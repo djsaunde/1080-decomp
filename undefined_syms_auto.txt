@@ -3661,6 +3661,7 @@ gl_ref_0001EE24_3AC5C = 0x0001EE24;  /* gl_func_0003AC5C baked lui/addiu message
 gl_ref_0001EE3C_3AC5C = 0x0001EE3C;  /* gl_func_0003AC5C baked lui/addiu message address (case 3, s3) */
 gl_ref_0001EE48_3AC5C = 0x0001EE48;  /* gl_func_0003AC5C baked lui/addiu message address (default cb, s4) */
 gl_func_00061F8C_rodata = 0x00002080;  /* gl_func_00061F8C 5-entry jumptable (cases 1..5) in bootup.uso RoData at +0x2080; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_61F8C.c) */
+gl_func_0004E96C_rodata = 0x00001B84;  /* gl_func_0004E96C 9-entry jumptable (cases 109..117) in bootup.uso RoData at +0x1B84; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_4E96C.c) */
 gl_ref_0007644C = 0x0007644C;  /* gl_func_00061F8C nonzero baked jal 0x0C01D913 (stream int reader) */
 gl_ref_00076400 = 0x00076400;  /* gl_func_00061F8C nonzero baked jal 0x0C01D900 (debug print) */
 gl_ref_0002205C_61F8C = 0x0002205C;  /* gl_func_00061F8C baked lui/addiu message address (case 1) */

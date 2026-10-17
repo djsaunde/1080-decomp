@@ -21691,92 +21691,17 @@ void gl_func_0004E920(int *a0, int *a1) {
     a1[5] = (int)a0;
 }
 
-// gl_func_0004E96C — STRUCTURAL PASS (0x1B8 / 111 words, no episode). Raw-.word
-// USO. realjr=1, regjr=1 (the 01E00008 at 0x4E994 is jr t7 = jump-table
-// dispatch, NOT a boundary — docs/N64_FORENSICS ADDENDUM-18c
-// register-indirect-jr pattern) → ONE clean function. Single prologue frame
-// 0x18 (saves ra). 9-way jump-table parameter-stream decoder.
-//
-//   void gl_func_0004E96C(void *a0, int *a1) {
-//     unsigned op = (unsigned)(*a1 - 0x6D);          // rebased opcode
-//     if (op >= 9) goto def;                          // sltiu/beqz guard
-//     goto *jumptab[op];                              // table at &D_0+0x1B84
-//     // each of the 9 arms:
-//     //   v   = a1->p04;                              // operand cursor
-//     //   a1->p04 = v + 4;                            // advance stream
-//     //   x   = *(int*)v;
-//     //   a0->p100 = x;  (or a0->p104 / a0->p108)     // store decoded slot
-//     //   FP arms: f = (float)x via mtc1/cvt.s.w; store / trunc.w.s back
-//     def:
-//     // default arm: fallthrough, no store
-//   }
-// Per-opcode parameter decoder: rebases the command word *(a1) by 0x6D,
-// range-checks to [0,8], dispatches through a 9-entry jump table at
-// &D_0+0x1B84 (USO-relocated data region — EXTENDS the &D_0 jump-table block
-// alongside the 0x1AE4 / 0x1B00 / 0x1B3C tables used by gl_func_00040304 /
-// 00040640 / 00044B84), and per arm pulls an operand from the a1->0x04
-// stream cursor (post-incrementing by 4), storing it into the object's
-// 0x100 / 0x104 / 0x108 slots with per-arm integer-or-FP (mtc1/cvt.s.w/
-// trunc.w.s) conversion. Family: jump-table command/parameter decode
-// (siblings gl_func_00040304 / 00040640 / 0004E96C-neighbours). Per-arm
-// store/convert detail representative; the dispatch math, the range guard,
-// the &D_0+0x1B84 table address, the jr-t7 dispatch and the a1->0x04
-// post-increment cursor are exact. Caps: object struct, the &D_0+0x1B84
-// jump table untyped. Full body INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-typedef struct { int op; int *args; } C4E96C;
-#define A4E96C(c) (p = (c)->args, (c)->args = p + 1, *p)
-void gl_func_0004E96C(char *a0, C4E96C *a1) {
-    int *p;
-    int *q;
-    int v;
-    int w;
-    switch (a1->op) {
-    case 109:
-        w = (q = a1->args, a1->args = q + 1, *q);
-        *(int *)(a0 + 0x100) = 0;
-        *(int *)(a0 + 0x104) = w;
-        break;
-    case 117:
-        *(int *)(a0 + 0x108) = A4E96C(a1);
-        break;
-    case 110:
-        v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xC0) = v;
-        *(int *)(a0 + 0xD0) = v;
-        v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xC4) = v;
-        *(int *)(a0 + 0xD4) = v;
-        break;
-    case 111:
-        v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xB8) = v;
-        *(int *)(a0 + 0xC8) = v;
-        v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xBC) = v;
-        *(int *)(a0 + 0xCC) = v;
-        break;
-    case 112:
-        w = (q = a1->args, a1->args = q + 1, *q);
-        *(int *)(a0 + 0x78) = w;
-        break;
-    case 113:
-        *(int *)(a0 + 0x7C) = A4E96C(a1);
-        break;
-    case 115:
-        *(float *)(a0 + 0xAC) = A4E96C(a1);
-        break;
-    case 116:
-        *(float *)(a0 + 0xB0) = A4E96C(a1);
-        break;
-    default:
-        gl_func_00000000(a0, a1);
-        break;
-    }
+/* gl_func_0004E96C: 9-way parameter-stream decoder (0x1B8 / 110 words).
+ * switch (a1->op) cases 109..117 pull operand words from the a1->args cursor
+ * into the object's 0x78/0x7C/0xAC/0xB0/0xB8..0xD4/0x100..0x108 slots (some
+ * through (int)(float) or int->float); case 114 / out of range call the
+ * placeholder. WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in
+ * the IDO 7.1 -O2 donor unit game_libs_o2_4E96C.c; the splice renames the
+ * donor-local jumptable reloc to gl_func_0004E96C_rodata, pinned to the USO
+ * RoData at +0x1B84. Body below is a placeholder for the splice. */
+void gl_func_0004E96C(char *a0) {
+    *(volatile int *)(a0 + 0x78) = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E96C);
-#endif
 
 /* Split off from gl_func_0004E96C bundle 2026-05-08: 9-insn FPU int-to-float
  * divide. a0->_B4 (float) = (float)a0->_B8 / (float)a0->_BC.

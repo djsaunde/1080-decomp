@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004E96C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-17T23:30:42.055158+00:00",
+  "end_time": "2026-10-17T23:30:42.055181+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-17T23:30:42.055175+00:00",
+      "assistant_text": "Manual exact match via IDO 7.1 -O2 donor splice (jumptable at USO RoData +0x1B84 pinned as gl_func_0004E96C_rodata). Register fix: in cases 109/112 the stream cursor is held in the int local v (the trunc.w.s result elsewhere) and the loaded word in the pointer local p, giving cursor v1 / word v0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 111,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for gl_func_0004E96C -- 9-way parameter-stream decoder\n * (0x1B8 / 110 words; word-exact apart from the jumptable reloc field).\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the\n * 52CD4 / 3AC5C / 61F8C recipe, docs/MATCHING_WORKFLOW.md#post0b-jumptable-donor-52cd4).\n * switch (op) cases 109..117: the 9-entry table sits at donor .rodata +0,\n * renamed gl_func_0004E96C_rodata and pinned to bootup.uso RoData +0x1B84\n * (the extractor dump at roff 0x1B88 lists all nine arms in case order,\n * arm = target - shim - vaddr with no -8; case 114 = the default arm).\n *\n * Load-bearing shape: in cases 109 and 112 the stream cursor lives in the\n * same int local (v) that holds the trunc.w.s result in cases 110/111, and\n * the loaded word lives in the pointer local (p) the other arms use as the\n * cursor. That puts the cursor in v1 and the word in v0, as in the target;\n * separate locals give v0/v1 the other way round. */\n#include \"common.h\"\n\nextern int gl_func_00000000();\n\ntypedef struct { int op; int *args; } C4E96C;\n#define A4E96C(c) (p = (c)->args, (c)->args = p + 1, *p)\n\nvoid gl_func_0004E96C(char *a0, C4E96C *a1) {\n    int *p;\n    int v;\n    switch (a1->op) {\n    case 109:\n        v = (int)a1->args; a1->args = (int *)v + 1; p = *(int **)v;\n        *(int *)(a0 + 0x100) = 0;\n        *(int *)(a0 + 0x104) = (int)p;\n        break;\n    case 117:\n        *(int *)(a0 + 0x108) = A4E96C(a1);\n        break;\n    case 110:\n        v = (int)(float)A4E96C(a1);\n        *(int *)(a0 + 0xC0) = v;\n        *(int *)(a0 + 0xD0) = v;\n        v = (int)(float)A4E96C(a1);\n        *(int *)(a0 + 0xC4) = v;\n        *(int *)(a0 + 0xD4) = v;\n        break;\n    case 111:\n        v = (int)(float)A4E96C(a1);\n        *(int *)(a0 + 0xB8) = v;\n        *(int *)(a0 + 0xC8) = v;\n        v = (int)(float)A4E96C(a1);\n        *(int *)(a0 + 0xBC) = v;\n        *(int *)(a0 + 0xCC) = v;\n        break;\n    case 112:\n        v = (int)a1->args; a1->args = (int *)v + 1; p = *(int **)v;\n        *(int *)(a0 + 0x78) = (int)p;\n        break;\n    case 113:\n        *(int *)(a0 + 0x7C) = A4E96C(a1);\n        break;\n    case 115:\n        *(float *)(a0 + 0xAC) = A4E96C(a1);\n        break;\n    case 116:\n        *(float *)(a0 + 0xB0) = A4E96C(a1);\n        break;\n    default:\n        gl_func_00000000(a0, a1);\n        break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_4E96C.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004E96C.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Verified with objdiff (100.0) and byte-identical ROM build."
+  }
+}
