@@ -16725,10 +16725,11 @@ void game_libs_func_00048104(int a0, short *a1, short *a2, short *a3, short arg5
     *((char *)a1 + 0xF) = (char)arg5;
 }
 
-// game_libs_func_00048184 -- NM decode 2026-10-17 agent-c. Clears a W*H u16
-// framebuffer (owner->0x240->0x148 table [owner->0x204] +0xF4) and blits a
-// 128x128 u16 image centred in it.
-#ifdef NON_MATCHING
+/* game_libs_func_00048184: clears the W*H u16 framebuffer
+ * (owner->0x240->0x148 table [owner->0x204] +0xF4) and blits a 128x128 u16
+ * image centred in it. EXACT: x0/y0 on ONE source line puts the h load ahead
+ * of the w load (two lines schedule w first); the table index as an array
+ * subscript gives the 576-chain the lower t-reg. */
 extern int D_48184_w, D_48184_h;
 extern unsigned short D_48184_img[];
 void game_libs_func_00048184(char *a0) {
@@ -16737,9 +16738,8 @@ void game_libs_func_00048184(char *a0) {
     int i, x, y, x0, y0;
 
     src = D_48184_img;
-    x0 = D_48184_w / 2 - 64;
-    y0 = D_48184_h / 2 - 64;
-    dst = *(unsigned short **)(*(char **)(*(char **)(a0 + 576) + 328) + *(int *)(a0 + 516) * 4 + 244);
+    x0 = D_48184_w / 2 - 64; y0 = D_48184_h / 2 - 64;
+    dst = ((unsigned short **)(*(char **)(*(char **)(a0 + 576) + 328) + 244))[*(int *)(a0 + 516)];
     for (i = 0; i < D_48184_w * D_48184_h; i++) {
         dst[i] = 0;
     }
@@ -16751,9 +16751,6 @@ void game_libs_func_00048184(char *a0) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00048184);
-#endif
 
 /* gl_func_00048354: bounded queue append (ctr @+0x258, slots @+0x25C, cap 8;
  * overflow calls placeholder(&D+0x1FF30)). BYTE-EXACT 19/19 (2026-07-15,

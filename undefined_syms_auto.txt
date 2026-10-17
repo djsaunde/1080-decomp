@@ -639,6 +639,9 @@ D_6179C_a = 0x00000000;  /* game_libs_func_0006179C run-once countdown: sym2345,
 D_6179C_b = 0x00000000;  /* game_libs_func_0006179C 64-entry handle table: sym2344, addend 0; &tbl[64] = the baked +0x100 end */
 D_412E8_e = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_412E8_f = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
+D_48184_w = 0x00000000;  /* game_libs_func_00048184 framebuffer width int (own lui/addiu base) */
+D_48184_h = 0x00000000;  /* game_libs_func_00048184 framebuffer height int (own lui/addiu base) */
+D_48184_img = 0x00000000;  /* game_libs_func_00048184 128x128 u16 source image */
 D_412E8_g = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_412E8_h = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_412E8_i = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
