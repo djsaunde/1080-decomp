@@ -30330,13 +30330,22 @@ void game_libs_func_0005C4F0(float *a0, float *a1, float a2, float a3, float a4)
  * j/k the cyclic successors); sign < 0 just subtracts d from v[i-1]. The
  * v[n] = v[n] self-copies are real (load/store pairs at entry and exit); the
  * entry copy needs one statement per line or the loads come out reversed.
- * 50/73 words. Residual: the target copies q into a2 (a0 home-stored, a0
- * reused for k, j in v1); here q is spilled to its home and reloaded, which
- * shifts j/k/i*4 one register and moves the slti into the bgez delay. */
+ * 2026-10-17 agent-g (run 104) 92.7 -> 99.18: the target's `sw a0,0(sp);
+ * or a2,a0,zero` = q is a MEMORY-homed param (dead if(0) address escape)
+ * loaded once into a register copy at entry (store-to-load forwarded to a
+ * move). Colours then follow uopt's first-appearance order: a dead
+ * `while (0) { q0 = &v[i]; j = 0; k = 0; }` before `q = q0` puts i*4 in v0,
+ * j in v1, k in a0, q in a2 (target). Residual: the v+i*4 address web is
+ * coloured t0 before the j*4/k*4 webs (target t2 after t0/t1); dead j*4/k*4
+ * appearances (sign = j*4, q0 = &q0[j], d = q[j]) do not move it. */
 #ifdef NON_MATCHING
-void game_libs_func_0005C548(f32 *q, f32 *v, f32 d, s32 i, s32 sign) {
+void game_libs_func_0005C548(f32 *q0, f32 *v, f32 d, s32 i, s32 sign) {
     s32 j, k;
     f32 qi, w, qj, qk, d2;
+    f32 *q;
+    if (0) { func_00000000(&q0); }
+    while (0) { q0 = &v[i]; j = 0; k = 0; }
+    q = q0;
     v[0] = v[0];
     v[1] = v[1];
     v[2] = v[2];
