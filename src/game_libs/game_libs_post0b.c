@@ -25366,33 +25366,30 @@ void gl_func_00053C04(char *arg0, s32 arg1) {
 
 /* game_libs_func_00054144: centroid of mesh triangle t: average of its three
  * s16 vertices (Mesh: verts @0x60, tris @0x68, Tri = {u16 flags; u16 v[3]}).
- * 50/51 words; the one residual is the vertex-address addu operand order
- * (target `addu v0,verts,idx*6`; every C spelling of &verts[idx], verts+idx,
- * char arithmetic or a commuted index emits idx*6 first; a separate `v = verts;
- * v += idx` gets base-first but colours the base v0). */
-#ifdef NON_MATCHING
-typedef struct { s16 x, y, z; } Vec3s_54144;
+ * EXACT 2026-10-17 agent-g (run 104; was 99.80 = 50/51): the last word was
+ * the vertex-address addu operand order (target `addu v0,verts,idx*6`, base
+ * first). Every flat spelling of &verts[idx] (struct-element IXA, ptr+idx,
+ * char/u32 arithmetic, commuted, comma/cast index) emits idx*6 first; typing
+ * the vertex array as ROWS, `s16 (*verts)[3]`, and taking the row
+ * `v = m->verts[idx]` (array-to-pointer decay of a row IXA) emits base first. */
 typedef struct { u16 flags; u16 v[3]; } Tri_54144;
-typedef struct { char pad[0x60]; Vec3s_54144 *verts; s32 pad64; Tri_54144 *tris; } Mesh_54144;
+typedef struct { char pad[0x60]; s16 (*verts)[3]; s32 pad64; Tri_54144 *tris; } Mesh_54144;
 void game_libs_func_00054144(Mesh_54144 *m, Vec3 *out, s32 t) {
     s32 i;
-    Vec3s_54144 *v;
+    s16 *v;
     out->x = 0.0f;
     out->y = 0.0f;
     out->z = 0.0f;
     for (i = 0; i < 3; i++) {
-        v = &m->verts[m->tris[t].v[i]];
-        out->x += v->x;
-        out->y += v->y;
-        out->z += v->z;
+        v = m->verts[m->tris[t].v[i]];
+        out->x += v[0];
+        out->y += v[1];
+        out->z += v[2];
     }
     out->x /= 3.0f;
     out->y /= 3.0f;
     out->z /= 3.0f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00054144);
-#endif
 
 
 /* gl_func_00054210 — EXACT 21/21 words (2026-07-08, agent-e). REVERSE-MERGE of
@@ -26232,59 +26229,39 @@ void game_libs_func_000550A0(int *a0, float a1) {
     }
 }
 
-#ifdef NON_MATCHING
-/* gl_func_000550CC — decoded 2026-05-19. MULTI-FUNCTION BUNDLE
- * (declared 0xE4 / 57 words). NAMED fn = init/register, insns
- * 1..50 (prologue 27BDFFB8 frame 0x48, jr ra at insn 50):
- *   void gl_func_000550CC(int *self) {
- *     if (cb1(self) == 2) return;            // beql v0,2
- *     // build a struct in stack scratch sp+0x34:
- *     //   [0]=self->0xDC  [4]=self->0xE0  [8]=self->0xE4
- *     //   + FP fields copied from self->0x114/118/11C/120/124/128
- *     cb2(&D_00000000, self + 0x114, &sp34, ...);
- *     // write FP results back: self->0x108/0x10C/0x110 = sp34 FP,
- *     // self->0x128 = 0
- *   }
- * Multi-idiom (focused pass): beql-likely early-return on cb1==2,
- * the mixed int(0xDC/E0/E4)+FP(0x114..0x128) struct-marshal into
- * sp+0x34, cb2's stack-scratch pointer arg, the FP write-back
- * (lwc1/swc1) to self->0x108/10C/110, and the &D_00000000 generic
- * symbol. Exact field order / FP regalloc need a focused .s pass.
- *
- * BOUNDARY NOTE (DEFERRED USO RE-SPLIT): insns 51..57 after the
- * jr ra are TWO tiny TRAILING LEAVES — arg-stash stubs
- * (`sw a0,0; jr ra; sw a1,4` and `sw a0,0; sw a1,4; jr ra;
- * sw a2,8`), each its own 03E00008. The 0xE4 size spans them so
- * the named fn can't byte-match standalone without a re-split at
- * the named-fn end. Real decoded C of the named fn preserved;
- * INCLUDE_ASM is the bundle build path. */
-extern int gl_func_00000000();
+/* gl_func_000550CC: if (f(self) == 2) return; copy self's position (+0xDC,
+ * int-word struct copy) into a float vec at self+0x114 field by field, call
+ * f(&D, &self->114, self->120, self->124, self->128) (the three tail args are
+ * raw words: lw, no lwc1), then struct-copy +0x114 back out and write its
+ * floats to +0x108..+0x110, clear +0x128. EXACT 2026-10-17 agent-g (run 104;
+ * was 54.8 with every field a float copy): float-copy-scan dir -1 hit -- the
+ * whole-struct moves are int-word copies (struct assignment), only the
+ * field-wise moves are lwc1/swc1. Frame 0x48 + the &self->114 home at 0x28
+ * via a pad split: s32 pad[2] above v, one s32 between v and p. */
+typedef struct { f32 x, y, z; } V3_550CC;
+extern int func_00000000();
 extern int D_00000000;
-void gl_func_000550CC(int *self) {
-    int sp34[3];
-    float fp[6];
-    if (gl_func_00000000(self) == 2) {
+void gl_func_000550CC(char *self) {
+    s32 pad[2];
+    V3_550CC v;
+    s32 padA;
+    V3_550CC *p;
+    if (func_00000000(self) == 2) {
         return;
     }
-    sp34[0] = *(int *)((char *)self + 0xDC);
-    sp34[1] = *(int *)((char *)self + 0xE0);
-    sp34[2] = *(int *)((char *)self + 0xE4);
-    fp[0] = *(float *)((char *)self + 0x114);
-    fp[1] = *(float *)((char *)self + 0x118);
-    fp[2] = *(float *)((char *)self + 0x11C);
-    fp[3] = *(float *)((char *)self + 0x120);
-    fp[4] = *(float *)((char *)self + 0x124);
-    fp[5] = *(float *)((char *)self + 0x128);
-    gl_func_00000000(&D_00000000, (char *)self + 0x114, sp34);
-    *(float *)((char *)self + 0x108) = fp[0];
-    *(float *)((char *)self + 0x10C) = fp[1];
-    *(float *)((char *)self + 0x110) = fp[2];
-    *(int *)((char *)self + 0x128) = 0;
+    v = *(V3_550CC *)(self + 0xDC);
+    p = (V3_550CC *)(self + 0x114);
+    p->x = v.x;
+    p->y = v.y;
+    p->z = v.z;
+    func_00000000(&D_00000000, p, *(s32 *)(self + 0x120), *(s32 *)(self + 0x124),
+                     *(s32 *)(self + 0x128));
+    v = *p;
+    *(f32 *)(self + 0x108) = v.x;
+    *(f32 *)(self + 0x10C) = v.y;
+    *(f32 *)(self + 0x110) = v.z;
+    *(s32 *)(self + 0x128) = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000550CC);
-
-#endif
 
 void game_libs_func_00055194(int a0, int a1) {
 }
