@@ -6307,14 +6307,18 @@ end:
  * r = cb(o); if r < 0: n = o->0x6C, cb(&n), n *= -r, set bit 1, return 1. */
 extern float gl_3B01C_f();
 int gl_func_0003B01C(char *o, char *other) {
+    Vec3 u1, u2, u3, u4;
+    Vec3 n;
+    Vec3 u5;
+    float r;
+    float dz;
+    Vec3 t2;
+    float dx, dy;
+    Vec3 t;
+    Vec3 u6, u7;
+    Vec3 t3;
     Vec3 *pa;
     Vec3 *pb;
-    float dx, dy, dz;
-    Vec3 t;
-    Vec3 t2;
-    Vec3 t3;
-    Vec3 n;
-    float r;
     int fl;
 
     pa = (Vec3 *)(o + 0x54);
@@ -12488,15 +12492,14 @@ void gl_func_00041A9C(char *self) {
 store1:
     b[0] = (int)((char *)&D_00000000 + 0x1F4B0);
 skip1:
-    n[0] = (int)D_41A9C_v1;
-    n[1] = (int)D_41A9C_v2;
+    n[0] = (int)D_41A9C_v1; n[1] = (int)D_41A9C_v2;
 end1:
     gl_func_00000000(D_41A9C_s6, (char *)&D_00000000 + 0x1F668, n, 0);
     gl_func_00000000(D_41A9C_s7, (char *)&D_00000000 + 0x1F670, D_41A9C_s8, 1);
     gl_func_00000000(D_41A9C_s9, (char *)&D_00000000 + 0x1F678, D_41A9C_s10, 4);
-    if (1) { int *t = D_41A9C_t1; gl_func_00000000(buf, (char *)&D_00000000 + 0x1F680, t[2], t[0]); }
+    gl_func_00000000(buf, (char *)&D_00000000 + 0x1F680, D_41A9C_t1[2], D_41A9C_t1[0]);
     gl_func_00000000(D_41A9C_s12, buf);
-    if (1) { int *t = D_41A9C_t2; gl_func_00000000(buf, (char *)&D_00000000 + 0x1F690, t[2], t[0]); }
+    gl_func_00000000(buf, (char *)&D_00000000 + 0x1F690, D_41A9C_t2[2], D_41A9C_t2[0]);
     gl_func_00000000(D_41A9C_s14, buf);
     n = (int *)gl_func_00000000(8);
     if (n == 0) goto end2;
@@ -12507,8 +12510,7 @@ end1:
 store2:
     b[0] = (int)((char *)&D_41A9C_vb + 0x1F4B0);
 skip2:
-    n[0] = (int)D_41A9C_v3;
-    n[1] = (int)D_41A9C_v4;
+    n[0] = (int)D_41A9C_v3; n[1] = (int)D_41A9C_v4;
 end2:
     gl_func_00000000(D_41A9C_s15, (char *)&D_00000000 + 0x1F6A0, n, 1);
     gl_func_00000000(D_41A9C_s16, (char *)&D_00000000 + 0x1F6AC);
@@ -17811,13 +17813,14 @@ typedef struct { char **data; int pad4, pad8; int count; } A49B3C;
 typedef struct { A49B3C *a; int idx; int last; } AI49B3C;
 typedef struct L49B3C { char *data; struct L49B3C *next; } L49B3C;
 typedef struct { L49B3C *cur; L49B3C *next; } LI49B3C;
-extern void gl_49B3C_regf(char *, char *, char *, int, float, int);
+extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern char D_49B3C_s1[], D_49B3C_s2[], D_49B3C_s3[], D_49B3C_s4[], D_49B3C_s5[], D_49B3C_s6[];
 void gl_func_00049B3C(char *self) {
-    LI49B3C li;
-    AI49B3C ai0;
-    AI49B3C ai1;
     AI49B3C ai;
+    AI49B3C aipad;
+    AI49B3C ai1;
+    AI49B3C ai0;
+    LI49B3C li;
     AI49B3C *p;
     A49B3C *arr;
     char **v;
@@ -17829,7 +17832,7 @@ void gl_func_00049B3C(char *self) {
     gl_func_00000000(D_49B3C_s1, (char *)&D_00000000 + 0x1FFD4, 0);
     gl_func_00000000(D_49B3C_s2, (char *)&D_00000000 + 0x1FFE0, self + 64, 0);
     gl_func_00000000(D_49B3C_s3, (char *)&D_00000000 + 0x1FFE8, self + 68, 0);
-    gl_49B3C_regf(D_49B3C_s4, (char *)&D_00000000 + 0x1FFF4, self + 156, 0, 10.0f, 0);
+    gl_49B3C_regf(D_49B3C_s4, (char *)&D_00000000 + 0x1FFF4, self + 156, 0.0f, 10.0f, 0);
     p = &ai0;
     if ((unsigned)p == 0) {
         p = (AI49B3C *)gl_func_00000000(12);
@@ -21277,49 +21280,39 @@ int game_libs_func_0004E23C(char *a0) {
  * dead null-fallback), copy it twice (hdr->buf1->buf2), then iterate entries
  * src[idx] for idx in (-1, src->0xC-1], dispatching entry->0x28->0x1c
  * (entry + entry->0x28->0x18) per entry. */
-void gl_func_0004E244(char *src) {
-    int hdr[3];
-    int buf1[3];
-    int buf2[3];
-    int *arr;
-    int idx, count;
-    char *a0;
-    char *n = (char *)hdr;
+/* Re-decoded 2026-10-17 agent-c run 105 (35 -> 88.7): the gl_func_00049B3C
+ * array-iterator idiom (placement-new into ai0, two struct copies, ?: step).
+ * Open: v1/a1/a2 coloring of &ai0 / p / src at entry. */
+void gl_func_0004E244(A49B3C *src) {
+    AI49B3C ai;
+    int g1[1];
+    AI49B3C ai1;
+    int g2[1];
+    AI49B3C ai0;
+    int u[3];
+    AI49B3C *p;
+    char **v;
+    char *e;
+    VS49B3C *vs;
 
-    if (n == 0) {
-        n = (char *)gl_func_00000000(0xC);
-        if (n == 0) {
-            return;
-        }
+    if (1) { AI49B3C *q2 = &ai; }
+    p = &ai0;
+    if ((unsigned)p == 0) {
+        p = (AI49B3C *)gl_func_00000000(12);
+        if (p == 0) goto skip;
     }
-    *(int *)(n + 0x4) = -1;
-    *(int *)(n + 0x0) = (int)src;
-    *(int *)(n + 0x8) = *(int *)(src + 0xC) - 1;
-    buf1[0] = hdr[0];
-    buf1[1] = hdr[1];
-    buf1[2] = hdr[2];
-    buf2[0] = buf1[0];
-    buf2[1] = buf1[1];
-    buf2[2] = buf1[2];
-    arr = (int *)buf2[0];
-    idx = buf2[1];
-    count = buf2[2];
-    if (idx < count) {
-        idx++;
-        a0 = (char *)(arr + idx);
-    } else {
-        a0 = 0;
-    }
-    while (a0 != 0) {
-        char *entry = (char *)*(int *)a0;
-        int *vt = *(int **)(entry + 0x28);
-        ((void (*)(int))*(int *)((char *)vt + 0x1C))((int)entry + *(short *)((char *)vt + 0x18));
-        if (idx < count) {
-            idx++;
-            a0 = (char *)(arr + idx);
-        } else {
-            a0 = 0;
-        }
+    p->idx = -1;
+    p->a = src;
+    p->last = src->count - 1;
+skip:
+    ai1 = ai0;
+    ai = ai1;
+    v = ai.idx < ai.last ? &ai.a->data[++ai.idx] : 0;
+    while (v != 0) {
+        e = ai.a->data[ai.idx];
+        vs = *(VS49B3C **)(e + 40);
+        vs->fn28(e + vs->d24);
+        v = ai.idx < ai.last ? &ai.a->data[++ai.idx] : 0;
     }
 }
 #else
@@ -21379,37 +21372,34 @@ int gl_func_0004E3F4(char *a0) {
 }
 
 #ifdef NON_MATCHING
-/* gl_func_0004E424: pure-FP clamp/abs transform leaf (no calls).
- * Decoded from bare stub 2026-05-19. Clean single fn, frame 0x10,
- * saves callee FP $f20 (sdc1/ldc1 @ sp+8). Float signature
- * f(float p0, float p1, float p2, float a3) → float in $f0.
- * Structure: t = a3 - p1; (f20); load p0,p1,p2 + a2-as-float;
- * a chain of c.lt.s / c.le.s vs 0.0 / 2.0f(0x40000000) with
- * bc1f/bc1t guards selecting abs.s / neg.s / add.s arms — a
- * saturating clamp + abs of the difference; returns the folded f0
- * (mov.s in the jr delay slot).
- *
- * DOCUMENTED-HARD FP cap (focused-pass): pure-FP leaf with many
- * interleaved c.lt/c.le + bc1f/bc1t + abs.s is the FP-compare-
- * branch + FP-register-allocation family (same class as the
- * centroid/transform caps) — the exact bc1f/bc1t arm order,
- * delay-likely fills, and $f0..$f20 allocation are not reachable
- * without iterating the .s. The C below documents the determinable
- * shape (args, the f20=a3-p1 sub, the clamp/abs nature, f0 return)
- * for the focused pass; it is NOT expected to byte-match as-is.
- * INCLUDE_ASM build path. */
-float gl_func_0004E424(float p0, float p1, float p2, float a3) {
-    float t = a3 - p1;
-    float r;
-    if (t < 0.0f) {
-        r = -t;
+/* gl_func_0004E424: fast 3D distance estimate between (x0,y0,z0) and
+ * (x1,y1,z1): abs of each delta, then max + (sum of the other two) / 2.
+ * Re-decoded 2026-10-17 agent-c run 105 (old body was a 2-arg stub). */
+float gl_func_0004E424(float x0, float y0, float z0, float x1, float y1, float z1) {
+    float dy, dz;
+    float a, b, c;
+    float zero = 0.0f;
+
+    x1 -= x0;
+    dy = y1 - y0;
+    dz = z1 - z0;
+    if (x1 < zero) x1 = -x1;
+    if (dy < zero) dy = -dy;
+    if (dz < zero) dz = -dz;
+    if (x1 < dy) {
+        a = x1;
+        b = dy;
     } else {
-        r = t;
+        a = dy;
+        b = x1;
     }
-    if (r < 2.0f) {
-        r = p0 - p2;
+    if (dz < b) {
+        c = b;
+        b = dz;
+    } else {
+        c = dz;
     }
-    return r;
+    return c + (a + b) / (float)2;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E424);
