@@ -30714,13 +30714,18 @@ void gl_func_0005D054(float *a0, float *a1, float *a2) {
  * axis i (1-based) by the half-angle pair (c, s): the (q[i], w) and
  * (q[j], q[k]) Givens pairs. The unfolded `lui 0x3f80; mul.s` is `(f32)1 * s`
  * (a float literal 1.0f * s is folded by cfe; the int-literal cast is not).
- * Residual (+2 words): q is moved to a1 and home-stored (the target keeps q
- * in a0 and puts &q[i]/&q[k] in a2/a1), and c/s colour f14/f12 swapped --
- * same param-coalescing miss as 0005C548. */
+ * 2026-10-17 agent-g (run 104) 71.2 -> 76.8: a dead `while (0) { t = c;
+ * q = &q[i]; }` ahead of the body fixes both old residuals -- c now colours
+ * f12 before s (first appearance), and the dead reassignment of q keeps it
+ * in a0 with no home store / or-copy. Remaining: the &q[i]/&q[j]/&q[k] webs
+ * colour a1/a2/t0 (target a2/t0/a1) and q[0] is loaded at the top instead
+ * of after q[i]; explicit pi/pj/pk locals in any order and dead &q[k]
+ * appearances do not move them. */
 #ifdef NON_MATCHING
 void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
     s32 j, k;
     f32 t, a;
+    while (0) { t = c; q = &q[i]; }
     j = i + 1;
     if (j >= 4) j = 1;
     k = j + 1;
@@ -33872,7 +33877,6 @@ void game_libs_func_000622C8(int *a0, int a1) {
     a0[2] = a1;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_000622D8: 36-insn alloc-array + N-init loop (0x90, frame 0x38).
  *
  * Decoded structure (raw-word disasm):
@@ -33890,27 +33894,24 @@ void game_libs_func_000622C8(int *a0, int a1) {
  * delay slot. Direct jal to 0x764C4 (no R_MIPS_26 reloc) is another
  * hardcoded-address-jal pattern (cf. 0x80824 in gl_func_0006C084).
  *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
+ * EXACT 2026-10-17 agent-g (run 104; was 55.7, first compile): count is a
+ * stack local filled by the stream reader (&count -> sp+0x34, re-read after
+ * the alloc call), the loop bound is re-read from self[1] every iteration
+ * (i in s1, i*32 in s0), and the baked jal 0x0C01D913 is the existing
+ * gl_ref_0007644C pin (61F8C's stream int reader), not a fn-ptr cast.
  */
+extern int gl_ref_0007644C(); /* baked jal 0x0C01D913: stream int reader */
 void gl_func_000622D8(int *self, int a1) {
-    int local_buf[1];
-    int *factory;
     int count;
     int i;
-    ((void(*)(int*, int))0x764C4)(local_buf, a1);
-    count = local_buf[0];
-    factory = (int*)gl_func_00000000(count * 32);
-    self[0] = (int)factory;
+    gl_ref_0007644C(&count, a1);
+    self[0] = gl_func_00000000(count * 32);
     self[1] = count;
-    for (i = 0; i < count; i++) {
-        gl_func_00000000((char*)self[0] + i * 32, self[2]);
-        gl_func_00000000((char*)self[0] + i * 32);
+    for (i = 0; i < self[1]; i++) {
+        gl_func_00000000((char *)self[0] + i * 32, self[2]);
+        gl_func_00000000((char *)self[0] + i * 32);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000622D8);
-#endif
 
 /* gl_func_00062368: array allocator/initializer. obj = a0 ?: alloc(8); store
  * count at obj->4 and an alloc(count*20) array at obj->0; init each 20-byte
@@ -34119,7 +34120,6 @@ int gl_func_000625FC(int *a0, int a1) {
     return *entry;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0006264C: 40-insn alloc-or-init + 14×-stride sub-init + 4-call (0xA0, frame 0x20).
  *
  * Decoded structure (raw-word disasm):
@@ -34143,31 +34143,26 @@ int gl_func_000625FC(int *a0, int a1) {
  * — IDO standard shift-subtract-shift chain for constant multiply
  * (`(a*8) - a = 7a; 7a*2 = 14a`).
  *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
+ * EXACT 2026-10-17 agent-g (run 104; was 68.3): the alloc fallback is the
+ * ||-form on the PARAMETER itself (`if (obj != 0 || (obj = alloc(0x48)) !=
+ * 0) { ... } return obj;` -- a separate obj local defers the s0 copy into
+ * the bnez delay), and the a2 field store comes BEFORE the two zero stores
+ * (that order lands the a2 home reload late, in the last jal's arg block).
  */
-int* gl_func_0006264C(int *self_or_null, int a1, int a2, int a3) {
+int* gl_func_0006264C(int *obj, int a1, int a2, int a3) {
     extern int D_00000000;
     extern int D_sym_6264C;
-    int *obj;
-    if (self_or_null == 0) {
-        obj = (int*)gl_func_00000000(0x48);
-        if (obj == 0) return 0;
-    } else {
-        obj = self_or_null;
+    if (obj != 0 || (obj = (int*)gl_func_00000000(0x48)) != 0) {
+        gl_func_00000000(obj, (char*)&D_00000000 + 0x220DC);
+        obj[0x28 / 4] = (int)&D_sym_6264C;
+        gl_func_00000000((char*)obj + 0x40, a3, a2 * 14);
+        obj[0x38 / 4] = a2;
+        obj[0x2C / 4] = 0;
+        obj[0x34 / 4] = 0;
+        gl_func_00000000(obj, 1, a1);
     }
-    gl_func_00000000(obj, (char*)&D_00000000 + 0x220DC);
-    obj[0x28 / 4] = (int)&D_sym_6264C;
-    gl_func_00000000((char*)obj + 0x40, a3, a2 * 14);
-    obj[0x2C / 4] = 0;
-    obj[0x34 / 4] = 0;
-    obj[0x38 / 4] = a2;
-    gl_func_00000000(obj, 1, a1);
     return obj;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0006264C);
-#endif
 
 extern int gl_func_00000000();
 int gl_func_000626EC(char *a0) {
