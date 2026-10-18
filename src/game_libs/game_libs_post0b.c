@@ -3775,7 +3775,7 @@ char *gl_func_0003800C(char *o, int a1) {
     int n;
     if (o == 0) {
         o = (char *)gl_func_00000000(0x2C);
-        if (o == 0) return o;
+        if (o == 0) goto out;
     }
     p = o;
     if (o == 0) {
@@ -3787,8 +3787,8 @@ char *gl_func_0003800C(char *o, int a1) {
         q = (char *)gl_func_00000000(0x10);
         if (q == 0) goto subc;
     }
-    *(int *)(q + 0x0) = -1;
     *(int *)(q + 0x8) = 0x8000;
+    *(int *)(q + 0x0) = -1;
     *(int *)(q + 0x4) = 0;
 subc:
     r = p + 0x10;
@@ -3798,8 +3798,8 @@ subc:
     }
     *(int *)r = 0;
 fields:
-    *(int *)(p + 0x14) = 0;
     *(int *)(p + 0xC) = a1;
+    *(int *)(p + 0x14) = 0;
 link:
     *(char **)(o + 0x28) = (char *)&D_00000000;
     gl_func_00000000(o + 0x18);
@@ -3808,6 +3808,7 @@ link:
     *(int *)&D_00000000 = n + 1;
     *(int *)(o + 0x1C) = n;
     *(int *)(o + 0x20) = gl_func_00000000(o, n);
+out:
     return o;
 }
 #else
@@ -5470,7 +5471,6 @@ void gl_func_00039990(int *a0, int *a1) {
     }
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00039A04: 38-insn alloc + init helper. If a0 == NULL,
  * alloc(0x88); if alloc fails, return 0. Init fields: [0x28] = &D_0,
  * [0x84] = 0, [0x6C..0x80] = float-zero, [0x70] = 1.0f. Call gl_func
@@ -5481,32 +5481,33 @@ void gl_func_00039990(int *a0, int *a1) {
  * `beq s0,zero` instead of target's `beq v0,zero` (move scheduling).
  * Tried pad[12,16,20] in various positions — sp_arg keeps landing
  * at sp+0x24 or sp+0x30 vs target's sp+0x2C. ~85% match. */
-extern int gl_func_00000000();
-int *gl_func_00039A04(int *a0) {
-    int *self = a0;
-    int sp_arg;
-    if (a0 == NULL) {
-        self = (int*)gl_func_00000000(0x88);
+/* EXACT 2026-10-17 agent-c run 106 (67.8 -> 100): the alloc-or-given
+ * constructor shape (nested NULL check + goto out, as in 36E74/3E238), the
+ * 0x70 = 1.0f store before the self+0x2C call, and pad locals around arg
+ * (arg's home must be sp+0x2C in the 0x38 frame). */
+int *gl_func_00039A04(int *self) {
+    int pad[2];
+    int arg;
+    int pad2[2];
+    if (self == NULL) {
+        self = (int *)gl_func_00000000(0x88);
+        if (self == NULL) goto out;
     }
-    if (self != NULL) {
-        gl_func_00000000(self, (char*)&D_00000000 + 0x1ECF4);
-        self[0x28/4] = (int)&D_00000000;
-        self[0x84/4] = 0;
-        *(float*)((char*)self + 0x74) = 0.0f;
-        *(float*)((char*)self + 0x78) = 0.0f;
-        *(float*)((char*)self + 0x7C) = 0.0f;
-        *(float*)((char*)self + 0x80) = 0.0f;
-        *(float*)((char*)self + 0x6C) = 0.0f;
-        gl_func_00000000((char*)self + 0x2C);
-        *(float*)((char*)self + 0x70) = 1.0f;
-        sp_arg = 19;
-        gl_func_00000000(self, &sp_arg);
-    }
+    gl_func_00000000(self, (char *)&D_00000000 + 0x1ECF4);
+    self[0x28/4] = (int)&D_00000000;
+    self[0x84/4] = 0;
+    *(float *)((char *)self + 0x74) = 0.0f;
+    *(float *)((char *)self + 0x78) = 0.0f;
+    *(float *)((char *)self + 0x7C) = 0.0f;
+    *(float *)((char *)self + 0x80) = 0.0f;
+    *(float *)((char *)self + 0x6C) = 0.0f;
+    *(float *)((char *)self + 0x70) = 1.0f;
+    gl_func_00000000((char *)self + 0x2C);
+    arg = 19;
+    gl_func_00000000(self, &arg);
+out:
     return self;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039A04);
-#endif
 
 /* gl_func_00039A9C: 28-insn helper. MATCHED 2026-05-28.
  *   func_0004C2DC(&buf);              alt-entry into gl_func_0004C288
@@ -7711,26 +7712,31 @@ void gl_func_0003D114(Quad4 *dst) {
 //   cbs + chained alloc-with-rollback + &D_0 back-link + data-seg
 //   template + -1 sentinel; 0x48 struct untyped. Real-C STRUCTURAL
 //   body below. Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int D_00000000;
-char *gl_func_0003D16C(char *o, int a1, int a2) {
-    int *sub;
+/* EXACT 2026-10-17 agent-c run 106 (69.8 -> 100): a1/a2 are 4-byte structs
+ * passed by value (every arg homed at entry, a2's register reused for o);
+ * the 0x2C sub-object is placement-constructed (p = o + 0x2C, alloc only if
+ * NULL, zeroed) and then assigned a1 by struct copy. */
+typedef struct { int w; } S3D16C;
+char *gl_func_0003D16C(char *o, S3D16C a1, S3D16C a2) {
+    S3D16C *p;
     if (o == 0) {
         o = (char *)gl_func_00000000(0x48);
         if (o == 0) goto out;
     }
     gl_func_00000000(o, (char *)&D_00000000 + 0x0001F2B8);
     *(char **)(o + 0x28) = (char *)&D_00000000;
-    sub = (int *)gl_func_00000000(0x04);
-    if (sub) *sub = 0;
-    *(int *)(o + 0x2C) = a1;
-    *(int *)(o + 0x34) = -1;
+    p = (S3D16C *)(o + 0x2C);
+    if (p != 0 || (p = (S3D16C *)gl_func_00000000(4)) != 0) {
+        p->w = 0;
+    }
+    *(S3D16C *)(o + 0x2C) = a1;
+    *(int *)(o + 0x3C) = 0;
+    *(int *)(o + 0x40) = a2.w;
+    *(int *)(o + 0x38) = 0;
+    *(int *)(o + 0x44) = -1;
 out:
     return o;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003D16C);
-#endif
 
 /* gl_func_0003D228: 24-insn helper. Calls gl_func(a0+0x10, a1); if
  * a1->[0x14] was non-zero sets a1->[0x4]=1; stores a1->[0x14]=a0; then
@@ -8733,40 +8739,20 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DD28);
  * C body present (under NON_MATCHING) as the permuter seed — build
  * path stays INCLUDE_ASM via #else. */
 #ifdef NON_MATCHING
-int game_libs_func_0003DDC0(int *a0, int *a1, float *a2) {
-    int *cell, *next4, *v1, *v0 = 0;
-    int *t6 = (int *)a0[0x10 / 4];
-    next4 = t6;
-    if (t6 != 0) {
-        cell = t6;
-        next4 = (int *)t6[1];
-        v0 = (int *)t6[0];
-    }
-    (void)cell;
-    if (v0 == 0) {
-        return 0;
-    }
-    v1 = v0;
-loop:
-    if (v1 == a1) {
-        a2[0] = *(float *)((char *)v1 + 0x5C);
-        a2[1] = *(float *)((char *)v1 + 0x60);
-        a2[2] = *(float *)((char *)v1 + 0x64);
-        return 1;
-    }
-    {
-        int *t0 = next4;
-        if (t0 == 0) {
-            v0 = 0;
-        } else {
-            cell = t0;
-            next4 = (int *)t0[1];
-            v0 = (int *)t0[0];
+typedef struct L3DDC0 { char *data; struct L3DDC0 *next; } L3DDC0;
+typedef struct { L3DDC0 *cur; L3DDC0 *next; } I3DDC0;
+int game_libs_func_0003DDC0(char *o, char *target, float *out) {
+    I3DDC0 it;
+    char *n;
+    if (1) { I3DDC0 *q = &it; }
+    it.next = *(L3DDC0 **)(o + 0x10);
+    while ((n = ((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0)) != 0) {
+        if (n == target) {
+            out[0] = *(float *)(n + 0x5C);
+            out[1] = *(float *)(n + 0x60);
+            out[2] = *(float *)(n + 0x64);
+            return 1;
         }
-    }
-    v1 = v0;
-    if (v0 != 0) {
-        goto loop;
     }
     return 0;
 }
@@ -16205,17 +16191,13 @@ void gl_func_00047644(int* a0, int* a1) {
 //   before they can be decoded under their own symbols. Real-C
 //   STRUCTURAL body below — the named fn (cb arg-adapter) only.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-void gl_func_000476DC(void **a0, int a1, int a2, int a3) {
-    void *ctx = ((void ***)a0)[0x254/4][0x158/4];
-    unsigned short h0 = *(unsigned short *)((char *)&a0 + 0x22);
-    unsigned short h1 = *(unsigned short *)((char *)&a0 + 0x26);
-    gl_func_00000000(ctx, a1, h0, h1);
+/* EXACT 2026-10-17 agent-c run 106 (79.3 -> 100): a2 and a3 are 4-byte
+ * structs passed by value; the call takes their low halves (lh 34/38(sp)
+ * from the homes) and a1 goes last. */
+typedef struct { short hi; short lo; } S476DC;
+void gl_func_000476DC(char *a0, int a1, S476DC a2, S476DC a3) {
+    gl_func_00000000(*(void **)(*(char **)(a0 + 0x254) + 0x158), a2.lo, a3.lo, a1);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000476DC);
-#endif
 
 /* game_libs_func_0004771C: float RGB [0,1] -> u16 triple at +0x1FC via (u32)(c * 255.0f). */
 void game_libs_func_0004771C(char *a0, float *a1) {
@@ -20879,23 +20861,18 @@ void gl_func_0004DDA0(Quad4 *dst) {
 
 #ifdef NON_MATCHING
 /* gl_func_0004DDF8: 32-insn alloc-or-given + multi-init constructor. */
-int* gl_func_0004DDF8(int *a0, int a1) {
-    int *s0 = a0;
-    int byte_size;
-    int v0;
+int *gl_func_0004DDF8(int *s0, int a1) {
     if (s0 == 0) {
-        s0 = (int*)gl_func_00000000(0x3C);
-        if (s0 == 0) return 0;
+        s0 = (int *)gl_func_00000000(0x3C);
+        if (s0 == 0) goto out;
     }
-    gl_func_00000000(s0, (char*)&D_00000000 + 0x204A8);
+    gl_func_00000000(s0, (char *)&D_00000000 + 0x204A8);
     s0[0x28/4] = (int)&D_00000000;
-    byte_size = a1 * 4;
-    gl_func_00000000(byte_size);
-    v0 = gl_func_00000000(byte_size);
-    s0[0x2C/4] = v0;
-    s0[0x30/4] = v0;
-    gl_func_00000000(s0);
+    gl_func_00000000(a1 * 4);
+    s0[0x30/4] = s0[0x2C/4] = gl_func_00000000(a1 * 4);
     s0[0x34/4] = a1;
+    gl_func_00000000(s0);
+out:
     return s0;
 }
 #else

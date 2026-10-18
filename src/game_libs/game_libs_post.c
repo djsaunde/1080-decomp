@@ -287,27 +287,28 @@ void game_libs_func_0001CF68(int a0, int a1) {
 //   never-defined USO placeholder for the 0x31FB0 blit routine.
 //   Next pass: resolve the 0x31FB0 symbol, then grind the
 //   multiply-sequence + beql codegen.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-int gl_func_0001CFDC(int code, int a1, int a2) {
-    short idx = (short)a1;
-    short sub = (short)a2;
-    char *rec = (char *)&D_00000000 + idx * 0x158;
-    unsigned char attr = *(unsigned char *)(rec + 0x1B);
-    char *e = rec + attr * 0x64 + sub * 0x14 + 0x50;
-    short h = *(short *)(e + 0x10);
-    unsigned short w = *(unsigned short *)(e + 0xE);
-    int r = gl_func_00000000(code, 0x3E0, w, h, idx);
-    if (*(short *)(e + 0x12) != 0) {
-        r = gl_func_00000000(r, (*(short *)(e + 0x10) + 0x3E0) & 0xFFFF, 0,
-                             *(short *)(e + 0x12), idx);
+/* EXACT 2026-10-17 agent-c run 106 (87.3 -> 100): the spec is an 8-byte
+ * struct passed BY VALUE (lh 46/50(sp) read its halves from the a1/a2
+ * homes), the glyph entry is addressed through a typed record view
+ * (&rec->grp[rec->attr].ent[sub]; flat byte arithmetic commutes one addu),
+ * and the blit is the baked in-unit jal 0x31FB0 (gl_ref_00031FB0 pin). */
+extern int gl_ref_00031FB0(); /* baked in-unit jal 0x31FB0 (blit) */
+typedef struct { short h0, h1, h2, h3; } Spec8_1CFDC;
+typedef struct { char p[0xE]; unsigned short w; short h; short n; } Ent_1CFDC;
+typedef struct { Ent_1CFDC ent[5]; } Grp_1CFDC;
+typedef struct { char p[0x1B]; unsigned char attr; char p2[0x50 - 0x1C]; Grp_1CFDC grp[2]; char p3[0x40]; } Rec_1CFDC;
+int gl_func_0001CFDC(int code, Spec8_1CFDC spec) {
+    Ent_1CFDC *e;
+    Rec_1CFDC *rec;
+    int r;
+    rec = &((Rec_1CFDC *)&D_00000000)[spec.h1];
+    e = &rec->grp[rec->attr].ent[spec.h3];
+    r = gl_ref_00031FB0(code, 0x3E0, e->w, e->h, spec.h1);
+    if (e->n != 0) {
+        r = gl_ref_00031FB0(r, (e->h + 0x3E0) & 0xFFFF, 0, e->n, spec.h1);
     }
     return r;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001CFDC);
-#endif
 
 // gl_func_0001D0AC — STRUCTURAL PASS (0x154 / 85 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
@@ -342,27 +343,21 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001CFDC);
 //   index-multiply chains + beql codegen). Name pre-checked: no
 //   extern reuse (collision-safe). gl_func_00000000 = canonical
 //   never-defined USO placeholder for the 0x3204C blit routine.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-int gl_func_0001D0AC(int code, int a1, int a2) {
-    short idx = (short)a1;
-    short sub = (short)a2;
-    char *rec = (char *)&D_00000000 + idx * 0x158;
-    unsigned char attr = *(unsigned char *)(rec + 0x1B);
-    char *e = rec + attr * 0x64 + sub * 0x14 + 0x50;
-    short h = *(short *)(e + 0x10);
-    unsigned short w = *(unsigned short *)(e + 0xE);
-    int r = gl_func_00000000(code, 0x3E0, w, h, idx);
-    if (*(short *)(e + 0x12) != 0) {
-        r = gl_func_00000000(r, (*(short *)(e + 0x10) + 0x3E0) & 0xFFFF, 0,
-                             *(short *)(e + 0x12), idx);
+/* EXACT 2026-10-17 agent-c run 106 (87.3 -> 100): gl_func_0001CFDC twin
+ * (same typed view and by-value spec); blit = baked jal 0x3204C. */
+extern int gl_ref_0003204C(); /* baked in-unit jal 0x3204C (blit) */
+int gl_func_0001D0AC(int code, Spec8_1CFDC spec) {
+    Ent_1CFDC *e;
+    Rec_1CFDC *rec;
+    int r;
+    rec = &((Rec_1CFDC *)&D_00000000)[spec.h1];
+    e = &rec->grp[rec->attr].ent[spec.h3];
+    r = gl_ref_0003204C(code, 0x3E0, e->w, e->h, spec.h1);
+    if (e->n != 0) {
+        r = gl_ref_0003204C(r, (e->h + 0x3E0) & 0xFFFF, 0, e->n, spec.h1);
     }
     return r;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001D0AC);
-#endif
 
 #ifdef NON_MATCHING
 /* game_libs_func_0001D17C: GBI display-list builder. Writes 3 commands (6 words)
@@ -759,26 +754,24 @@ void game_libs_func_0001D858(int *a0, int a1, int a2) {
 //   without growing the frame. jal display diff vs expected is the baked-USO
 //   reloc artifact (extern reloc target 0 = symbol at .text 0), not a real diff.
 typedef struct { short h0, h1, h2, h3, h4, h5; } Spec12_1D870;
-#ifdef NON_MATCHING
-extern int game_libs_func_0003443C();
-extern int D_00000000;
+/* EXACT 2026-10-17 agent-c run 106 (95.1 -> 100): the "coloring-preference"
+ * residual was the flat byte arithmetic. The gl_func_0001CFDC typed record
+ * view (&rec->grp[rec->attr].ent[sub]) colours the entry web like the
+ * target. The callee is the baked jal 0x31FB0 (word 0x0C00C7EC, same as
+ * 1CFDC), not game_libs_func_0003443C: gl_ref_00031FB0 pin. */
+extern int gl_ref_00031FB0();
 int gl_func_0001D870(int code, Spec12_1D870 spec) {
-    char *e = (char *)&D_00000000 + spec.h3 * 0x158;
+    Ent_1CFDC *e;
+    Rec_1CFDC *rec;
     int r;
-    e += *(unsigned char *)(e + 0x1B) * 0x64;
-    e += spec.h5 * 0x14;
-    e += 0x50;
-    r = game_libs_func_0003443C(code, 0xC80, *(unsigned short *)(e + 0xE),
-                                *(short *)(e + 0x10), spec.h3);
-    if (*(short *)(e + 0x12) != 0) {
-        r = game_libs_func_0003443C(r, (*(short *)(e + 0x10) + 0xC80) & 0xFFFF,
-                                    0, *(short *)(e + 0x12), spec.h3);
+    rec = &((Rec_1CFDC *)&D_00000000)[spec.h3];
+    e = &rec->grp[rec->attr].ent[spec.h5];
+    r = gl_ref_00031FB0(code, 0xC80, e->w, e->h, spec.h3);
+    if (e->n != 0) {
+        r = gl_ref_00031FB0(r, (e->h + 0xC80) & 0xFFFF, 0, e->n, spec.h3);
     }
     return r;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001D870);
-#endif
 
 #ifdef NON_MATCHING
 /* Double F3D/GBI command builder (sibling of the gl_func_0001D870 family).
