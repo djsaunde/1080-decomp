@@ -24131,103 +24131,84 @@ out:
 // the cb prototype are representative (deferred FULL-DECODE node).
 // Caps: out + cursor structs untyped, trace-string offset not
 // symbolized (USO-relocated). Full body INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_0005231C)();
-s32 *gl_func_0005231C(char *arg0, s32 arg1, s32 *arg2) {
-    s32 *var_a2;
-    s32 *var_v0;
-    s32 temp_v0;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *temp_v0_4;
-    char *temp_v0_5;
-    char *temp_v0_6;
-    char *temp_v0_7;
+/* EXACT 2026-10-17 agent-g (run 106), 60.7 -> 100. The command "switch" is
+ * NOT a switch: the target compare chain 3,13,14,15,22,23,17,24 is unsorted,
+ * so it is the kit-VI nested-!= goto chain (IDO sorts switch compares and
+ * this one went to a jumptable). The default is a 4-arg trace call
+ * (str, arg1, cur, arg0) placed AFTER the bodies; `if (1) goto done;` at the
+ * end of the last body keeps c24 out of the chain fallthrough (a plain
+ * `goto done` lets uopt hoist c24 under a `bne dflt`). One variable (q)
+ * carries both the command word and the field pointer in the 0x34 arms
+ * (target v0 for both), a separate w the 0x30-arm words (a0); do-while(0)
+ * around each RMW keeps the `addiu v0,a3,48` base unfolded. */
+s32 *gl_func_0005231C(char *arg0, s32 arg1, s32 *cur) {
+    s32 *p;
+    s32 *q;
+    s32 w;
+    s32 cmd = arg1 & 0xFFFF;
 
-    temp_v0 = arg1 & 0xFFFF;
-    switch (temp_v0) {                              /* irregular */
-    case 3:
-        var_a2 = (int)arg2 + 4;
-        FW(arg0, 0xC) = (s32) *arg2;
-        break;
-    case 13:
-        var_a2 = (int)arg2 + 4;
-        if (*(int*)arg2 != 0) {
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) | 2);
-        } else {
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) & ~2);
-        }
-        break;
-    case 14:
-        var_a2 = (int)arg2 + 4;
-        if (*(int*)arg2 != 0) {
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) | 1);
-        } else {
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) & ~1);
-        }
-        break;
-    case 15:
-        var_a2 = (int)arg2 + 4;
-        temp_v0_2 = (int)arg0 + 0x34;
-        if (*(int*)arg2 != 0) {
-            FW(temp_v0_2, 0x4) = (s32) (FW(temp_v0_2, 0x4) | 2);
-        } else {
-            temp_v0_3 = (int)arg0 + 0x34;
-            FW(temp_v0_3, 0x4) = (s32) (FW(temp_v0_3, 0x4) & ~2);
-        }
-        break;
-    case 22:
-        var_a2 = (int)arg2 + 4;
-        temp_v0_4 = (int)arg0 + 0x34;
-        if (*(int*)arg2 != 0) {
-            FW(temp_v0_4, 0x4) = (s32) (FW(temp_v0_4, 0x4) | 1);
-        } else {
-            temp_v0_5 = (int)arg0 + 0x34;
-            FW(temp_v0_5, 0x4) = (s32) (FW(temp_v0_5, 0x4) & ~1);
-        }
-        break;
-    case 23:
-        var_a2 = (int)arg2 + 4;
-        temp_v0_6 = (int)arg0 + 0x34;
-        if (*(int*)arg2 != 0) {
-            FW(temp_v0_6, 0x4) = (s32) (FW(temp_v0_6, 0x4) | 0x20000);
-        } else {
-            temp_v0_7 = (int)arg0 + 0x34;
-            FW(temp_v0_7, 0x4) = (s32) (FW(temp_v0_7, 0x4) & 0xFFFDFFFF);
-        }
-        break;
-    case 17:
-        var_v0 = (int)arg0 + 0x30;
-        if (*(int*)arg2 != 0) {
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) | 4);
-        } else {
-            var_v0 = (int)arg0 + 0x30;
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) & ~4);
-        }
-        var_a2 = (int)arg2 + 4;
-        if (*(int*)arg2 != 0) {
-            *var_v0 |= 2;
-        } else {
-            *var_v0 &= ~2;
-        }
-        break;
-    case 24:
-        var_a2 = (int)arg2 + 4;
-        FW(arg0, 0x38) = (s32) (FW(arg0, 0x38) | *arg2);
-        break;
-    default:
-        ((int(*)())gl_func_00034458)(0x20FA8, arg0);
-        var_a2 = arg2;
-        break;
-    }
-    return var_a2;
+    if (cmd != 3) {
+        if (cmd != 13) {
+            if (cmd != 14) {
+                if (cmd != 15) {
+                    if (cmd != 22) {
+                        if (cmd != 23) {
+                            if (cmd != 17) {
+                                if (cmd != 24) {
+                                } else goto c24;
+                            } else goto c17;
+                        } else goto c23;
+                    } else goto c22;
+                } else goto c15;
+            } else goto c14;
+        } else goto c13;
+    } else goto c3;
+    goto dflt;
+c3:
+    p = cur; cur++;
+    *(s32 *)(arg0 + 0xC) = *p;
+    goto done;
+c13:
+    p = cur; cur++;
+    w = *p;
+    if (w != 0) { q = (s32 *)(arg0 + 0x30); do { *q |= 2; } while (0); } else { q = (s32 *)(arg0 + 0x30); do { *q &= ~2; } while (0); }
+    goto done;
+c14:
+    p = cur; cur++;
+    w = *p;
+    if (w != 0) { q = (s32 *)(arg0 + 0x30); do { *q |= 1; } while (0); } else { q = (s32 *)(arg0 + 0x30); do { *q &= ~1; } while (0); }
+    goto done;
+c15:
+    p = cur; cur++;
+    q = (s32 *)*p;
+    if (q != 0) { q = (s32 *)(arg0 + 0x34); do { q[1] |= 2; } while (0); } else { q = (s32 *)(arg0 + 0x34); do { q[1] &= ~2; } while (0); }
+    goto done;
+c22:
+    p = cur; cur++;
+    q = (s32 *)*p;
+    if (q != 0) { q = (s32 *)(arg0 + 0x34); do { q[1] |= 1; } while (0); } else { q = (s32 *)(arg0 + 0x34); do { q[1] &= ~1; } while (0); }
+    goto done;
+c23:
+    p = cur; cur++;
+    q = (s32 *)*p;
+    if (q != 0) { q = (s32 *)(arg0 + 0x34); do { q[1] |= 0x20000; } while (0); } else { q = (s32 *)(arg0 + 0x34); do { q[1] &= ~0x20000; } while (0); }
+    goto done;
+c17:
+    q = (s32 *)*cur;
+    if (q != 0) { q = (s32 *)(arg0 + 0x30); do { *q |= 4; } while (0); } else { q = (s32 *)(arg0 + 0x30); do { *q &= ~4; } while (0); }
+    p = cur; cur++;
+    w = *p;
+    if (w != 0) { *q |= 2; } else { *q &= ~2; }
+    goto done;
+c24:
+    p = cur; cur++;
+    *(s32 *)(arg0 + 0x38) |= *p;
+    if (1) goto done;
+dflt:
+    gl_func_00000000((char *)&D_00000000 + 0x20FA8, arg1, cur, arg0);
+done:
+    return cur;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005231C);
-#endif
 
 /* gl_func_0005256C: 33-insn op-code dispatch (set/clear bits) (0x84, frame 0x18).
  *
@@ -33436,7 +33417,7 @@ void gl_func_00061B30(char *fmt, ...) {
     char *base = (char *)bi;
     char *ap;
     int h0, h1;
-    gl_func_00000000(base, 1);
+    { int one = 1; gl_func_00000000(base, one); }
     *(int *)(base + 0x224) = 8;
     *(int *)(base + 0x228) = 8;
     h1 = D_61B30_h1;
