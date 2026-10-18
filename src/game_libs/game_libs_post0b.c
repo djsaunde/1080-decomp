@@ -33629,7 +33629,6 @@ void game_libs_func_00061C88(int *a0, int *a1) {
     a0[3] = (int)a1;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00061C9C: 32-insn linked-list find-and-unlink (0x80, frame 0x20).
  *
  * Decoded structure (raw-word disasm):
@@ -33649,28 +33648,30 @@ void game_libs_func_00061C88(int *a0, int *a1) {
  *
  * Offset 0x60 = 96 is the "next" pointer slot in this node layout.
  *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
+ * EXACT 2026-10-17 agent-g (run 104; was 70.6): the decode above was wrong
+ * -- the callee's return value is DISCARDED (jal-delay `sw v0` of a
+ * pre-call value + post-call reload of the spill, not $v0, is the tell).
+ * The spilled value is a trailing `prev` pointer: unlink(cur) is called,
+ * then prev->next = target->next (or the head when prev == NULL). prev
+ * declared before cur puts its spill at 0x1C.
  */
 void gl_func_00061C9C(int *self, int *target) {
+    int *prev = 0;
     int *cur = (int*)self[0xC / 4];
-    int *recurse;
     while (cur != 0) {
         if (cur == target) {
-            recurse = (int*)gl_func_00000000(cur, target, cur, self);
-            if (recurse != 0) {
-                recurse[0x60 / 4] = target[0x60 / 4];
+            gl_func_00000000(cur);
+            if (prev != 0) {
+                prev[0x60 / 4] = target[0x60 / 4];
             } else {
                 self[0xC / 4] = target[0x60 / 4];
             }
             return;
         }
+        prev = cur;
         cur = (int*)cur[0x60 / 4];
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00061C9C);
-#endif
 
 void gl_func_00061D1C(int *a0, int matchval) {
     int *node = (int*)a0[0xC/4];
@@ -34255,7 +34256,6 @@ int gl_func_0006280C(int *self, int a1) {
     return (int)rec;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_000628EC: 5-arg constructor (arg4 stack-passed). Allocs self (0x130)
  * if arg0==NULL; inits via cb(self, 0x22128); clears low bit of self->0x110;
  * homes arg4->0x10C, arg1->0x54, arg3->0x48; OR's 0x1000 into self->8; zeros a
@@ -34284,7 +34284,12 @@ int gl_func_0006280C(int *self, int a1) {
  * the t6/t7/t8/t9 ring. RESIDUAL = only the FP constant pair: target 0.0
  * -> f0, 1.0 -> f2; ours is the reverse. Tried and no effect: (float)0.0 /
  * (float)1.0 / int 0,1 / double literals, named zero/one locals in both
- * decl and init orders, and while(0) dead-ref boosts of either web. */
+ * decl and init orders, and while(0) dead-ref boosts of either web.
+ * 2026-10-17 agent-g (run 104) EXACT: one dead `if (0) { *(f32 *)(self +
+ * 0xF4) = 1.0f; }` just before the first 0.0f store flips the pair. Both
+ * constants are CONSTRAINED uopt candidates coloured in priority order (the
+ * first gets f2); the dead store adds a 1.0 reference inside the 0.0 web's
+ * range so 1.0 out-ranks 0.0 (uoptlist: 73/74 swap). */
 extern int gl_func_00000000();
 void *gl_func_000628EC(char *self, int arg1, int arg2, int arg3, int arg4) {
     volatile char _pad[104];
@@ -34305,6 +34310,7 @@ void *gl_func_000628EC(char *self, int arg1, int arg2, int arg3, int arg4) {
         *(int *)(self + 8) |= 0x1000;
         *(int *)(self + 0x48) = arg3;
         *a1p &= ~1;
+        if (0) { *(float *)(self + 0xF4) = 1.0f; }
         *(float *)(self + 0xF0) = 0.0f;
     *(float *)(self + 0xEC) = 0.0f;
     *(float *)(self + 0xE8) = 0.0f;
@@ -34329,9 +34335,6 @@ void *gl_func_000628EC(char *self, int arg1, int arg2, int arg3, int arg4) {
     }
     return self;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000628EC);
-#endif
 
 /* gl_func_00062A2C: camera/transform blend step (0x344 / 209 words).
  * o->50 = 22, o->4C = 7; f(o, arg1, &x) fills a {Vec3 a, b, c; f32 d}
