@@ -3910,3 +3910,4 @@ D_global_00060370 = 0x00000000;  /* gl_func_00060370 global handle (blank lui at
 D_521F8_a = 0x00000000;  /* gl_func_000521F8 4-byte default struct (blank lui/addiu) */
 D_521F8_b = 0x00000000;  /* gl_func_000521F8 8-byte default struct (blank lui/addiu) */
 D_521F8_c = 0x00000000;  /* gl_func_000521F8 default word for +0x3C (blank lui/lw) */
+gl_ref_0007E970 = 0x0007E970;  /* gl_func_0006A420 (osSpTaskLoad) baked in-unit jal 0x0C01FA5C (_VirtualToPhysicalTask) */

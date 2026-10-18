@@ -2398,16 +2398,25 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00066210);
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-void gl_func_00066264(int dst_a0, int a1, int *src, int len) {
-    int rem = len & 3;
-    if (rem == 0) {
-        gl_func_00000000(src, a1, len);
+/* 2026-10-17 agent-g (run 105) 17.7 -> 93.8: the decode above had the
+ * args wrong. Real shape: f(unused, dst, src, len): an aligned length is
+ * one copy(src, dst, len); otherwise copy(src, dst, len & ~3), read the
+ * last word of dst into a 4-byte buffer, and write rem bytes of it to
+ * src + aligned. Residual: the spill slots and the buffer sit 4 bytes
+ * higher than the target's (24/28/32); decl order, block scope, int vs
+ * char[4] buffer and dropping the rem/al locals do not move them. */
+void gl_func_00066264(int a0, char *a1, char *a2, u32 len) {
+    u32 rem;
+    u32 al;
+    char buf[4];
+    rem = len & 3;
+    if (rem != 0) {
+        al = len & ~3;
+        gl_func_00000000(a2, a1, al);
+        gl_func_00000000(buf, a1 + al, 4);
+        gl_func_00000000(buf, a2 + al, rem);
     } else {
-        int aligned = len & ~3;
-        int tmpbuf[4];
-        gl_func_00000000(src, a1);
-        gl_func_00000000(&tmpbuf, (char*)a1 + aligned, 4);
-        gl_func_00000000(&tmpbuf, (char*)dst_a0 + aligned, rem);
+        gl_func_00000000(a2, a1, len);
     }
 }
 #else
@@ -2490,7 +2499,6 @@ unlink:
     }
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00066484: 20-insn doubly-linked-list insert-before. Split from
  * bundled 36-insn parent on 2026-05-15 (extracted game_libs_func_000664D4
  * and game_libs_func_000664F0 as no-prologue chain-state fragments).
@@ -2512,21 +2520,22 @@ unlink:
  * emits `bne + nop` without the pre-load). 19/20 word-match.
  *
  * Tried 2026-05-15: if-then-return form, if/else form, inverted-cond form
- * — all emit `bne` not `beql` with no duplicate load. Cap is structural. */
+ * — all emit `bne` not `beql` with no duplicate load. Cap is structural.
+ * 2026-10-17 agent-g (run 105) 21.8 -> EXACT: not a cap. The beql + the
+ * unreachable copy of its delay load is IDO's normal branch-likely fill
+ * when the TAKEN side is the link body: write the call arm first
+ * (`if (a0[1] != a0[0]) f(); else {...}`), and store a0[0] = a1[0]
+ * BEFORE a0[1] = a1 (as1 then pulls the a1[0] load into the slot). */
 void gl_func_00066484(int *a0, int *a1) {
-    if (a0[1] == a0[0]) {
-        int t8 = a1[0];
-        a0[1] = (int)a1;
-        a0[0] = t8;
-        ((int*)a1[0])[1] = (int)a0;
-        a1[0] = (int)a0;
-    } else {
+    if (a0[1] != a0[0]) {
         gl_func_00000000();
+    } else {
+        a0[0] = a1[0];
+        a0[1] = (int)a1;
+        ((int *)a1[0])[1] = (int)a0;
+        a1[0] = (int)a0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00066484);
-#endif
 
 void game_libs_func_000664D4(int *a0, int *a1) {
     a0[1] = a1[1];
@@ -2982,13 +2991,17 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00066A50);
  * 0x12345678 into v0 (2 materializations, not 4). Literal *(int*)0x3F310
  * spelling scores WORSE in objdiff (39.6) than &D+off (56.8) despite matching
  * the per-load lui shape - reloc scoring. Keep &D+off. */
+/* 2026-10-17 agent-g (run 105) 56.8 -> 59.7: one extern per guard word
+ * gives the target's per-load lui. Residual: the target re-materializes
+ * 0x12345678 (`li at`) for every compare with filled delay slots; -O2 CSEs
+ * it into v0, and an -O1 donor re-materializes it but leaves the delay
+ * slots empty, so neither level reproduces it. */
+extern int D_66AF0_a, D_66AF0_b, D_66AF0_c, D_66AF0_d;
 void gl_func_00066AF0(void) {
-    if (*(int *)((char *)&D_00000000 + 0x3F310) != 0x12345678 ||
-        *(int *)((char *)&D_00000000 + 0x3F314) != 0x12345678) {
+    if (D_66AF0_a != 0x12345678 || D_66AF0_b != 0x12345678) {
         gl_func_00000000((char *)&D_00000000 + 0x21BC);
     }
-    if (*(int *)((char *)&D_00000000 + 0x414C0) != 0x12345678 ||
-        *(int *)((char *)&D_00000000 + 0x414C4) != 0x12345678) {
+    if (D_66AF0_c != 0x12345678 || D_66AF0_d != 0x12345678) {
         gl_func_00000000((char *)&D_00000000 + 0x21D8);
     }
 }
@@ -5767,53 +5780,53 @@ int gl_func_0006A304(int a0) {
     return (int)obj;
 }
 
-#ifdef NON_MATCHING
-extern int game_libs_func_00070FA0(f32, f32);
-
-
-
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_0006A420)();
-void gl_func_0006A420(char *arg0) {
-    char *sp1C;
-
-    sp1C = ((int(*)())game_libs_func_00070FA0)(arg0);
-    if (FW(sp1C, 0x4) & 1) {
-        FW(sp1C, 0x18) = (s32) FW(sp1C, 0x38);
-        FW(sp1C, 0x1C) = (s32) FW(sp1C, 0x3C);
-        FW(arg0, 0x4) = (s32) (FW(arg0, 0x4) & ~1);
-        if (FW(sp1C, 0x4) & 4) {
-            FW(sp1C, 0x10) = (s32) *(int*)((FW(arg0, 0x38) + 0xBFC) | 0xA0000000);
+/* gl_func_0006A420 = libultra osSpTaskLoad (sptask.c). The function is
+ * -O1 code (tp homed and reloaded around every field access, unfilled
+ * delay slots): the real C lives in the -O1 donor unit
+ * game_libs_o1_6A420.c, spliced over this -O2 stand-in (REPLACE_FUNC_BODY,
+ * same recipe as gl_func_0006A304 just before it). The first call is the
+ * file-static _VirtualToPhysicalTask, baked as jal 0x0C01FA5C
+ * (gl_ref_0007E970). 2026-10-17 agent-g (run 105): 52.6 -> EXACT. */
+typedef struct {
+    unsigned int type, flags;
+    char *ucode_boot;
+    unsigned int ucode_boot_size;
+    char *ucode;
+    unsigned int ucode_size;
+    char *ucode_data;
+    unsigned int ucode_data_size;
+    char *dram_stack;
+    unsigned int dram_stack_size;
+    char *output_buff;
+    char *output_buff_size;
+    char *data_ptr;
+    unsigned int data_size;
+    char *yield_data_ptr;
+    unsigned int yield_data_size;
+} OSTask_6A420;
+extern char *gl_ref_0007E970();
+void gl_func_0006A420(OSTask_6A420 *intp) {
+    OSTask_6A420 *tp;
+    tp = (OSTask_6A420 *)gl_ref_0007E970(intp);
+    if (tp->flags & 1) {
+        tp->ucode_data = tp->yield_data_ptr;
+        tp->ucode_data_size = tp->yield_data_size;
+        intp->flags &= ~1;
+        if (tp->flags & 4) {
+            tp->ucode = (char *)*(volatile unsigned int *)(((unsigned int)intp->yield_data_ptr + 0xC00 - 4) | 0xA0000000);
         }
     }
-    gl_func_00062F64(sp1C, 0x40);
-    gl_func_00062F64((char *)0x2B00);
-    if (gl_func_00062F64((char *)0x04001000) == -1) {
-        do {
-
-        } while (gl_func_00062F64((char *)0x04001000) == -1);
-    }
-    if (gl_func_00062F64((char *)1, 0x04000FC0, sp1C, 0x40) == -1) {
-        do {
-
-        } while (gl_func_00062F64((char *)1, 0x04000FC0, sp1C, 0x40) == -1);
-    }
-    if (gl_func_00062F64() != 0) {
-        do {
-
-        } while (gl_func_00062F64() != 0);
-    }
-    if (gl_func_00062F64((char *)1, 0x04001000, FW(sp1C, 0x8), FW(sp1C, 0xC)) == -1) {
-        do {
-
-        } while (gl_func_00062F64((char *)1, 0x04001000, FW(sp1C, 0x8), FW(sp1C, 0xC)) == -1);
-    }
+    gl_func_00000000(tp, sizeof(OSTask_6A420));
+    gl_func_00000000(0x2B00);
+    while (gl_func_00000000(0x04001000) == -1)
+        ;
+    while (gl_func_00000000(1, 0x04001000 - sizeof(*tp), tp, sizeof(OSTask_6A420)) == -1)
+        ;
+    while (gl_func_00000000())
+        ;
+    while (gl_func_00000000(1, 0x04001000, tp->ucode_boot, tp->ucode_boot_size) == -1)
+        ;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0006A420);
-#endif
 
 /* gl_func_0006A5B0: poll-loop — call an intra-USO helper(a0); if nonzero, spin
  * calling it until it returns 0; then call it with 293 (0x125). BYTE-EXACT.

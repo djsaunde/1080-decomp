@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0006A420",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-18T01:32:41.861862+00:00",
+  "end_time": "2026-10-18T01:32:41.861879+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-18T01:32:41.861875+00:00",
+      "assistant_text": "libultra osSpTaskLoad from libreultra sptask.c at -O1, spliced into the -O2 post1b unit via REPLACE_FUNC_BODY; _VirtualToPhysicalTask is a baked in-unit jal (gl_ref_0007E970).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 100,
+  "initial_m2c_source": null,
+  "final_source": "/* -O1 donor for gl_func_0006A420 = libultra osSpTaskLoad (sptask.c), spliced\n * over the -O2 stand-in in game_libs_post1b.c (same recipe as the 6A304\n * donor just before it). The first call is the file-static\n * _VirtualToPhysicalTask, a baked in-unit jal 0x0C01FA5C (gl_ref_0007E970);\n * the rest are blank USO imports. OSTask offsets: flags 0x4, ucode_boot 0x8,\n * ucode_boot_size 0xC, ucode 0x10, ucode_data 0x18, ucode_data_size 0x1C,\n * yield_data_ptr 0x38, yield_data_size 0x3C. */\nextern int gl_func_00000000();\nextern char *gl_ref_0007E970();\n\ntypedef struct {\n    unsigned int type, flags;\n    char *ucode_boot;\n    unsigned int ucode_boot_size;\n    char *ucode;\n    unsigned int ucode_size;\n    char *ucode_data;\n    unsigned int ucode_data_size;\n    char *dram_stack;\n    unsigned int dram_stack_size;\n    char *output_buff;\n    char *output_buff_size;\n    char *data_ptr;\n    unsigned int data_size;\n    char *yield_data_ptr;\n    unsigned int yield_data_size;\n} OSTask_6A420;\n\nvoid gl_func_0006A420(OSTask_6A420 *intp) {\n    OSTask_6A420 *tp;\n    tp = (OSTask_6A420 *)gl_ref_0007E970(intp);\n    if (tp->flags & 1) {\n        tp->ucode_data = tp->yield_data_ptr;\n        tp->ucode_data_size = tp->yield_data_size;\n        intp->flags &= ~1;\n        if (tp->flags & 4) {\n            tp->ucode = (char *)*(volatile unsigned int *)(((unsigned int)intp->yield_data_ptr + 0xC00 - 4) | 0xA0000000);\n        }\n    }\n    gl_func_00000000(tp, sizeof(OSTask_6A420));\n    gl_func_00000000(0x2B00);\n    while (gl_func_00000000(0x04001000) == -1)\n        ;\n    while (gl_func_00000000(1, 0x04001000 - sizeof(*tp), tp, sizeof(OSTask_6A420)) == -1)\n        ;\n    while (gl_func_00000000())\n        ;\n    while (gl_func_00000000(1, 0x04001000, tp->ucode_boot, tp->ucode_boot_size) == -1)\n        ;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o1_6A420.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0006A420.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O1 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "ROM byte-identical (cmp tenshoe.z64 baserom.z64); make verify-blocks 6/6; non_matching_objects; refresh-report 100.0"
+  }
+}
