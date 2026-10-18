@@ -1160,37 +1160,40 @@ int game_libs_func_00035360(int a0) {
 //   match needs USO mnemonic disasm + handler vtable/object typed.
 //   Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern void *D_0003B8E8;
+/* EXACT 2026-10-17 agent-c run 107 (86.2 -> 100): same dispatch shape as
+ * gl_func_00035648 -- unsigned selector, nested-!= goto chain for the 1, 0, 2
+ * compare order (docs/IDO_CODEGEN.md #nested-ne-goto-chain-35648). */
+extern int gl_ref_0003B8E8; /* baked counter word 0x3B8E8 (pinned) */
 int gl_func_00035370(char *o, int a1) {
     int r;
-    switch (*(int *)(o + 4)) {
-        case 1:
-            r = (*(int (***)(int))&D_00000000)[0x4C / 4](a1);
-            *(int *)(o + 0x20) = r;
-            if (r == 0) {
-                gl_func_00034458(DB + 0x1E578, a1, gl_func_00034458(o));
-            }
-            break;
-        case 0:
-            r = gl_func_00034458(&D_00000000, a1);
-            *(int *)(o + 0x20) = r;
-            if (r == 0) {
-                gl_func_00034458(DB + 0x1E590, a1);
-            }
-            break;
-        case 2:
-            D_0003B8E8 = (void *)0x08000000;
-            *(int *)(o + 0x20) = 1;
-            break;
-        default:
-            break;
+    unsigned k = *(int *)(o + 4);
+    if (k != 1) {
+        if (k != 0) {
+            if (k != 2) {
+            } else goto c2;
+        } else goto c0;
+    } else goto c1;
+    goto end;
+c1:
+    r = (*(int (***)(int))&D_00000000)[0x4C / 4](a1);
+    *(int *)(o + 0x20) = r;
+    if (r == 0) {
+        gl_func_00000000((char *)&D_00000000 + 0x1E578, a1, gl_func_00000000(o));
     }
+    goto end;
+c0:
+    r = gl_func_00000000(&D_00000000, a1);
+    *(int *)(o + 0x20) = r;
+    if (r == 0) {
+        gl_func_00000000((char *)&D_00000000 + 0x1E590, a1);
+    }
+    goto end;
+c2:
+    gl_ref_0003B8E8 = 0x08000000;
+    *(int *)(o + 0x20) = 1;
+end:
     return *(int *)(o + 0x20);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035370);
-#endif
 
 /* gl_func_00035440: EXACT (0x160 / 88 words). Kind dispatch on o->0x04, the
  * sibling of gl_func_00035370 (vtable slot 0x50 here):
@@ -1463,8 +1466,6 @@ end:
 //   355A0 0x60 / 35648 0x54 / this is the diagnostic/validate
 //   variant). Byte-match deferred. Name pre-checked: no extern
 //   reuse.
-#ifdef NON_MATCHING
-extern int D_00000000;
 // Dispatch on o->0x4: kind==1 emits one diagnostic cb(0x1E608) and returns 0;
 // kind==0 tail-returns cb(str,a1,a2); kind==2 is the work arm — reads the
 // device-config word *0x4B8E8, emits cb(0x1E61C,a1,a2,config), and (when a2!=0)
@@ -1473,45 +1474,49 @@ extern int D_00000000;
 // cb(*0x4B8EC,&frame,1) after a bare flush cb(), then cb(&l28,0,1), cb(a1,a2).
 // Tail (always, kind==2): *0x4B8E8 += a2; return a2. Absolute data addrs
 // (0x4B8E8/0x4B8EC, 0x1E6xx strings) are deferred USO-symbolization sites.
+/* EXACT 2026-10-17 agent-c run 107 (69.8 -> 100): the twin of the exact
+ * gl_func_00035440 (same 0x70 frame, message struct and per-site pins). Kind 1
+ * and the default share `end: return 0;` (two predecessors, so the block
+ * survives as the dead `or v0,zero,zero` after the kind-2 return), kind 0
+ * returns the callback directly, kind 2 returns a2. The queue send passes 1. */
+extern int D_00000000;
+extern char gl_ref_0001E608, gl_ref_0001E61C, gl_ref_0001E638;
 int gl_func_000356FC(char *o, int a1, int a2) {
-    int kind = *(int *)(o + 4);
-    int local28;
-    int local24;
-    int config;
-    char frame[0x14];
-    if (kind == 1) {
-        gl_func_00000000((char *)0x0001E608);
-        return 0;
-    }
-    if (kind == 0) {
-        return gl_func_00000000((char *)&D_00000000, a1, a2);
-    }
-    if (kind == 2) {
-        config = *(int *)0x0004B8E8;
-        gl_func_00000000((char *)0x0001E61C, a1, a2, config);
+    int k = *(int *)(o + 4);
+    if (k == 1) goto L1;
+    if (k == 0) goto L0;
+    if (k != 2) goto end;
+    goto L2;
+L1:
+    gl_func_00000000(&gl_ref_0001E608);
+    goto end;
+L0:
+    return gl_func_00000000(&D_00000000, a1, a2);
+L2: {
+        Msg35440 s;
+        char buf[24];
+        int tmp;
+        gl_func_00000000(&gl_ref_0001E61C, a1, a2, gl_ref_0003B8E8);
         if (a2 != 0) {
             if (a1 & 7) {
-                gl_func_00000000((char *)0x0001E638);
+                gl_func_00000000(&gl_ref_0001E638);
             }
-            gl_func_00000000(&local28, &local24, 1);
-            *(int *)(frame + 0x4) = (int)&local28;
-            *(char *)(frame + 0x2) = 0;
-            *(int *)(frame + 0x10) = a2;
-            *(int *)(frame + 0xC) = *(int *)0x0004B8E8;
-            *(int *)(frame + 0x8) = a1;
+            gl_func_00000000(buf, &tmp, 1);
+            s.p = buf;
+            s.b = 0;
+            s.a2 = a2;
+            s.a1 = a1; s.cfg = gl_ref_0003B8E8;
             gl_func_00000000();
-            gl_func_00000000(*(int *)0x0004B8EC, frame, 1);
-            gl_func_00000000(&local28, 0, 1);
+            gl_func_00000000(gl_ref_0003B8EC, &s, 1);
+            gl_func_00000000(buf, 0, 1);
             gl_func_00000000(a1, a2);
         }
-        *(int *)0x0004B8E8 += a2;
+        gl_ref_0003B8E8 += a2;
         return a2;
     }
+end:
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000356FC);
-#endif
 
 void game_libs_func_0003582C(int *a0, int a1) {
     a0[8] = a1;
