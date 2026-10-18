@@ -13078,28 +13078,27 @@ void gl_func_00042648(int *dst) {
  * later pass: cfg accessed via a held &cfg pointer with the flag-word RE-READ
  * from the stack (mine CSEs a1[1] direct); color-pack operand/temp order (target
  * extracts red before green); frame -56 vs -72 + cfg slot at sp+0x40 not 0x30. */
-extern int gl_func_00000000();
-void gl_func_00042684(int *s0, int *a1, int a2) {
-    int cfg[2];
+typedef struct { int w0, w1; } Cfg42684;
+typedef struct { short h0, col; } Col42684;
+void gl_func_00042684(int *s0, Cfg42684 *a1, Col42684 a2) {
+    Cfg42684 cfg;
     int *list;
     int idx;
     int *entry;
-    int col;
-    cfg[0] = a1[0];
-    cfg[1] = a1[1];
-    cfg[1] = ((cfg[1] & ~0xF00) | 0x400) & ~0x80000 & ~8;
-    gl_func_00000000(s0, cfg);
-    gl_func_00000000(s0, cfg);
-    gl_func_00000000(s0, cfg);
-    gl_func_00000000(s0, cfg);
+    cfg = *a1;
+    cfg.w1 = (cfg.w1 & ~0xF00) | 0x400;
+    cfg.w1 = cfg.w1 & ~0x80000 & ~8;
+    gl_func_00000000(s0, &cfg);
+    gl_func_00000000(s0, &cfg);
+    gl_func_00000000(s0, &cfg);
+    gl_func_00000000(s0, &cfg);
     list = (int *)s0[0xC / 4];
     idx = list[1];
     list[1] = idx + 1;
     entry = (int *)(((int *)s0[0xC / 4])[0] + idx * 8);
-    col = (short)a2;
     entry[0] = 0xFA000000;
-    entry[1] = ((col >> 10) << 27) | ((((col >> 5) << 3) & 0xFF) << 16) |
-               (((col << 3) & 0xFF) << 8) | 0xFF;
+    entry[1] = ((a2.col >> 10) << 27) | ((((a2.col >> 5) << 3) & 0xFF) << 16) |
+               (((a2.col << 3) & 0xFF) << 8) | 0xFF;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00042684);

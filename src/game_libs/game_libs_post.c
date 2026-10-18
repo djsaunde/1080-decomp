@@ -874,29 +874,25 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D9E0);
 //   pre-checked: no extern reuse (collision-safe). gl_func_00000000
 //   = canonical never-defined USO placeholder for the three helpers.
 #ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-int gl_func_0001DA7C(int a0, int a1, int a2, int a3) {
-    short si = (short)a2;
-    char *rec = (char *)&D_00000000 + si * 0x158;
-    int *dl;
+extern void *gl_ref_00031EDC(); /* baked in-unit jals */
+extern void *gl_ref_0003186C();
+extern void *gl_ref_000317E8();
+typedef struct { unsigned int w0, w1; } Gfx1DA7C;
+#define G1DA7C(pkt, a, b) { Gfx1DA7C *_g = (Gfx1DA7C *)(pkt); _g->w0 = (a); _g->w1 = (b); }
+Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
+    int pad[1];
+    char *rec = (char *)&D_00000000 + a2 * 0x158;
     if (*(unsigned char *)(rec + 0x1C) == 1) {
-        dl = (int *)gl_func_00000000(a0, a1, si, (short)a3);
+        dl = gl_ref_00031EDC(dl, a1, a2, a3);
     } else {
-        dl = (int *)gl_func_00000000(a0, a1, si, (short)a3);
+        dl = gl_ref_0003186C(dl, a1, a2, a3);
     }
-    dl[0] = *(unsigned short *)(rec + 0x22) | 0x0C340000;
-    dl[1] = 0x0C800940;
-    dl[2] = ((*(unsigned short *)(rec + 0x24) + 0x8000) & 0xFFFF) | 0x0C340000;
-    dl[3] = 0x0C800C80;
-    {
-        int *e = &dl[4];
-        if (*(unsigned short *)(rec + 0x28) != 0 ||
-            *(unsigned short *)(rec + 0x2A) != 0) {
-            e = (int *)gl_func_00000000(&dl[4], si);
-        }
-        return (int)e;
+    G1DA7C(dl++, *(unsigned short *)(rec + 0x22) | 0x0C340000, 0x0C800940);
+    G1DA7C(dl++, ((*(unsigned short *)(rec + 0x24) + 0x8000) & 0xFFFF) | 0x0C340000, 0x0C800C80);
+    if (*(unsigned short *)(rec + 0x28) != 0 || *(unsigned short *)(rec + 0x2A) != 0) {
+        dl = gl_ref_000317E8(dl, a2);
     }
+    return dl;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DA7C);
@@ -961,31 +957,23 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DA7C);
 //     USO-LOCAL (mid-fragment targets, no in-tree symbol);
 //     gl_func_00000000 placeholder convention.
 #ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-int gl_func_0001DB88(a0, a1, a2)
-int a0;
-short a1;
-short a2;
-{
-#define REC1DB88 ((char *)&D_00000000 + a1 * 0x158)
-    char *e;
-    char *v0b;
-
-    v0b = REC1DB88 + *(unsigned char *)(REC1DB88 + 0x1B) * 0x64;
-    v0b += a2 * 0x14;
-    e = v0b + 0x50;
-    if (*(unsigned char *)(REC1DB88 + 0x1C) == 1) {
-        a0 = gl_func_00000000(a0, 0xC80, *(unsigned short *)(e + 0xE), *(short *)(e + 0x10), a1);
-        if (*(short *)(e + 0x12) != 0) {
-            a0 = gl_func_00000000(a0, (*(short *)(e + 0x10) + 0xC80) & 0xFFFF, 0, *(short *)(e + 0x12), a1);
+extern int gl_ref_00031D64();
+typedef struct { short h0, h1; } Spec4_1DB88;
+int gl_func_0001DB88(int a0, Spec4_1DB88 a1, short a2) {
+    Ent_1CFDC *e;
+    Rec_1CFDC *rec;
+    rec = &((Rec_1CFDC *)&D_00000000)[a1.h1];
+    e = &rec->grp[rec->attr].ent[a2];
+    if (*((unsigned char *)rec + 0x1C) == 1) {
+        a0 = gl_ref_0003204C(a0, 0xC80, e->w, e->h, a1.h1);
+        if (e->n != 0) {
+            a0 = gl_ref_0003204C(a0, (e->h + 0xC80) & 0xFFFF, 0, e->n, a1.h1);
         }
     } else {
-        gl_func_00000000(a0, 0xC80, 0x340, *(int *)(v0b + 0x54) + 0x80000000);
+        gl_ref_00031D64(a0, 0xC80, 0x340, *(int *)((char *)e + 4) + 0x80000000);
         a0 += 8;
     }
-    *(char *)(REC1DB88 + 0x18) = 0;
-#undef REC1DB88
+    *((char *)rec + 0x18) = 0;
     return a0;
 }
 #else
