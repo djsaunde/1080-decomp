@@ -297,8 +297,8 @@ build/src/game_libs/game_libs_post0b.c.o: TRUNCATE_TEXT := 0x2eb00
 # game_libs_func_00061040: .s began with 5 all-zero pad words (ROM 0x61040-0x61053); the real
 # body starts at 0x61054. Pad -> 61030 SUFFIX (both builds); expected/ metadata: 61030 size
 # 0x10->0x24, 61040 value +0x14, size 0xb4->0xa0 (2026-10-15).
-build/src/game_libs/game_libs_post0b.c.o: SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_00055FB4=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_00055FB4=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # gl_func_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
 # vs target 0x2c (nop is baserom alignment). Resize non_matching symbol to 0x2c so
 # objdiff scores 11w not 12w. ROM-neutral (non_matching .o only). (Same class as EBC8.)
@@ -450,7 +450,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # run 107 agent-c (35370 / 356FC exact): -> 0x2e840 (62F08 NM offset 0x2e7f0).
 # run 107 agent-c (4D688 goto-dispatch NM): -> 0x2e860 (62F08 NM offset 0x2e810).
 # agent-g run 105: 533EC rolled-loop NM (was unrolled), 5B90C/600A4/62194/60370/51694/5534C/558A0 re-decodes: -0x1b8 -> 0x2e6a8 (on agent-c 0x2e860).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e6a8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
+# agent-g run 105: 55FB4/5BAF4/5B070/5B23C exact + 51448 NM: -0x15c -> 0x2e54c.
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e54c gl_func_000551E0=0x7c gl_func_00055B10=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0

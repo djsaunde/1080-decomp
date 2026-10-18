@@ -23270,35 +23270,41 @@ void gl_func_000513CC(int* a0) {
  * regalloc. Real decoded C preserved; INCLUDE_ASM build path. */
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_00051448(int *a0, int a1) {
-    int o;
-    int v;
+/* 2026-10-17 agent-g (run 105) 60.1 -> 63.6: the a0 field stores and the
+ * list link run whether or not the alloc succeeded (beqz only skips the
+ * init block); 3-float ctor proto; the 0x1BB0 RoData float read ONCE into
+ * a local (the target loads it once, as for a literal). Residual: the
+ * target keeps a0 in s1 and SPLITS o's web (s0 up to the call, then the
+ * sp+40 spill feeds a1 for the tail); ours homes a0 and keeps o in s0. */
+void gl_func_00051448(char *a0) {
+    extern int gl_func_00000000f3(void *, void *, float, float, float);
+    extern int D_51448_vt;
+    char *o;
+    char *n;
+    char *l;
+    f32 k;
     gl_func_00000000();
-    o = gl_func_00000000(0x16C);
-    if (o == 0) {
-        goto end;
+    o = (char *)gl_func_00000000(0x16C);
+    if (o != 0) {
+        gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f);
+        *(int *)(o + 0x120) = 0xFFFF;
+        *(int **)(o + 0x28) = &D_51448_vt;
+        k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
+        *(f32 *)(o + 0x108) = k;
+        *(f32 *)(o + 0x10C) = k;
+        *(f32 *)(o + 0x110) = k;
+        *(f32 *)(o + 0x124) = 1.0f;
     }
-    gl_func_00000000(o, (char *)&D_00000000 + 0x20E68, 0, 0, 0.0f);
-    *(int *)(o + 0x120) = 0xFFFF;
-    *(int *)(o + 0x28) = (int)&D_00000000;
-    *(float *)(o + 0x108) = *(float *)((char *)&D_00000000 + 0x1BB0);
-    *(float *)(o + 0x10C) = *(float *)((char *)&D_00000000 + 0x1BB0);
-    *(float *)(o + 0x110) = *(float *)((char *)&D_00000000 + 0x1BB0);
-    *(float *)(o + 0x124) = 1.0f;
-    {
-        int x = *(int *)((char *)a0 + 0x3C);
-        *(int *)(o + 0x28) = x;
-        *(int *)(o + 0xC) = x;
-        *(int *)(o + 0x10) = x;
-        v = *(int *)(x + 0x10);
+    *(char **)(a0 + 0x28) = o;
+    *(char **)(a0 + 0xC) = o;
+    *(char **)(a0 + 0x10) = o;
+    l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);
+    n = o;
+    gl_func_00000000(l + 0x10, n);
+    if (*(int *)(n + 0x14) != 0) {
+        *(int *)(n + 4) = 1;
     }
-    gl_func_00000000(v + 0x10, o);
-    if (*(int *)(o + 0x14) != 0) {
-        *(int *)(o + 4) = 1;
-    }
-    *(int *)(o + 0x14) = v;
-end:
-    return o;
+    *(char **)(n + 0x14) = l;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051448);
@@ -26883,43 +26889,33 @@ void gl_func_00055C34(char *arg0) {
     gl_func_00034458_55C34(((char *)&D_00000000 + 0x21868), FLL_55C34(temp_s0, 0x180), FD_55C34(temp_s0, 0x188));
 }
 
-#ifdef NON_MATCHING
-/* gl_func_00055FB4: trace/log dispatch over a linked list (clean
- * single fn). Decoded from bare stub 2026-05-19.
- *   void f(int *self, int a1, int *ctx) {
- *     cb1(&D_00000000 + 0x21880);
- *     cb2(&D_00000000 + 0x2188C, self);
- *     for (n = *self; n != 0; n = n->0xC) {
- *       if (self & n) cb3(&D_00000000 + 0x21890, ctx->4, ...);
- *       else          cb4(&D_00000000 + 0x21894, ctx->8, ...);
- *     }
- *     cb5(&D_00000000 + 0x21898);
- *   }
- * Multi-idiom (focused pass): 5 cb with &D_00000000+string args
- * (generic-symbol fold), the beq-zero list-empty guard, the
- * `and t,self,n` flag test selecting cb3/cb4, the bnel-delay-
- * likely list back-edge (`n = n->0xC`), and ctx (s0) field reads
- * (->4 / ->8) threaded into the per-iter cb. Exact flag-test arm
- * order / cb arities need a focused .s pass. Real decoded C
- * preserved; INCLUDE_ASM build path. */
+/* gl_func_00055FB4: print a flag word by name: header (a1, val), then
+ * for each table entry {mask, bits, name} until mask == 0, print the name
+ * when (val & mask) == bits, with a separator before every name but the
+ * first; then a trailer. 2026-10-17 agent-g (run 105) 57.9 -> EXACT: the
+ * old decode had the wrong shape (a list walk); a named `m = e->mask` in
+ * the loop test gives `and t7,s4,v0`. Trailing pad word = all-zero
+ * SUFFIX_BYTES_FORCE (alignment, not code). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_00055FB4(int *self, int a1, int *ctx) {
-    int *n;
-    gl_func_00000000((char *)&D_00000000 + 0x21880);
-    gl_func_00000000((char *)&D_00000000 + 0x2188C, self);
-    for (n = (int *)*self; n != 0; n = (int *)n[0xC / 4]) {
-        if ((int)self & (int)n) {
-            gl_func_00000000((char *)&D_00000000 + 0x21890, ctx[4 / 4]);
-        } else {
-            gl_func_00000000((char *)&D_00000000 + 0x21894, ctx[8 / 4]);
+typedef struct { int mask; int bits; char *name; } Flag55FB4;
+void gl_func_00055FB4(int val, int a1, Flag55FB4 *e) {
+    int first = 1;
+    int m;
+    gl_func_00000000((char *)&D_00000000 + 0x21880, a1, val);
+    gl_func_00000000((char *)&D_00000000 + 0x2188C);
+    for (; (m = e->mask) != 0; e++) {
+        if ((val & m) == e->bits) {
+            if (first) {
+                first = 0;
+            } else {
+                gl_func_00000000((char *)&D_00000000 + 0x21890);
+            }
+            gl_func_00000000((char *)&D_00000000 + 0x21894, e->name);
         }
     }
     gl_func_00000000((char *)&D_00000000 + 0x21898);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00055FB4);
-#endif
 
 /* gl_func_00056084: 5-call sequence on a stack buffer (sp+0x18). Calls a
  * placeholder (gl_func_00000000) with (buf, a0), (buf, &str1), (buf, a1),
@@ -29491,179 +29487,125 @@ void gl_func_0005AFD4(int *a0, int *a1, int *a2) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005AFD4);
 #endif
 
-#ifdef NON_MATCHING
+/* gl_func_0005B070: heap block allocator (first fit over the free list at
+ * the heap head; 16-byte block headers {hdr: id << 24 | size in 16-byte
+ * units, next, prev, magic}). Split the block unless the fit is exact,
+ * register it (62F08), fill the payload with 0xFF, count the size into
+ * heap->used, stamp 0x12345678. The register call is the baked in-unit
+ * jal to 0x6F620 (gl_ref_0006F620), not 62F08. 2026-10-17 agent-g (run 105) 50.4 ->
+ * EXACT: typed rewrite of the m2c soup. Levers: the param typed as the
+ * NODE type (`p != h` with no cast gives the target's `beq v1,a0`
+ * operand order); split block written through `r->next->prev` and the
+ * hdr store BEFORE the magic store; the fill loop's copy-then-store
+ * schedule needs the comma form `*(p8 = c, c = p8 + 1, p8) = 0xFF`
+ * (statement forms schedule the increment before the first sb). */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0005B070)();
-s8 *gl_func_0005B070(char *arg0, s32 arg1) {
-    s32 temp_v0;
-    s32 temp_v1_2;
-    s32 var_a1;
-    s8 *temp_a3;
-    s8 *var_v0;
-    u32 temp_a3_2;
-    char *temp_t6;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *temp_v0_4;
-    char *temp_v1;
-    char *var_s1;
-    char *var_v1;
+typedef struct Blk5B070 { u32 hdr; struct Blk5B070 *next; struct Blk5B070 *prev; u32 magic; } Blk5B070;
+typedef struct { u32 x0; Blk5B070 *next; char pad8[8]; char list[0x10]; s32 id; s32 used; } Heap5B070;
+u8 *gl_func_0005B070(Blk5B070 *h, u32 size) {
+    extern void gl_ref_0006F620(); /* baked in-unit jal 0x0C01BD88 (game_libs_func_0005AFB0 entry 0x5AFB4) */
+    Blk5B070 *b;
+    Blk5B070 *p;
+    Blk5B070 *r;
+    Blk5B070 *nx;
+    u32 n;
+    s32 d;
+    u8 *q;
+    u8 *c;
+    u32 i;
+    u8 *p8;
 
-    var_v1 = FW(arg0, 0x4);
-    var_s1 = 0;
-    if (var_v1 != arg0) {
-loop_2:
-        temp_v0 = (FW(var_v1, 0x0) & 0xFFFFFF) - ((u32) ((int)arg1 + 0xF) >> 4);
-        if ((temp_v0 >= 0) && ((u32) temp_v0 < 0x7FFFFFFFU)) {
-            var_s1 = var_v1;
-        } else {
-            var_v1 = FW(var_v1, 0x4);
-            if (var_v1 != arg0) {
-                goto loop_2;
-            }
+    b = 0;
+    for (p = h->next; p != h; p = p->next) {
+        d = (p->hdr & 0xFFFFFF) - ((size + 15) >> 4);
+        if (d >= 0 && (u32)d < 0x7FFFFFFF) {
+            b = p;
+            break;
         }
     }
-    if (var_s1 == 0) {
+    if (b == 0) {
         return 0;
     }
-    temp_a3_2 = (u32) ((int)arg1 + 0xF) >> 4;
-    if (temp_a3_2 == (FW(var_s1, 0x0) & 0xFFFFFF)) {
-        FW(FW(var_s1, 0x4), 0x8) = (char *) FW(var_s1, 0x8);
-        FW(FW(var_s1, 0x8), 0x4) = (char *) FW(var_s1, 0x4);
+    n = (size + 15) >> 4;
+    if (n == (b->hdr & 0xFFFFFF)) {
+        b->next->prev = b->prev;
+        b->prev->next = b->next;
     } else {
-        temp_t6 = FW(var_s1, 0x4);
-        temp_v0_2 = var_s1 + (temp_a3_2 * 0x10);
-        FW(temp_v0_2, 0x14) = temp_t6;
-        temp_v1 = temp_v0_2 + 0x10;
-        FW(temp_v0_2, 0x18) = (char *) FW(var_s1, 0x8);
-        FW(temp_t6, 0x8) = temp_v1;
-        FW(FW(temp_v0_2, 0x18), 0x4) = temp_v1;
-        FW(temp_v0_2, 0x1C) = 0x87654321;
-        FW(temp_v0_2, 0x10) = (s32) ((FW(var_s1, 0x0) - temp_a3_2) - 1);
+        r = (Blk5B070 *)((char *)b + n * 16) + 1;
+        r->next = b->next;
+        r->prev = b->prev;
+        r->next->prev = r;
+        r->prev->next = r;
+        r->hdr = b->hdr - n - 1;
+        r->magic = 0x87654321;
     }
-    game_libs_func_00062F08(var_s1, (FW(arg0, 0x20) << 0x18) + temp_a3_2, (int)arg0 + 0x10, temp_a3_2);
-    temp_a3 = var_s1 + 0x10;
-    var_v0 = temp_a3;
-    var_a1 = 0;
-    if (arg1 != 0) {
-        temp_v1_2 = arg1 & 3;
-        if (temp_v1_2 != 0) {
-            do {
-                var_a1 += 1;
-                *var_v0 = 0xFF;
-                var_v0 += 1;
-            } while (temp_v1_2 != var_a1);
-            if (var_a1 != arg1) {
-                goto block_16;
-            }
-        } else {
-block_16:
-            do {
-                FW(var_v0, 0x0) = 0xFF;
-                temp_v0_3 = var_v0 + 1;
-                FW(var_v0, 0x1) = 0xFF;
-                temp_v0_4 = temp_v0_3 + 1;
-                FW(temp_v0_3, 0x1) = 0xFF;
-                var_a1 += 4;
-                FW(temp_v0_4, 0x1) = 0xFF;
-                var_v0 = temp_v0_4 + 1 + 1;
-            } while (var_a1 != arg1);
-        }
+    gl_ref_0006F620(b, (((Heap5B070 *)h)->id << 24) + n, ((Heap5B070 *)h)->list, n);
+    q = (u8 *)(b + 1);
+    c = q;
+    for (i = 0; i != size; i++) {
+        *(p8 = c, c = p8 + 1, p8) = 0xFF;
     }
-    FW(arg0, 0x24) = (s32) (FW(arg0, 0x24) + (FW(var_s1, 0x0) & 0xFFFFFF));
-    FW(var_s1, 0xC) = 0x12345678;
-    return temp_a3;
+    ((Heap5B070 *)h)->used += b->hdr & 0xFFFFFF;
+    b->magic = 0x12345678;
+    return q;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005B070);
-#endif
 
-#ifdef NON_MATCHING
+/* gl_func_0005B23C: top-down twin of gl_func_0005B070: first fit walking
+ * the free list backwards (prev), and a non-exact fit is carved from the
+ * END of the free block (the free block keeps its header, shrunk by n + 1;
+ * the result block r follows it). 2026-10-17 agent-g (run 105) 48.5 ->
+ * EXACT: separate result variable r (r = b in the exact arm, assigned
+ * before the unlink) is the sp+36 spill; declaring r FIRST gives the 0x28
+ * frame; no named temp for the shrunk header. */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0005B23C)();
-s8 *gl_func_0005B23C(char *arg0, s32 arg1) {
-    char *sp24;
-    s32 temp_t6;
-    s32 temp_v0;
-    s32 temp_v0_2;
-    s32 temp_v1;
-    s32 var_a1;
-    s8 *temp_a3;
-    s8 *var_v0;
-    u32 temp_a3_2;
-    char *temp_v0_3;
-    char *temp_v0_4;
-    char *var_a2;
-    char *var_v1;
+u8 *gl_func_0005B23C(Blk5B070 *h, u32 size) {
+    extern void gl_ref_0006F620();
+    Blk5B070 *r;
+    Blk5B070 *b;
+    Blk5B070 *p;
+    u32 n;
+    s32 d;
+    u8 *q;
+    u8 *c;
+    u32 i;
+    u8 *p8;
 
-    var_v1 = FW(arg0, 0x8);
-    var_a2 = 0;
-    if (var_v1 != arg0) {
-loop_2:
-        temp_v0 = (FW(var_v1, 0x0) & 0xFFFFFF) - ((u32) ((int)arg1 + 0xF) >> 4);
-        if ((temp_v0 >= 0) && ((u32) temp_v0 < 0x7FFFFFFFU)) {
-            var_a2 = var_v1;
-        } else {
-            var_v1 = FW(var_v1, 0x8);
-            if (var_v1 != arg0) {
-                goto loop_2;
-            }
+    b = 0;
+    for (p = h->prev; p != h; p = p->prev) {
+        d = (p->hdr & 0xFFFFFF) - ((size + 15) >> 4);
+        if (d >= 0 && (u32)d < 0x7FFFFFFF) {
+            b = p;
+            break;
         }
     }
-    if (var_a2 == 0) {
+    if (b == 0) {
         return 0;
     }
-    temp_v0_2 = FW(var_a2, 0x0);
-    temp_a3_2 = (u32) ((int)arg1 + 0xF) >> 4;
-    if (temp_a3_2 == (temp_v0_2 & 0xFFFFFF)) {
-        sp24 = var_a2;
-        FW(FW(var_a2, 0x4), 0x8) = (char *) FW(var_a2, 0x8);
-        FW(FW(var_a2, 0x8), 0x4) = (char *) FW(var_a2, 0x4);
+    n = (size + 15) >> 4;
+    if (n == (b->hdr & 0xFFFFFF)) {
+        r = b;
+        b->next->prev = b->prev;
+        b->prev->next = b->next;
     } else {
-        temp_t6 = (temp_v0_2 - temp_a3_2) - 1;
-        FW(var_a2, 0x0) = temp_t6;
-        sp24 = var_a2 + ((temp_t6 & 0xFFFFFF) * 0x10) + 0x10;
+        b->hdr = b->hdr - n - 1;
+        r = (Blk5B070 *)((char *)b + (b->hdr & 0xFFFFFF) * 16) + 1;
     }
-    game_libs_func_00062F08(sp24, (FW(arg0, 0x20) << 0x18) + temp_a3_2, (int)arg0 + 0x10, temp_a3_2);
-    temp_a3 = sp24 + 0x10;
-    var_v0 = temp_a3;
-    var_a1 = 0;
-    if (arg1 != 0) {
-        temp_v1 = arg1 & 3;
-        if (temp_v1 != 0) {
-            do {
-                var_a1 += 1;
-                *var_v0 = 0xFF;
-                var_v0 += 1;
-            } while (temp_v1 != var_a1);
-            if (var_a1 != arg1) {
-                goto block_16;
-            }
-        } else {
-block_16:
-            do {
-                FW(var_v0, 0x0) = 0xFF;
-                temp_v0_3 = var_v0 + 1;
-                FW(var_v0, 0x1) = 0xFF;
-                temp_v0_4 = temp_v0_3 + 1;
-                FW(temp_v0_3, 0x1) = 0xFF;
-                var_a1 += 4;
-                FW(temp_v0_4, 0x1) = 0xFF;
-                var_v0 = temp_v0_4 + 1 + 1;
-            } while (var_a1 != arg1);
-        }
+    gl_ref_0006F620(r, (((Heap5B070 *)h)->id << 24) + n, ((Heap5B070 *)h)->list, n);
+    q = (u8 *)(r + 1);
+    c = q;
+    for (i = 0; i != size; i++) {
+        *(p8 = c, c = p8 + 1, p8) = 0xFF;
     }
-    FW(arg0, 0x24) = (s32) (FW(arg0, 0x24) + (FW(sp24, 0x0) & 0xFFFFFF));
-    FW(sp24, 0xC) = 0x12345678;
-    return temp_a3;
+    ((Heap5B070 *)h)->used += r->hdr & 0xFFFFFF;
+    r->magic = 0x12345678;
+    return q;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005B23C);
-#endif
 
 /* gl_func_0005B3E0: heap free + coalesce (0x15C / 87 words) -- EXACT
  * 2026-10-15 agent-c (77.7 -> 100). Block header 16 bytes before the user
@@ -29953,46 +29895,33 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005B90C);
 #endif
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0005B90C_pad.s")
 
-#ifdef NON_MATCHING
-/* gl_func_0005BAF4: affine 4x4 builder from src object a0 (=s0).
-   (1) copy Vec3 a0[1..3] (a0+0x4..0xC) into a scratch triple;
-   (2) nested loop extracts s0's 3x3 (base s0+0x14, row stride 0x10)
-       into the matrix at scratch+0x00;
-   (3) zero the homogeneous column (mat[0..2][3]=0), mat[3][3]=1.0,
-       and drop the copied Vec3 into the translation column
-       (mat[3][0..2]); then reloc(&matrix, s0).
-   DEFERRED: multi-loop FP medium cap — three pointer-walk induction
-   loops with sltu/bne back-edges and store-in-delay-slot, 0.0/1.0
-   FP-const materialization order, deep frame 0x88 scratch layout
-   (Vec3 at sp+0x74, matrix at sp+0x34, work buf sp+0x44), and one
-   unresolved jal reloc. Next pass: resolve the reloc callee and grind
-   the three loops' exact induction-variable / stride-pointer schedule
-   (this is the matrix-build twin family; pairs with later 0005Bxxx). */
+/* gl_func_0005BAF4: transpose the 3x3 rotation of m (m[j][i] -> r[i-1][j-1],
+ * 1-based loops), take m[0][1..3] as the translation row, set the
+ * homogeneous column, and pass r on with m. 2026-10-17 agent-g (run 105)
+ * 58.9 -> EXACT on the first compile with the natural loops and the
+ * scalars declared before the arrays (the matrix-family rule). */
 extern int gl_func_00000000();
-void gl_func_0005BAF4(float *a0) {
-    float vec[3];
-    float mat[4][4];
-    int i, j;
+void gl_func_0005BAF4(f32 (*m)[4]) {
+    s32 i, j;
+    f32 v[3];
+    f32 r[4][4];
     for (i = 0; i < 3; i++) {
-        vec[i] = a0[1 + i];
+        v[i] = m[0][i + 1];
     }
-    for (j = 0; j < 3; j++) {
-        for (i = 0; i < 3; i++) {
-            mat[j][i] = a0[5 + j * 4 + i];
+    for (i = 1; i < 4; i++) {
+        for (j = 1; j < 4; j++) {
+            r[i - 1][j - 1] = m[j][i];
         }
     }
-    mat[0][3] = 0.0f;
-    mat[1][3] = 0.0f;
-    mat[2][3] = 0.0f;
-    mat[3][3] = 1.0f;
+    r[0][3] = 0.0f;
+    r[1][3] = 0.0f;
+    r[2][3] = 0.0f;
+    r[3][3] = 1.0f;
     for (i = 0; i < 3; i++) {
-        mat[3][i] = vec[i];
+        r[3][i] = v[i];
     }
-    gl_func_00000000(&mat[0][0], a0);
+    gl_func_00000000(r, m);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005BAF4);
-#endif
 
 /* gl_func_0005BBCC: trivial single-call wrapper. frame 0x18, saves
    only $ra, one jal reloc, args passed through unchanged.
