@@ -2744,7 +2744,8 @@ void gl_func_00036C08(char *o) {
 //   seed; 0x50 struct untyped. Real-C STRUCTURAL body below — factory
 //   leaf of the gl_func_00036088 / 00034890 / 00032E18 family.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* EXACT 2026-10-17 agent-c run 106: statement order 0x28, 0x4C, floats,
+ * 0x00, 0x3C reproduces the target schedule. */
 extern int D_00000000;
 char *gl_func_00036E74(char *o, int a1, int a2) {
     if (o == 0) {
@@ -2753,19 +2754,16 @@ char *gl_func_00036E74(char *o, int a1, int a2) {
     }
     gl_func_00000000(o, (char *)&D_00000000 + 0x0001EA10);
     *(char **)(o + 0x28) = (char *)&D_00000000;
-    *(int *)(o + 0x00) = 0x40;
-    *(int *)(o + 0x3C) = 0;
     *(int *)(o + 0x4C) = a2;
     *(f32 *)(o + 0x2C) = 1000.0f;
     *(f32 *)(o + 0x30) = -90.0f;
     *(f32 *)(o + 0x34) = 180.0f;
     *(f32 *)(o + 0x38) = 0.0f;
+    *(int *)(o + 0x00) = 0x40;
+    *(int *)(o + 0x3C) = 0;
 out:
     return o;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036E74);
-#endif
 
 // gl_func_00036F0C — STRUCTURAL PASS (0x3C8 / 242 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
@@ -9177,49 +9175,27 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E1B0);
  * depth + li at,-3 slide, equal-cost scheduling ties, probed line-joins /
  * early-copy, both no-ops) — so the direct-addressing form is kept as the
  * build body. If the as1 tie is ever cracked, restart from the if(1) form. */
-#ifdef NON_MATCHING
-void* gl_func_0003E238(int *a0, int a1, int a2) {
+/* EXACT 2026-10-17 agent-c run 106 (88.6 -> 100): a2 is stored right after
+ * 0x28, and the 0x18 bit clear goes through a pointer advanced inside an
+ * if(1) block, which keeps the target's addiu v0,a0,24 base (a plain
+ * a0[6] &= ~2 folds the offset into the lw/sw). */
+void *gl_func_0003E238(int *a0, int a1, int a2) {
+    int *p;
     if (a0 == 0) {
-        a0 = (int*)gl_func_00000000(0x38);
+        a0 = (int *)gl_func_00000000(0x38);
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, a1);
     a0[10] = (int)&D_00000000;    /* [0x28] */
+    a0[13] = a2;                  /* [0x34] */
     a0[12] = 0;                   /* [0x30] */
     a0[11] = 0;                   /* [0x2C] */
-    a0[13] = a2;                  /* [0x34] */
-    a0[6] &= ~2;                  /* [0x18] = old & ~2 (clear bit 1) */
+    p = a0;
+    if (1) { p += 6; }
+    *p &= ~2;                     /* [0x18] clear bit 1 */
 end:
     return a0;
 }
-#else
-#ifdef NON_MATCHING
-/* gl_func_0003E238: 30-insn alloc-or-given constructor. If a0==0, alloc a 0x38
- * object (return 0 on failure); run the init callback cb(obj, a1); set obj->0x28
- * to a global, zero obj->0x30 and obj->0x2C, store a2 to obj->0x34, clear bit 1
- * of obj->0x18; return obj. NM (reference decode): two collapsed-placeholder
- * calls + a collapsed D ref (raw-.word game_libs reloc depression). */
-extern int gl_func_00000000();
-extern int D_00000000;
-int gl_func_0003E238(int a0, int a1, int a2) {
-    if (a0 == 0) {
-        a0 = gl_func_00000000(0x38);
-        if (a0 == 0) {
-            return 0;
-        }
-    }
-    gl_func_00000000(a0, a1);
-    *(int *)((char *)a0 + 0x28) = (int)&D_00000000;
-    *(int *)((char *)a0 + 0x30) = 0;
-    *(int *)((char *)a0 + 0x2C) = 0;
-    *(int *)((char *)a0 + 0x34) = a2;
-    *(int *)((char *)a0 + 0x18) &= ~2;
-    return a0;
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E238);
-#endif
-#endif
 
 // gl_func_0003E2B0 — EXACT 2026-10-15 (agent-c; was NM 96.2).
 // Diagnostic/trace serializer: list-walk + per-node vtable dispatch bracketed
