@@ -1304,25 +1304,19 @@ end:
 //   per the analysis (third sibling: 35370 slot 0x4C, 35440 slot
 //   0x50, this slot 0x60). Byte-match deferred. Name pre-checked:
 //   no extern reuse.
-#ifdef NON_MATCHING
+/* EXACT 2026-10-17 agent-c run 106 (87.9 -> 100): vtable slot 0x60 called
+ * inline, its result passed straight to the second call with a2, and the
+ * error string is &D + 0x1E5F0 (not the literal 0x1E5F0). */
 int gl_func_000355A0(char *o, int a1, int a2) {
-    char *h;
-    int (*f)(int);
-    int r;
+    int r; /* unused: homes the sp+28 word so v lands at sp+24 */
     int v;
     if (*(int *)(o + 4) != 1) {
-        gl_func_00000000((char *)0x0001E5F0);
+        gl_func_00000000((char *)&D_00000000 + 0x1E5F0);
     }
-    h = *(char **)((char *)&D_00000000 + 0);
-    f = *(int (**)(int))(h + 0x60);
-    r = f(*(int *)(o + 0x20));
-    v = gl_func_00000000(a1, r);
+    v = gl_func_00000000(a1, (*(int (**)(int))(*(char **)&D_00000000 + 0x60))(*(int *)(o + 0x20)), a2);
     gl_func_00000000(o, 1, a2);
     return v;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000355A0);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_00035624(int a0, int a1) {
@@ -1378,32 +1372,26 @@ void gl_func_00035624(int a0, int a1) {
 //   35370 slot 0x4C / 35440 slot 0x50 / 355A0 slot 0x60 / this slot
 //   0x54). Byte-match deferred. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
-void gl_func_00035648(char *o, int a1, int a2) {
+extern char D_35648_a[], D_35648_b[], D_35648_c[], D_35648_d[];
+int gl_func_00035648(char *o, int a1, int a2) {
     int r;
-    char *h;
-    int (*f)(int);
-    int flag = *(int *)((char *)&D_00000000 + 0x100);
-    switch (*(int *)(o + 4)) {
-        case 1:
-            h = *(char **)((char *)&D_00000000 + 0);
-            f = *(int (**)(int))(h + 0x54);
-            r = f(a2);
-            (void)r;
-            break;
-        case 0:
-            r = gl_func_00000000(&D_00000000);
-            (void)r;
-            break;
-        case 2:
-            if (a1 == 0) {
-                *(int *)0x0004B8E8 = flag;
-            } else if (a1 == 1) {
-                *(int *)0x0004B8E8 += a2;
-            }
-            break;
-        default:
-            break;
+    switch ((unsigned)*(int *)(o + 4)) {
+    case 1:
+        r = (*(int (**)(int))(*(char **)&D_00000000 + 0x54))(*(int *)(o + 0x20));
+        break;
+    case 0:
+        r = gl_func_00000000(&D_00000000);
+        break;
+    case 2:
+        if (a1 == 0) {
+            *(int *)(D_35648_a + 0x3B8E8) = a2 + 0x08000000;
+        } else if (a1 == 1) {
+            *(int *)(D_35648_c + 0x3B8E8) = *(int *)(D_35648_b + 0x3B8E8) + a2;
+        }
+        r = *(int *)(D_35648_d + 0x3B8E8);
+        break;
     }
+    return r;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035648);
@@ -1660,18 +1648,16 @@ L0:
 //   0x50 / 35648 0x54 / this 0x5C / 355A0 0x60 — consecutive
 //   handler-vtable slots now mapped). Byte-match deferred. Name
 //   pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* EXACT 2026-10-17 agent-c run 106: the type word goes through a named
+ * local assigned inside the condition (lw v0 + bnel with v0 = 0 in the
+ * delay); the vtable call is spelled inline so IDO calls through t9. */
 int gl_func_0003593C(char *o) {
-    char *h;
-    int (*f)(int);
-    if (*(int *)(o + 4) != 1) return 0;
-    h = *(char **)((char *)&D_00000000 + 0);
-    f = *(int (**)(int))(h + 0x5C);
-    return f(*(int *)(o + 0x20));
+    int r;
+    if ((r = *(int *)(o + 4)) == 1) {
+        return (*(int (**)(int))(*(char **)&D_00000000 + 0x5C))(*(int *)(o + 0x20));
+    }
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003593C);
-#endif
 
 int game_libs_func_00035988(int *a0) {
     return a0[8];
@@ -2930,13 +2916,16 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036F0C);
  *   divergence class (cf gl_func_00065250). Real-C STRUCTURAL body
  *   below. Byte-match deferred. Name pre-checked: no extern reuse. */
 #ifdef NON_MATCHING
-extern int D_00000000;
 void gl_func_000372D4(int *a0, float *a1) {
-    int *p = (int *)((int **)a0)[0x14/4][0xF4/4];
+    int *o;
+    int **po = &o;
+    char *p;
     void (**vt)(int);
-    *(float *)((char *)p + 0x60) = a1[0];
-    *(float *)((char *)p + 0x64) = a1[1];
-    *(float *)((char *)p + 0x68) = a1[2];
+    o = ((int **)a0)[0x14/4];
+    p = (char *)o[0xF4/4] + 0x30;
+    *(float *)(p + 0x30) = a1[0];
+    *(float *)(p + 0x34) = a1[1];
+    *(float *)(p + 0x38) = a1[2];
     *(float *)((char *)a0 + 0x30) = -90.0f;
     *(float *)((char *)a0 + 0x34) = 180.0f;
     *(float *)((char *)a0 + 0x38) = 0.0f;
@@ -3228,11 +3217,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00037540);
  * to later pass with type info on arg0's struct (likely a Boarder-state
  * struct given Vec3 build pattern). */
 void gl_func_0003783C(int *a0) {
-    Vec3 buf;
-    buf.x = 0.0f;
-    buf.y = *(float*)((char*)a0 + 0x2C);
-    buf.z = 0.0f;
-    gl_func_00000000(*(int*)((char*)a0 + 0x14) + 0x30, &buf);
+    struct { Vec3 v; char pad[12]; int p; } s;
+    int pad[5];
+    s.p = *(int*)((char*)a0 + 0x14);
+    s.v.y = *(float*)((char*)a0 + 0x2C);
+    s.v.z = 0.0f;
+    s.v.x = 0.0f;
+    gl_func_00000000(s.p + 0x30, &s.v);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003783C);
@@ -8418,7 +8409,7 @@ N3DA14 *game_libs_func_0003DA14(char *o, Vec3 *ref, N3DA14 *excl) {
     Vec3 *p;
 
     if (1) { I3DA14 *q = &it; }
-    bestd = D_3DA14_max;
+    bestd = *(float *)((char *)&D_3DA14_max + 0x1AC0);
     best = 0;
     it.next = *(L3DA14 **)(o + 0x10);
     while ((n = ((it.cur = it.next) != 0 ? (it.next = it.next->next, it.cur->data) : 0)) != 0) {
@@ -9713,7 +9704,6 @@ end_zero:
     return 0;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0003EB3C: 21-insn (0x54) nullable-double-deref helper.
  * Boundary fix 2026-05-08: split off two trailing sentinels
  * (game_libs_func_0003EB90 + _0003EB98) which were bundled into the
@@ -9732,22 +9722,18 @@ end_zero:
  * for null-check, once for deref) — IDO -O2 CSE's into one. Plus
  * own-frame `sw a1, 0x4(sp)` spill needs a scoped `volatile int spill
  * = a1` but adding it grows the frame to 0x28. */
-extern int gl_func_00000000();
-int gl_func_0003EB3C(int *a0, int a1, int a2) {
-    volatile int *p1 = &a1;
-    volatile int *p2 = &a2;
-    int *r = (int*)gl_func_00000000(a0, a1, a2);
+/* EXACT 2026-10-17 agent-c run 106 (61.3 -> 100): a1 and a2 are 4-byte
+ * structs passed BY VALUE. That explains every "cap" above: struct params
+ * are always homed (sw a1/a2 to 28/32(sp)), and passing a1 on to the callee
+ * also copies it into its outgoing arg slot (sw a1,4(sp)). The second
+ * r->0x10 load is a plain if/return pair (no CSE across the two returns). */
+typedef struct { int w; } S3EB3C;
+int gl_func_0003EB3C(int *a0, S3EB3C a1, S3EB3C a2) {
+    char *r = (char *)gl_func_00000000(a0, a1);
     if (r == 0) return 0;
-    {
-        int *q = (int*)r[0x10/4];
-        if (q == 0) return 0;
-        (void)p1; (void)p2;
-        return *q;
-    }
+    if (*(int **)(r + 0x10) != 0) return **(int **)(r + 0x10);
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003EB3C);
-#endif
 
 /* Sentinels split off from gl_func_0003EB3C bundle 2026-05-08.
  * Both match via empty/return-0 bodies per
