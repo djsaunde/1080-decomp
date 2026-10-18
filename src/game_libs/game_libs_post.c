@@ -16496,127 +16496,84 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002F1B8);
 
 
 
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_0002F288)();
-void gl_func_0002F288(char *arg0) {
-    s32 sp40;                                       /* compiler-managed */
-    s32 sp3C;                                       /* compiler-managed */
-    s32 sp24;
-    s32 sp20;
-    s32 sp1C;
-    f32 temp_f2;
-    f32 var_f0;
-    f32 var_f0_2;
-    f32 var_f12;
-    f32 var_f12_2;
-    s32 temp_a0;
-    s32 temp_a0_2;
-    s32 temp_a0_3;
-    s32 temp_v0_2;
-    s32 temp_v0_3;
-    s32 temp_v0_4;
-    s32 temp_v0_5;
-    s32 temp_v1_3;
-    s32 temp_v1_4;
-    s32 var_t0;
-    s32 var_v0;
-    s32 var_v0_2;
-    s32 var_v0_3;
-    s32 var_v0_4;
-    u8 temp_a1;
-    u8 temp_v0;
-    u8 temp_v1;
-    u8 temp_v1_2;
+extern void gl_seti_2F288(int, int);
+extern void gl_setf_2F288(int, float);
+extern int D_2F288_g[];
+extern char D_2F288_a[], D_2F288_b[], D_2F288_c[], D_2F288_d[], D_2F288_n[], D_2F288_m[], D_2F288_r[], D_2F288_e[];
+extern float D_2F288_ta[], D_2F288_tb[]; /* file-static tables at D+0x1C330 / D+0x1C3B0 */
+void gl_func_0002F288(char *o) {
+    u8 mode = o[0x21];
+    float f = *(float *)o;
+    int k = o[0x14];
+    u8 c;
+    u8 idx;
+    u8 v;
+    int t0;
+    int t;
+    float sc;
+    float ff;
+    int hi;
+    int cmd;
+    int n;
 
-    temp_v0 = FW(arg0, 0x21);
-    temp_a1 = FW(arg0, 0x14);
-    if ((temp_v0 != 2) && (FW(arg0, 0x1C) == 0)) {
-        var_t0 = 7;
-        if (temp_v0 == 0) {
-            var_t0 = 3;
+    if (mode != 2 && o[0x1C] == 0) {
+    if (mode == 0) t0 = 3; else t0 = 7;
+    t = D_2F288_g[1];
+    f = *(float *)(D_2F288_a + 0x1730) * (float)t + f;
+    if (k == 0 && *(int *)(o + 0x38) >= 21) {
+        switch (D_2F288_g[4]) {
+        case 0:
+        default:
+            v = (int)(f * 0.5f);
+            sc = 1.0f;
+            break;
+        case 1:
+        case 2:
+            v = (int)(f / 3.5f);
+            sc = *(float *)(D_2F288_b + 0x1734);
+            break;
         }
-        temp_a0 = *(s32 *)4;
-        temp_f2 = ((f32) temp_a0 * *(f32 *)0x1730) + *(f32 *)(arg0 + 0x0);
-        if ((temp_a1 == 0) && (FW(arg0, 0x38) >= 0x15)) {
-            temp_v0_2 = *(s32 *)0x10;
-            switch (temp_v0_2) {                    /* irregular */
-            default:
-            case 0:
-                var_f12 = 1.0f;
-                var_v0 = (s32) (temp_f2 * 0.5f);
-                break;
-            case 1:
-            case 2:
-                var_f12 = *(f32 *)0x1734;
-                var_v0 = (s32) (temp_f2 / 3.5f);
-                break;
+    } else {
+        v = (int)(f * 0.25f);
+        sc = *(float *)(D_2F288_c + 0x1738);
+    }
+    v += t;
+    c = o[0x1F];
+    if (c != 0) {
+        n = *(int *)(D_2F288_n + 0x1C740) - 1;
+        *(int *)(D_2F288_m + 0x1C740) = n;
+        if (n == 0) {
+            if (k == 0) {
+                n = (int)c / 2;
+                if (v >= n) v -= n;
+            } else {
+                v += c;
             }
-        } else {
-            var_f12 = *(f32 *)0x1738;
-            var_v0 = (s32) (temp_f2 * 0.25f);
+            *(int *)(D_2F288_r + 0x1C740) = 3 - (*(int *)(D_2F288_e + 0x2154) & 1);
+        } else if (k != 0 && v >= 10) {
+            v -= 10;
         }
-        temp_v1 = FW(arg0, 0x1F);
-        var_v0_2 = ((var_v0 & 0xFF) + temp_a0) & 0xFF;
-        if (temp_v1 != 0) {
-            temp_a0_2 = *(s32 *)0x1C740 - 1;
-            *(char *)0x1C740 = temp_a0_2;
-            if (temp_a0_2 == 0) {
-                if (temp_a1 == 0) {
-                    temp_a0_3 = (s32) temp_v1 / 2;
-                    if (var_v0_2 >= temp_a0_3) {
-                        var_v0_3 = var_v0_2 - temp_a0_3;
-                        goto block_18;
-                    }
-                } else {
-                    var_v0_3 = var_v0_2 + temp_v1;
-block_18:
-                    var_v0_2 = var_v0_3 & 0xFF;
-                }
-                *(char *)0x1C740 = (s32) (3 - (*(s32 *)0x2154 & 1));
-            } else if ((temp_a1 != 0) && (var_v0_2 >= 0xA)) {
-                var_v0_2 = (var_v0_2 - 0xA) & 0xFF;
-            }
-        }
-        temp_v1_2 = FW(arg0, 0x32);
-        temp_v0_3 = temp_v1_2 * 4;
-        var_f0 = (temp_f2 / 80.0f) + *(f32 *)0x173C;
-        if (temp_v1_2 != 0) {
-            var_f0 *= *(f32 *)((char *)temp_v0_3 + 0x1C330);
-            var_f12 *= *(f32 *)((char *)temp_v0_3 + 0x1C3B0);
-        }
-        if (temp_a1 == 0xFF) {
-            temp_v1_3 = (var_t0 & 0xFF) << 8;
-            temp_v0_4 = temp_v1_3 | 0x06000000;
-            sp1C = temp_v0_4;
-            sp20 = temp_v1_3;
-            sp24 = var_v0_2;
-            sp3C = (s32) var_f12;
-            gl_func_0001CA10((s32) var_f12, temp_v0_4 | 6, 1, var_v0_2, arg0);
-            var_f0_2 = 1.0f;
-            var_v0_4 = temp_v0_4;
-        } else {
-            temp_v1_4 = (var_t0 & 0xFF) << 8;
-            temp_v0_5 = temp_v1_4 | 0x06000000;
-            sp1C = temp_v0_5;
-            sp20 = temp_v1_4;
-            sp24 = var_v0_2;
-            sp40 = (s32) var_f0;
-            sp3C = var_f12;
-            gl_func_0001CA10((s32) var_f12, temp_v0_5 | 6, 0, var_v0_2, arg0);
-            var_v0_4 = temp_v0_5;
-            var_f0_2 = var_f0;
-        }
-        var_f12_2 = sp3C;
-        if (FW(arg0, 0x1C) & 1) {
-            var_f12_2 = 0.0f;
-        }
-        sp40 = var_f0_2;
-        sp3C = var_f12_2;
-        gl_func_0001CA10((s32) var_f12_2, var_v0_4 | 5, (s8) var_v0_2, (s32) (s8) var_v0_2, arg0);
-        gl_func_0001CA10(sp20 | 0x04000000, (s32) var_f0_2);
-        gl_func_0001CA10((s32) var_f12_2, sp20 | 0x01000000, (s8) var_f12_2);
+    }
+    ff = f / 80.0f + *(float *)(D_2F288_d + 0x173C);
+    idx = o[0x32];
+    if (idx != 0) {
+        ff *= D_2F288_ta[idx];
+        sc *= D_2F288_tb[idx];
+    }
+    if (k == 255) {
+        hi = (t0 & 0xFF) << 8;
+        cmd = hi | 0x06000000;
+        gl_seti_2F288(cmd | 6, 1);
+        ff = 1.0f;
+    } else {
+        hi = (t0 & 0xFF) << 8;
+        cmd = hi | 0x06000000;
+        gl_seti_2F288(cmd | 6, 0);
+    }
+    if (o[0x1C] & 1) sc = 0.0f;
+    gl_seti_2F288(cmd | 5, (s8)v);
+    gl_setf_2F288(hi | 0x04000000, ff);
+    gl_setf_2F288(hi | 0x01000000, sc);
     }
 }
 #else

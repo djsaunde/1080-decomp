@@ -5713,29 +5713,21 @@ void gl_func_00039C8C(int *a0) {
  * Cap: NOT WRITTEN — complex 7-arg call with mixed prototype + FPU
  * mid-update + conditional flow. Initial NM wrap with structural
  * notes; future passes try named-typed-extern. */
-extern int gl_func_00000000();
-void gl_func_00039E24(int *a0) {
-    int v0;
-    /* 7-arg call: prototype needed (float at pos 3,4,5,7).
-     * v0 = gl_func(...); */
-    v0 = gl_func_00000000(
-        *(int*)((char*)&D_00000000 + 0x254),
-        3,
-        *(int*)((char*)a0 + 0x5C),
-        *(int*)((char*)a0 + 0x60),
-        *(int*)((char*)a0 + 0x64),
-        0,
-        0);
-    if (v0 != 0) {
-        gl_func_00000000(&D_00000000, (char*)a0 + 0x2C);
-        {
-            float *target = (float*)((char*)&D_00000000 + 0xA0 + 0x30);
-            float *scale = (float*)((char*)&D_00000000 + 0x128);
-            target[0] = target[0] * scale[0];
-            target[1] = target[1] * scale[1];
-            target[2] = target[2] * scale[2];
-            target[1] += *(float*)((char*)a0 + 0x6C);
-        }
+extern int gl_proto_39E24(int, int, float, float, float, int, float);
+extern char D_39E24_a[]; extern float D_39E24_b[];
+typedef struct { char pad[0x30]; float x, y, z; } T39E24;
+extern T39E24 D_39E24_c; /* file-static at section+0xA0 */
+void gl_func_00039E24(char *a0) {
+    if (gl_proto_39E24(*(int*)(D_39E24_a + 0x254), 3,
+                       *(float*)(a0 + 0x5C), *(float*)(a0 + 0x60), *(float*)(a0 + 0x64),
+                       0, 0.0f) != 0) {
+        T39E24 *t;
+        gl_func_00000000(D_39E24_b, a0 + 0x2C);
+        t = (T39E24*)(int)&D_39E24_c;
+        t->x *= D_39E24_b[74];
+        t->y *= D_39E24_b[75];
+        t->z *= D_39E24_b[76];
+        t->y += *(float*)(a0 + 0x6C);
         gl_func_00000000(a0);
     }
 }
@@ -14996,18 +14988,20 @@ typedef char *(*GP_00045178)();
  * was garbled; real tail = one vertex-buffer slot + one 0x01030040 display
  * list word + two Vec3 builds passed with &D. Open: lo/hi f12/f14 swap. */
 void gl_func_00045178(char *arg0) {
+    char *t;
     Vec3 a;
     Vec3 b;
-    char *p;
-    char *m;
-    int *g;
-    char *t;
     float *q;
     int i;
-    float lo, hi, v, r;
+    char *p;
+    float lo;
+    char *m;
+    float hi, v, r;
+    char *cD;
+    int *g;
 
     {
-    char *cD = (char *)&D_00000000;
+    cD = (char *)&D_00000000;
     lo = *(f32 *)(cD + 0x1B60);
     v = *(f32 *)(arg0 + 0x90);
     if (v < lo) {
@@ -16503,63 +16497,22 @@ int gl_func_00047DD8(int *a0, int a1) {
 // result scratch are exact. Caps: source/weight layout + a0 struct untyped.
 // Full body INCLUDE_ASM-preserved.
 #ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00047E00)();
-void gl_func_00047E00(char *arg0, char *arg1) {
-    f32 *sp80;
-    f32 sp40;
-    f32 *temp_t2;
-    f32 *temp_v0;
-    f32 *temp_v1;
-    f32 *var_t0;
-    f32 *var_v0;
-    f32 *var_v1;
-    f32 temp_f12;
-    f32 temp_f14;
-    f32 var_f16;
-    f32 var_f18;
-    s32 var_a0;
-    char *var_a2;
+void gl_func_00047E00(char *arg0, float (*a)[4]) {
+    int pad[3];
+    float (*m)[4];
+    float out[4][4];
+    int i, j, k;
 
-    temp_t2 = FW(arg0, 0xE0);
-    var_t0 = &sp40;
-    var_a2 = arg1;
-    sp80 = temp_t2;
-    do {
-        var_v0 = var_t0;
-        var_v1 = temp_t2;
-        *var_v0 = 0.0f;
-        var_a0 = 4;
-        var_f16 = *var_v0;
-        var_f18 = (*(f32*)((char*)var_a2 + 0x0)) * *var_v1;
-        if (4 != 0x10) {
-            do {
-                var_a0 += 4;
-                var_v0 += 4;
-                var_v1 += 4;
-                var_v0[-1] = (f32) (var_f16 + var_f18);
-                var_v0[-1] = (f32) (var_v0[-1] + ((*(f32*)((char*)var_a2 + 0x4)) * (*(f32*)((char*)var_v1 + 0xC))));
-                var_v0[-1] = (f32) (var_v0[-1] + ((*(f32*)((char*)var_a2 + 0x8)) * (*(f32*)((char*)var_v1 + 0x1C))));
-                var_v0[0] = 0.0f;
-                var_f16 = var_v0[0];
-                var_v0[-1] = (f32) (var_v0[-1] + ((*(f32*)((char*)var_a2 + 0xC)) * (*(f32*)((char*)var_v1 + 0x2C))));
-                var_f18 = (*(f32*)((char*)var_a2 + 0x0)) * (*(f32*)((char*)var_v1 + 0x0));
-            } while (var_a0 != 0x10);
+    m = *(float (**)[4])(arg0 + 0xE0);
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            out[i][j] = 0.0f;
+            for (k = 0; k < 4; k++) {
+                out[i][j] += a[i][k] * m[k][j];
+            }
         }
-        temp_v0 = var_v0 + 4;
-        temp_v1 = var_v1 + 4;
-        temp_v0[-1] = (f32) (var_f16 + var_f18);
-        temp_v0[-1] = (f32) (temp_v0[-1] + ((*(f32*)((char*)var_a2 + 0x4)) * (*(f32*)((char*)temp_v1 + 0xC))));
-        temp_v0[-1] = (f32) (temp_v0[-1] + ((*(f32*)((char*)var_a2 + 0x8)) * (*(f32*)((char*)temp_v1 + 0x1C))));
-        temp_f12 = temp_v0[-1];
-        temp_f14 = temp_f12 + ((*(f32*)((char*)var_a2 + 0xC)) * (*(f32*)((char*)temp_v1 + 0x2C)));
-        temp_v0[-1] = temp_f14;
-        var_t0 += 0x10;
-        var_a2 += 0x10;
-    } while ((int)var_t0 != (int)&sp80);
-    gl_func_00034458(temp_f12, temp_f14, &sp40, sp80, var_a2, 0x10);
+    }
+    gl_func_00034458(out, m);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00047E00);

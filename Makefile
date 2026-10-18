@@ -443,7 +443,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 104: 61C9C EXACT (32w vs old 30w NM body): 0x2e79c -> 0x2e7a4.
 # agent-g run 104: 6264C (40w vs 43w NM) -> 0x2e798; 62540 / 6275C exact + 61B30 NM re-decodes -> 0x2e780.
 # agent-g run 104: 5FF14 exact + 60AD0 NM re-decode -> 0x2e760 (62F08 NM offset 0x2e710).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e760 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
+# run 106 agent-c (39E24 / 47E00 / 45178 re-decodes, on top of agent-g 0x2e760): -> 0x2e780.
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e780 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
