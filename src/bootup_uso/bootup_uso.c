@@ -284,32 +284,35 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  * INCLUDE_ASM-preserved (.s = source of truth). */
 #ifdef NON_MATCHING
 extern char D_00006584;
+/* Run 109 (agent-c, 93.18 -> 99.75): per-address pool doubles; arg5 is
+ * reassigned with the scaled value (target keeps it in f2); ONE float local
+ * carries both the clamp and the fabs results (f0); `/ (f32)4` keeps the
+ * div.s (a 4.0f literal folds to * 0.25). Residual: frame 0x38 vs 0x30
+ * (sp28/sp24 sit 8 bytes higher; pads only grow it). */
 extern f64 D_bu_ro_d058, D_bu_ro_d060;  /* RoData pool doubles at 0x58 / 0x60 (func_00000044 + 0x14 / 0x1C); one symbol each, the target re-luis per load */
 void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     int o;
     f32 sp28;
     int sp24;
-    f32 temp_f2;
     f32 var_f0;
-    f32 var_f0_2;
 
     o = arg0[0];
     if (o != 0) {
-        temp_f2 = (f32) ((f64) arg5 / D_bu_ro_d058);
-        if (temp_f2 < 0.0f) {
+        arg5 = (f32) ((f64) arg5 / D_bu_ro_d058);
+        if (arg5 < 0.0f) {
             var_f0 = 0.0f;
-        } else if (1.0f < temp_f2) {
+        } else if (1.0f < arg5) {
             var_f0 = 1.0f;
         } else {
-            var_f0 = temp_f2;
+            var_f0 = arg5;
         }
         *(f32*)((char*)o + 0xC) = var_f0;
         if (arg4 < 0.0f) {
-            var_f0_2 = -arg4;
+            var_f0 = -arg4;
         } else {
-            var_f0_2 = arg4;
+            var_f0 = arg4;
         }
-        *(f32*)((char*)arg0[0] + 0x4) = (f32) ((f64) var_f0_2 + D_bu_ro_d060);
+        *(f32*)((char*)arg0[0] + 0x4) = (f32) ((f64) var_f0 + D_bu_ro_d060);
         *(s8*)((char*)arg0[0] + 0x18) = (s8) (s32) (arg4 * 63.0f);
         *(s8*)((char*)arg0[0] + 0x1E) = (s8) ((arg8 & 0x80) != 0);
         switch (arg6) {
@@ -334,8 +337,8 @@ void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, 
             *(s8*)((char*)arg0[0] + 0x14) = 2;
             break;
         }
-        *(f32*)((char*)arg0[0] + 0x0) = arg2 / 4.0f;
-        *(f32*)((char*)arg0[0] + 0x8) = arg3 / 4.0f;
+        *(f32*)((char*)arg0[0] + 0x0) = arg2 / (f32)4;
+        *(f32*)((char*)arg0[0] + 0x8) = arg3 / (f32)4;
         *(s8*)((char*)arg0[0] + 0x20) = 1;
         *(u8*)((char*)arg0[0] + 0x1C) = (u8) ((arg8 & 0x8000) != 0);
         if (*(u8*)((char*)arg0[0] + 0x1C) != 0) {
