@@ -30,6 +30,13 @@ not reproduce, `weak` the same for homes + hl.  Rows rank by
 size * (100 - fuzzy), filtered to miss + weak > 0 unless --all is given
 (--strong keeps only miss > 0).
 
+--chains switches to a second tell: an equality-compare chain on one register
+(`addiu at,zero,K; beq/bne rX,at` / `beqz rX`, three or more in a row) whose
+constants are NOT ascending in the target. IDO sorts switch compares
+ascending, so such a chain is a goto / nested-!= if chain written in that
+order (docs/IDO_CODEGEN.md #nested-ne-goto-chain-35648). Rows list the target
+order and the build's chains on the same register.
+
 Usage (from a project worktree, after `make non_matching_objects` and a fresh
 report.json):
 
@@ -113,6 +120,32 @@ def tells(insns):
     return t
 
 
+def compare_chains(insns):
+    """[(reg, [K, ...])] for runs of >= 3 equality compares on one register."""
+    seq, at = [], None
+    for op, args in insns:
+        m = re.match(r"^at,zero,(-?\d+)$", args)
+        if op == "addiu" and m:
+            at = int(m.group(1))
+            continue
+        m = re.match(r"^(\w+),at,", args)
+        if op in ("beq", "bne", "beql", "bnel") and m and at is not None:
+            seq.append((m.group(1), at))
+            continue
+        m = re.match(r"^(\w+),", args)
+        if op in ("beqz", "bnez", "beqzl", "bnezl") and m and m.group(1) != "zero":
+            seq.append((m.group(1), 0))
+    res, prev, cur = [], None, []
+    for r, v in seq + [(None, None)]:
+        if r == prev:
+            cur.append(v)
+            continue
+        if prev is not None and len(cur) >= 3:
+            res.append((prev, cur))
+        prev, cur = r, [v]
+    return res
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--units", default="game_libs_post,game_libs_post0b,bootup_uso*,h2hproc_uso*,timproc_uso_b1*",
@@ -121,6 +154,8 @@ def main():
                     help="unit=ADDR,... only fns whose name address is below ADDR")
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--strong", action="store_true")
+    ap.add_argument("--chains", action="store_true",
+                    help="report unsorted equality-compare chains instead")
     ap.add_argument("--min-fuzzy", type=float, default=0.0)
     a = ap.parse_args()
     subs = [s for s in a.units.split(",") if s]
@@ -156,6 +191,14 @@ def main():
             fn = f["name"]
             if fn not in T:
                 continue
+            if a.chains:
+                bc = compare_chains(B.get(fn, []))
+                for r, c in compare_chains(T[fn]):
+                    if c != sorted(c) and (r, c) not in bc:
+                        size = int(f.get("size", 0))
+                        fz = f.get("fuzzy_match_percent", 0.0)
+                        rows.append((size * (100 - fz), size, fz, c, [x[1] for x in bc if x[0] == r], un, fn))
+                continue
             tt = tells(T[fn])
             bt = tells(B.get(fn, []))
             miss = max(0, tt["sub"] - bt["sub"]) + max(0, tt["out"] - bt["out"]) + max(0, tt["ret"] - bt["ret"])
@@ -166,6 +209,11 @@ def main():
             fz = f.get("fuzzy_match_percent", 0.0)
             rows.append((size * (100 - fz), size, fz, tt, bt, miss, weak, un, fn))
     rows.sort(key=lambda r: -r[0])
+    if a.chains:
+        print(f"{'rank':>8} {'size':>5} {'fuzzy':>6}  target-order / build-chains  unit / function")
+        for rk, size, fz, c, bc, un, fn in rows:
+            print(f"{rk:8.0f} {size:5d} {fz:6.1f}  {c} / {bc}  {un.replace('src/', '')} {fn}")
+        return 0
     print(f"{'rank':>8} {'size':>5} {'fuzzy':>6} {'frm':>4} {'sub':>3} {'odd':>3} {'out':>3} {'ret':>3} "
           f"{'hom':>3} {'hl':>3} {'miss':>4} {'weak':>4}  build(sub/out/ret/hom/hl)  unit / function")
     for rk, size, fz, tt, bt, miss, weak, un, fn in rows:

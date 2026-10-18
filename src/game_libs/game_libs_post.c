@@ -18026,14 +18026,20 @@ void game_libs_func_000315BC(int a0, int a1) {
  * b21*100 (same strength-reduced index as sibling game_libs_func_000315BC). The
  * inner g-recheck (D[0]==1/2/3/5) is logically dead after the ==4 gate but the
  * target reloads g from memory so IDO can't fold it (cf. eddproc_uso_func_0000025C). */
+/* RUN 107 (agent-c, unsorted-chain scan): 78.3 -> 87.7. The two reads of the
+ * zero-page word are separate externs (separate lui/lw, no CSE, no volatile)
+ * and the index reuses b21 (`b21 = 1`). Residual: the target loads b22 into
+ * v0 before b21 and keeps b21 in v1 through the g-check block; the build
+ * holds b21 in a2 and copies it to v1 at the merge. */
 #ifdef NON_MATCHING
 extern char gl_ref_00000368;
+extern int D_31608_g0, D_31608_g1;
 void gl_func_00031608(char *a0, int a1) {
     unsigned char b22 = *(unsigned char *)(a0 + 0x22);
     unsigned char b21 = *(unsigned char *)(a0 + 0x21);
     int idx;
     int val;
-    if (*(int *)((char *)&D_00000000 + 0) != 4) {
+    if (D_31608_g0 != 4) {
         return;
     }
     val = b22 - 1;
@@ -18044,16 +18050,16 @@ void gl_func_00031608(char *a0, int a1) {
         val = 5;
     }
     if (b21 == 2) {
-        int g = *(volatile int *)((char *)&D_00000000 + 0);
+        int g = D_31608_g1;
         if (g == 1) return;
         if (g == 2) return;
         if (g == 3) return;
         if (g == 5) return;
     }
-    idx = b21;
     if (b21 == 2) {
-        idx = 1;
+        b21 = 1;
     }
+    idx = b21;
     *(short *)(&gl_ref_00000368 + idx * 100 + 0x62) = val;
     gl_ref_00045DC0(&gl_ref_00000368 + idx * 100, 1, (val << 6) + a1, 0x7F);
 }
