@@ -5673,44 +5673,59 @@ void *func_00007C74(char *a0) {
  * via rand01()*3.0. Caps <80: obj-0x28 vtable jalr + switch
  * (beq/beql chain) + FP rand*3.0 trunc + func_0000023C+0x18
  * reloc + reloc dispatch calls. INCLUDE_ASM remains build path. */
+/* RUN 107 (agent-c): 58.0 -> 96.1. The target compares 1, 0, 2 with the
+ * bodies out of line = nested-!= goto chain (IDO sorts switch compares).
+ * The arms were swapped in the old body (kind 1 -> 31 / kind 0 -> 61 and
+ * the -10 is unconditional / kind 2 -> 91 and the =24 is unconditional), each
+ * compares the OLD counter (`slti at,old,K` -- an explicit load / store
+ * pair, since `(*p)++ >= K` materializes slti/xori), and the dispatch value
+ * and the counter share one variable (both v1). The rand helper returns a
+ * float in $f0. Residual: the target's two list calls are an unrolled loop
+ * (dead `addiu v0,v0,4`, a3 re-spilled before each call); every loop form
+ * tried stays rolled (s-reg counter). */
 #ifdef NON_MATCHING
+extern char *D_7D04_root[];
+extern float func_7D04_randf();
 void func_00007D04(char *s0) {
-    char *root = *(char**)((char*)&func_0000023C + 0x18);
-    int *v = *(int**)(root + 0x28);
-    int a3 = *(int*)(s0 + 0x5C);  /* default: keep current */
-    char *o;
-    int **ml;
-    *(int*)(s0 + 0x64) =
-        ((int (*)(char*))*((unsigned int*)((char*)v + 0x64)))(
-            (char*)((int)(short)*(short*)((char*)v + 0x60) + (int)root));
-    switch (*(int*)(s0 + 0x5C)) {
-    case 0:
-        *(int*)(s0 + 0x60) += 1;
-        if (*(int*)(s0 + 0x60) >= 0x1F) a3 = 2;
-        break;
-    case 1:
-        *(int*)(s0 + 0x60) += 1;
-        if (*(int*)(s0 + 0x60) >= 0x3D) {
-            a3 = 2;
-            *(int*)(s0 + 0x58) -= 0xA;
-        }
-        break;
-    case 2:
-        *(int*)(s0 + 0x60) += 1;
-        if (*(int*)(s0 + 0x60) >= 0x5B) {
-            a3 = (int)((float)func_00000000() * 3.0f);
-            *(int*)(s0 + 0x60) = 0;
-            *(int*)(s0 + 0x58) = 0x18;
-        }
-        break;
-    default:
-        break;
+    char *root = D_7D04_root[6];
+    int *v = *(int **)(root + 0x28);
+    int a3 = *(int *)(s0 + 0x5C);
+    int i;
+    int k;
+    *(int *)(s0 + 0x64) =
+        ((int (*)(char *))*((unsigned int *)((char *)v + 0x64)))(
+            (char *)((int)(short)*(short *)((char *)v + 0x60) + (int)root));
+    k = *(int *)(s0 + 0x5C);
+    if (k != 1) {
+        if (k != 0) {
+            if (k != 2) {
+            } else goto c2;
+        } else goto c0;
+    } else goto c1;
+    goto end;
+c1:
+    k = *(int *)(s0 + 0x60);
+    *(int *)(s0 + 0x60) = k + 1;
+    if (k >= 0x1F) a3 = 2;
+    goto end;
+c0:
+    k = *(int *)(s0 + 0x60);
+    *(int *)(s0 + 0x60) = k + 1;
+    if (k >= 0x3D) a3 = 2;
+    *(int *)(s0 + 0x58) -= 0xA;
+    goto end;
+c2:
+    k = *(int *)(s0 + 0x60);
+    *(int *)(s0 + 0x60) = k + 1;
+    if (k >= 0x5B) {
+        a3 = (int)(func_7D04_randf() * 3.0f);
+        *(int *)(s0 + 0x60) = 0;
     }
-    o = *(char**)(s0 + 0x40);
-    ml = *(int***)(o + 0x84);
-    func_00000000(s0, *(int*)((char*)ml[0] + 0x1C), 0, a3);
-    func_00000000(s0, *(int*)((char*)ml[1] + 0x1C), 1, a3);
-    *(int*)(s0 + 0x5C) = a3;
+    *(int *)(s0 + 0x58) = 0x18;
+end:
+    func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[0] + 0x1C), 0, a3);
+    func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[1] + 0x1C), 1, a3);
+    *(int *)(s0 + 0x5C) = a3;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007D04);

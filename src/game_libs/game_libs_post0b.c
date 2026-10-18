@@ -20558,7 +20558,14 @@ loop_1:
     gl_func_00034458(temp_a0, temp_a0 + 0x1C, 1);
     temp_a1 = FW(sp38, 0x1C);
     *g2 = 1;
-    if (temp_a1 == 0x65) {
+    if (temp_a1 == 0x65) goto c65;
+    if (temp_a1 == 0x66) goto c66;
+    if (temp_a1 == 0x64) goto c64;
+    if (temp_a1 == 0x67) goto c67;
+    if (temp_a1 == 0x68) goto c67;
+    if (temp_a1 == 0x6C) goto c6C;
+    goto dflt;
+c65: {
         FW(arg0, 0x20) = 0;
         if (FW(arg0, 0x18) != 0) {
             gl_func_00034458(DSTR(0x20240), temp_a1);
@@ -20590,12 +20597,12 @@ loop_1:
         }
         goto loop_1;
     }
-    if (temp_a1 == 0x66) {
+c66: {
         FW(arg0, 0x1C) = 0;
         gl_func_00034458(DSTR(0x2026C), temp_a1);
         goto loop_1;
     }
-    if (temp_a1 == 0x64) {
+c64: {
         var_s3 += 1;
         if (var_s3 & 1) {
             gl_func_00034458(g1, temp_a1);
@@ -20629,7 +20636,7 @@ loop_1:
         }
         goto loop_1;
     }
-    if (temp_a1 == 0x67 || temp_a1 == 0x68) {
+c67: {
         if (FW(arg0, 0xC) != 0) {
             gl_func_00034458(DSTR(0x202A0), temp_a1);
         }
@@ -20646,12 +20653,13 @@ loop_1:
         gl_func_00034458(DSTR(0x202D0));
         goto loop_1;
     }
-    if (temp_a1 == 0x6C) {
+c6C: {
         gl_func_00034458(g1, temp_a1);
         gl_func_00034458();
         FW(arg0, 0x48) = 1;
         goto loop_1;
     }
+dflt:
     gl_func_00034458(DSTR(0x202D4), temp_a1);
     goto loop_1;
 }
