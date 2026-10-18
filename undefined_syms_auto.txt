@@ -3904,3 +3904,6 @@ D_61B30_out = 0x00000000;  /* gl_func_00061B30 blank vprintf target arg (distinc
 D_61B30_base = 0x00000000;  /* gl_func_00061B30 held s0 base (array extern keeps it opaque, no at-macro fold) */
 gl_ref_00031FB0 = 0x00031FB0;  /* baked in-unit jal target (sprite blit) for gl_func_0001CFDC */
 gl_ref_0003204C = 0x0003204C;  /* baked in-unit jal target (sprite blit, layer 2) for gl_func_0001D0AC */
+D_sym_a_00060370 = 0x00000000;  /* gl_func_00060370 vtable store at +0x28 (blank lui/addiu) */
+D_sym_b_00060370 = 0x00000000;  /* gl_func_00060370 lookup arg (blank lui/addiu) */
+D_global_00060370 = 0x00000000;  /* gl_func_00060370 global handle (blank lui at / sw) */

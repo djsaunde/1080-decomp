@@ -23405,33 +23405,23 @@ skip:
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005165C);
 #endif
 
-#ifdef NON_MATCHING
-/* gl_func_00051694: branch-log then register. Decoded from bare
- * stub 2026-05-18. void f(int a0, int a1):
- *   if (a1 == 0) cb(&D, "str_0x20E7C");
- *   else         cb(&D);
- *   cb(&D, "str_0x20E84", a0 + 0xC, 0, 1.0f, 0);
- * The final call is 6-arg with a FLOAT 5th arg: a3=0, then stack
- * sp+0x10 = 1.0f (swc1 f4, built `lui at,0x3F80; mtc1 at,f4`),
- * sp+0x14 = 0. Multi-idiom (defer): branch-convergence with a0
- * spilled in the beq DELAY slot (reloaded as a2 on both arms then
- * +0xC), and the float-on-stack 5th-arg ABI (swc1 in the jal delay)
- * — needs the exact arg-prototype shaping in a focused pass. Real
- * decoded C preserved. */
+/* gl_func_00051694: log the label (a1, or the default string at
+ * &D+0x20E7C when a1 is null) with a0, then register a0 + 0xC via the
+ * (void *, void *, void *, float, float, int) callee with (0.0f, 1.0f, 0)
+ * -- the `addiu a3,zero,0` is the 0.0f in a GPR. 2026-10-17 agent-g
+ * (run 105) 68.2 -> EXACT: both log calls also pass a0 (lw a2,32(sp) in
+ * each jal delay); the old body dropped it and inverted the a1 test. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_00051694(int a0, int a1) {
-    if (a1 == 0) {
-        gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20E7C);
+void gl_func_00051694(char *a0, char *a1) {
+    extern int gl_func_00000000ff(void *, void *, void *, float, float, int);
+    if (a1 != 0) {
+        gl_func_00000000(&D_00000000, a1, a0);
     } else {
-        gl_func_00000000(&D_00000000);
+        gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20E7C, a0);
     }
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20E84,
-                     a0 + 0xC, 0, 1.0f, 0);
+    gl_func_00000000ff(&D_00000000, (char *)&D_00000000 + 0x20E84, a0 + 0xC, 0.0f, 1.0f, 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051694);
-#endif
 
 /* gl_func_00051714: EXACT (0x60 / 24 words). Prints a Vec4 through the
  * K&R blank with a format string at &D + 0x20E8C: four floats promoted to
@@ -24927,47 +24917,45 @@ s32 game_libs_func_00053368(void *a0, int a1, int a2) {
  * formulation found that yields BOTH a register divisor (needs n=3 var)
  * and a rolled loop (the var makes the trip count foldable -> unroll).
  * Logic is faithful; body is unroll-expanded. ~13% until the rolled-loop
- * shape is cracked (likely needs a non-foldable trip source). */
-void gl_func_000533EC(void *arg0, int arg1, void *arg2) {
-    short r;   /* a1 */
-    short g;   /* a2 */
-    short b;   /* a3 */
-    int i;     /* v1 */
-    int n;     /* t1 = 3 */
-    unsigned char *colorTab;   /* t2 = arg0->0x50 */
-    unsigned short *idxTab;    /* arg0->0x4C */
-    unsigned short *tri;       /* a0 */
-    unsigned char *entry;      /* v0 */
-    unsigned short vidx;
+ * shape is cracked (likely needs a non-foldable trip source).
+ * 2026-10-17 agent-g (run 105) 11.7 -> 96.1: CRACKED the unroll. The loop
+ * stays rolled when the counter is initialised IN the for header
+ * (`for (i = 0; i != 3; i++)`); an `i = 0` statement before the loop, a
+ * do-while or a variable bound all unroll it. Dividing by `i` after the
+ * loop reuses the loop-bound register (div by a register + traps, as in
+ * the target). Residual: the target materialises 3 early (t1, beqz delay)
+ * and copies the tri pointer t0 -> a0 before the loop; ours keeps tri in
+ * one register and divides by v1 (a separate cursor copy costs 2 pts). */
+void gl_func_000533EC(char *arg0, int arg1, unsigned char *arg2) {
+    short r, g, b;
+    int i;
+    unsigned char *colorTab;
+    short *idxTab;
+    unsigned short *tri;
+    unsigned char *e;
 
-    colorTab = *(unsigned char **)((char *)arg0 + 0x50);
+    colorTab = *(unsigned char **)(arg0 + 0x50);
     if (colorTab == 0) {
-        gl_func_00034458((char *)0x21024, arg1);
-        colorTab = *(unsigned char **)((char *)arg0 + 0x50);
+        gl_func_00034458((char *)&D_00000000 + 0x21024, arg1);
+        colorTab = *(unsigned char **)(arg0 + 0x50);
     }
-    idxTab = *(unsigned short **)((char *)arg0 + 0x4C);
-    g = 0;
-    i = 0;
+    idxTab = *(short **)(arg0 + 0x4C);
     if (idxTab != 0) {
-        tri = (unsigned short *)(*(char **)((char *)arg0 + 0x68) + idxTab[arg1] * 8);
+        tri = (unsigned short *)(*(char **)(arg0 + 0x68) + idxTab[arg1] * 8);
     } else {
-        tri = (unsigned short *)(*(char **)((char *)arg0 + 0x68) + arg1 * 8);
+        tri = (unsigned short *)(*(char **)(arg0 + 0x68) + arg1 * 8);
     }
-    r = 0;
-    b = 0;
-    n = 3;
-    do {
-        vidx = *(unsigned short *)((char *)tri + 2);
-        i += 1;
-        tri = (unsigned short *)((char *)tri + 2);
-        entry = colorTab + vidx * 4;
-        r += entry[0];
-        g += entry[1];
-        b += entry[2];
-    } while (i != n);
-    *((char *)arg2 + 0) = r / n;
-    *((char *)arg2 + 1) = g / n;
-    *((char *)arg2 + 2) = b / n;
+    r = 0; g = 0; b = 0;
+    for (i = 0; i != 3; i++) {
+        e = colorTab + tri[1] * 4;
+        tri++;
+        r += e[0];
+        g += e[1];
+        b += e[2];
+    }
+    arg2[0] = r / i;
+    arg2[1] = g / i;
+    arg2[2] = b / i;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000533EC);
@@ -26346,20 +26334,33 @@ void gl_func_0005532C(void) {
  * Initial wrap, 0% measured fuzzy expected — 38-insn structural body in C
  * vs 73-insn target (target includes the trailing leaf). Subsequent runs
  * tighten + the splat-bundle issue may need to be unblocked. */
-void gl_func_0005534C(int **a0, int a1, int a2, int a3) {
-    int (*fp)();
-    int caller_args[4];
-
-    caller_args[0] = a1;
-    caller_args[1] = a2;
-    caller_args[2] = a3;
-    fp = (int(*)())(*a0)[0];
-    (*a0)++;
-    fp(caller_args);
-    while ((fp = (int(*)())(*a0)[0]) != 0) {
-        (*a0)++;
-        (void)((int)fp & 0xFFFF);
-        gl_func_00000000(caller_args);
+/* 2026-10-17 agent-g (run 105) 62.3 -> 97.1: the "caller_args" are the
+ * function's OWN by-value struct parameter (kit V): s = {pp, w, ...} homed
+ * at sp+32, &s passed to every callee (s1), each command word stored into
+ * s.w at its home (sw s0,36(sp)). The cursor step is store-first
+ * (p = *s.pp; *s.pp = p + 1; w = *p) and the mask is `s.w &= 0xFFFF` (a
+ * `s.w = w & 0xFFFF` lets uopt drop the preceding s.w = w store).
+ * Residual: p colours v0 and the s.pp reload a temp (target v1 / v0). */
+typedef struct { int **pp; int w; int x; int y; } St5534C;
+void gl_func_0005534C(St5534C s) {
+    int *p;
+    int w;
+    p = *s.pp;
+    *s.pp = p + 1;
+    w = *p;
+    s.w = w;
+    ((int (*)())w)(&s);
+    p = *s.pp;
+    *s.pp = p + 1;
+    w = *p;
+    s.w = w;
+    while (w != 0) {
+        s.w &= 0xFFFF;
+        gl_func_00000000(&s);
+        p = *s.pp;
+        *s.pp = p + 1;
+        w = *p;
+        s.w = w;
     }
 }
 #else
@@ -26670,23 +26671,24 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00055470);
  * caller-side va_arg shuffle with home-slot mutation is not
  * reproducible from standard varargs C without intrinsics).
  */
-void gl_func_000558A0(int **va_ptr, int a1, int a2, int a3) {
-    int sp_args[4];
+/* 2026-10-17 agent-g (run 105) 76.5 -> 97.6: same by-value St5534C
+ * parameter shape as gl_func_0005534C (no leading fp call). Residual is
+ * the same v0/v1 swap (p in v0, target v1); post-increment, a named pp
+ * copy and dead while(0) appearances do not move it. */
+void gl_func_000558A0(St5534C s) {
     int *p;
-    int s0;
-    sp_args[0] = (int)va_ptr;
-    sp_args[1] = a1;
-    sp_args[2] = a2;
-    sp_args[3] = a3;
-    p = *va_ptr;
-    *va_ptr = p + 1;
-    s0 = *p;
-    while (s0 != 0) {
-        sp_args[1] = s0 & 0xFFFF;
-        gl_func_00000000(&sp_args);
-        p = *va_ptr;
-        *va_ptr = p + 1;
-        s0 = *p;
+    int w;
+    p = *s.pp;
+    *s.pp = p + 1;
+    w = *p;
+    s.w = w;
+    while (w != 0) {
+        s.w &= 0xFFFF;
+        gl_func_00000000(&s);
+        p = *s.pp;
+        *s.pp = p + 1;
+        w = *p;
+        s.w = w;
     }
 }
 #else
@@ -29901,81 +29903,50 @@ void gl_func_0005B848(int *a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0005B90C)();
-void gl_func_0005B90C(char *arg0) {
-    int sp8C;
-    s16 sp8A;
-    s16 sp88;
-    int sp68;
-    s32 sp64;
-    s32 sp60;
-    int *var_s0;
-    int *var_v0;
-    s16 *temp_v0;
-    s16 *var_s0_2;
-    s16 temp_v0_2;
-    s32 *temp_v1;
-    s32 temp_a1;
-    s32 var_s1;
-    s32 var_s5;
-    s32 var_s6;
-    char *temp_t0;
-    char *var_a0;
-    char *var_a0_2;
+/* gl_func_0005B90C: heap/list stats dump. Count the nodes of the list at
+ * the object head and of the typed list at +0x10 (node {w, next}); per type
+ * (w >> 24, 0..9) count nodes and sum (w & 0xFFFFFF) * 16 bytes; print one
+ * line per used type (size / (f32)1024 KB, count), then a summary.
+ * 2026-10-17 agent-g (run 105) 45.5 -> 96.5: textbook rewrite of the m2c
+ * soup (IDO unrolls the 10-entry clear loop itself); scalars declared
+ * before the arrays set the frame; a typed list param gives the `beq a0,s7`
+ * operand order. Residual: as1 fills the clear loop's bne delay with the
+ * first sw (target: the counts-pointer increment). */
+typedef struct N5B90C { u32 w; struct N5B90C *next; } N5B90C;
+void gl_func_0005B90C(N5B90C *arg0) {
+    s32 i;
+    s32 nA, nB;
+    s16 counts[10];
+    s32 sizes[10];
+    N5B90C *p;
+    N5B90C *head;
+    u32 t;
 
-    var_s5 = 0;
-    var_s6 = 0;
-    var_s0 = &sp8C;
-    sp88 = 0;
-    sp60 = 0;
-    sp8A = 0;
-    sp64 = 0;
-    var_v0 = &sp68;
-    do {
-        var_v0 += 0x10;
-        FW(var_s0, 0x0) = 0;
-        FW(var_v0, -0x10) = 0;
-        FW(var_s0, 0x2) = 0;
-        FW(var_v0, -0xC) = 0;
-        FW(var_s0, 0x4) = 0;
-        FW(var_v0, -0x8) = 0;
-        FW(var_s0, 0x6) = 0;
-        FW(var_v0, -0x4) = 0;
-        var_s0 += 8;
-    } while ((int)var_v0 != (int)&sp88);
-    var_a0 = FW(arg0, 0x4);
-    var_s1 = 0;
-    var_s0_2 = &sp88;
-    if (var_a0 != arg0) {
-        do {
-            var_a0 = FW(var_a0, 0x4);
-            var_s5 += 1;
-        } while (var_a0 != arg0);
+    nA = 0;
+    nB = 0;
+    for (i = 0; i < 10; i++) {
+        counts[i] = 0;
+        sizes[i] = 0;
     }
-    var_a0_2 = FW(arg0, 0x14);
-    temp_t0 = (int)arg0 + 0x10;
-    if (var_a0_2 != temp_t0) {
-        do {
-            temp_a1 = ((u32) FW(var_a0_2, 0x0) >> 0x18) & 0xFF;
-            if ((temp_a1 < 0xA) && (temp_a1 >= 0)) {
-                temp_v0 = &(&sp88)[temp_a1];
-                temp_v1 = &(&sp60)[temp_a1];
-                *temp_v0 += 1;
-                *temp_v1 += (FW(var_a0_2, 0x0) & 0xFFFFFF) * 0x10;
-            }
-            var_a0_2 = FW(var_a0_2, 0x4);
-            var_s6 += 1;
-        } while (var_a0_2 != temp_t0);
+    for (p = arg0->next; p != arg0; p = p->next) {
+        nA++;
     }
-    do {
-        temp_v0_2 = *var_s0_2;
-        if (temp_v0_2 != 0) {
-            gl_func_00034458(((char*)&D_00000000 + 0x21A6C), var_s1, (f64)((f32)(&sp60)[var_s1] / 1024.0f), (s32) temp_v0_2);
+    head = (N5B90C *)((char *)arg0 + 0x10);
+    for (p = head->next; p != head; p = p->next) {
+        t = (p->w >> 24) & 0xFF;
+        if ((s32)t < 10 && (s32)t >= 0) {
+            counts[t]++;
+            sizes[t] += (p->w & 0xFFFFFF) * 16;
         }
-        var_s1 += 1;
-        var_s0_2 += 2;
-    } while (var_s1 != 0xA);
+        nB++;
+    }
+    for (i = 0; i < 10; i++) {
+        if (counts[i] != 0) {
+            gl_func_00034458((char *)&D_00000000 + 0x21A6C, i, (f64)((f32)sizes[i] / (f32)1024), counts[i]);
+        }
+    }
     gl_func_00034458(arg0);
-    gl_func_00034458(((char*)&D_00000000 + 0x21A84), var_s5, var_s6);
+    gl_func_00034458((char *)&D_00000000 + 0x21A84, nA, nB);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005B90C);
@@ -32357,42 +32328,58 @@ int gl_func_00060028(int* a0, int a1) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-int gl_func_000600A4(int **self_pp, int a1) {
-    extern int **D_global;
-    extern int D_00000000;
-    int *global;
-    int *node;
-    int *head;
-    global = *D_global;
-    head = (int*)global[0x40 / 4];
-    if (head == 0) {
-        node = (int*)gl_func_00000000(a1);
-        global = *D_global;
-        if (node == 0) {
-            *self_pp = 0;
-            return 0;
+/* 2026-10-17 agent-g (run 105) 38.2 -> 95.4: the decode above was wrong
+ * in the details. Real shape: try the recycle callee only when a tail
+ * exists; else alloc(68) + init, then link (empty list: warn if a head is
+ * set, store head; otherwise thread prev/next/owner off the old tail),
+ * set head if still empty, and always append as the new tail; the final
+ * call's result goes to node->r0. Residual is colouring only: target
+ * holds &global in v1, g in a3, tail in a2 (ours a3/a2/t6); a named tail
+ * local, decl order and dead while(0) orders all score lower. */
+typedef struct N600A4 {
+    int r0;
+    char pad4[0x10];
+    struct N600A4 *prev;    /* 0x14 */
+    struct N600A4 *next;    /* 0x18 */
+    struct N600A4 *owner;   /* 0x1C */
+    struct N600A4 *last;    /* 0x20 */
+    char pad24[0x1C];
+    struct N600A4 *tail;    /* 0x40 */
+    struct N600A4 *head;    /* 0x44 */
+} N600A4;
+extern N600A4 *D_600A4_g;
+extern N600A4 *gl_func_00000000_600a4();
+N600A4 *gl_func_000600A4(char *arg0, int a1) {
+    N600A4 *g;
+    N600A4 *node;
+
+    g = D_600A4_g;
+    node = 0;
+    if (g->tail != 0) {
+        node = gl_func_00000000_600a4(g, arg0);
+    }
+    if (node == 0) {
+        node = gl_func_00000000_600a4(68);
+        gl_func_00000000(node, arg0);
+        g = D_600A4_g;
+        if (g->tail == 0) {
+            if (g->head != 0) {
+                gl_func_00000000((char *)&D_00000000 + 0x21C8C);
+            }
+            D_600A4_g->head = node;
+        } else {
+            node->prev = g->tail->next;
+            D_600A4_g->tail->next = node;
+            node->owner = D_600A4_g->tail;
         }
-    } else {
-        node = (int*)gl_func_00000000(0x44);
-        global = *D_global;
+        if (D_600A4_g->head == 0) {
+            D_600A4_g->head = node;
+        }
     }
-    head = (int*)global[0x40 / 4];
-    if (head == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x21C8C);
-        global[0x44 / 4] = (int)node;
-    } else {
-        int *prev = (int*)global[0];
-        node[0x14 / 4] = (int)head[0x18 / 4];
-        prev[0x18 / 4] = (int)node;
-        node[0x1C / 4] = prev[0x40 / 4];
-        global = *D_global;
-        if (global[0x44 / 4] == 0) global[0x44 / 4] = (int)node;
-        node[0x20 / 4] = (*D_global)[0x40 / 4];
-        gl_func_00000000(node);
-        global[0x40 / 4] = (int)node;
-    }
-    *self_pp = node;
-    return (int)node;
+    node->last = D_600A4_g->tail;
+    D_600A4_g->tail = node;
+    node->r0 = gl_func_00000000();
+    return node;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000600A4);
@@ -32465,75 +32452,44 @@ void gl_func_00060318(int *a0, int a1) {
     }
 }
 
-#ifdef NON_MATCHING
-/* gl_func_00060370: 62-insn alloc-or-init constructor w/ chained factories (0xF8, frame 0x30).
- *
- * Decoded structure (raw-word disasm):
- *   if (self_or_null == NULL) {
- *       obj = func_alloc(0x48);                       // alloc 0x48 bytes
- *       if (obj == NULL) return 0;
- *   } else {
- *       obj = self_or_null;
- *   }
- *   func_init(obj, &D + 0x21CE8);                     // init with string sym
- *   obj->[0x28] = &D_sym_a;
- *   if (self_or_null != (int*)-44) {                  // sentinel pointer check
- *       func_factory(20);                              // returns child obj
- *       if (child != NULL) {
- *           child->[0x8] = 0x50;                      // type tag
- *           child->[0xC] = 0;
- *           func_init2(child, 0x1540);                 // 0x1540-byte sub-init
- *           child->[0] = grandchild;                   // back-ref
- *       }
- *   }
- *   D_global = obj;                                    // global handle update
- *   func_b(obj);                                       // post-init
- *   func_c(&D + 0x21CF8, 0);                          // banner 1
- *   func_d(0, &D_other_sym);                          // banner 2
- *   func_e(&D + 0x21D00, 0);                          // banner 3
- *   func_f(...);
- *   // Update obj->[0x8] += child_returned (chain link)
- *   obj->[0x8] += retval->[0x8];
- *   return obj;
- *
- * Standard constructor: alloc-or-take, chain-init with multiple banners,
- * sub-object child allocation, global registration. Many string-sym
- * references suggest debug-formatted logging during construction.
- *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
- */
-int* gl_func_00060370(int *self_or_null) {
+/* gl_func_00060370: alloc-or-given constructor (0x48 bytes): base ctor
+ * with the 0x21CE8 name, vtable at +0x28, placement sub-object at +44
+ * (`if (p != 0 || (p = alloc(20)) != 0)` = the `bne o,-44` guard, see
+ * IDO_CODEGEN #post0b-kit-v-run106), global handle, three lookups whose
+ * results link (c->8 = b; a->8 += b). 2026-10-17 agent-g (run 105)
+ * 44.8 -> EXACT: rewrite in the kit-V constructor shape; the decl order
+ * a, b, c, p sets the four spill slots (44/40/36/32). */
+char *gl_func_00060370(char *o) {
     extern int D_00000000;
-    extern int D_sym_a_00060370, D_sym_b_00060370, D_global_00060370;
-    int *obj;
-    if (self_or_null == 0) {
-        obj = (int*)gl_func_00000000(0x48);
-        if (obj == 0) return 0;
-    } else {
-        obj = self_or_null;
+    extern int D_sym_a_00060370, D_sym_b_00060370;
+    extern char *D_global_00060370;
+    char *a;
+    int b;
+    char *c;
+    int *p;
+    if (o == 0) {
+        o = (char *)gl_func_00000000(72);
+        if (o == 0) goto out;
     }
-    gl_func_00000000(obj, (char*)&D_00000000 + 0x21CE8);
-    obj[0x28 / 4] = (int)&D_sym_a_00060370;
-    if (self_or_null != (int*)-44) {
-        int *child = (int*)gl_func_00000000(20);
-        if (child != 0) {
-            child[0x8 / 4] = 0x50;
-            child[0xC / 4] = 0;
-            gl_func_00000000(child, 0x1540);
-            child[0] = (int)obj;
-        }
+    gl_func_00000000(o, (char *)&D_00000000 + 0x21CE8);
+    *(int **)(o + 0x28) = &D_sym_a_00060370;
+    p = (int *)(o + 44);
+    if (p != 0 || (p = (int *)gl_func_00000000(20)) != 0) {
+        p[2] = 80;
+        p[3] = 0;
+        p[0] = gl_func_00000000(5440);
     }
-    D_global_00060370 = (int)obj;
-    gl_func_00000000(obj);
-    gl_func_00000000((char*)&D_00000000 + 0x21CF8, 0);
-    gl_func_00000000(0, &D_sym_b_00060370);
-    gl_func_00000000((char*)&D_00000000 + 0x21D00, 0);
-    return obj;
+    D_global_00060370 = o;
+    gl_func_00000000(o);
+    a = (char *)gl_func_00000000((char *)&D_00000000 + 0x21CF8, 0);
+    b = gl_func_00000000(&D_sym_b_00060370);
+    c = (char *)gl_func_00000000((char *)&D_00000000 + 0x21D00, 0);
+    gl_func_00000000();
+    *(int *)(c + 8) = b;
+    *(int *)(a + 8) += b;
+out:
+    return o;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00060370);
-#endif
 
 /* gl_func_00060468: 3-call record update on rec = a0->0x44:
  *   rec->b = f1(); rec->c += rec->b - rec->a; f2(a0->0x44, &rec->c);
@@ -33828,21 +33784,28 @@ void gl_func_00061F8C(char *self) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-int gl_func_00062194(int *self, int a1, int a2, int a3) {
+/* 2026-10-17 agent-g (run 105) 36.2 -> 95.7: the two paths were swapped
+ * in the old body (self->8 != 0 is the short path that returns -1; the
+ * fallthrough path makes four calls and returns whatever the last call
+ * left in v0). stride = (short)self[0] * 14 is unsigned (multu). The
+ * target computes stride * a3 BEFORE the third call and spills it; passing
+ * it as an extra trailing arg to that call reproduces the order (a
+ * separate statement is sunk below the call), but costs a +8 frame.
+ * Residual: that frame and the t0/v1 colour of self->8. */
+int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
     extern int D_62194_a, D_62194_b, D_62194_c, D_62194_d;
-    int t0 = self[0x8 / 4];
-    if (t0 != 0) {
-        unsigned int v0 = ((unsigned)((*(short *)self << 3) - *(short *)self)) << 1;
-        gl_func_00000000(t0 + v0 * (unsigned)a2, a1, v0 * (unsigned)a3);
-        return -1;
+    char *t0 = *(char **)(self + 8);
+    unsigned int stride;
+    if (t0 == 0) {
+        gl_func_00000000(&D_62194_a, 1);
+        gl_func_00000000(&D_62194_b, *(int *)(*(char **)(self + 0x18) + 0x3C));
+        stride = *(short *)self * 14;
+        gl_func_00000000(&D_62194_c, 0, *(char **)(self + 0x14) + stride * a2, stride * a3);
+        gl_func_00000000(&D_62194_d, a1, stride * a3);
+        return;
     }
-    gl_func_00000000(&D_62194_a, 1);
-    gl_func_00000000(&D_62194_b, ((int *)self[0x18 / 4])[0x3C / 4]);
-    {
-        unsigned int v0 = ((unsigned)((*(short *)self << 3) - *(short *)self)) << 1;
-        gl_func_00000000(&D_62194_c, 0, self[0x14 / 4] + v0 * (unsigned)a2);
-        gl_func_00000000(&D_62194_d, a1, v0 * (unsigned)a3);
-    }
+    stride = *(short *)self * 14;
+    gl_func_00000000(t0 + stride * a2, a1, stride * a3);
     return -1;
 }
 #else
