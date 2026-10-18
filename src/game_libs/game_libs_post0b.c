@@ -22684,77 +22684,61 @@ int gl_func_000503A4(int *self, int cap, int b, int c, int d, int e) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_00050444)();
-u32 gl_func_00050444(u32 arg0, char *arg1, char *arg2, char *arg3, u32 arg4) {
-    s16 sp2C;
-    s16 sp2A;
-    s16 sp28;
-    s16 sp26;
-    s16 sp24;
-    f32 temp_f12;
-    s32 var_v1;
-    s32 var_v1_2;
-    u32 temp_a2;
-    u32 temp_v0_4;
-    u32 var_a0;
-    char *temp_v0;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *var_a1;
+/* gl_func_00050444: vertex dedup: truncate pos (3 floats) and uv (2) to
+ * shorts, search the position/uv tables from `start` for an equal pair,
+ * else append both and bump the count (warn at max). 2026-10-17 agent-g
+ * (run 105) 53.1 -> 84.5: typed short-struct rewrite; f32 x/y/z locals give
+ * the loads-first order; the loop is ROLLED in the target, and only a
+ * `volatile` start (reloaded from its home, as the target reloads a0 after
+ * the call) stops IDO unrolling it by 2. Residual: the volatile reloads
+ * start twice (i*6 via multu, target sll/subu once) and the struct homes
+ * sit at 36/44 vs 40/36. */
+typedef struct { s16 x, y, z; } P3_50444;
+typedef struct { s16 s, t; } T2_50444;
+u32 gl_func_00050444(volatile u32 start, char *m, f32 *pos, f32 *uv, u32 max) {
+    P3_50444 p;
+    T2_50444 t;
+    u32 i;
+    u32 n;
+    P3_50444 *e;
+    T2_50444 *u;
+    s32 eq;
+    f32 x, y, z;
+    if (1) { P3_50444 *pp = &p; T2_50444 *tt = &t; }
 
-    if (FW(arg1, 0x64) == 0) {
-        gl_func_00034458((char*)&D_00000000 + 0x20E3C);
+    if (*(int *)(m + 0x64) == 0) {
+        gl_func_00034458((char *)&D_00000000 + 0x20E3C);
     }
-    var_a0 = arg0;
-    temp_f12 = (*(f32*)((char*)arg2 + 0x8));
-    sp28 = (s16) (s32) (*(f32*)((char*)arg2 + 0x0));
-    sp2A = (s16) (s32) (*(f32*)((char*)arg2 + 0x4));
-    sp2C = (s16) (s32) temp_f12;
-    sp24 = (s16) (s32) (*(f32*)((char*)arg3 + 0x0));
-    sp26 = (s16) (s32) (*(f32*)((char*)arg3 + 0x4));
-    temp_a2 = FW(arg1, 0x40);
-    if (var_a0 < temp_a2) {
-        var_a1 = FW(arg1, 0x60) + (var_a0 * 6);
-loop_4:
-        var_v1 = sp28 == (*(s16*)((char*)var_a1 + 0x0));
-        if (var_v1 != 0) {
-            var_v1 = sp2A == (*(s16*)((char*)var_a1 + 0x2));
-            if (var_v1 != 0) {
-                var_v1 = sp2C == (*(s16*)((char*)var_a1 + 0x4));
+    x = pos[0];
+    y = pos[1];
+    z = pos[2];
+    p.x = x;
+    p.y = y;
+    p.z = z;
+    t.s = uv[0];
+    t.t = uv[1];
+    n = *(u32 *)(m + 0x40);
+    for (i = start, e = &(*(P3_50444 **)(m + 0x60))[start]; i < n; i++, e++) {
+        eq = p.x == e->x && p.y == e->y && p.z == e->z;
+        if (eq) {
+            u = &(*(T2_50444 **)(m + 0x64))[i];
+            eq = t.s == u->s && t.t == u->t;
+            if (eq) {
+                return i;
             }
         }
-        if (var_v1 != 0) {
-            temp_v0 = FW(arg1, 0x64) + (var_a0 * 4);
-            var_v1_2 = sp24 == (*(s16*)((char*)temp_v0 + 0x0));
-            if (var_v1_2 != 0) {
-                var_v1_2 = sp26 == (*(s16*)((char*)temp_v0 + 0x2));
-            }
-            if (var_v1_2 != 0) {
-                return var_a0;
-            }
-            goto block_12;
-        }
-block_12:
-        var_a0 += 1;
-        var_a1 += 6;
-        if (var_a0 >= temp_a2) {
-            goto block_13;
-        }
-        goto loop_4;
     }
-block_13:
-    temp_v0_2 = FW(arg1, 0x64) + (temp_a2 * 4);
-    (*(s16*)((char*)temp_v0_2 + 0x0)) = sp24;
-    (*(s16*)((char*)temp_v0_2 + 0x2)) = sp26;
-    temp_v0_3 = FW(arg1, 0x60) + (FW(arg1, 0x40) * 6);
-    (*(s16*)((char*)temp_v0_3 + 0x0)) = sp28;
-    (*(s16*)((char*)temp_v0_3 + 0x2)) = sp2A;
-    (*(s16*)((char*)temp_v0_3 + 0x4)) = sp2C;
-    temp_v0_4 = FW(arg1, 0x40) + 1;
-    FW(arg1, 0x40) = temp_v0_4;
-    if (temp_v0_4 >= arg4) {
-        gl_func_00034458(temp_f12, (char*)&D_00000000 + 0x20E4C);
+    u = &(*(T2_50444 **)(m + 0x64))[n];
+    u->s = t.s;
+    u->t = t.t;
+    e = &(*(P3_50444 **)(m + 0x60))[*(u32 *)(m + 0x40)];
+    e->x = p.x;
+    e->y = p.y;
+    e->z = p.z;
+    if (++*(u32 *)(m + 0x40) >= max) {
+        gl_func_00034458((char *)&D_00000000 + 0x20E4C);
     }
-    return FW(arg1, 0x40) - 1;
+    return *(u32 *)(m + 0x40) - 1;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00050444);
