@@ -32260,7 +32260,6 @@ void gl_func_0005FE7C(int *a0, int a1) {
     *(int*)((char*)a0 + 0x10) = gl_func_00000000();
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0005FF14: 47-insn header-dump + chain-walk debug formatter (0xBC, frame 0x70).
  *
  * Decoded structure (raw-word disasm):
@@ -32286,18 +32285,18 @@ void gl_func_0005FE7C(int *a0, int a1) {
  * a0->0xC; sprintf-style gl(buf, &D+0x21C7C, a0+0x24, (double)ratio); then
  * gl(&D, buf, 0), an a0->0x18 list walk gl(s0)/s0=s0->0x14, and gl(&D). The
  * prior body had wrong call args (passed a0/truncated instead of buf/a0+0x24)
- * and omitted the a0->0xC store. */
+ * and omitted the a0->0xC store.
+ * EXACT 2026-10-17 agent-g (run 104; was 50.5): the raw<0 branch pair is
+ * IDO's own unsigned->float conversion, so write `(float)(u32)a0[2]`; and
+ * `/ 1024.0f` is strength-reduced to `* 2^-10` (lui 0x3a80; mul.s) while
+ * the target keeps div.s by 1024 -- `/ (f32)1024` (int literal cast) is not
+ * folded (same cfe rule as the `(f32)1 * s` multiply). */
 void gl_func_0005FF14(int *a0) {
     extern int D_00000000;
     char buf[64];
-    int raw = a0[0x8 / 4];
     float ratio;
     int *s0;
-    if (raw < 0) {
-        ratio = ((float)raw + 4294967296.0f) / 1024.0f;
-    } else {
-        ratio = (float)raw / 1024.0f;
-    }
+    ratio = (float)(u32)a0[0x8 / 4] / (f32)1024;
     *(float *)((char *)a0 + 0xC) = ratio;
     gl_func_00000000(buf, (char *)&D_00000000 + 0x21C7C, (char *)a0 + 0x24, (double)ratio);
     gl_func_00000000(&D_00000000, buf, 0);
@@ -32308,9 +32307,6 @@ void gl_func_0005FF14(int *a0) {
     }
     gl_func_00000000(&D_00000000);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005FF14);
-#endif
 
 /* gl_func_0005FFD0: 22-insn 2-call pick wrapper, BYTE-EXACT 2026-10-14 (was NM
  * 73.5: frame 0x88 + "trailing branch shape" cap). Overwrite the PARAM itself
@@ -32861,10 +32857,17 @@ void gl_func_00060A74(int a0, int a1, ...) {
  * $v1 instead of promoting it to $s1 (the prior body kept rec live across the jal).
  * RESIDUAL (~24%, regalloc): s-reg assignment order (`end`→$s4 mine vs $s2 target,
  * cascading the prologue save order) + the rec[0]/rec[1] read order in the newline
- * path. Allocno-priority/operand-order, not C-steerable. Stays NM. */
+ * path. Allocno-priority/operand-order, not C-steerable. Stays NM.
+ * 2026-10-17 agent-g (run 104) 75.9 -> 82.0: both flush paths STORE the
+ * terminator first and then call (the sb is in the jal delay, i.e. before
+ * the call in program order); the overflow test is `if (x >= limit)
+ * {flush} else {append}` (fallthrough = flush, bnezl to append); x reuses
+ * the dead a1 PARAM (target lw a1,4(v1)); end = count + src. Residual: the
+ * target saves an unused s4 (frame 0x30) and colours end s2 / 10 s3, and
+ * x is copy-propagated into v0 here instead of staying in a1. */
 int gl_func_00060AD0(int *self, int a1, char *src, int count) {
+    char *end = count + src;
     char *cursor = src;
-    char *end = src + count;
     int *rec;
 
     if (count > 0) {
@@ -32872,28 +32875,25 @@ int gl_func_00060AD0(int *self, int a1, char *src, int count) {
             unsigned char ch = *cursor;
             rec = (int*)(self[0] + self[0x20 / 4] * 8);
             if (ch == 10) {
-                char *dst = (char*)(rec[0] + rec[1]);
+                *(char*)(rec[0] + rec[1]) = 0;
                 gl_func_00000000(self);
-                *dst = 0;
                 cursor++;
             } else {
-                int x = rec[1];
-                if (x < self[8 / 4]) {
-                    rec[1] = x + 1;
-                    *(char*)(rec[0] + x) = ch;
-                    cursor++;
-                } else {
-                    char *dst = (char*)(rec[0] + x);
+                a1 = rec[1];
+                if (a1 >= self[8 / 4]) {
+                    *(char*)(rec[0] + a1) = 0;
                     gl_func_00000000(self);
-                    *dst = 0;
                     cursor--;
+                } else {
+                    rec[1] = a1 + 1;
+                    *(char*)(rec[0] + a1) = ch;
+                    cursor++;
                 }
             }
         } while (cursor < end);
     }
     rec = (int*)(self[0] + self[0x20 / 4] * 8);
     *(char*)(rec[0] + rec[1]) = 0;
-    (void)a1;
     return 1;
 }
 #else
