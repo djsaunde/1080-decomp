@@ -33590,19 +33590,34 @@ void game_libs_func_00061B1C(int a0, int a1) {
  * the dual `lh _,0(_)` D_short reload into two regs, and the 4-arg
  * spill ordering are not reproduced by clean C first pass. Medium
  * class (multi-run), not the easy a0-ctor vein subset. INCLUDE_ASM
- * is the correct build path (no episode; tautology-trap rule). */
+ * is the correct build path (no episode; tautology-trap rule).
+ * 2026-10-17 agent-g (run 104) 41.6 -> 65.9: it is a VARARGS printf-style
+ * wrapper -- the four arg homes are the `...` spill, and (sp+47)&~3 is the
+ * va_start pointer &fmt + 4 rounded up to 4 (frame 0x28 puts &fmt at 0x28).
+ * The held s0 base needs `int bi = (int)arr; base = (char *)bi;` (a plain
+ * &D folds every store to a lui-at macro); the two lh values are named
+ * locals (v0/v1). Residual = scheduling only: the target sinks both base
+ * stores below the vprintf arg setup (one in the jal delay) and puts the
+ * first call's `or a0,s0` in its delay; same-line joins do not move them. */
 #ifdef NON_MATCHING
-void gl_func_00061B30(int a0, int a1, int a2, int a3) {
-    char *s0 = (char *)&D_00000000;
-    char buf[8];
-    char *scratch = (char *)(((int)buf + 47) & ~3);
-    gl_func_00000000(s0, 1);
-    *(int *)(s0 + 0x224) = 8;
-    *(int *)(s0 + 0x228) = 8;
-    *(int *)(s0 + 0x220) = *(short *)&D_00000000;
-    *(int *)(s0 + 0x21C) = *(short *)&D_00000000;
-    gl_func_00000000(&D_00000000, 0, a0, scratch);
-    gl_func_00000000(s0, 0);
+extern short D_61B30_h0, D_61B30_h1;
+extern char D_61B30_out;
+extern char D_61B30_base[];
+void gl_func_00061B30(char *fmt, ...) {
+    int bi = (int)D_61B30_base;
+    char *base = (char *)bi;
+    char *ap;
+    int h0, h1;
+    gl_func_00000000(base, 1);
+    *(int *)(base + 0x224) = 8;
+    *(int *)(base + 0x228) = 8;
+    h1 = D_61B30_h1;
+    h0 = D_61B30_h0;
+    ap = (char *)(((int)&fmt + sizeof(fmt) + 3) & ~3);
+    *(int *)(base + 0x220) = h1;
+    *(int *)(base + 0x21C) = h0;
+    gl_func_00000000(&D_61B30_out, 0, fmt, ap);
+    gl_func_00000000(base, 0);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00061B30);
@@ -34056,7 +34071,6 @@ fail:
     return -1;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00062540: 47-insn alloc-slot + initialize-or-evict (0xBC, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
@@ -34081,32 +34095,28 @@ fail:
  * level "claim-or-evict" wrapper that updates the entry payload on the
  * evict path. 5*x*4 = 20-byte entry stride matches 62484.
  *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
+ * EXACT 2026-10-17 agent-g (run 104; was 58.6, first compile of the
+ * re-decode): typed 20-byte entry array behind self[0], re-read for every
+ * access on the hit path ((*self)[slot].f), early `return slot` on a hit;
+ * the miss path claims a slot = evict(self) and stores h10 = the rebind
+ * call's result (the old decode had the store order and source wrong).
  */
-int gl_func_00062540(int *self, int key1, int key2) {
-    int slot = (int)gl_func_00000000(self, key1, key2);
-    int *entries = (int*)self[0];
-    int *entry;
+typedef struct { int w0; int w4; int w8; int wC; short h10; short pad12; } Ent_62540;
+int gl_func_00062540(Ent_62540 **self, int key1, int key2) {
+    int slot = gl_func_00000000(self, key1, key2);
+    Ent_62540 *e;
     if (slot != -1) {
-        entry = (int*)((char*)entries + slot * 20);
-        entry[0xC / 4] = 1;
-        *(short*)((char*)entry + 0x10) = -1;
-    } else {
-        int existing;
-        gl_func_00000000(self);
-        entry = (int*)((char*)entries + slot * 20);
-        existing = entry[0];
-        gl_func_00000000(key1, existing, key2, 1);
-        *(short*)((char*)entry + 0x10) = (short)slot;
-        entry[0x8 / 4] = key1;
-        entry[0x4 / 4] = key2;
+        (*self)[slot].wC = 1;
+        (*self)[slot].h10 = -1;
+        return slot;
     }
+    slot = gl_func_00000000(self);
+    e = &(*self)[slot];
+    e->h10 = gl_func_00000000(key1, e->w0, key2, 1);
+    e->w8 = key1;
+    e->w4 = key2;
     return slot;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00062540);
-#endif
 
 /* gl_func_000625FC: 20-insn array-walk + conditional-call helper.
  * Indexes into (*a0)[a1*5]; if entry[0x10] (signed halfword) != -1,
@@ -34182,7 +34192,6 @@ int gl_func_0006273C(char *a0) {
     return gl_func_00000000(a0 + 0x40);
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0006275C: 44-insn factory + 2 direct-jal + 12×-stride alloc + N-init loop (0xB0, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
@@ -34200,28 +34209,25 @@ int gl_func_0006273C(char *a0) {
  * 0x76488 new). Both in the 0x764xx cluster — likely libc-family
  * (memset/memcpy/strncpy-style).
  *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
+ * EXACT 2026-10-17 agent-g (run 104; was 44.7, first compile): the two
+ * stream readers are the baked jals 0x7644C / 0x76488 (gl_ref_ pins; the
+ * old fn-ptr casts to 0x764C4 were the wrong target AND the jalr form), the
+ * count and array are re-read from self+0x34 / self+0x30 at every use (no
+ * locals), and only the first per-entry call takes self as a 2nd arg.
  */
-void gl_func_0006275C(int *self) {
+extern int gl_ref_00076488();
+void gl_func_0006275C(char *self) {
     extern int D_sym_6275C;
-    int *arr;
-    int count;
     int i;
-    self[0x3C / 4] = (int)gl_func_00000000(&D_sym_6275C);
-    ((void(*)(int*))0x764C4)((int*)((char*)self + 0x2C));
-    ((void(*)(int*))0x76488)((int*)((char*)self + 0x34));
-    count = self[0x34 / 4];
-    arr = (int*)gl_func_00000000(count * 12);
-    self[0x30 / 4] = (int)arr;
-    for (i = 0; i < count; i++) {
-        gl_func_00000000(arr, (char*)arr + i * 12);
-        gl_func_00000000((char*)arr + i * 12, count);
+    *(int *)(self + 0x3C) = gl_func_00000000(&D_sym_6275C);
+    gl_ref_0007644C(self + 0x2C);
+    gl_ref_00076488(self + 0x34);
+    *(int *)(self + 0x30) = gl_func_00000000(*(int *)(self + 0x34) * 12);
+    for (i = 0; i < *(int *)(self + 0x34); i++) {
+        gl_func_00000000(*(char **)(self + 0x30) + i * 12, self);
+        gl_func_00000000(*(char **)(self + 0x30) + i * 12);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0006275C);
-#endif
 
 /* gl_func_0006280C: packed-index 2-level table lookup (0xE0 / 56 insns, EXACT).
  * a1 = (outer << 16) | inner. Asserts outer < self->0x34, inner <
