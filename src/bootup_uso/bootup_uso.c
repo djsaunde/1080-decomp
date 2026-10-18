@@ -8958,9 +8958,17 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000CAE8);
 //   float-prototype jal reloc names (NM-only; func_00000000 is K&R
 //   in-TU, would double-promote floats) + cap-coupled t-reg numbering.
 //   Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* RUN 108 (agent-c) EXACT: the five pool params are D_bu_ro_pool at RoData +0x95C..+0x96C
+ * (lui at / lwc1; the splat text shows them as func_00000940 + 0x1C..0x2C), and the first element is created
+ * inside the attach call (`f(cont, e0 = cce0(...))`) so its spill store
+ * schedules after the a0 copy. */
 // PARTIAL-FORM corrected NM body for func_0000CCE0 (replaces lines 8516..8554)
 extern char *func_cce0(int, char *, int, float, float, float);
+/* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
+ * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
+ * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
+ * `(char *)&func_00000940 + OFF` cast materialized the function address). */
+extern float D_bu_ro_pool[];
 void func_0000CCE0(char *st, int a1) {
     char *cont = st + 0x39C;
     /* Single decl list, slots assigned descending from frame top:
@@ -8970,20 +8978,19 @@ void func_0000CCE0(char *st, int a1) {
     char *g4, *g3, *g2, *g1;
     volatile int pad[1];
     char *g0, *e3, *e2, *e1, *e0;
-    e0 = (char *)func_cce0(0, st, 2, 140.0f, *(float *)((char *)&func_00000940 + 0x1C), -350.0f);
-    func_00000000(cont, e0);
-    e1 = (char *)func_cce0(0, st, 8, -140.0f, *(float *)((char *)&func_0000098C - 0x2C), -350.0f);
+    func_00000000(cont, e0 = (char *)func_cce0(0, st, 2, 140.0f, D_bu_ro_pool[0x95C / 4], -350.0f));
+    e1 = (char *)func_cce0(0, st, 8, -140.0f, D_bu_ro_pool[0x960 / 4], -350.0f);
     func_00000000(cont, e1);
-    e2 = (char *)func_cce0(0, st, 1, 140.0f, *(float *)((char *)&func_000008F4 + 0x70), 350.0f);
+    e2 = (char *)func_cce0(0, st, 1, 140.0f, D_bu_ro_pool[0x964 / 4], 350.0f);
     func_00000000(cont, e2);
-    e3 = (char *)func_cce0(0, st, 4, -140.0f, *(float *)((char *)&func_000008D4 + 0x94), 350.0f);
+    e3 = (char *)func_cce0(0, st, 4, -140.0f, D_bu_ro_pool[0x968 / 4], 350.0f);
     func_00000000(cont, e3);
     func_00000000(st, e0);
     func_00000000(st, e1);
     func_00000000(st, e2);
     func_00000000(st, e3);
     if (*(int *)(st + 0xA58) & 0x200) return;
-    g0 = (char *)func_cce0(0, st, 0x00, 0.0f, *(float *)((char *)&func_000008B4 + 0xB8), 0.0f);
+    g0 = (char *)func_cce0(0, st, 0x00, 0.0f, D_bu_ro_pool[0x96C / 4], 0.0f);
     func_00000000(cont, g0);
     func_00000000(st, g0);
     g1 = (char *)func_cce0(0, st, 0x20, 250.0f, -150.0f, -400.0f);
@@ -8999,9 +9006,6 @@ void func_0000CCE0(char *st, int a1) {
     func_00000000(st, g3);
     func_00000000(st, g4);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000CCE0);
-#endif
 
 // func_0000CFA0 — STRUCTURAL PASS (0x4A0 / 296 insns, 64.76% fuzzy, no episode).
 // Per-frame active-object sync + draw-state / color update on a large
