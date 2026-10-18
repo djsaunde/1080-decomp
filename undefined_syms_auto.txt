@@ -3907,3 +3907,6 @@ gl_ref_0003204C = 0x0003204C;  /* baked in-unit jal target (sprite blit, layer 2
 D_sym_a_00060370 = 0x00000000;  /* gl_func_00060370 vtable store at +0x28 (blank lui/addiu) */
 D_sym_b_00060370 = 0x00000000;  /* gl_func_00060370 lookup arg (blank lui/addiu) */
 D_global_00060370 = 0x00000000;  /* gl_func_00060370 global handle (blank lui at / sw) */
+D_521F8_a = 0x00000000;  /* gl_func_000521F8 4-byte default struct (blank lui/addiu) */
+D_521F8_b = 0x00000000;  /* gl_func_000521F8 8-byte default struct (blank lui/addiu) */
+D_521F8_c = 0x00000000;  /* gl_func_000521F8 default word for +0x3C (blank lui/lw) */

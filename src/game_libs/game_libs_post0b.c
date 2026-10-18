@@ -23310,42 +23310,40 @@ void gl_func_00051448(char *a0) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051448);
 #endif
 
-#ifdef NON_MATCHING
-/* gl_func_00051520: cursor-read init/register (clean single fn).
- * Decoded from bare stub 2026-05-19; algorithm correct.
- * build/non_matching: 44 vs 40 (count +4), frame 0x18 vs target
- * 0x20. Residual = cb-arg spill/reload threading (target keeps
- * v0=s0->0 / v1=*v0 / *v1 in regs across cb2/cb3 with the s0
- * spill at sp+0x20; the named v0/v1 locals + my extra spills add
- * 4 insns) and the beql-delay-likely s0->0x34 branch (target
- * picks the ->0xB0=6 arm in the likely slot). Documented-hard
- * arg-thread shape — focused pass (try: no named v0/v1, inline
- * the derefs; reuse a0 as s0). Real decoded C preserved;
- * INCLUDE_ASM build path. */
+/* gl_func_00051520: init step: base call, read one int from the stream
+ * (store-first cursor), keep it at +4, look it up (&D, name 0x20E74, x),
+ * store the result at +0x28/+0x10, clear +0xC, register it with the
+ * owner's sub-object, then set that sub-object's +0xB0 mode to 3 or 6 by
+ * the +0x34 flag. 2026-10-17 agent-g (run 105) 81.5 -> EXACT: ONE local v
+ * for the stream pointer, the lookup result and the arm pointer (all v0
+ * in the target), and a dead `while (0) { v = 0; p = 0; }` right after
+ * the first call so v's first web colours v0 ahead of the cursor p (v1). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_00051520(int *a0) {
-    int *v0;
-    int *v1;
+void gl_func_00051520(char *a0) {
+    char *v;
+    int *p;
+    int x;
     gl_func_00000000(a0);
-    v0 = (int *)a0[0];
-    v1 = (int *)*v0;
-    *v0 = (int)(v1 + 1);
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20E74, *v1);
-    a0[4 / 4] = *v1;
-    a0[0x28 / 4] = (int)v0;
-    a0[0x10 / 4] = (int)v0;
-    a0[0xC / 4] = 0;
-    gl_func_00000000(*(int *)(a0[0x3C / 4] + 0xC), v0);
-    if (*(int *)((char *)a0 + 0x34) != 0) {
-        *(int *)(*(int *)(a0[0x3C / 4] + 0xC) + 0xB0) = 3;
+    while (0) { v = 0; p = 0; }
+    v = *(char **)a0;
+    p = *(int **)v;
+    *(int **)v = p + 1;
+    x = *p;
+    *(int *)(a0 + 4) = x;
+    v = (char *)gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20E74, x);
+    *(char **)(a0 + 0x28) = v;
+    *(char **)(a0 + 0x10) = v;
+    *(int *)(a0 + 0xC) = 0;
+    gl_func_00000000(*(int *)(*(char **)(a0 + 0x3C) + 0xC), v);
+    if (*(int *)(a0 + 0x34) != 0) {
+        v = *(char **)(*(char **)(a0 + 0x3C) + 0xC);
+        *(int *)(v + 0xB0) = 3;
     } else {
-        *(int *)(*(int *)(a0[0x3C / 4] + 0xC) + 0xB0) = 6;
+        v = *(char **)(*(char **)(a0 + 0x3C) + 0xC);
+        *(int *)(v + 0xB0) = 6;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051520);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_000515C0(int *dst) {
@@ -23914,53 +23912,60 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051ED8);
  * arg0->0x84 ({base@0, count@0xC}); 0x65 = back-link prev; 0 = stop;
  * default = error. gl_func_00034458 is the in-file K&R error/parse cb.
  * Message args 0x20F38/4C/68/78 are absolute rodata addrs. */
-void gl_func_00051F5C(void *arg0, int *arg1) {
-    void *node;   /* s3 */
-    void *prev;   /* s5 */
-    int idx;      /* s4 */
-    int done;     /* s6 */
+/* 2026-10-17 agent-g (run 105) 81.9 -> 95.4: message args as &D + off
+ * (addiu, not ori), store-first cursor through a block local, case order
+ * 101/100/0/default, `node = f(); n = node;` for the s3/s1 copy order.
+ * Residual: IDO tests case 0 FIRST (beqz) in every switch order; the
+ * target tests 100, 101, then 0 (an if/goto chain lays the blocks out
+ * worse). */
+void gl_func_00051F5C(char *arg0, int *arg1) {
+    char *node;
+    char *prev;
+    int idx;
+    int done;
     int cmd;
-    int *vec;     /* s0 = arg0 + 0x84 */
+    int *vec;
     int k;
-    int *base;
+    char *n;
 
-    node = (void *)0;
-    prev = (void *)0;
-    *(void **)&D_00000000 = arg0;
+    node = 0;
+    prev = 0;
+    *(char **)&D_00000000 = arg0;
     idx = 0;
     done = 0;
     do {
-        cmd = *arg1;
-        arg1++;
+        int *c = arg1;
+        arg1 = c + 1;
+        cmd = *c;
         switch (cmd) {
         case 100:
             prev = node;
-            vec = (int *)((char *)arg0 + 0x84);
-            if (idx >= *(int *)((char *)arg0 + 0x8C)) {
-                gl_func_00034458((char *)0x20F38, cmd);
+            vec = (int *)(arg0 + 0x84);
+            if (idx >= *(int *)(arg0 + 0x8C)) {
+                gl_func_00034458((char *)&D_00000000 + 0x20F38, cmd);
             }
-            node = (void *)gl_func_00034458(arg0, &arg1);
-            if (*(int *)((char *)arg0 + 0x90) >= *(int *)((char *)arg0 + 0x8C)) {
-                gl_func_00034458((char *)0x20F4C);
+            node = (char *)gl_func_00034458(arg0, &arg1);
+            n = node;
+            if (*(int *)(arg0 + 0x90) >= *(int *)(arg0 + 0x8C)) {
+                gl_func_00034458((char *)&D_00000000 + 0x20F4C);
             }
             k = vec[3];
-            base = (int *)vec[0];
             vec[3] = k + 1;
-            base[k] = (int)node;
-            *(int *)((char *)node + 0x18) = idx;
+            ((char **)vec[0])[k] = n;
+            *(int *)(node + 0x18) = idx;
             idx++;
             break;
         case 101:
-            if (prev == (void *)0) {
-                gl_func_00034458((char *)0x20F68, cmd);
+            if (prev == 0) {
+                gl_func_00034458((char *)&D_00000000 + 0x20F68, cmd);
             }
-            *(int *)((char *)prev + 0x40) = (int)node;
+            *(char **)(prev + 0x40) = node;
             break;
         case 0:
             done = 1;
             break;
         default:
-            gl_func_00034458((char *)0x20F78, cmd);
+            gl_func_00034458((char *)&D_00000000 + 0x20F78, cmd);
             break;
         }
     } while (done == 0);
@@ -24071,57 +24076,49 @@ def:
     return 0.0f;
 }
 
-#ifdef NON_MATCHING
-/* gl_func_000521F8: 73-insn alloc-or-init + nested sub-alloc setup.
- * 2026-06-26: corrected the final cross-table block (target writes
- * obj[0x30]/obj[0x34]/obj[0x38]/obj[0x3c] from D-tables and OR-sets
- * obj[8]|=2 — it does NOT store arg1). Sub-alloc pointers p30/p34 are
- * computed before each alloc and consumed after, matching the target's
- * 0x1c/0x18 saved-slot pattern. game_libs is baked-reloc USO so the
- * table symbols are fuzzy-neutral; offsets/widths/branches move objdiff. */
+/* gl_func_000521F8: alloc-or-given constructor (0x40) with two placement
+ * sub-objects (kit V shape): base ctor, vtable at +0x28, a 4-byte member at
+ * +48 whose own ctor repeats the null/alloc test (nested `if (r != 0 ||
+ * (r = alloc(4)) != 0)` with a second variable), an 8-byte member at +52,
+ * flag |= 2, then default values copied in by STRUCT assignment from
+ * three globals (the lui/addiu + lw 0(base) tell). 2026-10-17 agent-g
+ * (run 105) 52.9 -> EXACT: no named o+48 / o+52 locals -- uopt CSEs and
+ * spills the expressions (sp+28/24); named locals add frame homes. */
 extern char D_521F8_reloc;        /* offset 0x28 store target */
-extern int D_521F8_table8[2];     /* D-table words copied into obj fields */
-int *gl_func_000521F8(int *a0, int a1) {
-    int *obj;
-    int *p30, *p34;
-    int *inner;
-    if (a0 == 0) {
-        obj = (int *)gl_func_00000000(0x40);
-        if (obj == 0) {
-            return 0;
-        }
-    } else {
-        obj = a0;
+typedef struct { int w; } W1_521F8;
+typedef struct { int a, b; } W2_521F8;
+extern W1_521F8 D_521F8_a;
+extern W2_521F8 D_521F8_b;
+extern int D_521F8_c;
+char *gl_func_000521F8(char *o, int a1) {
+    W1_521F8 *r;
+    W1_521F8 *t;
+    if (o == 0) {
+        o = (char *)gl_func_00000000(0x40);
+        if (o == 0) goto out;
     }
-    gl_func_00000000(obj, a1);
-    *(int *)((char *)obj + 0x28) = (int)&D_521F8_reloc;
-    p30 = (int *)((char *)obj + 0x30);
-    if (obj != (int *)-0x30) {
-        inner = (int *)gl_func_00000000(0x4);
-        if (inner != 0) {
-            *(int *)inner = 0;
-            *(int *)((char *)inner + 4) = 0;
+    gl_func_00000000(o, a1);
+    *(char **)(o + 0x28) = &D_521F8_reloc;
+    r = (W1_521F8 *)(o + 48);
+    if (r != 0 || (r = (W1_521F8 *)gl_func_00000000(4)) != 0) {
+        t = r;
+        if (t != 0 || (t = (W1_521F8 *)gl_func_00000000(4)) != 0) {
+            t->w = 0;
         }
     }
-    p34 = (int *)((char *)obj + 0x34);
-    if (obj != (int *)-0x34) {
-        inner = (int *)gl_func_00000000(0x8);
-        if (inner != 0) {
-            inner[1] = 0;
-            inner[0] = 0;
-        }
+    r = (W1_521F8 *)(o + 52);
+    if (r != 0 || (r = (W1_521F8 *)gl_func_00000000(8)) != 0) {
+        ((W2_521F8 *)r)->b = 0;
+        ((W2_521F8 *)r)->a = 0;
     }
-    *(int *)((char *)obj + 0x8) |= 2;
-    *p30 = D_521F8_table8[0];
-    *p34 = D_521F8_table8[0];
-    p34[1] = D_521F8_table8[1];
-    *(int *)((char *)obj + 0x2c) = 0;
-    *(int *)((char *)obj + 0x3c) = D_521F8_table8[0];
-    return obj;
+    *(int *)(o + 8) |= 2;
+    *(W1_521F8 *)(o + 48) = D_521F8_a;
+    *(W2_521F8 *)(o + 52) = D_521F8_b;
+    *(int *)(o + 0x3C) = D_521F8_c;
+    *(int *)(o + 0x2C) = 0;
+out:
+    return o;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000521F8);
-#endif
 
 // gl_func_0005231C — STRUCTURAL PASS (0x250 / 148 words, no episode).
 // Raw-.word USO. realjr=1, regjr=0 → ONE clean function. Frame 0x18,
@@ -24679,7 +24676,6 @@ void game_libs_func_00052A7C(int *a0, int a1, int a2) {
  * See project_1080_g3_unfilled_delay_split_2026-05-23. */
 /* game_libs_func_00052ACC MERGED into 52A7C 2026-06-10 (was the second if's else arm). */
 
-#ifdef NON_MATCHING
 /* gl_func_00052AE8: lazy-alloc + memset + per-zero-byte callback
  * (clean single fn). Decoded from bare stub 2026-05-19.
  *   void f(int *self) {
@@ -24699,27 +24695,26 @@ void game_libs_func_00052A7C(int *a0, int a1, int a2) {
  * INCLUDE_ASM build path. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_00052AE8(int *self) {
-    int i;
+/* 2026-10-17 agent-g (run 105) 82.1 -> EXACT: the clear loop is INSIDE the
+ * alloc-if (the old body cleared every time), the second loop tests a u8,
+ * and the final call takes no argument. */
+void gl_func_00052AE8(char *self) {
+    u32 i;
     gl_func_00000000((char *)&D_00000000 + 0x20FC8);
-    if (*(int *)((char *)self + 0x78) == 0) {
-        *(int *)((char *)self + 0x78) =
-            gl_func_00000000(*(int *)((char *)self + 0x44));
+    if (*(char **)(self + 0x78) == 0) {
+        *(char **)(self + 0x78) = (char *)gl_func_00000000(*(u32 *)(self + 0x44));
+        for (i = 0; i < *(u32 *)(self + 0x44); i++) {
+            (*(char **)(self + 0x78))[i] = 0;
+        }
     }
-    for (i = 0; (u32)i < *(u32 *)((char *)self + 0x44); i++) {
-        ((char *)*(int *)((char *)self + 0x78))[i] = 0;
-    }
-    *(int *)&D_00000000 = 1;
-    for (i = 0; (u32)i < *(u32 *)((char *)self + 0x44); i++) {
-        if (((char *)*(int *)((char *)self + 0x78))[i] == 0) {
+    D_00000000 = 1;
+    for (i = 0; i < *(u32 *)(self + 0x44); i++) {
+        if ((*(u8 **)(self + 0x78))[i] == 0) {
             gl_func_00000000(self, i);
         }
     }
-    gl_func_00000000(*(int *)((char *)self + 0x78));
+    gl_func_00000000();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00052AE8);
-#endif
 
 /* gl_func_00052BBC: dual-row directory min/max scan (clean leaf, NO calls).
  * f(a0, row1, row2, flagX, flagY): seeds lo=hi=0x7530, v1=-1; for each of
