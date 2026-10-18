@@ -1371,31 +1371,42 @@ void gl_func_00035624(int a0, int a1) {
 //   Real-C STRUCTURAL body below per the analysis (fourth sibling:
 //   35370 slot 0x4C / 35440 slot 0x50 / 355A0 slot 0x60 / this slot
 //   0x54). Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern char D_35648_a[], D_35648_b[], D_35648_c[], D_35648_d[];
+/* EXACT 2026-10-17 agent-c run 107 (89.8 -> 100). Compare order 1, 0, 2
+ * with out-of-line bodies and a `beq k,2 -> body; b end` tail is a NESTED-!=
+ * goto chain (`if (k != 1) { if (k != 0) { if (k != 2) {} else goto c2; }
+ * else goto c0; } else goto c1;`) -- the flat goto ladder inverts the last
+ * test to `bne k,2,end` (docs/IDO_CODEGEN.md #nested-ne-goto-chain-35648).
+ * The selector is UNSIGNED: an int k shares the constant 1 with `a1 == 1`
+ * (CSE'd into v1); the target materializes `addiu at,zero,1` at each test.
+ * The counter word 0x3B8E8 is accessed through per-site pins (load and two
+ * stores and the final read each lui separately). */
+extern int gl_ref_0003B8E8, gl_ref_0003B8E8_35648_ld, gl_ref_0003B8E8_35648_st, gl_ref_0003B8E8_35648_rd;
 int gl_func_00035648(char *o, int a1, int a2) {
     int r;
-    switch ((unsigned)*(int *)(o + 4)) {
-    case 1:
-        r = (*(int (**)(int))(*(char **)&D_00000000 + 0x54))(*(int *)(o + 0x20));
-        break;
-    case 0:
-        r = gl_func_00000000(&D_00000000);
-        break;
-    case 2:
-        if (a1 == 0) {
-            *(int *)(D_35648_a + 0x3B8E8) = a2 + 0x08000000;
-        } else if (a1 == 1) {
-            *(int *)(D_35648_c + 0x3B8E8) = *(int *)(D_35648_b + 0x3B8E8) + a2;
-        }
-        r = *(int *)(D_35648_d + 0x3B8E8);
-        break;
+    unsigned k = *(int *)(o + 4);
+    if (k != 1) {
+        if (k != 0) {
+            if (k != 2) {
+            } else goto c2;
+        } else goto c0;
+    } else goto c1;
+    goto end;
+c1:
+    r = (*(int (**)(int))(*(char **)&D_00000000 + 0x54))(*(int *)(o + 0x20));
+    goto end;
+c0:
+    r = gl_func_00000000(&D_00000000);
+    goto end;
+c2:
+    if (a1 == 0) {
+        gl_ref_0003B8E8 = a2 + 0x08000000;
+    } else if (a1 == 1) {
+        gl_ref_0003B8E8_35648_st = gl_ref_0003B8E8_35648_ld + a2;
     }
+    r = gl_ref_0003B8E8_35648_rd;
+end:
     return r;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035648);
-#endif
 
 // gl_func_000356FC — STRUCTURAL PASS + small BUNDLE BOUNDARY NOTE
 // (0x138 / 78 words, no episode). Raw-.word USO form (game_libs).
@@ -9611,23 +9622,33 @@ void game_libs_func_0003E9C0(int *a0, int a1) {
 //   table untyped; cb/cb2/cb3 signatures inferred from call shape.
 //   Real-C STRUCTURAL body below. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
+// RUN 107 (agent-c, by-value-struct-scan `out` tell): 70.7 -> 99.6. The token
+// is a 4-byte align-1 struct copied (lwl/lwr + swl/swr) into an aligned local,
+// passed BY VALUE to the resolver (`lw a1,68(sp); sw a1,4(sp)` = own outgoing
+// slot) through a per-call copy (k1/k2 stored before each call), and the bind
+// targets are held pointers p1/p2 spilled across the bind call. Residual:
+// frame 0x40 vs 0x48 -- the target puts o1 directly under the token (64) and
+// the two copies in 8-byte blocks at 56/48; named copies (function or block
+// scope, statement or comma form) all pack at 4.
 #ifdef NON_MATCHING
 extern int D_00000000;
+typedef struct { char c[4]; } Tag3E9C8; /* 4-byte key, align 1 (lwl/lwr copy) */
+typedef struct { int w; } Key3E9C8;
 void gl_func_0003E9C8(void *a0) {
-    int scratch;
-    int t1, t2;
+    Key3E9C8 key, k1, k2;
     char *o1, *o2;
-    scratch = *(int *)((char *)&D_00000000 + 0x0002F34C);
-    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F350)) return;
-    t1 = scratch;
-    o1 = (char *)gl_func_00000000(a0, t1);
+    int *p1, *p2;
+    *(Tag3E9C8 *)&key = *(Tag3E9C8 *)((char *)&D_00000000 + 0x0002F34C);
+    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F350, &key)) return;
+    k1.w = key.w; o1 = (char *)gl_func_00000000(a0, k1);
     if (!o1) return;
-    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F358, &scratch)) return;
-    t2 = scratch;
-    o2 = (char *)gl_func_00000000(a0, t2);
+    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F358, &key)) return;
+    k2.w = key.w; o2 = (char *)gl_func_00000000(a0, k2);
     if (!o2) return;
-    gl_func_00000000((char *)&D_00000000 + 0x0002F35C, o1 + 0x2C, o2 + 0x2C);
-    *(int *)(o1 + 0x2C) = *(int *)(o2 + 0x2C);
+    p1 = (int *)(o1 + 0x2C);
+    p2 = (int *)(o2 + 0x2C);
+    gl_func_00000000((char *)&D_00000000 + 0x0002F35C, p1, p2);
+    *p1 = *p2;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E9C8);
@@ -13524,70 +13545,52 @@ void gl_func_00043284(int *a0, int a1) {
 // representative; the &D_0+0x18C root, the 0xC4&0x80 gate, the a2 negate
 // branch and the +0xE4 source / +0xF0 dest lanes are exact. Caps: node
 // struct + the &D_0+0x18C global untyped. Full body INCLUDE_ASM-preserved.
+// RUN 107 (agent-c): 61.8 -> 96.6. cfront {cur,next} iterator (docs kit III
+// ternary step, address-taken via if(1)), typed node view (flags 0xC4, src
+// Vec3 0xE4, dst Vec3 0xF0), dst only for the two calls (s1 = o+0xF0; field
+// accesses stay o-relative), copy arm = struct temp + field-wise copy, and
+// the row transform written `m[8]*vz + (m[0]*vx + m[4]*vy)` (the natural
+// left-to-right sum swaps the second add.s operands). The first call is
+// f(dst, a0), the second f(dst). Residual: the target keeps the iterator
+// result in v0 and copies it to s0 in the loop-branch delay (one extra insn),
+// a separate v/o pair or block-scoped o is coalesced; frame 0x68 vs 0x70
+// (it at 96 and t at 68 in the target).
 #ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000432BC)();
-typedef struct { f32 unk0,unk4,unk8,unkC,unk10,unk14,unk18,unk1C; } Q_000432BC;
-void gl_func_000432BC(s32 arg0, char *arg1, s32 arg2) {
-    Q_000432BC sp44;
-    char **sp64;
-    char **sp60;
-    f32 temp_f0;
-    f32 temp_f12;
-    f32 temp_f14;
-    f32 temp_f2;
-    char **temp_t4;
-    char **temp_t6;
-    char *temp_s1;
-    char *var_s0;
-    char *var_v0;
-    char *var_v0_2;
-
-    sp64 = (*(char***)((char*)&D_00000000 + 0x18C));
-    sp60 = sp64;
-    if (sp64 != 0) {
-        var_v0 = FW(sp64, 0x0);
-        sp64 = FW(sp64, 0x4);
-    } else {
-        var_v0 = 0;
-    }
-    var_s0 = var_v0;
-    if (var_v0 != 0) {
-        do {
-            temp_s1 = var_s0 + 0xF0;
-            if (!(FW(var_s0, 0xC4) & 0x80)) {
-                if (arg2 != 0) {
-                    (*(f32*)((char*)var_s0 + 0xF0)) = (f32) -(*(f32*)((char*)var_s0 + 0xE4));
-                    (*(f32*)((char*)var_s0 + 0xF4)) = (f32) -(*(f32*)((char*)var_s0 + 0xE8));
-                    (*(f32*)((char*)var_s0 + 0xF8)) = (f32) -(*(f32*)((char*)var_s0 + 0xEC));
-                } else {
-                    sp44.unk0 = (*(f32*)((char*)var_s0 + 0xE4));
-                    sp44.unk4 = (f32) (*(f32*)((char*)var_s0 + 0xE8));
-                    sp44.unk8 = (f32) (*(f32*)((char*)var_s0 + 0xEC));
-                    (*(f32*)((char*)var_s0 + 0xF0)) = sp44.unk0;
-                    (*(f32*)((char*)var_s0 + 0xF4)) = sp44.unk4;
-                    (*(f32*)((char*)var_s0 + 0xF8)) = sp44.unk8;
-                }
-                gl_func_00034458(temp_s1, arg0);
-                temp_f0 = (*(f32*)((char*)var_s0 + 0xF0));
-                temp_f2 = (*(f32*)((char*)var_s0 + 0xF4));
-                temp_f12 = (*(f32*)((char*)var_s0 + 0xF8));
-                temp_f14 = ((*(f32*)((char*)arg1 + 0x0)) * temp_f0) + ((*(f32*)((char*)arg1 + 0x10)) * temp_f2) + ((*(f32*)((char*)arg1 + 0x20)) * temp_f12);
-                (*(f32*)((char*)var_s0 + 0xF4)) = (f32) (((*(f32*)((char*)arg1 + 0x4)) * temp_f0) + ((*(f32*)((char*)arg1 + 0x14)) * temp_f2) + ((*(f32*)((char*)arg1 + 0x24)) * temp_f12));
-                (*(f32*)((char*)var_s0 + 0xF0)) = temp_f14;
-                (*(f32*)((char*)var_s0 + 0xF8)) = (f32) (((*(f32*)((char*)arg1 + 0x8)) * temp_f0) + ((*(f32*)((char*)arg1 + 0x18)) * temp_f2) + ((*(f32*)((char*)arg1 + 0x28)) * temp_f12));
-                gl_func_00034458(temp_f12, temp_f14, temp_s1);
+typedef struct L432BC { char *data; struct L432BC *next; } L432BC;
+typedef struct { L432BC *cur; L432BC *next; } I432BC;
+typedef struct { f32 x, y, z; } V432BC;
+typedef struct { char p[0xC4]; int flags; char p2[0xE4 - 0xC8]; V432BC src; V432BC dst; } N432BC;
+void gl_func_000432BC(s32 arg0, f32 *m, s32 arg2) {
+    I432BC it;
+    N432BC *o;
+    V432BC *dst;
+    V432BC t;
+    
+    if (1) { I432BC *q = &it; }
+    it.next = *(L432BC **)((char *)&D_00000000 + 0x18C);
+    o = (N432BC *)((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0);
+    while (o != 0) {
+        dst = &o->dst;
+        if (!(o->flags & 0x80)) {
+            if (arg2 != 0) {
+                o->dst.x = -o->src.x; o->dst.y = -o->src.y; o->dst.z = -o->src.z;
+            } else {
+                t = o->src;
+                o->dst.x = t.x; o->dst.y = t.y; o->dst.z = t.z;
             }
-            var_v0_2 = 0;
-            sp60 = sp64;
-            if (sp64 != 0) {
-                var_v0_2 = FW(sp64, 0x0);
-                sp64 = FW(sp64, 0x4);
-            }
-            var_s0 = var_v0_2;
-        } while (var_v0_2 != 0);
+            gl_func_00034458(dst, arg0);
+            { f32 vx = o->dst.x, vy = o->dst.y, vz = o->dst.z;
+            f32 x = m[8] * vz + (m[4] * vy + m[0] * vx);
+            f32 y = m[9] * vz + (m[5] * vy + m[1] * vx);
+            f32 z = m[10] * vz + (m[6] * vy + m[2] * vx);
+            o->dst.x = x; o->dst.y = y; o->dst.z = z; }
+            gl_func_00034458(dst);
+        }
+        o = (N432BC *)((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0);
     }
 }
 #else
