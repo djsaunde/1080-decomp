@@ -23838,20 +23838,33 @@ void gl_func_00051E98(char *a0) {
  * jalr t9`), and the bnel delay-likely loop must all line up. No
  * single C lever; needs a focused varargs pass (likely
  * __builtin_va_* shaping or an explicit save-area struct). Real
- * decoded C below documents exact offsets/semantics. */
+ * decoded C below documents exact offsets/semantics.
+ * 2026-10-17 agent-g (run 105) 24.3 -> 95.0: the callee is a cfront vtable
+ * entry {short delta; short idx; fn} at vtbl+0x20 (lh delta / lw fn); ap
+ * is memory-resident (`if (1) { char **q = &ap; }`; the target keeps it at
+ * sp+48 and updates it in memory); the va step is store-first
+ * (`p = ap; ap = p + 4; x = *(int *)p`); decl order p, ap, stash, vt sets
+ * the 0x38 frame. Residual: a1 is home-stored TWICE here (address-taken
+ * param + varargs save; target once) and that cascades one t-reg. The
+ * literal IDO va_arg align macro and &a0-based va_start score far lower. */
 extern int gl_func_00000000();
-void gl_func_00051ED8(void *a0, int a1, ...) {
+typedef struct { short d; short i; int (*f)(); } VtE51ED8;
+void gl_func_00051ED8(char *a0, int a1, ...) {
+    char *p;
+    char *ap;
     int stash;
-    int *va = (int *)(((int)&stash + 0x17) & ~3);
-    if (a1 == 0) {
+    VtE51ED8 *vt;
+    if (1) { char **q = &ap; }
+    ap = (char *)(((int)&a1 + sizeof(a1) + 3) & ~3);
+    if ((stash = a1) == 0) {
         return;
     }
-    stash = a1;
     do {
-        int (*fp)() = (int (*)())*(int *)(*(int *)((char *)a0 + 0x5C) + 0x24);
-        fp((char *)a0 + *(short *)((char *)a0 + 0x20), &stash);
-        stash = *va;
-        va++;
+        vt = *(VtE51ED8 **)(a0 + 0x5C);
+        vt[4].f(a0 + vt[4].d, &stash);
+        p = ap;
+        ap = p + 4;
+        stash = *(int *)p;
     } while (stash != 0);
 }
 #else
@@ -26003,7 +26016,60 @@ void gl_func_00054C6C(int *self) {
     gl_func_00000000(self);
 }
 
+#ifdef NON_MATCHING
+/* gl_func_00054D04: if the subsystem is up, read the camera(?) position
+ * (obj+0xA0..0xA8) into a struct local, scale x/z by a RoData double and
+ * offset y by a RoData float, negate (x -1.0f) into a Vec3 temp, pass the
+ * cfront return-value copy to f3, optionally copy it out through the 3rd
+ * arg, then f4(self + 300, &v, arg1) and remember self + 300 in a global.
+ * Else log the 0x210EC string. 2026-10-17 agent-g (run 105) 0 -> 66.1:
+ * p is memory-resident (`if (1) { V3 *pp = &p; }`; the target stores and
+ * reloads every field) with the three loads before the three updates;
+ * decl order p, v, pad[4], r, t gives the 0x70 frame. Residual: mul.d
+ * operand order (target fs = cvt(p.x), ft = K; every spelling of K --
+ * cast-deref, pinned extern, local f64, operand swap -- gives K first),
+ * -1.0f materialised first here (target after the K2 load), and the out
+ * param re-loaded into a2 in the beqz delay and re-homed. */
+typedef struct { f32 x, y, z; } V3_54D04;
+void gl_func_00054D04(char *self, int arg1, V3_54D04 *out) {
+    V3_54D04 p;
+    V3_54D04 v;
+    s32 pad[4];
+    V3_54D04 r;
+    V3_54D04 t;
+    char *obj;
+    char *q;
+    if (1) { V3_54D04 *pp = &p; }
+    if (gl_func_00000000(&D_00000000) != 0) {
+        obj = (char *)gl_func_00000000(&D_00000000);
+        p.x = *(f32 *)(obj + 0xA0);
+        p.y = *(f32 *)(obj + 0xA4);
+        p.z = *(f32 *)(obj + 0xA8);
+        p.x = p.x * *(f64 *)((char *)&D_00000000 + 0x1C80);
+        p.y = p.y + *(f32 *)((char *)&D_00000000 + 0x1C88);
+        p.z = p.z * *(f64 *)((char *)&D_00000000 + 0x1C80);
+        t.x = p.x * (f32)-1;
+        t.y = p.y * (f32)-1;
+        t.z = p.z * (f32)-1;
+        r = t;
+        v = r;
+        gl_func_00000000(&v);
+        if (out != 0) {
+            r = v;
+            out->x = r.x;
+            out->y = r.y;
+            out->z = r.z;
+        }
+        q = self + 300;
+        gl_func_00000000(q, &v, arg1);
+        *(char **)((char *)&D_00000000 + 0xE4) = q;
+    } else {
+        gl_func_00000000((char *)&D_00000000 + 0x210EC);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00054D04);
+#endif
 
 #ifdef NON_MATCHING
 #ifndef FW
@@ -30235,9 +30301,12 @@ void game_libs_func_0005C4F0(float *a0, float *a1, float a2, float a3, float a4)
  * move). Colours then follow uopt's first-appearance order: a dead
  * `while (0) { q0 = &v[i]; j = 0; k = 0; }` before `q = q0` puts i*4 in v0,
  * j in v1, k in a0, q in a2 (target). Residual: the v+i*4 address web is
- * coloured t0 before the j*4/k*4 webs (target t2 after t0/t1); dead j*4/k*4
- * appearances (sign = j*4, q0 = &q0[j], d = q[j]) do not move it. */
-#ifdef NON_MATCHING
+ * coloured t0 before the j*4/k*4 webs (target t2 after t0/t1).
+ * 2026-10-17 agent-g (run 105) EXACT: a second dead loop AFTER `q = q0`,
+ * `while (0) { v = &v[j]; v = &v[k]; }`, gives the v+j*4 / v+k*4 address
+ * webs their first appearance before v+i*4, so they take t0/t1 and the
+ * v[i-1] web lands in t2 (the same dead pair placed in the first loop or
+ * spelled on q0 does nothing). */
 void game_libs_func_0005C548(f32 *q0, f32 *v, f32 d, s32 i, s32 sign) {
     s32 j, k;
     f32 qi, w, qj, qk, d2;
@@ -30245,6 +30314,7 @@ void game_libs_func_0005C548(f32 *q0, f32 *v, f32 d, s32 i, s32 sign) {
     if (0) { func_00000000(&q0); }
     while (0) { q0 = &v[i]; j = 0; k = 0; }
     q = q0;
+    while (0) { v = &v[j]; v = &v[k]; }
     v[0] = v[0];
     v[1] = v[1];
     v[2] = v[2];
@@ -30262,9 +30332,6 @@ void game_libs_func_0005C548(f32 *q0, f32 *v, f32 d, s32 i, s32 sign) {
     }
     v[0] = v[0]; v[1] = v[1]; v[2] = v[2];
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0005C548);
-#endif
 
 /* gl_func_0005C66C: 22-insn 2-call helper. First gl_func(a0, vec),
  * then printf-style gl_func(&D_0 + 0x21AFC, vec, double(vec[0]),
@@ -32763,13 +32830,20 @@ void gl_func_00060A74(int a0, int a1, ...) {
  * {flush} else {append}` (fallthrough = flush, bnezl to append); x reuses
  * the dead a1 PARAM (target lw a1,4(v1)); end = count + src. Residual: the
  * target saves an unused s4 (frame 0x30) and colours end s2 / 10 s3, and
- * x is copy-propagated into v0 here instead of staying in a1. */
+ * x is copy-propagated into v0 here instead of staying in a1.
+ * 2026-10-17 agent-g (run 105) 82.0 -> 92.95: cursor/end assigned INSIDE
+ * the count > 0 block (target computes end after the blez) and the append
+ * arm writes the byte BEFORE bumping rec[1]. Residual: the unused saved s4
+ * (frame 0x30; dead src/count/cursor appearances do not create it) and the
+ * a1/v0 copy-propagation of x. */
 int gl_func_00060AD0(int *self, int a1, char *src, int count) {
-    char *end = count + src;
-    char *cursor = src;
+    char *end;
+    char *cursor;
     int *rec;
 
     if (count > 0) {
+        cursor = src;
+        end = count + src;
         do {
             unsigned char ch = *cursor;
             rec = (int*)(self[0] + self[0x20 / 4] * 8);
@@ -32784,8 +32858,8 @@ int gl_func_00060AD0(int *self, int a1, char *src, int count) {
                     gl_func_00000000(self);
                     cursor--;
                 } else {
-                    rec[1] = a1 + 1;
                     *(char*)(rec[0] + a1) = ch;
+                    rec[1] = a1 + 1;
                     cursor++;
                 }
             }
