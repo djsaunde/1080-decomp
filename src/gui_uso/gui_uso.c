@@ -1508,8 +1508,8 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002BB0);
 #define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((1 << (w)) - 1)) << (s)))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define PKT_BEGIN { char *_c = (*(char **)&D_00000000); s32 _i = (*(s32 **)(_c + 0xC))[1]; u32 *_g; \
-    (*(s32 **)(_c + 0xC))[1] = _i + 1; _g = (u32 *)(**(s32 **)(_c + 0xC) + _i * 8);
+#define PKT_BEGIN { s32 _i; u32 *_g; t = (s32)(*(char **)&D_00000000); _i = (*(s32 **)((char *)t + 0xC))[1]; \
+    (*(s32 **)((char *)t + 0xC))[1] = _i + 1; _g = (u32 *)(**(s32 **)((char *)t + 0xC) + _i * 8);
 #define PKT_END }
 
 void gui_func_00002DE0(char *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
@@ -1521,22 +1521,29 @@ void gui_func_00002DE0(char *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     s32 y;
     s32 w;
     s32 h;
+    s32 t;
 
     PKT_BEGIN _g[0] = 0xBB000001; _g[1] = 0x80008000; PKT_END
     spr = *(char **)(arg0 + 0x10);
     w = *(s16 *)(spr + 0x20);
     h = *(s16 *)(spr + 0x22);
-    switch (*(s32 *)(spr + 0x24)) {
-    case 0x110:
-        gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
-        break;
-    case 0x120:
-        gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
-        break;
-    case 0x408:
-        gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
-        break;
-    }
+    t = *(s32 *)(spr + 0x24);
+    if (t != 0x408) {
+        if (t != 0x120) {
+            if (t != 0x110) {
+            } else goto c110;
+        } else goto c120;
+    } else goto c408;
+    goto done;
+c408:
+    gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
+    goto done;
+c120:
+    gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
+    goto done;
+c110:
+    gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
+done:
     x = (f32)x0 + (-((f32)w / 2) * sx);
     fw = w * sx;
     y = (f32)y0 + (-((f32)h / 2) * sy);
@@ -1597,8 +1604,8 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002DE0);
 #define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((1 << (w)) - 1)) << (s)))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define PKT_BEGIN { char *_c = (*(char **)&D_00000000); s32 _i = (*(s32 **)(_c + 0xC))[1]; u32 *_g; \
-    (*(s32 **)(_c + 0xC))[1] = _i + 1; _g = (u32 *)(**(s32 **)(_c + 0xC) + _i * 8);
+#define PKT_BEGIN { s32 _i; u32 *_g; t = (s32)(*(char **)&D_00000000); _i = (*(s32 **)((char *)t + 0xC))[1]; \
+    (*(s32 **)((char *)t + 0xC))[1] = _i + 1; _g = (u32 *)(**(s32 **)((char *)t + 0xC) + _i * 8);
 #define PKT_END }
 
 void gui_func_0000329C(char *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
@@ -1610,22 +1617,29 @@ void gui_func_0000329C(char *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     s32 y;
     s32 w;
     s32 h;
+    s32 t;
 
     PKT_BEGIN _g[0] = 0xBB000001; _g[1] = 0x80008000; PKT_END
     spr = *(char **)(arg0 + 0x10);
     w = *(s16 *)(spr + 0x20);
     h = *(s16 *)(spr + 0x22);
-    switch (*(s32 *)(spr + 0x24)) {
-    case 0x110:
-        gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
-        break;
-    case 0x120:
-        gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
-        break;
-    case 0x408:
-        gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
-        break;
-    }
+    t = *(s32 *)(spr + 0x24);
+    if (t != 0x408) {
+        if (t != 0x120) {
+            if (t != 0x110) {
+            } else goto c110;
+        } else goto c120;
+    } else goto c408;
+    goto done;
+c408:
+    gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
+    goto done;
+c120:
+    gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
+    goto done;
+c110:
+    gui_func_00000000((*(char **)&D_00000000), *(s32 *)(spr + 8), w, h, 0, 0, w, h, 0);
+done:
     x = (f32)x0;
     fw = x1 - x0;
     y = (f32)y0;

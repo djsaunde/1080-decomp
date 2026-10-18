@@ -1018,82 +1018,94 @@ extern char game_uso_D_807FE908, game_uso_D_807FE910, game_uso_D_807FE914,
  * FP stack-buffer setup, then 8 dead-sentinel-guarded sub-object stages
  * (s0+8/40/64/88/112/136/160/184; guard `s0==-off` never true so IDO emits the
  * dead alloc arms — 41C0/cascade family), each func_04A188(obj,s0,*D9xx,1) +
- * template ptr + FP/Vec3 init. FP stack-buffer copies approximate; ~multi-tick. */
+ * template ptr + FP/Vec3 init. FP stack-buffer copies approximate; ~multi-tick.
+ * 2026-10-17 agent-g (run 106) 50.9 -> 91.2: same inlined-cfront-ctor shape
+ * as 41C0 (see there): `if (s0 || (s0 = alloc(0xD0)))` around everything,
+ * the 8-byte base sub-object with its result discarded, then per member
+ * `o = s0 + off; if (o || (o = alloc(..))) {...}` -- a failed alloc skips
+ * only THAT member (the old body's `goto end` was wrong). Each template word
+ * is a by-value 4-byte struct (per-stage temp t2..t8, escaped, copied by .w
+ * into one shared inline param prm); stage 1 also takes three by-value Vec3
+ * params (pa/pb/pc = struct assignments of hi/lo/big.v, addiu-addressed word
+ * copies) and copies pa through a temp into o+0x10. The int pads reproduce
+ * the target's home-slot map (all homes match). RESIDUAL: the hi/lo/big
+ * constant stores -- the target stores them in source order reusing f0 for
+ * 0/-1000/1000 (64 in f4); here uopt hoists all four constants and reorders
+ * the stores. */
+typedef struct { int w; } T4_18FC;
 void *game_uso_func_000018FC(void *a0) {
     char *s0 = (char *)a0;
-    int *q;
-    struct { int idx; Vec3 v; } big;
-    Vec3 lo;
     Vec3 hi;
-    Vec3 lo_c1;
-    Vec3 hi_c1;
-    Vec3 big_c1;
-    int idx_save;
+    Vec3 lo;
+    struct { T4_18FC idx; Vec3 v; } big;
+    int g8;
+    T4_18FC t2, t3, t4, t5, t6, t7, t8;
+    int g0[2];
+    char *o;
+    int g1[5];
+    char *o1;
+    Vec3 pa;
+    int g3;
+    Vec3 pb;
+    int g4;
+    Vec3 pc;
+    int g5;
+    T4_18FC prm;
+    int g6;
+    Vec3 tmp;
+    char *b;
+    int g7;
 
-    if (s0 == 0) {
-        s0 = (char *)game_uso_func_055750(0xD0);
-        if (s0 == 0) return 0;
-    }
-    q = (int *)s0;
-    if (s0 == 0) {
-        q = (int *)game_uso_func_055750(8);
-        if (q == 0) goto fp;
-    }
-    q[0] = (int)((char *)&game_uso_D_807FE908 + 0x318);
-    q[1] = 0;
-fp:
-    hi.x = 0.0f;
-    hi.z = 0.0f;
-    lo.x = -1000.0f;
-    lo.y = -1000.0f;
-    lo.z = -1000.0f;
-    big.idx = *(int *)((char *)&game_uso_D_807FE910 + 0x320);
-    big.v.x = 1000.0f;
-    big.v.y = 1000.0f;
-    big.v.z = 1000.0f;
-    hi.y = 64.0f;
-
-    hi_c1 = hi;
-    lo_c1 = lo;
-    big_c1 = big.v;
-    idx_save = big.idx;
-
-    {
-        int *obj = (int *)(s0 + 8);
-        Vec3 obj_c;
-        if (s0 == (char *)-8) {
-            obj = (int *)game_uso_func_055750(0x20);
-            if (obj == 0) goto end;
+    if (1) { T4_18FC *q = &t2; q = &t3; q = &t4; q = &t5; q = &t6; q = &t7; q = &t8; }
+    if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xD0)) != 0) {
+        b = s0;
+        if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
+            *(char **)(b + 0) = &game_uso_D_807FE908 + 0x318;
+            *(int *)(b + 4) = 0;
         }
-        game_uso_func_04A188(obj, s0, idx_save, 1);
-        obj[0xC / 4] = (int)((char *)&game_uso_D_807FE620 + 48);
-        obj[0x1C / 4] = 0;
-        obj_c = hi_c1;
-        *(float *)((char *)obj + 0x10) = obj_c.x;
-        *(float *)((char *)obj + 0x14) = obj_c.y;
-        *(float *)((char *)obj + 0x18) = obj_c.z;
-    }
-#define STAGE(OFF, SYM, TVAL) \
-    { \
-        int *obj = (int *)(s0 + (OFF)); \
-        if (s0 == (char *)-(OFF)) { \
-            obj = (int *)game_uso_func_055750(0x18); \
-            if (obj == 0) goto end; \
-        } \
-        game_uso_func_04A188(obj, s0, *(int *)((char *)&(SYM) + (TVAL)), 1); \
-        obj[0xC / 4] = (int)((char *)&game_uso_D_807FE608 + 24); \
-        obj[0x14 / 4] = 0; \
-        *(float *)((char *)obj + 0x10) = 0.0f; \
-    }
-    STAGE(40,  game_uso_D_807FE914, 0x324)
-    STAGE(64,  game_uso_D_807FE918, 0x328)
-    STAGE(88,  game_uso_D_807FE91C, 0x32C)
-    STAGE(112, game_uso_D_807FE920, 0x330)
-    STAGE(136, game_uso_D_807FE924, 0x334)
-    STAGE(160, game_uso_D_807FE928, 0x338)
-    STAGE(184, game_uso_D_807FE92C, 0x33C)
+        hi.x = 0.0f;
+        hi.z = 0.0f;
+        lo.x = -1000.0f;
+        lo.y = -1000.0f;
+        lo.z = -1000.0f;
+        big.idx.w = ((T4_18FC *)(&game_uso_D_807FE910 + 0x320))->w;
+        hi.y = 64.0f;
+        big.v.x = 1000.0f;
+        big.v.y = 1000.0f;
+        big.v.z = 1000.0f;
+        pa = hi;
+        pb = lo;
+        pc = big.v;
+        prm.w = big.idx.w;
+        o1 = s0 + 8;
+        if (o1 != 0 || (o1 = (char *)game_uso_func_055750(0x20)) != 0) {
+            game_uso_func_04A188(o1, s0, prm, 1);
+            *(char **)(o1 + 0xC) = &game_uso_D_807FE620 + 48;
+            *(int *)(o1 + 0x1C) = 0;
+            tmp = pa;
+            *(f32 *)(o1 + 0x10) = tmp.x;
+            *(f32 *)(o1 + 0x14) = tmp.y;
+            *(f32 *)(o1 + 0x18) = tmp.z;
+        }
+#define STAGE(OFF, T, SYM, TOFF) \
+        T.w = ((T4_18FC *)(&(SYM) + (TOFF)))->w; \
+        o = s0 + (OFF); \
+        prm.w = T.w; \
+        if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
+            game_uso_func_04A188(o, s0, prm, 1); \
+            *(char **)(o + 0xC) = &game_uso_D_807FE608 + 24; \
+            *(int *)(o + 0x14) = 0; \
+            *(f32 *)(o + 0x10) = 0.0f; \
+        }
+        STAGE(40,  t2, game_uso_D_807FE914, 0x324)
+        STAGE(64,  t3, game_uso_D_807FE918, 0x328)
+        STAGE(88,  t4, game_uso_D_807FE91C, 0x32C)
+        STAGE(112, t5, game_uso_D_807FE920, 0x330)
+        STAGE(136, t6, game_uso_D_807FE924, 0x334)
+        STAGE(160, t7, game_uso_D_807FE928, 0x338)
+        STAGE(184, t8, game_uso_D_807FE92C, 0x33C)
 #undef STAGE
-end:
+    }
     return s0;
 }
 #else
@@ -1985,7 +1997,13 @@ void game_uso_func_00002FF8(void) {
  * IDO-from-C promotes to $s1, cascading the frame to -0xD8 vs -0xE8). Both
  * the volatile-buffer and inline-base levers were tried in prior runs and
  * REGRESSED; FP-constant hoist ($f0 reuse vs 3 regs) is also coloring. Logic /
- * callees / globals are faithful end-to-end; left NON_MATCHING (reloc-cap). */
+ * callees / globals are faithful end-to-end; left NON_MATCHING (reloc-cap).
+ * 2026-10-17 agent-g (run 106) 56.0 -> 93.1: re-decoded with the 18FC
+ * inlined-ctor template (per-member alloc-or-given, by-value 4-byte template
+ * params through one shared `prm`, three by-value Vec3 params for stage 1,
+ * int pads for the home-slot map). Same residual as 18FC (constant-store
+ * order; plus the pads leave the frame at 0xF0 vs 0xE8 -- the pad set that
+ * gives 0xE8 scores 0.1 lower). */
 #ifdef NON_MATCHING
 extern int game_uso_func_055750();
 extern int game_uso_func_04A188();
@@ -1995,82 +2013,79 @@ extern char game_uso_D_807FE608, game_uso_D_807FE620, game_uso_D_807FE964,
             game_uso_D_807FE984, game_uso_D_807FE988, game_uso_D_807FE98C;
 void *game_uso_func_00003018(void *a0) {
     char *s0 = (char *)a0;
-    int *q;
-    Vec3 zbuf, nbuf, xbuf;
-    int counter;
-    Vec3 ent_a, ent_b, ent_c;
-    Vec3 obj_c;
-    int v1, v2, v3, v4, v5, v6, v7, v8;
+    Vec3 hi;
+    Vec3 lo;
+    struct { T4_18FC idx; Vec3 v; } big;
+    int g8;
+    T4_18FC t2, t3, t4, t5, t6, t7, t8, t9;
+    int g0[3];
+    char *o;
+    int g1[5];
+    char *o1;
+    int g2[2];
+    Vec3 pa;
+    int g3;
+    Vec3 pb;
+    int g4;
+    Vec3 pc;
+    int g5;
+    T4_18FC prm;
+    int g6;
+    Vec3 tmp;
+    char *b;
+    int g7;
 
-    if (s0 == 0) {
-        s0 = (char *)game_uso_func_055750(0xE8);
-        if (s0 == 0) goto end;
-    }
-    q = (int *)s0;
-    if (s0 == 0) {
-        q = (int *)game_uso_func_055750(8);
-        if (q == 0) goto fp;
-    }
-    q[0] = (int)((char *)&game_uso_D_807FE964 + 0x374);
-    q[1] = 0;
-fp:
-    zbuf.x = 0.0f;
-    zbuf.y = 0.0f;
-    zbuf.z = 0.0f;
-    nbuf.x = -1000.0f;
-    nbuf.y = -1000.0f;
-    nbuf.z = -1000.0f;
-    counter = *(int *)((char *)&game_uso_D_807FE96C + 0x37C);
-    xbuf.x = 1000.0f;
-    xbuf.y = 1000.0f;
-    xbuf.z = 1000.0f;
-    {
-        Vec3 *zp = &zbuf;
-        Vec3 *np = &nbuf;
-        Vec3 *xp = &xbuf;
-        *(Tri3i *)&ent_a = *(Tri3i *)zp;
-        *(Tri3i *)&ent_b = *(Tri3i *)np;
-        *(Tri3i *)&ent_c = *(Tri3i *)xp;
-    }
-
-    {
-        int *obj = (int *)(s0 + 8);
-        Vec3 *ap = &ent_a;
-        if (s0 == (char *)-8) {
-            obj = (int *)game_uso_func_055750(0x20);
-            if (obj == 0) goto end;
+    if (1) { T4_18FC *q = &t2; q = &t3; q = &t4; q = &t5; q = &t6; q = &t7; q = &t8; q = &t9; }
+    if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xE8)) != 0) {
+        b = s0;
+        if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
+            *(char **)(b + 0) = &game_uso_D_807FE964 + 0x374;
+            *(int *)(b + 4) = 0;
         }
-        game_uso_func_04A188(obj, s0, counter, 1);
-        obj[0xC / 4] = (int)((char *)&game_uso_D_807FE620 + 48);
-        obj[0x1C / 4] = 0;
-        *(Tri3i *)&obj_c = *(Tri3i *)ap;
-        *(float *)((char *)obj + 0x10) = obj_c.x;
-        *(float *)((char *)obj + 0x14) = obj_c.y;
-        *(float *)((char *)obj + 0x18) = obj_c.z;
-    }
-#define STAGE(OFF, SYM, TVAL, VAL) \
-    { \
-        int *obj = (int *)(s0 + (OFF)); \
-        (VAL) = *(int *)((char *)&(SYM) + (TVAL)); \
-        if (s0 == (char *)-(OFF)) { \
-            obj = (int *)game_uso_func_055750(0x18); \
-            if (obj == 0) goto end; \
-        } \
-        game_uso_func_04A188(obj, s0, (VAL), 1); \
-        obj[0xC / 4] = (int)((char *)&game_uso_D_807FE608 + 24); \
-        obj[0x14 / 4] = 0; \
-        *(float *)((char *)obj + 0x10) = 0.0f; \
-    }
-    STAGE(40,  game_uso_D_807FE970, 0x380, v1)
-    STAGE(64,  game_uso_D_807FE974, 0x384, v2)
-    STAGE(88,  game_uso_D_807FE978, 0x388, v3)
-    STAGE(112, game_uso_D_807FE97C, 0x38C, v4)
-    STAGE(136, game_uso_D_807FE980, 0x390, v5)
-    STAGE(160, game_uso_D_807FE984, 0x394, v6)
-    STAGE(184, game_uso_D_807FE988, 0x398, v7)
-    STAGE(208, game_uso_D_807FE98C, 0x39C, v8)
+        hi.x = 0.0f;
+        hi.y = 0.0f;
+        hi.z = 0.0f;
+        lo.x = -1000.0f;
+        lo.y = -1000.0f;
+        lo.z = -1000.0f;
+        big.idx.w = ((T4_18FC *)(&game_uso_D_807FE96C + 0x37C))->w;
+        big.v.x = 1000.0f;
+        big.v.y = 1000.0f;
+        big.v.z = 1000.0f;
+        pa = hi;
+        pb = lo;
+        pc = big.v;
+        prm.w = big.idx.w;
+        o1 = s0 + 8;
+        if (o1 != 0 || (o1 = (char *)game_uso_func_055750(0x20)) != 0) {
+            game_uso_func_04A188(o1, s0, prm, 1);
+            *(char **)(o1 + 0xC) = &game_uso_D_807FE620 + 48;
+            *(int *)(o1 + 0x1C) = 0;
+            tmp = pa;
+            *(f32 *)(o1 + 0x10) = tmp.x;
+            *(f32 *)(o1 + 0x14) = tmp.y;
+            *(f32 *)(o1 + 0x18) = tmp.z;
+        }
+#define STAGE(OFF, T, SYM, TOFF) \
+        T.w = ((T4_18FC *)(&(SYM) + (TOFF)))->w; \
+        o = s0 + (OFF); \
+        prm.w = T.w; \
+        if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
+            game_uso_func_04A188(o, s0, prm, 1); \
+            *(char **)(o + 0xC) = &game_uso_D_807FE608 + 24; \
+            *(int *)(o + 0x14) = 0; \
+            *(f32 *)(o + 0x10) = 0.0f; \
+        }
+        STAGE(40,  t2, game_uso_D_807FE970, 0x380)
+        STAGE(64,  t3, game_uso_D_807FE974, 0x384)
+        STAGE(88,  t4, game_uso_D_807FE978, 0x388)
+        STAGE(112, t5, game_uso_D_807FE97C, 0x38C)
+        STAGE(136, t6, game_uso_D_807FE980, 0x390)
+        STAGE(160, t7, game_uso_D_807FE984, 0x394)
+        STAGE(184, t8, game_uso_D_807FE988, 0x398)
+        STAGE(208, t9, game_uso_D_807FE98C, 0x39C)
 #undef STAGE
-end:
+    }
     return s0;
 }
 #else
@@ -2799,7 +2814,18 @@ static void game_uso_func_00004168(Quad4 *dst) {
  * a0=obj+8/+0x20/+0x38, and on the (dead) equal arm alloc(0x18)+register
  * (04A188(obj2,obj,template,flag)) + template-init (incl. 1.0f swc1 in arm 1).
  * Tail: walk a0saved->0x40 node; if non-null link p1+0x10 via 07ACE0, set
- * node+4=1 when node+0x14!=0, then node+0x14 = p1. Returns p1 (v1). */
+ * node+4=1 when node+0x14!=0, then node+0x14 = p1. Returns p1 (v1).
+ * 2026-10-17 agent-g (run 106) 61.3 -> 94.2: the "dead sentinel stages" are
+ * cfront INLINED constructors on member sub-objects (`this = obj + 8;
+ * if (this || (this = alloc(0x18))) { ctor(this, obj, tmpl, 1); ... }`, the
+ * `obj == -8` compare is `obj + 8 == 0`), the 8-byte base sub-object is the
+ * same shape with its result discarded, and a failed alloc skips only the
+ * rest of the ctor -- the node tail always runs (with p1 possibly 0). The
+ * template word is a BY-VALUE 4-byte struct (kit VI): per-stage temps t1..t3
+ * copied through the int member into one inline parameter `prm`, passed by
+ * value (`sw a2,8(sp)` in the jal delay), temps escaped with an if(1) block.
+ * RESIDUAL: home-slot layout (target p1/obj/t1..t3 at 0x40..0x30, s/prm at
+ * 0x20/0x1C; here 4 higher) and the template loads take v0 (target tN). */
 extern char game_uso_D_807FEB68;
 extern char game_uso_D_807FECA0;
 extern char game_uso_D_807FECB4;
@@ -2811,82 +2837,67 @@ extern int game_uso_func_055750();
 extern int game_uso_func_051C28();
 extern int game_uso_func_04A188();
 extern int game_uso_func_07ACE0();
+typedef struct { int w; } T4_41C0;
 int *game_uso_func_000041C0(int a0) {
-    int *p1;
-    int *obj;
-    int *obj2;
-    int tmpl;
-    int *node;
-    int *parent;
+    char *p1;
+    char *obj;
+    char *b;
+    char *s;
+    char *node;
+    T4_41C0 prm;
+    T4_41C0 t1;
+    T4_41C0 t2;
+    T4_41C0 t3;
 
-    p1 = (int *)game_uso_func_055750(0x8C);
-    if (p1 == 0) {
-        return p1;
-    }
-    game_uso_func_051C28(p1);
-    *(int *)((char *)p1 + 0x28) = (int)&game_uso_D_807FEB68;
-
-    obj = (int *)((char *)p1 + 0x3C);
-    if ((int)p1 == -0x3C) {
-        obj = (int *)game_uso_func_055750(0x50);
-        if (obj == 0) {
-            return obj;
+    if (1) { T4_41C0 *q1 = &t1, *q2 = &t2, *q3 = &t3; }
+    if ((p1 = (char *)game_uso_func_055750(0x8C)) != 0) {
+        game_uso_func_051C28(p1);
+        *(char **)(p1 + 0x28) = &game_uso_D_807FEB68;
+        obj = p1 + 0x3C;
+        if (obj != 0 || (obj = (char *)game_uso_func_055750(0x50)) != 0) {
+            b = obj;
+            if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
+                *(char **)(b + 0) = &game_uso_D_807FECA0 + 0x6B0;
+                *(int *)(b + 4) = 0;
+            }
+            t1.w = ((T4_41C0 *)(&game_uso_D_807FECB4 + 0x6C4))->w;
+            s = obj + 8;
+            prm.w = t1.w;
+            if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
+                game_uso_func_04A188(s, obj, prm, 1);
+                *(char **)(s + 0xC) = &game_uso_D_807FE9B8 + 0x3C8;
+                *(int *)(s + 0x14) = 0;
+                *(f32 *)(s + 0x10) = 1.0f;
+            }
+            t2.w = ((T4_41C0 *)(&game_uso_D_807FECB8 + 0x6C8))->w;
+            s = obj + 0x20;
+            prm.w = t2.w;
+            if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
+                game_uso_func_04A188(s, obj, prm, 1);
+                *(char **)(s + 0xC) = &game_uso_D_807FEA00 + 0x410;
+                *(int *)(s + 0x10) = 0;
+                *(int *)(s + 0x14) = 0;
+            }
+            t3.w = ((T4_41C0 *)(&game_uso_D_807FECBC + 0x6CC))->w;
+            s = obj + 0x38;
+            prm.w = t3.w;
+            if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
+                game_uso_func_04A188(s, obj, prm, 0);
+                *(char **)(s + 0xC) = &game_uso_D_807FEA00 + 0x410;
+                *(int *)(s + 0x14) = 0;
+                *(int *)(s + 0x10) = 0;
+            }
         }
     }
-    if (obj == 0) {
-        obj2 = (int *)game_uso_func_055750(8);
-        if (obj2 != 0) {
-            obj2[0] = (int)((char *)&game_uso_D_807FECA0 + 0x6B0);
-            obj2[1] = 0;
-        }
-    }
-
-    tmpl = *(int *)((char *)&game_uso_D_807FECB4 + 0x6C4);
-    if ((int)obj == -8) {
-        obj2 = (int *)game_uso_func_055750(0x18);
-        if (obj2 == 0) {
-            return obj2;
-        }
-        game_uso_func_04A188(obj2, obj, tmpl, 1);
-        *(int *)((char *)obj2 + 0xC) = (int)((char *)&game_uso_D_807FE9B8 + 0x3C8);
-        *(int *)((char *)obj2 + 0x14) = 0;
-        *(float *)((char *)obj2 + 0x10) = 1.0f;
-    }
-
-    tmpl = *(int *)((char *)&game_uso_D_807FECB8 + 0x6C8);
-    if ((int)obj == -0x20) {
-        obj2 = (int *)game_uso_func_055750(0x18);
-        if (obj2 == 0) {
-            return obj2;
-        }
-        game_uso_func_04A188(obj2, obj, tmpl, 1);
-        *(int *)((char *)obj2 + 0xC) = (int)((char *)&game_uso_D_807FEA00 + 0x410);
-        *(int *)((char *)obj2 + 0x10) = 0;
-        *(int *)((char *)obj2 + 0x14) = 0;
-    }
-
-    tmpl = *(int *)((char *)&game_uso_D_807FECBC + 0x6CC);
-    if ((int)obj == -0x38) {
-        obj2 = (int *)game_uso_func_055750(0x18);
-        if (obj2 == 0) {
-            return obj2;
-        }
-        game_uso_func_04A188(obj2, obj, tmpl, 0);
-        *(int *)((char *)obj2 + 0xC) = (int)((char *)&game_uso_D_807FEA00 + 0x410);
-        *(int *)((char *)obj2 + 0x14) = 0;
-        *(int *)((char *)obj2 + 0x10) = 0;
-    }
-
-    node = *(int **)((char *)a0 + 0x40);
-    parent = p1;
+    node = *(char **)(a0 + 0x40);
     if (node != 0) {
-        game_uso_func_07ACE0((char *)p1 + 0x10, node);
-        if (*(int *)((char *)node + 0x14) != 0) {
-            *(int *)((char *)node + 4) = 1;
+        game_uso_func_07ACE0(p1 + 0x10, node);
+        if (*(int *)(node + 0x14) != 0) {
+            *(int *)(node + 4) = 1;
         }
-        *(int *)((char *)node + 0x14) = (int)parent;
+        *(char **)(node + 0x14) = p1;
     }
-    return parent;
+    return (int *)p1;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000041C0);
@@ -10051,6 +10062,15 @@ void game_uso_func_0000E564(int *a0) {
 // the A58 call stays CONDITIONAL: the target's unconditional-call shape is
 // semantically truer but churns regalloc and scores ~0.1pp WORSE in-tree,
 // so the marginal table-base fix is the only net-positive lever here.
+// 2026-10-17 agent-g (run 106) 76.9 -> 84.7: the "switch" is NOT on 0xE8 --
+// the target's compare chain 0,5,6,2,1,4,3 runs on a3->0x12C itself (case 0
+// = skip), unsorted, so it is the kit-VI nested-!= goto chain; the EAF4 call
+// IS unconditional with arg1 = `g && (v0 & 0x40)` (sltu/beqz/sltu), and the
+// 0xB4 sub pointer is an unnamed temp (a named `sub` takes v1). RESIDUAL:
+// uopt lays the goto bodies innermost-first (c4,c1,c2,c6,c5,c3; target
+// c5,c6,c2,c1,c4,c3) -- label text order and dead `if (0) goto` references
+// do not move it; the 0xF4->0x2C re-reads after each 0xE8 store are CSE'd
+// into v1 here (target reloads 0xF4).
 void game_uso_func_0000E5C8(char *a0, int a1) {
     char *a3 = a0;
     unsigned int src;
@@ -10072,24 +10092,36 @@ void game_uso_func_0000E5C8(char *a0, int a1) {
     if (src & 0x2000)  *(int *)(a3 + 0xE8) |= 0x40;
     if (src & 0x8000)  *(int *)(a3 + 0xE8) |= 0x80;
 
-    sub = *(char **)(a3 + 0xB4);
-    v0 = *(unsigned int *)(sub + 0xA58);
+    v0 = *(unsigned int *)(*(char **)(a3 + 0xB4) + 0xA58);
     {
         unsigned int g = v0 & 0x20;
-        if (g != 0) {
-            game_uso_func_0000EAF4(a3, (v0 & 0x40) != 0, g);
-        }
+        game_uso_func_0000EAF4(a3, g && (v0 & 0x40), g);
     }
 
-    if (*(int *)(a3 + 0x12C) != 0) {
-        switch (*(int *)(a3 + 0xE8)) {
-            case 5: *(int *)(a3 + 0xE8) |= 0x20000; break;
-            case 6: *(int *)(a3 + 0xE8) |= 0x10000; break;
-            case 2: *(int *)(a3 + 0xE8) |= 0x4000;  break;
-            case 1: *(int *)(a3 + 0xE8) |= 0x1000;  break;
-            case 4: *(int *)(a3 + 0xE8) |= 0x8000;  break;
-            case 3: *(int *)(a3 + 0xE8) |= 0x2000;  break;
+    {
+        int k = *(int *)(a3 + 0x12C);
+        if (k != 0) {
+            if (k != 5) {
+                if (k != 6) {
+                    if (k != 2) {
+                        if (k != 1) {
+                            if (k != 4) {
+                                if (k != 3) {
+                                } else goto c3;
+                            } else goto c4;
+                        } else goto c1;
+                    } else goto c2;
+                } else goto c6;
+            } else goto c5;
         }
+        goto cdone;
+c4:     *(int *)(a3 + 0xE8) |= 0x8000;  goto cdone;
+c1:     *(int *)(a3 + 0xE8) |= 0x1000;  goto cdone;
+c2:     *(int *)(a3 + 0xE8) |= 0x4000;  goto cdone;
+c6:     *(int *)(a3 + 0xE8) |= 0x10000; goto cdone;
+c5:     *(int *)(a3 + 0xE8) |= 0x20000; goto cdone;
+c3:     *(int *)(a3 + 0xE8) |= 0x2000;
+cdone:  ;
     }
 
     /* bit-clearing, gated by 0xE8 bit 0x4 and a3->0xF4->0x2C flags */
