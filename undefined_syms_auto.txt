@@ -3912,3 +3912,4 @@ D_521F8_b = 0x00000000;  /* gl_func_000521F8 8-byte default struct (blank lui/ad
 D_521F8_c = 0x00000000;  /* gl_func_000521F8 default word for +0x3C (blank lui/lw) */
 gl_ref_0007E970 = 0x0007E970;  /* gl_func_0006A420 (osSpTaskLoad) baked in-unit jal 0x0C01FA5C (_VirtualToPhysicalTask) */
 D_bu_ro_pool = 0x00000000;  /* bootup.uso RoData section base (USO reloc symIdx 1, RO_000054): FP literal loads are lui at,0 / lwc1 OFF(at) with OFF = pool offset (docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C) */
+D_bu_ro_dpool = 0x00000000;  /* f64 view of D_bu_ro_pool (bootup.uso RoData section base) */

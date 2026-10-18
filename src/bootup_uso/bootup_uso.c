@@ -1,4 +1,10 @@
 #include "common.h"
+/* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
+ * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
+ * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
+ * `(char *)&func_00000940 + OFF` cast materialized the function address). */
+extern float D_bu_ro_pool[];
+extern double D_bu_ro_dpool[];  /* same base, f64 view (8-aligned pool offsets) */
 extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
 
 /* func_00000000 is splat's synthetic symbol for unrelocated JAL target 0x0.
@@ -687,7 +693,7 @@ void func_00000D94(char *a0) {
     char *g = (char*)&D_00000000;
     char *st;
     int *kv;
-    if ((double)*(float*)(g + 0x2A0) < *(double*)((char*)&func_00000044 + 0x2C)) {
+    if ((double)*(float*)(g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
         func_00000000(g, (char*)&func_0000027C + 0x18);
         func_00000000(a0);
         st = *(char**)(g + 0x254);
@@ -2047,7 +2053,7 @@ extern char D_000073E8;
 extern void func_000003F8();  /* used as data-symbol base */
 #ifdef NON_MATCHING
 void func_00002C94(void *a0, void *a1) {
-    float k = *(float*)((char*)&func_000003F8 + 0xF8);
+    float k = D_bu_ro_pool[0x4F0 / 4];
     float *dst = (float*)((char*)&func_000000F0 + 0x38);
     void *src = (void*)((char*)&func_00000080 + 0x68);
     int *cfg_word = (int*)((char*)&func_00000000 + 4);
@@ -3014,8 +3020,8 @@ void func_0000411C(char *s1, int a1) {
     }
     func_00000000(&D_00000000, A[7]);
     func_00000000(&D_00000000, p);
-    A[4] = (char*)(int)(*(float*)((char*)&func_000003F8 + 0x14C) * func_411c_rf());
-    A[3] = (char*)((int)(func_411c_rf() * *(float*)((char*)&func_0000057C - 0x34) + (float)(int)A[4] + 1.0f) % 3);
+    A[4] = (char*)(int)(D_bu_ro_pool[0x544 / 4] * func_411c_rf());
+    A[3] = (char*)((int)(func_411c_rf() * D_bu_ro_pool[0x548 / 4] + (float)(int)A[4] + 1.0f) % 3);
     cfg = *(char**)(s1 + 0x98);
     A[5] = func_411c_r(s1, 0, (int)A[4],
                      (int)*(char**)((char*)&func_00000080 + (int)A[4] * 4 + 0x10), A[7], *(int*)(s1 + 0x80),
@@ -3091,9 +3097,9 @@ void func_000043D4(char *s0, int a1) {
     func_00000000(Dg, o1);
     func_00000000(Dg, o2);
     r = (float)func_00000000();
-    idx1 = (int)(r * *(float*)((char*)&func_000003F8 + 0x154));
+    idx1 = (int)(r * D_bu_ro_pool[0x54C / 4]);
     rr = (float)func_00000000();
-    idx2 = (int)(rr * *(float*)((char*)&func_000003F8 + 0x158) + (float)idx1 + 1.0f) % 3;
+    idx2 = (int)(rr * D_bu_ro_pool[0x550 / 4] + (float)idx1 + 1.0f) % 3;
     cfg = *(char**)(s0 + 0x98);
     row1 = *(char**)((char*)&func_00000080 + idx1 * 4 + 0x90);
     r1 = func_43d4_r(s0, 0, idx1, (int)row1, o1, *(int*)(s0 + 0x80),
@@ -5173,7 +5179,7 @@ void func_00007328(char *s3) {
     {
         int mode = *(int*)((char*)&func_00000008 + 0x34);
         if (mode == 6 || mode == 0xB) {
-            *(float*)((char*)&func_0000029C + 0x4) = 1.0f;
+            D_bu_ro_pool[0x2A0 / 4] = 1.0f;  /* same section-base reloc (symIdx 1) as the FP literals */
             *(int*)(s3 + 0x34) = 0x320;
             *(int*)(s3 + 0x38) = *(int*)(s3 + 0x38) | 2;
         }
@@ -8619,18 +8625,18 @@ void func_0000C234(char *arg0) {
     spCC.e4 = 0.0f;
     spCC.e8 = 1.0f;
     *(s16 *)((char *)(arg0) + 0x9A2) = 0;
-    *(f32 *)((char *)(arg0) + 0x9D0) = *(f32 *)((char *)&func_000008F4 + 0x2C);
+    *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4];
     sp3C = temp_a1;
     if (func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_a1, 0x457A0000, &spCC) != 0) {
         *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
-        if (spCC.d8 < *(f32 *)((char *)&func_000008F4 + 0x30)) {
+        if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             *(s16 *)((char *)(arg0) + 0x9A2) = *(s16 *)((char *)(arg0) + 0x9A0);
         } else {
             *(s16 *)((char *)(arg0) + 0x9A2) = 0;
         }
         *(s32 *)((char *)(arg0) + 0x9A8) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
-        if ((spCC.f0 < ((*(f32 *)((char *)&func_000000F0 + 0x38) * ((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + *(f32 *)((char *)&func_000008F4 + 0x34)) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
+        if ((spCC.f0 < ((D_bu_ro_pool[0x128 / 4] * ((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
             *(s32 *)((char *)(arg0) + 0xA4C) = 1;
             *((s32 *)spB4 + 0) = *((s32 *)&spCC.e4 + 0);
             var_t0 = 0;
@@ -8735,14 +8741,14 @@ void func_0000C234(char *arg0) {
     func_00000000((char *)func_00008A7C + 0x34);
     if (*(s32 *)((char *)(arg0) + 0x9A8) & 0x400) {
         func_00000000(arg0 + 0x808, 1);
-        var_f2 = *(f32 *)((char *)&func_00000940 + 0xC);
+        var_f2 = D_bu_ro_pool[0x94C / 4];
     } else {
         func_00000000(arg0 + 0x808, 0);
         var_f2 = 1.0f;
     }
     if (*(s32 *)((char *)&func_00000008 + 0x2C) != 2) {
         temp_f0 = *(f32 *)((char *)(arg0) + 0x91C);
-        *(f32 *)((char *)(arg0) + 0x91C) = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * *(f64 *)((char *)&func_00000940 + 0x10)));
+        *(f32 *)((char *)(arg0) + 0x91C) = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
         func_00000000(*(s32 *)((char *)(arg0) + 0x850), *(s32 *)((char *)(arg0) + 0x91C));
     }
     temp_v0_4 = *(s32 *)((char *)(arg0) + 0x938);
@@ -8878,7 +8884,7 @@ void func_0000CAE8(char *st) {
     func_00000000(st + 0x3EC, 1, *(int *)((char *)&D_00000000 + j * 4));
     if (*(int *)(st + 0xA58) & 0x80) func_00000000(st, 0);
     func_00000000(st + 0x90C, 0x17C);
-    *(float *)(st + 0x9D0) = *(float *)((char *)&func_00000940 + 0x18);
+    *(float *)(st + 0x9D0) = D_bu_ro_pool[0x958 / 4];
     *(float *)(st + 0xA78) = *(float *)(st + 0x768);
     mode = *(int *)((char *)&func_00000008 + 0x2C);
     if (mode == 2) {
@@ -8964,11 +8970,6 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000CAE8);
  * schedules after the a0 copy. */
 // PARTIAL-FORM corrected NM body for func_0000CCE0 (replaces lines 8516..8554)
 extern char *func_cce0(int, char *, int, float, float, float);
-/* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
- * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
- * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
- * `(char *)&func_00000940 + OFF` cast materialized the function address). */
-extern float D_bu_ro_pool[];
 void func_0000CCE0(char *st, int a1) {
     char *cont = st + 0x39C;
     /* Single decl list, slots assigned descending from frame top:
@@ -9917,7 +9918,7 @@ void func_0000E270(char *arg0, float arg1) {
      *  the float higher (0x1C). Same-frame (0x20) spill-slot-pair swap =
      *  documented IDO spill-order residual (permuter-class). INCLUDE_ASM keeps
      *  the ROM correct; no episode. */
-    float ratio = *(float*)((char*)func_0000098C + 0xC) / arg1;
+    float ratio = D_bu_ro_pool[0x998 / 4] / arg1;
     aE270(arg0 + 0xCC, arg0 + 0x3B0, ratio);
     aE270(arg0 + 0xF4, arg0 + 0x3B0, ratio);
 }
