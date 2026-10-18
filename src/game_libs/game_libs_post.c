@@ -1032,6 +1032,14 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DB88);
 // sll/sra 0x18 narrowing pairs (9 in build, 0 in target). Unknown suppressor in original for an
 // int counter; s8 counter kept as the lesser divergence. Loops B/C target has a per-iteration
 // `move v0,v1` entry-copy (e=p cursor) that copy-props away in our build. 294 vs 288 insns.
+// RUN 109 (agent-c) probe, not kept: the unroll suppressor IS the dead bound reload (the
+// target keeps `slt at,s1,a0; bnez` = no i<n -> i!=n conversion). With s32 var_s1 and
+// `for (var_s1 = 0; var_s1 < n; var_s1++, p += 0x20) { n = *(int *)(D + 0x2070); ... }`
+// all three classify loops come out rolled with the target's bodies, no s8 narrowing.
+// It scored lower overall (33-39) because the rewrite drops enough &D references that
+// uopt stops holding &D in an s-register (target s4), so every later access re-luis;
+// the pointer init also lands before the blez guard (target: after it). Next step:
+// keep that loop form and find what keeps &D held.
 #ifdef NON_MATCHING
 
 
@@ -6386,7 +6394,6 @@ void game_libs_func_0002436C(int a0) { D_2436C_a = a0; }
  *  - count*20 alloc takes 2 args; tail reporter takes (r, word) not casts.
  * Distinct zero-base externs per fresh materialization (anti-CSE). */
 extern u8 gl_d_24378[];       /* held base -> $s0 (whole-fn) */
-extern char gl_d_24378_proxy; /* link-time-0 proxy: (int)&proxy==0; the reloc sum defeats IDO const-fold so B stays HELD in $s0 (docs/PATTERNS proxy-extern lever) */
 /* per-site scalar externs (all USO syms resolve to 0; explicit offsets keep
  * the baked %lo immediates byte-exact while distinct relocs kill uopt's
  * repeated-&D address-CSE that hoisted a held a2 base) */
@@ -6422,8 +6429,21 @@ extern u8 gl_d_24378_pa[];    /* pointer table entries B[0x201C..0x2028] */
 extern u8 gl_d_24378_pb[];
 extern u8 gl_d_24378_pc[];
 extern u8 gl_d_24378_pd[];
+typedef struct { char pad[0xA]; s16 x, y, z; } Src24378;
+typedef struct { s16 n; char pad[0xE]; Src24378 e[1]; } Hdr24378;
+typedef struct { u8 b0, b1, b2, b3; s16 h4; char pad[0xE]; } Dst24378;
+/* Run 109 (agent-c, 69.1 -> 95.0): the area is the GLOBAL gl_d_24378
+ * itself, named at every access (FW(gl_d_24378, K)), not a `B` local.
+ * uopt still CSEs &gl_d_24378 into s0, and the pre-optimisation loop
+ * body is small enough for the x4 unroll + andi-3 remainder loop the
+ * target has (with the B local / proxy it unrolled x2; with typed
+ * struct-array views it did not unroll at all). Also: each switch arm
+ * writes the float before the int; the 0x202C short is read back
+ * through the just-stored 0x201C pointer and stored before the two byte
+ * flags. Residual: the target keeps a dead `or a0,zero,zero` (an
+ * eliminated loop counter init) live into the first call, which shifts
+ * every t-register one slot; the frame is 0x80 (build 0x40). */
 void gl_func_00024378(void) {
-    char *B;
     s32 n;
     s32 i;
     char *p;
@@ -6437,10 +6457,10 @@ void gl_func_00024378(void) {
     s32 srci;
     s32 r;
 
-    B = (char *)gl_d_24378 + (int)&gl_d_24378_proxy;
     *(s32 *)gl_d_24378_a = 0;
-    FW(B, 0x215C) = 0;
+    FW(gl_d_24378, 0x215C) = 0;
     n = *(s32 *)(gl_d_24378_b + 4) / 8;
+    i = 0;
     if (n > 0) {
         p = (char *)gl_d_24378_t64;
         e = p + n * 8;
@@ -6449,7 +6469,7 @@ void gl_func_00024378(void) {
             *(long long *)(p - 8) = 0;
         } while (p < e);
     }
-    q = B;
+    q = (char *)gl_d_24378;
     i = 0x5C30;
     do {
         i -= 1;
@@ -6459,41 +6479,41 @@ void gl_func_00024378(void) {
     mode = *(s32 *)gl_d_24378_c;
     switch (mode) {
     case 0:
-        FW(B, 0x213C) = 0x32;
-        *(f32 *)(B + 0x2138) = *(f32 *)(gl_d_24378_d + 0xEC8);
+        *(f32 *)(gl_d_24378 + 0x2138) = *(f32 *)(gl_d_24378_d + 0xEC8);
+        FW(gl_d_24378, 0x213C) = 0x32;
         break;
     case 2:
-        FW(B, 0x213C) = 0x3C;
-        *(f32 *)(B + 0x2138) = *(f32 *)(gl_d_24378_e + 0xECC);
+        *(f32 *)(gl_d_24378 + 0x2138) = *(f32 *)(gl_d_24378_e + 0xECC);
+        FW(gl_d_24378, 0x213C) = 0x3C;
         break;
     default:
     case 1:
-        FW(B, 0x213C) = 0x3C;
-        *(f32 *)(B + 0x2138) = *(f32 *)(gl_d_24378_f + 0xED0);
+        *(f32 *)(gl_d_24378 + 0x2138) = *(f32 *)(gl_d_24378_f + 0xED0);
+        FW(gl_d_24378, 0x213C) = 0x3C;
         break;
     }
-    gl_func_0001CA10(0);
+    gl_func_0001CA10(i);
     q = (char *)gl_d_24378_seed;
     e = (char *)gl_d_24378_seed + 6;
     do {
         q += 2;
         *(s16 *)(q + 0x214A) = 0xA0;
     } while (q < e);
-    FW(B, 0x2078) = 0;
-    FW(B, 0x2080) = 0;
-    FW(B, 0x2084) = 0;
-    SB(B, 0x2076) = 0;
-    FW(B, 0x2094) = 0;
-    FW(B, 0x20CC) = 0;
-    FW(B, 0x211C) = 0;
+    FW(gl_d_24378, 0x2078) = 0;
+    FW(gl_d_24378, 0x2080) = 0;
+    FW(gl_d_24378, 0x2084) = 0;
+    SB(gl_d_24378, 0x2076) = 0;
+    FW(gl_d_24378, 0x2094) = 0;
+    FW(gl_d_24378, 0x20CC) = 0;
+    FW(gl_d_24378, 0x211C) = 0;
     gl_func_0001CA10(gl_d_24378_g + 0x1DD4, gl_d_24378_h + 0x1DEC, 1);
     gl_func_0001CA10(gl_d_24378_i + 0x16BC, gl_d_24378_j + 0x16D4, 0x40);
     gl_func_0001CA10(gl_d_24378_k + 0x164C, gl_d_24378_l + 0x1664, 8);
     gl_func_0001CA10(gl_d_24378_m + 0x1684, gl_d_24378_n2 + 0x169C, 8);
-    FW(B, 0x207C) = 0;
-    FW(B, 0x1E0C) = 0;
-    FW(B, 0x1644) = gl_func_0001CA10();
-    FW(B, 0x1648) = gl_func_0001CA10();
+    FW(gl_d_24378, 0x207C) = 0;
+    FW(gl_d_24378, 0x1E0C) = 0;
+    FW(gl_d_24378, 0x1644) = gl_func_0001CA10();
+    FW(gl_d_24378, 0x1648) = gl_func_0001CA10();
     gl_func_0001CA10(*(s32 *)(gl_d_24378_o + 8));
     p = (char *)gl_d_24378_slot;
     do {
@@ -6501,38 +6521,34 @@ void gl_func_00024378(void) {
         p += 4;
         FW(p, 0x213C) = r;
     } while (p < (char *)gl_d_24378_slot + 12);
-    FW(B, 0x201C) = (s32)gl_d_24378_pa;
-    FW(B, 0x2020) = (s32)gl_d_24378_pb;
-    FW(B, 0x2024) = (s32)gl_d_24378_pc;
-    FW(B, 0x2028) = (s32)gl_d_24378_pd;
-    SB(B, 0x2CF1) = 0;
-    SB(B, 0x2CF0) = 1;
-    SH(B, 0x202C) = *(s16 *)gl_d_24378_pa;
+    FW(gl_d_24378, 0x201C) = (s32)gl_d_24378_pa;
+    FW(gl_d_24378, 0x2020) = (s32)gl_d_24378_pb;
+    FW(gl_d_24378, 0x2024) = (s32)gl_d_24378_pc;
+    FW(gl_d_24378, 0x2028) = (s32)gl_d_24378_pd;
+    SH(gl_d_24378, 0x202C) = *(s16 *)FW(gl_d_24378, 0x201C);
+    SB(gl_d_24378, 0x2CF1) = 0;
+    SB(gl_d_24378, 0x2CF0) = 1;
     gl_func_0001CA10();
-    game_libs_func_0003443C(FW(B, 0x201C), *(s32 *)gl_d_24378_q, 0);
-    game_libs_func_0003443C(FW(B, 0x2020), *(s32 *)gl_d_24378_r, 0);
-    game_libs_func_0003443C(FW(B, 0x2024), *(s32 *)gl_d_24378_s, 0);
-    c = *(s16 *)FW(B, 0x2020);
-    FW(B, 0x2030) = gl_func_0001CA10(gl_d_24378_t + 0x2188, c * 0x14);
-    /* target = andi-3 remainder prologue + x4-unrolled main body over
-     * (src stride 0x10 shorts 0x1A/0x1C/0x1E -> dst stride 0x14 packed
-     * bytes 2,3,0,1 + short 4). Spelled as the simple indexed loop: IDO
-     * here x2-unrolls it (andi-1) — closest overall shape; every hand-
-     * spelled remainder/x4 variant gets re-unrolled/peeled to worse
-     * (x2 peel on the remainder, x8 on the main; probed 4 forms). */
+    game_libs_func_0003443C(FW(gl_d_24378, 0x201C), *(s32 *)gl_d_24378_q, 0);
+    game_libs_func_0003443C(FW(gl_d_24378, 0x2020), *(s32 *)gl_d_24378_r, 0);
+    game_libs_func_0003443C(FW(gl_d_24378, 0x2024), *(s32 *)gl_d_24378_s, 0);
+    c = *(s16 *)FW(gl_d_24378, 0x2020);
+    FW(gl_d_24378, 0x2030) = gl_func_0001CA10(gl_d_24378_t + 0x2188, c * 0x14);
+    /* x4 unroll + andi-3 remainder loop come out of the plain loop once
+     * every access names the global directly (see header note). */
     for (i = 0; i < c; i++) {
-        SB(FW(B, 0x2030) + i * 0x14, 0x2) = (s8) (SH(FW(B, 0x2020) + i * 0x10, 0x1A) >> 8);
-        SB(FW(B, 0x2030) + i * 0x14, 0x3) = (s8) SH(FW(B, 0x2020) + i * 0x10, 0x1A);
-        SB(FW(B, 0x2030) + i * 0x14, 0x0) = (s8) (SH(FW(B, 0x2020) + i * 0x10, 0x1C) >> 8);
-        SB(FW(B, 0x2030) + i * 0x14, 0x1) = (s8) SH(FW(B, 0x2020) + i * 0x10, 0x1C);
-        SH(FW(B, 0x2030) + i * 0x14, 0x4) = SH(FW(B, 0x2020) + i * 0x10, 0x1E);
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x2) = (s8) (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A) >> 8);
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x3) = (s8) SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A);
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x0) = (s8) (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C) >> 8);
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x1) = (s8) SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C);
+        SH(FW(gl_d_24378, 0x2030) + i * 0x14, 0x4) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1E);
     }
     r = gl_func_0001CA10(gl_d_24378_u + 0x2188, *(s32 *)(gl_d_24378_v + 0xC));
     if (r == 0) {
         *(s32 *)(gl_d_24378_w + 0xC) = 0;
     }
     gl_func_0001CA10(gl_d_24378_y + 0x2528, r, *(s32 *)(gl_d_24378_x + 0xC));
-    gl_func_0001CA10(FW(B, 0x53C8), FW(B, 0x2078), 0);
+    gl_func_0001CA10(FW(gl_d_24378, 0x53C8), FW(gl_d_24378, 0x2078), 0);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00024378);
@@ -8010,6 +8026,21 @@ int gl_func_000261F4() {
 // register-name cascade through the body. Structural control flow / field
 // accesses / call args / FP-free reductions are faithful; the byte gap is the
 // documented spill-vs-color tradeoff (coloring cap), not a logic error.
+/* Run 109 (agent-c, 67.0 -> 78.9): this is the game's audio-manager
+ * frame handler (libultra __amHandleFrameMsg shape: samplesLeft =
+ * osAiGetLength() >> 2; frameSamples = 16 + ((frameSize - samplesLeft
+ * + 0x80) & ~0xF) clamped to [min, max]; then an OSTask fill). Decode
+ * fixes: the 0x214C table is s16 (lh/sh); the task's ucode_boot/ucode
+ * (0x8/0x10) and ucode_data (0x18) are symbol addresses and 0x1C is
+ * ((u64 *)dataEnd - (u64 *)data) * 8 - 1; the 0x20 global gets
+ * (pos & 0xFFF0) + &buf; the ring index update is idx++ (kept store),
+ * toggle ^= 1, idx %= 3, then next = (idx + 1) % 3 computed BEFORE the
+ * osAiGetLength call (s0); the post-callback re-reads of 0x2078/0x2034
+ * go through their own symbols; the per-buffer addresses are named
+ * locals p2/p4 (homed at 0x3C/0x34 in the target). Residual: the target
+ * keeps the loop counts in v1 with spills and materializes -1 per
+ * compare (build promotes both to s1, frame 0xA0 vs 0x70), the hoisted
+ * (cur, 0, cur) call args, and the multu operand order. */
 #ifdef NON_MATCHING
 extern int game_libs_func_0003443C();
 extern int gl_func_0001CA10();
@@ -8030,7 +8061,17 @@ extern GP_00026214 D_cb_26214;   /* distinct lui-zero callback global */
 extern s32 D_26214_20;           /* separate-lui scratch at 0x20 */
 extern char *D_26214_1B3D4;      /* lui 0x2 region result global */
 extern s32 D_26214_1B3D0;        /* lui 0x2 region max-tracker */
+extern s32 D_26214_w2078;        /* post-callback re-reads go through their own lui (not s2) */
+extern s16 D_26214_h2034;
+#define SH214C(k) (*(s16 *)((char *)&D_00000000 + (k) * 2 + 0x214C))  /* s16 per-buffer frame-sample counts (lh/sh) */
+extern u64 D_26214_boot[];   /* OSTask ucode_boot / ucode text (lui/addiu, NM-only) */
+extern u64 D_26214_data[];   /* OSTask ucode_data start */
+extern u64 D_26214_dataE[];  /* ucode_data end */
+extern char D_26214_buf[];   /* base added to the 0xFFF0-masked sample position */
 char *gl_func_00026214(void) {
+    char *p4;
+    char *p2;
+    s32 lim;
     s32 sp68;
     s32 sp4C;
     s32 sp34;
@@ -8054,36 +8095,38 @@ char *gl_func_00026214(void) {
     s32 var_v1_2;
     char *temp_v1_4;
 
+    lim = D_H(0x2034);
     temp_t7 = D_W(0x2078) + 1;
-    temp_a3 = temp_t7;
-    var_a0 = temp_t7 % D_H(0x2034);
+    var_a0 = temp_t7 % lim;
     D_W(0x2078) = temp_t7;
     if (var_a0 != 0) {
         cb = D_cb_26214;
         if (cb != 0) {
-            cb(var_a0, temp_t7, 0, temp_a3);
-            var_a0 = D_W(0x2078) % D_H(0x2034);
+            cb(var_a0, temp_t7, 0, temp_t7);
+            lim = D_26214_h2034;
+            var_a0 = D_26214_w2078 % lim;
         }
-        if (D_H(0x2034) == (var_a0 + 1)) {
+        if (lim == (var_a0 + 1)) {
             return D_26214_1B3D4;
         }
         return 0;
     }
-    gl_func_0001CA10(D_W(0x53C8), temp_t7, 0, temp_a3);
+    gl_func_0001CA10(D_W(0x53C8), temp_t7, 0, temp_t7);
     temp_t4 = D_W(0x2084) + 1;
-    temp_hi = temp_t4 % 3;
-    temp_hi_2 = (temp_hi + 1) % 3;
-    D_W(0x2084) = temp_t4;
+    if (1) {
+        D_W(0x2084) = temp_t4;
+    }
     D_W(0x2080) ^= 1;
-    D_W(0x2084) = temp_hi;
+    D_W(0x2084) = temp_t4 % 3;
+    temp_hi_2 = (D_W(0x2084) + 1) % 3;
     sp6C = (u32) gl_func_0001CA10() >> 2;
     if ((u32) D_W(0x215C) < 0x10U) {
-        s32 idx2 = temp_hi_2 * 2;
-        s16 cnt = FW((char *)&D_00000000 + idx2, 0x214C);
-        s32 idx4 = temp_hi_2 * 4;
+        s16 cnt;
+        p2 = BB + temp_hi_2 * 2;
+        cnt = *(s16 *)(p2 + 0x214C);
+        p4 = BB + temp_hi_2 * 4;
         if (cnt != 0) {
-            sp34 = idx4;
-            gl_func_0001CA10(FW((char *)&D_00000000 + idx4, 0x2140), cnt * 4, idx2);
+            gl_func_0001CA10(*(s32 *)(p4 + 0x2140), cnt * 4);
         }
     }
     cb = D_cb_26214;
@@ -8138,18 +8181,19 @@ char *gl_func_00026214(void) {
     temp_v1_2 = D_W(0x2080);
     temp_s0 = D_W(0x2084);
     D_W(0x2094) = (s32) (BB + (temp_v1_2 * 0x50) + 0x2098);
-    sp34 = temp_s0 * 4;
+    p4 = BB + temp_s0 * 4;
+    p2 = BB + temp_s0 * 2;
     D_W(0x2090) = FW((char *)&D_00000000 + (temp_v1_2 * 4), 0x2088);
-    sp58 = FW((char *)&D_00000000 + sp34, 0x2140);
-    FW((char *)&D_00000000 + (temp_s0 * 2), 0x214C) =
+    sp58 = *(s32 *)(p4 + 0x2140);
+    *(s16 *)(p2 + 0x214C) =
         (s16) ((((D_H(0x203A) - sp6C) + 0x80) & 0xFFF0) + 0x10);
     temp_a0 = D_H(0x203E);
-    if (FW((char *)&D_00000000 + (temp_s0 * 2), 0x214C) < temp_a0) {
-        FW((char *)&D_00000000 + (temp_s0 * 2), 0x214C) = temp_a0;
+    if (*(s16 *)(p2 + 0x214C) < temp_a0) {
+        *(s16 *)(p2 + 0x214C) = temp_a0;
     }
     temp_v1_3 = D_H(0x203C);
-    if (temp_v1_3 < FW((char *)&D_00000000 + (temp_s0 * 2), 0x214C)) {
-        FW((char *)&D_00000000 + (temp_s0 * 2), 0x214C) = temp_v1_3;
+    if (temp_v1_3 < *(s16 *)(p2 + 0x214C)) {
+        *(s16 *)(p2 + 0x214C) = temp_v1_3;
     }
     var_s0 = 0;
     if (D_BU(0x2CF0) == 0) {
@@ -8164,23 +8208,23 @@ char *gl_func_00026214(void) {
         }
     }
     D_W(0x2090) = gl_func_0001CA10(D_W(0x2090), &sp68, sp58,
-                                  FW((char *)&D_00000000 + (temp_s0 * 2), 0x214C));
+                                  *(s16 *)(p2 + 0x214C));
     temp_a3 = D_W(0x2078);
     temp_lo = gl_func_0001CA10() * (D_W(0x2154) + temp_a3);
     D_W(0x2154) = temp_lo;
-    temp_t3 = *(s16 *)(FW((char *)&D_00000000 + sp34, 0x2140) + ((temp_a3 & 0xFF) * 2)) + temp_lo;
+    temp_t3 = *(s16 *)(*(s32 *)(p4 + 0x2140) + ((temp_a3 & 0xFF) * 2)) + temp_lo;
     D_W(0x2154) = temp_t3;
-    D_26214_20 = temp_t3 & 0xFFF0;
+    D_26214_20 = (temp_t3 & 0xFFF0) + (s32)D_26214_buf;
     FW(D_W(0x2094), 0x40) = 0;
     FW(D_W(0x2094), 0x44) = 0;
     temp_v1_4 = (char *) D_W(0x2094);
     FW(temp_v1_4, 0x0) = 2;
     FW(temp_v1_4, 0x4) = 0;
-    FW(temp_v1_4, 0x8) = 0;
+    FW(temp_v1_4, 0x8) = (s32)D_26214_boot;
     FW(temp_v1_4, 0xC) = 0x1000;
-    FW(temp_v1_4, 0x1C) = (((0 >> 3) * 8) - 1);
-    FW(temp_v1_4, 0x10) = 0;
-    FW(temp_v1_4, 0x18) = 0;
+    FW(temp_v1_4, 0x1C) = ((u64 *)D_26214_dataE - (u64 *)D_26214_data) * 8 - 1;
+    FW(temp_v1_4, 0x10) = (s32)D_26214_boot;
+    FW(temp_v1_4, 0x18) = (s32)D_26214_data;
     FW(temp_v1_4, 0x14) = 0x1000;
     FW(temp_v1_4, 0x20) = 0;
     FW(temp_v1_4, 0x24) = 0;
@@ -15908,6 +15952,15 @@ int game_libs_func_0002E290(unsigned char *o) {
  * emitted a compare chain), and the sp6B table is 0..10 with 0,2 -> 8, 4,6 ->
  * 0xC, 8 -> 0x10, 10 -> 0x38, odd -> the 0x29 chain (m2c's reading was shifted
  * by one entry). Frame/slot offsets do not affect objdiff's fuzzy score. */
+/* PASS-7 run 109 (agent-c, 80.50 -> 81.78): (1) the 0x1C738 / 0x1C73C floats
+ * are per-access scalar externs (target re-emits `lui at,2` + folded %lo at
+ * each access; one symbol per site stops uopt holding a base); (2) the +0 /
+ * +0x14 counters go through a char-array view D_E354_G (target holds &G in
+ * v1); (3) the stateC 1/2/3 chain compares as unsigned so its 1 does not CSE
+ * with the later `== 1` tests (kit VI unsigned-selector rule). Still open:
+ * the 0x1C test (`== 1`) shares its constant with the stateB/stateD tests
+ * (target: fresh `li at,1`, then a0 for stateB/D); u32 externs for stateB/D
+ * fix that but re-merge the chain constant (-0.6). */
 extern int gl_func_000428FC();
 extern void gl_E354_emitf(s32, s32, s32, f32, s32, s32);  /* 4th arg is a single float passed in a3 (target lw a3,120(sp)) */
 extern int gl_func_00043824(float, ...);
@@ -15929,6 +15982,8 @@ extern s32 D_raceC_E354;    /* race word (t1 @125d8): ==0 -> increment 0x38 (swi
 extern s32 D_raceD_E354;    /* race word (v1 @12618): !=0,!=1,!=8 gate (distinct fresh lui) */
 extern f32 D_E354_1C330[], D_E354_1C3B0[], D_E354_1C310[];  /* per-table float arrays: target lui %hi(tbl)+addu idx+lwc1 %lo */
 extern s32 gl_E354_setf(s32, f32);  /* (cmd, single float in a1): target mfc1 a1 / lw a1, no cvt.d.s; blank jal (NM-only, like gl_E354_emitf) */
+extern f32 D_E354_1C738_a, D_E354_1C738_b, D_E354_1C738_c, D_E354_1C73C_a, D_E354_1C73C_b, D_E354_1C73C_c;  /* scalar globals: target lui at,2 + folded %lo per access */
+extern char D_E354_G[];  /* array view: target holds &G (lui/addiu v1) for the +0/+0x14 counters */
 void gl_func_0002E354(char *arg0, s32 arg1) {
     u8 sp7D;
     f32 sp78;
@@ -15968,7 +16023,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     if (temp_v0 != 0) {
         if (temp_v0 == 4) {
             temp_v1 = D_stateC_E354;
-            if (((temp_v1 == 1) || (temp_v1 == 2) || (temp_v1 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
+            if ((((u32)temp_v1 == 1) || ((u32)temp_v1 == 2) || ((u32)temp_v1 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
                 *(u8 *)((char *)(arg0) + 0x21) = 2U;
                 *(f32 *)((char *)(arg0) + 0x54) = 0.0f;
             }
@@ -16197,7 +16252,7 @@ block_83:
                         if ((s32) temp_v1_5 >= 6) {
                             var_t9 = temp_v1_5 + 0xE;
                         }
-                        if ((*(s32 *)((char *)&D_00000000 + 0) /* M2C unset $t4 */ == 4) || (*(u8 *)((char *)(arg0) + 0x1C) & 1)) {
+                        if ((*(s32 *)(D_E354_G + 0) /* M2C unset $t4 */ == 4) || (*(u8 *)((char *)(arg0) + 0x1C) & 1)) {
                             gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, (s32) *(u8 *)((char *)(arg0) + 0x28)); var_v0_2 = 0; /* M2C: v0-after-void-call */
                         } else {
                             temp_v1_5 = *(u8 *)((char *)(arg0) + 0x2E);
@@ -16267,35 +16322,35 @@ block_83:
                         temp_v1 = *(s32 *)((char *)(arg0) + 0x38);
                         if (temp_v1 == 0) {
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
-                            *(f32 *)((char *)&D_00000000 + 0x1C738) = temp_f16;
+                            D_E354_1C738_a = temp_f16;
                             if (temp_f16 == 0.0f) {
-                                *(f32 *)((char *)&D_00000000 + 0x1C738) = 1.0f;
+                                D_E354_1C738_b = 1.0f;
                             }
                         } else if (temp_v1 >= 7) {
-                            temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / *(f32 *)((char *)&D_00000000 + 0x1C738);
+                            temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / D_E354_1C738_c;
                             if (!(0.5f <= temp_f10_2)) {
                                 temp_f10_2 = 0.5f;
                             }
                             if (1.0f <= temp_f10_2) {
                                 temp_f10_2 = 1.0f;
                             }
-                            temp_v1 = *(s32 *)((char *)&D_00000000 + 0);
+                            temp_v1 = *(s32 *)(D_E354_G + 0);
                             if (temp_v1 != 0) {
-                                *(s32 *)((char *)&D_00000000 + 0) = (s32) (temp_v1 - 1);
+                                *(s32 *)(D_E354_G + 0) = (s32) (temp_v1 - 1);
                                 temp_f10_2 *= *(f32 *)((char *)(((temp_v1 & 0x1F) * 4)) + 0x1C430);
                             }
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1724);
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            *(s32 *)((char *)&D_00000000 + 0x14) = 0x20;
-                            *(f32 *)((char *)&D_00000000 + 0x1C73C) = temp_f10_2;
+                            *(s32 *)(D_E354_G + 0x14) = 0x20;
+                            D_E354_1C73C_a = temp_f10_2;
                             gl_E354_setf(0x04010900, temp_f10_2);
                         }
                     } else {
-                        temp_v0_2 = *(s32 *)((char *)&D_00000000 + 0x14);
+                        temp_v0_2 = *(s32 *)(D_E354_G + 0x14);
                         if (temp_v0_2 != 0) {
-                            temp_f0 = *(f32 *)((char *)&D_00000000 + 0x1C73C);
+                            temp_f0 = D_E354_1C73C_b;
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1728);
                             temp_f14 = ((1.0f - temp_f0) / (f32) temp_v0_2) + temp_f0;
                             if (temp_f16 <= temp_f14) {
@@ -16304,8 +16359,8 @@ block_83:
                             if (!(0.5f <= temp_f14)) {
                                 temp_f14 = 0.5f;
                             }
-                            *(s32 *)((char *)&D_00000000 + 0x14) = (s32) (temp_v0_2 - 1);
-                            *(f32 *)((char *)&D_00000000 + 0x1C73C) = temp_f14;
+                            *(s32 *)(D_E354_G + 0x14) = (s32) (temp_v0_2 - 1);
+                            D_E354_1C73C_c = temp_f14;
                             gl_E354_setf(0x04010900, temp_f14);
                         } else {
                             gl_E354_setf(0x04010900, 1.0f);
