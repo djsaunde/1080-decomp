@@ -2496,37 +2496,29 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036694);
 //   int↔float stack round-trip + one conditional jal-0 guard; vector
 //   args untyped. Real-C STRUCTURAL body below. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern float sqrtf(float);
-/* Whole-body decode 2026-06-01 (prior body had wrong sig/condition). Individual
- * float args (not a pointer): dx=(x0-x1)/scale, dy=(y0-y1)/scale, len2=dx^2+dy^2.
- * If 1.0<len2: inv=1/sqrt(len2), out=(dx*inv, dy*inv, 0). Else out=(dx, dy,
- * gl(1.0-len2)). Returns out. */
+/* EXACT 2026-10-17 agent-c run 106: returns a Vec3 BY VALUE (hidden a0
+ * return buffer, v0 = a0). The epilogue's lw/sw word copy from sp+36 is the
+ * struct-return copy, which the float-copy scan flagged as an int copy of
+ * floats; the earlier float *out body stored with swc1. */
 extern float gl_func_00000000_695c(float);
-int gl_func_0003695C(float *out, int a1, float x0, float y0, float u1,
-                     float x1, float y1, float u2, float scale) {
-    float dx = (x0 - x1) / scale;
-    float dy = (y0 - y1) / scale;
-    float len2 = dx * dx + dy * dy;
-    float res[3];
-    res[0] = dx;
-    res[1] = dy;
+Vec3 gl_func_0003695C(int a1, float x0, float y0, float u1,
+                      float x1, float y1, float u2, float scale) {
+    Vec3 res;
+    float len2;
+    float inv;
+    res.x = (x0 - x1) / scale;
+    res.y = (y0 - y1) / scale;
+    len2 = res.x * res.x + res.y * res.y;
     if (1.0f < len2) {
-        float inv = 1.0f / gl_func_00000000_695c(len2);
-        res[0] = dx * inv;
-        res[1] = dy * inv;
-        res[2] = 0.0f;
+        inv = 1.0f / gl_func_00000000_695c(len2);
+        res.z = 0.0f;
+        res.x = res.x * inv;
+        res.y = res.y * inv;
     } else {
-        res[2] = gl_func_00000000_695c(1.0f - len2);
+        res.z = gl_func_00000000_695c(1.0f - len2);
     }
-    out[0] = res[0];
-    out[1] = res[1];
-    out[2] = res[2];
-    return (int)out;
+    return res;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003695C);
-#endif
 
 // gl_func_00036A48 — STRUCTURAL PASS (0x154 / 85 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
