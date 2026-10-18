@@ -221,7 +221,7 @@ void func_000003F8(char *arg0, f32 *arg1, s32 *arg2, char *arg3) {
     sp34 = *(f32 *)((char *)FW(arg3, 0x70) + 0xC4);
     sp38 = *(f32 *)((char *)FW(arg3, 0x70) + 0xD4);
     *arg2 = (s32) (((temp_f10_2 * temp_f4) + (temp_f8_2 * sp34) + (temp_f16 * sp38)) * 63.0f);
-    *arg1 /= *(f32 *)0xC;
+    *arg1 /= D_bu_ro_pool[0x50 / 4];  /* RoData pool 0x50 (func_00000044 + 0xC) */
     if ((f64) *arg1 > 1.0) {
         *arg1 = 1.0f;
     }
@@ -284,6 +284,7 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  * INCLUDE_ASM-preserved (.s = source of truth). */
 #ifdef NON_MATCHING
 extern char D_00006584;
+extern f64 D_bu_ro_d058, D_bu_ro_d060;  /* RoData pool doubles at 0x58 / 0x60 (func_00000044 + 0x14 / 0x1C); one symbol each, the target re-luis per load */
 void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     int o;
     f32 sp28;
@@ -294,7 +295,7 @@ void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, 
 
     o = arg0[0];
     if (o != 0) {
-        temp_f2 = (f32) ((f64) arg5 / *(f64*)((char*)&func_00000044 + 0x14));
+        temp_f2 = (f32) ((f64) arg5 / D_bu_ro_d058);
         if (temp_f2 < 0.0f) {
             var_f0 = 0.0f;
         } else if (1.0f < temp_f2) {
@@ -308,7 +309,7 @@ void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, 
         } else {
             var_f0_2 = arg4;
         }
-        *(f32*)((char*)arg0[0] + 0x4) = (f32) ((f64) var_f0_2 + *(f64*)((char*)&func_00000044 + 0x1C));
+        *(f32*)((char*)arg0[0] + 0x4) = (f32) ((f64) var_f0_2 + D_bu_ro_d060);
         *(s8*)((char*)arg0[0] + 0x18) = (s8) (s32) (arg4 * 63.0f);
         *(s8*)((char*)arg0[0] + 0x1E) = (s8) ((arg8 & 0x80) != 0);
         switch (arg6) {
@@ -3958,7 +3959,7 @@ extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)gRoot)
 #define DI(o) (*(int *)((char *)&D_00000000 + (o)))
 #define DF(o) (*(float *)((char *)&D_00000000 + (o)))
-#define CF(o) (*(float *)((char *)&func_0000057C + (o))) /* float const pool */
+extern f32 D_bu_ro_598, D_bu_ro_59C, D_bu_ro_5A0, D_bu_ro_5A4, D_bu_ro_5A8, D_bu_ro_5AC;  /* per-address RoData pool scalars (func_0000057C + K): target re-emits lui at per load */
 #define DP(o) ((void *)((char *)&D_00000000 + (o)))
 #define OI(p, o) (*(int *)((char *)(p) + (o)))
 #define OF(p, o) (*(float *)((char *)(p) + (o)))
@@ -4024,7 +4025,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
     M(0xC8) = 0.0f; M(0xCC) = 0.0f; M(0xD0) = 0.0f;
     M(0x14C) = 1.0f; M(0x124) = 1.0f; M(0x128) = 1.0f; M(0x12C) = 1.0f; M(0x118) = 1.0f; M(0xC4) = 1.0f;
     M(0x13C) = 0.5f; M(0x108) = 0.5f; M(0xE4) = 0.5f; M(0xE8) = 0.5f; M(0xD4) = 0.5f;
-    M(0xF8) = CF(0x1C);
+    M(0xF8) = D_bu_ro_598;
 
     if (arg1 == 1) {
         D_55A0_G.b = 0x28002;
@@ -4081,7 +4082,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
-            vec0.w = 1.0f; vec0.x = vec0.y = vec0.z = CF(0x20);
+            vec0.w = 1.0f; vec0.x = vec0.y = vec0.z = D_bu_ro_59C;
             func_00000000(obj + 0x5C, &vec0, 993, 997);
             OI(obj, 0x38) = 1;
             OI(obj, 0x48) = (int)&D_55A0_o48_0;
@@ -4105,7 +4106,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
-            vec1.w = 1.0f; vec1.x = vec1.y = vec1.z = CF(0x24);
+            vec1.w = 1.0f; vec1.x = vec1.y = vec1.z = D_bu_ro_5A0;
             func_00000000(obj + 0x5C, &vec1, 993, 997);
             OI(obj, 0x38) = 1;
             OI(obj, 0x48) = (int)&D_55A0_o48_1;
@@ -4129,7 +4130,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x58) = 1.0f; OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0;
-            vec2.x = CF(0x28); vec2.y = CF(0x2C); vec2.z = CF(0x30); vec2.w = 1.0f;
+            vec2.x = D_bu_ro_5A4; vec2.y = D_bu_ro_5A8; vec2.z = D_bu_ro_5AC; vec2.w = 1.0f;
             func_00000000(obj + 0x5C, &vec2, 993, 997);
             OI(obj, 0x38) = 1;
             OI(obj, 0x48) = (int)&D_55A0_o48_2;
@@ -8681,31 +8682,35 @@ void func_0000C234(char *arg0) {
                 func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[(s32) ((f32) var_v0 + (var_f0 * 3.0f))], 2);
             }
         }
+        /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,
+         * 0x61, 0x62 (flat goto ladder); the 0x940/0x944/0x948 pool reads are
+         * per-address scalars (D_bu_ro_pool[] here CSEs the base, -0.1). */
         temp_v0_2 = *(s16 *)((char *)(arg0) + 0x9A0);
-        if (temp_v0_2 != 0x61) {
-            if (temp_v0_2 != 0x62) {
-                *(f32 *)((char *)(arg0) + 0x288) = (f32) D_00000938;
-                *(f32 *)((char *)(arg0) + 0x28C) = (f32) D_0000093C;
-                *(u8 *)((char *)(arg0) + 0xA33) = 0;
-                *(u8 *)((char *)(arg0) + 0xA32) = 0;
-                *(u8 *)((char *)(arg0) + 0xA31) = 0;
-                *(u8 *)((char *)(arg0) + 0xA30) = 0;
-                *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x5A0);
-                *(f32 *)((char *)(arg0) + 0x290) = *(f32 *)((char *)&func_00000940 + 0);
-            } else {
-                *(f32 *)((char *)(arg0) + 0x288) = 0.0f;
-                *(f32 *)((char *)(arg0) + 0x28C) = *(f32 *)((char *)&func_00000940 + 4);
-                *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
-                *(f32 *)((char *)(arg0) + 0x290) = *(f32 *)((char *)&func_00000940 + 8);
-                func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
-            }
-        } else {
-            *(f32 *)((char *)(arg0) + 0x288) = (f32) *(f32 *)((char *)(arg0) + 0x120);
-            *(f32 *)((char *)(arg0) + 0x28C) = (f32) *(f32 *)((char *)(arg0) + 0x138);
-            *(f32 *)((char *)(arg0) + 0x290) = (f32) *(f32 *)((char *)(arg0) + 0x1B0);
-            *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x570);
-            func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
-        }
+        if (temp_v0_2 == 0x61) goto c61;
+        if (temp_v0_2 == 0x62) goto c62;
+        *(f32 *)((char *)(arg0) + 0x288) = (f32) D_00000938;
+        *(f32 *)((char *)(arg0) + 0x28C) = (f32) D_0000093C;
+        *(u8 *)((char *)(arg0) + 0xA33) = 0;
+        *(u8 *)((char *)(arg0) + 0xA32) = 0;
+        *(u8 *)((char *)(arg0) + 0xA31) = 0;
+        *(u8 *)((char *)(arg0) + 0xA30) = 0;
+        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x5A0);
+        *(f32 *)((char *)(arg0) + 0x290) = D_00000940;
+        goto cend;
+c61:
+        *(f32 *)((char *)(arg0) + 0x288) = (f32) *(f32 *)((char *)(arg0) + 0x120);
+        *(f32 *)((char *)(arg0) + 0x28C) = (f32) *(f32 *)((char *)(arg0) + 0x138);
+        *(f32 *)((char *)(arg0) + 0x290) = (f32) *(f32 *)((char *)(arg0) + 0x1B0);
+        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x570);
+        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
+        goto cend;
+c62:
+        *(f32 *)((char *)(arg0) + 0x288) = 0.0f;
+        *(f32 *)((char *)(arg0) + 0x28C) = D_00000944;
+        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
+        *(f32 *)((char *)(arg0) + 0x290) = D_00000948;
+        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
+cend:
         *(s32 *)((char *)(arg0) + 0x95C) = 0;
     } else {
         temp_v1_2 = *(s32 *)((char *)(arg0) + 0x95C);

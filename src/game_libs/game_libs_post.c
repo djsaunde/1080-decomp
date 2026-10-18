@@ -1264,6 +1264,15 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DCB4);
  * colouring; merging all at once scores lower). Residual: frame 0x1B8 vs
  * 0x160 (spill set), temp_a0 typed u8 adds an andi 0xff the target lacks,
  * but typing it s32 recolours the body (-3.5), so it stays u8. */
+/* Run 109 (agent-c, 65.82 -> 65.94): two decode fixes. (1) the 0x5 byte is
+ * stored only when it was 1 (`if (FB(arg2, 5) == 1) FB(arg2, 5) = n;`, the
+ * target's lbu/bne/sb); m2c had an empty if and an unconditional store.
+ * (2) switch 2 case order is 0, 3, 1 then the shared default code (target
+ * case blocks at 1b24/1b34/1b44, case 1 falls into the default); m2c had
+ * 3 and 1 at the end jumping back. Residual: var_t4/var_t5 come out
+ * memory-homed (sw at each def) where the target keeps them in t4/t5 and
+ * spills around calls; removing the m2c spC8/spCC copy statements does not
+ * fix it and costs 1.4. */
 typedef char *(*GP_0001E134)();
 s32 *gl_func_0001E134(s32 arg0, u8 *arg1, u8 *arg2, int arg3, u32 arg4, s32 *arg5, s32 *arg6) {
     char *sp150;
@@ -1376,9 +1385,8 @@ s32 *gl_func_0001E134(s32 arg0, u8 *arg1, u8 *arg2, int arg3, u32 arg4, s32 *arg
     temp_t0 = ((temp_t9 & 0xFFFF) * arg4 * 2) + FH(arg2, 0x6);
     FH(arg2, 0x6) = temp_t0;
     if (FB(arg2, 0x5) == 1) {
-
+        FB(arg2, 0x5) = temp_a0;
     }
-    FB(arg2, 0x5) = temp_a0;
     var_v1 = FW(arg1, 0x0);
     if (var_v1 & 0x40000) {
         temp_a3_2 = temp_t0 >> 0x10;
@@ -1486,9 +1494,19 @@ loop_23:
                 case 0:                             /* switch 2 */
                     var_s7 = 9;
                     var_t5 = 0x10;
-block_41:
+                    var_t4 = 0;
+                    goto block_41;
+                case 3:                             /* switch 2 */
+                    var_s7 = 5;
+                    var_t5 = 0x10;
+                    var_t4 = 0;
+                    goto block_41;
+                case 1:                             /* switch 2 */
+                    var_s7 = 0x10;
+                    var_t5 = 0x10;
                     var_t4 = 0;
                 default:                            /* switch 2 */
+block_41:
                     var_t0 = 0;
                     if (var_s2 != 0) {
                         temp_a1_2 = (s32) ((temp_a2 + var_t5) - var_s4) / 16;
@@ -1585,14 +1603,6 @@ block_41:
                         sp138 = 0;
                     }
                     break;
-                case 3:                             /* switch 2 */
-                    var_s7 = 5;
-                    var_t5 = 0x10;
-                    goto block_41;
-                case 1:                             /* switch 2 */
-                    var_s7 = 0x10;
-                    var_t5 = 0x10;
-                    goto block_41;
                 }
                 if (sp140 != 0) {
                     temp_a0_3 = var_s3_2;
