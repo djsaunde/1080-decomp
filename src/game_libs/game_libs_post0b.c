@@ -26406,7 +26406,15 @@ void gl_func_00055470(int *s) {
      * 1014 innermost) lands every body block in target position but drifts
      * every arm's registers -> objdiff still 0.0 (strict-row agreement
      * 91/268). Layout and register agreement trade off between the goto and
-     * inline forms; 44.9 here is the scored ceiling of this shape. */
+     * inline forms; 44.9 here is the scored ceiling of this shape.
+     * REOPENED 2026-10-17 agent-g (run 106) 44.9 -> 93.7: ending every goto
+     * body with `if (1) goto Lend;` (instead of a plain `goto Lend;`) makes
+     * uopt keep the bodies in TEXT order -- the layout is no longer
+     * invariant. Residual: per-arm colours (cp/cur/w take v0/v1/a0, target
+     * v1/t0/v1 or v1/v0/a1) and the frame (0x148 vs 0x130: every named
+     * w-local takes a home below tb; the target has ~7 scalar homes between
+     * vt and ta; a single shared w fixes the frame but loses the colours,
+     * 89.6). */
     if (cmd != 1014) {
         if (cmd != 1012) {
             if (cmd != 1015) {
@@ -26481,10 +26489,10 @@ L1012:
     if ((s[18] & w12) == 0) {
         gl_func_00000000(s);
     }
-    goto Lend;
+    if (1) goto Lend;
 L1015:
     gl_func_00000000(s);
-    goto Lend;
+    if (1) goto Lend;
 L1010:
     cp = (int *)s[0];
     cur = (int *)*cp;
@@ -26494,7 +26502,7 @@ L1010:
     if (w10 != s[16]) {
         gl_func_00000000(s);
     }
-    goto Lend;
+    if (1) goto Lend;
 L1011:
     cp = (int *)s[0];
     cur = (int *)*cp;
@@ -26504,7 +26512,7 @@ L1011:
     if (w11 != s[17]) {
         gl_func_00000000(s);
     }
-    goto Lend;
+    if (1) goto Lend;
 L1016:
     cp = (int *)s[0];
     cur = (int *)*cp;
@@ -26512,7 +26520,7 @@ L1016:
     w16 = *cur;
     s[1] = w16;
     s[14] = w16;
-    goto Lend;
+    if (1) goto Lend;
 L1008:
     cp = (int *)s[0];
     cur = (int *)*cp;
@@ -26520,7 +26528,7 @@ L1008:
     w08 = *cur;
     s[1] = w08;
     D_00000000 = w08;
-    goto Lend;
+    if (1) goto Lend;
 L1004:
     p = (int *)&D_00000000;
     cp = (int *)s[0];
@@ -26529,7 +26537,7 @@ L1004:
     w04 = *cur;
     s[1] = w04;
     p[1] = p[1] | w04;
-    goto Lend;
+    if (1) goto Lend;
 L1005:
     p = (int *)&D_00000000;
     cp = (int *)s[0];
@@ -26538,7 +26546,7 @@ L1005:
     w05 = *cur;
     s[1] = w05;
     p[1] = p[1] & ~w05;
-    goto Lend;
+    if (1) goto Lend;
 L1006:
     p = (int *)&D_00000000;
     cp = (int *)s[0];
@@ -26547,7 +26555,7 @@ L1006:
     w06 = *cur;
     s[1] = w06;
     p[0] = p[0] | w06;
-    goto Lend;
+    if (1) goto Lend;
 L1007:
     p = (int *)&D_00000000;
     cp = (int *)s[0];
@@ -26556,7 +26564,7 @@ L1007:
     w07 = *cur;
     s[1] = w07;
     p[0] = p[0] & ~w07;
-    goto Lend;
+    if (1) goto Lend;
 L1017:
     ta = *(GlCmd76 *)s;
     cp = (int *)s[0];
@@ -26567,14 +26575,14 @@ L1017:
     ta.w[0] = (int)&val;
     val = w17;
     gl_func_00000000(ta);
-    goto Lend;
+    if (1) goto Lend;
 L1003:
     tb = *(GlCmd76 *)s;
     tb.w[3] = 0;
     tb.w[4] = 0;
     tb.w[15] = (int)s;
     gl_func_00000000(tb);
-    goto Lend;
+    if (1) goto Lend;
 L113:
     s[13] = 1;
 Ldef:
@@ -26585,7 +26593,7 @@ Ldef:
     cls = *(char **)(obj + 40);
     ((void (*)(char *, int *)) * (int *)(cls + 60))(obj + *(short *)(cls + 56), vt);
     *(int *)s[0] = vt[1];
-    goto Lend;
+    if (1) goto Lend;
 L1018:
     cp = (int *)s[0];
     cur = (int *)*cp;

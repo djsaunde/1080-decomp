@@ -10062,15 +10062,19 @@ void game_uso_func_0000E564(int *a0) {
 // the A58 call stays CONDITIONAL: the target's unconditional-call shape is
 // semantically truer but churns regalloc and scores ~0.1pp WORSE in-tree,
 // so the marginal table-base fix is the only net-positive lever here.
-// 2026-10-17 agent-g (run 106) 76.9 -> 84.7: the "switch" is NOT on 0xE8 --
+// 2026-10-17 agent-g (run 106) 76.9 -> 91.4: the "switch" is NOT on 0xE8 --
 // the target's compare chain 0,5,6,2,1,4,3 runs on a3->0x12C itself (case 0
-// = skip), unsorted, so it is the kit-VI nested-!= goto chain; the EAF4 call
-// IS unconditional with arg1 = `g && (v0 & 0x40)` (sltu/beqz/sltu), and the
-// 0xB4 sub pointer is an unnamed temp (a named `sub` takes v1). RESIDUAL:
-// uopt lays the goto bodies innermost-first (c4,c1,c2,c6,c5,c3; target
-// c5,c6,c2,c1,c4,c3) -- label text order and dead `if (0) goto` references
-// do not move it; the 0xF4->0x2C re-reads after each 0xE8 store are CSE'd
-// into v1 here (target reloads 0xF4).
+// = skip), unsorted, so it is the kit-VI nested-!= goto chain; ending EVERY
+// goto body with `if (1) goto cdone;` makes uopt lay the bodies out in text
+// order (with plain `goto cdone` they come out innermost-first). The EAF4
+// call IS unconditional with arg1 = `g && (v0 & 0x40)`, the 0xB4 sub pointer
+// is an unnamed temp, the 9A8 test is NEGATED (old body had the logic
+// inverted), the count is re-read in the loop condition (gives the target's
+// sltu bottom test instead of a collapsed bne), and the `&= 6` / `>= 21`
+// tail sits INSIDE the 0x214 bound check with the `&= 6` unconditional.
+// RESIDUAL: the table-base lui is hoisted to the entry here, 0xF4->0x2C
+// re-reads after each 0xE8 store are CSE'd (target reloads 0xF4), and the
+// found-store addu takes the shifted index first.
 void game_uso_func_0000E5C8(char *a0, int a1) {
     char *a3 = a0;
     unsigned int src;
@@ -10115,11 +10119,11 @@ void game_uso_func_0000E5C8(char *a0, int a1) {
             } else goto c5;
         }
         goto cdone;
-c4:     *(int *)(a3 + 0xE8) |= 0x8000;  goto cdone;
-c1:     *(int *)(a3 + 0xE8) |= 0x1000;  goto cdone;
-c2:     *(int *)(a3 + 0xE8) |= 0x4000;  goto cdone;
-c6:     *(int *)(a3 + 0xE8) |= 0x10000; goto cdone;
-c5:     *(int *)(a3 + 0xE8) |= 0x20000; goto cdone;
+c5:     *(int *)(a3 + 0xE8) |= 0x20000; if (1) goto cdone;
+c6:     *(int *)(a3 + 0xE8) |= 0x10000; if (1) goto cdone;
+c2:     *(int *)(a3 + 0xE8) |= 0x4000;  if (1) goto cdone;
+c1:     *(int *)(a3 + 0xE8) |= 0x1000;  if (1) goto cdone;
+c4:     *(int *)(a3 + 0xE8) |= 0x8000;  if (1) goto cdone;
 c3:     *(int *)(a3 + 0xE8) |= 0x2000;
 cdone:  ;
     }
@@ -10160,17 +10164,16 @@ cdone:  ;
 
     /* stride-64 search over the table when 0xEC exceeds the 0x214 bound */
     {
-        int t0 = *(int *)(a3 + 0xEC);
-        if (*(unsigned int *)(a3 + 0xEC) > *(unsigned int *)(a3 + 0x214)) {
-            unsigned int count = *(unsigned int *)&D_00000000;
-            char *base = *(char **)&game_uso_D_807FFBC0;
-            char *obj = *(char **)(a3 + 0xB4);
+        unsigned int t0 = *(unsigned int *)(a3 + 0xEC);
+        if (t0 > *(unsigned int *)(a3 + 0x214)) {
             unsigned int v1;
-            char *e = base;
-            for (v1 = 0; v1 < count; v1++, e += 64) {
-                if ((*(int *)(obj + 0x8C0) & *(int *)(e + 0x34)) == 0) continue;
+            char *base;
+            char *obj;
+            char *e;
+            for (v1 = 0, base = *(char **)&game_uso_D_807FFBC0, obj = *(char **)(a3 + 0xB4), e = base; v1 < *(unsigned int *)&D_00000000; v1++, e += 64) {
+                if ((*(int *)(e + 0x34) & *(int *)(obj + 0x8C0)) == 0) continue;
                 if (*(int *)(e + 0x2C) != *(int *)(a3 + 0xE8)) continue;
-                if ((*(int *)(e + 0x38) & 0x4) && (*(int *)(obj + 0x9A8) & 0x1)) continue;
+                if ((*(int *)(e + 0x38) & 0x4) && !(*(int *)(obj + 0x9A8) & 0x1)) continue;
                 if (*(int *)(obj + 0x938) != 0) continue;
                 *(char **)(a3 + 0xF0) = base + v1 * 64;
                 *(int *)(a3 + 0xE8) = 0;
@@ -10179,12 +10182,11 @@ cdone:  ;
                 t0 = 0;
                 break;
             }
-        }
-        if (t0 < 21) {
             *(int *)(a3 + 0xE8) &= 0x6;
-        } else {
-            *(int *)(a3 + 0xEC) = 0;
-            *(int *)(a3 + 0xE8) = 0;
+            if (t0 >= 21) {
+                *(int *)(a3 + 0xEC) = 0;
+                *(int *)(a3 + 0xE8) = 0;
+            }
         }
     }
     (void)a1;
