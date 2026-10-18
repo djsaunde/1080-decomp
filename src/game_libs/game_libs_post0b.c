@@ -3209,41 +3209,22 @@ void gl_func_00037540(char *o) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00037540);
 #endif
 
-#ifdef NON_MATCHING
-/* ~16% NM (3/16 insns identical). Builds (0,arg0->float_2C,0) Vec3 on
- * stack, calls gl_func_00000000(arg0->field_14 + 0x30, &vec).
- *
- * Logic verified — but target asm has unusual layout: frame -0x48 (32
- * bytes more than IDO's natural -0x28), with a DEAD spill `sw t6, 0x44(sp)`
- * after the lw t6, 0x14(a0). The vec3 is at sp+0x2C..0x34 (high-address
- * end of frame), matching IDO's typical "args first" layout with a giant
- * gap before the locals.
- *
- * Tried 5 variants:
- *   - inline `*(int*)((char*)a0+0x14)+0x30` arg - no spill, frame -0x28
- *   - named `int p = a0[5]` local - no spill, frame -0x28
- *   - `volatile int p = ...` - reload-after-spill but frame still -0x28
- *   - `register int p = ...` - same as plain
- *   - `int pad[5]` to bump frame - bumps to -0x40 not -0x48; vec3 ends up
- *     at sp+0x34 not sp+0x2C
- *
- * The dead spill at sp+0x44 + frame -0x48 strongly suggests the original
- * source had additional dead locals OR a `register` decl that IDO chose
- * to home at sp+0x44. None of the simple C shapes reproduce this. Defer
- * to later pass with type info on arg0's struct (likely a Boarder-state
- * struct given Vec3 build pattern). */
+/* gl_func_0003783C: builds Vec3 (0, a0->f2C, 0) and calls the placeholder
+ * with (a0->f14 + 0x30, &v). EXACT (run 108 agent-c): the target's FP colours
+ * (zero in $f2, the loaded y in $f0) are NAMED float locals y/z (expression
+ * temps take $f4+); the dead `sw t6,68(sp)` + frame 0x48 come from p living
+ * in a memory struct beside v, plus int pad[3]. */
 void gl_func_0003783C(int *a0) {
     struct { Vec3 v; char pad[12]; int p; } s;
-    int pad[5];
+    float y, z;
+    int pad[3];
     s.p = *(int*)((char*)a0 + 0x14);
-    s.v.y = *(float*)((char*)a0 + 0x2C);
-    s.v.z = 0.0f;
-    s.v.x = 0.0f;
+    y = *(float*)((char*)a0 + 0x2C); z = 0.0f;
+    s.v.y = y;
+    s.v.z = z;
+    s.v.x = z;
     gl_func_00000000(s.p + 0x30, &s.v);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003783C);
-#endif
 
 /* gl_func_0003787C: 21-insn 2-call helper. */
 extern int gl_proto_3787C(void*, void*, void*, int, float, int);
@@ -9635,13 +9616,23 @@ void game_libs_func_0003E9C0(int *a0, int a1) {
 // frame 0x40 vs 0x48 -- the target puts o1 directly under the token (64) and
 // the two copies in 8-byte blocks at 56/48; named copies (function or block
 // scope, statement or comma form) all pack at 4.
+// RUN 108 (agent-c): 99.58 -> 99.81. Frame FIXED: declare key, o1, then
+// unused `volatile int` pads between k1 and k2 (key 68, o1 64, k1 56, k2 48,
+// frame 0x48). Only residual: the final copy temp is t3 vs target t4 (one
+// more uopt temp consumed upstream); ~25 spellings (int-homed copies, struct
+// copies, comma args, nested ifs, kp pointer, unnamed p1/p2) keep t3 or worse.
 #ifdef NON_MATCHING
 extern int D_00000000;
 typedef struct { char c[4]; } Tag3E9C8; /* 4-byte key, align 1 (lwl/lwr copy) */
 typedef struct { int w; } Key3E9C8;
 void gl_func_0003E9C8(void *a0) {
-    Key3E9C8 key, k1, k2;
-    char *o1, *o2;
+    Key3E9C8 key;
+    char *o1;
+    volatile int pad1;
+    Key3E9C8 k1;
+    volatile int pad2;
+    Key3E9C8 k2;
+    char *o2;
     int *p1, *p2;
     *(Tag3E9C8 *)&key = *(Tag3E9C8 *)((char *)&D_00000000 + 0x0002F34C);
     if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F350, &key)) return;
