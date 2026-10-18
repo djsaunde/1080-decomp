@@ -3959,21 +3959,53 @@ extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 
 /* scratch[0] == sp+0xC4. Indices below are byte-offset/4 from 0xC4. */
 #define M(off) m[((off) - 0xC4) / 4]
+/* RUN 107 (agent-c, byvalue-struct-scan `out` tell): 51.9 -> 87.6. Every
+ * sub-object ctor takes a 4-byte struct BY VALUE (`lw a1,92(sp); sw a1,4(sp)`):
+ * zero-page global word -> per-object temp (v0..v3 / t4..t10, kept alive by
+ * an address escape so their dead stores stay) -> inline-param copies p1/p2
+ * shared by all objects, copied as `.w` ints (a struct assignment goes through
+ * addiu-addressed copies). Each reloc-blind zero-page site is its own extern
+ * (D_55A0_*), so uopt cannot CSE or dead-store them; one merged flags variable
+ * (s0); address-taken list iterator; actor zeros as (f32)0 so 0.0f is not
+ * hoisted into $f20. Residual: frame 0x170 vs 0x180, arg1 home reloads, the
+ * list-iterator spill shape, t-register numbering. */
+typedef struct { int w; } S4_55A0;
+typedef struct { float x, y, z, w; } V4_55A0;
+extern S4_55A0 D_55A0_v0, D_55A0_v1, D_55A0_v2, D_55A0_v3;
+extern char D_55A0_s28_0, D_55A0_s28_1, D_55A0_s28_2, D_55A0_s28_3;
+extern char D_55A0_o28_0, D_55A0_o28_1, D_55A0_o28_2, D_55A0_o28_3;
+extern char D_55A0_o48_0, D_55A0_o48_1, D_55A0_o48_2;
+typedef struct { int a, b; } P8_55A0;
+extern P8_55A0 D_55A0_pair;
+extern char D_55A0_la, D_55A0_lb, D_55A0_n4, D_55A0_n2;
+extern char D_55A0_tb, D_55A0_o28_4, D_55A0_s28_5, D_55A0_o28_5;
+extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
+typedef struct { int a, b; } G2_55A0;
+typedef struct { int w, x, y; } R12_55A0;
+extern G2_55A0 D_55A0_G;
+extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
+extern char D_55A0_lb0, D_55A0_fmt, D_55A0_cfg;
+#define CFG55A0(o) (*(int *)(&D_55A0_cfg + (o)))
 void func_000055A0(int arg0, int arg1, int arg2) {
+    S4_55A0 t4, t5, t6, t7, t8, t9, t10;
     float m[40]; /* sp+0xC4 .. sp+0x163 */
-    float sp74, sp68, sp6C, sp70;
-    float sp50, sp44, sp48, sp4C;
-    float sp34, sp28, sp2C, sp30;
-    int var_s0, var_s0_2, mode;
+    S4_55A0 v0, v1, v2, v3;
+    S4_55A0 p1;
+    V4_55A0 vec0;
+    S4_55A0 p2;
+    V4_55A0 vec1, vec2;
+    int var_s0, mode;
     int cnt;
-    int e34;
-    void *obj, *sub, *node, *n2, *n3;
-    void *iter;
+    char *obj, *sub, *node;
+    char *nl;
+    char *n2, *n3, *n4;
+    R12_55A0 *it;
 
-    DI(0) = DI(0) | 8;
-    DI(4) = 0xAA002;
-    DI(0) = 0;
-    DI(0) = 0;
+    if (1) { S4_55A0 *q0 = &v0, *q1 = &v1, *q2 = &v2, *q3 = &v3, *q4 = &t4, *q5 = &t5, *q10 = &t10; }
+    D_55A0_w0 = D_55A0_r0 | 8;
+    D_55A0_G.b = 0xAA002;
+    D_55A0_G.a = 0;
+    D_55A0_z0 = 0;
     var_s0 = arg2 | 0x10;
     M(0x154) = 0.0f; M(0x158) = 0.0f; M(0x15C) = 0.0f; M(0x160) = 0.0f;
     M(0x144) = 0.0f; M(0x148) = 0.0f; M(0x150) = 0.0f;
@@ -3989,135 +4021,142 @@ void func_000055A0(int arg0, int arg1, int arg2) {
     M(0xF8) = CF(0x1C);
 
     if (arg1 == 1) {
-        DI(4) = 0x28002;
-        DI(0) = 0;
-        DI(0) = func_00000000(0, &D_00007E20, DP(0), 0);
-        if (DI(0) != 0) {
-            iter = &D_00007E24;
-            cnt = OI(iter, 0);
+        D_55A0_G.b = 0x28002;
+        D_55A0_G.a = 0;
+        D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
+        if (D_55A0_listchk != 0) {
+            if (1) { R12_55A0 **q = &it; }
+            it = (R12_55A0 *)&D_00007E24;
             do {
-                func_00000000(&D_00007E24, cnt, iter);
-                func_00000000(DI(0), cnt);
-                cnt = OI(iter, 0xC);
-                iter = (char *)iter + 0xC;
-            } while (cnt != 0);
+                func_00000000(&D_55A0_fmt, it->w, it);
+                func_00000000(D_55A0_list2, it);
+                it++;
+            } while (it->w != 0);
         }
     }
 
     if (arg1 != 6) {
         var_s0 = var_s0 | 0x20;
     }
-    var_s0_2 = var_s0 | 4;
+    var_s0 |= 4;
     if ((arg1 == 6) || (arg1 == 0xB)) {
-        var_s0_2 &= ~0x704;
+        var_s0 &= ~0x704;
     }
-    mode = DI(0x34);
+    mode = CFG55A0(0x34);
     if (mode == 5) {
-        var_s0_2 |= 1;
+        var_s0 |= 1;
     }
     if (mode == 6) {
-        var_s0_2 |= 2;
+        var_s0 |= 2;
     }
-    if ((arg1 == 2) || (arg1 == 3) || (arg1 == 4) || (arg1 == 9) || (DI(0x64) == 7)) {
-        var_s0_2 |= 8;
+    if ((arg1 == 2) || (arg1 == 3) || (arg1 == 4) || (arg1 == 9) || (CFG55A0(0x64) == 7)) {
+        var_s0 |= 8;
     }
     if (arg1 == 1) {
-        var_s0_2 = 0xFFFF;
+        var_s0 = 0xFFFF;
     }
-    OI(DROOT, 0x34) = var_s0_2;
+    OI(DROOT, 0x34) = var_s0;
 
-    if (var_s0_2 & 4) {
+    if (var_s0 & 4) {
         /* actor 0 (0x74) */
-        e34 = D_00007E34;
-        obj = (void *)func_00000000(0x74);
+        v0.w = D_55A0_v0.w;
+        p1.w = v0.w;
+        obj = (char *)func_00000000(0x74);
         if (obj != 0) {
+            p2.w = p1.w;
             sub = obj;
-            if ((obj != 0) || (sub = (void *)func_00000000(0x48), sub != 0)) {
-                func_00000000(sub, e34, NULL);
-                OI(sub, 0x28) = 0;
+            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
+                func_00000000(sub, p2, 0);
+                OI(sub, 0x28) = (int)&D_55A0_s28_0;
             }
-            OI(obj, 0x28) = (int)&D_00007AB8;
-            node = (char *)obj + 0x5C;
-            if ((node != NULL) || (node = (void *)func_00000000(0x18), node != 0)) {
+            OI(obj, 0x28) = (int)&D_55A0_o28_0;
+            node = obj + 0x5C;
+            if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(node);
             }
-            OF(obj, 0x4C) = 0.0f; OF(obj, 0x50) = 0.0f; OF(obj, 0x54) = 0.0f; OF(obj, 0x58) = 1.0f;
-            sp74 = 1.0f;
-            sp68 = CF(0x20); sp6C = CF(0x20); sp70 = CF(0x20);
-            func_00000000(0x3F800000, node, &sp68, DP(0x3E1), 0x3E5);
+            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
+            vec0.w = 1.0f; vec0.x = vec0.y = vec0.z = CF(0x20);
+            func_00000000(obj + 0x5C, &vec0, 993, 997);
             OI(obj, 0x38) = 1;
-            OI(obj, 0x48) = 0;
+            OI(obj, 0x48) = (int)&D_55A0_o48_0;
         }
-        func_00000000(DROOT, obj, DP(4));
+        func_00000000(DROOT, obj, 4);
 
         /* actor 1 (0x74) */
-        obj = (void *)func_00000000(0x74);
+        v1.w = D_55A0_v1.w;
+        p1.w = v1.w;
+        obj = (char *)func_00000000(0x74);
         if (obj != 0) {
+            p2.w = p1.w;
             sub = obj;
-            if ((obj != 0) || (sub = (void *)func_00000000(0x48), sub != 0)) {
-                func_00000000(sub, DROOT, NULL);
-                OI(sub, 0x28) = 0;
+            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
+                func_00000000(sub, p2, 0);
+                OI(sub, 0x28) = (int)&D_55A0_s28_1;
             }
-            OI(obj, 0x28) = 0;
-            node = (char *)obj + 0x5C;
-            if ((node != NULL) || (node = (void *)func_00000000(0x18, node), node != NULL)) {
-                func_00000000(node, node);
+            OI(obj, 0x28) = (int)&D_55A0_o28_1;
+            node = obj + 0x5C;
+            if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
+                func_00000000(node);
             }
-            OF(obj, 0x4C) = 0.0f; OF(obj, 0x50) = 0.0f; OF(obj, 0x54) = 0.0f; OF(obj, 0x58) = 1.0f;
-            sp50 = 1.0f;
-            sp44 = CF(0x24); sp48 = CF(0x24); sp4C = CF(0x24);
-            func_00000000(0x3F800000, node, &sp44, DP(0x3E1), 0x3E5);
+            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
+            vec1.w = 1.0f; vec1.x = vec1.y = vec1.z = CF(0x24);
+            func_00000000(obj + 0x5C, &vec1, 993, 997);
             OI(obj, 0x38) = 1;
-            OI(obj, 0x48) = 0;
+            OI(obj, 0x48) = (int)&D_55A0_o48_1;
         }
-        func_00000000(DROOT, obj, DP(4));
+        func_00000000(DROOT, obj, 4);
 
         /* actor 2 (0x74) */
-        obj = (void *)func_00000000(0x74);
+        v2.w = D_55A0_v2.w;
+        p1.w = v2.w;
+        obj = (char *)func_00000000(0x74);
         if (obj != 0) {
+            p2.w = p1.w;
             sub = obj;
-            if ((obj != 0) || (sub = (void *)func_00000000(0x48), sub != 0)) {
-                func_00000000(sub, DROOT, NULL);
-                OI(sub, 0x28) = 0;
+            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
+                func_00000000(sub, p2, 0);
+                OI(sub, 0x28) = (int)&D_55A0_s28_2;
             }
-            OI(obj, 0x28) = 0;
-            node = (char *)obj + 0x5C;
-            if ((node != NULL) || (node = (void *)func_00000000(0x18, node), node != NULL)) {
-                func_00000000(node, node);
+            OI(obj, 0x28) = (int)&D_55A0_o28_2;
+            node = obj + 0x5C;
+            if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
+                func_00000000(node);
             }
-            OF(obj, 0x58) = 1.0f; OF(obj, 0x4C) = 0.0f; OF(obj, 0x50) = 0.0f; OF(obj, 0x54) = 0.0f;
-            sp28 = CF(0x28); sp2C = CF(0x2C); sp30 = CF(0x30); sp34 = 1.0f;
-            func_00000000(node, &sp28, DP(0x3E1), DP(0x3E5));
+            OF(obj, 0x58) = 1.0f; OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0;
+            vec2.x = CF(0x28); vec2.y = CF(0x2C); vec2.z = CF(0x30); vec2.w = 1.0f;
+            func_00000000(obj + 0x5C, &vec2, 993, 997);
             OI(obj, 0x38) = 1;
-            OI(obj, 0x48) = 0;
+            OI(obj, 0x48) = (int)&D_55A0_o48_2;
         }
-        func_00000000(DROOT, obj, DP(4));
+        func_00000000(DROOT, obj, 4);
 
         /* list object (0x6C) */
         DI(4) = 0x28002;
         DI(0) = 0;
-        node = (void *)func_00000000(0, NULL, NULL, NULL);
-        obj = (void *)func_00000000(0x6C);
+        nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
+        v3.w = D_55A0_v3.w;
+        p1.w = v3.w;
+        obj = (char *)func_00000000(0x6C);
         if (obj != 0) {
+            p2.w = p1.w;
             sub = obj;
-            if ((obj != 0) || (sub = (void *)func_00000000(0x48), sub != 0)) {
-                func_00000000(sub, DROOT, node);
-                OI(sub, 0x28) = 0;
+            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
+                func_00000000(sub, p2, nl);
+                OI(sub, 0x28) = (int)&D_55A0_s28_3;
             }
-            OI(obj, 0x28) = 0;
-            n2 = (char *)obj + 0x48;
-            if ((n2 != NULL) || (n2 = (void *)func_00000000(0x10, n2), n2 != NULL)) {
+            OI(obj, 0x28) = (int)&D_55A0_o28_3;
+            n2 = obj + 0x48;
+            if (n2 != 0 || (n2 = (char *)func_00000000(0x10)) != 0) {
                 n3 = n2;
-                if ((n2 != NULL) || (n3 = (void *)func_00000000(0x10, n2), n3 != 0)) {
-                    void *n4 = n3;
-                    if ((n3 != NULL) || (n4 = (void *)func_00000000(4, n2), n4 != 0)) {
-                        OI(n4, 0) = 0;
+                if (n3 != 0 || (n3 = (char *)func_00000000(0x10)) != 0) {
+                    n4 = n3;
+                    if (n4 != 0 || (n4 = (char *)func_00000000(4)) != 0) {
+                        OI(n4, 0) = (int)&D_55A0_n4;
                     }
                     OI(n3, 0x4) = (int)obj;
-                    OI(n3, 0x8) = DI(0);
-                    OI(n3, 0xC) = DI(4);
+                    *(P8_55A0 *)(n3 + 8) = D_55A0_pair;
                 }
-                OI(n2, 0) = 0;
+                OI(n2, 0) = (int)&D_55A0_n2;
             }
             DI(0) = 0;
             OI(obj, 0x5C) = 2;
@@ -4126,42 +4165,49 @@ void func_000055A0(int arg0, int arg1, int arg2) {
             OI(obj, 0x58) = 0;
             OI(obj, 0x68) = 0;
         }
-        func_00000000(DROOT, obj, DP(0xFFFF));
+        func_00000000(DROOT, obj, 0xFFFF);
     }
 
     func_00000000(DROOT, DP(0));
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
-    node = (void *)func_00000000(0, &D_00007E48, DI(0), 0);
-    obj = (void *)func_00000000(0x48);
+    nl = (char *)func_00000000(0, &D_00007E48, &D_55A0_tb, 0);
+    t4.w = *(int *)&func_00007E50;
+    p1.w = t4.w;
+    obj = (char *)func_00000000(0x48);
     if (obj != 0) {
-        func_00000000(obj, *(int *)&func_00007E50, node);
-        OI(obj, 0x28) = 0;
+        func_00000000(obj, p1, nl);
+        OI(obj, 0x28) = (int)&D_55A0_o28_4;
     }
-    func_00000000(DROOT, obj, DP(0xFFFF));
+    func_00000000(DROOT, obj, 0xFFFF);
 
-    obj = (void *)func_00000000(0x48);
+    t5.w = *(int *)&D_00007E54;
+    p1.w = t5.w;
+    obj = (char *)func_00000000(0x48);
     if (obj != 0) {
+        p2.w = p1.w;
         sub = obj;
-        if ((obj != 0) || (sub = (void *)func_00000000(0x48), sub != 0)) {
-            func_00000000(sub, D_00007E54, DI(0));
-            OI(sub, 0x28) = 0;
+        if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
+            func_00000000(sub, p2, D_55A0_g5);
+            OI(sub, 0x28) = (int)&D_55A0_s28_5;
         }
-        OI(obj, 0x28) = 0;
+        OI(obj, 0x28) = (int)&D_55A0_o28_5;
     }
-    func_00000000(DROOT, obj, DP(0xFFFF));
+    func_00000000(DROOT, obj, 0xFFFF);
 
-    func_00000000(DROOT, func_00000000(0, D_00007E58, DI(0), &M(0x144)), DP(0xFFFF));
-    func_00000000(DROOT, func_00000000(0, D_00007E5C, DI(0), &M(0x114)), DP(0xFFFF));
-    func_00000000(DROOT, func_00000000(0, D_00007E60, DI(0), &M(0xD4)), DP(0xFFFF));
-    func_00000000(DROOT, func_00000000(0, D_00007E64, DI(0), &M(0xC4)), DP(0xFFFF));
+    func_00000000(DROOT, func_00000000(0, (t6.w = *(int *)&D_00007E58, t6), D_55A0_g6, &M(0x144)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t7.w = *(int *)&D_00007E5C, t7), D_55A0_g7, &M(0x114)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t8.w = *(int *)&D_00007E60, t8), D_55A0_g8, &M(0xD4)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t9.w = *(int *)&D_00007E64, t9), D_55A0_g9, &M(0xC4)), 0xFFFF);
 
-    obj = (void *)func_00000000(0x58);
+    t10.w = *(int *)&D_00007E68;
+    p1.w = t10.w;
+    obj = (char *)func_00000000(0x58);
     if (obj != 0) {
-        func_00000000(obj, D_00007E68, DI(0), &M(0xE4));
+        func_00000000(obj, p1, D_55A0_g10, &M(0xE4));
         OI(obj, 0x28) = (int)&D_00007600;
     }
-    func_00000000(DROOT, obj, DP(0xFFFF));
+    func_00000000(DROOT, obj, 0xFFFF);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000055A0);
@@ -4590,10 +4636,10 @@ void *func_00006808(char *arg0, char *arg1, s32 arg2) {
     f32 spA4;
     f32 spA0;
     f32 sp9C;
-    s32 sp78;
-    s32 sp74;
-    s32 sp70;
-    s32 sp6C;
+    S4_55A0 sp78;
+    S4_55A0 sp74;
+    S4_55A0 sp70;
+    S4_55A0 sp6C;
     f32 sp4C;
     u32 sp48;
     s32 temp_a1;
@@ -4662,12 +4708,8 @@ loop_3:
         temp_v0_3 = func_00000000(0);
         temp_v0_4 = func_00000000(0, &D_00007ED8, temp_v0_3);
         func_00000000(temp_v0_3, temp_v0_4);
-        temp_a2 = *(s32 *)&D_00007EE8;
-        sp78 = temp_a2;
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_v0_3, temp_a2);
-        temp_a2_2 = *(s32 *)&D_00007EEC;
-        sp74 = temp_a2_2;
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_v0_4, temp_a2_2);
+        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_v0_3, (sp78.w = *(s32 *)&D_00007EE8, sp78));
+        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_v0_4, (sp74.w = *(s32 *)&D_00007EEC, sp74));
         temp_s3_2 = *(s32 *)((char *)(arg0) + 0x7C);
         func_00000000(temp_s3_2 + 0x10, temp_v0_3);
         if (*(s32 *)((char *)(temp_v0_3) + 0x14) != 0) {
@@ -4675,12 +4717,8 @@ loop_3:
         }
         *(s32 *)((char *)(temp_v0_3) + 0x14) = temp_s3_2;
         func_00000000(temp_v0_3, *(s32 *)((char *)(arg0) + 0x94));
-        temp_a2_3 = *(s32 *)&D_00007EF0;
-        sp70 = temp_a2_3;
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), *(s32 *)((char *)(arg0) + 0x90), temp_a2_3);
-        temp_a2_4 = *(s32 *)&D_00007EF4;
-        sp6C = temp_a2_4;
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), *(s32 *)((char *)(arg0) + 0x94), temp_a2_4);
+        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), *(s32 *)((char *)(arg0) + 0x90), (sp70.w = *(s32 *)&D_00007EF0, sp70));
+        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), *(s32 *)((char *)(arg0) + 0x94), (sp6C.w = *(s32 *)&D_00007EF4, sp6C));
         func_00000000();
     default:
 block_25:
