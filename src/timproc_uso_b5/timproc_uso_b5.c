@@ -4355,11 +4355,15 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * at 0x4E4, ORs the two rows' 0x2B4 words). Gate args are (scr->0x41C,
  * scr->0x3B8); the callees are 1D1C / import_000A53B4 / func_00F954.
  * Writing the index term FIRST (`idx*4 + base`) gives the target's t-reg
- * numbering on rows 1-3. RESIDUAL: the import_80020098 copy base and the
- * row-4 0x40C base take a0/v1 (target v1/v0) plus the row-5 temp pair. */
+ * numbering on rows 1-3.
+ * 2026-10-18 agent-g (run 107) 98.9 -> EXACT: (1) func_00F954 declared `void`
+ * -- with an `int` return its dead v0 def blocked v0 for the next statement,
+ * pushing the import copy base and the row-4 0x40C base one register up (a0/v1,
+ * target v1/v0); (2) the 0x40-row term of the row-4 OR is written base-first
+ * (`base + idx*4`) while every other row stays index-first -- the operand order
+ * picks the t-reg ring position of the loads. */
 extern int import_000A53B4();
-extern int timproc_uso_b5_func_00F954();
-#ifdef NON_MATCHING
+extern void timproc_uso_b5_func_00F954();
 void timproc_uso_b5_func_00006C00(char *scr) {
     if (!timproc_uso_b5_func_00001D1C(*(char **)(scr + 0x41C), *(int *)(scr + 0x3B8))) return;
     import_000A53B4(scr);
@@ -4369,13 +4373,12 @@ void timproc_uso_b5_func_00006C00(char *scr) {
     **(int **)(scr + 0x4DC) = E6C00(0x4C, 0x3DC, 0x2B0);
     **(int **)(scr + 0x4E0) = E6C00(0x40, 0x3D0, 0x2B0);
     **(int **)(scr + 0x4E8) = E6C00(0x44, 0x3D4, 0x2B0);
-    **(int **)(scr + 0x4E4) = E6C00(0x40, 0x3D0, 0x2B4) | E6C00(0x44, 0x3D4, 0x2B4);
+    **(int **)(scr + 0x4E4) =
+        *(int *)(*(char **)(*(char **)(*(char **)(scr + 0x40C) + 0x40) + *(int *)(scr + 0x3D0) * 4 + 0x3C) + 0x2B4) |
+        E6C00(0x44, 0x3D4, 0x2B4);
     **(int **)(scr + 0x4EC) = E6C00(0x48, 0x3D8, 0x2B0);
 #undef E6C00
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00006C00);
-#endif
 
 /* timproc_uso_b5_func_00006D30: 54-insn poll-loop over a record table.
  * X = timproc_uso_b5_func_00000000 (cross-USO placeholder, all 5 jals).
@@ -9187,8 +9190,6 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
   timproc_uso_b5_func_00003F58();
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000CE6C_pad.s")
-
 #ifdef NON_MATCHING
 /* timproc_uso_b5_func_0000CEB4: three HUD-emit calls (func_00004068) with an
  * RGBA colour that is white when a0->0x2AC selects that slot and
@@ -9198,10 +9199,11 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
  * cast) stops uopt CSE-ing the int-typed `sp+0x40` LDA across the calls and
  * spilling it -- the target rematerialises `addiu a3,sp,64` per call (also
  * lifts C310 90.5 -> 90.9); `pad[6]` after v gives the 0x50 frame with v at
- * 0x40. RESIDUAL: (1) the first block's `lui at,0x3F80; mtc1 f2` is hoisted
- * ABOVE the prologue -- those 2 words sit in the predecessor's
- * _pad_..._0000CE6C (prologue-stolen head, needs a boundary move before it
- * can land); (2) block 1's then-arm is empty in the target but still emitted
+ * 0x40. 2026-10-18 agent-g (run 107): BOUNDARY MOVED -- the first block's
+ * `lui at,0x3F80; mtc1 f2` hoisted ABOVE the prologue used to sit in the
+ * predecessor's _pad_..._0000CE6C; those 2 words now open this symbol (real
+ * entry 0xCEAC, name kept; no references to the label), and the C emits them.
+ * RESIDUAL: (2) block 1's then-arm is empty in the target but still emitted
  * as `bc1f else; b skip` (here bc1t skip); (3) blocks 2/3 load D before the
  * 1.0 constant (here after). */
 extern int gl_func_00000000();

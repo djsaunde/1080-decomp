@@ -1,6 +1,8 @@
-nonmatching timproc_uso_b5_func_0000CEB4, 0x1A4
+nonmatching timproc_uso_b5_func_0000CEB4, 0x1AC
 
 glabel timproc_uso_b5_func_0000CEB4
+    /* 00CEAC 0000CEAC 3C013F80 */  .word 0x3C013F80
+    /* 00CEB0 0000CEB0 44811000 */  .word 0x44811000
     /* 00CEB4 0000CEB4 27BDFFB0 */  .word 0x27BDFFB0
     /* 00CEB8 0000CEB8 AFBF001C */  .word 0xAFBF001C
     /* 00CEBC 0000CEBC AFA50054 */  .word 0xAFA50054
