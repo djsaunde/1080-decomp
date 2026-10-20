@@ -753,7 +753,7 @@ void mgrproc_uso_func_0000181C(int a0) {}
  * through the field (the re-read forwards the stored t9). RESIDUAL: the
  * outer switch value takes v1 (target v0) and the jtbl displacement above. */
 extern int import_000A7B90();
-extern int import_00096228();
+extern void import_00096228();
 extern int import_000B2888();
 extern int import_80020098[];
 extern char import_80020208;
@@ -978,7 +978,11 @@ void mgrproc_uso_func_00001C90(char *arg0) {
     char *p6a8;
     char *q;
     int w;
-    volatile int pad_a, pad_b, pad_c, pad_d, pad_e;
+    char *q2;
+    int w2;
+    char *q3;
+    int w3;
+    volatile int pad_a;
 
     if (*(int *)(arg0 + 0x4F0) & 0x10000) {
         sp50[0] = 1.0f;
@@ -1005,6 +1009,7 @@ void mgrproc_uso_func_00001C90(char *arg0) {
         gl_func_00000000(arg0 + 0x6B0);
         gl_func_00000000(arg0 + 0x6B0, 0xA0, 0xB0, 3);
         q = *(char **)(arg0 + 0x6F0);
+        if (1) {}
         w = *(short *)(q + 0x20);
         sp48 = 0xA0 - ((*(short *)(*(char **)(arg0 + 0x6D8) + 0x20) + w + 4) / 2);
         gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x7A0) * 255.0f), arg0 + 0x260, arg0 + 0x284);
@@ -1013,17 +1018,19 @@ void mgrproc_uso_func_00001C90(char *arg0) {
             gl_func_00000000(arg0 + 0x6E0);
             gl_func_00000000(arg0 + 0x6E0, sp48, 0x88, 2);
             gl_func_00000000(arg0 + 0x6C8);
-            q = *(char **)(arg0 + 0x6F0);
-            w = *(short *)(q + 0x20);
-            gl_func_00000000(arg0 + 0x6C8, sp48 + w + 4, 0x88, 2);
+            q2 = *(char **)(arg0 + 0x6F0);
+            if (1) {}
+            w2 = *(short *)(q2 + 0x20);
+            gl_func_00000000(arg0 + 0x6C8, sp48 + w2 + 4, 0x88, 2);
             return;
         }
         gl_func_00000000(arg0 + 0x6C8);
         gl_func_00000000(arg0 + 0x6C8, sp48, 0x88, 2);
         gl_func_00000000(arg0 + 0x6E0);
-        q = *(char **)(arg0 + 0x6D8);
-        w = *(short *)(q + 0x20);
-        gl_func_00000000(arg0 + 0x6E0, sp48 + w + 4, 0x88, 2);
+        q3 = *(char **)(arg0 + 0x6D8);
+        if (1) {}
+        w3 = *(short *)(q3 + 0x20);
+        gl_func_00000000(arg0 + 0x6E0, sp48 + w3 + 4, 0x88, 2);
     }
 }
 #else
