@@ -719,7 +719,7 @@ void gl_func_00034C44(int a0, int a1) {
 //
 // MULTI-FUNCTION USO BUNDLE (no-frame-leaf shape — see
 // docs/N64_FORENSICS.md ADDENDUM 2026-05-18b). realjr=2 but only
-// ONE 27BDFFE0 prologue. The second jr bounds a LARGE no-frame
+// ONE 27BDFFE0 prologue. The second jr bounds a LD_39E24_bE no-frame
 // LEAF (it uses only 0($sp), no frame allocation) splat could not
 // separate:
 //   - 0x34C7C..0x34CC0: the NAMED function (frame-allocating).
@@ -1567,7 +1567,7 @@ extern int D_00000000;
  * problem. To force a2, v1 must be FORBIDDEN for r — needs an interfering LR
  * colored to v1 living across r's reload.
  * 2026-07-15 RESOLVED 24/24 byte-exact, RETRACTING the "genuine lowest-free-reg
- * cap": r is passed as a THIRD K&R ARG to func_00000000(&D+0x1E64C, a1, r) —
+ * cap": r is passed as a THIRD K&R D_39E24_b to func_00000000(&D+0x1E64C, a1, r) —
  * the call-arg constraint precolors r's web to $a2 (or a2,v0 lands in the bgez
  * delay slot exactly as target; the a2 marshal costs ZERO extra insns because
  * it replaces the old `or v1,v0` carrier copy). The `or a2,v0` ALWAYS executes
@@ -3448,7 +3448,6 @@ void gl_func_00037A9C(int count) {
 //   Tried: inline-recompute (a0 promoted to s1, worse), s1/p2 reuse
 //   (identical or worse), if(1) BB-break (no-op), single-int-struct
 //   copy (goes through &home, +2 insns). Register-swap cap.
-#ifdef NON_MATCHING
 extern int D_00000000;
 // Object constructor. cb(a0); o = alloc(0xB4). When o!=0: init(o, template@
 // 0x1EBE4); o->0x28 = &D_0; sentinel-guard-zero *(o+0x2C) (doubled fallback
@@ -3456,6 +3455,10 @@ extern int D_00000000;
 // Tail (always, even on alloc-fail): p=a0; p->0xC = p->0x10 = o; if (p->0x38)
 // { r = cb(p->0x3C->0x10 + 16, o); if (o->0x14==0) o->0x14=r; else { o->4=1;
 // o->0x14=r; } }. Returns o. 0x1EBE4 is a deferred data-template symbol site.
+/* EXACT 2026-10-20 (agent-c run 112): the r = cb(p->0x3C->0x10 + 16, o)
+ * registration call returns nothing -- declared void via the alias
+ * gl_func_00000000_37AF0v (its dead int return held v0). */
+extern void gl_func_00000000_37AF0v();
 void gl_func_00037AF0(int a0) {
     int tmp;
     volatile int padA[4];
@@ -3489,16 +3492,13 @@ void gl_func_00037AF0(int a0) {
     *(char **)(a0 + 0xC) = o;
     *(char **)(a0 + 0x10) = o;
     if (*(int *)(a0 + 0x38) != 0) {
-        gl_func_00000000((tmp = *(int *)(*(char **)(a0 + 0x3C) + 0x10)) + 0x10, o);
+        gl_func_00000000_37AF0v((tmp = *(int *)(*(char **)(a0 + 0x3C) + 0x10)) + 0x10, o);
         if (*(int *)(o + 0x14) != 0) {
             *(int *)(o + 0x4) = 1;
         }
         *(int *)(o + 0x14) = tmp;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00037AF0);
-#endif
 
 // gl_func_00037BEC — STRUCTURAL PASS (0x84 / 33 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
@@ -3765,6 +3765,7 @@ extern int D_00000000;
 // *(o+0x10)=0, o->0x14=0, o->0xC=a1. Then o->0x28=&D_0; cb(o+0x18); cb(o,0);
 // a global counter at &D_0 is post-incremented into o->0x1C; o->0x20=cb(o,n).
 // Returns o. Reloc-blind allocator/cb placeholders -> byte-match deferred.
+extern void gl_func_00000000_3800Cv();
 char *gl_func_0003800C(char *o, int a1) {
     char *p;
     char *q;
@@ -3800,7 +3801,7 @@ fields:
 link:
     *(char **)(o + 0x28) = (char *)&D_00000000;
     gl_func_00000000(o + 0x18);
-    gl_func_00000000(o, 0);
+    gl_func_00000000_3800Cv(o, 0);
     n = *(int *)&D_00000000;
     *(int *)&D_00000000 = n + 1;
     *(int *)(o + 0x1C) = n;
@@ -5072,6 +5073,7 @@ extern int D_39094_a5a, D_39094_a5b, D_39094_a6a, D_39094_a6b, D_39094_a7;
 extern int D_39094_a8a, D_39094_a8b;
 extern int D_39094_dat;
 struct gl_39094_blk16 { int w[16]; };
+extern void gl_func_00034458_39094v();
 int gl_func_00039094(int *root) {
     int **bundle = (int**)root[0x10/4];   /* sp+156 home: a0[0x10] */
     int *cur;
@@ -5079,7 +5081,7 @@ int gl_func_00039094(int *root) {
     int *vt;
     int ret;
 
-    gl_func_00034458(root[0xC/4]);
+    gl_func_00034458_39094v(root[0xC/4]);
 
     if (root[0xB0/4] != 0)
     switch (root[0xB0/4]) {
@@ -5090,7 +5092,7 @@ int gl_func_00039094(int *root) {
             break;
         case 2: {
             int *vt2;
-            gl_func_00034458(&D_39094_a2a, (char*)&D_39094_dat + 0xE8);
+            gl_func_00034458_39094v(&D_39094_a2a, (char*)&D_39094_dat + 0xE8);
             vt2 = (int*)root[0x28/4];
             ret = ((int(*)(int))vt2[0x5C/4])(*(short*)((char*)vt2 + 0x58) + (int)root);
             gl_func_00034458(&D_39094_a2b, ret);
@@ -5223,7 +5225,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039094);
  * (3) ADVANCE = hoisted `iter2[0]=iter2[1];` (unconditional -> sinks into the
  * beqz delay) + ternary-comma WITHOUT the [0] store (gives the b .+1
  * collapsed-else); n=node copy after (n colors s0, li-16 -> s1, snapping the
- * (b) swap). (4) DISPATCH vt in a1 via HIDDEN 2ND ARG: (fn)(disp + (int)n, vt)
+ * (b) swap). (4) DISPATCH vt in a1 via HIDDEN 2ND D_39E24_b: (fn)(disp + (int)n, vt)
  * - arg marshaling pins vt's web to $a1 and forces lw-t9-first (the 39EE4
  * dead-def lever gives v0, wrong reg here). (5) first call = dup-arg
  * f(root[0xC/4], root[0xC/4]): CSE computes one lw + copy for the other arg
@@ -5698,12 +5700,13 @@ extern int gl_proto_39E24(int, int, float, float, float, int, float);
 extern char D_39E24_a[]; extern float D_39E24_b[];
 typedef struct { char pad[0x30]; float x, y, z; } T39E24;
 extern T39E24 D_39E24_c; /* file-static at section+0xA0 */
+extern void gl_func_00000000_39E24v();
 void gl_func_00039E24(char *a0) {
     if (gl_proto_39E24(*(int*)(D_39E24_a + 0x254), 3,
                        *(float*)(a0 + 0x5C), *(float*)(a0 + 0x60), *(float*)(a0 + 0x64),
                        0, 0.0f) != 0) {
         T39E24 *t;
-        gl_func_00000000(D_39E24_b, a0 + 0x2C);
+        gl_func_00000000_39E24v(D_39E24_b, a0 + 0x2C);
         t = (T39E24*)(int)&D_39E24_c;
         t->x *= D_39E24_b[74];
         t->y *= D_39E24_b[75];
@@ -6695,7 +6698,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B6A0);
 // gl_func_0003B9C0 — STRUCTURAL PASS (0x45C / 279 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — very large 0xE8 frame, saves s0-s8 AND three FP
-// callee-save doubles f20/f22/f24). The LARGEST geometry node in
+// callee-save doubles f20/f22/f24). The LD_39E24_bEST geometry node in
 // this vein.
 //
 //   void gl_func_0003B9C0(O *o, P *a, P *b, ...) {
@@ -6857,7 +6860,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B9C0);
 // gl_func_0003BE1C — RECONSTRUCTION (0x620 / 392 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — 0xF0=-240 frame, saves s0-s7+ra; 3 stack-passed f32 args
-// at sp+0x100/0x104/0x108). The LARGEST node decoded in this vein.
+// at sp+0x100/0x104/0x108). The LD_39E24_bEST node decoded in this vein.
 //
 // PASS-3 (2026-06-22): hand-reconstructed from the AUTHORITATIVE
 //   disassembly of the EXPECTED object (the prior "m2c graft" was built
@@ -10907,7 +10910,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003FC58);
 // all-nameless (recomputes instead of spilling), K&R unpassed node param
 // (arg-area spill 0x34 + prologue reschedule). E6E8-class coloring residual. NM.
 // EXACT 2026-10-15 (agent-c): the "(node,n) 2-web colour permutation" was the
-// CALL SHAPE. The third callee takes node as its SECOND ARG (node then
+// CALL SHAPE. The third callee takes node as its SECOND D_39E24_b (node then
 // precolours a1: `lw a1,0x10(s0)` + the a1 spill) and returns void (a pinned
 // void alias gl_func_00000000_ff44v, so the jal does not define $v0 and n can
 // colour v0 across the call; with the int-returning K&R blank n lands in v1).
@@ -12242,7 +12245,7 @@ void gl_func_000417CC(int *a0) {
  *
  * NM 2026-09-09 (agent-c): 96/147 words exact in the standalone strict diff
  * (head 0x0-0xd4 word-exact incl. the 0x17D7 beq and the 0x10 scratch).
- * Levers that landed: D_41820_a++ AS THE PRINT ARGUMENT (named `n` + `n+1`
+ * Levers that landed: D_41820_a++ AS THE PRINT D_39E24_bUMENT (named `n` + `n+1`
  * store colours the same a1 but must be passed), ONE pointer var `q` for the
  * alloc(20) record / both attach targets (they share home 0x30 and colour),
  * `int local[3]` (12-byte aggregate pinned at the frame top 0x34..0x3C gives
@@ -12268,6 +12271,7 @@ extern int *D_41820_e;        /* sym541 @0x3C050 record pointer (stored) */
 extern int D_41820_f;         /* sym1802 @0x3C7BC record pointer */
 extern int D_41820_g;         /* sym1671 @0x1EBD0 */
 extern int D_41820_h;         /* sym1827 @0x1F748 */
+extern void gl_func_00000000_41820v();
 void game_libs_func_00041820(char *self) {
     int local[3];
     int *q;
@@ -12302,7 +12306,7 @@ void game_libs_func_00041820(char *self) {
     D_41820_e = q;
     gl_func_00000000(1);
     gl_func_00000000(D_41820_f, 1);
-    gl_func_00000000();
+    gl_func_00000000_41820v();
     *(int *)(self + 0x10) = 0;
     *(int *)(self + 0x2C) = 0;
     D_41820_g = 0;
@@ -12384,6 +12388,7 @@ extern int D_41A9C_v1[], D_41A9C_v2[], D_41A9C_v3[], D_41A9C_v4[];
 extern int D_41A9C_t1[], D_41A9C_t2[];
 extern int D_41A9C_vb;
 
+extern void gl_func_00000000_41A9Cv();
 void gl_func_00041A9C(char *self) {
     char buf[64];
     I41A9C it;
@@ -12414,9 +12419,9 @@ skip1:
 end1:
     gl_func_00000000(D_41A9C_s6, (char *)&D_00000000 + 0x1F668, n, 0);
     gl_func_00000000(D_41A9C_s7, (char *)&D_00000000 + 0x1F670, D_41A9C_s8, 1);
-    gl_func_00000000(D_41A9C_s9, (char *)&D_00000000 + 0x1F678, D_41A9C_s10, 4);
+    gl_func_00000000_41A9Cv(D_41A9C_s9, (char *)&D_00000000 + 0x1F678, D_41A9C_s10, 4);
     gl_func_00000000(buf, (char *)&D_00000000 + 0x1F680, D_41A9C_t1[2], D_41A9C_t1[0]);
-    gl_func_00000000(D_41A9C_s12, buf);
+    gl_func_00000000_41A9Cv(D_41A9C_s12, buf);
     gl_func_00000000(buf, (char *)&D_00000000 + 0x1F690, D_41A9C_t2[2], D_41A9C_t2[0]);
     gl_func_00000000(D_41A9C_s14, buf);
     n = (int *)gl_func_00000000(8);
@@ -14204,6 +14209,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004406C);
 // Raw-.word USO: cb = gl_func_00000000 placeholder, all globals are
 // &D_00000000 + offset (the lui a0,0x0 / addiu a0,a0,0 base-load pair).
 // a0 base = g = &D_00000000 throughout.
+extern void gl_func_00000000_44144v();
 void gl_func_00044144(char *arg0) {
     extern int gl_func_00000000f(void *, void *, void *, int, float, int);
     /* per-site base-0 aliases of D_00000000: target re-materializes a fresh
@@ -14275,7 +14281,7 @@ void gl_func_00044144(char *arg0) {
         FW(var_a2, 0x0) = (s32)&gl_d44144_s4a;
         FW(var_a2, 0x4) = (s32)&gl_d44144_s4b;
     }
-    gl_func_00000000(&gl_d44144_r4, &D_0002FD94, var_a2, 1);
+    gl_func_00000000_44144v(&gl_d44144_r4, &D_0002FD94, var_a2, 1);
     temp_v0_9 = *(char **)(&gl_d44144_gp + 0x218);
     gl_func_00000000(sp38, &D_0002FDA4, FW(temp_v0_9, 0x3C), FW(temp_v0_9, 0x40), FW(temp_v0_9, 0x24), FW(temp_v0_9, 0x1C), FW(temp_v0_9, 0x20), *(int *)&gl_d44144_t1);
     gl_func_00000000(&gl_d44144_t2, sp38);
@@ -14894,6 +14900,7 @@ typedef char *(*GP_00045178)();
 /* Re-decoded 2026-10-17 agent-c run 105 (75.8 -> 98.3): the old m2c tail
  * was garbled; real tail = one vertex-buffer slot + one 0x01030040 display
  * list word + two Vec3 builds passed with &D. Open: lo/hi f12/f14 swap. */
+extern void gl_func_00000000_45178v();
 void gl_func_00045178(char *arg0) {
     char *t;
     Vec3 a;
@@ -14944,11 +14951,10 @@ void gl_func_00045178(char *arg0) {
     *(f32 *)(arg0 + 0x98) = r;
     p = *(char **)(*(char **)(arg0 + 0x254) + 0x158);
     {
-        i = FW(FW(p, 0x3C), 4);
-        FW(FW(p, 0x3C), 4) = i + 1;
+        i = FW(FW(p, 0x3C), 4)++;
         m = (char *)FW(FW(p, 0x3C), 0) + (i << 6);
     }
-    gl_func_00000000((char *)&D_00000000 + 0x60, m);
+    gl_func_00000000_45178v((char *)&D_00000000 + 0x60, m);
     {
         i = FW(FW(p, 0xC), 4);
         FW(FW(p, 0xC), 4) = i + 1;
@@ -17651,6 +17657,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00049B3C);
 //   pressure-driven, not C-flippable. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
+extern void gl_func_00000000_49DBCv();
 u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
     void *spAC;
     void *spA8;
@@ -17707,9 +17714,9 @@ u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
             gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + temp_s1 + 0x6), &sp8C);
         } else {
             if (*(s32 *)(arg0 + 0x54) == 0) {
-                gl_func_00000000((char *)&D_00000000 + 0x20014);
+                gl_func_00000000_49DBCv((char *)&D_00000000 + 0x20014);
             }
-            gl_func_00000000((char *)&D_00000000, &sp94, *(s32 *)(arg0 + 0x54) + arg3 * 0xC);
+            gl_func_00000000_49DBCv((char *)&D_00000000, &sp94, *(s32 *)(arg0 + 0x54) + arg3 * 0xC);
             *(u8 *)&sp8C = *(u8 *)&sp94;
             *(u8 *)&sp90 = *(u8 *)&sp94;
         }
@@ -18944,7 +18951,7 @@ void gl_func_0004BAF4(char *self) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004BAF4);
 #endif
 
-/* gl_func_0004C190: alloc-or-given VARARGS constructor. If a0 is null,
+/* gl_func_0004C190: alloc-or-given VARD_39E24_bS constructor. If a0 is null,
  * allocates 0x1CC bytes. Then calls func(self), stores &D at self[0xA],
  * calls func(self, a1, va_list_ptr), calls func(self). Returns self.
  *
@@ -19084,8 +19091,11 @@ void gl_func_0004C288(int *self, int a1) {
  * RESIDUAL (4 words): the else-arm G240 temp colours v1 (target v0), so the
  * `lui v0` is not hoisted into the beqz delay. Tried: local g, typed test,
  * arm swap, else-if split, sp54 types. The calls go through the blank alias
- * gl_func_00034458_4C300 and D_4C300_g6..g9 (both need = 0 pins on unwrap). */
-#ifdef NON_MATCHING
+ * gl_func_00034458_4C300 and D_4C300_g6..g9 (both need = 0 pins on unwrap).
+ * EXACT 2026-10-20 (agent-c run 112): the residual was the void-callee
+ * case -- the `if (G240 == 0) cb(&D + 0x20138);` call discards its return,
+ * and declaring it void (alias gl_func_00034458_4C300v) frees v0 so the
+ * else-arm G240 temp colours v0 and `lui v0` hoists into the beqz delay. */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
@@ -19102,6 +19112,7 @@ extern int D_4C300_g9;
 extern int gl_func_00034458_4C300();
 typedef char *(*GP_0004C300)();
 #define G240_4C300 (*(char **)((char *)&D_00000000 + 0x240))
+extern void gl_func_00034458_4C300v();
 void gl_func_0004C300(char *self) {
     s32 sz;
     s32 bc;
@@ -19150,7 +19161,7 @@ void gl_func_0004C300(char *self) {
         FW(self, 0xF0) = sp54;
     } else {
         if (G240_4C300 == 0) {
-            gl_func_00034458_4C300((char *)&D_00000000 + 0x20138);
+            gl_func_00034458_4C300v((char *)&D_00000000 + 0x20138);
         }
         FW(self, 0xF0) = FW(G240_4C300, 0xF0);
     }
@@ -19174,9 +19185,6 @@ void gl_func_0004C300(char *self) {
         ((GP_0004C300)FW(cb, 0x5C))(*(s16 *)(cb + 0x58) + self, cb);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004C300);
-#endif
 
 // gl_func_0004C5E4 — STRUCTURAL PASS (0x340 / 209 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0xD0
@@ -19451,6 +19459,7 @@ struct StackA { s32 n; struct StackB *p; };   /* sp+0x44 / sp+0x34 / sp+0x28 */
 extern char D_str_2017C;
 extern char D_str_20188;
 
+extern void gl_func_00034458_4C928v();
 void gl_func_0004C928(struct A4C928 *arg0, struct Arg4C928 *arg1)
 {
   struct St4C928 *st;
@@ -19625,7 +19634,7 @@ void gl_func_0004C928(struct A4C928 *arg0, struct Arg4C928 *arg1)
   *((volatile s32 *) (&arg0->d1A8)) = cnt;
   arg0->d1A8 = ((s32) cnt) >> 1;
   arg1->p10C = (struct Obj4C928 *) gl_func_00034458(arg0, arg0->d1A8);
-  gl_func_00034458((char *) (&D_str_2017C), arg0->d1A8);
+  gl_func_00034458_4C928v((char *) (&D_str_2017C), arg0->d1A8);
   *((s32 *) (((char *) (&D_00000000)) + 0x1C8)) = (s32) arg1->p10C;
   new_var2 = (char *) arg1->p10C;
   if (arg1->p10C != 0)
@@ -23607,7 +23616,7 @@ void gl_func_00051E98(char *a0) {
  * pointer by 4; load next arg; `bnel arg,0,TOP` (delay-likely
  * stash) until a 0 terminator.
  *
- * Multi-pass (defer): VARARGS byte-match is a documented-hard
+ * Multi-pass (defer): VARD_39E24_bS byte-match is a documented-hard
  * confluence — the IDO `...` save-area layout (sw a1/a2/a3 to
  * sp+0x3C/0x40/0x44 = caller arg slots, frame 0x38), the
  * `(sp+0x43)&~3` aligned-va init, the indirect-chain call
@@ -27288,7 +27297,7 @@ void gl_func_00056FF4(int a0, int *a1) {
 }
 
 /* Flag-decode (a1[1]) -> geometry-mode word, then two display-list appends
- * (0xB6000000 = G_CLEARGEOMETRYMODE, 0xB7000000 = G_SETGEOMETRYMODE) to the
+ * (0xB6000000 = G_CLED_39E24_bEOMETRYMODE, 0xB7000000 = G_SETGEOMETRYMODE) to the
  * record buffer at a0->0xC. EXACT: single-bit tests written as signed
  * `(v1 << N) < 0` (one sll temp each; the unsigned `<<N >>31` form burns a
  * second temp per test and shifts the whole $t ring), and the second record
@@ -27596,7 +27605,7 @@ void gl_func_00057700(int *a0) {
  * tick) or (b) m2c re-emit with different expression-folding flags.
  * PASS 4 (2026-06-11): instrument (b) FOUND -- m2c --reg-vars all
  * collapses 398 temps to 36 (+55 var_ decls) and the emit pipeline
- * works: disasm-func.py --obj expected/... (TARGET .o, not build!)
+ * works: disasm-func.py --obj expected/... (TD_39E24_bET .o, not build!)
  * -> m2c --reg-vars all -> m2c-graft-clean.py <file> <fn>. BUT the
  * blanket s32-retyping of var_ decls (to fix 30 cfe type conflicts)
  * broke m2c's pointer-arithmetic typing -> score 56.8 (vs 75.0
@@ -29517,7 +29526,7 @@ void game_libs_func_0005B680(int a0, int a1) {
  * (sentinel-set helper). Differs only in the two magic constants (compare
  * 0x12345678 / store 0x87654321 — swapped vs the donor) and the format-string
  * offset (0x21A0C vs 0x21A20). The old "1-insn-short" cap was a MISSING 4TH
- * ARG: the call is gl_func(&D+ofs, a0->0x20, a1[3], a1) (4 args, a1[3] passed
+ * D_39E24_b: the call is gl_func(&D+ofs, a0->0x20, a1[3], a1) (4 args, a1[3] passed
  * BY VALUE before the store), not the 3-arg form. Ported the donor's exact
  * match-form. */
 void gl_func_0005B68C(int *a0, int *a1) {
@@ -33216,7 +33225,7 @@ void game_libs_func_00061B1C(int a0, int a1) {
  * spill ordering are not reproduced by clean C first pass. Medium
  * class (multi-run), not the easy a0-ctor vein subset. INCLUDE_ASM
  * is the correct build path (no episode; tautology-trap rule).
- * 2026-10-17 agent-g (run 104) 41.6 -> 65.9: it is a VARARGS printf-style
+ * 2026-10-17 agent-g (run 104) 41.6 -> 65.9: it is a VARD_39E24_bS printf-style
  * wrapper -- the four arg homes are the `...` spill, and (sp+47)&~3 is the
  * va_start pointer &fmt + 4 rounded up to 4 (frame 0x28 puts &fmt at 0x28).
  * The held s0 base needs `int bi = (int)arr; base = (char *)bi;` (a plain
