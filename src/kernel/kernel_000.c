@@ -749,35 +749,17 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_8000085C);
 
 
 
-#ifdef NON_MATCHING
-/* func_800008F0: 58-insn iterator over a 135-entry table at D_80012D60.
- * Sibling caller of func_80000568 (the shared-epilogue stub).
- *
- * STRUCTURE (asm 0x8F0-0x9D8):
- *   1. Calls indirect fn-ptr D_80012C44(D_8000A300, a0).
- *   2. Calls func_80000660(a0, &D_80012FC0, &D_80012F80) — 3-arg helper.
- *   3. Outer loop: s2 = 0; while (s2 != 0x87 = 135):
- *        entry = D_80012D60[s2];
- *        if (entry == NULL) goto skip;
- *        ret = func_80000568(D_80012F80, entry + 0x72);  // shared trampoline
- *        if (ret == 0) {
- *            entry->[0x98] = 0;          // sb byte clear
- *            D_80012D60[s2] = NULL;
- *            // Inner cleanup loop (0x990-0x9B4): scan D_80012D60 entries
- *            // 0..0x86 (135) again:
- *            //   if (e != NULL) { func_800021D0(e, s2); func_8000275C(e, s2); }
- *            return 0;
- *        }
- *      skip: s2++;
- *   4. Falls through to return 0.
- *
- * 4th caller of `func_80000568(D_80012F80, entry+0x72)` — uses the
- * shared cross-function trampoline whose recipe ($v0=0 via PREFIX) was
- * just landed (see func_80000568 wrap doc).
- *
- * Cap: ~30-50% structural — cross-function jal works cleanly via fn-ptr
- * cast, but matching nested-loop `bnel` shapes and 4-saved-reg allocation
- * is hard. Documented body captures algorithm; default build INCLUDE_ASM. */
+/* func_800008F0: unload a USO module by path. Debug-print via the
+ * D_80012C44 hook, split the path (func_80000660 = func_80000260: dir ->
+ * D_80012FC0, file -> D_80012F80), find the D_80012D60 slot whose name (+0x72)
+ * equals the file (func_80000568 = func_80000168 strcmp, 0 = equal), clear it
+ * and notify every other live slot (func_800021D0 / func_8000275C, i.e. our
+ * 0x1DD0 / 0x235C). IDO 7.1 -O2.
+ * EXACT 2026-10-20 (agent-g run 112): the old NM called 568/660 through
+ * function-pointer casts (jalr) believing they were shared-epilogue stubs;
+ * kernel jal targets sit 0x400 above our numbering, so they are plain
+ * direct calls to the absolute names. The inner loop's end pointer is
+ * D_80012D60+0x21C (the target .s names it D_80012F7C; same address). */
 extern s32 D_8000A300;
 extern s32 D_80012F80;
 extern s32 D_80012FC0;
@@ -788,25 +770,23 @@ extern s32 D_8000A328;
 extern s32* func_800008B8(void*, void*, void*);
 extern s32 func_80000A98();
 
-s32 func_800008F0(s32 a0) {
-    s32 s2;
-    s32 (*shared_epilogue)(s32, s32) = (s32(*)(s32,s32))func_80000568;
-    void (*helper660)(s32, s32*, s32*) = (void(*)(s32, s32*, s32*))func_80000660;
+s32 func_800008F0(char *path) {
+    s32 i;
+    s32 j;
+    char *e;
 
-    D_80012C44((void*)&D_8000A300, (void*)a0);
-    helper660(a0, &D_80012FC0, &D_80012F80);
-    for (s2 = 0; s2 != 0x87; s2++) {
-        s32 *entry = (s32*)D_80012D60[s2];
-        if (entry == NULL) continue;
-        if (shared_epilogue((s32)&D_80012F80, (s32)entry + 0x72) == 0) {
-            s32 i;
-            *((u8*)entry + 0x98) = 0;
-            D_80012D60[s2] = 0;
-            for (i = 0; i < 0x87; i++) {
-                s32 *e = (s32*)D_80012D60[i];
-                if (e != NULL) {
-                    func_800021D0(e, s2);
-                    func_8000275C(e, s2);
+    D_80012C44((void *)&D_8000A300, path);
+    func_80000660(path, &D_80012FC0, &D_80012F80);
+    for (i = 0; i < 0x87; i++) {
+        if (D_80012D60[i] != 0 &&
+            func_80000568(&D_80012F80, (char *)D_80012D60[i] + 0x72) == 0) {
+            *((char *)D_80012D60[i] + 0x98) = 0;
+            D_80012D60[i] = 0;
+            for (j = 0; j < 0x87; j++) {
+                e = (char *)D_80012D60[j];
+                if (e != 0) {
+                    func_800021D0(e, i);
+                    func_8000275C(e, i);
                 }
             }
             return 0;
@@ -814,9 +794,6 @@ s32 func_800008F0(s32 a0) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800008F0);
-#endif
 
 /* func_800009D8 (5-insn shared-tail epilogue: lw s1/s2/s3, jr ra, addiu sp,+0x28)
  * merged into predecessor func_8000098C (size 0x4C → 0x60). Address re-exported
