@@ -4382,16 +4382,16 @@ void func_00006228(char *a0) {
  * *c=0) -> 64.9->67.3%. Remaining residual is the sub-object saved-reg(s1)-
  * vs-stack-spill(76sp) choice + the ~8 &D %hi/%lo reloc scheduling. */
 extern char D_00007E74, D_00007E7C, D_00007E84, D_00007E98;
-#ifdef NON_MATCHING
 /* run 111 (agent-c): cfront ctor shape -- if (this || (this = new(0xDC))), the inlined base ctor
  * if (s || (s = new(0xB4))) and the doubly-inlined member ctor for the +0x2C cell; the param
  * itself is the object (no copy local); pads restore the 0x50 frame / home offsets; block-count
- * lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). Residual: z[] store vs a0 schedule. */
+ * lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). EXACT: z[1]/z[2] stored in the call's
+ * argument (comma expression) puts the s+0x30 setup between the z[0] and z[1] stores as in the target. */
 void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
     char *s;
     volatile int pad[3];
     float z[3];
-    volatile int pad2[3];
+    volatile int pad2[1];
     if (a0 != 0 || (a0 = (char*)func_00000000(0xDC)) != 0) {
     s = a0;
     if (s != 0 || (s = (char*)func_00000000(0xB4)) != 0) {
@@ -4407,8 +4407,8 @@ void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
             }
         }
         func_00000000(s);
-        z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f;
-        func_00000000(s + 0x30, &z[0]);
+        z[0] = 0.0f;
+        func_00000000(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
     *(void**)(a0 + 0x28) = &D_00000000;
     *(void**)(a0 + 0xC) = &D_00007E7C;
@@ -4426,9 +4426,6 @@ void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
     if (1) { }
     return a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00006254);
-#endif
 
 // func_000063B4 — 0x380 / 224 insns. Minimap marker projection. 23.4 -> 76.0
 // (agent-f 2026-09-04, hand reconstruction from the target .s; old body was
