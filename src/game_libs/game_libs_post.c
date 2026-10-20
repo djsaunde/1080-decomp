@@ -787,18 +787,20 @@ int gl_func_0001D870(int code, Spec12_1D870 spec) {
  * reproduces. Permuter candidate (logic + count correct, regalloc only).
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 extern int D_00000000;
-int game_libs_func_0001D944(int *buf, Pair2 p, int a3, int idx) {
-    int cmd = (((a3 >> 4) & 0xFF) << 16) | 0x14000000;
+typedef struct { unsigned int w0, w1; } G1D944;
+int game_libs_func_0001D944(gfx, a1, a2, a3, idx)
+G1D944 *gfx;
+int a1;
+unsigned short a2;
+int a3;
+int idx;
+{
+#define cmd ((((a3 >> 4) & 0xFF) << 16) | 0x14000000)
     char *rec;
-    int off;
-    buf[0] = cmd | (p.a & 0xFFFF);
-    rec = (char *)&D_00000000 + idx * 0x158;
-    off = (p.b & 0xFFFF) << 1;
-    buf[1] = *(int *)(rec + 0x38) + off + 0x80000000;
-    buf += 2;
-    buf[0] = cmd | ((p.a + 0x1A0) & 0xFFFF);
-    buf[1] = *(int *)(rec + 0x3C) + off + 0x80000000;
-    return (int)(buf + 2);
+    { G1D944 *_g = gfx++; _g->w0 = cmd | (a1 & 0xFFFF); rec = (char *)&D_00000000 + idx * 0x158; _g->w1 = *(int *)(rec + 0x38) + (a2 << 1) + 0x80000000; }
+    { G1D944 *_g = gfx++; _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF); _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000; }
+    return (int)gfx;
+#undef cmd
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D944);
@@ -811,19 +813,20 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D944);
  * table at &D_00000000 by the 5th (stack) arg, reading segment-offset fields
  * +0x38/+0x3C and KSEG0-biasing, returns buf+16. Same cap as 0001D944: D_ ref
  * -> objdiff reloc-depressed + IDO dead arg-home-stores (sw a1/a2 to home). */
-int game_libs_func_0001D9E0(int *buf, int a1, int a2, int a3, int idx) {
-    int cmd = (((a3 >> 4) & 0xFF) << 16) | 0x15000000;
+typedef struct { unsigned int w0, w1; } G1D9E0;
+int game_libs_func_0001D9E0(gfx, a1, a2, a3, idx)
+G1D9E0 *gfx;
+int a1;
+unsigned short a2;
+int a3;
+int idx;
+{
+#define cmd ((((a3 >> 4) & 0xFF) << 16) | 0x15000000)
     char *rec;
-    int off;
-    buf[0] = cmd | (a1 & 0xFFFF);
-    rec = (char *)&D_00000000 + idx * 0x158;
-    a2 &= 0xFFFF;
-    off = a2 << 1;
-    buf[1] = *(int *)(rec + 0x38) + off + 0x80000000;
-    buf += 2;
-    buf[0] = cmd | ((a1 + 0x1A0) & 0xFFFF);
-    buf[1] = *(int *)(rec + 0x3C) + off + 0x80000000;
-    return (int)(buf + 2);
+    { G1D9E0 *_g = gfx++; _g->w0 = cmd | (a1 & 0xFFFF); rec = (char *)&D_00000000 + idx * 0x158; _g->w1 = *(int *)(rec + 0x38) + (a2 << 1) + 0x80000000; }
+    { G1D9E0 *_g = gfx++; _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF); _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000; }
+    return (int)gfx;
+#undef cmd
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D9E0);
