@@ -8709,21 +8709,27 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DD28);
  * can't score (new sym, expected/ baseline pre-merge stale).
  * C body present (under NON_MATCHING) as the permuter seed — build
  * path stays INCLUDE_ASM via #else. */
+/* Run 113 (agent-c): 84.41 -> 94.41, port of the sibling gl_func_0003E1B0
+ * NM (same list search, fields 0x5C/0x60/0x64 instead of 0xA0..): `int *it[2]`
+ * memory iterator, explicit pre-loop advance + loop-tail advance. Same
+ * residual as 3E1B0: the target's node -> key copy (`or v1,v0`) is
+ * copy-propagated away (the beqzl form). */
 #ifdef NON_MATCHING
-typedef struct L3DDC0 { char *data; struct L3DDC0 *next; } L3DDC0;
-typedef struct { L3DDC0 *cur; L3DDC0 *next; } I3DDC0;
 int game_libs_func_0003DDC0(char *o, char *target, float *out) {
-    I3DDC0 it;
-    char *n;
-    if (1) { I3DDC0 *q = &it; }
-    it.next = *(L3DDC0 **)(o + 0x10);
-    while ((n = ((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0)) != 0) {
-        if (n == target) {
-            out[0] = *(float *)(n + 0x5C);
-            out[1] = *(float *)(n + 0x60);
-            out[2] = *(float *)(n + 0x64);
+    int *it[2];
+    int *node;
+
+    it[1] = *(int **)(o + 0x10);
+    it[0] = it[1];
+    node = (it[0] != 0) ? (it[1] = (int *)it[0][1], (int *)it[0][0]) : 0;
+    while (node != 0) {
+        if ((char *)node == target) {
+            out[0] = *(float *)((char *)node + 0x5C);
+            out[1] = *(float *)((char *)node + 0x60);
+            out[2] = *(float *)((char *)node + 0x64);
             return 1;
         }
+        node = ((it[0] = it[1]) != 0) ? (it[1] = (int *)it[0][1], (int *)it[0][0]) : 0;
     }
     return 0;
 }
@@ -13278,7 +13284,7 @@ void game_libs_func_00042938(void) {
         func_00000000(FP38(cv, 0x158), FI38(FP38(cv, 0x148), 0xF0));
     }
     EM38(0xB7000000, 1);
-    four = 4.0f;
+    four = 4.0f; if (1) {}
     two = 2.0f;
     w = 320.0f * two;
     h = 240.0f * two;
@@ -15537,7 +15543,7 @@ s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
     charw = FI(arg0, 0x224);
 
     if (FI(arg0, 0x28C) == 0) {
-        EMIT(0xE7000000, 0);
+        EMIT(0xE7000000, 0); if (1) {}
         EMIT(0xBA001402, 0);
         EMIT(0xB6000000, 1);
         EMIT(0xB900031D, 0x0C087008);
@@ -15587,7 +15593,7 @@ s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
                         gl_func_00034458(arg0, ch, FI(arg0, 0x21C), FI(arg0, 0x220));
                     } else {
                         EMIT((((((FI(arg0, 0x21C) + charw) * 4) & 0xFFF) << 0xC) | 0xE4000000) | (((FI(arg0, 0x220) + lineh) * 4) & 0xFFF),
-                             (((FI(arg0, 0x21C) * 4) & 0xFFF) << 0xC) | ((FI(arg0, 0x220) * 4) & 0xFFF));
+                             (((FI(arg0, 0x21C) * 4) & 0xFFF) << 0xC) | ((FI(arg0, 0x220) * 4) & 0xFFF)); if (1) {}
                         EMIT(0xB4000000,
                             ((cc & 0xF) << 0x18) | (((((s32) (cc & 0xF0)) >> 1) << 5) & 0xFFFF));
                         EMIT(0xB3000000,
