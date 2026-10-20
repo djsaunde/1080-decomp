@@ -64,26 +64,9 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_80008454 merged into func_80008430.s (kernel_021.c) 2026-08-22 --
- * contiguous fragment of the same __rmon breakpoint function (8454's first
- * insn is the delay-slot nop of 8430's bnez; frame/regs owned by 8430's
- * prologue). Kept as global alabel alt-entry for the jal from func_800079F4.
- * Cross-.o label refs (.L8000849C/.L800084D8/.L80008578 into this unit)
- * resolved via undefined_syms_auto.txt. */
-
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80008498);
-
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800084AC);
-
-/* func_800084D0 (size 0xBC, was 0xAC): merged in former func_8000857C
- * fragment (4-insn epilogue at 0x8000857C — `lw $s0,0x14(sp); lw $s1,0x18(sp);
- * jr $ra; addiu $sp,+0x48`). func_8000857C was the natural tail of
- * func_800084D0 (its body ends at 0x80008578 with `lw $ra, 0x1C(sp)`).
- * Several callers — func_80008A08 etc — `jal 0x8000857C` directly to reuse
- * the restore-saved-regs+sp-pop+return sequence (cross-function shared-tail
- * entry, same pattern as func_80006640 → func_800065F0). The address is
- * re-exported via undefined_syms_auto.txt for those callers. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800084D0);
+/* func_80008498 / func_800084AC / func_800084D0 (old head of this unit) were
+ * the body of __rmonClearBreak; merged into func_80008430 (kernel_021.c, C,
+ * exact). Their addresses stay absolute undefined_syms entries. */
 
 /* func_8000858C - verified structural decode (kernel, 0x228, 138
  * insns, rmon MIPS instruction decoder / branch-target helper).

@@ -32,13 +32,10 @@ extern s32 D_8000A2E0;
 extern s32 D_8000A41C;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
-extern void func_80005350(s32, s32);
 extern void func_80005400(s32, s32);
-extern s32 func_80008430(s32);
 extern void func_80009148(s32);
 extern void func_80009030(s32, s32);
 extern void func_80008498(void);
-extern s32 func_80006A98(s32);
 extern void func_800091F0(s32);
 typedef struct { s32 pad[3]; s32 position; } FileState;
 
@@ -69,57 +66,62 @@ s32 func_80008424(s32 arg0) {
 }
 
 
-#ifdef NON_MATCHING
-/* func_80008430: 9-insn prologue fragment of a larger __rmon function
- * splat-split into a 4+ fragment chain (verified 2026-05-05 via asm/.s
- * cross-reference):
- *
- *   - func_80008430 (this, 0x24 / 9 insns) — prologue + first slti+bnez
- *     to .L80008460 (inside func_80008454). Frame -0x48, saves s0/s1/ra.
- *   - func_80008454 (0x44 / 17 insns) — body + dispatch:
- *       0x80008454+0: nop (delay slot of 80008430's bnez)
- *       0x80008458: b .L80008578 (far branch, target inside next fragment)
- *       0x800084??: .L80008460 — `lw t7, 0x48(sp); bnez t8 != 1, .L800084D8`
- *       0x8000848C: bnez t2, .L8000849C (inside func_80008498)
- *       0x80008494: b .L80008578 (far branch, target past 80008498)
- *   - func_80008498 (0x14 / 5 insns) — `.L8000849C: jal func_80006A98(...)`
- *     fragment for the `t2 != 0` arm. Externally-callable (extern void
- *     func_80008498(void) in kernel_054.c).
- *   - func_800084AC, func_800084D0 (further fragments) — `.L800084D8` target
- *     is in 800084D0+; `.L80008578` is also in this range.
- *   - func_8000857C (next standalone function, externally callable from
- *     kernel_000.c) — boundary; 80008430's chain ends just before.
- *
- * Decoded entry semantics:
- *   s32 f(MsgPtr *a0) {
- *     SaveState *s0 = (SaveState*)a0;          // s0 spilled+reloaded from sp
- *     int idx = s0->field_0x10;
- *     if (idx >= 0x10) return -2;              // bnez at→fall-through to "b end; v0=-2"
- *     if (a0->byte_0x9 != 1) goto skip;        // bne t8, 1, .L800084D8
- *     int *entry = rmonbrk_bss_0088 + idx*8;
- *     if (entry[0] != 0) goto skip2;            // .L8000849C
- *     // ...continued in fragments past 80008498...
- *   }
- *
- * Likely __rmonSetBrkpt or __rmonGetBrkPC (sets/gets a hardware breakpoint).
- * 2026-08-22: func_80008454 MERGED into func_80008430.s as a global alabel
- * alt-entry (move-then-merge: kernel_021.c.o and kernel_022.c.o are adjacent
- * in tenshoe.ld, so absorbing 022's leading 0x44 bytes is layout-neutral).
- * The old "MERGE BLOCKED" note conflated 8454 with 8498: 8498 IS externally
- * callable and stays a separate symbol in kernel_022.c; 8454's jal caller
- * (func_800079F4) resolves via the alabel. Remaining chain past 0x80008498
- * left as-is.
- *
- * Stub body documents the fragment relationship for grep discoverability per
- * feedback_orphan_include_asm_after_split_function_decomp.md. */
-/* Match the file-top extern's signature so NON_MATCHING build doesn't error
- * with redeclaration / incompatible-return-type. Stub body — bytes never
- * match anyway since the byte-correct path is INCLUDE_ASM (#else branch). */
-s32 func_80008430(s32 a0) {
-    /* see func_80008454 + func_80008498 for the rest of this function;
-     * merge requires linker-layout adjustment across kernel_018-021.c. */
+/* func_80008430 = __rmonClearBreak (libultra rmon/rmonbrk.c), IDO 7.1
+ * -O1, EXACT. One function [0x8430,0x858C); it used to be four .s pieces
+ * across two units (8430+alabel 8454 here, 8498/84AC/84D0 at the head of
+ * kernel_022, joined by absolute .L label syms). The jal'd 0x80008454 /
+ * 0x80008498 / 0x8000857C are other rmon functions 0x400 lower (kernel
+ * jal targets sit 0x400 above our symbol numbering) and stay absolute
+ * undefined_syms entries. Callees, real names: 6A98 __rmonReadWordAt,
+ * 6A50 __rmonWriteWordTo, 31F0 osWritebackDCache, 5350 osInvalICache,
+ * 73F8 __rmonSendReply. rmonbrk_bss_0088 = rspBreakpoints,
+ * rmonbrk_bss_0000 = breakpoints (16 x {addr, old instruction}). */
+typedef struct { u32 *breakAddress; u32 oldInstruction; } BreakInfo;
+typedef struct { s32 pad0; u8 code; u8 pad5[4]; u8 method; u8 padA[2]; s32 object; s32 bp; } ClrBkptRequest;
+typedef struct { s32 pad0; u8 code; u8 pad5; s16 error; s32 pad8; s32 object; s32 bp; s32 pad14; } BkptReply;
+extern BreakInfo rmonbrk_bss_0088[];
+extern BreakInfo rmonbrk_bss_0000[];
+extern u32 func_80006A98(u32 *);
+extern void func_80006A50(u32 *, u32);
+extern void func_800031F0(void *, s32);
+extern void func_80005350(void *, s32);
+extern void func_800073F8(void *, s32, s32);
+
+s32 func_80008430(ClrBkptRequest *req) {
+    register ClrBkptRequest *request = req;
+    register BreakInfo *whichBreak;
+    BkptReply reply;
+    u32 inst;
+
+    if (request->bp >= 16) {
+        return -2;
+    }
+    if (req->method == 1) {
+        whichBreak = &rmonbrk_bss_0088[request->bp];
+        if (!whichBreak->breakAddress) {
+            return -2;
+        }
+        inst = func_80006A98(whichBreak->breakAddress);
+        if ((inst & 0xFC00003F) == 0xD) {
+            func_80006A50(whichBreak->breakAddress, whichBreak->oldInstruction);
+        }
+    } else {
+        whichBreak = &rmonbrk_bss_0000[request->bp];
+        if (!whichBreak->breakAddress) {
+            return -2;
+        }
+        inst = *whichBreak->breakAddress;
+        if ((inst & 0xFC00003F) == 0xD) {
+            *whichBreak->breakAddress = whichBreak->oldInstruction;
+            func_800031F0(whichBreak->breakAddress, 4);
+            func_80005350(whichBreak->breakAddress, 4);
+        }
+    }
+    whichBreak->breakAddress = 0;
+    reply.code = request->code;
+    reply.error = 0;
+    reply.object = request->object;
+    reply.bp = request->bp;
+    func_800073F8(&reply, 0x18, 1);
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80008430);
-#endif

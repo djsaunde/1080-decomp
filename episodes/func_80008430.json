@@ -1,0 +1,33 @@
+{
+  "function_name": "func_80008430",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-20T21:08:18.082676+00:00",
+  "end_time": "2026-10-20T21:08:18.082693+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T21:08:18.082688+00:00",
+      "assistant_text": "__rmonClearBreak (libultra rmon/rmonbrk.c). Four .s pieces across kernel_021/kernel_022 joined by absolute .L syms merged into one; C written from the libultra source shape (register request/whichBreak, reply 0x18, inst at 0x24) matched first try. Kernel jal targets are +0x400 vs symbol numbering, so the 'alt entries' 8454/8498/857C are other functions.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 87,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* Forward declarations */\nextern s32 __osPiAccessQueue;\nextern s32 D_8000A480;\nextern s32 D_80013004;\nextern void func_80005DC0(s32*, s32, s32);\nextern void func_80005C00(void);\nextern void func_80004FE0(s32*, s32*, s32);\nextern void func_800053D0(s32*, s32*, s32);\nextern s32 D_8000A3E0;\nextern s32 func_800066B0(void);\nextern void func_800066D0(s32);\nextern void func_80003D0C(s32*);\nextern void* D_8000A420;\nextern s32 D_8000A418;\nextern s32 siacs_bss_0000;\nextern s32 func_800009D8(void*, s32, s32, void*);\nextern void func_80003FF0(s32, void*);\nextern void* func_80003E54(void*);\nextern void func_8000A110(void*);\nextern void func_8000857C(void);\nextern void func_8000785C(s32);\nextern void func_80008ED0(void);\nextern void func_80007760(void);\ntypedef void (*FuncPtr2)(void*, void*);\nextern FuncPtr2 D_80012C44;\nextern s32 D_8000A32C;\nextern s32 D_8000A340;\nextern s32 D_80012BC0;\nextern s32 D_8000A2E0;\nextern s32 D_8000A41C;\nextern s32 func_80002890(s32);\nextern void func_8000A0E0(void);\nextern void func_80005400(s32, s32);\nextern void func_80009148(s32);\nextern void func_80009030(s32, s32);\nextern void func_80008498(void);\nextern void func_800091F0(s32);\ntypedef struct { s32 pad[3]; s32 position; } FileState;\n\ntypedef struct {\n    void* mtqueue;\n    void* fullqueue;\n    s32 validCount;\n    s32 first;\n    s32 msgCount;\n    s32** msg;\n} OSMesgQueue;\n\ntypedef struct Thread {\n    s32 field0;\n    s32 pri;\n    s32 queue;\n    s32 pad0C;\n    u16 state;\n} Thread;\n\ntypedef struct { s32 queue; s32 msg; } OSEventState;\nextern OSEventState __osEventStateTab[];\n\n\n/* __rmonWriteWordTo (unimplemented stub) */\ns32 func_80008424(s32 arg0) {\n    return -1;\n}\n\n\n/* func_80008430 = __rmonClearBreak (libultra rmon/rmonbrk.c), IDO 7.1\n * -O1, EXACT. One function [0x8430,0x858C); it used to be four .s pieces\n * across two units (8430+alabel 8454 here, 8498/84AC/84D0 at the head of\n * kernel_022, joined by absolute .L label syms). The jal'd 0x80008454 /\n * 0x80008498 / 0x8000857C are other rmon functions 0x400 lower (kernel\n * jal targets sit 0x400 above our symbol numbering) and stay absolute\n * undefined_syms entries. Callees, real names: 6A98 __rmonReadWordAt,\n * 6A50 __rmonWriteWordTo, 31F0 osWritebackDCache, 5350 osInvalICache,\n * 73F8 __rmonSendReply. rmonbrk_bss_0088 = rspBreakpoints,\n * rmonbrk_bss_0000 = breakpoints (16 x {addr, old instruction}). */\ntypedef struct { u32 *breakAddress; u32 oldInstruction; } BreakInfo;\ntypedef struct { s32 pad0; u8 code; u8 pad5[4]; u8 method; u8 padA[2]; s32 object; s32 bp; } ClrBkptRequest;\ntypedef struct { s32 pad0; u8 code; u8 pad5; s16 error; s32 pad8; s32 object; s32 bp; s32 pad14; } BkptReply;\nextern BreakInfo rmonbrk_bss_0088[];\nextern BreakInfo rmonbrk_bss_0000[];\nextern u32 func_80006A98(u32 *);\nextern void func_80006A50(u32 *, u32);\nextern void func_800031F0(void *, s32);\nextern void func_80005350(void *, s32);\nextern void func_800073F8(void *, s32, s32);\n\ns32 func_80008430(ClrBkptRequest *req) {\n    register ClrBkptRequest *request = req;\n    register BreakInfo *whichBreak;\n    BkptReply reply;\n    u32 inst;\n\n    if (request->bp >= 16) {\n        return -2;\n    }\n    if (req->method == 1) {\n        whichBreak = &rmonbrk_bss_0088[request->bp];\n        if (!whichBreak->breakAddress) {\n            return -2;\n        }\n        inst = func_80006A98(whichBreak->breakAddress);\n        if ((inst & 0xFC00003F) == 0xD) {\n            func_80006A50(whichBreak->breakAddress, whichBreak->oldInstruction);\n        }\n    } else {\n        whichBreak = &rmonbrk_bss_0000[request->bp];\n        if (!whichBreak->breakAddress) {\n            return -2;\n        }\n        inst = *whichBreak->breakAddress;\n        if ((inst & 0xFC00003F) == 0xD) {\n            *whichBreak->breakAddress = whichBreak->oldInstruction;\n            func_800031F0(whichBreak->breakAddress, 4);\n            func_80005350(whichBreak->breakAddress, 4);\n        }\n    }\n    whichBreak->breakAddress = 0;\n    reply.code = request->code;\n    reply.error = 0;\n    reply.object = request->object;\n    reply.bp = request->bp;\n    func_800073F8(&reply, 0x18, 1);\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_021.c",
+    "asm_path": "asm/nonmatchings/kernel/func_80008430.s",
+    "segment": "kernel",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O1 -mips2",
+    "verification": "make cmp ROM + objdiff 100"
+  }
+}
