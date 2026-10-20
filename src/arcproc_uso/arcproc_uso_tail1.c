@@ -1843,37 +1843,36 @@ void arcproc_uso_func_00002864(void) {
  *    before `or s0,zero,zero`; build reverse). Both are ugen-backend allocator/
  *    scheduler ties: permuter-immune (prior run), and 6 manual levers tried this
  *    sweep (split-decl, single-expr s1, ptr-walk bp++, buf.w[0]*0 init, commuted
- *    24*buf.w[i], base-after-buf-copy) all 0-effect. IMMUNE. Stays NM, size-exact. */
+ *    24*buf.w[i], base-after-buf-copy) all 0-effect. IMMUNE. Stays NM, size-exact.
+ *  - 2026-10-20 agent-g: EXACT via twin port (twin-finder.py, 0.784 structural)
+ *    of timproc_uso_b1_func_00002BE4: base as a MUTATED pointer
+ *    (s4 = &D; if (1) { s4 += 0x10; }) instead of a const-folded base, the
+ *    compound-assign split `s2 = s4; s2 += vec4[i]*0x18;`, and the inner
+ *    counter derived as i*0x40 inside a for(i) loop. Old notes above are
+ *    historical. */
 typedef struct { int w[5]; } Arc2884Buf;
-#ifdef NON_MATCHING
-void arcproc_uso_func_00002884(void *a0) {
-  Arc2884Buf buf;
-  int i;
-  int s0;
-  int s3;
-  char *base = ((char *) (&D_00000000)) + 0x10;
-  buf = *((Arc2884Buf *) (((char *) (&D_00000000)) + 0x4A0));
-  s3 = 16;
-  do
-  {
-    i = 0;
-    s0 = 0;
-    do
-    {
-      char *s1 = base;
-      s1 += buf.w[i] * 24;
-      gl_func_00000000(s1);
-      gl_func_00000000(s1);
-      gl_func_00000000(s1, s0, s3, 0);
-      s0 += 64;
-      i++;
-    }
-    while (s0 != 320);
-    s3 += 32;
-  }
-  while (s3 != 240);
+typedef struct { char pad[0x18]; } ArcS18_2884;
+void arcproc_uso_func_00002884(int *a0) {
+    int vec4[5];
+    ArcS18_2884 *s4;
+    char *s2;
+    int s3, i;
+    (void)a0;
+
+    *(Arc2884Buf *)vec4 = *(Arc2884Buf *)((char *)&D_00000000 + 0x4A0);
+
+    s4 = (ArcS18_2884 *)&D_00000000;
+    if (1) { s4 = (ArcS18_2884 *)((char *)s4 + 0x10); }
+    s3 = 0x10;
+    do {
+        for (i = 0; i != 5; i++) {
+            s2 = (char *)s4;
+            s2 += vec4[i] * 0x18;
+            gl_func_00000000(s2);
+            gl_func_00000000(s2);
+            gl_func_00000000(s2, i * 0x40, s3, 0);
+        }
+        s3 += 0x20;
+    } while (s3 != 0xF0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00002884);
-#endif
 #pragma GLOBAL_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00002884_pad.s")

@@ -2355,12 +2355,13 @@ void gl_func_000661D8(int a0_unused) {
 void gl_func_00066200(int a0) {}
 void gl_func_00066208(int a0) {}
 
-#ifdef NON_MATCHING
 /* gl_func_00066210 — EXACT 21/21 (2026-07-03).
  * Previous "cap" was a misdecode: target's second jal has `sw v0,0x18(sp)` in
  * the delay slot with no a0 setup => second call takes ZERO args, and `saved`
  * is the FIRST call's result (spill scheduled into call 2's delay slot).
- * Decl order buf-then-saved puts saved@sp+0x18, buf@sp+0x1C. */
+ * Decl order buf-then-saved puts saved@sp+0x18, buf@sp+0x1C.
+ * 2026-10-20 agent-g: UNWRAPPED (twin-finder nm100 sweep) -- all five jals
+ * are blank USO words (0x0C000000), so gl_func_00000000 links them as-is. */
 int gl_func_00066210(int a0, int a1) {
     int buf;
     int saved;
@@ -2371,9 +2372,6 @@ int gl_func_00066210(int a0, int a1) {
     gl_func_00000000(saved);
     return buf;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00066210);
-#endif
 
 #ifdef NON_MATCHING
 /* gl_func_00066264: 33-insn aligned/unaligned-length dispatch (0x84, frame 0x30).
