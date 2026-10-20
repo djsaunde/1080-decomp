@@ -1582,11 +1582,13 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800018F0);
  * flags lack bit 3 (unresolved) is skipped. Types: R_26 (jal target field),
  * HI16 (remember the half and its address), LO16 (fold hi<<16 + lo + value,
  * patch the remembered HI16 with the carry-adjusted upper half), R_32 (add).
- * Bad type: D_80012C44(D_8000A36C, type) and return -2. The case numbers are
- * guessed from the arm order (the 4-entry jumptable at 0x8000A63C is not in
- * the ROM image). Open: the target dispatches through that 4-entry jumptable;
- * IDO 7.1/5.3 at -O1/-O2 lower a 4-label switch to a compare chain (5 labels
- * are needed for a table), so the switch shape is still unknown; hiptr/hival
+ * Bad type: D_80012C44(D_8000A36C, type) and return -2. Case numbers from the
+ * jumptable (2026-10-20, agent-g run 112): jtbl_8000A63C IS in the ROM, 0x400
+ * lower like every kernel address (our 0xA23C): type 1 = R_26, 2 = LO16,
+ * 3 = HI16, 4 = R_32. Open: the target dispatches through that 4-entry jumptable;
+ * IDO 7.1/5.3 at -O1/-O2/-O3 (+-g3) lower a 4-label switch to a compare chain
+ * (5 labels are needed for a table; an extra label always widens the table:
+ * case 0 / 5 / 7 / 8 / -1 tested), so the switch shape is still unknown; hiptr/hival
  * are uninitialised locals homed at 0x34/0x28 in the target. */
 extern char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
@@ -1621,14 +1623,14 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
         p = (u32 *)(base + r->offset);
         r->orig = *p;
         switch (type) {
-        case 2:
+        case 1:
             *p = (*p & 0xFC000000) | ((((u32)val >> 2) & 0x3FFFFFF) + (*p & 0x3FFFFFF));
             break;
         case 3:
             hiptr = (s16 *)p + 1;
             hival = ((s16 *)p)[1];
             break;
-        case 4:
+        case 2:
             lo = ((s16 *)p)[1];
             if (hiptr != 0) {
                 v = (hival << 16) + (s16)lo + val;
@@ -1637,7 +1639,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             }
             ((s16 *)p)[1] = (hival << 16) + lo + val;
             break;
-        case 1:
+        case 4:
             *p += val;
             break;
         default:
@@ -1773,7 +1775,17 @@ s32 func_80001DD0(void *arg0, s32 arg1) {
  *     with -0x1B (bad section). On read error the errno word D_80013004 is
  *     returned; a null alloc returns -0x12.
  *
- * CAP (NON_MATCHING, INCLUDE_ASM remains the build path; no episode) —
+ * 2026-10-20 CORRECTION (agent-g run 112): the table DOES exist. Like every
+ * kernel address it is 0x400 above our numbering: jtbl_8000A64C is at our
+ * 0xA24C (ROM 0xB24C), right after 1ADC's 4-entry table at 0xA23C. Entries
+ * (index type-1): 1 -> 20E8 (size / s6), 2..4 -> 2118 (size / s6, a second
+ * identical arm), 9 -> 20CC (stamp D_80012C64/68), 12 -> 20C4 (return
+ * -0x1B), 5..8 / 10 / 11 -> 2148 = default (store size). The case labels in
+ * the body below are therefore wrong. The real blocker is that the entries
+ * are RUNTIME addresses (+0x400): a C switch here emits a table of
+ * our-numbering .text relocs, so no kernel function with a jump table can
+ * match while the kernel is linked at 0x80000000.
+ * OLD CAP NOTE (its premise is wrong, see above) —
  * NOT C-FIXABLE (re-verified 2026-06-23, agent-b): the dispatch hardcodes the
  * ABSOLUTE address jtbl_8000A64C (lui 0x8001 + lo -0x59B4 => 0x8000A64C; index
  * = (type-1), sltiu 0xC, so base = the symbol). splat AUTO-minted that symbol,
