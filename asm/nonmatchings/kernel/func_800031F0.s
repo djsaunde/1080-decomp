@@ -1,6 +1,6 @@
 
 /* Handwritten function */
-nonmatching func_800031F0, 0xA34
+nonmatching func_800031F0, 0xA40
 
 glabel func_800031F0
     /* 41F0 800031F0 216B0001 */  addi       $t3, $t3, 0x1 /* handwritten instruction */
@@ -699,4 +699,9 @@ glabel func_800031F0
     /* 4C18 80003C18 00E03025 */  or         $a2, $a3, $zero
     /* 4C1C 80003C1C 8CC70000 */  lw         $a3, 0x0($a2)
     /* 4C20 80003C20 14E0FFF8 */  bnez       $a3, .L80003C04
+alabel func_80003C24
+    /* 4C24 80003C24 00000000 */  nop
+  .L80003C28:
+    /* 4C28 80003C28 03E00008 */  jr         $ra
+    /* 4C2C 80003C2C 27BD0008 */   addiu     $sp, $sp, 0x8
 endlabel func_800031F0

@@ -723,6 +723,10 @@ build/src/kernel/kernel_000_o1.c.o build/non_matching/src/kernel/kernel_000_o1.c
 # is -O1-shaped (no branch-likely, stack-spilled mq/es). All other fns in this
 # unit are INCLUDE_ASM (raw bytes, opt-independent), so -O1 is safe here.
 build/src/kernel/kernel_000_b.c.o build/non_matching/src/kernel/kernel_000_b.c.o: OPT_FLAGS := -O1
+# func_80003C30 (osDestroyThread, C since 2026-10-20 agent-g): its 3 trailing
+# inter-function pad nops before func_80003D40 are all-zero SUFFIX words.
+build/src/kernel/kernel_000_b.c.o: SUFFIX_BYTES_FORCE := func_80003C30=0x00000000,0x00000000,0x00000000
+build/non_matching/src/kernel/kernel_000_b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_80003C30=0x00000000,0x00000000,0x00000000
 # 2026-06-10 kernel ROM-order relayout: split-piece opt flags (inherit parent unit -O1)
 build/src/kernel/kernel_042_b.c.o build/non_matching/src/kernel/kernel_042_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_027_b.c.o build/non_matching/src/kernel/kernel_027_b.c.o: OPT_FLAGS := -O1

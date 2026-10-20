@@ -199,77 +199,40 @@ void func_80000118(s32 a0, s32 a1) {
     func_80002890(saved);
 }
 
-#ifdef NON_MATCHING
-/* String-compare returning 0 if equal, 1 if different.
- *
- * UPDATE 2026-06-23: SIZE-EXACT (116B / 29 words) with HEAD (entry v0 check +
- * `sltu v1,zero,v0` in the beql delay) and TAIL (merged `v1 = v0 != 0; if(v1)
- * return v1; v1 = *a1 != 0` returning via `bnel v1,0 / or v0,v1` delay) now
- * BYTE-EXACT. The old 4-byte-too-long beql cap was a TAIL-shape problem:
- * splitting the final return into `var_v1 = var_v0 != 0; if (var_v1 == 0)
- * var_v1 = *arg1 != 0;` produces the target's `bnel`+`sltu` tail exactly.
- *
- * Residual: 18 loop-body word diffs (offsets 0x16c-0x1b0). Root cause is a
- * single IDO -O2 CSE/scheduling artifact: the target reads `*a1` in the loop
- * THROUGH a freshly-saved pointer (`or v0,a1,zero; lbu t7,0(v0)`) — distinct
- * from the entry/bottom `*a1` null-checks (t6/t9) — which keeps the entry
- * check a PLAIN `beqz t6` with the `pa = arg0` save (`or v1,a0`) filling its
- * delay slot. Our build CSEs the entry `*arg1` check with the loop's first
- * `*pb` read, so the entry check becomes branch-LIKELY (`beqzl`, sltu in
- * delay) and the loop loses the dual-pointer indirection; everything from
- * 0x16c on cascades. This is the as1 branch-delay-fill priority quirk
- * (from-before pa-save vs likely-copy sltu) combined with -O2 load CSE — not
- * reachable from C. Verified: ~13 hand variants (do-while/goto, explicit
- * temps t6/t9, pa-save in if-branch delay, split end/pre_end entry points,
- * inline *pb deref) all regress or hold at 18; permuter 14.5k iters floored
- * at score 370 (no zero, structural). Genuine loop-body coloring/CSE cap. */
-s32 func_80000168(u8 *arg0, u8 *arg1) {
-    s32 var_v1;
-    s32 temp_t7;
-    s32 temp_t8;
-    s32 var_v0;
-    s32 temp_t6;
-    s32 temp_t9;
-    u8 *pa;
-    u8 *pb;
+/* func_80000168: string-difference predicate (0 if equal, 1 if different).
+ * EXACT via twin port (2026-10-20, twin-finder.py): structurally identical
+ * (1.000) to game_libs_func_00067B04 (post1b, exact 29/29), whose C carries
+ * the two levers the old 18-diff "loop-body CSE cap" lacked: the dead in-guard
+ * `q = arg1;` reassignment (q coalesces with c0 in $v0, p takes $v1, plain
+ * beq with `move v1,a0` delay instead of beqzl+sltu) and the dead `int r = 0;`
+ * initializer (r colors $v1). */
+s32 func_80000168(unsigned char *arg0, unsigned char *arg1) {
+    int c0 = *arg0;
+    unsigned char *q;
+    unsigned char *p;
+    int r = 0;
 
-    var_v0 = *arg0;
-    if (var_v0 == 0) {
-        goto block_6;
+    if (c0 != 0) {
+        q = arg1;
+        if (*arg1 != 0) {
+            do {
+                p = arg0;
+                q = arg1;
+                arg1++;
+                arg0++;
+                if (*q != *p) {
+                    return 1;
+                }
+                c0 = *arg0;
+            } while (!((c0 == 0) || (*arg1 == 0)));
+        }
     }
-    temp_t6 = *arg1;
-    pa = arg0;
-    if (temp_t6 == 0) {
-        goto block_6;
+    r = c0 != 0;
+    if (r == 0) {
+        r = *arg1 != 0;
     }
-loop_2:
-    pb = arg1;
-    temp_t7 = *pb;
-    temp_t8 = *pa;
-    arg1 += 1;
-    arg0 += 1;
-    if (temp_t7 != temp_t8) {
-        return 1;
-    }
-    var_v0 = *arg0;
-    if (var_v0 == 0) {
-        goto block_6;
-    }
-    temp_t9 = *arg1;
-    pa = arg0;
-    if (temp_t9 != 0) {
-        goto loop_2;
-    }
-block_6:
-    var_v1 = var_v0 != 0;
-    if (var_v1 == 0) {
-        var_v1 = *arg1 != 0;
-    }
-    return var_v1;
+    return r;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80000168);
-#endif
 
 void func_800001DC(char* dst, char* src) {
     char* s = src;

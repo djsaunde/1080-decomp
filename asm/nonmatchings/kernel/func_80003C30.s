@@ -1,11 +1,7 @@
 
-nonmatching func_80003C24, 0x110
+nonmatching func_80003C30, 0x110
 
-glabel func_80003C24
-    /* 4C24 80003C24 00000000 */  nop
-  .L80003C28:
-    /* 4C28 80003C28 03E00008 */  jr         $ra
-    /* 4C2C 80003C2C 27BD0008 */   addiu     $sp, $sp, 0x8
+glabel func_80003C30
     /* 4C30 80003C30 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* 4C34 80003C34 AFBF0024 */  sw         $ra, 0x24($sp)
     /* 4C38 80003C38 AFA40038 */  sw         $a0, 0x38($sp)
@@ -81,4 +77,4 @@ glabel func_80003C24
     /* 4D34 80003D34 00000000 */  nop
     /* 4D38 80003D38 00000000 */  nop
     /* 4D3C 80003D3C 00000000 */  nop
-endlabel func_80003C24
+endlabel func_80003C30

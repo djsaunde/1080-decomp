@@ -12,11 +12,11 @@ extern s32 D_8000A3E0;
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 extern void func_80003D0C(s32*);
-extern void* D_8000A420;
+extern int *D_8000A420;
 extern s32 D_8000A418;
 extern s32 siacs_bss_0000;
 extern s32 func_800009D8(void*, s32, s32, void*);
-extern void func_80003FF0(s32, void*);
+extern void func_80003FF0();
 extern void* func_80003E54(void*);
 extern void func_8000A110(void*);
 extern void func_8000857C(void);
@@ -34,7 +34,7 @@ extern s32 D_80012C68;
 extern s32 D_80012D60[];
 extern s32 D_80013000;
 extern s32 D_8000A2E0;
-extern s32 D_8000A41C;
+extern int *D_8000A41C;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005350(s32, s32);
@@ -140,7 +140,51 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800031E0);
 /* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
 INCLUDE_ASM("asm/nonmatchings/kernel", func_800031F0);
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80003C24);
+/* func_80003C30 = osDestroyThread (libultra destroythread.c), IDO 7.1 -O1.
+ * BOUNDARY FIX 2026-10-20: the old func_80003C24.s was [nop; jr ra; addiu sp,8]
+ * + this fn + 3 pad nops. Those 3 head words are the tail of handwritten
+ * func_800031F0 (its last bnez delay slot + its .L80003C28 exit), and
+ * 0x80003C24 itself is a jal'd pop-8-and-return entry used by 31F0 -- moved
+ * there as `alabel func_80003C24`. The 3 trailing nops are all-zero
+ * inter-function pad (SUFFIX_BYTES_FORCE in the Makefile).
+ * EXACT via twin port (twin-finder.py, 0.977): game_libs' copy gl_func_0006AF44
+ * (game_libs_o1_6AF44.c, exact at -O1). __osDisableInt = 66B0,
+ * __osDequeueThread = 3FF0, __osDispatchThread = 3E64 (alabel in 3D40.s),
+ * __osRestoreInt = 66D0, __osActiveQueue = D_8000A41C,
+ * __osRunningThread = D_8000A420. */
+extern void func_80003E64(void);
+
+void func_80003C30(int *target) {
+    register int prelim;
+    register int *curr;
+    register int *next;
+
+    prelim = func_800066B0();
+    if (target == 0) {
+        target = D_8000A420;
+    } else {
+        if (*(unsigned short *)((char *)target + 0x10) != 1) {
+            func_80003FF0(target[2], target);
+        }
+    }
+    if (D_8000A41C == target) {
+        D_8000A41C = (int *)D_8000A41C[3];
+    } else {
+        curr = D_8000A41C;
+        while (curr[1] != -1) {
+            next = (int *)curr[3];
+            if (next == target) {
+                curr[3] = target[3];
+                break;
+            }
+            curr = next;
+        }
+    }
+    if (target == D_8000A420) {
+        func_80003E64();
+    }
+    func_800066D0(prelim);
+}
 
 
 /* HANDWRITTEN REGION 2026-06-10: func_80003C24..func_80004030 (through
