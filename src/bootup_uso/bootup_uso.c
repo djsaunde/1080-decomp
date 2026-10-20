@@ -168,33 +168,20 @@ void func_000003D8(void) {
 //   outProj = arg2 s32*;  obj = arg3, obj->0x70 = Cam:
 //     0xA0/0xA4/0xA8 eye position Vec3;
 //     0xB4/0xC4/0xD4 a basis row Vec3 (stride 0x10 -> 4x4 matrix rows).
-//
-// BLOCKED on the bootup_uso FP-literal-pool bug — SECOND fold target:
-//   `func_00000044 + 0xC` (lwc1 @ 0x518/0x534) is an f32 constant splat
-//   folded into func_00000044's body (the f32-reader, real code @ 0x44),
-//   exactly like the func_0000098C case. Confirms the deferred fix must
-//   symbolize EVERY folded literal site, not just func_0000098C. See
-//   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
-// Caps: f64 reciprocal + folded-literal divisor; structural, no byte body.
-// Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* 2026-10-20 (agent-c run 114): clean re-decode. The delta is a real 12-byte
- * struct copy of *pos (pointer-based lw/sw), the three camera-column reads
- * land in a second aggregate (kept in memory, so it is stored and reloaded),
- * sqrtf (bootup.uso func_070238) is a typed float->float proto, the 1.0
- * double divisor is reused for the clamp compare, and the range divisor is
- * a rodata float literal (value is a placeholder here: only the reloc'd
- * load shape matters for the NM score). The camera column MUST be an f32
- * ARRAY: a 3-float struct gets scalarised into f12/f14/f16, the array stays
- * in memory, which gives the target's store-then-reload per element and the
- * 0x48 frame (with four ghost f32 decls after it). The third dot term pins
- * d.z as the mul.s fs via `n[2] * (t = d.z)`. Residual (99.5): the final
- * add.s and the div.s literal/dist register pair are swapped. */
+/* EXACT (agent-c run 115). The delta is a real 12-byte struct copy of *pos
+ * (pointer-based lw/sw); the camera column is an f32 ARRAY (stays in memory:
+ * store-then-reload per element, 0x48 frame with four ghost f32 decls); sqrtf
+ * is a typed float->float jal-0 callee; the 1.0 double divisor is reused for
+ * the clamp. The dot product is written last-term-first with the inner pair
+ * reversed and an assignment lever on d.x, which gives the target's
+ * running-sum-as-fs add.s and the f18 literal register; the range divisor is
+ * the f32 at func_00000044+0xC (D_00000050). */
 typedef struct { f32 x, y, z; } V3_3F8;
-extern f32 fn_3f8_sqrtf(f32);
+extern f32 func_00000000_3F8_f(f32);
+extern f32 D_00000050;
 void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     V3_3F8 d;
     f32 n[3];
@@ -206,7 +193,7 @@ void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     d.x = d.x - *(f32 *)(*(char **)(obj + 0x70) + 0xA0);
     d.y = d.y - *(f32 *)(*(char **)(obj + 0x70) + 0xA4);
     d.z = d.z - *(f32 *)(*(char **)(obj + 0x70) + 0xA8);
-    *dist = fn_3f8_sqrtf(d.x * d.x + d.y * d.y + d.z * d.z);
+    *dist = func_00000000_3F8_f(d.x * d.x + d.y * d.y + d.z * d.z);
     inv = 1.0 / *dist;
     d.x *= inv;
     d.y *= inv;
@@ -214,16 +201,12 @@ void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     n[0] = *(f32 *)(*(char **)(obj + 0x70) + 0xB4);
     n[1] = *(f32 *)(*(char **)(obj + 0x70) + 0xC4);
     n[2] = *(f32 *)(*(char **)(obj + 0x70) + 0xD4);
-    *proj = (s32)((d.x * n[0] + d.y * n[1] + n[2] * (t = d.z)) * 63.0f);
-    *dist = *dist / 1.2345f;
+    *proj = (s32)((d.z * n[2] + (d.y * n[1] + n[0] * (t = d.x))) * 63.0f);
+    *dist = *dist / D_00000050;
     if (*dist > 1.0) {
         *dist = 1.0f;
     }
 }
-#else
-
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000003F8);
-#endif
 
 /* func_0000057C: alloc obj = func(0x64) into arg0->0x0; switch(arg1) selects
  * 0/1/2; init obj->0x22=(s8)arg2, obj->0x10=0.0f, arg0->0x8=0; then call obj's

@@ -3974,3 +3974,4 @@ D_4e760_f1 = 0x0;
 D_4e760_f2 = 0x0;
 D_4e760_f3 = 0x0;
 D_4e760_f4 = 0x0;
+func_00000000_3F8_f = 0x00000000;  /* func_000003F8 sqrtf (float->float) callee, jal 0 */

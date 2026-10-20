@@ -1,0 +1,33 @@
+{
+  "function_name": "func_000003F8",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-20T22:51:30.798410+00:00",
+  "end_time": "2026-10-20T22:51:30.798433+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T22:51:30.798428+00:00",
+      "assistant_text": "Camera-relative distance/projection helper. Struct copy of the position, f32 array camera column kept in memory, typed sqrtf jal-0 callee. The final add.s operand order (running sum as fs) needs the dot product written last-term-first with the inner pair reversed plus an assignment lever on d.x; the divisor is the f32 at func_00000044+0xC (D_00000050).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 97,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\ntypedef struct { f32 x, y, z; } V3_3F8;\nextern f32 func_00000000_3F8_f(f32);\nextern f32 D_00000050;\nvoid func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {\n    V3_3F8 d;\n    f32 n[3];\n    f32 q0, q1, q2, q3;\n    f32 inv;\n    f32 t;\n\n    d = *pos;\n    d.x = d.x - *(f32 *)(*(char **)(obj + 0x70) + 0xA0);\n    d.y = d.y - *(f32 *)(*(char **)(obj + 0x70) + 0xA4);\n    d.z = d.z - *(f32 *)(*(char **)(obj + 0x70) + 0xA8);\n    *dist = func_00000000_3F8_f(d.x * d.x + d.y * d.y + d.z * d.z);\n    inv = 1.0 / *dist;\n    d.x *= inv;\n    d.y *= inv;\n    d.z *= inv;\n    n[0] = *(f32 *)(*(char **)(obj + 0x70) + 0xB4);\n    n[1] = *(f32 *)(*(char **)(obj + 0x70) + 0xC4);\n    n[2] = *(f32 *)(*(char **)(obj + 0x70) + 0xD4);\n    *proj = (s32)((d.z * n[2] + (d.y * n[1] + n[0] * (t = d.x))) * 63.0f);\n    *dist = *dist / D_00000050;\n    if (*dist > 1.0) {\n        *dist = 1.0f;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_000003F8.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name at identical addresses: func_00000044+0xC == D_00000050, func_00000000 == 0 placeholder)"
+  }
+}
