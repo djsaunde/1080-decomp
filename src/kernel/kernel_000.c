@@ -657,47 +657,24 @@ typedef struct {
 extern s32 D_8000A2E4;
 extern s32 D_80012F7C;
 
-#ifdef NON_MATCHING
-/* Logic-exact NM. Iterate a fixed table of entry pointers
- * (D_80012D60 .. D_80012F7C); for each non-NULL entry dispatch the callback
- * at D_80012BC0 + 0x84 with (arg0, &entry[0x72], field_4C, field_4C+field_14).
- *
- * SINGLE residual = IDO -O2 register-allocation cap (verified 2026-06-23,
- * decl-order sweep + 480s permuter / multiple variants, none reached 0).
- * Target saves FOUR callee-saved s-regs and hoists all four loop-invariant
- * base pointers: s0=D_80012D60(p), s1=D_8000A2E4(arg0), s2=D_80012BC0(state),
- * s3=D_80012F7C(end) — `lui` order p/arg0/state/end (decls below mirror it),
- * `addiu` order reversed. It then loads the callback via `lw $t9,0x84($s2)`.
- *
- * This build saves only THREE s-regs (s0/s1/s2) and leaves `state` in a
- * caller-saved temp: `lui $t9; lw $t9,0x84($t9)` rematerialized per iter.
- * Cause: `state`'s live range dies before the `jalr` (it is read only to
- * fetch the function pointer into t9), so -O2 declines callee-save promotion
- * for it and keeps end+arg0 instead. The `addu $a3,$a2,$t6` vs `$t6,$a2`
- * operand-order diff is downstream of the same allocation (IDO canonicalizes
- * the commutative add by allocated-reg order, not by C source order — verified
- * both `off+field_14` and `field_14+off` emit `t6,a2`).
- *
- * No semantics-preserving C reshaping promotes a 4th callee-saved invariant
- * whose range dies pre-call. Genuine -O2 coloring cap, not C-source-reachable. */
+typedef struct { u8 pad_00[0x72]; char name[0x22]; s32 unk94; u8 pad_98[4]; } UsoLoadSlotF;
+/* func_800007D4: for every live module slot (D_80012D60[0..0x86]) call the
+ * loader hook D_80012BC0.field_84(&D_8000A2E4, name, base, base + size).
+ * IDO 7.1 -O2. EXACT 2026-10-20 (agent-g run 112; was NM 83.0, written as a
+ * pointer walk with four `register` invariants and called a coloring cap):
+ * a plain index loop lets uopt build the p/end walk and hold &D_80012BC0 in
+ * s2 itself. */
 void func_800007D4(void) {
-    register UsoEntry74 **p = (UsoEntry74**)&D_80012D60;
-    register void *arg0 = &D_8000A2E4;
-    register UsoCallbacks84 *state = (UsoCallbacks84*)&D_80012BC0;
-    register UsoEntry74 **end = (UsoEntry74**)&D_80012F7C;
+    s32 i;
+    UsoEntry74 *e;
 
-    do {
-        UsoEntry74 *e = *p;
+    for (i = 0; i < 0x87; i++) {
+        e = ((UsoEntry74 **)&D_80012D60)[i];
         if (e != 0) {
-            s32 off = e->field_4C;
-            state->field_84(arg0, (char*)e + 0x72, off, off + e->field_14);
+            ((UsoCallbacks84 *)&D_80012BC0)->field_84(&D_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
         }
-        p++;
-    } while (p != end);
+    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800007D4);
-#endif
 
 typedef struct {
     char pad_00[0x94];
@@ -706,46 +683,19 @@ typedef struct {
 
 extern s32 D_8000A2F4;
 
-/* NON_MATCHING: logic + instruction sequence byte-exact in SIZE (38 insns) and
- * shape, but two -O2 register-allocation divergences remain:
- *
- * 1. GENUINE COLORING CAP (same class as sibling func_800007D4): target keeps
- *    `state` (=&D_80012BC0) pinned in a SIXTH callee-saved reg ($s4) and reloads
- *    the callback via `lw $t9,0x84($s4)` each iter; this build saves only FIVE
- *    s-regs and rematerializes the base (`lui $t9; lw $t9,0x84($t9)`). Cause:
- *    `state`'s live range DIES before the per-iter `jalr` (it is read only to
- *    fetch the fn ptr), and -O2 only callee-save-promotes a value used AFTER a
- *    call. Verified not a capacity issue: dropping the named `end` (literal
- *    bound) still keeps the 0x87 constant in a saved reg over `state`. No
- *    semantics-preserving C extends state's range past the call without changing
- *    the emitted code.
- * 2. `lui;ori` vs target `lui;addiu` for the two no-reloc absolute base
- *    constants (0x800130A0 / 0x80013112) — IDO literal-formation choice,
- *    downstream of the same allocation.
- *
- * FAILED levers: `register` hints (no-op for IDO), decl-order permutation,
- * literal vs named loop bound, for-loop literal-count (does NOT unroll — emits
- * 49 insns w/ mult, larger). Genuine -O2 coloring cap; the do/while form below
- * is the correct (size-exact) structure. */
-#ifdef NON_MATCHING
+/* func_8000085C: call the loader hook D_80012BC0.field_84(&D_8000A2F4, i,
+ * slot->unk94, slot->name) for all 135 module slots. IDO 7.1 -O2. The old
+ * NM (a hand pointer walk) was filed as a coloring cap. */
+/* EXACT 2026-10-20 (agent-g run 112): a plain index loop over the typed
+ * 0x9C-byte slot array (the two "no-reloc absolute bases" are &slots[0] and
+ * &slots[0].name; the .s now spells them %hi/%lo(D_800130A0[+0x72])). */
 void func_8000085C(void) {
-    UsoTable94* var_s1 = (UsoTable94*)0x800130A0;
-    void* var_s2 = (void*)0x80013112;
-    void* arg0 = &D_8000A2F4;
-    UsoCallbacks84* state = (UsoCallbacks84*)&D_80012BC0;
-    s32 var_s0 = 0;
-    s32 end = 0x87;
+    s32 i;
 
-    do {
-        state->field_84(arg0, var_s0, var_s1->field_94, var_s2);
-        var_s0 += 1;
-        var_s1 = (UsoTable94*)((char*)var_s1 + 0x9C);
-        var_s2 = (char*)var_s2 + 0x9C;
-    } while (var_s0 != end);
+    for (i = 0; i < 0x87; i++) {
+        ((UsoCallbacks84 *)&D_80012BC0)->field_84(&D_8000A2F4, i, ((UsoLoadSlotF *)&D_800130A0)[i].unk94, ((UsoLoadSlotF *)&D_800130A0)[i].name);
+    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_8000085C);
-#endif
 
 
 
@@ -1274,7 +1224,6 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80001184);
  * `slots[i].unk94`) gives both. The 0x30-byte hole at the top of the frame
  * is an unused local (any 0x29..0x2C-byte array; s32 pad[11] here). */
 extern char D_8000A368, D_80013112, D_80018356;
-typedef struct { u8 pad_00[0x72]; char name[0x22]; s32 unk94; u8 pad_98[4]; } UsoLoadSlotF;
 s32 uso_find_file(void *arg0, void *arg1) {
     s32 pad[11];
     s32 i;
