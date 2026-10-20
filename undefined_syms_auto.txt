@@ -2894,6 +2894,7 @@ D_0000CCEC = 0x0000CCEC;  /* gl_func_000038F4 baked USO fmt-string addr (lui 1/a
 D_0000CCF8 = 0x0000CCF8;  /* gl_func_000038F4 baked USO fmt-string addr */
 gl_func_00000000_1bcc_v = 0x00000000;  /* void-returning alias: kills dead v0 def blocking base coloring in timproc_uso_b1_func_00001BCC */
 gl_func_00000000_994v = 0x00000000;  /* void-returning alias: kills dead v0 def so the vt base colours v0 in timproc_uso_b3_func_00000994 */
+gl_func_00000000_17A0v = 0x00000000;  /* void-returning alias: kills dead v0 defs in h2hproc_uso_func_000017A0 */
 gl_func_00000000_A3Cv = 0x00000000;  /* void-returning alias: kills dead v0 def so the vt base colours v0 in arcproc_uso_func_00000A3C */
 gl_func_00000000_FA8v = 0x00000000;  /* void-returning alias: discarded-return set-up + link calls in arcproc_uso_func_00000FA8 (buf colours v0) */
 D_arc_A3C_v0 = 0x00000000;

@@ -1426,7 +1426,6 @@ void h2hproc_uso_func_000015F0(int *a0, int *a1, int a2) {
     *(int*)((char*)sub3 + 0x14) = (int)self;
 }
 
-#ifdef NON_MATCHING
 /* h2hproc_uso_func_000017A0: 143-insn (0x23C) per-frame state-machine.
  *
  * Sibling of 000015F0 (init) — this is the per-frame UPDATE companion.
@@ -1527,7 +1526,14 @@ void h2hproc_uso_func_000015F0(int *a0, int *a1, int a2) {
  *   then conditional zero-store); (5) one `q` local serves both E8/EC tests
  *   (v0 reuse), first two re-init `v` reads are inline (t7/t8 temps).
  *   Residual: whole-fn register renumber (gate/v/q v1<->v0, x a0 vs v1,
- *   t-ring +1: mine skips t7) -- coloring, not structure. */
+ *   t-ring +1: mine skips t7) -- coloring, not structure.
+ * EXACT 2026-10-20 (agent-c run 112): three levers -- (a) every discarded-
+ *   return gl call is the void alias gl_func_00000000_17A0v (dead v0 defs
+ *   pushed gate/v/q one ring slot up); (b) the 0x4F0 bit test is the sign
+ *   test `(parent->4F0 << 15) < 0`, not `(u32)(..<<15)>>31` (the dead srl
+ *   temp was the t-ring +1); (c) v->0x94 is re-read inline at each test
+ *   (target holds it in ring temp t4, a named p148 coloured v1). */
+extern void gl_func_00000000_17A0v();
 void h2hproc_uso_func_000017A0(int *self) {
     int *parent = (int*)*(int*)((char*)self + 0xB8);
     int *v;
@@ -1536,10 +1542,10 @@ void h2hproc_uso_func_000017A0(int *self) {
     int gate;
     int *q;
 
-    if ((((unsigned)parent[0x4F0/4] << 15) >> 31) && parent[0x4DC/4] == 1) {
+    if ((parent[0x4F0/4] << 15) < 0 && parent[0x4DC/4] == 1) {
         *(int*)((char*)self + 0x30) += 0x21;
     }
-    gl_func_00000000(self);
+    gl_func_00000000_17A0v(self);
     parent = (int*)*(int*)((char*)self + 0xB8);
     gate = parent[0x4F0/4] & 0x10000;
     if (gate != 0) {
@@ -1547,47 +1553,42 @@ void h2hproc_uso_func_000017A0(int *self) {
             v = (int*)*(int*)((char*)self + 0x44);
             x = v[0x34/4];
             if (x != 0) {
-                p148 = v[0x94/4];
-                if (p148 == 0) gl_func_00000000(parent, 0);
-                else if (p148 != 0) {
-                    gl_func_00000000(parent);
+                if (v[0x94/4] == 0) gl_func_00000000_17A0v(parent, 0);
+                else if (v[0x94/4] != 0) {
+                    gl_func_00000000_17A0v(parent);
                     *(int*)((char*)*(int*)((char*)self + 0xB8) + 0x6B8) = -1;
                 }
             } else {
-                p148 = v[0x94/4];
-                if (p148 != 0 && x == 0) gl_func_00000000(parent, 1);
+                if (v[0x94/4] != 0 && x == 0) gl_func_00000000_17A0v(parent, 1);
             }
 
             *(int*)((char*)self + 0xD4) += 1;
             if (*(int*)((char*)self + 0xD4) >= 51) *(int*)((char*)self + 0xD4) = 0;
 
             q = (int*)*(int*)((char*)self + 0xE8);
-            if (q != 0 && q[0xC4/4] >= 12 && *(int*)((char*)self + 0xD4) == 0) gl_func_00000000(309, 0);
+            if (q != 0 && q[0xC4/4] >= 12 && *(int*)((char*)self + 0xD4) == 0) gl_func_00000000_17A0v(309, 0);
             q = (int*)*(int*)((char*)self + 0xEC);
-            if (q != 0 && q[0xC4/4] >= 12 && *(int*)((char*)self + 0xD4) == 0) gl_func_00000000(309, 1);
-            if (*(int*)((char*)*(int*)((char*)self + 0xE8) + 0xC8) <= 0) gl_func_00000000(*(int*)((char*)self + 0xB8), 1);
-            if (*(int*)((char*)*(int*)((char*)self + 0xEC) + 0xC8) <= 0) gl_func_00000000(*(int*)((char*)self + 0xB8), 0);
+            if (q != 0 && q[0xC4/4] >= 12 && *(int*)((char*)self + 0xD4) == 0) gl_func_00000000_17A0v(309, 1);
+            if (*(int*)((char*)*(int*)((char*)self + 0xE8) + 0xC8) <= 0) gl_func_00000000_17A0v(*(int*)((char*)self + 0xB8), 1);
+            if (*(int*)((char*)*(int*)((char*)self + 0xEC) + 0xC8) <= 0) gl_func_00000000_17A0v(*(int*)((char*)self + 0xB8), 0);
             gate = *(int*)((char*)*(int*)((char*)self + 0xB8) + 0x4F0) & 0x10000;
         }
     }
     if (gate != 0) {
         if (gl_func_00000000(self) != 0) {
-            gl_func_00000000(*(int*)((char*)self + 0xB8));
-            gl_func_00000000(self);
+            gl_func_00000000_17A0v(*(int*)((char*)self + 0xB8));
+            gl_func_00000000_17A0v(self);
         }
-        gl_func_00000000(*(int*)((char*)self + 0xE8), (*(int**)((char*)self + 0x44))[0x28/4]);
-        gl_func_00000000(*(int*)((char*)self + 0xEC), (*(int**)((char*)self + 0x44))[0x88/4]);
+        gl_func_00000000_17A0v(*(int*)((char*)self + 0xE8), (*(int**)((char*)self + 0x44))[0x28/4]);
+        gl_func_00000000_17A0v(*(int*)((char*)self + 0xEC), (*(int**)((char*)self + 0x44))[0x88/4]);
         v = (int*)*(int*)((char*)self + 0x44);
-        gl_func_00000000(*(int*)((char*)self + 0x80), v[0x30/4], v[0x90/4]);
+        gl_func_00000000_17A0v(*(int*)((char*)self + 0x80), v[0x30/4], v[0x90/4]);
         v = (int*)*(int*)((char*)self + 0x44);
         gl_func_15f0((void*)*(int*)((char*)self + 0x80), v[0x8/4], v[0xC/4],
                      v[0x68/4], *(float*)((char*)v + 0x6C));
     }
-    gl_func_00000000(self);
+    gl_func_00000000_17A0v(self);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2hproc_uso_func_000017A0);
-#endif
 
 /* Original jals target fn-4 (leading-nop true entries) — h2h_4DC precedent. */
 extern int h2hproc_uso_func_h2h_4DC();
