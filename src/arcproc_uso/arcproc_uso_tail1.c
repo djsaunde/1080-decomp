@@ -508,7 +508,6 @@ int arcproc_uso_func_00000F78(int *a0) {
  * Multi-tick refinement target — entry decode is forward progress
  * documenting the dispatch structure. Default INCLUDE_ASM build remains
  * exact. */
-#ifdef NON_MATCHING
 /* arcproc_uso_func_00000FA8: 114-insn (0x1C8) state-machine dispatcher
  * on a0->[0x504]. Frame 0x30, saves ra/s1/s0.
  *
@@ -558,67 +557,64 @@ extern int gl_func_00000000();
  * list->$s2 (frame -40), so the body is instruction-for-instruction identical
  * but +2 insns (bltzl vs bltz + a duplicated `li t,1`). The target's
  * list-in-v0-across-call relies on the specific callee preserving $v0 — not
- * reliably C-reachable. Default INCLUDE_ASM build remains ROM-exact. */
+ * reliably C-reachable. Default INCLUDE_ASM build remains ROM-exact.
+ * 2026-10-20 agent-g (run 109) 90.95 -> EXACT, b1 0EE8 / b3 0E60 twin kit:
+ * the "list held in v0 across the call" was the CALL'S RETURN -- the loop
+ * compares a0->0x6B0 against r->0x1C of the returned record. Count stored to
+ * 0x6B4 and read back as the for-init, `i` reused as counter. Case 1: the
+ * set-up call and the link call are BOTH void (alias gl_func_00000000_FA8v;
+ * either one alone keeps buf in v1), node/buf loaded in that order. Case 4:
+ * `((int *)v0)[v0[1] + 4]` for addu v0,t0. All locals at function scope,
+ * declared before i/s1 (frame 48, buf home 32). */
+extern void gl_func_00000000_FA8v();
 void arcproc_uso_func_00000FA8(char *a0) {
+    int *list;
+    char *r;
+    char *node;
+    char *buf;
+    int *v0;
     int i = *(int*)(a0 + 0x504);
     char *s1 = a0;
 
     switch (i) {
-    case 0: {
-        int *list = *(int**)(s1 + 0x6AC);
-        int count;
+    case 0:
+        list = *(int**)(s1 + 0x6AC);
         *(int*)(s1 + 0x6B0) = *(int*)(*(char**)((char*)list + 0x44) + 0x14);
-        count = *(int*)(*(char**)((char*)list + 0x44) + 0x40);
-        i = count - 1;
-        if (i >= 0) {
-            *(int*)(s1 + 0x6B4) = count;
-            do {
-                char *t0 = *(char**)(s1 + 0x528);
-                gl_func_00000000(*(int*)(t0 + 0x4), i);
-                if (*(int*)(s1 + 0x6B0) != *(int*)((char*)list + 0x1C)) break;
-                *(int*)(s1 + 0x6B4) = *(int*)(s1 + 0x6B4) - 1;
-                i--;
-            } while (i >= 0);
+        *(int*)(s1 + 0x6B4) = *(int*)(*(char**)((char*)list + 0x44) + 0x40);
+        for (i = *(int*)(s1 + 0x6B4) - 1; i >= 0; i--) {
+            r = (char *)gl_func_00000000(*(int*)(*(char**)(s1 + 0x528) + 0x4), i);
+            if (*(int*)(s1 + 0x6B0) != *(int*)(r + 0x1C)) break;
+            *(int*)(s1 + 0x6B4) = *(int*)(s1 + 0x6B4) - 1;
         }
         *(int*)(s1 + 0x4D8) = 1;
         gl_func_00000000(7, 0, 0);
         gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190), 3, 1);
         *(int*)(s1 + 0x504) = 1;
         break;
-    }
-    case 1: {
-        int v0;
-        char *node, *buf;
+    case 1:
         if (gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190)) == 0) return;
         gl_func_00000000(s1);
         gl_func_00000000(&D_00000000);
         gl_func_00000000(s1);
         gl_func_00000000(7, 0, 0);
         gl_func_00000000(s1, *(int*)((char*)&D_00000000 + 0x170) + 0x26000F);
-        v0 = gl_func_00000000(0, s1, 0);
-        *(int*)(s1 + 0x524) = v0;
-        gl_func_00000000(v0, *(int*)(s1 + 0x528));
-        buf = *(char**)(s1 + 0x56C);
+        *(int*)(s1 + 0x524) = gl_func_00000000(0, s1, 0);
+        gl_func_00000000_FA8v(*(int*)(s1 + 0x524), *(int*)(s1 + 0x528));
         node = *(char**)(s1 + 0x524);
-        gl_func_00000000(buf + 16, node);
+        buf = *(char**)(s1 + 0x56C);
+        gl_func_00000000_FA8v(buf + 16, node);
         if (*(int*)(node + 0x14) != 0) {
             *(int*)(node + 0x4) = 1;
         }
         *(int*)(node + 0x14) = (int)buf;
         gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190), 1, 1);
         break;
-    }
-    case 4: {
-        int *v0 = *(int**)(s1 + 0x6A8);
-        int idx = *(int*)((char*)v0 + 0x4);
-        gl_func_00000000(s1, 4, *(int*)((char*)v0 + idx * 4 + 0x10));
+    case 4:
+        v0 = *(int**)(s1 + 0x6A8);
+        gl_func_00000000(s1, 4, ((int*)v0)[v0[1] + 4]);
         break;
     }
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00000FA8);
-#endif
 
 /* arcproc_uso_func_00001170: F1 (32-insn dispatcher + indirect call) only.
  * EXACT 2026-10-16 (was a "natural ceiling" 97.03% NM). The 2026-05-07 SUFFIX_BYTES recipe (28 words
