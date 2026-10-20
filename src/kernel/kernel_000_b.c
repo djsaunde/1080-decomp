@@ -187,26 +187,227 @@ void func_80003C30(int *target) {
 }
 
 
-/* HANDWRITTEN REGION 2026-06-10: func_80003C24..func_80004030 (through
- * 0x44CC) is one handwritten boot/PI-DMA chain, not compiler output:
- * no prologue past 3D40, t-reg-only dataflow, PI registers (0xA4600010,
- * 0x510(t3)) -- the continuation of the func_800031F0 handwritten
- * handler neighborhood. Permanent INCLUDE_ASM (same class as 31F0).
- * Fragment merges 2026-08-22: func_80003E0C absorbed into func_80003D40.s
- * (3D40's tail lw t9,0x3C(sp) falls through into 3E0C's and t1,t9,at --
- * one instruction stream on 3D40's frame); func_80003E64 absorbed into
- * func_80003E54.s (3E54 ends or v0,zero,zero, no jr ra, falls through).
- * Chain merge 2026-08-22 (second pass): func_80003E54 + func_80003FF0 +
- * func_80004030 absorbed into func_80003D40.s -- one contiguous stream
- * [0x3D40,0x44CC): 3D40 owns the ONLY full prologue (sp -0x40, ra@0x1C),
- * every fragment branches to the shared exit .L800043D4 (lw ra,0x1C;
- * addiu sp,sp,0x40; jr ra) and runs on 3D40's frame; 3E54/3FF0/4030 are
- * register-convention jal entries (live-in t-regs, no prologue), kept as
- * GLOBAL alabel alternative entries -- jal callers (44CC/4BE0/59C0/31F0/
- * 9D10 -> 3E54; 3C24/6110/7DD0 -> 3FF0; 31F0 -> 4030) resolve. The
- * embedded second prologue at 0x43E4 (sp -0x20) was already unnamed
- * inside 4030.s and stays so. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80003D40);
+/* func_80003D40 = __osLeoInterrupt, func_800043E4 = __osLeoAbnormalResume
+ * (libultra io/leointerrupt.c, IDO 7.1 -O1, the unit's flags). NOT a
+ * handwritten region: the old "handwritten PI-DMA chain" reading and the
+ * 2026-08-22 fragment merges glued one C function (sp -0x40, every local
+ * sp-resident at -O1) and its static sibling at 0x43E4 (sp -0x20) into one
+ * .s. Port of game_libs' copy gl_func_0006B0FC (game_libs_ido53_6B0FC.c,
+ * twin-finder.py 0.936; the +58 words were __osLeoAbnormalResume).
+ *   D_80019644 = __osDiskHandle, D_8000A3E0 = __OSGlobalIntMask,
+ *   func_800048CC = __osLeoResume, func_800047E4 = abnormal-resume entry
+ *   used by this copy, func_800056F0 = osEPiRawStartDma (post-addiu entry).
+ * The old alabels func_80003E0C/3E54/3E64/3FF0/4030 and D_80003FE0 point
+ * into the middle of this body (jal'd by other kernel code as stale
+ * exceptasm addresses); they stay resolvable as absolute
+ * undefined_syms_auto.txt entries.
+ * Levers vs the game_libs donor: `stat` is volatile here (sp-resident,
+ * reloaded at every test; bm_stat stays plain and is reused within a
+ * block), and the PI/LEO registers must be raw volatile literals -- extern
+ * volatile symbols let IDO share one lui across reads and hoist the
+ * PI_STATUS load above the blockInfo store (-8 bytes). The .s was
+ * de-symbolized to match (D_A46/D_A50 were splat guesses, same bytes). */
+typedef struct {
+    u32 errStatus;       /* 0x00 */
+    void *dramAddr;      /* 0x04 */
+    void *C2Addr;        /* 0x08 */
+    u32 sectorSize;      /* 0x0C */
+    u32 C1ErrNum;        /* 0x10 */
+    u32 C1ErrSector[4];  /* 0x14 */
+} __OSBlockInfo;         /* 0x24 */
+
+typedef struct {
+    u32 cmdType;         /* 0x00 */
+    u16 transferMode;    /* 0x04 */
+    u16 blockNum;        /* 0x06 */
+    s32 sectorNum;       /* 0x08 */
+    u32 track;           /* 0x0C */
+    u32 bmCtlShadow;     /* 0x10 */
+    u32 seqCtlShadow;    /* 0x14 */
+    __OSBlockInfo block[2]; /* 0x18 */
+} __OSTranxInfo;
+
+typedef struct LeoPiHandle_s {
+    struct LeoPiHandle_s *next; /* 0x00 */
+    u8 type;                    /* 0x04 */
+    u8 latency;                 /* 0x05 */
+    u8 pageSize;                /* 0x06 */
+    u8 relDuration;             /* 0x07 */
+    u8 pulse;                   /* 0x08 */
+    u8 domain;                  /* 0x09 */
+    u32 baseAddress;            /* 0x0C */
+    u32 speed;                  /* 0x10 */
+    __OSTranxInfo transferInfo; /* 0x14 */
+} LeoPiHandle;
+
+extern LeoPiHandle *D_80019644;     /* __osDiskHandle */
+#define LEO_PI_STATUS (*(volatile u32 *)0xA4600010) /* PI_STATUS_REG */
+#define LEO_STATUS    (*(volatile u32 *)0xA5000508)
+#define LEO_BM_CTL    (*(volatile u32 *)0xA5000510) /* write CTL / read STATUS */
+extern void func_800048CC(void);    /* __osLeoResume */
+extern void func_800047E4(void);    /* __osLeoAbnormalResume */
+extern s32 func_800056F0(LeoPiHandle *, s32, u32, void *, u32); /* osEPiRawStartDma */
+
+#define LEO_WAIT_ON_IOBUSY(stat) \
+    { stat = LEO_PI_STATUS; while (stat & 3) stat = LEO_PI_STATUS; }
+
+s32 func_80003D40(void)
+{
+    volatile u32 stat;
+    volatile u32 pi_stat;
+    u32 bm_stat;
+    __OSTranxInfo *info;
+    __OSBlockInfo *blockInfo;
+
+    stat = 0;
+    info = &D_80019644->transferInfo;
+    blockInfo = &info->block[info->blockNum];
+    pi_stat = LEO_PI_STATUS;
+    if (pi_stat & 1) {
+        D_8000A3E0 = D_8000A3E0 & ~0x800;
+        blockInfo->errStatus = 29;
+        func_800048CC();
+        return 1;
+    }
+    LEO_WAIT_ON_IOBUSY(pi_stat);
+    stat = LEO_STATUS;
+    if (stat & 0x02000000) {
+        LEO_WAIT_ON_IOBUSY(pi_stat);
+        LEO_BM_CTL = info->bmCtlShadow | 0x01000000;
+        blockInfo->errStatus = 0;
+        return 0;
+    }
+    if (info->cmdType == 2)
+        return 1;
+    if (stat & 0x08000000) {
+        LEO_WAIT_ON_IOBUSY(pi_stat);
+        stat = LEO_STATUS;
+        blockInfo->errStatus = 22;
+        func_800048CC();
+        LEO_PI_STATUS = 2;
+        D_8000A3E0 |= 0x00100401;
+        return 1;
+    }
+    if (info->cmdType == 1) {
+        if ((stat & 0x40000000) == 0) {
+            if (info->sectorNum + 1 != info->transferMode * 85) {
+                blockInfo->errStatus = 24;
+                func_800047E4();
+                return 1;
+            }
+            LEO_PI_STATUS = 2;
+            D_8000A3E0 |= 0x00100401;
+            blockInfo->errStatus = 0;
+            func_800048CC();
+            return 1;
+        }
+        blockInfo->dramAddr = (void *)((u32)blockInfo->dramAddr + blockInfo->sectorSize);
+        info->sectorNum++;
+        func_800056F0(D_80019644, 1, 0x05000400, blockInfo->dramAddr,
+                      blockInfo->sectorSize);
+        return 1;
+    }
+    if (info->cmdType == 0) {
+        if (info->transferMode == 3) {
+            if ((s32)blockInfo->C1ErrNum + 17 < info->sectorNum) {
+                blockInfo->errStatus = 0;
+                func_800047E4();
+                return 1;
+            }
+            if ((stat & 0x40000000) == 0) {
+                blockInfo->errStatus = 23;
+                func_800047E4();
+                return 1;
+            }
+        } else {
+            blockInfo->dramAddr = (void *)((u32)blockInfo->dramAddr + blockInfo->sectorSize);
+        }
+        bm_stat = LEO_BM_CTL;
+        if ((bm_stat & 0x00200000 && bm_stat & 0x00400000) || bm_stat & 0x02000000) {
+            if (blockInfo->C1ErrNum > 3) {
+                if (info->transferMode != 3 || info->sectorNum > 0x52) {
+                    blockInfo->errStatus = 23;
+                    func_800047E4();
+                    return 1;
+                }
+            } else {
+                int errNum = blockInfo->C1ErrNum;
+                blockInfo->C1ErrSector[errNum] = info->sectorNum + 1;
+            }
+            blockInfo->C1ErrNum += 1;
+        }
+        if (stat & 0x10000000) {
+            if (info->sectorNum != 87) {
+                blockInfo->errStatus = 24;
+                func_800047E4();
+            }
+            if (info->transferMode == 2 && info->blockNum == 0) {
+                info->blockNum = 1;
+                info->sectorNum = -1;
+                info->block[1].dramAddr =
+                    (void *)((u32)info->block[1].dramAddr - info->block[1].sectorSize);
+                blockInfo->errStatus = 22;
+            } else {
+                LEO_PI_STATUS = 2;
+                D_8000A3E0 |= 0x00100401;
+                info->cmdType = 2;
+                blockInfo->errStatus = 0;
+            }
+            func_800056F0(D_80019644, 0, 0x05000000, blockInfo->C2Addr,
+                          blockInfo->sectorSize * 4);
+            return 1;
+        }
+        if (info->sectorNum == -1 && info->transferMode == 2 && info->blockNum == 1) {
+            __OSBlockInfo *bptr = &info->block[0];
+            if (bptr->C1ErrNum == 0) {
+                if (((u32 *)bptr->C2Addr)[0] | ((u32 *)bptr->C2Addr)[1] |
+                    ((u32 *)bptr->C2Addr)[2] | ((u32 *)bptr->C2Addr)[3]) {
+                    bptr->errStatus = 24;
+                    func_800047E4();
+                    return 1;
+                }
+            }
+            bptr->errStatus = 0;
+            func_800048CC();
+        }
+        info->sectorNum++;
+        if (stat & 0x40000000) {
+            if (info->sectorNum > 0x54) {
+                blockInfo->errStatus = 24;
+                func_800047E4();
+                return 1;
+            }
+            func_800056F0(D_80019644, 0, 0x05000400, blockInfo->dramAddr,
+                          blockInfo->sectorSize);
+            blockInfo->errStatus = 0;
+            return 1;
+        }
+        if (info->sectorNum <= 0x54) {
+            blockInfo->errStatus = 24;
+            func_800047E4();
+            return 1;
+        }
+        return 1;
+    }
+    blockInfo->errStatus = 4;
+    func_800047E4();
+    return 1;
+}
+
+void func_800043E4(void)
+{
+    __OSTranxInfo *info;
+    volatile u32 pi_stat;
+
+    info = &D_80019644->transferInfo;
+    LEO_WAIT_ON_IOBUSY(pi_stat);
+    LEO_BM_CTL = info->bmCtlShadow | 0x10000000;
+    LEO_WAIT_ON_IOBUSY(pi_stat);
+    LEO_BM_CTL = info->bmCtlShadow;
+    func_800048CC();
+    LEO_PI_STATUS = 2;
+    D_8000A3E0 |= 0x00100401;
+}
 
 /* func_800044CC - kernel PI-event message dispatch (inlined send_mesg from
  * libultra exceptasm.s). Sends __osEventStateTab[OS_EVENT_PI].message to the
