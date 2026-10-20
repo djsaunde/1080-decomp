@@ -12506,59 +12506,56 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00041A9C);
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-typedef char *(*GP_00041D40)();
-typedef struct { int unk0,unk4,unk8,unkC,unk10,unk14,unk18,unk1C; } Q_00041D40;
+/* 2026-10-20 (agent-c run 114): re-decoded as inlined C++ list-iterator
+ * code. The ctor is built on the stack (dead `this == 0` alloc(12)
+ * fallback): {list, i = -1, n = count - 1}. It is copy-constructed twice
+ * (pointer-based struct copies), then walked with an inlined next():
+ * `if (i < n) return &list->buf[++i]; return 0;`. */
+typedef struct { char **list; s32 i; s32 n; } It41D40;
 void gl_func_00041D40(s32 arg0) {
-    Q_00041D40 sp60;
-    Q_00041D40 sp6C;
-    Q_00041D40 sp7C;
-    int *temp_v0;
-    int *var_v1;
-    s32 temp_a1;
-    s32 temp_v0_2;
-    s32 temp_v0_3;
-    s32 var_a0;
-    s32 var_v1_2;
-    char *temp_s0;
-    char *temp_s1;
+    It41D40 a;
+    It41D40 b;
+    It41D40 c;
+    It41D40 *p;
+    char *L;
+    char *e;
+    char **r;
 
-    gl_func_00034458((char*)((char*)&D_00000000 + 0x1F6B4));
-    FW((*(int*)&D_00000000), 0xC) = 0;
+    gl_func_00034458((char *)&D_00000000 + 0x1F6B4);
+    FW(*(char **)&D_00000000, 0xC) = 0;
     gl_func_00034458(arg0);
-    var_v1 = &sp60;
-    temp_s1 = *(int*)&D_00000000;
-    if ((&sp60 != 0) || (temp_v0 = gl_func_00034458(0xC), var_v1 = temp_v0, (temp_v0 != 0))) {
-        FW(var_v1, 0x4) = -1;
-        FW(var_v1, 0x0) = temp_s1;
-        FW(var_v1, 0x8) = (s32) (FW(temp_s1, 0xC) - 1);
+    p = 0;
+    if (1) {
+        p = &a;
     }
-    sp6C.unk0 = (s32 *) sp60.unk0;
-    sp6C.unk4 = (s32) sp60.unk4;
-    sp6C.unk8 = (s32) sp60.unk8;
-    sp7C.unk0 = sp6C.unk0;
-    sp7C.unk4 = (s32) sp6C.unk4;
-    var_v1_2 = 0;
-    sp7C.unk8 = (s32) sp6C.unk8;
-    if (sp7C.unk4 < sp7C.unk8) {
-        temp_a1 = sp7C.unk4 + 1;
-        sp7C.unk4 = temp_a1;
-        var_v1_2 = *(int*)sp7C.unk0 + (temp_a1 * 4);
+    L = *(char **)&D_00000000;
+    if (p == 0) {
+        p = (It41D40 *)gl_func_00034458(0xC);
+        if (p == 0) goto copy;
     }
-    if (var_v1_2 != 0) {
-        do {
-            gl_func_00034458((char*)((char*)&D_00000000 + 0x1F6C0), FW((*(int*)(*(int*)sp7C.unk0 + (sp7C.unk4 * 4))), 0xC));
-            temp_s0 = *(int*)(*(int*)sp7C.unk0 + (sp7C.unk4 * 4));
-            temp_v0_2 = FW(temp_s0, 0x14);
-            if (temp_v0_2 != 0) {
-                gl_func_00034458(temp_v0_2 + 0x10, temp_s0);
-            }
-            var_a0 = 0;
-            if (sp7C.unk4 < sp7C.unk8) {
-                temp_v0_3 = sp7C.unk4 + 1;
-                sp7C.unk4 = temp_v0_3;
-                var_a0 = *(int*)sp7C.unk0 + (temp_v0_3 * 4);
-            }
-        } while (var_a0 != 0);
+    p->i = -1;
+    p->list = (char **)L;
+    p->n = FW(L, 0xC) - 1;
+copy:
+    b = a;
+    c = b;
+    r = 0;
+    if (c.i < c.n) {
+        c.i++;
+        r = (char **)*c.list + c.i;
+    }
+    while (r != 0) {
+        e = ((char **)*c.list)[c.i];
+        gl_func_00034458((char *)&D_00000000 + 0x1F6C0, FW(e, 0xC));
+        e = ((char **)*c.list)[c.i];
+        if (FW(e, 0x14) != 0) {
+            gl_func_00034458((char *)FW(e, 0x14) + 0x10, e);
+        }
+        r = 0;
+        if (c.i < c.n) {
+            c.i++;
+            r = (char **)*c.list + c.i;
+        }
     }
     gl_func_00034458();
 }
