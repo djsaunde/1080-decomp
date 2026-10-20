@@ -21269,7 +21269,6 @@ void gl_func_0004E728(char *a0, int a1) {
     }
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0004E760: 74-insn / 0x128 struct initializer.
  *
  * Sets bit 0x80 in arg0->0x8, then bulk-copies fields from extern data
@@ -21307,41 +21306,43 @@ void gl_func_0004E728(char *a0, int a1) {
  * but the asm shows lui+mtc1 form (because lower 16 bits are 0 — IDO's
  * float-as-int trick triggers). */
 extern int gl_func_00000000();
+/* EXACT 2026-10-20 (agent-c run 114, 61.0 -> 74/74 words, C is the build
+ * path): 16-byte struct copy from the +0x30 table
+ * (pointer-based lw/sw), the vtable comes from the OBJECT (a0->0x28, not the
+ * global), and the 5 floats come from a RoData table at +0x1B70 (values
+ * 0, 2200, 3000, 12500, 50000 in the ROM, so not literals: the first is
+ * 0.0 and is still loaded), read through one zero alias per access (the target re-luis each). */
+typedef struct { int w[4]; } Q4E760;
+typedef struct { int w; } Q1E760;
+typedef struct { int w[2]; } Q2E760;
+extern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
+extern int D_00000000_4e760;  /* same zero data base, distinct symbol (target re-materializes it) */
 void gl_func_0004E760(char *a0) {
-    char *base = (char*)&D_00000000;
-    char *p;
-    union { int i; float f; } lit;
-    lit.i = 0x46990000;
-    *(int*)(a0 + 0x8) |= 0x80;
-    *(int*)(a0 + 0xDC) = *(int*)(base + 0x30);
-    *(int*)(a0 + 0xE0) = *(int*)(base + 0x34);
-    *(int*)(a0 + 0xE4) = *(int*)(base + 0x38);
-    *(int*)(a0 + 0xE8) = *(int*)(base + 0x3C);
-    *(int*)(a0 + 0xC0) = *(int*)(base + 0x10);
-    *(int*)(a0 + 0xC4) = *(int*)(base + 0x14);
-    *(int*)(a0 + 0xB8) = *(int*)(base + 0x8);
-    *(int*)(a0 + 0xBC) = *(int*)(base + 0xC);
-    *(int*)(a0 + 0x7C) = *(int*)(base + 0x2C);
-    *(float*)(a0 + 0xAC) = *(float*)(base + 0x18);
-    *(float*)(a0 + 0xB0) = *(float*)(base + 0x1C);
-    *(int*)(a0 + 0x70) = 0;
-    *(int*)(a0 + 0x78) = *(int*)(base + 0x28);
-    *(int*)(a0 + 0x100) = *(int*)(base + 0x0);
-    *(int*)(a0 + 0x104) = *(int*)(base + 0x4);
-    *(float*)(a0 + 0x84) = *(float*)(base + 0x1B70);
-    *(float*)(a0 + 0x88) = *(float*)(base + 0x1B74);
-    *(float*)(a0 + 0x8C) = *(float*)(base + 0x1B78);
-    *(float*)(a0 + 0x90) = lit.f;
-    *(float*)(a0 + 0x94) = *(float*)(base + 0x1B7C);
-    *(float*)(a0 + 0x80) = *(float*)(base + 0x1B80);
-    p = *(char**)(base + 0x28);
-    (*(int(**)(int))(p + 0x5C))((int)a0 + *(short*)(p + 0x58));
-    *(int*)(a0 + 0x108) = 1;
-    *(int*)(a0 + 0xFC) = 0;
+    char *base = (char *)&D_00000000;
+    char *vt;
+    *(int *)(a0 + 0x8) |= 0x80;
+    vt = *(char **)(a0 + 0x28);
+    *(Q4E760 *)(a0 + 0xDC) = *(Q4E760 *)((char *)&D_00000000 + 0x30);
+    *(int *)(a0 + 0xC0) = *(int *)(base + 0x10);
+    *(int *)(a0 + 0xC4) = *(int *)(base + 0x14);
+    *(int *)(a0 + 0xB8) = *(int *)(base + 0x8);
+    *(int *)(a0 + 0xBC) = *(int *)(base + 0xC);
+    *(int *)(a0 + 0x7C) = *(int *)(base + 0x2C);
+    *(float *)(a0 + 0xAC) = *(float *)(base + 0x18);
+    *(float *)(a0 + 0xB0) = *(float *)(base + 0x1C);
+    *(Q1E760 *)(a0 + 0x78) = *(Q1E760 *)((char *)&D_00000000 + 0x28);
+    *(int *)(a0 + 0x70) = 0;
+    *(Q2E760 *)(a0 + 0x100) = *(Q2E760 *)base;
+    *(float *)(a0 + 0x84) = D_4e760_f0[0x1B70 / 4];
+    *(float *)(a0 + 0x88) = D_4e760_f1[0x1B74 / 4];
+    *(float *)(a0 + 0x8C) = D_4e760_f2[0x1B78 / 4];
+    *(float *)(a0 + 0x90) = 19584.0f;
+    *(float *)(a0 + 0x94) = D_4e760_f3[0x1B7C / 4];
+    *(float *)(a0 + 0x80) = D_4e760_f4[0x1B80 / 4];
+    (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));
+    *(int *)(a0 + 0x108) = 1;
+    *(int *)(a0 + 0xFC) = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E760);
-#endif
 
 /* gl_func_0004E888: 19-insn / 0x4C link-back-pointer.
  * Byte-identical sibling of gl_func_0004E8D4/gl_func_0004E920 (same body,

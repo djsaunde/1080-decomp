@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004E760",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-20T22:42:37.954240+00:00",
+  "end_time": "2026-10-20T22:42:37.954263+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T22:42:37.954258+00:00",
+      "assistant_text": "Config init: 16/4/8-byte struct copies from the zero-based data block (pointer-based lw/sw), vtable taken from the object (a0->0x28) and read early, five floats from a RoData table at +0x1B70 (0,2200,3000,12500,50000 - a table, not literals) through one zero alias per access so each gets its own lui at.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 74,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int D_00000000;\n\n/* EXACT 2026-10-20 (agent-c run 114, 61.0 -> 74/74 words, C is the build\n * path): 16-byte struct copy from the +0x30 table\n * (pointer-based lw/sw), the vtable comes from the OBJECT (a0->0x28, not the\n * global), and the 5 floats come from a RoData table at +0x1B70 (values\n * 0, 2200, 3000, 12500, 50000 in the ROM, so not literals: the first is\n * 0.0 and is still loaded), read through one zero alias per access (the target re-luis each). */\ntypedef struct { int w[4]; } Q4E760;\ntypedef struct { int w; } Q1E760;\ntypedef struct { int w[2]; } Q2E760;\nextern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */\nextern int D_00000000_4e760;  /* same zero data base, distinct symbol (target re-materializes it) */\nvoid gl_func_0004E760(char *a0) {\n    char *base = (char *)&D_00000000;\n    char *vt;\n    *(int *)(a0 + 0x8) |= 0x80;\n    vt = *(char **)(a0 + 0x28);\n    *(Q4E760 *)(a0 + 0xDC) = *(Q4E760 *)((char *)&D_00000000 + 0x30);\n    *(int *)(a0 + 0xC0) = *(int *)(base + 0x10);\n    *(int *)(a0 + 0xC4) = *(int *)(base + 0x14);\n    *(int *)(a0 + 0xB8) = *(int *)(base + 0x8);\n    *(int *)(a0 + 0xBC) = *(int *)(base + 0xC);\n    *(int *)(a0 + 0x7C) = *(int *)(base + 0x2C);\n    *(float *)(a0 + 0xAC) = *(float *)(base + 0x18);\n    *(float *)(a0 + 0xB0) = *(float *)(base + 0x1C);\n    *(Q1E760 *)(a0 + 0x78) = *(Q1E760 *)((char *)&D_00000000 + 0x28);\n    *(int *)(a0 + 0x70) = 0;\n    *(Q2E760 *)(a0 + 0x100) = *(Q2E760 *)base;\n    *(float *)(a0 + 0x84) = D_4e760_f0[0x1B70 / 4];\n    *(float *)(a0 + 0x88) = D_4e760_f1[0x1B74 / 4];\n    *(float *)(a0 + 0x8C) = D_4e760_f2[0x1B78 / 4];\n    *(float *)(a0 + 0x90) = 19584.0f;\n    *(float *)(a0 + 0x94) = D_4e760_f3[0x1B7C / 4];\n    *(float *)(a0 + 0x80) = D_4e760_f4[0x1B80 / 4];\n    (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));\n    *(int *)(a0 + 0x108) = 1;\n    *(int *)(a0 + 0xFC) = 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004E760.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs to zero-valued symbols only)"
+  }
+}
