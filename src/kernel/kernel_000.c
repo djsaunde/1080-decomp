@@ -555,46 +555,15 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80000598);
 #endif
 #endif
 
-/* func_800005DC: 44-insn (0xB0) DMA-aligned bounded read helper.
- * Splat-split into 3 fragments: 800005DC (0x34, 13 insns) + 8000060C
- * (0x54, 21 insns) + 80000660 (0x28, 10 insns). All three share one
- * stack frame (addiu sp,-0x20 at 800005D8 prologue + lw ra,addiu sp at
- * 80000678 epilogue inside the third fragment).
- *
- * Decoded body (initial structural pass 2026-05-05):
- *
- *   s32 fread_aligned(void *buf, u32 count, u32 chunkSize, FileState *file) {
- *       s32 total;
- *       if ((u32)buf & 7) {
- *           D_80013004 = -0x1C;       // misaligned destination → set errno-style
- *           return 0;
- *       }
- *       total = count * chunkSize;     // multu $a1, $a2
- *       if (file->[0x1C] < file->[0x4] + total) {
- *           total = file->[0x1C] - file->[0x4];   // clamp to remaining
- *       }
- *       if (total < 0) return 0;        // bgez $a2 path
- *       if (total != 0) {
- *           D_80012C40(buf, count, file->[0xC] + file->[0x4]);  // indirect read fn
- *       }
- *       file->[0x4] += total;          // advance pos
- *       return total;
- *   }
- *
- * Field interpretation (FileState ~0x20+ bytes):
- *   [0x4]  s32 pos          (current read position)
- *   [0xC]  void *buf        (file's data buffer base)
- *   [0x1C] s32 capacity     (max bytes accessible)
- *
- * Globals:
- *   D_80013004: errno-style status word
- *   D_80012C40: indirect-call read function pointer (DMA-style)
- *
- * Cross-fragment merge BLOCKED on the same .s-file split as
- * func_80006698 / func_80008430 (linker layout shift if .s files are
- * concatenated). Wrap is for grep discoverability + structural seed; the
- * default INCLUDE_ASM build remains exact. Multi-tick refinement target. */
-#ifdef NON_MATCHING
+/* func_800005DC (really starts at 0x5D8: the .s glabel sits on the
+ * prologue word) = bounded file read, IDO 7.1 -O2: buf must be 8-aligned
+ * (else errno D_80013004 = -0x1C), size*n clamped to capacity - pos, read
+ * via the D_80012C40 hook, pos advanced. The alabels func_8000060C /
+ * func_80000660 inside the .s are not entries: kernel jal targets sit 0x400
+ * above our numbering, so `jal func_8000060C` / `jal func_80000660` are
+ * calls to 0x20C / func_80000260 (absolute undefined_syms entries).
+ * EXACT 2026-10-20 (agent-g run 112): `return D_80013004 = -0x1C;` is what
+ * puts the errno address in v1 and the value in v0. */
 extern s32 D_80013004;
 typedef s32 (*ReadFunc)(void *, u32, void *);
 extern ReadFunc D_80012C40;
@@ -602,73 +571,29 @@ typedef struct {
     s32 pad0;
     s32 pos;     /* +0x4 */
     s32 pad8;
-    void *buf;   /* +0xC */
+    char *buf;   /* +0xC */
     s32 padN[3];
-    s32 capacity; /* +0x1C */
+    u32 capacity; /* +0x1C */
 } FileStateRdr;
-s32 func_800005DC(void *buf, u32 count, u32 chunkSize, FileStateRdr *file) {
+s32 func_800005DC(s32 buf, u32 size, u32 n, FileStateRdr *fp) {
     s32 total;
-    if (((u32)buf & 7) != 0) {
-        D_80013004 = -0x1C;
+
+    if (buf & 7) {
+        return D_80013004 = -0x1C;
+    }
+    total = size * n;
+    if (fp->capacity < total + fp->pos) {
+        total = fp->capacity - fp->pos;
+    }
+    if (total < 0) {
         return 0;
     }
-    total = (s32)(count * chunkSize);
-    if (file->capacity < (s32)(file->pos + total)) {
-        total = file->capacity - file->pos;
-    }
-    if (total < 0) return 0;
     if (total != 0) {
-        D_80012C40(buf, count, (char*)file->buf + file->pos);
+        D_80012C40((void *)buf, (u32)(fp->buf + fp->pos), (void *)total);
     }
-    file->pos += total;
+    fp->pos += total;
     return total;
 }
-#else
-/* 3-fragment merge complete: func_800005DC + func_8000060C + func_80000660
- * -> single 0xB0 (44-insn) function with 2 alabels (60C at offset 0x34,
- * 660 at offset 0x88) preserving cross-callers.
- *
- * Branches that previously crossed fragment boundaries (b .L80000678 from
- * 5DC and 60C, beqz .L8000066C from 60C) now land in the single merged
- * file's .L labels. */
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
-/* Bounded read/transfer: require arg0 (handle/addr) 8-aligned (else errno
- * D_80013004 = -0x1C). Compute requested size arg1*arg2, clamp to the stream's
- * remaining (limit unk1C - position unk4); if nothing left return 0. Otherwise
- * DMA via the D_80012C40 ReadFunc (handle, buf=unkC+pos, size), advance the
- * position (unk4 += size), and return the bytes transferred. */
-s32 func_800005DC(s32 arg0, s32 arg1, s32 arg2, void *arg3) {
-    s32 var_a2;
-    s32 var_v1;
-    u32 temp_a0;
-
-    if (arg0 & 7) {
-        D_80013004 = -0x1C;
-        return -0x1C;
-    }
-    var_v1 = FW(arg3, 4);
-    temp_a0 = *(u32 *)((char *)arg3 + 0x1C);
-    var_a2 = arg1 * arg2;
-    if (temp_a0 < (u32) (var_a2 + var_v1)) {
-        var_a2 = temp_a0 - var_v1;
-    }
-    if (var_a2 < 0) {
-        return 0;
-    }
-    if (var_a2 != 0) {
-        D_80012C40((void *) arg0, (u32) (FW(arg3, 0xC) + var_v1), (void *) var_a2);
-        var_v1 = FW(arg3, 4);
-    }
-    FW(arg3, 4) = var_v1 + var_a2;
-    return var_a2;
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800005DC);
-#endif
-#endif
 
 /* uso_advance_position */
 void func_80000688(s32* file, s32 offset) {
