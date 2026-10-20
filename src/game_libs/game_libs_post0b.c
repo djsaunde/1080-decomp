@@ -21316,7 +21316,6 @@ typedef struct { int w[4]; } Q4E760;
 typedef struct { int w; } Q1E760;
 typedef struct { int w[2]; } Q2E760;
 extern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
-extern int D_00000000_4e760;  /* same zero data base, distinct symbol (target re-materializes it) */
 void gl_func_0004E760(char *a0) {
     char *base = (char *)&D_00000000;
     char *vt;
