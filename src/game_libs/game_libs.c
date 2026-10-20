@@ -4229,18 +4229,27 @@ void gl_func_000083CC(int *a0) {
  *   gl_func(arg0)                       (call 5)
  *
  * History: once promoted via PROLOGUE_STEALS=8 (banned 2026-05-23 as match-
- * faking), rolled back to NM, now orphan-MERGED (the correct boundary fix). */
-#ifdef NON_MATCHING
+ * faking), rolled back to NM, now orphan-MERGED (the correct boundary fix).
+ * 2026-10-20 agent-g: EXACT via twin port (twin-finder.py) of the exact
+ * sibling gl_func_000085B0: ONE function-scope `int *q` reused for the three
+ * reloaded pointers (state->0xC4, state->0xCC, arg0->0x528->8) outranks
+ * `state` (q = v0, state = v1) and its slot moves p2's home to 0x18. The
+ * "regalloc-dump-only" residual note above is historical. */
 void gl_func_00008510(int *arg0) {
-    char *state = *(char**)((char*)&D_00000000 + 0x134);
-    char *p = *(char**)(*(char**)((char*)state + 0xC4) + 0x800);
+    char *state;
+    char *p;
+    int *q;
+
+    state = *(char**)((char*)&D_00000000 + 0x134);
+    q = *(int**)(state + 0xC4);
+    p = *(char**)((char*)q + 0x800);
     if (*(int**)((char*)*(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8) + 0x8) != 0) {
-        char *p2 = *(char**)(*(char**)((char*)state + 0xCC) + 0x800);
-        gl_func_00000000(p2, *(int*)((char*)p2 + 0x34));
-        {
-            int *t = *(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8);
-            gl_func_00000000(p2, *(int*)((char*)t + 0x8), *(int*)((char*)t + 0x4));
-        }
+        char *p2;
+        q = *(int**)(state + 0xCC);
+        p2 = *(char**)((char*)q + 0x800);
+        gl_func_00000000(p2, *(int*)(p2 + 0x34));
+        q = *(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8);
+        gl_func_00000000(p2, *(int*)((char*)q + 0x8), *(int*)((char*)q + 0x4));
     }
     gl_func_00000000(p, *(int*)(p + 0x34));
     gl_func_00000000(p,
@@ -4249,9 +4258,6 @@ void gl_func_00008510(int *arg0) {
         (char*)&D_00000000 + 0x170);
     gl_func_00000000(arg0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00008510);
-#endif
 
 /* gl_func_000085B0 — EXACT MATCH 46/46 words (2026-07-03, agent-e w5).
  * Was 28/46: whole-body temp-reg cascade (+1/+2) plus p2 spill 0x24 vs 0x20.

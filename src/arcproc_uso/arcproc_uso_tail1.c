@@ -869,7 +869,6 @@ void arcproc_uso_func_000014A8(void) {
     gl_func_00000000();
 }
 
-#ifdef NON_MATCHING
 /* arcproc_uso_func_000014C8: gated HUD fade/draw. Sets a {1,1,1,1} Vec4 (sp48..54).
  * If arg0->0x500 != 0 && *(float*)&D <= 0.0f: fade 0x77C up by &D+0x40 (clamp <
  * &D+0x3C); 0x508++; if cb(arg0->0x528): draw a panel at 0x2F0 with alpha (int)
@@ -885,41 +884,50 @@ void arcproc_uso_func_000014A8(void) {
  * address-taken array), and the target reserves ~0x20 extra frame placing it at
  * sp+0x48..0x54 (frame -88) vs mine at sp+0x28 (frame -56); the oversized-
  * volatile-array trick doesn't reproduce the layout (regressed to 90.4%). Plus
- * a0/s0 regalloc + FP-load scheduling. NON_MATCHING. */
+ * a0/s0 regalloc + FP-load scheduling. NON_MATCHING.
+ * 2026-10-20 agent-g: EXACT via twin port (twin-finder.py, 0.775) of
+ * timproc_uso_b3_func_00001240: the Vec4 is a plain (void)-used float[4] with
+ * `char pad[28]` + a named `saved` arg-spill local (frame 0x58, color at
+ * sp+0x48), and the comma constant `x * (0, 255.0f)` orders mul.s K-first.
+ * Notes above are historical. */
 extern int gl_func_00000000();
 extern float D_flt_arc0, D_0000003C, D_00000040;
-void arcproc_uso_func_000014C8(char *arg0) {
-    volatile float sp54;
-    volatile float sp50;
-    volatile float sp4C;
-    volatile float sp48;
-    float f0;
+void arcproc_uso_func_000014C8(char *a0) {
+    float color[4];
+    char pad[28];
+    char *saved;
 
-    sp48 = 1.0f;
-    sp4C = 1.0f;
-    sp50 = 1.0f;
-    sp54 = 1.0f;
-    if ((*(int *)(arg0 + 0x500) != 0) && (D_flt_arc0 <= 0.0f)) {
-        f0 = *(float *)(arg0 + 0x77C);
-        if (f0 < D_0000003C) {
-            *(float *)(arg0 + 0x77C) = f0 + D_00000040;
-        }
-        *(int *)(arg0 + 0x508) = *(int *)(arg0 + 0x508) + 1;
-        if (gl_func_00000000(*(int *)(arg0 + 0x528)) != 0) {
-            gl_func_00000000(&D_00000000, (int)(255.0f * *(float *)(arg0 + 0x77C)), arg0 + 0x2F0, arg0 + 0x314);
-            gl_func_00000000(arg0 + 0x764);
-            if (*(int *)(arg0 + 0x508) & 8) {
-                gl_func_00000000(arg0 + 0x764, 0xA0, 0xB4, 3);
-                gl_func_00000000(arg0, 0xA0, *(int *)(*(char **)(*(char **)(arg0 + 0x6AC) + 0x44) + 0x14));
+    color[0] = 1.0f;
+    color[1] = 1.0f;
+    color[2] = 1.0f;
+    color[3] = 1.0f;
+    (void)color;
+    (void)pad;
+
+    if (*(int*)(a0 + 0x500) != 0) {
+        if (D_flt_arc0 <= 0.0f) {
+            if (*(float*)(a0 + 0x77C) < D_0000003C) {
+                *(float*)(a0 + 0x77C) += D_00000040;
             }
-        } else {
-            gl_func_00000000(arg0, 0xA0, *(int *)(*(char **)(*(char **)(arg0 + 0x6AC) + 0x44) + 0x14));
+
+            *(int*)(a0 + 0x508) = *(int*)(a0 + 0x508) + 1;
+            if (gl_func_00000000(*(int*)(a0 + 0x528)) != 0) {
+                gl_func_00000000(&D_00000000,
+                                 (int)(*(float*)(a0 + 0x77C) * (0, 255.0f)),
+                                 a0 + 0x2F0,
+                                 a0 + 0x314);
+                saved = a0 + 0x764;
+                gl_func_00000000(saved);
+                if ((*(int*)(a0 + 0x508) & 8) != 0) {
+                    gl_func_00000000(saved, 0xA0, 0xB4, 3);
+                    gl_func_00000000(a0, 0xA0, *(int*)(*(char**)(*(char**)(a0 + 0x6AC) + 0x44) + 0x14));
+                }
+            } else {
+                gl_func_00000000(a0, 0xA0, *(int*)(*(char**)(*(char**)(a0 + 0x6AC) + 0x44) + 0x14));
+            }
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_000014C8);
-#endif
 
 /* arcproc_uso_func_00001604: 60-insn (0xF0) state-machine update with
  * two-stage gate (a0->0x4FC entry, a0->0x4F8 path-select), three outcomes
