@@ -778,16 +778,29 @@ void arcproc_uso_func_00001228(int *a0) {
  * volatile-array trick already regressed, see 14C8 note). (2) 255.0-mul SCHEDULE:
  * target finishes the sum/span block before materializing 255.0f; IDO here hoists
  * the `lui 0x437f; mtc1` and interleaves the mul earlier (as1 adjacent-pair pick).
- * Logic verified insn-for-insn vs expected/.o. Default INCLUDE_ASM stays ROM-exact. */
+ * Logic verified insn-for-insn vs expected/.o. Default INCLUDE_ASM stays ROM-exact.
+ *
+ * 2026-10-18 agent-g (run 107) 90.0 -> 99.1: (1) the span arms were the
+ * signed `/ 2` idiom (bgez; sra delay; addiu 1; sra) -- `span = 0xA0 -
+ * (a + b + 4) / 2` lands the block size-exact (139 words); (2) the 0x70 frame
+ * is a home map: progress/alpha/sum/seq above ones[4], one pad, span (0x48),
+ * then pb/hb + six pads (a0+0x6BC temp at 0x20); (3) the 0x6FC side is a
+ * named pointer + half (`pb`/`hb`, re-set at both tail uses), which moves it
+ * from t-regs to v-regs. RESIDUAL: pb/hb colour v0/v1 (target v1/v0), the
+ * first threshold lwc1 pair order, one t-reg pair in the seq compare. */
 #ifdef NON_MATCHING
 extern float D_arc125C_30, D_arc125C_34, D_arc125C_38;
 void arcproc_uso_func_0000125C(char *a0) {
-    float ones[4];
     float progress;
     int alpha;
-    int span;
     int sum;
     int *seq;
+    float ones[4];
+    int pad0;
+    int span;
+    char *pb;
+    int hb;
+    int pad1[6];
 
     if ((*(int*)(a0 + 0x4F0) & 0x10000) == 0) {
         return;
@@ -817,13 +830,10 @@ void arcproc_uso_func_0000125C(char *a0) {
     gl_func_00000000(a0 + 0x6BC);
     gl_func_00000000(a0 + 0x6BC, 0xA0, 0xB6, 3);
 
-    sum = *(short*)(*(char**)(a0 + 0x6E4) + 0x20) +
-          *(short*)(*(char**)(a0 + 0x6FC) + 0x20) + 4;
-    if (sum < 0) {
-        span = 0xA0 - ((sum + 1) >> 1);
-    } else {
-        span = 0xA0 - (sum >> 1);
-    }
+    pb = *(char**)(a0 + 0x6FC);
+    hb = *(short*)(pb + 0x20);
+    span = 0xA0 - (*(short*)(*(char**)(a0 + 0x6E4) + 0x20) + hb + 4) / 2;
+
 
     alpha = (int)(255.0f * *(float*)(a0 + 0x77C));
     gl_func_00000000(&D_00000000, alpha, a0 + 0x260, a0 + 0x284);
@@ -834,14 +844,14 @@ void arcproc_uso_func_0000125C(char *a0) {
         gl_func_00000000(a0 + 0x6EC, span, 0x8E, 2);
         gl_func_00000000(a0 + 0x6D4);
         gl_func_00000000(a0 + 0x6D4,
-                         span + *(short*)(*(char**)(a0 + 0x6FC) + 0x20) + 4,
+                         (pb = *(char**)(a0 + 0x6FC), hb = *(short*)(pb + 0x20), span + hb + 4),
                          0x8E, 2);
     } else {
         gl_func_00000000(a0 + 0x6D4);
         gl_func_00000000(a0 + 0x6D4, span, 0x8E, 2);
         gl_func_00000000(a0 + 0x6EC);
         gl_func_00000000(a0 + 0x6EC,
-                         span + *(short*)(*(char**)(a0 + 0x6E4) + 0x20) + 4,
+                         (pb = *(char**)(a0 + 0x6E4), hb = *(short*)(pb + 0x20), span + hb + 4),
                          0x8E, 2);
     }
 
