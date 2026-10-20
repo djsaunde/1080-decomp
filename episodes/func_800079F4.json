@@ -1,0 +1,33 @@
+{
+  "function_name": "func_800079F4",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-20T20:32:49.833618+00:00",
+  "end_time": "2026-10-20T20:32:49.833639+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T20:32:49.833635+00:00",
+      "assistant_text": "__rmonStopThread (libultra rmon). Was split across units: head func_800079F4 (kernel_034, no jr ra) + body func_80007A98 (kernel_018_g head, starts with the head's delay-slot nop). Merged into one C fn; shape from sibling __rmonGetGRegisters (msg home + p copy, 0x4C reply). jal func_80007A98 is __rmonGetThreadStatus (kernel jal targets are +0x400 vs symbol numbering).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 82,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern s32 func_80007A98(s32, s32, void*);\nextern void func_800073F8(void*, s32, s32);\n\ntypedef struct { s32 pad0; u8 type; char pad5; s16 flags; s32 data[17]; } RmonBuf76;\ntypedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;\n\n/* __rmonGetGRegisters */\ns32 func_8000798C(RmonMsg* msg) {\n    RmonMsg* p = msg;\n    RmonBuf76 buf;\n    if (func_80007A98(p->domain, p->id, &buf) != 0) {\n        return -2;\n    }\n    buf.type = p->type;\n    buf.flags = 0;\n    func_800073F8(&buf, 0x4C, 1);\n    return 0;\n}\n\n/* func_800079F4 = __rmonStopThread (libultra rmon), IDO 7.1 -O1, EXACT.\n * One function [0x79F4,0x7B3C): it used to be split across units, with\n * the head here (no jr ra, \"tail-jumps into func_80007A98's shared\n * return\") and the body as func_80007A98 at the head of kernel_018_g\n * (no prologue, starting with this head's last bnez delay-slot nop).\n * The jal'd 0x80007A98 is NOT that body: every kernel jal target sits\n * 0x400 above our symbol numbering (the kernel really runs at 0x80000400),\n * so jal func_80007A98 = __rmonGetThreadStatus = func_80007698. It stays\n * an absolute undefined_syms_auto.txt entry.\n * Callees (all +0x400 names): 785C __rmonStopUserThreads, 8430\n * __rmonRCPrunning, 8454 __rmonIdleRCP, 6A98 __rmonReadWordAt(SP_PC_REG),\n * 898C (1, 1000, SP_IMEM + pc - 4), 8498 __rmonStepRCP, 73F8\n * __rmonSendReply. Shape copied from __rmonGetGRegisters above (msg home\n * + `p` copy, reply buffer 0x4C). */\nextern void func_8000785C(s32);\nextern s32 func_80008430(void);\nextern void func_80008454(void);\nextern u32 func_80006A98(u32);\nextern u32 func_8000898C(s32, s32, u32);\nextern void func_80008498(void);\ntypedef struct { s32 pad0; u8 type; char pad5; s16 flags; s32 pad8; s32 why; s32 data[15]; } RmonStatusReply;\n\ns32 func_800079F4(RmonMsg *msg) {\n    RmonMsg *p = msg;\n    RmonStatusReply buf;\n    u32 pc;\n\n    switch (msg->domain) {\n    case 0:\n        func_8000785C(p->id);\n        break;\n    case 1:\n        if (func_80008430()) {\n            func_80008454();\n            pc = func_80006A98(0x04080000);\n            if (pc == 0) {\n                break;\n            }\n            pc -= 4;\n            if (!(func_8000898C(1, 1000, pc + 0x04001000) & 3)) {\n                func_80008498();\n            }\n        }\n        break;\n    default:\n        return -4;\n    }\n    if (func_80007A98(msg->domain, p->id, &buf) != 0) {\n        return -2;\n    }\n    buf.type = p->type;\n    buf.flags = 0;\n    func_800073F8(&buf, 0x4C, 1);\n    if (buf.why == 1) {\n        buf.type = 4;\n        func_800073F8(&buf, 0x4C, 2);\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_034.c",
+    "asm_path": "asm/nonmatchings/kernel/func_800079F4.s",
+    "segment": "kernel",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O1 -mips2",
+    "verification": "make cmp ROM + objdiff 100"
+  }
+}

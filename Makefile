@@ -781,8 +781,8 @@ build/src/kernel/kernel_033.c.o build/non_matching/src/kernel/kernel_033.c.o: TR
 build/src/kernel/kernel_018_e.c.o build/non_matching/src/kernel/kernel_018_e.c.o: TRUNCATE_TEXT := 0x64
 build/src/kernel/kernel_018_o2.c.o build/non_matching/src/kernel/kernel_018_o2.c.o: TRUNCATE_TEXT := 0x108
 build/src/kernel/kernel_018_f.c.o build/non_matching/src/kernel/kernel_018_f.c.o: TRUNCATE_TEXT := 0x428
-build/src/kernel/kernel_034.c.o build/non_matching/src/kernel/kernel_034.c.o: TRUNCATE_TEXT := 0x10C
-build/src/kernel/kernel_018_g.c.o build/non_matching/src/kernel/kernel_018_g.c.o: TRUNCATE_TEXT := 0x338
+build/src/kernel/kernel_034.c.o build/non_matching/src/kernel/kernel_034.c.o: TRUNCATE_TEXT := 0x1B0
+build/src/kernel/kernel_018_g.c.o build/non_matching/src/kernel/kernel_018_g.c.o: TRUNCATE_TEXT := 0x294
 # Keep the halt stub after __rmonInit so IDO sees its true modulo-32 offset.
 build/src/kernel/kernel_030.c.o build/non_matching/src/kernel/kernel_030.c.o: TRUNCATE_TEXT := 0x148
 build/src/kernel/kernel_020_b.c.o build/non_matching/src/kernel/kernel_020_b.c.o: TRUNCATE_TEXT := 0x7C
