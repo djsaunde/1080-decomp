@@ -5680,43 +5680,84 @@ int gl_func_00023838(int a0) {
 //   gl_func_00000000 = canonical never-defined USO placeholder.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
+/* 2026-10-20 (agent-c run 114): re-decoded from the words. The two leading
+ * callees are the in-file gl_func_00023B44 (begin) and gl_func_00023B98
+ * (table). A NONZERO begin result takes the short path (*done = 0, kind
+ * 2) into the common tail switch on a0, which still returns the result.
+ * The size is computed into one local twice (the target keeps the dead
+ * first store). Levers: `case 4: break;` keeps the 5-entry table,
+ * `(char *)((int)tbl + a1 * 0x10)` gives addu tbl-first, and the
+ * `if (mode == 0) k = 5; else k = 2;` shape gives the b-around-b tail.
+ * Bytes are identical to the target apart from relocations. The jumptable
+ * (target .rodata +0xEA0) is what keeps it from being promoted. */
+extern int gl_func_00023B44();
+extern char *gl_func_00023B98();
 int gl_func_00023914(int a0, int a1, int *a2) {
-    int s0 = gl_func_00000000(a0, a1, a2);
-    char *base, *v1;
-    int aligned, b18, typ, t4, a1c;
-    if (s0 == 0) {
-        a2[0] = 0;
-        return 2;
-    }
-    base = (char *)gl_func_00000000();
-    v1 = base + a1 * 0x10;
-    aligned = (*(int *)(v1 + 0x14) + 0xF) & ~0xF;
-    b18 = *(signed char *)(v1 + 0x18);
-    typ = *(signed char *)(v1 + 0x19);
-    t4 = *(int *)(v1 + 0x10);
-    if ((unsigned)typ < 5) {
-        switch (typ) {
-        case 0: s0 = gl_func_00000000(a0, a1, aligned); if (s0 == 0) return s0; break;
-        case 1: s0 = gl_func_00000000(a0, aligned, 1, a1); if (s0 == 0) return s0; break;
-        case 2: s0 = gl_func_00000000(a0, aligned, 0, a1); if (s0 == 0) return s0; break;
-        case 3: s0 = gl_func_00000000(a0, aligned, 2, a1); if (s0 == 0) return s0; break;
+    int size;
+    char *tbl;
+    char *e;
+    int kind;
+    int mode;
+    int src;
+    int r;
+    int k;
+
+    r = gl_func_00023B44(a0, a1, a2);
+    if (r != 0) {
+        *a2 = 0;
+        k = 2;
+    } else {
+        tbl = gl_func_00023B98(a0);
+        e = (char *)((int)tbl + a1 * 0x10);
+        size = *(int *)(e + 0x14);
+        size = (size + 0xF) & ~0xF;
+        kind = *(s8 *)(e + 0x18);
+        mode = *(s8 *)(e + 0x19);
+        src = *(int *)(e + 0x10);
+        switch (mode) {
+        case 0:
+            r = gl_func_00000000(a0, a1, size);
+            if (r == 0) return r;
+            break;
+        case 1:
+            r = gl_func_00000000(a0, size, 1, a1);
+            if (r == 0) return r;
+            break;
+        case 2:
+            r = gl_func_00000000(a0, size, 0, a1);
+            if (r == 0) return r;
+            break;
+        case 3:
+            r = gl_func_00000000(a0, size, 2, a1);
+            if (r == 0) return r;
+            break;
+        case 4:
+            break;
+        }
+        *a2 = 1;
+        if (kind == 1) {
+            gl_func_00000000(src, r, size, *(s16 *)(tbl + 2));
+        } else {
+            gl_func_00000000(src, r, size, kind);
+        }
+        if (mode == 0) {
+            k = 5;
+        } else {
+            k = 2;
         }
     }
-    a2[0] = 1;
-    if (b18 == 1) {
-        gl_func_00000000(t4, s0, aligned, *(short *)(base + 2));
-    } else {
-        gl_func_00000000(t4, s0, aligned, b18);
+    switch (a0) {
+    case 0:
+        gl_func_00000000(a1, k);
+        break;
+    case 1:
+        gl_func_00000000(a1, k);
+        break;
+    case 2:
+        gl_func_00000000(a1, k);
+        break;
     }
-    a1c = (typ != 0) ? 2 : 5;
-    if (a0 == 0) {
-        gl_func_00000000(a1, a1c);
-    } else if (a0 == 1) {
-        gl_func_00000000(a1, a1c);
-    } else if (a0 == 2) {
-        gl_func_00000000(a1, a1c);
-    }
-    return s0;
+    return r;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023914);
