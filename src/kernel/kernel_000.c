@@ -1038,53 +1038,21 @@ extern s32 D_8000A35C;
 extern s32 D_8000A2A0;
 extern s32 D_80012D30;
 
-#ifdef NON_MATCHING
-/* Logic-correct decode of the D_80012BC0+0x84 logger-dump family
- * (SIBLING of func_800007D4 / func_8000085C). Build 50 insns vs target
- * 53; the SINGLE residual is the documented sibling coloring cap.
- *
- * Target (expected/.../kernel_000.c.o, -O2): frame -0x30, FIVE callee
- * saves s0-s4, pins state(&D_80012BC0) in s2 and reloads the callback
- * via `lw $t9,0x84($s2)` for BOTH the pre-loop call and every loop iter;
- * s4 holds end(&D_80012D5C), s3 fmt2, s0/s1 the two table pointers.
- *
- * This build (-O2): frame -0x28, FOUR callee saves (s0/s1/s2/s3), keeps
- * end/p0/p1/fmt2 in s-regs but leaves `state` in a caller-saved temp,
- * rematerializing `lui $t9; lw $t9,0x84($t9)` per call. state's value is
- * read only to fetch the fn-ptr, so -O2 declines the 5th callee-save
- * promotion for it. Verified NOT C-source-reachable 2026-06-23:
- *   - struct-field deref (state->field_84) vs cast-deref: identical alloc
- *   - decl-order sweep (state first / various): identical alloc
- *   - first-call 2nd arg via *end (couples end liveness): identical alloc
- *   - 1842-iter permuter run (-stop-on-zero, j8): floor ~1320, never 0
- * Genuine IDO -O2 register-coloring cap, same class as func_800007D4.
- *
- * Struct-typing: prints &D_8000A34C with arg *end (=D_80012D5C value)
- * once, then walks parallel s32 tables D_80012D30[] and D_8000A2A0[]
- * (11 entries, D_80012D30..<D_80012D5C), calling the field_84 logger
- * (&D_8000A35C, D_8000A2A0[i], D_80012D30[i]) per entry. */
-/* func_800010E8 [58.8%, -O2 reg-alloc near-miss, NOT under-decoded]: logic complete
- * (2 state->field_84 calls bracketing a parallel-array loop). Residual: target CSEs
- * &D_80012BC0 into s2 + uses a 5th saved reg s4 for `end` (39w); the build re-lui's
- * state each call + collapses to 4 saved regs (36w). Decl-order reorder doesn't move it
- * (global-allocator choice). -O2 reg-alloc cap; stays NM. */
+/* func_800010E8: dump the 11 loader counters through the D_80012BC0.field_84
+ * logger: one header line with D_80012D5C, then (&D_8000A35C, name[i],
+ * D_80012D30[i]) per entry. IDO 7.1 -O2.
+ * EXACT 2026-10-20 (agent-g run 112; was NM 58.5, a pointer walk with five
+ * `register` locals filed as a 5th-callee-save coloring cap): a plain
+ * index loop. The .s loop bound is now spelled %hi/%lo(D_80012D30 + 0x2C)
+ * (same address as D_80012D5C, which the header line reads as a value). */
 void func_800010E8(void) {
-    register UsoLooseCb *state = (UsoLooseCb*)&D_80012BC0;
-    register s32 *p1 = &D_8000A2A0;
-    register s32 *p0 = &D_80012D30;
-    register s32 *end = &D_80012D5C;
-    register void *fmt2 = &D_8000A35C;
+    s32 i;
 
-    state->field_84(&D_8000A34C, *end);
-    do {
-        state->field_84(fmt2, *p1, *p0);
-        p0++;
-        p1++;
-    } while (p0 != end);
+    ((UsoLooseCb *)&D_80012BC0)->field_84(&D_8000A34C, D_80012D5C);
+    for (i = 0; i < 11; i++) {
+        ((UsoLooseCb *)&D_80012BC0)->field_84(&D_8000A35C, (&D_8000A2A0)[i], (&D_80012D30)[i]);
+    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800010E8);
-#endif
 
 extern s32 D_80012D30;
 extern s32 D_80012D34;
@@ -1189,25 +1157,19 @@ extern s32 D_80012D5C_alias; /* distinct extern @ 0x80012D5C: breaks store<->end
  *       (refs x loop_depth) always assigns the incremented loop var v0.
  *       Decl-order / assign-order / register hints do not flip it.
  * Both are emit-shape caps, not C bugs. Stays NON_MATCHING. */
+/* 2026-10-20 (agent-g run 112): 82.1 -> 94.7 as a plain zeroing loop over the
+ * 11 words (IDO peels 3 and unrolls the rest x4 itself). Left: the target
+ * shares one `lui at` between the D30/D34 stores and keeps the -0x10 store
+ * first in the 4-store body (ours goes to the bne delay slot). */
 void func_80001184(void) {
-    s32* ptr;
-    s32* end;
+    s32 i;
 
-    *(s32*)&D_80012D5C_alias = 0;
-    *(s32*)&D_80012D30 = 0;
-    *(s32*)&D_80012D34 = 0;
-    *(s32*)&D_80012D38 = 0;
-    ptr = D_80012D3C;
-    end = &D_80012D5C;
-loop:
-    ptr += 4;
-    ptr[-4] = 0;
-    ptr[-3] = 0;
-    ptr[-2] = 0;
-    ptr[-1] = 0;
-    if (end != ptr) {
-        goto loop;
-    }
+    D_80012D5C = 0;
+    i = 0;
+    do {
+        (&D_80012D30)[i] = 0;
+        i++;
+    } while (i < 11);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/kernel", func_80001184);
