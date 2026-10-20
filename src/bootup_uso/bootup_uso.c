@@ -2498,42 +2498,44 @@ void func_00003B78(char *s1, int a1) {
  * f32 0xC4 (196) / 0xCC (204) builder params; o1/o2 = 0x80-byte
  * builder objects cross-wired through the tagged func_00000000
  * builder (saved at sp+0x4C across the alloc pair); a1 indexes
- * the 0x1C-stride descriptor table per the family pattern.
- * Caps <80: ~12 reloc + FP stack-arg + packed-flag lui/ori +
- * a1*0x1C index + list-link beql. INCLUDE_ASM remains build path. */
-#ifdef NON_MATCHING
-/* run 111: typed float prototype for the two spawn calls (target passes swc1, not doubles) + block-count lever
- * (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */
+ * the 0x1C-stride descriptor table per the family pattern. */
+/* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc: alloc =
+ * func_055750, ctor = func_07BA00, list adds = func_011CA4 / func_0128AC on
+ * import_000200FC (= &D_00000000, whose +0x4C/0x50/0x54/0x17D/0x17F fields
+ * are read through the same held base), spawn = func_00003638 (x2), link =
+ * func_000031C0, attach = func_000034E8 with &D_007294 + a1 * 0x1C (zero
+ * alias bu_3d3c_d7294). The two new-expression results go through ONE temp t (target
+ * s2) with o1 copied out to the frame; the camera reads are inline per arg
+ * (a cfg local hoists the load); decl order puts o1 at sp+76 and r at sp+64
+ * (seven declared locals, cfg unused but it holds the 0x58 frame). */
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
+extern char bu_3d3c_d7294[];
 void func_00003D3C(char *s1, int a1) {
-    char *o1, *o2, *o3, *o4, *r, *cfg;
-    o1 = (char*)func_00000000(0x80);
-    if (o1 != 0) func_00000000(o1, 1);
-    o2 = (char*)func_00000000(0x80);
-    if (o2 != 0) func_00000000(o2, 0);
+    char *o2, *o3, *o1, *o4, *t, *r, *cfg;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 1);
+    o1 = t;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 0);
+    o2 = t;
     func_00000000(&D_00000000, o1);
     func_00000000(&D_00000000, o2);
     func_00000000(&D_00000000, o1, 0);
-    cfg = *(char**)(s1 + 0x98);
     r = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
-                             o1, *(int*)(s1 + 0x80), *(float*)(cfg + 0xC4) - 500.0f, *(float*)(cfg + 0xCC),
+                             o1, *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50) | 1 | 0x10000 | 0x40000, 0x1B);
-    cfg = *(char**)(s1 + 0x98);
     o3 = func_00000000_3d3cm(s1, 2, *(unsigned char*)((char*)&D_00000000 + 0x17D),
                               *(unsigned char*)((char*)&D_00000000 + 0x17F), o2, *(int*)(s1 + 0x80),
-                              *(float*)(cfg + 0xC4) + 500.0f, *(float*)(cfg + 0xCC), 0x8004, 0x1D);
+                              *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x8004, 0x1D);
     *(int*)(o3 + 0xA14) = 0x989680;
     *(char**)(r + 0x908) = o3;
     *(char**)(o3 + 0x908) = r;
-    o4 = (char*)func_00000000(s1, a1 * 0x1C, func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o1));
+    o4 = (char*)func_00000000(s1, bu_3d3c_d7294 + a1 * 0x1C, func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o1));
     *(char**)(r + 0x8DC) = o4;
     if (1) { }
     if (1) { }
     *(char**)(o3 + 0x8DC) = o4;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00003D3C);
-#endif
 
 /* func_00003F00 - verified structural decode (0x21C, 135 insns,
  * multi-stage builder chain). MEMBER of the func_000038C0 /

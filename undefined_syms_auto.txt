@@ -3977,3 +3977,5 @@ D_4e760_f4 = 0x0;
 func_00000000_3F8_f = 0x00000000;  /* func_000003F8 sqrtf (float->float) callee, jal 0 */
 func_00000000_139B0_f = 0x00000000;  /* func_000139B0 RNG (void->float) jal-0 callee */
 func_00000000_139B0_v = 0x00000000;  /* func_000139B0 finisher func_00013B20 (jal 0 in ROM) */
+func_00000000_3d3cm = 0x00000000;  /* func_00003D3C spawn callee func_00003638 (jal 0 in ROM), prototyped for swc1 float args */
+bu_3d3c_d7294 = 0x00000000;  /* func_00003D3C attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */

@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00003D3C",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-20T23:09:12.281273+00:00",
+  "end_time": "2026-10-20T23:09:12.281297+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T23:09:12.281292+00:00",
+      "assistant_text": "Builder chain: identities from the bootup.uso reloc table (alloc/ctor/list-add/spawn x2/link/attach), the two new-expression results share one temp with o1 copied to the frame, camera reads inline per argument, the attach table is &D_007294 + a1*0x1C via a zero alias, and decl order places o1/r at the target slots.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 113,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nextern char D_00000000;\nextern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);\nextern char bu_3d3c_d7294[];\nvoid func_00003D3C(char *s1, int a1) {\n    char *o2, *o3, *o1, *o4, *t, *r, *cfg;\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 1);\n    o1 = t;\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 0);\n    o2 = t;\n    func_00000000(&D_00000000, o1);\n    func_00000000(&D_00000000, o2);\n    func_00000000(&D_00000000, o1, 0);\n    r = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),\n                             o1, *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),\n                             *(int*)((char*)&D_00000000 + 0x50) | 1 | 0x10000 | 0x40000, 0x1B);\n    o3 = func_00000000_3d3cm(s1, 2, *(unsigned char*)((char*)&D_00000000 + 0x17D),\n                              *(unsigned char*)((char*)&D_00000000 + 0x17F), o2, *(int*)(s1 + 0x80),\n                              *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x8004, 0x1D);\n    *(int*)(o3 + 0xA14) = 0x989680;\n    *(char**)(r + 0x908) = o3;\n    *(char**)(o3 + 0x908) = r;\n    o4 = (char*)func_00000000(s1, bu_3d3c_d7294 + a1 * 0x1C, func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o1));\n    *(char**)(r + 0x8DC) = o4;\n    if (1) { }\n    if (1) { }\n    *(char**)(o3 + 0x8DC) = o4;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00003D3C.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}
