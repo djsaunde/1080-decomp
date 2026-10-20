@@ -5962,7 +5962,10 @@ int game_libs_func_0003A164(float *a0, float *a1) {
 /* run 110 (agent-c) 66.4 -> 68.3: disc escaped with if (1) { float *pd = &disc; }. A register disc lets uopt fold
  * (rr - x) < 0 into c.lt.s rr,x; the target subtracts, spills disc and compares with a zero register.
  * Residual: &tmp (sp+236) and c are held in s1/s0 where the target rematerializes them after each call.
- * Per-expression block temps remove the &tmp hold but give each temp its own slot (frame 0x170). */
+ * Per-expression block temps remove the &tmp hold but give each temp its own slot (frame 0x170).
+ * run 111: 68.3 -> 75.1. The holds are a firstUseCost compare (IDO_CODEGEN#hold-vs-remat-firstusecost-run111):
+ * four emission-free if (1) blocks before the tail raise the block count so &tmp and b go back to caller-saved /
+ * home reloads, if (r) keeps r colourable in f20, and two pad words restore the frame (0x140) and home offsets. */
 extern void gl_func_00000000_3a58cn(Vec3 *);   /* normalize-in-place slot */
 extern float gl_func_00000000_3a58cs(float);   /* sqrt slot */
 int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
@@ -5976,6 +5979,7 @@ int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
     float len2;
     Vec3 tmp;
     float t;
+    volatile int padt;
     Vec3 d1;
     volatile int pad5a[5];
     Vec3 d2;
@@ -5989,7 +5993,9 @@ int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
     volatile int pad2[2];
     Vec3 d5;
     Vec3 sc;
+    volatile int padz[1];
 
+    if (r) { }
     d1.x = c[0] - a[0];
     d1.y = c[1] - a[1];
     d1.z = c[2] - a[2];
@@ -6030,6 +6036,10 @@ int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
     tmp = d4;
     step = tmp;
 
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
     pt.x = a[0] + step.x;
     pt.y = a[1] + step.y;
     pt.z = a[2] + step.z;
@@ -6490,6 +6500,7 @@ s32 gl_func_0003B2EC(ObjB2 *self, s32 max, f32 *out, f32 x, f32 z) {
     s16 ez;
     s16 dx;
     s16 dz;
+    volatile int padq[2];
     s32 c[2];
 
     if (1) { V3B2 *pp = &p; }
@@ -6559,6 +6570,9 @@ s32 gl_func_0003B2EC(ObjB2 *self, s32 max, f32 *out, f32 x, f32 z) {
         }
         out[cnt++] = -h / ((f32 *)&D_00000000)[0x12C / 4];
     }
+    /* run 111: block-count lever drops the s8 hold (IDO_CODEGEN#hold-vs-remat-firstusecost-run111), 85.2 -> 88.4 */
+    if (1) { }
+    if (1) { }
     return cnt;
 }
 #else
@@ -15134,6 +15148,8 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
     *(u8 *)(rec + 4) = r;
     *(u8 *)(rec + 5) = g;
     *(u8 *)(rec + 6) = b;
+    if (1) { }
+    if (1) { } /* run 111: block-count lever, 255.0f remat in f0 (IDO_CODEGEN#hold-vs-remat-firstusecost-run111) */
     node = *(char **)(arg0 + 0x18C);
     cnt = 0;
     elem = 0;
@@ -15158,10 +15174,10 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
                 cv3 = (s32) (*(f32 *)(arg2 + 8) * *(f32 *)(elem2 + 0x104) * 255.0f);
                 *(s8 *)(ent + 0xA) = cv3;
                 *(s8 *)(ent + 0xE) = cv3;
+                do {
                 *(s8 *)(ent + 0x10) = (s32) (*(f32 *)(elem2 + 0xE4) * 120.0f);
                 *(s8 *)(ent + 0x11) = (s32) (*(f32 *)(elem2 + 0xE8) * 120.0f);
                 *(s8 *)(ent + 0x12) = (s32) (*(f32 *)(elem2 + 0xEC) * 120.0f);
-                do {
                     dl = *(char **)(arg1 + 0xC);
                     i = *(s32 *)(dl + 4);
                     *(s32 *)(dl + 4) = i + 1;
