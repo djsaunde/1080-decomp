@@ -3121,6 +3121,7 @@ void func_000043D4(char *s0, int a1) {
     b3 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r1, o1);
     b4 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r2, o2);
     *(float*)(b3 + 0x14C) = 55.0f;
+    if (1) { }
     *(float*)(b4 + 0x14C) = 55.0f;
     row1 = (char*)&D_00000000 + a1 * 0x1C;
     f1 = (char*)func_00000000(s0, row1, b3);
@@ -4382,38 +4383,48 @@ void func_00006228(char *a0) {
  * vs-stack-spill(76sp) choice + the ~8 &D %hi/%lo reloc scheduling. */
 extern char D_00007E74, D_00007E7C, D_00007E84, D_00007E98;
 #ifdef NON_MATCHING
+/* run 111 (agent-c): cfront ctor shape -- if (this || (this = new(0xDC))), the inlined base ctor
+ * if (s || (s = new(0xB4))) and the doubly-inlined member ctor for the +0x2C cell; the param
+ * itself is the object (no copy local); pads restore the 0x50 frame / home offsets; block-count
+ * lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). Residual: z[] store vs a0 schedule. */
 void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
-    char *o = a0;
     char *s;
+    volatile int pad[3];
     float z[3];
-    if (o == 0) {
-        o = (char*)func_00000000(0xDC);
-        if (o == 0) return 0;
-    }
-    s = (char*)func_00000000(0xB4);
-    if (s != 0) {
+    volatile int pad2[3];
+    if (a0 != 0 || (a0 = (char*)func_00000000(0xDC)) != 0) {
+    s = a0;
+    if (s != 0 || (s = (char*)func_00000000(0xB4)) != 0) {
         func_00000000(s, &D_00007E74);
         *(void**)(s + 0x28) = &D_00000000;
         {
             int *c = (int*)(s + 0x2C);
-            if (s == (char*)0xFFFFFFD4) c = (int*)func_00000000(4);
-            if (c == 0) c = (int*)func_00000000(4);
-            if (c != 0) *c = 0;
+            if (c != 0 || (c = (int*)func_00000000(4)) != 0) {
+                int *c2 = c;
+                if (c2 != 0 || (c2 = (int*)func_00000000(4)) != 0) {
+                    *c2 = 0;
+                }
+            }
         }
         func_00000000(s);
         z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f;
         func_00000000(s + 0x30, &z[0]);
     }
-    *(void**)(o + 0x28) = &D_00000000;
-    *(void**)(o + 0xC) = &D_00007E7C;
-    *(int*)(o + 0xB4) = a1;
-    func_00000000(o, a1);
-    if (*(int*)(*(char**)(o + 0xB4) + 0xA0) == 0)
+    *(void**)(a0 + 0x28) = &D_00000000;
+    *(void**)(a0 + 0xC) = &D_00007E7C;
+    *(int*)(a0 + 0xB4) = a1;
+    func_00000000(a0, a1);
+    if (*(int*)(*(char**)(a0 + 0xB4) + 0xA0) == 0)
         func_00000000(&D_00007E84, &D_00007E98, 0x3E4);
-    *(int*)(o + 0xB8) = a3;
-    *(int*)(o + 0xBC) = a2;
-    *(int*)(o + 0xC0) = a4;
-    return o;
+    *(int*)(a0 + 0xB8) = a3;
+    *(int*)(a0 + 0xBC) = a2;
+    *(int*)(a0 + 0xC0) = a4;
+    }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    return a0;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00006254);
@@ -5231,6 +5242,14 @@ void func_000074E8(char *a0) {
     *(void**)(r + 0x28) = &D_00000000;
     *(char**)(a0 + 0x40) = r;
     head = *(char**)((*(char**)((char*)&func_000000F0 + 0x44)) + 0x88);
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
     func_00000000(head + 0x10, r);
     if (*(int*)(r + 0x14) != 0) *(int*)(r + 0x4) = 1;
     *(char**)(r + 0x14) = head;
@@ -10209,6 +10228,14 @@ void func_0000E800(void) {
     func_00000000(&D_00000000);
     *(void**)((char*)&func_00000008 + 0x20) = &D_00000000;
     root = *(char**)&D_00000000;
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
     vt = *(int**)(root + 0x28);
     (*(void (**)(char*))((char*)vt + 0x5C))((char*)((int)(short)*(short*)((char*)vt + 0x58) + (int)root));
 }
