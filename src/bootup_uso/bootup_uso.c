@@ -4632,310 +4632,287 @@ void func_00006734(char *a0) {
 //   until the register-role skeleton (obj->s7, ga->s4, gc->s5, seed->s1,
 //   idx/mask->s6) is rebuilt first, i.e. this needs the E68-style
 //   de-name/role-local pass BEFORE the alias split, not after.
+// PASS-6 2026-10-20 (agent-c run 114): FRESH HAND DECODE 63.4 -> 91.4.
+//   Real identities from the bootup.uso TextReloc table + emu symnames
+//   (scratch rel.py over uso-reloc-symbolize internals): A = import_
+//   8001FFC0 (root slot, s4 pre-loop), C = import_800200FC (s5), B =
+//   D_7770 (current obj), post-loop s4/s5 = D_776C / D_1EBDC, mode word
+//   import_8005EE6C, flags import_8005EE64 / import_8005C108+0x3C. Every
+//   `lui a0; addiu a0,0` string arg is a DISTINCT symbol (no &sym CSE in
+//   target). Levers: two shared object temps o(s0)/t(s2) + one list temp
+//   L(s3) used by an ATTACH macro (no per-site copies; explicit `t = o;`
+//   where target shows the s0+s2 pair); record header read as
+//   `count = *p >> 16; t = p++; op = *t & 0xFFFF` (t reused as the
+//   record pointer gives the target's or s2,s1 + reload); p reused for
+//   the post-loop object (s1); RMWs read through per-site zero aliases
+//   (target folds every RMW to lui/lw + lui/sw, no held base). Residual:
+//   post-loop target holds &D/&E in s4/s5 + 6/0xA0000/&I as hoisted
+//   caller-saved constants; 3 phantom frame words below v4C; t-ring +1.
 #ifdef NON_MATCHING
-extern char D_00007EC4, D_00007ECC, D_00007ED8, D_00007EE8, D_00007EEC;
-extern char D_00007EF0, D_00007EF4, D_00007EF8, D_00007EFC, D_00007F08;
-extern char D_00007F0C, D_00007F18, D_00007F28, D_00007F34, D_00007F3C;
-extern char D_00007F44, D_00007F50, D_00007F58, D_00007F64, D_00007F68;
-extern char D_00007F70, D_00007F78, D_00007EB8, D_00007F5C;
-extern char bu_6808_ga, bu_6808_gb;
-void *func_00006808(char *arg0, char *arg1, s32 arg2) {
-    f32 sp50; f32 sp54;
-    s32 spE4;
-    s32 spE0;
-    s32 spDC;
-    s32 spD4;
-    s32 spD0;
-    f32 spC8;
-    f32 spC4;
-    f32 spC0;
-    s32 spBC;
-    s32 spB8;
-    s32 spB4;
-    s32 spB0;
-    s32 spA8;
-    f32 spA4;
-    f32 spA0;
-    f32 sp9C;
-    S4_55A0 sp78;
-    S4_55A0 sp74;
-    S4_55A0 sp70;
-    S4_55A0 sp6C;
-    f32 sp4C;
-    u32 sp48;
-    s32 temp_a1;
-    s32 temp_a1_2;
-    s32 temp_a2;
-    s32 temp_a2_2;
-    s32 temp_a2_3;
-    s32 temp_a2_4;
-    s32 temp_s3;
-    s32 temp_s3_2;
-    s32 temp_s3_3;
-    s32 temp_s3_4;
-    s32 temp_s3_5;
-    s32 temp_s3_6;
-    s32 temp_s3_7;
-    s32 temp_v0_4;
-    s32 temp_v1;
-    s32 var_s6;
-    u32 var_v0;
-    char *temp_s1;
-    char *temp_s1_2;
-    char *temp_s2;
-    char *temp_s2_2;
-    char *temp_v0;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *temp_v0_5;
-    char *temp_v0_6;
-    char *temp_v0_7;
-    char *temp_v0_8;
-    char *var_s1;
+extern int import_8005EE6C[];   /* mode words: [0], [1] */
+extern int import_8005EE6C_r[];  /* read alias (same USO import) */
+extern char *import_8001FFC0;     /* root object slot */
+extern int import_800200FC[];   /* settings: [0x3C/4], [0x68/4] */
+extern int import_8005EE64;     /* flags word */
+extern int import_8005EE64_r;
+extern int import_8005C108[];   /* [0x3C/4] flags */
+extern int import_8005C108_r[];
+extern int import_8001FFF0;
+extern char *D_bu_7770;
+extern char *D_bu_776C;
+extern int D_bu_1EBDC;
+typedef struct { int count : 16; unsigned op : 16; } Rec6808;
+typedef struct { f32 x, y, z; } V3_6808;
+#define ATTACH6808(list, x) { \
+    L = (list); \
+    func_00000000(L + 0x10, x); \
+    if (*(int *)(x + 0x14) != 0) *(int *)(x + 0x4) = 1; \
+    *(int *)(x + 0x14) = (int)L; }
+extern char D_6808_00, D_6808_01, D_6808_02, D_6808_03, D_6808_04, D_6808_05, D_6808_06, D_6808_07, D_6808_08, D_6808_09, D_6808_10, D_6808_11, D_6808_12, D_6808_13, D_6808_14, D_6808_15, D_6808_16, D_6808_17, D_6808_18, D_6808_19, D_6808_20, D_6808_21, D_6808_22, D_6808_23;
+extern int import_8005C108_0[], import_8005C108_1[], import_8005C108_2[], import_8005C108_3[], import_8005C108_4[], import_8005C108_5[], import_8005EE64_0, import_8005EE64_1, import_8005EE64_2, import_8005EE64_3, import_8005EE64_4, import_8005EE64_5, import_8005EE64_6, import_8005EE64_7;
+void *func_00006808(char *obj, char *arg1, s32 arg2) {
+    S4_55A0 e4, e0;
+    int dc;
+    char *g1;
+    int d4, d0;
+    char *g2;
+    f32 c8, c4, c0;
+    int bC, b8, b4, b0;
+    char *g3;
+    int count;
+    f32 bA4, bA0, b9C;
+    char *va, *vb;
+    char *L, *t;
+    int *rec;
+    char **gD;
+    int *gE;
+    S4_55A0 t78, t74, t70, t6C;
+    int *p;
+    int idx;
+    char *o;
+    char *res;
+    V3_6808 v4C;
+    int op;
 
-    spDC = 0;
-    spD4 = 0;
-    var_s1 = *(s32 *)((char *)(arg1) + 0x40);
-    spBC = 0;
-    spB8 = 0x28;
-    spB4 = 0x14;
-    spB0 = 1;
-    *(s32 *)((char *)&bu_6808_gb + 4) = (s32) (*(s32 *)((char *)&bu_6808_gb + 4) | 0x20000);
-    spC8 = 0.0f;
-    spC4 = 0.0f;
-    spC0 = 0.0f;
-    func_00000000(&D_00007EB8, 0);
-    temp_v0_2 = func_00000000(0); if (1) {}
-    *(s32 *)((char *)&bu_6808_ga + 0) = temp_v0_2; if (1) {}
-    temp_s3 = *(s32 *)((char *)(arg0) + 0x84);
-    func_00000000(temp_s3 + 0x10, temp_v0_2);
-    if (*(s32 *)((char *)(temp_v0_2) + 0x14) != 0) {
-        *(s32 *)((char *)(temp_v0_2) + 0x4) = 1;
-    }
-    *(s32 *)((char *)(temp_v0_2) + 0x14) = temp_s3;
-    spA0 = 0.0f;
-    spA4 = 0.0f;
-    sp9C = 1.0f;
-    *(s32 *)((char *)&bu_6808_ga + 0) = func_00000000(0, &D_00007EC4, -1);
-    var_s6 = 0;
-loop_3:
-    temp_s1 = var_s1 + 4;
-    spA8 = (s32) *(s32 *)((char *)(var_s1) + 0x0) >> 0x10;
-    var_v0 = *(s32 *)((char *)(var_s1) + 0x0) & 0xFFFF;
-    sp48 = var_v0;
-    switch (var_v0) {
-    case 0:
-        func_00000000(&D_00007ECC, 0);
-        temp_v0_3 = func_00000000(0);
-        temp_v0_4 = func_00000000(0, &D_00007ED8, temp_v0_3); if (1) {}
-        func_00000000(temp_v0_3, temp_v0_4);
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_v0_3, (sp78.w = *(s32 *)&D_00007EE8, sp78));
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_v0_4, (sp74.w = *(s32 *)&D_00007EEC, sp74));
-        temp_s3_2 = *(s32 *)((char *)(arg0) + 0x7C);
-        func_00000000(temp_s3_2 + 0x10, temp_v0_3);
-        if (*(s32 *)((char *)(temp_v0_3) + 0x14) != 0) {
-            *(s32 *)((char *)(temp_v0_3) + 0x4) = 1;
-        }
-        *(s32 *)((char *)(temp_v0_3) + 0x14) = temp_s3_2;
-        func_00000000(temp_v0_3, *(s32 *)((char *)(arg0) + 0x94));
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), *(s32 *)((char *)(arg0) + 0x90), (sp70.w = *(s32 *)&D_00007EF0, sp70));
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), *(s32 *)((char *)(arg0) + 0x94), (sp6C.w = *(s32 *)&D_00007EF4, sp6C));
-        func_00000000();
-    default:
-block_25:
-        var_s1 = temp_s1 + (spA8 * 4);
-        if (sp48 == 0xC) {
-            func_00000000(); if (1) {}
-            temp_v1 = *(s32 *)((char *)&bu_6808_ga + 0x3C);
-            if ((temp_v1 == 6) || (temp_v1 == 0xB)) {
-                spB4 = 5;
-                spB0 = 2;
-            }
-            *(s32 *)((char *)&bu_6808_ga + 0) = 0;
-            *(s32 *)((char *)&bu_6808_ga + 0) = 6;
-            func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), arg2, var_s6, 6);
-            temp_s2 = *(s32 *)((char *)&bu_6808_ga + 0);
-            temp_s3_3 = *(s32 *)((char *)(arg0) + 0x88);
-            func_00000000(temp_s3_3 + 0x10, temp_s2);
-            if (*(s32 *)((char *)(temp_s2) + 0x14) != 0) {
-                *(s32 *)((char *)(temp_s2) + 0x4) = 1;
-            }
-            *(s32 *)((char *)(temp_s2) + 0x14) = temp_s3_3;
-            func_00000000(&D_00007F08, 0);
-            var_v0 = 0;
-            if (spBC != 0) {
-                *(s32 *)((char *)&bu_6808_ga + 0x1C4) = (s32) (*(s32 *)((char *)&bu_6808_ga + 0x1C4) | 8);
-            } else {
-            case 12:
-                *(s32 *)((char *)&bu_6808_ga + 0x1C4) = (s32) (*(s32 *)((char *)&bu_6808_ga + 0x1C4) & ~8);
-            }
-        } else {
-            goto loop_3;
-        }
-        break;
-    case 1:
-        var_s6 = *(s32 *)((char *)(temp_s1) + 0x4);
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), 1, *(s32 *)((char *)(var_s1) + 0x4));
-        goto block_25;
-    case 2:
-        if (*(s32 *)((char *)&bu_6808_ga + 0x68) < 2) {
-            var_s6 = *(s32 *)((char *)(temp_s1) + 0x4);
-            func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), 1, *(s32 *)((char *)(var_s1) + 0x4));
-        }
-        goto block_25;
-    case 3:
-        if (*(s32 *)((char *)&bu_6808_ga + 0x68) == 2) {
-            func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), 1, *(s32 *)((char *)(var_s1) + 0x4));
-            var_s6 = *(s32 *)((char *)(temp_s1) + 0x4);
-        }
-        goto block_25;
-    case 4:
-        if (*(s32 *)((char *)&bu_6808_ga + 0x68) == 3) {
-            func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), 1, *(s32 *)((char *)(var_s1) + 0x4));
-            var_s6 = *(s32 *)((char *)(temp_s1) + 0x4);
-        }
-        goto block_25;
-    case 5:
-        spBC = 1;
-        spB8 = *(s32 *)((char *)(var_s1) + 0x4);
-        spB4 = *(s32 *)((char *)(temp_s1) + 0x4);
-        spB0 = *(s32 *)((char *)(temp_s1) + 0x8);
-        goto block_25;
-    case 6:
-        if (arg2 != 6) {
-            func_00000000(&D_00007EF8, 0);
-            func_00000000(0, *(s32 *)((char *)(var_s1) + 0x4));
-            temp_v0_5 = func_00000000(*(s32 *)((char *)(temp_s1) + 0x4), *(s32 *)((char *)(temp_s1) + 0x8), *(s32 *)((char *)(temp_s1) + 0xC), *(s32 *)((char *)(temp_s1) + 0x10), *(s32 *)((char *)(temp_s1) + 0x14), *(s32 *)((char *)(temp_s1) + 0x18), *(s32 *)((char *)(temp_s1) + 0x1C));
-            temp_s3_4 = *(s32 *)((char *)(arg0) + 0x84);
-            func_00000000(temp_s3_4 + 0x10, temp_v0_5);
-            if (*(s32 *)((char *)(temp_v0_5) + 0x14) != 0) {
-                *(s32 *)((char *)(temp_v0_5) + 0x4) = 1;
-            }
-            *(s32 *)((char *)(temp_v0_5) + 0x14) = temp_s3_4;
-            *(s32 *)((char *)((*(s32 *)((char *)&bu_6808_ga + 0))) + 0x3C) = temp_v0_5;
+    dc = 0;
+    d4 = 0;
+    p = *(int **)(arg1 + 0x40);
+    bC = 0;
+    b8 = 40;
+    b4 = 20;
+    b0 = 1;
+    { int m = import_8005EE6C_r[1] | 0x20000; import_8005EE6C[1] = m; }
+    c8 = 0.0f;
+    c4 = 0.0f;
+    c0 = 0.0f;
+    func_00000000(&D_6808_00, 0);
+    t = (char *)func_00000000(0);
+    import_8001FFC0 = t;
+    ATTACH6808(*(char **)(obj + 0x84), t);
+    bA0 = 0.0f;
+    bA4 = 0.0f;
+    b9C = 1.0f;
+    D_bu_7770 = (char *)func_00000000(0, &D_6808_01, -1);
+    idx = 0;
+    do {
+        count = *p >> 16;
+        t = (char *)p++;
+        switch (op = *(int *)t & 0xFFFF) {
+        case 12:
+            break;
+        case 0: {
+            func_00000000(&D_6808_02, 0);
+            o = (char *)func_00000000(0);
+            t = (char *)func_00000000(0, &D_6808_03, o);
+            func_00000000(o, t);
+            t78.w = *(int *)&D_6808_04;
+            func_00000000(import_8001FFC0, o, t78);
+            t74.w = *(int *)&D_6808_05;
+            func_00000000(import_8001FFC0, t, t74);
+            ATTACH6808(*(char **)(obj + 0x7C), o);
+            func_00000000(o, *(int *)(obj + 0x94));
+            t70.w = *(int *)&D_6808_06;
+            func_00000000(import_8001FFC0, *(int *)(obj + 0x90), t70);
+            t6C.w = *(int *)&D_6808_07;
+            func_00000000(import_8001FFC0, *(int *)(obj + 0x94), t6C);
             func_00000000();
+            break;
         }
-        goto block_25;
-    case 7:
-        func_00000000(&D_00007EFC, 0);
-        func_00000000(0, *(s32 *)((char *)(var_s1) + 0x4));
-        spD0 = *(s32 *)((char *)(temp_s1) + 0x4);
-        func_00000000();
-        goto block_25;
-    case 8:
-        spDC = *(s32 *)((char *)(var_s1) + 0x4);
-        goto block_25;
-    case 9:
-        spD4 = *(s32 *)((char *)(var_s1) + 0x4);
-        goto block_25;
-    case 10:
-        spC8 = (f32) *(s32 *)((char *)(var_s1) + 0x4);
-        spC4 = (f32) *(s32 *)((char *)(temp_s1) + 0x4);
-        spC0 = (f32) *(s32 *)((char *)(temp_s1) + 0x8);
-        goto block_25;
-    case 11:
-        spA4 = (f32) *(s32 *)((char *)(var_s1) + 0x4);
-        spA0 = (f32) *(s32 *)((char *)(temp_s1) + 0x4);
-        sp9C = (f32) *(s32 *)((char *)(temp_s1) + 0x8);
-        goto block_25;
+        case 1:
+            idx = p[1];
+            func_00000000(import_8001FFC0, 1, p[0]);
+            break;
+        case 2:
+            if (import_800200FC[0x68 / 4] < 2) {
+                idx = p[1];
+                func_00000000(import_8001FFC0, 1, p[0]);
+            }
+            break;
+        case 3:
+            if (import_800200FC[0x68 / 4] == 2) {
+                func_00000000(import_8001FFC0, 1, p[0]);
+                idx = p[1];
+            }
+            break;
+        case 4:
+            if (import_800200FC[0x68 / 4] == 3) {
+                func_00000000(import_8001FFC0, 1, p[0]);
+                idx = p[1];
+            }
+            break;
+        case 5:
+            bC = 1;
+            b8 = p[0];
+            b4 = p[1];
+            b0 = p[2];
+            break;
+        case 6:
+            if (arg2 != 6) {
+                func_00000000(&D_6808_08, 0);
+                func_00000000(import_800200FC, p[0]);
+                o = (char *)func_00000000(p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
+                t = o;
+                ATTACH6808(*(char **)(obj + 0x84), t);
+                *(char **)(import_8001FFC0 + 0x3C) = o;
+                func_00000000();
+            }
+            break;
+        case 7:
+            func_00000000(&D_6808_09, 0);
+            func_00000000(import_800200FC, p[0]);
+            d0 = p[1];
+            func_00000000();
+            break;
+        case 8:
+            dc = p[0];
+            break;
+        case 9:
+            d4 = p[0];
+            break;
+        case 10:
+            c8 = p[0];
+            c4 = p[1];
+            c0 = p[2];
+            break;
+        case 11:
+            bA4 = p[0];
+            bA0 = p[1];
+            b9C = p[2];
+            break;
+        }
+        p += count;
+    } while (op != 12);
+    func_00000000();
+    if (import_800200FC[0x3C / 4] == 6 || import_800200FC[0x3C / 4] == 11) {
+        b4 = 5;
+        b0 = 2;
     }
-    *(s32 *)((char *)&bu_6808_ga + 0) = 6;
-    *(s32 *)((char *)&bu_6808_ga + 0) = (s32) ((*(s32 *)var_v0 & ~8) | 0x100); if (1) {}
-    *(s32 *)((char *)&bu_6808_gb + 4) = (s32) 0xA8002;
-    *(s32 *)((char *)&bu_6808_ga + 0) = 0;
-    func_00000000(&D_00007F0C, 0);
-    temp_s1_2 = func_00000000(0, &D_00007F18, 0, 0);
-    func_00000000();
-    func_00000000(&D_00007F28, 0);
-    func_00000000(temp_s1_2, spD0);
-    func_00000000();
-    func_00000000(&D_00007F34, 0);
-    *(s32 *)((char *)(temp_s1_2) + 0x50) = func_00000000(*(s32 *)((char *)(temp_s1_2) + 0x40) * 4);
-    func_00000000();
-    func_00000000(&D_00007F3C, 0);
-    func_00000000(temp_s1_2);
-    func_00000000();
-    *(s32 *)((char *)&bu_6808_ga + 0) = (void *) ((s32) *(s32 *)((char *)&bu_6808_ga + 0) & ~0x100);
-    *(s32 *)((char *)(temp_s1_2) + 0x30) = (s32) (*(s32 *)((char *)(temp_s1_2) + 0x30) | 0x40);
-    *(s32 *)((char *)&bu_6808_ga + 0x1C4) = (s32) (*(s32 *)((char *)&bu_6808_ga + 0x1C4) & ~8);
-    func_00000000();
-    func_00000000(&D_00007F44, 0);
-    temp_v0_6 = func_00000000(0, temp_s1_2, *(s32 *)((char *)(arg0) + 0x90), *(s32 *)((char *)(arg0) + 0x94));
-    temp_s3_5 = *(s32 *)((char *)(arg0) + 0x84);
-    func_00000000(temp_s3_5 + 0x10, temp_v0_6);
-    if (*(s32 *)((char *)(temp_v0_6) + 0x14) != 0) {
-        *(s32 *)((char *)(temp_v0_6) + 0x4) = 1;
+    gD = (char **)&D_bu_776C;
+    gE = &D_bu_1EBDC;
+    *gD = 0;
+    *gE = 6;
+    func_00000000(D_bu_7770, arg2, idx, *gE);
+    {
+        t = D_bu_7770;
+        ATTACH6808(*(char **)(obj + 0x88), t);
     }
-    *(s32 *)((char *)(temp_v0_6) + 0x14) = temp_s3_5;
-    func_00000000(temp_v0_6);
-    func_00000000();
-    *(s32 *)((char *)&bu_6808_ga + 0) = 1;
-    temp_v0 = func_00000000(0, temp_s1_2, spB8, spB4, spB0);
-    *(s32 *)((char *)(temp_v0) + 0x18) = (s32) (*(s32 *)((char *)(temp_v0) + 0x18) & ~0x40);
-    *(s32 *)((char *)&bu_6808_ga + 0) = func_00000000(0, temp_s1_2);
-    func_00000000(&D_00007F50, 0);
-    if (spDC != 0) {
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), 1, spDC);
-    }
-    func_00000000();
-    *(f32 *)((char *)(temp_v0) + 0xC4) = spC8;
-    *(f32 *)((char *)(temp_v0) + 0xC8) = spC4;
-    *(f32 *)((char *)(temp_v0) + 0xCC) = spC0;
-    *(f32 *)((char *)(temp_v0) + 0xD0) = spA4;
-    *(f32 *)((char *)(temp_v0) + 0xD4) = spA0;
-    *(f32 *)((char *)(temp_v0) + 0xD8) = sp9C;
-    temp_a1 = *(s32 *)&D_00007F58;
-    spE4 = temp_a1;
-    temp_v0_7 = func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_a1, 0);
-    if (temp_v0_7 != 0) {
-        *((s32 *)&sp4C + 0) = *(s32 *)((char *)(temp_v0_7) + 0x30);
-        *((s32 *)&sp4C + 1) = (s32) *(s32 *)((char *)(temp_v0_7) + 0x34);
-        *((s32 *)&sp4C + 2) = (s32) *(s32 *)((char *)(temp_v0_7) + 0x38);
-        *(f32 *)((char *)(temp_v0) + 0xC4) = sp4C;
-        *(f32 *)((char *)(temp_v0) + 0xC8) = sp50;
-        *(f32 *)((char *)(temp_v0) + 0xCC) = sp54;
+    func_00000000(&D_6808_10, 0);
+    if (bC != 0) {
+        import_8005C108_0[0x3C / 4] = import_8005C108_1[0x3C / 4] | 8;
     } else {
-        func_00000000(&D_00007F5C);
+        import_8005C108_2[0x3C / 4] = import_8005C108_3[0x3C / 4] & ~8;
     }
-    temp_a1_2 = *(s32 *)&D_00007F64;
-    spE0 = temp_a1_2;
-    temp_v0_8 = func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), temp_a1_2, 0);
-    if (temp_v0_8 != 0) {
-        *((s32 *)&sp4C + 0) = *(s32 *)((char *)(temp_v0_8) + 0x30);
-        *((s32 *)&sp4C + 1) = (s32) *(s32 *)((char *)(temp_v0_8) + 0x34);
-        *((s32 *)&sp4C + 2) = (s32) *(s32 *)((char *)(temp_v0_8) + 0x38);
-        *(f32 *)((char *)(temp_v0) + 0xD0) = sp4C;
-        *(f32 *)((char *)(temp_v0) + 0xD4) = sp50;
-        *(f32 *)((char *)(temp_v0) + 0xD8) = sp54;
-    } else {
-        func_00000000(&D_00007F68);
+    *gE = 6;
+    import_8005EE64_0 = (import_8005EE64_1 & ~8) | 0x100;
+    import_8005EE6C[1] = 0xA8002;
+    import_8005EE6C[0] = 0;
+    func_00000000(&D_6808_11, 0);
+    p = (int *)func_00000000(0, &D_6808_12, 0, 0);
+    func_00000000();
+    func_00000000(&D_6808_13, 0);
+    func_00000000(((char *)p), d0);
+    func_00000000();
+    func_00000000(&D_6808_14, 0);
+    *(int *)(((char *)p) + 0x50) = func_00000000(*(int *)(((char *)p) + 0x40) * 4);
+    func_00000000();
+    func_00000000(&D_6808_15, 0);
+    func_00000000(((char *)p));
+    func_00000000();
+    import_8005EE64_2 = import_8005EE64_3 & ~0x100;
+    {
+        char *q = ((char *)p);
+        if (1) { q += 0x30; }
+        *(int *)q |= 0x40;
     }
-    temp_s3_6 = *(s32 *)((char *)(arg0) + 0x84);
-    func_00000000(temp_s3_6 + 0x10, temp_v0);
-    if (*(s32 *)((char *)(temp_v0) + 0x14) != 0) {
-        *(s32 *)((char *)(temp_v0) + 0x4) = 1;
+    import_8005C108_4[0x3C / 4] = import_8005C108_5[0x3C / 4] & ~8;
+    func_00000000();
+    func_00000000(&D_6808_16, 0);
+    {
+        o = (char *)func_00000000(0, ((char *)p), *(int *)(obj + 0x90), *(int *)(obj + 0x94));
+        t = o;
+        ATTACH6808(*(char **)(obj + 0x84), t);
+        func_00000000(o);
     }
-    *(s32 *)((char *)(temp_v0) + 0x14) = temp_s3_6;
-    *(s32 *)((char *)&bu_6808_ga + 0) = 6;
-    func_00000000(&D_00007F70, 0);
-    *(s32 *)((char *)&bu_6808_ga + 0) = func_00000000(0, &D_00007F78, -1);
-    *(s32 *)((char *)&bu_6808_ga + 0) = (void *) ((s32) *(s32 *)((char *)&bu_6808_ga + 0) | 8);
-    func_00000000(*(s32 *)((char *)&bu_6808_ga + 0));
-    if (spD4 != 0) {
-        func_00000000(*(s32 *)((char *)&bu_6808_ga + 0), 1, spD4);
+    func_00000000();
+    *gE = 1;
+    res = (char *)func_00000000(0, ((char *)p), b8, b4, b0);
+    {
+        char *q = res;
+        if (1) { q += 0x18; }
+        *(int *)q &= ~0x40;
+    }
+    import_8001FFF0 = func_00000000(0, ((char *)p));
+    func_00000000(&D_6808_17, 0);
+    if (dc != 0) {
+        func_00000000(D_bu_7770, 1, dc);
+    }
+    func_00000000();
+    *(f32 *)(res + 0xC4) = c8;
+    *(f32 *)(res + 0xC8) = c4;
+    *(f32 *)(res + 0xCC) = c0;
+    *(f32 *)(res + 0xD0) = bA4;
+    *(f32 *)(res + 0xD4) = bA0;
+    *(f32 *)(res + 0xD8) = b9C;
+    {
+        e4.w = *(int *)&D_6808_18;
+        va = (char *)func_00000000(D_bu_7770, e4, 0);
+        if (va != 0) {
+            v4C = *(V3_6808 *)(va + 0x30);
+            *(f32 *)(res + 0xC4) = v4C.x;
+            *(f32 *)(res + 0xC8) = v4C.y;
+            *(f32 *)(res + 0xCC) = v4C.z;
+        } else {
+            func_00000000((char *)&D_6808_19 + 0x7F5C);
+        }
+    }
+    {
+        e0.w = *(int *)&D_6808_20;
+        vb = (char *)func_00000000(D_bu_7770, e0, 0);
+        if (vb != 0) {
+            v4C = *(V3_6808 *)(vb + 0x30);
+            *(f32 *)(res + 0xD0) = v4C.x;
+            *(f32 *)(res + 0xD4) = v4C.y;
+            *(f32 *)(res + 0xD8) = v4C.z;
+        } else {
+            func_00000000(&D_6808_21);
+        }
+    }
+    ATTACH6808(*(char **)(obj + 0x84), res);
+    *gE = 6;
+    func_00000000(&D_6808_22, 0);
+    *gD = (char *)func_00000000(0, &D_6808_23, -1);
+    import_8005EE64_4 = import_8005EE64_5 | 8;
+    func_00000000(*gD);
+    if (d4 != 0) {
+        func_00000000(*gD, 1, d4);
     }
     if (arg2 == 1) {
-        temp_s2_2 = *(s32 *)((char *)&bu_6808_ga + 0); if (1) {}
-        temp_s3_7 = *(s32 *)((char *)(arg0) + 0x80);
-        func_00000000(temp_s3_7 + 0x10, temp_s2_2);
-        if (*(s32 *)((char *)(temp_s2_2) + 0x14) != 0) {
-            *(s32 *)((char *)(temp_s2_2) + 0x4) = 1;
-        }
-        *(s32 *)((char *)(temp_s2_2) + 0x14) = temp_s3_7;
+        t = *gD;
+        ATTACH6808(*(char **)(obj + 0x80), t);
     }
     func_00000000();
-    *(s32 *)((char *)&bu_6808_ga + 0) = (void *) ((s32) *(s32 *)((char *)&bu_6808_ga + 0) & ~8);
-    return temp_v0;
+    import_8005EE64_6 = import_8005EE64_7 & ~8;
+    return res;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00006808);
