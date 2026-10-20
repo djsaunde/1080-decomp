@@ -455,7 +455,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 105: 50444 NM re-decode: -0x20 -> 0x2e56c.
 # agent-c run 110: 493AC NM re-decode: +0x40 -> 0x2e5ec.
 # agent-c run 110: 3BE1C NM re-decode: +0x20 -> 0x2e60c.
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e60c gl_func_000551E0=0x7c gl_func_00055B10=0x2c
+# agent-c run 110: 3B9C0 NM re-decode: +0x20 -> 0x2e62c.
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e62c gl_func_000551E0=0x7c gl_func_00055B10=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0

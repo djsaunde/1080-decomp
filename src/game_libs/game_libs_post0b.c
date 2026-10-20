@@ -6720,135 +6720,124 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B6A0);
 //   STRUCTURAL body below — gate + Vec3 delta + length skeleton
 //   only. Byte-match deferred. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
-/* PASS-3 2026-07-31 (hand reconstruction): segment-vs-face-set
- * intersector. Replaces the PASS-2 m2c graft (int-typed float loads had
- * killed every lwc1). delta = q - p; if len > eps normalize else fall to
- * straight-down (0,-1,0); for each front-facing face (flag s16 >= 0,
- * plane-normal dot dir <= eps2 back-face gate) compute plane hit
- * t = -(dot(p,n) - d)/den, hit point, then 3-edge point-in-polygon test
- * in the face's 2D projection plane (axes = face bytes 0/1, winding sign
- * = byte 3) over s16 vertex coords (verts 6B each, per-face u16 index
- * records 8B each, optional s16 remap at sub+0x4C, next-vertex table =
- * base-0 s16[3]). Hits append t/face-ptr/point until nMax. jal-0
- * placeholders: sqrtf + Vec3-normalize helper; eps doubles + next-table
- * are baked-USO rodata (base-0 extern aliases per file convention). */
-s32 gl_func_0003B9C0(char *arg0, s32 arg1, f32 *arg2, s32 *arg3, f32 *arg4, f32 *arg5, s32 arg6, char *arg7) {
-    extern float sqrtf(float);
-    extern void gl_func_00000000_vnorm3(f32 *);  /* Vec3 normalize (jal 0) */
-    extern s16 gl_d3b9c0_next[];   /* {1,2,0} next-vertex table (base-0 alias) */
-    extern s16 gl_d3b9c0_nexta[];  /* per-site alias: in-loop rematerialized lui/addiu */
-    extern f64 gl_d3b9c0_eps1;     /* min segment length gate (USO ro 0x1AA8) */
-    extern f64 gl_d3b9c0_eps2;     /* back-face denom gate   (USO ro 0x1AB0) */
-    f32 spB8[3];
-    f32 spA0[3];
+/* 2026-10-17 run 110 re-decode (agent-c): segment-vs-triangle-set raycast,
+ * sibling of gl_func_0003BE1C (same Obj/Col/Tri/Face views). d = *b - *a,
+ * normalized if longer than eps (else straight down), then for every
+ * front-facing triangle: plane hit t, hit point p = a + d*t, 3-edge 2D
+ * cross test; hits fill dist[]/tris[]/pts[] (pts optional) up to max.
+ * 67.0 -> 72.3. The two eps gates are double LITERALS (the target hoists the
+ * 0x1AB0 one into f24 out of the loop; a memory extern is not hoisted past
+ * the dist[]/out[] stores). Values 1e-4 / -1e-4 are placeholders (the real
+ * rodata words were not checked). One offset web (off) for both tris+off
+ * and nrm+off. Residual: FP colouring (target n.x/y/z f16/f18/f20, dn f12,
+ * t f22), frame 0xD8 vs 0xE8 (target spills off to sp+128 and saves f24). */
+typedef struct { f32 x, y, z; } V3B9;
+typedef struct { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; } TriB9;
+typedef struct { u16 mat; u16 vi[3]; } FaceB9;
+typedef struct {
+    char pad0[0x44]; u32 ntri; char pad48[4]; s16 *remap; char pad50[4]; V3B9 *nrm; char pad58[8];
+    s16 (*verts)[3]; char pad64[4]; FaceB9 *faces;
+} ColB9;
+typedef struct { char pad0[0x2C]; TriB9 *tris; char pad30[0x54]; ColB9 *col; } ObjB9;
+extern float sqrtf(float);
+extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
+extern void gl_func_00000000_vnorm3(V3B9 *);
+s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
+    s32 cnt;
+    u32 i;
+    s32 off;
+    ColB9 *col;
+    FaceB9 *f;
+    V3B9 *n;
+    f32 dn;
     f32 t;
-    f32 den;
-    f32 nx, ny, nz;
-    f32 sgn;
-    f32 p0, p1;
-    f32 *nrm;
-    s16 *it;
-    s16 *end;
-    s16 *vv0;
-    s16 *vv1;
-    char *sub;
-    char *faces;
-    char *face;
-    char *vt;
-    char *a3;
-    s32 verts;
-    s32 map;
-    s32 ax0, ax1;
-    s32 c0, c1;
-    s32 i0, i1;
-    s32 nv;
-    s32 inside;
-    s32 count;
-    u32 fi;
+    s32 ok;
+    V3B9 p;
+    s32 ia;
+    s32 ib;
+    f32 qa;
+    V3B9 d;
+    f32 qb;
+    f32 sg;
+    s16 (*vt)[3];
+    s16 *nx;
+    u16 *fv;
+    s16 *v0;
+    s16 *v1;
+    s16 ex;
+    s16 ey;
+    s16 dx;
+    s16 dy;
 
-    count = 0;
-    if (*(s32 *)(arg0 + 0x84) == 0) {
+    cnt = 0;
+    if (self->col == 0) {
         return 0;
     }
-    spA0[0] = arg5[0] - arg4[0];
-    spA0[1] = arg5[1] - arg4[1];
-    spA0[2] = arg5[2] - arg4[2];
-    if (gl_d3b9c0_eps1 < sqrtf((spA0[0] * spA0[0]) + (spA0[1] * spA0[1]) + (spA0[2] * spA0[2]))) {
-        gl_func_00000000_vnorm3(spA0);
+    d.x = b->x - a->x;
+    d.y = b->y - a->y;
+    d.z = b->z - a->z;
+    if (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.0001) {
+        gl_func_00000000_vnorm3(&d);
     } else {
-        spA0[0] = 0.0f;
-        spA0[2] = 0.0f;
-        spA0[1] = -1.0f;
+        d.x = 0.0f;
+        d.z = 0.0f;
+        d.y = -1.0f;
     }
-    sub = *(char **)(arg0 + 0x84);
-    end = &gl_d3b9c0_next[3];
-    for (fi = 0; fi < *(u32 *)(*(char **)(arg0 + 0x84) + 0x44); fi++) {
-        faces = *(char **)(arg0 + 0x2C);
-        nrm = (f32 *)(*(s32 *)(sub + 0x54) + (fi * 0xC));
-        if (*(s16 *)(faces + (fi * 0xC) + 4) < 0) {
+    for (i = 0, off = 0; i < self->col->ntri; i++, off += 12) {
+        if (((TriB9 *)((char *)self->tris + off))->grp < 0) {
             continue;
         }
-        nx = nrm[0];
-        ny = nrm[1];
-        nz = nrm[2];
-        it = gl_d3b9c0_nexta;
-        den = (nx * spA0[0]) + (ny * spA0[1]) + (nz * spA0[2]);
-        if (gl_d3b9c0_eps2 < den) {
+        n = (V3B9 *)((char *)self->col->nrm + off);
+        dn = n->x * d.x + n->y * d.y + n->z * d.z;
+        if (dn > -0.0001) {
             continue;
         }
-        t = -(((arg4[0] * nx) + (arg4[1] * ny) + (arg4[2] * nz)) - *(f32 *)(faces + (fi * 0xC) + 8)) / den;
-        inside = 1;
-        spB8[0] = arg4[0] + (spA0[0] * t);
-        spB8[1] = arg4[1] + (spA0[1] * t);
-        spB8[2] = arg4[2] + (spA0[2] * t);
-        sub = *(char **)(arg0 + 0x84);
-        map = *(s32 *)(sub + 0x4C);
-        if (map != 0) {
-            vt = (char *)(*(s32 *)(sub + 0x68) + (*(s16 *)(map + (fi * 2)) * 8));
+        ok = 1;
+        t = -(a->x * n->x + a->y * n->y + a->z * n->z - self->tris[i].d) / dn;
+        p.x = a->x + d.x * t;
+        p.y = a->y + d.y * t;
+        p.z = a->z + d.z * t;
+        col = self->col;
+        if (col->remap != 0) {
+            f = &col->faces[col->remap[i]];
         } else {
-            vt = (char *)(*(s32 *)(sub + 0x68) + (fi * 8));
+            f = &col->faces[i];
         }
-        verts = *(s32 *)(sub + 0x60);
-        face = *(char **)(arg0 + 0x2C) + (fi * 0xC);
-        ax0 = *(s8 *)(face + 0);
-        ax1 = *(s8 *)(face + 1);
-        sgn = *(s8 *)(face + 3);
-        p0 = spB8[ax0];
-        p1 = spB8[ax1];
-        a3 = vt;
+        ia = ((TriB9 *)((char *)self->tris + off))->a;
+        ib = ((TriB9 *)((char *)self->tris + off))->b;
+        qa = (&p.x)[ia];
+        qb = (&p.x)[ib];
+        sg = ((TriB9 *)((char *)self->tris + off))->sgn;
+        vt = col->verts;
+        nx = (s16 *)&D_00000000;
+        fv = (u16 *)f;
         do {
-            nv = *it++;
-            vv0 = (s16 *)(verts + (*(u16 *)(a3 + 2) * 6));
-            c0 = vv0[ax0];
-            c1 = vv0[ax1];
-            vv1 = (s16 *)(verts + (*(u16 *)(vt + (nv * 2) + 2) * 6));
-            i0 = (s16)(s32)(p0 - c0);
-            i1 = (s16)(s32)(p1 - c1);
-            if ((((f32)(s16)(vv1[ax0] - c0) * (f32)i1) - ((f32)(s16)(vv1[ax1] - c1) * (f32)i0)) * sgn > 0.0f) {
-                inside = 0;
+            v0 = vt[fv[1]];
+            v1 = vt[f->vi[*nx++]];
+            ex = v1[ia] - v0[ia];
+            ey = v1[ib] - v0[ib];
+            dx = (s32)(qa - v0[ia]);
+            dy = (s32)(qb - v0[ib]);
+            if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
+                ok = 0;
             }
-            if (inside == 0) {
-                break;
+            fv++;
+        } while (ok && nx != (s16 *)((char *)&D_3B9C0_c + 6));
+        if (ok) {
+            dist[cnt] = t;
+            out[cnt] = &self->tris[i];
+            if (pts != 0) {
+                pts[cnt].x = p.x;
+                pts[cnt].y = p.y;
+                pts[cnt].z = p.z;
             }
-            a3 += 2;
-        } while (it != end);
-        if (inside != 0) {
-            arg2[count] = t;
-            arg3[count] = (s32)(*(char **)(arg0 + 0x2C) + (fi * 0xC));
-            if (arg7 != 0) {
-                f32 *dst = (f32 *)(arg7 + (count * 0xC));
-                dst[0] = spB8[0];
-                dst[1] = spB8[1];
-                dst[2] = spB8[2];
-            }
-            count++;
-            if (count >= arg1) {
-                return count;
+            cnt++;
+            if (cnt >= max) {
+                return cnt;
             }
         }
-        sub = *(char **)(arg0 + 0x84);
     }
-    return count;
+    return cnt;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B9C0);
