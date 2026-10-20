@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004E600",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-20T22:10:15.958583+00:00",
+  "end_time": "2026-10-20T22:10:15.958598+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T22:10:15.958594+00:00",
+      "assistant_text": "Chained-alloc cfront constructor: object is the parameter (alloc assigned back to a0); each member ctor = outer &this->m==0 test (folded to a0==-OFF) + inner base ctor with fresh this pointer; 8-byte member at 0x100 has only the outer level.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 74,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern char D_00000000;\nextern int gl_func_00000000();\n\n/* EXACT 2026-10-20 (agent-c run 114, 27.1 -> 74/74 words, C is the build\n * path): rewritten as nested cfront ctors. The\n * object is the PARAMETER itself (alloc result assigned back to a0). Each\n * member ctor is the 7150 shape: an outer `&this->m == 0` test (folded to\n * a0 == -OFF) and, for the 4-byte members, an inner base ctor whose\n * `this` is a fresh pointer. The 8-byte member at 0x100 has only the\n * outer level. */\nint *gl_func_0004E600(int *a0) {\n    int *m;\n    int *p;\n    if (a0 == 0) {\n        a0 = (int *)gl_func_00000000(0x144);\n        if (a0 == 0) goto end;\n    }\n    gl_func_00000000(a0, (char *)&D_00000000 + 0x205CC);\n    *(int *)((char *)a0 + 0x28) = (int)&D_00000000;\n    m = (int *)((char *)a0 + 0x78);\n    if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto s2; }\n    p = m;\n    if (p == 0) { p = (int *)gl_func_00000000(4); if (p == 0) goto s2; }\n    *p = 0;\ns2:\n    m = (int *)((char *)a0 + 0x100);\n    if (m == 0) { m = (int *)gl_func_00000000(8); if (m == 0) goto s3; }\n    m[1] = 0;\n    m[0] = 0;\ns3:\n    m = (int *)((char *)a0 + 0x114);\n    if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto s4; }\n    p = m;\n    if (p == 0) { p = (int *)gl_func_00000000(4); if (p == 0) goto s4; }\n    *p = 0;\ns4:\n    m = (int *)((char *)a0 + 0x118);\n    if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto fin; }\n    p = m;\n    if (p == 0) { p = (int *)gl_func_00000000(4); if (p == 0) goto fin; }\n    *p = 0;\nfin:\n    gl_func_00000000(a0);\nend:\n    return a0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004E600.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs to zero-valued D_00000000/gl_func_00000000 only)"
+  }
+}

@@ -21188,7 +21188,6 @@ end:;
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E584);
 #endif
 
-#ifdef NON_MATCHING
 /* gl_func_0004E600: 74-insn / 0x128 chained-alloc constructor.
  *
  * Decoded structure:
@@ -21224,42 +21223,49 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E584);
  * timproc_uso_b3_func_00001660. Initial wrap; not byte-matched yet —
  * structural decode only. */
 extern int gl_func_00000000();
+/* EXACT 2026-10-20 (agent-c run 114, 27.1 -> 74/74 words, C is the build
+ * path): rewritten as nested cfront ctors. The
+ * object is the PARAMETER itself (alloc result assigned back to a0). Each
+ * member ctor is the 7150 shape: an outer `&this->m == 0` test (folded to
+ * a0 == -OFF) and, for the 4-byte members, an inner base ctor whose
+ * `this` is a fresh pointer. The 8-byte member at 0x100 has only the
+ * outer level. */
 int *gl_func_0004E600(int *a0) {
-    int *s0 = a0;
-    int *v1;
+    int *m;
+    int *p;
     if (a0 == 0) {
-        s0 = (int*)gl_func_00000000(0x144);
-        if (s0 == 0) return 0;
+        a0 = (int *)gl_func_00000000(0x144);
+        if (a0 == 0) goto end;
     }
-    gl_func_00000000(s0, (char*)&D_00000000 + 0x205CC);
-    *(int*)((char*)s0 + 0x28) = (int)&D_00000000;
-    if (s0 == (int*)-120) { v1 = (int*)gl_func_00000000(4); if (v1 == 0) goto sub2; }
-    else v1 = (int*)((char*)s0 + 0x78);
-    if (v1 == 0) { v1 = (int*)gl_func_00000000(4); if (v1 == 0) goto sub2; }
-    *v1 = 0;
-sub2:
-    if (s0 == (int*)-256) { v1 = (int*)gl_func_00000000(8); if (v1 == 0) goto sub3; }
-    else v1 = (int*)((char*)s0 + 0x100);
-    if (v1 == 0) { v1 = (int*)gl_func_00000000(8); if (v1 == 0) goto sub3; }
-    v1[1] = 0;
-    v1[0] = 0;
-sub3:
-    if (s0 == (int*)-276) { v1 = (int*)gl_func_00000000(4); if (v1 == 0) goto sub4; }
-    else v1 = (int*)((char*)s0 + 0x114);
-    if (v1 == 0) { v1 = (int*)gl_func_00000000(4); if (v1 == 0) goto sub4; }
-    *v1 = 0;
-sub4:
-    if (s0 == (int*)-280) { v1 = (int*)gl_func_00000000(4); if (v1 == 0) goto fin; }
-    else v1 = (int*)((char*)s0 + 0x118);
-    if (v1 == 0) { v1 = (int*)gl_func_00000000(4); if (v1 == 0) goto fin; }
-    *v1 = 0;
+    gl_func_00000000(a0, (char *)&D_00000000 + 0x205CC);
+    *(int *)((char *)a0 + 0x28) = (int)&D_00000000;
+    m = (int *)((char *)a0 + 0x78);
+    if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto s2; }
+    p = m;
+    if (p == 0) { p = (int *)gl_func_00000000(4); if (p == 0) goto s2; }
+    *p = 0;
+s2:
+    m = (int *)((char *)a0 + 0x100);
+    if (m == 0) { m = (int *)gl_func_00000000(8); if (m == 0) goto s3; }
+    m[1] = 0;
+    m[0] = 0;
+s3:
+    m = (int *)((char *)a0 + 0x114);
+    if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto s4; }
+    p = m;
+    if (p == 0) { p = (int *)gl_func_00000000(4); if (p == 0) goto s4; }
+    *p = 0;
+s4:
+    m = (int *)((char *)a0 + 0x118);
+    if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto fin; }
+    p = m;
+    if (p == 0) { p = (int *)gl_func_00000000(4); if (p == 0) goto fin; }
+    *p = 0;
 fin:
-    gl_func_00000000(s0);
-    return s0;
+    gl_func_00000000(a0);
+end:
+    return a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E600);
-#endif
 
 extern int gl_func_00000000();
 
