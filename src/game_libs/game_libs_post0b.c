@@ -5959,6 +5959,10 @@ int game_libs_func_0003A164(float *a0, float *a1) {
  * q1->q2 chain. Placeholder callees (reloc-free jal-0): Vec3-normalize
  * + float->float sqrt. */
 #ifdef NON_MATCHING
+/* run 110 (agent-c) 66.4 -> 68.3: disc escaped with if (1) { float *pd = &disc; }. A register disc lets uopt fold
+ * (rr - x) < 0 into c.lt.s rr,x; the target subtracts, spills disc and compares with a zero register.
+ * Residual: &tmp (sp+236) and c are held in s1/s0 where the target rematerializes them after each call.
+ * Per-expression block temps remove the &tmp hold but give each temp its own slot (frame 0x170). */
 extern void gl_func_00000000_3a58cn(Vec3 *);   /* normalize-in-place slot */
 extern float gl_func_00000000_3a58cs(float);   /* sqrt slot */
 int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
@@ -6003,6 +6007,7 @@ int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
     dot = (v_ca.x * dir.x) + (v_ca.y * dir.y) + (v_ca.z * dir.z);
     len2 = (v_ca.x * v_ca.x) + (v_ca.y * v_ca.y) + (v_ca.z * v_ca.z);
     disc = (r * r) - (len2 - (dot * dot));
+    if (1) { float *pd = &disc; }
     if (disc < 0.0f) {
         return 0;
     }
