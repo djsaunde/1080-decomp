@@ -978,64 +978,48 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000E68);
  * stores + any trailing FP from the target asm. */
 extern void func_00000188();  /* used as data-symbol base */
 #ifdef NON_MATCHING
-/* typed-float proto (0x0-alias of func_00000000) so the 7 float args pass as
- * single-precision (swc1) instead of K&R double-promote (cvt.d.s+sdc1). */
+/* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target
+ * words and the bootup.uso reloc table. It is a gSPMatrix + gSPDisplayList
+ * draw: gate = import_8005C108[0x3C] bit 1; gfx ctx = G->0x254->0x158; the
+ * matrix stack ctx->0x3C = {Mtx *buf, count} (64-byte Mtx). The 7-float
+ * builder is a typed-float proto (floats go in a1..a3 + stack slots). w1
+ * of the G_MTX word = osVirtualToPhysical of the same &buf[count], then
+ * count++. DL appends use the comma-temp reload macro (see E68). The
+ * camera pointer must stay inline (a named local costs a frame slot and
+ * re-colors the a0 reloads: 81.7 -> 91.4 when inlined). */
+extern int import_8005C108[];
+extern int import_8005C108_g1a44[];   /* gate read alias (same import) */
+extern char *D_bu_205CC;              /* bootup data sym161: camera root */
 extern void func_1a44_emit(void *, float, float, float, float, float, float, float);
 extern int func_1a44_emit2(void *);
-/* 2026-06-04 COMPLETE via Ghidra 17.2% -> 31.5%: was entry+first-emit stub;
- * added the 2nd reserve call (cmd[1]) + 3 more DL-word emits (0x6000000 payload
- * a0->0x38, 0xE7000000, 0xBA000E02). Residual: target holds &D in a base reg
- * (t0) indexing root/scale/0x254; mine re-materializes (known base-hold cap). */
+typedef struct { u32 w0, w1; } Gw1A44;
+typedef struct { Gw1A44 *buf; s32 count; } Dl1A44;
+typedef struct { char m[64]; } Mtx1A44;
+typedef struct { Mtx1A44 *buf; s32 count; } Ms1A44;
+#define NEXT1A44(d) (_n = (d)->count++, &(d)->buf[_n])
+#define W1A44(pkt, a, b) { Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 void func_00001A44(char *a0) {
-    char *st;
-    char *n;
-    char *e;
-    char *base;
-    int stride6;
-    char *root;
-    char *v0;
-    float sx, sy, sz;
-    char *l;
-    int i;
-    int *cmd;
-    if (*(int*)((char*)&func_00000188 + 0x3C) & 0x2) return;
-    st = *(char**)((char*)(*(int**)&D_00000000) + 0x254);
-    n = *(char**)(st + 0x158);
-    e = *(char**)(n + 0x3C);
-    base = *(char**)(e + 0x0);
-    stride6 = *(int*)(e + 0x4) << 6;
-    root = *(char**)&D_00000000;
-    v0 = *(char**)(root + 0x70);
-    sx = *(float*)(v0 + 0xA0) * *(float*)((char*)&D_00000000 + 0x128);
-    sy = *(float*)(v0 + 0xA4) * *(float*)((char*)&D_00000000 + 0x12C);
-    sz = *(float*)(v0 + 0xA8) * *(float*)((char*)&D_00000000 + 0x130);
-    func_1a44_emit(base + stride6,
-                   (float)*(int*)(a0 + 0x2C),
-                   (float)*(int*)(a0 + 0x30),
-                   (float)*(int*)(a0 + 0x34),
-                   1.0f, sx, sy, sz);
-    l = *(char**)(n + 0xC);
-    i = *(int*)(l + 0x4);
-    *(int*)(l + 0x4) = i + 1;
-    cmd = (int*)(*(char**)(l + 0x0) + i * 8);
-    cmd[0] = 0x01020040;
-    cmd[1] = func_1a44_emit2(base + stride6);
-    *(int*)(e + 4) += 1;
-    i = *(int*)(l + 4);
-    *(int*)(l + 4) = i + 1;
-    cmd = (int*)(*(char**)(l + 0x0) + i * 8);
-    cmd[0] = 0x06000000;
-    cmd[1] = *(int*)(a0 + 0x38);
-    i = *(int*)(l + 4);
-    *(int*)(l + 4) = i + 1;
-    cmd = (int*)(*(char**)(l + 0x0) + i * 8);
-    cmd[0] = (int)0xE7000000;
-    cmd[1] = 0;
-    i = *(int*)(l + 4);
-    *(int*)(l + 4) = i + 1;
-    cmd = (int*)(*(char**)(l + 0x0) + i * 8);
-    cmd[0] = (int)0xBA000E02;
-    cmd[1] = 0;
+    char *g;
+    char *gc;
+    s32 _n;
+
+    if (import_8005C108_g1a44[0x3C / 4] & 2) {
+        return;
+    }
+    g = (char *)import_8005C108;
+    gc = *(char **)(*(char **)(g + 0x254) + 0x158);
+    func_1a44_emit(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count],
+                   (f32)*(s32 *)(a0 + 0x2C), (f32)*(s32 *)(a0 + 0x30), (f32)*(s32 *)(a0 + 0x34),
+                   1.0f,
+                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA0) * *(f32 *)(g + 0x128),
+                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA4) * *(f32 *)(g + 0x12C),
+                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA8) * *(f32 *)(g + 0x130));
+    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x01020040,
+          func_1a44_emit2(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count]));
+    _n = (*(Ms1A44 **)(gc + 0x3C))->count++;
+    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x06000000, *(u32 *)(a0 + 0x38));
+    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xE7000000, 0);
+    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xBA000E02, 0);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00001A44);
