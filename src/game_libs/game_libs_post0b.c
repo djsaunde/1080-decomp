@@ -719,7 +719,7 @@ void gl_func_00034C44(int a0, int a1) {
 //
 // MULTI-FUNCTION USO BUNDLE (no-frame-leaf shape — see
 // docs/N64_FORENSICS.md ADDENDUM 2026-05-18b). realjr=2 but only
-// ONE 27BDFFE0 prologue. The second jr bounds a LD_39E24_bE no-frame
+// ONE 27BDFFE0 prologue. The second jr bounds a LARGE no-frame
 // LEAF (it uses only 0($sp), no frame allocation) splat could not
 // separate:
 //   - 0x34C7C..0x34CC0: the NAMED function (frame-allocating).
@@ -1567,7 +1567,7 @@ extern int D_00000000;
  * problem. To force a2, v1 must be FORBIDDEN for r — needs an interfering LR
  * colored to v1 living across r's reload.
  * 2026-07-15 RESOLVED 24/24 byte-exact, RETRACTING the "genuine lowest-free-reg
- * cap": r is passed as a THIRD K&R D_39E24_b to func_00000000(&D+0x1E64C, a1, r) —
+ * cap": r is passed as a THIRD K&R ARG to func_00000000(&D+0x1E64C, a1, r) —
  * the call-arg constraint precolors r's web to $a2 (or a2,v0 lands in the bgez
  * delay slot exactly as target; the a2 marshal costs ZERO extra insns because
  * it replaces the old `or v1,v0` carrier copy). The `or a2,v0` ALWAYS executes
@@ -5225,7 +5225,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039094);
  * (3) ADVANCE = hoisted `iter2[0]=iter2[1];` (unconditional -> sinks into the
  * beqz delay) + ternary-comma WITHOUT the [0] store (gives the b .+1
  * collapsed-else); n=node copy after (n colors s0, li-16 -> s1, snapping the
- * (b) swap). (4) DISPATCH vt in a1 via HIDDEN 2ND D_39E24_b: (fn)(disp + (int)n, vt)
+ * (b) swap). (4) DISPATCH vt in a1 via HIDDEN 2ND ARG: (fn)(disp + (int)n, vt)
  * - arg marshaling pins vt's web to $a1 and forces lw-t9-first (the 39EE4
  * dead-def lever gives v0, wrong reg here). (5) first call = dup-arg
  * f(root[0xC/4], root[0xC/4]): CSE computes one lw + copy for the other arg
@@ -6698,7 +6698,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B6A0);
 // gl_func_0003B9C0 — STRUCTURAL PASS (0x45C / 279 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — very large 0xE8 frame, saves s0-s8 AND three FP
-// callee-save doubles f20/f22/f24). The LD_39E24_bEST geometry node in
+// callee-save doubles f20/f22/f24). The LARGEST geometry node in
 // this vein.
 //
 //   void gl_func_0003B9C0(O *o, P *a, P *b, ...) {
@@ -6860,7 +6860,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B9C0);
 // gl_func_0003BE1C — RECONSTRUCTION (0x620 / 392 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — 0xF0=-240 frame, saves s0-s7+ra; 3 stack-passed f32 args
-// at sp+0x100/0x104/0x108). The LD_39E24_bEST node decoded in this vein.
+// at sp+0x100/0x104/0x108). The LARGEST node decoded in this vein.
 //
 // PASS-3 (2026-06-22): hand-reconstructed from the AUTHORITATIVE
 //   disassembly of the EXPECTED object (the prior "m2c graft" was built
@@ -10910,7 +10910,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003FC58);
 // all-nameless (recomputes instead of spilling), K&R unpassed node param
 // (arg-area spill 0x34 + prologue reschedule). E6E8-class coloring residual. NM.
 // EXACT 2026-10-15 (agent-c): the "(node,n) 2-web colour permutation" was the
-// CALL SHAPE. The third callee takes node as its SECOND D_39E24_b (node then
+// CALL SHAPE. The third callee takes node as its SECOND ARG (node then
 // precolours a1: `lw a1,0x10(s0)` + the a1 spill) and returns void (a pinned
 // void alias gl_func_00000000_ff44v, so the jal does not define $v0 and n can
 // colour v0 across the call; with the int-returning K&R blank n lands in v1).
@@ -12245,7 +12245,7 @@ void gl_func_000417CC(int *a0) {
  *
  * NM 2026-09-09 (agent-c): 96/147 words exact in the standalone strict diff
  * (head 0x0-0xd4 word-exact incl. the 0x17D7 beq and the 0x10 scratch).
- * Levers that landed: D_41820_a++ AS THE PRINT D_39E24_bUMENT (named `n` + `n+1`
+ * Levers that landed: D_41820_a++ AS THE PRINT ARGUMENT (named `n` + `n+1`
  * store colours the same a1 but must be passed), ONE pointer var `q` for the
  * alloc(20) record / both attach targets (they share home 0x30 and colour),
  * `int local[3]` (12-byte aggregate pinned at the frame top 0x34..0x3C gives
@@ -14951,7 +14951,8 @@ void gl_func_00045178(char *arg0) {
     *(f32 *)(arg0 + 0x98) = r;
     p = *(char **)(*(char **)(arg0 + 0x254) + 0x158);
     {
-        i = FW(FW(p, 0x3C), 4)++;
+        i = FW(FW(p, 0x3C), 4);
+        FW(FW(p, 0x3C), 4) = i + 1;
         m = (char *)FW(FW(p, 0x3C), 0) + (i << 6);
     }
     gl_func_00000000_45178v((char *)&D_00000000 + 0x60, m);
@@ -18951,7 +18952,7 @@ void gl_func_0004BAF4(char *self) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004BAF4);
 #endif
 
-/* gl_func_0004C190: alloc-or-given VARD_39E24_bS constructor. If a0 is null,
+/* gl_func_0004C190: alloc-or-given VARARGS constructor. If a0 is null,
  * allocates 0x1CC bytes. Then calls func(self), stores &D at self[0xA],
  * calls func(self, a1, va_list_ptr), calls func(self). Returns self.
  *
@@ -23616,7 +23617,7 @@ void gl_func_00051E98(char *a0) {
  * pointer by 4; load next arg; `bnel arg,0,TOP` (delay-likely
  * stash) until a 0 terminator.
  *
- * Multi-pass (defer): VARD_39E24_bS byte-match is a documented-hard
+ * Multi-pass (defer): VARARGS byte-match is a documented-hard
  * confluence — the IDO `...` save-area layout (sw a1/a2/a3 to
  * sp+0x3C/0x40/0x44 = caller arg slots, frame 0x38), the
  * `(sp+0x43)&~3` aligned-va init, the indirect-chain call
@@ -27297,7 +27298,7 @@ void gl_func_00056FF4(int a0, int *a1) {
 }
 
 /* Flag-decode (a1[1]) -> geometry-mode word, then two display-list appends
- * (0xB6000000 = G_CLED_39E24_bEOMETRYMODE, 0xB7000000 = G_SETGEOMETRYMODE) to the
+ * (0xB6000000 = G_CLEARGEOMETRYMODE, 0xB7000000 = G_SETGEOMETRYMODE) to the
  * record buffer at a0->0xC. EXACT: single-bit tests written as signed
  * `(v1 << N) < 0` (one sll temp each; the unsigned `<<N >>31` form burns a
  * second temp per test and shifts the whole $t ring), and the second record
@@ -27605,7 +27606,7 @@ void gl_func_00057700(int *a0) {
  * tick) or (b) m2c re-emit with different expression-folding flags.
  * PASS 4 (2026-06-11): instrument (b) FOUND -- m2c --reg-vars all
  * collapses 398 temps to 36 (+55 var_ decls) and the emit pipeline
- * works: disasm-func.py --obj expected/... (TD_39E24_bET .o, not build!)
+ * works: disasm-func.py --obj expected/... (TARGET .o, not build!)
  * -> m2c --reg-vars all -> m2c-graft-clean.py <file> <fn>. BUT the
  * blanket s32-retyping of var_ decls (to fix 30 cfe type conflicts)
  * broke m2c's pointer-arithmetic typing -> score 56.8 (vs 75.0
@@ -29526,7 +29527,7 @@ void game_libs_func_0005B680(int a0, int a1) {
  * (sentinel-set helper). Differs only in the two magic constants (compare
  * 0x12345678 / store 0x87654321 — swapped vs the donor) and the format-string
  * offset (0x21A0C vs 0x21A20). The old "1-insn-short" cap was a MISSING 4TH
- * D_39E24_b: the call is gl_func(&D+ofs, a0->0x20, a1[3], a1) (4 args, a1[3] passed
+ * ARG: the call is gl_func(&D+ofs, a0->0x20, a1[3], a1) (4 args, a1[3] passed
  * BY VALUE before the store), not the 3-arg form. Ported the donor's exact
  * match-form. */
 void gl_func_0005B68C(int *a0, int *a1) {
@@ -33225,7 +33226,7 @@ void game_libs_func_00061B1C(int a0, int a1) {
  * spill ordering are not reproduced by clean C first pass. Medium
  * class (multi-run), not the easy a0-ctor vein subset. INCLUDE_ASM
  * is the correct build path (no episode; tautology-trap rule).
- * 2026-10-17 agent-g (run 104) 41.6 -> 65.9: it is a VARD_39E24_bS printf-style
+ * 2026-10-17 agent-g (run 104) 41.6 -> 65.9: it is a VARARGS printf-style
  * wrapper -- the four arg homes are the `...` spill, and (sp+47)&~3 is the
  * va_start pointer &fmt + 4 rounded up to 4 (frame 0x28 puts &fmt at 0x28).
  * The held s0 base needs `int bi = (int)arr; base = (char *)bi;` (a plain
