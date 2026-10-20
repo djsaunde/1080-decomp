@@ -1311,7 +1311,7 @@ void h2hproc_uso_func_00001360(int *self) {
     int *sub;
 
     *(int*)((char*)self + 0x98) += 1;
-    v_call = (int*)*(int*)((char*)self + 0x34);
+    v_call = (int*)*(int*)((char*)self + 0x34); if (1) {}
     vtable = (int*)*(int*)((char*)v_call + 0x28);
     ((void(*)(int))vtable[0x1C/4])((int)v_call + *(short*)((char*)vtable + 0x18));
 

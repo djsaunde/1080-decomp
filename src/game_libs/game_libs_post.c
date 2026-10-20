@@ -2799,7 +2799,7 @@ top:
             sub = &cfg->sub;
             st0 = 0;
         } else {
-            sub = &cfg->sub;
+            sub = &cfg->sub; if (1) {}
             st0 = tbl[sub->ent[0].hA];
         }
         if (sub->ent[1].hA == -1) {
@@ -6503,7 +6503,7 @@ void gl_func_00024378(void) {
         FW(gl_d_24378, 0x213C) = 0x3C;
         break;
     }
-    gl_func_0001CA10(i);
+    gl_func_0001CA10(i); if (1) {}
     q = (char *)gl_d_24378_seed;
     e = (char *)gl_d_24378_seed + 6;
     do {
@@ -7388,11 +7388,11 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     for (i = 0; i < GW(0x1030); i++) {
         if (GW(0x1034) == 120) {
             break;
-        }
+        } if (1) {}
         e = *(Desc25504 **)(GB + 0x430 + i * 4);
         switch (arg3) {
         case 0:
-            sh = e->sh;
+            sh = e->sh; if (1) {}
             if (arg2[4] == sh) {
                 cur = gl_func_0001CA10(e->msk, arg2[0], e->key, (s8)sh);
             } else if (arg2[5] == sh) {
@@ -7400,7 +7400,7 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
             }
             break;
         case 1:
-            sh = e->sh;
+            sh = e->sh; if (1) {}
             if (arg2[4] == sh) {
                 cur = gl_func_0001CA10(e->msk, arg2[0], e->key, (s8)sh);
             } else if (arg2[5] == sh) {
@@ -7529,7 +7529,7 @@ int game_libs_func_000258C0(int a0) {
             key = d->key + d->msk + d->sh;
             if (key == *(int *)(REG_258C0 + spv * 20 + 0x630)) {
                 d->key = *(int *)(REG_258C0 + spv * 20 + 0x638);
-                d->sh = 0;
+                d->sh = 0; if (1) {}
             }
             *(int *)(REG_258C0 + spv * 20 + 0x640) = 1;
         }
@@ -7648,7 +7648,7 @@ int gl_func_00025AC8(int idx, int a1) {
     int i;
     char *r;
     for (i = 0; i < n2; i++) {
-        r = (char *)gl_func_00000000(idx, i);
+        r = (char *)gl_func_00000000(idx, i); if (1) {}
         if (r != 0) {
             acc = gl_func_00000000(*(void **)(r + 4), acc, a1);
         }
@@ -11798,7 +11798,7 @@ void game_libs_func_0002A258(char *obj) {
     *p &= 0xBF;
     *p &= 0xDF;
     *p &= 0xEF;
-    *p &= 0xF7;
+    *p &= 0xF7; if (1) {}
     *p &= 0xFB;
     *(short *)(obj + 0x14) = 2048;
     *(short *)(obj + 0x10) = 2048;
@@ -13229,7 +13229,7 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
             break;
         case 0x80:
             sp3A = *(s16 *)((char *)arg0 + 0x14);
-            cur = (char **)((char *)arg0 + 0x54);
+            cur = (char **)((char *)arg0 + 0x54); if (1) {}
             ptr = *cur;
             var_a3 = *(u8 *)ptr;
             ptr += 1;
@@ -16601,7 +16601,7 @@ void gl_func_0002F288(char *o) {
             v -= 10;
         }
     }
-    ff = f / 80.0f + *(float *)(D_2F288_d + 0x173C);
+    ff = f / 80.0f + *(float *)(D_2F288_d + 0x173C); if (1) {}
     idx = o[0x32];
     if (idx != 0) {
         ff *= D_2F288_ta[idx];
@@ -17739,7 +17739,7 @@ s32 arg2;
     gl_func_emit();
     gl_func_000460D0();
 
-    modeSel = mode;
+    modeSel = mode; if (1) {}
     gb = (s32)&gl_state_30AF4;
     switch (mode) {                     /* switch 1 @0xC0: sltiu 14, jtbl +0x1874 */
     case 0:                             /* body A @0xE0 */
@@ -17787,7 +17787,7 @@ s32 arg2;
         }
         if (g == 4) {
             gl_func_00042364(4);
-            gl_cmd_30AF4 = D_30AF4_j + 18;
+            gl_cmd_30AF4 = D_30AF4_j + 18; if (1) {}
         } else if (sv == 0) {
             gl_func_00042364(6);
         } else {
@@ -18394,7 +18394,7 @@ int gl_func_00031898(int *a0) {
 #ifdef NON_MATCHING
 void gl_func_0003190C(void) {
     if (gl_func_00000000((char *)&D_00000000 + 0x368)) {
-        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x3C8);
+        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x3C8); if (1) {}
         if (s == 0) {
             gl_func_00000000(0x06020004, -1);
             gl_func_00000000(0x06020000, 0);
@@ -18405,7 +18405,7 @@ void gl_func_0003190C(void) {
         }
     }
     if (gl_func_00000000((char *)&D_00000000 + 0x3CC)) {
-        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x42C);
+        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x42C); if (1) {}
         if (s == 0) {
             gl_func_00000000(0x06020104, -1);
             gl_func_00000000(0x06020100, 0);
@@ -18416,7 +18416,7 @@ void gl_func_0003190C(void) {
         }
     }
     if (gl_func_00000000((char *)&D_00000000 + 0x430)) {
-        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x490);
+        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x490); if (1) {}
         if (s == 0) {
             gl_func_00000000(0x06020204, -1);
             gl_func_00000000(0x06020200, 0);
@@ -18766,7 +18766,7 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
     gl_func_0001CA10(self + 0x30, &v);
     *(char **)(self + 0xC) = (char *)&D_00000000 + 0x1E18C;
     *(int *)(self + 0x8) |= 0x40;
-    *(int *)(self + 0xF4) = arg1;
+    *(int *)(self + 0xF4) = arg1; if (1) {}
     *(f32 *)(self + 0x104) = 0.0f;
     *(f32 *)(self + 0x108) = 0.0f;
     *(f32 *)(self + 0xFC) = 0.0f;
@@ -19820,7 +19820,7 @@ void gl_func_00033EB8(s32 dst, u32 flags) {
                     if (gl_d_33eb8_2cc != gl_d_33eb8_8b) {
                         gl_func_00000000(base, &gl_ref_0001E394);
                     }
-                    gl_func_00000000(base, gl_d_33eb8_28c + 8, 0x12340002);
+                    gl_func_00000000(base, gl_d_33eb8_28c + 8, 0x12340002); if (1) {}
                     tmp = gl_d_33eb8_24a;
                     gl_d_33eb8_cc = tmp;
                     gl_d_33eb8_8c = tmp;

@@ -328,9 +328,10 @@ extern int gl_func_00000000();
 #            which moves the hold-vs-reload threshold (firstUseCost).
 #
 # Notes: the alias/adder edits only touch the NM body, which is never linked.
-# For game_libs_post0b the NM .o is text-clipped (NON_MATCHING_TEXT_CLIP_*); a
-# size-changing variant only affects functions near the clip, so early
-# functions score correctly, but re-probe the clip before committing.
+# The NM .text clip (NON_MATCHING_TEXT_CLIP_KEEP_ALIGN, post0b / tail) is
+# disabled for variant builds (a shrinking variant would otherwise fail the
+# clip step); the final rebuild of the restored source uses the normal clip.
+# Re-probe the post0b clip after applying a size-changing patch.
 # ---------------------------------------------------------------------------
 import difflib, itertools, signal, shutil, atexit
 
@@ -461,7 +462,11 @@ class Scorer:
         try:
             if self.obj.exists():
                 self.obj.unlink()
-            r = subprocess.run(['make', str(self.obj.relative_to(REPO))], cwd=REPO,
+            # NON_MATCHING_TEXT_CLIP_KEEP_ALIGN= : disable the NM .text clip
+            # (post0b / tail) -- a variant that shrinks the unit would make
+            # the clip script fail ("smaller than requested") and be lost.
+            r = subprocess.run(['make', 'NON_MATCHING_TEXT_CLIP_KEEP_ALIGN=',
+                                str(self.obj.relative_to(REPO))], cwd=REPO,
                                capture_output=True, text=True)
             self.builds += 1
             if r.returncode != 0 or not self.obj.exists():

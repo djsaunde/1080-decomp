@@ -1820,7 +1820,7 @@ void func_000024B8(char *arg0) {
         if (FW(s0, 0x10) & 8) {
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
             if (FF(v1, 0x14C) < 120.0f) {
-                s0 = v1 + 0x14C;
+                s0 = v1 + 0x14C; if (1) {}
                 *(f32 *)s0 = *(f32 *)s0 + two;
             }
         }
@@ -1828,12 +1828,12 @@ void func_000024B8(char *arg0) {
         if (FW(s0, 0x10) & 4) {
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
             if (FF(v1, 0x14C) > 45.0f) {
-                s0 = v1 + 0x14C;
+                s0 = v1 + 0x14C; if (1) {}
                 *(f32 *)s0 = *(f32 *)s0 - two;
             }
         }
         v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
-        s0 = v1 + 0x134;
+        s0 = v1 + 0x134; if (1) {}
         *(f32 *)s0 = *(f32 *)s0 + FF(FW(arg0, 0x38), 4) * two;
         s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
         s0 += 0x138;
@@ -4016,7 +4016,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
     R12_55A0 *it;
 
     if (1) { S4_55A0 *q0 = &v0, *q1 = &v1, *q2 = &v2, *q3 = &v3, *q4 = &t4, *q5 = &t5, *q10 = &t10; }
-    D_55A0_w0 = D_55A0_r0 | 8;
+    D_55A0_w0 = D_55A0_r0 | 8; if (1) {}
     D_55A0_G.b = 0xAA002;
     D_55A0_G.a = 0;
     D_55A0_z0 = 0;
@@ -4040,11 +4040,11 @@ void func_000055A0(int arg0, int arg1, int arg2) {
         D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
         if (D_55A0_listchk != 0) {
             if (1) { R12_55A0 **q = &it; }
-            it = (R12_55A0 *)&D_00007E24;
+            it = (R12_55A0 *)&D_00007E24; if (1) {}
             do {
                 func_00000000(&D_55A0_fmt, it->w, it);
                 func_00000000(D_55A0_list2, it);
-                it++;
+                it++; if (1) {}
             } while (it->w != 0);
         }
     }
@@ -4088,7 +4088,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
             if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(node);
             }
-            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
+            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
             vec0.w = 1.0f; vec0.x = vec0.y = vec0.z = D_bu_ro_59C;
             func_00000000(obj + 0x5C, &vec0, 993, 997);
             OI(obj, 0x38) = 1;
@@ -4112,7 +4112,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
             if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(node);
             }
-            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
+            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
             vec1.w = 1.0f; vec1.x = vec1.y = vec1.z = D_bu_ro_5A0;
             func_00000000(obj + 0x5C, &vec1, 993, 997);
             OI(obj, 0x38) = 1;
@@ -5739,7 +5739,7 @@ c2:
     }
     *(int *)(s0 + 0x58) = 0x18;
 end:
-    func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[0] + 0x1C), 0, a3);
+    func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[0] + 0x1C), 0, a3); if (1) {}
     func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[1] + 0x1C), 1, a3);
     *(int *)(s0 + 0x5C) = a3;
 }
@@ -7274,7 +7274,7 @@ void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
         }
-        var_s0_3 = arg0 + 0x808;
+        var_s0_3 = arg0 + 0x808; if (1) {}
         sp40 = var_s0_3;
         if ((arg0 != (void *)-0x808) || (var_s0_3 = func_00000000(0xC), (var_s0_3 != 0))) {
             *var_s0_3 = 0;
@@ -7605,7 +7605,7 @@ sw_end:
             *fq &= ~4;
             func_00000000(arg0, *(s32 *)((char *)(arg0) + 0x870));
             temp_s1_8 = *(s32 *)((char *)(arg0) + 0x870);
-            func_00000000(temp_s1_8 + 0x10, sp164);
+            func_00000000(temp_s1_8 + 0x10, sp164); if (1) {}
             if (*(s32 *)((char *)(sp164) + 0x14) != 0) {
                 *(s32 *)((char *)(sp164) + 0x4) = 1;
             }
@@ -7619,13 +7619,13 @@ sw_end:
                 *(s32 *)((char *)(sp160) + 0x14) = temp_s1_8;
             }
             temp_s1_8 = *(s32 *)((char *)(arg0) + 0x870);
-            func_00000000(temp_s1_8 + 0x10, sp15C);
+            func_00000000(temp_s1_8 + 0x10, sp15C); if (1) {}
             if (*(s32 *)((char *)(sp15C) + 0x14) != 0) {
                 *(s32 *)((char *)(sp15C) + 0x4) = 1;
             }
             *(s32 *)((char *)(sp15C) + 0x14) = temp_s1_8;
             temp_s1_8 = *(s32 *)((char *)(arg0) + 0x870);
-            func_00000000(temp_s1_8 + 0x10, sp158);
+            func_00000000(temp_s1_8 + 0x10, sp158); if (1) {}
             if (*(s32 *)((char *)(sp158) + 0x14) != 0) {
                 *(s32 *)((char *)(sp158) + 0x4) = 1;
             }
@@ -9384,7 +9384,7 @@ void func_0000D440(char *st) {
                          * REFOLDS. See IDO_CODEGEN div-fold) */
     float four = 4.0f;
     func_00000000(&D_00008AD0);
-    fl = *(int *)(st + 0xA58);
+    fl = *(int *)(st + 0xA58); if (1) {}
     v0 = fl & 0x100;
     /* volatile on the per-arm 0x18 reads: target loads 0x18(v0) SEPARATELY in
      * each branch arm (one lands in the beql delay); plain derefs get CSE'd
@@ -10008,7 +10008,7 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     d = v[1].z * arg3->z + (v[1].y * arg3->y + v[1].x * arg3->x);
     v[1].x = d * arg3->x - v[1].x;
     v[1].y = d * arg3->y - v[1].y;
-    v[1].z = d * arg3->z - v[1].z;
+    v[1].z = d * arg3->z - v[1].z; if (1) {}
     v[0].x = *(f32 *)(arg0 + 0x3BC);
     v[0].y = *(f32 *)(arg0 + 0x3C0);
     v[0].z = *(f32 *)(arg0 + 0x3C4);

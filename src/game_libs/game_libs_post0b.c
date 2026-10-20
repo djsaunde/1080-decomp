@@ -472,7 +472,7 @@ void gl_func_00034890(char *o) {
         *(char **)a = (char *)&D_34890_c + 0x1E238;
     }
     if (1) {}
-    gl_func_00034458(&D_34890_d, h, a, *(int *)(o + 0x18) & 2);
+    gl_func_00034458(&D_34890_d, h, a, *(int *)(o + 0x18) & 2); if (1) {}
     p = &it;
     p->next = *(Link34890 **)(o + 0x10);
     ITER34890_STEP(p, nx, node);
@@ -3765,6 +3765,10 @@ extern int D_00000000;
 // *(o+0x10)=0, o->0x14=0, o->0xC=a1. Then o->0x28=&D_0; cb(o+0x18); cb(o,0);
 // a global counter at &D_0 is post-incremented into o->0x1C; o->0x20=cb(o,n).
 // Returns o. Reloc-blind allocator/cb placeholders -> byte-match deferred.
+// Run 113 (agent-c): 98.22 -> 99.30 with the one-line sentinel stores. Last
+// diff: the target never sets a0 for the final call (n goes in a1, a0 is
+// whatever the (o, 0) call left) -- a 1-arg call puts n in a0, an
+// uninitialised first arg gets a stack home and a reload. Unsolved.
 extern void gl_func_00000000_3800Cv();
 char *gl_func_0003800C(char *o, int a1) {
     char *p;
@@ -3785,9 +3789,8 @@ char *gl_func_0003800C(char *o, int a1) {
         q = (char *)gl_func_00000000(0x10);
         if (q == 0) goto subc;
     }
-    *(int *)(q + 0x8) = 0x8000;
-    *(int *)(q + 0x0) = -1;
-    *(int *)(q + 0x4) = 0;
+    /* one line: target stores -1 at 0 before 0x8000 at 8 (68FBC lever) */
+    *(int *)(q + 0x8) = 0x8000; *(int *)(q + 0x0) = -1; *(int *)(q + 0x4) = 0;
 subc:
     r = p + 0x10;
     if (p == (char *)-0x10) {
@@ -4605,7 +4608,7 @@ int gl_func_00038964(char *o, void *ctx) {
     }
     next = *(char **)(o + 0x10);
     cur = next;
-    node = (cur != NULL) ? (next = *(char **)(cur + 4), *(char **)cur) : NULL;
+    node = (cur != NULL) ? (next = *(char **)(cur + 4), *(char **)cur) : NULL; if (1) {}
     while (node != NULL) {
         node = *(char **)cur;
         if (0) { node = NULL; }                              /* dead multi-def (39EE4 lever) — shape-load-bearing */
@@ -6319,9 +6322,9 @@ int gl_func_0003B01C(char *o, char *other) {
     }
     *(int *)(o + 0x30) = fl | 2;
     pb = (Vec3 *)(other + 0x54);
-    dx = pb->x - pa->x;
+    dx = pb->x - pa->x; if (1) {}
     dy = pb->y - pa->y;
-    dz = pb->z - pa->z;
+    dz = pb->z - pa->z; if (1) {}
     t.x = dx;
     t.y = dy;
     t.z = dz;
@@ -7142,7 +7145,7 @@ int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
             acc.z += row->z;
             tmp.pos.x = row->x;
             tmp.pos.y = row->y;
-            tmp.pos.z = row->z;
+            tmp.pos.z = row->z; if (1) {}
             tmp2.pos = tmp.pos;
             a3->vtx.x = tmp2.pos.x;
             a3->vtx.y = tmp2.pos.y;
@@ -7524,7 +7527,7 @@ s32 gl_func_0003CBB4(char *arg0, char *arg1, char *arg2) {
                     *(f32 *)(arg0 + 0x38) + *(f32 *)(arg1 + 0x38)) {
                     tx = av[0] - bv[0];
                     ty = av[1] - bv[1];
-                    tz = av[2] - bv[2];
+                    tz = av[2] - bv[2]; if (1) {}
                     dvel[0] = tx;
                     dvel[1] = ty;
                     dvel[2] = tz;
@@ -7914,34 +7917,37 @@ int game_libs_func_0003D480(int a0) {
 //   list struct untyped. Real-C STRUCTURAL body below — sibling of
 //   gl_func_00038C98. Byte-match deferred. Name pre-checked: no
 //   extern reuse.
+/* Run 113 (agent-c): 75.8 -> 98.6, port of the exact twin gl_func_00069B94
+ * (address-taken iterator locals via the if(1){bar=&node;bar=&next;}
+ * barrier, pre-loop advance + tail advance reading through next) and two
+ * decode fixes: the final call takes o (target reloads a0 from its home in
+ * the jal delay). Residual: temp ring one slot early from the first
+ * successor load on (t8 vs t9); decl order, pointer types, the o->0x10
+ * spelling, barrier order, void alias and every `if (1) {}` position are
+ * inert. */
 #ifdef NON_MATCHING
 extern int D_00000000;
 void gl_func_0003D48C(char *o) {
-    char *volatile cur;
-    char *volatile next;
-    int v0;
-    char *t;
-    gl_func_00000000(&D_00000000, o + 0x2C, 1);
-    t = *(char **)(o + 0x10);
-    next = t;
-    v0 = 0;
-    if (t != 0) {
-        cur = t;
-        next = *(char **)(t + 4);
-        v0 = *(int *)t;
+    char *next;
+    char *node;
+    int key;
+    char **bar;
+
+    if (1) {
+        bar = &node;
+        bar = &next;
     }
-    while (v0 != 0) {
-        gl_func_00000000(*(char **)cur);
-        t = next;
-        v0 = 0;
-        if (t != 0) {
-            cur = t;
-            next = *(char **)(t + 4);
-            v0 = *(int *)t;
-        }
+    gl_func_00000000(&D_00000000, o + 0x2C, 1);
+    next = *(char **)(o + 0x10);
+    node = next;
+    key = node ? (next = *(char **)(node + 4), *(int *)node) : 0;
+    while (key != 0) {
+        gl_func_00000000(*(int *)node);
+        node = next;
+        key = node ? (next = *(char **)(next + 4), *(int *)node) : 0;
     }
     gl_func_00000000(&D_00000000);
-    gl_func_00000000();
+    gl_func_00000000(o);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003D48C);
@@ -11040,11 +11046,11 @@ s32 *gl_func_00040070(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
             gl_func_00034458(var_a2);
             sp54[0] = 0.0f;
             sp54[1] = 0.0f;
-            sp54[2] = 0.0f;
+            sp54[2] = 0.0f; if (1) {}
             gl_func_00034458((s32 *)((char *)var_a2 + 0x30), sp54);
         }
         FW(arg0, 0x28) = (s32) D_40070_vtb;
-        var_a2_3 = (s32 *)((char *)arg0 + 0x104);
+        var_a2_3 = (s32 *)((char *)arg0 + 0x104); if (1) {}
         if (((arg0 != (s32 *)-0x104) || (temp_v0_5 = gl_func_00034458((s32 *)4), var_a2_3 = temp_v0_5, (temp_v0_5 != 0))) && ((var_v1_2 = var_a2_3, (var_a2_3 != 0)) || (temp_v0_6 = gl_func_00034458((s32 *)4), var_v1_2 = temp_v0_6, (temp_v0_6 != 0)))) {
             *var_v1_2 = 0;
         }
@@ -12044,7 +12050,7 @@ void gl_func_000412E8(void) {
         }
         FW(var_s0, 0x18) = (s32)&D_412E8_j;
     }
-    FW((char *)&D_412E8_l, 0x18) = (s32)&D_412E8_k;
+    FW((char *)&D_412E8_l, 0x18) = (s32)&D_412E8_k; if (1) {}
     var_s0 = (s32 *)&D_412E8_m;
     if (((s32)var_s0 != 0) || (temp_v0 = (s32 *)gl_func_00034458(4), var_s0 = temp_v0, (temp_v0 != 0))) {
         var_v1 = var_s0;
@@ -12439,7 +12445,7 @@ end2:
     gl_func_00000000(D_41A9C_s16, (char *)&D_00000000 + 0x1F6AC);
     {
         int v;
-        it.next = *(N41A9C **)(self + 0x2C);
+        it.next = *(N41A9C **)(self + 0x2C); if (1) {}
         v = (it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0;
         while (v != 0) {
             gl_func_00000000(it.cur->data);
@@ -12590,7 +12596,7 @@ void gl_func_00041EDC(void *self) {
         pp = &cur;
         pp = &next;
     }
-    next = *(int **)((char *)self + 0x2C);
+    next = *(int **)((char *)self + 0x2C); if (1) {}
     cur = next;
     node = (cur != NULL) ? (next = (int *)cur[1], (int *)cur[0]) : NULL;
     while (node != NULL) {
@@ -13711,20 +13717,20 @@ void gl_func_00043654(char *arg0, char *arg1) {
         gl_func_00034458((char *)&D_00000000, var_a3, arg0);
         if (FW(arg0, 0x38) & 0x100000) {
             FW(arg0, 0x68) = gl_func_00034458(0, (char *)&D_00000000 + 0x1FD1C, 0xA, 0, 5, 0, 0);
-            gl_func_00034458(FW(arg0, 0x68));
+            gl_func_00034458(FW(arg0, 0x68)); if (1) {}
             temp_v0 = (char *) FW(arg0, 0x68);
             sp34 = (char *) FW(arg0, 0x64);
             temp_v0 = (char *) gl_func_00034458(FW(temp_v0, 0x60));
             temp_a0 = (char *) FW(sp34, 0xC);
-            idx = FW(temp_a0, 0x4);
+            idx = FW(temp_a0, 0x4); if (1) {}
             FW(temp_a0, 0x4) = idx + 1;
-            temp_a2 = (char *) FW((char *)FW(sp34, 0xC), 0x0) + (idx * 8);
+            temp_a2 = (char *) FW((char *)FW(sp34, 0xC), 0x0) + (idx * 8); if (1) {}
             FW(temp_a2, 0x0) = 0x06000000;
             FW(temp_a2, 0x4) = (int) temp_v0;
         }
         gl_func_00034458(FW(arg0, 0x64));
     } else {
-        temp_a0_2 = (char *) FW(var_a3, 0xC);
+        temp_a0_2 = (char *) FW(var_a3, 0xC); if (1) {}
         idx2 = FW(temp_a0_2, 0x4);
         FW(temp_a0_2, 0x4) = idx2 + 1;
         temp_a1 = (char *) FW((char *)FW(var_a3, 0xC), 0x0) + (idx2 * 8);
@@ -13934,7 +13940,7 @@ void gl_func_00043BEC(char *arg0, char *arg1) {
         FW(temp_a3, 0x4) = temp_v0_3;
         temp_v1_4 = FW(arg0, 0x6C);
         temp_v0_4 = gl_func_00034458(*(int*)FW(temp_v1_4, 0xC) + (*(s16*)((char*)arg0 + 0x8A) * 8), temp_a1_2, temp_a2, temp_a3);
-        temp_a1_3 = FW(arg1, 0xC);
+        temp_a1_3 = FW(arg1, 0xC); if (1) {}
         temp_a2_2 = FW(temp_a1_3, 0x4);
         FW(temp_a1_3, 0x4) = (s32) (temp_a2_2 + 1);
         temp_v1_2 = FW(FW(arg1, 0xC), 0x0) + (temp_a2_2 * 8);
@@ -16416,7 +16422,7 @@ void gl_func_00047E00(char *arg0, float (*a)[4]) {
     m = *(float (**)[4])(arg0 + 0xE0);
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            out[i][j] = 0.0f;
+            out[i][j] = 0.0f; if (1) {}
             for (k = 0; k < 4; k++) {
                 out[i][j] += a[i][k] * m[k][j];
             }
@@ -18483,13 +18489,13 @@ int *gl_func_0004B0A8(int *arg0, char *arg1) {
                     ps = (int *)FW(self, 0x40);
                     e1 = (char *)*(int **)(base2 + iv);
                     e2 = *(char *volatile *)((int)base2 + iv);
-                    a1v = (char *)FW(e1, 0x6C);
+                    a1v = (char *)FW(e1, 0x6C); if (1) {}
                     a2v = *(s16 *)(e2 + 0x8A);
                     cbres = (int *)gl_func_00034458(*(int *)FW(a1v, 0xC) + (a2v * 8), a1v, a2v);
                     vp = (int *)FW(ps, 0xC);
                     cnt = vp[1];
                     vp[1] = cnt + 1;
-                    tmp = (char *)(FW(FW(ps, 0xC), 0x0) + (cnt * 8));
+                    tmp = (char *)(FW(FW(ps, 0xC), 0x0) + (cnt * 8)); if (1) {}
                     FW(tmp, 0x0) = 0x06000000;
                     FW(tmp, 0x4) = (int)cbres;
                 }
@@ -18564,7 +18570,7 @@ void game_libs_func_0004B2F4(char *arg0) {
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
         flags = W(g, 0x1F4);
-        slot1 = (*(s32 **)(ctx + 0x3C))[1]++;
+        slot1 = (*(s32 **)(ctx + 0x3C))[1]++; if (1) {}
         fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6);
         F_4B2F4_pack(&D_4B2F4_fixed + 0x3C8A0, fixed);
         flags |= 2;
@@ -18919,8 +18925,8 @@ void gl_func_0004BAF4(char *self) {
                   SHL4B(MAX((s16)((y + (int)(h * sy) - 1) << 2), 0), 0, 12));
         _g->w1 = (SHL4B(0, 24, 3) |
                   SHL4B(MAX((s16)(x << 2), 0), 12, 12) |
-                  SHL4B(MAX((s16)(y << 2), 0), 0, 12));
-    }
+                  SHL4B(MAX((s16)(y << 2), 0), 0, 12)); if (1) {}
+    } if (1) {}
     {
         Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
         _g->w0 = SHL4B(0xB4, 24, 8);
@@ -18936,7 +18942,7 @@ void gl_func_0004BAF4(char *self) {
                     (MIN((((s16)(y << 2) * (s16)((u16)(s32)(1024.0f / sy))) >> 7), 0))) : 0)), 0, 16));
     }
     {
-        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
+        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *))); if (1) {}
         _g->w0 = SHL4B(0xB3, 24, 8);
         _g->w1 = (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16));
     }
