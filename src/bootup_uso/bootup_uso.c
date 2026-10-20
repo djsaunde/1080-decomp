@@ -2789,59 +2789,57 @@ void func_000039D8(char *s2, int a1) {
  * RAN (base score 1215, every mutation +score / 1-error) -> CANNOT crack;
  * objdiff normalizes sp-offsets so it is blind to the slot cascade. This is
  * the documented coloring-cap class for the 38C0/3734/39D8/3B78 family.
- * INCLUDE_ASM stays (honest NON_MATCHING). */
-#ifdef NON_MATCHING
+ * 2026-10-20 (run 113 agent-c): EXACT. 3734/38C0 recipe backport plus one new
+ * lever:
+ *  (1) void-typed alias for the second CFG reg call (frees $v0 so cfg colours
+ *      v0 and the CFG base v1, as in target);
+ *  (2) o / o2 / big merged into ONE $s0 web; register C dropped (the array-
+ *      typed CFG_3b78 base is CSE'd into v1 by itself) -> r1/b2/b3/f1 spill
+ *      homes 0x58..0x4C exact;
+ *  (3) four unused volatile pads between f1 and v1_84 = the ghost words that
+ *      put v1_84's home at 0x38;
+ *  (4) NEW: the flag constant spelled `| 1 | 0x8000` (not `| 0x8001`): the
+ *      folded intermediate burns one t-ring register, so the lbu/ori/or chain
+ *      numbers t8/t9/t0/t1 like the target instead of t7.. (every later
+ *      temp was one ring slot early). See docs/IDO_CODEGEN.md
+ *      #split-or-constant-ring-burn-3b78. */
 extern char *func_3b78_r(char *, int, int, int, char *, int, float, float, int, int);
 extern unsigned char CFG_3b78[];
-/* func_00003B78 — BEST 84/113 words (74.3%, count-EXACT 113/113, frame 0x60 EXACT; was ~52% w/ 2 LOGIC BUGS).
-   LOGIC FIXES (were hiding in the sub-90 band, per arity/control-flow re-derive):
-     (1) `if (o == 0) return;` was WRONG — only func(o,0) is conditional; the whole chain runs with o==0.
-     (2) `if (o2)` scope only wraps func(o2,1); big-builder + finalizer + r1->0x8DC are UNCONDITIONAL.
-   Levers kept: c182/flags folded into arg expr (t-temp chain), cfg unnamed CSE deref,
-   separate o2/big locals (recovers frame 0x60 + slot packing).
-   Residual cap (~29 words): v0-grant-between-calls — target puts the CSE'd cfg ptr in $v0 and the
-   &CFG lbu-base segment in $v1; IDO refuses $v0 for any LR born between calls here, so cfg=$v1,
-   C-base=$t0, temp chain and 4 spill slots (0x54.. vs 0x58..) cascade off-by-one/4. 11 variants
-   (zdbug-diagnosed: numsplitlu LR63, multi-def affinity, named-first, dead-if, pads, named-float)
-   all floor at 84. Uses file-scope decls: func_3b78_r typed-float proto + CFG_3b78 extern. */
+extern void func_00000000_3B78_v(void *, void *, int);
 void func_00003B78(char *s1, int a1) {
     char *o;
-    register unsigned char *C;
-    char *r1, *b2, *b3, *f1, *o2, *big;
+    char *r1, *b2, *b3, *f1;
+    volatile int pad1, pad2, pad3, pad4;  /* ghost home words (phantom-slot lever) */
     int v1_84;
     o = (char*)func_00000000(0x80);
     if (o != 0) {
         func_00000000(o, 0);
     }
     func_00000000(CFG_3b78, o);
-    func_00000000(CFG_3b78, o, 0);
-    C = CFG_3b78;
+    func_00000000_3B78_v(CFG_3b78, o, 0);
     r1 = func_3b78_r(s1, 0,
-                     C[0x181],
-                     C[0x183],
+                     CFG_3b78[0x181],
+                     CFG_3b78[0x183],
                      o, *(int*)(s1 + 0x80),
                      *(float*)(*(char**)(s1 + 0x98) + 0xC4), *(float*)(*(char**)(s1 + 0x98) + 0xCC),
-                     (C[0x182] | 0x8001) | 0x10000 | 0x40000, 0x1B);
+                     (CFG_3b78[0x182] | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
     b2 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), r1, o);
     b3 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r1, o);
     f1 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
     *(float*)(b2 + 0x14C) = 85.0f;
-    o2 = (char*)func_00000000(0x80);
-    if (o2 != 0) {
-        func_00000000(o2, 1);
+    o = (char*)func_00000000(0x80);
+    if (o != 0) {
+        func_00000000(o, 1);
     }
-    big = (char*)func_00000000(0, o2, r1, f1, b2, b3);
+    o = (char*)func_00000000(0, o, r1, f1, b2, b3);
     v1_84 = *(int*)(s1 + 0x84);
-    func_00000000(v1_84 + 0x10, big);
-    if (*(int*)(big + 0x14) != 0) {
-        *(int*)(big + 0x4) = 1;
+    func_00000000(v1_84 + 0x10, o);
+    if (*(int*)(o + 0x14) != 0) {
+        *(int*)(o + 0x4) = 1;
     }
-    *(int*)(big + 0x14) = v1_84;
+    *(int*)(o + 0x14) = v1_84;
     *(char**)(r1 + 0x8DC) = f1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00003B78);
-#endif
 
 /* func_00003D3C - verified structural decode (0x1C4, 113 insns,
  * multi-stage builder chain). MEMBER of the func_000038C0 /

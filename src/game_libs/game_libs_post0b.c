@@ -13403,7 +13403,6 @@ void game_libs_func_00042F4C(char *arg0, char *arg1, char *arg2) {
   *((s8 *) (arg0 + 0x17)) = 0;
 }
 
-#ifdef NON_MATCHING
 /* game_libs_func_000430D8 (0x1AC, 107 words; merged with the former gl_func_000430E4
  * INCLUDE_ASM + STRUCTURAL PASS note, 2026-09-09 agent-c). 0x430D8 IS bootup.uso's
  * export (sym1951; jal'd from text 0x58004/0x58030 = splat 0x43998/0x439C4); 0x430E4
@@ -13417,10 +13416,12 @@ void game_libs_func_00042F4C(char *arg0, char *arg1, char *arg2) {
  * 16-byte-stride table, idx++. Leaf, frame 0x10 = the memory-homed {cur,next}
  * iterator (IDO_CODEGEN#pointer-form-list-iterator-3df5c) + 8 (a 4-word Iter).
  *
- * STATUS: 107/107 words by mnemonic, every a/v register and the whole schedule
- * exact; the residual is ONLY the ugen temp-ring numbering (the target burns two
- * ring slots in the flag!=0 arm before the loop: t9/t1/t2/t3/t5/t7/t9/t0 where the
- * build emits t8/t9/t0/t1/t3/t5/t8/t7 -- 45 words differ by t-register only).
+ * EXACT (run 113 agent-c, found by scripts/lever-sweep.py --blocks): one
+ * emission-free `if (1) {}` right after the list-head load closes the old
+ * residual -- the target burned two temp-ring slots in the flag!=0 arm
+ * (t9/t1/t2/t3/t5/t7/t9/t0 vs our t8/t9/t0/t1/t3/t5/t8/t7, 45 words differing
+ * by t-register only). The extra basic block shifts uopt's ring start; why it
+ * is exactly two slots is not understood.
  * Levers that were needed for the shape (see the docs entry):
  *   - `slot = base; slot += idx * 16` -> base-first `addu a0,v0,tN`;
  *   - flag!=0 arm: entry result is a TEMP copied into `obj` (`or a1,a0`), the loop
@@ -13445,7 +13446,7 @@ void game_libs_func_000430D8(char *self, int flag) {
     char *base = **(char ***)(self + 0x2C);
     int idx = 0;
     char *slot;
-    p->next = *(Link_430D8 **)((char *)&D_00000000 + 0x18C);
+    p->next = *(Link_430D8 **)((char *)&D_00000000 + 0x18C); if (1) {}
     if (flag) {
         obj = ITER_FIRST_430D8(p);
         while (obj != 0) {
@@ -13473,9 +13474,6 @@ void game_libs_func_000430D8(char *self, int flag) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_000430D8);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_00043284(int *a0, int a1) {
@@ -20683,8 +20681,11 @@ void gl_func_0004DDA0(Quad4 *dst) {
     *dst = scratch;
 }
 
-#ifdef NON_MATCHING
-/* gl_func_0004DDF8: 32-insn alloc-or-given + multi-init constructor. */
+/* gl_func_0004DDF8: alloc-or-given + multi-init constructor. EXACT (run 113
+ * agent-c): the two a1*4 allocations go to 0x2C and 0x30 respectively (the
+ * target's `sw v0,44(s0)` sits in the second jal's delay slot, so it stores
+ * the FIRST call's result); the old decode discarded the first result and
+ * chain-assigned the second, which also pushed the a1*4 CSE spill to 32. */
 int *gl_func_0004DDF8(int *s0, int a1) {
     if (s0 == 0) {
         s0 = (int *)gl_func_00000000(0x3C);
@@ -20692,16 +20693,13 @@ int *gl_func_0004DDF8(int *s0, int a1) {
     }
     gl_func_00000000(s0, (char *)&D_00000000 + 0x204A8);
     s0[0x28/4] = (int)&D_00000000;
-    gl_func_00000000(a1 * 4);
-    s0[0x30/4] = s0[0x2C/4] = gl_func_00000000(a1 * 4);
+    s0[0x2C/4] = gl_func_00000000(a1 * 4);
+    s0[0x30/4] = gl_func_00000000(a1 * 4);
     s0[0x34/4] = a1;
     gl_func_00000000(s0);
 out:
     return s0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004DDF8);
-#endif
 
 void game_libs_func_0004DE80(int *a0) {
     a0[0xE] = 0;
