@@ -18840,213 +18840,134 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004B620);
 //   (target splits v0=&D+0xA0 for the 48/52/56 lwc1s from t4=&D+0),
 //   beq-delay scheduling. Register-class residual, not structure.
 #ifdef NON_MATCHING
-extern int gl_func_00034458();
-void gl_func_0004BAF4(char *arg0) {
-    f32 spEC;
-    f32 spE8;
-    f32 spE4;
-    f32 spA0[17];
-    s32 sp9C;
-    f32 sp98;
-    f32 sp94;
-    char *sp90;
-    char *sp8C;
-    char *g;
-    char **app;
-    s32 sp80;
-    s32 sp7C;
-    s32 sp78;
-    s32 sp74;
-    f32 *vsrc;
-    char *st;
-    s32 cy;
-    f32 f0;
-    s32 r;
-    char *dl;
-    char *e;
-    s32 n;
-    char *w;
-    s16 x4;
-    s16 tv;
-    s16 cA;
-    s16 cB;
-    s32 y4full;
-    s16 y4;
-    s16 dtx;
-    s16 dty;
-    s32 vA;
-    s32 vB;
-    char *A;
+/* 2026-10-17 run 110 re-decode (agent-c): billboard sprite draw. Projects
+ * the camera-relative anchor, offsets by half the sprite size (scaled), clips
+ * against the viewport, then gSPDisplayList + gDPSetPrimDepth + the libultra
+ * gSPScisTextureRectangle macro (dsdx/dtdy = 1024/scale) + gSPDisplayList.
+ * Each display-list append is a cfront inline (args first, then the pool
+ * slot), which is why ctx is read before the DL-source call. */
+typedef struct { u32 w0, w1; } Gfx4B;
+typedef struct { Gfx4B *buf; int n; } GP4B;
+typedef struct { char pad[0xC]; GP4B *gfx; } Ctx4B;
+typedef struct { f32 x, y, z; } V4B;
+typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
+#define GS4B (*(char **)((char *)&D_00000000 + 0x254))
+#define F4B(p, o, T) (*(T *)((char *)(p) + (o)))
+#define PKT4B(c) (cx = (c), gp = cx->gfx, gi = gp->n, gp->n = gi + 1, &cx->gfx->buf[gi])
+#ifndef MAX
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+#ifndef MIN
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
+#define SHL4B(v, s, w) ((unsigned int)(((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
 
-    if (1) { app = &arg0; }
-    g = (char *)&D_00000000;
-    vsrc = (f32 *)((char *)&D_00000000 + 0xA0);
-    spE4 = vsrc[12];
-    spE8 = vsrc[13];
-    spEC = vsrc[14];
-    if (gl_func_00034458(*(s32 *)(g + 0x254), &spE4, 1, spA0) != 0) {
-        A = *app;
-        g = (char *)&D_00000000;
-        sp9C = (s32) (((spEC + 1.0f) * 16384.0f) + *(f32 *)(A + 0xC8));
-        if (*(s32 *)(A + 0xC4) != 0) {
-            st = *(char **)(g + 0x254);
-            f0 = (f32) ((f64) (f32) *(s32 *)(st + 0xBC) * 0.5 * (f64) spA0[0]);
-            sp98 = *(f32 *)(A + 0xB0) * f0;
-            sp94 = *(f32 *)(A + 0xB4) * f0;
-        } else {
-            sp98 = *(f32 *)(A + 0xB0);
-            sp94 = *(f32 *)(A + 0xB4);
-        }
-        sp90 = *(char **)(*(s32 *)(A + 0x84) + (*(s16 *)(A + 0xC0) * 4));
-        spE4 = spE4 - ((f32) (*(s16 *)(sp90 + 0x20) >> 1) * sp98);
-        spE8 = spE8 - ((f32) (*(s16 *)(sp90 + 0x22) >> 1) * sp94);
-        spE4 = spE4 + *(f32 *)(A + 0xB8);
-        sp80 = (s32) spE4;
-        spE8 = spE8 + *(f32 *)(A + 0xBC);
-        sp7C = (s32) spE8;
-        sp78 = *(s16 *)(sp90 + 0x20);
-        sp74 = *(s16 *)(sp90 + 0x22);
-        st = *(char **)(g + 0x254);
-        n = *(s32 *)(st + 0xC0);
-        if ((n + *(s32 *)(st + 0xB8)) >= sp80) {
-            cy = *(s32 *)(st + 0xC4);
-            if (((cy + *(s32 *)(st + 0xBC)) >= sp7C) && (sp80 >= (n - *(s32 *)(st + 0xB8))) && (sp7C >= (cy - *(s32 *)(st + 0xBC)))) {
-                sp8C = *(char **)(st + 0x158);
-                r = gl_func_00034458(*(s32 *)(*(char **)(A + 0xCC) + 0x60));
-                e = *(char **)(sp8C + 0xC);
-                n = *(s32 *)(e + 4);
-                *(s32 *)(e + 4) = n + 1;
-                w = *(char **)(*(char **)(sp8C + 0xC)) + (n * 8);
-                *(s32 *)(w + 0) = 0x06000000;
-                *(s32 *)(w + 4) = r;
-                dl = *(char **)(*(char **)(g + 0x254) + 0x158);
-                e = *(char **)(dl + 0xC);
-                n = *(s32 *)(e + 4);
-                *(s32 *)(e + 4) = n + 1;
-                w = *(char **)(*(char **)(dl + 0xC)) + (n * 8);
-                *(s32 *)(w + 0) = 0xEE000000;
-                *(s32 *)(w + 4) = (sp9C & 0x7FFF) << 0x10;
-                A = *app;
-                g = (char *)&D_00000000;
-                if (*(s32 *)((char *)&D_00000000 + 0x1C4) & 2) {
-                    if (*(s32 *)(A + 0x30) & 8) {
-                        dl = *(char **)(A + 0x14);
-                        if (dl != NULL) {
-                            gl_func_00034458(*(char **)(*(char **)(g + 0x254) + 0x158), sp90 + 0x34, *(s16 *)(dl + 0x1E));
-                            A = *app;
-                            g = (char *)&D_00000000;
-                        }
-                    }
-                } else {
-                    sp8C = *(char **)(*(char **)(g + 0x254) + 0x158);
-                    r = gl_func_00034458(*(s32 *)(*(char **)(sp90 + 0x64) + 0x60));
-                    A = *app;
-                    g = (char *)&D_00000000;
-                    e = *(char **)(sp8C + 0xC);
-                    n = *(s32 *)(e + 4);
-                    *(s32 *)(e + 4) = n + 1;
-                    w = *(char **)(*(char **)(sp8C + 0xC)) + (n * 8);
-                    *(s32 *)(w + 0) = 0x06000000;
-                    *(s32 *)(w + 4) = r;
-                }
-                dl = *(char **)(*(char **)(g + 0x254) + 0x158);
-                e = *(char **)(dl + 0xC);
-                x4 = sp80 * 4;
-                n = *(s32 *)(e + 4);
-                *(s32 *)(e + 4) = n + 1;
-                cA = 0;
-                w = *(char **)(*(char **)(dl + 0xC)) + (n * 8);
-                tv = (sp80 + (s32) ((f32) sp78 * sp98)) * 4;
-                if (tv > 0) {
-                    cA = tv;
-                }
-                tv = ((sp7C + (s32) ((f32) sp74 * sp94)) - 1) * 4;
-                if (tv > 0) {
-                    cB = tv;
-                } else {
-                    cB = 0;
-                }
-                *(s32 *)(w + 0) = ((cA & 0xFFF) << 0xC) | 0xE4000000 | (cB & 0xFFF);
-                if (x4 > 0) {
-                    cA = x4;
-                } else {
-                    cA = 0;
-                }
-                y4full = sp7C * 4;
-                y4 = y4full;
-                if (y4 > 0) {
-                    cB = y4;
-                } else {
-                    cB = 0;
-                }
-                *(s32 *)(w + 4) = ((cA & 0xFFF) << 0xC) | (cB & 0xFFF);
-                dl = *(char **)(*(char **)(g + 0x254) + 0x158);
-                e = *(char **)(dl + 0xC);
-                n = *(s32 *)(e + 4);
-                *(s32 *)(e + 4) = n + 1;
-                w = *(char **)(*(char **)(dl + 0xC)) + (n * 8);
-                *(s32 *)(w + 0) = 0xB4000000;
-                if (x4 < 0) {
-                    dtx = (s32) (1024.0f / sp98) & 0xFFFF;
-                    if (dtx < 0) {
-                        r = (s32) (x4 * dtx) >> 7;
-                        if (r > 0) {
-                            vA = r;
-                        } else {
-                            vA = 0;
-                        }
-                    } else {
-                        cy = 0;
-                        r = (s32) (x4 * dtx) >> 7;
-                        if (r < 0) {
-                            cy = r;
-                        }
-                        vA = cy;
-                    }
-                } else {
-                    vA = 0;
-                    dtx = (s32) (1024.0f / sp98) & 0xFFFF;
-                }
-                if (y4full < 0) {
-                    dty = (s32) (1024.0f / sp94) & 0xFFFF;
-                    if (dty < 0) {
-                        r = (s32) (y4 * dty) >> 7;
-                        if (r > 0) {
-                            vB = r;
-                        } else {
-                            vB = 0;
-                        }
-                    } else {
-                        cy = 0;
-                        r = (s32) (y4 * dty) >> 7;
-                        if (r < 0) {
-                            cy = r;
-                        }
-                        vB = cy;
-                    }
-                } else {
-                    vB = 0;
-                    dty = (s32) (1024.0f / sp94) & 0xFFFF;
-                }
-                *(s32 *)(w + 4) = (vA * -0x10000) | (-vB & 0xFFFF);
-                dl = *(char **)(*(char **)(g + 0x254) + 0x158);
-                e = *(char **)(dl + 0xC);
-                n = *(s32 *)(e + 4);
-                *(s32 *)(e + 4) = n + 1;
-                w = *(char **)(*(char **)(dl + 0xC)) + (n * 8);
-                *(s32 *)(w + 0) = 0xB3000000;
-                *(s32 *)(w + 4) = (dtx << 0x10) | (dty & 0xFFFF);
-                sp8C = *(char **)(*(char **)(g + 0x254) + 0x158);
-                r = gl_func_00034458(*(s32 *)(*(char **)(A + 0xD0) + 0x60));
-                e = *(char **)(sp8C + 0xC);
-                n = *(s32 *)(e + 4);
-                *(s32 *)(e + 4) = n + 1;
-                w = *(char **)(*(char **)(sp8C + 0xC)) + (n * 8);
-                *(s32 *)(w + 0) = 0x06000000;
-                *(s32 *)(w + 4) = r;
-            }
-        }
+typedef struct { char pad[0x30]; V4B p; } Cam4B;
+extern struct { char pad[0xA0]; Cam4B c; } D_4BAF4_cam;
+void gl_func_0004BAF4(char *self) {
+    V4B pos;
+    f32 out[17];
+    int iz;
+    f32 sx;
+    f32 sy;
+    Spr4B *spr;
+    Ctx4B *ctx;
+    int x;
+    int y;
+    int w;
+    int h;
+    Ctx4B *cx;
+    GP4B *gp;
+    int gi;
+    Gfx4B *g;
+    f32 s;
+    char *gs;
+    u32 r;
+
+    {
+        Cam4B *cam = &D_4BAF4_cam.c;
+        pos.x = cam->p.x;
+        pos.y = cam->p.y;
+        pos.z = cam->p.z;
     }
+    if (gl_func_00000000(GS4B, &pos, 1, out) == 0) {
+        return;
+    }
+    iz = (pos.z + 1.0f) * 16384.0f + F4B(self, 0xC8, f32);
+    if (F4B(self, 0xC4, int) != 0) {
+        s = (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
+        sx = F4B(self, 0xB0, f32) * s;
+        sy = F4B(self, 0xB4, f32) * s;
+    } else {
+        sx = F4B(self, 0xB0, f32);
+        sy = F4B(self, 0xB4, f32);
+    }
+    gs = GS4B;
+    spr = F4B(self, 0x84, Spr4B **)[F4B(self, 0xC0, s16)];
+    pos.x -= (f32)(spr->w >> 1) * sx;
+    pos.y -= (f32)(spr->h >> 1) * sy;
+    pos.x += F4B(self, 0xB8, f32);
+    pos.y += F4B(self, 0xBC, f32);
+    x = pos.x;
+    y = pos.y;
+    w = spr->w;
+    h = spr->h;
+    if (F4B(gs, 0xC0, int) + F4B(gs, 0xB8, int) < x || F4B(gs, 0xC4, int) + F4B(gs, 0xBC, int) < y ||
+        x < F4B(gs, 0xC0, int) - F4B(gs, 0xB8, int) || y < F4B(gs, 0xC4, int) - F4B(gs, 0xBC, int)) {
+        return;
+    }
+    ctx = F4B(gs, 0x158, Ctx4B *);
+    r = gl_func_00000000(F4B(F4B(self, 0xCC, char *), 0x60, int));
+    g = PKT4B(ctx);
+    g->w0 = 0x06000000;
+    g->w1 = r;
+    g = PKT4B(F4B(GS4B, 0x158, Ctx4B *));
+    g->w0 = 0xEE000000;
+    g->w1 = (iz & 0x7FFF) << 16;
+    if (*(s32 *)((char *)&D_00000000 + 0x1C4) & 2) {
+        if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) {
+            gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
+        }
+    } else {
+        ctx = F4B(GS4B, 0x158, Ctx4B *);
+        r = gl_func_00000000(F4B(spr->dl64, 0x60, int));
+        g = PKT4B(ctx);
+        g->w0 = 0x06000000;
+        g->w1 = r;
+    }
+    {
+        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
+        _g->w0 = (SHL4B(0xE4, 24, 8) |
+                  SHL4B(MAX((s16)((x + (int)(w * sx)) << 2), 0), 12, 12) |
+                  SHL4B(MAX((s16)((y + (int)(h * sy) - 1) << 2), 0), 0, 12));
+        _g->w1 = (SHL4B(0, 24, 3) |
+                  SHL4B(MAX((s16)(x << 2), 0), 12, 12) |
+                  SHL4B(MAX((s16)(y << 2), 0), 0, 12));
+    }
+    {
+        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
+        _g->w0 = SHL4B(0xB4, 24, 8);
+        _g->w1 = (SHL4B((0 -
+                   (((s16)(x << 2) < 0) ?
+                   (((s16)((u16)(s32)(1024.0f / sx)) < 0) ?
+                    (MAX((((s16)(x << 2) * (s16)((u16)(s32)(1024.0f / sx))) >> 7), 0)) :
+                    (MIN((((s16)(x << 2) * (s16)((u16)(s32)(1024.0f / sx))) >> 7), 0))) : 0)), 16, 16) |
+                  SHL4B((0 -
+                   (((y << 2) < 0) ?
+                   (((s16)((u16)(s32)(1024.0f / sy)) < 0) ?
+                    (MAX((((s16)(y << 2) * (s16)((u16)(s32)(1024.0f / sy))) >> 7), 0)) :
+                    (MIN((((s16)(y << 2) * (s16)((u16)(s32)(1024.0f / sy))) >> 7), 0))) : 0)), 0, 16));
+    }
+    {
+        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
+        _g->w0 = SHL4B(0xB3, 24, 8);
+        _g->w1 = (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16));
+    }
+    ctx = F4B(GS4B, 0x158, Ctx4B *);
+    r = gl_func_00000000(F4B(F4B(self, 0xD0, char *), 0x60, int));
+    g = PKT4B(ctx);
+    g->w0 = 0x06000000;
+    g->w1 = r;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004BAF4);

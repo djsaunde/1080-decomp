@@ -3916,3 +3916,4 @@ D_bu_ro_dpool = 0x00000000;  /* f64 view of D_bu_ro_pool (bootup.uso RoData sect
 D_493AC_a = 0x00000000;  /* gl_func_000493AC per-access aliases for the +0x1C4 flags word (blank lui/lw, stop &D CSE) */
 D_493AC_b = 0x00000000;
 D_493AC_c = 0x00000000;
+D_4BAF4_cam = 0x00000000;  /* gl_func_0004BAF4 camera block base (blank lui/addiu +0xA0 held base) */
