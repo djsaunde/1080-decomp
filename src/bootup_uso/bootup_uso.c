@@ -1965,94 +1965,120 @@ void func_000031B8(int a0) {
 //   divergence), plus folded f32 consts at func_000003F8+0x138/+0x13C
 //   (bootup_uso literal-pool bug). Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
-/* Typed float prototypes: the callees take single-precision float args, so
- * declaring them (vs untyped K&R) suppresses the double-promote (cvt.d.s/sdc1)
- * and emits swc1/mtc1 matching the target. Distinct names → each resolves to a
- * relocated jal (0c000000) like the target's func_00000000. */
+/* PASS-3 2026-10-20 (agent-c run 114): fresh decode of the target words.
+ * cfront-style constructor code: obj = alloc(0xB8); the inlined ctor
+ * re-tests `this` (dead alloc(0xB4) fallback), and the member sub-object at
+ * +0x2C has two nested inlined ctors (the outer tests &this->sub == 0, i.e.
+ * this == -0x2C). Then a mode switch (0/2 -> widget kind A, 1 -> kind B)
+ * and the common attach + Vec3-copy tail. Float args sit in a2/a3 as
+ * bit patterns (`addiu a3,zero,0` = 0.0f, `lui a3,0x43fa` = 500.0f), so the
+ * builder protos take float params at those slots. Two `if (1) { }`
+ * blocks before the return raise the BB count so uopt keeps every local in
+ * its frame home instead of s0/s1 (74.3 -> 88.5). `vec1[0] = vec1[2] =
+ * 0.0f` shares one mtc1 (-> 91.6). Residual: target keeps an obj2 copy in
+ * its own slot (volatile reproduces it but costs the dispatch order), the
+ * switch tests 0,2,1 + an explicit b-default, and the frame is 0x20 short. */
 extern void *fn_31c0_alloc(int);
 extern void  fn_31c0_init(void *, void *);
 extern void  fn_31c0_fin(void *);
 extern void  fn_31c0_vec(void *, float *);
-extern void *fn_31c0_A1(int, void *, void *, int, float, float, int, void *);
+extern void *fn_31c0_A1(int, void *, void *, float, float, float, int, void *);
 extern void *fn_31c0_A2(int, void *, int, void *);
-extern void  fn_31c0_A3(void *, void *);
+extern void  fn_31c0_link(void *, void *);
 extern void *fn_31c0_A4(int, void *, void *, void *);
-extern void *fn_31c0_A5(void *, void *);
-extern void *fn_31c0_B1(int);
-extern void  fn_31c0_B2(void *, void *, int, int, float);
+extern void  fn_31c0_B2(void *, void *, float, float, float);
 extern void *fn_31c0_B3(int, void *, void *, void *);
-extern void  fn_31c0_B4(void *, void *);
 extern void  fn_31c0_tail(void *, void *);
-extern void  fn_31c0_tail3(void *, float *);
-
-void *func_000031C0(int a0, int mode, char *parent3, char *a3v, int p4) {
-    char *obj;
-    char *sub;
-    char *child;
-    char *e;
+extern char D_31c0_a, D_31c0_b, D_31c0_c, D_31c0_d, D_31c0_e, D_31c0_f, D_31c0_g, D_31c0_h;
+void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
     char *w;
+    char *h;
+    char *v;
     char *r2;
     char *r3;
-    char *r;
-    char *h;
-    float sp48[3];
-    float vec[3];
+    char *obj2;
+    char *obj;
+    char *p;
+    char *e;
+    f32 vec1[3];
+    f32 vec2[3];
+    int *m;
+
     obj = (char *)fn_31c0_alloc(0xB8);
-    if (!obj) obj = (char *)fn_31c0_alloc(0xB4);
-    if (obj) {
-        fn_31c0_init(obj, (char *)&D_00000000 + 0x7460);
-        *(int *)(obj + 0x28) = (int)&D_00000000;
-        sub = obj + 0x2C;
-        if (!sub) sub = (char *)fn_31c0_alloc(4);
-        if (sub) *(int *)sub = 0;
-        fn_31c0_fin(obj);
-        sp48[0] = 0.0f;
-        sp48[2] = 0.0f;
-        sp48[1] = 500.0f;
-        fn_31c0_vec(obj + 0x30, sp48);
-    }
-    if (mode == 0 || mode == 2) {
-        w = (char *)fn_31c0_A1(0, a3v, obj, 0, 500.0f, 1.0e-20f, p4,
-                               (char *)&D_00000000 + 0x746C);
-        h = w;
-        r2 = (char *)fn_31c0_A2(0, a3v, *(int *)(a3v + 0x874),
-                                (char *)&D_00000000 + 0x7480);
-        fn_31c0_A3(w, r2);
-        r3 = (char *)fn_31c0_A4(0, w, r2, (char *)&D_00000000 + 0x7490);
-        *(int *)(w + 0x154) = (int)r2;
-        child = (char *)fn_31c0_A5(obj, r3);
-        *(int *)(obj + 0xB4) = (int)child;
-        *(char **)(child + 0xC) = (char *)&D_00000000 + 0x74A4;
-    } else if (mode == 1) {
-        e = (char *)fn_31c0_B1(0x15C);
-        h = e;
-        if (e) {
-            fn_31c0_B2(e, obj, 0, 0x43FA0000, 1.0e-21f);
-            *(char **)(e + 0x28) = (char *)&D_00000000 + 0x7120;
-            *(int *)(e + 0x158) = 0;
-            *(int *)(e + 0x154) = (int)a3v;
-            *(int *)(e + 0x150) = *(int *)(e + 0x14C);
+    if (obj != 0) {
+        p = obj;
+        if (p == 0) {
+            p = (char *)fn_31c0_alloc(0xB4);
+            if (p == 0) goto post;
         }
-        r = (char *)fn_31c0_B3(0, a3v, a3v, (char *)&D_00000000 + 0x74B0);
-        fn_31c0_B4(obj, r);
-        *(char **)(r + 0xC) = (char *)&D_00000000 + 0x74C4;
+        fn_31c0_init(p, &D_31c0_a);
+        *(void **)(p + 0x28) = &D_31c0_b;
+        m = (int *)(p + 0x2C);
+        if (m == 0) {
+            m = (int *)fn_31c0_alloc(4);
+            if (m == 0) goto skip;
+        }
+        if (m == 0) {
+            m = (int *)fn_31c0_alloc(4);
+            if (m == 0) goto skip;
+        }
+        *m = 0;
+    skip:
+        fn_31c0_fin(p);
+        vec1[0] = vec1[2] = 0.0f;
+        vec1[1] = 500.0f;
+        fn_31c0_vec(p + 0x30, vec1);
     }
-    fn_31c0_tail(parent3 + 0x10, h);
-    if (*(int *)(h + 0x14)) *(int *)(h + 0x4) = 1;
-    *(int *)(h + 0x14) = (int)parent3;
-    fn_31c0_tail(parent3 + 0x10, obj);
-    if (*(int *)(obj + 0x14)) *(int *)(obj + 0x4) = 1;
-    *(int *)(obj + 0x14) = (int)parent3;
-    *(float *)(obj + 0x60) = *(float *)(a3v + 0x3A4);
-    *(float *)(obj + 0x64) = *(float *)(a3v + 0x3A8);
-    *(float *)(obj + 0x68) = *(float *)(a3v + 0x3AC);
-    *(float *)(h + 0x60) = *(float *)(a3v + 0x3A4);
-    *(float *)(h + 0x64) = *(float *)(a3v + 0x3A8);
-    *(float *)(h + 0x68) = *(float *)(a3v + 0x3AC);
-    vec[0] = 0.0f;
-    vec[1] = 0.0f;
-    vec[2] = -1000.0f;
-    fn_31c0_tail3(h + 0x30, vec);
+post:
+    obj2 = obj;
+    switch (mode) {
+    case 0:
+    case 2:
+        h = w = (char *)fn_31c0_A1(0, a3v, obj, 0.0f, 500.0f, 1.0e-20f, p4, &D_31c0_c);
+        r2 = (char *)fn_31c0_A2(0, a3v, *(int *)(a3v + 0x874), &D_31c0_d);
+        fn_31c0_link(w, r2);
+        *(char **)(w + 0x154) = r2;
+        r3 = (char *)fn_31c0_A4(0, w, r2, (char *)&D_31c0_e + 0x7490);
+        fn_31c0_link(obj2, r3);
+        *(char **)(obj2 + 0xB4) = r3;
+        *(void **)(r3 + 0xC) = &D_31c0_f;
+        break;
+    case 1:
+        e = (char *)fn_31c0_alloc(0x15C);
+        if (e != 0) {
+            fn_31c0_B2(e, obj, 0.0f, 500.0f, 1.0e-21f);
+            *(void **)(e + 0x28) = &D_31c0_g;
+            *(int *)(e + 0x158) = 0;
+            *(char **)(e + 0x154) = a3v;
+            *(f32 *)(e + 0x150) = *(f32 *)(e + 0x14C);
+        }
+        h = e;
+        v = (char *)fn_31c0_B3(0, a3v, a3v, &D_31c0_h);
+        fn_31c0_link(obj2, v);
+        *(void **)(v + 0xC) = &D_31c0_f;
+        break;
+    }
+    fn_31c0_tail(parent + 0x10, h);
+    if (*(int *)(h + 0x14) != 0) {
+        *(int *)(h + 0x4) = 1;
+    }
+    *(char **)(h + 0x14) = parent;
+    fn_31c0_tail(parent + 0x10, obj2);
+    if (*(int *)(obj2 + 0x14) != 0) {
+        *(int *)(obj2 + 0x4) = 1;
+    }
+    *(char **)(obj2 + 0x14) = parent;
+    *(f32 *)(obj2 + 0x60) = *(f32 *)(a3v + 0x3A4);
+    *(f32 *)(obj2 + 0x64) = *(f32 *)(a3v + 0x3A8);
+    *(f32 *)(obj2 + 0x68) = *(f32 *)(a3v + 0x3AC);
+    *(f32 *)(h + 0x60) = *(f32 *)(a3v + 0x3A4);
+    *(f32 *)(h + 0x64) = *(f32 *)(a3v + 0x3A8);
+    *(f32 *)(h + 0x68) = *(f32 *)(a3v + 0x3AC);
+    vec2[1] = 0.0f;
+    vec2[0] = 0.0f;
+    vec2[2] = -1000.0f;
+    fn_31c0_vec(h + 0x30, vec2);
+    if (1) { } if (1) { }
     return h;
 }
 #else
