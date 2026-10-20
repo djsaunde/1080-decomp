@@ -1340,7 +1340,6 @@ void arcproc_uso_func_00001C74(int *a0) {
 INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001C74);
 #endif
 
-#ifdef NON_MATCHING
 /* arcproc_uso_func_00001D18: widget constructor. Field inits (0xC=0x3E4, 0xBC=
  * arg1, 0xB8=arg3, 0x54=arg2, 0xD0=0xFF, 0xD4=0, 0x4C=arg4); float quad @0xC0/C4/
  * C8/CC = {192,255,192,0}/255 (variable-divisor `float denom=255.0f` → runtime
@@ -1349,7 +1348,11 @@ INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001C7
  * +0x80/84 ints, +0xA0 ptr, clear bit 4 of +0x18, float cb via gl_proto_1d18) and
  * link into the arg0+0x10 list. Fresh decode 2026-05-29 (m2c-confirmed), upgraded
  * from structural ceiling marker. Caps: structs + cb prototypes untyped (USO-reloc).
- * NON_MATCHING. */
+ * 2026-10-20 agent-g (run 109) 94.05 -> EXACT, twin of timproc_uso_b3_func_000019CC:
+ * the 0x18 RMW is `sub += 0x18` (if(1) block) then `*(int *)sub = *(int *)sub & ~4`
+ * through the pointer (no tv local, which pre-loaded the field and shifted the
+ * t-ring for the rest of the function); the 0x4C = arg4 store is written before
+ * 0xB8 = arg3 so ugen loads arg4 from the stack first (t7, ahead of li 255). */
 extern int gl_proto_1d18(void *, int, int, float, float);
 void arcproc_uso_func_00001D18(char *arg0, char *arg1, int arg2, char *arg3, int arg4) {
     char *sub;
@@ -1359,11 +1362,11 @@ void arcproc_uso_func_00001D18(char *arg0, char *arg1, int arg2, char *arg3, int
 
     *(int *)(arg0 + 0xC) = (int)((char *)&D_00000000 + 0x3E4);
     *(char **)(arg0 + 0xBC) = arg1;
+    *(int *)(arg0 + 0x4C) = arg4;
     *(char **)(arg0 + 0xB8) = arg3;
     *(int *)(arg0 + 0x54) = arg2;
     *(int *)(arg0 + 0xD0) = 0xFF;
     *(int *)(arg0 + 0xD4) = 0;
-    *(int *)(arg0 + 0x4C) = arg4;
     *(float *)(arg0 + 0xC8) = r192;
     *(float *)(arg0 + 0xC0) = r192;
     r0 = 0.0f / denom;
@@ -1380,11 +1383,9 @@ void arcproc_uso_func_00001D18(char *arg0, char *arg1, int arg2, char *arg3, int
         gl_func_00000000(*(char **)(arg0 + 0x94), 0);
         gl_proto_1d18(*(char **)(arg0 + 0x94), 0xA0, 0x46, 1.0f, 1.0f);
         {
-            int tv;
             sub = *(char **)(arg0 + 0x94);
-            tv = *(int *)(sub + 0x18);
             if (1) { sub += 0x18; }
-            *(int *)sub = tv & ~4;
+            *(int *)sub = *(int *)sub & ~4;
             sub = *(char **)(arg0 + 0x94);
             if (1) { sub += 0x64; }
             *(float *)(sub + 0x0) = 250.0f / denom;
@@ -1403,9 +1404,6 @@ void arcproc_uso_func_00001D18(char *arg0, char *arg1, int arg2, char *arg3, int
         *(char **)(sub + 0x14) = arg0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001D18);
-#endif
 
 /* arcproc_uso_func_00001F0C: boundary-corrected (stolen-prologue mirror). The 2
  * words `lui t6,0; lw t6,0x64(t6)` (preloading D[0x64]) sat PAST func_00001D18's
