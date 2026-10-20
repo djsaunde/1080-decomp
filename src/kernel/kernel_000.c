@@ -1533,74 +1533,39 @@ void func_800018B0(void* arg0) {
  * by flag>>4) is live (low-3==1), matches the module arg4 (slot>>4) and is
  * loaded (bit3), apply the patch (*(arg1 + rec->unk4) = rec->unk8) and clear the
  * flag. (func_80001994 is the loop-body alt-entry via undefined_syms.) */
+/* 2026-10-20 (agent-g run 112): 65.5 -> 89.2. The old body was a hand
+ * transcription of IDO's own odd-peel + x2 unroll; this is the plain loop
+ * (with `continue` for both skips). Left: the store block sits after the
+ * skip (target `bnezl found` + duplicated first load), the ~8 mask is a
+ * hoisted t5 constant even in the peel (ours uses at), and the found/one/
+ * i register picks. */
+typedef struct { s16 info; s16 pad2; s32 a; s32 b; } RelSym18F0;
+typedef struct { s32 info; s32 off; s32 val; } RelEnt18F0;
 s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
-    void *temp_v0;
-    s16 *temp_t4;
-    s16 temp_t0;
-    s32 temp_t2;
-    s32 var_t0;
-    s32 var_t3;
-    void *var_t1;
+    RelSym18F0 *syms = *(RelSym18F0 **)((char *)arg0 + 0x3C);
+    RelEnt18F0 *rel = arg2;
+    RelSym18F0 *s;
+    s32 i;
+    s32 found;
 
-    temp_v0 = (void *) FW(arg0, 0x3C);
-    if ((arg1 == 0) || (arg2 == NULL)) {
+    if (arg1 == 0 || rel == 0) {
         return 0;
     }
-    var_t0 = 0;
-    if (arg3 > 0) {
-        if (arg3 & 1) {
-            temp_t2 = FW(arg2, 0);
-            if (temp_t2 & 8) {
-                var_t3 = 0;
-                temp_t4 = (s16 *)((char *) temp_v0 + ((temp_t2 >> 4) * 0xC));
-                if ((*temp_t4 & 7) == 1) {
-                    temp_t0 = *temp_t4;
-                    if ((arg4 == (temp_t0 >> 4)) && (temp_t0 & 8)) {
-                        var_t3 = 1;
-                    }
-                }
-                if (var_t3 != 0) {
-                    *(s32 *)(arg1 + FW(arg2, 4)) = FW(arg2, 8);
-                    FW(arg2, 0) = FW(arg2, 0) & ~8;
-                }
+    for (i = 0; i < arg3; i++) {
+        if (!(rel[i].info & 8)) {
+            continue;
+        }
+        {
+            found = 0;
+            s = &syms[rel[i].info >> 4];
+            if ((s->info & 7) == 1 && (s->info >> 4) == arg4 && (s->info & 8)) {
+                found = 1;
             }
-            var_t0 = 1;
-            if (arg3 != 1) {
-                goto block_15;
+            if (found == 0) {
+                continue;
             }
-        } else {
-block_15:
-            var_t1 = (char *) arg2 + (var_t0 * 0xC);
-            do {
-                temp_t2 = FW(var_t1, 0);
-                if (temp_t2 & 8) {
-                    var_t3 = 0;
-                    temp_t4 = (s16 *)((char *) temp_v0 + ((temp_t2 >> 4) * 0xC));
-                    if ((*temp_t4 & 7) == 1) {
-                        temp_t0 = *temp_t4;
-                        if ((arg4 == (temp_t0 >> 4)) && (temp_t0 & 8)) {
-                            var_t3 = 1;
-                        }
-                    }
-                    if (var_t3 != 0) {
-                        *(s32 *)(arg1 + FW(var_t1, 4)) = FW(var_t1, 8);
-                        FW(var_t1, 0) = FW(var_t1, 0) & ~8;
-                    }
-                }
-                temp_t2 = FW(var_t1, 0xC);
-                if (temp_t2 & 8) {
-                    var_t3 = 0;
-                    temp_t4 = (s16 *)((char *) temp_v0 + ((temp_t2 >> 4) * 0xC));
-                    if (((*temp_t4 & 7) == 1) && (arg4 == (*temp_t4 >> 4)) && (*temp_t4 & 8)) {
-                        var_t3 = 1;
-                    }
-                    if (var_t3 != 0) {
-                        *(s32 *)(arg1 + FW(var_t1, 0x10)) = FW(var_t1, 0x14);
-                        FW(var_t1, 0xC) = FW(var_t1, 0xC) & ~8;
-                    }
-                }
-                var_t1 = (char *) var_t1 + 0x18;
-            } while (var_t1 != (char *)((arg3 * 0xC) + (s32) arg2));
+            *(s32 *)(arg1 + rel[i].off) = rel[i].val;
+            rel[i].info &= ~8;
         }
     }
     return 0;
@@ -1937,57 +1902,42 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80001EC8);
  *      docs/MATCHING_WORKFLOW.md "PERMUTER=1 DOESN'T work").
  * Default build is INCLUDE_ASM (byte-exact via raw bytes). */
 #ifdef NON_MATCHING
+/* 2026-10-20 (agent-g run 112): 94.5 -> 94.9 rewritten as the natural
+ * symbol-resolve loop (2/4: add the segment base, 3: mark). The compare
+ * chain order 2,4,3 rules out a switch (cfe sorts case values); goto-style
+ * ifs give it. Left: i/p/count land in a1/v1/a2 instead of v1/a2/a1 (decl
+ * order inert, 120 perms), and the t==3 test inverts (permuter 8 min: 96.3
+ * only with a junk `s++; s--;`). */
 int func_800021A4(int *a0) {
-    int *v0;
-    int v1;
-    short *a2;
-    int a1;
-    short type_word;
-    int a3, t8, t9, t3, t4, t7, t5, t6;
-    v0 = (int*)a0[0x3C / 4];
-    if (v0 == 0) return 0;
-    v1 = 0;
-    a1 = a0[0x4 / 4];
-    a2 = (short*)v0;
-    if (a1 <= 0) goto end;
-    do {
-        type_word = a2[0];
-        v1++;
-        if (type_word & 0x8) goto cond;
-        a3 = type_word & 0x7;
-        t8 = type_word >> 4;
-        if (a3 == 2) {
-            t9 = t8 << 2;
-            goto store_lookup;
+    RelSym18F0 *syms;
+    RelSym18F0 *s;
+    s32 i;
+    s32 info;
+    s32 t;
+
+    syms = *(RelSym18F0 **)((char *)a0 + 0x3C);
+    if (syms == 0) {
+        return 0;
+    }
+    s = syms;
+    for (i = 0; i < a0[1]; i++, s++) {
+        info = s->info;
+        if (info & 8) {
+            continue;
         }
-        if (a3 == 4) {
-            t9 = t8 << 2;
-            goto do_store;
-        }
-        t8 = type_word | 0x8;
-        if (a3 == 3) goto set_flag;
-        goto cond;
-    store_lookup:
-    do_store: {
-            int *tp = (int*)((char*)a0 + t9);
-            t4 = tp[0x38 / 4];
-            t7 = ((int*)a2)[0x4 / 4];
-            t6 = type_word | 0x8;
-            *a2 = (short)t6;
-            t5 = t7 + t4;
-            ((int*)a2)[0x4 / 4] = t5;
-            a1 = a0[0x4 / 4];
-            goto cond;
-        }
-    set_flag:
-        *a2 = (short)t8;
-        a1 = a0[0x4 / 4];
-    cond:
-        a2 = (short*)((char*)a2 + 0xC);
-    } while (v1 < a1);
-end:
+        t = info & 7;
+        if (2 == t) goto add;
+        if (t == 4) goto add;
+        if (t == 3) goto mark;
+        continue;
+    add:
+        s->a += a0[(info >> 4) + 14];
+        s->info = info | 8;
+        continue;
+    mark:
+        s->info = info | 8;
+    }
     return 0;
-    (void)t3;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/kernel", func_800021A4);
