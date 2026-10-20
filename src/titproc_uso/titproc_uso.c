@@ -544,7 +544,16 @@ void titproc_uso_func_00000C0C(int *a0) {
  * beqzl-compact where target has plain beqz with the next call's arg setup
  * interleaved (documented beqzl-chain scheduler tie); entry move-s1/sw-a1
  * two-insn permute; count<<4 tail temp-reuse (target reuses t7/t3, build
- * fresh temps). Honest NON_MATCHING; build path is INCLUDE_ASM. */
+ * fresh temps).
+ * EXACT 2026-10-20 (agent-g run 108, mgrproc E04 recipe): (1) the head is
+ * the nested inlined-base-ctor form `o = prev; if (o || (o = alloc(n)))`,
+ * not a goto ladder (fixes the entry permute and the dead-arm spill home);
+ * (2) home map child/o2/sub/pad, no `list` local (the target spills the
+ * root+0x10 temp at 44); (3) the 0x138 mirror store is void*-typed (an
+ * int-typed `= *(int *)(root + 0x50)` re-read burned one t-ring slot = the
+ * whole-body +1 rotation); (4) the last 0139B0 call takes (x, 1, 0) (the
+ * missing a1/a2 setup was the beqz-vs-beqzl tie); (5) `field * 30` instead
+ * of the hand-expanded `((c << 4) - c) * 2` (IDO's own expansion reuses t7). */
 extern int titproc_uso_func_000000();
 extern int titproc_uso_func_000098();
 extern int titproc_uso_func_07ACE0();
@@ -567,50 +576,34 @@ extern int import_000A5F40();
 extern int import_0024CCF4();
 extern int import_000A5FBC();
 extern int import_000A7ECC();
-#ifdef NON_MATCHING
-void *titproc_uso_func_00000C54(void *a0, int a1) {
-    void *root;
+void *titproc_uso_func_00000C54(void *root, int a1) {
     void *child;
+    void *o2;
     void *sub;
-    void *list;
-    int count;
+    int pad;              /* home 44: the spilled root+0x10 temp lands at 44 below it */
 
-    root = a0;
-    if (root == 0) {
-        root = titproc_uso_func_055750(0x78);
-        if (root == 0) goto end;
-    }
+    if (root != 0 || (root = titproc_uso_func_055750(0x78)) != 0) {
     sub = root;
-    if (root == 0) {
-        sub = titproc_uso_func_055750(0x50);
-        if (sub == 0) goto skip_a;
+    if (sub != 0 || (sub = titproc_uso_func_055750(0x50)) != 0) {
+        o2 = sub;
+        if (o2 != 0 || (o2 = titproc_uso_func_055750(0x2C)) != 0) { titproc_uso_func_04C678(o2, (char *)&titproc_uso_D_00048C + 0x4A8); *(int *)((char *)o2 + 0x28) = (int)&import_00073B18; }
+        *(int *)((char *)sub + 0x28) = (int)&import_00073B80;
     }
-    a0 = sub;
-    if (sub == 0) {
-        a0 = titproc_uso_func_055750(0x2C);
-        if (a0 == 0) goto skip_b;
-    }
-    titproc_uso_func_04C678(a0, (char *)&titproc_uso_D_00048C + 0x4A8);
-    *(int *)((char *)a0 + 0x28) = (int)&import_00073B18;
-skip_b:
-    *(int *)((char *)sub + 0x28) = (int)&import_00073B80;
-skip_a:
     *(int *)((char *)root + 0x28) = (int)&titproc_uso_D_000114;
     *(int *)((char *)root + 0x0C) = (int)((char *)&titproc_uso_D_00048C + 0x4B0);
     titproc_uso_func_000000();
     titproc_uso_func_000098();
     *(void **)((char *)root + 0x50) = (void *)import_000B6C40(0);
-    *(int *)((char *)&import_00020098 + 0x138) = *(int *)((char *)root + 0x50);
+    *(void **)((char *)&import_00020098 + 0x138) = *(void **)((char *)root + 0x50);
     import_000B88CC(*(int *)((char *)root + 0x50));
 
     sub = *(void **)((char *)root + 0x50);
-    list = (char *)root + 0x10;
-    titproc_uso_func_07ACE0(list, sub);
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub);
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
     *(void **)((char *)root + 0x54) = titproc_uso_func_0015F4(0);
 
-    titproc_uso_func_07ACE0(list, sub = *(void **)((char *)root + 0x54));
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x54));
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
     if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
@@ -621,17 +614,17 @@ skip_a:
     }
     *(void **)((char *)root + 0x58) = titproc_uso_func_001840(0);
 
-    titproc_uso_func_07ACE0(list, sub = *(void **)((char *)root + 0x58));
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x58));
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
     *(void **)((char *)root + 0x60) = titproc_uso_func_001B10(0);
 
-    titproc_uso_func_07ACE0(list, sub = *(void **)((char *)root + 0x60));
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x60));
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
     *(void **)((char *)root + 0x64) = titproc_uso_func_001D7C(0);
 
-    titproc_uso_func_07ACE0(list, sub = *(void **)((char *)root + 0x64));
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x64));
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
     *(void **)((char *)root + 0x5C) = import_000A5D38(0);
@@ -646,28 +639,26 @@ skip_a:
     *(int *)((char *)*(void **)((char *)root + 0x5C) + 0x7C) =
         *(int *)((char *)&import_00020098 + 0x84);
 
-    titproc_uso_func_07ACE0(list, sub = *(void **)((char *)root + 0x5C));
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x5C));
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
 
     sub = *(void **)((char *)&import_00020098 + 0x190);
-    titproc_uso_func_07ACE0(list, sub);
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub);
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
-    titproc_uso_func_0139B0(*(int *)((char *)&import_00020098 + 0x190));
+    titproc_uso_func_0139B0(*(int *)((char *)&import_00020098 + 0x190), 1, 0);
 
     *(int *)((char *)root + 0x6C) = 5;
     *(int *)((char *)root + 0x70) = 0x48;
     *(int *)((char *)root + 0x74) = 15000;
 
     if (*(int *)((char *)&import_00020098 + 0x88) != 0) {
-        count = *(int *)((char *)root + 0x6C);
         *(int *)((char *)root + 0x40) = 0;
-        *(int *)((char *)root + 0x3C) = ((count << 4) - count) * 2;
+        *(int *)((char *)root + 0x3C) = *(int *)((char *)root + 0x6C) * 30;
     } else {
-        count = *(int *)((char *)root + 0x70);
         *(int *)((char *)root + 0x40) = 1;
-        *(int *)((char *)root + 0x3C) = ((count << 4) - count) * 2;
+        *(int *)((char *)root + 0x3C) = *(int *)((char *)root + 0x70) * 30;
         *(int *)((char *)root + 0x68) = 0;
         *(int *)((char *)*(void **)((char *)root + 0x58) + 0x38) = 1;
         *(int *)((char *)*(void **)((char *)root + 0x58) + 0x2C) = 0;
@@ -682,12 +673,9 @@ skip_a:
     *(int *)((char *)root + 0x2C) = 0;
     *(int *)((char *)root + 0x48) = 0;
     (void)a1;
-end:
+    }
     return root;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", titproc_uso_func_00000C54);
-#endif
 
 void titproc_uso_func_00000FD0(int *a0, int *a1) {
     int v = *a1;
