@@ -79,120 +79,68 @@ typedef struct {
 
 extern OSPiHandle *D_8000A470[];
 extern s32 func_80004B30(void *);
-extern u32 D_A4600010;
 
-#define PI_REG(offset) (*(volatile u32 *)(0xA4600000 + (offset)))
-#define PI_HANDLE_TABLE ((OSPiHandle **)0x8000A470)
+/* func_800052F0 = osEPiRawStartDma (libultra io/epirawdma.c), IDO 7.1 -O1.
+ * One function [0x52F0,0x5514); IDO pads .text to 16 with the 3 zero words.
+ * It used to be split across two units: a 0x60 "entry block" here and the
+ * rest as func_80005350 at the head of kernel_006 ("alt-entry shared body,
+ * no honest C"). The jal'd 0x80005350/53D0/5400/54C0 addresses are stale
+ * mid-body targets that stay as absolute undefined_syms_auto.txt entries
+ * (same as __osLeoInterrupt's in kernel_000_b); merged into this unit.
+ * EXACT via twin port of game_libs' copy gl_func_0006F8A4
+ * (game_libs_ido53_6F8A4.c, 5.3 -O1; 7.1 -O1 emits the same bytes).
+ * The old NM's miss was the PI registers: `extern u32 D_A4600010` lets IDO
+ * hoist the first PI_STATUS load above the argument homing stores; raw
+ * volatile literals keep it after them. __osCurrentHandle = D_8000A470,
+ * osVirtualToPhysical = func_80004B30. */
+#define EPI_IO_READ(a) (*(volatile u32 *)(a))
+#define EPI_IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
-/* func_800052F0: __osEPiRawStartDma - extended PI DMA setup with handle.
- * 24-insn entry block (0x60). Falls through into func_80005350 (116 insns
- * / 0x1D0) which contains the body + epilogue. Combined function is the
- * full __osEPiRawStartDma per OoT reference (libultra/io/epirawdma.c).
- *
- * Decoded structure (covers BOTH halves):
- *
- *   s32 __osEPiRawStartDma(OSPiHandle* handle, s32 direction, u32 cartAddr,
- *                          void* dramAddr, s32 size) {
- *       u32 status;
- *       OSPiHandle* curHandle;
- *       status = IO_READ(PI_STATUS_REG);                    // 0xA4600010
- *       while (status & 3) { status = IO_READ(PI_STATUS_REG); }
- *
- *       curHandle = __osPiTable[handle->domain];            // table at 0x8000A470
- *       if (curHandle != handle) {
- *           // Per-domain BSD register updates (DOM1: 0x14/1C/20/18, DOM2: 0x24/2C/30/28)
- *           if (curHandle->latency    != handle->latency)    IO_WRITE(LAT_REG, ...);
- *           if (curHandle->pageSize   != handle->pageSize)   IO_WRITE(PGS_REG, ...);
- *           if (curHandle->relDuration!= handle->relDuration)IO_WRITE(RLS_REG, ...);
- *           if (curHandle->pulse      != handle->pulse)      IO_WRITE(PWD_REG, ...);
- *           __osPiTable[handle->domain] = handle;
- *       }
- *       IO_WRITE(PI_DRAM_ADDR_REG, osVirtualToPhysical(dramAddr));  // func_80004B30
- *       IO_WRITE(PI_CART_ADDR_REG, (handle->baseAddress | cartAddr) & 0x1FFFFFFF);
- *       if      (direction == 0) IO_WRITE(PI_WR_LEN_REG, size - 1);  // OS_READ
- *       else if (direction == 1) IO_WRITE(PI_RD_LEN_REG, size - 1);  // OS_WRITE
- *       else                     return -1;
- *       return 0;
- *   }
- *
- * Field offsets used: handle->{0x04 type, 0x05 latency, 0x06 pageSize,
- * 0x07 relDuration, 0x08 pulse, 0x09 domain, 0x0C baseAddress}.
- * Same OSPiHandle layout as OoT/libreultra (PI_BASE = 0xA4600000).
- *
- * Same alt-entry shared-tail pattern as func_800073DC /
- * func_8000817C / func_80008430. External callers in kernel_000.c /
- * kernel_001.c / kernel_003.c declare `extern void func_80005350(s32, s32)`
- * and call it as a 2-arg function — those callers expect to enter mid-body
- * (uses prologue's $sp frame + spilled $a0/$a3 args). The Makefile truncates
- * this object to the 0x60-byte entry block so func_80005350 remains the
- * separate shared-tail body.
- *
- * NON_MATCHING: the direct D_A4600010 C form keeps the required HI16/LO16
- * relocs, but IDO hoists the first load before the argument spills, so the
- * 0x60 prefix doesn't byte-match (was force-matched via the now-removed
- * RELOC_PATCH). Kept INCLUDE_ASM for the exact 0x60 entry block; C preserved
- * as reference / permuter seed. */
-#ifdef NON_MATCHING
-s32 func_800052F0(OSPiHandle *handle, s32 direction, u32 cartAddr, void *dramAddr, s32 size) {
-    u32 status;
+s32 func_800052F0(OSPiHandle *pihandle, s32 direction, u32 devAddr, void *dramAddr, u32 size)
+{
+    u32 stat;
     u32 domain;
-    register s32 dir;
-    OSPiHandle *curHandle;
 
-    status = D_A4600010;
-    while (status & 3) {
-        status = D_A4600010;
-    }
+    stat = EPI_IO_READ(0xA4600010);
+    while (stat & 3)
+        stat = EPI_IO_READ(0xA4600010);
 
-    domain = handle->domain;
-    curHandle = PI_HANDLE_TABLE[domain];
-    if (curHandle != handle) {
+    domain = pihandle->domain;
+    if (D_8000A470[domain] != pihandle) {
+        OSPiHandle *cHandle = D_8000A470[domain];
         if (domain == 0) {
-            if (curHandle->latency != handle->latency) {
-                PI_REG(0x14) = handle->latency;
-            }
-            if (curHandle->pageSize != handle->pageSize) {
-                PI_REG(0x1C) = handle->pageSize;
-            }
-            if (curHandle->relDuration != handle->relDuration) {
-                PI_REG(0x20) = handle->relDuration;
-            }
-            if (curHandle->pulse != handle->pulse) {
-                PI_REG(0x18) = handle->pulse;
-            }
+            if (cHandle->latency != pihandle->latency)
+                EPI_IO_WRITE(0xA4600014, pihandle->latency);
+            if (cHandle->pageSize != pihandle->pageSize)
+                EPI_IO_WRITE(0xA460001C, pihandle->pageSize);
+            if (cHandle->relDuration != pihandle->relDuration)
+                EPI_IO_WRITE(0xA4600020, pihandle->relDuration);
+            if (cHandle->pulse != pihandle->pulse)
+                EPI_IO_WRITE(0xA4600018, pihandle->pulse);
         } else {
-            if (curHandle->latency != handle->latency) {
-                PI_REG(0x24) = handle->latency;
-            }
-            if (curHandle->pageSize != handle->pageSize) {
-                PI_REG(0x2C) = handle->pageSize;
-            }
-            if (curHandle->relDuration != handle->relDuration) {
-                PI_REG(0x30) = handle->relDuration;
-            }
-            if (curHandle->pulse != handle->pulse) {
-                PI_REG(0x28) = handle->pulse;
-            }
+            if (cHandle->latency != pihandle->latency)
+                EPI_IO_WRITE(0xA4600024, pihandle->latency);
+            if (cHandle->pageSize != pihandle->pageSize)
+                EPI_IO_WRITE(0xA460002C, pihandle->pageSize);
+            if (cHandle->relDuration != pihandle->relDuration)
+                EPI_IO_WRITE(0xA4600030, pihandle->relDuration);
+            if (cHandle->pulse != pihandle->pulse)
+                EPI_IO_WRITE(0xA4600028, pihandle->pulse);
         }
-        PI_HANDLE_TABLE[domain] = handle;
+        D_8000A470[domain] = pihandle;
     }
 
-    PI_REG(0x00) = func_80004B30(dramAddr);
-    PI_REG(0x04) = (handle->baseAddress | cartAddr) & 0x1FFFFFFF;
-
-    dir = direction;
-    if (dir == 0) {
-        PI_REG(0x0C) = size - 1;
-    } else if (dir == 1) {
-        PI_REG(0x08) = size - 1;
-    } else {
+    EPI_IO_WRITE(0xA4600000, func_80004B30(dramAddr));
+    EPI_IO_WRITE(0xA4600004, (pihandle->baseAddress | devAddr) & 0x1FFFFFFF);
+    switch (direction) {
+    case 0: /* OS_READ */
+        EPI_IO_WRITE(0xA460000C, size - 1);
+        break;
+    case 1: /* OS_WRITE */
+        EPI_IO_WRITE(0xA4600008, size - 1);
+        break;
+    default:
         return -1;
     }
-
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800052F0);
-#endif
-
-#undef PI_REG

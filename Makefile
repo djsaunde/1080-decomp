@@ -1233,8 +1233,9 @@ build/src/kernel/kernel_006_o1_5520.c.o build/non_matching/src/kernel/kernel_006
 build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: REPLACE_FUNC_BODY := func_80005520=$(KERNEL006_5520_DONOR)
 # kernel_006: the promoted 5520 C body compiles +0x20 over the 0x1CC slot;
 # the splice shrinks it back to 0x1CC leaving a 4-byte align-pad tail
-# residue (.text 0x504 vs ROM-true 0x500) — trim it.
-build/src/kernel/kernel_006.c.o: TRUNCATE_TEXT := 0x500
+# residue (.text 0x334 vs ROM-true 0x330; 0x504/0x500 before the 2026-10-20
+# osEPiRawStartDma merge moved func_80005350 to kernel_005_b) — trim it.
+build/src/kernel/kernel_006.c.o: TRUNCATE_TEXT := 0x330
 build/src/kernel/kernel_008_o1_58C0.c.o build/non_matching/src/kernel/kernel_008_o1_58C0.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_008.c.o build/non_matching/src/kernel/kernel_008.c.o: REPLACE_FUNC_BODY := func_800058C0=$(KERNEL008_58C0_DONOR)
 build/src/kernel/kernel_024_o1_9AB0.c.o build/non_matching/src/kernel/kernel_024_o1_9AB0.c.o: OPT_FLAGS := -O1
