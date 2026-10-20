@@ -406,124 +406,45 @@ void func_80000480(Struct00480Dst* dst, Struct00480Src* src) {
     dst->unk4 = 0;
 }
 
-#ifdef NON_MATCHING
-/* func_800004B8: 44-insn handler-table iterator. Walks function table at
- * D_8000A2E0, calling func_80000568(entry, a1_saved) for each entry; on
- * first handler returning 0, calls func_80000880(saved_a0, entry) and
- * returns ptr to D_80012C70[s1].
- *
- * STRUCTURE WITH CROSS-FUNCTION BRANCHES (asm 0x4B8-0x568):
- *   table_base = D_8000A2E0;      // global function table head ptr
- *   v0 = *table_base;             // first table entry
- *   s1 = 0; saved_a0 = a0; saved_a1 = s3 = a1;
- *   if (v0 == NULL) {
- *       s1 = 0; v0 = 0;
- *       goto func_80000568+.L80000570;  // shared epilogue, no s1 update
- *   }
- *   if (v0[0] == NULL) {          // entries[0].first_func == NULL?
- *       s0 = s1 * 20;
- *       goto func_80000568+.L8000056C; // shared epilogue, s1 cleared
- *   }
- *   for (;;) {
- *       a0 = v0[s1*5];            // fetch entry[s1].handler
- *       ret = func_80000568(a0, saved_a1);   // CALL shared trampoline
- *       if (ret != 0) {
- *           s1++; s0 += 20;
- *           a0 = (*table_base)[s1*5];  // next entry handler
- *           if (a0 != 0) continue;     // loop back
- *           // fall through to "no more handlers" exit
- *       }
- *       // ret == 0 (handler signaled stop) or no more entries:
- *       func_80000880(saved_a0, *table_base + s0);  // followup call
- *       v0 = (s32*)((char*)&D_80012C70 + s1*20);    // compute ret ptr
- *       goto func_80000568+.L80000570;  // shared epilogue with v0 set
- *   }
- *
- * SHAPE NOTES:
- *   - 3 cross-function `b/beqz` branches into func_80000568's PREFIX-injected
- *     body: .L80000570 lands at 0x14 (lw ra,0x24(sp)), .L8000056C lands
- *     at 0x10 (or v0,zero,zero). Both resolve correctly post-link because
- *     func_80000568 is in the same .o at known offset.
- *   - The cross-function jump uses `b/beqz <abs_label>` which IDO C-emit
- *     won't reproduce — would need PREFIX_BYTES or asm-processor's
- *     `__asm__("b .Lext")` (IDO rejects per feedback_ido_no_asm_barrier.md).
- *   - 4 saved regs: s0 (s1*20 byte offset), s1 (entry index), s2 (table
- *     base ptr cache), s3 (saved a1). Plus 3 caller-arg spills at
- *     sp+0x28/0x2C/0x30 (a0, a1 dead, a2 dead).
- *
- * Cap: ~40-50% structural — control-flow shape can't be reproduced from
- * standard C due to cross-function branches. Could potentially use the
- * PREFIX_BYTES + INSN_PATCH combo if .L8000056C / .L80000570 land on
- * fixed offsets and the C body's natural emit can be "wrapped" with
- * leading prefix that handles the 0x4F0/0x4F4/0x504/0x548 branches
- * directly. Deferred — current structure documents the algorithm. */
-extern s32 D_80012C70[];
-extern int func_80000880();
+/* func_800004B8: named-handler lookup, IDO 7.1 -O2, EXACT. Walks the
+ * 0x14-byte entry table at *D_8000A2E0 until a NULL name; on the first
+ * entry whose name matches (func_80000568 == 0) it calls
+ * func_80000880(a0, entry) and returns &D_80012C70[i] (0xC stride).
+ * The old split (this .s without an epilogue + func_80000568.s "shared
+ * epilogue stub" that four callers supposedly jal'd) was one function: the
+ * kernel's jal targets are 0x400 above our symbol numbering, so `jal
+ * func_80000568` is really a call to func_80000168 (the string compare,
+ * exact twin of game_libs_func_00067B04). func_80000568 stays an absolute
+ * undefined_syms entry for those jals.
+ * Levers: `s32 i = 0` initialized at the declaration with a while loop
+ * (the pre-loop i*20 and the separate first-name load come from that), and
+ * the entry address as byte arithmetic `(char *)tab + i * 20` (tab first
+ * in the addu; &tab[i] puts the scaled index first). a2 is unused but
+ * homed, as in the target. */
+typedef struct { char *name; s32 pad[4]; } HandlerEntry;   /* 0x14 */
+typedef struct { s32 w[3]; } HandlerSlot;                   /* 0xC */
+extern HandlerSlot D_80012C70[];
+extern void func_80000880();
 extern s32 func_80000568();
 
-s32 *func_800004B8(s32 a0, s32 a1, s32 a2) {
-    s32 s1 = 0;
-    s32 *v0;
-    s32 *entry;
-    (void)a2;  /* spilled at sp+0x30 but never reloaded — dead spill */
+HandlerSlot *func_800004B8(void *a0, char *name, s32 a2) {
+    s32 i = 0;
 
-    v0 = (s32*)D_8000A2E0;
-    if (v0 == NULL) {
+    if (*(HandlerEntry **)&D_8000A2E0 == NULL) {
         return NULL;
     }
-    entry = (s32*)v0[0];
-    if (entry == NULL) {
-        return NULL;
-    }
-    {
-        s32 (*shared_epilogue)(s32, s32) = (s32(*)(s32,s32))func_80000568;
-        do {
-            s32 ret = shared_epilogue(entry[s1*5], a1);
-            if (ret == 0) {
-                func_80000880(a0, &(((s32*)D_8000A2E0)[s1*5]));
-                return &D_80012C70[s1*5];
-            }
-            s1++;
-        } while (((s32*)D_8000A2E0)[s1*5] != 0);
+    while ((*(HandlerEntry **)&D_8000A2E0)[i].name != NULL) {
+        if (func_80000568((*(HandlerEntry **)&D_8000A2E0)[i].name, name) == 0) {
+            func_80000880(a0, (HandlerEntry *)((char *)*(HandlerEntry **)&D_8000A2E0 + i * 20));
+            return &D_80012C70[i];
+        }
+        i++;
     }
     return NULL;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800004B8);
-#endif
 
-/* Cross-function shared-epilogue-return-0 stub. 9 insns:
- *   nop; or v0,zero,zero; lw ra,0x24(sp); lw s0,0x14(sp); lw s1,0x18(sp);
- *   lw s2,0x1C(sp); lw s3,0x20(sp); jr ra; addiu sp,+0x28
- *
- * 4 callers (`func_800004B8`, `func_800008F0`, `func_80000A98`,
- * `uso_find_file`) `jal func_80000568` to share this "pop my 0x28 frame
- * and return 0" sequence. The function lacks a prologue and walks the
- * CALLER's saved s0-s3/ra slots — unreproducible from standard C since
- * any function definition emits its own prologue.
- *
- * NATURAL CEILING: empty-stub C body emits only `jr ra; nop` (2 insns /
- * 8 bytes) but the target shape walks the CALLER's saved s0-s3/ra slots
- * and is 9 insns / 36 bytes. The function has no prologue — any C
- * function definition emits its own prologue, so this shape is
- * unreproducible from standard C. Was previously documented as
- * "Promotion via PREFIX_BYTES + INSN_PATCH combo (3rd application after
- * 7ABC and 7A98)" — the instruction-injecting PREFIX_BYTES form
- * (prologue-stealing) plus INSN_PATCH overwriting trailing nop with
- * `addiu sp,sp,+0x28` was REMOVED 2026-05-23 as match-faking (per
- * feedback_no_instruction_forcing_matches_policy; only genuine all-zero
- * SUFFIX_BYTES, USO-header PREFIX_BYTES, and TRUNCATE_TEXT remain).
- * docs/POST_CC_RECIPES.md is deprecated.
- *
- * Type signature is `void` here but callers declare/expect
- * `s32 func(s32, s32)` — runtime $v0=0 from the target's
- * `or v0,zero,zero` is the actual return value. Args ignored. Default
- * build is INCLUDE_ASM. */
-#ifdef NON_MATCHING
-s32 func_80000568() { return 0; }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80000568);
-#endif
+/* func_80000568 (old "shared epilogue stub") = the tail of func_800004B8,
+ * merged into it; the address stays an absolute undefined_syms entry. */
 
 /* uso_stub_ret0 */
 s32 func_8000058C(s32 arg0) {
