@@ -6442,129 +6442,119 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B1AC);
 //   documented per-function regalloc/CSE cap (see project memory):
 //   not a structural-C bug. Byte-match deferred. Name: no extern reuse.
 #ifdef NON_MATCHING
-/* PASS-3 2026-06-22 (big-swing reconstruction): structure rebuilt from
- * target disasm. Corrected field types: grid divisors at +0x10/+0x14 are
- * f32 (lwc1, not int); B[i] fields at +0x0/+0x4/+0x8 are f32; the +0x2C
- * parallel-array field +0x8 is f32. arg0 held; arg1/arg2 stack-homed;
- * arg4 is the 5th (stack) arg. Callback takes only the int 0x1EE8C, with
- * the two scaled floats merely live across the call. The three contiguous
- * vec slots {sp8C, sp90, sp94} carry the projected point. */
-s32 gl_func_0003B2EC(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4) {
-    f32 sp8C;
-    f32 sp90;
-    f32 sp94;
-    s32 sp3C;
-    s32 sp38;
-    f32 u;
-    f32 v;
+/* 2026-10-17 run 110 re-decode (agent-c): ground-height query at (x, z),
+ * sibling of gl_func_0003BE1C / 0003B9C0. Scales x/z by the world scale,
+ * finds the grid cell list, and for each upward-facing triangle (n.y > 0)
+ * runs an integer XZ edge test (cross < -1000 rejects); hits append
+ * -plane_height / K to out[]; returns the count, or -1 on overflow.
+ * 60.5 -> 85.2. Levers: Vec3 p escaped (memory, sp+140), p declared first
+ * (home map then exact down to the cell pair), loop-end and post-loop end
+ * addresses through different symbols (one symbol lets IDO turn the table
+ * walk into a -6 offset counter), and the record offset written as
+ * ((i << 2) - i) << 2: plain i * 12 here becomes multu by a 12 held in an
+ * s-reg. Residual: the post-loop end address is hoisted into s6 (target
+ * rematerializes it), one s-reg too many -> saves/cell pair 8 bytes up. */
+typedef struct { f32 x, y, z; } V3B2;
+typedef struct { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; } TriB2;
+typedef struct { u16 mat; u16 vi[3]; } FaceB2;
+typedef struct { int w; int h; int x0; int z0; f32 cw; f32 ch; s16 *lists; int *cells; } GridB2;
+typedef struct {
+    char pad0[0x4C]; s16 *remap; char pad50[4]; V3B2 *nrm; char pad58[8]; s16 (*verts)[3];
+    char pad64[4]; FaceB2 *faces; char pad6c[0x34]; GridB2 *grid;
+} ColB2;
+typedef struct { char pad0[0x2C]; TriB2 *tris; char pad30[0x54]; ColB2 *col; } ObjB2;
+extern int D_3B2EC_a, D_3B2EC_b;
+s32 gl_func_0003B2EC(ObjB2 *self, s32 max, f32 *out, f32 x, f32 z) {
+    V3B2 p;
+    s32 cnt;
     s32 cell;
-    s32 cx;
-    s32 cy;
-    char *o;
-    char *g;
+    s16 *lp;
     s16 *list;
-    s16 *p;
-    s16 idx;
-    s32 ent;
     s32 i;
-    s32 count;
-    char *rec;
-    char *par;
-    char *edge;
-    char *vbase;
-    char *vp;
-    s16 *kp;
-    f32 area;
+    s32 off;
+    ColB2 *col;
+    FaceB2 *f;
+    V3B2 *n;
+    f32 h;
+    s16 (*vt)[3];
+    s16 *nx;
+    u16 *fv;
+    s16 *v0;
+    s16 *v1;
+    s16 ex;
+    s16 ez;
+    s16 dx;
+    s16 dz;
+    s32 c[2];
 
-    u = arg3 * *(f32 *)((char *)&D_00000000 + 0x128);
-    o = *(s32 *)((char *)(arg0) + 0x84);
-    v = arg4 * *(f32 *)((char *)&D_00000000 + 0x130);
-    count = 0;
-    if (o == 0) {
+    if (1) { V3B2 *pp = &p; }
+    x *= ((f32 *)&D_00000000)[0x128 / 4];
+    z *= ((f32 *)&D_00000000)[0x130 / 4];
+    cnt = 0;
+    if (self->col == 0) {
         return 0;
     }
-    if (*(s32 *)((char *)(o) + 0xA0) == 0) {
-        func_00000000(0x1EE8C);
+    if (self->col->grid == 0) {
+        gl_func_00000000((char *)&D_00000000 + 0x1EE8C);
     }
-    sp8C = u;
-    sp94 = v;
-    sp90 = 0.0f;
+    p.x = x;
+    p.z = z;
+    p.y = 0.0f;
     cell = -1;
-    g = *(s32 *)((char *)(*(s32 *)((char *)(arg0) + 0x84)) + 0xA0);
-    cx = (s32) ((sp8C - (f32) *(s32 *)((char *)(g) + 0x8)) / *(f32 *)((char *)(g) + 0x10));
-    sp3C = cx;
-    g = *(s32 *)((char *)(*(s32 *)((char *)(arg0) + 0x84)) + 0xA0);
-    cy = (s32) ((sp94 - (f32) *(s32 *)((char *)(g) + 0xC)) / *(f32 *)((char *)(g) + 0x14));
-    sp38 = cy;
-    if (cx >= 0) {
-        g = *(s32 *)((char *)(*(s32 *)((char *)(arg0) + 0x84)) + 0xA0);
-        if ((cx < *(s32 *)((char *)(g) + 0x0)) && (cy >= 0) && (cy < *(s32 *)((char *)(g) + 0x4))) {
-            cell = cx + (cy * *(s32 *)((char *)(g) + 0x0));
-        }
+    c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
+    c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
+    if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
+        cell = c[1] + c[0] * self->col->grid->w;
     }
     if (cell < 0) {
         return 0;
     }
-    g = *(s32 *)((char *)(*(s32 *)((char *)(arg0) + 0x84)) + 0xA0);
     list = 0;
-    ent = *(s32 *)(*(s32 *)((char *)(g) + 0x1C) + (cell * 4));
-    if (ent != -1) {
-        list = *(s32 *)((char *)(g) + 0x18) + (ent * 2);
+    if (self->col->grid->cells[cell] != -1) {
+        list = &self->col->grid->lists[self->col->grid->cells[cell]];
     }
     if (list == 0) {
         return 0;
     }
-    idx = *list;
-    p = list + 2;
-    if (idx != -1) {
-loop_17:
-        o = *(s32 *)((char *)(arg0) + 0x84);
-        rec = *(s32 *)((char *)(o) + 0x54) + (idx * 0xC);
-        area = *(f32 *)((char *)(rec) + 0x4);
-        kp = (s16 *)((char *)&D_00000000);
-        if (0.0f < area) {
-            par = *(s32 *)((char *)(o) + 0x4C);
-            edge = *(s32 *)((char *)(o) + 0x60);
-            if (par != 0) {
-                vbase = *(s32 *)((char *)(o) + 0x68) + (*(s16 *)(par + (idx * 2)) * 8);
-            } else {
-                vbase = *(s32 *)((char *)(o) + 0x68) + (idx * 8);
-            }
-            vp = vbase;
-loop_22:
-            {
-                char *e0 = edge + (*(u16 *)((char *)(vp) + 0x2) * 6);
-                char *e1 = edge + (*(u16 *)((char *)((vbase + (*kp * 2))) + 0x2) * 6);
-                s32 ax = *(s16 *)((char *)(e0) + 0x0);
-                s32 ay = *(s16 *)((char *)(e0) + 0x4);
-                s16 dx = (s16) (*(s16 *)((char *)(e1) + 0x0) - ax);
-                s16 dy = (s16) (*(s16 *)((char *)(e1) + 0x4) - ay);
-                if ((((s16) (s32) (u - (f32) ax) * dy) - ((s16) (s32) (v - (f32) ay) * dx)) >= -0x3E8) {
-                    kp += 1;
-                    vp += 2;
-                    if (kp != (s16 *)((char *)&D_00000000 + 6)) {
-                        goto loop_22;
-                    }
-                }
-            }
-            if (kp == (s16 *)((char *)&D_00000000 + 6)) {
-                if (count >= arg1) {
-                    return -1;
-                }
-                *(f32 *)(arg2 + (count * 4)) =
-                    -((((*(f32 *)((char *)(rec) + 0x0) * u) + (*(f32 *)((char *)(rec) + 0x8) * v)) -
-                       *(f32 *)((char *)((*(s32 *)((char *)(arg0) + 0x2C) + (idx * 0xC))) + 0x8)) / area) /
-                    *(f32 *)((char *)&D_00000000 + 0x12C);
-                count += 1;
-            }
+    lp = list;
+    while ((i = *lp++) != -1) {
+        col = self->col;
+        off = ((i << 2) - i) << 2;
+        n = (V3B2 *)((char *)col->nrm + off);
+        if (!(n->y > 0.0f)) {
+            continue;
         }
-        idx = *p;
-        p += 2;
-        if (idx != -1) {
-            goto loop_17;
+        vt = col->verts;
+        if (col->remap != 0) {
+            f = &col->faces[col->remap[i]];
+        } else {
+            f = &col->faces[i];
         }
+        nx = (s16 *)&D_00000000;
+        fv = (u16 *)f;
+        do {
+            v0 = vt[fv[1]];
+            v1 = vt[f->vi[*nx]];
+            ex = v1[0] - v0[0];
+            ez = v1[2] - v0[2];
+            dx = (s32)(x - v0[0]);
+            dz = (s32)(z - v0[2]);
+            if (dx * ez - dz * ex < -1000) {
+                break;
+            }
+            nx++;
+            fv++;
+        } while (nx != (s16 *)((char *)&D_3B2EC_b + 6));
+        if (nx != (s16 *)((char *)&D_3B2EC_a + 6)) {
+            continue;
+        }
+        h = (n->x * x + n->z * z - ((TriB2 *)((char *)self->tris + off))->d) / n->y;
+        if (cnt >= max) {
+            return -1;
+        }
+        out[cnt++] = -h / ((f32 *)&D_00000000)[0x12C / 4];
     }
-    return count;
+    return cnt;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B2EC);
