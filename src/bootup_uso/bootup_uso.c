@@ -181,49 +181,43 @@ void func_000003D8(void) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-typedef f32 (*GP_000003F8)();
-typedef struct { f32 unk0,unk4,unk8,unkC,unk10,unk14,unk18,unk1C; } Q_000003F8;
-void func_000003F8(char *arg0, f32 *arg1, s32 *arg2, char *arg3) {
-    Q_000003F8 sp3C;
-    f32 sp38;
-    f32 sp34;
-    f32 sp30;
-    f32 temp_f0;
-    f32 temp_f10;
-    f32 temp_f10_2;
-    f32 temp_f16;
-    f32 temp_f18;
-    f32 temp_f2;
-    f32 temp_f4;
-    f32 temp_f8;
-    f32 temp_f8_2;
+/* 2026-10-20 (agent-c run 114): clean re-decode. The delta is a real 12-byte
+ * struct copy of *pos (pointer-based lw/sw), the three camera-column reads
+ * land in a second aggregate (kept in memory, so it is stored and reloaded),
+ * sqrtf (bootup.uso func_070238) is a typed float->float proto, the 1.0
+ * double divisor is reused for the clamp compare, and the range divisor is
+ * a rodata float literal (value is a placeholder here: only the reloc'd
+ * load shape matters for the NM score). The camera column MUST be an f32
+ * ARRAY: a 3-float struct gets scalarised into f12/f14/f16, the array stays
+ * in memory, which gives the target's store-then-reload per element and the
+ * 0x48 frame (with four ghost f32 decls after it). The third dot term pins
+ * d.z as the mul.s fs via `n[2] * (t = d.z)`. Residual (99.5): the final
+ * add.s and the div.s literal/dist register pair are swapped. */
+typedef struct { f32 x, y, z; } V3_3F8;
+extern f32 fn_3f8_sqrtf(f32);
+void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
+    V3_3F8 d;
+    f32 n[3];
+    f32 q0, q1, q2, q3;
+    f32 inv;
+    f32 t;
 
-    sp3C.unk0 = *(f32 *)((char *)arg0 + 0x0);
-    sp3C.unk4 = (s32) *(f32 *)((char *)arg0 + 0x4);
-    sp3C.unk8 = (s32) *(f32 *)((char *)arg0 + 0x8);
-    temp_f8 = sp3C.unk0 - *(f32 *)((char *)FW(arg3, 0x70) + 0xA0);
-    sp3C.unk0 = temp_f8;
-    temp_f18 = sp3C.unk4 - *(f32 *)((char *)FW(arg3, 0x70) + 0xA4);
-    sp3C.unk4 = temp_f18;
-    temp_f10 = sp3C.unk8 - *(f32 *)((char *)FW(arg3, 0x70) + 0xA8);
-    sp3C.unk8 = temp_f10;
-    temp_f0 = ((GP_000003F8)func_00000000)((temp_f8 * temp_f8) + (temp_f18 * temp_f18) + (temp_f10 * temp_f10));
-    *arg1 = temp_f0;
-    temp_f2 = (f32) (1.0 / (f64) temp_f0);
-    temp_f10_2 = sp3C.unk0 * temp_f2;
-    temp_f8_2 = sp3C.unk4 * temp_f2;
-    temp_f16 = sp3C.unk8 * temp_f2;
-    sp3C.unk0 = temp_f10_2;
-    sp3C.unk4 = temp_f8_2;
-    sp3C.unk8 = temp_f16;
-    temp_f4 = *(f32 *)((char *)FW(arg3, 0x70) + 0xB4);
-    sp30 = temp_f4;
-    sp34 = *(f32 *)((char *)FW(arg3, 0x70) + 0xC4);
-    sp38 = *(f32 *)((char *)FW(arg3, 0x70) + 0xD4);
-    *arg2 = (s32) (((temp_f10_2 * temp_f4) + (temp_f8_2 * sp34) + (temp_f16 * sp38)) * 63.0f);
-    *arg1 /= D_bu_ro_pool[0x50 / 4];  /* RoData pool 0x50 (func_00000044 + 0xC) */
-    if ((f64) *arg1 > 1.0) {
-        *arg1 = 1.0f;
+    d = *pos;
+    d.x = d.x - *(f32 *)(*(char **)(obj + 0x70) + 0xA0);
+    d.y = d.y - *(f32 *)(*(char **)(obj + 0x70) + 0xA4);
+    d.z = d.z - *(f32 *)(*(char **)(obj + 0x70) + 0xA8);
+    *dist = fn_3f8_sqrtf(d.x * d.x + d.y * d.y + d.z * d.z);
+    inv = 1.0 / *dist;
+    d.x *= inv;
+    d.y *= inv;
+    d.z *= inv;
+    n[0] = *(f32 *)(*(char **)(obj + 0x70) + 0xB4);
+    n[1] = *(f32 *)(*(char **)(obj + 0x70) + 0xC4);
+    n[2] = *(f32 *)(*(char **)(obj + 0x70) + 0xD4);
+    *proj = (s32)((d.x * n[0] + d.y * n[1] + n[2] * (t = d.z)) * 63.0f);
+    *dist = *dist / 1.2345f;
+    if (*dist > 1.0) {
+        *dist = 1.0f;
     }
 }
 #else
