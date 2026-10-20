@@ -1459,55 +1459,28 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80001594);
 void func_800017B4(void) {
 }
 
-#ifdef NON_MATCHING
-/* NON_MATCHING: the pool-walk body matches well, but the first three singleton
- * flag checks still allocate the base registers differently from target
- * (`v1`/`a0` in build versus direct `t6`/`t8`/`t0` loads with `at` stores). */
+/* func_800017BC: allocate the first free module slot (in_use byte at +0x98)
+ * of the 135 0x9C-byte slots at D_800130A0, or NULL. IDO 7.1 -O2.
+ * EXACT 2026-10-20 (agent-g run 112; was NM 67.0): it is one plain loop;
+ * the three "singleton" checks are IDO peeling 135 % 4 = 3 iterations
+ * before its x4 unroll. Char arithmetic for both the flag and the return
+ * keeps a single strength-reduced pointer (a typed slots[i] spelling
+ * builds a second offset IV for the return). The old func_800018A8
+ * ("empty function", jr ra; nop) was this function's return, split off by
+ * splat; its address stays an absolute undefined_syms entry. The .s now
+ * spells the slot addresses D_800130A0 + K (ROM bytes unchanged). */
 void* func_800017BC(void) {
-    register u8* var_v1;
+    s32 i;
 
-    if (D_80013138 == 0) {
-        D_80013138 = 1;
-        return &D_800130A0;
-    }
-    if (D_800131D4 == 0) {
-        D_800131D4 = 1;
-        return &D_8001313C;
-    }
-    var_v1 = (u8*)&D_80013274;
-    if (D_80013270 == 0) {
-        D_80013270 = 1;
-        return &D_800131D8;
-    }
-loop_7:
-    if (*(u8*)(var_v1 + 0x98) == 0) {
-        *(u8*)(var_v1 + 0x98) = 1;
-        return var_v1;
-    }
-    if (*(u8*)(var_v1 + 0x134) == 0) {
-        *(u8*)(var_v1 + 0x134) = 1;
-        return var_v1 + 0x9C;
-    }
-    if (*(u8*)(var_v1 + 0x1D0) == 0) {
-        *(u8*)(var_v1 + 0x1D0) = 1;
-        return var_v1 + 0x138;
-    }
-    if (*(u8*)(var_v1 + 0x26C) == 0) {
-        *(u8*)(var_v1 + 0x26C) = 1;
-        return var_v1 + 0x1D4;
-    }
-    var_v1 += 0x270;
-    if (var_v1 != (u8*)&D_800182E4) {
-        goto loop_7;
+    for (i = 0; i < 135; i++) {
+        if (((u8 *)&D_800130A0)[i * 0x9C + 0x98] == 0) {
+            ((u8 *)&D_800130A0)[i * 0x9C + 0x98] = 1;
+            return (u8 *)&D_800130A0 + i * 0x9C;
+        }
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800017BC);
-#endif
 
-void func_800018A8(void) {
-}
 
 void func_800018B0(void* arg0) {
     s32 i;
