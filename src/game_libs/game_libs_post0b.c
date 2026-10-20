@@ -17346,298 +17346,214 @@ void gl_func_00049308(char *self) {
 // Per-entry cb list not exhaustively typed. Caps: self struct, &D_0002FFxx
 // table and cb signatures untyped. Full body INCLUDE_ASM-preserved.
 #ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000493AC)();
-typedef struct { int unk0,unk4,unk8,unkC,unk10,unk14,unk18,unk1C; } Q_000493AC;
-typedef struct { char *ctx; int pad[354]; } R_000493AC; /* 0x58C builder record at sp+0xE0 */
+/* 2026-10-17 run 110 re-decode (agent-c): cfront registration pass. Two
+ * inlined Array iterators over self+0x84 ({arr, idx, last}, returned by
+ * value through a temp), a 0x59C builder record at sp+0xE0, per-row
+ * vcalls through self->0x28 vtable entry {s16 delta @0x60, fptr @0x64}. */
+typedef struct { char **buf; int pad4; int pad8; int count; } Arr493;
+typedef struct { Arr493 *arr; int idx; int last; } It493;
+typedef struct { u32 w0, w1; } Gfx493;
+typedef struct { Gfx493 *buf; int n; } Pool493;
+typedef struct { char pad[0xC]; Pool493 *gfx; } Ctx493;
+typedef struct { Ctx493 *ctx; char pad[0x588]; int n58C; int f590; int f594; char *p598; } Rec493;
+typedef struct { int w; int n; char pad[0x10]; s16 *tbl18; int *row1C; } Grid493;
+typedef struct { s16 d; s16 pad; int (*f)(); } VEnt493;
+typedef struct {
+    char pad0[0x14]; int f14; int key18; char pad1c[0x34]; int lo50; int hi54;
+    char pad58[0x14]; Ctx493 *ctx6C; char pad70[0xC]; s16 *rows7C; s16 n80; char pad82[8]; s16 n8A;
+} Obj493;
 #define STR493(o) ((char *)&D_00000000 + (o))
-#define ABS493(o) (*(s32 *)((char *)&D_00000000 + (o)))
-s32 gl_func_000493AC(char *arg0) {
-    Q_000493AC *pI;
-    Q_000493AC *pq;
-    Q_000493AC *pr;
-    int *temp_v0;
-    int *temp_v0_7;
-    int *var_v1;
-    s16 var_a3;
-    s16 var_s0;
-    s32 temp_a2;
-    s32 temp_t1;
-    Q_000493AC sp684;
-    s32 sp680;
-    u32 sp67C;
-    char *sp678;
-    s32 sp674;
-    s32 sp670;
-    s32 sp66C;
-    R_000493AC spE0;
-    Q_000493AC spCC;
-    Q_000493AC spC0;
-    s32 temp_s1;
-    s32 temp_v0_3;
-    s32 temp_v1_2;
-    s32 var_a0;
-    s32 var_s1;
-    s32 var_s4;
-    s32 var_s5;
-    s32 var_s7;
-    s32 var_s8;
-    s32 var_v0;
-    s32 var_v0_2;
-    int *var_v1_3;
-    s16 var_a3_2;
-    s32 var_v0_4;
-    Q_000493AC sp88;
-    s32 sp7C;
-    s32 var_v0_3;
-    s32 sp74;
-    s32 var_v1_4;
-    u32 temp_v0_6;
-    s32 *var_a0_2;
-    u32 var_v1_2;
-    u8 *temp_s0;
-    char *temp_s2;
-    char *temp_s3;
-    char *temp_v0_9;
-    char *temp_v0_2;
-    char *temp_v1;
-    s32 sp48;
+extern int D_493AC_a, D_493AC_b, D_493AC_c;
+#define G1C4(S) (*(s32 *)((char *)&S + 0x1C4))
+#define G214 (*(Ctx493 **)((char *)&D_00000000 + 0x214))
+#define SELF(o, T) (*(T *)(self + (o)))
+s32 gl_func_000493AC(char *self) {
+    Obj493 *o;
+    Grid493 *gr;
+    int cnt;
+    int hit;
+    int c;
+    int j;
+    int e;
+    u32 i;
+    It493 *q;
+    char **v;
+    char *tp;
+    Gfx493 *d;
+    int n;
+    It493 it;
+    int total;
+    u8 *buf;
+    Rec493 rec;
+    int pad1[2];
+    It493 tmp;
+    It493 t1;
+    int pad2[11];
+    It493 t2;
+    int pad3[2];
+    int k;
+    int pad4;
+    int rowStart;
+    int pad5[10];
+    int rowOff;
 
-    if (!(FW(arg0, 0x30) & 1)) {
+    if (!(SELF(0x30, s32) & 1)) {
         return 1;
     }
-    {
-        gl_func_00034458(FW(arg0, 0xC));
-        gl_func_00034458(STR493(0x1FF54), FW(arg0, 0xC));
-        FW(arg0, 0xB0) = 0;
-        FW(arg0, 0xB4) = 0;
-        FW(arg0, 0xB8) = 0;
-        gl_func_00034458(STR493(0x1FF58));
-        gl_func_00034458(STR493(0x1FF60), 0U);
-        gl_func_00034458();
-        gl_func_00034458(STR493(0x1FF6C));
-        gl_func_00034458(STR493(0x1FF74));
-        if (1) { pI = &spC0; }
-        var_v1 = (int *) pI;
-        if ((pI != 0) || (temp_v0 = gl_func_00034458(0xCU), var_v1 = temp_v0, (temp_v0 != 0))) {
-            temp_v0_2 = (int)arg0 + 0x84;
-            FW(var_v1, 0x0) = temp_v0_2;
-            FW(var_v1, 0x4) = -1;
-            FW(var_v1, 0x8) = (s32) (FW(temp_v0_2, 0xC) - 1);
-        }
-        temp_t1 = pI->unk4;
-        if (1) { pq = &spCC; }
-        pq->unk0 = pI->unk0;
-        temp_t1 = pI->unk8;
-        if (1) { pr = &sp684; }
-        pr->unk4 = temp_t1;
-        pq->unk4 = temp_t1;
-        pr->unk8 = temp_t1;
-        pq->unk8 = temp_t1;
-        pr->unk0 = pq->unk0;
-        if (sp684.unk4 < sp684.unk8) {
-            temp_a2 = sp684.unk4 + 1;
-            sp684.unk4 = temp_a2;
-            var_v0 = *(int*)sp684.unk0 + (temp_a2 * 4);
-        } else {
-            var_v0 = 0;
-        }
-        if (var_v0 != 0) {
-            do {
-                gl_func_00034458(*(int*)(*(int*)sp684.unk0 + (sp684.unk4 * 4)));
-                if (FW(arg0, 0x50) == 0) {
-                    temp_v0_3 = sp684.unk4 * 4;
-                    if (FW((*(int*)(*(int*)sp684.unk0 + temp_v0_3)), 0x38) & 0x2000) {
-                        gl_func_00034458(*(int*)(*(int*)sp684.unk0 + temp_v0_3), FW(arg0, 0x9C));
-                    }
-                }
-                temp_t1 = *(int*)sp684.unk0;
-                temp_v0_3 = sp684.unk4 * 4;
-                temp_a2 = *(int*)(temp_t1 + temp_v0_3);
-                gl_func_00034458(*(int*)(temp_t1 + temp_v0_3), temp_a2 + 0x34, temp_a2);
-                var_a0 = 0;
-                if (sp684.unk4 < sp684.unk8) {
-                    temp_v0_3 = sp684.unk4 + 1;
-                    sp684.unk4 = temp_v0_3;
-                    var_a0 = *(int*)sp684.unk0 + (temp_v0_3 * 4);
-                }
-            } while (var_a0 != 0);
-        }
-        gl_func_00034458();
-        gl_func_00034458(STR493(0x1FF7C));
-        gl_func_00034458(STR493(0x1FF88));
-        sp680 = 0;
-        if (ABS493(0x1C4) & 8) {
-            FW(arg0, 0x30) = (s32) (FW(arg0, 0x30) | 0x80);
-            temp_v0_6 = gl_func_00034458(STR493(0), FW(arg0, 0x44));
-            sp67C = temp_v0_6;
-            var_v1_2 = 0;
-            var_a0_2 = temp_v0_6;
-            if (FW(arg0, 0x44) != 0) {
-                do {
-                    *var_a0_2 = 0;
-                    var_v1_2 += 1;
-                    var_a0_2 += 1;
-                } while (var_v1_2 < (u32) FW(arg0, 0x44));
+    gl_func_00000000(SELF(0xC, int));
+    gl_func_00000000(STR493(0x1FF54), SELF(0xC, int));
+    SELF(0xB0, int) = 0;
+    SELF(0xB4, int) = 0;
+    SELF(0xB8, int) = 0;
+    gl_func_00000000(STR493(0x1FF58));
+    gl_func_00000000(STR493(0x1FF60), 0);
+    gl_func_00000000();
+    gl_func_00000000(STR493(0x1FF6C));
+    gl_func_00000000(STR493(0x1FF74));
+    if (1) { q = &t1; }
+    if (q != 0 || (q = (It493 *)gl_func_00000000(12)) != 0) {
+        q->arr = (Arr493 *)(self + 0x84);
+        q->idx = -1;
+        q->last = q->arr->count - 1;
+    }
+    tmp = t1;
+    it = tmp;
+    v = (it.idx < it.last) ? (++it.idx, &it.arr->buf[it.idx]) : 0;
+    while (v != 0) {
+        gl_func_00000000(it.arr->buf[it.idx]);
+        if (SELF(0x50, int) == 0) {
+            tp = it.arr->buf[it.idx];
+            if (*(int *)(tp + 0x38) & 0x2000) {
+                gl_func_00000000(it.arr->buf[it.idx], SELF(0x9C, int));
             }
         }
-        sp678 = STR493(0);
-        if (1) { pI = &sp88; }
-        var_v1_3 = (int *) pI;
-        if ((pI != 0) || (temp_v0_7 = gl_func_00034458(0xCU), var_v1_3 = temp_v0_7, (temp_v0_7 != 0))) {
-            temp_v0_2 = (int)arg0 + 0x84;
-            FW(var_v1_3, 0x0) = temp_v0_2;
-            FW(var_v1_3, 0x4) = -1;
-            FW(var_v1_3, 0x8) = (s32) (FW(temp_v0_2, 0xC) - 1);
-        }
-        temp_t1 = pI->unk4;
-        var_v0_2 = 0;
-        pq->unk0 = pI->unk0;
-        temp_t1 = pI->unk8;
-        pq->unk4 = temp_t1;
-        pr->unk4 = temp_t1;
-        pq->unk8 = temp_t1;
-        pr->unk8 = temp_t1;
-        pr->unk0 = pq->unk0;
-        if (sp684.unk4 < sp684.unk8) {
-            temp_a2 = sp684.unk4 + 1;
-            sp684.unk4 = temp_a2;
-            var_v0_2 = *(int*)sp684.unk0 + (temp_a2 * 4);
-        }
-        if (var_v0_2 != 0) {
-            do {
-                temp_s2 = *(char **)((char *)&D_00000000 + 0x214);
-                temp_s3 = *(int*)(*(int*)sp684.unk0 + (sp684.unk4 * 4));
-                FW(temp_s3, 0x6C) = temp_s2;
-                var_s5 = 0;
-                FW(temp_s3, 0x8A) = (s16) FW(FW(temp_s2, 0xC), 0x4);
-                sp66C = 0;
-                sp674 = 3;
-                sp670 = 0x20;
-                spE0.ctx = temp_s2;
-                gl_func_00034458((u32) &spE0);
-                if (ABS493(0x1C4) & 8) {
-                    sp7C = 0;
-                    if (FW(arg0, 0xA0) == 0) {
-                        gl_func_00034458(STR493(0x1FF90), STR493(0x1FFA0), 0xCD7);
-                    }
-                    temp_s2 = FW(temp_s3, 0x6C);
-                    FW(temp_s3, 0x80) = (s16) FW(FW(temp_s2, 0xC), 0x4);
-                    temp_v1 = FW(temp_s2, 0xC);
-                    temp_a2 = FW(temp_v1, 0x4);
-                    FW(temp_v1, 0x4) = (s32) (temp_a2 + 1);
-                    temp_v0_9 = FW(FW(temp_s2, 0xC), 0x0) + (temp_a2 * 8);
-                    FW(temp_v0_9, 0x0) = 0xC0000000;
-                    FW(temp_v0_9, 0x4) = 0;
-                    FW(temp_s3, 0x50) = 0x80;
-                    FW(temp_s3, 0x54) = 0;
-                    if (FW(FW(arg0, 0xA0), 0x4) > 0) {
-                        sp48 = 0;
-                        do {
-                            temp_v1_2 = FW(FW(arg0, 0xA0), 0x0);
-                            var_s4 = 0;
-                            temp_t1 = temp_v1_2 * sp7C;
-                            var_v0_4 = temp_t1 + temp_v1_2;
-                            sp74 = temp_t1;
-                            var_s7 = temp_t1;
-                            if (temp_t1 < var_v0_4) {
-                                var_s8 = temp_t1 * 4;
-                                do {
-                                    temp_s1 = *(int*)(FW(FW(arg0, 0xA0), 0x1C) + var_s8);
-                                    if (temp_s1 != -1) {
-                                        var_v1_4 = FW(FW(arg0, 0xA0), 0x18);
-                                        var_a3 = *(int*)(var_v1_4 + (temp_s1 * 2));
-                                        var_s1 = temp_s1 + 1;
-                                        if (var_a3 != -1) {
-                                            do {
-                                                temp_s0 = sp67C + var_a3;
-                                                if ((FW(temp_s3, 0x18) == *(int*)(FW(arg0, 0x68) + (var_a3 * 8))) && (*(int*)temp_s0 == 0)) {
-                                                    FW(temp_s3, 0x14) = 1;
-                                                    temp_s2 = FW(arg0, 0x28);
-                                                    var_s5 += 1;
-                                                    var_s4 = 1;
-                                                    ((GP_000493AC)FW(temp_s2, 0x64))(FW(temp_s2, 0x60) + (int)arg0, 0, &spE0, var_a3, temp_s3);
-                                                    *temp_s0 = 1;
-                                                    var_v1_4 = FW(FW(arg0, 0xA0), 0x18);
-                                                }
-                                                var_a3 = *(int*)(var_v1_4 + (var_s1 * 2));
-                                                var_s1 += 1;
-                                            } while (var_a3 != -1);
-                                            var_v0_4 = sp74 + FW(FW(arg0, 0xA0), 0x0);
-                                        }
-                                    }
-                                    var_s7 += 1;
-                                    var_s8 += 4;
-                                } while (var_s7 < var_v0_4);
-                            }
-                            if (var_s4 != 0) {
-                                if (sp7C < FW(temp_s3, 0x50)) {
-                                    FW(temp_s3, 0x50) = sp7C;
-                                }
-                                if (FW(temp_s3, 0x54) < sp7C) {
-                                    FW(temp_s3, 0x54) = sp7C;
-                                }
-                            }
-                            gl_func_00034458((u32) &spE0);
-                            *(int*)(FW(temp_s3, 0x7C) + sp48) = (s16) FW(FW(FW(temp_s3, 0x6C), 0xC), 0x4);
-                            temp_s2 = FW(temp_s3, 0x6C);
-                            temp_v1 = FW(temp_s2, 0xC);
-                            temp_a2 = FW(temp_v1, 0x4);
-                            FW(temp_v1, 0x4) = (s32) (temp_a2 + 1);
-                            temp_v0_9 = FW(FW(temp_s2, 0xC), 0x0) + (temp_a2 * 8);
-                            FW(temp_v0_9, 0x0) = 0xC0000000;
-                            FW(temp_v0_9, 0x4) = 0;
-                            temp_t1 = sp7C + 1;
-                            sp7C = temp_t1;
-                            sp48 += 2;
-                        } while (temp_t1 < FW(FW(arg0, 0xA0), 0x4));
-                    }
-                } else {
-                    FW(temp_s3, 0x50) = -1;
-                    var_s0 = 0;
-                    if (FW(arg0, 0x44) != 0) {
-                        do {
-                            temp_v0_3 = FW(arg0, 0x4C);
-                            var_a3_2 = var_s0;
-                            if (temp_v0_3 != 0) {
-                                var_a3_2 = *(int*)(temp_v0_3 + (var_s0 * 2));
-                            }
-                            if (FW(temp_s3, 0x18) == *(int*)(FW(arg0, 0x68) + (var_a3_2 * 8))) {
-                                FW(temp_s3, 0x14) = 1;
-                                temp_s2 = FW(arg0, 0x28);
-                                var_s5 += 1;
-                                ((GP_000493AC)FW(temp_s2, 0x64))(FW(temp_s2, 0x60) + (int)arg0, 0, &spE0, var_a3_2, temp_s3);
-                            }
-                            var_s0 += 1;
-                        } while ((u32) var_s0 < FW(arg0, 0x44));
-                    }
-                }
-                gl_func_00034458((u32) &spE0);
-                sp680 += sp66C;
-                gl_func_00034458((u32) FW(temp_s3, 0x6C));
-                var_v0_3 = 0;
-                if (var_s5 == 0) {
-                    FW(temp_s3, 0x6C) = 0;
-                }
-                if (sp684.unk4 < sp684.unk8) {
-                    temp_a2 = sp684.unk4 + 1;
-                    sp684.unk4 = temp_a2;
-                    var_v0_3 = *(int*)sp684.unk0 + (temp_a2 * 4);
-                }
-            } while (var_v0_3 != 0);
-        }
-        gl_func_00034458(STR493(0x1FFAC), FW(arg0, 0xC), sp680);
-        if (ABS493(0x1C4) & 8) {
-            gl_func_00034458(STR493(0), sp67C);
-        }
-        gl_func_00034458();
-        gl_func_00034458(STR493(0x1FFB4));
-        gl_func_00034458();
-        gl_func_00034458();
-        gl_func_00034458(STR493(0x1FFC4));
+        gl_func_00000000(it.arr->buf[it.idx], it.arr->buf[it.idx] + 0x34);
+        v = (it.idx < it.last) ? (++it.idx, &it.arr->buf[it.idx]) : 0;
     }
+    gl_func_00000000();
+    gl_func_00000000(STR493(0x1FF7C));
+    gl_func_00000000(STR493(0x1FF88));
+    total = 0;
+    if (G1C4(D_493AC_a) & 8) {
+        SELF(0x30, s32) |= 0x80;
+        buf = (u8 *)gl_func_00000000(&D_00000000, SELF(0x44, u32));
+        for (i = 0; i < SELF(0x44, u32); i++) {
+            buf[i] = 0;
+        }
+    }
+    rec.p598 = (char *)&D_00000000;
+    if (1) { q = &t2; }
+    if (q != 0 || (q = (It493 *)gl_func_00000000(12)) != 0) {
+        q->arr = (Arr493 *)(self + 0x84);
+        q->idx = -1;
+        q->last = q->arr->count - 1;
+    }
+    tmp = t2;
+    it = tmp;
+    v = (it.idx < it.last) ? (++it.idx, &it.arr->buf[it.idx]) : 0;
+    while (v != 0) {
+        Ctx493 *g;
+        o = (Obj493 *)it.arr->buf[it.idx];
+        g = G214;
+        o->ctx6C = g;
+        cnt = 0;
+        o->n8A = g->gfx->n;
+        rec.n58C = 0;
+        rec.f594 = 3;
+        rec.f590 = 32;
+        rec.ctx = g;
+        gl_func_00000000(&rec);
+        if (G1C4(D_493AC_b) & 8) {
+            k = 0;
+            if (SELF(0xA0, int) == 0) {
+                gl_func_00000000(STR493(0x1FF90), STR493(0x1FFA0), 3287);
+            }
+            {
+                tp = (char *)o->ctx6C;
+                o->n80 = ((Ctx493 *)tp)->gfx->n;
+                n = ((Ctx493 *)tp)->gfx->n;
+                ((Ctx493 *)tp)->gfx->n = n + 1;
+                d = &((Ctx493 *)tp)->gfx->buf[n];
+                d->w0 = 0xC0000000;
+                d->w1 = 0;
+            }
+            o->lo50 = 0x80;
+            o->hi54 = 0;
+            gr = SELF(0xA0, Grid493 *);
+            if (gr->n > 0) {
+                rowOff = 0;
+                do {
+                    hit = 0;
+                    rowStart = gr->w * k;
+                    for (c = rowStart; c < rowStart + gr->w; c++) {
+                        e = gr->row1C[c];
+                        if (e != -1) {
+                            while ((j = gr->tbl18[e++]) != -1) {
+                                u8 *m = buf + j;
+                                if (o->key18 == *(u16 *)(SELF(0x68, char *) + j * 8) && *m == 0) {
+                                    o->f14 = 1;
+                                    tp = SELF(0x28, char *);
+                                    cnt++;
+                                    hit = 1;
+                                    ((VEnt493 *)tp)[12].f(((VEnt493 *)tp)[12].d + self, 0, &rec, j, o);
+                                    *m = 1;
+                                }
+                                gr = SELF(0xA0, Grid493 *);
+                            }
+                        }
+                    }
+                    if (hit) {
+                        if (k < o->lo50) o->lo50 = k;
+                        if (o->hi54 < k) o->hi54 = k;
+                    }
+                    gl_func_00000000(&rec);
+                    {
+                        tp = (char *)o->ctx6C;
+                        *(s16 *)((char *)o->rows7C + rowOff) = ((Ctx493 *)tp)->gfx->n;
+                        tp = (char *)o->ctx6C;
+                        n = ((Ctx493 *)tp)->gfx->n;
+                        ((Ctx493 *)tp)->gfx->n = n + 1;
+                        d = &((Ctx493 *)tp)->gfx->buf[n];
+                        d->w0 = 0xC0000000;
+                        d->w1 = 0;
+                    }
+                    rowOff += 2;
+                    k++;
+                    gr = SELF(0xA0, Grid493 *);
+                } while (k < gr->n);
+            }
+        } else {
+            o->lo50 = -1;
+            for (i = 0; i < SELF(0x44, u32); i++) {
+                j = i;
+                if (SELF(0x4C, s16 *) != 0) {
+                    j = SELF(0x4C, s16 *)[i];
+                }
+                if (o->key18 == *(u16 *)(SELF(0x68, char *) + j * 8)) {
+                    o->f14 = 1;
+                    tp = SELF(0x28, char *);
+                    cnt++;
+                    ((VEnt493 *)tp)[12].f(((VEnt493 *)tp)[12].d + self, 0, &rec, j, o);
+                }
+            }
+        }
+        gl_func_00000000(&rec);
+        total += rec.n58C;
+        gl_func_00000000(o->ctx6C);
+        if (cnt == 0) {
+            o->ctx6C = 0;
+        }
+        v = (it.idx < it.last) ? (++it.idx, &it.arr->buf[it.idx]) : 0;
+    }
+    gl_func_00000000(STR493(0x1FFAC), SELF(0xC, int), total);
+    if (G1C4(D_493AC_c) & 8) {
+        gl_func_00000000(&D_00000000, buf);
+    }
+    gl_func_00000000();
+    gl_func_00000000(STR493(0x1FFB4));
+    gl_func_00000000();
+    gl_func_00000000();
+    gl_func_00000000(STR493(0x1FFC4));
     return 1;
 }
 #else
