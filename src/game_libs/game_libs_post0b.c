@@ -11433,6 +11433,10 @@ void gl_func_00040974(char *arg0) {
     gl_func_00034458(sp54[0], temp_s5);
     t = spE0[1];
     spE0[0] = t;
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
     var_v0 = (t != 0) ? (spE0[1] = *(char **)(t + 4), *(char **)(t + 0)) : 0;
     var_s1 = var_v0;
     if (var_v0 != 0) {
