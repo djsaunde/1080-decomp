@@ -1,0 +1,33 @@
+{
+  "function_name": "func_000139B0",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-20T23:04:47.144251+00:00",
+  "end_time": "2026-10-20T23:04:47.144275+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T23:04:47.144270+00:00",
+      "assistant_text": "Grid reset + random scatter. One flat clear index across both loops, i/y zeroed in the for-init after the early return (IDO hoists them above the beq), RNG and finisher as zero-valued jal placeholders, D_00000C64 read once into a local before the loop, the loop bound held in a local n = 5 so the compare stays slt (a constant bound is LFTR'd to bne), and a flat [x + y * 32] grid index.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 92,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern float D_00000C64;\nextern f32 func_00000000_139B0_f(void);\nextern void func_00000000_139B0_v(char *);\nvoid func_000139B0(char *s1, int a1, int a2) {\n    int i, k;\n    int x, y, n;\n    f32 sc;\n\n    *(int *)(s1 + 0x68) = a2;\n    if (a2 == 0) {\n        *(int *)(s1 + 0x6C) = 1;\n        *(int *)(s1 + 0x70) = 3;\n    } else {\n        *(int *)(s1 + 0x6C) = 0;\n    }\n    if (a1 == *(int *)(s1 + 0x40)) {\n        return;\n    }\n    *(int *)(s1 + 0x40) = a1;\n    *(int *)(s1 + 0x44) = 4;\n    *(int *)(s1 + 0x74) = 0;\n    for (i = 0, y = 0; y < *(int *)(s1 + 0x60); y++) {\n        for (x = 0; x < *(int *)(s1 + 0x5C); x++) {\n            (*(float **)(s1 + 0x58))[i] = 0.0f;\n            i++;\n        }\n    }\n    sc = D_00000C64;\n    n = 5; k = 0;\n    if (1) { }\n    do {\n        x = (int)(func_00000000_139B0_f() * 32.0f);\n        y = (int)(func_00000000_139B0_f() * 32.0f);\n        (*(float **)(s1 + 0x58))[x + y * 32] = func_00000000_139B0_f() * sc;\n        k++;\n    } while (k < n);\n    func_00000000_139B0_v(s1);\n    *(float *)(s1 + 0x48) = 0.0f;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_tail4.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_000139B0.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only on jal 0 to zero-valued placeholders)"
+  }
+}

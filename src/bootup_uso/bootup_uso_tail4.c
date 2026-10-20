@@ -732,27 +732,24 @@ int func_00013980(float *a0) {
  * / s1->0x70 (112) = mode-derived flags (1/3 when a2==0, else
  * 0), s1->0x74 (116) = 0. D_00000C64 = f32 value-scale for the
  * scattered amplitude. Looks like a randomized snow/terrain
- * height-field seed. Caps <80: FP-heavy mul.s/trunc.w.s +
- * f20/f22/f24 sdc1/ldc1 double-saves + D_00000C64 reloc + 3x
- * RNG calls + nested clear loop + bnel branch-likely.
- * INCLUDE_ASM remains build path. */
+ * height-field seed. */
 extern float D_00000C64;
-#ifdef NON_MATCHING
-/* PASS-2 2026-10-20 (agent-c run 114): re-decoded from the target words.
- * The clear loop runs ONE flat index i across both loops (grid[i++] =
- * 0.0f, grid re-read from s1->0x58 each store). The RNG (bootup.uso
- * func_075EE4) returns a float in f0, so it gets a typed proto. 32.0f,
- * the RO scale and 0.0f are hoisted into f22/f24/f20 and the bound 5 into
- * s4. The finisher is the in-file func_00013B20(s1). The scatter scale is
- * a rodata float literal (its value is loop-hoisted into f24, so it can not
- * be a global). The clear-loop counters are the same variables as the
- * scatter x/y (target s0/s2). Residual: target tests k < 5 with slt where
- * IDO here emits bne (LFTR), plus one delay-slot fill. */
-extern f32 fn_139b0_rand(void);
-void func_00013B20(char *arg0);
+/* EXACT (agent-c run 115). The clear loop runs ONE flat index i across both
+ * loops (grid[i++] = 0.0f, grid re-read from s1->0x58 each store); i and y
+ * are zeroed in the for-init AFTER the early return (IDO hoists them, with
+ * the 4 for s1->0x44, above the beq). The RNG (bootup.uso func_075EE4)
+ * returns a float in f0; the finisher is func_00013B20(s1) (both jal 0).
+ * The scatter scale D_00000C64 is read once into a local before the loop
+ * (a global read inside the loop would be reloaded after every call). The
+ * bound 5 is a LOCAL (n = 5): a constant bound gets LFTR'd to bne, the
+ * variable keeps the target's slt. The grid store is a flat [x + y * 32]
+ * index (the hand-shifted byte form takes one more t-register). */
+extern f32 func_00000000_139B0_f(void);
+extern void func_00000000_139B0_v(char *);
 void func_000139B0(char *s1, int a1, int a2) {
     int i, k;
-    int x, y;
+    int x, y, n;
+    f32 sc;
 
     *(int *)(s1 + 0x68) = a2;
     if (a2 == 0) {
@@ -761,34 +758,30 @@ void func_000139B0(char *s1, int a1, int a2) {
     } else {
         *(int *)(s1 + 0x6C) = 0;
     }
-    i = 0;
-    y = 0;
     if (a1 == *(int *)(s1 + 0x40)) {
         return;
     }
     *(int *)(s1 + 0x40) = a1;
     *(int *)(s1 + 0x44) = 4;
     *(int *)(s1 + 0x74) = 0;
-    for (; y < *(int *)(s1 + 0x60); y++) {
+    for (i = 0, y = 0; y < *(int *)(s1 + 0x60); y++) {
         for (x = 0; x < *(int *)(s1 + 0x5C); x++) {
             (*(float **)(s1 + 0x58))[i] = 0.0f;
             i++;
         }
     }
-    k = 0;
+    sc = D_00000C64;
+    n = 5; k = 0;
     if (1) { }
     do {
-        x = (int)(fn_139b0_rand() * 32.0f);
-        y = (int)(fn_139b0_rand() * 32.0f);
-        *(float *)((char *)*(float **)(s1 + 0x58) + x * 4 + (y << 7)) = fn_139b0_rand() * 1.2345f;
+        x = (int)(func_00000000_139B0_f() * 32.0f);
+        y = (int)(func_00000000_139B0_f() * 32.0f);
+        (*(float **)(s1 + 0x58))[x + y * 32] = func_00000000_139B0_f() * sc;
         k++;
-    } while (k < 5);
-    func_00013B20(s1);
+    } while (k < n);
+    func_00000000_139B0_v(s1);
     *(float *)(s1 + 0x48) = 0.0f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000139B0);
-#endif
 
 /* func_00013B20 - verified structural decode (0x144, 84 insns,
  * LUT index->value remap with all-ones fallback).
