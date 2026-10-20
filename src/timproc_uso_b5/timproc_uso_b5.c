@@ -856,6 +856,18 @@ end:
 //   the same float-const-CSE cap as BDEC), plus the |=0x40/0x80 flag stores
 //   materialize o+0xC4 as a base (addiu + sw 0(base)) in the target vs sw
 //   0xC4(o) here (address-materialization scheduling). Stays NM.
+// 2026-10-20 agent-g (run 109) 93.68 -> 3 words: (1) the flag RMWs reuse o
+//   as the pointer (`o += 0xC4; *(int *)o |= 0x40;`, s0 holds both, E04
+//   one-reused-local rule); (2) the white is `num / (float)255` with num a
+//   float var: the cast-literal divisor is NOT CSE'd with num, giving the
+//   target's two mtc1 of one lui (f4/f6) -- and that alone also fixed widget
+//   C's float register rotation; (3) the stack float at sp+36 is NOT the
+//   062880 return (both returns are discarded): it is the white value itself,
+//   spilled across the calls and reused as widget C's alpha; (4) four
+//   `if (1) {}` BB adders (agent-c firstUseCost lever) move it from f20 to
+//   the stack; volatile pad[2] = frame 72. RESIDUAL: the arg0+0x10 spill
+//   is at 40 (target 32); decl order (1560-permutation sweep), unnamed temp,
+//   adder count and placement never put it below the float's slot.
 #ifdef NON_MATCHING
 extern void *timproc_uso_b5_func_068D54(int, char *);
 extern float timproc_uso_b5_func_062880(char *, char *);
@@ -864,27 +876,32 @@ extern char timproc_uso_b5_D_807FE8FC;
 extern char timproc_uso_b5_D_807FE90C;
 extern char timproc_uso_b5_D_807FE918;
 void timproc_uso_b5_func_00001460(char *arg0) {
-    char *o, *reg;
+    volatile int pad[2];
+    char *o;
+    char *reg;
     float retA;
     float denom = 255.0f;
+    float num = 255.0f;
 
     reg = arg0 + 0x10;
 
-    /* widget A (id 1) — white RGBA = 255.0f/denom (runtime div, denom var
-     * defeats the 255/255 -> 1.0f const-fold that the target does NOT do) */
+    /* widget A (id 1) — white RGBA = num / (float)255 (runtime div) */
     o = (char *)timproc_uso_b5_func_068D54(0, &timproc_uso_b5_D_807FE8FC + 0x108C);
     *(char **)(arg0 + 0x38) = o;
-    *(float *)(o + 0x124) = 255.0f / denom;
-    *(float *)(o + 0x128) = 255.0f / denom;
-    *(float *)(o + 0x12C) = 255.0f / denom;
-    *(float *)(o + 0x130) = 255.0f / denom;
+    retA = num / (float)255;
+    *(float *)(o + 0x124) = retA;
+    *(float *)(o + 0x128) = retA;
+    *(float *)(o + 0x12C) = retA;
+    *(float *)(o + 0x130) = retA;
     o = *(char **)(arg0 + 0x38);
-    *(int *)(o + 0xC4) |= 0x40;
+    o += 0xC4;
+    *(int *)o |= 0x40;
     o = *(char **)(arg0 + 0x38);
-    *(int *)(o + 0xC4) |= 0x80;
+    o += 0xC4;
+    *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x38);
     *(int *)(o + 0xD0) = 1;
-    retA = timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x38));
+    timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x38));
     o = *(char **)(arg0 + 0x38);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {
@@ -917,9 +934,11 @@ void timproc_uso_b5_func_00001460(char *arg0) {
     *(float *)(o + 0x12C) = 61.0f / denom;
     *(float *)(o + 0x130) = retA;
     o = *(char **)(arg0 + 0x40);
-    *(int *)(o + 0xC4) |= 0x40;
+    o += 0xC4;
+    *(int *)o |= 0x40;
     o = *(char **)(arg0 + 0x40);
-    *(int *)(o + 0xC4) |= 0x80;
+    o += 0xC4;
+    *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x40);
     *(int *)(o + 0xD0) = 4;
     timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x40));
@@ -929,6 +948,7 @@ void timproc_uso_b5_func_00001460(char *arg0) {
         *(int *)(o + 0x4) = 1;
     }
     *(char **)(o + 0x14) = arg0;
+    if (1) {} if (1) {} if (1) {} if (1) {}
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00001460);
