@@ -22064,7 +22064,7 @@ unsigned char game_libs_func_0004FB34(unsigned char c) {
 //   extern reuse.
 #ifdef NON_MATCHING
 extern int D_00000000;
-extern char D_4fba4_vb, D_4fba4_vd;   /* base / derived vtables (USO data, pinned 0) */
+
 /* 2026-10-20 (agent-c run 114): re-decoded as cfront code. obj =
  * new(0x90); the inlined base ctor re-tests `this` (dead 0x60 fallback),
  * stores the base vtable, runs two one-level member ctors (8-byte at 0x34,
@@ -22087,7 +22087,7 @@ char *gl_func_0004FBA4(char *a0, s32 **a1) {
             t = (char *)gl_func_00000000(0x60);
             if (t == 0) goto derived;
         }
-        *(void **)(t + 0x5C) = &D_4fba4_vb;
+        *(void **)(t + 0x5C) = &D_00000000;
         m = (int *)(t + 0x34);
         if (m == 0) { m = (int *)gl_func_00000000(8); if (m == 0) goto m2; }
         m[1] = 0;
@@ -22099,7 +22099,7 @@ char *gl_func_0004FBA4(char *a0, s32 **a1) {
     fin:
         gl_func_00000000(t);
     derived:
-        *(void **)(obj + 0x5C) = &D_4fba4_vd;
+        *(void **)(obj + 0x5C) = &D_00000000;
     }
     *(s32 *)(obj + 0x34) = *(s32 *)(a0 + 0x34);
     *(s32 *)(obj + 0x38) = *(s32 *)(a0 + 0x38);
