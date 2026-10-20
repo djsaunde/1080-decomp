@@ -8188,6 +8188,15 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000BF8C);
  *   frame 328, fuzzy-neutral -- cfe does not slot volatile scalar pads
  *   between aggregates here), early-store scheduling, FP temp-ring numbering,
  *   var_t0/sp8C int-web coloring. */
+/* PASS-6 2026-10-20 (agent-c run 114, 70.75 -> 77.19): every 3-word vec
+ * shuffle (int-pair copies through spB4/sp54/sp68/sp40/sp7C) is a real
+ * STRUCT ASSIGNMENT of a 12-byte f32 vec (V3C234). spB4 takes >= 9 copies,
+ * so IDO pointer-izes them (`addiu v0,sp,0xB4; sw 0/4/8(v0)`), the target
+ * shape. The temps are declared between the vec aggregates to land the
+ * target's frame map (0x40/0x54/0x68/0x7C/0xB4/0xCC with ghost-slot gaps).
+ * The fuzzy score is blind to sp offsets, so that part only matters for a
+ * later exact match. */
+typedef struct { f32 x, y, z; } V3C234;
 typedef struct {
     /* +0x00 (sp 0xCC) */ s32 unk0;
     /* +0x04 */ s32 unk4;
@@ -8218,17 +8227,11 @@ typedef struct {
 extern f64 D_00000930;
 extern s32 D_000081C0[];
 void func_0000C234(char *arg0) {
-    C234Rec spCC;                                             /* 0xCC..0xF3 */
-    f32 spB4[3];                                              /* 0xB4 */
-    s32 sp8C;                                                 /* 0x8C */
-    f32 sp7C[3];                                              /* 0x7C */
-    f32 sp68[3];                                              /* 0x68 */
-    f32 sp54[3];                                              /* 0x54 */
-    f32 sp40[3];                                              /* 0x40 */
-    char *sp3C;                                               /* 0x3C */
+    C234Rec spCC;
     f32 temp_f0;
     f32 temp_f0_2;
     f32 temp_f12;
+    V3C234 spB4;
     f32 temp_f12_2;
     f32 temp_f14;
     f32 temp_f16;
@@ -8238,35 +8241,38 @@ void func_0000C234(char *arg0) {
     f32 var_f0;
     f32 var_f2;
     f32 var_f2_2;
+    s32 sp8C;
     s16 temp_v0_2;
+    V3C234 sp7C;
     s16 temp_v1;
     s32 temp_a1_2;
+    V3C234 sp68;
     s32 temp_v0;
     s32 temp_v0_4;
+    V3C234 sp54;
     s32 temp_v1_2;
     s32 var_t0;
+    V3C234 sp40;
+    char *sp3C;
     s32 var_v0;
     char *temp_a1;
     char *temp_v0_3;
     char *var_v0_2;
 
+
     temp_v0 = *(s32 *)((char *)(arg0) + 0xA80);
     if (temp_v0 != 0) {
         *(s32 *)((char *)(arg0) + 0xA80) = (s32) (temp_v0 - 1);
     }
-    *((s32 *)spB4 + 0) = *(s32 *)((char *)(arg0) + 0xB4);
-    *((s32 *)spB4 + 1) = *(s32 *)((char *)(arg0) + 0xB8);
+    spB4 = *(V3C234 *)((char *)(arg0) + 0xB4);
     temp_a1 = arg0 + 0xDC;
-    *((s32 *)spB4 + 2) = *(s32 *)((char *)(arg0) + 0xBC);
-    *(f32 *)((char *)(arg0) + 0x890) = spB4[0];
-    *(f32 *)((char *)(arg0) + 0x894) = spB4[1];
-    *(f32 *)((char *)(arg0) + 0x898) = spB4[2];
-    *((s32 *)spB4 + 0) = *(s32 *)((char *)(arg0) + 0x318);
-    *((s32 *)spB4 + 1) = *(s32 *)((char *)(arg0) + 0x31C);
-    *((s32 *)spB4 + 2) = *(s32 *)((char *)(arg0) + 0x320);
-    *(f32 *)((char *)(arg0) + 0x89C) = spB4[0];
-    *(f32 *)((char *)(arg0) + 0x8A0) = spB4[1];
-    *(f32 *)((char *)(arg0) + 0x8A4) = spB4[2];
+    *(f32 *)((char *)(arg0) + 0x890) = spB4.x;
+    *(f32 *)((char *)(arg0) + 0x894) = spB4.y;
+    *(f32 *)((char *)(arg0) + 0x898) = spB4.z;
+    spB4 = *(V3C234 *)((char *)(arg0) + 0x318);
+    *(f32 *)((char *)(arg0) + 0x89C) = spB4.x;
+    *(f32 *)((char *)(arg0) + 0x8A0) = spB4.y;
+    *(f32 *)((char *)(arg0) + 0x8A4) = spB4.z;
     spCC.f0 = 0.0f;
     spCC.ec = 0.0f;
     spCC.e4 = 0.0f;
@@ -8285,13 +8291,11 @@ void func_0000C234(char *arg0) {
         *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
         if ((spCC.f0 < ((D_bu_ro_pool[0x128 / 4] * ((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
             *(s32 *)((char *)(arg0) + 0xA4C) = 1;
-            *((s32 *)spB4 + 0) = *((s32 *)&spCC.e4 + 0);
+            spB4 = *(V3C234 *)&spCC.e4;
             var_t0 = 0;
-            *((s32 *)spB4 + 1) = *((s32 *)&spCC.e4 + 1);
-            *((s32 *)spB4 + 2) = *((s32 *)&spCC.e4 + 2);
-            *(f32 *)((char *)(arg0) + 0x9D8) = spB4[0];
-            *(f32 *)((char *)(arg0) + 0x9DC) = spB4[1];
-            *(f32 *)((char *)(arg0) + 0x9E0) = spB4[2];
+            *(f32 *)((char *)(arg0) + 0x9D8) = spB4.x;
+            *(f32 *)((char *)(arg0) + 0x9DC) = spB4.y;
+            *(f32 *)((char *)(arg0) + 0x9E0) = spB4.z;
             *(f32 *)((char *)(arg0) + 0x9E4) = spCC.f0;
             if (D_00000930 < (f64) *(f32 *)((char *)(arg0) + 0x9DC)) {
                 var_t0 = 1;
@@ -8371,14 +8375,12 @@ cend:
             sp8C = temp_a1_2;
             temp_v0_3 = func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_a1_2, sp3C, 0);
             if (temp_v0_3 != 0) {
-                *((s32 *)sp7C + 0) = *(s32 *)((char *)(temp_v0_3) + 0x30);
-                *((s32 *)sp7C + 1) = *(s32 *)((char *)(temp_v0_3) + 0x34);
-                *((s32 *)sp7C + 2) = *(s32 *)((char *)(temp_v0_3) + 0x38);
-                sp7C[1] += 200.0f;
-                func_00000000(arg0, sp7C);
+                sp7C = *(V3C234 *)((char *)(temp_v0_3) + 0x30);
+                sp7C.y += 200.0f;
+                func_00000000(arg0, &sp7C);
                 *(s32 *)((char *)(arg0) + 0x95C) = 0;
                 func_00000000((char *)func_00008A7C + 0);
-                func_00000000((char *)func_00008A7C + 0x18, (char *)func_00008A7C + 0x14, (f64) sp7C[0], (f64) sp7C[1], (f64) sp7C[2]);
+                func_00000000((char *)func_00008A7C + 0x18, (char *)func_00008A7C + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
             }
         }
     }
@@ -8413,47 +8415,37 @@ cend:
         *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2);
         if (temp_f12 < (f32) 0) {
             var_v0_2 = arg0 + 0x93C;
-            sp68[0] = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
-            sp68[1] = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
-            sp68[2] = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f12;
-            *((s32 *)spB4 + 0) = *((s32 *)sp68 + 0);
-            *((s32 *)spB4 + 1) = *((s32 *)sp68 + 1);
-            *((s32 *)spB4 + 2) = *((s32 *)sp68 + 2);
-            *((s32 *)sp54 + 0) = *((s32 *)spB4 + 0);
-            *((s32 *)sp54 + 1) = *((s32 *)spB4 + 1);
-            *((s32 *)sp54 + 2) = *((s32 *)spB4 + 2);
-            *(f32 *)((char *)(arg0) + 0x920) = sp54[0];
-            *(f32 *)((char *)(arg0) + 0x924) = sp54[1];
-            *(f32 *)((char *)(arg0) + 0x928) = sp54[2];
+            sp68.x = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
+            sp68.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
+            sp68.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f12;
+            spB4 = sp68;
+            sp54 = spB4;
+            *(f32 *)((char *)(arg0) + 0x920) = sp54.x;
+            *(f32 *)((char *)(arg0) + 0x924) = sp54.y;
+            *(f32 *)((char *)(arg0) + 0x928) = sp54.z;
         } else {
             *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
             *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
             *(f32 *)((char *)(arg0) + 0x928) = (f32) 0;
         }
-        *((s32 *)spB4 + 0) = *(s32 *)((char *)(var_v0_2) + 0x0);
-        *((s32 *)spB4 + 1) = *(s32 *)((char *)(var_v0_2) + 0x4);
-        *((s32 *)spB4 + 2) = *(s32 *)((char *)(var_v0_2) + 0x8);
-        *(f32 *)((char *)(arg0) + 0x948) = spB4[0];
-        *(f32 *)((char *)(arg0) + 0x94C) = spB4[1];
-        *(f32 *)((char *)(arg0) + 0x950) = spB4[2];
+        spB4 = *(V3C234 *)((char *)(var_v0_2) + 0x0);
+        *(f32 *)((char *)(arg0) + 0x948) = spB4.x;
+        *(f32 *)((char *)(arg0) + 0x94C) = spB4.y;
+        *(f32 *)((char *)(arg0) + 0x950) = spB4.z;
         var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x340) * *(f32 *)((char *)(arg0) + 0x940)) + (*(f32 *)((char *)(arg0) + 0x344) * *(f32 *)((char *)(arg0) + 0x944));
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
         temp_f0_2 = -var_f2_2;
-        sp40[0] = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0_2;
-        sp40[1] = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0_2;
-        sp40[2] = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0_2;
-        *((s32 *)spB4 + 0) = *((s32 *)sp40 + 0);
-        *((s32 *)spB4 + 1) = *((s32 *)sp40 + 1);
-        *((s32 *)spB4 + 2) = *((s32 *)sp40 + 2);
-        *((s32 *)sp54 + 0) = *((s32 *)spB4 + 0);
-        *((s32 *)sp54 + 1) = *((s32 *)spB4 + 1);
-        *((s32 *)sp54 + 2) = *((s32 *)spB4 + 2);
-        *(f32 *)((char *)(arg0) + 0x92C) = sp54[0];
-        *(f32 *)((char *)(arg0) + 0x930) = sp54[1];
+        sp40.x = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0_2;
+        sp40.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0_2;
+        sp40.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0_2;
+        spB4 = sp40;
+        sp54 = spB4;
+        *(f32 *)((char *)(arg0) + 0x92C) = sp54.x;
+        *(f32 *)((char *)(arg0) + 0x930) = sp54.y;
         *(s32 *)((char *)(arg0) + 0x9D4) = 0;
-        *(f32 *)((char *)(arg0) + 0x934) = sp54[2];
+        *(f32 *)((char *)(arg0) + 0x934) = sp54.z;
     } else {
         *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
