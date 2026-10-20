@@ -744,7 +744,13 @@ void mgrproc_uso_func_0000181C(int a0) {}
  * always emits HI16+LO16 pairs). Class = the 12-fn external-rodata-table
  * cohort in docs/MATCHING_WORKFLOW.md, now extended to mgrproc_uso. Residual
  * beyond the dispatch reloc = jump-table case-block ordering + register
- * coloring. No episode (NON_MATCHING). */
+ * coloring. No episode (NON_MATCHING).
+ * 2026-10-18 agent-g (run 107) 90.8 -> 98.4: the outer s0->0x7D4 gate is a
+ * two-case `switch` too (target: beqz/beq/b chain with the bodies AFTER it),
+ * both switch values are plain expressions (no phase/state locals), and
+ * case 3's counter is stored unconditionally before the >= 16 wrap, spelled
+ * through the field (the re-read forwards the stored t9). RESIDUAL: the
+ * outer switch value takes v1 (target v0) and the jtbl displacement above. */
 extern int import_000A7B90();
 extern int import_00096228();
 extern int import_000B2888();
@@ -762,16 +768,13 @@ void mgrproc_uso_func_00001824(char *s0) {
     char *v0;
     char *r;
     char *vt;
-    int phase;
-    int state;
 
     v0 = (char *)import_000A7B90(&import_80020098, 1);
     import_00096228(*(signed char *)(v0 + 8), *(signed char *)(v0 + 9));
     *(int *)(s0 + 0x7EC) = *(int *)(s0 + 0x7EC) + 1;
-    phase = *(int *)(s0 + 0x7D4);
-    if (phase == 0) {
-        state = *(int *)(s0 + 0x7E4);
-        switch (state) {
+    switch (*(int *)(s0 + 0x7D4)) {
+    case 0:
+        switch (*(int *)(s0 + 0x7E4)) {
         case 0:
             if (--*(int *)(s0 + 0x7E8) == 0) {
                 *(int *)(s0 + 0x7E4) = 1;
@@ -793,18 +796,15 @@ void mgrproc_uso_func_00001824(char *s0) {
             }
             break;
         case 3: {
-            int n;
             if (--*(int *)(s0 + 0x7E8) == 0) {
                 *(int *)(s0 + 0x7E8) = 300;
                 *(int *)(s0 + 0x7E4) = 4;
                 mgrproc_uso_func_0002DC(512);
             }
-            n = *(int *)(s0 + 0x7E0) + 1;
-            if (n >= 16) {
-                *(int *)(s0 + 0x7E0) = n - 16;
+            *(int *)(s0 + 0x7E0) = *(int *)(s0 + 0x7E0) + 1;
+            if (*(int *)(s0 + 0x7E0) >= 16) {
+                *(int *)(s0 + 0x7E0) = *(int *)(s0 + 0x7E0) - 16;
                 *(int *)(s0 + 0x7DC) = *(int *)(s0 + 0x7DC) + 1;
-            } else {
-                *(int *)(s0 + 0x7E0) = n;
             }
             break;
         }
@@ -814,7 +814,8 @@ void mgrproc_uso_func_00001824(char *s0) {
             }
             break;
         }
-    } else if (phase == 1) {
+        break;
+    case 1:
         r = (char *)mgrproc_uso_func_01FA1C(*(int *)(s0 + 0x528));
         if (r != 0) {
             import_000B2888(s0);
@@ -831,6 +832,7 @@ void mgrproc_uso_func_00001824(char *s0) {
             *(int *)(&import_800200D8 + 0x40) = 7;
             mgrproc_uso_func_00F954(s0, 0, 0);
         }
+        break;
     }
 }
 #else
