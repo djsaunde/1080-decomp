@@ -5584,49 +5584,29 @@ void func_00007BC8(char *a0) {
     func_00000000(a0);
 }
 
-/* Same dispatcher template as game_uso_func_0000BFDC. NATURAL CEILING:
- * the C body is structurally correct; the fixed branch-likely and
- * register-allocation deltas were previously closed via Makefile
- * INSN_PATCH/SUFFIX_BYTES_FORCE — both REMOVED 2026-05-23 as match-faking
- * (per feedback_no_instruction_forcing_matches_policy). Default build
- * is INCLUDE_ASM. */
-#ifdef NON_MATCHING
+/* func_00007BF4 - EXACT (run 113 agent-c): twin port of gl_func_00035A18
+ * (same vtable-dispatch thunk). Keys from the twin: plain if/else idx select
+ * (no goto / branch-likely), loaded-value-LAST entry add, and the arg load +
+ * accumulate joined on one line (hoists the lh above the lw). */
 int func_00007BF4(char *a0) {
-  short *pair = (short *) (a0 + 8);
-  short key = pair[1];
-  short new_var;
-  short offset = pair[0];
-  char *arg = *((char **) (a0 + 4));
-  char *entry;
-  int (*fnptr)(char *);
-  arg = arg + offset;
-  if (key < 0)
-  {
-    fnptr = *((int (**)(char *)) (a0 + 0xC));
-  }
-  else
-  {
-    int selector = *((int *) (pair + 2));
-    a0 = (char *) selector;
-    if (selector == 0)
-    {
-      if (pair[0] == 0)
-      {
-        a0 = (char *) 0x28;
-      }
+    char *arg;
+    char *v1;
+    char *entry;
+    int (*fnptr)(char *);
+    int idx;
+    v1 = a0 + 8;
+    arg = *(char**)(a0 + 4); arg = *(short*)(a0 + 8) + arg;
+    if (*(short*)(a0 + 0xA) < 0) {
+        fnptr = *(int (**)(char *))(a0 + 0xC);
+    } else {
+        int selector = *(int*)(v1 + 4);
+        if (selector == 0 && *(short*)v1 == 0) idx = 0x28; else idx = selector;
+        entry = (*(short*)(v1 + 2) << 3) + *(char**)(arg + idx);
+        arg = *(short*)entry + arg;
+        fnptr = *(int (**)(char *))(entry + 4);
     }
-    if (((selector & 0xFFFF) && selector) && selector)
-    {
-    }
-    entry = (*((char **) (arg + ((int) a0)))) + ((new_var = pair[1]) << 3);
-    arg = arg + (*((short *) entry));
-    fnptr = *((int (**)(char *)) (entry + 4));
-  }
-  return fnptr(arg);
+    return fnptr(arg);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007BF4);
-#endif
 
 extern float D_000005EC;
 /* func_00007C74: 36-insn alloc/init/link helper. EXACT 2026-10-16 (was NM spill-slot "cap", fix at the end).

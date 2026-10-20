@@ -859,39 +859,16 @@ void func_00013CE8(Quad4 *dst) {
     *dst = buf;
 }
 
-/* func_00013D40 - STRUCTURE-EXACT decode (0x2A0, 168/168 insns, all
- * mnemonics+offsets+slots match; 2026-07-30 agent-g). bootup_uso
- * get-or-create constructor + 6 child sub-objects at o+8/0x20/0x38/
- * 0x50/0x68/0x80, values from the 6-word table at 0xCAC0 (D_0000CAC0/
- * CAC4/CAC8 + func_0000CACC[0..2] -- reloc identity split per .s),
- * kinds 0x1E/0x1E/2/-0xC/2/-0xC, child type ptr &D_0000C764.
- * CRACKED IDIOMS (new levers, see docs/IDO_CODEGEN.md):
- *  - sw a2,0x8(sp) in jal delay = 4-byte STRUCT PASSED BY VALUE as
- *    arg3 (one-word struct home 0x24 stored in bne delay, reloaded
- *    lw a2 + homed to arg slot 0x8). Plain int arg NEVER homes a2.
- *  - sw a0,0x28/lw a0,0x28 around jal with slot BELOW the array =
- *    `char * volatile w` local (volatile store+forced reload; a
- *    plain local or one-word-struct field PROMOTES and spills ABOVE
- *    the array instead). w=c passed as arg0 expression, c=w reload.
- *  - six dead stores 0x38-0x4C = int A[9] homed-array lever, blocks
- *    write A[8]..A[3] (elements never scalarize; base 0x2C).
- *  - unused `char *q` decl retained: unused scalar decls still
- *    consume frame slots here; q holds p.v home at 0x24 (drop it
- *    and every slot shifts down 4).
- * RESIDUAL (73/168 words, pure allocator/scheduler cascade; probed
- * ~25 source variants in standalone-cc, all stable): (1) per-block
- * table-load temp v0 vs t7/t2 -- uopt coalesces the six p.v value
- * webs into ONE global web (v0) where target keeps six block-local
- * t-cycle temps; distinct x1..x6 / Val p1..p6 / P[1] array / union /
- * scoped decls / goto-CFG all still coalesce. (2) same root cause
- * reserves 3 extra spill words -> frame 0x60 vs 0x50. (3) post-call
- * &D_0000C764/kind temp-pair renumber (t8/t9 vs t0/t1 cycle offset
- * -- target consumes 2 more cycle slots per block: a2/a3 arg temps
- * numbered per-block local, ours unified). (4) [or a1/li a3/sw a0]
- * 3-insn window rotation x6 + prologue or-vs-sw-ra delay pick =
- * documented li/move const-first scheduling class. Body compiles to
- * identical structure; sub-100 -> NM wrap per policy. */
-#ifdef NON_MATCHING
+/* func_00013D40 - EXACT (run 113 agent-c, twin port of gl_func_0000135C).
+ * bootup_uso get-or-create constructor + 6 child sub-objects at o+8/0x20/
+ * 0x38/0x50/0x68/0x80, values from the 6-word table at 0xCAC0, kinds
+ * 0x1E/0x1E/2/-0xC/2/-0xC, child type ptr &D_0000C764. The earlier
+ * structure-exact decode (73/168 words) used `char * volatile w` + an int A[9]
+ * homed array to fake the slots; the game_libs twin's form fixes all of it:
+ * self reassigned in the `||` alloc-fallback head, six distinct one-word
+ * struct locals u1..u6 copied into one by-value carrier t2 (the six dead
+ * stores 0x38..0x4C are the u homes, a2 homed to 8(sp) by the by-value arg),
+ * two volatile pads for the phantom slots. */
 typedef struct { int v; } Val13D40;
 extern char D_0000CAAC;
 extern int D_0000CAC0;
@@ -899,85 +876,62 @@ extern int D_0000CAC4;
 extern int D_0000CAC8;
 extern int func_0000CACC[];  /* data words 0xCACC/0xCAD0/0xCAD4 (table tail) */
 extern char D_0000C764;
-char *func_00013D40(char *arg0) {
-    char *o;
-    char *s;
-    char *c;
-    char *q;
-    int A[9];
-    char * volatile w;
-    Val13D40 p;
-
-    o = arg0;
-    if (arg0 == 0) {
-        o = (char *)func_00000000(0x98);
-        if (o == 0) goto end;
+char *func_00013D40(char *self) {
+    Val13D40 u1;
+    Val13D40 u2;
+    Val13D40 u3;
+    Val13D40 u4;
+    Val13D40 u5;
+    Val13D40 u6;
+    char *p2;
+    volatile int pad1;
+    volatile int pad2;
+    char *m2;
+    Val13D40 t2;
+    if (self != 0 || (self = (char *)func_00000000(0x98)) != 0) {
+        if ((p2 = self) != 0 || (p2 = (char *)func_00000000(8)) != 0) {
+            *(char **)(p2 + 0) = &D_0000CAAC;
+            *(int *)(p2 + 4) = 0;
+        }
+        u1.v = D_0000CAC0;
+        t2 = u1;
+        if ((m2 = self + 8) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
+            func_00000000(m2, self, t2, 1);
+            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
+        }
+        u2.v = D_0000CAC4;
+        t2 = u2;
+        if ((m2 = self + 0x20) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
+            func_00000000(m2, self, t2, 1);
+            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
+        }
+        u3.v = D_0000CAC8;
+        t2 = u3;
+        if ((m2 = self + 0x38) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
+            func_00000000(m2, self, t2, 1);
+            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
+        }
+        u4.v = func_0000CACC[0];
+        t2 = u4;
+        if ((m2 = self + 0x50) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
+            func_00000000(m2, self, t2, 1);
+            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
+        }
+        u5.v = func_0000CACC[1];
+        t2 = u5;
+        if ((m2 = self + 0x68) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
+            func_00000000(m2, self, t2, 1);
+            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
+        }
+        u6.v = func_0000CACC[2];
+        t2 = u6;
+        if ((m2 = self + 0x80) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
+            func_00000000(m2, self, t2, 1);
+            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
+        }
     }
-    s = o;
-    if (s != 0 || (s = (char *)func_00000000(8)) != 0) {
-        *(char **)(s + 0) = &D_0000CAAC;
-        *(int *)(s + 4) = 0;
-    }
-    p.v = D_0000CAC0; A[8] = p.v;
-    c = o + 8;
-    if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
-        func_00000000(w = c, o, p, 1);
-        c = w;
-        *(char **)(c + 0xC) = &D_0000C764;
-        *(int *)(c + 0x10) = 0x1E;
-        *(int *)(c + 0x14) = 0;
-    }
-    p.v = D_0000CAC4; A[7] = p.v;
-    c = o + 0x20;
-    if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
-        func_00000000(w = c, o, p, 1);
-        c = w;
-        *(char **)(c + 0xC) = &D_0000C764;
-        *(int *)(c + 0x10) = 0x1E;
-        *(int *)(c + 0x14) = 0;
-    }
-    p.v = D_0000CAC8; A[6] = p.v;
-    c = o + 0x38;
-    if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
-        func_00000000(w = c, o, p, 1);
-        c = w;
-        *(char **)(c + 0xC) = &D_0000C764;
-        *(int *)(c + 0x10) = 2;
-        *(int *)(c + 0x14) = 0;
-    }
-    p.v = func_0000CACC[0]; A[5] = p.v;
-    c = o + 0x50;
-    if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
-        func_00000000(w = c, o, p, 1);
-        c = w;
-        *(char **)(c + 0xC) = &D_0000C764;
-        *(int *)(c + 0x10) = -0xC;
-        *(int *)(c + 0x14) = 0;
-    }
-    p.v = func_0000CACC[1]; A[4] = p.v;
-    c = o + 0x68;
-    if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
-        func_00000000(w = c, o, p, 1);
-        c = w;
-        *(char **)(c + 0xC) = &D_0000C764;
-        *(int *)(c + 0x10) = 2;
-        *(int *)(c + 0x14) = 0;
-    }
-    p.v = func_0000CACC[2]; A[3] = p.v;
-    c = o + 0x80;
-    if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
-        func_00000000(w = c, o, p, 1);
-        c = w;
-        *(char **)(c + 0xC) = &D_0000C764;
-        *(int *)(c + 0x10) = -0xC;
-        *(int *)(c + 0x14) = 0;
-    }
-end:
-    return o;
+    return self;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00013D40);
-#endif
 
 void func_00013FE0(char *a0, int a1, int a2) {
     *(int*)(a0 + 0x44) = a1;
