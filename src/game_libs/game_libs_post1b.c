@@ -1701,7 +1701,6 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  * reverse-order sub shape. 66.85% -> 94.38% fuzzy. Residual = struct-copy
  * sp-slot allocation (52/68/84 vs 44/.. ; frame -88 vs -96); documented
  * finicky struct-copy class. INCLUDE_ASM is the build path (no episode). */
-#ifdef NON_MATCHING
 /* gl_func_00065250 — EXACT 34/34 (2026-07-03). Levers (in order cracked):
  * 1. FP pool-coloring: named float diffs dx,dy,dz (defs x,y,z) -> f0,f2,f12
  *    from pool START; the 6 field loads stay expression temps (f4-f18) by
@@ -1719,7 +1718,12 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  * 5. Schedule z,y,x (subs+stores+a1 loads) with temps/coloring still
  *    x,y,z: put all three defs on ONE SOURCE LINE (as1 line-window
  *    grouping); stores written z,y,x on separate lines.
+ * 2026-10-20 agent-g: UNWRAPPED (twin-finder: nm100, structural 1.000 vs the
+ * exact sibling gl_func_000652D8). The NM body was already 34/34; only the
+ * callee needed the blank USO-jal alias gl_func_00062F64_65250 (= 0 in
+ * undefined_syms_auto.txt) -- a direct in-unit call bakes 0x0C018BD9.
  */
+extern int gl_func_00062F64_65250();
 void gl_func_00065250(int a0, Vec3_f *a1) {
     Vec3_f f;
     volatile int pad2;
@@ -1738,11 +1742,8 @@ void gl_func_00065250(int a0, Vec3_f *a1) {
     if (sub) {}
     e = d;
     f = e;
-    gl_func_00062F64(a0 + 0x294, &f);
+    gl_func_00062F64_65250(a0 + 0x294, &f);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00065250);
-#endif
 
 /* gl_func_000652D8: 34-insn Vec3-diff + buf-copy chain + dispatch (0x88, frame 0x60).
  *

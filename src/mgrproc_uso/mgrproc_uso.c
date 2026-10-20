@@ -1733,62 +1733,29 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00002B7C);
 #endif
 
-/* vram 0x2E34: 2-word FPU-const stolen prologue (lui $at,0x3F80; mtc1
- * $at,$f0). The old "C-emit-absorbed by _00002B7C" note was stale: 2B7C's
- * INCLUDE_ASM emits exactly its 0x2B8 decl, so the orphan had vanished from
- * the block (-8). Restored 2026-06-10 as a standalone 2-word GLOBAL_ASM. */
-#pragma GLOBAL_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_orphan_00002E34.s")
-
-/* mgrproc_uso_func_00002E3C: 45-insn (real 0xB0; declared 0xD4 incl. a
- * trailing FPU-const block) — DEFERRED, documented-cap class:
- *  (1) mgrproc_uso is Yay0-compressed / -O0 (see file-head BLOCKED note);
- *      -O2 C build can't match -O0 target — same cap as the other
- *      mgrproc/timproc -O0 wraps.
- *  (2) CHAINED FPU-const stolen-prologue boundary: 2E3C reads $f0
- *      uninitialized at +0xC..+0x18 (`swc1 f0,72..84(sp)`) — $f0 is set
- *      by the PREDECESSOR's trailing FPU-const. And 2E3C's own declared
- *      tail 0xB4..0xD0 (`lui 0x437f;mtc1 f2; lui 0x4340;mtc1 f4; lui
- *      0x437f;mtc1 f6; mtc1 zero,f10; div.s f0,f4,f2`) is the stolen
- *      prologue of successor mgrproc_uso_func_00002F10. FPU-variant of
- *      the docs/MATCHING_WORKFLOW forward-merge stolen-insn pattern,
- *      chained across the -O0 run.
- * Body shape (for future post-Yay0 work): a0->0x68++; v0=X(a0->0x50);
- * pick a0+312/+288 by v0; X(that); X(.., trunc(255.0*a0->0x168), &..);
- * if (a0->0x68 & 8) X(.., 160, 124, 3). Decode only when the Yay0/-O0
- * pipeline + the chained FPU-prologue pair are tackled together. */
+/* mgrproc_uso_func_00002E3C: historical name, true entry 0x2E34.
+ * a0->0x68++; state = X(a0->0x50); target = a0 + (state == 1 ? 0x120 : 0x138);
+ * X(target); X(target, (int)(a0->0x168 * 255.0f), rgba, 255); blink-gated
+ * X(target, 160, 124, 3).
+ * BOUNDARY FIX 2026-10-20: the 2-word "orphan" at 0x2E34 (lui at,0x3F80;
+ * mtc1 at,$f0) is this fn's rgba[] 1.0f hoisted above the prologue (same as
+ * b1 19C0 @ 0x19B8, arcproc 1C74 @ 0x1C6C) -- folded into this .s.
+ * The old "FP pair-swap cap" is the twin recipe (twin-finder.py: arcproc
+ * 1C74 / b1 19C0): field * (scale = 255.0f). */
 extern int mgrproc_uso_func_01F874();
 extern void import_0024E388();
-#ifdef NON_MATCHING
-/* RE-DERIVED 2026-06-22: prior body claimed -O0/Yay0 cap, but the target is
- * -O2 with FILLED delay slots and real reloc names. Three calls are distinct
- * real targets (mgrproc_uso_func_01F874, import_0024F2C8, import_0024E388,
- * import_0024F34C); a0 is saved across F2C8 (sw/lw sp+68) and reused.
- * Twin (if/else form) of titproc_uso_func_00001710. Body 97.49% fuzzy.
- *
- * PRIOR NOTE CORRECTED 2026-07-14 (splat-boundary vein): the orphan at
- * 0x2E34 is `lui at,0x3F80; mtc1 at,$f0` = rgba const **1.0f** (NOT
- * `mtc1 zero,f0`), and it IS C-reproducible: `rgba[i]=1.0f` makes IDO -O2
- * hoist the FP-const materialization ABOVE the `addiu sp,-0x58` prologue,
- * exactly reproducing the "stolen prologue" (+ decl order rgba,target,pad
- * lands target@sp+0x44 / rgba@sp+0x48) -> 45/47 words aligned. So this is
- * NOT a splat-boundary cap. BUT the 1.0f form scores LOWER on objdiff fuzzy
- * (95.3 vs 97.5 — the metric weighs the exposed FP-PAIR-SWAP residual
- * heavily), so the 0.0f body is kept per the monotonic-fuzzy rule.
- * TRUE RESIDUAL = 2-word FP-register pair-swap in alpha=255.0f*val at
- * 0x2E94/0x2E98: target `mtc1 at,$f4; lwc1 $f6,0x168(s0)`, IDO invariantly
- * assigns the loaded value the lower reg ($f4) across 5 source forms.
- * Documented intractable FP-reg-numbering cap. INCLUDE_ASM build path. */
 void mgrproc_uso_func_00002E3C(char *a0) {
   float rgba[4];
-  char pad[0x18];
   char *target;
+  float scale;
+  char pad[0x18];
   int state;
-  int alpha;
+
   (void) pad;
-  rgba[0] = 0.0f;
-  rgba[1] = 0.0f;
-  rgba[2] = 0.0f;
-  rgba[3] = 0.0f;
+  rgba[0] = 1.0f;
+  rgba[1] = 1.0f;
+  rgba[2] = 1.0f;
+  rgba[3] = 1.0f;
   *((int *) (a0 + 0x68)) = (*((int *) (a0 + 0x68))) + 1;
   state = mgrproc_uso_func_01F874(*((int *) (a0 + 0x50)));
   if (state == 0)
@@ -1804,16 +1771,12 @@ void mgrproc_uso_func_00002E3C(char *a0) {
     target = a0 + 0x138;
   }
   import_0024F2C8(target);
-  alpha = (int) (255.0f * (*((float *) (a0 + 0x168))));
-  import_0024E388(target, alpha, rgba, 255);
+  import_0024E388(target, (int) (*((float *) (a0 + 0x168)) * (scale = 255.0f)), rgba, 255);
   if (((*((int *) (a0 + 0x68))) & 8) != 0)
   {
     import_0024F34C(target, 160, 124, 3);
   }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00002E3C);
-#endif
 
 /* mgrproc_uso_func_00002EF0: one ~97-insn (0x184) object initializer + draw-list
  * builder. BOUNDARY MERGED 2026-06-02: splat had split it into 2EF0 (8-insn

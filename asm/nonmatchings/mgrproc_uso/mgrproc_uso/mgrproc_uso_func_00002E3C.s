@@ -1,6 +1,8 @@
-nonmatching mgrproc_uso_func_00002E3C, 0xB4
+nonmatching mgrproc_uso_func_00002E3C, 0xBC
 
 glabel mgrproc_uso_func_00002E3C
+    /* 002E34 00002E34 3C013F80 */  .word 0x3C013F80
+    /* 002E38 00002E38 44810000 */  .word 0x44810000
     /* 002E3C 00002E3C 27BDFFA8 */  .word 0x27BDFFA8
     /* 002E40 00002E40 AFBF001C */  .word 0xAFBF001C
     /* 002E44 00002E44 AFB00018 */  .word 0xAFB00018
