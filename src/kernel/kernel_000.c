@@ -283,70 +283,45 @@ extern s32 func_800005DC();
 extern s32 func_8000060C();
 extern void func_80000660();
 
-#ifdef NON_MATCHING
-/* +472 bytes bloat (built 800 vs baserom 328). Unrolled byte-copy loops
- * produce 2.4x the original asm. Likely the original used memcpy/bcopy
- * helpers or a different byte-copy idiom. Preserved as INCLUDE_ASM in
- * default build so kernel section size matches baserom (this single bloat
- * was responsible for ~80% of the kernel-section ROM-size mismatch). */
-void func_80000260(u8* arg0, s32 arg1, u8* arg2) {
-    u8 sp48[0x40];
-    s32 sp44;
-    s32 sp40;
-    s32 a2;
-    s32 v1;
+/* func_80000260: split "dir/file" at the first '/' (func_8000020C) into dir
+ * (strcpy func_800001DC from a 0x40 stack copy) and file; no slash -> dir =
+ * whole path, file = "". IDO 7.1 -O2. Kernel jal targets sit 0x400 above our
+ * numbering: `jal func_8000060C` is func_8000020C and `jal func_800005DC` is
+ * func_800001DC, so the calls go through the absolute names (the 5DC one via
+ * the func_800005DC_d2c alias: func_800005DC is also a C definition in this
+ * TU). The byte loop is IDO's own 4x unroll of a plain for loop.
+ * EXACT 2026-10-20 (agent-g run 112; the old NM wrote the unroll by hand and
+ * sat at 0%): the file copy is a while loop (IDO peels its first test, so
+ * file[0] gets a constant offset) with explicit post-increment copies
+ * m = j++ then k = i++ (that order picks m=a0/k=a1; without the copies IDO
+ * strength-reduces the indices into pointers), and `if (1) {}` after j = 0
+ * (BB lever: j in v1, the loaded char in v0). */
+extern s32 func_800005DC_d2c(void*, void*);
+void func_80000260(char *path, char *dir, char *file) {
+    char buf[0x40];
+    s32 len;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 m;
 
-    if (func_8000060C(arg0, &sp44) != 0) {
-        a2 = 0;
-        if (sp44 > 0) {
-            if ((sp44 & 3) != 0) {
-                do {
-                    sp48[a2] = arg0[a2];
-                    a2++;
-                } while ((sp44 & 3) != a2);
-
-                if (a2 != sp44) {
-                    do {
-                        sp48[a2] = arg0[a2];
-                        sp48[a2 + 1] = arg0[a2 + 1];
-                        sp48[a2 + 2] = arg0[a2 + 2];
-                        sp48[a2 + 3] = arg0[a2 + 3];
-                        a2 += 4;
-                    } while (a2 != sp44);
-                }
-            } else {
-                do {
-                    sp48[a2] = arg0[a2];
-                    sp48[a2 + 1] = arg0[a2 + 1];
-                    sp48[a2 + 2] = arg0[a2 + 2];
-                    sp48[a2 + 3] = arg0[a2 + 3];
-                    a2 += 4;
-                } while (a2 != sp44);
-            }
+    if (func_8000060C(path, &len) != 0) {
+        for (i = 0; i < len; i++) {
+            buf[i] = path[i];
         }
-
-        sp48[a2] = 0;
-        sp40 = sp44 + 1;
-        func_800005DC(arg1, sp48, sp40, arg0);
-
-        v1 = 1;
-        arg2[0] = arg0[sp40];
-        sp40++;
-        if (arg2[0] != 0) {
-            do {
-                arg2[v1] = arg0[sp40];
-                v1++;
-                sp40++;
-            } while (arg2[v1 - 1] != 0);
+        buf[i] = 0;
+        i = len + 1;
+        func_800005DC_d2c(dir, buf);
+        j = 0;
+        if (1) {
+        }
+        while (m = j++, k = i++, (file[m] = path[k]) != 0) {
         }
     } else {
-        func_800005DC(arg1, arg0);
-        arg2[0] = 0;
+        func_800005DC_d2c(dir, path);
+        file[0] = 0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80000260);
-#endif
 
 void func_800003A8(s32 arg0, s32 arg1, s32 arg2) {
     s32 savedMask;
