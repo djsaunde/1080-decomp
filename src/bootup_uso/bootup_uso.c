@@ -758,514 +758,174 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000D94);
 //   tiled quad-mesh + index-buffer builder skeleton. Name pre-checked:
 //   no extern reuse.
 #ifdef NON_MATCHING
+/* PASS-9 2026-10-20 (agent-c run 114): FRESH HAND DECODE 73.5 -> 86.9.
+ * The body is three phases of real libultra F3DEX GBI macros, written out
+ * here as E68_* clones of the 2.0I gbi.h expansions (scaled-down _SHIFTL,
+ * gDma1p, gSPCullDisplayList, gSP1Triangle, gDPSetTile, LoadTileGeneric):
+ *   1. a vertex grid (dims.h/32 rows x dims.w/64 cols, 4 Vtx per cell);
+ *   2. one sub-display-list per cell: CullDL + gDPLoadTextureTile (the
+ *      2.0J form whose SetTileSize is (0,0,(lrs-uls)<<2,(lrt-ult)<<2): IDO
+ *      reassociates that into the target's odd hoisted "63" and
+ *      "(t1-t1)+31" spill slots and the held 71 = line before >>3) + two
+ *      TRI1 + ENDDL, with the head pointer of each kept in arr[];
+ *   3. gSPVertex + gSPDisplayList(arr[i*n+j]) per row, then ENDDL.
+ * Levers: (1) the DL append is `(_n = m->dl->count++, &m->dl->buf[_n])`.
+ * With a plain `&buf[count++]`, IDO loads buf before the count store.
+ * The target re-reads m->dl after the store, which is what the comma
+ * temp gives (57.9 -> 85.1). (2) The dims w and h reads go through
+ * separate zero aliases (w = [0], h = [1], so the +4 stays in the lw).
+ * (3) Phase 3 walks a separate vp pointer, not &buf[i*n*4]. Residual: k
+ * (the arr[] index) is homed instead of held in s5, buf is held in s1
+ * where the target spills it to 0x1CC, the frame is 0x10 short, and the
+ * phase-2 vidx*2 web takes ra/s-regs where the target uses t5. Real
+ * identities: dims = import_8001FFA0 {w, h}, mgr = *(import_8005C108 +
+ * 0x18), vtx quad = bootup data sym163. */
 extern char D_000066B0, D_000066B8;
-extern volatile s32 D_00000004;  /* volatile re-read lever: target re-loads at each of its 3 sites; plain extern gets coloring-hoisted into a saved reg */
-extern s32 bu_e68_dimB;
-extern s32 bu_e68_mgr;
-/* PASS-2 2026-06-10 (big-swing): FULL m2c graft via the pipeline +
- * scripts/m2c-graft-clean.py (759 insns, no jumptables, 0 M2C_ERRORs).
- * PASS-3 2026-06-21 (agent-i): correctness fixes verified to emit the
- * target idioms (frame remains the genuine spill cap, untouched):
- * &D_000066B0/&D_000066B8 data refs (HI16/LO16 now emit), f32-typed 1.0f
- * stores (lui 0x3f80/mtc1/swc1), removed spurious 2nd alloc arg, sp130
- * sized to its real 0x80 span.
- * PASS-4 2026-06-22 (agent-i, deep big-swing): size gap 130->68 insns.
- *   (1) held-base-pointer: the gfx-context manager (global @0x214) was being
- *       re-deref'd from the global on all 44 straight-line/final-loop emit
- *       sites; the target loads it once (0x14D8) and holds it in $s1. Lifted
- *       to a single held local `mgr2` -> removed ~61 lui/lw pairs.
- *   (2) reloc-form-arg: `*(s32*)4`/`*(void**)0x214` literal derefs emitted
- *       `lw N($zero)` (no reloc); rewritten as &D_00000000+N so the folded
- *       HI16/LO16 pair emits. Reloc count now 30 == target.
- *   (3) distinct-extern-CSE-defeat for grid-dim-A: the 5 in-loop `+4` reads
- *       use a separate `D_00000004` symbol so each emits its own folded
- *       2-insn load (target uses func_00000000+0x4, a distinct symbol from
- *       the dim-B reads at D_00000000+0).
- * PASS-6 2026-07-11 (agent-g): Phase-1 grid records are 2-byte fields, not
- *       words. The 20 stores at var_v0_2 offsets 0x0..0x3A were mis-typed
- *       s32 (emitting sw); target has 20 `sh` (store-halfword) and 0 sw
- *       there. Retyped s32->s16 -> the 20 sh now emit. Fuzzy 66.15->70.60.
- * PASS-5 2026-06-22 (agent-i): self->0x28 store is a RELOC'd pointer
- *       (&D_00000000, target lui+addiu+sw), not integer 0 (was sw $zero).
- *       Fixed -> emits the target's 3-insn pointer store; -12 real word diffs.
- * PASS-7 2026-07-17 (agent-g, de-name pass): (1) alpha-renamed the 99
- *       m2c per-site DL-append temps onto 3 shared role locals (ga=list
- *       header, gk=count, gp=entry ptr, gw=payload) — pure renaming, zero
- *       semantic change; frame collapsed 0x348 -> 0x1C8. (2) mgr@+0x214
- *       reads now use the TRUE reloc identity &func_000001FC+0x18 (target
- *       0x10F0/0x14D8), dim-B value reads use a distinct base-0 alias
- *       bu_e68_dimB (direct lui/lw form) — this evicts the shared
- *       &D_00000000 address CSE from $s0, and the whole prologue snaps
- *       EXACT: a1->s0/a2->s1/a3->s2 ring, s0-fp+ra saves at target
- *       offsets, arg0 unregistered at 0x1D8(sp) home. (3) dimA2 pre-loop
- *       hoist gives the final-loop $fp-held bound (target 0x1538).
- *       (4) volatile e68_pad0 closes the frame to 0x1D8 EXACT.
- *       Fuzzy 70.60 -> 70.21 (dip is register-shift noise; mnemonic-LCS
- *       586/759 and prologue/frame/ring now exact — strictly better
- *       foundation). NEGATIVE RESULT: decl-reorder + volatile-hole
- *       mimicry of the target's 0x58-0x11C dead region FAILS — built's
- *       own residual spill temps already occupy that region, pads stack
- *       on top (frame 0x2B8). Remaining gap: ~49 extra insns of residual
- *       spill traffic (built slots 0x60/0xD8/0xF4/0x13C-0x154 vs target's
- *       named 0x4C-0x54/0x120-0x124/0x1B0-0x1D4 slots) — slot-placement
- *       coloring, per-slot RE grind.
- * REMAINING CAP (measured: built 832 words vs 759 target, ~73-word gap;
- * ~789 reloc-masked word diffs). TWO compounding regalloc/frame caps, both
- * C-irreproducible from this body:
- *   (a) m2c local explosion -> IDO spills a pile of temps IDO won't coalesce;
- *       built frame is 0x348 vs target 0x1D8 (~0xE0+ of extra spill slots),
- *       producing ~60 scattered spill lw/sw the target lacks. The grid array
- *       (sp130[32]) is the only genuine stack array and is correctly 0x80.
- *   (b) loop-invariant grid-dim-A read (D_00000004) is hoisted into the
- *       callee-saved $s1, whereas the target re-loads func_00000000+0x4 into
- *       a temp at each of its 3 read sites (0xF5C/0x10C8/0x14AC). Distinct
- *       externs do not defeat this (the value is invariant across both loop
- *       phases, so IDO colors it to a saved reg regardless).
- * Same class as the func_000055A0 &D-CSE-into-saved-reg cap (~line 3512):
- * solvable only by identical allocator coloring, not C/symbol tricks. Not a
- * fakeable diff -> stays NON_MATCHING. */
-/* PASS-8 2026-10-16 (agent-c, 71.38 -> 73.38 fuzzy): (1) the grid-row temps
- * temp_a1/a3/t0/v1 are s32, not s16: only their sh stores truncate, and the
- * s16 typing emitted sll/sra 16 sign-extension pairs the target lacks.
- * (2) the three dim-A reads use ONE PLAIN (non-volatile) extern PER SITE
- * (bu_e68_d4_1/2/3): the shared volatile symbol let IDO keep the address in
- * a saved register, and the per-site symbols restore the target's per-site
- * lui/lw at sites 1 and 3. (3) the three volatile e68 pads are dropped: with
- * (1)+(2) the frame is 0x1D8 without them. Residual: site 2 (inside the row
- * loop) still has its address hoisted into s1; dim-A spills to 0xF0 instead
- * of staying in a3 across the grid loop; buf (sp1CC) stays in s3 where the
- * target spills it and reloads it per row; Phase-2 colouring. */
-extern s32 bu_e68_d4_1, bu_e68_d4_2, bu_e68_d4_3;
-void *func_00000E68(char *arg0, char *arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 sp1D4;
-    s32 sp1D0;
-    s32 sp1CC;
-    s32 sp1C4;
-    s32 sp1B0;
-    s32 sp130[32];
-    s32 sp124;
-    s32 *sp120;
-    s32 sp54;
-    s32 sp50;
-    s32 sp4C;
-    s32 temp_a1;
-    s32 temp_a3;
-    s32 temp_t0;
-    s32 temp_v1;
-    s32 temp_a1_2;
-    s32 temp_s3;
-    s32 temp_s7;
-    s32 temp_t1;
-    s32 temp_t1_2;
-    s32 temp_t2_2;
-    s32 temp_t6;
-    s32 temp_v0_10;
-    s32 temp_v0_2;
-    s32 temp_v0_9;
-    s32 var_a0;
-    s32 var_a0_2;
-    s32 var_a3;
-    s32 boundA;
-    s32 var_s0;
-    s32 var_s0_2;
-    s32 var_s1;
-    s32 var_s2;
-    s32 var_s3;
-    s32 var_s3_2;
-    s32 var_s5;
-    s32 var_s5_2;
-    s32 var_s6;
-    s32 var_s6_2;
-    s32 var_s6_3;
-    s32 var_t1;
-    s32 var_t3;
-    s32 var_t4;
-    s32 var_t4_2;
-    s32 var_t5;
-    s32 var_v0;
-    s32 var_v1;
-    s32 var_v1_2;
-    char **temp_t0_3;
-    char **var_a1;
-    char **var_a1_2;
-    char **var_ra;
-    char *temp_s4;
-    char *temp_t0_2;
-    char *temp_v0;
-    char *var_a2;
-    char *var_v0_2;
-    s32 mgr2;
-    s32 dimA2;
-    char *ga;
-    char *gp;
-    char *gw;
-    s32 gk;
-    s32 g47;
+extern char D_e68_vtx;  /* bootup.uso data sym163 (D_0065AC): 4-vertex quad */
+typedef struct { u32 w0, w1; } GwE68;
+typedef struct { GwE68 *buf; s32 count; } DlE68;
+typedef struct { char pad[0xC]; DlE68 *dl; } MgrE68;
+typedef struct { s16 x, y, z; u16 flag; s16 s, t; u8 cn[4]; } VtxE68;
+extern s32 import_8001FFA0[];   /* screen/grid dims {w, h}: w reads */
+extern s32 import_8001FFA0_h[]; /* same import, h reads ([1] = +4) */
+extern int import_8005C108[];
+#define E68_MGR (*(MgrE68 **)((char *)import_8005C108 + 0x18))
+#define E68_NEXT(m) (_n = (m)->dl->count++, &(m)->dl->buf[_n])
+#define E68_SHL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
+#define E68_W(pkt, a, b) { GwE68 *_g = (GwE68 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
+#define E68_TILEGEN(pkt, c, tile, uls, ult, lrs, lrt) \
+    E68_W(pkt, E68_SHL(c, 24, 8) | E68_SHL(uls, 12, 12) | E68_SHL(ult, 0, 12), \
+          E68_SHL(tile, 24, 3) | E68_SHL(lrs, 12, 12) | E68_SHL(lrt, 0, 12))
+#define E68_SETTILE(pkt, fmt, siz, line, tmem, tile, pal, cmt, maskt, shiftt, cms, masks, shifts) \
+    E68_W(pkt, E68_SHL(0xF5, 24, 8) | E68_SHL(fmt, 21, 3) | E68_SHL(siz, 19, 2) | E68_SHL(line, 9, 9) | E68_SHL(tmem, 0, 9), \
+          E68_SHL(tile, 24, 3) | E68_SHL(pal, 20, 4) | E68_SHL(cmt, 18, 2) | E68_SHL(maskt, 14, 4) | \
+          E68_SHL(shiftt, 10, 4) | E68_SHL(cms, 8, 2) | E68_SHL(masks, 4, 4) | E68_SHL(shifts, 0, 4))
+#define E68_LOADTEXTILE(pkt, timg, fmt, siz, width, height, uls, ult, lrs, lrt, pal, cms, cmt, masks, maskt, shifts, shiftt) \
+{ \
+    E68_W(pkt, E68_SHL(0xFD, 24, 8) | E68_SHL(fmt, 21, 3) | E68_SHL(siz, 19, 2) | E68_SHL((width) - 1, 0, 12), (u32)(timg)); \
+    E68_SETTILE(pkt, fmt, siz, (((((lrs) - (uls) + 1) * 1) + 7) >> 3), 0, 7, 0, cmt, maskt, shiftt, cms, masks, shifts); \
+    E68_W(pkt, E68_SHL(0xE6, 24, 8), 0); \
+    E68_TILEGEN(pkt, 0xF4, 7, (uls) << 2, (ult) << 2, (lrs) << 2, (lrt) << 2); \
+    E68_W(pkt, E68_SHL(0xE7, 24, 8), 0); \
+    E68_SETTILE(pkt, fmt, siz, (((((lrs) - (uls) + 1) * 1) + 7) >> 3), 0, 0, pal, cmt, maskt, shiftt, cms, masks, shifts); \
+    E68_TILEGEN(pkt, 0xF2, 0, 0, 0, ((lrs) - (uls)) << 2, ((lrt) - (ult)) << 2); \
+}
+#define E68_DMA1P(pkt, c, s, l, p) E68_W(pkt, E68_SHL(c, 24, 8) | E68_SHL(p, 16, 8) | E68_SHL(l, 0, 16), (u32)(s))
+#define E68_VTX(pkt, v, n, v0) E68_DMA1P(pkt, 0x04, v, ((n) << 10) | (sizeof(VtxE68) * (n) - 1), (v0) * 2)
+#define E68_CULL(pkt, vs, ve) E68_W(pkt, E68_SHL(0xBE, 24, 8) | E68_SHL((vs) * 2, 0, 16), E68_SHL((ve) * 2, 0, 16))
+#define E68_TRI1(pkt, a, b, c) E68_W(pkt, E68_SHL(0xBF, 24, 8), E68_SHL((a) * 2, 16, 8) | E68_SHL((b) * 2, 8, 8) | E68_SHL((c) * 2, 0, 8))
+#define E68_END(pkt) E68_W(pkt, E68_SHL(0xB8, 24, 8), 0)
+void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
+    u32 timg;
+    u32 tlut;
+    VtxE68 *buf;
+    s32 row;
+    s32 k2;
+    s32 col, x, y, vidx;
+    s32 ult;
+    GwE68 *arr[32];
+    s32 k, uls;
+    s32 i;
+    GwE68 *head;
+    s32 j, n;
+    MgrE68 *m;
+    VtxE68 *vp;
+    s32 _n;
 
-
-    if ((arg0 != 0) || (temp_v0 = func_00000000(0x4C), arg0 = temp_v0, (temp_v0 != 0))) {
-        func_00000000(arg0, &D_000066B0);
-        *(s32 *)((char *)(arg0) + 0x28) = (s32)&D_00000000;
-        *(s32 *)((char *)(arg0) + 0xC) = (s32)&D_000066B8;
-        sp1D4 = *(s32 *)((char *)(arg1) + 0x8);
-        sp1D0 = *(s32 *)((char *)(arg1) + 0xC);
-        *(s32 *)((char *)(arg0) + 0x2C) = arg2;
-        *(s32 *)((char *)(arg0) + 0x30) = arg3;
-        *(s32 *)((char *)(arg0) + 0x34) = arg4;
-        *(f32 *)((char *)(arg0) + 0x48) = 1.0f;
-        *(f32 *)((char *)(arg0) + 0x44) = 1.0f;
-        *(f32 *)((char *)(arg0) + 0x40) = 1.0f;
-        *(f32 *)((char *)(arg0) + 0x3C) = 1.0f;
-        temp_v0_2 = func_00000000(0x800);
-        sp1CC = temp_v0_2;
-        func_00000000(temp_v0_2, 0x800, 0); if (1) {}
-        var_a3 = bu_e68_d4_1;
-        var_s6 = 0;
-        var_t4 = 0;
-        var_t3 = (var_a3 / 2) - 0x10;
-        var_v0 = var_a3 / 32;
-        var_s5 = 0;
-        if (var_v0 > 0) {
-            var_v1 = (s32) bu_e68_dimB / 64;
-            do {
-                var_a0 = (bu_e68_dimB / 2) - 0x20;
-                var_s3 = 0;
-                if (var_v1 > 0) {
-                    temp_a3 = var_t3 + 0x10;
-                    temp_t0 = var_t3 - 0x10;
-                    var_v0_2 = sp1CC + (var_s6 * 0x10);
-                    do {
-                        temp_v1 = var_a0 + 0x20;
-                        *(s16 *)((char *)(var_v0_2) + 0x0) = temp_v1;
-                        *(s16 *)((char *)(var_v0_2) + 0x2) = temp_a3;
-                        temp_a1 = var_a0 - 0x20;
-                        *(s16 *)((char *)(var_v0_2) + 0x8) = 0;
-                        *(s16 *)((char *)(var_v0_2) + 0x4) = (s16) ((s32) bu_e68_dimB / 2);
-                        *(s16 *)((char *)(var_v0_2) + 0xA) = 0;
-                        *(s16 *)((char *)(var_v0_2) + 0x10) = temp_a1;
-                        *(s16 *)((char *)(var_v0_2) + 0x12) = temp_a3;
-                        *(s16 *)((char *)(var_v0_2) + 0x18) = 0xFC0;
-                        *(s16 *)((char *)(var_v0_2) + 0x1A) = 0;
-                        *(s16 *)((char *)(var_v0_2) + 0x14) = (s16) ((s32) bu_e68_dimB / 2);
-                        *(s16 *)((char *)(var_v0_2) + 0x20) = temp_a1;
-                        *(s16 *)((char *)(var_v0_2) + 0x22) = temp_t0;
-                        *(s16 *)((char *)(var_v0_2) + 0x28) = 0xFC0;
-                        *(s16 *)((char *)(var_v0_2) + 0x2A) = 0x7C0;
-                        *(s16 *)((char *)(var_v0_2) + 0x24) = (s16) ((s32) bu_e68_dimB / 2);
-                        *(s16 *)((char *)(var_v0_2) + 0x30) = temp_v1;
-                        *(s16 *)((char *)(var_v0_2) + 0x32) = temp_t0;
-                        *(s16 *)((char *)(var_v0_2) + 0x38) = 0;
-                        *(s16 *)((char *)(var_v0_2) + 0x3A) = 0x7C0;
-                        *(s16 *)((char *)(var_v0_2) + 0x34) = (s16) ((s32) bu_e68_dimB / 2);
-                        var_s3 += 1;
-                        var_a0 -= 0x40;
-                        var_s6 += 4;
-                        var_v0_2 += 0x40;
-                        var_v1 = (s32) bu_e68_dimB / 64;
-                    } while (var_s3 < var_v1);
-                    var_a3 = bu_e68_d4_2;
-                    var_v0 = var_a3 / 32;
-                }
-                var_t4 += 1;
-                var_t3 -= 0x20;
-            } while (var_t4 < var_v0);
+    if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
+        func_00000000(self, &D_000066B0);
+        *(void **)(self + 0x28) = &D_00000000;
+        *(void **)(self + 0xC) = &D_000066B8;
+        timg = *(u32 *)(cfg + 0x8);
+        tlut = *(u32 *)(cfg + 0xC);
+        *(s32 *)(self + 0x2C) = arg2;
+        *(s32 *)(self + 0x30) = arg3;
+        *(s32 *)(self + 0x34) = arg4;
+        *(f32 *)(self + 0x48) = 1.0f;
+        *(f32 *)(self + 0x44) = 1.0f;
+        *(f32 *)(self + 0x40) = 1.0f;
+        *(f32 *)(self + 0x3C) = 1.0f;
+        buf = (VtxE68 *)func_00000000(0x800, 16);
+        func_00000000(buf, 0x800, 0);
+        vidx = 0;
+        y = import_8001FFA0_h[1] / 2 - 16;
+        k = 0;
+        for (row = 0; row < import_8001FFA0_h[1] / 32; row++) {
+            x = import_8001FFA0[0] / 2 - 32;
+            for (col = 0; col < import_8001FFA0[0] / 64; col++) {
+                buf[vidx + 0].x = x + 32;
+                buf[vidx + 0].y = y + 16;
+                buf[vidx + 0].s = 0;
+                buf[vidx + 0].z = import_8001FFA0[0] / 2;
+                buf[vidx + 0].t = 0;
+                buf[vidx + 1].x = x - 32;
+                buf[vidx + 1].y = y + 16;
+                buf[vidx + 1].s = 0xFC0;
+                buf[vidx + 1].t = 0;
+                buf[vidx + 1].z = import_8001FFA0[0] / 2;
+                buf[vidx + 2].x = x - 32;
+                buf[vidx + 2].y = y - 16;
+                buf[vidx + 2].s = 0xFC0;
+                buf[vidx + 2].t = 0x7C0;
+                buf[vidx + 2].z = import_8001FFA0[0] / 2;
+                buf[vidx + 3].x = x + 32;
+                buf[vidx + 3].y = y - 16;
+                buf[vidx + 3].s = 0;
+                buf[vidx + 3].t = 0x7C0;
+                buf[vidx + 3].z = import_8001FFA0[0] / 2;
+                x -= 64;
+                vidx += 4;
+            }
+            y -= 32;
         }
-        temp_t0_2 = *(void **)((char *)&func_000001FC + 0x18);
-        var_a2 = 0;
-        var_t1 = 0;
-        sp124 = 0;
-        boundA = var_a3 / 64;
-        if (boundA > 0) {
-            var_v1_2 = (s32) bu_e68_dimB / 64;
-            do {
-                var_s6_2 = 0;
-                var_a0_2 = 0;
-loop_12:
-                var_t4_2 = 0;
-                var_s3_2 = 0;
-                if (var_v1_2 > 0) {
-                    var_ra = &(&sp130[0])[var_s5];
-                    sp1B0 = var_t1;
-                    sp54 = ((var_t1 + 0x1F) * 4) & 0xFFF;
-                    var_t5 = var_s6_2 * 2;
-                    sp50 = 0x3F;
-                    sp4C = (((var_t1 - sp1B0) + 0x1F) * 4) & 0xFFF;
-                    var_s0 = var_t5 + 6;
-                    var_s1 = var_t5 + 2;
-                    var_s2 = var_t5 + 4;
-                    sp1C4 = var_a0_2;
-                    g47 = 0x47;
-                    do {
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *var_ra = gp;
-                        *(s32 *)((char *)(gp) + 0x4) = (s32) (var_s0 & 0xFFFF);
-                        *(s32 *)((char *)(gp) + 0x0) = (s32) ((var_t5 & 0xFFFF) | 0xBE000000);
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        var_s3_2 += 1;
-                        var_a3 = var_t5;
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        var_s5 += 1;
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = (s32) (((bu_e68_dimB - 1) & 0xFFF) | 0xFD480000);
-                        temp_t1 = (((g47 >> 3) & 0x1FF) << 9) | 0xF5480000;
-                        *(s32 *)((char *)(gp) + 0x4) = sp1D4;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        var_ra += 4;
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        var_s6_2 += 4;
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = temp_t1;
-                        *(s32 *)((char *)(gp) + 0x4) = 0x07014060;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = 0xE6000000;
-                        *(s32 *)((char *)(gp) + 0x4) = 0;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = (s32) ((((var_t4_2 * 4) & 0xFFF) << 0xC) | 0xF4000000 | ((var_t1 * 4) & 0xFFF));
-                        *(s32 *)((char *)(gp) + 0x4) = (s32) (((((var_t4_2 + 0x3F) * 4) & 0xFFF) << 0xC) | 0x07000000 | sp54);
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        temp_t2_2 = var_s2 & 0xFF;
-                        var_t4_2 += 0x40;
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        var_s2 += 8;
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = 0xE7000000;
-                        *(s32 *)((char *)(gp) + 0x4) = 0;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = temp_t1;
-                        *(s32 *)((char *)(gp) + 0x4) = 0x14060;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        temp_t1_2 = (var_t5 & 0xFF) << 0x10;
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        var_t5 += 8;
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x0) = 0xF2000000;
-                        *(s32 *)((char *)(gp) + 0x4) = (s32) ((((sp50 * 4) & 0xFFF) << 0xC) | sp4C);
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        temp_t6 = (var_s1 & 0xFF) << 8;
-                        var_s1 += 8;
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x4) = (s32) (temp_t1_2 | temp_t6 | temp_t2_2);
-                        *(s32 *)((char *)(gp) + 0x0) = 0xBF000000;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        gp = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(gp) + 0x4) = (s32) (temp_t1_2 | (temp_t2_2 << 8) | (var_s0 & 0xFF));
-                        *(s32 *)((char *)(gp) + 0x0) = 0xBF000000;
-                        ga = *(s32 *)((char *)(temp_t0_2) + 0xC);
-                        var_s0 += 8;
-                        gk = *(s32 *)((char *)(ga) + 0x4);
-                        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                        var_a2 = *(s32 *)((char *)(*(s32 *)((char *)(temp_t0_2) + 0xC)) + 0x0) + (gk * 8);
-                        *(s32 *)((char *)(var_a2) + 0x0) = 0xB8000000;
-                        *(s32 *)((char *)(var_a2) + 0x4) = 0;
-                        var_v1_2 = (s32) bu_e68_dimB / 64;
-                    } while (var_s3_2 < var_v1_2);
-                    var_t1 = sp1B0;
-                    var_a0_2 = sp1C4;
+        m = E68_MGR;
+        ult = 0;
+        for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
+            vidx = 0;
+            for (k2 = 0; k2 != 2; k2++) {
+                uls = 0;
+                for (j = 0; j < import_8001FFA0[0] / 64; j++) {
+                    E68_CULL(arr[k++] = E68_NEXT(m), vidx, vidx + 3);
+                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
+                    E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
+                    E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
+                    E68_END(E68_NEXT(m));
+                    vidx += 4;
+                    uls += 64;
                 }
-                var_a0_2 += 1;
-                var_t1 += 0x20;
-                if (var_a0_2 != 2) {
-                    goto loop_12;
-                }
-                temp_a1_2 = sp124 + 1;
-                sp124 = temp_a1_2;
-            } while (temp_a1_2 < boundA);
-            sp124 = 0;
+                ult += 32;
+            }
         }
-        mgr2 = *(s32 *)&bu_e68_mgr; if (1) {}
-        ga = *(s32 *)((char *)(mgr2) + 0xC); if (1) {}
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0x0400103F;
-        sp120 = gp;
-        *(s32 *)((char *)(sp120) + 0x4) = func_00000000(0, gk, var_a2, var_a3);
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xBE000000;
-        *(s32 *)((char *)(gp) + 0x4) = 6;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xE7000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xBA001402;
-        *(s32 *)((char *)(gp) + 0x4) = 0;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xBB000001;
-        *(s32 *)((char *)(gp) + 0x4) = 0x80008000;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xB6000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0x33205;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xB900031D;
-        *(s32 *)((char *)(gp) + 0x4) = 0x0C084000;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xFC357E6A;
-        *(s32 *)((char *)(gp) + 0x4) = 0x11FCF67B;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xBA000E02;
-        *(s32 *)((char *)(gp) + 0x4) = 0x8000;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xFD100000;
-        *(s32 *)((char *)(gp) + 0x4) = sp1D0;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xE8000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xF5000100;
-        *(s32 *)((char *)(gp) + 0x4) = 0x07000000;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xE6000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xF0000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0x073FC000;
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xE7000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0;
-        var_s5_2 = sp1CC;
-        temp_s3 = (s32) bu_e68_dimB / 32;
-        temp_v0_9 = temp_s3 * 4;
-        dimA2 = bu_e68_d4_3;
-        if ((dimA2 / 64) > 0) {
-            temp_s7 = (((temp_v0_9 << 0xA) | ((temp_v0_9 * 0x10) - 1)) & 0xFFFF) | 0x04000000;
-            var_s6_3 = sp124;
-            do {
-                ga = *(s32 *)((char *)(mgr2) + 0xC);
-                var_s0_2 = 0;
-                gk = *(s32 *)((char *)(ga) + 0x4);
-                *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                temp_s4 = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-                *(s32 *)((char *)(temp_s4) + 0x0) = temp_s7;
-                *(s32 *)((char *)(temp_s4) + 0x4) = func_00000000(var_s5_2, gk);
-                if (temp_s3 > 0) {
-                    temp_v0_10 = temp_s3 & 3;
-                    temp_t0_3 = &(&sp130[0])[var_s6_3 * temp_s3];
-                    if (temp_v0_10 != 0) {
-                        var_a1 = &temp_t0_3[0];
-                        do {
-                            ga = *(s32 *)((char *)(mgr2) + 0xC);
-                            gw = *var_a1;
-                            var_s0_2 += 1;
-                            gk = *(s32 *)((char *)(ga) + 0x4);
-                            var_a1 += 4;
-                            *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                            gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-                            *(s32 *)((char *)(gp) + 0x0) = 0x06000000;
-                            *(s32 *)((char *)(gp) + 0x4) = gw;
-                        } while (temp_v0_10 != var_s0_2);
-                        if (var_s0_2 != temp_s3) {
-                            goto block_26;
-                        }
-                    } else {
-block_26:
-                        var_a1_2 = &temp_t0_3[var_s0_2];
-                        do {
-                            ga = *(s32 *)((char *)(mgr2) + 0xC);
-                            gw = *var_a1_2;
-                            var_s0_2 += 4;
-                            gk = *(s32 *)((char *)(ga) + 0x4);
-                            var_a1_2 += 0x10;
-                            *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                            gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-                            *(s32 *)((char *)(gp) + 0x0) = 0x06000000;
-                            *(s32 *)((char *)(gp) + 0x4) = gw;
-                            ga = *(s32 *)((char *)(mgr2) + 0xC);
-                            gk = *(s32 *)((char *)(ga) + 0x4);
-                            *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                            gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-                            *(s32 *)((char *)(gp) + 0x0) = 0x06000000;
-                            *(s32 *)((char *)(gp) + 0x4) = (s32) *(s32 *)((char *)(var_a1_2) - 0xC);
-                            ga = *(s32 *)((char *)(mgr2) + 0xC);
-                            gk = *(s32 *)((char *)(ga) + 0x4);
-                            *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                            gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-                            *(s32 *)((char *)(gp) + 0x0) = 0x06000000;
-                            *(s32 *)((char *)(gp) + 0x4) = (s32) *(s32 *)((char *)(var_a1_2) - 0x8);
-                            ga = *(s32 *)((char *)(mgr2) + 0xC);
-                            gk = *(s32 *)((char *)(ga) + 0x4);
-                            *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-                            gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-                            *(s32 *)((char *)(gp) + 0x0) = 0x06000000;
-                            *(s32 *)((char *)(gp) + 0x4) = (s32) *(s32 *)((char *)(var_a1_2) - 0x4);
-                        } while (var_s0_2 != temp_s3);
-                    }
-                }
-                var_s6_3 += 1;
-                var_s5_2 += temp_s3 * 4 * 0x10;
-            } while (var_s6_3 < (dimA2 / 64));
-            sp124 = var_s6_3;
+        m = E68_MGR;
+        head = E68_NEXT(m);
+        E68_VTX(head, func_00000000(&D_e68_vtx), 4, 0);
+        E68_W(E68_NEXT(m), 0xBE000000, 6);
+        E68_W(E68_NEXT(m), 0xE7000000, 0);
+        E68_W(E68_NEXT(m), 0xBA001402, 0);
+        E68_W(E68_NEXT(m), 0xBB000001, 0x80008000);
+        E68_W(E68_NEXT(m), 0xB6000000, 0x33205);
+        E68_W(E68_NEXT(m), 0xB900031D, 0x0C084000);
+        E68_W(E68_NEXT(m), 0xFC357E6A, 0x11FCF67B);
+        E68_W(E68_NEXT(m), 0xBA000E02, 0x8000);
+        E68_W(E68_NEXT(m), 0xFD100000, tlut);
+        E68_W(E68_NEXT(m), 0xE8000000, 0);
+        E68_W(E68_NEXT(m), 0xF5000100, 0x07000000);
+        E68_W(E68_NEXT(m), 0xE6000000, 0);
+        E68_W(E68_NEXT(m), 0xF0000000, 0x073FC000);
+        E68_W(E68_NEXT(m), 0xE7000000, 0);
+        vp = buf;
+        n = import_8001FFA0[0] / 32;
+        for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
+            E68_VTX(E68_NEXT(m), func_00000000(vp), n * 4, 0);
+            for (j = 0; j < n; j++) {
+                E68_DMA1P(E68_NEXT(m), 0x06, arr[i * n + j], 0, 0);
+            }
+            vp += n * 4;
         }
-        ga = *(s32 *)((char *)(mgr2) + 0xC);
-        gk = *(s32 *)((char *)(ga) + 0x4);
-        *(s32 *)((char *)(ga) + 0x4) = (s32) (gk + 1);
-        gp = *(s32 *)((char *)(*(s32 *)((char *)(mgr2) + 0xC)) + 0x0) + (gk * 8);
-        *(s32 *)((char *)(gp) + 0x0) = 0xB8000000;
-        *(s32 *)((char *)(gp) + 0x4) = 0;
-        *(s32 *)((char *)(arg0) + 0x38) = sp120;
+        E68_END(E68_NEXT(m));
+        *(GwE68 **)(self + 0x38) = head;
     }
-    return arg0;
+    return self;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000E68);
