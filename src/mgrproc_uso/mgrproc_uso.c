@@ -183,7 +183,7 @@ extern int mgrproc_uso_func_04C678();
 extern void mgrproc_uso_func_0000119C();
 extern int mgrproc_uso_func_074710();
 extern void mgrproc_uso_func_00002EF0();
-extern int mgrproc_uso_func_07ACE0();
+extern void mgrproc_uso_func_07ACE0();
 extern int mgrproc_uso_func_01B0F8();
 extern int mgrproc_uso_func_0139B0();
 extern int mgrproc_uso_func_074840();
@@ -602,7 +602,6 @@ void mgrproc_uso_func_00001594(int *a0) {
     ((void(*)()) *(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90))();
 }
 
-#ifdef NON_MATCHING
 /* mgrproc_uso_func_00001614: state-machine step (switch arg0->0x504, cases 0/1/4
  * as an if-else chain). Case 0: cb(&D+0x190,3,1), set state=1, cb(7,0,0). Case 1:
  * if cb(&D+0x190,1,1): set 0x4D8=1, several inits, alloc a node into arg0->0x524,
@@ -635,14 +634,19 @@ void mgrproc_uso_func_00001594(int *a0) {
  * node@36: 6 raw words left, all the hdr v1-vs-v0 web (99.69). Assign-in-
  * call-arg (`07ACE0(hdr + 0x10, node = ...)`), hdr as the 2940 result var,
  * block-scoped hdr, if(1) and one-line joins do not move it.
- * NON_MATCHING. */
+ * 2026-10-20 (agent-g run 108, void-callee-scan): EXACT. Both discarded-return
+ * calls in front of the hdr web were K&R int: import_007FE4E8 (undeclared) and
+ * 07ACE0. Declaring BOTH void frees v0 for hdr; either one alone is neutral
+ * (the earlier 07ACE0-only void-alias probe). No caller in this TU uses either
+ * return value. */
 extern int gl_func_00000000();
 extern int mgrproc_uso_func_0139B0();
 extern int mgrproc_uso_func_000188();
 extern int mgrproc_uso_func_013924();
 extern int mgrproc_uso_func_000148();
 extern int mgrproc_uso_func_012110();
-extern int mgrproc_uso_func_07ACE0();
+extern void mgrproc_uso_func_07ACE0();
+extern void import_007FE4E8();
 extern int mgrproc_uso_func_00F954();
 extern int mgrproc_uso_func_00001BD4();
 extern void *mgrproc_uso_func_00002940(char *, int, int);
@@ -685,9 +689,6 @@ void mgrproc_uso_func_00001614(char *arg0) {
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00001614);
-#endif
 
 /* mgrproc_uso_func_0000179C: 30-insn (0x78) gated state-set.
  * Adjacent 2-insn alt-entry stubs (mgrproc_uso_func_00001814 / 0000181C,
