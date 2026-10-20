@@ -5223,22 +5223,28 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007328);
 extern char D_00007FB0, D_00007FBC;
 extern void func_000000F0();  /* used as data-symbol base */
 #ifdef NON_MATCHING
+/* run 111 (agent-c): cfront ctor shape (r = new(0x134); if (r) { sub = r; if (sub || (sub = new(0x48))) ... }),
+ * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,
+ * v reused for the tail stores, block-count lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */
+extern char D_74e8_g, D_74e8_h;
 void func_000074E8(char *a0) {
+    int *v;
     char *r;
     char *sub;
     char *head;
-    int *v;
-    if (*(int*)((char*)&func_00000008 + 0x2C) == 8) return;
+    if (*(int*)((char*)&D_74e8_g + 0x2C) == 8) return;
     func_00000000(&D_00007FB0, 0);
     r = (char*)func_00000000(0x134);
-    if (r == 0) return;
-    sub = (char*)func_00000000(0x48);
-    if (sub == 0) return;
-    func_00000000(sub, &D_00007FBC, r);
-    *(void**)(sub + 0x28) = &D_00000000;
-    *(void**)(r + 0x28) = &D_00000000;
+    if (r != 0) {
+        sub = r;
+        if (sub != 0 || (sub = (char*)func_00000000(0x48)) != 0) {
+            func_00000000(sub, &D_00007FBC);
+            *(void**)(sub + 0x28) = &D_00000000;
+        }
+        *(void**)(r + 0x28) = &D_00000000;
+    }
     *(char**)(a0 + 0x40) = r;
-    head = *(char**)((*(char**)((char*)&func_000000F0 + 0x44)) + 0x88);
+    head = *(char**)((*(char**)((char*)&D_74e8_h + 0x44)) + 0x88);
     if (1) { }
     if (1) { }
     if (1) { }
@@ -5247,15 +5253,16 @@ void func_000074E8(char *a0) {
     if (1) { }
     if (1) { }
     if (1) { }
+    if (1) { char **pa = &a0; }
     func_00000000(head + 0x10, r);
     if (*(int*)(r + 0x14) != 0) *(int*)(r + 0x4) = 1;
     *(char**)(r + 0x14) = head;
     v = *(int**)(*(char**)(a0 + 0x40) + 0x28);
     (*(void (**)(char*, int))((char*)v + 0x5C))(
-        (char*)((int)(short)*(short*)((char*)v + 0x58) + (int)*(char**)(a0 + 0x40)),
+        (char*)((int)*(char**)(a0 + 0x40) + (int)(short)*(short*)((char*)v + 0x58)),
         0x96);
-    *(int*)(*(char**)(a0 + 0x40) + 0x48) = 1;
-    *(float*)(*(char**)(a0 + 0x40) + 0x4C) = 0.0f;
+    v = *(int**)(a0 + 0x40); *(int*)((char*)v + 0x48) = 1;
+    v = *(int**)(a0 + 0x40); *(float*)((char*)v + 0x4C) = 0.0f;
     *(int*)(*(char**)(a0 + 0x40) + 0x48) = 0;
     func_00000000(*(char**)(a0 + 0x40));
 }
@@ -10213,18 +10220,24 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E740);
  * INCLUDE_ASM remains build path. */
 extern char D_00008D34, D_00008D48, D_00008D5C;
 #ifdef NON_MATCHING
+/* run 111 (agent-c): decl order z,x,y under a pad = homes 40/36/32, zero inits after the first call,
+ * root is &D itself (not a load), the 0x20 store goes through a data symbol (folds to %lo), plus the
+ * block-count lever. Residual: target keeps root in v1 for both the vtable load and the this-adjust. */
+extern char D_e800_t;
 void func_0000E800(void) {
-    int x = 0, y = 0, z = 0;
+    volatile int pad;
+    int z, x, y;
     char *root;
     int *vt;
     func_00000000();
+    z = 0; x = 0; y = 0;
     func_00000000(&D_00000000, &D_00008D34, &x);
     func_00000000(&D_00000000, &D_00008D48, &y);
     func_00000000(&D_00000000, &D_00008D5C, &z);
     func_00000000(x, z, y);
     func_00000000(&D_00000000);
-    *(void**)((char*)&func_00000008 + 0x20) = &D_00000000;
-    root = *(char**)&D_00000000;
+    ((void**)&D_e800_t)[8] = &D_00000000;
+    root = (char*)&D_00000000;
     if (1) { }
     if (1) { }
     if (1) { }
