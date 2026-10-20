@@ -438,32 +438,29 @@ extern int gl_func_00031FB0();
  * save-spill scheduling (same 139 insns, same frame).
  * 2026-06-27 logic fixes: p[0]/p[4] mask (s2+offs)&0xFFFF; u4=(a1<<1)&0xFFFF
  * (shift-then-mask, not &0x7FFF first); matches asm GBI word packing. */
+/* 2026-10-20 (agent-c run 114): packets rewritten in the gbi-macro shape of
+ * the exact sibling game_libs_func_0001D3E0 (`{ G *_g = gfx++; w0; w1; }`),
+ * with the half-width terms as s16 locals. */
+typedef struct { unsigned int w0, w1; } G1D200;
 unsigned int *gl_func_0001D200(int a0, unsigned int a1, short a2, short a3) {
-    short s1, s2;
-    unsigned int *p;
-    unsigned int u4;
-    int rec, e, t;
-    rec = (int)&D_00000000 + a2 * 0x158;
-    e = rec + (unsigned int)*(unsigned char *)(rec + 0x1B) * 100 + a3 * 0x14;
-    s1 = *(short *)(e + 0x60);
-    t = (*(unsigned int *)(e + 0x5C) & 7) << 0x11;
-    s2 = (short)((unsigned int)t >> 0x10);
-    p = (unsigned int *)gl_func_00031FB0(a0, 0x3E0,
-            *(unsigned int *)(e + 0x5C) - (t >> 0x11) & 0xFFFF, 0x1A0, (int)a2);
-    t = (int)(short)(s2 + s1 + 0xF & 0xFFF0);
-    if (*(short *)(e + 0x62) != 0) {
-        p = (unsigned int *)gl_func_00031FB0(p, t + 0x3E0 & 0xFFFF, 0, 0x1A0 - t, (int)a2);
+    G1D200 *gfx;
+    char *rec;
+    char *e;
+    short w2;
+    short wr;
+    rec = (char *)&D_00000000 + a2 * 0x158;
+    e = rec + *(unsigned char *)(rec + 0x1B) * 100 + a3 * 0x14 + 0x50;
+    w2 = (*(unsigned int *)(e + 0xC) & 7) * 2;
+    wr = (w2 + *(short *)(e + 0x10) + 0xF) & 0xFFF0;
+    gfx = (G1D200 *)gl_func_00031FB0(a0, 0x3E0, (*(unsigned int *)(e + 0xC) - w2 / 2) & 0xFFFF, 0x1A0, a2);
+    if (*(short *)(e + 0x12) != 0) {
+        gfx = (G1D200 *)gl_func_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);
     }
-    p[0] = ((int)s2 + 0x3E0 & 0xFFFF) | 0x8000000;
-    u4 = (a1 << 1) & 0xFFFF;
-    p[1] = u4 | 0xC800000;
-    p[2] = *(unsigned short *)(rec + 0x26) | 0x5000000 | (unsigned int)*(unsigned char *)(rec + 0x18) << 0x10;
-    p[3] = *(int *)(rec + 0x40) + 0x80000000;
-    p[4] = ((int)s2 + 0x580 & 0xFFFF) | 0x8000000;
-    p[5] = u4 | 0xE200000;
-    p[6] = *(unsigned short *)(rec + 0x26) | 0x5000000 | (unsigned int)*(unsigned char *)(rec + 0x18) << 0x10;
-    p[7] = *(int *)(rec + 0x44) + 0x80000000;
-    return p + 8;
+    { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x3E0) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0C800000; }
+    { G1D200 *_g = gfx++; _g->w0 = *(unsigned short *)(rec + 0x26) | 0x05000000 | (*(unsigned char *)(rec + 0x18) << 16); _g->w1 = *(int *)(rec + 0x40) + 0x80000000; }
+    { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x580) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0E200000; }
+    { G1D200 *_g = gfx++; _g->w0 = *(unsigned short *)(rec + 0x26) | 0x05000000 | (*(unsigned char *)(rec + 0x18) << 16); _g->w1 = *(int *)(rec + 0x44) + 0x80000000; }
+    return (unsigned int *)gfx;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001D200);
