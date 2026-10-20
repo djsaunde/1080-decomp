@@ -1263,68 +1263,39 @@ loop:
 INCLUDE_ASM("asm/nonmatchings/kernel", func_80001184);
 #endif
 
-/* uso_find_file(arg0, arg1): load the USO directory (func_80000660(arg0, &D_80012FC0,
- * &D_80012F80)), verify it (func_800008B8(arg1, &D_80012FC0, &D_8000A368) != 0 else
- * return -0x11), then walk a parallel key/record table (stride 0x9C: keys from
- * D_80013112, records from D_800130A0, end D_80018356), comparing each key via a
- * DIRECT `jal func_80000568(key, &D_80012F80)`; on match copy record->[0x94] into
- * arg1->[4], set found, return 0; else -0x11. Logic decoded 2026-05-30 (m2c +
- * hand-trace). ~55% NM. UNLOCK (2026-05-30): func_80000568's decl changed from
- * `void(void)` to `s32 func_80000568()` (callable) so this can DIRECT-`jal` it
- * instead of the jalr-emitting func-ptr cast — that took it 3%->55% (func_80000568
- * stays INCLUDE_ASM/EXACT in the default build; the cast-callers at ~482/886 still
- * compile). 2026-06-23 REWORK (agent-e): residual cut from ~25 to 10 words.
- *   FIXED: return tail now byte-exact — `if (found == 0) return -0x11; return 0;`
- *     emits `or v0,zero,zero / bnez found / nop / b / addiu v0,-0x11` (was a
- *     v1-based bnezl form). The 0-value must be the FALL-THROUGH return so IDO
- *     materializes v0=0 first and tests `bnez found`.
- *   FIXED: pointer-setup lui delay-slot — assigning `p` (D_800130A0) BEFORE `q`
- *     puts `lui s1,%hi(D_800130A0)` in the verify-branch delay slot, matching.
- *   REMAINING (10 words, 3 HARD backend caps — permuter 40k iters never beat
- *     base score 150, exhaustive C-variant grind failed):
- *   (a) FRAME 0x38 vs 0x60 — 0x30 bytes (0x30-0x5C) of UNUSED stack = a ghost
- *       DCE'd address-taken local. Any surviving address-taken local needs an
- *       `addiu reg,sp,off` to materialize the address (=+1 insn, breaks match);
- *       volatile array adds a spurious access. uopt retains the slot WITHOUT any
- *       access only via a pattern no C construct reproduces. (4 words: 1,9,17,55.)
- *   (b) loop-preamble addiu LO order: target emits end(s2)/q(s0)/p(s1), build
- *       emits q/p/end — same coloring, different ugen emission schedule. (2 words.)
- *   (c) found-block scheduler tie: target interleaves `li t6,1; sw t6,found`
- *       BETWEEN the two record/arg1 loads and the deferred store; build does the
- *       const+store first. Same registers (t7/t8/t6), different as1 schedule;
- *       not statement-order-fixable. (4 words.)
- *   Genuine ugen/as1 cap — leave NON_MATCHING. */
-#ifdef NON_MATCHING
+/* uso_find_file(path, file): split the path (func_80000660 = func_80000260:
+ * dir -> D_80012FC0, name -> D_80012F80), look the directory up
+ * (func_800008B8 = func_800004B8, -0x11 if unknown), then scan the 135
+ * 0x9C-byte module slots at D_800130A0 for that name (func_80000568 =
+ * func_80000168 strcmp); on a hit copy slot->unk94 into file[1]. IDO 7.1 -O2.
+ * EXACT 2026-10-20 (agent-g run 112; was NM 92.3): the old pointer-walk
+ * spelling left the loop-preamble addiu order and the found-block schedule
+ * off; an index loop over a TYPED slot array (`slots[i].name` /
+ * `slots[i].unk94`) gives both. The 0x30-byte hole at the top of the frame
+ * is an unused local (any 0x29..0x2C-byte array; s32 pad[11] here). */
 extern char D_8000A368, D_80013112, D_80018356;
+typedef struct { u8 pad_00[0x72]; char name[0x22]; s32 unk94; u8 pad_98[4]; } UsoLoadSlotF;
 s32 uso_find_file(void *arg0, void *arg1) {
-    char *q;
-    char *p;
+    s32 pad[11];
+    s32 i;
     s32 found;
     func_80000660(arg0, &D_80012FC0, &D_80012F80);
     if (func_800008B8(arg1, &D_80012FC0, &D_8000A368) == 0) {
         return -0x11;
     }
     found = 0;
-    p = (char *)&D_800130A0;
-    q = &D_80013112;
-    do {
-        s32 r = func_80000568(q, &D_80012F80);
-        q += 0x9C;
-        if (r == 0) {
+    for (i = 0; i < 135; i++) {
+        if (func_80000568(((UsoLoadSlotF *)&D_800130A0)[i].name, &D_80012F80) == 0) {
             found = 1;
-            ((s32 *)arg1)[1] = *(s32 *)(p + 0x94);
+            ((s32 *)arg1)[1] = ((UsoLoadSlotF *)&D_800130A0)[i].unk94;
             break;
         }
-        p += 0x9C;
-    } while (q != &D_80018356);
+    }
     if (found == 0) {
         return -0x11;
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", uso_find_file);
-#endif
 
 /* uso_get_error — returns last error code */
 s32 func_800012AC(s32 arg0) {
