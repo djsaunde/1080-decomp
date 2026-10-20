@@ -9,7 +9,13 @@ Strategy:
   5. Compare against expected/.o for byte-equality
   6. Report best variant and diff count
 
-Usage:
+Usage (in-tree cheap levers -- see the block comment above run_cheap_levers):
+  lever-sweep.py --void   <func> [<func> ...]
+  lever-sweep.py --blocks <func> [--k 2]
+  lever-sweep.py --void --blocks --from-report 90 --units bootup_uso,game_libs_post0b \\
+                 --patch-dir /tmp/patches --quiet-patch
+
+Usage (legacy standalone-compile sweep):
   lever-sweep.py [--fuzzy-min FM] [--size-max SZ] [--limit N] [--funcs F1,F2,...]
   lever-sweep.py --funcs gl_func_00037FAC,gl_func_00066514
 
@@ -299,6 +305,503 @@ extern int gl_func_00000000();
     return f'  {fname:42}  base={base_diffs:3}  best={best[0]:20}={best[1]:3}  fuzzy={fuzzy_pct:.1f}'
 
 
+# ---------------------------------------------------------------------------
+# In-tree cheap-lever sweeps (--void / --blocks)
+#
+# Unlike the legacy standalone-compile sweep above (which compiles an isolated
+# body and can falsely diverge from the full TU), these modes edit the real
+# source file, rebuild ONLY the function's build/non_matching .o via make, and
+# score with objdiff using the same setting the report uses
+# (functionRelocDiffs=none).  The source is always restored (try/finally plus
+# SIGINT/SIGTERM handlers, and a backup copy under build/lever-sweep/), the NM
+# .o is rebuilt from the restored source, and the best variant is printed as a
+# unified diff that `git apply` accepts.
+#
+#   --void   For every statement-level call whose result is discarded, retarget
+#            it to `extern void <callee>_<tag>v(<callee's params>);` -- one site
+#            at a time, then each callee's sites together, then pairs of sites.
+#            A void callee frees $v0 so IDO stops ring-shifting the post-call
+#            registers (docs/IDO_CODEGEN.md, "void callee frees v0").
+#   --blocks Insert an emission-free `if (1) {}` after each statement end (one
+#            position at a time, K adders per position), then greedily combine
+#            improving positions.  Each empty block adds a uopt basic block,
+#            which moves the hold-vs-reload threshold (firstUseCost).
+#
+# Notes: the alias/adder edits only touch the NM body, which is never linked.
+# For game_libs_post0b the NM .o is text-clipped (NON_MATCHING_TEXT_CLIP_*); a
+# size-changing variant only affects functions near the clip, so early
+# functions score correctly, but re-probe the clip before committing.
+# ---------------------------------------------------------------------------
+import difflib, itertools, signal, shutil, atexit
+
+OBJDIFF_CFG = ['-c', 'functionRelocDiffs=none']
+_RESTORE = {}
+
+
+def _restore_all(*_a):
+    for path, text in list(_RESTORE.items()):
+        with open(path, 'w') as f:
+            f.write(text)
+        _RESTORE.pop(path, None)
+
+
+def _sig(signum, _frame):
+    _restore_all()
+    sys.exit(128 + signum)
+
+
+def comment_mask(text):
+    """Boolean list: True where text[i] is inside a comment / string / char literal."""
+    m = [False] * len(text)
+    i, n = 0, len(text)
+    while i < n:
+        c = text[i]
+        if text.startswith('//', i):
+            j = text.find('\n', i)
+            j = n if j < 0 else j
+        elif text.startswith('/*', i):
+            j = text.find('*/', i + 2)
+            j = n if j < 0 else j + 2
+        elif c in '"\'':
+            j = i + 1
+            while j < n and text[j] != c:
+                j += 2 if text[j] == '\\' else 1
+            j += 1
+        else:
+            i += 1
+            continue
+        for k in range(i, min(j, n)):
+            m[k] = True
+        i = j
+    return m
+
+
+def _in_nm_branch(text, pos):
+    """True if pos lies in the true branch of an enclosing `#ifdef NON_MATCHING`."""
+    stack = []
+    for mm in re.finditer(r'^[ \t]*#[ \t]*(if|ifdef|ifndef|elif|else|endif)\b(.*)$', text[:pos], re.M):
+        d, rest = mm.group(1), mm.group(2)
+        if d in ('if', 'ifdef', 'ifndef'):
+            stack.append(d == 'ifdef' and re.match(r'\s*NON_MATCHING\b', rest) is not None
+                         or d == 'if' and re.match(r'\s*defined\s*\(?\s*NON_MATCHING\b', rest) is not None)
+        elif d in ('else', 'elif') and stack:
+            stack[-1] = False
+        elif d == 'endif' and stack:
+            stack.pop()
+    return any(stack)
+
+
+def locate_nm_def(text, func):
+    """(start, end) of func's definition (ANSI or K&R) inside a NON_MATCHING branch."""
+    cm = comment_mask(text)
+    pat = re.compile(r'^[A-Za-z_][^\n;{}#=]*?\b' + re.escape(func) + r'\s*\(', re.M)
+    for mm in pat.finditer(text):
+        if cm[mm.start()]:
+            continue
+        close = _match_paren(text, mm.end() - 1, cm)
+        if close < 0:
+            continue
+        k = close + 1
+        while k < len(text) and (text[k] in ' \t\n' or cm[k]):
+            k += 1
+        if k >= len(text) or text[k] in ';,=)':
+            continue  # prototype / call
+        ob = text.find('{', k)
+        if ob < 0 or text[k:ob].count('(') != text[k:ob].count(')'):
+            continue
+        if not _in_nm_branch(text, mm.start()):
+            continue
+        depth = 0
+        for j in range(ob, len(text)):
+            if cm[j]:
+                continue
+            if text[j] == '{':
+                depth += 1
+            elif text[j] == '}':
+                depth -= 1
+                if depth == 0:
+                    return mm.start(), j + 1
+    return None
+
+
+def load_objdiff_units():
+    cfg = json.load(open(REPO / 'objdiff.json'))
+    return {u['name']: u for u in cfg['units']}
+
+
+def unit_of(func, units):
+    """Unit name holding func: tracked report.json first, else scan sources."""
+    rp = REPO / 'report.json'
+    if rp.exists():
+        for u in json.load(open(rp))['units']:
+            for f in u.get('functions', []):
+                if f['name'] == func:
+                    return u['name']
+    for name, u in units.items():
+        sp = REPO / u.get('metadata', {}).get('source_path', '')
+        if sp.is_file() and locate_nm_def(sp.read_text(), func):
+            return name
+    return None
+
+
+class Scorer:
+    def __init__(self, func, unit, units, verbose=False):
+        u = units[unit]
+        self.func, self.unit = func, unit
+        self.src = REPO / u['metadata']['source_path']
+        self.obj = REPO / u['base_path']
+        self.verbose = verbose
+        self.orig = self.src.read_text()
+        self.builds = 0
+
+    def score_text(self, text):
+        """Write text to the source, rebuild the NM .o, return match % or None."""
+        _RESTORE[str(self.src)] = self.orig
+        self.src.write_text(text)
+        try:
+            if self.obj.exists():
+                self.obj.unlink()
+            r = subprocess.run(['make', str(self.obj.relative_to(REPO))], cwd=REPO,
+                               capture_output=True, text=True)
+            self.builds += 1
+            if r.returncode != 0 or not self.obj.exists():
+                if self.verbose:
+                    print('    build failed:', (r.stdout + r.stderr)[-300:], file=sys.stderr)
+                return None
+            r = subprocess.run(['objdiff-cli', 'diff', '-p', '.', '-u', self.unit, '-o', '-',
+                                '--format', 'json'] + OBJDIFF_CFG + [self.func],
+                               cwd=REPO, capture_output=True, text=True)
+            try:
+                d = json.loads(r.stdout)
+            except ValueError:
+                return None
+            for s in d.get('left', {}).get('symbols', []):
+                if s.get('name') == self.func:
+                    return float(s.get('match_percent', 0.0))
+            return None
+        finally:
+            self.src.write_text(self.orig)
+
+    def finish(self):
+        """Restore source (already restored) and rebuild the NM .o from it."""
+        _restore_all()
+        if self.obj.exists():
+            self.obj.unlink()
+        subprocess.run(['make', str(self.obj.relative_to(REPO))], cwd=REPO, capture_output=True)
+
+    def patch(self, text):
+        rel = str(self.src.relative_to(REPO))
+        return ''.join(difflib.unified_diff(self.orig.splitlines(True), text.splitlines(True),
+                                            'a/' + rel, 'b/' + rel))
+
+
+C_KEYWORDS = {'if', 'while', 'for', 'switch', 'return', 'sizeof', 'do', 'else', 'case',
+              'goto', 'break', 'continue', 'default'}
+
+
+def _match_paren(text, i, cm):
+    """text[i] == '(' -> index of matching ')'."""
+    d = 0
+    for j in range(i, len(text)):
+        if cm[j]:
+            continue
+        if text[j] == '(':
+            d += 1
+        elif text[j] == ')':
+            d -= 1
+            if d == 0:
+                return j
+    return -1
+
+
+def _stmt_start(body, k, cm):
+    """True if position k (start of an identifier) begins a statement."""
+    j = k - 1
+    while j >= 0 and (body[j] in ' \t\n' or cm[j]):
+        j -= 1
+    if j < 0:
+        return False
+    if body[j] in ';{}':
+        return True
+    if body[j] == ':':  # label / case, not ?: (heuristic: no '?' on the line)
+        line = body[body.rfind('\n', 0, j) + 1:j]
+        return '?' not in line
+    if body[j - 3:j + 1] == 'else' or (body[j - 1:j + 1] == 'do' and not body[j - 2:j - 1].isalnum()):
+        return True
+    if body[j] != ')':
+        return False
+    d = 0
+    while j >= 0:
+        if not cm[j]:
+            if body[j] == ')':
+                d += 1
+            elif body[j] == '(':
+                d -= 1
+                if d == 0:
+                    break
+        j -= 1
+    j -= 1
+    while j >= 0 and body[j] in ' \t\n':
+        j -= 1
+    w = re.search(r'(\w+)$', body[max(0, j - 8):j + 1])
+    return bool(w) and w.group(1) in ('if', 'while', 'for')
+
+
+def _body_brace(body):
+    cm = comment_mask(body)
+    close = _match_paren(body, body.index('('), cm)
+    return body.index('{', close)
+
+
+def find_void_sites(text, start, end, func):
+    """[(abs_pos, callee)] for discarded-result statement calls in text[start:end]."""
+    body = text[start:end]
+    cm = comment_mask(text)[start:end]
+    brace = _body_brace(body)
+    sites = []
+    for mm in re.finditer(r'\b([A-Za-z_]\w*)\s*\(', body):
+        name = mm.group(1)
+        k = mm.start(1)
+        if k < brace or cm[k] or name in C_KEYWORDS or name == func:
+            continue
+        if not _stmt_start(body, k, cm):
+            continue
+        close = _match_paren(body, mm.end() - 1, cm)
+        if close < 0:
+            continue
+        rest = body[close + 1:].lstrip()
+        if not rest.startswith(';'):
+            continue
+        sites.append((start + k, name))
+    return sites
+
+
+def callee_proto(text, callee, before):
+    """(is_void, params-string) from the last declaration of callee before `before`."""
+    pat = re.compile(r'^[ \t]*(?:extern\s+)?([\w\s\*]+?)\b' + re.escape(callee) +
+                     r'\s*\(([^;{)]*)\)\s*;', re.M)
+    cm = comment_mask(text[:before])
+    best = None
+    for mm in pat.finditer(text, 0, before):
+        if not cm[mm.start(1)]:
+            best = mm
+    if not best:
+        return False, ''
+    ret = best.group(1).strip()
+    return re.fullmatch(r'(?:static\s+)?void', ret) is not None, best.group(2).strip()
+
+
+_HDR_MACROS = None
+
+
+def function_macros(text):
+    """Names of function-like macros defined in text or any include/**/*.h."""
+    global _HDR_MACROS
+    pat = re.compile(r'^[ \t]*#[ \t]*define[ \t]+(\w+)\(', re.M)
+    if _HDR_MACROS is None:
+        _HDR_MACROS = set()
+        for h in glob.glob(str(REPO / 'include/**/*.h'), recursive=True):
+            try:
+                _HDR_MACROS.update(pat.findall(open(h, errors='replace').read()))
+            except OSError:
+                pass
+    return _HDR_MACROS | set(pat.findall(text))
+
+
+def build_void_variant(text, start, sites, chosen, func):
+    """Retarget the chosen sites to void aliases; insert alias decls before the def."""
+    tag = re.sub(r'^.*?([0-9A-Fa-f]{4,5})$', r'\1', func)[-5:]
+    decls, out = {}, text
+    for pos, callee in sorted((sites[i] for i in chosen), reverse=True):
+        alias = f'{callee}_{tag}v'
+        if alias not in decls:
+            decls[alias] = callee_proto(text, callee, start)[1]
+        out = out[:pos] + alias + out[pos + len(callee):]
+    hdr = ''.join(f'extern void {a}({p});\n' for a, p in sorted(decls.items())
+                  if not re.search(r'\b' + re.escape(a) + r'\s*\(', text[:start]))
+    return out[:start] + hdr + out[start:]
+
+
+def sweep_void(sc, args):
+    text = sc.orig
+    loc = locate_nm_def(text, sc.func)
+    if not loc:
+        print(f'{sc.func}: no NM definition found in {sc.src}')
+        return None
+    start, end = loc
+    macros = function_macros(text)
+    sites = [s for s in find_void_sites(text, start, end, sc.func)
+             if s[1] not in macros and not callee_proto(text, s[1], start)[0]]
+    base = sc.score_text(text)
+    print(f'{sc.func} [{sc.unit}] base={base}  void-candidate sites={len(sites)}')
+    if base is None or not sites:
+        return None
+    results = {}
+
+    def tryset(chosen, label):
+        chosen = tuple(sorted(set(chosen)))
+        if chosen in results:
+            return results[chosen][0]
+        v = build_void_variant(text, start, sites, chosen, sc.func)
+        r = sc.score_text(v)
+        results[chosen] = (r, v)
+        if args.verbose or (r is not None and r != base):
+            print(f'  {label:28s} {r}')
+        return r
+
+    for i, (pos, callee) in enumerate(sites):
+        ln = text[:pos].count('\n') + 1
+        tryset([i], f'site{i} {callee}@L{ln}')
+    by_callee = {}
+    for i, (_, c) in enumerate(sites):
+        by_callee.setdefault(c, []).append(i)
+    for c, idx in by_callee.items():
+        if len(idx) > 1:
+            tryset(idx, f'all {c} ({len(idx)})')
+    if len(sites) > 1:
+        tryset(range(len(sites)), 'all sites')
+    # pairs: every pair when small, else pairs among the non-regressing singles
+    if len(sites) <= args.max_pair_sites:
+        pool = range(len(sites))
+    else:
+        singles = sorted(range(len(sites)), key=lambda i: -(results[(i,)][0] or -1))
+        pool = [i for i in singles if (results[(i,)][0] or -1) >= base][:args.max_pair_sites]
+    for a, b in itertools.combinations(pool, 2):
+        tryset([a, b], f'pair site{a}+site{b}')
+    return base, results
+
+
+def find_block_positions(text, start, end):
+    body = text[start:end]
+    cm = comment_mask(text)[start:end]
+    brace = _body_brace(body)
+    pos = []
+    for mm in re.finditer(r'[;}][ \t]*(?=\n)', body):
+        p = mm.start()
+        if p <= brace or cm[p] or mm.end() >= len(body) - 1:
+            continue
+        line = body[body.rfind('\n', 0, p) + 1:p + 1].strip()
+        if line.startswith('#'):
+            continue
+        pos.append(start + mm.start() + 1)
+    return pos
+
+
+def sweep_blocks(sc, args):
+    text = sc.orig
+    loc = locate_nm_def(text, sc.func)
+    if not loc:
+        print(f'{sc.func}: no NM definition found in {sc.src}')
+        return None
+    start, end = loc
+    pos = find_block_positions(text, start, end)
+    base = sc.score_text(text)
+    print(f'{sc.func} [{sc.unit}] base={base}  positions={len(pos)}  k={args.k}')
+    if base is None:
+        return None
+    ins = ' if (1) {}' * args.k
+    results = {}
+
+    def variant(chosen):
+        out = text
+        for p in sorted((pos[i] for i in chosen), reverse=True):
+            out = out[:p] + ins + out[p:]
+        return out
+
+    def tryset(chosen, label):
+        chosen = tuple(sorted(set(chosen)))
+        if chosen in results:
+            return results[chosen][0]
+        v = variant(chosen)
+        r = sc.score_text(v)
+        results[chosen] = (r, v)
+        if args.verbose or (r is not None and r != base):
+            print(f'  {label:28s} {r}')
+        return r
+
+    for i, p in enumerate(pos):
+        ln = text[:p].count('\n') + 1
+        snippet = text[text.rfind('\n', 0, p) + 1:p].strip()[:50]
+        tryset([i], f'pos{i} L{ln} {snippet}')
+    # greedy combination over improving singles
+    good = sorted([i for i in range(len(pos)) if (results[(i,)][0] or -1) > base],
+                  key=lambda i: -results[(i,)][0])
+    if good:
+        cur, cur_s = (good[0],), results[(good[0],)][0]
+        improved = True
+        while improved:
+            improved = False
+            for i in good:
+                if i in cur:
+                    continue
+                r = tryset(cur + (i,), f'greedy {list(cur + (i,))}')
+                if r is not None and r > cur_s:
+                    cur, cur_s, improved = tuple(sorted(cur + (i,))), r, True
+    return base, results
+
+
+def run_cheap_levers(args):
+    sys.stdout.reconfigure(line_buffering=True)
+    for t in ('make', 'objdiff-cli'):
+        if not shutil.which(t):
+            sys.exit(f'{t} not in PATH (export PATH=<monorepo>/tools/build-venv/bin:$PATH)')
+    signal.signal(signal.SIGINT, _sig)
+    signal.signal(signal.SIGTERM, _sig)
+    atexit.register(_restore_all)
+    units = load_objdiff_units()
+    funcs = [f for f in args.func if f]
+    if args.from_report is not None:
+        own = [u.strip() for u in args.units.split(',')] if args.units else None
+        rep = json.load(open(REPO / 'report.json'))
+        for u in rep['units']:
+            if own and not any(u['name'].endswith(o) or ('/' + o + '/') in u['name'] + '/' for o in own):
+                continue
+            for f in u.get('functions', []):
+                fm = f.get('fuzzy_match_percent', 0)
+                if args.from_report <= fm < 100.0:
+                    funcs.append(f['name'])
+    modes = [m for m in ('void', 'blocks') if getattr(args, m)]
+    bakdir = REPO / 'build' / 'lever-sweep'
+    bakdir.mkdir(parents=True, exist_ok=True)
+    summary = []
+    for func in funcs:
+        unit = args.unit or unit_of(func, units)
+        if not unit or unit not in units:
+            print(f'{func}: unit not found')
+            continue
+        sc = Scorer(func, unit, units, args.verbose)
+        (bakdir / (sc.src.name + '.orig')).write_text(sc.orig)
+        try:
+            for mode in modes:
+                res = (sweep_void if mode == 'void' else sweep_blocks)(sc, args)
+                if not res:
+                    continue
+                base, results = res
+                scored = [(r, k, v) for k, (r, v) in results.items() if r is not None]
+                if not scored:
+                    continue
+                best = max(scored, key=lambda x: (x[0], -len(x[1])))
+                gain = best[0] - base
+                print(f'BEST {mode} {func}: {base:.4f} -> {best[0]:.4f} ({gain:+.4f}) set={list(best[1])} '
+                      f'[{sc.builds} builds]')
+                summary.append((func, mode, base, best[0]))
+                if gain > args.min_gain:
+                    p = sc.patch(best[2])
+                    if args.patch_dir:
+                        pd = Path(args.patch_dir)
+                        pd.mkdir(parents=True, exist_ok=True)
+                        (pd / f'{func}.{mode}.patch').write_text(p)
+                    if not args.quiet_patch:
+                        print(p)
+        finally:
+            sc.finish()
+    if len(summary) > 1:
+        print('\nSUMMARY (gains only)')
+        for func, mode, b, s in sorted(summary, key=lambda x: x[2] - x[3]):
+            if s - b > args.min_gain:
+                print(f'  {func:40s} {mode:6s} {b:8.4f} -> {s:8.4f} ({s - b:+.4f})')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--fuzzy-min', type=float, default=80.0)
@@ -306,7 +809,26 @@ def main():
     ap.add_argument('--size-max', type=int, default=300)
     ap.add_argument('--limit', type=int, default=20)
     ap.add_argument('--funcs', type=str, default='')
+    # in-tree cheap levers
+    ap.add_argument('--void', action='store_true', help='void-callee sweep (in-tree)')
+    ap.add_argument('--blocks', action='store_true', help='`if (1) {}` adder sweep (in-tree)')
+    ap.add_argument('func', nargs='*', help='function(s) for --void/--blocks')
+    ap.add_argument('--unit', help='objdiff unit name (default: looked up)')
+    ap.add_argument('--from-report', type=float, metavar='PCT',
+                    help='also sweep every report.json fn with PCT <= fuzzy < 100')
+    ap.add_argument('--units', help='with --from-report: comma list of unit-name suffixes / dirs')
+    ap.add_argument('--k', type=int, default=1, help='--blocks: adders per position')
+    ap.add_argument('--max-pair-sites', type=int, default=12,
+                    help='--void: try all site pairs when <= N sites, else pairs of top N')
+    ap.add_argument('--min-gain', type=float, default=0.0)
+    ap.add_argument('--patch-dir', help='write <func>.<mode>.patch files here')
+    ap.add_argument('--quiet-patch', action='store_true', help='do not print patches')
+    ap.add_argument('-v', '--verbose', action='store_true')
     args = ap.parse_args()
+    if args.void or args.blocks:
+        os.chdir(REPO)
+        run_cheap_levers(args)
+        return
 
     # Generate fresh report
     print('Generating fresh report...', file=sys.stderr)
