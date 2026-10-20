@@ -21836,27 +21836,31 @@ extern float sqrtf(float);
  * a0[a1]->0x98 <= dist-arg7 return 0. Else normalize d and dot it with o->0xBC/
  * 0xCC/0xDC; return dot >= a0->0x80. */
 extern float gl_func_00000000_f704(float);
+/* 2026-10-20 (agent-c run 114): the delta is an f32 ARRAY (kept in memory:
+ * store-then-reload per element, a0->0x70 re-read before each component).
+ * The second call takes the first call's result (f12 = dist) and the dot
+ * product re-reads a0->0x70 once. */
 int gl_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out, float arg7) {
-    char *o = *(char **)(a0 + 0x70);
-    float dx = *(float *)(o + 0xA0) - px;
-    float dy = *(float *)(o + 0xA4) - py;
-    float dz = *(float *)(o + 0xA8) - pz;
-    float d2 = dx * dx + dy * dy + dz * dz;
-    float dist = gl_func_00000000_f704(d2);
-    float inv, dot;
-
+    float dist;
+    f32 d[3];
+    char *o;
+    d[0] = *(float *)(*(char **)(a0 + 0x70) + 0xA0) - px;
+    d[1] = *(float *)(*(char **)(a0 + 0x70) + 0xA4) - py;
+    d[2] = *(float *)(*(char **)(a0 + 0x70) + 0xA8) - pz;
+    dist = gl_func_00000000_f704(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
     if (out != 0) {
         *out = dist;
     }
     if (*(float *)(a0 + a1 * 4 + 0x98) <= dist - arg7) {
         return 0;
     }
-    inv = 1.0f / gl_func_00000000_f704(d2);
-    dx = dx * inv;
-    dy = dy * inv;
-    dz = dz * inv;
-    dot = dx * *(float *)(o + 0xBC) + dy * *(float *)(o + 0xCC) + dz * *(float *)(o + 0xDC);
-    if (dot < *(float *)(a0 + 0x80)) {
+    dist = 1.0f / gl_func_00000000_f704(dist);
+    d[0] *= dist;
+    d[1] *= dist;
+    d[2] *= dist;
+    o = *(char **)(a0 + 0x70);
+    dist = d[0] * *(float *)(o + 0xBC) + d[1] * *(float *)(o + 0xCC) + d[2] * *(float *)(o + 0xDC);
+    if (dist < *(float *)(a0 + 0x80)) {
         return 0;
     }
     return 1;
