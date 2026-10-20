@@ -24,50 +24,14 @@ void __rmonSendHeader(void) {
     }
 }
 
-/* func_800073DC is the prologue fragment of the original 31-insn function
- * at ROM 0x800073DC, which splat split into:
- *   - func_800073DC (this file, 7 insns / 0x1C — prologue + first jal,
- *     no jr ra — falls through to next function in linker layout)
- *   - func_800073F8 (kernel_018.c INCLUDE_ASM, 25 insns / 0x64 — body)
- *
- * The full decompiled body lives above as `__rmonSendHeader` (matched 100%
- * per report.json). The INCLUDE_ASM below is residual dead duplicate code
- * emitted at a separate .o offset; removing it would shift downstream .o
- * layout so it stays for now.
- *
- * 2026-05-05 — evaluated PREFIX_BYTES + INSN_PATCH promotion (per
- * `docs/POST_CC_RECIPES.md` and feedback_prefix_bytes_plus_insn_patch_
- * breaks_documented_caps.md): BLOCKED by two combined constraints:
- *   1. The function's `jal func_80009C30` must carry an R_MIPS_26
- *      relocation in the .o for byte_verify against expected/.o. Raw
- *      PREFIX_BYTES are reloc-less, so prefix-encoded jals would produce
- *      correct ROM bytes but mismatch expected/.o at the .o level.
- *   2. Putting the jal in the C body emits a reloc'd jal but also a
- *      full 8-insn prologue+epilogue (0x20), which can't shrink to
- *      target's 7-insn (0x1C) "no-epilogue, falls-through" shape.
- * No recipe combines "function with .o reloc on jal" + "no jr ra
- * epilogue." Combo applicability window narrowed: leading-N insns of
- * any prefix must contain zero reloc'd jal or lui-extern-pair.
- *
- * 2026-05-06: tested __attribute__((noreturn)) to strip the epilogue —
- * IDO cfe rejects with "Syntax Error" on the attribute syntax (the
- * GNU __attribute__ extension is not supported by IDO 7.1). Confirmed
- * structural cap; no C-level path can produce 7-insn body with reloc'd
- * jal AND no jr ra epilogue.
- *
- * 2026-05-07: tested `for(;;);` infinite-loop sentinel after jal to
- * mark fall-through as unreachable. IDO -O2 still emits full epilogue
- * (lw ra; addiu sp; jr ra; nop) AT the function tail, after a 4-insn
- * nop-padded unreachable region. Net 13 insns (vs 7-insn target).
- * Loop infiniteness is not propagated to reorg.c's epilogue-emission
- * logic. Same cap holds.
- *
- * 2026-05-18: promoted from INCLUDE_ASM with the C body below plus the
- * kernel_036.c.o post-cc recipe. IDO -O1 with a `register` node emits the
- * exact 0x80-byte logical `func_800073DC + func_800073F8` instruction stream,
- * including the relocatable `jal func_80009C30`. The Makefile then zeros the
- * first two successor-body words and clips the .text section to preserve the
- * historical 0x1C symbol boundary and 8 bytes of padding. */
+/* func_800073DC = __rmonGetTCB (rmon/rmonmisc), IDO 7.1 -O1, whole function
+ * [0x73DC,0x745C). Splat had cut it at 0x73F8 (prologue + first jal here,
+ * body + epilogue as func_800073F8.s in kernel_018_e) and this unit clipped
+ * the C to 0x1C. The "external callers of func_800073F8" were never calling
+ * this body: kernel jal targets sit 0x400 above our numbering, so
+ * jal func_800073F8 is __rmonSendHeader at our 0x6FF8 and
+ * jal func_800077DC is THIS function. Merged 2026-10-20 (agent-g run 112);
+ * the only post-cc step left is TRUNCATE_TEXT dropping the 4-byte align pad. */
 RmonThreadNode* func_800073DC(s32 threadId) {
     register RmonThreadNode* node;
 

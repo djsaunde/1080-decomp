@@ -689,8 +689,7 @@ build/src/kernel/kernel_033.c.o build/non_matching/src/kernel/kernel_033.c.o: OP
 build/src/kernel/kernel_034.c.o build/non_matching/src/kernel/kernel_034.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_035.c.o build/non_matching/src/kernel/kernel_035.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_036.c.o build/non_matching/src/kernel/kernel_036.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_036.c.o: TEXT_CLIP_KEEP_ALIGN := 0x98 func_800073DC=0x1C func_800073DC.NON_MATCHING=0x1C  # 0x98: ROM falls through to func_800073F8 at 0x73F8 (2026-06-10 relayout)
-build/non_matching/src/kernel/kernel_036.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x98 func_800073DC=0x1C func_800073DC.NON_MATCHING=0x1C
+build/src/kernel/kernel_036.c.o build/non_matching/src/kernel/kernel_036.c.o: TRUNCATE_TEXT := 0xFC  # func_800073DC = __rmonGetTCB is whole here (was clipped to 0x1C + body in kernel_018_e); drop the 4-byte .text align pad
 build/src/kernel/kernel_037.c.o build/non_matching/src/kernel/kernel_037.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_038.c.o build/non_matching/src/kernel/kernel_038.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_039.c.o build/non_matching/src/kernel/kernel_039.c.o: OPT_FLAGS := -O1
@@ -739,7 +738,6 @@ build/src/kernel/kernel_013_b.c.o build/non_matching/src/kernel/kernel_013_b.c.o
 build/src/kernel/kernel_018_b.c.o build/non_matching/src/kernel/kernel_018_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_c.c.o build/non_matching/src/kernel/kernel_018_c.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_d.c.o build/non_matching/src/kernel/kernel_018_d.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_018_e.c.o build/non_matching/src/kernel/kernel_018_e.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_f.c.o build/non_matching/src/kernel/kernel_018_f.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_g.c.o build/non_matching/src/kernel/kernel_018_g.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_020_b.c.o build/non_matching/src/kernel/kernel_020_b.c.o: OPT_FLAGS := -O1
@@ -778,7 +776,6 @@ build/src/kernel/kernel_018_b.c.o build/non_matching/src/kernel/kernel_018_b.c.o
 build/src/kernel/kernel_032.c.o build/non_matching/src/kernel/kernel_032.c.o: TRUNCATE_TEXT := 0x80
 build/src/kernel/kernel_018_c.c.o build/non_matching/src/kernel/kernel_018_c.c.o: TRUNCATE_TEXT := 0xC
 build/src/kernel/kernel_033.c.o build/non_matching/src/kernel/kernel_033.c.o: TRUNCATE_TEXT := 0xA8
-build/src/kernel/kernel_018_e.c.o build/non_matching/src/kernel/kernel_018_e.c.o: TRUNCATE_TEXT := 0x64
 build/src/kernel/kernel_018_o2.c.o build/non_matching/src/kernel/kernel_018_o2.c.o: TRUNCATE_TEXT := 0x108
 build/src/kernel/kernel_018_f.c.o build/non_matching/src/kernel/kernel_018_f.c.o: TRUNCATE_TEXT := 0x428
 build/src/kernel/kernel_034.c.o build/non_matching/src/kernel/kernel_034.c.o: TRUNCATE_TEXT := 0x1B0
