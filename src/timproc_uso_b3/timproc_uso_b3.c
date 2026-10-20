@@ -467,14 +467,20 @@ ret0:
  * 2026-05-23 as match-faking per
  * feedback_no_instruction_forcing_matches_policy — fn rolled back to NM-wrap;
  * NATURAL CEILING 96.86% NM.
+ *
+ * 2026-10-20 agent-g (run 109) 97.47 -> EXACT by porting the b1 0EE8 kit
+ * (its exact twin): base = &D re-assigned right after the 0x6A8 load, the
+ * count stored to 0x6B0 and read back as the loop init (store-forward), and
+ * a for-loop that REUSES `state` as the counter with the call argument spelled
+ * mult-first `base[0x64/4] * 0x30 + *(int *)*(char **)(a0 + 0x528)` (no table
+ * local, which took v0). The break now exits to the base re-assignment, giving
+ * the target's bne + nop instead of bnel.
  */
-#ifdef NON_MATCHING
 void timproc_uso_b3_func_00000E60(char *a0) {
     volatile int *base = (int*)&D_00000000;
     char *saved = a0;
     int state = *(int*)(a0 + 0x504);
     char *obj;
-    int count;
     int *ret;
     int *created;
     char *link;
@@ -489,18 +495,13 @@ void timproc_uso_b3_func_00000E60(char *a0) {
 
 state0:
         obj = *(char**)(saved + 0x6A8);
+        base = (volatile int*)&D_00000000;
         *(int*)(saved + 0x6AC) = *(int*)(*(char**)(obj + 0x44) + 0x14);
-        count = *(int*)(*(char**)(obj + 0x44) + 0x3C);
-        state = count - 1;
-        *(int*)(saved + 0x6B0) = count;
-        while (state >= 0) {
-            char *table = *(char**)(saved + 0x528);
-            ret = (int*)gl_func_00000000(*(char**)table + (base[0x64 / 4] * 0x30), state);
-            if (*(int*)(saved + 0x6AC) != ret[1]) {
-                goto state0_done;
-            }
+        *(int*)(saved + 0x6B0) = *(int*)(*(char**)(obj + 0x44) + 0x3C);
+        for (state = *(int*)(saved + 0x6B0) - 1; state >= 0; state--) {
+            ret = (int*)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int*)*(char**)(saved + 0x528), state);
+            if (*(int*)(saved + 0x6AC) != ret[1]) break;
             *(int*)(saved + 0x6B0) = *(int*)(saved + 0x6B0) - 1;
-            state--;
         }
 state0_done:
         base = (volatile int*)&D_00000000;
@@ -528,9 +529,6 @@ state1:
         created[0x14 / 4] = (int)link;
         gl_func_00000000(base[0x190 / 4], 1, 1);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3", timproc_uso_b3_func_00000E60);
-#endif
 
 /* timproc_uso_b3_func_00000FF4: F1 (32-insn 0x80) gate-then-update wrapper
  * only. The 2026-05-07 SUFFIX_BYTES recipe (absorbing 7 words / 0x1C bytes
