@@ -33981,105 +33981,19 @@ void *gl_func_000628EC(char *self, int arg1, int arg2, int arg3, int arg4) {
 }
 
 /* gl_func_00062A2C: camera/transform blend step (0x344 / 209 words).
- * o->50 = 22, o->4C = 7; f(o, arg1, &x) fills a {Vec3 a, b, c; f32 d}
- * record, f(o, arg2, &p) a target Vec3, then lerp(&x.c, q, t, 0) and
- * x.a = lerp(x.a, p, t). mode != 0: the current state o->80/8C/98/A4 is
- * copied into o->D0/DC/E8/F4 (each Vec3 through a by-value temp: lw/sw
- * into the stack, then lwc1/swc1 per field), lerp(&o->E8, &x.c, t2, 0) and
- * o->D0 = lerp(o->D0, x.a, t2); else x is copied straight in. mode < 2
- * copies D0.. back into 80... Then o->DC.x = 1.0f and a C++-style virtual
- * call through o->54 (vtable +0x28: s16 this-adjust at +0x50, fn at +0x54).
- * NM 2026-10-16 agent-g (39.9 -> rewrite): 210 vs 209 words. Typed record
- * structs, the two float args passed through a PROTOTYPED alias
- * (void *, void *, f32, s32) (K&R gl_func_00000000 converts them to
- * double), lerp spelled (b - a) * t + a (the add takes the product
- * first), frame from the decl list (each named local takes a slot; pads
- * place x/q/p/tmp/tmp2/tmp3 at the target 176/160/136/100/68/36). Residual:
- * FP colouring of the lerps (target keeps each loaded a in f0, product
- * and sum in fresh ring temps and t in f2; do/while(0) per component gets
- * t into f2 but sums back into f0), t2 loaded into f12 before the copies
- * in the target, one extra word. Draft: /home/danjs/decomp-drafts/gl_func_00062A2C_draft.c. */
-#ifdef NON_MATCHING
-extern void gl_lerp_62A2C(void *, void *, f32, s32);
-typedef struct { f32 x, y, z; } V3_62A2C;
-typedef struct { V3_62A2C a; V3_62A2C b; V3_62A2C c; f32 d; } X_62A2C;
-typedef struct {
-    char pad0[0x4C];
-    s32 w4C;            /* 0x4C */
-    s32 w50;            /* 0x50 */
-    char *w54;          /* 0x54 */
-    char pad58[0x28];
-    V3_62A2C s80;       /* 0x80 */
-    V3_62A2C s8C;       /* 0x8C */
-    V3_62A2C s98;       /* 0x98 */
-    f32 fA4;            /* 0xA4 */
-    char padA8[0x28];
-    V3_62A2C dD0;       /* 0xD0 */
-    V3_62A2C dDC;       /* 0xDC */
-    V3_62A2C dE8;       /* 0xE8 */
-    f32 fF4;            /* 0xF4 */
-} O_62A2C;
-
-void gl_func_00062A2C(O_62A2C *o, s32 arg1, s32 arg2, f32 t, s32 mode, f32 t2) {
-    X_62A2C x;
-    f32 q[4];
-    f32 pad0[3];
-    V3_62A2C p;
-    f32 pad1[6];
-    V3_62A2C tmp;
-    f32 pad2[5];
-    V3_62A2C tmp2;
-    f32 pad3[3];
-    V3_62A2C tmp3;
-    char *obj;
-    char *vt;
-
-    o->w50 = 22;
-    o->w4C = 7;
-    gl_func_00000000(o, arg1, &x);
-    gl_func_00000000(o, arg2, &p);
-    gl_lerp_62A2C(&x.c, q, t, 0);
-    do { x.a.x = (p.x - x.a.x) * t + x.a.x; } while (0);
-    do { x.a.y = (p.y - x.a.y) * t + x.a.y; } while (0);
-    do { x.a.z = (p.z - x.a.z) * t + x.a.z; } while (0);
-    if (mode != 0) {
-        tmp = o->s80;
-        o->dD0.x = tmp.x; o->dD0.y = tmp.y; o->dD0.z = tmp.z;
-        tmp = o->s8C;
-        o->dDC.x = tmp.x; o->dDC.y = tmp.y; o->dDC.z = tmp.z;
-        tmp = o->s98;
-        o->dE8.x = tmp.x; o->dE8.y = tmp.y; o->dE8.z = tmp.z;
-        o->fF4 = o->fA4;
-        gl_lerp_62A2C(&o->dE8, &x.c, t2, 0);
-        o->dD0.x = (x.a.x - o->dD0.x) * t2 + o->dD0.x;
-        o->dD0.y = (x.a.y - o->dD0.y) * t2 + o->dD0.y;
-        o->dD0.z = (x.a.z - o->dD0.z) * t2 + o->dD0.z;
-    } else {
-        tmp = x.a;
-        o->dD0.x = tmp.x; o->dD0.y = tmp.y; o->dD0.z = tmp.z;
-        tmp2 = x.b;
-        o->dDC.x = tmp2.x; o->dDC.y = tmp2.y; o->dDC.z = tmp2.z;
-        tmp2 = x.c;
-        o->dE8.x = tmp2.x; o->dE8.y = tmp2.y; o->dE8.z = tmp2.z;
-        o->fF4 = x.d;
-    }
-    if (mode < 2) {
-        tmp = o->dD0;
-        o->s80.x = tmp.x; o->s80.y = tmp.y; o->s80.z = tmp.z;
-        tmp2 = o->dDC;
-        o->s8C.x = tmp2.x; o->s8C.y = tmp2.y; o->s8C.z = tmp2.z;
-        tmp3 = o->dE8;
-        o->s98.x = tmp3.x; o->s98.y = tmp3.y; o->s98.z = tmp3.z;
-        o->fA4 = o->fF4;
-    }
-    o->dDC.x = 1.0f;
-    obj = o->w54;
-    vt = *(char **)(obj + 0x28);
-    ((void (*)(char *, O_62A2C *))*(char **)(vt + 0x54))(obj + *(s16 *)(vt + 0x50), o);
+ * o->50 = 22, o->4C = 7; get(o, from, &x) fills a {Vec3 a, b, c; f32 d}
+ * pose, get(o, to, &p) a target, lerp(&x.c, q, t, 0) and x.a lerped toward
+ * p by t. mode != 0: dst = cur, lerp(&dst.c, &x.c, t2, 0), dst.a lerped
+ * toward x.a by t2; else dst = x. mode < 2: cur = dst. Then dst.b.x = 1.0f
+ * and a virtual notify(o) on o->54.
+ * EXACT (agent-g run 113): this is C++. The real source lives in the IDO 7.1
+ * NCC donor src/game_libs/game_libs_ncc_62A2C.cpp (Vec3 class with a
+ * by-value operator=, inline flerp, implicit record assignment) and is
+ * spliced over this placeholder via REPLACE_FUNC_BODY. The old cfe NM wrap
+ * (210 vs 209 words, FP colouring residual) is gone. */
+void gl_func_00062A2C(char *o) {
+    *(volatile int *)(o + 0x50) = 22;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00062A2C);
-#endif
 
 /* game_libs_func_00062D70: unpack a packed s16 record into floats: q =
  * a1[3..6] * scale -> a2[6..9] (named x, y, z, w computed before the four

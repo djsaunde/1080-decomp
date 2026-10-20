@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00062A2C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-20T23:10:52.341525+00:00",
+  "end_time": "2026-10-20T23:10:52.341545+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T23:10:52.341541+00:00",
+      "assistant_text": "Donor-splice exact, compiled as C++ by IDO 7.1 NCC: game_libs_post0b contains C++. Tells: per-Vec3 copies through a stack temp (addiu vN,sp,K + lw/sw, then lwc1/swc1 per field) = an inline operator=(V3 v) taking its argument by value, and a virtual notify() with the s16 this-adjust through vtable +0x50/+0x54. Frame layout pins the inline structure: operator= forwards to an inline set(const V3&) (temps 32 bytes apart at sp+100/68/36), the record's third member is a distinct class whose operator=(const V3c&) forwards to set(V3c) by value (its temp lowest), record copies are implicit Rec assignments, and the lerp goes through an inline flerp(float a, const float &b, float t) which keeps components sequential (a in f0, t in f2). cfe NM capped at 210/209 words.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 209,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00062A2C (0x344 / 209 words).\n *\n * game_libs_post0b holds C++ code too: this camera/transform blend step is\n * the first game_libs function matched under edg (agent-g run 113). The tells\n * were the per-Vec3 \"by-value temp\" copies (an `addiu vN,sp,K` base, three\n * lw/sw into the stack temp, then lwc1/swc1 per field into the destination)\n * and the virtual call with the s16 this-adjust through vtable +0x50/+0x54.\n * The cfe NM wrap capped at 210/209 words with FP colouring residuals.\n *\n * What the original source must have looked like (each item pins frame slots\n * or registers; see docs/IDO_CODEGEN.md#ncc-game-libs-vec3-62a2c):\n * - V3::operator=(V3 v) takes its argument BY VALUE (the stack temp) and\n *   forwards to an inline set(const V3 &) (two more inline locals per copy:\n *   the 32-byte spacing of the temps at sp+100/68/36);\n * - the third member of the record is a different class whose operator=\n *   takes a const reference and forwards to set(V3c) by value, so its temp\n *   is declared after the inline locals (sp+36, lowest in the frame);\n * - the record copies are plain `o->d = o->s;` assignments (the implicit\n *   Rec::operator= calls the member operators);\n * - the per-component lerp goes through an inline scalar\n *   flerp(float a, const float &b, float t), which keeps the components\n *   sequential (a in $f0, t in $f2, b loaded into the ugen ring);\n * - the second getter output is a 24-byte object (only the first Vec3 used).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY\n * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every\n * symbol is extern \"C\"; both callees are blank USO imports (jal 0), wired to\n * zero-valued aliases in undefined_syms_auto.txt. */\ninline float flerp(float a, const float &b, float t) { return (b - a) * t + a; }\n\nstruct V3 {\n    float x, y, z;\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void operator=(V3 v) { set(v); }\n    void lerp(const V3 &b, float t) { x = flerp(x, b.x, t); y = flerp(y, b.y, t); z = flerp(z, b.z, t); }\n};\n\nstruct V3c {\n    float x, y, z;\n    void set(V3c v) { x = v.x; y = v.y; z = v.z; }\n    V3c &operator=(const V3c &v) { set(v); return *this; }\n};\n\nstruct Pose {\n    V3 a;           /* 0x00 */\n    V3 b;           /* 0x0C */\n    V3c c;          /* 0x18 */\n    float d;        /* 0x24 */\n};\n\nstruct Pair { V3 v; V3 w; };\n\nstruct Listener {\n    char pad[0x28];\n    virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();\n    virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();\n    virtual void m8();\n    virtual void notify(void *src);     /* vtable +0x50 / +0x54 */\n};\n\nstruct Blend {\n    char pad0[0x4C];\n    int w4C;            /* 0x4C */\n    int w50;            /* 0x50 */\n    Listener *w54;      /* 0x54 */\n    char pad58[0x28];\n    Pose cur;           /* 0x80 */\n    char padA8[0x28];\n    Pose dst;           /* 0xD0 */\n};\n\nextern \"C\" {\nvoid gl_func_00000000_62a2c_get(void *, int, void *);\nvoid gl_func_00000000_62a2c_lerp(void *, void *, float, int);\n}\n\nextern \"C\" void gl_func_00062A2C(Blend *o, int from, int to, float t, int mode, float t2) {\n    Pose x;\n    float q[4];\n    Pair p;\n\n    o->w50 = 22;\n    o->w4C = 7;\n    gl_func_00000000_62a2c_get(o, from, &x);\n    gl_func_00000000_62a2c_get(o, to, &p.v);\n    gl_func_00000000_62a2c_lerp(&x.c, q, t, 0);\n    x.a.lerp(p.v, t);\n    if (mode != 0) {\n        o->dst = o->cur;\n        gl_func_00000000_62a2c_lerp(&o->dst.c, &x.c, t2, 0);\n        o->dst.a.lerp(x.a, t2);\n    } else {\n        o->dst = x;\n    }\n    if (mode < 2) {\n        o->cur = o->dst;\n    }\n    o->dst.b.x = 1.0f;\n    o->w54->notify(o);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_62A2C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00062A2C.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1 NCC",
+    "compiler_flags": "-O2 -G 0 -non_shared -mips2 -32 -Wab,-r4300_mul",
+    "verification": "Donor .text byte-equal to expected (209/209 words, only jal-0 import relocs); ROM cmp clean; objdiff 100."
+  }
+}
