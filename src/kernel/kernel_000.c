@@ -88,7 +88,7 @@ extern UsoSlotGroup D_80013274;
 extern UsoSlotGroup D_800182E4;
 
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80000000);
+/* func_80000000 (entry stub) + func_80000060 (boot main) live in kernel_000_entry.c */
 
 extern u32 D_8000A2D8;
 extern u32 D_8000A2DC;

@@ -36,6 +36,7 @@ SECTIONS
         FILL(0x00000000);
         kernel_TEXT_START = .;
         /* 2026-06-10 kernel ROM-order relayout: object order = baserom order. */
+        build/src/kernel/kernel_000_entry.c.o(.text);
         build/src/kernel/kernel_000.c.o(.text);
         build/src/kernel/kernel_045.c.o(.text);
         build/src/kernel/kernel_056.c.o(.text);

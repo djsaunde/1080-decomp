@@ -1,0 +1,32 @@
+{
+  "function_name": "func_80000060",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-20T22:12:07.576812+00:00",
+  "end_time": "2026-10-20T22:12:07.576830+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T22:12:07.576826+00:00",
+      "assistant_text": "Boot main hidden in the second half of func_80000000.s (entry stub jumps to runtime 0x80000460 = our 0x60). Split into its own unit with the handwritten entry stub; IDO pads the unit to 0xB0 where kernel_000 begins. Calls use +0x400 jal names (USO loader init with osMemSize, load boot module, call entry).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 20,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* Kernel entry point + boot main, split out of kernel_000.c (2026-10-20,\n * agent-g run 112). func_80000000.s [0x00,0x60) is the handwritten entry\n * stub (clear BSS, set sp, jump to runtime 0x80000460) plus its pad; the\n * kernel runs at 0x80000400, so that jump lands on func_80000060 here.\n * func_80000060 is plain IDO 7.1 -O2 C. Its callees use the +0x400 jal\n * names: func_80001994 = func_80001594 (USO loader init, given the memory\n * size), func_80000DEC = func_800009EC (load the first module, here the\n * boot USO named by D_8000A59C), func_80001088 = func_80000C88 (call its\n * entry). IDO pads this unit's .text to 0xB0, which is where kernel_000\n * starts. */\n\nINCLUDE_ASM(\"asm/nonmatchings/kernel\", func_80000000);\n\ntypedef struct { s32 pad[4]; u32 unk10; } UsoSegDesc0;\nextern UsoSegDesc0 D_8000A260;\nextern u32 D_80000318;               /* osMemSize */\nextern char D_8000A59C[];\nextern void func_80001994(UsoSegDesc0 *, u32);\nextern s32 func_80000DEC(char *);\nextern s32 func_80001088(void);\n\nvoid func_80000060(void) {\n    D_8000A260.unk10 = D_80000318 + 0x80000000;\n    func_80001994(&D_8000A260, D_80000318);\n    func_80000DEC(D_8000A59C);\n    func_80001088();\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_000_entry.c",
+    "asm_path": "asm/nonmatchings/kernel/func_80000060.s",
+    "segment": "kernel",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32"
+  }
+}
