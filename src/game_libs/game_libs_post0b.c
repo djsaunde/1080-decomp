@@ -15993,33 +15993,28 @@ void gl_func_00046F80(int a0, int a1, int a2) {
 //   untyped. Real-C STRUCTURAL body below. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
 #ifdef NON_MATCHING
+/* 2026-10-20 (agent-c run 114): gDPFillRectangle + gDPPipeSync through the
+ * comma-temp display-list append (re-read ctx->dl after the count store). */
+typedef struct { unsigned int w0, w1; } G46FA8;
+typedef struct { G46FA8 *buf; int count; } D46FA8;
+#define DL46FA8(c) (*(D46FA8 **)((c) + 0xC))
+#define NEXT46FA8(c) (_n = DL46FA8(c)->count++, &DL46FA8(c)->buf[_n])
+#define SHL46FA8(v, s, w) ((((unsigned int)(v)) & ((1 << (w)) - 1)) << (s))
 void gl_func_00046FA8(char *a0, int a1, int a2, int a3, int a4, int a5) {
     char *ctx;
-    char *gb;
-    int i;
-    unsigned int *p;
-    if (*(int *)(a0 + 0x28C) != 0) {
-        gl_func_00000000(a1, a2, a3, a4);
-        return;
-    }
+    int _n;
+    if (*(int *)(a0 + 0x28C) == 0) {
     if (a5 != 0) {
         gl_func_00000000(*(char **)(*(char **)(a0 + 0x254) + 0x158), a5);
         gl_func_00000000(*(char **)(*(char **)(a0 + 0x254) + 0x158), a5);
         gl_func_00000000(*(char **)(*(char **)(a0 + 0x254) + 0x158), a5);
     }
     ctx = *(char **)(*(char **)(a0 + 0x254) + 0x158);
-    gb = *(char **)(ctx + 0x0C);
-    i = *(int *)(gb + 0x4);
-    *(int *)(gb + 0x4) = i + 1;
-    p = (unsigned int *)(*(char **)gb + i * 8);
-    p[0] = 0xF6000000 | (((a1 + a3 - 1) & 0x3FF) << 14) | (((a2 + a4 - 1) & 0x3FF) << 2);
-    p[1] = ((a1 & 0x3FF) << 14) | ((a2 & 0x3FF) << 2);
-    gb = *(char **)(ctx + 0x0C);
-    i = *(int *)(gb + 0x4);
-    *(int *)(gb + 0x4) = i + 1;
-    p = (unsigned int *)(*(char **)gb + i * 8);
-    p[0] = 0xE7000000;
-    p[1] = 0;
+    { G46FA8 *_g = NEXT46FA8(ctx); _g->w0 = SHL46FA8(0xF6, 24, 8) | SHL46FA8(a1 + a3 - 1, 14, 10) | SHL46FA8(a2 + a4 - 1, 2, 10); _g->w1 = SHL46FA8(a1, 14, 10) | SHL46FA8(a2, 2, 10); }
+    { G46FA8 *_g = NEXT46FA8(ctx); _g->w0 = SHL46FA8(0xE7, 24, 8); _g->w1 = 0; }
+    } else {
+        gl_func_00000000(a1, a2, a3, a4);
+    }
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00046FA8);
