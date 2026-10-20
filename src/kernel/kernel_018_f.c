@@ -175,7 +175,6 @@ s32 func_80007564(char *msg) {
     return 0;
 }
 
-#ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 #endif
@@ -198,7 +197,7 @@ extern u8 __rmonRcpAtBreak;
  * the later 0x11C value) so the lhu result is held in a register across the
  * branch, matching the target's single `lhu $t0` reuse — NOT a fresh named
  * `temp_t0` (that adds a 3rd M-class home → frame 0x20 -> 0x28, the +8 cascade).
- * RESIDUAL (1 real insn, genuine cap): target keeps the HW value in a
+ * OLD RESIDUAL (superseded, see EXACT note below): target keeps the HW value in a
  * register-only subexpression temp ($t0, no stack home); reusing the homed
  * `sp1C` forces a dead `sw $t0,0x1C(sp)` into the beqz delay slot (target=nop).
  * Register-only temp is unreachable from C here: named locals always home
@@ -208,10 +207,17 @@ extern u8 __rmonRcpAtBreak;
  * store-then-fixup, RW(&sp18) volatile-addr, non-volatile do-while). The other
  * 6 word-diffs are R_MIPS_26/HI16/LO16 reloc placeholders (func_80008430,
  * func_80006A98, func_80009C30, __rmonRcpAtBreak) that resolve at link. */
+/* EXACT 2026-10-20 (agent-g run 112): the chain node is a plain local (not
+ * volatile) walked with a `while (node->unk4 != -1) { if (id match) break;
+ * node = next; }` loop, and the saved-cause test is a plain if/else that
+ * reads HW(sp18, 0x10) twice (-O1 keeps the first lhu in t0 for the
+ * then-arm). The two in-function branches to "func_8000785C" in the .s are
+ * now a local label (that address is a jal target 0x400 above
+ * __rmonStopUserThreads, an absolute undefined_syms entry). */
 s32 func_80007698(s32 arg0, s32 arg1, void *arg2) {
     extern s32 func_80008430();
     s32 sp1C;
-    void *volatile sp18;
+    void *sp18;
 
     FW(arg2, 0x14) = arg1;
     if (arg0 == 1) {
@@ -248,22 +254,18 @@ s32 func_80007698(s32 arg0, s32 arg1, void *arg2) {
         goto block_25;
     }
     sp18 = (void *) func_80009C30();
-    if (FW(sp18, 4) != -1) {
-loop_12:
-        if (FW(sp18, 0x14) != arg1) {
-            sp18 = (void *) FW(sp18, 0xC);
-            if (FW(sp18, 4) != -1) {
-                goto loop_12;
-            }
+    while (FW(sp18, 4) != -1) {
+        if (FW(sp18, 0x14) == arg1) {
+            break;
         }
+        sp18 = (void *) FW(sp18, 0xC);
     }
     if (FW(sp18, 4) == -1) {
         return -2;
     }
     FW(arg2, 0x28) = FW(sp18, 4);
-    sp1C = HW(sp18, 0x10);
-    if (sp1C != 0) {
-        FW(arg2, 0xC) = sp1C;
+    if (HW(sp18, 0x10) != 0) {
+        FW(arg2, 0xC) = HW(sp18, 0x10);
     } else {
         FW(arg2, 0xC) = 1;
     }
@@ -286,6 +288,3 @@ loop_12:
 block_25:
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80007698);
-#endif
