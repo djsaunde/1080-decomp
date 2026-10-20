@@ -102,7 +102,14 @@ extern UsoSlotGroup D_800182E4;
  * splat mis-split at 0x800047E4. Symbol kept as alt-entry via
  * undefined_syms_auto.txt for direct callers (jal func_800047E4). */
 
-/* ===== func_80004808: -O2 double-store / coloring cap (NOT branch-likely) =====
+/* func_80004808 / func_8000487C: KMC debugger port helpers, IDO 7.1 -O1
+ * (the whole unit is -O1 now; both were -O2 NM 73.0 / 91.1). 4808 sends a
+ * one-word packet {cmd:6 = 0xC, len:2, data[3]} to 0xC0000000 (plain
+ * `pkt.len = arg1;`, the bitfield store does the masking; pkt declared
+ * before i = the -O1 slot order). 487C waits on bit 0x2000 with two plain
+ * while loops around the 0xC000000C clear. EXACT 2026-10-20 (agent-g run
+ * 112).
+ * ===== (old) func_80004808: -O2 double-store / coloring cap (NOT branch-likely) =====
  * CORRECTION 2026-06-23: the older "branch-LIKELY-emission cap" header (below, in
  * spirit) is STALE for func_80004808. The current clean -O2 C body emits REGULAR
  * beqz/bnez — identical branch TYPE to the target. There is NO branch-likely diff.
@@ -126,7 +133,6 @@ extern UsoSlotGroup D_800182E4;
  * Permuter cannot bridge a 3-insn structural gap (coloring-only). Genuine -O2 ugen cap.
  * VERIFIED 2026-05-31 (still relevant for the bnezl family elsewhere): no branch-likely
  * disable flag exists in IDO 7.1 cc. */
-#ifdef NON_MATCHING
 /* 2026-06-04 (72.68->73.03%): structural cleanup. sp4 is the 4-byte packet
  * word at sp+0x4 (declare `u8 sp4[4]` BEFORE `u32 sp0` so IDO lays sp0 at
  * 0x0, sp4 at 0x4 — frame -0x8 matches target, final read folds to lw 0x4).
@@ -135,24 +141,17 @@ extern UsoSlotGroup D_800182E4;
  * memory round-trip + andi 0xFF reload-truncate); IDO register-caches
  * sp4[0] across the two assigns and emits one store (volatile sp4 forces
  * the round-trip but over-corrects the loop -> 67.6%). */
-void func_80004808(u8* arg0, u32 arg1) {
-    u8 sp4[4];
-    u32 sp0;
+void func_80004808(u8 *arg0, u32 arg1) {
+    struct { u8 cmd : 6; u8 len : 2; u8 data[3]; } pkt;
+    u32 i;
 
-    sp4[0] = (sp4[0] & 0xFF03) | 0x30;
-    sp4[0] = (arg1 & 3) | (sp4[0] & 0xFFFC);
-    sp0 = 0;
-    if (arg1 != 0) {
-        do {
-            *((u8*)&sp0 + sp0 + 5) = arg0[sp0];
-            sp0++;
-        } while (sp0 < arg1);
+    pkt.cmd = 0xC;
+    pkt.len = arg1;
+    for (i = 0; i < arg1; i++) {
+        pkt.data[i] = arg0[i];
     }
-    *(volatile u32*)0xC0000000 = *(u32*)sp4;
+    *(volatile u32 *)0xC0000000 = *(u32 *)&pkt;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80004808);
-#endif
 
 /* RSP status-bit poller. Two loops wait for SP_STATUS bit 0x2000 to be
  * SET then CLEAR around a write to 0xC000000C. The do-while form with the
@@ -170,22 +169,10 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80004808);
  * residual is likely-slot FILL policy (uopt/as1 branch-likely emission),
  * not register coloring or frame slots; the wave's same-name-web/dead-home/
  * ring-burn levers have no purchase. Cap stands on the 2026-07-10 matrix. */
-#ifdef NON_MATCHING
 void func_8000487C(void) {
-    s32 r = func_80009EA0();
-    if ((r & 0x2000) == 0) {
-        do {
-            r = func_80009EA0();
-        } while ((r & 0x2000) == 0);
+    while (!(func_80009EA0() & 0x2000)) {
     }
-    *(volatile u32*)0xC000000C = 0;
-    r = func_80009EA0();
-    if (r & 0x2000) {
-        do {
-            r = func_80009EA0();
-        } while (r & 0x2000);
+    *(volatile u32 *)0xC000000C = 0;
+    while (func_80009EA0() & 0x2000) {
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_8000487C);
-#endif

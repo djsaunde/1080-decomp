@@ -764,6 +764,7 @@ build/src/kernel/kernel_025_b.c.o build/non_matching/src/kernel/kernel_025_b.c.o
 build/src/kernel/kernel_039_b.c.o build/non_matching/src/kernel/kernel_039_b.c.o: OPT_FLAGS := -O1
 # (TRUNCATE_TEXT entries for relayout pieces are below, computed from ROM-truth spans)
 build/src/kernel/kernel_027_b.c.o build/non_matching/src/kernel/kernel_027_b.c.o: TRUNCATE_TEXT := 0x58
+build/src/kernel/kernel_000_c.c.o build/non_matching/src/kernel/kernel_000_c.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000_c.c.o build/non_matching/src/kernel/kernel_000_c.c.o: TRUNCATE_TEXT := 0xE0
 build/src/kernel/kernel_000_o1.c.o build/non_matching/src/kernel/kernel_000_o1.c.o: TRUNCATE_TEXT := 0x1D8
 build/src/kernel/kernel_038.c.o build/non_matching/src/kernel/kernel_038.c.o: TRUNCATE_TEXT := 0x140
