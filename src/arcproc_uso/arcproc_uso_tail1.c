@@ -1235,110 +1235,66 @@ arcproc_uso_func_00001B88(a0) int * a0; {
     arcproc_uso_func_00000000(t, 0x8C, *(int*)((char*)t + 0x6B0));
 }
 
-#ifdef NON_MATCHING
-/* arcproc_uso_func_00001BBC: float-gated decay updater. cb(arg0); reads
- * arg0->0xD4->0x77C; if > 0: subtract const *(float*)(&D+0x44), clamp to >=0,
- * cb(sub, 0x8C, sub->0x6B0, arg0), reload; if (value <= 0) cb(arg0). Fresh decode
- * 2026-05-29 (m2c-confirmed), upgraded from boundary bail-marker. The .s
- * over-extends 2 words (0x1C6C/0x1C70 = the stolen f0=1.0f prologue of successor
- * 0x1C74); the function proper is 44 insns ending jr-ra at 0x1C64 — those 2 tail
- * words are not part of this body, an irreducible boundary residual (1C74 is
- * clone-canonical, can't be merged). Caps: arg0/sub structs + cb prototypes
- * untyped (USO-reloc), decay-const not symbolized. NON_MATCHING. */
-extern int gl_func_00000000();
-void arcproc_uso_func_00001BBC(char *arg0) {
-    char *t;
-    float f0;
+/* arcproc_uso_func_00001BBC: decay-tick handler (sub = self->0xD4;
+ * sub->f_77C -= rate D+0x44, clamp at 0, 140-event mid-call with sub->0x6B0,
+ * threshold call once <= 0). EXACT 2026-10-20 via twin port (twin-finder.py):
+ * masked-identical to timproc_uso_b1_func_00001908 after the boundary fix
+ * (its 2 trailing words were 1C74's hoisted 1.0f head) -- only the field
+ * offsets differ (0x72C->0x77C, 0x6AC->0x6B0, rate 0x48->0x44). */
+void arcproc_uso_func_00001BBC(int *self) {
+    char *base = &D_00000000;
+    int *sub;
+    float *fp;
+    float val;
 
-    gl_func_00000000(arg0);
-    t = *(char **)(arg0 + 0xD4);
-    f0 = *(float *)(t + 0x77C);
-    if (f0 > 0.0f) {
-        *(float *)(t + 0x77C) = *(float *)(t + 0x77C) - *(float *)((char *)&D_00000000 + 0x44);
-        t = *(char **)(arg0 + 0xD4);
-        if (*(float *)(t + 0x77C) < 0.0f) {
-            *(float *)(t + 0x77C) = 0.0f;
+    gl_func_00000000(self);
+    sub = (int *)self[0xD4 / 4];
+    fp = (float *)((char *)sub + 0x77C);
+    val = *fp;
+    if (val > 0.0f) {
+        *fp -= *(float *)(base + 0x44);
+        sub = (int *)self[0xD4 / 4];
+        if (*(float *)((char *)sub + 0x77C) < 0.0f) {
+            *(float *)((char *)sub + 0x77C) = 0.0f;
+            sub = (int *)self[0xD4 / 4];
         }
-        gl_func_00000000(*(char **)(arg0 + 0xD4), 0x8C,
-                         *(int *)(*(char **)(arg0 + 0xD4) + 0x6B0), arg0);
-        f0 = *(float *)(*(char **)(arg0 + 0xD4) + 0x77C);
+        gl_func_00000000(sub, 140, *(int *)((char *)sub + 0x6B0));
+        val = *(float *)((char *)(int *)self[0xD4 / 4] + 0x77C);
     }
-    if (f0 <= 0.0f) {
-        gl_func_00000000(arg0);
+    if (val <= 0.0f) {
+        gl_func_00000000(self);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001BBC);
-#endif
 
-#ifdef NON_MATCHING
-/* arcproc_uso_func_00001C74: 41-insn (0xA4) counter+conditional-scale wrapper.
- *
- * BYTE-IDENTICAL with timproc_uso_b1_func_000019C0 and timproc_uso_b3_func_00001928
- * (sig=739fd8d1d3) — none of these are wrapped yet. This is the canonical decode.
- *
- * STRUCTURE (insns 1-15 decoded):
- *   addiu sp, -0x58; sw ra, sw s0; ...
- *   *(float*)(sp+0x48..0x54) = 0.0 (4 zero floats — accumulator buf)
- *   t6 = a0->[0x68];                  // counter
- *   s0 = a0;                          // saved arg
- *   a0->[0x68] = t6 + 1;              // incr counter
- *   gl_func_00000000(a0->[0x50]);     // call with field
- *   if (v0 != 0) {
- *     f4 = 255.0f;
- *     f6 = s0->[0x108];               // some float field
- *     f8 = 255.0 * f6;                // scale to 0..255
- *     i_val = (int)truncf(f8);
- *     gl_func_00000000(&D, sp+0x48 buf, ...);  // pass buf+scaled int
- *     ...
- *   }
- *
- * FULL DECODE 2026-06-01: semantic body below matches the control flow and
- * call sequence.
- *
- * PRIOR NOTE CORRECTED 2026-07-15 (stolen-prologue re-verify vein): the
- * "incoming $f0" is NOT incoming — the splat gap at 1BBC's tail (0x1C6C:
- * lui at,0x3F80; mtc1 at,$f0) is 1C74's OWN hoisted 1.0f materialization
- * (FP-const-hoist-above-prologue, see docs/IDO_CODEGEN 2E3C/1710 entry).
- * So buf[] = 1.0f (NOT 0.0f as the body below says). TRUE-BYTE decode
- * verified 41/43 words exact (incl. the 2 orphan words) with:
- *   float buf[4]; char *tgt; char pad[0x20]; (void)pad;
- *   buf[0..3] = 1.0f;  a0->0x68 += 1;
- *   if (call(a0->0x50)) { call(&D, (int)(field*255.0f), buf);
- *     tgt = a0+0xF0; call(tgt); if (a0->0x68 & 8) call(tgt,0xA0,0x7C,3); }
- * (tgt var = the sw/lw a0,0x20(sp) spill; pad 0x20 = the 0x24-0x44 gap;
- * frame 0x58 exact.) Residual = the 2E3C-class invariant FP pair-swap:
- * target mtc1 at,$f4(255.0); lwc1 $f6,0x108(s0) — IDO gives the LOADED
- * value the lower reg across all probed forms (both mul spellings, named
- * var, pointer-deref, volatile, int-literal 255, IDO 5.3 -O2 = identical).
- * objdiff fuzzy vs expected DROPS (92.34->89.59) because expected/'s 1C74
- * lacks the orphan (head misalignment artifact) — body kept as-is per the
- * monotonic-fuzzy rule. TO LAND LATER: move the 2 orphan words from
- * 1BBC.s tail into 1C74.s head + refresh this unit's expected baseline,
- * then the 1.0f body above scores ~95 and the fn is reloc-free-landable
- * (all jals baked 0 -> gl_func_00000000) once the pair-swap cracks.
- *
- * Per scripts/find-byte-identical-clones.py — sig=739fd8d1d3 has 3 plain
- * clones (this + b1_19C0 + b3_1928). Future runs can mirror this wrap. */
+/* arcproc_uso_func_00001C74: historical name, true entry 0x1C6C.
+ * EXACT 2026-10-20 via twin port (twin-finder.py): byte-identical to
+ * timproc_uso_b1_func_000019C0 (entry 0x19B8) / b3_func_00001920. BOUNDARY
+ * FIX: the 2 words at 0x1C6C (lui at,0x3F80; mtc1 at,$f0 = buf[]'s 1.0f
+ * hoisted above the prologue) moved from 1BBC.s's tail into this .s head.
+ * The old "FP pair-swap" residual is the b1 recipe: field * (scale = 255.0f)
+ * with scale's home + pad[0x1C] preserving the 0x58 frame. */
 void arcproc_uso_func_00001C74(int *a0) {
     float buf[4];
+    char *tgt;
+    float scale;
+    char pad[0x1C];
 
-    buf[0] = 0.0f;
-    buf[1] = 0.0f;
-    buf[2] = 0.0f;
-    buf[3] = 0.0f;
+    (void)pad;
+    buf[0] = 1.0f;
+    buf[1] = 1.0f;
+    buf[2] = 1.0f;
+    buf[3] = 1.0f;
     *(int *)((char *)a0 + 0x68) += 1;
     if (gl_func_00000000(*(int *)((char *)a0 + 0x50)) != 0) {
-        gl_func_00000000(&D_00000000, (int)(255.0f * *(float *)((char *)a0 + 0x108)), buf);
-        gl_func_00000000((char *)a0 + 0xF0);
+        gl_func_00000000(&D_00000000,
+            (int)(*(float *)((char *)a0 + 0x108) * (scale = 255.0f)), buf);
+        tgt = (char *)a0 + 0xF0;
+        gl_func_00000000(tgt);
         if ((*(int *)((char *)a0 + 0x68) & 8) != 0) {
-            gl_func_00000000((char *)a0 + 0xF0, 0xA0, 0x7C, 3);
+            gl_func_00000000(tgt, 0xA0, 0x7C, 3);
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001C74);
-#endif
 
 /* arcproc_uso_func_00001D18: widget constructor. Field inits (0xC=0x3E4, 0xBC=
  * arg1, 0xB8=arg3, 0x54=arg2, 0xD0=0xFF, 0xD4=0, 0x4C=arg4); float quad @0xC0/C4/
