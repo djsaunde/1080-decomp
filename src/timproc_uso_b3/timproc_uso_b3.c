@@ -1044,15 +1044,19 @@ void timproc_uso_b3_func_00001920(int *a0) {
  * below the outgoing-arg spill unreachable by pads: E6E8 compiler-spill
  * class), sub-spill 72 vs 76 (target SHARES o's slot -- name-merge injects
  * an or-copy at link-1 instead), tail link-block reload $v1 vs $a2
- * (free-pick tie, if(1)/merge probed). NON_MATCHING. */
-#ifdef NON_MATCHING
+ * (free-pick tie, if(1)/merge probed).
+ * 2026-10-20 agent-g (run 109) 99.81 -> EXACT, E04 one-reused-local rule:
+ * BOTH link blocks re-read the child into the SAME local o (target shares
+ * slot 76), and the +0x18/+0x64 pointer mutations go through o as well, so
+ * o's later a2 use (the 3rd arg of the sub create) colours the whole web a2
+ * without the old 3-arg q trick; final link call is plain 2-arg. With q
+ * gone, four volatile pads put the arg0+0x10 CSE spill at 44. */
 extern int gl_proto_19cc(void *, int, int, float, float);
 extern char D_b3_19CC_0C;
 void timproc_uso_b3_func_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
     char *o;
     char *sub;
     char *sp44;
-    char *q;
     volatile int pad1;
     volatile int pad2;
     volatile int pad3;
@@ -1094,33 +1098,27 @@ void timproc_uso_b3_func_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
         gl_func_00000000(sub, 0);
         gl_proto_19cc(*(char **)(arg0 + 0x94), 0xA0, 0x46, 1.0f, 1.0f);
         {
-            q = *(char **)(arg0 + 0x94);
-            if (1) { q = q + 0x18; }
-            *(int *)q = *(int *)q & ~4;
-            q = *(char **)(arg0 + 0x94);
-            if (1) { q = q + 0x64; }
-            ((float *)q)[0] = 250.0f / denom;
-            ((float *)q)[1] = 235.0f / denom;
-            ((float *)q)[2] = 100.0f / denom;
-            ((float *)q)[3] = 0.0f / denom;
+            o = *(char **)(arg0 + 0x94);
+            if (1) { o = o + 0x18; }
+            *(int *)o = *(int *)o & ~4;
+            o = *(char **)(arg0 + 0x94);
+            if (1) { o = o + 0x64; }
+            ((float *)o)[0] = 250.0f / denom;
+            ((float *)o)[1] = 235.0f / denom;
+            ((float *)o)[2] = 100.0f / denom;
+            ((float *)o)[3] = 0.0f / denom;
         }
         *(int *)(*(char **)(arg0 + 0x94) + 0xA0) = *(int *)(arg0 + 0x6C) + 0x108;
         *(int *)(*(char **)(arg0 + 0x94) + 0x80) = 0;
         *(int *)(*(char **)(arg0 + 0x94) + 0x84) = -0x12;
         o = *(char **)(arg0 + 0x94);
-        sub = *(char **)(arg0 + 0x94);
-        gl_func_00000000(arg0 + 0x10, sub, q);
-        if (1) {
-            if (*(int *)(sub + 0x14) != 0) {
-                *(int *)(sub + 4) = 1;
-            }
-            *(char **)(sub + 0x14) = arg0;
+        gl_func_00000000(arg0 + 0x10, o);
+        if (*(int *)(o + 0x14) != 0) {
+            *(int *)(o + 4) = 1;
         }
+        *(char **)(o + 0x14) = arg0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3", timproc_uso_b3_func_000019CC);
-#endif
 
 /* timproc_uso_b3_func_00001C20: orphan-merge of a stolen-prologue. The orphan
  * timproc_uso_b3_func_00001C20 (lui t6; lw t6,0x64(t6) = TIMB3_D_64) was the
