@@ -844,7 +844,6 @@ void game_libs_func_00001800(int *a0, int a1, int a2, int a3, int a4) {
     a0[0xBC/4] = a4;
 }
 
-#ifdef NON_MATCHING
 /* game_libs_func_00001818: 16-segment meter/gauge tick (0x43C incl. its 2-word
  * hoisted head: lui/mtc1 f0 = 1.0f = the local float v[4] = {1,1,1,1} init
  * scheduled above addiu sp by 7.1 -O2). Orphan-sweep verdict 2026-09-05
@@ -876,7 +875,13 @@ void game_libs_func_00001800(int *a0, int a1, int a2, int a3, int a4) {
  * spelling of m (plain / two-def / struct member / &m / register) is
  * rematerialised from n instead of homed; (b) the 0x148->+0x20 lh chain
  * colours pointer/value v0/v1 vs target v1/v0 (named q/h give v0/v1, inline
- * gives t4/v0), which renumbers the surrounding t4/t5/t6 ring. */
+ * gives t4/v0), which renumbers the surrounding t4/t5/t6 ring.
+ * EXACT 2026-10-20 (agent-g run 108): (b) an empty `if (1) {}` between the q
+ * and h defs (BB boundary: q is born in the call's dead-v0 BB -> v1, h in the
+ * next BB -> v0; docs #dead-v0-poison-is-per-bb-split-the-defs-683d4), then
+ * the a1 sum spelled `m[0] + o->0x44` (m loads first -> t5); (a) the field
+ * store FIRST, then the m home store, then test the LOCAL `n >= 12` (the
+ * else-if keeps the field re-read). */
 extern int gl_func_00000000();
 extern float gl_ffunc_00001818(float);
 extern float gl_ref_00001818_scale_f;
@@ -906,9 +911,9 @@ void game_libs_func_00001818(char *o) {
     if (rem < 0) rem = 0;
     if (tot < rem) rem = tot;
     n = (int)((float)rem / (float)tot * 16.0f);
-    m[0] = n * 4 + 2;
     *(int*)(o + 0xC4) = n;
-    if (*(int*)(o + 0xC4) >= 12) {
+    m[0] = n * 4 + 2;
+    if (n >= 12) {
         t = *(float*)(o + 0x12C) + *(float*)(o + 0x128); *(float*)(o + 0x128) = t; a = gl_ffunc_00001818(t);
         t = *(float*)(o + 0x12C) + *(float*)(o + 0x128); *(float*)(o + 0x128) = t; b = gl_ffunc_00001818(t);
         t = *(float*)(o + 0x12C) + *(float*)(o + 0x128); *(float*)(o + 0x128) = t; c = gl_ffunc_00001818(t);
@@ -941,8 +946,9 @@ void game_libs_func_00001818(char *o) {
     gl_func_00000000(p);
     gl_func_00000000(p, (int)(255.0f * gl_ref_00001818_scale_f), o + 0xD8, 0xFF);
     q = *(char**)(o + 0x148);
+    if (1) {}
     h = *(short*)(q + 0x20);
-    gl_func_00000000(p, *(int*)(o + 0x44) + m[0], *(int*)(o + 0x5C), m[0] - 1, h - m[0] - 1);
+    gl_func_00000000(p, m[0] + *(int*)(o + 0x44), *(int*)(o + 0x5C), m[0] - 1, h - m[0] - 1);
     if (*(int*)(o + 0xC4) > 0) {
         p = o + 0x150;
         gl_func_00000000(p);
@@ -950,9 +956,6 @@ void game_libs_func_00001818(char *o) {
         gl_func_00000000(p, m[0] + *(int*)(o + 0x44) - 3, *(int*)(o + 0x5C), 0);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00001818);
-#endif
 
 /* gl_func_00001C54: EXACT 2026-10-16 (agent-g). The "sibling-scope slot-sharing
  * cap" below was the 4244 lever: ONE function-scope `char *m; struct SB1C54 t;`
