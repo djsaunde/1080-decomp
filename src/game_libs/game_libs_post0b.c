@@ -3855,35 +3855,37 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003800C);
 //   a1 split were missing. RESIDUAL: low gain because `p=&D` promotes &D to
 //   s0 (target recomputes &D inline each printf) + the exact printf format/arg
 //   ordering + placeholder jals. Regalloc/printf-CSE cap. Name pre-checked.
-#ifdef NON_MATCHING
+// run 111 (agent-c): the &D s0 hold was the firstUseCost compare
+//   (IDO_CODEGEN#hold-vs-remat-firstusecost-run111): four emission-free if (1)
+//   blocks + p folded into the a2 home + a distinct 4th-arg symbol. 51.0 -> ~80.
 extern int D_00000000;
+extern char D_38108_d;
 void gl_func_00038108(char *o, int a1, int a2) {
     char *r;
-    char *p;
     gl_func_00000000(&D_00000000);
     if (a1 == 0) {
         if (gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001EBF8,
-                             (char *)&D_00000000 + 0x0001EC00, &D_00000000, 0) == 0) {
+                             (char *)&D_00000000 + 0x0001EC00, &D_38108_d, 0) == 0) {
             return;
         }
-        p = &D_00000000;
-    } else {
-        p = (char *)a2;
+        a2 = (int)&D_00000000;
     }
-    gl_func_00000000((char *)&D_00000000 + 0x0001EC08, p);
-    if (gl_func_00000000(&D_00000000, p, (char *)&D_00000000 + 0x0001EC1C)) {
-        r = *(char **)(o + 0x28);
+    gl_func_00000000((char *)&D_00000000 + 0x0001EC08, a2);
+    if (gl_func_00000000(&D_00000000, a2, (char *)&D_00000000 + 0x0001EC1C)) {
+        if (1) { r = *(char **)(o + 0x28); }
         (*(void (**)(char *))(r + 0x4C))(*(short *)(r + 0x48) + o);
         gl_func_00000000(&D_00000000);
     }
+    if (1) { }
+    if (1) { }
+    if (1) { }
+    if (1) { }
     if (a1 == 0) {
-        r = *(char **)(o + 0x28);
+        gl_func_00000000(&D_00000000);
+        if (1) { r = *(char **)(o + 0x28); }
         (*(void (**)(char *))(r + 0xC))(*(short *)(r + 0x8) + o);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038108);
-#endif
 
 // gl_func_000381F8 — STRUCTURAL PASS (0x9C / 39 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one

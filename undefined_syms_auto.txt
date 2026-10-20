@@ -3932,3 +3932,4 @@ D_493AC_a = 0x00000000;  /* gl_func_000493AC per-access aliases for the +0x1C4 f
 D_493AC_b = 0x00000000;
 D_493AC_c = 0x00000000;
 D_4BAF4_cam = 0x00000000;  /* gl_func_0004BAF4 camera block base (blank lui/addiu +0xA0 held base) */
+D_38108_d = 0x00000000;  /* gl_func_00038108: 4th report arg (USO load-resolved, distinct from the &D CSE) */
