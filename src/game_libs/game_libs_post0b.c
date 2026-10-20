@@ -6910,200 +6910,165 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B9C0);
 //   conditional cb + initial K-scaled accumulation skeleton only.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
-/* PASS-3 2026-06-22 (big-swing): hand reconstruction from authoritative
- * disassembly of the EXPECTED object (-240 frame, s0-s7+ra, 3 stack f32
- * args at sp+0x100..). Per-object grid-cell triangle/edge cull + screen
- * projection. Two jal-0 callbacks (USO-relocated; placeholder
- * func_00000000). FP coefficient pool at &D_00000000+0x128. The three
- * 3-way min/max clamps and the edge-cross loop hand-decoded (m2c aborts
- * on the bc1t.l likely branches).
- * PASS-4 2026-07-30 decode-error fixes vs authoritative expected-object
- * disasm: gate field +4 is lh (s16, was lw); grid divisors +0x10/+0x14 are
- * f32 lwc1 (was s32+cvt); K pool via opaque extern D_3BE1C_128 (baked USO
- * base 0x128, undefined_syms) not folded offsets; 0x1EE9C cb arg is a baked
- * USO symbol (D_3BE1C_1EE9C) not an int literal; spBC/C0/C4 is f32 spV[3]
- * (sp-indexed lwc1 188(t7)); min3/max3 are s16 (sll/sra assignment idiom);
- * edge-loop vertex elements are lh s16 (was lb s8) with corrected cross-
- * product operand pairing dx*(val2-vAy) - dy*(val-vAx); ring loop bound is
- * an end POINTER &D_0+6 (was (u32)ptr<6); loop-invariant spV[a1c]/spV[t0c]/
- * (f32)lb(v1e+3) hoisted. Levers: f32 *ap = &arg4 home-slot aliasing keeps
- * the K-scaled args in 256/260/264(sp) (kills the sdc1 f20/f22 promotion);
- * s32 cell[2] memory-homes the grid coords (forces the sw + arg0->84->A0
- * reload chain); 2x volatile pad = frame 240 (prologue + arg slots exact).
- * 53.5 -> 74.1. RESIDUAL (documented cap class): 8-saved-reg coloring skew
- * (target s5=obj/s7=count/s2=6/s3=&D_0+6 vs build s3/s4/t5/ra), spurious
- * s6=&spV / s7=&D_0 base promotions (anti-hoist probes: distinct RING
- * syms 71.6, sp54[1] homing 71.2 - both REGRESS; coloring is coupled),
- * and local-offset skew (cell 212 vs 128, spV 228 vs 188). */
+/* 2026-10-17 run 110 re-decode (agent-c): vertical ray / ground query.
+ * p is a Vec3 passed BY VALUE (stack home 256..264, scaled in place). Looks
+ * up the grid cell's triangle list, and for each triangle whose material
+ * flags have 0x100, projects p onto the plane; 0x200 = axis-range test on
+ * the dropped axis (MAX/MIN macro triples), else a 3-edge 2D cross test
+ * with the {1,2,0} next-vertex table. Hits fill dist[]/tris[] up to max.
+ * 73.4 -> 76.3. Frame map is exact (33 named homes: 10 above q, 13 between q
+ * and the memory cell pair, the rest below). MAX/MIN cast each arm to s16 of
+ * int-typed operands (target sll/sra after every lh). Residual: uopt hoists
+ * &q (sp+188) into an s-reg, so tri offset stays in s8 instead of the
+ * target's sp+84 spill; target's first inner MAX evaluates the else arm
+ * before the branch; K base sym+0x128 held with addend in the target. */
+typedef struct { f32 x, y, z; } V3BE;
+typedef struct { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; } TriBE;
+typedef struct { u16 mat; u16 vi[3]; } FaceBE;
+typedef struct { int w; int h; int x0; int z0; f32 cw; f32 ch; s16 *lists; int *cells; } GridBE;
+typedef struct {
+    char pad0[0x4C]; s16 *remap; char pad50[4]; V3BE *nrm; char pad58[8]; s16 (*verts)[3];
+    char pad64[4]; FaceBE *faces; char pad6c[0x34]; GridBE *grid;
+} ColBE;
+typedef struct { char pad0[0x2C]; TriBE *tris; char pad30[0x54]; ColBE *col; } ObjBE;
 extern f32 D_3BE1C_128[];
 extern char D_3BE1C_1EE9C[];
-s32 gl_func_0003BE1C(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 arg4, f32 arg5, f32 arg6) {
-    f32 spV[3];
-    s32 cell[2];
-    s32 sp54;
-    char *temp_s1;
-    char *temp_v1;
-    char *plane;
-    char *row;
-    char *var_v1;
-    char *v1e;
-    char *pA;
-    char *pB;
-    char *pC;
-    char *pA2;
-    char *pB2;
-    char *pE;
-    s16 *var_v0;
-    s16 *var_s6;
-    s16 *ring;
-    s16 *pC2;
-    s16 var_s4;
-    s16 vB2;
-    s16 vA2;
-    s16 max3;
-    s16 min3;
-    s16 rt;
-    s32 temp_a0;
-    s32 temp_a1;
-    s32 temp_w;
-    s32 var_a0;
-    s32 var_s1;
-    s32 var_s7;
-    s32 ret;
-    s32 t1;
+#define MAXS(a, b) ((a) > (b) ? (s16)(a) : (s16)(b))
+#define MINS(a, b) ((a) < (b) ? (s16)(a) : (s16)(b))
+#ifndef MAX
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+#ifndef MIN
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
+s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
+    s32 cnt;
+    s32 cell;
+    s16 *lp;
+    s16 *list;
+    s32 i;
     s32 off;
-    s8 a1c;
-    s8 t0c;
-    f32 temp_f16;
-    f32 val;
-    f32 val2;
-    f32 sgn;
-    f32 *ap;
-    volatile int pad0;
-    volatile int pad1;
+    ColBE *col;
+    FaceBE *f;
+    s32 r;
+    s32 ok;
+    f32 q[3];
+    f32 d;
+    V3BE *n;
+    TriBE *t;
+    s32 a;
+    s32 b;
+    f32 qa;
+    f32 qb;
+    s16 *v0;
+    s16 *v1;
+    s16 ex;
+    s16 ey;
+    s16 dx;
+    s16 dy;
+    f32 sg;
+    s16 (*vt)[3];
+    s32 c[2];
+    s16 *nx;
+    u16 *fv;
 
-    temp_s1 = *(char **)(arg0 + 0x84);
-    var_s7 = 0;
-    if (temp_s1 == 0) {
+    if (1) { V3BE *pp = &p; }
+    col = self->col;
+    cnt = 0;
+    if (col == 0) {
         return 0;
     }
-    if (*(s32 *)(temp_s1 + 0xA0) == 0) {
-        func_00000000(D_3BE1C_1EE9C);
+    if (col->grid == 0) {
+        gl_func_00000000((char *)&D_00000000 + 0x1EE9C);
     }
-    ap = &arg4;
-    ap[0] *= D_3BE1C_128[0];
-    var_a0 = -1;
-    ap[1] *= D_3BE1C_128[1];
-    ap[2] *= D_3BE1C_128[2];
-    temp_v1 = *(char **)(*(char **)(arg0 + 0x84) + 0xA0);
-    cell[1] = (s32) ((arg4 - (f32) *(s32 *)(temp_v1 + 0x8)) / *(f32 *)(temp_v1 + 0x10));
-    temp_v1 = *(char **)(*(char **)(arg0 + 0x84) + 0xA0);
-    cell[0] = (s32) ((arg6 - (f32) *(s32 *)(temp_v1 + 0xC)) / *(f32 *)(temp_v1 + 0x14));
-    if (cell[1] >= 0) {
-        temp_v1 = *(char **)(*(char **)(arg0 + 0x84) + 0xA0);
-        temp_w = *(s32 *)(temp_v1 + 0x0);
-        if ((cell[1] < temp_w) && (cell[0] >= 0) && (cell[0] < *(s32 *)(temp_v1 + 0x4))) {
-            var_a0 = cell[1] + (cell[0] * temp_w);
+    p.x *= D_3BE1C_128[0];
+    p.y *= D_3BE1C_128[1];
+    p.z *= D_3BE1C_128[2];
+    cell = -1;
+    c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
+    c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
+    if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
+        cell = c[1] + c[0] * self->col->grid->w;
+    }
+    if (cell < 0) {
+        return 0;
+    }
+    list = 0;
+    if (self->col->grid->cells[cell] != -1) {
+        list = &self->col->grid->lists[self->col->grid->cells[cell]];
+    }
+    if (list == 0) {
+        return 0;
+    }
+    lp = list;
+    while ((i = *lp++) != -1) {
+        if (self->tris[i].grp < 0) {
+            continue;
         }
-    }
-    if (var_a0 < 0) {
-        return 0;
-    }
-    temp_v1 = *(char **)(*(char **)(arg0 + 0x84) + 0xA0);
-    var_v0 = 0;
-    temp_a1 = *(s32 *)(*(char **)(temp_v1 + 0x1C) + (var_a0 * 4));
-    if (temp_a1 != -1) {
-        var_v0 = (s16 *)(*(char **)(temp_v1 + 0x18) + (temp_a1 * 2));
-    }
-    if (var_v0 == 0) {
-        return 0;
-    }
-    var_s6 = var_v0;
-    var_s4 = *var_s6;
-    var_s6 += 1;
-    while (var_s4 != -1) {
-        sp54 = var_s4 * 0xC;
-        if (*(s16 *)(*(char **)(arg0 + 0x2C) + sp54 + 0x4) >= 0) {
-            temp_s1 = *(char **)(arg0 + 0x84);
-            temp_a0 = *(s32 *)(temp_s1 + 0x4C);
-            if (temp_a0 != 0) {
-                var_v1 = *(char **)(temp_s1 + 0x68) + (*(s16 *)(temp_a0 + (var_s4 * 2)) * 8);
-            } else {
-                var_v1 = *(char **)(temp_s1 + 0x68) + (var_s4 * 8);
+        off = i * 12;
+        col = self->col;
+        if (col->remap != 0) {
+            f = &col->faces[col->remap[i]];
+        } else {
+            f = &col->faces[i];
+        }
+        r = gl_func_00000000(col, f->mat);
+        if (!(r & 0x100)) {
+            continue;
+        }
+        ok = 1;
+        n = (V3BE *)((char *)self->col->nrm + off);
+        t = (TriBE *)((char *)self->tris + off);
+        d = p.x * n->x + p.y * n->y + p.z * n->z - t->d;
+        q[0] = p.x - n->x * d;
+        q[1] = p.y - n->y * d;
+        q[2] = p.z - n->z * d;
+        t = (TriBE *)((char *)self->tris + off);
+        if (r & 0x200) {
+            s16 *va = self->col->verts[f->vi[0]];
+            s16 *vb = self->col->verts[f->vi[1]];
+            s16 *vc = self->col->verts[f->vi[2]];
+            s32 k = 2 - t->ax;
+            int ia = va[k];
+            int ib = vb[k];
+            int ic = vc[k];
+            s16 hi = MAXS(MAXS(ia, ib), ic);
+            s16 lo = MINS(MINS(ia, ib), ic);
+            if (q[k] < (f32)lo || (f32)hi < q[k]) {
+                ok = 0;
             }
-            ret = func_00000000(temp_s1, *(u16 *)var_v1, sp54, -1);
-            if (ret & 0x100) {
-                var_s1 = 1;
-                plane = (char *) (*(s32 *)(*(char **)(arg0 + 0x84) + 0x54) + sp54);
-                temp_f16 = ((arg4 * *(f32 *)(plane + 0x0)) + (arg5 * *(f32 *)(plane + 0x4)) + (arg6 * *(f32 *)(plane + 0x8))) - *(f32 *)(*(char **)(arg0 + 0x2C) + sp54 + 0x8);
-                spV[0] = arg4 - (*(f32 *)(plane + 0x0) * temp_f16);
-                spV[1] = arg5 - (*(f32 *)(plane + 0x4) * temp_f16);
-                spV[2] = arg6 - (*(f32 *)(plane + 0x8) * temp_f16);
-                v1e = *(char **)(arg0 + 0x2C) + sp54;
-                a1c = *(s8 *)(v1e + 0x0);
-                t0c = *(s8 *)(v1e + 0x1);
-                if (ret & 0x200) {
-                    t1 = 2 - *(s8 *)(v1e + 0x2);
-                    row = (char *) *(s32 *)(*(char **)(arg0 + 0x84) + 0x60);
-                    pA = row + (*(u16 *)(var_v1 + 0x2) * 6);
-                    pB = row + (*(u16 *)(var_v1 + 0x4) * 6);
-                    pC = row + (*(u16 *)(var_v1 + 0x6) * 6);
-                    vB2 = *(s16 *)(pB + (t1 * 2));
-                    vA2 = *(s16 *)(pA + (t1 * 2));
-                    pC2 = (s16 *)(pC + (t1 * 2));
-                    max3 = vB2;
-                    if (vB2 < vA2) {
-                        max3 = vA2;
-                    }
-                    if (*pC2 < max3) {
-                        max3 = (vB2 < vA2) ? vA2 : vB2;
-                    } else {
-                        max3 = *pC2;
-                    }
-                    min3 = (vA2 < vB2) ? vA2 : vB2;
-                    if (min3 < *pC2) {
-                        min3 = (vA2 < vB2) ? vA2 : vB2;
-                    } else {
-                        min3 = *pC2;
-                    }
-                    val = spV[t1];
-                    if ((val < (f32) min3) || ((f32) max3 < val)) {
-                        var_s1 = 0;
-                    }
-                } else {
-                    val = spV[a1c];
-                    sgn = (f32) *(s8 *)(v1e + 0x3);
-                    row = (char *) *(s32 *)(*(char **)(arg0 + 0x84) + 0x60);
-                    val2 = spV[t0c];
-                    ring = (s16 *) &D_00000000;
-                    pE = var_v1;
-                    do {
-                        rt = *ring;
-                        ring += 1;
-                        pA2 = row + (*(u16 *)(pE + 0x2) * 6);
-                        pB2 = row + (*(u16 *)((var_v1 + (rt * 2)) + 0x2) * 6);
-                        if ((((f32) (s16) (*(s16 *)(pB2 + (a1c * 2)) - *(s16 *)(pA2 + (a1c * 2))) * (f32) (s16) (s32) (val2 - (f32) *(s16 *)(pA2 + (t0c * 2))))
-                           - ((f32) (s16) (*(s16 *)(pB2 + (t0c * 2)) - *(s16 *)(pA2 + (t0c * 2))) * (f32) (s16) (s32) (val - (f32) *(s16 *)(pA2 + (a1c * 2))))) * sgn > 10.0f) {
-                            var_s1 = 0;
-                        }
-                        pE += 2;
-                    } while ((var_s1 != 0) && (ring < (s16 *) ((char *)&D_00000000 + 6)));
+        } else {
+            a = t->a;
+            b = t->b;
+            qa = q[a];
+            qb = q[b];
+            sg = t->sgn;
+            vt = self->col->verts;
+            nx = (s16 *)&D_00000000;
+            fv = (u16 *)f;
+            do {
+                v0 = vt[fv[1]];
+                v1 = vt[f->vi[*nx++]];
+                ex = v1[a] - v0[a];
+                ey = v1[b] - v0[b];
+                dx = (s32)(qa - v0[a]);
+                dy = (s32)(qb - v0[b]);
+                if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) {
+                    ok = 0;
                 }
-                if (var_s1 != 0) {
-                    off = var_s7 * 4;
-                    *(f32 *)(arg2 + off) = temp_f16 / *(f32 *)((char *)&D_00000000 + 0x12C);
-                    *(s32 *)(arg3 + off) = (s32) (*(char **)(arg0 + 0x2C) + (var_s4 * 0xC));
-                    var_s7 += 1;
-                    if (var_s7 >= arg1) {
-                        return var_s7;
-                    }
-                }
+                fv++;
+            } while (ok && nx < (s16 *)((char *)&D_00000000 + 6));
+        }
+        if (ok) {
+            dist[cnt] = d / *(f32 *)((char *)&D_00000000 + 0x12C);
+            out[cnt] = &self->tris[i];
+            cnt++;
+            if (cnt >= max) {
+                return cnt;
             }
         }
-        var_s4 = *var_s6;
-        var_s6 += 1;
     }
-    return var_s7;
+    return cnt;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003BE1C);
