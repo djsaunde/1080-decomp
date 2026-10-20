@@ -16003,6 +16003,7 @@ typedef struct { G46FA8 *buf; int count; } D46FA8;
 void gl_func_00046FA8(char *a0, int a1, int a2, int a3, int a4, int a5) {
     char *ctx;
     int _n;
+    G46FA8 *g1;
     if (*(int *)(a0 + 0x28C) == 0) {
     if (a5 != 0) {
         gl_func_00000000(*(char **)(*(char **)(a0 + 0x254) + 0x158), a5);
@@ -16010,7 +16011,7 @@ void gl_func_00046FA8(char *a0, int a1, int a2, int a3, int a4, int a5) {
         gl_func_00000000(*(char **)(*(char **)(a0 + 0x254) + 0x158), a5);
     }
     ctx = *(char **)(*(char **)(a0 + 0x254) + 0x158);
-    { G46FA8 *_g = NEXT46FA8(ctx); _g->w0 = SHL46FA8(0xF6, 24, 8) | SHL46FA8(a1 + a3 - 1, 14, 10) | SHL46FA8(a2 + a4 - 1, 2, 10); _g->w1 = SHL46FA8(a1, 14, 10) | SHL46FA8(a2, 2, 10); }
+    { G46FA8 *_g = g1 = NEXT46FA8(ctx); _g->w0 = SHL46FA8(0xF6, 24, 8) | SHL46FA8(a1 + a3 - 1, 14, 10) | SHL46FA8(a2 + a4 - 1, 2, 10); _g->w1 = SHL46FA8(a1, 14, 10) | SHL46FA8(a2, 2, 10); }
     { G46FA8 *_g = NEXT46FA8(ctx); _g->w0 = SHL46FA8(0xE7, 24, 8); _g->w1 = 0; }
     } else {
         gl_func_00000000(a1, a2, a3, a4);
@@ -21829,17 +21830,16 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004F2DC);
 // Caps (DEFERRED): a0/object struct + cb signature untyped; exact
 //   compare/return shape representative. Real-C STRUCTURAL body below.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern float sqrtf(float);
 /* Whole-body decode 2026-06-01 (prior body returned early w/ wrong sig). o=a0->
  * 0x70; d=o->0xA0/0xA4/0xA8 - {px,py,pz}; dist=sqrt(|d|^2), store to *out. If
  * a0[a1]->0x98 <= dist-arg7 return 0. Else normalize d and dot it with o->0xBC/
  * 0xCC/0xDC; return dot >= a0->0x80. */
 extern float gl_func_00000000_f704(float);
-/* 2026-10-20 (agent-c run 114): the delta is an f32 ARRAY (kept in memory:
+/* EXACT (agent-c run 115): the delta is an f32 ARRAY (kept in memory:
  * store-then-reload per element, a0->0x70 re-read before each component).
- * The second call takes the first call's result (f12 = dist) and the dot
- * product re-reads a0->0x70 once. */
+ * The second call takes the first call's result (f12 = dist). Both 3-term
+ * sums are written last-term-first with the inner pair reversed (running sum
+ * = add.s fs); the threshold is indexed as a float array off a0+0x98. */
 int gl_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out, float arg7) {
     float dist;
     f32 d[3];
@@ -21847,11 +21847,11 @@ int gl_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out,
     d[0] = *(float *)(*(char **)(a0 + 0x70) + 0xA0) - px;
     d[1] = *(float *)(*(char **)(a0 + 0x70) + 0xA4) - py;
     d[2] = *(float *)(*(char **)(a0 + 0x70) + 0xA8) - pz;
-    dist = gl_func_00000000_f704(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+    dist = gl_func_00000000_f704(d[2] * d[2] + (d[1] * d[1] + d[0] * d[0]));
     if (out != 0) {
         *out = dist;
     }
-    if (*(float *)(a0 + a1 * 4 + 0x98) <= dist - arg7) {
+    if (((float *)(a0 + 0x98))[a1] <= dist - arg7) {
         return 0;
     }
     dist = 1.0f / gl_func_00000000_f704(dist);
@@ -21859,15 +21859,12 @@ int gl_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out,
     d[1] *= dist;
     d[2] *= dist;
     o = *(char **)(a0 + 0x70);
-    dist = d[0] * *(float *)(o + 0xBC) + d[1] * *(float *)(o + 0xCC) + d[2] * *(float *)(o + 0xDC);
+    dist = d[2] * *(float *)(o + 0xDC) + (d[1] * *(float *)(o + 0xCC) + *(float *)(o + 0xBC) * d[0]);
     if (dist < *(float *)(a0 + 0x80)) {
         return 0;
     }
     return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004F704);
-#endif
 
 // gl_func_0004F85C — EXACT (unwrapped 2026-10-16; 0x150 / 84 words).
 // The ROM's jal words are `jal 0`; gl_func_00034458 is defined in this

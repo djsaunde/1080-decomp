@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004F704",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-20T22:54:49.430281+00:00",
+  "end_time": "2026-10-20T22:54:49.430302+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-20T22:54:49.430298+00:00",
+      "assistant_text": "Distance/visibility test: f32 array delta kept in memory, sqrtf jal-0 called twice. Both 3-term sums are written last-term-first with the inner pair reversed so the running sum is the add.s fs; the threshold lookup is a float-array index off a0+0x98 (addu a0,t0 order).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 86,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern float gl_func_00000000_f704(float);\nint gl_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out, float arg7) {\n    float dist;\n    f32 d[3];\n    char *o;\n    d[0] = *(float *)(*(char **)(a0 + 0x70) + 0xA0) - px;\n    d[1] = *(float *)(*(char **)(a0 + 0x70) + 0xA4) - py;\n    d[2] = *(float *)(*(char **)(a0 + 0x70) + 0xA8) - pz;\n    dist = gl_func_00000000_f704(d[2] * d[2] + (d[1] * d[1] + d[0] * d[0]));\n    if (out != 0) {\n        *out = dist;\n    }\n    if (((float *)(a0 + 0x98))[a1] <= dist - arg7) {\n        return 0;\n    }\n    dist = 1.0f / gl_func_00000000_f704(dist);\n    d[0] *= dist;\n    d[1] *= dist;\n    d[2] *= dist;\n    o = *(char **)(a0 + 0x70);\n    dist = d[2] * *(float *)(o + 0xDC) + (d[1] * *(float *)(o + 0xCC) + *(float *)(o + 0xBC) * d[0]);\n    if (dist < *(float *)(a0 + 0x80)) {\n        return 0;\n    }\n    return 1;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004F704.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (only diff: reloc on jal 0 to the zero-valued sqrtf placeholder)"
+  }
+}
