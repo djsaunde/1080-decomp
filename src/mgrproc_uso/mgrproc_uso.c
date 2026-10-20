@@ -151,31 +151,25 @@ static void mgrproc_uso_func_00000D94(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-#ifdef NON_MATCHING
-/* mgrproc_uso_func_00000E04: 0x396-byte constructor. SYMBOLS RE-DERIVED
- * 2026-06-23 from the resolved .s — the prior body used gl_func_00000000 /
- * single-`d`(&D_00000000) placeholders (all relocs WRONG). Real form:
- *  - 4-stage find-or-create cascade (sizes 2032/1704/80/44), collapses to obj
- *    since arg!=0; returns obj (move v0,s0 in epilogue).
- *  - Each vtable/base reference is a DISTINCT USO data import
- *    (import_80XXXXXX, value 0 in undefined_syms) referenced as
- *    `(char*)&sym + off` / `*(T*)(&sym + off)`. Each distinct char-symbol
- *    keeps its own unpaired-HI16 lui (offset folded into the addiu/lw/sw
- *    displacement, no LO16) — the B20/12AC matched idiom. One shared base
- *    would CSE the luis and emit paired HI16+LO16.
- *  - All cross-USO calls are DISTINCT named targets (import_000XXXXX /
- *    mgrproc_uso_func_XXXXXX), not a single gl_func placeholder.
- * 75.19 -> 76.67 (objdiff fuzzy). All R_MIPS_26 call relocs + struct offsets
- * + control flow byte-exact. Residual (~23%) is genuine IDO regalloc/scheduling
- * divergence, NOT logic: (1) frame 0x40 vs 0x58 — target threads the 4-stage
- * cascade through a single $a3 + stack temps 0x38/0x3c; build keeps o0..o3 in
- * more slots (~100 register-renumber + frame diffs cascade from this).
- * (2) record-flag blocks: target emits beqzl (likely, store hoisted+dup) for
- * the 2nd/3rd `if(rec[0x14]){rec[4]=1;} rec[0x14]=o0;` but plain beqz for the
- * 1st — IDO scheduler-tie, identical C, no source lever. (3) a few
- * &import+offset refs render as %hi+0x608 addend vs target's addend-0 lui +
- * literal addiu (byte-identical low-half, objdiff-flagged only). K&R param
- * style tested = no change. Genuine coloring/scheduling cap. */
+/* mgrproc_uso_func_00000E04: 0x398-byte cfront constructor. Each distinct
+ * import_80XXXXXX char symbol keeps its own unpaired HI16 lui (offset folded
+ * into the displacement); every cross-USO call is a distinct named target.
+ * 2026-10-18 agent-g (run 107) 79.2 -> EXACT:
+ *  - the top cascade is four INLINED base constructors in cfront form,
+ *    `o = parent; if (o || (o = alloc(n))) { ...; o->vptr = vt; }`, nested
+ *    inside each other (sizes 2032/1704/80/44); the 1704 level stores its
+ *    vptr BEFORE import_000AE700(o1 + 80); a failed 2032 alloc returns 0.
+ *  - only three named pointer locals (o1/o2/o3, homes 60/56/52) plus w: the
+ *    record-link blocks reuse o1 for the linked child and the 224-byte
+ *    alloc reuses o2 (that is why o2 is memory-homed at 56).
+ *  - `07ACE0(obj + 16, child); if (child->0x14) child->4 = 1;
+ *    child->0x14 = obj;` -- the child is the ARGUMENT, not the return value
+ *    (the old body read 07ACE0's v0).
+ *  - obj->0x6A8 = a3 is stored before 119C and re-read after it; 0x7C8 is
+ *    read through it and 0x7D8 = 1 comes after the 0x7A8 float.
+ *  - the 44-byte level's body is written on ONE source line: IDO's
+ *    scheduler then places the o1 spill reload after the vptr lui/addiu
+ *    (found by the permuter; multi-line form swaps that pair). */
 extern int mgrproc_uso_func_055750();
 extern int import_000AE700();
 extern int import_000B0DBC();
@@ -210,128 +204,105 @@ extern char import_802655EC;
 extern char import_802656A4;
 extern int import_80020228;
 extern char import_800200D8;
-void mgrproc_uso_func_00000E04(char *obj, int a1, int a2, int a3, int arg5) {
-    char *o0, *o1, *o3;
-    char * volatile o2;
-    char *tmp;
+char *mgrproc_uso_func_00000E04(char *obj, int a1, int a2, int a3, int arg5) {
+    char *o1;
+    char *o2;
+    char *o3;
     char *w;
-    float f0 = 0.0f;
-    int n;
 
-    o0 = obj;
-    if (obj == 0) {
-        o0 = (char *)mgrproc_uso_func_055750(2032);
-        if (o0 == 0) return;
+    if (obj != 0 || (obj = (char *)mgrproc_uso_func_055750(2032)) != 0) {
+    o1 = obj;
+    if (o1 != 0 || (o1 = (char *)mgrproc_uso_func_055750(1704)) != 0) {
+        o2 = o1;
+        if (o2 != 0 || (o2 = (char *)mgrproc_uso_func_055750(80)) != 0) {
+            o3 = o2;
+            if (o3 != 0 || (o3 = (char *)mgrproc_uso_func_055750(44)) != 0) { mgrproc_uso_func_04C678(o3, &import_802649D8 + 1544); *(int *)(o3 + 0x28) = (int)&import_80073B18; }
+            *(int *)(o2 + 0x28) = (int)&import_80073B80;
+        }
+        *(int *)(o1 + 0x28) = (int)&import_800745F8;
+        import_000AE700(o1 + 80);
     }
-    o1 = o0;
-    if (o0 == 0) {
-        o1 = (char *)mgrproc_uso_func_055750(1704);
-        if (o1 == 0) goto Lvt0;
-    }
-    o2 = o1;
-    if (o1 == 0) {
-        tmp = (char *)mgrproc_uso_func_055750(80);
-        o2 = tmp;
-        if (tmp == 0) goto Lvt1;
-    }
-    o3 = o2;
-    if (o3 == 0) {
-        o3 = (char *)mgrproc_uso_func_055750(44);
-        if (o3 == 0) goto Lvt2;
-    }
-    mgrproc_uso_func_04C678(o3, &import_802649D8 + 1544);
-    *(int *)(o3 + 0x28) = (int)&import_80073B18;
-Lvt2:
-    *(int *)(o2 + 0x28) = (int)&import_80073B80;
-Lvt1:
-    import_000AE700(o1 + 80);
-    *(int *)(o1 + 0x28) = (int)&import_800745F8;
-Lvt0:
-    *(int *)(o0 + 0x28) = (int)&import_80264880;
-    *(int *)(o0 + 0x568) = 0;
-    import_000B0DBC(o0, a1, &import_802649E0 + 1552, a2);
-    *(int *)(o0 + 0x528) = arg5;
-    *(int *)(o0 + 0x7D4) = 0;
-    mgrproc_uso_func_0000119C(o0);
-    *(int *)(o0 + 0x6A8) = a3;
-    w = *(char * volatile *)(o0 + 0x6A8);
-    *(int *)(o0 + 0x7C4) = 0;
-    *(float *)(o0 + 0x7A0) = f0;
-    *(float *)(o0 + 0x7A4) = f0;
-    *(float *)(o0 + 0x7B8) = f0;
-    n = *(int *)w;
-    *(int *)(o0 + 0x7D8) = 1;
-    *(int *)(o0 + 0x7C8) = n;
-    *(float *)(o0 + 0x7A8) = 160.0f - (float)(n * 2 - 2);
-    *(float *)(o0 + 0x7AC) = 210.0f;
+    *(int *)(obj + 0x28) = (int)&import_80264880;
+    *(int *)(obj + 0x568) = 0;
+    import_000B0DBC(obj, a1, &import_802649E0 + 1552, a2);
+    *(int *)(obj + 0x528) = arg5;
+    *(int *)(obj + 0x6A8) = a3;
+    *(int *)(obj + 0x7D4) = 0;
+    mgrproc_uso_func_0000119C(obj);
+    *(int *)(obj + 0x7C4) = 0;
+    *(float *)(obj + 0x7A0) = 0.0f;
+    *(float *)(obj + 0x7A4) = 0.0f;
+    *(float *)(obj + 0x7B8) = 0.0f;
+    *(int *)(obj + 0x7C8) = **(int **)(obj + 0x6A8);
+    *(float *)(obj + 0x7A8) = 160.0f - (float)(*(int *)(obj + 0x7C8) * 2 - 2);
+    *(int *)(obj + 0x7D8) = 1;
+    *(float *)(obj + 0x7AC) = 210.0f;
     mgrproc_uso_func_074710(&import_802649F0 + 1568, 0);
     import_000A7ECC(&import_80020098, 0);
 
     {
-        char *o5;
-        char *rec;
-        char *vt;
-        o5 = (char *)mgrproc_uso_func_055750(224);
-        if (o5 != 0) {
-            import_000B6C40(o5);
-            *(int *)(o5 + 0x28) = (int)&import_80264800;
+        o2 = (char *)mgrproc_uso_func_055750(224);
+        if (o2 != 0) {
+            import_000B6C40(o2);
+            *(int *)(o2 + 0x28) = (int)&import_80264800;
         }
-        *(int *)(o0 + 0x6AC) = (int)o5;
-        *(int *)(&import_800201D0 + 312) = (int)o5;
+        *(int *)(obj + 0x6AC) = (int)o2;
+        *(int *)(&import_800201D0 + 312) = (int)o2;
 
-        mgrproc_uso_func_00002EF0(*(int *)(o0 + 0x6AC), o0, *(int *)(o0 + 0x568),
-                                  *(int *)(o0 + 0x6A8), *(int *)(o0 + 0x528));
+        mgrproc_uso_func_00002EF0(*(int *)(obj + 0x6AC), obj, *(int *)(obj + 0x568),
+                                  *(int *)(obj + 0x6A8), *(int *)(obj + 0x528));
 
-        rec = *(char **)(o0 + 0x6AC);
-        vt = *(char **)(rec + 0x28);
-        ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)rec);
+        w = *(char **)(obj + 0x6AC);
+        o1 = *(char **)(w + 0x28);
+        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
-        rec = (char *)mgrproc_uso_func_07ACE0(o0 + 16, *(volatile int *)(o0 + 0x6AC));
-        if (*(int *)(rec + 0x14) != 0) {
-            *(int *)(rec + 0x4) = 1;
+        o1 = *(char **)(obj + 0x6AC);
+        mgrproc_uso_func_07ACE0(obj + 16, o1);
+        if (*(int *)(o1 + 0x14) != 0) {
+            *(int *)(o1 + 0x4) = 1;
         }
-        *(int *)(rec + 0x14) = (int)o0;
+        *(int *)(o1 + 0x14) = (int)obj;
 
-        mgrproc_uso_func_01B0F8(o0, a1);
-        *(int *)(o0 + 0x48) = import_000A5D38(0);
-        import_000A5F40(*(int *)(o0 + 0x48), o0);
+        mgrproc_uso_func_01B0F8(obj, a1);
+        *(int *)(obj + 0x48) = import_000A5D38(0);
+        import_000A5F40(*(int *)(obj + 0x48), obj);
 
-        import_000A69BC(*(int *)(o0 + 0x48), (*(int *)&import_8002022C + 3) << 16,
+        import_000A69BC(*(int *)(obj + 0x48), (*(int *)&import_8002022C + 3) << 16,
                         -1, &import_80265570);
-        import_000A69BC(*(int *)(o0 + 0x48),
+        import_000A69BC(*(int *)(obj + 0x48),
                         ((*(int *)&import_8002022C + 3) << 16) | 8, -1,
                         &import_802655B0);
-        import_000A69BC(*(int *)(o0 + 0x48),
+        import_000A69BC(*(int *)(obj + 0x48),
                         ((*(int *)&import_8002022C + 3) << 16) | 9, -1,
                         &import_802655EC);
-        import_000A69BC(*(int *)(o0 + 0x48),
+        import_000A69BC(*(int *)(obj + 0x48),
                         ((*(int *)&import_8002022C + 3) << 16) | 5, -1,
                         &import_802656A4);
 
-        *(int *)(*(int *)(o0 + 0x48) + 0x30) = *(int *)(o0 + 0x568);
-        import_000A5FBC(*(int *)(o0 + 0x48));
+        *(int *)(*(int *)(obj + 0x48) + 0x30) = *(int *)(obj + 0x568);
+        import_000A5FBC(*(int *)(obj + 0x48));
 
-        rec = (char *)mgrproc_uso_func_07ACE0(o0 + 16, *(int *)(o0 + 0x48));
-        if (*(int *)(rec + 0x14) != 0) {
-            *(int *)(rec + 0x4) = 1;
+        o1 = *(char **)(obj + 0x48);
+        mgrproc_uso_func_07ACE0(obj + 16, o1);
+        if (*(int *)(o1 + 0x14) != 0) {
+            *(int *)(o1 + 0x4) = 1;
         }
-        *(int *)(rec + 0x14) = (int)o0;
+        *(int *)(o1 + 0x14) = (int)obj;
 
-        rec = (char *)mgrproc_uso_func_07ACE0(o0 + 16,
-                                              *(int *)((char *)&import_80020228 + 400));
-        if (*(int *)(rec + 0x14) != 0) {
-            *(int *)(rec + 0x4) = 1;
+        o1 = *(char **)((char *)&import_80020228 + 400);
+        mgrproc_uso_func_07ACE0(obj + 16, o1);
+        if (*(int *)(o1 + 0x14) != 0) {
+            *(int *)(o1 + 0x4) = 1;
         }
-        *(int *)(rec + 0x14) = (int)o0;
+        *(int *)(o1 + 0x14) = (int)obj;
 
         mgrproc_uso_func_0139B0(*(int *)((char *)&import_80020228 + 400), 1, 0);
         mgrproc_uso_func_074840();
         *(int *)(&import_800200D8 + 0x40) = 4;
     }
+    }
+    return obj;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00000E04);
-#endif
 
 /* mgrproc_uso_func_0000119C (0x110, 68 insns, BYTE-EXACT 2026-09-05 agent-c):
  * sub-object registration table builder. TWENTY-FOURTH mis-split case

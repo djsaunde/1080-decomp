@@ -55,7 +55,7 @@ extern int import_000A5B9C();
 extern int mgrproc_uso_func_07ACE0();
 extern int mgrproc_uso_func_0118E4();
 extern int mgrproc_uso_func_0120A8();
-extern int mgrproc_uso_func_00000E04();
+extern char *mgrproc_uso_func_00000E04();
 extern int mgrproc_uso_func_01DA48();
 void mgrproc_uso_func_00000504();
 int mgrproc_uso_func_00000700();
