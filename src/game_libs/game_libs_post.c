@@ -2776,6 +2776,7 @@ extern gl_201B8_GS D_345c0_201B8;
 #define G D_345c0_201B8
 extern void gl_ref_00034238();
 
+extern void gl_func_00000000_201B8v();
 int gl_func_000201B8(int mode, int size, int op, int arg3) {
     gl_201B8_Pool *cfg;
     int k;
@@ -2925,7 +2926,7 @@ tail:
                     gl_ref_00034238(sub->ent[1].hA);
                     break;
                 case 1:
-                    gl_func_00000000(sub->ent[1].hA);
+                    gl_func_00000000_201B8v(sub->ent[1].hA);
                     break;
                 }
                 sub->ent[1].hA = -1;
@@ -2944,7 +2945,7 @@ tail:
                     gl_ref_00034238(sub->ent[0].hA);
                     break;
                 case 1:
-                    gl_func_00000000(sub->ent[0].hA);
+                    gl_func_00000000_201B8v(sub->ent[0].hA);
                     break;
                 }
                 sub->ent[0].hA = -1;
@@ -17697,6 +17698,7 @@ extern char gl_data_30AF4_45010, gl_data_30AF4_45F78;  /* baked arena addresses 
 
 #define CMD_B3 (((u8 *)&gl_cmd_30AF4)[3])
 
+extern void gl_func_emit_30AF4v();
 void gl_func_00030AF4(mode, sub, arg2)
 u32 mode;
 u32 sub;
@@ -17720,11 +17722,11 @@ s32 arg2;
     if (gl_state_30AF4.f0 == 1) {
         gl_func_00041D0C();
     }
-    gl_func_emit(0xFB000000, &gl_data_30AF4_45010);
+    gl_func_emit_30AF4v(0xFB000000, &gl_data_30AF4_45010);
     prev = gl_state_30AF4.f0;
     gl_state_30AF4.f0 = mode;
     gl_func_emit(0);
-    gl_func_emit(1);
+    gl_func_emit_30AF4v(1);
     D_30AF4_b = 0;
     D_30AF4_c = 0;
     D_30AF4_d = 0;

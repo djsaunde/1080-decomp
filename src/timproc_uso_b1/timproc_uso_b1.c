@@ -273,11 +273,12 @@ void timproc_uso_b1_func_0000090C(Vec3 *dst) {
  * E04 skeleton (nested `oN = oN-1; if (oN-1 || (oN = alloc(n)))` inlined
  * base ctors, void registration alias gl_func_00000000_994v, no 0xB4
  * block, alloc 0xE0). The memory-resident o2 (home 48) is NOT volatile:
- * it is an ADDRESS-TAKEN plain local (`(void)&o2;`). IDO keeps it in its
- * home but still forwards the just-stored value inside a block (the 0xE0
- * guard tests v0 and passes v0 in the jal delay), and the address-taken
- * spelling also removes volatile's extra temp (the t-ring phantom) and
- * the two extra frame words. */
+ * it is a PLAIN local whose web is spilled around the calls (home 48 is
+ * its spill slot). Within a block uopt still uses the just-stored value
+ * (the 0xE0 guard tests v0 and passes v0 in the jal delay), and dropping
+ * volatile also removes its extra temp (the t-ring phantom) and the two
+ * extra frame words. (A `(void)&o2;` statement is a no-op in IDO cfe --
+ * the run-112 commit message calling it "address-taken" was wrong.) */
 extern int gl_func_00000000();
 extern char D_b1_097C_v0;
 extern char D_b1_097C_v1;
@@ -293,7 +294,6 @@ int timproc_uso_b1_func_0000097C(char *obj, int a1, int a2, int a3) {
     char *o3;
     char *w;
 
-    (void)&o2;
     if (obj != 0 || (obj = (char *)gl_func_00000000(0x730)) != 0) {
     o1 = obj;
     if (o1 != 0 || (o1 = (char *)gl_func_00000000(0x6A8)) != 0) {

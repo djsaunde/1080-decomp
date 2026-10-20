@@ -2938,7 +2938,7 @@ void gl_func_000372D4(int *a0, float *a1) {
     char *p;
     void (**vt)(int);
     o = ((int **)a0)[0x14/4];
-    p = (char *)o[0xF4/4] + 0x30;
+    p = (char *)o[0xF4/4] + 0x30; if (1) {}
     *(float *)(p + 0x30) = a1[0];
     *(float *)(p + 0x34) = a1[1];
     *(float *)(p + 0x38) = a1[2];
@@ -13541,7 +13541,7 @@ void gl_func_000432BC(s32 arg0, f32 *m, s32 arg2) {
     V432BC t;
     
     if (1) { I432BC *q = &it; }
-    it.next = *(L432BC **)((char *)&D_00000000 + 0x18C);
+    it.next = *(L432BC **)((char *)&D_00000000 + 0x18C); if (1) {}
     o = (N432BC *)((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0);
     while (o != 0) {
         dst = &o->dst;

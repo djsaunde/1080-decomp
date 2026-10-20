@@ -9155,6 +9155,7 @@ extern double D_bu_978_d;
 #define CTX D_bu_254_ctx
 #define DISPATCH_CFA0(off) { o = *(char **)(st + (off)); vt = *(char **)(o + 0x28); \
     (*(void (**)(char *))(vt + 0x1C))(o + *(short *)(vt + 0x18)); }
+extern void func_00000000_0CFA0v();
 void func_0000CFA0(char *st) {
     float out;
     volatile int changed;
@@ -9183,11 +9184,11 @@ void func_0000CFA0(char *st) {
         *(int *)(dst + 0) = *(int *)(p + 0);
         *(int *)(dst + 4) = *(int *)(p + 4);
         *(int *)(dst + 8) = *(int *)(p + 8);
-        func_00000000(0x10);
+        func_00000000_0CFA0v(0x10);
         c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;
         c[3] = D_bu_970_f;
-        func_00000000(&D_CFA0_b, c);
-        func_00000000(0x10);
+        func_00000000_0CFA0v(&D_CFA0_b, c);
+        func_00000000_0CFA0v(0x10);
         DISPATCH_CFA0(0x824);
         p = (char *)func_00000000(&D_CFA0_c, 6);
         dst = *(char **)(st + 0x8FC);
@@ -9199,17 +9200,17 @@ void func_0000CFA0(char *st) {
         flg = *(int *)(st + 0x9A8);
         *(int *)(st + 0xA44) = 1;
         if ((flg & 2) && (*(int *)(st + 0xA58) & 0x1000) && *(int *)(st + 0xA4C)) {
-            func_00000000(*(int *)(st + 0x850), st + 0x9D8);
-            func_00000000(st);
-            func_00000000(0x11);
+            func_00000000_0CFA0v(*(int *)(st + 0x850), st + 0x9D8);
+            func_00000000_0CFA0v(st);
+            func_00000000_0CFA0v(0x11);
             t = st + 0x8E0;
-            func_00000000(&D_CFA0_d, t);
-            func_00000000(st);
-            func_00000000(st);
+            func_00000000_0CFA0v(&D_CFA0_d, t);
+            func_00000000_0CFA0v(st);
+            func_00000000_0CFA0v(st);
             D_bu_E4_flag = 0;
         } else {
           if ((*(int *)(st + 0x8B8) & 0xA) && *(int *)(st + 0xA4C) && !(flg & 0x400)) {
-            func_00000000(*(int *)(st + 0x850), st + 0x9D8, dp);
+            func_00000000_0CFA0v(*(int *)(st + 0x850), st + 0x9D8, dp);
             if ((double)(dp[0] * *(float *)(st + 0x9D8) + dp[1] * *(float *)(st + 0x9DC) +
                          dp[2] * *(float *)(st + 0x9E0)) < D_bu_978_d) {
                 float div255 = 255.0f;
@@ -9220,14 +9221,14 @@ void func_0000CFA0(char *st) {
                 *(float *)(st + 0x9EC) = (float)(unsigned int)cg / div255;
                 *(float *)(st + 0x9F0) = (float)(unsigned int)cb / div255;
                 *(float *)(st + 0x9F4) = 112.0f / div255;
-                func_00000000(&D_CFA0_e, st + 0x9E8);
+                func_00000000_0CFA0v(&D_CFA0_e, st + 0x9E8);
                 if (*(int *)(st + 0x8B8) & 2) {
-                    func_00000000(2);
+                    func_00000000_0CFA0v(2);
                     DISPATCH_CFA0(0x814);
                     DISPATCH_CFA0(0x820);
                 }
                 if ((*(int *)(st + 0x8B8) & 8) && *(int *)(st + 0x938) == 0) {
-                    func_00000000(8);
+                    func_00000000_0CFA0v(8);
                     DISPATCH_CFA0(0x824);
                 }
             }
@@ -9236,18 +9237,18 @@ void func_0000CFA0(char *st) {
           t = st + 0x8E0;
         }
         if (*(int *)(st + 0x8B8) & 1) {
-            func_00000000(0x11);
+            func_00000000_0CFA0v(0x11);
         } else {
-            func_00000000(0x14);
+            func_00000000_0CFA0v(0x14);
         }
     } else {
         *(int *)(st + 0xA44) = 0;
-        func_00000000(0x14);
+        func_00000000_0CFA0v(0x14);
         t = st + 0x8E0;
     }
-    func_00000000(&D_CFA0_f, t);
-    func_00000000(st);
-    func_00000000(*(int *)(CTX + 0x108));
+    func_00000000_0CFA0v(&D_CFA0_f, t);
+    func_00000000_0CFA0v(st);
+    func_00000000_0CFA0v(*(int *)(CTX + 0x108));
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000CFA0);
