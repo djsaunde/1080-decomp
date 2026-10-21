@@ -4012,3 +4012,5 @@ bu_2c94_y_ld = 0x00000000;  /* func_00002C94 import_0005EE6C load (baked 0, +4 i
 bu_2c94_y_st = 0x00000000;  /* func_00002C94 import_0005EE6C store */
 bu_2c94_tbl = 0x00000000;  /* func_00002C94 D_00719C table (baked 0) */
 bu_2c94_gate = 0x00000000;  /* func_00002C94 D_00719C gate load (separate alias) */
+bu_d94_g = 0x00000000;  /* func_00000D94 import_0005C108 (baked 0) */
+bu_d94_src = 0x00000294;  /* func_00000D94 record (func_0000027C + 0x18) */

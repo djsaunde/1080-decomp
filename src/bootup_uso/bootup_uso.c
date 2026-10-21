@@ -676,33 +676,32 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000CA0);
 extern void func_00000044();  /* used as data-symbol base */
 extern void func_0000027C();  /* used as data-symbol base */
 extern int D_00007324;
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 115). Globals block import_0005C108 (alias bu_d94_g),
+ * threshold = RoData f64 at +0x70 (func_00000044 + 0x2C), record at 0x294
+ * (func_0000027C + 0x18, alias bu_d94_src); callees func_05B750(g, rec) and
+ * func_04CCA8(a0). The a0->0x3C test goes through a named int (target v1),
+ * the flag word through a pointer, and the 16-byte record is a struct copy. */
+typedef struct { int w[4]; } S16_D94;
+extern char bu_d94_g[], bu_d94_src[];
 void func_00000D94(char *a0) {
-    char *g = (char*)&D_00000000;
-    char *st;
-    int *kv;
-    if ((double)*(float*)(g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
-        func_00000000(g, (char*)&func_0000027C + 0x18);
+    int *p;
+    int on;
+    if ((double)*(float *)(bu_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
+        func_00000000(bu_d94_g, bu_d94_src);
         func_00000000(a0);
-        st = *(char**)(g + 0x254);
-        if (*(int*)(a0 + 0x3C) == 0) {
-            *(int*)(st + 0x78) &= ~4;
+        p = (int *)(*(char **)(bu_d94_g + 0x254) + 0x78);
+        on = *(int *)(a0 + 0x3C);
+        if (on != 0) {
+            *p |= 4;
         } else {
-            *(int*)(st + 0x78) |= 4;
+            *p &= ~4;
         }
     } else {
-        st = *(char**)(g + 0x254);
-        kv = (int*)((char*)&func_0000027C + 0x18);
-        *(int*)(st + 0x78) |= 4;
-        *(int*)(st + 0xDC) = kv[0];
-        *(int*)(st + 0xE0) = kv[1];
-        *(int*)(st + 0xE4) = kv[2];
-        *(int*)(st + 0xE8) = kv[3];
+        p = (int *)(*(char **)(bu_d94_g + 0x254) + 0x78);
+        *p |= 4;
+        *(S16_D94 *)(*(char **)(bu_d94_g + 0x254) + 0xDC) = *(S16_D94 *)bu_d94_src;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000D94);
-#endif
 
 // func_00000E68 — FIRST STRUCTURAL PASS (0xBDC / 759 insns, multi-run target,
 // no episode). Procedural tiled quad-mesh + index-buffer builder/constructor

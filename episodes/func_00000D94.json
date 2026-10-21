@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00000D94",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T20:10:05.626109+00:00",
+  "end_time": "2026-10-21T20:10:05.626127+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T20:10:05.626123+00:00",
+      "assistant_text": "Threshold gate: reloc identities and addends (globals import, RoData f64 at 0x70, record at 0x294), a named int for the a0->0x3C test, a pointer for the flag RMW, and a 16-byte struct copy for the record.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 53,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nextern double D_bu_ro_dpool[];\ntypedef struct { int w[4]; } S16_D94;\nextern char bu_d94_g[], bu_d94_src[];\nvoid func_00000D94(char *a0) {\n    int *p;\n    int on;\n    if ((double)*(float *)(bu_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {\n        func_00000000(bu_d94_g, bu_d94_src);\n        func_00000000(a0);\n        p = (int *)(*(char **)(bu_d94_g + 0x254) + 0x78);\n        on = *(int *)(a0 + 0x3C);\n        if (on != 0) {\n            *p |= 4;\n        } else {\n            *p &= ~4;\n        }\n    } else {\n        p = (int *)(*(char **)(bu_d94_g + 0x254) + 0x78);\n        *p |= 4;\n        *(S16_D94 *)(*(char **)(bu_d94_g + 0x254) + 0xDC) = *(S16_D94 *)bu_d94_src;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00000D94.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}
