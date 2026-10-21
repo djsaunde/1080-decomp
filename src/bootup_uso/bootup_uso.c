@@ -4959,24 +4959,30 @@ void func_00007620(char *a0, int a1) {
  * Double-promote-scan vein. INCLUDE_ASM stays. */
 extern void func_0000023C();  /* used as data-symbol base */
 #ifdef NON_MATCHING
-/* typed-float proto (0x0-alias): args 5,7 are single floats (target swc1
- * 0x10/0x18); K&R func_00000000 double-promotes them. */
-extern int func_76f4_q(void *, int, int, int, float, int, float);
+/* 2026-10-21 (agent-c run 115): reloc-identity re-decode (root = 0x254
+ * (func_0000023C + 0x18), globals import_0005C108, v = the same import +
+ * 0xA0, count import_0001FFC4; callees func_063D70 (typed floats),
+ * func_05C444, func_04CCA8 as void). The count increment is inside the if.
+ * Residual: in the target v and the scale base are the SAME symbol held in
+ * two registers, so the scale loads stay after each store; two aliases let
+ * IDO hoist them. Also the 0x70/0x80 load order and the hoisted G def. */
+extern int func_00000000_76f4_q(void *, int, int, int, float, int, float);
+extern char *bu_76f4_root;
+extern char bu_76f4_g[], bu_76f4_v[];
+extern int bu_76f4_cnt;
+extern void func_00000000_76f4_v();
 void func_000076F4(char *s0) {
-    char *root = *(char**)((char*)&func_0000023C + 0x18);
-    char *v;
-    if (func_76f4_q(root, 3, *(int*)(s0 + 0x5C), *(int*)(s0 + 0x60),
-                    *(float*)(s0 + 0x64), 0,
-                    *(float*)(s0 + 0x80) * *(float*)(s0 + 0x70)) != 0) {
-        func_00000000(&D_00000000, s0 + 0x2C);
-        v = (char*)&func_00000080 + 0x20;
-        *(float*)(v + 0x30) *= *(float*)((char*)&D_00000000 + 0x128);
-        *(float*)(v + 0x34) *= *(float*)((char*)&D_00000000 + 0x12C);
-        *(float*)(v + 0x38) *= *(float*)((char*)&D_00000000 + 0x130);
-        *(float*)(v + 0x34) += *(float*)(s0 + 0x6C);
-        func_00000000(s0);
+    if (func_00000000_76f4_q(bu_76f4_root, 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),
+                    *(float *)(s0 + 0x64), 0,
+                    *(float *)(s0 + 0x80) * *(float *)(s0 + 0x70)) != 0) {
+        func_00000000_76f4_v(bu_76f4_g, s0 + 0x2C);
+        *(float *)(bu_76f4_v + 0x30) *= *(float *)(bu_76f4_g + 0x128);
+        *(float *)(bu_76f4_v + 0x34) *= *(float *)(bu_76f4_g + 0x12C);
+        *(float *)(bu_76f4_v + 0x38) *= *(float *)(bu_76f4_g + 0x130);
+        *(float *)(bu_76f4_v + 0x34) += *(float *)(s0 + 0x6C);
+        func_00000000_76f4_v(s0);
+        bu_76f4_cnt += 1;
     }
-    *(int*)&D_00000000 += 1;  /* global emit count */
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000076F4);
