@@ -724,6 +724,7 @@ build/src/kernel/kernel_002.c.o build/non_matching/src/kernel/kernel_002.c.o: OP
 build/src/kernel/kernel_018.c.o build/non_matching/src/kernel/kernel_018.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_o2.c.o build/non_matching/src/kernel/kernel_018_o2.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: OPT_FLAGS := -O1
+build/src/kernel/kernel_006_b.c.o build/non_matching/src/kernel/kernel_006_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000_o1.c.o build/non_matching/src/kernel/kernel_000_o1.c.o: OPT_FLAGS := -O1
 # kernel_000_b: C fns func_80003C30 (osDestroyThread), func_80003D40/43E4
 # (__osLeoInterrupt/__osLeoAbnormalResume) and func_800044CC (send_mesg), which
@@ -1236,11 +1237,10 @@ build/src/kernel/kernel_018_b_ido53_698C.c.o build/non_matching/src/kernel/kerne
 build/src/kernel/kernel_018_b.c.o build/non_matching/src/kernel/kernel_018_b.c.o: REPLACE_FUNC_BODY := func_8000698C=$(KERNEL018B_698C_DONOR)
 build/src/kernel/kernel_006_o1_5520.c.o build/non_matching/src/kernel/kernel_006_o1_5520.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: REPLACE_FUNC_BODY := func_80005520=$(KERNEL006_5520_DONOR)
-# kernel_006: the promoted 5520 C body compiles +0x20 over the 0x1CC slot;
-# the splice shrinks it back to 0x1CC leaving a 4-byte align-pad tail
-# residue (.text 0x334 vs ROM-true 0x330; 0x504/0x500 before the 2026-10-20
-# osEPiRawStartDma merge moved func_80005350 to kernel_005_b) — trim it.
-build/src/kernel/kernel_006.c.o: TRUNCATE_TEXT := 0x330
+# kernel_006: the 5520 host C body is sized to 0x1EC (slot 0x1CC + 0x20) so
+# the splice shifts func_800056EC by exactly 0x20 and keeps as1's 32-byte
+# alignment of its dead epilogue. .text is 0x2E0 after the splice (ROM-true:
+# func_80005800 now starts kernel_006_b at 0x80005800), no truncation needed.
 build/src/kernel/kernel_008_o1_58C0.c.o build/non_matching/src/kernel/kernel_008_o1_58C0.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_008.c.o build/non_matching/src/kernel/kernel_008.c.o: REPLACE_FUNC_BODY := func_800058C0=$(KERNEL008_58C0_DONOR)
 build/src/kernel/kernel_024_o1_9AB0.c.o build/non_matching/src/kernel/kernel_024_o1_9AB0.c.o: OPT_FLAGS := -O1

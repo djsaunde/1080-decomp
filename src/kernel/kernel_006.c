@@ -125,18 +125,22 @@ void func_80005520(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
         func_8000A110(&pimgr_bss_0000);
         func_80005F10(&pimgr_bss_11B0, 0, &D_80005AEC, NULL, (char *) &pimgr_bss_1360 + 0x400, arg0 - 1);
         func_8000A110(&pimgr_bss_11B0);
+        sp24 = 0; /* dead: sizes this host body to 0x1EC, see below */
         func_800066D0(sp2C);
         if (sp28 != -1) {
             func_80006510(0, sp28);
         }
     }
 }
-/* (donor bytes replace the body above in the .o; see comment + Makefile) */
+/* (donor bytes replace the body above in the .o; see comment + Makefile)
+ * Host-size rule: this placeholder must compile to 0x1EC = slot 0x1CC + 0x20.
+ * The splice then moves func_800056EC down by exactly 0x20, which keeps the
+ * 32-byte alignment as1 gives its unreachable epilogue (the 7 nops before
+ * 0x800057E0). The dead `sp24 = 0;` is the one word that makes it 0x1EC. */
 
 
 
 
-#ifdef NON_MATCHING
 extern void func_800051E0(s32, s32 *, s32);
 extern void func_80004FE0(s32 *, s32, s32);
 extern void func_80005C50(void);
@@ -155,12 +159,15 @@ extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
  * reloaded per statement incl. the post-store while-test reload lw t8,0x2C)
  * and the call result is a `register` var (colors s0, or s0,v0). With those
  * two levers the ENTIRE LIVE BODY is byte-exact standalone (insns 0..53 of
- * 66, verified 5.3 AND 7.1 -O1, both identical). REMAINING CAP: the ROM has
- * SEVEN nop words between the loop's back-branch (0x800057BC) and the dead
- * (unreachable) epilogue at 0x800057D4; IDO emits the dead epilogue
- * immediately after the branch with no padding under every flag combo tried
- * (5.3/7.1 x -O0/-O1/-O2/-g/-g3). Mid-function nop block is not
- * source-reachable -> stays NM (no episode). */
+ * 66, verified 5.3 AND 7.1 -O1, both identical).
+ * 2026-10-21 (agent-g run 115): EXACT. The seven nop words before the dead
+ * epilogue (0x800057C4..DC) are as1's 32-byte alignment of the unreachable
+ * epilogue block (docs/IDO_CODEGEN.md#whole-tu-o1-in-tu-def-at-share-dead-
+ * epilogue-align): they appear once this function is compiled at a TU offset
+ * that is 0xC mod 32. Two layout facts make that true: the 5520 host body is
+ * sized 0x1EC so the donor splice shifts this function by exactly 0x20, and
+ * func_80005800 starts a new TU (kernel_006_b.c) at 0x80005800 -- the three
+ * zero words after this function's jr are kernel_006's own 16-byte .text pad. */
 void func_800056EC(s32 arg0) {
     struct { s32 sum; } v;
     s32 sp28;
@@ -181,14 +188,4 @@ void func_800056EC(s32 arg0) {
         func_80004FE0(&D_8001B5F0, 0, 1);
         func_80005C94();
     }
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800056EC);
-#endif
-
-/* __osSiCreateAccessQueue */
-void func_80005800(void) {
-    D_8000A480 = 1;
-    func_800053D0(&__osPiAccessQueue, &siacs_bss_0000, 1);
-    func_80005DC0(&__osPiAccessQueue, 0, 0);
 }
