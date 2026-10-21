@@ -2616,22 +2616,31 @@ extern int game_uso_func_051C28();
 extern int game_uso_func_04A188();
 extern int game_uso_func_07ACE0();
 typedef struct { int w; } T4_41C0;
+/* 2026-10-21 agent-g run 116: 94.2 -> 132/134 words with the 3018 recipe
+ * (struct copy prm = tN) plus: the new result lives in a reused temp x that
+ * later holds the node (both the alloc web and the node are memory-resident
+ * at sp+64, so x is escaped), p1 = x copy in the tail (v1, spilled at 68),
+ * one escape pointer for all four, and the condition re-loads a0->0x40 while
+ * the argument is the earlier load (3A28's trick). Frame and every slot
+ * match. LEFT: the target puts the node store `sw v0,64` in the 07ACE0 jal
+ * delay slot and the p1 spill before it; here the order is swapped. */
 int *game_uso_func_000041C0(int a0) {
     char *p1;
+    char *x;
     char *obj;
-    char *b;
-    char *s;
-    char *node;
-    T4_41C0 prm;
     T4_41C0 t1;
     T4_41C0 t2;
     T4_41C0 t3;
+    char *b;
+    int pad[2];
+    char *s;
+    T4_41C0 prm;
 
-    if (1) { T4_41C0 *q1 = &t1, *q2 = &t2, *q3 = &t3; }
-    if ((p1 = (char *)game_uso_func_055750(0x8C)) != 0) {
-        game_uso_func_051C28(p1);
-        *(char **)(p1 + 0x28) = &game_uso_D_807FEB68;
-        obj = p1 + 0x3C;
+    if (1) { void *q = &t1; q = &t2; q = &t3; q = &x; }
+    if ((x = (char *)game_uso_func_055750(0x8C)) != 0) {
+        game_uso_func_051C28(x);
+        *(char **)(x + 0x28) = &game_uso_D_807FEB68;
+        obj = x + 0x3C;
         if (obj != 0 || (obj = (char *)game_uso_func_055750(0x50)) != 0) {
             b = obj;
             if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
@@ -2639,8 +2648,8 @@ int *game_uso_func_000041C0(int a0) {
                 *(int *)(b + 4) = 0;
             }
             t1.w = ((T4_41C0 *)(&game_uso_D_807FECB4 + 0x6C4))->w;
+            prm = t1;
             s = obj + 8;
-            prm.w = t1.w;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
                 *(char **)(s + 0xC) = &game_uso_D_807FE9B8 + 0x3C8;
@@ -2648,8 +2657,8 @@ int *game_uso_func_000041C0(int a0) {
                 *(f32 *)(s + 0x10) = 1.0f;
             }
             t2.w = ((T4_41C0 *)(&game_uso_D_807FECB8 + 0x6C8))->w;
+            prm = t2;
             s = obj + 0x20;
-            prm.w = t2.w;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
                 *(char **)(s + 0xC) = &game_uso_D_807FEA00 + 0x410;
@@ -2657,8 +2666,8 @@ int *game_uso_func_000041C0(int a0) {
                 *(int *)(s + 0x14) = 0;
             }
             t3.w = ((T4_41C0 *)(&game_uso_D_807FECBC + 0x6CC))->w;
+            prm = t3;
             s = obj + 0x38;
-            prm.w = t3.w;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 0);
                 *(char **)(s + 0xC) = &game_uso_D_807FEA00 + 0x410;
@@ -2667,13 +2676,14 @@ int *game_uso_func_000041C0(int a0) {
             }
         }
     }
-    node = *(char **)(a0 + 0x40);
-    if (node != 0) {
-        game_uso_func_07ACE0(p1 + 0x10, node);
-        if (*(int *)(node + 0x14) != 0) {
-            *(int *)(node + 4) = 1;
+    p1 = x;
+    obj = *(char **)(a0 + 0x40);
+    if (*(char **)(a0 + 0x40) != 0) {
+        game_uso_func_07ACE0(p1 + 0x10, x = obj);
+        if (*(int *)(x + 0x14) != 0) {
+            *(int *)(x + 4) = 1;
         }
-        *(char **)(node + 0x14) = p1;
+        *(char **)(x + 0x14) = p1;
     }
     return (int *)p1;
 }
