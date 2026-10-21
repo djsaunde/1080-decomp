@@ -3,11 +3,10 @@
  * Spliced into the NON_MATCHING post0b object only (REPLACE_FUNC_BODY on
  * build/non_matching/..., like the 65EE4 NM donor); the ROM keeps INCLUDE_ASM.
  * All 689 instructions are identical to the target once stack offsets are
- * masked; the only residual is ONE 4-byte edg pool slot: the first
- * statement's operator+ ctor temporary sits at sp+340 (target sp+336), i.e.
- * the target allocates two pool slots between the operator+ return slot
- * (sp+356) and that temporary where this source allocates one (4 words
- * differ: the three swc1 into the temp and its addiu base).
+ * masked, and 688 with exact offsets; the only residual is the first
+ * statement's operator+ return slot at sp+348 (target sp+356): the target
+ * allocates it above the two pool slots that sit between it and the
+ * operator+ ctor temporary (sp+336, now right), this source below them.
  *
  * Recursive triangle subdivider (agent-g run 114, from the run-113 draft):
  * three normal callbacks, an |n0+n1+n2| / 2 < scale*4 stop test, six edge
@@ -28,16 +27,20 @@
  *   slots sit between n2 and h0, as in the target).
  * - no dead address escape is needed for the int params: with this shape
  *   uopt keeps them in their arg homes on its own.
+ * - (run 115) V3 derives from a POD P3 and operator+ takes const P3 &: the
+ *   first operator+ ctor temporary moves to the target's sp+336 (685 -> 688
+ *   of 689 words). The one word left is the operator+ return slot, now
+ *   allocated below the two conversion slots (sp+348, target sp+356).
  * Callees are blank USO imports (jal 0); the NM object is not linked. */
-struct V3 {
-    float x, y, z;
+struct P3 { float x, y, z; };
+struct V3 : P3 {
     V3() {}
     V3(float a, float b, float c) { set(a, b, c); }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }
     V3 &assign(V3 v) { set(v); return *this; }
 };
-inline V3 operator+(const V3 &a, const V3 &b) { return V3(a.x + b.x, a.y + b.y, a.z + b.z); }
+inline V3 operator+(const P3 &a, const P3 &b) { return V3(a.x + b.x, a.y + b.y, a.z + b.z); }
 inline V3 operator/(const V3 &v, float s) { return V3(v.x / s, v.y / s, v.z / s); }
 #define fab(f) ((f) < 0.0f ? -(f) : (f))
 extern "C" {
