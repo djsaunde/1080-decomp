@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00038964",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T22:13:24.791223+00:00",
+  "end_time": "2026-10-21T22:13:24.791223+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T22:13:24.791223+00:00",
+      "assistant_text": "C++ donor: same {cur, nxt} list iterator as 3D48C, two virtual hooks per object.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 49,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00038964 (0xC4 / 49 words): walk the\n * owner's child list with a stack iterator and fire two virtual hooks\n * (slots 4 and 5, vptr at +0x28) on every object with the same context.\n *\n * Same list iterator as gl_func_0003D48C: next() advances through its own\n * nxt member, `(cur = nxt) ? (nxt = nxt->next, cur->obj) : 0`; each hook\n * re-reads the current object through get(). The cfe wrap (98.88) needed\n * address-taken locals and dead `if (0)` stores for the same shape.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nstruct Node389 {\n    char pad[0x28];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();\n    virtual void f1(void *ctx); virtual void f2(void *ctx);\n};\nstruct Link389 { Node389 *obj; Link389 *next; };\nstruct Iter389 {\n    Link389 *cur, *nxt;\n    Iter389(Link389 *head) { nxt = head; }\n    Node389 *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    Node389 *get() { return cur->obj; }\n};\nstruct Owner389 { char pad[0x10]; Link389 *head; };\nextern \"C\" void gl_func_00038964(Owner389 *o, void *ctx) {\n    Iter389 it(o->head);\n    for (Node389 *n = it.next(); n; n = it.next()) {\n        it.get()->f1(ctx);\n        it.get()->f2(ctx);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_38964.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00038964.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

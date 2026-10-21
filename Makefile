@@ -1347,6 +1347,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_62A2C_DONOR := build/src/game_libs/game_libs_ncc_62A2C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_62A2C_DONOR)
+# 38964 = child-list walk firing virtual slots 4/5 (same {cur, nxt} iterator as 3D48C); NCC donor.
+GAMELIBS_38964_DONOR := build/src/game_libs/game_libs_ncc_38964.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038964=$(GAMELIBS_38964_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38964_DONOR)
 # 3D48C = child-list walk through a stack {cur, nxt} iterator (next() advances via nxt->next); NCC donor.
 GAMELIBS_3D48C_DONOR := build/src/game_libs/game_libs_ncc_3D48C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003D48C=$(GAMELIBS_3D48C_DONOR)
