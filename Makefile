@@ -142,6 +142,10 @@ BOOTUP_E740_DONOR := build/src/bootup_uso/bootup_uso_ncc_E740.cpp.o
 BOOTUP_E800_DONOR := build/src/bootup_uso/bootup_uso_ncc_E800.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000E740=$(BOOTUP_E740_DONOR) func_0000E800=$(BOOTUP_E800_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_E740_DONOR) $(BOOTUP_E800_DONOR)
+# B1B4 = sound bank lazy loader + registry add (cfront Bank chain, inline Reg::add); NCC donor.
+BOOTUP_B1B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_B1B4.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000B1B4=$(BOOTUP_B1B4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B1B4_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o: TRUNCATE_TEXT := 0x334
 build/src/bootup_uso/bootup_uso_F434.c.o build/non_matching/src/bootup_uso/bootup_uso_F434.c.o: OPT_FLAGS := -O0
@@ -1569,7 +1573,8 @@ build/assets/timproc_uso_block5_yay0.bin: YAY0_TEXT_SIZE := 0xE620
 # Only genuine data/alignment mechanisms remain: all-zero padding SUFFIX_BYTES,
 # USO-header PREFIX_BYTES, TRUNCATE_TEXT / TEXT_CLIP_KEEP_ALIGN, and the -O0
 # donor splice REPLACE_FUNC_BODY (real -O0 compiler output).
-build/src/bootup_uso/bootup_uso.c.o: SUFFIX_BYTES := func_0000F1B4=0x00000000,0x00000000,0x00000000
+# func_0000F1B4 pad moved into SUFFIX_BYTES_FORCE (run 117): as the last fn, the plain path
+# skips when trailing .text zeros happen to sit after it (B1B4 splice shifted them).
 # func_0000EE8C: byte-exact C body ends `jr ra; nop` at 0xEF1C; the target has a
 # single trailing 8-byte-alignment nop so func_0000EF20 sits at 0xEF20. Append it
 # as an all-zero (nop) word via SUFFIX_BYTES_FORCE (alignment pad, not an invented
@@ -1579,7 +1584,7 @@ build/src/bootup_uso/bootup_uso.c.o: SUFFIX_BYTES := func_0000F1B4=0x00000000,0x
 # sits at 0xEC80. All-zero pad words, FORCE for the same skip-path reason.
 # func_000087A4 (2026-10-16): exact C body ends at 0x8914; three all-zero file-end
 # alignment pad words to func_00008920 (0x8914..0x891C). FORCE for the same reason.
-build/src/bootup_uso/bootup_uso.c.o: SUFFIX_BYTES_FORCE := func_000087A4=0x00000000,0x00000000,0x00000000 func_0000EE8C=0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
+build/src/bootup_uso/bootup_uso.c.o: SUFFIX_BYTES_FORCE := func_000087A4=0x00000000,0x00000000,0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EE8C=0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
 # Mirror onto the non_matching object so report.json/objdiff score the trailing
 # alignment-nop word (splat-symbol-boundary trailing-delay-nop class).
 # func_0000F1B4 likewise: matching build has SUFFIX_BYTES (3 all-zero pad words to

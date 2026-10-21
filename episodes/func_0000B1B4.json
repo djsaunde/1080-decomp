@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000B1B4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T21:38:43.958233+00:00",
+  "end_time": "2026-10-21T21:38:43.958233+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T21:38:43.958233+00:00",
+      "assistant_text": "C++ donor: cfront Bank chain built with new, registered through an inline Reg::add on the 5-slot table; see the .cpp header.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 186,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000B1B4 (0x2E8 / 186 words) -- sound /\n * resource bank lazy loader: clamp (cat, idx), on the banked categories 6/7\n * build the bank object once and register it, then load + play.\n *\n * The bank object is `new Bank`: a cfront chain Bank : Mid : Base where Base\n * has an out-of-line ctor, two member objects with their own `this == 0`\n * alloc protocol (Pair at +0x34, Word at +0x58) and a vptr at +0x5C. Only\n * Bank's vtable is a real bootup symbol (func_000083D0 + 0x70); Base and\n * Mid's are blank USO refs.\n *\n * The four words that kept the cfe/NCC ports off (the counter read into v0,\n * target a1) are the registry: a 5-slot table `{ Base *tbl[5]; int n; }` at\n * func_00000148 with an inline add() that does the overflow check and the\n * post-increment store itself. The expression temp of `tbl[n++]` colours a1;\n * a named `n` local colours v0. The `Base *o = b;` copy is dead code but\n * buys the edg frame slot that puts the later v1 spill at sp+24\n * (docs/IDO_CODEGEN.md kit XVI #6).\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. Every symbol is\n * extern \"C\"; blank refs go through bu_b1b4_* aliases (0) in\n * undefined_syms_auto.txt; the three vtables are aliases too. */\nextern \"C\" {\nint func_00000000(...);\nextern char D_00000000;\nextern char func_000089FC[], func_00008A40[];\nextern int bu_b1b4_tblA[], bu_b1b4_tblB[];\n}\nstruct Bb4Pair { int a, b; Bb4Pair() { b = 0; a = 0; } };\nstruct Bb4Word { int a; Bb4Word() { a = 0; } };\nstruct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n; Bb4Base() { func_00000000(this); } virtual void v(); };\nstruct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };\n#define W(o) (*(int *)((char *)this + (o)))\n#define H(o) (*(short *)((char *)this + (o)))\nstruct Bb4Bank : Bb4Mid {\n    Bb4Bank() { W(0x24) = 0x110; W(0x1C) = func_00000000(0x1000); H(0x20) = 0x40; H(0x22) = 0x20; W(0x28) = 0x1100; W(0x38) = 0x402C4B; W(0x34) = 0; W(0x18) = 0; }\n    virtual void v();\n};\nstruct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) func_00000000(); Bb4Base *o = b; tbl[n++] = o; } };\nextern \"C\" Bb4Reg func_00000148;\nstruct Bb4Req { int pad[3]; int a4a, a4b; int pad2[11]; int cat, idx, a2; };\nextern \"C\" void func_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {\n    Bb4Req o;\n    if (idx >= 10) idx = 9;\n    if (cat >= 9) cat = 8;\n    o.a4a = a4;\n    o.a4b = a4;\n    o.a2 = a2;\n    o.cat = cat;\n    o.idx = idx;\n    if (cat == 7 || cat == 6) {\n        if (func_00000148.tbl[0] == 0) {\n            func_00000000(func_000089FC + 0x2C);\n            Bb4Bank *r = new Bb4Bank;\n            func_00000148.add(r);\n        }\n    }\n    func_00000000(func_00008A40 + 0x8, 0);\n    func_00000000(func_00008A40 + 0x14, 0);\n    if (idx != 0) {\n        if (func_00000000(bu_b1b4_tblA[idx]) == 0) func_00000000(&D_00000000, bu_b1b4_tblA[idx]);\n    }\n    if (func_00000000(bu_b1b4_tblB[cat]) == 0) func_00000000(&D_00000000, bu_b1b4_tblB[cat]);\n    func_00000000();\n    func_00000000(&D_00000000, a4, a3, &o);\n    func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_B1B4.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000B1B4.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

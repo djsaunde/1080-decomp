@@ -7366,108 +7366,13 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000090CC);
 //   pair-order class (probe-immune). Rest of diff = split-name/base-0 reloc
 //   naming only (NM-only externs, masked class).
 //   Name pre-checked. Build via INCLUDE_ASM; ROM byte-identical (NM diff only).
-#ifdef NON_MATCHING
-/* Split-NAME externs (NM-only, never linked): distinct per-site names for the
- * same target symbols kill the %hi-CSE base collapse (see IDO_CODEGEN
- * #split-name-hi-cse-volatile-param-b5). Real syms: flag/cnt/tbl =
- * func_00000148(+0x14), name = func_000089FC+0x2C, vt = func_000083D0+0x70,
- * str1/str2 = func_00008A40+0x8/+0x14. Reloc names differ — fine under
- * reloc-masked USO fuzzy scoring; NM objects are compiled, not linked. */
-extern int B1B4_flag;
-extern int B1B4_cnt_a;
-extern int B1B4_cnt_b;
-extern int B1B4_cnt_c;
-extern char *B1B4_tbl[];
-extern char B1B4_name;
-extern char B1B4_vt;
-extern char B1B4_str1;
-extern char B1B4_str2;
-extern char *B1B4_tblA[];
-extern char *B1B4_tblB[];
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_B1B4.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The
+ * last residual (counter in v0, target a1) was the registry: an inline
+ * Reg::add() on the 5-slot table at func_00000148 doing `tbl[n++] = b`. */
 void func_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
-    int o[19];             /* escaping out-block at 0x34: +0xC/+0x10 a4 copies,
-                              +0x40 cat, +0x44 idx, +0x48 a2; base passed to the
-                              finalize call (was "&sp34"). Declared FIRST: named
-                              decls ghost-consume slots top-down, so o claims the
-                              TOP block (0x34-0x7F) and the 7 scalars below it
-                              descend 0x30..0x18 (t last = 0x18 CSE-temp home,
-                              r/s/s2 = the 0x2C/0x28/0x24 cross-call spills). */
-    char *t;
-    char *r;
-    char *s;
-    char *s2;
-    char *buf;
-    int n;
-
-    if (idx >= 0xA) idx = 9;
-    if (cat >= 9)  cat = 8;
-    o[3] = a4;
-    o[4] = a4;
-    o[18] = a2;
-    o[16] = cat;
-    o[17] = idx;
-    if (cat == 7 || cat == 6) {
-        if (B1B4_flag == 0) {
-            func_00000000(&B1B4_name);
-            r = (char *)func_00000000(0x90);
-            if (r == 0) goto reg;
-            s = r;
-            if (r == 0) {
-                s = (char *)func_00000000(0x90);
-                if (s == 0) goto rinit;
-            }
-            s2 = s;
-            if (s == 0) {
-                s2 = (char *)func_00000000(0x60);
-                if (s2 == 0) goto svt;
-            }
-            *(char **)(s2 + 0x5C) = &D_00000000;
-            t = s2 + 0x34;
-            if (s2 != (char *)0xFFFFFFCC || (t = (char *)func_00000000(8)) != 0) {
-                *(int *)(t + 4) = 0;
-                *(int *)(t + 0) = 0;
-            }
-            t = s2 + 0x58;
-            if (s2 != (char *)0xFFFFFFA8 || (t = (char *)func_00000000(4)) != 0) {
-                *(int *)(t + 0) = 0;
-            }
-            func_00000000(s2);
-        svt:
-            *(char **)(s + 0x5C) = &D_00000000;
-        rinit:
-            *(char **)(r + 0x5C) = &B1B4_vt;
-            *(int *)(r + 0x24) = 0x110;
-            buf = (char *)func_00000000(0x1000);
-            *(int *)(r + 0x28) = 0x1100;
-            *(short *)(r + 0x22) = 0x20;
-            *(short *)(r + 0x20) = 0x40;
-            *(int *)(r + 0x38) = 0x402C4B;
-            *(char **)(r + 0x1C) = buf;
-            *(int *)(r + 0x34) = 0;
-            *(int *)(r + 0x18) = 0;
-        reg:
-            if (B1B4_cnt_a >= 5) func_00000000();
-            s2 = (char *)B1B4_cnt_b;      /* dead-web reuse: s2's last color
-                                             was $a1 -> n inherits it */
-            B1B4_cnt_c = (int)s2 + 1;
-            B1B4_tbl[(int)s2] = r;
-        }
-    }
-    func_00000000(&B1B4_str1, 0);
-    func_00000000(&B1B4_str2, 0);
-    if (idx != 0) {
-        t = (char *)&B1B4_tblA[idx];
-        if (func_00000000(*(int *)t) == 0) func_00000000(&D_00000000, *(int *)t);
-    }
-    t = (char *)&B1B4_tblB[cat];
-    if (func_00000000(*(int *)t) == 0) func_00000000(&D_00000000, *(int *)t);
-    func_00000000();
-    func_00000000(&D_00000000, a4, a3, o);
-    func_00000000();
+    volatile unsigned int r = cat;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000B1B4);
-#endif
 
 /* func_0000B49C: 33-insn (0x84) clamped-index dispatcher. EXACT 2026-07-15.
  *
