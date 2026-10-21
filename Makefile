@@ -122,6 +122,12 @@ build/src/bootup_uso/bootup_uso.c.o: TRUNCATE_TEXT := 0xF1F0
 # table at bootup_uso RoData +0x4F4.
 BOOTUP_2DA4_DONOR := build/src/bootup_uso/bootup_uso_o2_2DA4.c.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00002DA4=$(BOOTUP_2DA4_DONOR)
+# CAE8 = per-round state reset. bootup_uso is C++ too: IDO 7.1 NCC donor
+# (V3 operator=(const V3 &) forwarding to a by-value set; named locals pin the
+# frame), 126/126 words. docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116.
+BOOTUP_CAE8_DONOR := build/src/bootup_uso/bootup_uso_ncc_CAE8.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000CAE8=$(BOOTUP_CAE8_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CAE8_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o: TRUNCATE_TEXT := 0x334
 build/src/bootup_uso/bootup_uso_F434.c.o build/non_matching/src/bootup_uso/bootup_uso_F434.c.o: OPT_FLAGS := -O0

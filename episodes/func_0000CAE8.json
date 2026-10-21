@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000CAE8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T20:36:36.103480+00:00",
+  "end_time": "2026-10-21T20:36:36.103498+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T20:36:36.103494+00:00",
+      "assistant_text": "C++ donor: V3 operator=(const V3&) forwarding to by-value set(V3) puts the copy temp lowest (sp+36); named mode/p/q locals take edg frame slots (frame 80).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 126,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000CAE8 (0x1F8 / 126 words) -- per-round\n * state reset / re-arm on the rider state object.\n *\n * bootup_uso is C++ too (agent-c run 116). The tell was the two Vec3\n * snapshots at the end: `addiu v0,sp,0x24` + three lw/sw into a stack temp,\n * then lwc1/swc1 per field into the destination. The cfe NM wrap was\n * byte-identical except that temp slot (sp+44 vs sp+36). Under edg:\n * - V3::operator=(const V3 &) forwards to an inline set(V3) taking its\n *   argument BY VALUE, which puts the temp lowest in the frame (sp+36; the\n *   62A2C V3c class, docs/IDO_CODEGEN.md#ncc-game-libs-vec3-62a2c);\n * - the named `mode` local and the two named destination pointers p/q each\n *   take a 4-byte edg frame slot even though they are register/folded\n *   (frame 64 -> 80, docs/IDO_CODEGEN.md#ncc-ctor-forwarding-inline-set-frame-b750).\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. Every symbol is\n * extern \"C\"; the blank (in-place addend) refs go through the bu_cae8_*\n * aliases in undefined_syms_auto.txt (ta/tb/x/y = 0, mode = 0x34,\n * k958 = 0x958, d8abc = 0x8ABC). Callees are func_00000000 (USO TextReloc\n * jal 0). */\nstruct V3 { float x, y, z;\n    void set(V3 v) { x = v.x; y = v.y; z = v.z; }\n    V3 &operator=(const V3 &v) { set(v); return *this; } };\nextern \"C\" {\nvoid func_00000000(...);\nextern int bu_cae8_ta[], bu_cae8_tb[];\nextern int bu_cae8_x_ld, bu_cae8_x_st, bu_cae8_y;\nextern int bu_cae8_mode;\nextern float bu_cae8_k958;\nextern char bu_cae8_d8abc[];\n}\n#define I(o) (*(int *)(st + (o)))\n#define F(o) (*(float *)(st + (o)))\nextern \"C\" void func_0000CAE8(char *st) {\n    func_00000000(st, 1, bu_cae8_ta[I(0x8C4)]);\n    func_00000000(st + 0x3EC, 1, bu_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);\n    if (I(0xA58) & 0x80) func_00000000(st);\n    func_00000000(st + 0x90C, (st + 0x17C) - st);\n    F(0x9D0) = bu_cae8_k958;\n    F(0xA78) = F(0x768);\n    int mode = bu_cae8_mode;\n    switch (mode) {\n    case 2: I(0xA14) = 0x5A; break;\n    case 3:\n    case 4: I(0xA14) = 0x4B; break;\n    default: I(0xA14) = 0xF4240; break;\n    }\n    F(0x9F4) = 0.0f;\n    F(0x9F0) = 0.0f;\n    F(0x9EC) = 0.0f;\n    F(0x9E8) = 0.0f;\n    I(0x3DC) = 1;\n    I(0xA54) = 0;\n    bu_cae8_x_st = bu_cae8_x_ld & ~8;\n    F(0xA0C) = 1.0f;\n    bu_cae8_y = 0;\n    I(0xA58) = I(0x8BC);\n    if (I(0x8BC) & 0x20) func_00000000(st);\n    func_00000000(st, st + 0x3A4);\n    func_00000000(st);\n    func_00000000(*(char **)(st + 0x840));\n    func_00000000(*(char **)(st + 0x804));\n    if (I(0xA58) & 0x20000) func_00000000(bu_cae8_d8abc, I(0xC));\n    V3 *p = (V3 *)(st + 0x890); V3 *q = (V3 *)(st + 0x89C);\n    *p = *(V3 *)(st + 0xB4);\n    *q = *(V3 *)(st + 0x318);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_CAE8.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000CAE8.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "126/126 words byte-equal (relocs via aliases); ROM cmp clean; report 100."
+  }
+}

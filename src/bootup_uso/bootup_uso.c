@@ -8514,75 +8514,13 @@ void func_0000CACC(char *a0) {
 //   match blocked by deferred pool symbolization. Real-C STRUCTURAL
 //   body below — per-round state reset / re-arm skeleton.
 //   Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-/* 2026-10-21 (agent-c run 115): re-decode from the bootup.uso reloc table
- * (tables D_00838C / D_008364, callees func_04C774 x2, func_0000E124 x2,
- * func_07F6C0, func_0799CC, func_0796CC, two imports, func_048E7C; the RMW
- * on import_0005EE64 uses separate load/store aliases). Byte-identical to the
- * target except the Vec3 temp slot (sp+44 here, sp+36 in the target): the
- * temp-then-per-field copies are C++ (inline V3::operator=(V3) by value, see
- * IDO_CODEGEN #ncc-game-libs-vec3-62a2c), and no cfe decl layout puts a
- * declared local that low with this frame. Needs an NCC donor for an exact.
- * Alias values for a promote: ta/tb/x/y = 0, mode = 0x34, k958 = 0x958,
- * d8abc = 0x8ABC. */
-extern int bu_cae8_ta[], bu_cae8_tb[];
-extern int bu_cae8_x_ld, bu_cae8_x_st, bu_cae8_y;
-extern int bu_cae8_mode;
-extern f32 bu_cae8_k958;
-extern char bu_cae8_d8abc[];
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_CAE8.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). The
+ * Vec3 snapshots are an inline V3::operator=(const V3 &) forwarding to a
+ * by-value set(V3); see docs/IDO_CODEGEN.md#ncc-game-libs-vec3-62a2c. */
 void func_0000CAE8(char *st) {
-    int unused[6];
-    Vec3 t;
-    func_00000000(st, 1, bu_cae8_ta[*(int *)(st + 0x8C4)]);
-    func_00000000(st + 0x3EC, 1, bu_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);
-    if (*(int *)(st + 0xA58) & 0x80) func_00000000(st);
-    func_00000000(st + 0x90C, (st + 0x17C) - st);
-    *(float *)(st + 0x9D0) = bu_cae8_k958;
-    *(float *)(st + 0xA78) = *(float *)(st + 0x768);
-    switch (bu_cae8_mode) {
-    case 2:
-        *(int *)(st + 0xA14) = 0x5A;
-        break;
-    case 3:
-    case 4:
-        *(int *)(st + 0xA14) = 0x4B;
-        break;
-    default:
-        *(int *)(st + 0xA14) = 0xF4240;
-        break;
-    }
-    *(float *)(st + 0x9F4) = 0.0f;
-    *(float *)(st + 0x9F0) = 0.0f;
-    *(float *)(st + 0x9EC) = 0.0f;
-    *(float *)(st + 0x9E8) = 0.0f;
-    *(int *)(st + 0x3DC) = 1;
-    *(int *)(st + 0xA54) = 0;
-    bu_cae8_x_st = bu_cae8_x_ld & ~8;
-    *(float *)(st + 0xA0C) = 1.0f;
-    bu_cae8_y = 0;
-    *(int *)(st + 0xA58) = *(int *)(st + 0x8BC);
-    if (*(int *)(st + 0x8BC) & 0x20) {
-        func_00000000(st);
-    }
-    func_00000000(st, st + 0x3A4);
-    func_00000000(st);
-    func_00000000(*(char **)(st + 0x840));
-    func_00000000(*(char **)(st + 0x804));
-    if (*(int *)(st + 0xA58) & 0x20000) {
-        func_00000000(bu_cae8_d8abc, *(int *)(st + 0xC));
-    }
-    t = *(Vec3 *)(st + 0xB4);
-    *(float *)(st + 0x890) = t.x;
-    *(float *)(st + 0x894) = t.y;
-    *(float *)(st + 0x898) = t.z;
-    t = *(Vec3 *)(st + 0x318);
-    *(float *)(st + 0x89C) = t.x;
-    *(float *)(st + 0x8A0) = t.y;
-    *(float *)(st + 0x8A4) = t.z;
+    volatile char *r = st;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000CAE8);
-#endif
 
 // func_0000CCE0 — STRUCTURAL PASS (0x2C0 / 176 insns, no episode).
 // HUD/menu layout builder: creates ~12 positioned widget elements into
