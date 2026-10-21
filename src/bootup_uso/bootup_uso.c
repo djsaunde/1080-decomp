@@ -9453,39 +9453,51 @@ void func_0000E014(char *s0) {
  * direction flip. Caps <80: FP-heavy neg.s/mul.s + many lui+mtc1
  * f32 consts + beql branch-likely + flag-bit branches + reloc.
  * INCLUDE_ASM remains build path. */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 115). Mirror-flip toggle: callees from the TextReloc
+ * (func_0000DDCC / func_0000E014, func_072E58 x2, func_072F1C, func_072FB0
+ * which takes (ptr, ptr, float) so 180.0f goes out in a2); the flag word is
+ * a plain ^= RMW re-read per test; the r-call sits inside the null check and
+ * one pointer variable p carries the negated component and both call args;
+ * up[] sits at the frame top with five unused words above r[]. */
+extern void func_00000000_e124_r(char *, float *, float);
 void func_0000E124(char *s0) {
-    unsigned int fl = *(unsigned int*)(s0 + 0xA58) ^ 0x80;
     float up[3];
+    int unused[5];
     float r[3];
-    char *cA;
-    char *cB;
-    *(unsigned int*)(s0 + 0xA58) = fl;
-    *(float*)(s0 + 0xA38) = 0.0f;
-    if (fl & 0x8) {
-        func_00000000(s0);
-    } else {
+    float *p;
+
+    *(unsigned int *)(s0 + 0xA58) ^= 0x80;
+    *(float *)(s0 + 0xA38) = 0.0f;
+    if (*(unsigned int *)(s0 + 0xA58) & 0x8) {
         func_00000000();
-    }
-    *(float*)(s0 + 0x978) = -*(float*)(s0 + 0x978);
-    up[0] = 0.0f; up[1] = 1.0f; up[2] = 0.0f;
-    cA = *(char**)(s0 + 0x844);
-    *(float*)(cA + 0x30) *= -1.0f;
-    cB = *(char**)(s0 + 0x864);
-    if (fl & 0x80) {
-        if (cB != 0) func_00000000(cB + 0x30);
-        r[0] = -1.0f; r[1] = 1.0f; r[2] = 1.0f;
-        func_00000000(cB + 0x30, &r[0]);
     } else {
-        if (cB != 0) func_00000000(cB + 0x30);
+        func_00000000(s0);
     }
-    if (fl & 0x20) {
-        if (cB != 0) func_00000000(cB + 0x30, &up[0], 180.0f);
+    *(float *)(s0 + 0x978) = -*(float *)(s0 + 0x978);
+    up[0] = 0.0f;
+    up[1] = 1.0f;
+    up[2] = 0.0f;
+    if (*(unsigned int *)(s0 + 0xA58) & 0x80) {
+        p = (float *)(*(char **)(s0 + 0x844) + 0x30);
+        *p = *p * -1.0f;
+        if (*(char **)(s0 + 0x864) != 0) {
+            p = (float *)(*(char **)(s0 + 0x864) + 0x30);
+            func_00000000(p);
+            p = (float *)(*(char **)(s0 + 0x864) + 0x30);
+            r[0] = -1.0f;
+            r[2] = 1.0f;
+            r[1] = 1.0f;
+            func_00000000(p, r);
+        }
+    } else {
+        p = (float *)(*(char **)(s0 + 0x844) + 0x30);
+        *p = *p * -1.0f;
+        if (*(char **)(s0 + 0x864) != 0) { p = (float *)(*(char **)(s0 + 0x864) + 0x30); func_00000000(p); }
+    }
+    if (*(unsigned int *)(s0 + 0xA58) & 0x20) {
+        if (*(char **)(s0 + 0x864) != 0) func_00000000_e124_r(*(char **)(s0 + 0x864) + 0x30, up, 180.0f);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E124);
-#endif
 
 #ifdef NON_MATCHING
 /* 24-insn wrapper that calls a sibling twice with computed-offset args.

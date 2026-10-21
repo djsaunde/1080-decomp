@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000E124",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T19:56:55.228821+00:00",
+  "end_time": "2026-10-21T19:56:55.228839+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T19:56:55.228835+00:00",
+      "assistant_text": "Mirror toggle: reloc-table callees with a typed (ptr, ptr, float) last call, ^= RMW flag re-read per test, the second call pair nested under the null check, one shared pointer variable for the negated component and the call arguments, and the r[] stores ordered 0,2,1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 83,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nextern void func_00000000_e124_r(char *, float *, float);\nvoid func_0000E124(char *s0) {\n    float up[3];\n    int unused[5];\n    float r[3];\n    float *p;\n\n    *(unsigned int *)(s0 + 0xA58) ^= 0x80;\n    *(float *)(s0 + 0xA38) = 0.0f;\n    if (*(unsigned int *)(s0 + 0xA58) & 0x8) {\n        func_00000000();\n    } else {\n        func_00000000(s0);\n    }\n    *(float *)(s0 + 0x978) = -*(float *)(s0 + 0x978);\n    up[0] = 0.0f;\n    up[1] = 1.0f;\n    up[2] = 0.0f;\n    if (*(unsigned int *)(s0 + 0xA58) & 0x80) {\n        p = (float *)(*(char **)(s0 + 0x844) + 0x30);\n        *p = *p * -1.0f;\n        if (*(char **)(s0 + 0x864) != 0) {\n            p = (float *)(*(char **)(s0 + 0x864) + 0x30);\n            func_00000000(p);\n            p = (float *)(*(char **)(s0 + 0x864) + 0x30);\n            r[0] = -1.0f;\n            r[2] = 1.0f;\n            r[1] = 1.0f;\n            func_00000000(p, r);\n        }\n    } else {\n        p = (float *)(*(char **)(s0 + 0x844) + 0x30);\n        *p = *p * -1.0f;\n        if (*(char **)(s0 + 0x864) != 0) { p = (float *)(*(char **)(s0 + 0x864) + 0x30); func_00000000(p); }\n    }\n    if (*(unsigned int *)(s0 + 0xA58) & 0x20) {\n        if (*(char **)(s0 + 0x864) != 0) func_00000000_e124_r(*(char **)(s0 + 0x864) + 0x30, up, 180.0f);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000E124.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}

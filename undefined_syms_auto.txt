@@ -4000,3 +4000,4 @@ D_00007F90 = 0x00007F90;  /* func_00007328 data ref into func_00007EC8 body (was
 D_00007F5C = 0x00007F5C;  /* func_00006808 data ref into func_00007EC8 body (was asm label .L00007F5C) */
 bu_7ec8_m = 0x00000034;  /* func_00007EC8 mode word (asm: func_00000008 + 0x2C) */
 bu_7ec8_src = 0x00000294;  /* func_00007EC8 24-byte record (asm: func_0000027C + 0x18) */
+func_00000000_e124_r = 0x00000000;  /* func_0000E124 callee func_072FB0 (ptr, ptr, float), jal 0 */
