@@ -622,32 +622,39 @@ void *func_00000C10(int *arg0) {
  * but IDO holds D_00000000 in $v1 (shared with the 12-entry box table).
  * Stays INCLUDE_ASM (no episode). */
 #ifdef NON_MATCHING
-extern int func_00000000();
-extern char D_00000000;
+/* 2026-10-21 (agent-c run 115): cfront ctor re-decode from the TextReloc
+ * (alloc func_055750, base ctor func_04C678(o, &D_000066A8), descriptor
+ * D_0065EC, globals import_0001FFA0 +0/+4 through two aliases, box table
+ * D_0065AC). Residual (97.2): the box block colours base/h/-h v0/v1/a0, the
+ * target v1/a0/a1 (one candidate earlier in the target holds v0). */
 extern char D_000066A8;
-void *func_00000CA0(void *a0, int a1, int a2, int a3) {
-    char *o = (char *)a0;
-    short *v;
+extern char bu_ca0_desc[];
+extern int bu_ca0_g[], bu_ca0_g_b[];
+extern short bu_ca0_box[];
+void *func_00000CA0(char *o, int a1, int a2, int a3) {
     int h, nh;
-    if (a0 != 0 || (o = (char *)func_00000000(0x40)) != 0) {
-        func_00000000(o, &D_000066A8);
-        *(int *)(o + 0x28) = (int)&D_00000000;   /* descriptor */
-        *(float *)(o + 0x34) = 1.0f;
-        *(int *)(o + 0xC) = a1;
-        *(float *)(o + 0x30) = 1.0f;
-        *(float *)(o + 0x2C) = 1.0f;             /* scale = (1,1,1) */
-        *(float *)(o + 0x38) = 0.0f;
-        *(int *)(o + 0x3C) = a2;
-        *(int *)&D_00000000 = a3;                /* global g0 */
-        *(int *)((char *)&func_00000000 + 4) = a3;
-        h = a3 / 2;
-        nh = -h;
-        v = (short *)&D_00000000;                /* global box-corner table, 0x10 stride */
-        v[0] = h;   v[1] = h;   v[2] = h;
-        v[8] = nh;  v[9] = h;   v[10] = h;
-        v[16] = nh; v[17] = nh; v[18] = h;
-        v[24] = h;  v[25] = nh; v[26] = h;
+    if (o == 0) {
+        o = (char *)func_00000000(0x40);
+        if (o == 0) goto end;
     }
+    func_00000000(o, &D_000066A8);
+    *(char **)(o + 0x28) = bu_ca0_desc;
+    if (1) { }
+    *(int *)(o + 0xC) = a1;
+    *(float *)(o + 0x34) = 1.0f;
+    *(float *)(o + 0x30) = 1.0f;
+    *(float *)(o + 0x2C) = 1.0f;
+    *(float *)(o + 0x38) = 0.0f;
+    *(int *)(o + 0x3C) = a2;
+    bu_ca0_g[0] = a3;
+    bu_ca0_g_b[1] = a3;
+    h = a3 / 2;
+    nh = -h;
+    bu_ca0_box[0] = h;   bu_ca0_box[1] = h;   bu_ca0_box[2] = h;
+    bu_ca0_box[8] = nh;  bu_ca0_box[9] = h;   bu_ca0_box[10] = h;
+    bu_ca0_box[16] = nh; bu_ca0_box[17] = nh; bu_ca0_box[18] = h;
+    bu_ca0_box[24] = h;  bu_ca0_box[25] = nh; bu_ca0_box[26] = h;
+end:
     return o;
 }
 #else
