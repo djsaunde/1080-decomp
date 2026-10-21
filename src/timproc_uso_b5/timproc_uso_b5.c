@@ -3784,7 +3784,7 @@ extern void timproc_uso_b5_func_00007B2C();
 extern void timproc_uso_b5_func_00007E34();
 extern void timproc_uso_b5_func_000080F4();
 extern void timproc_uso_b5_func_00008468();
-extern f32 timproc_uso_b5_func_07E7B0();
+extern f32 timproc_uso_b5_func_07E7B0(f32);
 /* 00001CF0, 000038B0, 0000396C, 000073C0, 000085E0, 00008A38, 00008AD4
  * are defined elsewhere in this TU with real prototypes. */
 int timproc_uso_b5_func_00001CF0(int *a0, int a1);
@@ -3795,119 +3795,40 @@ void timproc_uso_b5_func_000085E0(int *a0);
 
 typedef void (*FPv)();
 
+#endif /* NON_MATCHING */
+/* timproc_uso_b5_func_00005FC0: EXACT (agent-g run 114). The real C is the
+ * IDO 7.1 -O2 donor src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c, spliced over
+ * this placeholder by REPLACE_FUNC_BODY so its switch jumptable reloc can be
+ * pinned to the USO RoData table at +0x190 (Makefile TIMB5_5FC0_DONOR). */
+/* The placeholder also emits the 0x44 bytes of RoData +0x190..+0x1D4 that the
+ * INCLUDE_ASM .s used to carry as .late_rodata (docs/MATCHING_WORKFLOW.md
+ * #game-uso-rodata-relayout-late-rodata): an 11-entry jumptable (the donor's
+ * table position), five pi/2 literals of this fn, and 79A4's 0.1f
+ * (spelled &D_00000000 + 0x1D0 there). Only the layout matters; the splice
+ * drops this body's text and relocs. */
 void timproc_uso_b5_func_00005FC0(char *arg0) {
-    char *sp2C;
-    char *v0;
-    char *v1;
-    f32 f2;
-
-    if (FW(arg0, 0x3BC) == 2) {
-        if ((FW(arg0, 0x3C8) == 4) &&
-            (FW(timproc_uso_b5_func_00001CF0((int *)FW(arg0, 0x41C), FW(arg0, 0x3B8)), 0x3C8) == 4)) {
-            import_000A7ECC(&import_80020098, -1);
-        } else {
-            import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
-        }
-    } else {
-        import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
+    switch (*(int *)arg0) {
+    case 0: arg0[4] = 0; break;
+    case 1: arg0[4] = 1; break;
+    case 2: arg0[4] = 2; break;
+    case 3: arg0[4] = 3; break;
+    case 4: arg0[4] = 4; break;
+    case 5: arg0[4] = 5; break;
+    case 6: arg0[4] = 6; break;
+    case 7: arg0[4] = 7; break;
+    case 8: arg0[4] = 8; break;
+    case 9: arg0[4] = 9; break;
+    case 10: arg0[4] = 10; break;
     }
-    switch ((u32)FW(arg0, 0x3CC)) {
-    case 0:
-        timproc_uso_b5_func_00007078(arg0);
-        break;
-    case 1:
-        timproc_uso_b5_func_000072D0(arg0);
-        break;
-    case 2:
-        timproc_uso_b5_func_000073C0(arg0);
-        break;
-    case 3:
-        timproc_uso_b5_func_00007430(arg0);
-        break;
-    case 4:
-        timproc_uso_b5_func_000077D8(arg0);
-        break;
-    case 5:
-        timproc_uso_b5_func_000079A4(arg0);
-        break;
-    case 6:
-        timproc_uso_b5_func_00007B2C(arg0);
-        break;
-    case 7:
-        timproc_uso_b5_func_00007E34(arg0);
-        break;
-    case 8:
-        timproc_uso_b5_func_000080F4(arg0);
-        break;
-    case 9:
-        timproc_uso_b5_func_00008468(arg0);
-        break;
-    case 10:
-        timproc_uso_b5_func_000085E0(arg0);
-        break;
-    }
-    if (FW(arg0, 0x4B4) != 0) {
-        *(f32 *)(arg0 + 0x4BC) = *(f32 *)(arg0 + 0x4BC) + *(f32 *)(arg0 + 0xBC);
-        if (*(f32 *)(arg0 + 0x4BC) >= 1.0f) {
-            *(f32 *)(arg0 + 0x4BC) = 1.0f;
-            FW(arg0, 0x4B4) = 0;
-            FW(arg0, 0x4B8) = 0;
-        }
-    }
-    if (FW(arg0, 0x3FC) != 0) {
-        FW(arg0, 0x3FC) = FW(arg0, 0x3FC) - 4;
-        if (FW(arg0, 0x3FC) <= 0) {
-            FW(arg0, 0x3FC) = 0;
-        }
-    }
-    if (FW(arg0, 0x3F8) != 0) {
-        v0 = (char *)timproc_uso_b5_func_00008AD4(arg0);
-        v1 = (char *)FW(v0, 0x28);
-        ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    }
-    v0 = (char *)timproc_uso_b5_func_00008A38(arg0);
-    v1 = (char *)FW(v0, 0x28);
-    ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    v1 = (char *)FW(FW(arg0, 0x40C), 0x54);
-    v0 = (char *)FW(v1, 0x28);
-    ((FPv)FW(v0, 0xBC))(*(s16 *)(v0 + 0xB8) + v1, FW(arg0, 0x480));
-    v0 = (char *)FW(FW(arg0, 0x40C), 0x58);
-    v1 = (char *)FW(v0, 0x28);
-    ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    if (*(s32 *)(&import_800200CC + 0x34) != 2) {
-        v0 = (char *)FW(FW(arg0, 0x40C), 0x5C);
-        v1 = (char *)FW(v0, 0x28);
-        ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    }
-    if (FW(arg0, 0x3CC) == 5) {
-        sp2C = (char *)timproc_uso_b5_func_00008A38(arg0);
-        timproc_uso_b5_func_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
-            *(f32 *)(arg0 + 0x5C));
-        sp2C = (char *)timproc_uso_b5_func_00008A38(arg0);
-        *(f32 *)(arg0 + 0x498) =
-            *(f32 *)(sp2C + 0x14C) *
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)(arg0 + 0x480)) +
-            *(f32 *)(arg0 + 0x49C);
-    } else {
-        sp2C = (char *)timproc_uso_b5_func_00008A38(arg0);
-        timproc_uso_b5_func_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
-            *(f32 *)(arg0 + 0x5C));
-        sp2C = (char *)timproc_uso_b5_func_00008A38(arg0);
-        *(f32 *)(arg0 + 0x498) =
-            *(f32 *)(sp2C + 0x134) *
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) +
-            *(f32 *)(arg0 + 0x49C);
-    }
-    f2 = *(f32 *)(arg0 + 0x4C0);
-    *(f32 *)(FW(FW(FW(arg0, 0x414), 0xC), 0x70) + 0x14C) =
-        timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC)) *
-        (*(f32 *)(arg0 + 0x498) - f2) + f2;
+    /* IDO merges equal literals in one fn: five distinct words stand in for
+     * the ROM's five pi/2 (0x3FC90FDB) entries. */
+    *(volatile float *)(arg0 + 8) = 1.5707964f;
+    *(volatile float *)(arg0 + 8) = 1.5707966f;
+    *(volatile float *)(arg0 + 8) = 1.5707967f;
+    *(volatile float *)(arg0 + 8) = 1.5707968f;
+    *(volatile float *)(arg0 + 8) = 1.5707970f;
+    *(volatile float *)(arg0 + 8) = 0.1f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00005FC0);
-#endif
 
 /* timproc_uso_b5_func_00006394 (0x4C8 / 306 words): timing-screen row draw.
  * Gate on scr->0x414->0xC->0xBC >= 0x78; clamp the row y (C4 + 0x3B0) to
