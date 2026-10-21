@@ -2643,64 +2643,50 @@ void func_00003F00(char *s1, int a1) {
  *  2nd-use anchors have wrong reloc name/lo16 (semantically same address);
  *  downstream f10/f18 ring swap + mfc1 t8-vs-a2 idx-temp coloring couple to
  *  that. Struct-cast ((P*)func)->field does NOT fold either. */
-#ifdef NON_MATCHING
-/* typed-float proto (0x0-alias): 10-arg builder, args 7,8 single floats. */
-extern char *func_411c_r(char *, int, int, int, char *, int, float, float, int, int);
-extern float func_411c_rf(void); /* 0x0-alias: rand callee returns f32 in $f0 directly */
+/* EXACT (agent-c run 115). The func_000043D4 shape (reloc identities,
+ * per-site pinned aliases for the RoData scales +0x544/+0x548 and the 0x90
+ * descriptor table, zero alias for the second list add, spawn results in
+ * r[2], block temps for the cross link) plus the tail: a third new-expression
+ * (ctor flag 1) passed to func_002420(0, t, r[0], f, b3, b4), linked into
+ * s1->0x84 + 0x10 by func_07ACE0. */
+extern char bu_411c_d7294[], bu_411c_d00_b;
+extern int bu_411c_t90[];
+extern f32 bu_411c_k544, bu_411c_k548;
+extern f32 func_00000000_411c_f(void);
+extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void func_0000411C(char *s1, int a1) {
-    volatile int padA[1];
-    char *A[8]; /* [0]=f1 [1]=b4 [2]=b3 [3]=idx2 [4]=idx1 [5]=r1 [6]=r2 [7]=o1 */
-    volatile int padB[2];
-    char *p = (char*)func_00000000(0x80);
-    char *cfg;
-    int p84;
-    if (p != 0) {
-        func_00000000(p, 0);
-    }
-    A[7] = p;
-    p = (char*)func_00000000(0x80);
-    if (p != 0) {
-        func_00000000(p, 0);
-    }
-    func_00000000(&D_00000000, A[7]);
-    func_00000000(&D_00000000, p);
-    A[4] = (char*)(int)(D_bu_ro_pool[0x544 / 4] * func_411c_rf());
-    A[3] = (char*)((int)(func_411c_rf() * D_bu_ro_pool[0x548 / 4] + (float)(int)A[4] + 1.0f) % 3);
-    cfg = *(char**)(s1 + 0x98);
-    A[5] = func_411c_r(s1, 0, (int)A[4],
-                     (int)*(char**)((char*)&func_00000080 + (int)A[4] * 4 + 0x10), A[7], *(int*)(s1 + 0x80),
-                     *(float*)(cfg + 0xC4) - 500.0f, *(float*)(cfg + 0xCC), 0x58005, 0x1B);
-    cfg = *(char**)(s1 + 0x98);
-    {
-        char *r2v = func_411c_r(s1, 2, (int)A[3],
-                     (int)*(char**)((char*)&func_00000044 + (int)A[3] * 4 + 0x4C), p, *(int*)(s1 + 0x80),
-                     *(float*)(cfg + 0xC4) + 500.0f, *(float*)(cfg + 0xCC), 0x48024, 0x1B);
-        char *q = A[5];
-        A[6] = r2v;
-        *(char**)(q + 0x908) = r2v;
-        *(char**)(r2v + 0x908) = q;
-        A[2] = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), q, A[7]);
-    }
-    {
-        char *q = A[5];
-        A[1] = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), q, A[7]);
-    }
-    A[0] = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, A[2]);
-    p = (char*)func_00000000(0x80);
-    if (p != 0) {
-        func_00000000(p, 1);
-    }
-    p = (char*)func_00000000(0, p, A[5], A[0], A[2], A[1]);
-    p84 = *(int*)(s1 + 0x84);
-    func_00000000(p84 + 0x10, p);
-    if (*(int*)(p + 0x14) != 0) *(int*)(p + 0x4) = 1;
-    *(int*)(p + 0x14) = p84;
-    *(char**)(A[5] + 0x8DC) = A[0];
-    *(char**)(A[6] + 0x8DC) = A[0];
+    char *t, *o1, *r[2];
+    int idx1, idx2;
+    char *b3, *b4, *f;
+    int unused[4];  /* frame words between f (sp+76) and the p84 home (sp+56) */
+    char *p84;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 0);
+    o1 = t;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 0);
+    func_00000000(&D_00000000, o1);
+    func_00000000(&bu_411c_d00_b, t);
+    idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);
+    idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;
+    r[0] = func_00000000_3d3cm(s1, 0, idx1, bu_411c_t90[idx1], o1, *(int*)(s1 + 0x80),
+                             *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x58005, 0x1B);
+    r[1] = func_00000000_3d3cm(s1, 2, idx2, bu_411c_t90[idx2], t, *(int*)(s1 + 0x80),
+                             *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x48024, 0x1B);
+    { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;
+    b3 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), a, o1); }
+    b4 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r[0], o1);
+    f = (char*)func_00000000(s1, bu_411c_d7294 + a1 * 0x1C, b3);
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 1);
+    t = (char*)func_00000000(0, t, r[0], f, b3, b4);
+    p84 = *(char**)(s1 + 0x84);
+    func_00000000(p84 + 0x10, t);
+    if (*(int*)(t + 0x14) != 0) *(int*)(t + 0x4) = 1;
+    *(char**)(t + 0x14) = p84;
+    *(char**)(r[0] + 0x8DC) = f;
+    *(char**)(r[1] + 0x8DC) = f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000411C);
-#endif
 
 /* func_000043D4 - verified structural decode (0x258, 150 insns,
  * multi-stage builder chain w/ randomized params). MEMBER of the

@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000411C",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T19:38:08.276798+00:00",
+  "end_time": "2026-10-21T19:38:08.276823+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T19:38:08.276818+00:00",
+      "assistant_text": "Randomised builder chain with a tail object: same recipe as func_000043D4 (pinned per-site data aliases, r[2] spawn array, block-temp cross link) plus four unused frame words between f and the p84 home to reach the 0x70 frame.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 174,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nextern char D_00000000;\nextern char bu_411c_d7294[], bu_411c_d00_b;\nextern int bu_411c_t90[];\nextern f32 bu_411c_k544, bu_411c_k548;\nextern f32 func_00000000_411c_f(void);\nextern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);\nvoid func_0000411C(char *s1, int a1) {\n    char *t, *o1, *r[2];\n    int idx1, idx2;\n    char *b3, *b4, *f;\n    int unused[4];  /* frame words between f (sp+76) and the p84 home (sp+56) */\n    char *p84;\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 0);\n    o1 = t;\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 0);\n    func_00000000(&D_00000000, o1);\n    func_00000000(&bu_411c_d00_b, t);\n    idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);\n    idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;\n    r[0] = func_00000000_3d3cm(s1, 0, idx1, bu_411c_t90[idx1], o1, *(int*)(s1 + 0x80),\n                             *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x58005, 0x1B);\n    r[1] = func_00000000_3d3cm(s1, 2, idx2, bu_411c_t90[idx2], t, *(int*)(s1 + 0x80),\n                             *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x48024, 0x1B);\n    { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;\n    b3 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), a, o1); }\n    b4 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r[0], o1);\n    f = (char*)func_00000000(s1, bu_411c_d7294 + a1 * 0x1C, b3);\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 1);\n    t = (char*)func_00000000(0, t, r[0], f, b3, b4);\n    p84 = *(char**)(s1 + 0x84);\n    func_00000000(p84 + 0x10, t);\n    if (*(int*)(t + 0x14) != 0) *(int*)(t + 0x4) = 1;\n    *(char**)(t + 0x14) = p84;\n    *(char**)(r[0] + 0x8DC) = f;\n    *(char**)(r[1] + 0x8DC) = f;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000411C.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}
