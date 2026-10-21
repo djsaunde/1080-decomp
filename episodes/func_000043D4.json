@@ -1,0 +1,33 @@
+{
+  "function_name": "func_000043D4",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T19:33:21.565504+00:00",
+  "end_time": "2026-10-21T19:33:21.565530+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T19:33:21.565525+00:00",
+      "assistant_text": "Randomised builder chain: reloc identities, per-site data aliases pinned to the real RoData scale and descriptor-table offsets plus a second zero alias for the list-add base (nothing held in s-regs), spawn results as an r[2] array, block temps for the cross link with the first link call using the same temp, and the final stores ordered r[0] then r[1].",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 150,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nextern char D_00000000;\nextern char bu_43d4_d7294[], bu_43d4_d00_b;\nextern int bu_43d4_t90[];\nextern f32 bu_43d4_k54c, bu_43d4_k550;\nextern f32 func_00000000_43d4_f(void);\nextern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);\nvoid func_000043D4(char *s0, int a1) {\n    char *t, *o1, *r[2];\n    int idx1, idx2;\n    char *f1, *row, *b3, *b4;\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 0);\n    o1 = t;\n    t = (char*)func_00000000(0x80);\n    if (t != 0) func_00000000(t, 0);\n    func_00000000(&D_00000000, o1);\n    func_00000000(&bu_43d4_d00_b, t);\n    idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);\n    idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;\n    r[0] = func_00000000_3d3cm(s0, 0, idx1, bu_43d4_t90[idx1], o1, *(int*)(s0 + 0x80),\n                             *(float*)(*(char**)(s0 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8004, 0x15);\n    r[1] = func_00000000_3d3cm(s0, 1, idx2, bu_43d4_t90[idx2], t, *(int*)(s0 + 0x80),\n                             *(float*)(*(char**)(s0 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8024, 0x15);\n    { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;\n    b3 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), a, o1); }\n    b4 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r[1], t);\n    *(float*)(b3 + 0x14C) = 55.0f;\n    *(float*)(b4 + 0x14C) = 55.0f;\n    row = bu_43d4_d7294 + a1 * 0x1C;\n    f1 = (char*)func_00000000(s0, row, b3);\n    b4 = (char*)func_00000000(s0, row + 0x1C, b4);\n    *(char**)(r[0] + 0x8DC) = f1;\n    *(char**)(r[1] + 0x8DC) = b4;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_000043D4.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}

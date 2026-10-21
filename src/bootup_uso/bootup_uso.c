@@ -2714,8 +2714,8 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000411C);
  * trunc, one a float param); func_00000080+0x10 = a descriptor
  * table indexed by idx*4; tags 0x8004 / 0x15 + flag bits drive the
  * builder. Randomized variant of the family.
- * Caps <80: ~10 reloc (incl. RNG) + FP mul.s/trunc.w.s + idx*4
- * table index + cross-symbol refs + FP stack-arg.
+ * (Historical notes below; see the EXACT comment for the final shape.)
+ *
  *
  * 2026-06-02 FULL CHAIN DECODED 27.6->55.5% (+27.9pp): two rng() calls give
  * idx1=(int)(r*F3F8->0x154) and idx2=(int)(rr*F3F8->0x158 + idx1 + 1.0f) % 3;
@@ -2724,51 +2724,47 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000411C);
  * 0x8004/0x8024, 0x15); r1<->r2 0x908 cross-link; b3/b4=builder(s0,2,s0->0x80,
  * rN,oN); bN->0x14C=55.0f; rowF=&D+a1*0x1C; f1/f2=builder(s0,rowF[+0x1C],bN);
  * rN->0x8DC=fN. All field stores byte-match; residual ~45% = regalloc. */
-#ifdef NON_MATCHING
-/* typed-float proto (0x0-alias): 10-arg builder, args 7,8 single floats. */
-extern char *func_43d4_r(char *, int, int, int, char *, int, float, float, int, int);
+/* EXACT (agent-c run 115). Same reloc-identified chain as func_00003D3C /
+ * func_00003F00 (alloc, ctor, list add x2, RNG func_075EE4 x2, spawn
+ * func_00003638 x2, link func_000031C0 x2, attach func_000034E8 x2). The
+ * RoData scales (pool +0x54C / +0x550) and the descriptor table (0x90) are
+ * per-site data aliases pinned to their real offsets, and the second list
+ * add gets its own zero alias of import_000200FC, so nothing is held in an
+ * s-reg. The two spawn results are an ARRAY r[2] (frame 80/84); the cross
+ * link and the first link call go through block temps a/b (a = a3). */
+extern char bu_43d4_d7294[], bu_43d4_d00_b;
+extern int bu_43d4_t90[];
+extern f32 bu_43d4_k54c, bu_43d4_k550;
+extern f32 func_00000000_43d4_f(void);
+extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void func_000043D4(char *s0, int a1) {
-    char *o1 = (char*)func_00000000(0x80);
-    char *o2, *cfg, *Dg = &D_00000000;
-    char *r1, *r2, *b3, *b4, *f1, *row1, *row2;
-    float r, rr;
+    char *t, *o1, *r[2];
     int idx1, idx2;
-    if (o1 == 0) return;
-    func_00000000(o1, 0);
-    o2 = (char*)func_00000000(0x80);
-    if (o2 == 0) return;
-    func_00000000(o2, 0);
-    func_00000000(Dg, o1);
-    func_00000000(Dg, o2);
-    r = (float)func_00000000();
-    idx1 = (int)(r * D_bu_ro_pool[0x54C / 4]);
-    rr = (float)func_00000000();
-    idx2 = (int)(rr * D_bu_ro_pool[0x550 / 4] + (float)idx1 + 1.0f) % 3;
-    cfg = *(char**)(s0 + 0x98);
-    row1 = *(char**)((char*)&func_00000080 + idx1 * 4 + 0x90);
-    r1 = func_43d4_r(s0, 0, idx1, (int)row1, o1, *(int*)(s0 + 0x80),
-                     *(float*)(cfg + 0xC4) - 500.0f, *(float*)(cfg + 0xCC), 0x8004, 0x15);
-    row2 = *(char**)((char*)&func_00000080 + idx2 * 4 + 0x90);
-    r2 = func_43d4_r(s0, 1, idx2, (int)row2, o2, *(int*)(s0 + 0x80),
-                     *(float*)(cfg + 0xC4) + 500.0f, *(float*)(cfg + 0xCC), 0x8024, 0x15);
-    *(char**)(r1 + 0x908) = r2;
-    *(char**)(r2 + 0x908) = r1;
-    b3 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r1, o1);
-    b4 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r2, o2);
+    char *f1, *row, *b3, *b4;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 0);
+    o1 = t;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 0);
+    func_00000000(&D_00000000, o1);
+    func_00000000(&bu_43d4_d00_b, t);
+    idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);
+    idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;
+    r[0] = func_00000000_3d3cm(s0, 0, idx1, bu_43d4_t90[idx1], o1, *(int*)(s0 + 0x80),
+                             *(float*)(*(char**)(s0 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8004, 0x15);
+    r[1] = func_00000000_3d3cm(s0, 1, idx2, bu_43d4_t90[idx2], t, *(int*)(s0 + 0x80),
+                             *(float*)(*(char**)(s0 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8024, 0x15);
+    { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;
+    b3 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), a, o1); }
+    b4 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r[1], t);
     *(float*)(b3 + 0x14C) = 55.0f;
-    if (1) { }
     *(float*)(b4 + 0x14C) = 55.0f;
-    row1 = (char*)&D_00000000 + a1 * 0x1C;
-    f1 = (char*)func_00000000(s0, row1, b3);
-    *(char**)(r1 + 0x8DC) = f1;
-    {
-        char *f2 = (char*)func_00000000(s0, row1 + 0x1C, b4);
-        *(char**)(r2 + 0x8DC) = f2;
-    }
+    row = bu_43d4_d7294 + a1 * 0x1C;
+    f1 = (char*)func_00000000(s0, row, b3);
+    b4 = (char*)func_00000000(s0, row + 0x1C, b4);
+    *(char**)(r[0] + 0x8DC) = f1;
+    *(char**)(r[1] + 0x8DC) = b4;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000043D4);
-#endif
 
 void func_0000462C(char *a0) {
     int scratch;
