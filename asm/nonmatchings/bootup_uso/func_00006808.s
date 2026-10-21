@@ -523,9 +523,9 @@ glabel func_00006808
     /* DD7A30 00006FC4 10000004 */  b          .L00006FD8
     /* DD7A34 00006FC8 E60A00CC */   swc1      $f10, 0xCC($s0)
   .L00006FCC:
-    /* DD7A38 00006FCC 3C040000 */  lui        $a0, %hi(.L00007F5C)
+    /* DD7A38 00006FCC 3C040000 */  lui        $a0, %hi(D_00007F5C)
     /* DD7A3C 00006FD0 0C000000 */  jal        func_00000000
-    /* DD7A40 00006FD4 24847F5C */   addiu     $a0, $a0, %lo(.L00007F5C)
+    /* DD7A40 00006FD4 24847F5C */   addiu     $a0, $a0, %lo(D_00007F5C)
   .L00006FD8:
     /* DD7A44 00006FD8 3C190000 */  lui        $t9, %hi(D_00007F64)
     /* DD7A48 00006FDC 8F257F64 */  lw         $a1, %lo(D_00007F64)($t9)

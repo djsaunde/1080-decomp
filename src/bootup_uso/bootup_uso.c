@@ -5377,18 +5377,30 @@ void func_00007E70(char *a0) {
  * Caps <80: FP-heavy mul.s/c.lt.s/add.s/sub.s/div.s + bc1fl
  * branch-likely chain + &D + func_0000027C+0x18 cross-symbol block
  * copy. INCLUDE_ASM remains build path. */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc: the
+ * mode word is import_000200FC + 0x2C (= D_00000000), the globals block is
+ * import_0005C108 (zero alias bu_7ec8_g: +0x130 scale, +0x254 game object,
+ * +0x18 a 24-byte record), the backup record is import_0001FFC8 (bu_7ec8_h);
+ * (the asm spells the mode word func_00000008 + 0x2C = 0x34, alias
+ * bu_7ec8_m, and the record func_0000027C + 0x18 = 0x294, alias
+ * bu_7ec8_src: the baked words carry those offsets); callees func_0586D8 (char *, char *, float: frac goes out by mfc1 a2),
+ * func_063D70 (four ints then float/int/float on the stack) and func_051D88.
+ * The record copies are 24-byte struct assignments; the scale is re-read
+ * inline (a scale local colours f2/f0 the wrong way round) and written
+ * scale * field for the target mul.s operand order. */
+typedef struct { int a, b, c, d, e, f; } S24_7EC8;
+extern char bu_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];
+extern int bu_7ec8_m;
+extern void func_00000000_7ec8_c(char *, char *, float);
+extern int func_00000000_7ec8_t(int, int, int, int, float, int, float);
 void func_00007EC8(char *s0) {
     float scale, limit, p, end, frac;
     int hit;
-    char *src;
-    if (*(int *)((char *)&func_00000008 + 0x2C) != 8) {
-        scale = *(float *)((char *)&D_00000000 + 0x130);
+    if (bu_7ec8_m != 8) {
         frac = 0.0f;
-        src = (char *)&func_0000027C + 0x18;
-        limit = *(float *)(*(char **)(*(char **)((char *)&D_00000000 + 0x254) + 0x70) + 0xA8) * scale;
+        limit = *(float *)(bu_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(bu_7ec8_g + 0x254) + 0x70) + 0xA8);
         hit = 0;
-        p = *(float *)(s0 + 0x38) * scale;
+        p = *(float *)(bu_7ec8_g + 0x130) * *(float *)(s0 + 0x38);
         end = *(float *)(s0 + 0x54) + p;
         if (p < limit && limit < end) {
             hit = 1;
@@ -5398,33 +5410,20 @@ void func_00007EC8(char *s0) {
             hit = 1;
         }
         if (hit != *(int *)(s0 + 0x8C)) {
-            *(int *)((char *)&D_00000000 + 0x0)  = *(int *)(src + 0x0);
-            *(int *)((char *)&D_00000000 + 0x4)  = *(int *)(src + 0x4);
-            *(int *)((char *)&D_00000000 + 0x8)  = *(int *)(src + 0x8);
-            *(int *)((char *)&D_00000000 + 0xC)  = *(int *)(src + 0xC);
-            *(int *)((char *)&D_00000000 + 0x10) = *(int *)(src + 0x10);
-            *(int *)((char *)&D_00000000 + 0x14) = *(int *)(src + 0x14);
+            *(S24_7EC8 *)bu_7ec8_h = *(S24_7EC8 *)(bu_7ec8_src);
             *(int *)(s0 + 0x8C) = hit;
         }
         if (hit != 0) {
-            *(int *)(src + 0x0)  = *(int *)((char *)&D_00000000 + 0x0);
-            *(int *)(src + 0x4)  = *(int *)((char *)&D_00000000 + 0x4);
-            *(int *)(src + 0x8)  = *(int *)((char *)&D_00000000 + 0x8);
-            *(int *)(src + 0xC)  = *(int *)((char *)&D_00000000 + 0xC);
-            *(int *)(src + 0x10) = *(int *)((char *)&D_00000000 + 0x10);
-            *(int *)(src + 0x14) = *(int *)((char *)&D_00000000 + 0x14);
-            func_00000000(p, end, src, s0 + 0x74, frac);
+            *(S24_7EC8 *)(bu_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;
+            func_00000000_7ec8_c(bu_7ec8_src, s0 + 0x74, frac);
         }
     } else {
-        if (func_00000000(*(int *)((char *)&D_00000000 + 0x254), 3, *(int *)(s0 + 0x30),
+        if (func_00000000_7ec8_t(*(int *)(bu_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
                           *(int *)(s0 + 0x34), *(float *)(s0 + 0x38), 0, 0.0f) != 0) {
             func_00000000(s0);
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007EC8);
-#endif
 
 void func_00008078(char *a0) {
     func_00000000(a0 + 0x3C, 0);

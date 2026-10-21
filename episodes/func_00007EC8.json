@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00007EC8",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T19:44:43.009977+00:00",
+  "end_time": "2026-10-21T19:44:43.009993+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T19:44:43.009989+00:00",
+      "assistant_text": "Range-trigger record swap: identities and baked offsets from the reloc table (mode word 0x34, globals import, record at 0x294, backup import), 24-byte struct copies, prototyped callees (float in a2 by mfc1; float stack args), scale re-read inline as scale*field. Three asm data refs that pointed at labels inside this function were repointed to pinned D_ symbols so the link survives.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 108,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\ntypedef struct { int a, b, c, d, e, f; } S24_7EC8;\nextern char bu_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];\nextern int bu_7ec8_m;\nextern void func_00000000_7ec8_c(char *, char *, float);\nextern int func_00000000_7ec8_t(int, int, int, int, float, int, float);\nvoid func_00007EC8(char *s0) {\n    float scale, limit, p, end, frac;\n    int hit;\n    if (bu_7ec8_m != 8) {\n        frac = 0.0f;\n        limit = *(float *)(bu_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(bu_7ec8_g + 0x254) + 0x70) + 0xA8);\n        hit = 0;\n        p = *(float *)(bu_7ec8_g + 0x130) * *(float *)(s0 + 0x38);\n        end = *(float *)(s0 + 0x54) + p;\n        if (p < limit && limit < end) {\n            hit = 1;\n            frac = (limit - p) / *(float *)(s0 + 0x54);\n        } else if (end < limit && limit < *(float *)(s0 + 0x6C) + p) {\n            frac = 1.0f;\n            hit = 1;\n        }\n        if (hit != *(int *)(s0 + 0x8C)) {\n            *(S24_7EC8 *)bu_7ec8_h = *(S24_7EC8 *)(bu_7ec8_src);\n            *(int *)(s0 + 0x8C) = hit;\n        }\n        if (hit != 0) {\n            *(S24_7EC8 *)(bu_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;\n            func_00000000_7ec8_c(bu_7ec8_src, s0 + 0x74, frac);\n        }\n    } else {\n        if (func_00000000_7ec8_t(*(int *)(bu_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),\n                          *(int *)(s0 + 0x34), *(float *)(s0 + 0x38), 0, 0.0f) != 0) {\n            func_00000000(s0);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00007EC8.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}
