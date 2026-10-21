@@ -22641,6 +22641,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00050444);
  * Both are coloring/frame-layout outcomes. No C-level lever found that
  * recovers the 16-byte frame without regressing the metric. Leaving
  * NON_MATCHING at the improved 66.52%. */
+/* 2026-10-21 (agent-g run 113): C++ (Vec3 class, see game_libs_ncc_62A2C.cpp).
+ * NCC draft src/game_libs/ncc_drafts/gl_func_0005062C.cpp: 690/689 insns,
+ * 93.3, frame 592 exact (not built); residual listed in its header. */
 /* PASS-5 2026-08-22 (agent-g): 66.52 -> 67.24. The three leading callback
  * output buffers (sp1B4/sp1A8/sp19C) and the top-of-frame div-input buffer
  * (sp244) are REAL 12-byte Vec3s, not independent f32 scalars — converted to
@@ -27573,6 +27576,11 @@ void gl_func_00057700(int *a0) {
     if (q != 0) gl_func_00000000(a0);
 }
 
+/* gl_func_000578B4 2026-10-21 (agent-g run 113): this function is C++ and
+ * the body below is an m2c transcription. The real source is the libultra
+ * gbi texture-load macros + a C++ inline Gfx *next() member; NCC draft at
+ * src/game_libs/ncc_drafts/gl_func_000578B4.cpp (2418/2419 insns, 95.0, not
+ * built) -- continue from there, not from this body. */
 /* gl_func_000578B4 LADDER PASS 1 (2026-06-11, size-weighted strategy):
  * 9676B at 75.0 -- the project's #2 largest near-miss; worth +1.26pp
  * alone. GAP MAP: build +152B (+38 insns) over target; 279 mnemonic
