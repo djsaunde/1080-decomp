@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00014598",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T20:19:37.495284+00:00",
+  "end_time": "2026-10-21T20:19:37.495301+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T20:19:37.495297+00:00",
+      "assistant_text": "Name-string transform: for-loop with strlen re-evaluated in the condition, bytes addressed as (a0 + i)[off] and read inline at each use so the CSE'd byte lands in v0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 45,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nvoid func_00014598(char *a0) {\n    unsigned int i;\n    unsigned char c;\n    for (i = 0; i < (unsigned int)func_00000000(a0 + 0xB4); i++) {\n        if ((u8)(a0 + i)[0xB4] != 0x61 && (u8)(a0 + i)[0xB4] != 0x62 && (u8)(a0 + i)[0xB4] != 0x20) {\n            (a0 + i)[0xB4] = 0x69 - (u8)(a0 + i)[0xB4];\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_tail4.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00014598.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}

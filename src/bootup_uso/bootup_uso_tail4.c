@@ -983,23 +983,19 @@ void func_00014004(char *a0, int a1, int a2) {
  * IDO global-allocator order-sensitive). Full body INCLUDE_ASM-
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 115). strlen (func_07C610, jal 0) re-evaluated in the
+ * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
+ * with the field offset in the lbu/sb) and read inline at every use (a named
+ * char lands in v1, the inline reads CSE into v0). */
 void func_00014010(char *a0) {
-    char *s = a0 + 0xE4;
-    unsigned int n = (unsigned int)func_00000000(s);
-    unsigned int i = 0;
-    while (i < n) {
-        unsigned char c = s[i];
-        i++;
-        if (c != 0x61 && c != 0x62 && c != 0x20) {
-            s[i - 1] = (char)(0x69 - c);
+    unsigned int i;
+    unsigned char c;
+    for (i = 0; i < (unsigned int)func_00000000(a0 + 0xE4); i++) {
+        if ((u8)(a0 + i)[0xE4] != 0x61 && (u8)(a0 + i)[0xE4] != 0x62 && (u8)(a0 + i)[0xE4] != 0x20) {
+            (a0 + i)[0xE4] = 0x69 - (u8)(a0 + i)[0xE4];
         }
-        n = (unsigned int)func_00000000(s);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00014010);
-#endif
 
 /* func_000140C4 - 3-element draw/place dispatcher. EXACT TWIN of
  * func_00014228 (byte-for-byte identical TARGET except the function
@@ -1315,20 +1311,16 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000144F4);
  * sensitive) - same as func_00014010. Full body INCLUDE_ASM-
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 115). strlen (func_07C610, jal 0) re-evaluated in the
+ * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
+ * with the field offset in the lbu/sb) and read inline at every use (a named
+ * char lands in v1, the inline reads CSE into v0). */
 void func_00014598(char *a0) {
-    char *s = a0 + 0xB4;
-    unsigned int n = (unsigned int)func_00000000(s);
-    unsigned int i = 0;
-    while (i < n) {
-        unsigned char c = s[i];
-        i++;
-        if (c != 0x61 && c != 0x62 && c != 0x20) {
-            s[i - 1] = (char)(0x69 - c);
+    unsigned int i;
+    unsigned char c;
+    for (i = 0; i < (unsigned int)func_00000000(a0 + 0xB4); i++) {
+        if ((u8)(a0 + i)[0xB4] != 0x61 && (u8)(a0 + i)[0xB4] != 0x62 && (u8)(a0 + i)[0xB4] != 0x20) {
+            (a0 + i)[0xB4] = 0x69 - (u8)(a0 + i)[0xB4];
         }
-        n = (unsigned int)func_00000000(s);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00014598);
-#endif
