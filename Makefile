@@ -269,6 +269,11 @@ build/non_matching/src/bootup_uso/bootup_uso_o0_12BF8.c.o: NON_MATCHING_TRUNCATE
 build/src/bootup_uso/bootup_uso_o0_12DA4.c.o: TRUNCATE_TEXT := 0x1F0
 # 0x184C = exact len of the tail4 region (0x12E00..0x1464C); was 0x1850 (+4).
 build/src/bootup_uso/bootup_uso_tail4.c.o: TRUNCATE_TEXT := 0x184C
+# func_00013B20 (agent-c run 115): exact C body ends at 0x13C64; the target
+# carries three all-zero alignment words before the next function. FORCE for
+# the natural-epilogue skip path; mirrored onto the NM object for the report.
+build/src/bootup_uso/bootup_uso_tail4.c.o: SUFFIX_BYTES_FORCE := func_00013B20=0x00000000,0x00000000,0x00000000
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_00013B20=0x00000000,0x00000000,0x00000000
 # game_libs split around the 56 KB RSP microcode blob at 0xEBF8..0x1CA10.
 # Reduce sh_addralign to 4 so the three objects link back-to-back without
 # 16-byte padding between them. Size targets match the natural compiled

@@ -819,40 +819,34 @@ void func_000139B0(char *s1, int a1, int a2) {
  * unrolled nested loop + beql branch-likely. Full body INCLUDE_ASM-
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00013B20)();
+/* EXACT (agent-c run 115). Palette remap: the game object is 0x240
+ * (func_0000023C + 0x4, alias bu_13b20_root), its vtable +0x60/+0x64 slot
+ * returns the u16 palette (this-adjusted cfront call, arg0 passed through).
+ * Both loops are plain rolled indexed loops (IDO unrolls them x4) with their
+ * own counters i / j; the root load is followed by two empty blocks (ring
+ * lever). Three all-zero alignment words follow (SUFFIX_BYTES_FORCE). */
+extern char *bu_13b20_root;
 void func_00013B20(char *arg0) {
-    s32 sp24;
-    s32 var_i;
-    char *temp_v0;
-    char *temp_v1;
-    char *temp_v0_2;
-    s32 *palette;
+    char *o;
+    char *vt;
+    u16 *pal;
+    int i, j;
 
-    temp_v1 = (*(char**)((char*)&D_00000000 + 4));
-    temp_v0 = FW(temp_v1, 0x28);
-    palette = (s32 *)((GP_00013B20)FW(temp_v0, 0x64))((*(s16*)((char*)temp_v0 + 0x60)) + temp_v1, arg0);
-    (void)sp24; (void)temp_v0_2;
-    if (FW(arg0, 0x68) != 0) {
-        var_i = 0;
-        do {
-            *(u16*)(FW(arg0, 0x4C) + (var_i >> 1)) = *(u16*)((char*)palette + (*(s32*)((char*)FW(arg0, 0x54) + var_i) * 2));
-            var_i += 4;
-        } while (var_i != 0x1000);
-        return;
+    o = bu_13b20_root;
+    if (1) { }
+    if (1) { }
+    vt = *(char **)(o + 0x28);
+    pal = (*(u16 *(**)(char *, char *))(vt + 0x64))(o + *(s16 *)(vt + 0x60), arg0);
+    if (*(int *)(arg0 + 0x68) != 0) {
+        for (i = 0; i != 0x400; i++) {
+            (*(u16 **)(arg0 + 0x4C))[i] = pal[(*(s32 **)(arg0 + 0x54))[i]];
+        }
+    } else {
+        for (j = 0; j != 0x400; j++) {
+            (*(u16 **)(arg0 + 0x4C))[j] = 1;
+        }
     }
-    var_i = 0;
-    do {
-        *(u16*)(FW(arg0, 0x4C) + var_i) = 1;
-        var_i += 2;
-    } while (var_i != 0x800);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00013B20);
-#endif
 
 void func_00013C70(int *dst) {
     int buf[2];
