@@ -1961,7 +1961,18 @@ void game_uso_func_00002FF8(void) {
     game_uso_func_00000000();
 }
 
-/* game_uso_func_00003018: 291-insn (0x48C) alloc-cascade constructor, frame
+/* game_uso_func_00003018: EXACT 2026-10-21 (agent-g run 116), from 93.1 NM.
+ * Three changes to the run-106 body: (1) each stage stores the template word
+ * into its per-stage struct and copies the STRUCT (`T.w = G; prm = T;`) --
+ * the `.w` copy put the load in v0 and the shared store first; (2) s0 is the
+ * parameter (a `char *s0 = a0` copy added the top frame word) and the g8/g7
+ * pads are gone (frame 0xE8); (3) the three stage-1 vectors are separate
+ * basic blocks (`if (1) {}` between them) and the zero vector is spelled with
+ * int zeros, so 0.0 is not one CSE candidate with the stage `f10 = 0.0f`
+ * stores: every constant then lives in $f0 in turn, as in the target.
+ * docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018.
+ *
+ * game_uso_func_00003018: 291-insn (0x48C) alloc-cascade constructor, frame
  * -0xE8. RECONSTRUCTED from expected/game_uso.c.o to the REAL callees + globals:
  *   alloc  = game_uso_func_055750(size)
  *   init   = game_uso_func_04A188(obj, s0, *D_807FE9xx[+TVAL], 1)
@@ -2004,20 +2015,18 @@ void game_uso_func_00002FF8(void) {
  * int pads for the home-slot map). Same residual as 18FC (constant-store
  * order; plus the pads leave the frame at 0xF0 vs 0xE8 -- the pad set that
  * gives 0xE8 scores 0.1 lower). */
-#ifdef NON_MATCHING
+typedef struct { int w; } T4_3018;
 extern int game_uso_func_055750();
 extern int game_uso_func_04A188();
 extern char game_uso_D_807FE608, game_uso_D_807FE620, game_uso_D_807FE964,
             game_uso_D_807FE96C, game_uso_D_807FE970, game_uso_D_807FE974,
             game_uso_D_807FE978, game_uso_D_807FE97C, game_uso_D_807FE980,
             game_uso_D_807FE984, game_uso_D_807FE988, game_uso_D_807FE98C;
-void *game_uso_func_00003018(void *a0) {
-    char *s0 = (char *)a0;
+void *game_uso_func_00003018(char *s0) {
     Vec3 hi;
     Vec3 lo;
-    struct { T4_18FC idx; Vec3 v; } big;
-    int g8;
-    T4_18FC t2, t3, t4, t5, t6, t7, t8, t9;
+    struct { T4_3018 idx; Vec3 v; } big;
+    T4_3018 t2, t3, t4, t5, t6, t7, t8, t9;
     int g0[3];
     char *o;
     int g1[5];
@@ -2029,29 +2038,25 @@ void *game_uso_func_00003018(void *a0) {
     int g4;
     Vec3 pc;
     int g5;
-    T4_18FC prm;
+    T4_3018 prm;
     int g6;
     Vec3 tmp;
     char *b;
-    int g7;
 
-    if (1) { T4_18FC *q = &t2; q = &t3; q = &t4; q = &t5; q = &t6; q = &t7; q = &t8; q = &t9; }
+    if (1) { T4_3018 *q = &t2; q = &t3; q = &t4; q = &t5; q = &t6; q = &t7; q = &t8; q = &t9; }
     if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xE8)) != 0) {
         b = s0;
         if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
             *(char **)(b + 0) = &game_uso_D_807FE964 + 0x374;
             *(int *)(b + 4) = 0;
         }
-        hi.x = 0.0f;
-        hi.y = 0.0f;
-        hi.z = 0.0f;
-        lo.x = -1000.0f;
-        lo.y = -1000.0f;
-        lo.z = -1000.0f;
-        big.idx.w = ((T4_18FC *)(&game_uso_D_807FE96C + 0x37C))->w;
-        big.v.x = 1000.0f;
-        big.v.y = 1000.0f;
-        big.v.z = 1000.0f;
+        hi.x = 0; hi.y = 0; hi.z = 0;
+        if (1) {}
+        lo.x = -1000.0f; lo.y = -1000.0f; lo.z = -1000.0f;
+        if (1) {}
+        big.idx.w = ((T4_3018 *)(&game_uso_D_807FE96C + 0x37C))->w;
+        if (1) {}
+        big.v.x = 1000.0f; big.v.y = 1000.0f; big.v.z = 1000.0f;
         pa = hi;
         pb = lo;
         pc = big.v;
@@ -2067,9 +2072,7 @@ void *game_uso_func_00003018(void *a0) {
             *(f32 *)(o1 + 0x18) = tmp.z;
         }
 #define STAGE(OFF, T, SYM, TOFF) \
-        T.w = ((T4_18FC *)(&(SYM) + (TOFF)))->w; \
-        o = s0 + (OFF); \
-        prm.w = T.w; \
+T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
         if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
             game_uso_func_04A188(o, s0, prm, 1); \
             *(char **)(o + 0xC) = &game_uso_D_807FE608 + 24; \
@@ -2088,9 +2091,7 @@ void *game_uso_func_00003018(void *a0) {
     }
     return s0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00003018);
-#endif
+
 
 /* game_uso_func_000034A4: 45-insn alloc-or-passthrough constructor, sibling of
  * game_uso_func_00000858 (same alloc-if-null + init + set-vtable + conditional
