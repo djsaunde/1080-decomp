@@ -7909,33 +7909,10 @@ int game_libs_func_0003D480(int a0) {
  * successor load on (t8 vs t9); decl order, pointer types, the o->0x10
  * spelling, barrier order, void alias and every `if (1) {}` position are
  * inert. */
-#ifdef NON_MATCHING
-extern int D_00000000;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3D48C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The {cur, nxt} pair is a C++ list iterator; see the .cpp header. */
 void gl_func_0003D48C(char *o) {
-    char *next;
-    char *node;
-    int key;
-    char **bar;
-
-    if (1) {
-        bar = &node;
-        bar = &next;
-    }
-    gl_func_00000000(&D_00000000, o + 0x2C, 1);
-    next = *(char **)(o + 0x10);
-    node = next;
-    key = node ? (next = *(char **)(node + 4), *(int *)node) : 0;
-    while (key != 0) {
-        gl_func_00000000(*(int *)node);
-        node = next;
-        key = node ? (next = *(char **)(next + 4), *(int *)node) : 0;
-    }
-    gl_func_00000000(&D_00000000);
-    gl_func_00000000(o);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003D48C);
-#endif
 
 int game_libs_func_0003D538(int a0, int a1, int a2) {
     return 0;

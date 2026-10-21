@@ -1347,6 +1347,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_62A2C_DONOR := build/src/game_libs/game_libs_ncc_62A2C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_62A2C_DONOR)
+# 3D48C = child-list walk through a stack {cur, nxt} iterator (next() advances via nxt->next); NCC donor.
+GAMELIBS_3D48C_DONOR := build/src/game_libs/game_libs_ncc_3D48C.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003D48C=$(GAMELIBS_3D48C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D48C_DONOR)
 # 372D4 = sub-node position copy + rot reset + virtual slot 3 (smart-pointer handle local); NCC donor.
 GAMELIBS_372D4_DONOR := build/src/game_libs/game_libs_ncc_372D4.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_000372D4=$(GAMELIBS_372D4_DONOR)

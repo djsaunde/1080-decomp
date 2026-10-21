@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0003D48C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T22:13:15.736893+00:00",
+  "end_time": "2026-10-21T22:13:15.736893+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T22:13:15.736893+00:00",
+      "assistant_text": "C++ donor: stack {cur, nxt} list iterator whose next() advances via its own nxt member.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 43,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0003D48C (0xAC / 43 words): notify,\n * then walk the owner's child list with a stack iterator and hand every\n * object to the callee, then two closing calls.\n *\n * The `{cur, nxt}` pair at sp+24/28 is a list iterator object (memory\n * because its inline methods take `this`), and the owner pointer is kept in\n * its incoming home. The shape that settles the loop-bottom expansion\n * (pre-zeroed v0 result, the nxt load in a t-temp) is advancing through the\n * iterator's OWN nxt member: `(cur = nxt) ? (nxt = nxt->next, cur->obj) : 0`.\n * With `nxt = cur->next` the bottom copy colours the nxt load into v0 and\n * zeroes v0 in the else arm (11 words). cfe gets the bottom right but not\n * the ring position of the top expansion. Same iterator: 38964, 41EDC, 7328.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" int D_00000000;\nstruct Link3D4 { int obj; Link3D4 *next; };\nstruct Iter3D4 {\n    Link3D4 *cur, *nxt;\n    Iter3D4(Link3D4 *head) { nxt = head; }\n    int next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    int get() { return cur->obj; }\n};\nstruct Owner3D4 { char pad[0x10]; Link3D4 *head; char pad14[0x18]; int x2c; };\nextern \"C\" void gl_func_0003D48C(Owner3D4 *o) {\n    gl_func_00000000(&D_00000000, &o->x2c, 1);\n    Iter3D4 it(o->head);\n    while (it.next()) gl_func_00000000(it.get());\n    gl_func_00000000(&D_00000000);\n    gl_func_00000000(o);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3D48C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003D48C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
