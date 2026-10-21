@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000CFA0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T21:03:08.802214+00:00",
+  "end_time": "2026-10-21T21:03:08.802235+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T21:03:08.802231+00:00",
+      "assistant_text": "C++ donor: virtual hook calls (vptr +0x28 slot 2), V3 struct copies, edg compare operand order, ctx defined as call argument for a0 colouring, dead named-local stores for the frame.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 296,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000CFA0 (0x4A0 / 296 words) -- rider\n * ground-contact / lighting refresh: asks the context (func_cfa0) for the\n * surface under the rider, flags a change, re-tints from the surface colour\n * and fires the sub-object hooks.\n *\n * C++ (agent-c run 116). The cfe NM capped at 99.03 (54 words off: v-reg\n * swaps around the dispatches and the context temp). A direct NCC port of\n * the same logic was already closer (43); then:\n * - the sub-object hooks are real virtual calls (vptr at +0x28, slot 2:\n *   lh +0x18 / lw +0x1C), `o->f()` instead of a hand-written dispatch;\n * - the two 12-byte copies into st->0x8FC are V3 struct assignments;\n * - CTX is compared `st->0x8DC == CTX` (edg operand order);\n * - the context pointer is one named local whose first def is the call\n *   argument (`func_cfa0(ctx = CTX, ...)`), which colours the post-call\n *   reload a0 like the target;\n * - frame 0x88: every referenced named local takes an edg slot even when it\n *   is register-only; dst / o / vt are the original's (dead here) names and\n *   the dead `= 0` stores keep their three slots.\n * docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116. Spliced into bootup_uso.c.o\n * via REPLACE_FUNC_BODY; the bu_cfa0_* aliases are pinned in\n * undefined_syms_auto.txt (ctx 0x254 = func_0000023C+0x18, flag 0xE4,\n * k970 0x970, k978 0x978, the per-site blank args a..f and the two callees 0). */\nextern \"C\" {\nchar *bu_cfa0_probe(char *, int, int, int, float, float *, float);\nextern char bu_cfa0_a, bu_cfa0_b, bu_cfa0_c, bu_cfa0_d, bu_cfa0_e, bu_cfa0_f;\nextern char *bu_cfa0_ctx;\nextern int bu_cfa0_flag;\nextern float bu_cfa0_k970;\nextern double bu_cfa0_k978;\nint func_00000000(...);\nvoid bu_cfa0_v(...);\n}\n#define CTX bu_cfa0_ctx\nstruct VO { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void f(); };\nstruct V3 { float x, y, z; };\n#define DISPATCH_CFA0(off) { (*(VO **)(st + (off)))->f(); }\nextern \"C\" void func_0000CFA0(char *st) {\n    float out;\n    volatile int changed;\n    char *r;\n    char *ctx;\n    char *p;\n    float c[4];\n    char *dst;\n    int flg;\n    char *o;\n    char *vt;\n    char *t;\n    float dp[3];\n\n    dst = 0; o = 0; vt = 0;\n    if ((*(int *)(st + 0xA58) & 0x2000) && *(char **)(st + 0x8DC) == CTX) return;\n    r = bu_cfa0_probe(ctx = CTX, 2, *(int *)(st + 0xB4), *(int *)(st + 0xB8),\n                  *(float *)(st + 0xBC), &out, 0.0f);\n    *(char **)(st + 0xA40) = r;\n    if (r == 0) return;\n    ctx = CTX;\n    changed = (*(float *)(ctx + 0x98) < out) || (ctx != *(char **)(st + 0x8DC));\n    if ((*(int *)(st + 0xA58) & 0x10000) && *(short *)(st + 0x9A0) == 0x61 &&\n        *(short *)(st + 0x904) != 9 && *(int *)(st + 0x938) != 0) {\n        p = (char *)func_00000000(&bu_cfa0_a, 0xD);\n        *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;\n        bu_cfa0_v(0x10);\n        c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;\n        c[3] = bu_cfa0_k970;\n        bu_cfa0_v(&bu_cfa0_b, c);\n        bu_cfa0_v(0x10);\n        DISPATCH_CFA0(0x824);\n        p = (char *)func_00000000(&bu_cfa0_c, 6);\n        *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;\n    }\n    if (!changed || !(*(int *)(st + 0x8B8) & 4)) {\n        flg = *(int *)(st + 0x9A8);\n        *(int *)(st + 0xA44) = 1;\n        if ((flg & 2) && (*(int *)(st + 0xA58) & 0x1000) && *(int *)(st + 0xA4C)) {\n            bu_cfa0_v(*(int *)(st + 0x850), st + 0x9D8);\n            bu_cfa0_v(st);\n            bu_cfa0_v(0x11);\n            t = st + 0x8E0;\n            bu_cfa0_v(&bu_cfa0_d, t);\n            bu_cfa0_v(st);\n            bu_cfa0_v(st);\n            bu_cfa0_flag = 0;\n        } else {\n          if ((*(int *)(st + 0x8B8) & 0xA) && *(int *)(st + 0xA4C) && !(flg & 0x400)) {\n            bu_cfa0_v(*(int *)(st + 0x850), st + 0x9D8, dp);\n            if ((double)(dp[0] * *(float *)(st + 0x9D8) + dp[1] * *(float *)(st + 0x9DC) +\n                         dp[2] * *(float *)(st + 0x9E0)) < bu_cfa0_k978) {\n                float div255 = 255.0f;\n                unsigned char cr = *(unsigned char *)(st + 0xA30) / 2;\n                unsigned char cg = *(unsigned char *)(st + 0xA31) / 2;\n                unsigned char cb = *(unsigned char *)(st + 0xA32) / 2;\n                *(float *)(st + 0x9E8) = (float)(unsigned int)cr / div255;\n                *(float *)(st + 0x9EC) = (float)(unsigned int)cg / div255;\n                *(float *)(st + 0x9F0) = (float)(unsigned int)cb / div255;\n                *(float *)(st + 0x9F4) = 112.0f / div255;\n                bu_cfa0_v(&bu_cfa0_e, st + 0x9E8);\n                if (*(int *)(st + 0x8B8) & 2) {\n                    bu_cfa0_v(2);\n                    DISPATCH_CFA0(0x814);\n                    DISPATCH_CFA0(0x820);\n                }\n                if ((*(int *)(st + 0x8B8) & 8) && *(int *)(st + 0x938) == 0) {\n                    bu_cfa0_v(8);\n                    DISPATCH_CFA0(0x824);\n                }\n            }\n            bu_cfa0_flag = 0;\n          }\n          t = st + 0x8E0;\n        }\n        if (*(int *)(st + 0x8B8) & 1) {\n            bu_cfa0_v(0x11);\n        } else {\n            bu_cfa0_v(0x14);\n        }\n    } else {\n        *(int *)(st + 0xA44) = 0;\n        bu_cfa0_v(0x14);\n        t = st + 0x8E0;\n    }\n    bu_cfa0_v(&bu_cfa0_f, t);\n    bu_cfa0_v(st);\n    bu_cfa0_v(*(int *)(CTX + 0x108));\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_CFA0.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000CFA0.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "296/296 words byte-equal after link; ROM cmp clean; report 100."
+  }
+}
