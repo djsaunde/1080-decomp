@@ -2549,63 +2549,51 @@ void func_00003D3C(char *s1, int a1) {
  * global build params; tag 0x15. o1/o2 = 0x80-byte builder
  * objects (init types 1 and 2) cross-wired via the tagged builder;
  * a1 indexes the 0x1C-stride descriptor table per the family.
- * Caps <80: ~12 reloc + FP stack-arg (with a sub.s 500.0 bias) +
- * a1*0x1C index + list-link beql. INCLUDE_ASM remains build path. */
-#ifdef NON_MATCHING
-/* func_00003F00: dual-builder + cross-link + 4 sub-builders + a1*0x1C table
- * finalizer (func_00003734/38C0/39D8 family). FULL CHAIN DECODED 2026-06-02
- * (29.5->58.3%): r1=builder(...,cfg->0xC4-500, cfg->0xCC,...); r2=builder(1,
- * ...,+500,...); r1/r2->0xC = &D+0x74E4/0x74EC; r1/r2->0x908 cross-link;
- * b3/b4=builder(s1,2,s1->0x80,r,o); b3/b4->0x14C=55.0f; row=&D+a1*0x1C;
- * f1/f2=builder(s1,row[+0x1C],b); r1/r2->0x8DC=f1/f2; f2->0x1B8=f1. All field
- * stores byte-match; residual ~42% = saved-reg renumber + &D-base const-fold
- * (Dg not held in $s0) + spill-slot layout — regalloc, not structural.
- * typed-float proto (0x0-alias): 10-arg builders, args 7,8 single floats. */
-extern char *func_3f00_r(char *, int, int, int, char *, int, float, float, int, int);
+ */
+/* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc (same
+ * chain as func_00003D3C): alloc func_055750, ctor func_07BA00, list adds
+ * func_011CA4 x2 + func_0129A0 on import_000200FC, spawn func_00003638 x2,
+ * link func_000031C0 x2, attach func_000034E8 x2 on &D_007294 + a1 * 0x1C
+ * (zero alias), r->0xC = D_000074E4 / D_000074EC (baked). No early returns:
+ * the two new-expression results share temp t and are copied into an object
+ * ARRAY o[2] (slots 104/108, re-read from memory for the link calls); b3/f1
+ * are their own variables (sharing t's register drops the param to s2); the
+ * if (1) { } after the copies lowers t below r1 (s3 vs s2). */
+extern char D_000074E4[], D_000074EC[], bu_3f00_d7294[];
+extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void func_00003F00(char *s1, int a1) {
-    char *o1 = (char*)func_00000000(0x80);
-    char *o2;
-    char *cfg;
-    char *Dg = &D_00000000;  /* D_g (placeholder) */
-    char *r1, *r2, *b3, *b4, *f1;
-    char *row;
-    if (o1 == 0) return;
-    func_00000000(o1, 1);
-    o2 = (char*)func_00000000(0x80);
-    if (o2 == 0) return;
-    func_00000000(o2, 2);
-    func_00000000(Dg, o1);
-    func_00000000(Dg, o2, o1);
-    func_00000000(Dg, o1, o2);
-    cfg = *(char**)(s1 + 0x98);
-    r1 = func_3f00_r(s1, 0, *(int*)(Dg + 0x4C), *(int*)(Dg + 0x54),
-                     o1, *(int*)(s1 + 0x80),
-                     *(float*)(cfg + 0xC4) - 500.0f, *(float*)(cfg + 0xCC),
-                     *(int*)(Dg + 0x50), 0x15);
-    r2 = func_3f00_r(s1, 1, *(int*)(Dg + 0x58), *(int*)(Dg + 0x60),
-                     o2, *(int*)(s1 + 0x80),
-                     *(float*)(cfg + 0xC4) + 500.0f, *(float*)(cfg + 0xCC),
-                     *(int*)(Dg + 0x5C), 0x15);
-    *(int*)(r1 + 0xC) = (int)((char*)&D_00000000 + 0x74E4);
-    *(int*)(r2 + 0xC) = (int)((char*)&D_00000000 + 0x74EC);
+    char *o[2], *t, *r1, *r2, *x, *y, *b4, *f2, *row;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 1);
+    o[0] = t;
+    t = (char*)func_00000000(0x80);
+    if (t != 0) func_00000000(t, 2);
+    o[1] = t;
+    if (1) { }
+    func_00000000(&D_00000000, o[0]);
+    func_00000000(&D_00000000, t);
+    func_00000000(&D_00000000, o[0], t);
+    r1 = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
+                             o[0], *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                             *(int*)((char*)&D_00000000 + 0x50), 0x15);
+    r2 = func_00000000_3d3cm(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
+                             t, *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                             *(int*)((char*)&D_00000000 + 0x5C), 0x15);
+    *(char**)(r1 + 0xC) = D_000074E4;
+    *(char**)(r2 + 0xC) = D_000074EC;
     *(char**)(r1 + 0x908) = r2;
     *(char**)(r2 + 0x908) = r1;
-    b3 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r1, o1);
-    b4 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r2, o2);
-    *(float*)(b3 + 0x14C) = 55.0f;
+    x = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r1, o[0]);
+    b4 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r2, o[1]);
+    *(float*)(x + 0x14C) = 55.0f;
     *(float*)(b4 + 0x14C) = 55.0f;
-    row = (char*)&D_00000000 + a1 * 0x1C;
-    f1 = (char*)func_00000000(s1, row, b3);
-    *(char**)(r1 + 0x8DC) = f1;
-    {
-        char *f2 = (char*)func_00000000(s1, row + 0x1C, b4);
-        *(char**)(r2 + 0x8DC) = f2;
-        *(char**)(f2 + 0x1B8) = f1;
-    }
+    row = bu_3f00_d7294 + a1 * 0x1C;
+    y = (char*)func_00000000(s1, row, x);
+    f2 = (char*)func_00000000(s1, row + 0x1C, b4);
+    *(char**)(r1 + 0x8DC) = y;
+    *(char**)(r2 + 0x8DC) = f2;
+    *(char**)(f2 + 0x1B8) = y;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00003F00);
-#endif
 
 /* func_0000411C - verified structural decode (0x2B8, 174 insns,
  * randomized multi-stage builder chain). MEMBER of the
