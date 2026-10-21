@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00002C94",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-21T20:03:24.192819+00:00",
+  "end_time": "2026-10-21T20:03:24.192837+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T20:03:24.192833+00:00",
+      "assistant_text": "Mode init: reloc identities and asm addends give the pinned aliases (pool 0x4F0, dst 0x128, src 0xE8), separate load/store aliases for the flag RMW, a named int for the cfg-word RMW chain, a separate gate alias for the table head, and a do-while over (key, value) pairs.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 68,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\nextern int func_00000000();\nextern f32 bu_2c94_k4f0;\nextern f32 bu_2c94_dst[];\nextern char bu_2c94_src[], bu_2c94_ctx[], D_000073E8;\nextern int bu_2c94_mode, bu_2c94_x_ld, bu_2c94_x_st, bu_2c94_y_ld[], bu_2c94_y_st[];\nextern int bu_2c94_tbl[], bu_2c94_gate;\nvoid func_00002C94(void *a0, void *a1) {\n    f32 k;\n    int *p;\n    int e;\n    int v;\n\n    k = bu_2c94_k4f0;\n    bu_2c94_dst[0] = k;\n    bu_2c94_dst[1] = k;\n    bu_2c94_dst[2] = k;\n    func_00000000(bu_2c94_src);\n    func_00000000(bu_2c94_src, bu_2c94_dst);\n    bu_2c94_mode = 6;\n    bu_2c94_x_st = bu_2c94_x_ld & ~8;\n    v = bu_2c94_y_ld[1];\n    v &= ~2;\n    v |= 0x2000;\n    v |= 0x80000;\n    bu_2c94_y_st[1] = v;\n    p = bu_2c94_tbl;\n    func_00000000(&D_000073E8, 0);\n    if (bu_2c94_gate != 0) {\n        do {\n            func_00000000(bu_2c94_ctx, p[0], p[1]);\n            p += 2;\n        } while (p[0] != 0);\n    }\n    func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00002C94.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2",
+    "verification": "make cmp ROM byte-identical + .o byte compare (relocs differ only by symbol name on zero-valued imports/placeholders or same-address aliases)"
+  }
+}

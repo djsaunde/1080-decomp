@@ -1676,35 +1676,47 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000027E8);
  * walk branch-likely. INCLUDE_ASM remains build path. */
 extern char D_000073E8;
 extern void func_000003F8();  /* used as data-symbol base */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 115). Identities/offsets from the TextReloc and the
+ * asm addends: scale = RoData pool +0x4F0, dst = 0x128 / src = 0xE8 (both
+ * import_0005C108 fields), mode D_01EBDC, flags import_0005EE64 (separate
+ * load/store aliases), cfg word import_0005EE6C + 4 through a named int v
+ * (target keeps it in v0), table/gate D_00719C (two aliases so the gate is
+ * its own load), ctx import_0005C108; callees func_072E58, func_072F1C,
+ * func_074710(&D_000073E8, 0), func_059354 per entry, func_074840. */
+extern f32 bu_2c94_k4f0;
+extern f32 bu_2c94_dst[];
+extern char bu_2c94_src[], bu_2c94_ctx[], D_000073E8;
+extern int bu_2c94_mode, bu_2c94_x_ld, bu_2c94_x_st, bu_2c94_y_ld[], bu_2c94_y_st[];
+extern int bu_2c94_tbl[], bu_2c94_gate;
 void func_00002C94(void *a0, void *a1) {
-    float k = D_bu_ro_pool[0x4F0 / 4];
-    float *dst = (float*)((char*)&func_000000F0 + 0x38);
-    void *src = (void*)((char*)&func_00000080 + 0x68);
-    int *cfg_word = (int*)((char*)&func_00000000 + 4);
+    f32 k;
     int *p;
-    dst[0] = k;
-    dst[1] = k;
-    dst[2] = k;
-    func_00000000(src);
-    func_00000000(src, dst);
-    *(int*)&D_00000000 = 6;                    /* D_mode */
-    *(int*)&D_00000000 &= ~0x8;                /* D_flags */
-    *cfg_word = (*cfg_word & ~0x2) | 0x2000 | 0x80000;
+    int e;
+    int v;
+
+    k = bu_2c94_k4f0;
+    bu_2c94_dst[0] = k;
+    bu_2c94_dst[1] = k;
+    bu_2c94_dst[2] = k;
+    func_00000000(bu_2c94_src);
+    func_00000000(bu_2c94_src, bu_2c94_dst);
+    bu_2c94_mode = 6;
+    bu_2c94_x_st = bu_2c94_x_ld & ~8;
+    v = bu_2c94_y_ld[1];
+    v &= ~2;
+    v |= 0x2000;
+    v |= 0x80000;
+    bu_2c94_y_st[1] = v;
+    p = bu_2c94_tbl;
     func_00000000(&D_000073E8, 0);
-    if (*(int*)&D_00000000 != 0) {             /* D_gate */
-        p = (int*)&D_00000000;                 /* D_tbl */
+    if (bu_2c94_gate != 0) {
         do {
-            func_00000000(&D_00000000, p[0], p[1]);  /* D_ctx */
+            func_00000000(bu_2c94_ctx, p[0], p[1]);
             p += 2;
         } while (p[0] != 0);
-        func_00000000();
     }
-    (void)a0; (void)a1;
+    func_00000000();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00002C94);
-#endif
 
 /* func_00002DA4: bootup_uso subsystem init + 12-way command dispatch
  * (0x1EC / 123 words). init(&D_000073EC, 0); create -> global; attach the
