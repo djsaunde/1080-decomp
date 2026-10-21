@@ -1,3 +1,5 @@
+# donor rules defined early (e.g. the 62A2C NCC splice) must not become the default goal
+.DEFAULT_GOAL := all
 BASENAME  := tenshoe
 TARGET    := $(BASENAME)
 ROM       := $(TARGET).z64
