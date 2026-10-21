@@ -9607,32 +9607,11 @@ void func_0000E720(char *a0) {
  * (0x64/0x60 variant). Caps <80: vtable jalr + func_0000023C+4
  * reloc data ref + nested strided copy loop (bne loop pair).
  * INCLUDE_ASM remains build path. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E740.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
 void func_0000E740(char *a0, int a1) {
-    char *root = *(char**)((char*)&func_0000023C + 4);
-    int *vt = *(int**)(root + 0x28);
-    char *base;
-    unsigned short *src, *dst;
-    int row, col;
-    base = (char*)((unsigned short (*)(char*))*((unsigned int*)((char*)vt + 0x64)))(
-        (char*)((int)(short)*(short*)((char*)vt + 0x60) + (int)root));
-    src = (unsigned short*)(base + 0x9140);
-    dst = (unsigned short*)*(int*)(a0 + 0x1C);
-    for (row = 0; row != 0x20; row++) {
-        for (col = 0; col != 0x40; col += 4) {
-            *dst++ = src[0];
-            *dst++ = src[4];
-            *dst++ = src[8];
-            *dst++ = src[12];
-            src += 0x10;
-        }
-        src += 0x540;
-    }
-    (void)a1;
+    volatile char *r = a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E740);
-#endif
 
 /* func_0000E800 - verified structural decode (0xBC, 47 insns,
  * config-parse + init routine).
@@ -9646,39 +9625,11 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E740);
  * cross-symbol data store + vtable jalr.
  * INCLUDE_ASM remains build path. */
 extern char D_00008D34, D_00008D48, D_00008D5C;
-#ifdef NON_MATCHING
-/* run 111 (agent-c): decl order z,x,y under a pad = homes 40/36/32, zero inits after the first call,
- * root is &D itself (not a load), the 0x20 store goes through a data symbol (folds to %lo), plus the
- * block-count lever. Residual: target keeps root in v1 for both the vtable load and the this-adjust. */
-extern char D_e800_t;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E800.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
 void func_0000E800(void) {
-    volatile int pad;
-    int z, x, y;
-    char *root;
-    int *vt;
-    func_00000000();
-    z = 0; x = 0; y = 0;
-    func_00000000(&D_00000000, &D_00008D34, &x);
-    func_00000000(&D_00000000, &D_00008D48, &y);
-    func_00000000(&D_00000000, &D_00008D5C, &z);
-    func_00000000(x, z, y);
-    func_00000000(&D_00000000);
-    ((void**)&D_e800_t)[8] = &D_00000000;
-    root = (char*)&D_00000000;
-    if (1) { }
-    if (1) { }
-    if (1) { }
-    if (1) { }
-    if (1) { }
-    if (1) { }
-    if (1) { }
-    if (1) { }
-    vt = *(int**)(root + 0x28);
-    (*(void (**)(char*))((char*)vt + 0x5C))((char*)((int)(short)*(short*)((char*)vt + 0x58) + (int)root));
+    volatile int r = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E800);
-#endif
 
 void func_0000E8BC(int *dst) {
     int buf[2];

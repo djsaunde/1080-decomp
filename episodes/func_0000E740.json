@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000E740",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T21:14:40.746594+00:00",
+  "end_time": "2026-10-21T21:14:40.746611+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T21:14:40.746607+00:00",
+      "assistant_text": "C++ donor with a real virtual call on the root object; see the .cpp header for the load-bearing shapes.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 48,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000E740 (0xB4 / 45 words) -- copies a\n * 64x32 u16 tile out of the root object's buffer (every 4th sample) into\n * self->pix.\n *\n * C++ (agent-c run 116): the buffer comes from a virtual getter on the root\n * object at func_0000023C+4 (vptr +0x28, slot 11: lh +0x60 / lw +0x64). With\n * the source pointer stepped per element (`*dst++ = *src; src += 4;`, then\n * `src += 0x540` per row) IDO unrolls the inner loop x4 into the target's\n * 0/8/16/24 offsets with one `addiu v1,v1,32`. The cfe NM indexed src[4*k]\n * by hand and scored 26.4. Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY;\n * the root reference is func_0000023C itself (same reloc as the target). */\nextern \"C\" {\nextern char func_0000023C[];\n}\nstruct VO { char pad[0x28];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();\n    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();\n    virtual void v10(); virtual char *buf(); };\nstruct Obj { char pad[0x1C]; unsigned short *pix; };\nextern \"C\" void func_0000E740(Obj *self, int a1) {\n    unsigned short *src = (unsigned short *)((*(VO **)(func_0000023C + 4))->buf() + 0x9140);\n    unsigned short *dst = self->pix;\n    for (int y = 0; y < 32; y++) {\n        for (int x = 0; x < 64; x++) {\n            *dst++ = *src;\n            src += 4;\n        }\n        src += 0x540;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_E740.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000E740.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000E800",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T21:14:40.866878+00:00",
+  "end_time": "2026-10-21T21:14:40.866895+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T21:14:40.866891+00:00",
+      "assistant_text": "C++ donor with a real virtual call on the root object; see the .cpp header for the load-bearing shapes.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 47,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000E800 (0xBC / 47 words) -- reads three\n * config ints by key, applies them, then installs a handler pointer at\n * func_00000008+0x20 and calls the root object's virtual slot 10\n * (vptr +0x28: lh +0x58 / lw +0x5C).\n *\n * C++ (agent-c run 116). Needed beyond the cfe logic:\n * - the root object is &D_00000000 itself and the call is a real virtual call;\n * - each blank first argument is its own symbol (bu_e800_g1..g4, bu_e800_v,\n *   all 0): one shared symbol is CSE'd into an s-reg;\n * - a named `root` local declared first gives frame 0x30 (z/x/y homes\n *   40/36/32, every named edg local takes a slot);\n * - the last config call and the handler store share one source line; on two\n *   lines as1 schedules the handler's addiu after `lui v1`.\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nvoid func_00000000(...);\nextern char D_00000000;\nextern char bu_e800_g1, bu_e800_g2, bu_e800_g3, bu_e800_g4, bu_e800_v;\nextern char D_00008D34, D_00008D48, D_00008D5C;\nextern char func_00000008[];\n}\nstruct VO { char pad[0x28];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();\n    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();\n    virtual void f(); };\nextern \"C\" void func_0000E800(void) {\n    VO *root;\n    int z, x, y;\n    func_00000000();\n    z = 0; x = 0; y = 0;\n    func_00000000(&bu_e800_g1, &D_00008D34, &x);\n    func_00000000(&bu_e800_g2, &D_00008D48, &y);\n    func_00000000(&bu_e800_g3, &D_00008D5C, &z);\n    func_00000000(x, z, y);\n    func_00000000(&bu_e800_g4); *(void **)(func_00000008 + 0x20) = &bu_e800_v;\n    root = (VO *)&D_00000000;\n    root->f();\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_E800.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000E800.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
