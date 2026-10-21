@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000485C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T20:43:08.684065+00:00",
+  "end_time": "2026-10-21T20:43:08.684081+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T20:43:08.684077+00:00",
+      "assistant_text": "C++ donor: V3 ctor forwarding to set(); second vector block-scoped so edg allocates it after the first ctor's pool slots; ctor+call on one line fixes a scheduling swap.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 46,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000485C (0xB8 / 46 words) -- pushes the\n * object's vector and the root transform's scaled vector to a debug/draw\n * sink (func_00000080 + 0x20 is the sink's datum, passed to every call).\n *\n * C++ (agent-c run 116). Under cfe the body capped at 94.1: the two stack\n * vectors and the a2 reload of the homed arg cannot both come out. Under edg:\n * - V3(float, float, float) forwards to an inline set() (the 5062C rule):\n *   gives every FP register and the a0 home / a2 reloads;\n * - b1 is a function-scope local, b2 lives in an inner block: edg allocates\n *   block-scope locals when the block opens, i.e. AFTER the pool slots of\n *   b1's inline ctor, which puts b2 at sp+0x20 under 5 pool slots (target\n *   layout b1 0x40 / b2 0x20; function scope gives b2 0x34);\n * - b2's constructor and the call share ONE source line: on separate lines\n *   uopt schedules the x store before the a0 %lo (one swapped pair); IDO\n *   line boundaries limit the scheduler (PERM_FORCE_SAMELINE effect).\n * docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116. Spliced into bootup_uso.c.o\n * via REPLACE_FUNC_BODY; bu_485c_root / bu_485c_g are blank (0) aliases. */\nstruct V3 { float x, y, z;\n    V3(float a, float b, float c) { set(a, b, c); }\n    void set(float a, float b, float c) { x = a; y = b; z = c; } };\nextern \"C\" {\nvoid func_00000000(...);\nextern char func_00000080[];\nextern char bu_485c_g[];\nextern char *bu_485c_root;\n}\n#define STR (func_00000080 + 0x20)\n#define F(p,o) (*(float *)((char *)(p) + (o)))\nextern \"C\" void func_0000485C(char *a0) {\n    char *v0;\n    func_00000000(STR);\n    V3 b1(F(a0,0x30), F(a0,0x34), F(a0,0x30));\n    func_00000000(STR, &b1);\n    v0 = *(char **)(bu_485c_root + 0x70);\n    {\n        V3 b2(F(v0,0xA0) * F(bu_485c_g,0x128), F(v0,0xA4) * F(bu_485c_g,0x12C) + F(a0,0x2C), F(v0,0xA8) * F(bu_485c_g,0x130)); func_00000000(STR, &b2);\n    }\n    func_00000000(a0);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_485C.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000485C.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "46/46 words + relocs byte-equal; ROM cmp clean; report 100."
+  }
+}

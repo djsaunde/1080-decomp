@@ -4025,3 +4025,5 @@ bu_cae8_y = 0x00000000;  /* func_0000CAE8 blank global store */
 bu_cae8_mode = 0x00000034;  /* func_0000CAE8 mode word (func_00000008+0x2C) */
 bu_cae8_k958 = 0x00000958;  /* func_0000CAE8 f32 const (func_00000940+0x18) */
 bu_cae8_d8abc = 0x00008ABC;  /* func_0000CAE8 arg (func_00008A7C+0x40) */
+bu_485c_root = 0x00000000;  /* func_0000485C NCC donor: blank root-pointer global (in-place lui/lw 0) */
+bu_485c_g = 0x00000000;  /* func_0000485C blank scale-table base (+0x128..0x130) */

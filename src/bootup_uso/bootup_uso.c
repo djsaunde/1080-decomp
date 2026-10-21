@@ -2865,44 +2865,12 @@ void func_0000477C(char *a0) {
  * func_00000080+0x20 cross-symbol data ref. INCLUDE_ASM remains build
  * path. */
 extern void func_00000080();  /* used as data-symbol base */
-#ifdef NON_MATCHING
-/* 2026-10-21 (agent-c run 115): reloc-identity re-decode (str = 0xA0 =
- * func_00000080 + 0x20 per site, root = D_0205CC, scales on import_0005C108;
- * callees func_072E58 / func_072F1C / func_072EE8 / func_04CCA8). This is
- * C++: under NCC a V3 with V3(float,float,float) { set(a,b,c); } gives every
- * register and the a2 reload of the homed arg (drafted, 47/47 words); only
- * the frame slots of the two vectors differ there (b1 64 / b2 32 in the
- * target, the "temp order" open item of IDO_CODEGEN #ncc-game-libs-vec3-62a2c).
- * This cfe body is the best C layout. */
-extern char bu_485c_str[], bu_485c_g[];
-extern char *bu_485c_root;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_485C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116): V3 ctor
+ * forwarding to set(), b2 in an inner block (allocated after b1's pool slots). */
 void func_0000485C(char *a0) {
-    int pre;
-    float b1[3];
-    int unused[2];
-    float x, y, z;
-    float b2[3];
-    char *v0;
-    func_00000000(bu_485c_str);
-    x = *(float *)(a0 + 0x30);
-    y = *(float *)(a0 + 0x34);
-    b1[0] = x;
-    b1[1] = y;
-    b1[2] = x;
-    func_00000000(bu_485c_str, b1);
-    v0 = *(char **)(bu_485c_root + 0x70);
-    x = *(float *)(v0 + 0xA0) * *(float *)(bu_485c_g + 0x128);
-    y = *(float *)(v0 + 0xA4) * *(float *)(bu_485c_g + 0x12C) + *(float *)(a0 + 0x2C);
-    z = *(float *)(v0 + 0xA8) * *(float *)(bu_485c_g + 0x130);
-    b2[0] = x;
-    b2[1] = y;
-    b2[2] = z;
-    func_00000000(bu_485c_str, b2);
-    func_00000000(a0);
+    volatile char *r = a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000485C);
-#endif
 
 void func_00004914(char *a0, int a1, char *a2) {
     *(float*)(a0 + 0x60) = *(float*)(a2 + 0x30);
