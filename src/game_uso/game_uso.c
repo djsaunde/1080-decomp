@@ -979,7 +979,6 @@ c18: game_uso_func_00000AEC(a0, 29);
 end: ;
 }
 
-#ifdef NON_MATCHING
 /* 3.83% NM (stub body, alloc-or-passthrough only). 269-insn / 0x434 size,
  * frame ~0xE0 with 4 saved $s-regs. Single-arg constructor.
  *
@@ -1032,18 +1031,22 @@ extern char game_uso_D_807FE908, game_uso_D_807FE910, game_uso_D_807FE914,
  * constant stores -- the target stores them in source order reusing f0 for
  * 0/-1000/1000 (64 in f4); here uopt hoists all four constants and reorders
  * the stores. */
+/* game_uso_func_000018FC: EXACT 2026-10-21 (agent-g run 116), from 91.2 NM,
+ * with the 3018 recipe (docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018):
+ * per-stage struct copy `prm = T`, s0 as the parameter, `if (1) {}` between
+ * the stage-1 vectors and int zeros in hi, and the pad map re-fit (no g8,
+ * g0[3], one int after o1). */
 typedef struct { int w; } T4_18FC;
-void *game_uso_func_000018FC(void *a0) {
-    char *s0 = (char *)a0;
+void *game_uso_func_000018FC(char *s0) {
     Vec3 hi;
     Vec3 lo;
     struct { T4_18FC idx; Vec3 v; } big;
-    int g8;
     T4_18FC t2, t3, t4, t5, t6, t7, t8;
-    int g0[2];
+    int g0[3];
     char *o;
     int g1[5];
     char *o1;
+    int g2;
     Vec3 pa;
     int g3;
     Vec3 pb;
@@ -1063,16 +1066,13 @@ void *game_uso_func_000018FC(void *a0) {
             *(char **)(b + 0) = &game_uso_D_807FE908 + 0x318;
             *(int *)(b + 4) = 0;
         }
-        hi.x = 0.0f;
-        hi.z = 0.0f;
-        lo.x = -1000.0f;
-        lo.y = -1000.0f;
-        lo.z = -1000.0f;
+        hi.x = 0; hi.y = 64.0f; hi.z = 0;
+        if (1) {}
+        lo.x = -1000.0f; lo.y = -1000.0f; lo.z = -1000.0f;
+        if (1) {}
         big.idx.w = ((T4_18FC *)(&game_uso_D_807FE910 + 0x320))->w;
-        hi.y = 64.0f;
-        big.v.x = 1000.0f;
-        big.v.y = 1000.0f;
-        big.v.z = 1000.0f;
+        if (1) {}
+        big.v.x = 1000.0f; big.v.y = 1000.0f; big.v.z = 1000.0f;
         pa = hi;
         pb = lo;
         pc = big.v;
@@ -1089,8 +1089,8 @@ void *game_uso_func_000018FC(void *a0) {
         }
 #define STAGE(OFF, T, SYM, TOFF) \
         T.w = ((T4_18FC *)(&(SYM) + (TOFF)))->w; \
+        prm = T; \
         o = s0 + (OFF); \
-        prm.w = T.w; \
         if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
             game_uso_func_04A188(o, s0, prm, 1); \
             *(char **)(o + 0xC) = &game_uso_D_807FE608 + 24; \
@@ -1108,9 +1108,7 @@ void *game_uso_func_000018FC(void *a0) {
     }
     return s0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000018FC);
-#endif
+
 
 /* 4-arg constructor-or-init for 0x124-byte object. Lever: reuse `a0`
  * (drop the `register char *p = a0;` fresh local). With direct
