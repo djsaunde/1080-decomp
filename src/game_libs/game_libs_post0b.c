@@ -2931,26 +2931,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036F0C);
  *   *(float*)(p+0x64) C is 2 insns short. The struct-base-reuse
  *   divergence class (cf gl_func_00065250). Real-C STRUCTURAL body
  *   below. Byte-match deferred. Name pre-checked: no extern reuse. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_372D4.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The dead handle store is a one-pointer smart-pointer aggregate. */
 void gl_func_000372D4(int *a0, float *a1) {
-    int *o;
-    int **po = &o;
-    char *p;
-    void (**vt)(int);
-    o = ((int **)a0)[0x14/4];
-    p = (char *)o[0xF4/4] + 0x30; if (1) {}
-    *(float *)(p + 0x30) = a1[0];
-    *(float *)(p + 0x34) = a1[1];
-    *(float *)(p + 0x38) = a1[2];
-    *(float *)((char *)a0 + 0x30) = -90.0f;
-    *(float *)((char *)a0 + 0x34) = 180.0f;
-    *(float *)((char *)a0 + 0x38) = 0.0f;
-    vt = (void (**)(int))((char **)a0)[0x28/4];
-    ((void (*)(int))vt[0x24/4])(*(short *)((char *)vt + 0x20) + (int)a0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000372D4);
-#endif
 
 // gl_func_00037348 — STRUCTURAL PASS (0x1F8 / 126 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one

@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000372D4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T21:47:59.767649+00:00",
+  "end_time": "2026-10-21T21:47:59.767649+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T21:47:59.767649+00:00",
+      "assistant_text": "C++ donor: smart-pointer handle aggregate (the dead spill store) + inline Sub::setPos; see the .cpp header.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 29,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000372D4 (0x74 / 29 words): copy a\n * Vec3 into the attached object's sub-node position, reset this->rot to\n * (-90, 180, 0) and fire virtual slot 3.\n *\n * The cfe wrap capped on two shapes, both C++:\n * - the dead `sw t6,28(sp)` is the attached-object handle: a one-pointer\n *   smart-pointer struct (`Ptr` with operator->) is an aggregate local, so it\n *   lives in its frame slot and the load is stored there once;\n * - the x store at p+0x60 before `addiu v1,v1,48` and y/z at 52/56 is the\n *   inline Sub::setPos(const V3 &) (this = p + 0x30) forwarding to\n *   V3::operator=.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nstruct V3 { float x, y, z;\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    V3 &operator=(const V3 &v) { set(v); return *this; } };\nstruct Sub372 { char pad[0x30]; V3 pos; void setPos(const V3 &v) { pos = v; } };\nstruct Node372 { char pad[0x30]; Sub372 sub; };\nstruct Obj372 { char pad[0xF4]; Node372 *node; };\nstruct Ptr372 { Obj372 *o; Obj372 *operator->() { return o; } };\nstruct Base372 {\n    char pad[0x14]; Obj372 *att; char pad18[0x10];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); };\nstruct Self372 : Base372 {\n    int pad2c;\n    V3 rot;\n};\nextern \"C\" void gl_func_000372D4(Self372 *s, const V3 &v) {\n    Ptr372 o; o.o = s->att;\n    o->node->sub.setPos(v);\n    s->rot.set(-90.0f, 180.0f, 0.0f);\n    s->v3();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_372D4.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000372D4.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
