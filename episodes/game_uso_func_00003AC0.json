@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_00003AC0",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-21T21:35:38.596903+00:00",
+  "end_time": "2026-10-21T21:35:38.596920+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-21T21:35:38.596916+00:00",
+      "assistant_text": "Exact via IDO 7.1 NCC donor. Twelve add(arg0, new Item(q_k), -1); Item has an inline ctor taking a trivial-copy Q by value, whose parameter is one shared pool slot (sp+36) filled before the global operator new. q0..q11 are outer-block named locals declared just before each statement (descending sp+108..64). Four dead named int locals declared last (z0..z3 = 0) add the four missing 4-byte homes between q11 and the pool slot, giving frame 112.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 265,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_uso_func_00003AC0 (0x414 / 261 words).\n *\n * Twelve `list->add(new Item(name_k), -1)` statements: each reads one\n * 4-byte name from the USO import table, allocates a 0x58 Item through the\n * global operator new, runs the inline Item ctor (out-of-line base ctor\n * 051E64 with the name by value, then the vptr at +0x28) and registers it.\n *\n * edg / frame facts this body depends on (cfe capped at 253/261 words):\n *  - `new Item(q)` with an inline ctor and NO class-scope operator new: one\n *    alloc, beqz over the inlined ctor. The ctor's by-value Q parameter\n *    (trivial copy) is ONE pool slot shared by all twelve expansions and\n *    is filled before the alloc (the `sw tN,36(sp)` in the jal delay slot).\n *  - q0..q11 are outer-block named locals declared right before their\n *    statement: homed at function entry in declaration order, descending\n *    from sp+108 (the target's twelve slots).\n *  - z0..z3 are dead named locals declared last: edg/uopt still give each\n *    a 4-byte home, between q11 and the pool slot, which is the target's\n *    frame 112 (without them 96).\n * Spliced into game_uso.c.o via REPLACE_FUNC_BODY\n * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every\n * symbol is extern \"C\"; __nw__FUi resolves through undefined_syms. */\nextern \"C\" {\nvoid game_uso_func_052F70(void *, void *, int);\nextern char game_uso_D_807FEC70, game_uso_D_807FEC74, game_uso_D_807FEC78, game_uso_D_807FEC7C;\nextern char game_uso_D_807FEC80, game_uso_D_807FEC84, game_uso_D_807FEC88, game_uso_D_807FEC8C;\nextern char game_uso_D_807FEC90, game_uso_D_807FEC94, game_uso_D_807FEC98, game_uso_D_807FEC9C;\nextern char game_uso_D_807FEAA8;\n}\nstruct P { int v; };\ntypedef P Name;\nstruct Q { P p; Q(const P &x) { p.v = x.v; } };\nextern \"C\" void game_uso_func_051E64(void *, P, int, int);\nstruct Item {\n    char pad[0x28];\n    void *vt;\n    char pad2[0x58 - 0x2C];\n    Item(Q q) { game_uso_func_051E64(this, q.p, 0, 0); vt = &game_uso_D_807FEAA8; }\n};\n#define NM(s, o) (*(Name *)(&game_uso_D_##s + (o)))\n#define BLK(k, s, o) Q q##k(NM(s, o)); game_uso_func_052F70(arg0, new Item(q##k), -1);\nextern \"C\" void game_uso_func_00003AC0(void *arg0) {\n    BLK(0, 807FEC70, 0x680)\n    BLK(1, 807FEC74, 0x684)\n    BLK(2, 807FEC78, 0x688)\n    BLK(3, 807FEC7C, 0x68C)\n    BLK(4, 807FEC80, 0x690)\n    BLK(5, 807FEC84, 0x694)\n    BLK(6, 807FEC88, 0x698)\n    BLK(7, 807FEC8C, 0x69C)\n    BLK(8, 807FEC90, 0x6A0)\n    BLK(9, 807FEC94, 0x6A4)\n    BLK(10, 807FEC98, 0x6A8)\n    BLK(11, 807FEC9C, 0x6AC)\n    int z0, z1, z2, z3;\n    z0 = 0; z1 = 0; z2 = 0; z3 = 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_3AC0.cpp",
+    "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_00003AC0.s",
+    "segment": "game_uso",
+    "compiler": "IDO 7.1 NCC (C++)",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "Donor .text byte-equal to expected slice (0x414); spliced build: ROM cmp clean, verify-blocks all zero, objdiff 100, relocs match expected names (__nw__FUi renamed to game_uso_func_055750)."
+  }
+}
