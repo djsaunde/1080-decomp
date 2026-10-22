@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00007288",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:05:09.705563+00:00",
+  "end_time": "2026-10-22T21:05:09.705563+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:05:09.705563+00:00",
+      "assistant_text": "Raw diff showed the target's copy as t8/t7-alternating lw/sw pairs (an IDO struct copy) from a held base func_0000027C + 0x18, and the flags RMW addressing through the advanced pointer. A 16-byte struct copy from an alias pinned at 0x294 plus *q |= 4 through q = base->0x254 + 0x78 is byte-exact after link.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 40,
+  "initial_m2c_source": null,
+  "final_source": "/* func_00007288: 40-insn (0xA0) two-conditional state-init helper.\n *\n * Structure:\n *   self = D[0x254];   // global state pointer at &D_00000000 + 0x254\n *   if (a0->0x38 & 2) {\n *       self->0xAC = (float)(int)a0->0x30;   // cvt.s.w via int\u2192float regs\n *       self->0xB0 = (float)(int)a0->0x34;\n *   }\n *   if (a0->0x3C == 0) {\n *       self->0x78 |= 4;\n *       copy 4 words from (func_0000027C + 0x18..0x24) to self->0xDC..0xE8;\n *   }\n *\n * The `func_0000027C + 0x18` is the splat-fold-into-nearest-func pattern\n * (per docs/MATCHING_WORKFLOW.md): a real D_<addr> rodata symbol was folded\n * into the preceding function. */\n/* EXACT (agent-c run 121): the record is a 16-byte struct copy from a pinned alias (bu_7288_src = func_0000027C + 0x18), and the flags RMW goes through the advanced pointer q (*q |= 4). */\n/* 2026-07-31 (agent-g newest-lever sweep): 94.6 -> 95.4. Levers landed:\n * de-named self (per-use *(base+0x254) deref -> t-ring reload temps t9/t1\n * exact, kills the old named-self $v0 web) + named per-region base local +\n * named single-load `d` for the 4-store tail (one lw like target) + q\n * pointer-bump RMW (lw 120(v0)/addiu v0,v0,120/ori/sw 0(v0) shape exact).\n * Body is now insn-for-insn isomorphic to target (40 words, all opcodes\n * + offsets aligned); RESIDUAL is a pure register-name rotation web:\n * base colors $a2 vs target $v1, d $a1 vs t5, RMW temps $a0 vs t3/t4,\n * data temps t3-t6 vs t8/t7 ping-pong, plus the folded-rodata src-base\n * addend form \u2014 target addiu carries +0x18 (25ce0018 = %lo(func_0000027C)\n * +24: the ORIGINAL had its own D_00000294 rodata symbol, splat folded it\n * into func_0000027C) where C can only produce %lo+0 with the 0x18 folded\n * into the load offsets (24..36); if(1) pointer-mutation does NOT bake\n * addends on FUNCTION symbols (probed \u2014 emits a separate addiu+24, unlike\n * the data-symbol C14/2BE4 cases). Coloring probes: if(1) BB-split flips\n * base a2->v1 and makes region 1 + region-2 head BYTE-EXACT but costs +2\n * insns in the tail (split addiu + d remat, net fuzzy 91.3 \u2014 rejected);\n * def-order swap src<->RMW = 95.275; register kw inert. a-reg-vs-t-ring\n * named-web free-pool tie class. NM. */\ntypedef struct { int w[4]; } Q7288;\nextern Q7288 bu_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */\nvoid func_00007288(int *a0) {\n    if (a0[0x38/4] & 2) {\n        char *base = (char*)&D_00000000;\n        *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)a0[0x30/4];\n        *(float*)(*(char**)(base + 0x254) + 0xB0) = (float)(int)a0[0x34/4];\n    }\n    if (a0[0x3C/4] == 0) {\n        char *b2 = (char*)&D_00000000;\n        int *q;\n        q = *(int**)(b2 + 0x254);\n        q = (int*)((char*)q + 0x78);\n        *q |= 4;\n        *(Q7288 *)(*(char **)(b2 + 0x254) + 0xDC) = bu_7288_src;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00007288.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

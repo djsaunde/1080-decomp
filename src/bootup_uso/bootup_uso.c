@@ -4622,7 +4622,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007204);
  * The `func_0000027C + 0x18` is the splat-fold-into-nearest-func pattern
  * (per docs/MATCHING_WORKFLOW.md): a real D_<addr> rodata symbol was folded
  * into the preceding function. */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 121): the record is a 16-byte struct copy from a pinned alias (bu_7288_src = func_0000027C + 0x18), and the flags RMW goes through the advanced pointer q (*q |= 4). */
 /* 2026-07-31 (agent-g newest-lever sweep): 94.6 -> 95.4. Levers landed:
  * de-named self (per-use *(base+0x254) deref -> t-ring reload temps t9/t1
  * exact, kills the old named-self $v0 web) + named per-region base local +
@@ -4642,6 +4642,8 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007204);
  * insns in the tail (split addiu + d remat, net fuzzy 91.3 — rejected);
  * def-order swap src<->RMW = 95.275; register kw inert. a-reg-vs-t-ring
  * named-web free-pool tie class. NM. */
+typedef struct { int w[4]; } Q7288;
+extern Q7288 bu_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
 void func_00007288(int *a0) {
     if (a0[0x38/4] & 2) {
         char *base = (char*)&D_00000000;
@@ -4651,24 +4653,12 @@ void func_00007288(int *a0) {
     if (a0[0x3C/4] == 0) {
         char *b2 = (char*)&D_00000000;
         int *q;
-        int *src;
-        int *d;
-        int t;
         q = *(int**)(b2 + 0x254);
-        src = (int*)((char*)&func_0000027C + 0x18);
-        t = q[0x78/4] | 4;
         q = (int*)((char*)q + 0x78);
-        *q = t;
-        d = *(int**)(b2 + 0x254);
-        d[0xDC/4] = src[0];
-        d[0xE0/4] = src[1];
-        d[0xE4/4] = src[2];
-        d[0xE8/4] = src[3];
+        *q |= 4;
+        *(Q7288 *)(*(char **)(b2 + 0x254) + 0xDC) = bu_7288_src;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007288);
-#endif
 
 /* func_00007328 - FULL structural decode (0x1C0, 112 insns, node-list
  * search + match-dispatch loop + tail state-set). fuzzy 24 -> 69 (2026-07,

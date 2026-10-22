@@ -4100,3 +4100,4 @@ D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
 gl_ref_0001E6B0 = 0x0001E6B0;  /* gl_func_00035B1C blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* gl_func_00039E24 camera block (same blank USO data ref as D_4BAF4_cam: base 0xA0, fields at +0x30) */
 D_34EB4_flags = 0x00000000;  /* gl_func_00034EB4 flags-word test: distinct zero alias so the test does not share base's s3 */
+bu_7288_src = 0x00000294;  /* func_00007288 16-byte record copy source (asm: func_0000027C + 0x18) */
