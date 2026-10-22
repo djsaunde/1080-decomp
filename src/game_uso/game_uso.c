@@ -42,34 +42,22 @@ typedef struct { int a, b; } Pair2;
 #define GAME_D_F1C (*(int*)((char*)&D_00000000 + 0xF1C))
 #endif
 
-#ifdef NON_MATCHING
-/* Cubic B-spline basis evaluator. Computes 4 weights for parameter t into
- * out[0..3]. D = *(float*)&D_00000000 = 1/6.
- *   out[0] = D*(1-t)^3, out[1] = D*(3t^3-6t^2+4),
- *   out[2] = D*(-3t^3+3t^2+3t+1), out[3] = D*t^3.
- * Target receives t as a SINGLE float in $a1 (mtc1 a1,$f12). The prior K&R
- * `float t` def DOUBLE-PROMOTED (assembled a double from a2/a3 + cvt.s.d,
- * +9 insns -> 49w vs target 40w, 57.85% cap). Here the second arg is taken
- * as `int ti` and bit-reinterpreted to float, which makes IDO move a1
- * directly into f12 with no double assembly -- matching the target ABI while
- * staying K&R-`()` compatible for the overloaded placeholder call sites. */
-void game_uso_func_00000000(out, ti)
+/* game_uso_func_00000000: uniform cubic B-spline basis (four weights for t
+ * into out[0..3]). EXACT 2026-10-22 (agent-g run 120) via the IDO 7.1 NCC
+ * donor src/game_uso/game_uso_ncc_0000.cpp (REPLACE_FUNC_BODY, both trees):
+ * the 1/6 is a float literal there, so it is a reg-alloc-prep constant
+ * candidate coloured after omt/t2/t3 -- the old cfe body's `D` local (read
+ * through D_00000000) took $f0 first and the K&R `int ti` reinterpret was
+ * only an ABI workaround. This placeholder exists to re-emit the unit's
+ * .rodata item 0 (the 1/6 word, 0x3E2AAAAB) ahead of the C jumptables of
+ * game_uso_func_00000940; its text and relocs are replaced by the donor's,
+ * whose .rodata reloc becomes game_uso_func_00000000_rodata (= 0). */
+void game_uso_func_00000000(out, t)
     float *out;
-    int ti;
+    float t;
 {
-    float t = *(float*)&ti;
-    float D = *(float*)&D_00000000;
-    float omt = 1.0f - t;
-    float t2 = t * t;
-    float t3 = t2 * t;
-    out[0] = D * omt * omt * omt;
-    out[1] = D * (3.0f*t3 - 6.0f*t2 + 4.0f);
-    out[2] = D * (-3.0f*t3 + 3.0f*t2 + 3.0f*t + 1.0f);
-    out[3] = D * t3;
+    out[0] = 0.16666667f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00000000);
-#endif
 
 /* 4-element dot product. CRACKED 2026-06-11 to 100.0 via fully right-nested
  * grouping `a[3]*b[3] + (a[2]*b[2] + (a[1]*b[1] + b[0]*a[0]))` (exhaustive

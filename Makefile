@@ -1888,6 +1888,13 @@ $(GAMEUSO_3AC0_DONOR): src/game_uso/game_uso_ncc_3AC0.cpp
 	$(OBJCOPY) --redefine-sym __nw__FUi=game_uso_func_055750 $@
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00003AC0=$(GAMEUSO_3AC0_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3AC0_DONOR)
+# 0000: cubic B-spline basis; the 1/6 is a float literal (a uopt constant
+# candidate, coloured after omt/t2/t3) -- 40/40 words. The host placeholder
+# re-emits the .rodata 1/6; the donor's .rodata reloc is pinned to 0 as
+# game_uso_func_00000000_rodata.
+GAMEUSO_0000_DONOR := build/src/game_uso/game_uso_ncc_0000.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00000000=$(GAMEUSO_0000_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_0000_DONOR)
 # 97EC: NM-only NCC donor (XZ derived-ctor protocol x5; two edg temp homes swapped vs target).
 GAMEUSO_97EC_NM_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)

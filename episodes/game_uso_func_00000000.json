@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_00000000",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:04:30.327075+00:00",
+  "end_time": "2026-10-22T20:04:30.327149+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:04:30.327143+00:00",
+      "assistant_text": "Exact from 66.7: game_uso is C++. Rewrote the cubic B-spline basis as natural C++ with the 1/6 as a float literal: as a constant it is a uopt reg-alloc-prep candidate coloured after omt/t2/t3 (f16), while the cfe D local took f0 first. Source-order D-first products. Donor .rodata reloc renamed to game_uso_func_00000000_rodata = 0; host placeholder re-emits the 1/6 rodata word.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 44,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_uso_func_00000000 (0xA0 / 40 words).\n *\n * Uniform cubic B-spline basis: the four weights for parameter t into\n * out[0..3]. The 1/6 is a float LITERAL (the unit's .rodata item 0), not a\n * local loaded from a data symbol: as a constant it becomes a uopt\n * reg-alloc-prep candidate, coloured after omt/t2/t3 ($f16 here, as in the\n * target), while its lui/lwc1 still schedules first. A `float D = ...` local\n * colours $f0 first; a global re-read after every out[] store.\n * edg keeps the source operand order, so every product is written D-first.\n * The donor's .rodata reloc is renamed by replace-function-body.py to\n * game_uso_func_00000000_rodata (pinned to 0 in undefined_syms_auto.txt);\n * the host placeholder re-emits the 1/6 word so game_uso.c.o's .rodata\n * keeps its layout. */\nextern \"C\" void game_uso_func_00000000(float *out, float t) {\n    float omt = 1.0f - t;\n    float t2 = t * t;\n    float t3 = t2 * t;\n    out[0] = (1.0f / 6.0f) * omt * omt * omt;\n    out[1] = (1.0f / 6.0f) * (3.0f * t3 - 6.0f * t2 + 4.0f);\n    out[2] = (1.0f / 6.0f) * (3.0f * (t2 - t3 + t) + 1.0f);\n    out[3] = (1.0f / 6.0f) * t3;\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_0000.cpp",
+    "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_00000000.s",
+    "segment": "game_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC donor spliced via REPLACE_FUNC_BODY; ROM byte-identical, verify-blocks game_uso block OK jal=0 lo16=0 other=0, objdiff 100%."
+  }
+}
