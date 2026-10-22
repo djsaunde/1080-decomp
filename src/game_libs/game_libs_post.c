@@ -18318,45 +18318,43 @@ int gl_func_00031898(int *a0) {
 //   alt-entry at 0x45f04 (gl_func_000628EC+0x64) but C emits the generic
 //   gl_func_00000000 reloc (alt-entry-jal cap, cf. func_00039194) + s in
 //   v1-vs-v0 renumber + last-block beql. INCLUDE_ASM stays the build path.
-#ifdef NON_MATCHING
-void gl_func_0003190C(void) {
-    if (gl_func_00000000((char *)&D_00000000 + 0x368)) {
-        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x3C8); if (1) {}
+/* EXACT (agent-c run 122): the query callee is a baked in-unit jal (gl_ref_00045F04); each else arm's second command is 0x0602x000 (the NM had x004); s as int reuses v0; the function is int with no return, so v0 is live at the exit and the last guard's beqzl takes lw ra instead of the lui. */
+extern int gl_ref_00045F04();
+int gl_func_0003190C(void) {
+    if (gl_ref_00045F04((char *)&D_00000000 + 0x368)) {
+        int s = *(unsigned short *)((char *)&D_00000000 + 0x3C8);
         if (s == 0) {
             gl_func_00000000(0x06020004, -1);
             gl_func_00000000(0x06020000, 0);
         } else {
             gl_func_00000000(0x06020004, (signed char)s);
-            gl_func_00000000(0x06020004,
+            gl_func_00000000(0x06020000,
                              *(signed char *)((char *)&D_00000000 + 0x3CB));
         }
     }
-    if (gl_func_00000000((char *)&D_00000000 + 0x3CC)) {
-        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x42C); if (1) {}
+    if (gl_ref_00045F04((char *)&D_00000000 + 0x3CC)) {
+        int s = *(unsigned short *)((char *)&D_00000000 + 0x42C);
         if (s == 0) {
             gl_func_00000000(0x06020104, -1);
             gl_func_00000000(0x06020100, 0);
         } else {
             gl_func_00000000(0x06020104, (signed char)s);
-            gl_func_00000000(0x06020104,
+            gl_func_00000000(0x06020100,
                              *(signed char *)((char *)&D_00000000 + 0x42F));
         }
     }
-    if (gl_func_00000000((char *)&D_00000000 + 0x430)) {
-        unsigned short s = *(unsigned short *)((char *)&D_00000000 + 0x490); if (1) {}
+    if (gl_ref_00045F04((char *)&D_00000000 + 0x430)) {
+        int s = *(unsigned short *)((char *)&D_00000000 + 0x490);
         if (s == 0) {
             gl_func_00000000(0x06020204, -1);
             gl_func_00000000(0x06020200, 0);
         } else {
             gl_func_00000000(0x06020204, (signed char)s);
-            gl_func_00000000(0x06020204,
+            gl_func_00000000(0x06020200,
                              *(signed char *)((char *)&D_00000000 + 0x493));
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003190C);
-#endif
 
 /* Split off from gl_func_0003190C bundle 2026-05-08: 4-insn setter.
  * Clears the global at &D_00000000 + 0x1CAA8 to -1. */

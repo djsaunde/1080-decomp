@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0003190C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:17:49.341341+00:00",
+  "end_time": "2026-10-22T21:17:49.341341+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:17:49.341341+00:00",
+      "assistant_text": "Exact. Raw diff showed three decode errors: the guard query is a baked in-unit jal (pinned gl_ref_00045F04), each else arm's second command constant is 0x0602x000 not x004. Then int s (not unsigned short) reuses v0; declaring the function int with no return keeps v0 live at exit so the last guard emits beqzl+lw ra like the target.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 86,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_0003190C \u2014 STRUCTURAL PASS (0x158 / 86 words, no episode).\n// permuter resists: verify-fails every batch (x5+, 2026-06-19) \u2014 factory skip.\n// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no\n// bundle). A dual state-block conditional command emitter.\n//\n//   void gl_func_0003190C(void) {\n//     // block A: state record at &D_0 + 0x368\n//     if (query_0117C1(&D_0 + 0x368)) {\n//       u16 s = *(u16*)(&D_0 + 0x3C8);\n//       if (s != 0) {\n//         emit(0x06020004, -1);              // jal 0 (USO callback)\n//         emit(0x06020004, 0);\n//       } else {\n//         emit(..., (signed char)*(s8*)(&D_0 + 0x3CB));\n//         emit(0x06020000, ...);\n//       }\n//     }\n//     // block B: parallel record at &D_0 + 0x3CC (state at +0x42C)\n//     if (query_0117C1(&D_0 + 0x3CC)) {\n//       u16 s = *(u16*)(&D_0 + 0x42C);\n//       if (s != 0) { emit(0x06020104, -1); ... }\n//       else        { emit(0x06020100, ...); }\n//     }\n//   }\n//\n// Struct-typing reference: a paired state-driven command flusher.\n//   For each of TWO parallel state records (table bases &D_0+0x368\n//   and &D_0+0x3CC) it calls a FIXED intra-USO query helper at\n//   0x0117C1 (encoded jal 0x0117C1, a real resolved target) passing\n//   the record base; only if that returns nonzero does it read the\n//   record's state halfword (&D_0+0x3C8 / +0x42C) and a signed byte\n//   (&D_0+0x3CB) and emit 0x06020000-bank command words via\n//   USO-relocated callbacks (jal 0 \u2192 resolved at load) \u2014 choosing a\n//   \"nonzero state\" variant (subfield 0x04/0x104, a1 = -1 then 0)\n//   vs a \"zero state\" variant (subfield 0x00/0x100, a1 = the\n//   sign-extended state byte). A per-frame two-channel command\n//   flush leaf of the game_libs object subsystem (the 0x06020000\n//   bank is the gl_func_0002F638 / 0002F9D4 emitter family with a\n//   0x02xx sub-bank; the query helper 0x0117C1 is shared with the\n//   gl_func_00031710 table cluster).\n// 2026-05-31 FULL DECODE 45.0->95.66%: it is THREE identical blocks (not\n//   two), bases 0x06020004/0x104/0x204, checks &D+0x368/0x3CC/0x430,\n//   state halfwords &D+0x3C8/0x42C/0x490, sign bytes &D+0x3CB/0x42F/0x493.\n//   The branch polarity was inverted in the old draft: `if (s == 0)` (the\n//   FALL-THROUGH, emits `bne s,0,else`) does { func(A,-1); func(A2,0) };\n//   `else` (s != 0) does { func(A,(s8)s); func(A,(s8)byte) }. Writing it\n//   `if(s!=0)` emits `beq` and mis-aligns the whole block \u2014 match the\n//   target's fall-through. Residual ~4%: the check jal is a CONCRETE\n//   alt-entry at 0x45f04 (gl_func_000628EC+0x64) but C emits the generic\n//   gl_func_00000000 reloc (alt-entry-jal cap, cf. func_00039194) + s in\n//   v1-vs-v0 renumber + last-block beql. INCLUDE_ASM stays the build path.\n/* EXACT (agent-c run 122): the query callee is a baked in-unit jal (gl_ref_00045F04); each else arm's second command is 0x0602x000 (the NM had x004); s as int reuses v0; the function is int with no return, so v0 is live at the exit and the last guard's beqzl takes lw ra instead of the lui. */\nextern int gl_ref_00045F04();\nint gl_func_0003190C(void) {\n    if (gl_ref_00045F04((char *)&D_00000000 + 0x368)) {\n        int s = *(unsigned short *)((char *)&D_00000000 + 0x3C8);\n        if (s == 0) {\n            gl_func_00000000(0x06020004, -1);\n            gl_func_00000000(0x06020000, 0);\n        } else {\n            gl_func_00000000(0x06020004, (signed char)s);\n            gl_func_00000000(0x06020000,\n                             *(signed char *)((char *)&D_00000000 + 0x3CB));\n        }\n    }\n    if (gl_ref_00045F04((char *)&D_00000000 + 0x3CC)) {\n        int s = *(unsigned short *)((char *)&D_00000000 + 0x42C);\n        if (s == 0) {\n            gl_func_00000000(0x06020104, -1);\n            gl_func_00000000(0x06020100, 0);\n        } else {\n            gl_func_00000000(0x06020104, (signed char)s);\n            gl_func_00000000(0x06020100,\n                             *(signed char *)((char *)&D_00000000 + 0x42F));\n        }\n    }\n    if (gl_ref_00045F04((char *)&D_00000000 + 0x430)) {\n        int s = *(unsigned short *)((char *)&D_00000000 + 0x490);\n        if (s == 0) {\n            gl_func_00000000(0x06020204, -1);\n            gl_func_00000000(0x06020200, 0);\n        } else {\n            gl_func_00000000(0x06020204, (signed char)s);\n            gl_func_00000000(0x06020200,\n                             *(signed char *)((char *)&D_00000000 + 0x493));\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003190C.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
