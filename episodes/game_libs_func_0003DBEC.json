@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0003DBEC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:48:18.501016+00:00",
+  "end_time": "2026-10-22T15:48:18.501016+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:48:18.501016+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} list iterator with an inline first() { return next(); } for the entry call; by-value V3 operator=.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 41,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_0003DBEC (0xA4 / 41 words): walk the\n * owner's child list; when the child equals the argument, copy its position\n * into *out (by-value V3 operator= through the sp+4 temp) and return 1.\n * The first next() goes through an inline first() { return next(); }: the\n * nested inline gives the entry call its own return temp, so the loop\n * variable is a phi of two temps and the compare reads its v1 copy\n * (a single next() shares one temp and the compare is copy-propagated to v0).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nstruct V3 {\n    float x, y, z;\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void operator=(V3 v) { set(v); }\n};\nstruct Node3DB { char pad[0x30]; V3 pos; };\nstruct Link3DB { Node3DB *obj; Link3DB *next; };\nstruct Iter3DB {\n    Link3DB *cur, *nxt;\n    Iter3DB(Link3DB *h) { nxt = h; }\n    Node3DB *first() { return next(); }\n    Node3DB *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Owner3DB { char pad[0x10]; Link3DB *head; };\nextern \"C\" int game_libs_func_0003DBEC(Owner3DB *o, Node3DB *t, V3 *out) {\n    Iter3DB it(o->head);\n    for (Node3DB *n = it.first(); n; n = it.next()) {\n        if (n == t) { *out = n->pos; return 1; }\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3DBEC.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0003DBEC.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

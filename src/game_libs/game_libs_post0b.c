@@ -8335,51 +8335,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003DB38);
  * a2[0..2], return 1; not found → 0. Residual: same write-only-sp-slot
  * + direct-sp-offset stack-forcing class as DDC0 — documented hard. PERMUTER-EXHAUSTED 2026-05-17: 4.6M iterations, score flat at 1415 — same verdict as DDC0 (sibling). True-structural, not permuter-crackable. C body under NON_MATCHING retained as reference;
  * build path stays INCLUDE_ASM via #else. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3DBEC.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
 int game_libs_func_0003DBEC(int *a0, int *a1, float *a2) {
-    int vec[3];
-    int *cell, *next4, *v1, *v0 = 0;
-    int *t6 = (int *)a0[0x10 / 4];
-    next4 = t6;
-    if (t6 != 0) {
-        cell = t6;
-        next4 = (int *)t6[1];
-        v0 = (int *)t6[0];
-    }
-    (void)cell;
-    if (v0 == 0) {
-        return 0;
-    }
-    v1 = v0;
-loop:
-    if (v1 == a1) {
-        vec[0] = v1[0x30 / 4];
-        vec[1] = v1[0x34 / 4];
-        vec[2] = v1[0x38 / 4];
-        a2[0] = *(float *)&vec[0];
-        a2[1] = *(float *)&vec[1];
-        a2[2] = *(float *)&vec[2];
-        return 1;
-    }
-    {
-        int *t3 = next4;
-        if (t3 == 0) {
-            v0 = 0;
-        } else {
-            cell = t3;
-            next4 = (int *)t3[1];
-            v0 = (int *)t3[0];
-        }
-    }
-    v1 = v0;
-    if (v0 != 0) {
-        goto loop;
-    }
-    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003DBEC);
-#endif
 
 // gl_func_0003DC90 — STRUCTURAL PASS (0x98 / 38 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
