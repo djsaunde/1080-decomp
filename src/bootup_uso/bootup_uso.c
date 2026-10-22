@@ -4580,46 +4580,15 @@ end:
  * (+8 bytes, 2 nops) + 31-entry INSN_PATCH promotion was REMOVED
  * 2026-05-23 as match-faking. Last of the 3-function bootup_uso regalloc
  * cluster (7C74/7B08/7204) per project_1080_bootup_regalloc_cluster.md. */
-#ifdef NON_MATCHING
-/* agent-c run 122: NCC (C++) draft, raw 5 words off --: new Pair(a1, p) then a 2-arg call. Left: the object pointer colours a1 (target: a2 = the ctor this, then or a1,a2 before the call, i.e. the new-expression result is a separate web; same in 3E0F0 / 8124 where it is spilled to sp+76). Casts, prototypes, inline add(), operator new forms and ctor-side registration all keep a1.
- * extern "C" void *func_00000000(...);
- * inline void *operator new(unsigned n) { return func_00000000(n); }
- * struct Val { int v; };
- * struct M4 { int a; M4() { a = 0; } };
- * struct Pair {
- *     int a;
- *     M4 b;
- *     Pair(int x, Val p) { a = x; *(Val *)&b = p; }
- * };
- * extern "C" void func_00007204(char *a0, int a1, Val p) {
- *     Pair *o = new Pair(a1, p);
- *     func_00000000(a0 + 0x2C, o);
- * }
- */
+/* func_00007204: allocate a {word, M4} record (cfront new + inline ctors with
+ * the member this==0 protocol) and add it to the list at a0 + 0x2C.
+ * EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_7204.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 123). The add is
+ * an inline list member forwarding to the import, which keeps the new-expression
+ * result a separate web from the call argument (target a2, copied to a1). */
 void func_00007204(int a0, int a1, int a2) {
-    int *sp28;
-    int sp1C = a2;
-    int *temp_v0;
-    int *temp_v0_2;
-    int *var_a2;
-    int *var_v1;
-
-    temp_v0 = func_00000000(8);
-    var_a2 = temp_v0;
-    if (temp_v0 != 0) {
-        var_v1 = temp_v0 + 1;
-        if ((temp_v0 != (int *)-4) ||
-            (sp28 = temp_v0, temp_v0_2 = func_00000000(4), var_a2 = sp28, var_v1 = temp_v0_2, temp_v0_2 != 0)) {
-            *var_v1 = 0;
-        }
-        var_a2[0] = a1;
-        var_a2[1] = sp1C;
-    }
-    func_00000000(a0 + 0x2C, var_a2, var_a2);
+    volatile int r = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007204);
-#endif
 
 /* func_00007288: 40-insn (0xA0) two-conditional state-init helper.
  *

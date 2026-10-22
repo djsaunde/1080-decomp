@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00007204",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T22:45:22.395872+00:00",
+  "end_time": "2026-10-22T22:45:22.395872+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T22:45:22.395872+00:00",
+      "assistant_text": "Exact via IDO 7.1 NCC donor. new Pair(a1, p) with inline ctors (M4 member with the cfront this==0 protocol); the list hand-off is an inline member L::add(Pair *n) { func(this, n); } whose parameter is a separate web from the new-expression result, so the result stays in a2 and is copied into a1 at the call.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 33,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00007204: allocate a two-field record\n * (new Pair(a1, p): word + M4 member with its own cfront this==0 protocol)\n * and hand it to the list at a0 + 0x2C. 33/33 words.\n *\n * The hand-off is an INLINE member of the list, `L::add(Pair *n)`, that\n * forwards to the blank import: its parameter `n` is a separate web from the\n * new-expression result, so the result stays in the ctor's register (a2) and\n * is copied into a1 only at the call (`or a1,a2`). Calling the import\n * directly with the result (every spelling tried in run 122: named copies,\n * casts, prototypes, operator new forms) coalesces the result into a1.\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-c run 123). */\nextern \"C\" void *func_00000000(...);\ninline void *operator new(unsigned n) { return func_00000000(n); }\nstruct Val { int v; };\nstruct M4 { int a; M4() { a = 0; } };\nstruct Pair {\n    int a;\n    M4 b;\n    Pair(int x, Val p) { a = x; *(Val *)&b = p; }\n};\nstruct L { void add(Pair *n) { func_00000000(this, n); } };\nextern \"C\" void func_00007204(char *a0, int a1, Val p) {\n    Pair *o = new Pair(a1, p);\n    ((L *)(a0 + 0x2C))->add(o);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_7204.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00007204.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
