@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000432BC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:26:37.136472+00:00",
+  "end_time": "2026-10-22T16:26:37.136472+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:26:37.136472+00:00",
+      "assistant_text": "C++ donor: {cur, nxt list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 106,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000432BC (0x1A8 / 106 words): for every\n * child without flag 0x80, dst = src (by-value V3 operator=, the sp+68 temp) or\n * dst = -src, then a callback, an inline 3x3 transform of dst, and a second callback.\n * The iterator's next() is written as an if/return (not ?:): each call then gets\n * its own return value, the loop variable is not copy-propagated onto v0, and no\n * first() pool slot is needed (frame 104).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" char D_00000000[];\nstruct V3 {\n    float x, y, z;\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void operator=(V3 v) { set(v); }\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    void xform(const float *m) {\n        set(m[0] * x + m[4] * y + m[8] * z, m[1] * x + m[5] * y + m[9] * z, m[2] * x + m[6] * y + m[10] * z);\n    }\n};\nstruct Obj { char p[0xC4]; int flags; char p2[0xE4 - 0xC8]; V3 src; V3 dst; };\nstruct Link { Obj *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *h) { nxt = h; }\n    Obj *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->obj; } return 0; }\n};\nextern \"C\" void gl_func_000432BC(int a0, float *m, int neg) {\n    Iter it(*(Link **)(D_00000000 + 0x18C));\n    Obj *o;\n    while (o = it.next()) {\n        if (!(o->flags & 0x80)) {\n            if (neg) { o->dst.x = -o->src.x; o->dst.y = -o->src.y; o->dst.z = -o->src.z; }\n            else o->dst = o->src;\n            gl_func_00000000(&o->dst, a0);\n            o->dst.xform(m);\n            gl_func_00000000(&o->dst);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_432BC.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000432BC.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

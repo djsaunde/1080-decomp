@@ -12981,47 +12981,10 @@ void gl_func_00043284(int *a0, int a1) {
 // result in v0 and copies it to s0 in the loop-branch delay (one extra insn),
 // a separate v/o pair or block-scoped o is coalesced; frame 0x68 vs 0x70
 // (it at 96 and t at 68 in the target).
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000432BC)();
-typedef struct L432BC { char *data; struct L432BC *next; } L432BC;
-typedef struct { L432BC *cur; L432BC *next; } I432BC;
-typedef struct { f32 x, y, z; } V432BC;
-typedef struct { char p[0xC4]; int flags; char p2[0xE4 - 0xC8]; V432BC src; V432BC dst; } N432BC;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_432BC.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void gl_func_000432BC(s32 arg0, f32 *m, s32 arg2) {
-    I432BC it;
-    N432BC *o;
-    V432BC *dst;
-    V432BC t;
-    
-    if (1) { I432BC *q = &it; }
-    it.next = *(L432BC **)((char *)&D_00000000 + 0x18C); if (1) {}
-    o = (N432BC *)((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0);
-    while (o != 0) {
-        dst = &o->dst;
-        if (!(o->flags & 0x80)) {
-            if (arg2 != 0) {
-                o->dst.x = -o->src.x; o->dst.y = -o->src.y; o->dst.z = -o->src.z;
-            } else {
-                t = o->src;
-                o->dst.x = t.x; o->dst.y = t.y; o->dst.z = t.z;
-            }
-            gl_func_00034458(dst, arg0);
-            { f32 vx = o->dst.x, vy = o->dst.y, vz = o->dst.z;
-            f32 x = m[8] * vz + (m[4] * vy + m[0] * vx);
-            f32 y = m[9] * vz + (m[5] * vy + m[1] * vx);
-            f32 z = m[10] * vz + (m[6] * vy + m[2] * vx);
-            o->dst.x = x; o->dst.y = y; o->dst.z = z; }
-            gl_func_00034458(dst);
-        }
-        o = (N432BC *)((it.cur = it.next) != 0 ? (it.next = it.cur->next, it.cur->data) : 0);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000432BC);
-#endif
 
 /* game_libs_func_00043468 (0xF0, 60 words): the 7-word game_libs_func_00043468
  * orphan + gl_func_00043484 are ONE function -- bootup.uso Sym exports text
