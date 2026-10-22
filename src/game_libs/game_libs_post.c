@@ -9774,7 +9774,7 @@ void game_libs_func_00027C48(char *arg0, f32 arg1) {
 //   Real-C STRUCTURAL body below per the analysis (placeholder calls
 //   / fields). Byte-match deferred.
 //   Name pre-checked: no extern reuse (collision-safe).
-#ifdef NON_MATCHING
+/* 2026-10-22 (agent-c run 120) EXACT: the nibble clear is a double mask (f60 & 0xFFFF & ~0xF) -- permuter find; the single 0xFFF0 mask allocated the store temps one register off. */
 extern int gl_func_00000000();
 void gl_func_00027D00(int *obj) {
     int *p = *(int **)((char *)obj + 0x44);
@@ -9790,16 +9790,13 @@ void gl_func_00027D00(int *obj) {
     }
     f60 = *(unsigned char *)((char *)obj + 0x60);
     *(unsigned char *)((char *)obj + 0x34) = 0;
-    *(unsigned char *)((char *)obj + 0x60) = (f60 & 0xFFF0) | 1;
+    *(unsigned char *)((char *)obj + 0x60) = (f60 & 0xFFFF & ~0xF) | 1;
     tmpl = (int *)&D_00000000;
     {
         struct Blk8 { int w[8]; };
         *(struct Blk8 *)((char *)obj + 0xB0) = *(struct Blk8 *)tmpl;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00027D00);
-#endif
 
 /* game_libs_func_00027DC0: object reset. If bit30 of a0->0xB0 is set, clear its
  * bit6; then clear bits 7 and 5 of a0->0xB0, zero the bytes at 0x30/0x34, set

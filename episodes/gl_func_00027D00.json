@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00027D00",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T19:44:14.524965+00:00",
+  "end_time": "2026-10-22T19:44:14.524965+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T19:44:14.524965+00:00",
+      "assistant_text": "Double mask f60 & 0xFFFF & ~0xF for the nibble clear (permuter).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 73,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_00027D00 \u2014 STRUCTURAL PASS (0x124 / 73 words, no episode).\n// Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle\n// (named fn + 1 trailing helper) \u2014 deferred USO re-split. The named\n// leading fn pulls a transform from a linked source object and\n// applies it into the object's matrix/flag block.\n//\n//   void gl_func_00027D00(O *obj) {\n//     P *p = obj->w_44;                                 // source obj\n//     if (p->b_18 != 0) {\n//       (*ha)(&obj->_36, p->w_1C, \u2026);                    // jal 0 USO\n//     } else {\n//       (*hb)(&obj->_60, p->w_1C);                        // jal 0 USO\n//     }\n//     T *t = p->w_50;\n//     obj->b_34 = 0;                                       // clear flag\n//     obj->b_60 = (obj->b_60 & 0xF0) | 1;                  // set bit0\n//     obj->w_B0 = t->w_0;                                  // copy a\n//     obj->w_B4 = t->w_4;                                  //  4-word\n//     obj->w_B8 = t->w_8;                                  //  block\n//     obj->w_BC = t->w_C;                                  //  (Vec4/row)\n//     obj->f_70 = \u2026;                                        // swc1 +0x70\n//   }\n//\n// Struct-typing reference: applies a transform from a linked source.\n//   obj->0x44 is a pointer to the source object P; byte P->0x18 is a\n//   mode gate selecting which USO-relocated handler runs (`jal 0`\n//   slots) with obj sub-blocks at +0x36 / +0x60 and P->0x1C. P->0x50\n//   points to a 4-word value block (matrix row / Vec4) that is copied\n//   verbatim into obj->0xB0..0xBC (the same +0xB0 block\n//   gl_func_00027804 manipulates). obj flag byte +0x34 is cleared and\n//   +0x60 has its low nibble reset with bit0 set (a dirty/ready\n//   marker); float obj->0x70 is written. The \"pull-and-apply linked\n//   transform\" entry of the game_libs object subsystem.\n// Caps (DEFERRED): raw-word USO bundle + jal-0 USO-reloc handlers \u2014\n//   byte-match needs USO mnemonic disasm + reloc-pad jal infra.\n//   Real-C STRUCTURAL body below per the analysis (placeholder calls\n//   / fields). Byte-match deferred.\n//   Name pre-checked: no extern reuse (collision-safe).\n/* 2026-10-22 (agent-c run 120) EXACT: the nibble clear is a double mask (f60 & 0xFFFF & ~0xF) -- permuter find; the single 0xFFF0 mask allocated the store temps one register off. */\nextern int gl_func_00000000();\nvoid gl_func_00027D00(int *obj) {\n    int *p = *(int **)((char *)obj + 0x44);\n    int *tmpl;\n    unsigned char f60;\n    if (*(unsigned char *)((char *)p + 0x18) == 0) {\n        gl_func_00000000((char *)obj + 0x60,\n                         *(int *)(*(char **)((char *)p + 0x50) + 0x90),\n                         (char *)obj + 0x36);\n    } else {\n        gl_func_00000000((char *)obj + 0x60, *(int *)((char *)p + 0x1C),\n                         (char *)obj + 0x36);\n    }\n    f60 = *(unsigned char *)((char *)obj + 0x60);\n    *(unsigned char *)((char *)obj + 0x34) = 0;\n    *(unsigned char *)((char *)obj + 0x60) = (f60 & 0xFFFF & ~0xF) | 1;\n    tmpl = (int *)&D_00000000;\n    {\n        struct Blk8 { int w[8]; };\n        *(struct Blk8 *)((char *)obj + 0xB0) = *(struct Blk8 *)tmpl;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00027D00.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
