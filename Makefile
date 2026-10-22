@@ -283,6 +283,14 @@ build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/b
 # NON_MATCHING clip: our -O0 emits each fn's extra dead `b epi; nop` BEFORE its
 # epilogue (return-value dead-double-b gap), so a tail clip could not remove it.
 build/src/bootup_uso/bootup_uso_o0_11E00.c.o: TRUNCATE_TEXT := 0x27C
+# 11E00/11ED4/11FA8 = the -O0 slot-mask triplet, EXACT as IDO 7.1 NCC -O0 donors:
+# edg's -O0 ucode has no closing-brace marker, so the cfe dead `b epi; nop`
+# pair (return-value dead-double-b gap) is gone. Same TRUNCATE in the NM tree.
+build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x27C
+BOOTUP_11E00_DONOR := build/src/bootup_uso/bootup_uso_ncc_11E00.cpp.o
+$(BOOTUP_11E00_DONOR): OPT_FLAGS := -O0
+build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: REPLACE_FUNC_BODY += func_00011E00=$(BOOTUP_11E00_DONOR) func_00011ED4=$(BOOTUP_11E00_DONOR) func_00011FA8=$(BOOTUP_11E00_DONOR)
+build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: $(BOOTUP_11E00_DONOR)
 build/src/bootup_uso/bootup_uso_o0_1207C.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_1207C.c.o: OPT_FLAGS := -O0
 # 0x2C = two frameless -O0 FALL-OFF fns (1207C 0xC + its dead `$exit` pair
 # "12088", 12090 0x10 + its pair "120A0"); -O0 emits exactly this, the

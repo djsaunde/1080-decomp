@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00011E00",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:34:33.207011+00:00",
+  "end_time": "2026-10-22T16:34:33.207011+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:34:33.207011+00:00",
+      "assistant_text": "C++ -O0 donor: NCC's -O0 drops the cfe dead closing-brace branch.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 53,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donors for func_00011E00 / func_00011ED4 / func_00011FA8\n * (0xD4 / 53 words each): \"first slot whose mask word (+0x18 / +0x10 / +0x1C)\n * has an a1 bit\" (slot[] = a0 + 0xE0, a0->[0x128] == -1 scans all a0->[0x120]\n * slots). bootup_uso is C++: under cfe -O0 every fn carried an extra dead\n * `b epi; nop` pair before the epilogue (the closing-brace marker of the\n * return-value dead-double-b gap); edg's -O0 ucode has no such marker, so the\n * same body compiles to the shipped 53 words.\n * Spliced into bootup_uso_o0_11E00.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" int func_00011E00(register int *a0, register int a1) {\n    int i;\n    register int *p;\n    if (a0[0x18C/4] == 0) {\n        if (a0[0x128/4] == -1) {\n            i = 0;\n            if (a0[0x120/4] > 0) do {\n                p = (int*)a0[0xE0/4 + i];\n                if (p[0x18/4] & a1) return 1 << i;\n            } while (++i < a0[0x120/4]);\n            goto ret0;\n        }\n        p = (int*)a0[0xE0/4 + a0[0x128/4]];\n        if (p[0x18/4] & a1) return 1 << a0[0x128/4];\n    }\nret0:\n    return 0;\n}\n\nextern \"C\" int func_00011ED4(register int *a0, register int a1) {\n    int i;\n    register int *p;\n    if (a0[0x18C/4] == 0) {\n        if (a0[0x128/4] == -1) {\n            i = 0;\n            if (a0[0x120/4] > 0) do {\n                p = (int*)a0[0xE0/4 + i];\n                if (p[0x10/4] & a1) return 1 << i;\n            } while (++i < a0[0x120/4]);\n            goto ret0;\n        }\n        p = (int*)a0[0xE0/4 + a0[0x128/4]];\n        if (p[0x10/4] & a1) return 1 << a0[0x128/4];\n    }\nret0:\n    return 0;\n}\n\nextern \"C\" int func_00011FA8(register int *a0, register int a1) {\n    int i;\n    register int *p;\n    if (a0[0x18C/4] == 0) {\n        if (a0[0x128/4] == -1) {\n            i = 0;\n            if (a0[0x120/4] > 0) do {\n                p = (int*)a0[0xE0/4 + i];\n                if (p[0x1C/4] & a1) return 1 << i;\n            } while (++i < a0[0x120/4]);\n            goto ret0;\n        }\n        p = (int*)a0[0xE0/4 + a0[0x128/4]];\n        if (p[0x1C/4] & a1) return 1 << a0[0x128/4];\n    }\nret0:\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_11E00.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00011E00.s",
+    "segment": "bootup_uso_o0_11E00",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O0 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
