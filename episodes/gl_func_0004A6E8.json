@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004A6E8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:32:57.417666+00:00",
+  "end_time": "2026-10-22T20:32:57.417666+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:32:57.417666+00:00",
+      "assistant_text": "Raw diff exposed a decode-order error: the 0xD8 clear precedes the first call (it fills that jal's delay slot). Frame 48->40 by block-scoping the g pointer; dst declared before i puts its spill home at sp+36.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 55,
+  "initial_m2c_source": null,
+  "final_source": "/* EXACT (agent-c run 121): 0xD8 store before the first call; g block-scoped; dst declared before i (frame 40, dst home at 36). */\n/* gl_func_0004A6E8: init + s16-copy. Decoded from bare stub\n * 2026-05-19. void f(int *self):\n *   self->0xC8=self->0xCC=self->0xC0=self->0xC4=self->0xD8 = 0;\n *   cb1();  cb2(self);\n *   g = *(int*)(&D_00000000 + 0x214);\n *   self->0xD6 = (u16)((*(int**)((char*)g + 0x1C))[1]);   // g->0x1C->4\n *   dst = cb3((self->0xD6 - self->0xD4) * 2);              // alloc buffer\n *   for (i = 0; i < self->0xD6 - self->0xD4; i++)          // count reloaded\n *       *(short*)(dst + i*2) = *(short*)(self->0xD0 + i*2);\n * Multi-idiom (defer): 4 jal-0 (cb1/cb2/cb3 + the copy uses no\n * call), the count `self->0xD6 - self->0xD4` is reloaded EVERY\n * iteration (lh D4; lh D6; subu) \u2014 uncached; loop back-edge is\n * `slt at,i,count; bnel at,0,TOP; lw t3,0xD0(s0) [delay-likely]`;\n * dst advances via `addiu a1,a1,2; sh t5,-2(a1)` (post-advance\n * store). cb3's result is the buffer base. Documented-hard\n * loop+reload+bnel-likely shape \u2014 focused-pass. Real decoded C\n * preserved; INCLUDE_ASM build path. */\nextern int gl_func_00000000();\nextern int D_00000000;\nvoid gl_func_0004A6E8(int *self) {\n    short *dst;\n    int i;\n    *(int *)((char *)self + 0xC8) = 0;\n    *(int *)((char *)self + 0xCC) = 0;\n    *(int *)((char *)self + 0xC0) = 0;\n    *(int *)((char *)self + 0xC4) = 0;\n    *(int *)((char *)self + 0xD8) = 0;\n    gl_func_00000000();\n    gl_func_00000000(self);\n    {\n        int *g = *(int **)((char *)&D_00000000 + 0x214);\n        *(short *)((char *)self + 0xD6) =\n            (*(int **)((char *)g + 0x1C))[1];\n    }\n    dst = (short *)gl_func_00000000(\n        (*(short *)((char *)self + 0xD6) -\n         *(short *)((char *)self + 0xD4)) * 2);\n    for (i = 0; i < *(short *)((char *)self + 0xD6) -\n                    *(short *)((char *)self + 0xD4); i++) {\n        dst[i] = *(short *)(*(int *)((char *)self + 0xD0) + i * 2);\n    }\n    gl_func_00000000(&D_00000000, *(int *)((char *)self + 0xD0));\n    *(int *)((char *)self + 0xD0) = (int)dst;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004A6E8.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

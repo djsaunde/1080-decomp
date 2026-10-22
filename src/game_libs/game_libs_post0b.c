@@ -16681,7 +16681,7 @@ int *gl_func_0004A670(int *a0, int a1, int a2, int a3) {
     return a0;
 }
 
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 121): 0xD8 store before the first call; g block-scoped; dst declared before i (frame 40, dst home at 36). */
 /* gl_func_0004A6E8: init + s16-copy. Decoded from bare stub
  * 2026-05-19. void f(int *self):
  *   self->0xC8=self->0xCC=self->0xC0=self->0xC4=self->0xD8 = 0;
@@ -16702,19 +16702,20 @@ int *gl_func_0004A670(int *a0, int a1, int a2, int a3) {
 extern int gl_func_00000000();
 extern int D_00000000;
 void gl_func_0004A6E8(int *self) {
-    int i;
-    int *g;
     short *dst;
+    int i;
     *(int *)((char *)self + 0xC8) = 0;
     *(int *)((char *)self + 0xCC) = 0;
     *(int *)((char *)self + 0xC0) = 0;
     *(int *)((char *)self + 0xC4) = 0;
-    gl_func_00000000();
     *(int *)((char *)self + 0xD8) = 0;
+    gl_func_00000000();
     gl_func_00000000(self);
-    g = *(int **)((char *)&D_00000000 + 0x214);
-    *(short *)((char *)self + 0xD6) =
-        (*(int **)((char *)g + 0x1C))[1];
+    {
+        int *g = *(int **)((char *)&D_00000000 + 0x214);
+        *(short *)((char *)self + 0xD6) =
+            (*(int **)((char *)g + 0x1C))[1];
+    }
     dst = (short *)gl_func_00000000(
         (*(short *)((char *)self + 0xD6) -
          *(short *)((char *)self + 0xD4)) * 2);
@@ -16725,9 +16726,6 @@ void gl_func_0004A6E8(int *self) {
     gl_func_00000000(&D_00000000, *(int *)((char *)self + 0xD0));
     *(int *)((char *)self + 0xD0) = (int)dst;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004A6E8);
-#endif
 
 
 
