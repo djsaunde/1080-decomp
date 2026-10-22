@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00040E90",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:04:15.846244+00:00",
+  "end_time": "2026-10-22T16:04:15.846244+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:04:15.846244+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, inline first(), implicit Rec operator=, dead block local. list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 93,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00040E90 (0x174 / 93 words): for every child\n * with flag 0x20000, copy its source record (three V3 + a float, the implicit\n * Rec::operator= through the by-value V3 temp at sp+60) into the cached one,\n * or hand both to a callee with the owner's 0xDC block; then fire virtual\n * slot 1. Entry next() via an inline first() { return next(); }; one dead\n * block-scope int at the end of the loop body buys the bottom frame slots.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nstruct V3 {\n    float x, y, z;\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void operator=(V3 v) { set(v); }\n};\nstruct Rec { V3 a, b, c; float w; };\nstruct ObjB { char pad[8]; int flags; char pad0c[0x1C];\n    virtual void v0(); virtual void tick(); };\nstruct Obj : ObjB { char pad2c[0x88]; Rec src; Rec dst; };\nstruct Link { Obj *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *h) { nxt = h; }\n    Obj *first() { return next(); }\n    Obj *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Own { char pad[0x10]; Link *head; char pad14[0x18]; int flags; char pad30[0xAC]; char xdc[4]; };\nextern \"C\" void gl_func_00040E90(Own *ow) {\n    Iter it(ow->head);\n\n    for (Obj *o = it.first(); o; o = it.next()) {\n        if (o->flags & 0x20000) {\n            if (ow->flags & 2) o->dst = o->src;\n            else gl_func_00000000(ow->xdc, &o->src, &o->dst);\n        }\n        o->tick();\n        { int z0; z0 = 0; }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_40E90.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00040E90.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
