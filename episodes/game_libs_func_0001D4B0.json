@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0001D4B0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:38:01.355551+00:00",
+  "end_time": "2026-10-22T21:38:01.355551+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:38:01.355551+00:00",
+      "assistant_text": "Exact. The frame residue (0x30 vs 0x28) was the named record pointer: cfe reserves a word for it and spills it to a separate temp. Written as an expression macro, &GLYPHTAB[a1] is CSE'd into one temp whose spill lands at sp+32 with the a2 temp at sp+24, frame 0x28. int k in the if-block keeps the (short) sign-extension; dl carries the reserve() result.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 41,
+  "initial_m2c_source": null,
+  "final_source": "// game_libs_func_0001D4B0 -- MERGED 2026-09-09 (agent-c): the 4-word orphan\n// `li t0,0x158; multu a1,t0; lui v0; addiu v0` was the hoisted record-index head of\n// gl_func_0001D4C0 (splat mis-split; 0x1D4C0 is a mid-function word, neither address\n// is in bootup.uso's Sym export table -- the fn is TU-local, reached by the BAKED\n// `jal 0x0C00C6C7` from gl_func_0001DCB4 @0x1DFF0). One symbol, 0xA4 / 41 words;\n// the 1D4C0 wrap (10.5) + .s retired.\n//\n// Glyph DL emit: rec = &registry[a1] (sym1255 @ Data 0x345C0, addend 0, stride 0x158);\n// if registry[rec->k].flag == 1: p = reserve(dl, (short)rec->k, (short)a2) [baked\n// jal 0x31648 = gl_func_0001CFDC]; p[0] = rec->w20 | 0x0C340000; p[1] = 0x0C8003E0;\n// dl = submit(p + 2, rec->k, (short)a2) [baked jal 0x31718 = gl_func_0001D0AC];\n// return dl. The baked jals are the absolute `gl_ref_<section>` symbols (0x0C00C592 /\n// 0x0C00C5C6), same class as gl_func_00025C54's gl_ref_0003A268.\n//\n// NM 4 words short of exact -- the 41-word BODY is byte-identical to the target\n// (colouring, spill slots 0x18/0x20, temp ring, store order all exact); the residual\n// is the FRAME: 0x30 vs 0x28 (prologue/epilogue addiu + the a2 home 0x38 vs 0x30).\n// Levers that were required (docs/IDO_CODEGEN.md#hoisted-record-index-head-int-param-short-cast-spill-1d4b0):\n//   (1) `int a2` + `(short)a2` at BOTH call sites -> IDO narrows a homed int param\n//       through memory (`sw a2,home; lh a2,home+2`) and the CSE'd conversion is a\n//       temp SPILLED across the first call (`sw a2,0x18` in the jal delay, `lw` after);\n//       a `short a2` param re-narrows from the home instead (`lh a2,0x32(sp)`) and\n//       never spills;\n//   (2) `(rec->w20 & 0xFFFF)` on the already-u16 field = zero-emission phantom alloc\n//       that re-phases the post-call ugen ring to t2/t3/t4 (t1 otherwise);\n//   (3) `Rec *e = &TAB[a1]` named at function scope and `int k = e->k` named in the\n//       if-block (bitpos AFTER base and e) -> base=v0, e=v1, k=a3 with the sll/sra\n//       conversion; every temp/int-typed spelling of k colours it v0 first.\n// The frame residual: the target has ONE named-local home (0x24) above the a2 temp\n// (0x18), a phantom slot (0x1C) and e's spill (0x20); this shape needs three named\n// locals (e, p, k) = two extra 4-byte homes (0x28/0x2C). Every 1- or 2-name spelling\n// tried (k as a CSE temp with `+0`/`(int)`/`|0`, `a1 = e->k` param web in head or\n// body, k+p sharing one `int`, `register`, nested-scope overlay, while(0) boosts,\n// a0-as-cursor) either flips k back to v0 or spawns phantom templocs (frame 0x30 with\n// the spills at 0x1C/0x24). Genuine remaining gap = one named-local home.\n/* EXACT (agent-c run 122): the record pointer is an expression, not a named local, so its cross-call spill is a temp (sp+32) and the frame is 0x28; int k in the if-block keeps the (short) narrowing; dl carries the reserve() result. */\ntypedef struct {\n    char pad0[0x1C];\n    unsigned char flag;   /* +0x1C: emit gate, must be 1 */\n    signed char k;        /* +0x1D: target record index */\n    char pad1[2];\n    unsigned short w20;   /* +0x20: DL word0 low half */\n    char pad2[0x158 - 0x22];\n} GlyphRec1D4B0;\n#define GLYPHTAB_1D4B0 ((GlyphRec1D4B0 *)&D_00000000)\nextern int *gl_ref_00031648(); /* baked USO jal 0x0C00C592 -> 0x31648 (= gl_func_0001CFDC, TU-local) */\nextern int gl_ref_00031718();  /* baked USO jal 0x0C00C5C6 -> 0x31718 (= gl_func_0001D0AC, TU-local) */\nint game_libs_func_0001D4B0(int dl, int a1, int a2) {\n#define e (&GLYPHTAB_1D4B0[a1]) /* unnamed: its cross-call spill is a temp, not a declared-local word */\n    if (GLYPHTAB_1D4B0[e->k].flag == 1) {\n        int k = e->k;\n        dl = (int)gl_ref_00031648(dl, (short)k, (short)a2);\n        ((int *)dl)[0] = (e->w20 & 0xFFFF) | 0x0C340000;\n        ((int *)dl)[1] = 0x0C8003E0;\n        dl = gl_ref_00031718((int *)dl + 2, e->k, (short)a2);\n    }\n    return dl;\n#undef e\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0001D4B0.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

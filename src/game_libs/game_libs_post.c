@@ -524,7 +524,7 @@ gl_1D3E0_Gfx *game_libs_func_0001D3E0(gl_1D3E0_Gfx *gfx, int a1, int a2) {
 // body, k+p sharing one `int`, `register`, nested-scope overlay, while(0) boosts,
 // a0-as-cursor) either flips k back to v0 or spawns phantom templocs (frame 0x30 with
 // the spills at 0x1C/0x24). Genuine remaining gap = one named-local home.
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122): the record pointer is an expression, not a named local, so its cross-call spill is a temp (sp+32) and the frame is 0x28; int k in the if-block keeps the (short) narrowing; dl carries the reserve() result. */
 typedef struct {
     char pad0[0x1C];
     unsigned char flag;   /* +0x1C: emit gate, must be 1 */
@@ -537,20 +537,17 @@ typedef struct {
 extern int *gl_ref_00031648(); /* baked USO jal 0x0C00C592 -> 0x31648 (= gl_func_0001CFDC, TU-local) */
 extern int gl_ref_00031718();  /* baked USO jal 0x0C00C5C6 -> 0x31718 (= gl_func_0001D0AC, TU-local) */
 int game_libs_func_0001D4B0(int dl, int a1, int a2) {
-    GlyphRec1D4B0 *e = &GLYPHTAB_1D4B0[a1];
+#define e (&GLYPHTAB_1D4B0[a1]) /* unnamed: its cross-call spill is a temp, not a declared-local word */
     if (GLYPHTAB_1D4B0[e->k].flag == 1) {
-        int *p;
         int k = e->k;
-        p = gl_ref_00031648(dl, (short)k, (short)a2);
-        p[0] = (e->w20 & 0xFFFF) | 0x0C340000;
-        p[1] = 0x0C8003E0;
-        dl = gl_ref_00031718(p + 2, e->k, (short)a2);
+        dl = (int)gl_ref_00031648(dl, (short)k, (short)a2);
+        ((int *)dl)[0] = (e->w20 & 0xFFFF) | 0x0C340000;
+        ((int *)dl)[1] = 0x0C8003E0;
+        dl = gl_ref_00031718((int *)dl + 2, e->k, (short)a2);
     }
     return dl;
+#undef e
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D4B0);
-#endif
 
 void game_libs_func_0001D554(void) {}
 
