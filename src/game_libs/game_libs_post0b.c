@@ -276,27 +276,29 @@ void gl_func_00034684(void) {
 //   below per the analysis. Byte-match deferred. Name pre-checked:
 //   no extern reuse.
 #ifdef NON_MATCHING
-void gl_func_000346F0(int a0, char *fmt, void *args) {
-    char *gbuf = *(char **)((char *)&D_00000000 + 8);
-    char buf[0x108];
-    int len;
+/* 2026-10-22 (agent-c run 120) RE-DECODE (42.3 -> 4 words off): the old body was the
+ * wrong function shape. Real one: if (*(D+8)) G(*(D+8), 0, src, n); clamp n to 255;
+ * copy src[0..n) into a 256-byte stack buffer through a separate write index; write
+ * two NULs; return 1. Residual: the target ends the unrolled copy on the src pointer
+ * (LFTR, `bne v1,a3` with a3 = src + n); IDO here keeps the counter. */
+int gl_func_000346F0(int a0, char *src, int n) {
     int i;
-    int n;
-    (void)a0;
-    if (gbuf == 0) return;
-    len = gl_func_00000000(gbuf, fmt, args);
-    if (len > 0xFF) len = 0xFF;
-    if (len <= 0) return;
-    n = len & 3;
-    for (i = 0; i != n; i++) {
-        buf[i] = gbuf[i];
+    int k2;
+    char buf[256];
+    int j;
+    int g = *(int *)((char *)&D_00000000 + 8);
+    int k;
+    if (g != 0) {
+        gl_func_00000000(g, 0, src, n);
     }
-    for (; i < len; i += 4) {
-        buf[i + 0] = gbuf[i + 0];
-        buf[i + 1] = gbuf[i + 1];
-        buf[i + 2] = gbuf[i + 2];
-        buf[i + 3] = gbuf[i + 3];
+    if (n >= 255) {
+        n = 255;
     }
+    j = 0; for (i = 0; i < n; i++) { k = j++; buf[k] = src[i]; } k2 = j++; buf[k2] = 0;
+    if (!i) {
+    }
+    buf[j] = 0;
+    return 1;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000346F0);
