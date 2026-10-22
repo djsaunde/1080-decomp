@@ -899,6 +899,7 @@ void gl_func_00034E8C(int a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_00034EB4)();
+extern int D_34EB4_flags; /* distinct zero alias: the flags test must not share base's s3 */
 #define DB ((char *)&D_00000000)
 void gl_func_00034EB4(char *arg0, char *arg1) {
     int (*temp_v0_5)();
@@ -916,7 +917,7 @@ void gl_func_00034EB4(char *arg0, char *arg1) {
     int var_s4;
 
     gl_func_00034458(DB + 0x1E47C);
-    if (*(int *)DB & 1) {
+    if (D_34EB4_flags & 1) {
         gl_func_00034458();
     }
     t0 = DB + 0x1E484;
