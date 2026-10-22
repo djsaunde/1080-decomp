@@ -1984,6 +1984,15 @@ extern char D_timb5_2B74_vf0, D_timb5_2B74_vf1, D_timb5_2B74_vf2, D_timb5_2B74_v
 struct TimB5V3 { f32 x, y, z; };
 struct TimB5Nm { char *v; };
 #define B5_NAME(sym, lo) (*(char **)((char *)&sym + (lo)))
+/* 2026-10-22 agent-g run 117: 3018 recipe ported -> 450/469 words. Rows
+ * 0-10 are `uK.v = NAME; nm = uK;` (struct copy); row 11 and the two vec
+ * children are `uK = *(struct TimB5Nm *)&G; nm.v = uK.v;` -- with a 12th
+ * struct copy into nm, uopt switches EVERY copy of nm to a held &nm pointer
+ * (s1 = sp+172; docs/IDO_CODEGEN.md#struct-copy-count-pointer-switch-2b74).
+ * One function-scope c (shared home 176) plus cA/cB for the vec children;
+ * the vec values are named floats f/g/h assigned like cfront inline-ctor
+ * parameters (f/g loaded on both alloc paths). LEFT: g and the zero swap
+ * $f0/$f12 (target zero=$f0, g=$f12) in both vec blocks. */
 char *timproc_uso_b5_func_00002B74(char *arg0) {
     struct TimB5Nm u0;
     struct TimB5Nm u1;
@@ -2005,19 +2014,39 @@ char *timproc_uso_b5_func_00002B74(char *arg0) {
     struct TimB5V3 vD;
     struct TimB5V3 vE;
     struct TimB5Nm u13;
+    volatile s32 padA1;
+    volatile s32 padA2;
+    volatile s32 padA3;
+    char *c;
+    struct TimB5Nm nm;
+    volatile s32 padB0;
+    volatile s32 padB1;
+    volatile s32 padB2;
+    volatile s32 padB3;
+    volatile s32 padB4;
+    volatile s32 padB5;
+    volatile s32 padB6;
+    char *cA;
+    volatile s32 padC0;
+    struct TimB5V3 cp0;
+    volatile s32 padD0;
+    struct TimB5V3 cp1;
+    volatile s32 padE0;
+    struct TimB5V3 cp2;
+    volatile s32 padF0;
+    volatile s32 padF1;
+    volatile s32 padF2;
+    struct TimB5V3 t;
+    volatile s32 padG0;
+    volatile s32 padG1;
+    volatile s32 padG2;
+    f32 h;
+    char *cB;
     char *vt;
     f32 f;
     f32 g;
-    struct TimB5Nm nm;
-    struct TimB5V3 cp0;
-    struct TimB5V3 cp1;
-    struct TimB5V3 cp2;
-    struct TimB5V3 t;
 
-    if (0) {
-        timproc_uso_b5_func_04A188(&u0, &u1, &u2, &u3, &u4, &u5, &u6, &u7,
-            &u8, &u9, &u10, &u11, &u12, &u13);
-    }
+    if (1) { struct TimB5Nm *q = &u0; q = &u1; q = &u2; q = &u3; q = &u4; q = &u5; q = &u6; q = &u7; q = &u8; q = &u9; q = &u10; q = &u11; q = &u12; q = &u13; }
 
     if (arg0 != 0 || (arg0 = (char *)timproc_uso_b5_func_055750(0x168)) != 0) {
         vt = arg0;
@@ -2025,89 +2054,78 @@ char *timproc_uso_b5_func_00002B74(char *arg0) {
             FW(vt, 0x0) = (int)((char *)&timproc_uso_b5_D_807FE9A0 + 0x1130);
             FW(vt, 0x4) = 0;
         }
-        nm.v = u0.v = B5_NAME(timproc_uso_b5_D_807FE9B0, 0x1140);
+        u0.v = B5_NAME(timproc_uso_b5_D_807FE9B0, 0x1140); nm = u0;
         {
-            register char *c;
             if ((c = arg0 + 0x8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt0 + 0x1A0), FW(c, 0x10) = 0x52, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u1.v = B5_NAME(timproc_uso_b5_D_807FE9B4, 0x1144);
+        u1.v = B5_NAME(timproc_uso_b5_D_807FE9B4, 0x1144); nm = u1;
         {
-            register char *c;
             if ((c = arg0 + 0x20) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt1 + 0x1A0), FW(c, 0x10) = 0x12, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u2.v = B5_NAME(timproc_uso_b5_D_807FE9B8, 0x1148);
+        u2.v = B5_NAME(timproc_uso_b5_D_807FE9B8, 0x1148); nm = u2;
         {
-            register char *c;
             if ((c = arg0 + 0x38) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt2 + 0x1A0), FW(c, 0x10) = 0x52, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u3.v = B5_NAME(timproc_uso_b5_D_807FE9BC, 0x114C);
+        u3.v = B5_NAME(timproc_uso_b5_D_807FE9BC, 0x114C); nm = u3;
         {
-            register char *c;
             if ((c = arg0 + 0x50) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt3 + 0x1A0), FW(c, 0x10) = 0x26, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u4.v = B5_NAME(timproc_uso_b5_D_807FE9C0, 0x1150);
+        u4.v = B5_NAME(timproc_uso_b5_D_807FE9C0, 0x1150); nm = u4;
         {
-            register char *c;
             if ((c = arg0 + 0x68) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt4 + 0x1A0), FW(c, 0x10) = 0x52, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u5.v = B5_NAME(timproc_uso_b5_D_807FE9C4, 0x1154);
+        u5.v = B5_NAME(timproc_uso_b5_D_807FE9C4, 0x1154); nm = u5;
         {
-            register char *c;
             if ((c = arg0 + 0x80) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt5 + 0x1A0), FW(c, 0x10) = 0x26, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u6.v = B5_NAME(timproc_uso_b5_D_807FE9C8, 0x1158);
+        u6.v = B5_NAME(timproc_uso_b5_D_807FE9C8, 0x1158); nm = u6;
         {
-            register char *c;
             if ((c = arg0 + 0x98) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt6 + 0x1A0), FW(c, 0x10) = 0x52, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u7.v = B5_NAME(timproc_uso_b5_D_807FE9CC, 0x115C);
+        u7.v = B5_NAME(timproc_uso_b5_D_807FE9CC, 0x115C); nm = u7;
         {
-            register char *c;
             if ((c = arg0 + 0xB0) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt7 + 0x1A0), FW(c, 0x10) = 0x12, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u8.v = B5_NAME(timproc_uso_b5_D_807FE9D0, 0x1160);
+        u8.v = B5_NAME(timproc_uso_b5_D_807FE9D0, 0x1160); nm = u8;
         {
-            register char *c;
             if ((c = arg0 + 0xC8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt8 + 0x1A0), FW(c, 0x10) = 0x52, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u9.v = B5_NAME(timproc_uso_b5_D_807FE9D4, 0x1164);
+        u9.v = B5_NAME(timproc_uso_b5_D_807FE9D4, 0x1164); nm = u9;
         {
-            register char *c;
             if ((c = arg0 + 0xE0) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vt9 + 0x1A0), FW(c, 0x10) = 0x12, FW(c, 0x14) = 0);
             }
         }
-        nm.v = u10.v = B5_NAME(timproc_uso_b5_D_807FE9D8, 0x1168);
+        u10.v = B5_NAME(timproc_uso_b5_D_807FE9D8, 0x1168); nm = u10;
         {
-            register char *c;
             if ((c = arg0 + 0xF8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vv0 + 0x158);
@@ -2115,9 +2133,8 @@ char *timproc_uso_b5_func_00002B74(char *arg0) {
                 *(f32 *)(c + 0x10) = -20.0f;
             }
         }
-        nm.v = u11.v = B5_NAME(timproc_uso_b5_D_807FE9DC, 0x116C);
+        u11 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9DC + 0x116C); nm.v = u11.v;
         {
-            register char *c;
             if ((c = arg0 + 0x110) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
                 timproc_uso_b5_func_04A188(c, arg0, nm, 1);
                 FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vv1 + 0x158);
@@ -2125,49 +2142,46 @@ char *timproc_uso_b5_func_00002B74(char *arg0) {
                 *(f32 *)(c + 0x10) = -20.0f;
             }
         }
-        vA.x = vA.y = vA.z = *(f32 *)((char *)&D_timb5_2B74_ve0 + 0x11C);
-        vB.x = vB.y = vB.z = *(f32 *)((char *)&D_timb5_2B74_ve1 + 0x120);
-        vC.x = vC.y = vC.z = 0.0f;
-        u12.v = B5_NAME(timproc_uso_b5_D_807FE9E0, 0x1170);
+        h = 0; vC.x = h; vC.y = h; vC.z = h;
+        u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9E0 + 0x1170);
+        g = *(f32 *)((char *)&D_timb5_2B74_ve1 + 0x120); vB.x = g; vB.y = g; vB.z = g;
+        f = *(f32 *)((char *)&D_timb5_2B74_ve0 + 0x11C); vA.x = f; vA.y = f; vA.z = f;
+        cp0 = vC; cp1 = vA; cp2 = vB;
         nm.v = u12.v;
-        cp0 = vC;
-        cp1 = vA;
-        cp2 = vB;
         {
-            register char *c;
-            if ((c = arg0 + 0x128) != 0 ||
-                ((c = (char *)timproc_uso_b5_func_055750(0x20)),
+            if ((cA = arg0 + 0x128) != 0 ||
+                ((cA = (char *)timproc_uso_b5_func_055750(0x20)),
                  (f = *(f32 *)((char *)&D_timb5_2B74_vf0 + 0x124)),
-                 (g = *(f32 *)((char *)&D_timb5_2B74_vf1 + 0x128)), (c != 0))) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+                 (g = *(f32 *)((char *)&D_timb5_2B74_vf1 + 0x128)), (h = 0), (cA != 0))) {
+                timproc_uso_b5_func_04A188(cA, arg0, nm, 1);
                 f = *(f32 *)((char *)&D_timb5_2B74_vf2 + 0x12C);
                 g = *(f32 *)((char *)&D_timb5_2B74_vf3 + 0x130);
-                FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vw0 + 0x170);
-                FW(c, 0x1C) = 0;
+                h = 0;
+                FW(cA, 0xC) = (int)((char *)&D_timb5_2B74_vw0 + 0x170);
+                FW(cA, 0x1C) = 0;
                 t = cp0;
-                *(f32 *)(c + 0x10) = t.x;
-                *(f32 *)(c + 0x14) = t.y;
-                *(f32 *)(c + 0x18) = t.z;
+                *(f32 *)(cA + 0x10) = t.x;
+                *(f32 *)(cA + 0x14) = t.y;
+                *(f32 *)(cA + 0x18) = t.z;
             }
         }
-        u13.v = B5_NAME(timproc_uso_b5_D_807FE9E4, 0x1174);
-        vC2.x = vC2.y = vC2.z = 0.0f;
-        vD.x = vD.y = vD.z = f;
-        vE.x = vE.y = vE.z = g;
-        nm.v = u13.v;
+        u13 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FE9E4 + 0x1174);
+        vC2.x = h; vC2.y = h; vC2.z = h;
+        vD.x = f; vD.y = f; vD.z = f;
+        vE.x = g; vE.y = g; vE.z = g;
         cp0 = vC2;
         cp1 = vD;
         cp2 = vE;
+        nm.v = u13.v;
         {
-            register char *c;
-            if ((c = arg0 + 0x148) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
-                FW(c, 0xC) = (int)((char *)&D_timb5_2B74_vw1 + 0x170);
-                FW(c, 0x1C) = 0;
+            if ((cB = arg0 + 0x148) != 0 || (cB = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
+                timproc_uso_b5_func_04A188(cB, arg0, nm, 1);
+                FW(cB, 0xC) = (int)((char *)&D_timb5_2B74_vw1 + 0x170);
+                FW(cB, 0x1C) = 0;
                 t = cp0;
-                *(f32 *)(c + 0x10) = t.x;
-                *(f32 *)(c + 0x14) = t.y;
-                *(f32 *)(c + 0x18) = t.z;
+                *(f32 *)(cB + 0x10) = t.x;
+                *(f32 *)(cB + 0x14) = t.y;
+                *(f32 *)(cB + 0x18) = t.z;
             }
         }
     }
