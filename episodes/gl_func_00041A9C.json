@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00041A9C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:56:53.418464+00:00",
+  "end_time": "2026-10-22T17:56:53.418464+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:56:53.418464+00:00",
+      "assistant_text": "C++ donor: registration calls, two new objects, list walk with an if/return next().",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 169,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00041A9C (0x2A4 / 169 words): debug-menu\n * registration -- sixteen calls, two `new` objects (D41/E41 over the B41 base whose\n * ctor stores the 0x1F4B0 vptr), then a {cur, nxt} list walk calling every child.\n * next() is written as an if/return (kit XIX #2): with the ?: form the first next()\n * result shared the D41 new-expression's edg temp and coloured v1 (target v0).\n * The blank USO refs are distinct symbols pinned at 0 (one shared symbol is CSE'd\n * into s0). Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" void *gl_alloc_2D130(...);\nextern \"C\" char D_00000000[];\nextern \"C\" char D_41A9C_s1[], D_41A9C_s2[], D_41A9C_s3[], D_41A9C_s4[], D_41A9C_s5[];\nextern \"C\" char D_41A9C_s6[], D_41A9C_s7[], D_41A9C_s8[], D_41A9C_s9[], D_41A9C_s10[];\nextern \"C\" char D_41A9C_s12[], D_41A9C_s14[], D_41A9C_s15[], D_41A9C_s16[];\nextern \"C\" char D_41A9C_s17[], D_41A9C_s18[];\nextern \"C\" int D_41A9C_v1[], D_41A9C_v2[], D_41A9C_v3[], D_41A9C_v4[];\nextern \"C\" int D_41A9C_t1[], D_41A9C_t2[];\nstruct Link41A { void *obj; Link41A *next; };\nstruct Iter41A {\n    Link41A *cur, *nxt;\n    Iter41A(Link41A *h) { nxt = h; }\n    void *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->obj; } return 0; }\n    void *get() { return cur->obj; }\n};\ninline void *operator new(unsigned n) { return gl_alloc_2D130(n); }\nstruct B41 {\n    int vt;\n    B41() { vt = (int)(D_00000000 + 0x1F4B0); }\n};\nstruct D41 : B41 { int x; D41() { vt = (int)D_41A9C_v1; x = (int)D_41A9C_v2; } };\nstruct E41 : B41 { int x; E41() { vt = (int)D_41A9C_v3; x = (int)D_41A9C_v4; } };\nstruct Self41A { char pad[0x2C]; Link41A *head; char pad30[0xC]; char name[4]; };\nextern \"C\" void gl_func_00041A9C(Self41A *self) {\n    char buf[64];\n    gl_func_00000000(D_41A9C_s1, D_00000000 + 0x1F658, 0);\n    gl_func_00000000(D_41A9C_s2, D_00000000 + 0x1F65C);\n    gl_func_00000000(self->name, buf);\n    gl_func_00000000(D_41A9C_s3, buf);\n    gl_func_00000000(self->name, buf);\n    gl_func_00000000(D_41A9C_s4, buf);\n    gl_func_00000000(D_41A9C_s5);\n    gl_func_00000000(D_41A9C_s6, D_00000000 + 0x1F668, new D41, 0);\n    gl_func_00000000(D_41A9C_s7, D_00000000 + 0x1F670, D_41A9C_s8, 1);\n    gl_func_00000000(D_41A9C_s9, D_00000000 + 0x1F678, D_41A9C_s10, 4);\n    gl_func_00000000(buf, D_00000000 + 0x1F680, D_41A9C_t1[2], D_41A9C_t1[0]);\n    gl_func_00000000(D_41A9C_s12, buf);\n    gl_func_00000000(buf, D_00000000 + 0x1F690, D_41A9C_t2[2], D_41A9C_t2[0]);\n    gl_func_00000000(D_41A9C_s14, buf);\n    gl_func_00000000(D_41A9C_s15, D_00000000 + 0x1F6A0, new E41, 1);\n    gl_func_00000000(D_41A9C_s16, D_00000000 + 0x1F6AC);\n    for (Iter41A it(self->head); it.next(); )\n        gl_func_00000000(it.get());\n    gl_func_00000000(D_41A9C_s17);\n    gl_func_00000000(D_41A9C_s18);\n    gl_func_00000000(self);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_41A9C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00041A9C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
