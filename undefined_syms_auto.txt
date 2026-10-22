@@ -4053,3 +4053,4 @@ __nw__FUi = 0x00000000;  /* global operator new in NCC donors = blank USO import
 D_00007350 = 0x00007350;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
 D_00007398 = 0x00007398;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
 D_00007490 = 0x00007490;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
+gl_d_0001F970 = 0x0001F970;  /* gl_func_00047F9C NCC donor: baked USO data address (lui 0x2 / addiu -1680) */

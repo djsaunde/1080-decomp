@@ -16172,64 +16172,10 @@ void game_libs_func_00047F68(int *a0, int a1) {
 // node->0xE0 copy, the cb1 dispatch and the &D_0002F970 default are exact.
 // Trailing 2 leaves = deferred re-split. Caps: node struct + cb signature
 // untyped; bundle re-split deferred. Full body INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00047F9C)();
-typedef struct { f32 unk0,unk4,unk8,unkC,unk10,unk14,unk18,unk1C; } Q_00047F9C;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_47F9C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
 void gl_func_00047F9C(char *arg0) {
-    Q_00047F9C sp3C;
-    Q_00047F9C sp4C;
-    char **sp6C;
-    char **sp68;
-    char **temp_t5;
-    char **temp_t6;
-    char *var_s0;
-    char *var_v0;
-    char *var_v0_2;
-
-    sp6C = FW(arg0, 0x18C);
-    var_v0 = 0;
-    sp68 = sp6C;
-    if (sp6C != 0) {
-        var_v0 = FW(sp6C, 0x0);
-        sp6C = FW(sp6C, 0x4);
-    }
-    var_s0 = var_v0;
-    if (var_v0 != 0) {
-        do {
-            FW(var_s0, 0xE0) = (s32) (*(s32*)((char*)&D_00000000 + 0x1F970));
-            sp4C.unk0 = (*(f32*)((char*)var_s0 + 0xA0));
-            sp4C.unk4 = (*(f32*)((char*)var_s0 + 0xA4));
-            sp4C.unk8 = (*(f32*)((char*)var_s0 + 0xA8));
-            gl_func_00034458(&sp4C);
-            var_v0_2 = 0;
-            if ((sp4C.unk0 != (*(f32*)((char*)var_s0 + 0xE4))) || (sp4C.unk4 != (*(f32*)((char*)var_s0 + 0xE8))) || (sp4C.unk8 != (*(f32*)((char*)var_s0 + 0xEC)))) {
-                FW(var_s0, 0xE0) = 1;
-            }
-            sp3C.unk0 = sp4C.unk0;
-            sp3C.unk4 = sp4C.unk4;
-            sp3C.unk8 = sp4C.unk8;
-            (*(f32*)((char*)var_s0 + 0xE4)) = sp3C.unk0;
-            (*(f32*)((char*)var_s0 + 0xE8)) = sp3C.unk4;
-            FW(var_s0, 0x100) = (s32) FW(var_s0, 0x128);
-            FW(var_s0, 0xFC) = (s32) FW(var_s0, 0x124);
-            (*(f32*)((char*)var_s0 + 0xEC)) = sp3C.unk8;
-            FW(var_s0, 0x104) = (s32) FW(var_s0, 0x12C);
-            FW(var_s0, 0x108) = (s32) FW(var_s0, 0x130);
-            sp68 = sp6C;
-            if (sp6C != 0) {
-                var_v0_2 = FW(sp6C, 0x0);
-                sp6C = FW(sp6C, 0x4);
-            }
-            var_s0 = var_v0_2;
-        } while (var_v0_2 != 0);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00047F9C);
-#endif
 
 void game_libs_func_00048104(int a0, short *a1, short *a2, short *a3, short arg5, unsigned char *arg6) {
     a1[0] = a2[0];

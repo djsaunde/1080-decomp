@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00047F9C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:00:22.583534+00:00",
+  "end_time": "2026-10-22T16:00:22.583534+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:00:22.583534+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, V3 class with by-value operator=, inline || compare, dead block-scope locals for the bottom frame slots.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 90,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00047F9C (0x168 / 90 words): for every\n * child, reset its dirty word from a global, fetch its position into a V3\n * local through a callee, set dirty if it differs from the cached copy, then\n * store the cache (by-value V3 operator=, the sp+60 temp) and a 16-byte record.\n * The dead block-scope pair after the record copy buys the two bottom frame\n * slots (frame 112). The global is a baked USO address, pinned as\n * gl_d_0001F970 in undefined_syms (a D_00000000 + 0x1F970 form makes uopt\n * split the hoisted address into base + 0x7970).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" int gl_d_0001F970;\nstruct V3 {\n    float x, y, z;\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void operator=(V3 v) { set(v); }\n    int operator!=(const V3 &o) const { return x != o.x || y != o.y || z != o.z; }\n};\nstruct Q4 { int a, b, c, d; };\nstruct Obj { char pad[0xA0]; V3 a0; char padac[0x34]; int e0; V3 e4; char padf0[0xC]; Q4 fc; char pad10c[0x18]; Q4 q124; };\nstruct Link { Obj *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *h) { nxt = h; }\n    Obj *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Own { char pad[0x18C]; Link *head; };\nextern \"C\" void gl_func_00047F9C(Own *ow) {\n    Iter it(ow->head);\n    for (Obj *o = it.next(); o; o = it.next()) {\n        o->e0 = gl_d_0001F970;\n        V3 p;\n        p.set(o->a0);\n        gl_func_00000000(&p);\n        if (p.x != o->e4.x || p.y != o->e4.y || p.z != o->e4.z) o->e0 = 1;\n        o->e4 = p;\n        o->fc = o->q124;\n        { int z0, z1; z0 = 0; z1 = 0; }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_47F9C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00047F9C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
