@@ -7,15 +7,22 @@
  * obj->pos + probe. Both arms: d = goal - pos, len = sqrtf(|d|^2),
  * normalize(d), d *= len * k, accumulate into out+0x30, pos = out+0x60.
  *
- * agent-g run 119 rewrite (cfe NM body was 69%): same instruction count and
- * every NCC temp/home in place (frame 232, the out/tgt homes come from the
- * Ctx aggregate whose inline ctor takes its address; the frame-top named
- * homes r/p/q/d/len, the operator- ctor temp at 120 and return slot at 140
- * all match). RESIDUAL: integer reloads of out/tgt colour t-regs/a0 where the
- * target uses v1 (uopt live-range split), the operator- result colours
- * rotate f12/f0/f2 vs the target's f0/f2/f12, and the else-arm probe temp
- * sits 4 bytes high. Spliced into the NON_MATCHING object only; the ROM
- * keeps INCLUDE_ASM. docs/IDO_CODEGEN.md#kit-xxi-agent-g-run-119. */
+ * agent-g run 119 rewrite (cfe NM body was 69%), run 120 refinements:
+ * - the sqrt argument is written out (no inline lenSq()): edg pooled the
+ *   lenSq() result temp with operator-'s first ctor argument, so that
+ *   candidate wanted $f12 (the call argument) and rotated the x/y/z
+ *   difference triple; spelled out, the triple colours f0/f2/f12 as in the
+ *   target, and the probe constants f2/f0 too.
+ * - the else arm's body sits in a nested block below the dead `int zz`
+ *   (edg allocates a block's temporaries before its named locals; the
+ *   nesting puts the zz slot above the probe ctor temp): every stack
+ *   offset now matches.
+ * RESIDUAL (72 words): the target's out/tgt reloads are split pieces of a
+ * register candidate coloured $v1 (else-arm head, the 072EE8 argument, the
+ * rotate base); here out/tgt live in the Ctx aggregate, are not candidates,
+ * and ugen loads them into t-regs, which also shifts the t-ring.
+ * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM.
+ * docs/IDO_CODEGEN.md#kit-xxiii-agent-g-run-120. */
 struct V3 {
     float x, y, z;
     V3() {}
@@ -66,7 +73,7 @@ extern "C" void game_uso_func_000028C0(Self *a0) {
         r = game_uso_func_000023D4(a0->src);
         q += r;
         d = q - p;
-        len = game_uso_func_070238(d.lenSq());
+        len = game_uso_func_070238(d.x * d.x + d.y * d.y + d.z * d.z);
         game_uso_func_071028(&d);
         float f = len * a0->k; d.x *= f; d.y *= f; d.z *= f;
         game_uso_func_072EE8(c.out->acc, &d);
@@ -74,7 +81,8 @@ extern "C" void game_uso_func_000028C0(Self *a0) {
         c.out->py = c.out->gy;
         c.out->pz = c.out->gz;
     } else {
-        int zz; zz = 0; /* dead block-scope int: one pool slot (else homes) */
+        int zz; zz = 0;
+        {
         V3 p;
         V3 q;
         V3 v;
@@ -85,12 +93,13 @@ extern "C" void game_uso_func_000028C0(Self *a0) {
         c.tgt->mtx.rotate(v);
         q += v;
         q -= p;
-        len = game_uso_func_070238(q.lenSq());
+        len = game_uso_func_070238(q.x * q.x + q.y * q.y + q.z * q.z);
         game_uso_func_071028(&q);
         float f2 = len * a0->k; q.x *= f2; q.y *= f2; q.z *= f2;
         game_uso_func_072EE8(c.out->acc, &q);
         c.out->px = c.out->gx;
         c.out->py = c.out->gy;
         c.out->pz = c.out->gz;
+        }
     }
 }
