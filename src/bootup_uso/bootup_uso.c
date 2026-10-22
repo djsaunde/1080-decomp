@@ -9179,13 +9179,24 @@ void func_0000E270(char *arg0, float arg1) {
  * a stack f32 (1.0f + arg4), not an int. Sums written z + (y + x) (x,y first).
  * Residual: d and the arg3->x load colour f2/f0 swapped, the dot/scale tail
  * colours, frame 0x50 vs 0x70. */
+/* Run 123 (agent-c, raw 55 -> 19 words): the f64 at RoData +0x9A0 is the literal
+ * 0.1 (exact needs a donor, func_0000E2D0_rodata = 0x9A0 - 0); the frame is 112:
+ * one unused word between s and dot and seven below dot (dot's home at sp+68);
+ * dot and s are ONE variable (f0 across the call, spilled to its home); the
+ * normalise call takes only &v[0] but arg3 stays live in a3 (spilled at 124),
+ * reproduced by `if (arg3) {}`; `dot *= k` keeps dot as the first mul operand.
+ * Left: the dot sum is emitted z-first (cfe canonical order; target (x+y)+z,
+ * an NCC-style source order) and the 1.0f + arg4 load/mtc1 schedule + one nop;
+ * NCC compiles of this body are much worse (frame 80, no pads). */
 extern f64 bu_e2d0_k9a0;  /* rodata f64 (target func_0000098C + 0x14) */
 void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     Vec3 v[2];
     f32 d;
-    f32 dot;
     f32 lim;
     f32 s;
+    int X;
+    f32 dot;
+    int pad[7];
 
     v[1].x = arg2->x;
     v[1].y = arg2->y;
@@ -9201,21 +9212,21 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     v[0].x = d * arg3->x - v[0].x;
     v[0].y = d * arg3->y - v[0].y;
     v[0].z = d * arg3->z - v[0].z;
-    if (bu_e2d0_k9a0 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
-        dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[1].x * v[0].x);
-        func_00000000(&v[0], arg3);
+    if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
+        dot = v[1].x * v[0].x + v[1].y * v[0].y + v[0].z * v[1].z;
+        func_00000000(&v[0]); if (arg3) {}
         lim = *(f32 *)(arg0 + 0x9FC);
-        s = dot * *(f32 *)(arg0 + 0x9F8);
-        if (s < -lim) {
-            s = -lim;
+        dot *= *(f32 *)(arg0 + 0x9F8);
+        if (dot < -lim) {
+            dot = -lim;
         }
-        if (lim < s) {
-            s = lim;
+        if (lim < dot) {
+            dot = lim;
         }
-        s *= 1.0f + arg4;
-        v[0].x *= s;
-        v[0].y *= s;
-        v[0].z *= s;
+        dot *= 1.0f + arg4;
+        v[0].x *= dot;
+        v[0].y *= dot;
+        v[0].z *= dot;
         func_00000000(arg0, arg1, &v[0]);
     }
 }
