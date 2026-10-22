@@ -16740,80 +16740,10 @@ void gl_func_0002F638(int a0, int sel, int arg3, int arg4, int stk_43) {
 }
 
 
-#ifdef NON_MATCHING
-/* game_libs_func_0002F720: one 96-insn (0x180) per-object FP value updater +
- * quantized table-apply. BOUNDARY MERGED 2026-06-02: splat had split it into
- * 0002F720 (3-insn FP-const prologue: `mtc1 a1,$f12` (input, ARG-DERIVED) +
- * `lui 0x4334`->$f4=180.0 — hoisted above the frame; the real entry) +
- * gl_func_0002F72C (the prologue+body using f12 in `mul.s $f12,$f12,$f4`).
- * SINGLE-entry per the dual-vs-single test (f12 arg-derived + FP-op use; no
- * callers). Absorbed 0002F72C's 93 words into 0002F720 (0xC -> 0x180); dropped
- * the 0002F72C symbol. Brings f12(=a1)/f4(=180.0) in-scope — CORRECTS the prior
- * structural decode that mis-read `nv = in * o->0` (the multiplier is the entry
- * const 180.0, not o->0). Sibling of the gl_func_0002F584 quantizer; the 2 calls
- * go to the FIXED intra-USO routine jal 0x010E09 (codes 8, 0x10). Byte-match
- * deferred (raw-word USO + FP delta/commit + signed-byte clamp + table lookups). */
-extern int D_00000000;
-extern int D_2F720_t1, D_2F720_t2, D_2F720_t3; /* per-call-site table args (baked USO relocs stripped; placeholders) */
-extern int D_2F720_lut, D_2F720_flut;       /* byte LUT (+ret1) / float LUT (+ret2*4) */
-extern int D_2F720_p1740, D_2F720_p1744, D_2F720_p1748, D_2F720_p174C; /* FP pool: per-site externs kill the %hi CSE (target has one lui per access) */
-/* WHOLE-BODY REDECODE 2026-07-31 (34.9->84.3). Decode-error fixes vs the
- * 2026-07-10 pass: all three table indices are the gl_func_00043824 CALL
- * RESULTS (not the local fold index v); the o->0x63 nibble is ret3/2 (signed
- * div, bgez+addiu+sra), sign chosen by ret3 not i; the o->0x58 second clamp
- * is an UPPER bound (if (D[0x174C] < field) field = D[0x174C]) — polarity was
- * inverted. Shape levers: ANSI f32 param + in-place `in *= 180.0f` puts the
- * value's web in call-arg $f12 homed at a1's arg slot (frame 0x28 exact);
- * fl/lo pre-load temps place the flut load + D[0x1748] load early; per-site
- * pool externs kill the %hi CSE. Residual (~14 rows): t1-vs-v1 pick for the
- * unnamed /2 temp (if(1)+CSE probes inert), sb/FP-const interleave, mul.s
- * commutative operand order (register-var vs pool-chain cfe rank), coupled
- * ft ring numbering. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_2F720.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 84.68 (double store DSE'd / if(1)-split, operand order). */
 void game_libs_func_0002F720(char *o, f32 in, signed char idxb) {
-    float dlt;
-    int v;
-    char *p;
-    int t;
-    float fl;
-    float lo;
-
-    in = in * 180.0f; /* param reuse: the value's web = call-arg $f12, homed at a1's arg slot */
-    dlt = in - *(float *)(o + 0x5C);
-    *(float *)(o + 0x5C) = in;
-    v = idxb;
-    p = o + 0x54;
-    if (idxb >= 0x40) {
-        v = 0x7F - idxb;
-    }
-    if (v < -0x40) {
-        v = -0x80 - v;
-    }
-    *(unsigned char *)(p + 0xC) = v + 0x40;
-
-    t = gl_func_00043824(in, (char *)&D_2F720_t1, 8);
-    *(unsigned char *)(p + 0xD) = *((unsigned char *)&D_2F720_lut + t);
-    t = gl_func_00043824(in, (char *)&D_2F720_t2, 0x10);
-    fl = *(float *)((char *)&D_2F720_flut + t * 4);
-    *(float *)(p + 0) = (*(float *)(p + 0) * *(float *)&D_2F720_p1740) + (*(float *)&D_2F720_p1744 * fl);
-    t = gl_func_00043824(in, (char *)&D_2F720_t3, 0x10);
-    lo = *(float *)&D_2F720_p1748;
-    if (1) {
-        *(unsigned char *)(p + 0xF) = t / 2;
-    }
-    *(unsigned char *)(p + 0xF) = (t / 2) << 4;
-
-    *(unsigned char *)(p + 0xE) = idxb & 0x80;
-    *(float *)(p + 4) = 1.0f - (dlt * 0.0625f);
-    if (*(float *)(p + 4) < lo) {
-        *(float *)(p + 4) = lo;
-    }
-    if (*(float *)&D_2F720_p174C < *(float *)(p + 4)) {
-        *(float *)(p + 4) = *(float *)&D_2F720_p174C;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002F720);
-#endif
 
 
 // gl_func_0002F8A0 — STRUCTURAL PASS (0x94 / 37 words, no episode).

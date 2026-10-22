@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0002F720",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T19:24:25.464881+00:00",
+  "end_time": "2026-10-22T19:24:25.464881+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T19:24:25.464881+00:00",
+      "assistant_text": "C++ donor: store plus compound shift for the nibble byte, source-order operands, pinned FP pool refs.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 96,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_0002F720 (0x180 / 96 words): sound-voice\n * parameter update (pan from a signed byte, three table lookups through the 0x43824\n * helper, a damped float, a clamped rate). Two spellings the cfe NM could not reach:\n * the high-nibble byte is a store plus a compound shift `p[0xF] = t / 2; p[0xF] <<= 4;`\n * (store-forwarded, both stores kept; a plain double store is DSE'd), and edg keeps\n * the source order of `fl * K` and of the 0xE store after the rate. The FP pool reads\n * are per-site symbols pinned at their pool offsets. Spliced into game_libs_post.c.o\n * via REPLACE_FUNC_BODY. */\ntypedef float f32;\nextern \"C\" {\nint gl_ref_00043824(float, ...);\nextern int D_00000000;\nextern int D_2F720_t1, D_2F720_t2, D_2F720_t3;\nextern int D_2F720_lut, D_2F720_flut;\nextern int D_2F720_p1740, D_2F720_p1744, D_2F720_p1748, D_2F720_p174C;\nvoid game_libs_func_0002F720(char *o, f32 in, signed char idxb) {\n    float dlt;\n    int v;\n    char *p;\n    int t;\n    float fl;\n    float lo;\n\n    in = in * 180.0f;\n    dlt = in - *(float *)(o + 0x5C);\n    *(float *)(o + 0x5C) = in;\n    v = idxb;\n    p = o + 0x54;\n    if (idxb >= 0x40) {\n        v = 0x7F - idxb;\n    }\n    if (v < -0x40) {\n        v = -0x80 - v;\n    }\n    *(unsigned char *)(p + 0xC) = v + 0x40;\n\n    t = gl_ref_00043824(in, (char *)&D_2F720_t1, 8);\n    *(unsigned char *)(p + 0xD) = *((unsigned char *)&D_2F720_lut + t);\n    t = gl_ref_00043824(in, (char *)&D_2F720_t2, 0x10);\n    fl = *(float *)((char *)&D_2F720_flut + t * 4);\n    *(float *)(p + 0) = (*(float *)(p + 0) * *(float *)&D_2F720_p1740) + (fl * *(float *)&D_2F720_p1744);\n    t = gl_ref_00043824(in, (char *)&D_2F720_t3, 0x10);\n    lo = *(float *)&D_2F720_p1748;\n    *(unsigned char *)(p + 0xF) = t / 2;\n    *(unsigned char *)(p + 0xF) <<= 4;\n\n    *(float *)(p + 4) = 1.0f - (dlt * 0.0625f);\n    *(unsigned char *)(p + 0xE) = idxb & 0x80;\n    if (*(float *)(p + 4) < lo) {\n        *(float *)(p + 4) = lo;\n    }\n    if (*(float *)&D_2F720_p174C < *(float *)(p + 4)) {\n        *(float *)(p + 4) = *(float *)&D_2F720_p174C;\n    }\n}\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_2F720.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0002F720.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
