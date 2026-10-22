@@ -172,6 +172,11 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_7204_DONOR := build/src/bootup_uso/bootup_uso_ncc_7204.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00007204=$(BOOTUP_7204_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7204_DONOR)
+# 4948 = camera transition blend; C++ (Vec3 operator temps, edg case-order compare
+# chains). Still NON_MATCHING (FP colouring + edg slots): NM comparison object only.
+BOOTUP_4948_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o
+build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00004948=$(BOOTUP_4948_NM_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_4948_NM_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o

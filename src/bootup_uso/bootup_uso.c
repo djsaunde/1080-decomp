@@ -2910,6 +2910,9 @@ void func_00004914(char *a0, int a1, char *a2) {
 //   0x70-stride sub-record whose Vec3 sits at +0x30 (abs 0xA0);
 //   obj->0x30 = live transform Vec3 (call arg); obj->0xA0 = eye Vec3;
 //   obj->0x14C / 0x150 = current / target f32.
+// run 124: this function is C++. The NM comparison object takes the NCC donor
+// src/bootup_uso/bootup_uso_ncc_4948.cpp (structurally identical, 99.28);
+// the cfe body below is kept as the readable C reference.
 #ifdef NON_MATCHING
 typedef struct { float lo, hi, v, w; } Bu4948E16;
 typedef struct { float a, b; } Bu4948E8;
