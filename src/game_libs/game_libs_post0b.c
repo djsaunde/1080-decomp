@@ -8500,28 +8500,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DD28);
  * memory iterator, explicit pre-loop advance + loop-tail advance. Same
  * residual as 3E1B0: the target's node -> key copy (`or v1,v0`) is
  * copy-propagated away (the beqzl form). */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3DDC0.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
 int game_libs_func_0003DDC0(char *o, char *target, float *out) {
-    int *it[2];
-    int *node;
-
-    it[1] = *(int **)(o + 0x10);
-    it[0] = it[1];
-    node = (it[0] != 0) ? (it[1] = (int *)it[0][1], (int *)it[0][0]) : 0;
-    while (node != 0) {
-        if ((char *)node == target) {
-            out[0] = *(float *)((char *)node + 0x5C);
-            out[1] = *(float *)((char *)node + 0x60);
-            out[2] = *(float *)((char *)node + 0x64);
-            return 1;
-        }
-        node = ((it[0] = it[1]) != 0) ? (it[1] = (int *)it[0][1], (int *)it[0][0]) : 0;
-    }
-    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003DDC0);
-#endif
 
 // game_libs_func_0003DE48 — STRUCTURAL PASS (0x114 / 69 words, no
 // episode). Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION.
