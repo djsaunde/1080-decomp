@@ -6477,103 +6477,11 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00008CD8);
 //   pass only, no byte body.
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
 #ifdef NON_MATCHING
-extern float game_uso_func_082880(float);
-/* A0E8-family geometric predicate (dead-alloc XZ vecs -> deltas -> normalize
- * 082880 -> cross/dot projection -> range gates -> return 0/1). Opening +
- * magnitude gate decoded; cross/dot tail pending (multi-tick). */
+/* NM body = the NCC donor src/game_uso/game_uso_ncc_97EC.cpp (spliced into
+ * the NON_MATCHING object only; 229/231 words up to two swapped temp homes
+ * and the FP colouring they cause). This placeholder is replaced. */
 int game_uso_func_000097EC(char *a0) {
-    int ret = 0;
-    char *v0 = *(char **)(a0 + 0x30);
-    char *sub;
-    char *w2, *sub2;
-    Vec3 vec1, vec2, vec3, c1, c2, scaled, s1, s2, vec4, delta2, d1, d2, vec5;
-    Vec3 *p;
-    float *q;
-    float mag2, scale, mag, cross, dot, tparam, perp, t1, t2, mag2b;
-
-    /* Nested-goto alloc-guard shape throughout (docs/IDO_CODEGEN.md
-     * #nested-goto-alloc-guard-bnezl-9b88); single-exit via homed `ret`
-     * (target: sw zero,268(sp) at prologue, sw 1 at tail, lw v0,268(sp)). */
-    if (*(int *)(v0 + 0x908) == 0) goto done;
-    q = (float *)(unsigned)(v0 + 0x318);
-    p = (Vec3 *)(unsigned)&vec1;
-    if (p == 0) {
-        p = (Vec3 *)game_uso_func_055750(12);
-        if (p == 0) goto sk1;
-    }
-    { p->x = q[0]; p->z = q[2]; p->y = 0.0f; }
-sk1:;
-    sub = *(char **)(*(char **)(a0 + 0x30) + 0x908);
-    q = (float *)(unsigned)(sub + 0x318);
-    p = (Vec3 *)(unsigned)&vec2;
-    if (p == 0) {
-        p = (Vec3 *)game_uso_func_055750(12);
-        if (p == 0) goto sk2;
-    }
-    { p->x = q[0]; p->z = q[2]; p->y = 0.0f; }
-sk2:;
-    mag2 = vec1.x * vec1.x + vec1.z * vec1.z;
-    if (!(0.0f < mag2)) goto done;
-    {
-        Vec3 *pa = (Vec3 *)(unsigned)&vec3;
-        p = pa;
-        if (p == 0) {
-            p = (Vec3 *)game_uso_func_055750(12);
-            if (p == 0) goto sk3;
-        }
-        { p->x = vec1.x - vec2.x; p->y = 0.0f; p->z = vec1.z - vec2.z; }
-sk3:;
-        c1 = *pa;
-    }
-    c2 = c1;
-    scale = *(float *)(a0 + 0xD0);
-    scaled.x = c2.x * scale;
-    scaled.y = c2.y * scale;
-    scaled.z = c2.z * scale;
-    s1 = scaled;
-    s2 = s1;
-    p = (Vec3 *)(unsigned)&vec4;
-    if (p == 0) {
-        p = (Vec3 *)game_uso_func_055750(12);
-        if (p == 0) goto sk4;
-    }
-    { p->x = s2.x; p->z = s2.z; p->y = 0.0f; }
-sk4:;
-    w2 = *(char **)(a0 + 0x30);
-    sub2 = *(char **)(w2 + 0x908);
-    q = (float *)(w2 + 0xB4);
-    delta2.x = *(float *)(sub2 + 0xB4) - q[0];
-    delta2.y = *(float *)(sub2 + 0xB8) - q[1];
-    delta2.z = *(float *)(sub2 + 0xBC) - q[2];
-    q = (float *)(sub2 + 0xB4);
-    d1 = delta2;
-    d2 = d1;
-    p = (Vec3 *)(unsigned)&vec5;
-    if (p == 0) {
-        p = (Vec3 *)game_uso_func_055750(12);
-        if (p == 0) goto sk5;
-    }
-    { p->x = d2.x; p->z = d2.z; p->y = 0.0f; }
-sk5:;
-    mag = game_uso_func_082880(vec4.x * vec4.x + vec4.z * vec4.z);
-    if (!(0.0f < mag)) goto done;
-    t1 = vec4.z * vec5.x;
-    t2 = vec4.x * vec5.z;
-    dot = vec4.x * vec5.x + vec4.z * vec5.z;
-    mag2b = vec4.x * vec4.x + vec4.z * vec4.z;
-    if (t1 < t2) {
-        cross = -(t1 - t2);
-    } else {
-        cross = t1 - t2;
-    }
-    tparam = dot / mag2b;
-    if (!(0.0f <= tparam)) goto done;
-    if (!(tparam < 1.0f)) goto done;
-    perp = cross / mag;
-    if (!(perp < *(float *)(a0 + 0xD4))) goto done;
-    ret = 1;
-done:;
-    return ret;
+    return *(int *)(a0 + 0x30);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000097EC);

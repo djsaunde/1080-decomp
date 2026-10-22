@@ -1727,6 +1727,10 @@ $(GAMEUSO_3AC0_DONOR): src/game_uso/game_uso_ncc_3AC0.cpp
 	$(OBJCOPY) --redefine-sym __nw__FUi=game_uso_func_055750 $@
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00003AC0=$(GAMEUSO_3AC0_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3AC0_DONOR)
+# 97EC: NM-only NCC donor (XZ derived-ctor protocol x5; two edg temp homes swapped vs target).
+GAMEUSO_97EC_NM_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_NM_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol
