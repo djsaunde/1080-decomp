@@ -3804,23 +3804,21 @@ int game_libs_func_00021D2C(int a0, int a1) {
  * reorders all regressed (33.9% / 42.7% / 57.6%); INSN_PATCH is the
  * direct path. */
 extern int func_00000000();
-#ifdef NON_MATCHING
+/* 2026-10-22 (agent-c run 120) EXACT: early `return 0` on a failed call and NO return
+ * statement after the stores (v0 still holds the call result, as in the target); the
+ * slot address recomputed per store (CSE'd) and base declared before count. */
 int gl_func_00021D84(int a0, int a1, int a2) {
-    int count = *(int*)((char*)&D_00000000 + 0x2534);
     char *base = (char*)&D_00000000;
+    int count = *(int*)((char*)&D_00000000 + 0x2534);
     int v0 = func_00000000(base + 0x2528, a2);
-    char *slot = base + count * 12;
-    *(int*)(slot + 0x2538) = v0;
-    if (v0 != 0) {
-        *(short*)(slot + 0x2540) = (short)a0;
-        *(short*)(slot + 0x2542) = (short)a1;
-        *(int*)(slot + 0x253C) = a2;
+    *(int*)(base + count * 12 + 0x2538) = v0;
+    if (v0 == 0) {
+        return 0;
     }
-    return v0;
+    *(short*)(base + count * 12 + 0x2540) = (short)a0;
+    *(short*)(base + count * 12 + 0x2542) = (short)a1;
+    *(int*)(base + count * 12 + 0x253C) = a2;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00021D84);
-#endif
 
 /* gl_func_00021E08: 20-insn alloc-via-jal-alt-entry + 3-field-set wrapper.
  * Matched 2026-05-14 via if-goto-end_zero (skip body) + explicit
