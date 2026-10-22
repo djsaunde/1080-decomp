@@ -101,6 +101,16 @@ build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FO
 build/src/arcproc_uso/arcproc_uso_o0_50.c.o: TRUNCATE_TEXT := 0xDC
 build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: OPT_FLAGS := -O0
 build/src/arcproc_uso/arcproc_uso_o0_12C.c.o: TRUNCATE_TEXT := 0x114
+# arcproc is C++: B4 / 12C compile under NCC -O0 without cfe's closing-brace
+# b-epilogue (kit XIX); edg keeps source evaluation order (see the donors).
+ARC_O0_B4_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_o0_B4.cpp.o
+$(ARC_O0_B4_DONOR): OPT_FLAGS := -O0
+build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: REPLACE_FUNC_BODY += arcproc_uso_func_000000B4=$(ARC_O0_B4_DONOR)
+build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: $(ARC_O0_B4_DONOR)
+ARC_O0_12C_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_o0_12C.cpp.o
+$(ARC_O0_12C_DONOR): OPT_FLAGS := -O0
+build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: REPLACE_FUNC_BODY += arcproc_uso_func_0000012C=$(ARC_O0_12C_DONOR)
+build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: $(ARC_O0_12C_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F1F0.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F390.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_F7F4.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F7F4.c.o: OPT_FLAGS := -O0

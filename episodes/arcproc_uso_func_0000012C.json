@@ -1,0 +1,33 @@
+{
+  "function_name": "arcproc_uso_func_0000012C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:18:04.806348+00:00",
+  "end_time": "2026-10-22T17:18:04.806365+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:18:04.806361+00:00",
+      "assistant_text": "Exact: C++ under NCC -O0 (no cfe closing-brace b-epilogue). edg keeps source evaluation order and takes &lvalue temps for compound assignment, so spell the first-evaluated compare side on the left and use plain x = x op k.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 28,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donor for arcproc_uso_func_0000012C (0x70 / 28 words).\n * edg -O0 has no closing-brace b-epilogue (cfe +2 words); the decrement is a\n * plain assignment (`*p -= 1` makes edg copy p into s1 first).\n * Spliced into arcproc_uso_o0_12C.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nint gl_func_00000000(...);\nint arcproc_uso_func_0000012C(int *a0, int a1) {\n    register int *p;\n    gl_func_00000000(a0, a1);\n    p = a0;\n    *p = *p - 1;\n    if (*a0 == 0) return 1;\n    return 0;\n}\n}\n",
+  "metadata": {
+    "source_path": "src/arcproc_uso/arcproc_uso_ncc_o0_12C.cpp",
+    "asm_path": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_0000012C.s",
+    "segment": "arcproc_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O0 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC -O0 donor spliced via REPLACE_FUNC_BODY; ROM byte-identical; objdiff 100%."
+  }
+}

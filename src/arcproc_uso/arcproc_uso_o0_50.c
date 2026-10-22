@@ -88,17 +88,9 @@ void arcproc_uso_func_00000050(Quad4 *dst) {
  * +0x5C differ. The frame remains 40 bytes. Full-TU fuzzy remains 93.33%
  * (standalone 93.17% due to object context). Keep NON_MATCHING, no episode.
  * See docs/IDO_CODEGEN.md#o0-return-branch-b4-direct-audit. */
-#ifdef NON_MATCHING
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/arcproc_uso/arcproc_uso_ncc_o0_B4.cpp. The "extra-branch" residual above is cfe's -O0
+ * closing-brace b-epilogue, which edg does not emit. Placeholder spliced over. */
 int arcproc_uso_func_000000B4(int *a0, int a1) {
-    register int *p;
-    gl_func_00000000(a0, a1);
-    if (a0[2] == a0[1] + 1) {
-        return 1;
-    }
-    p = a0;
-    p[1] += 1;
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_000000B4);
-#endif
