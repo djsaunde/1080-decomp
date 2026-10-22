@@ -7934,43 +7934,10 @@ end:
 //   mnemonic disasm + FP-pool/struct symbolization; structural
 //   pass only, no byte body.
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
-typedef struct L3DA14 { struct N3DA14 *data; struct L3DA14 *next; } L3DA14;
-typedef struct N3DA14 { char pad[0x30]; Vec3 pos; } N3DA14;
-typedef struct { L3DA14 *cur; L3DA14 *next; int pad[2]; } I3DA14;
-extern float D_3DA14_max;
-#define ABS3DA14(a, b) ((a) < (b) ? -((a) - (b)) : ((a) - (b)))
-N3DA14 *game_libs_func_0003DA14(char *o, Vec3 *ref, N3DA14 *excl) {
-    I3DA14 it;
-    N3DA14 *n;
-    N3DA14 *best;
-    float bestd;
-    float d;
-    float dx, dy, dz;
-    Vec3 *p;
-
-    if (1) { I3DA14 *q = &it; }
-    bestd = *(float *)((char *)&D_3DA14_max + 0x1AC0);
-    best = 0;
-    it.next = *(L3DA14 **)(o + 0x10);
-    while ((n = ((it.cur = it.next) != 0 ? (it.next = it.next->next, it.cur->data) : 0)) != 0) {
-        if (n != excl) {
-            p = &n->pos;
-            dx = ABS3DA14(p->x, ref->x);
-            dy = ABS3DA14(p->y, ref->y);
-            dz = ABS3DA14(p->z, ref->z);
-            d = dx + dy + dz;
-            if (d < bestd) {
-                best = n;
-                bestd = d;
-            }
-        }
-    }
-    return best;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3DA14.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
+char *game_libs_func_0003DA14(char *o, char *ref, char *excl) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003DA14);
-#endif
 
 
 // game_libs_func_0003DB38 (ex gl_func_0003DB3C) — STRUCTURAL PASS (0xB4 / 45 words, no episode).
