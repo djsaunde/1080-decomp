@@ -13355,9 +13355,9 @@ void gl_func_000445AC(char *a0) {
     gl_func_00000000();
     a3 = (char *)gl_func_00000000(40);
     if (a3 != 0) {
-        a3 = (char *)gl_func_00000000(32);
-        gl_func_00000000(a3, a3, 8);
-        *(int *)(a3 + 0x18) = (int)a3;
+        v1 = (char *)gl_func_00000000(32);
+        *(int *)(a3 + 0x18) = (int)v1;
+        gl_func_00000000(a3, v1, 8);
     }
     *(int *)(g + 0x1C) = (int)a3;
     gl_func_00000000(a3, 0x64, 1);
@@ -13365,8 +13365,8 @@ void gl_func_000445AC(char *a0) {
     if (a3 != 0) {
         v1 = a3;
         if (a3 == 0) {
-            v1 = a3 = (char *)gl_func_00000000(20);
-            if (a3 == 0) goto skip_body;
+            v1 = (char *)gl_func_00000000(20);
+            if (v1 == 0) goto skip_body;
         }
         *(int *)(v1 + 0x8) = 10;
         *(int *)(v1 + 0xC) = 0;
