@@ -2026,62 +2026,53 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_00003F18);
 void gui_uso_func_0000413C(void) {
 }
 
-#ifdef NON_MATCHING
-void gui_uso_func_00004354(char *a0, int a1, int a2, int a3, int arg5,
-                           int arg6, int arg7, int arg8, int arg9) {
-    struct GfxRing_413C *r;
-    int i;
-    int *p;
-    int t0, t1, t3, m;
-    int *ap5 = &arg5;
-    int *ap9 = &arg9;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC);
-    m = (a2 - 1) & 0xFFF;
-    i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xFD680000 | m;
-    p[1] = a1;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    a3 = arg5 + arg7;
-    t0 = a3 - arg5;
-    t1 = ((((t0 + 7) >> 3) & 0x1FF) << 9) | 0xF5680000 | ((arg9 << 8) & 0x1FF);
-    p[0] = t1;
-    p[1] = 0x07020090;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    a2 = arg6;
-    p[0] = 0xE6000000;
-    p[1] = 0;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xF4000000 | ((((arg5 << 2) & 0xFFF) << 0xC)) | ((a2 << 2) & 0xFFF);
-    a1 = a2 + arg8;
-    p[1] = 0x07000000 | ((((a3 - 1) << 2) & 0xFFF) << 0xC) | (((a1 - 1) << 2) & 0xFFF);
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xE7000000;
-    p[1] = 0;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = t1;
-    t3 = (arg9 & 7) << 0x18;
-    p[1] = t3 | 0x00020000 | 0x90;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xF2000000;
-    p[1] = t3 | ((((t0 - 1) << 2) & 0xFFF) << 0xC) | ((((a1 - a2) - 1) << 2) & 0xFFF);
+/* gui_uso_func_00004354: 133-insn (0x214) Gfx-display-list builder.
+ * Leaf function (no stack frame, only caller-slot a3 spill at sp+0xC)
+ * that writes ~6 RDP commands into a display list buffer at a0->[0xC].
+ *
+ * Args (inferred from asm structure):
+ *   a0 — gui-state struct; a0->[0xC] is a Gfx-buffer descriptor:
+ *        - +0: dlist pointer (Gfx **) into the actual command buffer
+ *        - +4: command counter (advanced by 1 per command emitted)
+ *   a1 — image segment-address (used as second word of G_SETTIMG)
+ *   a2 — width minus 1 (asm pre-decrements: addiu t4, a2, -1)
+ *   a3 — saved at sp+0xC at function entry, never used in body
+ *   sp+0x10..0x20 — additional stack args (4..5 more ints)
+ *
+ * RDP command sequence (each emits a 64-bit Gfx command pair):
+ *   0xFD68 hi-word — G_SETTIMG (set texture image)
+ *   0xE600 hi-word — G_RDPLOADSYNC
+ *   0xF400 hi-word — G_LOADTILE
+ *   0x0700 hi-word — appears in tile-size cmd
+ *   0xE700 hi-word — G_RDPPIPESYNC
+ *   0xF200 hi-word — G_SETTILESIZE
+ *   0xF568 hi-word — variant of SETTIMG (8-bit format?)
+ *
+ * Pattern: classic "render textured quad" setup — set texture image,
+ * load the tile, set tile params, set tile size, draw a texture
+ * rectangle. Common in N64 GUI/HUD code.
+ *
+ * Structural cap: complex F3DEX2 / RDP gfx code with heavy bit-shifting
+ * (sll t9, v1, 3 = stride*8 for 64-bit Gfx) and packing
+ * (multiple `andi rN, 0xFFF` for 12-bit width/height fields). Multi-
+ * tick decomp; first pass documents the structure, future passes can
+ * decode each command into gsDPSetTextureImage / gsDPLoadTile /
+ * gsDPSetTile / gsDPSetTileSize / gsSPTextureRectangle macros (or
+ * their open-coded equivalents).
+ *
+ * 2026-05-08: structural NM-only first pass. The 0xC-byte addressing
+ * pattern (a0->[0xC] = Gfx-buffer descriptor with .dlist + .count
+ * fields) recurs across gui_uso_func_*413C, *4354, *4568, *4774 —
+ * worth typing as `GfxBuf { Gfx **dlist; int count; }` in a future
+ * pass once decoded for one of them. */
+/* gui_uso_func_00004354: IA8 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
+ * LOADTILE, PIPESYNC, SETTILE, SETTILESIZE). EXACT 2026-10-22 (agent-g run
+ * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_4354.cpp
+ * (REPLACE_FUNC_BODY, both trees): the real gbi.h macro bodies with
+ * `uls + w - 1` corner arguments and the context's inline next() append; the
+ * notes above describe the old cfe reconstruction. This is the splice host. */
+void gui_uso_func_00004354(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_00004354);
-#endif
 
 #ifdef NON_MATCHING
 /* gui_func_00004568: 198-insn / 0x318 RDP TEXRECT display-list builder.
