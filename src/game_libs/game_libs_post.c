@@ -442,24 +442,23 @@ extern int gl_func_00031FB0();
  * the exact sibling game_libs_func_0001D3E0 (`{ G *_g = gfx++; w0; w1; }`),
  * with the half-width terms as s16 locals. */
 typedef struct { unsigned int w0, w1; } G1D200;
-unsigned int *gl_func_0001D200(int a0, unsigned int a1, short a2, short a3) {
-    G1D200 *gfx;
-    char *rec;
+unsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3) {
     char *e;
     short w2;
     short wr;
+    char *rec;
     rec = (char *)&D_00000000 + a2 * 0x158;
     e = rec + *(unsigned char *)(rec + 0x1B) * 100 + a3 * 0x14 + 0x50;
     w2 = (*(unsigned int *)(e + 0xC) & 7) * 2;
-    wr = (w2 + *(short *)(e + 0x10) + 0xF) & 0xFFF0;
-    gfx = (G1D200 *)gl_func_00031FB0(a0, 0x3E0, (*(unsigned int *)(e + 0xC) - w2 / 2) & 0xFFFF, 0x1A0, a2);
+    wr = (w2 + *(short *)(e + 0x10) + 0xF) & ~0xF;
+    gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, (*(unsigned int *)(e + 0xC) - w2 / 2) & 0xFFFF, 0x1A0, a2);
     if (*(short *)(e + 0x12) != 0) {
-        gfx = (G1D200 *)gl_func_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);
+        gfx = (G1D200 *)gl_ref_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);
     }
     { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x3E0) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0C800000; }
-    { G1D200 *_g = gfx++; _g->w0 = *(unsigned short *)(rec + 0x26) | 0x05000000 | (*(unsigned char *)(rec + 0x18) << 16); _g->w1 = *(int *)(rec + 0x40) + 0x80000000; }
+    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x40) + 0x80000000; }
     { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x580) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0E200000; }
-    { G1D200 *_g = gfx++; _g->w0 = *(unsigned short *)(rec + 0x26) | 0x05000000 | (*(unsigned char *)(rec + 0x18) << 16); _g->w1 = *(int *)(rec + 0x44) + 0x80000000; }
+    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x44) + 0x80000000; }
     return (unsigned int *)gfx;
 }
 #else
@@ -5509,38 +5508,35 @@ void gl_func_0002372C(int a0) {
 //   the 4 baked-jal placeholders (38204/38174/381b0/37f80 — USO-reloc cap,
 //   ~7%) + a minor frame-packing diff. Name pre-checked: no extern reuse.
 //   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122): four baked in-unit jals as gl_ref_ pins; the busy path returns the 381B0 result (not acquire's), held across the call in a copy declared first (sp+52); the type byte reuses ok (v0); the 37F80 result reuses the copy so no extra frame word. */
 extern int gl_func_00000000();
+extern int gl_ref_00038204(), gl_ref_00038174(), gl_ref_000381B0(), gl_ref_00037F80();
 int gl_func_00023760(int x, int *out) {
-    int r0 = gl_func_00000000(2);            /* 38204(2) - table base */
+    int nv;
+    int r0 = gl_ref_00038204(2);             /* table base */
     int ok;
-    char *e;
-    x = gl_func_00000000(2, x);              /* x := j = 38174(2, x); reuse param -> s0 */
-    ok = gl_func_00000000(2, x);             /* 381b0(2, j) */
+    x = gl_ref_00038174(2, x);               /* x := j; reuse param -> s0 */
+    ok = gl_ref_000381B0(2, x);
+    nv = ok;
     if (ok != 0) {
-        int v = gl_func_00000000(x, 2);      /* acquire(j, 2) - jal 0 */
+        gl_func_00000000(x, 2);              /* acquire(j, 2) - jal 0, result dropped */
         *out = 0;
-        return v;
+        return nv;
     }
-    e = (char *)r0 + x * 0x10;
-    if (*(signed char *)(e + 0x19) == 4) {
-        *out = *(signed char *)(e + 0x18);
-        return *(int *)(e + 0x10);
+    if ((ok = *(signed char *)((char *)r0 + x * 0x10 + 0x19)) == 4) {
+        *out = *(signed char *)((char *)r0 + x * 0x10 + 0x18);
+        return *(int *)((char *)r0 + x * 0x10 + 0x10);
     }
     {
         int local;
-        int res = gl_func_00000000(2, x, &local);   /* 37f80(2, j, &local) */
-        if (res != 0) {
+        if ((nv = gl_ref_00037F80(2, x, &local)) != 0) {
             *out = 0;
-            return res;
+            return nv;
         }
     }
-    *out = *(signed char *)(e + 0x18);
-    return *(int *)(e + 0x10);
+    *out = *(signed char *)((char *)r0 + x * 0x10 + 0x18);
+    return *(int *)((char *)r0 + x * 0x10 + 0x10);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023760);
-#endif
 
 // gl_func_00023838 — STRUCTURAL PASS (0xDC / 55 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no

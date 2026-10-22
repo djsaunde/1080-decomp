@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00023760",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:25:57.965193+00:00",
+  "end_time": "2026-10-22T21:25:57.965193+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:25:57.965193+00:00",
+      "assistant_text": "Exact. Decode fixes from the raw diff: four baked in-unit jals (gl_ref_00038204/38174/381B0/37F80); the busy path returns the 381B0 result (spilled across the acquire call), not acquire's. Frame/slots: the return-holder copy is declared first (sp+52), r0 next (48), ok third; the type byte is assigned to ok (colours v0); the 37F80 result reuses the copy so no extra frame word is reserved.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 54,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_00023760 \u2014 STRUCTURAL PASS (0xD8 / 54 words, no episode).\n// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no\n// bundle). A multi-step resource acquire/resolve helper.\n//\n//   ret gl_func_00023760(int a0, int a1) {\n//     int  r0 = jal 0x38204(2);                         // 0x0C00E081\n//     int  j  = jal 0x38174(2);                          // 0x0C00E05D\n//     int  ok = jal 0x381B0(2, j);                       // 0x0C00E06C\n//     if (ok == 0) return ...;\n//     int  v  = (*acquire)(j, 2);                         // jal 0 USO\n//     E   *e  = tbl + j*0x10;                              // entry tbl\n//     if (e->b_19 == 4) {                                  // type 4\n//       byte t = e->b_18;\n//       *(int*)dst = t;\n//     } else {\n//       int p = e->w_10;\n//       ...\n//     }\n//   }\n//\n// Struct-typing reference: resolves a class-2 resource by chaining\n//   the fixed USO-relocated routines 0x0C00E081 (\u22480x38204),\n//   0x0C00E05D (\u22480x38174, the shared poll/advance used across the\n//   gl_func_00022D68 readiness + gl_func_00022FC0 buffer-run\n//   families) and 0x0C00E06C (\u22480x381B0), then a `jal 0` acquire.\n//   The resolved index `j` selects an entry in a 0x10-stride table;\n//   byte e->0x19 is a type tag (value 4 special-cased), byte e->0x18\n//   a payload, word e->0x10 a pointer. The \"obtain & dereference a\n//   resource handle of class 2\" entry in the game_libs resource\n//   subsystem.\n// 2026-05-31: body completed + register-matched 44.0->91.2%. The sketch\n//   was wrong in several ways, now fixed: (1) the FIRST call's result r0 =\n//   38204(2) is the TABLE BASE (e = r0 + j*0x10), not a separate func(j)\n//   call; (2) ok-polarity is INVERTED \u2014 if ok!=0 the acquire path runs and\n//   returns early (acquire(j,2); *out=0; return v), only ok==0 reaches the\n//   table lookup; (3) param0 is passed to 38174 while param1 is the OUTPUT\n//   pointer; (4) the non-type-4 arm calls 37f80(2,j,&local) and branches on\n//   its result; (5) the ==4 and the res==0 arms both return e->0x10 (delay-\n//   slot load). KEY LEVER: reusing the PARAM var x to hold j (x = 38174(2,x))\n//   extends its live range across all calls -> IDO promotes it to saved reg\n//   s0, fixing the whole register cascade (72->91%). RESIDUAL (91->100) is\n//   the 4 baked-jal placeholders (38204/38174/381b0/37f80 \u2014 USO-reloc cap,\n//   ~7%) + a minor frame-packing diff. Name pre-checked: no extern reuse.\n//   gl_func_00000000 = canonical never-defined USO placeholder.\n/* EXACT (agent-c run 122): four baked in-unit jals as gl_ref_ pins; the busy path returns the 381B0 result (not acquire's), held across the call in a copy declared first (sp+52); the type byte reuses ok (v0); the 37F80 result reuses the copy so no extra frame word. */\nextern int gl_func_00000000();\nextern int gl_ref_00038204(), gl_ref_00038174(), gl_ref_000381B0(), gl_ref_00037F80();\nint gl_func_00023760(int x, int *out) {\n    int nv;\n    int r0 = gl_ref_00038204(2);             /* table base */\n    int ok;\n    x = gl_ref_00038174(2, x);               /* x := j; reuse param -> s0 */\n    ok = gl_ref_000381B0(2, x);\n    nv = ok;\n    if (ok != 0) {\n        gl_func_00000000(x, 2);              /* acquire(j, 2) - jal 0, result dropped */\n        *out = 0;\n        return nv;\n    }\n    if ((ok = *(signed char *)((char *)r0 + x * 0x10 + 0x19)) == 4) {\n        *out = *(signed char *)((char *)r0 + x * 0x10 + 0x18);\n        return *(int *)((char *)r0 + x * 0x10 + 0x10);\n    }\n    {\n        int local;\n        if ((nv = gl_ref_00037F80(2, x, &local)) != 0) {\n            *out = 0;\n            return nv;\n        }\n    }\n    *out = *(signed char *)((char *)r0 + x * 0x10 + 0x18);\n    return *(int *)((char *)r0 + x * 0x10 + 0x10);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00023760.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
