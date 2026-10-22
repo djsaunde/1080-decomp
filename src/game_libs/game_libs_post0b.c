@@ -13347,7 +13347,7 @@ void gl_func_000445AC(char *a0) {
     gl_func_00000000(a0);
     gl_func_00000000(((char *)&D_00000000) + 0x1FE14, 0);
     *(int *)(a0 + 0x214) = gl_func_00000000(
-        0, ((char *)&D_00000000) + 0x1FE24, D_glob_a, D_glob_b, D_glob_c, D_glob_d, D_glob_e);
+        0, ((char *)&D_00000000) + 0x1FE24, D_glob_a, D_glob_b, D_glob_c, D_glob_d, v = D_glob_e);
     gl_func_00000000();
     a3 = (char *)gl_func_00000000(40);
     if (a3 != 0) {
