@@ -4267,6 +4267,15 @@ void func_00006734(char *a0) {
 //   (target folds every RMW to lui/lw + lui/sw, no held base). Residual:
 //   post-loop target holds &D/&E in s4/s5 + 6/0xA0000/&I as hoisted
 //   caller-saved constants; 3 phantom frame words below v4C; t-ring +1.
+// PASS-7 2026-10-22 (agent-c run 119): frame map from a -g3 .mdebug dump
+//   (cfe homes EVERY named local, even unreferenced ones, in declaration
+//   order): target = two dummy slots above e4, one more before va/vb, op
+//   declared before v4C, and no block-scope m/q/q slots -> every stack
+//   offset now matches the target relative to the frame top (frame 240).
+//   gD/gE through `(T *)(int)&sym` DO get held in s4/s5 like the target
+//   (uopt no longer folds the store back to lui/sw), but the frame then
+//   grows to 248 (an unused 8-byte home at 72..80) and the t-ring shifts;
+//   kept the plain form (258 diff words vs 280).
 #ifdef NON_MATCHING
 extern int import_8005EE6C[];   /* mode words: [0], [1] */
 extern int import_8005EE6C_r[];  /* read alias (same USO import) */
@@ -4278,8 +4287,8 @@ extern int import_8005C108[];   /* [0x3C/4] flags */
 extern int import_8005C108_r[];
 extern int import_8001FFF0;
 extern char *D_bu_7770;
-extern char *D_bu_776C;
-extern int D_bu_1EBDC;
+extern char *D_bu_776C[];
+extern int D_bu_1EBDC[];
 typedef struct { int count : 16; unsigned op : 16; } Rec6808;
 typedef struct { f32 x, y, z; } V3_6808;
 #define ATTACH6808(list, x) { \
@@ -4290,6 +4299,7 @@ typedef struct { f32 x, y, z; } V3_6808;
 extern char D_6808_00, D_6808_01, D_6808_02, D_6808_03, D_6808_04, D_6808_05, D_6808_06, D_6808_07, D_6808_08, D_6808_09, D_6808_10, D_6808_11, D_6808_12, D_6808_13, D_6808_14, D_6808_15, D_6808_16, D_6808_17, D_6808_18, D_6808_19, D_6808_20, D_6808_21, D_6808_22, D_6808_23;
 extern int import_8005C108_0[], import_8005C108_1[], import_8005C108_2[], import_8005C108_3[], import_8005C108_4[], import_8005C108_5[], import_8005EE64_0, import_8005EE64_1, import_8005EE64_2, import_8005EE64_3, import_8005EE64_4, import_8005EE64_5, import_8005EE64_6, import_8005EE64_7;
 void *func_00006808(char *obj, char *arg1, s32 arg2) {
+    int g0, g00;
     S4_55A0 e4, e0;
     int dc;
     char *g1;
@@ -4300,6 +4310,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     char *g3;
     int count;
     f32 bA4, bA0, b9C;
+    char *g4;
     char *va, *vb;
     char *L, *t;
     int *rec;
@@ -4310,8 +4321,8 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     int idx;
     char *o;
     char *res;
-    V3_6808 v4C;
     int op;
+    V3_6808 v4C;
 
     dc = 0;
     d4 = 0;
@@ -4320,7 +4331,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     b8 = 40;
     b4 = 20;
     b0 = 1;
-    { int m = import_8005EE6C_r[1] | 0x20000; import_8005EE6C[1] = m; }
+    import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000;
     c8 = 0.0f;
     c4 = 0.0f;
     c0 = 0.0f;
@@ -4426,8 +4437,8 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         b4 = 5;
         b0 = 2;
     }
-    gD = (char **)&D_bu_776C;
-    gE = &D_bu_1EBDC;
+    gD = D_bu_776C;
+    gE = D_bu_1EBDC;
     *gD = 0;
     *gE = 6;
     func_00000000(D_bu_7770, arg2, idx, *gE);
@@ -4458,11 +4469,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000(((char *)p));
     func_00000000();
     import_8005EE64_2 = import_8005EE64_3 & ~0x100;
-    {
-        char *q = ((char *)p);
-        if (1) { q += 0x30; }
-        *(int *)q |= 0x40;
-    }
+    *(int *)((char *)p + 0x30) |= 0x40;
     import_8005C108_4[0x3C / 4] = import_8005C108_5[0x3C / 4] & ~8;
     func_00000000();
     func_00000000(&D_6808_16, 0);
@@ -4475,11 +4482,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000();
     *gE = 1;
     res = (char *)func_00000000(0, ((char *)p), b8, b4, b0);
-    {
-        char *q = res;
-        if (1) { q += 0x18; }
-        *(int *)q &= ~0x40;
-    }
+    *(int *)(res + 0x18) &= ~0x40;
     import_8001FFF0 = func_00000000(0, ((char *)p));
     func_00000000(&D_6808_17, 0);
     if (dc != 0) {
