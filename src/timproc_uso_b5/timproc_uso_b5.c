@@ -2220,6 +2220,15 @@ extern char D_timb5_32C8_vw0, D_timb5_32C8_vw1;
 extern char D_timb5_32C8_ve0, D_timb5_32C8_ve1, D_timb5_32C8_ve2,
     D_timb5_32C8_ve3;
 extern char D_timb5_32C8_vf0, D_timb5_32C8_vf1;
+/* 2026-10-22 agent-g run 117: 3018 recipe ported (docs/IDO_CODEGEN.md
+ * #cfront-ctor-stage-struct-copy-3018) -> 366/370 words: per-stage name
+ * struct + struct copy (`uK.v = NAME; nm = uK;`, the uE8/uC0 copies stay
+ * member copies -- a struct copy there makes uopt copy every struct through
+ * a held &nm pointer), the `if (1)` address-escape of the uK temps instead
+ * of the dead call, vt store before the `= 2` store in rows 2-6, two pads
+ * moved from the bottom to above c, and the vec children written as
+ * U / F / E / `if (1) {}` / int-zero Z. LEFT: the target loads l134 into $f2
+ * (the zero takes $f0 first and conflicts with it); here l134 gets $f0. */
 char *timproc_uso_b5_func_000032C8(char *arg0) {
     struct TimB5Nm u0;
     struct TimB5Nm u1;
@@ -2239,6 +2248,7 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
     struct TimB5Nm uB8;
     volatile s32 padA1;
     volatile s32 padA2;
+    volatile s32 padA3;
     char *c;
     struct TimB5Nm nm;
     volatile s32 padB0;
@@ -2262,14 +2272,9 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
     volatile s32 padG0;
     volatile s32 padG1;
     volatile s32 padG2;
-    volatile s32 padG3;
-    volatile s32 padG4;
     f32 fa;
 
-    if (0) {
-        timproc_uso_b5_func_04A188(&u0, &u1, &u2, &u3, &u4, &u5, &uE8, &uC0,
-            &uBC, &uB8);
-    }
+    if (1) { struct TimB5Nm *q = &u0; q = &u1; q = &u2; q = &u3; q = &u4; q = &u5; q = &uE8; q = &uC0; q = &uBC; q = &uB8; }
 
     if (arg0 != 0 || (arg0 = (char *)timproc_uso_b5_func_055750(0x108)) != 0) {
         register char *vt;
@@ -2278,57 +2283,48 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
             FW(vt, 0x0) = (int)((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
             FW(vt, 0x4) = 0;
         }
-        u0.v = nm.v = B5_NAME(timproc_uso_b5_D_807FE9F8, 0x1188);
+        u0.v = B5_NAME(timproc_uso_b5_D_807FE9F8, 0x1188); nm = u0;
         if ((c = arg0 + 0x8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt0 + 0x1A0),
              FW(c, 0x14) = 0, FW(c, 0x10) = 0);
         }
-        u1.v = nm.v = B5_NAME(timproc_uso_b5_D_807FE9FC, 0x118C);
+        u1.v = B5_NAME(timproc_uso_b5_D_807FE9FC, 0x118C); nm = u1;
         if ((c = arg0 + 0x20) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
-            (FW(c, 0x10) = 2, FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0),
+            (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
-        u2.v = nm.v = B5_NAME(timproc_uso_b5_D_807FEA00, 0x1190);
+        u2.v = B5_NAME(timproc_uso_b5_D_807FEA00, 0x1190); nm = u2;
         if ((c = arg0 + 0x38) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
-            (FW(c, 0x10) = 2, FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0),
+            (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
-        u3.v = nm.v = B5_NAME(timproc_uso_b5_D_807FEA04, 0x1194);
+        u3.v = B5_NAME(timproc_uso_b5_D_807FEA04, 0x1194); nm = u3;
         if ((c = arg0 + 0x50) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
-            (FW(c, 0x10) = 2, FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0),
+            (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
-        u4.v = nm.v = B5_NAME(timproc_uso_b5_D_807FEA08, 0x1198);
+        u4.v = B5_NAME(timproc_uso_b5_D_807FEA08, 0x1198); nm = u4;
         if ((c = arg0 + 0x68) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
-            (FW(c, 0x10) = 2, FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0),
+            (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
-        u5.v = nm.v = B5_NAME(timproc_uso_b5_D_807FEA0C, 0x119C);
+        u5.v = B5_NAME(timproc_uso_b5_D_807FEA0C, 0x119C); nm = u5;
         if ((c = arg0 + 0x80) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
-            (FW(c, 0x10) = 2, FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0),
+            (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
-        fa = *(f32 *)((char *)&D_timb5_32C8_ve0 + 0x134);
-        vF8.x = fa;
-        vF8.z = fa;
-        fa = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C);
-        vF8.y = *(f32 *)((char *)&D_timb5_32C8_ve1 + 0x138);
-        vEC.x = fa;
-        vEC.z = fa;
-        v104.x = 0.0f;
-        v104.y = 0.0f;
-        v104.z = 0.0f;
         uE8.v = B5_NAME(timproc_uso_b5_D_807FEA10, 0x11A0);
-        vEC.y = *(f32 *)((char *)&D_timb5_32C8_ve3 + 0x140);
-        cp0 = v104;
-        cp1 = vF8;
-        cp2 = vEC;
+        vF8.x = *(f32 *)((char *)&D_timb5_32C8_ve0 + 0x134); vF8.y = *(f32 *)((char *)&D_timb5_32C8_ve1 + 0x138); vF8.z = *(f32 *)((char *)&D_timb5_32C8_ve0 + 0x134);
+        vEC.x = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C); vEC.y = *(f32 *)((char *)&D_timb5_32C8_ve3 + 0x140); vEC.z = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C);
+        if (1) {}
+        v104.x = 0; v104.y = 0; v104.z = 0;
+        cp0 = v104; cp1 = vF8; cp2 = vEC;
         nm = uE8;
         if ((cA = arg0 + 0x98) != 0 || (cA = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
             timproc_uso_b5_func_04A188(cA, arg0, nm, 1);
@@ -2339,21 +2335,13 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
             *(f32 *)(cA + 0x14) = t.y;
             *(f32 *)(cA + 0x18) = t.z;
         }
-        vDC.x = 0.0f;
-        vDC.y = 0.0f;
-        vDC.z = 0.0f;
-        fa = *(f32 *)((char *)&D_timb5_32C8_vf0 + 0x144);
-        vD0.x = fa;
-        vD0.y = fa;
-        vD0.z = fa;
-        fa = *(f32 *)((char *)&D_timb5_32C8_vf1 + 0x148);
-        vC4.x = fa;
-        vC4.y = fa;
-        vC4.z = fa;
+        vDC.x = 0; vDC.y = 0; vDC.z = 0;
+        if (1) {}
+        vD0.x = *(f32 *)((char *)&D_timb5_32C8_vf0 + 0x144); vD0.y = *(f32 *)((char *)&D_timb5_32C8_vf0 + 0x144); vD0.z = *(f32 *)((char *)&D_timb5_32C8_vf0 + 0x144);
+        if (1) {}
+        vC4.x = *(f32 *)((char *)&D_timb5_32C8_vf1 + 0x148); vC4.y = *(f32 *)((char *)&D_timb5_32C8_vf1 + 0x148); vC4.z = *(f32 *)((char *)&D_timb5_32C8_vf1 + 0x148);
         uC0.v = B5_NAME(timproc_uso_b5_D_807FEA14, 0x11A4);
-        cp0 = vDC;
-        cp1 = vD0;
-        cp2 = vC4;
+        cp0 = vDC; cp1 = vD0; cp2 = vC4;
         nm = uC0;
         if ((cB = arg0 + 0xB8) != 0 || (cB = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
             timproc_uso_b5_func_04A188(cB, arg0, nm, 1);
@@ -2364,14 +2352,14 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
             *(f32 *)(cB + 0x14) = t.y;
             *(f32 *)(cB + 0x18) = t.z;
         }
-        uBC.v = nm.v = B5_NAME(timproc_uso_b5_D_807FEA18, 0x11A8);
+        uBC.v = B5_NAME(timproc_uso_b5_D_807FEA18, 0x11A8); nm = uBC;
         if ((c = arg0 + 0xD8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
             FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw0 + 0x158);
             FW(c, 0x14) = 0;
             *(f32 *)(c + 0x10) = 0.0f;
         }
-        uB8.v = nm.v = B5_NAME(timproc_uso_b5_D_807FEA1C, 0x11AC);
+        uB8.v = B5_NAME(timproc_uso_b5_D_807FEA1C, 0x11AC); nm = uB8;
         if ((c = arg0 + 0xF0) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
             timproc_uso_b5_func_04A188(c, arg0, nm, 1);
             FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw1 + 0x158);
