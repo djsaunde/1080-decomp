@@ -8924,16 +8924,16 @@ void gl_func_0003E9C8(void *a0) {
     Key3E9C8 k2;
     char *o2;
     int *p1, *p2;
-    *(Tag3E9C8 *)&key = *(Tag3E9C8 *)((char *)&D_00000000 + 0x0002F34C);
-    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F350, &key)) return;
+    *(Tag3E9C8 *)&key = *(Tag3E9C8 *)((char *)&D_00000000 + 0x0001F34C);
+    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001F350, &key)) return;
     k1.w = key.w; o1 = (char *)gl_func_00000000(a0, k1);
     if (!o1) return;
-    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0002F358, &key)) return;
+    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001F358, &key)) return;
     k2.w = key.w; o2 = (char *)gl_func_00000000(a0, k2);
     if (!o2) return;
     p1 = (int *)(o1 + 0x2C);
     p2 = (int *)(o2 + 0x2C);
-    gl_func_00000000((char *)&D_00000000 + 0x0002F35C, p1, p2);
+    gl_func_00000000((char *)&D_00000000 + 0x0001F35C, p1, p2);
     *p1 = *p2;
 }
 #else
