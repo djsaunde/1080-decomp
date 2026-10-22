@@ -5120,14 +5120,17 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000230D0);
 //   reloc infra + recursion schedule. Name pre-checked: no extern
 //   reuse (collision-safe). gl_func_00000000 = canonical
 //   never-defined USO placeholder.
-#ifdef NON_MATCHING
 extern int gl_func_00000000();
 /* Whole-body decode 2026-06-01. depth>=0x7F: only depth==0x7F does work
  * (n=gl(handle,a2); gl_3773c(n->4,handle)); else return 0. depth<0x7F:
  * n=gl(handle); if(!n) return -1; if n->1!=0 gl_3773c(n->8,handle); always
  * gl_3773c(n->0x10,handle); if n->2!=0x7F gl_3773c(n->0x18,handle). The prior
  * body had the n->1 branch backwards and used the placeholder for 0x3773c. */
-extern int gl_func_0003773C();
+/* 2026-10-22 (agent-c run 120) EXACT: decode fix found with a branch-offset-aware
+ * diff -- the depth < 0x7F path has no return statement (the target jumps past the
+ * `or v0,zero,zero` straight to the epilogue, returning the last callee's v0), and
+ * depth > 0x7F falls to the same epilogue. Callee = baked USO jal 0x3773C. */
+extern int gl_ref_0003773C();
 int gl_func_000231B4(int handle, int depth, int a2) {
     int *n;
     if (depth < 0x7F) {
@@ -5136,27 +5139,21 @@ int gl_func_000231B4(int handle, int depth, int a2) {
             return -1;
         }
         if (*((unsigned char *)n + 1) != 0) {
-            gl_func_0003773C(n[8 / 4], handle);
+            gl_ref_0003773C(n[8 / 4], handle);
         }
-        gl_func_0003773C(n[0x10 / 4], handle);
+        gl_ref_0003773C(n[0x10 / 4], handle);
         if (*((unsigned char *)n + 2) != 0x7F) {
-            gl_func_0003773C(n[0x18 / 4], handle);
+            gl_ref_0003773C(n[0x18 / 4], handle);
         }
+    } else if (depth == 0x7F) {
+        n = (int *)gl_func_00000000(handle, a2);
+        if (n == 0) {
+            return -1;
+        }
+        gl_ref_0003773C(n[4 / 4], handle);
         return 0;
     }
-    if (depth != 0x7F) {
-        return 0;
-    }
-    n = (int *)gl_func_00000000(handle, a2);
-    if (n == 0) {
-        return -1;
-    }
-    gl_func_0003773C(n[4 / 4], handle);
-    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000231B4);
-#endif
 
 /* gl_func_00023284: 25-insn 2-callee dispatcher with conditional cleanup.
  *   v = call(2, a0);

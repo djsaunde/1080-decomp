@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000231B4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:08:26.066606+00:00",
+  "end_time": "2026-10-22T20:08:26.066606+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:08:26.066606+00:00",
+      "assistant_text": "Decode fix: the depth < 0x7F path has no return statement; baked jal 0x3773C pinned.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 52,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_000231B4 \u2014 STRUCTURAL PASS (0xD0 / 52 words, no episode).\n// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no\n// bundle). A recursive handle/node-tree walker.\n//\n//   int gl_func_000231B4(int handle, int depth) {\n//     if (depth >= 0x7F) return 0;                      // depth cap\n//     N *n = (*lookup)(handle);                          // jal 0 USO\n//     if (n == 0) return -1;\n//     byte k1 = n->b_1;\n//     if (k1 == 0) {                                      // leaf-ish\n//       jal 0x37364(n->w_10, handle);                     // 0x0C00DDCF\n//       jal 0x37364(n->w_10, handle);\n//     } else {\n//       jal 0x37364(n->w_8,  handle);                     // recurse 8\n//     }\n//     byte k2 = n->b_2;\n//     if (k2 != 0x7F) {\n//       jal 0x37364(n->w_18, handle);                     // recurse 18\n//     }\n//     ...\n//   }\n//\n// Struct-typing reference: walks a handle-resolved node graph. The\n//   handle is mapped to a node N via the USO-relocated lookup (`jal 0`\n//   slot). N has child/next pointers at words +8, +0x10, +0x18 and\n//   classifier bytes at +1 / +2 (the value 0x7F is the stop/no-child\n//   sentinel, matching the same 0x7F sentinel the gl_func_000221D8 /\n//   gl_func_00022D68 family uses). Traversal of each child goes\n//   through the fixed routine 0x0C00DDCF (\u22480x37364); the `depth`\n//   second arg guards recursion (cap 0x7F). This is a scene/handle-\n//   graph recursive visitor in the game_libs registry subsystem.\n// Caps (DEFERRED): CLEAN single jr $ra. Recursive scene/handle-graph\n//   visitor in the game_libs registry subsystem. Real-C STRUCTURAL\n//   body below per the analysis (depth cap 0x7F; jal-0 USO-reloc\n//   lookup(handle)->node; classifier byte n->1 selects leaf double-\n//   visit of n->0x10 vs recurse n->8; n->2 != 0x7F sentinel ->\n//   recurse n->0x18; traversal via fixed routine 0x37364). Byte-\n//   match deferred \u2014 placeholder jal-0 lookup/traversal need USO\n//   reloc infra + recursion schedule. Name pre-checked: no extern\n//   reuse (collision-safe). gl_func_00000000 = canonical\n//   never-defined USO placeholder.\nextern int gl_func_00000000();\n/* Whole-body decode 2026-06-01. depth>=0x7F: only depth==0x7F does work\n * (n=gl(handle,a2); gl_3773c(n->4,handle)); else return 0. depth<0x7F:\n * n=gl(handle); if(!n) return -1; if n->1!=0 gl_3773c(n->8,handle); always\n * gl_3773c(n->0x10,handle); if n->2!=0x7F gl_3773c(n->0x18,handle). The prior\n * body had the n->1 branch backwards and used the placeholder for 0x3773c. */\n/* 2026-10-22 (agent-c run 120) EXACT: decode fix found with a branch-offset-aware\n * diff -- the depth < 0x7F path has no return statement (the target jumps past the\n * `or v0,zero,zero` straight to the epilogue, returning the last callee's v0), and\n * depth > 0x7F falls to the same epilogue. Callee = baked USO jal 0x3773C. */\nextern int gl_ref_0003773C();\nint gl_func_000231B4(int handle, int depth, int a2) {\n    int *n;\n    if (depth < 0x7F) {\n        n = (int *)gl_func_00000000(handle);\n        if (n == 0) {\n            return -1;\n        }\n        if (*((unsigned char *)n + 1) != 0) {\n            gl_ref_0003773C(n[8 / 4], handle);\n        }\n        gl_ref_0003773C(n[0x10 / 4], handle);\n        if (*((unsigned char *)n + 2) != 0x7F) {\n            gl_ref_0003773C(n[0x18 / 4], handle);\n        }\n    } else if (depth == 0x7F) {\n        n = (int *)gl_func_00000000(handle, a2);\n        if (n == 0) {\n            return -1;\n        }\n        gl_ref_0003773C(n[4 / 4], handle);\n        return 0;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000231B4.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
