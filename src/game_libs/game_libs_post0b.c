@@ -15292,27 +15292,32 @@ int gl_func_00047DD8(int *a0, int a1) {
 // 0x10 (4-float) stride, the mul.s/add.s MAC structure and the sp+0x40
 // result scratch are exact. Caps: source/weight layout + a0 struct untyped.
 // Full body INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
+/* 2026-10-22 (agent-c run 120) EXACT (permuter-assisted): the matrix walk needs a
+ * copied row base b = a, the column base re-assigned per use ((n = m)[k][j]), an
+ * if (1) {} before the j loop, and the declaration order below (pad[1], n, i, m,
+ * out, ...) for the frame: out at 64 with m homed directly above it. */
 void gl_func_00047E00(char *arg0, float (*a)[4]) {
-    int pad[3];
+    int pad[1];
+    float (*n)[4];
+    int i;
     float (*m)[4];
     float out[4][4];
-    int i, j, k;
+    float (*b)[4];
+    int j;
+    int k;
 
     m = *(float (**)[4])(arg0 + 0xE0);
+    b = a;
     for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
+        if (1) {} for (j = 0; j < 4; j++) {
             out[i][j] = 0.0f; if (1) {}
             for (k = 0; k < 4; k++) {
-                out[i][j] += a[i][k] * m[k][j];
+                out[i][j] += b[i][k] * (n = m)[k][j];
             }
         }
     }
-    gl_func_00034458(out, m);
+    gl_func_00000000(out, m);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00047E00);
-#endif
 
 /* gl_func_00047F48: 8-insn tail-call wrapper.
  *   Loads *(int*)(a0 + 0xE0) and tail-calls a cross-segment function with
