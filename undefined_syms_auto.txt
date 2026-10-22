@@ -4120,3 +4120,6 @@ gl_ref_0004B8E8 = 0x0004B8E8;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_00045F04 = 0x00045F04;  /* gl_func_0003190C baked in-unit jal (agent-c run 122) */
 D_445AC_b = 0x00000000;  /* gl_func_000445AC: distinct zero alias for the g+0x1C store (target materialises the base: lui/addiu v0 + sw 28(v0)) */
 gl_func_00023914_rodata = 0x00000EA0;  /* switch(mode) 5-entry jumptable: USO ships it in game_libs rodata at +0xEA0; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_23914.c) */
+D_2D7D0_a = 0x00000000;  /* gl_func_0002D7D0: three blank USO data refs each set to 8 (distinct zero aliases) */
+D_2D7D0_b = 0x00000000;
+D_2D7D0_c = 0x00000000;

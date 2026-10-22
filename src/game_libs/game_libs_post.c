@@ -15031,16 +15031,17 @@ void gl_func_0002D788(int a0) {
  * the predecessor-stolen store + successor suffix bytes diverge from
  * target without the banned post-cc recipes). */
 extern int D_2D7D0_arr;
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122): the raw diff showed three leading stores of 8 to three blank USO data refs (distinct zero aliases) that the NM had dropped. */
 void gl_func_0002D7D0(void) {
+    extern int D_2D7D0_a, D_2D7D0_b, D_2D7D0_c;
+    D_2D7D0_a = 8;
+    D_2D7D0_b = 8;
+    D_2D7D0_c = 8;
     gl_func_00000000(0x41010000, ((int*)&D_2D7D0_arr)[8]);
     gl_func_00000000(0x41000000, ((int*)&D_2D7D0_arr)[8]);
     gl_func_00000000(0x41020000, ((int*)&D_2D7D0_arr)[8]);
     gl_func_00000000(0xF0000000, 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002D7D0);
-#endif
 
 /* gl_func_0002D838: 12-insn prologue-stolen-successor (sibling of 0002D8A8,
  * 0002D870). NATURAL CEILING: 83.33% NM. Predecessor's tail
