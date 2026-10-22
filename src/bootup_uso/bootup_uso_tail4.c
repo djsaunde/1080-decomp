@@ -1180,6 +1180,28 @@ void func_00014228(char *s0) {
  * sw a0] window rotation. Same-family probes documented exhausted
  * (~25 variants on 13D40); sub-100 -> NM wrap per policy. */
 #ifdef NON_MATCHING
+/* agent-c run 122: NCC (C++) draft, raw 6 words off -- this is the out-of-line ctor Obj::Obj() (rename __ct__3ObjFv in a Makefile rule, 4E584 precedent). Every instruction matches; left: the two Val temporaries sit at 56/60 (target 60/56) and the member this spill at 48 (target 40).
+ * extern "C" {
+ * void *func_00000000(...);
+ * extern int func_0000CACC[];
+ * extern int func_0000CAE8[];
+ * extern char D_0000C83C;
+ * }
+ * struct Val { int v; Val(int x) { v = x; } };
+ * struct B0 { void *vt; int x; B0() { vt = &func_0000CACC[3]; x = 0; } };
+ * struct Base { char pad[0xC]; Base(void *owner, Val p, int k); };
+ * struct D : Base {
+ *     void *vt2; float f; int z;
+ *     D(void *owner, Val p) : Base(owner, p, 1) { vt2 = &D_0000C83C; z = 0; f = 30.0f; }
+ * };
+ * struct Obj {
+ *     B0 b;
+ *     D m1;
+ *     D m2;
+ *     Obj();
+ * };
+ * Obj::Obj() : m1(this, Val(func_0000CAE8[1])), m2(this, Val(func_0000CAE8[2])) {}
+ */
 extern int func_0000CAE8[];  /* data words 0xCAE8/0xCAEC/0xCAF0 (table) */
 extern char D_0000C83C;
 char *func_0001438C(char *arg0) {

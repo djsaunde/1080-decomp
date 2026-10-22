@@ -4581,6 +4581,21 @@ end:
  * 2026-05-23 as match-faking. Last of the 3-function bootup_uso regalloc
  * cluster (7C74/7B08/7204) per project_1080_bootup_regalloc_cluster.md. */
 #ifdef NON_MATCHING
+/* agent-c run 122: NCC (C++) draft, raw 5 words off --: new Pair(a1, p) then a 2-arg call. Left: the object pointer colours a1 (target: a2 = the ctor this, then or a1,a2 before the call, i.e. the new-expression result is a separate web; same in 3E0F0 / 8124 where it is spilled to sp+76). Casts, prototypes, inline add(), operator new forms and ctor-side registration all keep a1.
+ * extern "C" void *func_00000000(...);
+ * inline void *operator new(unsigned n) { return func_00000000(n); }
+ * struct Val { int v; };
+ * struct M4 { int a; M4() { a = 0; } };
+ * struct Pair {
+ *     int a;
+ *     M4 b;
+ *     Pair(int x, Val p) { a = x; *(Val *)&b = p; }
+ * };
+ * extern "C" void func_00007204(char *a0, int a1, Val p) {
+ *     Pair *o = new Pair(a1, p);
+ *     func_00000000(a0 + 0x2C, o);
+ * }
+ */
 void func_00007204(int a0, int a1, int a2) {
     int *sp28;
     int sp1C = a2;
