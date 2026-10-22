@@ -12318,38 +12318,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00041D40);
 // cur-first inits, int/ptr casts on every term, volatile self + named s,
 // register self, while(0) colour anchors in all 16 orders, if(0) demotion
 // on s/head, call-result-in-v0 occupancy.
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41EDC.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
 void gl_func_00041EDC(void *self) {
-    int *next;
-    int *cur;
-    int *node;
-    int **pp;
-
-    gl_func_00000000((char*)&D_00000000 + 0x1F6D0);
-    while (0) {
-        pp = &cur;
-        pp = &next;
-    }
-    next = *(int **)((char *)self + 0x2C); if (1) {}
-    cur = next;
-    node = (cur != NULL) ? (next = (int *)cur[1], (int *)cur[0]) : NULL;
-    while (node != NULL) {
-        node = (int *)cur[0];
-        if (node[0x18 / 4] & 0x4) {
-            int *vt = (int *)node[0x28 / 4];
-            if (0) {
-                vt = NULL;
-            }
-            ((void (*)(int))vt[0x1C / 4])(*(short *)((char *)vt + 0x18) + (int)node);
-        }
-        cur = next;
-        node = (cur != NULL) ? (next = (int *)cur[1], (int *)cur[0]) : NULL;
-    }
-    gl_func_00000000();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00041EDC);
-#endif
 
 // gl_func_00041F90 — STRUCTURAL PASS (0x100 / 66 words, no episode). Raw-.word
 // USO. realjr=2, regjr=0 → 2-function BUNDLE + BOUNDARY NOTE: named fn ends

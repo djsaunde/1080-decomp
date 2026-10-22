@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00041EDC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:49:10.295488+00:00",
+  "end_time": "2026-10-22T15:49:10.295488+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:49:10.295488+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, inline first(), inline Node::tick(). list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 45,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00041EDC (0xB4 / 45 words): walk the child\n * list and fire virtual slot 2 on every child with flag 4. Entry next() via an\n * inline first() { return next(); } (own return temp: v1); the body is an\n * inline Node::tick() { if (flags & 4) update(); } on it.get(), whose this\n * shares the loop temp's v0.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" char D_00000000[];\nstruct Node {\n    char pad[0x18]; int flags; char pad1c[0xC];\n    virtual void v0(); virtual void v1(); virtual void update();\n    void tick() { if (flags & 4) update(); }\n};\nstruct Link { Node *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    Node *first() { return next(); }\n    Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    Node *get() { return cur->obj; }\n};\nstruct Owner { char pad[0x2C]; Link *head; };\nextern \"C\" void gl_func_00041EDC(Owner *o) {\n    gl_func_00000000(D_00000000 + 0x1F6D0);\n    Iter it(o->head);\n    for (Node *n = it.first(); n; n = it.next()) {\n        it.get()->tick();\n    }\n    gl_func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_41EDC.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00041EDC.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
