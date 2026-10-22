@@ -4308,33 +4308,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003863C);
 //   regalloc: target spills the cursor/next chain to stack 40/44(sp) (3
 //   saved regs, frame 0x30); IDO here keeps them in regs (4 saved regs,
 //   frame 0x28), shifting the frame + insns. Permuter candidate.
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_38728.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). Same C++ list iterator as gl_func_0003D48C. */
 void gl_func_00038728(char *o) {
-    char *cursor, *next, *obj, *disp;
-    gl_func_00000000(*(char **)(o + 0x0C));                  /* cb1(o->0x0C) */
-    for (cursor = *(char **)(o + 0x10); cursor != 0; cursor = next) {
-        next = *(char **)(cursor + 0x04);                    /* prefetch next BEFORE body */
-        obj = *(char **)cursor;
-        if (obj == 0) {
-            break;
-        }
-        if ((*(int *)(obj + 0x18) & 8) &&
-            (*(int *)(obj + 0x08) & 0x200) &&
-            !(*(int *)(obj + 0x08) & 0x20000) &&            /* mask is literal 0x20000 (lui 0x2) */
-            !(*(int *)(obj + 0x2C) & 1)) {
-            gl_func_00000000((float *)(obj + 0x30), (float *)(obj + 0x70));   /* cb2 */
-            if (*(char **)(obj + 0x04) != 0) {
-                *(char **)(obj + 0x14) = o;                  /* back-link if obj has a next */
-            }
-            disp = *(char **)(obj + 0x28);                   /* vtable dispatch */
-            (*(void (*)())(*(int *)(disp + 0x24)))(obj + *(short *)(disp + 0x20));
-        }
-    }
-    gl_func_00000000();                                      /* cb_final() */
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038728);
-#endif
 
 // gl_func_00038830 — STRUCTURAL PASS (0x134 / 77 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one

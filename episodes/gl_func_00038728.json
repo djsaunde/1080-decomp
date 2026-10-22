@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00038728",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:13:05.238477+00:00",
+  "end_time": "2026-10-22T15:13:05.238477+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:13:05.238477+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} list iterator, inline Sub::lock (this in a1), virtual slot 3.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 66,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00038728 (0x108 / 66 words): lock the\n * owner's sub-object, walk the child list ({cur, nxt} iterator of\n * gl_func_0003D48C) and, for each object with flag 8, rebuild its matrix\n * pair when 0x200 is set and neither 0x20000 nor the +0x2C bit is, attach\n * the owner, and fire virtual slot 3; unlock.\n * The first call's `lw a1,12(a0); jal; or a0,a1` is an inline Sub::lock()\n * whose `this` lands in a1 (a plain gl_func(o->x0c) loads straight into a0).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" int gl_func_00000000(...);\nstruct Owner387;\nstruct Node387B {\n    int x0; int x4; int x8; char padc[8]; Owner387 *x14; int x18; char pad1c[0xC];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void upd(); };\nstruct Node387 : Node387B { int x2c; char m30[0x40]; char m70[0x40]; };\nstruct Link387 { Node387 *obj; Link387 *next; };\nstruct Iter387 {\n    Link387 *cur, *nxt;\n    Iter387(Link387 *head) { nxt = head; }\n    Node387 *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    Node387 *get() { return cur->obj; }\n};\nstruct Sub387 { void lock() { gl_func_00000000(this); } };\nstruct Owner387 { char pad[0xC]; Sub387 *x0c; Link387 *head; };\nextern \"C\" void gl_func_00038728(Owner387 *o) {\n    Iter387 it(o->head);\n    o->x0c->lock();\n    for (Node387 *n = it.next(); n; n = it.next()) {\n        if (n->x18 & 8) {\n            if ((n->x8 & 0x200) && !(n->x8 & 0x20000) && !(n->x2c & 1)) gl_func_00000000(n->m30, n->m70);\n            if (n->x4) n->x14 = o;\n            n->upd();\n        }\n    }\n    gl_func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_38728.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00038728.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

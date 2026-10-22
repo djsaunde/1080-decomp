@@ -1351,6 +1351,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_62A2C_DONOR := build/src/game_libs/game_libs_ncc_62A2C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_62A2C_DONOR)
+# 38728 = child-list update with matrix rebuild + owner attach + virtual slot 3 ({cur, nxt} iterator); NCC donor.
+GAMELIBS_38728_DONOR := build/src/game_libs/game_libs_ncc_38728.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038728=$(GAMELIBS_38728_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38728_DONOR)
 # 38598 = child-list walk: matrix rebuild on flag 0x200 + virtual slot 1 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_38598_DONOR := build/src/game_libs/game_libs_ncc_38598.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038598=$(GAMELIBS_38598_DONOR)
