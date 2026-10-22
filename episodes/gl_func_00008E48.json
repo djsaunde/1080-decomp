@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00008E48",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:12:57.818538+00:00",
+  "end_time": "2026-10-22T17:12:57.818559+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:12:57.818555+00:00",
+      "assistant_text": "Exact from 98.2: the cfe -O0 body compiled with NCC -O0 (no closing-brace b-epilogue); the callee is the jal-0 placeholder gl_func_00000000, not the gl_func_00008C3C name the NM wrap used (objdiff hid it; ROM cmp caught it).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 109,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donor for gl_func_00008E48 (0x1B4 / 109 words): the\n * cfe NM body unchanged; under edg -O0 there is no closing-brace b-epilogue\n * marker (cfe built 111 words). Spliced into game_libs_mid.c.o. */\nextern \"C\" {\ntypedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;\ntypedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;\ntypedef long long s64; typedef unsigned long long u64;\n#define NULL 0\n\n\n/* gl_func_00008E48 \u2014 VERIFIED 101/111 reloc-resolved (was 10/109 raw baseline).\n * ALL 109 target words reproduced in order except the live `b epilogue` offset\n * (10000003 vs 10000001) + a DEAD `b epilogue; nop` pair (build 111 vs target 109):\n * the documented -O0 RETURN-VALUE dead-double-b TOOLCHAIN-BINARY GAP\n * (docs/IDO_CODEGEN.md). Proven not C-fixable. HONEST CAP -> stays NM at ~98%\n * (up from 92.98%).\n *\n * Levers applied (all verified in-tree):\n * 1. sp3C/sp38/sp34 are PLAIN locals declared FIRST in that order -> slots\n *    0x3C/0x38/0x34 top-down; register base/o/tmp reserve 0x30/0x2C/0x28.\n *    (Old wrap had sp3C as register s1 -> `move s1,v0` instead of the target's\n *    sw v0,0x3C / lw s1,0x3C / return-from-home, and sp38/sp34 landed 0x30/0x2C.)\n * 2. Chain direction swapped: `sp34 = sp38 = (char *)D_0000004C;` -> target's\n *    store order sw t6,0x38 THEN sw t6,0x34 (old `sp38 = sp34 = ...` reversed it).\n * 3. First call arg1 via `*(int *)((char *)&D_8FFC_base + 8)` (base-0 alias,\n *    shared with 8FFC, in undefined_syms_auto.txt) -> 3-insn lui/addiu/lw-off-8\n *    with NO CSE against the &D_00000000 arg0 materialization.\n * 4. Separate `register char *o` (s1) alias of sp3C for the tail derefs;\n *    `tmp = base; FW(o,0x14) = (int)tmp;` two-step keeps the target's\n *    `move s2,s0; sw s2,20(s1)` (direct base store folds to sw s0 \u2014 wrong).\n * undefined_syms_auto.txt ADDITION (shared with 8FFC, line 578):\n *   D_8FFC_base = 0x00000000;\n */\n#ifndef FW\n#define FW(p, o) (*(int *)((char *)(p) + (o)))\n#endif\nextern int gl_func_00000000(...);  /* USO placeholder callee (jal 0) */\nextern char D_00000000;\nextern int D_0000004C, D_00000064;\nextern unsigned char D_00000181, D_00000182, D_00000183;\nextern char D_8FFC_base;   /* base-0 alias of D_00000000 (see gl_func_00008FFC note) */\nchar *gl_func_00008E48(char **arg0, int arg1, s32 arg2) {\n    char *sp3C;            /* plain locals decl'd first: slots 0x3C/0x38/0x34 top-down */\n    char *sp38;\n    char *sp34;\n    register char *base;   /* s0 */\n    register char *o;      /* s1 */\n    register char *tmp;    /* s2 */\n\n    sp34 = sp38 = (char *)D_0000004C;\n    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));\n    if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {\n        D_00000181 = gl_func_00000000(FW((*(int*)arg0), 0x8));\n        sp34 = (char *)(int)D_00000181;\n        D_00000182 = gl_func_00000000(FW((*(int*)arg0), 0x8));\n        D_00000183 = gl_func_00000000(FW((*(int*)arg0), 0x8));\n    }\n    gl_func_00000000(sp38, sp34);\n    if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {\n        sp3C = (char *)gl_func_00000000(&D_00000000, D_00000064, 3, arg2);\n    } else {\n        sp3C = (char *)gl_func_00000000(&D_00000000, D_00000064, 2, arg2);\n    }\n    base = (char *)&D_00000000;\n    o = sp3C;\n    tmp = base + 0x10;\n    gl_func_00000000(tmp, o);\n    if (FW(o, 0x14) != 0) {\n        FW(o, 0x4) = 1;\n    }\n    tmp = base;\n    FW(o, 0x14) = (int)tmp;\n    gl_func_00000000(&D_00000000, 0);\n    (void)arg1;\n    return sp3C;\n}\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_o0_8E48.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00008E48.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O0 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC -O0 donor spliced via REPLACE_FUNC_BODY into game_libs_mid.c.o; ROM byte-identical; objdiff 100%."
+  }
+}
