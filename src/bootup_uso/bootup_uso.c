@@ -4720,85 +4720,10 @@ extern char D_00007FA0;
 extern void func_0000027C();   /* K&R data-symbol base (0x27C) */
 extern void func_0000029C();   /* K&R data-symbol base (0x29C) */
 extern void func_00000008();   /* K&R data-symbol base (0x08)  */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_7328.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). Handler list walk through the C++ {cur, nxt} iterator; see the .cpp header. */
 void func_00007328(char *s3) {
-    int flag;
-    int outv;
-    int keybuf;
-    int *node;
-    int *cval;
-    int *pl;
-    int *match;
-
-    while (1) {
-        func_00005EF8(&flag);
-        if (flag == 0) break;
-        match = 0;
-        func_0000502C(&outv);
-        node = *(int**)(s3 + 0x2C);
-        cval = node;
-        pl = 0;
-        if (node != 0) {
-            cval = (int*)node[1];
-            pl = (int*)node[0];
-        }
-        if (pl != 0) {
-            do {
-                keybuf = flag;
-                pl = (int*)node[0];
-                if (keybuf == pl[1]) {
-                    match = (int*)node[0];
-                    break;
-                }
-                if (cval == 0) {
-                    node = cval;
-                    pl = 0;
-                } else {
-                    node = cval;
-                    cval = (int*)cval[1];
-                    pl = (int*)node[0];
-                }
-            } while (pl != 0);
-        }
-        if (match != 0) {
-            int *o = (int*)match[0];
-            int *vt;
-            short off;
-            func_00000000(&D_00007F90, (char*)match + 4);
-            vt = *(int**)((char*)o + 0x28);
-            off = *(short*)((char*)vt + 0x48);
-            (*(void (**)(void *))((char*)vt + 0x4C))((char*)o + off);
-        } else {
-            func_00000000(&D_00007FA0, &flag);
-            func_00000000(&D_00000000, 1, outv);
-        }
-        flag = 0;
-    }
-
-    func_0000502C((int*)(s3 + 0x38));
-    {
-        int f = *(int*)(s3 + 0x38);
-        if (f & 1) {
-            func_00000000((char*)&func_0000027C + 0x18);
-            f = *(int*)(s3 + 0x38);
-        }
-        if (f & 2) {
-            func_00004FF0((int*)(s3 + 0x30));
-            func_00004FF0((int*)(s3 + 0x34));
-        }
-    }
-    {
-        int mode = *(int*)((char*)&func_00000008 + 0x34);
-        if (mode == 6 || mode == 0xB) {
-            D_bu_ro_pool[0x2A0 / 4] = 1.0f;  /* same section-base reloc (symIdx 1) as the FP literals */
-            *(int*)(s3 + 0x34) = 0x320;
-            *(int*)(s3 + 0x38) = *(int*)(s3 + 0x38) | 2;
-        }
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007328);
-#endif
 
 /* func_000074E8 - verified structural decode (0x138, 78 insns,
  * guarded constructor + list-link + vtable + finalize).

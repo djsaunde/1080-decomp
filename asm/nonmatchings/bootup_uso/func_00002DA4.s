@@ -5,8 +5,8 @@ glabel func_00002DA4
     /* DD3814 00002DA8 00803825 */  or         $a3, $a0, $zero
     /* DD3818 00002DAC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD381C 00002DB0 AFA50024 */  sw         $a1, 0x24($sp)
-    /* DD3820 00002DB4 3C040000 */  lui        $a0, %hi(.L000073EC)
-    /* DD3824 00002DB8 248473EC */  addiu      $a0, $a0, %lo(.L000073EC)
+    /* DD3820 00002DB4 3C040000 */  lui        $a0, %hi(D_000073EC)
+    /* DD3824 00002DB8 248473EC */  addiu      $a0, $a0, %lo(D_000073EC)
     /* DD3828 00002DBC 00002825 */  or         $a1, $zero, $zero
     /* DD382C 00002DC0 AFA70020 */  sw         $a3, 0x20($sp)
     /* DD3830 00002DC4 0C000000 */  jal        func_00000000

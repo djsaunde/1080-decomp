@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00007328",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:06:31.465088+00:00",
+  "end_time": "2026-10-22T15:06:31.465088+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:06:31.465088+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} list iterator + by-value Msg match; frame from function-scope found and block-scope mode.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 112,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00007328 (0x1C0 / 112 words): drain the\n * message queue -- for each message look the id up in the handler list (stack\n * {cur, nxt} iterator, the same class as game_libs 38964 / 3D48C) and fire\n * the handler's virtual slot 8, else report + reply; then the flag tail.\n *\n * Load-bearing (cfe NM was 66.6):\n * - the list iterator's next() advances through its own nxt member,\n *   `(cur = nxt) ? (nxt = nxt->next, cur->data) : 0`;\n * - Entry::matches(Msg) takes the message BY VALUE (the per-iteration copy\n *   through the s1 = sp+52 pointer);\n * - frame 88: msg/out/found at function scope (found above the iterator),\n *   the handler call without a named local, `mode` in its own block (a\n *   function-scope `mode` costs a slot above the iterator);\n * - tail: the |= 2 before the 800 store (ring t5/t3/t4).\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nvoid func_00000000(...);\nvoid func_00005EF8(void *);\nvoid func_0000502C(void *);\nvoid func_00004FF0(void *);\nextern char D_00000000, D_00007F90, D_00007FA0;\nextern char func_0000027C[], func_00000008[], func_0000029C[];\n}\nstruct Msg73 { int id; };\nstruct Handler73 { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();\n    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void handle(); };\nstruct Entry73 { Handler73 *h; int id; int matches(Msg73 m) { return m.id == id; } };\nstruct Link73 { Entry73 *data; Link73 *next; };\nstruct Iter73 {\n    Link73 *cur; Link73 *nxt;\n    void start(Link73 *h) { nxt = h; }\n    Entry73 *next() { return (cur = nxt) ? (nxt = nxt->next, cur->data) : 0; }\n    Entry73 *get() { return cur->data; }\n};\nextern \"C\" void func_00007328(char *self) {\n    Msg73 msg;\n    int out;\n    Entry73 *found;\n    for (;;) {\n        msg.id = 0;\n        func_00005EF8(&msg);\n        if (msg.id == 0) break;\n        Iter73 it;\n        func_0000502C(&out);\n        found = 0;\n        it.start(*(Link73 **)(self + 0x2C));\n        while (it.next() != 0) {\n            if (it.get()->matches(msg)) {\n                found = it.get();\n                break;\n            }\n        }\n        if (found != 0) {\n            func_00000000(&D_00007F90, &found->id);\n            Handler73 *h = found->h;\n            h->handle();\n        } else {\n            func_00000000(&D_00007FA0, &msg);\n            func_00000000(&D_00000000, 1, out);\n        }\n    }\n    func_0000502C(self + 0x38);\n    if (*(int *)(self + 0x38) & 1) {\n        func_00000000(func_0000027C + 0x18);\n    }\n    if (*(int *)(self + 0x38) & 2) {\n        func_00004FF0(self + 0x30);\n        func_00004FF0(self + 0x34);\n    }\n    { int mode = *(int *)(func_00000008 + 0x34);\n    if (mode == 6 || mode == 11) {\n        *(float *)(func_0000029C + 4) = 1.0f;\n        *(int *)(self + 0x38) |= 2;\n        *(int *)(self + 0x34) = 800;\n    } }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_7328.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00007328.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

@@ -4050,3 +4050,6 @@ __vtbl__7Bb4Base = 0x00000000;  /* func_0000B1B4 Base vtable (blank lui/addiu 0)
 __vtbl__6Bb4Mid = 0x00000000;  /* func_0000B1B4 Mid vtable (blank) */
 __vtbl__7Bb4Bank = 0x00008440;  /* func_0000B1B4 Bank vtable = func_000083D0 + 0x70 */
 __nw__FUi = 0x00000000;  /* global operator new in NCC donors = blank USO import (jal 0) */
+D_00007350 = 0x00007350;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
+D_00007398 = 0x00007398;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
+D_00007490 = 0x00007490;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
