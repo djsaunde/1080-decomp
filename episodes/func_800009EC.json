@@ -1,0 +1,33 @@
+{
+  "function_name": "func_800009EC",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:09:23.486253+00:00",
+  "end_time": "2026-10-22T16:09:23.486273+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:09:23.486268+00:00",
+      "assistant_text": "Exact from 99.94: loop-1 IV shape. desc computed as &D_80013112 + i*0x9C (uopt strength-reduces into its own IV created after mod's), comma for-init mod = base, i = 0 with step mod++, i++. Fixes the lui s0/s1 schedule order.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 167,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct UsoModule {\n    char unk0[0x70];\n    s16 unk70;          /* slot id */\n    char unk72[0x94 - 0x72];\n    s32 unk94;\n    char pad98[4];\n} UsoModule;\n\nextern char D_80013112;                 /* = &D_800130A0[0].unk72 */\nextern s32 D_8000A314;\nextern s32 D_8000A328;\nextern s32 D_80012FC0;\nextern s32 D_80012F80;\nextern void func_80001CB0();\nextern s32 func_800022C8();\nextern s32 func_800025A4();\nextern s32 func_80002650();\nextern s32 func_800020F4();\n\ns32 func_800009EC(s32 file) {\n    s32 off;\n    s32 len;\n    s32 *new_var;\n    char *desc;\n    s32 header[8];\n    s32 *range;\n    UsoModule *found;\n    s32 i;\n    s32 j;\n    UsoModule *mod;\n    s32 err;\n\n    D_80012C64 = -1;\n    D_80012C68 = -1;\n    err = 0;\n    if (1) {\n    }\n    D_80012C44(&D_8000A314, (void *)file);\n    ((s32 *)&D_80012BC0)[6] = 0;\n    ((s16 *)&D_80012BC0)[0x16] = 0;\n    func_80000660(file, &D_80012FC0, &D_80012F80);\n    range = func_800008B8(header, &D_80012FC0, &D_8000A328);\n    if (range == NULL) {\n        return -0x11;\n    }\n    D_8000A2D8 = range[0];\n    D_8000A2DC = range[1];\n    found = NULL;\n    for (mod = (UsoModule *)&D_800130A0, i = 0; i != 0x87; mod++, i++) {\n        if (func_80000568(&D_80013112 + i * 0x9C, &D_80012F80) == 0) {\n            found = mod;\n            func_80001CB0(mod);\n            mod->unk70 = i;\n            if (D_80012D60[i] != 0) {\n                return -0x13;\n            }\n            D_80012D60[i] = (s32)mod;\n            header[1] = mod->unk94;\n            err = func_800022C8(mod, header);\n            if (err != 0) {\n                return err;\n            }\n            break;\n        }\n    }\n    new_var = D_80012D60;\n    if (found == NULL) {\n        return -0x14;\n    }\n    len = range[1] - range[0];\n    off = D_8000A2D8 - range[0];\n    ((s32 *)&D_80012BC0)[1] = len - off;\n    ((s32 *)&D_80012BC0)[0] = D_8000A2D8;\n    func_8000098C(header, len, off, &D_80012BC0);\n    for (j = 0; j < 0x87; j++) {\n        if (new_var[j] != 0) {\n            err |= func_800025A4(D_80012D60[j]);\n        }\n    }\n    if (err != 0) {\n        return -0xA;\n    }\n    for (j = 0; j < 0x87; j++) {\n        if (D_80012D60[j] != 0) {\n            err |= func_80002650(D_80012D60[j]);\n        }\n    }\n    if (err != 0) {\n        return -0xC;\n    }\n    for (j = 0; j < 0x87; j++) {\n        if (D_80012D60[j] != 0) {\n            err |= func_800020F4(D_80012D60[j]);\n        }\n    }\n    if (err != 0) {\n        return err;\n    }\n    range[0] = D_8000A2D8;\n    return found->unk70;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_000.c",
+    "asm_path": "asm/nonmatchings/kernel/func_800009EC.s",
+    "segment": "kernel",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Full ROM build byte-identical (cmp tenshoe.z64 baserom.z64), objdiff 100%."
+  }
+}

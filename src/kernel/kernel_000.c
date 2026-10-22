@@ -770,11 +770,14 @@ s32 func_800008F0(char *path) {
  *   homes fill 0x70..0x80), found at 0x48, i spills at 0x44;
  * - `new_var = D_80012D60` read in loop 1's test (permuter find) gives the
  *   target's mod-in-s1 / i-in-v1 coloring.
- * RESIDUAL: `lui s0,%hi(D_80013112)` / `lui s1,%hi(D_800130A0)` scheduled
- * in the opposite order (target s1 first). Inert: statement order of the 5
- * loop-init assignments (240 combos), increment order, decl order, desc
- * from the same base symbol, BB anchors. */
-#ifdef NON_MATCHING
+ * EXACT 2026-10-22 (agent-g run 118): the last 2 words (lui s0/s1 order)
+ * were the loop-1 induction-variable shape. desc is NOT a separate stepped
+ * pointer: the call takes `&D_80013112 + i * 0x9C` (uopt strength-reduces it
+ * into its own IV, created after mod's -> mod's lui schedules first), and
+ * the for-init is the comma `mod = base, i = 0` with the step `mod++, i++`
+ * (mod init before the loop as its own statement, or `i++, mod++`, leaves
+ * the two addiu or the bne-delay increment swapped). desc stays declared
+ * (unused) only for the frame layout: dropping it shrinks the frame by 8. */
 typedef struct UsoModule {
     char unk0[0x70];
     s16 unk70;          /* slot id */
@@ -823,10 +826,8 @@ s32 func_800009EC(s32 file) {
     D_8000A2D8 = range[0];
     D_8000A2DC = range[1];
     found = NULL;
-    desc = &D_80013112;
-    mod = (UsoModule *)&D_800130A0;
-    for (i = 0; i != 0x87; i++, mod++, desc += 0x9C) {
-        if (func_80000568(desc, &D_80012F80) == 0) {
+    for (mod = (UsoModule *)&D_800130A0, i = 0; i != 0x87; mod++, i++) {
+        if (func_80000568(&D_80013112 + i * 0x9C, &D_80012F80) == 0) {
             found = mod;
             func_80001CB0(mod);
             mod->unk70 = i;
@@ -878,9 +879,6 @@ s32 func_800009EC(s32 file) {
     range[0] = D_8000A2D8;
     return found->unk70;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800009EC);
-#endif
 
 /* uso_call_init — dispatches a function from the USO module vtable */
 typedef s32 (*UsoFunc)(void*);
