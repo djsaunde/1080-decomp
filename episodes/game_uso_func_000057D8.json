@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_000057D8",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T22:40:29.340337+00:00",
+  "end_time": "2026-10-22T22:40:29.340363+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T22:40:29.340357+00:00",
+      "assistant_text": "Exact under NCC: the 8-way value selector is one C++ switch (edg case-order compare chain; cfe jumptables >=5 cases, capping the cfe NM at 82.5). The 0x758 sub-object store is an inline Val::set() with this = a0->0x30 + 0x758 re-read; reading the state through a0->0x30 too makes the const 2 colour v0. The host placeholder dropped the 57D8 .s's 24 .late_rodata words, so they moved to the end of 591C.s (next INCLUDE_ASM block) to keep the unit's .rodata identical.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 85,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_uso_func_000057D8 (0x144 / 81 words): mode-value\n * pick + mode dispatch. The selector is ONE 8-way C++ switch -- edg lowers it to a\n * case-order compare chain (cfe tables any >= 5-case switch, which capped the cfe NM\n * at 82.5 with nested 3+4 switches). The 0x758 sub-object store is an inline\n * Val::set() whose `this` re-reads a0->0x30 (gives `addiu v0,a1,0x758; swc1 0x10(v0)`),\n * and the state pointer is read through a0->0x30 too, so the const 2 colours v0.\n * Spliced into game_uso.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nvoid game_uso_func_0000591C(char *);\nvoid game_uso_func_00006A30(char *);\nvoid game_uso_func_00006CF0(char *);\nvoid game_uso_func_000071E0(char *);\n}\nstruct Val { char pad[0x10]; float v; void set(float f) { v = f; } };\n#define AT(T, p, o) (*(T *)((char *)(p) + (o)))\nextern \"C\" void game_uso_func_000057D8(char *a0) {\n    if (AT(int, a0, 0x4D8) != 0) {\n        AT(int, a0, 0x4D8) = 0;\n        char *st = AT(char *, AT(char *, a0, 0x30), 0x908);\n        if (st != 0 && AT(unsigned, AT(char *, a0, 0x30), 0x848) == 2 && AT(unsigned, st, 0x848) != 2) {\n            float value;\n            switch (AT(int, st, 0x8C4)) {\n            case 1: value = AT(float, a0, 0x414); break;\n            case 2: value = AT(float, a0, 0x42C); break;\n            case 3: value = AT(float, a0, 0x444); break;\n            case 4: value = AT(float, a0, 0x45C); break;\n            case 5: value = AT(float, a0, 0x474); break;\n            case 6: value = AT(float, a0, 0x48C); break;\n            case 7: value = AT(float, a0, 0x4A4); break;\n            default: value = AT(float, a0, 0x4BC); break;\n            }\n            ((Val *)(AT(char *, a0, 0x30) + 0x758))->set(value);\n        }\n    }\n    AT(float, a0, 0x3C) = 0.0f;\n    switch (AT(int, a0, 0x64)) {\n    case 0: game_uso_func_0000591C(a0); break;\n    case 1: game_uso_func_00006A30(a0); break;\n    case 2: game_uso_func_00006CF0(a0); break;\n    case 3: game_uso_func_000071E0(a0); break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_57D8.cpp",
+    "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000057D8.s",
+    "segment": "game_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical, make verify-blocks game_uso jal=0 lo16=0 other=0, rdiff --raw --pins 81/81 (NCC donor via REPLACE_FUNC_BODY)."
+  }
+}

@@ -3781,93 +3781,14 @@ void game_uso_func_000057B8(char *a0) {
     game_uso_func_00000000(a0 + 0xE4);
 }
 
-/* NATURAL CEILING: NM only, 82.5% objdiff (was 61.4). 2026-07-08 rise via
- * three levers; the last +2 words are a PRECISELY-CHARACTERIZED toolchain cap.
- * Levers that landed: (1) u32-retype of the two `== 2` field compares
- * (`*(u32*)(sub+0x848) == 2U`) — distinct dtype kills the uopt const-2 CSE
- * with the selector/dispatch case-2 compares, so the 2 colors $v0 and dies at
- * the mode load (target `li v0,2`; s32 form extended the candidate to $a2/$a3
- * and shifted sub/state coloring); (2) tail store via `t = sub; if (1) { t +=
- * 0x758; } *(f32*)(t+0x10) = value;` — the if(1)-committed pointer mutation
- * materializes `addiu v0,a1,0x758; swc1 f0,0x10(v0)` exactly (plain named
- * intermediate off the CACHED sub folds to swc1 0x768(a1)); (3) selector as
- * NESTED switches 3+4 (case 1-3 + default:switch case 4-7/default) — each
- * sub-switch is under the >=5-case jumptable threshold and chain-lowers with
- * the target's grouped shape (li-at delays, beq-to-arm, beql+dup on case 7
- * with orphan arm, default arm at fall-through, arms ascending).
- * RESIDUAL CAP (+2 words, tail exact but shifted): the target selector is ONE
- * 7-compare cascade; sub-switch junction costs `b + nop` (outer fall-through
- * must skip arms 1-3 to reach the inner compares — uopt block placement puts
- * each switch's arms right after its own compares regardless of source order;
- * verified with goto-thunk arms + sequential switches, same layout). A single
- * 7-case `switch` ALWAYS jumptables (sltiu/lui/lw/jr .rodata): threshold is
- * ncases>=5, verified 4=chain/5=table standalone, immune to expr type (u32,
- * u8, s16, &0xF), -KPIC, -mips1, -O1, IDO 5.3, missing default, and outlier
- * case (ugen splits clusters + STILL tables the dense one behind an slti
- * guard). `if(mode==K) goto cK;` chains get their single-assign arms PULLED
- * inline by uopt (bnel inversion + li-dup + orphan, +6 words; volatile arm
- * loads, 2-insn arms, double-jump spelling, arm source order all tested — the
- * pull only spares an arm that physically falls into the merge block; the
- * matched 174C 16-case goto-chain survives because its arms have STORES).
- * Only xjp (switch) arms are pull-immune, and only <=4-case switches chain.
- * NB: SUFFIX_BYTES_FORCE/INSN_PATCH removed 2026-05-23 as match-faking.
- * 2026-06-20: corrected call ABI — the 4 trailing mode-dispatch callees take a
- * SINGLE arg `a0` (target jal delay slots are `nop`); dispatch tail matches
- * target word-for-word (shifted +2 by the junction). */
-#ifdef NON_MATCHING
-void game_uso_func_0000591C(int *a0);
-void game_uso_func_00006A30(int *a0);
-void game_uso_func_00006CF0(int *a0);
-void game_uso_func_000071E0(int *a0);
+/* game_uso_func_000057D8: EXACT via REPLACE_FUNC_BODY donor splice: the real body is
+ * the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_57D8.cpp (81/81 words). The
+ * cfe NM capped at 82.5: cfe turns the 8-way selector switch into a jumptable, edg
+ * into the target's case-order compare chain (agent-g run 123). Placeholder body; the
+ * 24 .late_rodata words the 57D8 .s carried (44F4's float pool, RoData +0x9C) moved to
+ * the end of game_uso_func_0000591C.s, the next INCLUDE_ASM block in text order. */
 void game_uso_func_000057D8(char *a0) {
-    char *sub;
-    char *state;
-    s32 mode;
-    f32 value;
-
-    if (*(s32 *)(a0 + 0x4D8) != 0) {
-        sub = *(char **)(a0 + 0x30);
-        *(s32 *)(a0 + 0x4D8) = 0;
-
-        state = *(char **)(sub + 0x908);
-        if ((state != 0) && (*(u32 *)(sub + 0x848) == 2U) &&
-                (*(u32 *)(state + 0x848) != 2U)) {
-            char *t;
-            mode = *(s32 *)(state + 0x8C4);
-            switch (mode) {
-            case 1: value = *(f32 *)(a0 + 0x414); break;
-            case 2: value = *(f32 *)(a0 + 0x42C); break;
-            case 3: value = *(f32 *)(a0 + 0x444); break;
-            default:
-                switch (mode) {
-                case 4: value = *(f32 *)(a0 + 0x45C); break;
-                case 5: value = *(f32 *)(a0 + 0x474); break;
-                case 6: value = *(f32 *)(a0 + 0x48C); break;
-                case 7: value = *(f32 *)(a0 + 0x4A4); break;
-                default: value = *(f32 *)(a0 + 0x4BC); break;
-                }
-                break;
-            }
-            t = sub;
-            if (1) {
-                t += 0x758;
-            }
-            *(f32 *)(t + 0x10) = value;
-        }
-    }
-
-    mode = *(s32 *)(a0 + 0x64);
-    *(f32 *)(a0 + 0x3C) = 0.0f;
-    switch (mode) {
-        case 0: game_uso_func_0000591C((int *)a0); break;
-        case 1: game_uso_func_00006A30((int *)a0); break;
-        case 2: game_uso_func_00006CF0((int *)a0); break;
-        case 3: game_uso_func_000071E0((int *)a0); break;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000057D8);
-#endif
 
 /* game_uso_func_0000591C: 0x1114 (1102 insns, 4.3 KB) — strategy-memo spine
  * candidate #2 (~29 cross-USO calls).  0x1D0-byte stack frame.

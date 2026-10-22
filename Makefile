@@ -1897,6 +1897,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_E35C_DONOR := build/src/game_uso/game_uso_ncc_E35C.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000E35C=$(GAMEUSO_E35C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_E35C_DONOR)
+# 57D8 = mode-value pick (8-way switch = edg case-order chain; cfe jumptables it) + mode dispatch; 81/81 under NCC, cfe capped at 82.5%.
+GAMEUSO_57D8_DONOR := build/src/game_uso/game_uso_ncc_57D8.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000057D8=$(GAMEUSO_57D8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_57D8_DONOR)
 # 6A30: Vec3 value class + derived-class ctor protocol (bnez &pt / new(12)); cfe capped at 93.2%.
 GAMEUSO_6A30_DONOR := build/src/game_uso/game_uso_ncc_6A30.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00006A30=$(GAMEUSO_6A30_DONOR)
