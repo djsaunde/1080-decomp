@@ -4735,90 +4735,10 @@ mid:
     *p |= 0x10;
 }
 
-#ifdef NON_MATCHING
-/* gl_func_00038DC0: 136-insn linked-list iterator that drives a per-node
- * 4x4 matrix transform + virtual-dispatch.
- *
- * For each node in root->[0x10] (linked list of {node*, next*} bundles):
- *   skip if !(node->[0x8] & 0x200) || (node->[0x2C] & 0x1)
- *   if (root->[0x2C] & 0x2):
- *     gl_func(node+0x30, node+0x70)   (caller-driven transform)
- *   else:
- *     compute result[4x4] = node_mat[4x4] * root_world[4x4]
- *     gl_func(result, node+0x70)
- *   vt = node->[0x28];
- *   (vt->[0x14])(node + (short)vt->[0x10])
- *
- * 2026-07-23 redecode via the 393B8 recipe (2026-07-18 sibling, 89.3%):
- * the "hand-unrolled mat-mult cap" was a decode error — target is a clean
- * triple-for with MEMORY compound accumulate (result[r*4+c] += ..., no
- * float sum local; IDO fully unrolls the trip-4 k-loop and
- * software-pipelines the c-loop with beql/bnel peel). Iterator pair lives
- * in memory as int *iter2[2] (sp+0xB8/0xBC; arrays never registerized).
- * SECOND decode error in the old body: the vtable dispatch is
- * UNCONDITIONAL per node — the beqzl/bnezl guards (node[8]&0x200,
- * !(node[0x2C]&1)) skip only the transform, branching straight to the
- * dispatch with v0=node[0x28] loaded in the likely-slot. Real callee
- * gl_func_00034458 (st_value 0 in post0b => jal encodes 0 as in target).
- *
- * 2026-07-30 95.35 (from 89.5): dispatch cracked via 39EE4 vt dead-def
- * lever (lw t9,20(v0) BEFORE lh t7,16(v0), jalr t9 — direct expression
- * call, named vt + if(0){vt=NULL}); frame/homes exact via 2 lowest-slot
- * volatile pads (frame -192, iter2 at 0xB8/0xBC, result at sp+0x60).
- * SOLE residual (1-word shift, both fetch sites): target keeps the
- * fetched node in $v0 with an UNCOALESCED `or s0,v0,zero` in the test's
- * delay slot (plain bne, nop-free); every C spelling probed coalesces
- * n/node into s0 directly (bnel + body-load delay): plain copy, dead
- * if(0){node=n}/if(0){node=NULL} defs, fall-off-end int, explicit
- * return node (adds trailing move), condition-embedded fetch, empty-else.
- * ONLY same-name web reuse (node doubling as fn-ptr carrier) splits the
- * copy out — but then the tested web colors $a2 not $v0 and pre-call
- * guard uses ride the copy source (+1 insn, worse). Uncracked cap. */
-extern int gl_func_00034458();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_38DC0.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 int gl_func_00038DC0(int *root) {
-    int *iter2[2]; /* [0]=cur (sp+0xB8 dead store), [1]=next (sp+0xBC) */
-    int *node;     /* tested web; target keeps it $v0 w/ or s0,v0 delay copies (uncracked) */
-    int *n;        /* body node $s0 */
-    int *vt;
-    volatile int padA, padB; /* lowest 2 slots: lifts all homes +8 to target offsets */
-
-    iter2[1] = (int *)root[0x10/4];
-    node = (iter2[1] != NULL)
-        ? (iter2[0] = iter2[1], iter2[1] = (int *)iter2[0][1], (int *)iter2[0][0])
-        : NULL;
-    while (node != NULL) {
-        n = node;
-        if (0) { node = n; } /* dead def: interference probe (kept: benign) */
-        if ((n[0x8/4] & 0x200) && !(n[0x2C/4] & 0x1)) {
-            if (root[0x2C/4] & 0x2) {
-                gl_func_00034458((char*)n + 0x30, (char*)n + 0x70);
-            } else {
-                float *src = (float*)((char*)n + 0x30);
-                float *world = (float*)((char*)root + 0x70);
-                int r, c, k;
-                float result[16];
-                for (r = 0; r < 4; r++) {
-                    for (c = 0; c < 4; c++) {
-                        result[r*4 + c] = 0.0f;
-                        for (k = 0; k < 4; k++) {
-                            result[r*4 + c] += src[r*4 + k] * world[k*4 + c];
-                        }
-                    }
-                }
-                gl_func_00034458(result, (char*)n + 0x70);
-            }
-        }
-        vt = (int*)n[0x28/4];
-        if (0) { vt = NULL; } /* dead multi-def: vt LR rejected -> ugen temp, fn load t9 (39EE4 lever) */
-        ((void(*)(int))vt[0x14/4])(*(short*)((char*)vt + 0x10) + (int)n);
-        node = (iter2[1] != NULL)
-            ? (iter2[0] = iter2[1], iter2[1] = (int *)iter2[0][1], (int *)iter2[0][0])
-            : NULL;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038DC0);
-#endif
 
 void gl_func_00038FE0(char *a0) {
     gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECD0, 0);
