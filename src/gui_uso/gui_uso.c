@@ -980,67 +980,12 @@ void gui_uso_func_00001A5C(void) {
 void gui_uso_func_00001CA8(void) {
 }
 
-#ifdef NON_MATCHING
-/* DL emitter: SETCOMBINE (FC309A61/5536FF7F), then an FB command packing
- * a3 Vec3*255 + (a1 & 0xff) alpha, then an FA (SETPRIMCOLOR) packing
- * a2 Vec3*255 + 0xff alpha, to the builder at *(&D). The global ADDRESS is
- * held in one register (char **dp = &D_00000000) and re-dereffed each block,
- * matching the target's lui;addiu t2 once + lw v0,0(t2) per block (line-73
- * "reference symbol via held address" form; plain *(char**)&D folds %lo).
- * The last FA word uses | 0xff (target `ori ...,0xff`), the FB word uses
- * (a1 & 0xff) (target `andi a1,0xff`).
- *
- * CAP (2026-06-22, agent-e): structure exact (mnemonic multiset matches modulo
- * one block-3 address recompute), residual is the IDO unsigned-cast macro's
- * internal `lui at,0x4f00` AS1-SCHEDULER placement (emitted inside the
- * float->int cast, not a source statement) + register coloring cascade. NOT
- * source-reorderable. permuter-factory -j4 ~15min PLATEAUED at score 2085
- * (86.94 -> 92.40% objdiff, descends fast then flat). This is the documented
- * as1-scheduler-tie + ugen-coloring core; keep INCLUDE_ASM. */
-void gui_uso_func_00001EF4(char *a0, int a1, float *a2, float *a3) {
-    char **dp = (char **)&D_00000000;
-    char *b;
-    char *p;
-    char *buf;
-    int i;
-    int r, g, bl;
-    (void)a0;
-
-    b = *dp;
-    p = *(char **)(b + 0xC);
-    i = *(int *)(p + 4);
-    *(int *)(p + 4) = i + 1;
-    buf = *(char **)(*(char **)(b + 0xC));
-    *(int *)(buf + i * 8) = 0xFC309A61;
-    *(int *)(buf + i * 8 + 4) = 0x5536FF7F;
-
-    p = *(char **)(b + 0xC);
-    i = *(int *)(p + 4);
-    *(int *)(p + 4) = i + 1;
-    buf = *(char **)(*(char **)(b + 0xC));
-    *(int *)(buf + i * 8) = 0xFB000000;
-    r = (int)(unsigned)(a3[0] * 255.0f);
-    g = (int)(unsigned)(a3[1] * 255.0f);
-    bl = (int)(unsigned)(a3[2] * 255.0f);
-    *(int *)(buf + i * 8 + 4) =
-        (r << 24) | ((g & 0xff) << 16) | ((bl & 0xff) << 8) | (a1 & 0xff);
-
-    b = *dp;
-    p = *(char **)(b + 0xC);
-    i = *(int *)(p + 4);
-    *(int *)(p + 4) = i + 1;
-    buf = *(char **)(*(char **)(b + 0xC));
-    *(int *)(buf + i * 8) = 0xFA000000;
-    r = (int)(unsigned)(a2[0] * 255.0f);
-    g = (int)(unsigned)(a2[1] * 255.0f);
-    b = *dp;
-    bl = (int)(unsigned)(a2[2] * 255.0f);
-    *(int *)(buf + i * 8 + 4) =
-        (r << 24) | ((g & 0xff) << 16) | ((bl & 0xff) << 8) | 0xff;
+/* gui_uso_func_00001EF4: DL colour setup (SETCOMBINE, SETENVCOLOR from env * 255
+ * + alpha, SETPRIMCOLOR from prim * 255 + 0xFF). EXACT 2026-10-22 (agent-g
+ * run 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_1EF4.cpp
+ * (REPLACE_FUNC_BODY, both trees; the 1A5C recipe). This is the splice host. */
+void gui_uso_func_00001EF4(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_00001EF4);
-#endif
 
 /* SOURCE=2 sibling of gui_uso_func_000025B4 / gui_uso_func_000017DC:
  * three display-list command writes. Entry 1 sets the combiner

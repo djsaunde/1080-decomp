@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_uso_func_00001EF4",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:10:20.790974+00:00",
+  "end_time": "2026-10-22T21:10:20.790974+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:10:20.790974+00:00",
+      "assistant_text": "Exact from 91.26 (documented as an as1-scheduler/colouring cap, permuter plateau) on the first compile with the gui_uso_func_00001A5C recipe: three appends through the gfx context's inline next() member, the context global read per append, every colour channel (u32)(c * 255.0f) & 0xFF before its shift.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 272,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_uso_func_00001EF4 (0x440 / 272 words).\n *\n * Display-list colour setup: G_SETCOMBINE (0xFC309A61 / 0x5536FF7F), then\n * G_SETENVCOLOR (0xFB) from env[0..2] * 255 with the alpha argument, then\n * G_SETPRIMCOLOR (0xFA) from prim[0..2] * 255 with alpha 0xFF. The\n * gui_uso_func_00001A5C recipe (docs/IDO_CODEGEN.md kit XXV): three appends\n * through the context's inline next() member, the context global read as\n * `*(Ctx **)&D_00000000` per append, and every channel masked with & 0xFF\n * before its shift (the gbi.h _SHIFTL form). The old cfe body's \"as1\n * scheduler tie + ugen colouring cap\" was the missing C++ shape; this is\n * word-exact on the first compile.\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees. */\nextern \"C\" { extern char D_00000000; }\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n};\n#define CTX (*(Ctx **)&D_00000000)\n#define C8(x) ((unsigned)((x) * 255.0f) & 0xFF)\nextern \"C\" void gui_uso_func_00001EF4(void *self, int alpha, float *prim, float *env) {\n    Gfx *p1 = CTX->next();\n    p1->w0 = 0xFC309A61; p1->w1 = 0x5536FF7F;\n    Gfx *p2 = CTX->next();\n    p2->w0 = 0xFB000000;\n    p2->w1 = (C8(env[0]) << 24) | (C8(env[1]) << 16) | (C8(env[2]) << 8) | (alpha & 0xFF);\n    Gfx *p3 = CTX->next();\n    p3->w0 = 0xFA000000;\n    p3->w1 = (C8(prim[0]) << 24) | (C8(prim[1]) << 16) | (C8(prim[2]) << 8) | 0xFF;\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_1EF4.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_uso_func_00001EF4.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical, make verify-blocks all OK jal=0 lo16=0 other=0, objdiff 100%."
+  }
+}
