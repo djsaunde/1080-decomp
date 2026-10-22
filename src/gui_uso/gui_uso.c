@@ -1006,41 +1006,14 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_000017DC);
 void gui_uso_func_00001A5C(void) {
 }
 
-#ifdef NON_MATCHING
-/* Full decode 2026-06-01. Sibling of gui_uso_func_00001A5C: appends a
- * SETCOMBINE (FCFFFFFF/FFFDF6FB) then a SETPRIMCOLOR (FA) packing the a2
- * Vec3*255 (RGB) + a1 alpha into word1, to the builder at *(&D). */
-void gui_uso_func_00001CA8(char *a0, int a1, float *a2) {
-    char *b;
-    char *p;
-    char *buf;
-    int i;
-    int r, g, bl;
-    (void)a0;
-
-    b = *(char **)&D_00000000;
-    p = *(char **)(b + 0xC);
-    i = *(int *)(p + 4);
-    *(int *)(p + 4) = i + 1;
-    buf = *(char **)(*(char **)(b + 0xC));
-    *(int *)(buf + i * 8) = 0xFCFFFFFF;
-    *(int *)(buf + i * 8 + 4) = 0xFFFDF6FB;
-
-    b = *(char **)&D_00000000;
-    p = *(char **)(b + 0xC);
-    i = *(int *)(p + 4);
-    *(int *)(p + 4) = i + 1;
-    buf = *(char **)(*(char **)(b + 0xC));
-    *(int *)(buf + i * 8) = 0xFA000000;
-    r = (int)(unsigned)(a2[0] * 255.0f);
-    g = (int)(unsigned)(a2[1] * 255.0f);
-    bl = (int)(unsigned)(a2[2] * 255.0f);
-    *(int *)(buf + i * 8 + 4) =
-        (r << 24) | ((g & 0xff) << 16) | ((bl & 0xff) << 8) | (a1 & 0xff);
+/* gui_uso_func_00001CA8: DL colour emitter (SETCOMBINE FCFFFFFF/FFFDF6FB, then G_SETPRIMCOLOR
+ * with col[0..2] * 255 above the alpha byte). EXACT 2026-10-22 (agent-g run
+ * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_1CA8.cpp
+ * (REPLACE_FUNC_BODY, both trees): an inline next() member on the gfx
+ * context, and a redundant & 0xFF under the red channel's << 24 that burns
+ * the t-ring slot the old cfe body was missing. This is the splice host. */
+void gui_uso_func_00001CA8(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_00001CA8);
-#endif
 
 #ifdef NON_MATCHING
 /* DL emitter: SETCOMBINE (FC309A61/5536FF7F), then an FB command packing

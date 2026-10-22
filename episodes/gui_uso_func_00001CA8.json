@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_uso_func_00001CA8",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:48:34.373829+00:00",
+  "end_time": "2026-10-22T20:48:34.373829+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:48:34.373829+00:00",
+      "assistant_text": "Exact from 92.06: twin of gui_uso_func_00001A5C (only the combine words differ); the same NCC donor shape (inline next() DL append member, (u32)(c*255) & 0xFF on every channel including red) is word-exact on the first compile.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 147,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_uso_func_00001CA8 (0x24C / 147 words).\n *\n * Display-list colour emitter: appends a SETCOMBINE (prim-colour modulate) pair\n * (0xFCFFFFFF / 0xFFFDF6FB), then G_SETPRIMCOLOR (0xFA000000) with the RGB of\n * col[0..2] * 255 packed above the alpha byte. gui is C++ (kit XXIII #3):\n *   - the DL append is an inline member on the gfx context (`next()`), so\n *     the context, the list and the index are edg's pooled inline temps\n *     (v0 / v1 / a0 in both appends) while each returned slot pointer is\n *     its own value (a3, t0);\n *   - the context global is read as `*(Ctx **)&D_00000000` per append: its\n *     address is a uopt constant candidate, coloured after the slot\n *     pointers (t1);\n *   - every channel is (u32)(c * 255.0f) & 0xFF before the shift, the red\n *     one included: the redundant mask under `<< 24` is folded only after\n *     the t-ring has spent a register on it (without it every later temp\n *     is one ring slot early);\n *   - the first parameter is an unused `this`-like pointer; edg still\n *     stores it to its home (`sw a0,0(sp)` with no frame).\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees (docs/IDO_CODEGEN.md\n * kit XXV). */\nextern \"C\" { extern char D_00000000; }\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n};\n#define CTX (*(Ctx **)&D_00000000)\nextern \"C\" void gui_uso_func_00001CA8(void *self, int alpha, float *col) {\n    Gfx *p1 = CTX->next();\n    p1->w0 = 0xFCFFFFFF; p1->w1 = 0xFFFDF6FB;\n    Gfx *p2 = CTX->next();\n    p2->w0 = 0xFA000000;\n    p2->w1 = (((unsigned)(col[0] * 255.0f) & 0xFF) << 24) | (((unsigned)(col[1] * 255.0f) & 0xFF) << 16) |\n             (((unsigned)(col[2] * 255.0f) & 0xFF) << 8) | (alpha & 0xFF);\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_1CA8.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_uso_func_00001CA8.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical, make verify-blocks all OK jal=0 lo16=0 other=0, objdiff 100%."
+  }
+}
