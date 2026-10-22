@@ -5229,13 +5229,11 @@ void *func_00007C74(char *a0) {
 extern char *D_7D04_root[];
 extern float func_7D04_randf();
 void func_00007D04(char *s0) {
-    char *root = D_7D04_root[6];
-    int *v = *(int **)(root + 0x28);
     int a3 = *(int *)(s0 + 0x5C);
     int k;
     *(int *)(s0 + 0x64) =
-        ((int (*)(char *))*((unsigned int *)((char *)v + 0x64)))(
-            (char *)((int)(short)*(short *)((char *)v + 0x60) + (int)root));
+        ((int (*)(char *))*((unsigned int *)((char *)*(int **)(D_7D04_root[6] + 0x28) + 0x64)))(
+            (char *)((int)D_7D04_root[6] + (int)(short)*(short *)((char *)*(int **)(D_7D04_root[6] + 0x28) + 0x60)));
     k = *(int *)(s0 + 0x5C);
     if (k != 1) {
         if (k != 0) {
@@ -5264,10 +5262,10 @@ c2:
     }
     *(int *)(s0 + 0x58) = 0x18;
 end:
-    root = *(char **)(s0 + 0x40); v = *(int **)(root + 0x84);
-    func_00000000(s0, *(int *)(*v + 0x1C), 0, a3); if (1) {}
-    root = *(char **)(s0 + 0x40); v = *(int **)(root + 0x84) + 1;
-    func_00000000(s0, *(int *)(*v + 0x1C), 1, a3);
+    k = *(int *)(s0 + 0x40); k = *(int *)(k + 0x84);
+    func_00000000(s0, *(int *)(*(int *)k + 0x1C), 0, a3); if (1) {}
+    k = *(int *)(s0 + 0x40); k = *(int *)(k + 0x84) + 4;
+    func_00000000(s0, *(int *)(*(int *)k + 0x1C), 1, a3);
     *(int *)(s0 + 0x5C) = a3;
 }
 #else
