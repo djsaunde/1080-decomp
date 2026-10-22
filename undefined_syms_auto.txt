@@ -3903,6 +3903,12 @@ D_b3_23E4_d9 = 0x00000000;
 gl_func_00034458_55C34 = 0x00000000;
 game_libs_func_00062F08_55C34 = 0x0006A620;
 game_libs_func_00062F08_578B4 = 0x0006A750;  /* the two baked jal words at gl_func_000578B4 +0x1C/+0x28 */
+/* gl_func_000546E8 per-site D-base aliases (the ROM words hold only the in-code offsets) */
+gl_ref_546E8_a = 0x00000000;
+gl_ref_546E8_b = 0x00000000;
+gl_ref_546E8_c = 0x00000000;
+gl_ref_546E8_d = 0x00000000;
+gl_ref_546E8_e = 0x00000000;
 /* timproc_uso_b1 block bake: names with no pin yet, 0 = the raw addend the ROM already has */
 D_b1_1FE4_a = 0x00000000;
 D_b1_1FE4_b = 0x00000000;
