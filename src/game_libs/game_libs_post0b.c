@@ -13857,7 +13857,12 @@ typedef char *(*GP_00045178)();
  * Residual: the second slot keeps the index in a3 and the packet pointer in
  * v1 (target v1 / a3, pointer spilled at sp+36, ours 40); `++`, block-scoped
  * `_g` (gbi gDma1p shape, 0x01030040 = F3DEX gSPMatrix(.., 3)), holder
- * reuse and a 576-variant spelling grid all leave it. */
+ * reuse and a 576-variant spelling grid all leave it.
+ * Later in run 123 (raw 14 -> 5, permuter hint): the second slot reads the
+ * index into its own named int (n3) before the store through a list pointer
+ * held in t, then copies it to i; lo is not a local (the literal inline), which
+ * keeps the frame at 104. Left: the packet pointer's spill slot (target sp+36
+ * = the temp area, ours its home at 40) + the 3 literal %lo (donor pin). */
 extern void gl_func_00000000_45178v();
 extern char D_45178_c1, D_45178_c2, D_45178_c3;
 void gl_func_00045178(char *arg0) {
@@ -13867,17 +13872,16 @@ void gl_func_00045178(char *arg0) {
     float *q;
     int i;
     char *p;
-    float lo;
+    int n3;
     char *m;
     float hi, v, r;
     int *g;
 
     {
-    lo = -32700.0f;
     v = *(f32 *)(arg0 + 0x90);
-    if (v < lo) {
+    if (v < -32700.0f) {
         hi = 32700.0f;
-        r = lo;
+        r = -32700.0f;
     } else {
         hi = 32700.0f;
         if (hi < v) {
@@ -13889,8 +13893,8 @@ void gl_func_00045178(char *arg0) {
     }
     v = *(f32 *)(arg0 + 0x94);
     *(f32 *)(arg0 + 0x90) = r;
-    if (v < lo) {
-        r = lo;
+    if (v < -32700.0f) {
+        r = -32700.0f;
     } else if (hi < v) {
         r = hi;
     } else {
@@ -13898,8 +13902,8 @@ void gl_func_00045178(char *arg0) {
     }
     v = *(f32 *)(arg0 + 0x98);
     *(f32 *)(arg0 + 0x94) = r;
-    if (v < lo) {
-        r = lo;
+    if (v < -32700.0f) {
+        r = -32700.0f;
     } else if (hi < v) {
         r = hi;
     } else {
@@ -13913,7 +13917,10 @@ void gl_func_00045178(char *arg0) {
     }
     gl_func_00000000_45178v((char *)&D_00000000 + 0x60, m);
     {
-        i = FW(FW(p, 0xC), 4); FW(FW(p, 0xC), 4) = i + 1;
+        t = (char *)FW(p, 0xC);
+        n3 = FW(FW(p, 0xC), 4);
+        i = n3;
+        FW(t, 4) = i + 1;
         g = (int *)((char *)FW(FW(p, 0xC), 0) + i * 8);
     }
     g[0] = 0x01030040;
