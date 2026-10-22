@@ -542,7 +542,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 110: 3B2EC NM re-decode -> 0x2e66c.
 # agent-g run 123: 55470 NCC donor (0x430 vs 0x448 NM body): 0x2e888 -> 0x2e870 (62F08 NM offset 0x2e820).
 # agent-g run 123: 56974 NCC donor: 0x2e870 -> 0x2e864 (62F08 NM offset 0x2e814).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e864 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-g run 123: 56D14 NCC donor: 0x2e864 -> 0x2e858 (62F08 NM offset 0x2e808).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e858 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1442,7 +1443,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_55470_DONOR)
 # 56974 / 56D14 = combine-mode selectors (switch = edg case-order compare chain, inline next() append); one NCC donor TU.
 GAMELIBS_56974_DONOR := build/src/game_libs/game_libs_ncc_56974.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00056974=$(GAMELIBS_56974_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00056974=$(GAMELIBS_56974_DONOR) gl_func_00056D14=$(GAMELIBS_56974_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_56974_DONOR)
 # 41A9C = debug-menu registration + two new objects + {cur, nxt} child walk; if/return next(); NCC donor.
 GAMELIBS_41A9C_DONOR := build/src/game_libs/game_libs_ncc_41A9C.cpp.o

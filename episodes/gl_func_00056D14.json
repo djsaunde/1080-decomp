@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00056D14",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T22:27:37.603502+00:00",
+  "end_time": "2026-10-22T22:27:37.603519+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T22:27:37.603514+00:00",
+      "assistant_text": "Exact on the first NCC compile family: the combine-mode selector is a C++ switch on (mode & 0xF00) -- edg lowers it to a compare chain in case order, which the cfe NM imitated with if-goto ladders. Each arm appends one SETCOMBINE through an inline Ctx::next() (n = dl->n++, then &dl->buf[n]); the mode read into a named k fixes the last colour.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 184,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00056974 (0x3A0) and gl_func_00056D14 (0x2E0):\n * gDPSetCombineMode-style selectors. `switch (mode & 0xF00)` lowers under edg to a\n * compare chain in CASE order (the cfe NMs needed if-goto ladders + if (1) {} and still\n * lost the last test's polarity and a temp-ring phase); each arm appends one 8-byte\n * SETCOMBINE through an inline Ctx::next() (n = dl->n++, then &dl->buf[n]). The mode is\n * read once into a named `k`. Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nextern char D_00000000[];\nint gl_func_00000000(...);\n}\nstruct G { int w0, w1; };\nstruct DL { G *buf; int n; };\nstruct Ctx { char pad[0xC]; DL *dl;\n    G *next() { int n = dl->n++; return &dl->buf[n]; } };\nstruct Cmd { int w0, w1; };\n#define SET(a, b) { G *g = c->next(); g->w0 = a; g->w1 = b; }\nextern \"C\" void gl_func_00056974(Ctx *c, Cmd *m) {\n    int k = m->w1 & 0xF00;\n    switch (k) {\n    case 0x0: SET(0xFCFFFFFF, 0xFFFE793C); break;\n    case 0x400: SET(0xFCFFFFFF, 0xFFFDF6FB); break;\n    case 0x700: SET(0xFC41C683, 0xFF8FFFFF); break;\n    case 0x100: SET(0xFCFFFFFF, 0xFFFCF279); break;\n    case 0x600: SET(0xFC60FEC1, 0x44FE773B); break;\n    case 0x200: SET(0xFC30B261, 0x44664924); break;\n    case 0x300: SET(0xFC121824, 0xFF33FFFF); break;\n    case 0x500: SET(0xFC30B261, 0xFF67FFFF); break;\n    case 0x900: SET(0xFC30B261, 0x5566FF7F); break;\n    case 0xA00: SET(0xFC40B281, 0x3365FEFF); break;\n    case 0x800: SET(0xFC127E24, -0x805); break;\n    case 0xC00: SET(0xFC11FE23, -0x805); break;\n    case 0xD00: SET(0xFCFFB3FF, 0xFF65FEFF); break;\n    default:\n        gl_func_00000000(D_00000000 + 0x21980, k);\n        break;\n    }\n}\n\nextern \"C\" void gl_func_00056D14(Ctx *c, Cmd *m) {\n    int k = m->w1 & 0xF00;\n    switch (k) {\n    case 0: SET(0xFCFFFFFF, 0xFFFE7838); break;\n    case 0x400: SET(0xFCFFFFFF, 0xFFFDF638); break;\n    case 0x100: SET(0xFCFFFFFF, 0xFFFCF238); break;\n    case 0x200:\n    case 0x600: SET(0xFC30B3FF, 0x4FFE4838); break;\n    case 0x500: SET(0xFC30B3FF, 0xFFFFFE38); break;\n    case 0xA00: SET(0xFC40B3FF, 0x3FFDFE38); break;\n    case 0xB00: SET(0xFC40E3FF, 0x3FFDCE38); break;\n    case 0x900: SET(0xFC30B3FF, 0x5FFEFE38); break;\n    case 0x300:\n        if (m->w1 & 0x80000) SET(0xFC127FFF, 0xFFFFF238)\n        else SET(0xFC257E04, 0x1FFCF3F8)\n        break;\n    default:\n        gl_func_00000000(D_00000000 + 0x2199C, k);\n        break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_56974.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00056D14.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical (cmp vs baserom), rdiff --raw --pins exact (NCC donor spliced via REPLACE_FUNC_BODY)."
+  }
+}
