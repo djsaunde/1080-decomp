@@ -4123,3 +4123,4 @@ gl_func_00023914_rodata = 0x00000EA0;  /* switch(mode) 5-entry jumptable: USO sh
 D_2D7D0_a = 0x00000000;  /* gl_func_0002D7D0: three blank USO data refs each set to 8 (distinct zero aliases) */
 D_2D7D0_b = 0x00000000;
 D_2D7D0_c = 0x00000000;
+gl_ref_55470_d = 0x00000000;  /* gl_func_00055470 1008 store target (NCC donor game_libs_ncc_55470.cpp): distinct zero alias of the D_00000000 block */

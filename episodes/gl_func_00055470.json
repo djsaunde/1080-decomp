@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00055470",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T22:25:19.055322+00:00",
+  "end_time": "2026-10-22T22:25:19.055340+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T22:25:19.055336+00:00",
+      "assistant_text": "Exact from the 93.72 cfe goto-ladder NM by rewriting as C++ (NCC): switch = edg case-order compare chain; inline next() returning cmd = *(*cp)++; 1012 calls next() as a statement and tests f18 & cmd; Flags inline members on the D block; Strm by value for 1017/1003; default arm is a real cfront virtual call (vptr at +0x28 behind a 40-byte base, 7th virtual), vt pair at function scope after a dead class object (NCC keeps class locals, drops scalars), set() through a block int c then if (1) {}.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 268,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00055470 (0x430 / 268 words): the command-stream\n * opcode dispatcher. A `switch` under edg is a compare chain in CASE order (1014, 1012,\n * ... 1018), which is why the cfe goto-ladder NM needed `if (1) goto` tricks. Shapes:\n * - `next()` = `return cmd = *(*cp)++;` (inline, its result temp is the v1 value);\n *   1012 calls it as a statement and tests `f18 & cmd` (gives `and t8,t7,v1`);\n * - the flag cases are inline Flags members on the D_00000000 block (this = a0, m = a1);\n * - 1017 / 1003 pass the 76-byte Strm by value (edg copy loops);\n * - default: a REAL cfront virtual call (vptr at +0x28 behind a 40-byte base, 7th\n *   virtual = entry +0x38: `lh delta; lw fn; jalr; addu a0,delta,obj`), the {cmd, cur}\n *   pair `vt` declared at function scope after a dead `Two pt` (frame 0x130: NCC drops\n *   unused scalars but keeps a class object), filled by an inline set() through a block\n *   int `c` and followed by `if (1) {}`.\n * gl_ref_55470_d is a distinct zero alias (the plain D_00000000 store would CSE with\n * the Flags base). Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nextern char D_00000000[];\nextern int gl_ref_55470_d;\nint gl_func_00000000(...);\n}\nstruct Two { int a, b; Two() {} Two(int x, int y) { a = x; b = y; } void set(int x, int y) { a = x; b = y; } };\nstruct Obj;\nstruct ObjPad { char pad[40]; };\nstruct Obj : ObjPad { virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7(int *); };\nstruct Flags { int a; int b;\n    void orA(int m) { a |= m; } void clrA(int m) { a &= ~m; }\n    void orB(int m) { b |= m; } void clrB(int m) { b &= ~m; } };\nstruct Strm {\n    int **cp; int cmd; int w2; int w3; Obj *obj; int w5, w6, w7, w8, w9, w10, w11, w12;\n    int f13; int f14; int w15; int f16; int f17; int f18;\n    int next() { return cmd = *(*cp)++; }\n};\nextern \"C\" void gl_func_00055470(Strm *s) {\n    Two pt;\n    Two vt;\n    switch (s->cmd) {\n    case 1014:\n        break;\n    case 1012:\n        s->next(); if (!(s->f18 & s->cmd)) gl_func_00000000(s);\n        break;\n    case 1015:\n        gl_func_00000000(s);\n        break;\n    case 1010:\n        if (s->next() != s->f16) gl_func_00000000(s);\n        break;\n    case 1011:\n        if (s->next() != s->f17) gl_func_00000000(s);\n        break;\n    case 1016:\n        s->f14 = s->next();\n        break;\n    case 1000:\n        break;\n    case 1008:\n        gl_ref_55470_d = s->next();\n        break;\n    case 1019:\n        break;\n    case 1004:\n        ((Flags *)D_00000000)->orB(s->next());\n        break;\n    case 1005:\n        ((Flags *)D_00000000)->b &= ~s->next();\n        break;\n    case 1006:\n        ((Flags *)D_00000000)->orA(s->next());\n        break;\n    case 1007:\n        ((Flags *)D_00000000)->a &= ~s->next();\n        break;\n    case 1017: {\n        Strm t = *s;\n        int v = s->next();\n        t.cp = (int **)&v;\n        gl_func_00000000(t);\n        break;\n    }\n    case 1003: {\n        Strm t = *s;\n        t.w3 = 0;\n        t.obj = 0;\n        t.w15 = (int)s;\n        gl_func_00000000(t);\n        break;\n    }\n    case 113:\n        s->f13 = 1;\n    default: {\n        gl_func_00000000(s);\n        { int c = s->cmd; vt.set(c, (int)*s->cp); }\n        if (1) {}\n        s->obj->m7(&vt.a);\n        *s->cp = (int *)vt.b;\n        break;\n    }\n    case 1018:\n        gl_func_00000000(D_00000000 + 0x211B0, s->next());\n        break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_55470.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00055470.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical (cmp vs baserom), rdiff --raw --pins 268/268 (NCC donor spliced via REPLACE_FUNC_BODY)."
+  }
+}

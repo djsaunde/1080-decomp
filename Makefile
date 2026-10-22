@@ -540,7 +540,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 110: 3BE1C NM re-decode: +0x20 -> 0x2e60c.
 # agent-c run 110: 3B9C0 NM re-decode: +0x20 -> 0x2e62c.
 # agent-c run 110: 3B2EC NM re-decode -> 0x2e66c.
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e888 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-g run 123: 55470 NCC donor (0x430 vs 0x448 NM body): 0x2e888 -> 0x2e870 (62F08 NM offset 0x2e820).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e870 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1434,6 +1435,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E37C_DONOR)
+# 55470 = command-stream opcode dispatcher (switch = edg case-order compare chain, real cfront virtual in default); NCC donor.
+GAMELIBS_55470_DONOR := build/src/game_libs/game_libs_ncc_55470.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00055470=$(GAMELIBS_55470_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_55470_DONOR)
 # 41A9C = debug-menu registration + two new objects + {cur, nxt} child walk; if/return next(); NCC donor.
 GAMELIBS_41A9C_DONOR := build/src/game_libs/game_libs_ncc_41A9C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00041A9C=$(GAMELIBS_41A9C_DONOR)
