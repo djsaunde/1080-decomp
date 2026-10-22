@@ -4089,3 +4089,4 @@ D_2F720_p1744 = 0x00001744;  /* game_libs_func_0002F720 NCC donor: FP pool read 
 D_2F720_p1748 = 0x00001748;  /* game_libs_func_0002F720 NCC donor: FP pool read */
 D_2F720_p174C = 0x0000174C;  /* game_libs_func_0002F720 NCC donor: FP pool read */
 gl_ref_00037B00 = 0x00037B00;  /* gl_func_000233E4: baked USO jal (0x0C00DEC0) */
+gl_ref_0003A0EC = 0x0003A0EC;  /* gl_func_00025AC8: baked USO jal (0x0C00E83B) */

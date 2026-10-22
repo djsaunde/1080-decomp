@@ -7659,40 +7659,39 @@ int game_libs_func_00025A80(int *a0, int a1, int **a2) {
 //   (acc/i/n2/idx slot order) + the 4 placeholder jals (jal 0 vs baked 0x3A0EC
 //   — USO-reloc cap, blocks byte-exact regardless). 95.3% is the ceiling
 //   without USO-reloc infra.
-#ifdef NON_MATCHING
+/* 2026-10-22 (agent-c run 120) EXACT (permuter-assisted): n1 declared after acc/i, and the first loop tests a block-scope copy q of the call result. */
 extern int gl_func_00000000();
 extern int D_00000000;
+extern int gl_ref_0003A0EC(); /* baked USO jal 0x0C00E83B */
 int gl_func_00025AC8(int idx, int a1) {
     char *g = (char *)&D_00000000;
     char *rec = *(char **)(g + 0x2030) + idx * 0x14;
     int n2 = *(unsigned char *)(rec + 1);
-    int n1 = *(unsigned char *)(rec + 0);
     int acc = 0;
     int i;
+    int n1 = *(unsigned char *)(rec + 0);
     char *r;
     for (i = 0; i < n2; i++) {
-        r = (char *)gl_func_00000000(idx, i); if (1) {}
-        if (r != 0) {
-            acc = gl_func_00000000(*(void **)(r + 4), acc, a1);
+        char *q;
+        r = (char *)gl_func_00000000(idx, i); q = r; if (1) {}
+        if (q != 0) {
+            acc = gl_ref_0003A0EC(*(void **)(q + 4), acc, a1);
         }
     }
     for (i = 0; i < n1; i++) {
         r = (char *)gl_func_00000000(idx, i);
         if (r != 0) {
             if (*(unsigned char *)(r + 1) != 0) {
-                acc = gl_func_00000000(*(void **)(r + 8), acc, a1);
+                acc = gl_ref_0003A0EC(*(void **)(r + 8), acc, a1);
             }
             if (*(unsigned char *)(r + 2) != 127) {
-                acc = gl_func_00000000(*(void **)(r + 24), acc, a1);
+                acc = gl_ref_0003A0EC(*(void **)(r + 24), acc, a1);
             }
-            acc = gl_func_00000000(*(void **)(r + 16), acc, a1);
+            acc = gl_ref_0003A0EC(*(void **)(r + 16), acc, a1);
         }
     }
     return acc;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00025AC8);
-#endif
 
 /* game_libs_func_00025BFC: flag-guarded D_-queue append. p=*a0; the header
  * word of *p is a packed descriptor: bits 0-23 nonzero AND bit 25 set AND

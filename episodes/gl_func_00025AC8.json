@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00025AC8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:02:19.395893+00:00",
+  "end_time": "2026-10-22T20:02:19.395893+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:02:19.395893+00:00",
+      "assistant_text": "Registry fold: n1 declared after acc/i, block-scope copy q of the predicate result (permuter), baked jal 0x3A0EC pinned.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 77,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_00025AC8 \u2014 STRUCTURAL PASS (0x18C / 99 words, no episode).\n// permuter resists: verify-fails every batch (x5+, 2026-06-19) \u2014 factory skip.\n// Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle\n// (named fn + 1 trailing helper) \u2014 deferred USO re-split. The named\n// leading fn iterates a registry record's sub-entries.\n//\n//   int gl_func_00025AC8(int idx, int a1) {\n//     R *rec = (char*)*(R**)(&D_0 + 0x2030) + idx*0x14; // reg record\n//     int  n   = rec->b_1;                               // sub count\n//     byte k   = rec->b_0;\n//     int  acc = 0;\n//     for (int i = 0; i < n; i++) {\n//       if ((*pred)(idx, i)) {                            // jal 0 USO\n//         void *p = rec->w_4;                              // sub list\n//         acc = jal 0x3A0EC(p, acc, a1);                   // 0x0C00E83B\n//       }\n//     }\n//     return acc;\n//   }\n//\n// Struct-typing reference: indexes the SAME registry record table as\n//   gl_func_000221D8 / gl_func_00023838 / gl_func_00023BDC (base\n//   &D_0+0x2030, fixed 0x14 entry stride). Per record: byte +0 a\n//   type/key, byte +1 the sub-entry count, word +4 a pointer to the\n//   sub-entry list. It walks all sub-entries, gating each on a\n//   USO-relocated predicate (`jal 0` slot) and folding the accepted\n//   ones through the fixed routine 0x0C00E83B (\u22480x3A0EC) with an\n//   accumulator. The \"apply over a record's sub-entry list\" operation\n//   of the registry family.\n// Caps (DEFERRED): single jr $ra (the \"2-fn unsplit bundle\" note is\n//   STALE; .s is 0x18C/81 words, ONE function). \"Apply over a\n//   record's sub-entry list\" of the registry family (same\n//   &D_0+0x2030 0x14-stride table as gl_func_000221D8 /\n//   gl_func_00023838 / gl_func_00023BDC). Real-C STRUCTURAL body\n//   below per the analysis (rec = (*&D_0+0x2030) + idx*0x14; for\n//   each of rec->1 sub-entries gated on jal-0 pred(idx,i), fold the\n//   accepted ones through fixed 0x3A0EC(rec->4, acc, a1)). Byte-\n//   match deferred \u2014 placeholder jal-0 predicate + fixed fold need\n//   USO reloc infra + loop schedule. Name pre-checked: no extern\n//   reuse (collision-safe). gl_func_00000000 = canonical\n//   never-defined USO placeholder.\n//\n// 2026-05-31 FULL DECODE + completion 49.6->95.3%: the fn has TWO loops, not\n//   one. Loop 1 (over rec->1 count): r=pred(idx,i); if(r) acc=fold(r->4,acc,a1)\n//   \u2014 the fold arg is the PREDICATE RESULT's ->4, NOT rec->4. Loop 2 (over\n//   rec->0 count): r=pred(idx,i); if(r){ if(r->1) acc=fold(r->8,..); if(r->2!=\n//   127) acc=fold(r->24,..); acc=fold(r->16,..) [always] }. Structure now\n//   EXACT (77=77 insns). RESIDUAL (95->100): consistent saved-reg renumber\n//   (acc/i/n2/idx slot order) + the 4 placeholder jals (jal 0 vs baked 0x3A0EC\n//   \u2014 USO-reloc cap, blocks byte-exact regardless). 95.3% is the ceiling\n//   without USO-reloc infra.\n/* 2026-10-22 (agent-c run 120) EXACT (permuter-assisted): n1 declared after acc/i, and the first loop tests a block-scope copy q of the call result. */\nextern int gl_func_00000000();\nextern int D_00000000;\nextern int gl_ref_0003A0EC(); /* baked USO jal 0x0C00E83B */\nint gl_func_00025AC8(int idx, int a1) {\n    char *g = (char *)&D_00000000;\n    char *rec = *(char **)(g + 0x2030) + idx * 0x14;\n    int n2 = *(unsigned char *)(rec + 1);\n    int acc = 0;\n    int i;\n    int n1 = *(unsigned char *)(rec + 0);\n    char *r;\n    for (i = 0; i < n2; i++) {\n        char *q;\n        r = (char *)gl_func_00000000(idx, i); q = r; if (1) {}\n        if (q != 0) {\n            acc = gl_ref_0003A0EC(*(void **)(q + 4), acc, a1);\n        }\n    }\n    for (i = 0; i < n1; i++) {\n        r = (char *)gl_func_00000000(idx, i);\n        if (r != 0) {\n            if (*(unsigned char *)(r + 1) != 0) {\n                acc = gl_ref_0003A0EC(*(void **)(r + 8), acc, a1);\n            }\n            if (*(unsigned char *)(r + 2) != 127) {\n                acc = gl_ref_0003A0EC(*(void **)(r + 24), acc, a1);\n            }\n            acc = gl_ref_0003A0EC(*(void **)(r + 16), acc, a1);\n        }\n    }\n    return acc;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00025AC8.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
