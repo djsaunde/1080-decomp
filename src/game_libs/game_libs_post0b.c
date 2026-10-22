@@ -8369,6 +8369,16 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  * symbol size includes one trailing splat-boundary word (`lw t6,0x10(a0)`)
  * belonging to the next function. Byte-match deferred to the return-spill cap. */
 #ifdef NON_MATCHING
+/* Run 123 (agent-c): best NCC draft, raw 8 words (this cfe body: 11). The
+ * returned pointer is a MEMORY variable stored in the last call's delay slot
+ * and reloaded at the end (sp+76 = first local's home), not the ctor's s0:
+ *   (run-122 V3 / M4 / W4 / Base(const char *) + virtual / Obj classes)
+ *   inline Obj *link(Obj *&q, Obj *n, char *a) {
+ *       gl_func_00000000(q = n, *(int *)(a + 0x40)); return q; }
+ *   extern "C" Obj *gl_func_0003E0F0(char *arg0) {
+ *       Obj *p; return link(p, new Obj, arg0); }
+ * Left: frame 72 vs 80, the store takes s0 (target the a0 copy), W4 member
+ * this a1 (target a0). docs/IDO_CODEGEN.md#kit-xxviii-agent-c-run-123 #4. */
 void *gl_func_0003E0F0(char *arg0) {
     char *s0 = (char *)gl_func_00000000(0xB4);
     if (s0 != 0) {
