@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_uso_func_00003F18",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:08:13.903268+00:00",
+  "end_time": "2026-10-22T21:08:13.903268+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:08:13.903268+00:00",
+      "assistant_text": "Exact from 83.93: RGBA32 twin of gui_uso_func_0000413C (gbi.h texture-tile macros under NCC, fmt RGBA / siz 32b, tile bytes 2). The symbol had absorbed three leading zero words that are the predecessor's pad; they moved to an all-zero SUFFIX_BYTES_FORCE on gui_func_00003B80 in a separate boundary commit.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 134,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_uso_func_00003F18.\n *\n * Texture-tile loader for the gfx context c: SETTIMG, load SETTILE (tile 7),\n * LOADSYNC, LOADTILE, PIPESYNC, render SETTILE (tile `tile`, tmem tile << 8)\n * and SETTILESIZE (origin 0), G_IM_FMT_RGBA / G_IM_SIZ_32b, maskt 8 / masks 8. Written\n * with the real gbi.h macro bodies (src/gui_uso/gui_ncc_gbi.h) and the\n * context's inline next() append; the lower-right corners are macro text\n * (uls + w - 1), so IDO's reassociation gives the target's (uls + w) - uls\n * and a3 - 1 forms. The cfe NM body (an open-coded reconstruction) capped\n * at ~86%; this is word-exact. The fourth parameter is unused (edg still\n * stores it to its home). docs/IDO_CODEGEN.md kit XXV. Siblings: 413C\n * (RGBA16), 4354 (IA8), 3F18 (RGBA32).\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees. */\n#include \"gui_ncc_gbi.h\"\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n};\n#define FMT G_IM_FMT_RGBA\n#define SIZ G_IM_SIZ_32b\n#define LRS (uls + w - 1)\n#define LRT (ult + h - 1)\nextern \"C\" void gui_uso_func_00003F18(Ctx *c, void *timg, int width, int unused, int uls, int ult, int w, int h,\n                                       int tile) {\n    gDPSetTextureImage(c->next(), FMT, SIZ, width, timg);\n    gDPSetTile(c->next(), FMT, SIZ, ((((LRS) - (uls) + 1) * G_IM_SIZ_32b_TILE_BYTES) + 7) >> 3, tile << 8, G_TX_LOADTILE,\n               0, 0, 8, 0, 0, 8, 0);\n    gDPLoadSync(c->next());\n    gDPLoadTile(c->next(), G_TX_LOADTILE, (uls) << G_TEXTURE_IMAGE_FRAC, (ult) << G_TEXTURE_IMAGE_FRAC,\n                (LRS) << G_TEXTURE_IMAGE_FRAC, (LRT) << G_TEXTURE_IMAGE_FRAC);\n    gDPPipeSync(c->next());\n    gDPSetTile(c->next(), FMT, SIZ, ((((LRS) - (uls) + 1) * G_IM_SIZ_32b_LINE_BYTES) + 7) >> 3, tile << 8, tile,\n               0, 0, 8, 0, 0, 8, 0);\n    gDPSetTileSize(c->next(), tile, 0, 0, ((LRS) - (uls)) << G_TEXTURE_IMAGE_FRAC,\n                   ((LRT) - (ult)) << G_TEXTURE_IMAGE_FRAC);\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_3F18.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_uso_func_00003F18.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical, make verify-blocks all OK jal=0 lo16=0 other=0, objdiff 100%."
+  }
+}

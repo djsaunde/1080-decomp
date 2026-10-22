@@ -1892,110 +1892,14 @@ void gui_func_00003B80(int *a0, volatile int a1, int a2, int a3) {
 INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00003B80);
 #endif
 
-#ifdef NON_MATCHING
-/* gui_uso_func_00003F18: 137-insn / 0x224 prologue-less DL builder, sibling of
- * gui_uso_func_00003B14 (the smaller 27-insn fillrect builder).
- *
- * STRUCTURAL CAP: function starts with 3 leading nops (0x3F18-0x3F20) AND
- * has NO `addiu sp, -N` prologue / NO `addiu sp, +N` epilogue. Body uses
- * sp+0xC..0x20 as scratch (caller's frame). C-emit always produces a
- * frame even when empty, AND IDO never emits 3 leading nops from a void
- * body, so plain C cannot match these structural shapes.
- *
- * Entry decode (post-leading-nops):
- *   sw a3, 0xC(sp)              ; save a3 to caller's arg-save slot
- *   v0 = a0->_C                 ; some DL state ptr
- *   v1 = v0->_4                 ; current entry counter
- *   v0->_4 = v1 + 1             ; bump
- *   t6 = a3 & 0xFFF             ; arg masked to 12 bits
- *   ... builds Gfx entry words from a1/a2/a3 + sp+0x10/0x14/0x18 ...
- *   final entries store via t7 (= v0->_0 base + v1*8).
- *
- * Likely a G_TEXRECTFLIP or G_SETOTHERMODE-class command builder bundled
- * with sibling 0x413C (which has the same body sans 3 leading nops) and
- * 0x4354 (same again, sans nops). The 3-nop variant might be "shared
- * backward-compatible entry that landed mid-cache-line" (alignment or
- * cache-friendliness consideration).
- *
- * Recipe options for byte-match (none tried this tick):
- *   1. Hand-written .s file in src/gui_uso/, removed from INCLUDE_ASM list,
- *      compiled directly. Equivalent to keeping INCLUDE_ASM forever — no
- *      C representation.
- *   2. SUFFIX_BYTES on predecessor (gui_func_00003B80) injecting 3 nops
- *      then this function emits without leading padding. Predecessor
- *      already ends at 0x3F14, and 0x3F18 sits 4-byte aligned — adding
- *      SUFFIX_BYTES of 3 nops to predecessor + matching successor's body
- *      from its first non-nop insn could work. Untested.
- *
- * Stays INCLUDE_ASM until a recipe is verified. */
-// GBI texture-load display list (sibling of gui_uso_func_00004354; constants
-// 0xFD18/0xF518/0x07020080/0x20080 + a *2 in the SetTile size calc). 7 command
-// packets via the cursor idiom. NOTE: the function .s has 3 leading nops
-// (0x3F18..0x3F20) that C cannot emit, so the body aligns but the head won't.
-// 2026-08-22 65.3->83.9 levers: (1) unused int* locals ap5=&arg5/ap9=&arg9
-// force per-packet stack reloads of arg5/arg9 (target reloads, plain params
-// get CSE-held in regs); (2) hoist m=(a2-1)&0xFFF before the ring bump
-// (packet-1 head now byte-exact); (3) reuse params a3/a2/a1 for the
-// arg5+arg7 / arg6 / arg6+arg8 webs. Residual: slot-ptr web coalesces to
-// one a3-colored web (target alternates t2/t3/a3 per packet) which evicts
-// a3-web to t1 + write-through at 12(sp); block-scoped or multi-var slot
-// pointers renumber ALL temps and regress (tested 8/135 vs 31/135) —
-// per-packet-web coloring with a3v priority is the remaining coloring cap.
-void gui_uso_func_00003F18(char *a0, int a1, int a2, int a3, int arg5,
-                           int arg6, int arg7, int arg8, int arg9) {
-    struct GfxRing_413C *r;
-    int i;
-    int *p;
-    int t0, t1, t3, m;
-    int *ap5 = &arg5;
-    int *ap9 = &arg9;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC);
-    m = (a2 - 1) & 0xFFF;
-    i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xFD180000 | m;
-    p[1] = a1;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    a3 = arg5 + arg7;
-    t0 = a3 - arg5;
-    t1 = ((((t0 * 2 + 7) >> 3) & 0x1FF) << 9) | 0xF5180000 | ((arg9 << 8) & 0x1FF);
-    p[0] = t1;
-    p[1] = 0x07020080;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    a2 = arg6;
-    p[0] = 0xE6000000;
-    p[1] = 0;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xF4000000 | ((((arg5 << 2) & 0xFFF) << 0xC)) | ((a2 << 2) & 0xFFF);
-    a1 = a2 + arg8;
-    p[1] = 0x07000000 | ((((a3 - 1) << 2) & 0xFFF) << 0xC) | (((a1 - 1) << 2) & 0xFFF);
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xE7000000;
-    p[1] = 0;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = t1;
-    t3 = (arg9 & 7) << 0x18;
-    p[1] = t3 | 0x00020000 | 0x80;
-
-    r = *(struct GfxRing_413C **)(a0 + 0xC); i = r->idx; r->idx = i + 1;
-    p = (*(struct GfxRing_413C **)(a0 + 0xC))->buf + i * 2;
-    p[0] = 0xF2000000;
-    p[1] = t3 | ((((t0 - 1) << 2) & 0xFFF) << 0xC) | ((((a1 - a2) - 1) << 2) & 0xFFF);
+/* gui_uso_func_00003F18: RGBA32 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
+ * LOADTILE, PIPESYNC, SETTILE, SETTILESIZE). EXACT 2026-10-22 (agent-g run
+ * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_3F18.cpp
+ * (REPLACE_FUNC_BODY, both trees; the 413C gbi.h recipe). Its three leading
+ * zero words are gui_func_00003B80's pad (SUFFIX_BYTES_FORCE). The notes
+ * above describe the old cfe reconstruction. This is the splice host. */
+void gui_uso_func_00003F18(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_00003F18);
-#endif
 
 /* gui_uso_func_0000413C — verified structural decode (no-call/no-branch RDP
  * display-list builder, 134 insns, 1% first pass; GfxCtx-idiom regalloc
