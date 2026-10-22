@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00028A68",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:26:24.866562+00:00",
+  "end_time": "2026-10-22T17:26:24.866562+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:26:24.866562+00:00",
+      "assistant_text": "C++ donor: NCC keeps addu operands in source order.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 41,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00028A68 (0xA4 / 41 words): init a list head and\n * register every 0xD0-byte record of the global pool with it, storing each\n * record's own address at +8 and clearing +0. Under NCC the addu operand order\n * follows the source (kit XX): the stored value is an int sum (off first), the\n * store address a pointer sum (base first), the call argument an int sum cast\n * back to a pointer.\n * Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY. */\n#define GL_COUNT_2070 (*(int*)((char*)&D_00000000 + 0x2070))\nextern \"C\" {\nextern void gl_func_00000000(...);\nextern int D_00000000;\nvoid gl_func_00028A68(void) {\n    char *tbl = (char *)&D_00000000 + 0x5378;\n    int i;\n    int off;\n    gl_func_00000000(tbl);\n    for (i = 0, off = 0; i < GL_COUNT_2070; i++, off += 0xD0) {\n        char *base = *(char **)((char *)&D_00000000 + 0x2CFC);\n        *(int *)(base + off + 8) = off + (int)base;\n        *(int *)(*(int *)((char *)&D_00000000 + 0x2CFC) + off) = 0;\n        gl_func_00000000(tbl, (char *)(off + *(int *)((char *)&D_00000000 + 0x2CFC)));\n    }\n}\n\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_28A68.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00028A68.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

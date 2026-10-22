@@ -1556,6 +1556,10 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 29CCC / 31334 recipe). Uses += (composes).
 GAMELIBS_2FB74_DONOR := build/src/game_libs/game_libs_o2_2FB74.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += gl_func_0002FB74=$(GAMELIBS_2FB74_DONOR)
+# 28A68 = pool init: link 0xD0-byte records into a list (NCC operand order: int value, pointer address); NCC donor.
+GAMELIBS_28A68_DONOR := build/src/game_libs/game_libs_ncc_28A68.cpp.o
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += gl_func_00028A68=$(GAMELIBS_28A68_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_28A68_DONOR)
 # 717CC = __osPfsGetOneChannelData (pfsgetstatus.c), IDO 5.3 -O1 donor;
 # true entry 0x717C8 (stolen-prologue lui folded into the symbol). See
 # game_libs_ido53_717C8.c.

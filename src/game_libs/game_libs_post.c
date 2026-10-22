@@ -10611,24 +10611,10 @@ void gl_func_00028A18(char *a0) {
 //   (build t1,s0): with the reload inline IDO evaluates the load first in
 //   every spelling (off+X, X+off, &X[off], (int) casts, struct-array
 //   &recs[i]); a reassigned named local gets the order but colours v0.
-#ifdef NON_MATCHING
-extern int gl_func_0001CA10();
-extern int D_00000000;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_28A68.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void gl_func_00028A68(void) {
-    char *tbl = (char *)&D_00000000 + 0x5378;
-    int i;
-    int off;
-    gl_func_0001CA10(tbl);
-    for (i = 0, off = 0; i < GL_COUNT_2070; i++, off += 0xD0) {
-        char *base = *(char **)((char *)&D_00000000 + 0x2CFC);
-        *(int *)((int)base + off + 8) = (int)(off + base);
-        *(int *)(*(int *)((char *)&D_00000000 + 0x2CFC) + off) = 0;
-        gl_func_0001CA10(tbl, *(char **)((char *)&D_00000000 + 0x2CFC) + off);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00028A68);
-#endif
 
 // gl_func_00028B0C — STRUCTURAL PASS (0x160 / 88 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
