@@ -268,47 +268,12 @@ void gui_uso_func_0000055C(char *a0) {
 INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_0000055C);
 #endif
 
-#ifdef NON_MATCHING
-/* Full decode 2026-06-01. SETPRIMCOLOR-style DL emitter: appends a 0xFA
- * command packing the a2 Vec3 (each *255, cast to byte) as RGB plus a1 as
- * alpha into word1, to the gfx builder at a0->0x24. The RGB channels use the
- * IDO (int)(unsigned)(f*255.0f) saturating float->int cast (cfc1/ctc1/cvt.w.s
- * + lui at,0x4f00;sub.s overflow-bias ladder); word1 = (R<<24)|(G&0xff)<<16|
- * (B&0xff)<<8|(a1&0xff). Single-arg-deref base (a0->0x24), NOT the held-&D
- * form of the multi-block siblings (00001CA8/00001EF4).
- *
- * CAP (2026-06-23, agent-i): structure EXACT — opcode multiset identical to
- * target (verified opcode-only diff = empty). Residual is two strands of the
- * documented as1-scheduler-tie + ugen-coloring core (docs/IDO_CODEGEN.md
- * "unsigned-cast 0x4f00 scheduler cap"): (1) integer register coloring is
- * renumbered (t1/t3/t9/t8/t0 vs t9/t2/t8/t0/t1) across the whole body; (2)
- * the MIDDLE (G-channel) cast schedules `lui at,0x4f00` AFTER its `mul.s`
- * where the build emits it before — the bias-lui is emitted INSIDE the cast
- * macro so source can't reorder it (1st/3rd blocks already agree). permuter
- * -j6 10min: base 1095 -> best 550, never 0 (plateaus; perturbations only add
- * noise). NOT source-reorderable; keep INCLUDE_ASM. */
-void gui_uso_func_000006B8(char *a0, int a1, float *a2, int a3) {
-    char *b = *(char **)(a0 + 0x24);
-    char *p;
-    char *buf;
-    int i;
-    int r, g, bl;
-    (void)a3;
-
-    p = *(char **)(b + 0xC);
-    i = *(int *)(p + 4);
-    *(int *)(p + 4) = i + 1;
-    buf = *(char **)(*(char **)(b + 0xC));
-    *(int *)(buf + i * 8) = 0xFA000000;
-    r = (int)(unsigned)(a2[0] * 255.0f);
-    g = (int)(unsigned)(a2[1] * 255.0f);
-    bl = (int)(unsigned)(a2[2] * 255.0f);
-    *(int *)(buf + i * 8 + 4) =
-        (r << 24) | ((g & 0xff) << 16) | ((bl & 0xff) << 8) | (a1 & 0xff);
+/* gui_uso_func_000006B8: one G_SETPRIMCOLOR append (col[0..2] * 255 above
+ * the alpha byte) into a0->0x24's gfx context. EXACT 2026-10-22 (agent-g run
+ * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_06B8.cpp
+ * (REPLACE_FUNC_BODY, both trees; the 1A5C recipe). This is the splice host. */
+void gui_uso_func_000006B8(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_000006B8);
-#endif
 
 /* gui_uso_func_000008C0 [0x8C0..0xB58): GUI primitive-color DL builder --
  * FULL-CLUSTER MERGE 2026-06-09 of the former 22-insn fall-through head +
