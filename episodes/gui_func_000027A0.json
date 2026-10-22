@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_func_000027A0",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T23:24:07.322233+00:00",
+  "end_time": "2026-10-22T23:24:07.322233+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T23:24:07.322233+00:00",
+      "assistant_text": "Exact from the run-124 NCC draft (4 raw words): x is the parameter and the pooled int scratch (width/height reads, ctx pointer, switch value) is also the sprite passed as the strip helper's 2nd argument, which gives it a1 and makes uopt copy x to s8 at entry.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 260,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_func_000027A0.\n *\n * Tiled sprite blitter: adjust x/y by the sprite size per the alignment flags\n * (4 = right, 1 = centre-x, 2 = centre-y), append gSPTexture through the gfx\n * context's inline next(), pick the per-format load function and TMEM budget\n * from spr->mode (edg lowers the switch to a compare chain in CASE order:\n * 1032, 272, 288, default), then either load + draw the whole sprite or, when\n * w * h exceeds the budget, cut it into column strips of gl(budget / h, spr)\n * texels. The one int scratch `t` holds the width/height reads, the context\n * pointer, the mode and the sprite passed as the strip helper's 2nd argument;\n * that last use gives it a1 (so x, the parameter, takes s8 from the entry).\n * docs/IDO_CODEGEN.md kits XXXI / XXXIII. Spliced via REPLACE_FUNC_BODY into\n * both gui_uso trees. */\n#define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))\n#define G_TEXTURE 0xbb\n#define BOWTIE_VAL 0\n#define gSPTexture(pkt, s, t, level, tile, on) \\\n{ \\\n\tGfx *_g = (Gfx *)(pkt); \\\n\t_g->w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(BOWTIE_VAL, 16, 8) | \\\n\t\t\t_SHIFTL(level, 11, 3) | _SHIFTL(tile, 8, 3) | _SHIFTL(on, 0, 8)); \\\n\t_g->w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); \\\n}\nextern \"C\" { extern char D_00000000; extern char D_27A0_fn1032, D_27A0_fn272, D_27A0_fn288, D_27A0_fndef;\nint gl_func_00000000(...); }\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n};\n#define CTX (*(Ctx **)&D_00000000)\nstruct Spr { char pad[8]; int tex; char pad2[0x14]; short w; short h; int mode; };\nstruct W { char pad[0x10]; Spr *spr; };\ntypedef void (*RFn)(Ctx *, int, int, int, int, int, int, int, int);\nextern \"C\" void gui_func_000027A0(W *self, int x, int y, int flags) {\n    int t;\n    int w, h;\n    Spr *p;\n    if (flags & 4) { p = self->spr; t = p->w; x -= t; }\n    else if (flags & 1) { p = self->spr; t = p->w; x -= t / 2; }\n    if (flags & 2) { p = self->spr; t = p->h; y -= t / 2; }\n    gSPTexture(((Ctx *)(t = (int)CTX))->next(), 0x8000, 0x8000, 0, 0, 1);\n    int srcx = 0;\n    int budget;\n    RFn fn;\n    p = self->spr;\n    switch (t = self->spr->mode) {\n    case 1032: budget = 4096; fn = (RFn)&D_27A0_fn1032; break;\n    case 272: budget = 2048; fn = (RFn)&D_27A0_fn272; break;\n    case 288: budget = 1024; fn = (RFn)&D_27A0_fn288; break;\n    default: budget = 2048; fn = (RFn)&D_27A0_fndef; break;\n    }\n    w = self->spr->w;\n    h = self->spr->h;\n    t = (int)self->spr;\n    if (budget < w * h) {\n        int tile = gl_func_00000000(budget / h, (Spr*)t);\n        int rem = w;\n        int sy = (h << 10) / h;\n        while (rem != 0) {\n            if (tile < rem) {\n                int sx = (tile << 10) / tile;\n                p = self->spr; fn(CTX, p->tex, w, h, srcx, 0, tile, h, 0);\n                gl_func_00000000(CTX, x, y, tile, h, sx, sy);\n                x += tile;\n                srcx += tile;\n                rem -= tile;\n            } else {\n                tile = rem;\n                p = self->spr; fn(CTX, p->tex, w, h, srcx, 0, rem, h, 0);\n                gl_func_00000000(CTX, x, y, rem, h, (rem << 10) / rem, sy);\n                rem -= tile;\n            }\n        }\n    } else {\n        fn(CTX, p->tex, w, h, 0, 0, w, h, 0);\n        gl_func_00000000(CTX, x, y, w, h, (w << 10) / w, (h << 10) / h);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_27A0.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_func_000027A0.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}

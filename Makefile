@@ -1997,6 +1997,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_1EF4_DONOR := build/src/gui_uso/gui_uso_ncc_1EF4.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00001EF4=$(GUI_1EF4_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1EF4_DONOR)
+# 27A0: tiled sprite blitter (flags align, gSPTexture, mode switch, strip loop;
+# 260/260). The pooled int scratch is passed as the strip helper's 2nd arg.
+GUI_27A0_DONOR := build/src/gui_uso/gui_uso_ncc_27A0.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_000027A0=$(GUI_27A0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_27A0_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000B274=$(GAMEUSO_B274_NM_DONOR)

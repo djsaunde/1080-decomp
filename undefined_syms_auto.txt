@@ -4125,3 +4125,7 @@ D_2D7D0_a = 0x00000000;  /* gl_func_0002D7D0: three blank USO data refs each set
 D_2D7D0_b = 0x00000000;
 D_2D7D0_c = 0x00000000;
 gl_ref_55470_d = 0x00000000;  /* gl_func_00055470 1008 store target (NCC donor game_libs_ncc_55470.cpp): distinct zero alias of the D_00000000 block */
+D_27A0_fn1032 = 0x00000000;  /* gui_func_000027A0 NCC donor: per-format load-function addresses (blank USO refs, distinct zero aliases) */
+D_27A0_fn272 = 0x00000000;
+D_27A0_fn288 = 0x00000000;
+D_27A0_fndef = 0x00000000;
