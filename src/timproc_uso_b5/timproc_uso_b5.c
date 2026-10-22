@@ -8010,8 +8010,12 @@ void timproc_uso_b5_func_0000BBC8(int *a0, float a1) {
  * or +3 words), dead while(0)/dead-store expr occurrences (DCE'd before
  * interning), do-while forms, permuter 9.5min floored at base=50.
  * Only order-flippers found cost words: (p230-(a1+0x230)) live subu (+3).
- * Genuine uopt-tie cap unless a zero-emission interning lever is found. */
+ * Genuine uopt-tie cap unless a zero-emission interning lever is found.
+ * 2026-10-22 agent-g run 118: the `volatile int pad0;` at the top of the
+ * decl list had been lost (frame 0xB0 vs 0xB8, 15 words); restored -> back
+ * to the 2-word preheader tie. NCC (C++) does not help here (88 words). */
 void timproc_uso_b5_func_0000BBDC(int *a0, int *a1) {
+    volatile int pad0;
     int caps[5];
     int *idxp[5];
     volatile int pad2[5];
