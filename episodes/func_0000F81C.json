@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000F81C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:38:46.200278+00:00",
+  "end_time": "2026-10-22T16:38:46.200278+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:38:46.200278+00:00",
+      "assistant_text": "C++ donor (IDO 7.1 NCC -O0).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 78,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donor for func_0000F81C: the NM C body of\n * bootup_uso_tail1.c compiled as C++ (bootup_uso is C++). cfe -O0 left a dead\n * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.\n * Spliced into bootup_uso_tail1.c.o via REPLACE_FUNC_BODY. */\ntypedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;\ntypedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;\nextern \"C\" {\nextern int func_00000000(...);\nextern char D_00000000;\ntypedef struct { int a, b, c, d; } Quad4;\n\n/* USO-base absolute placeholders (undefined_syms_auto.txt): the segment links\n * at VRAM 0, so `extern D_00000030` produces the same lui/addiu words as the\n * target's %hi/%lo(func_00000008 + 0x28) \u2014 the F7D0 trick, addend baked in\n * the addiu (form-a LO16-fold, unreachable via struct-member address-of). */\nextern float D_00000030[4];    /* == func_00000008 + 0x28: Vec4f zeroed slot */\nextern char D_0000002C;        /* == func_00000008 + 0x24 */\ntypedef struct {\n    char pad44[0x44];\n    char *ptr44;                /* +0x44: object holder, result stored at +0x114 */\n} F0Struct;\nextern F0Struct func_000000F0; /* USO-base reloc */\nextern int func_00000188;      /* USO-base reloc */\nextern char D_0000C57C;\nextern char D_0000C58C;\nextern char D_0000C594;\n\n/* func_0000F81C: 78-insn (0x138) allocator + init helper \u2014 -O0 island\n * (arg homing above frame, unfilled beqz/jal delays, b-to-epilogue return).\n * flags local, 16-arg constructor call, result relinked + published.\n * NATURAL CEILING: 97%+ \u2014 every insn/reg/slot matches EXCEPT the documented\n * -O0 return-value dead double-b toolchain gap (+2 words before epilogue;\n * see IDO_CODEGEN #feedback-ido-o0-return-value-dead-double-b). Framed\n * value-return tail => not truncatable. Do not fight. */\nvoid *func_0000F81C(int a0, int a1) {\n    int flags;\n    int result;\n    register float *p;          /* s0 */\n    register char *q;           /* s1 */\n    register float f1;          /* f20 */\n    register float f2;          /* f22 */\n    register float f3;          /* f24 */\n\n    flags = 0;\n    if (a1 != 0) {\n        flags = flags | 6;\n    }\n    p = D_00000030;\n    f1 = 0.0f;\n    p[3] = f1;\n    f2 = f1;\n    p[2] = f2;\n    f3 = f2;\n    p[1] = f3;\n    p[0] = f3;\n    result = func_00000000(0, 0x64, &D_0000C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,\n                           0x140, 0xF0, 0x70, flags | 0x400, 0x71, 2, 0);\n    p = (float *)result;\n    q = &D_0000002C;\n    func_00000000(q, p);\n    *(int *)(func_000000F0.ptr44 + 0x114) = result;\n    return (void *)result;\n}\n\n/* func_0000F954 + func_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23\n * (cluster -O0 split; F954 is a byte-exact -O0 match, F9E8 stays NM at 1w off).\n * Moved together so tail1.c keeps only the -O2 func_0000F81C and the linker layout\n * stays contiguous. */\n\n/* func_0000FAE8 split out to bootup_uso_o0_FAE8.c on 2026-06-23 \u2014 it's an -O0\n * function (reloads self each use, register-var bit-manip in s0-s3, if(1)\n * dead-branch); now a byte-exact -O0 C match there (same recipe as 100F0/118E4). */\n\n/* func_000100F0 + func_0001016C split out to bootup_uso_o0_100F0.c on\n * 2026-05-14 for -O0 build (same recipe as func_000118E4 ->\n * bootup_uso_o0_118E4.c earlier this date). */\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_F81C.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000F81C.s",
+    "segment": "bootup_uso_tail1",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O0 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

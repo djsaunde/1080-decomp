@@ -20,46 +20,11 @@ extern char D_0000C57C;
 extern char D_0000C58C;
 extern char D_0000C594;
 
-#ifdef NON_MATCHING
-/* func_0000F81C: 78-insn (0x138) allocator + init helper — -O0 island
- * (arg homing above frame, unfilled beqz/jal delays, b-to-epilogue return).
- * flags local, 16-arg constructor call, result relinked + published.
- * NATURAL CEILING: 97%+ — every insn/reg/slot matches EXCEPT the documented
- * -O0 return-value dead double-b toolchain gap (+2 words before epilogue;
- * see IDO_CODEGEN #feedback-ido-o0-return-value-dead-double-b). Framed
- * value-return tail => not truncatable. Do not fight. */
+/* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_F81C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void *func_0000F81C(int a0, int a1) {
-    int flags;
-    int result;
-    register float *p;          /* s0 */
-    register char *q;           /* s1 */
-    register float f1;          /* f20 */
-    register float f2;          /* f22 */
-    register float f3;          /* f24 */
-
-    flags = 0;
-    if (a1 != 0) {
-        flags = flags | 6;
-    }
-    p = D_00000030;
-    f1 = 0.0f;
-    p[3] = f1;
-    f2 = f1;
-    p[2] = f2;
-    f3 = f2;
-    p[1] = f3;
-    p[0] = f3;
-    result = func_00000000(0, 0x64, &D_0000C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,
-                           0x140, 0xF0, 0x70, flags | 0x400, 0x71, 2, 0);
-    p = (float *)result;
-    q = &D_0000002C;
-    func_00000000(q, p);
-    *(int *)(func_000000F0.ptr44 + 0x114) = result;
-    return (void *)result;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000F81C);
-#endif
 
 /* func_0000F954 + func_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23
  * (cluster -O0 split; F954 is a byte-exact -O0 match, F9E8 stays NM at 1w off).

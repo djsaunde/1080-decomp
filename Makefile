@@ -169,6 +169,12 @@ build/src/bootup_uso/bootup_uso_tail1.c.o: TRUNCATE_TEXT := 0x138
 # 2026-07-10: func_0000F81C is an -O0 island (arg homing above frame, unfilled
 # beqz/jal delays, b-to-epilogue return) — tail1 holds only it, so build -O0.
 build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: OPT_FLAGS := -O0
+# F81C: -O0 C++ donor(s) for func_0000F81C (edg -O0 has no dead closing-brace branch)
+BOOTUP_F81C_DONOR := build/src/bootup_uso/bootup_uso_ncc_F81C.cpp.o
+$(BOOTUP_F81C_DONOR): OPT_FLAGS := -O0
+build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: REPLACE_FUNC_BODY += func_0000F81C=$(BOOTUP_F81C_DONOR)
+build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: $(BOOTUP_F81C_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x138
 build/src/bootup_uso/bootup_uso_o0_FBCC.c.o: TRUNCATE_TEXT := 0x5C
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o: TRUNCATE_TEXT := 0x4C8
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: OPT_FLAGS := -O0
