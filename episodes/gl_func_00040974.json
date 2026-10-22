@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00040974",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:13:17.024846+00:00",
+  "end_time": "2026-10-22T16:13:17.024846+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:13:17.024846+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, Rec operator=, triple-loop matrix multiply, dead named locals for the frame. list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 206,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00040974 (0x338 / 206 words): lock the\n * owner, blend its 0xDC block from its matrix, then for every child with flag 8:\n * publish the owner, back-link, and either copy/blend the child's record\n * (flag 0x20000, implicit Rec::operator= over by-value V3 copies) or rebuild\n * its matrix from the owner's (flag 0x200, the natural triple loop), then fire\n * virtual slot 3. Matched on the first port except the frame: two dead\n * function-scope ints and one dead block-scope int restore the edg slot layout.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" char D_00000000[];\nstruct V3 {\n    float x, y, z;\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void operator=(V3 v) { set(v); }\n};\nstruct Rec { V3 a, b, c; float w; };\nstruct Sub { void lock() { gl_func_00000000(this); } };\nstruct NodeB {\n    char pad[4]; int x04; int flags; char pad0c[8]; void *owner; int x18; char pad1c[0xC];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void tick();\n};\nstruct Node : NodeB { int x2c; float m30[16]; float m70[16]; char padb0[4]; Rec src; Rec dst; };\nstruct Link { Node *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *h) { nxt = h; }\n    Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Root { char pad[0xC]; Sub *sub; Link *head; char pad14[0x18]; int x2c; char pad30[0x40]; float m70[16]; char padb0[0x2C]; char xdc[4]; };\nextern \"C\" void gl_func_00040974(Root *r) {\n    Iter it(r->head);\n    int y0, y1; y0 = 0; y1 = 0;\n    r->sub->lock();\n    gl_func_00000000(r->xdc, r->m70);\n    for (Node *n = it.next(); n; n = it.next()) {\n        if (n->x18 & 8) {\n            if (r->x2c & 2) *(Root **)D_00000000 = r;\n            if (n->x04) n->owner = r;\n            if (n->flags & 0x20000) {\n                if (!(n->x2c & 1)) {\n                    if (r->x2c & 2) n->dst = n->src;\n                    else gl_func_00000000(r->xdc, &n->src, &n->dst);\n                }\n            } else if (n->flags & 0x200) {\n                float *src = n->m30, *w = r->m70; int e0; e0 = 0;\n                float res[16];\n                for (int i = 0; i < 4; i++)\n                    for (int j = 0; j < 4; j++) {\n                        res[i * 4 + j] = 0.0f;\n                        for (int k = 0; k < 4; k++)\n                            res[i * 4 + j] += src[i * 4 + k] * w[k * 4 + j];\n                    }\n                gl_func_00000000(res, n->m70);\n            }\n            n->tick();\n        }\n    }\n    gl_func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_40974.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00040974.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
