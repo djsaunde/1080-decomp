@@ -3148,7 +3148,7 @@ D_3734_v = 0x00000094;  /* value load at func_00000080+0x14 in func_00003734 (lu
 func_00000000_3638_v = 0x00000000;  /* void-typed init-call alias (kills dead $v0 def; flags -> v0) in func_00003638 */
 /* gl_func_00064588 kit-transfer aliases (2026-07-15 agent-h): per-site distinct
  * symbols bust the shared-&D-base-pin CSE; addresses are D_00000000-relative. */
-gl_init_0001CA10_64588 = 0x0001CA10;
+gl_init_00000000_64588 = 0x00000000;  /* blank (jal 0) prototyped float init for gl_func_00064588 */
 gl_ref_00000000_64588 = 0x00000000;
 gl_ref_000223C0_64588 = 0x000223C0;
 /* gl_func_00063884 per-site ANSI f32-alias (2026-07-17 agent-h) */
