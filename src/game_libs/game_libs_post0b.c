@@ -13846,8 +13846,20 @@ void gl_func_00044EDC(char *arg0) {
 typedef char *(*GP_00045178)();
 /* Re-decoded 2026-10-17 agent-c run 105 (75.8 -> 98.3): the old m2c tail
  * was garbled; real tail = one vertex-buffer slot + one 0x01030040 display
- * list word + two Vec3 builds passed with &D. Open: lo/hi f12/f14 swap. */
+ * list word + two Vec3 builds passed with &D. Open: lo/hi f12/f14 swap.
+ * Run 123 (agent-c, raw 27 -> 14 words): the clamp bounds are LITERALS
+ * (-32700.0f / 32700.0f / 32700.0f at bootup.uso RoData +0x1B60/+0x1B64/
+ * +0x1B68; an exact needs a donor with gl_func_00045178_rodata = 0x1B60):
+ * as constant candidates they colour lo f12 / hi f14 like the target. The
+ * three &D call args are distinct zero aliases (one symbol is CSE'd into s0
+ * once cD is gone; cD itself was a dead local = one frame word too many).
+ * The first slot's `i = n++` gives the target's list v0 / index v1.
+ * Residual: the second slot keeps the index in a3 and the packet pointer in
+ * v1 (target v1 / a3, pointer spilled at sp+36, ours 40); `++`, block-scoped
+ * `_g` (gbi gDma1p shape, 0x01030040 = F3DEX gSPMatrix(.., 3)), holder
+ * reuse and a 576-variant spelling grid all leave it. */
 extern void gl_func_00000000_45178v();
+extern char D_45178_c1, D_45178_c2, D_45178_c3;
 void gl_func_00045178(char *arg0) {
     char *t;
     Vec3 a;
@@ -13858,18 +13870,16 @@ void gl_func_00045178(char *arg0) {
     float lo;
     char *m;
     float hi, v, r;
-    char *cD;
     int *g;
 
     {
-    cD = (char *)&D_00000000;
-    lo = *(f32 *)(cD + 0x1B60);
+    lo = -32700.0f;
     v = *(f32 *)(arg0 + 0x90);
     if (v < lo) {
-        hi = *(f32 *)(cD + 0x1B64);
+        hi = 32700.0f;
         r = lo;
     } else {
-        hi = *(f32 *)(cD + 0x1B68);
+        hi = 32700.0f;
         if (hi < v) {
             r = hi;
         } else {
@@ -13898,14 +13908,12 @@ void gl_func_00045178(char *arg0) {
     *(f32 *)(arg0 + 0x98) = r;
     p = *(char **)(*(char **)(arg0 + 0x254) + 0x158);
     {
-        i = FW(FW(p, 0x3C), 4);
-        FW(FW(p, 0x3C), 4) = i + 1;
+        i = FW(FW(p, 0x3C), 4)++;
         m = (char *)FW(FW(p, 0x3C), 0) + (i << 6);
     }
     gl_func_00000000_45178v((char *)&D_00000000 + 0x60, m);
     {
-        i = FW(FW(p, 0xC), 4);
-        FW(FW(p, 0xC), 4) = i + 1;
+        i = FW(FW(p, 0xC), 4); FW(FW(p, 0xC), 4) = i + 1;
         g = (int *)((char *)FW(FW(p, 0xC), 0) + i * 8);
     }
     g[0] = 0x01030040;
@@ -13919,15 +13927,15 @@ void gl_func_00045178(char *arg0) {
         b.x = q[1];
         b.y = q[5];
         b.z = q[9];
-        gl_func_00000000(&D_00000000, &a, &b);
-        gl_func_00000000(&D_00000000, &a, &b);
+        gl_func_00000000(&D_45178_c1, &a, &b);
+        gl_func_00000000(&D_45178_c2, &a, &b);
         a.y = 0.0f;
         a.z = 0.0f;
         b.x = 0.0f;
         b.y = 0.0f;
         a.x = 1.0f;
         b.z = -1.0f;
-        gl_func_00000000(&D_00000000, &a, &b);
+        gl_func_00000000(&D_45178_c3, &a, &b);
     }
 }
 #else
