@@ -770,7 +770,6 @@ int gl_func_0001D870(int code, Spec12_1D870 spec) {
     return r;
 }
 
-#ifdef NON_MATCHING
 /* Double F3D/GBI command builder (sibling of the gl_func_0001D870 family).
  * Writes two 8-byte commands (4 words) to the $a0 DList buffer, indexing the
  * 0x158-stride record table at &D_00000000 by the 5th (stack) arg, reading the
@@ -817,11 +816,12 @@ int idx;
  * 8-byte commands (4 words) to the $a0 buffer, indexing the 0x158-stride record
  * table at &D_00000000 by the 5th (stack) arg, reading segment-offset fields
  * +0x38/+0x3C and KSEG0-biasing, returns buf+16. Same cap as 0001D944: D_ ref
- * -> objdiff reloc-depressed + IDO dead arg-home-stores (sw a1/a2 to home). */
+ * -> objdiff reloc-depressed + IDO dead arg-home-stores (sw a1/a2 to home).
+ * 2026-10-22 EXACT with 0001D944's u16 a1 + `a1++; a1--;`. */
 typedef struct { unsigned int w0, w1; } G1D9E0;
 int game_libs_func_0001D9E0(gfx, a1, a2, a3, idx)
 G1D9E0 *gfx;
-int a1;
+unsigned short a1;
 unsigned short a2;
 int a3;
 int idx;
@@ -829,13 +829,15 @@ int idx;
 #define cmd ((((a3 >> 4) & 0xFF) << 16) | 0x15000000)
     char *rec;
     { G1D9E0 *_g = gfx++; _g->w0 = cmd | (a1 & 0xFFFF); rec = (char *)&D_00000000 + idx * 0x158; _g->w1 = *(int *)(rec + 0x38) + (a2 << 1) + 0x80000000; }
-    { G1D9E0 *_g = gfx++; _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF); _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000; }
+    {
+        G1D9E0 *_g = gfx++;
+        a1++; a1--;
+        _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF);
+        _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000;
+    }
     return (int)gfx;
 #undef cmd
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D9E0);
-#endif
 
 // gl_func_0001DA7C — STRUCTURAL PASS (0x10C / 67 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
