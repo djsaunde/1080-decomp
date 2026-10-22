@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0003E1B0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:49:04.499124+00:00",
+  "end_time": "2026-10-22T15:49:04.499124+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:49:04.499124+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, inline first() for the entry call, V3 operator=. list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 34,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0003E1B0 (0x88 / 34 words): twin of\n * game_libs_func_0003DDC0 reading the child's +0xA0 vector. The inline\n * first() { return next(); } gives the entry call its own return temp.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nstruct V3 { float x, y, z; void set(const V3 &v) { x = v.x; y = v.y; z = v.z; } V3 &operator=(const V3 &v) { set(v); return *this; } };\nstruct Node { char pad[0xA0]; V3 pos; };\nstruct Link { Node *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    Node *first() { return next(); }\n    Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    Node *get() { return cur->obj; }\n};\nstruct Owner { char pad[0x10]; Link *head; };\nextern \"C\" int gl_func_0003E1B0(Owner *o, Node *target, V3 *out) {\n    Iter it(o->head);\n    for (Node *n = it.first(); n; n = it.next()) {\n        if (n == target) {\n            *out = n->pos;\n            return 1;\n        }\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3E1B0.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003E1B0.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

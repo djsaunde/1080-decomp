@@ -492,7 +492,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 110: 3BE1C NM re-decode: +0x20 -> 0x2e60c.
 # agent-c run 110: 3B9C0 NM re-decode: +0x20 -> 0x2e62c.
 # agent-c run 110: 3B2EC NM re-decode -> 0x2e66c.
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e7f0 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e7e8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1379,6 +1379,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3DDC0_DONOR := build/src/game_libs/game_libs_ncc_3DDC0.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0003DDC0=$(GAMELIBS_3DDC0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DDC0_DONOR)
+# 3E1B0 = find a child in the owner list, copy its +0xA0 position out (first() wrapper); NCC donor.
+GAMELIBS_3E1B0_DONOR := build/src/game_libs/game_libs_ncc_3E1B0.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003E1B0=$(GAMELIBS_3E1B0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3E1B0_DONOR)
 # 5062C is still NON_MATCHING: its closest source is C++ (an NCC .cpp that is
 # instruction-identical except one 4-byte edg stack slot). Only the NM
 # comparison object receives it; the ROM keeps INCLUDE_ASM. The splice grows

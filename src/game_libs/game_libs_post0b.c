@@ -8820,47 +8820,10 @@ void *gl_func_0003E0F0(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E0F0);
 #endif
 
-#ifdef NON_MATCHING
-/* gl_func_0003E1B0 — linked-list search-and-fetch-vec3 (34 words). REVERSE-MERGE
- * of the old gl_func_0003E1B4 (2026-07-08, agent-e): the predecessor 3E0F0's
- * "trailing boundary word" `lw t6,0x10(a0)` at 0x3E1B0 is this function's real
- * FIRST instruction (IDO schedules the load above the addiu sp) — real entry
- * 0x3E1B0, head comes from *(a0+0x10), no caller-set-$t6 convention (that cap
- * RETRACTED; 3E0F0.s trimmed to 0xC0, merged .s here is 0x88/34 words).
- * Walks a {elem, next} node list via a 2-slot stack iterator (it[0]=cur,
- * it[1]=next stored BEFORE the null test = the beqz-delay-slot sw); on
- * node==a1 copies vec3 from node+0xA0 to a2 and returns 1, else 0.
- * RISE 61.7% -> 21/34 words length-exact. RESIDUAL (web-split cap): target
- * splits the ternary-phi elem web (v0, incl. both return consts) from a `node`
- * copy web (v1, `move v1,v0` in the beqz AND bnez delay slots) and demotes the
- * cursor reload to $t0; every C spelling coalesces them (10 variants: two-var
- * pre/post-branch copies, embedded while-assign, dead elem=0 kill, mid-arm
- * ret-share, continue-form, reload-CSE). `-Wo,-zcopy:0` reproduces the moves
- * exactly (mechanism = uopt copyprop) but is per-file and still leaves the
- * cursor v0-vs-t0 5-word diff, so no flag-split either. Real redefinition
- * between copy and uses DOES materialize the move (probe G) but forces
- * advance-before-compare emission ordering that diverges from the target. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3E1B0.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
 int gl_func_0003E1B0(char *a0, int *a1, float *a2) {
-    int *it[2];
-    int *node;
-
-    it[1] = *(int **)(a0 + 0x10);
-    it[0] = it[1];
-    node = (it[0] != 0) ? (it[1] = (int *)it[0][1], (int *)it[0][0]) : 0;
-    while (node != 0) {
-        if (node == a1) {
-            a2[0] = *(float *)((char *)node + 0xA0);
-            a2[1] = *(float *)((char *)node + 0xA4);
-            a2[2] = *(float *)((char *)node + 0xA8);
-            return 1;
-        }
-        node = ((it[0] = it[1]) != 0) ? (it[1] = (int *)it[0][1], (int *)it[0][0]) : 0;
-    }
-    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E1B0);
-#endif
 
 /* gl_func_0003E238: 30-insn (0x78) optional-allocator + init constructor.
  * NATURAL CEILING: 88.63% NM. Cap: target uses base-pointer trick
