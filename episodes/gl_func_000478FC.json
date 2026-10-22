@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000478FC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:02:49.163139+00:00",
+  "end_time": "2026-10-22T16:02:49.163139+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:02:49.163139+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, Flags sub-object reference. list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 110,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000478FC (0x1B8 / 110 words): for every\n * child whose mask matches, mark it (flag 2), remember the 0x80 one, rebuild\n * its offset from the anchor when flag 0x40 is clear (count it, callee, dirty\n * = 1), then OR the dirty state into the owner and rescale when set; clear\n * flag 2 otherwise. The flag word is a Flags sub-object reached through a\n * body-scope reference (the target's addiu v0,s0,196 in both arms); the three\n * owner resets are written in the reverse of their store order.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nstruct V3 { float x, y, z; };\nstruct Flags { int v;\n    void set(int m) { v |= m; }\n    void clr(int m) { v &= ~m; } };\nstruct Obj { char pad[0xA0]; V3 pos; char padac[0x18]; Flags fl; char padc8[8]; int mask; char padd4[0xC]; int dirty; V3 d; char padf0[0xC]; V3 s; char pad108[0x1C]; V3 scale; };\nstruct Link { Obj *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *h) { nxt = h; }\n    Obj *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Own { char pad[0x18C]; Link *head; char pad190[4]; Obj *sel; char pad198[0xAC]; int any; int cnt; };\nextern \"C\" void gl_func_000478FC(Own *ow, V3 *p, int mask, float k, int force) {\n    Iter it(ow->head);\n    ow->any = 0;\n    ow->cnt = 0;\n    ow->sel = 0;\n    for (Obj *o = it.next(); o; o = it.next()) {\n        Flags &f = o->fl;\n        if (o->mask & mask) {\n            if (o->fl.v & 0x80) ow->sel = o;\n            f.set(2);\n            if (!(o->fl.v & 0x40)) {\n                ow->cnt++;\n                o->d.x = o->pos.x - p->x;\n                o->d.y = o->pos.y - p->y;\n                o->d.z = o->pos.z - p->z;\n                gl_func_00000000(&o->d);\n                o->dirty = 1;\n            }\n            if (ow->any = ow->any | o->dirty | force) {\n                o->s.x = o->scale.x * k;\n                o->s.y = o->scale.y * k;\n                o->s.z = o->scale.z * k;\n            }\n        } else f.clr(2);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_478FC.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000478FC.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
