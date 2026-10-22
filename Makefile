@@ -164,6 +164,10 @@ build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc
 BOOTUP_7328_DONOR := build/src/bootup_uso/bootup_uso_ncc_7328.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00007328=$(BOOTUP_7328_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7328_DONOR)
+# A9C = mode letter -> flag bit: switch assigning one result variable (compare chain, 'n'/'s' result hoisted into v1); NCC donor.
+BOOTUP_A9C_DONOR := build/src/bootup_uso/bootup_uso_ncc_A9C.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00000A9C=$(BOOTUP_A9C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_A9C_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o: TRUNCATE_TEXT := 0x334
 build/src/bootup_uso/bootup_uso_F434.c.o build/non_matching/src/bootup_uso/bootup_uso_F434.c.o: OPT_FLAGS := -O0

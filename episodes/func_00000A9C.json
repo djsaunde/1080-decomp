@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00000A9C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:02:21.490600+00:00",
+  "end_time": "2026-10-22T21:02:21.490600+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:02:21.490600+00:00",
+      "assistant_text": "Raw diff showed the target returning 8 through v1 (hoisted 'addiu v1,zero,8' in the 'n' compare's delay slot, 'or v0,v1' at the shared return) where the NM goto chain returned constants. bootup_uso is C++: a switch assigning one result variable, compiled with IDO 7.1 NCC (compare chain, no jumptable), is 30/30.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 30,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00000A9C: mode letter -> flag bit.\n * A switch whose cases assign one result variable: edg lowers it to a compare\n * chain (NCC never emits jumptables) and the 'n'/'s' arm's `r = 8` is hoisted\n * into the 'n' compare's delay slot (v1), returned through `or v0,v1`.\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-c run 121). */\nextern \"C\" int func_00000A9C(int a0, int a1) {\n    int r;\n    switch (a1) {\n    case 0: r = 1; break;\n    case 'e': r = 4; break;\n    case 'd': r = 0x10; break;\n    case 'm': r = 0x40; break;\n    case 't': r = 0x20; break;\n    case 'n': case 's': r = 8; break;\n    default: r = 2;\n    }\n    return r;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_A9C.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00000A9C.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
