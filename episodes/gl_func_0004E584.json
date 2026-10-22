@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004E584",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T19:52:09.981349+00:00",
+  "end_time": "2026-10-22T19:52:09.981349+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T19:52:09.981349+00:00",
+      "assistant_text": "C++ donor: the function is a global object's static initializer; __sti__ symbol renamed.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 33,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0004E584 (0x84 / 33 words): it is the\n * static-initializer (__sti__) of a global object -- an 8-byte member zeroed by its\n * ctor at +0 and a wrapped 4-byte member at +0x28, each built through the cfront\n * this==0 allocation protocol that edg emits for every constructor. The object\n * declaration's `;` sits on its own line: as1 ties the sti code to that line, which\n * schedules the protocol's `or v1,a1` above `sw ra` like the target. The Makefile\n * renames the __sti__ symbol to gl_func_0004E584 (a symbol name only). Spliced into\n * game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void *gl_func_00000000(...);\ninline void *operator new(unsigned n) { return gl_func_00000000(n); }\nstruct M8 { int a, b; M8() { b = 0; a = 0; } };\nstruct M4 { int a; M4() { a = 0; } };\nstruct W4 { M4 m; W4() {} };\nstruct G { M8 m8; char pad[0x28 - 8]; W4 w; G() {} };\nextern \"C\" G D_4E584_arr;\nG D_4E584_arr\n;\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4E584.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004E584.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

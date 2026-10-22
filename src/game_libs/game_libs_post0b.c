@@ -19935,38 +19935,10 @@ void gl_func_0004E524(Quad4 *dst) {
  * reachable from C only with a statement whose line number is LOWER than the
  * `{` (a #line or an #include'd body) -- NOT a natural layout; kept NM
  * (see docs/IDO_CODEGEN.md #prologue-sw-ra-carries-brace-line-4e584). */
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_4E584_arr[];   /* head base: lui a1; addiu a1,a1,%lo (array-extern form of D_00000000) */
-
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4E584.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 87.88 (prologue order). */
 void gl_func_0004E584(void) {
-    int *base = D_4E584_arr;
-    int *p, *q, *r;
-    p = base;
-    if ((unsigned)base == 0) {
-        p = (int*)gl_func_00000000(8);
-        base = D_4E584_arr;
-        if (p == 0) goto s1;
-    }
-    p[1] = 0;
-    p[0] = 0;
-s1:
-    q = base + 10;
-    if (q == 0) {
-        q = (int*)gl_func_00000000(4);
-        if (q == 0) goto end;
-    }
-    r = q;
-    if (r == 0) {
-        r = (int*)gl_func_00000000(4);
-        if (r == 0) goto end;
-    }
-    *r = 0;
-end:;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E584);
-#endif
 
 /* gl_func_0004E600: 74-insn / 0x128 chained-alloc constructor.
  *

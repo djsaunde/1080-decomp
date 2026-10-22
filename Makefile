@@ -528,7 +528,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 110: 3BE1C NM re-decode: +0x20 -> 0x2e60c.
 # agent-c run 110: 3B9C0 NM re-decode: +0x20 -> 0x2e62c.
 # agent-c run 110: 3B2EC NM re-decode -> 0x2e66c.
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e848 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e844 gl_func_000551E0=0x7c gl_func_00055B10=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1410,6 +1410,14 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_62A2C_DONOR := build/src/game_libs/game_libs_ncc_62A2C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_62A2C_DONOR)
+# 4E584 = static initializer (__sti__) of a global object (two protocol member ctors); NCC donor, __sti__ symbol renamed (a symbol name only; no bytes change).
+GAMELIBS_4E584_DONOR := build/src/game_libs/game_libs_ncc_4E584.cpp.o
+$(GAMELIBS_4E584_DONOR): src/game_libs/game_libs_ncc_4E584.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=gl_func_0004E584 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0004E584=$(GAMELIBS_4E584_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E584_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
