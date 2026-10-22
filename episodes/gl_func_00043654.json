@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00043654",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:52:43.796345+00:00",
+  "end_time": "2026-10-22T17:52:43.796345+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:52:43.796345+00:00",
+      "assistant_text": "C++ donor: cfe NM body compiled with NCC plus a dead if(!sp34){} that moves the else-branch append pointer to a1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 91,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00043654 (0x16C / 91 words): the cfe NM body\n * compiled as C++, plus a dead `if (!sp34) {}` between the two stores of the\n * else-branch display-list append (permuter find, agent-c run 120): it moves the\n * append pointer from v1 to the target's a1. Spliced into game_libs_post0b.c.o via\n * REPLACE_FUNC_BODY. */\ntypedef int s32; typedef short s16;\n#define FW(p, o) (*(int *)((char *)(p) + (o)))\nextern \"C\" {\nextern char D_00000000;\nint gl_func_00000000(...);\nvoid gl_func_00043654(char *arg0, char *arg1) {\n    char *sp34;\n    char *var_a3;\n    char *temp_v0;\n    char *temp_a0;\n    char *temp_a0_2;\n    char *temp_a1;\n    char *temp_a2;\n    s32 idx;\n    s32 idx2;\n\n    FW(arg0, 0x64) = (int) *(char **)((char *)&D_00000000 + 0x214);\n    var_a3 = (char *) FW(arg0, 0x64);\n    *(s16 *)(arg0 + 0x88) = FW((char *)FW((char *)FW(arg0, 0x64), 0xC), 0x4);\n    if (FW(arg0, 0x48) == 0) {\n        gl_func_00000000(FW(arg0, 0x64), arg1);\n        gl_func_00000000(FW(arg0, 0x64), arg1);\n        gl_func_00000000(FW(arg0, 0x64), arg1);\n        gl_func_00000000(FW(arg0, 0x64), arg1);\n        var_a3 = (char *) FW(arg0, 0x64);\n    }\n    if (FW(arg0, 0x38) & 0x400000) {\n        gl_func_00000000((char *)&D_00000000, var_a3, arg0);\n        if (FW(arg0, 0x38) & 0x100000) {\n            FW(arg0, 0x68) = gl_func_00000000(0, (char *)&D_00000000 + 0x1FD1C, 0xA, 0, 5, 0, 0);\n            gl_func_00000000(FW(arg0, 0x68)); if (1) {}\n            temp_v0 = (char *) FW(arg0, 0x68);\n            sp34 = (char *) FW(arg0, 0x64);\n            temp_v0 = (char *) gl_func_00000000(FW(temp_v0, 0x60));\n            temp_a0 = (char *) FW(sp34, 0xC);\n            idx = FW(temp_a0, 0x4); if (1) {}\n            FW(temp_a0, 0x4) = idx + 1;\n            temp_a2 = (char *) FW((char *)FW(sp34, 0xC), 0x0) + (idx * 8); if (1) {}\n            FW(temp_a2, 0x0) = 0x06000000;\n            FW(temp_a2, 0x4) = (int) temp_v0;\n        }\n        gl_func_00000000(FW(arg0, 0x64));\n    } else {\n        temp_a0_2 = (char *) FW(var_a3, 0xC); if (1) {}\n        idx2 = FW(temp_a0_2, 0x4);\n        FW(temp_a0_2, 0x4) = idx2 + 1;\n        temp_a1 = (char *) FW((char *)FW(var_a3, 0xC), 0x0) + (idx2 * 8);\n        FW(temp_a1, 0x0) = 0xBB040000;\n        if (!sp34) {}\n        FW(temp_a1, 0x4) = -1;\n    }\n    gl_func_00000000(FW(arg0, 0x64));\n}\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_43654.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00043654.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

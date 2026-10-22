@@ -1410,6 +1410,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_62A2C_DONOR := build/src/game_libs/game_libs_ncc_62A2C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_62A2C_DONOR)
+# 43654 = display-list setup with flag-gated subobject; cfe NM body as C++ + a dead if(!sp34){} in the else append (permuter); NCC donor.
+GAMELIBS_43654_DONOR := build/src/game_libs/game_libs_ncc_43654.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00043654=$(GAMELIBS_43654_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43654_DONOR)
 # 38728 = child-list update with matrix rebuild + owner attach + virtual slot 3 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_38728_DONOR := build/src/game_libs/game_libs_ncc_38728.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038728=$(GAMELIBS_38728_DONOR)

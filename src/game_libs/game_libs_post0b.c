@@ -12755,61 +12755,10 @@ int gl_func_000435FC(int *a0, int a1) {
 // decl-order swap, def-order swap, var_a3-reuse (proves uopt one-color-per-
 // variable: whole var stays a3, slot moves 0x30). Same cap class as 42F4C's
 // temp-ring residual. Caps: object/g struct, cb identities untyped.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00043654)();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_43654.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 99.84 (the else-branch append pointer coloured v1, target a1). */
 void gl_func_00043654(char *arg0, char *arg1) {
-    char *sp34;
-    char *var_a3;
-    char *temp_v0;
-    char *temp_a0;
-    char *temp_a0_2;
-    char *temp_a1;
-    char *temp_a2;
-    s32 idx;
-    s32 idx2;
-
-    FW(arg0, 0x64) = (int) *(char **)((char *)&D_00000000 + 0x214);
-    var_a3 = (char *) FW(arg0, 0x64);
-    *(s16 *)(arg0 + 0x88) = FW((char *)FW((char *)FW(arg0, 0x64), 0xC), 0x4);
-    if (FW(arg0, 0x48) == 0) {
-        gl_func_00034458(FW(arg0, 0x64), arg1);
-        gl_func_00034458(FW(arg0, 0x64), arg1);
-        gl_func_00034458(FW(arg0, 0x64), arg1);
-        gl_func_00034458(FW(arg0, 0x64), arg1);
-        var_a3 = (char *) FW(arg0, 0x64);
-    }
-    if (FW(arg0, 0x38) & 0x400000) {
-        gl_func_00034458((char *)&D_00000000, var_a3, arg0);
-        if (FW(arg0, 0x38) & 0x100000) {
-            FW(arg0, 0x68) = gl_func_00034458(0, (char *)&D_00000000 + 0x1FD1C, 0xA, 0, 5, 0, 0);
-            gl_func_00034458(FW(arg0, 0x68)); if (1) {}
-            temp_v0 = (char *) FW(arg0, 0x68);
-            sp34 = (char *) FW(arg0, 0x64);
-            temp_v0 = (char *) gl_func_00034458(FW(temp_v0, 0x60));
-            temp_a0 = (char *) FW(sp34, 0xC);
-            idx = FW(temp_a0, 0x4); if (1) {}
-            FW(temp_a0, 0x4) = idx + 1;
-            temp_a2 = (char *) FW((char *)FW(sp34, 0xC), 0x0) + (idx * 8); if (1) {}
-            FW(temp_a2, 0x0) = 0x06000000;
-            FW(temp_a2, 0x4) = (int) temp_v0;
-        }
-        gl_func_00034458(FW(arg0, 0x64));
-    } else {
-        temp_a0_2 = (char *) FW(var_a3, 0xC); if (1) {}
-        idx2 = FW(temp_a0_2, 0x4);
-        FW(temp_a0_2, 0x4) = idx2 + 1;
-        temp_a1 = (char *) FW((char *)FW(var_a3, 0xC), 0x0) + (idx2 * 8);
-        FW(temp_a1, 0x0) = 0xBB040000;
-        FW(temp_a1, 0x4) = -1;
-    }
-    gl_func_00034458(FW(arg0, 0x64));
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00043654);
-#endif
 
 // gl_func_000437C0 (0x428 / 267 words): per-object update tick. Bails unless
 // self->0x14; validates self->0x50 against -1 and the 0x254 global's bounds
