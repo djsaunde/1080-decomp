@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0001D200",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:27:21.462249+00:00",
+  "end_time": "2026-10-22T21:27:21.462249+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:27:21.462249+00:00",
+      "assistant_text": "Exact. dl param reused as the gfx cursor (one fewer frame word); rec spelled as an expression so its cross-call spill is a temp at sp+36; (x + 0xF) & ~0xF reproduces the target's dead li at,-16; the 0x05 packet word in SHL form (0x05000000 | (b & 0xFF) << 16 | (h & 0xFFFF)); the two addu operand orders need one-level typed member reads (rec->b1B, e->h10), per the cfe commutative-operand rank (kit #99); baked jal via gl_ref_00031FB0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 120,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_0001D200 \u2014 STRUCTURAL PASS (0x2C0 / 176 words, no episode).\n// Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle\n// (named fn + 1 trailing helper) \u2014 deferred USO re-split. Same glyph-\n// table FAMILY as gl_func_0001CFDC / gl_func_0001D0AC, but the larger\n// STRING-draw variant: it loops over a packed glyph spec, accumulating\n// an advance, rather than drawing a single glyph.\n//\n//   int gl_func_0001D200(args\u2026, Spec spec) {            // spec by value\n//     E *base = &D_0 + idx(...);                         // glyph table\n//     E *e = base + 0x50;\n//     int packed = e->0x5C;                              // word at +0x5C\n//     short flags = e->0x60;                             // halfword +0x60\n//     int lo = packed & 7;                               // 3-bit field\n//     int hi = (packed >> 4) & 0xFFF;                     // 12-bit field\n//     ... pack glyph metrics into sp+0x38/0x3A/0x3C ...\n//     v0 = jal 0x31FB0(0x3E0, \u2026, 0x1A0, w, h, spec.0x2); // blit row\n//     if (cond) { ... second pass ... }\n//     // tail: lui/addiu builds a &D_xxxx table pointer for caller\n//     return v0;                                          // advance px\n//   }\n//\n// Struct-typing reference: shares gl_func_0001CFDC's glyph layout \u2014\n//   &D_0 table, entry+0x50, fixed blit 0x0C00C7EC (\u22480x31FB0), 0x3E0\n//   blit mode, spec by-value halfword struct. NEW here vs the single-\n//   glyph helpers: packed metric word at e->0x5C decoded via\n//   mask-0x7 / shift-4 mask-0xFFF (sub-fields), halfword e->0x60, and\n//   stack-built metric block at sp+0x38..0x3C passed by ref to the\n//   blit. This is the multi-glyph / string-row entry of the family.\n// Caps (DEFERRED): single jr $ra (older \"2-jr bundle\" note is STALE;\n//   .s is 0x1E0/120 words, one function). Multi-glyph/string-row\n//   variant of the gl_func_0001CFDC family. Real-C structural body\n//   below per the analysis; byte-match deferred \u2014 fixed blit target\n//   0x31FB0 needs its symbol, the e->0x5C packed-bitfield decode\n//   (&7 / >>4 &0xFFF) and the trailing F3D command-pair emission\n//   (0x08000000/0x0C800000/0x05000000/0x0E200000/0x80000000 opcode\n//   highs) are IDO-schedule-sensitive. Name pre-checked: no extern\n//   reuse (collision-safe). gl_func_00000000 = canonical\n//   never-defined USO placeholder for the 0x31FB0 blit routine.\n//   Next pass: resolve 0x31FB0, pin the exact attr/idx entry math,\n//   then grind the bitfield + DL-emit schedule.\n/* EXACT (agent-c run 122): rec as an unnamed expression (its spill becomes a temp at sp+36), & ~0xF (the target's dead li at,-16), SHL-style 0x05 packet words, and the two addu operand orders come from typed one-level member reads (kit #99 cfe operand rank) on rec->0x1B and e->0x10. */\nextern int gl_func_00000000();\nextern int D_00000000;\nextern int gl_func_00031FB0();\n/* 2026-06-04 RECONSTRUCT via Ghidra 20.8% -> 52.5%: was a wrong-signature stub\n * (2-arg, wrong packing). Real fn is (a0 dl-ptr, a1 spec, a2 idx, a3 sub):\n * locate record &D[a2*0x158]+attr*100+a3*0x14, call gl_func_00031FB0 to reserve\n * DL space (twice if rec->0x62), then emit 8 packed GBI words (2 quads at\n * sV2+0x3E0 / +0x580) and return p+8. Residual is $t-reg renumber +\n * save-spill scheduling (same 139 insns, same frame).\n * 2026-06-27 logic fixes: p[0]/p[4] mask (s2+offs)&0xFFFF; u4=(a1<<1)&0xFFFF\n * (shift-then-mask, not &0x7FFF first); matches asm GBI word packing. */\n/* 2026-10-20 (agent-c run 114): packets rewritten in the gbi-macro shape of\n * the exact sibling game_libs_func_0001D3E0 (`{ G *_g = gfx++; w0; w1; }`),\n * with the half-width terms as s16 locals. */\ntypedef struct { unsigned int w0, w1; } G1D200;\nunsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3) {\n    char *e;\n    short w2;\n    short wr;\n#define rec ((char *)&D_00000000 + a2 * 0x158)\n    e = rec + ((struct { char p[0x1B]; unsigned char b; } *)rec)->b * 100 + a3 * 0x14 + 0x50;\n    w2 = (*(unsigned int *)(e + 0xC) & 7) * 2;\n    wr = (w2 + ((struct { char p[0x10]; short h; } *)e)->h + 0xF) & ~0xF;\n    gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, (*(unsigned int *)(e + 0xC) - w2 / 2) & 0xFFFF, 0x1A0, a2);\n    if (*(short *)(e + 0x12) != 0) {\n        gfx = (G1D200 *)gl_ref_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);\n    }\n    { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x3E0) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0C800000; }\n    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x40) + 0x80000000; }\n    { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x580) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0E200000; }\n    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x44) + 0x80000000; }\n    return (unsigned int *)gfx;\n#undef rec\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0001D200.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

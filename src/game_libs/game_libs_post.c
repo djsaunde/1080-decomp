@@ -426,7 +426,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D17C);
 //   never-defined USO placeholder for the 0x31FB0 blit routine.
 //   Next pass: resolve 0x31FB0, pin the exact attr/idx entry math,
 //   then grind the bitfield + DL-emit schedule.
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122): rec as an unnamed expression (its spill becomes a temp at sp+36), & ~0xF (the target's dead li at,-16), SHL-style 0x05 packet words, and the two addu operand orders come from typed one-level member reads (kit #99 cfe operand rank) on rec->0x1B and e->0x10. */
 extern int gl_func_00000000();
 extern int D_00000000;
 extern int gl_func_00031FB0();
@@ -446,11 +446,10 @@ unsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3)
     char *e;
     short w2;
     short wr;
-    char *rec;
-    rec = (char *)&D_00000000 + a2 * 0x158;
-    e = rec + *(unsigned char *)(rec + 0x1B) * 100 + a3 * 0x14 + 0x50;
+#define rec ((char *)&D_00000000 + a2 * 0x158)
+    e = rec + ((struct { char p[0x1B]; unsigned char b; } *)rec)->b * 100 + a3 * 0x14 + 0x50;
     w2 = (*(unsigned int *)(e + 0xC) & 7) * 2;
-    wr = (w2 + *(short *)(e + 0x10) + 0xF) & ~0xF;
+    wr = (w2 + ((struct { char p[0x10]; short h; } *)e)->h + 0xF) & ~0xF;
     gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, (*(unsigned int *)(e + 0xC) - w2 / 2) & 0xFFFF, 0x1A0, a2);
     if (*(short *)(e + 0x12) != 0) {
         gfx = (G1D200 *)gl_ref_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);
@@ -460,10 +459,8 @@ unsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3)
     { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x580) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0E200000; }
     { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x44) + 0x80000000; }
     return (unsigned int *)gfx;
+#undef rec
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001D200);
-#endif
 
 /* game_libs_func_0001D3E0: display-list emitter for registry record a2 (bootup.uso
  * Data sym1255 @0x345C0 = D_00000000_345c0, stride 0x158). For each nonzero
