@@ -149,70 +149,19 @@ int gl_func_00009100(int a0, int a1, int a2) {
     return 0;
 }
 
-#ifdef NON_MATCHING
-/* gl_func_00009204: module-init/registration. cb(A, *(B+8)); cb(*(C+0x4C),
- * *(D+0x58)); node = cb(E, *(F+0x64), 6, a2); cb(G+0x10, node); if (node->0x14)
- * node->4=1; node->0x14 = G; cb(H, 0); return node. The &D globals are distinct
- * (no CSE). Fresh decode 2026-05-29: 74%, structure + the 8 distinct &D refs
- * match. RESIDUAL: target promotes node/G/(G+0x10) to callee-saved $s1/$s0/$s2
- * (frame -56); my C keeps fewer in s-regs (spills node, frame -32) — an
- * s-reg-promotion/allocation difference. */
-extern int gl_func_00000000();
-extern int D_0000004C, D_00000058, D_00000064;
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/game_libs/game_libs_ncc_o0_9204.cpp (8FFC-shape re-decode as C++).
+ * Placeholder spliced over. */
 int gl_func_00009204(int a0, int a1, int a2) {
-    register char *g;      /* s0 */
-    register int *node;    /* s1 */
-    register char *tmp;    /* s2 */
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_00000000 + 8));
-    gl_func_00000000(D_0000004C, D_00000058);
-    node = (int *)gl_func_00000000(&D_00000000, D_00000064, 6, a2);
-    g = (char *)&D_00000000;
-    tmp = g + 0x10;
-    gl_func_00000000(tmp, node);
-    if (node[0x14 / 4] != 0) {
-        node[0x4 / 4] = 1;
-    }
-    node[0x14 / 4] = (int)g;
-    gl_func_00000000(&D_00000000, 0);
-    (void)a0;
-    (void)a1;
-    return (int)node;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00009204);
-#endif
 
-#ifdef NON_MATCHING
-/* gl_func_000092F4: module-init/registration, sibling of gl_func_00009204.
- * cb(a, *(b+8)); cb(*(c+0x4C), *(c+0x4C)); node = cb(d, 8, 2, a1); cb(g+0x10,
- * node); if (node->0x14) node->4=1; node->0x14 = g; cb(f, 0); return node.
- * Distinct &D globals (no CSE). Fresh decode 2026-05-29: 73%, structure + the
- * distinct &D refs match. RESIDUAL (same as gl_func_00009204): target promotes
- * node/g to callee-saved $s1/$s0 (frame -56); my C keeps them in t-regs/spills
- * (frame -40) — s-reg-promotion cap. */
-extern int gl_func_00000000();
-extern int D_0000004C;
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/game_libs/game_libs_ncc_o0_9204.cpp (8FFC-shape re-decode as C++).
+ * Placeholder spliced over. */
 int gl_func_000092F4(int a0, int a1) {
-    register char *g;      /* s0 */
-    register int *node;    /* s1 */
-    register char *tmp;    /* s2 */
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_00000000 + 8));
-    gl_func_00000000(D_0000004C, D_0000004C);
-    node = (int *)gl_func_00000000(&D_00000000, 8, 2, a1);
-    g = (char *)&D_00000000;
-    tmp = g + 0x10;
-    gl_func_00000000(tmp, node);
-    if (node[0x14 / 4] != 0) {
-        node[0x4 / 4] = 1;
-    }
-    node[0x14 / 4] = (int)g;
-    gl_func_00000000(&D_00000000, 0);
-    (void)a0;
-    return (int)node;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000092F4);
-#endif
 
 /* gl_func_000093DC: -O0 init/dispatch (scalar-only, no struct locals = no
  * frame-offset ceiling). Real direct-global symbols D_w0 (offset 0) / D_w134

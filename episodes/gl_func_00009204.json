@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00009204",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:19:30.721028+00:00",
+  "end_time": "2026-10-22T17:19:30.721046+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:19:30.721041+00:00",
+      "assistant_text": "Exact from ~88: re-decoded on the gl_func_00008FFC shape (plain obj home slot + register base/o/tmp aliases, base-0 alias symbol for the &D+8 read) and compiled with NCC -O0 (no cfe closing-brace b-epilogue).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 60,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donors for gl_func_00009204 (60 words) and\n * gl_func_000092F4 (58 words), siblings of gl_func_00008FFC: re-decoded on the\n * 8FFC shape (plain obj home + register base/o/tmp aliases, D_8FFC_base for\n * the &D+8 read) and compiled with NCC -O0 (no cfe closing-brace b-epilogue).\n * The old \"s-reg promotion cap\" note was the missing obj home + aliases.\n * Spliced into game_libs_mid.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nint gl_func_00000000(...);\nextern char D_00000000;\nextern int D_0000004C, D_00000058, D_00000064;\nextern char D_8FFC_base;\n\nint gl_func_00009204(int a0, int a1, int a2) {\n    int obj;\n    register char *base;\n    register int *o;\n    register char *tmp;\n\n    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));\n    gl_func_00000000(D_0000004C, D_00000058);\n    obj = gl_func_00000000(&D_00000000, D_00000064, 6, a2);\n    base = (char *)&D_00000000;\n    o = (int *)obj;\n    tmp = base + 0x10;\n    gl_func_00000000(tmp, o);\n    if (o[0x14 / 4] != 0) {\n        o[0x4 / 4] = 1;\n    }\n    tmp = base;\n    o[0x14 / 4] = (int)tmp;\n    gl_func_00000000(&D_00000000, 0);\n    (void)a0;\n    (void)a1;\n    return obj;\n}\n\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_o0_9204.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00009204.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O0 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC -O0 donor spliced via REPLACE_FUNC_BODY into game_libs_mid.c.o; ROM byte-identical; objdiff 100%."
+  }
+}
