@@ -3792,6 +3792,7 @@ D_2DE24_b = 0x00000000;  /* gl_func_0002DE24 base-0 store target (sw zero,0xC(at
 D_2DE24_c = 0x00000000;  /* gl_func_0002DE24 base-0 final call arg (lui a1; lw a1,0(a1)) */
 import_80263D60_30 = 0x00000030;
 func_00002DA4_rodata = 0x000004F4;  /* func_00002DA4 12-entry jumptable (cases 1..12): bootup_uso ships it in RoData at +0x4F4 (file offset +0x4F8); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_2DA4.c) */
+func_0000E270_rodata = 0x00000998;  /* func_0000E270 f32 literal pi in bootup.uso RoData +0x998; donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E270.c) */
 func_00000000_2DA4_v = 0x00000000;  /* func_00002DA4 void-typed blank alias (kills dead $v0 defs; config value -> v0) */
 D_000073EC = 0x000073EC;  /* func_00002DA4 init arg (target lui/addiu %hi/%lo .L000073EC, baked 0x73EC) */
 D_2DA4_obj = 0x00000000;  /* func_00002DA4 base-0 created-object global (store + later reads) */

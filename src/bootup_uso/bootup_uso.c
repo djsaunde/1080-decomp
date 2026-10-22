@@ -9145,67 +9145,17 @@ void func_0000E124(char *s0) {
     }
 }
 
-#ifdef NON_MATCHING
-/* 24-insn wrapper that calls a sibling twice with computed-offset args.
- * Logic:
- *   ratio = *(f32*)((char*)&func_0000098C + 0xC) / arg1;
- *   func_00000000(arg0 + 0xCC, arg0 + 0x3B0, ratio);
- *   func_00000000(arg0 + 0xF4, arg0 + 0x3B0, ratio);
- *
- * PUZZLE RESOLVED (2026-07-10, agent-f — CONFIRMED against the USO reloc
- * table; SUPERSEDES the 2026-05-17 "splat-folded pool / re-extract" theory
- * that used to be here). The lwc1 load reads a GENUINE rodata literal, not
- * code: parsing the bootup.uso module TextReloc table shows this HI16/LO16
- * pair references symIdx=1 = the module's RoData SECTION base (used by 774
- * loads; the 16-bit immediate IS the pool offset). It has nothing to do with
- * func_0000098C — splat prints `func_0000098C + 0xC` only because it flat-
- * disassembles the module at VRAM=0 and the placeholder immediate 0x998
- * collides with text-symbol space. func_0000098C IS real code (its 0x99C word
- * carries a live R_MIPS_26 jal reloc). The actual constant, read from RoData
- * (data @ ROM 0xD9FE44) at pool offset 0x998, is **f32 π (3.1415927)**.
- *   Sibling loads (same rodata pool): func_0000D900 @0x988 = f64 0.1, @0x990 =
- *   f64 0.2; func_0000E2D0 @0x9A0 = f64 0.1.
- * NO re-extract / splat-config break-out is needed or would help — the rodata
- * is already a separate section, and `func_0000098C + 0xC` is the CORRECT way
- * to reproduce the ROM's placeholder text bytes (lui 0 / lwc1 0x998). The real
- * blocker on this trio: the fold form needs func_0000098C as `extern struct{}`,
- * which clashes because it is DEFINED in this same .c → a FILE-SPLIT is
- * required (the `*(f32*)((char*)&func_0000098C+0xC)` cast does NOT fold — it
- * materializes &sym, wrong shape), plus full FP-body reconstruction. NOT a
- * pool/symbolization blocker. See the RESOLVED block in
- * docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
- *
- * Default INCLUDE_ASM keeps ROM correct; this wrap is a structural pass. */
+/* func_0000E270: ratio wrapper. EXACT via the IDO 7.1 -O2 donor
+ * bootup_uso_o2_E270.c (REPLACE_FUNC_BODY): the constant is the f32 literal pi
+ * at bootup.uso RoData +0x998 (func_0000E270_rodata pin). The in-unit body is
+ * the same C (keeps the .text size); the splice swaps in the donor body so the
+ * .rodata reloc resolves to the RoData pool. Old "spill-slot pair swap" residue
+ * was the named `ratio` local (one frame word too many). */
 extern void aE270(void*, void*, float); /* float-proto alias; jal bakes RAW to 0 */
 void func_0000E270(char *arg0, float arg1) {
-    /* 2026-06-22: full structural reconstruction. The body below is REGISTER-
-     * EXACT against the target (all opcodes + GPR/FPR allocations match) with
-     * exactly two residuals; the wrap captures the precise C levers found:
-     *  (1) float-arg prototype on func_00000000 keeps each call passing a single
-     *      f32 (mfc1 a2,f0 + swc1 f0,N(sp) spill) — an UNprototyped call would
-     *      K&R-promote ratio to double (cvt.d.s / sdc1 / a3:a2 pair). REQUIRED.
-     *  (2) the f32 const reads from func_0000098C + 0xC (= 0x998, the splat-
-     *      folded bootup_uso FP literal pool). The TARGET folds +0xC into the
-     *      lwc1 %lo so the reloc is %hi/%lo(func_0000098C + 0xC) with lwc1
-     *      offset 12 and NO extra addiu. That fold needs func_0000098C declared
-     *      as `float[]` (then func_0000098C[3]); but the symbol is a FUNCTION in
-     *      this TU, so the C below uses `*(float*)((char*)func_0000098C + 0xC)`,
-     *      which emits one EXTRA `addiu at,at,0` (25 insns vs 24). Cosmetic-only
-     *      after reloc-bake (both resolve to 0x998), but it is a real byte diff.
-     *  RESIDUAL #2 (the true blocker): even with the [3]-fold form, the f0/a1
-     *  spill SLOTS are swapped vs target — target spills the f32 temp at the
-     *  LOWER slot (0x18) and the a1 ptr at 0x1C; every C ordering tried (decl
-     *  permute, named-locals, -g/-g3/-O1) colors the int spill lower (0x18) and
-     *  the float higher (0x1C). Same-frame (0x20) spill-slot-pair swap =
-     *  documented IDO spill-order residual (permuter-class). INCLUDE_ASM keeps
-     *  the ROM correct; no episode. */
-    float ratio = D_bu_ro_pool[0x998 / 4] / arg1;
-    aE270(arg0 + 0xCC, arg0 + 0x3B0, ratio);
-    aE270(arg0 + 0xF4, arg0 + 0x3B0, ratio);
+    aE270(arg0 + 0xCC, arg0 + 0x3B0, 3.14159265f / arg1);
+    aE270(arg0 + 0xF4, arg0 + 0x3B0, 3.14159265f / arg1);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E270);
-#endif
 
 /* func_0000E2D0 - verified structural decode (0x20C, 131 insns,
  * FP vector reflect/project math helper).

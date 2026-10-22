@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000E270",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T22:24:00.256730+00:00",
+  "end_time": "2026-10-22T22:24:00.256730+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T22:24:00.256730+00:00",
+      "assistant_text": "Exact via IDO 7.1 -O2 donor. The RoData load is the f32 literal pi (bootup.uso RoData +0x998), pinned via func_0000E270_rodata; the quotient is written inline twice (no named ratio local), which fixes the frame (0x20) and spill slots.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 24,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for func_0000E270 -- ratio wrapper (0x60 / 24 words).\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the 2DA4 /\n * game_libs 675A4 recipe): the constant is the f32 LITERAL pi, which bootup.uso\n * ships in its RoData at +0x998 (ROM 0xD9FE44 + 0x998). The donor-local .rodata\n * reloc is renamed func_0000E270_rodata and pinned to 0x998.\n *\n * As a literal the quotient is an expression, not a named local: `ratio` as a\n * named f32 cost a frame word (0x28 vs 0x20) and swapped the f0/a1 spill slots\n * (the old \"spill-slot pair swap\" residue). Written twice inline, IDO CSEs the\n * division into one temp whose spill lands at sp+0x18 under the a1 home. */\n#include \"common.h\"\n\nextern void aE270(void *, void *, float); /* float-proto blank import */\n\nvoid func_0000E270(char *arg0, float arg1) {\n    aE270(arg0 + 0xCC, arg0 + 0x3B0, 3.14159265f / arg1);\n    aE270(arg0 + 0xF4, arg0 + 0x3B0, 3.14159265f / arg1);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_o2_E270.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000E270.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
