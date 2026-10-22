@@ -4095,3 +4095,5 @@ gl_ref_0003773C = 0x0003773C;  /* gl_func_000231B4: baked USO jal (0x0C00DDCF) *
 D_74e8_g = 0x00000008;  /* func_000074E8: = func_00000008 (expected reloc base; read at +0x2C) */
 D_74e8_h = 0x000000F0;  /* func_000074E8: = func_000000F0 (expected reloc base; read at +0x44) */
 game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor: its 1/6 float literal = game_uso RoData item 0 (lui 0 / lwc1 0); renamed donor-local .rodata reloc, content re-emitted by the host placeholder */
+D_43D8_fmin = 0x00000000;  /* game_uso_func_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
+D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */

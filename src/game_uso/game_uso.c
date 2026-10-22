@@ -2679,64 +2679,20 @@ int *game_uso_func_000041C0(int a0) {
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000041C0);
 #endif
 
-/* game_uso_func_000043D8: 60-insn cell-walk + FPU nearest-select. Walk the
- * {value@0, next@4} cell list from a0->0x10; for each value n != a2 compute
- * d = a1->0x8 - n->0x38 and track the nearest-below (largest d<0 -> v1/fmax)
- * and nearest-above (smallest d>=0 -> v0/fmin), seeded from D[0x94]/D[0x98].
- * Return v0 ? v0 : v1.
- * NON_MATCHING cap: no-call same-base cell-walk = reload-CSE class (the dual
- * sp-slot cursor + branch-likely select aren't C-reproducible) AND the f0/f2
- * seeds load from the USO FP literal pool (mis-attributed by splat). Real C
- * body below (un-bailed from doc-comment per docs/IDO_CODEGEN); INCLUDE_ASM is
- * the byte-exact build path.
- * 2026-05-28 regalloc detail: with NO calls in the body, mine promotes `a1` to
- * $s0 (tiny frame -8), but target keeps a1 in caller-saved $a3 with a bigger
- * frame (-0x18) spilling head/nextcell to sp+0/+4. The volatile-ptr knob
- * (gl_func_00072550) does NOT apply — it forces STACK reload, but target keeps
- * a1 in a REGISTER ($a3); there's no C knob to pin a loop-long value to a
- * caller-saved reg instead of $s. Whole-function allocation-strategy cap. */
-#ifdef NON_MATCHING
-/* game_uso_func_000043D8: 60-insn cell-walk + FPU nearest-select.
- * v2 reconstruction: two-cursor stack-spilled walk. head=a0->0x10; seed
- * both cursors (cur@sp0, nextcell@sp4) from head; for each cell value n!=a2
- * compute d = a1->8 - n->0x38; track nearest-below (largest d<0 -> v1/f2)
- * and nearest-above (smallest d>=0 -> v0/f0), seeded from base[0x94]/[0x98].
- * Return v0 ? v0 : v1. */
+/* game_uso_func_000043D8: nearest neighbours of a1's value among the owner's
+ * children (closest above wins, else closest below). EXACT 2026-10-22
+ * (agent-g run 120) via the IDO 7.1 NCC donor src/game_uso/game_uso_ncc_43D8.cpp
+ * (REPLACE_FUNC_BODY, both trees): the {cur, nxt} stack iterator with
+ * first()/next() is the game_libs 3DB38 class; the two seeds are the
+ * unit's +/-FLT_MAX .rodata floats. The old notes here ("dual sp-slot cursor not
+ * C-reproducible", "a1 promoted to $s0") were cfe artifacts. This placeholder
+ * re-emits the unit's .rodata +0x94/+0x98 words (FLT_MAX, -FLT_MAX), which
+ * the donor reads through D_43D8_fmin/fmax (= 0) + those offsets. */
 void *game_uso_func_000043D8(int **a0, int *a1, void *a2) {
-    float fmin = *(float *)0x94;
-    float fmax = *(float *)0x98;
-    void *v0 = 0;
-    void *v1 = 0;
-    int *head = a0[4]; /* a0->0x10 */
-    int *cur;
-    int *nextcell;
-    if (head != 0) {
-        nextcell = (int *)head[1];
-        cur = (int *)head[0];
-    } else {
-        cur = 0;
-    }
-    while (cur != 0) {
-        if ((void *)cur != a2) {
-            float d = *(float *)((char *)a1 + 8) - *(float *)((char *)cur + 0x38);
-            if (d < 0.0f) {
-                if (fmax < d) { v1 = cur; fmax = d; }
-            } else {
-                if (d < fmin) { v0 = cur; fmin = d; }
-            }
-        }
-        if (nextcell != 0) {
-            cur = (int *)nextcell[0];
-            nextcell = (int *)nextcell[1];
-        } else {
-            cur = 0;
-        }
-    }
-    return v0 ? v0 : v1;
+    ((float *)a1)[0] = 3.4028235e38f;
+    ((float *)a1)[1] = -3.4028235e38f;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000043D8);
-#endif
 
 void game_uso_func_000044C8(char *a0) {
     game_uso_func_00000000(a0);

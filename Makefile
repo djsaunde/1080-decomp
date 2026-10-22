@@ -1895,6 +1895,12 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_0000_DONOR := build/src/game_uso/game_uso_ncc_0000.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00000000=$(GAMEUSO_0000_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_0000_DONOR)
+# 43D8: nearest-above/below child search ({cur, nxt} iterator; 60/60 words).
+# Host placeholder re-emits the two .rodata floats (+/-FLT_MAX) the donor
+# reads through D_43D8_fmin/fmax + 0x94/0x98.
+GAMEUSO_43D8_DONOR := build/src/game_uso/game_uso_ncc_43D8.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000043D8=$(GAMEUSO_43D8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_43D8_DONOR)
 # D9CC: NM-only NCC donor (4 words: two unfilled branch delays at a 3-way join).
 GAMEUSO_D9CC_NM_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_NM_DONOR)

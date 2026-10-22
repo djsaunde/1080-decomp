@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_000043D8",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:09:50.408170+00:00",
+  "end_time": "2026-10-22T20:09:50.408198+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:09:50.408188+00:00",
+      "assistant_text": "Exact from 69.8: game_uso is C++. The two-sp-slot cursor is the {cur, nxt} stack iterator with first()/next() from the game_libs 3DB38 donor; written as a for loop over it, NCC reproduces the slots, the nxt reload in the skip-test delay slot and the v0/v1/a0/a1/a3 colours. The +/-FLT_MAX seeds are the unit's rodata floats read through two distinct zero-valued externs plus the 0x94/0x98 addends (separate lui at each; the game_uso block is extracted without a link, so addends must carry the offsets). Host placeholder re-emits the two rodata words.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 64,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_uso_func_000043D8 (0xF0 / 60 words).\n *\n * Nearest neighbours of a1's value among the owner's children (skipping\n * `skip`): the closest one above (smallest d >= 0) wins, else the closest\n * below. The {cur, nxt} stack iterator with first()/next() is the\n * game_libs 3DB38 one (docs/IDO_CODEGEN.md kit XVIII/XIX); it gives the\n * target's two sp slots, the nxt reload in the skip-test delay slot and the\n * v0/v1/a0/a1/a3 colours on its own. The two seeds are the unit's\n * .rodata +0x94/+0x98 floats (+/-FLT_MAX). They are read through two\n * DISTINCT zero-valued externs so each gets its own `lui at` with the %lo\n * folded (one shared symbol gives a lui/addiu base register), and the\n * offsets are in the addends: the game_uso block is extracted from the .o\n * without a link, so a pinned symbol value would not reach its bytes. The\n * host placeholder re-emits both .rodata words. */\nextern \"C\" char D_43D8_fmin, D_43D8_fmax; /* = 0 (undefined_syms_auto.txt) */\nstruct Node { char pad[0x38]; float v; };\nstruct Link { Node *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    Node *first() { return next(); }\n    Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Owner { char pad[0x10]; Link *head; };\nstruct Ref { char pad[8]; float v; };\nextern \"C\" Node *game_uso_func_000043D8(Owner *o, Ref *a1, Node *skip) {\n    float fmin = *(float *)(&D_43D8_fmin + 0x94); /* FLT_MAX */\n    float fmax = *(float *)(&D_43D8_fmax + 0x98); /* -FLT_MAX */\n    Node *above = 0;\n    Node *below = 0;\n    Iter it(o->head);\n    Node *n;\n    for (n = it.first(); n; n = it.next()) {\n        if (n != skip) {\n            float d = a1->v - n->v;\n            if (d < 0.0f) {\n                if (fmax < d) { below = n; fmax = d; }\n            } else {\n                if (d < fmin) { above = n; fmin = d; }\n            }\n        }\n    }\n    return above ? above : below;\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_43D8.cpp",
+    "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000043D8.s",
+    "segment": "game_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC donor spliced via REPLACE_FUNC_BODY; ROM byte-identical, verify-blocks game_uso block OK jal=0 lo16=0 other=0, objdiff 100%."
+  }
+}
