@@ -1895,6 +1895,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_0000_DONOR := build/src/game_uso/game_uso_ncc_0000.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00000000=$(GAMEUSO_0000_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_0000_DONOR)
+# D9CC: NM-only NCC donor (4 words: two unfilled branch delays at a 3-way join).
+GAMEUSO_D9CC_NM_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D9CC_NM_DONOR)
 # 97EC: NM-only NCC donor (XZ derived-ctor protocol x5; two edg temp homes swapped vs target).
 GAMEUSO_97EC_NM_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)
