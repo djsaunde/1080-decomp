@@ -5382,6 +5382,12 @@ void func_000080EC(char *a0) {
  * x2, tail lw-v0/move-s0 two-step elided (116 vs 117). Sub-100 ->
  * NM wrap per policy. */
 #ifdef NON_MATCHING
+/* Run 123 (agent-c, raw 40 -> 31 words): frame 80 = declared locals v (sp+76,
+ * the result's spill home), o, u (sp+68), A[5], w, q2, p, c; the size-8 inner
+ * member reuses c (s was one word too many). Left: that member's this colours
+ * a0 (target v1), the Val reads colour v0 (target t-ring temps), the a3 = 1
+ * schedule, and the tail loads the parent into v0 before copying it to s0/a1
+ * (the 7204 inline-member separation; a cfe temp copy lengthens it by 4). */
 typedef struct { int v; } Val8124;
 extern char D_00007878;
 extern char D_00007FC4;
@@ -5389,16 +5395,14 @@ extern int D_00007FCC;
 extern int D_00007FD0;
 extern char D_00007540;
 char *func_00008124(char *arg0) {
-    char *o;
     char *v;
+    char *o;
     char *u;
-    char *s;
-    char *c;
     int A[5];
     char * volatile w;
     char *q2;
     Val8124 p;
-    char *q1;
+    char *c;
 
     o = (char *)func_00000000(0x90);
     if (o != 0) {
@@ -5406,10 +5410,10 @@ char *func_00008124(char *arg0) {
         *(char **)(o + 0x28) = &D_00007878;
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
-            s = u;
-            if (s != 0 || (s = (char *)func_00000000(8)) != 0) {
-                *(char **)(s + 0) = &D_00007FC4;
-                *(int *)(s + 4) = 0;
+            c = u;
+            if (c != 0 || (c = (char *)func_00000000(8)) != 0) {
+                *(char **)(c + 0) = &D_00007FC4;
+                *(int *)(c + 4) = 0;
             }
             p.v = D_00007FCC; A[4] = p.v;
             c = u + 8;
