@@ -6119,7 +6119,7 @@ int gl_func_00024080(int a0, int a1) {
 //   finishing needs the jumptable, not a structural rewrite.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
-extern int gl_func_0001CA10();
+extern int gl_ref_000381B0(), gl_ref_00038204();
 extern int gl_func_0003959C();
 extern int D_00000000;
 /* Decoded via jumptable extraction (scripts/uso-jumptable-to-m2c.py) — the
@@ -6170,7 +6170,13 @@ extern int D_00000000;
  *      Next: the per-case colour (a1 vs v1) suggests the copy is sp44's OWN
  *      register web, coloured by what is free at that point -- try giving
  *      case 0 a live v1/a0 interferer, or spelling the deferred store from
- *      a second variable assigned from h after the test. */
+ *      a second variable assigned from h after the test.
+ * Run 123 (agent-c): the placeholder gl_func_0001CA10 calls are BLANK imports
+ * in the ROM (jal 0) -> gl_func_00000000; the two fixed-address thunks are the
+ * pinned gl_ref_000381B0 / gl_ref_00038204 (baked jals). Raw diff 20 -> 10:
+ * only the jumptable %lo (donor pin 0xEB4) and the case-0/3 h colouring are
+ * left. Also negative: `sp44 = f(); if (sp44 == 0) return sp44;` (-1 word),
+ * `if ((h = f()) == 0)`, a block-scoped copy for the store, `sp44 = h = f()`. */
 int gl_func_000240A0(int cls, int idx, int a2, int a3, void *a4) {
     int sp4C, h, sp44, b18, typ, payload, sp34; /* reverse-alloc: h/typ dead homes = target frame holes 0x48/0x3C */
     char *e;
@@ -6188,13 +6194,13 @@ int gl_func_000240A0(int cls, int idx, int a2, int a3, void *a4) {
         if (*(unsigned char *)(g + 0x2C10 + idx) == 1) return 0;
         break;
     }
-    sp44 = gl_func_00000000(c);           /* jal 0x381B0 */
+    sp44 = gl_ref_000381B0(c);           /* jal 0x381B0 */
     if (sp44 != 0) {
         sp34 = 2;
-        gl_func_0001CA10(a4, a3 << 0x18, 0);
+        gl_func_00000000(a4, a3 << 0x18, 0);
         goto block_30;
     }
-    e = (char *)(gl_func_00000000(c) + idx * 0x10);   /* jal 0x38204 */
+    e = (char *)(gl_ref_00038204(c) + idx * 0x10);   /* jal 0x38204 */
     sp4C = *(int *)(e + 0x14);
     sp4C = (sp4C + 0xF) & ~0xF;           /* double store to same slot */
     b18 = *(signed char *)(e + 0x18);     /* sw (word) home, not sb */
@@ -6203,23 +6209,23 @@ int gl_func_000240A0(int cls, int idx, int a2, int a3, void *a4) {
     sp34 = 2;
     switch (typ) {                        /* jtbl @ &D+0xEB4 */
     case 0:
-        h = gl_func_0001CA10(c, idx, sp4C);
+        h = gl_func_00000000(c, idx, sp4C);
         if (h == 0) return h;
         sp34 = 5;
         sp44 = h;
         break;
     case 1:
-        h = gl_func_0001CA10(c, sp4C, 1, idx);
+        h = gl_func_00000000(c, sp4C, 1, idx);
         sp44 = h;
         if (h == 0) return h;
         break;
     case 2:
-        h = gl_func_0001CA10(c, sp4C, 0, idx);
+        h = gl_func_00000000(c, sp4C, 0, idx);
         sp44 = h;
         if (h == 0) return h;
         break;
     case 3:
-        h = gl_func_0001CA10(c, sp4C, 2, idx);
+        h = gl_func_00000000(c, sp4C, 2, idx);
         if (h == 0) return h;
         sp44 = h;
         break;
@@ -6232,13 +6238,13 @@ int gl_func_000240A0(int cls, int idx, int a2, int a3, void *a4) {
 block_30:
     switch (c) { /* compare chain on s0, arms out-of-line */
     case 0:
-        gl_func_0001CA10(idx, sp34);
+        gl_func_00000000(idx, sp34);
         break;
     case 1:
-        gl_func_0001CA10(idx, sp34);
+        gl_func_00000000(idx, sp34);
         break;
     case 2:
-        gl_func_0001CA10(idx, sp34);
+        gl_func_00000000(idx, sp34);
         break;
     }
     return sp44;
