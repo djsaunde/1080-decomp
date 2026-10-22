@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0003863C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:15:52.329007+00:00",
+  "end_time": "2026-10-22T16:15:52.329007+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:15:52.329007+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} iterator, inline first(), inline Sub::lock. list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 59,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0003863C (0xEC / 59 words): lock the owner's\n * sub-object, then for every child with flag 4 back-link it to the owner and\n * fire virtual slot 2 when its mask overlaps the callee's result. The entry\n * next() goes through an inline first() { return next(); }, which moves the\n * vptr after the second get() into v0 as in the target.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" int gl_func_00000000(...);\nstruct Owner;\nstruct NodeB {\n    int x0; int x4; char pad8[0xC]; Owner *x14; int flags; char pad1c[4]; int mask; char pad24[4];\n    virtual void v0(); virtual void v1(); virtual void fire(); };\nstruct Link { NodeB *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    NodeB *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    NodeB *first() { return next(); }\n    NodeB *get() { return cur->obj; }\n};\nstruct Sub { void lock() { gl_func_00000000(this); } };\nstruct Owner { char pad[0xC]; Sub *x0c; Link *head; };\nextern \"C\" void gl_func_0003863C(Owner *o) {\n    Iter it(o->head);\n    o->x0c->lock();\n    for (NodeB *n = it.first(); n; n = it.next()) {\n        if (it.get()->flags & 4) {\n            if (it.get()->x4) it.get()->x14 = o;\n            int m = gl_func_00000000();\n            if (it.get()->mask & m) it.get()->fire();\n        }\n    }\n    gl_func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3863C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003863C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
