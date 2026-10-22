@@ -5232,7 +5232,6 @@ void func_00007D04(char *s0) {
     char *root = D_7D04_root[6];
     int *v = *(int **)(root + 0x28);
     int a3 = *(int *)(s0 + 0x5C);
-    int i;
     int k;
     *(int *)(s0 + 0x64) =
         ((int (*)(char *))*((unsigned int *)((char *)v + 0x64)))(
@@ -5265,8 +5264,10 @@ c2:
     }
     *(int *)(s0 + 0x58) = 0x18;
 end:
-    func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[0] + 0x1C), 0, a3); if (1) {}
-    func_00000000(s0, *(int *)((char *)(*(int ***)(*(char **)(s0 + 0x40) + 0x84))[1] + 0x1C), 1, a3);
+    root = *(char **)(s0 + 0x40); v = *(int **)(root + 0x84);
+    func_00000000(s0, *(int *)(*v + 0x1C), 0, a3); if (1) {}
+    root = *(char **)(s0 + 0x40); v = *(int **)(root + 0x84) + 1;
+    func_00000000(s0, *(int *)(*v + 0x1C), 1, a3);
     *(int *)(s0 + 0x5C) = a3;
 }
 #else
