@@ -12007,18 +12007,19 @@ void game_libs_func_00042438(void)
  * 5,277-iteration permuter run tied score 45 without improvement. This is
  * still a partial, not a proven C impossibility. The assembled full entry,
  * default object, and pure-ASM expected symbol match ROM E27554:E275B0. */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122, permuter-found and re-verified with rdiff --raw --pins): the global is re-read at each use, and the 5th argument is a named int read before the call (two more t-ring slots: t1 like the target). */
 void game_libs_func_0004247C(void)
 {
-    int *g = *(int **)((char *)&D_00000000 + 0x240);
-    int *p = (int *)g[0x28 / 4];
-    int rv = ((int (*)(int))p[0x64 / 4])((int)g + *(short *)((char *)p + 0x60));
-    g = *(int **)((char *)&D_00000000 + 0x240);
-    gl_func_00000000(&gl_data_42440_arg, 0x110, rv, g[0xB8 / 4], g[0xBC / 4]);
+#define G4247C (*(int **)((char *)&D_00000000 + 0x240))
+    int bc;
+    int *g;
+    int *p = (int *)G4247C[0x28 / 4];
+    int rv = ((int (*)(int))p[0x64 / 4])((int)G4247C + *(short *)((char *)p + 0x60));
+    g = G4247C;
+    bc = g[0xBC / 4];
+    gl_func_00000000(&gl_data_42440_arg, 0x110, rv, G4247C[0xB8 / 4], bc);
+#undef G4247C
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004247C);
-#endif
 
 extern int gl_func_00000000();
 int gl_func_000424D8() {

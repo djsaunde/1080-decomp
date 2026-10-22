@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0004247C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:47:23.311590+00:00",
+  "end_time": "2026-10-22T21:47:23.311590+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:47:23.311590+00:00",
+      "assistant_text": "Exact (permuter-found, re-verified with rdiff --raw --pins and ROM cmp). The 5th argument is a named int read before the call and the global pointer is re-read at every use; together they spend the two t-ring slots the target spends (t1 for the stack arg).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 23,
+  "initial_m2c_source": null,
+  "final_source": "/* game_libs_func_0004247C (0x5C, 23 words) = the old 2-word orphan\n * game_libs_func_0004247C + gl_func_00042484, merged 2026-09-09 (agent-c).\n * bootup.uso Sym table exports section offset 0x56AE8 = splat 0x4247C (ROM\n * 0xE27554 - 0xDD0A6C; address taken by the HI16/LO16 pair at TextReloc\n * 0x588B8/0x588BC); 0x56AF0 = 0x42484 is NOT exported. The `lui v1; lw\n * v1,0x240(v1)` head is the successor's hoisted first statement: the read of\n * the current-object pointer at D+0x240 (sym154 @0x3C168 + 0x240, the same\n * pair as the matched predecessor game_libs_func_00042438) scheduled above\n * `addiu sp`. The old \"PROLOGUE-STOLEN / p live across jalr\" verdict was a\n * decode error: `or a2,v0,zero` after the jalr is the CALLBACK'S RETURN\n * VALUE (v0), not p -- p (v0 before the call) dies at the lh.\n *\n * Body: g = CUR; p = g->0x28 (class record); rv = p->fn_0x64((char *)g +\n * p->off_0x60); g = CUR (re-read, the call clobbers globals);\n * debugprint(&gl_data_42440_arg, 0x110, rv, g->0xB8, g->0xBC). String\n * sym338 @0x3C768 = the same gl_data_42440_arg as 42438; callee = blank\n * R_MIPS_26 to sym1788 (text 0x541D0 = splat 0x3FB64) -> gl_func_00000000.\n *\n * NM 99.565216% objdiff, 21/23 raw words exact on the merged symbol\n * (was gl_func_00042484 65.0%).\n * Residual = ONE register: the stack-arg load `lw t1,0xBC(v1)` / `sw t1,\n * 0x10(sp)` (target) vs t7 here. De-named it is the first post-call ugen\n * ring pop (t7); as a named local it is a uopt candidate coloured to the\n * lowest free caller-saved reg = t0 (v0 = rv, v1 = g, a0-a3 = args). The\n * target's t1 needs either three zero-emission pre-call ring pops or a\n * co-live LR holding t0. Probed standalone (all inert, stay at t7 / t0):\n * named c / b+c in both decl+assign orders, register c, c declared first,\n * int-vs-char* derefs, held `int **nv` address, struct-typed global\n * (`D_s.cur` / typed Obj), extern array base, prototyped callee (varargs\n * and fixed), void/int return, `return call(..)`, `if(x){}` keep-alives on\n * rv/c/b/g/s, folded casts / <<0 / *1 / +0 / &~0 / (int)(short)(int) on the\n * lh operand, (unsigned short)/(unsigned char) callee return + subsumed\n * masks (the mask is not an identity on the signed lh, andi emitted),\n * K&R fnptr type, `*(int(**)(int))` fnptr deref, `(char*)g + off` pointer\n * form, named cb / named off (both colour to a1/a2, wrong class), 6th/7th\n * dead args, do{}while(0), comma-arg.\n * 2026-09-09 agent-h follow-up: IDO 5.3/7.1 at O2/O3 emit the same two\n * differences; O1 changes the structure. Pointer/unsigned callback returns,\n * void-pointer callback argument, independent reload scope, split pointer\n * dereference, and named format/stack-argument locals do not match. A\n * 5,277-iteration permuter run tied score 45 without improvement. This is\n * still a partial, not a proven C impossibility. The assembled full entry,\n * default object, and pure-ASM expected symbol match ROM E27554:E275B0. */\n/* EXACT (agent-c run 122, permuter-found and re-verified with rdiff --raw --pins): the global is re-read at each use, and the 5th argument is a named int read before the call (two more t-ring slots: t1 like the target). */\nvoid game_libs_func_0004247C(void)\n{\n#define G4247C (*(int **)((char *)&D_00000000 + 0x240))\n    int bc;\n    int *g;\n    int *p = (int *)G4247C[0x28 / 4];\n    int rv = ((int (*)(int))p[0x64 / 4])((int)G4247C + *(short *)((char *)p + 0x60));\n    g = G4247C;\n    bc = g[0xBC / 4];\n    gl_func_00000000(&gl_data_42440_arg, 0x110, rv, G4247C[0xB8 / 4], bc);\n#undef G4247C\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0004247C.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
