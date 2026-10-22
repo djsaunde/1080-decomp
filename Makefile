@@ -1912,6 +1912,11 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_D9CC_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D9CC_DONOR)
+# gui is C++ too (kit XXIII #3). 1A5C / 1CA8: DL colour emitters (combine +
+# primcolor) with an inline next() append member (147/147 words each).
+GUI_1A5C_DONOR := build/src/gui_uso/gui_uso_ncc_1A5C.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00001A5C=$(GUI_1A5C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1A5C_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000B274=$(GAMEUSO_B274_NM_DONOR)
