@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0004406C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:59:28.816967+00:00",
+  "end_time": "2026-10-22T20:59:28.816967+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:59:28.816967+00:00",
+      "assistant_text": "Raw diff showed the int fields loaded into v0/v1 named locals while the target keeps them as t-ring temps and converts each into the shared float d right before its line (cvt.s.w f2), exactly like the float lines. Dropping the int locals and writing d = (f32)FW(arg0, off) per int line is byte-exact.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 54,
+  "initial_m2c_source": null,
+  "final_source": "/* EXACT (agent-c run 121): the int fields are not named locals; each int line converts the old value into the shared d first, like the float lines. */\n#ifndef FW\n#define FW(p, o) (*(int *)((char *)(p) + (o)))\n#endif\n#define AF(p, o) (*(f32 *)((char *)(p) + (o)))\nvoid game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {\n    f32 d;\n    f32 temp_f0 = arg2 * arg2;\n\n    d = AF(arg0, 0x0); AF(arg0, 0x0) = (AF(arg1, 0x0) - d) * arg2 + d;\n    d = AF(arg0, 0x4); AF(arg0, 0x4) = (AF(arg1, 0x4) - d) * arg2 + d;\n    d = AF(arg0, 0x8); AF(arg0, 0x8) = (AF(arg1, 0x8) - d) * arg2 + d;\n    d = AF(arg0, 0xC); AF(arg0, 0xC) = (AF(arg1, 0xC) - d) * temp_f0 + d;\n    d = (f32) FW(arg0, 0x10); FW(arg0, 0x10) = (s32) ((((f32) FW(arg1, 0x10) - d) * temp_f0) + d);\n    d = (f32) FW(arg0, 0x14); FW(arg0, 0x14) = (s32) ((((f32) FW(arg1, 0x14) - d) * temp_f0) + d);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0004406C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

@@ -13086,14 +13086,12 @@ void gl_func_00044034(void *a0) {
     gl_ref_00056CB4((char *)a0 + 0x14);
 }
 
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 121): the int fields are not named locals; each int line converts the old value into the shared d first, like the float lines. */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 #define AF(p, o) (*(f32 *)((char *)(p) + (o)))
 void game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {
-    s32 a10 = FW(arg0, 0x10);
-    s32 a14 = FW(arg0, 0x14);
     f32 d;
     f32 temp_f0 = arg2 * arg2;
 
@@ -13101,12 +13099,9 @@ void game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {
     d = AF(arg0, 0x4); AF(arg0, 0x4) = (AF(arg1, 0x4) - d) * arg2 + d;
     d = AF(arg0, 0x8); AF(arg0, 0x8) = (AF(arg1, 0x8) - d) * arg2 + d;
     d = AF(arg0, 0xC); AF(arg0, 0xC) = (AF(arg1, 0xC) - d) * temp_f0 + d;
-    FW(arg0, 0x10) = (s32) ((((f32) FW(arg1, 0x10) - (f32) a10) * temp_f0) + (f32) a10);
-    FW(arg0, 0x14) = (s32) ((((f32) FW(arg1, 0x14) - (f32) a14) * temp_f0) + (f32) a14);
+    d = (f32) FW(arg0, 0x10); FW(arg0, 0x10) = (s32) ((((f32) FW(arg1, 0x10) - d) * temp_f0) + d);
+    d = (f32) FW(arg0, 0x14); FW(arg0, 0x14) = (s32) ((((f32) FW(arg1, 0x14) - d) * temp_f0) + d);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004406C);
-#endif
 
 // gl_func_00044144 — STRUCTURAL PASS (0x36C / 220 words, no episode). Raw-.word
 // USO. realjr=5, regjr=0 → MULTI-FUNCTION BUNDLE + BOUNDARY NOTE: the tail
