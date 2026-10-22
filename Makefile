@@ -258,6 +258,12 @@ build/src/bootup_uso/bootup_uso_o0_11C70.c.o: TRUNCATE_TEXT := 0xD0
 build/src/bootup_uso/bootup_uso_o0_11D40.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11D40.c.o: OPT_FLAGS := -O0
 # 0x38 = the 0x30 body + the shipped build's ONE dead `$exit: jr ra; nop` pair
 # (0x11D70, formerly the -O2 -g3 "empty fn" unit bootup_uso_tail3a_bot.c, retired
+# 11B5C: -O0 C++ donor(s) for func_00011B5C (edg -O0 has no dead closing-brace branch)
+BOOTUP_11B5C_DONOR := build/src/bootup_uso/bootup_uso_ncc_11B5C.cpp.o
+$(BOOTUP_11B5C_DONOR): OPT_FLAGS := -O0
+build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: REPLACE_FUNC_BODY += func_00011B5C=$(BOOTUP_11B5C_DONOR)
+build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: $(BOOTUP_11B5C_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x114
 # 2026-09-05). Our -O0 emits two dead pairs after a frameless fn whose last
 # statement is a return; TRUNCATE clips the second. See docs/IDO_CODEGEN.md
 # #o0-two-block-predicate-not-adjacent-leaf-cap (mgrproc 140+168 precedent).

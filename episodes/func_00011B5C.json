@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00011B5C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:38:46.271565+00:00",
+  "end_time": "2026-10-22T16:38:46.271565+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:38:46.271565+00:00",
+      "assistant_text": "C++ donor (IDO 7.1 NCC -O0).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 37,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donor for func_00011B5C: the NM C body of\n * bootup_uso_tail3a_mid.c compiled as C++ (bootup_uso is C++). cfe -O0 left a dead\n * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.\n * Spliced into bootup_uso_tail3a_mid.c.o via REPLACE_FUNC_BODY. */\ntypedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;\ntypedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;\nextern \"C\" {\nextern int func_00000000(...);\n\n/* Mid-tail assembly gap after func_00011AB4 was split to an -O0 file.\n * Holds 0x11B5C..0x11C70 so the following o0_11C70 split keeps its offset. */\n/* func_00011B5C: 37-insn -O0 flag-set + per-element-1-call loop, returns the\n * old _188 flag (saves it, sets _188=1, calls helper(arg,1) per item).\n * CAP: -O0 return-value DEAD-double-b toolchain gap. Identical structure to\n * the LANDED void sibling func_00011BF0 below (if-guard + do-while) \u2014 the ONLY\n * difference is this one returns a value, so our cc emits `lw v0; b epi; nop;\n * b epi; nop` (second b dead/unreachable) where the target has ONE b -> built\n * .o is +8 bytes, never matches. Proven a toolchain-binary codegen gap (trivial\n * `int f(int*a){int x=a[0];g();return x;}` reproduces it; no -g/-O level or IDO\n * 5.3-vs-7.1 flips it; void -O0 fns are unaffected, hence BF0 lands). NOT\n * C-fixable, NOT permuter-fixable; stripping the dead b = match-faking (banned).\n * See docs/IDO_CODEGEN.md#feedback-ido-o0-return-value-dead-double-b. */\ns32 func_00011B5C(s32 *a0) {\n    s32 saved = *(s32*)((char*)a0 + 0x188);\n    s32 i;\n    *(s32*)((char*)a0 + 0x188) = 1;\n    i = 0;\n    if (*(s32*)((char*)a0 + 0x124) > 0) {\n        do {\n            func_00000000(*(s32*)((char*)a0 + 0x100 + i * 4), 1);\n        } while (++i < *(s32*)((char*)a0 + 0x124));\n    }\n    return saved;\n}\n\nvoid func_00011BF0(char *a0) {\n    s32 i;\n\n    i = 0;\n    if (*(s32*)(a0 + 0x124) > 0) {\n        do {\n            func_00000000(*(s32*)(a0 + 0x100 + i * 4), 0);\n        } while (++i < *(s32*)(a0 + 0x124));\n    }\n    *(s32*)(a0 + 0x188) = 0;\n}\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_11B5C.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00011B5C.s",
+    "segment": "bootup_uso_tail3a_mid",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O0 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
