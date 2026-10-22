@@ -19841,50 +19841,10 @@ skip:
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E244);
 #endif
-#ifdef NON_MATCHING
-/* Append-to-array-with-bounds-check (28 insns, prologue-stolen).
- * Predecessor gl_func_0004E244 tail loads a flag from &D + 0x1C4. If
- * (flag & 1), skip body. Else: idx = a0[3]; if (idx >= a0[2]) call
- * gl_func with format ptr + a1, reload idx; a0[3] = idx + 1;
- * a0[0][idx] = a1.
- *
- * 2026-05-30 — ORPHAN-MERGE READY, blocked by a single $v0/$v1 regalloc cap.
- * The predecessor game_libs_func_0004E37C (0x8: `lui t6,0; lw t6,0x1C4(t6)`) is
- * the stolen prologue that loads the &D+0x1C4 flag into $t6. Verified: writing the
- * body as below, the flag-load HOISTS above the prologue and reproduces the orphan
- * bytes exactly (same mechanism as game_uso_func_0001155C). The 30-insn body then
- * matches the target REGISTER-FOR-REGISTER except `idx` (= a0[3]) lands in $v0,
- * where the target uses $v1 (6 insns differ only in that one reg; target leaves $v0
- * entirely unused). Root cause: at the post-call reload the target treats $v0 as
- * live (the discarded call RESULT), so idx avoids it; the merged C frees $v0 and
- * idx takes it. NOT C-reachable: tried ptr-local, bound-first-decl, register int,
- * dead-assign-reload, unsigned idx, recompute-per-arm, and using the call result
- * (the only thing that flips idx->$v1, but it changes the a2-reload semantics) —
- * plus decomp-permuter -j4 for 180s (0 candidates). So the orphan-merge (prepend
- * the 2 orphan words to this body's .s as game_libs_func_0004E37C, delete the body
- * symbol) is ready and would land the moment the $v0/$v1 is solved — but it is a
- * genuine allocator cap today. Leave both INCLUDE_ASM.
- * 2026-07-15 new-lever-wave sweep NEGATIVE (all standalone-verified, idx stays $v0):
- * ll-alias callee (dead v0+v1 defs — FD0 exclusion does NOT fire; idx web's first
- * def precedes the call so it never interferes with the jal's dead defs), dead-if
- * result consume `if(call()){}`, same-name destructive `v1=call(); v1=a0[3];`
- * (DSE'd), v1 as 4th K&R param (+1 insn), de-naming both spellings (array-store-
- * first regresses reloads; increment-first folds sll onto NEW value). Cap stands. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4E37C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 99.00 (count coloured v0, target v1). */
 void game_libs_func_0004E37C(int *a0, int a1) {
-    int v1;
-    if ((*(int*)((char*)&D_00000000 + 0x1C4) & 1) == 0) {
-        v1 = a0[3];
-        if (v1 >= a0[2]) {
-            gl_func_00000000((char*)&D_00000000 + 0x204D4, a1);
-            v1 = a0[3];
-        }
-        a0[3] = v1 + 1;
-        ((int**)a0)[0][v1] = a1;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004E37C);
-#endif
 
 extern int gl_ref_000623D0();
 extern int gl_ref_0006240C();

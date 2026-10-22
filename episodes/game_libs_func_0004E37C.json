@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0004E37C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T19:27:40.585959+00:00",
+  "end_time": "2026-10-22T19:27:40.585959+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T19:27:40.585959+00:00",
+      "assistant_text": "C++ donor: inline registry add() with tbl[n++].",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 30,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_0004E37C (0x78 / 30 words): append to a\n * {tbl, ?, cap, n} registry unless the global flag bit is set -- an inline\n * Reg::add() whose tbl[n++] expression temp gives the target's v1 count (kit XVII #1).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nextern char D_00000000[];\nvoid gl_func_00000000(...);\n}\nstruct Reg { int *tbl; int pad; int cap; int n;\n    void add(int o) { if (n >= cap) gl_func_00000000(D_00000000 + 0x204D4, o); tbl[n++] = o; } };\nextern \"C\" void game_libs_func_0004E37C(Reg *r, int a1) {\n    if ((*(int *)(D_00000000 + 0x1C4) & 1) == 0) r->add(a1);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4E37C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0004E37C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
