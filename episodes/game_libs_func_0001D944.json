@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0001D944",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T19:36:25.910791+00:00",
+  "end_time": "2026-10-22T19:36:25.910791+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T19:36:25.910791+00:00",
+      "assistant_text": "u16 K&R a1 (home store) plus a1++; a1--; ring burn before the second command (permuter).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 39,
+  "initial_m2c_source": null,
+  "final_source": "#ifdef NON_MATCHING\n/* Double F3D/GBI command builder (sibling of the gl_func_0001D870 family).\n * Writes two 8-byte commands (4 words) to the $a0 DList buffer, indexing the\n * 0x158-stride record table at &D_00000000 by the 5th (stack) arg, reading the\n * segment-offset fields +0x38/+0x3C and KSEG0-biasing them. Returns buf+16.\n *\n * 2026-05-28: declaring the (a1,a2) arg pair as a Pair2 struct-by-value param\n * (the RECEIVING-side analog of the struct-by-value arg-home lever) forces the\n * `sw a1,4(sp); sw a2,8(sp)` dead home-stores the target has, fixing the\n * instruction count (39==39). Remaining 25 diffs are pure register allocation:\n * cmd lands in $v1 vs target $t0 (cascades), and p.b is reloaded from its home\n * slot vs the target keeping a2 in $6. The struct-by-value frontend treats\n * members as memory so it reloads; the target uses the incoming register AND\n * has a dead home store \u2014 a combo neither pure struct-by-value nor (void)&aN\n * reproduces. Permuter candidate (logic + count correct, regalloc only).\n * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair.\n * 2026-10-22 (agent-c run 120) EXACT: a1 is an `unsigned short` K&R param too\n * (the promoted-param home store is the `sw a1,4(sp)`), and `a1++; a1--;` on one\n * line before the second command burns the ring slot the target spends there\n * (permuter find; separate lines, `a1 += 0` or `a1 = a1` do not). */\nextern int D_00000000;\ntypedef struct { unsigned int w0, w1; } G1D944;\nint game_libs_func_0001D944(gfx, a1, a2, a3, idx)\nG1D944 *gfx;\nunsigned short a1;\nunsigned short a2;\nint a3;\nint idx;\n{\n#define cmd ((((a3 >> 4) & 0xFF) << 16) | 0x14000000)\n    char *rec;\n    { G1D944 *_g = gfx++; _g->w0 = cmd | (a1 & 0xFFFF); rec = (char *)&D_00000000 + idx * 0x158; _g->w1 = *(int *)(rec + 0x38) + (a2 << 1) + 0x80000000; }\n    {\n        G1D944 *_g = gfx++;\n        a1++; a1--;\n        _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF);\n        _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000;\n    }\n    return (int)gfx;\n#undef cmd\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0001D944.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

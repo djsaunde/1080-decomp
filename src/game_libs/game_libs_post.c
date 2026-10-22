@@ -785,12 +785,16 @@ int gl_func_0001D870(int code, Spec12_1D870 spec) {
  * members as memory so it reloads; the target uses the incoming register AND
  * has a dead home store — a combo neither pure struct-by-value nor (void)&aN
  * reproduces. Permuter candidate (logic + count correct, regalloc only).
- * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
+ * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair.
+ * 2026-10-22 (agent-c run 120) EXACT: a1 is an `unsigned short` K&R param too
+ * (the promoted-param home store is the `sw a1,4(sp)`), and `a1++; a1--;` on one
+ * line before the second command burns the ring slot the target spends there
+ * (permuter find; separate lines, `a1 += 0` or `a1 = a1` do not). */
 extern int D_00000000;
 typedef struct { unsigned int w0, w1; } G1D944;
 int game_libs_func_0001D944(gfx, a1, a2, a3, idx)
 G1D944 *gfx;
-int a1;
+unsigned short a1;
 unsigned short a2;
 int a3;
 int idx;
@@ -798,15 +802,16 @@ int idx;
 #define cmd ((((a3 >> 4) & 0xFF) << 16) | 0x14000000)
     char *rec;
     { G1D944 *_g = gfx++; _g->w0 = cmd | (a1 & 0xFFFF); rec = (char *)&D_00000000 + idx * 0x158; _g->w1 = *(int *)(rec + 0x38) + (a2 << 1) + 0x80000000; }
-    { G1D944 *_g = gfx++; _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF); _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000; }
+    {
+        G1D944 *_g = gfx++;
+        a1++; a1--;
+        _g->w0 = cmd | ((a1 + 0x1A0) & 0xFFFF);
+        _g->w1 = *(int *)(rec + 0x3C) + (a2 << 1) + 0x80000000;
+    }
     return (int)gfx;
 #undef cmd
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D944);
-#endif
 
-#ifdef NON_MATCHING
 /* Double F3D/GBI command builder -- byte-identical sibling of
  * game_libs_func_0001D944 (same body; command opcode 0x15 vs 0x14). Writes two
  * 8-byte commands (4 words) to the $a0 buffer, indexing the 0x158-stride record
