@@ -1868,6 +1868,10 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_NM_DONOR)
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000028C0=$(GAMEUSO_28C0_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
+# 24BC: NM-only NCC donor (camera homing sibling of 28C0).
+GAMEUSO_24BC_NM_DONOR := build/src/game_uso/game_uso_ncc_24BC.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_24BC_NM_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol
