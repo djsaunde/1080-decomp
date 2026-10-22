@@ -880,7 +880,7 @@ int idx;
 //   not resolvable from .s), plus beql/bne schedule. Name
 //   pre-checked: no extern reuse (collision-safe). gl_func_00000000
 //   = canonical never-defined USO placeholder for the three helpers.
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122): pins for the three baked in-unit jals + the redundant & 0xFFFF on the first lhu burns the one t-ring slot the target spends there. */
 extern void *gl_ref_00031EDC(); /* baked in-unit jals */
 extern void *gl_ref_0003186C();
 extern void *gl_ref_000317E8();
@@ -894,16 +894,13 @@ Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
     } else {
         dl = gl_ref_0003186C(dl, a1, a2, a3);
     }
-    G1DA7C(dl++, *(unsigned short *)(rec + 0x22) | 0x0C340000, 0x0C800940);
+    G1DA7C(dl++, (*(unsigned short *)(rec + 0x22) & 0xFFFF) | 0x0C340000, 0x0C800940);
     G1DA7C(dl++, ((*(unsigned short *)(rec + 0x24) + 0x8000) & 0xFFFF) | 0x0C340000, 0x0C800C80);
     if (*(unsigned short *)(rec + 0x28) != 0 || *(unsigned short *)(rec + 0x2A) != 0) {
         dl = gl_ref_000317E8(dl, a2);
     }
     return dl;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DA7C);
-#endif
 
 // gl_func_0001DB88 — STRUCTURAL PASS (0x12C / 75 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no

@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0001DA7C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:15:47.553176+00:00",
+  "end_time": "2026-10-22T21:15:47.553176+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:15:47.553176+00:00",
+      "assistant_text": "Exact. Baked in-unit jals pinned (gl_ref_00031EDC/0003186C/000317E8). The NM was one t-ring slot early everywhere after the calls; a redundant & 0xFFFF on the first unsigned-short field read burns exactly that slot.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 67,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_0001DA7C \u2014 STRUCTURAL PASS (0x10C / 67 words, no episode).\n// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no\n// bundle). An F3D/GBI glyph-command builder in the gl_func_0001D4C0\n// display-list family.\n//\n//   int gl_func_0001DA7C(int a0, int a1, short idx) {\n//     E *e = &D_0 + idx_scaled(idx);            // signed-halfword idx\n//     byte flag = e->0x1C;\n//     int r;\n//     if (flag != 1) {\n//       r = jal 0x31EDC(packed_at_sp42);        // 0x0C00C7B7 measure\n//     } else {\n//       r = jal 0x3186C(a0, packed_at_sp42);    // 0x0C00C61B measure\n//     }\n//     int dl = *(short*)(&D_0C34xxxx + ...);    // global DL cursor\n//     *(int*)dl     = 0x0C800940 | a1;          // GBI word0\n//     *(int*)(dl+4) = ...;                       // GBI word1\n//     dl_cursor = r + 8;                         // advance by 8 bytes\n//     ...\n//   }\n//\n// Struct-typing reference: object/glyph entry e from &D_0 via a\n//   sign-extended-halfword index (sll16/sra16 then *4 scaling); byte\n//   e->0x1C selects which fixed measure/prep routine runs (0x0C00C7B7\n//   \u22480x31EDC vs 0x0C00C61B \u22480x3186C, the flag==1 path also passes a0).\n//   Emits one 8-byte F3D/GBI command (word0 = const 0x0C800940 ORed\n//   with arg a1) to the global DL write cursor rooted at &D_0C34xxxx,\n//   then advances the cursor by 8. Same builder family as the\n//   gl_func_0001D4C0 leading fn but standalone.\n// Caps (DEFERRED): single jr $ra. Glyph/sprite DL-emitter of the\n//   family: record = &D_00000000 + (short)a2 * 0x158; visibility\n//   gate rec->0x1C==1 selects helper1 vs helper2; then two F3D\n//   command pairs ((rec->0x22 | 0x0C340000)/0x0C800940 and\n//   ((rec->0x24+0x8000)&0xFFFF | 0x0C340000)/0x0C800C80) written to\n//   the returned DL ptr; a final helper3 call gated on\n//   rec->0x28==0 && rec->0x2A!=0. Real-C structural body below;\n//   byte-match deferred \u2014 three placeholder jals (0xC7B7/0xC61B/\n//   0xC5FA) are runtime-patched USO relocs (need USO reloc infra,\n//   not resolvable from .s), plus beql/bne schedule. Name\n//   pre-checked: no extern reuse (collision-safe). gl_func_00000000\n//   = canonical never-defined USO placeholder for the three helpers.\n/* EXACT (agent-c run 122): pins for the three baked in-unit jals + the redundant & 0xFFFF on the first lhu burns the one t-ring slot the target spends there. */\nextern void *gl_ref_00031EDC(); /* baked in-unit jals */\nextern void *gl_ref_0003186C();\nextern void *gl_ref_000317E8();\ntypedef struct { unsigned int w0, w1; } Gfx1DA7C;\n#define G1DA7C(pkt, a, b) { Gfx1DA7C *_g = (Gfx1DA7C *)(pkt); _g->w0 = (a); _g->w1 = (b); }\nGfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {\n    int pad[1];\n    char *rec = (char *)&D_00000000 + a2 * 0x158;\n    if (*(unsigned char *)(rec + 0x1C) == 1) {\n        dl = gl_ref_00031EDC(dl, a1, a2, a3);\n    } else {\n        dl = gl_ref_0003186C(dl, a1, a2, a3);\n    }\n    G1DA7C(dl++, (*(unsigned short *)(rec + 0x22) & 0xFFFF) | 0x0C340000, 0x0C800940);\n    G1DA7C(dl++, ((*(unsigned short *)(rec + 0x24) + 0x8000) & 0xFFFF) | 0x0C340000, 0x0C800C80);\n    if (*(unsigned short *)(rec + 0x28) != 0 || *(unsigned short *)(rec + 0x2A) != 0) {\n        dl = gl_ref_000317E8(dl, a2);\n    }\n    return dl;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0001DA7C.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
