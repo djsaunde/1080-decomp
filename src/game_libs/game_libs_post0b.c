@@ -7614,38 +7614,10 @@ void gl_func_0003D288(char *a0, int a1) {
 //   intra-USO call (0x01459B) + second-list walk; list structs
 //   untyped. Real-C STRUCTURAL body below. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int gl_func_0005166C();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3D2C8.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
 void gl_func_0003D2C8(char *o) {
-    char *a1 = o;
-    struct { int count; char *prev; char *cur; } it;
-    char *prev2, *cur2, *v, *t, *payload, *h;
-    it.count = 0;
-    it.cur = *(char **)(o + 0x10);
-    t = it.cur;
-    if (t != 0) { it.prev = t; it.cur = *(char **)(t + 4); v = *(char **)t; } else v = 0;
-    if (v != 0) {
-        do {
-            it.count++;
-            t = it.cur;
-            if (t != 0) { it.prev = t; it.cur = *(char **)(t + 4); v = *(char **)t; } else v = 0;
-        } while (v != 0);
-    }
-    gl_func_0005166C(&it);
-    cur2 = *(char **)(a1 + 0x10);
-    t = cur2;
-    if (t != 0) { prev2 = t; cur2 = *(char **)(t + 4); v = *(char **)t; } else v = 0;
-    while (v != 0) {
-        payload = *(char **)prev2;
-        h = *(char **)(payload + 0x28);
-        (*(int (**)())(*(char **)(h + 0x44)))(*(short *)(h + 0x40) + (int)payload);
-        t = cur2;
-        if (t != 0) { prev2 = t; cur2 = *(char **)(t + 4); v = *(char **)t; } else v = 0;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003D2C8);
-#endif
 
 // gl_func_0003D3C4 — STRUCTURAL PASS (0xBC / 47 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one

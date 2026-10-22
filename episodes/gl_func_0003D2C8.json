@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0003D2C8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:49:53.636647+00:00",
+  "end_time": "2026-10-22T15:49:53.636647+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:49:53.636647+00:00",
+      "assistant_text": "C++ donor: two {cur, nxt} iterators, inline first() on the counting loop. list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 63,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0003D2C8 (0xFC / 63 words): count the\n * owner's children with one iterator, pass &count to gl_ref_0005166C (baked\n * USO jal), then fire virtual slot 7 on every child with a second iterator.\n * The counting loop's entry call goes through an inline\n * first() { return next(); } (own return temp, v1); with it the second loop's\n * get() object lands in v0 as in the target.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_ref_0005166C(int *);\nstruct NodeB { char pad[0x28];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void reset(); };\nstruct Link { NodeB *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    NodeB *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n    NodeB *first() { return next(); }\n    NodeB *get() { return cur->obj; }\n};\nstruct Owner { char pad[0x10]; Link *head; };\nextern \"C\" void gl_func_0003D2C8(Owner *o) {\n    Iter a(o->head);\n    int n = 0;\n    if (a.first()) do n++; while (a.next());\n    gl_ref_0005166C(&n);\n    Iter b(o->head);\n    while (b.next()) b.get()->reset();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3D2C8.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003D2C8.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
