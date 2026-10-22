@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_func_00003B80",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T23:28:33.456523+00:00",
+  "end_time": "2026-10-22T23:28:33.456523+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T23:28:33.456523+00:00",
+      "assistant_text": "Exact from the run-124 NCC draft (10 raw words): the budget li landing before the fn spill store is an as1 per-source-line schedule effect; writing 'budget = K;' on the case line and 'fn = ...; break;' on the next line gives the target order in all three arms.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 230,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_func_00003B80.\n *\n * Image blitter (27A0's sibling for a plain {tex, w, h, mode} image): append\n * gSPTexture through the gfx context's inline next(), pick the TMEM budget and\n * the per-format load function from img->mode (case 0/1/2, no default: the\n * budget is then read uninitialised from its home), then load + draw the whole\n * image or, when w * h exceeds the budget, column strips of gl(budget / h).\n *  - Frame: NCC lays out declared scalars in DECLARATION order down to the\n *    lowest used home, so budget (116) and fn (92) sit five scalars apart.\n *  - The dead `h = 0;` in the strip branch keeps uopt from copy-propagating\n *    hh -> h (kit XXXI #3).\n *  - Each arm puts `budget = K;` on its own source line and `fn = ...; break;`\n *    on the next: as1 schedules per source line, and only this split gives the\n *    target's `lui; addiu; li budget; b; sw fn` (one line: the li drops into\n *    the delay slot). docs/IDO_CODEGEN.md kits XXXI / XXXIII.\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees. */\n#define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))\n#define G_TEXTURE 0xbb\n#define BOWTIE_VAL 0\n#define gSPTexture(pkt, s, t, level, tile, on) \\\n{ \\\n\tGfx *_g = (Gfx *)(pkt); \\\n\t_g->w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(BOWTIE_VAL, 16, 8) | \\\n\t\t\t_SHIFTL(level, 11, 3) | _SHIFTL(tile, 8, 3) | _SHIFTL(on, 0, 8)); \\\n\t_g->w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); \\\n}\nextern \"C\" { extern char D_00000000; extern char D_27A0_fn1032, D_27A0_fn272, D_27A0_fn288, D_27A0_fndef;\nint gl_func_00000000(...); }\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n};\n#define CTX (*(Ctx **)&D_00000000)\ntypedef void (*RFn)(Ctx *, int, int, int, int, int, int, int, int);\nextern \"C\" { extern char D_3B80_f0, D_3B80_f1, D_3B80_f2; }\nstruct Img { int tex; int w; int h; int mode; int width() { return w; } int height() { return h; } };\nextern \"C\" void gui_func_00003B80(Img *img, int x, int y) {\n    int budget;\n    int srcx = 0;\n    int w, h;\n    int hh, tile;\n    RFn fn;\n    int rem, sy, sx;\n    gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);\n    switch (img->mode) {\n    case 0: budget = 4096;\n        fn = (RFn)&D_3B80_f0; break;\n    case 1: budget = 2048;\n        fn = (RFn)&D_3B80_f1; break;\n    case 2: budget = 1024;\n        fn = (RFn)&D_3B80_f2; break;\n    }\n    w = img->width();\n    h = img->height();\n    if (budget < w * h) {\n        hh = h;\n        tile = gl_func_00000000(budget / h);\n        h = 0;\n        rem = img->width();\n        sy = (hh << 10) / hh;\n        while (rem != 0) {\n            w = img->width();\n            if (tile < rem) {\n                sx = (tile << 10) / tile;\n                fn(CTX, img->tex, w, img->h, srcx, 0, tile, hh, 0);\n                gl_func_00000000(CTX, x, y, tile, hh, sx, sy);\n                srcx += tile;\n                rem -= tile;\n                x += tile;\n            } else {\n                tile = rem;\n                fn(CTX, img->tex, w, img->h, srcx, 0, rem, hh, 0);\n                gl_func_00000000(CTX, x, y, rem, hh, (rem << 10) / rem, sy);\n                rem -= tile;\n            }\n        }\n    } else {\n        fn(CTX, img->tex, w, h, 0, 0, w, h, 0);\n        w = img->width();\n        h = img->height();\n        gl_func_00000000(CTX, x, y, w, h, (w << 10) / w, (h << 10) / h);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_3B80.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00003B80.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}

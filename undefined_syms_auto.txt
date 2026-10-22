@@ -4129,3 +4129,6 @@ D_27A0_fn1032 = 0x00000000;  /* gui_func_000027A0 NCC donor: per-format load-fun
 D_27A0_fn272 = 0x00000000;
 D_27A0_fn288 = 0x00000000;
 D_27A0_fndef = 0x00000000;
+D_3B80_f0 = 0x00000000;  /* gui_func_00003B80 NCC donor: per-format load-function addresses, mode 0/1/2 */
+D_3B80_f1 = 0x00000000;
+D_3B80_f2 = 0x00000000;

@@ -2002,6 +2002,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_27A0_DONOR := build/src/gui_uso/gui_uso_ncc_27A0.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_000027A0=$(GUI_27A0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_27A0_DONOR)
+# 3B80: image blitter, 27A0's sibling (230/230). Budget and fn assignments on
+# separate source lines per arm (as1 schedules per line).
+GUI_3B80_DONOR := build/src/gui_uso/gui_uso_ncc_3B80.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3B80_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000B274=$(GAMEUSO_B274_NM_DONOR)
