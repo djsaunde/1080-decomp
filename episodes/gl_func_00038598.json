@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00038598",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T15:10:32.695549+00:00",
+  "end_time": "2026-10-22T15:10:32.695549+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T15:10:32.695549+00:00",
+      "assistant_text": "C++ donor: {cur, nxt} list iterator; flag-gated matrix call + virtual slot 1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 41,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00038598 (0xA4 / 41 words): walk the\n * owner's child list; for each object with flag 0x200 rebuild its matrix\n * pair (callee(&m30, &m70)), then fire virtual slot 1.\n * The {cur, nxt} list iterator of gl_func_0003D48C (next() advances through\n * nxt->next); the object is held in s0 across the calls. The vptr at +0x28\n * needs the virtuals declared in a base whose data ends at +0x28 (declared\n * in Node itself, edg puts the vptr after all of Node's data).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nstruct Node385B {\n    char pad[8]; int flags; char padc[0x1C];\n    virtual void v0(); virtual void tick(); };\nstruct Node385 : Node385B {\n    char pad2c[4];\n    char m30[0x40];\n    char m70[0x40];\n};\nstruct Link385 { Node385 *obj; Link385 *next; };\nstruct Iter385 {\n    Link385 *cur, *nxt;\n    Iter385(Link385 *head) { nxt = head; }\n    Node385 *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Owner385 { char pad[0x10]; Link385 *head; };\nextern \"C\" void gl_func_00038598(Owner385 *o) {\n    Iter385 it(o->head);\n    for (Node385 *n = it.next(); n; n = it.next()) {\n        if (n->flags & 0x200) gl_func_00000000(n->m30, n->m70);\n        n->tick();\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_38598.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00038598.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

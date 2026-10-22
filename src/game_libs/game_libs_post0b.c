@@ -4159,44 +4159,10 @@ void gl_func_00038360(char *arg0) {
 //   mnemonic disasm + the node/handler structs typed; structural
 //   pass only, no byte body.
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
-/* gl_func_00038598: 41-insn list walk. 2026-09-04 agent-g: 3DF5C/3DB3C-family
- * pointer-form memory-homed iterator {cur@32(sp), next@36(sp)}; step here is
- * default-then-if with an unconditional cur store (target: sw in the beq delay)
- * and nx->next (no re-read: target lw t4,4(t3)). Residual: loop-var copy
- * (node v0 -> obj s0 via or-in-delay; every copy/ternary/for form coalesces).
- * For each node
- * obj (s0): if obj->8 & 0x200 call gl_func_00034458(obj+0x30, obj+0x70); then
- * dispatch obj->0x28's method (+0x14) with (obj + (s16)(+0x10)). */
-typedef struct Link38598 { char *data; struct Link38598 *next; } Link38598;
-typedef struct { Link38598 *cur; Link38598 *next; } Iter38598;
-#define ITER38598_STEP(p, nx, node) \
-    nx = (p)->next; (node) = 0; (p)->cur = nx; \
-    if (nx != 0) { (p)->next = nx->next; (node) = nx->data; }
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_38598.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). Same C++ list iterator as gl_func_0003D48C. */
 void gl_func_00038598(char *a0) {
-    Iter38598 it;
-    Iter38598 *p;
-    Link38598 *nx;
-    char *node;
-    char *obj;
-    char *sub;
-
-    p = &it;
-    p->next = *(Link38598 **)(a0 + 0x10);
-    ITER38598_STEP(p, nx, node);
-    while (node != 0) {
-        obj = node;
-        if (*(int *)(obj + 8) & 0x200) {
-            gl_func_00034458(obj + 0x30, obj + 0x70);
-        }
-        sub = *(char **)(obj + 0x28);
-        (*(void (**)(char *))(sub + 0x14))(*(short *)(sub + 0x10) + obj);
-        ITER38598_STEP(p, nx, node);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038598);
-#endif
 
 // gl_func_0003863C — STRUCTURAL PASS (0xEC / 59 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
