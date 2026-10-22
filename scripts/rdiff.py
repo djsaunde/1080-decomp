@@ -80,6 +80,8 @@ def disasm(obj, fn):
                           '--disassemble=' + fn, obj],
                          capture_output=True, text=True).stdout
     rows = []
+    at = {}
+    pending = []
     start = None
     for l in out.splitlines():
         mm = re.match(r'([0-9a-f]+) <', l)
@@ -100,11 +102,22 @@ def disasm(obj, fn):
                 args = re.sub(r'-?\d+\(sp\)', 'N(sp)', args)
                 args = re.sub(r'sp,sp,-?\d+', 'sp,sp,N', args)
                 args = re.sub(r',sp,\d+', ',sp,N', args)
+            at[int(m.group(1), 16)] = len(rows)
             rows.append([op, args, None, None])
             continue
-        m = re.match(r'\s+[0-9a-f]+:\s+R_MIPS_(\w+)\s+(\S+)', l)
-        if m and rows:
-            rows[-1][2], rows[-1][3] = m.group(1), m.group(2)
+        # objdump can print a reloc block out of place (bootup/post objects):
+        # attach each reloc to the instruction at its offset, not the last one.
+        m = re.match(r'\s+([0-9a-f]+):\s+R_MIPS_(\w+)\s+(\S+)', l)
+        if m:
+            k = at.get(int(m.group(1), 16))
+            if k is not None:
+                rows[k][2], rows[k][3] = m.group(2), m.group(3)
+            else:
+                pending.append((int(m.group(1), 16), m.group(2), m.group(3)))
+    for off, rt, sym in pending:  # relocs printed before their instruction
+        k = at.get(off)
+        if k is not None:
+            rows[k][2], rows[k][3] = rt, sym
     return rows
 
 
