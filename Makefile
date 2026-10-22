@@ -1905,10 +1905,13 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_43D8_DONOR := build/src/game_uso/game_uso_ncc_43D8.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000043D8=$(GAMEUSO_43D8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_43D8_DONOR)
-# D9CC: NM-only NCC donor (4 words: two unfilled branch delays at a 3-way join).
-GAMEUSO_D9CC_NM_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_NM_DONOR)
-build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D9CC_NM_DONOR)
+# D9CC: landing/turn-state classifier (524/524 words). The first gate is two
+# nested ifs and the early goto leaves both, so two branches hit an empty
+# inner end label and keep their nop delays. Host placeholder re-emits the
+# three .rodata doubles (+0x1F8..+0x210).
+GAMEUSO_D9CC_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D9CC_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000B274=$(GAMEUSO_B274_NM_DONOR)

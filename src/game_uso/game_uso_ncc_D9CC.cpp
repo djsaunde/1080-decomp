@@ -1,18 +1,23 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_0000D9CC (0x830 / 524 words).
+/* IDO 7.1 NCC (C++) donor for game_uso_func_0000D9CC (0x830 / 524 words).
  *
- * Per-frame landing/turn-state classifier. The cfe NM body in game_uso.c
- * compiles under NCC to the same 17-word residue; two edg spellings fix the
- * "andi temp coalesced into a1" t-ring cascade (kit XXI #2): the 0x108 field
- * is re-read through memory (no value local) in the `| 0x60000` store and the
- * `!= 0` test, and the three `vol * FF(arg0, K)` products of the 0xA1C..0xA24
- * block are written field-first (edg keeps source operand order).
- * RESIDUAL (4 words): at the three-way join before the 500.0f test the target
- * keeps `beqz t8; nop` and `bc1f; nop` and only the first gate becomes
- * `bc1fl` with the lui duplicated; both compilers convert all three. The two
- * doubles stay data-symbol reads here so their %lo immediates (0x1F8/0x200)
- * match without a link (as literals they colour the same).
- * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM.
- * docs/IDO_CODEGEN.md#kit-xxiii-agent-g-run-120. */
+ * Per-frame landing/turn-state classifier. Under NCC two edg spellings fix
+ * the cfe "andi temp coalesced into a1" t-ring cascade (kit XXI #2): the
+ * 0x108 field is re-read through memory (no value local) in the `| 0x60000`
+ * store and the `!= 0` test, and the three `vol * FF(arg0, K)` products of
+ * the 0xA1C..0xA24 block are written field-first (edg keeps source operand
+ * order).
+ * The first gate is TWO nested ifs (x > 30.0f, then the 0x1F0 mask), not one
+ * `&&`, and the early goto lands after BOTH closing braces. The mask test and
+ * the 0x22C test branch to the inner end label, which is directly followed by
+ * the outer one, so as1 finds no instruction to steal and keeps `beqz; nop` /
+ * `bc1f; nop`; only the first gate (whose target starts with the 500.0f lui)
+ * becomes `bc1fl` with the lui duplicated. Found with a branch-offset-aware
+ * diff (docs/IDO_CODEGEN.md kit XXV); the masked diffs showed it as a
+ * 4-word as1 cap.
+ * The two doubles are data-symbol reads whose addends carry the %lo offsets
+ * (0x1F8/0x200; the game_uso block is extracted unlinked); the host
+ * placeholder in game_uso.c re-emits the .rodata words.
+ * Spliced via REPLACE_FUNC_BODY into both trees. */
 extern "C" {
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef struct { int a, b; } Pair2;
@@ -55,7 +60,7 @@ void game_uso_func_0000D9CC(char *arg0) {
     sp28 = 0;
     var_v1 = (char *)FW(arg0, 0xB4);
     var_a3 = 0;
-    if ((FF(var_v1, 0x348) > 30.0f) && (*(u16 *)(var_v1 + 0xA10) & 0x1F0)) {
+    if (FF(var_v1, 0x348) > 30.0f) { if (*(u16 *)(var_v1 + 0xA10) & 0x1F0) {
         temp_f2 = FF(var_v1, 0xA1C);
         if (temp_f2 < 0.0f) {
             var_f0 = -temp_f2;
@@ -110,6 +115,7 @@ void game_uso_func_0000D9CC(char *arg0) {
             }
             var_v1 = (char *)FW(arg0, 0xB4);
         }
+    }
 after_24:;
     }
     if (FF(var_v1, 0x9D0) < 500.0f) {
