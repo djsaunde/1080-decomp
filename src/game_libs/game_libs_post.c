@@ -5658,90 +5658,16 @@ int gl_func_00023838(int a0) {
 //   computed jump-table + fixed-target resolve need USO reloc infra.
 //   Name pre-checked: no extern reuse (collision-safe).
 //   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-/* 2026-10-20 (agent-c run 114): re-decoded from the words. The two leading
- * callees are the in-file gl_func_00023B44 (begin) and gl_func_00023B98
- * (table). A NONZERO begin result takes the short path (*done = 0, kind
- * 2) into the common tail switch on a0, which still returns the result.
- * The size is computed into one local twice (the target keeps the dead
- * first store). Levers: `case 4: break;` keeps the 5-entry table,
- * `(char *)((int)tbl + a1 * 0x10)` gives addu tbl-first, and the
- * `if (mode == 0) k = 5; else k = 2;` shape gives the b-around-b tail.
- * Bytes are identical to the target apart from relocations. The jumptable
- * (target .rodata +0xEA0) is what keeps it from being promoted. */
-extern int gl_func_00023B44();
-extern char *gl_func_00023B98();
+/* gl_func_00023914: resource acquire (0x1F4 / 125 words). WIRED via
+ * REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2 donor
+ * unit game_libs_o2_23914.c (125/125 words; agent-c run 114 decode, run 122
+ * baked-jal fix); the splice renames the donor-local .rodata jumptable reloc
+ * to gl_func_00023914_rodata, pinned to the USO table at +0xEA0. Body below
+ * is a placeholder for the splice. */
 int gl_func_00023914(int a0, int a1, int *a2) {
-    int size;
-    char *tbl;
-    char *e;
-    int kind;
-    int mode;
-    int src;
-    int r;
-    int k;
-
-    r = gl_func_00023B44(a0, a1, a2);
-    if (r != 0) {
-        *a2 = 0;
-        k = 2;
-    } else {
-        tbl = gl_func_00023B98(a0);
-        e = (char *)((int)tbl + a1 * 0x10);
-        size = *(int *)(e + 0x14);
-        size = (size + 0xF) & ~0xF;
-        kind = *(s8 *)(e + 0x18);
-        mode = *(s8 *)(e + 0x19);
-        src = *(int *)(e + 0x10);
-        switch (mode) {
-        case 0:
-            r = gl_func_00000000(a0, a1, size);
-            if (r == 0) return r;
-            break;
-        case 1:
-            r = gl_func_00000000(a0, size, 1, a1);
-            if (r == 0) return r;
-            break;
-        case 2:
-            r = gl_func_00000000(a0, size, 0, a1);
-            if (r == 0) return r;
-            break;
-        case 3:
-            r = gl_func_00000000(a0, size, 2, a1);
-            if (r == 0) return r;
-            break;
-        case 4:
-            break;
-        }
-        *a2 = 1;
-        if (kind == 1) {
-            gl_func_00000000(src, r, size, *(s16 *)(tbl + 2));
-        } else {
-            gl_func_00000000(src, r, size, kind);
-        }
-        if (mode == 0) {
-            k = 5;
-        } else {
-            k = 2;
-        }
-    }
-    switch (a0) {
-    case 0:
-        gl_func_00000000(a1, k);
-        break;
-    case 1:
-        gl_func_00000000(a1, k);
-        break;
-    case 2:
-        gl_func_00000000(a1, k);
-        break;
-    }
-    return r;
+    volatile int ret = a0;
+    return ret;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023914);
-#endif
 
 extern int gl_ref_00038204();
 

@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00023914",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T21:58:04.451857+00:00",
+  "end_time": "2026-10-22T21:58:04.451857+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T21:58:04.451857+00:00",
+      "assistant_text": "Exact via the 29CCC jumptable donor-splice recipe. Decode fix from the raw diff: the two leading callees are the baked in-unit jals 0x381B0 / 0x38204 (gl_ref_ pins), not the in-file 23B44 / 23B98. The switch table rides gl_func_00023914_rodata = 0xEA0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 125,
+  "initial_m2c_source": null,
+  "final_source": "int gl_func_00023914(int a0, int a1, int *a2) {\n    int size;\n    char *tbl;\n    char *e;\n    int kind;\n    int mode;\n    int src;\n    int r;\n    int k;\n\n    r = gl_ref_000381B0(a0, a1, a2);\n    if (r != 0) {\n        *a2 = 0;\n        k = 2;\n    } else {\n        tbl = (char *)gl_ref_00038204(a0);\n        e = (char *)((int)tbl + a1 * 0x10);\n        size = *(int *)(e + 0x14);\n        size = (size + 0xF) & ~0xF;\n        kind = *(s8 *)(e + 0x18);\n        mode = *(s8 *)(e + 0x19);\n        src = *(int *)(e + 0x10);\n        switch (mode) {\n        case 0:\n            r = gl_func_00000000(a0, a1, size);\n            if (r == 0) return r;\n            break;\n        case 1:\n            r = gl_func_00000000(a0, size, 1, a1);\n            if (r == 0) return r;\n            break;\n        case 2:\n            r = gl_func_00000000(a0, size, 0, a1);\n            if (r == 0) return r;\n            break;\n        case 3:\n            r = gl_func_00000000(a0, size, 2, a1);\n            if (r == 0) return r;\n            break;\n        case 4:\n            break;\n        }\n        *a2 = 1;\n        if (kind == 1) {\n            gl_func_00000000(src, r, size, *(s16 *)(tbl + 2));\n        } else {\n            gl_func_00000000(src, r, size, kind);\n        }\n        if (mode == 0) {\n            k = 5;\n        } else {\n            k = 2;\n        }\n    }\n    switch (a0) {\n    case 0:\n        gl_func_00000000(a1, k);\n        break;\n    case 1:\n        gl_func_00000000(a1, k);\n        break;\n    case 2:\n        gl_func_00000000(a1, k);\n        break;\n    }\n    return r;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_23914.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00023914.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
