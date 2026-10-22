@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000233E4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T19:29:51.801569+00:00",
+  "end_time": "2026-10-22T19:29:51.801569+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T19:29:51.801569+00:00",
+      "assistant_text": "Decode fix: the conditional skips both calls; handler(p, 0) moves inside the if.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 44,
+  "initial_m2c_source": null,
+  "final_source": "/* gl_func_000233E4 (0xB0, 44 insns): run-list consumer over the halfword-indexed\n * byte stream at *(D+0x2028) (same buffer as gl_func_00022FC0 / gl_func_000232E8).\n * cur = buf16[idx]; cnt = buf[cur++]; per element: p = poll(1, buf[cur++])\n * (baked jal 0x38174 = gl_ref_00038174); if lookup(1, p) == 0 (jal-0 USO slot)\n * run the TU-local deregister (baked jal 0x37B00 = gl_ref_00037B00) and then\n * handler(p, 0) (jal-0 USO slot), both inside the if.\n * `*(cur + buf)` for the run-length read gives the index-first `addu t8,s1,v0`\n * (only through the struct-typed alias gl_d_232E8 shared with gl_func_000232E8;\n * the cast view of D_00000000 flips it); the struct view keeps &D in s3 across\n * the loop (`lw t9,0x2028(s3)` per element).\n * 2026-10-22 (agent-c run 120) EXACT: the \"branch-likely cap\" was a decode error --\n * the `bnez v0` skips BOTH calls (its target is the loop test, not the handler);\n * a branch-target-masked diff hid it. Moving handler(p, 0) into the if is exact. */\nextern int gl_ref_00037B00();\n#define GS_233E4 gl_d_232E8\nvoid gl_func_000233E4(int idx) {\n    int cur;\n    int cnt;\n    int p;\n\n    cur = ((unsigned short *)GS_233E4.buf)[idx];\n    cnt = *(cur + GS_233E4.buf);\n    cur++;\n    while (cnt > 0) {\n        cnt--;\n        p = gl_ref_00038174(1, GS_233E4.buf[cur++]);\n        if (gl_func_00000000(1, p) == 0) {\n            gl_ref_00037B00(p);\n            gl_func_00000000(p, 0);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000233E4.s",
+    "segment": "game_libs_post",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
