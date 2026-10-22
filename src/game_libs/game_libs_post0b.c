@@ -17677,7 +17677,7 @@ typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } S
 #define SHL4B(v, s, w) ((unsigned int)(((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
 
 typedef struct { char pad[0x30]; V4B p; } Cam4B;
-extern struct { char pad[0xA0]; Cam4B c; } D_4BAF4_cam;
+extern Cam4B D_4BAF4_cam; /* pinned at 0xA0 (blank USO data ref, base held in a register) */
 void gl_func_0004BAF4(char *self) {
     V4B pos;
     f32 out[17];
@@ -17699,7 +17699,7 @@ void gl_func_0004BAF4(char *self) {
     u32 r;
 
     {
-        Cam4B *cam = &D_4BAF4_cam.c;
+        Cam4B *cam = &D_4BAF4_cam;
         pos.x = cam->p.x;
         pos.y = cam->p.y;
         pos.z = cam->p.z;

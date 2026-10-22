@@ -3971,7 +3971,7 @@ D_bu_ro_dpool = 0x00000000;  /* f64 view of D_bu_ro_pool (bootup.uso RoData sect
 D_493AC_a = 0x00000000;  /* gl_func_000493AC per-access aliases for the +0x1C4 flags word (blank lui/lw, stop &D CSE) */
 D_493AC_b = 0x00000000;
 D_493AC_c = 0x00000000;
-D_4BAF4_cam = 0x00000000;  /* gl_func_0004BAF4 camera block base (blank lui/addiu +0xA0 held base) */
+D_4BAF4_cam = 0x000000A0;  /* gl_func_0004BAF4 camera block (blank USO data ref: lui 0 / addiu 0xA0 held base, fields at +0x30) */
 D_38108_d = 0x00000000;  /* gl_func_00038108: 4th report arg (USO load-resolved, distinct from the &D CSE) */
 D_4e760_f0 = 0x0;  /* gl_func_0004E760: bootup.uso RoData base, per-access alias (+0x1B70 table) */
 D_4e760_f1 = 0x0;
@@ -4098,3 +4098,4 @@ game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor
 D_43D8_fmin = 0x00000000;  /* game_uso_func_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
 D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
 gl_ref_0001E6B0 = 0x0001E6B0;  /* gl_func_00035B1C blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
+D_39E24_c = 0x000000A0;  /* gl_func_00039E24 camera block (same blank USO data ref as D_4BAF4_cam: base 0xA0, fields at +0x30) */
