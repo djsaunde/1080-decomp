@@ -212,7 +212,6 @@ void mgrproc_uso_func_000005D0(char *a0) {
     } while (++count < 4);
 }
 
-#ifdef NON_MATCHING
 /* mgrproc_uso_func_00000700: 3-case state-init dispatcher. 90.05 -> 93.31
  * (2026-07-10): real callees wired from expected relocs (all three case
  * calls are mgrproc_uso_func_000005D0, NOT func_0000019C as the old body
@@ -266,57 +265,12 @@ void mgrproc_uso_func_000005D0(char *a0) {
 #endif
 extern struct { char pad[0x154]; unsigned short *v; } import_800201EC;
 extern char import_8005C6E0;
-mgrproc_uso_func_00000700(arg0, arg1) char *arg0; int arg1; {
-    register char *base; /* s0; case-1 dead address of import_8005C6E0 */
-    *(int*)(FW(arg0, 0x8)) = 3;
-    FW(FW(arg0, 0x8), 0x4) = 0;
-    switch (arg1) { /* irregular */
-    case 1:
-        base = &import_8005C6E0;
-        if (*(s32 *)0xA0000284 == 0x240B17D7) {
-            FW(FW(arg0, 0x8), 0x8) = 4;
-        } else {
-            FW(FW(arg0, 0x8), 0x8) = 3;
-        }
-        FW(FW(arg0, 0x8), 0xC) = 2;
-        FW(FW(arg0, 0x8), 0x10) = 3;
-        FW(FW(arg0, 0x8), 0x14) = 4;
-        FW(FW(arg0, 0x8), 0x18) = 5;
-        mgrproc_uso_func_000005D0(arg0);
-        break;
-    case 2:
-        FW(FW(arg0, 0x8), 0x8) = 5;
-        FW(FW(arg0, 0x8), 0xC) = 2;
-        FW(FW(arg0, 0x8), 0x10) = 3;
-        FW(FW(arg0, 0x8), 0x14) = 4;
-        FW(FW(arg0, 0x8), 0x18) = 5;
-        FW(FW(arg0, 0x8), 0x1C) = 6;
-        mgrproc_uso_func_000005D0(arg0);
-        FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;
-        break;
-    case 3:
-        FW(FW(arg0, 0x8), 0x8) = 6;
-        FW(FW(arg0, 0x8), 0xC) = 2;
-        FW(FW(arg0, 0x8), 0x10) = 3;
-        FW(FW(arg0, 0x8), 0x14) = 4;
-        FW(FW(arg0, 0x8), 0x18) = 5;
-        FW(FW(arg0, 0x8), 0x1C) = 6;
-        FW(FW(arg0, 0x8), 0x20) = 7;
-        mgrproc_uso_func_000005D0(arg0);
-        FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;
-        if (import_800201EC.v[1] == 3) {
-            FW(FW(arg0, 0x8), 0x38) = 5;
-        } else if (import_800201EC.v[1] == 4) {
-            FW(FW(arg0, 0x8), 0x38) = 6;
-        } else {
-            FW(FW(arg0, 0x8), 0x38) = 7;
-        }
-        break;
-    }
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp (the NM body that was here, as
+ * C++; no cfe closing-brace b-epilogue). Placeholder spliced over. */
+int mgrproc_uso_func_00000700(char *arg0, int arg1) {
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00000700);
-#endif
 
 /* 27-insn -O0 cleanup wrapper, byte-matched at -O0. The `register int z=0`
  * lands in callee-saved s0 (the target's shared-zero reg); D_0000014C (defined
@@ -332,7 +286,6 @@ void mgrproc_uso_func_000009A8(int *a0) {
     D_0000014C = z;
 }
 
-#ifdef NON_MATCHING
 /* mgrproc_uso_func_00000A14 — BEST BODY (IMPROVED over checked-in), still CAP.
  * VERIFIED 2026-07-03 in-tree (build/non_matching, -O0 IDO 7.1): 42/48 words,
  * build 50 insns vs target 48 (checked-in body was 37/48, build 51).
@@ -349,28 +302,12 @@ void mgrproc_uso_func_000009A8(int *a0) {
  * return-branch: `lw v0,0x28(sp); b epi; nop; b+1; nop` vs target
  * `lw v0,0x28(sp); b+1; nop`. Same cap as arcproc 0xB4/0x12C; IDO 5.3 and all
  * flag/shape probes negative. Leave INCLUDE_ASM. */
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp (the NM body that was here, as
+ * C++; no cfe closing-brace b-epilogue). Placeholder spliced over. */
 s32 mgrproc_uso_func_00000A14(s32 *arg0, s32 *arg1) {
-    union { s32 arr[8]; s32 head; } buf;
-    s32 count;
-    s32 acc;
-    s32 i;
-    register s32 r;
-
-    acc = 0;
-    count = import_000B574C(*arg0);
-    mgrproc_uso_D_01F97C(*arg0, &buf);
-    i = 0;
-    if (count > 0)
-        do {
-            r = import_000AE5B0(buf.arr[i]);
-            acc |= r;
-        } while (++i < count);
-    *arg1 = buf.head;
-    return acc;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00000A14);
 /* func_00000A14_pad (0xC trailing block-alignment zeros) is added by the
  * block1 yay0 concat rule's intermediate pad-to-0xAE0, not a GLOBAL_ASM here:
  * asm-processor rejects the 3-word pad block as "too short". */
-#endif

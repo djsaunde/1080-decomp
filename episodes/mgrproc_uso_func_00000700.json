@@ -1,0 +1,33 @@
+{
+  "function_name": "mgrproc_uso_func_00000700",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:16:10.249574+00:00",
+  "end_time": "2026-10-22T17:16:10.249603+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:16:10.249598+00:00",
+      "assistant_text": "Exact: the cfe -O0 NM body compiled as C++ with NCC -O0. edg emits no closing-brace b-epilogue marker; that +2-word marker was the whole cfe residual.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 170,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donors for mgrproc_uso_func_00000700 (0x2A8 / 170\n * words) and mgrproc_uso_func_00000A14 (0xC0 / 48 words): the cfe NM bodies\n * unchanged (700's K&R definition spelled as a prototype). mgrproc is C++;\n * edg -O0 emits no closing-brace b-epilogue, which was the whole cfe residual\n * (+2 words each). Spliced into mgrproc_uso_o0_19C.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\ntypedef int s32;\n#define FW(p, o) (*(int *)((char *)(p) + (o)))\nstruct IC { int pad[0x13]; int v; };\nextern struct IC import_800200E4;\nextern struct { char pad[0x154]; unsigned short *v; } import_800201EC;\nextern char import_8005C6E0;\nvoid mgrproc_uso_func_000005D0(char *a0);\nint import_000B574C(...);\nint mgrproc_uso_D_01F97C(...);\nint import_000AE5B0(...);\n\nint mgrproc_uso_func_00000700(char *arg0, int arg1) {\n    register char *base; /* s0; case-1 dead address of import_8005C6E0 */\n    *(int*)(FW(arg0, 0x8)) = 3;\n    FW(FW(arg0, 0x8), 0x4) = 0;\n    switch (arg1) { /* irregular */\n    case 1:\n        base = &import_8005C6E0;\n        if (*(s32 *)0xA0000284 == 0x240B17D7) {\n            FW(FW(arg0, 0x8), 0x8) = 4;\n        } else {\n            FW(FW(arg0, 0x8), 0x8) = 3;\n        }\n        FW(FW(arg0, 0x8), 0xC) = 2;\n        FW(FW(arg0, 0x8), 0x10) = 3;\n        FW(FW(arg0, 0x8), 0x14) = 4;\n        FW(FW(arg0, 0x8), 0x18) = 5;\n        mgrproc_uso_func_000005D0(arg0);\n        break;\n    case 2:\n        FW(FW(arg0, 0x8), 0x8) = 5;\n        FW(FW(arg0, 0x8), 0xC) = 2;\n        FW(FW(arg0, 0x8), 0x10) = 3;\n        FW(FW(arg0, 0x8), 0x14) = 4;\n        FW(FW(arg0, 0x8), 0x18) = 5;\n        FW(FW(arg0, 0x8), 0x1C) = 6;\n        mgrproc_uso_func_000005D0(arg0);\n        FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;\n        break;\n    case 3:\n        FW(FW(arg0, 0x8), 0x8) = 6;\n        FW(FW(arg0, 0x8), 0xC) = 2;\n        FW(FW(arg0, 0x8), 0x10) = 3;\n        FW(FW(arg0, 0x8), 0x14) = 4;\n        FW(FW(arg0, 0x8), 0x18) = 5;\n        FW(FW(arg0, 0x8), 0x1C) = 6;\n        FW(FW(arg0, 0x8), 0x20) = 7;\n        mgrproc_uso_func_000005D0(arg0);\n        FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;\n        if (import_800201EC.v[1] == 3) {\n            FW(FW(arg0, 0x8), 0x38) = 5;\n        } else if (import_800201EC.v[1] == 4) {\n            FW(FW(arg0, 0x8), 0x38) = 6;\n        } else {\n            FW(FW(arg0, 0x8), 0x38) = 7;\n        }\n        break;\n    }\n}\n\n}\n",
+  "metadata": {
+    "source_path": "src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp",
+    "asm_path": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00000700.s",
+    "segment": "mgrproc_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O0 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC -O0 donor spliced via REPLACE_FUNC_BODY into mgrproc_uso_o0_19C.c.o; ROM byte-identical; verify-blocks mgrproc block1 OK jal=0 lo16=0 other=0; objdiff 100%."
+  }
+}
