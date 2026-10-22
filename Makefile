@@ -178,6 +178,12 @@ build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: NON_MATCHING_TRUNCATE_TE
 build/src/bootup_uso/bootup_uso_o0_FBCC.c.o: TRUNCATE_TEXT := 0x5C
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o: TRUNCATE_TEXT := 0x4C8
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: OPT_FLAGS := -O0
+# FC28: -O0 C++ donor(s) for func_0000FC28 func_0000FD4C func_0000FEE8 (edg -O0 has no dead closing-brace branch)
+BOOTUP_FC28_DONOR := build/src/bootup_uso/bootup_uso_ncc_FC28.cpp.o
+$(BOOTUP_FC28_DONOR): OPT_FLAGS := -O0
+build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: REPLACE_FUNC_BODY += func_0000FC28=$(BOOTUP_FC28_DONOR) func_0000FD4C=$(BOOTUP_FC28_DONOR) func_0000FEE8=$(BOOTUP_FC28_DONOR)
+build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: $(BOOTUP_FC28_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x4C8
 # 2026-07-10: func_000102A4 (-O0 island) carved out of tail2 into o0_1024C.
 # 2026-09-05: the 2-word "func_000102E8" (jr ra; nop) that headed tail2 was
 # 102A4's dead -O0 `$exit` pair (102A4 is a fall-off fn: its own `jr ra; nop`
@@ -252,18 +258,18 @@ build/src/bootup_uso/bootup_uso_o0_11A34.c.o: TRUNCATE_TEXT := 0x80
 build/src/bootup_uso/bootup_uso_o0_11AB4.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11AB4.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_11AB4.c.o: TRUNCATE_TEXT := 0xA8
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail3a_mid.c.o: TRUNCATE_TEXT := 0x114
-build/src/bootup_uso/bootup_uso_o0_11C70.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11C70.c.o: OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_o0_11C70.c.o: TRUNCATE_TEXT := 0xD0
-build/src/bootup_uso/bootup_uso_o0_11D40.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11D40.c.o: OPT_FLAGS := -O0
-# 0x38 = the 0x30 body + the shipped build's ONE dead `$exit: jr ra; nop` pair
-# (0x11D70, formerly the -O2 -g3 "empty fn" unit bootup_uso_tail3a_bot.c, retired
 # 11B5C: -O0 C++ donor(s) for func_00011B5C (edg -O0 has no dead closing-brace branch)
 BOOTUP_11B5C_DONOR := build/src/bootup_uso/bootup_uso_ncc_11B5C.cpp.o
 $(BOOTUP_11B5C_DONOR): OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: REPLACE_FUNC_BODY += func_00011B5C=$(BOOTUP_11B5C_DONOR)
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: $(BOOTUP_11B5C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x114
+build/src/bootup_uso/bootup_uso_tail3a_mid.c.o: TRUNCATE_TEXT := 0x114
+build/src/bootup_uso/bootup_uso_o0_11C70.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11C70.c.o: OPT_FLAGS := -O0
+build/src/bootup_uso/bootup_uso_o0_11C70.c.o: TRUNCATE_TEXT := 0xD0
+build/src/bootup_uso/bootup_uso_o0_11D40.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11D40.c.o: OPT_FLAGS := -O0
+# 0x38 = the 0x30 body + the shipped build's ONE dead `$exit: jr ra; nop` pair
+# (0x11D70, formerly the -O2 -g3 "empty fn" unit bootup_uso_tail3a_bot.c, retired
 # 2026-09-05). Our -O0 emits two dead pairs after a frameless fn whose last
 # statement is a return; TRUNCATE clips the second. See docs/IDO_CODEGEN.md
 # #o0-two-block-predicate-not-adjacent-leaf-cap (mgrproc 140+168 precedent).

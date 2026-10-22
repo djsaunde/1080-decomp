@@ -19,122 +19,17 @@ extern char D_0000C5BC;
 extern char D_0000C5C4;
 extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $at-fused scratch store/reload */
 
-#ifdef NON_MATCHING
-/* func_0000FC28: 73-insn (0x124) constructor + init chain, returns a0.
- *
- * 2026-07-10: 56.23% -> 97.06%. 2026-09-05: -> 73/75 insns byte-exact;
- * the ONLY residual is the documented -O0 return-value dead-double-b
- * toolchain gap (see FD4C below for the full lever writeup — FC28 is the
- * smaller sibling, same recipe).
- * Levers: (1) SHORT-CIRCUIT alloc-fallback `if (x != 0 || (x = alloc(N))
- * != 0) { arm }` (docs/IDO_CODEGEN.md -O0 alloc-cascade lever #2). The
- * 2026-07-10 body used nested `if(x==0){x=alloc;} if(x!=0){...}` and
- * mis-reported "byte-exact except the double-b": that shape re-tests x
- * on the no-alloc path too, so the target's `bnez t6,.L64` (straight to
- * `lw s0`) came out as `bnez t6,.L58` (into the `lw t7; beqz t7` re-test)
- * — 3 wrong branch targets (t6/s0/s1 bnez). `||` puts the null-test on
- * the alloc path only: `bnez x,.arm; alloc; beqz x,.skip` exactly. A
- * `goto` at -O0 would emit a 2-insn branch-over (bnez;b), so no gotos;
- * the outer `||`'s false-exit IS the a0-alloc-fail `beqz t7,end`.
- * (2) `register void*
- * s0,s1` (callee-saved cascade temps, no home spill). (3) TAIL recycles
- * the now-dead s0/s1: `s0=a0; s1=&D_0000C594; *(int*)(s0+0xC)=(int)s1;`
- * reproduces `lw s0; lui s1; sw s1,0xC(s0)`, and `s0=a0; f(scratch,s0)`
- * the final-call arg. (4) D_bootup_scratch0 (int-typed base-0 alias of
- * D_00000000, undefined_syms) $at-fuses the *&D store/reload (lui/sw)
- * vs the address-of-cast's lui/addiu/sw. RESIDUAL = the dead second
- * `b epilogue` only (value-return -O0 cap, NOT C-fixable; re-probed
- * 2026-09-05: switch/if(1)/for(;;)/goto-end/same-line-brace/ternary tails
- * all keep or worsen it). NM stays. */
+/* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void *func_0000FC28(void *a0) {
-    register void *s0, *s1;
-
-    if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
-        s0 = a0;
-        if (s0 != 0 || (s0 = (void*)func_00000000(0x50)) != 0) {
-            s1 = s0;
-            if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
-                func_00000000(s1, &D_0000C58C);
-                *(int*)((char*)s1 + 0x28) = (int)&D_00000000;
-            }
-            *(int*)((char*)s0 + 0x28) = (int)&D_00000000;
-        }
-        *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
-        s0 = a0;
-        s1 = (void*)&D_0000C594;
-        *(int*)((char*)s0 + 0x0C) = (int)s1;
-        D_bootup_scratch0 = func_00000000(a0, 0);
-        s0 = a0;
-        func_00000000(D_bootup_scratch0, s0);
-    }
-    return a0;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000FC28);
-#endif
 
-#ifdef NON_MATCHING
-/* func_0000FD4C: 85-insn (0x154) alloc-chain + multi-init helper, returns a0.
- * Larger sibling of func_0000FC28 (+ a1/a2 global stashes, 0x44/0x48 zeroing).
- *
- * 2026-07-10: 58.18% -> 97.47%. 2026-09-05: -> 85/87 insns byte-exact; the
- * ONLY residual is the documented -O0 return-value dead-double-b toolchain
- * gap: our cc emits `lw v0; b epi; nop; b epi(DEAD); nop`, the target has a
- * single b — value-return -O0 cap,
- * docs/IDO_CODEGEN.md#feedback-ido-o0-return-value-dead-double-b, NOT C-fixable.
- *
- * LEVER KIT (the reusable part — cracked all diffs except the double-b):
- * (1) SHORT-CIRCUIT ALLOC-FALLBACK: `if (x != 0 || (x = alloc(N)) != 0) { arm }`
- *     (docs/IDO_CODEGEN.md -O0 alloc-cascade lever #2). IDO -O0 renders
- *     `if(E) goto L;` as a 2-insn branch-over (`b!E over; b L`), so no gotos;
- *     but nested `if(x==0){x=alloc;} if(x!=0){arm}` (the 2026-07-10 body,
- *     which mis-reported "byte-exact except the double-b") re-tests x on the
- *     no-alloc path, so each cascade `bnez x` landed on the `lw t;beqz t`
- *     re-test instead of skipping past it (3 wrong bnez targets: t6/s0/s1).
- *     `||` puts the null-test on the alloc path only: `bnez x,.arm; alloc;
- *     beqz x,.skip` exactly; the outer `||` false-exit IS the a0-alloc-fail
- *     `beqz t7,end`.
- * (2) `register void *s0,s1;` = the callee-saved cascade temps (or s0,v0 / or
- *     s1,s0 — no home spill; plain locals would stack-home and lose the shape).
- * (3) TAIL RE-USE of the now-dead register vars as scratch (the target recycles
- *     $s0/$s1 once the cascade vars die): `s0=a0; s1=&D_0000C5AC;
- *     *(int*)(s0+0xC)=(int)s1;` -> `lw s0; lui s1; sw s1,0xC(s0)`; and
- *     `s0=a0; f(scratch,s0)` for the last call's arg.
- * (4) struct-typed func_00000008 (member .f2C/.f38) $at-fuses the global stashes
- *     (lui at; sw ...(at)) vs the (char*)&sym+off cast's lui/addiu/sw.
- * (5) D_bootup_scratch0 = int-typed base-0 alias of D_00000000 (undefined_syms)
- *     $at-fuses the *&D scratch store + reload.
- * RESIDUAL = the dead double-b only. NM stays. */
+/* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void *func_0000FD4C(void *a0, int a1, int a2) {
-    register void *s0, *s1;
-
-    if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
-        s0 = a0;
-        if (s0 != 0 || (s0 = (void*)func_00000000(0x50)) != 0) {
-            s1 = s0;
-            if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
-                func_00000000(s1, &D_0000C5A4);
-                *(int*)((char*)s1 + 0x28) = (int)&D_00000000;
-            }
-            *(int*)((char*)s0 + 0x28) = (int)&D_00000000;
-        }
-        *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
-        s0 = a0;
-        s1 = (void*)&D_0000C5AC;
-        *(int*)((char*)s0 + 0x0C) = (int)s1;
-        func_00000008.f2C = a1;
-        func_00000008.f38 = a2;
-        *(int*)((char*)a0 + 0x44) = 0;
-        *(int*)((char*)a0 + 0x48) = 0;
-        D_bootup_scratch0 = func_00000000(a0, 0);
-        s0 = a0;
-        func_00000000(D_bootup_scratch0, s0);
-    }
-    return a0;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000FD4C);
-#endif
 
 /* func_0000FEA0: 18-insn indirect-call wrapper:
  *   p = a0->field_28; (*p->field_64)(a0 + (short)p->field_60).
@@ -182,44 +77,8 @@ void func_0000FEA0(char *a0) {
  * cvt.s.w + div.s by 255.0 chain + &D descriptors. Full body
  * INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no
  * episode; tautology-trap rule). */
-#ifdef NON_MATCHING
-/* 2026-09-04 REBUILD 43.3 -> cap (128/130 words, 2 = the -O0 value-return
- * dead-double-b toolchain gap shared with FC28/FD4C above; everything else
- * byte-exact incl. relocs). Levers: fused-|| get-or-create cascades (outer
- * on the a0 home, inner on register s -> s0); second register d -> s1 for
- * the 0xC descriptor store; s re-based to a0+0x4C / a0+0x5C for the two
- * colour quads; and the /255 channels spelled `(float)(0, N) / 255.0f` --
- * the COMMA expression is the only spelling found that stops cfe folding
- * an int/float constant quotient at -O0 (li N; mtc1; cvt.s.w; lui 0x437f;
- * div.s, incl. the 255/255 = 1.0 one). All plain casts/pointer casts/
- * sizeof/char literals fold to a .rodata lwc1. */
+/* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 void *func_0000FEE8(char *a0) {
-    register char *s;
-    register char *d;
-    if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {
-        if ((s = a0) != 0 || (s = (char *)func_00000000(0x2C)) != 0) {
-            func_00000000(s, &D_0000C5BC);
-            *(char **)(s + 0x28) = &D_00000000;
-        }
-        *(char **)(a0 + 0x28) = &D_00000000;
-        s = a0;
-        d = &D_0000C5C4;
-        *(char **)(s + 0xC) = d;
-        s = a0 + 0x4C;
-        *(float *)(s + 0) = (float)(0, 119) / 255.0f;
-        *(float *)(s + 4) = (float)(0, 117) / 255.0f;
-        *(float *)(s + 8) = (float)(0, 229) / 255.0f;
-        *(float *)(s + 12) = (float)(0, 255) / 255.0f;
-        s = a0 + 0x5C;
-        *(float *)(s + 0) = (float)(0, 192) / 255.0f;
-        *(float *)(s + 4) = (float)(0, 194) / 255.0f;
-        *(float *)(s + 8) = (float)(0, 229) / 255.0f;
-        *(float *)(s + 12) = (float)(0, 255) / 255.0f;
-        *(int *)(a0 + 0x80) = 0;
-        func_00000000(a0);
-    }
-    return a0;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000FEE8);
-#endif
