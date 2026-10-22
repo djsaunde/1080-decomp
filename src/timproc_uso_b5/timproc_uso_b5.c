@@ -3104,6 +3104,7 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
             sp36C.unk0 = 0.5f;
             sp36C.unk4 = 0.5f;
             sp36C.unk8 = 0.5f;
+            if (1) {} /* BB split: 0.5f lui/mtc1 + stores before the 1.0f group (run 125, raw 86 -> 76) */
             sp34C.unk0 = 1.0f;
             sp34C.unk4 = 1.0f;
             sp34C.unk8 = 1.0f;
