@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0003DB38",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:08:10.289537+00:00",
+  "end_time": "2026-10-22T17:08:10.289537+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:08:10.289537+00:00",
+      "assistant_text": "C++ donor: {cur, nxt list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 45,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_0003DB38 (0xB4 / 45 words): among the\n * children, the one whose +0x38 value is the smallest above ref (a1's own value\n * or a pool default) and below a pool limit. The loop variable's registers are\n * colored unconstrained, in first-occurrence (bitpos) order: the dead `n = 0`\n * before the loop makes n occur before the next() temp, so n takes v0 and the\n * temp a0 as in the target.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" float D_00000000[];\nstruct Node { char pad[0x38]; float v; };\nstruct Link { Node *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    Node *first() { return next(); }\n    Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Owner { char pad[0x10]; Link *head; };\nextern \"C\" Node *game_libs_func_0003DB38(Owner *o, Node *a1) {\n    float ref = a1 ? a1->v : D_00000000[0x1AC4 / 4];\n    Iter it(o->head);\n    float lim = D_00000000[0x1AC8 / 4];\n    Node *best = 0;\n    Node *n = 0;\n    for (n = it.first(); n; n = it.next())\n        if (ref < n->v && n->v < lim) { best = n; lim = n->v; }\n    return best;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3DB38.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0003DB38.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
