@@ -2403,8 +2403,14 @@ int gl_func_00066210(int a0, int a1) {
  * last word of dst into a 4-byte buffer, and write rem bytes of it to
  * src + aligned. Residual: the spill slots and the buffer sit 4 bytes
  * higher than the target's (24/28/32); decl order, block scope, int vs
- * char[4] buffer and dropping the rem/al locals do not move them. */
+ * char[4] buffer and dropping the rem/al locals do not move them.
+ * 2026-10-22 agent-g run 118: a `volatile int pad;` declared FIRST takes the
+ * stray top word and drops the spills/buffer to 24/28/32 (7 -> 2 words).
+ * LEFT: the last call's `lw a2,28(sp)` (rem reload) schedules after the
+ * `addiu a0,sp,32` here (target before); &buf[0]/&buf/char* casts, int rem,
+ * `len & 3` recomputes and al + a2 order all inert or worse. NCC identical. */
 void gl_func_00066264(int a0, char *a1, char *a2, u32 len) {
+    volatile int pad;
     u32 rem;
     u32 al;
     char buf[4];
