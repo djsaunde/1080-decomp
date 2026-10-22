@@ -8286,98 +8286,19 @@ int game_libs_func_0003DDC0(char *o, char *target, float *out) {
 //   FP-pool/struct symbolization; structural pass only, no byte
 //   body.
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_0003DE48)();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3DE48.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
 char *game_libs_func_0003DE48(char *arg0, char *arg1, s32 arg2) {
-    char **sp4;
-    char **sp0;
-    f32 temp_f12;
-    f32 temp_f12_2;
-    f32 temp_f12_3;
-    f32 temp_f2;
-    f32 temp_f2_2;
-    f32 temp_f2_3;
-    f32 temp_f2_4;
-    f32 var_f0;
-    f32 var_f14;
-    f32 var_f16;
-    f32 var_f18;
-    char **temp_t6;
-    char **temp_v0;
-    char *var_a0;
-    char *var_v0;
-    char *var_v0_2;
-    char *var_v1;
-
-    temp_t6 = FW(arg0, 0x10);
-    var_f0 = *(f32*)((char*)&D_00000000 + 0x1ACC);
-    var_v1 = 0;
-    sp4 = temp_t6;
-    sp0 = temp_t6;
-    if (temp_t6 != 0) {
-        sp4 = FW(temp_t6, 0x4);
-        var_v0 = FW(temp_t6, 0x0);
-    } else {
-        var_v0 = 0;
-    }
-    var_a0 = var_v0;
-    if (var_v0 != 0) {
-        do {
-            temp_v0 = sp4;
-            if ((int)var_a0 != arg2) {
-                temp_f2 = *(f32*)((char*)var_a0 + 0x5C);
-                temp_f12 = *(f32*)((char*)arg1 + 0x0);
-                if (temp_f2 < temp_f12) {
-                    var_f14 = -(temp_f2 - temp_f12);
-                } else {
-                    var_f14 = temp_f2 - temp_f12;
-                }
-                temp_f2_2 = *(f32*)((char*)var_a0 + 0x60);
-                temp_f12_2 = *(f32*)((char*)arg1 + 0x4);
-                if (temp_f2_2 < temp_f12_2) {
-                    var_f16 = -(temp_f2_2 - temp_f12_2);
-                } else {
-                    var_f16 = temp_f2_2 - temp_f12_2;
-                }
-                temp_f2_3 = *(f32*)((char*)var_a0 + 0x64);
-                temp_f12_3 = *(f32*)((char*)arg1 + 0x8);
-                if (temp_f2_3 < temp_f12_3) {
-                    var_f18 = -(temp_f2_3 - temp_f12_3);
-                } else {
-                    var_f18 = temp_f2_3 - temp_f12_3;
-                }
-                temp_f2_4 = var_f14 + var_f16 + var_f18;
-                if (temp_f2_4 < var_f0) {
-                    var_v1 = var_a0;
-                    var_f0 = temp_f2_4;
-                }
-            }
-            sp0 = temp_v0;
-            if (temp_v0 != 0) {
-                sp4 = FW(sp4, 0x4);
-                var_v0_2 = FW(temp_v0, 0x0);
-            } else {
-                var_v0_2 = 0;
-            }
-            var_a0 = var_v0_2;
-        } while (var_v0_2 != 0);
-    }
-    return var_v1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003DE48);
-#endif
 
-// gl_func_0003DF5C — STRUCTURAL PASS (0x194 / 101 words, no episode). Raw-.word
+// gl_func_0003DF58 (was gl_func_0003DF5C until 2026-10-22: its first word, `lw t6,16(a0)`, sat at
+// the end of game_libs_func_0003DE48.s -- boundary fix, ROM bytes unchanged) -- STRUCTURAL PASS (0x194 / 101 words, no episode). Raw-.word
 // USO. realjr=2 → 2-function BUNDLE + BOUNDARY NOTE: the named fn ends at the
 // jr at 0x3E0B8; a separate no-prologue leaf begins at 0x3E0BC (DEFERRED USO
 // RE-SPLIT — its instructions belong to the next symbol, not to this one).
 //
 // Named fn = dual extremal-search-by-FP-field over a singly-linked list:
-//   void *gl_func_0003DF5C(List a0, RefNode a1, void *a2_stop) {  // a1 may be 0
+//   void *gl_func_0003DF58(List a0, RefNode a1, void *a2_stop) {  // a1 may be 0
 //     float ref = a1 ? a1->f64 : fp_pool_at_1AD0;   // min-sweep seed
 //     float lim = fp_pool_at_1AD4;                   // min-sweep bound
 //     void *best = 0; float bf;
@@ -8415,7 +8336,7 @@ typedef struct { Link3DF5C *cur; Link3DF5C *next; } Iter3DF5C;
 extern f32 D_3DF5C_1AD0[], D_3DF5C_1AD4[], D_3DF5C_1AD8[], D_3DF5C_1ADC[];
 #define ITER3DF5C_STEP(p, nx, node) \
     nx = (p)->next; if (nx != 0) { (p)->cur = nx; (p)->next = (p)->next->next; (node) = nx->data; } else { (node) = 0; }
-char *gl_func_0003DF5C(char *a0, char *a1) {
+char *gl_func_0003DF58(char *a0, char *a1) {
     char *best;
     Iter3DF5C it;
     Iter3DF5C *p;
@@ -8456,7 +8377,7 @@ char *gl_func_0003DF5C(char *a0, char *a1) {
     return best;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DF5C);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DF58);
 #endif
 
 int game_libs_func_0003E0C0(int a0, int a1) {
