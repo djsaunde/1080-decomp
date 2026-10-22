@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_00001DB0",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:43:25.768125+00:00",
+  "end_time": "2026-10-22T16:43:25.768141+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:43:25.768138+00:00",
+      "assistant_text": "Exact from 99.55: same C body compiled as C++ with NCC. edg keeps source operand order of commutative FP ops (C0 + B8 * t, 41.0f + 5.0f * f) where cfe canonicalizes constants right; the target's const-first mul.d/add.d/mul.s/add.s operands are the C++ tell.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 95,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_00001DB0 (0x164 / 89 words).\n * timproc_b5 is C++: edg keeps the SOURCE operand order of commutative FP ops\n * (cfe canonicalizes the constant to the right), so `C0 + B8 * t` and\n * `41.0f + 5.0f * f` emit the target's const-first mul/add operands.\n * Spliced into timproc_uso_b5.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nextern char timproc_uso_b5_D_807FF0D8, timproc_uso_b5_D_807FF0E0;\n#define D_dbl_1DB0_B8 (*(double *)(&timproc_uso_b5_D_807FF0D8 + 0xB8))\n#define D_dbl_1DB0_C0 (*(double *)(&timproc_uso_b5_D_807FF0E0 + 0xC0))\ntypedef int s32; typedef float f32; typedef double f64;\nvoid timproc_uso_b5_func_00001DB0(char *a0) {\n    char *t;\n    char *u;\n\n    *(s32 *)(*(char **)(a0 + 0x34) + 0x4D8) = *(s32 *)(a0 + 0x44);\n    t = *(char **)(a0 + 0x34);\n    if (*(s32 *)(t + 0x4D8) == 0) {\n        *(s32 *)(*(char **)(*(char **)(t + 0x414) + 0xC) + 0xBC) = 0;\n    } else {\n        *(s32 *)(*(char **)(*(char **)(t + 0x414) + 0xC) + 0xC4) = 0;\n        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;\n        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(a0 + 0x44);\n        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(a0 + 0x44);\n        *(f32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xB4) =\n            D_dbl_1DB0_C0 + D_dbl_1DB0_B8 * (f64)(1.0f - *(f32 *)(a0 + 0x54));\n        *(f32 *)(*(char **)(a0 + 0x34) + 0x49C) = 41.0f + 5.0f * *(f32 *)(a0 + 0x54);\n    }\n    *(s32 *)(*(char **)(a0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(a0 + 0x44);\n    u = *(char **)(a0 + 0x38);\n    if (*(s32 *)(u + 0x4D8) == 0) {\n        *(s32 *)(*(char **)(*(char **)(u + 0x414) + 0xC) + 0xBC) = 0;\n        return;\n    }\n    *(s32 *)(*(char **)(*(char **)(u + 0x414) + 0xC) + 0xC4) = *(s32 *)(a0 + 0x44);\n    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(a0 + 0x44);\n    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(a0 + 0x44);\n    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(a0 + 0x44);\n}\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00001DB0.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC donor spliced via REPLACE_FUNC_BODY; ROM byte-identical, verify-blocks block5 OK jal=0 lo16=0 other=0, objdiff 100%."
+  }
+}

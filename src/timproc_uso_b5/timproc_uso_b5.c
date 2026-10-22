@@ -1382,40 +1382,33 @@ int timproc_uso_b5_func_00001D1C(char *a0, int a1) {
  * lever: naming the sub result (dm = 1.0f - f54) and/or the reloaded f54
  * into f32 locals scrambles the whole FP pseudo pool (f0 enters, 13-14
  * diffs) and STILL leaves mul.d operands expr-first. Cap stands. */
-#ifdef NON_MATCHING
-extern f64 D_dbl_1DB0_B8, D_dbl_1DB0_C0;
-
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp (the C body that was here,
+ * compiled as C++), REPLACE_FUNC_BODY-spliced over this placeholder. The
+ * placeholder only re-emits the 0xC8 bytes of .rodata the old .s carried
+ * (the 14 state-name strings the Data name table points at, then this fn's
+ * two doubles 1.3333 / (double)1.333f); its text and relocs are dropped. The
+ * "commutative FP operand-order canonicalization cap" above is cfe-only:
+ * edg (NCC) keeps the source order `C0 + B8 * t` / `41.0f + 5.0f * f`, which
+ * is exactly the target's const-first mul/add operand order. */
 void timproc_uso_b5_func_00001DB0(char *a0) {
-    char *t;
-    char *u;
-
-    *(s32 *)(*(char **)(a0 + 0x34) + 0x4D8) = *(s32 *)(a0 + 0x44);
-    t = *(char **)(a0 + 0x34);
-    if (*(s32 *)(t + 0x4D8) == 0) {
-        *(s32 *)(*(char **)(*(char **)(t + 0x414) + 0xC) + 0xBC) = 0;
-    } else {
-        *(s32 *)(*(char **)(*(char **)(t + 0x414) + 0xC) + 0xC4) = 0;
-        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(a0 + 0x44);
-        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(a0 + 0x44);
-        *(f32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xB4) =
-            D_dbl_1DB0_C0 + D_dbl_1DB0_B8 * (f64)(1.0f - *(f32 *)(a0 + 0x54));
-        *(f32 *)(*(char **)(a0 + 0x34) + 0x49C) = 41.0f + 5.0f * *(f32 *)(a0 + 0x54);
-    }
-    *(s32 *)(*(char **)(a0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(a0 + 0x44);
-    u = *(char **)(a0 + 0x38);
-    if (*(s32 *)(u + 0x4D8) == 0) {
-        *(s32 *)(*(char **)(*(char **)(u + 0x414) + 0xC) + 0xBC) = 0;
-        return;
-    }
-    *(s32 *)(*(char **)(*(char **)(u + 0x414) + 0xC) + 0xC4) = *(s32 *)(a0 + 0x44);
-    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(a0 + 0x44);
-    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(a0 + 0x44);
-    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(a0 + 0x44);
+    *(char **)(a0 + 0) = "LookAround";
+    *(char **)(a0 + 4) = "ZoomingUp";
+    *(char **)(a0 + 8) = "ZoomingUpLevel";
+    *(char **)(a0 + 12) = "ZoomedChar";
+    *(char **)(a0 + 16) = "ZoomedHandiChar";
+    *(char **)(a0 + 20) = "ZoomedSuperChar";
+    *(char **)(a0 + 24) = "ZoomedBoard";
+    *(char **)(a0 + 28) = "ZoomedBoardType";
+    *(char **)(a0 + 32) = "ZoomedCourse";
+    *(char **)(a0 + 36) = "ZoomedLevel";
+    *(char **)(a0 + 40) = "ZoomingDown";
+    *(char **)(a0 + 44) = "CrystalGuy";
+    *(char **)(a0 + 48) = "MetalGuy";
+    *(char **)(a0 + 52) = "Panda";
+    *(double *)(a0 + 0x40) = 1.3333;
+    *(double *)(a0 + 0x48) = 1.3329999446868896;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00001DB0);
-#endif
 
 /* timproc_uso_b5_func_00001EB8 MERGED into 1DB0 2026-06-10 (bnezl tail fragment). */
 
