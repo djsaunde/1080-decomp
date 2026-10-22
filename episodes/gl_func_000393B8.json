@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000393B8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T16:55:58.394060+00:00",
+  "end_time": "2026-10-22T16:55:58.394060+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T16:55:58.394060+00:00",
+      "assistant_text": "C++ donor: {cur, nxt list iterator.}",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 155,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000393B8 (0x26C / 155 words): lock the owner,\n * then for every child with flag 8: if flag 0x200, not 0x20000 and not x2c&1,\n * pass its matrix pair to a callback (owner flag 2) or multiply it by the\n * owner's 4x4; publish the owner, back-link, fire virtual slot 3. The if/return\n * next() keeps the loop variable a copy of v0; the dead `if (n) {}` in the j\n * loop lifts n above the hoisted constant 16 for s0; the dead e0 is the extra\n * frame slot above res (as in 40974).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void gl_func_00000000(...);\nextern \"C\" int gl_func_00000000_i(...);\nextern \"C\" char D_00000000[];\nstruct Sub393 { void lock() { gl_func_00000000(this); } };\nstruct NodeB393 {\n    char pad[4]; int x04; int flags; char pad0c[8]; void *owner; int x18; char pad1c[0xC];\n    virtual void v0(); virtual void v1(); virtual void v2(); virtual void tick();\n};\nstruct Node393 : NodeB393 { int x2c; float m30[16]; float m70[16]; };\nstruct Link393 { Node393 *obj; Link393 *next; };\nstruct Iter393 {\n    Link393 *cur, *nxt;\n    Iter393(Link393 *h) { nxt = h; }\n    Node393 *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->obj; } return 0; }\n};\nstruct Root393 { char pad[0xC]; Sub393 *sub; Link393 *head; char pad14[0x18]; int x2c; char pad30[0x40]; float m70[16]; };\nextern \"C\" int gl_func_000393B8(Root393 *r) {\n    Iter393 it(r->head);\n    r->sub->lock();\n    Node393 *n = it.next();\n    while (n) {\n        if (n->x18 & 8) {\n            if ((n->flags & 0x200) && !(n->flags & 0x20000) && !(n->x2c & 1)) {\n                if (r->x2c & 2) {\n                    gl_func_00000000(n->m30, n->m70);\n                } else {\n                    float *src = n->m30, *w = r->m70; int e0; e0 = 0;\n                    float res[16];\n                    for (int i = 0; i < 4; i++)\n                        for (int j = 0; j < 4; j++) {\n                            if (n) {} res[i * 4 + j] = 0.0f;\n                            for (int k = 0; k < 4; k++)\n                                res[i * 4 + j] += src[i * 4 + k] * w[k * 4 + j];\n                        }\n                    gl_func_00000000(res, n->m70);\n                }\n            }\n            if (r->x2c & 2) *(Root393 **)D_00000000 = r;\n            if (n->x04) n->owner = r;\n            n->tick();\n        }\n        n = it.next();\n    }\n    return gl_func_00000000_i();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_393B8.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000393B8.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
