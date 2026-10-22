@@ -543,10 +543,12 @@ extern int gl_ref_00031718();  /* baked USO jal 0x0C00C5C6 -> 0x31718 (= gl_func
 int game_libs_func_0001D4B0(int dl, int a1, int a2) {
     GlyphRec1D4B0 *e = &GLYPHTAB_1D4B0[a1];
     if (GLYPHTAB_1D4B0[e->k].flag == 1) {
-        dl = (int)gl_ref_00031648(dl, (short)e->k, (short)a2);
-        ((int *)dl)[0] = (e->w20 & 0xFFFF) | 0x0C340000;
-        ((int *)dl)[1] = 0x0C8003E0;
-        dl = gl_ref_00031718((int *)dl + 2, e->k, (short)a2);
+        int *p;
+        int k = e->k;
+        p = gl_ref_00031648(dl, (short)k, (short)a2);
+        p[0] = (e->w20 & 0xFFFF) | 0x0C340000;
+        p[1] = 0x0C8003E0;
+        dl = gl_ref_00031718(p + 2, e->k, (short)a2);
     }
     return dl;
 }
