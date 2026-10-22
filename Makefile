@@ -156,6 +156,10 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_B1B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_B1B4.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000B1B4=$(BOOTUP_B1B4_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B1B4_DONOR)
+# h2h 1204 = alpha fade + state callback; nested clamps (decode fix), void alias for discarded calls; NCC donor.
+H2H_1204_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp.o
+build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: REPLACE_FUNC_BODY += h2hproc_uso_func_00001204=$(H2H_1204_DONOR)
+build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1204_DONOR)
 # 7328 = message-queue drain with the {cur, nxt} list iterator + by-value Msg match; NCC donor.
 BOOTUP_7328_DONOR := build/src/bootup_uso/bootup_uso_ncc_7328.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00007328=$(BOOTUP_7328_DONOR)

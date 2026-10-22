@@ -1181,55 +1181,10 @@ end:
  * all keep the web in $s0 (frame 32) and cascade ~30 words: nested version
  * measures 78.6 vs 94.5 sequential. Port-goal C should use the NESTED form;
  * matching needs the a2-split lever first. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 94.48 (clamps not nested, record base v1). */
 void h2hproc_uso_func_00001204(char *a0) {
-    char *p1;
-    char *v0;
-
-    if (*(int*)(*(char**)(a0 + 0x2C) + 0x4F4) < 2) {
-        char *fp_a;
-        v0 = *(char**)(a0 + 0x34);
-        fp_a = v0 + 0x3C;
-        if (*(int*)fp_a < 0xFF) {
-            *(int*)fp_a += 0x10;
-        }
-        v0 = *(char**)(a0 + 0x34);
-        if (*(int*)(v0 + 0x3C) >= 0x100) {
-            *(int*)(v0 + 0x3C) = 0x2D0;
-        }
-    } else {
-        char *fp_b;
-        v0 = *(char**)(a0 + 0x34);
-        fp_b = v0 + 0x3C;
-        if (*(int*)fp_b > 0) {
-            *(int*)fp_b -= 0x10;
-        }
-        v0 = *(char**)(a0 + 0x34);
-        if (*(int*)(v0 + 0x3C) < 0) {
-            *(int*)(v0 + 0x3C) = 0;
-        }
-    }
-    /* Asm has 3 nested early-out gates that all converge at the SHARED
-     * tail `gl_func_00000000(a0)` (target's branches @ 0x12B4 / 0x12CC /
-     * 0x12F4 all land at 0x1348 — the final jal). NOT plain `return`
-     * exits — the wrapper call always runs. */
-    if (gl_func_00000000(&D_00000000, 0x40100) != 0) {
-        if (gl_func_00000000(*(int*)(&D_00000000 + 0x190)) != 0) {
-            p1 = *(char**)(a0 + 0x30);
-            if (*(int*)(p1 + *(int*)(p1 + 0x7C) * 0x28 + 0x90) != 0) {
-                gl_func_00000000(5);
-                *(int*)((char*)&D_00000000 + 0x4) = *(int*)(a0 + 0x30);
-                *(int*)((char*)&D_00000000 + 0x0) = *(int*)(a0 + 0x2C);
-                p1 = *(char**)(a0 + 0x30);
-                (*(void (**)(void))(p1 + *(int*)(p1 + 0x7C) * 0x28 + 0x90))();
-            }
-        }
-    }
-    gl_func_00000000(a0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2hproc_uso_func_00001204);
-#endif
 
 #ifdef NON_MATCHING
 /* h2hproc_uso_func_00001360: 164-insn (0x290) per-frame compound dispatcher.

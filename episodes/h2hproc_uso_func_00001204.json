@@ -1,0 +1,33 @@
+{
+  "function_name": "h2hproc_uso_func_00001204",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:07:12.570376+00:00",
+  "end_time": "2026-10-22T20:07:12.570376+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:07:12.570376+00:00",
+      "assistant_text": "C++ donor: nested clamps (decode fix) and a void alias for the discarded calls.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 87,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for h2hproc_uso_func_00001204 (0x15C / 87 words): fade a\n * 0..720 alpha up or down by 16, then run the registered state callback. Decode fix:\n * each clamp is NESTED inside its step (`if (a < 0xFF) { a += 16; if (a >= 0x100)\n * a = 0x2D0; }`) -- both branches of the target skip to the shared tail; the old NM\n * clamped unconditionally. The two calls whose results are discarded go through a\n * void alias (kit XVIII #3) so the record base takes v0. Spliced into\n * h2hproc_uso.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nextern char D_00000000;\nint gl_func_00000000(...); void h2h_void_1204(...);\nvoid h2hproc_uso_func_00001204(char *a0) {\n    char *p1;\n    char *v0;\n\n    if (*(int*)(*(char**)(a0 + 0x2C) + 0x4F4) < 2) {\n        int *fp;\n        v0 = *(char**)(a0 + 0x34);\n        fp = (int *)(v0 + 0x3C);\n        if (*fp < 0xFF) {\n            *fp += 0x10;\n            v0 = *(char**)(a0 + 0x34);\n            if (*(int*)(v0 + 0x3C) >= 0x100) {\n                *(int*)(v0 + 0x3C) = 0x2D0;\n            }\n        }\n    } else {\n        int *fp;\n        v0 = *(char**)(a0 + 0x34);\n        fp = (int *)(v0 + 0x3C);\n        if (*fp > 0) {\n            *fp -= 0x10;\n            v0 = *(char**)(a0 + 0x34);\n            if (*(int*)(v0 + 0x3C) < 0) {\n                *(int*)(v0 + 0x3C) = 0;\n            }\n        }\n    }\n    if (gl_func_00000000(&D_00000000, 0x40100) != 0) {\n        if (gl_func_00000000(*(int*)(&D_00000000 + 0x190)) != 0) {\n            p1 = *(char**)(a0 + 0x30);\n            if (*(int*)(p1 + *(int*)(p1 + 0x7C) * 0x28 + 0x90) != 0) {\n                h2h_void_1204(5);\n                *(int*)((char*)&D_00000000 + 0x4) = *(int*)(a0 + 0x30);\n                *(int*)((char*)&D_00000000 + 0x0) = *(int*)(a0 + 0x2C);\n                p1 = *(char**)(a0 + 0x30);\n                (*(void (**)(void))(p1 + *(int*)(p1 + 0x7C) * 0x28 + 0x90))();\n            }\n        }\n    }\n    h2h_void_1204(a0);\n}\n}\n",
+  "metadata": {
+    "source_path": "src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp",
+    "asm_path": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001204.s",
+    "segment": "h2hproc_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
