@@ -83,12 +83,12 @@ build/src/gui_uso/gui_uso_zcopy_0.c.o build/non_matching/src/gui_uso/gui_uso_zco
 build/src/gui_uso/gui_uso_zcopy_0.c.o: TRUNCATE_TEXT := 0x148
 build/src/gui_uso/gui_uso_zcopy_0.c.o: PREFIX_BYTES := gui_func_00000000=0x1000736F
 build/non_matching/src/gui_uso/gui_uso_zcopy_0.c.o: NON_MATCHING_PREFIX_BYTES := gui_func_00000000=0x1000736F
-build/src/gui_uso/gui_uso.c.o: SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000
+build/src/gui_uso/gui_uso.c.o: SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000 gui_func_00003B80=0x00000000,0x00000000,0x00000000
 build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x4738
 # Mirror the suffix onto the non_matching object so report.json/objdiff (which
 # compare build/non_matching vs expected) score the trailing alignment-nop word.
 # splat-symbol-boundary trailing-delay-nop class — see docs/MATCHING_WORKFLOW.md.
-build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000
+build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000 gui_func_00003B80=0x00000000,0x00000000,0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2hproc_uso_func_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2hproc_uso_func_00001AFC=0x00000000

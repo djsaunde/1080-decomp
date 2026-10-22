@@ -1,9 +1,6 @@
-nonmatching gui_uso_func_00003F18, 0x224
+nonmatching gui_uso_func_00003F18, 0x218
 
 glabel gui_uso_func_00003F18
-    /* 591448 00003F18 00000000 */  .word 0x00000000
-    /* 59144C 00003F1C 00000000 */  .word 0x00000000
-    /* 591450 00003F20 00000000 */  .word 0x00000000
     /* 591454 00003F24 AFA7000C */  .word 0xAFA7000C
     /* 591458 00003F28 8C82000C */  .word 0x8C82000C
     /* 59145C 00003F2C 24CCFFFF */  .word 0x24CCFFFF
