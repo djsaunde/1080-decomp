@@ -25953,7 +25953,13 @@ void gl_func_00057700(int *a0) {
  * the body below is an m2c transcription. The real source is the libultra
  * gbi texture-load macros + a C++ inline Gfx *next() member; NCC draft at
  * src/game_libs/ncc_drafts/gl_func_000578B4.cpp (2418/2419 insns, 95.0, not
- * built) -- continue from there, not from this body. */
+ * built) -- continue from there, not from this body.
+ * 2026-10-22 (agent-g run 122): the two leading calls are the baked
+ * `jal 0x6A750` words (game_libs_func_00062F08_578B4 pin), and both format
+ * dispatches are edg SOURCE-ORDER compare chains (0x120, 0x110, 0x408,
+ * 0x308, 0x304, 0x508; cfe sorts a switch), spelled here as a goto ladder
+ * whose last test is `!= 0x508 -> default` so uopt keeps the target's
+ * `beq arm; b default` tail (raw 1822 -> 1799 words). */
 /* gl_func_000578B4 LADDER PASS 1 (2026-06-11, size-weighted strategy):
  * 9676B at 75.0 -- the project's #2 largest near-miss; worth +1.26pp
  * alone. GAP MAP: build +152B (+38 insns) over target; 279 mnemonic
@@ -26188,6 +26194,7 @@ extern char gl_d_578b4_s1[];   /* base-0 alias: 0x219B8 addiu-form const (switch
 extern char gl_d_578b4_s2a[];  /* base-0 alias: 0x219C4 addiu-form const (switch-2 falling case) */
 extern char gl_d_578b4_s2b[];  /* base-0 alias: 0x219C4 addiu-form const (switch-2 default) */
 typedef char *(*GP_000578B4)();
+extern int game_libs_func_00062F08_578B4();
 void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
     s32 sp1EC;
     s32 sp1E8;
@@ -26306,8 +26313,8 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
     volatile s32 hybrid_pad_3;
     volatile s32 sp20;
 
-    sp1EC = game_libs_func_00062F08((*(s16 *)((char *)arg1 + 0x20)));
-    sp1E8 = game_libs_func_00062F08((*(s16 *)((char *)arg1 + 0x22)));
+    sp1EC = game_libs_func_00062F08_578B4((*(s16 *)((char *)arg1 + 0x20)));
+    sp1E8 = game_libs_func_00062F08_578B4((*(s16 *)((char *)arg1 + 0x22)));
     sp1E0 = 0;
     sp1E4 = 0;
     temp_v1 = FW(arg0, 0xC);
@@ -26334,8 +26341,10 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
     if (var_a2 & 0x10) {
         temp_t1 = FW(arg1, 0x24);
         sp1DC = (int *) FW(arg1, 0x1C);
-        switch (temp_t1) {                          /* switch 1; irregular */
-        case 0x120:
+        /* edg-style source-order compare chain (switch 1) */
+        if (temp_t1 == 0x120) goto s1_120; if (temp_t1 == 0x110) goto s1_110; if (temp_t1 == 0x408) goto s1_408; if (temp_t1 == 0x308) goto s1_308; if (temp_t1 == 0x304) goto s1_304; if (temp_t1 != 0x508) goto s1_def; goto s1_508;
+        {
+        s1_120:
             g = FW(arg0, 0xC);
             n = FW(g, 0x4);
             FW(g, 0x4) = n + 1;
@@ -26387,7 +26396,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             v = FW(sp1DC, 0x8);
             FW(temp_t0_6, 0x4) = (((((v + (*(s16 *)((char *)arg1 + 0x22))) - v) - 1) << 2) & 0xFFF) | ((((((w + (*(s16 *)((char *)arg1 + 0x20))) - w) - 1) << 2) & 0xFFF) << 0xC);
             return;
-        case 0x110:                                 /* switch 1 */
+        s1_110:                                 /* switch 1 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -26440,7 +26449,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_v0_6 = FW(sp1DC, 0x8);
             FW(temp_t0_6, 0x4) = (s32) ((((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF) | ((((((temp_a0_6 + (*(s16 *)((char *)arg1 + 0x20))) - temp_a0_6) - 1) << 2) & 0xFFF) << 0xC));
             return;
-        case 0x408:                                 /* switch 1 */
+        s1_408:                                 /* switch 1 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -26493,7 +26502,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_v0_6 = FW(sp1DC, 0x8);
             FW(temp_t0_9, 0x4) = (s32) ((((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF) | ((((((temp_a0_6 + (*(s16 *)((char *)arg1 + 0x20))) - temp_a0_6) - 1) << 2) & 0xFFF) << 0xC));
             return;
-        case 0x308:                                 /* switch 1 */
+        s1_308:                                 /* switch 1 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -26546,7 +26555,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_v0_6 = FW(sp1DC, 0x8);
             FW(temp_t0_12, 0x4) = (s32) ((((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF) | ((((((temp_a0_6 + (*(s16 *)((char *)arg1 + 0x20))) - temp_a0_6) - 1) << 2) & 0xFFF) << 0xC));
             return;
-        case 0x304:                                 /* switch 1 */
+        s1_304:                                 /* switch 1 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -26599,7 +26608,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_v0_6 = FW(sp1DC, 0x8);
             FW(temp_t0_15, 0x4) = (s32) ((((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF) | ((((((temp_a0_6 + (*(s16 *)((char *)arg1 + 0x20))) - temp_a0_6) - 1) << 2) & 0xFFF) << 0xC));
             return;
-        case 0x508:                                 /* switch 1 */
+        s1_508:                                 /* switch 1 */
             temp_v1 = FW(arg0, 0xC);
             temp_t1_7 = FW(sp1DC, 0x0);
             temp_a1_9 = FW(temp_v1, 0x4);
@@ -26694,14 +26703,16 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_v0_6 = FW(sp1DC, 0x8);
             FW(temp_t0_19, 0x4) = (s32) ((((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF) | ((((((temp_a0_6 + (*(s16 *)((char *)arg1 + 0x20))) - temp_a0_6) - 1) << 2) & 0xFFF) << 0xC));
             return;
-        default:                                    /* switch 1 */
+        s1_def:                                    /* switch 1 */
             gl_func_00034458((int *)(gl_d_578b4_s1 + 0x219B8), temp_a1, sp1DC, arg0);
             return;
         }
     } else {
         temp_a1 = FW(arg1, 0x24);
-        switch (temp_a1) {                       /* switch 2; irregular */
-        case 0x120:                                 /* switch 2 */
+        /* edg-style source-order compare chain (switch 2) */
+        if (temp_a1 == 0x120) goto s2_120; if (temp_a1 == 0x110) goto s2_110; if (temp_a1 == 0x408) goto s2_408; if (temp_a1 == 0x308) goto s2_308; if (temp_a1 == 0x304) goto s2_304; if (temp_a1 != 0x508) goto s2_def; goto s2_508;
+        {
+        s2_120:                                 /* switch 2 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -26767,7 +26778,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v0_4, 0x0) = 0xF2000000;
             FW(temp_v0_4, 0x4) = (s32) ((((((*(s16 *)((char *)arg1 + 0x20)) - 1) << 2) & 0xFFF) << 0xC) | ((((*(s16 *)((char *)arg1 + 0x22)) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
             return;
-        case 0x110:                                 /* switch 2 */
+        s2_110:                                 /* switch 2 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -26833,7 +26844,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v0_4, 0x0) = 0xF2000000;
             FW(temp_v0_4, 0x4) = (s32) ((((((*(s16 *)((char *)arg1 + 0x20)) - 1) << 2) & 0xFFF) << 0xC) | ((((*(s16 *)((char *)arg1 + 0x22)) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
             return;
-        case 0x408:                                 /* switch 2 */
+        s2_408:                                 /* switch 2 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -26899,7 +26910,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v0_4, 0x0) = 0xF2000000;
             FW(temp_v0_4, 0x4) = (s32) ((((((*(s16 *)((char *)arg1 + 0x20)) - 1) << 2) & 0xFFF) << 0xC) | ((((*(s16 *)((char *)arg1 + 0x22)) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
             return;
-        case 0x308:                                 /* switch 2 */
+        s2_308:                                 /* switch 2 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -26965,7 +26976,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v0_4, 0x0) = 0xF2000000;
             FW(temp_v0_4, 0x4) = (s32) ((((((*(s16 *)((char *)arg1 + 0x20)) - 1) << 2) & 0xFFF) << 0xC) | ((((*(s16 *)((char *)arg1 + 0x22)) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
             return;
-        case 0x304:                                 /* switch 2 */
+        s2_304:                                 /* switch 2 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -27031,7 +27042,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v0_4, 0x0) = 0xF2000000;
             FW(temp_v0_4, 0x4) = (s32) ((((((*(s16 *)((char *)arg1 + 0x20)) - 1) << 2) & 0xFFF) << 0xC) | ((((*(s16 *)((char *)arg1 + 0x22)) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
             return;
-        case 0x508:                                 /* switch 2 */
+        s2_508:                                 /* switch 2 */
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             temp_t1_7 = *(int*)sp1DC;
@@ -27145,7 +27156,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             sp34 = FW(arg1, 0x24);
             gl_func_00034458((int *)(gl_d_578b4_s2a + 0x219C4), sp34, (int *) var_a2, arg0);
             return;
-        default:                                    /* switch 2 */
+        s2_def:                                    /* switch 2 */
             gl_func_00034458((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1, (int *) var_a2, arg0);
             return;
         }
