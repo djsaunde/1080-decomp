@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0000959C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:14:23.756245+00:00",
+  "end_time": "2026-10-22T17:14:23.756273+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:14:23.756267+00:00",
+      "assistant_text": "Exact from 94.4: the cfe -O0 body under NCC -O0 (no closing-brace b-epilogue). The one-word trailing nop is alignment padding the .s carried, restored as an all-zero pad suffix.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 54,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donor for gl_func_0000959C (0xD4 + the 1-word zero\n * pad the .s carried): the cfe NM body unchanged; edg -O0 emits no closing-brace\n * b-epilogue marker. Spliced into game_libs_o0_949C.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nint gl_func_00000000(...);\nextern int D_00000000;\nint *gl_func_0000959C(int *a0) {\n    int *ret;\n    register int *s0;\n    register int *s1;\n    register int *s2;\n\n    s1 = 0;\n    if (s1 != 0 || (s1 = (int *)gl_func_00000000(0x40)) != 0) {\n        gl_func_00000000(s1);\n        s1[0x28 / 4] = (int)&D_00000000;\n        s1[0x3C / 4] = 0;\n    }\n    ret = s0 = s1;\n    if (a0[0x40 / 4] != 0) {\n        s0 = (int *)a0[0x40 / 4];\n        s1 = ret;\n        s2 = (int *)((char *)s1 + 0x10);\n        gl_func_00000000(s2, s0);\n        if (s0[0x14 / 4] != 0) {\n            s0[1] = 1;\n        }\n        s2 = s1;\n        s0[0x14 / 4] = (int)s2;\n    }\n    return ret;\n}\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_o0_959C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0000959C.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O0 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC -O0 donor spliced via REPLACE_FUNC_BODY into game_libs_o0_949C.c.o + the .s's all-zero alignment pad word; ROM byte-identical; objdiff 100%."
+  }
+}

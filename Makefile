@@ -609,6 +609,14 @@ build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs
 build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: OPT_FLAGS := -O0
 # 0x100 -> 0x1D8 (2026-10-15 agent-g): the -O0 gl_func_0000959C (0xD8) moved in from game_libs_tail.c.
 build/src/game_libs/game_libs_o0_949C.c.o: TRUNCATE_TEXT := 0x1D8
+GAMELIBS_O0_959C_DONOR := build/src/game_libs/game_libs_ncc_o0_959C.cpp.o
+$(GAMELIBS_O0_959C_DONOR): OPT_FLAGS := -O0
+build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: REPLACE_FUNC_BODY += gl_func_0000959C=$(GAMELIBS_O0_959C_DONOR)
+build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: $(GAMELIBS_O0_959C_DONOR)
+# the .s carried 959C's one-word zero alignment pad (fn size 0xD8); the
+# NCC body is 0xD4, so re-add the all-zero pad word after the splice.
+build/src/game_libs/game_libs_o0_949C.c.o: SUFFIX_BYTES_FORCE := gl_func_0000959C=0x00000000
+build/non_matching/src/game_libs/game_libs_o0_949C.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0000959C=0x00000000
 # Bake resolved jal targets to match expected/.o (which is INCLUDE_ASM-derived
 # with pre-baked jals). Without these, the .o has `jal 0` + R_MIPS_26 relocs;
 # byte-verify fails even though ROM ends up identical post-link.
