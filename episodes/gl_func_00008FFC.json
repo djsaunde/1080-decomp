@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00008FFC",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T17:11:53.098231+00:00",
+  "end_time": "2026-10-22T17:11:53.098247+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T17:11:53.098243+00:00",
+      "assistant_text": "Exact from 96.9: the cfe -O0 body compiled as C++ (NCC -O0). edg emits no closing-brace b-epilogue marker, so cfe's dead double b (67 words) disappears; 65/65.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 65,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) -O0 donors for gl_func_00008FFC and gl_func_00009100\n * (0x104 / 65 words each). game_libs is C++: compiled by edg the -O0 bodies\n * end without cfe's closing-brace `b epilogue; nop` marker, so the\n * \"-O0 return-value dead-double-b\" gap of the cfe build (67 words) is gone.\n * The bodies are the cfe NM bodies unchanged (plain obj home + register\n * s0/s1/s2 aliases; D_8FFC_base defeats the &D CSE for the +8 read).\n * Spliced into game_libs_mid.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nint gl_func_00000000(...);\nextern char D_00000000;\nextern int D_0000004C, D_00000050, D_00000064;\nextern unsigned char D_0000017D;\nextern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;\nextern char D_8FFC_base;\n\nint gl_func_00008FFC(int a0, int a1, int a2) {\n    int obj;\n    register char *base;\n    register int *o;\n    register char *tmp;\n\n    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));\n    gl_func_00000000(D_0000004C, D_0000017D);\n    D_00000050 = D_00000050 & 0x20;\n    obj = gl_func_00000000(&D_00000000, D_00000064, 5, a2);\n    base = (char *)&D_00000000;\n    o = (int *)obj;\n    tmp = base + 0x10;\n    gl_func_00000000(tmp, o);\n    if (o[0x14 / 4] != 0) {\n        o[0x4 / 4] = 1;\n    }\n    tmp = base;\n    o[0x14 / 4] = (int)tmp;\n    gl_func_00000000(&D_00000000, 0);\n    (void)a0;\n    (void)a1;\n    return obj;\n}\n\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_o0_8FFC.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00008FFC.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O0 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "NCC -O0 donor spliced via REPLACE_FUNC_BODY into game_libs_mid.c.o; ROM byte-identical; objdiff 100%."
+  }
+}

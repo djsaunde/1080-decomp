@@ -595,6 +595,13 @@ build/src/game_libs/game_libs_o0_8AE4.c.o build/non_matching/src/game_libs/game_
 build/src/game_libs/game_libs_o0_8AE4.c.o: TRUNCATE_TEXT := 0x158
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: OPT_FLAGS := -O0
 build/src/game_libs/game_libs_mid.c.o: TRUNCATE_TEXT := 0x860
+# game_libs is C++: the -O0 return-value functions compile under NCC -O0
+# without cfe's closing-brace `b epilogue` marker (kit XIX). 8FFC + 9100 =
+# one NCC -O0 donor TU (65/65 words each; cfe 67 words).
+GAMELIBS_O0_8FFC_DONOR := build/src/game_libs/game_libs_ncc_o0_8FFC.cpp.o
+$(GAMELIBS_O0_8FFC_DONOR): OPT_FLAGS := -O0
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: REPLACE_FUNC_BODY += gl_func_00008FFC=$(GAMELIBS_O0_8FFC_DONOR) gl_func_00009100=$(GAMELIBS_O0_8FFC_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_8FFC_DONOR)
 build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: OPT_FLAGS := -O0
 # 0x100 -> 0x1D8 (2026-10-15 agent-g): the -O0 gl_func_0000959C (0xD8) moved in from game_libs_tail.c.
 build/src/game_libs/game_libs_o0_949C.c.o: TRUNCATE_TEXT := 0x1D8

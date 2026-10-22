@@ -172,65 +172,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00008E48);
  * reg-renumber. Real wrap, correct logic; stays NM. */
 extern int D_00000008, D_0000004C, D_00000050, D_00000064;
 extern unsigned char D_0000017D;
-#ifdef NON_MATCHING
-/* gl_func_00008FFC — VERIFIED 57/67 reloc-resolved (was 19/65 raw baseline).
- * ALL 65 target words are reproduced in order except:
- *   [56] live `b epilogue` offset 10000003 vs target 10000001, and
- *   [58-59] a DEAD `b epilogue; nop` pair (2 extra words, build 67 vs target 65).
- * Both artifacts are ONE root cause: the documented -O0 RETURN-VALUE dead-double-b
- * TOOLCHAIN-BINARY GAP (docs/IDO_CODEGEN.md "-O0 RETURN-VALUE functions get a DEAD
- * second b epilogue; nop"): our ido-static-recomp cc emits return's `b` PLUS the
- * closing-brace `b`; the original 1080 cc folded them. Proven not C-fixable
- * (full 7.1/5.3 flag matrix in docs). HONEST CAP -> stays NM at ~97%.
- *
- * Levers applied this session (all verified in-tree, non_matching build):
- * 1. PLAIN `int obj` home + separate `register int *o` (s1) alias: target does
- *    sw v0,0x34(sp) / lw s1,0x34(sp) / ... / lw v0,0x34(sp) (return-from-home).
- *    The old single `register obj` gave move s1,v0 (no home). Fixed [33-37],[54].
- *    obj declared FIRST -> top local slot 0x34 (decl-order top-down; register vars
- *    reserve the lower slots).
- * 2. D_8FFC_base (NEW base-0 alias of D_00000000 in undefined_syms_auto.txt):
- *    first call's arg1 must be the 3-insn `lui t6; addiu t6; lw a1,8(t6)` form
- *    (&D+8 read) WITHOUT CSE-sharing the &D_00000000 materialized for arg0.
- *    Same-symbol form emitted lui t6/addiu t6/move a0,t6/lw a1,8(t6) (4 insns,
- *    a0 stolen from t6). Distinct base-0 extern re-materializes both. This also
- *    restores the target temp-reg phase (t6 consumed -> D_50 RMW uses t7/t8).
- *    The old distinct-extern D_00000008 2-insn form (lui;lw 0x8) was WRONG here.
- * undefined_syms_auto.txt ADDITION (line 578):
- *   D_8FFC_base = 0x00000000;
- */
-extern int gl_func_00000000();
-extern char D_00000000;
-extern int D_0000004C, D_00000050, D_00000064;
-extern unsigned char D_0000017D;
-extern char D_8FFC_base;   /* base-0 alias of D_00000000: defeats -O0 CSE of &D between arg0 and the +8 read (target re-materializes lui/addiu) */
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/game_libs/game_libs_ncc_o0_8FFC.cpp (the NM body that was here, compiled
+ * as C++ -- edg emits no closing-brace `b epilogue`, so the "dead-double-b
+ * toolchain gap" above is a cfe-only artifact). Placeholder spliced over. */
 int gl_func_00008FFC(int a0, int a1, int a2) {
-    int obj;                 /* plain local: home slot 0x34, sw v0/lw s1/return-from-home */
-    register char *base;     /* s0 */
-    register int *o;         /* s1 */
-    register char *tmp;      /* s2 */
-
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));
-    gl_func_00000000(D_0000004C, D_0000017D);
-    D_00000050 = D_00000050 & 0x20;
-    obj = gl_func_00000000(&D_00000000, D_00000064, 5, a2);
-    base = (char*)&D_00000000;
-    o = (int*)obj;
-    tmp = base + 0x10;
-    gl_func_00000000(tmp, o);
-    if (o[0x14 / 4] != 0) {
-        o[0x4 / 4] = 1;
-    }
-    tmp = base;
-    o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&D_00000000, 0);
-    (void)a0;
-    (void)a1;
-    return obj;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00008FFC);
-#endif
 
 /* gl_func_00009100: -O0 init sequence (fresh decode 2026-05-28). Near-twin of
  * gl_func_00008FFC: 3 byte-field copies (D[0x179..0x17B] → D[0x181..0x183]), a
@@ -257,57 +205,13 @@ extern int D_0000004C, D_00000064;
  * home slot). TESTED-NEGATIVE 2026-06-23: making obj a plain (spilled) local -> 85.4%
  * (worse); rewriting the D-relative reads as &D_00000000+offset -> 74% (adds a
  * materializing addiu, worse). Original register form stays. */
-#ifdef NON_MATCHING
-/* gl_func_00009100 — VERIFIED 57/67 reloc-resolved (was 28/66 raw baseline).
- * ALL 65 target words reproduced in order except the live `b epilogue` offset
- * (10000003 vs 10000001) + a DEAD `b epilogue; nop` pair (build 67 vs target 65):
- * the documented -O0 RETURN-VALUE dead-double-b TOOLCHAIN-BINARY GAP
- * (docs/IDO_CODEGEN.md; original 1080 cc folded the second b, ours can't).
- * Proven not C-fixable. HONEST CAP -> stays NM at ~97% (up from 93.5%).
- *
- * Lever applied: PLAIN `int obj` home-slot + separate `register int *o` (s1)
- * alias — target sw v0,0x34(sp); lui s0; addiu s0; lw s1,0x34(sp); ... and
- * returns from the home (lw v0,0x34). Statement order matters:
- * obj = ctor(...); base = &D; o = obj; tmp = base + 0x10;  (base materialization
- * BETWEEN the home store and the alias reload, exactly as target).
- * obj declared FIRST -> top local slot 0x34 (-O0 slots decl-order top-down;
- * register vars reserve the lower slots 0x28/0x2C/0x30).
- * The old "obj home-spill / spill-timing -O0 cap" comment is WRONG — it's the
- * two-variable (plain + register alias) shape, same as 8FFC/8E48 siblings.
- * No new undefined_syms needed (D_00000179..183/D_0000004C/D_00000064 present).
- */
-extern int gl_func_00000000();
-extern char D_00000000;
-extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
-extern int D_0000004C, D_00000064;
+/* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
+ * src/game_libs/game_libs_ncc_o0_8FFC.cpp (the NM body that was here, compiled
+ * as C++ -- edg emits no closing-brace `b epilogue`, so the "dead-double-b
+ * toolchain gap" above is a cfe-only artifact). Placeholder spliced over. */
 int gl_func_00009100(int a0, int a1, int a2) {
-    int obj;                 /* plain local: home slot 0x34, sw v0/lw s1/return-from-home */
-    register char *base;     /* s0 */
-    register int *o;         /* s1 */
-    register char *tmp;      /* s2 */
-
-    D_00000181 = D_00000179;
-    D_00000182 = D_0000017A;
-    D_00000183 = D_0000017B;
-    gl_func_00000000(D_0000004C, D_0000004C);
-    obj = gl_func_00000000(&D_00000000, D_00000064, 4, a2);
-    base = (char*)&D_00000000;
-    o = (int*)obj;
-    tmp = base + 0x10;
-    gl_func_00000000(tmp, o);
-    if (o[0x14 / 4] != 0) {
-        o[0x4 / 4] = 1;
-    }
-    tmp = base;
-    o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&D_00000000, 0);
-    (void)a0;
-    (void)a1;
-    return obj;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00009100);
-#endif
 
 #ifdef NON_MATCHING
 /* gl_func_00009204: module-init/registration. cb(A, *(B+8)); cb(*(C+0x4C),
