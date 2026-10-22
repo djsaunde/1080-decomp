@@ -18759,20 +18759,17 @@ void gl_func_0004D05C(int a0) { gl_func_00000000((char *)&D_00000000 + 0x201B0);
 void gl_func_0004D084(int *a0) {
     (*(int(**)())((char*)a0 + 0x4))(*(int*)((char*)a0 + 0x8), a0);
 }
-/* gl_func_0004D0B4 + its 1-word leading pad: the pad sat between two
+/* gl_func_0004D0B4 (history) + its 1-word leading pad: the pad sat between two
  * matched C fns (no emission host; a standalone 1-word block emits +4),
  * so the fn was converted to an INCLUDE of one combined [pad+fn] block
  * (route b, 2026-06-10). The proven matching C is preserved below. */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 122): plain C again; the leading zero word is gl_func_0004D084's all-zero SUFFIX pad (Makefile). */
 int gl_func_0004D0B4(int a0) {
     if (a0 == 0) {
         a0 = gl_func_00000000(0x78, 0x10);
     }
     return a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004D0B4);
-#endif
 
 #ifdef NON_MATCHING
 /* game_libs_func_0004D0E4: 27-insn struct initializer (3-arg, leaf).
