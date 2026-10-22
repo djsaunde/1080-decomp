@@ -1,0 +1,33 @@
+{
+  "function_name": "func_000074E8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-22T20:12:23.715651+00:00",
+  "end_time": "2026-10-22T20:12:23.715651+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-22T20:12:23.715651+00:00",
+      "assistant_text": "Final call takes no argument; init call + store on one line; data bases pinned at func_00000008/func_000000F0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 78,
+  "initial_m2c_source": null,
+  "final_source": "/* func_000074E8 - verified structural decode (0x138, 78 insns,\n * guarded constructor + list-link + vtable + finalize).\n * Struct-typing reference: global gate *(func_00000008+0x2C) == 8\n * skips construction (already-done / disabled state). r = 0x134-byte\n * object, sub = 0x48-byte aux; both get a &D descriptor at ->0x28\n * (r's is the obj-0x28 vtable, 0x5C/0x58 variant: fn@0x5C (92),\n * s16@0x58 (88), dispatched with arg 0x96). a0->0x40 (64) = the\n * owning slot for r. r linked into the global list whose head is\n * (*(func_000000F0+0x44))->0x88 via r->0x14 (back-link) / r->0x4\n * (=1 when already-linked). r->0x48 (72) s32 toggled 1 then 0,\n * r->0x4C (76) f32 = 0.0 (init state/flags). D_00007FB0 / D_00007FBC\n * = init datums. Caps <80: global gate + ~6 reloc (alloc/init/\n * finalize) + &D descriptors + list-link beql + obj-0x28 vtable\n * jalr + FP. INCLUDE_ASM remains build path. */\nextern char D_00007FB0, D_00007FBC;\nextern void func_000000F0();  /* used as data-symbol base */\n/* 2026-10-22 (agent-c run 120) EXACT: the final call takes NO argument (the target only stores p->0x48 = 0 in its delay slot; a0 is whatever the previous call left), and the child's init call and its +0x28 store share one source line (as1 line tie). */\n/* run 111 (agent-c): cfront ctor shape (r = new(0x134); if (r) { sub = r; if (sub || (sub = new(0x48))) ... }),\n * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,\n * v reused for the tail stores, block-count lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */\nextern char D_74e8_g, D_74e8_h;\nvoid func_000074E8(char *a0) {\n    int *v;\n    char *r;\n    char *sub;\n    char *head;\n    if (*(int*)((char*)&D_74e8_g + 0x2C) == 8) return;\n    func_00000000(&D_00007FB0, 0);\n    r = (char*)func_00000000(0x134);\n    if (r != 0) {\n        sub = r;\n        if (sub != 0 || (sub = (char*)func_00000000(0x48)) != 0) {\n            func_00000000(sub, &D_00007FBC); *(void**)(sub + 0x28) = &D_00000000;\n        }\n        *(void**)(r + 0x28) = &D_00000000;\n    }\n    *(char**)(a0 + 0x40) = r;\n    head = *(char**)((*(char**)((char*)&D_74e8_h + 0x44)) + 0x88);\n    if (1) { }\n    if (1) { }\n    if (1) { }\n    if (1) { }\n    if (1) { }\n    if (1) { }\n    if (1) { }\n    if (1) { }\n    if (1) { char **pa = &a0; }\n    func_00000000(head + 0x10, r);\n    if (*(int*)(r + 0x14) != 0) *(int*)(r + 0x4) = 1;\n    *(char**)(r + 0x14) = head;\n    v = *(int**)(*(char**)(a0 + 0x40) + 0x28);\n    (*(void (**)(char*, int))((char*)v + 0x5C))(\n        (char*)((int)*(char**)(a0 + 0x40) + (int)(short)*(short*)((char*)v + 0x58)),\n        0x96);\n    v = *(int**)(a0 + 0x40); *(int*)((char*)v + 0x48) = 1;\n    v = *(int**)(a0 + 0x40); *(float*)((char*)v + 0x4C) = 0.0f;\n    *(int*)(*(char**)(a0 + 0x40) + 0x48) = 0;\n    func_00000000();\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_000074E8.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

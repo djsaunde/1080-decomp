@@ -4744,7 +4744,7 @@ void func_00007328(char *s3) {
  * jalr + FP. INCLUDE_ASM remains build path. */
 extern char D_00007FB0, D_00007FBC;
 extern void func_000000F0();  /* used as data-symbol base */
-#ifdef NON_MATCHING
+/* 2026-10-22 (agent-c run 120) EXACT: the final call takes NO argument (the target only stores p->0x48 = 0 in its delay slot; a0 is whatever the previous call left), and the child's init call and its +0x28 store share one source line (as1 line tie). */
 /* run 111 (agent-c): cfront ctor shape (r = new(0x134); if (r) { sub = r; if (sub || (sub = new(0x48))) ... }),
  * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,
  * v reused for the tail stores, block-count lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */
@@ -4760,8 +4760,7 @@ void func_000074E8(char *a0) {
     if (r != 0) {
         sub = r;
         if (sub != 0 || (sub = (char*)func_00000000(0x48)) != 0) {
-            func_00000000(sub, &D_00007FBC);
-            *(void**)(sub + 0x28) = &D_00000000;
+            func_00000000(sub, &D_00007FBC); *(void**)(sub + 0x28) = &D_00000000;
         }
         *(void**)(r + 0x28) = &D_00000000;
     }
@@ -4786,11 +4785,8 @@ void func_000074E8(char *a0) {
     v = *(int**)(a0 + 0x40); *(int*)((char*)v + 0x48) = 1;
     v = *(int**)(a0 + 0x40); *(float*)((char*)v + 0x4C) = 0.0f;
     *(int*)(*(char**)(a0 + 0x40) + 0x48) = 0;
-    func_00000000(*(char**)(a0 + 0x40));
+    func_00000000();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000074E8);
-#endif
 
 /* func_00007620 - verified structural decode (0xD4, 53 insns,
  * enable/disable toggle on a substate object).

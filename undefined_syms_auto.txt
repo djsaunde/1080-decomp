@@ -4092,3 +4092,5 @@ gl_ref_00037B00 = 0x00037B00;  /* gl_func_000233E4: baked USO jal (0x0C00DEC0) *
 gl_ref_0003A0EC = 0x0003A0EC;  /* gl_func_00025AC8: baked USO jal (0x0C00E83B) */
 h2h_void_1204 = 0x00000000;  /* h2hproc_uso_func_00001204 NCC donor: void-returning blank import (jal 0) */
 gl_ref_0003773C = 0x0003773C;  /* gl_func_000231B4: baked USO jal (0x0C00DDCF) */
+D_74e8_g = 0x00000008;  /* func_000074E8: = func_00000008 (expected reloc base; read at +0x2C) */
+D_74e8_h = 0x000000F0;  /* func_000074E8: = func_000000F0 (expected reloc base; read at +0x44) */
