@@ -1973,6 +1973,7 @@ extern void  fn_31c0_B2(void *, void *, float, float, float);
 extern void *fn_31c0_B3(int, void *, void *, void *);
 extern void  fn_31c0_tail(void *, void *);
 extern char D_31c0_a, D_31c0_b, D_31c0_c, D_31c0_d, D_31c0_e, D_31c0_f, D_31c0_g, D_31c0_h;
+typedef struct { int w; } SC4_; /* run 131 struct-copy lever (31C0) */
 void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
     char *w;
     char *h;
@@ -2013,7 +2014,7 @@ void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
         fn_31c0_vec(p + 0x30, vec1);
     }
 post:
-    obj2 = obj;
+    *(SC4_ *)&(obj2) = *(SC4_ *)&(obj); /* run 131: 4-byte struct copy (both address-taken) -> length 202 = target */
     switch (mode) {
     case 0:
     case 2:
