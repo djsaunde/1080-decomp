@@ -17044,7 +17044,7 @@ int gl_func_0004AFB4(int *a0, int a1, int a2, int a3, int stack_arg) {
     int r = gl_func_00000000(a0, a1, a2, a3, stack_arg);
     if (a1 == 0) {
         gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h4, D_S[0]);
-        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, D_S[1]);
+        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, D_S[1]); if (a3) {} /* run 131: a3 live past the 2nd call -> offset temp v0 */
     }
     return r;
 }
