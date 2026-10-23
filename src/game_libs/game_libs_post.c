@@ -17,49 +17,66 @@ typedef struct { int a, b, c; } Tri3i;
 typedef struct { int a, b; } Pair2;
 typedef struct { float x, y, z; } Vec3;
 
-// gl_func_0001CA10 — STRUCTURAL PASS (0x354 / 213 words, no episode).
-// Raw-.word USO form (game_libs RSP/graphics-library segment).
-// BOUNDARY NOTE: 2-jr USO bundle (named fn + 1 trailing helper) —
-// deferred USO re-split.
-//
-// game_libs RSP/F3D vertex-index / triangle-list builder.
-//
-//   void gl_func_0001CA10(int count, Cmd *a1, Ctx *a2) {
-//     if (count < 3) return;                              // need a tri
-//     C *c = a1 + 0x18;
-//     i = c->0x2(u8) * 4;  j = c->0x3(u8) * …;            // index calc
-//     // entry = base + idx * 0x340  (per-record stride 0x340);
-//     func_00000000(a2->0x3C, a2 + 0x38, …);              // setup/xform
-//     // loop over the index list: read s16 vertex fields v->0x10 /
-//     //   v->0x12 / v->0x04, signed-ceil-div-by-2 (sra+addiu idiom),
-//     //   compare/clip, and sh-store packed triangle/quad indices
-//     //   into the output command buffer; bne loops back (1420FFD7).
-//   }
-//
-// Struct-typing reference:
-//   count = vertex/primitive count (<3 = no-op); a1 + 0x18 -> a
-//     descriptor (->0x2 / ->0x3 u8 indices), a2->0x3C / a2+0x38 =
-//     transform inputs. Per-record stride 0x340. v->0x10 / 0x12 /
-//     0x04 = s16 vertex coords; signed ceil-div-by-2 is the
-//     `bgez; sra 1 / addiu 1; sra 1` rounding idiom. Output = an
-//     RSP/F3D triangle-index command buffer. func_00000000 = USO
-//     placeholder dispatcher (game_libs JAL targets are runtime-
-//     patched placeholders — see reference memos).
-// MUST STAY INCLUDE_ASM (hard blocker, not a bail): the name
-//   `gl_func_0001CA10` is reused as a GENERIC PLACEHOLDER extern in
-//   ~8 unrelated NM bodies in this file (e.g. lines ~5656/13960/
-//   16784/28834/29493) — each `extern int gl_func_0001CA10();` and
-//   called with conflicting arg counts/return types. IDO cfe treats
-//   file-scope externs as one symbol, so giving THIS function a real
-//   typed definition makes the whole game_libs_post.c NON_MATCHING
-//   compile fail (redeclaration / incompatible type / arg-count) and
-//   freezes the objdiff report. Real-C body is blocked until the
-//   placeholder-name reuse is migrated to unique names (separate
-//   refactor). Single jr $ra (older "2-jr bundle" note is STALE; .s
-//   is 0x288/162 words). Algorithm is fully captured in the analysis
-//   comment above; build path is INCLUDE_ASM (no episode — tautology
-//   rule). DO-NOT-define-without first renaming the placeholder uses.
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001CA10);
+/* game_libs_func_0001C9E4 -- EXACT (run 136). Was gl_func_0001CA10 (648 B, no C):
+ * a mid-function split. The real entry's first 11 words (the `k * 344` record
+ * index chain + the hoisted `lbu f4`) sat at the end of the game_libs_text2_tail
+ * bin (ROM 0xE01ABC); tenshoe.yaml's game_libs_post start moved 0xE01AE8 ->
+ * 0xE01ABC (ROM bytes unchanged; assets/game_libs_text2_tail.bin shrinks by
+ * 0x2C -- re-run `make setup` in other checkouts). bootup.uso exports neither
+ * 0x1CA10 nor 0x1C9E4 (its Sym 1229 is the pad start 0x1C9D4).
+ * Per (record k, slot j): unless the record is short (f4 < 3) or busy (f2),
+ * clear the slot's 0x340-byte buffer, copy its two s16 streams (stride f4) into
+ * the record's ring at offC then at 0; then requeue: q = n / f4 entries, split
+ * at the ring end f1C (n10 / n12 are byte counts). The 0x340 callee is a blank
+ * import (jal 0). Levers: s assigned before both early tests, e recomputed
+ * BEFORE q in the tail, e declared first, one unused 2-word pad (frame 0x48). */
+typedef struct { s16 f0; s16 f2; s16 *p4; s16 *p8; s32 offC; s16 n10; s16 n12; } VbElem;
+typedef struct {
+    u8 pad0[2]; u8 f2; u8 f3; u8 f4; u8 pad5[0xF];
+    s32 f14; s32 f18; s32 f1C; s16 *p20; s16 *p24; u8 pad28[0x10];
+    VbElem e[2][5]; u8 rest[64];
+} VbSub;
+typedef struct { u8 pad[0x18]; VbSub sub; } VbRec;
+extern int gl_func_00000000();
+void game_libs_func_0001C9E4(int n, int j, int k) {
+    VbElem *e;
+    VbRec *r = &((VbRec *)&D_00000000)[k];
+    VbSub *s;
+    int pad[2];
+    int i, idx, q, rem;
+    s = &r->sub;
+    if (s->f4 >= 3 && s->f2 == 0) {
+        e = &s->e[s->f3][j];
+        gl_func_00000000(e->p4, 0x340);
+        idx = 0;
+        for (i = 0; i < e->n10 / 2; i++) {
+            s->p20[e->offC + i] = e->p4[idx];
+            s->p24[e->offC + i] = e->p8[idx];
+            idx += s->f4;
+        }
+        for (i = 0; i < e->n12 / 2; i++) {
+            s->p20[i] = e->p4[idx];
+            s->p24[i] = e->p8[idx];
+            idx += s->f4;
+        }
+    }
+    e = &s->e[s->f3][j];
+    q = n / s->f4;
+    rem = s->f14 + q - s->f1C;
+    if (rem < 0) {
+        e->n10 = q * 2;
+        e->n12 = 0;
+        e->offC = s->f14;
+        s->f14 += q;
+    } else {
+        e->n10 = (q - rem) * 2;
+        e->n12 = rem * 2;
+        e->offC = s->f14;
+        s->f14 = rem;
+    }
+    e->f0 = q;
+    e->f2 = n;
+}
 
 /* game_libs_func_0001CC98: publish the flagged 0x20-byte element of every record
  * (TU-local, baked jal callee; section 0x31304 not exported). Base = bootup.uso

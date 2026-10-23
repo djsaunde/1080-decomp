@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0001C9E4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T22:33:28.519378+00:00",
+  "end_time": "2026-10-23T22:33:28.519392+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T22:33:28.519388+00:00",
+      "assistant_text": "Fake-split merge: gl_func_0001CA10's first 11 words sat at the end of the game_libs_text2_tail bin; moved the game_libs_post boundary 0xE01AE8->0xE01ABC, decoded the merged 173-word function from scratch; levers: s before both early tests, e recomputed before q, e declared first, 2-word unused pad for frame 0x48.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 173,
+  "initial_m2c_source": null,
+  "final_source": "/* game_libs_func_0001C9E4 -- EXACT (run 136). Was gl_func_0001CA10 (648 B, no C):\n * a mid-function split. The real entry's first 11 words (the `k * 344` record\n * index chain + the hoisted `lbu f4`) sat at the end of the game_libs_text2_tail\n * bin (ROM 0xE01ABC); tenshoe.yaml's game_libs_post start moved 0xE01AE8 ->\n * 0xE01ABC (ROM bytes unchanged; assets/game_libs_text2_tail.bin shrinks by\n * 0x2C -- re-run `make setup` in other checkouts). bootup.uso exports neither\n * 0x1CA10 nor 0x1C9E4 (its Sym 1229 is the pad start 0x1C9D4).\n * Per (record k, slot j): unless the record is short (f4 < 3) or busy (f2),\n * clear the slot's 0x340-byte buffer, copy its two s16 streams (stride f4) into\n * the record's ring at offC then at 0; then requeue: q = n / f4 entries, split\n * at the ring end f1C (n10 / n12 are byte counts). The 0x340 callee is a blank\n * import (jal 0). Levers: s assigned before both early tests, e recomputed\n * BEFORE q in the tail, e declared first, one unused 2-word pad (frame 0x48). */\ntypedef struct { s16 f0; s16 f2; s16 *p4; s16 *p8; s32 offC; s16 n10; s16 n12; } VbElem;\ntypedef struct {\n    u8 pad0[2]; u8 f2; u8 f3; u8 f4; u8 pad5[0xF];\n    s32 f14; s32 f18; s32 f1C; s16 *p20; s16 *p24; u8 pad28[0x10];\n    VbElem e[2][5]; u8 rest[64];\n} VbSub;\ntypedef struct { u8 pad[0x18]; VbSub sub; } VbRec;\nextern int gl_func_00000000();\nvoid game_libs_func_0001C9E4(int n, int j, int k) {\n    VbElem *e;\n    VbRec *r = &((VbRec *)&D_00000000)[k];\n    VbSub *s;\n    int pad[2];\n    int i, idx, q, rem;\n    s = &r->sub;\n    if (s->f4 >= 3 && s->f2 == 0) {\n        e = &s->e[s->f3][j];\n        gl_func_00000000(e->p4, 0x340);\n        idx = 0;\n        for (i = 0; i < e->n10 / 2; i++) {\n            s->p20[e->offC + i] = e->p4[idx];\n            s->p24[e->offC + i] = e->p8[idx];\n            idx += s->f4;\n        }\n        for (i = 0; i < e->n12 / 2; i++) {\n            s->p20[i] = e->p4[idx];\n            s->p24[i] = e->p8[idx];\n            idx += s->f4;\n        }\n    }\n    e = &s->e[s->f3][j];\n    q = n / s->f4;\n    rem = s->f14 + q - s->f1C;\n    if (rem < 0) {\n        e->n10 = q * 2;\n        e->n12 = 0;\n        e->offC = s->f14;\n        s->f14 += q;\n    } else {\n        e->n10 = (q - rem) * 2;\n        e->n12 = rem * 2;\n        e->offC = s->f14;\n        s->f14 = rem;\n    }\n    e->f0 = q;\n    e->f2 = n;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0001C9E4.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "standalone cfe 173/173 words vs ROM; make all ROM byte-identical; objdiff report 100"
+  }
+}
