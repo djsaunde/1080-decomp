@@ -366,7 +366,7 @@ def main():
     edits = [('ins', p, s) for p in pos for s in a.ins.split('|')]
     for sw in a.swap:
         x, y = sw.split('=>', 1) if '=>' in sw else sw.split('=', 1)
-        i = t.find(x, ob)
+        i = t.find(x, t.rfind('\n', 0, t.rfind(a.func, 0, ob)) + 1)  # header included
         while 0 <= i < end:
             edits.append(('swap', i, (x, y)))
             i = t.find(x, i + 1)
