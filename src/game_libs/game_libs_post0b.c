@@ -13502,7 +13502,7 @@ int gl_func_00044CE8(int a0, int a1, int a2) {
 skip:
     n = *(int *)(a0 + 0x5D0);
     *(int *)(a0 + 0x5D0) = n + 1;
-    rec = (a0 + 0x378) + n * 6;
+    rec = (a0 + 0x378) + n * 6; if (a0) {}
     *(int *)(a0 + a1 * 4 + 0x2AC) = rec;
     *(int *)(rec + 8) = 0;
     gl_func_00000000(rec, a2);
