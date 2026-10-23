@@ -10342,7 +10342,7 @@ void gl_func_00028604(char *obj, int tag) {
             if (*(volatile unsigned char *)(obj + 1) == 0) {
                 *(unsigned char *)(dst + 3) = *(unsigned char *)(node2 + 0xE0);
             } else {
-                *(unsigned char *)(dst + 3) = *(unsigned char *)(obj + 1);
+                *(unsigned char *)(dst + 3) = *(unsigned char *)(obj + 1); if (node) {}
             }
             *(unsigned char *)(owner + 0x30) = *(unsigned char *)(node2 + 6);
         } else {
