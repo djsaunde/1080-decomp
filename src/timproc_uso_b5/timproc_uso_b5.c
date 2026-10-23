@@ -8259,7 +8259,7 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
         if (m < *pv) {
             mv = m;
         } else {
-            mv = *pv;
+            mv = *pv; if (arg0) {}
         }
         mv2 = mv;
         if (*(s32 *)(arg1 + 0x3BC) == 1) {
