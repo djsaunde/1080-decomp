@@ -891,105 +891,10 @@ void gl_func_00034E8C(int a0) {
 //   permuter (base 1210 -> 760) only cracked it via noise mutations, not
 //   clean source. Genuine IDO scheduling/CSE cap. Byte-match deferred.
 // game_libs non-jumptable via scripts/decomp-uso-cf.py.
-#ifdef NON_MATCHING
-
-
-
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00034EB4)();
-extern int D_34EB4_flags; /* distinct zero alias: the flags test must not share base's s3 */
-#define DB ((char *)&D_00000000)
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_34EB4.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 124). */
 void gl_func_00034EB4(char *arg0, char *arg1) {
-    int (*temp_v0_5)();
-    char *temp_v0;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *temp_v0_4;
-    char *temp_v0_6;
-    char *var_s0;
-    char *t0;
-    char *t1;
-    char *t2;
-    char *t3;
-    char *base;
-    int var_s4;
-
-    gl_func_00034458(DB + 0x1E47C);
-    if (D_34EB4_flags & 1) {
-        gl_func_00034458();
-    }
-    t0 = DB + 0x1E484;
-    t1 = DB + 0x1E490;
-    t2 = DB + 0x1E494;
-    t3 = DB + 0x1E4A0;
-    base = DB + 0;
-    var_s4 = 0;
-loop_top:
-    FW(arg0, 0x0) = (s32) (FW(arg0, 0x0) & ~1);
-    temp_v0 = FW(arg1, 0x28);
-    ((GP_00034EB4)FW(temp_v0, 0x24))(*(s16*)((char*)temp_v0 + 0x20) + (int)arg1);
-    gl_func_00034458();
-    do {
-        var_s0 = FW(arg0, 0xC);
-        if (var_s0 != 0) {
-            do {
-                gl_func_00034458(var_s0);
-                var_s0 = FW(var_s0, 0x60);
-            } while (var_s0 != 0);
-        }
-        if (FW(FW(base, 0x218), 0x48) != 0) {
-            temp_v0_2 = FW(arg1, 0x28);
-            ((GP_00034EB4)FW(temp_v0_2, 0x7C))(*(s16*)((char*)temp_v0_2 + 0x78) + (int)arg1);
-        }
-        if (FW(arg0, 0x0) & 4) {
-            do {
-                FW(arg0, 0x10) = 0;
-                gl_func_00034458();
-            } while (FW(arg0, 0x0) & 4);
-        }
-        FW(arg0, 0x10) = 0;
-        gl_func_00034458(t0);
-        gl_func_00034458(base);
-        gl_func_00034458(t1);
-        gl_func_00034458();
-        gl_func_00034458(t2);
-        gl_func_00034458(t3);
-        temp_v0_3 = FW(arg1, 0x28);
-        ((GP_00034EB4)FW(temp_v0_3, 0x24))(*(s16*)((char*)temp_v0_3 + 0x20) + (int)arg1);
-        gl_func_00034458(DB + 0x1E4AC);
-        gl_func_00034458();
-        gl_func_00034458(DB + 0x1E4B8);
-        gl_func_00034458(DB + 0x1E4C4);
-        temp_v0_4 = FW(arg1, 0x28);
-        ((GP_00034EB4)FW(temp_v0_4, 0x1C))(*(s16*)((char*)temp_v0_4 + 0x18) + (int)arg1);
-        gl_func_00034458(DB + 0x1E4D0);
-        gl_func_00034458();
-        gl_func_00034458(DB + 0x1E4DC);
-        gl_func_00034458(base);
-        gl_func_00034458();
-        gl_func_00034458(DB + 0x1E4E4);
-        gl_func_00034458(DB + 0x1E4F0);
-        gl_func_00034458(DB + 0x1E4F4);
-        gl_func_00034458(DB + 0x1E500);
-        gl_func_00034458();
-        gl_func_00034458(DB + 0x1E508);
-        gl_func_00034458();
-        FW(arg0, 0x14) = (s32) (FW(arg0, 0x14) + 1);
-        temp_v0_5 = FW(arg1, 0x30);
-        if (temp_v0_5 != 0) {
-            temp_v0_5();
-            FW(arg1, 0x30) = 0;
-        }
-    } while (var_s4 == 0);
-    temp_v0_6 = FW(arg1, 0x28);
-    ((GP_00034EB4)FW(temp_v0_6, 0x6C))(*(s16*)((char*)temp_v0_6 + 0x68) + (int)arg1);
-    goto loop_top;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00034EB4);
-#endif
 
 long long gl_func_00035164_inner(int a0);
 

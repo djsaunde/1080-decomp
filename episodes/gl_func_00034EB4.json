@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00034EB4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T00:02:32.684426+00:00",
+  "end_time": "2026-10-23T00:02:32.684426+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T00:02:32.684426+00:00",
+      "assistant_text": "Fresh IDO 7.1 NCC decode: frame main loop with real virtual hooks on a 40-byte base (vptr +0x28), list pump, one-shot callback; for (quit = 0;;) places li s4. Word-exact, ROM cmp clean.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 172,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00034EB4 (0x2B0 / 172 words): the frame\n * main loop. Pumps the per-object list, the app's virtual hooks (v3/v4/v13/v15\n * on a 40-byte base, so the vptr is at +0x28) and the one-shot callback at\n * +0x30, forever: `quit` is never set, so the epilogue is unreachable and the\n * outer loop restarts with the v13 hook. `for (quit = 0;;)` puts the `li s4,0`\n * after the hoisted string addresses (a plain `quit = 0;` before the loop\n * schedules it first). The flags word is a distinct zero alias so the test\n * does not share the s3 base. Spliced into game_libs_post0b.c.o via\n * REPLACE_FUNC_BODY (agent-c run 124). */\nextern \"C\" {\nvoid gl_func_00000000(...);\nextern char D_00000000[];\nextern int D_34EB4_flags;\n}\n#define DB D_00000000\n#define FW(p, o) (*(int *)((char *)(p) + (o)))\nstruct Pad40 { char pad[0x28]; };\nstruct AppB : Pad40 {\n    virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();\n    virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();\n    virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();\n    virtual void v13(); virtual void v14(); virtual void v15();\n};\nstruct App : AppB { char pad2[4]; void (*cb)(); };\nstruct Node { char pad[0x60]; Node *next; };\nstruct St { int flags; int pad4, pad8; Node *list; int f10; int count; };\nextern \"C\" void gl_func_00034EB4(St *a0, App *a1) {\n    int quit;\n    gl_func_00000000(DB + 0x1E47C);\n    if (D_34EB4_flags & 1) gl_func_00000000();\n    for (quit = 0;;) {\n        a0->flags &= ~1;\n        a1->v4();\n        gl_func_00000000();\n        do {\n            Node *n;\n            for (n = a0->list; n != 0; n = n->next) gl_func_00000000(n);\n            if (FW(FW(DB, 0x218), 0x48) != 0) a1->v15();\n            while (a0->flags & 4) {\n                a0->f10 = 0;\n                gl_func_00000000();\n            }\n            a0->f10 = 0;\n            gl_func_00000000(DB + 0x1E484);\n            gl_func_00000000(DB);\n            gl_func_00000000(DB + 0x1E490);\n            gl_func_00000000();\n            gl_func_00000000(DB + 0x1E494);\n            gl_func_00000000(DB + 0x1E4A0);\n            a1->v4();\n            gl_func_00000000(DB + 0x1E4AC);\n            gl_func_00000000();\n            gl_func_00000000(DB + 0x1E4B8);\n            gl_func_00000000(DB + 0x1E4C4);\n            a1->v3();\n            gl_func_00000000(DB + 0x1E4D0);\n            gl_func_00000000();\n            gl_func_00000000(DB + 0x1E4DC);\n            gl_func_00000000(DB);\n            gl_func_00000000();\n            gl_func_00000000(DB + 0x1E4E4);\n            gl_func_00000000(DB + 0x1E4F0);\n            gl_func_00000000(DB + 0x1E4F4);\n            gl_func_00000000(DB + 0x1E500);\n            gl_func_00000000();\n            gl_func_00000000(DB + 0x1E508);\n            gl_func_00000000();\n            a0->count++;\n            if (a1->cb) {\n                a1->cb();\n                a1->cb = 0;\n            }\n        } while (quit == 0);\n        a1->v13();\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_34EB4.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00034EB4.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
