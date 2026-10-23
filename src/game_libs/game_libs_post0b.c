@@ -621,8 +621,7 @@ void gl_func_00034A78(int a0) {
         gl_ref_0003B8F6 = 13;
         gl_ref_0003B8F7 = 2;
         gl_ref_0003B8F9 = 1;
-        gl_ref_0003B900 = 0;
-        gl_func_00000000(&gl_ref_0003B904, 96);
+        gl_ref_0003B900 = 0; gl_func_00000000(&gl_ref_0003B904, 96);
         gl_func_00000000(&gl_ref_0003B8F0);
     }
     gl_ref_0003B8EC = (int)&gl_ref_0003B8F0;            /* self-pointer (always) */
