@@ -8935,9 +8935,13 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
  * `lui at,0x3F80; mtc1 f2` hoisted ABOVE the prologue used to sit in the
  * predecessor's _pad_..._0000CE6C; those 2 words now open this symbol (real
  * entry 0xCEAC, name kept; no references to the label), and the C emits them.
- * RESIDUAL: (2) block 1's then-arm is empty in the target but still emitted
- * as `bc1f else; b skip` (here bc1t skip); (3) blocks 2/3 load D before the
- * 1.0 constant (here after). */
+ * 2026-10-23 agent-g (run 139): block 1 as an if / else whose then-arm is the
+ * self-assignment `v[0] = v[0];` keeps the target's `bc1f else; b join` shape
+ * (every other empty or dead then-arm -- `;`, `{}`, `f = ...`, `v[0] = 1.0f`,
+ * `a0 = a0` -- is folded into `bc1t skip`): 104 -> 107 words = target, 94.2 ->
+ * 96.9 standalone. RESIDUAL: the then-arm keeps one `swc1 $f2,64(sp)` in the
+ * `b join` delay slot (target: the join's `lw a1`), and blocks 2/3 materialise
+ * the 1.0 constant before the D load (target after). */
 extern int gl_func_00000000();
 extern char D_00000000;
 void timproc_uso_b5_func_0000CEB4(char *a0, int a1) {
@@ -8945,7 +8949,9 @@ void timproc_uso_b5_func_0000CEB4(char *a0, int a1) {
     s32 pad[6];
     f32 f;
     v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    if (*(s32 *)(a0 + 0x2AC) != 0 || !(0.5f < *(f32 *)(a0 + 0x2A0))) {
+    if (*(s32 *)(a0 + 0x2AC) == 0 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
+        v[0] = v[0];
+    } else {
         f = *(f32 *)(&D_00000000 + 0x394);
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
