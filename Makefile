@@ -2419,6 +2419,11 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_1DB0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001DB0=$(TIMB5_1DB0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1DB0_DONOR)
+# 1F14 = two-player transition update (551/551 words under NCC): literal FP
+# constants (rodata pinned at +0xC8) and a 3-arg inner 87A0 call (agent-g run 138).
+TIMB5_1F14_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001F14=$(TIMB5_1F14_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1F14_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
 # (87E8, 8894, 8940 -- and 1DA4 before them) were mis-split return blocks of

@@ -1454,231 +1454,32 @@ void timproc_uso_b5_func_00001DB0(char *a0) {
 extern int timproc_uso_b5_func_000087A0();
 extern void timproc_uso_b5_func_00001DB0(char *);
 extern void timproc_uso_b5_func_04CD94(char *);
-#ifdef NON_MATCHING
-/* 84.18% fuzzy (was 83.59; the old "branch-likely deficit" verdict was
- * stale — we now draw 19/21 likelies and 551/551 words). 2026-07-10 levers:
- * (1) `|= 1` store-forward after the sw-zero gives the ori t0,zero,1 form;
- * (2) NO flag/sub40/anim locals — direct *(arg0+0x3C/0x40/0x48) derefs;
- *     the load-CSE web then colors flag->v0 and gives const-first bne
- *     operand order (locals had produced a v1+a0-copy split);
- * (3) invisible K&R phantom 4th arg `2` on the two nested 3-arg 87A0
- *     calls (target remats addiu a3,zero,2 mid-cluster = all four calls
- *     pass 2; emission-neutral, extends the a3 web).
- * RESIDUAL (single root cause): the const-2 candidate colors t0, target
- * colors a3. uoptreg2 cupcosts: our ichain-2 splits into two LRs (compare/
- * store web + call-arg web) so the compare web prices a3 by the GENERIC
- * phi cost and the tie breaks to t0 (enumeration order); the target's ONE
- * merged web carries precolored-a3 liveunits (lu->reg==a3 discount) and
- * wins a3. No C spelling merges the webs: probed phantom-arg variants,
- * unsigned web-splits (anim==2u -> a1, wrong: target keeps one a3 web,
- * no addiu at,zero,2), named `two` (copy-propped, inert), register-kw,
- * while(0)/dead-if ref boosts (deleted pre-analoop), switch shape (worse),
- * operand flips, coloring-search depth-1 (exhausted). The t0 occupation
- * shifts the whole t-ring +1 and misphases the call cluster — one cap,
- * not independent diffs. Build path stays INCLUDE_ASM (ROM exact). */
+/* EXACT 2026-10-23 (agent-g run 138) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp, REPLACE_FUNC_BODY-spliced
+ * over this placeholder (Makefile TIMB5_1F14_DONOR). The cfe "a3 web" cap above
+ * was a decode error plus the wrong front end: the second 87A0 call of each
+ * copy pair passes only THREE args (a3 still holds the constant 2), and the
+ * FP constants are source literals (0.05f, 1.333f + 1.3333 * t), whose
+ * donor-local .rodata relocs are renamed timproc_uso_b5_func_00001F14_rodata
+ * and pinned to RoData +0xC8 (undefined_syms_auto.txt).
+ * The placeholder only re-emits the layout of RoData +0xC8..+0x11C that the
+ * INCLUDE_ASM .s carried as .late_rodata (f32, f32, f64, f64, f32, pad,
+ * six f64, f32); IDO merges equal literals in one fn, so distinct values
+ * stand in for the repeated ones. The splice drops its text and relocs. */
 void timproc_uso_b5_func_00001F14(char *arg0) {
-    s32 dst;
-    f64 cf12;
-    f64 cf14;
-    f64 vf12;
-    f64 vf14;
-    s32 frame;
-    s32 frame2;
-    s32 frame3;
-    s32 v1;
-    char *r34;
-    char *r34b;
-    char *r34c;
-    char *r38;
-    char *r38b;
-    char *r38c;
-
-    *(s32 *)(arg0 + 0x3C) = 0;
-    if (*(s32 *)(arg0 + 0x30) == 2) {
-        if (*(s32 *)(*(char **)(arg0 + 0x34) + 0x3CC) == 8) {
-            *(s32 *)(arg0 + 0x3C) |= 1;
-        }
-        if (*(s32 *)(*(char **)(arg0 + 0x38) + 0x3CC) == 8) {
-            *(s32 *)(arg0 + 0x3C) = *(s32 *)(arg0 + 0x3C) | 2;
-        }
-        if (*(s32 *)(arg0 + 0x3C) != 0) {
-            if (*(s32 *)(arg0 + 0x3C) == 3) {
-                if (*(s32 *)(arg0 + 0x44) == 0x78) {
-                    if (*(s32 *)(arg0 + 0x40) == 1) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 1;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
-                    } else if (*(s32 *)(arg0 + 0x40) == 2) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 2;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
-                    }
-                }
-                if (*(s32 *)(arg0 + 0x48) == 1) {
-                    dst = timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0, 2);
-                    *(s32 *)(*(s32 *)(arg0 + 0x38) + (dst * 4) + 0x3D0) =
-                        *(s32 *)(*(s32 *)(arg0 + 0x34) + (timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0, 2) * 4) + 0x3D0);
-                } else {
-                    dst = timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0, 2);
-                    *(s32 *)(*(s32 *)(arg0 + 0x34) + (dst * 4) + 0x3D0) =
-                        *(s32 *)(*(s32 *)(arg0 + 0x38) + (timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0, 2) * 4) + 0x3D0);
-                }
-                if (*(s32 *)(arg0 + 0x4C) != 0) {
-                    if (*(s32 *)(arg0 + 0x48) == 1) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + *(f32 *)((char *)&D_00000000 + 0xC8);
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
-                        }
-                        *(s32 *)(arg0 + 0x44) = (s32) (120.0f + (*(f32 *)(arg0 + 0x54) * 120.0f));
-                        timproc_uso_b5_func_00001DB0(arg0); if (arg0) {}
-                    } if (frame2) {}
-                    if (*(s32 *)(arg0 + 0x48) == 2) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + *(f32 *)((char *)&D_00000000 + 0xCC);
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
-                        }
-                        frame = (s32) (120.0f - (*(f32 *)(arg0 + 0x54) * 120.0f));
-                        *(s32 *)(arg0 + 0x44) = frame;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame;
-                        r34 = *(char **)(arg0 + 0x34);
-                        if (*(s32 *)(r34 + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34 + 0x414) + 0xC) + 0xBC) = 0;
-                        } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34 + 0x414) + 0xC) + 0xC4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(arg0 + 0x44);
-                        }
-                        *(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                        r38 = *(char **)(arg0 + 0x38);
-                        if (*(s32 *)(r38 + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38 + 0x414) + 0xC) + 0xBC) = 0;
-                        } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38 + 0x414) + 0xC) + 0xC4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xB4) =
-                                *(f64 *)((char *)&D_00000000 + 0xD0) + (*(f64 *)((char *)&D_00000000 + 0xD8) * (f64) (1.0f - *(f32 *)(arg0 + 0x54)));
-                            *(f32 *)(*(char **)(arg0 + 0x38) + 0x49C) = 41.0f + (5.0f * *(f32 *)(arg0 + 0x54));
-                        }
-                    }
-                }
-            } else {
-                v1 = *(s32 *)(arg0 + 0x44);
-                if ((v1 == 0) || (v1 == 0xF0)) {
-                    if (*(s32 *)(arg0 + 0x3C) == 1) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 1;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
-                    }
-                    if (*(s32 *)(arg0 + 0x3C) == 2) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 2;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
-                    }
-                }
-                if (*(s32 *)(arg0 + 0x4C) != 0) {
-                    if (*(s32 *)(arg0 + 0x48) == 1) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + *(f32 *)((char *)&D_00000000 + 0xE0);
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
-                            *(s32 *)(arg0 + 0x48) = 0;
-                        }
-                        frame2 = (s32) (240.0f - (*(f32 *)(arg0 + 0x54) * 120.0f));
-                        *(s32 *)(arg0 + 0x44) = frame2;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame2;
-                        r34b = *(char **)(arg0 + 0x34);
-                        if (*(s32 *)(r34b + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34b + 0x414) + 0xC) + 0xBC) = 0;
-                            vf14 = *(f64 *)((char *)&D_00000000 + 0xE8);
-                            vf12 = *(f64 *)((char *)&D_00000000 + 0xF0);
-                        } else {
-                            vf12 = *(f64 *)((char *)&D_00000000 + 0xF8);
-                            vf14 = *(f64 *)((char *)&D_00000000 + 0x100);
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34b + 0x414) + 0xC) + 0xC4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xB4) =
-                                vf12 + (vf14 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x34) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
-                        }
-                        *(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                        r38b = *(char **)(arg0 + 0x38);
-                        if (*(s32 *)(r38b + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38b + 0x414) + 0xC) + 0xBC) = 0;
-                        } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38b + 0x414) + 0xC) + 0xC4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xB4) =
-                                vf12 + (vf14 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x38) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
-                        }
-                    }
-                    cf12 = *(f64 *)((char *)&D_00000000 + 0x108);
-                    cf14 = *(f64 *)((char *)&D_00000000 + 0x110);
-                    if (*(s32 *)(arg0 + 0x48) == 2) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + *(f32 *)((char *)&D_00000000 + 0x118);
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
-                            *(s32 *)(arg0 + 0x48) = 0;
-                        }
-                        frame3 = (s32) (*(f32 *)(arg0 + 0x54) * 120.0f);
-                        *(s32 *)(arg0 + 0x44) = frame3;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame3; if (frame) {}
-                        r34c = *(char **)(arg0 + 0x34);
-                        if (*(s32 *)(r34c + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34c + 0x414) + 0xC) + 0xBC) = 0;
-                        } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34c + 0x414) + 0xC) + 0xC4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xB4) =
-                                cf12 + (cf14 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x34) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
-                        }
-                        *(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                        r38c = *(char **)(arg0 + 0x38);
-                        if (*(s32 *)(r38c + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38c + 0x414) + 0xC) + 0xBC) = 0;
-                        } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38c + 0x414) + 0xC) + 0xC4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xB4) =
-                                cf12 + (cf14 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x38) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
-                        }
-                    }
-                }
-            }
-        }
-        if (*(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) != 0) {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) | 1;
-        } else {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) & ~1;
-        }
-        if (*(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) != 0) {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) | 2;
-        } else {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) & ~2;
-        }
-        *(s32 *)(arg0 + 0x40) = *(s32 *)(arg0 + 0x3C);
-    }
-    timproc_uso_b5_func_04CD94(arg0);
+    *(volatile float *)(arg0 + 0) = 0.05f;
+    *(volatile float *)(arg0 + 0) = 0.0501f;
+    *(volatile double *)(arg0 + 8) = 1.3329999446868896;
+    *(volatile double *)(arg0 + 8) = 1.3333;
+    *(volatile float *)(arg0 + 0) = 0.0502f;
+    *(volatile double *)(arg0 + 8) = 1.33331;
+    *(volatile double *)(arg0 + 8) = 1.33332;
+    *(volatile double *)(arg0 + 8) = 1.33333;
+    *(volatile double *)(arg0 + 8) = 1.33334;
+    *(volatile double *)(arg0 + 8) = 1.33335;
+    *(volatile double *)(arg0 + 8) = 1.33336;
+    *(volatile float *)(arg0 + 0) = 0.0503f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00001F14);
-#endif
 
 /* CRACKED 2026-05-27 (byte-exact): the lever is "declare `float buf[4]`
  * FIRST so it gets the highest stack slot (sp+0x38) per IDO -O2's
