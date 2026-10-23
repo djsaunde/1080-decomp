@@ -17212,7 +17212,7 @@ void game_libs_func_000307A8(void) {
     } else if (D_307A8_i.hold != 0) {
         D_307A8_j.hold = D_307A8_i.hold - 1;
     } else {
-        f = D_307A8_k.acc;
+        f = D_307A8_k.acc; if (c) {}
         fl = D_307A8_l.floor_;
         f -= D_307A8_m.dec;
         D_307A8_n.acc = f;
