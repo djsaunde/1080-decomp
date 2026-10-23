@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00046FA8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T02:18:33.634700+00:00",
+  "end_time": "2026-10-23T02:18:33.634700+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T02:18:33.634700+00:00",
+      "assistant_text": "NCC (C++) donor: context inline next() appends, memory-homed params, (g = ctx)->next() pooled this, named slot result in next() (one fewer counted load before the uopt 20-load block cut).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 79,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00046FA8 (0x13C / 79 words): emit a\n * gDPFillRectangle + gDPPipeSync pair through the object's display-list\n * context, after up to three pre-dispatch calls; the else arm calls out.\n * - C++: the context's inline next() append (lw dl; lw n; n+1; sw; reload dl)\n *   and the memory-homed parameters (edg keeps x/y/w/h in their arg homes).\n * - `(g = a0->mgr->ctx)->next()` makes the context the pooled next() `this`\n *   (v1) for both appends; a named `Gfx *g` result in next() puts the\n *   second append's list/index/slot webs in a2/v0/a3 (one fewer counted\n *   variable load before uopt's 20-load block cut, kit XXXV).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-c run 126). */\nextern \"C\" void gl_func_00000000(...);\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n++; Gfx *g = &dl->buf[n]; return g; } };\nstruct Mgr { char pad[0x158]; Ctx *ctx; };\nstruct Obj { char pad[0x254]; Mgr *mgr; char pad2[0x28C - 0x258]; int done; };\n#define _SHIFTL(v, s, w) ((unsigned int)(((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))\nextern \"C\" void gl_func_00046FA8(Obj *a0, int x, int y, int w, int h, int c) {\n    if (a0->done == 0) {\n        if (c != 0) {\n            gl_func_00000000(a0->mgr->ctx, c);\n            gl_func_00000000(a0->mgr->ctx, c);\n            gl_func_00000000(a0->mgr->ctx, c);\n        }\n        Ctx *g;\n        Gfx *p = (g = a0->mgr->ctx)->next();\n        p->w0 = _SHIFTL(0xF6, 24, 8) | _SHIFTL(x + w - 1, 14, 10) | _SHIFTL(y + h - 1, 2, 10);\n        p->w1 = _SHIFTL(x, 14, 10) | _SHIFTL(y, 2, 10);\n        p = g->next();\n        p->w0 = _SHIFTL(0xE7, 24, 8);\n        p->w1 = 0;\n    } else {\n        gl_func_00000000(x, y, w, h);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_46FA8.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00046FA8.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}
