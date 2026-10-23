@@ -2074,6 +2074,10 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
 GAMEUSO_24BC_NM_DONOR := build/src/game_uso/game_uso_ncc_24BC.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_24BC_NM_DONOR)
+# BB8C: NM-only NCC donor (contact sweep, V3 operator temporaries; agent-g run 128).
+GAMEUSO_BB8C_NM_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_BB8C_NM_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol
