@@ -17253,7 +17253,7 @@ void game_libs_func_0004B2F4(char *arg0) {
         F_4B2F4_copy(mtx, &D_4B2F4_fixed + 0x3C8A0);
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
-        flags = W(g, 0x1F4);
+        flags = W(g, 0x1F4); if (slot3) {}
         slot1 = (*(s32 **)(ctx + 0x3C))[1]++; if (1) {}
         fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6);
         F_4B2F4_pack(&D_4B2F4_fixed + 0x3C8A0, fixed);
