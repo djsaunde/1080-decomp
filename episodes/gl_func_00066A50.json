@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00066A50",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T23:35:37.463933+00:00",
+  "end_time": "2026-10-23T23:35:37.463948+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T23:35:37.463944+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 37,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00066A50 (0x94 / 37 words): the panic\n * handler that logs, resets the two canary words to 0x12345678 (checked by\n * the sibling gl_func_00066AF0) and hangs. The \"shared-$at canary cell cap\"\n * (one `lui at` + `sw t8,-3312(at); sw t8,-3308(at)` with the constant in the\n * ugen temp t8) is ONE 64-bit static store: as1 shares the lui only for the\n * same static symbol (kit LX), and a `long long` store keeps 0x12345678 as a\n * single ugen temp (an int pair makes it a uopt constant candidate in v0).\n * The splice renames the donor's .bss reloc to gl_func_00066A50_bss, pinned\n * to the canary address 0x3F310 in undefined_syms_auto.txt.\n * gl_ncc_66a50_phase (0x1C) only sets the 32-byte phase of the dead epilogue\n * (5 nops) as in the original TU; it is not spliced.\n * Spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY (agent-g run 142). */\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern int D_00000000;\n}\nstatic long long s66a50_canary;\nextern \"C\" void gl_ncc_66a50_phase(int *p) { p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0; p[5] = 0; }\nextern \"C\" void gl_func_00066A50(int a0) {\n    gl_func_00000000((char *)&D_00000000 + 0x3F160, 2, &D_00000000, 0,\n                     (char *)&D_00000000 + 0x41310, 0xA);\n    s66a50_canary = 0x1234567812345678LL;\n    gl_func_00000000((char *)&D_00000000 + 0x3F160);\n    gl_func_00000000(0, 0);\n    for (;;) {\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_66A50.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00066A50.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom + refresh-report 100"
+  }
+}
