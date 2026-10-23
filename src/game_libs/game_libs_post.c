@@ -1077,7 +1077,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
 
     t0 = *(s8 *)(G1DCB4 + 1);
     n2 = 0;
-    if (t0 == 0) {
+    if (t0 == 0) { if (e) {}
         i = 0;
         if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
             p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
@@ -1098,7 +1098,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
                 i = 0;
                 if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
                     p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
-                    do {
+                    do { if (rec) {}
                         e = p;
                         if ((*(u32 *)e >> 31) != 0 && k == ((u32)*(u8 *)(e + 1) >> 5)) {
                             buf[n2++] = i;
@@ -1123,7 +1123,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
                 p += 0x20;
             } while (i < *(s32 *)(G1DCB4 + 0x2070));
             i = 0;
-        }
+        } if (q) {}
     }
     {
         p = gp;
@@ -1133,7 +1133,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
     }
     for (; k < *(s8 *)(G1DCB4 + 1); k++) {
         rec = G1DCB4 + k * 0x158;
-        flag = *(u8 *)(rec + 0x19);
+        flag = *(u8 *)(rec + 0x19); if (arg0) {}
         if (flag != 0) {
             gp = gl_1dcb4_f1(gp, arg1, k, arg3);
         }
