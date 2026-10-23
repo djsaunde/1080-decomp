@@ -1478,6 +1478,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_5F5F0_NM_DONOR := build/src/game_libs/game_libs_ncc_5F5F0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F5F0=$(GAMELIBS_5F5F0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F5F0_NM_DONOR)
+# 5F984 = NCC 88.0 vs cfe 85.1. Still NON_MATCHING: NM comparison object only.
+GAMELIBS_5F984_NM_DONOR := build/src/game_libs/game_libs_ncc_5F984_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F984=$(GAMELIBS_5F984_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F984_NM_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)

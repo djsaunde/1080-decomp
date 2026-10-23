@@ -29253,6 +29253,8 @@ void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 y
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005F5F0);
 #endif
 
+/* 2026-10-23 agent-g (run 137): the NM comparison object uses an IDO 7.1 NCC donor,
+ * src/game_libs/game_libs_ncc_5F984_nm.cpp (this body recompiled under NCC: 85.1 -> 88.2). */
 #ifdef NON_MATCHING
 /* gl_func_0005F984: rotate matrix m about axis (x,y,z) (optionally taken
  * through rot's upper 3x3 first): len = sqrtf(|v|^2); len==0 -> (flag ?
