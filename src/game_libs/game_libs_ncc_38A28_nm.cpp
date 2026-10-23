@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00038A28: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 52.99).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00038A28: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 52.99; if (c) {} after the key >= 40 report call from a parameter-only fz sweep, 61.2, 87 -> 85 of 81 words).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -39,7 +39,7 @@ extern "C" void gl_func_00038A28(char *o, char *c) {
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000((char *)&D_00000000 + 0x0001EC6C, key);
+                gl_func_00000000((char *)&D_00000000 + 0x0001EC6C, key); if (c) {}
             }
             r = gl_func_00000000(*(char **)((char *)&D_00000000 + key * 4) + 0x10, o);
             if (*(int *)(o + 0x14) != 0) {
