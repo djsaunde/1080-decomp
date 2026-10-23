@@ -583,7 +583,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 133: 4A9F0 NM-only NCC donor (39 -> 40 words = target): 0x2e854 -> 0x2e858 (62F08 NM offset 0x2e808).
 # agent-c run 133: 35DAC NCC donor + placeholder host (+0x28): 0x2e858 -> 0x2e880 (62F08 NM offset 0x2e830).
 # agent-c run 133: 36A48 NM-only NCC donor (82 -> 85 words = target): 0x2e880 -> 0x2e88c (62F08 NM offset 0x2e83c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e88c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 14 NM-only NCC donors (42778, 46790, 3B6A0, 483BC, 4B0A8, 3C43C, 38A28, 49DBC, 48510, 43D38, 34548): 0x2e88c -> 0x2e8a4 (62F08 NM offset 0x2e854).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8a4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1509,6 +1510,50 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_NM_DONOR
 GAMELIBS_36A48_NM_DONOR := build/src/game_libs/game_libs_ncc_36A48_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036A48=$(GAMELIBS_36A48_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36A48_NM_DONOR)
+# 42778 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 77.04). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_42778_NM_DONOR := build/src/game_libs/game_libs_ncc_42778_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042778=$(GAMELIBS_42778_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42778_NM_DONOR)
+# 46790 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_46790_NM_DONOR := build/src/game_libs/game_libs_ncc_46790_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046790=$(GAMELIBS_46790_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_NM_DONOR)
+# 3B6A0 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 65.26). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_3B6A0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B6A0_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_NM_DONOR)
+# 483BC = NM C body lifted under NCC (agent-c run 134 sweep, cfe 88.86). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_483BC_NM_DONOR := build/src/game_libs/game_libs_ncc_483BC_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000483BC=$(GAMELIBS_483BC_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_483BC_NM_DONOR)
+# 4B0A8 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.36). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4B0A8_NM_DONOR := build/src/game_libs/game_libs_ncc_4B0A8_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_NM_DONOR)
+# 3C43C = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.00). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_3C43C_NM_DONOR := build/src/game_libs/game_libs_ncc_3C43C_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003C43C=$(GAMELIBS_3C43C_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3C43C_NM_DONOR)
+# 38A28 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 52.99). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_38A28_NM_DONOR := build/src/game_libs/game_libs_ncc_38A28_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038A28=$(GAMELIBS_38A28_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38A28_NM_DONOR)
+# 49DBC = NM C body lifted under NCC (agent-c run 134 sweep, cfe 96.04). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_49DBC_NM_DONOR := build/src/game_libs/game_libs_ncc_49DBC_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00049DBC=$(GAMELIBS_49DBC_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49DBC_NM_DONOR)
+# 48510 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_48510_NM_DONOR := build/src/game_libs/game_libs_ncc_48510_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_NM_DONOR)
+# 43D38 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 79.55). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_43D38_NM_DONOR := build/src/game_libs/game_libs_ncc_43D38_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043D38=$(GAMELIBS_43D38_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_NM_DONOR)
+# 34548 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 73.84). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_34548_NM_DONOR := build/src/game_libs/game_libs_ncc_34548_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034548=$(GAMELIBS_34548_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_NM_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
@@ -1693,6 +1738,18 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 GAMELIBS_1D17C_NM_DONOR := build/src/game_libs/game_libs_ncc_1D17C_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0001D17C=$(GAMELIBS_1D17C_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_1D17C_NM_DONOR)
+# 33094 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 70.95). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_33094_NM_DONOR := build/src/game_libs/game_libs_ncc_33094_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00033094=$(GAMELIBS_33094_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_33094_NM_DONOR)
+# 23BDC = NM C body lifted under NCC (agent-c run 134 sweep, cfe 74.43). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_23BDC_NM_DONOR := build/src/game_libs/game_libs_ncc_23BDC_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00023BDC=$(GAMELIBS_23BDC_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_23BDC_NM_DONOR)
+# 1EF20 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 71.35). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_1EF20_NM_DONOR := build/src/game_libs/game_libs_ncc_1EF20_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0001EF20=$(GAMELIBS_1EF20_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_1EF20_NM_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E290=$(GAMELIBS_2E290_DONOR)
 # 343F4 = selector -> 0xC-stride table-entry address (8-entry jumptable switch,
 # cases 2/3/5/1 + default), IDO 7.1 -O2 donor: game_libs_o2_343F4.c (25/25
