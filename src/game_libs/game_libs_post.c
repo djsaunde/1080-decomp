@@ -6406,16 +6406,25 @@ typedef struct { u8 b0, b1, b2, b3; s16 h4; char pad[0xE]; } Dst24378;
  * through the just-stored 0x201C pointer and stored before the two byte
  * flags. Residual: the target keeps a dead `or a0,zero,zero` (an
  * eliminated loop counter init) live into the first call, which shifts
- * every t-register one slot; the frame is 0x80 (build 0x40). */
+ * every t-register one slot; the frame is 0x80 (build 0x40).
+ * Run 129 (agent-c) 323 -> 315 raw: `volatile s32 pad[16]` declared FIRST
+ * gives frame 0x80 (declared last it does not grow the frame), and the decl
+ * order n, i, c, q, e, mode, rem, p puts the two spill homes where the target
+ * has them (p 32, c 52); the byte-clear counter is rem (not i) and the first
+ * 1CA10 call takes no argument (target: nop delay). LEFT: the dead
+ * `or a0,zero,zero` at entry (i = 0 kept live; dead while (0) uses and
+ * counted-loop spellings of the u64 clear do not keep it -- the latter
+ * unroll), and the one-slot t-register shift it causes. */
 void gl_func_00024378(void) {
+    volatile s32 pad[16];
     s32 n;
     s32 i;
-    char *p;
+    s32 c;
     char *q;
     char *e;
     s32 mode;
-    s32 c;
     s32 rem;
+    char *p;
     s32 done;
     s32 dsti;
     s32 srci;
@@ -6434,12 +6443,12 @@ void gl_func_00024378(void) {
         } while (p < e);
     }
     q = (char *)gl_d_24378;
-    i = 0x5C30;
+    rem = 0x5C30;
     do {
-        i -= 1;
+        rem -= 1;
         *q = 0;
         q += 1;
-    } while (i >= 0);
+    } while (rem >= 0);
     mode = *(s32 *)gl_d_24378_c;
     switch (mode) {
     case 0:
@@ -6456,7 +6465,7 @@ void gl_func_00024378(void) {
         FW(gl_d_24378, 0x213C) = 0x3C;
         break;
     }
-    gl_func_0001CA10(i); if (1) {}
+    gl_func_0001CA10(); if (1) {}
     q = (char *)gl_d_24378_seed;
     e = (char *)gl_d_24378_seed + 6;
     do {
