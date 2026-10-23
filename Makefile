@@ -1426,6 +1426,10 @@ build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o
 # the table at bootup.uso RoData +0xC9C.
 GAMELIBS_25A8_DONOR := build/src/game_libs/game_libs_o2_25A8.c.o
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000025A8=$(GAMELIBS_25A8_DONOR)
+# 2840: NM-only NCC comparison donor (same 111 words as cfe; 89.75 -> 90.81 fuzzy).
+GAMELIBS_2840_NM_DONOR := build/src/game_libs/game_libs_ncc_2840_nm.cpp.o
+build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00002840=$(GAMELIBS_2840_NM_DONOR)
+build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_2840_NM_DONOR)
 GAMELIBS_68990_DONOR := build/src/game_libs/game_libs_o2_68990.c.o
 # 44B78 = video-mode selector (9-case jumptable switch), IDO 7.1 -O2 donor:
 # game_libs_o2_44B78.c (73/73 word-exact). Spliced only so the C switch's

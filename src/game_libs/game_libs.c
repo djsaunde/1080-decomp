@@ -1279,6 +1279,7 @@ void gl_func_000025A8(char *arg0, s32 arg1) {
     *(s32 *)(arg0 + 0x1F0) = arg1;
 }
 
+/* NM object: replaced by the NCC comparison donor game_libs_ncc_2840_nm.cpp (90.8). */
 #ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
