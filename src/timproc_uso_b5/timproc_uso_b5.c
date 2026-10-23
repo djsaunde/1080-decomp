@@ -9583,7 +9583,7 @@ char *timproc_uso_b5_func_0000D550(char *arg0, volatile s32 arg1, volatile s32 a
             f32 cf;
             char *g2;
             timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
-            g2 = gc;
+            g2 = gc; if (1) {}
             cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);
             FW(g2, 0x120) = 1;
             FW(g2, 0x28) = (s32) (&import_80087FB8[0]);
