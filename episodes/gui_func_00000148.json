@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_func_00000148",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T00:26:35.581774+00:00",
+  "end_time": "2026-10-23T00:26:35.581774+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T00:26:35.581774+00:00",
+      "assistant_text": "Exact from the cfe NM (99.98, frame 136 vs 128). Under NCC the frame is one word per declared scalar: drop the line local, reuse the dead a1 parameter as the width sum (12 locals, anonymous spills at sp+72/68), and a dead if (maxw) {} after the fill loop (found by a 10-minute permuter run) makes uopt colour the a1/sum web s5 and maxw s6.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 255,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_func_00000148 (0x414 / 261 words).\n *\n * Glyph-grid layout constructor (find-or-create a 40-byte grid, scan each\n * cell's ink columns, fill the 20-byte cell records). The cfe NM was 255/261\n * (frame 136 vs 128). Under NCC the frame is one word per declared scalar,\n * so the fix is the declaration set, not the order of homes:\n *  - no line local: the scan indexes (px + y * a2)[x];\n *  - the width sum reuses the a1 parameter (dead after the pixels store),\n *    which with 12 locals puts the anonymous gw/gh spills at sp+72/68;\n *  - a dead \"if (maxw) {}\" after the fill loop extends maxw's live range so\n *    uopt ranks the a1/sum web first (s5) and maxw second (s6); found by a\n *    10-minute permuter run on this NCC source.\n * docs/IDO_CODEGEN.md kit XXXIII. Spliced via REPLACE_FUNC_BODY into both\n * gui_uso trees. */\nextern \"C\" { void *gl_func_00000000(...); }\ntypedef struct GuiGlyphCell148 {\n    int x;                      /* 0x00: first ink column in the atlas */\n    int y;                      /* 0x04: cell's atlas row */\n    int ink_width;              /* 0x08: right edge minus left bearing */\n    int advance;                /* 0x0C: shared maximum right edge */\n    int left_bearing;           /* 0x10: first ink column within the cell */\n} GuiGlyphCell148;\n\ntypedef struct GuiGlyphGrid148 {\n    int cell_count;             /* 0x00 */\n    char *pixels;               /* 0x04 */\n    int half_mean_width;        /* 0x08: integer-truncated half-sum / count */\n    int cell_width;             /* 0x0C: initial width, then maximum right edge */\n    int cell_height;            /* 0x10 */\n    int height_14;              /* 0x14: initialized to the same height */\n    int atlas_width;            /* 0x18 */\n    int atlas_height;           /* 0x1C */\n    GuiGlyphCell148 *cells;     /* 0x20 */\n    void *draw_state;           /* 0x24: not initialized by this function */\n} GuiGlyphGrid148;\n\nextern \"C\" GuiGlyphGrid148 *gui_func_00000148(GuiGlyphGrid148 *a0, int a1, int a2, int a3, int rows, int cols) {\n    /* NCC frame: the 12 declared scalars (sum lives in the dead a1 parameter). */\n    int idx;\n    int col;\n    int maxw;\n    int maxx;\n    char *px;\n    int x;\n    int y;\n    int row;\n    int gi;\n    int gw;\n    int gh;\n    int minx;\n\n    if (a0 == 0) {\n        a0 = (GuiGlyphGrid148 *)gl_func_00000000(sizeof(GuiGlyphGrid148));\n        if (a0 == 0) {\n            goto end;\n        }\n    }\n    gw = a2 / rows;\n    gh = a3 / cols;\n    a0->pixels = (char *)a1;\n    a0->cell_width = gw;\n    a0->cell_count = rows * cols;\n    a0->cell_height = gh;\n    a0->height_14 = gh;\n    a0->atlas_width = a2;\n    a0->atlas_height = a3;\n    a0->cells = (GuiGlyphCell148 *)gl_func_00000000(rows * cols * sizeof(GuiGlyphCell148));\n\n    a1 = 0;\n    maxw = 0;\n    for (col = 0; col < cols; col++) {\n        row = 0;\n        if (rows > 0) {\n            gi = col * rows;\n            do {\n                px = a0->pixels + (col * gh) * a2 + row * gw;\n                idx = gi;\n                maxx = 0; minx = gw;\n                for (y = 0; y < gh; y++) {\n                    x = y * a2; /* dead; kept from the original scan-line staging */\n                    /* Same-line scan preserves IDO's unrolled compare schedule. */\n                    for (x = 0; x < gw; x++) { if ((px + y * a2)[x] != 0) { if (x < minx) minx = x; if (maxx < x) maxx = x; } }\n                }\n                maxx += 1;\n                if (maxw < maxx) maxw = maxx;\n                a0->cells[idx].x = row * gw + minx;\n                a0->cells[idx].y = col * gh;\n                a0->cells[idx].ink_width = maxx - minx;\n                a1 += maxx;\n                a0->cells[idx].left_bearing = minx;\n                gi++;\n                row++;\n            } while (row != rows);\n        }\n    }\n    a0->cell_width = maxw;\n    a0->half_mean_width = (int)((float)a1 * 0.5f) / a0->cell_count;\n    {\n        for (row = 0; row < a0->cell_count; row++) {\n            a0->cells[row].advance = a0->cell_width;\n        }\n        if (maxw) {} /* keeps maxw live: s6 for maxw, s5 for the a1/sum web */\n    }\nend:\n    return a0;\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_0148.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00000148.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}

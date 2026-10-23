@@ -1997,6 +1997,10 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_1EF4_DONOR := build/src/gui_uso/gui_uso_ncc_1EF4.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00001EF4=$(GUI_1EF4_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1EF4_DONOR)
+# 0148: glyph-grid layout constructor (261/261; NCC frame = declared scalars).
+GUI_0148_DONOR := build/src/gui_uso/gui_uso_ncc_0148.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_00000148=$(GUI_0148_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0148_DONOR)
 # 27A0: tiled sprite blitter (flags align, gSPTexture, mode switch, strip loop;
 # 260/260). The pooled int scratch is passed as the strip helper's 2nd arg.
 GUI_27A0_DONOR := build/src/gui_uso/gui_uso_ncc_27A0.cpp.o
