@@ -8378,9 +8378,8 @@ void gl_func_00026790(unsigned char *cmd) {
         *(unsigned char *)(g + 0x2076) = *(int *)(cmd + 4);
         break;
     case 0xF2:
-        g = (char *)&D_00000000;
         p = gl_26790_ent;
-        for (i = 0; i < *(short *)(g + 0x2048); i++) {
+        for (i = 0; i < *(short *)((char *)&D_00000000 + 0x2048); i++) {
             ((Ent26790 *)(p + 0x2D00))->f20 = 1;
             ((Ent26790 *)(p + 0x2D00))->f04 = 1;
             p += sizeof(Ent26790);
@@ -8400,9 +8399,8 @@ void gl_func_00026790(unsigned char *cmd) {
             }
         }
     case 0xF0:
-        g = (char *)&D_00000000;
         p = gl_26790_ent;
-        for (i = 0; i < *(short *)(g + 0x2048); i++) {
+        for (i = 0; i < *(short *)((char *)&D_00000000 + 0x2048); i++) {
             ((Ent26790 *)(p + 0x2D00))->f20 = 0;
             ((Ent26790 *)(p + 0x2D00))->f04 = 1;
             p += sizeof(Ent26790);
