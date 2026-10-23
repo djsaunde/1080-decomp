@@ -31173,20 +31173,32 @@ void gl_func_00061F8C(char *self) {
  * it as an extra trailing arg to that call reproduces the order (a
  * separate statement is sunk below the call), but costs a +8 frame.
  * Residual: that frame and the t0/v1 colour of self->8. */
+/* 2026-10-23 agent-g run 133 (22 -> 10 raw, length still 65): PR #10 style
+ * homes. No named self->8 local (it costs a frame word; the CSE temp takes
+ * the register), the stride * a3 product goes through a one-element ARRAY
+ * home n[1] (never a uopt candidate: frame 40, sw/lw 32(sp) as the target),
+ * and the then-path pointer is a block-scoped p computed BEFORE n[0] is
+ * stored, which gives the target's a2-product-first order with a 3-argument
+ * third call. LEFT: self->8 takes v1 (target t0) and the else product a
+ * ugen t-reg (target v1); in the target the else product is a uopt
+ * candidate that outranks self->8. Block cuts (k = 2), named / function-
+ * scope q / p for the else product: all flat at 10. */
 int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
     extern int D_62194_a, D_62194_b, D_62194_c, D_62194_d;
-    char *t0 = *(char **)(self + 8);
     unsigned int stride;
-    if (t0 == 0) {
+    unsigned int n[1];
+    if (*(char **)(self + 8) == 0) {
         gl_func_00000000(&D_62194_a, 1);
         gl_func_00000000(&D_62194_b, *(int *)(*(char **)(self + 0x18) + 0x3C));
         stride = *(short *)self * 14;
-        gl_func_00000000(&D_62194_c, 0, *(char **)(self + 0x14) + stride * a2, stride * a3);
-        gl_func_00000000(&D_62194_d, a1, stride * a3);
+        { char *p = *(char **)(self + 0x14) + stride * a2;
+        n[0] = stride * a3;
+        gl_func_00000000(&D_62194_c, 0, p); }
+        gl_func_00000000(&D_62194_d, a1, n[0]);
         return;
     }
     stride = *(short *)self * 14;
-    gl_func_00000000(t0 + stride * a2, a1, stride * a3);
+    gl_func_00000000(*(char **)(self + 8) + stride * a2, a1, stride * a3);
     return -1;
 }
 #else
