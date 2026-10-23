@@ -57,7 +57,6 @@ extern int gl_func_0003773C();
 extern int gl_func_00037C50();
 extern int gl_func_00037D98();
 extern int gl_func_00038604();
-extern int gl_func_0003B1AC();
 extern int gl_func_0003B244();
 extern int gl_func_0003B844();
 extern int gl_func_0003C36C();
@@ -5834,55 +5833,54 @@ float game_libs_func_0003B198(int a0, int a1) {
     return 0.0f;
 }
 
-/* game_libs_func_0003B1A8: 1-insn alt-entry prologue for gl_func_0003B1AC.
- * Sets $v1 = a0->[0x8C] then falls through into 3B1AC body (which expects
- * v1 pre-set). Cannot be expressed in C as a standalone function (no jr ra,
- * no frame, arg-reg-only side effect) — INCLUDE_ASM permanent. See split
- * boundary correction note on 3B198. */
-/* game_libs_func_0003B1A8 folded into gl_func_0003B1AC.s 2026-06-10 (its
- * glabel lives at the head of that block): a standalone 1-word block
- * emitted +4 via the placeholder bug. */
-
-// gl_func_0003B1AC — STRUCTURAL PASS (0x140 / 80 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). A matrix x point transform (apply 4-row matrix to a
-// Vec3 stream).
-//
-//   void gl_func_0003B1AC(C *c, M *m) {
-//     int n = c->w_2C;                            // point count
-//     if (n == 0) return;
-//     for (int i = 0; i < n; i++) {
-//       float *buf = c->p_30;                     // ring/shift buf
-//       buf[i*0]=buf[i+1]...;                       // shift entries
-//       Vec3 p = { sp_scratch... };
-//       // 4-row matrix at m+0x00 / +0x10 / +0x20 / +0x30
-//       //   (0x10 stride = 4 floats per row; row3 = translation)
-//       out.x = m00*p.x + m10*p.y + m20*p.z + m30;
-//       out.y = m01*p.x + m11*p.y + m21*p.z + m31;
-//       out.z = m02*p.x + m12*p.y + m22*p.z + m32;
-//     }
-//   }
-//
-// Struct-typing reference: the textbook 4x4 (well, 4-row x 4-float-
-//   stride) MATRIX-APPLY-TO-POINT transform. The matrix is at the
-//   second argument with rows at offsets 0x00 / 0x10 / 0x20 / 0x30
-//   (the +0x30 row being the translation), each component computed
-//   as the dot of a matrix column with the point plus the
-//   translation (`mul.s` / `add.s` chain). It runs count-gated
-//   (c->0x2C = number of points) over a buffer reached via c->0x30
-//   (shifting/streaming entries with the `lw;sw` move), spilling
-//   results through stack scratch (sp+0x24..0x40). A core geometry
-//   transform leaf of the game_libs object subsystem — the
-//   "apply the composed matrix to vertices" stage that consumes
-//   the matrices the gl_func_00036694 matrix-concat /
-//   gl_func_00036224 viewport / gl_func_00037938 transform-compose
-//   leaves build (and feeds the gl_func_00034458 render traversal).
-// Caps: raw-word USO + count-gated 4-row-matrix x Vec3 multiply +
-//   streaming buffer move — not exact-matchable without proper USO
-//   mnemonic disasm + the matrix/point/count structs typed;
-//   structural pass only, no byte body.
-// Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B1AC);
+/* game_libs_func_0003B1A8 (0x144, 81 words) -- EXACT (agent-c run 135). The
+ * 1-word "alt-entry prologue" orphan (`lw v1,0x8C(a0)`) and gl_func_0003B1AC
+ * are ONE function: bootup.uso Sym 1722 exports text 0x4F814 (= splat
+ * 0x3B1A8); 0x4F818 (= 0x3B1AC) is not exported (scripts/uso-sym-oracle.py).
+ * The orphan word is the loop-bound load `a0->list` hoisted above `addiu sp`.
+ * For each 40-byte element of a0->list->buf: copy its Vec3 at +4 into a stack
+ * temp, transform it by the 4x4 m (row 3 = translation) and ADD the result
+ * back into the element (the old note's "shift" / subtract read was wrong:
+ * the three ops are add.s). Levers: (1) the transformed point lives in a
+ * stack Vec3 written and read through a pointer q = &p, so the element
+ * stores alias it (p.x/p.y/p.z reloads in the add-back); (2) the three
+ * results go to named X / Y / Z first, stored y, x, z (target store order);
+ * (3) each lane spelled reversed and right-associated
+ * `m[12] + (m[8]*z + (m[4]*y + m[0]*x))` for the target's left-linear sum
+ * with the m[12] load as the second add operand; (4) frame 0x48: an unused
+ * word declared above p and `f32 pad[3]` below t (uncoloured locals keep
+ * their slots); (5) `i++` right after the element pointer (no for-step)
+ * schedules the strength-reduced offset add after the third element load. */
+typedef struct { f32 x, y, z; } V3_3B1A8;
+typedef struct { s32 pad0; V3_3B1A8 v; char pad10[0x18]; } E3B1A8;
+typedef struct { char pad[0x2C]; u32 n; E3B1A8 *buf; } L3B1A8;
+void game_libs_func_0003B1A8(char *a0, f32 *m) {
+    s32 pad0;
+    V3_3B1A8 p;
+    V3_3B1A8 *q;
+    u32 i;
+    V3_3B1A8 t;
+    f32 pad[3];
+    f32 X, Y, Z;
+    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) {
+        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v;
+        q = &p;
+        q->x = t.x; q->y = t.y; q->z = t.z;
+        X = m[12] + (m[8] * q->z + (m[4] * q->y + m[0] * q->x));
+        Y = m[13] + (m[9] * q->z + (m[5] * q->y + m[1] * q->x));
+        Z = m[14] + (m[10] * q->z + (m[6] * q->y + m[2] * q->x));
+        q->y = Y;
+        q->x = X;
+        q->z = Z;
+        {
+            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v;
+            i++;
+            d->x = d->x + q->x;
+            d->y = d->y + q->y;
+            d->z = d->z + q->z;
+        }
+    }
+}
 
 // gl_func_0003B2EC — STRUCTURAL PASS (0x3B4 / 237 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one

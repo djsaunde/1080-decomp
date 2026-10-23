@@ -1,10 +1,8 @@
-nonmatching gl_func_0003B1AC, 0x144
+nonmatching game_libs_func_0003B1A8, 0x144
 
 glabel game_libs_func_0003B1A8
-    /* 1-insn alt-entry prologue folded in-block (was a standalone 1-word block, emitted +4) */
+    /* hoisted loop-bound load (bootup.uso exports 0x3B1A8; 0x3B1AC is not an entry) */
     .word 0x8C83008C
-endlabel game_libs_func_0003B1A8
-glabel gl_func_0003B1AC
     /* E20284 0003B1AC 27BDFFB8 */  .word 0x27BDFFB8
     /* E20288 0003B1B0 00A03025 */  .word 0x00A03025
     /* E2028C 0003B1B4 8C6E002C */  .word 0x8C6E002C
@@ -85,4 +83,4 @@ glabel gl_func_0003B1AC
     /* E203B8 0003B2E0 00000000 */  .word 0x00000000
     /* E203BC 0003B2E4 03E00008 */  .word 0x03E00008
     /* E203C0 0003B2E8 27BD0048 */  .word 0x27BD0048
-endlabel gl_func_0003B1AC
+endlabel game_libs_func_0003B1A8

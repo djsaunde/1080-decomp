@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0003B1A8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T22:05:26.751807+00:00",
+  "end_time": "2026-10-23T22:05:26.751823+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T22:05:26.751819+00:00",
+      "assistant_text": "Hoisted-head merge (bootup.uso Sym 1722 exports 0x3B1A8): Vec3 += 4x4 transform per 40-byte element; aliasing stack point via q=&p, named X/Y/Z stored y,x,z, reversed right-assoc lanes, frame pads, i++ after the element pointer.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 81,
+  "initial_m2c_source": null,
+  "final_source": "/* game_libs_func_0003B1A8 (0x144, 81 words) -- EXACT (agent-c run 135). The\n * 1-word \"alt-entry prologue\" orphan (`lw v1,0x8C(a0)`) and gl_func_0003B1AC\n * are ONE function: bootup.uso Sym 1722 exports text 0x4F814 (= splat\n * 0x3B1A8); 0x4F818 (= 0x3B1AC) is not exported (scripts/uso-sym-oracle.py).\n * The orphan word is the loop-bound load `a0->list` hoisted above `addiu sp`.\n * For each 40-byte element of a0->list->buf: copy its Vec3 at +4 into a stack\n * temp, transform it by the 4x4 m (row 3 = translation) and ADD the result\n * back into the element (the old note's \"shift\" / subtract read was wrong:\n * the three ops are add.s). Levers: (1) the transformed point lives in a\n * stack Vec3 written and read through a pointer q = &p, so the element\n * stores alias it (p.x/p.y/p.z reloads in the add-back); (2) the three\n * results go to named X / Y / Z first, stored y, x, z (target store order);\n * (3) each lane spelled reversed and right-associated\n * `m[12] + (m[8]*z + (m[4]*y + m[0]*x))` for the target's left-linear sum\n * with the m[12] load as the second add operand; (4) frame 0x48: an unused\n * word declared above p and `f32 pad[3]` below t (uncoloured locals keep\n * their slots); (5) `i++` right after the element pointer (no for-step)\n * schedules the strength-reduced offset add after the third element load. */\ntypedef struct { f32 x, y, z; } V3_3B1A8;\ntypedef struct { s32 pad0; V3_3B1A8 v; char pad10[0x18]; } E3B1A8;\ntypedef struct { char pad[0x2C]; u32 n; E3B1A8 *buf; } L3B1A8;\nvoid game_libs_func_0003B1A8(char *a0, f32 *m) {\n    s32 pad0;\n    V3_3B1A8 p;\n    V3_3B1A8 *q;\n    u32 i;\n    V3_3B1A8 t;\n    f32 pad[3];\n    f32 X, Y, Z;\n    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) {\n        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v;\n        q = &p;\n        q->x = t.x; q->y = t.y; q->z = t.z;\n        X = m[12] + (m[8] * q->z + (m[4] * q->y + m[0] * q->x));\n        Y = m[13] + (m[9] * q->z + (m[5] * q->y + m[1] * q->x));\n        Z = m[14] + (m[10] * q->z + (m[6] * q->y + m[2] * q->x));\n        q->y = Y;\n        q->x = X;\n        q->z = Z;\n        {\n            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v;\n            i++;\n            d->x = d->x + q->x;\n            d->y = d->y + q->y;\n            d->z = d->z + q->z;\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0003B1A8.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "rdiff 81/81 + ROM cmp OK"
+  }
+}
