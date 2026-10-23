@@ -18610,6 +18610,10 @@ void gl_func_00032DC0(Quad4 *dst) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
+/* Run 129 (agent-c) NM 17 -> 4 raw, length 158 -> 159 = target. LEFT: the
+ * zv Vec3 sits at sp+64 (target 68) with x/y/z stored before the a0 setup
+ * (target: x, a0, y, z in the jal delay = the comma-argument form, which
+ * moves the homes: with it zv 64 / v 36 vs target 68 / 32). */
 typedef char *(*GP_00032E18)();
 char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
     char *o;
@@ -18648,9 +18652,8 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
         if (b != 0 || (b = (char *)gl_func_0001CA10(0x18)) != 0) {
             p = (int *)b;
             if (p != 0 || (p = (int *)gl_func_0001CA10(0x10)) != 0) {
-                /* run 129: p[2] first = the target's ori-before-addiu temps */
-                p[2] = 0x8000;
-                p[0] = -1;
+                /* run 129: p[2] evaluated first (comma) = the target ori-before-addiu temps, stores still 0 then 8 */
+                p[0] = (p[2] = 0x8000, -1);
                 p[1] = 0;
             }
             q = (int *)(b + 0x10);
@@ -18675,7 +18678,7 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
     *(int *)(self + 0xF4) = arg1; if (1) {}
     *(f32 *)(self + 0x104) = 0.0f;
     *(f32 *)(self + 0x108) = 0.0f;
-    *(f32 *)(self + 0xFC) = 0.0f;
+    *(f32 *)(self + 0xFC) = 0; /* run 129: int 0, not 0.0f -- its own mtc1 zero,$f10 as in the target (+1 word, length 159 = target) */
     *(f32 *)(self + 0x10C) = 1.0f;
     gl_func_0001CA10(self + 0xB4);
     *(int *)(self + 0x130) = 0;
