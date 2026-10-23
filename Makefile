@@ -601,7 +601,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 134: 4E424 NM-only NCC donor (53 -> 51 of 49 words): 0x2e898 -> 0x2e890 (62F08 NM offset 0x2e840).
 # agent-c run 134: 4E00C (69 -> 70) + 4A890 (80 -> 81) + 4A308 (221) NM-only NCC donors: 0x2e890 -> 0x2e898 (62F08 NM offset 0x2e848).
 # agent-c run 134: 4E00C round-2 if (s0) {} (70 -> 71 of 75 words): 0x2e898 -> 0x2e89c (62F08 NM offset 0x2e84c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e89c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 3B9C0 (277 -> 280 of 279) + 36694 (176) NM-only NCC donors: 0x2e89c -> 0x2e8a8 (62F08 NM offset 0x2e858).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8a8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1579,6 +1580,14 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_NM_DONOR
 GAMELIBS_4A890_NM_DONOR := build/src/game_libs/game_libs_ncc_4A890_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A890=$(GAMELIBS_4A890_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A890_NM_DONOR)
+# 3B9C0 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 72.25). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_3B9C0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B9C0_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B9C0=$(GAMELIBS_3B9C0_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B9C0_NM_DONOR)
+# 36694 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 82.41). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_36694_NM_DONOR := build/src/game_libs/game_libs_ncc_36694_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036694=$(GAMELIBS_36694_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36694_NM_DONOR)
 # 42778 = normalised Vec3 -> fixed-point screen pair (len reused for the inverse, pad[12] frame words); NCC donor.
 GAMELIBS_42778_DONOR := build/src/game_libs/game_libs_ncc_42778.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042778=$(GAMELIBS_42778_DONOR)
@@ -1775,6 +1784,14 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 GAMELIBS_1D17C_NM_DONOR := build/src/game_libs/game_libs_ncc_1D17C_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0001D17C=$(GAMELIBS_1D17C_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_1D17C_NM_DONOR)
+# 25C54 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 76.23). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_25C54_NM_DONOR := build/src/game_libs/game_libs_ncc_25C54_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00025C54=$(GAMELIBS_25C54_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_25C54_NM_DONOR)
+# 27804 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 77.59). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_27804_NM_DONOR := build/src/game_libs/game_libs_ncc_27804_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00027804=$(GAMELIBS_27804_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_27804_NM_DONOR)
 # 33094 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 70.95). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_33094_NM_DONOR := build/src/game_libs/game_libs_ncc_33094_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00033094=$(GAMELIBS_33094_NM_DONOR)
