@@ -1099,7 +1099,7 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
         arcproc_uso_func_00001B88(temp_s7);
         temp_s1 = (int)arg0 + 0x704;
         temp_s5 = *(s16 *)((char *)FW(arg0, 0x75C) + 0x20) / 12;
-        arcproc_uso_func_00001B88(temp_s1);
+        arcproc_uso_func_00001B88(temp_s1); if (arg2) {}
         temp_s2 = (int)arg0 + 0x71C;
         arcproc_uso_func_00001B88(temp_s2);
         temp_s0 = (int)arg0 + 0x734;
@@ -1118,16 +1118,16 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
         var_s0 = spB8;
         if (temp_v0 > 0) {
             var_s1 = 0;
-            var_s2 = sp88;
+            var_s2 = sp88; if (arg0) {}
             do {
-                *var_s0 -= 0x30;
-                arcproc_uso_func_00001B88(temp_s7, var_s2, (arg1 - (*(s16 *)((char *)FW(arg0, 0x75C) + 0x22) / 2)) + 0x32, (char *) (*var_s0 * temp_s5), temp_s5);
+                *var_s0 -= 0x30; if (arg2) {}
+                arcproc_uso_func_00001B88(temp_s7, var_s2, (arg1 - (*(s16 *)((char *)FW(arg0, 0x75C) + 0x22) / 2)) + 0x32, (char *) (*var_s0 * temp_s5), temp_s5); if (arg2) {}
                 var_s1 += 0xD;
                 var_s0 += 1;
                 var_s2 += 0xD;
             } while (var_s1 != (temp_v0 * 0xD));
         }
-        arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x77C))), sp138);
+        arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x77C))), sp138); if (arg1) {}
         arcproc_uso_func_00001B88(temp_s1, temp_s2_2, temp_a2, (char *)2);
         arcproc_uso_func_00001B88(temp_s2, temp_s1_2, temp_a2, (char *)2);
     }
