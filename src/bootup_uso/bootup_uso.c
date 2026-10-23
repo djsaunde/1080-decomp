@@ -1988,9 +1988,9 @@ void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
     f32 vec2[3];
     int *m;
 
-    obj = (char *)fn_31c0_alloc(0xB8);
+    obj = (char *)fn_31c0_alloc(0xB8); if (mode) {}
     if (obj != 0) {
-        p = obj;
+        p = obj; if (e) {}
         if (p == 0) {
             p = (char *)fn_31c0_alloc(0xB4);
             if (p == 0) goto post;
