@@ -10032,7 +10032,7 @@ void gl_func_00027E24(void) {
                     if (o->u.b[1] == 0) {
                         *pb = d->bE0;
                     } else {
-                        *pb = o->u.b[1];
+                        *pb = o->u.b[1]; if (pad0) {}
                     }
                     buf.b0 = d->b4;
                     buf.b1 = d->bC;
