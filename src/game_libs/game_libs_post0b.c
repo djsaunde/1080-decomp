@@ -29156,6 +29156,8 @@ void game_libs_func_0005F534(float mf[4][4], float fovy, float aspect, float nea
     mf[3][3] = 0;
 }
 
+/* 2026-10-23 agent-g (run 137): the NM comparison object now uses an IDO 7.1 NCC donor,
+ * src/game_libs/game_libs_ncc_5F5F0_nm.cpp (85.0 -> 98.4); this cfe body is kept for reference. */
 #ifdef NON_MATCHING
 /* gl_func_0005F5F0 — DECODE CORRECTED (agent-f 2026-07-30): custom guLookAtF
  * (see references/libreultra/src/gu/lookat.c) with an eye-to-at distance clamp:
