@@ -18294,8 +18294,8 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
     if (sel < 0) {
         sel = 0;
     }
-    gl_func_00000000_f(0x1000A00, ACCS2_31A74 = r);
-    gl_func_00000000(0x3000A00, sel);
+    gl_func_00000000_f(0x1000A00, ACCS2_31A74 = r), gl_func_00000000(0x3000A00, sel);
+    if (r) {}
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00031A74);
