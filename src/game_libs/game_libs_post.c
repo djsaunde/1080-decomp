@@ -1047,7 +1047,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DB88);
  * i (s1) is int, while n2 (s2) and k (s3) are s16. The classify-loop
  * bound is the live global count, written in the loop test. LICM hoists
  * it, but the trip count stays unknown, so there is no x4 unroll and no
- * i<n -> i!=n rewrite. */
+ * i<n -> i!=n rewrite.
+ * Run 129 (agent-c) 157 -> 150 raw, length 284 -> 288 = target: all three
+ * display-list writes are the gbi `Gfx *_g = gp++` shape (copy, bump, then
+ * w0 / w1 through the copy); the class field shifts are unsigned (srl).
+ * LEFT: arg1 should be held in s8 (ours holds &buf there and homes arg1),
+ * and loops B / C keep a per-iteration `e = p` copy in the target (moving
+ * `p += 0x20` above the body keeps the copy but rotates the loop, +4 words). */
 extern char *gl_1dcb4_f1(char *, s32, s16, s16);
 extern char *gl_1dcb4_f2(s32, char *, char *, s32, s32, char *, s32);
 extern char *gl_1dcb4_f3(char *, s32, s32);
@@ -1094,7 +1100,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
                     p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
                     do {
                         e = p;
-                        if ((*(u32 *)e >> 31) != 0 && k == (*(u8 *)(e + 1) >> 5)) {
+                        if ((*(u32 *)e >> 31) != 0 && k == ((u32)*(u8 *)(e + 1) >> 5)) {
                             buf[n2++] = i;
                         }
                         i++;
@@ -1110,7 +1116,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
             p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
             do {
                 e = p;
-                if ((*(u32 *)e >> 31) != 0 && (s32)(*(u8 *)(e + 1) >> 5) >= t0) {
+                if ((*(u32 *)e >> 31) != 0 && (s32)((u32)*(u8 *)(e + 1) >> 5) >= t0) {
                     buf[n2++] = i;
                 }
                 i++;
@@ -1119,9 +1125,12 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
             i = 0;
         }
     }
-    *(s32 *)(gp + 4) = 0x340;
-    *(s32 *)(gp + 0) = 0x02000940;
-    gp += 8;
+    {
+        char *g0 = gp;
+        gp += 8;
+        *(s32 *)(g0 + 0) = 0x02000940;
+        *(s32 *)(g0 + 4) = 0x340;
+    }
     for (; k < *(s8 *)(G1DCB4 + 1); k++) {
         rec = G1DCB4 + k * 0x158;
         flag = *(u8 *)(rec + 0x19);
@@ -1163,12 +1172,19 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
             q++;
         } while (q < qe);
     }
-    *(s32 *)(gp + 0) = (((sz2 >> 4) & 0xFF) << 16) | 0x0D000000 | 0x3C0;
-    *(s32 *)(gp + 4) = 0x09400AE0;
-    gp += 8;
-    *(s32 *)(gp + 0) = ((((sz2 * 2) >> 4) & 0xFF) << 16) | 0x15000000 | 0x3C0;
-    *(s32 *)(gp + 4) = arg0 + 0x80000000;
-    return gp + 8;
+    {
+        char *g1 = gp;
+        gp += 8;
+        *(s32 *)(g1 + 0) = (((sz2 >> 4) & 0xFF) << 16) | 0x0D000000 | 0x3C0;
+        *(s32 *)(g1 + 4) = 0x09400AE0;
+    }
+    {
+        char *g2 = gp;
+        gp += 8;
+        *(s32 *)(g2 + 0) = ((((sz2 * 2) >> 4) & 0xFF) << 16) | 0x15000000 | 0x3C0;
+        *(s32 *)(g2 + 4) = arg0 + 0x80000000;
+    }
+    return gp;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DCB4);
