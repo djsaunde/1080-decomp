@@ -788,9 +788,12 @@ void gui_func_000027A0(void) {
  * a4-web (counter s0 vs s1, height s2 vs s0, ctx-web s1 vs s2); a0
  * spill-store placement; prologue ori/or schedule ties. Or-copy/
  * coloring class (same as 4568). */
+/* 2026-10-22 agent-g run 128 (57 -> 34 raw): field58 is the SIXTH declared
+ * local (cfe frame word per declared referenced local: frame 112, field58 at
+ * sp+88 as the target) and two empty if (1) {} cuts. LEFT: the target keeps
+ * lw s6,128 + or s1,s6 (w promoted, rem a copy); here rem loads the param. */
 void gui_func_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
-    int s5, s4, s3, s1, s6, s0, s8, field58;
-    int *s2, *v1;
+    int s5; int s4; int s3; int s1; int s6; int field58; int s0; int s8; int *s2; int *v1;
 
     /* first DL emit: G_SETSCISSOR (BB000001 / 80008000); ctx rides the s2 web */
     s2 = *(int **)&D_00000000;
@@ -809,15 +812,14 @@ void gui_func_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
     s2 = (int *)a0[0x10 / 4];
     s3 = 32;
     s6 = a4;
-    s1 = a4;
-    field58 = *(short *)((char *)s2 + 0x20);
+    s1 = a4; if (1) {}
+    field58 = *(short *)((char *)s2 + 0x20); if (1) {}
     if (s6 == 0) return;
     s0 = *(short *)((char *)s2 + 0x22);
     s8 = (s0 << 10) / s0;
     do {
         v1 = (int *)a0[0x10 / 4];
         if (s1 >= 33) {
-            int *dead = (int *)a0[0x10 / 4];
             s6 = (s3 << 10) / s3;
             s2 = (int *)v1[8 / 4];
             gl_func_00000000(*(int **)&D_00000000, s2, field58, s0, s4, 0, s3, s0, 0);
@@ -826,12 +828,10 @@ void gui_func_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
             s4 += 32;
             s1 -= 32;
         } else {
-            int t7;
             s2 = (int *)v1[8 / 4];
             s3 = s1;
             gl_func_00000000(*(int **)&D_00000000, s2, field58, s0, s4, 0, s1, s0, 0);
-            t7 = (s1 << 10) / s1;
-            gl_func_00000000(*(int **)&D_00000000, s5, a2, s1, s0, t7, s8);
+            gl_func_00000000(*(int **)&D_00000000, s5, a2, s1, s0, (s1 << 10) / s1, s8);
             s1 = 0;
         }
     } while (s1 != 0);
