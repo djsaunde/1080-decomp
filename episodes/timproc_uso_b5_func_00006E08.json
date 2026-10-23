@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_00006E08",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T03:25:22.047098+00:00",
+  "end_time": "2026-10-23T03:25:22.047098+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T03:25:22.047098+00:00",
+      "assistant_text": "Two-pass list-scroll tick: four declared locals (frame words), slot RMW through a block pointer built as p = base; p += index (addiu v0,v0,976 + sw 0(v0)), one empty if after the first capture, and the second loop's counter as a block-scoped variable (keeps j = 0 after the call).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 156,
+  "initial_m2c_source": null,
+  "final_source": "void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1) {\n    s32 old1;\n    s32 i;\n    s32 cur;\n    s32 old2;\n\n    if (((int)timproc_uso_b5_alias(&import_80020098, 0x10001) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {\n        old1 = SLOT(FW(arg0, 0x3C4)); if (1) {}\n        (int)timproc_uso_b5_alias(arg0);\n        i = 0;\n        if ((int)timproc_uso_b5_alias(arg0) > 0) {\nloop_4:\n            { s32 *p = (s32 *)(arg0 + 0x3D0); p += FW(arg0, 0x3C4); *p -= 1; }\n            if (SLOT(FW(arg0, 0x3C4)) < 0) {\n                SLOT(FW(arg0, 0x3C4)) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);\n            }\n            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)timproc_uso_b5_alias(arg0))) {\n                goto loop_4;\n            }\n        }\n        cur = SLOT(FW(arg0, 0x3C4));\n        if (old1 != cur) {\n            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[FW(arg0, 0x3C4)], FW(arg0, 0x4D4) | cur);\n            (int)timproc_uso_b5_alias(arg0, arg1);\n        }\n    }\n    if (((int)timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {\n        {\n        s32 j;\n        old2 = SLOT(FW(arg0, 0x3C4));\n        (int)timproc_uso_b5_alias(arg0);\n        j = 0;\n        if ((int)timproc_uso_b5_alias(arg0) > 0) {\nloop_13:\n            { s32 *p = (s32 *)(arg0 + 0x3D0); p += FW(arg0, 0x3C4); *p += 1; }\n            if (SLOT(FW(arg0, 0x3C4)) >= (int)timproc_uso_b5_alias(arg0)) {\n                SLOT(FW(arg0, 0x3C4)) = 0;\n            }\n            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (j += 1, 0x2A4)) == 0.0f) && (j < (int)timproc_uso_b5_alias(arg0))) {\n                goto loop_13;\n            }\n        }\n        }\n        cur = SLOT(FW(arg0, 0x3C4));\n        if (old2 != cur) {\n            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[FW(arg0, 0x3C4)], FW(arg0, 0x4D4) | cur);\n            (int)timproc_uso_b5_alias(arg0, arg1);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00006E08.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "ido7.1-cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words on the matching-build object; full gate at branch tip."
+  }
+}

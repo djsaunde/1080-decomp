@@ -4422,20 +4422,18 @@ void timproc_uso_b5_func_00006D30(int *self) {
 //   (s2) in the build but the target SPILLS it to a stack slot (52/48(sp)) —
 //   one extra saved reg shifts the whole s-reg/frame-offset layout and flips
 //   bgez<->bgezl. Register-promotion cap (resists per project cap analysis).
-#ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef int (*GP_00006E08)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE738;
-/* 2026-10-22 agent-g (run 127) 81 -> 23 raw words: four declared locals
- * (old1, i, cur, old2: one frame word each -> frame 56, old1/old2 at 52/40),
- * the slot as an array index (s0-first addu), one empty if (1) {} after the
- * first capture (keeps old1 spilled to the stack instead of s2: a uopt block
- * boundary, scripts/blockcut-search.py), and i += 1 evaluated after the item
- * call (comma in the offset). LEFT: the slot RMW (target: addiu v0,v0,976 +
- * sw 0(v0), a pointer temp in v0) and block 2 sets i = 0 after the first call. */
+/* EXACT 2026-10-22 agent-g (run 128): four declared locals (old1, i, cur,
+ * old2: one frame word each), the slot as an array index, one empty if (1) {}
+ * after the first capture, i += 1 evaluated after the item call, the slot
+ * RMW through a block pointer built in two steps (p = base; p += index: the
+ * target's addiu v0,v0,976 + sw 0(v0), s0-first addu), and the second loop's
+ * counter as its own block-scoped variable (keeps j = 0 after the call). */
 #define SLOT(i) (((s32 *)(arg0 + 0x3D0))[i])
 #define SLOTP(i) ((char *)&((s32 *)(arg0 + 0x3D0))[i])
 void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1) {
@@ -4450,7 +4448,7 @@ void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1) {
         i = 0;
         if ((int)timproc_uso_b5_alias(arg0) > 0) {
 loop_4:
-            SLOT(FW(arg0, 0x3C4))--;
+            { s32 *p = (s32 *)(arg0 + 0x3D0); p += FW(arg0, 0x3C4); *p -= 1; }
             if (SLOT(FW(arg0, 0x3C4)) < 0) {
                 SLOT(FW(arg0, 0x3C4)) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);
             }
@@ -4465,18 +4463,21 @@ loop_4:
         }
     }
     if (((int)timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
+        {
+        s32 j;
         old2 = SLOT(FW(arg0, 0x3C4));
         (int)timproc_uso_b5_alias(arg0);
-        i = 0;
+        j = 0;
         if ((int)timproc_uso_b5_alias(arg0) > 0) {
 loop_13:
-            SLOT(FW(arg0, 0x3C4))++; if (1) {}
+            { s32 *p = (s32 *)(arg0 + 0x3D0); p += FW(arg0, 0x3C4); *p += 1; }
             if (SLOT(FW(arg0, 0x3C4)) >= (int)timproc_uso_b5_alias(arg0)) {
                 SLOT(FW(arg0, 0x3C4)) = 0;
             }
-            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)timproc_uso_b5_alias(arg0))) {
+            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (j += 1, 0x2A4)) == 0.0f) && (j < (int)timproc_uso_b5_alias(arg0))) {
                 goto loop_13;
             }
+        }
         }
         cur = SLOT(FW(arg0, 0x3C4));
         if (old2 != cur) {
@@ -4487,9 +4488,6 @@ loop_13:
 }
 #undef SLOT
 #undef SLOTP
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00006E08);
-#endif
 
 // timproc_uso_b5_func_00007078 — STRUCTURAL PASS (0x258 / 150 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
