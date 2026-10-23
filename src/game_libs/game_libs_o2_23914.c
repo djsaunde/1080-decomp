@@ -58,10 +58,9 @@ int gl_func_00023914(int a0, int a1, int *a2) {
             if (r == 0) return r;
             break;
         case 3:
+        case 4:
             r = gl_func_00000000(a0, size, 2, a1);
             if (r == 0) return r;
-            break;
-        case 4:
             break;
         }
         *a2 = 1;
