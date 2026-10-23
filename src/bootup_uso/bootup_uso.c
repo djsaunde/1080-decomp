@@ -987,7 +987,8 @@ void func_00001A44(char *a0) {
                    *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA8) * *(f32 *)(g + 0x130));
     W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x01020040,
           func_1a44_emit2(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count]));
-    _n = (*(Ms1A44 **)(gc + 0x3C))->count++;
+    _n = (*(Ms1A44 **)(gc + 0x3C))->count;
+    (*(Ms1A44 **)(gc + 0x3C))->count = _n + 1;
     W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x06000000, *(u32 *)(a0 + 0x38)); if (g) {}
     W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xE7000000, 0);
     W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xBA000E02, 0);
