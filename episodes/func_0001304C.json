@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0001304C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T01:49:14.445137+00:00",
+  "end_time": "2026-10-23T01:49:14.445137+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T01:49:14.445137+00:00",
+      "assistant_text": "NCC (C++) donor: run-125 shape/frame-exact body plus empty-if uopt block boundaries (between packets 12/13, 23/24, 25/26; inside packets 3 and 18 after the slot pointer; inside packet 26's next() between index bump and slot address), found by exhaustive placement search.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 566,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0001304C (fire-grid blur + texture upload\n * display list, 0x8D8 / 566 words). EXACT (agent-c run 126). Recipe:\n * - declaration order x, y, i, j / up, dn / k / lf, rt / count = frame 96, k at 68;\n * - `if (f->timer != 0) f->timer--; if (f->timer == 0)` = the t6 decrement temp;\n * - centre cell through i (strength-reduced 4*i), texel through j = i copied at\n *   the top of the x loop, `i++` at the end (the early a3 increment + t1 copy);\n * - `for (count = 0, y = 0; ...)` and `for (x = 0, i = y * 32; ...)` set the\n *   init order; next() with a named result `Gfx *g` places the constants;\n * - the display-list packet pointers rotate a1 a2 a3 a1 a2 t0 ... because of\n *   where uopt's basic blocks end: empty `if (1) {}` boundaries between packets,\n *   inside one packet macro after its slot pointer (G2B) and inside one next()\n *   between the index bump and the slot address (nextb). Found by an exhaustive\n *   placement search (kit XXXV #4); see docs/IDO_CODEGEN.md kit XXXIV. */\ntypedef struct { unsigned int w0, w1; } Gwords;\ntypedef union { Gwords words; long long force_structure_alignment; } Gfx;\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *nextb() { int n = dl->n++; if (1) {} Gfx *g = &dl->buf[n]; return g; }\n    Gfx *next() { int n = dl->n++; Gfx *g = &dl->buf[n]; return g; }\n};\n#define G2(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (unsigned int)(a); _g->words.w1 = (unsigned int)(b); }\n#define G2B(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); if (1) {} _g->words.w0 = (unsigned int)(a); _g->words.w1 = (unsigned int)(b); }\n#define G2C(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (unsigned int)(a); if (1) {} _g->words.w1 = (unsigned int)(b); }\nstruct Fire {\n    char pad[0x40];\n    int state;          /* 0x40 */\n    int pad44;\n    float f48;          /* 0x48 */\n    void *tex0;         /* 0x4C */\n    unsigned char *tex1; /* 0x50 */\n    int pad54;\n    float *grid;        /* 0x58 */\n    char pad5C[0x68 - 0x5C];\n    int flag68;         /* 0x68 */\n    int timerOn;        /* 0x6C */\n    int timer;          /* 0x70 */\n    int frame;          /* 0x74 */\n};\nextern \"C\" {\nvoid func_00000000(...);\nextern char D_00000000[];\nextern float D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;\nextern char func_0000023C[];\n}\nextern \"C\" void func_0001304C(Fire *f) {\n    int x, y, i, j;\n    float up, dn;\n    float k;\n    float lf, rt;\n    int count;\n    if (f->state == 0) return;\n    f->frame++;\n    if (f->timerOn) {\n        if (f->timer != 0) f->timer--;\n        if (f->timer == 0) {\n            func_00000000(D_00000000, 0);\n            f->timerOn = 0;\n            if (f->state == 2) {\n                f->state = 0;\n                f->f48 = 1.0f;\n                return;\n            }\n        }\n    }\n    func_00000000(f);\n    if (f->state == 2) k = D_00000C50;\n    if (f->state == 3) {\n        if (f->flag68) k = D_00000C54;\n        else k = D_00000C58;\n    }\n    if (f->state == 1) {\n        if (f->flag68) k = D_00000C5C;\n        else k = D_00000C60;\n    }\n    for (count = 0, y = 0; y != 32; y++) {\n        for (x = 0, i = y * 32; x != 32; x++) {\n            j = i;\n            if (y - 1 < 0) up = 0.0f;\n            else up = f->grid[((y - 1) & 31) * 32 + x];\n            if (y == 31) dn = 0.0f;\n            else dn = f->grid[((y + 1) & 31) * 32 + x];\n            if (x - 1 < 0) lf = 0.0f;\n            else lf = f->grid[y * 32 + ((x - 1) & 31)];\n            if (x == 31) rt = 0.0f;\n            else rt = f->grid[y * 32 + ((x + 1) & 31)];\n            f->grid[i] += (up + dn + lf + rt) * k;\n            if (f->grid[i] > 1.0f) {\n                f->grid[i] = 1.0f;\n                count++;\n            }\n            f->tex1[j] = (unsigned int)(((f->state == 2 || f->state == 3) ? f->grid[i] : 1.0f - f->grid[i]) * 255.0f);\n            i++;\n        }\n    }\n    if (f->state == 3 && count > 1024) f->f48 = 1.0f;\n    if (count == 1024) {\n        f->f48 = 1.0f;\n        if (f->state == 1) f->state = 0;\n    }\n    Ctx *c = *(Ctx **)(*(char **)(func_0000023C + 0x18) + 0x158);\n    G2(c->next(), 0xE7000000, 0);\n    G2(c->next(), 0xBA001402, 0x100000);\n    G2B(c->next(), 0xBA001301, 0);\n    G2(c->next(), 0xB900031D, 0x504240);\n    G2(c->next(), 0xFCFFFFFF, 0xFFFCF438);\n    G2(c->next(), 0xBA000C02, 0x2000);\n    if (f->flag68 == 0) G2(c->next(), 0xBA000602, 0xC0);\n    G2(c->next(), 0xF8000000, 0xFFFFFFFF);\n    G2(c->next(), 0xFD100000, f->tex0);\n    G2(c->next(), 0xF5100000, 0x07014050);\n    G2(c->next(), 0xE6000000, 0);\n    G2(c->next(), 0xF3000000, 0x073FF100);\n    if (1) {}\n    G2(c->next(), 0xE7000000, 0);\n    G2(c->next(), 0xF5101000, 0x00014050);\n    G2(c->next(), 0xF2000000, 0x0007C07C);\n    G2(c->next(), 0xFD900000, f->tex1);\n    G2(c->next(), 0xF5900100, 0x07014050);\n    G2B(c->next(), 0xE6000000, 0);\n    G2(c->next(), 0xF3000000, 0x071FF200);\n    G2(c->next(), 0xE7000000, 0);\n    G2(c->next(), 0xF5880900, 0x01014050);\n    G2(c->next(), 0xF2000000, 0x0107C07C);\n    G2(c->next(), 0xBA001001, 0);\n    if (1) {}\n    G2(c->next(), 0xE45003C0, 0);\n    G2(c->next(), 0xB4000000, 0);\n    if (1) {}\n    G2(c->nextb(), 0xB3000000, 0x00630084);\n    G2(c->next(), 0xE7000000, 0);\n    G2(c->next(), 0xBA001301, 0x80000);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_1304C.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0001304C.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

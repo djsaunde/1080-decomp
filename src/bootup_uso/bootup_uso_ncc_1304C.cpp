@@ -1,24 +1,28 @@
-/* IDO 7.1 NCC (C++) NM donor for func_0001304C (fire-grid blur + texture
- * upload display list, 0x8D8 / 566 words). Shape- and frame-exact (noreg 0);
- * 42 raw words left, all in the display-list tail: the target's per-packet
- * pointer rotation is a1 a2 a3 a1 a2 t0 ... where ours is a strict a1 a2 a3, which
- * shifts the hoisted constants by one register. Recipe (agent-c run 125):
+/* IDO 7.1 NCC (C++) donor for func_0001304C (fire-grid blur + texture upload
+ * display list, 0x8D8 / 566 words). EXACT (agent-c run 126). Recipe:
  * - declaration order x, y, i, j / up, dn / k / lf, rt / count = frame 96, k at 68;
  * - `if (f->timer != 0) f->timer--; if (f->timer == 0)` = the t6 decrement temp;
  * - centre cell through i (strength-reduced 4*i), texel through j = i copied at
  *   the top of the x loop, `i++` at the end (the early a3 increment + t1 copy);
  * - `for (count = 0, y = 0; ...)` and `for (x = 0, i = y * 32; ...)` set the
- *   init order; next() with a named result `Gfx *g` places the constants.
- * Spliced into the NON_MATCHING comparison object only. */
+ *   init order; next() with a named result `Gfx *g` places the constants;
+ * - the display-list packet pointers rotate a1 a2 a3 a1 a2 t0 ... because of
+ *   where uopt's basic blocks end: empty `if (1) {}` boundaries between packets,
+ *   inside one packet macro after its slot pointer (G2B) and inside one next()
+ *   between the index bump and the slot address (nextb). Found by an exhaustive
+ *   placement search (kit XXXV #4); see docs/IDO_CODEGEN.md kit XXXIV. */
 typedef struct { unsigned int w0, w1; } Gwords;
 typedef union { Gwords words; long long force_structure_alignment; } Gfx;
 struct DL { Gfx *buf; int n; };
 struct Ctx {
     char pad[0xC];
     DL *dl;
+    Gfx *nextb() { int n = dl->n++; if (1) {} Gfx *g = &dl->buf[n]; return g; }
     Gfx *next() { int n = dl->n++; Gfx *g = &dl->buf[n]; return g; }
 };
 #define G2(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (unsigned int)(a); _g->words.w1 = (unsigned int)(b); }
+#define G2B(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); if (1) {} _g->words.w0 = (unsigned int)(a); _g->words.w1 = (unsigned int)(b); }
+#define G2C(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (unsigned int)(a); if (1) {} _g->words.w1 = (unsigned int)(b); }
 struct Fire {
     char pad[0x40];
     int state;          /* 0x40 */
@@ -98,7 +102,7 @@ extern "C" void func_0001304C(Fire *f) {
     Ctx *c = *(Ctx **)(*(char **)(func_0000023C + 0x18) + 0x158);
     G2(c->next(), 0xE7000000, 0);
     G2(c->next(), 0xBA001402, 0x100000);
-    G2(c->next(), 0xBA001301, 0);
+    G2B(c->next(), 0xBA001301, 0);
     G2(c->next(), 0xB900031D, 0x504240);
     G2(c->next(), 0xFCFFFFFF, 0xFFFCF438);
     G2(c->next(), 0xBA000C02, 0x2000);
@@ -108,20 +112,23 @@ extern "C" void func_0001304C(Fire *f) {
     G2(c->next(), 0xF5100000, 0x07014050);
     G2(c->next(), 0xE6000000, 0);
     G2(c->next(), 0xF3000000, 0x073FF100);
+    if (1) {}
     G2(c->next(), 0xE7000000, 0);
     G2(c->next(), 0xF5101000, 0x00014050);
     G2(c->next(), 0xF2000000, 0x0007C07C);
     G2(c->next(), 0xFD900000, f->tex1);
     G2(c->next(), 0xF5900100, 0x07014050);
-    G2(c->next(), 0xE6000000, 0);
+    G2B(c->next(), 0xE6000000, 0);
     G2(c->next(), 0xF3000000, 0x071FF200);
     G2(c->next(), 0xE7000000, 0);
     G2(c->next(), 0xF5880900, 0x01014050);
     G2(c->next(), 0xF2000000, 0x0107C07C);
     G2(c->next(), 0xBA001001, 0);
+    if (1) {}
     G2(c->next(), 0xE45003C0, 0);
     G2(c->next(), 0xB4000000, 0);
-    G2(c->next(), 0xB3000000, 0x00630084);
+    if (1) {}
+    G2(c->nextb(), 0xB3000000, 0x00630084);
     G2(c->next(), 0xE7000000, 0);
     G2(c->next(), 0xBA001301, 0x80000);
 }
