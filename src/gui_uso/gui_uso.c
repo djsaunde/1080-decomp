@@ -1028,6 +1028,8 @@ done:
 INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_0000329C);
 #endif
 
+/* 2026-10-23 agent-g (run 137): the NM comparison object uses an IDO 7.1 NCC donor,
+ * src/gui_uso/gui_uso_ncc_3714_nm.cpp (this body recompiled under NCC: 83.0 -> 85.4). */
 #ifdef NON_MATCHING
 /* gui_func_00003714: f-scroll sibling of gui_func_0000329C, rebuilt 2026-08-22
  * in the 2DE0 kit shape 68.5 -> 83.0. Levers: volatile-deref held base (t4 web

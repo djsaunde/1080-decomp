@@ -2098,6 +2098,10 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_3B80_DONOR := build/src/gui_uso/gui_uso_ncc_3B80.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3B80_DONOR)
+# 3714 = gui DL emitter; NCC 85.3 vs cfe 83.0. Still NON_MATCHING: NM comparison object only.
+GUI_3714_NM_DONOR := build/src/gui_uso/gui_uso_ncc_3714_nm.cpp.o
+build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_NM_DONOR)
+build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_NM_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
