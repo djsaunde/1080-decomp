@@ -385,7 +385,9 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
  *     (of 313; the B4 arms now have the target's `b join` shapes). The cfe ?:
  *     temps each reserve a frame word, so a2v / a1v / a3v / v were dropped
  *     (frame 0x118, target 0x108). The macro form of the TEXRECT words lowers
- *     fuzzy (85.3 / 85.4): kept as the int clamps. */
+ *     fuzzy (85.3 / 85.4): kept as the int clamps. Four parameter empty tests from
+ *     a fuzzy-scored PARAMS_ONLY psweep (after the sp7C store, the a3 reload, the
+ *     ca1 store and the B4 word): 86.2 -> 91.2. */
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5) {
@@ -435,7 +437,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
                 int wa3, wa0;
                 int t;
 
-                sp7C = f10b & 0xFFFF;
+                sp7C = f10b & 0xFFFF; if (arg2) {}
                 t = gl_func_00000000(*s7);
                 spD3 = (unsigned char)t;
                 glyph = (int*)(*(int*)((char*)arg0 + 0x20) + t * 0x14);
@@ -443,7 +445,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
                 gl_func_00000000(*(int*)((char*)arg0 + 0x24), *(int*)((char*)arg0 + 0x4),
                                  *(int*)((char*)arg0 + 0x18), *(int*)((char*)arg0 + 0x1C),
                                  glyph[0], glyph[1], s0, s6, 0);
-                a3 = *(int**)((char*)arg0 + 0x24);
+                a3 = *(int**)((char*)arg0 + 0x24); if (arg1) {}
                 dl = *(int**)((char*)a3 + 0xC);
                 cnt = dl[1];
                 f0b = (float)s0 * arg3;
@@ -451,7 +453,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
                 f8 = (int)((float)arg1 + (var_f22 * arg3));
                 cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
                 ca0 = (f8 + (int)f0b) * 4;
-                ca1 = f8 * 4;
+                ca1 = f8 * 4; if (arg1) {}
                 wa3 = (ca0 > 0) ? ca0 : 0;
                 wa0 = (s1 > 0) ? s1 : 0;
                 cmd[0] = ((wa3 & 0xFFF) << 0xC) | 0xE4000000 | (wa0 & 0xFFF);
@@ -469,7 +471,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
 #define F4_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define F4_SHIFTL(v, s, w) ((unsigned int)(((unsigned int)(v) & ((1 << (w)) - 1)) << (s)))
                 cmd[1] = F4_SHIFTL((0 - (((short)(ca1) < 0) ? (((short)(F4_DSDX) < 0) ? (F4_MAX((((short)(ca1) * (short)(F4_DSDX)) >> 7), 0)) : (F4_MIN((((short)(ca1) * (short)(F4_DSDX)) >> 7), 0))) : 0)), 16, 16) |
-                         F4_SHIFTL((0 - (((s4) < 0) ? (((short)(f10b) < 0) ? (F4_MAX((((short)(s4) * (short)(f10b)) >> 7), 0)) : (F4_MIN((((short)(s4) * (short)(f10b)) >> 7), 0))) : 0)), 0, 16);
+                         F4_SHIFTL((0 - (((s4) < 0) ? (((short)(f10b) < 0) ? (F4_MAX((((short)(s4) * (short)(f10b)) >> 7), 0)) : (F4_MIN((((short)(s4) * (short)(f10b)) >> 7), 0))) : 0)), 0, 16); if (arg2) {}
                 a3 = *(int**)((char*)arg0 + 0x24);
                 dl = *(int**)((char*)a3 + 0xC);
                 cnt = dl[1];
