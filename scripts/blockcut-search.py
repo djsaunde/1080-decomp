@@ -67,7 +67,11 @@ Search options:
                   (place a cut).  Never put -varref in a build.
 
 Positions are after every `;` at paren depth 0, after every `{` and after
-every `}` inside FUNC's body.  In C mode a position directly followed by a
+every `}` inside FUNC's body, EXCEPT in front of `else` (a cut there re-binds
+the else to the inserted `if (1)`).  A variant whose function length differs
+from the target's is flagged `LEN!ours/target` and ranked below every
+same-length variant (a non-win: length-changing gains are fake).
+`--selftest` checks both rules without compiling.  In C mode a position directly followed by a
 declaration is skipped (C89).  Variants that fail to compile are ignored.
 
 Examples:
@@ -225,6 +229,17 @@ def positions(t, ob, end, cmode, typedefs):
             if t[ls:i].lstrip().startswith('#'):
                 continue
             pos.append(i + 1)
+    # never cut in front of `else`: `if (a) x; if (1) {} else y;` (or `} if (1) {} else`)
+    # re-binds the else to the inserted `if (1)` -- different program, fake score
+    # (agent-c run 128).
+    keep = []
+    for p in pos:
+        j = p
+        while j < end and (t[j].isspace() or cm[j]):
+            j += 1
+        if not re.match(r'else\b', t[j:j + 5]):
+            keep.append(p)
+    pos = keep
     if cmode:
         keep = []
         for p in pos:
@@ -318,8 +333,8 @@ class Compiler:
             q = subprocess.run([sys.executable, os.path.join(ROOT, 'scripts', 'rdiff.py'), obj,
                                 self.expected, self.a.score_func or self.a.func, '--raw', '--pins', '-q'],
                                cwd=ROOT, capture_output=True, text=True).stdout
-            m = re.search(r'diffwords (\d+)', q)
-            return int(m.group(1)) if m else None
+            m = re.search(r'len (\d+) vs (\d+), diffwords (\d+)', q)
+            return (int(m.group(3)), int(m.group(1)), int(m.group(2))) if m else None
         finally:
             if self.a.keep and tag == 'base' and os.path.exists(obj):
                 shutil.copy(obj, self.a.keep)
@@ -328,7 +343,35 @@ class Compiler:
             shutil.rmtree(d, ignore_errors=True)
 
 
+def key(r):
+    """Sort key: a variant whose function length differs from the target is a NON-WIN
+    (its diffwords can drop by deleting/adding words, e.g. a cut that re-binds an else
+    or kills a delay slot) -- every same-length variant ranks above it."""
+    return (0 if r[1] == r[2] else 1, r[0])
+
+
+def fmt(r):
+    if r is None:
+        return 'None'
+    return str(r[0]) if r[1] == r[2] else f'{r[0]} LEN!{r[1]}/{r[2]}'
+
+
+def selftest():
+    t = 'void f(int a) { if (a) { g(); } else { h(); } if (a) g(); else h(); k(); }'
+    ob = t.index('{')
+    pos = positions(t, ob, len(t), True, set())
+    bad = [p for p in pos if t[p:].lstrip().startswith('else')]
+    assert not bad, bad
+    # the cut after `{ g();` and after `k();` must still be offered
+    assert t.index('g();') + 4 in pos and t.index('k();') + 4 in pos, pos
+    assert key((3, 10, 10)) < key((0, 9, 10)), 'length-changing variant must rank below'
+    print('selftest OK:', len(pos), 'positions, none in front of else')
+
+
 def main():
+    if '--selftest' in sys.argv:
+        selftest()
+        return
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument('--unit')
@@ -428,7 +471,13 @@ def main():
         C.v = make_vars('build/non_matching/' + a.unit + '.c.o')
         t = C.text
         base = C.build(t, 'base')
-    print('base', base)
+    if base is not None:
+        print(f'base {base[0]}  (len {base[1]} vs target {base[2]})')
+        if base[1] != base[2]:
+            print('WARNING: the unmodified function length differs from the target; every variant'
+                  ' of a different length is scored as a non-win (LEN!)')
+    else:
+        print('base None')
     if a.varref:
         dump_cc = os.path.join(DUMP_DIR, 'NCC' if C.kind == 'cpp' else 'cc')
         if not os.path.exists(dump_cc):
@@ -436,20 +485,23 @@ def main():
         else:
             res = []
             for n in (12, 16, 18, 20, 22, 24, 26, 28, 32, 40, 1000):
-                res.append(f'{n}:{C.build(t, f"vr{n}", dump_cc, ["-Wo,-varref,%d" % n])}')
+                r = C.build(t, f"vr{n}", dump_cc, ["-Wo,-varref,%d" % n])
+                res.append(f'{n}:{fmt(r)}')
             print('varref (DIAGNOSTIC ONLY)', ' '.join(res))
-    if a.k <= 0 or base == 0:
+    if a.k <= 0 or (base and base[0] == 0 and base[1] == base[2]):
         shutil.rmtree(C.tmp, ignore_errors=True)
         return
     results = {(): base}
+    base_key = key(base) if base else (1, 10 ** 9)
 
     def run(combos):
         combos = [c for c in combos if c not in results and valid(c)]
         with ThreadPoolExecutor(a.jobs) as ex:
             for c, r in zip(combos, ex.map(lambda c: C.build(variant(c), 'v' + '_'.join(map(str, c))), combos)):
                 results[c] = r
-                if r is not None and (min(v for v in results.values() if v is not None) == r) and r < base:
-                    print('  improve', r, describe(c))
+                if r is not None and r[1] == r[2] and key(r) < base_key and \
+                        key(r) == min(key(v) for v in results.values() if v is not None):
+                    print('  improve', r[0], describe(c))
         return combos
 
     if not a.greedy:
@@ -459,7 +511,7 @@ def main():
             a.greedy = True
     if a.greedy:
         run([(e,) for e in range(len(edits))])
-        beam = sorted([c for c in results if c and results[c] is not None], key=lambda c: results[c])[:4]
+        beam = sorted([c for c in results if c and results[c] is not None], key=lambda c: key(results[c]))[:4]
         for _ in range(a.k - 1):
             nxt = set()
             for c in beam:
@@ -467,16 +519,17 @@ def main():
                     if e not in c:
                         nxt.add(tuple(sorted(c + (e,))))
             run(sorted(nxt))
-            beam = sorted([c for c in results if c and results[c] is not None], key=lambda c: results[c])[:4]
+            beam = sorted([c for c in results if c and results[c] is not None], key=lambda c: key(results[c]))[:4]
     else:
         combos = [c for k in range(1, a.k + 1) for c in itertools.combinations(range(len(edits)), k)]
         print('variants', len(combos))
         run(combos)
-    ranked = sorted([(r, c) for c, r in results.items() if r is not None], key=lambda x: (x[0], len(x[1])))
+    ranked = sorted([(r, c) for c, r in results.items() if r is not None], key=lambda x: (key(x[0]), len(x[1])))
     nok = sum(1 for r in results.values() if r is not None)
-    print(f'best ({nok}/{len(results)} variants compiled):')
+    nlen = sum(1 for r in results.values() if r is not None and r[1] != r[2])
+    print(f'best ({nok}/{len(results)} variants compiled, {nlen} rejected as length-changing):')
     for r, c in ranked[:a.top]:
-        print(f'  {r:5d}  {describe(c) or "(no cut)"}')
+        print(f'  {fmt(r):>12}  {describe(c) or "(no cut)"}')
     if a.write and ranked:
         open(a.write, 'w').write(variant(ranked[0][1]))
         print('wrote', a.write)
