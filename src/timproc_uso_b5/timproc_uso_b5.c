@@ -1531,8 +1531,8 @@ void timproc_uso_b5_func_00001F14(char *arg0) {
                             *(s32 *)(arg0 + 0x4C) = 0;
                         }
                         *(s32 *)(arg0 + 0x44) = (s32) (120.0f + (*(f32 *)(arg0 + 0x54) * 120.0f));
-                        timproc_uso_b5_func_00001DB0(arg0);
-                    }
+                        timproc_uso_b5_func_00001DB0(arg0); if (arg0) {}
+                    } if (frame2) {}
                     if (*(s32 *)(arg0 + 0x48) == 2) {
                         *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + *(f32 *)((char *)&D_00000000 + 0xCC);
                         if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
