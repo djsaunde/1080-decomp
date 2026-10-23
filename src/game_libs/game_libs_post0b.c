@@ -21144,27 +21144,26 @@ void gl_func_000515FC(Quad4 *dst) {
  * struct copy -> ALWAYS either a held base (lui v0; addiu; sw 4(v0); sw 0(v0))
  * or two per-symbol luis. Two distinct externs (below) give the closest
  * 17-word form (13/16 words). Stays NM; no episode. */
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_5165C_arr[];   /* head base: lui v0; addiu v1,v0,%lo (array-extern form) */
-extern int D_5165C_b;       /* per-site alias of D_00000000 for the second tail store */
-
+/* EXACT 2026-10-23 (agent-g run 141) via an IDO 7.1 NCC (C++) donor:
+ * src/game_libs/game_libs_ncc_5165C.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder (the tail pair is one static object, kit LXI). The placeholder
+ * only reserves the 16-word slot; the splice drops its text. */
 void gl_func_0005165C(void) {
-    int *p = D_5165C_arr;
-    if ((unsigned)p == 0) {
-        p = (int*)gl_func_00000000(4);
-        if (p == 0) {
-            goto skip;
-        }
-    }
-    *p = 0;
-skip:
-    *(int*)((char*)&D_00000000 + 4) = 0;
-    D_5165C_b = 0;
+    volatile int *p = (volatile int *)&D_00000000;
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    p[7] = 0;
+    p[8] = 0;
+    p[9] = 0;
+    p[10] = 0;
+    p[11] = 0;
+    p[12] = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005165C);
-#endif
 
 /* gl_func_00051694: log the label (a1, or the default string at
  * &D+0x20E7C when a1 is null) with a0, then register a0 + 0xC via the
