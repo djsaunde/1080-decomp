@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00062194",
+  "project": "1080",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T16:16:41.366677+00:00",
+  "end_time": "2026-10-23T16:16:41.366695+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T16:16:41.366691+00:00",
+      "assistant_text": "Else-path product named q, folded into the pointer (b += q) and kept referenced by an empty if (q) {} before the call: q becomes a uopt candidate (v1) instead of a ugen t-reg.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 65,
+  "initial_m2c_source": null,
+  "final_source": "int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {\n    extern int D_62194_a, D_62194_b, D_62194_c, D_62194_d;\n    unsigned int stride;\n    unsigned int n[1];\n    if (*(char **)(self + 8) == 0) {\n        gl_func_00000000(&D_62194_a, 1);\n        gl_func_00000000(&D_62194_b, *(int *)(*(char **)(self + 0x18) + 0x3C));\n        stride = *(short *)self * 14;\n        { char *p = *(char **)(self + 0x14) + stride * a2;\n        n[0] = stride * a3;\n        gl_func_00000000(&D_62194_c, 0, p); }\n        gl_func_00000000(&D_62194_d, a1, n[0]);\n        return;\n    }\n    stride = *(short *)self * 14;\n    { char *b = *(char **)(self + 8); unsigned int q = stride * a2; b += q; if (q) {} gl_func_00000000(b, a1, stride * a3); }\n    return -1;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00062194.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "rdiff --raw --pins 0 diffwords (build/src); ROM byte-identical"
+  }
+}

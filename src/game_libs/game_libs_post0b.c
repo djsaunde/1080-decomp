@@ -31127,7 +31127,6 @@ void gl_func_00061F8C(char *self) {
     *(volatile int *)(self + 4) = 7;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00062194: 65-insn 64-bit-multiply-based scale + dispatch (0x104, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
@@ -31188,6 +31187,11 @@ void gl_func_00061F8C(char *self) {
  * read): self->8 now takes t0 as in the target. LEFT: the else product
  * stride * a2 is a ugen t-reg here, a v1 candidate in the target (named q,
  * array q[1], comma, b += ..., separate stride: all 4 or worse). */
+/* 2026-10-23 agent-g run 135 EXACT (4 -> 0): name the else product q,
+ * fold it into b (b += q) and keep q referenced by an empty if (q) {}
+ * before the call: q becomes a uopt candidate (v1) instead of a ugen
+ * t-reg, and the a3 reload drops back to t4. q alone, b += alone, or
+ * if (q) {} without b += q all stay at 4. */
 int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
     extern int D_62194_a, D_62194_b, D_62194_c, D_62194_d;
     unsigned int stride;
@@ -31203,12 +31207,9 @@ int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
         return;
     }
     stride = *(short *)self * 14;
-    { char *b = *(char **)(self + 8); gl_func_00000000(b + stride * a2, a1, stride * a3); }
+    { char *b = *(char **)(self + 8); unsigned int q = stride * a2; b += q; if (q) {} gl_func_00000000(b, a1, stride * a3); }
     return -1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00062194);
-#endif
 
 /* gl_func_00062298: was 16-insn bundle. Split via split-fragments.py
  * 2026-05-08 into: parent gl_func_00062298 (12 insns / 0x30, conditional
