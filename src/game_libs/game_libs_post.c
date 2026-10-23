@@ -8762,7 +8762,7 @@ void gl_func_00026D64(u32 arg0) {
             g->pending = 0;
             return;
         }
-        CUR_D = CUR_C + 1;
+        CUR_D = (CUR_C + 1) & 0xFF; /* run 130: dead u8 mask burns the target's t-register (57 -> 49) */
         code = *(u8 *)ent;
         if (code == 0xF8) {
             g->pending = 1;
