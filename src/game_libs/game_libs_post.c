@@ -17202,7 +17202,7 @@ void game_libs_func_000307A8(void) {
     }
     c = D_307A8_d.cnt;
     if (c != 0) {
-        f = D_307A8_e.acc;
+        f = D_307A8_e.acc; while (0) { f = c + c; }
         f += D_307A8_f.step;
         D_307A8_g.cnt = c - 1;
         if (1.0f < f) {
