@@ -6411,10 +6411,13 @@ typedef struct { u8 b0, b1, b2, b3; s16 h4; char pad[0xE]; } Dst24378;
  * gives frame 0x80 (declared last it does not grow the frame), and the decl
  * order n, i, c, q, e, mode, rem, p puts the two spill homes where the target
  * has them (p 32, c 52); the byte-clear counter is rem (not i) and the first
- * 1CA10 call takes no argument (target: nop delay). LEFT: the dead
- * `or a0,zero,zero` at entry (i = 0 kept live; dead while (0) uses and
- * counted-loop spellings of the u64 clear do not keep it -- the latter
- * unroll), and the one-slot t-register shift it causes. */
+ * 1CA10 call takes no argument (target: nop delay).
+ * 315 -> 243: the dead `or a0,zero,zero` at entry is the init of an
+ * IV-eliminated counter: the u64 clear is `for (srci = 0; srci < B4 / 8;
+ * srci++) t64[srci] = 0;` with the bound written in the test (re-read, so no
+ * unroll; uopt rewrites it to the pointer loop and leaves the dead init). A
+ * named n, or reusing i (live later -> s1), unrolls or moves it. LEFT: srci
+ * colours v0 / bound a0 (target a0 / a1); the 0x14-record loop's t-ring. */
 void gl_func_00024378(void) {
     volatile s32 pad[16];
     s32 n;
@@ -6432,15 +6435,8 @@ void gl_func_00024378(void) {
 
     *(s32 *)gl_d_24378_a = 0;
     FW(gl_d_24378, 0x215C) = 0;
-    n = *(s32 *)(gl_d_24378_b + 4) / 8;
-    i = 0;
-    if (n > 0) {
-        p = (char *)gl_d_24378_t64;
-        e = p + n * 8;
-        do {
-            p += 8;
-            *(long long *)(p - 8) = 0;
-        } while (p < e);
+    for (srci = 0; srci < *(s32 *)(gl_d_24378_b + 4) / 8; srci++) {
+        ((long long *)gl_d_24378_t64)[srci] = 0;
     }
     q = (char *)gl_d_24378;
     rem = 0x5C30;
