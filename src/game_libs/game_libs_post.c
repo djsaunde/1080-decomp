@@ -14137,7 +14137,9 @@ typedef struct Gl2C7A4 {
     s8 chan158[16];            /* 0x158 */
 } Gl2C7A4;
 
-/* Run 129 (agent-c) 206 -> 186 raw: ugen temp order -- o->wE0 += 1 is the
+/* Run 129 (agent-c) 206 -> 155 raw: case 0xC8 is `o->hE += (s8)read()` (the
+ * spelled-out add put the operands and temps in the wrong order, -31); ugen
+ * temp order -- o->wE0 += 1 is the
  * first statement of the accumulate (target t3/t4 before hA/h8), a dead
  * `& 0xFFFF` on the hA wrap burns the target's t1, and the h10 countdown is
  * read through the field (no r web: r would sit in v1 for the whole loop).
@@ -14220,7 +14222,7 @@ void gl_func_0002C7A4(Gl2C7A4 *o) {
                 continue;
             case 0xC8:  /* hE accumulate */
                 o->hE = 0;
-                o->hE = o->hE + (s8)gl_func_0003F010(sub);
+                o->hE += (s8)gl_func_0003F010(sub);
                 continue;
             case 0xC9:  /* h8 = v*48, clamp to D_2074, min 1 */
                 h = gl_func_0003F010(sub) * 48;
