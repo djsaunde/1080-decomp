@@ -7432,7 +7432,7 @@ void timproc_uso_b5_func_0000B368(char *arg0) {
     c2_308 = c1_292.v;
     timproc_uso_b5_func_071028(&c2_308);
     if (M2C_FIELD(arg0, s32 *, 0x140) != 0) {
-        ang = M2C_FIELD(arg0, f32 *, 0x110);
+        ang = M2C_FIELD(arg0, f32 *, 0x110); if (arg0) {}
         M2C_FIELD(arg0, f32 *, 0xF4) = 0.0f;
         M2C_FIELD(arg0, f32 *, 0xF8) = 0.0f;
         M2C_FIELD(arg0, f32 *, 0xFC) = 0.0f;
@@ -7458,12 +7458,12 @@ void timproc_uso_b5_func_0000B368(char *arg0) {
         }
         M2C_FIELD(arg0, f32 *, 0xE8) = M2C_FIELD(arg0, f32 *, 0x118);
         M2C_FIELD(arg0, f32 *, 0xEC) = M2C_FIELD(arg0, f32 *, 0x118);
-        M2C_FIELD(arg0, f32 *, 0xF0) = M2C_FIELD(arg0, f32 *, 0x118);
+        M2C_FIELD(arg0, f32 *, 0xF0) = M2C_FIELD(arg0, f32 *, 0x118); if (arg0) {}
         s92.f0 = import_80800000_ld0 * timb5_B368_gscale;
         s92.f4 = import_80800000_ld4.v * timb5_B368_gscale;
         s92.f8 = import_80800000_ld8.v * timb5_B368_gscale;
         c1_292.v = s92;
-        s240 = c1_292.v;
+        s240 = c1_292.v; if (arg0) {}
         ang = M2C_FIELD(arg0, f32 *, 0x128);
         s64.f0 = ang * s240.f0;
         s64.f4 = ang * s240.f4;
