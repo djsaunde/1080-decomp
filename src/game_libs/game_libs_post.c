@@ -1,6 +1,7 @@
 #include "common.h"
 
 extern int D_00000000;
+typedef struct { int w; } SC4_; /* run 131 struct-copy lever: 4-byte word copy type */
 
 #ifdef NON_MATCHING
 /* Macro definitions for NM-wrap bodies. Auto-managed by /struct-name-tick.
@@ -2931,7 +2932,7 @@ tail:
         r = &cfg->sub.base;
         switch (sub->cur) {
         case 0:
-            sub->ent[0].w0 = r[0];
+            *(SC4_ *)&(sub->ent[0].w0) = *(SC4_ *)&(r[0]);
             sub->ent[0].hA = arg3;
             sub->ent[0].w4 = size;
             r[1] = r[0] + size;
