@@ -1431,7 +1431,7 @@ void func_000024B8(char *arg0) {
             ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, 3, 0);
             FF(FW(FW(arg0, 0x2C), 0x70), 0x14C) = 85.0f;
         }
-        s0 = (char *)FW(arg0, 0x38);
+        s0 = (char *)FW(arg0, 0x38); if (arg0) {}
         if (FW(s0, 0x10) & 8) {
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
             if (FF(v1, 0x14C) < 120.0f) {
