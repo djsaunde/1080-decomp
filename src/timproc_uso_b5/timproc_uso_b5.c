@@ -6509,6 +6509,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 s32 fl = (M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000;
                 if (1) { fl |= 2; }
                 M2C_FIELD(import_80063D04, s32 *, 4) = fl;
+    if (arg0) {}
             }
             pw0 = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, (s32) f8fc8_e3d04_2, 0);
             M2C_FIELD(pv0, s32 *, 0x13C) = 1;
@@ -6524,6 +6525,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s32 *, 0x144) = 0;
             if (sp68 != 0) {
                 M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) | 0x80000;
+    if (arg0) {}
             } else {
                 M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
             }
