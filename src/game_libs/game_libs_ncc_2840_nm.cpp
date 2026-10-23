@@ -1,8 +1,14 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_00002840 (110 words;
- * this body 111, the same length as the cfe NM body). NM object only; the ROM
- * build keeps INCLUDE_ASM. cfe body under NCC + `if (arg2) {}`: 89.75 -> 90.81.
- * RESIDUAL: the target normalises dx/dy in their stack homes (no vx/vy copies)
- * and keeps the D+0xCB4 load later; dropping the copies alone is worse (82.5). */
+ * this body 110 = target). NM object only; the ROM build keeps INCLUDE_ASM. cfe body
+ * under NCC + `if (arg2) {}`: 89.75 -> 90.81. Run 139: the target stores dy into its
+ * stack home before the sqrt call and reloads it after (no spill-slot copy): declaring
+ * sp38 VOLATILE reproduces that and fixes the length (111 -> 110); sp3C / sp38 moved
+ * after f18 and len / dx / dy before p put both homes at 60 / 56 (target). Two
+ * parameter empty tests (after the sqrt call and after vx = sp3C) 92.45 -> 92.82.
+ * RESIDUAL: sp3C is still register-allocated (spill at 32, home 92; the target
+ * keeps it in its home at 60 like sp38); making sp3C volatile too fixes that but
+ * shifts the whole FP colouring (f16 / f18 locals -> f14 / f16): 83.1. p spills at
+ * 32 (target 40). */
 typedef int s32;
 typedef float f32;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -13,21 +19,21 @@ extern f32 gl_func_00000000_sqf(f32);
 }
 extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
     f32 vec[4];
-    f32 sp3C;
-    f32 sp38;
+    f32 vx;
+    f32 vy;
     f32 b4;
     f32 d4;
     f32 f0;
     f32 f16;
     f32 f2;
     f32 f18;
-    f32 vx;
-    f32 vy;
+    f32 sp3C;
+    volatile f32 sp38;
     f32 len;
-    char *p;
-    char *temp_v0;
     f32 dx;
     f32 dy;
+    char *p;
+    char *temp_v0;
 
     temp_v0 = (char *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
     f0 = (*(f32*)((char*)temp_v0 + 0xBC));
@@ -41,9 +47,9 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
         sp3C = dx;
         d4 = (*(f32*)((char*)temp_v0 + 0xD4));
         sp38 = dy;
-        len = gl_func_00000000_sqf((dx * dx) + (dy * dy));
-        vx = sp3C;
-        vy = sp38; if (arg2) {}
+        len = gl_func_00000000_sqf((dx * dx) + (dy * dy)); if (arg2) {}
+        vx = sp3C; if (arg2) {}
+        vy = sp38;
         if (len != 0.0f) {
             vx /= len;
             vy /= len;
