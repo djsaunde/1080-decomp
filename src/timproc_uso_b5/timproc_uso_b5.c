@@ -2283,6 +2283,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * 2026-07-18 redecode 31.8->41.8 — identical transform to 038B0 (see its
  * comment): h snapshot, volatile t/y carrier slots (pad ladder t@0/y@24),
  * if(1){} store-base wrap, x,y,z order. Same FP-ring/scheduling residual. */
+/* NM object: replaced by the NCC comparison donor timproc_uso_b5_ncc_396C_nm.cpp (60.2). */
 #ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))

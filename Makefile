@@ -2429,6 +2429,10 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_8AFC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008AFC=$(TIMB5_8AFC_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8AFC_DONOR)
+# 396C: NM-only NCC comparison donor (same 46 words as cfe; 41.8 -> 60.2 fuzzy).
+TIMB5_396C_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_396C_nm.cpp.o
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=$(TIMB5_396C_NM_DONOR)
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_396C_NM_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
 # (87E8, 8894, 8940 -- and 1DA4 before them) were mis-split return blocks of
