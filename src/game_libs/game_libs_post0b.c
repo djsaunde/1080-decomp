@@ -29304,7 +29304,7 @@ void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 y
     dead[0] = zRight;
     slen = sqrtf((xRight * xRight) + (yRight * yRight) + (zRight * zRight));
     if (slen < *(f32 *)((char *)&D_00000000 + 0x2060)) {
-        zRight = 0.0f;
+        zRight = 0.0f; if (yLook) {}
         xRight = 1.0f;
         yRight = 0.0f;
         slen = 1.0f;
