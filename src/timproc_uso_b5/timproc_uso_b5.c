@@ -7594,7 +7594,7 @@ void timproc_uso_b5_func_0000B624(char *arg0) {
         if ((M2C_FIELD(arg0, s32 *, 0x144) != 0) || (M2C_FIELD(arg0, s32 *, 0x138) != 0)) {
             timproc_uso_b5_func_054FE0(arg0);
             timproc_uso_b5_D_807FFBBC += 1;
-            var_v0 = M2C_FIELD(arg0, s32 *, 0x144);
+            var_v0 = M2C_FIELD(arg0, s32 *, 0x144); if (arg0) {}
             temp_t5 = var_v0 - 1;
             if (var_v0 != 0) {
                 M2C_FIELD(arg0, s32 *, 0x144) = temp_t5;
