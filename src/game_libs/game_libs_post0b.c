@@ -31183,6 +31183,11 @@ void gl_func_00061F8C(char *self) {
  * ugen t-reg (target v1); in the target the else product is a uopt
  * candidate that outranks self->8. Block cuts (k = 2), named / function-
  * scope q / p for the else product: all flat at 10. */
+/* 2026-10-23 agent-g run 134 (10 -> 4 raw): re-read self->8 into a
+ * block-scoped pointer b in the else path (the test keeps its own CSE
+ * read): self->8 now takes t0 as in the target. LEFT: the else product
+ * stride * a2 is a ugen t-reg here, a v1 candidate in the target (named q,
+ * array q[1], comma, b += ..., separate stride: all 4 or worse). */
 int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
     extern int D_62194_a, D_62194_b, D_62194_c, D_62194_d;
     unsigned int stride;
@@ -31198,7 +31203,7 @@ int gl_func_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
         return;
     }
     stride = *(short *)self * 14;
-    gl_func_00000000(*(char **)(self + 8) + stride * a2, a1, stride * a3);
+    { char *b = *(char **)(self + 8); gl_func_00000000(b + stride * a2, a1, stride * a3); }
     return -1;
 }
 #else
