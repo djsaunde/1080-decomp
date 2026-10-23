@@ -6246,10 +6246,9 @@ int gl_func_000240A0(int cls, int idx, int a2, int a3, void *a4) {
     sp34 = 2;
     switch (typ) {                        /* jtbl @ &D+0xEB4 */
     case 0:
-        h = gl_func_00000000(c, idx, sp4C);
-        if (h == 0) return h;
+        sp44 = gl_func_00000000(c, idx, sp4C); /* run 131: straight into sp44 (no h) -> v0 returned as is, a1 copy for the home */
+        if (sp44 == 0) return sp44;
         sp34 = 5;
-        sp44 = h;
         break;
     case 1:
         h = gl_func_00000000(c, sp4C, 1, idx);
