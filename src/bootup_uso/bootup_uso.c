@@ -3622,7 +3622,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
     nl = (char *)func_00000000(0, &D_00007E48, &D_55A0_tb, 0);
-    t4.w = *(int *)&func_00007E50;
+    *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&func_00007E50);
     p1.w = t4.w;
     obj = (char *)func_00000000(0x48);
     if (obj != 0) {
