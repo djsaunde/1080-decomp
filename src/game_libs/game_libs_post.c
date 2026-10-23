@@ -7122,8 +7122,7 @@ block7:
         gl_ref_0003998C(obj, rem, rem);
     }
     rem = *(int *)(obj + 0x14);
-    *(int *)(obj + 0x10) = *(int *)(obj + 0x10) - rem;
-    *(int *)(obj + 8) = *(int *)(obj + 8) + rem;
+    *(int *)(obj + 0x10) = *(int *)(obj + 0x10) - rem, *(int *)(obj + 8) = *(int *)(obj + 8) + rem;
     *(int *)(obj + 0xc) = *(int *)(obj + 0xc) + rem;
 }
 #else
