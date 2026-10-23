@@ -7377,6 +7377,7 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     for (i = 0; i < GW(0x1030); i++) {
         idx = ((*(Desc25504 **)(&D_25504_tab + 0x430 + i * 4))->msk + 15) & -16;
         sum += idx;
+        while (0) { idx = idx + 0; } /* run 130: dead loop in the sum loop: sum a1 / lim a2 as the target (76 -> 74) */
     }
     for (i = 0; i < GW(0x1030); i++) {
         if (GW(0x1034) == 120) {
