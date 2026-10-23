@@ -1719,7 +1719,7 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
         return;
     case 4:
         if (*(int *)(arg0 + 0x170) >= 0x79) {
-            *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1;
+            *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1; if (arg0) {}
             a3 = *(char **)(arg0 + 0xD4);
         }
         import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x4C4);
