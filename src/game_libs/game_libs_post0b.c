@@ -21797,7 +21797,6 @@ void gl_func_00051E98(char *a0) {
     gl_func_00000000(&gl_data_00000000, *(int*)(a0 + 0x24), *(int*)(a0 + 0x1C), *(short*)(a0 + 0x20), *(short*)(a0 + 0x22));
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00051ED8: varargs per-arg dispatch loop. Decoded from bare
  * stub 2026-05-18. Signature: void f(void *obj, int a1, ...).
  * Sets up an aligned va pointer ((sp+0x43)&~3 → the a1/a2/a3 caller
@@ -21824,30 +21823,32 @@ void gl_func_00051E98(char *a0) {
  * (`p = ap; ap = p + 4; x = *(int *)p`); decl order p, ap, stash, vt sets
  * the 0x38 frame. Residual: a1 is home-stored TWICE here (address-taken
  * param + varargs save; target once) and that cascades one t-reg. The
- * literal IDO va_arg align macro and &a0-based va_start score far lower. */
+ * literal IDO va_arg align macro and &a0-based va_start score far lower.
+ * 2026-10-22 agent-g (run 127) EXACT: the function is a K&R varargs.h
+ * function, `f(a0, va_alist) char *a0; int va_alist;`: cfe then saves
+ * a1..a3 ONCE (the `int a1, ...` ANSI form also re-stores the address-taken
+ * a1, the old residual), plus one empty `if (1) {}` after `p = ap;` (a uopt
+ * block boundary, found by scripts/blockcut-search.py). */
 extern int gl_func_00000000();
 typedef struct { short d; short i; int (*f)(); } VtE51ED8;
-void gl_func_00051ED8(char *a0, int a1, ...) {
+void gl_func_00051ED8(a0, va_alist) char *a0; int va_alist; {
     char *p;
     char *ap;
     int stash;
     VtE51ED8 *vt;
     if (1) { char **q = &ap; }
-    ap = (char *)(((int)&a1 + sizeof(a1) + 3) & ~3);
-    if ((stash = a1) == 0) {
+    ap = (char *)(((int)&va_alist + sizeof(va_alist) + 3) & ~3);
+    if ((stash = va_alist) == 0) {
         return;
     }
     do {
         vt = *(VtE51ED8 **)(a0 + 0x5C);
         vt[4].f(a0 + vt[4].d, &stash);
-        p = ap;
+        p = ap; if (1) {}
         ap = p + 4;
         stash = *(int *)p;
     } while (stash != 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051ED8);
-#endif
 
 // gl_func_00051F5C — STRUCTURAL PASS (0x158 / 87 words, no episode).
 // Raw-.word USO. realjr=1, regjr=0 → ONE clean function. Frame 0x40,
