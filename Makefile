@@ -590,7 +590,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 134: 3B6A0 NM donor if (max) {} (198 -> 199 of 200 words): 0x2e890 -> 0x2e894 (62F08 NM offset 0x2e844).
 # agent-c run 134: 3DD28 NCC donor + placeholder host (36 -> 38 words): 0x2e894 -> 0x2e8a0 (62F08 NM offset 0x2e850).
 # agent-c run 134: 38A28 NM donor if (c) {} (87 -> 85 of 81 words): 0x2e8a0 -> 0x2e898 (62F08 NM offset 0x2e848).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e898 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 4E424 NM-only NCC donor (53 -> 51 of 49 words): 0x2e898 -> 0x2e890 (62F08 NM offset 0x2e840).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e890 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1552,6 +1553,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_NM_DONOR
 GAMELIBS_488A0_NM_DONOR := build/src/game_libs/game_libs_ncc_488A0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000488A0=$(GAMELIBS_488A0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_NM_DONOR)
+# 4E424 = NM C body lifted under NCC + if (param) {} (agent-c run 134, cfe 88.33 -> 90.98). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4E424_NM_DONOR := build/src/game_libs/game_libs_ncc_4E424_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E424=$(GAMELIBS_4E424_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E424_NM_DONOR)
 # 42778 = normalised Vec3 -> fixed-point screen pair (len reused for the inverse, pad[12] frame words); NCC donor.
 GAMELIBS_42778_DONOR := build/src/game_libs/game_libs_ncc_42778.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042778=$(GAMELIBS_42778_DONOR)
