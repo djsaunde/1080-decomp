@@ -11983,48 +11983,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00042684);
 //   untyped; exact reduction formula and compare sense representative.
 //   Real-C STRUCTURAL body below. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-/* 2026-10-16 agent-c re-decode (15.7 -> NM): a1 = 4x4 float matrix
- * (rows of 4), a2 = Vec3. v = a1 column 2 + a2; len = sqrt(|v|^2) via the
- * float(float) blank; len > 0.1 (double at RoData +0x1B30): v /= len and
- * a0[k] = (int)(32*4 + (v . a1 column k) * 32 * 2) for k = 0, 1; else
- * a0[0] = a0[1] = (int)(32*2). The target multiplies the constants at run
- * time (lui/mtc1 per statement, no folding, no CSE across the two
- * statements), so they are float locals re-assigned per statement here;
- * the else arm matches. Residual: the first statement evaluates 32*4
- * before the dot product in the target, the second statement's *2 turns
- * into add.s + a spill (x/y/z homes 12 bytes high), and the FP colours of
- * x/y/z/inv (target f2/f14/f16/f18, build f14/f16/f18/f2). */
-extern float gl_func_00000000_42778(float);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_42778.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 134). */
 void gl_func_00042778(int *a0, float *a1, float *a2) {
-    f32 pad[8];
-    f32 len, inv;
-    f32 w, four, two;
-    f32 x, y, z;
-    w = 32.0f;
-    four = 4.0f;
-    two = 2.0f;
-    x = a1[2] + a2[0];
-    y = a1[6] + a2[1];
-    z = a1[10] + a2[2];
-    len = gl_func_00000000_42778(x * x + y * y + z * z);
-    if (len > *(f64 *)((char *)&D_00000000 + 0x1B30)) {
-        inv = 1.0 / len;
-        x *= inv;
-        y *= inv;
-        z *= inv;
-        a0[0] = w * four + (x * a1[0] + y * a1[4] + z * a1[8]) * w * two;
-        w = 32.0f; four = 4.0f; two = 2.0f;
-        a0[1] = w * four + (x * a1[1] + y * a1[5] + z * a1[9]) * w * two;
-    } else {
-        a0[0] = w * two;
-        w = 32.0f; two = 2.0f;
-        a0[1] = w * two;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00042778);
-#endif
 
 
 // game_libs_func_00042938 — 0x614 MERGED (2026-07-23): the old 3-insn orphan

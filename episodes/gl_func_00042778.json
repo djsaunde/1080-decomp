@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00042778",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T20:52:29.442454+00:00",
+  "end_time": "2026-10-23T20:52:29.442476+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T20:52:29.442472+00:00",
+      "assistant_text": "C++ donor: len reused for the inverse, pad[12] frame words, a2+column operand order; spliced over an empty placeholder.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 112,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00042778: normalised a2 + matrix column -> two fixed-point coordinates.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\n/* (agent-c run 134) 42778 = Vec3 a2 + matrix column 2 of a1, normalised when\n * longer than 0.1 (double at RoData +0x1B30, read through D_00000000), then the\n * two fixed-point screen coordinates 32*4 + (v . column k) * 32 * 2; (32*2, 32*2)\n * otherwise. NCC NM 77.0 (cfe) -> 99.9 -> EXACT. Load-bearing: len is reused for\n * the inverse (len = 1.0 / len): with a separate inv local x/y/z colour f14/f16/f18\n * (target f2/f14/f16, inverse f18). The sum is a2[k] + a1 column (operand order).\n * The 32/4/2 factors are float locals re-assigned per statement (no folding, no\n * CSE across the statements). The frame (104) needs twelve more words of locals\n * above x/y/z: NCC gives every referenced local a slot even when its only store\n * is dead, so pad[12] with one dead store supplies them. Separately named\n * constants, named copies, named int results and inline helpers all changed the\n * code instead. */\ntypedef float f32; typedef double f64;\nextern \"C\" { extern int D_00000000; extern float gl_func_00000000_42778(float); }\nextern \"C\" void gl_func_00042778(int *a0, float *a1, float *a2) {\n    f32 len;\n    f32 w, four, two;\n    f32 pad[12];\n    f32 x, y, z;\n    pad[0] = 0;\n    w = 32.0f;\n    four = 4.0f;\n    two = 2.0f;\n    x = a2[0] + a1[2];\n    y = a2[1] + a1[6];\n    z = a2[2] + a1[10];\n    len = gl_func_00000000_42778(x * x + y * y + z * z);\n    if (len > *(f64 *)((char *)&D_00000000 + 0x1B30)) {\n        len = 1.0 / len;\n        x *= len;\n        y *= len;\n        z *= len;\n        a0[0] = w * four + (x * a1[0] + y * a1[4] + z * a1[8]) * w * two;\n        w = 32.0f; four = 4.0f; two = 2.0f;\n        a0[1] = w * four + (x * a1[1] + y * a1[5] + z * a1[9]) * w * two;\n    } else {\n        a0[0] = w * two;\n        w = 32.0f; two = 2.0f;\n        a0[1] = w * two;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_42778.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00042778.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), rdiff 0 diffwords"
+  }
+}
