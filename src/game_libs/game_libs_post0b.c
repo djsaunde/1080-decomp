@@ -28048,8 +28048,8 @@ void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
     if (j >= 4) j = 1;
     k = j + 1;
     if (k >= 4) k = 1;
-    t = (f32)1 * s;
-    a = q[i];
+    t = (a = q[i], (f32)1 * s);
+
     { f32 q_ = a * c; q[i] = q_ + t * q[0]; if (q_) {} }
     q[0] = q[0] * c - t * a;
     a = q[j];
