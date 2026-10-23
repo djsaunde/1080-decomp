@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00004948",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T00:46:55.550074+00:00",
+  "end_time": "2026-10-23T00:46:55.550074+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T00:46:55.550074+00:00",
+      "assistant_text": "IDO 7.1 NCC decode finished from the run-124 NM donor: the Vec3 float ctor forwards to an inline set(a, b, c) (no dead statement, no declared ep pointer). That edg temp layout puts the section-3 divisor-call temp at sp+232 and colours the shared x/y/z temps f14/f2/f12 like the target. Word-exact after link, all-zero pad SUFFIX word, ROM cmp clean.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 426,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00004948 (camera transition tick, 0x6A4 + an\n * all-zero pad word). EXACT (agent-c run 125).\n * - Vec3 has no user copy ctor (a user copy ctor adds cfront's this==0 new\n *   protocol to every return); operators build `Vec3 r(x, y, z); return r;`\n *   = r -> return temp (sp+260, shared) -> destination copy ladder;\n * - the float ctor forwards to an inline set(a, b, c): edg allocates its\n *   ctor `this`/parameter temps in the order that puts the divisor-call temp of\n *   section 3 at sp+232 and colours the shared x/y/z temps f14/f2/f12 (run 124's\n *   dead `if (0) { x = a; }` + a declared `E16 *ep;` gave the same colours but\n *   left the divisor at sp+236);\n * - Node::get(Vec3 &) member copies = the interleaved lwc1/swc1 C/E fills;\n * - case-order `switch` = the edg compare chain (no jumptable);\n * - frame: B before sv in the snap macro; the recpos() reference temp in\n *   section A places the slots.\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */\nstruct Vec3 {\n    float x, y, z;\n    Vec3() {}\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    Vec3(float a, float b, float c) { set(a, b, c); }\n};\ninline Vec3 operator*(const Vec3 &a, float k) { Vec3 r(a.x * k, a.y * k, a.z * k); return r; }\ninline Vec3 operator-(const Vec3 &a, const Vec3 &b) { Vec3 r(a.x - b.x, a.y - b.y, a.z - b.z); return r; }\nstruct Node { char pad[0x30]; Vec3 pos; void get(Vec3 &v) { v.x = pos.x; v.y = pos.y; v.z = pos.z; } };\nstruct Ob { char pad[0x70]; Node node; };\ninline Vec3 &recpos(char *o) { return *(Vec3 *)(*(char **)(o + 0x154) + 0x318); }\nstruct E16 { float lo, hi, v, w; };\nstruct E8 { float a, b; };\nextern \"C\" {\nvoid func_00000000(...);\nfloat bu4948_ff(float);\nextern char func_000003F8[];\nextern E16 bu_4948_t16[];\nextern E8 bu_4948_t8[];\nextern float bu_4948_k0, bu_4948_k1, bu_4948_klo, bu_4948_khi;\n}\n#define F(p,o) (*(float *)((char *)(p) + (o)))\n#define W(p,o) (*(unsigned *)((char *)(p) + (o)))\n#define SNAP() { Vec3 *sv = (Vec3 *)(*(char **)(obj + 0x154) + 0x318); Vec3 B; B = *sv * bu_4948_k0; B.y *= bu_4948_k1; func_00000000(obj + 0x30, &B); }\nextern \"C\" void func_00004948(char *obj) {\n#define st W(obj, 0x158)\n    if (st == 2) {\n        Vec3 B;\n        B = recpos(obj) * bu_4948_k0;\n        B.y *= bu_4948_k1;\n        func_00000000(obj + 0x30, &B);\n        F(obj, 0x14C) = F(obj, 0x150);\n    } else if ((st >= 0x13 && st < 0x18) || (st >= 0x18 && st < 0x1D)) {\n        Vec3 d, C, E;\n        float dist;\n        int idx;\n        (*(Ob **)(obj + 0xF4))->node.get(C); ((Ob *)obj)->node.get(E);\n        d = C - E;\n        dist = bu4948_ff(d.x * d.x + d.y * d.y + d.z * d.z);\n        idx = 0;\n        switch (W(obj, 0x158)) {\n        case 0x13: case 0x18: idx = 0; break;\n        case 0x14: case 0x19: idx = 1; break;\n        case 0x15: case 0x1A: idx = 2; break;\n        case 0x16: case 0x1B: idx = 3; break;\n        case 0x17: case 0x1C: idx = 4; break;\n        }\n#define e (&bu_4948_t16[idx])\n        if (e->lo < dist) F(obj, 0x14C) = e->w;\n        else if (dist < e->hi) F(obj, 0x14C) = e->v;\n        else F(obj, 0x14C) = e->w + (e->v - e->w) / (e->lo - e->hi) * (e->lo - dist);\n        if (st >= 0x18 && st < 0x1D) SNAP();\n    } else if ((st >= 0x1D && st < 0x22) || (st >= 0x22 && st < 0x27)) {\n        Vec3 d, C, E;\n        float dist;\n        int idx;\n        float ang, r, t;\n        (*(Ob **)(obj + 0xF4))->node.get(C); ((Ob *)obj)->node.get(E);\n        d = C - E;\n        dist = bu4948_ff(d.x * d.x + d.y * d.y + d.z * d.z);\n        idx = 0;\n        switch (W(obj, 0x158)) {\n        case 0x1D: case 0x22: idx = 0; break;\n        case 0x1E: case 0x23: idx = 1; break;\n        case 0x1F: case 0x24: idx = 2; break;\n        case 0x20: case 0x25: idx = 3; break;\n        case 0x21: case 0x26: idx = 4; break;\n        }\n#undef e\n#define e (&bu_4948_t8[idx])\n        ang = e->b / 2 * F(func_000003F8, 0x15C) / 180.0f;\n        r = bu4948_ff(ang) * e->a / bu4948_ff(ang);\n        t = bu4948_ff(dist * dist + r * r);\n        t = bu4948_ff(dist / t) * 2 / F(func_000003F8, 0x160) * 180.0f;\n        if (t < bu_4948_klo) F(obj, 0x14C) = bu_4948_klo; else if (bu_4948_khi < t) F(obj, 0x14C) = bu_4948_khi; else F(obj, 0x14C) = t;\n        if (st >= 0x22 && st < 0x27) SNAP();\n    } else {\n        F(obj, 0x14C) = F(obj, 0x150);\n    }\n    func_00000000(obj + 0x30);\n    func_00000000(obj);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_4948.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00004948.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

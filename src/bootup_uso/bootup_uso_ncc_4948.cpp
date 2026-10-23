@@ -1,29 +1,28 @@
-/* IDO 7.1 NCC (C++) NM donor for func_00004948 (camera transition blend, 0x6A8).
- * Instruction-identical to the target except ONE spill slot: the divisor call
- * result (sin of the half angle) is stored to the edg float temp at sp+236
- * (first free pool temp) where the target uses sp+232 (2 words), plus the
- * target's trailing zero pad word. Shape notes (agent-c run 124):
+/* IDO 7.1 NCC (C++) donor for func_00004948 (camera transition tick, 0x6A4 + an
+ * all-zero pad word). EXACT (agent-c run 125).
  * - Vec3 has no user copy ctor (a user copy ctor adds cfront's this==0 new
  *   protocol to every return); operators build `Vec3 r(x, y, z); return r;`
  *   = r -> return temp (sp+260, shared) -> destination copy ladder;
- * - edg inlines the ctor's float params as three SHARED function-level temps
- *   (x/y/z of every vector op); `if (0) { x = a; }` at the top of the ctor
- *   recolours them f14/f2/f12 like the target (any dead statement there works);
+ * - the float ctor forwards to an inline set(a, b, c): edg allocates its
+ *   ctor `this`/parameter temps in the order that puts the divisor-call temp of
+ *   section 3 at sp+232 and colours the shared x/y/z temps f14/f2/f12 (run 124's
+ *   dead `if (0) { x = a; }` + a declared `E16 *ep;` gave the same colours but
+ *   left the divisor at sp+236);
  * - Node::get(Vec3 &) member copies = the interleaved lwc1/swc1 C/E fills;
  * - case-order `switch` = the edg compare chain (no jumptable);
- * - frame: B before sv in the snap macro; the leading `E16 *ep;` of section 1
- *   and the recpos() reference temp in section A place every slot.
- * Spliced into the NON_MATCHING comparison object only. */
+ * - frame: B before sv in the snap macro; the recpos() reference temp in
+ *   section A places the slots.
+ * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
-    Vec3(float a, float b, float c) { if (0) { x = a; } x = a; y = b; z = c; }
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    Vec3(float a, float b, float c) { set(a, b, c); }
 };
 inline Vec3 operator*(const Vec3 &a, float k) { Vec3 r(a.x * k, a.y * k, a.z * k); return r; }
 inline Vec3 operator-(const Vec3 &a, const Vec3 &b) { Vec3 r(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
 struct Node { char pad[0x30]; Vec3 pos; void get(Vec3 &v) { v.x = pos.x; v.y = pos.y; v.z = pos.z; } };
 struct Ob { char pad[0x70]; Node node; };
-struct Rec { char pad[0x318]; Vec3 v; Vec3 &pos() { return v; } };
 inline Vec3 &recpos(char *o) { return *(Vec3 *)(*(char **)(o + 0x154) + 0x318); }
 struct E16 { float lo, hi, v, w; };
 struct E8 { float a, b; };
@@ -47,7 +46,6 @@ extern "C" void func_00004948(char *obj) {
         func_00000000(obj + 0x30, &B);
         F(obj, 0x14C) = F(obj, 0x150);
     } else if ((st >= 0x13 && st < 0x18) || (st >= 0x18 && st < 0x1D)) {
-        E16 *ep;
         Vec3 d, C, E;
         float dist;
         int idx;
@@ -62,8 +60,7 @@ extern "C" void func_00004948(char *obj) {
         case 0x16: case 0x1B: idx = 3; break;
         case 0x17: case 0x1C: idx = 4; break;
         }
-        ep = &bu_4948_t16[idx];
-#define e ep
+#define e (&bu_4948_t16[idx])
         if (e->lo < dist) F(obj, 0x14C) = e->w;
         else if (dist < e->hi) F(obj, 0x14C) = e->v;
         else F(obj, 0x14C) = e->w + (e->v - e->w) / (e->lo - e->hi) * (e->lo - dist);
