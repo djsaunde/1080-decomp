@@ -16684,26 +16684,32 @@ void gl_func_0004A6E8(int *self) {
  * compare so idx colors $a2 not $a0. (2) carrier spills to a1's K&R
  * home 0x24 vs target 0x20 (a0's home) — only carrier==param-a0-var
  * spills at 0x20, but then carrier colors $a2 (idx steals $a1) and
- * costs +1 word. Hoist = the gate; register/slot cells are downstream. */
+ * costs +1 word. Hoist = the gate; register/slot cells are downstream.
+ * 2026-10-22 (agent-c run 126): DECODE FIX -- the flag test does not
+ * return: its bnez lands on the final cb(x) jal (a0 = x in the delay), so
+ * the push is an if-block and cb(x) runs on both paths. With an empty
+ * `if (1) {}` after the slot store (a uopt block cut, kit XXXV) the string
+ * address is no longer hoisted above the compare and idx colours a0.
+ * 2 raw words left: the carrier spills to the 2nd param home (sp+36),
+ * the target to the 1st (sp+32). */
 extern int gl_func_00000000();
 extern int D_00000000;
 extern int D_00000000_a[]; /* base-0 alias: busts &D lui CSE (each access keeps its own folded lui/lw) */
 extern int D_00000000_b[];
 void game_libs_func_0004A7C4(int a0, int a1) {
-    int *q;
+    int *q; if (1) {}
     if (a1) {}
     a1 = a0;
-    if (*(int *)((char *)&D_00000000 + 0x1C4) & 1) {
-        return;
-    }
-    q = *(int **)((char *)&D_00000000_a[0] + 0x22C);
-    a0 = q[3];
-    if (a0 >= q[2]) {
-        gl_func_00000000((char *)&D_00000000_b[0] + 0x2003C, a1);
+    if (!(*(int *)((char *)&D_00000000 + 0x1C4) & 1)) {
+        q = *(int **)((char *)&D_00000000_a[0] + 0x22C);
         a0 = q[3];
+        if (a0 >= q[2]) {
+            gl_func_00000000((char *)&D_00000000_b[0] + 0x2003C, a1);
+            a0 = q[3];
+        }
+        q[3] = a0 + 1;
+        *(int *)(q[0] + a0 * 4) = a1; if (1) {}
     }
-    q[3] = a0 + 1;
-    *(int *)(q[0] + a0 * 4) = a1;
     gl_func_00000000(a1);
 }
 #else
