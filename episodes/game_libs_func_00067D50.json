@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_00067D50",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-23T18:43:53.262210+00:00",
+  "end_time": "2026-10-23T18:43:53.262229+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T18:43:53.262225+00:00",
+      "assistant_text": "C++ donor: plain memset while (n--) *p++ = c;",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 12,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_00067D50: memset (12 words). The plain while (n--) *p++ = c; under NCC gives the target's or a3,a2 n-- copy ahead of the sb; cfe capped at 2 raw (40 spellings).\n * Spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" void *game_libs_func_00067D50(void *s, int c, int n) {\n    unsigned char *p = (unsigned char *)s;\n    while (n--) *p++ = c;\n    return s;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_67D50.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_00067D50.s",
+    "segment": "game_libs_post1b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all ROM byte-identical; objdiff 100"
+  }
+}
