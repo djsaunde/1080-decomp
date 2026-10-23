@@ -1226,6 +1226,9 @@ void game_uso_func_00001DDC(int *a0) {
     Vec3 st_p2e;
     Vec3 st_p2e2;
     Vec3 st_c2;
+    /* run 135: an empty test of fz at entry (lever E at the TOP) makes the
+     * pass-1 zero constant take f14 as in the target (13 -> 10). */
+    if (fz) {}
     key = a0[0x40 / 4];
 
     if (key == 0) {
