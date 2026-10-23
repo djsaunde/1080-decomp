@@ -222,6 +222,7 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
             *(Tri3i *)&scratch = *(Tri3i *)&s1a;
             *(Tri3i *)&s1b = *(Tri3i *)&scratch;
             k = *(f32 *)(arg3 + 0x54);
+            if (arg0) {}
             s1m2.x = s1b.x * k;
             s1m2.y = s1b.y * k;
             s1m2.z = s1b.z * k;
