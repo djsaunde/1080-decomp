@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_00003298",
+  "project": "1080",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T15:55:57.592604+00:00",
+  "end_time": "2026-10-23T15:55:57.592661+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T15:55:57.592655+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 83,
+  "initial_m2c_source": null,
+  "final_source": "extern void gl_reset_3298(void *, int, int, float, float);\ntypedef struct { float r, g, b, a; } Color3298;\nvoid game_libs_func_00003298(int *a0) {\n    Color3298 *color;\n    float div255 = 255.0f;\n    float r = 100.0f / div255;\n    float g = 235.0f / div255;\n    float b = 250.0f / div255;\n    float al = 0.0f / div255;\n    int i;\n    for (i = 0; i < 8; i++) {\n        *(int*)((char*)*(int**)((char*)a0 + 0x2C + i * 4) + 0x98) = 0;\n        gl_reset_3298(*(int**)((char*)a0 + 0x2C + i * 4), 0xA0, 0x5A, 1.0f, 1.0f);\n        color = (Color3298*)((char*)*(int**)((char*)a0 + 0x2C + i * 4) + 0x64);\n        color->a = al;\n        color->b = b;\n        color->g = g;\n        color->r = r;\n        *(int*)((char*)(*(int**)((char*)a0 + 0x2C + i * 4)) + 0x94) = 0;\n    }\n    *(int*)((char*)a0 + 0x5C) = 0;\n    *(int*)((char*)a0 + 0x9C) = 0;\n    *(int*)((char*)a0 + 0x8C) = 0xFF;\n    *(int*)((char*)a0 + 0x90) = 0xFF;\n    *(int*)((char*)a0 + 0x94) = 0xFF;\n    *(int*)((char*)a0 + 0x98) = 0xFF;\n    *(int*)((char*)a0 + 0x60) = 0;\n    *(int*)((char*)a0 + 0xA0) = 0;\n    *(int*)((char*)a0 + 0x64) = 0;\n    *(int*)((char*)a0 + 0xA4) = 0;\n    *(int*)((char*)a0 + 0x68) = 0;\n    *(int*)((char*)a0 + 0xA8) = 0;\n    *(int*)((char*)a0 + 0x84) = 0;\n    *(int*)((char*)a0 + 0x7C) = 0;\n    *(int*)((char*)a0 + 0x80) = 0;\n    *(int*)((char*)a0 + 0x88) = 0;\n    if (color) {}\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_00003298.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "rdiff --raw --pins 0 diffwords (build/src and non_matching); ROM byte-identical"
+  }
+}

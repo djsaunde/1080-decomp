@@ -1497,11 +1497,16 @@ char *gl_func_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
  * (five raw-word differences). Typed float call avoids K&R promotion;
  * Color3298 preserves the +0x64 base. Pointer scopes/register hints, int/void
  * callee, signed/unsigned or != loop, tail indexing/chained stores, if(1)
- * blocks and a 2,971-iteration permuter pass did not close those five words. */
-#ifdef NON_MATCHING
+ * blocks and a 2,971-iteration permuter pass did not close those five words.
+ * EXACT 2026-10-23 (agent-g run 134): the 0xFF constant took v0 because the
+ * walker's color pointer (v0 + 0x64 after the last child) was dead after the
+ * loop. Declaring color at function scope and ending with an empty
+ * `if (color) {}` (PR #10's trailing empty conditional on a live pointer)
+ * keeps v0 busy, so 0xFF goes to v1 as in the target. */
 extern void gl_reset_3298(void *, int, int, float, float);
 typedef struct { float r, g, b, a; } Color3298;
 void game_libs_func_00003298(int *a0) {
+    Color3298 *color;
     float div255 = 255.0f;
     float r = 100.0f / div255;
     float g = 235.0f / div255;
@@ -1509,7 +1514,6 @@ void game_libs_func_00003298(int *a0) {
     float al = 0.0f / div255;
     int i;
     for (i = 0; i < 8; i++) {
-        Color3298 *color;
         *(int*)((char*)*(int**)((char*)a0 + 0x2C + i * 4) + 0x98) = 0;
         gl_reset_3298(*(int**)((char*)a0 + 0x2C + i * 4), 0xA0, 0x5A, 1.0f, 1.0f);
         color = (Color3298*)((char*)*(int**)((char*)a0 + 0x2C + i * 4) + 0x64);
@@ -1535,10 +1539,8 @@ void game_libs_func_00003298(int *a0) {
     *(int*)((char*)a0 + 0x7C) = 0;
     *(int*)((char*)a0 + 0x80) = 0;
     *(int*)((char*)a0 + 0x88) = 0;
+    if (color) {}
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00003298);
-#endif
 
 extern int gl_func_00000000();
 
