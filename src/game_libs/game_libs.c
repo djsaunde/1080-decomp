@@ -764,7 +764,16 @@ char *gl_func_0000135C(char *self) {
  * -0x38) and the spills drop to 0x28/0x2C exact (27->23 diffs; `register`
  * on temp_f2 is byte-inert). Remaining = the interleave hunk + li-100
  * v0/v1 tie only; re-probed D4/D0 source swap (t8/t9 role swap, no gain)
- * and D4/D0/12C same-line join (byte-inert). Cap stands. */
+ * and D4/D0/12C same-line join (byte-inert). Cap stands.
+ * 2026-10-23 agent-g run 141: the interleave hunk is GONE (fuzzy 90.06 ->
+ * 99.22 standalone): E0 before E4, D4 = arg1 before the 128 zero, the two
+ * 100 stores as ONE chained assignment (CC = C8 = 100, which also gives the
+ * target's 204-then-200 store order) and 12C before D0 (found by a full
+ * permutation sweep of the tail block under NCC; the same order gives the
+ * same words under cfe). Only the li-100 v0-vs-v1 tie is left (3 words);
+ * NCC + source literals, void / pointer / float callee returns, a named
+ * constant local, struct-member spellings and empty tests are all inert on
+ * it. */
 extern f32 D_00000C7C, D_00000C80, D_00000C84, D_00000C88, D_00000C8C, D_00000C90, D_00000C94;
 extern char D_0000CC58[], D_0000CC60[];
 extern int gl_data_00000000_15fc;
@@ -790,14 +799,13 @@ char *gl_func_000015FC(char *self, s32 arg1) {
         *(f32*)(self + 0x120) = 0.0f;
         *(f32*)(self + 0xD8) = D_00000C88;
         *(f32*)(self + 0xDC) = D_00000C8C;
-        *(f32*)(self + 0xE4) = 0.0f;
         *(f32*)(self + 0xE0) = D_00000C90;
-        FW(self, 0xCC) = 0x64;
-        FW(self, 0xC8) = 0x64;
-        *(f32*)(self + 0x128) = 0.0f;
+        *(f32*)(self + 0xE4) = 0.0f;
         FW(self, 0xD4) = arg1;
-        FW(self, 0xD0) = 0x82;
+        *(f32*)(self + 0x128) = 0.0f;
+        FW(self, 0xCC) = FW(self, 0xC8) = 0x64;
         *(f32*)(self + 0x12C) = D_00000C94;
+        FW(self, 0xD0) = 0x82;
         func_00000000(self + 0x138, 0x5000A);
         func_00000000(self + 0x150, 0x50009);
         func_00000000(self + 0x180, 0x5000B);
