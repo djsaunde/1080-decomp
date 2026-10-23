@@ -1379,128 +1379,16 @@ void game_uso_func_0000249C(char *a0) {
     game_uso_func_00000000(a0 + 0x44);
 }
 
-#ifdef NON_MATCHING
-/* game_uso_func_000024BC: 0x258 (150 insns) — sibling of game_uso_func_00001DDC
- * and member of the 028C0/024BC homing family. 3-way dispatch on a0->0x40 (key):
- * key==0 early return; key==3 dual Vec3 copy from sub-obj@0xA0 to out+0x60 and
- * out+0xA0; else a planar-homing pass (ref_v += game_uso_func_000023D4 delta;
- * project arg1 onto XZ, normalize via game_uso_func_071028, scale and subtract;
- * height-select add; per-axis divide-and-subtract; writeback to out+0x60/0xA0).
- * 2026-06-23 (agent-d): rewrote with the REAL resolved callees
- * (game_uso_func_000023D4 first-call, game_uso_func_071028 second-call =
- * single-arg Vec3 normalize) instead of the generic gl_func placeholder, so
- * the R_MIPS_26 reloc set now pairs with the target (R_MIPS_26 023D4 + 071028,
- * verified vs objdump -r of expected). Modeled on the MATCHED sibling
- * game_uso_func_00001DDC (same ref_v/delta/Tri3i-copy idioms). Logic verified
- * correct vs m2c + target disasm; fuzzy 72.05%.
- *
- * CAP (confirmed permuter-resistant 2026-06-23, agent-d): residual is NOT a
- * missing-logic or operand-order bug — it is frame layout + long-lived-pointer
- * spill. (a) build frame -0xB8/184 vs target -0x98/152 (the volatile self/copy
- * temps + work[9] scratch take ~32 more bytes than the target's tightly-reused
- * sp+0x48..0x94 slots); (b) the target keeps a0->0x14 live in t6 across the
- * whole body and reloads v0 from the sp+0x94 spill for the 0xA0 writebacks,
- * whereas the build's spill/reload cadence differs per store. A dedicated
- * permuter run (51k iters, -j4, target.o assembled from expected mnemonics with
- * both R_MIPS_26 stubs) drove the internal score from 4735 -> 3465 but never
- * reached 0; all wins were cosmetic expr-rewrites, none touched the frame/spill
- * diffs. Same long-lived-pointer-spill cap class as gl_func_000641DC
- * (docs/IDO_CODEGEN.md s0-promotion-failure). No C lever found. */
+/* game_uso_func_000024BC: camera-homing update (0x258 / 150 words).
+ * EXACT via REPLACE_FUNC_BODY donor splice: the real body is the IDO 7.1 NCC
+ * (C++) donor src/game_uso/game_uso_ncc_24BC.cpp (150/150 words; out read
+ * through an inline Ctx accessor, Out::setG / setP in a nested block, one
+ * empty if after q += r). The cfe wrap capped at 72%.
+ * docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe. Body below
+ * is a placeholder for the splice. */
 void game_uso_func_000024BC(int *a0, int *a1) {
-    int *t6;
-    int key;
-    char *vc;
-    float work[9];
-    float ref_x, ref_y, ref_z;
-    float delta_x, delta_y, delta_z;
-    char self_pad[16];
-    volatile float self_z, self_y, self_x;
-    float proj_x, proj_y, proj_z;
-    register float scale;
-    register float rx, ry, rz;
-    float denom_xz, denom_y;
-    Vec3 *delta;
-    Tri3i delta_copy;
-    int * volatile mirror_t6;
-
-    (void)self_pad;
-    t6 = (int*)a0[0x14 / 4];
-    mirror_t6 = t6;
-    key = a0[0x40 / 4];
-    if (key == 0) goto end;
-    if (key != 3) goto branch_else;
-
-    /* key == 3: dual Vec3 copy from sub-obj@0xA0 to t6+0x60 and t6+0xA0. */
-    {
-        volatile float copy_x, copy_y, copy_z;
-        vc = (char*)a0[0x3C / 4];
-        copy_x = *(float*)(vc + 0xA0);
-        vc += 0x70;
-        copy_y = *(float*)(vc + 0x34);
-        copy_z = *(float*)(vc + 0x38);
-        *(float*)((char*)t6 + 0x60) = copy_x;
-        *(float*)((char*)t6 + 0x64) = copy_y;
-        *(float*)((char*)t6 + 0x68) = copy_z;
-        *(float*)((char*)mirror_t6 + 0xA0) = copy_x;
-        *(float*)((char*)mirror_t6 + 0xA4) = copy_y;
-        *(float*)((char*)mirror_t6 + 0xA8) = copy_z;
-    }
-    goto end;
-
-branch_else:
-    vc = (char*)a0[0x38 / 4];
-    ref_x = *(float*)(vc + 0xA0);
-    vc += 0x70;
-    ref_y = *(float*)(vc + 0x34);
-    ref_z = *(float*)(vc + 0x38);
-    delta = game_uso_func_000023D4((Vec3*)work, (char*)a0);
-    delta_copy = *(Tri3i*)delta;
-    delta_x = *(float*)&delta_copy.a;
-    delta_y = *(float*)&delta_copy.b;
-    delta_z = *(float*)&delta_copy.c;
-    self_x = ref_x + delta_x;
-    self_y = ref_y + delta_y;
-    self_z = ref_z + delta_z;
-    /* Zero-Y projection of a1 then second call: Vec3 normalize. */
-    work[6] = *(float*)&a1[0];      /* a1.x */
-    work[7] = 0.0f;
-    work[8] = *(float*)&a1[2];      /* a1.z */
-    game_uso_func_071028((Vec3*)&work[6]);
-
-    scale = *(float*)((char*)a0 + 0x94);
-    proj_x = work[6] * scale;
-    proj_y = work[7] * scale;
-    proj_z = work[8] * scale;
-    self_x -= proj_x;
-    self_y -= proj_y;
-    self_z -= proj_z;
-
-    self_y += (*(int*)((char*)a0 + 0x40) == 2)
-        ? *(float*)((char*)a0 + 0xF4)
-        : *(float*)((char*)a0 + 0xDC);
-
-    denom_xz = *(float*)((char*)a0 + 0xAC);
-    denom_y = *(float*)((char*)a0 + 0x10C);
-    work[3] = *(float*)&a1[0] / denom_xz;
-    work[4] = *(float*)&a1[1] / denom_y;
-    work[5] = *(float*)&a1[2] / denom_xz;
-    self_x -= work[3];
-    self_y -= work[4];
-    self_z -= work[5];
-
-    *(float*)((char*)t6 + 0x60) = self_x;
-    *(float*)((char*)t6 + 0x64) = self_y;
-    *(float*)((char*)t6 + 0x68) = self_z;
-    *(float*)((char*)t6 + 0xA0) = self_x;
-    *(float*)((char*)t6 + 0xA4) = self_y;
-    *(float*)((char*)t6 + 0xA8) = self_z;
-
-end:
-    return;
+    volatile int *ret = a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000024BC);
-#endif
 
 void game_uso_func_00002714(int *a0, int a1, int a2) {
     if (*(int*)((char*)a0 + 0x40) == a1) return;

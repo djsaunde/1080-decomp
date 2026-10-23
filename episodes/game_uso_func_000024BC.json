@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_000024BC",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T05:03:13.624022+00:00",
+  "end_time": "2026-10-23T05:03:13.624022+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T05:03:13.624022+00:00",
+      "assistant_text": "Finished the run-119 NCC donor (118 raw): out read through an inline Ctx accessor (edg temp, v0 reloads), Out::setG/setP tail in a nested block (its o below the 023D4 return temp), no named key (slot), dead int zz in the key-3 arm, n/s declared at the else top with component stores, one empty if after q += r (a2 reload/re-save between the calls).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 150,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_uso_func_000024BC (0x258 / 150 words).\n *\n * Camera-homing update, sibling of 28C0 / 2CC8 / 1DDC (same V3 class kit):\n * key 3 snaps out->goal and out->pos to the source body's matrix\n * translation; otherwise q = obj->pos + 023D4(this) (by-value return),\n * n = normalize(XZ of the input vector) * spd, q -= n, q.y += height (key 2\n * selects 0xF4, else 0xDC), q -= in / (sx, sy, sx), and goal = pos = q.\n *\n * agent-g run 119 rewrite (cfe 72%), finished in run 129 (118 -> 0 raw):\n *  - every out access is `Out *o = c.getOut(); ...; o = c.getOut(); ...`\n *    through an inline Ctx accessor (the accessor result is an edg\n *    temporary: the target's v0 reloads; getPos's this stays v1). The tail\n *    writes through Out::setG / setP members, inside a nested block so its\n *    `o` is allocated below the 023D4 return temp (sp+60 as the target).\n *  - no named `key`: a named int takes a slot and pushes m 4 bytes down.\n *  - the key-3 arm's dead `int zz` between its two store groups and n / s at\n *    the top of the else arm give frame 152 and every target slot; s is\n *    filled by three separate component stores (sx is loaded twice).\n *  - one empty if after `q += r` ends a block, so a2 is reloaded after the\n *    first call and re-saved before the second, as in the target.\n * Spliced into game_uso.c.o via REPLACE_FUNC_BODY\n * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). */\nstruct V3 {\n    float x, y, z;\n    V3() {}\n    V3(float a, float b, float c) { set(a, b, c); }\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    V3 &operator+=(const V3 &v) { x += v.x; y += v.y; z += v.z; return *this; }\n    V3 &operator-=(const V3 &v) { x -= v.x; y -= v.y; z -= v.z; return *this; }\n    void operator*=(float s) { x *= s; y *= s; z *= s; }\n};\nstruct M4 {\n    float m[4][4];\n    void getPos(V3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; }\n};\nstruct Out { char pad[0x60]; V3 goal; char pad6c[0x34]; V3 pos;\n    void setG(const V3 &v) { goal.x = v.x; goal.y = v.y; goal.z = v.z; }\n    void setP(const V3 &v) { pos.x = v.x; pos.y = v.y; pos.z = v.z; } };\nstruct Body { char pad[0x70]; M4 mtx; };\nstruct Self { char pad[0x14]; Out *out; char pad18[0x38 - 0x18]; Body *obj; Body *src; int key;\n              char pad44[0x94 - 0x44]; float spd; char pad98[0xAC - 0x98]; float sx;\n              char padb0[0xDC - 0xB0]; float hA; char pade0[0xF4 - 0xE0]; float hB;\n              char padf8[0x10C - 0xF8]; float sy; };\nextern \"C\" {\nV3 game_uso_func_000023D4(Self *a1);\nvoid game_uso_func_071028(V3 *);\n}\nstruct Ctx { Out *out; Ctx(Self *s) { out = s->out; }\n    Out *getOut() const { return out; } };\nextern \"C\" void game_uso_func_000024BC(Self *a0, V3 *in) {\n    Ctx c(a0);\n    if (a0->key == 0) return;\n    if (a0->key == 3) {\n        V3 m;\n        a0->src->mtx.getPos(m);\n        Out *o = c.getOut(); o->goal.x = m.x; o->goal.y = m.y; o->goal.z = m.z;\n        int zz; zz = 0;\n        o = c.getOut(); o->pos.x = m.x; o->pos.y = m.y; o->pos.z = m.z;\n    } else {\n        V3 r;\n        V3 q;\n        V3 n;\n        V3 s;\n        a0->obj->mtx.getPos(q);\n        r = game_uso_func_000023D4(a0);\n        q += r;\n        if (1) {}\n        n.set(in->x, 0.0f, in->z);\n        game_uso_func_071028(&n);\n        n *= a0->spd;\n        q -= n;\n        q.y += a0->key == 2 ? a0->hB : a0->hA;\n        s.x = in->x / a0->sx; s.y = in->y / a0->sy; s.z = in->z / a0->sx;\n        q -= s;\n        { Out *o = c.getOut(); o->setG(q);\n        o = c.getOut(); o->setP(q); }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_24BC.cpp",
+    "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000024BC.s",
+    "segment": "game_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "REPLACE_FUNC_BODY splice; rdiff --raw --pins 0 words in both build/src and build/non_matching game_uso.c.o; verify-blocks game_uso OK; full gate at branch tip."
+  }
+}

@@ -1966,6 +1966,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_2CC8_DONOR := build/src/game_uso/game_uso_ncc_2CC8.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00002CC8=$(GAMEUSO_2CC8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_2CC8_DONOR)
+# 24BC: camera homing (2CC8 / 28C0 sibling); out via inline Ctx accessor, setG / setP in a nested block, one empty if after q += r; cfe capped at 72%.
+GAMEUSO_24BC_DONOR := build/src/game_uso/game_uso_ncc_24BC.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_24BC_DONOR)
 # 3AC0: twelve `new Item(name)`; the inline ctor's by-value param is the shared
 # sp+36 pool slot, four dead named locals give frame 112 (cfe capped at 253/261).
 # It calls the global operator new; the USO imports that as game_uso_func_055750,
@@ -2074,10 +2078,6 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_NM_DONOR)
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000028C0=$(GAMEUSO_28C0_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
-# 24BC: NM-only NCC donor (camera homing sibling of 28C0).
-GAMEUSO_24BC_NM_DONOR := build/src/game_uso/game_uso_ncc_24BC.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_NM_DONOR)
-build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_24BC_NM_DONOR)
 # BB8C: NM-only NCC donor (contact sweep, V3 operator temporaries; agent-g run 128).
 GAMEUSO_BB8C_NM_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_NM_DONOR)
