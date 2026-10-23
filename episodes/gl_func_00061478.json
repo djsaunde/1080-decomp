@@ -1,0 +1,919 @@
+{
+  "function_name": "gl_func_00061478",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.115977+00:00",
+  "end_time": "2026-10-23T11:55:26.115989+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.115985+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00061478",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 660, \"native_sha256\": \"96198c962b0239884b235df81c5a2161a6fa139398d683b85a89f23cc6478402\", \"code_gain\": 660}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 165,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00061478(u8 *fmt, ...) {\n    char *args;\n    int i;\n    char *start;\n    int c;\n    u8 *old;\n\n    gl_ref_00034810((char *)&D_00000000 + 0x21E14);\n    args = (char *)(((unsigned int)&fmt + 7) & ~3);\n    start = args;\n    old = fmt;\n    fmt = old + 1;\n    if (*old != 0) {\n        do {\n            c = *old;\n            if (*old == '%') goto percent;\n            if (*old == '\\\\') goto slash;\n            if (*old != '\\n') goto character;\n            goto newline;\npercent:\n            old = fmt;\n            fmt = old + 1;\n            c = *old;\n            if (*old == 'd') goto fmt_d;\n            if (*old == 'f') goto fmt_f;\n            if (*old == 's') goto fmt_s;\n            if (*old == 'c') goto fmt_c;\n            if (*old == 'x') goto fmt_x;\n            if (*old != 'r') goto fmt_default;\n            goto fmt_r;\nfmt_d:\n            gl_ref_00034810((char *)&D_00000000 + 0x21E48,\n                              *(int *)((args = (char *)(((unsigned int)args + 7) & ~3)) - 4));\n            goto next;\nfmt_f:\n            args = (char *)(((unsigned int)args + 15) & ~7);\n            gl_ref_00034810((char *)&D_00000000 + 0x21E4C,\n                              *(double *)(args - 8));\n            goto next;\nfmt_s:\n            args = (char *)(((unsigned int)args + 7) & ~3);\n            gl_ref_00034810((char *)&D_00000000 + 0x21E50,\n                              *(char **)(args - 4));\n            goto next;\nfmt_c:\n            args = (char *)(((unsigned int)args + 7) & ~3);\n            gl_ref_00034810((char *)&D_00000000 + 0x21E54,\n                              *(u8 *)(args - 1));\n            goto next;\nfmt_x:\n            args = (char *)(((unsigned int)args + 7) & ~3);\n            gl_ref_00034810((char *)&D_00000000 + 0x21E58,\n                              *(unsigned int *)(args - 4));\n            goto next;\nfmt_r:\n            gl_ref_00034810((char *)D_6170C_arr[D_6170C_idx - 1]);\n            goto next;\nfmt_default:\n            gl_ref_00034810((char *)&D_00000000 + 0x21E5C, c);\n            goto next;\nslash:\n            gl_ref_00034810((char *)&D_00000000 + 0x21E60, c);\n            goto next;\nnewline:\n            gl_ref_00034810((char *)&D_00000000 + 0x21E64, c);\n            goto next;\ncharacter:\n            gl_ref_00034810((char *)&D_00000000 + 0x21E68, c);\nnext:\n            old = fmt;\n            fmt = old + 1;\n        } while (*old != 0);\n    }\n    gl_ref_00034810((char *)&D_00000000 + 0x21E6C);\n    for (i = 0; i < D_6170C_idx; i++) {\n        gl_ref_00034810((char *)&D_00000000 + 0x21E70, (char *)D_6170C_arr[i]);\n    }\n    gl_ref_00034810((char *)&D_00000000 + 0x21E7C);\n    gl_ref_00034810((char *)&D_00000000 + 0x21E80);\n    for (;;) {\n        gl_ref_00034240();\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Likely a fatal diagnostic formatter: prints banners, expands %d/%f/%s/%c/%x/%r, prints context-stack entries, then repeatedly calls gl_func_00034240. The terminal callee's precise role remains uncertain.",
+      "observed_abi": "o32 variadic entry: a0 points to a NUL-terminated byte string; a0\u2013a3 are homed above a 0x40-byte frame. Word arguments use 4-byte alignment; promoted doubles use 8-byte alignment and outgoing a2:a3. No normal return is reachable. Imported results are ignored, so original return types remain unknown. The print alias's void declaration and terminal alias's int declaration are provisional.",
+      "calls": [
+        {
+          "site": "0x614A0",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=opening banner; result ignored"
+        },
+        {
+          "site": "0x61570",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%d; a1=word at variadic cursor-4"
+        },
+        {
+          "site": "0x61594",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%f; a2:a3=aligned double at cursor-8/-4; a1 retains selector"
+        },
+        {
+          "site": "0x615B0",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%s; a1=string pointer at cursor-4"
+        },
+        {
+          "site": "0x615CC",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%c; a1=unsigned byte at cursor-1"
+        },
+        {
+          "site": "0x615E8",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%x; a1=word at cursor-4"
+        },
+        {
+          "site": "0x61608",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=table[count-1]; no variadic argument consumed"
+        },
+        {
+          "site": "0x61618",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%c; a1=unrecognized selector"
+        },
+        {
+          "site": "0x61628",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=literal backslash; a1 retains current byte"
+        },
+        {
+          "site": "0x61638",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=literal newline; a1 retains current byte"
+        },
+        {
+          "site": "0x61648",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=%c; a1=current byte"
+        },
+        {
+          "site": "0x61674",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=newline; result ignored"
+        },
+        {
+          "site": "0x6169C",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=context-line format; a1=table entry; index spilled at sp+0x38"
+        },
+        {
+          "site": "0x616C8",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=newline; result ignored"
+        },
+        {
+          "site": "0x616D4",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_ref_00034810",
+          "observed_abi": "a0=closing banner; result ignored"
+        },
+        {
+          "site": "0x616DC",
+          "target": "gl_func_00034240",
+          "c_alias": "gl_ref_00034240",
+          "observed_abi": "No explicit argument setup; result ignored; repeated indefinitely"
+        }
+      ],
+      "evidence": [
+        "Transplanted only the saved target block and two evidenced zero-valued call aliases. The fresh source's initial SHA256 matches the coordinator's 79360d2a7a8baf4906e28067ca1209c258f7b2e224e64a2b3b8e3c326fa8347f. Other function definitions remain unchanged.",
+        "Immutable target is 660 bytes, SHA256 96198c962b0239884b235df81c5a2161a6fa139398d683b85a89f23cc6478402. Both actual C builds match its first 0x274 bytes, including every reachable instruction.",
+        "Current raw normal entry/epilogue are 0x2CECC/0x2D140; NON_MATCHING entry/epilogue are 0x2C6EC/0x2C960. Original bootup entry/epilogue are 0x75AE4/0x75D60. All dead epilogues are 32-byte aligned.",
+        "Original bootup TextReloc sym76 identifies all fifteen print sites as func_048E7C/gl_func_00034810; sym1550 identifies the terminal site as func_0488AC/gl_func_00034240. Reported sites subtract 0x1466C from bootup Text offsets. Alias value zero is not identity evidence.",
+        "Approved context family inspected: gl_func_00055B10, gl_func_00061458, and gl_func_00061478. The first passes a local word address and input pointer+0x10 to callees; this does not establish a shared record layout. The immediate predecessor remains 0x20 bytes.",
+        "Direct ROM inspection confirms jr ra at 0x55B38, delay-slot zero at 0x55B3C, alignment zero at 0x55B40, and successor prologue at 0x55B44. m2c rejects the expected 55B10 slice because its last instruction lacks a delay slot.",
+        "Context-layout family remains gl_func_00061478 and game_libs_func_0006170C/00061728/0006179C. Original sym2344/sym2345 establish table/count identity. Existing shared declarations are reused: count word at +0, table stride 4, capacity 64, push guard count>=63, and null sentinel.",
+        "Message addends are 0x21E14\u20130x21E80. Format reads use lbu; variadic words use lw; character arguments use lbu at cursor-1.",
+        "Supplied callers include bootup func_00002DA4/00006808/00008FA8/000090CC/0000D900, gl_func_00061458, game_libs_func_00061728/0006179C, and numerous game_libs callers. Current supplied DFS rank is 1.",
+        "Advanced only the permitted NON_MATCHING clip endpoint from 0x2E314 to 0x2E334, preserving the downstream 0x50-byte game_libs_func_00062F08 body after the transplant's 32-byte growth.",
+        "Final ROM and all six compressed-block checks passed; ROM MD5 is fa27089c425dbab99f19245c5c997613. Preserved 626 baseline byte-exact bodies and 191 objdiff-exact functions without regressions. git diff --check passed.",
+        "The historical 98.69091% result remains valid for its old compilation context; this fresh context yields 98.08485% with the same reachable C. No exhausted permutations were replayed.",
+        "Root cause reproduced using unchanged IDO flags: compiler emits .align 5 before the unreachable epilogue. Standalone C emits 664 bytes; stale TU emits 652. Original bootup Text entry is 0x61478+0x1466C=0x75AE4, residue4 mod32. Authentic adjacent 610F4/6110C/611E4/6126C/61458 span0x384 bytes from aligned Text0x75760. Their existing assembly provides compilation context only. The same target C then emits660/660 exact bytes in both modes; no injected bytes, altered source assembly or changed expected object.",
+        "Directed coordinator recovery after attempt7; no new provider generation. All original ABI/call identities and unknowns remain. The target C is identical in the host and original-context auxiliary source.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The shared table records diagnostic execution context as a bounded stack.",
+        "The terminal loop services or waits on an engine subsystem after reporting a fatal condition."
+      ],
+      "unknowns": [
+        "Original return types of both imports and the terminal callee's complete argument contract.",
+        "The original translation-unit context needed to reproduce both dead-epilogue padding words without altering accepted slices or manufacturing instructions.",
+        "No unresolved direct or observed indirect calls were supplied for the target. Transitive import behavior remains uncertain.",
+        "Ghidra MCP tools, including list_project_binaries, were not exposed in this session; no Ghidra result is claimed.",
+        "Normal ROM verification uses the retained assembly fallback and does not establish exact C.",
+        "Full original source-file boundaries remain unknown; the demonstrated contiguous aligned range reproduces this function without claiming to recover every original compilation unit.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00061478.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 1,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_00002DA4",
+        "src/bootup_uso/bootup_uso:func_00006808",
+        "src/bootup_uso/bootup_uso:func_00008FA8",
+        "src/bootup_uso/bootup_uso:func_000090CC",
+        "src/bootup_uso/bootup_uso:func_0000D900",
+        "src/game_libs/game_libs_post:gl_func_000332B4",
+        "src/game_libs/game_libs_post:gl_func_000334B0",
+        "src/game_libs/game_libs_post:gl_func_000337AC",
+        "src/game_libs/game_libs_post:gl_func_00033880",
+        "src/game_libs/game_libs_post:gl_func_00033A8C",
+        "src/game_libs/game_libs_post0b:gl_func_00034548",
+        "src/game_libs/game_libs_post0b:gl_func_00034A54",
+        "src/game_libs/game_libs_post0b:gl_func_00035188",
+        "src/game_libs/game_libs_post0b:gl_func_000351EC",
+        "src/game_libs/game_libs_post0b:gl_func_00035268",
+        "src/game_libs/game_libs_post0b:gl_func_00035370",
+        "src/game_libs/game_libs_post0b:gl_func_00035440",
+        "src/game_libs/game_libs_post0b:gl_func_000355A0",
+        "src/game_libs/game_libs_post0b:gl_func_000356FC",
+        "src/game_libs/game_libs_post0b:gl_func_00035834",
+        "src/game_libs/game_libs_post0b:gl_func_00035894",
+        "src/game_libs/game_libs_post0b:gl_func_00035B1C",
+        "src/game_libs/game_libs_post0b:gl_func_00038A28",
+        "src/game_libs/game_libs_post0b:gl_func_0003AC5C",
+        "src/game_libs/game_libs_post0b:gl_func_0003B2EC",
+        "src/game_libs/game_libs_post0b:gl_func_0003BE1C",
+        "src/game_libs/game_libs_post0b:gl_func_0003E840",
+        "src/game_libs/game_libs_post0b:gl_func_0003EDBC",
+        "src/game_libs/game_libs_post0b:gl_func_00041148",
+        "src/game_libs/game_libs_post0b:game_libs_func_00041820",
+        "src/game_libs/game_libs_post0b:gl_func_00041A74",
+        "src/game_libs/game_libs_post0b:gl_func_000424D8",
+        "src/game_libs/game_libs_post0b:gl_func_00043284",
+        "src/game_libs/game_libs_post0b:game_libs_func_00044B78",
+        "src/game_libs/game_libs_post0b:gl_func_00048354",
+        "src/game_libs/game_libs_post0b:gl_func_00048510",
+        "src/game_libs/game_libs_post0b:gl_func_00049DBC",
+        "src/game_libs/game_libs_post0b:game_libs_func_0004A7C4",
+        "src/game_libs/game_libs_post0b:gl_func_0004A890",
+        "src/game_libs/game_libs_post0b:gl_func_0004AAF0",
+        "src/game_libs/game_libs_post0b:gl_func_0004ABD8",
+        "src/game_libs/game_libs_post0b:gl_func_0004C300",
+        "src/game_libs/game_libs_post0b:gl_func_0004D05C",
+        "src/game_libs/game_libs_post0b:gl_func_0004D224",
+        "src/game_libs/game_libs_post0b:gl_func_0004D2A0",
+        "src/game_libs/game_libs_post0b:gl_func_0004D3E4",
+        "src/game_libs/game_libs_post0b:gl_func_0004D688",
+        "src/game_libs/game_libs_post0b:gl_func_0004DA40",
+        "src/game_libs/game_libs_post0b:gl_func_0004DB50",
+        "src/game_libs/game_libs_post0b:gl_func_0004DC44",
+        "src/game_libs/game_libs_post0b:gl_func_0004DE88",
+        "src/game_libs/game_libs_post0b:game_libs_func_0004E37C",
+        "src/game_libs/game_libs_post0b:gl_func_0004ECE4",
+        "src/game_libs/game_libs_post0b:gl_func_0004EE44",
+        "src/game_libs/game_libs_post0b:gl_func_0004F9E4",
+        "src/game_libs/game_libs_post0b:gl_func_000503A4",
+        "src/game_libs/game_libs_post0b:gl_func_00050444",
+        "src/game_libs/game_libs_post0b:gl_func_00051AD8",
+        "src/game_libs/game_libs_post0b:gl_func_00051F5C",
+        "src/game_libs/game_libs_post0b:gl_func_00052144",
+        "src/game_libs/game_libs_post0b:gl_func_0005231C",
+        "src/game_libs/game_libs_post0b:gl_func_00052CD4",
+        "src/game_libs/game_libs_post0b:gl_func_000531C0",
+        "src/game_libs/game_libs_post0b:gl_func_000533EC",
+        "src/game_libs/game_libs_post0b:gl_func_00053C04",
+        "src/game_libs/game_libs_post0b:gl_func_00054AEC",
+        "src/game_libs/game_libs_post0b:gl_func_00054D04",
+        "src/game_libs/game_libs_post0b:gl_func_00055264",
+        "src/game_libs/game_libs_post0b:gl_func_00055298",
+        "src/game_libs/game_libs_post0b:gl_func_000552CC",
+        "src/game_libs/game_libs_post0b:gl_func_000552FC",
+        "src/game_libs/game_libs_post0b:gl_func_0005591C",
+        "src/game_libs/game_libs_post0b:gl_func_000561A8",
+        "src/game_libs/game_libs_post0b:gl_func_0005640C",
+        "src/game_libs/game_libs_post0b:gl_func_00056864",
+        "src/game_libs/game_libs_post0b:gl_func_00056974",
+        "src/game_libs/game_libs_post0b:gl_func_00056D14",
+        "src/game_libs/game_libs_post0b:gl_func_000578B4",
+        "src/game_libs/game_libs_post0b:gl_func_0005B68C",
+        "src/game_libs/game_libs_post0b:gl_func_0005B6E4",
+        "src/game_libs/game_libs_post0b:gl_func_0005EB4C",
+        "src/game_libs/game_libs_post0b:game_libs_func_0005FE14",
+        "src/game_libs/game_libs_post0b:gl_func_0005FE7C",
+        "src/game_libs/game_libs_post0b:gl_func_000600A4",
+        "src/game_libs/game_libs_post0b:gl_func_000601DC",
+        "src/game_libs/game_libs_post0b:gl_func_00060260",
+        "src/game_libs/game_libs_post0b:gl_func_00061458",
+        "src/game_libs/game_libs_post0b:game_libs_func_00061728",
+        "src/game_libs/game_libs_post0b:game_libs_func_0006179C",
+        "src/game_libs/game_libs_post0b:gl_func_00061E9C",
+        "src/game_libs/game_libs_post0b:gl_func_00061F8C",
+        "src/game_libs/game_libs_post0b:gl_func_00062484",
+        "src/game_libs/game_libs_post0b:gl_func_0006280C",
+        "src/game_libs/game_libs_post1b:gl_func_000634F8",
+        "src/game_libs/game_libs_post1b:gl_func_00063568",
+        "src/game_libs/game_libs_post1b:gl_func_000661D8",
+        "src/game_libs/game_libs_post1b:gl_func_00066384",
+        "src/game_libs/game_libs_post1b:gl_func_000663AC",
+        "src/game_libs/game_libs_post1b:gl_func_00066810",
+        "src/game_libs/game_libs_post1b:gl_func_00066850",
+        "src/game_libs/game_libs_post1b:gl_func_000669B8",
+        "src/game_libs/game_libs_post1b:gl_func_00066AF0",
+        "src/game_libs/game_libs_post1b:gl_func_00067F58",
+        "src/game_libs/game_libs_post1b:gl_func_000685C0",
+        "src/game_libs/game_libs_post1b:gl_func_00068990",
+        "src/game_libs/game_libs_post1b:gl_func_00068C14",
+        "src/game_libs/game_libs_post1b:gl_func_00068D18",
+        "src/game_libs/game_libs_post1b:gl_func_00068DD4",
+        "src/game_libs/game_libs_post1b:gl_func_00069688",
+        "src/game_libs/game_libs_post1b:gl_func_000697C4",
+        "src/game_libs/game_libs_post1b:gl_func_00069B94",
+        "src/bootup_uso/bootup_uso_tail3a_10C8C:func_00010FEC"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482060,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482268,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482304,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482332,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482360,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482388,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482420,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482436,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482452,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482468,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482484,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482528,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482568,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482612,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 482624,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00034240",
+          "kind": "relocation",
+          "site": 482632,
+          "identity": "func_0488AC",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00061478.s",
+          "sym_index": 1550,
+          "cached_first_reference": "func_0488AC",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00061478.c",
+    "implementation_sha256": "cee2fb622d9f3033e8ef67d76cffc5a063d2128c3e49a9b3896695edfd00cbd9",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 40,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482060,
+          "payload_site": 482060,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 248,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482268,
+          "payload_site": 482268,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 284,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482304,
+          "payload_site": 482304,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 312,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482332,
+          "payload_site": 482332,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 340,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482360,
+          "payload_site": 482360,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 368,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482388,
+          "payload_site": 482388,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 400,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482420,
+          "payload_site": 482420,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 416,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482436,
+          "payload_site": 482436,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 432,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482452,
+          "payload_site": 482452,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 448,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482468,
+          "payload_site": 482468,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 464,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482484,
+          "payload_site": 482484,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 508,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482528,
+          "payload_site": 482528,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 548,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482568,
+          "payload_site": 482568,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 592,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482612,
+          "payload_site": 482612,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 604,
+          "kind": 4,
+          "symbol": "gl_ref_00034810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 482624,
+          "payload_site": 482624,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 612,
+          "kind": 4,
+          "symbol": "gl_ref_00034240",
+          "original_identity": "bootup_uso:symbol_1550:addend_0x0",
+          "original_site": 482632,
+          "payload_site": 482632,
+          "original_symbol_index": 1550,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "96198c962b0239884b235df81c5a2161a6fa139398d683b85a89f23cc6478402"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 12,
+        "lo": 44,
+        "native_addend": 138772,
+        "original_addend": 138772,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_6170C_idx",
+        "hi": 80,
+        "lo": 84,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_2345:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 112,
+        "lo": 160,
+        "native_addend": 138824,
+        "original_addend": 138824,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 124,
+        "lo": 160,
+        "native_addend": 138824,
+        "original_addend": 138824,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 132,
+        "lo": 160,
+        "native_addend": 138824,
+        "original_addend": 138824,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 144,
+        "lo": 160,
+        "native_addend": 138824,
+        "original_addend": 138824,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 184,
+        "lo": 288,
+        "native_addend": 138828,
+        "original_addend": 138828,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 232,
+        "lo": 288,
+        "native_addend": 138828,
+        "original_addend": 138828,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 304,
+        "lo": 308,
+        "native_addend": 138832,
+        "original_addend": 138832,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 332,
+        "lo": 336,
+        "native_addend": 138836,
+        "original_addend": 138836,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 360,
+        "lo": 364,
+        "native_addend": 138840,
+        "original_addend": 138840,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_6170C_arr",
+        "hi": 388,
+        "lo": 404,
+        "native_addend": -4,
+        "original_addend": -4,
+        "base_identity": "bootup_uso:symbol_2344:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 360,
+        "lo": 420,
+        "native_addend": 138844,
+        "original_addend": 138844,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 360,
+        "lo": 436,
+        "native_addend": 138848,
+        "original_addend": 138848,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 360,
+        "lo": 452,
+        "native_addend": 138852,
+        "original_addend": 138852,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 360,
+        "lo": 468,
+        "native_addend": 138856,
+        "original_addend": 138856,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_6170C_idx",
+        "hi": 496,
+        "lo": 504,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_2345:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 500,
+        "lo": 512,
+        "native_addend": 138860,
+        "original_addend": 138860,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_6170C_arr",
+        "hi": 520,
+        "lo": 524,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_2344:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 536,
+        "lo": 540,
+        "native_addend": 138864,
+        "original_addend": 138864,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 584,
+        "lo": 588,
+        "native_addend": 138876,
+        "original_addend": 138876,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 600,
+        "lo": 608,
+        "native_addend": 138880,
+        "original_addend": 138880,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00061478.json",
+      "nm": "scripts/match-bindings-gl_func_00061478-nm.json"
+    },
+    "source_context": null,
+    "source_context_sha256": null,
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_context_61478.c",
+    "original_local_episode_sha256": "7864cfd08c282a901b8aa7349498b5e7de37bcca4da24dcf8af6a19808a3a237",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "function": "game_libs_func_0000CBF0",
+  "raw_sha256": "8b92dc775c29fe8bd288beb906183563d91d5f29b35127309a2a5aad38a43f1e",
+  "renames": {
+    "D_00000000": "snw_port_game_libs_func_0000CBF0_D_00000000",
+    "game_libs_CBF0_handler0": "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler0",
+    "game_libs_CBF0_handler1": "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler1",
+    "game_libs_CBF0_handler2": "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler2",
+    "game_libs_CBF0_handler3": "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler3"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_libs_func_0000CBF0_D_00000000": 0,
+    "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler0": 0,
+    "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler1": 0,
+    "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler2": 0,
+    "snw_port_game_libs_func_0000CBF0_game_libs_CBF0_handler3": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

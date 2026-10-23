@@ -1,0 +1,224 @@
+{
+  "function_name": "gl_func_0002D224",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.746920+00:00",
+  "end_time": "2026-10-23T11:55:25.746937+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.746933+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0002D224",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 208, \"native_sha256\": \"7a690175af9196125d4ea8e54097147a55fefed1fd6c965c702d81365beb1547\", \"code_gain\": 208}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 52,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_0002D224(Obj26D64 *a0) {\n    int i;\n    int j;\n    for (i = 0; i != 16; i++) {\n        *((s32 **)&a0->w38[i]) = (s32 *)((char *)&D_00000000 + 0x5280);\n    }\n    a0->flags &= ~0x80;\n    a0->flags &= 0xDF;\n    a0->flags &= 0xF7;\n    a0->flags &= 0xEF;\n    a0->flags &= 0xFE;\n    for (j = 0; j < 8; j++) {\n        a0->b158[j] = -1;\n    }\n    *((u8 *)a0 + 3) = 96;\n    a0->f2C = 1.0f;\n    a0->f34 = 1.0f;\n    gl_2D224_init_links((char *)a0 + 0x9C);\n    gl_2D224_reset_record(a0);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Initialize a shared 0x160-byte record: set sixteen slot pointers, clear flags, initialize eight signed channels and float defaults, then initialize embedded links and reset record state. The precise subsystem remains uncertain.",
+      "observed_abi": "a0 points to writable record storage. No deliberate return value is established. The void definition models the observed behavior; the original return type remains unproven.",
+      "calls": [
+        {
+          "site": "0x2D2D4",
+          "target": "gl_func_00028A18",
+          "c_alias": "gl_2D224_init_links",
+          "observed_abi": "a0 = record + 0x9C; callee consumes one pointer argument. Result unused. Identity recovered from bootup TextReloc 0x41940."
+        },
+        {
+          "site": "0x2D2DC",
+          "target": "gl_func_0002D064",
+          "c_alias": "gl_2D224_reset_record",
+          "observed_abi": "a0 = record, reloaded from its stack home; callee consumes one pointer argument. Result unused. Identity recovered from bootup TextReloc 0x41948."
+        }
+      ],
+      "evidence": [
+        "Expected assembly contains one complete 52-instruction function, including two calls and one return.",
+        "Inspected family: gl_func_00026D64, gl_func_0002C7A4, game_libs_func_0002CF60, gl_func_0002D064, gl_func_0002D130 and gl_func_0002D2F4. Shared evidence includes 0x160 table stride, slots beginning at 0x38 and signed channels at 0x158. Reused the existing Obj26D64 definition.",
+        "Assigned function accesses flags at 0x00, byte 0x03, floats at 0x2C/0x34, sixteen pointers at 0x38\u20130x74, embedded links at 0x9C and signed bytes at 0x158\u20130x15F.",
+        "Both C builds produce 208 byte-identical bytes with SHA-256 7a690175af9196125d4ea8e54097147a55fefed1fd6c965c702d81365beb1547. Other normal-build function bodies are unchanged.",
+        "Both call aliases resolve to absolute zero. Full ROM matches baserom; all six compressed-block checks passed.",
+        "Objdiff reports 99.76923% because symbolic relocation operands differ from the reloc-free expected object; raw function bytes match exactly.",
+        "The supplied relocation graph has no recovered callers or unresolved callsites for this function; DFS rank is unavailable.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "D_00000000 + 0x5280 is an inactive/default slot object.",
+        "The record belongs to the nearby command/channel processing family."
+      ],
+      "unknowns": [
+        "Precise meanings of the cleared flags, byte value 96 and float defaults.",
+        "Original source-level return types and callers outside recovered graph coverage.",
+        "The related Gl2C7A4 draft declares sixteen channels; this function and Obj26D64 establish initialization of eight.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0002D224.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post:gl_func_0002D2F4"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00028A18",
+          "kind": "relocation",
+          "site": 268608,
+          "identity": "func_03D084",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002D224.s",
+          "sym_index": 1409,
+          "cached_first_reference": "func_03D084",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_0002D064",
+          "kind": "relocation",
+          "site": 268616,
+          "identity": "func_0416D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002D224.s",
+          "sym_index": 1305,
+          "cached_first_reference": "func_0416D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/gl_func_0002D224.c",
+    "implementation_sha256": "5aa4eba5908855950fb18953a69b5441b2437ec7b1e239f234c0258eab6ccb89",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 176,
+          "kind": 4,
+          "symbol": "gl_2D224_init_links",
+          "original_identity": "bootup_uso:symbol_1409:addend_0x0",
+          "original_site": 268608,
+          "payload_site": 268608,
+          "original_symbol_index": 1409,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 184,
+          "kind": 4,
+          "symbol": "gl_2D224_reset_record",
+          "original_identity": "bootup_uso:symbol_1305:addend_0x0",
+          "original_site": 268616,
+          "payload_site": 268616,
+          "original_symbol_index": 1305,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "7a690175af9196125d4ea8e54097147a55fefed1fd6c965c702d81365beb1547"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 12,
+        "lo": 20,
+        "native_addend": 21120,
+        "original_addend": 21120,
+        "base_identity": "bootup_uso:symbol_1255:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0002D224.json",
+      "nm": "scripts/match-bindings-gl_func_0002D224-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "c40ba6fd59fc665a042645b857f49d900c82d271c92ad771d6fbac13c18250b3",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

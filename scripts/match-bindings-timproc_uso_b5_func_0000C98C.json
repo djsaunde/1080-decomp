@@ -1,0 +1,27 @@
+{
+  "function": "timproc_uso_b5_func_0000C98C",
+  "raw_sha256": "b5acd87af914a31b3ad30ab34b7c71592315c4daf3dad769a081e2b8851addf7",
+  "renames": {
+    "timproc_uso_b5_D_807FF640": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FF640",
+    "timproc_uso_b5_func_000040BC": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_000040BC",
+    "import_8002022C": "snw_port_timproc_uso_b5_func_0000C98C_import_8002022C",
+    "timproc_uso_b5_D_807FF700": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FF700",
+    "timproc_uso_b5_func_00003FF8": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_00003FF8",
+    "import_80020098": "snw_port_timproc_uso_b5_func_0000C98C_import_80020098",
+    "timproc_uso_b5_func_01EEE4": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EEE4",
+    "timproc_uso_b5_func_01EFC8": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EFC8",
+    "timproc_uso_b5_D_807FFB50": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FFB50"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FF640": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_000040BC": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_import_8002022C": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FF700": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_00003FF8": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_import_80020098": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EEE4": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EFC8": 0,
+    "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FFB50": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

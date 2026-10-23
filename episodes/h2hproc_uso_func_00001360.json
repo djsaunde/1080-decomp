@@ -1,0 +1,816 @@
+{
+  "function_name": "h2hproc_uso_func_00001360",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.301205+00:00",
+  "end_time": "2026-10-23T11:55:26.301217+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.301213+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "h2hproc_uso_func_00001360",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 656, \"native_sha256\": \"e727ff857fae11152ce2fe6cce84be1cbaef3c0f8d9cb863eb07b355ca36a3a5\", \"code_gain\": 656}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 164,
+  "initial_m2c_source": null,
+  "final_source": "void h2hproc_uso_func_00001360(int *self) {\n    char scratch[64];\n    int *vtable;\n    int *v_call;\n    int retval;\n    int gate;\n    char c;\n    *(int*)((char*)self + 0x98) += 1;\n    gate = (int)*(int*)((char*)*(int*)((char*)self + 0x34) + 0x28);\n    ((void(*)(int))((int*)gate)[0x1C/4])(*(int*)((char*)self + 0x34) + *(short*)((char*)gate + 0x18));\n    h2hproc_1360_import_157((*(H2HParentState **)((char *)self + 0x2C))->field_568);\n    h2hproc_1360_import_158((*(H2HParentState **)((char *)self + 0x2C))->field_568);\n    gate = ((*(H2HParentState **)((char *)self + 0x2C))->field_6B8 == 0)\n         ? *(int*)((char*)self + 0x98) : 0x10;\n    if (gate & 0x10) {\n        h2hproc_1360_import_159(scratch, &snw_h2h_1360_text_data + 0x3FC);\n        retval = h2hproc_1360_import_160((*(H2HParentState **)((char *)self + 0x2C))->field_568, 80, scratch);\n        h2hproc_1360_import_161((*(H2HParentState **)((char *)self + 0x2C))->field_568, retval, 30, scratch);\n        {\n            retval = (*(H2HParentState **)((char *)self + 0x2C))->field_6A8[0]; if (retval != 1) c = 115; else c = 0; h2hproc_1360_import_159(scratch, &snw_h2h_1360_text_data + 0x400, retval, c);\n        }\n        retval = h2hproc_1360_import_160((*(H2HParentState **)((char *)self + 0x2C))->field_568, 80, scratch);\n        h2hproc_1360_import_161((*(H2HParentState **)((char *)self + 0x2C))->field_568, retval, 80, scratch);\n    }\n    gate = ((*(H2HParentState **)((char *)self + 0x2C))->field_6B8 == 1)\n         ? *(int*)((char*)self + 0x98) : 0x10;\n    if (gate & 0x10) {\n        h2hproc_1360_import_159(scratch, &snw_h2h_1360_text_data + 0x40C);\n        retval = h2hproc_1360_import_160((*(H2HParentState **)((char *)self + 0x2C))->field_568, 240, scratch);\n        h2hproc_1360_import_161((*(H2HParentState **)((char *)self + 0x2C))->field_568, retval, 30, scratch);\n        {\n            retval = (*(H2HParentState **)((char *)self + 0x2C))->field_6A8[1]; if (retval != 1) c = 115; else c = 0; h2hproc_1360_import_159(scratch, &snw_h2h_1360_text_data + 0x410, retval, c);\n        }\n        retval = h2hproc_1360_import_160((*(H2HParentState **)((char *)self + 0x2C))->field_568, 240, scratch);\n        h2hproc_1360_import_161((*(H2HParentState **)((char *)self + 0x2C))->field_568, retval, 80, scratch);\n    }\n    h2hproc_1360_import_162(&snw_h2h_1360_import149);\n    v_call = (int*)((char*)self + 0x38);\n    h2hproc_1360_import_163(v_call);\n    h2hproc_1360_import_164(v_call, 60, 64, 3);\n    v_call = (int*)((char*)self + 0x50);\n    h2hproc_1360_import_163(v_call);\n    vtable = (int*)*(int*)((char*)self + 0x48);\n    if (1) {}\n    retval = *(short*)((char*)vtable + 0x20);\n    h2hproc_1360_import_164(v_call, retval + 68, 64, 3);\n    v_call = (int*)((char*)self + 0x68);\n    h2hproc_1360_import_163(v_call);\n    h2hproc_1360_import_164(v_call, 220, 64, 3);\n    v_call = (int*)((char*)self + 0x80);\n    h2hproc_1360_import_163(v_call);\n    vtable = (int*)*(int*)((char*)self + 0x78);\n    if (1) {}\n    retval = *(short*)((char*)vtable + 0x20);\n    h2hproc_1360_import_164(v_call, retval + 228, 64, 3);\n    h2hproc_1360_import_165(self);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Displays player-one and player-two win counts, gated by the parent selector and counter bit. Original strings establish the labels and plural suffix. The precise measurement/drawing imports and final subobject operations remain inferred.",
+      "observed_abi": "Entry a0 is a self pointer. Frame is 0x78; s0 and ra are saved, scratch starts at sp+0x38, and a subobject pointer spills at sp+0x20. The indirect callback receives an adjusted object pointer in a0. Four sym160 calls return v0 values consumed as subsequent a1 arguments. The original enclosing return type remains unknown: the final import's return registers are not overwritten. Discarded-result import declarations, including int for sym163, are code-generation choices rather than recovered return types.",
+      "calls": [
+        {
+          "site": "0x138C",
+          "target": "unresolved",
+          "c_alias": "((void(*)(int))((int*)gate)[0x1C/4])",
+          "observed_abi": "Indirect callback at self->field_34->table+0x1C; a0 is the object pointer plus the table's signed halfword adjustment at +0x18. Result unobserved."
+        },
+        {
+          "site": "0x1398",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_157",
+          "observed_abi": "Original import sym157; a0=parent+0x568 word. Result unobserved."
+        },
+        {
+          "site": "0x13A4",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_158",
+          "observed_abi": "Original import sym158; a0=parent+0x568 word. Result unobserved."
+        },
+        {
+          "site": "0x13D8",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_159",
+          "observed_abi": "Original import sym159; a0=scratch, a1=data+0x3FC ('1p'). Result unobserved."
+        },
+        {
+          "site": "0x13EC",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_160",
+          "observed_abi": "Original import sym160; a0=parent+0x568, a1=80, a2=scratch. v0 consumed."
+        },
+        {
+          "site": "0x1404",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_161",
+          "observed_abi": "Original import sym161; a0=parent+0x568, a1=preceding v0, a2=30, a3=scratch. Result unobserved."
+        },
+        {
+          "site": "0x143C",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_159",
+          "observed_abi": "Original import sym159; a0=scratch, a1=data+0x400 ('%d win%c'), a2=first win count, a3=0 or 115. Result unobserved."
+        },
+        {
+          "site": "0x1450",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_160",
+          "observed_abi": "Original import sym160; a0=parent+0x568, a1=80, a2=scratch. v0 consumed."
+        },
+        {
+          "site": "0x1468",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_161",
+          "observed_abi": "Original import sym161; a0=parent+0x568, a1=preceding v0, a2=80, a3=scratch. Result unobserved."
+        },
+        {
+          "site": "0x14A0",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_159",
+          "observed_abi": "Original import sym159; a0=scratch, a1=data+0x40C ('2p'). Result unobserved."
+        },
+        {
+          "site": "0x14B4",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_160",
+          "observed_abi": "Original import sym160; a0=parent+0x568, a1=240, a2=scratch. v0 consumed."
+        },
+        {
+          "site": "0x14CC",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_161",
+          "observed_abi": "Original import sym161; a0=parent+0x568, a1=preceding v0, a2=30, a3=scratch. Result unobserved."
+        },
+        {
+          "site": "0x1504",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_159",
+          "observed_abi": "Original import sym159; a0=scratch, a1=data+0x410 ('%d win%c'), a2=second win count, a3=0 or 115. Result unobserved."
+        },
+        {
+          "site": "0x1518",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_160",
+          "observed_abi": "Original import sym160; a0=parent+0x568, a1=240, a2=scratch. v0 consumed."
+        },
+        {
+          "site": "0x1530",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_161",
+          "observed_abi": "Original import sym161; a0=parent+0x568, a1=preceding v0, a2=80, a3=scratch. Result unobserved."
+        },
+        {
+          "site": "0x153C",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_162",
+          "observed_abi": "Original import sym162; a0 references unresolved data import sym149 with zero addend. Result unobserved."
+        },
+        {
+          "site": "0x1548",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_163",
+          "observed_abi": "Original import sym163; a0=self+0x38. Result discarded; int declaration does not establish original return type."
+        },
+        {
+          "site": "0x155C",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_164",
+          "observed_abi": "Original import sym164; a0=self+0x38, a1=60, a2=64, a3=3. Result unobserved."
+        },
+        {
+          "site": "0x1568",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_163",
+          "observed_abi": "Original import sym163; a0=self+0x50. Result discarded; int declaration does not establish original return type."
+        },
+        {
+          "site": "0x1584",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_164",
+          "observed_abi": "Original import sym164; a0=self+0x50, a1=signed halfword at self->field_48+0x20 plus 68, a2=64, a3=3. Result unobserved."
+        },
+        {
+          "site": "0x1590",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_163",
+          "observed_abi": "Original import sym163; a0=self+0x68. Result discarded; int declaration does not establish original return type."
+        },
+        {
+          "site": "0x15A4",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_164",
+          "observed_abi": "Original import sym164; a0=self+0x68, a1=220, a2=64, a3=3. Result unobserved."
+        },
+        {
+          "site": "0x15B0",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_163",
+          "observed_abi": "Original import sym163; a0=self+0x80. Result discarded; int declaration does not establish original return type."
+        },
+        {
+          "site": "0x15CC",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_164",
+          "observed_abi": "Original import sym164; a0=self+0x80, a1=signed halfword at self->field_78+0x20 plus 228, a2=64, a3=3. Result unobserved."
+        },
+        {
+          "site": "0x15D4",
+          "target": "unresolved",
+          "c_alias": "h2hproc_1360_import_165",
+          "observed_abi": "Original import sym165; a0=self. Return registers are not overwritten before the enclosing return."
+        }
+      ],
+      "evidence": [
+        "Normal and NON_MATCHING C each produce 656 bytes identical to immutable expected bytes: SHA256 e727ff857fae11152ce2fe6cce84be1cbaef3c0f8d9cb863eb07b355ca36a3a5.",
+        "The assigned INCLUDE_ASM fallback and its NON_MATCHING wrapper were removed.",
+        "make -j2 verify verify-blocks passes: complete ROM is byte-identical to baserom, and all six compressed-block checks pass.",
+        "All 40 function bodies in the unit were compared with retained baseline bytes. Normal instruction bytes remain unchanged; only the assigned NON_MATCHING function changed. git diff --check passes.",
+        "Original TextReloc records distinguish imports sym157..sym165. Separate zero-valued aliases retain those identities without claiming runtime targets.",
+        "Inspected shared-layout family: 0x0620, 0x08EC, 0x0944, 0x0C18, 0x1204, and 0x17A0. H2HParentState retains observed fields at +0x4DC, +0x4F0, +0x4F4, +0x568, +0x6A8, +0x6B0, +0x6B4, and +0x6B8; companion bodies remain unchanged.",
+        "Observed self fields: +0x2C parent, +0x34 dispatch object, +0x48/+0x78 extent pointers, +0x98 counter. Embedded subobject arguments use +0x38/+0x50/+0x68/+0x80.",
+        "The documented per-basic-block dead-v0 behavior resolves tail coloring. Sharing the initial table address with the later gate temporary restores the initial dispatch registers. Joining each count load, suffix selection, and formatting call on one source line resolves the final scheduling rotations.",
+        "Objdiff reports 99.20731% with argument/symbol mismatches; raw instruction bytes match completely in both modes, and linked ROM verification passes.",
+        "No callers are recovered by the supplied graph. Indirect and unresolved import edges remain coverage gaps; this function is not a leaf.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "sym159 is a sprintf-like formatter, sym160 measures or positions text, and sym161 draws it.",
+        "Signed halfwords at extent objects' +0x20 likely represent widths used to position adjacent display elements."
+      ],
+      "unknowns": [
+        "Exact runtime targets and original return types of imports sym157..sym165 and the indirect callback.",
+        "The original enclosing return type and declared scratch-buffer size.",
+        "Exact data identities for sym3 and imported sym149; equal zero operands do not establish identity.",
+        "Unobserved layout gaps and complete dispatch/extent types.",
+        "Canonical episode creation and local integration remain the coordinator's responsibility; this worker changed only the two permitted text files.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/h2hproc_uso_func_00001360.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "h2hproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 5004,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5016,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5028,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5080,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5100,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5124,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5180,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5200,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5224,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5280,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5300,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5324,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5380,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5400,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5424,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5436,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5448,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5468,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5480,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5508,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5520,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5540,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5552,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5580,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 5588,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00001360.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/h2hproc_uso/h2hproc_uso.c",
+    "source_sha256": "8874e8953beceb5f375468a2afc202672a44f1a8d0519abf8b2c6f41a733d12f",
+    "implementation_path": "src/match_imports/h2hproc_uso_func_00001360.c",
+    "implementation_sha256": "451e2446442cfde8814d913a657be0f6c35f998d33498345bfbf84bc17c123ee",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 56,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_157",
+          "original_identity": "h2hproc_uso:symbol_157:addend_0x0",
+          "original_site": 5016,
+          "payload_site": 5012,
+          "original_symbol_index": 157,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 68,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_158",
+          "original_identity": "h2hproc_uso:symbol_158:addend_0x0",
+          "original_site": 5028,
+          "payload_site": 5024,
+          "original_symbol_index": 158,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 120,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_159",
+          "original_identity": "h2hproc_uso:symbol_159:addend_0x0",
+          "original_site": 5080,
+          "payload_site": 5076,
+          "original_symbol_index": 159,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 140,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_160",
+          "original_identity": "h2hproc_uso:symbol_160:addend_0x0",
+          "original_site": 5100,
+          "payload_site": 5096,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 164,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_161",
+          "original_identity": "h2hproc_uso:symbol_161:addend_0x0",
+          "original_site": 5124,
+          "payload_site": 5120,
+          "original_symbol_index": 161,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 220,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_159",
+          "original_identity": "h2hproc_uso:symbol_159:addend_0x0",
+          "original_site": 5180,
+          "payload_site": 5176,
+          "original_symbol_index": 159,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 240,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_160",
+          "original_identity": "h2hproc_uso:symbol_160:addend_0x0",
+          "original_site": 5200,
+          "payload_site": 5196,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 264,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_161",
+          "original_identity": "h2hproc_uso:symbol_161:addend_0x0",
+          "original_site": 5224,
+          "payload_site": 5220,
+          "original_symbol_index": 161,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 320,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_159",
+          "original_identity": "h2hproc_uso:symbol_159:addend_0x0",
+          "original_site": 5280,
+          "payload_site": 5276,
+          "original_symbol_index": 159,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 340,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_160",
+          "original_identity": "h2hproc_uso:symbol_160:addend_0x0",
+          "original_site": 5300,
+          "payload_site": 5296,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 364,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_161",
+          "original_identity": "h2hproc_uso:symbol_161:addend_0x0",
+          "original_site": 5324,
+          "payload_site": 5320,
+          "original_symbol_index": 161,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 420,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_159",
+          "original_identity": "h2hproc_uso:symbol_159:addend_0x0",
+          "original_site": 5380,
+          "payload_site": 5376,
+          "original_symbol_index": 159,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 440,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_160",
+          "original_identity": "h2hproc_uso:symbol_160:addend_0x0",
+          "original_site": 5400,
+          "payload_site": 5396,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 464,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_161",
+          "original_identity": "h2hproc_uso:symbol_161:addend_0x0",
+          "original_site": 5424,
+          "payload_site": 5420,
+          "original_symbol_index": 161,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 476,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_162",
+          "original_identity": "h2hproc_uso:symbol_162:addend_0x0",
+          "original_site": 5436,
+          "payload_site": 5432,
+          "original_symbol_index": 162,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 488,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_163",
+          "original_identity": "h2hproc_uso:symbol_163:addend_0x0",
+          "original_site": 5448,
+          "payload_site": 5444,
+          "original_symbol_index": 163,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 508,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_164",
+          "original_identity": "h2hproc_uso:symbol_164:addend_0x0",
+          "original_site": 5468,
+          "payload_site": 5464,
+          "original_symbol_index": 164,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 520,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_163",
+          "original_identity": "h2hproc_uso:symbol_163:addend_0x0",
+          "original_site": 5480,
+          "payload_site": 5476,
+          "original_symbol_index": 163,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 548,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_164",
+          "original_identity": "h2hproc_uso:symbol_164:addend_0x0",
+          "original_site": 5508,
+          "payload_site": 5504,
+          "original_symbol_index": 164,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 560,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_163",
+          "original_identity": "h2hproc_uso:symbol_163:addend_0x0",
+          "original_site": 5520,
+          "payload_site": 5516,
+          "original_symbol_index": 163,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 580,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_164",
+          "original_identity": "h2hproc_uso:symbol_164:addend_0x0",
+          "original_site": 5540,
+          "payload_site": 5536,
+          "original_symbol_index": 164,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 592,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_163",
+          "original_identity": "h2hproc_uso:symbol_163:addend_0x0",
+          "original_site": 5552,
+          "payload_site": 5548,
+          "original_symbol_index": 163,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 620,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_164",
+          "original_identity": "h2hproc_uso:symbol_164:addend_0x0",
+          "original_site": 5580,
+          "payload_site": 5576,
+          "original_symbol_index": 164,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 628,
+          "kind": 4,
+          "symbol": "h2hproc_1360_import_165",
+          "original_identity": "h2hproc_uso:symbol_165:addend_0x0",
+          "original_site": 5588,
+          "payload_site": 5584,
+          "original_symbol_index": 165,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        44
+      ],
+      "native_sha256": "e727ff857fae11152ce2fe6cce84be1cbaef3c0f8d9cb863eb07b355ca36a3a5"
+    },
+    "native_data_proof": [
+      {
+        "alias": "snw_h2h_1360_text_data",
+        "hi": 112,
+        "lo": 116,
+        "native_addend": 1020,
+        "original_addend": 1020,
+        "base_identity": "h2hproc_uso:symbol_3:base_addend_0x0"
+      },
+      {
+        "alias": "snw_h2h_1360_text_data",
+        "hi": 180,
+        "lo": 188,
+        "native_addend": 1024,
+        "original_addend": 1024,
+        "base_identity": "h2hproc_uso:symbol_3:base_addend_0x0"
+      },
+      {
+        "alias": "snw_h2h_1360_text_data",
+        "hi": 312,
+        "lo": 316,
+        "native_addend": 1036,
+        "original_addend": 1036,
+        "base_identity": "h2hproc_uso:symbol_3:base_addend_0x0"
+      },
+      {
+        "alias": "snw_h2h_1360_text_data",
+        "hi": 380,
+        "lo": 388,
+        "native_addend": 1040,
+        "original_addend": 1040,
+        "base_identity": "h2hproc_uso:symbol_3:base_addend_0x0"
+      },
+      {
+        "alias": "snw_h2h_1360_import149",
+        "hi": 472,
+        "lo": 480,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "h2hproc_uso:symbol_149:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-h2hproc_uso_func_00001360.json",
+      "nm": "scripts/match-bindings-h2hproc_uso_func_00001360-nm.json"
+    },
+    "source_context": "src/match_imports/context_h2hproc_uso.h",
+    "source_context_sha256": "3085de5b37f8a8ed3c6bfab94bb5c80d30f486cacb02a28456c5c19115c68b3d",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/h2hproc_uso/h2hproc_uso.c",
+    "original_local_episode_sha256": "d8c537572b5db022cd100ee79ecc6fc73629e79e5e166f463c0d04c1e7e7cd95",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

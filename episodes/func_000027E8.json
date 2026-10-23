@@ -1,0 +1,1457 @@
+{
+  "function_name": "func_000027E8",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.513982+00:00",
+  "end_time": "2026-10-23T11:55:25.513995+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.513991+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_000027E8",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1196, \"native_sha256\": \"ea4a02da95b2c86a8639fa8bda1d8ce6c598610531d2fdac669ff59877c01335\", \"code_gain\": 1196}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 299,
+  "initial_m2c_source": null,
+  "final_source": "BootupObjectBase *func_000027E8(BootupSceneSetup *scene, int a1, int a2, int a3) {\n    BootupObjectBase *s4C, *s48, *s44, *s40, *s3C;\n    int sv;\n    BootupObjectBase *g;\n    char *p;\n    int m;\n    f32 fd;\n    sv = (int)bootup_27E8_func_0497D0(&bootup_27E8_timer_object);\n    scene->field_3c = a2;\n    bootup_27E8_func_074710(&bootup_27E8_ref_7328, 0);\n    bootup_27E8_func_0118E4(&bootup_27E8_registration_context, &bootup_27E8_ref_7334);\n    bootup_27E8_func_002C94(scene->field_134, a2);\n    bootup_27E8_func_074710(&bootup_27E8_ref_7344, 0);\n    bootup_27E8_func_0118E4(&bootup_27E8_registration_context, (char *)&D_00000000 + 0x7350);\n    bootup_27E8_func_0118E4(&bootup_27E8_registration_context, &bootup_27E8_ref_7360);\n    bootup_27E8_func_074840();\n    bootup_27E8_func_074710(&bootup_27E8_ref_7374, 0);\n    s3C = bootup_27E8_func_04C678(0, (s32)(&bootup_27E8_ref_7380));\n    s4C = bootup_27E8_func_04C678(0, (s32)(&bootup_27E8_ref_738C));\n    s48 = bootup_27E8_func_04C678(0, (s32)(&bootup_27E8_ref_7390));\n    s44 = bootup_27E8_func_04C678(0, (s32)(&bootup_27E8_ref_7394));\n    s40 = bootup_27E8_func_04C678(0, (s32)((char *)&D_00000000 + 0x7398));\n    g = bootup_27E8_func_050E80(0);\n    g = *(BootupObjectBase **)&bootup_27E8_singleton_storage = g;\n    bootup_27E8_func_07ACE0((char *)s4C + 0x10, g);\n    if (g->field_14) g->field_04 = 1;\n    g->field_14 = s4C;\n    bootup_27E8_func_074840();\n    bootup_27E8_func_002060(scene->field_134, s48, s4C, s3C, s44, s40);\n    bootup_27E8_func_0020A4(scene->field_134);\n    bootup_27E8_func_002080(scene->field_134);\n    bootup_27E8_func_002F90(scene->field_134);\n    m = (int)bootup_27E8_func_0497D0(&bootup_27E8_timer_object);\n    fd = (f32)bootup_27E8_scale1.field_10;\n    bootup_27E8_func_048E7C(&bootup_27E8_ref_739C,\n                  ((f32)(u32)m - (f32)(u32)sv) / fd);\n    sv = (int)bootup_27E8_func_0497D0(&bootup_27E8_timer_object);\n    scene->field_134->field_98 = bootup_27E8_func_006808(scene->field_134, bootup_27E8_func_002014(scene->field_134, a1), a2);\n    m = (int)bootup_27E8_func_0497D0(&bootup_27E8_timer_object);\n    fd = (f32)bootup_27E8_scale2.field_10;\n    bootup_27E8_func_048E7C(&bootup_27E8_ref_73B4,\n                  ((f32)(u32)m - (f32)(u32)sv) / fd);\n    sv = (int)bootup_27E8_func_0497D0(&bootup_27E8_timer_object);\n    bootup_27E8_func_002DA4(scene->field_134, a2, a3);\n    m = (int)bootup_27E8_func_0497D0(&bootup_27E8_timer_object);\n    fd = (f32)bootup_27E8_scale3.field_10;\n    bootup_27E8_func_048E7C(&bootup_27E8_ref_73CC,\n                  ((f32)(u32)m - (f32)(u32)sv) / fd);\n    p = (char *)s48 + 0x10;\n    bootup_27E8_func_07ACE0(p, s44);\n    if (s44->field_14) s44->field_04 = 1;\n    s44->field_14 = s48;\n    bootup_27E8_func_07ACE0(p, s40);\n    if (s40->field_14) s40->field_04 = 1;\n    s40->field_14 = s48;\n    bootup_27E8_func_074840();\n    p = (char *)s3C + 0x10;\n    bootup_27E8_func_07ACE0(p, s4C);\n    if (s4C->field_14) s4C->field_04 = 1;\n    s4C->field_14 = s3C;\n    bootup_27E8_func_07ACE0(p, s48);\n    if (s48->field_14) s48->field_04 = 1;\n    s48->field_14 = s3C;\n    return s3C;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Constructs and configures a scene hierarchy, links child objects and parent references, and profiles three setup intervals. A bootup/title-screen role is plausible; the precise screen and descriptor meanings remain unproved.",
+      "observed_abi": "O32: a0=scene pointer, a1=list index, a2=mode/command word, a3=opaque forwarded 32-bit value. Inputs are homed at sp+0x50/54/58/5C; frame size is 0x50. Returns in v0 the first object created at 0x28A8, saved at sp+0x3C. C uses BootupSceneSetup* and BootupObjectBase*; original typedef names remain unknown.",
+      "calls": [
+        {
+          "site": "0x2804",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "c_alias": "bootup_27E8_func_0497D0",
+          "observed_abi": "a0=timer object; v0=count interpreted as u32."
+        },
+        {
+          "site": "0x2824",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000600A4",
+          "c_alias": "bootup_27E8_func_074710",
+          "observed_abi": "a0=descriptor reference +0x7328, a1=0; result ignored."
+        },
+        {
+          "site": "0x2838",
+          "target": "src/bootup_uso/bootup_uso_o0_118E4:func_000118E4 (bootup_uso Text+0x0118E4)",
+          "c_alias": "bootup_27E8_func_0118E4",
+          "observed_abi": "a0=registration context, a1=descriptor reference +0x7334; result ignored."
+        },
+        {
+          "site": "0x2848",
+          "target": "src/bootup_uso/bootup_uso:func_00002C94 (bootup_uso Text+0x002C94)",
+          "c_alias": "bootup_27E8_func_002C94",
+          "observed_abi": "a0=scene->field_134 container, a1=input a2; result ignored."
+        },
+        {
+          "site": "0x2858",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000600A4",
+          "c_alias": "bootup_27E8_func_074710",
+          "observed_abi": "a0=descriptor reference +0x7344, a1=0; result ignored."
+        },
+        {
+          "site": "0x286C",
+          "target": "src/bootup_uso/bootup_uso_o0_118E4:func_000118E4 (bootup_uso Text+0x0118E4)",
+          "c_alias": "bootup_27E8_func_0118E4",
+          "observed_abi": "a0=registration context, a1=descriptor reference +0x7350; result ignored."
+        },
+        {
+          "site": "0x2880",
+          "target": "src/bootup_uso/bootup_uso_o0_118E4:func_000118E4 (bootup_uso Text+0x0118E4)",
+          "c_alias": "bootup_27E8_func_0118E4",
+          "observed_abi": "a0=registration context, a1=descriptor reference +0x7360; result ignored."
+        },
+        {
+          "site": "0x2888",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000601DC",
+          "c_alias": "bootup_27E8_func_074840",
+          "observed_abi": "No explicit argument setup; v0 result ignored. Related body ends a profiling record."
+        },
+        {
+          "site": "0x2898",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000600A4",
+          "c_alias": "bootup_27E8_func_074710",
+          "observed_abi": "a0=descriptor reference +0x7374, a1=0; result ignored."
+        },
+        {
+          "site": "0x28A8",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "c_alias": "bootup_27E8_func_04C678",
+          "observed_abi": "a0=0, a1=descriptor reference +0x7380; v0=object pointer saved as s3C and eventually returned."
+        },
+        {
+          "site": "0x28BC",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "c_alias": "bootup_27E8_func_04C678",
+          "observed_abi": "a0=0, a1=descriptor reference +0x738C; v0=object pointer saved as s4C."
+        },
+        {
+          "site": "0x28D0",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "c_alias": "bootup_27E8_func_04C678",
+          "observed_abi": "a0=0, a1=descriptor reference +0x7390; v0=object pointer saved as s48."
+        },
+        {
+          "site": "0x28E4",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "c_alias": "bootup_27E8_func_04C678",
+          "observed_abi": "a0=0, a1=descriptor reference +0x7394; v0=object pointer saved as s44."
+        },
+        {
+          "site": "0x28F8",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "c_alias": "bootup_27E8_func_04C678",
+          "observed_abi": "a0=0, a1=descriptor reference +0x7398; v0=object pointer saved as s40."
+        },
+        {
+          "site": "0x2904",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003C814",
+          "c_alias": "bootup_27E8_func_050E80",
+          "observed_abi": "a0=0; v0=object pointer stored in singleton storage and linked beneath s4C."
+        },
+        {
+          "site": "0x2924",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "bootup_27E8_func_07ACE0",
+          "observed_abi": "a0=s4C+0x10 list head, a1=g child; result ignored."
+        },
+        {
+          "site": "0x2944",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000601DC",
+          "c_alias": "bootup_27E8_func_074840",
+          "observed_abi": "No explicit argument setup; result ignored."
+        },
+        {
+          "site": "0x296C",
+          "target": "src/bootup_uso/bootup_uso:func_00002060 (bootup_uso Text+0x002060)",
+          "c_alias": "bootup_27E8_func_002060",
+          "observed_abi": "a0=container, a1=s48, a2=s4C, a3=s3C, stack+0x10=s44, stack+0x14=s40; result ignored."
+        },
+        {
+          "site": "0x2978",
+          "target": "src/bootup_uso/bootup_uso:func_000020A4 (bootup_uso Text+0x0020A4)",
+          "c_alias": "bootup_27E8_func_0020A4",
+          "observed_abi": "a0=container; callee clears word +0xC0; result ignored."
+        },
+        {
+          "site": "0x2984",
+          "target": "src/bootup_uso/bootup_uso:func_00002080 (bootup_uso Text+0x002080)",
+          "c_alias": "bootup_27E8_func_002080",
+          "observed_abi": "a0=container; callee clears word +0x104; result ignored."
+        },
+        {
+          "site": "0x2990",
+          "target": "src/bootup_uso/bootup_uso:func_00002F90 (bootup_uso Text+0x002F90)",
+          "c_alias": "bootup_27E8_func_002F90",
+          "observed_abi": "a0=container; builds child objects in fields starting +0x90; result ignored."
+        },
+        {
+          "site": "0x299C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "c_alias": "bootup_27E8_func_0497D0",
+          "observed_abi": "a0=timer object; v0=ending count interpreted as u32."
+        },
+        {
+          "site": "0x2A20",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "c_alias": "bootup_27E8_func_048E7C",
+          "observed_abi": "a0=report reference +0x739C; aligned a2:a3 carries normalized float ratio promoted to double. a1 is an alignment hole; result ignored."
+        },
+        {
+          "site": "0x2A2C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "c_alias": "bootup_27E8_func_0497D0",
+          "observed_abi": "a0=timer object; v0=starting count interpreted as u32."
+        },
+        {
+          "site": "0x2A40",
+          "target": "src/bootup_uso/bootup_uso:func_00002014 (bootup_uso Text+0x002014)",
+          "c_alias": "bootup_27E8_func_002014",
+          "observed_abi": "a0=container, a1=input index; v0=node pointer reached through +0x70 then +0x44 links."
+        },
+        {
+          "site": "0x2A54",
+          "target": "src/bootup_uso/bootup_uso:func_00006808 (bootup_uso Text+0x006808)",
+          "c_alias": "bootup_27E8_func_006808",
+          "observed_abi": "a0=container, a1=returned node, a2=input mode; v0=constructed object stored to container+0x98."
+        },
+        {
+          "site": "0x2A6C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "c_alias": "bootup_27E8_func_0497D0",
+          "observed_abi": "a0=timer object; v0=ending count. Delay slot stores the preceding constructor result to container+0x98."
+        },
+        {
+          "site": "0x2AF0",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "c_alias": "bootup_27E8_func_048E7C",
+          "observed_abi": "a0=report reference +0x73B4; a2:a3=normalized ratio promoted to double; result ignored."
+        },
+        {
+          "site": "0x2AFC",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "c_alias": "bootup_27E8_func_0497D0",
+          "observed_abi": "a0=timer object; v0=starting count interpreted as u32."
+        },
+        {
+          "site": "0x2B14",
+          "target": "src/bootup_uso/bootup_uso:func_00002DA4 (bootup_uso Text+0x002DA4)",
+          "c_alias": "bootup_27E8_func_002DA4",
+          "observed_abi": "a0=container, a1=input mode a2, a2=opaque input a3; result ignored."
+        },
+        {
+          "site": "0x2B20",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "c_alias": "bootup_27E8_func_0497D0",
+          "observed_abi": "a0=timer object; v0=ending count interpreted as u32."
+        },
+        {
+          "site": "0x2BA4",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "c_alias": "bootup_27E8_func_048E7C",
+          "observed_abi": "a0=report reference +0x73CC; a2:a3=normalized ratio promoted to double; result ignored."
+        },
+        {
+          "site": "0x2BB8",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "bootup_27E8_func_07ACE0",
+          "observed_abi": "a0=s48+0x10 list head, a1=s44 child; result ignored."
+        },
+        {
+          "site": "0x2BE8",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "bootup_27E8_func_07ACE0",
+          "observed_abi": "a0=s48+0x10 list head, a1=s40 child; result ignored."
+        },
+        {
+          "site": "0x2C10",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000601DC",
+          "c_alias": "bootup_27E8_func_074840",
+          "observed_abi": "No explicit argument setup; result ignored."
+        },
+        {
+          "site": "0x2C24",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "bootup_27E8_func_07ACE0",
+          "observed_abi": "a0=s3C+0x10 list head, a1=s4C child; result ignored."
+        },
+        {
+          "site": "0x2C54",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "bootup_27E8_func_07ACE0",
+          "observed_abi": "a0=s3C+0x10 list head, a1=s48 child; result ignored."
+        }
+      ],
+      "evidence": [
+        "Original span 0x27E8..0x2C94 contains one complete function: 299 instructions, 37 JAL sites and one epilogue. Every recovered call identity is retained; no supplied callsite is unresolved.",
+        "Both compiled C bodies match immutable expected bytes, SHA256 ea4a02da95b2c86a8639fa8bda1d8ce6c598610531d2fdac669ff59877c01335. Current source SHA256 is 9590de05a18f3c038ed99a728581a7bcbd734eafa43929d62ec009cf4b021904.",
+        "Complete ROM is byte-identical to baserom, MD5 fa27089c425dbab99f19245c5c997613. Six compressed-block checks passed; 191 pre-edit raw-exact functions in this unit have no regression in either final build.",
+        "Inspected callers gl_func_00008E48, gl_func_00008FFC, gl_func_00009100, gl_func_00009204 and gl_func_000092F4 in game_libs_mid.c. They append the returned object and write its +0x14 reference.",
+        "Inspected layout family func_00002014, func_00002060, func_00002080, func_000020A4, func_00002DA4, func_00002F90 and func_00006808, plus gl_func_0003800C and gl_func_00066674. Extended existing shared BootupObjectBase and BootupDescriptorList definitions within the assigned source, preserving their prior offsets and sizes.",
+        "Observed fields: scene+0x3C stores mode; scene+0x134 points to the container. Base+0x10 supplies list storage, +0x14 holds a parent/back reference, and +0x04 becomes 1 when the previous +0x14 was nonzero. Container+0x7C/80/84/88/8C receive object pointers; +0x90/94 hold related children; +0x98 receives func_00006808's result.",
+        "Corrected handle order for func_00002060, constructor-result storage before the clock read at 0x2A6C, and the missing profiling-end call at 0x2C10. Chained singleton/local assignment reproduces the held-v1 store and subsequent a1 reload.",
+        "Original TextReloc identities distinguish timer object symbol 73=import_0005C6E0, registration context 272=import_000200FC, singleton storage 246=import_0001FFB0, timing-scale base 154=import_0005C108 with addend +0x20C, and descriptor base 2=D_00653C.",
+        "All 34 new alias equations passed the scope/value check. Call aliases resolve to zero; data aliases reuse immutable expected symbol values. Experiments, m2c output and verification logs are retained under build/orchestration-scratch/27E8/. Pinned reference hashes and git diff --check passed.",
+        "Coordinator type consolidation: Retrospective shared-type consolidation of func_000027E8: existing C still matches all 1196 expected bytes in normal and NON_MATCHING builds. ROM and all six compressed blocks were verified. No new generation or matched-code gain is attributed to this sibling update.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Base+0x04 is a hierarchy change flag and base+0x14 is the parent link.",
+        "The normalized ratios report durations of three setup phases.",
+        "The hierarchy serves bootup/title-screen UI."
+      ],
+      "unknowns": [
+        "Original typedef names, descriptor payload meanings, timing units and the precise interpretation of input a3 remain unknown.",
+        "Ignored results do not prove original void returns. Several imports retain unspecified-argument declarations; the append import's void declaration models discarded output.",
+        "There are no indirect calls in this function or unresolved supplied callsites. Indirect/import coverage elsewhere in the family remains incomplete; zero alias values alone establish no identities.",
+        "Objdiff symbol-name comparisons differ because recovered aliases replace collapsed relocation names. Exactness was verified through instruction bytes and the complete ROM.",
+        "Canonical episode creation remains coordinator-owned under the worker's source/alias-only authorization.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_000027E8.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_mid:gl_func_00008E48",
+        "src/game_libs/game_libs_mid:gl_func_00008FFC",
+        "src/game_libs/game_libs_mid:gl_func_00009100",
+        "src/game_libs/game_libs_mid:gl_func_00009204",
+        "src/game_libs/game_libs_mid:gl_func_000092F4"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "kind": "relocation",
+          "site": 10244,
+          "identity": "func_0497D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 277,
+          "cached_first_reference": "func_0497D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000600A4",
+          "kind": "relocation",
+          "site": 10276,
+          "identity": "func_074710",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 278,
+          "cached_first_reference": "func_074710",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso_o0_118E4:func_000118E4",
+          "kind": "relocation",
+          "site": 10296,
+          "identity": "func_0118E4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 279,
+          "cached_first_reference": "func_0118E4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00002C94",
+          "kind": "relocation",
+          "site": 10312,
+          "identity": "func_002C94",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 280,
+          "cached_first_reference": "func_002C94",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000600A4",
+          "kind": "relocation",
+          "site": 10328,
+          "identity": "func_074710",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 278,
+          "cached_first_reference": "func_074710",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso_o0_118E4:func_000118E4",
+          "kind": "relocation",
+          "site": 10348,
+          "identity": "func_0118E4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 279,
+          "cached_first_reference": "func_0118E4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso_o0_118E4:func_000118E4",
+          "kind": "relocation",
+          "site": 10368,
+          "identity": "func_0118E4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 279,
+          "cached_first_reference": "func_0118E4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000601DC",
+          "kind": "relocation",
+          "site": 10376,
+          "identity": "func_074840",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 281,
+          "cached_first_reference": "func_074840",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000600A4",
+          "kind": "relocation",
+          "site": 10392,
+          "identity": "func_074710",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 278,
+          "cached_first_reference": "func_074710",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "kind": "relocation",
+          "site": 10408,
+          "identity": "func_04C678",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 153,
+          "cached_first_reference": "func_04C678",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "kind": "relocation",
+          "site": 10428,
+          "identity": "func_04C678",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 153,
+          "cached_first_reference": "func_04C678",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "kind": "relocation",
+          "site": 10448,
+          "identity": "func_04C678",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 153,
+          "cached_first_reference": "func_04C678",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "kind": "relocation",
+          "site": 10468,
+          "identity": "func_04C678",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 153,
+          "cached_first_reference": "func_04C678",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "kind": "relocation",
+          "site": 10488,
+          "identity": "func_04C678",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 153,
+          "cached_first_reference": "func_04C678",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003C814",
+          "kind": "relocation",
+          "site": 10500,
+          "identity": "func_050E80",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 282,
+          "cached_first_reference": "func_050E80",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 10532,
+          "identity": "func_07ACE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 144,
+          "cached_first_reference": "func_07ACE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000601DC",
+          "kind": "relocation",
+          "site": 10564,
+          "identity": "func_074840",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 281,
+          "cached_first_reference": "func_074840",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00002060",
+          "kind": "relocation",
+          "site": 10604,
+          "identity": "func_002060",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 239,
+          "cached_first_reference": "func_002060",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_000020A4",
+          "kind": "relocation",
+          "site": 10616,
+          "identity": "func_0020A4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 242,
+          "cached_first_reference": "func_0020A4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00002080",
+          "kind": "relocation",
+          "site": 10628,
+          "identity": "func_002080",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 240,
+          "cached_first_reference": "func_002080",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00002F90",
+          "kind": "relocation",
+          "site": 10640,
+          "identity": "func_002F90",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 283,
+          "cached_first_reference": "func_002F90",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "kind": "relocation",
+          "site": 10652,
+          "identity": "func_0497D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 277,
+          "cached_first_reference": "func_0497D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 10784,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "kind": "relocation",
+          "site": 10796,
+          "identity": "func_0497D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 277,
+          "cached_first_reference": "func_0497D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00002014",
+          "kind": "relocation",
+          "site": 10816,
+          "identity": "func_002014",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 238,
+          "cached_first_reference": "func_002014",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00006808",
+          "kind": "relocation",
+          "site": 10836,
+          "identity": "func_006808",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 284,
+          "cached_first_reference": "func_006808",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "kind": "relocation",
+          "site": 10860,
+          "identity": "func_0497D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 277,
+          "cached_first_reference": "func_0497D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 10992,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "kind": "relocation",
+          "site": 11004,
+          "identity": "func_0497D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 277,
+          "cached_first_reference": "func_0497D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00002DA4",
+          "kind": "relocation",
+          "site": 11028,
+          "identity": "func_002DA4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 285,
+          "cached_first_reference": "func_002DA4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035164",
+          "kind": "relocation",
+          "site": 11040,
+          "identity": "func_0497D0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 277,
+          "cached_first_reference": "func_0497D0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 11172,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 11192,
+          "identity": "func_07ACE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 144,
+          "cached_first_reference": "func_07ACE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 11240,
+          "identity": "func_07ACE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 144,
+          "cached_first_reference": "func_07ACE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000601DC",
+          "kind": "relocation",
+          "site": 11280,
+          "identity": "func_074840",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 281,
+          "cached_first_reference": "func_074840",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 11300,
+          "identity": "func_07ACE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 144,
+          "cached_first_reference": "func_07ACE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 11348,
+          "identity": "func_07ACE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_000027E8.s",
+          "sym_index": 144,
+          "cached_first_reference": "func_07ACE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "source_sha256": "39532ee29b70c60d8359ffb22db61f2623cbe6973decfbadddb3f034469a9ad1",
+    "implementation_path": "src/match_imports/func_000027E8.c",
+    "implementation_sha256": "8dc92d60c2e07d43a20f20978c8a5d213867fb2f23a83e8c28ca73061db8d7f7",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 28,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0497D0",
+          "original_identity": "bootup_uso:symbol_277:addend_0x0",
+          "original_site": 10244,
+          "payload_site": 10244,
+          "original_symbol_index": 277,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 60,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_074710",
+          "original_identity": "bootup_uso:symbol_278:addend_0x0",
+          "original_site": 10276,
+          "payload_site": 10276,
+          "original_symbol_index": 278,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 80,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0118E4",
+          "original_identity": "bootup_uso:symbol_279:addend_0x0",
+          "original_site": 10296,
+          "payload_site": 10296,
+          "original_symbol_index": 279,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 96,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_002C94",
+          "original_identity": "bootup_uso:symbol_280:addend_0x0",
+          "original_site": 10312,
+          "payload_site": 10312,
+          "original_symbol_index": 280,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 112,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_074710",
+          "original_identity": "bootup_uso:symbol_278:addend_0x0",
+          "original_site": 10328,
+          "payload_site": 10328,
+          "original_symbol_index": 278,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 132,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0118E4",
+          "original_identity": "bootup_uso:symbol_279:addend_0x0",
+          "original_site": 10348,
+          "payload_site": 10348,
+          "original_symbol_index": 279,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 152,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0118E4",
+          "original_identity": "bootup_uso:symbol_279:addend_0x0",
+          "original_site": 10368,
+          "payload_site": 10368,
+          "original_symbol_index": 279,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 160,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_074840",
+          "original_identity": "bootup_uso:symbol_281:addend_0x0",
+          "original_site": 10376,
+          "payload_site": 10376,
+          "original_symbol_index": 281,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 176,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_074710",
+          "original_identity": "bootup_uso:symbol_278:addend_0x0",
+          "original_site": 10392,
+          "payload_site": 10392,
+          "original_symbol_index": 278,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 192,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_04C678",
+          "original_identity": "bootup_uso:symbol_153:addend_0x0",
+          "original_site": 10408,
+          "payload_site": 10408,
+          "original_symbol_index": 153,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 212,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_04C678",
+          "original_identity": "bootup_uso:symbol_153:addend_0x0",
+          "original_site": 10428,
+          "payload_site": 10428,
+          "original_symbol_index": 153,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 232,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_04C678",
+          "original_identity": "bootup_uso:symbol_153:addend_0x0",
+          "original_site": 10448,
+          "payload_site": 10448,
+          "original_symbol_index": 153,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 252,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_04C678",
+          "original_identity": "bootup_uso:symbol_153:addend_0x0",
+          "original_site": 10468,
+          "payload_site": 10468,
+          "original_symbol_index": 153,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 272,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_04C678",
+          "original_identity": "bootup_uso:symbol_153:addend_0x0",
+          "original_site": 10488,
+          "payload_site": 10488,
+          "original_symbol_index": 153,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 284,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_050E80",
+          "original_identity": "bootup_uso:symbol_282:addend_0x0",
+          "original_site": 10500,
+          "payload_site": 10500,
+          "original_symbol_index": 282,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 316,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_07ACE0",
+          "original_identity": "bootup_uso:symbol_144:addend_0x0",
+          "original_site": 10532,
+          "payload_site": 10532,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 348,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_074840",
+          "original_identity": "bootup_uso:symbol_281:addend_0x0",
+          "original_site": 10564,
+          "payload_site": 10564,
+          "original_symbol_index": 281,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 388,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_002060",
+          "original_identity": "bootup_uso:symbol_239:addend_0x0",
+          "original_site": 10604,
+          "payload_site": 10604,
+          "original_symbol_index": 239,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 400,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0020A4",
+          "original_identity": "bootup_uso:symbol_242:addend_0x0",
+          "original_site": 10616,
+          "payload_site": 10616,
+          "original_symbol_index": 242,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 412,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_002080",
+          "original_identity": "bootup_uso:symbol_240:addend_0x0",
+          "original_site": 10628,
+          "payload_site": 10628,
+          "original_symbol_index": 240,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 424,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_002F90",
+          "original_identity": "bootup_uso:symbol_283:addend_0x0",
+          "original_site": 10640,
+          "payload_site": 10640,
+          "original_symbol_index": 283,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 436,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0497D0",
+          "original_identity": "bootup_uso:symbol_277:addend_0x0",
+          "original_site": 10652,
+          "payload_site": 10652,
+          "original_symbol_index": 277,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 568,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_048E7C",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 10784,
+          "payload_site": 10784,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 580,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0497D0",
+          "original_identity": "bootup_uso:symbol_277:addend_0x0",
+          "original_site": 10796,
+          "payload_site": 10796,
+          "original_symbol_index": 277,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 600,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_002014",
+          "original_identity": "bootup_uso:symbol_238:addend_0x0",
+          "original_site": 10816,
+          "payload_site": 10816,
+          "original_symbol_index": 238,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 620,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_006808",
+          "original_identity": "bootup_uso:symbol_284:addend_0x0",
+          "original_site": 10836,
+          "payload_site": 10836,
+          "original_symbol_index": 284,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 644,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0497D0",
+          "original_identity": "bootup_uso:symbol_277:addend_0x0",
+          "original_site": 10860,
+          "payload_site": 10860,
+          "original_symbol_index": 277,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 776,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_048E7C",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 10992,
+          "payload_site": 10992,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 788,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0497D0",
+          "original_identity": "bootup_uso:symbol_277:addend_0x0",
+          "original_site": 11004,
+          "payload_site": 11004,
+          "original_symbol_index": 277,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 812,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_002DA4",
+          "original_identity": "bootup_uso:symbol_285:addend_0x0",
+          "original_site": 11028,
+          "payload_site": 11028,
+          "original_symbol_index": 285,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 824,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_0497D0",
+          "original_identity": "bootup_uso:symbol_277:addend_0x0",
+          "original_site": 11040,
+          "payload_site": 11040,
+          "original_symbol_index": 277,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 956,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_048E7C",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 11172,
+          "payload_site": 11172,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 976,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_07ACE0",
+          "original_identity": "bootup_uso:symbol_144:addend_0x0",
+          "original_site": 11192,
+          "payload_site": 11192,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1024,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_07ACE0",
+          "original_identity": "bootup_uso:symbol_144:addend_0x0",
+          "original_site": 11240,
+          "payload_site": 11240,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1064,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_074840",
+          "original_identity": "bootup_uso:symbol_281:addend_0x0",
+          "original_site": 11280,
+          "payload_site": 11280,
+          "original_symbol_index": 281,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1084,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_07ACE0",
+          "original_identity": "bootup_uso:symbol_144:addend_0x0",
+          "original_site": 11300,
+          "payload_site": 11300,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1132,
+          "kind": 4,
+          "symbol": "bootup_27E8_func_07ACE0",
+          "original_identity": "bootup_uso:symbol_144:addend_0x0",
+          "original_site": 11348,
+          "payload_site": 11348,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "ea4a02da95b2c86a8639fa8bda1d8ce6c598610531d2fdac669ff59877c01335"
+    },
+    "native_data_proof": [
+      {
+        "alias": "bootup_27E8_timer_object",
+        "hi": 12,
+        "lo": 32,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_ref_7328",
+        "hi": 48,
+        "lo": 52,
+        "native_addend": 0,
+        "original_addend": 29480,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7328"
+      },
+      {
+        "alias": "bootup_27E8_ref_7334",
+        "hi": 72,
+        "lo": 76,
+        "native_addend": 0,
+        "original_addend": 29492,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7334"
+      },
+      {
+        "alias": "bootup_27E8_registration_context",
+        "hi": 68,
+        "lo": 84,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_ref_7344",
+        "hi": 104,
+        "lo": 108,
+        "native_addend": 0,
+        "original_addend": 29508,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7344"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 124,
+        "lo": 128,
+        "native_addend": 29520,
+        "original_addend": 29520,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_registration_context",
+        "hi": 120,
+        "lo": 136,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_ref_7360",
+        "hi": 144,
+        "lo": 148,
+        "native_addend": 0,
+        "original_addend": 29536,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7360"
+      },
+      {
+        "alias": "bootup_27E8_registration_context",
+        "hi": 140,
+        "lo": 156,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_ref_7374",
+        "hi": 168,
+        "lo": 172,
+        "native_addend": 0,
+        "original_addend": 29556,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7374"
+      },
+      {
+        "alias": "bootup_27E8_ref_7380",
+        "hi": 184,
+        "lo": 188,
+        "native_addend": 0,
+        "original_addend": 29568,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7380"
+      },
+      {
+        "alias": "bootup_27E8_ref_738C",
+        "hi": 200,
+        "lo": 208,
+        "native_addend": 0,
+        "original_addend": 29580,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x738c"
+      },
+      {
+        "alias": "bootup_27E8_ref_7390",
+        "hi": 220,
+        "lo": 228,
+        "native_addend": 0,
+        "original_addend": 29584,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7390"
+      },
+      {
+        "alias": "bootup_27E8_ref_7394",
+        "hi": 240,
+        "lo": 248,
+        "native_addend": 0,
+        "original_addend": 29588,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7394"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 260,
+        "lo": 268,
+        "native_addend": 29592,
+        "original_addend": 29592,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_singleton_storage",
+        "hi": 296,
+        "lo": 300,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_246:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_timer_object",
+        "hi": 432,
+        "lo": 440,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_scale1",
+        "hi": 444,
+        "lo": 448,
+        "native_addend": 16,
+        "original_addend": 524,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x1fc"
+      },
+      {
+        "alias": "bootup_27E8_ref_739C",
+        "hi": 456,
+        "lo": 492,
+        "native_addend": 0,
+        "original_addend": 29596,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x739c"
+      },
+      {
+        "alias": "bootup_27E8_timer_object",
+        "hi": 576,
+        "lo": 584,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_timer_object",
+        "hi": 632,
+        "lo": 636,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_scale2",
+        "hi": 652,
+        "lo": 656,
+        "native_addend": 16,
+        "original_addend": 524,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x1fc"
+      },
+      {
+        "alias": "bootup_27E8_ref_73B4",
+        "hi": 664,
+        "lo": 700,
+        "native_addend": 0,
+        "original_addend": 29620,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x73b4"
+      },
+      {
+        "alias": "bootup_27E8_timer_object",
+        "hi": 784,
+        "lo": 792,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_timer_object",
+        "hi": 820,
+        "lo": 828,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_27E8_scale3",
+        "hi": 832,
+        "lo": 836,
+        "native_addend": 16,
+        "original_addend": 524,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x1fc"
+      },
+      {
+        "alias": "bootup_27E8_ref_73CC",
+        "hi": 844,
+        "lo": 880,
+        "native_addend": 0,
+        "original_addend": 29644,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x73cc"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_000027E8.json",
+      "nm": "scripts/match-bindings-func_000027E8-nm.json"
+    },
+    "source_context": "src/match_imports/context_bootup_uso.h",
+    "source_context_sha256": "456278d1b612f3c36ee3fe3165e87f5c4025cebf314c79aebe05b95ecbb72a08",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/bootup_uso/bootup_uso.c",
+    "original_local_episode_sha256": "e3492dae5853e8c2674bb6ce3b970a2f57768c9c566fdadf84204a7fb63376c1",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "function": "gl_func_00036224",
+  "raw_sha256": "30ded414705351d62ec97ef45a58da7454032993a37c48d633871f084ae28321",
+  "renames": {
+    "gl_36224_direction": "snw_port_gl_func_00036224_gl_36224_direction",
+    "gl_36224_matrix": "snw_port_gl_func_00036224_gl_36224_matrix",
+    "gl_36224_between": "snw_port_gl_func_00036224_gl_36224_between",
+    "gl_36224_product": "snw_port_gl_func_00036224_gl_36224_product",
+    "gl_36224_conjugate": "snw_port_gl_func_00036224_gl_36224_conjugate",
+    "gl_36224_rotation": "snw_port_gl_func_00036224_gl_36224_rotation",
+    "gl_36224_translate": "snw_port_gl_func_00036224_gl_36224_translate"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00036224_gl_36224_direction": 0,
+    "snw_port_gl_func_00036224_gl_36224_matrix": 0,
+    "snw_port_gl_func_00036224_gl_36224_between": 0,
+    "snw_port_gl_func_00036224_gl_36224_product": 0,
+    "snw_port_gl_func_00036224_gl_36224_conjugate": 0,
+    "snw_port_gl_func_00036224_gl_36224_rotation": 0,
+    "snw_port_gl_func_00036224_gl_36224_translate": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

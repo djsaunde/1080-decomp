@@ -1,0 +1,416 @@
+{
+  "function_name": "gl_func_00030A20",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.805882+00:00",
+  "end_time": "2026-10-23T11:55:25.805894+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.805890+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00030A20",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 212, \"native_sha256\": \"140cf70032dec17f9c08d41153d99cc612adcf205ab5002752aa78527d07997c\", \"code_gain\": 212}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 53,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00030A20(s32 arg0,s32 arg1) {\n s32 temp_v0;\n gl_30A20_pair(arg0,arg1);\n gl_30A20_slot1435=arg0;\n gl_30A20_slot1436=arg1;\n gl_30A20_set(0xF);\n temp_v0=gl_30A20_gate1432;\n if(temp_v0==0 || temp_v0==4) {\n  if(arg0>=5) gl_30A20_clear(gl_30A20_slot1435+0x29);\n  else gl_30A20_clear(gl_30A20_slot1435+4);\n  gl_30A20_clear(0xE);\n  if(arg1>=5) {\n   gl_30A20_clear(gl_30A20_slot1436+0x29);\n   return;\n  }\n  gl_30A20_clear(gl_30A20_slot1436+4);\n }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Register two incoming words, publish separate slots before selecting mode15, and conditionally clear commands based on the stored gate and signed incoming thresholds.",
+      "observed_abi": "Two s32 incomingargs retainedinhomes. Original2DEF4 consumesbotha0/a1 (SLLa0*8+ADDUa1 thenpackedcommand). Publisharg0Import1435 andarg1Import1436 BEFORE316CC(15); helpermayread/mutatethese. GateData1432 readaftercall; only0/4execute. Signedincomingarg>=5 choosesoffset41or4 appliedtoRELOADEDunsignedwordslot1435/1436. Five31710calls includeunconditional14betweenfirst/seconddispatch. Ignoredhelperreturns do not establish originalvoid; voidsourceprojection follows existingcalleedecls. uint32slots expressobservedwordwrap; no newsourceownership/APIclaims.",
+      "calls": [
+        {
+          "site": "0x30a2c",
+          "target": "Text+0x42560",
+          "c_alias": "gl_30A20_pair",
+          "observed_abi": "Two consumed incomingwords a0/a1; game_libs2DEF4 shiftsfirst andaddssecond beforepack."
+        },
+        {
+          "site": "0x30a4c",
+          "target": "Text+0x45d38",
+          "c_alias": "gl_30A20_set",
+          "observed_abi": "a0=15; bothglobals already published beforecall."
+        },
+        {
+          "site": "0x30a88",
+          "target": "Text+0x45d7c",
+          "c_alias": "gl_30A20_clear",
+          "observed_abi": "a0int code14 or reloadedwordslot+41/+4; ignoredreturnunknown."
+        },
+        {
+          "site": "0x30a9c",
+          "target": "Text+0x45d7c",
+          "c_alias": "gl_30A20_clear",
+          "observed_abi": "a0int code14 or reloadedwordslot+41/+4; ignoredreturnunknown."
+        },
+        {
+          "site": "0x30aa4",
+          "target": "Text+0x45d7c",
+          "c_alias": "gl_30A20_clear",
+          "observed_abi": "a0int code14 or reloadedwordslot+41/+4; ignoredreturnunknown."
+        },
+        {
+          "site": "0x30ac8",
+          "target": "Text+0x45d7c",
+          "c_alias": "gl_30A20_clear",
+          "observed_abi": "a0int code14 or reloadedwordslot+41/+4; ignoredreturnunknown."
+        },
+        {
+          "site": "0x30adc",
+          "target": "Text+0x45d7c",
+          "c_alias": "gl_30A20_clear",
+          "observed_abi": "a0int code14 or reloadedwordslot+41/+4; ignoredreturnunknown."
+        }
+      ],
+      "evidence": [
+        "Immutable212B[30A20,30AF4) equalsROM[E15AF8,E15BCC).19originalUSOsites/7JALs and38normal/NM ELFsites preserveImport1435/1436,Data1432 andText1456/1472/1475 identities/addend0 via sixuniquezeroaliases. Threehelperbodies60/68/68B ROM-equal. Original2DEF4 consumesbothargs;316CC and31710 consumeeacha0. All recordedexternalentries audited; unknownrawinteriors remainunknown.",
+        "Two stockCFE: baseline196B44w126; actual3globalidentities+bothpairargs+arg1storeBEFORE316CC yields212B0w0. No register/declaration/frame/LOC/FPpermutations, forcing/padding/flags changes. Two diagnostics stock-raw equivalent; actualGhidra/m2c saved. Historical four-global/CSE story refuted: arg0slot andheldbase bothsameImport1435, notfouridentities. Wordslotsuint32 preserve observedADDIUwrap; incomingargs/gatesigned, 0or4 gate exactlyretained.",
+        "4800 original/normal/NM MIPSinstruction runs against1600 independent integer models pass. OriginalHI/LO identities bound to three synthetic addresses only in testexecutioncopies; productionraw acceptance unchanged. Pairhook consumesbothargs andclobberscallers; mode15hook verifiesbothglobals beforemutating them. Clearhooks mutatebetweenfirst/14/last dispatches, requiringreloads. Signedthreshold casesMIN,-1,0,4,5,6,MAX; gates0/4/others andu32wrapping additions. Verifytraces/publicationorder/RAMguards/SP/RA/callee-saved/fullphysicalmode states. SixstockO32word/signedness/wrap assertions pass.",
+        "Original normal/NM builds, raw212, byte-identicalROM/sixblocks, progress+212to434840/762344, exact/priorfamily gates and120explicitmodechecks pass including57194both136/62F08both80/5BD80both64/3695Cboth236. Strict6605unassignedmodebodiesidentical,5751rawexpectedbefore; no context exception/clip/header/helper/ASM/expected/linker/flags changes.7030canonicalpreimages unchanged. Onlyfunction/privatealiases andcanonicalretrospectiveEpisode proposed.",
+        "First semantics-runner parse rejected a missing space before numeric else operand beforeexecution; corrected and rerun4800cases, rejection preserved. No product/code/gate workaround. OriginalEpisode records actual preservedm2c/probes and fresh verification retrospectively, no inventedtiming/token usage.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Paired slots and selector/clear helpers indicate command/state registration; complete systemprotocol/source names notproved."
+      ],
+      "unknowns": [
+        "Complete helperAPI/return/sideeffect/system protocol unknown beyondoriginalwordconsumption; opaquehooks used for callervalidation.",
+        "Runtime importedslotaddresses unresolved; original symbolidentities/addend0 maintained separately fromzeroaliases.",
+        "No unrecordedrawinteriorentries/concurrency/invalidmemory claim.",
+        "Semantichooks validatecaller underadversarialmutations, not complete helperexecution or engineprotocol.",
+        "Original four-global/comment also placedarg1storeafterhelper; bothhistoricalclaims superseded by originalUSO/ROM.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00030A20.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_0000027C"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post:game_libs_func_0002DEF4",
+          "kind": "relocation",
+          "site": 282776,
+          "identity": "func_042560",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1456,
+          "cached_first_reference": "func_042560",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_000316CC",
+          "kind": "relocation",
+          "site": 282808,
+          "identity": "func_045D38",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1472,
+          "cached_first_reference": "func_045D38",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00031710",
+          "kind": "relocation",
+          "site": 282868,
+          "identity": "func_045D7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1475,
+          "cached_first_reference": "func_045D7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00031710",
+          "kind": "relocation",
+          "site": 282888,
+          "identity": "func_045D7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1475,
+          "cached_first_reference": "func_045D7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00031710",
+          "kind": "relocation",
+          "site": 282896,
+          "identity": "func_045D7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1475,
+          "cached_first_reference": "func_045D7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00031710",
+          "kind": "relocation",
+          "site": 282932,
+          "identity": "func_045D7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1475,
+          "cached_first_reference": "func_045D7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00031710",
+          "kind": "relocation",
+          "site": 282952,
+          "identity": "func_045D7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00030A20.s",
+          "sym_index": 1475,
+          "cached_first_reference": "func_045D7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/gl_func_00030A20.c",
+    "implementation_sha256": "758d949a384f507a2b1bc3413a207a3b854257132d90cfa04482fc05d7b69eaf",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 12,
+          "kind": 4,
+          "symbol": "gl_30A20_pair",
+          "original_identity": "bootup_uso:symbol_1456:addend_0x0",
+          "original_site": 282776,
+          "payload_site": 282776,
+          "original_symbol_index": 1456,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 44,
+          "kind": 4,
+          "symbol": "gl_30A20_set",
+          "original_identity": "bootup_uso:symbol_1472:addend_0x0",
+          "original_site": 282808,
+          "payload_site": 282808,
+          "original_symbol_index": 1472,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 104,
+          "kind": 4,
+          "symbol": "gl_30A20_clear",
+          "original_identity": "bootup_uso:symbol_1475:addend_0x0",
+          "original_site": 282868,
+          "payload_site": 282868,
+          "original_symbol_index": 1475,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 124,
+          "kind": 4,
+          "symbol": "gl_30A20_clear",
+          "original_identity": "bootup_uso:symbol_1475:addend_0x0",
+          "original_site": 282888,
+          "payload_site": 282888,
+          "original_symbol_index": 1475,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 132,
+          "kind": 4,
+          "symbol": "gl_30A20_clear",
+          "original_identity": "bootup_uso:symbol_1475:addend_0x0",
+          "original_site": 282896,
+          "payload_site": 282896,
+          "original_symbol_index": 1475,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 168,
+          "kind": 4,
+          "symbol": "gl_30A20_clear",
+          "original_identity": "bootup_uso:symbol_1475:addend_0x0",
+          "original_site": 282932,
+          "payload_site": 282932,
+          "original_symbol_index": 1475,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 188,
+          "kind": 4,
+          "symbol": "gl_30A20_clear",
+          "original_identity": "bootup_uso:symbol_1475:addend_0x0",
+          "original_site": 282952,
+          "payload_site": 282952,
+          "original_symbol_index": 1475,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "140cf70032dec17f9c08d41153d99cc612adcf205ab5002752aa78527d07997c"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_30A20_slot1435",
+        "hi": 24,
+        "lo": 32,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1435:base_addend_0x0"
+      },
+      {
+        "alias": "gl_30A20_slot1436",
+        "hi": 36,
+        "lo": 48,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1436:base_addend_0x0"
+      },
+      {
+        "alias": "gl_30A20_gate1432",
+        "hi": 52,
+        "lo": 56,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1432:base_addend_0x0"
+      },
+      {
+        "alias": "gl_30A20_slot1435",
+        "hi": 60,
+        "lo": 64,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1435:base_addend_0x0"
+      },
+      {
+        "alias": "gl_30A20_slot1436",
+        "hi": 144,
+        "lo": 164,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1436:base_addend_0x0"
+      },
+      {
+        "alias": "gl_30A20_slot1436",
+        "hi": 160,
+        "lo": 164,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1436:base_addend_0x0"
+      },
+      {
+        "alias": "gl_30A20_slot1436",
+        "hi": 160,
+        "lo": 184,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1436:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00030A20.json",
+      "nm": "scripts/match-bindings-gl_func_00030A20-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "529fe764da4ccc73ac1787eb07aa9edfbe7ef34d276680acf6a935be12e4b182",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

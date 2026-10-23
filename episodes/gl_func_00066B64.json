@@ -1,0 +1,304 @@
+{
+  "function_name": "gl_func_00066B64",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.146421+00:00",
+  "end_time": "2026-10-23T11:55:26.146435+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.146431+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00066B64",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 112, \"native_sha256\": \"1a8684ed9f95892b486b3673af7ef41b267d04f8889c99951b2ceea20fdc7bac\", \"code_gain\": 112}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 28,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00066B64(int argument) {\n    gl_import_66B64_osInitialize();\n    gl_import_66B64_osCreateThread((char *)&gl_storage_66B64_threadRegion + 0x41310, 1,\n                                 gl_import_66B64_threadEntry, argument,\n                                 (char *)&gl_storage_66B64_threadRegion + 0x415C0, 1);\n    gl_storage_66B64_threadRegion[0x414C0 / 8] = 0x1234567812345678ULL;\n    gl_import_66B64_osStartThread((char *)&gl_storage_66B64_threadRegion + 0x41310);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Initialize the OS, create and start a thread entering gl_func_00066A50, and initialize two stack canaries. The thread's broader application role remains uncertain.",
+      "observed_abi": "One 32-bit incoming a0 is saved at sp+0x20 and forwarded as the fourth osCreateThread argument without dereferencing it. Frame size is 0x20, with ra at sp+0x1C. No deliberate return value is established; the caller ignores the result. The original argument pointerness and wrapper return type remain uncertain.",
+      "calls": [
+        {
+          "site": "0x66B6C",
+          "target": "src/game_libs/game_libs_post1b2c:gl_func_0006C484",
+          "c_alias": "gl_import_66B64_osInitialize",
+          "observed_abi": "Relocation identifies osInitialize. No explicit arguments or consumed result."
+        },
+        {
+          "site": "0x66B9C",
+          "target": "src/game_libs/game_libs_post1b2:gl_func_0006BF34",
+          "c_alias": "gl_import_66B64_osCreateThread",
+          "observed_abi": "Six arguments: storage-base+0x41310, ID 1, entry gl_func_00066A50, original a0, storage-base+0x415C0, priority 1. Arguments five and six occupy sp+0x10 and sp+0x14. Result ignored."
+        },
+        {
+          "site": "0x66BBC",
+          "target": "src/game_libs/game_libs_post2b_e:gl_func_00074C04",
+          "c_alias": "gl_import_66B64_osStartThread",
+          "observed_abi": "a0 points to thread storage at storage-base+0x41310. Result not consumed."
+        }
+      ],
+      "evidence": [
+        "Both C builds produce the immutable expected 112-byte SHA-256: 1a8684ed9f95892b486b3673af7ef41b267d04f8889c99951b2ceea20fdc7bac. Original assembly has one complete function boundary.",
+        "Distinct call aliases retain the supplied relocation identities. Entry relocations at bootup Text 0x7B1EC/0x7B1F8 identify Sym 2442, Text 0x7B0BC, corresponding to gl_func_00066A50.",
+        "Storage relocations identify Sym 4, import_0001FFA0. The new storage alias resolves to zero, reusing immutable expected D_00000000's value. The linked ELF confirms all added aliases are absolute zero.",
+        "Defining the storage view in the translation unit makes IDO share $at across the paired stores, resolving the previous three-word mismatch. Existing linker rules and immutable assets provide storage; no asset or object edits were made.",
+        "Inspected caller gl_func_00066C30, siblings gl_func_00066BD4 and gl_func_00066A50, checker gl_func_00066AF0, and the resolved callees and relevant donor implementations.",
+        "gl_func_00066AF0 checks words at storage offsets 0x414C0 and 0x414C4 against 0x12345678. Thread storage is passed at 0x41310 and stack top at 0x415C0.",
+        "Related thread-layout evidence includes constructor fields at 0x04, 0x08, 0x10, 0x14, 0x38, 0xF0 and 0x11C; osStartThread reads queue at 0x08 and state at 0x10. Related priority/state implementations were inspected. This wrapper does not dereference the thread layout and introduces no independent thread struct.",
+        "Final objects, NON_MATCHING objects, ROM and six-block verification passed. Unit checks preserved 197 previously exact normal functions and 174 previously exact NON_MATCHING functions. The tracked report's 2508 exact functions also remained exact; the code denominator stayed 762344.",
+        "Additive alias and safe-source checks passed. Experiments and verification logs remain under build/orchestration-scratch/attempt-02/.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The paired magic words guard the thread stack, supported by their placement and the sibling checker.",
+        "The original source likely defined the relevant storage locally or used an equivalent definition pattern; the compiler experiment proves the matching mechanism, not the original declaration."
+      ],
+      "unknowns": [
+        "The imported storage base's complete layout and runtime address remain unresolved.",
+        "The storage-view extent is the minimum covering observed uses, not a recovered original allocation size. The u64 assignment emits two 32-bit stores and does not prove an original u64 field.",
+        "No unresolved direct calls appear in the supplied graph. Indirect and missing relocation edges remain coverage limitations.",
+        "Canonical episode creation remains with the coordinator, as required by this isolated worker workflow.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00066B64.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post1b:gl_func_00066C30"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post1b2c:gl_func_0006C484",
+          "kind": "relocation",
+          "site": 504280,
+          "identity": "func_080AF0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066B64.s",
+          "sym_index": 2445,
+          "cached_first_reference": "func_080AF0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b2:gl_func_0006BF34",
+          "kind": "relocation",
+          "site": 504328,
+          "identity": "func_0805A0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066B64.s",
+          "sym_index": 1564,
+          "cached_first_reference": "func_0805A0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post2b_e:gl_func_00074C04",
+          "kind": "relocation",
+          "site": 504360,
+          "identity": "func_089270",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066B64.s",
+          "sym_index": 1565,
+          "cached_first_reference": "func_089270",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "source_sha256": "b4efbb5445b1569ec58be28f5cbc15a03b6b2012dbe9b3389b2db1c0fb357595",
+    "implementation_path": "src/match_imports/gl_func_00066B64.c",
+    "implementation_sha256": "9f2358bf3e2046aaa9362e9ad39ce5c40ea93c9d19f07f02ef05fe7770738b6d",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 8,
+          "kind": 4,
+          "symbol": "gl_import_66B64_osInitialize",
+          "original_identity": "bootup_uso:symbol_2445:addend_0x0",
+          "original_site": 504280,
+          "payload_site": 504280,
+          "original_symbol_index": 2445,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 56,
+          "kind": 4,
+          "symbol": "gl_import_66B64_osCreateThread",
+          "original_identity": "bootup_uso:symbol_1564:addend_0x0",
+          "original_site": 504328,
+          "payload_site": 504328,
+          "original_symbol_index": 1564,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 88,
+          "kind": 4,
+          "symbol": "gl_import_66B64_osStartThread",
+          "original_identity": "bootup_uso:symbol_1565:addend_0x0",
+          "original_site": 504360,
+          "payload_site": 504360,
+          "original_symbol_index": 1565,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "1a8684ed9f95892b486b3673af7ef41b267d04f8889c99951b2ceea20fdc7bac"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 16,
+        "lo": 20,
+        "native_addend": 267712,
+        "original_addend": 267712,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_import_66B64_threadEntry",
+        "hi": 28,
+        "lo": 40,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_2442:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 24,
+        "lo": 44,
+        "native_addend": 267024,
+        "original_addend": 267024,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 72,
+        "lo": 80,
+        "native_addend": 267456,
+        "original_addend": 267456,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 76,
+        "lo": 80,
+        "native_addend": 267456,
+        "original_addend": 267456,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 76,
+        "lo": 84,
+        "native_addend": 267460,
+        "original_addend": 267460,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 76,
+        "lo": 92,
+        "native_addend": 267024,
+        "original_addend": 267024,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00066B64.json",
+      "nm": "scripts/match-bindings-gl_func_00066B64-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post1b.h",
+    "source_context_sha256": "45740ff555773b14044d65f42ccd0c4d27e5da3a2a544f61e5882205112bc573",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post1b.c",
+    "original_local_episode_sha256": "ae56b62b745aaf3f7f37d8ace95f8a3f16d783841bb7000cea44a0d8e720494c",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

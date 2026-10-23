@@ -1,0 +1,266 @@
+{
+  "function_name": "gl_func_00066AF0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.136443+00:00",
+  "end_time": "2026-10-23T11:55:26.136455+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.136451+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00066AF0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 128, \"native_sha256\": \"971d9244587b3f69a5d14682efa9f0973449cca85e0ebc020cab7cc72bc5da45\", \"code_gain\": 128}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 32,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00066AF0(void) {\n    if (gl_storage_66B64_threadRegion[0x3F310 / 8] != 0x1234567812345678ULL) {\n        gl_import_66AF0_report(gl_ro_66AF0 + 0x21BC);\n    }\n    if (gl_storage_66B64_threadRegion[0x414C0 / 8] != 0x1234567812345678ULL) {\n        gl_import_66AF0_report(gl_ro_66AF0 + 0x21D8);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Check two imported memory canaries against 0x1234567812345678 and report mismatches. Likely stack-corruption detection; exact stack names and diagnostic wording remain uncertain.",
+      "observed_abi": "No incoming argument is read. Caller gl_func_00034B64 supplies a0, which is ignored. Frame size is 0x18; ra is saved at sp+0x14. No deliberate return-value assignment is observed. Each diagnostic call establishes only a0 and ignores its result; the void variadic import declaration models caller usage without proving the original return type.",
+      "calls": [
+        {
+          "site": "0x66B18",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "c_alias": "gl_import_66AF0_report",
+          "observed_abi": "a0 = RO_000054 base + 0x21BC; result ignored. Bootup Text+0x7B184 relocation identifies Sym 306, func_075AE4."
+        },
+        {
+          "site": "0x66B4C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "c_alias": "gl_import_66AF0_report",
+          "observed_abi": "a0 = RO_000054 base + 0x21D8; result ignored. Bootup Text+0x7B1B8 relocation identifies Sym 306, func_075AE4."
+        }
+      ],
+      "evidence": [
+        "Immutable function span begins at game_libs Text+0x66AE4, includes the hoisted prologue load, and contains 32 instructions. Both C builds reproduce SHA256 971d9244587b3f69a5d14682efa9f0973449cca85e0ebc020cab7cc72bc5da45.",
+        "Original load relocations identify Sym 4, import_0001FFA0, at offsets 0x3F310/0x3F314 and 0x414C0/0x414C4. Format-address relocations identify Sym 1, RO_000054. Callee identities come from per-site relocations, independently of zero-valued aliases.",
+        "Inspected gl_func_00066A50, gl_func_00066B64, gl_func_00034B64 and gl_func_00061478 alongside the checker. The two setters write the corresponding canary pairs. The checker reuses the existing shared gl_storage_66B64_threadRegion u64 storage view.",
+        "u64 comparisons emit the exact paired lw sequences, second loads in branch delay slots, and four $at constant materializations. Scalar comparison probes retained scheduling differences.",
+        "Caller relocation at 0x34B6C directly identifies this checker. Reporter assembly reads format bytes and handles percent-format codes.",
+        "Normal unit .text is unchanged; all 175 previously byte-exact NON_MATCHING functions in this unit remain exact. Global exact-set comparison found no losses.",
+        "ROM is byte-identical to baserom with MD5 fa27089c425dbab99f19245c5c997613. All six compressed code blocks passed. Strict alias and source-addition gates passed.",
+        "Only the assigned source and undefined_syms_auto.txt changed. Experiments and genuine m2c output remain under build/orchestration-scratch/66AF0.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The original source used u64 canaries or equivalent 64-bit expressions; exact IDO lowering and the neighboring initializer strongly support this.",
+        "The two canaries guard distinct stacks."
+      ],
+      "unknowns": [
+        "Original typedefs, diagnostic wording, and surrounding imported allocation layout remain unrecovered.",
+        "Ignored results do not establish the reporter's original return type.",
+        "Ghidra binary listing required unavailable approval; analysis used immutable ELF, assembly, m2c and recovered USO relocations.",
+        "The supplied graph contains no unresolved calls for this function. General indirect/import coverage limitations remain.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00066AF0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00034B64"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 504196,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066AF0.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 504248,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066AF0.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "source_sha256": "b4efbb5445b1569ec58be28f5cbc15a03b6b2012dbe9b3389b2db1c0fb357595",
+    "implementation_path": "src/match_imports/gl_func_00066AF0.c",
+    "implementation_sha256": "2041807184095a614c4f263f2550753821c772c8e4920bd55af91cc90b5585e1",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 52,
+          "kind": 4,
+          "symbol": "gl_import_66AF0_report",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 504196,
+          "payload_site": 504196,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 104,
+          "kind": 4,
+          "symbol": "gl_import_66AF0_report",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 504248,
+          "payload_site": 504248,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "971d9244587b3f69a5d14682efa9f0973449cca85e0ebc020cab7cc72bc5da45"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 0,
+        "lo": 4,
+        "native_addend": 258832,
+        "original_addend": 258832,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 20,
+        "lo": 32,
+        "native_addend": 258836,
+        "original_addend": 258836,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_ro_66AF0",
+        "hi": 48,
+        "lo": 56,
+        "native_addend": 8636,
+        "original_addend": 8636,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 60,
+        "lo": 64,
+        "native_addend": 267456,
+        "original_addend": 267456,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_storage_66B64_threadRegion",
+        "hi": 76,
+        "lo": 84,
+        "native_addend": 267460,
+        "original_addend": 267460,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "gl_ro_66AF0",
+        "hi": 100,
+        "lo": 108,
+        "native_addend": 8664,
+        "original_addend": 8664,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00066AF0.json",
+      "nm": "scripts/match-bindings-gl_func_00066AF0-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post1b.h",
+    "source_context_sha256": "45740ff555773b14044d65f42ccd0c4d27e5da3a2a544f61e5882205112bc573",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post1b.c",
+    "original_local_episode_sha256": "5c9ec751d1a3b6dc0fc24d0cfd03ecd66b574761428acbf02c6589b1a47f5854",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

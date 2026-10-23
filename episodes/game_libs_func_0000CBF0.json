@@ -1,0 +1,285 @@
+{
+  "function_name": "game_libs_func_0000CBF0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.621186+00:00",
+  "end_time": "2026-10-23T11:55:25.621198+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.621194+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_0000CBF0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 388, \"native_sha256\": \"8b92dc775c29fe8bd288beb906183563d91d5f29b35127309a2a5aad38a43f1e\", \"code_gain\": 388}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 97,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_0000CBF0(GameLibsC784 *self) {\n    int i;\n    union { s32 count; GameLibsC784Record *record; } work;\n    float difference;\n    CBF0_Bounds *g = (((CBF0_Global *)&D_00000000)->registry->bounds);\n    float range = g->hi - g->lo;\n    work.count = self->count;\n    for (i = 0; i < work.count; i++) {\n        if (self->field_2C) {\n            GameLibsC784Record *rec = &self->records[i];\n            g = (((CBF0_Global *)&D_00000000)->registry->bounds);\n            if (g) {}\n            if (rec->field_0C < g->lo) rec->percentage = 0.0f;\n            else if (g->hi < rec->field_0C) rec->percentage = 100.0f;\n            else {\n                difference = rec->field_0C - g->lo;\n                rec->percentage = difference / range * 100.0f;\n            }\n            work.record = &self->records[i];\n            if (work.record->percentage == 100.0f) work.record->field_34++;\n            work.count = self->count;\n        } else {\n            continue;\n        }\n    }\n    if (self->field_70) game_libs_CBF0_handler0(self->field_70, (int)*self->field_74);\n    if (self->field_78) game_libs_CBF0_handler1(self->field_78, *self->field_7C);\n    if (self->field_8C) game_libs_CBF0_handler2(self->field_8C, *self->field_90);\n    if (self->field_98) game_libs_CBF0_handler3(self->field_98, *self->field_9C);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Clips each record's float field_0C to a percentage using global bounds, increments field_34 whenever the percentage equals 100%, then updates three formatted displays and one object property. The quantity and units remain uncertain.",
+      "observed_abi": "One object pointer arrives in a0; no incoming floating-point arguments are evidenced. Outputs are memory writes and four conditional calls. The original return contract remains unconfirmed; C models the operation as void.",
+      "calls": [
+        {
+          "site": "0xCD00",
+          "target": "src/game_libs/game_libs:gl_func_00001134",
+          "c_alias": "game_libs_CBF0_handler0",
+          "observed_abi": "a0 loads the pointer at self+0x70; a1 is signed truncation of the float through self+0x74. Callee formats at object+0xE4. Result ignored; original return type unconfirmed."
+        },
+        {
+          "site": "0xCD20",
+          "target": "src/game_libs/game_libs:gl_func_00000338",
+          "c_alias": "game_libs_CBF0_handler1",
+          "observed_abi": "a0 loads the pointer at self+0x78; a1 loads the word through self+0x7C. Callee formats signed milliseconds at object+0xE4. Result ignored."
+        },
+        {
+          "site": "0xCD40",
+          "target": "src/game_libs/game_libs:gl_func_00000EA4",
+          "c_alias": "game_libs_CBF0_handler2",
+          "observed_abi": "a0 loads the pointer at self+0x8C; a1 loads the word through self+0x90. Callee propagates its formatting call's v0, ignored here. Original return semantics remain unconfirmed."
+        },
+        {
+          "site": "0xCD5C",
+          "target": "src/game_libs/game_libs:game_libs_func_000017EC",
+          "c_alias": "game_libs_CBF0_handler3",
+          "observed_abi": "a0 loads the pointer at self+0x98; a1 loads the word through self+0x9C. Callee stores a1 at object+0xCC and defines no return value."
+        }
+      ],
+      "evidence": [
+        "Immutable expected bytes and original assembly establish the 388-byte range 0xCBF0\u20130xCD74. Actual C matches all 97 instruction words in both build modes; the fallback is removed.",
+        "A local typed union shares the count and completion-pointer storage while keeping the first record pointer separate. Every union member is assigned before use. This resolves the final four register differences without pointer/integer casts.",
+        "Original relocation sites establish four distinct recovered targets. Their C aliases each resolve to zero; identity comes from relocation evidence, not alias equality.",
+        "Inspected shared family: gl_func_0000C784, gl_func_0000C8B8, game_libs_func_0000CA30, game_libs_func_0000CB58, gl_func_0000CE38, game_libs_func_0000D090 and gl_func_0000D0D0. Shared definitions reside in the assigned source; those bodies are unchanged.",
+        "Constructor evidence establishes a 0xB8 object and eight 0x60-byte records. Records/count reside at self+0x44/+0x48; observed record fields include floats +0x08/+0x0C/+0x10/+0x30, word +0x34, and pointers +0x54/+0x58.",
+        "The function tests self+0x2C and follows global+0x134 -> registry+0x98 -> bounds +0xCC/+0xD8. Range is captured before iteration.",
+        "Objdiff reports 99.77319% because of global-address and call relocation annotations; raw instruction bytes are identical. No metric or report configuration was changed.",
+        "make -j2 verify verify-blocks passes. ROM MD5 is fa27089c425dbab99f19245c5c997613 and cmp confirms byte identity. All six block checks pass with exact lengths and permitted relocation-field differences only.",
+        "All 50 previously exact NON_MATCHING symbols remain exact, with no unit score regressions. git diff --check passes.",
+        "The graph reports no recovered callers or unresolved callsites; DFS rank is unavailable.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The record family tracks progress or completion for display; field_34 behaves as a completion counter.",
+        "The original source may have reused a word-sized temporary for count and completion-pointer roles; the typed union is a matching equivalent representation."
+      ],
+      "unknowns": [
+        "Original domain names, units, complete layouts and source variable declarations remain unknown.",
+        "Ignored results do not establish original void returns.",
+        "Missing graph edges remain a coverage limitation; game.uso reachability and DFS rank are unavailable.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_0000CBF0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 522,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00038728"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs:gl_func_00001134",
+          "kind": "relocation",
+          "site": 136044,
+          "identity": "func_0157A0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0000CBF0.s",
+          "sym_index": 916,
+          "cached_first_reference": "func_0157A0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs:gl_func_00000338",
+          "kind": "relocation",
+          "site": 136076,
+          "identity": "func_0149A4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0000CBF0.s",
+          "sym_index": 894,
+          "cached_first_reference": "func_0149A4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs:gl_func_00000EA4",
+          "kind": "relocation",
+          "site": 136108,
+          "identity": "func_015510",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0000CBF0.s",
+          "sym_index": 910,
+          "cached_first_reference": "func_015510",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs:game_libs_func_000017EC",
+          "kind": "relocation",
+          "site": 136136,
+          "identity": "func_015E58",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0000CBF0.s",
+          "sym_index": 927,
+          "cached_first_reference": "func_015E58",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_tail.c",
+    "source_sha256": "3ef8bb6b16b34e661a37c35bd5fe97ba10ed6fade80be1fcd130b4ade433ebcd",
+    "implementation_path": "src/match_imports/game_libs_func_0000CBF0.c",
+    "implementation_sha256": "8e4b16cbdfe8232076c9328b2ec49d2549e337d68cb7263461afe9de17812dcf",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 272,
+          "kind": 4,
+          "symbol": "game_libs_CBF0_handler0",
+          "original_identity": "bootup_uso:symbol_916:addend_0x0",
+          "original_site": 136044,
+          "payload_site": 136044,
+          "original_symbol_index": 916,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 304,
+          "kind": 4,
+          "symbol": "game_libs_CBF0_handler1",
+          "original_identity": "bootup_uso:symbol_894:addend_0x0",
+          "original_site": 136076,
+          "payload_site": 136076,
+          "original_symbol_index": 894,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 336,
+          "kind": 4,
+          "symbol": "game_libs_CBF0_handler2",
+          "original_identity": "bootup_uso:symbol_910:addend_0x0",
+          "original_site": 136108,
+          "payload_site": 136108,
+          "original_symbol_index": 910,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 364,
+          "kind": 4,
+          "symbol": "game_libs_CBF0_handler3",
+          "original_identity": "bootup_uso:symbol_927:addend_0x0",
+          "original_site": 136136,
+          "payload_site": 136136,
+          "original_symbol_index": 927,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "8b92dc775c29fe8bd288beb906183563d91d5f29b35127309a2a5aad38a43f1e"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 0,
+        "lo": 4,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_0000CBF0.json",
+      "nm": "scripts/match-bindings-game_libs_func_0000CBF0-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_tail.h",
+    "source_context_sha256": "0cfe1954368286a5037a170502b26c281c60c3b7a7e13743c4f4356c30df38e5",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_tail.c",
+    "original_local_episode_sha256": "7b7444be2b88d16d36ddfca20e73c96cd32ec0f19327ae4ac9b291dd004d4319",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

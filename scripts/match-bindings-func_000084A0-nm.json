@@ -1,0 +1,33 @@
+{
+  "function": "func_000084A0",
+  "raw_sha256": "f38cefea17fcea7048c3922f1bcbf65464d2a53bb8409ff0c4fc36afa930b28f",
+  "renames": {
+    "bootup_84A0_singleton": "snw_port_func_000084A0_bootup_84A0_singleton",
+    "bootup_84A0_func_074E8": "snw_port_func_000084A0_bootup_84A0_func_074E8",
+    "bootup_84A0_func_055750": "snw_port_func_000084A0_bootup_84A0_func_055750",
+    "bootup_84A0_func_051C28": "snw_port_func_000084A0_bootup_84A0_func_051C28",
+    "D_00007968": "snw_port_func_000084A0_D_00007968",
+    "D_00007FE4": "snw_port_func_000084A0_D_00007FE4",
+    "D_00007FEC": "snw_port_func_000084A0_D_00007FEC",
+    "bootup_84A0_func_04A188": "snw_port_func_000084A0_bootup_84A0_func_04A188",
+    "D_00007540": "snw_port_func_000084A0_D_00007540",
+    "D_00007FF0": "snw_port_func_000084A0_D_00007FF0",
+    "bootup_84A0_expected_07620": "snw_port_func_000084A0_bootup_84A0_expected_07620",
+    "bootup_84A0_func_07ACE0": "snw_port_func_000084A0_bootup_84A0_func_07ACE0"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_000084A0_bootup_84A0_singleton": 0,
+    "snw_port_func_000084A0_bootup_84A0_func_074E8": 0,
+    "snw_port_func_000084A0_bootup_84A0_func_055750": 0,
+    "snw_port_func_000084A0_bootup_84A0_func_051C28": 0,
+    "snw_port_func_000084A0_D_00007968": 31080,
+    "snw_port_func_000084A0_D_00007FE4": 32740,
+    "snw_port_func_000084A0_D_00007FEC": 32748,
+    "snw_port_func_000084A0_bootup_84A0_func_04A188": 0,
+    "snw_port_func_000084A0_D_00007540": 30016,
+    "snw_port_func_000084A0_D_00007FF0": 32752,
+    "snw_port_func_000084A0_bootup_84A0_expected_07620": 30240,
+    "snw_port_func_000084A0_bootup_84A0_func_07ACE0": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

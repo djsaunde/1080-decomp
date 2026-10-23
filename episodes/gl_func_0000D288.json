@@ -1,0 +1,204 @@
+{
+  "function_name": "gl_func_0000D288",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.726091+00:00",
+  "end_time": "2026-10-23T11:55:25.726103+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.726099+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0000D288",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 144, \"native_sha256\": \"6dd3a8ac2634dcdf82d0d94cacd2e4a003fbba81a43e57f5f989c8b20f83c299\", \"code_gain\": 144}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 36,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_0000D288(D288Self *self) {\n    D288Node *child;\n    D288Parent *parent;\n    void *tmp;\n    parent = self->field_44;\n    child = parent->field_4C;\n    if (child != 0 && child->field_64 <= parent->field_0C) {\n        tmp = parent->field_4C->field_84;\n        parent->field_4C = tmp;\n        if (gl_import_D288(child, self->field_44->field_00 + 0xB4, parent) != 0) {\n            tmp = self->field_28;\n            ((D288Dispatch *)tmp)->field_64(\n                ((D288Dispatch *)tmp)->field_60 + (char *)self, child);\n        }\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Removes the head node when node field_64 is ordered <= parent field_0C, calls an unresolved imported helper, then invokes a virtual callback when the helper returns nonzero. Domain purpose remains uncertain.",
+      "observed_abi": "Incoming a0 is self; no other incoming argument is consumed. Frame size is 0x20, with self saved at sp+0x20 and node at sp+0x1C. No explicit result is produced on early exits; original return type remains unproved despite the C void declaration.",
+      "calls": [
+        {
+          "site": "0xD2D8",
+          "target": "unresolved",
+          "c_alias": "gl_import_D288",
+          "observed_abi": "Original bootup Text+0x21944 relocation uses symbol index 1140, recovered as import_00000000. a0=node; a1=parent->field_00+0xB4; a2=parent; v0 is tested for zero. C represents a2 as a third argument, whose intentionality remains uncertain."
+        },
+        {
+          "site": "0xD300",
+          "target": "unresolved",
+          "c_alias": "field_64",
+          "observed_abi": "JALR through dispatch field_64. a0=self plus signed 16-bit dispatch field_60; a1=removed node. Result is ignored; original return type and runtime target are unknown."
+        }
+      ],
+      "evidence": [
+        "Assembly and immutable expected symbol establish one complete function: 36 instructions, 144 bytes.",
+        "Self fields: +0x28 dispatch pointer, +0x44 parent pointer. Parent fields: +0x00 data pointer, +0x0C float bound, +0x4C head pointer. Node fields: +0x64 float key, +0x84 next pointer. Dispatch fields: +0x60 signed short adjustment, +0x64 callback pointer.",
+        "c.le.s followed by bc1fl rejects NaNs as well as values above the bound; the previous C greater-than guard incorrectly admitted NaNs.",
+        "Original per-site relocation confirms import_00000000; objdump's gl_func_0000959C label for jal 0 does not identify this call.",
+        "Both build modes match all 144 immutable expected bytes; import alias links to zero.",
+        "Complete ROM is byte-identical, MD5 fa27089c425dbab99f19245c5c997613. All six compressed blocks passed with other=0.",
+        "No regressions among this unit's 163 previously exact normal functions and 146 previously exact NON_MATCHING functions.",
+        "Objdiff reports 99.861115% because of the differing import annotation; raw target instruction bytes match exactly.",
+        "Canonical retrospective terminal episode passed schema and semantic validation; actual m2c output and experiments remain in scratch.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The chain and float bound may represent a timed queue.",
+        "Parent in a2 may be an intentional third helper argument.",
+        "Signed adjustment and callback pointer resemble C++ virtual dispatch."
+      ],
+      "unknowns": [
+        "No callers or verified game.uso reachability were recovered in the supplied graph; this remains a background candidate.",
+        "Imported helper identity and indirect runtime target remain unresolved; zero-valued aliases cannot identify callees.",
+        "Original typedefs, field meanings, float units and ignored return types remain uncertain.",
+        "Compressed-block checks permit relocation-field differences; this function was independently checked against unfiltered expected instruction bytes.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0000D288.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 137540,
+          "identity": "import_00000000",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0000D288.s",
+          "sym_index": 1140,
+          "cached_first_reference": "import_00000000",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 137580,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0000D288.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_tail.c",
+    "source_sha256": "3ef8bb6b16b34e661a37c35bd5fe97ba10ed6fade80be1fcd130b4ade433ebcd",
+    "implementation_path": "src/match_imports/gl_func_0000D288.c",
+    "implementation_sha256": "be9c02ae6a83fe5966e0632e2f35af4bb5648f28a53498fa150aa551bad45991",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 80,
+          "kind": 4,
+          "symbol": "gl_import_D288",
+          "original_identity": "bootup_uso:symbol_1140:addend_0x0",
+          "original_site": 137540,
+          "payload_site": 137540,
+          "original_symbol_index": 1140,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        120
+      ],
+      "native_sha256": "6dd3a8ac2634dcdf82d0d94cacd2e4a003fbba81a43e57f5f989c8b20f83c299"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0000D288.json",
+      "nm": "scripts/match-bindings-gl_func_0000D288-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_tail.h",
+    "source_context_sha256": "0cfe1954368286a5037a170502b26c281c60c3b7a7e13743c4f4356c30df38e5",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_tail.c",
+    "original_local_episode_sha256": "6da6479754c328aa34db482b4e7ecaf36ffc9bd964af9d8d0c16a87d5af83236",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

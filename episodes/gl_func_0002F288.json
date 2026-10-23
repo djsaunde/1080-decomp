@@ -1,0 +1,394 @@
+{
+  "function_name": "gl_func_0002F288",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.772375+00:00",
+  "end_time": "2026-10-23T11:55:25.772388+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.772384+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0002F288",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 752, \"native_sha256\": \"2890bb5c9de16a94d1d4ce0b7e8b93ee7908b0d85265ed120b6fe9d48e72bcb6\", \"code_gain\": 752}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 188,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_0002F288(GlState2E0C4 *arg0) {\n    f32 value;\n    f32 level;\n    f32 scale;\n    u8 mode;\n    u8 amount;\n    s16 kind;\n    s32 aux;\n    s32 state;\n    value = arg0->field_00;\n    kind = arg0->field_14;\n    state = arg0->field_21;\n    if ((state != 2) && (arg0->field_1C == 0)) {\n        mode = state == 0 ? 3 : 7;\n        {\n            s32 base;\n            base = *(s32 *)((char *)&D_00000000 + 4);\n            value = (f32)base * gl_2F288_pool1730.field_1730 + value;\n            if ((kind == 0) && (arg0->field_38 >= 21)) {\n                switch (*(s32 *)((char *)&D_00000000 + 0x10)) {\n                default:\n                case 0:\n                    amount = (u8)(s32)(value * 0.5f);\n                    scale = 1.0f;\n                    break;\n                case 1:\n                case 2:\n                    amount = (u8)(s32)(value / 3.5f);\n                    scale = gl_2F288_pool1734[0x1734 / 4];\n                    break;\n                }\n            } else {\n                amount = (u8)(s32)(value * 0.25f);\n                scale = gl_2F288_pool1738[0x1738 / 4];\n            }\n            aux = arg0->field_1F;\n            amount = (u8)(amount + base);\n            if (aux != 0) {\n                base = *(s32 *)(&gl_2F288_countdown + 0x1C740) - 1;\n                *(s32 *)(&gl_2F288_countdown_store + 0x1C740) = base;\n                if (base == 0) {\n                    if (kind == 0) {\n                        base = aux / 2;\n                        if (amount >= base) {\n                            amount = (u8)(amount - base);\n                        }\n                    } else {\n                        amount = (u8)(amount + aux);\n                    }\n                    base = 3 - (*(s32 *)(&gl_2F288_random + 0x2154) & 1);\n                    *(s32 *)(&gl_2F288_countdown_reset + 0x1C740) = base;\n                } else if ((kind != 0) && (amount >= 10)) {\n                    amount = (u8)(amount - 10);\n                }\n            }\n        }\n        aux = arg0->field_32;\n        level = value / 80.0f;\n        level += gl_2F288_pool173C[0x173C / 4];\n        if (aux != 0) {\n            level *= *(f32 *)((u32)&gl_2F288_tableC330 + (aux * 4) + 0x1C330);\n            scale *= *(f32 *)((u32)&gl_2F288_tableC3B0 + (aux * 4) + 0x1C3B0);\n        }\n        if (kind == 0xFF) {\n            aux = (mode & 0xFF) << 8;\n            gl_2F288_emit_byte((aux | 0x06000000) | 6, 1);\n            level = 1.0f;\n        } else {\n            aux = (mode & 0xFF) << 8;\n            gl_2F288_emit_byte((aux | 0x06000000) | 6, 0);\n        }\n        if (arg0->field_1C & 1) {\n            scale = 0.0f;\n        }\n        gl_2F288_emit_byte((aux | 0x06000000) | 5, (s8)amount);\n        gl_2F288_emit_float(aux | 0x04000000, level);\n        gl_2F288_emit_float(aux | 0x01000000, scale);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Computes a wrapped byte parameter and two float parameters, updates a global countdown, and emits commands. Related emitters suggest audio parameter updates; precise meanings remain uncertain. No object stores occur.",
+      "observed_abi": "Observed input: a0 is an object pointer. Reads f32 at 0x00, u8 at 0x14/0x1C/0x1F/0x21/0x32, and s32 at 0x38. Frame is 0x48 bytes. No deliberate return value is established; ignored call results do not prove original void return types.",
+      "calls": [
+        {
+          "site": "0x2F4A4",
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "c_alias": "gl_2F288_emit_byte",
+          "observed_abi": "a0 = 0x06000000 | (mode << 8) | 6; a1 = 1. Result ignored."
+        },
+        {
+          "site": "0x2F4F0",
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "c_alias": "gl_2F288_emit_byte",
+          "observed_abi": "a0 = 0x06000000 | (mode << 8) | 6; a1 = 0. Result ignored."
+        },
+        {
+          "site": "0x2F530",
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "c_alias": "gl_2F288_emit_byte",
+          "observed_abi": "a0 = 0x06000000 | (mode << 8) | 5; a1 = sign-extended byte parameter. Result ignored."
+        },
+        {
+          "site": "0x2F548",
+          "target": "src/game_libs/game_libs_post:gl_func_00026C24",
+          "c_alias": "gl_2F288_emit_float",
+          "observed_abi": "a0 = 0x04000000 | (mode << 8); a1 carries single-precision float bits. Result ignored."
+        },
+        {
+          "site": "0x2F560",
+          "target": "src/game_libs/game_libs_post:gl_func_00026C24",
+          "c_alias": "gl_2F288_emit_float",
+          "observed_abi": "a0 = 0x01000000 | (mode << 8); a1 carries single-precision float bits. Result ignored."
+        }
+      ],
+      "evidence": [
+        "Adjacent u8 mode/amount declarations, s16 kind loaded from u8 field_14, and an explicit s32 state reproduce the original branch operands and spill allocation. The byte-derived kind value fits s16 without changing semantics.",
+        "Both C builds match expected SHA256 2890bb5c9de16a94d1d4ce0b7e8b93ee7908b0d85265ed120b6fe9d48e72bcb6, with zero differing bytes and no assembly fallback.",
+        "Original relocations identify byte calls as Sym1376, bootup Text 0x3B2D8, and float calls as Sym1374, bootup Text 0x3B290.",
+        "Data identities: Sym1443 D_01C0C4 supplies context offsets 0x04/0x10; Sym1 RO_000054 supplies pool addends 0x1730..0x173C; Sym2 D_00653C supplies countdown 0x1C740 and tables 0x1C330/0x1C3B0; Sym1255 import_00054560 supplies the word read at addend 0x2154.",
+        "Inspected family: DF98 constructor, E06C reset, E0A0/E0AC setters, E0C4 update, F578 quantizer, F720 updater and callees 26C6C/26C24. Reused GlState2E0C4: DF98 initializes 00/14/1F/21/32/38; E06C accesses 00/21; setters access 32; E0C4 accesses 00/16/29/2D/2E/30/48.",
+        "Regression comparison preserved 352 previously exact normal-build functions and 212 exact NON_MATCHING functions in the unit.",
+        "make -j2 verified complete ROM equality. All six compressed blocks decompress byte-identically. git diff --check and all 12 zero-valued alias equations passed.",
+        "objdiff reports 99.75%; all 27 annotated differences are relocation arguments against baked expected instructions. Raw instruction bytes are identical. Expected disassembly and m2c output were retained.",
+        "Recovered graph has callers=[], unresolved_calls=[], and DFS rank null. This attempt changed only the assigned function block.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Command families 0x06/0x04/0x01 control audio parameters.",
+        "The imported word's low bit varies countdown resets."
+      ],
+      "unknowns": [
+        "Original return types, local declarations and semantic field names remain unproved despite exact code generation.",
+        "The shared object extends beyond its recovered partial layout.",
+        "Zero-valued aliases do not establish runtime import semantics; identities come from original relocation sites.",
+        "Indirect and missing relocation edges remain coverage limitations; game.uso reachability is not established.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0002F288.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 444,
+      "callers": [
+        "src/game_libs/game_libs_post:gl_func_0002E354"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "kind": "relocation",
+          "site": 277264,
+          "identity": "func_03B2D8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002F288.s",
+          "sym_index": 1376,
+          "cached_first_reference": "func_03B2D8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "kind": "relocation",
+          "site": 277340,
+          "identity": "func_03B2D8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002F288.s",
+          "sym_index": 1376,
+          "cached_first_reference": "func_03B2D8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "kind": "relocation",
+          "site": 277404,
+          "identity": "func_03B2D8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002F288.s",
+          "sym_index": 1376,
+          "cached_first_reference": "func_03B2D8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00026C24",
+          "kind": "relocation",
+          "site": 277428,
+          "identity": "func_03B290",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002F288.s",
+          "sym_index": 1374,
+          "cached_first_reference": "func_03B290",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00026C24",
+          "kind": "relocation",
+          "site": 277452,
+          "identity": "func_03B290",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0002F288.s",
+          "sym_index": 1374,
+          "cached_first_reference": "func_03B290",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/gl_func_0002F288.c",
+    "implementation_sha256": "1a1c317b72134c0286bf21b07940bf4d01bac21f3deb3c8a9f171169fc6bf73e",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 540,
+          "kind": 4,
+          "symbol": "gl_2F288_emit_byte",
+          "original_identity": "bootup_uso:symbol_1376:addend_0x0",
+          "original_site": 277264,
+          "payload_site": 277264,
+          "original_symbol_index": 1376,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 616,
+          "kind": 4,
+          "symbol": "gl_2F288_emit_byte",
+          "original_identity": "bootup_uso:symbol_1376:addend_0x0",
+          "original_site": 277340,
+          "payload_site": 277340,
+          "original_symbol_index": 1376,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 680,
+          "kind": 4,
+          "symbol": "gl_2F288_emit_byte",
+          "original_identity": "bootup_uso:symbol_1376:addend_0x0",
+          "original_site": 277404,
+          "payload_site": 277404,
+          "original_symbol_index": 1376,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 704,
+          "kind": 4,
+          "symbol": "gl_2F288_emit_float",
+          "original_identity": "bootup_uso:symbol_1374:addend_0x0",
+          "original_site": 277428,
+          "payload_site": 277428,
+          "original_symbol_index": 1374,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 728,
+          "kind": 4,
+          "symbol": "gl_2F288_emit_float",
+          "original_identity": "bootup_uso:symbol_1374:addend_0x0",
+          "original_site": 277452,
+          "payload_site": 277452,
+          "original_symbol_index": 1374,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "2890bb5c9de16a94d1d4ce0b7e8b93ee7908b0d85265ed120b6fe9d48e72bcb6"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 36,
+        "lo": 40,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1443:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_pool1730",
+        "hi": 72,
+        "lo": 76,
+        "native_addend": 5936,
+        "original_addend": 5936,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_pool1734",
+        "hi": 192,
+        "lo": 196,
+        "native_addend": 5940,
+        "original_addend": 5940,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_pool1738",
+        "hi": 228,
+        "lo": 232,
+        "native_addend": 5944,
+        "original_addend": 5944,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_countdown",
+        "hi": 272,
+        "lo": 276,
+        "native_addend": 116544,
+        "original_addend": 116544,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_countdown_store",
+        "hi": 280,
+        "lo": 296,
+        "native_addend": 116544,
+        "original_addend": 116544,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_random",
+        "hi": 284,
+        "lo": 356,
+        "native_addend": 8532,
+        "original_addend": 8532,
+        "base_identity": "bootup_uso:symbol_1255:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_countdown_reset",
+        "hi": 364,
+        "lo": 380,
+        "native_addend": 116544,
+        "original_addend": 116544,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_pool173C",
+        "hi": 420,
+        "lo": 428,
+        "native_addend": 5948,
+        "original_addend": 5948,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_tableC330",
+        "hi": 436,
+        "lo": 456,
+        "native_addend": 115504,
+        "original_addend": 115504,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_2F288_tableC3B0",
+        "hi": 460,
+        "lo": 468,
+        "native_addend": 115632,
+        "original_addend": 115632,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0002F288.json",
+      "nm": "scripts/match-bindings-gl_func_0002F288-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "2d2e412b81eda62ec217cc61a0a6b91944fb167aa75f1fe79a5e00ae9c256ed8",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "function_name": "game_uso_func_0000E5C8",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.260511+00:00",
+  "end_time": "2026-10-23T11:55:26.260523+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.260518+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_uso_func_0000E5C8",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 852, \"native_sha256\": \"5a29486179ad30c50f9d27f4b5afa4ee715feaab926391ffda5a5e79580cb034\", \"code_gain\": 852}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 213,
+  "initial_m2c_source": null,
+  "final_source": "void game_uso_func_0000E5C8(char *a0, int a1) {\n    GameState *a3 = (GameState *)a0;\n    unsigned int src;\n    unsigned int v0;\n    if (((GameState *)a0)->field_f4 != 0) {\n        src = ((GameState *)a0)->field_b4->field_800->field_18;\n    } else {\n        src = ((GameState *)a0)->field_b4->field_800->field_10;\n    }\n    if (src & 0x200) a3->field_e8 |= 0x2;\n    if (src & 0x1000) a3->field_e8 |= 0x4;\n    if (src & 0x400) a3->field_e8 |= 0x1;\n    if (src & 0x10000) a3->field_e8 |= 0x10;\n    if (src & 0x4000) a3->field_e8 |= 0x20;\n    if (src & 0x2000) a3->field_e8 |= 0x40;\n    if (src & 0x8000) a3->field_e8 |= 0x80;\n    v0 = a3->field_b4->field_a58;\n    {\n        int cond;\n        if (1) { cond = (v0 & 0x20) != 0; }\n        if (cond != 0) {\n            cond = (v0 & 0x40) != 0;\n        }\n        game_uso_e5c8_eaf4(a3, cond, v0 & 0x20);\n    }\n    v0 = a3->field_12c;\n    if (v0 != 0) {\n        if (v0 == 5) goto state5;\n        if (v0 == 6) goto state6;\n        if (v0 == 2) goto state2;\n        if (v0 == 1) goto state1;\n        if (v0 == 4) goto state4;\n        if (v0 != 3) goto state_done;\n        goto state3;\n    state5:\n        if (1) {\n            a3->field_e8 |= 0x20000;\n        }\n        goto state_done;\n    state6:\n        if (1) {\n            a3->field_e8 |= 0x10000;\n        }\n        goto state_done;\n    state2:\n        if (1) {\n            a3->field_e8 |= 0x4000;\n        }\n        goto state_done;\n    state1:\n        if (1) {\n            a3->field_e8 |= 0x1000;\n        }\n        goto state_done;\n    state4:\n        if (1) {\n            a3->field_e8 |= 0x8000;\n        }\n        goto state_done;\n    state3:\n        if (1) {\n            a3->field_e8 |= 0x2000;\n        }\n    state_done:;\n    }\n    {\n        v0 = a3->field_e8;\n        if (v0 & 0x4) {\n            GameStateNode *f4 = a3->field_f4;\n            a3->field_e8 = v0 & 0x3F007;\n            if (f4 != 0) {\n                unsigned int m = f4->field_2c;\n                if (m & 0x5000) {\n                    a3->field_e8 &= 0xFFFF5FFF;\n                    m = (*(GameStateNode * volatile *)&a3->field_f4)->field_2c;\n                }\n                if (m & 0xA000) {\n                    a3->field_e8 &= 0xFFFFAFFF;\n                    m = (*(GameStateNode * volatile *)&a3->field_f4)->field_2c;\n                }\n                if (m & 0xC000) {\n                    if (m & 0x100000) {\n                        a3->field_e8 |= 0x200000;\n                    } else if (!(m & 0x200000)) {\n                        a3->field_e8 |= 0x100000;\n                    }\n                }\n            }\n            v0 = a3->field_e8;\n        }\n    }\n    if (v0 != 0) {\n        a3->field_ec += 1;\n    } else {\n        a3->field_ec = 0;\n    }\n    {\n        unsigned int t0;\n        if (1) { t0 = a3->field_ec; }\n        if (a3->field_ec > a3->field_214) {\n            unsigned int count = game_uso_e5c8_count;\n            GameStateActor *obj;\n            unsigned int v1;\n            GameStateNode *e;\n            v1 = 0;\n            if (count != 0) {\n                obj = a3->field_b4;\n                if (1) { e = *(GameStateNode **)&game_uso_D_807FFBC0; }\n                do {\n                    if (t0) {}\n                    if ((obj->field_8c0 & e->field_34) == 0) goto next_entry;\n                    if (a3->field_e8 != e->field_2c) goto next_entry;\n                    if ((e->field_38 & 0x4) && !(obj->field_9a8 & 0x1)) goto next_entry;\n                    if (obj->field_938 != 0) goto next_entry;\n                    a3->field_f0 = *(GameStateNode **)&game_uso_D_807FFBC0 + v1;\n                    a3->field_e8 = 0;\n                    a3->field_12c = 0;\n                    a3->field_ec = 0;\n                    t0 = 0;\n                    break;\n                next_entry:\n                    e++;\n                } while (++v1 < count);\n            }\n            a3->field_e8 &= 0x6;\n            if ((unsigned int)t0 >= 21) {\n                a3->field_ec = 0;\n                a3->field_e8 = 0;\n            }\n        }\n    }\n    (void)a1;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Translates input flags into state flags, augments them from a state selector, filters them against the current node, and searches a 64-byte-entry table after an unsigned counter exceeds its bound. Exact gameplay terminology remains uncertain.",
+      "observed_abi": "a0 is an object pointer. The second word argument in a1 is homed but unused. The function uses a 24-byte stack frame. Inspected callers ignore its result; the C uses void, but that does not establish the original return type.",
+      "calls": [
+        {
+          "site": "0xE6B0",
+          "target": "game_uso_func_0000EAF4",
+          "c_alias": "game_uso_e5c8_eaf4",
+          "observed_abi": "a0=object; a1=Boolean(A58&0x40) when A58&0x20 is set, otherwise zero; a2=A58&0x20. Result ignored; original return type uncertain. Alias resolves to zero; identity comes from this site's recovered relocation."
+        }
+      ],
+      "evidence": [
+        "Normal and NON_MATCHING C both match the immutable expected object and original assembly: 852 bytes, 213/213 words.",
+        "Final ROM is byte-identical to baserom; MD5 fa27089c425dbab99f19245c5c997613. All six compressed-block checks pass.",
+        "No regressions among 39 previously exact functions in this unit. Only the assigned function body changed.",
+        "Inspected callers F424, F664, 10068, 10128, 102CC, 10408 and 104A4, plus related E35C and callee EAF4. Recovered shared GameState, GameStateActor, GameStateInput and GameStateNode partial definitions in the assigned source.",
+        "Object offsets: B4 actor pointer; E8 flags; EC unsigned counter; F0/F4/F8 node pointers; FC word; 100 counter; 114 word; 124/126/128 signed halfwords; 12C selector; 214 unsigned bound.",
+        "Actor offsets: 800 input pointer, 8C0 flags, 938 word, 9A8 flags, A18 word and A58 flags. Input accesses include words 10/18 and signed halfword 7C.",
+        "Node/table offsets: 2C, 30, 34, 38 and 3C; table stride 0x40. E35C transfers F0 into F4, supporting the shared node layout.",
+        "Corrected unconditional helper invocation, selector 12C instead of E8, the 9A8-bit search condition, and clearing gated by counter overflow.",
+        "Table-base relocation at original 0xE85C identifies game_uso_D_807FFBC0. Count import at 0xE6C0 remains recorded as unpaired.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The family implements input-driven gameplay state or action transitions.",
+        "The unidentified count may correspond to game_uso_D_807FFBC4, based on the related table constructor; this identity is not established."
+      ],
+      "unknowns": [
+        "The count import's runtime identity and address are unrecovered; its alias preserves an existing expected zero value without inventing an address.",
+        "Original return types and precise gameplay meanings of several fields remain uncertain.",
+        "No unresolved callsites were identified in the supplied evidence. Zero-valued aliases alone do not identify imports.",
+        "Ghidra MCP tools were unavailable in this session; structural evidence came from original assembly, immutable ELF, related source and m2c.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_uso_func_0000E5C8.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "game_uso",
+      "dfs_rank": 344,
+      "callers": [
+        "src/game_uso/game_uso:game_uso_func_0000F424",
+        "src/game_uso/game_uso:game_uso_func_0000F664",
+        "src/game_uso/game_uso:game_uso_func_00010068",
+        "src/game_uso/game_uso:game_uso_func_00010128",
+        "src/game_uso/game_uso:game_uso_func_000102CC",
+        "src/game_uso/game_uso:game_uso_func_00010408",
+        "src/game_uso/game_uso:game_uso_func_000104A4"
+      ],
+      "calls": [
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_0000EAF4",
+          "kind": "relocation",
+          "site": 59056,
+          "identity": "func_0000EAF4",
+          "class": "func",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_0000E5C8.s"
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_uso/game_uso.c",
+    "source_sha256": "fa2b3ab40ab70612f935dc1bc5f64a4fd0b26b43d0bcd2cc04e707ce05411dfd",
+    "implementation_path": "src/match_imports/game_uso_func_0000E5C8.c",
+    "implementation_sha256": "13fdd42c45edd17b5ac075e7560204b303b61ed9ecf4376fec8e7a190b2fdd31",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 232,
+          "kind": 4,
+          "symbol": "game_uso_e5c8_eaf4",
+          "original_identity": "game_uso:symbol_317:addend_0x0",
+          "original_site": 59056,
+          "payload_site": 59056,
+          "original_symbol_index": 317,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "5a29486179ad30c50f9d27f4b5afa4ee715feaab926391ffda5a5e79580cb034"
+    },
+    "native_data_proof": [
+      {
+        "alias": "game_uso_e5c8_count",
+        "hi": 248,
+        "lo": 652,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "game_uso:symbol_200:base_addend_0x0"
+      },
+      {
+        "alias": "game_uso_D_807FFBC0",
+        "hi": 660,
+        "lo": 676,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "game_uso:symbol_199:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_uso_func_0000E5C8.json",
+      "nm": "scripts/match-bindings-game_uso_func_0000E5C8-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_uso.h",
+    "source_context_sha256": "0e1f74836a92d9c2f3ae2791b42b57aaf040d4caaeef235fd677fa22e4fc2d44",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_uso/game_uso.c",
+    "original_local_episode_sha256": "29690b1675111edea5aaa975b6cb134b822669df781fbadc99e1e6841256cf5e",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

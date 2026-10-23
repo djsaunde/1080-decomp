@@ -1,0 +1,351 @@
+{
+  "function_name": "gl_func_00054D04",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.073183+00:00",
+  "end_time": "2026-10-23T11:55:26.073195+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.073191+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00054D04",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 372, \"native_sha256\": \"c6fd38440b52caca3e9df33b6a79a06a6f248a46f90fc8366ce1ace2ebe9e24c\", \"code_gain\": 372}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 93,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00054D04(char *self, float *plane, Vec3 *out) {\n    Vec3 position;\n    Vec3 direction;\n    float nx, ny;\n    double scale;\n    struct { Vec3 v; } tmp;\n    Vec3 negative;\n    char *matrix;\n    GLLightPrefix *light;\n    Vec3 *p;\n    float nz;\n    p = &position;\n    if (gl_54d04_get(&gl_54d04_root) != 0) {\n        light = gl_54d04_get(&gl_54d04_root);\n        scale = gl_54d04_scale.value;\n        position.x = light->field_A0.x;\n        position.y = light->field_A0.y;\n        position.z = light->field_A0.z;\n        position.x = (float)(p->x * scale);\n        position.y = p->y + gl_54d04_bias.value;\n        position.z = (float)(p->z * scale);\n        if (0) gl_54d04_normalize(&position.x);\n        if (1) {\n            nx = p->x * -1.0f;\n            negative.x = nx;\n            ny = p->y * -1.0f;\n            negative.y = ny;\n            nz = p->z * -1.0f;\n            negative.z = nz;\n        }\n        tmp.v = negative;\n        direction = tmp.v;\n        gl_54d04_normalize(&direction.x);\n        if (out != 0) {\n            tmp.v = direction;\n            out->x = tmp.v.x;\n            out->y = tmp.v.y;\n            out->z = tmp.v.z;\n        }\n        matrix = self + 0x12C;\n        gl_54d04_project(matrix, &direction, plane);\n        *(char **)(&gl_54d04_root + 0xE4) = matrix;\n    } else {\n        gl_54d04_report(&gl_54d04_strings + 0x210EC);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Constructs a directional projection matrix at self+0x12C using an adjusted, negated, normalized light position. Optionally returns the direction and publishes the matrix pointer. Its precise gameplay role remains uncertain; shadow projection is likely.",
+      "observed_abi": "o32: a0=self, a1=plane pointer forwarded to a four-float consumer, a2=optional writable Vec3. No deliberate return value is evident. The caller ignores the result, so the original return declaration remains unknown.",
+      "calls": [
+        {
+          "site": "0x54D1C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004E23C",
+          "c_alias": "gl_54d04_get",
+          "observed_abi": "a0=import-root address; returned pointer in v0 is tested for null."
+        },
+        {
+          "site": "0x54D30",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004E23C",
+          "c_alias": "gl_54d04_get",
+          "observed_abi": "a0=same root; returned object supplies floats at +0xA0/+0xA4/+0xA8."
+        },
+        {
+          "site": "0x54DF0",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "c_alias": "gl_54d04_normalize",
+          "observed_abi": "a0=writable three-float direction. Normalizes in place; integer status is ignored."
+        },
+        {
+          "site": "0x54E48",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005F27C",
+          "c_alias": "gl_54d04_project",
+          "observed_abi": "a0=self+0x12C matrix destination; a1=normalized direction; a2=original plane pointer. Writes 16 floats."
+        },
+        {
+          "site": "0x54E60",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "c_alias": "gl_54d04_report",
+          "observed_abi": "a0=diagnostic data base+0x210EC. Additional arguments are not explicitly prepared; result is ignored."
+        }
+      ],
+      "evidence": [
+        "Immutable expected assembly establishes one 0x174-byte function with a 0x70-byte frame. Both C build modes match SHA256 c6fd38440b52caca3e9df33b6a79a06a6f248a46f90fc8366ce1ace2ebe9e24c.",
+        "Named negated products consumed within the same block reproduce f0/f2/f12 and the shared multiplier in f14. Placing two product homes before the double scale reproduces the original stack offsets.",
+        "All five call identities derive from recovered relocations. Sites are game_libs Text offsets after subtracting the bootup 0x1466C shim.",
+        "Inspected caller bootup_uso:func_0000CFA0 calls at +0xD204 and subsequently uses the output direction in a dot product.",
+        "Reused Vec3 and GLLightPrefix. Inspected shared light family: 430D8, 432BC, 454C4, 478FC, and 47F9C. Position is at +0xA0/+0xA4/+0xA8; getter reads root+0x190; target publishes the matrix at root+0xE4.",
+        "Data relocations identify sym154=import_0005C108, sym1=RO_000054, and sym2=D_00653C. All aliases remain zero-valued; relocation evidence establishes their identities.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613. All six compressed blocks pass. Other function definitions and bytes are unchanged, including 841 previously exact normal functions and 604 previously exact NON_MATCHING functions.",
+        "Objdiff reports 99.60215% with relocation-annotation differences; independent instruction-byte comparisons are exact in both modes. Experiments remain under build/orchestration-scratch/attempt3/.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The matrix implements light-based shadow projection."
+      ],
+      "unknowns": [
+        "Original return declaration, scale/bias meanings, and complete imported-root layout.",
+        "The caller's Vec3 declaration is narrower than the projection helper's observed four-float plane read.",
+        "No call identities remain unresolved within this target. Ghidra's collapsed imports do not independently establish those identities.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00054D04.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 174,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_0000CFA0"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004E23C",
+          "kind": "relocation",
+          "site": 430984,
+          "identity": "func_0628A8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00054D04.s",
+          "sym_index": 2127,
+          "cached_first_reference": "func_0628A8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004E23C",
+          "kind": "relocation",
+          "site": 431004,
+          "identity": "func_0628A8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00054D04.s",
+          "sym_index": 2127,
+          "cached_first_reference": "func_0628A8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "kind": "relocation",
+          "site": 431196,
+          "identity": "func_071028",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00054D04.s",
+          "sym_index": 568,
+          "cached_first_reference": "func_071028",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005F27C",
+          "kind": "relocation",
+          "site": 431284,
+          "identity": "func_0738E8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00054D04.s",
+          "sym_index": 2227,
+          "cached_first_reference": "func_0738E8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 431308,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00054D04.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00054D04.c",
+    "implementation_sha256": "755f4b185c6a2817f0137de5814c33bbdd0897ea4638d7940326b5484e3bfffe",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 24,
+          "kind": 4,
+          "symbol": "gl_54d04_get",
+          "original_identity": "bootup_uso:symbol_2127:addend_0x0",
+          "original_site": 430984,
+          "payload_site": 430984,
+          "original_symbol_index": 2127,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 44,
+          "kind": 4,
+          "symbol": "gl_54d04_get",
+          "original_identity": "bootup_uso:symbol_2127:addend_0x0",
+          "original_site": 431004,
+          "payload_site": 431004,
+          "original_symbol_index": 2127,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 236,
+          "kind": 4,
+          "symbol": "gl_54d04_normalize",
+          "original_identity": "bootup_uso:symbol_568:addend_0x0",
+          "original_site": 431196,
+          "payload_site": 431196,
+          "original_symbol_index": 568,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 324,
+          "kind": 4,
+          "symbol": "gl_54d04_project",
+          "original_identity": "bootup_uso:symbol_2227:addend_0x0",
+          "original_site": 431284,
+          "payload_site": 431284,
+          "original_symbol_index": 2227,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 348,
+          "kind": 4,
+          "symbol": "gl_54d04_report",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 431308,
+          "payload_site": 431308,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "c6fd38440b52caca3e9df33b6a79a06a6f248a46f90fc8366ce1ace2ebe9e24c"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_54d04_root",
+        "hi": 12,
+        "lo": 28,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_54d04_root",
+        "hi": 40,
+        "lo": 48,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_54d04_scale",
+        "hi": 56,
+        "lo": 60,
+        "native_addend": 7296,
+        "original_addend": 7296,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_54d04_bias",
+        "hi": 76,
+        "lo": 112,
+        "native_addend": 7304,
+        "original_addend": 7304,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "gl_54d04_root",
+        "hi": 336,
+        "lo": 344,
+        "native_addend": 228,
+        "original_addend": 228,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_54d04_strings",
+        "hi": 36,
+        "lo": 352,
+        "native_addend": 135404,
+        "original_addend": 135404,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00054D04.json",
+      "nm": "scripts/match-bindings-gl_func_00054D04-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "c27fdde404bfd25b6b22663ce4cf1a2664f0015aa881f0d30ff53c79b5a2c96e",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

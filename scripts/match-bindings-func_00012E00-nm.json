@@ -1,0 +1,25 @@
+{
+  "function": "func_00012E00",
+  "raw_sha256": "44d6e536a92604a0147cfd38b85ce98fe1e5db0575981516726f441a7977bf90",
+  "renames": {
+    "boot12E00_alloc": "snw_port_func_00012E00_boot12E00_alloc",
+    "D_0000C730": "snw_port_func_00012E00_D_0000C730",
+    "boot12E00_base_init": "snw_port_func_00012E00_boot12E00_base_init",
+    "boot12E00_desc_base": "snw_port_func_00012E00_boot12E00_desc_base",
+    "boot12E00_desc_self": "snw_port_func_00012E00_boot12E00_desc_self",
+    "D_0000C738": "snw_port_func_00012E00_D_0000C738",
+    "boot12E00_exchange_context": "snw_port_func_00012E00_boot12E00_exchange_context",
+    "boot12E00_alloc_aligned": "snw_port_func_00012E00_boot12E00_alloc_aligned"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_00012E00_boot12E00_alloc": 0,
+    "snw_port_func_00012E00_D_0000C730": 50992,
+    "snw_port_func_00012E00_boot12E00_base_init": 0,
+    "snw_port_func_00012E00_boot12E00_desc_base": 0,
+    "snw_port_func_00012E00_boot12E00_desc_self": 0,
+    "snw_port_func_00012E00_D_0000C738": 51000,
+    "snw_port_func_00012E00_boot12E00_exchange_context": 0,
+    "snw_port_func_00012E00_boot12E00_alloc_aligned": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

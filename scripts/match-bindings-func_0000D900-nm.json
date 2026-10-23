@@ -1,0 +1,43 @@
+{
+  "function": "func_0000D900",
+  "raw_sha256": "b893b55199ac23d774c9044fbfca9403ab8e092b35b956813e72a0c9714d07c5",
+  "renames": {
+    "D_00000988": "snw_port_func_0000D900_D_00000988",
+    "bu_d900_a68": "snw_port_func_0000D900_bu_d900_a68",
+    ".rodata": "snw_port_func_0000D900__rodata",
+    "bu_d900_cae8": "snw_port_func_0000D900_bu_d900_cae8",
+    "bu_d900_game6e88": "snw_port_func_0000D900_bu_d900_game6e88",
+    "bu_d900_gl34810": "snw_port_func_0000D900_bu_d900_gl34810",
+    "bu_d900_desc8aec": "snw_port_func_0000D900_bu_d900_desc8aec",
+    "bu_d900_game6ecc": "snw_port_func_0000D900_bu_d900_game6ecc",
+    "bu_d900_desc8b44": "snw_port_func_0000D900_bu_d900_desc8b44",
+    "bu_d900_game6f28": "snw_port_func_0000D900_bu_d900_game6f28",
+    "bu_d900_game11258": "snw_port_func_0000D900_bu_d900_game11258",
+    "bu_d900_game112e0": "snw_port_func_0000D900_bu_d900_game112e0",
+    "bu_d900_global": "snw_port_func_0000D900_bu_d900_global",
+    "bu_d900_gl3eb3c": "snw_port_func_0000D900_bu_d900_gl3eb3c",
+    "bu_d900_gl65360": "snw_port_func_0000D900_bu_d900_gl65360",
+    "bu_d900_gl61478": "snw_port_func_0000D900_bu_d900_gl61478",
+    "bu_d900_gl65c54": "snw_port_func_0000D900_bu_d900_gl65c54"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_0000D900_D_00000988": 2440,
+    "snw_port_func_0000D900_bu_d900_a68": 0,
+    "snw_port_func_0000D900__rodata": 2444,
+    "snw_port_func_0000D900_bu_d900_cae8": 0,
+    "snw_port_func_0000D900_bu_d900_game6e88": 0,
+    "snw_port_func_0000D900_bu_d900_gl34810": 0,
+    "snw_port_func_0000D900_bu_d900_desc8aec": 35564,
+    "snw_port_func_0000D900_bu_d900_game6ecc": 0,
+    "snw_port_func_0000D900_bu_d900_desc8b44": 35652,
+    "snw_port_func_0000D900_bu_d900_game6f28": 0,
+    "snw_port_func_0000D900_bu_d900_game11258": 0,
+    "snw_port_func_0000D900_bu_d900_game112e0": 0,
+    "snw_port_func_0000D900_bu_d900_global": 0,
+    "snw_port_func_0000D900_bu_d900_gl3eb3c": 0,
+    "snw_port_func_0000D900_bu_d900_gl65360": 0,
+    "snw_port_func_0000D900_bu_d900_gl61478": 0,
+    "snw_port_func_0000D900_bu_d900_gl65c54": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

@@ -1,0 +1,167 @@
+{
+  "function_name": "gl_func_000693A4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.176771+00:00",
+  "end_time": "2026-10-23T11:55:26.176783+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.176779+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_000693A4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 592, \"native_sha256\": \"532ca848754bddc7233d45aa7d28bea4af71b73c3bce7080d8e96146f5519126\", \"code_gain\": 592}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 148,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_000693A4(GLVertexElement *arg0, GLVertexContext *arg1, GLVertexS16 *arg2) {\n    f32 kscale;\n    f32 v[7];\n    f32 o0;\n    f32 o1;\n    f32 o2;\n    f32 ex;\n    f32 ey;\n    f32 ez;\n    f32 scale;\n    s16 idx;\n    s16 mode;\n    s32 var_a3;\n    s32 var_v1;\n    GLVertexEntry *entry;\n    GLVertexS16 *src;\n    f32 *mtx;\n    GLVertexS16 *out;\n    ex = arg0->transform->matrix[12] - arg1->field_38->matrix[12];\n    ey = arg0->transform->matrix[13] - arg1->field_38->matrix[13];\n    ez = arg0->transform->matrix[14] - arg1->field_38->matrix[14];\n    var_a3 = 0;\n    if (arg0->count > 0) {\n        mode = 0;\n        o0 = ex;\n        o1 = ey;\n        o2 = ez;\n        kscale = gl_693A4_rodata.weight_scale;\n        var_v1 = 0;\n        do {\n            entry = (GLVertexEntry *)((s32)arg0->entries + var_v1);\n            mode = entry->weight;\n            if (mode > 0) {\n                idx = entry->index;\n                src = (GLVertexS16 *)((s32)arg0->vertices + (var_a3 * 6));\n                v[0] = (f32)src->x;\n                v[1] = (f32)src->y;\n                v[2] = (f32)src->z;\n                mtx = arg0->transform->matrix;\n                o0 = mtx[8] * v[2] + (mtx[4] * v[1] + v[0] * mtx[0]);\n                o1 = mtx[9] * v[2] + (mtx[5] * v[1] + v[0] * mtx[1]);\n                o2 = mtx[10] * v[2] + (mtx[6] * v[1] + v[0] * mtx[2]);\n                v[0] = o0 + ex; v[1] = o1 + ey;\n                v[2] = o2 + ez;\n                out = (GLVertexS16 *)((s32)arg2 + (idx * 6));\n                if (mode == 0x64) {\n                    out->x = (s16) (s32) v[0];\n                    out->y = (s16) (s32) v[1];\n                    out->z = (s16)(s32) v[2];\n                    goto vertex_done;\n                }\n                scale = (f32) mode * kscale;\n                out->x += (s32)(v[0] * scale);\n                out->y += (s32)(v[1] * scale);\n                out->z += (s32)(v[2] * scale);\nvertex_done:\n                ;\n            }\n            var_a3 += 1;\n            var_v1 += 4;\n        } while (var_a3 < arg0->count);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Transforms packed signed vertices through a matrix and relative translation. Weight 100 replaces an indexed destination; other positive weights accumulate coordinates scaled by weight \u00d7 0.01f. Its broader deformation or blending role remains inferred.",
+      "observed_abi": "O32: a0 is GLVertexElement*, a1 is GLVertexContext*, and a2 is GLVertexS16*. Frame 0x38 saves s0 and f20; a2 is preserved in s0. No consistent scalar return is established. The original void declaration remains inferred.",
+      "calls": [],
+      "evidence": [
+        "Immutable expected object and original assembly establish a 592-byte leaf spanning game_libs offsets 0x693A4\u20130x695F4, with no direct or indirect calls.",
+        "Caller gl_func_000697C4 invokes gl_func_000693A4 at game_libs 0x69B44, equivalent to bootup Text 0x7E1B0; original relocation evidence identifies the target.",
+        "Element fields: +0x18 transform pointer, +0x1C four-byte signed index/weight entries, +0x20 signed count, +0x24 six-byte signed vertices. Context +0x38 supplies another transform pointer.",
+        "Matrix coefficients start at +0x70; translations occupy +0xA0/+0xA4/+0xA8. Signed lh/sh accesses establish coordinate and entry types.",
+        "Inspected family: gl_func_00068FBC, gl_func_000690A8, gl_func_000695F4, gl_func_00069688, gl_func_000697C4, gl_func_00069B94 and gl_func_00069C38. Five functions evidence the recovered shared partial context definition.",
+        "TextReloc sites 0x693EC/0x693F0 identify bootup symbol 1. Its RO_000054 label includes the first reference's 0x50 addend. The assigned scale load reaches ROM 0xDA2084, word 0x3C23D70A: 0.01f.",
+        "Data alias gl_693A4_rodata resolves to zero, reusing immutable expected D_00000000's address. Original relocation sites establish identity; the zero value does not.",
+        "An explicit iteration-join jump and compound coordinate updates reproduce all 148 original instruction words without the previously promoted integer temporaries.",
+        "Fresh standalone C compilations in both modes and both unit objects match expected bytes: SHA256 532ca848754bddc7233d45aa7d28bea4af71b73c3bce7080d8e96146f5519126. The assigned fallback is absent.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613 and the ROM equals baserom. All six compressed-block checks passed. All 197 previously exact normal and 161 previously exact NON_MATCHING unit functions remained exact.",
+        "Only the assigned source and undefined_syms_auto.txt contain changed tracked text. No expected objects, assembly, compiler flags or metrics were changed.",
+        "Current review unifies manager views through existing GLVertexContext/GLVertexLink/GLVertexS16 types from the same receiver passed697C4->693A4 and69688->69B94. Element payload and manager remain distinct; local memory-resident cursors preserve original lowering.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The related family implements weighted vertex deformation or blending."
+      ],
+      "unknowns": [
+        "Original type names, complete object layouts and declared return type.",
+        "Independent coordinator acceptance remains separate from local byte equality: its fuzzy-score gate may reject the two annotation-only differences. The expected function has no ELF relocations, while C retains the evidenced HI16/LO16 data import.",
+        "The supplied DFS rank is null. General call-graph coverage excludes unrecovered edges; this function's leaf classification also follows direct assembly inspection.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_000693A4.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 166,
+      "callers": [
+        "src/game_libs/game_libs_post1b:gl_func_000697C4"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "source_sha256": "b4efbb5445b1569ec58be28f5cbc15a03b6b2012dbe9b3389b2db1c0fb357595",
+    "implementation_path": "src/match_imports/gl_func_000693A4.c",
+    "implementation_sha256": "b4ab1bfab86f5f69d2d6e5086cddd6200e6ff77ee6b3bff08cc35fa4dd3d8f14",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "532ca848754bddc7233d45aa7d28bea4af71b73c3bce7080d8e96146f5519126"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_693A4_rodata",
+        "hi": 72,
+        "lo": 76,
+        "native_addend": 8768,
+        "original_addend": 8768,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_000693A4.json",
+      "nm": "scripts/match-bindings-gl_func_000693A4-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post1b.h",
+    "source_context_sha256": "45740ff555773b14044d65f42ccd0c4d27e5da3a2a544f61e5882205112bc573",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post1b.c",
+    "original_local_episode_sha256": "960e7051d0cf6130f6baa74b63ff095267f5da15331f8e952c76b56f686dbbe6",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,244 @@
+{
+  "function_name": "mgrproc_uso_func_00002850",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.341478+00:00",
+  "end_time": "2026-10-23T11:55:26.341491+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.341487+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "mgrproc_uso_func_00002850",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 212, \"native_sha256\": \"c4580deb158d4ac3fb91c2d95fc49287bb6f42b23f4a5f58832f81a6352fadd8\", \"code_gain\": 212}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 53,
+  "initial_m2c_source": null,
+  "final_source": "void mgrproc_uso_func_00002850(MgrState *state, s32 x, s32 y, s32 count) {\n    extern void import_0024E608(void *, s32, f32 *);\n    extern void import_0024F2C8(void *);\n    extern void import_0024F34C(void *, s32, s32, s32);\n    f32 buf[4];\n    volatile int pad0, pad1, pad2, pad3;\n    int n;\n    char *tgt;\n    int i;\n    int off;\n    int p1;\n    int p2;\n    buf[0] = 1.0f; buf[1] = 1.0f; buf[2] = 1.0f; buf[3] = 1.0f;\n    n = (int)((0, 255.0f) * state->field_7A4);\n    import_0024E608(&import_8024CAF8, n, buf);\n    tgt = &state->field_6F8;\n    import_0024F2C8(tgt);\n    i = count - 1;\n    if (i >= 0) {\n        off = i << 2;\n        p1 = x + off;\n        p2 = y - off;\n        do {\n            import_0024F34C(tgt, p1, p2, 3);\n            off -= 4;\n            p1 -= 4;\n            p2 += 4;\n        } while (off >= 0);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Appears to render repeated copies of an embedded context using white color and scaled opacity. Rendering semantics remain uncertain; copies receive coordinates (x+4*i, y-4*i) for descending i.",
+      "observed_abi": "a0: manager-state pointer; a1/a2: signed integer coordinates; a3: signed count. Caller 00001F30 truncates floating coordinates into integers. No intentional return value is established or consumed; the C implementation uses void.",
+      "calls": [
+        {
+          "site": "0x28B4",
+          "target": "unresolved",
+          "c_alias": "import_0024E608",
+          "observed_abi": "Recovered relocation identity import_0024E608. a0=&import_8024CAF8; a1=trunc(255*state[0x7A4]); a2 points to four 1.0f values. Return ignored; original return type unknown."
+        },
+        {
+          "site": "0x28C0",
+          "target": "unresolved",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "Recovered relocation identity import_0024F2C8. a0=state+0x6F8. Return ignored; original return type unknown."
+        },
+        {
+          "site": "0x28F0",
+          "target": "unresolved",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "Recovered relocation identity import_0024F34C. a0=state+0x6F8; a1=x+4*i; a2=y-4*i; a3=3. Return ignored; original return type unknown."
+        }
+      ],
+      "evidence": [
+        "Immutable expected object and original assembly establish one 212-byte function spanning module Text 0x2850\u20130x2924; the successor is separate.",
+        "Caller mgrproc_uso_func_00001F30 calls at 0x20D8 and 0x2170 with integer coordinates converted from float fields.",
+        "Inspected shared-layout family: 00000E04, 0000119C, 000012AC, 00001824, 00001C90, 00001F30 and 00002850. Recovered reusable MgrState in the assigned source.",
+        "Family evidence establishes the context address at 0x6F8, float fields 0x7A0\u20130x7C0, and integer fields 0x7C4/0x7C8. Unobserved bytes remain opaque.",
+        "Typed-member access, a volatile read and the documented comma-constant expression reproduce all 53 original instruction words.",
+        "Both builds match the target bytes; INCLUDE_ASM is removed. Normal unit instructions remain unchanged, and eight previously objdiff-exact NON_MATCHING functions retain their scores.",
+        "ROM matches baserom byte-for-byte, MD5 fa27089c425dbab99f19245c5c997613; all six compressed-block checks passed.",
+        "Objdiff reports 99.98113% because C adds a LO16 relocation for import_8024CAF8. Instruction bytes and the verified ROM are exact; no aliases or addresses were changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "0x7A4 represents opacity; import_0024E608 configures color, import_0024F2C8 begins rendering, and import_0024F34C draws a copy."
+      ],
+      "unknowns": [
+        "The three recovered import identities do not map uniquely to current module functions; they remain separate unresolved edges.",
+        "Original return types and volatile qualification are unknown.",
+        "The embedded context's extent and internal layout remain unknown; zero-valued aliases do not establish identity.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/mgrproc_uso_func_00002850.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "mgrproc_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/mgrproc_uso/mgrproc_uso:mgrproc_uso_func_00001F30"
+      ],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 10420,
+          "identity": "import_0024E608",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00002850.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 10432,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00002850.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 10480,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00002850.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/mgrproc_uso/mgrproc_uso.c",
+    "source_sha256": "126607732b076c5b950a730e6fdbf188046a4e4d6c71a87beecfc97dbc6ba52c",
+    "implementation_path": "src/match_imports/mgrproc_uso_func_00002850.c",
+    "implementation_sha256": "f7e00fde4b736b79fc3864970ce6eaa2d6832cbf691d7d892b410799deea0be6",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 100,
+          "kind": 4,
+          "symbol": "import_0024E608",
+          "original_identity": "mgrproc_uso:symbol_174:addend_0x0",
+          "original_site": 10420,
+          "payload_site": 10420,
+          "original_symbol_index": 174,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 112,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 10432,
+          "payload_site": 10432,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 160,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 10480,
+          "payload_site": 10480,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "c4580deb158d4ac3fb91c2d95fc49287bb6f42b23f4a5f58832f81a6352fadd8"
+    },
+    "native_data_proof": [
+      {
+        "alias": "import_8024CAF8",
+        "hi": 72,
+        "lo": 84,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "mgrproc_uso:symbol_173:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-mgrproc_uso_func_00002850.json",
+      "nm": "scripts/match-bindings-mgrproc_uso_func_00002850-nm.json"
+    },
+    "source_context": "src/match_imports/context_mgrproc_uso.h",
+    "source_context_sha256": "1af63fd38a9d3b41b9e75735adfc33a6d825561b93cff3c8cb449c7587038e8c",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/mgrproc_uso/mgrproc_uso.c",
+    "original_local_episode_sha256": "e18cc2c138eda642fa6554ead87da8cd48b1d0f141c9ea642f21c28ad4006446",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

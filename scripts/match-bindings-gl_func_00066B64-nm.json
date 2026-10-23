@@ -1,0 +1,19 @@
+{
+  "function": "gl_func_00066B64",
+  "raw_sha256": "1a8684ed9f95892b486b3673af7ef41b267d04f8889c99951b2ceea20fdc7bac",
+  "renames": {
+    "gl_import_66B64_osInitialize": "snw_port_gl_func_00066B64_gl_import_66B64_osInitialize",
+    "gl_storage_66B64_threadRegion": "snw_port_gl_func_00066B64_gl_storage_66B64_threadRegion",
+    "gl_import_66B64_threadEntry": "snw_port_gl_func_00066B64_gl_import_66B64_threadEntry",
+    "gl_import_66B64_osCreateThread": "snw_port_gl_func_00066B64_gl_import_66B64_osCreateThread",
+    "gl_import_66B64_osStartThread": "snw_port_gl_func_00066B64_gl_import_66B64_osStartThread"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00066B64_gl_import_66B64_osInitialize": 0,
+    "snw_port_gl_func_00066B64_gl_storage_66B64_threadRegion": 0,
+    "snw_port_gl_func_00066B64_gl_import_66B64_threadEntry": 0,
+    "snw_port_gl_func_00066B64_gl_import_66B64_osCreateThread": 0,
+    "snw_port_gl_func_00066B64_gl_import_66B64_osStartThread": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

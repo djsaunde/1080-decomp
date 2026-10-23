@@ -1,0 +1,21 @@
+{
+  "function": "func_00003638",
+  "raw_sha256": "683f819402585f0433bdfa71a5d31e9ca6529055705e80ecfaa35f0fa79456dd",
+  "renames": {
+    "D_000074DC": "snw_port_func_00003638_D_000074DC",
+    "func_00000000_3638_v": "snw_port_func_00003638_func_00000000_3638_v",
+    "func_3638_node": "snw_port_func_00003638_func_3638_node",
+    "func_3638_attach": "snw_port_func_00003638_func_3638_attach",
+    "func_3638_notify": "snw_port_func_00003638_func_3638_notify",
+    "func_3638_finalize": "snw_port_func_00003638_func_3638_finalize"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_00003638_D_000074DC": 29916,
+    "snw_port_func_00003638_func_00000000_3638_v": 0,
+    "snw_port_func_00003638_func_3638_node": 0,
+    "snw_port_func_00003638_func_3638_attach": 0,
+    "snw_port_func_00003638_func_3638_notify": 0,
+    "snw_port_func_00003638_func_3638_finalize": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

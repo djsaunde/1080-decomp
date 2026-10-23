@@ -1,0 +1,448 @@
+{
+  "function_name": "gl_func_00036224",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.860156+00:00",
+  "end_time": "2026-10-23T11:55:25.860169+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.860165+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00036224",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1136, \"native_sha256\": \"30ded414705351d62ec97ef45a58da7454032993a37c48d633871f084ae28321\", \"code_gain\": 1136}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 284,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00036224(char *o, char *arg1) {\n    extern Vec3 *gl_36224_direction(Vec3 *, char *, Vec3, Vec3, f32);\n    extern void gl_36224_matrix(f32 (*)[4], f32 (*)[4]);\n    extern void gl_36224_between(GlQuaternion *, Vec3 *, Vec3 *);\n    extern void gl_36224_product(GlQuaternion *, GlQuaternion *, GlQuaternion *);\n    extern void gl_36224_conjugate(GlQuaternion *, GlQuaternion *);\n    extern void gl_36224_rotation(f32 (*)[4], GlQuaternion *);\n    extern void gl_36224_translate(f32 (*)[4], Vec3 *);\n    union { Vec3 v; f32 p[3]; } vecA;\n    union { Vec3 v; f32 p[3]; } vecB;\n    f32 mtx[4][4];\n    f32 vecC[4];\n    f32 x1, y1;\n    union { Vec3 v; f32 pad[3]; } tmp;\n    char *src;\n    f32 x, y, z;\n    f32 z1;\n    Vec3 rv;\n    f32 out1[3];\n    f32 out2[3];\n    Vec3 * volatile pB;\n    GlQuaternion *pA;\n    void *ap = &pA;\n    (void)ap;\n    tmp.v = *(Vec3 *)(*(char **)(o + 0x1CC) + 0xF8);\n    vecA.p[0] = tmp.v.x; vecA.p[1] = tmp.v.y; vecA.p[2] = tmp.v.z;\n    vecA.v.x = vecA.p[0] - 160.0f;\n    vecA.v.y = vecA.p[1] - 120.0f;\n    tmp.v = *(Vec3 *)(*(char **)(o + 0x1CC) + 0xBC);\n    vecB.p[0] = tmp.v.x; vecB.p[1] = tmp.v.y; vecB.p[2] = tmp.v.z;\n    vecB.v.x = vecB.p[0] - 160.0f;\n    vecB.v.y = vecB.p[1] - 120.0f;\n    vecB.v.y = vecB.v.y * -1.0f;\n    vecA.v.y = vecA.v.y * -1.0f;\n    if (*(int *)(o + 0x1D8) != 0) {\n        vecB.v.x *= -1.0f;\n        vecB.v.y *= -1.0f;\n        vecB.v.z *= -1.0f;\n        vecA.v.x *= -1.0f;\n        vecA.v.y *= -1.0f;\n        vecA.v.z *= -1.0f;\n    }\n    {\n        rv = *gl_36224_direction(&tmp.v, o, vecA.v, *(Vec3 *)(o + 0x2C), *(f32 *)(o + 0x44));\n        *(f32 *)(o + 0xA0) = rv.x;\n        *(f32 *)(o + 0xA4) = rv.y;\n        *(f32 *)(o + 0xA8) = rv.z;\n        rv = *gl_36224_direction(&tmp.v, o, vecB.v, *(Vec3 *)(o + 0x2C), *(f32 *)(o + 0x44));\n        *(f32 *)(o + 0xAC) = rv.x;\n        *(f32 *)(o + 0xB0) = rv.y;\n        *(f32 *)(o + 0xB4) = rv.z;\n    }\n    gl_36224_matrix((f32 (*)[4])(*(char **)(o + 0x1D0) + 0xB4), mtx);\n    x = *(f32 *)(o + 0xA0);\n    y = *(f32 *)(o + 0xA4);\n    z = *(f32 *)(o + 0xA8);\n    out1[0] = mtx[2][0] * z + (mtx[1][0] * y + mtx[0][0] * x);\n    out1[1] = mtx[2][1] * z + (mtx[1][1] * y + mtx[0][1] * x);\n    out1[2] = mtx[2][2] * z + (mtx[1][2] * y + mtx[0][2] * x);\n    *(f32 *)(o + 0xA0) = out1[0];\n    *(f32 *)(o + 0xA4) = out1[1];\n    *(f32 *)(o + 0xA8) = out1[2];\n    x1 = *(f32 *)(o + 0xAC);\n    y1 = *(f32 *)(o + 0xB0);\n    z1 = *(f32 *)(o + 0xB4);\n    out2[0] = mtx[2][0] * z1 + (mtx[1][0] * y1 + mtx[0][0] * x1);\n    out2[1] = mtx[2][1] * z1 + (mtx[1][1] * y1 + mtx[0][1] * x1);\n    out2[2] = mtx[2][2] * z1 + (mtx[1][2] * y1 + mtx[0][2] * x1);\n    *(f32 *)(o + 0xAC) = out2[0];\n    *(f32 *)(o + 0xB0) = out2[1];\n    *(f32 *)(o + 0xB4) = out2[2];\n    src = *(char **)(o + 0x1CC);\n    ap = *(char **)(src + 0xB4);\n    if ((*(int *)(o + 0x1D4) & *(int *)((char *)ap + 0x10)) && (*(int *)(src + 0x108) != 0)) {\n        pA = (GlQuaternion *)(o + 0x68);\n        gl_36224_between(pA, (Vec3 *)(o + 0xA0), pB = (Vec3 *)(o + 0xAC));\n        gl_36224_product(pA, (GlQuaternion *)(o + 0x58), (GlQuaternion *)(o + 0x48));\n        gl_36224_between((GlQuaternion *)(o + 0x78), (Vec3 *)(o + 0xD0), pB);\n        tmp.v = *pB;\n        *(f32 *)(o + 0xD0) = tmp.v.x;\n        *(f32 *)(o + 0xD4) = tmp.v.y;\n        *(f32 *)(o + 0xD8) = tmp.v.z;\n    } else {\n        gl_36224_product((GlQuaternion *)(o + 0x78), (GlQuaternion *)(o + 0x48), (GlQuaternion *)(o + 0x48));\n        tmp.v = *(Vec3 *)(o + 0x48);\n        *(f32 *)(o + 0x58) = tmp.v.x;\n        *(f32 *)(o + 0x5C) = tmp.v.y;\n        *(f32 *)(o + 0x60) = tmp.v.z;\n        *(f32 *)(o + 0x64) = *(f32 *)(o + 0x54);\n    }\n    gl_36224_conjugate((GlQuaternion *)(o + 0x48), (GlQuaternion *)&vecC);\n    gl_36224_rotation((f32 (*)[4])arg1, (GlQuaternion *)&vecC);\n    gl_36224_translate((f32 (*)[4])arg1, (Vec3 *)(o + 0x38));\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Updates orientation from two screen-derived hemisphere directions, then constructs a translated rotation matrix. Likely a virtual-trackball handler; the input records' precise roles and flag meanings remain uncertain.",
+      "observed_abi": "O32: a0 is the state pointer; a1 is the output-matrix pointer. Caller gl_func_0003604C supplies *(state+0x14)+0x30 as a1. Frame is 0x108 bytes, preserving ra/s0/s1/s2. No deliberate return value is established; the C void declaration does not prove the original return type.",
+      "calls": [
+        {
+          "site": "0x36384",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003695C",
+          "c_alias": "gl_36224_direction",
+          "observed_abi": "a0=Vec3 output, a1=state, two Vec3 values followed by f32 scale. First vector occupies a2/a3 and stack+0x10; second occupies stack+0x14..0x1C; scale is stack+0x20. Returned v0 points to the copied Vec3."
+        },
+        {
+          "site": "0x36404",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003695C",
+          "c_alias": "gl_36224_direction",
+          "observed_abi": "Same output-pointer/by-value-vector/f32 ABI, using the second screen point. Returned v0 points to the copied Vec3."
+        },
+        {
+          "site": "0x36448",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005E138",
+          "c_alias": "gl_36224_matrix",
+          "observed_abi": "a0=linked pointer at state+0x1D0 plus 0xB4; a1=stack 4x4 matrix output. Result register unused."
+        },
+        {
+          "site": "0x365B0",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005D588",
+          "c_alias": "gl_36224_between",
+          "observed_abi": "a0=quaternion output at state+0x68; a1=Vec3 at +0xA0; a2=Vec3 at +0xAC. Callee writes cross-product xyz and dot-product w. Result register unused."
+        },
+        {
+          "site": "0x365C4",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005D054",
+          "c_alias": "gl_36224_product",
+          "observed_abi": "a0=quaternion +0x68; a1=quaternion +0x58; a2=output quaternion +0x48. Hamilton product stored through a2; result register unused."
+        },
+        {
+          "site": "0x365D4",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005D588",
+          "c_alias": "gl_36224_between",
+          "observed_abi": "a0=quaternion output +0x78; a1=Vec3 +0xD0; a2=Vec3 +0xAC, reloaded from stack+0x50 in the jal delay slot. Result register unused."
+        },
+        {
+          "site": "0x36614",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005D054",
+          "c_alias": "gl_36224_product",
+          "observed_abi": "a0=quaternion +0x78; a1=a2=quaternion +0x48, producing an in-place Hamilton product. Result register unused."
+        },
+        {
+          "site": "0x3665C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005CCC4",
+          "c_alias": "gl_36224_conjugate",
+          "observed_abi": "a0=quaternion +0x48; a1=stack quaternion output. Negates xyz and preserves w. Result register unused."
+        },
+        {
+          "site": "0x36668",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005DDE4",
+          "c_alias": "gl_36224_rotation",
+          "observed_abi": "a0=output 4x4 matrix; a1=stack quaternion. Writes quaternion-derived rotation matrix; result register unused."
+        },
+        {
+          "site": "0x36674",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "c_alias": "gl_36224_translate",
+          "observed_abi": "a0=output matrix; a1=Vec3 at state+0x38. Adds xyz to matrix+0x30/+0x34/+0x38. No explicit result use."
+        }
+      ],
+      "evidence": [
+        "Original assembly and immutable expected bytes agree: 284 words, SHA-256 30ded414705351d62ec97ef45a58da7454032993a37c48d633871f084ae28321. Both compiled C builds have the same bytes and hash.",
+        "Complete ROM is byte-identical to baserom; MD5 fa27089c425dbab99f19245c5c997613. All six compressed-block verifier checks passed with other=0; their existing relocation-only differences remain.",
+        "No regressions among 573 previously raw-exact NON_MATCHING functions. Normal function bytes and symbol sets are unchanged versus rebuilding the original source.",
+        "Inspected caller 3604C, initializer 36074 and all seven resolved callees. Reused Vec3 and recovered shared GlQuaternion: xyz at +0x00/+0x04/+0x08, scalar w at +0x0C, evidenced by 36074, 36224, 5CCC4, 5D054, 5D588 and 5DDE4.",
+        "State accesses include Vec3s +0x2C/+0x38/+0xA0/+0xAC/+0xD0; scale +0x44; quaternions +0x48/+0x58/+0x68/+0x78; links +0x1CC/+0x1D0; mask +0x1D4; sign-flip flag +0x1D8.",
+        "The +0x1CC record supplies Vec3s +0xBC/+0xF8, a flags-record link +0xB4 with flags at record+0x10, and enable word +0x108. Screen coordinates are biased by 160 and 120, with y inverted.",
+        "All ten original JAL sites retain supplied relocation identities. Seven distinct import aliases resolve to zero with inline provenance; zero itself is not used to infer identity.",
+        "Volatile pB with an in-call assignment reproduces its original spill and delay-slot reload. Experiments and build evidence remain under build/orchestration-scratch/.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The hemisphere/rim mapping and cross/dot quaternion updates implement virtual-trackball rotation.",
+        "The +0xBC/+0xF8 vectors represent two input positions; their temporal ordering is not established."
+      ],
+      "unknowns": [
+        "Original return declarations, typedef names, input provenance and flag semantics remain unknown.",
+        "No unresolved direct or indirect call exists within the assigned function. Transitive imports inside its callees were not fully recovered.",
+        "Ghidra binary listing was rejected by the tool approval gate because approval policy is never; no Ghidra-derived claims were used.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00036224.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_0003604C"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003695C",
+          "kind": "relocation",
+          "site": 305648,
+          "identity": "func_04AFC8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1653,
+          "cached_first_reference": "func_04AFC8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003695C",
+          "kind": "relocation",
+          "site": 305776,
+          "identity": "func_04AFC8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1653,
+          "cached_first_reference": "func_04AFC8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005E138",
+          "kind": "relocation",
+          "site": 305844,
+          "identity": "func_0727A4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1654,
+          "cached_first_reference": "func_0727A4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005D588",
+          "kind": "relocation",
+          "site": 306204,
+          "identity": "func_071BF4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1655,
+          "cached_first_reference": "func_071BF4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005D054",
+          "kind": "relocation",
+          "site": 306224,
+          "identity": "func_0716C0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1656,
+          "cached_first_reference": "func_0716C0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005D588",
+          "kind": "relocation",
+          "site": 306240,
+          "identity": "func_071BF4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1655,
+          "cached_first_reference": "func_071BF4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005D054",
+          "kind": "relocation",
+          "site": 306304,
+          "identity": "func_0716C0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1656,
+          "cached_first_reference": "func_0716C0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005CCC4",
+          "kind": "relocation",
+          "site": 306376,
+          "identity": "func_071330",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1657,
+          "cached_first_reference": "func_071330",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005DDE4",
+          "kind": "relocation",
+          "site": 306388,
+          "identity": "func_072450",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 1658,
+          "cached_first_reference": "func_072450",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "kind": "relocation",
+          "site": 306400,
+          "identity": "func_072EE8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00036224.s",
+          "sym_index": 308,
+          "cached_first_reference": "func_072EE8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00036224.c",
+    "implementation_sha256": "76db6654f7f2dc9aefdc5e5283a15e2476766503f35b2332b130ffcd41a2f380",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 352,
+          "kind": 4,
+          "symbol": "gl_36224_direction",
+          "original_identity": "bootup_uso:symbol_1653:addend_0x0",
+          "original_site": 305648,
+          "payload_site": 305648,
+          "original_symbol_index": 1653,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 480,
+          "kind": 4,
+          "symbol": "gl_36224_direction",
+          "original_identity": "bootup_uso:symbol_1653:addend_0x0",
+          "original_site": 305776,
+          "payload_site": 305776,
+          "original_symbol_index": 1653,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 548,
+          "kind": 4,
+          "symbol": "gl_36224_matrix",
+          "original_identity": "bootup_uso:symbol_1654:addend_0x0",
+          "original_site": 305844,
+          "payload_site": 305844,
+          "original_symbol_index": 1654,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 908,
+          "kind": 4,
+          "symbol": "gl_36224_between",
+          "original_identity": "bootup_uso:symbol_1655:addend_0x0",
+          "original_site": 306204,
+          "payload_site": 306204,
+          "original_symbol_index": 1655,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 928,
+          "kind": 4,
+          "symbol": "gl_36224_product",
+          "original_identity": "bootup_uso:symbol_1656:addend_0x0",
+          "original_site": 306224,
+          "payload_site": 306224,
+          "original_symbol_index": 1656,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 944,
+          "kind": 4,
+          "symbol": "gl_36224_between",
+          "original_identity": "bootup_uso:symbol_1655:addend_0x0",
+          "original_site": 306240,
+          "payload_site": 306240,
+          "original_symbol_index": 1655,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1008,
+          "kind": 4,
+          "symbol": "gl_36224_product",
+          "original_identity": "bootup_uso:symbol_1656:addend_0x0",
+          "original_site": 306304,
+          "payload_site": 306304,
+          "original_symbol_index": 1656,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1080,
+          "kind": 4,
+          "symbol": "gl_36224_conjugate",
+          "original_identity": "bootup_uso:symbol_1657:addend_0x0",
+          "original_site": 306376,
+          "payload_site": 306376,
+          "original_symbol_index": 1657,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1092,
+          "kind": 4,
+          "symbol": "gl_36224_rotation",
+          "original_identity": "bootup_uso:symbol_1658:addend_0x0",
+          "original_site": 306388,
+          "payload_site": 306388,
+          "original_symbol_index": 1658,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1104,
+          "kind": 4,
+          "symbol": "gl_36224_translate",
+          "original_identity": "bootup_uso:symbol_308:addend_0x0",
+          "original_site": 306400,
+          "payload_site": 306400,
+          "original_symbol_index": 308,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "30ded414705351d62ec97ef45a58da7454032993a37c48d633871f084ae28321"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00036224.json",
+      "nm": "scripts/match-bindings-gl_func_00036224-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "29b54fc55889182dea96043c451d1b81809bb60e71467099b241588bf6b6c868",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

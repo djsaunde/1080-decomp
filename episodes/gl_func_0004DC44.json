@@ -1,0 +1,295 @@
+{
+  "function_name": "gl_func_0004DC44",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.051985+00:00",
+  "end_time": "2026-10-23T11:55:26.051997+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.051993+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0004DC44",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 144, \"native_sha256\": \"3d47ae1a4c2dd7ee1a1bbd1533572df3697a867b2dca39adef0fc1a5aedc0c4e\", \"code_gain\": 144}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 36,
+  "initial_m2c_source": null,
+  "final_source": "Node4D3E4 *gl_func_0004DC44(Node4D3E4 **head, int flag) {\n Node4D3E4 *node;\n u32 saved;\n if(flag!=0) {\n  if(gl_4DC44_busy!=0) {\n   do {} while(gl_4DC44_busy!=0);\n  }\n  saved=gl_4DC44_word(1);\n }\n node=*head;\n if(node==0) {\n  gl_4DC44_print(&gl_4DC44_data+0x20330);\n }\n gl_4DC44_remove(node,head);\n if(flag!=0) {\n  gl_4DC44_word(saved);\n }\n return node;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "When flagged, poll the original busy word, save a returned control word, remove the node at a head slot, and restore that word. Always return the captured original node. The full control-word/system purpose remains unknown.",
+      "observed_abi": "a0Node4D3E4** head,a1flag. Frame20; incominghomes20/24, savedword18,node1C. Busyimport1970 at+0 is repeatedlyread. Sym1310 receives1 andreturnsphysicalv0 savedword; later receivesexactword. Remove2101 receivesa0node=*head,a1headslot. Data2+20330diagnosticifnodeNULL. Nodecapturedbeforecallsandreturned evenif headchanges.",
+      "calls": [
+        {
+          "site": "0x4dc78",
+          "target": "Text+0x7E710 (original Sym1310; no unique current function)",
+          "c_alias": "gl_4DC44_word",
+          "observed_abi": "a0=1,physicalv0 savedword. Mapping unresolved is retained; no API/boundary invented."
+        },
+        {
+          "site": "0x4dc98",
+          "target": "gl_func_00061478",
+          "c_alias": "gl_4DC44_print",
+          "observed_abi": "a0=DataSym2+20330, no other printf argument prepared. Diagnostic may not return; full runtime not assumed."
+        },
+        {
+          "site": "0x4dca4",
+          "target": "gl_func_0004D3E4",
+          "c_alias": "gl_4DC44_remove",
+          "observed_abi": "a0=capturedNode,a1=headslot. Verified canonical Node50/54 family; result ignored."
+        },
+        {
+          "site": "0x4dcb8",
+          "target": "Text+0x7E710 (original Sym1310; no unique current function)",
+          "c_alias": "gl_4DC44_word",
+          "observed_abi": "a0=previously saved physicalv0word, result ignored. Same originalidentity+0 asfirstcall."
+        }
+      ],
+      "evidence": [
+        "Original144B[4DC44,4DCD4) equalsROM[E32D1C,E32DAC). EightUSOsites preservebusyimport1970(183B3BDB,82423F,3EC10),Text1310(01811575,521A1E,7E710)twice,DataSym2+20330,Text306\u219261478 andText2101\u21924D3E4. All16ELFnormal/NMsites preservezeroaliasidentity/in-placeaddend. Busyimport anddiagnosticData2 aredistinctobjects despitezeroaliases.",
+        "Original61478/4D3E4 bodies independentlyROMverified. Text7E710 hasno uniquecurrentfunctionmap; a96BROMprefix beginsMFC0 andwordbitoperations, its hash recordedwithoutassertingfunctionsize orOSAPI. Both callgraph unresolvededges arepreserved in Episode/analysis.",
+        "Three stockCFEcontrols: oldcollapsedglobal/generic164B37w111B; actualidentities,float-freeABIs,distinctbusy/data andoriginalif/do-whilepolling144B5w5B; fivewordsall saved/node stackslotinterchange. One causal declarationorder swap changesonlyslots1C/18\u219218/1C andproduces144B0w0B. No random cap-permutationbattery, padding, flags orforcedbytes.",
+        "Reuses existing Node4D3E4 partialtype verbatim. Five O32assertions checkpointer/u32 widths andNode58links50/54. Pollingvolatileview expressesoriginal repeatedexternalreads; no otherfield madevolatile. Diagnosticcompilerrawstockequivalent; actualm2c andimmutableobjectGhidra saved.",
+        "4800 original/normal/NM boundedMIPSexecutions against1600 independentwrappermodels pass: flags0/1/-1/2,1/2/3node rings, busy0/1/2/7ones\u21920, savedword passthrough, adversarialheadchangesonword/restorecalls, callerGPR/outgoinghomeclobbers, exactcallargs/pollreads/nonstackRAM/guards, physicalv0/v1 andreturnedSP/RA/s0..s8.1404modelsreturn,103faultprefix and93nonreturndiagnosticprefix. Removehookusesverifiedordered4D3E4model;wordhelperprivilegedcode/formatterarenotexecuted.",
+        "Firstnormalbuild rejectedleftoverNON_MATCHINGdelimiterinlocaladoption; fixedonlythatfunctiondelimiterandpreservedlogs. Secondactualgate rejectedoldNMclip2E1E0becauseunclippedtext2E1D8issmaller. SourcebodyNM164\u2192144shiftscomplete62F08tail2E190\u21922E17C; tail80Brawexactends2E1CC. Readonlycheckerprovesremaining12Bzero,no relocs/functions/symbolsdiscarded. ParentauthorizedsoleMakefilenumericvalue2E1E0\u21922E1CC; overrides551E0/55B10unchanged. ExplicitNMrebuildandfulloriginalverificationpass; no waiver.",
+        "Finalnormal/NMmake-j2,ROM/sixblocks,progress/exact/prior-familygatespass,+144\u2192432164/762344. Strict6605availableunassignedbodiesidentical,5737rawexactbefore;92explicitmodechecks include4D3E4,57194both136B,62F08both80B,1CC98.7016canonicalpreimagesunchanged. No ASM/expected/header/helper/linker/flagschanges.",
+        "RetrospectiveoriginalEpisodecreatedandvalidatedwithactualm2c/hash andexplicitinitialfailures. No fabricated timing/token/modelattempts; isolatedpatchawaitsindependentcoordinatorreview.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Control word may represent processor/system state, but its API/name/full contract is not established by this wrapper or prefix."
+      ],
+      "unknowns": [
+        "Sym1310Text7E710 remains unmapped to a unique currentfunction; originalidentity,addend andopaqueABI preserved. No boundary or callable addressinvented.",
+        "Busyflagownership/fullstorageextent,concurrency ordering andallruntimewaitterminationunknown. Finitepolls areboundedcontrols only.",
+        "Full61478 formatter andprivilegedwordhelper semantics notexecuted. Diagnostic models retainbothopaque-return andnonreturnprefix possibilities; nullfaultcases aremachinecontrols,notvalidCobjects.",
+        "No registeredinteriorentrydoesnotexcludeunrecordedruntime/interiorcallers. Backgroundlabelretained; runtime/graphunchanged.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0004DC44.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_000469A8",
+        "src/game_libs/game_libs_post0b:game_libs_func_0004CEFC"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 402180,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004DC44.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004D3E4",
+          "kind": "relocation",
+          "site": 402192,
+          "identity": "func_061A50",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004DC44.s",
+          "sym_index": 2101,
+          "cached_first_reference": "func_061A50",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 402148,
+          "identity": "func_07E710",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004DC44.s",
+          "sym_index": 1310,
+          "cached_first_reference": "func_07E710",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 402212,
+          "identity": "func_07E710",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004DC44.s",
+          "sym_index": 1310,
+          "cached_first_reference": "func_07E710",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_0004DC44.c",
+    "implementation_sha256": "b65a3c747bcccc12e1796133bec44ea546333e23141f0f92a624ade120221105",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 52,
+          "kind": 4,
+          "symbol": "gl_4DC44_word",
+          "original_identity": "bootup_uso:symbol_1310:addend_0x0",
+          "original_site": 402148,
+          "payload_site": 402148,
+          "original_symbol_index": 1310,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 84,
+          "kind": 4,
+          "symbol": "gl_4DC44_print",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 402180,
+          "payload_site": 402180,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 96,
+          "kind": 4,
+          "symbol": "gl_4DC44_remove",
+          "original_identity": "bootup_uso:symbol_2101:addend_0x0",
+          "original_site": 402192,
+          "payload_site": 402192,
+          "original_symbol_index": 2101,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 116,
+          "kind": 4,
+          "symbol": "gl_4DC44_word",
+          "original_identity": "bootup_uso:symbol_1310:addend_0x0",
+          "original_site": 402212,
+          "payload_site": 402212,
+          "original_symbol_index": 1310,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "3d47ae1a4c2dd7ee1a1bbd1533572df3697a867b2dca39adef0fc1a5aedc0c4e"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_4DC44_busy",
+        "hi": 20,
+        "lo": 24,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1970:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4DC44_data",
+        "hi": 68,
+        "lo": 88,
+        "native_addend": 131888,
+        "original_addend": 131888,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0004DC44.json",
+      "nm": "scripts/match-bindings-gl_func_0004DC44-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "59ee9515455a79cda8d05c9e396842db1d28cec127112f95c158419b61e8aa28",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

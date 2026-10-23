@@ -1,0 +1,29 @@
+{
+  "function": "gl_func_0004C928",
+  "raw_sha256": "ceed1b825c4d34e22fa9abe462a883d4055dd7555dcaa3a1d5e733c35bbbd25c",
+  "renames": {
+    "gl_4C928_state_base": "snw_port_gl_func_0004C928_gl_4C928_state_base",
+    "gl_4C928_poll": "snw_port_gl_func_0004C928_gl_4C928_poll",
+    "gl_4C928_result_base": "snw_port_gl_func_0004C928_gl_4C928_result_base",
+    "gl_4C928_process": "snw_port_gl_func_0004C928_gl_4C928_process",
+    "gl_4C928_mode": "snw_port_gl_func_0004C928_gl_4C928_mode",
+    "gl_4C928_queue_base": "snw_port_gl_func_0004C928_gl_4C928_queue_base",
+    "gl_4C928_send": "snw_port_gl_func_0004C928_gl_4C928_send",
+    "gl_4C928_find": "snw_port_gl_func_0004C928_gl_4C928_find",
+    "gl_4C928_strings_base": "snw_port_gl_func_0004C928_gl_4C928_strings_base",
+    "gl_4C928_log": "snw_port_gl_func_0004C928_gl_4C928_log"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_0004C928_gl_4C928_state_base": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_poll": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_result_base": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_process": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_mode": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_queue_base": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_send": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_find": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_strings_base": 0,
+    "snw_port_gl_func_0004C928_gl_4C928_log": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

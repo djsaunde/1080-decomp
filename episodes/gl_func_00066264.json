@@ -1,0 +1,273 @@
+{
+  "function_name": "gl_func_00066264",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.126463+00:00",
+  "end_time": "2026-10-23T11:55:26.126475+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.126471+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00066264",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 132, \"native_sha256\": \"f15e3e19b6b26531cdcbeb1b2c47224fb8eb901822ab527d5b86b87fb33c6459\", \"code_gain\": 132}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 33,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00066264(void *unused, char *source, char *destination, unsigned int length) {\n    unsigned int remainder;\n    unsigned int aligned;\n    int scratch[2];\n    remainder = length & 3;\n    if (remainder != 0) {\n        aligned = length & ~3U;\n        gl_66264_transfer(destination, source, aligned);\n        gl_66264_transfer((char *)scratch, source + aligned, 4);\n        if (remainder != 0) {}\n        gl_66264_copy((char *)scratch, destination + aligned, remainder);\n    } else {\n        gl_66264_transfer(destination, source, length);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Transfers a four-byte-aligned prefix, fetches a complete word into stack scratch, then copies the remaining bytes to the destination. Backend/device semantics remain uncertain.",
+      "observed_abi": "a0 is homed but unused; a1 supplies the source address, a2 the destination address, and a3 the byte count. Callee results are ignored. No independent return value is established, so the original wrapper return contract remains unknown.",
+      "calls": [
+        {
+          "site": "0x66290",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066720",
+          "c_alias": "gl_66264_transfer",
+          "observed_abi": "a0=destination, a1=source, a2=length&~3; result ignored."
+        },
+        {
+          "site": "0x662A8",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066720",
+          "c_alias": "gl_66264_transfer",
+          "observed_abi": "a0=stack scratch, a1=source+aligned, a2=4; result ignored."
+        },
+        {
+          "site": "0x662C0",
+          "target": "src/game_libs/game_libs_post1c:game_libs_func_00070324",
+          "c_alias": "gl_66264_copy",
+          "observed_abi": "a0=stack scratch, a1=destination+aligned, a2=length&3. The bcopy implementation leaves destination in v0; this caller ignores it."
+        },
+        {
+          "site": "0x662D0",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066720",
+          "c_alias": "gl_66264_transfer",
+          "observed_abi": "a0=destination, a1=source, a2=length; result ignored."
+        }
+      ],
+      "evidence": [
+        "Original assembly and immutable expected object establish one 132-byte function with a 0x30-byte frame.",
+        "Both C builds match expected SHA-256 f15e3e19b6b26531cdcbeb1b2c47224fb8eb901822ab527d5b86b87fb33c6459.",
+        "A redundant empty remainder test resolves the reload/address scheduling swap without emitting additional instructions.",
+        "Original relocations identify func_07AD8C and func_084990. Their distinct import aliases each resolve to zero and use inline provenance comments.",
+        "Inspected caller gl_func_00033EB8, callees gl_func_00066720 and game_libs_func_00070324, sibling gl_func_00066794, and backend gl_func_000339B4. No shared object layout is accessed by the assigned wrapper.",
+        "Observed stack offsets: aligned count +0x18, remainder +0x1C, scratch +0x20. Only four scratch bytes are transferred.",
+        "ROM is byte-identical to baserom; MD5 fa27089c425dbab99f19245c5c997613. All six compressed-block checks pass.",
+        "Symbol-aware objdiff reports 99.393936% solely because named imports differ from the expected object's collapsed call symbol; instruction bytes match exactly.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The full-word scratch transfer accommodates a backend requiring lengths divisible by four."
+      ],
+      "unknowns": [
+        "Original wrapper and transfer-callee return contracts, unused leading argument meaning, and original scratch type/extent.",
+        "No unresolved calls are recorded for the assigned function; deeper import and indirect coverage remains outside this assignment.",
+        "Regression byte checks passed for all 156 previously exact functions in the modified unit. Global raw-versus-report discrepancies outside that unit were not investigated.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00066264.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post:gl_func_00033EB8"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066720",
+          "kind": "relocation",
+          "site": 502012,
+          "identity": "func_07AD8C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066264.s",
+          "sym_index": 2419,
+          "cached_first_reference": "func_07AD8C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066720",
+          "kind": "relocation",
+          "site": 502036,
+          "identity": "func_07AD8C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066264.s",
+          "sym_index": 2419,
+          "cached_first_reference": "func_07AD8C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1c:game_libs_func_00070324",
+          "kind": "relocation",
+          "site": 502060,
+          "identity": "func_084990",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066264.s",
+          "sym_index": 2378,
+          "cached_first_reference": "func_084990",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066720",
+          "kind": "relocation",
+          "site": 502076,
+          "identity": "func_07AD8C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00066264.s",
+          "sym_index": 2419,
+          "cached_first_reference": "func_07AD8C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "source_sha256": "b4efbb5445b1569ec58be28f5cbc15a03b6b2012dbe9b3389b2db1c0fb357595",
+    "implementation_path": "src/match_imports/gl_func_00066264.c",
+    "implementation_sha256": "e701546911cec035b8968cd60b651b9b4d6e18bac7e8791598032fab20a9d8bd",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 44,
+          "kind": 4,
+          "symbol": "gl_66264_transfer",
+          "original_identity": "bootup_uso:symbol_2419:addend_0x0",
+          "original_site": 502012,
+          "payload_site": 502012,
+          "original_symbol_index": 2419,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 68,
+          "kind": 4,
+          "symbol": "gl_66264_transfer",
+          "original_identity": "bootup_uso:symbol_2419:addend_0x0",
+          "original_site": 502036,
+          "payload_site": 502036,
+          "original_symbol_index": 2419,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 92,
+          "kind": 4,
+          "symbol": "gl_66264_copy",
+          "original_identity": "bootup_uso:symbol_2378:addend_0x0",
+          "original_site": 502060,
+          "payload_site": 502060,
+          "original_symbol_index": 2378,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 108,
+          "kind": 4,
+          "symbol": "gl_66264_transfer",
+          "original_identity": "bootup_uso:symbol_2419:addend_0x0",
+          "original_site": 502076,
+          "payload_site": 502076,
+          "original_symbol_index": 2419,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "f15e3e19b6b26531cdcbeb1b2c47224fb8eb901822ab527d5b86b87fb33c6459"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00066264.json",
+      "nm": "scripts/match-bindings-gl_func_00066264-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post1b.h",
+    "source_context_sha256": "45740ff555773b14044d65f42ccd0c4d27e5da3a2a544f61e5882205112bc573",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post1b.c",
+    "original_local_episode_sha256": "15eeda88f331b864cdf76956fdbd05344abd83cfcd178cae7e2635186276657c",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

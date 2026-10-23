@@ -1,0 +1,248 @@
+{
+  "function_name": "arcproc_uso_func_00001B04",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.477915+00:00",
+  "end_time": "2026-10-23T11:55:25.477936+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.477929+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "arcproc_uso_func_00001B04",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 132, \"native_sha256\": \"69036af4c03e4d5842a78dbc532a546eb322496e2a0f225abf06d224593f32e9\", \"code_gain\": 132}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 33,
+  "initial_m2c_source": null,
+  "final_source": "void arcproc_uso_func_00001B04(Arc1B04Object *arg) {\n    int result;\n    result = arcproc_uso_import_165_1B04(&D_arc1B04_a, 0x40100);\n    if (result == 0) return;\n    result = arcproc_uso_import_116_1B04(arg->unk50);\n    if (result != 0) {\n        arg->unk60 = 1;\n        ((int *)&D_arc1B04_a)[0x40 / 4] = 8;\n        ((int *)&D_arc1B04_a)[0x44 / 4] = 6;\n    } else {\n        ((int *)&D_arc1B04_a)[0x40 / 4] = 6;\n        arcproc_uso_import_117_1B04(arg, 7, 0);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Conditional state setup. If the first import returns zero, exit. Otherwise test the object's +0x50 word through another import. A nonzero result sets object+0x60 to 1 and global+0x40/+0x44 to 8/6. A zero result sets global+0x40 to 6 and invokes a third import. State meanings remain unknown.",
+      "observed_abi": "MIPS o32: a0 supplies the object address. Frame size 0x18; a0 saved at sp+0x18 and ra at sp+0x14. Reads a 32-bit word at object+0x50 and writes a 32-bit integer at +0x60. The function does not normalize v0 before returning; its intentional return contract is unknown despite the C void declaration.",
+      "calls": [
+        {
+          "site": "0x1B1C",
+          "target": "unresolved",
+          "c_alias": "arcproc_uso_import_165_1B04",
+          "observed_abi": "a0=Sym10 base, a1=0x40100; v0 tested for zero. Original relocation identifies imported Sym165, whose target name/address remains unknown."
+        },
+        {
+          "site": "0x1B2C",
+          "target": "unresolved",
+          "c_alias": "arcproc_uso_import_116_1B04",
+          "observed_abi": "a0=32-bit word loaded from object+0x50; v0 tested for zero. Original relocation identifies imported Sym116, whose target name/address remains unknown."
+        },
+        {
+          "site": "0x1B70",
+          "target": "unresolved",
+          "c_alias": "arcproc_uso_import_117_1B04",
+          "observed_abi": "a0=object, a1=7, a2=0; result unused locally. Original relocation identifies imported Sym117; an ignored result does not establish void."
+        }
+      ],
+      "evidence": [
+        "Original assembly and immutable expected object establish a complete 0x84-byte function at 0x1B04..0x1B88.",
+        "Original ROM TextReloc records identify three distinct imported symbols: Sym165, Sym116 and Sym117. Section offsets require +4 to obtain the original assembly callsite offsets.",
+        "Both global address pairs relocate through Sym10, establishing a shared base for the first call and the +0x40/+0x44 stores.",
+        "Repeated inline array casts reproduce the shared v1 base across the branch; named pointers rematerialized it separately.",
+        "Both compiled functions equal the immutable expected bytes: SHA256 69036af4c03e4d5842a78dbc532a546eb322496e2a0f225abf06d224593f32e9.",
+        "make -j2 all verify-blocks passed. ROM MD5 is fa27089c425dbab99f19245c5c997613.",
+        "All 11 previously objdiff-exact symbols in this unit remain exact. Final objdiff is 99.42424% solely from relocation annotations absent in expected; raw instruction bytes match.",
+        "Recovered callers: none. Only the assigned source and zero-valued alias definitions changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Object+0x50 is a pointer or handle; the partial C layout models it as void*.",
+        "Constants 1, 6 and 8 represent state or mode values."
+      ],
+      "unknowns": [
+        "Imported target names and addresses remain unresolved; zero-valued aliases do not identify callees.",
+        "Object and global field meanings, complete layouts and intentional return contracts remain unknown.",
+        "No recovered callers or game.uso DFS reachability are available; this remains a background candidate.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/arcproc_uso_func_00001B04.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "arcproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 6940,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001B04.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 6956,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001B04.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 7024,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001B04.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/arcproc_uso/arcproc_uso_tail1.c",
+    "source_sha256": "037fbf21733b101fd34bbfc066e82fd79ac5526ea4a01b5b7092158cb302eae0",
+    "implementation_path": "src/match_imports/arcproc_uso_func_00001B04.c",
+    "implementation_sha256": "d6bde9484f7b9988e054ec2e58cfee6d1265438a38df2cd909a378b35704294c",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 24,
+          "kind": 4,
+          "symbol": "arcproc_uso_import_165_1B04",
+          "original_identity": "arcproc_uso:symbol_165:addend_0x0",
+          "original_site": 6940,
+          "payload_site": 6936,
+          "original_symbol_index": 165,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 40,
+          "kind": 4,
+          "symbol": "arcproc_uso_import_116_1B04",
+          "original_identity": "arcproc_uso:symbol_116:addend_0x0",
+          "original_site": 6956,
+          "payload_site": 6952,
+          "original_symbol_index": 116,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 108,
+          "kind": 4,
+          "symbol": "arcproc_uso_import_117_1B04",
+          "original_identity": "arcproc_uso:symbol_117:addend_0x0",
+          "original_site": 7024,
+          "payload_site": 7020,
+          "original_symbol_index": 117,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "69036af4c03e4d5842a78dbc532a546eb322496e2a0f225abf06d224593f32e9"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_arc1B04_a",
+        "hi": 12,
+        "lo": 28,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "arcproc_uso:symbol_10:base_addend_0x0"
+      },
+      {
+        "alias": "D_arc1B04_a",
+        "hi": 48,
+        "lo": 56,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "arcproc_uso:symbol_10:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-arcproc_uso_func_00001B04.json",
+      "nm": "scripts/match-bindings-arcproc_uso_func_00001B04-nm.json"
+    },
+    "source_context": "src/match_imports/context_arcproc_uso_tail1.h",
+    "source_context_sha256": "3397bdf508a8572c23f94a47047f9c9be18e614474961fbfee512d56fcb11d7b",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/arcproc_uso/arcproc_uso_tail1.c",
+    "original_local_episode_sha256": "d7bd71bd0d5c655c5211aeb73ef061263f7130ef9c2d4ff32da11637af372df7",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

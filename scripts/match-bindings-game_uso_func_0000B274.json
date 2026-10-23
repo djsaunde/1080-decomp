@@ -1,0 +1,29 @@
+{
+  "function": "game_uso_func_0000B274",
+  "raw_sha256": "834bcc3fff95856b8ebbef00d01bd5024227fed8429a18e04125c678e087156b",
+  "renames": {
+    "game_uso_B274_context": "snw_port_game_uso_func_0000B274_game_uso_B274_context",
+    "game_uso_D_807FFA40": "snw_port_game_uso_func_0000B274_game_uso_D_807FFA40",
+    "game_uso_func_063734": "snw_port_game_uso_func_0000B274_game_uso_func_063734",
+    "import_000F8678": "snw_port_game_uso_func_0000B274_import_000F8678",
+    ".rodata": "snw_port_game_uso_func_0000B274__rodata",
+    "game_uso_D_807FFA50": "snw_port_game_uso_func_0000B274_game_uso_D_807FFA50",
+    "game_uso_D_807FFA58": "snw_port_game_uso_func_0000B274_game_uso_D_807FFA58",
+    "game_uso_func_04D700": "snw_port_game_uso_func_0000B274_game_uso_func_04D700",
+    "import_8005C1A8": "snw_port_game_uso_func_0000B274_import_8005C1A8",
+    "game_uso_B274_set_prim_color": "snw_port_game_uso_func_0000B274_game_uso_B274_set_prim_color"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_uso_func_0000B274_game_uso_B274_context": 0,
+    "snw_port_game_uso_func_0000B274_game_uso_D_807FFA40": 0,
+    "snw_port_game_uso_func_0000B274_game_uso_func_063734": 0,
+    "snw_port_game_uso_func_0000B274_import_000F8678": 0,
+    "snw_port_game_uso_func_0000B274__rodata": 0,
+    "snw_port_game_uso_func_0000B274_game_uso_D_807FFA50": 0,
+    "snw_port_game_uso_func_0000B274_game_uso_D_807FFA58": 0,
+    "snw_port_game_uso_func_0000B274_game_uso_func_04D700": 0,
+    "snw_port_game_uso_func_0000B274_import_8005C1A8": 0,
+    "snw_port_game_uso_func_0000B274_game_uso_B274_set_prim_color": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

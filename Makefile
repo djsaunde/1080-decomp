@@ -105,11 +105,11 @@ build/src/arcproc_uso/arcproc_uso_o0_12C.c.o: TRUNCATE_TEXT := 0x114
 # b-epilogue (kit XIX); edg keeps source evaluation order (see the donors).
 ARC_O0_B4_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_o0_B4.cpp.o
 $(ARC_O0_B4_DONOR): OPT_FLAGS := -O0
-build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: REPLACE_FUNC_BODY += arcproc_uso_func_000000B4=$(ARC_O0_B4_DONOR)
+build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_000000B4=$(ARC_O0_B4_DONOR)
 build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: $(ARC_O0_B4_DONOR)
 ARC_O0_12C_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_o0_12C.cpp.o
 $(ARC_O0_12C_DONOR): OPT_FLAGS := -O0
-build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: REPLACE_FUNC_BODY += arcproc_uso_func_0000012C=$(ARC_O0_12C_DONOR)
+build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_0000012C=$(ARC_O0_12C_DONOR)
 build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: $(ARC_O0_12C_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F1F0.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F390.c.o: OPT_FLAGS := -O0
@@ -131,66 +131,64 @@ build/src/bootup_uso/bootup_uso.c.o: TRUNCATE_TEXT := 0xF1F0
 # .rodata jumptable reloc is renamed func_00002DA4_rodata and pinned to the
 # table at bootup_uso RoData +0x4F4.
 BOOTUP_2DA4_DONOR := build/src/bootup_uso/bootup_uso_o2_2DA4.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00002DA4=$(BOOTUP_2DA4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00002DA4=$(BOOTUP_2DA4_DONOR)
 # CAE8 = per-round state reset. bootup_uso is C++ too: IDO 7.1 NCC donor
 # (V3 operator=(const V3 &) forwarding to a by-value set; named locals pin the
 # frame), 126/126 words. docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116.
 BOOTUP_CAE8_DONOR := build/src/bootup_uso/bootup_uso_ncc_CAE8.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000CAE8=$(BOOTUP_CAE8_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000CAE8=$(BOOTUP_CAE8_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CAE8_DONOR)
 # 485C = vector debug push, NCC donor (V3 ctor forwarding to set, block-scope b2).
 BOOTUP_485C_DONOR := build/src/bootup_uso/bootup_uso_ncc_485C.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000485C=$(BOOTUP_485C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000485C=$(BOOTUP_485C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_485C_DONOR)
 # CFA0 = ground-contact / tint refresh, NCC donor (virtual hooks, V3 copies).
 BOOTUP_CFA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CFA0.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000CFA0=$(BOOTUP_CFA0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000CFA0=$(BOOTUP_CFA0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CFA0_DONOR)
 # E740 = tile copy from the root object's buffer, E800 = config + root virtual
 # call; NCC donors.
 BOOTUP_E740_DONOR := build/src/bootup_uso/bootup_uso_ncc_E740.cpp.o
 BOOTUP_E800_DONOR := build/src/bootup_uso/bootup_uso_ncc_E800.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000E740=$(BOOTUP_E740_DONOR) func_0000E800=$(BOOTUP_E800_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E740=$(BOOTUP_E740_DONOR) func_0000E800=$(BOOTUP_E800_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_E740_DONOR) $(BOOTUP_E800_DONOR)
 # B1B4 = sound bank lazy loader + registry add (cfront Bank chain, inline Reg::add); NCC donor.
 BOOTUP_B1B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_B1B4.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000B1B4=$(BOOTUP_B1B4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000B1B4=$(BOOTUP_B1B4_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B1B4_DONOR)
 # h2h 1204 = alpha fade + state callback; nested clamps (decode fix), void alias for discarded calls; NCC donor.
 H2H_1204_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp.o
-build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: REPLACE_FUNC_BODY += h2hproc_uso_func_00001204=$(H2H_1204_DONOR)
+build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00001204=$(H2H_1204_DONOR)
 build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1204_DONOR)
 # 1360 = per-frame menu draw; C++ (edg-order virtual call). Still NON_MATCHING
 # (font pointer / width colours in the item tail): NM comparison object only.
 H2H_1360_NM_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1360.cpp.o
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: REPLACE_FUNC_BODY += h2hproc_uso_func_00001360=$(H2H_1360_NM_DONOR)
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1360_NM_DONOR)
 # 7328 = message-queue drain with the {cur, nxt} list iterator + by-value Msg match; NCC donor.
 BOOTUP_7328_DONOR := build/src/bootup_uso/bootup_uso_ncc_7328.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00007328=$(BOOTUP_7328_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00007328=$(BOOTUP_7328_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7328_DONOR)
 # A9C = mode letter -> flag bit: switch assigning one result variable (compare chain, 'n'/'s' result hoisted into v1); NCC donor.
 BOOTUP_A9C_DONOR := build/src/bootup_uso/bootup_uso_ncc_A9C.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00000A9C=$(BOOTUP_A9C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000A9C=$(BOOTUP_A9C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_A9C_DONOR)
 # 7204 = new {word, M4} record + inline L::add(n) forwarding to the import (separate result web); NCC donor.
 BOOTUP_7204_DONOR := build/src/bootup_uso/bootup_uso_ncc_7204.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00007204=$(BOOTUP_7204_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00007204=$(BOOTUP_7204_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7204_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
 BOOTUP_4948_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00004948=$(BOOTUP_4948_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00004948=$(BOOTUP_4948_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_4948_DONOR)
 # D900 = event handler; C++ (edg case-order compare chain, Vec3 operator temps).
 # Still NON_MATCHING (operator temp slots, case-6 zero colour): NM comparison object only.
 BOOTUP_D900_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_D900.cpp.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000D900=$(BOOTUP_D900_NM_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000E270=$(BOOTUP_E270_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E270=$(BOOTUP_E270_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o: TRUNCATE_TEXT := 0x334
 build/src/bootup_uso/bootup_uso_F434.c.o build/non_matching/src/bootup_uso/bootup_uso_F434.c.o: OPT_FLAGS := -O0
@@ -203,7 +201,7 @@ build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/boot
 # F81C: -O0 C++ donor(s) for func_0000F81C (edg -O0 has no dead closing-brace branch)
 BOOTUP_F81C_DONOR := build/src/bootup_uso/bootup_uso_ncc_F81C.cpp.o
 $(BOOTUP_F81C_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: REPLACE_FUNC_BODY += func_0000F81C=$(BOOTUP_F81C_DONOR)
+build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: private REPLACE_FUNC_BODY += func_0000F81C=$(BOOTUP_F81C_DONOR)
 build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: $(BOOTUP_F81C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x138
 build/src/bootup_uso/bootup_uso_o0_FBCC.c.o: TRUNCATE_TEXT := 0x5C
@@ -212,7 +210,7 @@ build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/
 # FC28: -O0 C++ donor(s) for func_0000FC28 func_0000FD4C func_0000FEE8 (edg -O0 has no dead closing-brace branch)
 BOOTUP_FC28_DONOR := build/src/bootup_uso/bootup_uso_ncc_FC28.cpp.o
 $(BOOTUP_FC28_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: REPLACE_FUNC_BODY += func_0000FC28=$(BOOTUP_FC28_DONOR) func_0000FD4C=$(BOOTUP_FC28_DONOR) func_0000FEE8=$(BOOTUP_FC28_DONOR)
+build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: private REPLACE_FUNC_BODY += func_0000FC28=$(BOOTUP_FC28_DONOR) func_0000FD4C=$(BOOTUP_FC28_DONOR) func_0000FEE8=$(BOOTUP_FC28_DONOR)
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: $(BOOTUP_FC28_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x4C8
 # 2026-07-10: func_000102A4 (-O0 island) carved out of tail2 into o0_1024C.
@@ -292,7 +290,7 @@ build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso
 # 11B5C: -O0 C++ donor(s) for func_00011B5C (edg -O0 has no dead closing-brace branch)
 BOOTUP_11B5C_DONOR := build/src/bootup_uso/bootup_uso_ncc_11B5C.cpp.o
 $(BOOTUP_11B5C_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: REPLACE_FUNC_BODY += func_00011B5C=$(BOOTUP_11B5C_DONOR)
+build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: private REPLACE_FUNC_BODY += func_00011B5C=$(BOOTUP_11B5C_DONOR)
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: $(BOOTUP_11B5C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x114
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o: TRUNCATE_TEXT := 0x114
@@ -338,7 +336,7 @@ build/src/bootup_uso/bootup_uso_o0_11E00.c.o: TRUNCATE_TEXT := 0x27C
 build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x27C
 BOOTUP_11E00_DONOR := build/src/bootup_uso/bootup_uso_ncc_11E00.cpp.o
 $(BOOTUP_11E00_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: REPLACE_FUNC_BODY += func_00011E00=$(BOOTUP_11E00_DONOR) func_00011ED4=$(BOOTUP_11E00_DONOR) func_00011FA8=$(BOOTUP_11E00_DONOR)
+build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: private REPLACE_FUNC_BODY += func_00011E00=$(BOOTUP_11E00_DONOR) func_00011ED4=$(BOOTUP_11E00_DONOR) func_00011FA8=$(BOOTUP_11E00_DONOR)
 build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: $(BOOTUP_11E00_DONOR)
 build/src/bootup_uso/bootup_uso_o0_1207C.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_1207C.c.o: OPT_FLAGS := -O0
 # 0x2C = two frameless -O0 FALL-OFF fns (1207C 0xC + its dead `$exit` pair
@@ -373,7 +371,7 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: SUFFIX_BYTES_FORCE := func_00013B20=0
 # 1304C = fire-grid blur + texture DL; C++ (inline next() appends, uopt block
 # boundaries placed with empty ifs). NCC donor, exact.
 BOOTUP_1304C_DONOR := build/src/bootup_uso/bootup_uso_ncc_1304C.cpp.o
-build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: REPLACE_FUNC_BODY += func_0001304C=$(BOOTUP_1304C_DONOR)
+build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_0001304C=$(BOOTUP_1304C_DONOR)
 build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: $(BOOTUP_1304C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_00013B20=0x00000000,0x00000000,0x00000000
 # game_libs split around the 56 KB RSP microcode blob at 0xEBF8..0x1CA10.
@@ -575,7 +573,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 124: 4E244 NCC donor + placeholder host: 0x2e83c -> 0x2e84c (62F08 NM offset 0x2e7fc).
 # agent-c run 126: 46FA8 NCC donor + placeholder host: 0x2e84c -> 0x2e854 (62F08 NM offset 0x2e804).
 # agent-g run 128: 5F0B8 NM (111 vs 113 words; 61478 suffix pad re-aligns): 0x2e854 -> 0x2e834 (62F08 NM offset 0x2e7e4).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e834 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e850 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -683,22 +681,22 @@ build/src/game_libs/game_libs_mid.c.o: TRUNCATE_TEXT := 0x860
 # one NCC -O0 donor TU (65/65 words each; cfe 67 words).
 GAMELIBS_O0_8FFC_DONOR := build/src/game_libs/game_libs_ncc_o0_8FFC.cpp.o
 $(GAMELIBS_O0_8FFC_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: REPLACE_FUNC_BODY += gl_func_00008FFC=$(GAMELIBS_O0_8FFC_DONOR) gl_func_00009100=$(GAMELIBS_O0_8FFC_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += gl_func_00008FFC=$(GAMELIBS_O0_8FFC_DONOR) gl_func_00009100=$(GAMELIBS_O0_8FFC_DONOR)
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_8FFC_DONOR)
 GAMELIBS_O0_8E48_DONOR := build/src/game_libs/game_libs_ncc_o0_8E48.cpp.o
 $(GAMELIBS_O0_8E48_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: REPLACE_FUNC_BODY += gl_func_00008E48=$(GAMELIBS_O0_8E48_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += gl_func_00008E48=$(GAMELIBS_O0_8E48_DONOR)
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_8E48_DONOR)
 GAMELIBS_O0_9204_DONOR := build/src/game_libs/game_libs_ncc_o0_9204.cpp.o
 $(GAMELIBS_O0_9204_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: REPLACE_FUNC_BODY += gl_func_00009204=$(GAMELIBS_O0_9204_DONOR) gl_func_000092F4=$(GAMELIBS_O0_9204_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += gl_func_00009204=$(GAMELIBS_O0_9204_DONOR) gl_func_000092F4=$(GAMELIBS_O0_9204_DONOR)
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_9204_DONOR)
 build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: OPT_FLAGS := -O0
 # 0x100 -> 0x1D8 (2026-10-15 agent-g): the -O0 gl_func_0000959C (0xD8) moved in from game_libs_tail.c.
 build/src/game_libs/game_libs_o0_949C.c.o: TRUNCATE_TEXT := 0x1D8
 GAMELIBS_O0_959C_DONOR := build/src/game_libs/game_libs_ncc_o0_959C.cpp.o
 $(GAMELIBS_O0_959C_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: REPLACE_FUNC_BODY += gl_func_0000959C=$(GAMELIBS_O0_959C_DONOR)
+build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: private REPLACE_FUNC_BODY += gl_func_0000959C=$(GAMELIBS_O0_959C_DONOR)
 build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: $(GAMELIBS_O0_959C_DONOR)
 # the .s carried 959C's one-word zero alignment pad (fn size 0xD8); the
 # NCC body is 0xD4, so re-add the all-zero pad word after the splice.
@@ -737,7 +735,7 @@ build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_SUFFIX_BYTES_F
 # moved out to game_libs_o0_949C.c; EBC8 NM offset 0x55f8 -> 0x5560, clip = offset + 0x30.
 # tail clip 0x5590 -> 0x558c (2026-10-16 agent-g): gl_func_0000C5B0 unwrapped; its 8-byte _pad.s
 # block became a 4-byte SUFFIX_BYTES_FORCE word. EBC8 NM offset 0x5560 -> 0x555c, clip = offset + 0x30.
-build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x558c gl_func_0000EBC8=0x2c gl_func_0000C5B0=0x8c
+build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x5580 gl_func_0000EBC8=0x2c gl_func_0000C5B0=0x8c
 # tail clip 0x5550 -> 0x5554 (2026-09-11 agent-g): gl_func_0000A670 real def is 62w vs its
 # old 61w NM body; EBC8 NM offset 0x5520 -> 0x5524, clip = offset + 0x30.
 # 0x17a38 -> 0x17a48 (2026-09-05 agent-g): game_libs_func_000343F4 absorbed the
@@ -1231,9 +1229,9 @@ build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_mips3_6C740.c.o build/non_matching/src/game_libs/game_libs_mips3_6C740.c.o: MIPSISET := -mips3 -32
 build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := game_libs_func_0006C8AC=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C90C=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C9F4=$(GAMELIBS_6C9F4_DONOR) gl_func_0006F534=$(GAMELIBS_6F534_DONOR) gl_func_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_func_0006E1A4=$(GAMELIBS_6E1A4_DONOR) gl_func_0006FFE4=$(GAMELIBS_6FFE4_DONOR) gl_func_0006FAD4=$(GAMELIBS_6FAD4_DONOR) game_libs_func_0006C740=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C77C=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C7B8=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C7E4=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C820=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C87C=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C9A8=$(GAMELIBS_6C740_DONOR) gl_func_0006D0F4=$(GAMELIBS_6D0F4_DONOR) gl_func_0006DA74=$(GAMELIBS_6DA74_DONOR) gl_func_0006CDB4=$(GAMELIBS_6CDB4_DONOR) gl_func_0006CF54=$(GAMELIBS_6CDB4_DONOR) game_libs_func_0006C714=$(GAMELIBS_6C740_DONOR) gl_func_0006D554=$(GAMELIBS_6D554_DONOR) gl_func_0006D6F4=$(GAMELIBS_6D6F4_DONOR) gl_func_0006D7CC=$(GAMELIBS_6D7CC_DONOR) gl_func_0006CAD4=$(GAMELIBS_6CAD4_DONOR) gl_func_0006CB84=$(GAMELIBS_6CB84_DONOR) gl_func_0006CC64=$(GAMELIBS_6CC64_DONOR) gl_func_0006D270=$(GAMELIBS_6D270_DONOR) gl_func_00070040=$(GAMELIBS_70040_DONOR) gl_func_0006F088=$(GAMELIBS_6F088_DONOR) gl_func_0006F38C=$(GAMELIBS_6F38C_DONOR) gl_func_0006F3BC=$(GAMELIBS_6F3BC_DONOR) gl_func_0006DC0C=$(GAMELIBS_6DC0C_DONOR) gl_func_0006DD14=$(GAMELIBS_6DD14_DONOR) gl_func_0006F8A4=$(GAMELIBS_6F8A4_DONOR) gl_func_0006FB54=$(GAMELIBS_6FB54_DONOR) gl_func_0006FE5C=$(GAMELIBS_6FE5C_DONOR) gl_func_0006F3E4=$(GAMELIBS_6F3E4_DONOR) gl_func_0006E224=$(GAMELIBS_6E224_DONOR) gl_func_0006E894=$(GAMELIBS_6E224_DONOR) game_libs_func_0006F1D8=$(GAMELIBS_6F1D8_DONOR) game_libs_func_0006F1FC=$(GAMELIBS_6F1D8_DONOR) game_libs_func_0006F17C=$(GAMELIBS_6F17C_DONOR) game_libs_func_0006F218=$(GAMELIBS_6F218_DONOR) game_libs_func_0006FBE4=$(GAMELIBS_6FBE4_DONOR)
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY += game_libs_func_0006FC70=$(GAMELIBS_6FC70_DONOR) gl_func_0006FDE8=$(GAMELIBS_6FC70_DONOR) gl_func_0006C484=$(GAMELIBS_6C484_DONOR) gl_func_0006CD44=$(GAMELIBS_6CD44_DONOR) gl_func_0006F834=$(GAMELIBS_6F834_DONOR) gl_func_0006F634=$(GAMELIBS_6F634_DONOR) gl_func_0006CC14=$(GAMELIBS_6CC14_DONOR) game_libs_func_0006F684=$(GAMELIBS_6F684_DONOR) gl_func_0006D964=$(GAMELIBS_6D964_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += game_libs_func_0006FC70=$(GAMELIBS_6FC70_DONOR) gl_func_0006FDE8=$(GAMELIBS_6FC70_DONOR) gl_func_0006C484=$(GAMELIBS_6C484_DONOR) gl_func_0006CD44=$(GAMELIBS_6CD44_DONOR) gl_func_0006F834=$(GAMELIBS_6F834_DONOR) gl_func_0006F634=$(GAMELIBS_6F634_DONOR) gl_func_0006CC14=$(GAMELIBS_6CC14_DONOR) game_libs_func_0006F684=$(GAMELIBS_6F684_DONOR) gl_func_0006D964=$(GAMELIBS_6D964_DONOR)
 # gl_func_0006EF08: -O2 body emits the 0x58 target function (jr-ra + delay nop);
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY += gl_func_0006EF64=$(GAMELIBS_6EF64_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += gl_func_0006EF64=$(GAMELIBS_6EF64_DONOR)
 # append the 1-word all-zero alignment pad at 0x6EF60 so gl_func_0006EF64 sits at
 # +0x5C. FORCE because the function ends in the natural jr-ra;nop epilogue.
 # gl_func_0006C484: the 16-byte inter-object pad at 0x6C710 that the old
@@ -1398,26 +1396,26 @@ build/src/game_libs/game_libs_o1_6DA74.c.o build/non_matching/src/game_libs/game
 # four colour float literals is renamed gl_func_00002B94_rodata and pinned to
 # bootup.uso RoData +0xCB8 (in-unit compile cannot bake the %lo words).
 GAMELIBS_2B94_DONOR := build/src/game_libs/game_libs_o2_2B94.c.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: REPLACE_FUNC_BODY += gl_func_00002B94=$(GAMELIBS_2B94_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00002B94=$(GAMELIBS_2B94_DONOR)
 # 7344 = per-panel HUD-element updater (7-entry jumptable switch), IDO 7.1
 # -O2 donor: game_libs_o2_7344.c (225/225 word-exact). Spliced only so the
 # donor-local .rodata jumptable reloc is renamed gl_func_00007344_rodata and
 # pinned to the table at bootup.uso RoData +0xDE8.
 GAMELIBS_7344_DONOR := build/src/game_libs/game_libs_o2_7344.c.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: REPLACE_FUNC_BODY += gl_func_00007344=$(GAMELIBS_7344_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00007344=$(GAMELIBS_7344_DONOR)
 # 3C0C = free-slot allocator (3B1C/3DB8 family), IDO 7.1 -O2 donor:
 # game_libs_o2_3C0C.c (107/107 word-exact). Spliced only so the donor-local
 # .rodata reloc of its 0.1f literal is renamed gl_func_00003C0C_rodata and
 # pinned to bootup.uso RoData +0xCF8.
 GAMELIBS_3C0C_DONOR := build/src/game_libs/game_libs_o2_3C0C.c.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: REPLACE_FUNC_BODY += gl_func_00003C0C=$(GAMELIBS_3C0C_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00003C0C=$(GAMELIBS_3C0C_DONOR)
 # 25A8 = mode -> eight 0x18-stride slot values + alloc(24) init (6-entry
 # jumptable switch, cases 2..7 + default), IDO 7.1 -O2 donor:
 # game_libs_o2_25A8.c (166/166 word-exact). Spliced only so the donor-local
 # .rodata jumptable reloc is renamed gl_func_000025A8_rodata and pinned to
 # the table at bootup.uso RoData +0xC9C.
 GAMELIBS_25A8_DONOR := build/src/game_libs/game_libs_o2_25A8.c.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: REPLACE_FUNC_BODY += gl_func_000025A8=$(GAMELIBS_25A8_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000025A8=$(GAMELIBS_25A8_DONOR)
 GAMELIBS_68990_DONOR := build/src/game_libs/game_libs_o2_68990.c.o
 # 44B78 = video-mode selector (9-case jumptable switch), IDO 7.1 -O2 donor:
 # game_libs_o2_44B78.c (73/73 word-exact). Spliced only so the C switch's
@@ -1431,31 +1429,31 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # gl_func_00052CD4_rodata and pinned to the USO RoData at +0x1BE4 (the 29CCC
 # recipe). Uses += (composes with the := line above).
 GAMELIBS_52CD4_DONOR := build/src/game_libs/game_libs_o2_52CD4.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00052CD4=$(GAMELIBS_52CD4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00052CD4=$(GAMELIBS_52CD4_DONOR)
 # 3AC5C = constructor + token-stream loop (5-entry jumptable switch), IDO 7.1
 # -O2 donor: game_libs_o2_3AC5C.c (127/127 word-exact). Spliced only so the
 # donor-local .rodata jumptable reloc is renamed gl_func_0003AC5C_rodata and
 # pinned to the USO RoData at +0x1A90 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_3AC5C_DONOR := build/src/game_libs/game_libs_o2_3AC5C.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003AC5C=$(GAMELIBS_3AC5C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003AC5C=$(GAMELIBS_3AC5C_DONOR)
 # 61F8C = (cmd, val) record loader (5-entry jumptable switch, cases 1..5),
 # IDO 7.1 -O2 donor: game_libs_o2_61F8C.c. Spliced only so the donor-local
 # .rodata jumptable reloc is renamed gl_func_00061F8C_rodata and pinned to the
 # USO RoData at +0x2080 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_61F8C_DONOR := build/src/game_libs/game_libs_o2_61F8C.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00061F8C=$(GAMELIBS_61F8C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00061F8C=$(GAMELIBS_61F8C_DONOR)
 # 4E96C = 9-way parameter-stream decoder (9-entry jumptable switch, cases
 # 109..117), IDO 7.1 -O2 donor: game_libs_o2_4E96C.c. Spliced only so the
 # donor-local .rodata jumptable reloc is renamed gl_func_0004E96C_rodata and
 # pinned to the USO RoData at +0x1B84 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_4E96C_DONOR := build/src/game_libs/game_libs_o2_4E96C.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0004E96C=$(GAMELIBS_4E96C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E96C=$(GAMELIBS_4E96C_DONOR)
 # 62A2C = camera/transform blend step. game_libs_post0b holds C++ too: the
 # real source is an IDO 7.1 NCC donor (Vec3 class with a by-value operator=,
 # inline flerp, implicit record assignment), 209/209 words byte-exact.
 # docs/IDO_CODEGEN.md#ncc-game-libs-vec3-62a2c. Uses += (composes).
 GAMELIBS_62A2C_DONOR := build/src/game_libs/game_libs_ncc_62A2C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00062A2C=$(GAMELIBS_62A2C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_62A2C_DONOR)
 # 4E584 = static initializer (__sti__) of a global object (two protocol member ctors); NCC donor, __sti__ symbol renamed (a symbol name only; no bytes change).
 GAMELIBS_4E584_DONOR := build/src/game_libs/game_libs_ncc_4E584.cpp.o
@@ -1463,134 +1461,134 @@ $(GAMELIBS_4E584_DONOR): src/game_libs/game_libs_ncc_4E584.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=gl_func_0004E584 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0004E584=$(GAMELIBS_4E584_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E584=$(GAMELIBS_4E584_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E584_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E37C_DONOR)
 # 55470 = command-stream opcode dispatcher (switch = edg case-order compare chain, real cfront virtual in default); NCC donor.
 GAMELIBS_55470_DONOR := build/src/game_libs/game_libs_ncc_55470.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00055470=$(GAMELIBS_55470_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00055470=$(GAMELIBS_55470_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_55470_DONOR)
 # 56974 / 56D14 = combine-mode selectors (switch = edg case-order compare chain, inline next() append); one NCC donor TU.
 GAMELIBS_56974_DONOR := build/src/game_libs/game_libs_ncc_56974.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00056974=$(GAMELIBS_56974_DONOR) gl_func_00056D14=$(GAMELIBS_56974_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00056974=$(GAMELIBS_56974_DONOR) gl_func_00056D14=$(GAMELIBS_56974_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_56974_DONOR)
 # 41A9C = debug-menu registration + two new objects + {cur, nxt} child walk; if/return next(); NCC donor.
 GAMELIBS_41A9C_DONOR := build/src/game_libs/game_libs_ncc_41A9C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00041A9C=$(GAMELIBS_41A9C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041A9C=$(GAMELIBS_41A9C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41A9C_DONOR)
 # 43654 = display-list setup with flag-gated subobject; cfe NM body as C++ + a dead if(!sp34){} in the else append (permuter); NCC donor.
 GAMELIBS_43654_DONOR := build/src/game_libs/game_libs_ncc_43654.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00043654=$(GAMELIBS_43654_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043654=$(GAMELIBS_43654_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43654_DONOR)
 # 38728 = child-list update with matrix rebuild + owner attach + virtual slot 3 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_38728_DONOR := build/src/game_libs/game_libs_ncc_38728.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038728=$(GAMELIBS_38728_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038728=$(GAMELIBS_38728_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38728_DONOR)
 # 38598 = child-list walk: matrix rebuild on flag 0x200 + virtual slot 1 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_38598_DONOR := build/src/game_libs/game_libs_ncc_38598.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038598=$(GAMELIBS_38598_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038598=$(GAMELIBS_38598_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38598_DONOR)
 # 38964 = child-list walk firing virtual slots 4/5 (same {cur, nxt} iterator as 3D48C); NCC donor.
 GAMELIBS_38964_DONOR := build/src/game_libs/game_libs_ncc_38964.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038964=$(GAMELIBS_38964_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038964=$(GAMELIBS_38964_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38964_DONOR)
 # 3D48C = child-list walk through a stack {cur, nxt} iterator (next() advances via nxt->next); NCC donor.
 GAMELIBS_3D48C_DONOR := build/src/game_libs/game_libs_ncc_3D48C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003D48C=$(GAMELIBS_3D48C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003D48C=$(GAMELIBS_3D48C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D48C_DONOR)
 # 372D4 = sub-node position copy + rot reset + virtual slot 3 (smart-pointer handle local); NCC donor.
 GAMELIBS_372D4_DONOR := build/src/game_libs/game_libs_ncc_372D4.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_000372D4=$(GAMELIBS_372D4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000372D4=$(GAMELIBS_372D4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_372D4_DONOR)
 # 3DBEC = find a child in the owner list and copy its position out ({cur, nxt} iterator, first() wrapper); NCC donor.
 GAMELIBS_3DBEC_DONOR := build/src/game_libs/game_libs_ncc_3DBEC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0003DBEC=$(GAMELIBS_3DBEC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003DBEC=$(GAMELIBS_3DBEC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DBEC_DONOR)
 # 3DDC0 = find a child in the owner list, copy its +0x5C position out (first() wrapper); NCC donor.
 GAMELIBS_3DDC0_DONOR := build/src/game_libs/game_libs_ncc_3DDC0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0003DDC0=$(GAMELIBS_3DDC0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003DDC0=$(GAMELIBS_3DDC0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DDC0_DONOR)
 # 3E1B0 = find a child in the owner list, copy its +0xA0 position out (first() wrapper); NCC donor.
 GAMELIBS_3E1B0_DONOR := build/src/game_libs/game_libs_ncc_3E1B0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003E1B0=$(GAMELIBS_3E1B0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003E1B0=$(GAMELIBS_3E1B0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3E1B0_DONOR)
 # 41EDC = child-list walk calling virtual slot 2 on flag 4 (first() wrapper, inline Node::tick); NCC donor.
 GAMELIBS_41EDC_DONOR := build/src/game_libs/game_libs_ncc_41EDC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00041EDC=$(GAMELIBS_41EDC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041EDC=$(GAMELIBS_41EDC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41EDC_DONOR)
 # 3D2C8 = count the owner's children, register the count, then reset each child (two {cur, nxt} iterators, first() wrapper); NCC donor.
 GAMELIBS_3D2C8_DONOR := build/src/game_libs/game_libs_ncc_3D2C8.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003D2C8=$(GAMELIBS_3D2C8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003D2C8=$(GAMELIBS_3D2C8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D2C8_DONOR)
 # 47F9C = child-list refresh: dirty flag on position change, copy the cached record ({cur, nxt} iterator, V3 class); NCC donor.
 GAMELIBS_47F9C_DONOR := build/src/game_libs/game_libs_ncc_47F9C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00047F9C=$(GAMELIBS_47F9C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00047F9C=$(GAMELIBS_47F9C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_47F9C_DONOR)
 # 478FC = child-list update: flag 2 by mask, rebuild offset vector, scale vector when dirty ({cur, nxt} iterator, Flags sub-object); NCC donor.
 GAMELIBS_478FC_DONOR := build/src/game_libs/game_libs_ncc_478FC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_000478FC=$(GAMELIBS_478FC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000478FC=$(GAMELIBS_478FC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_478FC_DONOR)
 # 40E90 = child-list transform refresh: copy or blend the cached record, then virtual slot 1 ({cur, nxt} iterator, first() wrapper); NCC donor.
 GAMELIBS_40E90_DONOR := build/src/game_libs/game_libs_ncc_40E90.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00040E90=$(GAMELIBS_40E90_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040E90=$(GAMELIBS_40E90_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40E90_DONOR)
 # 40974 = child-list update: publish, owner link, record copy/blend on 0x20000, matrix rebuild on 0x200, virtual slot 3 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_40974_DONOR := build/src/game_libs/game_libs_ncc_40974.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00040974=$(GAMELIBS_40974_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040974=$(GAMELIBS_40974_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40974_DONOR)
 # 3863C = lock owner, walk children: back-link + virtual slot 2 when flag 4 and mask & callee() ({cur, nxt} iterator, first() wrapper); NCC donor.
 GAMELIBS_3863C_DONOR := build/src/game_libs/game_libs_ncc_3863C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0003863C=$(GAMELIBS_3863C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003863C=$(GAMELIBS_3863C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3863C_DONOR)
 # 432BC = flagged-child transform: copy or negate src into dst, matrix-transform it between two callbacks ({cur, nxt} iterator, if-form next()); NCC donor.
 GAMELIBS_432BC_DONOR := build/src/game_libs/game_libs_ncc_432BC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_000432BC=$(GAMELIBS_432BC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000432BC=$(GAMELIBS_432BC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_432BC_DONOR)
 # 38DC0 = child matrix refresh: for every flagged child either hand its matrix to a callback or multiply it by the owner's 4x4 ({cur, nxt} iterator, if/return next() + first(), dead if (n) {} in the j loop); NCC donor.
 GAMELIBS_38DC0_DONOR := build/src/game_libs/game_libs_ncc_38DC0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00038DC0=$(GAMELIBS_38DC0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038DC0=$(GAMELIBS_38DC0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38DC0_DONOR)
 # 393B8 = locked child matrix refresh with owner publish/back-link and virtual tick; returns a blank int import ({cur, nxt} iterator, if/return next(), dead if (n) {} in the j loop, dead e0 slot); NCC donor.
 GAMELIBS_393B8_DONOR := build/src/game_libs/game_libs_ncc_393B8.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_000393B8=$(GAMELIBS_393B8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000393B8=$(GAMELIBS_393B8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_393B8_DONOR)
 # 4E244 = virtual call over a pointer array via the by-value index iterator (base-class ctor = cfront new protocol); NCC donor.
 GAMELIBS_4E244_DONOR := build/src/game_libs/game_libs_ncc_4E244.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0004E244=$(GAMELIBS_4E244_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E244=$(GAMELIBS_4E244_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E244_DONOR)
 # 45CB0 = light record fill + light packets through two inline next() pools (C++); NCC donor.
 GAMELIBS_45CB0_DONOR := build/src/game_libs/game_libs_ncc_45CB0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00045CB0=$(GAMELIBS_45CB0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00045CB0=$(GAMELIBS_45CB0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45CB0_DONOR)
 # 46FA8 = gDPFillRectangle + gDPPipeSync through the context's inline next() (C++); NCC donor.
 GAMELIBS_46FA8_DONOR := build/src/game_libs/game_libs_ncc_46FA8.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00046FA8=$(GAMELIBS_46FA8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046FA8=$(GAMELIBS_46FA8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46FA8_DONOR)
 # 34EB4 = frame main loop (object list pump + app virtual hooks + one-shot callback); NCC donor.
 GAMELIBS_34EB4_DONOR := build/src/game_libs/game_libs_ncc_34EB4.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00034EB4=$(GAMELIBS_34EB4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034EB4=$(GAMELIBS_34EB4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34EB4_DONOR)
 # 3DE48 = nearest-child search by Manhattan distance, skipping one node ({cur, nxt} iterator, first(), ABS macro sum); NCC donor.
 GAMELIBS_3DE48_DONOR := build/src/game_libs/game_libs_ncc_3DE48.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0003DE48=$(GAMELIBS_3DE48_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003DE48=$(GAMELIBS_3DE48_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DE48_DONOR)
 # 3DA14 = nearest-child search by Manhattan distance through a position pointer, skipping one node ({cur, nxt} iterator, first(), ABS macro sum); NCC donor.
 GAMELIBS_3DA14_DONOR := build/src/game_libs/game_libs_ncc_3DA14.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0003DA14=$(GAMELIBS_3DA14_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003DA14=$(GAMELIBS_3DA14_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DA14_DONOR)
 # 3DB38 = child search: the smallest field-0x38 value above a reference and below a limit ({cur, nxt} iterator, first(), loop variable zero-initialised first); NCC donor.
 GAMELIBS_3DB38_DONOR := build/src/game_libs/game_libs_ncc_3DB38.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += game_libs_func_0003DB38=$(GAMELIBS_3DB38_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003DB38=$(GAMELIBS_3DB38_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DB38_DONOR)
 # 5062C is still NON_MATCHING: its closest source is C++ (an NCC .cpp that is
 # instruction-identical except one 4-byte edg stack slot). Only the NM
 # comparison object receives it; the ROM keeps INCLUDE_ASM. The splice grows
 # the NM body (placeholder -> 689 words), which moves the post0b clip below.
 GAMELIBS_5062C_NM_DONOR := build/src/game_libs/game_libs_ncc_5062C.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0005062C=$(GAMELIBS_5062C_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005062C=$(GAMELIBS_5062C_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5062C_NM_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := gl_func_000669B8=$(GAMELIBS_669AC_DONOR) gl_func_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_func_00069E04=$(GAMELIBS_69E04_DONOR) gl_func_00069F64=$(GAMELIBS_69F64_DONOR) gl_func_0006AF0C=$(GAMELIBS_6AF0C_DONOR) gl_func_0006A304=$(GAMELIBS_6A304_DONOR) gl_func_0006AF44=$(GAMELIBS_6AF44_DONOR) gl_func_0006B880=$(GAMELIBS_6B880_DONOR) gl_func_0006B974=$(GAMELIBS_6B974_DONOR) gl_func_0006BAD4=$(GAMELIBS_6BAD4_DONOR) gl_func_0006B7A0=$(GAMELIBS_6B7A0_DONOR) gl_func_0006B0FC=$(GAMELIBS_6B0FC_DONOR) game_libs_func_0006A144=$(GAMELIBS_6A144_DONOR) gl_func_00068990=$(GAMELIBS_68990_DONOR) gl_func_0006A420=$(GAMELIBS_6A420_DONOR)
 # 675A4 = input debounce / stick flags, IDO 7.1 -O2 donor: game_libs_o2_675A4.c
@@ -1598,16 +1596,16 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 # dead-zone double literal is renamed gl_func_000675A4_rodata and pinned to
 # bootup.uso RoData +0x2200. Uses += (composes with the := line above).
 GAMELIBS_675A4_DONOR := build/src/game_libs/game_libs_o2_675A4.c.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY += gl_func_000675A4=$(GAMELIBS_675A4_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000675A4=$(GAMELIBS_675A4_DONOR)
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl_func_0006C11C=$(GAMELIBS_6C11C_DONOR) gl_func_0006BF34=$(GAMELIBS_6BF34_DONOR) gl_func_0006C1B8=$(GAMELIBS_6C1B8_DONOR) gl_func_0006C2AC=$(GAMELIBS_6C2A4_DONOR)
-build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY += gl_func_0006C084=$(GAMELIBS_6C084_DONOR)
+build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += gl_func_0006C084=$(GAMELIBS_6C084_DONOR)
 # 65EE4 is still NON_MATCHING. Only the NM comparison object receives this
 # complete compiler-produced body; the default ROM retains INCLUDE_ASM.
 # -O2's size-limit fallback is closer than plain -O1 (146 vs 149 words).
 GAMELIBS_65EE4_NM_DONOR := build/src/game_libs/game_libs_o2limit_65EE4.c.o
 build/src/game_libs/game_libs_o2limit_65EE4.c.o: OPT_FLAGS := -O2
 build/src/game_libs/game_libs_o2limit_65EE4.c.o: CC_ONLY_FLAGS := -Olimit 1
-build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY += game_libs_func_00065EE4=$(GAMELIBS_65EE4_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00065EE4=$(GAMELIBS_65EE4_NM_DONOR)
 
 GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o
 # 29CCC = envelope/keyframe stepper (9-case jumptable switch), IDO 7.1 -O2
@@ -1624,7 +1622,7 @@ GAMELIBS_29CCC_DONOR := build/src/game_libs/game_libs_o2_29CCC.c.o
 # (origin/main carries game_libs_func_00029CCC on the same unit).
 GAMELIBS_2E290_DONOR := build/src/game_libs/game_libs_o2_2E290.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY := game_libs_func_00029CCC=$(GAMELIBS_29CCC_DONOR)
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += game_libs_func_0002E290=$(GAMELIBS_2E290_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E290=$(GAMELIBS_2E290_DONOR)
 # 343F4 = selector -> 0xC-stride table-entry address (8-entry jumptable switch,
 # cases 2/3/5/1 + default), IDO 7.1 -O2 donor: game_libs_o2_343F4.c (25/25
 # word-exact). Same splice-for-the-rodata-rename reason as 2E290: the reloc is
@@ -1632,41 +1630,41 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # +0x19B8. Absorbs the former game_libs_g3_34448.c carve-out (the switch's own
 # default block; plain -O2 emits its unfilled `jr ra; nop`). Uses += (composes).
 GAMELIBS_343F4_DONOR := build/src/game_libs/game_libs_o2_343F4.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += game_libs_func_000343F4=$(GAMELIBS_343F4_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000343F4=$(GAMELIBS_343F4_DONOR)
 # 273B8 = 14-case message-handler switch, IDO 7.1 -O2 donor:
 # game_libs_o2_273B8.c (99/99 word-exact). Spliced only so the C switch's
 # local .rodata jumptable reloc gets renamed to game_libs_func_000273B8_rodata
 # and pinned to the USO's table at +0xF88 (the 29CCC recipe).
 GAMELIBS_273B8_DONOR := build/src/game_libs/game_libs_o2_273B8.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += game_libs_func_000273B8=$(GAMELIBS_273B8_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000273B8=$(GAMELIBS_273B8_DONOR)
 # 31334 = stepped cue driver with two jumptable switches (15 + 11 entries),
 # IDO 7.1 -O2 donor: game_libs_o2_31334.c (123/123 word-exact). Spliced only
 # so the donor-local .rodata reloc (both tables, +0 and +0x3C) is renamed
 # gl_func_00031334_rodata and pinned to the USO tables at +0x1900 (the 29CCC
 # recipe). Uses += (composes).
 GAMELIBS_31334_DONOR := build/src/game_libs/game_libs_o2_31334.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += gl_func_00031334=$(GAMELIBS_31334_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00031334=$(GAMELIBS_31334_DONOR)
 # 2FB74 = event -> sound command dispatcher with two jumptable switches (21 +
 # 49 entries), IDO 7.1 -O2 donor: game_libs_o2_2FB74.c (612/612 words).
 # Spliced only so the donor-local .rodata reloc (both tables, +0 and +0x54) is
 # renamed gl_func_0002FB74_rodata and pinned to the USO tables at +0x1750 (the
 # 29CCC / 31334 recipe). Uses += (composes).
 GAMELIBS_2FB74_DONOR := build/src/game_libs/game_libs_o2_2FB74.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += gl_func_0002FB74=$(GAMELIBS_2FB74_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002FB74=$(GAMELIBS_2FB74_DONOR)
 # 28A68 = pool init: link 0xD0-byte records into a list (NCC operand order: int value, pointer address); NCC donor.
 GAMELIBS_28A68_DONOR := build/src/game_libs/game_libs_ncc_28A68.cpp.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += gl_func_00028A68=$(GAMELIBS_28A68_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00028A68=$(GAMELIBS_28A68_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_28A68_DONOR)
 # 2F720 = voice parameter update; p[0xF] = t/2; p[0xF] <<= 4; NCC donor.
 GAMELIBS_2F720_DONOR := build/src/game_libs/game_libs_ncc_2F720.cpp.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += game_libs_func_0002F720=$(GAMELIBS_2F720_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002F720=$(GAMELIBS_2F720_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_2F720_DONOR)
 # 23914 = resource acquire (5-entry jumptable switch on the entry mode), IDO 7.1
 # -O2 donor: game_libs_o2_23914.c (125/125 words). Spliced only so the
 # donor-local .rodata jumptable reloc is renamed gl_func_00023914_rodata and
 # pinned to the USO table at +0xEA0 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_23914_DONOR := build/src/game_libs/game_libs_o2_23914.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY += gl_func_00023914=$(GAMELIBS_23914_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00023914=$(GAMELIBS_23914_DONOR)
 # 717CC = __osPfsGetOneChannelData (pfsgetstatus.c), IDO 5.3 -O1 donor;
 # true entry 0x717C8 (stolen-prologue lui folded into the symbol). See
 # game_libs_ido53_717C8.c.
@@ -1685,7 +1683,7 @@ build/src/game_libs/game_libs_ido53_71624.c.o build/non_matching/src/game_libs/g
 GAMELIBS_71624_DONOR := build/src/game_libs/game_libs_ido53_71624.c.o
 build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: REPLACE_FUNC_BODY := gl_func_00071708=$(GAMELIBS_71708_DONOR) game_libs_func_00070FCC=$(GAMELIBS_70FCC_DONOR) gl_func_00071624=$(GAMELIBS_71624_DONOR) gl_func_00071384=$(GAMELIBS_71384_DONOR) gl_func_000717CC=$(GAMELIBS_717C8_DONOR) gl_func_00071144=$(GAMELIBS_71144_DONOR)
 # osViSetEvent: full, unmodified IDO -O1 function body; no instruction patches.
-build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: REPLACE_FUNC_BODY += gl_func_00071304=$(GAMELIBS_71304_DONOR)
+build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: private REPLACE_FUNC_BODY += gl_func_00071304=$(GAMELIBS_71304_DONOR)
 # gl_func_00067370: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
 # pad at 0x67390 (folded into the 0x24 .s symbol). FORCE: ends jr-ra;nop.
 # gl_func_00069E04 (osSendMesg, donor-spliced) + game_libs_func_00069F54
@@ -1807,7 +1805,7 @@ build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: TRUNCATE_TEXT := 0x938
 # NCC -O0 without cfe's closing-brace b-epilogue (kit XIX); one donor TU.
 MGR_O0_700_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp.o
 $(MGR_O0_700_DONOR): OPT_FLAGS := -O0
-build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: REPLACE_FUNC_BODY += mgrproc_uso_func_00000700=$(MGR_O0_700_DONOR) mgrproc_uso_func_00000A14=$(MGR_O0_700_DONOR)
+build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00000700=$(MGR_O0_700_DONOR) mgrproc_uso_func_00000A14=$(MGR_O0_700_DONOR)
 build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: $(MGR_O0_700_DONOR)
 
 # timproc_uso_b1 / b3 (Yay0-compressed): same opening -O0 run (int-reader 0x4C +
@@ -1912,63 +1910,63 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # 10694 = state-entry handler; passes PMFs by value to D5BC + the same PMF
 # null compare (107/107 words identical under NCC). Uses += (composes).
 GAMEUSO_10694_DONOR := build/src/game_uso/game_uso_ncc_10694.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00010694=$(GAMEUSO_10694_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00010694=$(GAMEUSO_10694_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_10694_DONOR)
 # F060 = flag-dispatch handler; the 0x800 child read through an inlined
 # member puts the 0xB4 pointer in v1 (55/55 words; cfe capped at 99.64%).
 GAMEUSO_F060_DONOR := build/src/game_uso/game_uso_ncc_F060.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000F060=$(GAMEUSO_F060_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000F060=$(GAMEUSO_F060_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F060_DONOR)
 # F13C = sibling of F060 (same flag block + child() member; 81/81 words).
 GAMEUSO_F13C_DONOR := build/src/game_uso/game_uso_ncc_F13C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000F13C=$(GAMEUSO_F13C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000F13C=$(GAMEUSO_F13C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F13C_DONOR)
 # B750 = basis/scale update with a virtual call; k is the float param itself
 # and the 4-float temp is a class whose ctor forwards to an inline set()
 # (77/77 words; cfe capped at 72.8%).
 GAMEUSO_B750_DONOR := build/src/game_uso/game_uso_ncc_B750.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000B750=$(GAMEUSO_B750_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B750=$(GAMEUSO_B750_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B750_DONOR)
 # 10A0C = 1094C twin with PMFs passed by value (47/47 words; cfe 93.4%).
 GAMEUSO_10A0C_DONOR := build/src/game_uso/game_uso_ncc_10A0C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00010A0C=$(GAMEUSO_10A0C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00010A0C=$(GAMEUSO_10A0C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_10A0C_DONOR)
 # 10840 = 10694 sibling; DB78 float 4th param + DB28 else-arm args (67/67 words; cfe 87.67%).
 GAMEUSO_10840_DONOR := build/src/game_uso/game_uso_ncc_10840.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00010840=$(GAMEUSO_10840_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00010840=$(GAMEUSO_10840_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_10840_DONOR)
 # F6D4 = E35C-sibling queue advance; no named prev local, base-first ceil-div
 # addu (132/132 words; cfe capped at 95.4%).
 GAMEUSO_F6D4_DONOR := build/src/game_uso/game_uso_ncc_F6D4.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000F6D4=$(GAMEUSO_F6D4_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000F6D4=$(GAMEUSO_F6D4_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F6D4_DONOR)
 # E35C = F6D4 sibling, same recipe (130/130 words; cfe capped at 95.3%).
 GAMEUSO_E35C_DONOR := build/src/game_uso/game_uso_ncc_E35C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000E35C=$(GAMEUSO_E35C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E35C=$(GAMEUSO_E35C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_E35C_DONOR)
 # 57D8 = mode-value pick (8-way switch = edg case-order chain; cfe jumptables it) + mode dispatch; 81/81 under NCC, cfe capped at 82.5%.
 GAMEUSO_57D8_DONOR := build/src/game_uso/game_uso_ncc_57D8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000057D8=$(GAMEUSO_57D8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000057D8=$(GAMEUSO_57D8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_57D8_DONOR)
 # 6A30: Vec3 value class + derived-class ctor protocol (bnez &pt / new(12)); cfe capped at 93.2%.
 GAMEUSO_6A30_DONOR := build/src/game_uso/game_uso_ncc_6A30.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00006A30=$(GAMEUSO_6A30_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00006A30=$(GAMEUSO_6A30_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_6A30_DONOR)
 # 71E0: 6A30 sibling (inline tick() param colours a1; nested-block k/fr give the frame); cfe capped at 83.6%.
 GAMEUSO_71E0_DONOR := build/src/game_uso/game_uso_ncc_71E0.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000071E0=$(GAMEUSO_71E0_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000071E0=$(GAMEUSO_71E0_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_71E0_DONOR)
 # 6FA8: closer-of-two compare; named `w` ref + a `const Vec3 &u = *this` inline local set the frame; cfe capped at 79.7%.
 GAMEUSO_6FA8_DONOR := build/src/game_uso/game_uso_ncc_6FA8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00006FA8=$(GAMEUSO_6FA8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00006FA8=$(GAMEUSO_6FA8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_6FA8_DONOR)
 # 2CC8: camera position snap (28C0 / BB8C sibling); Ctx read through inline accessors (v0 reloads), POD P3 return, by-value operator=; cfe capped at 190 raw.
 GAMEUSO_2CC8_DONOR := build/src/game_uso/game_uso_ncc_2CC8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00002CC8=$(GAMEUSO_2CC8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00002CC8=$(GAMEUSO_2CC8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_2CC8_DONOR)
 # 24BC: camera homing (2CC8 / 28C0 sibling); out via inline Ctx accessor, setG / setP in a nested block, one empty if after q += r; cfe capped at 72%.
 GAMEUSO_24BC_DONOR := build/src/game_uso/game_uso_ncc_24BC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_24BC_DONOR)
 # 3AC0: twelve `new Item(name)`; the inline ctor's by-value param is the shared
 # sp+36 pool slot, four dead named locals give frame 112 (cfe capped at 253/261).
@@ -1980,107 +1978,105 @@ $(GAMEUSO_3AC0_DONOR): src/game_uso/game_uso_ncc_3AC0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -woff 3255 -o $@ $<
 	$(OBJCOPY) --redefine-sym __nw__FUi=game_uso_func_055750 $@
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00003AC0=$(GAMEUSO_3AC0_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00003AC0=$(GAMEUSO_3AC0_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3AC0_DONOR)
 # 0000: cubic B-spline basis; the 1/6 is a float literal (a uopt constant
 # candidate, coloured after omt/t2/t3) -- 40/40 words. The host placeholder
 # re-emits the .rodata 1/6; the donor's .rodata reloc is pinned to 0 as
 # game_uso_func_00000000_rodata.
 GAMEUSO_0000_DONOR := build/src/game_uso/game_uso_ncc_0000.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00000000=$(GAMEUSO_0000_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00000000=$(GAMEUSO_0000_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_0000_DONOR)
 # 43D8: nearest-above/below child search ({cur, nxt} iterator; 60/60 words).
 # Host placeholder re-emits the two .rodata floats (+/-FLT_MAX) the donor
 # reads through D_43D8_fmin/fmax + 0x94/0x98.
 GAMEUSO_43D8_DONOR := build/src/game_uso/game_uso_ncc_43D8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000043D8=$(GAMEUSO_43D8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000043D8=$(GAMEUSO_43D8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_43D8_DONOR)
 # D9CC: landing/turn-state classifier (524/524 words). The first gate is two
 # nested ifs and the early goto leaves both, so two branches hit an empty
 # inner end label and keep their nop delays. Host placeholder re-emits the
 # three .rodata doubles (+0x1F8..+0x210).
 GAMEUSO_D9CC_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D9CC_DONOR)
 # gui is C++ too (kit XXIII #3). 1A5C / 1CA8: DL colour emitters (combine +
 # primcolor) with an inline next() append member (147/147 words each).
 GUI_1A5C_DONOR := build/src/gui_uso/gui_uso_ncc_1A5C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00001A5C=$(GUI_1A5C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00001A5C=$(GUI_1A5C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1A5C_DONOR)
 GUI_1CA8_DONOR := build/src/gui_uso/gui_uso_ncc_1CA8.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00001CA8=$(GUI_1CA8_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00001CA8=$(GUI_1CA8_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1CA8_DONOR)
 # 06B8: one G_SETPRIMCOLOR append into a0->0x24's context (1A5C recipe; 130/130).
 GUI_06B8_DONOR := build/src/gui_uso/gui_uso_ncc_06B8.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000006B8=$(GUI_06B8_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000006B8=$(GUI_06B8_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_06B8_DONOR)
 # 08C0: SETOTHERMODE + SETCOMBINE + PRIMCOLOR appends (166/166; 17DC recipe:
 # next() without the n copy + Gfx::set() (uopt 20-varref block boundary).
 GUI_08C0_DONOR := build/src/gui_uso/gui_uso_ncc_08C0.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000008C0=$(GUI_08C0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000008C0=$(GUI_08C0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_08C0_DONOR)
 # 17DC: SETCOMBINE + SETENVCOLOR + SETPRIMCOLOR (160/160); next() without the
 # n copy + Gfx::set() keep uopt's 20-varref block boundary after the 3rd slot.
 GUI_17DC_DONOR := build/src/gui_uso/gui_uso_ncc_17DC.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000017DC=$(GUI_17DC_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000017DC=$(GUI_17DC_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_17DC_DONOR)
 # 2334: 17DC with another combiner (160/160; the 17DC recipe).
 GUI_2334_DONOR := build/src/gui_uso/gui_uso_ncc_2334.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00002334=$(GUI_2334_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00002334=$(GUI_2334_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2334_DONOR)
 # 055C: six fixed appends (87/87); block boundaries from empty ifs (kit XXXV).
 GUI_055C_DONOR := build/src/gui_uso/gui_uso_ncc_055C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_0000055C=$(GUI_055C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_0000055C=$(GUI_055C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_055C_DONOR)
 # 16A4: 055C's four-append sibling (60/60; empty-if block boundaries).
 GUI_16A4_DONOR := build/src/gui_uso/gui_uso_ncc_16A4.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000016A4=$(GUI_16A4_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000016A4=$(GUI_16A4_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_16A4_DONOR)
 # 413C: RGBA16 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_413C_DONOR := build/src/gui_uso/gui_uso_ncc_413C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_0000413C=$(GUI_413C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_0000413C=$(GUI_413C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_413C_DONOR)
 # 4354: IA8 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_4354_DONOR := build/src/gui_uso/gui_uso_ncc_4354.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00004354=$(GUI_4354_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00004354=$(GUI_4354_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4354_DONOR)
 # 3F18: RGBA32 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_3F18_DONOR := build/src/gui_uso/gui_uso_ncc_3F18.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00003F18=$(GUI_3F18_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00003F18=$(GUI_3F18_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3F18_DONOR)
 # 1EF4: combine + env + prim colour appends (1A5C recipe; 272/272).
 GUI_1EF4_DONOR := build/src/gui_uso/gui_uso_ncc_1EF4.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_00001EF4=$(GUI_1EF4_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00001EF4=$(GUI_1EF4_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1EF4_DONOR)
 # 0148: glyph-grid layout constructor (261/261; NCC frame = declared scalars).
 GUI_0148_DONOR := build/src/gui_uso/gui_uso_ncc_0148.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_00000148=$(GUI_0148_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000148=$(GUI_0148_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0148_DONOR)
 # 27A0: tiled sprite blitter (flags align, gSPTexture, mode switch, strip loop;
 # 260/260). The pooled int scratch is passed as the strip helper's 2nd arg.
 GUI_27A0_DONOR := build/src/gui_uso/gui_uso_ncc_27A0.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_000027A0=$(GUI_27A0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_000027A0=$(GUI_27A0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_27A0_DONOR)
 # 3B80: image blitter, 27A0's sibling (230/230). Budget and fn assignments on
 # separate source lines per arm (as1 schedules per line).
 GUI_3B80_DONOR := build/src/gui_uso/gui_uso_ncc_3B80.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3B80_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000B274=$(GAMEUSO_B274_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
 # 97EC: NM-only NCC donor (XZ derived-ctor protocol x5; two edg temp homes swapped vs target).
 GAMEUSO_97EC_NM_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_NM_DONOR)
 # 28C0: NM-only NCC donor (camera homing, V3 class; regs/one else-arm slot differ).
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_000028C0=$(GAMEUSO_28C0_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
 # BB8C: NM-only NCC donor (contact sweep, V3 operator temporaries; agent-g run 128).
 GAMEUSO_BB8C_NM_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_BB8C_NM_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
@@ -2335,13 +2331,13 @@ build/assets/timproc_uso_block3_yay0.bin: build/src/timproc_uso_b3/timproc_uso_b
 # timproc_uso_b5_func_00005FC0_rodata and pinned to the table the USO ships at
 # RoData +0x190 (the 29CCC recipe). Uses += (composes).
 TIMB5_5FC0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: REPLACE_FUNC_BODY += timproc_uso_b5_func_00005FC0=$(TIMB5_5FC0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005FC0=$(TIMB5_5FC0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_5FC0_DONOR)
 # timproc_b5 is C++ (cfront-lowered ctors): NCC keeps the source operand
 # order of commutative FP ops where cfe canonicalizes the constant right.
 # 1DB0 = transition-frame update (89/89 words under NCC; cfe capped at 99.55).
 TIMB5_1DB0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: REPLACE_FUNC_BODY += timproc_uso_b5_func_00001DB0=$(TIMB5_1DB0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001DB0=$(TIMB5_1DB0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1DB0_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
@@ -2421,3 +2417,2206 @@ build/src/game_libs/game_libs_ido53_69F64.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_69F64.c.o build/non_matching/src/game_libs/game_libs_ido53_69F64.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_ido53_74C04.c.o build/non_matching/src/game_libs/game_libs_ido53_74C04.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_74C04.c.o build/non_matching/src/game_libs/game_libs_ido53_74C04.c.o: OPT_FLAGS := -O1
+
+# Per-function local source ports: independently compiled, never new progress units.
+build/src/match_imports/arcproc_uso_func_00001B04.c.o: src/match_imports/arcproc_uso_func_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o: src/match_imports/arcproc_uso_func_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/arcproc_uso_func_00001F54.c.o: src/match_imports/arcproc_uso_func_00001F54.c src/match_imports/context_arcproc_uso_tail1.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o: src/match_imports/arcproc_uso_func_00001F54.c src/match_imports/context_arcproc_uso_tail1.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_00000610.c.o: src/match_imports/func_00000610.c src/match_imports/context_bootup_uso_o2_0610.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_00000610.c.o: src/match_imports/func_00000610.c src/match_imports/context_bootup_uso_o2_0610.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_000027E8.c.o: src/match_imports/func_000027E8.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_000027E8.c.o: src/match_imports/func_000027E8.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_00003638.c.o: src/match_imports/func_00003638.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_00003638.c.o: src/match_imports/func_00003638.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_00008124.c.o: src/match_imports/func_00008124.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_00008124.c.o: src/match_imports/func_00008124.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_000084A0.c.o: src/match_imports/func_000084A0.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_000084A0.c.o: src/match_imports/func_000084A0.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_0000BF8C.c.o: src/match_imports/func_0000BF8C.c src/match_imports/context_bootup_uso_o2_BF8C.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_0000BF8C.c.o: src/match_imports/func_0000BF8C.c src/match_imports/context_bootup_uso_o2_BF8C.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_0000D440.c.o: src/match_imports/func_0000D440.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_0000D440.c.o: src/match_imports/func_0000D440.c src/match_imports/context_bootup_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_0000D900.c.o: src/match_imports/func_0000D900.c src/match_imports/context_bootup_uso_pool_D900.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_0000D900.c.o: src/match_imports/func_0000D900.c src/match_imports/context_bootup_uso_pool_D900.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_00012E00.c.o: src/match_imports/func_00012E00.c src/match_imports/context_bootup_uso_tail4.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_00012E00.c.o: src/match_imports/func_00012E00.c src/match_imports/context_bootup_uso_tail4.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_0001438C.c.o: src/match_imports/func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_0001438C.c.o: src/match_imports/func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_00000B94.c.o: src/match_imports/game_libs_func_00000B94.c src/match_imports/context_game_libs.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_00000B94.c.o: src/match_imports/game_libs_func_00000B94.c src/match_imports/context_game_libs.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_0000CBF0.c.o: src/match_imports/game_libs_func_0000CBF0.c src/match_imports/context_game_libs_tail.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o: src/match_imports/game_libs_func_0000CBF0.c src/match_imports/context_game_libs_tail.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_00029BC8.c.o: src/match_imports/game_libs_func_00029BC8.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o: src/match_imports/game_libs_func_00029BC8.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_0002E0C4.c.o: src/match_imports/game_libs_func_0002E0C4.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o: src/match_imports/game_libs_func_0002E0C4.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_0002F1B8.c.o: src/match_imports/game_libs_func_0002F1B8.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o: src/match_imports/game_libs_func_0002F1B8.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_00035E64.c.o: src/match_imports/game_libs_func_00035E64.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_00035E64.c.o: src/match_imports/game_libs_func_00035E64.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_000470E4.c.o: src/match_imports/game_libs_func_000470E4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_000470E4.c.o: src/match_imports/game_libs_func_000470E4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_00047394.c.o: src/match_imports/game_libs_func_00047394.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_00047394.c.o: src/match_imports/game_libs_func_00047394.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_00047B28.c.o: src/match_imports/game_libs_func_00047B28.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_00047B28.c.o: src/match_imports/game_libs_func_00047B28.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_libs_func_0004A7C4.c.o: src/match_imports/game_libs_func_0004A7C4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o: src/match_imports/game_libs_func_0004A7C4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0000D0D0.c.o: src/match_imports/gl_func_0000D0D0.c src/match_imports/context_game_libs_tail.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0000D0D0.c.o: src/match_imports/gl_func_0000D0D0.c src/match_imports/context_game_libs_tail.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0000D288.c.o: src/match_imports/gl_func_0000D288.c src/match_imports/context_game_libs_tail.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0000D288.c.o: src/match_imports/gl_func_0000D288.c src/match_imports/context_game_libs_tail.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0002A3AC.c.o: src/match_imports/gl_func_0002A3AC.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0002A3AC.c.o: src/match_imports/gl_func_0002A3AC.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0002D224.c.o: src/match_imports/gl_func_0002D224.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0002D224.c.o: src/match_imports/gl_func_0002D224.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0002D910.c.o: src/match_imports/gl_func_0002D910.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0002D910.c.o: src/match_imports/gl_func_0002D910.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0002F288.c.o: src/match_imports/gl_func_0002F288.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0002F288.c.o: src/match_imports/gl_func_0002F288.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0002F9D4.c.o: src/match_imports/gl_func_0002F9D4.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0002F9D4.c.o: src/match_imports/gl_func_0002F9D4.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0003061C.c.o: src/match_imports/gl_func_0003061C.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0003061C.c.o: src/match_imports/gl_func_0003061C.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00030A20.c.o: src/match_imports/gl_func_00030A20.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00030A20.c.o: src/match_imports/gl_func_00030A20.c src/match_imports/context_game_libs_post.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00031608.c.o: src/match_imports/gl_func_00031608.c src/match_imports/context_game_libs_o2_31608.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00031608.c.o: src/match_imports/gl_func_00031608.c src/match_imports/context_game_libs_o2_31608.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_000346F0.c.o: src/match_imports/gl_func_000346F0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_000346F0.c.o: src/match_imports/gl_func_000346F0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00035268.c.o: src/match_imports/gl_func_00035268.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00035268.c.o: src/match_imports/gl_func_00035268.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00035C6C.c.o: src/match_imports/gl_func_00035C6C.c src/match_imports/context_game_libs_o2_35C6C.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00035C6C.c.o: src/match_imports/gl_func_00035C6C.c src/match_imports/context_game_libs_o2_35C6C.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00036224.c.o: src/match_imports/gl_func_00036224.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00036224.c.o: src/match_imports/gl_func_00036224.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0003800C.c.o: src/match_imports/gl_func_0003800C.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0003800C.c.o: src/match_imports/gl_func_0003800C.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00039094.c.o: src/match_imports/gl_func_00039094.c src/match_imports/context_game_libs_o2_39094.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00039094.c.o: src/match_imports/gl_func_00039094.c src/match_imports/context_game_libs_o2_39094.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00039B58.c.o: src/match_imports/gl_func_00039B58.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00039B58.c.o: src/match_imports/gl_func_00039B58.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0003A58C.c.o: src/match_imports/gl_func_0003A58C.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0003A58C.c.o: src/match_imports/gl_func_0003A58C.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0003CBB4.c.o: src/match_imports/gl_func_0003CBB4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0003CBB4.c.o: src/match_imports/gl_func_0003CBB4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0003E39C.c.o: src/match_imports/gl_func_0003E39C.c src/match_imports/context_game_libs_post0b_o2_3E39C.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0003E39C.c.o: src/match_imports/gl_func_0003E39C.c src/match_imports/context_game_libs_post0b_o2_3E39C.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00040640.c.o: src/match_imports/gl_func_00040640.c src/match_imports/context_game_libs_o2_40640.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00040640.c.o: src/match_imports/gl_func_00040640.c src/match_imports/context_game_libs_o2_40640.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00042684.c.o: src/match_imports/gl_func_00042684.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00042684.c.o: src/match_imports/gl_func_00042684.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_000437C0.c.o: src/match_imports/gl_func_000437C0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_000437C0.c.o: src/match_imports/gl_func_000437C0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00043BEC.c.o: src/match_imports/gl_func_00043BEC.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00043BEC.c.o: src/match_imports/gl_func_00043BEC.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00044144.c.o: src/match_imports/gl_func_00044144.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00044144.c.o: src/match_imports/gl_func_00044144.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00044918.c.o: src/match_imports/gl_func_00044918.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00044918.c.o: src/match_imports/gl_func_00044918.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00045E20.c.o: src/match_imports/gl_func_00045E20.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00045E20.c.o: src/match_imports/gl_func_00045E20.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00046BC4.c.o: src/match_imports/gl_func_00046BC4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00046BC4.c.o: src/match_imports/gl_func_00046BC4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0004AAF0.c.o: src/match_imports/gl_func_0004AAF0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0004AAF0.c.o: src/match_imports/gl_func_0004AAF0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0004C928.c.o: src/match_imports/gl_func_0004C928.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0004C928.c.o: src/match_imports/gl_func_0004C928.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0004DC44.c.o: src/match_imports/gl_func_0004DC44.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0004DC44.c.o: src/match_imports/gl_func_0004DC44.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0004F9E4.c.o: src/match_imports/gl_func_0004F9E4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0004F9E4.c.o: src/match_imports/gl_func_0004F9E4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00054D04.c.o: src/match_imports/gl_func_00054D04.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00054D04.c.o: src/match_imports/gl_func_00054D04.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_0005B90C.c.o: src/match_imports/gl_func_0005B90C.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_0005B90C.c.o: src/match_imports/gl_func_0005B90C.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_000600A4.c.o: src/match_imports/gl_func_000600A4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_000600A4.c.o: src/match_imports/gl_func_000600A4.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00060AD0.c.o: src/match_imports/gl_func_00060AD0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00060AD0.c.o: src/match_imports/gl_func_00060AD0.c src/match_imports/context_game_libs_post0b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00061478.c.o: src/match_imports/gl_func_00061478.c include/match_imports/common.h
+	@mkdir -p $(dir $@) build/$(<D)
+	$(ASM_PROC) -O2 $< > build/$<
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) -I include/match_imports $(CPPFLAGS) -o $@ build/$<
+	$(ASM_PROC) -O2 $< --post-process $@ --assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PRELUDE)
+build/non_matching/src/match_imports/gl_func_00061478.c.o: src/match_imports/gl_func_00061478.c include/match_imports/common.h
+	@mkdir -p $(dir $@) build/$(<D)
+	$(ASM_PROC) -O2 $< > build/non_matching/$<
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) -I include/match_imports $(CPPFLAGS) -DNON_MATCHING -o $@ build/non_matching/$<
+	$(ASM_PROC) -O2 $< --post-process $@ --assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PRELUDE)
+build/src/match_imports/gl_func_00066264.c.o: src/match_imports/gl_func_00066264.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00066264.c.o: src/match_imports/gl_func_00066264.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00066AF0.c.o: src/match_imports/gl_func_00066AF0.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00066AF0.c.o: src/match_imports/gl_func_00066AF0.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00066B64.c.o: src/match_imports/gl_func_00066B64.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00066B64.c.o: src/match_imports/gl_func_00066B64.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_000671E4.c.o: src/match_imports/gl_func_000671E4.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_000671E4.c.o: src/match_imports/gl_func_000671E4.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_00068C14.c.o: src/match_imports/gl_func_00068C14.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_00068C14.c.o: src/match_imports/gl_func_00068C14.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_000693A4.c.o: src/match_imports/gl_func_000693A4.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_000693A4.c.o: src/match_imports/gl_func_000693A4.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gl_func_000697C4.c.o: src/match_imports/gl_func_000697C4.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gl_func_000697C4.c.o: src/match_imports/gl_func_000697C4.c src/match_imports/context_game_libs_post1b.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_000028C0.c.o: src/match_imports/game_uso_func_000028C0.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_000028C0.c.o: src/match_imports/game_uso_func_000028C0.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_000041C0.c.o: src/match_imports/game_uso_func_000041C0.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_000041C0.c.o: src/match_imports/game_uso_func_000041C0.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_00007448.c.o: src/match_imports/game_uso_func_00007448.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_00007448.c.o: src/match_imports/game_uso_func_00007448.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_00007538.c.o: src/match_imports/game_uso_func_00007538.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_00007538.c.o: src/match_imports/game_uso_func_00007538.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_0000B274.c.o: src/match_imports/game_uso_func_0000B274.c src/match_imports/context_game_uso_pool_B274.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_0000B274.c.o: src/match_imports/game_uso_func_0000B274.c src/match_imports/context_game_uso_pool_B274.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_0000B4B8.c.o: src/match_imports/game_uso_func_0000B4B8.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o: src/match_imports/game_uso_func_0000B4B8.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/game_uso_func_0000E5C8.c.o: src/match_imports/game_uso_func_0000E5C8.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o: src/match_imports/game_uso_func_0000E5C8.c src/match_imports/context_game_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/gui_func_00002BB0.c.o: src/match_imports/gui_func_00002BB0.c src/match_imports/context_gui_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/gui_func_00002BB0.c.o: src/match_imports/gui_func_00002BB0.c src/match_imports/context_gui_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/h2hproc_uso_func_0000002C.c.o: src/match_imports/h2hproc_uso_func_0000002C.c src/match_imports/context_h2hproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o: src/match_imports/h2hproc_uso_func_0000002C.c src/match_imports/context_h2hproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/h2hproc_uso_func_00000C18.c.o: src/match_imports/h2hproc_uso_func_00000C18.c src/match_imports/context_h2hproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o: src/match_imports/h2hproc_uso_func_00000C18.c src/match_imports/context_h2hproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/h2hproc_uso_func_00001360.c.o: src/match_imports/h2hproc_uso_func_00001360.c src/match_imports/context_h2hproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o: src/match_imports/h2hproc_uso_func_00001360.c src/match_imports/context_h2hproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_800000B0.c.o: src/match_imports/func_800000B0.c src/match_imports/context_kernel_000.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_800000B0.c.o: src/match_imports/func_800000B0.c src/match_imports/context_kernel_000.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/func_800021A4.c.o: src/match_imports/func_800021A4.c src/match_imports/context_kernel_000.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/func_800021A4.c.o: src/match_imports/func_800021A4.c src/match_imports/context_kernel_000.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/mgrproc_uso_func_00001C90.c.o: src/match_imports/mgrproc_uso_func_00001C90.c src/match_imports/context_mgrproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o: src/match_imports/mgrproc_uso_func_00001C90.c src/match_imports/context_mgrproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_0000117C.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_00001460.c.o: src/match_imports/timproc_uso_b5_func_00001460.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o: src/match_imports/timproc_uso_b5_func_00001460.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_000038B0.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_000069E8.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_0000D550.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/src/match_imports/titproc_uso_func_00001710.c.o: src/match_imports/titproc_uso_func_00001710.c src/match_imports/context_titproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o: src/match_imports/titproc_uso_func_00001710.c src/match_imports/context_titproc_uso.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+
+# Original native symbol/section origins for local per-function ports.
+build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf: build/src/match_imports/arcproc_uso_func_00001B04.c.o scripts/match-origins-arcproc_uso_func_00001B04.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001B04.ld -e arcproc_uso_func_00001B04 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o scripts/match-origins-arcproc_uso_func_00001B04-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001B04-nm.ld -e arcproc_uso_func_00001B04 -o $@ $@.stripped.o
+build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf: build/src/match_imports/arcproc_uso_func_00001F54.c.o scripts/match-origins-arcproc_uso_func_00001F54.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001F54.ld -e arcproc_uso_func_00001F54 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o scripts/match-origins-arcproc_uso_func_00001F54-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001F54-nm.ld -e arcproc_uso_func_00001F54 -o $@ $@.stripped.o
+build/src/match_imports/func_00000610.c.o.linked.elf: build/src/match_imports/func_00000610.c.o scripts/match-origins-func_00000610.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00000610.ld -e func_00000610 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_00000610.c.o.linked.elf: build/non_matching/src/match_imports/func_00000610.c.o scripts/match-origins-func_00000610-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00000610-nm.ld -e func_00000610 -o $@ $@.stripped.o
+build/src/match_imports/func_000027E8.c.o.linked.elf: build/src/match_imports/func_000027E8.c.o scripts/match-origins-func_000027E8.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000027E8.ld -e func_000027E8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf: build/non_matching/src/match_imports/func_000027E8.c.o scripts/match-origins-func_000027E8-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000027E8-nm.ld -e func_000027E8 -o $@ $@.stripped.o
+build/src/match_imports/func_00003638.c.o.linked.elf: build/src/match_imports/func_00003638.c.o scripts/match-origins-func_00003638.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00003638.ld -e func_00003638 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_00003638.c.o.linked.elf: build/non_matching/src/match_imports/func_00003638.c.o scripts/match-origins-func_00003638-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00003638-nm.ld -e func_00003638 -o $@ $@.stripped.o
+build/src/match_imports/func_00008124.c.o.linked.elf: build/src/match_imports/func_00008124.c.o scripts/match-origins-func_00008124.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00008124.ld -e func_00008124 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_00008124.c.o.linked.elf: build/non_matching/src/match_imports/func_00008124.c.o scripts/match-origins-func_00008124-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00008124-nm.ld -e func_00008124 -o $@ $@.stripped.o
+build/src/match_imports/func_000084A0.c.o.linked.elf: build/src/match_imports/func_000084A0.c.o scripts/match-origins-func_000084A0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000084A0.ld -e func_000084A0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf: build/non_matching/src/match_imports/func_000084A0.c.o scripts/match-origins-func_000084A0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000084A0-nm.ld -e func_000084A0 -o $@ $@.stripped.o
+build/src/match_imports/func_0000BF8C.c.o.linked.elf: build/src/match_imports/func_0000BF8C.c.o scripts/match-origins-func_0000BF8C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000BF8C.ld -e func_0000BF8C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf: build/non_matching/src/match_imports/func_0000BF8C.c.o scripts/match-origins-func_0000BF8C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000BF8C-nm.ld -e func_0000BF8C -o $@ $@.stripped.o
+build/src/match_imports/func_0000D440.c.o.linked.elf: build/src/match_imports/func_0000D440.c.o scripts/match-origins-func_0000D440.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D440.ld -e func_0000D440 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf: build/non_matching/src/match_imports/func_0000D440.c.o scripts/match-origins-func_0000D440-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D440-nm.ld -e func_0000D440 -o $@ $@.stripped.o
+build/src/match_imports/func_0000D900.c.o.linked.elf: build/src/match_imports/func_0000D900.c.o scripts/match-origins-func_0000D900.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D900.ld -e func_0000D900 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf: build/non_matching/src/match_imports/func_0000D900.c.o scripts/match-origins-func_0000D900-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D900-nm.ld -e func_0000D900 -o $@ $@.stripped.o
+build/src/match_imports/func_00012E00.c.o.linked.elf: build/src/match_imports/func_00012E00.c.o scripts/match-origins-func_00012E00.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00012E00.ld -e func_00012E00 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf: build/non_matching/src/match_imports/func_00012E00.c.o scripts/match-origins-func_00012E00-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00012E00-nm.ld -e func_00012E00 -o $@ $@.stripped.o
+build/src/match_imports/func_0001438C.c.o.linked.elf: build/src/match_imports/func_0001438C.c.o scripts/match-origins-func_0001438C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0001438C.ld -e func_0001438C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/func_0001438C.c.o scripts/match-origins-func_0001438C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0001438C-nm.ld -e func_0001438C -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf: build/src/match_imports/game_libs_func_00000B94.c.o scripts/match-origins-game_libs_func_00000B94.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00000B94.ld -e game_libs_func_00000B94 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o scripts/match-origins-game_libs_func_00000B94-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00000B94-nm.ld -e game_libs_func_00000B94 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf: build/src/match_imports/game_libs_func_0000CBF0.c.o scripts/match-origins-game_libs_func_0000CBF0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0000CBF0.ld -e game_libs_func_0000CBF0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o scripts/match-origins-game_libs_func_0000CBF0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0000CBF0-nm.ld -e game_libs_func_0000CBF0 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf: build/src/match_imports/game_libs_func_00029BC8.c.o scripts/match-origins-game_libs_func_00029BC8.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00029BC8.ld -e game_libs_func_00029BC8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o scripts/match-origins-game_libs_func_00029BC8-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00029BC8-nm.ld -e game_libs_func_00029BC8 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf: build/src/match_imports/game_libs_func_0002E0C4.c.o scripts/match-origins-game_libs_func_0002E0C4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0002E0C4.ld -e game_libs_func_0002E0C4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o scripts/match-origins-game_libs_func_0002E0C4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0002E0C4-nm.ld -e game_libs_func_0002E0C4 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf: build/src/match_imports/game_libs_func_0002F1B8.c.o scripts/match-origins-game_libs_func_0002F1B8.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0002F1B8.ld -e game_libs_func_0002F1B8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o scripts/match-origins-game_libs_func_0002F1B8-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0002F1B8-nm.ld -e game_libs_func_0002F1B8 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_00035E64.c.o.linked.elf: build/src/match_imports/game_libs_func_00035E64.c.o scripts/match-origins-game_libs_func_00035E64.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00035E64.ld -e game_libs_func_00035E64 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_00035E64.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00035E64.c.o scripts/match-origins-game_libs_func_00035E64-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00035E64-nm.ld -e game_libs_func_00035E64 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_000470E4.c.o.linked.elf: build/src/match_imports/game_libs_func_000470E4.c.o scripts/match-origins-game_libs_func_000470E4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_000470E4.ld -e game_libs_func_000470E4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_000470E4.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_000470E4.c.o scripts/match-origins-game_libs_func_000470E4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_000470E4-nm.ld -e game_libs_func_000470E4 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_00047394.c.o.linked.elf: build/src/match_imports/game_libs_func_00047394.c.o scripts/match-origins-game_libs_func_00047394.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00047394.ld -e game_libs_func_00047394 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_00047394.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00047394.c.o scripts/match-origins-game_libs_func_00047394-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00047394-nm.ld -e game_libs_func_00047394 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_00047B28.c.o.linked.elf: build/src/match_imports/game_libs_func_00047B28.c.o scripts/match-origins-game_libs_func_00047B28.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00047B28.ld -e game_libs_func_00047B28 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_00047B28.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00047B28.c.o scripts/match-origins-game_libs_func_00047B28-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00047B28-nm.ld -e game_libs_func_00047B28 -o $@ $@.stripped.o
+build/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf: build/src/match_imports/game_libs_func_0004A7C4.c.o scripts/match-origins-game_libs_func_0004A7C4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0004A7C4.ld -e game_libs_func_0004A7C4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o scripts/match-origins-game_libs_func_0004A7C4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0004A7C4-nm.ld -e game_libs_func_0004A7C4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0000D0D0.c.o.linked.elf: build/src/match_imports/gl_func_0000D0D0.c.o scripts/match-origins-gl_func_0000D0D0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0000D0D0.ld -e gl_func_0000D0D0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0000D0D0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0000D0D0.c.o scripts/match-origins-gl_func_0000D0D0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0000D0D0-nm.ld -e gl_func_0000D0D0 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0000D288.c.o.linked.elf: build/src/match_imports/gl_func_0000D288.c.o scripts/match-origins-gl_func_0000D288.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0000D288.ld -e gl_func_0000D288 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0000D288.c.o scripts/match-origins-gl_func_0000D288-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0000D288-nm.ld -e gl_func_0000D288 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf: build/src/match_imports/gl_func_0002A3AC.c.o scripts/match-origins-gl_func_0002A3AC.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002A3AC.ld -e gl_func_0002A3AC -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002A3AC.c.o scripts/match-origins-gl_func_0002A3AC-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002A3AC-nm.ld -e gl_func_0002A3AC -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0002D224.c.o.linked.elf: build/src/match_imports/gl_func_0002D224.c.o scripts/match-origins-gl_func_0002D224.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D224.ld -e gl_func_0002D224 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002D224.c.o scripts/match-origins-gl_func_0002D224-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D224-nm.ld -e gl_func_0002D224 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0002D910.c.o.linked.elf: build/src/match_imports/gl_func_0002D910.c.o scripts/match-origins-gl_func_0002D910.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D910.ld -e gl_func_0002D910 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002D910.c.o scripts/match-origins-gl_func_0002D910-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D910-nm.ld -e gl_func_0002D910 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0002F288.c.o.linked.elf: build/src/match_imports/gl_func_0002F288.c.o scripts/match-origins-gl_func_0002F288.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F288.ld -e gl_func_0002F288 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002F288.c.o scripts/match-origins-gl_func_0002F288-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F288-nm.ld -e gl_func_0002F288 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf: build/src/match_imports/gl_func_0002F9D4.c.o scripts/match-origins-gl_func_0002F9D4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F9D4.ld -e gl_func_0002F9D4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002F9D4.c.o scripts/match-origins-gl_func_0002F9D4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F9D4-nm.ld -e gl_func_0002F9D4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0003061C.c.o.linked.elf: build/src/match_imports/gl_func_0003061C.c.o scripts/match-origins-gl_func_0003061C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003061C.ld -e gl_func_0003061C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0003061C.c.o scripts/match-origins-gl_func_0003061C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003061C-nm.ld -e gl_func_0003061C -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00030A20.c.o.linked.elf: build/src/match_imports/gl_func_00030A20.c.o scripts/match-origins-gl_func_00030A20.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00030A20.ld -e gl_func_00030A20 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00030A20.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00030A20.c.o scripts/match-origins-gl_func_00030A20-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00030A20-nm.ld -e gl_func_00030A20 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00031608.c.o.linked.elf: build/src/match_imports/gl_func_00031608.c.o scripts/match-origins-gl_func_00031608.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00031608.ld -e gl_func_00031608 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00031608.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00031608.c.o scripts/match-origins-gl_func_00031608-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00031608-nm.ld -e gl_func_00031608 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_000346F0.c.o.linked.elf: build/src/match_imports/gl_func_000346F0.c.o scripts/match-origins-gl_func_000346F0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000346F0.ld -e gl_func_000346F0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000346F0.c.o scripts/match-origins-gl_func_000346F0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000346F0-nm.ld -e gl_func_000346F0 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00035268.c.o.linked.elf: build/src/match_imports/gl_func_00035268.c.o scripts/match-origins-gl_func_00035268.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035268.ld -e gl_func_00035268 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00035268.c.o scripts/match-origins-gl_func_00035268-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035268-nm.ld -e gl_func_00035268 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00035C6C.c.o.linked.elf: build/src/match_imports/gl_func_00035C6C.c.o scripts/match-origins-gl_func_00035C6C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035C6C.ld -e gl_func_00035C6C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00035C6C.c.o scripts/match-origins-gl_func_00035C6C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035C6C-nm.ld -e gl_func_00035C6C -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00036224.c.o.linked.elf: build/src/match_imports/gl_func_00036224.c.o scripts/match-origins-gl_func_00036224.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00036224.ld -e gl_func_00036224 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00036224.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00036224.c.o scripts/match-origins-gl_func_00036224-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00036224-nm.ld -e gl_func_00036224 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0003800C.c.o.linked.elf: build/src/match_imports/gl_func_0003800C.c.o scripts/match-origins-gl_func_0003800C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003800C.ld -e gl_func_0003800C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0003800C.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0003800C.c.o scripts/match-origins-gl_func_0003800C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003800C-nm.ld -e gl_func_0003800C -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00039094.c.o.linked.elf: build/src/match_imports/gl_func_00039094.c.o scripts/match-origins-gl_func_00039094.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00039094.ld -e gl_func_00039094 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00039094.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00039094.c.o scripts/match-origins-gl_func_00039094-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00039094-nm.ld -e gl_func_00039094 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00039B58.c.o.linked.elf: build/src/match_imports/gl_func_00039B58.c.o scripts/match-origins-gl_func_00039B58.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00039B58.ld -e gl_func_00039B58 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00039B58.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00039B58.c.o scripts/match-origins-gl_func_00039B58-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00039B58-nm.ld -e gl_func_00039B58 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0003A58C.c.o.linked.elf: build/src/match_imports/gl_func_0003A58C.c.o scripts/match-origins-gl_func_0003A58C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003A58C.ld -e gl_func_0003A58C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0003A58C.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0003A58C.c.o scripts/match-origins-gl_func_0003A58C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003A58C-nm.ld -e gl_func_0003A58C -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0003CBB4.c.o.linked.elf: build/src/match_imports/gl_func_0003CBB4.c.o scripts/match-origins-gl_func_0003CBB4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003CBB4.ld -e gl_func_0003CBB4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0003CBB4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0003CBB4.c.o scripts/match-origins-gl_func_0003CBB4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003CBB4-nm.ld -e gl_func_0003CBB4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0003E39C.c.o.linked.elf: build/src/match_imports/gl_func_0003E39C.c.o scripts/match-origins-gl_func_0003E39C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003E39C.ld -e gl_func_0003E39C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0003E39C.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0003E39C.c.o scripts/match-origins-gl_func_0003E39C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003E39C-nm.ld -e gl_func_0003E39C -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00040640.c.o.linked.elf: build/src/match_imports/gl_func_00040640.c.o scripts/match-origins-gl_func_00040640.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00040640.ld -e gl_func_00040640 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00040640.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00040640.c.o scripts/match-origins-gl_func_00040640-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00040640-nm.ld -e gl_func_00040640 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00042684.c.o.linked.elf: build/src/match_imports/gl_func_00042684.c.o scripts/match-origins-gl_func_00042684.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00042684.ld -e gl_func_00042684 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00042684.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00042684.c.o scripts/match-origins-gl_func_00042684-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00042684-nm.ld -e gl_func_00042684 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_000437C0.c.o.linked.elf: build/src/match_imports/gl_func_000437C0.c.o scripts/match-origins-gl_func_000437C0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000437C0.ld -e gl_func_000437C0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_000437C0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000437C0.c.o scripts/match-origins-gl_func_000437C0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000437C0-nm.ld -e gl_func_000437C0 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00043BEC.c.o.linked.elf: build/src/match_imports/gl_func_00043BEC.c.o scripts/match-origins-gl_func_00043BEC.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00043BEC.ld -e gl_func_00043BEC -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00043BEC.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00043BEC.c.o scripts/match-origins-gl_func_00043BEC-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00043BEC-nm.ld -e gl_func_00043BEC -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00044144.c.o.linked.elf: build/src/match_imports/gl_func_00044144.c.o scripts/match-origins-gl_func_00044144.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00044144.ld -e gl_func_00044144 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00044144.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00044144.c.o scripts/match-origins-gl_func_00044144-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00044144-nm.ld -e gl_func_00044144 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00044918.c.o.linked.elf: build/src/match_imports/gl_func_00044918.c.o scripts/match-origins-gl_func_00044918.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00044918.ld -e gl_func_00044918 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00044918.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00044918.c.o scripts/match-origins-gl_func_00044918-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00044918-nm.ld -e gl_func_00044918 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00045E20.c.o.linked.elf: build/src/match_imports/gl_func_00045E20.c.o scripts/match-origins-gl_func_00045E20.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00045E20.ld -e gl_func_00045E20 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00045E20.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00045E20.c.o scripts/match-origins-gl_func_00045E20-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00045E20-nm.ld -e gl_func_00045E20 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00046BC4.c.o.linked.elf: build/src/match_imports/gl_func_00046BC4.c.o scripts/match-origins-gl_func_00046BC4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00046BC4.ld -e gl_func_00046BC4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00046BC4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00046BC4.c.o scripts/match-origins-gl_func_00046BC4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00046BC4-nm.ld -e gl_func_00046BC4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0004AAF0.c.o.linked.elf: build/src/match_imports/gl_func_0004AAF0.c.o scripts/match-origins-gl_func_0004AAF0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004AAF0.ld -e gl_func_0004AAF0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0004AAF0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0004AAF0.c.o scripts/match-origins-gl_func_0004AAF0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004AAF0-nm.ld -e gl_func_0004AAF0 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0004C928.c.o.linked.elf: build/src/match_imports/gl_func_0004C928.c.o scripts/match-origins-gl_func_0004C928.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004C928.ld -e gl_func_0004C928 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0004C928.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0004C928.c.o scripts/match-origins-gl_func_0004C928-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004C928-nm.ld -e gl_func_0004C928 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0004DC44.c.o.linked.elf: build/src/match_imports/gl_func_0004DC44.c.o scripts/match-origins-gl_func_0004DC44.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004DC44.ld -e gl_func_0004DC44 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0004DC44.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0004DC44.c.o scripts/match-origins-gl_func_0004DC44-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004DC44-nm.ld -e gl_func_0004DC44 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0004F9E4.c.o.linked.elf: build/src/match_imports/gl_func_0004F9E4.c.o scripts/match-origins-gl_func_0004F9E4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004F9E4.ld -e gl_func_0004F9E4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0004F9E4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0004F9E4.c.o scripts/match-origins-gl_func_0004F9E4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0004F9E4-nm.ld -e gl_func_0004F9E4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00054D04.c.o.linked.elf: build/src/match_imports/gl_func_00054D04.c.o scripts/match-origins-gl_func_00054D04.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00054D04.ld -e gl_func_00054D04 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00054D04.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00054D04.c.o scripts/match-origins-gl_func_00054D04-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00054D04-nm.ld -e gl_func_00054D04 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_0005B90C.c.o.linked.elf: build/src/match_imports/gl_func_0005B90C.c.o scripts/match-origins-gl_func_0005B90C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0005B90C.ld -e gl_func_0005B90C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_0005B90C.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0005B90C.c.o scripts/match-origins-gl_func_0005B90C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0005B90C-nm.ld -e gl_func_0005B90C -o $@ $@.stripped.o
+build/src/match_imports/gl_func_000600A4.c.o.linked.elf: build/src/match_imports/gl_func_000600A4.c.o scripts/match-origins-gl_func_000600A4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000600A4.ld -e gl_func_000600A4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_000600A4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000600A4.c.o scripts/match-origins-gl_func_000600A4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000600A4-nm.ld -e gl_func_000600A4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00060AD0.c.o.linked.elf: build/src/match_imports/gl_func_00060AD0.c.o scripts/match-origins-gl_func_00060AD0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00060AD0.ld -e gl_func_00060AD0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00060AD0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00060AD0.c.o scripts/match-origins-gl_func_00060AD0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00060AD0-nm.ld -e gl_func_00060AD0 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00061478.c.o.linked.elf: build/src/match_imports/gl_func_00061478.c.o scripts/match-origins-gl_func_00061478.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00061478.ld -e gl_func_00061478 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00061478.c.o scripts/match-origins-gl_func_00061478-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00061478-nm.ld -e gl_func_00061478 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00066264.c.o.linked.elf: build/src/match_imports/gl_func_00066264.c.o scripts/match-origins-gl_func_00066264.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066264.ld -e gl_func_00066264 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00066264.c.o scripts/match-origins-gl_func_00066264-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066264-nm.ld -e gl_func_00066264 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00066AF0.c.o.linked.elf: build/src/match_imports/gl_func_00066AF0.c.o scripts/match-origins-gl_func_00066AF0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066AF0.ld -e gl_func_00066AF0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00066AF0.c.o scripts/match-origins-gl_func_00066AF0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066AF0-nm.ld -e gl_func_00066AF0 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00066B64.c.o.linked.elf: build/src/match_imports/gl_func_00066B64.c.o scripts/match-origins-gl_func_00066B64.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066B64.ld -e gl_func_00066B64 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00066B64.c.o scripts/match-origins-gl_func_00066B64-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066B64-nm.ld -e gl_func_00066B64 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_000671E4.c.o.linked.elf: build/src/match_imports/gl_func_000671E4.c.o scripts/match-origins-gl_func_000671E4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000671E4.ld -e gl_func_000671E4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000671E4.c.o scripts/match-origins-gl_func_000671E4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000671E4-nm.ld -e gl_func_000671E4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_00068C14.c.o.linked.elf: build/src/match_imports/gl_func_00068C14.c.o scripts/match-origins-gl_func_00068C14.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00068C14.ld -e gl_func_00068C14 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00068C14.c.o scripts/match-origins-gl_func_00068C14-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00068C14-nm.ld -e gl_func_00068C14 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_000693A4.c.o.linked.elf: build/src/match_imports/gl_func_000693A4.c.o scripts/match-origins-gl_func_000693A4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000693A4.ld -e gl_func_000693A4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000693A4.c.o scripts/match-origins-gl_func_000693A4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000693A4-nm.ld -e gl_func_000693A4 -o $@ $@.stripped.o
+build/src/match_imports/gl_func_000697C4.c.o.linked.elf: build/src/match_imports/gl_func_000697C4.c.o scripts/match-origins-gl_func_000697C4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000697C4.ld -e gl_func_000697C4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000697C4.c.o scripts/match-origins-gl_func_000697C4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000697C4-nm.ld -e gl_func_000697C4 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf: build/src/match_imports/game_uso_func_000028C0.c.o scripts/match-origins-game_uso_func_000028C0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000028C0.ld -e game_uso_func_000028C0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_000028C0.c.o scripts/match-origins-game_uso_func_000028C0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000028C0-nm.ld -e game_uso_func_000028C0 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf: build/src/match_imports/game_uso_func_000041C0.c.o scripts/match-origins-game_uso_func_000041C0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000041C0.ld -e game_uso_func_000041C0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_000041C0.c.o scripts/match-origins-game_uso_func_000041C0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000041C0-nm.ld -e game_uso_func_000041C0 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_00007448.c.o.linked.elf: build/src/match_imports/game_uso_func_00007448.c.o scripts/match-origins-game_uso_func_00007448.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_00007448.ld -e game_uso_func_00007448 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_00007448.c.o scripts/match-origins-game_uso_func_00007448-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_00007448-nm.ld -e game_uso_func_00007448 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_00007538.c.o.linked.elf: build/src/match_imports/game_uso_func_00007538.c.o scripts/match-origins-game_uso_func_00007538.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_00007538.ld -e game_uso_func_00007538 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_00007538.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_00007538.c.o scripts/match-origins-game_uso_func_00007538-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_00007538-nm.ld -e game_uso_func_00007538 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf: build/src/match_imports/game_uso_func_0000B274.c.o scripts/match-origins-game_uso_func_0000B274.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B274.ld -e game_uso_func_0000B274 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000B274.c.o scripts/match-origins-game_uso_func_0000B274-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B274-nm.ld -e game_uso_func_0000B274 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf: build/src/match_imports/game_uso_func_0000B4B8.c.o scripts/match-origins-game_uso_func_0000B4B8.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B4B8.ld -e game_uso_func_0000B4B8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o scripts/match-origins-game_uso_func_0000B4B8-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B4B8-nm.ld -e game_uso_func_0000B4B8 -o $@ $@.stripped.o
+build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf: build/src/match_imports/game_uso_func_0000E5C8.c.o scripts/match-origins-game_uso_func_0000E5C8.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000E5C8.ld -e game_uso_func_0000E5C8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o scripts/match-origins-game_uso_func_0000E5C8-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000E5C8-nm.ld -e game_uso_func_0000E5C8 -o $@ $@.stripped.o
+build/src/match_imports/gui_func_00002BB0.c.o.linked.elf: build/src/match_imports/gui_func_00002BB0.c.o scripts/match-origins-gui_func_00002BB0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_func_00002BB0.ld -e gui_func_00002BB0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf: build/non_matching/src/match_imports/gui_func_00002BB0.c.o scripts/match-origins-gui_func_00002BB0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_func_00002BB0-nm.ld -e gui_func_00002BB0 -o $@ $@.stripped.o
+build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf: build/src/match_imports/h2hproc_uso_func_0000002C.c.o scripts/match-origins-h2hproc_uso_func_0000002C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_0000002C.ld -e h2hproc_uso_func_0000002C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf: build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o scripts/match-origins-h2hproc_uso_func_0000002C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_0000002C-nm.ld -e h2hproc_uso_func_0000002C -o $@ $@.stripped.o
+build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf: build/src/match_imports/h2hproc_uso_func_00000C18.c.o scripts/match-origins-h2hproc_uso_func_00000C18.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00000C18.ld -e h2hproc_uso_func_00000C18 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o scripts/match-origins-h2hproc_uso_func_00000C18-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00000C18-nm.ld -e h2hproc_uso_func_00000C18 -o $@ $@.stripped.o
+build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf: build/src/match_imports/h2hproc_uso_func_00001360.c.o scripts/match-origins-h2hproc_uso_func_00001360.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00001360.ld -e h2hproc_uso_func_00001360 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o scripts/match-origins-h2hproc_uso_func_00001360-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00001360-nm.ld -e h2hproc_uso_func_00001360 -o $@ $@.stripped.o
+build/src/match_imports/func_800000B0.c.o.linked.elf: build/src/match_imports/func_800000B0.c.o scripts/match-origins-func_800000B0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800000B0.ld -e func_800000B0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf: build/non_matching/src/match_imports/func_800000B0.c.o scripts/match-origins-func_800000B0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800000B0-nm.ld -e func_800000B0 -o $@ $@.stripped.o
+build/src/match_imports/func_800021A4.c.o.linked.elf: build/src/match_imports/func_800021A4.c.o scripts/match-origins-func_800021A4.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800021A4.ld -e func_800021A4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf: build/non_matching/src/match_imports/func_800021A4.c.o scripts/match-origins-func_800021A4-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800021A4-nm.ld -e func_800021A4 -o $@ $@.stripped.o
+build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf: build/src/match_imports/mgrproc_uso_func_00001C90.c.o scripts/match-origins-mgrproc_uso_func_00001C90.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00001C90.ld -e mgrproc_uso_func_00001C90 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o scripts/match-origins-mgrproc_uso_func_00001C90-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00001C90-nm.ld -e mgrproc_uso_func_00001C90 -o $@ $@.stripped.o
+build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850-nm.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000117C.c.o scripts/match-origins-timproc_uso_b5_func_0000117C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000117C.ld -e timproc_uso_b5_func_0000117C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o scripts/match-origins-timproc_uso_b5_func_0000117C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000117C-nm.ld -e timproc_uso_b5_func_0000117C -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_00001460.c.o scripts/match-origins-timproc_uso_b5_func_00001460.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00001460.ld -e timproc_uso_b5_func_00001460 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o scripts/match-origins-timproc_uso_b5_func_00001460-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00001460-nm.ld -e timproc_uso_b5_func_00001460 -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o scripts/match-origins-timproc_uso_b5_func_000038B0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000038B0.ld -e timproc_uso_b5_func_000038B0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o scripts/match-origins-timproc_uso_b5_func_000038B0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000038B0-nm.ld -e timproc_uso_b5_func_000038B0 -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o scripts/match-origins-timproc_uso_b5_func_00005BF0.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00005BF0.ld -e timproc_uso_b5_func_00005BF0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o scripts/match-origins-timproc_uso_b5_func_00005BF0-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00005BF0-nm.ld -e timproc_uso_b5_func_00005BF0 -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_000069E8.c.o scripts/match-origins-timproc_uso_b5_func_000069E8.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000069E8.ld -e timproc_uso_b5_func_000069E8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o scripts/match-origins-timproc_uso_b5_func_000069E8-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000069E8-nm.ld -e timproc_uso_b5_func_000069E8 -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o scripts/match-origins-timproc_uso_b5_func_0000BBDC.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000BBDC.ld -e timproc_uso_b5_func_0000BBDC -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o scripts/match-origins-timproc_uso_b5_func_0000BBDC-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000BBDC-nm.ld -e timproc_uso_b5_func_0000BBDC -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o scripts/match-origins-timproc_uso_b5_func_0000C98C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000C98C.ld -e timproc_uso_b5_func_0000C98C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o scripts/match-origins-timproc_uso_b5_func_0000C98C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000C98C-nm.ld -e timproc_uso_b5_func_0000C98C -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o scripts/match-origins-timproc_uso_b5_func_0000D14C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D14C.ld -e timproc_uso_b5_func_0000D14C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o scripts/match-origins-timproc_uso_b5_func_0000D14C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D14C-nm.ld -e timproc_uso_b5_func_0000D14C -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000D550.c.o scripts/match-origins-timproc_uso_b5_func_0000D550.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D550.ld -e timproc_uso_b5_func_0000D550 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o scripts/match-origins-timproc_uso_b5_func_0000D550-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D550-nm.ld -e timproc_uso_b5_func_0000D550 -o $@ $@.stripped.o
+build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf: build/src/match_imports/titproc_uso_func_00001710.c.o scripts/match-origins-titproc_uso_func_00001710.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-titproc_uso_func_00001710.ld -e titproc_uso_func_00001710 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf: build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o scripts/match-origins-titproc_uso_func_00001710-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-titproc_uso_func_00001710-nm.ld -e titproc_uso_func_00001710 -o $@ $@.stripped.o
+
+# Audited original-ROM carrier bindings.
+build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001B04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001B04.json $@
+build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001B04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001B04-nm.json $@
+build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001F54.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001F54.json $@
+build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001F54-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001F54-nm.json $@
+build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: build/src/match_imports/func_00000610.c.o.linked.elf scripts/match-bindings-func_00000610.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00000610.json $@
+build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00000610.c.o.linked.elf scripts/match-bindings-func_00000610-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00000610-nm.json $@
+build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: build/src/match_imports/func_000027E8.c.o.linked.elf scripts/match-bindings-func_000027E8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000027E8.json $@
+build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf scripts/match-bindings-func_000027E8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000027E8-nm.json $@
+build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: build/src/match_imports/func_00003638.c.o.linked.elf scripts/match-bindings-func_00003638.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00003638.json $@
+build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00003638.c.o.linked.elf scripts/match-bindings-func_00003638-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00003638-nm.json $@
+build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: build/src/match_imports/func_00008124.c.o.linked.elf scripts/match-bindings-func_00008124.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00008124.json $@
+build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00008124.c.o.linked.elf scripts/match-bindings-func_00008124-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00008124-nm.json $@
+build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: build/src/match_imports/func_000084A0.c.o.linked.elf scripts/match-bindings-func_000084A0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000084A0.json $@
+build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf scripts/match-bindings-func_000084A0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000084A0-nm.json $@
+build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: build/src/match_imports/func_0000BF8C.c.o.linked.elf scripts/match-bindings-func_0000BF8C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000BF8C.json $@
+build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf scripts/match-bindings-func_0000BF8C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000BF8C-nm.json $@
+build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: build/src/match_imports/func_0000D440.c.o.linked.elf scripts/match-bindings-func_0000D440.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D440.json $@
+build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf scripts/match-bindings-func_0000D440-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D440-nm.json $@
+build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: build/src/match_imports/func_0000D900.c.o.linked.elf scripts/match-bindings-func_0000D900.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D900.json $@
+build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf scripts/match-bindings-func_0000D900-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D900-nm.json $@
+build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: build/src/match_imports/func_00012E00.c.o.linked.elf scripts/match-bindings-func_00012E00.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00012E00.json $@
+build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf scripts/match-bindings-func_00012E00-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00012E00-nm.json $@
+build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: build/src/match_imports/func_0001438C.c.o.linked.elf scripts/match-bindings-func_0001438C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0001438C.json $@
+build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf scripts/match-bindings-func_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0001438C-nm.json $@
+build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf scripts/match-bindings-game_libs_func_00000B94.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00000B94.json $@
+build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf scripts/match-bindings-game_libs_func_00000B94-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00000B94-nm.json $@
+build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf scripts/match-bindings-game_libs_func_0000CBF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0000CBF0.json $@
+build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf scripts/match-bindings-game_libs_func_0000CBF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0000CBF0-nm.json $@
+build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf scripts/match-bindings-game_libs_func_00029BC8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00029BC8.json $@
+build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf scripts/match-bindings-game_libs_func_00029BC8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00029BC8-nm.json $@
+build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf scripts/match-bindings-game_libs_func_0002E0C4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0002E0C4.json $@
+build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf scripts/match-bindings-game_libs_func_0002E0C4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0002E0C4-nm.json $@
+build/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf scripts/match-bindings-game_libs_func_0002F1B8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0002F1B8.json $@
+build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf scripts/match-bindings-game_libs_func_0002F1B8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0002F1B8-nm.json $@
+build/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00035E64.c.o.linked.elf scripts/match-bindings-game_libs_func_00035E64.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00035E64.json $@
+build/non_matching/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00035E64.c.o.linked.elf scripts/match-bindings-game_libs_func_00035E64-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00035E64-nm.json $@
+build/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_000470E4.c.o.linked.elf scripts/match-bindings-game_libs_func_000470E4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_000470E4.json $@
+build/non_matching/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_000470E4.c.o.linked.elf scripts/match-bindings-game_libs_func_000470E4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_000470E4-nm.json $@
+build/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00047394.c.o.linked.elf scripts/match-bindings-game_libs_func_00047394.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00047394.json $@
+build/non_matching/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00047394.c.o.linked.elf scripts/match-bindings-game_libs_func_00047394-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00047394-nm.json $@
+build/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00047B28.c.o.linked.elf scripts/match-bindings-game_libs_func_00047B28.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00047B28.json $@
+build/non_matching/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00047B28.c.o.linked.elf scripts/match-bindings-game_libs_func_00047B28-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00047B28-nm.json $@
+build/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf scripts/match-bindings-game_libs_func_0004A7C4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0004A7C4.json $@
+build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf scripts/match-bindings-game_libs_func_0004A7C4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0004A7C4-nm.json $@
+build/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0000D0D0.c.o.linked.elf scripts/match-bindings-gl_func_0000D0D0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0000D0D0.json $@
+build/non_matching/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0000D0D0.c.o.linked.elf scripts/match-bindings-gl_func_0000D0D0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0000D0D0-nm.json $@
+build/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0000D288.c.o.linked.elf scripts/match-bindings-gl_func_0000D288.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0000D288.json $@
+build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf scripts/match-bindings-gl_func_0000D288-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0000D288-nm.json $@
+build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf scripts/match-bindings-gl_func_0002A3AC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002A3AC.json $@
+build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf scripts/match-bindings-gl_func_0002A3AC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002A3AC-nm.json $@
+build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002D224.c.o.linked.elf scripts/match-bindings-gl_func_0002D224.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D224.json $@
+build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf scripts/match-bindings-gl_func_0002D224-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D224-nm.json $@
+build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002D910.c.o.linked.elf scripts/match-bindings-gl_func_0002D910.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D910.json $@
+build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf scripts/match-bindings-gl_func_0002D910-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D910-nm.json $@
+build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002F288.c.o.linked.elf scripts/match-bindings-gl_func_0002F288.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F288.json $@
+build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf scripts/match-bindings-gl_func_0002F288-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F288-nm.json $@
+build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf scripts/match-bindings-gl_func_0002F9D4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F9D4.json $@
+build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf scripts/match-bindings-gl_func_0002F9D4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F9D4-nm.json $@
+build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0003061C.c.o.linked.elf scripts/match-bindings-gl_func_0003061C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003061C.json $@
+build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf scripts/match-bindings-gl_func_0003061C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003061C-nm.json $@
+build/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00030A20.c.o.linked.elf scripts/match-bindings-gl_func_00030A20.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00030A20.json $@
+build/non_matching/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00030A20.c.o.linked.elf scripts/match-bindings-gl_func_00030A20-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00030A20-nm.json $@
+build/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00031608.c.o.linked.elf scripts/match-bindings-gl_func_00031608.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00031608.json $@
+build/non_matching/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00031608.c.o.linked.elf scripts/match-bindings-gl_func_00031608-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00031608-nm.json $@
+build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000346F0.c.o.linked.elf scripts/match-bindings-gl_func_000346F0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000346F0.json $@
+build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf scripts/match-bindings-gl_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000346F0-nm.json $@
+build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00035268.c.o.linked.elf scripts/match-bindings-gl_func_00035268.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035268.json $@
+build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf scripts/match-bindings-gl_func_00035268-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035268-nm.json $@
+build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00035C6C.c.o.linked.elf scripts/match-bindings-gl_func_00035C6C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035C6C.json $@
+build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf scripts/match-bindings-gl_func_00035C6C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035C6C-nm.json $@
+build/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00036224.c.o.linked.elf scripts/match-bindings-gl_func_00036224.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00036224.json $@
+build/non_matching/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00036224.c.o.linked.elf scripts/match-bindings-gl_func_00036224-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00036224-nm.json $@
+build/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0003800C.c.o.linked.elf scripts/match-bindings-gl_func_0003800C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003800C.json $@
+build/non_matching/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0003800C.c.o.linked.elf scripts/match-bindings-gl_func_0003800C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003800C-nm.json $@
+build/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00039094.c.o.linked.elf scripts/match-bindings-gl_func_00039094.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00039094.json $@
+build/non_matching/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00039094.c.o.linked.elf scripts/match-bindings-gl_func_00039094-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00039094-nm.json $@
+build/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00039B58.c.o.linked.elf scripts/match-bindings-gl_func_00039B58.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00039B58.json $@
+build/non_matching/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00039B58.c.o.linked.elf scripts/match-bindings-gl_func_00039B58-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00039B58-nm.json $@
+build/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0003A58C.c.o.linked.elf scripts/match-bindings-gl_func_0003A58C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003A58C.json $@
+build/non_matching/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0003A58C.c.o.linked.elf scripts/match-bindings-gl_func_0003A58C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003A58C-nm.json $@
+build/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0003CBB4.c.o.linked.elf scripts/match-bindings-gl_func_0003CBB4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003CBB4.json $@
+build/non_matching/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0003CBB4.c.o.linked.elf scripts/match-bindings-gl_func_0003CBB4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003CBB4-nm.json $@
+build/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0003E39C.c.o.linked.elf scripts/match-bindings-gl_func_0003E39C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003E39C.json $@
+build/non_matching/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0003E39C.c.o.linked.elf scripts/match-bindings-gl_func_0003E39C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003E39C-nm.json $@
+build/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00040640.c.o.linked.elf scripts/match-bindings-gl_func_00040640.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00040640.json $@
+build/non_matching/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00040640.c.o.linked.elf scripts/match-bindings-gl_func_00040640-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00040640-nm.json $@
+build/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00042684.c.o.linked.elf scripts/match-bindings-gl_func_00042684.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00042684.json $@
+build/non_matching/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00042684.c.o.linked.elf scripts/match-bindings-gl_func_00042684-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00042684-nm.json $@
+build/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000437C0.c.o.linked.elf scripts/match-bindings-gl_func_000437C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000437C0.json $@
+build/non_matching/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000437C0.c.o.linked.elf scripts/match-bindings-gl_func_000437C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000437C0-nm.json $@
+build/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00043BEC.c.o.linked.elf scripts/match-bindings-gl_func_00043BEC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00043BEC.json $@
+build/non_matching/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00043BEC.c.o.linked.elf scripts/match-bindings-gl_func_00043BEC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00043BEC-nm.json $@
+build/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00044144.c.o.linked.elf scripts/match-bindings-gl_func_00044144.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00044144.json $@
+build/non_matching/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00044144.c.o.linked.elf scripts/match-bindings-gl_func_00044144-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00044144-nm.json $@
+build/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00044918.c.o.linked.elf scripts/match-bindings-gl_func_00044918.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00044918.json $@
+build/non_matching/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00044918.c.o.linked.elf scripts/match-bindings-gl_func_00044918-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00044918-nm.json $@
+build/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00045E20.c.o.linked.elf scripts/match-bindings-gl_func_00045E20.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00045E20.json $@
+build/non_matching/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00045E20.c.o.linked.elf scripts/match-bindings-gl_func_00045E20-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00045E20-nm.json $@
+build/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00046BC4.c.o.linked.elf scripts/match-bindings-gl_func_00046BC4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00046BC4.json $@
+build/non_matching/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00046BC4.c.o.linked.elf scripts/match-bindings-gl_func_00046BC4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00046BC4-nm.json $@
+build/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0004AAF0.c.o.linked.elf scripts/match-bindings-gl_func_0004AAF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004AAF0.json $@
+build/non_matching/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0004AAF0.c.o.linked.elf scripts/match-bindings-gl_func_0004AAF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004AAF0-nm.json $@
+build/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0004C928.c.o.linked.elf scripts/match-bindings-gl_func_0004C928.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004C928.json $@
+build/non_matching/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0004C928.c.o.linked.elf scripts/match-bindings-gl_func_0004C928-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004C928-nm.json $@
+build/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0004DC44.c.o.linked.elf scripts/match-bindings-gl_func_0004DC44.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004DC44.json $@
+build/non_matching/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0004DC44.c.o.linked.elf scripts/match-bindings-gl_func_0004DC44-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004DC44-nm.json $@
+build/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0004F9E4.c.o.linked.elf scripts/match-bindings-gl_func_0004F9E4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004F9E4.json $@
+build/non_matching/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0004F9E4.c.o.linked.elf scripts/match-bindings-gl_func_0004F9E4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0004F9E4-nm.json $@
+build/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00054D04.c.o.linked.elf scripts/match-bindings-gl_func_00054D04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00054D04.json $@
+build/non_matching/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00054D04.c.o.linked.elf scripts/match-bindings-gl_func_00054D04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00054D04-nm.json $@
+build/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0005B90C.c.o.linked.elf scripts/match-bindings-gl_func_0005B90C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0005B90C.json $@
+build/non_matching/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0005B90C.c.o.linked.elf scripts/match-bindings-gl_func_0005B90C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0005B90C-nm.json $@
+build/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000600A4.c.o.linked.elf scripts/match-bindings-gl_func_000600A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000600A4.json $@
+build/non_matching/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000600A4.c.o.linked.elf scripts/match-bindings-gl_func_000600A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000600A4-nm.json $@
+build/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00060AD0.c.o.linked.elf scripts/match-bindings-gl_func_00060AD0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00060AD0.json $@
+build/non_matching/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00060AD0.c.o.linked.elf scripts/match-bindings-gl_func_00060AD0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00060AD0-nm.json $@
+build/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00061478.c.o.linked.elf scripts/match-bindings-gl_func_00061478.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00061478.json $@
+build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf scripts/match-bindings-gl_func_00061478-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00061478-nm.json $@
+build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00066264.c.o.linked.elf scripts/match-bindings-gl_func_00066264.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066264.json $@
+build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf scripts/match-bindings-gl_func_00066264-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066264-nm.json $@
+build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00066AF0.c.o.linked.elf scripts/match-bindings-gl_func_00066AF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066AF0.json $@
+build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf scripts/match-bindings-gl_func_00066AF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066AF0-nm.json $@
+build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00066B64.c.o.linked.elf scripts/match-bindings-gl_func_00066B64.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066B64.json $@
+build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf scripts/match-bindings-gl_func_00066B64-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066B64-nm.json $@
+build/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000671E4.c.o.linked.elf scripts/match-bindings-gl_func_000671E4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000671E4.json $@
+build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf scripts/match-bindings-gl_func_000671E4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000671E4-nm.json $@
+build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00068C14.c.o.linked.elf scripts/match-bindings-gl_func_00068C14.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00068C14.json $@
+build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf scripts/match-bindings-gl_func_00068C14-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00068C14-nm.json $@
+build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000693A4.c.o.linked.elf scripts/match-bindings-gl_func_000693A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000693A4.json $@
+build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf scripts/match-bindings-gl_func_000693A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000693A4-nm.json $@
+build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000697C4.c.o.linked.elf scripts/match-bindings-gl_func_000697C4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000697C4.json $@
+build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf scripts/match-bindings-gl_func_000697C4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000697C4-nm.json $@
+build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000028C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000028C0.json $@
+build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000028C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000028C0-nm.json $@
+build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000041C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000041C0.json $@
+build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000041C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000041C0-nm.json $@
+build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_00007448.c.o.linked.elf scripts/match-bindings-game_uso_func_00007448.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_00007448.json $@
+build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf scripts/match-bindings-game_uso_func_00007448-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_00007448-nm.json $@
+build/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_00007538.c.o.linked.elf scripts/match-bindings-game_uso_func_00007538.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_00007538.json $@
+build/non_matching/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_00007538.c.o.linked.elf scripts/match-bindings-game_uso_func_00007538-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_00007538-nm.json $@
+build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B274.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B274.json $@
+build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B274-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B274-nm.json $@
+build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B4B8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B4B8.json $@
+build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B4B8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B4B8-nm.json $@
+build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000E5C8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000E5C8.json $@
+build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000E5C8-nm.json $@
+build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: build/src/match_imports/gui_func_00002BB0.c.o.linked.elf scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_func_00002BB0.json $@
+build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf scripts/match-bindings-gui_func_00002BB0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_func_00002BB0-nm.json $@
+build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_0000002C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_0000002C.json $@
+build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json $@
+build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00000C18.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00000C18.json $@
+build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json $@
+build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00001360.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00001360.json $@
+build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00001360-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00001360-nm.json $@
+build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: build/src/match_imports/func_800000B0.c.o.linked.elf scripts/match-bindings-func_800000B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800000B0.json $@
+build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf scripts/match-bindings-func_800000B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800000B0-nm.json $@
+build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: build/src/match_imports/func_800021A4.c.o.linked.elf scripts/match-bindings-func_800021A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800021A4.json $@
+build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf scripts/match-bindings-func_800021A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800021A4-nm.json $@
+build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00001C90.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00001C90.json $@
+build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json $@
+build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850.json $@
+build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000117C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000117C.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000117C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000117C-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00001460.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00001460.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000038B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000038B0.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00005BF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00005BF0.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000069E8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000069E8.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000BBDC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000BBDC.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000BBDC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000BBDC-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000C98C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000C98C.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000C98C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000C98C-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D14C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D14C.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D14C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D14C-nm.json $@
+build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D550.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D550.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json $@
+build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf scripts/match-bindings-titproc_uso_func_00001710.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-titproc_uso_func_00001710.json $@
+build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf scripts/match-bindings-titproc_uso_func_00001710-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-titproc_uso_func_00001710-nm.json $@
+
+# Local function union; upstream exacts and unit inventory are unchanged.
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001B04=build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001B04.c scripts/match-bindings-arcproc_uso_func_00001B04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001B04=build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001B04.c scripts/match-bindings-arcproc_uso_func_00001B04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001F54=build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001F54.c scripts/match-bindings-arcproc_uso_func_00001F54.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001F54=build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001F54.c scripts/match-bindings-arcproc_uso_func_00001F54-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000610=build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00000610.c scripts/match-bindings-func_00000610.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000610=build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00000610.c scripts/match-bindings-func_00000610-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000027E8=build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000027E8.c scripts/match-bindings-func_000027E8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000027E8=build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000027E8.c scripts/match-bindings-func_000027E8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00003638=build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00003638.c scripts/match-bindings-func_00003638.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00003638=build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00003638.c scripts/match-bindings-func_00003638-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008124=build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00008124.c scripts/match-bindings-func_00008124.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008124=build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00008124.c scripts/match-bindings-func_00008124-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000084A0=build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000084A0.c scripts/match-bindings-func_000084A0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000084A0=build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000084A0.c scripts/match-bindings-func_000084A0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000BF8C=build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000BF8C.c scripts/match-bindings-func_0000BF8C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000BF8C=build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000BF8C.c scripts/match-bindings-func_0000BF8C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D440=build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D440.c scripts/match-bindings-func_0000D440.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D440=build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D440.c scripts/match-bindings-func_0000D440-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D900=build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D900.c scripts/match-bindings-func_0000D900.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D900=build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D900.c scripts/match-bindings-func_0000D900-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_00012E00=build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_00012E00.c scripts/match-bindings-func_00012E00.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_00012E00=build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_00012E00.c scripts/match-bindings-func_00012E00-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_0001438C=build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_0001438C.c scripts/match-bindings-func_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_0001438C=build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_0001438C.c scripts/match-bindings-func_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += game_libs_func_00000B94=build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs.c.o: src/match_imports/game_libs_func_00000B94.c scripts/match-bindings-game_libs_func_00000B94.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += game_libs_func_00000B94=build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs.c.o: src/match_imports/game_libs_func_00000B94.c scripts/match-bindings-game_libs_func_00000B94-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += game_libs_func_0000CBF0=build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_tail.c.o: src/match_imports/game_libs_func_0000CBF0.c scripts/match-bindings-game_libs_func_0000CBF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += game_libs_func_0000CBF0=build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/game_libs_func_0000CBF0.c scripts/match-bindings-game_libs_func_0000CBF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_00029BC8=build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_00029BC8.c scripts/match-bindings-game_libs_func_00029BC8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_00029BC8=build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_00029BC8.c scripts/match-bindings-game_libs_func_00029BC8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E0C4=build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_0002E0C4.c scripts/match-bindings-game_libs_func_0002E0C4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E0C4=build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_0002E0C4.c scripts/match-bindings-game_libs_func_0002E0C4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002F1B8=build/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_0002F1B8.c scripts/match-bindings-game_libs_func_0002F1B8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002F1B8=build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_0002F1B8.c scripts/match-bindings-game_libs_func_0002F1B8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00035E64=build/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_00035E64.c scripts/match-bindings-game_libs_func_00035E64.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00035E64=build/non_matching/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_00035E64.c scripts/match-bindings-game_libs_func_00035E64-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_000470E4=build/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_000470E4.c scripts/match-bindings-game_libs_func_000470E4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_000470E4=build/non_matching/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_000470E4.c scripts/match-bindings-game_libs_func_000470E4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00047394=build/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_00047394.c scripts/match-bindings-game_libs_func_00047394.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00047394=build/non_matching/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_00047394.c scripts/match-bindings-game_libs_func_00047394-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00047B28=build/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_00047B28.c scripts/match-bindings-game_libs_func_00047B28.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00047B28=build/non_matching/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_00047B28.c scripts/match-bindings-game_libs_func_00047B28-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A7C4=build/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_0004A7C4.c scripts/match-bindings-game_libs_func_0004A7C4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A7C4=build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/game_libs_func_0004A7C4.c scripts/match-bindings-game_libs_func_0004A7C4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += gl_func_0000D0D0=build/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_tail.c.o: src/match_imports/gl_func_0000D0D0.c scripts/match-bindings-gl_func_0000D0D0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += gl_func_0000D0D0=build/non_matching/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/gl_func_0000D0D0.c scripts/match-bindings-gl_func_0000D0D0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += gl_func_0000D288=build/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_tail.c.o: src/match_imports/gl_func_0000D288.c scripts/match-bindings-gl_func_0000D288.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += gl_func_0000D288=build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/gl_func_0000D288.c scripts/match-bindings-gl_func_0000D288-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002A3AC=build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002A3AC.c scripts/match-bindings-gl_func_0002A3AC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002A3AC=build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002A3AC.c scripts/match-bindings-gl_func_0002A3AC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D224=build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D224.c scripts/match-bindings-gl_func_0002D224.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D224=build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D224.c scripts/match-bindings-gl_func_0002D224-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D910=build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D910.c scripts/match-bindings-gl_func_0002D910.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D910=build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D910.c scripts/match-bindings-gl_func_0002D910-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F288=build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F288.c scripts/match-bindings-gl_func_0002F288.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F288=build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F288.c scripts/match-bindings-gl_func_0002F288-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F9D4=build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F9D4.c scripts/match-bindings-gl_func_0002F9D4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F9D4=build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F9D4.c scripts/match-bindings-gl_func_0002F9D4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0003061C=build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0003061C.c scripts/match-bindings-gl_func_0003061C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0003061C=build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0003061C.c scripts/match-bindings-gl_func_0003061C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00030A20=build/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_00030A20.c scripts/match-bindings-gl_func_00030A20.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00030A20=build/non_matching/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_00030A20.c scripts/match-bindings-gl_func_00030A20-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00031608=build/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_00031608.c scripts/match-bindings-gl_func_00031608.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00031608=build/non_matching/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_00031608.c scripts/match-bindings-gl_func_00031608-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000346F0=build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000346F0.c scripts/match-bindings-gl_func_000346F0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000346F0=build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000346F0.c scripts/match-bindings-gl_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035268=build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035268.c scripts/match-bindings-gl_func_00035268.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035268=build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035268.c scripts/match-bindings-gl_func_00035268-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035C6C=build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035C6C.c scripts/match-bindings-gl_func_00035C6C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035C6C=build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035C6C.c scripts/match-bindings-gl_func_00035C6C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036224=build/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00036224.c scripts/match-bindings-gl_func_00036224.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036224=build/non_matching/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00036224.c scripts/match-bindings-gl_func_00036224-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003800C=build/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003800C.c scripts/match-bindings-gl_func_0003800C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003800C=build/non_matching/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003800C.c scripts/match-bindings-gl_func_0003800C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00039094=build/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00039094.c scripts/match-bindings-gl_func_00039094.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00039094=build/non_matching/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00039094.c scripts/match-bindings-gl_func_00039094-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00039B58=build/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00039B58.c scripts/match-bindings-gl_func_00039B58.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00039B58=build/non_matching/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00039B58.c scripts/match-bindings-gl_func_00039B58-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003A58C=build/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003A58C.c scripts/match-bindings-gl_func_0003A58C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003A58C=build/non_matching/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003A58C.c scripts/match-bindings-gl_func_0003A58C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003CBB4=build/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003CBB4.c scripts/match-bindings-gl_func_0003CBB4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003CBB4=build/non_matching/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003CBB4.c scripts/match-bindings-gl_func_0003CBB4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003E39C=build/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003E39C.c scripts/match-bindings-gl_func_0003E39C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003E39C=build/non_matching/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0003E39C.c scripts/match-bindings-gl_func_0003E39C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040640=build/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00040640.c scripts/match-bindings-gl_func_00040640.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040640=build/non_matching/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00040640.c scripts/match-bindings-gl_func_00040640-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042684=build/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00042684.c scripts/match-bindings-gl_func_00042684.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042684=build/non_matching/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00042684.c scripts/match-bindings-gl_func_00042684-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000437C0=build/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000437C0.c scripts/match-bindings-gl_func_000437C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000437C0=build/non_matching/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000437C0.c scripts/match-bindings-gl_func_000437C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043BEC=build/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00043BEC.c scripts/match-bindings-gl_func_00043BEC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043BEC=build/non_matching/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00043BEC.c scripts/match-bindings-gl_func_00043BEC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044144=build/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00044144.c scripts/match-bindings-gl_func_00044144.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044144=build/non_matching/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00044144.c scripts/match-bindings-gl_func_00044144-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044918=build/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00044918.c scripts/match-bindings-gl_func_00044918.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044918=build/non_matching/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00044918.c scripts/match-bindings-gl_func_00044918-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00045E20=build/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00045E20.c scripts/match-bindings-gl_func_00045E20.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00045E20=build/non_matching/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00045E20.c scripts/match-bindings-gl_func_00045E20-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046BC4=build/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00046BC4.c scripts/match-bindings-gl_func_00046BC4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046BC4=build/non_matching/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00046BC4.c scripts/match-bindings-gl_func_00046BC4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004AAF0=build/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004AAF0.c scripts/match-bindings-gl_func_0004AAF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004AAF0=build/non_matching/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004AAF0.c scripts/match-bindings-gl_func_0004AAF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C928=build/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004C928.c scripts/match-bindings-gl_func_0004C928.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C928=build/non_matching/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004C928.c scripts/match-bindings-gl_func_0004C928-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004DC44=build/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004DC44.c scripts/match-bindings-gl_func_0004DC44.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004DC44=build/non_matching/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004DC44.c scripts/match-bindings-gl_func_0004DC44-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004F9E4=build/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004F9E4.c scripts/match-bindings-gl_func_0004F9E4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004F9E4=build/non_matching/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0004F9E4.c scripts/match-bindings-gl_func_0004F9E4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054D04=build/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00054D04.c scripts/match-bindings-gl_func_00054D04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054D04=build/non_matching/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00054D04.c scripts/match-bindings-gl_func_00054D04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005B90C=build/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0005B90C.c scripts/match-bindings-gl_func_0005B90C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005B90C=build/non_matching/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_0005B90C.c scripts/match-bindings-gl_func_0005B90C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000600A4=build/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000600A4.c scripts/match-bindings-gl_func_000600A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000600A4=build/non_matching/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000600A4.c scripts/match-bindings-gl_func_000600A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00060AD0=build/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00060AD0.c scripts/match-bindings-gl_func_00060AD0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00060AD0=build/non_matching/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00060AD0.c scripts/match-bindings-gl_func_00060AD0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00061478=build/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00061478.c scripts/match-bindings-gl_func_00061478.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00061478=build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00061478.c scripts/match-bindings-gl_func_00061478-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066264=build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066264.c scripts/match-bindings-gl_func_00066264.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066264=build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066264.c scripts/match-bindings-gl_func_00066264-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066AF0=build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066AF0.c scripts/match-bindings-gl_func_00066AF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066AF0=build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066AF0.c scripts/match-bindings-gl_func_00066AF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066B64=build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066B64.c scripts/match-bindings-gl_func_00066B64.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066B64=build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066B64.c scripts/match-bindings-gl_func_00066B64-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000671E4=build/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000671E4.c scripts/match-bindings-gl_func_000671E4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000671E4=build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000671E4.c scripts/match-bindings-gl_func_000671E4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00068C14=build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00068C14.c scripts/match-bindings-gl_func_00068C14.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00068C14=build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00068C14.c scripts/match-bindings-gl_func_00068C14-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000693A4=build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000693A4.c scripts/match-bindings-gl_func_000693A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000693A4=build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000693A4.c scripts/match-bindings-gl_func_000693A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000697C4=build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000697C4.c scripts/match-bindings-gl_func_000697C4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000697C4=build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000697C4.c scripts/match-bindings-gl_func_000697C4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000028C0=build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000028C0.c scripts/match-bindings-game_uso_func_000028C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000028C0=build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000028C0.c scripts/match-bindings-game_uso_func_000028C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000041C0=build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000041C0.c scripts/match-bindings-game_uso_func_000041C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000041C0=build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000041C0.c scripts/match-bindings-game_uso_func_000041C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007448=build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_00007448.c scripts/match-bindings-game_uso_func_00007448.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007448=build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_00007448.c scripts/match-bindings-game_uso_func_00007448-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007538=build/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_00007538.c scripts/match-bindings-game_uso_func_00007538.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007538=build/non_matching/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_00007538.c scripts/match-bindings-game_uso_func_00007538-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B274=build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B274.c scripts/match-bindings-game_uso_func_0000B274.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B274=build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B274.c scripts/match-bindings-game_uso_func_0000B274-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B4B8=build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B4B8.c scripts/match-bindings-game_uso_func_0000B4B8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B4B8=build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B4B8.c scripts/match-bindings-game_uso_func_0000B4B8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E5C8=build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E5C8=build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
+build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
+build/non_matching/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_0000002C=build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
+build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_0000002C.c scripts/match-bindings-h2hproc_uso_func_0000002C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_0000002C=build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_0000002C.c scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00000C18=build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
+build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00000C18.c scripts/match-bindings-h2hproc_uso_func_00000C18.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00000C18=build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00000C18.c scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00001360=build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
+build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00001360.c scripts/match-bindings-h2hproc_uso_func_00001360.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00001360=build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00001360.c scripts/match-bindings-h2hproc_uso_func_00001360-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800000B0=build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
+build/src/kernel/kernel_000.c.o: src/match_imports/func_800000B0.c scripts/match-bindings-func_800000B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800000B0=build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
+build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/func_800000B0.c scripts/match-bindings-func_800000B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800021A4=build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
+build/src/kernel/kernel_000.c.o: src/match_imports/func_800021A4.c scripts/match-bindings-func_800021A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800021A4=build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
+build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/func_800021A4.c scripts/match-bindings-func_800021A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00001C90=build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
+build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00001C90.c scripts/match-bindings-mgrproc_uso_func_00001C90.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00001C90=build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00001C90.c scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
+build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000117C=build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c scripts/match-bindings-timproc_uso_b5_func_0000117C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000117C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c scripts/match-bindings-timproc_uso_b5_func_0000117C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001460=build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00001460.c scripts/match-bindings-timproc_uso_b5_func_00001460.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001460=build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00001460.c scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000038B0=build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c scripts/match-bindings-timproc_uso_b5_func_000038B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000038B0=build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005BF0=build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c scripts/match-bindings-timproc_uso_b5_func_00005BF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005BF0=build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000069E8=build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c scripts/match-bindings-timproc_uso_b5_func_000069E8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000069E8=build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000BBDC=build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c scripts/match-bindings-timproc_uso_b5_func_0000BBDC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000BBDC=build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c scripts/match-bindings-timproc_uso_b5_func_0000BBDC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C98C=build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c scripts/match-bindings-timproc_uso_b5_func_0000C98C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C98C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c scripts/match-bindings-timproc_uso_b5_func_0000C98C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D14C=build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c scripts/match-bindings-timproc_uso_b5_func_0000D14C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D14C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c scripts/match-bindings-timproc_uso_b5_func_0000D14C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D550=build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c scripts/match-bindings-timproc_uso_b5_func_0000D550.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D550=build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_00001710=build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
+build/src/titproc_uso/titproc_uso.c.o: src/match_imports/titproc_uso_func_00001710.c scripts/match-bindings-titproc_uso_func_00001710.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_00001710=build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
+build/non_matching/src/titproc_uso/titproc_uso.c.o: src/match_imports/titproc_uso_func_00001710.c scripts/match-bindings-titproc_uso_func_00001710-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+
+# Host C/ASM definitions retain the original compiler and RoData context only.
+# Both modes require and install the independently checked C implementations above.
+
+# Full source-to-host dependency closure for incremental rebuilds.
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
+build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
+build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
+build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
+build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
+build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
+build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
+build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
+build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
+build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
+build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
+build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
+build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs.c.o: build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs.c.o: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_0002F1B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_00035E64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_000470E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_00047394.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_00047B28.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf
+build/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_libs_func_0004A7C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0000D0D0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00030A20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00031608.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00036224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0003800C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00039094.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00039B58.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0003A58C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0003CBB4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0003E39C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00040640.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00044144.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00044918.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00045E20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00046BC4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0004AAF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0004C928.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0004DC44.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0004F9E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00054D04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_0005B90C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_000600A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00060AD0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/match_imports/gl_func_00061478.c.o: src/match_imports/original_context/game_libs_func_000610F4.s src/match_imports/original_context/game_libs_func_0006110C.s src/match_imports/original_context/game_libs_func_000611E4.s src/match_imports/original_context/gl_func_0006126C.s src/match_imports/original_context/gl_func_00061458.s
+build/non_matching/src/match_imports/gl_func_00061478.c.o: src/match_imports/original_context/game_libs_func_000610F4.s src/match_imports/original_context/game_libs_func_0006110C.s src/match_imports/original_context/game_libs_func_000611E4.s src/match_imports/original_context/gl_func_0006126C.s src/match_imports/original_context/gl_func_00061458.s
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
+build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_00007538.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
+build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/gui_uso/gui_uso.c.o: build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
+build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/gui_uso/gui_uso.c.o: build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
+build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
+build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
+build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/kernel/kernel_000.c.o: build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
+build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/kernel/kernel_000.c.o: build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
+build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
+build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
+build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
+build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/titproc_uso/titproc_uso.c.o: build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
+build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/titproc_uso/titproc_uso.c.o: build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py

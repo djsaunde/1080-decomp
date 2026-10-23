@@ -1,0 +1,19 @@
+{
+  "function": "gui_func_00002BB0",
+  "raw_sha256": "fafa07bc0bfa0cdfcfd823ca2185538b92965f7fc59506ab6adda7135168c8b2",
+  "renames": {
+    "D_00000000": "snw_port_gui_func_00002BB0_D_00000000",
+    "gui_import_2CEC": "snw_port_gui_func_00002BB0_gui_import_2CEC",
+    "gui_import_2D0C": "snw_port_gui_func_00002BB0_gui_import_2D0C",
+    "gui_import_2D4C": "snw_port_gui_func_00002BB0_gui_import_2D4C",
+    "gui_import_2DA0": "snw_port_gui_func_00002BB0_gui_import_2DA0"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gui_func_00002BB0_D_00000000": 0,
+    "snw_port_gui_func_00002BB0_gui_import_2CEC": 0,
+    "snw_port_gui_func_00002BB0_gui_import_2D0C": 0,
+    "snw_port_gui_func_00002BB0_gui_import_2D4C": 0,
+    "snw_port_gui_func_00002BB0_gui_import_2DA0": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

@@ -1,0 +1,159 @@
+{
+  "function_name": "game_libs_func_0002E0C4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.642739+00:00",
+  "end_time": "2026-10-23T11:55:25.642752+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.642748+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_0002E0C4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 228, \"native_sha256\": \"b5183facc2e3fd7bff557b2f985f59c082063b09f224cc57c4267fdf192577cd\", \"code_gain\": 228}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 57,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_0002E0C4(GlState2E0C4 *arg0, s32 arg1, s32 arg2, s32 arg3) {\n    f32 temp_f0;\n    if (((arg0->field_48 == 0) && !(arg0->field_16 & 4)) || (((arg0->field_30 != 1) || (arg0->field_29 != 3)) && ((s32) arg0->field_29 >= (s32) arg0->field_2D))) {\n        arg0->field_30 = arg1;\n        arg0->field_16 = arg0->field_16 | 4;\n        if (arg1 != 1) {\n            if ((temp_f0 = arg0->field_00) >= 50.0f) {\n                arg2 = 3;\n            } else if (temp_f0 >= 38.0f) {\n                arg2 = 2;\n            } else if (temp_f0 >= 25.0f) {\n                arg2 = 1;\n            } else {\n                arg2 = 0;\n            }\n        }\n        arg0->field_29 = arg2;\n        arg0->field_2E = arg3;\n        arg0->field_2D = arg2;\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Conditionally updates an object's state and level. State 1 preserves the supplied level; other states derive levels 3/2/1/0 from float thresholds 50/38/25. The subsystem and field meanings remain uncertain.",
+      "observed_abi": "Leaf with four GPR arguments: a0 points to the partial record; a1 is compared as a 32-bit value and stored as a halfword; a2 supplies a level stored as bytes; a3 is stored as a byte. No return value is established; C uses void, while the original return type remains unknown.",
+      "calls": [],
+      "evidence": [
+        "Immutable expected object and original assembly establish one complete function spanning game_libs Text 0x2E0C4\u20130x2E1A8, equivalent to bootup Text 0x42730.",
+        "Observed fields: float 0x00; unsigned bytes 0x16, 0x29, 0x2D, 0x2E; unsigned halfword 0x30; word 0x48.",
+        "Acceptance condition: (field_48 == 0 and flag bit 2 clear) OR ((field_30 != 1 OR field_29 != 3) AND field_29 >= field_2D).",
+        "Accepted updates set flag bit 2, store a1 at 0x30, store the selected level at 0x29 and 0x2D, and store a3 at 0x2E.",
+        "Caller relocations at bootup Text 0x928, 0x974, 0x9C0 and 0xA0C resolve to func_042730, identifying this function. Callers func_000008F4, func_00000940, func_0000098C and func_000009D8 supply levels 0, 3, 1 and 2 respectively.",
+        "No call instructions, imports or unresolved outgoing edges occur in this body.",
+        "Volatile byte access reproduces the target's distinct flag reads. Explicit final else-if and an inline float assignment reproduce threshold control flow and scheduling.",
+        "Raw function bytes match in both build modes. ROM comparison and checksum pass; all six compressed-block checks pass; global exact-function regression count is zero.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The selected level may represent a priority or classification tier.",
+        "Flag bit 2 may indicate initialized or updated state."
+      ],
+      "unknowns": [
+        "Original field names, subsystem identity and complete record layout.",
+        "Whether field_48 is a pointer or scalar.",
+        "Original volatility qualifier and return type; matching code does not establish either.",
+        "Graph limitations remain applicable generally: zero-valued aliases do not identify callees, and missing relocation or indirect-call evidence cannot prove a leaf. This function's leaf classification follows its complete assembly.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_0002E0C4.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 298,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_000008F4",
+        "src/bootup_uso/bootup_uso:func_00000940",
+        "src/bootup_uso/bootup_uso:func_0000098C",
+        "src/bootup_uso/bootup_uso:func_000009D8"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/game_libs_func_0002E0C4.c",
+    "implementation_sha256": "5db8192eb68f9dd3d0d4c9428de7519886ba66855857beae0aeda2da15b16c68",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "b5183facc2e3fd7bff557b2f985f59c082063b09f224cc57c4267fdf192577cd"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_0002E0C4.json",
+      "nm": "scripts/match-bindings-game_libs_func_0002E0C4-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "39860dc78682fbe3f86feb39c7adc19b578e336e23bd18cf650030f72503478e",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

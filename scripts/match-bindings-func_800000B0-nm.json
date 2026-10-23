@@ -1,0 +1,15 @@
+{
+  "function": "func_800000B0",
+  "raw_sha256": "8de150a6bfb92521543f551a60b289a3d3fb8e3f3ce35c239540aeb588d5248f",
+  "renames": {
+    "D_8000A2D8": "snw_port_func_800000B0_D_8000A2D8",
+    "D_80012D5C": "snw_port_func_800000B0_D_80012D5C",
+    "D_8000A2DC": "snw_port_func_800000B0_D_8000A2DC"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_800000B0_D_8000A2D8": 2147525336,
+    "snw_port_func_800000B0_D_80012D5C": 2147560796,
+    "snw_port_func_800000B0_D_8000A2DC": 2147525340
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

@@ -1,0 +1,394 @@
+{
+  "function_name": "h2hproc_uso_func_00000C18",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.290901+00:00",
+  "end_time": "2026-10-23T11:55:26.290913+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.290909+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "h2hproc_uso_func_00000C18",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 492, \"native_sha256\": \"f8f51f25fd1749b2a60d4aaccded0273554eddd00b282346dd9cfbae0434793b\", \"code_gain\": 492}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 123,
+  "initial_m2c_source": null,
+  "final_source": "void h2hproc_uso_func_00000C18(H2H_C18Context *a0) {\n    int unused0;\n    int *made0, *made1;\n    int idx;\n    H2HLinkNode *created;\n    H2H_C18Flags *binding;\n    int *allocation;\n    H2H_C18Slot *slot;\n    void *node;\n    int *flags;\n    int bits;\n    idx = a0->field_6B8;\n    if (idx == -1) slot = ((H2H_C18Global*)&D_00000000)->field_134->field_C4[0].field_00;\n    else slot = *(H2H_C18Slot**)((char*)((H2H_C18Global*)&D_00000000)->field_134 + 0xC4 + idx * 8);\n    flags = &((H2H_C18Global*)&D_00000000)->field_134->field_C4[0].field_00->field_A58;\n    *flags |= 0x8000;\n    flags = (int*)((H2H_C18Global*)&D_00000000)->field_134->field_C4[1].field_00;\n    flags = (int*)((char*)flags + 0xA58);\n    *flags |= 0x8000;\n    made0 = h2hproc_C18_make0((int*)((H2H_C18Global*)&D_00000000)->field_134, 0, ((H2H_C18Global*)&D_00000000)->field_134->field_80, (int*)slot, slot->field_800);\n    made1 = h2hproc_C18_make1((int*)((H2H_C18Global*)&D_00000000)->field_134, 1, ((H2H_C18Global*)&D_00000000)->field_134->field_80, (int*)slot, slot->field_800);\n    a0->field_520 = ((H2H_C18Global*)&D_00000000)->field_134->field_108;\n    flags = &a0->field_520->field_18;\n    *flags &= ~8;\n    flags = (int*)a0->field_520;\n    flags = (int*)((char*)flags + 0x18);\n    *flags &= ~4;\n    if (1) {}\n    flags = (int*)((H2H_C18Global*)&D_00000000)->field_134->field_10C;\n    {\n        int *p;\n        int t;\n        p = flags;\n        if (1) { p += 6; }\n        *p &= ~8;\n        *p &= ~4;\n    }\n    if (1) {}\n    binding = (H2H_C18Flags*)h2hproc_C18_bind((int*)((H2H_C18Global*)&D_00000000)->field_134, &h2hproc_C18_data_Sym140 + 0x1C, made0);\n    a0->field_51C = binding;\n    ((H2H_C18Global*)&D_00000000)->field_134->field_108 = binding;\n    allocation = h2hproc_C18_alloc(0x80);\n    if (allocation) h2hproc_C18_init(allocation, 1);\n    created = (H2HLinkNode*)h2hproc_C18_create(0, allocation, (int*)slot, (int*)a0->field_51C, made0, made1);\n    node = ((H2H_C18Global*)&D_00000000)->field_134->field_84;\n    h2hproc_C18_link((int)node + 0x10, (int*)created, (int)node);\n    if (created->field_14) created->field_04 = 1;\n    created->field_14 = node;\n    h2hproc_C18_finish((int*)a0->field_51C, (int*)a0);\n    a0->field_4F0 &= 0xFEFFFFFF;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Likely initializes head-to-head state: selects a slot, updates flags, creates and binds objects, and links a created object. Exact subsystem and import meanings remain uncertain.",
+      "observed_abi": "MIPS o32; a0 supplies the context pointer. No additional incoming arguments are consumed. Frame size is 0x58 with s0\u2013s2 and ra saved. C models a void return; the original return type remains unproven.",
+      "calls": [
+        {
+          "site": "0xCAC",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_make0",
+          "observed_abi": "Original import Sym139. a0=root, a1=0, a2=root field 0x80, a3=selected slot, fifth argument=slot field 0x800. v0 is saved and passed onward."
+        },
+        {
+          "site": "0xCCC",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_make1",
+          "observed_abi": "Same original import Sym139 and five argument locations as 0xCAC, with a1=1. v0 is saved for the later six-argument call."
+        },
+        {
+          "site": "0xD3C",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_bind",
+          "observed_abi": "Original import Sym141. a0=root, a1=import Sym140 address plus 0x1C, a2=first saved result. v0 is stored at context+0x51C and root+0x108."
+        },
+        {
+          "site": "0xD50",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_alloc",
+          "observed_abi": "Original import Sym18. a0=0x80; nullable v0 is saved. The delay-slot store writes the preceding binding result."
+        },
+        {
+          "site": "0xD64",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_init",
+          "observed_abi": "Original import Sym142. Conditional call with a0=allocation result and a1=1. Result ignored; C uses a void declaration."
+        },
+        {
+          "site": "0xD88",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_create",
+          "observed_abi": "Original import Sym143. a0=0, a1=allocation result, a2=selected slot, a3=reloaded context+0x51C. Fifth and sixth arguments are the first two saved results. v0 becomes the created object."
+        },
+        {
+          "site": "0xDA4",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_link",
+          "observed_abi": "Original import Sym16. a0=node+0x10, a1=created object, a2=node from root+0x84. a2 is spilled and reloaded. C models three arguments and an ignored result."
+        },
+        {
+          "site": "0xDD0",
+          "target": "unresolved",
+          "c_alias": "h2hproc_C18_finish",
+          "observed_abi": "Original import Sym144. a0=reloaded context+0x51C, a1=context; a2 retains the node value. Whether a2 is another argument remains unknown. Result is unobserved."
+        }
+      ],
+      "evidence": [
+        "Both C builds match immutable expected SHA-256 f8f51f25fd1749b2a60d4aaccded0273554eddd00b282346dd9cfbae0434793b, with zero differing words.",
+        "Declaration order restores spill homes 0x50, 0x4C and 0x44. Ordinary compound assignments reproduce both flag stores and the target register stream.",
+        "Original Sym136 exports module Text+0xC14, corresponding to source function 0xC18. TextReloc at source 0xB04 resolves a caller in h2hproc_uso_func_00000A88.",
+        "Original relocation records identify seven distinct imports across eight calls; the first two share Sym139. Their destination functions remain unresolved.",
+        "Root-address relocations use Sym8; the binding-address relocations use distinct Sym140. Separate C aliases preserve that distinction.",
+        "Inspected shared link family: 0000002C, 00000620, 00000A88, 00000C18, 00000FD0, 000015F0 and 00001A6C. Original assembly and Sym16 callsites establish recurring fields 0x04 and 0x14; recovered file-scope H2HLinkNode preserves this shared prefix without changing sibling bodies.",
+        "Also inspected 000008EC, 00000944, 00000E04 and 000017A0 for context and root-layout evidence.",
+        "Context fields: 0x4F0, 0x51C, 0x520, 0x6B8. Root fields: 0x80, 0x84, 0xC4, 0xCC, 0x108, 0x10C. Slot fields: 0x800 and 0xA58; indexed slots have eight-byte stride. Flag records access 0x18.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613 and ROM bytes equal baserom. All six compressed blocks verify; no previously exact score in this unit was lost.",
+        "Strict alias gate and git diff --check pass. Only the permitted source and alias files changed; retained experiments are under build/orchestration-scratch/attempt2/.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The first two calls configure paired side objects.",
+        "Call 0xDA4 consumes the explicitly presented node value as a third argument.",
+        "The shared 0x14 field records an owner or linkage relationship; 0x04 marks an already-linked object."
+      ],
+      "unknowns": [
+        "Import destination names/modules and original return types.",
+        "Complete layouts, unobserved padding, field meanings and valid slot-index range.",
+        "Whether retained argument-register values represent additional arguments.",
+        "Caller coverage remains incomplete despite the recovered 00000A88 edge.",
+        "Canonical episode creation and integration remain coordinator-owned.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/h2hproc_uso_func_00000C18.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "h2hproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3244,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3276,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3388,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3408,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3428,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3464,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3492,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 3536,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_00000C18.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/h2hproc_uso/h2hproc_uso.c",
+    "source_sha256": "8874e8953beceb5f375468a2afc202672a44f1a8d0519abf8b2c6f41a733d12f",
+    "implementation_path": "src/match_imports/h2hproc_uso_func_00000C18.c",
+    "implementation_sha256": "76e5ff9014f50d98b5777b214264f811d67de9d2278ae44d50f8a160fa1714cf",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 148,
+          "kind": 4,
+          "symbol": "h2hproc_C18_make0",
+          "original_identity": "h2hproc_uso:symbol_139:addend_0x0",
+          "original_site": 3244,
+          "payload_site": 3240,
+          "original_symbol_index": 139,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 180,
+          "kind": 4,
+          "symbol": "h2hproc_C18_make1",
+          "original_identity": "h2hproc_uso:symbol_139:addend_0x0",
+          "original_site": 3276,
+          "payload_site": 3272,
+          "original_symbol_index": 139,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 292,
+          "kind": 4,
+          "symbol": "h2hproc_C18_bind",
+          "original_identity": "h2hproc_uso:symbol_141:addend_0x0",
+          "original_site": 3388,
+          "payload_site": 3384,
+          "original_symbol_index": 141,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 312,
+          "kind": 4,
+          "symbol": "h2hproc_C18_alloc",
+          "original_identity": "h2hproc_uso:symbol_18:addend_0x0",
+          "original_site": 3408,
+          "payload_site": 3404,
+          "original_symbol_index": 18,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 332,
+          "kind": 4,
+          "symbol": "h2hproc_C18_init",
+          "original_identity": "h2hproc_uso:symbol_142:addend_0x0",
+          "original_site": 3428,
+          "payload_site": 3424,
+          "original_symbol_index": 142,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 368,
+          "kind": 4,
+          "symbol": "h2hproc_C18_create",
+          "original_identity": "h2hproc_uso:symbol_143:addend_0x0",
+          "original_site": 3464,
+          "payload_site": 3460,
+          "original_symbol_index": 143,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 396,
+          "kind": 4,
+          "symbol": "h2hproc_C18_link",
+          "original_identity": "h2hproc_uso:symbol_16:addend_0x0",
+          "original_site": 3492,
+          "payload_site": 3488,
+          "original_symbol_index": 16,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 440,
+          "kind": 4,
+          "symbol": "h2hproc_C18_finish",
+          "original_identity": "h2hproc_uso:symbol_144:addend_0x0",
+          "original_site": 3536,
+          "payload_site": 3532,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "f8f51f25fd1749b2a60d4aaccded0273554eddd00b282346dd9cfbae0434793b"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 36,
+        "lo": 44,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "h2hproc_uso:symbol_8:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 40,
+        "lo": 44,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "h2hproc_uso:symbol_8:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 40,
+        "lo": 64,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "h2hproc_uso:symbol_8:base_addend_0x0"
+      },
+      {
+        "alias": "h2hproc_C18_data_Sym140",
+        "hi": 280,
+        "lo": 284,
+        "native_addend": 28,
+        "original_addend": 28,
+        "base_identity": "h2hproc_uso:symbol_140:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-h2hproc_uso_func_00000C18.json",
+      "nm": "scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json"
+    },
+    "source_context": "src/match_imports/context_h2hproc_uso.h",
+    "source_context_sha256": "3085de5b37f8a8ed3c6bfab94bb5c80d30f486cacb02a28456c5c19115c68b3d",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/h2hproc_uso/h2hproc_uso.c",
+    "original_local_episode_sha256": "0aed76b6497454581f7e5f3806bf6575f97d82bdf39e82ff37e838f1934e3636",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

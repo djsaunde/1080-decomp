@@ -1,0 +1,11 @@
+{
+  "function": "game_libs_func_00029BC8",
+  "raw_sha256": "de336bcd14e91364c5fcbf9e1418eda6cbb5bd7f33901673fa50a134c2aa2d11",
+  "renames": {
+    "gl_anim_defaults_1236": "snw_port_game_libs_func_00029BC8_gl_anim_defaults_1236"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_libs_func_00029BC8_gl_anim_defaults_1236": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

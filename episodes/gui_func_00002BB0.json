@@ -1,0 +1,266 @@
+{
+  "function_name": "gui_func_00002BB0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.270594+00:00",
+  "end_time": "2026-10-23T11:55:26.270607+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.270602+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gui_func_00002BB0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 560, \"native_sha256\": \"fafa07bc0bfa0cdfcfd823ca2185538b92965f7fc59506ab6adda7135168c8b2\", \"code_gain\": 560}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 140,
+  "initial_m2c_source": null,
+  "final_source": "void gui_func_00002BB0(GuiTextureObject *object, int x, int y, int source_x, int count) {\n    short raw_height;\n    int draw_x, src_x, tile_width, remaining, width; unsigned int step_x, step_y;\n    int *scratch, *info, *metadata_copy;\n    scratch = *(int **)&D_00000000;\n    {\n        struct GfxRing_413C *ring = (struct GfxRing_413C *)scratch[0xC / 4];\n        int index = ring->idx;\n        ring->idx = index + 1;\n        {\n            int *packet = ((struct GfxRing_413C *)scratch[0xC / 4])->buf + index * 2;\n            packet[0] = 0xBB000001; packet[1] = (int)0x80008000;\n        }\n    }\n    draw_x = x;\n    src_x = source_x;\n    scratch = (int *)object->field_10;\n    tile_width = 32;\n    step_x = count;\n    remaining = count;\n    width = ((GuiTextureInfo *)scratch)->field_20;\n    {\n        int height;\n        raw_height = ((GuiTextureInfo *)scratch)->field_22;\n        height = raw_height;\n        if (step_x == 0) return;\n        step_y = (height << 10) / height;\n        do {\n            info = (int *)object->field_10;\n            if (remaining >= 33) {\n                step_x = (tile_width << 10) / tile_width;\n                gui_import_2CEC(*(int **)&D_00000000, scratch = ((GuiTextureInfo *)(metadata_copy = info, info = 0, metadata_copy))->field_08, width, height, src_x, 0, tile_width, height, 0);\n                gui_import_2D0C(*(int **)&D_00000000, draw_x, y, tile_width, height, step_x, step_y);\n                draw_x += 32;\n                src_x += 32;\n                remaining -= 32;\n            } else {\n                int last_step_x;\n                scratch = ((GuiTextureInfo *)info)->field_08;\n                tile_width = remaining;\n                gui_import_2D4C(*(int **)&D_00000000, scratch, width, height, src_x, 0, remaining, height, 0);\n                last_step_x = (remaining << 10) / remaining;\n                gui_import_2DA0(*(int **)&D_00000000, draw_x, y, remaining, height, last_step_x, step_y);\n                remaining = 0;\n            }\n        } while (remaining != 0);\n        if (src_x) {}\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Builds texture-load and texture-rectangle commands for a horizontal span, using 32-wide strips followed by the remainder. Texture format and valid input bounds remain uncertain.",
+      "observed_abi": "Five O32 word arguments: object pointer in a0, destination x/y in a1/a2, source x in a3, and span width at incoming sp+0x10. Metadata dimensions use signed halfword loads; divisions are signed. Original return types remain unknown; ignored results do not establish void.",
+      "calls": [
+        {
+          "site": "0x2CEC",
+          "target": "gui_uso_func_00004354",
+          "c_alias": "gui_import_2CEC",
+          "observed_abi": "Nine words: context, image address, width, height, source_x, 0, tile_width, height, 0. Result ignored."
+        },
+        {
+          "site": "0x2D0C",
+          "target": "gui_func_00004568",
+          "c_alias": "gui_import_2D0C",
+          "observed_abi": "Seven words: context, destination x/y, tile_width, height, horizontal quotient, vertical quotient. Result ignored."
+        },
+        {
+          "site": "0x2D4C",
+          "target": "gui_uso_func_00004354",
+          "c_alias": "gui_import_2D4C",
+          "observed_abi": "Nine words: context, image address, width, height, source_x, 0, remaining, height, 0. Result ignored."
+        },
+        {
+          "site": "0x2DA0",
+          "target": "gui_func_00004568",
+          "c_alias": "gui_import_2DA0",
+          "observed_abi": "Seven words: context, destination x/y, remaining, height, horizontal quotient, vertical quotient. Quotients use (dimension<<10)/dimension. Result ignored."
+        }
+      ],
+      "evidence": [
+        "Original TextReloc records resolve 0x2CEC/0x2D4C through Sym 11, Text+0x4350, and 0x2D0C/0x2DA0 through Sym 12, Text+0x4564. Accounting for the leading four-byte flag identifies curated functions 00004354/00004568.",
+        "Inspected both callees and shared layout family 000027A0, 00002BB0, 00002DE0, 0000329C and 00003714. Reused GuiTextureObject/GuiTextureInfo: object +0x10; metadata image word +0x08, signed dimensions +0x20/+0x22, mode +0x24.",
+        "Reused GfxRing_413C: context +0x0C points to buffer at +0 and index at +4. The initial packet contains 0xBB000001 and 0x80008000.",
+        "Staged signed height promotion restores s0/s1/s2 allocation and width at sp+0x58. A post-loop source-coordinate lifetime marker restores coordinate-copy order.",
+        "Both compiled C bodies equal the immutable expected function: 560 bytes, SHA256 fafa07bc0bfa0cdfcfd823ca2185538b92965f7fc59506ab6adda7135168c8b2. Objdiff's residual 99.84286% score reflects relocation annotations; raw instruction differences are zero.",
+        "ROM is byte-identical to baserom; all six compressed blocks pass. Four previously exact unit functions remain byte-exact in both modes. Other function bodies and existing aliases are unchanged this attempt.",
+        "Assigned function exports Sym 46, original Text+0x2BAC. No local caller relocation was recovered; external/indirect callers and game.uso DFS reachability remain unverified.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Metadata +0x08 represents a texture image address.",
+        "Callers normally provide positive dimensions and a nonnegative span width.",
+        "The scoped locals and lifetime marker reproduce IDO allocation without establishing the original source spelling."
+      ],
+      "unknowns": [
+        "Original return types and exact image-address C type.",
+        "Identity of the global context import represented by D_00000000.",
+        "External and indirect callers, texture format and input bounds.",
+        "The supplied graph omitted the recovered call edges. Zero-valued aliases establish no identity; targets above come from original per-site relocations.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gui_func_00002BB0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "gui_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 11500,
+          "identity": null,
+          "evidence": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00002BB0.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 11532,
+          "identity": null,
+          "evidence": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00002BB0.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 11596,
+          "identity": null,
+          "evidence": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00002BB0.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 11680,
+          "identity": null,
+          "evidence": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00002BB0.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/gui_uso/gui_uso.c",
+    "source_sha256": "c23128a3b008f3232ecce65b3c6d7d4d9d6fbd9d20ee33d53adb7e8f6ab07f5c",
+    "implementation_path": "src/match_imports/gui_func_00002BB0.c",
+    "implementation_sha256": "5782faa956ace91ad1d9d2e2981b9308d9ba3223c1fcb4fee468abb25a49ee0d",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 316,
+          "kind": 4,
+          "symbol": "gui_import_2CEC",
+          "original_identity": "gui_uso:symbol_11:addend_0x0",
+          "original_site": 11500,
+          "payload_site": 11496,
+          "original_symbol_index": 11,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 348,
+          "kind": 4,
+          "symbol": "gui_import_2D0C",
+          "original_identity": "gui_uso:symbol_12:addend_0x0",
+          "original_site": 11532,
+          "payload_site": 11528,
+          "original_symbol_index": 12,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 412,
+          "kind": 4,
+          "symbol": "gui_import_2D4C",
+          "original_identity": "gui_uso:symbol_11:addend_0x0",
+          "original_site": 11596,
+          "payload_site": 11592,
+          "original_symbol_index": 11,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 496,
+          "kind": 4,
+          "symbol": "gui_import_2DA0",
+          "original_identity": "gui_uso:symbol_12:addend_0x0",
+          "original_site": 11680,
+          "payload_site": 11676,
+          "original_symbol_index": 12,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "fafa07bc0bfa0cdfcfd823ca2185538b92965f7fc59506ab6adda7135168c8b2"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 8,
+        "lo": 12,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "gui_uso:symbol_3:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gui_func_00002BB0.json",
+      "nm": "scripts/match-bindings-gui_func_00002BB0-nm.json"
+    },
+    "source_context": "src/match_imports/context_gui_uso.h",
+    "source_context_sha256": "e9906daae3203621a68c4b8cd7ebbc59db4b9721fddda5517153794d0fe67083",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/gui_uso/gui_uso.c",
+    "original_local_episode_sha256": "ed99324329f7a78a691afe3a7151a38c05c0f1f549a8a185e185b560ff511d0e",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

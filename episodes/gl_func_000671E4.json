@@ -1,0 +1,198 @@
+{
+  "function_name": "gl_func_000671E4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.156555+00:00",
+  "end_time": "2026-10-23T11:55:26.156567+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.156564+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_000671E4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 60, \"native_sha256\": \"73f8a3f7ef1771db615ac6de51bd3d43de3255da6a850c1f6743b3ad43b3c34f\", \"code_gain\": 60}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 15,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_000671E4(GlControllerState *self) {\n    char *message = (char *)&D_00000000;\n    if (1) {\n        message += 0x416E0;\n    }\n    self->field_13E8 = 0;\n    *(int *)message = 1;\n    gl_671E4_osSendMesg(&self->queue_11B0, message, 1);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Queue controller-input acquisition, inferred from the consumer\u2019s message-1 branch calling locally identified osContStartReadData. Clear self+0x13E8, set the global message word to 1, and send its address to self+0x11B0 with blocking flag 1. Complete scheduling semantics remain uncertain.",
+      "observed_abi": "Incoming a0 is self; frame size is 0x18. Call registers: a0=self+0x11B0, a1=0x416E0, a2=1. a3 retains self without establishing a fourth formal argument. Callee v0 is preserved; the wrapper\u2019s original return type is unknown.",
+      "calls": [
+        {
+          "site": "0x67208",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00069E04",
+          "c_alias": "gl_671E4_osSendMesg",
+          "observed_abi": "Queue pointer, message pointer and blocking flag 1; integer status returned in v0."
+        }
+      ],
+      "evidence": [
+        "Original bootup TextReloc 0x7B874 identifies symbol 1333, Text 0x7E470, gl_func_00069E04. The unique import alias resolves to zero with inline provenance; relocation evidence establishes identity.",
+        "Original instructions write 32-bit zero to self+0x13E8 and 32-bit one to global address 0x416E0.",
+        "Callers are gl_func_00034E3C and gl_func_0006719C. The latter tests self+0x13E8; gl_func_00067220 polls it.",
+        "Consumer gl_func_00066EEC\u2019s message-1 call at source site 0x6701C resolves through bootup TextReloc 0x7B688 to Text 0x806F0, gl_func_0006C084, locally identified as osContStartReadData.",
+        "Inspected family: gl_func_00066C74, gl_func_00066D54, gl_func_00066EEC, gl_func_00067084, gl_func_00067134, gl_func_00067168, gl_func_0006719C, game_libs_func_000671D4, gl_func_000671E4, gl_func_00067220, gl_func_00067264, game_libs_func_00067358 and game_libs_func_00067368.",
+        "Shared GlControllerState reuses OSMesgQueue_69E04 and GlRow104. Evidenced offsets: queue 0x11B0, four message slots 0x11C8, four 0x68-byte records 0x1228, channel fields 0x13C8..0x13E7, shared word 0x13E8, byte 0x13EC and counter 0x13F0. Compiler offset checks passed.",
+        "This attempt confirms the source hash matches the validated scratch episode. Retained verification establishes 60/60 expected bytes in both build modes, report score 100%, byte-identical ROM, six passing compressed blocks, scope checks and no sibling regressions. Unchanged build checks were not repeated.",
+        "Only the allowed C and alias files remain changed. No neighboring-function or canonical integration edits were made.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "field_13E8 tracks acquisition completion across messages 1 and 2."
+      ],
+      "unknowns": [
+        "Original names, typedefs, volatile declaration, wrapper return type and complete scheduling semantics.",
+        "Object extent beyond the recovered minimum 0x13F4.",
+        "No unresolved calls occur in the assigned function. Related gl_func_00066EEC has a callee at source site 0x6702C with known bootup Text offset 0x8077C whose function-name mapping remains unrecovered.",
+        "Indirect calls and missing recovered relocations remain broader coverage limitations.",
+        "Canonical integration awaits coordinator reconciliation of the stale baseline.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_000671E4.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 34,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00034E3C",
+        "src/game_libs/game_libs_post1b:gl_func_0006719C"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00069E04",
+          "kind": "relocation",
+          "site": 505972,
+          "identity": "func_07E470",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000671E4.s",
+          "sym_index": 1333,
+          "cached_first_reference": "func_07E470",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "source_sha256": "b4efbb5445b1569ec58be28f5cbc15a03b6b2012dbe9b3389b2db1c0fb357595",
+    "implementation_path": "src/match_imports/gl_func_000671E4.c",
+    "implementation_sha256": "df7aa083987b299105a485a243419060c2b684e5a1c1a6ce16bd45f82eb71008",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 36,
+          "kind": 4,
+          "symbol": "gl_671E4_osSendMesg",
+          "original_identity": "bootup_uso:symbol_1333:addend_0x0",
+          "original_site": 505972,
+          "payload_site": 505972,
+          "original_symbol_index": 1333,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "73f8a3f7ef1771db615ac6de51bd3d43de3255da6a850c1f6743b3ad43b3c34f"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 12,
+        "lo": 16,
+        "native_addend": 268000,
+        "original_addend": 268000,
+        "base_identity": "bootup_uso:symbol_4:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_000671E4.json",
+      "nm": "scripts/match-bindings-gl_func_000671E4-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post1b.h",
+    "source_context_sha256": "45740ff555773b14044d65f42ccd0c4d27e5da3a2a544f61e5882205112bc573",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post1b.c",
+    "original_local_episode_sha256": "99322a70ec739cbf7e097a16e80f459e40c16d184743ff035fe514d5d9369966",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

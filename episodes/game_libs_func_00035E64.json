@@ -1,0 +1,205 @@
+{
+  "function_name": "game_libs_func_00035E64",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.663853+00:00",
+  "end_time": "2026-10-23T11:55:25.663865+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.663861+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_00035E64",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 360, \"native_sha256\": \"428e0690abbfc5db36f5e71f61a31f4951f3ed4a1175a5c8af5a4cacc5a6851d\", \"code_gain\": 360}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 90,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_00035E64(char *o) {\n    float sy;\n    float lerp;\n    float initial_distance;\n    Vec3 point;\n    float result[11];\n    float f200;\n    float sx;\n    float tmp3[4];\n    float tmp2[4];\n    float tmp1[4];\n    float sz, ox, oy, oz;\n    struct { char *context; float distance; } state;\n    state.context = D_00000000_50;\n    if (state.context == 0) return;\n    point.x = *(float *)(o + 0x30);\n    point.y = *(float *)(o + 0x34);\n    point.z = *(float *)(o + 0x38);\n    if (gl_query_0003C43C_35E64(D_00000000_50, &point.x, 1000.0f, result) == 0) return;\n    do { state.distance = result[3]; } while (0);\n    f200 = 200.0f;\n    if ((initial_distance = state.distance) < f200) {\n        state.distance = initial_distance - f200;\n        state.distance = -state.distance;\n        sx = result[0] * state.distance;\n        sy = result[1] * state.distance;\n        sz = result[2] * state.distance;\n        tmp1[0] = sx;\n        tmp1[1] = sy;\n        tmp1[2] = sz;\n        do {\n        lerp = *(float *)((char *)&D_00000000 + 0x19E0);\n        *(Vec3 *)tmp2 = *(Vec3 *)tmp1;\n        *(Vec3 *)tmp3 = *(Vec3 *)tmp2;\n        } while (0);\n        do {\n        point.x += tmp3[0];\n        point.y += tmp3[1];\n        point.z += tmp3[2];\n        ox = *(float *)(o + 0x30);\n        oy = *(float *)(o + 0x34);\n        oz = *(float *)(o + 0x38);\n        *(float *)(o + 0x30) = (point.x - ox) * lerp + (0, ox);\n        *(float *)(o + 0x34) = (point.y - oy) * lerp + (0, oy);\n        *(float *)(o + 0x38) = (point.z - oz) * lerp + (0, oz);\n        } while (0);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Adjusts a position after a spatial query. When the returned distance is below 200, it adds a scaled query vector and interpolates toward the adjusted position. Camera collision avoidance remains a hypothesis; the vector's precise physical meaning is unconfirmed.",
+      "observed_abi": "a0 is a writable object/subobject pointer preserved in s0. Reads and writes f32 fields at +0x30/+0x34/+0x38. No consistent return value is established; the C declaration uses void without claiming the original return type was proven.",
+      "calls": [
+        {
+          "site": "0x35EA8",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003C43C",
+          "c_alias": "gl_query_0003C43C_35E64",
+          "observed_abi": "a0=context pointer; a1=copied position address; a2=1000.0f bits; a3=query output address. Tests integral v0 for zero. Output +0x00/+0x04/+0x08 supplies a Vec3; +0x0C supplies an f32 distance."
+        }
+      ],
+      "evidence": [
+        "Normal and NON_MATCHING C each match the immutable 0x168-byte expected function, SHA-256 428e0690abbfc5db36f5e71f61a31f4951f3ed4a1175a5c8af5a4cacc5a6851d, with zero differing words or bytes. The fallback is removed.",
+        "A block around the distance load followed by assignment in the floating predicate coalesces the initial and updated values through f0. Scalar declaration placement preserves frame gaps; the global context expression at the call reproduces the spill at sp+0x20.",
+        "Original relocation at bootup Text+0x4A514, equivalent to game_libs Text+0x35EA8, identifies sym579/func_050AA8 and resolves to gl_func_0003C43C. The typed alias remains zero-valued with inline provenance.",
+        "Caller func_00004948 at bootup Text+0x4FCC passes parent+0x30. Assigned offsets +0x30/+0x34/+0x38 therefore correspond to parent+0x60/+0x64/+0x68, also initialized by func_00004914.",
+        "Inspected family includes the assigned function, func_00004948, func_00004914, gl_func_0003C43C, game_libs_func_00036074 and gl_func_0003CBB4. Coincident offsets do not establish a shared complete object layout. Existing shared Vec3 remains reused.",
+        "Imports include D_00000000_50, annotated as the sym451 Data+0x50 context pointer, and the f32 coefficient accessed through D_00000000+0x19E0.",
+        "ROM is byte-identical to baserom with MD5 fa27089c425dbab99f19245c5c997613. All six compressed-block checks pass.",
+        "All 842 previously byte-equal normal functions and 569 previously byte-exact NON_MATCHING functions in the unit remain unchanged. No other function bytes changed in either mode.",
+        "Objdiff reports 99.9%; raw instruction-byte equality and recovered call identity were verified separately. Experiments remain under build/orchestration-scratch/35E64/attempt3/.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The query vector supplies a collision correction direction, and the 200 threshold maintains camera clearance.",
+        "The final C forms reproduce IDO value coalescing and frame allocation; they do not establish the original local declaration arrangement."
+      ],
+      "unknowns": [
+        "Original return type, complete object layout, coefficient identity and query-vector meaning remain unconfirmed.",
+        "No unresolved call sites are reported for this function. Indirect/import coverage limitations remain, and zero-valued aliases alone do not identify callees.",
+        "Canonical Episode creation and validation remain coordinator-owned; no episode file was changed in this worker.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_00035E64.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 459,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_00004948"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003C43C",
+          "kind": "relocation",
+          "site": 304404,
+          "identity": "func_050AA8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/game_libs_func_00035E64.s",
+          "sym_index": 579,
+          "cached_first_reference": "func_050AA8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/game_libs_func_00035E64.c",
+    "implementation_sha256": "4181b5277651faf3710629a29a45aa5ee46f451826280495d9a0f954fbb7d0ae",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 68,
+          "kind": 4,
+          "symbol": "gl_query_0003C43C_35E64",
+          "original_identity": "bootup_uso:symbol_579:addend_0x0",
+          "original_site": 304404,
+          "payload_site": 304404,
+          "original_symbol_index": 579,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "428e0690abbfc5db36f5e71f61a31f4951f3ed4a1175a5c8af5a4cacc5a6851d"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000_50",
+        "hi": 0,
+        "lo": 4,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_451:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 140,
+        "lo": 176,
+        "native_addend": 6624,
+        "original_addend": 6624,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_00035E64.json",
+      "nm": "scripts/match-bindings-game_libs_func_00035E64-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "0251c43ec4150f05ceb3404a591bae128c8982c2c099b9ce3b7fafc0861336d8",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

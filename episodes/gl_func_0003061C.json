@@ -1,0 +1,888 @@
+{
+  "function_name": "gl_func_0003061C",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.794939+00:00",
+  "end_time": "2026-10-23T11:55:25.794952+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.794948+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0003061C",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 408, \"native_sha256\": \"58ca02693ec16f136025087fa50c5267e6420e56a8a3de83bfb3039e3b596ed7\", \"code_gain\": 408}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 102,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_0003061C(s32 duration, s32 hold, s32 mode) {\n    S307A8 *g = (S307A8 *)&D_00000000;\n    s32 state;\n    s32 remaining;\n    remaining = g->cnt;\n    if (g->flag != 4) {\n        state = g->flag;\n        if (state == 2) {\n            if (mode == 0) {\n                mode = 8;\n            }\n            if (mode == 1) {\n                mode = 0xA;\n            }\n            if (mode == 3) {\n                mode = 0xB;\n            }\n            if (mode == 4) {\n                mode = 0xB;\n            }\n            if (mode == 5) {\n                mode = 0xB;\n            }\n        }\n        if ((remaining != 0) && (remaining < duration)) {\n            if (mode == g->w4) {\n                g->hold = hold;\n            } else {\n                g->acc /= 1.5f;\n                g->cnt = duration;\n                if (duration != 0) {\n                    g->step = (1.0f - g->acc) / (f32) g->cnt;\n                }\n                g->hold = hold;\n                remaining = 0;\n            }\n        } else {\n            g->cnt = duration;\n            if (duration != 0) {\n                g->step = (1.0f - g->acc) / (f32) g->cnt;\n            }\n            g->hold = hold;\n        }\n        if ((state != 0) && ((mode != g->w4) || (remaining == 0)) && (g->cnt != 0)) {\n            g->w4 = mode;\n            gl_3061C_emit(0x06000800, (s8) mode);\n        }\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "function": "gl_func_0003061C",
+      "source": {
+        "path": "src/game_libs/game_libs_post.c",
+        "line": 18821,
+        "sha256": "e4305090945724f46974872c00dbf2015cd09935e21785791d3b85779746678a"
+      },
+      "asm": {
+        "path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+        "first_instruction_line": 4,
+        "project_start": "0x30610",
+        "project_end": "0x307a8"
+      },
+      "facts": [
+        "State4 blocks updates; state2 remaps modes0\u21928,1\u219210,3/4/5\u219211.",
+        "State record offsets0 state,4 mode,8 duration,0xC hold,0x10 float level,0x18 float increment; recomputes(1-level)/duration when nonzero.",
+        "Calls bootup text0x3B2D8 (=gl_func_00026C6C) with(0x06000800,(int8)mode). Callee shifts second word by24 then forwards payload pointer.",
+        "Every state relocation uses symbol1448 tag0x8259E4,value0x338; emulator symnames classifies its address as import_000202D8."
+      ],
+      "hypotheses": [
+        "Timed level ramp/fade command; section-class0x8 symbol likely BSS at+0x338."
+      ],
+      "unknowns": [
+        "Whether level is audio volume, visual fade or another control; original enum/state names.",
+        "Dump import_000202D8 may be misclassified BSS because correlator has no BSS section range; do not treat as confirmed kernel import.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0003061C.c. This is not a proof of original source spelling or whole-program portable source."
+      ],
+      "calls": [
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 100,
+          "project_callsite": "0x30790",
+          "bootup_text_callsite": "0x44dfc",
+          "symbol_id": 1376,
+          "symbol_tag": "0x52412f",
+          "symbol_value": "0x3b2d8",
+          "relocation_kind": 1,
+          "dump_name": "func_03B2D8",
+          "target_module": "bootup.uso",
+          "target_text_offset": "0x3b2d8",
+          "target_game_libs_offset": "0x26c6c",
+          "target_addend": "0x0",
+          "source_alias": "gl_3061C_emit",
+          "site": "0x30790",
+          "c_alias": "gl_3061C_emit",
+          "target": "bootup.uso:Text+0x3b2d8",
+          "observed_abi": "s32 command, s8 mode; result ignored"
+        }
+      ],
+      "data_references": [
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 4,
+          "project_callsite": "0x30610",
+          "bootup_text_callsite": "0x44c7c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 5,
+          "project_callsite": "0x30614",
+          "bootup_text_callsite": "0x44c80",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 12,
+          "project_callsite": "0x30630",
+          "bootup_text_callsite": "0x44c9c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 13,
+          "project_callsite": "0x30634",
+          "bootup_text_callsite": "0x44ca0",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 15,
+          "project_callsite": "0x3063c",
+          "bootup_text_callsite": "0x44ca8",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 37,
+          "project_callsite": "0x30694",
+          "bootup_text_callsite": "0x44d00",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 38,
+          "project_callsite": "0x30698",
+          "bootup_text_callsite": "0x44d04",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 39,
+          "project_callsite": "0x3069c",
+          "bootup_text_callsite": "0x44d08",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 42,
+          "project_callsite": "0x306a8",
+          "bootup_text_callsite": "0x44d14",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 44,
+          "project_callsite": "0x306b0",
+          "bootup_text_callsite": "0x44d1c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 45,
+          "project_callsite": "0x306b4",
+          "bootup_text_callsite": "0x44d20",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 48,
+          "project_callsite": "0x306c0",
+          "bootup_text_callsite": "0x44d2c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 49,
+          "project_callsite": "0x306c4",
+          "bootup_text_callsite": "0x44d30",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 52,
+          "project_callsite": "0x306d0",
+          "bootup_text_callsite": "0x44d3c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 53,
+          "project_callsite": "0x306d4",
+          "bootup_text_callsite": "0x44d40",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 55,
+          "project_callsite": "0x306dc",
+          "bootup_text_callsite": "0x44d48",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 56,
+          "project_callsite": "0x306e0",
+          "bootup_text_callsite": "0x44d4c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 60,
+          "project_callsite": "0x306f0",
+          "bootup_text_callsite": "0x44d5c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 64,
+          "project_callsite": "0x30700",
+          "bootup_text_callsite": "0x44d6c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 65,
+          "project_callsite": "0x30704",
+          "bootup_text_callsite": "0x44d70",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 67,
+          "project_callsite": "0x3070c",
+          "bootup_text_callsite": "0x44d78",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 68,
+          "project_callsite": "0x30710",
+          "bootup_text_callsite": "0x44d7c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 70,
+          "project_callsite": "0x30718",
+          "bootup_text_callsite": "0x44d84",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 71,
+          "project_callsite": "0x3071c",
+          "bootup_text_callsite": "0x44d88",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 72,
+          "project_callsite": "0x30720",
+          "bootup_text_callsite": "0x44d8c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 76,
+          "project_callsite": "0x30730",
+          "bootup_text_callsite": "0x44d9c",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 77,
+          "project_callsite": "0x30734",
+          "bootup_text_callsite": "0x44da0",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 79,
+          "project_callsite": "0x3073c",
+          "bootup_text_callsite": "0x44da8",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 82,
+          "project_callsite": "0x30748",
+          "bootup_text_callsite": "0x44db4",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 83,
+          "project_callsite": "0x3074c",
+          "bootup_text_callsite": "0x44db8",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 84,
+          "project_callsite": "0x30750",
+          "bootup_text_callsite": "0x44dbc",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 87,
+          "project_callsite": "0x3075c",
+          "bootup_text_callsite": "0x44dc8",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 88,
+          "project_callsite": "0x30760",
+          "bootup_text_callsite": "0x44dcc",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 93,
+          "project_callsite": "0x30774",
+          "bootup_text_callsite": "0x44de0",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 95,
+          "project_callsite": "0x3077c",
+          "bootup_text_callsite": "0x44de8",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 3,
+          "dump_name": "import_000202D8"
+        },
+        {
+          "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "asm_line": 99,
+          "project_callsite": "0x3078c",
+          "bootup_text_callsite": "0x44df8",
+          "symbol_id": 1448,
+          "symbol_tag": "0x8259e4",
+          "symbol_value": "0x338",
+          "relocation_kind": 2,
+          "dump_name": "import_000202D8"
+        }
+      ],
+      "callers": [
+        {
+          "module": "bootup.uso",
+          "callsite": "0x4467c",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_0002FB74",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002FB74.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x44694",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_0002FB74",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002FB74.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x44728",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_0002FB74",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002FB74.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x44738",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_0002FB74",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002FB74.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x44798",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_0002FB74",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002FB74.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x44850",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_0002FB74",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002FB74.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x44c20",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_00030598",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00030598.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x4577c",
+          "symbol_id": 1473,
+          "owners": [
+            {
+              "function": "gl_func_00030AF4",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00030AF4.s"
+            }
+          ]
+        }
+      ],
+      "module": "bootup.uso/game_libs",
+      "identity": {
+        "symbol_ids": [
+          1473
+        ],
+        "text_offset": "0x44c7c",
+        "game_libs_to_bootup_shim": "0x1466c"
+      },
+      "signature": "void(int32 duration, int32 hold, int32 mode)",
+      "callers_scope": "bootup.uso original relocation tables and game.uso captured direct-call sites; GUI own tables where applicable; other overlays and dynamic indirect calls not exhaustively reviewed",
+      "purpose": "Update duration, hold, mode, level and increment state, with state-dependent mode remapping and conditional command dispatch to gl_func_00026C6C; the audio/visual meaning is unproved.",
+      "observed_abi": "Current matching C signature (reconstructed): void(int32 duration, int32 hold, int32 mode); compatible with the recorded IDO o32 instruction bytes. Original typedefs, signedness and return types are not established merely by this declaration or by ignored call results.",
+      "evidence": [
+        "State4 blocks updates; state2 remaps modes0\u21928,1\u219210,3/4/5\u219211.",
+        "State record offsets0 state,4 mode,8 duration,0xC hold,0x10 float level,0x18 float increment; recomputes(1-level)/duration when nonzero.",
+        "Calls bootup text0x3B2D8 (=gl_func_00026C6C) with(0x06000800,(int8)mode). Callee shifts second word by24 then forwards payload pointer.",
+        "Every state relocation uses symbol1448 tag0x8259E4,value0x338; emulator symnames classifies its address as import_000202D8.",
+        "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s \u2014 immutable assembly and per-site USO identities",
+        "Coordinator type consolidation: Retrospective shared-type consolidation of gl_func_0003061C: existing C still matches all 408 expected bytes in normal and NON_MATCHING builds. ROM and all six compressed blocks were verified. No new generation or matched-code gain is attributed to this sibling update.",
+        "Current3061C uses the same S307A8 transition-state type as307A8, proven by original Sym1448; no other state symbol merged. Wrapper30598 forwarding and remaining draft family views require separate review.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "audit_source_path": "src/game_libs/game_libs_post.c",
+      "audit_current_definition_line": 18823,
+      "evidence_note": "Line references describe the inspection snapshot; immutable callsite/module offsets remain the identity evidence after comment edits."
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 317,
+      "callers": [
+        "src/game_libs/game_libs_post:gl_func_0002FB74",
+        "src/game_libs/game_libs_post:gl_func_00030598",
+        "src/game_libs/game_libs_post:gl_func_00030AF4"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_00026C6C",
+          "kind": "relocation",
+          "site": 282108,
+          "identity": "func_03B2D8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003061C.s",
+          "sym_index": 1376,
+          "cached_first_reference": "func_03B2D8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/gl_func_0003061C.c",
+    "implementation_sha256": "58e502ca0025da48e494d56e1a5bf2871335f80c348c8ea4252e9c0041d57440",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 384,
+          "kind": 4,
+          "symbol": "gl_3061C_emit",
+          "original_identity": "bootup_uso:symbol_1376:addend_0x0",
+          "original_site": 282108,
+          "payload_site": 282108,
+          "original_symbol_index": 1376,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "58ca02693ec16f136025087fa50c5267e6420e56a8a3de83bfb3039e3b596ed7"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 0,
+        "lo": 4,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 32,
+        "lo": 36,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 44,
+        "lo": 136,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 132,
+        "lo": 136,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 140,
+        "lo": 160,
+        "native_addend": 12,
+        "original_addend": 12,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 152,
+        "lo": 160,
+        "native_addend": 12,
+        "original_addend": 12,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 152,
+        "lo": 164,
+        "native_addend": 16,
+        "original_addend": 16,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 176,
+        "lo": 192,
+        "native_addend": 16,
+        "original_addend": 16,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 180,
+        "lo": 192,
+        "native_addend": 16,
+        "original_addend": 16,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 196,
+        "lo": 204,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 196,
+        "lo": 208,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 224,
+        "lo": 240,
+        "native_addend": 24,
+        "original_addend": 24,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 244,
+        "lo": 252,
+        "native_addend": 12,
+        "original_addend": 12,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 256,
+        "lo": 264,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 268,
+        "lo": 272,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 288,
+        "lo": 292,
+        "native_addend": 16,
+        "original_addend": 16,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 300,
+        "lo": 312,
+        "native_addend": 24,
+        "original_addend": 24,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 316,
+        "lo": 320,
+        "native_addend": 12,
+        "original_addend": 12,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 316,
+        "lo": 332,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 336,
+        "lo": 356,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 364,
+        "lo": 380,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "bootup_uso:symbol_1448:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0003061C.json",
+      "nm": "scripts/match-bindings-gl_func_0003061C-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "d3da44db226ab8e2a2ec34d54f71f59fda4ecce980ddfd257e18ea1816fbcc93",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

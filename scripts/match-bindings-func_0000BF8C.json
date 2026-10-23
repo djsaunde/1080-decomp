@@ -1,0 +1,33 @@
+{
+  "function": "func_0000BF8C",
+  "raw_sha256": "2218db9c2f07dbc1ecbfbaa17b133a9d13e2349b613a7d251dc8cb5aa0dddb79",
+  "renames": {
+    "bootup_BF8C_constants": "snw_port_func_0000BF8C_bootup_BF8C_constants",
+    "bootup_BF8C_double": "snw_port_func_0000BF8C_bootup_BF8C_double",
+    "bootup_BF8C_call0": "snw_port_func_0000BF8C_bootup_BF8C_call0",
+    "bootup_BF8C_call1": "snw_port_func_0000BF8C_bootup_BF8C_call1",
+    "bootup_BF8C_call2": "snw_port_func_0000BF8C_bootup_BF8C_call2",
+    "bootup_BF8C_ref20": "snw_port_func_0000BF8C_bootup_BF8C_ref20",
+    "bootup_BF8C_call3": "snw_port_func_0000BF8C_bootup_BF8C_call3",
+    "bootup_BF8C_call4": "snw_port_func_0000BF8C_bootup_BF8C_call4",
+    "bootup_BF8C_ref2C": "snw_port_func_0000BF8C_bootup_BF8C_ref2C",
+    "bootup_BF8C_call5": "snw_port_func_0000BF8C_bootup_BF8C_call5",
+    "bootup_BF8C_call6": "snw_port_func_0000BF8C_bootup_BF8C_call6",
+    "bootup_BF8C_call7": "snw_port_func_0000BF8C_bootup_BF8C_call7"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_0000BF8C_bootup_BF8C_constants": 2292,
+    "snw_port_func_0000BF8C_bootup_BF8C_double": 2292,
+    "snw_port_func_0000BF8C_bootup_BF8C_call0": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_call1": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_call2": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_ref20": 35392,
+    "snw_port_func_0000BF8C_bootup_BF8C_call3": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_call4": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_ref2C": 35392,
+    "snw_port_func_0000BF8C_bootup_BF8C_call5": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_call6": 0,
+    "snw_port_func_0000BF8C_bootup_BF8C_call7": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

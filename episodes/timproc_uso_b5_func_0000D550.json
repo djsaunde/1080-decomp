@@ -1,0 +1,702 @@
+{
+  "function_name": "timproc_uso_b5_func_0000D550",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.435231+00:00",
+  "end_time": "2026-10-23T11:55:26.435243+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.435239+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "timproc_uso_b5_func_0000D550",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 820, \"native_sha256\": \"4952ba9855c8eaf07cf3a69610c94e98f7754b73fa40c61e16b7f5a6dadb55df\", \"code_gain\": 820}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 205,
+  "initial_m2c_source": null,
+  "final_source": "char *timproc_uso_b5_func_0000D550(char *arg0, volatile s32 arg1, volatile s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {\n    char *volatile r;\n    char *g2;\n    char *volatile obj;\n    char *child;\n    volatile int pad[7];\n    s32 savedbit;\n    char *p;\n    char *gc;\n    if (0) { timproc_uso_b5_func_04DFFC(&gc); }\n    child = (char *)timproc_uso_b5_func_055750((char *)0x2C8);\n    if (child != 0) {\n        obj = child;\n        if (child != 0 || (p = (char *)timproc_uso_b5_func_055750((char *)0x2B8), obj = p, p != 0)) {\n            timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE60 + 0x15F0);\n            {\n                char *o2 = obj;\n                (*(s32 *)((char *)(o2) + 0x28)) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);\n                timproc_uso_b5_func_00002B74(o2 + 0x2C);\n            }\n            timproc_uso_b5_func_000032C8(obj + 0x194);\n        }\n        (*(s32 *)((char *)(child) + 0x28)) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x6D4); (*(s32 *)((char *)(child) + 0xC)) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x15F8); timproc_uso_b5_func_00003890(child);\n        (*(s32 *)((char *)(child) + 0x2C4)) = 0;\n        (*(s32 *)((char *)(child) + 0x2B4)) = 0;\n    }\n    r = child;\n    timproc_uso_b5_func_07ACE0(arg0 + 0x10, child);\n    if (((TimB5ObjectPrefix *)child)->field_14 != 0) {\n        ((TimB5ObjectPrefix *)child)->field_04 = 1;\n    }\n    {\n        char *rr = r;\n        {\n        s32 a2v = arg2;\n        ((TimB5ObjectPrefix *)child)->field_14 = arg0;\n        ((TimB5EntryFields *)rr)->field_2A4 = (f32) arg1;\n        ((TimB5EntryFields *)rr)->field_2B0 = a2v;\n        obj = (char *)(a2v + 1);\n    }}\n    child = (char *)timproc_uso_b5_func_055750((char *)0x138);\n    if (child != 0) {\n        timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEE74 + 0x1604, 0.0f, 0.0f, 0.0f);\n        (*(s32 *)((char *)(child) + 0x28)) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x444); (*(s32 *)((char *)(child) + 0xC)) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x160C); gc = (char *)timproc_uso_b5_func_055750((char *)0x16C);\n        if (gc != 0) {\n            f32 cf;\n            timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);\n            g2 = gc;\n            if (1) {}\n            cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);\n            (*(s32 *)((char *)(g2) + 0x28)) = (s32) (&import_80087FB8[0]); (*(s32 *)((char *)(g2) + 0x120)) = 1;\n            *(f32 *)(g2 + 0x108) = cf;\n            *(f32 *)(g2 + 0x10C) = cf;\n            *(f32 *)(g2 + 0x110) = cf;\n            *(f32 *)(g2 + 0x124) = 1.0f;\n        }\n        (*(s32 *)((char *)(child) + 0x108)) = (s32) gc;\n        timproc_uso_b5_func_04DFFC(child, gc);\n        if (1) {}\n        p = (char *)(*(s32 *)((char *)(child) + 0x108));\n        p += 0xB4;\n        ((Vec3 *)p)->z = (f32)0;\n        ((Vec3 *)p)->y = (f32)0;\n        ((Vec3 *)p)->x = (f32)0;\n        savedbit = (*(s32 *)((char *)&d550_ee6c_l1 + 4)) & 0x80000; p = (char *)(((*(s32 *)((char *)&d550_ee6c_l2 + 4)) & 0xFFF7FFFF) | 0x2000); (*(s32 *)((char *)&d550_ee6c_s1 + 4)) = (s32) p; timproc_uso_b5_func_04DFFC(child, (char *)import_000A12EC(obj));\n        if (savedbit != 0) {\n            p = (char *)((*(s32 *)((char *)&d550_ee6c_l3 + 4)) | 0x80000);\n            (*(s32 *)((char *)&d550_ee6c_s2 + 4)) = (s32) p;\n        } else {\n            p = (char *)((*(s32 *)((char *)&d550_ee6c_l4 + 4)) & 0xFFF7FFFF);\n            (*(s32 *)((char *)&d550_ee6c_s3 + 4)) = (s32) p;\n        }\n        *(f32 *)(child + 0xDC) = arg3;\n        *(f32 *)(child + 0xE0) = arg4;\n        *(f32 *)(child + 0xE4) = arg5;\n        *(f32 *)(child + 0x10C) = (f32) 0;\n        *(f32 *)(child + 0x110) = arg6;\n        *(f32 *)(child + 0x114) = arg7;\n        *(f32 *)(child + 0x118) = arg8;\n        (*(s32 *)((char *)(child) + 0x12C)) = 0;\n        (*(s32 *)((char *)(child) + 0x130)) = 0;\n        *(f32 *)(child + 0x120) = 1.0f;\n        *(f32 *)(child + 0x124) = (f32) 0;\n    }\n    {\n        g2 = r;\n        do {\n        ((TimB5EntryFields *)g2)->field_2B8 = child;\n        ((TimB5EntryFields *)g2)->field_134 = *(f32 *)((char *)&import_80807FB8 + 0x3B8);\n        ((TimB5EntryFields *)g2)->field_29C = child;\n        } while (0);\n    }\n    p = (char *)(*(s32 *)((char *)(arg0) + 0x38));\n    {\n        register char *list = p + 0x10;\n        if (list) {}\n        obj = p;\n        timproc_uso_b5_func_07ACE0(list, child);\n    }\n    if (((TimB5ObjectPrefix *)child)->field_14 != 0) {\n        ((TimB5ObjectPrefix *)child)->field_04 = 1;\n    }\n    ((TimB5ObjectPrefix *)child)->field_14 = obj;\n    child = (char *)(*(s32 *)((char *)(arg0) + 0x6C));\n    (*(s32 *)((char *)(arg0) + 0x6C)) = (s32) child + 1;\n    (*(s32 *)((char *)(arg0 + (s32) child * 4) + 0x3C)) = (s32) r;\n    return r;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Constructs an outer object, child and grandchild, initializes fields, temporarily changes imported flags, and registers objects with their owners. A timing-screen/panel role remains a hypothesis.",
+      "observed_abi": "MIPS o32: a0 is an owner pointer; a1 undergoes signed 32-bit-to-float conversion; a2 is a stored/incremented word with unproved original signedness. Six floats arrive through a3 and caller stack offsets 0x10\u20130x20. The 0x60-byte frame preserves s0 and ra. On completion, v0 returns the outer allocation. Original qualifiers and padding declarations remain unknown.",
+      "calls": [
+        {
+          "site": "0xD56C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "timproc_uso_b5_func_055750",
+          "observed_abi": "a0=0x2C8; v0 used as object pointer."
+        },
+        {
+          "site": "0xD584",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "timproc_uso_b5_func_055750",
+          "observed_abi": "a0=0x2B8; conditional allocation; v0 stored as object pointer."
+        },
+        {
+          "site": "0xD59C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "c_alias": "timproc_uso_b5_func_04C678",
+          "observed_abi": "a0=object; a1=descriptor at alias+0x15F0; result unused."
+        },
+        {
+          "site": "0xD5B4",
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00002B74",
+          "c_alias": "timproc_uso_b5_func_00002B74",
+          "observed_abi": "a0=object+0x2C; result unused."
+        },
+        {
+          "site": "0xD5C0",
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_000032C8",
+          "c_alias": "timproc_uso_b5_func_000032C8",
+          "observed_abi": "a0=object+0x194; result unused."
+        },
+        {
+          "site": "0xD5E0",
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00003890",
+          "c_alias": "timproc_uso_b5_func_00003890",
+          "observed_abi": "a0=outer object; result unused."
+        },
+        {
+          "site": "0xD5FC",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "timproc_uso_b5_func_07ACE0",
+          "observed_abi": "a0=owner+0x10; a1=outer object pointer/list key; result unused."
+        },
+        {
+          "site": "0xD644",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "timproc_uso_b5_func_055750",
+          "observed_abi": "a0=0x138; v0 used as child pointer."
+        },
+        {
+          "site": "0xD66C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040070",
+          "c_alias": "timproc_uso_b5_func_0546DC",
+          "observed_abi": "a0=child; a1=descriptor at alias+0x1604; three zero floats through a2, a3 and stack+0x10; result unused."
+        },
+        {
+          "site": "0xD68C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "timproc_uso_b5_func_055750",
+          "observed_abi": "a0=0x16C; v0 used as grandchild pointer."
+        },
+        {
+          "site": "0xD6B4",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040070",
+          "c_alias": "timproc_uso_b5_func_0546DC",
+          "observed_abi": "a0=grandchild; a1=descriptor at alias+0x1614; three zero floats through a2, a3 and stack+0x10; result unused."
+        },
+        {
+          "site": "0xD700",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00039990",
+          "c_alias": "timproc_uso_b5_func_04DFFC",
+          "observed_abi": "a0=child; a1=grandchild; result unused."
+        },
+        {
+          "site": "0xD754",
+          "target": "unresolved",
+          "c_alias": "import_000A12EC",
+          "observed_abi": "a0=original a2+1; v0 supplies the pointer-valued second argument at 0xD760. Recovered import identity has no unique current target."
+        },
+        {
+          "site": "0xD760",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00039990",
+          "c_alias": "timproc_uso_b5_func_04DFFC",
+          "observed_abi": "a0=child; a1=result from 0xD754; result unused."
+        },
+        {
+          "site": "0xD828",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "timproc_uso_b5_func_07ACE0",
+          "observed_abi": "a0=pointer from owner+0x38, advanced by 0x10; a1=child pointer/list key; parent pointer spilled in the jal delay slot; result unused."
+        }
+      ],
+      "evidence": [
+        "Immutable expected object and original assembly establish one 820-byte function spanning 0xD550\u20130xD884.",
+        "Original per-site relocations identify 14 resolved calls and one unresolved import. Supplied graph has no recovered callers or game.uso DFS rank; reachability remains unproved.",
+        "Shared entry-layout family inspected: 038B0, 0396C, 03A28, 03F5C, C978, D14C, D550, D884 and DF14. Their accesses support pointer fields +0x29C/+0x2B8, floats +0x134/+0x2A0/+0x2A4 and words +0x2B0/+0x2B4. The assigned body reuses TimB5EntryFields and Vec3.",
+        "Shared object-prefix family inspected: 08FC8, D14C, D550, D884 and DF14, plus gl_func_0003800C and gl_func_00039990. TimB5ObjectPrefix preserves offset names; +0x14 holds the parent pointer and +0x28 receives a descriptor address.",
+        "Outer +0x29C/+0x2B8 reference the child; +0x2B0 stores a2; float +0x2A4 stores converted a1; float +0x134 receives an imported constant.",
+        "Child +0x108 references the grandchild. Six floats populate +0xDC/+0xE0/+0xE4 and +0x110/+0x114/+0x118. Floats +0x10C/+0x124 receive zero and +0x120 receives 1.0; words +0x12C/+0x130 receive zero.",
+        "Grandchild +0x28 receives a descriptor pointer; floats +0x108/+0x10C/+0x110 receive an imported constant; word +0x120 receives 1; float +0x124 receives 1.0. Its vector at +0xB4/+0xB8/+0xBC is cleared.",
+        "Owner+0x6C is incremented; its previous value indexes the pointer array at +0x3C. Imported flag word import_8005EE6C+4 has bit 0x80000 saved, cleared and restored around the unresolved call; bit 0x2000 is set.",
+        "Defining the grandchild pointer before a basic-block split preserves v1. Splitting the later outer stores and retaining the final list-address candidate reproduces the original argument preparation and spill order. Applied the pinned IDO_CODEGEN dead-v0-poison-per-basic-block recipe.",
+        "Normal and NON_MATCHING C each match all 820 expected bytes, SHA256 4952ba9855c8eaf07cf3a69610c94e98f7754b73fa40c61e16b7f5a6dadb55df. INCLUDE_ASM is removed. Objdiff fuzzy is 99.541466% because relocation metadata differs; raw instructions are exact.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613; all six compressed blocks pass; this unit\u2019s 96 previously exact functions remain exact. Other function bodies are unchanged. Compiler flags, expected objects, assembly and metrics were not modified.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The objects represent timing-screen panels or widgets.",
+        "Fields +0x28 and +0x0C contain virtual-method or descriptor information.",
+        "The unresolved import constructs another object from the incremented a2 value."
+      ],
+      "unknowns": [
+        "Original class names, field meanings, qualifiers, a2 signedness and complete derived layouts.",
+        "Unique target of import_000A12EC at 0xD754.",
+        "Original return types of calls whose results are ignored.",
+        "Symbol identity underlying the relocation-free load at 0xD810; C uses an existing zero-base alias with identical instruction bytes.",
+        "Missing callers, indirect edges and missing relocations remain coverage gaps; zero-valued aliases do not identify callees.",
+        "Allocation failure paths subsequently dereference returned pointers; safe failure-return behavior is not established.",
+        "The exact spelling of the original source remains unknown; block boundaries, padding and empty tests in this C guide IDO code generation.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/timproc_uso_b5_func_0000D550.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "timproc_uso_b5",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 54636,
+          "identity": "func_055750",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 54660,
+          "identity": "func_055750",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003800C",
+          "kind": "relocation",
+          "site": 54684,
+          "identity": "func_04C678",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00002B74",
+          "kind": "relocation",
+          "site": 54708,
+          "identity": "func_00002B74",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_000032C8",
+          "kind": "relocation",
+          "site": 54720,
+          "identity": "func_000032C8",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00003890",
+          "kind": "relocation",
+          "site": 54752,
+          "identity": "func_00003890",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 54780,
+          "identity": "func_07ACE0",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 54852,
+          "identity": "func_055750",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040070",
+          "kind": "relocation",
+          "site": 54892,
+          "identity": "func_0546DC",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 54924,
+          "identity": "func_055750",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040070",
+          "kind": "relocation",
+          "site": 54964,
+          "identity": "func_0546DC",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00039990",
+          "kind": "relocation",
+          "site": 55040,
+          "identity": "func_04DFFC",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00039990",
+          "kind": "relocation",
+          "site": 55136,
+          "identity": "func_04DFFC",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 55336,
+          "identity": "func_07ACE0",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 55124,
+          "identity": "import_000A12EC",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000D550.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "source_sha256": "2a5c307ee53f83f7d684757b62553c2e8bb2ab307891f048deacfc3fcd7fb00d",
+    "implementation_path": "src/match_imports/timproc_uso_b5_func_0000D550.c",
+    "implementation_sha256": "f8d5869603552ec62609edbeec0f9ed73d9cccb59a5925b84dccd9424276ac4e",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 28,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_055750",
+          "original_identity": "timproc_uso_b5:symbol_23:addend_0x0",
+          "original_site": 54636,
+          "payload_site": 54636,
+          "original_symbol_index": 23,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 52,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_055750",
+          "original_identity": "timproc_uso_b5:symbol_23:addend_0x0",
+          "original_site": 54660,
+          "payload_site": 54660,
+          "original_symbol_index": 23,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 76,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_04C678",
+          "original_identity": "timproc_uso_b5:symbol_24:addend_0x0",
+          "original_site": 54684,
+          "payload_site": 54684,
+          "original_symbol_index": 24,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 100,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00002B74",
+          "original_identity": "timproc_uso_b5:symbol_248:addend_0x0",
+          "original_site": 54708,
+          "payload_site": 54708,
+          "original_symbol_index": 248,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 112,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_000032C8",
+          "original_identity": "timproc_uso_b5:symbol_250:addend_0x0",
+          "original_site": 54720,
+          "payload_site": 54720,
+          "original_symbol_index": 250,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 144,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00003890",
+          "original_identity": "timproc_uso_b5:symbol_251:addend_0x0",
+          "original_site": 54752,
+          "payload_site": 54752,
+          "original_symbol_index": 251,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 172,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_07ACE0",
+          "original_identity": "timproc_uso_b5:symbol_33:addend_0x0",
+          "original_site": 54780,
+          "payload_site": 54780,
+          "original_symbol_index": 33,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 244,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_055750",
+          "original_identity": "timproc_uso_b5:symbol_23:addend_0x0",
+          "original_site": 54852,
+          "payload_site": 54852,
+          "original_symbol_index": 23,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 284,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_0546DC",
+          "original_identity": "timproc_uso_b5:symbol_311:addend_0x0",
+          "original_site": 54892,
+          "payload_site": 54892,
+          "original_symbol_index": 311,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 316,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_055750",
+          "original_identity": "timproc_uso_b5:symbol_23:addend_0x0",
+          "original_site": 54924,
+          "payload_site": 54924,
+          "original_symbol_index": 23,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 356,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_0546DC",
+          "original_identity": "timproc_uso_b5:symbol_311:addend_0x0",
+          "original_site": 54964,
+          "payload_site": 54964,
+          "original_symbol_index": 311,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 432,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_04DFFC",
+          "original_identity": "timproc_uso_b5:symbol_313:addend_0x0",
+          "original_site": 55040,
+          "payload_site": 55040,
+          "original_symbol_index": 313,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 516,
+          "kind": 4,
+          "symbol": "import_000A12EC",
+          "original_identity": "timproc_uso_b5:symbol_343:addend_0x0",
+          "original_site": 55124,
+          "payload_site": 55124,
+          "original_symbol_index": 343,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 528,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_04DFFC",
+          "original_identity": "timproc_uso_b5:symbol_313:addend_0x0",
+          "original_site": 55136,
+          "payload_site": 55136,
+          "original_symbol_index": 313,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 728,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_07ACE0",
+          "original_identity": "timproc_uso_b5:symbol_33:addend_0x0",
+          "original_site": 55336,
+          "payload_site": 55336,
+          "original_symbol_index": 33,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "4952ba9855c8eaf07cf3a69610c94e98f7754b73fa40c61e16b7f5a6dadb55df"
+    },
+    "native_data_proof": [
+      {
+        "alias": "timproc_uso_b5_D_807FEE60",
+        "hi": 68,
+        "lo": 72,
+        "native_addend": 5616,
+        "original_addend": 5616,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FDB64",
+        "hi": 88,
+        "lo": 92,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "timproc_uso_b5:symbol_46:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE68",
+        "hi": 120,
+        "lo": 128,
+        "native_addend": 5624,
+        "original_addend": 5624,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE68",
+        "hi": 124,
+        "lo": 128,
+        "native_addend": 5624,
+        "original_addend": 5624,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE68",
+        "hi": 124,
+        "lo": 132,
+        "native_addend": 1748,
+        "original_addend": 1748,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE74",
+        "hi": 264,
+        "lo": 268,
+        "native_addend": 5636,
+        "original_addend": 5636,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE7C",
+        "hi": 292,
+        "lo": 300,
+        "native_addend": 5644,
+        "original_addend": 5644,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE7C",
+        "hi": 296,
+        "lo": 300,
+        "native_addend": 5644,
+        "original_addend": 5644,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE7C",
+        "hi": 296,
+        "lo": 304,
+        "native_addend": 1092,
+        "original_addend": 1092,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEE84",
+        "hi": 336,
+        "lo": 340,
+        "native_addend": 5652,
+        "original_addend": 5652,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "import_80807FB8",
+        "hi": 368,
+        "lo": 372,
+        "native_addend": 948,
+        "original_addend": 948,
+        "base_identity": "timproc_uso_b5:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "import_80087FB8",
+        "hi": 384,
+        "lo": 388,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "timproc_uso_b5:symbol_312:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_l1",
+        "hi": 448,
+        "lo": 468,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_l2",
+        "hi": 476,
+        "lo": 480,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_s1",
+        "hi": 504,
+        "lo": 508,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_l3",
+        "hi": 552,
+        "lo": 556,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_s2",
+        "hi": 568,
+        "lo": 576,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_l4",
+        "hi": 540,
+        "lo": 580,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "d550_ee6c_s3",
+        "hi": 596,
+        "lo": 600,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "timproc_uso_b5:symbol_314:base_addend_0x0"
+      },
+      {
+        "alias": "import_80807FB8",
+        "hi": 692,
+        "lo": 704,
+        "native_addend": 952,
+        "original_addend": 952,
+        "base_identity": "timproc_uso_b5:symbol_4:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-timproc_uso_b5_func_0000D550.json",
+      "nm": "scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json"
+    },
+    "source_context": "src/match_imports/context_timproc_uso_b5.h",
+    "source_context_sha256": "ccba90359c7e71d971348f72d547e63e2ebeb0fb7163484fe33de2a0bc6528f1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "original_local_episode_sha256": "35ffdf24f6b05abd0a16370156a70044cf7122f0738e0501f5ecaec9f75c1aa3",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

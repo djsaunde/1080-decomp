@@ -1,0 +1,15 @@
+{
+  "function": "timproc_uso_b5_func_0000BBDC",
+  "raw_sha256": "fc715c54fb8e15ea351db27a24402349a38c6c2458b74daafb63c9e140d84417",
+  "renames": {
+    "timproc_uso_b5_D_807FF4C0": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_D_807FF4C0",
+    "timproc_uso_b5_func_00003A4C": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003A4C",
+    "timproc_uso_b5_func_00003C8C": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003C8C"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_D_807FF4C0": 0,
+    "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003A4C": 0,
+    "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003C8C": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

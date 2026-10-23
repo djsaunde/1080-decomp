@@ -1,0 +1,31 @@
+{
+  "function": "h2hproc_uso_func_00001360",
+  "raw_sha256": "e727ff857fae11152ce2fe6cce84be1cbaef3c0f8d9cb863eb07b355ca36a3a5",
+  "renames": {
+    "h2hproc_1360_import_157": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_157",
+    "h2hproc_1360_import_158": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_158",
+    "snw_h2h_1360_text_data": "snw_port_h2hproc_uso_func_00001360_snw_h2h_1360_text_data",
+    "h2hproc_1360_import_159": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_159",
+    "h2hproc_1360_import_160": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_160",
+    "h2hproc_1360_import_161": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_161",
+    "h2hproc_1360_import_162": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_162",
+    "snw_h2h_1360_import149": "snw_port_h2hproc_uso_func_00001360_snw_h2h_1360_import149",
+    "h2hproc_1360_import_163": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_163",
+    "h2hproc_1360_import_164": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_164",
+    "h2hproc_1360_import_165": "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_165"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_157": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_158": 0,
+    "snw_port_h2hproc_uso_func_00001360_snw_h2h_1360_text_data": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_159": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_160": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_161": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_162": 0,
+    "snw_port_h2hproc_uso_func_00001360_snw_h2h_1360_import149": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_163": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_164": 0,
+    "snw_port_h2hproc_uso_func_00001360_h2hproc_1360_import_165": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

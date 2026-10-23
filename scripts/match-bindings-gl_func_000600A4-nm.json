@@ -1,0 +1,23 @@
+{
+  "function": "gl_func_000600A4",
+  "raw_sha256": "eda6f1df153a048837d9abf40be6ab9c26f36a2fe88583162b941095fd053b69",
+  "renames": {
+    "gl_600A4_root": "snw_port_gl_func_000600A4_gl_600A4_root",
+    "gl_600A4_lookup": "snw_port_gl_func_000600A4_gl_600A4_lookup",
+    "gl_600A4_alloc": "snw_port_gl_func_000600A4_gl_600A4_alloc",
+    "gl_600A4_init": "snw_port_gl_func_000600A4_gl_600A4_init",
+    "gl_600A4_diag": "snw_port_gl_func_000600A4_gl_600A4_diag",
+    "gl_600A4_data": "snw_port_gl_func_000600A4_gl_600A4_data",
+    "gl_600A4_read": "snw_port_gl_func_000600A4_gl_600A4_read"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_000600A4_gl_600A4_root": 0,
+    "snw_port_gl_func_000600A4_gl_600A4_lookup": 0,
+    "snw_port_gl_func_000600A4_gl_600A4_alloc": 0,
+    "snw_port_gl_func_000600A4_gl_600A4_init": 0,
+    "snw_port_gl_func_000600A4_gl_600A4_diag": 0,
+    "snw_port_gl_func_000600A4_gl_600A4_data": 0,
+    "snw_port_gl_func_000600A4_gl_600A4_read": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

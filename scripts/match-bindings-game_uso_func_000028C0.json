@@ -1,0 +1,17 @@
+{
+  "function": "game_uso_func_000028C0",
+  "raw_sha256": "fdb0ed386d1c9c39b161c9edbfead7460ff2baf3f8b404190de20e293a68eb4d",
+  "renames": {
+    "game_uso_28C0_rotate": "snw_port_game_uso_func_000028C0_game_uso_28C0_rotate",
+    "game_uso_func_070238": "snw_port_game_uso_func_000028C0_game_uso_func_070238",
+    "game_uso_28C0_normalize": "snw_port_game_uso_func_000028C0_game_uso_28C0_normalize",
+    "game_uso_func_072EE8": "snw_port_game_uso_func_000028C0_game_uso_func_072EE8"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_uso_func_000028C0_game_uso_28C0_rotate": 0,
+    "snw_port_game_uso_func_000028C0_game_uso_func_070238": 0,
+    "snw_port_game_uso_func_000028C0_game_uso_28C0_normalize": 0,
+    "snw_port_game_uso_func_000028C0_game_uso_func_072EE8": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

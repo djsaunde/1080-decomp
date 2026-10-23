@@ -1,0 +1,156 @@
+{
+  "function_name": "game_libs_func_00047B28",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.695857+00:00",
+  "end_time": "2026-10-23T11:55:25.695870+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.695866+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_00047B28",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 688, \"native_sha256\": \"64513e2fa2fd7ee1e0f052f99666a55f044e72b7a0fab8d4a0f957bafbe8a697\", \"code_gain\": 688}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 172,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_00047B28(GL470E4Self *self, const f32 *c) {\n    float r, g;\n    unsigned char col[4];\n    float b, a;\n    GL470E4Object *obj;\n    GL470E4List *gp;\n    GL470E4Packet *p;\n    int i;\n    obj = self->context->object;\n    r = c[0];\n    col[0] = (g = c[1], b = c[2], a = c[3], r * 255.0f);\n    col[1] = g * 255.0f;\n    col[2] = b * 255.0f;\n    col[3] = a * 255.0f;\n    gp = obj->list;\n    i = gp->count;\n    gp->count = i + 1;\n    p = &obj->list->packets[i];\n    p->command = 0xF9000000;\n    p->color = (((unsigned int)col[3] & 0xFF) << 0) |\n               ((((unsigned int)col[2] & 0xFF) << 8) |\n                ((((unsigned int)col[1] & 0xFF) << 16) |\n                 (((unsigned int)col[0] & 0xFF) << 24)));\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Appends an RDP blend-color command containing four float channels scaled by 255 and packed into RGBA bytes. The intended input range is uncertain.",
+      "observed_abi": "Reads a0 as an owner pointer and a1 as four consecutive f32 values. Leaf with a 0x10-byte stack frame. C uses void; assembly leaves the object pointer in v0, so the original return type remains uncertain.",
+      "calls": [],
+      "evidence": [
+        "Original assembly contains one complete 172-instruction function and no outgoing calls or imports.",
+        "Expected bytes differ from game_libs_func_000470E4 and game_libs_func_00047394 only at offset 0x254, the command constant.",
+        "Grouping channel loads inside the first conversion resolves the remaining constant-load scheduling difference.",
+        "Reused existing GL470E4 shared layouts; removed the independent BlendColor types.",
+        "Inspected family: game_libs_func_000470E4, game_libs_func_00047394, gl_func_00046FA8, gl_func_00047644, gl_func_000476DC, game_libs_func_0004CDB0 and caller gl_func_000546BC.",
+        "Observed chain: owner+0x254 -> context+0x158 -> object+0xC -> list; list+0 holds packet storage and list+4 holds the incremented count. Packets occupy eight bytes.",
+        "Recovered caller gl_func_000546BC targets game_libs_func_00047B28 at bootup Text 0x68D3C, equivalent to game_libs offset 0x546D0.",
+        "Both compiled C bodies match the immutable expected function bytes; objdiff reports 100%.",
+        "Regression comparison preserved 842 previously exact normal functions and 548 previously exact NON_MATCHING functions in this unit.",
+        "make -j2 verify verify-blocks passed, including byte-identical ROM comparison.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The input represents normalized RGBA components."
+      ],
+      "unknowns": [
+        "Original return type and complete object-class identities are not established.",
+        "The caller's existing collapsed C aliases do not establish its relocated argument identities; that body was left unchanged.",
+        "Call-graph coverage generally excludes unrecovered relocation and indirect edges; this function's assembly independently confirms it has no calls.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_00047B28.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_000546BC"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/game_libs_func_00047B28.c",
+    "implementation_sha256": "1a5418fb56aee10896e2c46861c3b6632e943464d638282b254ecc387dfa5d04",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "64513e2fa2fd7ee1e0f052f99666a55f044e72b7a0fab8d4a0f957bafbe8a697"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_00047B28.json",
+      "nm": "scripts/match-bindings-game_libs_func_00047B28-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "4d0bfb15b9f148a3fea2510159af19077e353dee5e648f653511d7dab121c04c",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

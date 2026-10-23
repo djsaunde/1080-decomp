@@ -1,0 +1,17 @@
+{
+  "function": "arcproc_uso_func_00001B04",
+  "raw_sha256": "69036af4c03e4d5842a78dbc532a546eb322496e2a0f225abf06d224593f32e9",
+  "renames": {
+    "arcproc_uso_import_165_1B04": "snw_port_arcproc_uso_func_00001B04_arcproc_uso_import_165_1B04",
+    "D_arc1B04_a": "snw_port_arcproc_uso_func_00001B04_D_arc1B04_a",
+    "arcproc_uso_import_116_1B04": "snw_port_arcproc_uso_func_00001B04_arcproc_uso_import_116_1B04",
+    "arcproc_uso_import_117_1B04": "snw_port_arcproc_uso_func_00001B04_arcproc_uso_import_117_1B04"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_arcproc_uso_func_00001B04_arcproc_uso_import_165_1B04": 0,
+    "snw_port_arcproc_uso_func_00001B04_D_arc1B04_a": 0,
+    "snw_port_arcproc_uso_func_00001B04_arcproc_uso_import_116_1B04": 0,
+    "snw_port_arcproc_uso_func_00001B04_arcproc_uso_import_117_1B04": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

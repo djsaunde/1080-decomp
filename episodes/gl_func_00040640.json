@@ -1,0 +1,987 @@
+{
+  "function_name": "gl_func_00040640",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.941738+00:00",
+  "end_time": "2026-10-23T11:55:25.941751+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.941747+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00040640",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 820, \"native_sha256\": \"50fc2434416111f0a2abcd8e41fd1a7b829f296481cd420098ae0129739883a9\", \"code_gain\": 820}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 205,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00040640(GlObjectPrefix *root) {\n    GlObjectLink *iter[2];\n    register GlObjectPrefix *node;\n    register GlObjectPrefix *obj;\n    register GlObjectDispatch *vt;\n    register f32 x;\n    GL40640Matrix matrix;\n    Vec3 scaled;\n    register f32 y, z;\n    register GlObjectPrefix *current;\n    register GlObjectDispatch *current_vt;\n    register u32 mask;\n    register GlObjectPrefix *masked;\n    volatile char pad_38[0x34];\n    Vec3 scaled_direct;\n    gl40640_push((void *)root->field_0C, root->field_0C);\n    iter[1] = root->field_10;\n    if (root->field_B0 != 0) {\n        switch ((u32)root->field_B0) {\n        case 0:\n            break;\n        case 6:\n            gl40640_copy(&gl40640_context, &gl40640_context.field_E8);\n            gl40640_mul(&gl40640_context, root->field_70);\n            break;\n        case 7:\n            gl40640_copy(&gl40640_context, &gl40640_context.field_E8);\n            break;\n        case 1:\n            gl40640_copy(&gl40640_context, root->field_70);\n            break;\n        case 2:\n            gl40640_mul(&gl40640_context, root->field_70);\n            break;\n        case 3:\n            gl40640_copy(&gl40640_context, &gl40640_context.field_E8);\n            if (1) {\n                current_vt = gl40640_current->field_28;\n                current = gl40640_current;\n                gl40640_mul(&gl40640_context,\n                    (void *)current_vt->field_5C(current_vt->field_58 + (s32)current));\n            }\n            gl40640_mul(&gl40640_context, root->field_70);\n            break;\n        case 4:\n            gl40640_copy(&gl40640_context, &gl40640_context.field_E8);\n            if (1) {\n                current_vt = gl40640_current->field_28;\n                current = gl40640_current;\n                gl40640_mul(&gl40640_context,\n                    (void *)current_vt->field_5C(current_vt->field_58 + (s32)current));\n            }\n            break;\n        case 5:\n            gl40640_reset(&gl40640_context);\n            break;\n        case 8:\n            matrix = gl40640_context.field_E8;\n            if (1) {\n                x = root->field_70[12] * gl40640_context.field_128.x;\n                y = root->field_70[13] * gl40640_context.field_128.y;\n                z = root->field_70[14] * gl40640_context.field_128.z;\n                scaled.x = x;\n                scaled.y = y;\n                scaled.z = z;\n            }\n            gl40640_translate(&matrix, &scaled);\n            gl40640_copy(&gl40640_context, &matrix);\n            break;\n        case 9:\n            if (1) {\n                x = root->field_70[12] * gl40640_context.field_128.x;\n                y = root->field_70[13] * gl40640_context.field_128.y;\n                z = root->field_70[14] * gl40640_context.field_128.z;\n                scaled_direct.x = x;\n                scaled_direct.y = y;\n                scaled_direct.z = z;\n            }\n            gl40640_translate(&gl40640_context.field_A0, &scaled_direct);\n            break;\n        }\n    }\n    iter[0] = iter[1];\n    node = iter[1] != ((void*)0)\n        ? (iter[1] = iter[0]->field_04, iter[0]->field_00) : ((void*)0);\n    if (node != ((void*)0)) {\n        do {\n            obj = iter[0]->field_00;\n            if (obj->field_18 & 4) {\n                if (root->field_2C & 2) {\n                    gl40640_current = root;\n                }\n                mask = gl40640_mask();\n                masked = iter[0]->field_00;\n                if (masked->field_20 & mask) {\n                    masked->field_14 = root;\n                    obj = iter[0]->field_00;\n                    vt = obj->field_28;\n                    vt->field_1C(vt->field_18 + (s32)obj, obj);\n                }\n            }\n            iter[0] = iter[1];\n            node = iter[1] != ((void*)0)\n                ? (iter[1] = iter[0]->field_04, iter[0]->field_00) : ((void*)0);\n        } while (node != ((void*)0));\n    }\n    gl40640_pop();\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Selects matrix state using root+0xB0, then traverses linked objects, filters them by flags and a global mask, updates back-references and invokes adjusted virtual methods. A scene/render traversal is likely; original class and mode names remain uncertain.",
+      "observed_abi": "MIPS o32: a0 is GlObjectPrefix*. The 0xE8 frame preserves s0 and ra. No intentional return value is established. Existing shared object/link/dispatch types are reused. The context view now shares its typed +0xE0 matrix pointer with SNW_47E00_Object without changing any function body.",
+      "calls": [
+        {
+          "site": "0x40654",
+          "target": "game_libs_func_00061728",
+          "c_alias": "gl40640_push",
+          "observed_abi": "a0=root.field_0C; a1 carries the same word. Callee consumes a0; result unused."
+        },
+        {
+          "site": "0x40698",
+          "target": "gl_func_00047DD8",
+          "c_alias": "gl40640_copy",
+          "observed_abi": "a0=context; a1=context+0xE8 matrix; result unused."
+        },
+        {
+          "site": "0x406A8",
+          "target": "gl_func_00047E00",
+          "c_alias": "gl40640_mul",
+          "observed_abi": "a0=context; a1=root+0x70 matrix; result unused."
+        },
+        {
+          "site": "0x406C4",
+          "target": "gl_func_00047DD8",
+          "c_alias": "gl40640_copy",
+          "observed_abi": "a0=context; a1=context+0xE8 matrix; result unused."
+        },
+        {
+          "site": "0x406DC",
+          "target": "gl_func_00047DD8",
+          "c_alias": "gl40640_copy",
+          "observed_abi": "a0=context; a1=root+0x70 matrix; result unused."
+        },
+        {
+          "site": "0x406F4",
+          "target": "gl_func_00047E00",
+          "c_alias": "gl40640_mul",
+          "observed_abi": "a0=context; a1=root+0x70 matrix; result unused."
+        },
+        {
+          "site": "0x40710",
+          "target": "gl_func_00047DD8",
+          "c_alias": "gl40640_copy",
+          "observed_abi": "a0=context; a1=context+0xE8 matrix; result unused."
+        },
+        {
+          "site": "0x4072C",
+          "target": "unresolved",
+          "c_alias": "current_vt->field_5C",
+          "observed_abi": "a0=current object plus signed adjustment at dispatch+0x58; v0 supplies a matrix address."
+        },
+        {
+          "site": "0x4073C",
+          "target": "gl_func_00047E00",
+          "c_alias": "gl40640_mul",
+          "observed_abi": "a0=context; a1=preceding indirect result; result unused."
+        },
+        {
+          "site": "0x4074C",
+          "target": "gl_func_00047E00",
+          "c_alias": "gl40640_mul",
+          "observed_abi": "a0=context; a1=root+0x70 matrix; result unused."
+        },
+        {
+          "site": "0x40768",
+          "target": "gl_func_00047DD8",
+          "c_alias": "gl40640_copy",
+          "observed_abi": "a0=context; a1=context+0xE8 matrix; result unused."
+        },
+        {
+          "site": "0x40784",
+          "target": "unresolved",
+          "c_alias": "current_vt->field_5C",
+          "observed_abi": "a0=current object plus signed adjustment at dispatch+0x58; v0 supplies a matrix address."
+        },
+        {
+          "site": "0x40794",
+          "target": "gl_func_00047E00",
+          "c_alias": "gl40640_mul",
+          "observed_abi": "a0=context; a1=preceding indirect result; result unused."
+        },
+        {
+          "site": "0x407A8",
+          "target": "gl_func_00047F48",
+          "c_alias": "gl40640_reset",
+          "observed_abi": "a0=context; result unused."
+        },
+        {
+          "site": "0x40830",
+          "target": "game_libs_func_0005E87C",
+          "c_alias": "gl40640_translate",
+          "observed_abi": "a0=matrix at sp+0x90; a1=Vec3 at sp+0x84; result unused."
+        },
+        {
+          "site": "0x40840",
+          "target": "gl_func_00047DD8",
+          "c_alias": "gl40640_copy",
+          "observed_abi": "a0=context; a1=matrix at sp+0x90; result unused."
+        },
+        {
+          "site": "0x40890",
+          "target": "game_libs_func_0005E87C",
+          "c_alias": "gl40640_translate",
+          "observed_abi": "a0=context+0xA0 matrix; a1=Vec3 at sp+0x2C; result unused."
+        },
+        {
+          "site": "0x408F0",
+          "target": "game_libs_func_00038B94",
+          "c_alias": "gl40640_mask",
+          "observed_abi": "No explicit arguments; v0 is intersected with object+0x20."
+        },
+        {
+          "site": "0x40928",
+          "target": "unresolved",
+          "c_alias": "vt->field_1C",
+          "observed_abi": "a0=object plus signed adjustment at dispatch+0x18; a1=object. Result unused."
+        },
+        {
+          "site": "0x40958",
+          "target": "game_libs_func_0006179C",
+          "c_alias": "gl40640_pop",
+          "observed_abi": "No explicit arguments; result unconsumed."
+        }
+      ],
+      "evidence": [
+        "Immutable assembly and expected object establish one complete 0x334-byte function. Only instruction +0x40 differs in NON_MATCHING C; normal retains the exact assembly fallback.",
+        "Original Text relocations 0x40678 and 0x40680 both reference symbol 1, the RO base. Generated C instead has R_MIPS_HI16/LO16 relocations against local .rodata.",
+        "All ten generated table entries match original case-relative offsets: 0x258,0x94,0xAC,0xC4,0x11C,0x164,0x4C,0x78,0x178,0x210.",
+        "An isolated IDO probe rejects goto *table[key] with a syntax error. Probe source and compiler output remain under build/orchestration-scratch/.",
+        "Shared context family: 39094 and 40640 use original import sym154; 47DD8,47E00 and 47F48 consume the supplied context's +0xE0 matrix pointer. SNW_47E00_Object now aliases the shared definition; its function body is unchanged.",
+        "Existing shared object layout is corroborated by inspected 38598,3863C,38728,39094,40974 and 40E90. Fields include +0x0C word, +0x10 links, +0x14 back-reference, +0x18 flags, +0x20 mask, +0x28 dispatch, +0x2C flags, +0x70 matrix and +0xB0 selector.",
+        "Context accesses establish matrices at +0xA0/+0xE8, matrix pointer +0xE0 and float factors +0x128/+0x12C/+0x130.",
+        "Call identities come from the supplied per-site relocations. Data aliases preserve sym154 and sym1675 separately while reusing expected D_00000000's zero address; equal alias values do not identify targets.",
+        "Supplied callers are bootup func_0000CFA0 and timproc_uso_b5 functions 0000AC20,0000B154,0000B368,0000B624. The bootup caller was inspected in the prior attempt.",
+        "Both object builds passed. All 857 function byte sequences in each pipeline equal the attempt-start objects. ROM and all six compressed-block checks passed. No function body or preprocessor-directive inventory changed in this follow-up; git diff --check passed.",
+        "Retrospective recovery of the saved worker C, with GlObjectPrefix/Link/Dispatch from canonical common.h. The existing shared GlMatrixStore prefix is extended with the same-instance E8 matrix and scale at128 used by this function; existing fields and sibling bodies remain unchanged.",
+        "Standard IDO7.1 O2 compilation and GNU MIPS full linking place the compiler-generated switch table at original USO RoData1B00. Imports remain distinct zero-base aliases. No instruction edits, expected changes or new model generation.",
+        "Independent normal and NON_MATCHING raw function checks, full ROM, all six compressed blocks and prior exact function regression checks passed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The selector represents scene/render transformation modes.",
+        "The +0x5C virtual method returns an object's transformation matrix; context+0x128 supplies per-axis factors."
+      ],
+      "unknowns": [
+        "Runtime targets at 0x4072C,0x40784 and 0x40928.",
+        "Original class names, mode names, complete context layout and discarded-result return declarations.",
+        "A permitted C representation that preserves external RO placement and satisfies raw-object equality. Existing linker placement examples alone do not change pre-link instruction bytes. No exact episode was created.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00040640.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 163,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_0000CFA0",
+        "src/game_libs/game_libs_post0b:gl_func_00040640",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_0000AC20",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_0000B154",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_0000B368",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_0000B624"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00061728",
+          "kind": "relocation",
+          "site": 347328,
+          "identity": "func_075D94",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 117,
+          "cached_first_reference": "func_075D94",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047DD8",
+          "kind": "relocation",
+          "site": 347396,
+          "identity": "func_05C444",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 461,
+          "cached_first_reference": "func_05C444",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047E00",
+          "kind": "relocation",
+          "site": 347412,
+          "identity": "func_05C46C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1701,
+          "cached_first_reference": "func_05C46C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047DD8",
+          "kind": "relocation",
+          "site": 347440,
+          "identity": "func_05C444",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 461,
+          "cached_first_reference": "func_05C444",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047DD8",
+          "kind": "relocation",
+          "site": 347464,
+          "identity": "func_05C444",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 461,
+          "cached_first_reference": "func_05C444",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047E00",
+          "kind": "relocation",
+          "site": 347488,
+          "identity": "func_05C46C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1701,
+          "cached_first_reference": "func_05C46C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047DD8",
+          "kind": "relocation",
+          "site": 347516,
+          "identity": "func_05C444",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 461,
+          "cached_first_reference": "func_05C444",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047E00",
+          "kind": "relocation",
+          "site": 347560,
+          "identity": "func_05C46C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1701,
+          "cached_first_reference": "func_05C46C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047E00",
+          "kind": "relocation",
+          "site": 347576,
+          "identity": "func_05C46C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1701,
+          "cached_first_reference": "func_05C46C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047DD8",
+          "kind": "relocation",
+          "site": 347604,
+          "identity": "func_05C444",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 461,
+          "cached_first_reference": "func_05C444",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047E00",
+          "kind": "relocation",
+          "site": 347648,
+          "identity": "func_05C46C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1701,
+          "cached_first_reference": "func_05C46C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047F48",
+          "kind": "relocation",
+          "site": 347668,
+          "identity": "func_05C5B4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1702,
+          "cached_first_reference": "func_05C5B4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "kind": "relocation",
+          "site": 347804,
+          "identity": "func_072EE8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 308,
+          "cached_first_reference": "func_072EE8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00047DD8",
+          "kind": "relocation",
+          "site": 347820,
+          "identity": "func_05C444",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 461,
+          "cached_first_reference": "func_05C444",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "kind": "relocation",
+          "site": 347900,
+          "identity": "func_072EE8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 308,
+          "cached_first_reference": "func_072EE8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00038B94",
+          "kind": "relocation",
+          "site": 347996,
+          "identity": "func_04D200",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 1694,
+          "cached_first_reference": "func_04D200",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0006179C",
+          "kind": "relocation",
+          "site": 348100,
+          "identity": "func_075E08",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s",
+          "sym_index": 119,
+          "cached_first_reference": "func_075E08",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 347544,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 347632,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 348052,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00040640.s"
+        }
+      ],
+      "observed_indirect_calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000550CC",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_0000D634",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_000697C4",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00039094",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040640",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00048AEC",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004BAF4",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003863C",
+          "kind": "observed_indirect_call",
+          "site": 348052,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        }
+      ],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00040640.c",
+    "implementation_sha256": "18ddb41c398111373f7ea05a91216016764f67247cc11693dc79d38c2c9b0c72",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 20,
+          "kind": 4,
+          "symbol": "gl40640_push",
+          "original_identity": "bootup_uso:symbol_117:addend_0x0",
+          "original_site": 347328,
+          "payload_site": 347328,
+          "original_symbol_index": 117,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 88,
+          "kind": 4,
+          "symbol": "gl40640_copy",
+          "original_identity": "bootup_uso:symbol_461:addend_0x0",
+          "original_site": 347396,
+          "payload_site": 347396,
+          "original_symbol_index": 461,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 104,
+          "kind": 4,
+          "symbol": "gl40640_mul",
+          "original_identity": "bootup_uso:symbol_1701:addend_0x0",
+          "original_site": 347412,
+          "payload_site": 347412,
+          "original_symbol_index": 1701,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 132,
+          "kind": 4,
+          "symbol": "gl40640_copy",
+          "original_identity": "bootup_uso:symbol_461:addend_0x0",
+          "original_site": 347440,
+          "payload_site": 347440,
+          "original_symbol_index": 461,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 156,
+          "kind": 4,
+          "symbol": "gl40640_copy",
+          "original_identity": "bootup_uso:symbol_461:addend_0x0",
+          "original_site": 347464,
+          "payload_site": 347464,
+          "original_symbol_index": 461,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 180,
+          "kind": 4,
+          "symbol": "gl40640_mul",
+          "original_identity": "bootup_uso:symbol_1701:addend_0x0",
+          "original_site": 347488,
+          "payload_site": 347488,
+          "original_symbol_index": 1701,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 208,
+          "kind": 4,
+          "symbol": "gl40640_copy",
+          "original_identity": "bootup_uso:symbol_461:addend_0x0",
+          "original_site": 347516,
+          "payload_site": 347516,
+          "original_symbol_index": 461,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 252,
+          "kind": 4,
+          "symbol": "gl40640_mul",
+          "original_identity": "bootup_uso:symbol_1701:addend_0x0",
+          "original_site": 347560,
+          "payload_site": 347560,
+          "original_symbol_index": 1701,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 268,
+          "kind": 4,
+          "symbol": "gl40640_mul",
+          "original_identity": "bootup_uso:symbol_1701:addend_0x0",
+          "original_site": 347576,
+          "payload_site": 347576,
+          "original_symbol_index": 1701,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 296,
+          "kind": 4,
+          "symbol": "gl40640_copy",
+          "original_identity": "bootup_uso:symbol_461:addend_0x0",
+          "original_site": 347604,
+          "payload_site": 347604,
+          "original_symbol_index": 461,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 340,
+          "kind": 4,
+          "symbol": "gl40640_mul",
+          "original_identity": "bootup_uso:symbol_1701:addend_0x0",
+          "original_site": 347648,
+          "payload_site": 347648,
+          "original_symbol_index": 1701,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 360,
+          "kind": 4,
+          "symbol": "gl40640_reset",
+          "original_identity": "bootup_uso:symbol_1702:addend_0x0",
+          "original_site": 347668,
+          "payload_site": 347668,
+          "original_symbol_index": 1702,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 496,
+          "kind": 4,
+          "symbol": "gl40640_translate",
+          "original_identity": "bootup_uso:symbol_308:addend_0x0",
+          "original_site": 347804,
+          "payload_site": 347804,
+          "original_symbol_index": 308,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 512,
+          "kind": 4,
+          "symbol": "gl40640_copy",
+          "original_identity": "bootup_uso:symbol_461:addend_0x0",
+          "original_site": 347820,
+          "payload_site": 347820,
+          "original_symbol_index": 461,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 592,
+          "kind": 4,
+          "symbol": "gl40640_translate",
+          "original_identity": "bootup_uso:symbol_308:addend_0x0",
+          "original_site": 347900,
+          "payload_site": 347900,
+          "original_symbol_index": 308,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 688,
+          "kind": 4,
+          "symbol": "gl40640_mask",
+          "original_identity": "bootup_uso:symbol_1694:addend_0x0",
+          "original_site": 347996,
+          "payload_site": 347996,
+          "original_symbol_index": 1694,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 792,
+          "kind": 4,
+          "symbol": "gl40640_pop",
+          "original_identity": "bootup_uso:symbol_119:addend_0x0",
+          "original_site": 348100,
+          "payload_site": 348100,
+          "original_symbol_index": 119,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        236,
+        324,
+        744
+      ],
+      "native_sha256": "50fc2434416111f0a2abcd8e41fd1a7b829f296481cd420098ae0129739883a9"
+    },
+    "native_data_proof": [
+      {
+        "alias": ".rodata",
+        "hi": 56,
+        "lo": 64,
+        "native_addend": 0,
+        "original_addend": 6912,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x1b00"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 76,
+        "lo": 84,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 80,
+        "lo": 84,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 80,
+        "lo": 92,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 96,
+        "lo": 100,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 120,
+        "lo": 128,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 124,
+        "lo": 128,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 124,
+        "lo": 136,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 148,
+        "lo": 152,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 172,
+        "lo": 176,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 196,
+        "lo": 204,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 200,
+        "lo": 204,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 200,
+        "lo": 212,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_current",
+        "hi": 216,
+        "lo": 220,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1675:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 244,
+        "lo": 248,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 260,
+        "lo": 264,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 284,
+        "lo": 292,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 288,
+        "lo": 292,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 288,
+        "lo": 300,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_current",
+        "hi": 304,
+        "lo": 308,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1675:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 332,
+        "lo": 336,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 356,
+        "lo": 364,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 376,
+        "lo": 384,
+        "native_addend": 232,
+        "original_addend": 232,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 436,
+        "lo": 440,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 504,
+        "lo": 508,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 528,
+        "lo": 532,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_context",
+        "hi": 568,
+        "lo": 572,
+        "native_addend": 160,
+        "original_addend": 160,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl40640_current",
+        "hi": 668,
+        "lo": 684,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1675:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00040640.json",
+      "nm": "scripts/match-bindings-gl_func_00040640-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_o2_40640.h",
+    "source_context_sha256": "21e04694835d1bd5c45380881c90b36bdc1e8dd1d8d92f190c8e0d5cf715eba1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_o2_40640.c",
+    "original_local_episode_sha256": "59a7e7772c9ace8667a6d9d74b2b22d82d5c8108686d88061c2ca9bc68d81a92",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

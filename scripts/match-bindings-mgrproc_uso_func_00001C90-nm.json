@@ -1,0 +1,29 @@
+{
+  "function": "mgrproc_uso_func_00001C90",
+  "raw_sha256": "c3e6ae31553afe12bc8123331bb6c64081dbbd0d836d6fce9dc74aee09426c2c",
+  "renames": {
+    "mgrproc_1C90_pool_5CC": "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5CC",
+    "mgrproc_1C90_pool_5D0": "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5D0",
+    "mgrproc_1C90_pool_5D4": "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5D4",
+    "mgrproc_1C90_pool_5D8": "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5D8",
+    "import_8024CAF8": "snw_port_mgrproc_uso_func_00001C90_import_8024CAF8",
+    "import_0024E608": "snw_port_mgrproc_uso_func_00001C90_import_0024E608",
+    "import_0024F2C8": "snw_port_mgrproc_uso_func_00001C90_import_0024F2C8",
+    "import_80263D30": "snw_port_mgrproc_uso_func_00001C90_import_80263D30",
+    "import_0024F34C": "snw_port_mgrproc_uso_func_00001C90_import_0024F34C",
+    "import_0024EAA0": "snw_port_mgrproc_uso_func_00001C90_import_0024EAA0"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5CC": 0,
+    "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5D0": 0,
+    "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5D4": 0,
+    "snw_port_mgrproc_uso_func_00001C90_mgrproc_1C90_pool_5D8": 0,
+    "snw_port_mgrproc_uso_func_00001C90_import_8024CAF8": 0,
+    "snw_port_mgrproc_uso_func_00001C90_import_0024E608": 0,
+    "snw_port_mgrproc_uso_func_00001C90_import_0024F2C8": 0,
+    "snw_port_mgrproc_uso_func_00001C90_import_80263D30": 0,
+    "snw_port_mgrproc_uso_func_00001C90_import_0024F34C": 0,
+    "snw_port_mgrproc_uso_func_00001C90_import_0024EAA0": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

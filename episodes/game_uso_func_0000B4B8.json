@@ -1,0 +1,198 @@
+{
+  "function_name": "game_uso_func_0000B4B8",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.250240+00:00",
+  "end_time": "2026-10-23T11:55:26.250252+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.250248+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_uso_func_0000B4B8",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 600, \"native_sha256\": \"963dcea85192f65ce1f00c46abb12fa4013f4b672255b81dc9149ced0c6d8a15\", \"code_gain\": 600}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 150,
+  "initial_m2c_source": null,
+  "final_source": "void game_uso_func_0000B4B8(GameUsoSentinelObject *obj) {\n    int count = 0;\n    char *cursor = *(char **)(&import_8005C348 + 0x240);\n    unsigned short *data = ((GameUsoSentinelContext *)cursor)->buffer->cells;\n    int w;\n    int h;\n    int i;\n    int idx;\n    float result;\n    float prev;\n    cursor = (char *)obj->grid;\n    w = ((GameUsoSentinelGrid *)cursor)->width;\n    h = ((GameUsoSentinelGrid *)cursor)->height;\n    cursor = (char *)game_uso_D_807FF2B4;\n    for (i = 0; i < 9; i++, cursor += 4) {\n        idx = (obj->y + ((B4Offset *)cursor)->row) * w + obj->x + ((B4Offset *)cursor)->column;\n        if (idx > 0 && idx < w * h) {\n            if (data[idx] == 0xFFFC) count++;\n        }\n    }\n    result = (float)count / 9.0f;\n    prev = obj->fraction;\n    if (result < prev) {\n        obj->fraction = result;\n    } else {\n        obj->fraction = (float)((double)prev + (double)(result - prev) *\n            game_uso_D_807FFA68.coefficient);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Counts 0xFFFC sentinel cells among nine table-selected grid positions, then updates a fraction with immediate decreases and increases smoothed by double 0.6. The sentinel's game meaning remains unknown.",
+      "observed_abi": "a0 points to the object. On exit, v0 contains the count and f0 retains count/9. The function preserves s0 using an 8-byte frame and makes no calls. The provisional void declaration reproduces the original instructions; the original formal return declaration remains unknown.",
+      "calls": [],
+      "evidence": [
+        "Normal and NON_MATCHING C each produce 600 bytes with SHA256 963dcea85192f65ce1f00c46abb12fa4013f4b672255b81dc9149ced0c6d8a15, identical to the immutable expected function.",
+        "Typed signed-halfword offset fields and product-first index grouping resolved the five remaining addu operand swaps.",
+        "Object fields: +0xCC float fraction, +0xD0/+0xD4 integer coordinates, +0xD8 metadata pointer. Metadata +0xB8/+0xBC supply stride and extent.",
+        "External data import import_8005C348 supplies a context pointer at +0x240. Context +0x148 points to a buffer whose +0xF0 field supplies unsigned-halfword cells.",
+        "Offset pairs occupy four bytes. Reads occur only when 0 < index < stride*extent. Immutable USO RoData+0x148 contains double 0.6.",
+        "Inspected AE1C, B274, B420, B498 and A7F8. AE1C and B274 corroborate the derived fields; five users of that layout were not established.",
+        "Assembly contains no jal or jalr. Supplied and local graphs report callers=[], calls=[] and unresolved_calls=[]; missing incoming edges remain a coverage limitation.",
+        "make -j2 verify verify-blocks passed. ROM MD5 is fa27089c425dbab99f19245c5c997613, and cmp confirms identity with baserom.",
+        "Baseline comparison found no byte changes in other normal unit functions and no regressions among 215 previously raw-exact functions. Other NON_MATCHING instruction listings also remain unchanged.",
+        "Local objdiff reports 99.833336% because of relocation-name differences; raw instruction bytes are fully identical. Only src/game_uso/game_uso.c changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The routine measures local sentinel-cell coverage; its object class and gameplay role are not established.",
+        "A void interface is plausible, but live return registers and absent callers do not prove its original declaration."
+      ],
+      "unknowns": [
+        "Original formal return declaration, complete object-class identity and sentinel meaning.",
+        "Ghidra list_project_binaries was denied because approval was required under a never-approval policy.",
+        "Canonical episode creation and integration remain coordinator-owned; no commit or publication was performed.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_uso_func_0000B4B8.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "game_uso",
+      "dfs_rank": 678,
+      "callers": [
+        "src/game_uso/game_uso:game_uso_func_0000BFDC"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_uso/game_uso.c",
+    "source_sha256": "fa2b3ab40ab70612f935dc1bc5f64a4fd0b26b43d0bcd2cc04e707ce05411dfd",
+    "implementation_path": "src/match_imports/game_uso_func_0000B4B8.c",
+    "implementation_sha256": "4ec8b5e654b450ab18115522689482761ede54049a22da4498a254bd43ab19c8",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "963dcea85192f65ce1f00c46abb12fa4013f4b672255b81dc9149ced0c6d8a15"
+    },
+    "native_data_proof": [
+      {
+        "alias": "import_8005C348",
+        "hi": 0,
+        "lo": 4,
+        "native_addend": 576,
+        "original_addend": 576,
+        "base_identity": "game_uso:symbol_186:base_addend_0x0"
+      },
+      {
+        "alias": "game_uso_D_807FF2B4",
+        "hi": 24,
+        "lo": 28,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "game_uso:symbol_158:base_addend_0x0"
+      },
+      {
+        "alias": "game_uso_D_807FF2B4",
+        "hi": 52,
+        "lo": 56,
+        "native_addend": 2,
+        "original_addend": 2,
+        "base_identity": "game_uso:symbol_158:base_addend_0x0"
+      },
+      {
+        "alias": "game_uso_D_807FF2B4",
+        "hi": 148,
+        "lo": 152,
+        "native_addend": 4,
+        "original_addend": 4,
+        "base_identity": "game_uso:symbol_158:base_addend_0x0"
+      },
+      {
+        "alias": "game_uso_D_807FFA68",
+        "hi": 556,
+        "lo": 560,
+        "native_addend": 328,
+        "original_addend": 328,
+        "base_identity": "game_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_uso_func_0000B4B8.json",
+      "nm": "scripts/match-bindings-game_uso_func_0000B4B8-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_uso.h",
+    "source_context_sha256": "0e1f74836a92d9c2f3ae2791b42b57aaf040d4caaeef235fd677fa22e4fc2d44",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_uso/game_uso.c",
+    "original_local_episode_sha256": "7e165566cff8d02219060675fa98deed8e7eed272360c48aec535f1b0c616314",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

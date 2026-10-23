@@ -102,7 +102,10 @@ class Elf:
     def text_bytes_for(self, name):
         _, fields, _ = self.find_symbol(name)
         text = self.sections[self.find_section(".text")]
-        start = text[4] + fields[1]
+        offset = fields[1] - text[3]
+        if offset < 0 or offset + fields[2] > text[5]:
+            raise ValueError("Function lies outside donor .text: " + name)
+        start = text[4] + offset
         return bytes(self.data[start:start + fields[2]])
 
     def replace_text_range(self, old_start, old_size, payload):

@@ -1,0 +1,25 @@
+{
+  "function": "func_00000610",
+  "raw_sha256": "3592ee51b00933ed7885d304c4d80904c568563897121fa4ea95bf45124d29ac",
+  "renames": {
+    "bootup_0610_scale": "snw_port_func_00000610_bootup_0610_scale",
+    "bootup_0610_bias": "snw_port_func_00000610_bootup_0610_bias",
+    "bootup_0610_decode": "snw_port_func_00000610_bootup_0610_decode",
+    "bootup_0610_apply": "snw_port_func_00000610_bootup_0610_apply",
+    "bootup_0610_select": "snw_port_func_00000610_bootup_0610_select",
+    "D_00006584": "snw_port_func_00000610_D_00006584",
+    "bootup_0610_reset": "snw_port_func_00000610_bootup_0610_reset",
+    "bootup_0610_finish": "snw_port_func_00000610_bootup_0610_finish"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_00000610_bootup_0610_scale": 68,
+    "snw_port_func_00000610_bootup_0610_bias": 68,
+    "snw_port_func_00000610_bootup_0610_decode": 0,
+    "snw_port_func_00000610_bootup_0610_apply": 0,
+    "snw_port_func_00000610_bootup_0610_select": 0,
+    "snw_port_func_00000610_D_00006584": 25988,
+    "snw_port_func_00000610_bootup_0610_reset": 0,
+    "snw_port_func_00000610_bootup_0610_finish": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

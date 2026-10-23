@@ -1,0 +1,7 @@
+{
+  "function": "func_800021A4",
+  "raw_sha256": "c4a64edd3fff4208acfe3635c9139219aab9126ede5debc90c78251c2f949cbd",
+  "renames": {},
+  "original_ROM_minus_curated_addend_bindings": {},
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

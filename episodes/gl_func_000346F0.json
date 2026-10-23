@@ -1,0 +1,197 @@
+{
+  "function_name": "gl_func_000346F0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.827029+00:00",
+  "end_time": "2026-10-23T11:55:25.827042+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.827038+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_000346F0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 288, \"native_sha256\": \"6e350bae69cea99ebd858786626ed72c47bb7385593e7afc72878f6b50372c13\", \"code_gain\": 288}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 72,
+  "initial_m2c_source": null,
+  "final_source": "char *gl_func_000346F0(unsigned int context, unsigned char *src, int count) {\n    extern int gl_346F0_line_write(int *, int, unsigned char *, int);\n    unsigned char buf[0x108];\n    unsigned int out;\n    int i;\n    int rem;\n    unsigned char *p;\n    unsigned char *writer;\n    writer = *(unsigned char **)((char *)&D_00000000 + 8);\n    if (writer != 0) {\n        gl_346F0_line_write((int *)writer, 0, src, count);\n    }\n    if (count >= 0xFF) count = 0xFF;\n    out = 0;\n    i = 0;\n    if (count > 0) {\n        context = count & 3;\n        do {\n            if (context != 0) {\n                rem = context;\n                if (1) {}\n                p = src;\nremainder_loop:\n                context = out++;\n                buf[context] = *p++ & 0xFFFF;\n                i++;\n                if (rem != i) goto remainder_loop;\n                if (i == count) break;\n            }\n            p = src + i;\n            writer = count + src;\ncopy_loop:\n            context = out++;\n            buf[context] = p[0];\n            context = out++;\n            buf[context] = p[1];\n            context = out++;\n            buf[context] = p[2];\n            context = out++;\n            buf[context] = p[3];\n            p += 4;\n            if (p != writer) goto copy_loop;\n        } while (0);\n    }\n    context = out, out++, buf[context] = 0;\n    if (1) { buf[out] = 0; }\n    return (char *)1;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Byte-output callback reachable from gl_func_0006E894 (_Printf). It forwards the original span to an optional line writer, copies at most 255 bytes into stack storage, appends two zero bytes and returns a non-null sentinel. The discarded stack copy\u2019s original purpose remains uncertain.",
+      "observed_abi": "O32: incoming a0 is unused context, a1 is the source byte pointer, and a2 is the count. Clamping and positivity comparisons are signed. Every exit sets v0 to 1; the caller\u2019s callback interface supports the retained pointer return. Original typedefs remain unproved.",
+      "calls": [
+        {
+          "site": "0x3471C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00060AD0",
+          "c_alias": "gl_346F0_line_write",
+          "observed_abi": "a0 = pointer loaded from global base +0x08; a1 = zero; a2 = original source pointer; a3 = original unclamped count. Return value is ignored."
+        }
+      ],
+      "evidence": [
+        "Immutable assembly establishes one 288-byte function, a 0x140-byte frame and stack buffer address sp+0x38.",
+        "Original relocation at bootup Text 0x48D88 corresponds to source Text 0x3471C. Symbol 1566 identifies func_07513C, resolving to gl_func_00060AD0. The dedicated alias resolves to zero; relocation evidence establishes its identity.",
+        "Inspected caller gl_func_0006E894 and family gl_func_00060AD0, game_libs_func_00060BD4 and game_libs_func_00060CB8. Records contain buffer pointer +0 and length +4; writer fields include records +0, limit +8, line count +0x0C and current line +0x20. Existing LineRec60BD4/LineBuf60BD4 definitions were preserved. The target only reads the opaque global pointer at +8.",
+        "Constructor gl_func_00060D40 and dispatcher gl_func_00060DC4 were also inspected without attributing their additional fields to the target global storage.",
+        "A one-shot do/while(0) block with a structured break resolved the terminator ordering and branch-target residual.",
+        "Both C pipelines match all 288 expected bytes: SHA256 6e350bae69cea99ebd858786626ed72c47bb7385593e7afc72878f6b50372c13. Target INCLUDE_ASM fallback is absent.",
+        "All 842 previously byte-exact normal symbols and 578 previously byte-exact NON_MATCHING symbols in this unit remained byte-exact.",
+        "Complete ROM is byte-identical with MD5 fa27089c425dbab99f19245c5c997613; all six compressed-block checks passed.",
+        "Canonical Episode/Step logger produced a retrospective scratch record, validated against the original schema. Canonical publication remains coordinator-owned.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The stack copy may serve debugging or historical output handling.",
+        "A byte-identical reconstruction does not establish the original source spelling."
+      ],
+      "unknowns": [
+        "Original global symbol identity, stack declaration and typedefs remain uncertain.",
+        "No unresolved calls are recorded for this target; missing relocations and indirect edges elsewhere remain coverage limitations.",
+        "Ghidra was unavailable through exposed tools; the previously observed project lock was preserved.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_000346F0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 4,
+      "callers": [
+        "src/game_libs/game_libs_post1b2c:gl_func_0006E894"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00060AD0",
+          "kind": "relocation",
+          "site": 298376,
+          "identity": "func_07513C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000346F0.s",
+          "sym_index": 1566,
+          "cached_first_reference": "func_07513C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_000346F0.c",
+    "implementation_sha256": "43e14ed45ec7eba72f7675150baa2953e51d940e09125e442912edb7e00a9959",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 44,
+          "kind": 4,
+          "symbol": "gl_346F0_line_write",
+          "original_identity": "bootup_uso:symbol_1566:addend_0x0",
+          "original_site": 298376,
+          "payload_site": 298376,
+          "original_symbol_index": 1566,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "6e350bae69cea99ebd858786626ed72c47bb7385593e7afc72878f6b50372c13"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 8,
+        "lo": 12,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_000346F0.json",
+      "nm": "scripts/match-bindings-gl_func_000346F0-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "f6eb4837b36c7e83fe0bf7eb32c8e538e510e9c81bbcee0eaa4891ebf3f4ad5c",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

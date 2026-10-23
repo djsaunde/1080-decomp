@@ -1,0 +1,39 @@
+{
+  "function": "arcproc_uso_func_00001F54",
+  "raw_sha256": "3174a7585bfe9fcdf341883d5d2e21d9a9bbd5ed34be04db2d83c7612edb739b",
+  "renames": {
+    "arcproc_import_179": "snw_port_arcproc_uso_func_00001F54_arcproc_import_179",
+    "arcproc_import_180": "snw_port_arcproc_uso_func_00001F54_arcproc_import_180",
+    "arcproc_import_181": "snw_port_arcproc_uso_func_00001F54_arcproc_import_181",
+    "arcproc_import_182": "snw_port_arcproc_uso_func_00001F54_arcproc_import_182",
+    "arcproc_import_183": "snw_port_arcproc_uso_func_00001F54_arcproc_import_183",
+    "arcproc_import_184": "snw_port_arcproc_uso_func_00001F54_arcproc_import_184",
+    "arcproc_import_185": "snw_port_arcproc_uso_func_00001F54_arcproc_import_185",
+    "arcproc_import_186": "snw_port_arcproc_uso_func_00001F54_arcproc_import_186",
+    "arcproc_import_174": "snw_port_arcproc_uso_func_00001F54_arcproc_import_174",
+    "arcproc_import_187": "snw_port_arcproc_uso_func_00001F54_arcproc_import_187",
+    "arcproc_import_188": "snw_port_arcproc_uso_func_00001F54_arcproc_import_188",
+    "arcproc_import_177": "snw_port_arcproc_uso_func_00001F54_arcproc_import_177",
+    "arcproc_import_189": "snw_port_arcproc_uso_func_00001F54_arcproc_import_189",
+    "arcproc_import_176": "snw_port_arcproc_uso_func_00001F54_arcproc_import_176",
+    "arcproc_import_40": "snw_port_arcproc_uso_func_00001F54_arcproc_import_40"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_179": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_180": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_181": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_182": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_183": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_184": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_185": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_186": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_174": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_187": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_188": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_177": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_189": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_176": 0,
+    "snw_port_arcproc_uso_func_00001F54_arcproc_import_40": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

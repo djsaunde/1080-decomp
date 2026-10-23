@@ -1,0 +1,23 @@
+{
+  "function": "gl_func_00068C14",
+  "raw_sha256": "fe9e928dd2dd239d1ad9bc2fd5374fed0547f90ecf6e58ed777f3334eaa22035",
+  "renames": {
+    "gl_68C14_check": "snw_port_gl_func_00068C14_gl_68C14_check",
+    "D_00000000": "snw_port_gl_func_00068C14_D_00000000",
+    "gl_68C14_assert": "snw_port_gl_func_00068C14_gl_68C14_assert",
+    "gl_68C14_report": "snw_port_gl_func_00068C14_gl_68C14_report",
+    "gl_68C14_create": "snw_port_gl_func_00068C14_gl_68C14_create",
+    "gl_68C14_append": "snw_port_gl_func_00068C14_gl_68C14_append",
+    "gl_68C14_table": "snw_port_gl_func_00068C14_gl_68C14_table"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00068C14_gl_68C14_check": 0,
+    "snw_port_gl_func_00068C14_D_00000000": 0,
+    "snw_port_gl_func_00068C14_gl_68C14_assert": 0,
+    "snw_port_gl_func_00068C14_gl_68C14_report": 0,
+    "snw_port_gl_func_00068C14_gl_68C14_create": 0,
+    "snw_port_gl_func_00068C14_gl_68C14_append": 0,
+    "snw_port_gl_func_00068C14_gl_68C14_table": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

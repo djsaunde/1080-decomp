@@ -1,0 +1,526 @@
+{
+  "function_name": "func_00008124",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.535383+00:00",
+  "end_time": "2026-10-23T11:55:25.535396+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.535391+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_00008124",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 468, \"native_sha256\": \"7f231b9a1c146b443e622b43e8f6a398f2afdd3ef6bc1f94b30ce250358224ed\", \"code_gain\": 468}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 117,
+  "initial_m2c_source": null,
+  "final_source": "BootObject90 *func_00008124(BootContext44 *arg0) {\n    BootObject90 *v;\n    BootObject90 *o;\n    BootGroup38 *u;\n    struct OneI first;\n    struct OneI second;\n    BootGroup38 *s;\n    BootTail18 *tail;\n    BootGroup38 *group;\n    BootChild18 *c;\n    int mode;\n    struct OneI p;\n    BootObject90 *base;\n    o = boot8124_alloc(0x90);\n    if (o != 0) {\n        base = o;\n        boot8124_object_init(base);\n        o->f28 = &D_00007878;\n        u = (BootGroup38 *)((char *)o + 0x3C);\n        if (u != 0 || (u = boot8124_alloc(0x38)) != 0) {\n            s = u;\n            if (s != 0 || (s = boot8124_alloc(8)) != 0) {\n                s->f00 = &D_00007FC4;\n                s->f04 = 0;\n            }\n            first.x = D_00007FCC.x;\n            p = first;\n            c = (BootChild18 *)((char *)u + 8);\n            if (c != 0 || (c = boot8124_alloc(0x18)) != 0) {\n                group = u;\n                mode = 1;\n                boot8124_child(c, group, p, mode);\n                c->base.f0C = &D_00007540;\n                c->f14 = 0;\n                c->f10 = 200.0f;\n            }\n            second.x = D_00007FD0.x;\n            p = second;\n            c = (BootChild18 *)((char *)u + 0x20);\n            if (c != 0 || (c = boot8124_alloc(0x18)) != 0) {\n                group = u;\n                mode = 1;\n                boot8124_child(c, group, p, mode);\n                c->base.f0C = &D_00007540;\n                c->f14 = 0;\n                c->f10 = 300.0f;\n            }\n        }\n        tail = (BootTail18 *)((char *)o + 0x74);\n        u = (BootGroup38 *)tail;\n        if (u != 0 || (u = boot8124_alloc(0x18)) != 0) {\n            tail = (BootTail18 *)u;\n            boot8124_tail_init(tail);\n        }\n        o->f8C = 0;\n    }\n    v = o;\n    o = (BootObject90 *)arg0->f40;\n    if (arg0->f40 != 0) {\n        boot8124_link(&v->f10, (BootOwner18 *)o);\n        if (((BootOwner18 *)o)->f14 != 0) {\n            ((BootOwner18 *)o)->f04 = 1;\n        }\n        ((BootOwner18 *)o)->f14 = v;\n    }\n    return v;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Constructs a compound object, initializes embedded children and a tail member, registers the context record, and updates its back-reference. Collision or boundary handling is inferred from the related family; original class names remain unknown.",
+      "observed_abi": "a0 supplies a context with a registration-record pointer at +0x40; v0 returns the constructed object. Original frame is 0x50 bytes. Child construction receives a one-word aggregate in a2, homed at sp+8, represented by the existing OneI type.",
+      "calls": [
+        {
+          "site": "0x8134",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "boot8124_alloc",
+          "observed_abi": "a0=0x90; v0 returns allocation pointer."
+        },
+        {
+          "site": "0x8144",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003D5BC",
+          "c_alias": "boot8124_object_init",
+          "observed_abi": "a0=object; v0 returns object pointer, discarded here."
+        },
+        {
+          "site": "0x8164",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "boot8124_alloc",
+          "observed_abi": "a0=0x38; v0 returns allocation pointer."
+        },
+        {
+          "site": "0x8180",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "boot8124_alloc",
+          "observed_abi": "a0=8; v0 returns allocation pointer; live a1 is preserved across the call."
+        },
+        {
+          "site": "0x81C4",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "boot8124_alloc",
+          "observed_abi": "a0=0x18; v0 returns allocation pointer."
+        },
+        {
+          "site": "0x81E8",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035B1C",
+          "c_alias": "boot8124_child",
+          "observed_abi": "a0=child, a1=group, a2=OneI from D_00007FCC, a3=1; a2 homed at sp+8. Callee returns child pointer, discarded here."
+        },
+        {
+          "site": "0x8234",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "boot8124_alloc",
+          "observed_abi": "a0=0x18; v0 returns allocation pointer."
+        },
+        {
+          "site": "0x8254",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035B1C",
+          "c_alias": "boot8124_child",
+          "observed_abi": "a0=child, a1=group, a2=OneI from D_00007FD0, a3=1; a2 homed at sp+8. Callee returns child pointer, discarded here."
+        },
+        {
+          "site": "0x8288",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "c_alias": "boot8124_alloc",
+          "observed_abi": "a0=0x18; v0 returns allocation pointer."
+        },
+        {
+          "site": "0x8298",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00043EAC",
+          "c_alias": "boot8124_tail_init",
+          "observed_abi": "a0=tail at object+0x74; result unused. Local callee definition declares void."
+        },
+        {
+          "site": "0x82C0",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "c_alias": "boot8124_link",
+          "observed_abi": "a0=address of list head at object+0x10, a1=context record; result unused. Local callee definition declares void."
+        }
+      ],
+      "evidence": [
+        "Immutable expected object and original assembly establish one 468-byte function. Both final C objects match all 117 instruction words exactly.",
+        "INCLUDE_ASM fallback removed. make -j2 verify verify-blocks passed; rebuilt ROM MD5 is fa27089c425dbab99f19245c5c997613.",
+        "Focused comparison found no regressions among 181 previously byte-identical functions in this unit.",
+        "Original relocation sites identify all 11 direct calls. Five distinct typed import aliases resolve to zero, with inline provenance equations; zero values were not used to infer identities.",
+        "Inspected allocation, base-constructor, child-constructor, tail-initializer and list-insertion callees in local source and assembly.",
+        "Container family inspected: func_00007EC8, func_00008078, func_000080B4, func_000080EC and func_00008124. Shared group/tail offsets are +0x3C/+0x74; 07EC8 also accesses +0x38, +0x54, +0x6C and +0x8C.",
+        "Recovered offset-based object, group, child, tail and context-record definitions. Child fields are next +0, identifier +4, mode +8, descriptor +0xC, float +0x10 and pointer +0x14; group children begin at +8/+0x20. func_000084A0 corroborates this group shape.",
+        "Reused OneI, also present in func_00005068, func_000054A0, func_000054D8 and func_0000553C.",
+        "Used constructor argument copies recover temporary homes +0x40/+0x3C, aggregate +0x24, child +0x2C, group +0x44 and returned pointer +0x4C. The context-field guard reproduces the v0-to-s0 transfer.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The compound object participates in collision or boundary handling.",
+        "The aggregate copies and pointer aliases reflect inlined constructor arguments and temporaries."
+      ],
+      "unknowns": [
+        "No callers or game.uso DFS reachability were recovered; absence of callers does not establish unreachability.",
+        "Original class names, descriptor meanings and child identifier meanings remain unknown.",
+        "Ignored results alone do not establish void returns; tail/list declarations use inspected local definitions.",
+        "No supplied direct callsite remains unresolved. Indirect-call and missing-relocation coverage limitations still apply.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_00008124.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 33076,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003D5BC",
+          "kind": "relocation",
+          "site": 33092,
+          "identity": "func_051C28",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 142,
+          "cached_first_reference": "func_051C28",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 33124,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 33152,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 33220,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035B1C",
+          "kind": "relocation",
+          "site": 33256,
+          "identity": "func_04A188",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 470,
+          "cached_first_reference": "func_04A188",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 33332,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035B1C",
+          "kind": "relocation",
+          "site": 33364,
+          "identity": "func_04A188",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 470,
+          "cached_first_reference": "func_04A188",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 33416,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00043EAC",
+          "kind": "relocation",
+          "site": 33432,
+          "identity": "func_058518",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 427,
+          "cached_first_reference": "func_058518",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00066674",
+          "kind": "relocation",
+          "site": 33472,
+          "identity": "func_07ACE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00008124.s",
+          "sym_index": 144,
+          "cached_first_reference": "func_07ACE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "source_sha256": "39532ee29b70c60d8359ffb22db61f2623cbe6973decfbadddb3f034469a9ad1",
+    "implementation_path": "src/match_imports/func_00008124.c",
+    "implementation_sha256": "ceb46a5e149ddbfbee54f5bb9438de48b52f1500d486534f9128d2629ea5a878",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 16,
+          "kind": 4,
+          "symbol": "boot8124_alloc",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 33076,
+          "payload_site": 33076,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 32,
+          "kind": 4,
+          "symbol": "boot8124_object_init",
+          "original_identity": "bootup_uso:symbol_142:addend_0x0",
+          "original_site": 33092,
+          "payload_site": 33092,
+          "original_symbol_index": 142,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 64,
+          "kind": 4,
+          "symbol": "boot8124_alloc",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 33124,
+          "payload_site": 33124,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 92,
+          "kind": 4,
+          "symbol": "boot8124_alloc",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 33152,
+          "payload_site": 33152,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 160,
+          "kind": 4,
+          "symbol": "boot8124_alloc",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 33220,
+          "payload_site": 33220,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 196,
+          "kind": 4,
+          "symbol": "boot8124_child",
+          "original_identity": "bootup_uso:symbol_470:addend_0x0",
+          "original_site": 33256,
+          "payload_site": 33256,
+          "original_symbol_index": 470,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 272,
+          "kind": 4,
+          "symbol": "boot8124_alloc",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 33332,
+          "payload_site": 33332,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 304,
+          "kind": 4,
+          "symbol": "boot8124_child",
+          "original_identity": "bootup_uso:symbol_470:addend_0x0",
+          "original_site": 33364,
+          "payload_site": 33364,
+          "original_symbol_index": 470,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 356,
+          "kind": 4,
+          "symbol": "boot8124_alloc",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 33416,
+          "payload_site": 33416,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 372,
+          "kind": 4,
+          "symbol": "boot8124_tail_init",
+          "original_identity": "bootup_uso:symbol_427:addend_0x0",
+          "original_site": 33432,
+          "payload_site": 33432,
+          "original_symbol_index": 427,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 412,
+          "kind": 4,
+          "symbol": "boot8124_link",
+          "original_identity": "bootup_uso:symbol_144:addend_0x0",
+          "original_site": 33472,
+          "payload_site": 33472,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "7f231b9a1c146b443e622b43e8f6a398f2afdd3ef6bc1f94b30ce250358224ed"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00007878",
+        "hi": 40,
+        "lo": 44,
+        "native_addend": 0,
+        "original_addend": 30840,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7878"
+      },
+      {
+        "alias": "D_00007FC4",
+        "hi": 112,
+        "lo": 116,
+        "native_addend": 0,
+        "original_addend": 32708,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7fc4"
+      },
+      {
+        "alias": "D_00007FCC",
+        "hi": 128,
+        "lo": 132,
+        "native_addend": 0,
+        "original_addend": 32716,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7fcc"
+      },
+      {
+        "alias": "D_00007540",
+        "hi": 220,
+        "lo": 224,
+        "native_addend": 0,
+        "original_addend": 30016,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7540"
+      },
+      {
+        "alias": "D_00007FD0",
+        "hi": 240,
+        "lo": 244,
+        "native_addend": 0,
+        "original_addend": 32720,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7fd0"
+      },
+      {
+        "alias": "D_00007540",
+        "hi": 324,
+        "lo": 328,
+        "native_addend": 0,
+        "original_addend": 30016,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x7540"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_00008124.json",
+      "nm": "scripts/match-bindings-func_00008124-nm.json"
+    },
+    "source_context": "src/match_imports/context_bootup_uso.h",
+    "source_context_sha256": "456278d1b612f3c36ee3fe3165e87f5c4025cebf314c79aebe05b95ecbb72a08",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/bootup_uso/bootup_uso.c",
+    "original_local_episode_sha256": "9598dc47f7f4ddb1ce34a99d07fcdad92b95c8161dee775532ced5f8773644bd",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

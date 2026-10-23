@@ -1,0 +1,918 @@
+{
+  "function_name": "func_0000D440",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.568351+00:00",
+  "end_time": "2026-10-23T11:55:25.568364+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.568360+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_0000D440",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1216, \"native_sha256\": \"872823a06c7e338760b697fd86e4f4f486014eeb29462f745be622c03eb7d05e\", \"code_gain\": 1216}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 304,
+  "initial_m2c_source": null,
+  "final_source": "void func_0000D440(BootupState *st) {\n    char *a0_2, *vt;\n    int fl, v0, t5;\n    int sp58;\n    float f0, f2;\n    bootup_D440_062380(bootup_D440_desc0 + 0x54);\n    v0 = st->field_A58 & 0x100;\n    if (v0 != 0) {\n        vt = (char *)st->field_800;\n        if (*(int *)(vt + 0x18) & 0x20) {\n            st->field_A28 ^= 1;\n            vt = (char *)*(BootupInput *volatile *)&st->field_800;\n        }\n        if (st->field_A28 != 0) {\n            if (*(volatile int *)(vt + 0x18) & 0x10) {\n                v0 = st->field_A58 & 0x100;\n                goto block_9;\n            }\n        } else {\n            if (*(volatile int *)(vt + 0x18) & 0x10) {\n                st->field_A58 ^= 4;\n            }\n            v0 = st->field_A58 & 0x100;\n            goto block_9;\n        }\n    } else {\n    block_9:\n        if (v0 != 0) {\n            a0_2 = (char *)st->field_800;\n            if ((!!(*(volatile int *)(a0_2 + 0x10) & 0x80)) & ((*(int *)(a0_2 + 0x10) & 0x40) != 0)) {\n                sp58 = 9;\n                vt = (char *)st->field_28;\n                a0_2 = (char *)(*(short *)(vt + 0x28) + (int)st);\n                (*(void (**)(char *, int *))(vt + 0x2C))(a0_2, &sp58);\n            }\n        }\n        if (st->field_A58 & 4) {\n            vt = (char *)st->field_800;\n            *(int *)(vt + 0x3C) = 1;\n            bootup_D440_062380(bootup_D440_desc1 + 0x5C);\n            fl = (int)st->field_804;\n            vt = *(char **)(fl + 0x28);\n            (*(void (**)(char *))(vt + 0x24))((char *)(fl + *(short *)(vt + 0x20)));\n            bootup_D440_062388(bootup_D440_desc2 + 0x64);\n        }\n        a0_2 = st->field_808;\n        if (st->field_A58 & 0x80) {\n            st->field_A1C = -st->field_A1C;\n        }\n        bootup_D440_000A94((BootupCodeContextPrefix *)a0_2, st->field_9A4);\n        st->field_9A4 = 0;\n        fl = (int)st->field_840;\n        vt = *(char **)(fl + 0x28);\n        (*(void (**)(char *))(vt + 0x24))((char *)(fl + *(short *)(vt + 0x20)));\n        st->field_A10 = 0;\n        st->field_A1C = 0.0f;\n        st->field_A20 = 0.0f;\n        st->field_A24 = 0.0f;\n        if (st->field_A58 & 0x800) {\n            bootup_D440_062380(bootup_D440_desc3 + 0x6C);\n            bootup_D440_00BF8C(st);\n            bootup_D440_062388(bootup_D440_desc4 + 0x8);\n            if (st->field_A58 & 0x40000) {\n                f0 = st->field_318.y;\n                f2 = (f0 < 0.0f) ? -f0 : f0;\n                v0 = (int)((f2 - 100.0f) / (float)4);\n                st->field_A84 = v0;\n                if (v0 < 0) {\n                    st->field_A84 = 0;\n                }\n                bootup_D440_000A50(a0_2, st->field_A84);\n                if (st->field_8B8 & 1) {\n                    *(int *)((char *)st->field_81C + 0x94) = st->field_A84;\n                }\n                if (st->field_8B8 & 4) {\n                    *(int *)((char *)st->field_818 + 0x94) = st->field_A84;\n                }\n            }\n        }\n        bootup_D440_062380(bootup_D440_desc5 + 0x14);\n        st->field_A38 = st->field_3C8.x * st->field_318.x\n                               + st->field_3C8.y * st->field_318.y\n                               + st->field_3C8.z * st->field_318.z;\n        bootup_D440_0779E8(st->field_840);\n        if (st->field_A5C != 0) {\n            f2 = (float)(((double)bootup_D440_075E90(((((int)st->field_DC.x ^ (int)st->field_DC.z) >> 5) ^ 0x12345678)) - 0.5) * 30.0 * (double)((float)st->field_A5C / 100.0f));\n            vt = (char *)st->field_824;\n            vt += 0x64;\n            *(float *)vt += f2;\n            vt = (char *)st->field_828;\n            vt += 0x64;\n            *(float *)vt += f2;\n            vt = (char *)st->field_830;\n            vt += 0x64;\n            *(float *)vt += f2;\n            vt = (char *)st->field_834;\n            vt += 0x64;\n            *(float *)vt = (float)((double)*(float *)vt + (double)f2 * 0.5);\n            vt = (char *)st->field_82C;\n            vt += 0x64;\n            *(float *)vt = (float)((double)*(float *)vt + (double)f2 * 0.5);\n            vt = (char *)st->field_838;\n            vt += 0x64;\n            *(float *)vt = (float)((double)*(float *)vt - (double)f2 * 0.5);\n        }\n        bootup_D440_062388(bootup_D440_desc6 + 0x20);\n        bootup_D440_062380(bootup_D440_desc7 + 0x2C);\n        bootup_D440_054FE0(st);\n        bootup_D440_062388(bootup_D440_desc8 + 0x38);\n        bootup_D440_02258C(bootup_D440_root0[0x48 / 4], st, st->field_348 / (float)2);\n        bootup_D440_0225F8(bootup_D440_root1[0x48 / 4], st, st->field_DC.x, st->field_DC.z);\n        bootup_D440_0225B8(bootup_D440_root2[0x48 / 4], st, st->field_A14);\n        fl = (int)st->field_8DC;\n        if (fl != 0) {\n            bootup_D440_000610(a0_2, &st->field_DC, st->field_348,\n                          -st->field_968.x, st->field_968.z,\n                          st->field_9D0 + D_00000980,\n                          (int)st->field_9A2, (char *)fl, st->field_A58);\n        }\n        bootup_D440_062388(bootup_D440_desc9 + 0x44);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Per-frame snowboard input, state, animation and render update. SnowB/SnowBai/SnowBDyn/SnowBAnm/SnowBChild marker strings corroborate the subsystem; original class names and several field meanings remain uncertain.",
+      "observed_abi": "a0 is a mutable BootupState pointer retained in s0. Frame size is 0x70, with s0/ra saved at sp+0x30/34. No stable return value is established. Supplied caller: src/game_libs/game_libs_post0b:gl_func_00038728 through virtual dispatch. Discarded results are modeled as void without proving original return types.",
+      "calls": [
+        {
+          "site": "0xD454",
+          "target": "unresolved",
+          "c_alias": "bootup_D440_062380",
+          "observed_abi": "a0=SnowB marker string; result unused. Sym573 identifies func_062380 without a unique current-function mapping."
+        },
+        {
+          "site": "0xD520",
+          "target": "unresolved",
+          "c_alias": "(*(void (**)(char *, int *))(vt + 0x2C))",
+          "observed_abi": "a0=self+signed table halfword +0x28; a1=&stack word 9. Runtime function slot +0x2C; result unused."
+        },
+        {
+          "site": "0xD548",
+          "target": "unresolved",
+          "c_alias": "bootup_D440_062380",
+          "observed_abi": "a0=SnowBai marker string; result unused. Import sym573."
+        },
+        {
+          "site": "0xD560",
+          "target": "unresolved",
+          "c_alias": "(*(void (**)(char *))(vt + 0x24))",
+          "observed_abi": "a0=child at self+0x804 plus signed table halfword +0x20. Runtime function slot +0x24; result unused."
+        },
+        {
+          "site": "0xD56C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "c_alias": "bootup_D440_062388",
+          "observed_abi": "a0=SnowBai marker string; result unused."
+        },
+        {
+          "site": "0xD594",
+          "target": "src/bootup_uso/bootup_uso:func_00000A94",
+          "c_alias": "bootup_D440_000A94",
+          "observed_abi": "a0=self+0x808; a1=sign-extended s16 at self+0x9A4; result unused."
+        },
+        {
+          "site": "0xD5B0",
+          "target": "unresolved",
+          "c_alias": "(*(void (**)(char *))(vt + 0x24))",
+          "observed_abi": "a0=child at self+0x840 plus signed table halfword +0x20. Runtime function slot +0x24; result unused."
+        },
+        {
+          "site": "0xD5DC",
+          "target": "unresolved",
+          "c_alias": "bootup_D440_062380",
+          "observed_abi": "a0=SnowBDyn marker string; result unused. Import sym573."
+        },
+        {
+          "site": "0xD5E4",
+          "target": "src/bootup_uso/bootup_uso:func_0000BF8C",
+          "c_alias": "bootup_D440_00BF8C",
+          "observed_abi": "a0=self; result unused."
+        },
+        {
+          "site": "0xD5F0",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "c_alias": "bootup_D440_062388",
+          "observed_abi": "a0=SnowBDyn marker string; result unused."
+        },
+        {
+          "site": "0xD664",
+          "target": "src/bootup_uso/bootup_uso:func_00000A50",
+          "c_alias": "bootup_D440_000A50",
+          "observed_abi": "a0=self+0x808; a1=s32 at self+0xA84. Callee stores its low byte; result unused."
+        },
+        {
+          "site": "0xD6A8",
+          "target": "unresolved",
+          "c_alias": "bootup_D440_062380",
+          "observed_abi": "a0=SnowBAnm marker string; result unused. Import sym573."
+        },
+        {
+          "site": "0xD6E0",
+          "target": "src/game_libs/game_libs_post1b:gl_func_0006337C",
+          "c_alias": "bootup_D440_0779E8",
+          "observed_abi": "a0=child pointer at self+0x840; result unused."
+        },
+        {
+          "site": "0xD720",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00061824",
+          "c_alias": "bootup_D440_075E90",
+          "observed_abi": "a0=s32 position-derived seed; f0=f32 return consumed as f64."
+        },
+        {
+          "site": "0xD80C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "c_alias": "bootup_D440_062388",
+          "observed_abi": "a0=SnowBAnm marker string; result unused."
+        },
+        {
+          "site": "0xD818",
+          "target": "unresolved",
+          "c_alias": "bootup_D440_062380",
+          "observed_abi": "a0=SnowBChild marker string; result unused. Import sym573."
+        },
+        {
+          "site": "0xD820",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040974",
+          "c_alias": "bootup_D440_054FE0",
+          "observed_abi": "a0=self; result unused."
+        },
+        {
+          "site": "0xD82C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "c_alias": "bootup_D440_062388",
+          "observed_abi": "a0=SnowBChild marker string; result unused."
+        },
+        {
+          "site": "0xD854",
+          "target": "src/game_libs/game_libs_tail:gl_func_0000DF20",
+          "c_alias": "bootup_D440_02258C",
+          "observed_abi": "a0=word loaded through import272+0x138; a1=self; a2=f32 field348 divided by 2; result unused."
+        },
+        {
+          "site": "0xD86C",
+          "target": "src/game_libs/game_libs_tail:gl_func_0000DF8C",
+          "c_alias": "bootup_D440_0225F8",
+          "observed_abi": "a0=word loaded through import272+0x138; a1=self; a2/a3=f32 position x/z words; result unused."
+        },
+        {
+          "site": "0xD880",
+          "target": "src/game_libs/game_libs_tail:gl_func_0000DF4C",
+          "c_alias": "bootup_D440_0225B8",
+          "observed_abi": "a0=word loaded through import272+0x138; a1=self; a2=word at self+0xA14; result unused."
+        },
+        {
+          "site": "0xD8D8",
+          "target": "src/bootup_uso/bootup_uso:func_00000610",
+          "c_alias": "bootup_D440_000610",
+          "observed_abi": "a0=self+0x808; a1=&position at self+0xDC; a2/a3=f32 field348/negated field968. Stack arguments: f32 field970, f32 field9D0+RoData[0x980], signed field9A2, field8DC pointer and u32 flags. Result unused."
+        },
+        {
+          "site": "0xD8E4",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "c_alias": "bootup_D440_062388",
+          "observed_abi": "a0=SnowB marker string; result unused."
+        }
+      ],
+      "evidence": [
+        "Original assembly and immutable expected ELF delimit one complete function at bootup Text 0xD440..0xD900, totaling 1216 bytes.",
+        "Preserved the current shared BootupState family, including CAE8, CFA0, DDCC, DF04, E014, E124 and BF8C. Coordinator-provided original-ROM dispatch evidence identifies the same a0 for D440 and CFA0. Shared definitions, including fourth f32 at +0x8EC, and all aliases remain unchanged.",
+        "Observed fields include dispatch +0x28; position +0xDC; float triplets +0x318/+0x3C8; float +0x348; input pointer +0x800; child pointers +0x804/+0x818..0x840; subrecord +0x808; flags +0x8B8/+0xA58; pointer +0x8DC; floats +0x968/+0x970/+0x9D0/+0xA1C/+0xA20/+0xA24/+0xA38; signed halfwords +0x9A2/+0x9A4/+0xA10; and words +0xA14/+0xA28/+0xA5C/+0xA84.",
+        "Input fields +0x10/+0x18 hold masks; +0x3C receives 1. Child +0x64 is f32 and +0x94 is s32. Dispatch tables carry signed adjustments +0x20/+0x28 and function slots +0x24/+0x2C.",
+        "Original marker relocations use Data sym2; global loads use import sym272, cached as import_000200FC; constant load 0xD8AC uses RoData sym1. Call identities remain tied to original relocation sites.",
+        "Direct flag-field expressions restore the store-forwarded XOR temporary. Mixed !! and !=0 predicates restore the integer temporary sequence and sp+0x48 spill. Reusing the existing pointer carrier for field_8DC fixes the final v1 allocation.",
+        "Normal and NON_MATCHING C both match all 304 expected instructions: SHA256 872823a06c7e338760b697fd86e4f4f486014eeb29462f745be622c03eb7d05e. INCLUDE_ASM fallback removed. Objdiff fuzzy is 99.24342%; relocation annotations remain a separate metric from exact instruction bytes.",
+        "Executed make -j2 and make -j2 verify-blocks after sourcing tools/local/env.sh. ROM MD5 fa27089c425dbab99f19245c5c997613 and complete byte comparison passed; all six compressed-block checks passed.",
+        "No regressions among 241 previously exact normal and 199 previously exact NON_MATCHING symbols in the assigned unit. Only func_0000D440 body changed.",
+        "Canonical Episode/Step record passed original schema and semantic validation at build/orchestration-scratch/canonical-stage/episodes/func_0000D440.json. It is explicitly retrospective. Experiments and verification logs remain in scratch for coordinator integration.",
+        "Coordinator type consolidation: Retrospective shared-type consolidation of func_0000D440: existing C still matches all 1216 expected bytes in normal and NON_MATCHING builds. ROM and all six compressed blocks were verified. No new generation or matched-code gain is attributed to this sibling update.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Unresolved sym573 and the empty 062388 helper probably mark profiling entry/exit around update phases.",
+        "The A28 latch supports pause/single-step control; A5C scales deterministic animation perturbation."
+      ],
+      "unknowns": [
+        "Five sym573 calls lack a unique mapped target; three indirect runtime targets remain unresolved.",
+        "Ignored results do not establish original void returns. Complete layouts, several field meanings and import272's storage type remain uncertain.",
+        "Data aliases preserve curated expected-object encodings; their numerical values do not identify runtime storage.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_0000D440.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 255,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00038728"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "kind": "relocation",
+          "site": 54636,
+          "identity": "func_062388",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 575,
+          "cached_first_reference": "func_062388",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000A94",
+          "kind": "relocation",
+          "site": 54676,
+          "identity": "func_000A94",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 139,
+          "cached_first_reference": "func_000A94",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_0000BF8C",
+          "kind": "relocation",
+          "site": 54756,
+          "identity": "func_00BF8C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 572,
+          "cached_first_reference": "func_00BF8C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "kind": "relocation",
+          "site": 54768,
+          "identity": "func_062388",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 575,
+          "cached_first_reference": "func_062388",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000A50",
+          "kind": "relocation",
+          "site": 54884,
+          "identity": "func_000A50",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 136,
+          "cached_first_reference": "func_000A50",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_0006337C",
+          "kind": "relocation",
+          "site": 55008,
+          "identity": "func_0779E8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 596,
+          "cached_first_reference": "func_0779E8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00061824",
+          "kind": "relocation",
+          "site": 55072,
+          "identity": "func_075E90",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 597,
+          "cached_first_reference": "func_075E90",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "kind": "relocation",
+          "site": 55308,
+          "identity": "func_062388",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 575,
+          "cached_first_reference": "func_062388",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00040974",
+          "kind": "relocation",
+          "site": 55328,
+          "identity": "func_054FE0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 525,
+          "cached_first_reference": "func_054FE0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "kind": "relocation",
+          "site": 55340,
+          "identity": "func_062388",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 575,
+          "cached_first_reference": "func_062388",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_tail:gl_func_0000DF20",
+          "kind": "relocation",
+          "site": 55380,
+          "identity": "func_02258C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 598,
+          "cached_first_reference": "func_02258C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_tail:gl_func_0000DF8C",
+          "kind": "relocation",
+          "site": 55404,
+          "identity": "func_0225F8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 599,
+          "cached_first_reference": "func_0225F8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_tail:gl_func_0000DF4C",
+          "kind": "relocation",
+          "site": 55424,
+          "identity": "func_0225B8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 600,
+          "cached_first_reference": "func_0225B8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000610",
+          "kind": "relocation",
+          "site": 55512,
+          "identity": "func_000610",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 115,
+          "cached_first_reference": "func_000610",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "kind": "relocation",
+          "site": 55524,
+          "identity": "func_062388",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 575,
+          "cached_first_reference": "func_062388",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 54356,
+          "identity": "func_062380",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 573,
+          "cached_first_reference": "func_062380",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 54560,
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 54600,
+          "identity": "func_062380",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 573,
+          "cached_first_reference": "func_062380",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 54624,
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 54704,
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 54748,
+          "identity": "func_062380",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 573,
+          "cached_first_reference": "func_062380",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 54952,
+          "identity": "func_062380",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 573,
+          "cached_first_reference": "func_062380",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 55320,
+          "identity": "func_062380",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D440.s",
+          "sym_index": 573,
+          "cached_first_reference": "func_062380",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "observed_indirect_calls": [
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_000057D8",
+          "kind": "observed_indirect_call",
+          "site": 54624,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_0000D204",
+          "kind": "observed_indirect_call",
+          "site": 54704,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        }
+      ],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "source_sha256": "39532ee29b70c60d8359ffb22db61f2623cbe6973decfbadddb3f034469a9ad1",
+    "implementation_path": "src/match_imports/func_0000D440.c",
+    "implementation_sha256": "592501134342f6568e95ac86c1a9e88c0afc6788a06d943c774ee6cb3ebd0194",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 20,
+          "kind": 4,
+          "symbol": "bootup_D440_062380",
+          "original_identity": "bootup_uso:symbol_573:addend_0x0",
+          "original_site": 54356,
+          "payload_site": 54356,
+          "original_symbol_index": 573,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 264,
+          "kind": 4,
+          "symbol": "bootup_D440_062380",
+          "original_identity": "bootup_uso:symbol_573:addend_0x0",
+          "original_site": 54600,
+          "payload_site": 54600,
+          "original_symbol_index": 573,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 300,
+          "kind": 4,
+          "symbol": "bootup_D440_062388",
+          "original_identity": "bootup_uso:symbol_575:addend_0x0",
+          "original_site": 54636,
+          "payload_site": 54636,
+          "original_symbol_index": 575,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 340,
+          "kind": 4,
+          "symbol": "bootup_D440_000A94",
+          "original_identity": "bootup_uso:symbol_139:addend_0x0",
+          "original_site": 54676,
+          "payload_site": 54676,
+          "original_symbol_index": 139,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 412,
+          "kind": 4,
+          "symbol": "bootup_D440_062380",
+          "original_identity": "bootup_uso:symbol_573:addend_0x0",
+          "original_site": 54748,
+          "payload_site": 54748,
+          "original_symbol_index": 573,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 420,
+          "kind": 4,
+          "symbol": "bootup_D440_00BF8C",
+          "original_identity": "bootup_uso:symbol_572:addend_0x0",
+          "original_site": 54756,
+          "payload_site": 54756,
+          "original_symbol_index": 572,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 432,
+          "kind": 4,
+          "symbol": "bootup_D440_062388",
+          "original_identity": "bootup_uso:symbol_575:addend_0x0",
+          "original_site": 54768,
+          "payload_site": 54768,
+          "original_symbol_index": 575,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 548,
+          "kind": 4,
+          "symbol": "bootup_D440_000A50",
+          "original_identity": "bootup_uso:symbol_136:addend_0x0",
+          "original_site": 54884,
+          "payload_site": 54884,
+          "original_symbol_index": 136,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 616,
+          "kind": 4,
+          "symbol": "bootup_D440_062380",
+          "original_identity": "bootup_uso:symbol_573:addend_0x0",
+          "original_site": 54952,
+          "payload_site": 54952,
+          "original_symbol_index": 573,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 672,
+          "kind": 4,
+          "symbol": "bootup_D440_0779E8",
+          "original_identity": "bootup_uso:symbol_596:addend_0x0",
+          "original_site": 55008,
+          "payload_site": 55008,
+          "original_symbol_index": 596,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 736,
+          "kind": 4,
+          "symbol": "bootup_D440_075E90",
+          "original_identity": "bootup_uso:symbol_597:addend_0x0",
+          "original_site": 55072,
+          "payload_site": 55072,
+          "original_symbol_index": 597,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 972,
+          "kind": 4,
+          "symbol": "bootup_D440_062388",
+          "original_identity": "bootup_uso:symbol_575:addend_0x0",
+          "original_site": 55308,
+          "payload_site": 55308,
+          "original_symbol_index": 575,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 984,
+          "kind": 4,
+          "symbol": "bootup_D440_062380",
+          "original_identity": "bootup_uso:symbol_573:addend_0x0",
+          "original_site": 55320,
+          "payload_site": 55320,
+          "original_symbol_index": 573,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 992,
+          "kind": 4,
+          "symbol": "bootup_D440_054FE0",
+          "original_identity": "bootup_uso:symbol_525:addend_0x0",
+          "original_site": 55328,
+          "payload_site": 55328,
+          "original_symbol_index": 525,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1004,
+          "kind": 4,
+          "symbol": "bootup_D440_062388",
+          "original_identity": "bootup_uso:symbol_575:addend_0x0",
+          "original_site": 55340,
+          "payload_site": 55340,
+          "original_symbol_index": 575,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1044,
+          "kind": 4,
+          "symbol": "bootup_D440_02258C",
+          "original_identity": "bootup_uso:symbol_598:addend_0x0",
+          "original_site": 55380,
+          "payload_site": 55380,
+          "original_symbol_index": 598,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1068,
+          "kind": 4,
+          "symbol": "bootup_D440_0225F8",
+          "original_identity": "bootup_uso:symbol_599:addend_0x0",
+          "original_site": 55404,
+          "payload_site": 55404,
+          "original_symbol_index": 599,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1088,
+          "kind": 4,
+          "symbol": "bootup_D440_0225B8",
+          "original_identity": "bootup_uso:symbol_600:addend_0x0",
+          "original_site": 55424,
+          "payload_site": 55424,
+          "original_symbol_index": 600,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1176,
+          "kind": 4,
+          "symbol": "bootup_D440_000610",
+          "original_identity": "bootup_uso:symbol_115:addend_0x0",
+          "original_site": 55512,
+          "payload_site": 55512,
+          "original_symbol_index": 115,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1188,
+          "kind": 4,
+          "symbol": "bootup_D440_062388",
+          "original_identity": "bootup_uso:symbol_575:addend_0x0",
+          "original_site": 55524,
+          "payload_site": 55524,
+          "original_symbol_index": 575,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        224,
+        288,
+        368
+      ],
+      "native_sha256": "872823a06c7e338760b697fd86e4f4f486014eeb29462f745be622c03eb7d05e"
+    },
+    "native_data_proof": [
+      {
+        "alias": "bootup_D440_desc0",
+        "hi": 16,
+        "lo": 24,
+        "native_addend": 84,
+        "original_addend": 35536,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8a7c"
+      },
+      {
+        "alias": "bootup_D440_desc1",
+        "hi": 256,
+        "lo": 260,
+        "native_addend": 92,
+        "original_addend": 35544,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8a7c"
+      },
+      {
+        "alias": "bootup_D440_desc2",
+        "hi": 296,
+        "lo": 304,
+        "native_addend": 100,
+        "original_addend": 35552,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8a7c"
+      },
+      {
+        "alias": "bootup_D440_desc3",
+        "hi": 408,
+        "lo": 416,
+        "native_addend": 108,
+        "original_addend": 35560,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8a7c"
+      },
+      {
+        "alias": "bootup_D440_desc4",
+        "hi": 428,
+        "lo": 436,
+        "native_addend": 8,
+        "original_addend": 35572,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bootup_D440_desc5",
+        "hi": 612,
+        "lo": 620,
+        "native_addend": 20,
+        "original_addend": 35584,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bootup_D440_desc6",
+        "hi": 968,
+        "lo": 976,
+        "native_addend": 32,
+        "original_addend": 35596,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bootup_D440_desc7",
+        "hi": 980,
+        "lo": 988,
+        "native_addend": 44,
+        "original_addend": 35608,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bootup_D440_desc8",
+        "hi": 1000,
+        "lo": 1008,
+        "native_addend": 56,
+        "original_addend": 35620,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bootup_D440_root0",
+        "hi": 1024,
+        "lo": 1028,
+        "native_addend": 72,
+        "original_addend": 312,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0xf0"
+      },
+      {
+        "alias": "bootup_D440_root1",
+        "hi": 1052,
+        "lo": 1056,
+        "native_addend": 72,
+        "original_addend": 312,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0xf0"
+      },
+      {
+        "alias": "bootup_D440_root2",
+        "hi": 1076,
+        "lo": 1080,
+        "native_addend": 72,
+        "original_addend": 312,
+        "base_identity": "bootup_uso:symbol_272:base_addend_0xf0"
+      },
+      {
+        "alias": "D_00000980",
+        "hi": 1100,
+        "lo": 1132,
+        "native_addend": 0,
+        "original_addend": 2432,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x980"
+      },
+      {
+        "alias": "bootup_D440_desc9",
+        "hi": 1184,
+        "lo": 1192,
+        "native_addend": 68,
+        "original_addend": 35632,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_0000D440.json",
+      "nm": "scripts/match-bindings-func_0000D440-nm.json"
+    },
+    "source_context": "src/match_imports/context_bootup_uso.h",
+    "source_context_sha256": "456278d1b612f3c36ee3fe3165e87f5c4025cebf314c79aebe05b95ecbb72a08",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/bootup_uso/bootup_uso.c",
+    "original_local_episode_sha256": "30287e1105781d81bc2c1c227dba44dd81ed3730c9097199654de81d3977cc0f",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

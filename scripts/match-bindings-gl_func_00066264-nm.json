@@ -1,0 +1,13 @@
+{
+  "function": "gl_func_00066264",
+  "raw_sha256": "f15e3e19b6b26531cdcbeb1b2c47224fb8eb901822ab527d5b86b87fb33c6459",
+  "renames": {
+    "gl_66264_transfer": "snw_port_gl_func_00066264_gl_66264_transfer",
+    "gl_66264_copy": "snw_port_gl_func_00066264_gl_66264_copy"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00066264_gl_66264_transfer": 0,
+    "snw_port_gl_func_00066264_gl_66264_copy": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

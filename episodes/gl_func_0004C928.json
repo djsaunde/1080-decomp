@@ -1,0 +1,610 @@
+{
+  "function_name": "gl_func_0004C928",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.041203+00:00",
+  "end_time": "2026-10-23T11:55:26.041215+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.041211+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0004C928",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 908, \"native_sha256\": \"ceed1b825c4d34e22fa9abe462a883d4055dd7555dcaa3a1d5e733c35bbbd25c\", \"code_gain\": 908}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 227,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_0004C928(struct GLRender4C *arg0, struct Arg4C928 *arg1)\n{\n  unsigned int loop_ready;\n  unsigned int ready;\n  struct StackB b;\n  struct Obj4C928 *receiver0;\n  union { struct St4C928 *state; struct GlSmallState22C *small; struct GLMethods4C *methods; s32 saved_d0; void *queue; } work;\n  struct GLMethods4C *table0;\n  struct Obj4C928 *receiver1;\n  struct GLMethods4C *table1;\n  struct GLRequest4C a0blk;\n  struct Obj4C928 *receiver2;\n  struct GLRequest4C a1blk;\n  struct GLRequest4C a2blk;\n  struct GLMethods4C *table2;\n  work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));\n  do\n  {\n    do\n    {\n      ready = work.state->p1C != 0;\n      if (ready == 0)\n      {\n        ready = work.state->p04 != 0;\n        if (ready == 0)\n        {\n          ready = work.state->p0C != 0;\n        }\n      }\n    }\n    while (0);\n    if (ready != 0)\n    {\n      do\n      {\n        gl_4C928_poll();\n        do\n        {\n          ready = work.state->p1C != 0;\n          if (ready == 0)\n          {\n            ready = work.state->p04 != 0;\n            if (ready == 0)\n            {\n              ready = (*work.state).p0C != 0;\n            }\n          }\n        }\n        while (0);\n      }\n      while (ready != 0);\n    }\n  }\n  while (0);\n  work.small = *((struct GlSmallState22C **) (((char *) (&gl_4C928_state_base)) + 0x22C));\n  work.small->p0C = 0;\n  work.methods = *((struct GLMethods4C **) (((char *) arg0) + 0x28));\n  gl_4C928_result_base = work.methods->m64(work.methods->h60 + (char *)arg0);\n  ready = arg0->dD4;\n  work.saved_d0 = arg0->dD0;\n  arg0->dD0 = (s32) (4.0f - arg1->fBC);\n  arg0->dD4 = (s32) (4.0f - arg1->fC0);\n  *((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C4)) = (*((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C4))) | 2;\n  gl_4C928_process(arg0);\n  *(s32 *)((char *)&gl_4C928_state_base + 0x1C4) &= ~2;\n  arg0->dD0 = work.saved_d0;\n  arg0->dD4 = ready;\n  gl_4C928_mode(arg0, 1);\n  work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));\n  do\n  {\n    do\n    {\n      ready = work.state->p1C != 0;\n      if (ready == 0)\n      {\n        ready = work.state->p04 != 0;\n        if (ready == 0)\n        {\n          ready = work.state->p0C != 0;\n        }\n      }\n    }\n    while (0);\n    if (ready != 0)\n    {\n      do\n      {\n        gl_4C928_poll();\n        do\n        {\n          loop_ready = work.state->p1C != 0;\n          if (loop_ready == 0)\n          {\n            loop_ready = work.state->p04 != 0;\n            if (loop_ready == 0)\n            {\n              loop_ready = work.state->p0C != 0;\n            }\n          }\n        }\n        while (0);\n      }\n      while (loop_ready != 0);\n    }\n  }\n  while (0);\n  work.queue = *(void **)((char *)&gl_4C928_queue_base + 0x1C);\n  gl_4C928_send(work.queue, 0x68, 1);\n  work.state = *((struct St4C928 **) (((char *) (&gl_4C928_state_base)) + 0x218));\n  do\n  {\n    do\n    {\n      ready = work.state->p1C != 0;\n      if (ready == 0)\n      {\n        ready = work.state->p04 != 0;\n        if (ready == 0)\n        {\n          ready = work.state->p0C != 0;\n        }\n      }\n    }\n    while (0);\n    if (ready != 0)\n    {\n      do\n      {\n        gl_4C928_poll();\n        do\n        {\n          loop_ready = work.state->p1C != 0;\n          if (loop_ready == 0)\n          {\n            loop_ready = work.state->p04 != 0;\n            if (loop_ready == 0)\n            {\n              loop_ready = work.state->p0C != 0;\n            }\n          }\n        }\n        while (0);\n      }\n      while (loop_ready != 0);\n    }\n  }\n  while (0);\n  if (arg1->p10C != 0)\n  {\n    ready = arg0->d1A8;\n    do { loop_ready = arg0->h1AC; } while (0);\n    b.b = 0;\n    a0blk.n = 0xC; a0blk.p = &b;\n    b.c = ready;\n    b.a = (s16)loop_ready;\n    do {\n      receiver0 = arg1->p10C;\n      table0 = receiver0->methods;\n      table0->m2C(table0->h28 + (char *)receiver0, &a0blk);\n    } while (0);\n  }\n  arg0->d1A8 = gl_4C928_result_base->h48;\n  do { arg0->d1A8 = arg0->d1A8 >> 1; } while (0);\n  arg1->p10C = (struct Obj4C928 *) gl_4C928_find(arg0, arg0->d1A8);\n  gl_4C928_log((char *)&gl_4C928_strings_base + 0x2017C, arg0->d1A8);\n  *((s32 *) (((char *) (&gl_4C928_state_base)) + 0x1C8)) = (s32) arg1->p10C;\n  if (arg1->p10C != 0)\n  {\n    gl_4C928_log((char *)&gl_4C928_strings_base + 0x20188, arg1->p10C->id);\n    a1blk.n = 4;\n    a1blk.p = arg1;\n    do {\n      receiver1 = arg1->p10C;\n      table1 = receiver1->methods;\n      table1->m2C(table1->h28 + (char *)receiver1, &a1blk);\n    } while (0);\n    {\n      ready = arg0->d1A8;\n      loop_ready = arg0->h1AC;\n      b.b = 1;\n      a2blk.n = 0xC; a2blk.p = &b;\n      b.c = ready;\n      b.a = (s16) loop_ready;\n    }\n    do {\n      receiver2 = arg1->p10C;\n      table2 = receiver2->methods;\n      table2->m2C(table2->h28 + (char *)receiver2, &a2blk);\n    } while (0);\n  }\n  work.small = *((struct GlSmallState22C **) (((char *) (&gl_4C928_state_base)) + 0x22C));\n  work.small->p0C = 0;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Likely a rendering/frame and active-target hand-off: wait for readiness, render with temporary dimensions, finalize, send a blocking message, notify the previous target, select another target and configure it. Exact activation/visibility semantics remain uncertain.",
+      "observed_abi": "Two pointer arguments in a0/a1; C returns void, with no original return value established. Frame is 0x78; arg1 is homed at sp+0x7C. Virtual calls apply signed 16-bit receiver adjustments. The m64 result is subsequently dereferenced as a pointer. Ignored results do not establish original void return types.",
+      "calls": [
+        {
+          "site": "0x4C978",
+          "target": "gl_func_000732C4",
+          "c_alias": "gl_4C928_poll",
+          "observed_abi": "No arguments; scheduler yield."
+        },
+        {
+          "site": "0x4C9C8",
+          "target": "unresolved",
+          "c_alias": "work.methods->m64",
+          "observed_abi": "Adjusted receiver in a0; signed adjustment at table+0x60, target at +0x64; v0 stored globally and subsequently dereferenced at +0x48."
+        },
+        {
+          "site": "0x4CA38",
+          "target": "gl_func_0004C5E4",
+          "c_alias": "gl_4C928_process",
+          "observed_abi": "a0=render object; result ignored."
+        },
+        {
+          "site": "0x4CA68",
+          "target": "game_libs_func_0004CDB0",
+          "c_alias": "gl_4C928_mode",
+          "observed_abi": "a0=render object, a1=1; result ignored."
+        },
+        {
+          "site": "0x4CAA8",
+          "target": "gl_func_000732C4",
+          "c_alias": "gl_4C928_poll",
+          "observed_abi": "No arguments; scheduler yield."
+        },
+        {
+          "site": "0x4CAEC",
+          "target": "gl_func_00069E04",
+          "c_alias": "gl_4C928_send",
+          "observed_abi": "a0=queue from symbol 73+0x1C, a1=0x68, a2=1; integer result ignored."
+        },
+        {
+          "site": "0x4CB2C",
+          "target": "gl_func_000732C4",
+          "c_alias": "gl_4C928_poll",
+          "observed_abi": "No arguments; scheduler yield."
+        },
+        {
+          "site": "0x4CBB0",
+          "target": "unresolved",
+          "c_alias": "table0->m2C",
+          "observed_abi": "Adjusted receiver in a0; request at sp+0x44 in a1; result ignored."
+        },
+        {
+          "site": "0x4CBD0",
+          "target": "gl_func_00038BB8",
+          "c_alias": "gl_4C928_find",
+          "observed_abi": "a0=render object, a1=halved unsigned count; v0 used as target pointer."
+        },
+        {
+          "site": "0x4CBE8",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_4C928_log",
+          "observed_abi": "a0=symbol 2+0x2017C, a1=selection value; variadic diagnostic wrapper."
+        },
+        {
+          "site": "0x4CC14",
+          "target": "gl_func_00034810",
+          "c_alias": "gl_4C928_log",
+          "observed_abi": "a0=symbol 2+0x20188, a1=target+0xC word."
+        },
+        {
+          "site": "0x4CC44",
+          "target": "unresolved",
+          "c_alias": "table1->m2C",
+          "observed_abi": "Adjusted receiver in a0; request at sp+0x34 containing arg1; result ignored."
+        },
+        {
+          "site": "0x4CC8C",
+          "target": "unresolved",
+          "c_alias": "table2->m2C",
+          "observed_abi": "Adjusted receiver in a0; request at sp+0x28 containing the updated payload; result ignored."
+        }
+      ],
+      "evidence": [
+        "Original assembly, immutable expected object, normal C and NON_MATCHING C have identical 908-byte function bodies: SHA-256 ceed1b825c4d34e22fa9abe462a883d4055dd7555dcaa3a1d5e733c35bbbd25c.",
+        "Both unit builds and git diff --check pass. The assigned INCLUDE_ASM fallback is absent. Comparing all 857 normal-unit function hashes against the starting snapshot found no changes.",
+        "Objdiff reports 99.6696% because recovered relocation names differ from collapsed expected symbols; raw instruction differences are zero.",
+        "Call sites are original game_libs offsets, obtained by subtracting 0x1466C from bootup Text offsets. Known identities come from per-site relocations, not zero-valued alias equality.",
+        "Six distinct call aliases and four data-base aliases retain inline provenance. Data bases distinguish symbols 154 (state), 73 (queue), 1851 (result) and 2 (strings).",
+        "Inspected rendering family: gl_func_0004C190, gl_func_0004C214, gl_func_0004C288, gl_func_0004C300, gl_func_0004C5E4, game_libs_func_0004CDB0 and game_libs_func_0004D014. Shared GLRender4C/GLMethods4C definitions retain allocation size 0x1CC, methods +0x28, dimensions +0xD0/+0xD4, index +0x144, pointers +0x148/+0x158/+0x1C0 and words +0x1A8/+0x1AC.",
+        "Request-family evidence from gl_func_00038BB8, gl_func_00038830 and gl_func_00052994 supports opcode +0, payload pointer +4 and object reply +8.",
+        "Assigned fields include arg1 floats +0xBC/+0xC0, target pointer +0x10C, readiness words +0x04/+0x0C/+0x1C and unsigned result halfword +0x48.",
+        "Field store-forwarding removed the volatile count cast. Independent dispatch temporaries, a typed temporary union and queue-pointer staging reproduced the remaining register allocation without padding or instruction forcing.",
+        "This attempt changed only the assigned source span; experiments remain under build/orchestration-scratch.",
+        "Coordinator type consolidation: Retrospective shared-type consolidation of gl_func_0004C928: existing C still matches all 908 expected bytes in normal and NON_MATCHING builds. ROM and all six compressed blocks were verified. No new generation or matched-code gain is attributed to this sibling update.",
+        "Current review shares the Sym154+218 readiness pointee through the proven fields04/0C/1C/20/24/3C/40. The distinct22C pointee retains its18-byte view and separate union member. Parent294 record now contains its complete observed18-byte initializer extent. Unknown meanings and return contracts remain unresolved.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Opcode 12 with flags 0/1 changes activation or visibility; inspected handlers modify flag 0x80, but runtime dispatch is unresolved.",
+        "Opcode 4 supplies target configuration.",
+        "The constructor-installed table suggests game_libs_func_0004D014 as an m64 candidate when that table is active."
+      ],
+      "unknowns": [
+        "No recovered callers or game.uso DFS rank are available.",
+        "Four indirect runtime targets remain unresolved.",
+        "Original return types of ignored results, complete payload semantics and runtime object ownership remain uncertain.",
+        "Complete-ROM, compressed-block and canonical acceptance checks were not performed in this worker.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0004C928.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post2b_c:gl_func_000732C4",
+          "kind": "relocation",
+          "site": 397284,
+          "identity": "func_087930",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1535,
+          "cached_first_reference": "func_087930",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004C5E4",
+          "kind": "relocation",
+          "site": 397476,
+          "identity": "func_060C50",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1888,
+          "cached_first_reference": "func_060C50",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004CDB0",
+          "kind": "relocation",
+          "site": 397524,
+          "identity": "func_06141C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1993,
+          "cached_first_reference": "func_06141C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post2b_c:gl_func_000732C4",
+          "kind": "relocation",
+          "site": 397588,
+          "identity": "func_087930",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1535,
+          "cached_first_reference": "func_087930",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00069E04",
+          "kind": "relocation",
+          "site": 397656,
+          "identity": "func_07E470",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1333,
+          "cached_first_reference": "func_07E470",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post2b_c:gl_func_000732C4",
+          "kind": "relocation",
+          "site": 397720,
+          "identity": "func_087930",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1535,
+          "cached_first_reference": "func_087930",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00038BB8",
+          "kind": "relocation",
+          "site": 397884,
+          "identity": "func_04D224",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 1695,
+          "cached_first_reference": "func_04D224",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 397908,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 397952,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 397364,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 397852,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 398000,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 398072,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004C928.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_0004C928.c",
+    "implementation_sha256": "8b0837248a328820bb4e74149258115fde801c172018c994f399fc4b90783209",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 80,
+          "kind": 4,
+          "symbol": "gl_4C928_poll",
+          "original_identity": "bootup_uso:symbol_1535:addend_0x0",
+          "original_site": 397284,
+          "payload_site": 397284,
+          "original_symbol_index": 1535,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 272,
+          "kind": 4,
+          "symbol": "gl_4C928_process",
+          "original_identity": "bootup_uso:symbol_1888:addend_0x0",
+          "original_site": 397476,
+          "payload_site": 397476,
+          "original_symbol_index": 1888,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 320,
+          "kind": 4,
+          "symbol": "gl_4C928_mode",
+          "original_identity": "bootup_uso:symbol_1993:addend_0x0",
+          "original_site": 397524,
+          "payload_site": 397524,
+          "original_symbol_index": 1993,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 384,
+          "kind": 4,
+          "symbol": "gl_4C928_poll",
+          "original_identity": "bootup_uso:symbol_1535:addend_0x0",
+          "original_site": 397588,
+          "payload_site": 397588,
+          "original_symbol_index": 1535,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 452,
+          "kind": 4,
+          "symbol": "gl_4C928_send",
+          "original_identity": "bootup_uso:symbol_1333:addend_0x0",
+          "original_site": 397656,
+          "payload_site": 397656,
+          "original_symbol_index": 1333,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 516,
+          "kind": 4,
+          "symbol": "gl_4C928_poll",
+          "original_identity": "bootup_uso:symbol_1535:addend_0x0",
+          "original_site": 397720,
+          "payload_site": 397720,
+          "original_symbol_index": 1535,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 680,
+          "kind": 4,
+          "symbol": "gl_4C928_find",
+          "original_identity": "bootup_uso:symbol_1695:addend_0x0",
+          "original_site": 397884,
+          "payload_site": 397884,
+          "original_symbol_index": 1695,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 704,
+          "kind": 4,
+          "symbol": "gl_4C928_log",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 397908,
+          "payload_site": 397908,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 748,
+          "kind": 4,
+          "symbol": "gl_4C928_log",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 397952,
+          "payload_site": 397952,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        160,
+        648,
+        796,
+        868
+      ],
+      "native_sha256": "ceed1b825c4d34e22fa9abe462a883d4055dd7555dcaa3a1d5e733c35bbbd25c"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 8,
+        "lo": 12,
+        "native_addend": 536,
+        "original_addend": 536,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 136,
+        "lo": 140,
+        "native_addend": 556,
+        "original_addend": 556,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_result_base",
+        "hi": 180,
+        "lo": 184,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1851:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 204,
+        "lo": 260,
+        "native_addend": 452,
+        "original_addend": 452,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 208,
+        "lo": 260,
+        "native_addend": 452,
+        "original_addend": 452,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 208,
+        "lo": 276,
+        "native_addend": 452,
+        "original_addend": 452,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 280,
+        "lo": 284,
+        "native_addend": 452,
+        "original_addend": 452,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 300,
+        "lo": 304,
+        "native_addend": 452,
+        "original_addend": 452,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 328,
+        "lo": 332,
+        "native_addend": 536,
+        "original_addend": 536,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_queue_base",
+        "hi": 440,
+        "lo": 444,
+        "native_addend": 28,
+        "original_addend": 28,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 460,
+        "lo": 464,
+        "native_addend": 536,
+        "original_addend": 536,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_result_base",
+        "hi": 656,
+        "lo": 660,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1851:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_strings_base",
+        "hi": 692,
+        "lo": 696,
+        "native_addend": 131452,
+        "original_addend": 131452,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_strings_base",
+        "hi": 720,
+        "lo": 728,
+        "native_addend": 131464,
+        "original_addend": 131464,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 716,
+        "lo": 732,
+        "native_addend": 456,
+        "original_addend": 456,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4C928_state_base",
+        "hi": 876,
+        "lo": 880,
+        "native_addend": 556,
+        "original_addend": 556,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0004C928.json",
+      "nm": "scripts/match-bindings-gl_func_0004C928-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "adde172f6746e39b6fa5a00865e39545fc16293d2d699dfb0619290e124e3408",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

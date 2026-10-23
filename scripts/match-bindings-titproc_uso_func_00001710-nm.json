@@ -1,0 +1,23 @@
+{
+  "function": "titproc_uso_func_00001710",
+  "raw_sha256": "fe51c37d7948ddac4654f68830f3668746172ef649c47352c2fa95008a5219a8",
+  "renames": {
+    "import_00020098": "snw_port_titproc_uso_func_00001710_import_00020098",
+    "import_00263E00": "snw_port_titproc_uso_func_00001710_import_00263E00",
+    "import_0024CAF8": "snw_port_titproc_uso_func_00001710_import_0024CAF8",
+    "import_0024E608": "snw_port_titproc_uso_func_00001710_import_0024E608",
+    "import_00263D30": "snw_port_titproc_uso_func_00001710_import_00263D30",
+    "import_0024F2C8": "snw_port_titproc_uso_func_00001710_import_0024F2C8",
+    "import_0024F34C": "snw_port_titproc_uso_func_00001710_import_0024F34C"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_titproc_uso_func_00001710_import_00020098": 0,
+    "snw_port_titproc_uso_func_00001710_import_00263E00": 0,
+    "snw_port_titproc_uso_func_00001710_import_0024CAF8": 0,
+    "snw_port_titproc_uso_func_00001710_import_0024E608": 0,
+    "snw_port_titproc_uso_func_00001710_import_00263D30": 0,
+    "snw_port_titproc_uso_func_00001710_import_0024F2C8": 0,
+    "snw_port_titproc_uso_func_00001710_import_0024F34C": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

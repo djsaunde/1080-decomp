@@ -1,0 +1,325 @@
+{
+  "function_name": "game_libs_func_000470E4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.674626+00:00",
+  "end_time": "2026-10-23T11:55:25.674639+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.674635+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_000470E4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 688, \"native_sha256\": \"f7d1a6753d574daf9146dfbc7acabaecc7bb6cb6a9ea391034b64c4be83e66f4\", \"code_gain\": 688}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 172,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_000470E4(GL470E4Self *self, const f32 *c) {\n    float r, g;\n    unsigned char col[4];\n    float b, a;\n    GL470E4Object *obj; GL470E4List *gp; GL470E4Packet *p; s32 i;\n    obj = self->context->object;\n    r = c[0];\n    col[0] = (g = c[1], b = c[2], a = c[3], r * 255.0f);\n    col[1] = g * 255.0f;\n    col[2] = b * 255.0f;\n    col[3] = a * 255.0f;\n    gp = obj->list; i = gp->count; gp->count = i + 1;\n    p = obj->list->packets + i;\n    p->command = 0xFA000000;\n    p->color = (col[3] & 0xFF) | (((col[2] & 0xFF) << 8) | (((col[1] & 0xFF) << 16) | ((col[0] & 0xFF) << 24)));\n}",
+  "metadata": {
+    "analysis": {
+      "function": "game_libs_func_000470E4",
+      "source": {
+        "path": "src/game_libs/game_libs_post0b.c",
+        "line": 16082,
+        "sha256": "c4b585a0a564ddc24d7bcb270e61a63e4f08c007f119821b1fbf6a794e2830ed"
+      },
+      "asm": {
+        "path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_000470E4.s",
+        "first_instruction_line": 4,
+        "project_start": "0x470e4",
+        "project_end": "0x47394"
+      },
+      "facts": [
+        "Appends one8-byte RGBA color command through self+0x254 -> context+0x158 -> object+0xC -> {buffer,count}.",
+        "Four floats multiplied by255, converted to unsigned bytes and packed R/G/B/A into big-endian command word.",
+        "No calls. Packet opcode 0xFA SETPRIMCOLOR."
+      ],
+      "hypotheses": [
+        "Partial layouts likely belong to render context/display-list builder."
+      ],
+      "unknowns": [
+        "Original struct/member names and complete layouts; caller material/render semantics.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_000470E4.c. This is not a proof of original source spelling or whole-program portable source."
+      ],
+      "calls": [],
+      "data_references": [],
+      "callers": [
+        {
+          "module": "bootup.uso",
+          "callsite": "0xdc8",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_00000D94",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_00000D94.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x6714",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_000063B4",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_000063B4.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x86d8",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_000086C0",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_000086C0.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0xd0e0",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_0000CFA0",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_0000CFA0.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0xd1b0",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_0000CFA0",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_0000CFA0.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0xd328",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_0000CFA0",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_0000CFA0.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0xd40c",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "func_0000CFA0",
+              "asm_path": "asm/nonmatchings/bootup_uso/func_0000CFA0.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x52030",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "gl_func_0003D9AC",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003D9AC.s"
+            }
+          ]
+        },
+        {
+          "module": "bootup.uso",
+          "callsite": "0x74f78",
+          "symbol_id": 155,
+          "owners": [
+            {
+              "function": "gl_func_000608A4",
+              "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000608A4.s"
+            }
+          ]
+        },
+        {
+          "module": "game.uso",
+          "callsite": "0xb3cc",
+          "resolved_physical": "0xf15a0",
+          "bootup_textbase_for_capture": "0x95e50",
+          "owners": [
+            {
+              "function": "game_uso_func_0000B274",
+              "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_0000B274.s"
+            }
+          ]
+        },
+        {
+          "module": "game.uso",
+          "callsite": "0xb854",
+          "resolved_physical": "0xf15a0",
+          "bootup_textbase_for_capture": "0x95e50",
+          "owners": [
+            {
+              "function": "game_uso_func_0000B750",
+              "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_0000B750.s"
+            }
+          ]
+        },
+        {
+          "module": "game.uso",
+          "callsite": "0xbe84",
+          "resolved_physical": "0xf15a0",
+          "bootup_textbase_for_capture": "0x95e50",
+          "owners": [
+            {
+              "function": "game_uso_func_0000BB8C",
+              "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_0000BB8C.s"
+            }
+          ]
+        }
+      ],
+      "module": "bootup.uso/game_libs",
+      "identity": {
+        "symbol_ids": [
+          155
+        ],
+        "text_offset": "0x5b750",
+        "game_libs_to_bootup_shim": "0x1466c"
+      },
+      "signature": "void(partial Self*, const float rgba[4])",
+      "callers_scope": "bootup.uso original relocation tables and game.uso captured direct-call sites; GUI own tables where applicable; other overlays and dynamic indirect calls not exhaustively reviewed",
+      "purpose": "Append one SETPRIMCOLOR display-list packet (0xFA), converting four float RGBA components multiplied by 255 to packed bytes.",
+      "observed_abi": "Current matching C signature (reconstructed): void(partial Self*, const float rgba[4]); compatible with the recorded IDO o32 instruction bytes. Original typedefs, signedness and return types are not established merely by this declaration or by ignored call results.",
+      "evidence": [
+        "Appends one8-byte RGBA color command through self+0x254 -> context+0x158 -> object+0xC -> {buffer,count}.",
+        "Four floats multiplied by255, converted to unsigned bytes and packed R/G/B/A into big-endian command word.",
+        "No calls. Packet opcode 0xFA SETPRIMCOLOR.",
+        "asm/nonmatchings/game_libs/game_libs/game_libs_func_000470E4.s \u2014 immutable assembly and per-site USO identities",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "audit_source_path": "src/game_libs/game_libs_post0b.c",
+      "audit_current_definition_line": 16082,
+      "evidence_note": "Line references describe the inspection snapshot; immutable callsite/module offsets remain the identity evidence after comment edits."
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 103,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_00000D94",
+        "src/bootup_uso/bootup_uso:func_000063B4",
+        "src/bootup_uso/bootup_uso:func_000086C0",
+        "src/bootup_uso/bootup_uso:func_0000CFA0",
+        "src/game_libs/game_libs_post0b:gl_func_0003D9AC",
+        "src/game_libs/game_libs_post0b:gl_func_000608A4",
+        "src/game_uso/game_uso:game_uso_func_0000B274",
+        "src/game_uso/game_uso:game_uso_func_0000B750",
+        "src/game_uso/game_uso:game_uso_func_0000BB8C",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_0000B154"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/game_libs_func_000470E4.c",
+    "implementation_sha256": "9eed794228cc30320b96dc2b4848e7469a5bc44de33593f3927104e065da2cc0",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "f7d1a6753d574daf9146dfbc7acabaecc7bb6cb6a9ea391034b64c4be83e66f4"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_000470E4.json",
+      "nm": "scripts/match-bindings-game_libs_func_000470E4-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "d2b56a1306041972ac40d8b350583257d35e460b7ab7f6d1f4453d677be76f2f",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

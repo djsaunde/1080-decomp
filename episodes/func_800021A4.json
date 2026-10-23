@@ -1,0 +1,153 @@
+{
+  "function_name": "func_800021A4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.321034+00:00",
+  "end_time": "2026-10-23T11:55:26.321046+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.321042+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_800021A4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 172, \"native_sha256\": \"c4a64edd3fff4208acfe3635c9139219aab9126ede5debc90c78251c2f949cbd\", \"code_gain\": 172}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 43,
+  "initial_m2c_source": null,
+  "final_source": "s32 func_800021A4(UsoSlot *module) {\n    UsoRecord *head;\n    s32 index;\n    UsoRecord *record;\n    s32 count;\n    s16 flags;\n    s32 kind, selector, section_offset;\n    head = (UsoRecord*)module->field_38[1];\n    if (head == 0) return 0;\n    index = 0;\n    count = module->field_04;\n    record = head;\n    if (count <= 0) goto end;\n    do {\n        flags = record->field_00;\n        index++;\n        if (flags & 0x8) goto cond;\n        kind = flags & 0x7;\n        selector = flags >> 4;\n        if (2 == kind) {\n            section_offset = selector << 2;\n            goto store_lookup;\n        }\n        if (kind == 4) {\n            section_offset = selector << 2;\n            goto do_store;\n        }\n        selector = flags | 0x8;\n        if (kind != 3) goto cond;\n        goto set_flag;\n    store_lookup:\n    do_store: {\n            UsoSlot *section = (UsoSlot*)((char*)module + section_offset);\n            record->field_04 += section->field_38[0];\n            record->field_00 = flags | 8;\n            count = module->field_04;\n            goto cond;\n        }\n    set_flag:\n        record->field_00 = (short)selector;\n        count = module->field_04;\n    cond:\n        record = record + 1;\n    } while (index < count);\nend:\n    return 0;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Walk module records, add indexed section bases to unprocessed kinds 2 and 4, and mark kind 3 processed without changing its value. Probably USO symbol/address rebasing; original kind meanings remain uncertain.",
+      "observed_abi": "MIPS o32 leaf: a0 holds a module pointer; no stack frame or calls. Every return explicitly sets v0=0, consistent with s32 func_800021A4(UsoSlot *). Module+0x04 is a signed count; module+0x3C points to 12-byte records. Record+0x00 is loaded as a signed halfword; record+0x04 is a 32-bit value. Original typedefs and value signedness are unproven.",
+      "calls": [],
+      "evidence": [
+        "Normal and NON_MATCHING C each match 43 original instructions, SHA256 c4a64edd3fff4208acfe3635c9139219aab9126ede5debc90c78251c2f949cbd.",
+        "Assembly establishes complete entry/return paths and contains no JAL/JALR or unresolved outgoing callsites. Supplied graph lists no main-entry callers or imports.",
+        "Observed fields: module+0x04 count, +0x3C record pointer, +0x38+4*(flags>>4) section base; record stride 0x0C, +0x00 flags, +0x04 value. Bit 3 marks processed; low three bits select kinds.",
+        "Inspected shared family: func_800018B0 clears fourteen section slots at +0x38..+0x6C; func_800018F0 accesses records at +0x3C and record fields +0x04/+0x08; func_80001EC8 writes section counts/bases; func_80002250 and func_8000235C use the same count/list/flags layout. Expanded existing shared UsoSlot and recovered UsoRecord without changing sibling bodies.",
+        "Original func_800008F0 calls interior entry func_800021D0 at kernel Text+0x998. Its existing absolute alias and assigned instruction offset were preserved.",
+        "make -j2 objects non_matching_objects and make -j2 verify verify-blocks passed. ROM MD5 is fa27089c425dbab99f19245c5c997613.",
+        "Fresh objdiff reports 100%; denominator unchanged, matched-code gain 172 bytes, and all 2,569 prior exact functions remain exact.",
+        "Only src/kernel/kernel_000.c changed. Experiments, actual m2c output, verification logs and a validated retrospective Episode/Step record remain in ignored scratch storage.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Kinds 2 and 4 represent section-relative values; kind 3 represents an absolute value requiring only the processed marker.",
+        "Valid selectors index the fourteen section slots evidenced by sibling routines."
+      ],
+      "unknowns": [
+        "Original enum meanings, field names and record-value signedness remain uncertain.",
+        "The interior func_800021D0 entry requires live a2/v1 state that the inspected caller does not explain; curated boundaries and aliases were preserved.",
+        "game.uso reachability is unestablished (dfs_rank=null). Missing graph edges remain a coverage limitation.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_800021A4.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "kernel",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/kernel/kernel_000.c",
+    "source_sha256": "b60776f699431ca83d4970cd7c638ffc4ff202739a8463edd8e63a449ed44a99",
+    "implementation_path": "src/match_imports/func_800021A4.c",
+    "implementation_sha256": "fb5930738ed486882d23f8a12affe7e78b88a3ed2768c8400f2cc3c7db530b92",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "c4a64edd3fff4208acfe3635c9139219aab9126ede5debc90c78251c2f949cbd"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_800021A4.json",
+      "nm": "scripts/match-bindings-func_800021A4-nm.json"
+    },
+    "source_context": "src/match_imports/context_kernel_000.h",
+    "source_context_sha256": "11098d8525a8a619b0ebefd207c518efe1d78133639d7278e215506740040ee1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/kernel/kernel_000.c",
+    "original_local_episode_sha256": "12a39ccb8b39285b6c7b6c31f0b9e086b5c2255e27bc80ffea5d8e0982fe8940",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

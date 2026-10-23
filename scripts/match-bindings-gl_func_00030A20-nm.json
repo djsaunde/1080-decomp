@@ -1,0 +1,21 @@
+{
+  "function": "gl_func_00030A20",
+  "raw_sha256": "140cf70032dec17f9c08d41153d99cc612adcf205ab5002752aa78527d07997c",
+  "renames": {
+    "gl_30A20_pair": "snw_port_gl_func_00030A20_gl_30A20_pair",
+    "gl_30A20_slot1435": "snw_port_gl_func_00030A20_gl_30A20_slot1435",
+    "gl_30A20_set": "snw_port_gl_func_00030A20_gl_30A20_set",
+    "gl_30A20_slot1436": "snw_port_gl_func_00030A20_gl_30A20_slot1436",
+    "gl_30A20_gate1432": "snw_port_gl_func_00030A20_gl_30A20_gate1432",
+    "gl_30A20_clear": "snw_port_gl_func_00030A20_gl_30A20_clear"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00030A20_gl_30A20_pair": 0,
+    "snw_port_gl_func_00030A20_gl_30A20_slot1435": 0,
+    "snw_port_gl_func_00030A20_gl_30A20_set": 0,
+    "snw_port_gl_func_00030A20_gl_30A20_slot1436": 0,
+    "snw_port_gl_func_00030A20_gl_30A20_gate1432": 0,
+    "snw_port_gl_func_00030A20_gl_30A20_clear": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

@@ -1,0 +1,7 @@
+{
+  "function": "game_libs_func_00047B28",
+  "raw_sha256": "64513e2fa2fd7ee1e0f052f99666a55f044e72b7a0fab8d4a0f957bafbe8a697",
+  "renames": {},
+  "original_ROM_minus_curated_addend_bindings": {},
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}
