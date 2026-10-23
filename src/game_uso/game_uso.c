@@ -828,7 +828,7 @@ void game_uso_func_00000B3C(char *arg0) {
     q = (f32 *)((int)tv + 0xB4);
     v30.z = *(f32 *)((int)q + 8) + vC.z;
     v30.y = *(f32 *)((int)q + 4) + vC.y;
-    v30.x = *q + vC.x;
+    v30.x = *q + vC.x; if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;
     *(Tri3i *)&vD = *(Tri3i *)&v3C;
     game_uso_func_0000052C((int)kf, &pos2, &pos1, (int *)seg, &vD);
