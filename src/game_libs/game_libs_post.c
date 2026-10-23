@@ -4550,7 +4550,7 @@ block_29:
         var_t2 = gl_d_00022760[temp_v0_6 + 0x1E18];
         gl_d_00022760[0x2018] = temp_v0_6 + 1;
         found = (char *)((var_t2 * 0x10) + *(u32 *)(gl_d_00022760 + 0x1E08));
-    }
+    } if (var_a0_2) {}
     temp_v0_7 = *(u16 *)(found + 0xA);
     *(u8 *)(found + 0xE) = 3;
     temp_s0 = arg0 & ~0xF;
