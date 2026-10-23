@@ -17026,18 +17026,20 @@ void game_libs_func_0004B2F4(char *arg0) {
         F_4B2F4_copy(mtx, &D_4B2F4_fixed + 0x3C8A0);
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
-        flags = W(g, 0x1F4); if (slot3) {}
+        flags = W(g, 0x1F4);
         slot1 = (*(s32 **)(ctx + 0x3C))[1]++; if (1) {}
         fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6);
         F_4B2F4_pack(&D_4B2F4_fixed + 0x3C8A0, fixed);
         flags |= 2;
-        slot2 = (*(s32 **)(ctx + 0xC))[1]++;
+        slot2 = (*(s32 **)(ctx + 0xC))[1];
+        (*(s32 **)(ctx + 0xC))[1] = slot2 + 1;
         cmd1 = (u32 *)(P(P(ctx, 0xC), 0) + slot2 * 8);
         cmd1[0] = ((((u32)flags & 0xFF) << 8) << 8) | 0x01000000 | 0x40;
         cmd1[1] = F_4B2F4_phys(fixed);
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
-        slot3 = (*(s32 **)(ctx + 0xC))[1]++;
+        slot3 = (*(s32 **)(ctx + 0xC))[1];
+        (*(s32 **)(ctx + 0xC))[1] = slot3 + 1;
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
         cmd2[0] = 0xFA000100;
         cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;
