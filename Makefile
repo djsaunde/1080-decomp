@@ -2001,6 +2001,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_08C0_DONOR := build/src/gui_uso/gui_uso_ncc_08C0.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000008C0=$(GUI_08C0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_08C0_DONOR)
+# 17DC: SETCOMBINE + SETENVCOLOR + SETPRIMCOLOR (160/160); next() without the
+# n copy + Gfx::set() keep uopt's 20-varref block boundary after the 3rd slot.
+GUI_17DC_DONOR := build/src/gui_uso/gui_uso_ncc_17DC.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000017DC=$(GUI_17DC_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_17DC_DONOR)
 # 413C: RGBA16 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_413C_DONOR := build/src/gui_uso/gui_uso_ncc_413C.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_0000413C=$(GUI_413C_DONOR)

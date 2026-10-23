@@ -782,48 +782,14 @@ void gui_uso_func_00001794(int a0) {
     arr[0] = 0xFCFFFFFF; arr[1] = 0xFFFCF279;
 }
 
-/* Display-list color-command builder (sibling of gui_uso_func_00001794 /
- * _00003B14 — same 8-byte-entry/increment-counter template, here repeated 3x).
- * Entry 1: fixed 0xFC309A61 / 0xFF37FFFF. Entry 2: 0xFB000000 / (a1 & 0xFF).
- * Entry 3: 0xFA000000 / packed RGBA, where R/G/B = float*255 -> byte and the
- * low byte is the alpha arg. 88.4% (objdiff). Logic + FP idiom both correct;
- * the (unsigned) cast (NOT (int)) is the key: it emits IDO's FULL cvt.w.s +
- * cfc1/ctc1/andi-0x78/sub.s-2^31 overflow-correction dance (the target form),
- * whereas (int) emits a single trunc.w.s. See docs/IDO_CODEGEN.md. Residual is
- * the register-allocation cascade: target dead-homes a0 at 0(sp) and keeps the
- * alpha arg live in $7.
- * 2026-06-05: FIXED the +2 alpha-spill by inlining the 3 color conversions
- * into ONE accumulating OR expression (col0<<24 | col1<<16 | col2<<8 | alpha)
- * instead of 3 simultaneously-live r0/r1/r2 locals — that dropped peak
- * register pressure so $7(alpha) no longer spills. insns 162->160 (now ==
- * target), 198->182 diffs. Applied to the sibling color-emit fn too. REMAINING
- * 12 opcode diffs are the per-channel cvt/andi/sll SCHEDULING order in the
- * combine; the rest is $t-renumber across the 3 DL-appends. Permuter -j4 220s/
- * 44k iters best score ~1800 (NOT 0) — did NOT crack it; the score is high
- * because the $t-renumber + combine-scheduling compound across the 3 record-
- * appends. Don't re-run the permuter. INCLUDE_ASM stays the build path. */
-#ifdef NON_MATCHING
-void gui_uso_func_000017DC(int a0, int a1, float *col, int alpha) {
-  int *new_var;
-  int *rec = *((int **) (&D_00000000));
-  int new_var2;
-  int *sub;
-  int count;
-  int *arr;
-  sub = (int *) rec[3];
-  count = sub[1];
-  sub[1] = count + 1;
-  new_var = (int *) (((int *) rec[3])[0] + (count * 8));
- arr = new_var; arr[0] = 0xFC309A61; arr[1] = 0xFF37FFFF; rec = *((int **) (&D_00000000)); sub = (int *) rec[3]; new_var2 = sub[1]; count = new_var2; sub[1] = count + 1; arr = (int *) (((int *) rec[3])[0] + (count * 8)); arr[0] = 0xFB000000; arr[1] = a1 & 0xFF; rec = *((int **) (&D_00000000)); sub = (int *) rec[3];
-  count = sub[1];
-  sub[1] = count + 1;
-  arr = (int *) (((int *) rec[3])[0] + (count * 8));
-  arr[0] = 0xFA000000;
-  arr[1] = (((((int) ((unsigned) (col[0] * 255.0f))) << 24) | (((((int) ((unsigned) (col[1] * 255.0f))) & 0xFF) << 3) << 13)) | ((((unsigned) (col[2] * 255.0f)) & 0xFF) << 8)) | (alpha & 0xFF);
+/* gui_uso_func_000017DC: DL colour setup (SETCOMBINE FC309A61/FF37FFFF,
+ * SETENVCOLOR with the a1 alpha byte, SETPRIMCOLOR from col * 255 + alpha).
+ * EXACT 2026-10-22 (agent-g run 126) via the IDO 7.1 NCC donor
+ * src/gui_uso/gui_uso_ncc_17DC.cpp (REPLACE_FUNC_BODY, both trees). The old
+ * "third slot pointer colour" residual came from where uopt's 20-variable-load
+ * block limit ended the block. This is the splice host. */
+void gui_uso_func_000017DC(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_000017DC);
-#endif
 
 /* gui_uso_func_00001A5C: DL colour emitter (SETCOMBINE FC309661/FF2FFFFF, then G_SETPRIMCOLOR
  * with col[0..2] * 255 above the alpha byte). EXACT 2026-10-22 (agent-g run
