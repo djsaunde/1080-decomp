@@ -1889,34 +1889,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035C6C);
 //   call-arg pointers inline -> only 3 of 5 field-pointers reach saved regs;
 //   target hoists all 5 addiu sN,sp,off to the top. Address-folding/saved-
 //   reg-promotion regalloc cap. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int gl_ref_0004A110();
-extern int gl_ref_0004A14C();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_35DAC.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 133). */
 void gl_func_00035DAC(void) {
-    int a[7];
-    int *p3 = &a[3];      /* s0 = sp+64 */
-    int *p5 = &a[5];      /* s1 = sp+72 (end / init arg) */
-    int *p0 = &a[0];      /* s2 = sp+52 (current) */
-    int *p6 = &a[6];      /* s3 = sp+76 (sentinel) */
-    int *p4 = &a[4];      /* s4 = sp+68 (counter) */
-    *p5 = 0;
-    gl_ref_0004A110(p5);             /* iterator init(&end) */
-    *p6 = -1;
-    *p0 = *p6;
-    while (*p0 != *p5) {
-        gl_ref_0004A14C(p4);         /* step -> sets counter *p4 */
-        if (*p4 != 0) {
-            do {
-                gl_ref_0004A14C(p3); /* inner step */
-                *p4 -= 4;
-            } while (*p4 != 0);
-        }
-        *p5 = 0;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035DAC);
-#endif
 
 
 /* game_libs_func_00035E5C: 2-word all-zero inter-function ROM pad (0x35E5C/0x35E60).

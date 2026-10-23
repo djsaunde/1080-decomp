@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00035DAC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T20:19:47.353622+00:00",
+  "end_time": "2026-10-23T20:19:47.353642+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T20:19:47.353636+00:00",
+      "assistant_text": "C++ donor: outer loop re-inits the end marker; every value is an address-taken one-word stack object (addresses hoisted into s0-s4); declaration order sets the frame.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 44,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00035DAC (0xB0 / 44 words): an outer\n * loop that re-initialises an end marker through gl_ref_0004A110(&end),\n * copies a -1 sentinel into the cursor, and stops when the cursor equals the\n * end. Otherwise it steps a counter through gl_ref_0004A14C(&cnt) and then\n * calls gl_ref_0004A14C(&x) once per 4 counted.\n *\n * Load-bearing (agent-c run 133; cfe NM was 58.9 / 39 words):\n * - the outer loop starts at `end = 0; init(&end)` (the old NM ran the init\n *   once, before the loop);\n * - every value is a one-word stack object whose address is taken. Their\n *   addresses are loop-invariant, so NCC hoists them into s0-s4, and\n *   `cur = sent` is a copy through two of those pointers. cfe\n *   const-propagates the -1 instead;\n * - frame = declaration order: sent 76, end 72, cnt 68, x 64, two unused\n *   words (u1 / u2: each takes a slot because it is assigned), cur 52.\n *   Frame 80.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" { void gl_ref_0004A110(...); void gl_ref_0004A14C(...); }\nstruct W { int v; };\nextern \"C\" void gl_func_00035DAC(void) {\n    W sent, end, cnt, x, u1, u2, cur;\n    u1.v = 0; u2.v = 0;\n    for (;;) {\n        end.v = 0; gl_ref_0004A110(&end);\n        sent.v = -1;\n        cur = sent;\n        if (cur.v == end.v) break;\n        gl_ref_0004A14C(&cnt);\n        while (cnt.v != 0) { gl_ref_0004A14C(&x); cnt.v -= 4; }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_35DAC.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00035DAC.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "ROM byte-identical (cmp), objdiff 100"
+  }
+}
