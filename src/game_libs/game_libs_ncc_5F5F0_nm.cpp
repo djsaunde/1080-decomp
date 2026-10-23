@@ -5,8 +5,10 @@
  * 1.0f with the d2 < 1.0f compare constant, the target rematerialises it), the normalised
  * copy-out read z, y, x, NCC frame order slen, len, xLook.., xRight.., v[3], then d2 and a
  * separate ulen for the up-vector scale (one frame word per declared local).
- * RESIDUAL: x colours f14 (target f0), z * 10 lands in f12 (target f18), and the mf home
- * store is scheduled in the jal delay instead of at the top of both branch arms. */
+ * Run 138: `x *= 10.0f; xLook = x;` colours x f0 and z * 10 f18 as the target; `if (z) {}`
+ * after the copy-out and after the v[] refill (z is assigned on both arms) 98.37 -> 98.69.
+ * RESIDUAL (6 raw): z itself colours f14 (target f18), and the mf home store is scheduled
+ * after the v[] stores instead of heading the else arm. */
 typedef float f32;
 extern "C" {
 extern int D_00000000;
@@ -37,16 +39,17 @@ extern "C" void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32
             v[1] = yLook;
             v[2] = zLook;
             gl_vec3_normalize_0005F5F0(v);
-            z = v[2];
+            z = v[2]; if (z) {}
             y = v[1];
             x = v[0];
         }
-        xLook = x * 10.0f;
+        x *= 10.0f;
+        xLook = x;
         yLook = y * 10.0f;
         zLook = z * 10.0f;
         v[0] = xLook;
         v[1] = yLook;
-        v[2] = zLook;
+        v[2] = zLook; if (z) {}
         d2 = 100.0f;
     }
     len = -1.0f / sqrtf(d2);
