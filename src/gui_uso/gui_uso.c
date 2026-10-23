@@ -366,13 +366,22 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
  *     tail-duplicates it into both inner branches, target keeps it single — a
  *     short-cast temp did NOT defeat it); `beql` vs `beq` on the space-skip
  *     test; and the resulting recompute(sll/sra)-vs-reload(lw/move) opcode
- *     skew. Opcode multiset differs by these few; logic is byte-correct. */
+ *     skew. Opcode multiset differs by these few; logic is byte-correct.
+ *   - 2026-10-23 agent-g (run 139): 82.17 -> ~84.7 fuzzy, 309 -> 310 words. The
+ *     frame is DECLARED-LOCAL COUNT: cfe reserved one word per declared local
+ *     (register-allocated or not), so dropping 8 words of locals (cnt2-4 /
+ *     cmd2-4 reuse cnt / cmd, one t / v pair for the nested blocks, ch / f2 /
+ *     gidx inlined) gives frame 0x108 = target, and declaring 12 words of
+ *     locals before spD4 puts spD4 / spD3 at 212 / 211 (target). xa3 / xa0b are
+ *     int (no re-sign-extension), and the three loop appends re-read the write
+ *     base from a3->0xC (with cnt / cmd shared this no longer double-loads).
+ *     LEFT: the first packet colours a3 v1 / dl a3 (target a3 / v0), sp7C
+ *     spills at 120 (target 124), and the two `(t < 0) ? t : 0` arms (target
+ *     `b join; move v0,a0; move a0,v0`) -- writing them as ternaries is 309 /
+ *     81.8. */
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5) {
-    float spD4;
-    unsigned char spD3;
-    int sp7C;
     float var_f22;
     int s6;
     unsigned char *s7;
@@ -381,6 +390,13 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
     int *dl;
     int cnt;
     int *cmd;
+    int *glyph;
+    int s0;
+    float f0b;
+    int f8;
+    float spD4;
+    unsigned char spD3;
+    int sp7C;
 
     a3 = *(int**)((char*)arg0 + 0x24);
     s6 = *(int*)((char*)arg0 + 0x14);
@@ -402,62 +418,54 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
     idx = 0;
     if (gl_func_00000000(arg5) != 0) {
         do {
-            unsigned char ch = *s7;
-            if (ch != 0x20) {
+            if (*s7 != 0x20) {
                 float f0 = (float)s6 * arg4;
-                float f2 = (float)arg2 + (spD4 * arg4);
-                int s4 = (int)f2 * 4;
-                short s1 = ((int)f2 + (int)f0) * 4;
+                int s4 = (int)((float)arg2 + (spD4 * arg4)) * 4;
+                short s1 = ((int)((float)arg2 + (spD4 * arg4)) + (int)f0) * 4;
                 int f10b = (int)(((float)(s6 - 1) * 1024.0f) / f0);
-                int *glyph;
-                int s0;
-                float f0b;
-                int f8;
                 short ca0, ca1;
-                short xa3, xa0b;
+                int xa3, xa0b;
                 int wa3, wa0;
-                int cnt2, cnt3, cnt4;
-                int *cmd2, *cmd3, *cmd4;
                 int a2v, a1v, a3v;
-                int gidx;
+                int t, v;
 
                 sp7C = f10b & 0xFFFF;
-                gidx = gl_func_00000000(ch);
-                spD3 = (unsigned char)gidx;
-                glyph = (int*)(*(int*)((char*)arg0 + 0x20) + gidx * 0x14);
+                t = gl_func_00000000(*s7);
+                spD3 = (unsigned char)t;
+                glyph = (int*)(*(int*)((char*)arg0 + 0x20) + t * 0x14);
                 s0 = glyph[2];
                 gl_func_00000000(*(int*)((char*)arg0 + 0x24), *(int*)((char*)arg0 + 0x4),
                                  *(int*)((char*)arg0 + 0x18), *(int*)((char*)arg0 + 0x1C),
                                  glyph[0], glyph[1], s0, s6, 0);
                 a3 = *(int**)((char*)arg0 + 0x24);
                 dl = *(int**)((char*)a3 + 0xC);
-                cnt2 = dl[1];
+                cnt = dl[1];
                 f0b = (float)s0 * arg3;
-                dl[1] = cnt2 + 1;
+                dl[1] = cnt + 1;
                 f8 = (int)((float)arg1 + (var_f22 * arg3));
-                cmd2 = (int*)(*(char**)dl + cnt2 * 8);
+                cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
                 ca0 = (f8 + (int)f0b) * 4;
                 ca1 = f8 * 4;
-                if (ca0 > 0) wa3 = ca0; else wa3 = 0;
-                if (s1 > 0) wa0 = s1; else wa0 = 0;
-                cmd2[0] = ((wa3 & 0xFFF) << 0xC) | 0xE4000000 | (wa0 & 0xFFF);
-                if (ca1 > 0) xa3 = ca1; else xa3 = 0;
-                if ((short)s4 > 0) xa0b = (short)s4; else xa0b = 0;
-                cmd2[1] = ((xa3 & 0xFFF) << 0xC) | (xa0b & 0xFFF);
+                wa3 = (ca0 > 0) ? ca0 : 0;
+                wa0 = (s1 > 0) ? s1 : 0;
+                cmd[0] = ((wa3 & 0xFFF) << 0xC) | 0xE4000000 | (wa0 & 0xFFF);
+                xa3 = (ca1 > 0) ? ca1 : 0;
+                xa0b = ((short)s4 > 0) ? (short)s4 : 0;
+                cmd[1] = ((xa3 & 0xFFF) << 0xC) | (xa0b & 0xFFF);
                 a3 = *(int**)((char*)arg0 + 0x24);
                 dl = *(int**)((char*)a3 + 0xC);
-                cnt3 = dl[1];
-                dl[1] = cnt3 + 1;
-                cmd3 = (int*)(*(char**)dl + cnt3 * 8);
-                cmd3[0] = 0xB4000000;
+                cnt = dl[1];
+                dl[1] = cnt + 1;
+                cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
+                cmd[0] = 0xB4000000;
                 if (ca1 < 0) {
                     a2v = (int)(((float)(s0 - 1) * 1024.0f) / f0b);
                     if ((short)a2v < 0) {
-                        int t = (int)(ca1 * (short)a2v) >> 7;
-                        if (t > 0) a3v = t; else a3v = 0;
+                        t = (int)(ca1 * (short)a2v) >> 7;
+                        a3v = (t > 0) ? t : 0;
                     } else {
-                        int v = 0;
-                        int t = (int)(ca1 * (short)a2v) >> 7;
+                        v = 0;
+                        t = (int)(ca1 * (short)a2v) >> 7;
                         if (t < 0) v = t;
                         a3v = v;
                     }
@@ -466,25 +474,25 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
                     a2v = (int)(((float)(s0 - 1) * 1024.0f) / f0b);
                 }
                 if (s4 < 0) {
-                    int t = (int)((short)s4 * (short)f10b) >> 7;
+                    t = (int)((short)s4 * (short)f10b) >> 7;
                     if ((short)f10b < 0) {
-                        if (t > 0) a1v = t; else a1v = 0;
+                        a1v = (t > 0) ? t : 0;
                     } else {
-                        int v = 0;
+                        v = 0;
                         if (t < 0) v = t;
                         a1v = v;
                     }
                 } else {
                     a1v = 0;
                 }
-                cmd3[1] = (a3v * -0x10000) | (-a1v & 0xFFFF);
+                cmd[1] = (a3v * -0x10000) | (-a1v & 0xFFFF);
                 a3 = *(int**)((char*)arg0 + 0x24);
                 dl = *(int**)((char*)a3 + 0xC);
-                cnt4 = dl[1];
-                dl[1] = cnt4 + 1;
-                cmd4 = (int*)(*(char**)dl + cnt4 * 8);
-                cmd4[0] = 0xB3000000;
-                cmd4[1] = (a2v << 0x10) | sp7C;
+                cnt = dl[1];
+                dl[1] = cnt + 1;
+                cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
+                cmd[0] = 0xB3000000;
+                cmd[1] = (a2v << 0x10) | sp7C;
                 var_f22 += (float)*(int*)((char*)(*(int*)((char*)arg0 + 0x20) + (int)spD3 * 0x14) + 0xC);
             } else {
                 var_f22 += (float)*(int*)((char*)*(int**)((char*)arg0 + 0x20) + 0xC);
