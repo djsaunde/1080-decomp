@@ -1962,6 +1962,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_6FA8_DONOR := build/src/game_uso/game_uso_ncc_6FA8.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00006FA8=$(GAMEUSO_6FA8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_6FA8_DONOR)
+# 2CC8: camera position snap (28C0 / BB8C sibling); Ctx read through inline accessors (v0 reloads), POD P3 return, by-value operator=; cfe capped at 190 raw.
+GAMEUSO_2CC8_DONOR := build/src/game_uso/game_uso_ncc_2CC8.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY += game_uso_func_00002CC8=$(GAMEUSO_2CC8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_2CC8_DONOR)
 # 3AC0: twelve `new Item(name)`; the inline ctor's by-value param is the shared
 # sp+36 pool slot, four dead named locals give frame 112 (cfe capped at 253/261).
 # It calls the global operator new; the USO imports that as game_uso_func_055750,

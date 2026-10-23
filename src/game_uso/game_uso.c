@@ -1811,131 +1811,16 @@ void game_uso_func_00002CA8(char *a0) {
     game_uso_func_00000000(a0 + 0x44);
 }
 
-// game_uso_func_00002CC8 — STRUCTURAL PASS (0x300 / 192 words,
-// no episode). Raw-.word USO form (single function). Near-identical
-// SIBLING of game_uso_func_000028C0 — same per-object world-matrix
-// builder shape, 2nd variant (extra a1 arg, different output offsets).
-//
-//   void game_uso_func_00002CC8(Obj *obj, A a1) {        // obj -> a2
-//     sp.cache0 = obj->0x14;  sp.cache1 = obj->0x3C->0x38;
-//     if (obj->0x40 == 0) return;
-//     if (obj->0x40 != 1) { ...alt path... return; }
-//     // copy orientation Vec3 from obj->0x3C->0xA0/0xA4/0xA8 into
-//     //   sp scratch (sp+0x8C/0xB4..); func_00000000(obj->0x3C, …);
-//     // matrix*vector FP chains (mul.s/add.s) compose a world
-//     //   transform into sp+0xB4..0xC8;
-//     // read obj->0x5C / +0x8 source Vec3 and apply, writing the
-//     //   composed transform back into obj fields.
-//   }
-//
-// Struct-typing reference:
-//   obj: 0x14 cached word, 0x3C -> sub (->0x38 field, ->0xA0/0xA4/
-//     0xA8 orientation Vec3), 0x40 state (0 skip / 1 build / else
-//     alt), 0x5C a source/output base. a1 = a secondary param.
-//     sp+0xB4..0xC8 = transform scratch. func_00000000 = USO
-//     placeholder dispatcher (transform helper). Same family as
-//     game_uso_func_000028C0 (see its structural comment).
-// Caps (DEFERRED): raw-word USO + placeholder calls + 192-word FP
-//   transform; USO mnemonic disasm limitation prevents byte-match.
-//   Real-C STRUCTURAL body below — entry gate + orientation copy +
-//   transform compose skeleton (sibling of game_uso_func_000028C0).
-//   Byte-match deferred. Name pre-checked: no extern reuse.
-// game_uso_func_00002CC8 — DECODE PASS (0x300 / 192 words, no episode).
-// Raw-.word USO form (single function). Per-object world-transform
-// builder, 2nd variant of the 000028C0 family (extra a1 arg). Decode
-// upgrade: the prior STRUCTURAL body kept everything in Vec3 structs
-// (IDO -O2 reg-keeps + DCEs them -> 48.6% fuzzy, too-small frame).
-// This pass groups every staged vector as a `float v[3]` array passed
-// BY ADDRESS and fans the copy chains through 3-word INTEGER struct
-// copies (Tri3i), forcing the memory-resident staging the target uses
-// (sp+0xB4 staged, sp+0xC0 vcopy, sp+0x8C cp1, sp+0x74 divv, sp+0x54
-// cp2). Byte-match still deferred (raw-word USO disasm + final
-// frame-coloring); pass raises decode fidelity / fuzzy. Name
-// pre-checked: no extern reuse.
-//
-// Struct-typing reference:
-//   obj(a0): 0x14 -> out base, 0x3C -> sub (->0x38 = s matrix/orient
-//     record, ->0xA0/A4/A8 orientation Vec3, ->0x70.. a 3x3 matrix),
-//     0x38 -> ss record, 0x40 = mode (0 skip / 1 build / 3 -z probe /
-//     else +z probe), 0x5C = inverse-scale divisor. a1 = a source Vec3
-//     (mode 1). game_uso_func_000023D4 = local-frame offset helper.
-// ANCHOR 2026-08-22 (agent-h, from FIXED disasm-raw — pinned jal 23D4 now
-//   visible at target 0x60): target frame 216 (0xD8) / 192 insns vs build
-//   160 / 181. Gap = 56 bytes: several staging arrays (likely dir/dir2/res
-//   and one of cp1/cp2) are still reg-kept/DCE'd despite the Tri3i copies.
-//   Next lever: force memory residency for the mode!=0,1 branch's vectors
-//   (per-array volatile pads or address-taken fan-out), THEN chase regs.
-#ifdef NON_MATCHING
+/* game_uso_func_00002CC8: camera position snap (0x300 / 192 words).
+ * EXACT via REPLACE_FUNC_BODY donor splice: the real body is the IDO 7.1 NCC
+ * (C++) donor src/game_uso/game_uso_ncc_2CC8.cpp (192/192 words, sibling of
+ * 28C0 / BB8C: Ctx aggregate read through inline accessors, POD P3 return,
+ * by-value V3::operator=). The cfe wrap capped at 190 raw words.
+ * docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe. Body below
+ * is a placeholder for the splice. */
 void game_uso_func_00002CC8(char *a0, char *a1) {
-    char *out = *(char **)(a0 + 0x14);
-    char *s = *(char **)(*(char **)(a0 + 0x3C) + 0x38);
-    int mode = *(int *)(a0 + 0x40);
-    Vec3 *r;
-    float staged[3], vcopy[3], divv[3], cp1[3], cp2[3];
-    float ssv[3], dir[3], dir2[3], res[3];
-    float invd, dirv;
-
-    if (mode == 0) {
-        return;
-    }
-    if (mode == 1) {
-        staged[0] = *(float *)(s + 0xA0);
-        staged[1] = *(float *)(s + 0xA4);
-        staged[2] = *(float *)(s + 0xA8);
-        r = game_uso_func_000023D4((Vec3 *)&vcopy[0], *(char **)(a0 + 0x3C));
-        *(Tri3i *)&vcopy[0] = *(Tri3i *)r;
-        staged[0] = staged[0] + vcopy[0];
-        staged[1] = staged[1] + vcopy[1];
-        staged[2] = staged[2] + vcopy[2];
-        invd = *(float *)(a0 + 0x5C);
-        divv[2] = *(float *)(a1 + 0x8) / invd;
-        divv[1] = *(float *)(a1 + 0x4) / invd;
-        divv[0] = *(float *)(a1 + 0x0) / invd;
-        *(Tri3i *)&cp1[0] = *(Tri3i *)&divv[0];
-        *(Tri3i *)&cp2[0] = *(Tri3i *)&cp1[0];
-        staged[0] = staged[0] - cp2[0];
-        staged[1] = staged[1] - cp2[1];
-        staged[2] = staged[2] - cp2[2];
-        *(float *)(out + 0x60) = staged[0];
-        *(float *)(out + 0x64) = staged[1];
-        *(float *)(out + 0x68) = staged[2];
-        *(float *)(out + 0xA0) = staged[0];
-        *(float *)(out + 0xA4) = staged[1];
-        *(float *)(out + 0xA8) = staged[2];
-        return;
-    }
-    /* mode != 0,1: probe = M * {0,0,±1000}; ssv = (a0->0x38)->0xA0.. + probe */
-    {
-        char *ss = *(char **)(a0 + 0x38);
-        ssv[0] = *(float *)(ss + 0xA0);
-        ssv[1] = *(float *)(ss + 0xA4);
-        ssv[2] = *(float *)(ss + 0xA8);
-        if (mode == 3) {
-            dirv = -1000.0f;
-        } else {
-            dirv = 1000.0f;
-        }
-        dir[0] = 0.0f;
-        dir[1] = 0.0f;
-        dir[2] = dirv;
-        *(Tri3i *)&dir2[0] = *(Tri3i *)&dir[0];
-        res[0] = *(float *)(s + 0x70) * dir2[0] + *(float *)(s + 0x80) * dir2[1] + *(float *)(s + 0x90) * dir2[2];
-        res[1] = *(float *)(s + 0x74) * dir2[0] + *(float *)(s + 0x84) * dir2[1] + *(float *)(s + 0x94) * dir2[2];
-        res[2] = *(float *)(s + 0x78) * dir2[0] + *(float *)(s + 0x88) * dir2[1] + *(float *)(s + 0x98) * dir2[2];
-        ssv[0] = ssv[0] + res[0];
-        ssv[1] = ssv[1] + res[1];
-        ssv[2] = ssv[2] + res[2];
-        *(float *)(out + 0x60) = ssv[0];
-        *(float *)(out + 0x64) = ssv[1];
-        *(float *)(out + 0x68) = ssv[2];
-        *(float *)(out + 0xA0) = ssv[0];
-        *(float *)(out + 0xA4) = ssv[1];
-        *(float *)(out + 0xA8) = ssv[2];
-    }
+    volatile char *ret = a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00002CC8);
-#endif
 
 void game_uso_func_00002FC8(int *a0, int a1, int a2) {
     if (*(int*)((char*)a0 + 0x40) == a1) return;
