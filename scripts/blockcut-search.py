@@ -43,6 +43,13 @@ Search options:
                   towards K.  Repeatable.  An empty Y deletes X (e.g. drop
                   an existing `if (1) {}`: --swap 'if (1) {}=>').
   --lines A-B     only positions on source lines A..B (repeatable)
+  --also NAME     also cut inside the body of NAME (an inline member or helper
+                  such as `next()`; a cut there lands in every inlined copy,
+                  e.g. between the index bump and the slot address).  For cuts
+                  inside a macro, expand the draft first (`gcc -E -P`).
+                  Staged searches (agent-c run 126, 1304C): run --k 1..2 on the
+                  packets, keep the best, then search --also next(), then
+                  inside the expanded macros.
   --greedy        after the singles, grow the best single greedily (beam 4)
                   instead of enumerating every K-subset (for big functions)
   --max N         above N exhaustive variants, switch to --greedy (default 20000)
@@ -335,6 +342,7 @@ def main():
     ap.add_argument('--ins', default='if (1) {}')
     ap.add_argument('--swap', action='append', default=[])
     ap.add_argument('--lines', action='append', default=[])
+    ap.add_argument('--also', action='append', default=[])
     ap.add_argument('--greedy', action='store_true')
     ap.add_argument('--max', type=int, default=20000)
     ap.add_argument('--jobs', type=int, default=8)
@@ -360,6 +368,11 @@ def main():
     typedefs = set(re.findall(r'typedef[^;{}]*?\b([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*;', t)) | \
         set(re.findall(r'\}\s*([A-Za-z_]\w*)\s*;', t))
     pos = positions(t, ob, end, C.kind == 'c', typedefs)
+    for other in a.also:
+        lo = locate_def(t, other, False)
+        if not lo:
+            sys.exit(f'--also {other}: no definition found')
+        pos += positions(t, lo[0], lo[1], C.kind == 'c', typedefs)
     if a.lines:
         rng = [tuple(int(x) for x in s.split('-')) for s in a.lines]
         pos = [p for p in pos if any(lo <= t.count('\n', 0, p) + 1 <= hi for lo, hi in rng)]
