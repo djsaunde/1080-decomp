@@ -576,7 +576,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 136: 6126C NM if (arg3) {} (122 -> 123 words = target): 0x2e850 -> 0x2e858 (62F08 NM offset 0x2e808).
 # agent-g run 136: 5D134 NM named product q_ = a * c (48 -> 47 words = target): 0x2e858 -> 0x2e854 (62F08 NM offset 0x2e804).
 # agent-g run 136: 5F5F0 NM if (yLook) {} in the degenerate-axis arm (230 -> 229 words = target): 0x2e854 -> 0x2e850 (62F08 NM offset 0x2e800).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e850 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 133: 3D54C NCC donor + placeholder host: 0x2e850 -> 0x2e854 (62F08 NM offset 0x2e804).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e854 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1482,10 +1483,6 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F5F0_NM_DONOR
 GAMELIBS_5F984_NM_DONOR := build/src/game_libs/game_libs_ncc_5F984_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F984=$(GAMELIBS_5F984_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F984_NM_DONOR)
-# 3D54C = n-th node value via the {cur, nxt} list iterator (NCC 94.5 vs cfe 80.2). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3D54C_NM_DONOR := build/src/game_libs/game_libs_ncc_3D54C_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003D54C=$(GAMELIBS_3D54C_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D54C_NM_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
@@ -1522,6 +1519,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3D48C_DONOR := build/src/game_libs/game_libs_ncc_3D48C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003D48C=$(GAMELIBS_3D48C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D48C_DONOR)
+# 3D54C = n-th node value via the same {cur, nxt} iterator (entry through an inline first(), r initialised); NCC donor.
+GAMELIBS_3D54C_DONOR := build/src/game_libs/game_libs_ncc_3D54C.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003D54C=$(GAMELIBS_3D54C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D54C_DONOR)
 # 372D4 = sub-node position copy + rot reset + virtual slot 3 (smart-pointer handle local); NCC donor.
 GAMELIBS_372D4_DONOR := build/src/game_libs/game_libs_ncc_372D4.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000372D4=$(GAMELIBS_372D4_DONOR)

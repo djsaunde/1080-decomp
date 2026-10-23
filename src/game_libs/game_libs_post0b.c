@@ -7430,54 +7430,11 @@ int game_libs_func_0003D538(int a0, int a1, int a2) {
     return 0;
 }
 
-/* game_libs_func_0003D54C: linked-list walk — advance arg0->unk10's chain
- * via ->unk4 (next), reading ->unk0 (value), counting up to arg1 nodes;
- * returns the last ->unk0 read (0 when the chain runs out). sp0 holds the
- * current node (spilled), sp4 the next. (splat had mis-split the leading
- * `lw t6,0x10(a0)` into a 0x4 symbol; this is the merged 0x70 fn at 0x3D54C.)
- *
- * 64.3% NM (2026-07-09 agent-e, was 56.4%): re-decoded with the W45
- * iterator lever kit (address-taken cur/next via dead pp anchor +
- * ternary-comma advance + pre-branch ret=val copy). Word-count now
- * EXACT (28w frame -8) and entry/exit match; residual 10 words are ONE
- * coupled artifact uopt -O2 won't drop: it loop-carries `next`'s value
- * in $v1 (`move v1,t1` + entry-only lw, vs target's fresh `lw t0,4(sp)`
- * every iteration) and copy-props ret=val (deleting the target's twin
- * `move v1,a0` delay-slot copies; ret==val is provable at the return, so
- * every copy spelling merges). 14 in-tree variants + standalone
- * do-while/goto/-O1/-g3/ido53 sweeps all byte-identical or worse —
- * canonicalization-invariant; rejection needs a call-crossing penalty
- * this leaf doesn't have. Permuter-class. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3D54C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 133). n-th node
+ * value through the {cur, nxt} list iterator of 3D48C; see the .cpp header. */
 int game_libs_func_0003D54C(int *arg0, int arg1) {
-    int *next;
-    int *cur;
-    int count;
-    int val;
-    int ret;
-    int **pp;
-
-    while (0) {
-        pp = &cur;
-        pp = &next;
-    }
-    count = 0;
-    next = (int *)arg0[0x10 / 4];
-    cur = next;
-    val = (cur != NULL) ? (next = (int *)cur[1], cur[0]) : 0;
-    ret = val;
-    while (val != 0) {
-        if (count == arg1) break;
-        count += 1;
-        cur = next;
-        val = (cur != NULL) ? (next = (int *)cur[1], cur[0]) : 0;
-        ret = val;
-    }
-    return ret;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003D54C);
-#endif
 
 /* 25-insn alloc-if-null + init + zero-Vec3. Promoted 81.6%→100% via:
  * (1) `||` short-circuit alloc form (per gl_func_000378D0 recipe);
