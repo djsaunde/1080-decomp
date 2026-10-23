@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0003DD28",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T21:10:59.154900+00:00",
+  "end_time": "2026-10-23T21:10:59.154918+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T21:10:59.154914+00:00",
+      "assistant_text": "C++ donor: cfront create + virtual call; if (a0) {} after the create call; frame pads; spliced over an empty placeholder.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 38,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0003DD28: cfront create + virtual call + list attach.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\n/* (agent-c run 133 / 134) 3DD28 = create an object through its cfront allocating\n * constructor (called with this == 0; `new Obj` compiles to the same __ct(0) call),\n * set +0x70 = 10.0f, call its virtual f(&kind) with kind = 19 through the\n * this-adjusted vtable entry, link it into the owner's node list (node = a0->0x40),\n * then node->4 = 1 if the node already held an object, node->0x14 = o.\n * cfe 67.3 -> NCC 81.4 (run 133) -> 81.7 (frame pads) -> EXACT: `if (a0) {}` right\n * after the create call keeps a0 live across it, which moves o into v1 (the target's\n * `move v1,v0` copy) and fills the jalr delay as the target does. pad[2] / pad2[2]\n * (one dead store each) give the frame 56 and the kind / o / node homes 44 / 40 / 36:\n * NCC gives every referenced local a slot. */\nextern \"C\" void *gl_func_00000000(...);\nstruct Base { char pad[0x10]; char link[0x18];\n  virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void f(int *); };\nstruct Obj : Base { char pad2c[0x44]; float f70; };\nstruct Node { int x0; int x4; char pad8[0xC]; Obj *o14; };\nstruct Owner { char pad[0x40]; Node *n40; };\nextern \"C\" Obj *gl_func_0003DD28(Owner *a0) {\n    int pad[2];\n    int kind;\n    Obj *o;\n    Node *node;\n    int pad2[2];\n    pad[0] = 0; pad2[0] = 0;\n    o = (Obj *)gl_func_00000000(0); if (a0) {}\n    o->f70 = 10.0f;\n    kind = 19;\n    o->f(&kind);\n    node = a0->n40;\n    gl_func_00000000(o->link, node);\n    if (node->o14) node->x4 = 1;\n    node->o14 = o;\n    return o;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3DD28.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0003DD28.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), rdiff 0 diffwords"
+  }
+}

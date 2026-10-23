@@ -7909,28 +7909,10 @@ int gl_func_0003DC90(D914Obj *a0) {
 //   seed + intrusive-list splice; object/vtable/list structs untyped.
 //   Real-C STRUCTURAL body below. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3DD28.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 134). */
 char *gl_func_0003DD28(char *a0) {
-    char *o = (char *)gl_func_00000000();
-    int kind = 0x13;
-    char *h;
-    char *node;
-    void (*fp)(int, int *);
-    *(float *)(o + 0x70) = 10.0f;
-    h = *(char **)(o + 0x28);
-    fp = *(void (**)(int, int *))(h + 0x2C);
-    fp(*(short *)(h + 0x28) + (int)o, &kind);
-    node = *(char **)(a0 + 0x40);
-    gl_func_00000000(o + 0x10, node);
-    if (*(char **)(node + 0x14) == 0) {
-        *(int *)(node + 0x04) = 1;
-    }
-    *(char **)(node + 0x14) = o;
-    return o;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DD28);
-#endif
 
 /* game_libs_func_0003DDC0: 34-insn linked-list search + Vec3 copy.
  * Newly decompilable (entry insn `lw t6,16(a0)` was the splat-stolen

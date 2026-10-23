@@ -588,7 +588,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 134: 42778 NCC donor + placeholder host: 0x2e8a0 -> 0x2e8a4 (62F08 NM offset 0x2e854).
 # agent-c run 134: 483BC NCC donor + placeholder host: 0x2e8a4 -> 0x2e890 (62F08 NM offset 0x2e840).
 # agent-c run 134: 3B6A0 NM donor if (max) {} (198 -> 199 of 200 words): 0x2e890 -> 0x2e894 (62F08 NM offset 0x2e844).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e894 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 3DD28 NCC donor + placeholder host (36 -> 38 words): 0x2e894 -> 0x2e8a0 (62F08 NM offset 0x2e850).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8a0 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1502,10 +1503,6 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F984_NM_DONOR
 GAMELIBS_3DF58_NM_DONOR := build/src/game_libs/game_libs_ncc_3DF58_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DF58=$(GAMELIBS_3DF58_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DF58_NM_DONOR)
-# 3DD28 = factory + virtual call + list attach (NCC 81.4 vs cfe 67.3, 36 vs 35 words of 38). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3DD28_NM_DONOR := build/src/game_libs/game_libs_ncc_3DD28_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DD28=$(GAMELIBS_3DD28_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DD28_NM_DONOR)
 # 4A9F0 = stream -> grid byte copier (NCC 89.2 vs cfe 76.5, 39 -> 40 words = target, frameless). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4A9F0_NM_DONOR := build/src/game_libs/game_libs_ncc_4A9F0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_NM_DONOR)
@@ -1562,6 +1559,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_483BC_DONOR := build/src/game_libs/game_libs_ncc_483BC.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000483BC=$(GAMELIBS_483BC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_483BC_DONOR)
+# 3DD28 = cfront create + virtual f(&kind) + node attach (if (a0) {} after the create call, frame pads); NCC donor.
+GAMELIBS_3DD28_DONOR := build/src/game_libs/game_libs_ncc_3DD28.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DD28=$(GAMELIBS_3DD28_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DD28_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
