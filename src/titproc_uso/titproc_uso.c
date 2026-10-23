@@ -850,7 +850,7 @@ void titproc_uso_func_0000116C(char *s0) {
          * t==0 path and the p-chain-nonzero path. */
         v = *(int *)(s0 + 0x68);
         if (v != 0) {
-            *(int *)(s0 + 0x68) = v - 1;
+            *(int *)(s0 + 0x68) = v - 1; if (s0) {}
             v = v - 1;
         }
         if (v == 0) {
