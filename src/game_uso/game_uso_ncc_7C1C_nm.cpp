@@ -328,6 +328,7 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
             }
             *(Tri3i *)&scratch = *(Tri3i *)&lF;
             *(Tri3i *)&lRD = *(Tri3i *)&scratch;
+            if (arg0) {}
             hitC.x = scratch.x; hitC.y = scratch.y; hitC.z = scratch.z;
 
             if (mode == 1) {
