@@ -4142,7 +4142,7 @@ int game_uso_func_0000A0E8(char *, char *, char *);
 void game_uso_func_0000AB98(void *);
 void game_uso_func_000071A4(int *);
 int game_uso_func_00006FA8(int *);
-long long game_uso_func_00007538(int *, int);
+void game_uso_func_00007538();
 void game_uso_func_0000591C(int *a0) {
     /* 2026-09-09: 76.42 -> 81.96 -> 88.18 -> 91.19 -> 92.85 -> 93.99 -> 94.09% NM.
      * Word-typed staging copies preserve
@@ -4784,6 +4784,7 @@ void game_uso_func_00006A30(int *a0) {
  * the target; (2) the dead `addiu v0,v0,0x318` is `p += 0x318` placed BEFORE
  * the three reads, which read through p (folded back to 0x318(v0)..). */
 void game_uso_func_00011024();
+void game_uso_func_00007538();
 void game_uso_func_00006CF0(int *a0) {
     V3_6A30 added_vec;   /* sp+0x7C */
     V3_6A30 base_vec;    /* sp+0x70 */
@@ -5025,418 +5026,156 @@ void game_uso_func_0000751C(char *a0) {
 }
 
 #ifdef NON_MATCHING
-/* game_uso_func_00007538: 0x560 (344 insns) — largest residue of the split-up
- * 0x7424 bundle. Per-frame event dispatcher + per-bit timer decrementer.
- *
- * Partial C body below: 63.27% as of 2026-05-30 after replacing the s64
- * return `(ll)ret_hi<<32 | ret_lo` (which compiled to an __ll_lshift CALL,
- * forcing a frame + $a0->$s0 promotion) with a hi:lo union build — the target
- * is a frameless LEAF (no jal). That single change took it 58.69%->63.27% and
- * removed the long-documented "built saves $s0" frame divergence at entry.
- * Was 58.69% (2026-05-17, bit-0x80 audit), 38.83% pre-bit-0x80-table rewrite.
- *
- * NEXT BLOCKER (2026-05-30): residual is a 2-word $a2/$a3 SPILL frame (build
- * `addiu sp,-88; sw a3,0(sp); sw a2,4(sp)`; target has NO frame) + ~15 still-
- * stubbed insns. Root cause is an INVERTED arg-register assignment: the target
- * keeps ret_lo/ret_hi in $v0/$v1 the whole function (it inits `move v0,zero;
- * move v1,zero`, returns from there with no final move) which pushes
- * counter->$a2 and a1_saved->$a3; OUR build puts a1_saved->$v0, counter->$v1
- * (the union return computes ret_lo/ret_hi in $a2/$a3 then moves to $v0/$v1 at
- * the end), so $a2/$a3 are needed for the returns and the long-lived
- * counter/a1_saved spill. REGALLOC-DUMP CONFIRMED (2026-05-30, `cc -Wo,-zdbug:6`
- * -> uoptlist, see docs/IDO_CODEGEN.md): a1_saved colors to $v0 and counter to
- * $v1 because their decls (`a1_saved=a1`, `counter=a0[0x50]`) are REAL early
- * USES encountered before ret_lo/ret_hi's first meaningful use — ret_lo/ret_hi
- * are `=0` constants until an arm ORs them, so their candidates are created late
- * and lose the $v0/$v1 colors. Lever (per the dump's reorder-first-use rule):
- * give ret_lo/ret_hi an earlier non-constant first-use so they're colored before
- * a1_saved/counter; tried-and-pending (no natural early use — they're genuinely 0
- * until the arms). A focused regalloc session should drive this via the uoptlist
- * candidate order. Until then the spill caps it.
- * 2026-07-30 spelling probes (all INERT, byte-identical output): anti-fold
- * guards `x=0; if(1){x=...}` on a1_saved+counter (copy-propped, dead 0-def
- * DCE'd); `register` hints on ret_lo/ret_hi (candidate order unchanged).
- * Confirms this is a uoptlist-candidate-order cap, not a spelling lever.
- * Captures prelude + dispatch outline + epilogue + bit-0x80 trunk arm.
- * Many arm bodies are TODO-stubbed with correct control-flow targets but
- * no per-bit state mutations yet.
- *
- * 2026-05-05 BUG FIXES (+5.3pp):
- *   (1) Prelude `if ((flags & 0x10) == 0)` was wrong — should be
- *       `if (flags > 0)`. The asm computes `t8 = a3 & 0x10` separately
- *       (later used as the `arg1 & 0x10` dispatch test); the decrement
- *       guard is `blez a1` which is `flags <= 0`. The two computations
- *       were conflated.
- *   (2) Dispatch arms were testing `a1` (which is the running-mask state
- *       built up by ORs into a0[0x6C], starts at 0 = flag2 in the
- *       flag2==0 path) instead of `a1_saved` (the input arg). With the
- *       running mask starting at 0, NONE of the arm bodies could fire.
- *       The bit tests are on `a1_saved` (= a3 in asm), the running mask
- *       gets ORed bits stored back into a0[0x6C].
- *
- * Next pass should compare objdiff output per-arm and fill in the TODO
- * placeholders embedded in each arm.
- *
- * 2026-05-05 ASM TRACE NOTES (no code change this pass):
- *   - Branch at 0x75D8 is `beq t1,zero,+0xA` (opcode 4 = BEQ), NOT BNEL.
- *     Initial mis-decode as bnel led to a regression-tested invert attempt
- *     (36.89% -> 36.74%, reverted). The dispatch arm is normal-direction:
- *     bit 0x01 set → body at 0x75E0 fires (raises bit 0x01 in a0[0x6C]).
- *
- *   - bit 0x04 arm's full asm body (0x7628-0x7650) does MORE than the
- *     current C captures:
- *       a1 was loaded as t9 = a0[0x50] (counter check)
- *       at = 0x3F800000 (1.0f)
- *       t0 = 8
- *       if (t9 != 0) skip 6 insns (don't fire body)
- *       f2 = 1.0f                            ← current C has this
- *       v1 = 1                               ← MISSING (retHi)
- *       a0[0x50] = 8                         ← current C has this
- *       a1 = a0[0x6C] (reload, in delay slot of b)
- *     Adding `retHi=1` requires returning a 64-bit (v0,v1) pair; the
- *     current C body returns void via implicit dropped-value. Function
- *     signature needs update to int64_t (or u64) before the bit-0x04
- *     and bit-0x80 arm bodies (which both set retHi) can match.
- *
- *   - Function epilogue stores ret_lo to `outer[0x800]->[0x40]`; the
- *     return value (v0,v1) packs ret_lo,ret_hi for the caller too. Both
- *     paths must be correct for a full match.
- *
- *   Next pass: change signature to `s64 game_uso_func_00007538(int*, int)`
- *   then add `retHi` field updates. Likely +5-10pp gain.
- *
- * DECODE (insns 1-40 @ 0x7538-0x75D4):
- *   Setup:
- *     f16 = 0.0f; f0 = 0.0f; f2 = 0.0f; v0 = v1 = 0 (retLo/retHi)
- *     a3 = saved_arg1 (=a1)
- *     counter = a0[0x50]; if (counter > 0) a0[0x50]--;
- *     flags   = a0[0x48]; if (flags   > 0) a0[0x48]--;
- *     mask10 = arg1 & 0x10;
- *     flag2   = a0[0x6C];
- *   Dispatch (bnel branch-likely at 0x40):
- *     if (flag2 != 0) goto tail_case (at 0x20C, with t1 = flag2 & 1 in delay)
- *   Fallthrough (flag2 == 0):
- *     if ((arg1 & 0x10) == 0) goto dispatch_next (0xA0, with t1 = arg1 & 1 in delay)
- *     // case: flag2==0 AND (arg1 & 0x10):
- *     t9 = a0[0x30]; t0 = t9[0x938/4];
- *     if (t0 == 0) goto tail_case (beql at 0x58, with t1 = a1 & 1 in delay)
- *     // case: t0 != 0 (inner): float sign-of check
- *     f4 = *(float*)&a0[0x38];
- *     if (f4 >= 0.0f) { a0[0x3C] = 1.0f; } else { a0[0x3C] = -1.0f; }
- *     goto dispatch_next (0xA0, reloads a1 = a0[0x6C])
- *
- * CHARACTERISTICS:
- *  - Uses 0xBF80 = -1.0f and 0x3F80 = 1.0f as magic constants (sign-setter)
- *  - Multiple beql/bnel branch-likely ops — tight scheduling with delay slot
- *    side-effects (reloading a1, setting up a2 args, etc.)
- *  - State machine: a0->field_6C holds a flag mask; arg1 holds event bits
- *  - a0->field_30 is an outer struct pointer (->field_938 is another flag)
- *
- * DECODE (insns 40-80 @ 0x75D4-0x766C): dispatch_next cascade
- * Starting at 0x75D4 (a1 reloaded from a0[0x6C]), a chain of per-bit
- * tests on arg1, each firing a short event-handler arm that flips a
- * flag in a0[0x6C], sets one or two state fields, and branches to a
- * common merge point at ~0x7740.
- *
- * The arm template:
- *   if (arg1 & BIT) {
- *       // optional guard on counter/flags
- *       if (guard != 0) goto next_arm;
- *       a0[0x6C] |= BIT;
- *       a0[FIELD] = CONST;   // field/const varies per arm
- *       [optional: side effect — float const, counter reset, etc.]
- *       goto merge;
- *   }
- *   next_arm:
- *
- * Decoded arms (first 5 of ~8):
- *   arg1 & 0x01  (guarded by flags == 0):  a0[0x6C] |= 1;    a0[0x44] = 91
- *   arg1 & 0x40  (no guard):                a0[0x6C] |= 0x40; a0[0x44] = 13
- *   arg1 & 0x04  (guarded by counter == 0): a0[0x6C] |= ?;    a0[0x50] = 8;
- *                                           f2 = 1.0f; retHi = 1
- *   arg1 & 0x20  (no guard, yet):           a0[0x6C] |= 0x20; a0[0x4C] = 38
- *   arg1 & 0x80  (pending):                 a0[0x6C] |= ?;    ...
- *
- * This is an animation/state-event dispatcher. Each bit in arg1 maps to
- * a specific transition; the 91/13/38 constants are likely frame-count
- * targets for animations. a0[0x44], a0[0x4C], a0[0x50] are state timers.
- * a0[0x6C] is the active-events mask.
- *
- * DECODE (insns 80-120 @ 0x7670-0x7708):
- * The arg1 & 0x20 arm's BODY (started at 0x765C) is longer than the
- * simpler arms — it does a floating-point abs+mod9 computation:
- *   f12 = outer_ptr->0xB4           // load float
- *   f14 = (f12 < 0) ? -f12 : f12    // fabs via bc1fl + neg.s
- *                                    // NB: dead `mov.s f14, f12` at 0x768C
- *                                    //   (unreachable, both arms branch to merge)
- *   a0[0x44] = 60
- *   a0[0x58] = (int)f14 % 9         // trunc.w.s + divu + mfhi
- *   goto merge
- *
- * Two more arms decoded:
- *   arg1 & 0x80 (no guard): a0[0x6C] |= 0x80; a0[0x4C] = 0; a0[0x44] = 2
- *   arg1 & 0x08 (guarded by outer->0x938 == 0): set f2 = -1.0f, goto merge;
- *                 otherwise (outer->0x938 != 0) different path
- *
- * DECODE (insns 116-160 @ 0x7708-0x77B8): arg1 & 0x02 arm + flag-decrement
- * merge trunk.
- *
- * arg1 & 0x02 arm (0x7708-0x773C):
- *   if (arm_02_fires) {                         // t5 carried from prev arm
- *       int out_flag = outer->field_938;
- *       if (out_flag == 0) {
- *           // branch-likely skip; flow falls back into mask update below
- *       } else {
- *           retLo = 0x400;                      // or into return low word
- *           if (arg1 & 0x100) {
- *               a0->field_6C = (a1 | 0x100);    // set BOTH bits 0x02 AND 0x100
- *               a0->field_44 = 0x68;            // animation counter = 104
- *           }
- *       }
- *       a1 = a0->field_6C;                      // reload mask for merge
- *   }
- *
- * FLAG-DECREMENT TRUNK (merge at 0x7740, per-bit-and-counter cleanup):
- *   // For each bit still set in the active mask (a1 = a0->field_6C), the
- *   // function decrements its associated countdown timer at a0->field_44
- *   // and clears the bit when the timer reaches zero.
- *   //
- *   // Pattern per bit:
- *   //   if ((a1 & BIT) != 0) {
- *   //       retLo |= RET_BITS_FOR_THIS_BIT;
- *   //       a1 = a0->field_44 - 1;
- *   //       a0->field_44 = a1;
- *   //       if (a1 == 0) {
- *   //           a0->field_6C &= ~MASK_FOR_THIS_BIT;
- *   //           goto ret;  // short-circuit — don't process lower bits
- *   //       }
- *   //   }
- *   //   // fall through to next bit
- *   //
- *   // Decoded per-bit entries so far:
- *   //   bit 0x01: retLo |= 0x500; clear-mask = ~0xA1 (clears 0x80|0x20|0x01)
- *   //   bit 0x40: retLo |= 0x100; clear-mask = ~0x40
- *   //   bit 0x20: (cascades into another outer->0x938 check, continues)
- *   //
- *   // Multi-bit clear on bit-0x01 hit suggests bit 0x01 is a "master event"
- *   // — when its timer expires, three related event bits all reset together.
- *
- * REMAINING ~185 insns at 0x77B8-0x7A98: continued flag-decrement trunk for
- * bits 0x20, 0x80, 0x100, 0x08, 0x04, 0x10; the merge/ret block; the
- * flag2!=0 tail_case at 0x20C that we first saw at bnel @0x40. Return
- * packs (retHi, retLo) into (v1, v0) = 64-bit "which-events-fired" word.
- *
- * Not ready to write full C yet — too many intermediate branches with
- * delay-slot-scheduled state mutations (each arm's delay slot does part of
- * the next arm's setup). Next pass: decode 0x77B8-0x7880 (bits 0x20, 0x80,
- * 0x100) and the merge block proper. */
+/* 2026-10-23 agent-g run 128: REWRITTEN FROM SCRATCH (old body 611 raw words,
+ * 41 now, same 344 words). The function is VOID: v0 is the event-bit word
+ * (stored to out->0x40, the caller ignores the result) and v1 a local
+ * 'moving' flag (dead before the final out reload reuses v1); with an int /
+ * long long return uopt constrains the bits word away from v0. Dispatch on
+ * the 0x6C mask: an if/else-if chain of event arms writing 0x6C = m | BIT,
+ * one empty if after the 0x10 arm's if/else (joins it before the merge
+ * reload); per-bit countdown trunk reusing m for the decremented 0x44 value
+ * (m = t - 1 computed BEFORE the 0x100 range chain keeps bnez m instead of
+ * t == 1); the 0x80 frame window is t < 8 || (t >= p + 8 && t < p + 16) ||
+ * t >= p + p + 16 with lim a nested ternary; t reuses the dead arg. The
+ * table base needs an empty if right after `tp = D + 0x638` (keeps the
+ * lui/addiu with the addend). LEFT: a1 / a2 swapped between the 0x4DC
+ * period and the CSE temps (2p, table pointer, t + 1, t - 1) in the 0x20 /
+ * 0x80 / 0x100 arms (colour order). */
 extern char game_uso_D_807FEC28;
-long long game_uso_func_00007538(int *a0, int a1) {
-    int ret_lo = 0;
-    int ret_hi = 0;
-    int a1_saved = a1;
-    int counter, flags, flag2;
-    float f0 = 0.0f, f2 = 0.0f, f_tmp;
+#ifndef FW
+#define FW(p, o) (*(int *)((char *)(p) + (o)))
+#endif
+#define FF7(p, o) (*(float *)((char *)(p) + (o)))
+#define O938(a) FW(FW(a, 0x30), 0x938)
+#define TBL ((float *)((char *)&game_uso_D_807FEC28 + 0x638))
+void game_uso_func_00007538(char *a0, int arg) {
+    float zero = 0.0f;
+    float fx = zero;
+    float fy = zero;
+    int ret = 0;
+    int moving = 0;
+    int m;
+    int t;
+    float f, g;
 
-    counter = a0[0x50 / 4];
-    if (counter > 0) a0[0x50 / 4] = counter - 1;
-    if ((int)a0[0x48 / 4] > 0) a0[0x48 / 4] -= 1;
-
-    flag2 = a0[0x6C / 4];
-    if (flag2 != 0) goto trunk;
-
-    a1 = flag2;
-
-    if (a1_saved & 0x10) {
-        if (((int*)a0[0x30 / 4])[0x938 / 4] != 0) {
-            f_tmp = *(float*)&a0[0x38 / 4];
-            *(float*)&a0[0x3C / 4] = (f_tmp >= 0.0f) ? 1.0f : -1.0f;
-        }
-        a1 = a0[0x6C / 4];
-        goto trunk;
-    }
-
-    if (a1_saved & 0x01) {
-        flags = a0[0x48 / 4];
-        if (flags != 0) goto check_40;
-        a0[0x6C / 4] = a1 | 0x01;
-        a0[0x44 / 4] = 91;
-        a1 = a1 | 0x01;
-        goto trunk;
-    }
-check_40:
-    if (a1_saved & 0x40) {
-        a0[0x6C / 4] = a1 | 0x40;
-        a0[0x44 / 4] = 13;
-        a1 = a1 | 0x40;
-        goto trunk;
-    }
-    if (a1_saved & 0x04) {
-        if (counter != 0) goto check_20;
-        f2 = 1.0f;
-        ret_hi = 1;
-        a0[0x50 / 4] = 8;
-        a1 = a0[0x6C / 4];
-        goto trunk;
-    }
-check_20:
-    if (a1_saved & 0x20) {
-        a0[0x6C / 4] = a1 | 0x20;
-        a0[0x4C / 4] = 38;
-        f_tmp = *(float*)&((int*)a0[0x30 / 4])[0xB4 / 4];
-        if (f_tmp < 0.0f) f_tmp = -f_tmp;
-        a1 = a0[0x6C / 4];
-        a0[0x44 / 4] = 60;
-        a0[0x58 / 4] = (int)f_tmp % 9;
-        goto trunk;
-    }
-    if (a1_saved & 0x80) {
-        a0[0x6C / 4] = a1 | 0x80;
-        a0[0x4C / 4] = 0;
-        a0[0x44 / 4] = 2;
-        a1 = a1 | 0x80;
-        goto trunk;
-    }
-    if (a1_saved & 0x08) {
-        if (((int*)a0[0x30 / 4])[0x938 / 4] != 0) {
-            f2 = -1.0f;
-        }
-        goto trunk;
-    }
-    if (a1_saved & 0x02) {
-        if (((int*)a0[0x30 / 4])[0x938 / 4] != 0) {
-            ret_lo = 0x400;
-        }
-    } else if (a1_saved & 0x100) {
-        a0[0x6C / 4] = a1 | 0x100;
-        a0[0x44 / 4] = 0x68;
-        a1 = a1 | 0x100;
-    }
-
-trunk:
-    if (a1 & 0x01) {
-        ret_lo |= 0x500;
-        counter = a0[0x44 / 4] - 1;
-        a0[0x44 / 4] = counter;
-        if (counter == 0) {
-            a0[0x6C / 4] &= ~0xA1;
-        }
-        goto ret_tail;
-    }
-    if (a1 & 0x40) {
-        counter = a0[0x44 / 4] - 1;
-        if (counter != 0) {
-            a0[0x44 / 4] = counter;
-            ret_lo |= 0x100;
-        } else {
-            a0[0x6C / 4] &= ~0x40;
-        }
-        goto ret_tail;
-    }
-    if (a1 & 0x20) {
-        if (((int*)a0[0x30 / 4])[0x938 / 4] == 0) {
-            int cnt = a0[0x4C / 4];
-            ret_hi = 1;
-            ret_lo |= 0x200;
-            if (cnt >= 31) {
-                int idx = a0[0x58 / 4];
-                f0 = *(float*)((char*)&game_uso_D_807FEC28 + 0x638 + idx * 8);
-                f2 = *(float*)((char*)&game_uso_D_807FEC28 + 0x638 + idx * 8 + 4);
+    if (FW(a0, 0x50) > 0) FW(a0, 0x50)--;
+    if (FW(a0, 0x48) > 0) FW(a0, 0x48)--;
+    m = FW(a0, 0x6C);
+    if (m == 0) {
+        if (arg & 0x10) {
+            if (O938(a0) != 0) {
+                fy = -1.0f;
+                if (FF7(a0, 0x38) >= zero) FF7(a0, 0x3C) = 1.0f;
+                else FF7(a0, 0x3C) = -1.0f;
+                if (1) {}
             }
-            a0[0x4C / 4] = cnt - 1;
+        } else if ((arg & 1) && FW(a0, 0x48) == 0) {
+            FW(a0, 0x6C) = m | 1;
+            FW(a0, 0x44) = 91;
+        } else if (arg & 0x40) {
+            FW(a0, 0x6C) = m | 0x40;
+            FW(a0, 0x44) = 13;
+        } else if ((arg & 4) && FW(a0, 0x50) == 0) {
+            fy = 1.0f;
+            moving = 1;
+            FW(a0, 0x50) = 8;
+        } else if (arg & 0x20) {
+            FW(a0, 0x6C) = m | 0x20;
+            FW(a0, 0x4C) = 38;
+            f = FF7(FW(a0, 0x30), 0xB4);
+            g = (f < zero) ? -f : f;
+            FW(a0, 0x58) = (unsigned int)(int)g % 9;
+            FW(a0, 0x44) = 60;
+        } else if (arg & 0x80) {
+            FW(a0, 0x6C) = m | 0x80;
+            FW(a0, 0x4C) = 0;
+            FW(a0, 0x44) = 2;
+        } else if (arg & 8) {
+            if (O938(a0) != 0) fy = -1.0f;
+        } else if (arg & 2) {
+            if (O938(a0) != 0) ret = 0x400;
+        } else if (arg & 0x100) {
+            FW(a0, 0x6C) = m | 0x100;
+            FW(a0, 0x44) = 104;
         }
-        if (a0[0x4C / 4] == 0) {
-            a0[0x6C / 4] &= ~0x20;
-        } else {
-            counter = a0[0x44 / 4] - 1;
-            a0[0x44 / 4] = counter;
-            if (counter == 0) {
-                a0[0x6C / 4] &= ~0x20;
+    }
+    m = FW(a0, 0x6C);
+    if (m & 1) {
+        ret |= 0x500;
+        m = FW(a0, 0x44) - 1;
+        FW(a0, 0x44) = m;
+        if (m == 0) FW(a0, 0x6C) &= ~0xA1;
+    } else if (m & 0x40) {
+        m = FW(a0, 0x44) - 1;
+        FW(a0, 0x44) = m;
+        if (m == 0) FW(a0, 0x6C) &= ~0x40;
+        else ret |= 0x100;
+    } else if (m & 0x20) {
+        if (O938(a0) == 0) {
+            arg = FW(a0, 0x4C);
+            moving = 1;
+            ret |= 0x200;
+            if (arg >= 31) {
+                { int i = FW(a0, 0x58); float *tp = (float *)((char *)&game_uso_D_807FEC28 + 0x638); if (1) {} fx = tp[i * 2]; fy = tp[i * 2 + 1]; }
             }
+            FW(a0, 0x4C) = arg - 1;
         }
-        goto ret_tail;
-    }
-    if (a1 & 0x80) {
-        int sub_cnt = a0[0x4C / 4];
-        int list_base;
-        int main_cnt, new_sub_cnt, limit, table_idx;
-        ret_hi = 1;
-
-        if (sub_cnt < 8) {
-            list_base = a0[0x4DC / 4];
-            a0[0x58 / 4] = sub_cnt;
-            if (sub_cnt >= 5) {
-                if (sub_cnt < 8) ret_lo |= 0x1000;
+        if (FW(a0, 0x4C) != 0) {
+            m = FW(a0, 0x44) - 1;
+            FW(a0, 0x44) = m;
+            if (m != 0) goto end;
+        }
+        FW(a0, 0x6C) &= ~0x20;
+    } else if (m & 0x80) {
+        int lim;
+        arg = FW(a0, 0x4C);
+        moving = 1;
+        if (arg < 8 || (arg >= FW(a0, 0x4DC) + 8 && arg < FW(a0, 0x4DC) + 16) || arg >= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 16) {
+            if (arg >= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 16) {
+                FW(a0, 0x58) = arg - (FW(a0, 0x4DC) + FW(a0, 0x4DC)) - 16;
+                if (arg >= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 21 && arg <= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 23) ret |= 0x1600;
+            } else if (arg >= FW(a0, 0x4DC) + 8) {
+                FW(a0, 0x58) = arg - FW(a0, 0x4DC) - 8;
+                if (arg >= FW(a0, 0x4DC) + 13 && arg <= FW(a0, 0x4DC) + 15) ret |= 0x1200;
+            } else {
+                FW(a0, 0x58) = arg;
+                if (arg >= 5 && arg < 8) ret |= 0x1000;
             }
-            goto bit80_table;
+            { int i = FW(a0, 0x58); float *tp = (float *)((char *)&game_uso_D_807FEC28 + 0x638); if (1) {} fx = tp[i * 2]; fy = tp[i * 2 + 1]; }
         }
-        list_base = a0[0x4DC / 4];
-        if (sub_cnt < list_base + 8)  goto bit80_count;
-        if (sub_cnt < list_base + 16) goto bit80_mid;
-        if (sub_cnt < list_base * 2 + 16) goto bit80_count;
-        a0[0x58 / 4] = (sub_cnt - list_base * 2) - 16;
-        if (sub_cnt < list_base * 2 + 21) goto bit80_table;
-        if (list_base * 2 + 23 < sub_cnt) goto bit80_table;
-        ret_lo |= 0x1600;
-        goto bit80_table;
-bit80_mid:
-        a0[0x58 / 4] = (sub_cnt - list_base) - 8;
-        if (sub_cnt < list_base + 13) goto bit80_table;
-        if (list_base + 15 < sub_cnt) goto bit80_table;
-        ret_lo |= 0x1200;
-bit80_table:
-        table_idx = a0[0x58 / 4];
-        f0 = *(float*)((char*)&game_uso_D_807FEC28 + 0x638 + table_idx * 8);
-        f2 = *(float*)((char*)&game_uso_D_807FEC28 + 0x638 + table_idx * 8 + 4);
-bit80_count:
-        main_cnt = a0[0x44 / 4];
-        new_sub_cnt = sub_cnt + 1;
-        a0[0x4C / 4] = new_sub_cnt;
-        if (main_cnt == 0)      limit = 8;
-        else if (main_cnt == 1) limit = a0[0x4DC / 4] + 16;
-        else                    limit = a0[0x4DC / 4] * 2 + 24;
-        if (new_sub_cnt >= limit) {
-            a0[0x6C / 4] &= ~0x80;
+        FW(a0, 0x4C) = arg + 1;
+        lim = (FW(a0, 0x44) == 0) ? 8 : (FW(a0, 0x44) == 1) ? FW(a0, 0x4DC) + 16 : (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 24;
+        if (arg + 1 >= lim) FW(a0, 0x6C) &= ~0x80;
+    } else if (m & 0x100) {
+        t = FW(a0, 0x44);
+        m = t - 1;
+        if (t >= 93) {
+            fy = 1.0f;
+            moving = 1;
+        } else if (t >= 73) {
+            moving = 1;
+        } else if (t >= 61) {
+            ret |= 0x100;
         }
-        goto ret_tail;
+        FW(a0, 0x44) = m;
+        if (m == 0) FW(a0, 0x6C) &= ~0x100;
     }
-    if (a1 & 0x100) {
-        int main_cnt = a0[0x44 / 4];
-        int new_cnt  = main_cnt - 1;
-        if (main_cnt >= 93) {
-            f2 = 1.0f;
-            ret_hi = 1;
-        } else if (main_cnt >= 73) {
-            ret_hi = 1;
-        } else if (main_cnt >= 61) {
-            ret_lo |= 0x100;
-        }
-        a0[0x44 / 4] = new_cnt;
-        if (new_cnt == 0) a0[0x6C / 4] &= ~0x100;
-    }
-
-ret_tail:
-    if (ret_hi != 0) {
-        f_tmp = *(float*)&a0[0x3C / 4];
-        if (0.0 < (double)f_tmp)        *(float*)&a0[0x3C / 4] = 1.0f;
-        else if ((double)f_tmp < 0.0)   *(float*)&a0[0x3C / 4] = -1.0f;
-        f0 = *(float*)&a0[0x3C / 4];
+end:
+    if (moving) {
+        FF7(a0, 0x38) = zero;
     } else {
-        *(float*)&a0[0x38 / 4] = 0.0f;
-        goto store_out;
+        if (FF7(a0, 0x3C) > 1.0) FF7(a0, 0x3C) = 1.0f;
+        else if (FF7(a0, 0x3C) < -1.0) FF7(a0, 0x3C) = -1.0f;
+        fx = FF7(a0, 0x38) = FF7(a0, 0x3C);
     }
-    *(float*)&a0[0x38 / 4] = *(float*)&a0[0x3C / 4];
-
-store_out:
-    *(float*)&((int*)((int*)a0[0x30 / 4])[0x800 / 4])[0x44 / 4] = f0;
-    *(float*)&((int*)((int*)a0[0x30 / 4])[0x800 / 4])[0x48 / 4] = f2;
-    ((int*)((int*)a0[0x30 / 4])[0x800 / 4])[0x40 / 4] = ret_lo;
     {
-        union { long long ll; struct { int hi; int lo; } w; } _r;
-        _r.w.hi = ret_hi;
-        _r.w.lo = ret_lo;
-        return _r.ll;
+        char *o = (char *)FW(FW(a0, 0x30), 0x800);
+        FF7(o, 0x44) = fx;
+        FF7(o, 0x48) = fy;
+        o = (char *)FW(FW(a0, 0x30), 0x800);
+        FW(o, 0x40) = ret;
     }
+
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00007538);
