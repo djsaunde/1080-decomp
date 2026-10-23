@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_uso_func_000016A4",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T01:22:51.477024+00:00",
+  "end_time": "2026-10-23T01:22:51.477024+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T01:22:51.477024+00:00",
+      "assistant_text": "NCC donor (055C recipe): inline next() appends through the cached global; empty if (1) {} after packets 1 and 3 and inside next() for packet 2 set the slot colours.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 60,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_uso_func_000016A4 (0xF0 / 60 words).\n *\n * Caches the gfx context (*(D + 0x254))->0x158 in the global\n * D_gui16a4_cache, then appends four fixed commands (RDPPIPESYNC, two\n * SETOTHERMODE_H, SETOTHERMODE_L) through the context's inline next(),\n * re-reading the global per packet. 055C's sibling. The slot-pointer colours\n * (a1 a2 a3 a1) come from uopt's basic blocks: an empty `if (1) {}` after\n * packets 1 and 3, and nextb() (next() with an empty if between the index\n * bump and the slot address) for packet 2. Found by a 256-variant layout\n * search (docs/IDO_CODEGEN.md kit XXXV). The unused int parameter is still\n * homed (sw a0,0(sp)), as edg does for the gui emitters.\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees. */\nextern \"C\" { extern char D_00000000; }\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n    Gfx *nextb() { int n = dl->n++; if (1) {} return &dl->buf[n]; }\n};\nstruct G { char pad[0x158]; Ctx *ctx; };\nextern \"C\" { extern Ctx *D_gui16a4_cache; }\nextern \"C\" void gui_uso_func_000016A4(int a0) {\n    Gfx *p1, *p2, *p3, *p4;\n    D_gui16a4_cache = (*(G **)(&D_00000000 + 0x254))->ctx;\n    p1 = D_gui16a4_cache->next();\n    p1->w0 = 0xE7000000; p1->w1 = 0;\n    if (1) {}\n    p2 = D_gui16a4_cache->nextb();\n    p2->w0 = 0xBA001402; p2->w1 = 0;\n    p3 = D_gui16a4_cache->next();\n    p3->w0 = 0xBA001301; p3->w1 = 0;\n    if (1) {}\n    p4 = D_gui16a4_cache->next();\n    p4->w0 = 0xB900031D; p4->w1 = 0x00404240;\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_16A4.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_uso_func_000016A4.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}

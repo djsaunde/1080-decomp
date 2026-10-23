@@ -2014,6 +2014,10 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_055C_DONOR := build/src/gui_uso/gui_uso_ncc_055C.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_0000055C=$(GUI_055C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_055C_DONOR)
+# 16A4: 055C's four-append sibling (60/60; empty-if block boundaries).
+GUI_16A4_DONOR := build/src/gui_uso/gui_uso_ncc_16A4.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000016A4=$(GUI_16A4_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_16A4_DONOR)
 # 413C: RGBA16 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_413C_DONOR := build/src/gui_uso/gui_uso_ncc_413C.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_0000413C=$(GUI_413C_DONOR)
