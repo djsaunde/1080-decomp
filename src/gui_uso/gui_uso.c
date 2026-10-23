@@ -378,7 +378,14 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
  *     LEFT: the first packet colours a3 v1 / dl a3 (target a3 / v0), sp7C
  *     spills at 120 (target 124), and the two `(t < 0) ? t : 0` arms (target
  *     `b join; move v0,a0; move a0,v0`) -- writing them as ternaries is 309 /
- *     81.8. */
+ *     81.8.
+ *     Then the B4 (RDPHALF_1) word as the stock gbi.h gSPScisTextureRectangle
+ *     expression (as 2DE0 / 329C: nested (s16) ternaries with MAX / MIN, dsdx
+ *     re-evaluated inside, also in the B3 word): 84.7 -> 86.2, 310 -> 315 words
+ *     (of 313; the B4 arms now have the target's `b join` shapes). The cfe ?:
+ *     temps each reserve a frame word, so a2v / a1v / a3v / v were dropped
+ *     (frame 0x118, target 0x108). The macro form of the TEXRECT words lowers
+ *     fuzzy (85.3 / 85.4): kept as the int clamps. */
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5) {
@@ -426,8 +433,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
                 short ca0, ca1;
                 int xa3, xa0b;
                 int wa3, wa0;
-                int a2v, a1v, a3v;
-                int t, v;
+                int t;
 
                 sp7C = f10b & 0xFFFF;
                 t = gl_func_00000000(*s7);
@@ -458,41 +464,19 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
                 dl[1] = cnt + 1;
                 cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
                 cmd[0] = 0xB4000000;
-                if (ca1 < 0) {
-                    a2v = (int)(((float)(s0 - 1) * 1024.0f) / f0b);
-                    if ((short)a2v < 0) {
-                        t = (int)(ca1 * (short)a2v) >> 7;
-                        a3v = (t > 0) ? t : 0;
-                    } else {
-                        v = 0;
-                        t = (int)(ca1 * (short)a2v) >> 7;
-                        if (t < 0) v = t;
-                        a3v = v;
-                    }
-                } else {
-                    a3v = 0;
-                    a2v = (int)(((float)(s0 - 1) * 1024.0f) / f0b);
-                }
-                if (s4 < 0) {
-                    t = (int)((short)s4 * (short)f10b) >> 7;
-                    if ((short)f10b < 0) {
-                        a1v = (t > 0) ? t : 0;
-                    } else {
-                        v = 0;
-                        if (t < 0) v = t;
-                        a1v = v;
-                    }
-                } else {
-                    a1v = 0;
-                }
-                cmd[1] = (a3v * -0x10000) | (-a1v & 0xFFFF);
+#define F4_DSDX ((int)(((float)(s0 - 1) * 1024.0f) / f0b))
+#define F4_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define F4_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define F4_SHIFTL(v, s, w) ((unsigned int)(((unsigned int)(v) & ((1 << (w)) - 1)) << (s)))
+                cmd[1] = F4_SHIFTL((0 - (((short)(ca1) < 0) ? (((short)(F4_DSDX) < 0) ? (F4_MAX((((short)(ca1) * (short)(F4_DSDX)) >> 7), 0)) : (F4_MIN((((short)(ca1) * (short)(F4_DSDX)) >> 7), 0))) : 0)), 16, 16) |
+                         F4_SHIFTL((0 - (((s4) < 0) ? (((short)(f10b) < 0) ? (F4_MAX((((short)(s4) * (short)(f10b)) >> 7), 0)) : (F4_MIN((((short)(s4) * (short)(f10b)) >> 7), 0))) : 0)), 0, 16);
                 a3 = *(int**)((char*)arg0 + 0x24);
                 dl = *(int**)((char*)a3 + 0xC);
                 cnt = dl[1];
                 dl[1] = cnt + 1;
                 cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
                 cmd[0] = 0xB3000000;
-                cmd[1] = (a2v << 0x10) | sp7C;
+                cmd[1] = (F4_DSDX << 0x10) | sp7C;
                 var_f22 += (float)*(int*)((char*)(*(int*)((char*)arg0 + 0x20) + (int)spD3 * 0x14) + 0xC);
             } else {
                 var_f22 += (float)*(int*)((char*)*(int**)((char*)arg0 + 0x20) + 0xC);
