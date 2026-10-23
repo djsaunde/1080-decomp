@@ -954,7 +954,7 @@ void gl_func_00064388(char *arg0, char *arg1, Vec3 *arg2, f32 arg3) {
         *(f32*)((char*)arg0 + 0xC) = *(f32*)((char*)arg0 + 0xC) / len;
         if (1) {
         bx = pv->x - qv->x;
-        by = pv->y - qv->y;
+        by = pv->y - qv->y; if (by) {}
         bz = pv->z - qv->z;
         d.z = bz;
         d.y = by;
