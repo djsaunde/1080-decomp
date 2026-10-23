@@ -30568,7 +30568,7 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
                 A = (u8)(c - '0');
                 t = *p++;
                 if (t != 0) {
-                    B = *p++ - '0';
+                    B = *p++ - '0'; if (arg3) {}
                 }
             } else {
                 gl_func_00034458(out, (char *)&D_00000000 + 0x21E08);

@@ -573,7 +573,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 124: 4E244 NCC donor + placeholder host: 0x2e83c -> 0x2e84c (62F08 NM offset 0x2e7fc).
 # agent-c run 126: 46FA8 NCC donor + placeholder host: 0x2e84c -> 0x2e854 (62F08 NM offset 0x2e804).
 # agent-g run 128: 5F0B8 NM (111 vs 113 words; 61478 suffix pad re-aligns): 0x2e854 -> 0x2e834 (62F08 NM offset 0x2e7e4).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e850 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-g run 136: 6126C NM if (arg3) {} (122 -> 123 words = target): 0x2e850 -> 0x2e858 (62F08 NM offset 0x2e808).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e858 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
