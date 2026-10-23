@@ -5903,11 +5903,17 @@ end:
  * (zero-instruction phantom slots). RESIDUAL CAP: IDO as1 hoists the
  * &D_00008714 address into the pre-branch delay region, forcing `count`
  * off $a0 onto $v1 (coloring-renumber), plus the tbl-spill slot lands at
- * 0x1C instead of 0x40. Pure scheduler-tie + coloring; not C-fixable. */
+ * 0x1C instead of 0x40. Pure scheduler-tie + coloring; not C-fixable.
+ * Run 129 (agent-c) 15 -> 13 raw: tbl declared at function scope between
+ * `volatile int pad_t[1]` and `pad_hi[2]` -- its home IS the spill slot, now
+ * sp+0x40 as the target. LEFT: count v1 (target a0) lets the &D_8714 lui
+ * hoist above the compare; while (0) / trailing if (count) {} are flat. */
 extern char D_00008714;
 typedef struct { int a, b, c; } Vec3i_8FA8;
 void func_00008FA8(int *self) {
-    volatile int pad_hi[4];
+    volatile int pad_t[1];
+    int *tbl;
+    volatile int pad_hi[2];
     Vec3i_8FA8 scratch;
     volatile int pad_lo[2];
     scratch = *(Vec3i_8FA8*)((char*)self + 0xB4);
@@ -5928,8 +5934,9 @@ void func_00008FA8(int *self) {
         int counter = self[0x3D4/4];
         self[0x3D4/4] = counter - 1;
         if (counter <= 0) {
-            int *tbl = *(int**)&D_00000000;
-            int count = tbl[3];
+            int count;
+            tbl = *(int**)&D_00000000;
+            count = tbl[3];
             if (count >= tbl[2]) {
                 func_00000000(&D_00008714, self);
                 count = tbl[3];
