@@ -5878,7 +5878,6 @@ end:
     return self;
 }
 
-#ifdef NON_MATCHING
 /* func_00008FA8: 73-insn (0x124) "scatter-bitcast-int-to-float-vec3-fields"
  * + counter decrement + global-table update. Sibling of recently-matched
  * func_00008F18 (alloc + multi-call init).
@@ -5907,7 +5906,10 @@ end:
  * Run 129 (agent-c) 15 -> 13 raw: tbl declared at function scope between
  * `volatile int pad_t[1]` and `pad_hi[2]` -- its home IS the spill slot, now
  * sp+0x40 as the target. LEFT: count v1 (target a0) lets the &D_8714 lui
- * hoist above the compare; while (0) / trailing if (count) {} are flat. */
+ * hoist above the compare; while (0) / trailing if (count) {} are flat.
+ * Run 131 (agent-c) EXACT: the pre-realloc compare reads tbl[3] directly and
+ * count is assigned only AFTER the if (one load, not a count copy reloaded in
+ * the then-arm) -> count colours a0 and the &D_8714 lui stays in the arm. */
 extern char D_00008714;
 typedef struct { int a, b, c; } Vec3i_8FA8;
 void func_00008FA8(int *self) {
@@ -5936,19 +5938,15 @@ void func_00008FA8(int *self) {
         if (counter <= 0) {
             int count;
             tbl = *(int**)&D_00000000;
-            count = tbl[3];
-            if (count >= tbl[2]) {
+            if (tbl[3] >= tbl[2]) {
                 func_00000000(&D_00008714, self);
-                count = tbl[3];
             }
+            count = tbl[3];
             tbl[3] = count + 1;
             *(int*)(tbl[0] + count * 4) = (int)self;
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00008FA8);
-#endif
 
 #ifdef NON_MATCHING
 /* func_000090CC: 2106-insn (0x20E8) alloc-cascade constructor.
