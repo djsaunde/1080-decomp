@@ -20,9 +20,12 @@
  * A dead `if (k) {}` at the very end extends k's live range over the whole
  * function: k drops below f20 in uopt's priority order and the callee-saved
  * colours come out as the target (f20 = f20 ramp, f22 = k), 72 -> 66 raw.
- * RESIDUAL (66 raw): the getPos this-adjust (target lwc1 160(a2); addiu
+ * run 132: P2 r declared FIRST in the if block (before f24) puts it at
+ * sp+132 like the target (66 -> 64 raw).
+ * RESIDUAL (64 raw): the getPos this-adjust (target lwc1 160(a2); addiu
  * a2,a2,112; 52/56(a2)), the float zero hoisted above the K88 return, the
- * operator= param temp 8 bytes low, the P2 record 4 bytes low, and the dead
+ * operator= param temp 8 bytes low (a function-scope temp, not moved by
+ * inline layers or dead locals without growing the frame), the s2/s3 obj swap, and the dead
  * if leaves one epilogue nop (bc1f + nop where the target has bc1fl).
  * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM. */
 struct P3 { float x, y, z; };
@@ -78,11 +81,11 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
     game_uso_func_071028(&norm);
     d = -((V3 &)q.dir).dot(norm);
     if (obj->lo < d) {
+        P2 r;
         float f24 = (d - obj->lo) / (1.0f - obj->lo);
         if (f24 > 1.0) f24 = 1.0f;
         f24 *= obj->sub->k;
         if (f24 < game_uso_D_807FFA88[45]) return;
-        P2 r;
         r.b = 1033;
         r.a = 0;
         float f20 = 0.0f;
