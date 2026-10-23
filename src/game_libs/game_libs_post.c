@@ -6484,8 +6484,8 @@ void gl_func_00024378(void) {
         break;
     }
     gl_func_0001CA10(); if (1) {}
-    q = (char *)gl_d_24378_seed;
     e = (char *)gl_d_24378_seed + 6;
+    q = (char *)gl_d_24378_seed;
     do {
         q += 2;
         *(s16 *)(q + 0x214A) = 0xA0;
