@@ -2149,6 +2149,10 @@ build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_NM_DONOR)
 GUI_329C_NM_DONOR := build/src/gui_uso/gui_uso_ncc_329C_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_NM_DONOR)
+# 2DE0 = gui sprite rect (gbi.h gSPScisTextureRectangle, sibling of 329C / 3714); NCC 88.7 vs cfe 81.7. NM comparison object only.
+GUI_2DE0_NM_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0_nm.cpp.o
+build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_NM_DONOR)
+build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_NM_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
