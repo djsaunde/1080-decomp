@@ -5038,9 +5038,13 @@ void game_uso_func_0000751C(char *a0) {
  * t == 1); the 0x80 frame window is t < 8 || (t >= p + 8 && t < p + 16) ||
  * t >= p + p + 16 with lim a nested ternary; t reuses the dead arg. The
  * table base needs an empty if right after `tp = D + 0x638` (keeps the
- * lui/addiu with the addend). LEFT: a1 / a2 swapped between the 0x4DC
- * period and the CSE temps (2p, table pointer, t + 1, t - 1) in the 0x20 /
- * 0x80 / 0x100 arms (colour order). */
+ * lui/addiu with the addend). Variable reuse sets the a-register colours:
+ * n (a2) is the 0x50 counter at entry, the 0x100-arm countdown value and
+ * the 0x4DC period (`n = 0x4DC` in the window test and the frame body,
+ * m = n + n), m (a1) the mask, the decremented counters and 2p (41 -> 18).
+ * LEFT: the two table pointers and the 0x80 lim tail (t + 1 / 0x44 / lim)
+ * take a2 / a1 swapped; every spelling that assigns m = t + 1 there shifts
+ * the whole t-ring (217 words). */
 extern char game_uso_D_807FEC28;
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -5056,9 +5060,11 @@ void game_uso_func_00007538(char *a0, int arg) {
     int moving = 0;
     int m;
     int t;
+    int n;
     float f, g;
 
-    if (FW(a0, 0x50) > 0) FW(a0, 0x50)--;
+    n = FW(a0, 0x50);
+    if (n > 0) FW(a0, 0x50) = n - 1;
     if (FW(a0, 0x48) > 0) FW(a0, 0x48)--;
     m = FW(a0, 0x6C);
     if (m == 0) {
@@ -5130,13 +5136,15 @@ void game_uso_func_00007538(char *a0, int arg) {
         int lim;
         arg = FW(a0, 0x4C);
         moving = 1;
-        if (arg < 8 || (arg >= FW(a0, 0x4DC) + 8 && arg < FW(a0, 0x4DC) + 16) || arg >= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 16) {
-            if (arg >= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 16) {
-                FW(a0, 0x58) = arg - (FW(a0, 0x4DC) + FW(a0, 0x4DC)) - 16;
-                if (arg >= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 21 && arg <= (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 23) ret |= 0x1600;
-            } else if (arg >= FW(a0, 0x4DC) + 8) {
-                FW(a0, 0x58) = arg - FW(a0, 0x4DC) - 8;
-                if (arg >= FW(a0, 0x4DC) + 13 && arg <= FW(a0, 0x4DC) + 15) ret |= 0x1200;
+        if (arg < 8 || (arg >= (n = FW(a0, 0x4DC)) + 8 && arg < n + 16) || arg >= n + n + 16) {
+            n = FW(a0, 0x4DC);
+            m = n + n;
+            if (arg >= m + 16) {
+                FW(a0, 0x58) = arg - m - 16;
+                if (arg >= m + 21 && arg <= m + 23) ret |= 0x1600;
+            } else if (arg >= n + 8) {
+                FW(a0, 0x58) = arg - n - 8;
+                if (arg >= n + 13 && arg <= n + 15) ret |= 0x1200;
             } else {
                 FW(a0, 0x58) = arg;
                 if (arg >= 5 && arg < 8) ret |= 0x1000;
@@ -5147,14 +5155,14 @@ void game_uso_func_00007538(char *a0, int arg) {
         lim = (FW(a0, 0x44) == 0) ? 8 : (FW(a0, 0x44) == 1) ? FW(a0, 0x4DC) + 16 : (FW(a0, 0x4DC) + FW(a0, 0x4DC)) + 24;
         if (arg + 1 >= lim) FW(a0, 0x6C) &= ~0x80;
     } else if (m & 0x100) {
-        t = FW(a0, 0x44);
-        m = t - 1;
-        if (t >= 93) {
+        n = FW(a0, 0x44);
+        m = n - 1;
+        if (n >= 93) {
             fy = 1.0f;
             moving = 1;
-        } else if (t >= 73) {
+        } else if (n >= 73) {
             moving = 1;
-        } else if (t >= 61) {
+        } else if (n >= 61) {
             ret |= 0x100;
         }
         FW(a0, 0x44) = m;
