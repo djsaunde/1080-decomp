@@ -322,7 +322,7 @@ void titproc_uso_func_000005DC(char *a0, int a1) {
             *(int *)(d + 0x8C) = 0x820000;
             r = (int *)titproc_uso_func_0027E8(d, 2, 9, one);
             rr = r;
-            titproc_uso_func_07ACE0(d + 0x10, r);
+            titproc_uso_func_07ACE0(d + 0x10, r); if (a0) {}
             if (*(int *)((char *)rr + 0x14) != 0) {
                 *(int *)((char *)rr + 0x4) = one;
             }
