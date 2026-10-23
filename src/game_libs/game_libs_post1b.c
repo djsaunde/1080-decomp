@@ -3204,58 +3204,114 @@ void gl_func_00066D54(char *arg0) {
  * #switch-sort-goto-ladder-52144); else-continue, end label, inverted skip
  * + goto, nested ifs, 1-case switch, while/do-while all keep it. The dead-
  * epilogue nop before the epilogue is the cc-direct alignment pad. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_66EEC.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 141). The
+ * placeholder only reserves the 0x198-byte slot so later functions keep
+ * their compile-time layout; the splice drops its text. */
 void gl_func_00066EEC(char *arg0) {
-    s32 i;
-    s32 flag;
-    u32 *sp54;
-    u32 v;
-
-    flag = 0;
-    for (;;) {
-        gl_func_00000000(arg0 + 0x11B0, &sp54, 1);
-        v = *sp54;
-        if (v == 0) continue;
-        if (v == 5) goto c5;
-        if (v == 6) continue;
-        if (v == 1) goto c1;
-        if (v == 4) continue;
-        if (v == 2) goto c2;
-        continue;
-    c5: {
-        u8 sp4F;
-        sp4F = 0;
-        gl_func_00000000(arg0 + 0x11B0, &sp4F);
-        for (i = 0; i != 4; i++) {
-            if (sp4F & (1 << i)) {
-                if (gl_func_00000000(arg0 + 0x11B0, (int)arg0 + i * 0x68 + 0x1228, i) == 0) {
-                    gl_func_00000000((int)arg0 + i * 0x68 + 0x1228);
-                }
-            }
-        }
-        flag = 1;
-        continue;
-        }
-    c1:
-        if (flag == 0) {
-            for (i = 0; i != 4; i++) {
-                gl_func_00000000(arg0, i, *(s16 *)(arg0 + i * 2 + 0x13E0));
-            }
-        }
-        gl_func_00000000(arg0 + 0x11B0);
-        *(int *)(arg0 + 0x13E8) = 0;
-        continue;
-    c2:
-        gl_func_00000000(arg0 + 0x1200);
-        if (flag == 0) {
-            gl_func_00000000(arg0);
-        }
-        *(int *)(arg0 + 0x13E8) = 1;
-    }
+    volatile int *p = (volatile int *)arg0;
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    p[7] = 0;
+    p[8] = 0;
+    p[9] = 0;
+    p[10] = 0;
+    p[11] = 0;
+    p[12] = 0;
+    p[13] = 0;
+    p[14] = 0;
+    p[15] = 0;
+    p[16] = 0;
+    p[17] = 0;
+    p[18] = 0;
+    p[19] = 0;
+    p[20] = 0;
+    p[21] = 0;
+    p[22] = 0;
+    p[23] = 0;
+    p[24] = 0;
+    p[25] = 0;
+    p[26] = 0;
+    p[27] = 0;
+    p[28] = 0;
+    p[29] = 0;
+    p[30] = 0;
+    p[31] = 0;
+    p[32] = 0;
+    p[33] = 0;
+    p[34] = 0;
+    p[35] = 0;
+    p[36] = 0;
+    p[37] = 0;
+    p[38] = 0;
+    p[39] = 0;
+    p[40] = 0;
+    p[41] = 0;
+    p[42] = 0;
+    p[43] = 0;
+    p[44] = 0;
+    p[45] = 0;
+    p[46] = 0;
+    p[47] = 0;
+    p[48] = 0;
+    p[49] = 0;
+    p[50] = 0;
+    p[51] = 0;
+    p[52] = 0;
+    p[53] = 0;
+    p[54] = 0;
+    p[55] = 0;
+    p[56] = 0;
+    p[57] = 0;
+    p[58] = 0;
+    p[59] = 0;
+    p[60] = 0;
+    p[61] = 0;
+    p[62] = 0;
+    p[63] = 0;
+    p[64] = 0;
+    p[65] = 0;
+    p[66] = 0;
+    p[67] = 0;
+    p[68] = 0;
+    p[69] = 0;
+    p[70] = 0;
+    p[71] = 0;
+    p[72] = 0;
+    p[73] = 0;
+    p[74] = 0;
+    p[75] = 0;
+    p[76] = 0;
+    p[77] = 0;
+    p[78] = 0;
+    p[79] = 0;
+    p[80] = 0;
+    p[81] = 0;
+    p[82] = 0;
+    p[83] = 0;
+    p[84] = 0;
+    p[85] = 0;
+    p[86] = 0;
+    p[87] = 0;
+    p[88] = 0;
+    p[89] = 0;
+    p[90] = 0;
+    p[91] = 0;
+    p[92] = 0;
+    p[93] = 0;
+    p[94] = 0;
+    p[95] = 0;
+    p[96] = 0;
+    p[97] = 0;
+    p[98] = 0;
+    p[99] = 0;
+    p[100] = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00066EEC);
-#endif
 
 void gl_func_00067084(char *a0, int a1, int a2) {
     char *v1 = a0 + a1;

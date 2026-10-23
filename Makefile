@@ -1772,6 +1772,12 @@ build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY
 GAMELIBS_67D50_DONOR := build/src/game_libs/game_libs_ncc_67D50.cpp.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00067D50=$(GAMELIBS_67D50_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_67D50_DONOR)
+# 66EEC = message pump: switch on the message type (edg source-order compare chain); NCC donor.
+# The donor .cpp opens with a 0x18-byte phase function so as1's 32-byte dead-epilogue alignment
+# gives the target's single nop (see the donor header).
+GAMELIBS_66EEC_DONOR := build/src/game_libs/game_libs_ncc_66EEC.cpp.o
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066EEC=$(GAMELIBS_66EEC_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66EEC_DONOR)
 
 GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o
 # 29CCC = envelope/keyframe stepper (9-case jumptable switch), IDO 7.1 -O2
