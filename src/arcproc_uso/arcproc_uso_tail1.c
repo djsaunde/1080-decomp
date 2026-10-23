@@ -778,7 +778,13 @@ void arcproc_uso_func_00001228(int *a0) {
  * then pb/hb + six pads (a0+0x6BC temp at 0x20); (3) the 0x6FC side is a
  * named pointer + half (`pb`/`hb`, re-set at both tail uses), which moves it
  * from t-regs to v-regs. RESIDUAL: pb/hb colour v0/v1 (target v1/v0), the
- * first threshold lwc1 pair order, one t-reg pair in the seq compare. */
+ * first threshold lwc1 pair order, one t-reg pair in the seq compare.
+ * 2026-10-23 agent-g (run 140) raw 10 -> 6: the progress read written as the
+ * comparison's assignment operand loads the threshold first (target order);
+ * the second alpha as `field * (progress = 255.0f)` (dead store to the dead
+ * progress) colours 255.0f f10 / field f16 like the target. RESIDUAL: the
+ * seq compare and both tail span reloads run one t-register behind the
+ * target (t0/t1/t2 vs t1/t2/t3); parameter / local empty tests: no move. */
 #ifdef NON_MATCHING
 extern float D_arc125C_30, D_arc125C_34, D_arc125C_38;
 void arcproc_uso_func_0000125C(char *a0) {
@@ -807,8 +813,7 @@ void arcproc_uso_func_0000125C(char *a0) {
     ones[3] = 1.0f;
 
     if (*(int*)(a0 + 0x4E4) >= 11) {
-        progress = *(float*)(a0 + 0x77C);
-        if (progress < D_arc125C_30) {
+        if ((progress = *(float*)(a0 + 0x77C)) < D_arc125C_30) {
             *(float*)(a0 + 0x77C) = progress + D_arc125C_34;
         }
     } else {
@@ -831,7 +836,7 @@ void arcproc_uso_func_0000125C(char *a0) {
     span = 0xA0 - (*(short*)(*(char**)(a0 + 0x6E4) + 0x20) + hb + 4) / 2;
 
 
-    alpha = (int)(255.0f * *(float*)(a0 + 0x77C));
+    alpha = (int)(*(float*)(a0 + 0x77C) * (progress = 255.0f));
     gl_func_00000000(&D_00000000, alpha, a0 + 0x260, a0 + 0x284);
 
     seq = *(int**)(a0 + 0x6A8);
