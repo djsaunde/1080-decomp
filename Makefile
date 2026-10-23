@@ -2334,14 +2334,17 @@ build/assets/timproc_uso_block3_yay0.bin: build/src/timproc_uso_b3/timproc_uso_b
 # switch's donor-local .rodata jumptable reloc is renamed
 # timproc_uso_b5_func_00005FC0_rodata and pinned to the table the USO ships at
 # RoData +0x190 (the 29CCC recipe). Uses += (composes).
+# private: the donor is also a prerequisite of timproc_uso_b5.c.o, and a
+# plain target-specific REPLACE_FUNC_BODY is inherited by prerequisites, so a
+# clean build (CI) would run every splice on the donor itself and fail.
 TIMB5_5FC0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: REPLACE_FUNC_BODY += timproc_uso_b5_func_00005FC0=$(TIMB5_5FC0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005FC0=$(TIMB5_5FC0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_5FC0_DONOR)
 # timproc_b5 is C++ (cfront-lowered ctors): NCC keeps the source operand
 # order of commutative FP ops where cfe canonicalizes the constant right.
 # 1DB0 = transition-frame update (89/89 words under NCC; cfe capped at 99.55).
 TIMB5_1DB0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: REPLACE_FUNC_BODY += timproc_uso_b5_func_00001DB0=$(TIMB5_1DB0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001DB0=$(TIMB5_1DB0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1DB0_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
