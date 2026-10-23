@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00043D38: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 79.55; if (arg0) {} after var_v1 += 1 from a parameter-only fz sweep, 80.25).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00043D38: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 79.55; if (arg0) {} after var_v1 += 1 from a parameter-only fz sweep, 80.25; round 2: if (arg0) {} after var_v1 = var_t2, 80.41).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -34,7 +34,7 @@ extern "C" void gl_func_00043D38(char *arg0) {
         if (var_t2 > 0) {
             var_t2 -= 1;
         }
-        var_v1 = var_t2;
+        var_v1 = var_t2; if (arg0) {}
         var_a0 = var_v1 * 2;
         if (var_t2 < FW(temp_v0, 0x110)) {
             do {

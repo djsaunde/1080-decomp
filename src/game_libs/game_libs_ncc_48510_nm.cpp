@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23; if (arg0) {} after the temp_t8 load from a parameter-only fz sweep).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23; if (arg0) {} after the temp_t8 load from a parameter-only fz sweep; round 2: if (arg4) {} after the temp_a1_2 vertex address, 85.28).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -67,7 +67,7 @@ extern "C" void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, 
                 temp_v1 = (char *)(FW(temp_v0_2, 0x1C));
                 temp_a0 = FW(temp_v1, 0x4);
                 FW(temp_v1, 0x4) = (s32) (temp_a0 + 1);
-                temp_a1_2 = (char *)(FW(FW(temp_v0_2, 0x1C), 0x0) + (temp_a0 * 0x10));
+                temp_a1_2 = (char *)(FW(FW(temp_v0_2, 0x1C), 0x0) + (temp_a0 * 0x10)); if (arg4) {}
                 FW(temp_a1_2, 0x0) = (s32) FW(var_s2, 0x0);
                 FW(temp_a1_2, 0x4) = (s32) FW(var_s2, 0x4);
                 FW(temp_a1_2, 0x8) = (s32) FW(var_s2, 0x8);
