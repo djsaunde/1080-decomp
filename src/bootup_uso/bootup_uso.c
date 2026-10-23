@@ -1476,7 +1476,7 @@ void func_000024B8(char *arg0) {
                 s0 = (char *)FW(v0, 0x28);
                 ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k, p);
             }
-            FW(arg0, 0x48) = 0;
+            FW(arg0, 0x48) = 0; if (p) {}
             FW(arg0, 0x44) = (int)p;
         }
     }
