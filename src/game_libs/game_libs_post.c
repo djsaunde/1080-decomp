@@ -8346,7 +8346,7 @@ void gl_func_00026790(unsigned char *cmd) {
     char *p;
     int i;
     int n;
-    int v;
+    unsigned char v;
 
     switch (cmd[0]) {
     case 0x82:
@@ -8369,7 +8369,7 @@ void gl_func_00026790(unsigned char *cmd) {
             if (i == 0) {
                 gl_func_00000000(e);
             } else {
-                func_3b110(cmd[1], i);
+                func_3b110(v, i); /* run 130: v (u8) not cmd[1]: target copies v0 -> a0 */
             }
         }
         break;
