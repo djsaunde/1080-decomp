@@ -4429,67 +4429,64 @@ void timproc_uso_b5_func_00006D30(int *self) {
 typedef int (*GP_00006E08)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE738;
+/* 2026-10-22 agent-g (run 127) 81 -> 23 raw words: four declared locals
+ * (old1, i, cur, old2: one frame word each -> frame 56, old1/old2 at 52/40),
+ * the slot as an array index (s0-first addu), one empty if (1) {} after the
+ * first capture (keeps old1 spilled to the stack instead of s2: a uopt block
+ * boundary, scripts/blockcut-search.py), and i += 1 evaluated after the item
+ * call (comma in the offset). LEFT: the slot RMW (target: addiu v0,v0,976 +
+ * sw 0(v0), a pointer temp in v0) and block 2 sets i = 0 after the first call. */
+#define SLOT(i) (((s32 *)(arg0 + 0x3D0))[i])
+#define SLOTP(i) ((char *)&((s32 *)(arg0 + 0x3D0))[i])
 void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1) {
-    s32 sp34;
-    s32 sp28;
-    s32 temp_v0_2;
-    s32 temp_v0_4;
-    s32 temp_v1;
-    s32 temp_v1_3;
-    s32 var_s1;
-    s32 var_s1_2;
-    char *temp_v0;
-    char *temp_v0_3;
-    char *temp_v1_2;
+    s32 old1;
+    s32 i;
+    s32 cur;
+    s32 old2;
 
     if (((int)timproc_uso_b5_alias(&import_80020098, 0x10001) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
-        sp34 = FW(((int)arg0 + (FW(arg0, 0x3C4) * 4)), 0x3D0);
+        old1 = SLOT(FW(arg0, 0x3C4)); if (1) {}
         (int)timproc_uso_b5_alias(arg0);
-        var_s1 = 0;
+        i = 0;
         if ((int)timproc_uso_b5_alias(arg0) > 0) {
 loop_4:
-            temp_v0 = (char *)((int)arg0 + (FW(arg0, 0x3C4) * 4) + 0x3D0);
-            *(s32 *)temp_v0 = *(s32 *)temp_v0 - 1;
-            if (*(s32 *)((int)arg0 + (FW(arg0, 0x3C4) * 4) + 0x3D0) < 0) {
-                *(s32 *)((int)arg0 + (FW(arg0, 0x3C4) * 4) + 0x3D0) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);
+            SLOT(FW(arg0, 0x3C4))--;
+            if (SLOT(FW(arg0, 0x3C4)) < 0) {
+                SLOT(FW(arg0, 0x3C4)) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);
             }
-            var_s1 += 1;
-            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + 0x2A4) == 0.0f) && (var_s1 < (int)timproc_uso_b5_alias(arg0))) {
+            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)timproc_uso_b5_alias(arg0))) {
                 goto loop_4;
             }
         }
-        temp_v0_2 = FW(arg0, 0x3C4);
-        temp_v1 = FW(((int)arg0 + (temp_v0_2 * 4)), 0x3D0);
-        if (sp34 != temp_v1) {
-            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[temp_v0_2], FW(arg0, 0x4D4) | temp_v1);
+        cur = SLOT(FW(arg0, 0x3C4));
+        if (old1 != cur) {
+            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[FW(arg0, 0x3C4)], FW(arg0, 0x4D4) | cur);
             (int)timproc_uso_b5_alias(arg0, arg1);
         }
     }
     if (((int)timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
-        sp28 = FW(((int)arg0 + (FW(arg0, 0x3C4) * 4)), 0x3D0);
+        old2 = SLOT(FW(arg0, 0x3C4));
         (int)timproc_uso_b5_alias(arg0);
-        var_s1_2 = 0;
+        i = 0;
         if ((int)timproc_uso_b5_alias(arg0) > 0) {
 loop_13:
-            temp_v0_3 = (char *)((int)arg0 + (FW(arg0, 0x3C4) * 4) + 0x3D0);
-            *(s32 *)temp_v0_3 = *(s32 *)temp_v0_3 + 1;
-            temp_v1_2 = (char *)((int)arg0 + (FW(arg0, 0x3C4) * 4) + 0x3D0);
-            if (*(s32 *)temp_v1_2 >= (int)timproc_uso_b5_alias(arg0)) {
-                *(s32 *)temp_v1_2 = 0;
+            SLOT(FW(arg0, 0x3C4))++; if (1) {}
+            if (SLOT(FW(arg0, 0x3C4)) >= (int)timproc_uso_b5_alias(arg0)) {
+                SLOT(FW(arg0, 0x3C4)) = 0;
             }
-            var_s1_2 += 1;
-            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + 0x2A4) == 0.0f) && (var_s1_2 < (int)timproc_uso_b5_alias(arg0))) {
+            if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)timproc_uso_b5_alias(arg0))) {
                 goto loop_13;
             }
         }
-        temp_v0_4 = FW(arg0, 0x3C4);
-        temp_v1_3 = FW(((int)arg0 + (temp_v0_4 * 4)), 0x3D0);
-        if (sp28 != temp_v1_3) {
-            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[temp_v0_4], FW(arg0, 0x4D4) | temp_v1_3);
+        cur = SLOT(FW(arg0, 0x3C4));
+        if (old2 != cur) {
+            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[FW(arg0, 0x3C4)], FW(arg0, 0x4D4) | cur);
             (int)timproc_uso_b5_alias(arg0, arg1);
         }
     }
 }
+#undef SLOT
+#undef SLOTP
 #else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00006E08);
 #endif
