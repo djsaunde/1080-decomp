@@ -8642,7 +8642,13 @@ void game_libs_func_00026D4C(void) {
  * renumbering downstream of that swap (target skips t7/t9 in the
  * prologue). The switch jumptable `lw t2,0xF50(at)` %lo is the USO rodata
  * offset -- needs the 2E290/6DD14 REPLACE_FUNC_BODY donor route
- * (`gl_func_00026D64_rodata = 0xF50`) once the .text is exact. */
+ * (`gl_func_00026D64_rodata = 0xF50`) once the .text is exact.
+ * Run 129 (agent-c) 93 -> 61 raw: the prologue t7/t9 skips are two dead
+ * masks in the source -- `CUR_A = (arg0 >> 8) & 0xFF` (the u8 store drops
+ * the andi but ugen already took t7) and `lo = (u8) (arg0 & 0xFF)`; temps now
+ * agree through the 0xF8 test. LEFT: idx = (cur & 0xFF) * 8 still sinks below
+ * the lo == cur exit (comma-condition / no-idx / array forms flat), and the
+ * case region runs one temp behind the target from there on. */
 extern int D_26D64_a, D_26D64_b, D_26D64_c, D_26D64_d;
 #define CUR_A (*(u8 *)((char *)&D_26D64_a + 0x1B5DC))
 #define CUR_B (*(u8 *)((char *)&D_26D64_b + 0x1B5DC))
@@ -8696,9 +8702,9 @@ void gl_func_00026D64(u32 arg0) {
     f32 f2;
 
     if (g->pending == 0) {
-        CUR_A = (u8) (arg0 >> 8);
+        CUR_A = (arg0 >> 8) & 0xFF;
     }
-    lo = arg0 & 0xFF;
+    lo = (u8) (arg0 & 0xFF);
     for (;;) {
         cur = CUR_B;
         idx = (cur & 0xFF) * 8;
