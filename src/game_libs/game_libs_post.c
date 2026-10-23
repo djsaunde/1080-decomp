@@ -18669,8 +18669,7 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
             }
         }
         gl_func_0001CA10(o);
-        zv.x = 0.0f;
-        zv.y = 0.0f;
+        zv.x = (zv.y = 0.0f, 0.0f);
         zv.z = 0.0f;
         gl_func_0001CA10(o + 0x30, &zv);
     }
