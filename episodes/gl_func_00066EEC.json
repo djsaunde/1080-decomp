@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00066EEC",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T23:19:21.102070+00:00",
+  "end_time": "2026-10-23T23:19:21.102086+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T23:19:21.102082+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 102,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00066EEC (0x198 / 102 words): message-pump\n * loop. osRecvMesg-style receive (mq @+0x11B0, &msg, 1) then a `switch` on the\n * message type with the cases in SOURCE order 0/5/6/1/4/2: edg lowers a switch\n * to a source-order compare chain whose last test is `beq last; nop; b default`\n * (the cfe goto ladder inverts that tail to `bnel top; b c2`, kit LXI).\n * The one nop before the unreachable epilogue is as1's 32-byte alignment of the\n * dead epilogue block, which depends on the function's offset in the compiled\n * .text: the original TU had it at 0x18 mod 32 (the expected object's TU offset\n * 0x3F88 is 0x08 mod 32 because game_libs_post1b is a later split). The\n * 0x18-byte gl_ncc_66eec_phase function only sets that phase in this donor\n * object; it is not spliced anywhere.\n * Spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. */\ntypedef int s32;\ntypedef unsigned int u32;\ntypedef unsigned char u8;\ntypedef short s16;\nextern \"C\" int func_00000000(...);\nextern \"C\" int gl_ncc_66eec_phase(int *p) { p[0] = 1; p[1] = 2; return 0; }\nextern \"C\" void gl_func_00066EEC(char *arg0) {\n    s32 i;\n    s32 flag;\n    u32 *sp54;\n    u32 v;\n\n    flag = 0;\n    for (;;) {\n        func_00000000(arg0 + 0x11B0, &sp54, 1);\n        v = *sp54;\n        switch (v) {\n        case 0:\n            break;\n        case 5: {\n            u8 sp4F;\n            sp4F = 0;\n            func_00000000(arg0 + 0x11B0, &sp4F);\n            for (i = 0; i != 4; i++) {\n                if (sp4F & (1 << i)) {\n                    if (func_00000000(arg0 + 0x11B0, (int)arg0 + i * 0x68 + 0x1228, i) == 0) {\n                        func_00000000((int)arg0 + i * 0x68 + 0x1228);\n                    }\n                }\n            }\n            flag = 1;\n            break;\n        }\n        case 6:\n            break;\n        case 1:\n            if (flag == 0) {\n                for (i = 0; i != 4; i++) {\n                    func_00000000(arg0, i, *(s16 *)(arg0 + i * 2 + 0x13E0));\n                }\n            }\n            func_00000000(arg0 + 0x11B0);\n            *(int *)(arg0 + 0x13E8) = 0;\n            break;\n        case 4:\n            break;\n        case 2:\n            func_00000000(arg0 + 0x1200);\n            if (flag == 0) {\n                func_00000000(arg0);\n            }\n            *(int *)(arg0 + 0x13E8) = 1;\n            break;\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_66EEC.cpp",
+    "asm_path": "projects/1080-agent-g/asm/nonmatchings/game_libs/game_libs/gl_func_00066EEC.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "ROM cmp byte-identical; refresh-report 100"
+  }
+}

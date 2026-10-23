@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0005165C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T23:19:21.226120+00:00",
+  "end_time": "2026-10-23T23:19:21.226138+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T23:19:21.226134+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 16,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0005165C (0x40 / 16 words incl. its\n * 2-word hoisted head at 0x51654): alloc-or-passthrough zeroing setter.\n * The old \"shared-$at store-pair cap\" (one `lui at` + `sw zero,4(at); sw\n * zero,0(at)`) is a file-local STATIC pair written through two references\n * in one block (kit LX, agent-c 34A78); as1 shares the lui only for the same\n * static symbol. The splice renames the donor's .bss reloc to\n * gl_func_0005165C_bss, pinned to 0 (base-0 USO data) in\n * undefined_syms_auto.txt. Head: `(unsigned)p == 0` keeps the alloc test.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-g run 141). */\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern int D_5165C_arr[];\n}\nstatic int s5165c[2];\nextern \"C\" void gl_func_0005165C(void) {\n    int *p = D_5165C_arr;\n    if ((unsigned)p == 0) {\n        p = (int*)gl_func_00000000(4);\n        if (p == 0) {\n            goto skip;\n        }\n    }\n    *p = 0;\nskip:\n    { int &a = s5165c[1]; int &b = s5165c[0]; a = 0; b = 0; }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5165C.cpp",
+    "asm_path": "projects/1080-agent-g/asm/nonmatchings/game_libs/game_libs/gl_func_0005165C.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "ROM cmp byte-identical; refresh-report 100"
+  }
+}
