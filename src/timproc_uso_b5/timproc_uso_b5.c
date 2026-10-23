@@ -7098,7 +7098,7 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
 
     {
         register f32 *tp = (f32 *)(arg0 + 0xDC);
-        spD0.x = tp[0] - *(f32 *)((char *)&D_timb5_AC20_gxy + 0);
+        spD0.x = tp[0] - *(f32 *)((char *)&D_timb5_AC20_gxy + 0); if (arg0) {}
         spD0.y = tp[1] - *(f32 *)((char *)&D_timb5_AC20_gxy + 4);
         spD0.z = tp[2] - *(f32 *)((char *)&D_timb5_AC20_gz + 8);
     }
