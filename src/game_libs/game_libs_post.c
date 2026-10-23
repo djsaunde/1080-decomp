@@ -961,7 +961,7 @@ int gl_func_0001DB88(int a0, Spec4_1DB88 a1, short a2) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     rec = &((Rec_1CFDC *)&D_00000000)[a1.h1];
-    e = &rec->grp[rec->attr].ent[a2];
+    e = &rec->grp[rec->attr].ent[a2]; if (a0) {}
     if (*((unsigned char *)rec + 0x1C) == 1) {
         a0 = gl_ref_0003204C(a0, 0xC80, e->w, e->h, a1.h1);
         if (e->n != 0) {
@@ -12654,7 +12654,7 @@ int gl_func_0002ABC0(char *o, int a1) {
     }
     if (one == b) {
         a2 = *(char **)(o + 0x2C);
-        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) {
+        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) { if (n) {}
             if (*(char **)(o + 0x4C) == 0) {
                 gl_func_00000000(a2, o);
             }
