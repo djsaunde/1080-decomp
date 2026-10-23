@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0005D134",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-23T18:34:31.203205+00:00",
+  "end_time": "2026-10-23T18:34:31.203247+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T18:34:31.203241+00:00",
+      "assistant_text": "C++ donor: (f32)1*s at both uses, pk assigned before the q[i] pair, dead if (q) {}.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 47,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_0005D134 (0xBC / 47 words): rotate the\n * quaternion q = (w, x, y, z) about axis i (1-based) by the half-angle pair (c, s) --\n * the (q[i], q[0]) and (q[j], q[k]) Givens pairs. Under cfe it capped at 96.5 (FP\n * operand order + pointer colours); under NCC: `(f32)1 * s` written at both uses (no t\n * local), pk = &q[k] assigned BEFORE the q[i] pair (colours a1 ahead of &q[i] = a2),\n * pj named after it (t0), and a dead `if (q) {}` keeps q in a0 (no home store / copy).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\ntypedef float f32;\ntypedef int s32;\nextern \"C\" void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {\n    s32 j, k;\n    f32 a;\n    f32 *pk, *pj;\n    j = i + 1;\n    if (j >= 4) j = 1; if (q) {}\n    k = j + 1;\n    if (k >= 4) k = 1;\n    pk = &q[k];\n    a = q[i];\n    q[i] = a * c + ((f32)1 * s) * q[0];\n    q[0] = q[0] * c - ((f32)1 * s) * a;\n    pj = &q[j];\n    a = *pj;\n    *pj = a * c + s * *pk;\n    *pk = *pk * c - s * a;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5D134.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0005D134.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all ROM byte-identical; objdiff 100; rdiff --raw --pins 0"
+  }
+}

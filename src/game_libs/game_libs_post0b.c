@@ -28027,38 +28027,11 @@ void gl_func_0005D054(float *a0, float *a1, float *a2) {
     a2[3] = w;
 }
 
-/* game_libs_func_0005D134: rotate quaternion q = (w, x, y, z) about its own
- * axis i (1-based) by the half-angle pair (c, s): the (q[i], w) and
- * (q[j], q[k]) Givens pairs. The unfolded `lui 0x3f80; mul.s` is `(f32)1 * s`
- * (a float literal 1.0f * s is folded by cfe; the int-literal cast is not).
- * 2026-10-17 agent-g (run 104) 71.2 -> 76.8: a dead `while (0) { t = c;
- * q = &q[i]; }` ahead of the body fixes both old residuals -- c now colours
- * f12 before s (first appearance), and the dead reassignment of q keeps it
- * in a0 with no home store / or-copy. Remaining: the &q[i]/&q[j]/&q[k] webs
- * colour a1/a2/t0 (target a2/t0/a1) and q[0] is loaded at the top instead
- * of after q[i]; explicit pi/pj/pk locals in any order and dead &q[k]
- * appearances do not move them. */
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_5D134.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 137). The cfe body
+ * capped at 96.5 (23 raw): quaternion rotate about axis i by (c, s). */
 void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
-    s32 j, k;
-    f32 t, a, b_;
-    while (0) { t = c; q = &q[i]; }
-    while (0) { j = k + k; }
-    j = i + 1;
-    if (j >= 4) j = 1;
-    k = j + 1;
-    if (k >= 4) k = 1;
-    t = (a = q[i], (f32)1 * s);
-
-    { f32 q_ = a * c; q[i] = q_ + t * q[0]; if (q_) {} }
-    q[0] = q[0] * c - t * a; if (i) {}
-    a = (b_ = q[k], q[j]);
-    q[j] = a * c + s * b_; if (j) {}
-    q[k] = q[k] * c - s * a;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0005D134);
-#endif
 
 /* game_libs_func_0005D1F0 (0x114, 69 words): the 7-word game_libs_func_0005D1F0
  * orphan + gl_func_0005D20C are ONE function -- bootup.uso Sym exports text
