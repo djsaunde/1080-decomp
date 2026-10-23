@@ -8829,7 +8829,8 @@ void game_libs_func_0003E9C0(int *a0, int a1) {
 // frame 0x48). Only residual: the final copy temp is t3 vs target t4 (one
 // more uopt temp consumed upstream); ~25 spellings (int-homed copies, struct
 // copies, comma args, nested ifs, kp pointer, unnamed p1/p2) keep t3 or worse.
-#ifdef NON_MATCHING
+// RUN 131 (agent-c) EXACT: the final store as a struct copy
+// `*(Key3E9C8 *)p1 = *(Key3E9C8 *)p2;` takes t4 as the target.
 extern int D_00000000;
 typedef struct { char c[4]; } Tag3E9C8; /* 4-byte key, align 1 (lwl/lwr copy) */
 typedef struct { int w; } Key3E9C8;
@@ -8852,11 +8853,8 @@ void gl_func_0003E9C8(void *a0) {
     p1 = (int *)(o1 + 0x2C);
     p2 = (int *)(o2 + 0x2C);
     gl_func_00000000((char *)&D_00000000 + 0x0001F35C, p1, p2);
-    *p1 = *p2;
+    *(Key3E9C8 *)p1 = *(Key3E9C8 *)p2; /* run 131: struct copy -> the target t4 temp */
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E9C8);
-#endif
 
 /* gl_func_0003EA98: linked-list lookup by key. Walks list at a0->[0x2C]
  * via 0x30 next-pointer; returns first node where node->[0x2C] == a1, or 0.
