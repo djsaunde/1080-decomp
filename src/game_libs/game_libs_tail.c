@@ -1533,7 +1533,6 @@ void gl_func_0000B8E0(int a0, int a1, int a2, int a3) {
     gl_func_00000000(&gl_data_B938_arg, a2, a3);
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0000B958: 69-insn word-array equality predicate. Compares a3/4 words
  * (signed div, trunc-toward-zero) of a1[] vs a2[]; returns 0 on first
  * mismatch, 1 if all equal. a0 is dead (saved, never read). RELOC-FREE, -O2.
@@ -1549,11 +1548,15 @@ void gl_func_0000B8E0(int a0, int a1, int a2, int a3) {
  * Residual: ONE delay-slot swap in the first main-body copy (target
  * `addiu s0,s0,4; beq t8,t9; or a0,a2,zero`, build `or a0,a2,zero; beq;
  * addiu s0`); copies 2-4 and the remainder loop agree. ~30 stmt orders /
- * decl orders / loop forms / -g3 / K&R / types probed, all stuck on it. */
+ * decl orders / loop forms / -g3 / K&R / types probed, all stuck on it.
+ * 2026-10-22 agent-g (run 127) EXACT: one empty `if (1) {}` at the top of the
+ * loop body (a uopt basic-block boundary; scripts/blockcut-search.py found it
+ * in a 45-variant search) moves the copy into the beq delay slot. */
 int gl_func_0000B958(int a0, register int *a1, int *a2, int a3) {
     int i;
     int *x, *y;
     for (i = 0; i < a3 / 4; i++) {
+        if (1) {}
         y = a2;
         x = a1;
         a2++;
@@ -1562,9 +1565,6 @@ int gl_func_0000B958(int a0, register int *a1, int *a2, int a3) {
     }
     return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0000B958);
-#endif
 
 /* gl_func_0000BA6C: 42-insn save-game checksum verifier (sibling of
  * BB14 — same magic 0xD1265205 + same 4 data chunks).

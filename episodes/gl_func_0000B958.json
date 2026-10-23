@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0000B958",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T02:22:36.968740+00:00",
+  "end_time": "2026-10-23T02:22:36.968740+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T02:22:36.968740+00:00",
+      "assistant_text": "IDO unrolls the rolled per-word compare loop itself; one empty if (1) {} at the top of the loop body (a uopt basic-block boundary, found by scripts/blockcut-search.py) moves the a2 copy into the beq delay slot.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 69,
+  "initial_m2c_source": null,
+  "final_source": "int gl_func_0000B958(int a0, register int *a1, int *a2, int a3) {\n    int i;\n    int *x, *y;\n    for (i = 0; i < a3 / 4; i++) {\n        if (1) {}\n        y = a2;\n        x = a1;\n        a2++;\n        a1++;\n        if (*x != *y) return 0;\n    }\n    return 1;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_tail.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0000B958.s",
+    "segment": "game_libs_tail",
+    "compiler": "ido7.1-cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}
