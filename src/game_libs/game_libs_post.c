@@ -7433,7 +7433,7 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     if (idx != 0 && ret == 0) {
         e = *(Desc25504 **)(GB + idx * 0x14 + 0x620);
         gl_ref_0003959C(e->key, GW(idx * 0x14 + 0x624), e->msk, e->sh, (e->msk >> 12) + 1,
-                        &D_25504_1684 + 0x1684, GW(idx * 0x14 + 0x628));
+                        &D_25504_1684 + 0x1684, GW(idx * 0x14 + 0x628)); if (idx) {}
     }
 }
 #undef GB
@@ -8760,10 +8760,10 @@ void gl_func_00026D64(u32 arg0) {
         if (lo == cur) {
             g->pending = 0;
             return;
-        }
+        } if (ent) {}
         CUR_D = (CUR_C + 1) & 0xFF; /* run 130: dead u8 mask burns the target's t-register (57 -> 49) */
         code = *(u8 *)ent;
-        if (code == 0xF8) {
+        if (code == 0xF8) { if (cur) {}
             g->pending = 1;
             return;
         }
