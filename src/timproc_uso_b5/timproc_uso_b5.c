@@ -1632,7 +1632,7 @@ void timproc_uso_b5_func_00001F14(char *arg0) {
                         }
                         frame3 = (s32) (*(f32 *)(arg0 + 0x54) * 120.0f);
                         *(s32 *)(arg0 + 0x44) = frame3;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame3;
+                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame3; if (frame) {}
                         r34c = *(char **)(arg0 + 0x34);
                         if (*(s32 *)(r34c + 0x4D8) == 0) {
                             *(s32 *)(*(s32 *)(*(s32 *)(r34c + 0x414) + 0xC) + 0xBC) = 0;
