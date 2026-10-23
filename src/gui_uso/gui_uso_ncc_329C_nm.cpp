@@ -2,7 +2,7 @@
  * same length as the cfe NM body). NM object only; the ROM build keeps INCLUDE_ASM. Run 139: the cfe gbi.h
  * macro body (gSPTexture + 3-way texture load + gSPScisTextureRectangle) recompiled unchanged under NCC:
  * 86.6 -> 88.50 standalone; `s32 pad[2]; pad[0] = 0;` (a dead store, no code) gives frame 88 = target. As for
- * 3714 (same macro, 93.5 under NCC). RESIDUAL: the target keeps the ring context / switch value in $s0. */
+ * 3714 (same macro, 93.5 under NCC). One parameter empty test (psweep) on top. RESIDUAL: the target keeps the ring context / switch value in $s0. */
 typedef float f32; typedef double f64; typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef signed char s8; typedef unsigned char u8;
 extern "C" {
 extern char D_00000000;
@@ -68,7 +68,7 @@ done:
              _SHIFTL((0 - (((YL) < 0) ? (((s16)(DTDY) < 0) ? (MAX((((s16)(YL) * (s16)(DTDY)) >> 7), 0)) : (MIN((((s16)(YL) * (s16)(DTDY)) >> 7), 0))) : 0)), 0, 16));
     PKT_END
     PKT_BEGIN
-    _g[1] = (_SHIFTL(DSDX, 16, 16) | _SHIFTL(DTDY, 0, 16));
+    _g[1] = (_SHIFTL(DSDX, 16, 16) | _SHIFTL(DTDY, 0, 16)); if (x0) {}
     _g[0] = _SHIFTL(0xB3, 24, 8);
     PKT_END
 }
