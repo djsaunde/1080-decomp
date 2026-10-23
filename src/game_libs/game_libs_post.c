@@ -10052,7 +10052,7 @@ void gl_func_00027E24(void) {
                 e->mode = v;
             }
         }
-    }
+    } if (act) {}
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00027E24);
