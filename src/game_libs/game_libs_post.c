@@ -1048,9 +1048,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DB88);
  * bound is the live global count, written in the loop test. LICM hoists
  * it, but the trip count stays unknown, so there is no x4 unroll and no
  * i<n -> i!=n rewrite.
- * Run 129 (agent-c) 157 -> 150 raw, length 284 -> 288 = target: all three
+ * Run 129 (agent-c) 157 -> 146 raw, length 284 -> 288 = target: all three
  * display-list writes are the gbi `Gfx *_g = gp++` shape (copy, bump, then
- * w0 / w1 through the copy); the class field shifts are unsigned (srl).
+ * w0 / w1 through the copy, reusing p -- a new block local takes a home
+ * and grows the frame by 16); the class field shifts are unsigned (srl).
  * LEFT: arg1 should be held in s8 (ours holds &buf there and homes arg1),
  * and loops B / C keep a per-iteration `e = p` copy in the target (moving
  * `p += 0x20` above the body keeps the copy but rotates the loop, +4 words). */
@@ -1126,10 +1127,10 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
         }
     }
     {
-        char *g0 = gp;
+        p = gp;
         gp += 8;
-        *(s32 *)(g0 + 0) = 0x02000940;
-        *(s32 *)(g0 + 4) = 0x340;
+        *(s32 *)(p + 0) = 0x02000940;
+        *(s32 *)(p + 4) = 0x340;
     }
     for (; k < *(s8 *)(G1DCB4 + 1); k++) {
         rec = G1DCB4 + k * 0x158;
@@ -1173,16 +1174,16 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
         } while (q < qe);
     }
     {
-        char *g1 = gp;
+        p = gp;
         gp += 8;
-        *(s32 *)(g1 + 0) = (((sz2 >> 4) & 0xFF) << 16) | 0x0D000000 | 0x3C0;
-        *(s32 *)(g1 + 4) = 0x09400AE0;
+        *(s32 *)(p + 0) = (((sz2 >> 4) & 0xFF) << 16) | 0x0D000000 | 0x3C0;
+        *(s32 *)(p + 4) = 0x09400AE0;
     }
     {
-        char *g2 = gp;
+        p = gp;
         gp += 8;
-        *(s32 *)(g2 + 0) = ((((sz2 * 2) >> 4) & 0xFF) << 16) | 0x15000000 | 0x3C0;
-        *(s32 *)(g2 + 4) = arg0 + 0x80000000;
+        *(s32 *)(p + 0) = ((((sz2 * 2) >> 4) & 0xFF) << 16) | 0x15000000 | 0x3C0;
+        *(s32 *)(p + 4) = arg0 + 0x80000000;
     }
     return gp;
 }
