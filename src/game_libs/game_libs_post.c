@@ -968,7 +968,7 @@ int gl_func_0001DB88(int a0, Spec4_1DB88 a1, short a2) {
             a0 = gl_ref_0003204C(a0, (e->h + 0xC80) & 0xFFFF, 0, e->n, a1.h1);
         }
     } else {
-        gl_ref_00031D64(a0, 0xC80, 0x340, *(int *)((char *)e + 4) + 0x80000000);
+        gl_ref_00031D64(a0, 0xC80, 0x340, *(int *)((char *)&rec->grp[rec->attr].ent[a2] + 4) + 0x80000000);
         a0 += 8;
     }
     *((char *)rec + 0x18) = 0;
