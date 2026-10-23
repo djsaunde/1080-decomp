@@ -3311,11 +3311,26 @@ gl_d_33be4_2ca = 0x0000002C;  /* gl_func_00033BE4 per-site alias */
 gl_d_33be4_2cb = 0x0000002C;  /* gl_func_00033BE4 per-site alias */
 gl_d_33be4_2cc = 0x0000002C;  /* gl_func_00033BE4 per-site alias */
 /* distinct alias externs for timproc_uso_b5_func_00002B74 redecode (bust cross-expansion &sym CSE) */
-D_timb5_2B74_vt0 = 0; D_timb5_2B74_vt1 = 0; D_timb5_2B74_vt2 = 0; D_timb5_2B74_vt3 = 0; D_timb5_2B74_vt4 = 0;
-D_timb5_2B74_vt5 = 0; D_timb5_2B74_vt6 = 0; D_timb5_2B74_vt7 = 0; D_timb5_2B74_vt8 = 0; D_timb5_2B74_vt9 = 0;
-D_timb5_2B74_vv0 = 0; D_timb5_2B74_vv1 = 0; D_timb5_2B74_vw0 = 0; D_timb5_2B74_vw1 = 0;
-D_timb5_2B74_ve0 = 0; D_timb5_2B74_ve1 = 0;
-D_timb5_2B74_vf0 = 0; D_timb5_2B74_vf1 = 0; D_timb5_2B74_vf2 = 0; D_timb5_2B74_vf3 = 0;
+D_timb5_2B74_vt0 = 0;
+D_timb5_2B74_vt1 = 0;
+D_timb5_2B74_vt2 = 0;
+D_timb5_2B74_vt3 = 0;
+D_timb5_2B74_vt4 = 0;
+D_timb5_2B74_vt5 = 0;
+D_timb5_2B74_vt6 = 0;
+D_timb5_2B74_vt7 = 0;
+D_timb5_2B74_vt8 = 0;
+D_timb5_2B74_vt9 = 0;
+D_timb5_2B74_vv0 = 0;
+D_timb5_2B74_vv1 = 0;
+D_timb5_2B74_vw0 = 0;
+D_timb5_2B74_vw1 = 0;
+D_timb5_2B74_ve0 = 0;
+D_timb5_2B74_ve1 = 0;
+D_timb5_2B74_vf0 = 0;
+D_timb5_2B74_vf1 = 0;
+D_timb5_2B74_vf2 = 0;
+D_timb5_2B74_vf3 = 0;
 D_00000000_76F0 = 0x00000000;
 gl_d_42938_idx = 0x00000000;  /* game_libs_func_00042938: record-index global (base-0 alias) */
 gl_d_42938_rec = 0x00000000;  /* game_libs_func_00042938: 0x50-stride record array base (base-0 alias) */
@@ -3513,6 +3528,7 @@ game_libs_func_00029CCC_rodata = 0x00000FF0;  /* switch(state) 9-entry jumptable
 timproc_uso_b5_func_00005FC0_rodata = 0x00000190;
 timproc_uso_b5_func_00001F14_rodata = 0x000000C8;
 timproc_uso_b5_func_00008AFC_rodata = 0x00000238;
+timproc_uso_b5_func_00002B74_rodata = 0x0000011C;
 game_libs_func_00044B78_rodata = 0x00001B3C;  /* switch(mode & 0xFF) 9-entry jumptable: USO ships it in bootup.uso RoData at +0x1B3C; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_44B78.c) */
 D_44B78_modes = 0x00000000;  /* OSViMode table base (bootup.uso Data sym1947 @0x2D700), zero alias: game_libs_func_00044B78 arms bake +0x0/0x50/0xA0/0x280/0x320/0x3C0/0x960 */
 gl_ref_00001014_f = 0x00001014;  /* 32767.0f literal (game_libs data), game_libs_func_00029CCC */

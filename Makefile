@@ -2552,6 +2552,11 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_8AFC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008AFC=$(TIMB5_8AFC_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8AFC_DONOR)
+# 2B74 = composite panel constructor (469/469 words under NCC; vec3 constants
+# as source literals, rodata pinned at +0x11C) (agent-g run 140).
+TIMB5_2B74_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_2B74.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00002B74=$(TIMB5_2B74_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_2B74_DONOR)
 # 396C: NM-only NCC comparison donor (same 46 words as cfe; 41.8 -> 60.2 fuzzy).
 TIMB5_396C_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_396C_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=$(TIMB5_396C_NM_DONOR)
