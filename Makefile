@@ -583,10 +583,11 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 133: 4A9F0 NM-only NCC donor (39 -> 40 words = target): 0x2e854 -> 0x2e858 (62F08 NM offset 0x2e808).
 # agent-c run 133: 35DAC NCC donor + placeholder host (+0x28): 0x2e858 -> 0x2e880 (62F08 NM offset 0x2e830).
 # agent-c run 133: 36A48 NM-only NCC donor (82 -> 85 words = target): 0x2e880 -> 0x2e88c (62F08 NM offset 0x2e83c).
-# agent-c run 134: 11 post0b NM-only NCC donors (42778 [promoted to a full donor below], 46790, 3B6A0, 483BC, 4B0A8, 3C43C, 38A28, 49DBC, 48510, 43D38, 34548): 0x2e88c -> 0x2e8a4 (62F08 NM offset 0x2e854).
+# agent-c run 134: 11 post0b NM-only NCC donors (42778 and 483BC [both promoted to full donors below], 46790, 3B6A0, 4B0A8, 3C43C, 38A28, 49DBC, 48510, 43D38, 34548): 0x2e88c -> 0x2e8a4 (62F08 NM offset 0x2e854).
 # agent-c run 134: 488A0 NM-only NCC donor + 49DBC 340 -> 339 words: 0x2e8a4 -> 0x2e8a0 (62F08 NM offset 0x2e850).
 # agent-c run 134: 42778 NCC donor + placeholder host: 0x2e8a0 -> 0x2e8a4 (62F08 NM offset 0x2e854).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8a4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 483BC NCC donor + placeholder host: 0x2e8a4 -> 0x2e890 (62F08 NM offset 0x2e840).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e890 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1520,10 +1521,6 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_NM_DONOR
 GAMELIBS_3B6A0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B6A0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_NM_DONOR)
-# 483BC = NM C body lifted under NCC (agent-c run 134 sweep, cfe 88.86). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_483BC_NM_DONOR := build/src/game_libs/game_libs_ncc_483BC_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000483BC=$(GAMELIBS_483BC_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_483BC_NM_DONOR)
 # 4B0A8 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.36). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4B0A8_NM_DONOR := build/src/game_libs/game_libs_ncc_4B0A8_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_NM_DONOR)
@@ -1560,6 +1557,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_NM_DONOR
 GAMELIBS_42778_DONOR := build/src/game_libs/game_libs_ncc_42778.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042778=$(GAMELIBS_42778_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42778_DONOR)
+# 483BC = G_VTX + G_TRI1 packet emitter (488A0 struct form, early return, loop packet in its own h); NCC donor.
+GAMELIBS_483BC_DONOR := build/src/game_libs/game_libs_ncc_483BC.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000483BC=$(GAMELIBS_483BC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_483BC_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
