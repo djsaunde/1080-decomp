@@ -1,5 +1,6 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_00003714: the existing cfe NM body
- * recompiled unchanged under NCC (82.96 -> 85.32, same length). NM object only; ROM build keeps INCLUDE_ASM. */
+ * recompiled unchanged under NCC (82.96 -> 85.32, same length). NM object only; ROM build keeps INCLUDE_ASM.
+ * Run 138: four parameter empty tests from a fuzzy-scored sweep -> 88.72 (247 -> 250 of 256 words). */
 typedef float f32; typedef double f64; typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef signed char s8; typedef unsigned char u8;
 extern "C" {
 extern char D_00000000;
@@ -32,7 +33,7 @@ extern "C" void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 
 
     slot2 = *(s32 *)(arg0 + 0x10);
     sp30 = *(s16 *)(slot2 + 0x22);
-    gui_func_00000000(*dp, *(s32 *)(slot2 + 8), *(s16 *)(slot2 + 0x20), sp30, arg3, 0, arg4, sp30, 0);
+    gui_func_00000000(*dp, *(s32 *)(slot2 + 8), *(s16 *)(slot2 + 0x20), sp30, arg3, 0, arg4, sp30, 0); if (arg5) {}
 
     two = (f32)2;
     fv = (f32)arg4;
@@ -115,13 +116,13 @@ extern "C" void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 
                 lrx = idx;
             }
         } else {
-            dl = ((s32)((u32)slot1 * (u32)idx)) >> 7;
+            dl = ((s32)((u32)slot1 * (u32)idx)) >> 7; if (arg3) {}
             idx = 0;
             if (dl < 0) {
                 idx = dl;
             }
             dl = idx;
-            lrx = dl;
+            lrx = dl; if (arg0) {}
         }
     } else {
         lrx = 0;
@@ -136,4 +137,5 @@ extern "C" void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 
     w = *(s32 *)(*(s32 *)(t + 0xC)) + idx * 8;
     *(s32 *)w = 0xB3000000;
     *(s32 *)(w + 4) = (slot2 << 0x10) | (u & 0xFFFF);
+    if (arg4) {}
 }
