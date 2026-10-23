@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00051F5C",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-23T18:37:40.733266+00:00",
+  "end_time": "2026-10-23T18:37:40.733296+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T18:37:40.733289+00:00",
+      "assistant_text": "C++ donor: the switch is edg's case-order compare chain (100, 101, 0); cfe's NM body recompiled under NCC unchanged; per-site blank callee alias.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 87,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00051F5C: token-stream interpreter; the switch is edg's case-order compare chain (100, 101, 0), which cfe could not lay out (95.4 cap).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */\nextern \"C\" {\nextern int D_00000000;\nint gl_func_00034458_51F5C(...);\n}\nextern \"C\" void gl_func_00051F5C(char *arg0, int *arg1) {\n    char *node;\n    char *prev;\n    int idx;\n    int done;\n    int cmd;\n    int *vec;\n    int k;\n    char *n;\n\n    node = 0;\n    prev = 0;\n    *(char **)&D_00000000 = arg0;\n    idx = 0;\n    done = 0;\n    do {\n        int *c = arg1;\n        arg1 = c + 1;\n        cmd = *c;\n        switch (cmd) {\n        case 100:\n            prev = node;\n            vec = (int *)(arg0 + 0x84);\n            if (idx >= *(int *)(arg0 + 0x8C)) {\n                gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F38, cmd);\n            }\n            node = (char *)gl_func_00034458_51F5C(arg0, &arg1);\n            n = node;\n            if (*(int *)(arg0 + 0x90) >= *(int *)(arg0 + 0x8C)) {\n                gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F4C);\n            }\n            k = vec[3];\n            vec[3] = k + 1;\n            ((char **)vec[0])[k] = n;\n            *(int *)(node + 0x18) = idx;\n            idx++;\n            break;\n        case 101:\n            if (prev == 0) {\n                gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F68, cmd);\n            }\n            *(char **)(prev + 0x40) = node;\n            break;\n        case 0:\n            done = 1;\n            break;\n        default:\n            gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F78, cmd);\n            break;\n        }\n    } while (done == 0);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_51F5C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00051F5C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all ROM byte-identical; objdiff 100"
+  }
+}

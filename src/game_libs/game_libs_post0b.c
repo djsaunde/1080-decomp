@@ -21889,74 +21889,10 @@ void gl_func_00051ED8(a0, va_alist) char *a0; int va_alist; {
 // FULL-DECODE node). Caps: self struct + 5 cb prototypes untyped,
 // message offsets not symbolized (USO-relocated). Full body
 // INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-/* Token-stream interpreter. arg0=context, arg1=int command cursor.
- * Stores context to a &D global, then walks the cursor (advance-by-4)
- * dispatching: 0x64 = parse+append element into the grow-array at
- * arg0->0x84 ({base@0, count@0xC}); 0x65 = back-link prev; 0 = stop;
- * default = error. gl_func_00034458 is the in-file K&R error/parse cb.
- * Message args 0x20F38/4C/68/78 are absolute rodata addrs. */
-/* 2026-10-17 agent-g (run 105) 81.9 -> 95.4: message args as &D + off
- * (addiu, not ori), store-first cursor through a block local, case order
- * 101/100/0/default, `node = f(); n = node;` for the s3/s1 copy order.
- * Residual: IDO tests case 0 FIRST (beqz) in every switch order; the
- * target tests 100, 101, then 0 (an if/goto chain lays the blocks out
- * worse). */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_51F5C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 137). */
 void gl_func_00051F5C(char *arg0, int *arg1) {
-    char *node;
-    char *prev;
-    int idx;
-    int done;
-    int cmd;
-    int *vec;
-    int k;
-    char *n;
-
-    node = 0;
-    prev = 0;
-    *(char **)&D_00000000 = arg0;
-    idx = 0;
-    done = 0;
-    do {
-        int *c = arg1;
-        arg1 = c + 1;
-        cmd = *c;
-        switch (cmd) {
-        case 100:
-            prev = node;
-            vec = (int *)(arg0 + 0x84);
-            if (idx >= *(int *)(arg0 + 0x8C)) {
-                gl_func_00034458((char *)&D_00000000 + 0x20F38, cmd);
-            }
-            node = (char *)gl_func_00034458(arg0, &arg1);
-            n = node;
-            if (*(int *)(arg0 + 0x90) >= *(int *)(arg0 + 0x8C)) {
-                gl_func_00034458((char *)&D_00000000 + 0x20F4C);
-            }
-            k = vec[3];
-            vec[3] = k + 1;
-            ((char **)vec[0])[k] = n;
-            *(int *)(node + 0x18) = idx;
-            idx++;
-            break;
-        case 101:
-            if (prev == 0) {
-                gl_func_00034458((char *)&D_00000000 + 0x20F68, cmd);
-            }
-            *(char **)(prev + 0x40) = node;
-            break;
-        case 0:
-            done = 1;
-            break;
-        default:
-            gl_func_00034458((char *)&D_00000000 + 0x20F78, cmd);
-            break;
-        }
-    } while (done == 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051F5C);
-#endif
 
 /* gl_func_000520B8: 19-insn float-mul wrapper. Sibling of gl_func_00052104
  * (also NM cap). Multiplies scale by (a0->[0x20] * a0->[0x22]) — two
