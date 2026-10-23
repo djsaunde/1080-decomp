@@ -7293,16 +7293,23 @@ typedef struct Desc25504 {
     unsigned msk : 24;
     s32 key;
 } Desc25504;
+/* Run 127 (agent-c, raw 106 -> 76; --noreg 2): ret declared 7th (frame 104,
+ * cur home sp+92 as the target); the first loop is a plain indexed `for` whose
+ * IV init is the target's first `or s5,zero,zero` (no x4 unroll once the bound
+ * is re-read from the global); `(s32)e->sh` as the else-arm argument keeps sh in
+ * v1 with the target's `or a3,v1` copy in the bne delay (plain e->sh coalesced
+ * into a3 and as1 stole a lui into a bnel). Left: the t-ring runs one register
+ * low from the first loop on (target burns t0/t1 before the word load), the
+ * first-loop -16 / lim / sum colours, and the main-loop slot address in v0
+ * where the target has a t-temp. */
 void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
-    s32 ret;
     s32 sum;
     s32 i;
     s32 cur;
     Desc25504 *e;
     s32 sh;
     s32 idx;
-    char *p;
-    char *lim;
+    s32 ret;
 
     ret = 0;
     if (GW(0x1034) != 0) {
@@ -7313,14 +7320,9 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     GW(0x1030) = 0;
     gl_ref_00038248(arg0, arg1, arg2);
     sum = 0;
-    i = 0;
-    if (GW(0x1030) > 0) {
-        p = &D_25504_tab;
-        lim = p + GW(0x1030) * 4;
-        do {
-            sum += ((*(Desc25504 **)(p + 0x430))->msk + 15) & -16;
-            p += 4;
-        } while (p < lim);
+    for (i = 0; i < GW(0x1030); i++) {
+        idx = ((*(Desc25504 **)(&D_25504_tab + 0x430 + i * 4))->msk + 15) & -16;
+        sum += idx;
     }
     for (i = 0; i < GW(0x1030); i++) {
         if (GW(0x1034) == 120) {
@@ -7329,7 +7331,7 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
         e = *(Desc25504 **)(GB + 0x430 + i * 4);
         switch (arg3) {
         case 0:
-            sh = e->sh; if (1) {}
+            sh = e->sh;
             if (arg2[4] == sh) {
                 cur = gl_func_0001CA10(e->msk, arg2[0], e->key, (s8)sh);
             } else if (arg2[5] == sh) {
@@ -7337,7 +7339,7 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
             }
             break;
         case 1:
-            sh = e->sh; if (1) {}
+            sh = e->sh;
             if (arg2[4] == sh) {
                 cur = gl_func_0001CA10(e->msk, arg2[0], e->key, (s8)sh);
             } else if (arg2[5] == sh) {
@@ -7355,7 +7357,7 @@ void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
                 e->key = cur;
                 e->sh = 0;
             } else {
-                gl_func_0001CA10(e->key, cur, e->msk, e->sh);
+                gl_func_0001CA10(e->key, cur, e->msk, (s32)e->sh);
                 e->key = cur;
                 e->sh = 0;
             }
