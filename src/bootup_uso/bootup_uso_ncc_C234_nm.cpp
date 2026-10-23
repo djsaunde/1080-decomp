@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_0000C234: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.39).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for func_0000C234: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.39; a second parameter empty test from round 2 gives 79.35).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -192,7 +192,7 @@ cend:
         *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
-        *(s32 *)((char *)(arg0) + 0x95C) = (s32) (temp_v1_2 + 1);
+        *(s32 *)((char *)(arg0) + 0x95C) = (s32) (temp_v1_2 + 1); if (arg0) {}
         *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
         if (temp_v1_2 >= 0x97) {
             temp_a1_2 = *(s32 *)((char *)&func_00008A40 + 0x38);

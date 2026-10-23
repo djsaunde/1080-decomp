@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_000063B4: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 76.09).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for func_000063B4: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 76.09; a second parameter empty test from round 2 gives 82.95).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -77,7 +77,7 @@ extern "C" void func_000063B4(char *obj) {
     if (iy < 0) iy = 0;
     if (iy >= 0x80) iy = 0x7F;
     *(int *)(ctx + 0x10C) = ix;
-    *(int *)(*(char **)(base + 0x254) + 0x110) = iy;
+    *(int *)(*(char **)(base + 0x254) + 0x110) = iy; if (obj) {}
     fr.q[2] = 0.0f;
     fr.q[1] = 0.0f;
     fr.q[0] = 0.0f;

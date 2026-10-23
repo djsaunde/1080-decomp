@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004A890: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 60.66).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004A890: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 60.66; a second parameter empty test from round 2 gives 68.45).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -52,7 +52,7 @@ extern "C" s16 *gl_func_0004A890(char *arg0, s32 arg1, s16 *arg2) {
             p += 1;
             list[t0] = -1;
             t0 = t0 + 1;
-        } while (p != end);
+        } while (p != end); if (arg1) {}
     }
     list[t0] = -1;
     t0 = t0 + 1;

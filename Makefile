@@ -600,7 +600,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 134: 38A28 NM donor if (c) {} (87 -> 85 of 81 words): 0x2e8a0 -> 0x2e898 (62F08 NM offset 0x2e848).
 # agent-c run 134: 4E424 NM-only NCC donor (53 -> 51 of 49 words): 0x2e898 -> 0x2e890 (62F08 NM offset 0x2e840).
 # agent-c run 134: 4E00C (69 -> 70) + 4A890 (80 -> 81) + 4A308 (221) NM-only NCC donors: 0x2e890 -> 0x2e898 (62F08 NM offset 0x2e848).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e898 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 4E00C round-2 if (s0) {} (70 -> 71 of 75 words): 0x2e898 -> 0x2e89c (62F08 NM offset 0x2e84c).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e89c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
