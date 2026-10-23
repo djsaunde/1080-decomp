@@ -757,7 +757,7 @@ void game_uso_func_00000B3C(char *arg0) {
     case 1:
         bv = *(char **)(s + 0xF4);
         pos2.x = *(f32 *)(bv + 0xA0);
-        q = (f32 *)((int)bv + 0x70);
+        q = (f32 *)((int)bv + 0x70); if (arg0) {}
         pos2.y = *(f32 *)((int)q + 0x34);
         pos2.z = *(f32 *)((int)q + 0x38);
         break;
