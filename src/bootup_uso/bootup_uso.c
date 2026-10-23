@@ -9051,7 +9051,7 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     v[0].z = d * arg3->z - v[0].z;
     if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
         dot = v[1].x * v[0].x + v[1].y * v[0].y + v[0].z * v[1].z;
-        func_00000000(&v[0]); if (arg3) {}
+        func_00000000(&v[0]); if (arg3) {} if (arg4) {} /* run 131: arg4 kept live -> the 1.0f + arg4 load/mtc1/nop schedule, length 131 */
         lim = *(f32 *)(arg0 + 0x9FC);
         dot *= *(f32 *)(arg0 + 0x9F8);
         if (dot < -lim) {
