@@ -1271,6 +1271,24 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DCB4);
  * spills around calls; removing the m2c spC8/spCC copy statements does not
  * fix it and costs 1.4. */
 typedef char *(*GP_0001E134)();
+extern int gl_ref_000338B4();
+extern int gl_ref_00031C4C();
+extern int gl_ref_00031DC0();
+extern int gl_ref_00031BC8();
+extern int gl_ref_000315D4();
+extern int gl_ref_00031CDC();
+extern int gl_ref_000334E4();
+extern int gl_ref_00031E10();
+extern int gl_ref_00031E64();
+extern int gl_ref_00031DDC();
+extern int gl_ref_00031EC4();
+extern int gl_ref_00031EA0();
+extern int gl_ref_00031C90();
+extern int gl_ref_00031D3C();
+extern int gl_ref_00031D64();
+extern int gl_ref_00031C00();
+extern int gl_ref_0003358C();
+extern int gl_ref_00033A34();
 s32 *gl_func_0001E134(s32 arg0, u8 *arg1, u8 *arg2, int arg3, u32 arg4, s32 *arg5, s32 *arg6) {
     char *sp150;
     char *sp14C;
@@ -1388,7 +1406,7 @@ s32 *gl_func_0001E134(s32 arg0, u8 *arg1, u8 *arg2, int arg3, u32 arg4, s32 *arg
     if (var_v1 & 0x40000) {
         temp_a3_2 = temp_t0 >> 0x10;
         sp50 = temp_a3_2;
-        temp_v0 = game_libs_func_0003443C(arg5, arg1, arg2, temp_a3_2);
+        temp_v0 = gl_ref_000338B4(arg5, arg1, arg2, temp_a3_2);
         temp_a2 = FW(arg2, 0x8);
         spAE = (temp_a2 * 2) + 0x580;
         FW(arg2, 0x8) = (s32) (temp_a2 + sp50);
@@ -1570,10 +1588,10 @@ block_41:
                         sp104 = var_t3_2;
                         spC8 = var_t4;
                         spCC = var_t5;
-                        game_libs_func_0003443C(var_s3_2, 0, (s16) (0x940 - (((var_s2 * var_s7) + 0x1F) & 0xFFF0)) + var_t0, var_s5 + 0x580, var_s1 * 2);
+                        gl_ref_00031C4C(var_s3_2, 0, (s16) (0x940 - (((var_s2 * var_s7) + 0x1F) & 0xFFF0)) + var_t0, var_s5 + 0x580, var_s1 * 2);
                         temp_a0_3 = temp_s3_3;
                         var_s3_2 = temp_s3_3 + 8;
-                        game_libs_func_0003443C(temp_a0_3, (u8 *) sp138, FW(arg2, 0xC) + 0x80000000);
+                        gl_ref_00031DC0(temp_a0_3, (u8 *) sp138, FW(arg2, 0xC) + 0x80000000);
                         break;
                     }
                     if (var_t3_2 != 0) {
@@ -1607,9 +1625,9 @@ block_41:
                     var_s3_2 += 8;
                     spC8 = var_t4;
                     spCC = var_t5;
-                    game_libs_func_0003443C(temp_a0_3, var_s6 + 0x580, (u8 *) ((sp108 - var_t3_2) * 2));
+                    gl_ref_00031BC8(temp_a0_3, var_s6 + 0x580, (u8 *) ((sp108 - var_t3_2) * 2));
                     FB(sp9C, 0xB0) = (u8) (FB(sp9C, 0xB0) | 0x20);
-                    game_libs_func_0003443C(arg6, (u8 *) arg0);
+                    gl_ref_000315D4(arg6, (u8 *) arg0);
                     var_a0 = sp50;
                 } else {
                     if (sp13C != 0) {
@@ -1637,14 +1655,14 @@ block_41:
                     var_s3_2 += 8;
                     spC8 = var_t4;
                     spCC = var_t5;
-                    game_libs_func_0003443C(temp_a0_5, sp120 + 0x580, (u8 *)0x3E0, (((s32) sp108 / 2) + 7) & ~7);
+                    gl_ref_00031CDC(temp_a0_5, sp120 + 0x580, (u8 *)0x3E0, (((s32) sp108 / 2) + 7) & ~7);
                     spB0 = sp108;
                     if (sp88 != 0) {
                         temp_a0_5 = var_s3_2;
                         var_s3_2 += 8;
                         spC8 = var_t4;
                         spCC = var_t5;
-                        game_libs_func_0003443C(temp_a0_5, sp108 + 0x3E0, sp108 + 0x10);
+                        gl_ref_00031BC8(temp_a0_5, sp108 + 0x3E0, sp108 + 0x10);
                     }
                     var_a0 = sp50;
                     break;
@@ -1653,7 +1671,7 @@ block_41:
                     var_s3_2 += 8;
                     spC8 = var_t4;
                     spCC = var_t5;
-                    game_libs_func_0003443C(temp_a0_7, sp120 + 0x580, spB0 + 0x3E0, (((s32) sp108 / 2) + 7) & ~7);
+                    gl_ref_00031CDC(temp_a0_7, sp120 + 0x580, spB0 + 0x3E0, (((s32) sp108 / 2) + 7) & ~7);
                     var_a0 = sp50;
                     break;
                 }
@@ -1684,16 +1702,16 @@ block_41:
     }
     temp_t0_3 = arg4 * 2;
     sp138 = var_t1_3;
-    temp_v1_2 = game_libs_func_0003443C(arg5, arg2, (u8 *) temp_t0_3, (u32) sp136, (s32) spAE, var_t1_3);
+    temp_v1_2 = gl_ref_000334E4(arg5, arg2, (u8 *) temp_t0_3, (u32) sp136, (s32) spAE, var_t1_3);
     var_s3_3 = temp_v1_2;
     if (sp8C == 3) {
         var_s3_3 = temp_v1_2 + 8;
-        game_libs_func_0003443C(temp_v1_2, (u8 *)0x3C0, (u8 *)0x3C0, temp_t0_3, 0);
+        gl_ref_00031E10(temp_v1_2, (u8 *)0x3C0, (u8 *)0x3C0, temp_t0_3, 0);
     }
     temp_a0_7 = var_s3_3;
     if (sp8C == 2) {
         var_s3_3 += 8;
-        game_libs_func_0003443C(temp_a0_7, (u8 *)0x3C0, (u8 *)0x3C0, temp_t0_3);
+        gl_ref_00031E64(temp_a0_7, (u8 *)0x3C0, (u8 *)0x3C0, temp_t0_3);
     }
     temp_a0_9 = var_s3_3;
     var_a1_2 = FB(arg1, 0x2);
@@ -1702,38 +1720,38 @@ block_41:
         if ((s32) var_a1_2 < 0x10) {
             var_a1_2 = 0x10;
         }
-        game_libs_func_0003443C(temp_a0_9, (u8 *) var_a1_2, (u8 *)0x3C0, 0U, temp_t0_3 + 0x20);
+        gl_ref_00031DDC(temp_a0_9, (u8 *) var_a1_2, (u8 *)0x3C0, 0U, temp_t0_3 + 0x20);
     }
     temp_a2_3 = FW(arg1, 0x14);
     if (temp_a2_3 != 0) {
         temp_s3_3 = var_s3_3 + 8;
-        game_libs_func_0003443C(var_s3_3, (u8 *) temp_t0_3, temp_a2_3);
+        gl_ref_00031EC4(var_s3_3, (u8 *) temp_t0_3, temp_a2_3);
         temp_a0_10 = temp_s3_3;
         var_s3_3 = temp_s3_3 + 8;
-        game_libs_func_0003443C(temp_a0_10, (u8 *) sp138, (u8 *)0x3C0, FW(arg2, 0xC) + 0x40);
+        gl_ref_00031EA0(temp_a0_10, (u8 *) sp138, (u8 *)0x3C0, FW(arg2, 0xC) + 0x40);
     }
     temp_a0 = FB(arg1, 0x7);
     temp_t0 = FH(arg1, 0xE);
     temp_a3_2 = FW(arg2, 0xC) + 0x800000C0;
     if ((temp_a0 != 0) && (temp_t0 != 0)) {
         temp_a0_10 = var_s3_3 + 8;
-        game_libs_func_0003443C(var_s3_3, (u8 *)0x3C0, (u8 *)0x760, temp_t0_3);
+        gl_ref_00031C90(var_s3_3, (u8 *)0x3C0, (u8 *)0x760, temp_t0_3);
         var_s1_2 = 0x760 - temp_a0;
         if (FB(arg2, 0x1A) != 0) {
             var_s1_2 = 0x760 - temp_a0;
             var_s3_4 = temp_a0_10 + 8;
-            game_libs_func_0003443C(temp_a0_10, var_s1_2, (u8 *) temp_a0);
+            gl_ref_00031BC8(temp_a0_10, var_s1_2, (u8 *) temp_a0);
             FB(arg2, 0x1A) = 0U;
         } else {
             var_s3_4 = temp_a0_10 + 8;
-            game_libs_func_0003443C(temp_a0_10, var_s1_2, (u8 *) temp_a0, temp_a3_2);
+            gl_ref_00031D3C(temp_a0_10, var_s1_2, (u8 *) temp_a0, temp_a3_2);
         }
         temp_a0_9 = var_s3_4 + 8;
-        game_libs_func_0003443C(var_s3_4, (temp_t0_3 - temp_a0) + 0x3C0, (u8 *) temp_a0, temp_a3_2);
+        gl_ref_00031D64(var_s3_4, (temp_t0_3 - temp_a0) + 0x3C0, (u8 *) temp_a0, temp_a3_2);
         temp_v0_10 = temp_a0_9 + 8;
-        game_libs_func_0003443C(temp_a0_9, (u8 *) ((s32) temp_t0_3 >> 4), (u8 *) temp_t0, 0x760U, (s32) var_s1_2);
+        gl_ref_00031C00(temp_a0_9, (u8 *) ((s32) temp_t0_3 >> 4), (u8 *) temp_t0, 0x760U, (s32) var_s1_2);
         var_s3_3 = temp_v0_10 + 8;
-        game_libs_func_0003443C(temp_v0_10, var_s1_2, (u8 *)0x3C0, temp_t0_3);
+        gl_ref_00031C90(temp_v0_10, var_s1_2, (u8 *)0x3C0, temp_t0_3);
     } else {
         FB(arg2, 0x1A) = 1U;
     }
@@ -1742,12 +1760,12 @@ block_41:
     } else if ((FB(arg1, 0x4) != 0) || (var_s0_2 = 0, (FB(arg2, 0x3) != 0))) {
         var_s0_2 = 2;
     }
-    var_s3 = game_libs_func_0003443C(var_s3_3, arg1, arg2, arg4, 0x3C0, var_s0_2, sp138);
+    var_s3 = gl_ref_0003358C(var_s3_3, arg1, arg2, arg4, 0x3C0, var_s0_2, sp138);
     if ((u16) FW(arg1, 0x0) & 1) {
         if (!(sp138 & 1)) {
             sp138 = 0;
         }
-        var_s3 = game_libs_func_0003443C(var_s3, arg1, arg2, temp_t0_3, sp138, var_s0_2);
+        var_s3 = gl_ref_00033A34(var_s3, arg1, arg2, temp_t0_3, sp138, var_s0_2);
     }
     return var_s3;
 }
@@ -2055,6 +2073,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001EF20);
 //   gl_func_00000000 = canonical never-defined USO placeholder.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
+extern int gl_ref_00031D3C();
 int *gl_func_0001F248(int *dst, int *a1, int *a2, int a3) {
     int *s0 = dst;
     int w = a1[0];
@@ -2066,7 +2085,7 @@ int *gl_func_0001F248(int *dst, int *a1, int *a2, int a3) {
         int dp = *(int *)((char *)&D_00000000 + 0x20);
         int *old = s0;
         s0 += 2;
-        gl_func_00000000(old, 0x580, sz, dp + 0x80000000);
+        gl_ref_00031D3C(old, 0x580, sz, dp + 0x80000000);
         *(int *)((char *)&D_00000000 + 0x20) =
             *(int *)((char *)&D_00000000 + 0x20) + a3 * 4;
         return s0;
@@ -3849,9 +3868,9 @@ end_zero:
 
 /* 20-insn helper: alloc-via-callee gl_func_00036A48 + 3-field-set + return
  * v0[8]. */
-extern int gl_func_00036A48();
+extern int gl_ref_00036A48();
 int *gl_func_00021E58(int a0, int a1, int a2, signed char a3) {
-    int *v0 = (int*)gl_func_00036A48(a0);
+    int *v0 = (int*)gl_ref_00036A48(a0);
     if (v0 == 0) goto end_zero;
     *(char*)((char*)v0 + 2) = (char)a1;
     *(int*)((char*)v0 + 0xC) = a2;
@@ -4426,6 +4445,7 @@ void game_libs_func_00022674(void) {
  * array so IDO materializes the base once per block (lui;addiu) and reuses
  * it with field displacements, matching the target's single-base codegen. */
 extern u8 gl_d_00022760[];
+extern int gl_ref_00038604();
 s32 gl_func_00022760(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
     char *found;
     s32 sp38;
@@ -4538,7 +4558,7 @@ block_29:
     temp_v1_3 = *(u32 *)(gl_d_00022760 + 0x207C);
     *(u32 *)(gl_d_00022760 + 0x207C) = temp_v1_3 + 1;
     sp38 = var_t2;
-    game_libs_func_0003443C(gl_d_00022760 + (temp_v1_3 * 0x18) + 0x17D4, 0, 0, temp_s0, FW(found, 0x0), (s32) temp_v0_7, 0x16BC, arg4, 0x1AA84);
+    gl_ref_00038604(gl_d_00022760 + (temp_v1_3 * 0x18) + 0x17D4, 0, 0, temp_s0, FW(found, 0x0), (s32) temp_v0_7, 0x16BC, arg4, 0x1AA84);
     *arg3 = sp38;
     return (arg0 - temp_s0) + FW(found, 0x0);
 }
@@ -5803,6 +5823,7 @@ int game_libs_func_00023B98(int idx) {
 #ifdef NON_MATCHING
 extern int gl_func_0001CA10();
 extern int D_00000000;
+extern int gl_ref_00039A30();
 void gl_func_00023BDC(s32 arg0, char *arg1, int arg2) {
     s32 sp3C;
     s32 sp48;
@@ -5832,7 +5853,7 @@ void gl_func_00023BDC(s32 arg0, char *arg1, int arg2) {
                     node = node + (int)arg1;
                     *slot = node;
                     if (*(u8 *)(node + 0x2) == 0) {
-                        game_libs_func_0003443C(node + 4, arg1, arg2);
+                        gl_ref_00039A30(node + 4, arg1, arg2);
                         *(u8 *)(node + 0x2) = 1;
                         *(char **)(node + 0xC) = *(char **)(node + 0xC) + (int)arg1;
                     }
@@ -5848,7 +5869,7 @@ void gl_func_00023BDC(s32 arg0, char *arg1, int arg2) {
             do {
                 node = *(char **)(arg1 + 0x4) + i;
                 if ((node != 0) && (*(int *)node != 0)) {
-                    game_libs_func_0003443C(node, arg1, arg2);
+                    gl_ref_00039A30(node, arg1, arg2);
                 }
                 i += 8;
             } while (i != cnt2 * 8);
@@ -5869,11 +5890,11 @@ void gl_func_00023BDC(s32 arg0, char *arg1, int arg2) {
                 *listp = node;
                 if (*(u8 *)(node + 0x0) == 0) {
                     if (*(u8 *)(node + 0x1) != 0) {
-                        game_libs_func_0003443C(node + 8, arg1, arg2);
+                        gl_ref_00039A30(node + 8, arg1, arg2);
                     }
-                    game_libs_func_0003443C(node + 0x10, arg1, arg2);
+                    gl_ref_00039A30(node + 0x10, arg1, arg2);
                     if (*(u8 *)(node + 0x2) != 0x7F) {
-                        game_libs_func_0003443C(node + 0x18, arg1, arg2);
+                        gl_ref_00039A30(node + 0x18, arg1, arg2);
                     }
                     *(u8 *)(node + 0x0) = 1;
                     *(char **)(node + 0x4) = *(char **)(node + 0x4) + (int)arg1;
@@ -6418,6 +6439,7 @@ typedef struct { u8 b0, b1, b2, b3; s16 h4; char pad[0xE]; } Dst24378;
  * unroll; uopt rewrites it to the pointer loop and leaves the dead init). A
  * named n, or reusing i (live later -> s1), unrolls or moves it. LEFT: srci
  * colours v0 / bound a0 (target a0 / a1); the 0x14-record loop's t-ring. */
+extern int gl_ref_000375CC();
 void gl_func_00024378(void) {
     volatile s32 pad[16];
     s32 n;
@@ -6498,9 +6520,9 @@ void gl_func_00024378(void) {
     SB(gl_d_24378, 0x2CF1) = 0;
     SB(gl_d_24378, 0x2CF0) = 1;
     gl_func_0001CA10();
-    game_libs_func_0003443C(FW(gl_d_24378, 0x201C), *(s32 *)gl_d_24378_q, 0);
-    game_libs_func_0003443C(FW(gl_d_24378, 0x2020), *(s32 *)gl_d_24378_r, 0);
-    game_libs_func_0003443C(FW(gl_d_24378, 0x2024), *(s32 *)gl_d_24378_s, 0);
+    gl_ref_000375CC(FW(gl_d_24378, 0x201C), *(s32 *)gl_d_24378_q, 0);
+    gl_ref_000375CC(FW(gl_d_24378, 0x2020), *(s32 *)gl_d_24378_r, 0);
+    gl_ref_000375CC(FW(gl_d_24378, 0x2024), *(s32 *)gl_d_24378_s, 0);
     c = *(s16 *)FW(gl_d_24378, 0x2020);
     FW(gl_d_24378, 0x2030) = gl_func_0001CA10(gl_d_24378_t + 0x2188, c * 0x14);
     /* x4 unroll + andi-3 remainder loop come out of the plain loop once
@@ -7011,6 +7033,10 @@ void gl_func_00025044(int a0) {
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 
+extern int gl_ref_00037DCC();
+extern int gl_ref_00039B70();
+extern int gl_ref_00039A1C();
+extern int gl_ref_0003998C();
 void gl_func_000250C8(char *obj, int arg1) {
     char *reg;
     int mode;
@@ -7061,16 +7087,16 @@ block7:
             buf[0] = c2;
             buf[1] = c3;
             if (c2 != 0xff) {
-                buf[2] = gl_func_00000000(c2, &buf[4]);
+                buf[2] = gl_ref_00037DCC(c2, &buf[4]);
             } else {
                 buf[2] = 0;
             }
             if (c3 != 0xff) {
-                buf[3] = gl_func_00000000(c3, &buf[5]);
+                buf[3] = gl_ref_00037DCC(c3, &buf[5]);
             } else {
                 buf[3] = 0;
             }
-            gl_func_00000000(sub, *(int *)(obj + 4), &buf[0], 1);
+            gl_ref_00039B70(sub, *(int *)(obj + 4), &buf[0], 1);
             break;
         }
         *(char *)(obj + 0) = 0;
@@ -7079,20 +7105,20 @@ block7:
     }
     if (sub < (unsigned int)*(int *)(obj + 0x14)) {
         if (*(signed char *)(obj + 2) == 1) {
-            gl_func_00000000(*(int *)(obj + 8), *(int *)(obj + 0xc), sub,
+            gl_ref_00039A1C(*(int *)(obj + 8), *(int *)(obj + 0xc), sub,
                              *(short *)(reg + 2));
         } else {
-            gl_func_00000000(obj, sub, sub);
+            gl_ref_0003998C(obj, sub, sub);
         }
         *(int *)(obj + 0x10) = 0;
         return;
     }
     rem = *(int *)(obj + 0x14);
     if (*(signed char *)(obj + 2) == 1) {
-        gl_func_00000000(*(int *)(obj + 8), *(int *)(obj + 0xc), rem,
+        gl_ref_00039A1C(*(int *)(obj + 8), *(int *)(obj + 0xc), rem,
                          *(short *)(reg + 2));
     } else {
-        gl_func_00000000(obj, rem, rem);
+        gl_ref_0003998C(obj, rem, rem);
     }
     rem = *(int *)(obj + 0x14);
     *(int *)(obj + 0x10) = *(int *)(obj + 0x10) - rem;
@@ -7144,12 +7170,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000250C8);
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 extern int D_00000000;
+extern int gl_ref_00038604();
 void gl_func_00025320(char *obj, int a1) {
     char *g = (char *)&D_00000000;
     int sz = (a1 + 0xF) & ~0xF;
     gl_func_00000000(*(int *)(obj + 0xC), sz);
     gl_func_00000000(obj + 0x20, obj + 0x38, 1);
-    gl_func_00000000(obj + 0x3C, 0, 0,
+    gl_ref_00038604(obj + 0x3C, 0, 0,
                      *(int *)(obj + 0xC), sz, obj + 0x20,
                      *(unsigned char *)(obj + 2), g + 0x2B0C0);
 }
@@ -8044,6 +8071,7 @@ extern u64 D_26214_boot[];   /* OSTask ucode_boot / ucode text (lui/addiu, NM-on
 extern u64 D_26214_data[];   /* OSTask ucode_data start */
 extern u64 D_26214_dataE[];  /* ucode_data end */
 extern char D_26214_buf[];   /* base added to the 0xFFF0-masked sample position */
+extern int gl_ref_0003B3D0();
 char *gl_func_00026214(void) {
     char *p4;
     char *p2;
@@ -8175,7 +8203,7 @@ char *gl_func_00026214(void) {
     if (D_BU(0x2CF0) == 0) {
         if (gl_func_0001CA10(D_W(0x53CC), &sp4C, 0) != -1) {
             do {
-                game_libs_func_0003443C(sp4C);
+                gl_ref_0003B3D0(sp4C);
                 var_s0 += 1;
             } while (gl_func_0001CA10(D_W(0x53CC), &sp4C, 0) != -1);
         }
@@ -9365,9 +9393,9 @@ ret0:
 /* game_libs_func_000276B8 / _000276D0 / _000276D8 MERGED into 275F4
  * 2026-07-08 (reverse-merge; symbols dropped, .s absorbed). */
 
-extern int gl_func_0003B1AC();
+extern int gl_ref_0003B1AC();
 int gl_func_000276E4() {
-    return gl_func_0003B1AC();
+    return gl_ref_0003B1AC();
 }
 
 extern int gl_func_00000000();
@@ -9526,6 +9554,7 @@ typedef char *(*GP_00027804)();
 #ifndef FF
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 #endif
+extern int gl_ref_0003C2B4();
 void gl_func_00027804(char *arg0, char *arg1) {
     union {
         s32 w;
@@ -9550,7 +9579,7 @@ void gl_func_00027804(char *arg0, char *arg1) {
 
     if (0) { char **pp27804 = &arg1; }
     temp_v0 = *(u8 *)(arg0 + 0x35);
-    game_libs_func_0003443C(arg0, FW(arg1, 0x4));
+    gl_ref_0003C2B4(arg0, FW(arg1, 0x4));
     var_f2 = FF(arg1, 0x8);
     sc.b.b2 = *(u8 *)(arg1 + 0x2);
     sc.b.b0 = *(u8 *)(arg1 + 0x0);
@@ -13159,6 +13188,7 @@ extern int game_libs_func_0003443C();
 extern u8 gl_d_2b5f4_f;   /* base-0 alias of D_00000000: per-site fold for the 0x10AC f32 const */
 extern u8 gl_d_2b5f4_r1;  /* base-0 alias: RNG word 0x2154, first (float ramp) block */
 extern u8 gl_d_2b5f4_r2;  /* base-0 alias: RNG word 0x2154, second (percent) block */
+extern int gl_ref_0003F05C();
 s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
     f32 ramp;
     u16 sp3A;
@@ -13173,7 +13203,7 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
     sp2C = *(char **)((char *)t0 + 0x4C);
 
     if (arg1 == 0xC0) {
-        *(s16 *)((char *)arg0 + 0x8) = game_libs_func_0003443C((char *)arg0 + 0x54);
+        *(s16 *)((char *)arg0 + 0x8) = gl_ref_0003F05C((char *)arg0 + 0x54);
         *(u8 *)arg0 |= 0x20;
         *(u8 *)arg0 &= 0xFD;
         return -1;
@@ -13183,7 +13213,7 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
         switch (arg1 & 0xC0) {                      /* irregular */
         case 0x0:
             cur = (char **)((char *)arg0 + 0x54);
-            sp3A = game_libs_func_0003443C(cur);
+            sp3A = gl_ref_0003F05C(cur);
             ptr = *cur;
             var_a3 = *(u8 *)ptr;
             ptr += 1;
@@ -13194,7 +13224,7 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
             break;
         case 0x40:
             cur = (char **)((char *)arg0 + 0x54);
-            sp3A = game_libs_func_0003443C(cur);
+            sp3A = gl_ref_0003F05C(cur);
             ptr = *cur;
             var_a3 = *(u8 *)ptr;
             *cur = ptr + 1;
@@ -13220,7 +13250,7 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
     } else {
         switch (arg1 & 0xC0) {                      /* irregular */
         case 0x0:
-            sp3A = game_libs_func_0003443C((char *)arg0 + 0x54);
+            sp3A = gl_ref_0003F05C((char *)arg0 + 0x54);
             *(s16 *)((char *)arg0 + 0x14) = sp3A;
             break;
         case 0x40:

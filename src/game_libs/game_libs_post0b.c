@@ -1891,6 +1891,8 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035C6C);
 //   target hoists all 5 addiu sN,sp,off to the top. Address-folding/saved-
 //   reg-promotion regalloc cap. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
+extern int gl_ref_0004A110();
+extern int gl_ref_0004A14C();
 void gl_func_00035DAC(void) {
     int a[7];
     int *p3 = &a[3];      /* s0 = sp+64 */
@@ -1899,14 +1901,14 @@ void gl_func_00035DAC(void) {
     int *p6 = &a[6];      /* s3 = sp+76 (sentinel) */
     int *p4 = &a[4];      /* s4 = sp+68 (counter) */
     *p5 = 0;
-    gl_func_00000000(p5);             /* iterator init(&end) */
+    gl_ref_0004A110(p5);             /* iterator init(&end) */
     *p6 = -1;
     *p0 = *p6;
     while (*p0 != *p5) {
-        gl_func_00000000(p4);         /* step -> sets counter *p4 */
+        gl_ref_0004A14C(p4);         /* step -> sets counter *p4 */
         if (*p4 != 0) {
             do {
-                gl_func_00000000(p3); /* inner step */
+                gl_ref_0004A14C(p3); /* inner step */
                 *p4 -= 4;
             } while (*p4 != 0);
         }
