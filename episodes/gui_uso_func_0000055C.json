@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_uso_func_0000055C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T01:21:40.524405+00:00",
+  "end_time": "2026-10-23T01:21:40.524405+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T01:21:40.524405+00:00",
+      "assistant_text": "NCC donor: inline next() appends; slot-pointer colours set by uopt block boundaries -- empty if (1) {} after packet 1 and inside next() for packets 2 and 3 (found by a 2048-variant layout search).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 87,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_uso_func_0000055C (0x15C / 87 words).\n *\n * Caches the gfx context (*(D + 0x254))->0x158 in w->ctx, then appends six\n * fixed commands (RDPPIPESYNC, two SETOTHERMODE_H, SETOTHERMODE_L,\n * SETCOMBINE, TEXTURE) through the context's inline next() (1A5C recipe,\n * docs/IDO_CODEGEN.md kit XXV).\n *\n * The slot pointers' colours (a2 a3 a2 a3 t1 a2) are set by uopt's basic\n * blocks. Interference is per block: two slot pointers conflict only when\n * they share a block. The target has a boundary after the first packet and\n * one between the dl->n store and the slot address of packets 2 and 3.\n * Here those come from an empty `if (1) {}` after packet 1 and from\n * nextb(), which is next() with the same empty if. A 2048-variant search\n * over next() / nextb() per packet and an empty if after each packet found\n * this as the only exact layout (kit XXXV).\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees. */\nextern \"C\" { extern char D_00000000; }\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n    Gfx *nextb() { int n = dl->n++; if (1) {} return &dl->buf[n]; }\n};\nstruct G { char pad[0x158]; Ctx *ctx; };\nstruct W { char pad[0x24]; Ctx *ctx; };\nextern \"C\" void gui_uso_func_0000055C(W *w) {\n    Gfx *p1, *p2, *p3, *p4, *p5, *p6;\n    w->ctx = (*(G **)(&D_00000000 + 0x254))->ctx;\n    p1 = w->ctx->next();\n    p1->w0 = 0xE7000000; p1->w1 = 0;\n    if (1) {}\n    p2 = w->ctx->nextb();\n    p2->w0 = 0xBA001402; p2->w1 = 0;\n    p3 = w->ctx->nextb();\n    p3->w0 = 0xBA001301; p3->w1 = 0;\n    p4 = w->ctx->next();\n    p4->w0 = 0xB900031D; p4->w1 = 0x00404240;\n    p5 = w->ctx->next();\n    p5->w0 = 0xFC309661; p5->w1 = 0xFF2FFFFF;\n    p6 = w->ctx->next();\n    p6->w0 = 0xBB000001; p6->w1 = 0x80008000;\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_055C.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_uso_func_0000055C.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}

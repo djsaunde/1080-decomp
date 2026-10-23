@@ -84,96 +84,14 @@ struct GfxRing_413C { int *buf; int idx; };
 void gui_func_00000148(void) {
 }
 
-#ifdef NON_MATCHING
-/* Display-list emitter (sibling of gui_uso_func_000016A4): appends 6 fixed
- * GBI commands (RDPPIPESYNC, two SETOTHERMODE_H, SETOTHERMODE_L,
- * SETCOMBINE, B/B-tile) to the gfx builder reached via *(D+0x254)->0x158,
- * caching it at a0->0x24 and re-reading the cache ONCE per packet.
- * 2026-10-15 rewrite (78.6 -> see report): store the cache, then RE-READ
- * it into b (`a0->24 = expr; b = a0->24;` -- IDO forwards the stored value,
- * so packet 1 runs on the t7 expression temp; the `b = a0->24 = expr`
- * chain that works for 16A4's global gives v0 here); i and slot
- * block-scoped per packet. RESIDUAL (28 words, colouring + 2 lui pairs):
- * target keeps i in a1 for every packet and rotates slot a2/a3/a2/a3/t1/a2;
- * here i rotates a1/a3/a1/a3/t1/a2 and slot a2/t0/a2/t0/a1/a3. With i at
- * function scope (slot block-scoped) the i/slot colours match but ugen's
- * temps shift (E700 const in t2 not t4) and every next-packet constant
- * lui is scheduled early -> 69 words. Tried all 16 b/r/i/slot scope
- * combos x {chain, separate, reload, nested-temp} cache forms. */
-void gui_uso_func_0000055C(char *a0) {
-    char *b;
-    struct GfxRing_413C *r;
-    {
-        int i;
-        int *slot;
-        *(char **)(a0 + 0x24) = *(char **)(*(char **)((char *)&D_00000000 + 0x254) + 0x158);
-        b = *(char **)(a0 + 0x24);
-        r = *(struct GfxRing_413C **)(b + 0xC);
-        i = r->idx;
-        r->idx = i + 1;
-        slot = (*(struct GfxRing_413C **)(b + 0xC))->buf + i * 2;
-        slot[0] = 0xE7000000;
-        slot[1] = 0;
-    }
-    {
-        int i;
-        int *slot;
-        b = *(char **)(a0 + 0x24);
-        r = *(struct GfxRing_413C **)(b + 0xC);
-        i = r->idx;
-        r->idx = i + 1;
-        slot = (*(struct GfxRing_413C **)(b + 0xC))->buf + i * 2;
-        slot[0] = 0xBA001402;
-        slot[1] = 0;
-    }
-    {
-        int i;
-        int *slot;
-        b = *(char **)(a0 + 0x24);
-        r = *(struct GfxRing_413C **)(b + 0xC);
-        i = r->idx;
-        r->idx = i + 1;
-        slot = (*(struct GfxRing_413C **)(b + 0xC))->buf + i * 2;
-        slot[0] = 0xBA001301;
-        slot[1] = 0;
-    }
-    {
-        int i;
-        int *slot;
-        b = *(char **)(a0 + 0x24);
-        r = *(struct GfxRing_413C **)(b + 0xC);
-        i = r->idx;
-        r->idx = i + 1;
-        slot = (*(struct GfxRing_413C **)(b + 0xC))->buf + i * 2;
-        slot[0] = 0xB900031D;
-        slot[1] = 0x00404240;
-    }
-    {
-        int i;
-        int *slot;
-        b = *(char **)(a0 + 0x24);
-        r = *(struct GfxRing_413C **)(b + 0xC);
-        i = r->idx;
-        r->idx = i + 1;
-        slot = (*(struct GfxRing_413C **)(b + 0xC))->buf + i * 2;
-        slot[0] = 0xFC309661;
-        slot[1] = 0xFF2FFFFF;
-    }
-    {
-        int i;
-        int *slot;
-        b = *(char **)(a0 + 0x24);
-        r = *(struct GfxRing_413C **)(b + 0xC);
-        i = r->idx;
-        r->idx = i + 1;
-        slot = (*(struct GfxRing_413C **)(b + 0xC))->buf + i * 2;
-        slot[0] = 0xBB000001;
-        slot[1] = 0x80008000;
-    }
+/* gui_uso_func_0000055C: display-list emitter (sibling of gui_uso_func_000016A4),
+ * six fixed GBI commands into the context cached at a0->0x24. EXACT
+ * 2026-10-22 (agent-g run 126) via the IDO 7.1 NCC donor
+ * src/gui_uso/gui_uso_ncc_055C.cpp (REPLACE_FUNC_BODY, both trees). The
+ * old "slot rotation" residual came from where uopt's basic blocks
+ * ended. This is the splice host. */
+void gui_uso_func_0000055C(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_uso_func_0000055C);
-#endif
 
 /* gui_uso_func_000006B8: one G_SETPRIMCOLOR append (col[0..2] * 255 above
  * the alpha byte) into a0->0x24's gfx context. EXACT 2026-10-22 (agent-g run
