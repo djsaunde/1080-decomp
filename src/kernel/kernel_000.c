@@ -2012,7 +2012,7 @@ s32 func_80002250(void *arg0) {
             temp_v0_2 = *(s16 *)var_v1;
             var_a3 += 1;
             if (!(temp_v0_2 & 8) && ((temp_v0_2 & 7) == 1)) {
-                temp_a1 = ((void **)&D_80012D60)[temp_v0_2 >> 4];
+                temp_a1 = ((void **)&D_80012D60)[temp_v0_2 >> 4]; if (var_a3) {}
                 if (temp_a1 == NULL) {
                     *(u8 *)((char *)arg0 + 0x99) = 1;
                     FW(&D_80012BC0, 0x18) = FW(&D_80012BC0, 0x18) + 1;
