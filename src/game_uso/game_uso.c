@@ -1286,10 +1286,12 @@ void game_uso_func_00001DDC(int *a0) {
         /* These scoped pointer definitions split the cross-call webs. */
         if (1) { scaled_src = (Vec3 *)&diff; }
         if (1) { hopA = (Tri3i *)scratch; }
-        fy = *(float *)((char *)a0 + 0x7C);
-        if (mag < fy) {
-            excess = mag - fy;
-            st_p1t.x = (fx = scaled_src->x * excess); st_p1t.y = (fz = scaled_src->y * excess); st_p1t.z = (mag = scaled_src->z * excess);
+        /* run 140: the threshold in fz and the excess in fy (same-name web
+         * reuse) colour them f2 / f0 as in the target (raw 10 -> 7). */
+        fz = *(float *)((char *)a0 + 0x7C);
+        if (mag < fz) {
+            fy = mag - fz;
+            st_p1t.x = (fx = scaled_src->x * fy); st_p1t.y = (fz = scaled_src->y * fy); st_p1t.z = (mag = scaled_src->z * fy);
             *hopA = *(Tri3i *)&st_p1t;
             *(Tri3i *)&hopB = *hopA;
             acc.x = hopB.x; acc.y = hopB.y; acc.z = hopB.z;
