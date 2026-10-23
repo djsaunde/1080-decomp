@@ -3468,8 +3468,7 @@ int gl_func_0002119C(void) {
     case 4:
         gl_func_00035B04();
         p = (char *)gl_d_2119C_p;
-        GL2119C_STATE = 0;
-        e = (char *)gl_d_2119C_e + 12;
+        GL2119C_STATE = 0, e = (char *)gl_d_2119C_e + 12;
         q = p;
         do {
             *(short *)(q + 0x214C) = *(short *)(B + 0x203C);
