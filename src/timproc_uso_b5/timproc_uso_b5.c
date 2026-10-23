@@ -3649,7 +3649,7 @@ void timproc_uso_b5_func_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, i
         } while (j < *(int *)(row + 0x6C));
     }
     *(int *)(arg0 + 0x3E8) = timproc_uso_b5_func_00008988(arg0, 2, **(int **)(arg0 + 0x4EC));
-    idx = timproc_uso_b5_func_00008988(arg0, 3, **(int **)(arg0 + 0x4DC));
+    idx = timproc_uso_b5_func_00008988(arg0, 3, **(int **)(arg0 + 0x4DC)); if (1) {}
     *(int *)(arg0 + 0x3EC) = idx;
     *(int *)(arg0 + 0x3DC) = idx;
     n = *(int *)(arg0 + 0x3E0);
