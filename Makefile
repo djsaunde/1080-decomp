@@ -160,6 +160,11 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 H2H_1204_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp.o
 build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: REPLACE_FUNC_BODY += h2hproc_uso_func_00001204=$(H2H_1204_DONOR)
 build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1204_DONOR)
+# 1360 = per-frame menu draw; C++ (edg-order virtual call). Still NON_MATCHING
+# (font pointer / width colours in the item tail): NM comparison object only.
+H2H_1360_NM_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1360.cpp.o
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: REPLACE_FUNC_BODY += h2hproc_uso_func_00001360=$(H2H_1360_NM_DONOR)
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1360_NM_DONOR)
 # 7328 = message-queue drain with the {cur, nxt} list iterator + by-value Msg match; NCC donor.
 BOOTUP_7328_DONOR := build/src/bootup_uso/bootup_uso_ncc_7328.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00007328=$(BOOTUP_7328_DONOR)
