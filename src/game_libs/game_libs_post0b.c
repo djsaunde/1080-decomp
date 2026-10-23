@@ -13425,9 +13425,12 @@ int gl_func_00044CE8(int a0, int a1, int a2) {
     }
     gl_func_00000000();
 skip:
-    n = *(int *)(a0 + 0x5D0);
-    *(int *)(a0 + 0x5D0) = n + 1;
-    rec = (a0 + 0x378) + n * 6; if (a0) {}
+    /* run 133: the pool at +0x378 holds 50 TWELVE-byte entries (stride 12, not 6) with its count at
+     * pool+0x258 (= +0x5D0); frame 40 -> 32 = target */
+    {
+        char *pool = (char *)(a0 + 0x378);
+        rec = (int)(pool + (*(int *)(pool + 0x258))++ * 12);
+    }
     *(int *)(a0 + a1 * 4 + 0x2AC) = rec;
     *(int *)(rec + 8) = 0;
     gl_func_00000000(rec, a2);
