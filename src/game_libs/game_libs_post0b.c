@@ -4583,42 +4583,11 @@ void gl_func_00038C70(int a0, int a1, int a2) {
 //   jal-0 printf cbs + contiguous fixed string-data table; string
 //   table / node struct untyped. Real-C STRUCTURAL body below.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int D_00000000;
-/* Whole-body decode 2026-06-01 (prior loop calls were wrong). If a1==0, call
- * gl(&D+0x1ECB8, o->0xC). Then s1=a1+1 and a two-level walk of o->0x10 entries
- * ({node@0, next@4}): per node call gl(s1), gl(&D+0x1ECCC, node->0xC),
- * gl(node, s1). */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_38C98.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 133). The list
+ * walk is the {cur, nxt} iterator of 3D48C; see the .cpp header. */
 void gl_func_00038C98(char *o, int a1) {
-    char *list = *(char **)(o + 0x10);
-    int s1;
-    char *node;
-
-    if (a1 == 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001ECB8, *(int *)(o + 0x0C));
-    }
-    s1 = a1 + 1;
-    if (list != 0) {
-        node = *(char **)list;
-        list = *(char **)(list + 4);
-    } else {
-        node = 0;
-    }
-    while (node != 0) {
-        gl_func_00000000(s1);
-        gl_func_00000000((char *)&D_00000000 + 0x0001ECCC, *(int *)(node + 0x0C));
-        gl_func_00000000(node, s1);
-        if (list != 0) {
-            node = *(char **)list;
-            list = *(char **)(list + 4);
-        } else {
-            node = 0;
-        }
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038C98);
-#endif
 
 void game_libs_func_00038D5C(int *a0, int a1) {
     a0[0x24/4] = a1;
