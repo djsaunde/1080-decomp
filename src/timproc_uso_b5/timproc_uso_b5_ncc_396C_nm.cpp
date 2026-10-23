@@ -1,9 +1,11 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for timproc_uso_b5_func_0000396C
- * (47 words; this body 46, the same length as the cfe NM body). NM object only
- * (build/non_matching); the ROM build keeps INCLUDE_ASM. The cfe body recompiled
- * unchanged under NCC: 41.8 -> 60.2 fuzzy.
- * RESIDUAL: the target loads all three arg2 components before the first store
- * to o (one extra word), and colours tt f18 / x f16. */
+ * (47 words = target). NM object only (build/non_matching); the ROM build keeps
+ * INCLUDE_ASM. The cfe body recompiled under NCC: 41.8 -> 60.2 fuzzy. Run 139: the
+ * target reads all three arg2 components BEFORE the first store to o (the stores can
+ * alias arg2), so the three results are computed into x / yv / z first and stored
+ * together at the end: 46 -> 47 words, 60.2 -> 86.3.
+ * RESIDUAL: colours only -- tt f0 (target f18), the x / z sums f2 / f16 (target f16 /
+ * f0), o in v1 (target reuses v0 after B dies); declaration order has no effect. */
 typedef int s32;
 typedef float f32;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -38,11 +40,14 @@ extern "C" void timproc_uso_b5_func_0000396C(char *arg0, s32 arg1, char *arg2, f
     if (1) {
         t = *(f32 *)((char *)arg2 + 0x0);
         tv = t;
-        *(f32 *)((char *)o + 0x30) = tv + ((x - tv) * h);
+        x = tv + ((x - tv) * h);
         t = *(f32 *)((char *)arg2 + 0x4);
-        tv = t;
-        *(f32 *)((char *)o + 0x34) = tv + ((yv - tv) * h);
         cz = *(f32 *)((char *)arg2 + 0x8);
-        *(f32 *)((char *)o + 0x38) = cz + ((z - cz) * h);
+        tv = t;
+        yv = tv + ((yv - tv) * h);
+        z = cz + ((z - cz) * h);
+        *(f32 *)((char *)o + 0x30) = x;
+        *(f32 *)((char *)o + 0x34) = yv;
+        *(f32 *)((char *)o + 0x38) = z;
     }
 }
