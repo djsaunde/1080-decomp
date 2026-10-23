@@ -1675,6 +1675,10 @@ GAMELIBS_29CCC_DONOR := build/src/game_libs/game_libs_o2_29CCC.c.o
 # (origin/main carries game_libs_func_00029CCC on the same unit).
 GAMELIBS_2E290_DONOR := build/src/game_libs/game_libs_o2_2E290.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY := game_libs_func_00029CCC=$(GAMELIBS_29CCC_DONOR)
+# 1D17C = three DL packets from a 344-byte record (NCC 96.0 vs cfe 89.0, 31 -> 33 words = target). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_1D17C_NM_DONOR := build/src/game_libs/game_libs_ncc_1D17C_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0001D17C=$(GAMELIBS_1D17C_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_1D17C_NM_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E290=$(GAMELIBS_2E290_DONOR)
 # 343F4 = selector -> 0xC-stride table-entry address (8-entry jumptable switch,
 # cases 2/3/5/1 + default), IDO 7.1 -O2 donor: game_libs_o2_343F4.c (25/25
