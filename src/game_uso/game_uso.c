@@ -5087,6 +5087,7 @@ int game_uso_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
  * 2026-10-17 (agent-g run 103, 79.99 -> 88.20): the nine `hitA/hitB/hitC/result =
  * scratch` Vec3 assignments are member-wise FLOAT copies in the target (lwc1/swc1:
  * the C++ Vec3 operator=), not struct assignment (lw/sw). */
+/* NM object: replaced by the NCC comparison donor game_uso_ncc_7C1C_nm.cpp (89.3). */
 
 int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
                            char *arg4, f32 *arg5) {

@@ -4271,6 +4271,10 @@ build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000
 build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E5C8=build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
 build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+# 7C1C: NM-only NCC comparison donor (88.2 -> 89.3 fuzzy, 1058 -> 1065 of 1071 words).
+GAMEUSO_7C1C_NM_DONOR := build/src/game_uso/game_uso_ncc_7C1C_nm.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007C1C=$(GAMEUSO_7C1C_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_7C1C_NM_DONOR)
 build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
 build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
