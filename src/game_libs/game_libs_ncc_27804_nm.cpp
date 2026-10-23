@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00027804: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.59).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00027804: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.59; a second parameter empty test from round 2 gives 78.51).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -106,7 +106,7 @@ extern "C" void gl_func_00027804(char *arg0, char *arg1) {
             *(u8 *)(var_v0 + 0x0) &= ~1;
             var_f12 = var_f14;
         } else {
-            var_v0 = arg0 + 0xB0;
+            var_v0 = arg0 + 0xB0; if (arg0) {}
             *(u8 *)(var_v0 + 0x0) = ((((u32) (sc.w << 4) >> 0x1F) << 3) & 8) | (*(u8 *)(var_v0 + 0x0) & 0xFFF7);
             *(u8 *)(var_v0 + 0x0) = ((((u32) (sc.w << 5) >> 0x1F) << 2) & 4) | (*(u8 *)(var_v0 + 0x0) & 0xFB);
             var_f12 = *(f32 *)((char *)&D_00000000 + sc.b.b2 * 4);

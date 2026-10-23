@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B9C0: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 72.25).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B9C0: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 72.25; a second parameter empty test from round 2 gives 75.08).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -96,7 +96,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             v1 = vt[f->vi[*nx++]];
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib]; if (self) {}
-            dx = (s32)(qa - v0[ia]);
+            dx = (s32)(qa - v0[ia]); if (self) {}
             dy = (s32)(qb - v0[ib]);
             if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
                 ok = 0;

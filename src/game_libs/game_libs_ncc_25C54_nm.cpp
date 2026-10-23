@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00025C54: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 76.23).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00025C54: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 76.23; a second parameter empty test from round 2 gives 76.96).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -138,7 +138,7 @@ extern "C" void gl_func_00025C54(s32 arg0, s32 arg1, char *arg2) {
                                 var_t0 = FW(DB, 0x1034);
                                 break;
                             default:
-                                var_t0 = FW(DB, 0x1034);
+                                var_t0 = FW(DB, 0x1034); if (arg1) {}
                                 break;
                             }
                         }
