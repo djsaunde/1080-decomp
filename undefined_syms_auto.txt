@@ -4139,3 +4139,5 @@ bu_4948_k0 = 0x00000000;  /* func_00004948 snap scale (lwc1 0(at)) */
 bu_4948_k1 = 0x00000000;  /* func_00004948 snap y scale (lwc1 0(at)) */
 bu_4948_klo = 0x00000000;  /* func_00004948 angle clamp low (lwc1 0(at)) */
 bu_4948_khi = 0x00000000;  /* func_00004948 angle clamp high (lwc1 0(at)) */
+D_7D04_root = 0x0000023C;  /* func_00007D04 root context table = func_0000023C (lui/lw 0x18 -> 0x254) */
+func_7D04_randf = 0x00000000;  /* func_00007D04 float rand helper (jal 0) */

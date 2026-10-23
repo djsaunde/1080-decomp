@@ -5014,8 +5014,10 @@ void *func_00007C74(char *a0) {
  * and the counter share one variable (both v1). The rand helper returns a
  * float in $f0. Residual: the target's two list calls are an unrolled loop
  * (dead `addiu v0,v0,4`, a3 re-spilled before each call); every loop form
- * tried stays rolled (s-reg counter). */
-#ifdef NON_MATCHING
+ * tried stays rolled (s-reg counter).
+ * RUN 126 (agent-c): EXACT. The list pointer is its own variable `l`, not the
+ * reused `k` (k = obj stays in v1, the list base goes to v0 as in the target);
+ * `+ 1` on the int * gives the dead `addiu v0,v0,4`. */
 extern char *D_7D04_root[];
 extern float func_7D04_randf();
 void func_00007D04(char *s0) {
@@ -5052,15 +5054,13 @@ c2:
     }
     *(int *)(s0 + 0x58) = 0x18;
 end:
-    k = *(int *)(s0 + 0x40); k = *(int *)(k + 0x84);
-    func_00000000(s0, *(int *)(*(int *)k + 0x1C), 0, a3); if (1) {}
-    k = *(int *)(s0 + 0x40); k = *(int *)(k + 0x84) + 4;
-    func_00000000(s0, *(int *)(*(int *)k + 0x1C), 1, a3);
+    { int *l;
+    k = *(int *)(s0 + 0x40); l = *(int **)(k + 0x84);
+    func_00000000(s0, *(int *)(*l + 0x1C), 0, a3); if (1) {}
+    k = *(int *)(s0 + 0x40); l = *(int **)(k + 0x84) + 1;
+    func_00000000(s0, *(int *)(*l + 0x1C), 1, a3); }
     *(int *)(s0 + 0x5C) = a3;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00007D04);
-#endif
 
 void func_00007E50(int *a0) {
     *(int*)((char*)a0 + 0x68) = 0;
