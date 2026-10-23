@@ -1,0 +1,696 @@
+{
+  "function_name": "func_0000D900",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.579786+00:00",
+  "end_time": "2026-10-23T11:55:25.579799+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.579795+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_0000D900",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1220, \"native_sha256\": \"1418476b1b7013573bc28511e3dda114b21cd2c63856cf2abfce353e83b80427\", \"code_gain\": 1220}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 305,
+  "initial_m2c_source": null,
+  "final_source": "void func_0000D900(BootupState *st, BootupD900Message *m) {\n    BootupD900Word name;\n    int opcode;\n    s32 *desc;\n    int pad_first[2];\n    float clamped;\n    Vec3 impulse;\n    float magnitude;\n    float y, z;\n    Vec3 stage;\n    Vec3 scaled;\n    int pad_low[7];\n    Vec3 delta;\n    BootupD900Payload *payload;\n    char *found;\n    opcode = m->field_00;\n    if (opcode == 20) goto event20;\n    if (opcode == 9) goto event9;\n    if (opcode == 6) goto event6;\n    if (opcode == 1000) goto event1000;\n    if (opcode == 1001) goto event1001;\n    if (opcode == 1003) goto event1003;\n    if (opcode == 1002) goto event1002;\n    if (opcode == 1004) goto event1004;\n    if (opcode == 1005) goto event1005;\n    if (opcode == 1006) goto event1005;\n    if (opcode != 1007) { goto other; } else { goto event1005; }\nevent20:\n    if (1) {\n        if (st->field_A80 != 0) return;\n        payload = m->field_04;\n        magnitude = payload->field_0C;\n        if ((double)magnitude < D_00000988 && payload->field_28->field_0C == 0x74) {\n            bu_d900_a68((int *)st->field_808);\n            return;\n        }\n        clamped = magnitude;\n        if (magnitude < 0.0f) magnitude = 0.0f;\n        else {\n            magnitude = clamped;\n            if (clamped > 50.0f) magnitude = 50.0f;\n            else magnitude = clamped;\n        }\n        if (1) { clamped = magnitude; }\n        y = clamped;\n        clamped = payload->field_00.x * clamped;\n        magnitude = payload->field_00.y * magnitude;\n        z = payload->field_00.z * y;\n        scaled.x = clamped; scaled.y = magnitude; scaled.z = z;\n        stage = scaled;\n        impulse = stage;\n        st->field_B4 += impulse.x;\n        st->field_B8 += impulse.y;\n        st->field_BC += impulse.z;\n        st->field_318.x += impulse.x;\n        st->field_318.y += impulse.y;\n        st->field_318.z += impulse.z;\n        clamped = st->field_3BC.x * impulse.x + st->field_3BC.y * impulse.y + st->field_3BC.z * impulse.z;\n        st->field_A1C = (float)((double)st->field_A1C +\n            (double)clamped * 0.2);\n        clamped = st->field_3C8.x * impulse.x + st->field_3C8.y * impulse.y + st->field_3C8.z * impulse.z;\n        st->field_A24 = (float)((double)st->field_A24 +\n            (double)-clamped * 0.5);\n        st->field_A10 = (u16)st->field_A10 | 0x1F0;\n        st->field_9A4 = payload->field_28->field_0C;\n        st->field_A80 = 10;\n        return;\n    }\nevent9:\n    if (1) { bu_d900_cae8(st); return; }\nevent6:\n    if (1) {\n        delta = m->field_04->field_E0;\n        delta.x *= 4.0f;\n        delta.y *= 4.0f;\n        delta.z *= 4.0f;\n        st->field_B4 += delta.x;\n        st->field_B8 += delta.y;\n        st->field_BC += delta.z;\n        st->field_318.z = (float)0;\n        st->field_318.y = (float)0;\n        st->field_318.x = (float)0;\n        return;\n    }\nevent1000:\n    if (1) {\n        st->field_A54 = 1;\n        st->field_A58 |= 4;\n        bu_d900_game6e88(st->field_804);\n        bu_d900_gl34810(bu_d900_desc8aec + 0x4C);\n        return;\n    }\nevent1001:\n    if (1) {\n        st->field_A54 = 2;\n        st->field_A58 |= 4;\n        bu_d900_game6ecc(st->field_804);\n        bu_d900_gl34810(bu_d900_desc8aec + 0x54);\n        return;\n    }\nevent1003:\n    if (1) {\n        st->field_A54 = 3;\n        st->field_A58 |= 4;\n        bu_d900_gl34810(bu_d900_desc8b44 + 4);\n        bu_d900_game6f28(st->field_804);\n        return;\n    }\nevent1002:\n    if (1) { st->field_A54 = 4; return; }\nevent1004:\n    if (1) { st->field_A54 = 5; return; }\nevent1005:\n    if (1) {\n        st->field_A54 = 6;\n        bu_d900_gl34810(bu_d900_desc8b44 + 0x10);\n        if (st->field_848 == 2) {\n            desc = (s32 *)(bu_d900_desc8b44 + 0x24);\n            bu_d900_game11258(st->field_840);\n        } else {\n            desc = (s32 *)(bu_d900_desc8b44 + 0x28);\n            bu_d900_game112e0(st->field_840);\n        }\n        name.value = *desc;\n        found = bu_d900_gl3eb3c(bu_d900_global, name, 0);\n        if (found != 0) {\n            bu_d900_gl65360(st, found + 0x30);\n            return;\n        }\n        bu_d900_gl61478(bu_d900_desc8b44 + 0x2C, desc);\n        return;\n    }\nother:\n    if (1) { bu_d900_gl65c54(st, m); }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Dispatches message opcodes to update state vectors, clamp and accumulate a scaled payload, maintain scalar projections and select descriptor-driven actions. The precise gameplay role remains unproved.",
+      "observed_abi": "Consumes a0 as a state pointer and a1 as a message pointer with a 32-bit opcode at+0 and payload pointer at+4. This C returns no value; original return declaration and ignored callee returns remain unproved. The original frame is0x90 bytes, saving ra at+0x14.",
+      "calls": [
+        {
+          "site": "0xd9d0",
+          "target": "func_00000A68",
+          "c_alias": "bu_d900_a68",
+          "observed_abi": "a0 = state +0x808; result ignored."
+        },
+        {
+          "site": "0xdbb8",
+          "target": "func_0000CAE8",
+          "c_alias": "bu_d900_cae8",
+          "observed_abi": "a0 = state; result ignored."
+        },
+        {
+          "site": "0xdc6c",
+          "target": "game_uso_func_00006E88",
+          "c_alias": "bu_d900_game6e88",
+          "observed_abi": "a0 = state->field_804; result ignored."
+        },
+        {
+          "site": "0xdc78",
+          "target": "gl_func_00034810",
+          "c_alias": "bu_d900_gl34810",
+          "observed_abi": "a0 = original Data+0x8B38 descriptor; result ignored."
+        },
+        {
+          "site": "0xdc98",
+          "target": "game_uso_func_00006ECC",
+          "c_alias": "bu_d900_game6ecc",
+          "observed_abi": "a0 = state->field_804; result ignored."
+        },
+        {
+          "site": "0xdca4",
+          "target": "gl_func_00034810",
+          "c_alias": "bu_d900_gl34810",
+          "observed_abi": "a0 = original Data+0x8B40 descriptor; result ignored."
+        },
+        {
+          "site": "0xdccc",
+          "target": "gl_func_00034810",
+          "c_alias": "bu_d900_gl34810",
+          "observed_abi": "a0 = original Data+0x8B48 descriptor; result ignored."
+        },
+        {
+          "site": "0xdcd8",
+          "target": "game_uso_func_00006F28",
+          "c_alias": "bu_d900_game6f28",
+          "observed_abi": "a0 = state->field_804; result ignored."
+        },
+        {
+          "site": "0xdd00",
+          "target": "gl_func_00034810",
+          "c_alias": "bu_d900_gl34810",
+          "observed_abi": "a0 = original Data+0x8B54 descriptor; result ignored."
+        },
+        {
+          "site": "0xdd30",
+          "target": "game_uso_func_00011258",
+          "c_alias": "bu_d900_game11258",
+          "observed_abi": "a0 = state->field_840; result ignored."
+        },
+        {
+          "site": "0xdd48",
+          "target": "game_uso_func_000112E0",
+          "c_alias": "bu_d900_game112e0",
+          "observed_abi": "a0 = state->field_840; result ignored."
+        },
+        {
+          "site": "0xdd70",
+          "target": "gl_func_0003EB3C",
+          "c_alias": "bu_d900_gl3eb3c",
+          "observed_abi": "a0 = loaded USO sym274 object pointer; a1 = selected descriptor word passed by-value as a four-byte record, a2=0; v0 is tested as a pointer."
+        },
+        {
+          "site": "0xdd84",
+          "target": "gl_func_00065360",
+          "c_alias": "bu_d900_gl65360",
+          "observed_abi": "a0 = state; a1 = returned pointer +0x30; result ignored."
+        },
+        {
+          "site": "0xdd9c",
+          "target": "gl_func_00061478",
+          "c_alias": "bu_d900_gl61478",
+          "observed_abi": "a0 = original Data+0x8B70; a1 = selected descriptor address; result ignored."
+        },
+        {
+          "site": "0xddac",
+          "target": "gl_func_00065C54",
+          "c_alias": "bu_d900_gl65c54",
+          "observed_abi": "a0 = state; a1 = original message; result ignored."
+        }
+      ],
+      "evidence": [
+        "Independent fresh normal and NON_MATCHING builds both reproduce all1220 immutable expected function bytes, SHA256 b893b55199ac23d774c9044fbfca9403ab8e092b35b956813e72a0c9714d07c5.",
+        "Fresh original ROM parsing verifies35 relocation sites, including15 direct calls. Every C alias preserves its original per-site identity; five game.uso imports require the existing loader capture.",
+        "Opcode20 rejects nonzero state+A80, uses payload+0C and tag+0C of payload+28, clamps the float to[0,50], accumulates vectors at state+B4 and+318, updates projections at+A1C/+A24, flags+A10, tag+9A4 and cooldown+A80.",
+        "Opcode6 reads payload+E0, scales each component by4, accumulates at state+B4 and clears state+318. Opcodes1000..1007 select original Data descriptors. Default delegates to gl_func_00065C54 with(state,message).",
+        "The compiler-emitted double0.2 and the original preceding low word form the12-byte RoData region98C..998; an ordinary GNU partial link emits the original section+4 addend. The verifier matches the asset against ROM; both valid modes pass and four corrupted fixtures are rejected. No instruction bytes or expected objects are patched.",
+        "The main reviewable C declarations/body and donor are identical; shared type changes replace padding with observed fields without moving existing offsets.",
+        "Independent complete ROM and all six compressed blocks pass. All5847 prior unique raw-exact object/symbol entries, including57194 in both modes, remain intact against current canonical objects; code denominator stays762344.",
+        "This is a retrospective terminal record. Earlier worker artifacts remain preserved; the acceptance log records only newly executed verification. No m2c output, token usage or experiment timings are invented.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The vector and projection updates implement an impulse-like response; the gameplay name of the state and message family is unknown."
+      ],
+      "unknowns": [
+        "Original source names and return declarations remain unknown.",
+        "USO sym274 is observed as a loaded object pointer; its runtime name is unresolved.",
+        "Unobserved indirect callers and missing import coverage are not excluded.",
+        "Original typedefs and the exact source layout of frame-padding temporaries are unknown.",
+        "Descriptor and offset-field gameplay meanings beyond the observed behavior remain uncertain.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_0000D900.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 540,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00038964"
+      ],
+      "calls": [
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000A68",
+          "kind": "relocation",
+          "site": 55760,
+          "identity": "func_000A68",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 137,
+          "cached_first_reference": "func_000A68",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_0000CAE8",
+          "kind": "relocation",
+          "site": 56248,
+          "identity": "func_00CAE8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 559,
+          "cached_first_reference": "func_00CAE8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_00006E88",
+          "kind": "relocation",
+          "site": 56428,
+          "identity": "import_00000000",
+          "loader_capture": "scripts/emu-symdump/loader.call-targets.json",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 601,
+          "cached_first_reference": "import_00000000",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 56440,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_00006ECC",
+          "kind": "relocation",
+          "site": 56472,
+          "identity": "import_00000000",
+          "loader_capture": "scripts/emu-symdump/loader.call-targets.json",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 602,
+          "cached_first_reference": "import_00000000",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 56484,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 56524,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_00006F28",
+          "kind": "relocation",
+          "site": 56536,
+          "identity": "import_00000000",
+          "loader_capture": "scripts/emu-symdump/loader.call-targets.json",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 603,
+          "cached_first_reference": "import_00000000",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 56576,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_00011258",
+          "kind": "relocation",
+          "site": 56624,
+          "identity": "import_00000000",
+          "loader_capture": "scripts/emu-symdump/loader.call-targets.json",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 604,
+          "cached_first_reference": "import_00000000",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_000112E0",
+          "kind": "relocation",
+          "site": 56648,
+          "identity": "import_00000000",
+          "loader_capture": "scripts/emu-symdump/loader.call-targets.json",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 605,
+          "cached_first_reference": "import_00000000",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003EB3C",
+          "kind": "relocation",
+          "site": 56688,
+          "identity": "func_0531A8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 452,
+          "cached_first_reference": "func_0531A8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00065360",
+          "kind": "relocation",
+          "site": 56708,
+          "identity": "func_0799CC",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 582,
+          "cached_first_reference": "func_0799CC",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 56732,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00065C54",
+          "kind": "relocation",
+          "site": 56748,
+          "identity": "func_07A2C0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000D900.s",
+          "sym_index": 499,
+          "cached_first_reference": "func_07A2C0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "source_sha256": "39532ee29b70c60d8359ffb22db61f2623cbe6973decfbadddb3f034469a9ad1",
+    "implementation_path": "src/match_imports/func_0000D900.c",
+    "implementation_sha256": "7983ac819c4d8183db5f143ed66b87b4e87d6b139a5741a3fc7aef6993a6968e",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 208,
+          "kind": 4,
+          "symbol": "bu_d900_a68",
+          "original_identity": "bootup_uso:symbol_137:addend_0x0",
+          "original_site": 55760,
+          "payload_site": 55760,
+          "original_symbol_index": 137,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 696,
+          "kind": 4,
+          "symbol": "bu_d900_cae8",
+          "original_identity": "bootup_uso:symbol_559:addend_0x0",
+          "original_site": 56248,
+          "payload_site": 56248,
+          "original_symbol_index": 559,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 876,
+          "kind": 4,
+          "symbol": "bu_d900_game6e88",
+          "original_identity": "bootup_uso:symbol_601:addend_0x0",
+          "original_site": 56428,
+          "payload_site": 56428,
+          "original_symbol_index": 601,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 888,
+          "kind": 4,
+          "symbol": "bu_d900_gl34810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 56440,
+          "payload_site": 56440,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 920,
+          "kind": 4,
+          "symbol": "bu_d900_game6ecc",
+          "original_identity": "bootup_uso:symbol_602:addend_0x0",
+          "original_site": 56472,
+          "payload_site": 56472,
+          "original_symbol_index": 602,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 932,
+          "kind": 4,
+          "symbol": "bu_d900_gl34810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 56484,
+          "payload_site": 56484,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 972,
+          "kind": 4,
+          "symbol": "bu_d900_gl34810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 56524,
+          "payload_site": 56524,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 984,
+          "kind": 4,
+          "symbol": "bu_d900_game6f28",
+          "original_identity": "bootup_uso:symbol_603:addend_0x0",
+          "original_site": 56536,
+          "payload_site": 56536,
+          "original_symbol_index": 603,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1024,
+          "kind": 4,
+          "symbol": "bu_d900_gl34810",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 56576,
+          "payload_site": 56576,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1072,
+          "kind": 4,
+          "symbol": "bu_d900_game11258",
+          "original_identity": "bootup_uso:symbol_604:addend_0x0",
+          "original_site": 56624,
+          "payload_site": 56624,
+          "original_symbol_index": 604,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1096,
+          "kind": 4,
+          "symbol": "bu_d900_game112e0",
+          "original_identity": "bootup_uso:symbol_605:addend_0x0",
+          "original_site": 56648,
+          "payload_site": 56648,
+          "original_symbol_index": 605,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1136,
+          "kind": 4,
+          "symbol": "bu_d900_gl3eb3c",
+          "original_identity": "bootup_uso:symbol_452:addend_0x0",
+          "original_site": 56688,
+          "payload_site": 56688,
+          "original_symbol_index": 452,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1156,
+          "kind": 4,
+          "symbol": "bu_d900_gl65360",
+          "original_identity": "bootup_uso:symbol_582:addend_0x0",
+          "original_site": 56708,
+          "payload_site": 56708,
+          "original_symbol_index": 582,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1180,
+          "kind": 4,
+          "symbol": "bu_d900_gl61478",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 56732,
+          "payload_site": 56732,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1196,
+          "kind": 4,
+          "symbol": "bu_d900_gl65c54",
+          "original_identity": "bootup_uso:symbol_499:addend_0x0",
+          "original_site": 56748,
+          "payload_site": 56748,
+          "original_symbol_index": 499,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "1418476b1b7013573bc28511e3dda114b21cd2c63856cf2abfce353e83b80427"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000988",
+        "hi": 156,
+        "lo": 160,
+        "native_addend": 0,
+        "original_addend": 2440,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x988"
+      },
+      {
+        "alias": ".rodata",
+        "hi": 340,
+        "lo": 552,
+        "native_addend": 0,
+        "original_addend": 2448,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x990"
+      },
+      {
+        "alias": "bu_d900_desc8aec",
+        "hi": 884,
+        "lo": 892,
+        "native_addend": 76,
+        "original_addend": 35640,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bu_d900_desc8aec",
+        "hi": 928,
+        "lo": 936,
+        "native_addend": 84,
+        "original_addend": 35648,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8aec"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 108,
+        "lo": 976,
+        "native_addend": 4,
+        "original_addend": 35656,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 956,
+        "lo": 976,
+        "native_addend": 4,
+        "original_addend": 35656,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 956,
+        "lo": 1028,
+        "native_addend": 16,
+        "original_addend": 35668,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 1040,
+        "lo": 1052,
+        "native_addend": 36,
+        "original_addend": 35688,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 1048,
+        "lo": 1052,
+        "native_addend": 36,
+        "original_addend": 35688,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 1048,
+        "lo": 1060,
+        "native_addend": 40,
+        "original_addend": 35692,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      },
+      {
+        "alias": "bu_d900_global",
+        "hi": 1112,
+        "lo": 1116,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_274:base_addend_0x0"
+      },
+      {
+        "alias": "bu_d900_desc8b44",
+        "hi": 1172,
+        "lo": 1176,
+        "native_addend": 44,
+        "original_addend": 35696,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8b44"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_0000D900.json",
+      "nm": "scripts/match-bindings-func_0000D900-nm.json"
+    },
+    "source_context": "src/match_imports/context_bootup_uso_pool_D900.h",
+    "source_context_sha256": "33613f9cf1a79420b5c078c282c6663ff8ca0db47e6b9bc3dbf8387c134fb525",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/bootup_uso/bootup_uso_pool_D900.c",
+    "original_local_episode_sha256": "3cd28f7c56ef3ebe8586a9a397408c2f8114db7a7871a4e587fdba08def0ee01",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

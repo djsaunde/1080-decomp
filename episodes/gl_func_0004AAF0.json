@@ -1,0 +1,203 @@
+{
+  "function_name": "gl_func_0004AAF0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.030125+00:00",
+  "end_time": "2026-10-23T11:55:26.030139+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.030134+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0004AAF0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 232, \"native_sha256\": \"9f9af02c87c6ed40e8ddb1d1508be2bf2b84dd05db32a19293cfe955fb2d73af\", \"code_gain\": 232}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 58,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_0004AAF0(Owner4AAF0 *self) {\n int i;\n if(self->sourceC0==0) {\n  gl_4AAF0_diag(&gl_4AAF0_data+0x2006C);\n  return;\n }\n for(i=0;i<self->endD6-self->baseD4;i++) {\n  s16 index=self->indicesD0[i];\n  if(index!=-1) {\n   Context4AAF0 *context=gl_4AAF0_globals.context214;\n   s16 *slot=(s16 *)(context->table1C->buffer00+self->baseD4*16+i*16);\n   slot[0]=self->sourceC0[index].a;\n   slot[1]=self->sourceC0[index].b;\n   slot[2]=self->sourceC0[index].c;\n  }\n }\n self->sourceC0=0;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Copy selected six-byte source records into sixteen-byte destination slots, honoring original pointer and bound reloads after each potentially aliasing halfword write; clear pending source only after the ordinary loop.",
+      "observed_abi": "a0owner. IfsourceC0null call61478(Data2+2006C) andreturnwithoutclearingaftercallback. Otherwise signedbaseD4/endD6,indicesD0s16, -1skip. Destination=Import154+214->1C->0 +16*baseD4+16*i. Forselectedid: readsourceC0+6*id field0,storeSH0;reloadsourceC0 forfield2,storeSH2;reloadsourceC0 forfield4,storeSH4. ReloadD6/D4afterstoresfornextbounds; clearC0afterloop evennonpositivecount. One6-byte source record,16-byte outputstride. No originalformalreturn inferred fromphysicalv0whichvaries bypath.",
+      "calls": [
+        {
+          "site": "0x4ab08",
+          "target": "gl_func_00061478",
+          "c_alias": "gl_4AAF0_diag",
+          "observed_abi": "a0=DataSym2+2006C, originalstring Morphpoly: nothing to update\\n has no format directives. No other argument prepared; nested formatter contract unknown."
+        }
+      ],
+      "evidence": [
+        "Original232B[4AAF0,4ABD8) equals ROM[E2FBC8,E2FCB0). Five USOsites/ten freshnormalNMELFsites preserve DataSym2+2006C, Text306\u219261478+0 andImport154base+0; member214 accessed after binding. Helper61478 660B ROMverified. One originalentry, no registered interior; absent registered callers do not prove no runtimeentries.",
+        "OldC caches sourceC0 andsignedD4/D6 despite SH writes that can alias them. Corrected C repeats C0 before each sourcefield LH and D4/D6 after stores. Six-byte source stride and sixteen-byte output stride; signed -1 index skips without writes. Nullsource callsdiag andreturnswithoutlaterclear, evenif callbackmutatesC0; nonpositive ordinaryloop stillclearsC0.",
+        "Five stockCFE: baseline224B57w183 (semanticallyincorrect); actualidentities/reloads232B37w66; naturalprivateviews232B37w66 rawsame; inline_single_use_destination_buffer232B0w0; baseIndexmultidef232B0w0 rawsame. Lasttwo sourceswerewritten before sequentialcompile results inspected. Adopt simpler firstexact. Removing held single-use buffer pointer alone recovers all37 words; baseIndex renaming is an unnecessary equivalencecontrol, not matchcause. Three actual diagnosticcompiles equivalent tostock. No LOC/padding/volatile/flags/registerhints/permutationbattery.",
+        "3600 MIPSruns original/normal/NM against1200orderedmodels, sixaliaslayouts200each. Forwardshortoverlap, C0 pointermetadata, D4/D6 boundmetadata, D0 indicespointer andtablebufferpointer exercise every reload while currentdestination remains held across three SH. 71diagnosticmodels mutateC0 andmustreturnwithoutclear;73nonpositiveordinarymodels and193skipindices. AllnonstackRAMguards, callargs/traces, SP/RA/callee-saved andallphysicalmodeGPR match. Fourteen stockO32offset/size assertions. Metadata pointeroverlaps are machine-level controls, notISOaliasingclaims.",
+        "Stocknormal/NM232raw,ROM/sixblocks/originalprogress/exact/prior-family gates pass, +232 to433788/762344. Strictallrawreject retained:6604unassignedmodebodies identical,5746rawexactbefore; one unchangedpartial4D688 NMcontext960\u2192952 removes8unreachablezero bytes. Independentcoordinator approved exactscope after rerunningcheckers: stockS only.loc+bijective localalpha, original.align5,218reachableinstructionbytes/CFG and79relocs identical, epilogueabsolute18EB8unchanged,475Textreferences per mode no observedinterior. No4D688promotion or claimednewbytes. 110explicitmodechecks include57194both136/62F08both80/600A4both272. Canonical7025preimages unchanged. NoASM/expected/header/helper/linker/Makefile/flagchange. OriginalEpisode retrospective actualm2c andfive realprobes, no fabricated steps/timing.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Morphpoly label suggests pending morph-data update; full system ownership/meaning remains unproved."
+      ],
+      "unknowns": [
+        "Buffer/index/countdomains, completeowner/globalextent andpending-sourceownership unknown.",
+        "Callbackformatter/nestedhelpers notexecutedfully; noformatdirectives inactualstring, onlyobservedfirstargprepared.",
+        "SameImport154aliasesfromotherfunctions notassumeddisjoint objects; aliases preserveoriginalidentity.",
+        "Absenceofregisteredinteriorentry doesnotexclude runtime/interiorcallers; metadata-overlapcases machinecontrols only.",
+        "Metadata pointer/halfword overlaps are explicit machine-level controls, notISO C effective-type/pointer-validity claims. Ordinary forwardoverlap is withinmappedshortstorage. Opaque diagnostic hookmodels observed interface only, nofullformatterAPI. No formalreturn claimedfromvoidprojection; physicalregisterscomparedbetweenrawmodes. Invalidmemory, fullsource/globalextent, concurrency andunrecordedinteriorentries unknown.",
+        "4D688 narrow context comparison proves observed entry CFG equivalence of unchanged partialC, not correctness versus original. Unrecorded interior/runtime entries/raw integer addresses remain unknown.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0004AAF0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_0004A84C"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 389492,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0004AAF0.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_0004AAF0.c",
+    "implementation_sha256": "b15659f0c7899e742bf5f132b711b30eb36113a72996ca052d0906ff516bbc37",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 24,
+          "kind": 4,
+          "symbol": "gl_4AAF0_diag",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 389492,
+          "payload_site": 389492,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "9f9af02c87c6ed40e8ddb1d1508be2bf2b84dd05db32a19293cfe955fb2d73af"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_4AAF0_data",
+        "hi": 20,
+        "lo": 28,
+        "native_addend": 131180,
+        "original_addend": 131180,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_4AAF0_globals",
+        "hi": 68,
+        "lo": 72,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0004AAF0.json",
+      "nm": "scripts/match-bindings-gl_func_0004AAF0-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "e85bb94a87fbf42ec8d4f1e457ec9607e9ff81de2f31bd39d312bb2457cd7513",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

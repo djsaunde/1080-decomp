@@ -1,0 +1,15 @@
+{
+  "function": "gl_func_00043BEC",
+  "raw_sha256": "ec004201b160f3d3edd9fe7070728b58dbd651ee5b5b336c7d1a2bd7c3583680",
+  "renames": {
+    "gl_43BEC_data": "snw_port_gl_func_00043BEC_gl_43BEC_data",
+    "gl_43BEC_call_44540": "snw_port_gl_func_00043BEC_gl_43BEC_call_44540",
+    "gl_43BEC_virtual_to_physical": "snw_port_gl_func_00043BEC_gl_43BEC_virtual_to_physical"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00043BEC_gl_43BEC_data": 0,
+    "snw_port_gl_func_00043BEC_gl_43BEC_call_44540": 0,
+    "snw_port_gl_func_00043BEC_gl_43BEC_virtual_to_physical": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

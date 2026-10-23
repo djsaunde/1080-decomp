@@ -1,0 +1,151 @@
+{
+  "function_name": "game_uso_func_00007448",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.218770+00:00",
+  "end_time": "2026-10-23T11:55:26.218783+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.218778+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_uso_func_00007448",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 144, \"native_sha256\": \"bce2cbf65799859e1998276d7ff5bfa24d3e477bbf27c5e4599c2a79edfe6c32\", \"code_gain\": 144}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 36,
+  "initial_m2c_source": null,
+  "final_source": "void game_uso_func_00007448(char *a0) {\n    char *snapshot_slot;\n    char *linked;\n    char *replacement_slot;\n    char *factor_slot;\n    char *write_slot;\n    snapshot_slot = a0;\n    while (0) { snapshot_slot += 1; }\n    linked = *(char**)(a0 + 0x30);\n    write_slot = a0;\n    while (0) { write_slot += 1; }\n    snapshot_slot = linked;\n    if (1) { snapshot_slot += 0x758; }\n    *(float*)(a0 + 0x4C8) = *(float*)(snapshot_slot + 0x10);\n    snapshot_slot = linked;\n    if (1) { snapshot_slot += 0x6F8; }\n    *(float*)(a0 + 0x4CC) = *(float*)(snapshot_slot + 0x10);\n    snapshot_slot = linked;\n    if (1) { snapshot_slot += 0x6E0; }\n    *(float*)(a0 + 0x4D0) = *(float*)(snapshot_slot + 0x10);\n    snapshot_slot = linked;\n    if (1) { snapshot_slot += 0x498; }\n    replacement_slot = write_slot;\n    factor_slot = a0;\n    if (1) { factor_slot += 0x35C; }\n    *(float*)(a0 + 0x4D4) = *(float*)(snapshot_slot + 0x10);\n    *(float*)(linked + 0x768) = *(float*)(a0 + 0x33C) * *(float*)(a0 + 0x4C8);\n    write_slot = *(char**)(a0 + 0x30) + 0x6F8;\n    *(float*)(write_slot + 0x10) = *(float*)(a0 + 0x36C) * *(float*)(a0 + 0x4CC);\n    if (replacement_slot) {}\n    write_slot = *(char**)(a0 + 0x30) + 0x6E0;\n    *(float*)(write_slot + 0x10) = *(float*)(factor_slot + 0x10) * *(float*)(a0 + 0x4D0);\n    linked = *(char**)(a0 + 0x30);\n    replacement_slot = linked;\n    if (1) { replacement_slot += 0x4C8; }\n    write_slot = linked;\n    if (1) { write_slot += 0x498; }\n    *(float*)(write_slot + 0x10) = *(float*)(replacement_slot + 0x10);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Save four linked-object floats, scale three, and replace the fourth. Gameplay meaning remains uncertain; the adjacent restore function supports a temporary parameter override.",
+      "observed_abi": "One observed pointer input in a0; linked-object pointer at +0x30. Single-precision loads, stores and multiplication; no stack frame. No deliberate return value is established, so void remains provisional.",
+      "calls": [],
+      "evidence": [
+        "Immutable expected object and original assembly establish one 36-instruction leaf spanning module Text offsets 0x7448\u20130x74D4.",
+        "Caller: game_uso_func_0000591C. No calls, indirect calls, imports or global references occur in this body.",
+        "Linked offsets +0x768, +0x708, +0x6F0 and +0x4A8 are saved at self offsets +0x4C8, +0x4CC, +0x4D0 and +0x4D4.",
+        "The first three linked fields are multiplied by self+0x33C, self+0x36C and self+0x36C respectively; linked+0x4A8 receives linked+0x4D8.",
+        "Separate pointer variables and one empty condition reproduce the original register allocation without emitted extra instructions.",
+        "Both compiled bodies match expected bytes exactly; ROM MD5 is fa27089c425dbab99f19245c5c997613. All six block checks pass.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The caller's state transition and game_uso_func_000074D8 restore behavior suggest temporary movement or physics parameter changes."
+      ],
+      "unknowns": [
+        "Original struct names, field meanings and declared return type remain unproved.",
+        "Call-graph recovery limitations remain relevant outside this directly inspected leaf.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_uso_func_00007448.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "game_uso",
+      "dfs_rank": 274,
+      "callers": [
+        "src/game_uso/game_uso:game_uso_func_0000591C"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_uso/game_uso.c",
+    "source_sha256": "fa2b3ab40ab70612f935dc1bc5f64a4fd0b26b43d0bcd2cc04e707ce05411dfd",
+    "implementation_path": "src/match_imports/game_uso_func_00007448.c",
+    "implementation_sha256": "02add51a8ba981829f90ede5ff5fcf2f4732df3d4d2c3c5d26acd3aa41ee2927",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "bce2cbf65799859e1998276d7ff5bfa24d3e477bbf27c5e4599c2a79edfe6c32"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_uso_func_00007448.json",
+      "nm": "scripts/match-bindings-game_uso_func_00007448-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_uso.h",
+    "source_context_sha256": "0e1f74836a92d9c2f3ae2791b42b57aaf040d4caaeef235fd677fa22e4fc2d44",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_uso/game_uso.c",
+    "original_local_episode_sha256": "678115849f83aeec3c0fd9aae3bb1f8a4c46426a23308eb1c8015668328da303",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "function": "gl_func_00054D04",
+  "raw_sha256": "c6fd38440b52caca3e9df33b6a79a06a6f248a46f90fc8366ce1ace2ebe9e24c",
+  "renames": {
+    "gl_54d04_get": "snw_port_gl_func_00054D04_gl_54d04_get",
+    "gl_54d04_root": "snw_port_gl_func_00054D04_gl_54d04_root",
+    "gl_54d04_scale": "snw_port_gl_func_00054D04_gl_54d04_scale",
+    "gl_54d04_bias": "snw_port_gl_func_00054D04_gl_54d04_bias",
+    "gl_54d04_normalize": "snw_port_gl_func_00054D04_gl_54d04_normalize",
+    "gl_54d04_project": "snw_port_gl_func_00054D04_gl_54d04_project",
+    "gl_54d04_report": "snw_port_gl_func_00054D04_gl_54d04_report",
+    "gl_54d04_strings": "snw_port_gl_func_00054D04_gl_54d04_strings"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00054D04_gl_54d04_get": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_root": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_scale": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_bias": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_normalize": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_project": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_report": 0,
+    "snw_port_gl_func_00054D04_gl_54d04_strings": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

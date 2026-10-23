@@ -1,0 +1,247 @@
+{
+  "function_name": "gl_func_0003A58C",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.906733+00:00",
+  "end_time": "2026-10-23T11:55:25.906748+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.906744+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0003A58C",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1056, \"native_sha256\": \"43f0b9ead1bd7737bcc9f4340b540d7832bf3ebde86173a8e7a8ffa75630e99c\", \"code_gain\": 1056}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 264,
+  "initial_m2c_source": null,
+  "final_source": "int gl_func_0003A58C(float *a, float *b, float *c, float r, float *out) {\n    float step[3];\n    float v_oc[3];\n    float v_ca[3];\n    float dir[3];\n    float dot;\n    float disc;\n    float v_bc[3];\n    volatile int pad_F8[1];\n    Vec3 tmp;\n    float pad_D8;\n    Vec3 d1;\n    float tx, ty, tz;\n    float zero;\n    volatile int pad5a[1];\n    Vec3 d2;\n    Vec3 d3;\n    Vec3 d4;\n    float work_x, pad_98, work_z;\n    float pad_90, pad_8C;\n    float scalar, pad_84;\n    Vec3 q1;\n    float pad_78;\n    Vec3 pt;\n    float scx;\n    volatile int pad5b[4];\n    Vec3 q2;\n    volatile int pad2[2];\n    Vec3 d5;\n    Vec3 sc;\n    volatile int bottom[1];\n    zero = 0.0f;\n    tx = c[0] - a[0];\n    ty = c[1] - a[1];\n    tz = c[2] - a[2];\n    d1.x = tx; d1.y = ty; d1.z = tz;\n    if (1) {\n        tmp = d1;\n        *(Tri3i *)v_ca = *(Tri3i *)&tmp;\n    }\n    tx = b[0] - a[0];\n    ty = b[1] - a[1];\n    tz = b[2] - a[2];\n    d2.x = tx; d2.y = ty; d2.z = tz;\n    if (1) {\n        tmp = d2;\n        *(Tri3i *)dir = *(Tri3i *)&tmp;\n    }\n    gl_func_00000000_3a58cn((Vec3 *)dir);\n    dot = (v_ca[2] * dir[2]) + ((v_ca[1] * dir[1]) + (dir[0] * v_ca[0]));\n    disc = (r * r) - (((v_ca[2] * v_ca[2]) + ((v_ca[1] * v_ca[1]) + (v_ca[0] * v_ca[0]))) - (dot * dot));\n    if (disc < zero) {\n        return 0;\n    }\n    tx = b[0] - c[0];\n    ty = b[1] - c[1];\n    tz = b[2] - c[2];\n    d3.x = tx; d3.y = ty; d3.z = tz;\n    if (1) {}\n    tmp = d3;\n    *(Tri3i *)v_bc = *(Tri3i *)&tmp;\n    if (r < gl_func_00000000_3a58cs((v_bc[2] * v_bc[2]) + ((v_bc[1] * v_bc[1]) + (v_bc[0] * v_bc[0])))) {\n        return 0;\n    }\n    scalar = dot - gl_3a58c_sqrt_082880(disc);\n    work_x = dir[0] * scalar;\n    tz = dir[1] * scalar;\n    work_z = dir[2] * scalar;\n    d4.x = work_x; d4.y = tz; d4.z = work_z;\n    if (1) {\n        tmp = d4;\n        *(Tri3i *)step = *(Tri3i *)&tmp;\n    }\n    if (scalar) {}\n    work_z = step[0] + a[0];\n    tx = step[1] + a[1];\n    ty = step[2] + a[2];\n    pt.x = work_z; pt.y = tx; pt.z = ty;\n    q1 = pt;\n    q2 = q1;\n    out[0] = q2.x;\n    out[1] = q2.y;\n    out[2] = q2.z;\n    if (scalar) {}\n    tx = out[0] - c[0];\n    ty = out[1] - c[1];\n    tz = out[2] - c[2];\n    d5.x = tx; d5.y = ty; d5.z = tz;\n    if (1) {\n        tmp = d5;\n        *(Tri3i *)v_oc = *(Tri3i *)&tmp;\n    }\n    work_z = v_oc[0] / r; scalar = v_oc[1] / r; work_x = v_oc[2] / r;\n    sc.x = work_z; sc.y = scalar; sc.z = work_x;\n    q1 = sc;\n    q2 = q1;\n    out[0] = q2.x;\n    out[1] = q2.y;\n    out[2] = q2.z;\n    return 1;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Motion-segment/sphere contact-normal query with an endpoint-inside requirement. It normalizes b-a, computes the intersection discriminant, rejects a negative discriminant or endpoint distance exceeding the radius, and writes (a + dir*(dot-sqrt(disc)) - c)/r. The broader collision contract and original API names remain uncertain.",
+      "observed_abi": "a0/a1/a2 are three-component float-vector pointers. a3 carries radius float bits, transferred to f20. The output-vector pointer is the fifth argument at entry sp+0x10. Returns integer 0 or 1 in v0. Vector components occupy +0/+4/+8.",
+      "calls": [
+        {
+          "site": "0x3A678",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "c_alias": "gl_func_00000000_3a58cn",
+          "observed_abi": "a0 points to the mutable direction vector. The callee returns integer normalization status; this caller ignores it."
+        },
+        {
+          "site": "0x3A798",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "c_alias": "gl_func_00000000_3a58cs",
+          "observed_abi": "Squared endpoint distance enters in f12; float result returns in f0 and is compared with the radius."
+        },
+        {
+          "site": "0x3A7CC",
+          "target": "unresolved",
+          "c_alias": "gl_3a58c_sqrt_082880",
+          "observed_abi": "Discriminant enters in f12; float result returns in f0. Recovered identity func_082880 is bootup Text+0x82880, or game_libs Text+0x6E214. Its current function mapping remains unresolved."
+        }
+      ],
+      "evidence": [
+        "Expected, normal-C, and NON_MATCHING-C function bytes all have SHA-256 43f0b9ead1bd7737bcc9f4340b540d7832bf3ebde86173a8e7a8ffa75630e99c: 1,056 bytes, zero differing words or bytes.",
+        "Original assembly bounds one complete 0x420-byte function with a shared epilogue. Its INCLUDE_ASM fallback is absent.",
+        "Relocations identify +0x3A678 as sym568/func_071028 and +0x3A798 as sym111/func_070238. Three distinct zero-valued aliases preserve the separate call identities.",
+        "Inspected caller gl_func_0003CBB4 and related 37D48, 5C948, 5C9BC, and 5D4F8. Reused existing Vec3/Tri3i definitions for 12-byte vector storage and copies; 5D4F8 supplies supporting four-component normalization evidence.",
+        "Caller 3CBB4 supplies flattened XZ positions and summed radii. Its fields include position +0x18, vector +0x24, radius +0x34, extent +0x38, and contact normal +0/+4/+8.",
+        "Defined scalar keep-alives and reuse of work_z resolved register allocation. A separate byte-equal candidate containing an uninitialized read was rejected.",
+        "Objdiff fuzzy is 99.943184% because call relocation annotations differ; immutable instruction bytes match completely.",
+        "Both complete object build paths passed with make -j2. The rebuilt ROM is byte-identical to baserom, all six compressed-block checks passed, and no previously exact function in the assigned unit regressed. git diff --check passed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "func_082880 implements single-precision square root, supported by existing per-site source comments, the forwarding wrapper, and the surrounding mathematics.",
+        "The preserved expression boundaries reflect expanded vector-operation temporary lifetimes; original source spelling is unknown."
+      ],
+      "unknowns": [
+        "Unique current function mapping for func_082880.",
+        "Original typedefs, vector-operator implementation, and broader collision contract.",
+        "Caller coverage beyond supplied relocation evidence. Collapsed Ghidra targets and equal zero aliases do not establish callee identity.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0003A58C.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 199,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_0003CBB4"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "kind": "relocation",
+          "site": 322788,
+          "identity": "func_071028",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003A58C.s",
+          "sym_index": 568,
+          "cached_first_reference": "func_071028",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "kind": "relocation",
+          "site": 323076,
+          "identity": "func_070238",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003A58C.s",
+          "sym_index": 111,
+          "cached_first_reference": "func_070238",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 323128,
+          "identity": "func_082880",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003A58C.s",
+          "sym_index": 344,
+          "cached_first_reference": "func_082880",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_0003A58C.c",
+    "implementation_sha256": "e1d9656e3e221d8004e000a03e3f5ac9d35df962423606796356d314769c83fd",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 236,
+          "kind": 4,
+          "symbol": "gl_func_00000000_3a58cn",
+          "original_identity": "bootup_uso:symbol_568:addend_0x0",
+          "original_site": 322788,
+          "payload_site": 322788,
+          "original_symbol_index": 568,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 524,
+          "kind": 4,
+          "symbol": "gl_func_00000000_3a58cs",
+          "original_identity": "bootup_uso:symbol_111:addend_0x0",
+          "original_site": 323076,
+          "payload_site": 323076,
+          "original_symbol_index": 111,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 576,
+          "kind": 4,
+          "symbol": "gl_3a58c_sqrt_082880",
+          "original_identity": "bootup_uso:symbol_344:addend_0x0",
+          "original_site": 323128,
+          "payload_site": 323128,
+          "original_symbol_index": 344,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "43f0b9ead1bd7737bcc9f4340b540d7832bf3ebde86173a8e7a8ffa75630e99c"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0003A58C.json",
+      "nm": "scripts/match-bindings-gl_func_0003A58C-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "2ffdb91af6cf663d95f6313702dcabbdb85cf8d0f0c7b53b288c79956a48a0c0",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

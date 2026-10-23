@@ -1,0 +1,11 @@
+{
+  "function": "gl_func_000693A4",
+  "raw_sha256": "532ca848754bddc7233d45aa7d28bea4af71b73c3bce7080d8e96146f5519126",
+  "renames": {
+    "gl_693A4_rodata": "snw_port_gl_func_000693A4_gl_693A4_rodata"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_000693A4_gl_693A4_rodata": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

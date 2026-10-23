@@ -1,0 +1,466 @@
+{
+  "function_name": "timproc_uso_b5_func_00005BF0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.382317+00:00",
+  "end_time": "2026-10-23T11:55:26.382329+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.382325+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "timproc_uso_b5_func_00005BF0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 976, \"native_sha256\": \"440d6b1b05918a9ff7e4cd590ce11b3af0e4ddc750acda47c2b1e28db8cc2c19\", \"code_gain\": 976}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 244,
+  "initial_m2c_source": null,
+  "final_source": "void timproc_uso_b5_func_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *arg3, int *arg4, int *arg5) {\n    extern B5TimingEntry *timproc_uso_b5_func_00008A38_entry(B5TimingScreen *);\n    extern s32 import_0024CCF4(s32, char *, s32, s32, s32, s32);\n    B5TimingRow *row, *row2;\n    B5TimingEntry *e, *e2, *e3;\n    B5TimingVtable *vt;\n    int *tbl;\n    int i, idx, n, j;\n    float divisor;\n    f32 (*records)[4];\n    screen->field_4DC[0] = arg1;\n    screen->field_4DC[1] = arg2;\n    screen->field_4DC[2] = arg3;\n    screen->field_4DC[3] = arg4;\n    screen->field_4DC[4] = arg5;\n    screen->field_4A4 = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);\n    screen->field_3E0[0] = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);\n    screen->field_4A8 = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);\n    screen->field_3E0[1] = timproc_uso_b5_func_00008988((char *)screen, 1, *arg4);\n    row = screen->field_40C->field_40[0];\n    i = 0;\n    if (row->field_6C > 0) {\n        tbl = (int *)(&import_80020150 + 0xB8);\n        do {\n            if (screen->field_3BC == 2) {\n                if (tbl[screen->field_3B8] != 0) {\n                    row->field_3C[i]->field_2B4 = 0x20000;\n                } else {\n                    row->field_3C[i]->field_2B4 = 0;\n                }\n            } else {\n                row->field_3C[i]->field_2B4 = 0;\n            }\n            i++;\n            row = screen->field_40C->field_40[0];\n        } while (i < row->field_6C);\n    }\n    row2 = screen->field_40C->field_40[1];\n    j = 0;\n    if (row2->field_6C > 0) {\n        do {\n            row2->field_3C[j]->field_2B4 = *screen->field_4DC[2] & 0x20;\n            j++;\n            row2 = screen->field_40C->field_40[1];\n        } while (j < row2->field_6C);\n    }\n    screen->field_3E0[2] = timproc_uso_b5_func_00008988((char *)screen, 2, *screen->field_4DC[4]);\n    idx = timproc_uso_b5_func_00008988((char *)screen, 3, *screen->field_4DC[0]);\n    screen->field_3E0[3] = idx;\n    screen->field_3D0[3] = idx;\n    n = screen->field_3E0[0];\n    screen->field_3D0[0] = n;\n    screen->field_3D0[1] = screen->field_3E0[1];\n    screen->field_3D0[2] = screen->field_3E0[2];\n    e = screen->field_40C->field_40[0]->field_3C[n];\n    vt = e->field_28;\n    vt->field_84((char *)(vt->field_80 + (int)e), 0);\n    e2 = screen->field_40C->field_40[1]->field_3C[screen->field_3E0[1]];\n    vt = e2->field_28;\n    vt->field_84((char *)(vt->field_80 + (int)e2), 0);\n    e3 = screen->field_40C->field_40[2]->field_3C[screen->field_3E0[2]];\n    vt = e3->field_28;\n    vt->field_84((char *)(vt->field_80 + (int)e3), 0);\n    records = screen->field_420;\n    divisor = 255.0f;\n    records[0][0] = 90.0f / divisor;\n    records[0][1] = 90.0f / divisor;\n    records[0][2] = 90.0f / divisor;\n    records[0][3] = (float)255 / divisor;\n    records[1][0] = (float)255 / divisor;\n    records[1][1] = 145.0f / divisor;\n    records[1][2] = 58.0f / divisor;\n    records[1][3] = (float)255 / divisor;\n    records[2][0] = (float)255 / divisor;\n    records[2][1] = (float)255 / divisor;\n    records[2][2] = (float)255 / divisor;\n    records[2][3] = (float)255 / divisor;\n    records[3][0] = 13.0f / divisor;\n    records[3][1] = 13.0f / divisor;\n    records[3][2] = 13.0f / divisor;\n    records[3][3] = (float)255 / divisor;\n    records[4][0] = 161.0f / divisor;\n    records[4][1] = 91.0f / divisor;\n    records[4][2] = 35.0f / divisor;\n    records[4][3] = (float)255 / divisor;\n    records[5][0] = 70.0f / divisor;\n    records[5][1] = 70.0f / divisor;\n    records[5][2] = 70.0f / divisor;\n    records[5][3] = (float)255 / divisor;\n    screen->field_4D0 = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);\n    e = timproc_uso_b5_func_00008A38_entry(screen);\n    vt = e->field_28;\n    vt->field_64((char *)(vt->field_60 + (int)e));\n    {\n        char *p414;\n        e = timproc_uso_b5_func_00008A38_entry(screen);\n        p414 = screen->field_414;\n        timproc_uso_b5_func_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));\n    }\n    timproc_uso_b5_func_00008688((char *)screen, 0);\n    screen->field_488 = screen->field_104;\n    screen->field_404 = 0x40;\n    screen->field_4BC = 1.0f;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Binds five live-value pointers, initializes row flags and selections, dispatches selected entries, initializes six normalized four-component records, and synchronizes associated state. Timing/replay-screen and RGBA interpretations remain hypotheses.",
+      "observed_abi": "O32: six pointer words. a0 is the screen; a1\u2013a3 and incoming stack offsets 0x10/0x14 supply five pointers saved at screen+0x4DC..0x4EC. Frame size is 0x28, saving s0 and ra. Callers discard the result; the original return type remains unproven despite the C void declaration.",
+      "calls": [
+        {
+          "site": "0x5C84",
+          "target": "timproc_uso_b5_func_00008988",
+          "c_alias": "timproc_uso_b5_func_00008988",
+          "observed_abi": "a0=screen, a1=1, a2=*arg4; v0 index stored at screen+0x3E4."
+        },
+        {
+          "site": "0x5D80",
+          "target": "timproc_uso_b5_func_00008988",
+          "c_alias": "timproc_uso_b5_func_00008988",
+          "observed_abi": "a0=screen, a1=2, a2=*saved_arg5; v0 index stored at screen+0x3E8."
+        },
+        {
+          "site": "0x5D98",
+          "target": "timproc_uso_b5_func_00008988",
+          "c_alias": "timproc_uso_b5_func_00008988",
+          "observed_abi": "a0=screen, a1=3, a2=*saved_arg1; v0 index stored at screen+0x3EC and +0x3DC."
+        },
+        {
+          "site": "0x5DE4",
+          "target": "unresolved",
+          "c_alias": "vt->field_84",
+          "observed_abi": "a0=row-0 entry plus signed halfword adjustment at vtable+0x80; a1=0. Runtime slot +0x84; result ignored."
+        },
+        {
+          "site": "0x5E14",
+          "target": "unresolved",
+          "c_alias": "vt->field_84",
+          "observed_abi": "a0=row-1 entry plus signed halfword adjustment at vtable+0x80; a1=0. Runtime slot +0x84; result ignored."
+        },
+        {
+          "site": "0x5E44",
+          "target": "unresolved",
+          "c_alias": "vt->field_84",
+          "observed_abi": "a0=row-2 entry plus signed halfword adjustment at vtable+0x80; a1=0. Runtime slot +0x84; result ignored."
+        },
+        {
+          "site": "0x5F40",
+          "target": "unresolved",
+          "c_alias": "import_0024CCF4",
+          "observed_abi": "Recovered identity import_0024CCF4 has no unique current-function mapping. Six word arguments: 0, &import_80074E78, 0x48, 0xDD, 3, 13. Last two occupy outgoing stack+0x10/+0x14; v0 stored at screen+0x4D0. Floating-point arguments are not established."
+        },
+        {
+          "site": "0x5F4C",
+          "target": "timproc_uso_b5_func_00008A38",
+          "c_alias": "timproc_uso_b5_func_00008A38_entry",
+          "observed_abi": "a0=screen; v0 returns the selected row-entry pointer."
+        },
+        {
+          "site": "0x5F60",
+          "target": "unresolved",
+          "c_alias": "vt->field_64",
+          "observed_abi": "a0=entry plus signed halfword adjustment at vtable+0x60. Runtime slot +0x64; result ignored."
+        },
+        {
+          "site": "0x5F68",
+          "target": "timproc_uso_b5_func_00008A38",
+          "c_alias": "timproc_uso_b5_func_00008A38_entry",
+          "observed_abi": "a0=screen; v0 returns the selected row-entry pointer."
+        },
+        {
+          "site": "0x5F7C",
+          "target": "timproc_uso_b5_func_00003A28",
+          "c_alias": "timproc_uso_b5_func_00003A28",
+          "observed_abi": "a0=entry, a1=pointer at attachment+0x10, a2=word at attachment+0x14, where attachment=screen->field_414. Callee copies three floats and does not read a2; result ignored."
+        },
+        {
+          "site": "0x5F88",
+          "target": "timproc_uso_b5_func_00008688",
+          "c_alias": "timproc_uso_b5_func_00008688",
+          "observed_abi": "a0=screen, a1=0; result ignored."
+        }
+      ],
+      "evidence": [
+        "Immutable expected extent is 0x5BF0..0x5FC0: 976 bytes and 244 instruction words, with an independent following function.",
+        "Caller 000018B4 invokes this initializer after 00004118 at module sites 0x19A8, 0x1A6C and 0x1B34. Constructor 00004118 requests 0x4F0 bytes at 0x4144.",
+        "Inspected shared layout family: 00004118, 00005BF0, 00005FC0, 00006900, 00008688, 00008988 and 00008A38. Shared partial definitions remain within the assigned source; other function bodies were unchanged.",
+        "Screen fields include indices at 0x3D0/0x3E0, panel pointer at 0x40C, attachment at 0x414, six four-float records at 0x420, and five pointers at 0x4DC. Panel row slots start at 0x40; row entries start at 0x3C and signed count is at 0x6C.",
+        "Entry dispatch pointer is at 0x28; selector fields are float +0x2A4 and word +0x2B0; initializer writes flags at +0x2B4. Virtual adjustments are signed halfwords +0x60/+0x80, with call slots +0x64/+0x84.",
+        "Callee 00003A28 reads entry+0x29C and child floats +0xDC/+0xE0/+0xE4, copying them to destination+0x60/+0x64/+0x68.",
+        "Original import call at module 0x18C in 00000058 passes the same six word arguments without preparing floating-point arguments. Live palette values in f12/f14 do not establish additional arguments.",
+        "Related initializer 0000C310 also uses an f0 full-scale quotient and f2 normalization divisor, with different branch and stack lifetimes.",
+        "A typed f32 pointer to four-component records recovers f2/f0/f12/f14 allocation. Assigning records and components in ascending order then reproduces every remaining numerator, quotient and scheduling instruction.",
+        "Normal and NON_MATCHING target C each compile to exactly the expected 976 bytes. INCLUDE_ASM is removed. All 138 previously exact functions remain exact; no unassigned function bytes changed; normal .text is unchanged.",
+        "make -j2 verify verify-blocks passes: the complete ROM is byte-identical to baserom and all six compressed-block checks pass. git diff --check and pinned reference checks pass.",
+        "All 12 original call sites and literal C callee expressions were validated against the recovered call graph.",
+        "Data alias reuses immutable expected D_807FE6E4 value zero. Accessor alias resolves to zero; its identity comes from original relocations at 0x5F4C/0x5F68. Alias values do not identify callees.",
+        "Experiments remain under build/orchestration-scratch/attempt6. Canonical episode creation and integration are left to the coordinator.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The object represents a timing/replay selection screen.",
+        "The normalized four-component records represent RGBA colors.",
+        "The original initializer may have accessed these records through a typed record pointer; that C form reproduces the observed allocation."
+      ],
+      "unknowns": [
+        "Runtime identities and original return types of the four indirect calls.",
+        "Concrete mapping and semantic return type of import_0024CCF4.",
+        "Original source spelling and semantic component names, despite exact compiled instructions.",
+        "Verified game.uso callback reachability is unavailable; DFS rank is null.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/timproc_uso_b5_func_00005BF0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "timproc_uso_b5",
+      "dfs_rank": null,
+      "callers": [
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_000018B4"
+      ],
+      "calls": [
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00008988",
+          "kind": "relocation",
+          "site": 23684,
+          "identity": "func_00008988",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00008988",
+          "kind": "relocation",
+          "site": 23936,
+          "identity": "func_00008988",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00008988",
+          "kind": "relocation",
+          "site": 23960,
+          "identity": "func_00008988",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00008A38",
+          "kind": "relocation",
+          "site": 24396,
+          "identity": "func_00008A38",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00008A38",
+          "kind": "relocation",
+          "site": 24424,
+          "identity": "func_00008A38",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00003A28",
+          "kind": "relocation",
+          "site": 24444,
+          "identity": "func_00003A28",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00008688",
+          "kind": "relocation",
+          "site": 24456,
+          "identity": "func_00008688",
+          "class": "func",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 24036,
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 24084,
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 24132,
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 24384,
+          "identity": "import_0024CCF4",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        },
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 24416,
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00005BF0.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "source_sha256": "2a5c307ee53f83f7d684757b62553c2e8bb2ab307891f048deacfc3fcd7fb00d",
+    "implementation_path": "src/match_imports/timproc_uso_b5_func_00005BF0.c",
+    "implementation_sha256": "2db5647435b3870d01ede3d6ab416f5550e4f18b322a510f6254cfe8c1130d02",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 148,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00008988",
+          "original_identity": "timproc_uso_b5:symbol_271:addend_0x0",
+          "original_site": 23684,
+          "payload_site": 23684,
+          "original_symbol_index": 271,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 400,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00008988",
+          "original_identity": "timproc_uso_b5:symbol_271:addend_0x0",
+          "original_site": 23936,
+          "payload_site": 23936,
+          "original_symbol_index": 271,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 424,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00008988",
+          "original_identity": "timproc_uso_b5:symbol_271:addend_0x0",
+          "original_site": 23960,
+          "payload_site": 23960,
+          "original_symbol_index": 271,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 848,
+          "kind": 4,
+          "symbol": "import_0024CCF4",
+          "original_identity": "timproc_uso_b5:symbol_31:addend_0x0",
+          "original_site": 24384,
+          "payload_site": 24384,
+          "original_symbol_index": 31,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 860,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00008A38_entry",
+          "original_identity": "timproc_uso_b5:symbol_272:addend_0x0",
+          "original_site": 24396,
+          "payload_site": 24396,
+          "original_symbol_index": 272,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 888,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00008A38_entry",
+          "original_identity": "timproc_uso_b5:symbol_272:addend_0x0",
+          "original_site": 24424,
+          "payload_site": 24424,
+          "original_symbol_index": 272,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 908,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00003A28",
+          "original_identity": "timproc_uso_b5:symbol_254:addend_0x0",
+          "original_site": 24444,
+          "payload_site": 24444,
+          "original_symbol_index": 254,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 920,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00008688",
+          "original_identity": "timproc_uso_b5:symbol_273:addend_0x0",
+          "original_site": 24456,
+          "payload_site": 24456,
+          "original_symbol_index": 273,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        500,
+        548,
+        596,
+        880
+      ],
+      "native_sha256": "440d6b1b05918a9ff7e4cd590ce11b3af0e4ddc750acda47c2b1e28db8cc2c19"
+    },
+    "native_data_proof": [
+      {
+        "alias": "timproc_uso_b5_D_807FE6E4",
+        "hi": 32,
+        "lo": 84,
+        "native_addend": 3700,
+        "original_addend": 3700,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FE6E4_b",
+        "hi": 60,
+        "lo": 112,
+        "native_addend": 3668,
+        "original_addend": 3668,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FE6C4",
+        "hi": 88,
+        "lo": 136,
+        "native_addend": 3732,
+        "original_addend": 3732,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "import_80020150",
+        "hi": 180,
+        "lo": 184,
+        "native_addend": 184,
+        "original_addend": 184,
+        "base_identity": "timproc_uso_b5:symbol_18:base_addend_0x0"
+      },
+      {
+        "alias": "import_80074E78",
+        "hi": 652,
+        "lo": 664,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "timproc_uso_b5:symbol_30:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-timproc_uso_b5_func_00005BF0.json",
+      "nm": "scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json"
+    },
+    "source_context": "src/match_imports/context_timproc_uso_b5.h",
+    "source_context_sha256": "ccba90359c7e71d971348f72d547e63e2ebeb0fb7163484fe33de2a0bc6528f1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "original_local_episode_sha256": "30c0b5f51c8a147e9b2bc20470d7c38c5945da9b09958b4c7dd5ae76ecaa6038",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

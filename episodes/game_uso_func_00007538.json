@@ -1,0 +1,175 @@
+{
+  "function_name": "game_uso_func_00007538",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.229258+00:00",
+  "end_time": "2026-10-23T11:55:26.229270+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.229266+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_uso_func_00007538",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1376, \"native_sha256\": \"b661b4288ff314af796a4f5a5162ac4e3c8854f3b9cb2b4d198a9b1d9557a303\", \"code_gain\": 1376}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 344,
+  "initial_m2c_source": null,
+  "final_source": "void game_uso_func_00007538(int *a0, int arg1) {\n    GameEventStateLayout *arg0 = (GameEventStateLayout *)a0;\n    f32 temp_f12;\n    f32 output_44;\n    f32 magnitude;\n    f32 output_48;\n    f64 temp_f0;\n    s32 temp_a1;\n    s32 temp_a1_2;\n    s32 temp_a1_3;\n    s32 temp_a1_4;\n    s32 temp_a1_5;\n    s32 temp_a1_6;\n    s32 temp_a1_7;\n    s32 temp_a2;\n    s32 temp_a3_2;\n    s32 active_mask;\n    s32 var_a2;\n    s32 var_a3;\n    s32 result_mask;\n    s32 suppress_direction;\n    GameEventOutputLayout *temp_v1;\n    char *table_pair;\n    temp_a2 = arg0->field_50;\n    result_mask = 0;\n    suppress_direction = 0;\n    output_44 = 0.0f;\n    output_48 = 0.0f;\n    if (temp_a2 > 0) {\n        arg0->field_50 = (s32) (temp_a2 - 1);\n    }\n    temp_a1 = arg0->field_48;\n    if (temp_a1 > 0) {\n        arg0->field_48 = (s32) (temp_a1 - 1);\n    }\n    active_mask = arg0->field_6C;\n    if (active_mask == 0) {\n        if (arg1 & 0x10) {\n            if (arg0->field_30->field_938 != 0) {\n                output_48 = -1.0f;\n                if (arg0->field_38 >= 0.0f) {\n                    arg0->field_3C = 1.0f;\n                } else {\n                    arg0->field_3C = -1.0f;\n                }\n                if (1) { active_mask = arg0->field_6C; }\n            }\n        } else if ((arg1 & 1) && (arg0->field_48 == 0)) {\n            arg0->field_6C = active_mask | 1;\n            arg0->field_44 = 0x5B;\n            if (1) { active_mask = arg0->field_6C; }\n        } else if (arg1 & 0x40) {\n            arg0->field_6C = active_mask | 0x40;\n            arg0->field_44 = 0xD;\n            if (1) { active_mask = arg0->field_6C; }\n        } else if ((arg1 & 4) && (arg0->field_50 == 0)) {\n            output_48 = 1.0f;\n            suppress_direction = 1;\n            arg0->field_50 = 8;\n            active_mask = *(volatile int *)((char *)arg0 + 0x6C);\n        } else if (arg1 & 0x20) {\n            arg0->field_6C = (s32) (active_mask | 0x20);\n            arg0->field_4C = 0x26;\n            temp_f12 = arg0->field_30->field_B4.x;\n            if (temp_f12 < 0.0f) {\n                magnitude = -temp_f12;\n            } else {\n                magnitude = temp_f12;\n            }\n            arg0->field_58 = (u32)(s32)magnitude % 9U;\n            arg0->field_44 = 0x3C;\n            if (1) { active_mask = arg0->field_6C; }\n        } else if (arg1 & 0x80) {\n            arg0->field_6C = active_mask | 0x80;\n            arg0->field_4C = 0;\n            arg0->field_44 = 2;\n            if (1) { active_mask = arg0->field_6C; }\n        } else if (arg1 & 8) {\n            if (arg0->field_30->field_938 != 0) {\n                output_48 = -1.0f;\n            }\n        } else if (arg1 & 2) {\n            if (arg0->field_30->field_938 != 0) {\n                result_mask = 0x400;\n            }\n        } else {\n            if (arg1 & 0x100) {\n                arg0->field_6C = active_mask | 0x100;\n                arg0->field_44 = 0x68;\n                if (1) { active_mask = arg0->field_6C; }\n            }\n        }\n    }\n    if (active_mask & 1) {\n        result_mask |= 0x500;\n        temp_a1_2 = arg0->field_44 - 1;\n        arg0->field_44 = temp_a1_2;\n        if (temp_a1_2 == 0) {\n            arg0->field_6C = (s32) (arg0->field_6C & ~0xA1);\n        }\n    } else if (active_mask & 0x40) {\n        temp_a1_3 = arg0->field_44 - 1;\n        arg0->field_44 = temp_a1_3;\n        if (temp_a1_3 == 0) {\n            arg0->field_6C = (s32) (arg0->field_6C & ~0x40);\n        } else {\n            result_mask |= 0x100;\n        }\n    } else if (active_mask & 0x20) {\n        if (arg0->field_30->field_938 == 0) {\n            arg1 = arg0->field_4C;\n            suppress_direction = 1;\n            result_mask |= 0x200;\n            if (arg1 >= 0x1F) {\n                table_pair = (char*)&game_uso_D_807FEC28 + 0x638;\n                if (1) { table_pair += arg0->field_58 * 8; }\n                output_44 = *(float *)table_pair;\n                output_48 = *(float *)(table_pair + 4);\n            }\n            arg0->field_4C = (s32) (arg1 - 1);\n        }\n        if ((arg0->field_4C == 0) || (temp_a1_4 = arg0->field_44 - 1, arg0->field_44 = temp_a1_4, (temp_a1_4 == 0))) {\n            arg0->field_6C = (s32) (arg0->field_6C & ~0x20);\n        }\n    } else if (active_mask & 0x80) {\n        while (0) { temp_a1_5 = temp_a2 + temp_a2; }\n        temp_a3_2 = arg0->field_4C;\n        suppress_direction = 1;\n        if ((temp_a3_2 < 8) || ((temp_a2 = arg0->field_4DC, (temp_a3_2 >= (temp_a2 + 8))) && (temp_a3_2 < (temp_a2 + 0x10))) || (temp_a3_2 >= (((temp_a2 + temp_a2)) + 0x10))) {\n            if (1) { temp_a2 = arg0->field_4DC; }\n            temp_a1_5 = (temp_a2 + temp_a2);\n            if (temp_a3_2 >= (temp_a1_5 + 0x10)) {\n                arg0->field_58 = (u32) ((temp_a3_2 - temp_a1_5) - 0x10);\n                if ((temp_a3_2 >= (temp_a1_5 + 0x15)) && ((temp_a1_5 + 0x17) >= temp_a3_2)) {\n                    result_mask |= 0x1600;\n                }\n            } else if (temp_a3_2 >= (temp_a2 + 8)) {\n                arg0->field_58 = (u32) ((temp_a3_2 - temp_a2) - 8);\n                if ((temp_a3_2 >= (temp_a2 + 0xD)) && ((temp_a2 + 0xF) >= temp_a3_2)) {\n                    result_mask |= 0x1200;\n                }\n            } else {\n                arg0->field_58 = (u32) temp_a3_2;\n                if ((temp_a3_2 >= 5) && (temp_a3_2 < 8)) {\n                    result_mask |= 0x1000;\n                }\n            }\n            table_pair = (char*)&game_uso_D_807FEC28 + 0x638;\n            if (1) { table_pair += arg0->field_58 * 8; }\n            output_44 = *(float *)table_pair;\n            output_48 = *(float *)(table_pair + 4);\n        }\n        if (1) { temp_a2 = arg0->field_44; }\n        temp_a1_6 = temp_a3_2 + 1;\n        arg0->field_4C = temp_a1_6;\n        if (temp_a2 == 0) {\n            var_a2 = 8;\n        } else {\n            if (temp_a2 == 1) {\n                var_a3 = arg0->field_4DC + 0x10;\n            } else {\n                var_a3 = ((arg0->field_4DC + arg0->field_4DC)) + 0x18;\n            }\n            var_a2 = var_a3;\n        }\n        if (temp_a1_6 >= var_a2) {\n            arg0->field_6C = (s32) (arg0->field_6C & ~0x80);\n        }\n    } else if (active_mask & 0x100) {\n        if (1) { temp_a2 = arg0->field_44; }\n        temp_a1_7 = temp_a2 - 1;\n        if (temp_a2 >= 0x5D) {\n            output_48 = 1.0f;\n            suppress_direction = 1;\n        } else if (temp_a2 >= 0x49) {\n            suppress_direction = 1;\n        } else if (temp_a2 >= 0x3D) {\n            result_mask |= 0x100;\n        }\n        arg0->field_44 = temp_a1_7;\n        if (temp_a1_7 == 0) {\n            arg0->field_6C = (s32) (arg0->field_6C & ~0x100);\n        }\n    }\n    if (suppress_direction != 0) {\n        arg0->field_38 = 0.0f;\n    } else {\n        temp_f0 = (f64) arg0->field_3C;\n        if (temp_f0 > 1.0) {\n            arg0->field_3C = 1.0f;\n        } else if (temp_f0 < -1.0) {\n            arg0->field_3C = -1.0f;\n        }\n        arg0->field_38 = arg0->field_3C;\n        output_44 = arg0->field_3C;\n    }\n    temp_v1 = arg0->field_30->field_800;\n    temp_v1->field_44 = output_44;\n    temp_v1->field_48 = output_48;\n    temp_v1 = arg0->field_30->field_800;\n    temp_v1->field_40 = result_mask;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Verified leaf that dispatches event bits, updates countdowns and phases, and writes a mask plus two float outputs. Specific gameplay meanings remain uncertain.",
+      "observed_abi": "$a0 is the state pointer and $a1 is the input mask. The frameless target leaves the mask in $v0 and the output pointer in $v1. The working C declaration is void; both compiled objects preserve these physical register values exactly. The original declared return type remains unknown\u2014ignored caller results do not prove void.",
+      "calls": [],
+      "evidence": [
+        "Both C modes produce 1376 bytes with SHA-256 b661b4288ff314af796a4f5a5162ac4e3c8854f3b9cb2b4d198a9b1d9557a303, identical to the immutable expected function.",
+        "Assembly spans module Text 0x7538\u20130x7A98, contains one return and no call instructions.",
+        "Inspected callers game_uso_func_0000591C, game_uso_func_00006A30, game_uso_func_00006CF0 and game_uso_func_000071E0. Their bodies remain unchanged; shared partial layouts cover this five-function family.",
+        "Observed state fields: pointer 0x30; floats 0x38/0x3C; integers 0x44/0x48/0x4C/0x50/0x54/0x58/0x6C/0x4DC. Linked fields: Vec3 0xB4, output pointer 0x800 and integer guard 0x938. Output fields: integer 0x40 and floats 0x44/0x48.",
+        "Recovered relocation pairs 0x77DC/0x77E0 and 0x7918/0x791C identify local data D_807FEC28. Byte-pointer arithmetic preserves the existing base, 0x638 addend and eight-byte stride. No aliases or addresses were added.",
+        "Counter-variable reuse, preserved reload blocks, byte-pointer table addressing, modulo-store scheduling and explicit output-pointer reload resolved the remaining instruction differences.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613. All six compressed blocks, exact-function regression checks, reference hashes and git diff --check passed.",
+        "Experiments remain under build/orchestration-scratch/attempt4; canonical Episode creation and integration remain coordinator-owned.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The event phases likely coordinate movement or animation.",
+        "Void may have been the original declaration, but this remains a hypothesis."
+      ],
+      "unknowns": [
+        "Original declared return type.",
+        "Gameplay meanings of the fields and table entries.",
+        "General call-graph coverage limitations remain; this function\u2019s leaf status is independently established by complete assembly.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_uso_func_00007538.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "game_uso",
+      "dfs_rank": 280,
+      "callers": [
+        "src/game_uso/game_uso:game_uso_func_0000591C",
+        "src/game_uso/game_uso:game_uso_func_00006A30",
+        "src/game_uso/game_uso:game_uso_func_00006CF0",
+        "src/game_uso/game_uso:game_uso_func_000071E0"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_uso/game_uso.c",
+    "source_sha256": "fa2b3ab40ab70612f935dc1bc5f64a4fd0b26b43d0bcd2cc04e707ce05411dfd",
+    "implementation_path": "src/match_imports/game_uso_func_00007538.c",
+    "implementation_sha256": "096d396418bda63e571070250ac1ff0ddd81d3c3768546f725efaec774dfa96d",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "b661b4288ff314af796a4f5a5162ac4e3c8854f3b9cb2b4d198a9b1d9557a303"
+    },
+    "native_data_proof": [
+      {
+        "alias": "game_uso_D_807FEC28",
+        "hi": 676,
+        "lo": 680,
+        "native_addend": 1592,
+        "original_addend": 1592,
+        "base_identity": "game_uso:symbol_3:base_addend_0x0"
+      },
+      {
+        "alias": "game_uso_D_807FEC28",
+        "hi": 992,
+        "lo": 996,
+        "native_addend": 1592,
+        "original_addend": 1592,
+        "base_identity": "game_uso:symbol_3:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_uso_func_00007538.json",
+      "nm": "scripts/match-bindings-game_uso_func_00007538-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_uso.h",
+    "source_context_sha256": "0e1f74836a92d9c2f3ae2791b42b57aaf040d4caaeef235fd677fa22e4fc2d44",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_uso/game_uso.c",
+    "original_local_episode_sha256": "d9c84f265b6230b1507a518de5b897891f271006f6af02d86c473162ab554b6b",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

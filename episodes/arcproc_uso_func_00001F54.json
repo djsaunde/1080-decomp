@@ -1,0 +1,636 @@
+{
+  "function_name": "arcproc_uso_func_00001F54",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.492204+00:00",
+  "end_time": "2026-10-23T11:55:25.492219+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.492214+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "arcproc_uso_func_00001F54",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 848, \"native_sha256\": \"3174a7585bfe9fcdf341883d5d2e21d9a9bbd5ed34be04db2d83c7612edb739b\", \"code_gain\": 848}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 212,
+  "initial_m2c_source": null,
+  "final_source": "void arcproc_uso_func_00001F54(ArcPanel *arg0) {\n    ArcContext *bc;\n    ArcPanelData *p44;\n    unsigned int word;\n    int rem;\n    int v0;\n    int a;\n    bc = arg0->fieldBC;\n    if ((bc->field4F0 & 0x10000) && (bc->field4DC == 1)) {\n        arg0->field30 = arg0->field30 + 0x21;\n        arcproc_import_179(arg0);\n        arcproc_import_180(arg0);\n        arg0->fieldA0 -= 0x21;\n        if (arg0->fieldA0 < 0) {\n            arg0->fieldA0 = 0;\n            arcproc_import_181(arg0->field84, 0, 0);\n            arcproc_import_182(arg0->fieldBC);\n            arg0->field2C = 0;\n        }\n    }\n    arcproc_import_183(arg0);\n    bc = arg0->fieldBC;\n    if (bc->field4F0 & 0x10000) {\n        if ((bc->field4DC == 1) && (arg0->field44->field34 != 0)) {\n            arcproc_import_184(arg0);\n            arcproc_import_185(arg0, arg0->fieldA0);\n            arcproc_import_181(arg0->field84, arg0->fieldA0, 0);\n            arcproc_import_186(arg0->fieldBC);\n        }\n        rem = arg0->field44->field18 - arg0->fieldA8;\n        if (rem >= 0xFA) {\n            arg0->fieldA8 += 0xFA;\n        } else if (rem >= 0x32) {\n            arg0->fieldA8 += 0x32;\n        } else if (rem >= 0x19) {\n            arg0->fieldA8 += 0x19;\n        } else if (rem > 0) {\n            arg0->fieldA8 += 1;\n        }\n        arcproc_import_174(arg0->field8C, arg0->fieldA8);\n        v0 = arg0->fieldBC->field4DC;\n        if ((v0 == 1) || (v0 == 0)) {\n            arcproc_import_181(arg0->field84, arg0->fieldA0, 1);\n            arcproc_import_187(arg0->field80, arg0->field44->field30, 0.0f);\n            p44 = arg0->field44;\n            arcproc_import_188(arg0->field80, p44->field08, p44->field0C, 0.0f, 0.0f);\n        }\n        if (arg0->field44->field1C != 0) {\n            arcproc_import_177(arg0->field94, 0xA0, 0x46, 1.0f, 1.0f);\n            arg0->field94->field78 = 0xFF;\n            word = (unsigned int)&arg0->field94->field18;\n            *(int *)word = *(int *)word | 4;\n            p44 = arg0->field44;\n            a = *(int *)&p44->field20;\n            word = p44->field1C - a;\n            if ((int)word >= 0x32) {\n                word = (unsigned int)p44;\n                if (1) { word += 0x20; }\n                *(unsigned int *)word += 0x32;\n                arcproc_import_189(0x20, 0x32);\n                a = arg0->field44->field20;\n            } else if ((int)word >= 5) {\n                word = (unsigned int)p44;\n                if (1) { word += 0x20; }\n                *(unsigned int *)word += 5;\n                arcproc_import_189(0x20, 5);\n                a = arg0->field44->field20;\n            } else if ((int)word > 0) {\n                p44->field20 = p44->field20 + 1;\n                arcproc_import_189(0x20, 1);\n                a = arg0->field44->field20;\n            }\n            arcproc_import_176(arg0->field94, a);\n        } else {\n            word = (unsigned int)&arg0->field94->field18;\n            *(int *)word = *(int *)word & ~4;\n        }\n        bc = arg0->fieldBC;\n        if ((bc->field4DC == 2) && (bc->field4F8 == 0)) {\n            arg0->fieldAC += 1;\n            if (arg0->fieldAC & 8) {\n                word = (unsigned int)&arg0->field8C->field18;\n                *(int *)word = *(int *)word & ~4;\n            } else {\n                word = (unsigned int)&arg0->field8C->field18;\n                *(int *)word = *(int *)word | 4;\n            }\n        }\n    }\n    arcproc_import_40(arg0);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Apparently updates a panel and its widgets: advances displayed counters toward targets, adjusts positions, toggles visibility, and blinks a widget in state 2. Specific gameplay meaning remains uncertain.",
+      "observed_abi": "Incoming a0 is a panel pointer retained in s0. The 0x28-byte frame saves s0 and ra. A 32-bit scratch word holds addresses or signed difference bits in nonoverlapping lifetimes. The final import leaves v0 intact through the epilogue; the original return contract remains unknown despite the current void declaration. Import int return declarations are unused placeholders.",
+      "calls": [
+        {
+          "site": "0x1F90",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_179",
+          "observed_abi": "Original Sym[179]; a0=panel; result unused."
+        },
+        {
+          "site": "0x1F98",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_180",
+          "observed_abi": "Original Sym[180]; a0=panel; result unused."
+        },
+        {
+          "site": "0x1FBC",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_181",
+          "observed_abi": "Original Sym[181]; a0=widget at panel+0x84, a1=0, a2=0."
+        },
+        {
+          "site": "0x1FC4",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_182",
+          "observed_abi": "Original Sym[182]; a0=parent at panel+0xBC."
+        },
+        {
+          "site": "0x1FD0",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_183",
+          "observed_abi": "Original Sym[183]; a0=panel."
+        },
+        {
+          "site": "0x200C",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_184",
+          "observed_abi": "Original Sym[184]; a0=panel."
+        },
+        {
+          "site": "0x2018",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_185",
+          "observed_abi": "Original Sym[185]; a0=panel, a1=panel+0xA0 value."
+        },
+        {
+          "site": "0x2028",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_181",
+          "observed_abi": "Original Sym[181]; a0=widget at panel+0x84, a1=panel+0xA0 value, a2=0."
+        },
+        {
+          "site": "0x2030",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_186",
+          "observed_abi": "Original Sym[186]; a0=parent at panel+0xBC."
+        },
+        {
+          "site": "0x20A4",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_174",
+          "observed_abi": "Original Sym[174]; a0=widget at panel+0x8C, a1=updated panel+0xA8 value."
+        },
+        {
+          "site": "0x20D0",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_181",
+          "observed_abi": "Original Sym[181]; a0=widget at panel+0x84, a1=panel+0xA0 value, a2=1."
+        },
+        {
+          "site": "0x20E4",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_187",
+          "observed_abi": "Original Sym[187]; a0=widget at panel+0x80, a1=data+0x30 value, a2=zero. The C models the third argument as float; its original type is uncertain."
+        },
+        {
+          "site": "0x2104",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_188",
+          "observed_abi": "Original Sym[188]; a0=widget at panel+0x80, a1=data+0x08, a2=data+0x0C; a3 and stack+0x10 carry float-zero bits."
+        },
+        {
+          "site": "0x2134",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_177",
+          "observed_abi": "Original Sym[177]; a0=widget at panel+0x94, a1=160, a2=70; a3 and stack+0x10 carry 1.0f bits."
+        },
+        {
+          "site": "0x218C",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_189",
+          "observed_abi": "Original Sym[189]; a0=32, a1=50."
+        },
+        {
+          "site": "0x21C0",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_189",
+          "observed_abi": "Original Sym[189]; a0=32, a1=5."
+        },
+        {
+          "site": "0x21EC",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_189",
+          "observed_abi": "Original Sym[189]; a0=32, a1=1."
+        },
+        {
+          "site": "0x21FC",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_176",
+          "observed_abi": "Original Sym[176]; a0=widget at panel+0x94, a1=data+0x20 value."
+        },
+        {
+          "site": "0x2288",
+          "target": "unresolved",
+          "c_alias": "arcproc_import_40",
+          "observed_abi": "Original Sym[40]; a0=panel. v0 survives the epilogue; return forwarding is uncertain."
+        }
+      ],
+      "evidence": [
+        "Original assembly spans 0x1F54\u20130x22A0: 848 bytes, one complete function boundary.",
+        "Original TextReloc entries distinguish 15 imports across 19 calls. Every literal C callee was checked against its original site\u2019s symbol index. All aliases resolve to zero; this establishes placeholder encoding, not callee identity.",
+        "No direct callers or verified game.uso reachability were recovered. Original DataReloc slot 0x21C references export Sym[75], raw Text 0x1F50; assembly offsets include the leading four-byte flag.",
+        "Inspected A3C, 11F0, 1228, 14C8, 1604, 1D18, 1F0C, this updater, and the timproc_uso_b3 1C68 variant. Recovered shared partial ArcContext, ArcPanel, ArcPanelData and ArcWidget definitions within the assigned source.",
+        "A3C callsite 0xBC8 resolves through original TextReloc 0xBC4 and Sym[129] to arcproc_uso Text 0x1D14, the 1D18 panel constructor. The constructor stores parent at panel+0xBC; the parent stores panel at +0x6AC.",
+        "Observed offsets: context+0x4DC/+0x4F0/+0x4F8/+0x6AC; panel+0x2C/+0x30/+0x44/+0x6C/+0x80/+0x84/+0x8C/+0x94/+0xA0/+0xA4/+0xA8/+0xAC/+0xBC; data+0x08/+0x0C/+0x14/+0x18/+0x1C/+0x20/+0x30/+0x34; widget+0x18/+0x78.",
+        "Sharing the scratch word across flag addresses, the signed difference and selected counter address prevents early address hoisting and reproduces the original v0 allocation. Both ramp address advances now match.",
+        "Normal and NON_MATCHING C each match all 212 original instruction words. INCLUDE_ASM is removed. Objdiff marks only the 19 typed import relocation arguments.",
+        "make -j2 verify verify-blocks passed: ROM MD5 and byte comparison passed; all six compressed blocks have exact lengths and no non-relocation differences.",
+        "Other function bodies and common comparison metrics remain unchanged. git diff --check passed. Only the assigned source and undefined_syms_auto.txt changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The function is a per-frame panel callback that animates displayed values.",
+        "Signed comparison reads and unsigned updates model the counter\u2019s observed word operations; they do not establish its original declared signedness.",
+        "The five-argument imports likely position or scale widgets, based on their integer coordinates and floating-point argument bits."
+      ],
+      "unknowns": [
+        "Actual targets and names of all 15 imports; static ROM export searches did not resolve them.",
+        "Original callback and import return types.",
+        "Whether import 187\u2019s zero third argument is floating point.",
+        "Original data+0x20 signedness, complete object sizes and semantic field names.",
+        "Indirect callback callers and verified reachability from game.uso.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/arcproc_uso_func_00001F54.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "arcproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8080,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8088,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8124,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8132,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8144,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8204,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8216,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8232,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8240,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8356,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8400,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8420,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8452,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8500,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8588,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8640,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8684,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8700,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 8840,
+          "identity": null,
+          "evidence": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_00001F54.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/arcproc_uso/arcproc_uso_tail1.c",
+    "source_sha256": "037fbf21733b101fd34bbfc066e82fd79ac5526ea4a01b5b7092158cb302eae0",
+    "implementation_path": "src/match_imports/arcproc_uso_func_00001F54.c",
+    "implementation_sha256": "b28203136dea9f0213da0062599962bd61e19d4b52c1026a5a9cbd5234836167",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 60,
+          "kind": 4,
+          "symbol": "arcproc_import_179",
+          "original_identity": "arcproc_uso:symbol_179:addend_0x0",
+          "original_site": 8080,
+          "payload_site": 8076,
+          "original_symbol_index": 179,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 68,
+          "kind": 4,
+          "symbol": "arcproc_import_180",
+          "original_identity": "arcproc_uso:symbol_180:addend_0x0",
+          "original_site": 8088,
+          "payload_site": 8084,
+          "original_symbol_index": 180,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 104,
+          "kind": 4,
+          "symbol": "arcproc_import_181",
+          "original_identity": "arcproc_uso:symbol_181:addend_0x0",
+          "original_site": 8124,
+          "payload_site": 8120,
+          "original_symbol_index": 181,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 112,
+          "kind": 4,
+          "symbol": "arcproc_import_182",
+          "original_identity": "arcproc_uso:symbol_182:addend_0x0",
+          "original_site": 8132,
+          "payload_site": 8128,
+          "original_symbol_index": 182,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 124,
+          "kind": 4,
+          "symbol": "arcproc_import_183",
+          "original_identity": "arcproc_uso:symbol_183:addend_0x0",
+          "original_site": 8144,
+          "payload_site": 8140,
+          "original_symbol_index": 183,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 184,
+          "kind": 4,
+          "symbol": "arcproc_import_184",
+          "original_identity": "arcproc_uso:symbol_184:addend_0x0",
+          "original_site": 8204,
+          "payload_site": 8200,
+          "original_symbol_index": 184,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 196,
+          "kind": 4,
+          "symbol": "arcproc_import_185",
+          "original_identity": "arcproc_uso:symbol_185:addend_0x0",
+          "original_site": 8216,
+          "payload_site": 8212,
+          "original_symbol_index": 185,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 212,
+          "kind": 4,
+          "symbol": "arcproc_import_181",
+          "original_identity": "arcproc_uso:symbol_181:addend_0x0",
+          "original_site": 8232,
+          "payload_site": 8228,
+          "original_symbol_index": 181,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 220,
+          "kind": 4,
+          "symbol": "arcproc_import_186",
+          "original_identity": "arcproc_uso:symbol_186:addend_0x0",
+          "original_site": 8240,
+          "payload_site": 8236,
+          "original_symbol_index": 186,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 336,
+          "kind": 4,
+          "symbol": "arcproc_import_174",
+          "original_identity": "arcproc_uso:symbol_174:addend_0x0",
+          "original_site": 8356,
+          "payload_site": 8352,
+          "original_symbol_index": 174,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 380,
+          "kind": 4,
+          "symbol": "arcproc_import_181",
+          "original_identity": "arcproc_uso:symbol_181:addend_0x0",
+          "original_site": 8400,
+          "payload_site": 8396,
+          "original_symbol_index": 181,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 400,
+          "kind": 4,
+          "symbol": "arcproc_import_187",
+          "original_identity": "arcproc_uso:symbol_187:addend_0x0",
+          "original_site": 8420,
+          "payload_site": 8416,
+          "original_symbol_index": 187,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 432,
+          "kind": 4,
+          "symbol": "arcproc_import_188",
+          "original_identity": "arcproc_uso:symbol_188:addend_0x0",
+          "original_site": 8452,
+          "payload_site": 8448,
+          "original_symbol_index": 188,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 480,
+          "kind": 4,
+          "symbol": "arcproc_import_177",
+          "original_identity": "arcproc_uso:symbol_177:addend_0x0",
+          "original_site": 8500,
+          "payload_site": 8496,
+          "original_symbol_index": 177,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 568,
+          "kind": 4,
+          "symbol": "arcproc_import_189",
+          "original_identity": "arcproc_uso:symbol_189:addend_0x0",
+          "original_site": 8588,
+          "payload_site": 8584,
+          "original_symbol_index": 189,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 620,
+          "kind": 4,
+          "symbol": "arcproc_import_189",
+          "original_identity": "arcproc_uso:symbol_189:addend_0x0",
+          "original_site": 8640,
+          "payload_site": 8636,
+          "original_symbol_index": 189,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 664,
+          "kind": 4,
+          "symbol": "arcproc_import_189",
+          "original_identity": "arcproc_uso:symbol_189:addend_0x0",
+          "original_site": 8684,
+          "payload_site": 8680,
+          "original_symbol_index": 189,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 680,
+          "kind": 4,
+          "symbol": "arcproc_import_176",
+          "original_identity": "arcproc_uso:symbol_176:addend_0x0",
+          "original_site": 8700,
+          "payload_site": 8696,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 820,
+          "kind": 4,
+          "symbol": "arcproc_import_40",
+          "original_identity": "arcproc_uso:symbol_40:addend_0x0",
+          "original_site": 8840,
+          "payload_site": 8836,
+          "original_symbol_index": 40,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "3174a7585bfe9fcdf341883d5d2e21d9a9bbd5ed34be04db2d83c7612edb739b"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-arcproc_uso_func_00001F54.json",
+      "nm": "scripts/match-bindings-arcproc_uso_func_00001F54-nm.json"
+    },
+    "source_context": "src/match_imports/context_arcproc_uso_tail1.h",
+    "source_context_sha256": "3397bdf508a8572c23f94a47047f9c9be18e614474961fbfee512d56fcb11d7b",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/arcproc_uso/arcproc_uso_tail1.c",
+    "original_local_episode_sha256": "5049f1f8b4b01cc24b7612dca829e870749f857b7e01e32e184fdc34a5398e59",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

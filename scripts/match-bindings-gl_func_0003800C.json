@@ -1,0 +1,21 @@
+{
+  "function": "gl_func_0003800C",
+  "raw_sha256": "dfd10052d9eccb174ae5729bb1659a32ee83630e515cfe69783c9cfb023bb25b",
+  "renames": {
+    "gl_3800C_alloc": "snw_port_gl_func_0003800C_gl_3800C_alloc",
+    "gl_3800C_table": "snw_port_gl_func_0003800C_gl_3800C_table",
+    "gl_3800C_init": "snw_port_gl_func_0003800C_gl_3800C_init",
+    "gl_3800C_set": "snw_port_gl_func_0003800C_gl_3800C_set",
+    "gl_3800C_counter": "snw_port_gl_func_0003800C_gl_3800C_counter",
+    "gl_3800C_get": "snw_port_gl_func_0003800C_gl_3800C_get"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_0003800C_gl_3800C_alloc": 0,
+    "snw_port_gl_func_0003800C_gl_3800C_table": 0,
+    "snw_port_gl_func_0003800C_gl_3800C_init": 0,
+    "snw_port_gl_func_0003800C_gl_3800C_set": 0,
+    "snw_port_gl_func_0003800C_gl_3800C_counter": 0,
+    "snw_port_gl_func_0003800C_gl_3800C_get": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

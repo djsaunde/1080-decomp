@@ -1,0 +1,335 @@
+{
+  "function_name": "game_uso_func_000028C0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.197912+00:00",
+  "end_time": "2026-10-23T11:55:26.197924+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.197920+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_uso_func_000028C0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1000, \"native_sha256\": \"fdb0ed386d1c9c39b161c9edbfead7460ff2baf3f8b404190de20e293a68eb4d\", \"code_gain\": 1000}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 250,
+  "initial_m2c_source": null,
+  "final_source": "void game_uso_func_000028C0(GameUsoHomingPrefix *a0) {\n    GameUsoVectorOutput *out_home[1];\n    GameUsoVectorOutput *s_home[1];\n    GameUsoVectorOutput *pose;\n    Vec3 dcopy;\n    Vec3 refv1;\n    union { Vec3 value; volatile Vec3 reload; } v2;\n    Vec3 dc2;\n    float mag[1];\n    GameUsoVectorOutput *mode_out, *mode_ref; s32 pad1[2];\n    float scratch[3];\n    s32 pad2[2];\n    Vec3 diff;\n    s32 pad3[4];\n    Vec3 axis;\n    float refv2[3];\n    Vec3 ssv;\n    union { Vec3 value; volatile Vec3 reload; } axisc;\n    float mag2;\n    int mode;\n    float f, ax, ay, az;\n    s32 unused_self_home;\n    do { out_home[0] = a0->field_14; } while (0);\n    do { s_home[0] = ((GameUsoRotationSource *)a0->field_3C)->field_38; } while (0);\n    do { mode = a0->field_40; } while (0);\n    do { if (mode == 0) { return; } } while (0);\n    if (mode == 1) {\n        mode_out = out_home[0];\n        mode_ref = s_home[0];\n        refv1.x = mode_out->field_A0.x;\n        refv1.y = mode_out->field_A0.y;\n        refv1.z = mode_out->field_A0.z;\n        v2.value.x = mode_ref->field_A0.x;\n        v2.value.y = mode_ref->field_A0.y;\n        v2.value.z = mode_ref->field_A0.z;\n        dcopy = *game_uso_28C0_rotate((Vec3 *)scratch, (GameUsoRotationSource *)a0->field_3C);\n        if (a0) { }\n        v2.value.x = v2.value.x + dcopy.x;\n        v2.value.y = v2.value.y + dcopy.y;\n        v2.value.z = v2.value.z + dcopy.z;\n        do {\n        diff.x = (f = v2.reload.x - refv1.x),\n        diff.y = (ax = v2.reload.y - refv1.y),\n        diff.z = (ay = v2.reload.z - refv1.z);\n        } while (0);\n        *(Vec3 *)scratch = diff;\n        dc2 = *(Vec3 *)scratch;\n        mag[0] = game_uso_func_070238(ay = dc2.x * dc2.x + dc2.y * dc2.y + dc2.z * dc2.z);\n        game_uso_28C0_normalize(&dc2);\n        f = mag[0] * a0->field_5C;\n        dc2.x = dc2.x * f;\n        dc2.y = dc2.y * f;\n        dc2.z = dc2.z * f;\n        pose = out_home[0];\n        game_uso_func_072EE8((char *)pose + 0x30, &dc2);\n        out_home[0]->field_A0.x = out_home[0]->field_60.x;\n        out_home[0]->field_A0.y = out_home[0]->field_60.y;\n        out_home[0]->field_A0.z = out_home[0]->field_60.z;\n    } else {\n        char *ss;\n        pose = out_home[0];\n        refv2[0] = pose->field_A0.x;\n        refv2[1] = pose->field_A0.y;\n        refv2[2] = pose->field_A0.z;\n        ss = (char *)a0->field_38;\n        ssv.x = *(float *)(ss + 0xA0);\n        ss += 0x70;\n        ssv.y = *(float *)(ss + 0x34);\n        ssv.z = *(float *)(ss + 0x38);\n        if (a0->field_40 == 3) {\n            f = -1000.0f;\n        } else {\n            f = 1000.0f;\n        }\n        do {\n        mag2 = 0.0f;\n        axis.x = mag2;\n        axis.y = mag2;\n        axis.z = f;\n        } while (0);\n        axisc.value = axis;\n        pose = s_home[0];\n        f = pose->field_70[2].field_00[0] * axisc.value.z + (pose->field_70[1].field_00[0] * axisc.value.y + pose->field_70[0].field_00[0] * axisc.value.x);\n        ax = pose->field_70[2].field_00[1] * axisc.value.z + (pose->field_70[1].field_00[1] * axisc.value.y + pose->field_70[0].field_00[1] * axisc.value.x);\n        axisc.value.z = (az = pose->field_70[2].field_00[2] * axisc.value.z + (pose->field_70[1].field_00[2] * axisc.value.y + pose->field_70[0].field_00[2] * axisc.value.x));\n        axisc.value.x = f; axisc.value.y = ax;\n        ssv.x = ssv.x + axisc.reload.x;\n        ssv.y = ssv.y + axisc.reload.y;\n        ssv.z = ssv.z + axisc.reload.z;\n        ssv.x = ssv.x - refv2[0];\n        ssv.y = ssv.y - refv2[1];\n        ssv.z = ssv.z - refv2[2];\n        mag2 = game_uso_func_070238(ssv.x * ssv.x + ssv.y * ssv.y + ssv.z * ssv.z);\n        game_uso_28C0_normalize(&ssv);\n        f = (0, mag2) * a0->field_5C;\n        ssv.x = ssv.x * f;\n        ssv.y = ssv.y * f;\n        ssv.z = ssv.z * f;\n        pose = out_home[0];\n        game_uso_func_072EE8((char *)pose + 0x30, &ssv);\n        out_home[0]->field_A0.x = out_home[0]->field_60.x;\n        out_home[0]->field_A0.y = out_home[0]->field_60.y;\n        out_home[0]->field_A0.z = out_home[0]->field_60.z;\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Applies a scaled vector correction to an output position and mirrors the result. Mode zero skips; mode one uses a rotated local offset; other modes rotate a Z probe, negative for mode three. Gameplay meaning remains uncertain.",
+      "observed_abi": "One GameUsoHomingPrefix pointer arrives in a0, is carried in a2 and spills to incoming sp+0xE8. Frame is 0xE8 with only ra saved. No return value contract is established; C uses void. Vec3 contains floats at offsets 0, 4 and 8.",
+      "calls": [
+        {
+          "site": "0x2930",
+          "target": "src/game_uso/game_uso:game_uso_func_000023D4",
+          "c_alias": "game_uso_28C0_rotate",
+          "observed_abi": "a0=stack Vec3 destination; a1=linked GameUsoRotationSource; v0=destination pointer copied as three words. Carried a2 does not establish a third parameter."
+        },
+        {
+          "site": "0x2A14",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "c_alias": "game_uso_func_070238",
+          "observed_abi": "f12=sum of squared components; f0=float result saved for scaling."
+        },
+        {
+          "site": "0x2A20",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "c_alias": "game_uso_28C0_normalize",
+          "observed_abi": "a0=Vec3 normalized in place; integer status in v0 is ignored."
+        },
+        {
+          "site": "0x2A6C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "c_alias": "game_uso_func_072EE8",
+          "observed_abi": "a0=output+0x30; a1=scaled correction. Callee updates output+0x60/+0x64/+0x68; no result consumed."
+        },
+        {
+          "site": "0x2C14",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "c_alias": "game_uso_func_070238",
+          "observed_abi": "f12=sum of squared components; f0=float result used for scaling."
+        },
+        {
+          "site": "0x2C20",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "c_alias": "game_uso_28C0_normalize",
+          "observed_abi": "a0=Vec3 normalized in place; integer status in v0 is ignored."
+        },
+        {
+          "site": "0x2C6C",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "c_alias": "game_uso_func_072EE8",
+          "observed_abi": "a0=output+0x30; a1=scaled correction. Output+0x60/+0x64/+0x68 updated; no result consumed."
+        }
+      ],
+      "evidence": [
+        "Immutable expected object and original assembly establish one 0x3E8-byte function and seven resolved callsites.",
+        "Ghidra's private expected-ELF project confirmed the inspected family: 00001DDC, 000023D4, 000024BC, 00002714, 000028C0 and 00002CC8. Constructors 00001D30/00002814 initialize +0x38/+0x3C; resets 00001DC4/000028A8 clear +0x40.",
+        "Reused accepted shared layouts. GameUsoHomingPrefix has output +0x14, source pointers +0x38/+0x3C, mode +0x40 and scalar +0x5C. The separate linked GameUsoRotationSource has owner +0x38 and Vec3 +0x5C/+0x60/+0x64.",
+        "GameUsoVectorOutput provides vectors +0x60/+0xA0 and matrix XYZ columns +0x70/+0x80/+0x90 with 0x10-byte stride. Fourth column words remain unknown. Matrix owner is *(*(primary+0x3C)+0x38).",
+        "Branch-local pose allocation, one XYZ comma expression and short mode_out/mode_ref pointer webs recover the original register allocation and scheduling.",
+        "Typed import declarations visible in both builds prevent normal-build double promotion and integer return conversion.",
+        "Normal and NON_MATCHING function bytes equal expected SHA256 fdb0ed386d1c9c39b161c9edbfead7460ff2baf3f8b404190de20e293a68eb4d. Objdiff's 99.94% reflects the rotation relocation alias; all raw instructions match.",
+        "make -j2 verification passed ROM MD5/cmp and all six compressed blocks. No regressions among 37 baseline exact functions; accepted 2CC8 remains byte-exact. All other function bodies are unchanged.",
+        "Import identities derive from original per-site relocations and resolve to game_libs Text+0x5BBCC/+0x5C9BC/+0x5E87C. Distinct call aliases resolve to zero with inline provenance.",
+        "MCP initialization timed out; direct cached-project Ghidra queries enumerated game_uso.c.o and decompiled the family. Supplied callers=[] and unresolved_calls=[]; indirect-call and missing-relocation coverage remain limitations.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Import 070238 computes vector length through a square-root wrapper.",
+        "Primary +0x5C controls interpolation or homing strength."
+      ],
+      "unknowns": [
+        "Gameplay identity, semantic field names and original source-level return contract.",
+        "The wrapped callee inside import 070238 remains unidentified.",
+        "Absent recovered callers do not establish unreachability; indirect and missing relocation edges remain coverage gaps.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_uso_func_000028C0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "game_uso",
+      "dfs_rank": 203,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_000393B8"
+      ],
+      "calls": [
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_000023D4",
+          "kind": "relocation",
+          "site": 10544,
+          "identity": "func_000023D4",
+          "class": "func",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "kind": "relocation",
+          "site": 10772,
+          "identity": "func_070238",
+          "class": "import",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "kind": "relocation",
+          "site": 10784,
+          "identity": "func_071028",
+          "class": "import",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "kind": "relocation",
+          "site": 10860,
+          "identity": "func_072EE8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "kind": "relocation",
+          "site": 11284,
+          "identity": "func_070238",
+          "class": "import",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "kind": "relocation",
+          "site": 11296,
+          "identity": "func_071028",
+          "class": "import",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0005E87C",
+          "kind": "relocation",
+          "site": 11372,
+          "identity": "func_072EE8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/game_uso/game_uso/game_uso_func_000028C0.s"
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_uso/game_uso.c",
+    "source_sha256": "fa2b3ab40ab70612f935dc1bc5f64a4fd0b26b43d0bcd2cc04e707ce05411dfd",
+    "implementation_path": "src/match_imports/game_uso_func_000028C0.c",
+    "implementation_sha256": "7c0857a2f18fedb223e687343f9c5bd924dc792ec8823c04c9bb6a5d0250280d",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 112,
+          "kind": 4,
+          "symbol": "game_uso_28C0_rotate",
+          "original_identity": "game_uso:symbol_79:addend_0x0",
+          "original_site": 10544,
+          "payload_site": 10544,
+          "original_symbol_index": 79,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 340,
+          "kind": 4,
+          "symbol": "game_uso_func_070238",
+          "original_identity": "game_uso:symbol_84:addend_0x0",
+          "original_site": 10772,
+          "payload_site": 10772,
+          "original_symbol_index": 84,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 352,
+          "kind": 4,
+          "symbol": "game_uso_28C0_normalize",
+          "original_identity": "game_uso:symbol_85:addend_0x0",
+          "original_site": 10784,
+          "payload_site": 10784,
+          "original_symbol_index": 85,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 428,
+          "kind": 4,
+          "symbol": "game_uso_func_072EE8",
+          "original_identity": "game_uso:symbol_86:addend_0x0",
+          "original_site": 10860,
+          "payload_site": 10860,
+          "original_symbol_index": 86,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 852,
+          "kind": 4,
+          "symbol": "game_uso_func_070238",
+          "original_identity": "game_uso:symbol_84:addend_0x0",
+          "original_site": 11284,
+          "payload_site": 11284,
+          "original_symbol_index": 84,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 864,
+          "kind": 4,
+          "symbol": "game_uso_28C0_normalize",
+          "original_identity": "game_uso:symbol_85:addend_0x0",
+          "original_site": 11296,
+          "payload_site": 11296,
+          "original_symbol_index": 85,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 940,
+          "kind": 4,
+          "symbol": "game_uso_func_072EE8",
+          "original_identity": "game_uso:symbol_86:addend_0x0",
+          "original_site": 11372,
+          "payload_site": 11372,
+          "original_symbol_index": 86,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "fdb0ed386d1c9c39b161c9edbfead7460ff2baf3f8b404190de20e293a68eb4d"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_uso_func_000028C0.json",
+      "nm": "scripts/match-bindings-game_uso_func_000028C0-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_uso.h",
+    "source_context_sha256": "0e1f74836a92d9c2f3ae2791b42b57aaf040d4caaeef235fd677fa22e4fc2d44",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_uso/game_uso.c",
+    "original_local_episode_sha256": "c588585f4aa2d1ab4994080f22e7941c8158faf5f1587c1407463fbd3fc97185",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,623 @@
+{
+  "function_name": "mgrproc_uso_func_00001C90",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.331140+00:00",
+  "end_time": "2026-10-23T11:55:26.331151+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.331147+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "mgrproc_uso_func_00001C90",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 672, \"native_sha256\": \"c3e6ae31553afe12bc8123331bb6c64081dbbd0d836d6fce9dc74aee09426c2c\", \"code_gain\": 672}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 168,
+  "initial_m2c_source": null,
+  "final_source": "void mgrproc_uso_func_00001C90(char *arg0) {\n    volatile int pt_a, pt_b, pt_c, pt_d;\n    float sp50[4];\n    volatile int pmid;\n    int sp48;\n    char *p6a8;\n    char *p6d8;\n    int w;\n    char *q;\n    volatile int pad_a, pad_b, pad_c;\n    if (*(int *)(arg0 + 0x4F0) & 0x10000) {\n        sp50[0] = 1.0f;\n        sp50[1] = 1.0f;\n        sp50[2] = 1.0f;\n        sp50[3] = 1.0f;\n        if (*(int *)(arg0 + 0x4E4) >= 0xB) {\n            float max = mgrproc_1C90_pool_5CC.field_5CC;\n            if (((Mgrproc1C90State *)arg0)->field_7A0 < max) {\n                ((Mgrproc1C90State *)arg0)->field_7A0 = ((Mgrproc1C90State *)arg0)->field_7A0 + mgrproc_1C90_pool_5D0.field_5D0;\n            }\n            if (((Mgrproc1C90State *)arg0)->field_7A4 < max) {\n                ((Mgrproc1C90State *)arg0)->field_7A4 = ((Mgrproc1C90State *)arg0)->field_7A4 + mgrproc_1C90_pool_5D4.field_5D4;\n            }\n        } else {\n            if (((Mgrproc1C90State *)arg0)->field_7A0 > 0.0f) {\n                ((Mgrproc1C90State *)arg0)->field_7A0 = ((Mgrproc1C90State *)arg0)->field_7A0 - mgrproc_1C90_pool_5D8.field_5D8;\n            }\n        }\n        import_0024E608(&import_8024CAF8, (int)((0, (float)255) * ((Mgrproc1C90State *)arg0)->field_7A0), sp50);\n        import_0024F2C8(&import_80263D30);\n        import_0024F34C(&import_80263D30, 0xA0, 0x9C, 3);\n        import_0024EAA0(&import_8024CAF8, (int)((0, (float)255) * ((Mgrproc1C90State *)arg0)->field_7A0), arg0 + 0x380, arg0 + 0x3A4);\n        import_0024F2C8(arg0 + 0x6B0);\n        import_0024F34C(arg0 + 0x6B0, 0xA0, 0xB0, 3);\n        while (0) { w = *(short *)(arg0 + 0x20); }\n        q = *(char **)(arg0 + 0x6F0);\n        w = *(short *)(q + 0x20);\n        p6d8 = *(char **)(arg0 + 0x6D8);\n        sp48 = 0xA0 - ((*(short *)(p6d8 + 0x20) + w + 4) / 2);\n        import_0024EAA0(&import_8024CAF8, (int)((0, (float)255) * ((Mgrproc1C90State *)arg0)->field_7A0), arg0 + 0x260, arg0 + 0x284);\n        p6a8 = *(char **)(arg0 + 0x6A8);\n        if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {\n            import_0024F2C8(arg0 + 0x6E0);\n            import_0024F34C(arg0 + 0x6E0, sp48, 0x88, 2);\n            import_0024F2C8(arg0 + 0x6C8);\n            q = *(char **)(arg0 + 0x6F0);\n            w = *(short *)(q + 0x20);\n            import_0024F34C(arg0 + 0x6C8, sp48 + w + 4, 0x88, 2);\n            return;\n        }\n        import_0024F2C8(arg0 + 0x6C8);\n        import_0024F34C(arg0 + 0x6C8, sp48, 0x88, 2);\n        import_0024F2C8(arg0 + 0x6E0);\n        q = *(char **)(arg0 + 0x6D8);\n        w = *(short *)(q + 0x20);\n        import_0024F34C(arg0 + 0x6E0, sp48 + w + 4, 0x88, 2);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Likely updates fade values and renders a menu or label group, including centered placement of two objects. The exact screen and imported routines' meanings remain uncertain.",
+      "observed_abi": "One state pointer in a0, preserved in s0; 0x70-byte frame. No dedicated return-value assignment is observed. Imported results are discarded; C void declarations do not prove original void contracts.",
+      "calls": [
+        {
+          "site": "0x1D7C",
+          "target": "import_0024E608",
+          "c_alias": "import_0024E608",
+          "observed_abi": "a0=&import_8024CAF8; a1=signed trunc(255*state[0x7A0]); a2=pointer to four float values, all 1.0f; result discarded."
+        },
+        {
+          "site": "0x1D88",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=&import_80263D30; result discarded."
+        },
+        {
+          "site": "0x1DA0",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=&import_80263D30; a1=160; a2=156; a3=3; result discarded."
+        },
+        {
+          "site": "0x1DD0",
+          "target": "import_0024EAA0",
+          "c_alias": "import_0024EAA0",
+          "observed_abi": "a0=&import_8024CAF8; a1=signed trunc(255*state[0x7A0]); a2=state+0x380; a3=state+0x3A4; result discarded."
+        },
+        {
+          "site": "0x1DDC",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=state+0x6B0; result discarded."
+        },
+        {
+          "site": "0x1DF0",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=state+0x6B0; a1=160; a2=176; a3=3; result discarded."
+        },
+        {
+          "site": "0x1E54",
+          "target": "import_0024EAA0",
+          "c_alias": "import_0024EAA0",
+          "observed_abi": "a0=&import_8024CAF8; a1=signed trunc(255*state[0x7A0]); a2=state+0x260; a3=state+0x284; result discarded."
+        },
+        {
+          "site": "0x1E7C",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=state+0x6E0; result discarded."
+        },
+        {
+          "site": "0x1E90",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=state+0x6E0; a1=centered horizontal position; a2=136; a3=2; result discarded."
+        },
+        {
+          "site": "0x1E9C",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=state+0x6C8; result discarded."
+        },
+        {
+          "site": "0x1EC0",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=state+0x6C8; a1=centered position plus signed halfword at state[0x6F0]+0x20 plus 4; a2=136; a3=2; result discarded."
+        },
+        {
+          "site": "0x1ED0",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=state+0x6C8; result discarded."
+        },
+        {
+          "site": "0x1EE4",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=state+0x6C8; a1=centered horizontal position; a2=136; a3=2; result discarded."
+        },
+        {
+          "site": "0x1EF0",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=state+0x6E0; result discarded."
+        },
+        {
+          "site": "0x1F14",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=state+0x6E0; a1=centered position plus signed halfword at state[0x6D8]+0x20 plus 4; a2=136; a3=2; result discarded."
+        }
+      ],
+      "evidence": [
+        "Original assembly establishes one function spanning module Text 0x1C90\u20130x1F30, with 168 instructions.",
+        "Normal and NON_MATCHING function bytes equal the immutable expected object; SHA-256: c3e6ae31553afe12bc8123331bb6c64081dbbd0d836d6fce9dc74aee09426c2c.",
+        "make -j2 passed ROM verification: byte-identical to baserom, MD5 fa27089c425dbab99f19245c5c997613. All six compressed-block checks passed.",
+        "No regressions among the eight previously exact functions in the changed unit.",
+        "Bit 16 of the word at 0x4F0 gates execution. Signed word 0x4E4 selects growth versus decay; 0x7A0 and 0x7A4 are floats.",
+        "Pointers at 0x6D8 and 0x6F0 supply signed halfwords at +0x20. Pointer 0x6A8 supplies signed words at +4 and +8.",
+        "Centered position is 160 - ((halfword_6D8 + halfword_6F0 + 4) / 2), using signed division.",
+        "All 15 call identities come from original per-site relocations. No callers are recovered in the supplied graph.",
+        "Added constant-pool aliases all resolve to zero, reusing the expected object's D_00000000 address.",
+        "Objdiff reports 99.89881% due to relocation-symbol differences despite identical instruction bytes.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Field 0x7A0 represents opacity; 0x7A4 is a related animation value.",
+        "The signed halfwords at object+0x20 represent display widths.",
+        "import_0024F2C8 prepares a drawable object, and import_0024F34C draws or positions it."
+      ],
+      "unknowns": [
+        "All four recovered import identities remain unresolved to unique current function names.",
+        "Original return contracts of this function and its imports are unknown.",
+        "Exact screen identity, pointer-pair layouts, constant values, and most field meanings remain unknown.",
+        "Missing callers and indirect/import mappings limit call-graph coverage; zero-valued aliases do not establish callee identity.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/mgrproc_uso_func_00001C90.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "mgrproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7548,
+          "identity": "import_0024E608",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7560,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7584,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7632,
+          "identity": "import_0024EAA0",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7644,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7664,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7764,
+          "identity": "import_0024EAA0",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7804,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7824,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7836,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7872,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7888,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7908,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7920,
+          "identity": "import_0024F2C8",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        },
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 7956,
+          "identity": "import_0024F34C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_00001C90.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/mgrproc_uso/mgrproc_uso.c",
+    "source_sha256": "126607732b076c5b950a730e6fdbf188046a4e4d6c71a87beecfc97dbc6ba52c",
+    "implementation_path": "src/match_imports/mgrproc_uso_func_00001C90.c",
+    "implementation_sha256": "7a4439e080aab8eedf96f25afa3ed2a3927cba46bfa2c22af8523dba124303b2",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 236,
+          "kind": 4,
+          "symbol": "import_0024E608",
+          "original_identity": "mgrproc_uso:symbol_174:addend_0x0",
+          "original_site": 7548,
+          "payload_site": 7548,
+          "original_symbol_index": 174,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 248,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 7560,
+          "payload_site": 7560,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 272,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 7584,
+          "payload_site": 7584,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 320,
+          "kind": 4,
+          "symbol": "import_0024EAA0",
+          "original_identity": "mgrproc_uso:symbol_177:addend_0x0",
+          "original_site": 7632,
+          "payload_site": 7632,
+          "original_symbol_index": 177,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 332,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 7644,
+          "payload_site": 7644,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 352,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 7664,
+          "payload_site": 7664,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 452,
+          "kind": 4,
+          "symbol": "import_0024EAA0",
+          "original_identity": "mgrproc_uso:symbol_177:addend_0x0",
+          "original_site": 7764,
+          "payload_site": 7764,
+          "original_symbol_index": 177,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 492,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 7804,
+          "payload_site": 7804,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 512,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 7824,
+          "payload_site": 7824,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 524,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 7836,
+          "payload_site": 7836,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 560,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 7872,
+          "payload_site": 7872,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 576,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 7888,
+          "payload_site": 7888,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 596,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 7908,
+          "payload_site": 7908,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 608,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "mgrproc_uso:symbol_175:addend_0x0",
+          "original_site": 7920,
+          "payload_site": 7920,
+          "original_symbol_index": 175,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 644,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "mgrproc_uso:symbol_176:addend_0x0",
+          "original_site": 7956,
+          "payload_site": 7956,
+          "original_symbol_index": 176,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "c3e6ae31553afe12bc8123331bb6c64081dbbd0d836d6fce9dc74aee09426c2c"
+    },
+    "native_data_proof": [
+      {
+        "alias": "mgrproc_1C90_pool_5CC",
+        "hi": 72,
+        "lo": 76,
+        "native_addend": 1484,
+        "original_addend": 1484,
+        "base_identity": "mgrproc_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "mgrproc_1C90_pool_5D0",
+        "hi": 84,
+        "lo": 104,
+        "native_addend": 1488,
+        "original_addend": 1488,
+        "base_identity": "mgrproc_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "mgrproc_1C90_pool_5D4",
+        "hi": 120,
+        "lo": 140,
+        "native_addend": 1492,
+        "original_addend": 1492,
+        "base_identity": "mgrproc_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "mgrproc_1C90_pool_5D8",
+        "hi": 168,
+        "lo": 188,
+        "native_addend": 1496,
+        "original_addend": 1496,
+        "base_identity": "mgrproc_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "import_8024CAF8",
+        "hi": 212,
+        "lo": 216,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "mgrproc_uso:symbol_173:base_addend_0x0"
+      },
+      {
+        "alias": "import_80263D30",
+        "hi": 244,
+        "lo": 252,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "mgrproc_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "import_80263D30",
+        "hi": 256,
+        "lo": 260,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "mgrproc_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "import_8024CAF8",
+        "hi": 292,
+        "lo": 296,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "mgrproc_uso:symbol_173:base_addend_0x0"
+      },
+      {
+        "alias": "import_8024CAF8",
+        "hi": 380,
+        "lo": 384,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "mgrproc_uso:symbol_173:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-mgrproc_uso_func_00001C90.json",
+      "nm": "scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json"
+    },
+    "source_context": "src/match_imports/context_mgrproc_uso.h",
+    "source_context_sha256": "1af63fd38a9d3b41b9e75735adfc33a6d825561b93cff3c8cb449c7587038e8c",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/mgrproc_uso/mgrproc_uso.c",
+    "original_local_episode_sha256": "e9195b76c31ea18f4253773315a160f4ee5f743ab60d611b36c10cfdae4fbc3d",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

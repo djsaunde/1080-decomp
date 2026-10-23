@@ -1,0 +1,179 @@
+{
+  "function_name": "func_800000B0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.311372+00:00",
+  "end_time": "2026-10-23T11:55:26.311384+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.311380+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_800000B0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 104, \"native_sha256\": \"8de150a6bfb92521543f551a60b289a3d3fb8e3f3ce35c239540aeb588d5248f\", \"code_gain\": 104}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 26,
+  "initial_m2c_source": null,
+  "final_source": "u32 func_800000B0(u32 size, u32 alignment) {\n    u32 v;\n    u32 r;\n    if ((size | 0) & (alignment - 1)) {\n        size = (size + alignment) & ~(alignment - 1);\n    }\n    v = D_8000A2D8;\n    D_8000A2D8 = v + size;\n    D_80012D5C += size;\n    r = v;\n    v = 0;\n    if (D_8000A2D8 >= D_8000A2DC) {\n        return 0;\n    }\n    return r;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Size-rounded bump allocator: advances a global cursor and byte counter, then returns the old cursor if the new cursor is strictly below the limit, otherwise zero. Both updates occur on failure. Original API naming and allocation ownership remain uncertain.",
+      "observed_abi": "Two 32-bit arguments in a0/a1 represent size and alignment; v0 returns a 32-bit address-like value or zero. Arithmetic uses addu and the limit comparison uses sltu. Implemented as u32 func_800000B0(u32 size, u32 alignment); original pointer-versus-integer return typing is unproven. Leaf with no stack frame.",
+      "calls": [],
+      "evidence": [
+        "Immutable expected extent is kernel Text+0xB0 through Text+0x117, including two return paths within one function.",
+        "Text+0xB0..0xC8 conditionally computes size = (size + alignment) & ~(alignment - 1).",
+        "D_8000A2D8 is the cursor, D_8000A2DC the limit, and D_80012D5C the accumulated byte counter. Cursor/counter stores precede the unsigned bounds comparison.",
+        "Inspected related loader code beginning at func_800009EC, including fragments func_80000A88/func_80000A98: Text+0xA90 stores range[0] into the cursor and Text+0xAB0 stores range[1] into the limit. Also inspected func_800010E8 reading the counter and func_80001184 resetting it.",
+        "No parameter-relative field offsets or shared aggregate layout are accessed. The inspected family establishes scalar global state; no new struct definition is required.",
+        "The supplied graph and local reference search recover no callers. The complete assigned instruction stream contains no direct or indirect calls and imports no callees.",
+        "The emission-neutral size | 0 fixes AND operand order; clearing the dead old-cursor local after its result copy preserves the target return sequence. Experiment sources and results remain under build/orchestration-scratch/.",
+        "Normal and NON_MATCHING function SHA-256 both equal expected: 8de150a6bfb92521543f551a60b289a3d3fb8e3f3ce35c239540aeb588d5248f.",
+        "Full object builds passed with make -j2. ROM matches baserom with MD5 fa27089c425dbab99f19245c5c997613; all six compressed blocks passed. All 2,508 previously reported exact functions remain exact, and all 32 previously exact unit functions match expected bytes in both modes.",
+        "Only src/kernel/kernel_000.c changed; expected objects, assembly, aliases, Makefile and tracked reports remain unchanged.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Callers likely supply nonzero power-of-two alignment and an already aligned cursor; the function itself enforces neither condition.",
+        "The successful return likely represents an allocated memory pointer."
+      ],
+      "unknowns": [
+        "Original argument signedness, pointer return type, valid alignment domain and overflow assumptions are not recoverable from this leaf alone.",
+        "No recovered callers establish broader usage; missing graph coverage is not proof that the allocator is unused.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_800000B0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "kernel",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/kernel/kernel_000.c",
+    "source_sha256": "b60776f699431ca83d4970cd7c638ffc4ff202739a8463edd8e63a449ed44a99",
+    "implementation_path": "src/match_imports/func_800000B0.c",
+    "implementation_sha256": "c5cacb0356124fd11a991e5c1296500ec9ee5d578eb4fa3232046457b1fe763e",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "8de150a6bfb92521543f551a60b289a3d3fb8e3f3ce35c239540aeb588d5248f"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_8000A2D8",
+        "hi": 28,
+        "lo": 32,
+        "native_addend": 0,
+        "original_addend": 2147525336,
+        "base_identity": "kernel:absolute_base_0x8000a2d8"
+      },
+      {
+        "alias": "D_80012D5C",
+        "hi": 12,
+        "lo": 36,
+        "native_addend": 0,
+        "original_addend": 2147560796,
+        "base_identity": "kernel:absolute_base_0x80012d5c"
+      },
+      {
+        "alias": "D_8000A2DC",
+        "hi": 48,
+        "lo": 68,
+        "native_addend": 0,
+        "original_addend": 2147525340,
+        "base_identity": "kernel:absolute_base_0x8000a2dc"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_800000B0.json",
+      "nm": "scripts/match-bindings-func_800000B0-nm.json"
+    },
+    "source_context": "src/match_imports/context_kernel_000.h",
+    "source_context_sha256": "11098d8525a8a619b0ebefd207c518efe1d78133639d7278e215506740040ee1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/kernel/kernel_000.c",
+    "original_local_episode_sha256": "5d37bef17cdb9849178deb6bae7696ea101dd0d7ace97e40ebd7e59ba6ea124c",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

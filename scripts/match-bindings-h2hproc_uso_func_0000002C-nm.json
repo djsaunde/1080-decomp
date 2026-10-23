@@ -1,0 +1,31 @@
+{
+  "function": "h2hproc_uso_func_0000002C",
+  "raw_sha256": "bebb423ba3ded3c7601e2e73e480fbed5eb0faf64114b8bff467567ff36a0389",
+  "renames": {
+    "D_00000000": "snw_port_h2hproc_uso_func_0000002C_D_00000000",
+    ".rodata": "snw_port_h2hproc_uso_func_0000002C__rodata",
+    "h2hproc_2C_call_0000020C": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_call_0000020C",
+    "h2hproc_2C_import_9": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_9",
+    "h2hproc_2C_import_10": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_10",
+    "h2hproc_2C_import_11": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_11",
+    "h2hproc_2C_call_00000620": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_call_00000620",
+    "h2hproc_2C_import_13": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_13",
+    "h2hproc_2C_call_00000274": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_call_00000274",
+    "h2hproc_2C_import_15": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_15",
+    "h2hproc_2C_import_16": "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_16"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_h2hproc_uso_func_0000002C_D_00000000": 0,
+    "snw_port_h2hproc_uso_func_0000002C__rodata": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_call_0000020C": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_9": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_10": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_11": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_call_00000620": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_13": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_call_00000274": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_15": 0,
+    "snw_port_h2hproc_uso_func_0000002C_h2hproc_2C_import_16": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

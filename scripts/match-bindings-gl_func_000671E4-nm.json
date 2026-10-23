@@ -1,0 +1,13 @@
+{
+  "function": "gl_func_000671E4",
+  "raw_sha256": "73f8a3f7ef1771db615ac6de51bd3d43de3255da6a850c1f6743b3ad43b3c34f",
+  "renames": {
+    "D_00000000": "snw_port_gl_func_000671E4_D_00000000",
+    "gl_671E4_osSendMesg": "snw_port_gl_func_000671E4_gl_671E4_osSendMesg"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_000671E4_D_00000000": 0,
+    "snw_port_gl_func_000671E4_gl_671E4_osSendMesg": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

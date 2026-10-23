@@ -1,0 +1,21 @@
+{
+  "function": "gl_func_00039B58",
+  "raw_sha256": "72cf67f206cd04f43a8b5086b4d518b9bab9d7b61eadf41a908c767d7013038d",
+  "renames": {
+    "gl_cmd_5E7EC": "snw_port_gl_func_00039B58_gl_cmd_5E7EC",
+    "gl_cmd_5E8B0": "snw_port_gl_func_00039B58_gl_cmd_5E8B0",
+    "gl_39B58_rotate_bits": "snw_port_gl_func_00039B58_gl_39B58_rotate_bits",
+    "D_00000000": "snw_port_gl_func_00039B58_D_00000000",
+    "gl_cmd_5E87C": "snw_port_gl_func_00039B58_gl_cmd_5E87C",
+    "gl_cmd_38830_ignored": "snw_port_gl_func_00039B58_gl_cmd_38830_ignored"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00039B58_gl_cmd_5E7EC": 0,
+    "snw_port_gl_func_00039B58_gl_cmd_5E8B0": 0,
+    "snw_port_gl_func_00039B58_gl_39B58_rotate_bits": 0,
+    "snw_port_gl_func_00039B58_D_00000000": 0,
+    "snw_port_gl_func_00039B58_gl_cmd_5E87C": 0,
+    "snw_port_gl_func_00039B58_gl_cmd_38830_ignored": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

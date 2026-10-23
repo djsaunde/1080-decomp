@@ -1,0 +1,29 @@
+{
+  "function": "timproc_uso_b5_func_00005BF0",
+  "raw_sha256": "440d6b1b05918a9ff7e4cd590ce11b3af0e4ddc750acda47c2b1e28db8cc2c19",
+  "renames": {
+    "timproc_uso_b5_D_807FE6E4": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4",
+    "timproc_uso_b5_D_807FE6E4_b": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4_b",
+    "timproc_uso_b5_D_807FE6C4": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6C4",
+    "timproc_uso_b5_func_00008988": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008988",
+    "import_80020150": "snw_port_timproc_uso_b5_func_00005BF0_import_80020150",
+    "import_80074E78": "snw_port_timproc_uso_b5_func_00005BF0_import_80074E78",
+    "import_0024CCF4": "snw_port_timproc_uso_b5_func_00005BF0_import_0024CCF4",
+    "timproc_uso_b5_func_00008A38_entry": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008A38_entry",
+    "timproc_uso_b5_func_00003A28": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00003A28",
+    "timproc_uso_b5_func_00008688": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008688"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4_b": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6C4": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008988": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_import_80020150": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_import_80074E78": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_import_0024CCF4": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008A38_entry": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00003A28": 0,
+    "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008688": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

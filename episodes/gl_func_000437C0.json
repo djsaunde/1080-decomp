@@ -1,0 +1,884 @@
+{
+  "function_name": "gl_func_000437C0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.964617+00:00",
+  "end_time": "2026-10-23T11:55:25.964634+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.964626+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_000437C0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 1068, \"native_sha256\": \"1652f57df3bf70f7f1133da46cdafb5a52a84923f59825fa78927717cc5e8b8e\", \"code_gain\": 1068}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 267,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_000437C0(char *arg0, char *arg1) {\n    s32 *temp_a0_2;\n    s32 *temp_a0_3;\n    GL470E4List *temp_a1;\n    GL470E4Object *temp_v1;\n    s32 temp_a2_6;\n    char *scratch_ptr;\n    s32 var_a2;\n    int unused_home;\n    s32 temp_a2;\n    s32 temp_a2_2;\n    s32 temp_a2_3;\n    s32 temp_a2_4;\n    s32 temp_a2_5;\n    struct { f32 values[4]; char pad10[0x24]; Pair2 field34; char pad3C[0x1C]; int field58; void *field5C; } sp4C;\n    char *var_a1;\n    s32 temp_v0;\n    s32 unused_flag_home;\n    char *temp_a3;\n    char *temp_t0;\n    char *temp_a3_2;\n    char *temp_t0_2;\n    char *temp_a3_3;\n    char *temp_t0_3;\n    s32 var_v1;\n    char *temp_a0;\n    if ((*(int *)((char *)(arg0) + (0x14))) != 0) {\n        temp_v0 = (*(int *)((char *)(arg0) + (0x50)));\n        if (temp_v0 != -1) {\n            temp_a0 = *(char **)((char *)&D_00000000 + 0x254);\n            var_v1 = (*(int *)((char *)(arg0) + (0x54))) >= (*(int *)((char *)(temp_a0) + (0x10C)));\n            if (var_v1 != 0) {\n                var_v1 = (*(int *)((char *)(temp_a0) + (0x110))) >= temp_v0;\n            }\n            (*(int *)((char *)(arg0) + (0x4C))) = var_v1;\n            if (var_v1 != 0) {\n                goto block_5;\n            }\n        } else {\nblock_5:\n            gl_437C0_link_43BEC(arg0, (*(int *)((char *)((*(char **)((char *)&D_00000000 + 0x254))) + (0x158))));\n            temp_a0_2 = (*(int *)((char *)(arg0) + (0x60)));\n            if (temp_a0_2 != 0) {\n                if (((*(int *)((char *)(&D_00000000) + (0))) != 0) && ((*(int *)((char *)(arg1) + (0xA4))) == (*(int *)((char *)(arg0) + (0x18))))) {\n                    gl_437C0_reset_56814(temp_a0_2);\n                    var_a1 = (char *)&sp4C;\n                    if (((s32)var_a1 != 0) || ((var_a1 = gl_437C0_alloc_410E4(0x60)) != 0)) {\n                        (*(int *)((char *)(var_a1) + (0x5C))) = (s32) &gl_437C0_ctor_table;\n                        var_a2 = (s32)(var_a1 + 0x34);\n                        if (((s32)var_a2 != 0) || ((var_a2 = (s32)gl_437C0_alloc_410E4(8)) != 0)) {\n                            (*(int *)((char *)(var_a2) + (0x4))) = 0;\n                            (*(int *)((char *)(var_a2) + (0x0))) = 0;\n                        }\n                        var_a2 = (s32)(var_a1 + 0x58);\n                        if (((s32)var_a2 != 0) || ((var_a2 = (s32)gl_437C0_alloc_410E4(4)) != 0)) {\n                            (*(int *)((char *)(var_a2) + (0))) = 0;\n                        }\n                        gl_437C0_init_517E4(var_a1);\n                    }\n                    sp4C.field5C = &gl_437C0_value_table;\n                    sp4C.values[0] = 1.0f;\n                    sp4C.values[1] = 1.0f;\n                    sp4C.values[2] = 0.0f;\n                    sp4C.values[3] = 0.0f;\n                    gl_437C0_light_45CB0((s32 *)&D_00000000, (*(int *)((char *)(arg0) + (0x60))), (char *)&sp4C);\n                    gl_437C0_finish_57700((*(int *)((char *)(arg0) + (0x60))));\n                    (*(int *)((char *)(arg0) + (0x84))) = 1;\n                } else if (((*(int *)((char *)(&D_00000000) + (0x244))) != 0) || ((*(int *)((char *)(arg0) + (0x84))) != 0)) {\n                    gl_437C0_reset_56814(temp_a0_2);\n                    gl_437C0_update_454C4((s32 *)&D_00000000, (*(int *)((char *)(arg0) + (0x60))), arg0, (*(int *)((char *)(arg1) + (0x9C))));\n                    gl_437C0_finish_57700((*(int *)((char *)(arg0) + (0x60))));\n                    gl_437C0_enable_430D8((*(int *)((char *)(arg0) + (0x60))), ((*(int *)((char *)(arg1) + (0xA8))) != 0));\n                    (*(int *)((char *)(arg0) + (0x84))) = 0;\n                } else if (((*(int *)((char *)(&D_00000000) + (0x248))) != 0) || ((*(int *)((char *)(arg1) + (0xA8))) != 0)) {\n                    gl_437C0_enable_430D8(temp_a0_2, ((*(int *)((char *)(arg1) + (0xA8))) != 0));\n                }\n            }\n            if ((*(int *)((char *)(arg0) + (0x38))) & 0x100000) {\n                temp_a0_3 = (*(int *)((char *)(arg0) + (0x68)));\n                if (temp_a0_3 != 0) {\n                    gl_437C0_reset_56814(temp_a0_3);\n                    temp_v0 = (*(int *)((char *)(arg0) + (0x38)));\n                    if (temp_v0 & 0x04000000) {\n                        temp_v1 = *(GL470E4Object **)(arg0 + 0x68);\n                        temp_a1 = temp_v1->list;\n                        var_a2 = temp_a1->count;\n                        temp_a1->count = (s32) (var_a2 + 1);\n                        temp_a3 = (int)temp_v1->list->packets + (var_a2 * 8);\n                        (*(int *)((char *)(temp_a3) + (0x0))) = 0x03840010;\n                        (*(int *)((char *)(temp_a3) + (0x4))) = gl_437C0_physical_6C384(&gl_437C0_lightA, temp_a1, var_a2);\n                        temp_v1 = *(GL470E4Object **)(arg0 + 0x68);\n                        temp_a1 = temp_v1->list;\n                        temp_a2_2 = temp_a1->count;\n                        temp_a1->count = (s32) (temp_a2_2 + 1);\n                        temp_t0 = (int)temp_v1->list->packets + (temp_a2_2 * 8);\n                        (*(int *)((char *)(temp_t0) + (0x0))) = 0x03820010;\n                        (*(int *)((char *)(temp_t0) + (0x4))) = (s32) (gl_437C0_physical_6C384(&gl_437C0_lightA, temp_a1, temp_a2_2) + 0x10);\n                    } else if ((temp_v0 & 0xF00) == 0x200) {\n                        temp_v1 = *(GL470E4Object **)(arg0 + 0x68);\n                        temp_a1 = temp_v1->list;\n                        temp_a2_3 = temp_a1->count;\n                        temp_a1->count = (s32) (temp_a2_3 + 1);\n                        temp_a3_2 = (int)temp_v1->list->packets + (temp_a2_3 * 8);\n                        (*(int *)((char *)(temp_a3_2) + (0x0))) = 0x03840010;\n                        (*(int *)((char *)(temp_a3_2) + (0x4))) = gl_437C0_physical_6C384(&gl_437C0_lightB, temp_a1, temp_a2_3);\n                        temp_v1 = *(GL470E4Object **)(arg0 + 0x68);\n                        temp_a1 = temp_v1->list;\n                        temp_a2_4 = temp_a1->count;\n                        temp_a1->count = (s32) (temp_a2_4 + 1);\n                        temp_t0_2 = (int)temp_v1->list->packets + (temp_a2_4 * 8);\n                        (*(int *)((char *)(temp_t0_2) + (0x0))) = 0x03820010;\n                        (*(int *)((char *)(temp_t0_2) + (0x4))) = (s32) (gl_437C0_physical_6C384(&gl_437C0_lightB, temp_a1, temp_a2_4) + 0x10);\n                    } else {\n                        temp_v1 = *(GL470E4Object **)(arg0 + 0x68);\n                        temp_a1 = temp_v1->list;\n                        temp_a2_5 = temp_a1->count;\n                        temp_a1->count = (s32) (temp_a2_5 + 1);\n                        temp_a3_3 = (int)temp_v1->list->packets + (temp_a2_5 * 8);\n                        (*(int *)((char *)(temp_a3_3) + (0x0))) = 0x03840010;\n                        (*(int *)((char *)(temp_a3_3) + (0x4))) = gl_437C0_physical_6C384(&gl_437C0_lightC, temp_a1, temp_a2_5);\n                        temp_v1 = *(GL470E4Object **)(arg0 + 0x68);\n                        temp_a1 = temp_v1->list;\n                        temp_a2_6 = temp_a1->count;\n                        temp_a1->count = (s32) (temp_a2_6 + 1);\n                        temp_t0_3 = (int)temp_v1->list->packets + (temp_a2_6 * 8);\n                        (*(int *)((char *)(temp_t0_3) + (0x0))) = 0x03820010;\n                        (*(int *)((char *)(temp_t0_3) + (0x4))) = (s32) (gl_437C0_physical_6C384(&gl_437C0_lightC, temp_a1, temp_a2_6) + 0x10);\n                    }\n                    gl_437C0_finish_57700((*(int *)((char *)(arg0) + (0x68))));\n                }\n            }\n        }\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Prepare a render node: validate its active interval, link rendering state, rebuild conditional lighting data, and emit light-address commands. Application-level flag meanings remain partly uncertain.",
+      "observed_abi": "O32: a0 is a mutable node pointer; a1 is a context pointer homed across calls. Frame size is 0xE0, saving ra/s0. No explicit return-value formation establishes the original return type. Import declarations describe compatible call-site views, not proven original APIs.",
+      "calls": [
+        {
+          "site": "0x4382C",
+          "target": "gl_func_00043BEC",
+          "c_alias": "gl_437C0_link_43BEC",
+          "observed_abi": "a0=node; a1=global context +0x158 pointee; result unconsumed."
+        },
+        {
+          "site": "0x43868",
+          "target": "game_libs_func_00056814",
+          "c_alias": "gl_437C0_reset_56814",
+          "observed_abi": "a0=node +0x60 pointee; result unconsumed."
+        },
+        {
+          "site": "0x4387C",
+          "target": "gl_func_000410E4",
+          "c_alias": "gl_437C0_alloc_410E4",
+          "observed_abi": "a0=0x60; v0=allocated pointer, checked for null."
+        },
+        {
+          "site": "0x438A8",
+          "target": "gl_func_000410E4",
+          "c_alias": "gl_437C0_alloc_410E4",
+          "observed_abi": "a0=8; v0=allocated pointer."
+        },
+        {
+          "site": "0x438D4",
+          "target": "gl_func_000410E4",
+          "c_alias": "gl_437C0_alloc_410E4",
+          "observed_abi": "a0=4; v0=allocated pointer."
+        },
+        {
+          "site": "0x438EC",
+          "target": "game_libs_func_000517E4",
+          "c_alias": "gl_437C0_init_517E4",
+          "observed_abi": "a0=scratch record; result unconsumed."
+        },
+        {
+          "site": "0x43928",
+          "target": "gl_func_00045CB0",
+          "c_alias": "gl_437C0_light_45CB0",
+          "observed_abi": "a0=import base; a1=node +0x60 pointee; a2=scratch record."
+        },
+        {
+          "site": "0x43930",
+          "target": "gl_func_00057700",
+          "c_alias": "gl_437C0_finish_57700",
+          "observed_abi": "a0=node +0x60 pointee; result unconsumed."
+        },
+        {
+          "site": "0x43960",
+          "target": "game_libs_func_00056814",
+          "c_alias": "gl_437C0_reset_56814",
+          "observed_abi": "a0=node +0x60 pointee; result unconsumed."
+        },
+        {
+          "site": "0x4397C",
+          "target": "gl_func_000454C4",
+          "c_alias": "gl_437C0_update_454C4",
+          "observed_abi": "a0=import base; a1=node +0x60 pointee; a2=node; a3=context +0x9C bits interpreted as float by the callee."
+        },
+        {
+          "site": "0x43984",
+          "target": "gl_func_00057700",
+          "c_alias": "gl_437C0_finish_57700",
+          "observed_abi": "a0=node +0x60 pointee; result unconsumed."
+        },
+        {
+          "site": "0x43998",
+          "target": "game_libs_func_000430D8",
+          "c_alias": "gl_437C0_enable_430D8",
+          "observed_abi": "a0=node +0x60 pointee; a1=boolean(context +0xA8)."
+        },
+        {
+          "site": "0x439C4",
+          "target": "game_libs_func_000430D8",
+          "c_alias": "gl_437C0_enable_430D8",
+          "observed_abi": "a0=node +0x60 pointee; a1=boolean(context +0xA8)."
+        },
+        {
+          "site": "0x439E8",
+          "target": "game_libs_func_00056814",
+          "c_alias": "gl_437C0_reset_56814",
+          "observed_abi": "a0=node +0x68 pointee; result unconsumed."
+        },
+        {
+          "site": "0x43A3C",
+          "target": "gl_func_0006C384",
+          "c_alias": "gl_437C0_physical_6C384",
+          "observed_abi": "a0=import_0005C810 address; v0 stored as command address. Callee consumes only a0."
+        },
+        {
+          "site": "0x43A84",
+          "target": "gl_func_0006C384",
+          "c_alias": "gl_437C0_physical_6C384",
+          "observed_abi": "a0=import_0005C810 address; command receives v0+0x10."
+        },
+        {
+          "site": "0x43ADC",
+          "target": "gl_func_0006C384",
+          "c_alias": "gl_437C0_physical_6C384",
+          "observed_abi": "a0=import_0005C7D0 address; command receives v0."
+        },
+        {
+          "site": "0x43B24",
+          "target": "gl_func_0006C384",
+          "c_alias": "gl_437C0_physical_6C384",
+          "observed_abi": "a0=import_0005C7D0 address; command receives v0+0x10."
+        },
+        {
+          "site": "0x43B74",
+          "target": "gl_func_0006C384",
+          "c_alias": "gl_437C0_physical_6C384",
+          "observed_abi": "a0=import_0005C7F0 address; command receives v0."
+        },
+        {
+          "site": "0x43BBC",
+          "target": "gl_func_0006C384",
+          "c_alias": "gl_437C0_physical_6C384",
+          "observed_abi": "a0=import_0005C7F0 address; command receives v0+0x10."
+        },
+        {
+          "site": "0x43BD0",
+          "target": "gl_func_00057700",
+          "c_alias": "gl_437C0_finish_57700",
+          "observed_abi": "a0=node +0x68 pointee; result unconsumed."
+        }
+      ],
+      "evidence": [
+        "Original assembly and immutable expected object establish one complete function at game_libs Text 0x437C0..0x43BEC.",
+        "Historical worker verification: Both C builds produce 1068 bytes with SHA-256 1652f57df3bf70f7f1133da46cdafb5a52a84923f59825fa78927717cc5e8b8e; INCLUDE_ASM fallback removed.",
+        "Historical worker verification: ROM MD5 is fa27089c425dbab99f19245c5c997613. All six compressed-block checks passed.",
+        "Historical worker verification: Only gl_func_000437C0 changed among function definitions. All 553 previously fuzzy-100 functions retained their instruction bytes.",
+        "Inspected caller gl_func_00048AEC and related callees 43BEC, 517E4, 56814, 454C4, 45CB0 and 57700.",
+        "Reused shared GL470E4Packet/List/Object layouts evidenced by 45CB0, 46FA8, 470E4, 47394, 47B28 and 5703C: object +0xC references a header containing packet base +0 and count +4; packets occupy eight bytes.",
+        "Node fields observed at +0x14, +0x18, +0x38, +0x4C, +0x50, +0x54, +0x60, +0x68 and +0x84. Context reads occur at +0x9C, +0xA4 and +0xA8; global context reads include +0x254, +0x10C, +0x110 and +0x158.",
+        "The 0x60-byte scratch record contains floats at +0..+0xC, an embedded pair at +0x34, a word at +0x58 and a table pointer at +0x5C.",
+        "Per-site relocation evidence preserves all 21 call identities and distinct data identities D_020644, D_01FBF0, import_0005C810, import_0005C7D0 and import_0005C7F0. Alias values alone were not used as identity evidence.",
+        "Removing the duplicated initializer argument restored a1 allocation; declaration ordering fixed spill homes. Sharing the constructor address variable with the first command index supplied the remaining a2 allocation.",
+        "Experiments and verification logs remain in build/orchestration-scratch/437C0-attempt2/.",
+        "Coordinator reuses current canonical GL470E4 declarations rather than duplicating identical types from the stale worker. Assigned function definition is unchanged from the retained Sol attempt2 source. Prior workspace/session/results and rejected integration remain preserved; current-context acceptance will independently check all previous exact function bytes.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The 0x03840010/0x03820010 command pair installs lighting records selected by node flags.",
+        "Node +0x84 tracks whether special lighting requires rebuilding."
+      ],
+      "unknowns": [
+        "Original class names, complete layouts, flag meanings and discarded-return declarations remain unknown.",
+        "Extra K&R operands on physical-address calls preserve existing register values; they do not establish additional consumed callee arguments.",
+        "No unresolved or indirect call sites were supplied for this function; coverage remains limited to the recovered relocation evidence.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_000437C0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 133,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00048AEC"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00043BEC",
+          "kind": "relocation",
+          "site": 360088,
+          "identity": "func_058258",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1961,
+          "cached_first_reference": "func_058258",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00056814",
+          "kind": "relocation",
+          "site": 360148,
+          "identity": "func_06AE80",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1962,
+          "cached_first_reference": "func_06AE80",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 360168,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 360212,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000410E4",
+          "kind": "relocation",
+          "site": 360256,
+          "identity": "func_055750",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 113,
+          "cached_first_reference": "func_055750",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_000517E4",
+          "kind": "relocation",
+          "site": 360280,
+          "identity": "func_065E50",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 561,
+          "cached_first_reference": "func_065E50",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00045CB0",
+          "kind": "relocation",
+          "site": 360340,
+          "identity": "func_05A31C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1963,
+          "cached_first_reference": "func_05A31C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00057700",
+          "kind": "relocation",
+          "site": 360348,
+          "identity": "func_06BD6C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1958,
+          "cached_first_reference": "func_06BD6C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00056814",
+          "kind": "relocation",
+          "site": 360396,
+          "identity": "func_06AE80",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1962,
+          "cached_first_reference": "func_06AE80",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000454C4",
+          "kind": "relocation",
+          "site": 360424,
+          "identity": "func_059B30",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1964,
+          "cached_first_reference": "func_059B30",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00057700",
+          "kind": "relocation",
+          "site": 360432,
+          "identity": "func_06BD6C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1958,
+          "cached_first_reference": "func_06BD6C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_000430D8",
+          "kind": "relocation",
+          "site": 360452,
+          "identity": "func_057744",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1951,
+          "cached_first_reference": "func_057744",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_000430D8",
+          "kind": "relocation",
+          "site": 360496,
+          "identity": "func_057744",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1951,
+          "cached_first_reference": "func_057744",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00056814",
+          "kind": "relocation",
+          "site": 360532,
+          "identity": "func_06AE80",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1962,
+          "cached_first_reference": "func_06AE80",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_ido53_6C384:gl_func_0006C384",
+          "kind": "relocation",
+          "site": 360616,
+          "identity": "func_0809F0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 160,
+          "cached_first_reference": "func_0809F0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_ido53_6C384:gl_func_0006C384",
+          "kind": "relocation",
+          "site": 360688,
+          "identity": "func_0809F0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 160,
+          "cached_first_reference": "func_0809F0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_ido53_6C384:gl_func_0006C384",
+          "kind": "relocation",
+          "site": 360776,
+          "identity": "func_0809F0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 160,
+          "cached_first_reference": "func_0809F0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_ido53_6C384:gl_func_0006C384",
+          "kind": "relocation",
+          "site": 360848,
+          "identity": "func_0809F0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 160,
+          "cached_first_reference": "func_0809F0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_ido53_6C384:gl_func_0006C384",
+          "kind": "relocation",
+          "site": 360928,
+          "identity": "func_0809F0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 160,
+          "cached_first_reference": "func_0809F0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_ido53_6C384:gl_func_0006C384",
+          "kind": "relocation",
+          "site": 361000,
+          "identity": "func_0809F0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 160,
+          "cached_first_reference": "func_0809F0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00057700",
+          "kind": "relocation",
+          "site": 361020,
+          "identity": "func_06BD6C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000437C0.s",
+          "sym_index": 1958,
+          "cached_first_reference": "func_06BD6C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_000437C0.c",
+    "implementation_sha256": "954e11ea8d39efef825bf967f1da67baecc8784c1fcc5c2c395f73cd514cbc69",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 108,
+          "kind": 4,
+          "symbol": "gl_437C0_link_43BEC",
+          "original_identity": "bootup_uso:symbol_1961:addend_0x0",
+          "original_site": 360088,
+          "payload_site": 360088,
+          "original_symbol_index": 1961,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 168,
+          "kind": 4,
+          "symbol": "gl_437C0_reset_56814",
+          "original_identity": "bootup_uso:symbol_1962:addend_0x0",
+          "original_site": 360148,
+          "payload_site": 360148,
+          "original_symbol_index": 1962,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 188,
+          "kind": 4,
+          "symbol": "gl_437C0_alloc_410E4",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 360168,
+          "payload_site": 360168,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 232,
+          "kind": 4,
+          "symbol": "gl_437C0_alloc_410E4",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 360212,
+          "payload_site": 360212,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 276,
+          "kind": 4,
+          "symbol": "gl_437C0_alloc_410E4",
+          "original_identity": "bootup_uso:symbol_113:addend_0x0",
+          "original_site": 360256,
+          "payload_site": 360256,
+          "original_symbol_index": 113,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 300,
+          "kind": 4,
+          "symbol": "gl_437C0_init_517E4",
+          "original_identity": "bootup_uso:symbol_561:addend_0x0",
+          "original_site": 360280,
+          "payload_site": 360280,
+          "original_symbol_index": 561,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 360,
+          "kind": 4,
+          "symbol": "gl_437C0_light_45CB0",
+          "original_identity": "bootup_uso:symbol_1963:addend_0x0",
+          "original_site": 360340,
+          "payload_site": 360340,
+          "original_symbol_index": 1963,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 368,
+          "kind": 4,
+          "symbol": "gl_437C0_finish_57700",
+          "original_identity": "bootup_uso:symbol_1958:addend_0x0",
+          "original_site": 360348,
+          "payload_site": 360348,
+          "original_symbol_index": 1958,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 416,
+          "kind": 4,
+          "symbol": "gl_437C0_reset_56814",
+          "original_identity": "bootup_uso:symbol_1962:addend_0x0",
+          "original_site": 360396,
+          "payload_site": 360396,
+          "original_symbol_index": 1962,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 444,
+          "kind": 4,
+          "symbol": "gl_437C0_update_454C4",
+          "original_identity": "bootup_uso:symbol_1964:addend_0x0",
+          "original_site": 360424,
+          "payload_site": 360424,
+          "original_symbol_index": 1964,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 452,
+          "kind": 4,
+          "symbol": "gl_437C0_finish_57700",
+          "original_identity": "bootup_uso:symbol_1958:addend_0x0",
+          "original_site": 360432,
+          "payload_site": 360432,
+          "original_symbol_index": 1958,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 472,
+          "kind": 4,
+          "symbol": "gl_437C0_enable_430D8",
+          "original_identity": "bootup_uso:symbol_1951:addend_0x0",
+          "original_site": 360452,
+          "payload_site": 360452,
+          "original_symbol_index": 1951,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 516,
+          "kind": 4,
+          "symbol": "gl_437C0_enable_430D8",
+          "original_identity": "bootup_uso:symbol_1951:addend_0x0",
+          "original_site": 360496,
+          "payload_site": 360496,
+          "original_symbol_index": 1951,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 552,
+          "kind": 4,
+          "symbol": "gl_437C0_reset_56814",
+          "original_identity": "bootup_uso:symbol_1962:addend_0x0",
+          "original_site": 360532,
+          "payload_site": 360532,
+          "original_symbol_index": 1962,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 636,
+          "kind": 4,
+          "symbol": "gl_437C0_physical_6C384",
+          "original_identity": "bootup_uso:symbol_160:addend_0x0",
+          "original_site": 360616,
+          "payload_site": 360616,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 708,
+          "kind": 4,
+          "symbol": "gl_437C0_physical_6C384",
+          "original_identity": "bootup_uso:symbol_160:addend_0x0",
+          "original_site": 360688,
+          "payload_site": 360688,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 796,
+          "kind": 4,
+          "symbol": "gl_437C0_physical_6C384",
+          "original_identity": "bootup_uso:symbol_160:addend_0x0",
+          "original_site": 360776,
+          "payload_site": 360776,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 868,
+          "kind": 4,
+          "symbol": "gl_437C0_physical_6C384",
+          "original_identity": "bootup_uso:symbol_160:addend_0x0",
+          "original_site": 360848,
+          "payload_site": 360848,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 948,
+          "kind": 4,
+          "symbol": "gl_437C0_physical_6C384",
+          "original_identity": "bootup_uso:symbol_160:addend_0x0",
+          "original_site": 360928,
+          "payload_site": 360928,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1020,
+          "kind": 4,
+          "symbol": "gl_437C0_physical_6C384",
+          "original_identity": "bootup_uso:symbol_160:addend_0x0",
+          "original_site": 361000,
+          "payload_site": 361000,
+          "original_symbol_index": 160,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 1040,
+          "kind": 4,
+          "symbol": "gl_437C0_finish_57700",
+          "original_identity": "bootup_uso:symbol_1958:addend_0x0",
+          "original_site": 361020,
+          "payload_site": 361020,
+          "original_symbol_index": 1958,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "1652f57df3bf70f7f1133da46cdafb5a52a84923f59825fa78927717cc5e8b8e"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 40,
+        "lo": 52,
+        "native_addend": 596,
+        "original_addend": 596,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 48,
+        "lo": 52,
+        "native_addend": 596,
+        "original_addend": 596,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 48,
+        "lo": 100,
+        "native_addend": 596,
+        "original_addend": 596,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 120,
+        "lo": 124,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_ctor_table",
+        "hi": 204,
+        "lo": 208,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_560:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_value_table",
+        "hi": 320,
+        "lo": 324,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_562:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 332,
+        "lo": 356,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 428,
+        "lo": 432,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_154:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_lightA",
+        "hi": 596,
+        "lo": 600,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1868:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_lightA",
+        "hi": 664,
+        "lo": 668,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1868:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_lightB",
+        "hi": 756,
+        "lo": 760,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1866:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_lightB",
+        "hi": 824,
+        "lo": 828,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1866:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_lightC",
+        "hi": 908,
+        "lo": 912,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1867:base_addend_0x0"
+      },
+      {
+        "alias": "gl_437C0_lightC",
+        "hi": 976,
+        "lo": 980,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1867:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_000437C0.json",
+      "nm": "scripts/match-bindings-gl_func_000437C0-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "a8f2f9c6d87971d59ef787183f07b0fd6efed9bde07761d9044f46c0c96ecb27",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

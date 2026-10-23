@@ -1,0 +1,305 @@
+{
+  "function_name": "titproc_uso_func_00001710",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.445631+00:00",
+  "end_time": "2026-10-23T11:55:26.445643+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.445639+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "titproc_uso_func_00001710",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 304, \"native_sha256\": \"fe51c37d7948ddac4654f68830f3668746172ef649c47352c2fa95008a5219a8\", \"code_gain\": 304}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 76,
+  "initial_m2c_source": null,
+  "final_source": "void titproc_uso_func_00001710(TitprocBlendObject *object) {\n    float ones[4];\n    char *tgt;\n    char local_gap[4];\n    float green, blue;\n    float t;\n    float red;\n    float *src;\n    float vec[4];\n    float out[4];\n    src = ones;\n    red = 1.0f;\n    ones[0] = red; ones[1] = red; ones[2] = red; ones[3] = red;\n    if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {\n        red = ones[0];\n        t = *(float *)((char *)&import_00263E00 + 0x40);\n        vec[0] = red; vec[3] = red; vec[1] = t; vec[2] = t;\n        t = (float)object->field_2C / 255.0f;\n        out[3] = red;\n        red = (vec[0] - src[0]) * t + src[0];\n        green = (vec[1] - src[1]) * t + src[1];\n        blue = (vec[2] - src[2]) * t + src[2];\n        out[0] = red; out[1] = green; out[2] = blue;\n        import_0024E608(&import_0024CAF8, object->field_2C, out);\n        tgt = (char *)&import_00263D30 + 0x18;\n    } else {\n        import_0024E608(&import_0024CAF8, object->field_2C, ones);\n        tgt = (char *)&import_00263D30;\n    }\n    import_0024F2C8(tgt);\n    import_0024F34C(tgt, (int)object->field_34, (int)object->field_38, 3);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "A registered title-module callback that prepares four-component float vectors, optionally interpolates three components using field_2C / 255, selects a resource, and passes truncated float fields to another import. Color modulation and drawing are likely purposes; the imported APIs remain unidentified.",
+      "observed_abi": "a0 is an object pointer. Reads signed int at 0x2C and floats at 0x34/0x38. Uses a 0x70-byte frame, preserves s0/ra, and establishes no explicit return value. Original return types remain unknown; C void declarations model discarded results.",
+      "calls": [
+        {
+          "site": "0x17CC",
+          "target": "import_0024E608",
+          "c_alias": "import_0024E608",
+          "observed_abi": "a0=&import_0024CAF8, a1=field_2C, a2=interpolated four-float vector. Result discarded. Recovered import symbol 144; callee module/Text offset unresolved."
+        },
+        {
+          "site": "0x17EC",
+          "target": "import_0024E608",
+          "c_alias": "import_0024E608",
+          "observed_abi": "a0=&import_0024CAF8, a1=field_2C, a2=four unit floats. Result discarded. Same original import symbol 144."
+        },
+        {
+          "site": "0x17FC",
+          "target": "import_0024F2C8",
+          "c_alias": "import_0024F2C8",
+          "observed_abi": "a0=import_00263D30 plus 0 or 0x18; pointer preserved across the call. Result discarded. Import symbol 145; callee module/Text offset unresolved."
+        },
+        {
+          "site": "0x1824",
+          "target": "import_0024F34C",
+          "c_alias": "import_0024F34C",
+          "observed_abi": "a0=same selected pointer, a1=trunc(field_34), a2=trunc(field_38), a3=3. Result discarded. Import symbol 146; callee module/Text offset unresolved."
+        }
+      ],
+      "evidence": [
+        "Immutable expected instructions cover 0x1710\u20130x183F, including the leading 1.0f materialization and complete epilogue.",
+        "Original TextReloc records at ROM 0x59CEF8 map the four call sites to symbols 144, 144, 145 and 146; titproc_uso.symnames.json supplies their distinct import addresses.",
+        "Original DataReloc registers Text 0x1710 at data offset 0x1CC and oscillator 0x16B8 at 0x1D4. No direct callers are recovered; game.uso DFS reachability remains unverified.",
+        "Inspected family: constructor 000015F4, oscillator 000016B8 and assigned callback. Constructor allocates 0x3C bytes, initializes ints at 0x2C/0x30 and floats at 0x34/0x38; oscillator updates 0x2C and toggles 0x30. Three functions support this layout.",
+        "Compared neighboring 00001840/00001950/00001AF8 and 00001D7C/00001E2C families: their differing field types prevent treating them as the same layout.",
+        "Store-forwarded red=ones[0] resolves the f2/f16 swap without another instruction. Four-element input/output arrays reproduce the observed contiguous float slots.",
+        "Both build modes match raw bytes and relocations. ROM verification and all six compressed-block checks passed; no other unit function changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The four-component vectors represent RGBA modulation; the fourth component remains 1.0.",
+        "Fields 0x34/0x38 represent drawing coordinates, and import_00020098+0x18C selects a modulation mode."
+      ],
+      "unknowns": [
+        "Imported callee module/function names and original return ABIs remain unresolved despite recovered per-site import identities.",
+        "Meaning of import_00263E00+0x40 and the resource layouts is unconfirmed.",
+        "Original declaration occupying the four-byte local home is unknown.",
+        "Indirect runtime callers and game.uso callback reachability are not established.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/titproc_uso_func_00001710.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "titproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 6092,
+          "identity": null,
+          "evidence": "asm/nonmatchings/titproc_uso/titproc_uso/titproc_uso_func_00001710.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 6124,
+          "identity": null,
+          "evidence": "asm/nonmatchings/titproc_uso/titproc_uso/titproc_uso_func_00001710.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 6140,
+          "identity": null,
+          "evidence": "asm/nonmatchings/titproc_uso/titproc_uso/titproc_uso_func_00001710.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 6180,
+          "identity": null,
+          "evidence": "asm/nonmatchings/titproc_uso/titproc_uso/titproc_uso_func_00001710.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/titproc_uso/titproc_uso.c",
+    "source_sha256": "2bf32e07ea4aec177359f42d55c077ec8fcc9b8385a9f6854b7078a287a0f5f3",
+    "implementation_path": "src/match_imports/titproc_uso_func_00001710.c",
+    "implementation_sha256": "7fedc0bd5f805e453e335f7b36550a438228ff7342e18029252521e2edbb2f6b",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 188,
+          "kind": 4,
+          "symbol": "import_0024E608",
+          "original_identity": "titproc_uso:symbol_144:addend_0x0",
+          "original_site": 6092,
+          "payload_site": 6092,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 220,
+          "kind": 4,
+          "symbol": "import_0024E608",
+          "original_identity": "titproc_uso:symbol_144:addend_0x0",
+          "original_site": 6124,
+          "payload_site": 6124,
+          "original_symbol_index": 144,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 236,
+          "kind": 4,
+          "symbol": "import_0024F2C8",
+          "original_identity": "titproc_uso:symbol_145:addend_0x0",
+          "original_site": 6140,
+          "payload_site": 6140,
+          "original_symbol_index": 145,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 276,
+          "kind": 4,
+          "symbol": "import_0024F34C",
+          "original_identity": "titproc_uso:symbol_146:addend_0x0",
+          "original_site": 6180,
+          "payload_site": 6180,
+          "original_symbol_index": 146,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "fe51c37d7948ddac4654f68830f3668746172ef649c47352c2fa95008a5219a8"
+    },
+    "native_data_proof": [
+      {
+        "alias": "import_00020098",
+        "hi": 12,
+        "lo": 16,
+        "native_addend": 396,
+        "original_addend": 396,
+        "base_identity": "titproc_uso:symbol_81:base_addend_0x0"
+      },
+      {
+        "alias": "import_00263E00",
+        "hi": 52,
+        "lo": 56,
+        "native_addend": 64,
+        "original_addend": 64,
+        "base_identity": "titproc_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "import_0024CAF8",
+        "hi": 108,
+        "lo": 112,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "titproc_uso:symbol_143:base_addend_0x0"
+      },
+      {
+        "alias": "import_00263D30",
+        "hi": 196,
+        "lo": 204,
+        "native_addend": 24,
+        "original_addend": 24,
+        "base_identity": "titproc_uso:symbol_4:base_addend_0x0"
+      },
+      {
+        "alias": "import_0024CAF8",
+        "hi": 208,
+        "lo": 212,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "titproc_uso:symbol_143:base_addend_0x0"
+      },
+      {
+        "alias": "import_00263D30",
+        "hi": 228,
+        "lo": 232,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "titproc_uso:symbol_4:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-titproc_uso_func_00001710.json",
+      "nm": "scripts/match-bindings-titproc_uso_func_00001710-nm.json"
+    },
+    "source_context": "src/match_imports/context_titproc_uso.h",
+    "source_context_sha256": "c5cc579ac4e60a9330e8699dd777778e1d3298ef2d969090ed11bdf5f7fc4fd4",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/titproc_uso/titproc_uso.c",
+    "original_local_episode_sha256": "10ac41506f6b0cf27c48f7d9d71e634988e25f54a2a569d487a8a6c797653a81",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

@@ -1,0 +1,490 @@
+{
+  "function_name": "h2hproc_uso_func_0000002C",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.280616+00:00",
+  "end_time": "2026-10-23T11:55:26.280627+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.280623+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "h2hproc_uso_func_0000002C",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 480, \"native_sha256\": \"bebb423ba3ded3c7601e2e73e480fbed5eb0faf64114b8bff467567ff36a0389\", \"code_gain\": 480}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 120,
+  "initial_m2c_source": null,
+  "final_source": "void h2hproc_uso_func_0000002C(int *a0, int a1) {\n    H2HLinkNode *s0;\n    int t1;\n    int flag = 0;\n    int resource = 0x01450000;\n    do {\n        switch (a1) {\n            case 0:\n                h2hproc_2C_call_0000020C(a0);\n                ((H2HStatePrefix *)&D_00000000)->field_40 = 1;\n                break;\n            case 1:\n                h2hproc_2C_import_9(a0, 2, 7, 1);\n                flag = 1;\n                ((H2HStatePrefix *)&D_00000000)->field_44 = 5;\n                ((H2HStatePrefix *)&D_00000000)->field_48 = 6;\n                break;\n            case 2:\n                h2hproc_2C_import_9(a0, 2, 7, 1);\n                flag = 1;\n                ((H2HStatePrefix *)&D_00000000)->field_44 = 5;\n                ((H2HStatePrefix *)&D_00000000)->field_48 = 6;\n                break;\n            case 3:\n                h2hproc_2C_import_9(a0, 2, 7, 2);\n                flag = 1;\n                ((H2HStatePrefix *)&D_00000000)->field_44 = 5;\n                ((H2HStatePrefix *)&D_00000000)->field_48 = 6;\n                break;\n            case 4:\n                h2hproc_2C_import_9(a0, 2, 7, 4);\n                flag = 1;\n                ((H2HStatePrefix *)&D_00000000)->field_44 = 5;\n                ((H2HStatePrefix *)&D_00000000)->field_48 = 6;\n                break;\n            case 5:\n                h2hproc_2C_import_10(&D_00000000, 4,\n                                 ((H2HStatePrefix *)&D_00000000)->field_64, 4);\n                flag = 1;\n                t1 = h2hproc_2C_import_11(a0, a0[0], 2);\n                t1 = (int)h2hproc_2C_call_00000620(0, resource, t1, a0[2]);\n                h2hproc_2C_import_13(a0, 0, t1);\n                break;\n            case 6:\n                h2hproc_2C_call_00000274(a0);\n                flag = 1;\n                s0 = (H2HLinkNode *)h2hproc_2C_import_15(0, 1, 0);\n                h2hproc_2C_import_16(((H2HStatePrefix *)&D_00000000)->field_10, s0);\n                if (s0->field_14 != 0) {\n                    s0->field_04 = 1;\n                }\n                s0->field_14 = &D_00000000;\n                break;\n        }\n        a1 = ((H2HStatePrefix *)&D_00000000)->field_40;\n    } while (flag == 0);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Exported seven-state dispatcher. It reloads global selector40 until a case completes, initializes a record, configures state words44/48, forwards constructor results, and registers a linked node. Its precise gameplay role remains uncertain.",
+      "observed_abi": "a0 is a record pointer with word00 and word/pointer08; a1 is the initial signed selector, range-checked unsigned for0..6. Global importSym8 provides fields10/40/44/48/64/68. The frame is40 bytes, saves s0-s8/ra and restores them. Cases consume callees in the original argument registers; returned v0 values are forwarded only at160/174/1A8. This dispatcher has no established deliberate return value; void C is ABI-compatible but the original declaration is unknown.",
+      "calls": [
+        {
+          "site": "0xA0",
+          "target": "h2hproc_uso_func_0000020C",
+          "c_alias": "h2hproc_2C_call_0000020C",
+          "observed_abi": "a0=record pointer; result discarded. Sym7 resolves to module Text+0x208."
+        },
+        {
+          "site": "0xC0",
+          "target": "unresolved importSym9",
+          "c_alias": "h2hproc_2C_import_9",
+          "observed_abi": "a0=record, a1=2, a2=7, a3=1; result discarded. Import sym9."
+        },
+        {
+          "site": "0xE4",
+          "target": "unresolved importSym9",
+          "c_alias": "h2hproc_2C_import_9",
+          "observed_abi": "a0=record, a1=2, a2=7, a3=1; result discarded. Import sym9."
+        },
+        {
+          "site": "0x108",
+          "target": "unresolved importSym9",
+          "c_alias": "h2hproc_2C_import_9",
+          "observed_abi": "a0=record, a1=2, a2=7, a3=2; result discarded. Import sym9."
+        },
+        {
+          "site": "0x12C",
+          "target": "unresolved importSym9",
+          "c_alias": "h2hproc_2C_import_9",
+          "observed_abi": "a0=record, a1=2, a2=7, a3=4; result discarded. Import sym9."
+        },
+        {
+          "site": "0x150",
+          "target": "unresolved importSym10",
+          "c_alias": "h2hproc_2C_import_10",
+          "observed_abi": "a0=global base, a1=4, a2=global word +0x64, a3=4; result discarded. Import sym10."
+        },
+        {
+          "site": "0x160",
+          "target": "unresolved importSym11",
+          "c_alias": "h2hproc_2C_import_11",
+          "observed_abi": "a0=record, a1=record word +0x00, a2=2; v0 feeds the next call's a2. Import sym11."
+        },
+        {
+          "site": "0x174",
+          "target": "h2hproc_uso_func_00000620",
+          "c_alias": "h2hproc_2C_call_00000620",
+          "observed_abi": "a0=0, a1=0x01450000, a2=previous v0, a3=record +0x08; returned pointer feeds the next call. Sym12 resolves to module Text+0x61C."
+        },
+        {
+          "site": "0x184",
+          "target": "unresolved importSym13",
+          "c_alias": "h2hproc_2C_import_13",
+          "observed_abi": "a0=record, a1=0, a2=constructor result; result discarded. Import sym13."
+        },
+        {
+          "site": "0x198",
+          "target": "h2hproc_uso_func_00000274",
+          "c_alias": "h2hproc_2C_call_00000274",
+          "observed_abi": "a0=record pointer; result discarded. Sym14 resolves to module Text+0x270."
+        },
+        {
+          "site": "0x1A8",
+          "target": "unresolved importSym15",
+          "c_alias": "h2hproc_2C_import_15",
+          "observed_abi": "a0=0, a1=1, a2=0; v0 returns a subsequently dereferenced node pointer. Import sym15."
+        },
+        {
+          "site": "0x1B8",
+          "target": "unresolved importSym16",
+          "c_alias": "h2hproc_2C_import_16",
+          "observed_abi": "a0=global base+0x10, a1=node pointer; result discarded. Import sym16."
+        }
+      ],
+      "evidence": [
+        "Historical exact C was recovered without redoing exhausted source variants. Fresh official original-flags normal/NM compilation matches all480 bytes, SHA256bebb423ba3ded3c7601e2e73e480fbed5eb0faf64114b8bff467567ff36a0389. INCLUDE_ASM removed only for this function.",
+        "Original ROM USO at5AB230: logical Text28..208 equals expected/source2C..20C, accounting for the four-byte marker. Sym22 exports logical28 and DataReloc24 references it. No direct local TextReloc caller or interior Text symbol was found; background recovery is explicitly authorized by the100%ROM scope.",
+        "All12 original JAL sites audited. Sym7/12/14 resolve to local functions20C/620/274; Sym9/10/11/13/15/16 and globalSym8 remain unresolved. Nine distinct zero-valued aliases retain the original identity partition. Equal aliases are not callee identity.",
+        "Original RoData contains exactly seven entries9C/AC/D0/F4/118/13C/190. All seven original RoDataReloc records use Text-baseSym1(type54), kind4, sites0..18. Both generated tables contain the same28 bytes and seven R_MIPS_32 .text relocations; remaining four bytes are zero alignment. The seven curated case labels are original entries+4. The computed jump is intraprocedural, not an unknown extra call.",
+        "The unit-specific linker binding follows the existing arcproc mechanism: .h2hproc_uso_2C_jtbl has VMA0, SHT_NOBITS,size20(hex), and no ROM payload. The shipped original table/pre asset is untouched. No compiler flags, instructions, relocations, expected objects or boundary definitions were forced or edited.",
+        "Shared H2HStatePrefix adopted in seven functions using original globalSym8 evidence. Existing H2HLinkNode is reused for the proven04/14 link prefix. Pinned IDO O32 layout checks establish state offsets10/40/44/48/64/68 and node offsets04/14. All12 sibling function-mode bodies remain byte-identical.",
+        "Private Ghidra on the immutable expected ELF cannot reconstruct the jump because that input lacks the original table. Its warning is preserved; the original ROM/RoDataReloc audit supplies the missing seven edges rather than treating the jump as an external call.",
+        "2000 bounded relocation-aware MIPS cases agree with the semantic model across all states, case0 retry, unsigned out-of-range selectors, all12 JAL sites, result forwarding and both node-owner branches. Callbacks mutate record/global/node fields and clobber caller-saved registers. This is not hardware execution or proof of unresolved import semantics.",
+        "Normal/NM objects, full byte-identical ROM and all six compressed blocks pass. All6605 available unassigned function-mode bodies equal current canonical, including5704 previously raw-exact comparisons. Existing6B048 NM symbol is missing in both baselines and not counted.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The dispatcher manages head-to-head initialization/state transitions.",
+        "Global10 is a list container and node14 identifies an owner/parent; exact class names remain unknown."
+      ],
+      "unknowns": [
+        "Six imported call identities, globalSym8 identity, precise gameplay role and runtime callers/game.uso reachability.",
+        "Original declared return types for discarded-result calls and dispatcher, complete object sizes and meanings of unobserved fields.",
+        "This episode is retrospective with fresh gates; no m2c output, model-generation steps, token totals or duration measurements were fabricated.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/h2hproc_uso_func_0000002C.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "h2hproc_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 160,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 192,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 228,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 264,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 300,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 336,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 352,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 372,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 388,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 408,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 424,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        },
+        {
+          "target": null,
+          "reason": "No recovered relocation identity",
+          "kind": "unresolved_jal_zero",
+          "site": 440,
+          "identity": null,
+          "evidence": "asm/nonmatchings/h2hproc_uso/h2hproc_uso/h2hproc_uso_func_0000002C.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/h2hproc_uso/h2hproc_uso.c",
+    "source_sha256": "8874e8953beceb5f375468a2afc202672a44f1a8d0519abf8b2c6f41a733d12f",
+    "implementation_path": "src/match_imports/h2hproc_uso_func_0000002C.c",
+    "implementation_sha256": "103ea824edeaa50c5cf833bbbe525810ae18f41f35f6a93798bfb3bc4af6f10e",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 116,
+          "kind": 4,
+          "symbol": "h2hproc_2C_call_0000020C",
+          "original_identity": "h2hproc_uso:symbol_7:addend_0x0",
+          "original_site": 160,
+          "payload_site": 156,
+          "original_symbol_index": 7,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 148,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_9",
+          "original_identity": "h2hproc_uso:symbol_9:addend_0x0",
+          "original_site": 192,
+          "payload_site": 188,
+          "original_symbol_index": 9,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 184,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_9",
+          "original_identity": "h2hproc_uso:symbol_9:addend_0x0",
+          "original_site": 228,
+          "payload_site": 224,
+          "original_symbol_index": 9,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 220,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_9",
+          "original_identity": "h2hproc_uso:symbol_9:addend_0x0",
+          "original_site": 264,
+          "payload_site": 260,
+          "original_symbol_index": 9,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 256,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_9",
+          "original_identity": "h2hproc_uso:symbol_9:addend_0x0",
+          "original_site": 300,
+          "payload_site": 296,
+          "original_symbol_index": 9,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 292,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_10",
+          "original_identity": "h2hproc_uso:symbol_10:addend_0x0",
+          "original_site": 336,
+          "payload_site": 332,
+          "original_symbol_index": 10,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 308,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_11",
+          "original_identity": "h2hproc_uso:symbol_11:addend_0x0",
+          "original_site": 352,
+          "payload_site": 348,
+          "original_symbol_index": 11,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 328,
+          "kind": 4,
+          "symbol": "h2hproc_2C_call_00000620",
+          "original_identity": "h2hproc_uso:symbol_12:addend_0x0",
+          "original_site": 372,
+          "payload_site": 368,
+          "original_symbol_index": 12,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 344,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_13",
+          "original_identity": "h2hproc_uso:symbol_13:addend_0x0",
+          "original_site": 388,
+          "payload_site": 384,
+          "original_symbol_index": 13,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 364,
+          "kind": 4,
+          "symbol": "h2hproc_2C_call_00000274",
+          "original_identity": "h2hproc_uso:symbol_14:addend_0x0",
+          "original_site": 408,
+          "payload_site": 404,
+          "original_symbol_index": 14,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 380,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_15",
+          "original_identity": "h2hproc_uso:symbol_15:addend_0x0",
+          "original_site": 424,
+          "payload_site": 420,
+          "original_symbol_index": 15,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 396,
+          "kind": 4,
+          "symbol": "h2hproc_2C_import_16",
+          "original_identity": "h2hproc_uso:symbol_16:addend_0x0",
+          "original_site": 440,
+          "payload_site": 436,
+          "original_symbol_index": 16,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "bebb423ba3ded3c7601e2e73e480fbed5eb0faf64114b8bff467567ff36a0389"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 36,
+        "lo": 60,
+        "native_addend": 16,
+        "original_addend": 16,
+        "base_identity": "h2hproc_uso:symbol_8:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 40,
+        "lo": 60,
+        "native_addend": 16,
+        "original_addend": 16,
+        "base_identity": "h2hproc_uso:symbol_8:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 40,
+        "lo": 64,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "h2hproc_uso:symbol_8:base_addend_0x0"
+      },
+      {
+        "alias": ".rodata",
+        "hi": 96,
+        "lo": 104,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "h2hproc_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-h2hproc_uso_func_0000002C.json",
+      "nm": "scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json"
+    },
+    "source_context": "src/match_imports/context_h2hproc_uso.h",
+    "source_context_sha256": "3085de5b37f8a8ed3c6bfab94bb5c80d30f486cacb02a28456c5c19115c68b3d",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/h2hproc_uso/h2hproc_uso.c",
+    "original_local_episode_sha256": "a85392963beb1a4d81f3415cda4857b1f0629345ba26918ef4c17a78d99f0752",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

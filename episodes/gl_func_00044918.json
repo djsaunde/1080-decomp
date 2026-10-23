@@ -1,0 +1,415 @@
+{
+  "function_name": "gl_func_00044918",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.998199+00:00",
+  "end_time": "2026-10-23T11:55:25.998210+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.998207+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00044918",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 468, \"native_sha256\": \"289bf707fb7ceb09249d78591208800deb271c8d61f2ce1740ae951a36b91ab8\", \"code_gain\": 468}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 117,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00044918(GlResetState *arg0) {\n    int *p;\n    int i;\n    int busy;\n    p = arg0->table_2AC;\n    arg0->field_5D0 = 0;\n    for (i = 0; i < 50; i++) { p[i] = 0; }\n    p[50] = 0;\n    arg0->field_210 = 0;\n    gl_44918_init_43EAC(&arg0->field_294);\n    gl_44918_set_46788(arg0, 0);\n    p = (int *)arg0->field_218;\n    do { do { do { do { busy = (((GlPendingWork *)p)->p1C != 0 || ((GlPendingWork *)p)->p04 != 0 || ((GlPendingWork *)p)->p0C != 0); } while (0); } while (0); } while (0); } while (0);\n    while (busy) {\n        do { do { do { do { do { do { do { do { gl_44918_yield_732C4(); } while (0); } while (0); } while (0); } while (0); } while (0); } while (0); } while (0); } while (0);\n        busy = (((GlPendingWork *)p)->p1C != 0 || ((GlPendingWork *)p)->p04 != 0 || ((GlPendingWork *)p)->p0C != 0);\n    }\n    p = (int *)&arg0->flags_138;\n    gl_44918_reset_4E00C(arg0);\n    arg0->field_24C = *(f32 *)(D_44918_flt + 0x1B38);\n    arg0->field_250 = 0;\n    arg0->field_230 = 0;\n    arg0->flags_138.a = 0;\n    arg0->flags_138.b = 0;\n    ((Pair2 *)p)->b &= ~0x10000;\n    D_44918_fzero = 0.0f;\n    ((Pair2 *)p)->b &= ~2;\n    ((Pair2 *)p)->b &= ~0x1000;\n    gl_44918_reset_56814(arg0->field_214);\n    ((Pair2 *)p)->b |= 1;\n    ((Pair2 *)p)->b |= 0x4000;\n    ((Pair2 *)p)->b |= 0x8000;\n    ((Pair2 *)p)->b |= 0x20000;\n    ((Pair2 *)p)->b |= 0x80;\n    gl_44918_notify_4DD4C((char *)&D_00000000 + 0x1FE70);\n    gl_44918_range_3523C(&D_44918_arg0c, arg0->field_240->field_FC,\n                     D_44918_ma * D_44918_mb * 6);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Clears a 51-word subsystem table, waits for three pending-work fields to clear, initializes state, rebuilds flags and initializes an allocator-like range. The pool interpretation is supported by the downstream sentinel initializer; the precise gameplay role remains uncertain.",
+      "observed_abi": "a0 supplies an object pointer with accesses through offset 0x5D0. Frame size is 0x38, saving ra and s0. No deliberate return value is established; C uses void. Unused results do not independently establish the original callees' return declarations.",
+      "calls": [
+        {
+          "site": "0x44968",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00043EAC",
+          "c_alias": "gl_44918_init_43EAC",
+          "observed_abi": "a0 = self+0x294; result unused. Initializes four words and two integer parameters."
+        },
+        {
+          "site": "0x44974",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00046788",
+          "c_alias": "gl_44918_set_46788",
+          "observed_abi": "a0 = self, a1 = 0; callee writes self+0x28C."
+        },
+        {
+          "site": "0x449B0",
+          "target": "src/game_libs/game_libs_post2b_c:gl_func_000732C4",
+          "c_alias": "gl_44918_yield_732C4",
+          "observed_abi": "No explicit arguments or consumed result; scheduler yield/dispatch."
+        },
+        {
+          "site": "0x449EC",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004E00C",
+          "c_alias": "gl_44918_reset_4E00C",
+          "observed_abi": "a0 = self; result unused. Initializes the leading object region."
+        },
+        {
+          "site": "0x44A54",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00056814",
+          "c_alias": "gl_44918_reset_56814",
+          "observed_abi": "a0 = pointer loaded from self+0x214; result unused."
+        },
+        {
+          "site": "0x44A94",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD4C",
+          "c_alias": "gl_44918_notify_4DD4C",
+          "observed_abi": "a0 = D_00653C+0x1FE70; result unused. Callee is an empty stub."
+        },
+        {
+          "site": "0x44AD0",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003523C",
+          "c_alias": "gl_44918_range_3523C",
+          "observed_abi": "a0 = import_0005C6E0 address; a1 = self->field_240->field_FC; a2 = unsigned D_01F978*D_01F97C*6. Wrapper forwards begin/end to gl_func_0005AFD4."
+        }
+      ],
+      "evidence": [
+        "Both compiled C versions equal the immutable expected bytes: SHA256 289bf707fb7ceb09249d78591208800deb271c8d61f2ce1740ae951a36b91ab8, 468 bytes, zero differences. Objdiff reports 100%.",
+        "Pointer reuse across the table, pending-work and flag phases corrected the flag spill to sp+0x24. Leaving the loop's final condition unwrapped while redistributing scope-only blocks corrected the pending pointer to v1.",
+        "Original assembly contains one complete function. All seven call identities come from original per-site USO relocations; hexadecimal sites are bootup Text offsets minus 0x1466C. Distinct call aliases resolve to zero.",
+        "Inspected callers: game_libs_func_00041820 and gl_func_000445AC. Layout family: gl_func_000445AC, gl_func_00044918, gl_func_00044AEC, gl_func_00044CE8, gl_func_00044D94, game_libs_func_00044DD4 and game_libs_func_00046788.",
+        "Recovered GlResetState, GlPendingWork and GlRangeSource retain offset-based fields. The +0x294 region reuses the existing game_libs_func_00043EF0_Four definition.",
+        "Observed fields: flags 0x138/0x13C; word 0x210; pointers 0x214/0x218/0x240; word 0x230; float 0x24C; word 0x250; subobject 0x294; parameters 0x2A4/0x2A8; table 0x2AC..0x374; counter 0x5D0. Pending fields: 0x1C/0x04/0x0C. Range field: 0xFC.",
+        "Data identities preserved: RO_000054+0x1B38, import_0005C7CC, D_01F978, D_01F97C and import_0005C6E0. Existing aliases retain immutable placeholder addresses.",
+        "make -j2 objects non_matching_objects and verify/verify-blocks completed successfully. ROM is byte-identical, MD5 fa27089c425dbab99f19245c5c997613. All six block checks passed; zero exact-function regressions; code denominator remains 762344.",
+        "Pinned references and git diff --check passed. Only permitted source and alias files are changed. Attempt-four experiments and final disassemblies remain under build/orchestration-scratch/44918-attempt4/.",
+        "Coordinator type consolidation: Retrospective shared-type consolidation of gl_func_00044918: existing C still matches all 468 expected bytes in normal and NON_MATCHING builds. ROM and all six compressed blocks were verified. No new generation or matched-code gain is attributed to this sibling update.",
+        "Current review shares the Sym154+218 readiness pointee through the proven fields04/0C/1C/20/24/3C/40. The distinct22C pointee retains its18-byte view and separate union member. Parent294 record now contains its complete observed18-byte initializer extent. Unknown meanings and return contracts remain unresolved.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The table and counter manage registered subsystem records.",
+        "The final range operation initializes a memory pool, based on the downstream span, sentinel links and magic values."
+      ],
+      "unknowns": [
+        "Precise gameplay role, flag meanings and original declaration details remain unknown despite exact instruction matching.",
+        "No unresolved callsites occur in the supplied graph; broader indirect/import coverage remains limited.",
+        "Ghidra list_project_binaries was rejected because the MCP call required approval and this session's approval policy is never.",
+        "Compressed-block checks accept established relocation differences; they do not establish literal equality of every rebuilt block byte.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00044918.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:game_libs_func_00041820",
+        "src/game_libs/game_libs_post0b:gl_func_000445AC"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00043EAC",
+          "kind": "relocation",
+          "site": 364500,
+          "identity": "func_058518",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 427,
+          "cached_first_reference": "func_058518",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00046788",
+          "kind": "relocation",
+          "site": 364512,
+          "identity": "func_05ADF4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 1985,
+          "cached_first_reference": "func_05ADF4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post2b_c:gl_func_000732C4",
+          "kind": "relocation",
+          "site": 364572,
+          "identity": "func_087930",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 1535,
+          "cached_first_reference": "func_087930",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004E00C",
+          "kind": "relocation",
+          "site": 364632,
+          "identity": "func_062678",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 1986,
+          "cached_first_reference": "func_062678",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00056814",
+          "kind": "relocation",
+          "site": 364736,
+          "identity": "func_06AE80",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 1962,
+          "cached_first_reference": "func_06AE80",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD4C",
+          "kind": "relocation",
+          "site": 364800,
+          "identity": "func_0623B8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 1987,
+          "cached_first_reference": "func_0623B8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003523C",
+          "kind": "relocation",
+          "site": 364860,
+          "identity": "func_0498A8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00044918.s",
+          "sym_index": 1608,
+          "cached_first_reference": "func_0498A8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00044918.c",
+    "implementation_sha256": "47106b787634e8e3bee2a1e152ef874667023a071f88bc2156dfdb1f175f31ce",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 80,
+          "kind": 4,
+          "symbol": "gl_44918_init_43EAC",
+          "original_identity": "bootup_uso:symbol_427:addend_0x0",
+          "original_site": 364500,
+          "payload_site": 364500,
+          "original_symbol_index": 427,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 92,
+          "kind": 4,
+          "symbol": "gl_44918_set_46788",
+          "original_identity": "bootup_uso:symbol_1985:addend_0x0",
+          "original_site": 364512,
+          "payload_site": 364512,
+          "original_symbol_index": 1985,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 152,
+          "kind": 4,
+          "symbol": "gl_44918_yield_732C4",
+          "original_identity": "bootup_uso:symbol_1535:addend_0x0",
+          "original_site": 364572,
+          "payload_site": 364572,
+          "original_symbol_index": 1535,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 212,
+          "kind": 4,
+          "symbol": "gl_44918_reset_4E00C",
+          "original_identity": "bootup_uso:symbol_1986:addend_0x0",
+          "original_site": 364632,
+          "payload_site": 364632,
+          "original_symbol_index": 1986,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 316,
+          "kind": 4,
+          "symbol": "gl_44918_reset_56814",
+          "original_identity": "bootup_uso:symbol_1962:addend_0x0",
+          "original_site": 364736,
+          "payload_site": 364736,
+          "original_symbol_index": 1962,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 380,
+          "kind": 4,
+          "symbol": "gl_44918_notify_4DD4C",
+          "original_identity": "bootup_uso:symbol_1987:addend_0x0",
+          "original_site": 364800,
+          "payload_site": 364800,
+          "original_symbol_index": 1987,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 440,
+          "kind": 4,
+          "symbol": "gl_44918_range_3523C",
+          "original_identity": "bootup_uso:symbol_1608:addend_0x0",
+          "original_site": 364860,
+          "payload_site": 364860,
+          "original_symbol_index": 1608,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "289bf707fb7ceb09249d78591208800deb271c8d61f2ce1740ae951a36b91ab8"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_44918_flt",
+        "hi": 220,
+        "lo": 224,
+        "native_addend": 6968,
+        "original_addend": 6968,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "D_44918_fzero",
+        "hi": 276,
+        "lo": 280,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1865:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 332,
+        "lo": 340,
+        "native_addend": 130672,
+        "original_addend": 130672,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "D_44918_mb",
+        "hi": 392,
+        "lo": 396,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1854:base_addend_0x0"
+      },
+      {
+        "alias": "D_44918_ma",
+        "hi": 388,
+        "lo": 400,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_1853:base_addend_0x0"
+      },
+      {
+        "alias": "D_44918_arg0c",
+        "hi": 408,
+        "lo": 416,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00044918.json",
+      "nm": "scripts/match-bindings-gl_func_00044918-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "14b556ae3eefa94fe5cd13e6a87cb91df90a18ead65da5761bdb04e461ee1cd0",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

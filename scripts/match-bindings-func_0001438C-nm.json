@@ -1,0 +1,19 @@
+{
+  "function": "func_0001438C",
+  "raw_sha256": "54d073a9cde2c9c9fd1b40d7ec8e87f98e297c1af9c74efd83fdff8e2c849c6c",
+  "renames": {
+    "bootup_1438C_alloc": "snw_port_func_0001438C_bootup_1438C_alloc",
+    "func_0000CACC": "snw_port_func_0001438C_func_0000CACC",
+    "func_0000CAE8": "snw_port_func_0001438C_func_0000CAE8",
+    "bootup_1438C_init": "snw_port_func_0001438C_bootup_1438C_init",
+    "D_0000C83C": "snw_port_func_0001438C_D_0000C83C"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_func_0001438C_bootup_1438C_alloc": 0,
+    "snw_port_func_0001438C_func_0000CACC": 51916,
+    "snw_port_func_0001438C_func_0000CAE8": 51944,
+    "snw_port_func_0001438C_bootup_1438C_init": 0,
+    "snw_port_func_0001438C_D_0000C83C": 51260
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

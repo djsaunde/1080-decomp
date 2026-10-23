@@ -1,0 +1,264 @@
+{
+  "function_name": "gl_func_0003CBB4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.918760+00:00",
+  "end_time": "2026-10-23T11:55:25.918772+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.918768+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_0003CBB4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 992, \"native_sha256\": \"1a457510cbcd81860e760be0ed14062a74b29b61698ed2824c4990d929899f78\", \"code_gain\": 992}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 248,
+  "initial_m2c_source": null,
+  "final_source": "s32 gl_func_0003CBB4(GLSpatialSphere *arg0, GLSpatialSphere *arg1, GLSpatialContact *arg2) {\n    s32 ret;\n    f32 *av;\n    f32 *bv;\n    Vec3 dv;\n    s32 type;\n    f32 rel[3];\n    f32 apos[3];\n    f32 start[3];\n    f32 bpos[3];\n    f32 out[3];\n    f32 tmp[3];\n    volatile int pad68[1];\n    f32 dvel[3];\n    f32 fzero;\n    f32 tz;\n    f32 ty;\n    f32 tx;\n    f32 sum[3];\n    ret = 0;\n    type = arg1->base.field_08;\n    if (type == 1) {\n        fzero = 0.0f;\n        if (((dv.z = arg0->base.position_18.z - arg1->base.position_18.z) < fzero ? -(dv.z = arg0->base.position_18.z - arg1->base.position_18.z) : (dv.z = arg0->base.position_18.z - arg1->base.position_18.z)) < 1000.0f) {\n            if (((dv.x = arg0->base.position_18.x - arg1->base.position_18.x) < fzero ? -(dv.x = arg0->base.position_18.x - arg1->base.position_18.x) : (dv.x = arg0->base.position_18.x - arg1->base.position_18.x)) < 1000.0f) {\n                av = (f32 *)&arg0->base.vector_24;\n                bv = (f32 *)&arg1->base.vector_24;\n                if (((dv.y = arg0->base.position_18.y - arg1->base.position_18.y) < fzero ? -(dv.y = arg0->base.position_18.y - arg1->base.position_18.y) : (dv.y = arg0->base.position_18.y - arg1->base.position_18.y)) <\n                    arg0->extent_38 + arg1->extent_38) {\n                    tx = av[0] - bv[0];\n                    ty = av[1] - bv[1];\n                    tz = av[2] - bv[2];\n                    dvel[0] = tx;\n                    dvel[1] = ty;\n                    dvel[2] = tz;\n                    if (1) {\n                        *(Tri3i *)tmp = *(Tri3i *)dvel;\n                        *(Tri3i *)rel = *(Tri3i *)tmp;\n                    }\n                    *(Tri3i *)apos = *(Tri3i *)&arg0->base.position_18;\n                    if (1) { tx = rel[0] + apos[0], ty = rel[1] + apos[1], tz = rel[2] + apos[2]; sum[2] = tz; sum[1] = ty; sum[0] = tx; }\n                    *(Tri3i *)tmp = *(Tri3i *)sum;\n                    *(Tri3i *)start = *(Tri3i *)tmp;\n                    *(Tri3i *)bpos = *(Tri3i *)&arg1->base.position_18;\n                    start[1] = fzero;\n                    apos[1] = fzero;\n                    bpos[1] = fzero;\n                    if (gl_3cbb4_segment_3a58c(apos, start, bpos,\n                            arg0->radius_34 + arg1->radius_34, out) != 0) {\n                        gl_3cbb4_magnitude_5bbcc(rel[2] * rel[2] + (rel[1] * rel[1] + rel[0] * rel[0]));\n                        arg2->field_0C = -(rel[2] * out[2] + (rel[1] * out[1] + out[0] * rel[0]));\n                        if (arg2->field_0C > fzero) {\n                            gl_3cbb4_normalize_5c9bc((f32 *)&dv);\n                            ret = 1;\n                            *(Tri3i *)tmp = *(Tri3i *)out;\n                            arg2->normal_00.x = tmp[0];\n                            arg2->normal_00.y = tmp[1];\n                            arg2->normal_00.z = tmp[2];\n                        }\n                    } else if (arg1->base.flags_10 & 1) {\n                        arg2->normal_00.x = fzero;\n                        arg2->normal_00.y = fzero;\n                        arg2->normal_00.z = fzero;\n                        arg2->field_0C = fzero;\n                        ret = 1;\n                    }\n                }\n            }\n        }\n    } else {\n        ret = arg1->base.dispatch_30->query_0C(\n            arg1->base.dispatch_30->adjust_08 + (char *)arg1, arg0, arg2);\n    }\n    return ret;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Tests a type-1 spatial object's contact with another object using position bounds and an XZ sphere/segment intersection. Writes a normal and negative relative-vector projection, returning 0/1 on the built-in path. Other types delegate through a runtime callback. Velocity and collision terminology remain geometric interpretations.",
+      "observed_abi": "O32: a0 and a1 are object pointers, a2 is a writable contact prefix. Returns a 32-bit status in v0; delegated results are not necessarily boolean. Frame size is 0xD0. Recovered GLSpatialBase, GLSpatialSphere, GLSpatialDispatch and GLSpatialContact definitions retain unknown fields by offset.",
+      "calls": [
+        {
+          "site": "0x3CE5C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003A58C",
+          "c_alias": "gl_3cbb4_segment_3a58c",
+          "observed_abi": "a0/a1/a2 point to three position vectors; a3 carries the summed f32 radius bits; the fifth argument at sp+0x10 points to the output vector. Tests v0 for nonzero."
+        },
+        {
+          "site": "0x3CE90",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "c_alias": "gl_3cbb4_magnitude_5bbcc",
+          "observed_abi": "f12 receives the relative vector's squared length. Result is ignored; this caller does not establish a void return."
+        },
+        {
+          "site": "0x3CEE8",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "c_alias": "gl_3cbb4_normalize_5c9bc",
+          "observed_abi": "a0 points to the position-difference vector at sp+0xB8. Inspected callee normalizes in place and returns an integer status; caller ignores it."
+        },
+        {
+          "site": "0x3CF6C",
+          "target": "unresolved",
+          "c_alias": "arg1->base.dispatch_30->query_0C",
+          "observed_abi": "Loads callback from dispatch+0xC. a0 is arg1 plus the signed halfword adjustment at dispatch+0x8; a1=arg0, a2=arg2. Propagates v0."
+        }
+      ],
+      "evidence": [
+        "Original assembly establishes one complete 0x3E0-byte function with a single return epilogue.",
+        "Normal and NON_MATCHING C both match immutable expected bytes: SHA256 1a457510cbcd81860e760be0ed14062a74b29b61698ed2824c4990d929899f78.",
+        "All normal unit function bytes remained unchanged; all 187 previously exact NON_MATCHING functions in the unit remained exact.",
+        "make -j2 verify verify-blocks passed: ROM byte-identical to baserom; all six compressed blocks passed length and relocation-field checks.",
+        "Bootup Text relocations 0x514C8/0x514FC/0x51554 identify func_04EBF8/func_070238/func_071028 respectively. Distinct zero-valued aliases retain those identities with inline provenance.",
+        "Inspected layout family: gl_func_0003CAA0, game_libs_func_0003CB00, gl_func_0003CB6C, gl_func_0003CBB4 and gl_func_0003C86C inner nodes. Evidence supports the 0x34 base, words at +0x8/+0x10, masks at +0x14/+0x16, vectors at +0x18/+0x24 and dispatch pointer at +0x30. Sphere extension uses floats at +0x34/+0x38/+0x3C.",
+        "Inspected resolved callees gl_func_0003A58C, gl_func_0005BBCC and gl_func_0005C9BC. Assigned function has no recovered callers or verified game.uso DFS rank.",
+        "Contact writes occur at +0/+4/+8/+0xC. Basic-block boundaries, a one-line comma-expression vector sum and the dot-product operand-rank spelling reproduce target scheduling.",
+        "Name-aware objdiff reports 99.939514 solely because three distinct call aliases differ from collapsed func_00000000 names; instruction bytes are exact. Strict source/alias gates and git diff --check passed.",
+        "Experiments and build evidence remain under build/orchestration-scratch/3cbb4/. Only the assigned source and undefined_syms_auto.txt changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The +0x24 vector represents motion or velocity, +0x34 is a radius, and +0x38 is a vertical extent.",
+        "gl_func_0005BBCC is a floating-point magnitude/square-root wrapper; its f32 return declaration is consistent with related callers, although this caller discards the result."
+      ],
+      "unknowns": [
+        "Runtime identity of the indirect callback at 0x3CF6C.",
+        "Original class names, complete contact size, and meanings of remaining offset-named fields.",
+        "Import identity func_082880 reached by inspected numeric helpers does not map uniquely to a current function.",
+        "Missing callers and unresolved indirect/import edges limit coverage; zero-valued aliases alone do not identify callees.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_0003CBB4.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 198,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_0003C86C"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0003A58C",
+          "kind": "relocation",
+          "site": 333000,
+          "identity": "func_04EBF8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003CBB4.s",
+          "sym_index": 1714,
+          "cached_first_reference": "func_04EBF8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005BBCC",
+          "kind": "relocation",
+          "site": 333052,
+          "identity": "func_070238",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003CBB4.s",
+          "sym_index": 111,
+          "cached_first_reference": "func_070238",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0005C9BC",
+          "kind": "relocation",
+          "site": 333140,
+          "identity": "func_071028",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003CBB4.s",
+          "sym_index": 568,
+          "cached_first_reference": "func_071028",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 333272,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_0003CBB4.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_0003CBB4.c",
+    "implementation_sha256": "cf1319295e65002641cc03b50ea76cd0ee1a83838830720b88daa5ba1fe0819b",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 680,
+          "kind": 4,
+          "symbol": "gl_3cbb4_segment_3a58c",
+          "original_identity": "bootup_uso:symbol_1714:addend_0x0",
+          "original_site": 333000,
+          "payload_site": 333000,
+          "original_symbol_index": 1714,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 732,
+          "kind": 4,
+          "symbol": "gl_3cbb4_magnitude_5bbcc",
+          "original_identity": "bootup_uso:symbol_111:addend_0x0",
+          "original_site": 333052,
+          "payload_site": 333052,
+          "original_symbol_index": 111,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 820,
+          "kind": 4,
+          "symbol": "gl_3cbb4_normalize_5c9bc",
+          "original_identity": "bootup_uso:symbol_568:addend_0x0",
+          "original_site": 333140,
+          "payload_site": 333140,
+          "original_symbol_index": 568,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        952
+      ],
+      "native_sha256": "1a457510cbcd81860e760be0ed14062a74b29b61698ed2824c4990d929899f78"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_0003CBB4.json",
+      "nm": "scripts/match-bindings-gl_func_0003CBB4-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "30cb20654b3194c11fff27b2d2a7d9eff84e97ecdcf718ed8fa8c381df69ab0c",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

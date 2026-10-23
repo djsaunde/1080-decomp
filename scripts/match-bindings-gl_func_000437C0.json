@@ -1,0 +1,39 @@
+{
+  "function": "gl_func_000437C0",
+  "raw_sha256": "1652f57df3bf70f7f1133da46cdafb5a52a84923f59825fa78927717cc5e8b8e",
+  "renames": {
+    "D_00000000": "snw_port_gl_func_000437C0_D_00000000",
+    "gl_437C0_link_43BEC": "snw_port_gl_func_000437C0_gl_437C0_link_43BEC",
+    "gl_437C0_reset_56814": "snw_port_gl_func_000437C0_gl_437C0_reset_56814",
+    "gl_437C0_alloc_410E4": "snw_port_gl_func_000437C0_gl_437C0_alloc_410E4",
+    "gl_437C0_ctor_table": "snw_port_gl_func_000437C0_gl_437C0_ctor_table",
+    "gl_437C0_init_517E4": "snw_port_gl_func_000437C0_gl_437C0_init_517E4",
+    "gl_437C0_value_table": "snw_port_gl_func_000437C0_gl_437C0_value_table",
+    "gl_437C0_light_45CB0": "snw_port_gl_func_000437C0_gl_437C0_light_45CB0",
+    "gl_437C0_finish_57700": "snw_port_gl_func_000437C0_gl_437C0_finish_57700",
+    "gl_437C0_update_454C4": "snw_port_gl_func_000437C0_gl_437C0_update_454C4",
+    "gl_437C0_enable_430D8": "snw_port_gl_func_000437C0_gl_437C0_enable_430D8",
+    "gl_437C0_lightA": "snw_port_gl_func_000437C0_gl_437C0_lightA",
+    "gl_437C0_physical_6C384": "snw_port_gl_func_000437C0_gl_437C0_physical_6C384",
+    "gl_437C0_lightB": "snw_port_gl_func_000437C0_gl_437C0_lightB",
+    "gl_437C0_lightC": "snw_port_gl_func_000437C0_gl_437C0_lightC"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_000437C0_D_00000000": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_link_43BEC": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_reset_56814": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_alloc_410E4": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_ctor_table": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_init_517E4": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_value_table": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_light_45CB0": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_finish_57700": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_update_454C4": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_enable_430D8": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_lightA": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_physical_6C384": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_lightB": 0,
+    "snw_port_gl_func_000437C0_gl_437C0_lightC": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

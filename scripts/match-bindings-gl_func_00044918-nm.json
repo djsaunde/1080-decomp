@@ -1,0 +1,35 @@
+{
+  "function": "gl_func_00044918",
+  "raw_sha256": "289bf707fb7ceb09249d78591208800deb271c8d61f2ce1740ae951a36b91ab8",
+  "renames": {
+    "gl_44918_init_43EAC": "snw_port_gl_func_00044918_gl_44918_init_43EAC",
+    "gl_44918_set_46788": "snw_port_gl_func_00044918_gl_44918_set_46788",
+    "gl_44918_yield_732C4": "snw_port_gl_func_00044918_gl_44918_yield_732C4",
+    "gl_44918_reset_4E00C": "snw_port_gl_func_00044918_gl_44918_reset_4E00C",
+    "D_44918_flt": "snw_port_gl_func_00044918_D_44918_flt",
+    "D_44918_fzero": "snw_port_gl_func_00044918_D_44918_fzero",
+    "gl_44918_reset_56814": "snw_port_gl_func_00044918_gl_44918_reset_56814",
+    "D_00000000": "snw_port_gl_func_00044918_D_00000000",
+    "gl_44918_notify_4DD4C": "snw_port_gl_func_00044918_gl_44918_notify_4DD4C",
+    "D_44918_mb": "snw_port_gl_func_00044918_D_44918_mb",
+    "D_44918_ma": "snw_port_gl_func_00044918_D_44918_ma",
+    "D_44918_arg0c": "snw_port_gl_func_00044918_D_44918_arg0c",
+    "gl_44918_range_3523C": "snw_port_gl_func_00044918_gl_44918_range_3523C"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_00044918_gl_44918_init_43EAC": 0,
+    "snw_port_gl_func_00044918_gl_44918_set_46788": 0,
+    "snw_port_gl_func_00044918_gl_44918_yield_732C4": 0,
+    "snw_port_gl_func_00044918_gl_44918_reset_4E00C": 0,
+    "snw_port_gl_func_00044918_D_44918_flt": 0,
+    "snw_port_gl_func_00044918_D_44918_fzero": 0,
+    "snw_port_gl_func_00044918_gl_44918_reset_56814": 0,
+    "snw_port_gl_func_00044918_D_00000000": 0,
+    "snw_port_gl_func_00044918_gl_44918_notify_4DD4C": 0,
+    "snw_port_gl_func_00044918_D_44918_mb": 0,
+    "snw_port_gl_func_00044918_D_44918_ma": 0,
+    "snw_port_gl_func_00044918_D_44918_arg0c": 0,
+    "snw_port_gl_func_00044918_gl_44918_range_3523C": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

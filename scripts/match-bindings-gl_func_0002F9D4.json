@@ -1,0 +1,15 @@
+{
+  "function": "gl_func_0002F9D4",
+  "raw_sha256": "0b1704e4a8721a795f58303bb5323604df911f5cd30b57562ddd20454823653f",
+  "renames": {
+    "gl_2F9D4_byte": "snw_port_gl_func_0002F9D4_gl_2F9D4_byte",
+    "gl_2F9D4_float": "snw_port_gl_func_0002F9D4_gl_2F9D4_float",
+    "gl_2F9D4_word": "snw_port_gl_func_0002F9D4_gl_2F9D4_word"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_0002F9D4_gl_2F9D4_byte": 0,
+    "snw_port_gl_func_0002F9D4_gl_2F9D4_float": 0,
+    "snw_port_gl_func_0002F9D4_gl_2F9D4_word": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

@@ -1,0 +1,152 @@
+{
+  "function_name": "timproc_uso_b5_func_000038B0",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.372089+00:00",
+  "end_time": "2026-10-23T11:55:26.372101+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.372097+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "timproc_uso_b5_func_000038B0",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 188, \"native_sha256\": \"c84e4ef988c5a94c66683279d05ca02e07d12562418091cbefdfd68497873326\", \"code_gain\": 188}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 47,
+  "initial_m2c_source": null,
+  "final_source": "void timproc_uso_b5_func_000038B0(TimprocCoordinateOwner *owner, char *destination,\n                                Vec3 *source, f32 blend_arg, f32 height) {\n    f32 x, y, z;\n    f32 result_x, result_y, result_z;\n    f32 *out = (f32 *)(destination + 0x30);\n    x = owner->f_164 * owner->f_2A0 + owner->p_29C->f_DC;\n    y = owner->f_168 * owner->f_2A0 + owner->p_29C->f_E0 +\n        height * (1.0f - owner->f_2A0);\n    z = owner->f_16C * owner->f_2A0 + owner->p_29C->f_E4;\n    result_x = source->x + (x - source->x) * blend_arg;\n    result_y = source->y + (y - source->y) * blend_arg;\n    result_z = source->z + (z - source->z) * blend_arg;\n    out[12] = result_x;\n    out[13] = result_y;\n    out[14] = result_z;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Interpolates three coordinates toward owner coordinates * scale + pointed-to base coordinates, adding height * (1-scale) to target Y. Its spatial or camera role remains uncertain.",
+      "observed_abi": "O32: owner/destination/source pointers in a0/a1/a2, blend float bits in a3, height float at incoming sp+0x10. Uses a 32-byte frame and writes destination+0x60/+0x64/+0x68. C declares void; the original declared return type remains unknown.",
+      "calls": [],
+      "evidence": [
+        "Immutable expected object establishes a 47-instruction leaf at module Text 0x38B0..0x396B, with no outgoing calls, imports or relocation sites.",
+        "Caller timproc_uso_b5_func_00005FC0 has a recovered jal relocation at module site 0x6300 targeting timproc_uso_b5_func_000038B0.",
+        "Inspected layout family: 00003890, 000038B0, 0000396C, 00003A28 and 00003F5C. Retained shared TimprocCoordinateOwner/TimprocCoordinateBase definitions and existing Vec3.",
+        "Observed owner triples at 0x164/168/16C, 0x184/188/18C and 0x23C/240/244; pointer at 0x29C; float at 0x2A0; word at 0x2B4; pointed-to floats at 0xDC/E0/E4.",
+        "Removing both cached base and blend locals produces the original frame and spill offsets while retaining every arithmetic instruction and register assignment.",
+        "Both builds report objdiff 100%; function SHA256 equals expected c84e4ef988c5a94c66683279d05ca02e07d12562418091cbefdfd68497873326.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613. All six compressed blocks and git diff --check pass. Only the allowed source file is modified.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The coordinate triples represent spatial positions and the factors control interpolation."
+      ],
+      "unknowns": [
+        "Original field meanings, factor ranges, temporary declarations and declared return type.",
+        "Reachability from a verified game.uso callback is not established by the supplied caller edge.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/timproc_uso_b5_func_000038B0.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "timproc_uso_b5",
+      "dfs_rank": null,
+      "callers": [
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00005FC0"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "source_sha256": "2a5c307ee53f83f7d684757b62553c2e8bb2ab307891f048deacfc3fcd7fb00d",
+    "implementation_path": "src/match_imports/timproc_uso_b5_func_000038B0.c",
+    "implementation_sha256": "98ce4443545d91729fa617586b4c243a6b2d81fe9a7857a65b24efac409c4ae1",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "c84e4ef988c5a94c66683279d05ca02e07d12562418091cbefdfd68497873326"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-timproc_uso_b5_func_000038B0.json",
+      "nm": "scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json"
+    },
+    "source_context": "src/match_imports/context_timproc_uso_b5.h",
+    "source_context_sha256": "ccba90359c7e71d971348f72d547e63e2ebeb0fb7163484fe33de2a0bc6528f1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "original_local_episode_sha256": "ce586bdbdc361302ca9254a26333bd700b3efa951d04aebcad070cb391fcf62f",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

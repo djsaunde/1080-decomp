@@ -1,0 +1,293 @@
+{
+  "function_name": "timproc_uso_b5_func_000069E8",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.392831+00:00",
+  "end_time": "2026-10-23T11:55:26.392844+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.392840+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "timproc_uso_b5_func_000069E8",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 536, \"native_sha256\": \"172bb98512116dcf2e885a297c63a30503f1dc462cfd4f167a133467b4aa989a\", \"code_gain\": 536}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 134,
+  "initial_m2c_source": null,
+  "final_source": "int timproc_uso_b5_func_000069E8(char *scr, int a1) {\n    B5TimingPanels *C;\n    int a4;\n    B5TimingScreen *screen = (B5TimingScreen *)scr;\n    import_000A53B4(scr, a1);\n    timproc_uso_b5_func_00F954(*(char **)(scr + 0x418), -1, 0);\n    *(int *)(timproc_uso_b5_69E8_global + 0x40) = *(int *)(timproc_uso_b5_69E8_global + 0x44);\n    *screen->field_4DC[1] = screen->field_40C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B0;\n    a4 = screen->field_4A4;\n    if (a4 != 0 && a4 < 4) {\n        timproc_uso_b5_69E8_print(&timproc_uso_b5_D_807FEB74 + 0x1304, a4);\n        *screen->field_4DC[1] = ((int *)(&timproc_uso_b5_D_807FE794 + 0xF24))[screen->field_4A4] - 1;\n    }\n    if (*(int *)&import_80000310 == 0x17D7) {\n        *screen->field_4DC[0] = screen->field_40C->field_40[3]->field_3C[screen->field_3D0[3]]->field_2B0;\n    } else {\n        *screen->field_4DC[0] = 1;\n    }\n    *screen->field_4DC[3] = screen->field_40C->field_40[1]->field_3C[screen->field_3D0[1]]->field_2B0;\n    if (screen->field_4A8 == 4) {\n        *screen->field_4DC[3] = 8;\n    }\n    C = screen->field_40C;\n    *screen->field_4DC[2] = C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B4 | C->field_40[1]->field_3C[screen->field_3D0[1]]->field_2B4;\n    if (a1 != 0) {\n        *screen->field_4DC[4] = screen->field_40C->field_40[2]->field_3C[screen->field_3D0[2]]->field_2B0;\n    }\n    if (*(int *)(timproc_uso_b5_69E8_global + 0x34) != 2) {\n        ((int *)(&import_8002013C + 0xA4))[screen->field_3D0[0]] = *screen->field_4DC[3];\n    } else {\n        ((int *)(&import_80020150 + 0xB8))[screen->field_3B8] =\n            (screen->field_40C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B4 & 0x20000) != 0;\n    }\n    return 1;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Snapshots selected timing-screen values and combined flags into five bound output slots, then updates mode-dependent global arrays. Exact UI meanings remain uncertain.",
+      "observed_abi": "a0 is a screen pointer retained in s0; a1 is a word flag homed at entry sp+0x24. Nonzero a1 enables output at screen+0x4EC. Frame size is 0x20 bytes; v0 returns 1. The existing char-pointer signature is retained with a B5TimingScreen cast.",
+      "calls": [
+        {
+          "site": "0x69F8",
+          "target": "unresolved",
+          "c_alias": "import_000A53B4",
+          "observed_abi": "Original a0/a1 remain available; C forwards screen and flag. Recovered identity import_000A53B4 has no unique mapped target. Original arity and return type remain unknown; result is unused."
+        },
+        {
+          "site": "0x6A08",
+          "target": "src/bootup_uso/bootup_uso_o0_F954:func_0000F954 (bootup Text+0x00F954)",
+          "c_alias": "timproc_uso_b5_func_00F954",
+          "observed_abi": "a0 receives the pointer at screen+0x418; a1=-1; a2=0. Result is unused. Inspected callee C declares a void initialization helper."
+        },
+        {
+          "site": "0x6A58",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "c_alias": "timproc_uso_b5_69E8_print",
+          "observed_abi": "a0=timproc_uso_b5_D_807FEB74+0x1304; a1 is the signed selection from screen+0x4A4. C passes both to a variadic alias. Result is unused; void expresses observed usage rather than a proved original return type."
+        }
+      ],
+      "evidence": [
+        "Immutable extent 0x69E8..0x6C00 contains one complete function: 536 bytes and 134 instructions.",
+        "Caller timproc_uso_b5_func_00001C08 passes 1 for the active screen and 0 for other screens, ignoring v0.",
+        "Inspected layout family: 04118, 05BF0, 05FC0, 06900, 08688, 08988 and 08A38. Reused existing B5TimingScreen, B5TimingPanels, B5TimingRow and B5TimingEntry definitions.",
+        "Screen fields include indices 0x3D0..0x3DC, panels pointer 0x40C, initialization target 0x418, selection 0x4A4, gate 0x4A8 and output pointers 0x4DC..0x4EC. Panel row pointers begin at 0x40; row entry pointers at 0x3C; entry values and flags are at 0x2B0/0x2B4.",
+        "Copies import_80020098+0x44 to +0x40 and tests mode at +0x34. Indexed outputs use import_8002013C+0xA4 or import_80020150+0xB8. Selection table uses +0xF24; the special branch compares import_80000310 with 0x17D7.",
+        "Direct byte-array accesses eliminate the artificial pointer merge and reproduce both address materializations in v1.",
+        "Both C builds match immutable expected SHA256 172bb98512116dcf2e885a297c63a30503f1dc462cfd4f167a133467b4aa989a. Full-project fuzzy match is 100%, with 536 matched bytes gained and unchanged denominator.",
+        "Complete normal/NON_MATCHING builds, byte-identical ROM and all six compressed blocks pass. No regressions among 2,559 previously exact functions. Strict alias gate passes; source outside the assigned block is unchanged.",
+        "Canonical Episode/Step scratch record validates against the original schema and semantic callgraph checks. Retained experiments remain resumable.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Entry+0x2B0 represents a selection or command value; entry+0x2B4 holds UI flags."
+      ],
+      "unknowns": [
+        "Unique target, original arity and return type of import_000A53B4.",
+        "Exact meanings of selection-table values, the 0x17D7 condition, global modes and output values.",
+        "Original debug-print return type is not proved by its ignored result.",
+        "Missing relocations and indirect edges remain coverage gaps; zero-valued aliases do not establish callee identities.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/timproc_uso_b5_func_000069E8.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "timproc_uso_b5",
+      "dfs_rank": null,
+      "callers": [
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00001C08"
+      ],
+      "calls": [
+        {
+          "target": "src/bootup_uso/bootup_uso_o0_F954:func_0000F954",
+          "kind": "relocation",
+          "site": 27144,
+          "identity": "func_00F954",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_000069E8.s"
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 27224,
+          "identity": "func_048E7C",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_000069E8.s"
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 27128,
+          "identity": "import_000A53B4",
+          "class": "import",
+          "evidence": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_000069E8.s"
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "source_sha256": "2a5c307ee53f83f7d684757b62553c2e8bb2ab307891f048deacfc3fcd7fb00d",
+    "implementation_path": "src/match_imports/timproc_uso_b5_func_000069E8.c",
+    "implementation_sha256": "e4e8cff528372551115d87ead2eab00c7326741b94c6065086f1a9b30894e3fb",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 16,
+          "kind": 4,
+          "symbol": "import_000A53B4",
+          "original_identity": "timproc_uso_b5:symbol_292:addend_0x0",
+          "original_site": 27128,
+          "payload_site": 27128,
+          "original_symbol_index": 292,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 32,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_func_00F954",
+          "original_identity": "timproc_uso_b5:symbol_19:addend_0x0",
+          "original_site": 27144,
+          "payload_site": 27144,
+          "original_symbol_index": 19,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 112,
+          "kind": 4,
+          "symbol": "timproc_uso_b5_69E8_print",
+          "original_identity": "timproc_uso_b5:symbol_36:addend_0x0",
+          "original_site": 27224,
+          "payload_site": 27224,
+          "original_symbol_index": 36,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "172bb98512116dcf2e885a297c63a30503f1dc462cfd4f167a133467b4aa989a"
+    },
+    "native_data_proof": [
+      {
+        "alias": "timproc_uso_b5_69E8_global",
+        "hi": 40,
+        "lo": 44,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "timproc_uso_b5:symbol_18:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FEB74",
+        "hi": 108,
+        "lo": 116,
+        "native_addend": 4868,
+        "original_addend": 4868,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_D_807FE794",
+        "hi": 124,
+        "lo": 140,
+        "native_addend": 3876,
+        "original_addend": 3876,
+        "base_identity": "timproc_uso_b5:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "timproc_uso_b5_69E8_global",
+        "hi": 144,
+        "lo": 148,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "timproc_uso_b5:symbol_18:base_addend_0x0"
+      },
+      {
+        "alias": "import_80000310",
+        "hi": 160,
+        "lo": 164,
+        "native_addend": 0,
+        "original_addend": 0,
+        "base_identity": "timproc_uso_b5:symbol_293:base_addend_0x0"
+      },
+      {
+        "alias": "import_8002013C",
+        "hi": 432,
+        "lo": 452,
+        "native_addend": 164,
+        "original_addend": 164,
+        "base_identity": "timproc_uso_b5:symbol_18:base_addend_0x0"
+      },
+      {
+        "alias": "import_80020150",
+        "hi": 500,
+        "lo": 512,
+        "native_addend": 184,
+        "original_addend": 184,
+        "base_identity": "timproc_uso_b5:symbol_18:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-timproc_uso_b5_func_000069E8.json",
+      "nm": "scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json"
+    },
+    "source_context": "src/match_imports/context_timproc_uso_b5.h",
+    "source_context_sha256": "ccba90359c7e71d971348f72d547e63e2ebeb0fb7163484fe33de2a0bc6528f1",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "original_local_episode_sha256": "8fba80477b00ecf5923a35cb780fff12324470f999607c0edd494a285d3c3dce",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

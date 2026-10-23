@@ -1,0 +1,215 @@
+{
+  "function_name": "gl_func_00045E20",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.009180+00:00",
+  "end_time": "2026-10-23T11:55:26.009192+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.009188+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00045E20",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 468, \"native_sha256\": \"88e720174df295456aba55e0f3cf459f6d5ae23db7f857fdd696e170c3c549f2\", \"code_gain\": 468}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 117,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00045E20(void *a0, GL470E4Object *a1, GLRenderNode *a2) {\n    unsigned int m = a2->field38;\n    int nodeIndex;\n    int packetOffset;\n    int hi, lo;\n    unsigned int enabledScale = 1984;\n    if ((int)(m << 0xB) < 0) {\n        lo = enabledScale;\n        if ((int)(m << 0x7) < 0) {\n            { GL470E4List *d_ = (a1)->list; int i_ = d_->count; d_->count = i_ + 1; { unsigned int *p_ = (unsigned int *)((char *)(((a1)->list)->packets) + i_ * 8); p_[0] = (0xB7000000); p_[1] = (0x000C0000); } };\n        } else {\n            { GL470E4List *d_ = (a1)->list; int i_ = d_->count; d_->count = i_ + 1; { unsigned int *p_ = (unsigned int *)((char *)(((a1)->list)->packets) + i_ * 8); p_[0] = (0xB7000000); p_[1] = (0x00040000); } };\n        }\n        a2->field28 |= 0x1100;\n        if (a2->field20 == 64) {\n            hi = 3968;\n        } else {\n            hi = 1984;\n            lo = 1984;\n        }\n    } else {\n        { GL470E4List *d_ = (a1)->list; int i_ = d_->count; d_->count = i_ + 1; { unsigned int *p_ = (unsigned int *)((char *)(((a1)->list)->packets) + i_ * 8); p_[0] = (0xB6000000); p_[1] = (0x00040000); } };\n        lo = 0xFFFF;\n        hi = 0xFFFF;\n    }\n    { GL470E4List *d_ = (a1)->list; int i_ = d_->count; d_->count = i_ + 1; { unsigned int *p_ = (unsigned int *)((char *)(((a1)->list)->packets) + i_ * 8); p_[0] = (0xBB040801); p_[1] = ((((unsigned int)hi & 0xFFFF) << 16) | (lo & 0xFFFF)); } };\n    nodeIndex = 0;\n    packetOffset = 0;\n    {\n        GLRenderNode *node = a2;\n        if (node != 0) {\n            do {\n                int v;\n                int index;\n                do { index = nodeIndex++; } while (0); node->field3C = index;\n                gl_45E20_emit_node(a1, node, packetOffset);\n                v = gl_45E20_node_bytes(node);\n                node = node->field40;\n                packetOffset += v / 8;\n            } while (node != 0);\n        }\n    }\n    {\n        int syncIndex = *(int *)((int)a1->list + 4);\n        int tail = (int)a1->list;\n        unsigned int *syncCmd;\n        ((GL470E4List *)tail)->count = syncIndex + 1;\n        syncCmd = (unsigned int *)(*(int *)a1->list + syncIndex * 8);\n        syncCmd[0] = 0xE7000000;\n        syncCmd[1] = 0;\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Emits geometry/texture state, numbers and processes linked texture-like nodes, then appends an RDP pipe-sync packet. Higher-level ownership remains uncertain.",
+      "observed_abi": "MIPS o32: a0 is homed but unused; its caller supplies a module-data address. a1 points to the display-list context and a2 to the node chain. The caller ignores the function result, so its original return convention remains unproved.",
+      "calls": [
+        {
+          "site": "0x45F80",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000578B4",
+          "c_alias": "gl_45E20_emit_node",
+          "observed_abi": "a0=context pointer, a1=node pointer, a2=32-bit packet offset. Result ignored; original return ABI unknown. Recovered relocation identity: bootup func_06BF20."
+        },
+        {
+          "site": "0x45F88",
+          "target": "src/game_libs/game_libs_post0b:gl_func_000520B8",
+          "c_alias": "gl_45E20_node_bytes",
+          "observed_abi": "a0=node pointer; signed 32-bit result in v0, divided by eight with truncation toward zero. Recovered relocation identity: bootup func_066724."
+        }
+      ],
+      "evidence": [
+        "Immutable assembly contains one 117-word function, a 0x28-byte frame, two direct calls and one return.",
+        "Both compiled function hashes equal the immutable target: 88e720174df295456aba55e0f3cf459f6d5ae23db7f857fdd696e170c3c549f2.",
+        "Inspected shared-node family: caller gl_func_00043654, assigned function, gl_func_000578B4, gl_func_000520B8 and gl_func_00052144.",
+        "Recovered GLRenderNode fields remain offset-named: halfwords 0x20/0x22/0x88; words 0x18/0x24/0x28/0x38/0x3C; pointers 0x1C/0x40/0x64/0x68.",
+        "Reused existing GL470E4 display-list types: context+0xC references a descriptor with buffer+0 and count+4; packets occupy eight bytes.",
+        "An o32 integer address carrier reproduces the final descriptor/index allocation. Storing through the shared struct field preserves the offset-4 store without an extra address instruction.",
+        "Distinct zero-valued aliases retain inline relocation provenance. Callsites are original game_libs offsets, calculated from bootup Text offsets minus 0x1466C.",
+        "Normal/NON_MATCHING builds, ROM byte comparison, all six compressed-code checks and the unchanged-other-functions check passed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The halfwords at 0x20/0x22 represent texture dimensions, with format selection at 0x24 controlling bytes per texel."
+      ],
+      "unknowns": [
+        "Original leading-argument pointee type and ignored return conventions.",
+        "No unresolved direct call identities remain at the assigned sites; broader indirect-call coverage remains limited.",
+        "Original typedef spellings are not proved by instruction equality.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00045E20.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post0b:gl_func_00043654"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000578B4",
+          "kind": "relocation",
+          "site": 370156,
+          "identity": "func_06BF20",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00045E20.s",
+          "sym_index": 2004,
+          "cached_first_reference": "func_06BF20",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_000520B8",
+          "kind": "relocation",
+          "site": 370164,
+          "identity": "func_066724",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00045E20.s",
+          "sym_index": 2005,
+          "cached_first_reference": "func_066724",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00045E20.c",
+    "implementation_sha256": "ea60bdf67e67ae85030527929d517502da4a6071cf1e34a19a58fab3cd43b2f7",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 352,
+          "kind": 4,
+          "symbol": "gl_45E20_emit_node",
+          "original_identity": "bootup_uso:symbol_2004:addend_0x0",
+          "original_site": 370156,
+          "payload_site": 370156,
+          "original_symbol_index": 2004,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 360,
+          "kind": 4,
+          "symbol": "gl_45E20_node_bytes",
+          "original_identity": "bootup_uso:symbol_2005:addend_0x0",
+          "original_site": 370164,
+          "payload_site": 370164,
+          "original_symbol_index": 2005,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "88e720174df295456aba55e0f3cf459f6d5ae23db7f857fdd696e170c3c549f2"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00045E20.json",
+      "nm": "scripts/match-bindings-gl_func_00045E20-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "0477a039e8bd1201ebe7c402bada9bcc49e06667163464d8e4207a7307b4e206",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

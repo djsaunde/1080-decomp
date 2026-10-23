@@ -1,0 +1,35 @@
+{
+  "function": "gl_func_0002F288",
+  "raw_sha256": "2890bb5c9de16a94d1d4ce0b7e8b93ee7908b0d85265ed120b6fe9d48e72bcb6",
+  "renames": {
+    "D_00000000": "snw_port_gl_func_0002F288_D_00000000",
+    "gl_2F288_pool1730": "snw_port_gl_func_0002F288_gl_2F288_pool1730",
+    "gl_2F288_pool1734": "snw_port_gl_func_0002F288_gl_2F288_pool1734",
+    "gl_2F288_pool1738": "snw_port_gl_func_0002F288_gl_2F288_pool1738",
+    "gl_2F288_countdown": "snw_port_gl_func_0002F288_gl_2F288_countdown",
+    "gl_2F288_countdown_store": "snw_port_gl_func_0002F288_gl_2F288_countdown_store",
+    "gl_2F288_random": "snw_port_gl_func_0002F288_gl_2F288_random",
+    "gl_2F288_countdown_reset": "snw_port_gl_func_0002F288_gl_2F288_countdown_reset",
+    "gl_2F288_pool173C": "snw_port_gl_func_0002F288_gl_2F288_pool173C",
+    "gl_2F288_tableC330": "snw_port_gl_func_0002F288_gl_2F288_tableC330",
+    "gl_2F288_tableC3B0": "snw_port_gl_func_0002F288_gl_2F288_tableC3B0",
+    "gl_2F288_emit_byte": "snw_port_gl_func_0002F288_gl_2F288_emit_byte",
+    "gl_2F288_emit_float": "snw_port_gl_func_0002F288_gl_2F288_emit_float"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_0002F288_D_00000000": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_pool1730": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_pool1734": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_pool1738": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_countdown": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_countdown_store": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_random": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_countdown_reset": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_pool173C": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_tableC330": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_tableC3B0": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_emit_byte": 0,
+    "snw_port_gl_func_0002F288_gl_2F288_emit_float": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

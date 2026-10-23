@@ -1,0 +1,429 @@
+{
+  "function_name": "func_0000BF8C",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.556714+00:00",
+  "end_time": "2026-10-23T11:55:25.556726+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.556722+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_0000BF8C",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 680, \"native_sha256\": \"705d5ea35491ec5d09d65c27ddab42946b9f0ba00204d2bafb97af3894cced72\", \"code_gain\": 680}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 170,
+  "initial_m2c_source": null,
+  "final_source": "void func_0000BF8C(BootupPhysicsState *arg0) {\n    f32 temp_f0;\n    f32 temp_f0_2;\n    f32 var_f12;\n    f32 var_f2;\n    s16 temp_v0_2;\n    s32 temp_v0_3;\n    BootupPhysicsInput *temp_v0;\n    var_f12 = 0.0f;\n    temp_v0 = arg0->field_800;\n    arg0->field_990 = (f64)temp_v0->field_004 < -0.75;\n    arg0->field_9CC = (temp_v0->field_010 & 0x400) != 0;\n    arg0->field_9F8 = arg0->field_490;\n    if (arg0->field_9CC != 0) {\n        arg0->field_A00 = arg0->field_6F0 * arg0->field_508;\n        arg0->field_9FC = arg0->field_4F0;\n        arg0->field_360 = arg0->field_4D8;\n    } else {\n        arg0->field_A00 = arg0->field_708 * arg0->field_508;\n        arg0->field_9FC = arg0->field_4C0;\n        arg0->field_360 = arg0->field_4A8;\n    }\n    if (arg0->field_990 != 0) {\n        if (arg0->field_9CC != 0) {\n            var_f12 = bootup_BF8C_constants[8];\n        } else {\n            var_f12 = 0.5f;\n        }\n        temp_f0 = arg0->field_970;\n        if (temp_f0 < 0.0f) {\n            var_f2 = -temp_f0;\n        } else {\n            var_f2 = temp_f0;\n        }\n        arg0->field_360 = (f32) ((arg0->field_360) + (var_f2 * var_f12));\n    }\n    temp_v0_2 = arg0->field_9A2;\n    if (temp_v0_2 != 0x63) {\n        if (temp_v0_2 != 0x61) {\n            if (temp_v0_2 != 0x62) {\n                arg0->field_360 += bootup_BF8C_double[-5];\n                arg0->field_9FC = 0.0f;\n                arg0->field_9F8 = 0.0f;\n                goto mode_done;\n            } else {\n                goto mode_62;\n            }\n        } else {\n            goto mode_done;\n        }\n    } else {\n        goto mode_63;\n    }\nmode_63:\n    if (1) {\n        arg0->field_360 *= arg0->field_448;\n        arg0->field_9FC *= arg0->field_430;\n    }\n    goto mode_done;\nmode_62:\n    if (1) {\n        arg0->field_360 *= arg0->field_478;\n        arg0->field_9FC *= arg0->field_460;\n    }\nmode_done:\n    temp_v0_3 = arg0->field_960;\n    arg0->field_9FC = (f32) ((arg0->field_9FC) * (arg0->field_5D0));\n    arg0->field_360 = (f32) ((arg0->field_360) * (arg0->field_5E8));\n    if (temp_v0_3 != 0) {\n        arg0->field_9FC = 0.0f;\n        arg0->field_360 = (f32) ((arg0->field_360) + ((f32) temp_v0_3 / 100.0f));\n        temp_f0_2 = 1.0f - arg0->field_6D8;\n        arg0->field_318 = (f32) ((arg0->field_318) * temp_f0_2);\n        arg0->field_320 = (f32) ((arg0->field_320) * temp_f0_2);\n    }\n    bootup_BF8C_call0(arg0);\n    bootup_BF8C_call1(arg0);\n    bootup_BF8C_call2(bootup_BF8C_ref20 + 0x20);\n    bootup_BF8C_call3(arg0);\n    bootup_BF8C_call4(bootup_BF8C_ref2C + 0x2C);\n    bootup_BF8C_call5(arg0);\n    if ((arg0->field_960 == 0x64) && ((arg0->field_348) < 30.0f)) {\n        arg0->field_318 = 0.0f;\n        arg0->field_320 = 0.0f;\n    }\n    bootup_BF8C_call6(arg0);\n    bootup_BF8C_call7(arg0);\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Updates per-frame physics coefficients using input flags, signed mode and an integer modifier, then invokes state and transform updates. Constants 0.1f and 0.1 are confirmed; exact gameplay meanings remain uncertain.",
+      "observed_abi": "Incoming a0 is a state pointer preserved in s0; stack frame is 0x20 bytes. No additional incoming argument is evidenced. Original return type is unknown; C void declarations discard unused results.",
+      "calls": [
+        {
+          "site": "0xC1A0",
+          "target": "src/bootup_uso/bootup_uso:func_0000B520",
+          "c_alias": "bootup_BF8C_call0",
+          "observed_abi": "a0=state; result unused."
+        },
+        {
+          "site": "0xC1A8",
+          "target": "src/bootup_uso/bootup_uso:func_0000B75C",
+          "c_alias": "bootup_BF8C_call1",
+          "observed_abi": "a0=state; result unused."
+        },
+        {
+          "site": "0xC1B4",
+          "target": "unresolved",
+          "c_alias": "bootup_BF8C_call2",
+          "observed_abi": "a0=0x8A40+0x20; result unused. Recovered identity func_062380 maps ambiguously."
+        },
+        {
+          "site": "0xC1BC",
+          "target": "src/bootup_uso/bootup_uso:func_0000C234",
+          "c_alias": "bootup_BF8C_call3",
+          "observed_abi": "a0=state; result unused."
+        },
+        {
+          "site": "0xC1C8",
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "c_alias": "bootup_BF8C_call4",
+          "observed_abi": "a0=0x8A40+0x2C; result unused."
+        },
+        {
+          "site": "0xC1D0",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00065448",
+          "c_alias": "bootup_BF8C_call5",
+          "observed_abi": "a0=state; result unused."
+        },
+        {
+          "site": "0xC210",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00064DEC",
+          "c_alias": "bootup_BF8C_call6",
+          "observed_abi": "a0=state; result unused."
+        },
+        {
+          "site": "0xC218",
+          "target": "src/game_libs/game_libs_post1b:gl_func_00065148",
+          "c_alias": "bootup_BF8C_call7",
+          "observed_abi": "a0=state; result unused."
+        }
+      ],
+      "evidence": [
+        "Original assembly and immutable expected object establish boundaries 0xBF8C\u20130xC234, 680 bytes and eight direct calls. Caller func_0000D440 invokes the function at 0xD5E4.",
+        "Inspected family: D440, BF8C, B520, B75C, C234 and game_libs 64DEC/65148/65448. Shared accesses support BootupPhysicsState and typed state-import declarations; 36 recovered layout offsets were verified with IDO.",
+        "State 0x800 holds an input pointer. Input 0x4 is f32, compared as double against -0.75; input 0x10 supplies bit 0x400. Related callers access input 0x18 and 0x3C.",
+        "State 0x960/0x990/0x9CC are s32; 0x9A2 is s16. Floating fields include 0x318/0x31C/0x320/0x348/0x360/0x508/0x6D8/0x9F8/0x9FC/0xA00.",
+        "Original USO symbol 1 is tagged RoData with value zero. Its loads address 0x914, containing f32 0.1f, and 0x918, containing f64 0.1.",
+        "New const object/member probes still emit unaligned loads at +0x24. Const-qualified declarations at the saved anchors preserve both complete C bodies byte-for-byte.",
+        "Both actual C modes pass and produce identical 680-byte bodies with only 0xC0C0 differing. After restoring INCLUDE_ASM, all 61,936 bytes of normal unit .text match expected.",
+        "Call identities follow original per-site relocations; game_libs offsets subtract 0x1466C. Eight call aliases are zero and four data aliases reuse expected symbol addresses. Only allowed files changed; unassigned source is unchanged and git diff --check passes.",
+        "Original constant identity RoData918 is expressed by the aligned C anchor940 minus28. Immutable expected uses symbol8F4 plus24. Their coordinate difference is4C; ordinary GNU MIPS linking resolves the donor reference in that relative coordinate and metadata-only rename retains original symbol8F4 for final relocation. 940-28 equals8F4+(4C-28)=918. No instruction patch or expected edit is used.",
+        "Full --emit-relocs preserves every donor call/data relocation. The existing metadata-only rename helper preserves zero-valued alias identities, unlike objcopy which collapses them to an absolute symbol. Distinct per-site calls remain distinct.",
+        "Shared BootupPhysicsInput/State preserves all previously evidenced offsets; unknown fields and original qualifier/return uncertainties remain explicit. Normal/NM raw bytes, full ROM, six compressed blocks, all prior exact regressions and denominator762344 verified. Earlier unresolved-representation statements above describe historical attempts.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "Fields 0x318/0x31C/0x320 form a motion vector used by downstream position updates.",
+        "The remaining cap concerns synthetic constant-pool labeling and compiler alignment rather than recovered arithmetic or control flow."
+      ],
+      "unknowns": [
+        "func_062380 remains unresolved; equal zero-valued aliases do not establish identity.",
+        "Original return types, complete state layout and precise gameplay meanings remain unconfirmed.",
+        "field_508 volatility preserves observed per-arm loads but is not a proven original qualifier.",
+        "No tested permitted declaration reproduces the final raw word. Full ROM and compressed-block checks were not run; no exact acceptance or episode is claimed.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_0000BF8C.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 396,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_0000D440"
+      ],
+      "calls": [
+        {
+          "target": "src/bootup_uso/bootup_uso:func_0000B520",
+          "kind": "relocation",
+          "site": 49568,
+          "identity": "func_00B520",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 567,
+          "cached_first_reference": "func_00B520",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_0000B75C",
+          "kind": "relocation",
+          "site": 49576,
+          "identity": "func_00B75C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 569,
+          "cached_first_reference": "func_00B75C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_0000C234",
+          "kind": "relocation",
+          "site": 49596,
+          "identity": "func_00C234",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 574,
+          "cached_first_reference": "func_00C234",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0004DD1C",
+          "kind": "relocation",
+          "site": 49608,
+          "identity": "func_062388",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 575,
+          "cached_first_reference": "func_062388",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00065448",
+          "kind": "relocation",
+          "site": 49616,
+          "identity": "func_079AB4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 576,
+          "cached_first_reference": "func_079AB4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00064DEC",
+          "kind": "relocation",
+          "site": 49680,
+          "identity": "func_079458",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 577,
+          "cached_first_reference": "func_079458",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_00065148",
+          "kind": "relocation",
+          "site": 49688,
+          "identity": "func_0797B4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 578,
+          "cached_first_reference": "func_0797B4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Recovered identity does not map uniquely to a current function",
+          "kind": "relocation",
+          "site": 49588,
+          "identity": "func_062380",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_0000BF8C.s",
+          "sym_index": 573,
+          "cached_first_reference": "func_062380",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "source_sha256": "39532ee29b70c60d8359ffb22db61f2623cbe6973decfbadddb3f034469a9ad1",
+    "implementation_path": "src/match_imports/func_0000BF8C.c",
+    "implementation_sha256": "1d8782c8a72e7db7c32f75cfff1b6e42620413dcac378ba895ef8ea6da2b7fee",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 532,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call0",
+          "original_identity": "bootup_uso:symbol_567:addend_0x0",
+          "original_site": 49568,
+          "payload_site": 49568,
+          "original_symbol_index": 567,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 540,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call1",
+          "original_identity": "bootup_uso:symbol_569:addend_0x0",
+          "original_site": 49576,
+          "payload_site": 49576,
+          "original_symbol_index": 569,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 552,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call2",
+          "original_identity": "bootup_uso:symbol_573:addend_0x0",
+          "original_site": 49588,
+          "payload_site": 49588,
+          "original_symbol_index": 573,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 560,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call3",
+          "original_identity": "bootup_uso:symbol_574:addend_0x0",
+          "original_site": 49596,
+          "payload_site": 49596,
+          "original_symbol_index": 574,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 572,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call4",
+          "original_identity": "bootup_uso:symbol_575:addend_0x0",
+          "original_site": 49608,
+          "payload_site": 49608,
+          "original_symbol_index": 575,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 580,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call5",
+          "original_identity": "bootup_uso:symbol_576:addend_0x0",
+          "original_site": 49616,
+          "payload_site": 49616,
+          "original_symbol_index": 576,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 644,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call6",
+          "original_identity": "bootup_uso:symbol_577:addend_0x0",
+          "original_site": 49680,
+          "payload_site": 49680,
+          "original_symbol_index": 577,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 652,
+          "kind": 4,
+          "symbol": "bootup_BF8C_call7",
+          "original_identity": "bootup_uso:symbol_578:addend_0x0",
+          "original_site": 49688,
+          "payload_site": 49688,
+          "original_symbol_index": 578,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "705d5ea35491ec5d09d65c27ddab42946b9f0ba00204d2bafb97af3894cced72"
+    },
+    "native_data_proof": [
+      {
+        "alias": "bootup_BF8C_constants",
+        "hi": 196,
+        "lo": 204,
+        "native_addend": 32,
+        "original_addend": 2324,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x8f4"
+      },
+      {
+        "alias": "bootup_BF8C_double",
+        "hi": 304,
+        "lo": 308,
+        "native_addend": -40,
+        "original_addend": 2328,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x940"
+      },
+      {
+        "alias": "bootup_BF8C_ref20",
+        "hi": 548,
+        "lo": 556,
+        "native_addend": 32,
+        "original_addend": 35424,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8a40"
+      },
+      {
+        "alias": "bootup_BF8C_ref2C",
+        "hi": 568,
+        "lo": 576,
+        "native_addend": 44,
+        "original_addend": 35436,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x8a40"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_0000BF8C.json",
+      "nm": "scripts/match-bindings-func_0000BF8C-nm.json"
+    },
+    "source_context": "src/match_imports/context_bootup_uso_o2_BF8C.h",
+    "source_context_sha256": "b258ae5e143f13a131a698a3ab9bf0017a0bda194616aefda02591e2a81aa452",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/bootup_uso/bootup_uso_o2_BF8C.c",
+    "original_local_episode_sha256": "dc04135aed4abb3bce8e2abea83ec49cc741d4da7504aaf4e2719ca883014bd3",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

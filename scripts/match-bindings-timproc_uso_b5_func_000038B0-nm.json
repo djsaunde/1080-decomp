@@ -1,0 +1,7 @@
+{
+  "function": "timproc_uso_b5_func_000038B0",
+  "raw_sha256": "c84e4ef988c5a94c66683279d05ca02e07d12562418091cbefdfd68497873326",
+  "renames": {},
+  "original_ROM_minus_curated_addend_bindings": {},
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

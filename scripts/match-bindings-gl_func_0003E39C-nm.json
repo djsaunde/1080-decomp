@@ -1,0 +1,33 @@
+{
+  "function": "gl_func_0003E39C",
+  "raw_sha256": "2241e8b1a9307fd3fef65bdb94f1e8dd397d1c47964a2e3f7cfe9683de980143",
+  "renames": {
+    "gl_E39C_reset": "snw_port_gl_func_0003E39C_gl_E39C_reset",
+    "gl_E39C_push": "snw_port_gl_func_0003E39C_gl_E39C_push",
+    "gl_E39C_data": "snw_port_gl_func_0003E39C_gl_E39C_data",
+    "gl_E39C_stream": "snw_port_gl_func_0003E39C_gl_E39C_stream",
+    "gl_E39C_read": "snw_port_gl_func_0003E39C_gl_E39C_read",
+    "snw_3E39C_count_origin": "snw_port_gl_func_0003E39C_snw_3E39C_count_origin",
+    "gl_E39C_find": "snw_port_gl_func_0003E39C_gl_E39C_find",
+    "gl_E39C_create": "snw_port_gl_func_0003E39C_gl_E39C_create",
+    "gl_E39C_missing": "snw_port_gl_func_0003E39C_gl_E39C_missing",
+    "gl_E39C_seek": "snw_port_gl_func_0003E39C_gl_E39C_seek",
+    "gl_E39C_finish": "snw_port_gl_func_0003E39C_gl_E39C_finish",
+    "gl_E39C_pop": "snw_port_gl_func_0003E39C_gl_E39C_pop"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_0003E39C_gl_E39C_reset": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_push": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_data": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_stream": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_read": 0,
+    "snw_port_gl_func_0003E39C_snw_3E39C_count_origin": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_find": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_create": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_missing": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_seek": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_finish": 0,
+    "snw_port_gl_func_0003E39C_gl_E39C_pop": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

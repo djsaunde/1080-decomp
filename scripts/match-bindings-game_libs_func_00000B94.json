@@ -1,0 +1,15 @@
+{
+  "function": "game_libs_func_00000B94",
+  "raw_sha256": "eb7f27aa650e3246e2f29c69a988602a6820328e77c8a965f9e32ba4c8e35d09",
+  "renames": {
+    "game_libs_B94_format": "snw_port_game_libs_func_00000B94_game_libs_B94_format",
+    "D_00000000": "snw_port_game_libs_func_00000B94_D_00000000",
+    "game_libs_B94_notify": "snw_port_game_libs_func_00000B94_game_libs_B94_notify"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_libs_func_00000B94_game_libs_B94_format": 0,
+    "snw_port_game_libs_func_00000B94_D_00000000": 0,
+    "snw_port_game_libs_func_00000B94_game_libs_B94_notify": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

@@ -1,0 +1,33 @@
+{
+  "function": "game_uso_func_000041C0",
+  "raw_sha256": "6bb35d05c4ba0983b8abcb50bbe310a4caea88987eaee8243b7d4171c04ea219",
+  "renames": {
+    "game_uso_func_055750": "snw_port_game_uso_func_000041C0_game_uso_func_055750",
+    "uso_base_init_051C28": "snw_port_game_uso_func_000041C0_uso_base_init_051C28",
+    "game_uso_D_807FEB68": "snw_port_game_uso_func_000041C0_game_uso_D_807FEB68",
+    "game_uso_D_807FECA0": "snw_port_game_uso_func_000041C0_game_uso_D_807FECA0",
+    "game_uso_D_807FECB4": "snw_port_game_uso_func_000041C0_game_uso_D_807FECB4",
+    "game_uso_func_04A188": "snw_port_game_uso_func_000041C0_game_uso_func_04A188",
+    "game_uso_D_807FE9B8": "snw_port_game_uso_func_000041C0_game_uso_D_807FE9B8",
+    "game_uso_D_807FECB8": "snw_port_game_uso_func_000041C0_game_uso_D_807FECB8",
+    "game_uso_D_807FEA00": "snw_port_game_uso_func_000041C0_game_uso_D_807FEA00",
+    "game_uso_D_807FECBC": "snw_port_game_uso_func_000041C0_game_uso_D_807FECBC",
+    "game_uso_D_41C0_last": "snw_port_game_uso_func_000041C0_game_uso_D_41C0_last",
+    "game_uso_func_07ACE0": "snw_port_game_uso_func_000041C0_game_uso_func_07ACE0"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_uso_func_000041C0_game_uso_func_055750": 0,
+    "snw_port_game_uso_func_000041C0_uso_base_init_051C28": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FEB68": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FECA0": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FECB4": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_func_04A188": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FE9B8": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FECB8": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FEA00": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_807FECBC": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_D_41C0_last": 0,
+    "snw_port_game_uso_func_000041C0_game_uso_func_07ACE0": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

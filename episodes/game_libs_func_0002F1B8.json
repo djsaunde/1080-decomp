@@ -1,0 +1,157 @@
+{
+  "function_name": "game_libs_func_0002F1B8",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.652856+00:00",
+  "end_time": "2026-10-23T11:55:25.652868+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.652864+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_0002F1B8",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 208, \"native_sha256\": \"6072a55b8f1b49df142ba45e3f2c0a9cf5ea5066e2a2b097a90e2278ecbc2c60\", \"code_gain\": 208}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 52,
+  "initial_m2c_source": null,
+  "final_source": "s32 game_libs_func_0002F1B8(f32 key, f32 *arr, s32 n) {\n    s32 mid = n >> 1;\n    s32 step = mid + 1;\n    s32 nxt;\n    f32 d, d2, d3;\n    f32 *p;\n    step = step >> 1;\nloop:\n    p = (f32 *)((char *)arr + mid * 4);\n    nxt = mid + 1;\n    d = key - p[0];\n    if (0.0f < d) {\n        if (n == nxt) {\n            goto retmid;\n        }\n        d2 = p[1] - key;\n        if (0.0f < d2) {\n            if (!(d2 < d)) {\n                goto retmid;\n            }\n            mid++;\n            goto retmid;\n        }\n        mid += step;\n        step = step + 1;\n        step = step >> 1;\n        goto loop;\n    }\n    if (mid == 0) {\n        goto retmid;\n    }\n    d = -d;\n    d3 = key - p[-1];\n    if (0.0f < d3) {\n        if (!(d3 < d)) {\n            goto retmid;\n        }\n        mid--;\n        goto retmid;\n    }\n    mid -= step;\n    step = step + 1;\n    step = step >> 1;\n    goto loop;\nretmid:\n    return mid;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Searches a float array for the nearest-element index, checking adjacent distances and endpoints. Its specific game use is unknown; positive count and strictly ascending finite input are inferred preconditions.",
+      "observed_abi": "ABI-compatible signature: s32 game_libs_func_0002F1B8(f32 key, f32 *arr, s32 n). Inputs are $f12, $a1 and $a2; integer index returns in $v0. No stack frame, calls, imports or globals.",
+      "calls": [],
+      "evidence": [
+        "Original game_libs Text offsets 0x2F1B8\u20130x2F287 form one 52-instruction function. Internal branches connect both search directions; predecessor and successor have independent boundaries.",
+        "Array addressing scales the index by four and reads f32 values at relative offsets 0, +4 and -4. No aggregate field layout is accessed.",
+        "Recovered callgraph has no callers, resolved calls or unresolved callsites; original instructions contain no JAL/JALR.",
+        "Inspected neighboring gl_func_0002E354 and gl_func_0002F288. Their object accesses provide no evidence of a shared layout with this scalar-array leaf; no five-function layout family was identified.",
+        "Updating mid before the shared return eliminates the previous branch-delay mismatch; byte-based indexing reproduces the base-first addu.",
+        "Both compiled function bodies equal immutable expected bytes, SHA256 6072a55b8f1b49df142ba45e3f2c0a9cf5ea5066e2a2b097a90e2278ecbc2c60.",
+        "ROM MD5 is fa27089c425dbab99f19245c5c997613; byte comparison and all six compressed-block checks passed.",
+        "Only src/game_libs/game_libs_post.c is modified. Experiments remain under build/orchestration-scratch/.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "n is the array element count.",
+        "Valid callers supply a positive count and strictly ascending finite values.",
+        "Under those preconditions, strict distance comparisons retain the current midpoint on equal-distance ties."
+      ],
+      "unknowns": [
+        "Original typedefs, caller identities and application-level use of the index remain unrecovered.",
+        "Behavioral guarantees for empty arrays, duplicates and nonfinite inputs are unproved.",
+        "Missing relocation and indirect-edge coverage limits caller discovery; absence of recovered callers does not prove the function is unused.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_0002F1B8.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 433,
+      "callers": [
+        "src/game_libs/game_libs_post:gl_func_0002E354",
+        "src/game_libs/game_libs_post:game_libs_func_0002F720"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/game_libs_func_0002F1B8.c",
+    "implementation_sha256": "b07e8025a854c3a107d905a55e6ebf257e596a8812e4fc3f6b69da4726654e4a",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "6072a55b8f1b49df142ba45e3f2c0a9cf5ea5066e2a2b097a90e2278ecbc2c60"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_0002F1B8.json",
+      "nm": "scripts/match-bindings-game_libs_func_0002F1B8-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "27f55b1dc663e185c56e4e080856ccf28106076cecdd282cf84ab6b6e82358f7",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

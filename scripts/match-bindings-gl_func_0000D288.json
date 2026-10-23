@@ -1,0 +1,11 @@
+{
+  "function": "gl_func_0000D288",
+  "raw_sha256": "6dd3a8ac2634dcdf82d0d94cacd2e4a003fbba81a43e57f5f989c8b20f83c299",
+  "renames": {
+    "gl_import_D288": "snw_port_gl_func_0000D288_gl_import_D288"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_0000D288_gl_import_D288": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

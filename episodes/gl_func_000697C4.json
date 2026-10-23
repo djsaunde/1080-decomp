@@ -1,0 +1,285 @@
+{
+  "function_name": "gl_func_000697C4",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:26.187414+00:00",
+  "end_time": "2026-10-23T11:55:26.187429+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:26.187422+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_000697C4",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 976, \"native_sha256\": \"1fa04061088a82f7fe02c898251f1b9639800af23f94551af6d28c75ed808004\", \"code_gain\": 976}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 244,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_000697C4(GlState695F4 *arg0) {\n    register f32 temp_f14;\n    register f32 temp_f4;\n    register f32 temp_f8;\n    f32 sp38;\n    f32 sp34;\n    f32 sp30;\n    struct Cursor697C4 { char **node; char **next; } cursor;\n    struct Cursor697C4 *pc = &cursor;\n    f32 sp24;\n    f32 sp20;\n    f32 temp_f0;\n    f32 temp_f0_2;\n    f32 temp_f6;\n    s16 *temp_v0_4;\n    s16 temp_t5;\n    s32 temp_a0;\n    u32 product;\n    s32 temp_t1;\n    s32 amplitude;\n    s32 temp_v0;\n    s32 temp_v1_3;\n    s32 var_a0;\n    s32 var_a1;\n    u32 var_a3;\n    u32 var_v0;\n    char **temp_t6;\n    char **temp_t9;\n    char *temp_v0_2;\n    char *temp_v0_3;\n    char *temp_v0_5;\n    char *temp_v0_6;\n    char *var_v0_2;\n    char *var_v0_3;\n    u32 *rng;\n    f32 *fbar;\n    char ***pbar;\n    if (1) {\n        fbar = &sp38; fbar = &sp34; fbar = &sp30;\n        fbar = &sp24; fbar = &sp20;\n        pbar = &pc->next; pbar = &pc->node;\n    }\n    temp_v0 = gl_697C4_tick.value;\n    var_a3 = (u32)arg0->field_4C - (u32)temp_v0;\n    if (var_a3 != 0) {\n        arg0->field_4C = temp_v0;\n        if (arg0->field_38 == 0) {\n            gl_697C4_report((char*)((char*)&D_00000000 + 0x2C5CC));\n        }\n        var_a3 = 0;\n        var_a0 = 0;\n        var_v0 = *(u32 *)((char *)arg0->field_34 + 0x40);\n        var_a1 = 0;\n        if (var_v0 != 0) {\n            f32 mult = gl_697C4_scale.value;\n            do {\n                temp_f0 = (f32) *(s16*)((char *)arg0->field_30 + var_a0);\n                if (1) {}\n                if (temp_f0 != 0.0f) {\n                    temp_f0 *= mult;\n                    temp_v1_3 = (s32)((char *)arg0->field_3C + var_a1);\n                    sp30 = (f32) *(s16*)((char*)temp_v1_3 + 0x0);\n                    sp34 = (f32) *(s16*)((char*)temp_v1_3 + 0x2);\n                    sp38 = (f32) *(s16*)((char*)temp_v1_3 + 0x4);\n                    temp_v0_3 = (char *)arg0->field_38;\n                    if (1) { temp_v0_3 += 0x70; }\n                    temp_f14 = (*(f32*)((char*)temp_v0_3 + 0x20) * sp38) + ((*(f32*)((char*)temp_v0_3 + 0x10) * sp34) + (*(f32*)((char*)temp_v0_3 + 0x0) * sp30));\n                    temp_f4 = (*(f32*)((char*)temp_v0_3 + 0x24) * sp38) + ((*(f32*)((char*)temp_v0_3 + 0x14) * sp34) + (*(f32*)((char*)temp_v0_3 + 0x4) * sp30));\n                    temp_f8 = (*(f32*)((char*)temp_v0_3 + 0x28) * sp38) + ((*(f32*)((char*)temp_v0_3 + 0x18) * sp34) + (*(f32*)((char*)temp_v0_3 + 0x8) * sp30));\n                    sp34 = temp_f4;\n                    sp38 = temp_f8;\n                    sp30 = temp_f14;\n                    temp_f0_2 = temp_f0;\n                    *(s16*)((char *)arg0->field_40 + var_a1) = (s16) (s32) (sp30 * temp_f0_2);\n                    *(s16*)(((char *)arg0->field_40 + var_a1) + 0x2) = (s16) (s32) (sp34 * temp_f0_2);\n                    *(s16*)(((char *)arg0->field_40 + var_a1) + 0x4) = (s16) (s32) (sp38 * temp_f0_2);\n                } else {\n                    *(s16*)(((char *)arg0->field_40 + var_a1) + 0x4) = 0;\n                    *(s16*)(((char *)arg0->field_40 + var_a1) + 0x2) = 0;\n                    *(s16*)((char *)arg0->field_40 + var_a1) = 0;\n                }\n                var_a3 += 1;\n                var_a0 += 2;\n                var_v0 = *(u32 *)((char *)arg0->field_34 + 0x40);\n                var_a1 += 6;\n            } while (var_a3 < var_v0);\n        }\n        temp_v1_3 = arg0->field_94;\n        if (temp_v1_3 != 0) {\n            amplitude = temp_v1_3;\n            temp_t1 = temp_v1_3 / 2;\n            var_a3 = 0;\n            if (var_v0 != 0) {\n                rng = (u32 *)&D_00000000;\n                if (1) { rng += 0x2C4F0 / 4; }\n                var_a1 = 0;\n                do {\n                    var_a3 += 1;\n                    temp_v1_3 = (*rng * 4) + 2;\n                    product = (u32)temp_v1_3 + 1;\n                    temp_v1_3 = ((u32)temp_v1_3 * product) >> 2;\n                    *rng = temp_v1_3;\n                    temp_v0_4 = (s16 *)((char *)arg0->field_40 + var_a1);\n                    *temp_v0_4 = (*temp_v0_4 + ((s32) (((u32)temp_v1_3 & 0xFFFF) * (u32)amplitude) >> 0x10)) - temp_t1;\n                    temp_a0 = (*rng * 4) + 2;\n                    product = (u32)temp_a0 + 1;\n                    temp_a0 = ((u32)temp_a0 * product) >> 2;\n                    *rng = temp_a0;\n                    temp_v0_4 = (s16 *)((char *)arg0->field_40 + var_a1 + 2);\n                    if (1) { temp_v0_4 = temp_v0_4; }\n                    *temp_v0_4 = (s16) ((*temp_v0_4 + ((s32) (((u32)temp_a0 & 0xFFFF) * (u32)amplitude) >> 0x10)) - temp_t1);\n                    temp_v1_3 = (*rng * 4) + 2;\n                    product = (u32)temp_v1_3 + 1;\n                    temp_v1_3 = ((u32)temp_v1_3 * product) >> 2;\n                    *rng = temp_v1_3;\n                    temp_v0_4 = (s16 *)((char *)arg0->field_40 + var_a1 + 4);\n                    if (1) { temp_v0_4 = temp_v0_4; }\n                    *temp_v0_4 = (*temp_v0_4 + ((s32) (((u32)temp_v1_3 & 0xFFFF) * (u32)amplitude) >> 0x10)) - temp_t1;\n                    var_a1 += 6;\n                } while (var_a3 < (u32) *(u32 *)((char *)arg0->field_34 + 0x40));\n            }\n            arg0->field_94 = 0;\n        }\n        pc->next = (char **)arg0->field_48;\n        pc->node = pc->next;\n        if (pc->node != 0) {\n            pc->next = (*(int *)((char *)(pc->next) + (0x4)));\n            var_v0_2 = (*(int *)((char *)(pc->node) + (0x0)));\n        } else {\n            var_v0_2 = 0;\n        }\n        if (var_v0_2 != 0) {\n            do {\n                gl_697C4_modifier(*(GLVertexElement **)pc->node, arg0, arg0->field_40);\n                pc->node = pc->next;\n                if (pc->node != 0) {\n                    pc->next = (*(int *)((char *)(pc->next) + (0x4)));\n                    var_v0_3 = (*(int *)((char *)(pc->node) + (0x0)));\n                } else {\n                    var_v0_3 = 0;\n                }\n            } while (var_v0_3 != 0);\n        }\n        gl_697C4_finish(arg0->field_34, (char *)arg0->field_40);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "SkinMgr::Update refreshes cached weighted, transformed three-short records, optionally adds one-shot pseudorandom displacement, applies skin modifiers and installs the output buffer on a mesh. Diagnostic strings support this identity; the cache stamp\u2019s broader meaning remains uncertain.",
+      "observed_abi": "MIPS O32: a0 receives the state pointer. The function uses a 0x48-byte frame and saves ra and s0. No deliberate return-value construction is evident. The reconstructed void signature models an unconsumed result; the original return type remains unknown.",
+      "calls": [
+        {
+          "site": "0x697FC",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "c_alias": "gl_697C4_report",
+          "observed_abi": "a0 receives Data-base+0x2C5CC, containing \"SkinMgr::Update() not initialized\"; result ignored. Original relocation identity: func_075AE4."
+        },
+        {
+          "site": "0x69B44",
+          "target": "src/game_libs/game_libs_post1b:gl_func_000693A4",
+          "c_alias": "gl_697C4_modifier",
+          "observed_abi": "a0 receives the list payload, a1 the state pointer and a2 the output buffer at state+0x40; result ignored. Original relocation identity: func_07DA10."
+        },
+        {
+          "site": "0x69B78",
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004AA90",
+          "c_alias": "gl_697C4_finish",
+          "observed_abi": "a0 receives mesh at state+0x34; a1 receives output buffer at state+0x40. The inspected callee stores it at mesh+0xC0. Result ignored; original relocation identity: func_05F0FC."
+        }
+      ],
+      "evidence": [
+        "Normal and NON_MATCHING C each produce 976 bytes with SHA-256 1fa04061088a82f7fe02c898251f1b9639800af23f94551af6d28c75ed808004, identical to the immutable expected function. Original assembly has coherent boundaries and a shared epilogue.",
+        "Sharing the unsigned cache-stamp difference with the existing loop counter reproduces the original beql t6,v0 and v0 stamp allocation, eliminating the final differing word.",
+        "Pointer-form cursor accesses re-read next after storing current. This reproduces iterator scheduling and integer temporary allocation. A block boundary before the weight comparison reproduces f16/f18 allocation.",
+        "Inspected layout family: gl_func_000695F4, gl_func_00069688, gl_func_000697C4, gl_func_00069B94, gl_func_00069C38 and the second argument of gl_func_000693A4. Shared GlState695F4 is recovered in the assigned source; sibling bodies remain unchanged.",
+        "Constructor allocates 0x98 bytes. Evidenced fields: +0x28 pointer, +0x30 signed-short weights, +0x34 mesh, +0x38 transform, +0x3C input records, +0x40 output records, +0x48 list, +0x4C cached stamp, +0x50 matrix storage, +0x90 stored word and +0x94 displacement amplitude.",
+        "Mesh+0x40 supplies an unsigned loop bound. Records have six-byte stride with signed-halfword components at +0/+2/+4. Transform arithmetic uses matrix terms at transform+0x70 through +0x98.",
+        "Original relocation evidence identifies stamp import_0005C6E0+0x14, scale RO_000054+0x2244 and seed D_00653C+0x2C4F0. Accounting for section encoding headers, the scale contains 0x3C23D70A, representing 0.01f.",
+        "Each displacement component advances the PRNG using unsigned wraparound multiplication, uses the low 16 bits, subtracts signed amplitude/2 and stores a halfword. State+0x94 is subsequently cleared.",
+        "All three distinct call aliases resolve to zero. Data aliases reuse the immutable expected D_00000000 address. Identities come from original per-site relocations, not alias values.",
+        "Supplied callers=[] and dfs_rank=null provide no verified game.uso reachability for this background candidate. Supplied unresolved_calls=[]; the body contains three recovered direct calls.",
+        "INCLUDE_ASM is removed. Both builds, ROM verification, all six compressed-block checks and git diff --check passed. No regressions among 167 previously exact NON_MATCHING functions; the normal unit matches expected throughout. Text outside the assigned region was preserved.",
+        "Coordinator type consolidation: Retrospective shared-type consolidation of gl_func_000697C4: existing C still matches all 976 expected bytes in normal and NON_MATCHING builds. ROM and all six compressed blocks were verified. No new generation or matched-code gain is attributed to this sibling update.",
+        "Current review unifies manager views through existing GLVertexContext/GLVertexLink/GLVertexS16 types from the same receiver passed697C4->693A4 and69688->69B94. Element payload and manager remain distinct; local memory-resident cursors preserve original lowering.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The imported stamp represents a frame or update sequence.",
+        "The modifier list implements weighted skin deformation or animation blending."
+      ],
+      "unknowns": [
+        "Original inheritance, field names and reserved-field meanings.",
+        "Broader semantic identity of import_0005C6E0.",
+        "Original return types are not established by ignored results.",
+        "Unrecovered or indirect callers remain a coverage gap.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_000697C4.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 165,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_0000CFA0",
+        "src/game_libs/game_libs_post0b:gl_func_00040640"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00061478",
+          "kind": "relocation",
+          "site": 515688,
+          "identity": "func_075AE4",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000697C4.s",
+          "sym_index": 306,
+          "cached_first_reference": "func_075AE4",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post1b:gl_func_000693A4",
+          "kind": "relocation",
+          "site": 516528,
+          "identity": "func_07DA10",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000697C4.s",
+          "sym_index": 2508,
+          "cached_first_reference": "func_07DA10",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_0004AA90",
+          "kind": "relocation",
+          "site": 516580,
+          "identity": "func_05F0FC",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_000697C4.s",
+          "sym_index": 2060,
+          "cached_first_reference": "func_05F0FC",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "source_sha256": "b4efbb5445b1569ec58be28f5cbc15a03b6b2012dbe9b3389b2db1c0fb357595",
+    "implementation_path": "src/match_imports/gl_func_000697C4.c",
+    "implementation_sha256": "57f191046cd7cafd4df5b24585473a6067c4339d4c2ac1c9012319430841d1e2",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 56,
+          "kind": 4,
+          "symbol": "gl_697C4_report",
+          "original_identity": "bootup_uso:symbol_306:addend_0x0",
+          "original_site": 515688,
+          "payload_site": 515688,
+          "original_symbol_index": 306,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 896,
+          "kind": 4,
+          "symbol": "gl_697C4_modifier",
+          "original_identity": "bootup_uso:symbol_2508:addend_0x0",
+          "original_site": 516528,
+          "payload_site": 516528,
+          "original_symbol_index": 2508,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 948,
+          "kind": 4,
+          "symbol": "gl_697C4_finish",
+          "original_identity": "bootup_uso:symbol_2060:addend_0x0",
+          "original_site": 516580,
+          "payload_site": 516580,
+          "original_symbol_index": 2060,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "1fa04061088a82f7fe02c898251f1b9639800af23f94551af6d28c75ed808004"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_697C4_tick",
+        "hi": 12,
+        "lo": 16,
+        "native_addend": 20,
+        "original_addend": 20,
+        "base_identity": "bootup_uso:symbol_73:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 44,
+        "lo": 60,
+        "native_addend": 181708,
+        "original_addend": 181708,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      },
+      {
+        "alias": "gl_697C4_scale",
+        "hi": 84,
+        "lo": 100,
+        "native_addend": 8772,
+        "original_addend": 8772,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "D_00000000",
+        "hi": 572,
+        "lo": 576,
+        "native_addend": 181488,
+        "original_addend": 181488,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_000697C4.json",
+      "nm": "scripts/match-bindings-gl_func_000697C4-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post1b.h",
+    "source_context_sha256": "45740ff555773b14044d65f42ccd0c4d27e5da3a2a544f61e5882205112bc573",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post1b.c",
+    "original_local_episode_sha256": "56bf6df765673aa9ab571d40b4253d3a8317aa848c9d4ddec7c45bd0ab7575c2",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

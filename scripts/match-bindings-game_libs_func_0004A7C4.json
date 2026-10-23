@@ -1,0 +1,19 @@
+{
+  "function": "game_libs_func_0004A7C4",
+  "raw_sha256": "dc86d3c9676e997d3a70037b4378895cad0a4c5075199cee76845c99e602e4a7",
+  "renames": {
+    "D_00000000": "snw_port_game_libs_func_0004A7C4_D_00000000",
+    "D_00000000_a": "snw_port_game_libs_func_0004A7C4_D_00000000_a",
+    "D_00000000_b": "snw_port_game_libs_func_0004A7C4_D_00000000_b",
+    "gl_4A7C4_report": "snw_port_game_libs_func_0004A7C4_gl_4A7C4_report",
+    "gl_4A7C4_render": "snw_port_game_libs_func_0004A7C4_gl_4A7C4_render"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_game_libs_func_0004A7C4_D_00000000": 0,
+    "snw_port_game_libs_func_0004A7C4_D_00000000_a": 0,
+    "snw_port_game_libs_func_0004A7C4_D_00000000_b": 0,
+    "snw_port_game_libs_func_0004A7C4_gl_4A7C4_report": 0,
+    "snw_port_game_libs_func_0004A7C4_gl_4A7C4_render": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

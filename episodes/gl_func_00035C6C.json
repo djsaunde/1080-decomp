@@ -1,0 +1,369 @@
+{
+  "function_name": "gl_func_00035C6C",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.849056+00:00",
+  "end_time": "2026-10-23T11:55:25.849072+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.849067+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "gl_func_00035C6C",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 320, \"native_sha256\": \"67dce6a06dffdf6272fdb88361eed56c70ecdc638f7061d696ad0cf9909b0ace\", \"code_gain\": 320}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 80,
+  "initial_m2c_source": null,
+  "final_source": "int gl_func_00035C6C(SnwRecordCollection *list) {\n    SnwRecordNode *initial = list->field_04;\n    Gl35C6CWord sentinel_obj;\n    Gl35C6CWord current_obj;\n    Gl35C6CWord *sentinel;\n    Gl35C6CWord *key;\n    Gl35C6CWord *current;\n    Gl35C6CWord key_obj;\n    int count_obj;\n    Gl35C6CWord value_obj;\n    SnwRecordNode *node;\n    sentinel = &sentinel_obj;\n    key = &key_obj;\n    current = &current_obj;\n    if (initial != 0) {\n        do {\n            current_obj.value = 0;\n            if (initial) {}\n            gl_35c6c_read_tag(&current->value);\n            if (list) {}\n            sentinel_obj.value = -1;\n            *key = *sentinel;\n            if (key_obj.value == current_obj.value) break;\n            node = list->field_04;\n            if (node != 0) {\n                *key = *current;\n                do {\n                    if (node->field_04 == key_obj.value) {\n                        node->field_0C->field_0C((void *)(node->field_0C->field_08 + (int)node));\n                        break;\n                    }\n                    node = node->field_00;\n                } while (node != 0);\n            }\n            if (node == 0) {\n                gl_35c6c_print((char *)&D_00000000 + 0x1E6C0, &current->value);\n                gl_35c6c_read_word(&count_obj);\n                if (count_obj != 0) {\n                    do {\n                        gl_35c6c_read_word(&value_obj.value);\n                        count_obj -= 4;\n                    } while (count_obj != 0);\n                }\n            }\n        } while (initial != 0);\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Loads named parameters until a -1 sentinel, invoking the first matching registered callback. Unknown names produce a diagnostic and discard words while a count decreases by four. The complete stream format and parameter meanings remain uncertain.",
+      "observed_abi": "a0 points to an eight-byte collection prefix: field_00 at +0 and head at +4. Nodes contain next +0, comparison key +4, constructor argument a3 at +8 and descriptor +0xC. The descriptor supplies a signed halfword adjustment +8 and callback +0xC. Callback a0 is node plus that adjustment. The dispatcher uses a 0x68 frame. Original return contracts remain unknown; ignored results do not establish void.",
+      "calls": [
+        {
+          "site": "0x35CC4",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035AA4",
+          "c_alias": "gl_35c6c_read_tag",
+          "observed_abi": "a0=&current->value at sp+0x5C; writes four bytes. Result ignored. Original target is bootup Text+0x4A110."
+        },
+        {
+          "site": "0x35D1C",
+          "target": "unresolved",
+          "c_alias": "node->field_0C->field_0C",
+          "observed_abi": "Indirect callback receives node plus signed descriptor field_08 in a0. Result ignored. Observed possible targets include game_uso_func_00003968 and game_uso_func_000039F8; other runtime targets remain unknown."
+        },
+        {
+          "site": "0x35D40",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "c_alias": "gl_35c6c_print",
+          "observed_abi": "a0=existing data-symbol base+0x1E6C0; a1=&current->value. Variadic diagnostic wrapper; result ignored."
+        },
+        {
+          "site": "0x35D48",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035AE0",
+          "c_alias": "gl_35c6c_read_word",
+          "observed_abi": "a0=&count_obj at sp+0x48; writes the subsequently tested count. Result ignored. Original target is bootup Text+0x4A14C."
+        },
+        {
+          "site": "0x35D5C",
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035AE0",
+          "c_alias": "gl_35c6c_read_word",
+          "observed_abi": "a0=&value_obj.value at sp+0x44; written word is discarded, then count decreases by four. Result ignored."
+        }
+      ],
+      "evidence": [
+        "Fresh comparison confirms 320 bytes, 77 identical words and three differing call-target words totaling nine bytes. NON_MATCHING SHA256 remains 67dce6a06dffdf6272fdb88361eed56c70ecdc638f7061d696ad0cf9909b0ace. Normal fallback bytes equal immutable expected bytes.",
+        "The expected ELF has no relocations at the four direct-call sites. The C object has R_MIPS_26 entries targeting the distinct zero-valued aliases. Per-site USO addends establish identities; the cached func_000008 name does not. Reported sites are bootup Text offsets minus 0x1466C.",
+        "Fresh Ghidra queries of /game_libs_post0b.c.o corroborate the sentinel, first-match dispatch, four-byte reads and fallback decrement. disasm-func.py substitutes misleading nearest-symbol callee names here; supplied relocation evidence remains authoritative.",
+        "ROM Data+0x1E6C0 contains \"Parm '%s' ignored\\n\" and Data+0x1E6B0 contains \"Dup parm '%s'\\n\". Sample four-byte parameter-name carriers contain fin, rng and sta.",
+        "Preserved the shared prefixes used by gl_func_00035B1C, gl_func_00035C6C, func_00008124, func_000084A0, func_000090CC, game_uso_func_000018FC and game_uso_func_00002744. Constructor instance flow, insertion and consumption establish collection+4 and node+0/+4/+0xC. func_000080EC passes the object's +0x3C collection.",
+        "Fresh make -j2 builds succeeded. The ROM is byte-identical to baserom. All six compressed-block checks passed with equal lengths and relocation-field differences only. No previously exact function regressed across the three family units; git diff --check passed. Aliases were unchanged from their validated state.",
+        "Provided callers: bootup func_000080EC, func_00008474, func_0000E4DC, func_0000E610, func_0000E720; game_libs gl_func_000083AC, gl_func_00054C04, gl_func_00065E64; game_uso_func_0000249C, game_uso_func_00002CA8, game_uso_func_00003948, game_uso_func_000044C8, game_uso_func_000057B8, game_uso_func_0000B498, game_uso_func_0000BF7C, game_uso_func_0000D418; timproc_uso_b5_func_00003ED8, timproc_uso_b5_func_00003F18, timproc_uso_b5_func_0000685C.",
+        "Saved typed record-dispatch C recovered through standard IDO7.1 O2 compilation and GNU MIPS full linking: original per-site Text addends4A110 and4A14C preserved; other imported bases remain distinct and zero. No instruction patches or expected edits.",
+        "Shared record prefixes retained in game_record_layout.h from saved same-instance family analysis. Indirect callback and unresolved target set remain intact; ignored return contracts remain unknown.",
+        "Old NM body124 grows to140 bytes, moving the final symbol by20 after alignment. The existing text clipping boundary changes2e31c to2e33c to preserve the complete final50-byte function. Normal/NM raw equality, ROM, six blocks and prior exact-function regression checks passed after this measured adjustment. No new model generation.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The table-like pointers represent C++ dispatch structures.",
+        "Records contain a four-byte parameter name, payload length and typed payload."
+      ],
+      "unknowns": [
+        "Complete descriptor layout, complete callback target set and original return contracts.",
+        "Meaning of node field_08, complete stream format and count validity requirements.",
+        "A permitted source representation matching the three direct-call addends. No exact promotion or fallback removal occurred.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/gl_func_00035C6C.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 592,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_000080EC",
+        "src/bootup_uso/bootup_uso:func_00008474",
+        "src/bootup_uso/bootup_uso:func_0000E4DC",
+        "src/bootup_uso/bootup_uso:func_0000E610",
+        "src/bootup_uso/bootup_uso:func_0000E720",
+        "src/game_libs/game_libs:gl_func_000083AC",
+        "src/game_libs/game_libs_post0b:gl_func_00054C04",
+        "src/game_libs/game_libs_post1b:gl_func_00065E64",
+        "src/game_uso/game_uso:game_uso_func_0000249C",
+        "src/game_uso/game_uso:game_uso_func_00002CA8",
+        "src/game_uso/game_uso:game_uso_func_00003948",
+        "src/game_uso/game_uso:game_uso_func_000044C8",
+        "src/game_uso/game_uso:game_uso_func_000057B8",
+        "src/game_uso/game_uso:game_uso_func_0000B498",
+        "src/game_uso/game_uso:game_uso_func_0000BF7C",
+        "src/game_uso/game_uso:game_uso_func_0000D418",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00003ED8",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_00003F18",
+        "src/timproc_uso_b5/timproc_uso_b5:timproc_uso_b5_func_0000685C"
+      ],
+      "calls": [
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035AA4",
+          "kind": "relocation",
+          "site": 303920,
+          "identity": "func_04A110",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00035C6C.s",
+          "sym_index": 3,
+          "cached_first_reference": "func_000008",
+          "first_reference_addend": 8,
+          "in_place_addend": 303376
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00034810",
+          "kind": "relocation",
+          "site": 304044,
+          "identity": "func_048E7C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00035C6C.s",
+          "sym_index": 76,
+          "cached_first_reference": "func_048E7C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035AE0",
+          "kind": "relocation",
+          "site": 304052,
+          "identity": "func_04A14C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00035C6C.s",
+          "sym_index": 3,
+          "cached_first_reference": "func_000008",
+          "first_reference_addend": 8,
+          "in_place_addend": 303436
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:gl_func_00035AE0",
+          "kind": "relocation",
+          "site": 304072,
+          "identity": "func_04A14C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00035C6C.s",
+          "sym_index": 3,
+          "cached_first_reference": "func_000008",
+          "first_reference_addend": 8,
+          "in_place_addend": 303436
+        }
+      ],
+      "unresolved_calls": [
+        {
+          "target": null,
+          "reason": "Indirect runtime target cannot be recovered statically",
+          "kind": "indirect_call",
+          "site": 304008,
+          "evidence": "asm/nonmatchings/game_libs/game_libs/gl_func_00035C6C.s"
+        }
+      ],
+      "observed_indirect_calls": [
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_00003968",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_000039F8",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000B50",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000BE0",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000B80",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/game_uso/game_uso:game_uso_func_00003998",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        },
+        {
+          "target": "src/bootup_uso/bootup_uso:func_00000BB0",
+          "kind": "observed_indirect_call",
+          "site": 304008,
+          "evidence": "scripts/emu-symdump/loader.indirect-targets.json",
+          "complete_target_set": false
+        }
+      ],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/gl_func_00035C6C.c",
+    "implementation_sha256": "f4cfbff6c4336c319cb2d93a842ad87bbd55e76420473452a9f37ad9840b6259",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 88,
+          "kind": 4,
+          "symbol": "gl_35c6c_read_tag",
+          "original_identity": "bootup_uso:symbol_3:addend_0x4a110",
+          "original_site": 303920,
+          "payload_site": 303920,
+          "original_symbol_index": 3,
+          "original_addend": 303376,
+          "opcode": 3
+        },
+        {
+          "offset": 212,
+          "kind": 4,
+          "symbol": "gl_35c6c_print",
+          "original_identity": "bootup_uso:symbol_76:addend_0x0",
+          "original_site": 304044,
+          "payload_site": 304044,
+          "original_symbol_index": 76,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 220,
+          "kind": 4,
+          "symbol": "gl_35c6c_read_word",
+          "original_identity": "bootup_uso:symbol_3:addend_0x4a14c",
+          "original_site": 304052,
+          "payload_site": 304052,
+          "original_symbol_index": 3,
+          "original_addend": 303436,
+          "opcode": 3
+        },
+        {
+          "offset": 240,
+          "kind": 4,
+          "symbol": "gl_35c6c_read_word",
+          "original_identity": "bootup_uso:symbol_3:addend_0x4a14c",
+          "original_site": 304072,
+          "payload_site": 304072,
+          "original_symbol_index": 3,
+          "original_addend": 303436,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [
+        176
+      ],
+      "native_sha256": "67dce6a06dffdf6272fdb88361eed56c70ecdc638f7061d696ad0cf9909b0ace"
+    },
+    "native_data_proof": [
+      {
+        "alias": "D_00000000",
+        "hi": 52,
+        "lo": 64,
+        "native_addend": 124608,
+        "original_addend": 124608,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-gl_func_00035C6C.json",
+      "nm": "scripts/match-bindings-gl_func_00035C6C-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_o2_35C6C.h",
+    "source_context_sha256": "285f4c149fa04229c8a71f5333ae6a1cdec0eb4854b8bf6c0c072de7adb12b82",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_o2_35C6C.c",
+    "original_local_episode_sha256": "f0b802db7fa0ad6e9dfd634ef619340021d65bed2d985b86bae005c2cbb03244",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

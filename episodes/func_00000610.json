@@ -1,0 +1,331 @@
+{
+  "function_name": "func_00000610",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.503421+00:00",
+  "end_time": "2026-10-23T11:55:25.503437+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.503433+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "func_00000610",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 588, \"native_sha256\": \"97973c62f44cd97c01bd21be838debae091d85b42e1d11af0b3a2e7d9ef09252\", \"code_gain\": 588}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 147,
+  "initial_m2c_source": null,
+  "final_source": "void func_00000610(GlState2E0C4 **arg0, Vec3 *arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, char *arg7, s32 arg8) {\n    GlState2E0C4 *o;\n    f32 sp28;\n    int sp24;\n    f32 var_f0;\n    o = arg0[0];\n    if (o != 0) {\n        {\n            arg5 = (f32) ((f64) arg5 / bootup_0610_scale.value);\n            if (arg5 < 0.0f) {\n                var_f0 = 0.0f;\n            } else if (1.0f < arg5) {\n                var_f0 = 1.0f;\n            } else {\n                var_f0 = arg5;\n            }\n            o->field_0C = var_f0;\n            if (arg4 < 0.0f) {\n                var_f0 = -arg4;\n            } else {\n                var_f0 = arg4;\n            }\n            arg0[0]->field_04 = (f32) ((f64) var_f0 + bootup_0610_bias.value);\n            arg0[0]->field_18 = (s8) (s32) (arg4 * 63.0f);\n            arg0[0]->field_1E = (s8) ((arg8 & 0x80) != 0);\n            if (arg6 == 0x0) goto mode_0;\n            if (arg6 == 0x61) goto mode_1;\n            if (arg6 == 0x62) goto mode_2;\n            if (arg6 == 0x63) goto mode_3;\n            if (arg6 == 0x64) goto mode_4;\n            if (1) {\n                goto mode_done;\n            }\n        mode_0:\n            if (1) {\n                arg0[0]->field_15 = 1;\n                arg0[0]->field_14 = 0;\n                goto mode_done;\n            }\n        mode_1:\n            if (1) {\n                arg0[0]->field_15 = 1;\n                arg0[0]->field_14 = 1;\n                goto mode_done;\n            }\n        mode_2:\n            if (1) {\n                arg0[0]->field_15 = 3;\n                arg0[0]->field_14 = 1;\n                goto mode_done;\n            }\n        mode_3:\n            if (1) {\n                arg0[0]->field_15 = 2;\n                arg0[0]->field_14 = 1;\n                goto mode_done;\n            }\n        mode_4:\n            if (1) {\n                arg0[0]->field_15 = 2;\n                arg0[0]->field_14 = 2;\n                goto mode_done;\n            }\n        mode_done:\n            var_f0 = 4;\n            arg0[0]->field_00 = arg2 / var_f0;\n            arg0[0]->field_08 = arg3 / var_f0;\n            arg0[0]->field_20 = 1;\n            arg0[0]->field_1C = (u8) ((arg8 & 0x8000) != 0);\n        }\n        if (arg0[0]->field_1C != 0) {\n            bootup_0610_decode(arg1, &sp28, &sp24, arg7);\n            bootup_0610_apply(arg0[0], sp28, (s8) sp24);\n        }\n        bootup_0610_select(&D_00006584);\n        bootup_0610_reset(arg0[0], 0);\n        bootup_0610_finish();\n    }\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Updates shared-object scalar parameters and byte selectors, optionally computes camera-relative distance/projection from a Vec3, applies those outputs, and invokes an updater within diagnostic bookkeeping tagged NA_UpdPl. An audio-related role is plausible; precise field meanings remain uncertain.",
+      "observed_abi": "o32: a0 points to an object-pointer slot; a1 is a Vec3 pointer; a2/a3 carry f32 arguments. Incoming stack offsets 0x10/0x14 contain further f32 arguments, 0x18 a selector, 0x1C a context pointer, and 0x20 flags. Discarded results do not prove original void return contracts.",
+      "calls": [
+        {
+          "site": "0x810",
+          "target": "func_000003F8 (bootup Text 0x3F8)",
+          "c_alias": "bootup_0610_decode",
+          "observed_abi": "a0=Vec3 pointer; a1=f32 output pointer at sp+0x28; a2=s32 output pointer at sp+0x24; a3=context pointer. Both outputs receive full 32-bit writes. Result discarded."
+        },
+        {
+          "site": "0x820",
+          "target": "game_libs_func_0002F720 (bootup Text 0x43D8C; game_libs Text 0x2F720)",
+          "c_alias": "bootup_0610_apply",
+          "observed_abi": "a0=object pointer; a1=f32 bits; a2=sign-extended low byte of integer output. Callee transfers a1 into f12. Result discarded."
+        },
+        {
+          "site": "0x82C",
+          "target": "game_libs_func_00061728 (bootup Text 0x75D94; game_libs Text 0x61728)",
+          "c_alias": "bootup_0610_select",
+          "observed_abi": "a0 points to NA_UpdPl at D_00006584. Callee pushes that pointer into its diagnostic stack. Result discarded."
+        },
+        {
+          "site": "0x838",
+          "target": "gl_func_0002E354 (bootup Text 0x429C0; game_libs Text 0x2E354)",
+          "c_alias": "bootup_0610_reset",
+          "observed_abi": "a0=object pointer; a1=0. Result discarded."
+        },
+        {
+          "site": "0x840",
+          "target": "game_libs_func_0006179C (bootup Text 0x75E08; game_libs Text 0x6179C)",
+          "c_alias": "bootup_0610_finish",
+          "observed_abi": "No arguments prepared or consumed. Callee decrements diagnostic depth and diagnoses underflow. Result discarded."
+        }
+      ],
+      "evidence": [
+        "Immutable assembly establishes one 588-byte function. Caller func_0000D440 at 0xD8D8 passes state+0xDC as the Vec3 pointer; supplied DFS rank is 414.",
+        "Inspected and preserved GlState2E0C4 across func_0000057C, func_00000610, gl_func_0002DF98, gl_func_0002E06C, gl_func_0002E354, and game_libs_func_0002F720. Field qualifiers, widths, and opaque spans remain intact.",
+        "Family instance flow follows initialization at 0x5F8, same-object calls at 0x820/0x838, and forwarding at bootup Text 0x42A90. Target fields are f32 at 0x00/0x04/0x08/0x0C and bytes at 0x14/0x15/0x18/0x1C/0x1E/0x20. Related functions establish offset-named parameters through 0x63.",
+        "Fresh audit checked assembly instruction comments directly against baserom bytes. Both differing C load words equal the original ROM words. Expected ELF relocations at 0x638/0x63C and 0x698/0x6BC reference STT_FUNC func_00000044 with value 0x44.",
+        "Expected resolves 0x44+0x14 and 0x44+0x1C; C resolves 0+0x58 and 0+0x60. Original RoData contains doubles 5000.0 and 0.3 at those effective offsets.",
+        "All five call aliases remain distinct and zero-valued. Their identities derive from original per-site relocations. Data aliases retain evidenced addresses.",
+        "Prior true-C normal/NON_MATCHING builds produced identical bodies and a byte-identical complete ROM. Current object hashes remain unchanged; only the two expected-object words differ.",
+        "Final make -j2 checks, ROM byte comparison, all six compressed-block checks, function regression comparisons, and git diff --check passed. Fresh disassembly, m2c output, objdiff output, and relocation audit remain under attempt12.",
+        "Native IDO7.1 O2 shared-layout donor matches all588 bytes after standard linker relocation in the original symbol44 coordinate: base0 plus58/60 equals base44 plus14/1C. Linker coordinate offset is minus44; metadata-only symbol rename restores func_00000044 for final relocation. Full emitted relocations preserve distinct call identities. No instruction patches or expected edits.",
+        "Canonical game_command_record_layout.h now names only evidenced fields within prior unknown padding. Existing volatile16, all member offsets and parameters54..63 remain unchanged. Original-source Vec3 pointer ABI is restored in the host C definition.",
+        "Independent C normal/NON_MATCHING bytes, full ROM, six blocks, all prior exact-function regressions and denominator762344 passed. Historical unresolved-representation evidence above is superseded by this verified donor.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "NA_UpdPl and nearby sound-heap messages indicate an audio-related subsystem.",
+        "The remaining acceptance obstruction concerns symbolic representation rather than runtime behavior."
+      ],
+      "unknowns": [
+        "Original typedefs, nesting, complete object extent, precise field meanings, and return contracts remain unknown.",
+        "No unresolved direct or observed indirect calls are reported for this target; transitive coverage remains incomplete.",
+        "The experiments do not prove that every possible permitted C representation is impossible.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/func_00000610.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": 430,
+      "callers": [
+        "src/bootup_uso/bootup_uso:func_0000D440"
+      ],
+      "calls": [
+        {
+          "target": "src/bootup_uso/bootup_uso:func_000003F8",
+          "kind": "relocation",
+          "site": 2064,
+          "identity": "func_0003F8",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00000610.s",
+          "sym_index": 101,
+          "cached_first_reference": "func_0003F8",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:game_libs_func_0002F720",
+          "kind": "relocation",
+          "site": 2080,
+          "identity": "func_043D8C",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00000610.s",
+          "sym_index": 116,
+          "cached_first_reference": "func_043D8C",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_00061728",
+          "kind": "relocation",
+          "site": 2092,
+          "identity": "func_075D94",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00000610.s",
+          "sym_index": 117,
+          "cached_first_reference": "func_075D94",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post:gl_func_0002E354",
+          "kind": "relocation",
+          "site": 2104,
+          "identity": "func_0429C0",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00000610.s",
+          "sym_index": 118,
+          "cached_first_reference": "func_0429C0",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        },
+        {
+          "target": "src/game_libs/game_libs_post0b:game_libs_func_0006179C",
+          "kind": "relocation",
+          "site": 2112,
+          "identity": "func_075E08",
+          "class": "bootup_symbol",
+          "evidence": "asm/nonmatchings/bootup_uso/func_00000610.s",
+          "sym_index": 119,
+          "cached_first_reference": "func_075E08",
+          "first_reference_addend": 0,
+          "in_place_addend": 0
+        }
+      ],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/bootup_uso/bootup_uso.c",
+    "source_sha256": "39532ee29b70c60d8359ffb22db61f2623cbe6973decfbadddb3f034469a9ad1",
+    "implementation_path": "src/match_imports/func_00000610.c",
+    "implementation_sha256": "355087697e4e319ea25ea79791e6b4f8bb275d0e88763ff3a2b37c235a475b05",
+    "native_call_proof": {
+      "calls": [
+        {
+          "offset": 512,
+          "kind": 4,
+          "symbol": "bootup_0610_decode",
+          "original_identity": "bootup_uso:symbol_101:addend_0x0",
+          "original_site": 2064,
+          "payload_site": 2064,
+          "original_symbol_index": 101,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 528,
+          "kind": 4,
+          "symbol": "bootup_0610_apply",
+          "original_identity": "bootup_uso:symbol_116:addend_0x0",
+          "original_site": 2080,
+          "payload_site": 2080,
+          "original_symbol_index": 116,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 540,
+          "kind": 4,
+          "symbol": "bootup_0610_select",
+          "original_identity": "bootup_uso:symbol_117:addend_0x0",
+          "original_site": 2092,
+          "payload_site": 2092,
+          "original_symbol_index": 117,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 552,
+          "kind": 4,
+          "symbol": "bootup_0610_reset",
+          "original_identity": "bootup_uso:symbol_118:addend_0x0",
+          "original_site": 2104,
+          "payload_site": 2104,
+          "original_symbol_index": 118,
+          "original_addend": 0,
+          "opcode": 3
+        },
+        {
+          "offset": 560,
+          "kind": 4,
+          "symbol": "bootup_0610_finish",
+          "original_identity": "bootup_uso:symbol_119:addend_0x0",
+          "original_site": 2112,
+          "payload_site": 2112,
+          "original_symbol_index": 119,
+          "original_addend": 0,
+          "opcode": 3
+        }
+      ],
+      "indirect_sites": [],
+      "native_sha256": "97973c62f44cd97c01bd21be838debae091d85b42e1d11af0b3a2e7d9ef09252"
+    },
+    "native_data_proof": [
+      {
+        "alias": "bootup_0610_scale",
+        "hi": 40,
+        "lo": 44,
+        "native_addend": 88,
+        "original_addend": 88,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "bootup_0610_bias",
+        "hi": 136,
+        "lo": 172,
+        "native_addend": 96,
+        "original_addend": 96,
+        "base_identity": "bootup_uso:symbol_1:base_addend_0x0"
+      },
+      {
+        "alias": "D_00006584",
+        "hi": 536,
+        "lo": 544,
+        "native_addend": 0,
+        "original_addend": 25988,
+        "base_identity": "bootup_uso:symbol_2:base_addend_0x6584"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-func_00000610.json",
+      "nm": "scripts/match-bindings-func_00000610-nm.json"
+    },
+    "source_context": "src/match_imports/context_bootup_uso_o2_0610.h",
+    "source_context_sha256": "e884ab47c5f9b22eb3b87ce393e57e6e235e86647332f511b66dd558ef68f9b8",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/bootup_uso/bootup_uso_o2_0610.c",
+    "original_local_episode_sha256": "2f7ed7cad658c18b3f83629c97c8a71fe9bac0e60d5c0e1f302a3d0f03b4d749",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

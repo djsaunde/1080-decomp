@@ -1,0 +1,179 @@
+{
+  "function_name": "game_libs_func_00047394",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.685347+00:00",
+  "end_time": "2026-10-23T11:55:25.685359+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.685355+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_00047394",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 688, \"native_sha256\": \"e4b72566526405b0337f612f72719be4d550cb2642494794a83ec8c2a0151edf\", \"code_gain\": 688}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 172,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_00047394(GL470E4Self *self, const f32 *c) {\n    float r, g;\n    unsigned char col[4];\n    float b, a;\n    GL470E4Object *obj; GL470E4List *gp; GL470E4Packet *p; s32 i;\n    obj = self->context->object;\n    r = c[0];\n    col[0] = (g = c[1], b = c[2], a = c[3], r * 255.0f);\n    col[1] = g * 255.0f;\n    col[2] = b * 255.0f;\n    col[3] = a * 255.0f;\n    gp = obj->list; i = gp->count; gp->count = i + 1;\n    p = obj->list->packets + i;\n    p->command = 0xFB000000;\n    p->color = (col[3] & 0xFF) | (((col[2] & 0xFF) << 8) | (((col[1] & 0xFF) << 16) | ((col[0] & 0xFF) << 24)));\n}",
+  "metadata": {
+    "analysis": {
+      "function": "game_libs_func_00047394",
+      "source": {
+        "path": "src/game_libs/game_libs_post0b.c",
+        "line": 16104,
+        "sha256": "c4b585a0a564ddc24d7bcb270e61a63e4f08c007f119821b1fbf6a794e2830ed"
+      },
+      "asm": {
+        "path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_00047394.s",
+        "first_instruction_line": 4,
+        "project_start": "0x47394",
+        "project_end": "0x47644"
+      },
+      "facts": [
+        "Appends one8-byte RGBA color command through self+0x254 -> context+0x158 -> object+0xC -> {buffer,count}.",
+        "Four floats multiplied by255, converted to unsigned bytes and packed R/G/B/A into big-endian command word.",
+        "No calls. Packet opcode 0xFB SETENVCOLOR."
+      ],
+      "hypotheses": [
+        "Partial layouts likely belong to render context/display-list builder."
+      ],
+      "unknowns": [
+        "Original struct/member names and complete layouts; caller material/render semantics.",
+        "Symbol2027 exports this function, but no incoming TextReloc/DataReloc/RoDataReloc references found in bootup.uso; external/indirect callers not established.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_00047394.c. This is not a proof of original source spelling or whole-program portable source."
+      ],
+      "calls": [],
+      "data_references": [],
+      "callers": [],
+      "module": "bootup.uso/game_libs",
+      "identity": {
+        "symbol_ids": [
+          2027
+        ],
+        "text_offset": "0x5ba00",
+        "game_libs_to_bootup_shim": "0x1466c"
+      },
+      "signature": "void(partial Self*, const float rgba[4])",
+      "callers_scope": "bootup.uso original relocation tables and game.uso captured direct-call sites; GUI own tables where applicable; other overlays and dynamic indirect calls not exhaustively reviewed",
+      "purpose": "Append one SETENVCOLOR display-list packet (0xFB), converting four float RGBA components multiplied by 255 to packed bytes.",
+      "observed_abi": "Current matching C signature (reconstructed): void(partial Self*, const float rgba[4]); compatible with the recorded IDO o32 instruction bytes. Original typedefs, signedness and return types are not established merely by this declaration or by ignored call results.",
+      "evidence": [
+        "Appends one8-byte RGBA color command through self+0x254 -> context+0x158 -> object+0xC -> {buffer,count}.",
+        "Four floats multiplied by255, converted to unsigned bytes and packed R/G/B/A into big-endian command word.",
+        "No calls. Packet opcode 0xFB SETENVCOLOR.",
+        "asm/nonmatchings/game_libs/game_libs/game_libs_func_00047394.s \u2014 immutable assembly and per-site USO identities",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "audit_source_path": "src/game_libs/game_libs_post0b.c",
+      "audit_current_definition_line": 16104,
+      "evidence_note": "Line references describe the inspection snapshot; immutable callsite/module offsets remain the identity evidence after comment edits."
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
+    "implementation_path": "src/match_imports/game_libs_func_00047394.c",
+    "implementation_sha256": "67ab9e1e22eb3fa82a30e107153a22edad31cb1b9d9cf313984c5647ab45253d",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "e4b72566526405b0337f612f72719be4d550cb2642494794a83ec8c2a0151edf"
+    },
+    "native_data_proof": [],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_00047394.json",
+      "nm": "scripts/match-bindings-game_libs_func_00047394-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post0b.h",
+    "source_context_sha256": "134ea4ae6e17c4c08707bcf0d79618a13b71dbf68f708852046fc9343255d260",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post0b.c",
+    "original_local_episode_sha256": "601c496ec10ac5067e26077d25511d0d5aaf6231140ae9d91e2eee8af7898e88",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}

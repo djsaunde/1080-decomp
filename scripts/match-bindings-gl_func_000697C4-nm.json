@@ -1,0 +1,21 @@
+{
+  "function": "gl_func_000697C4",
+  "raw_sha256": "1fa04061088a82f7fe02c898251f1b9639800af23f94551af6d28c75ed808004",
+  "renames": {
+    "gl_697C4_tick": "snw_port_gl_func_000697C4_gl_697C4_tick",
+    "gl_697C4_report": "snw_port_gl_func_000697C4_gl_697C4_report",
+    "D_00000000": "snw_port_gl_func_000697C4_D_00000000",
+    "gl_697C4_scale": "snw_port_gl_func_000697C4_gl_697C4_scale",
+    "gl_697C4_modifier": "snw_port_gl_func_000697C4_gl_697C4_modifier",
+    "gl_697C4_finish": "snw_port_gl_func_000697C4_gl_697C4_finish"
+  },
+  "original_ROM_minus_curated_addend_bindings": {
+    "snw_port_gl_func_000697C4_gl_697C4_tick": 0,
+    "snw_port_gl_func_000697C4_gl_697C4_report": 0,
+    "snw_port_gl_func_000697C4_D_00000000": 0,
+    "snw_port_gl_func_000697C4_gl_697C4_scale": 0,
+    "snw_port_gl_func_000697C4_gl_697C4_modifier": 0,
+    "snw_port_gl_func_000697C4_gl_697C4_finish": 0
+  },
+  "note": "Original native call/data identities are separately audited before standard linking. These per-function carriers retain ELF relocations where curated target representation differs from original ROM; .text is unchanged."
+}

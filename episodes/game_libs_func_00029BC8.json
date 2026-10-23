@@ -1,0 +1,166 @@
+{
+  "function_name": "game_libs_func_00029BC8",
+  "project": "1080 Snowboarding local upstream integration",
+  "model": "terminal-local-merge",
+  "start_time": "2026-10-23T11:55:25.632162+00:00",
+  "end_time": "2026-10-23T11:55:25.632174+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T11:55:25.632170+00:00",
+      "assistant_text": "Retrospective verified source port onto frozen upstream. Independent native C, original USO identities, both raw modes, full ROM, six strict code-block payloads and no exact/raw/partial regression pass. Canonical and remote branches untouched.",
+      "tool_calls": [
+        {
+          "name": "independent_local_upstream_port_verification",
+          "input": {
+            "function": "game_libs_func_00029BC8",
+            "normal_and_NM": true,
+            "original_USO_identities": true,
+            "generated_data": true,
+            "ROM": true,
+            "strict_six_blocks": true
+          },
+          "output": "{\"bytes\": 184, \"native_sha256\": \"de336bcd14e91364c5fcbf9e1418eda6cbb5bd7f33901673fa50a134c2aa2d11\", \"code_gain\": 184}",
+          "duration_ms": 0
+        }
+      ],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 46,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_00029BC8(struct GameLibsAnimRecord *obj) {\n    u16 state;\n    struct GameLibsAnimDescriptor *desc;\n    struct GameLibsAnimChannel *channel;\n    obj->field8C.field14 = 1;\n    obj->field8C.field04 = 0;\n    obj->field3C = 1.0f;\n    obj->field8C.field08 = gl_anim_defaults_1236.field08;\n    obj->field8C.field00 = obj->field44->field50;\n    channel = &obj->field8C;\n    desc = channel->field00;\n    channel->field18 = state = desc->field1A;\n    if (state == 0) {\n        do {} while (0);\n        channel->field0C = (f32)(s32)desc->field16;\n    } else {\n        do {} while (0);\n        channel->field0C = (f32)(s32)desc->field12;\n    }\n    state = desc->field18;\n    channel->field16 = state;\n    if (state == 0) {\n        channel->field10 = (f32)(s32)desc->field14;\n    } else {\n        channel->field10 = (f32)(s32)desc->field10;\n    }\n    channel->field1A = desc->field1C;\n}",
+  "metadata": {
+    "analysis": {
+      "purpose": "Initializes the oscillator/tween channel at record+0x8C from record+0x44->0x50, including its sample pointer, paired float values, counters, and countdown. Original field meanings remain partly uncertain.",
+      "observed_abi": "One observed input: a0 points to the record. Complete leaf without a stack frame or calls. Both callers ignore the result. Original instructions leave record+0x8C in v0; the retained void signature does not establish the original return contract.",
+      "calls": [],
+      "evidence": [
+        "The immutable expected object and original assembly establish a complete 184-byte function ending before game_libs_func_00029C80.",
+        "Incoming calls: gl_func_00027E24 at game_libs offset 0x2805C and gl_func_0002ABC0 at 0x2ACDC, both targeting bootup Text+0x3E234.",
+        "Inspected shared record family: the assigned initializer, gl_func_00027E24, gl_func_0002ABC0, gl_func_00029B6C, and game_libs_func_00029C80. Shared partial record/channel/descriptor definitions remain in the allowed source file.",
+        "Related gl_func_00029978 and game_libs_func_00029934 corroborate channel+0x04 as a 32-bit accumulator, +0x08 as a signed-halfword sample pointer, floats at +0x0C/+0x10, counters at +0x16/+0x18, and countdown at +0x1A.",
+        "Text relocations at game_libs offsets 0x29BDC and 0x29BE4 identify bootup Sym 1236 with addend +8. Its Data offset is 0x18D50; DataReloc at 0x18D58 targets Sym 1264 at Data+0x18150. C identifier gl_anim_defaults_1236 preserves this provenance and reuses the expected zero placeholder. The strict alias gate passed.",
+        "Writes record+0xA0=1, +0x90=0, +0x3C=1.0f, +0x94=sample pointer, and +0x8C=descriptor. Descriptor halfwords +0x1A/+0x18 populate record+0xA4/+0xA2; their zero tests select +0x16 versus +0x12 for float +0x98 and +0x14 versus +0x10 for float +0x9C. Descriptor+0x1C populates record+0xA6.",
+        "Using the named descriptor for both the first counter load and its zero-case value eliminated all six remaining register differences.",
+        "Both C builds have SHA-256 de336bcd14e91364c5fcbf9e1418eda6cbb5bd7f33901673fa50a134c2aa2d11, identical to expected. Only the six corrected bytes changed in the NON_MATCHING text section.",
+        "Objdiff reports 99.95652% because the typed import carries HI16/LO16 relocation metadata absent from the raw expected instructions; instruction bytes and the linked ROM match exactly.",
+        "Experiments are retained under build/orchestration-scratch/attempt5/. No compiler flags or expected assets were changed.",
+        "Fresh upstream port: original compiler in both modes, complete native call/data USO identity checks, exact source-generated tables/constants, exact host function bytes, full ROM and all six strict original code-block payloads."
+      ],
+      "hypotheses": [
+        "The descriptor counters control interpolation toward the paired values.",
+        "The formerly mixed descriptor access paths introduced a redundant allocator candidate; exact matching was achieved without allocator diagnostics."
+      ],
+      "unknowns": [
+        "Original return type, complete layouts, original field names, and accumulator signedness.",
+        "DFS rank and verified game.uso callback ancestry remain unavailable. Missing relocation and indirect-edge coverage remain graph limitations; original instructions confirm this assigned function contains no calls.",
+        "The surrounding host definition preserves compiler/RoData context; the required independently compiled C implementation is src/match_imports/game_libs_func_00029BC8.c. This is not a proof of original source spelling or whole-program portable source."
+      ]
+    },
+    "callgraph": {
+      "module": "bootup_uso",
+      "dfs_rank": null,
+      "callers": [
+        "src/game_libs/game_libs_post:gl_func_00027E24",
+        "src/game_libs/game_libs_post:gl_func_0002ABC0"
+      ],
+      "calls": [],
+      "unresolved_calls": [],
+      "observed_indirect_calls": [],
+      "limitations": [
+        "Indirect calls and missing recovered relocations stay unresolved; alias value zero is not an identity.",
+        "Observed indirect calls prove possible executed targets only; preserve indirect C dispatch and other unknown runtime targets."
+      ]
+    },
+    "source_path": "src/game_libs/game_libs_post.c",
+    "source_sha256": "d4ae08382854a4e8abc9b5880edadae9d0ef6746d78ed6f86e3a123adc032522",
+    "implementation_path": "src/match_imports/game_libs_func_00029BC8.c",
+    "implementation_sha256": "2df34781fc70a6c37814f5ff0cf501d24465cd2c2f6c8045c49d39e1e5f33d64",
+    "native_call_proof": {
+      "calls": [],
+      "indirect_sites": [],
+      "native_sha256": "de336bcd14e91364c5fcbf9e1418eda6cbb5bd7f33901673fa50a134c2aa2d11"
+    },
+    "native_data_proof": [
+      {
+        "alias": "gl_anim_defaults_1236",
+        "hi": 20,
+        "lo": 28,
+        "native_addend": 8,
+        "original_addend": 8,
+        "base_identity": "bootup_uso:symbol_1236:base_addend_0x0"
+      }
+    ],
+    "native_binding_manifests": {
+      "normal": "scripts/match-bindings-game_libs_func_00029BC8.json",
+      "nm": "scripts/match-bindings-game_libs_func_00029BC8-nm.json"
+    },
+    "source_context": "src/match_imports/context_game_libs_post.h",
+    "source_context_sha256": "d0301dd34b9b4e2fd985ae83809228a1d827858daae6b89307bc6c58aa2828e0",
+    "upstream_revision": "450df4fa099384984261915d38d6c02ce2a76afd",
+    "workflow": {
+      "repository": "https://github.com/bigyoshi51/decomp",
+      "revision": "a1de002735b79044a1baf8d552dc0c3181c7c245"
+    },
+    "original_local_source": "src/game_libs/game_libs_post.c",
+    "original_local_episode_sha256": "587c288b21db79b262d3c38f710b218da897b2f236fd0324785bca5469e88a85",
+    "rom_sha256": "5e9d7168e5786ba1bd4b643431ba7100ff3d7a09e558acae15438d426c0f34df",
+    "strict_six_code_blocks": [
+      {
+        "module": "mgrproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 13344
+      },
+      {
+        "module": "game_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 72496
+      },
+      {
+        "module": "timproc_uso",
+        "block": 1,
+        "strict_equal": true,
+        "bytes": 12000
+      },
+      {
+        "module": "timproc_uso",
+        "block": 3,
+        "strict_equal": true,
+        "bytes": 12512
+      },
+      {
+        "module": "timproc_uso",
+        "block": 5,
+        "strict_equal": true,
+        "bytes": 58912
+      },
+      {
+        "module": "map4_data_uso",
+        "block": 2,
+        "strict_equal": true,
+        "bytes": 208
+      }
+    ],
+    "recording": "Retrospective terminal verification of this isolated upstream port; original local semantic evidence retained and fresh native/ROM checks performed. No historical attempts, m2c output, tokens or elapsed time are reconstructed.",
+    "canonical_adoption": false,
+    "published_to_upstream": false,
+    "status": "locally verified upstream integration candidate",
+    "token_usage_available": false,
+    "timing_available": false,
+    "measurement_note": "Zero tokens and duration_ms=0 are unmeasured logger defaults, not measurements.",
+    "verification_logs": {
+      "objects.log": "e242ae69835c0fa69b537ed2b529c396518cc04badb4ac5ce5fa90f6751f9cc8",
+      "ROM-blocks.log": "226ba6561fcb398c26d59d3dd9240a1a1e65958f563a19d0e567a3fcb63ec00f",
+      "report.log": "6927d03307faff8f6bae5ea4ebf8e839a35d659a896e6c5e479e7bf51e251903"
+    }
+  }
+}
