@@ -28044,6 +28044,7 @@ void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
     s32 j, k;
     f32 t, a, b_;
     while (0) { t = c; q = &q[i]; }
+    while (0) { j = k + k; }
     j = i + 1;
     if (j >= 4) j = 1;
     k = j + 1;
