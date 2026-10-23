@@ -582,7 +582,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 133: 3DD28 NM-only NCC donor (35 -> 36 words, target 38): 0x2e850 -> 0x2e854 (62F08 NM offset 0x2e804).
 # agent-c run 133: 4A9F0 NM-only NCC donor (39 -> 40 words = target): 0x2e854 -> 0x2e858 (62F08 NM offset 0x2e808).
 # agent-c run 133: 35DAC NCC donor + placeholder host (+0x28): 0x2e858 -> 0x2e880 (62F08 NM offset 0x2e830).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e880 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 133: 36A48 NM-only NCC donor (82 -> 85 words = target): 0x2e880 -> 0x2e88c (62F08 NM offset 0x2e83c).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e88c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1500,6 +1501,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DD28_NM_DONOR
 GAMELIBS_4A9F0_NM_DONOR := build/src/game_libs/game_libs_ncc_4A9F0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_NM_DONOR)
+# 36A48 = best-dot index over callback-transformed V3s (NCC 97.1 vs cfe 87.9, 82 -> 85 words = target). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_36A48_NM_DONOR := build/src/game_libs/game_libs_ncc_36A48_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036A48=$(GAMELIBS_36A48_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36A48_NM_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)
