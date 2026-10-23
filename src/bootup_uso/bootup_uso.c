@@ -641,7 +641,7 @@ void *func_00000CA0(char *o, int a1, int a2, int a3) {
     bu_ca0_box[0] = h;   bu_ca0_box[1] = h;   bu_ca0_box[2] = h;
     bu_ca0_box[8] = nh;  bu_ca0_box[9] = h;   bu_ca0_box[10] = h;
     bu_ca0_box[16] = nh; bu_ca0_box[17] = nh; bu_ca0_box[18] = h;
-    bu_ca0_box[24] = h;  bu_ca0_box[25] = nh; bu_ca0_box[26] = h;
+    bu_ca0_box[24] = h;  bu_ca0_box[25] = nh; bu_ca0_box[26] = h; if (h) {}
 end:
     return o;
 }
