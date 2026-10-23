@@ -177,6 +177,11 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_4948_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_00004948=$(BOOTUP_4948_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_4948_DONOR)
+# D900 = event handler; C++ (edg case-order compare chain, Vec3 operator temps).
+# Still NON_MATCHING (operator temp slots, case-6 zero colour): NM comparison object only.
+BOOTUP_D900_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_D900.cpp.o
+build/non_matching/src/bootup_uso/bootup_uso.c.o: REPLACE_FUNC_BODY += func_0000D900=$(BOOTUP_D900_NM_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
