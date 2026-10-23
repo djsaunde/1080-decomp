@@ -1921,7 +1921,7 @@ void gl_func_00065494(char *arg0) {
             sp134[0] = (f32)0;
             sp134[1] = 1.0f;
             sp134[2] = (f32)0;
-            temp_v0 = var_s0 + 0xDC;
+            temp_v0 = var_s0 + 0xDC; if (var_f20) {}
             spEC = *(V3i_65494 *)temp_v0;
             FF(var_s0, 0x120) = *(f32 *)&spEC.a;
             FF(var_s0, 0x124) = *(f32 *)&spEC.b;
