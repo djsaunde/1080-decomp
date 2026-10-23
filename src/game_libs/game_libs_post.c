@@ -14143,7 +14143,7 @@ void gl_func_0002C7A4(Gl2C7A4 *o) {
     o->f04 = 1;
     sub = (Gl2BB7CSub *)((u8 *)o + 0x78);
     for (;;) {
-        r = gl_func_0003F010(sub);
+        r = gl_func_0003F010(sub); if (1) {}
         op = (u8)r;
         if (r >= 0xF2) {
             r = gl_func_0003E6E8(o, sub, op, gl_func_0003E680(sub, (u8)op));
