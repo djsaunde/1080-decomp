@@ -14137,6 +14137,13 @@ typedef struct Gl2C7A4 {
     s8 chan158[16];            /* 0x158 */
 } Gl2C7A4;
 
+/* Run 129 (agent-c) 206 -> 186 raw: ugen temp order -- o->wE0 += 1 is the
+ * first statement of the accumulate (target t3/t4 before hA/h8), a dead
+ * `& 0xFFFF` on the hA wrap burns the target's t1, and the h10 countdown is
+ * read through the field (no r web: r would sit in v1 for the whole loop).
+ * LEFT: the loop's r = 3F010() result is copied to v1 and op is computed on
+ * both arms (target: one andi in the delay slot, r stays v0); dropping the
+ * `if (1) {}` or folding op into the call is -2 words. */
 void gl_func_0002C7A4(Gl2C7A4 *o) {
     u8 x;                      /* unused: its home byte (103) puts n at 102(sp) */
     u8 n;
@@ -14167,19 +14174,18 @@ void gl_func_0002C7A4(Gl2C7A4 *o) {
             return;
         }
     }
-    o->hA = o->hA + o->h8;
     o->wE0 += 1;
+    o->hA = o->hA + o->h8;
     o->hA = o->hA + o->hC;
     if (o->hA < D_2C7A4_2074) {
         return;
     }
-    o->hA = o->hA - D_2C7A4_2074;
+    o->hA = (o->hA - D_2C7A4_2074) & 0xFFFF;
     if (o->f02 == 1) {
         return;
     }
-    r = o->h10;
-    if (r >= 2) {
-        o->h10 = r - 1;
+    if (o->h10 >= 2) {
+        o->h10 = o->h10 - 1;
         goto cleanup;
     }
     o->f04 = 1;
