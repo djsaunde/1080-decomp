@@ -8761,7 +8761,7 @@ void gl_func_00026D64(u32 arg0) {
             g->pending = 0;
             return;
         } if (ent) {}
-        CUR_D = (CUR_C + 1) & 0xFF; /* run 130: dead u8 mask burns the target's t-register (57 -> 49) */
+        CUR_D = CUR_C + 1; /* run 132: no mask here; the t-register burns belong in the flags RMWs below (43 -> 2) */
         code = *(u8 *)ent;
         if (code == 0xF8) { if (cur) {}
             g->pending = 1;
@@ -8779,7 +8779,7 @@ void gl_func_00026D64(u32 arg0) {
                     case 0x41:
                         if (*(f32 *)(ent + 0x4) != obj->f2C) {
                             obj->f2C = *(f32 *)(ent + 0x4);
-                            obj->flags |= 4;
+                            obj->flags = (obj->flags & 0xFF) | 4; /* run 132: dead u8 mask = one t-register burn */
                         }
                         break;
                     case 0x42:
@@ -8832,7 +8832,7 @@ block_24:
                         if (obj->f34 == 1.0f) {
                             obj->flags &= ~1;
                         } else {
-                            obj->flags |= 1;
+                            obj->flags = (obj->flags & 0xFF) | 1;
                         }
                         break;
                     case 0x4D:
