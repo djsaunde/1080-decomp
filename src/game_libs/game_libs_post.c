@@ -18648,8 +18648,9 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
         if (b != 0 || (b = (char *)gl_func_0001CA10(0x18)) != 0) {
             p = (int *)b;
             if (p != 0 || (p = (int *)gl_func_0001CA10(0x10)) != 0) {
-                p[0] = -1;
+                /* run 129: p[2] first = the target's ori-before-addiu temps */
                 p[2] = 0x8000;
+                p[0] = -1;
                 p[1] = 0;
             }
             q = (int *)(b + 0x10);
