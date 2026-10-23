@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_00008AFC",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T19:36:58.999222+00:00",
+  "end_time": "2026-10-23T19:36:58.999245+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T19:36:58.999239+00:00",
+      "assistant_text": "NCC donor: K literal 0.9f (rodata pin) + int-sum this-adjust",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 77,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_00008AFC (0x120 / 72 words):\n * per-group element refresh through the cfront virtual slot 0x58/0x5C.\n * K = 0.9f is a source literal (donor .rodata pinned at RoData +0x238 as\n * timproc_uso_b5_func_00008AFC_rodata); the this-adjust is spelled\n * `(char *)(delta + (int)e)` for the target's addu operand order.\n * Spliced into timproc_uso_b5.c.o via REPLACE_FUNC_BODY. */\ntypedef short s16;\ntypedef float f32;\nextern \"C\" {\nextern int timproc_uso_b5_func_00008A38(...);\n}\nextern \"C\" void timproc_uso_b5_func_00008AFC(char *scr) {\n    f32 K = 0.9f;\n    int g, i;\n    char *e;\n    char *vt;\n    char *o;\n\n    for (g = 0; g < 4; g++) {\n        for (i = 0; i < *(int *)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + 0x6C); i++) {\n            o = (char *)timproc_uso_b5_func_00008A38(scr);\n            e = *(char **)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + i * 4 + 0x3C);\n            if (o != e) {\n                o = *(char **)(e + 0x28);\n                ((void (*)(char *, f32))*(int *)(o + 0x5C))((char *)(*(s16 *)(o + 0x58) + (int)e), 1.0f - *(f32 *)(scr + 0x480) * K);\n            }\n        }\n    }\n    o = (char *)timproc_uso_b5_func_00008A38(scr);\n    vt = *(char **)(o + 0x28);\n    ((void (*)(char *, f32))*(int *)(vt + 0x5C))((char *)(*(s16 *)(vt + 0x58) + (int)o), 1.0f);\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00008AFC.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all ROM byte-identical; verify-blocks OK; rodata pinned at +0x238"
+  }
+}

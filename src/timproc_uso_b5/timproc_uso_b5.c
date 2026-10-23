@@ -5768,31 +5768,15 @@ int timproc_uso_b5_func_00008AD4(int *a0) {
  * vtable puts it in v0 like the target. RESIDUAL: prologue schedule only --
  * the target materialises the 1.0f (f22) before the K load (f20) and saves
  * f22 first; decl order, a named `one`, and K placement do not move it. */
-#ifdef NON_MATCHING
+/* EXACT 2026-10-23 (agent-g run 138) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp, REPLACE_FUNC_BODY-spliced
+ * over this placeholder (Makefile TIMB5_8AFC_DONOR). The prologue-schedule
+ * residual above was the front end plus K being a source literal 0.9f (donor
+ * .rodata pinned at RoData +0x238). The placeholder only re-emits that one
+ * .rodata word the INCLUDE_ASM .s carried; the splice drops its text. */
 void timproc_uso_b5_func_00008AFC(char *scr) {
-    f32 K = *(f32 *)((char *)&D_00000000 + 0x238);
-    int g, i;
-    char *e;
-    char *vt;
-    char *o;
-
-    for (g = 0; g < 4; g++) {
-        for (i = 0; i < *(int *)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + 0x6C); i++) {
-            o = (char *)timproc_uso_b5_func_00008A38(scr);
-            e = *(char **)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + i * 4 + 0x3C);
-            if (o != e) {
-                o = *(char **)(e + 0x28);
-                ((void (*)(char *, f32))*(int *)(o + 0x5C))(*(s16 *)(o + 0x58) + e, 1.0f - *(f32 *)(scr + 0x480) * K);
-            }
-        }
-    }
-    o = (char *)timproc_uso_b5_func_00008A38(scr);
-    vt = *(char **)(o + 0x28);
-    ((void (*)(char *, f32))*(int *)(vt + 0x5C))(*(s16 *)(vt + 0x58) + o, 1.0f);
+    *(volatile float *)scr = 0.9f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00008AFC);
-#endif
 
 /* timproc_uso_b5_func_00008C1C: indexed double-deref accessor. addu operand
  * order lever: scaled index FIRST (idx*4 + base) emits the target all-$t. */
