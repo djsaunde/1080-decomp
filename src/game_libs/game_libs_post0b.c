@@ -16670,7 +16670,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004A890);
  * in $a3 (caller-save — valid, no calls), while IDO promotes self to $s0 (long
  * live range across the inner loop), forcing a stack frame + s0 save/restore;
  * that cascades the t-reg names. The callee-save-vs-leaf choice for a loop-live
- * value isn't C-steerable (cf. game_uso_func_00007538 s0-vs-leaf). Stays NM. */
+ * value isn't C-steerable (cf. game_uso_func_00007538 s0-vs-leaf). Stays NM.
+ * Run 133 (agent-c): under NCC it IS steerable -- the NM comparison object now
+ * uses src/game_libs/game_libs_ncc_4A9F0_nm.cpp (inline Self::put member, self
+ * as `this` in a3, frameless, 40 words, 89.25). */
 #ifdef NON_MATCHING
 void game_libs_func_0004A9F0(short *self, char *a1, short *cursor) {
     short idx1, idx2;
