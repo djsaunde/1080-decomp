@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004E244",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T00:13:46.804077+00:00",
+  "end_time": "2026-10-23T00:13:46.804077+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T00:13:46.804077+00:00",
+      "assistant_text": "Fresh IDO 7.1 NCC decode: by-value array index iterator (base-class ctor gives the cfront this==0 new protocol), Arr::iter() return-by-value copy ladder, operator[] inline webs, dead if (0) { self = this; } recolouring. Word-exact, ROM cmp clean.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 78,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0004E244 (0x138 / 78 words): call the\n * third virtual of every element of a pointer array, through the array's\n * by-value index iterator (12-byte {arr, idx, last}).\n * - The iterator's fields live in a BASE class whose ctor is reached through\n *   the derived ctor: only then does edg emit cfront's `this == 0 -> new(12)`\n *   protocol the target has around the construction (sp+60 is never 0).\n * - Arr::iter() returns AIter(self) by value: construct (sp+60) -> return temp\n *   (sp+76) -> it (sp+92), the two lw/sw copy ladders; the named `self` is the\n *   4-byte slot at sp+72, and the dead `if (0) { self = this; }` recolours the\n *   construction block (&tmp v1 / this a1 / array a2) like the target.\n * - Arr::operator[] makes the array pointer and the pre-incremented index\n *   inline-parameter webs (v0/v1/a0/a1 candidates instead of ring temps).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-c run 124). */\nextern \"C\" {\nvoid *gl_func_00000000(...);\n}\ninline void *operator new(unsigned n) { return gl_func_00000000(n); }\nstruct Pad40 { char pad[0x28]; };\nstruct Elem : Pad40 { virtual void v1(); virtual void v2(); virtual void v3(); };\nstruct AIter;\nstruct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };\nstruct IBase {\n    Arr *a;\n    int idx;\n    int last;\n    IBase(Arr *arr) { idx = -1; a = arr; last = arr->count - 1; }\n};\nstruct AIter : IBase {\n    AIter(Arr *arr) : IBase(arr) {}\n    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }\n    Elem *cur() { return (*a)[idx]; }\n};\ninline AIter Arr::iter() { Arr *self = this; if (0) { self = this; } return AIter(self); }\nextern \"C\" void gl_func_0004E244(Arr *src) {\n    AIter it = src->iter();\n    while (it.next()) it.cur()->v3();\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4E244.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004E244.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

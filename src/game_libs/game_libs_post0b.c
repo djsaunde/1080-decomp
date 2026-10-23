@@ -19725,50 +19725,10 @@ int game_libs_func_0004E23C(char *a0) {
 // Caps (DEFERRED): node/src struct + cb signature untyped. Real-C
 //   STRUCTURAL body below. Byte-match deferred. Name pre-checked: no
 //   extern reuse.
-#ifdef NON_MATCHING
-/* Whole-body decode 2026-06-01 (prior body was structurally wrong). Build a
- * 3-word header {src, -1, src->0xC-1} in a stack buffer (the alloc(0xC) is the
- * dead null-fallback), copy it twice (hdr->buf1->buf2), then iterate entries
- * src[idx] for idx in (-1, src->0xC-1], dispatching entry->0x28->0x1c
- * (entry + entry->0x28->0x18) per entry. */
-/* Re-decoded 2026-10-17 agent-c run 105 (35 -> 88.7): the gl_func_00049B3C
- * array-iterator idiom (placement-new into ai0, two struct copies, ?: step).
- * Open: v1/a1/a2 coloring of &ai0 / p / src at entry. */
-void gl_func_0004E244(A49B3C *src) {
-    AI49B3C ai;
-    int g1[1];
-    AI49B3C ai1;
-    int g2[1];
-    AI49B3C ai0;
-    int u[3];
-    AI49B3C *p;
-    char **v;
-    char *e;
-    VS49B3C *vs;
-
-    if (1) { AI49B3C *q2 = &ai; }
-    p = &ai0;
-    if ((unsigned)p == 0) {
-        p = (AI49B3C *)gl_func_00000000(12);
-        if (p == 0) goto skip;
-    }
-    p->idx = -1;
-    p->a = src;
-    p->last = src->count - 1;
-skip:
-    ai1 = ai0;
-    ai = ai1;
-    v = ai.idx < ai.last ? &ai.a->data[++ai.idx] : 0;
-    while (v != 0) {
-        e = ai.a->data[ai.idx];
-        vs = *(VS49B3C **)(e + 40);
-        vs->fn28(e + vs->d24);
-        v = ai.idx < ai.last ? &ai.a->data[++ai.idx] : 0;
-    }
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4E244.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 124). */
+void gl_func_0004E244(char *src) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E244);
-#endif
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4E37C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 99.00 (count coloured v0, target v1). */
 void game_libs_func_0004E37C(int *a0, int a1) {
