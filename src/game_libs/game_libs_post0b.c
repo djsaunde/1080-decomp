@@ -14179,65 +14179,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000454C4);
 // vars claim v0, inline 4x FP exprs do NOT CSE (+12 mul/trunc), chained
 // assignment spills arg2 - all probed) + the downstream t-ring/const-lui
 // parity shift. Coloring-multiset class.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_45CB0.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 126). */
 void gl_func_00045CB0(s32 arg0, char *arg1, float *arg2) {
-    char *out;
-    int *rec;
-    int idx;
-    int *cmd1;
-    int bx;
-    int by;
-    int bz;
-    int *cmd2;
-    int *cmd3;
-
-    rec = *(int **)(arg1 + 0x2C);
-    idx = rec[1];
-    rec[1] = idx + 1;
-    out = (char *)((*(int **)(arg1 + 0x2C))[0] + (idx * 0x48));
-    bx = (int)(arg2[0] * 255.0f);
-    by = (int)(arg2[1] * 255.0f);
-    bz = (int)(arg2[2] * 255.0f);
-    out[0] = bx;
-    out[4] = bx;
-    out[8] = bx;
-    out[0xC] = bx;
-    out[1] = by;
-    out[5] = by;
-    out[9] = by;
-    out[0xD] = by;
-    out[2] = bz;
-    out[6] = bz;
-    out[0xA] = bz;
-    out[0xE] = bz;
-
-    rec = *(int **)(arg1 + 0xC);
-    idx = rec[1];
-    rec[1] = idx + 1;
-    cmd1 = (int *)((*(int **)(arg1 + 0xC))[0] + (idx * 8));
-    cmd1[0] = 0xBC000002;
-    cmd1[1] = 0x80000040;
-
-    rec = *(int **)(arg1 + 0xC);
-    idx = rec[1];
-    rec[1] = idx + 1;
-    cmd2 = (int *)((*(int **)(arg1 + 0xC))[0] + (idx * 8));
-    cmd2[0] = 0x03880010;
-    cmd2[1] = gl_func_00034458(out + 8, arg1, cmd2);
-
-    rec = *(int **)(arg1 + 0xC);
-    idx = rec[1];
-    rec[1] = idx + 1;
-    cmd3 = (int *)((*(int **)(arg1 + 0xC))[0] + (idx * 8));
-    cmd3[0] = 0x03860010;
-    cmd3[1] = gl_func_00034458(out, arg1, cmd2);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00045CB0);
-#endif
 
 // gl_func_00045E20 — STRUCTURAL PASS (0x1D0 / 117 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x28

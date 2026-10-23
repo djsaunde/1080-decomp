@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00045CB0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T02:30:11.971464+00:00",
+  "end_time": "2026-10-23T02:30:11.971464+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T02:30:11.971464+00:00",
+      "assistant_text": "NCC (C++) donor: two inline next() pools, chained byte stores through one pointer (fewer counted loads), two empty-if block cuts, k1/k2 dead stores for the frame.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 92,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00045CB0 (0x170 / 92 words): fill one\n * 0x48-byte light record (ambient + light 0 colour/colour-copy bytes from a\n * float RGB) from the context's light pool, then emit gSPNumLights-style\n * 0xBC000002 / 0x80000040 and two G_MOVEMEM light packets whose w1 comes from\n * an address-conversion call.\n * - C++: two inline next() appends on the context (display list +0xC, light\n *   pool +0x2C) and the unused first parameter homed at entry.\n * - Colours / slots are uopt block placement (kit XXXV): `-varref` showed the\n *   target cut later; the chained byte stores through one `q` pointer save the\n *   counted r/g/b and l loads, and two empty `if (1) {}` (after the b\n *   conversion and after the first packet) place the remaining cuts.\n * - Frame 64: `int k1, k2; k1 = 0; k2 = 0;` (dead stores keep two declared\n *   scalar words, kit XXXIII frame rule) so l / p2 / p3 land on sp+60/32/28.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-c run 126). */\nextern \"C\" unsigned int gl_func_00000000(...);\nstruct Gfx { unsigned int w0, w1; };\nstruct DL { Gfx *buf; int n; };\nstruct Lt { unsigned char c[0x48]; };\nstruct LB { Lt *buf; int n; };\nstruct Ctx {\n    char pad[0xC]; DL *dl; char pad10[0x2C - 0x10]; LB *lb;\n    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }\n    Lt *nextl() { int n = lb->n++; return &lb->buf[n]; }\n};\nextern \"C\" void gl_func_00045CB0(int a0, Ctx *c, float *col) {\n    Lt *l;\n    int k1, k2;\n    k1 = 0; k2 = 0;\n    l = c->nextl();\n    int r, g, b;\n    r = col[0] * 255.0f;\n    g = col[1] * 255.0f;\n    b = col[2] * 255.0f; if (1) {}\n    { unsigned char *q = l->c; q[0xC] = q[8] = q[4] = q[0] = r;\n    q[0xD] = q[9] = q[5] = q[1] = g;\n    q[0xE] = q[0xA] = q[6] = q[2] = b; }\n    Gfx *p1 = c->next(); p1->w0 = 0xBC000002; p1->w1 = 0x80000040; if (1) {}\n    Gfx *p2 = c->next(); p2->w0 = 0x03880010; p2->w1 = gl_func_00000000(&l->c[8]);\n    Gfx *p3 = c->next(); p3->w0 = 0x03860010; p3->w1 = gl_func_00000000(l);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_45CB0.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00045CB0.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

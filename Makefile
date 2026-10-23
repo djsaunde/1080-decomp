@@ -1560,6 +1560,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4E244_DONOR := build/src/game_libs/game_libs_ncc_4E244.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_0004E244=$(GAMELIBS_4E244_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E244_DONOR)
+# 45CB0 = light record fill + light packets through two inline next() pools (C++); NCC donor.
+GAMELIBS_45CB0_DONOR := build/src/game_libs/game_libs_ncc_45CB0.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00045CB0=$(GAMELIBS_45CB0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45CB0_DONOR)
 # 46FA8 = gDPFillRectangle + gDPPipeSync through the context's inline next() (C++); NCC donor.
 GAMELIBS_46FA8_DONOR := build/src/game_libs/game_libs_ncc_46FA8.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00046FA8=$(GAMELIBS_46FA8_DONOR)
