@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00034A78",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T23:06:09.205830+00:00",
+  "end_time": "2026-10-23T23:06:09.205851+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T23:06:09.205846+00:00",
+      "assistant_text": "Shared-lui-at cap cracked: the 0x3B8F6/F7 byte pair is one FILE-LOCAL static object; as1 shares one lui at (LIFO sb pair) only for the same static symbol written through two C++ references in one block. Other accesses keep their extern per-site aliases. Donor .bss reloc renamed gl_func_00034A78_bss, pinned 0x3B8F6.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 59,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00034A78 (0xEC / 59 words): four init\n * callbacks, back-link two root pointers into the record, then (once) install\n * the KSEG1 config block at module data 0x3B8EC.. and register it.\n * The 0x3B8F6 / 0x3B8F7 byte pair is ONE file-local object: as1 stores it under a\n * single shared `lui at` (`li t4,13; li t5,2; sb t5,F7(at); sb t4,F6(at)`) only\n * for the same static symbol, written through two references in one block (plain\n * sF6[0] / sF6[1] stores CSE the base into v0). Every other access keeps its own\n * extern alias (own `lui at` per access). The splice renames the donor's .bss reloc\n * to gl_func_00034A78_bss, pinned to 0x3B8F6 in undefined_syms_auto.txt.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-c run 136). */\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern int D_34A78_rec, D_34A78_b, D_34A78_c;\nextern signed char gl_ref_0003B8F4, gl_ref_0003B8F5, gl_ref_0003B8F8, gl_ref_0003B8F9;\nextern int gl_ref_0003B8EC, gl_ref_0003B8F0, gl_ref_0003B8FC, gl_ref_0003B8FC_st, gl_ref_0003B900, gl_ref_0003B904;\n}\nstatic signed char sF6[2];\nextern \"C\" void gl_func_00034A78(int a0) {\n    gl_func_00000000();\n    gl_func_00000000();\n    gl_func_00000000(a0);\n    gl_func_00000000(a0);\n    *(int *)(*(char **)&D_34A78_rec + 0x8C) = (int)&D_34A78_b;\n    *(int *)(*(char **)&D_34A78_rec + 0x90) = (int)&D_34A78_c;\n    if (gl_ref_0003B8FC != (int)0xA8000000) {\n        gl_ref_0003B8F4 = 3;\n        gl_ref_0003B8FC_st = (int)0xA8000000;\n        gl_ref_0003B8F5 = 5;\n        gl_ref_0003B8F8 = 12;\n        { signed char &a = sF6[0]; signed char &b = sF6[1]; a = 13; b = 2; }\n        gl_ref_0003B8F9 = 1;\n        gl_ref_0003B900 = 0; gl_func_00000000(&gl_ref_0003B904, 96);\n        gl_func_00000000(&gl_ref_0003B8F0);\n    }\n    gl_ref_0003B8EC = (int)&gl_ref_0003B8F0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_34A78.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00034A78.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "make all ROM byte-identical; objdiff report 100"
+  }
+}

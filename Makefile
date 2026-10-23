@@ -602,7 +602,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 134: 4E00C (69 -> 70) + 4A890 (80 -> 81) + 4A308 (221) NM-only NCC donors: 0x2e890 -> 0x2e898 (62F08 NM offset 0x2e848).
 # agent-c run 134: 4E00C round-2 if (s0) {} (70 -> 71 of 75 words): 0x2e898 -> 0x2e89c (62F08 NM offset 0x2e84c).
 # agent-c run 134: 3B9C0 (277 -> 280 of 279) + 36694 (176) NM-only NCC donors: 0x2e89c -> 0x2e8a8 (62F08 NM offset 0x2e858).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8a8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 136: 34A78 NCC donor splice over a placeholder (NM body was 4 bytes shorter in-tree): 0x2e8a8 -> 0x2e8ac (62F08 NM offset 0x2e85c).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8ac gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1566,6 +1567,11 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_NM_DONOR
 GAMELIBS_488A0_NM_DONOR := build/src/game_libs/game_libs_ncc_488A0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000488A0=$(GAMELIBS_488A0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_NM_DONOR)
+# 34A78 = KSEG1 config-block install; the F6/F7 byte pair is one static object (shared lui at); NCC donor.
+# Its .bss reloc is renamed gl_func_00034A78_bss by the splice (pinned to 0x3B8F6 in undefined_syms_auto.txt).
+GAMELIBS_34A78_DONOR := build/src/game_libs/game_libs_ncc_34A78.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034A78=$(GAMELIBS_34A78_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34A78_DONOR)
 # 4E424 = NM C body lifted under NCC + if (param) {} (agent-c run 134, cfe 88.33 -> 90.98). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4E424_NM_DONOR := build/src/game_libs/game_libs_ncc_4E424_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E424=$(GAMELIBS_4E424_NM_DONOR)

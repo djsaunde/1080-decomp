@@ -599,35 +599,12 @@ int gl_func_00034A54() {
 //   pass: the pair + zero-store come from one aggregate/struct write form
 //   uopt keeps symbol-relative; try a defined-in-TU struct with -O2 -Olimit
 //   or the regalloc/uopt dump (docs/IDO_CODEGEN.md uoptlist).
-#ifdef NON_MATCHING
-extern int D_34A78_rec, D_34A78_b, D_34A78_c;   /* per-site aliases of D_00000000 */
-extern signed char gl_ref_0003B8F4, gl_ref_0003B8F5, gl_ref_0003B8F6, gl_ref_0003B8F7,
-                   gl_ref_0003B8F8, gl_ref_0003B8F9;
-extern int gl_ref_0003B8EC, gl_ref_0003B8F0, gl_ref_0003B8FC, gl_ref_0003B8FC_st,
-           gl_ref_0003B900, gl_ref_0003B904;
+/* EXACT (run 136) via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_34A78.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder. The residual (1) above was the
+ * shared-`lui at` byte pair: one static 2-byte object in the donor (pinned 0x3B8F6),
+ * every other access its own extern alias as in the old body. */
 void gl_func_00034A78(int a0) {
-    gl_func_00000000();                                 /* cb1 (a0 saved in delay) */
-    gl_func_00000000();                                 /* cb2 */
-    gl_func_00000000(a0);                               /* cb3(a0) */
-    gl_func_00000000(a0);                               /* cb4(a0) */
-    *(int *)(*(char **)&D_34A78_rec + 0x8C) = (int)&D_34A78_b;   /* back-link record -> root */
-    *(int *)(*(char **)&D_34A78_rec + 0x90) = (int)&D_34A78_c;
-    if (gl_ref_0003B8FC != (int)0xA8000000) {           /* KSEG1 buffer base not yet installed */
-        gl_ref_0003B8F4 = 3;
-        gl_ref_0003B8FC_st = (int)0xA8000000;
-        gl_ref_0003B8F5 = 5;
-        gl_ref_0003B8F8 = 12;
-        gl_ref_0003B8F6 = 13;
-        gl_ref_0003B8F7 = 2;
-        gl_ref_0003B8F9 = 1;
-        gl_ref_0003B900 = 0; gl_func_00000000(&gl_ref_0003B904, 96);
-        gl_func_00000000(&gl_ref_0003B8F0);
-    }
-    gl_ref_0003B8EC = (int)&gl_ref_0003B8F0;            /* self-pointer (always) */
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00034A78);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_00034B64(int a0) {
