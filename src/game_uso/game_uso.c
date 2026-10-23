@@ -9350,7 +9350,7 @@ cdone:  ;
     {
         unsigned int e8 = *(unsigned int *)(a3 + 0xE8);
         if (e8 & 0x4) {
-            char *f4 = *(char **)(a3 + 0xF4);
+            char *f4 = *(char **)(a3 + 0xF4); if (1) {}
             *(unsigned int *)(a3 + 0xE8) = e8 & 0x3F007;
             if (f4 != 0) {
                 unsigned int m = *(unsigned int *)(f4 + 0x2C);
