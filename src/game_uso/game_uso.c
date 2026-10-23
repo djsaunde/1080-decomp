@@ -1169,7 +1169,15 @@ void game_uso_func_00001DC4(void *a0) {
  * This recovers target scheduling without changing the pointer or values;
  * 39 real pointer/FP-register differences remain. No exact episode.
  * See docs/IDO_CODEGEN.md#homing-output-reload-sameline-1ddc.
- * See docs/IDO_CODEGEN.md#homing-scoped-pointers-1ddc. */
+ * See docs/IDO_CODEGEN.md#homing-scoped-pointers-1ddc.
+ * 2026-10-23 agent-g run 134: 36 -> 13 raw words. Key-3 arm stores the
+ * output home FIRST and reads it back (outh[0] = a0[5]; out = outh[0];),
+ * so the forwarded value is a ugen temp (t6) as in PR #10's 28C0; the
+ * non-3 arm reads ref_v through a block-scoped copy of out_home[0], which
+ * keeps the t-ring in step for the dcopy word copy. FP: the pass-1 else
+ * excess and the later z products get their own variables, the final
+ * commit Y uses fx. LEFT: the zero constant (target f14 both passes)
+ * against fy (0x7C load, commit-1 Y). See docs kit XLVI. */
 #ifdef NON_MATCHING
 extern Vec3* game_uso_func_000023D4(Vec3 *out, char *a1);
 extern float game_uso_func_070238(float);
@@ -1224,8 +1232,9 @@ void game_uso_func_00001DDC(int *a0) {
         return;
     }
     if (key == 3) {
-        out = (char *)a0[0x14 / 4];
-        outh[0] = out;
+        /* Store first, then read the home: the forwarded value stays a ugen temp (t6). */
+        outh[0] = (char *)a0[0x14 / 4];
+        out = outh[0];
         src = (char *)a0[0x3C / 4];
         m[0] = *(float *)(src + 0xA0);
         src += 0x70;
@@ -1245,9 +1254,10 @@ void game_uso_func_00001DDC(int *a0) {
         /* Keep the output pointer homed across both emit calls. */
         out_home[0] = (char *)a0[0x14 / 4];
 
-        ref_v.x = *(float *)(out_home[0] + 0xA0);
-        ref_v.y = *(float *)(out_home[0] + 0xA4);
-        ref_v.z = *(float *)(out_home[0] + 0xA8);
+        { char *mo = out_home[0]; /* named read of the home keeps the t-ring in step */
+        ref_v.x = *(float *)(mo + 0xA0);
+        ref_v.y = *(float *)(mo + 0xA4);
+        ref_v.z = *(float *)(mo + 0xA8); }
 
         src = (char *)a0[0x38 / 4];
         self_v[0] = *(float *)(src + 0xA0);
@@ -1281,8 +1291,8 @@ void game_uso_func_00001DDC(int *a0) {
             *(Tri3i *)&hopB = *hopA;
             acc.x = hopB.x; acc.y = hopB.y; acc.z = hopB.z;
         } else {
-            excess = mag - speed;
-            st_p1e.x = (fx = scaled_src->x * excess); st_p1e.y = (fz = scaled_src->y * excess); if (1) { st_p1e.z = (mag = scaled_src->z * excess); }
+            yd_unused = mag - speed; /* own variable: f0 like the then-arm excess */
+            st_p1e.x = (fx = scaled_src->x * yd_unused); st_p1e.y = (fz = scaled_src->y * yd_unused); if (1) { st_p1e.z = (y_excess_unused = scaled_src->z * yd_unused); }
             *hopA = *(Tri3i *)&st_p1e;
             *(Tri3i *)&hop_p1e = *hopA;
             if (1) { scaled_src = &hop_p1e; }
@@ -1314,13 +1324,13 @@ void game_uso_func_00001DDC(int *a0) {
         if (1) { scaled_src = &diff; }
         if (mag < *(float *)((char *)a0 + 0xC4)) {
             excess = *(float *)((char *)a0 + 0xC4) - mag; if (1) {}
-            st_p2t.x = (fx = scaled_src->x * excess); st_p2t.y = (fz = scaled_src->y * excess); st_p2t.z = (mag = scaled_src->z * excess);
+            st_p2t.x = (fx = scaled_src->x * excess); st_p2t.y = (fz = scaled_src->y * excess); st_p2t.z = (y_excess_unused = scaled_src->z * excess);
             *hopA = *(Tri3i *)&st_p2t;
             *(Tri3i *)&hopB = *hopA;
             acc.x = hopB.x; acc.y = hopB.y; acc.z = hopB.z;
         } else {
             excess = sel - mag;
-            st_p2e.x = (fx = scaled_src->x * excess); st_p2e.y = (fz = scaled_src->y * excess); st_p2e.z = (mag = scaled_src->z * excess);
+            st_p2e.x = (fx = scaled_src->x * excess); st_p2e.y = (fz = scaled_src->y * excess); st_p2e.z = (y_excess_unused = scaled_src->z * excess);
             *hopA = *(Tri3i *)&st_p2e;
             *(Tri3i *)&hop_p2e = *hopA;
             if (1) { scaled_src = &hop_p2e; }
@@ -1334,7 +1344,7 @@ void game_uso_func_00001DDC(int *a0) {
 
         if (1) { scaled_src = (Vec3 *)&diff; }
         if (1) { hopA = (Tri3i *)scratch; }
-        st_c2.x = (excess = scaled_src->x * sel); st_c2.y = (fy = scaled_src->y * sel); st_c2.z = (fz = scaled_src->z * sel);
+        st_c2.x = (excess = scaled_src->x * sel); st_c2.y = (fx = scaled_src->y * sel); st_c2.z = (fz = scaled_src->z * sel);
         *hopA = *(Tri3i *)&st_c2;
         *(Tri3i *)&fin_c2 = *hopA;
         *(float *)((char *)a0 + 0x2C) -= fin_c2.x;
