@@ -1996,6 +1996,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_06B8_DONOR := build/src/gui_uso/gui_uso_ncc_06B8.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000006B8=$(GUI_06B8_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_06B8_DONOR)
+# 08C0: SETOTHERMODE + SETCOMBINE + PRIMCOLOR appends (166/166). The third
+# append's next() has an empty if (1) {} (uopt 20-varref block boundary).
+GUI_08C0_DONOR := build/src/gui_uso/gui_uso_ncc_08C0.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_000008C0=$(GUI_08C0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_08C0_DONOR)
 # 413C: RGBA16 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_413C_DONOR := build/src/gui_uso/gui_uso_ncc_413C.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: REPLACE_FUNC_BODY += gui_uso_func_0000413C=$(GUI_413C_DONOR)
