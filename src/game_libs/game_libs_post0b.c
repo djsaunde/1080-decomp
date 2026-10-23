@@ -28042,7 +28042,7 @@ void gl_func_0005D054(float *a0, float *a1, float *a2) {
 #ifdef NON_MATCHING
 void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
     s32 j, k;
-    f32 t, a;
+    f32 t, a, b_;
     while (0) { t = c; q = &q[i]; }
     j = i + 1;
     if (j >= 4) j = 1;
@@ -28052,8 +28052,8 @@ void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
 
     { f32 q_ = a * c; q[i] = q_ + t * q[0]; if (q_) {} }
     q[0] = q[0] * c - t * a;
-    a = q[j];
-    q[j] = a * c + s * q[k]; if (j) {}
+    a = (b_ = q[k], q[j]);
+    q[j] = a * c + s * b_; if (j) {}
     q[k] = q[k] * c - s * a;
 }
 #else
