@@ -209,8 +209,8 @@ void gui_uso_func_000006B8(void) {
 /* EXACT 2026-10-22 (agent-g run 126) via the IDO 7.1 NCC donor
  * src/gui_uso/gui_uso_ncc_08C0.cpp (REPLACE_FUNC_BODY, both trees). The
  * old "ring pointer colour" residual came from where uopt's 20-variable-load
- * rule ended the basic block. An empty `if (1) {}` inside the third append's
- * next() moves that boundary to the target's place. This is the splice host. */
+ * rule ended the basic block (the 17DC recipe moves it). This is the splice
+ * host. */
 void gui_uso_func_000008C0(void) {
 }
 
