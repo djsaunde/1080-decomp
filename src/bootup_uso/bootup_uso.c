@@ -4269,8 +4269,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     } else {
         import_8005C108_2[0x3C / 4] = import_8005C108_3[0x3C / 4] & ~8;
     }
-    *gE = 6;
-    import_8005EE64_0 = (import_8005EE64_1 & ~8) | 0x100;
+    *gE = (import_8005EE64_0 = (import_8005EE64_1 & ~8) | 0x100, 6);
     import_8005EE6C[1] = 0xA8002;
     import_8005EE6C[0] = 0;
     func_00000000(&D_6808_11, 0);
