@@ -1313,7 +1313,7 @@ void game_uso_func_00001DDC(int *a0) {
         mag = ref_v.y - self_v[1];
         if (1) { scaled_src = &diff; }
         if (mag < *(float *)((char *)a0 + 0xC4)) {
-            excess = *(float *)((char *)a0 + 0xC4) - mag;
+            excess = *(float *)((char *)a0 + 0xC4) - mag; if (1) {}
             st_p2t.x = (fx = scaled_src->x * excess); st_p2t.y = (fz = scaled_src->y * excess); st_p2t.z = (mag = scaled_src->z * excess);
             *hopA = *(Tri3i *)&st_p2t;
             *(Tri3i *)&hopB = *hopA;
