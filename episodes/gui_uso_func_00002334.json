@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_uso_func_00002334",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T00:55:43.025001+00:00",
+  "end_time": "2026-10-23T00:55:43.025001+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T00:55:43.025001+00:00",
+      "assistant_text": "NCC donor, 17DC recipe: next() without the n copy + Gfx::set() for the first two packets keep uopt's 20-varref block boundary after the third slot pointer.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 160,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gui_uso_func_00002334 (0x280 / 160 words).\n *\n * Three appends into the global gfx context: G_SETCOMBINE (0xFC11EA23 / 0xFFD7FFFF),\n * G_SETENVCOLOR with the a1 alpha byte, then G_SETPRIMCOLOR from col[0..2]\n * * 255 above the a3 alpha byte (the 1EF4 recipe, docs/IDO_CODEGEN.md kit\n * XXV). gui_uso_func_000017DC is the same function with another combiner.\n *\n * uopt ends a straight-line basic block after 20 variable loads\n * (varreflimit, a statement boundary). The target needs that boundary to\n * come AFTER the third slot pointer is defined, so that p1, p2, p3 and the\n * pooled dl temporary share one block and p3 colours t2. With next() written\n * `int n = dl->n++; return &dl->buf[n];` and stores through p->w0 / p->w1,\n * the boundary fell three counted loads too early: p3 took v1 and every later\n * t-register moved by one. Here next() is `return &dl->buf[dl->n++];` (no\n * copy of n), and the first two packets go through an inline Gfx::set().\n * Reads of set()'s `this` forward to p1 / p2 and do not count toward the\n * limit. Same code, three fewer counted loads. See kit XXXV.\n * Spliced via REPLACE_FUNC_BODY into both gui_uso trees. */\nextern \"C\" { extern char D_00000000; }\nstruct Gfx {\n    unsigned int w0, w1;\n    void set(unsigned a, unsigned b) { w0 = a; w1 = b; }\n};\nstruct DL { Gfx *buf; int n; };\nstruct Ctx {\n    char pad[0xC];\n    DL *dl;\n    Gfx *next() { return &dl->buf[dl->n++]; }\n};\n#define CTX (*(Ctx **)&D_00000000)\n#define C8(x) ((unsigned)((x) * 255.0f) & 0xFF)\nextern \"C\" void gui_uso_func_00002334(void *self, int a1, float *col, int alpha) {\n    Gfx *p1 = CTX->next();\n    p1->set(0xFC11EA23, 0xFFD7FFFF);\n    Gfx *p2 = CTX->next();\n    p2->set(0xFB000000, a1 & 0xFF);\n    Gfx *p3 = CTX->next();\n    p3->w0 = 0xFA000000;\n    p3->w1 = (C8(col[0]) << 24) | (C8(col[1]) << 16) | (C8(col[2]) << 8) | (alpha & 0xFF);\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_2334.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_uso_func_00002334.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}
