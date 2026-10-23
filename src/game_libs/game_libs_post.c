@@ -6484,11 +6484,10 @@ void gl_func_00024378(void) {
         break;
     }
     gl_func_0001CA10(); if (1) {}
-    e = (char *)gl_d_24378_seed + 6;
-    q = (char *)gl_d_24378_seed;
+    q = (char *)gl_d_24378_seed; e = (char *)gl_d_24378_seed + 6; /* run 130: one line = target lui q / lui e / addiu e / addiu q order */
     do {
+        *(s16 *)(q + 0x214C) = 0xA0;
         q += 2;
-        *(s16 *)(q + 0x214A) = 0xA0;
     } while (q < e);
     FW(gl_d_24378, 0x2078) = 0;
     FW(gl_d_24378, 0x2080) = 0;
@@ -6526,12 +6525,14 @@ void gl_func_00024378(void) {
     c = *(s16 *)FW(gl_d_24378, 0x2020);
     FW(gl_d_24378, 0x2030) = gl_func_0001CA10(gl_d_24378_t + 0x2188, c * 0x14);
     /* x4 unroll + andi-3 remainder loop come out of the plain loop once
-     * every access names the global directly (see header note). */
+     * every access names the global directly (see header note).
+     * Run 130: `& 0xFF` on all four byte values (no (s8) casts): the dead
+     * masks burn the target's t-registers in every unrolled copy (240 -> 9). */
     for (i = 0; i < c; i++) {
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x2) = (s8) (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A) >> 8);
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x3) = (s8) SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A);
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x0) = (s8) (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C) >> 8);
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x1) = (s8) SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C);
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x2) = (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A) >> 8) & 0xFF;
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x3) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A) & 0xFF;
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x0) = (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C) >> 8) & 0xFF;
+        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x1) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C) & 0xFF;
         SH(FW(gl_d_24378, 0x2030) + i * 0x14, 0x4) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1E);
     }
     r = gl_func_0001CA10(gl_d_24378_u + 0x2188, *(s32 *)(gl_d_24378_v + 0xC));
