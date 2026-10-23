@@ -1137,7 +1137,10 @@ void timproc_uso_b3_func_00001C20(char *a0) {
     gl_func_00000000();
 }
 
-#ifdef NON_MATCHING
+/* EXACT 2026-10-23 (agent-g run 138): (c) was a FLOAT 0.0f third arg (li a2,0)
+ * through the (int, int, float) blank alias gl_proto_1c94; the r > 0 bump reads
+ * the counter as fl[8] off the re-read 0x44 pointer (target lw 32(v1), no
+ * addiu fl); `if (arg0) {}` after the (arg0, 1) call and after the flag-4 RMW. */
 /* timproc_uso_b3_func_00001C68: UI animation/draw orchestrator (sibling of
  * arcproc_uso_func_00001F54 / mgrproc per-frame steps). cb(); gate arg0->0xB8
  * bit-16 && ->0x4DC==1: bump 0x30, decrement 0xA0 by 0x21 (floor 0 + cleanup that
@@ -1171,6 +1174,7 @@ void timproc_uso_b3_func_00001C20(char *a0) {
  * materialization at the state-1 draw call (0u probe inert). Same
  * allocator/scheduler-internal class as the Two-s-reg kit II residuals. */
 extern int gl_proto_1c68(void *, int, int, float, float);
+extern int gl_proto_1c94(int, int, float);
 void timproc_uso_b3_func_00001C68(char *arg0) {
     int *fl;
     int v0;
@@ -1200,7 +1204,7 @@ void timproc_uso_b3_func_00001C68(char *arg0) {
         if (*(int *)(arg0 + 0x48) == 2) {
             if ((*(int *)(arg0 + 0xD8) == 1) &&
                 (*(int *)(*(char **)(*(char **)(*(char **)(arg0 + 0x44) + 0x60) + 0x800) + 0x4C) == 0)) {
-                gl_func_00000000(arg0, 1);
+                gl_func_00000000(arg0, 1); if (arg0) {}
             }
             *(int *)(arg0 + 0xD8) = *(int *)(*(char **)(*(char **)(*(char **)(arg0 + 0x44) + 0x60) + 0x800) + 0x4C);
             v0 = *(int *)(*(char **)(arg0 + 0xB8) + 0x4F0) & 0x10000;
@@ -1235,14 +1239,14 @@ void timproc_uso_b3_func_00001C68(char *arg0) {
         }
         if (v0b == 1) {
             gl_func_00000000(*(int *)(arg0 + 0x84), *(int *)(arg0 + 0xA0), 1);
-            gl_func_00000000(*(int *)(arg0 + 0x80), *(int *)(*(char **)(arg0 + 0x44) + 0x30), 0);
+            gl_proto_1c94(*(int *)(arg0 + 0x80), *(int *)(*(char **)(arg0 + 0x44) + 0x30), 0.0f);
             gl_proto_1c68(*(int *)(arg0 + 0x80), *(int *)(*(char **)(arg0 + 0x44) + 8), *(int *)(*(char **)(arg0 + 0x44) + 0xC), 0.0f, 0.0f);
         }
         if (*(int *)(*(char **)(arg0 + 0x44) + 0x1C) != 0) {
             gl_proto_1c68(*(int *)(arg0 + 0x94), 0xA0, 0x46, 1.0f, 1.0f);
             *(int *)(*(char **)(arg0 + 0x94) + 0x78) = 0xFF;
             fl = (int *)(*(char **)(arg0 + 0x94) + 0x18);
-            *fl = *fl | 4;
+            *fl = *fl | 4; if (arg0) {}
             a1 = *(int *)(*(char **)(arg0 + 0x44) + 0x20);
             r = *(int *)(*(char **)(arg0 + 0x44) + 0x1C) - a1;
             if (r >= 0x32) {
@@ -1256,7 +1260,8 @@ void timproc_uso_b3_func_00001C68(char *arg0) {
                 gl_func_00000000(0x20, 5);
                 a1 = *(int *)(*(char **)(arg0 + 0x44) + 0x20);
             } else if (r > 0) {
-                *(int *)(*(char **)(arg0 + 0x44) + 0x20) = *(int *)(*(char **)(arg0 + 0x44) + 0x20) + 1;
+                fl = (int *)(*(char **)(arg0 + 0x44));
+                fl[8] = fl[8] + 1;
                 gl_func_00000000(0x20, 1);
                 a1 = *(int *)(*(char **)(arg0 + 0x44) + 0x20);
             }
@@ -1278,9 +1283,7 @@ void timproc_uso_b3_func_00001C68(char *arg0) {
     }
     gl_func_00000000(arg0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3", timproc_uso_b3_func_00001C68);
-#endif
+
 
 void timproc_uso_b3_func_0000205C(char *dst) {
     int tmp;
