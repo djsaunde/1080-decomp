@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046790: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046790: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10; q declared before dst puts dst at sp+0 as in the target, 96.54; the pixel store through an inline put(unsigned short *&, v) gives the target a2 reload, 96.61).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -14,6 +14,7 @@ extern float q[4];
 extern char D_46790_g[];
 extern unsigned char D_46790_font[];
 }
+static inline void put(unsigned short *&d, unsigned short v) { *d++ = v; }
 extern "C" void gl_func_00046790(char *o, unsigned char ch, int x, int y) {
     unsigned short **q;
     unsigned short *dst;
@@ -36,7 +37,7 @@ extern "C" void gl_func_00046790(char *o, unsigned char ch, int x, int y) {
                 } else {
                     if (D_46790_font[idx >> 1] & 0xF0) px = 0xFFFE;
                 }
-                *dst++ = px;
+                put(dst, px);
                 idx++;
             }
             dst += 312;
