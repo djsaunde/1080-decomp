@@ -6019,10 +6019,12 @@ int timproc_uso_b5_func_00008C38(char *scr) {
  * `bne s1,s2` bottom test and the table address inside the guard; a plain
  * `for (i < cnt)` keeps slt+bnez. RESIDUAL: colouring only -- target i/p =
  * s1/s0 (here s0/s1) and n in v0 (here a1); init/increment/decl order,
- * indexed access, reused return variable do not move them. */
+ * indexed access, reused return variable do not move them.
+ * 2026-10-22 agent-g (run 127) EXACT: two empty `if (1) {}` (uopt basic-block
+ * boundaries) after `cnt = n + 1;` and after `i = 0;` give the target colours;
+ * found by scripts/blockcut-search.py (k = 2, 231 variants). */
 extern struct DBlk_8D38 import_800201EC;
 extern char timproc_uso_b5_D_807FE78C;
-#ifdef NON_MATCHING
 int timproc_uso_b5_func_00008C44(char *r) {
     char *c = *(char **)((char *)&import_800201EC + 0x154);
     int n = *(u16 *)(c + 2) - 4;
@@ -6031,9 +6033,9 @@ int timproc_uso_b5_func_00008C44(char *r) {
     int *p;
 
     if (n >= 0 && n < 2) {
-        cnt = n + 1;
+        cnt = n + 1; if (1) {}
         if (cnt > 0) {
-            i = 0;
+            i = 0; if (1) {}
             p = (int *)((char *)&timproc_uso_b5_D_807FE78C + 0xF1C);
             do {
                 if (*p == *(int *)((char *)timproc_uso_b5_func_00008A38(r) + 0x2B0) + 1) {
@@ -6051,9 +6053,6 @@ int timproc_uso_b5_func_00008C44(char *r) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00008C44);
-#endif
 
 /* timproc_uso_b5_func_00008D38: 21-insn frameless bit-scan leaf
  * (boundary-merged 2026-06-02 from the 8D78 tail).

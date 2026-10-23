@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_00008C44",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T02:39:06.693228+00:00",
+  "end_time": "2026-10-23T02:39:06.693228+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T02:39:06.693228+00:00",
+      "assistant_text": "Guarded do-while scan; two empty if (1) {} uopt block boundaries after cnt = n + 1 and after i = 0 give the target s1/s0/v0 colours (scripts/blockcut-search.py, k=2).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 61,
+  "initial_m2c_source": null,
+  "final_source": "int timproc_uso_b5_func_00008C44(char *r) {\n    char *c = *(char **)((char *)&import_800201EC + 0x154);\n    int n = *(u16 *)(c + 2) - 4;\n    int cnt;\n    int i;\n    int *p;\n\n    if (n >= 0 && n < 2) {\n        cnt = n + 1; if (1) {}\n        if (cnt > 0) {\n            i = 0; if (1) {}\n            p = (int *)((char *)&timproc_uso_b5_D_807FE78C + 0xF1C);\n            do {\n                if (*p == *(int *)((char *)timproc_uso_b5_func_00008A38(r) + 0x2B0) + 1) {\n                    return i + 1;\n                }\n                i++;\n                p++;\n            } while (i != cnt);\n        }\n        c = *(char **)((char *)&import_800201EC + 0x154);\n    }\n    if (*(u8 *)(c + 0xE) == 0xFC && *(u8 *)(c + 0xF) == 0xFF && *(u8 *)(c + 0x10) == 7 &&\n        *(int *)((char *)timproc_uso_b5_func_00008A38(r) + 0x2B0) == 4) {\n        return 3;\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5.c",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00008C44.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "ido7.1-cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}
