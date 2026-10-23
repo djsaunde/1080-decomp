@@ -8253,7 +8253,13 @@ extern int func_3b164(), func_3b110();
  * (target lui v0 + 0x2D00(v0) next to the a3 = &D count base); the 0xF3 count
  * is a variable reloaded only after the store; the 0x84 call takes one arg.
  * Residual: &D colours a2 (target a3) and cmd[1] a0 (target v0); the 0xF3
- * loop's q + 0xB0 address is not pre-formed. */
+ * loop's q + 0xB0 address is not pre-formed.
+ * Run 129 (agent-c) 64 -> 41 raw: g assigned inside the 0xF3 `if` (the
+ * addiu lands in the bne delay slot as in the target) + a dead
+ * `while (0) { g = g + 0; }` at the top of the 0xF3 loop body: &D now takes
+ * a3 in every case. LEFT: the 0xF3 loop still remats the g+0x2CFC load
+ * (uopt keeps it as a static memory candidate), i a1 / q a0 vs a0 / v1,
+ * F2/F0 copy g into v1, cmd[1] a0 vs v0. */
 extern char gl_26790_ent[];  /* per-site base-0 alias of the entry array (target materialises it apart from &D) */
 extern int gl_26790_w;      /* base-0 word stored by op 0x81 (direct lui at / sw) */
 typedef struct Ent26790 {   /* &D + 0x2D00, stride 0x160 */
@@ -8326,10 +8332,11 @@ void gl_func_00026790(unsigned char *cmd) {
         }
         break;
     case 0xF3:
-        g = (char *)&D_00000000;
         if (*(int *)(cmd + 4) == 1) {
+            g = (char *)&D_00000000;
             n = *(int *)(g + 0x2070);
             for (i = 0; i < n; i++) {
+                while (0) { g = g + 0; }
                 q = (Obj26790 *)(*(char **)(g + 0x2CFC) + i * 208);
                 if (q->f80 && q->b34 == 0 && (*(unsigned char *)(*(char **)(q->p44 + 0x50) + 3) & 8)) {
                     q->f20 = 1;
