@@ -4969,3 +4969,4 @@ D_308AC_k1 = 0x00000000;
 D_308AC_k2 = 0x00000000;
 gl_func_00034A78_bss = 0x0003B8F6;  /* gl_func_00034A78 NCC donor: static F6/F7 byte pair (.bss reloc renamed by the splice) */
 gl_func_0005165C_bss = 0x00000000;  /* gl_func_0005165C NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
+gl_func_00066A50_bss = 0x0003F310;  /* gl_func_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */

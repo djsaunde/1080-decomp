@@ -1796,6 +1796,11 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_66EEC_DONOR := build/src/game_libs/game_libs_ncc_66EEC.cpp.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066EEC=$(GAMELIBS_66EEC_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66EEC_DONOR)
+# 66A50 = panic handler; NCC donor: the canary pair is one static long long (shared lui at, constant in t8).
+# The donor .cpp opens with a 0x1C-byte phase function (dead-epilogue alignment, kit LXI).
+GAMELIBS_66A50_DONOR := build/src/game_libs/game_libs_ncc_66A50.cpp.o
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066A50=$(GAMELIBS_66A50_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66A50_DONOR)
 
 GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o
 # 29CCC = envelope/keyframe stepper (9-case jumptable switch), IDO 7.1 -O2
