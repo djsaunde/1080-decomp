@@ -1048,10 +1048,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DB88);
  * bound is the live global count, written in the loop test. LICM hoists
  * it, but the trip count stays unknown, so there is no x4 unroll and no
  * i<n -> i!=n rewrite.
- * Run 129 (agent-c) 157 -> 146 raw, length 284 -> 288 = target: all three
+ * Run 129 (agent-c) 157 -> 150 raw, length 284 -> 288 = target: all three
  * display-list writes are the gbi `Gfx *_g = gp++` shape (copy, bump, then
- * w0 / w1 through the copy, reusing p -- a new block local takes a home
- * and grows the frame by 16); the class field shifts are unsigned (srl).
+ * w0 / w1 through the copy); the class field shifts are unsigned (srl).
  * LEFT: arg1 should be held in s8 (ours holds &buf there and homes arg1),
  * and loops B / C keep a per-iteration `e = p` copy in the target (moving
  * `p += 0x20` above the body keeps the copy but rotates the loop, +4 words). */
@@ -13142,17 +13141,31 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002B09C);
 // `or rX,rY,zero` ptr copies in cases 0/0x80, second-block v-copy +
 // multu operand order (v*mod spells mod-first here; swap is neutral),
 // ring-number offsets downstream of the above. Honest NON_MATCHING.
+// Run 129 (agent-c) 197 -> 168 raw: all locals at function scope (ramp first,
+// then sp3A / var_a3 / t0 / sp2C / ptr / cur / r; only d stays block-scoped)
+// and base / nv / v / v2 de-named: frame 96 -> 72 (target 64), and the
+// ours-only `or` copy of v in the percent block is gone (length 258 -> 257;
+// --nosp --noreg now differs only by the two missing ptr copies of cases 0 /
+// 0x80, so the remaining length gap is exactly those). LEFT: one more name
+// too many for frame 64; the two ptr copies (dead-copy spellings via r are
+// all eliminated).
 #ifdef NON_MATCHING
 extern int game_libs_func_0003443C();
 extern u8 gl_d_2b5f4_f;   /* base-0 alias of D_00000000: per-site fold for the 0x10AC f32 const */
 extern u8 gl_d_2b5f4_r1;  /* base-0 alias: RNG word 0x2154, first (float ramp) block */
 extern u8 gl_d_2b5f4_r2;  /* base-0 alias: RNG word 0x2154, second (percent) block */
 s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
-    char *t0 = *(char **)((char *)arg0 + 0x50);
-    char *sp2C = *(char **)((char *)t0 + 0x4C);
+    f32 ramp;
     u16 sp3A;
     s32 var_a3;
+    char *t0;
+    char *sp2C;
     char *ptr;
+    char **cur;
+    u32 r;
+
+    t0 = *(char **)((char *)arg0 + 0x50);
+    sp2C = *(char **)((char *)t0 + 0x4C);
 
     if (arg1 == 0xC0) {
         *(s16 *)((char *)arg0 + 0x8) = game_libs_func_0003443C((char *)arg0 + 0x54);
@@ -13162,7 +13175,6 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
     }
     *(u8 *)arg0 = *(u8 *)arg0 & 0xFFDF;
     if (((u32) (*(u32 *)t0 << 6) >> 0x1F) == 1) {
-        char **cur;
         switch (arg1 & 0xC0) {                      /* irregular */
         case 0x0:
             cur = (char **)((char *)arg0 + 0x54);
@@ -13216,17 +13228,13 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
         arg1 -= arg1 & 0xC0;
     }
     if (*(u8 *)((char *)t0 + 0xD) != 0) {
-        u32 r = *(u32 *)(&gl_d_2b5f4_r1 + 0x2154);
-        f32 base = *(f32 *)((char *)arg0 + 0x3C);
-        f32 ramp;
-        f32 nv;
-        ramp = (base * (f32) (r % *(u8 *)((char *)t0 + 0xD))) / 100.0f;
+        r = *(u32 *)(&gl_d_2b5f4_r1 + 0x2154);
+        ramp = (*(f32 *)((char *)arg0 + 0x3C) * (f32) (r % *(u8 *)((char *)t0 + 0xD))) / 100.0f;
         if (r & 0x8000) {
             ramp = -ramp;
         }
-        nv = base + ramp;
-        *(f32 *)((char *)arg0 + 0x38) = nv;
-        if (nv < 0.0f) {
+        *(f32 *)((char *)arg0 + 0x38) = *(f32 *)((char *)arg0 + 0x3C) + ramp;
+        if (*(f32 *)((char *)arg0 + 0x38) < 0.0f) {
             *(f32 *)((char *)arg0 + 0x38) = 0.0f;
         } else if (1.0f < *(f32 *)((char *)arg0 + 0x38)) {
             *(f32 *)((char *)arg0 + 0x38) = 1.0f;
@@ -13237,18 +13245,16 @@ s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
     *(s16 *)((char *)arg0 + 0x8) = sp3A;
     *(s16 *)((char *)arg0 + 0xA) = (s16) (*(u8 *)((char *)arg0 + 0x3) * sp3A >> 8);
     if (*(u8 *)((char *)t0 + 0xE) != 0) {
-        u32 r = *(u32 *)(&gl_d_2b5f4_r2 + 0x2154);
-        s16 v = *(s16 *)((char *)arg0 + 0xA);
-        u32 d = (u32) (v * (r % *(u8 *)((char *)t0 + 0xD))) / 100;
-        s16 v2;
+        u32 d;
+        r = *(u32 *)(&gl_d_2b5f4_r2 + 0x2154);
+        d = (u32) (*(s16 *)((char *)arg0 + 0xA) * (r % *(u8 *)((char *)t0 + 0xD))) / 100;
         if (r & 0x4000) {
             d = -(s32) d;
         }
-        *(s16 *)((char *)arg0 + 0xA) = (s16) (v + d);
-        v2 = *(s16 *)((char *)arg0 + 0xA);
-        if (v2 < 0) {
+        *(s16 *)((char *)arg0 + 0xA) = (s16) (*(s16 *)((char *)arg0 + 0xA) + d);
+        if (*(s16 *)((char *)arg0 + 0xA) < 0) {
             *(s16 *)((char *)arg0 + 0xA) = 0;
-        } else if (*(s16 *)((char *)arg0 + 0x8) < v2) {
+        } else if (*(s16 *)((char *)arg0 + 0x8) < *(s16 *)((char *)arg0 + 0xA)) {
             *(s16 *)((char *)arg0 + 0xA) = *(s16 *)((char *)arg0 + 0x8);
         }
     }
