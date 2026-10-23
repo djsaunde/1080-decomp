@@ -6981,19 +6981,25 @@ void gl_func_00025044(int a0) {
 // that the target keeps separate; (2) lower-half (count/sub) $a2-vs-temp
 // register-coloring tie; (3) one bne operand-order diff. Genuine
 // regalloc-coloring + cross-jump residual — NM-wrap.
+// Run 129 (agent-c) 82 -> 61 raw: the target lays the switch out as
+// case 0, case 2, case 1 (source order 0, 2, 1 -- the "cross-jump" was just
+// order); sub/rem unsigned (sltu); decl order puts sub lowest; the compare
+// reads obj->14 directly and rem is loaded for the second branch. LEFT: frame
+// 104 vs 96 (two extra slots), rem homed at 48 instead of coloured a2, the
+// 3998c call takes sub reloaded into a2 (target a1 reload, a2 = t2).
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 
 void gl_func_000250C8(char *obj, int arg1) {
     char *reg;
     int mode;
-    int sub;
     unsigned int field18;
     int kind;
     char *rec;
-    int buf[6];
     int c2, c3;
-    int rem;
+    int buf[6];
+    unsigned int rem;
+    unsigned int sub;
 
     mode = *(signed char *)(obj + 1);
     reg = *(char **)((char *)&D_00000000 + 0x2024);
@@ -7022,6 +7028,9 @@ block7:
         case 0:
             gl_func_00000000((field18 >> 8) & 0xff, field18 & 0xff);
             break;
+        case 2:
+            gl_func_00000000((field18 >> 8) & 0xff, field18 & 0xff);
+            break;
         case 1:
             sub = (field18 >> 8) & 0xff;
             gl_func_00000000(sub, field18 & 0xff); if (1) {}
@@ -7042,16 +7051,12 @@ block7:
             }
             gl_func_00000000(sub, *(int *)(obj + 4), &buf[0], 1);
             break;
-        case 2:
-            gl_func_00000000((field18 >> 8) & 0xff, field18 & 0xff);
-            break;
         }
         *(char *)(obj + 0) = 0;
         gl_func_00000000(*(int *)(obj + 0x1c), *(int *)(obj + 0x18), 0);
         return;
     }
-    rem = *(int *)(obj + 0x14);
-    if (sub < rem) {
+    if (sub < (unsigned int)*(int *)(obj + 0x14)) {
         if (*(signed char *)(obj + 2) == 1) {
             gl_func_00000000(*(int *)(obj + 8), *(int *)(obj + 0xc), sub,
                              *(short *)(reg + 2));
@@ -7061,6 +7066,7 @@ block7:
         *(int *)(obj + 0x10) = 0;
         return;
     }
+    rem = *(int *)(obj + 0x14);
     if (*(signed char *)(obj + 2) == 1) {
         gl_func_00000000(*(int *)(obj + 8), *(int *)(obj + 0xc), rem,
                          *(short *)(reg + 2));
