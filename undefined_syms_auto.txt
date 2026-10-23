@@ -4962,3 +4962,8 @@ D_40304_k001 = 0x00001AE0;
 gl_data_0001EE5C = 0x0001EE5C;
 gl_data_0001EE70 = 0x0001EE70;
 D_00000000F = 0x00000128;
+/* game_libs_func_000308AC NCC donor: module-local state block (.bss reloc renamed by the splice) + second data block */
+game_libs_func_000308AC_bss = 0x00000000;
+D_308AC_k0 = 0x00000000;
+D_308AC_k1 = 0x00000000;
+D_308AC_k2 = 0x00000000;

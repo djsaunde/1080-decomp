@@ -1845,6 +1845,11 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 GAMELIBS_28A68_DONOR := build/src/game_libs/game_libs_ncc_28A68.cpp.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00028A68=$(GAMELIBS_28A68_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_28A68_DONOR)
+# 308AC = mode setter over a module-LOCAL static block (merged head 308AC + body 308C8, 62 words); NCC donor.
+# Its .bss reloc is renamed game_libs_func_000308AC_bss by the splice (pinned to 0 in undefined_syms_auto.txt).
+GAMELIBS_308AC_DONOR := build/src/game_libs/game_libs_ncc_308AC.cpp.o
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000308AC=$(GAMELIBS_308AC_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_308AC_DONOR)
 # 2F720 = voice parameter update; p[0xF] = t/2; p[0xF] <<= 4; NCC donor.
 GAMELIBS_2F720_DONOR := build/src/game_libs/game_libs_ncc_2F720.cpp.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002F720=$(GAMELIBS_2F720_DONOR)
