@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0005721C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-23T01:17:52.439774+00:00",
+  "end_time": "2026-10-23T01:17:52.439774+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-23T01:17:52.439774+00:00",
+      "assistant_text": "cfe body: d = max - min reused (fewer counted var loads keep uopt's 20-varref block boundary after the 255.0f entry candidate) + arr[0]/arr[1] on one line for the as1 schedule.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 214,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_0005721C(int *a0, s16 min, s16 max, f32 *c) {\n    int *rec;\n    int idx;\n    int *arr;\n    int *arr2;\n    int d;\n    rec = (int *)a0[3];\n    idx = rec[1];\n    rec[1] = idx + 1;\n    arr = (int *)(((int *)a0[3])[0] + idx * 8);\n    d = max - min;\n    arr[0] = 0xBC000008; arr[1] = (((u32)(128000 / d) & 0xFFFF) << 16) | ((u32)((500 - min) * 256 / d) & 0xFFFF);\n    rec = (int *)a0[3];\n    idx = rec[1];\n    rec[1] = idx + 1;\n    arr2 = (int *)(((int *)a0[3])[0] + idx * 8);\n    arr2[0] = 0xF8000000;\n    arr2[1] = (((u32)(c[1] * 255.0f) & 0xFF) << 16) | (((u32)(c[2] * 255.0f) & 0xFF) << 8) | ((u32)(c[3] * 255.0f) & 0xFF) | (((u32)(c[0] * 255.0f) & 0xFF) << 24);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0005721C.s",
+    "segment": "game_libs_post0b",
+    "compiler": "ido7.1-cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "rdiff --raw --pins 0 words; .text byte-identical to expected; full gate at branch tip."
+  }
+}

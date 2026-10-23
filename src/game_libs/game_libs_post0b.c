@@ -25140,18 +25140,25 @@ void game_libs_func_00057194(int *a0, int *a1) {
  * written c1 | c2 | c3 | c0 because IDO evaluates the LAST operand of an
  * a|b|c|d chain first, then a, b, c (target loads c[0..3] in order).
  * Draft: /home/danjs/decomp-drafts/game_libs_func_0005721C_draft.c. */
-#ifdef NON_MATCHING
+/* EXACT 2026-10-22 (agent-g run 126): the 255.0f constant placement was the
+ * uopt basic-block boundary that ends a straight block after 20 counted
+ * variable loads (varreflimit). `d = max - min` read twice, instead of
+ * reloading both params at each divide, saves the loads that pushed the
+ * boundary in front of the colour block. arr[0] and arr[1] on one line give
+ * the target's sw / sll order (as1 schedules per source line). See
+ * docs/IDO_CODEGEN.md kit XXXV. */
 void game_libs_func_0005721C(int *a0, s16 min, s16 max, f32 *c) {
     int *rec;
     int idx;
     int *arr;
     int *arr2;
+    int d;
     rec = (int *)a0[3];
     idx = rec[1];
     rec[1] = idx + 1;
     arr = (int *)(((int *)a0[3])[0] + idx * 8);
-    arr[0] = 0xBC000008;
-    arr[1] = (((u32)(128000 / (max - min)) & 0xFFFF) << 16) | ((u32)((500 - min) * 256 / (max - min)) & 0xFFFF);
+    d = max - min;
+    arr[0] = 0xBC000008; arr[1] = (((u32)(128000 / d) & 0xFFFF) << 16) | ((u32)((500 - min) * 256 / d) & 0xFFFF);
     rec = (int *)a0[3];
     idx = rec[1];
     rec[1] = idx + 1;
@@ -25159,9 +25166,6 @@ void game_libs_func_0005721C(int *a0, s16 min, s16 max, f32 *c) {
     arr2[0] = 0xF8000000;
     arr2[1] = (((u32)(c[1] * 255.0f) & 0xFF) << 16) | (((u32)(c[2] * 255.0f) & 0xFF) << 8) | ((u32)(c[3] * 255.0f) & 0xFF) | (((u32)(c[0] * 255.0f) & 0xFF) << 24);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0005721C);
-#endif
 
 void game_libs_func_00057574(int *a0) {
     int *rec;
