@@ -19613,13 +19613,12 @@ void gl_func_00033EB8(s32 dst, u32 flags) {
             if (len != 0) {
                 if ((dst & 7) != 0) {
                     if ((u32)(8 - (dst & 7)) < len) {
-                        len = 8 - (dst & 7);
+                        len = 8 - (dst & 7); if (len) {}
                     }
                     cnt = 0;
                     gl_func_00000000(base, gl_d_33eb8_ce, base, len);
                     if (len != 0) {
-                        src = &gl_d_33eb8_src;
-                        cpdst = dst;
+                        src = (cpdst = dst, &gl_d_33eb8_src);
                         do {
                             *(u8 *)cpdst = *src;
                             cnt += 1;
