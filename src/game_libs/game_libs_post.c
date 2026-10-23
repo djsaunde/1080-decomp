@@ -11824,8 +11824,7 @@ void game_libs_func_0002A258(char *obj) {
     *(float *)(obj + 0x28) = 1.0f;
     *(float *)(obj + 0x38) = 1.0f;
     i = 0;
-    v1 = obj;
-    do {
+    v1 = obj; do {
         i += 4;
         *(signed char *)(v1 + 0xD5) = -1;
         *(signed char *)(v1 + 0xD6) = -1;
