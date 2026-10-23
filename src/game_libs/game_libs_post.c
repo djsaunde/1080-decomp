@@ -7024,7 +7024,7 @@ block7:
             break;
         case 1:
             sub = (field18 >> 8) & 0xff;
-            gl_func_00000000(sub, field18 & 0xff);
+            gl_func_00000000(sub, field18 & 0xff); if (1) {}
             rec = *(char **)((char *)&D_00000000 + 0x2030) + sub * 0x14;
             c2 = *(unsigned char *)(rec + 2);
             c3 = *(unsigned char *)(rec + 3);
