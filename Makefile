@@ -185,6 +185,14 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # Still NON_MATCHING (operator temp slots, case-6 zero colour): NM comparison object only.
 BOOTUP_D900_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_D900.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
+# 63B4 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 76.09). Still NON_MATCHING: NM comparison object only.
+BOOTUP_63B4_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_63B4_nm.cpp.o
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000063B4=$(BOOTUP_63B4_NM_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_63B4_NM_DONOR)
+# C234 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 77.39). Still NON_MATCHING: NM comparison object only.
+BOOTUP_C234_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_C234_nm.cpp.o
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000C234=$(BOOTUP_C234_NM_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_C234_NM_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
@@ -591,7 +599,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 134: 3DD28 NCC donor + placeholder host (36 -> 38 words): 0x2e894 -> 0x2e8a0 (62F08 NM offset 0x2e850).
 # agent-c run 134: 38A28 NM donor if (c) {} (87 -> 85 of 81 words): 0x2e8a0 -> 0x2e898 (62F08 NM offset 0x2e848).
 # agent-c run 134: 4E424 NM-only NCC donor (53 -> 51 of 49 words): 0x2e898 -> 0x2e890 (62F08 NM offset 0x2e840).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e890 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 134: 4E00C (69 -> 70) + 4A890 (80 -> 81) + 4A308 (221) NM-only NCC donors: 0x2e890 -> 0x2e898 (62F08 NM offset 0x2e848).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e898 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1557,6 +1566,18 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_NM_DONOR
 GAMELIBS_4E424_NM_DONOR := build/src/game_libs/game_libs_ncc_4E424_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E424=$(GAMELIBS_4E424_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E424_NM_DONOR)
+# 4E00C = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 75.69). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4E00C_NM_DONOR := build/src/game_libs/game_libs_ncc_4E00C_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E00C=$(GAMELIBS_4E00C_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E00C_NM_DONOR)
+# 4A308 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 76.89). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4A308_NM_DONOR := build/src/game_libs/game_libs_ncc_4A308_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A308=$(GAMELIBS_4A308_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_NM_DONOR)
+# 4A890 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 60.66). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4A890_NM_DONOR := build/src/game_libs/game_libs_ncc_4A890_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A890=$(GAMELIBS_4A890_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A890_NM_DONOR)
 # 42778 = normalised Vec3 -> fixed-point screen pair (len reused for the inverse, pad[12] frame words); NCC donor.
 GAMELIBS_42778_DONOR := build/src/game_libs/game_libs_ncc_42778.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042778=$(GAMELIBS_42778_DONOR)
