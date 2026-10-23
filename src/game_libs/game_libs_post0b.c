@@ -15672,7 +15672,7 @@ void gl_func_000488A0(Obj488A0 *obj) {
     if (obj->nv != 0) {
         ctx = obj->ctx; n = ctx->dl->count++;
         g = &ctx->dl->base[n];
-        g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF);
+        g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF); if (obj) {}
         g->w1 = gl_func_00000000(*(c2 = obj->ctx)->vtx + obj->vbase);
         *(int *)((char *)obj + 0x58C) += obj->nv;
         for (i = 0; i < obj->nline; i++) {
