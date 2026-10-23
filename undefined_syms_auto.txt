@@ -3720,6 +3720,7 @@ gl_ref_00022088_61F8C = 0x00022088;  /* gl_func_00061F8C baked lui/addiu message
 gl_ref_00022098_61F8C = 0x00022098;  /* gl_func_00061F8C baked lui/addiu message address (default) */
 gl_ref_000220AC_61F8C = 0x000220AC;  /* gl_func_00061F8C baked lui/addiu message address (exit check) */
 gl_func_0002FB74_rodata = 0x00001750;  /* gl_func_0002FB74 two jumptables (21 entries at +0x1750, 49 at +0x17A4) in game_libs rodata; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2FB74.c) */
+gl_func_00026D64_rodata = 0x00000F50;  /* gl_func_00026D64 switch (code) jumptable (14 entries, 0x41..0x4E) in game_libs rodata; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_26D64.c) */
 gl_ref_000423A4 = 0x000423A4;  /* gl_func_0002FB74 baked in-unit jal (game_libs_func_0002DD38, 0x0C0108E9) */
 gl_ref_00044B70 = 0x00044B70;  /* gl_func_0002FB74 baked in-unit tail jal (gl_func_00030504) */
 gl2FB74_snd = 0x00000000;  /* gl_func_0002FB74 USO-relocated sound submit (blank jal 0) */
