@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B6A0: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 65.26).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B6A0: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 65.26; if (max) {} after the ey difference from a parameter-only fz sweep, 198 -> 199 of 200 words).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -72,7 +72,7 @@ extern "C" int gl_func_0003B6A0(char *o, int max, float *outd, char **outp, floa
                 ax = *(short *)(v + a * 2);
                 ay = *(short *)(v + b * 2);
                 ex = *(short *)(w + a * 2) - ax;
-                ey = *(short *)(w + b * 2) - ay;
+                ey = *(short *)(w + b * 2) - ay; if (max) {}
                 px = (int)(qa - (float)ax);
                 py = (int)(qb - (float)ay);
                 cross = (float)ex * (float)py - (float)ey * (float)px;
