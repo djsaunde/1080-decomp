@@ -1089,7 +1089,9 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 // frame / homes (noteIndices 132, useReverb 120). LEFT (2 words): the target
 // loads enabled through the sampleState copy (or v0,v1; lw 0(v0)), ours
 // through the induction pointer before the copy.
-#ifdef NON_MATCHING
+/* EXACT (run 144, agent-c): the enabled bitfield is VOLATILE (OoT / SM64-EU
+ * declare the note-sub flags vu8): the target then loads it through the per-iteration
+ * sampleState copy (or v0,v1; lw 0(v0)) instead of the induction pointer. */
 typedef struct { u32 w0; u32 w1; } gl_dcb4_Awords;
 typedef union { gl_dcb4_Awords words; long long force_structure_alignment; } gl_dcb4_Acmd;
 #define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -1103,7 +1105,7 @@ typedef union { gl_dcb4_Awords words; long long force_structure_alignment; } gl_
 #define DMEM_2CH_SIZE 0x340
 #define SAMPLE_SIZE sizeof(s16)
 typedef struct {
-    u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1;
+    volatile u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1;
     u32 stereoStrongRight : 1; u32 stereoStrongLeft : 1; u32 stereoHeadsetEffects : 1; u32 usesHeadsetPanEffects : 1;
     u32 reverbIndex : 3; u32 bookOffset : 2; u32 isSyntheticWave : 1; u32 hasTwoParts : 1; u32 useHaasEffect : 1;
     char pad[0x1C];
@@ -1218,9 +1220,16 @@ gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 
 #undef AudioSynth_FilterReverb
 #undef AudioSynth_SaveReverbSamples
 #undef AudioSynth_MaybeMixRingBuffer1
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DCB4);
-#endif
+#undef _SHIFTL
+#undef OS_K0_TO_PHYSICAL
+#undef aClearBuffer
+#undef aInterleave
+#undef aSaveBuffer
+#undef DMEM_TEMP
+#undef DMEM_LEFT_CH
+#undef DMEM_RIGHT_CH
+#undef DMEM_2CH_SIZE
+#undef SAMPLE_SIZE
 
 /* gl_func_0001E134 = AudioSynth_ProcessNote (OoT synthesis.c), EXACT (run 143,
  * agent-c; was a 65.94 m2c NM). OoT's body verbatim with the 1080 deltas:
