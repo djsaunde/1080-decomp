@@ -6090,7 +6090,7 @@ int game_libs_func_00023F98(char *s, int tag, int a2, int a3, int arg5, int size
     if (*(unsigned int *)(gl_d_23f98 + 0x215C) >= 0x11U) {
         return -1;
     }
-    switch (mode) {
+    switch ((unsigned)(mode)) { /* unsigned key: case compares load li at,K (no held-constant CSE) */
     case 2:
         buf = (char *)*(int *)(gl_d_23f98 + 0x1644);
         break;
