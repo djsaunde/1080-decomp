@@ -4177,8 +4177,7 @@ void game_uso_func_0000591C(int *a0) {
     bits = *(int*)((char*)self + 0x6C);
     if (bits & 1) {
         if ((resolved_state & 1) && !(resolved_state & 2)) {
-            *(int*)((char*)self + 0x6C) = bits & ~1;
-            *(int*)((char*)self + 0x48) = 0x14;
+            *(int*)((char*)self + 0x6C) = bits & ~1; *(int*)((char*)self + 0x48) = 0x14;
             if (resolved_state & 4) {
                 out_flags = 0x20;
             } else if (resolved_state & 0x800) {
