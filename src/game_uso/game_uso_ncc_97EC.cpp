@@ -11,7 +11,8 @@
  * target 192/204; dp/f as named locals, the C chain 48 -> 140 -> 180 is
  * right); (2) the FP colouring follows from that (x in $f2 vs $f12).
  * The m2 escape (`float *pm = &m2`) gives the target's spill/reload of
- * |e|^2 and the duplicate f.x / f.z loads. Spliced into the NON_MATCHING
+ * |e|^2 and the duplicate f.x / f.z loads. Run 146: cr, t and pm declared BEFORE m2
+ * put m2's home at the target's sp+32 (was sp+44). Spliced into the NON_MATCHING
  * game_uso object only (docs/MATCHING_WORKFLOW.md#game-libs-ncc-nm-only-donor-run114).
  * Every symbol is extern "C". */
 extern "C" void *game_uso_func_055750(unsigned);
@@ -43,9 +44,10 @@ extern "C" int game_uso_func_000097EC(Self *s) {
             XZ f(s->w->other->pos - s->w->pos);
             float mag = game_uso_func_082880(e.x * e.x + e.z * e.z);
             if (0.0f < mag) {
-                float m2 = e.x * e.x + e.z * e.z; float *pm = &m2;
-                float cr = ABS(e.z * f.x - e.x * f.z);
-                float t = (e.x * f.x + e.z * f.z) / *pm;
+                float cr, t, *pm;
+                float m2 = e.x * e.x + e.z * e.z; pm = &m2;
+                cr = ABS(e.z * f.x - e.x * f.z);
+                t = (e.x * f.x + e.z * f.z) / *pm;
                 if (0.0f <= t && t < 1.0f && cr / mag < s->lim) ret = 1;
             }
         }
