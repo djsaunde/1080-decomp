@@ -6054,7 +6054,12 @@ extern f32 DF_320;
  * FLOAT data: VecH is {f32,f32,f32} (spD0.f0 = 110.0f, the DS_xxx first members
  * are lwc1 float loads), the two stage copies are plain struct assignments (lw/sw
  * through addiu pointers in the target) and the final three stores into the
- * object are float member reads (lwc1/swc1), not s32 word moves. */
+ * object are float member reads (lwc1/swc1), not s32 word moves.
+ * 2026-10-23 (agent-g run 143) 85.10 -> 85.5 (standalone 84.73 -> 85.12, 1595 ->
+ * 1600 of 1624 words): the three 0xB4/B8/BC zero triples are DOUBLE literals
+ * (`= 0.0`): the target materialises fresh `mtc1 zero` per store (12 vs our 3,
+ * kit LXV); with 0.0f they joined the held f20 zero. Site 3 now gives the
+ * target's three mtc1; sites 1 / 2 still CSE into one f0 zero. */
 extern char f8fc8_e304_1[], f8fc8_e304_2[], f8fc8_e304_3[], f8fc8_e304_4[], f8fc8_e3d04_2[], f8fc8_ee6c_sb1[], f8fc8_ee6c_sb2[], f8fc8_ee6c_sb3[];
 void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
     VecH sp154;
@@ -6173,9 +6178,9 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 M2C_FIELD(pv0, s8 **, 0x108) = pw0;
                 timproc_uso_b5_func_04DFFC(pv0, pw0);
                 ps0 = M2C_FIELD(pv0, s8 **, 0x108);
-                M2C_FIELD(ps0, f32 *, 0xB4) = 0.0f;
-                M2C_FIELD(ps0, f32 *, 0xB8) = 0.0f;
-                M2C_FIELD(ps0, f32 *, 0xBC) = 0.0f;
+                M2C_FIELD(ps0, f32 *, 0xB4) = 0.0;
+                M2C_FIELD(ps0, f32 *, 0xB8) = 0.0;
+                M2C_FIELD(ps0, f32 *, 0xBC) = 0.0;
                 M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
                 spC0 = M2C_FIELD(f8fc8_ee6c_sb1, s32 *, 4) & 0x80000;
                 M2C_FIELD(import_800664C4, s32 *, 4) = (s32) (((M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000) & ~2);
@@ -6391,9 +6396,9 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s8 **, 0x108) = pw0;
             timproc_uso_b5_func_04DFFC(pv0, pw0);
             pa1 = M2C_FIELD(pv0, s8 **, 0x108);
-            M2C_FIELD(pa1, f32 *, 0xB4) = 0.0f;
-            M2C_FIELD(pa1, f32 *, 0xB8) = 0.0f;
-            M2C_FIELD(pa1, f32 *, 0xBC) = 0.0f;
+            M2C_FIELD(pa1, f32 *, 0xB4) = 0.0;
+            M2C_FIELD(pa1, f32 *, 0xB8) = 0.0;
+            M2C_FIELD(pa1, f32 *, 0xBC) = 0.0;
             M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
             sp80 = M2C_FIELD(f8fc8_ee6c_sb2, s32 *, 4) & 0x80000;
             {
@@ -6500,9 +6505,9 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s8 **, 0x108) = pw0;
             timproc_uso_b5_func_04DFFC(pv0, pw0);
             pa1 = M2C_FIELD(pv0, s8 **, 0x108);
-            M2C_FIELD(pa1, f32 *, 0xB4) = 0.0f;
-            M2C_FIELD(pa1, f32 *, 0xB8) = 0.0f;
-            M2C_FIELD(pa1, f32 *, 0xBC) = 0.0f;
+            M2C_FIELD(pa1, f32 *, 0xB4) = 0.0;
+            M2C_FIELD(pa1, f32 *, 0xB8) = 0.0;
+            M2C_FIELD(pa1, f32 *, 0xBC) = 0.0;
             M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
             sp68 = M2C_FIELD(f8fc8_ee6c_sb3, s32 *, 4) & 0x80000;
             {
