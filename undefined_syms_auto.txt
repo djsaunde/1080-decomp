@@ -5029,3 +5029,4 @@ gl_26790_ent = 0x00000000;  /* agent-c run 141: gl_func_00026790 seqPlayer loop 
 gl_26790_w = 0x00000000;  /* agent-c run 141: gl_func_00026790 custom-update function word (op 0x81) */
 gl_22760_gAudioCtxT = 0x00000000;  /* agent-c run 141: gl_func_00022760 typed gAudioCtx extern */
 gl_22760_superDma = 0x0001AA84;  /* agent-c run 141: gl_func_00022760 "SUPERDMA" string in game_libs module rodata (baked lui 2 / addiu -0x557C) */
+gl_1F248_gWaveSamples = 0x00000000;  /* agent-c run 141: gl_func_0001F248 gWaveSamples pointer table (USO-resolved, entry 8 at +0x20) */

@@ -2087,7 +2087,11 @@ gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 //   placeholder jal needs USO reloc infra + bitfield/align schedule.
 //   Name pre-checked: no extern reuse (collision-safe).
 //   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
+/* gl_func_0001F248 EXACT 2026-10-24 (agent-c run 141, 98.44 -> 100): OoT's
+ * AudioSynth_LoadWaveSamples verbatim -- `AudioSynth_LoadBuffer(cmd++, ...)` and
+ * gWaveSamples as a TYPED extern array (gl_1F248_gWaveSamples) for both the read and
+ * the += (the `(s16 **)&D` cast form needed the split cursor copy and still missed
+ * the `or a0,s0` cursor copy). Older notes below. */
 /* run 140: OoT's AudioSynth_LoadWaveSamples (96.02 -> 98.32, 93 of 94 words). The
  * noise path's gWaveSamples[8] read goes through its own per-site alias (else the
  * base is CSE'd into a register); OS_K0_TO_PHYSICAL on both load addresses.
@@ -2099,7 +2103,8 @@ extern int D_00000000;
 extern int D_1F248_dp;
 extern int gl_ref_00031D3C();
 #define AudioSynth_LoadBuffer gl_ref_00031D3C
-#define gWaveSamples ((s16 **)&D_00000000)
+extern s16 *gl_1F248_gWaveSamples[];
+#define gWaveSamples gl_1F248_gWaveSamples
 #define sNumSamplesPerWavePeriod ((u8 *)&D_00000000)
 #define A_DUPLICATE 9
 #define DMEM_UNCOMPRESSED_NOTE 0x580
@@ -2114,7 +2119,7 @@ gl_aud_Acmd *gl_func_0001F248(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
     s32 numDuplicates;
 
     if (sampleState->bookOffset != 0) {
-        { gl_aud_Acmd *c = cmd; cmd++; AudioSynth_LoadBuffer(c, DMEM_UNCOMPRESSED_NOTE, ALIGN16(numSamplesToLoad * SAMPLE_SIZE), OS_K0_TO_PHYSICAL(((s16 **)&D_1F248_dp)[8])); }
+        AudioSynth_LoadBuffer(cmd++, DMEM_UNCOMPRESSED_NOTE, ALIGN16(numSamplesToLoad * SAMPLE_SIZE), OS_K0_TO_PHYSICAL(gWaveSamples[8]));
         gWaveSamples[8] += numSamplesToLoad * SAMPLE_SIZE;
         return cmd;
     } else {
@@ -2144,9 +2149,6 @@ gl_aud_Acmd *gl_func_0001F248(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 #undef WAVE_SAMPLE_COUNT
 #undef SAMPLE_SIZE
 #undef aDuplicate
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001F248);
-#endif
 
 /* gl_func_0001F3C8 EXACT 2026-10-23 (agent-c run 140, 63.55 -> 100): the audio
  * driver's Haas-effect stage -- the same function as OoT's
