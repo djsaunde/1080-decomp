@@ -3523,8 +3523,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
             vec1.w = 1.0f; vec1.x = vec1.y = vec1.z = D_bu_ro_5A0;
             func_00000000(obj + 0x5C, &vec1, 993, 997);
-            OI(obj, 0x38) = 1;
-            OI(obj, 0x48) = (int)&D_55A0_o48_1;
+            OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_1;
         }
         func_00000000(DROOT, obj, 4);
 
@@ -3554,8 +3553,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
 
         /* list object (0x6C) */
         DI(4) = 0x28002;
-        DI(0) = 0;
-        nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
+        DI(0) = 0; nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
         v3.w = D_55A0_v3.w;
         p1.w = v3.w;
         obj = (char *)func_00000000(0x6C);
@@ -3575,8 +3573,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
                     if (n4 != 0 || (n4 = (char *)func_00000000(4)) != 0) {
                         OI(n4, 0) = (int)&D_55A0_n4;
                     }
-                    OI(n3, 0x4) = (int)obj;
-                    *(P8_55A0 *)(n3 + 8) = D_55A0_pair;
+                    OI(n3, 0x4) = (int)obj; *(P8_55A0 *)(n3 + 8) = D_55A0_pair;
                 }
                 OI(n2, 0) = (int)&D_55A0_n2;
             }
