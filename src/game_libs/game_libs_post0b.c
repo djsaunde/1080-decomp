@@ -30130,13 +30130,12 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
     int *flag = (int *) (int) &D_00000000;
     int one = 1;
     char *out = arg0;
-    u8 *p = fmt;
     int B = 6;
     int A = 6;
     int c;
     int t;
 
-    c = *p++;
+    c = *fmt++;
     if (c != 0) {
         do {
             if (c == 'd') {
@@ -30160,15 +30159,15 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
                 out = gl_func_00034458(out, frac, gl_func_00034458(0xA, Bm1));
             } else if ((c >= '0') && (c < ':')) {
                 A = (u8)(c - '0');
-                t = *p++;
+                t = *fmt++;
                 if (t != 0) {
-                    B = *p++ - '0'; if (arg3) {}
+                    B = *fmt++ - '0'; if (arg3) {}
                 }
             } else {
                 gl_func_00034458(out, (char *)&D_00000000 + 0x21E08);
                 out += 0xA;
             }
-            c = *p++;
+            c = *fmt++;
         } while (c != 0);
     }
     return out;
