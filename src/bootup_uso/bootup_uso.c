@@ -4660,15 +4660,22 @@ extern char *bu_76f4_root;
 extern char bu_76f4_g[], bu_76f4_v[];
 extern int bu_76f4_cnt;
 extern void func_00000000_76f4_v();
+/* Run 150 (agent-g, 87.33 -> 3 words): the vector is read through a
+ * FUNCTION-typed alias (bu_76f4_vf, target lo16 0xA0 = import + 0xA0): a data
+ * array lets as1 prove it cannot alias the scale base and hoist the three
+ * scale loads above the vector stores; the function symbol keeps them after
+ * each store, as in the target. Left: lui v0 / lui a2 order after the call
+ * (G is the rematerialised arg constant) and the pin (+0x20 addend). */
+extern void bu_76f4_vf();
 void func_000076F4(char *s0) {
     if (func_00000000_76f4_q(*(char **)(bu_76f4_g + 0x18), 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),
                     *(float *)(s0 + 0x64), 0,
                     *(float *)(s0 + 0x70) * *(float *)(s0 + 0x80)) != 0) {
         func_00000000_76f4_v(bu_76f4_g, s0 + 0x2C);
-        *(float *)(bu_76f4_v + 0x30) *= *(float *)(bu_76f4_g + 0x128);
-        *(float *)(bu_76f4_v + 0x34) *= *(float *)(bu_76f4_g + 0x12C);
-        *(float *)(bu_76f4_v + 0x38) *= *(float *)(bu_76f4_g + 0x130);
-        *(float *)(bu_76f4_v + 0x34) += *(float *)(s0 + 0x6C);
+        *(float *)((char *)bu_76f4_vf + 0x30) *= *(float *)(bu_76f4_g + 0x128);
+        *(float *)((char *)bu_76f4_vf + 0x34) *= *(float *)(bu_76f4_g + 0x12C);
+        *(float *)((char *)bu_76f4_vf + 0x38) *= *(float *)(bu_76f4_g + 0x130);
+        *(float *)((char *)bu_76f4_vf + 0x34) += *(float *)(s0 + 0x6C);
         func_00000000_76f4_v(s0);
         bu_76f4_cnt += 1;
     }
