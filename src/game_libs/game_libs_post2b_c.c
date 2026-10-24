@@ -103,8 +103,9 @@ int gl_func_000730CC(char *pihandle, unsigned int devAddr, unsigned int *data) {
 /* game_libs_func_00073258 = libultra osMapTLBRdb (os/maptlbrdb.s) --
  * HANDWRITTEN assembly in libreultra (LEAF macro, mfc0/mtc0/tlbwi: maps
  * TLB entry 31 -> 0xC0000000 rdb area). IDO C cannot emit CP0/TLB ops;
- * permanent INCLUDE_ASM, same class as the MIPS3-runtime helpers. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00073258);
+ * now real assembly source (below). */
+/* game_libs_func_00073258 = osMapTLBRdb (game_libs libultra copy): real source in src/libultra/game_libs/maptlbrdb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/maptlbrdb.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000730CC_pad.s")
 
 /* gl_func_000732C4 = libultra scheduler yield/dispatch. LANDED 2026-06-21 as a

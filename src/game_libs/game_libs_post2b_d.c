@@ -262,7 +262,8 @@ unsigned int game_libs_func_00074854(void) {
     return *(volatile unsigned int *)0xA4040010;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00074860);
+/* game_libs_func_00074860 = osWritebackDCacheAll (game_libs libultra copy): real source in src/libultra/game_libs/writebackdcacheall.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/writebackdcacheall.s")
 
 /* 7488C decomposed 2026-06-10 (drift region realigned by the relayout,
  * unblocking the deferred match): 2 inter-fn pad words (orphan block)

@@ -35,8 +35,9 @@ typedef struct { float x, y, z; } Vec3;
  * (twenty-sixth mis-split case, docs/MATCHING_WORKFLOW
  * #leading-nop-cap-is-inter-object-pad-sym-oracle-74844). Oracle: section
  * 0x84980 (= 0x70314) exported sym 2639 (2 R_MIPS_26 refs), 0x8498C not.
- * Default INCLUDE_ASM remains byte-exact. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00070314);
+ * Now real assembly source (below). */
+/* game_libs_func_00070314 = __osSetCompare (game_libs libultra copy): real source in src/libultra/game_libs/setcompare.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/setcompare.s")
 
 /* game_libs_func_00070324 = libultra bcopy (HANDWRITTEN, libc/bcopy.s), 193
  * insns (0x304). BOUNDARY CORRECTED 2026-09-09 (agent-g): the old
@@ -322,16 +323,18 @@ void gl_func_00070A14(int m) {
  * jr ra; nop` -- the pre-2.0I form without the __OSGlobalIntMask logic).
  * Sym oracle 2026-09-09 (agent-g): true entry 0x70AC4 = section 0x85130 =
  * export sym 2511 (three jal refs); the leading zero word at 0x70AC0
- * (0x8512C, not exported) is gl_func_00070A14's object pad. Stays
- * INCLUDE_ASM (mfc0/mtc0). The many blank `gl_func_00000000_disint` jals in
+ * (0x8512C, not exported) is gl_func_00070A14's object pad. Now
+ * real assembly source (below). The many blank `gl_func_00000000_disint` jals in
  * the -O1 donors resolve to this symbol at USO load time. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00070AC0);
+/* game_libs_func_00070AC0 = __osDisableInt (game_libs libultra copy): real source in src/libultra/game_libs/disableint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/disableint.s")
 
 /* game_libs_func_00070AE4 = libultra __osRestoreInt (HANDWRITTEN CP0:
  * `mfc0 t0,$12; or t0,t0,a0; mtc0 t0,$12; nop; nop; jr ra`), section 0x85150
  * = export sym 2514 (four jal refs). The jr delay nop at 0x70AFC lives in
- * gl_func_00070A14_pad.s below. Stays INCLUDE_ASM (mfc0/mtc0). */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00070AE4);
+ * gl_func_00070A14_pad.s below. Now real assembly source (below). */
+/* game_libs_func_00070AE4 = __osRestoreInt (game_libs libultra copy): real source in src/libultra/game_libs/restoreint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/restoreint.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070A14_pad.s")
 
 /* gl_func_00070B04 = libultra __osViInit (vi.c verbatim): bzero the

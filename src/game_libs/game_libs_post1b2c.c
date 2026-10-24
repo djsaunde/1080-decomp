@@ -30,8 +30,9 @@ typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state
  * (gl_func_0006C384, its own unit TRUNCATE_TEXT 0x7C) inter-object pad,
  * kept in this `.s` because it sits at the unit start (re-homing it means
  * a cross-unit relayout). Not osWritebackDCacheAll (= game_libs_func_
- * 00074864). IDO C cannot emit the cache op; permanent INCLUDE_ASM. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006C400);
+ * 00074864). IDO C cannot emit the cache op; now real assembly source (below). */
+/* game_libs_func_0006C400 = osWritebackDCache (game_libs libultra copy): real source in src/libultra/game_libs/writebackdcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/writebackdcache.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C384_pad.s")
 
 /* gl_func_0006C484 = libultra osInitialize (os/initialize.c verbatim),
@@ -108,13 +109,15 @@ long long gl_func_0006C90C(long long a, long long b) {
 /* __ll_rshift <- kernel func_80002CA4. TWIN-PORT, donor game_libs_mips3_6C740.c. */
 s64 game_libs_func_0006C9A8(s64 a, s64 b) { return a >> b; }
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006C9D4);
+/* game_libs_func_0006C9D4 = __osSetSR (game_libs libultra copy): real source in src/libultra/game_libs/setsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/setsr.s")
 
 /* game_libs_func_0006C9E4: 3-insn `mfc0 v0, $12; jr ra; nop` Status-register
  * read. CP0 access (mfc0) is MIPS3 runtime — IDO C can't emit CP0 ops from
  * standard C. CAP class per reference_1080_mips3_runtime_helpers. Default
- * INCLUDE_ASM remains byte-exact. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006C9E4);
+ * now real assembly source (below). */
+/* game_libs_func_0006C9E4 = __osGetSR (game_libs libultra copy): real source in src/libultra/game_libs/getsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/getsr.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C90C_pad.s")
 
 /* gl_func_0006C9F4 = libultra __osPiRawStartDma. LANDED 2026-06-21 as a
@@ -350,10 +353,12 @@ void gl_func_0006D7CC(unsigned char *pattern, void *data) {
  * trapping `add v0,v0,t5` and the unfilled CP0 hazard nops (IDO never emits
  * either). Section 0x81F00 is 16-aligned (no inter-object pad in this .s;
  * the two zero words of game_libs_func_0006D94C are its trailing pad).
- * Identified 2026-09-09 (agent-g). Permanent INCLUDE_ASM. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006D894);
+ * Identified 2026-09-09 (agent-g). Now real assembly source (below). */
+/* game_libs_func_0006D894 = __osProbeTLB (game_libs libultra copy): real source in src/libultra/game_libs/probetlb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/probetlb.s")
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006D94C);
+/* game_libs_func_0006D94C = osGetCount (game_libs libultra copy): real source in src/libultra/game_libs/getcount.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/getcount.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006D7CC_pad.s")
 
 /* gl_func_0006D964 = libultra osPiStartDma (io/pidma.c verbatim), section
@@ -725,9 +730,10 @@ void game_libs_func_0006F218(int *a0, int a1, int a2) {
  * leading zero word 0x6F250 (0x838BC, not exported) is osCreateMesgQueue's
  * (game_libs_func_0006F218) 16-byte object pad -> SUFFIX_BYTES_FORCE
  * game_libs_func_0006F218=0x00000000 in the Makefile; the three zero words
- * 0x6F2C8..0x6F2D0 are THIS object's trailing pad (kept in the `.s`). Stays
- * INCLUDE_ASM (cache op). */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006F254);
+ * 0x6F2C8..0x6F2D0 are THIS object's trailing pad (kept in the `.s`). Now
+ * real assembly source (below). */
+/* game_libs_func_0006F254 = osInvalICache (game_libs libultra copy): real source in src/libultra/game_libs/invalicache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/invalicache.s")
 
 /* game_libs_func_0006F2D4 = libultra osInvalDCache (os/invaldcache.s,
  * HANDWRITTEN: `blez a1; li t3,0x2000 DCACHE_SIZE; bgeu a1,t3 -> label 4;
@@ -742,8 +748,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006F254);
  * baked jal -> one LEAF, MERGED here (0xAC). The zero word at 0x6F380 is
  * this object's 16-byte pad before __osSpDeviceBusy (0x6F384 = 0x839F0 =
  * export sym 2524) = SUFFIX_BYTES_FORCE game_libs_func_0006F2D4=0x00000000
- * in the Makefile. Stays INCLUDE_ASM (cache op). */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006F2D4);
+ * in the Makefile. Now real assembly source (below). */
+/* game_libs_func_0006F2D4 = osInvalDCache (game_libs libultra copy): real source in src/libultra/game_libs/invaldcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/invaldcache.s")
 
 /* gl_func_0006F38C = libultra __osSpDeviceBusy (sp.c verbatim):
  * return (*SP_STATUS_REG & (DMA_BUSY|DMA_FULL|IO_FULL)) ? 1 : 0.

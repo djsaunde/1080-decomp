@@ -5798,9 +5798,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006A5F0);
  * $t9 "allocator state" -- the t9 is simply the hand-written register
  * choice. The neighbor game_libs_func_0006AD78 is the exception
  * context-switch block from the same file (k-regs, ld/ldc1 GPR+FPR
- * restore, eret -- also handwritten). Permanent INCLUDE_ASM, always-
- * skip class. Reference-search-first would have caught this. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006AD68);
+ * restore, eret -- also handwritten). Now real assembly source (below);
+ * reference-search-first would have caught this. */
+/* game_libs_func_0006AD68 = __osPopThread (game_libs libultra copy): real source in src/libultra/game_libs/popthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/popthread.s")
 
 /* game_libs_func_0006AD78 = the exception-handler context block from
  * os/exceptasm.s (HANDWRITTEN: mtc0/k-regs, full ld GPR + ldc1 FPR
@@ -5926,7 +5927,6 @@ void gl_func_0006AF44(int *target) {
     gl_func_00000000(prelim);
 }
 
-#ifdef NON_MATCHING
 /* game_libs_func_0006B048: libc-style bzero / memset-zero (declared size 0xB4, 45 words).
  *
  * Splat declares the symbol at offset 0, but the real function body starts at
@@ -6006,11 +6006,12 @@ void gl_func_0006AF44(int *target) {
  *   (3) the BSD-bzero C body compiled at this file's -O2 EXPANDS to ~104 insns
  *       (vs the 42-insn target) — IDO does not reproduce the tight unrolled
  *       form here (measured fuzzy=None). So it is not C-matchable as-is.
- * Stays INCLUDE_ASM. Re-attempt only after a splat boundary split (drops the
- * 3 nops) AND finding what produces the tight 39-insn form + the lone swl. */
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006B048);
-#endif
+ * RESOLVED 2026-10-24 (agent-g run 158): it is libultra's HANDWRITTEN
+ * libc/bzero.s (the lone swl head and the tight unrolled loops are the
+ * reference source verbatim; byte-identical to the kernel copy
+ * func_80002CD0), so it is assembled from real assembly source below. */
+/* game_libs_func_0006B048 = bzero (game_libs libultra copy): real source in src/libultra/game_libs/bzero.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/bzero.s")
 
 
 
