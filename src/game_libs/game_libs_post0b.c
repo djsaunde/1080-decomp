@@ -22455,7 +22455,6 @@ s32 game_libs_func_00053368(void *a0, int a1, int a2) {
            *(int *)((char *)a0 + 0x58);
 }
 
-#ifdef NON_MATCHING
 /* Triangle vertex-color averager. arg0=mesh ctx, arg1=triangle index,
  * arg2=out RGB. Looks up the triangle (via optional index table at 0x4C,
  * else direct) in the 8-byte tri array at 0x68, sums the 3 vertices'
@@ -22476,7 +22475,16 @@ s32 game_libs_func_00053368(void *a0, int a1, int a2) {
  * loop reuses the loop-bound register (div by a register + traps, as in
  * the target). Residual: the target materialises 3 early (t1, beqz delay)
  * and copies the tri pointer t0 -> a0 before the loop; ours keeps tri in
- * one register and divides by v1 (a separate cursor copy costs 2 pts). */
+ * one register and divides by v1 (a separate cursor copy costs 2 pts).
+ * 2026-10-24 agent-g (run 147) EXACT: three changes. (1) divide by the
+ * literal 3 (`r / 3`): uopt holds the constant 3 in a register for both the
+ * loop bound and the divisors, so the div keeps its trap checks (the old
+ * `/ i` divided by the counter). (2) a separate cursor copy `p = tri;` read
+ * as p[i + 1] gives the target's t0 -> a0 copy before the loop. (3) operand
+ * order: the tri address is `idxTab[arg1] * 8 + base` (fixes the t-ring
+ * phase of the whole body), and the colour entry re-reads the table from
+ * the object, index first: `p[i + 1] * 4 + *(u8 **)(arg0 + 0x50)` (the
+ * load is CSEd with colorTab, and the addu takes the table first). */
 void gl_func_000533EC(char *arg0, int arg1, unsigned char *arg2) {
     short r, g, b;
     int i;
@@ -22484,33 +22492,31 @@ void gl_func_000533EC(char *arg0, int arg1, unsigned char *arg2) {
     short *idxTab;
     unsigned short *tri;
     unsigned char *e;
+    unsigned short *p;
 
     colorTab = *(unsigned char **)(arg0 + 0x50);
     if (colorTab == 0) {
-        gl_func_00034458((char *)&D_00000000 + 0x21024, arg1);
+        gl_func_00000000((char *)&D_00000000 + 0x21024, arg1);
         colorTab = *(unsigned char **)(arg0 + 0x50);
     }
     idxTab = *(short **)(arg0 + 0x4C);
     if (idxTab != 0) {
-        tri = (unsigned short *)(*(char **)(arg0 + 0x68) + idxTab[arg1] * 8);
+        tri = (unsigned short *)(idxTab[arg1] * 8 + *(char **)(arg0 + 0x68));
     } else {
         tri = (unsigned short *)(*(char **)(arg0 + 0x68) + arg1 * 8);
     }
     r = 0; g = 0; b = 0;
+    p = tri;
     for (i = 0; i != 3; i++) {
-        e = colorTab + tri[1] * 4;
-        tri++;
+        e = p[i + 1] * 4 + *(unsigned char **)(arg0 + 0x50);
         r += e[0];
         g += e[1];
         b += e[2];
     }
-    arg2[0] = r / i;
-    arg2[1] = g / i;
-    arg2[2] = b / i;
+    arg2[0] = r / 3;
+    arg2[1] = g / 3;
+    arg2[2] = b / 3;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000533EC);
-#endif
 
 /* 2026-10-22 (agent-g run 123) EXACT (301/301): the m2c transcription had a 64-byte-short
  * frame (16 unused declared words above sp4C: `s32 pad[16]`), the 0x2103C path read as a
