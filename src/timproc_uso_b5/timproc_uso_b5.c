@@ -9570,8 +9570,10 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 // abs %hi/%lo) as media. (3) No FW(r,0x144) store exists (removed). (4) gc
 // zero-fill is p=(f32*)(gc+0xB4); p[2..0]=0 — the folded-offset form leaves
 // the target's dead `addiu v0,v0,180`. (5) EE6C RMW ladder through a volatile
-// macro (fresh lui per access, no addiu-CSE). (6) if(0) &arg1/&arg2 escape
-// busts IDO's arg-first s0 promotion (args stay home-resident like target).
+// macro (fresh lui per access, no addiu-CSE). (6) 2026-10-23 (agent-g run
+// 142): the old if(0) &arg1/&arg2/&gsub/&flag escape is gone -- without it
+// (or with only &arg1 / &flag) the body is 430 words (was 436, target 422)
+// and objdiff 78.2 -> 79.4; escaping &arg2 or &gsub costs it back.
 // Residual ~21%: target colors the head range of r into s0 (move s0,v0 +
 // late sw s0,92(sp) spill = live-range split around the child claim) — every
 // c/register/block-scope/escape variant tried leaves r stack-homed 68(sp),
@@ -9635,9 +9637,6 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         FW(r, 0x4) = 1;
     }
     FW(r, 0x14) = (s32) arg0;
-    if (0) {
-        timproc_uso_b5_func_04DFFC((char *)&arg1, (char *)&arg2, (char *)&gsub, (char *)&flag); /* address escape (2B74 kit): args + stack locals memory-resident so only c/child compete for s0 */
-    }
     FW(r, 0x2B0) = arg2;
     sub = (char *)(arg2 + 10);
     *(f32 *)(r + 0x2A4) = (f32) arg1;
