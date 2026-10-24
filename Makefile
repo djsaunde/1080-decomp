@@ -408,7 +408,7 @@ build/src/game_libs/game_libs_head.c.o: TRUNCATE_TEXT := 0x1EC
 build/src/game_libs/game_libs_o0_8944.c.o build/non_matching/src/game_libs/game_libs_o0_8944.c.o: OPT_FLAGS := -O0
 build/src/game_libs/game_libs_o0_8944.c.o: TRUNCATE_TEXT := 0xFC
 build/src/game_libs/game_libs_o0_8A40.c.o build/non_matching/src/game_libs/game_libs_o0_8A40.c.o: OPT_FLAGS := -O0
-build/src/game_libs/game_libs_post0b.c.o: TRUNCATE_TEXT := 0x2eb00
+build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # gl_func_0005FD20: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
 # pad at 0x5FDC0 (was the lone-word game_libs_func_0005FDC0 INCLUDE_ASM, which
 # emits 2 words / +4 drift -- documented trap). FORCE: ends jr-ra;nop. The real
@@ -424,11 +424,11 @@ build/src/game_libs/game_libs_post0b.c.o: TRUNCATE_TEXT := 0x2eb00
 # game_libs_func_00061040: .s began with 5 all-zero pad words (ROM 0x61040-0x61053); the real
 # body starts at 0x61054. Pad -> 61030 SUFFIX (both builds); expected/ metadata: 61030 size
 # 0x10->0x24, 61040 value +0x14, size 0xb4->0xa0 (2026-10-15).
-build/src/game_libs/game_libs_post0b.c.o: SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_00055FB4=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_00055FB4=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 gl_func_00055FB4=0x00000000 gl_func_0005FD20=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # gl_func_0004D0B4's leading zero word (0x4D0B0) is gl_func_0004D084's all-zero tail pad (agent-c run 122):
 # 4D0B4 is plain C again; the NM symbol of 4D084 is resized back to 0x2c in the clip line below.
-build/src/game_libs/game_libs_post0b.c.o: SUFFIX_BYTES_FORCE += gl_func_0004D084=0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_0004D084=0x00000000
 build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += gl_func_0004D084=0x00000000
 # gl_func_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
 # vs target 0x2c (nop is baserom alignment). Resize non_matching symbol to 0x2c so
@@ -1524,7 +1524,7 @@ GAMELIBS_68990_DONOR := build/src/game_libs/game_libs_o2_68990.c.o
 # local .rodata jumptable reloc gets renamed to game_libs_func_00044B78_rodata
 # and pinned to the USO's RoData table at +0x1B3C (the 29CCC recipe).
 GAMELIBS_44B78_DONOR := build/src/game_libs/game_libs_o2_44B78.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY := gl_func_000601DC=$(GAMELIBS_601D4_DONOR) game_libs_func_00044B78=$(GAMELIBS_44B78_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY := gl_func_000601DC=$(GAMELIBS_601D4_DONOR) game_libs_func_00044B78=$(GAMELIBS_44B78_DONOR)
 # 52CD4 = command-stream decoder (37-entry jumptable switch), IDO 7.1 -O2
 # donor: game_libs_o2_52CD4.c (282/282 word-exact). Spliced only so the
 # donor-local .rodata reloc (table +0, 10000.0f literal +0x94) is renamed
@@ -1638,8 +1638,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_NM_DONOR
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
 # original unit's head (real 343F4 + 34458 C, then 34548): only that layout
 # gives the target's 2 nops (in post0b's own layout the same C has 3).
+# 3485C (hang stub, same unit, epilogue alignment too) comes from the same donor.
 GAMELIBS_34548_DONOR := build/src/game_libs/game_libs_o2_34548.c.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034548=$(GAMELIBS_34548_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003485C=$(GAMELIBS_34548_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_DONOR)
 # 488A0 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 81.4 -> 98.6). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_488A0_NM_DONOR := build/src/game_libs/game_libs_ncc_488A0_nm.cpp.o

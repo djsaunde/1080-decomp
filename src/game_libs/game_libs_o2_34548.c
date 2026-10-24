@@ -1,6 +1,7 @@
 /* IDO 7.1 -O2 donor for gl_func_00034548 (0x13C / 79 words, the
- * subsystem poll loop). Spliced into game_libs_post0b.c.o via
- * REPLACE_FUNC_BODY; only gl_func_00034548 is imported.
+ * subsystem poll loop) and game_libs_func_0003485C (0x20, the hang stub).
+ * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY; only those two
+ * functions are imported.
  *
  * Why a donor: the loop is infinite, and IDO places the unreachable
  * epilogue after an infinite loop on a 32-byte boundary of the .text
@@ -79,5 +80,49 @@ void gl_func_00034548(void *a0) {
         r5 = gl_func_00000000(*(int *)(D_34548_slot + 0x14));
         gl_func_00000000((char *)&D_00000000 + 0x1E438, sp50, sp54, *(int *)(s0 + 0xFC), r5,
                          *(int *)(D_34548_slot + 0x14));
+    }
+}
+
+extern int func_00000000();
+void gl_func_00034684(void) {
+    func_00000000((char*)&D_00000000 + 0x3BB18, (char*)&D_00000000 + 0x3BB30, 1);
+    func_00000000((char*)&D_00000000 + 0x3B968, 5, &D_00000000, 0,
+                   (char*)&D_00000000 + 0x3C040, 12);
+    func_00000000((char*)&D_00000000 + 0x3B968);
+}
+
+int gl_func_000346F0(int a0, char *src, int n) {
+    int i;
+    int k2;
+    char buf[256];
+    int j;
+    int g = *(int *)((char *)&D_00000000 + 8);
+    int k;
+    if (g != 0) {
+        gl_func_00000000(g, 0, src, n);
+    }
+    if (n >= 255) {
+        n = 255;
+    }
+    j = 0; for (i = 0; i < n; i++) { k = j++; buf[k] = src[i]; } k2 = j++; buf[k2] = 0;
+    if (!i) {
+    }
+    buf[j] = 0;
+    return 1;
+}
+
+void gl_func_00034810(int a0, ...) {
+    int aligned = (((int)((char *)&a0 + 4)) + 3) & ~3;
+    gl_func_00000000((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
+}
+
+/* 3485C: hang stub (8/8 words). `&a0` homes the argument at 0(sp) with no
+ * frame; the epilogue after the infinite loop lands on the 32-byte boundary
+ * at unit offset 0x480 (3 nops), exactly as in the target. 34684 / 346F0 /
+ * 34810 above are the real (exact) C of the functions in between, copied
+ * from game_libs_post0b.c so the offsets agree. */
+void game_libs_func_0003485C(int a0) {
+    int *p = &a0;
+    for (;;) {
     }
 }

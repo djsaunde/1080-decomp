@@ -361,7 +361,15 @@ void gl_func_00034810(int a0, ...) {
     gl_func_00000000((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003485C);
+/* game_libs_func_0003485C: hang stub. EXACT via the game_libs_o2_34548.c
+ * donor (REPLACE_FUNC_BODY, agent-c run 147): this C is the same body, but
+ * compiled here its post-loop epilogue lands on post0b's 32-byte boundary
+ * (0x28 bytes); in the original unit (starts at 343F4) it is 0x20. */
+void game_libs_func_0003485C(int a0) {
+    int *p = &a0;
+    for (;;) {
+    }
+}
 
 /* game_libs_func_0003487C: stores two args to two segment-base globals
  * (lui at; sw a0,0(at); lui at; jr; sw a1,0(at) — two distinct symbol refs,
