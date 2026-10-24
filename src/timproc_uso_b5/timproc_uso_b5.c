@@ -9638,8 +9638,7 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             timproc_uso_b5_func_00002B74(sub + 0x2C);
             timproc_uso_b5_func_000032C8(sub + 0x194);
         }
-        FW(r, 0x28) = (s32) &timproc_uso_b5_D_807FEF50[2468];
-        FW(r, 0xC) = (s32) &timproc_uso_b5_D_807FEF50[5856];
+        FW(r, 0x28) = (s32) &timproc_uso_b5_D_807FEF50[2468]; FW(r, 0xC) = (s32) &timproc_uso_b5_D_807FEF50[5856];
         timproc_uso_b5_func_00003890(r);
     }
     FW(r, 0x2AC) = FW(arg0, 0x6C);
@@ -9656,8 +9655,7 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
     child = (char *) timproc_uso_b5_func_055750((char *)0x144);
     if (child != 0) {
         timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEF5C[5868], 0.0f, 0.0f, 0.0f);
-        FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF64[1300];
-        FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF64[5876];
+        FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF64[1300]; FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF64[5876];
         gsub = (char *) timproc_uso_b5_func_055750((char *)0x16C);
         if (gsub != 0) {
             timproc_uso_b5_func_0546DC(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
