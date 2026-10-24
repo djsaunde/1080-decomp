@@ -4194,7 +4194,8 @@ void gl_func_00022464(void) {
 /* game_libs_func_0002266C: 2-word all-zero inter-object ROM pad (0x2266C/0x22670;
  * the predecessor gl_func_00022464 ends at 0x2266C). bootup.uso Sym 1322 exports
  * section 0x36CE0 = splat 0x22674, NOT 0x2266C -- the body below starts there. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002266C);
+/* (folded 2026-10-24 agent-c run 150: the two zero words are an all-zero
+ * SUFFIX_BYTES_FORCE on gl_func_00022464; expected/ symbol deleted, gl_func_00022464 grown by 8.) */
 
 /* game_libs_func_00022674 (bootup.uso Sym 1322, jal'd from TextReloc @0x3AAFC; the
  * HI16/LO16 pair @0x36CE0/0x36CE4 = Data sym1255 @0x345C0, addend 0 -> the existing
@@ -11705,7 +11706,8 @@ void gl_func_0002D2F4(void) {
 /* game_libs_func_0002D36C: 2-word all-zero inter-function ROM pad (0x2D36C/0x2D370).
  * The old 4-word orphan also carried `lui t6; lw t6,0(t6)` = the hoisted first
  * statement (mode read) of game_libs_func_0002D374 below (merged 2026-09-06). */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002D36C);
+/* (folded 2026-10-24 agent-c run 150: the two zero words are an all-zero
+ * SUFFIX_BYTES_FORCE on gl_func_0002D2F4; expected/ symbol deleted, gl_func_0002D2F4 grown by 8.) */
 
 // game_libs_func_0002D374 (ex gl_func_0002D37C; bootup.uso Sym exports section
 // 0x419E0 = splat 0x2D374, the `lui t6; lw t6` mode read that splat had lumped
