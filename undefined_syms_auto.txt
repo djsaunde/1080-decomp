@@ -5016,3 +5016,6 @@ gl_func_0002AD1C_rodata = 0x00001058;  /* agent-c run 141: SeqLayerProcessScript
 gl_2AD1C_SeqLayerDisable = 0x00000000;  /* agent-c run 141: gl_func_0002AD1C blank jal */
 gl_2AD1C_SeqLayerNoteDecay = 0x00000000;  /* agent-c run 141: gl_func_0002AD1C blank jal */
 gl_2AD1C_gBendPitchTwoSemitonesFrequencies = 0x00000000;  /* agent-c run 141: gl_func_0002AD1C float table (USO-resolved, lo baked 0) */
+gl_func_0002B09C_rodata = 0x00001098;  /* agent-c run 141: SeqLayerProcessScriptStep4 portamento-mode jumptable in game_libs rodata at +0x1098; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2B09C.c) */
+gl_2B09C_gPitchFrequencies = 0x00000000;  /* agent-c run 141: gl_func_0002B09C pitch table (USO-resolved, lo baked 0) */
+gl_2B09C_bufParams = 0x00000000;  /* agent-c run 141: gl_func_0002B09C audio buffer parameters (ticksPerUpdate +0x2040) */

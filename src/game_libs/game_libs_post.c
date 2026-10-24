@@ -12106,112 +12106,17 @@ s32 gl_func_0002AD1C(void *o) {
  * t3 at 108 and spills a2 into the a0 slot 112); probes (u32 param, local copy,
  * decl order, t3 init order) all keep the home. Tail: target loads the 3-deep
  * 0x4C chain before sp38->8 and puts sh zero,10 after the lwc1s. */
-#ifdef NON_MATCHING
-extern char D_2B09C_obj, D_2B09C_tbl, D_2B09C_2000, D_2B09C_205C;
+/* gl_func_0002B09C EXACT 2026-10-24 (agent-c run 141, 87.77 -> 100): OoT's
+ * AudioSeq_SeqLayerProcessScriptStep4 in its older form (no semitone field, no
+ * delay guard on the special portamento speed, short zero-delay tail). WIRED via
+ * REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2 donor unit
+ * game_libs_o2_2B09C.c (342/342 words); the splice renames the donor-local
+ * .rodata jumptable reloc to gl_func_0002B09C_rodata, pinned to the USO table at
+ * +0x1098. Body below is a placeholder for the splice. */
 int gl_func_0002B09C(char *arg0, int arg1) {
-    char *buf = *(char **)(arg0 + 0x50);
-    char *sp38 = *(char **)(buf + 0x4C);
-    int t0 = *(unsigned char *)(arg0 + 2);
-    int v1 = t0;
-    int t3 = 1;
-    void **r;
-    short c;
-    if (t0 == 0xFF) {
-        if (!(*(int *)(buf + 0) & 0x08000000)) return -1;
-        v1 = *(short *)(buf + 0x24);
-    }
-    switch (v1) {
-    case 0:
-        r = (void **)gl_func_0001CA10(*(unsigned char *)(buf + 7),
-            (arg1 + *(short *)(buf + 0x26) + *(short *)(arg0 + 0x10)) & 0xFF);
-        if (r == 0) { *(unsigned char *)(arg0 + 0) |= 0x20; *(short *)(arg0 + 0xC) = *(short *)(arg0 + 8); return -1; }
-        *(int *)(arg0 + 0x1C) = *(int *)((char *)r + 0xC);
-        *(unsigned char *)(arg0 + 0x18) = *(unsigned char *)((char *)r + 0);
-        if (!(*(int *)(arg0 + 0) & 0x04000000)) *(unsigned char *)(arg0 + 5) = *(unsigned char *)((char *)r + 1);
-        *(int *)(arg0 + 0x4C) = (int)((char *)r + 4);
-        *(float *)(arg0 + 0x30) = *(float *)((char *)r + 8);
-        goto block_46;
-    case 1:
-        r = (void **)gl_func_0001CA10(*(unsigned char *)(buf + 7),
-            ((*(short *)(arg0 + 0x10) << 6) + (arg1 & 0xFF)) & 0xFFFF);
-        if (r == 0) { *(unsigned char *)(arg0 + 0) |= 0x20; *(short *)(arg0 + 0xC) = *(short *)(arg0 + 8) + 1; return -1; }
-        *(int *)(arg0 + 0x4C) = (int)r;
-        *(float *)(arg0 + 0x30) = *(float *)((char *)r + 4);
-        goto block_46;
-    default: {
-        unsigned char pb = (arg1 + *(short *)(sp38 + 0xE) + *(short *)(buf + 0x26) + *(short *)(arg0 + 0x10)) & 0xFF;
-        volatile int pos = pb;
-        int va0, va1, pv;
-        float f02, f2, f03, f12, f14;
-        char *e20 = arg0 + 0x20;
-        int t9, v0, b20;
-        if (pb >= 0x80) { *(unsigned char *)(arg0 + 0) |= 0x20; return -1; }
-        pv = pos;
-        va0 = (t0 == 0xFF) ? *(int *)(buf + 0x48) : *(int *)(arg0 + 0x48);
-        if (*(unsigned char *)(arg0 + 0x20) != 0) {
-            va1 = *(unsigned char *)(arg0 + 4);
-            if (va1 < pv) va1 = pv;
-            if (va0 != 0) {
-                void **t8;
-                r = (void **)gl_func_0001CA10(va0, va1);
-                t8 = *(void ***)(arg0 + 0x4C);
-                *(int *)(arg0 + 0x4C) = (int)r;
-                f02 = *(float *)((char *)r + 4);
-                t3 = (r == t8);
-            } else {
-                f02 = 1.0f;
-                *(int *)(arg0 + 0x4C) = 0;
-                if (v1 >= 0xC0) *(int *)(arg0 + 0x4C) = (v1 * 0x158) + ((int)&D_2B09C_obj - 0x100D8);
-            }
-            f2 = *(float *)((char *)&D_2B09C_tbl + pos * 4) * f02;
-            f14 = *(float *)((char *)&D_2B09C_tbl + *(unsigned char *)(arg0 + 4) * 4) * f02;
-            b20 = *(unsigned char *)e20;
-            switch (b20 & ~0x80) {
-            case 1: case 3: case 5: f03 = f2; f12 = f14; break;
-            case 2: case 4: f12 = f2; f03 = f14; break;
-            default: f12 = f2; f03 = f2; break;
-            }
-            *(float *)(e20 + 8) = (f03 / f12) - 1.0f;
-            if (b20 & 0x80) {
-                v0 = (((*(unsigned short *)(sp38 + 8) << 0xF) / *(short *)((char *)&D_2B09C_2000 + 0x2074)) << 8) / (*(short *)(arg0 + 8) * *(unsigned short *)(arg0 + 0xE));
-            } else {
-                v0 = 0x20000 / (*(short *)((char *)&D_2B09C_2000 + 0x2040) * *(unsigned short *)(arg0 + 0xE));
-            }
-            if (v0 >= 0x7FFF) v0 = 0x7FFF; else if (v0 <= 0) v0 = 1;
-            *(short *)(e20 + 4) = (short)v0;
-            *(short *)(e20 + 2) = 0;
-            *(float *)(arg0 + 0x30) = f12;
-            if ((*(unsigned char *)e20 & ~0x80) == 5) *(unsigned char *)(arg0 + 4) = pb;
-        } else if (va0 != 0) {
-            void **t7;
-            r = (void **)gl_func_0001CA10(va0, pos);
-            t7 = *(void ***)(arg0 + 0x4C);
-            *(int *)(arg0 + 0x4C) = (int)r;
-            t3 = (r == t7);
-            *(float *)(arg0 + 0x30) = *(float *)((char *)&D_2B09C_tbl + pos * 4) * *(float *)((char *)r + 4);
-        } else {
-            *(int *)(arg0 + 0x4C) = 0;
-            *(float *)(arg0 + 0x30) = *(float *)((char *)&D_2B09C_tbl + pos * 4);
-            if (v1 >= 0xC0) *(int *)(arg0 + 0x4C) = (v1 * 0x158) + ((int)&D_2B09C_obj - 0x100D8);
-        }
-        goto block_46;
-    }
-    }
-block_46:
-    c = *(short *)(arg0 + 8);
-    *(short *)(arg0 + 0xC) = c;
-    *(float *)(arg0 + 0x30) = *(float *)(arg0 + 0x30) * *(float *)(arg0 + 0x34);
-    if (c == 0) {
-        int t4 = *(int *)(*(int *)(*(int *)(*(int *)(arg0 + 0x4C)) + 8) + 4);
-        float f0 = (float)(unsigned)t4 * (float)(unsigned)*(unsigned short *)(sp38 + 8);
-        *(short *)(arg0 + 0xA) = 0;
-        *(short *)(arg0 + 8) = (short)((int)((f0 * *(float *)((char *)&D_2B09C_205C + 0x205C)) / *(float *)(arg0 + 0x30)) + 1);
-    }
-    return t3;
+    volatile int ret = arg1;
+    return ret;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002B09C);
-#endif
 
 // gl_func_0002B5F4 — STRUCTURAL PASS (0x444 / 273 words ≈ 1.1KB, no
 // episode). Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO
