@@ -12999,6 +12999,12 @@ int game_libs_func_0002E290(unsigned char *o) {
  * `(f32)(u32)x` (target: ONE bgez + cvt.s.w + the 2^32 add.s); m2c's spelled-out
  * `f = (f32)x; if (x < 0) f += 4294967296.0f;` made IDO emit a second bgez /
  * mov.s pair at each site (length 3724 -> 3692, target 3684). */
+/* run 151 later (87.87 -> 88.24, length 3692 -> 3684 = target): the side-B
+ * negation temp is an int (target `negu a2` with no sll/sra 24 re-sign);
+ * the 8 / 0x40 pick is an if/else (target `b join` with 0x40 in the slot);
+ * the 0x7F / 0 / 0x40 pan pick nests `v = 0x40; if (== 3) v = 0;` in the else
+ * (target bnel with the dead duplicate 0x40). Not kept: the odd-case chain as a
+ * switch (88.79 but 3688). */
 extern int gl_func_000428FC();
 extern void gl_E354_emitf(s32, s32, s32, f32, s32, s32);  /* 4th arg is a single float passed in a3 (target lw a3,120(sp)) */
 extern int gl_func_00043824(float, ...);
@@ -13045,7 +13051,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     s32 var_t9;
     s32 var_v0;
     s32 var_v0_3;
-    s8 var_a2_3;
+    s32 var_a2_3;
     u32 temp_t9_2;
     u8 temp_v1_2;
     u8 temp_v1_3;
@@ -13116,9 +13122,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             }
             temp_v1_2 = *(u8 *)((char *)(arg0) + 0x1D);
             if (*(u8 *)((char *)(arg0) + 0x34) != temp_v1_2) {
-                var_v0 = 8;
                 if (temp_v1_2 == 1) {
                     var_v0 = 0x40;
+                } else {
+                    var_v0 = 8;
                 }
                 temp_v1_3 = *(u8 *)((char *)(arg0) + 0x21);
                 switch (temp_v1_3) {                /* switch 1; irregular */
@@ -13289,10 +13296,11 @@ block_83:
                             temp_v1_5 = *(u8 *)((char *)(arg0) + 0x2E);
                             if (temp_v1_5 == 1) {
                                 var_v0_3 = 0x7F;
-                            } else if (temp_v1_5 == 3) {
-                                var_v0_3 = 0;
                             } else {
                                 var_v0_3 = 0x40;
+                                if (temp_v1_5 == 3) {
+                                    var_v0_3 = 0;
+                                }
                             }
                             if (*(u8 *)((char *)(arg0) + 0x1E) != 0) {
                                 var_v0_3 = (0x7F - var_v0_3) & 0xFF;
