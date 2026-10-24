@@ -5023,3 +5023,7 @@ gl_func_0002B5F4_rodata = 0x000010AC;  /* agent-c run 141: SeqLayerProcessScript
 gl_2B5F4_audioRandom = 0x00000000;  /* agent-c run 141: gl_func_0002B5F4 audioRandom base (+0x2154) */
 gl_func_0002C7A4_rodata = 0x000013E0;  /* agent-c run 141: SequencePlayerProcessSequence jumptables (45 entries at +0x13E0, 113 at +0x1494) in game_libs rodata; donor-local .rodata relocs renamed by replace-function-body.py (game_libs_o2_2C7A4.c) */
 gl_27E24_gAudioCtx = 0x00000000;  /* agent-c run 141: gl_func_00027E24 typed gAudioCtx extern (resampleRate 0x204C, ticksPerUpdateInv 0x2050, numNotes 0x2070, notes 0x2CFC) */
+gl_func_00026790_rodata = 0x00000EE0;  /* agent-c run 141: ProcessGlobalCmd jumptables (0xF0..0xFB at +0xEE0, 0x81..0x90 at +0xF10) in game_libs rodata; donor-local .rodata relocs renamed by replace-function-body.py (game_libs_o2_26790.c) */
+gl_26790_gAudioCtx = 0x00000000;  /* agent-c run 141: gl_func_00026790 typed gAudioCtx extern */
+gl_26790_ent = 0x00000000;  /* agent-c run 141: gl_func_00026790 seqPlayer loop base (&gAudioCtx, own symbol) */
+gl_26790_w = 0x00000000;  /* agent-c run 141: gl_func_00026790 custom-update function word (op 0x81) */

@@ -7669,150 +7669,15 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00026214);
 //   dual computed jump-table + jal-0 handlers need USO reloc infra.
 //   Name pre-checked: no extern reuse (collision-safe).
 //   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int func_3b164(), func_3b110();
-/* PASS-2 2026-10-16 (agent-c): ONE switch on cmd[0]; IDO splits its two dense
- * clusters into the two tables (0x81..0x90 at D+0xF10, 0xF0..0xFB at D+0xEE0).
- * Case map from `scripts/extract-uso-jumptable.py gl_func_00026790 --module
- * 0xD9FE28 --shim 0x1466C --vaddr 0x26790 --size 0x314` (target = value -
- * shim); entry 0xF0 is a zero-addend reloc in the table and is the clear-bit
- * loop that case 0xF3 falls into. Cases are laid out in source order. Void
- * (no v0 at the exit). NM 22.28 -> 96.36. Also: the +0x2D00 entries and the
- * +0xB0 object word are bitfield words (lw + srl 31 tests, lbu/ori/sb sets,
- * andi 0xffdf clear); the two flag loops walk a base-0 alias apart from &D
- * (target lui v0 + 0x2D00(v0) next to the a3 = &D count base); the 0xF3 count
- * is a variable reloaded only after the store; the 0x84 call takes one arg.
- * Residual: &D colours a2 (target a3) and cmd[1] a0 (target v0); the 0xF3
- * loop's q + 0xB0 address is not pre-formed.
- * Run 129 (agent-c) 64 -> 41 raw: g assigned inside the 0xF3 `if` (the
- * addiu lands in the bne delay slot as in the target) + a dead
- * `while (0) { g = g + 0; }` at the top of the 0xF3 loop body: &D now takes
- * a3 in every case. LEFT: the 0xF3 loop still remats the g+0x2CFC load
- * (uopt keeps it as a static memory candidate), i a1 / q a0 vs a0 / v1,
- * F2/F0 copy g into v1, cmd[1] a0 vs v0. */
-extern char gl_26790_ent[];  /* per-site base-0 alias of the entry array (target materialises it apart from &D) */
-extern int gl_26790_w;      /* base-0 word stored by op 0x81 (direct lui at / sw) */
-typedef struct Ent26790 {   /* &D + 0x2D00, stride 0x160 */
-    unsigned f80 : 1;
-    unsigned f40 : 1;
-    unsigned f20 : 1;
-    unsigned f10 : 1;
-    unsigned f08 : 1;
-    unsigned f04 : 1;
-    unsigned lo : 26;
-    char pad[0x15C];
-} Ent26790;
-typedef struct Obj26790 {   /* *(&D + 0x2CFC), stride 208 */
-    char pad00[0x34];
-    unsigned char b34;
-    char pad35[0x44 - 0x35];
-    char *p44;
-    char pad48[0xB0 - 0x48];
-    unsigned f80 : 1;
-    unsigned f40 : 1;
-    unsigned f20 : 1;
-    unsigned lo : 29;
-    char padB4[208 - 0xB4];
-} Obj26790;
+/* gl_func_00026790 EXACT 2026-10-24 (agent-c run 141, 97.93 -> 100): OoT's
+ * AudioThread_ProcessGlobalCmd, older form. WIRED via REPLACE_FUNC_BODY donor
+ * splice: the real C lives in the IDO 7.1 -O2 donor unit game_libs_o2_26790.c
+ * (197/197 words); the splice renames the donor-local .rodata jumptable relocs to
+ * gl_func_00026790_rodata, pinned to the USO tables at +0xEE0. Body below is a
+ * placeholder for the splice. */
 void gl_func_00026790(unsigned char *cmd) {
-    char *g;
-    Ent26790 *e;
-    Obj26790 *q;
-    char *p;
-    int i;
-    int n;
-    unsigned char v;
-
-    switch (cmd[0]) {
-    case 0x82:
-        gl_func_00000000(cmd[2], 3);
-        break;
-    case 0x83:
-    case 0x89:
-        gl_func_00000000(cmd[1], cmd[2], cmd[3]);
-        func_3b164(cmd[1], *(int *)(cmd + 4));
-        break;
-    case 0x86:
-        gl_func_00000000(cmd[1], cmd[2], *(int *)(cmd + 4));
-        break;
-    case 0x84:
-        v = cmd[1];
-        g = (char *)&D_00000000;
-        e = (Ent26790 *)(g + 0x2D00) + v;
-        if (e->f80) {
-            i = *(int *)(cmd + 4);
-            if (i == 0) {
-                gl_func_00000000(e);
-            } else {
-                func_3b110(v, i); /* run 130: v (u8) not cmd[1]: target copies v0 -> a0 */
-            }
-        }
-        break;
-    case 0xF1:
-        g = (char *)&D_00000000;
-        *(unsigned char *)(g + 0x2076) = *(int *)(cmd + 4);
-        break;
-    case 0xF2:
-        p = gl_26790_ent;
-        for (i = 0; i < *(short *)((char *)&D_00000000 + 0x2048); i++) {
-            ((Ent26790 *)(p + 0x2D00))->f20 = 1;
-            ((Ent26790 *)(p + 0x2D00))->f04 = 1;
-            p += sizeof(Ent26790);
-        }
-        break;
-    case 0xF3:
-        if (*(int *)(cmd + 4) == 1) {
-            g = (char *)&D_00000000;
-            n = *(int *)(g + 0x2070);
-            for (i = 0; i < n; i++) {
-                while (0) { g = g + 0; }
-                q = (Obj26790 *)(*(char **)(g + 0x2CFC) + i * 208);
-                if (q->f80 && q->b34 == 0 && (*(unsigned char *)(*(char **)(q->p44 + 0x50) + 3) & 8)) {
-                    q->f20 = 1;
-                    n = *(int *)(g + 0x2070);
-                }
-            }
-        }
-    case 0xF0:
-        p = gl_26790_ent;
-        for (i = 0; i < *(short *)((char *)&D_00000000 + 0x2048); i++) {
-            ((Ent26790 *)(p + 0x2D00))->f20 = 0;
-            ((Ent26790 *)(p + 0x2D00))->f04 = 1;
-            p += sizeof(Ent26790);
-        }
-        break;
-    case 0xF4:
-        gl_func_00000000(cmd[1], cmd[2], cmd[3]);
-        break;
-    case 0xF5:
-        gl_func_00000000(cmd[1], cmd[2], cmd[3], (char *)&D_00000000 + 0x164C);
-        break;
-    case 0xF6:
-        gl_func_00000000(cmd[1], cmd[2], cmd[3], (char *)&D_00000000 + 0x164C);
-        break;
-    case 0xF7:
-        gl_func_00000000(cmd[2]);
-        break;
-    case 0x90:
-        g = (char *)&D_00000000;
-        *(unsigned short *)(g + 0x53BC + cmd[1] * 2) = *(unsigned short *)(cmd + 4);
-        break;
-    case 0xFA:
-        g = (char *)&D_00000000;
-        *(unsigned char *)(g + 0x2CF0) = 5;
-        *(unsigned char *)(g + 0x2CF1) = *(int *)(cmd + 4);
-        break;
-    case 0x81:
-        gl_26790_w = *(int *)(cmd + 4);
-        break;
-    case 0xFB:
-        break;
-    }
+    volatile int x = cmd[0];
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00026790);
-#endif
 
 /* Per-entry (a0-indexed, stride 352) FP struct update at &D_+0x2D00. If a1==0,
  * a1=1; base->1=2; base->0x12=(short)a1; base->0x20 = -(base->0x1C / (float)a1).

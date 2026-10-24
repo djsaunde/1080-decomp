@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00026790",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T04:15:25.089029+00:00",
+  "end_time": "2026-10-24T04:15:25.089045+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T04:15:25.089041+00:00",
+      "assistant_text": "Exact match: OoT AudioThread_ProcessGlobalCmd older form; typed gAudioCtx extern, u32 bitfields, byte-pointer seqPlayer loops from own base symbol; donor splice with two jumptables pinned at +0xEE0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 197,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* IDO 7.1 -O2 donor for gl_func_00026790 (0x314 / 197 words) = OoT's\n * AudioThread_ProcessGlobalCmd (thread.c) in its older form (the 1080 command set:\n * 0x82 / 0x83+0x89 / 0x86 / 0x84 / 0xF1 / 0xF2 mute / 0xF3 stop-notes falling into\n * 0xF0 unmute / 0xF4..0xF7 / 0x90 / 0xFA / 0x81 / 0xFB). Spliced into\n * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local\n * .rodata jumptable relocs (0xF0..0xFB at +0, 0x81..0x90 at +0x30) to\n * gl_func_00026790_rodata, pinned to the USO tables at +0xEE0. Load-bearing:\n * gAudioCtx as a typed extern struct (cursor-first notes[i] addu), seqPlayer /\n * NoteSampleState flags as u32 bitfield runs, the mute / unmute loops walking a\n * byte pointer from their own base symbol (gl_26790_ent) so the bound re-reads\n * and the two read-modify-write stores stay. */\n\ntypedef struct {\n    u8 op; u8 arg0; u8 arg1; u8 arg2;\n    union { void *data; f32 asFloat; s32 asInt; u16 asUShort; s8 asSbyte; u8 asUbyte; u32 asUInt; };\n} gl_26790_AudioCmd;\ntypedef struct {\n    u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 seqDmaInProgress : 1;\n    u32 fontDmaInProgress : 1; u32 recalculateVolume : 1; u32 stopScript : 1; u32 applyBend : 1; u32 rest : 24;\n    char pad[0x15C];\n} gl_26790_SeqPlayer;\ntypedef struct { char pad[3]; u8 muteBehavior; } gl_26790_Channel;\ntypedef struct { char pad[0x50]; gl_26790_Channel *channel; } gl_26790_Layer;\ntypedef struct { struct { u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 rest : 29; } bitField0; } gl_26790_SampleState;\ntypedef struct {\n    char pad00[0x34]; u8 unk_04; char pad35[0x44 - 0x35]; gl_26790_Layer *parentLayer;\n    char pad48[0xB0 - 0x48];\n    gl_26790_SampleState sampleState;\n    char padB4[0xD0 - 0xB4];\n} gl_26790_Note;\ntypedef struct {\n    char pad0[0x164C]; char externalLoadQueue[0x18];\n    char pad1664[0x2048 - 0x1664]; s16 numSequencePlayers;\n    char pad204a[0x2070 - 0x204A]; s32 numNotes; char pad2074[2]; s8 soundOutputMode;\n    char pad2077[0x2CF0 - 0x2077]; u8 resetStatus; u8 specId; char pad2cf2[0x2CFC - 0x2CF2];\n    gl_26790_Note *notes; gl_26790_SeqPlayer seqPlayers[4];\n    char pad[0x53BC - 0x2D00 - 4 * 0x160]; u16 threadCmdChannelMask[4];\n} gl_26790_Ctx;\nextern int D_00000000;\nextern gl_26790_Ctx gl_26790_gAudioCtx;\n#define gAudioCtx gl_26790_gAudioCtx\nextern u8 gl_26790_ent[];\nextern int gl_26790_w;\nextern int gl_func_00000000();\nextern int func_3b164(), func_3b110();\n\nvoid gl_func_00026790(gl_26790_AudioCmd *cmd) {\n    s32 i;\n    s32 pad[3];\n    u32 flags;\n    u8 *p;\n\n    switch (cmd->op) {\n        case 0x82:\n            gl_func_00000000(cmd->arg1, 3);\n            break;\n\n        case 0x83:\n        case 0x89:\n            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2);\n            func_3b164(cmd->arg0, cmd->asInt);\n            break;\n\n        case 0x86:\n            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->asInt);\n            break;\n\n        case 0x84:\n            if (gAudioCtx.seqPlayers[cmd->arg0].enabled) {\n                if (cmd->asInt == 0) {\n                    gl_func_00000000(&gAudioCtx.seqPlayers[cmd->arg0]);\n                } else {\n                    func_3b110(cmd->arg0, cmd->asInt);\n                }\n            }\n            break;\n\n        case 0xF1:\n            gAudioCtx.soundOutputMode = cmd->asUInt;\n            break;\n\n        case 0xF2:\n            p = gl_26790_ent;\n            for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {\n                ((gl_26790_Ctx *)p)->seqPlayers[0].muted = 1;\n                ((gl_26790_Ctx *)p)->seqPlayers[0].recalculateVolume = 1;\n                p += sizeof(gl_26790_SeqPlayer);\n            }\n            break;\n\n        case 0xF3:\n            if (cmd->asUInt == 1) {\n                for (i = 0; i < gAudioCtx.numNotes; i++) {\n                    gl_26790_Note *note = &gAudioCtx.notes[i];\n                    gl_26790_SampleState *sampleState = &note->sampleState;\n\n                    if (sampleState->bitField0.enabled && (note->unk_04 == 0) &&\n                        (note->parentLayer->channel->muteBehavior & 8)) {\n                        sampleState->bitField0.finished = 1;\n                    }\n                }\n            }\n        case 0xF0:\n            p = gl_26790_ent;\n            for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {\n                ((gl_26790_Ctx *)p)->seqPlayers[0].muted = 0;\n                ((gl_26790_Ctx *)p)->seqPlayers[0].recalculateVolume = 1;\n                p += sizeof(gl_26790_SeqPlayer);\n            }\n            break;\n\n        case 0xF4:\n            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2);\n            break;\n\n        case 0xF5:\n            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);\n            break;\n\n        case 0xF6:\n            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);\n            break;\n\n        case 0xF7:\n            gl_func_00000000(cmd->arg1);\n            break;\n\n        case 0x90:\n            gAudioCtx.threadCmdChannelMask[cmd->arg0] = cmd->asUShort;\n            break;\n\n        case 0xFA:\n            gAudioCtx.resetStatus = 5;\n            gAudioCtx.specId = cmd->asUInt;\n            break;\n\n        case 0x81:\n            gl_26790_w = cmd->asUInt;\n            break;\n\n        case 0xFB:\n            break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_26790.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00026790.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "Verified with rdiff --raw --pins (0 diff words) and full ROM build (byte-identical)."
+  }
+}
