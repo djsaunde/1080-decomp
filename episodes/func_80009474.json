@@ -1,0 +1,33 @@
+{
+  "function_name": "func_80009474",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T02:58:57.805380+00:00",
+  "end_time": "2026-10-24T02:58:57.805412+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T02:58:57.805406+00:00",
+      "assistant_text": "rmon RSP state restore; IDO 5.3 -O1 donor; inline masked call argument gives the lw a1 / andi t8 / or a1 temp copy",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 68,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 5.3 -O1 donor for func_80009474 (0x110 / 68 words): rmon RSP state\n * restore -- fail with -4 while the RCP runs (func_80008430), then write the\n * 32 saved words through func_80006A50 (__rmonWriteWordTo) with a per-word\n * step (func_80009030 / func_80008498), SP_DRAM_ADDR / SP_MEM_ADDR, the PC\n * masked to 12 bits, SP_STATUS fields, and reply with a 16-byte header\n * (func_800073F8).\n *\n * The \"andi into a pre-coloured a1\" cap (target `lw a1; andi t8,a1,0xfff;\n * or a1,t8`) is IDO 5.3: with the mask written inline in the call argument,\n * 5.3 -O1 emits exactly that temp copy (7.1 folds it into `andi a1,a1`).\n * Same compiler as the other rmon donors (func_8000858C). Kept out of\n * C_FILES (Makefile). */\n#include \"common.h\"\n\ntypedef struct {\n    char pad_00[4];\n    u8   type;\n    char pad_05;\n    s16  flags;\n    char pad_08[4];\n    s32  field_0C;\n} RmonHdr16;\n\nextern s32 func_80008430();\nextern void func_80009148(void *);\nextern void func_80008498(void);\nextern void func_800091F0(s32);\nextern void func_80006A50(u32 addr, u32 val);\nextern void func_80009030(s32, s32);\nextern void func_800073F8(void *hdr, s32 size, s32 flags);\n\ns32 func_80009474(s32 *volatile msg) {\n    register s32 *p;\n    RmonHdr16 hdr;\n    register s32 i;\n\n    p = msg;\n    if (func_80008430() != 0) {\n        return -4;\n    }\n    func_80009148(0);\n    for (i = 0; i < 0x20; i++) {\n        func_80006A50(0x04000000, ((u32 *)p)[4 + i]);\n        func_80009030(0x23, i);\n        func_80008498();\n    }\n    func_800091F0(0);\n    func_80006A50(0x04040004, ((u32 *)p)[0x24]);\n    func_80006A50(0x04040000, ((u32 *)p)[0x25]);\n    func_80006A50(0x04080000, ((u32 *)p)[0x27] & 0xFFF);\n    func_80006A50(0x0404000C, ((u32 *)p)[0x28]);\n    func_80006A50(0x04040010, ((u32 *)p)[0x29]);\n    hdr.field_0C = p[3];\n    hdr.type = ((u8 *)p)[4];\n    hdr.flags = 0;\n    func_800073F8(&hdr, 0x10, 1);\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_054_c_ido53_9474.c",
+    "asm_path": "asm/nonmatchings/kernel/func_80009474.s",
+    "segment": "kernel",
+    "compiler": "IDO 5.3 cc",
+    "compiler_flags": "-O1 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff report 100"
+  }
+}

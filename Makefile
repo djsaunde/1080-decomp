@@ -992,6 +992,12 @@ build/src/kernel/kernel_022_e.c.o build/non_matching/src/kernel/kernel_022_e.c.o
 build/src/kernel/kernel_054_b.c.o build/non_matching/src/kernel/kernel_054_b.c.o: TRUNCATE_TEXT := 0x16C
 build/src/kernel/kernel_022_f.c.o build/non_matching/src/kernel/kernel_022_f.c.o: TRUNCATE_TEXT := 0x1C4
 build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: TRUNCATE_TEXT := 0x110
+# func_80009474 = rmon RSP state restore, IDO 5.3 -O1 donor (5.3 gives the target's andi/or temp copy).
+KERNEL054C_9474_DONOR := build/src/kernel/kernel_054_c_ido53_9474.c.o
+build/src/kernel/kernel_054_c_ido53_9474.c.o build/non_matching/src/kernel/kernel_054_c_ido53_9474.c.o: CC := $(IDO53_DIR)/cc
+build/src/kernel/kernel_054_c_ido53_9474.c.o build/non_matching/src/kernel/kernel_054_c_ido53_9474.c.o: OPT_FLAGS := -O1
+build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: private REPLACE_FUNC_BODY += func_80009474=$(KERNEL054C_9474_DONOR)
+build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: $(KERNEL054C_9474_DONOR)
 build/src/kernel/kernel_022_g.c.o build/non_matching/src/kernel/kernel_022_g.c.o: TRUNCATE_TEXT := 0x118
 build/src/kernel/kernel_054_d.c.o build/non_matching/src/kernel/kernel_054_d.c.o: TRUNCATE_TEXT := 0xC4
 build/src/kernel/kernel_029.c.o build/non_matching/src/kernel/kernel_029.c.o: TRUNCATE_TEXT := 0x250  # no trim; lowers sh_addralign so it links at 0x80006D0C
@@ -2139,6 +2145,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
 C_FILES := $(filter-out src/game_libs/game_libs_o2limit_65EE4.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_000_1EC8.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_022_ido53_858C.c,$(C_FILES))
+C_FILES := $(filter-out src/kernel/kernel_054_c_ido53_9474.c,$(C_FILES))
 ASM_FILES := $(shell find asm -maxdepth 1 -name '*.s' -type f 2>/dev/null)
 BIN_FILES := $(shell find assets -name '*.bin' -type f)
 
