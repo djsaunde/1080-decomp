@@ -772,7 +772,7 @@ void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
         pt4 = *(volatile s16 **)(arg0 + 0x70C);
         pt2 = *(volatile s16 **)(arg0 + 0x6DC);
         pt3 = *(volatile s16 **)(arg0 + 0x6C4);
-        x = 160 - ((pt4[0x10] + count * 13 + pt2[0x10] + pt3[0x10] + 16) / 2);
+        x = 160 - ((count * 13 + pt2[0x10] + pt3[0x10] + pt4[0x10] + 16) / 2);
         pos4 = pt3[0x10] + x + 4;
         posA1 = pt2[0x10] + pos4 + 4;
         pos6 = pt4[0x10] + posA1 + 8;
