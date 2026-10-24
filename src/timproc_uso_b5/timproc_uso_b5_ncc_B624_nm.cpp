@@ -5,7 +5,11 @@
  * second one): 140 -> 139 words, 88.57 -> 89.7 fuzzy (agent-g run 142).
  * RESIDUAL: the target hoists the shared `lui at` to the first slot and orders the
  * head loads differently; FP colours in the rotate / scale tail. An exact landing
- * would pin the renamed .bss relocs to the USO data offsets 0 / 8. */
+ * would pin the renamed .bss relocs to the USO data offsets 0 / 8.
+ * Run 156 (kit LXXXVI): the head offset vector is computed into three held locals and stored
+ * afterwards (the target keeps the differences in f2 / f0 / f12 and loads all three statics
+ * first): 89.84 -> 93.72, length unchanged (139 words). The reference form of x / y on top
+ * gives 94.78 but 138 words (away from the target), not kept. */
 typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -45,12 +49,12 @@ extern "C" void timproc_uso_b5_func_0000B624(char *arg0) {
     f32 *sp28;
 
     sp28 = (f32 *) (arg0 + 0xDC);
-    do {
-        { f32 &x = sXY[0]; f32 &y = sXY[1];
-        sp68.f0 = sp28[0] - x;
-        sp68.f4 = sp28[1] - y; }
-        sp68.f8 = sp28[2] - sZ;
-    } while (0);
+    {
+        f32 hx = sp28[0] - sXY[0];
+        f32 hy = sp28[1] - sXY[1];
+        f32 hz = sp28[2] - sZ;
+        sp68.f0 = hx; sp68.f4 = hy; sp68.f8 = hz;
+    }
     sp7C.v = sp68;
     sp8C = sp7C.v;
     timproc_uso_b5_func_071028(&sp8C);
