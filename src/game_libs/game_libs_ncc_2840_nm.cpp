@@ -47,7 +47,7 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
         sp3C = dx;
         d4 = (*(f32*)((char*)temp_v0 + 0xD4));
         sp38 = dy;
-        len = gl_func_00000000_sqf((dx * dx) + (dy * dy)); if (arg2) {}
+        len = gl_func_00000000_sqf((dy * dy) + (dx * dx)); if (arg2) {}
         vx = sp3C; if (arg2) {}
         vy = sp38;
         if (len != 0.0f) {
@@ -63,6 +63,6 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
         vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));
         gl_func_00000000(p);
         gl_func_00000000(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
-        gl_func_00000000(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * sp3C) + (d4 * sp38)) * 150.0f)), arg4 - 8, 0);
+        gl_func_00000000(p, (s32) ((((b4 * sp3C) + (d4 * sp38)) * 150.0f) + (f32) (FW(arg0, 0x164) - 0xC)), arg4 - 8, 0);
     }
 }
