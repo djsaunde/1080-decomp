@@ -12202,130 +12202,16 @@ int gl_func_0002B09C(char *arg0, int arg1) {
 // 0x80, so the remaining length gap is exactly those). LEFT: one more name
 // too many for frame 64; the two ptr copies (dead-copy spellings via r are
 // all eliminated).
-#ifdef NON_MATCHING
-extern int game_libs_func_0003443C();
-extern u8 gl_d_2b5f4_f;   /* base-0 alias of D_00000000: per-site fold for the 0x10AC f32 const */
-extern u8 gl_d_2b5f4_r1;  /* base-0 alias: RNG word 0x2154, first (float ramp) block */
-extern u8 gl_d_2b5f4_r2;  /* base-0 alias: RNG word 0x2154, second (percent) block */
-extern int gl_ref_0003F05C();
+/* gl_func_0002B5F4 EXACT 2026-10-24 (agent-c run 141, 96.67 -> 100): OoT's
+ * AudioSeq_SeqLayerProcessScriptStep3 verbatim, audioRandom through its own symbol.
+ * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2
+ * donor unit game_libs_o2_2B5F4.c; the splice renames the donor-local .rodata
+ * reloc (the SQ(127.0f) literal) to gl_func_0002B5F4_rodata, pinned to the USO
+ * RoData word at +0x10AC. Body below is a placeholder for the splice. */
 s32 gl_func_0002B5F4(char *arg0, s32 arg1) {
-    f32 ramp;
-    u16 sp3A;
-    s32 var_a3;
-    char *t0;
-    char *sp2C;
-    char *ptr;
-    char **cur;
-    u32 r;
-
-    t0 = *(char **)((char *)arg0 + 0x50);
-    sp2C = *(char **)((char *)t0 + 0x4C);
-
-    if (arg1 == 0xC0) {
-        *(s16 *)((char *)arg0 + 0x8) = gl_ref_0003F05C((char *)arg0 + 0x54);
-        *(u8 *)arg0 |= 0x20;
-        *(u8 *)arg0 &= 0xFD;
-        return -1;
-    }
-    *(u8 *)arg0 = *(u8 *)arg0 & 0xFFDF;
-    if (((u32) (*(u32 *)t0 << 6) >> 0x1F) == 1) {
-        switch (arg1 & 0xC0) {                      /* irregular */
-        case 0x0:
-            cur = (char **)((char *)arg0 + 0x54);
-            sp3A = gl_ref_0003F05C(cur);
-            ptr = *cur;
-            var_a3 = *(u8 *)ptr;
-            ptr += 1;
-            *cur = ptr;
-            *(u8 *)((char *)arg0 + 0x3) = *(u8 *)ptr;
-            *cur = *cur + 1;
-            *(s16 *)((char *)arg0 + 0x14) = sp3A;
-            break;
-        case 0x40:
-            cur = (char **)((char *)arg0 + 0x54);
-            sp3A = gl_ref_0003F05C(cur);
-            ptr = *cur;
-            var_a3 = *(u8 *)ptr;
-            *cur = ptr + 1;
-            *(u8 *)((char *)arg0 + 0x3) = 0;
-            *(s16 *)((char *)arg0 + 0x14) = sp3A;
-            break;
-        case 0x80:
-            sp3A = *(s16 *)((char *)arg0 + 0x14);
-            cur = (char **)((char *)arg0 + 0x54); if (1) {}
-            ptr = *cur;
-            var_a3 = *(u8 *)ptr;
-            ptr += 1;
-            *cur = ptr;
-            *(u8 *)((char *)arg0 + 0x3) = *(u8 *)ptr;
-            *cur = *cur + 1;
-            break;
-        }
-        if ((var_a3 >= 0x80) || (var_a3 < 0)) {
-            var_a3 = 0x7F;
-        }
-        *(f32 *)((char *)arg0 + 0x3C) = ((f32) var_a3 * (f32) var_a3) / *(f32 *)(&gl_d_2b5f4_f + 0x10AC);
-        arg1 -= arg1 & 0xC0;
-    } else {
-        switch (arg1 & 0xC0) {                      /* irregular */
-        case 0x0:
-            sp3A = gl_ref_0003F05C((char *)arg0 + 0x54);
-            *(s16 *)((char *)arg0 + 0x14) = sp3A;
-            break;
-        case 0x40:
-            sp3A = *(s16 *)((char *)arg0 + 0x12);
-            break;
-        case 0x80:
-            sp3A = *(s16 *)((char *)arg0 + 0x14);
-            break;
-        }
-        arg1 -= arg1 & 0xC0;
-    }
-    if (*(u8 *)((char *)t0 + 0xD) != 0) {
-        r = *(u32 *)(&gl_d_2b5f4_r1 + 0x2154);
-        ramp = (*(f32 *)((char *)arg0 + 0x3C) * (f32) (r % *(u8 *)((char *)t0 + 0xD))) / 100.0f;
-        if (r & 0x8000) {
-            ramp = -ramp;
-        }
-        *(f32 *)((char *)arg0 + 0x38) = *(f32 *)((char *)arg0 + 0x3C) + ramp;
-        if (*(f32 *)((char *)arg0 + 0x38) < 0.0f) {
-            *(f32 *)((char *)arg0 + 0x38) = 0.0f;
-        } else if (1.0f < *(f32 *)((char *)arg0 + 0x38)) {
-            *(f32 *)((char *)arg0 + 0x38) = 1.0f;
-        }
-    } else {
-        *(f32 *)((char *)arg0 + 0x38) = *(f32 *)((char *)arg0 + 0x3C);
-    }
-    *(s16 *)((char *)arg0 + 0x8) = sp3A;
-    *(s16 *)((char *)arg0 + 0xA) = (s16) (*(u8 *)((char *)arg0 + 0x3) * sp3A >> 8);
-    if (*(u8 *)((char *)t0 + 0xE) != 0) {
-        u32 d;
-        r = *(u32 *)(&gl_d_2b5f4_r2 + 0x2154);
-        d = (u32) (*(s16 *)((char *)arg0 + 0xA) * (r % *(u8 *)((char *)t0 + 0xD))) / 100;
-        if (r & 0x4000) {
-            d = -(s32) d;
-        }
-        *(s16 *)((char *)arg0 + 0xA) = (s16) (*(s16 *)((char *)arg0 + 0xA) + d);
-        if (*(s16 *)((char *)arg0 + 0xA) < 0) {
-            *(s16 *)((char *)arg0 + 0xA) = 0;
-        } else if (*(s16 *)((char *)arg0 + 0x8) < *(s16 *)((char *)arg0 + 0xA)) {
-            *(s16 *)((char *)arg0 + 0xA) = *(s16 *)((char *)arg0 + 0x8);
-        }
-    }
-    if (((*(u32 *)sp2C & 0x20000000) && (*(u8 *)((char *)t0 + 0x3) & 0x50)) ||
-        (*(u32 *)t0 & 0x10000000)) {
-        *(u8 *)arg0 = *(u8 *)arg0 | 0x20;
-        return -1;
-    }
-    if (*(s32 *)((char *)sp2C + 0xDC) != 0) {
-        *(u8 *)arg0 = *(u8 *)arg0 | 0x20;
-        return -1;
-    }
-    return arg1;
+    volatile s32 ret = arg1;
+    return ret;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002B5F4);
-#endif
 
 /* game_libs_func_0002BA08: nibble-splitter — store low/high nibble of (arg1&0xFF)
  * to arg0->5 / arg0->6 (skip if zero). BYTE-EXACT.
