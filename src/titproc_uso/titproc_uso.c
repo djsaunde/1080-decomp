@@ -302,7 +302,10 @@ void titproc_uso_func_0000056C(Vec3 *dst) {
  *    s5v 3rd = home 92, r, t, mask) = the target's frame; t carries the rr /
  *    r1 / flag / 01EFC8 / av webs; case 3 is one comma statement;
  *    the uopt spill temp of mask lands at 68 as in the target.
- *    decl order, if(1) sweeps, register/unsigned, dead uses: s0/s1 fixed. */
+ *  - `mask + x` as a 2-D char-array index (IXA) emits the target's base-first
+ *    `addu a1,s4,tN`; every flat spelling puts the load chain first.
+ *    decl order, if(1) sweeps, register/unsigned, dead while(0) uses of d,
+ *    web swaps: the d/t s0/s1 order does not move. */
 extern int titproc_uso_func_0120A8();
 extern int titproc_uso_func_0027E8();
 extern int titproc_uso_func_000C54();
@@ -425,7 +428,7 @@ void titproc_uso_func_000005DC(char *a0, int a1) {
             *(int *)((char *)t + 0x14) = d;
             titproc_uso_func_011CD8(d, 1);
             t = *(int *)a0;
-            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask + *(int *)(*(int *)(t + 8) + 4), r, t));
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, (int)&((char (*)[2])mask)[0][*(int *)(*(int *)(t + 8) + 4)], r, t));
             *(int *)(d + 0x40) = 11;
             break;
         }
@@ -458,7 +461,7 @@ void titproc_uso_func_000005DC(char *a0, int a1) {
             *(int *)((char *)t + 0x14) = d;
             titproc_uso_func_011CD8(d, 1);
             t = *(int *)a0;
-            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask + *(int *)(*(int *)(t + 8) + 4), r, t));
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, (int)&((char (*)[2])mask)[0][*(int *)(*(int *)(t + 8) + 4)], r, t));
             *(int *)(d + 0x40) = 11;
             break;
         }
