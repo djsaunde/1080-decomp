@@ -16090,26 +16090,26 @@ block_83:
                 }
                 if (*(u8 *)((char *)(arg0) + 0x16) & 4) {
                     sp50 = 4;
-                    var_v0_2 = gl_func_000428FC(arg0);
-                    sp6B = var_v0_2;
+                    { int rv = gl_func_000428FC(arg0); var_v0_2 = rv; /* run 138: int return (target slti v0,11) */
+                    sp6B = rv;
                     temp_v1_2 = *(u8 *)((char *)(arg0) + 0x29);
-                    var_t9 = var_v0_2 & 0xFF;
+                    var_t9 = rv & 0xFF;
                     temp_f10_2 = D_E354_1C310[temp_v1_2];
-                    if ((s32) var_v0_2 < 0xB) {
+                    if (rv < 0xB) {
                         switch (temp_v1_2) {        /* switch 4; irregular */
                         default:                    /* switch 4 */
-                            var_t9 = var_v0_2 & 0xFF;
+                            var_t9 = rv & 0xFF;
                             break;
                         case 0:                     /* switch 4 */
                         case 1:                     /* switch 4 */
-                            var_t9 = (var_v0_2 & 0xFF) + 1;
+                            var_t9 = (rv & 0xFF) + 1;
                             break;
                         case 2:                     /* switch 4 */
                         case 3:                     /* switch 4 */
-                            var_t9 = var_v0_2 & 0xFF;
+                            var_t9 = rv & 0xFF;
                             break;
                         }
-                    }
+                    } }
                     if ((*(u16 *)((char *)(arg0) + 0x30) != 1) || (temp_v1_2 != 3)) {
                         temp_v1_5 = *(u8 *)((char *)(arg0) + 0x22);
                         if ((s32) temp_v1_5 >= 6) {
