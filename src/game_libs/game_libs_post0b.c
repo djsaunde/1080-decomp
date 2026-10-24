@@ -14465,15 +14465,18 @@ typedef char *(*GP_000469A8)();
  * &D_00000000 + 0x254 (`lui/addiu v1; sw 596(v1)`), not absolute 0x254.
  * FLAG: length 384 -> 380 (target 412) -- the removed spill pair was wrong, the
  * remaining gap is the target's s0 copy of the vcall result, the held
- * self+0x100 / self+0x78 pointers and the sp+72 home of the 0x148->0xF0 word. */
+ * self+0x100 / self+0x78 pointers and the sp+72 home of the 0x148->0xF0 word.
+ * run 152 (agent-c, 67.64 -> 67.81, 380 -> 392 bytes toward 412): the first vcall result and the
+ * second vtable pointer are ONE variable (target: `or s0,v0` copy, then s0 = vt); bit-4 test hoisted
+ * above the bit-2 if. The held +0x100 / +0x78 pointers still fold into offsets. */
 void gl_func_000469A8(char *arg0, s32 arg1) {
     s32 sp48;
     s32 temp_a1;
     s32 temp_a1_2;
     s32 var_t0;
     char *temp_a3;
-    char *temp_s0;
     char *temp_s1;
+    char *temp_s0;
     char *temp_t6;
     char *temp_v0;
     char *temp_v0_2;
@@ -14485,14 +14488,21 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     gl_func_00034458(temp_s1);
     temp_v1 = FW(arg0, 0x240);
     temp_v0 = FW(temp_v1, 0x28);
-    temp_a1 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
+    temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
     temp_v1 = FW(arg0, 0x240);
-    sp48 = FW(FW(temp_v1, 0x148), 0xF0);
-    var_t0 = (FW((temp_v1 + 0x100), 0x4) & 2) != 0;
-    if (var_t0 != 0) {
-        var_t0 = (FW(temp_v1 + 0x78, 0) & 2) != 0;
+    {
+        char *p100 = temp_v1 + 0x100;
+        char *p78 = temp_v1 + 0x78;
+        char *pDC = temp_v1 + 0xDC;
+        s32 m4;
+        sp48 = FW(FW(temp_v1, 0x148), 0xF0);
+        m4 = FW(p78, 0) & 4;
+        var_t0 = (FW(p100, 0x4) & 2) != 0;
+        if (var_t0 != 0) {
+            var_t0 = (FW(p78, 0) & 2) != 0;
+        }
+        gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
     }
-    gl_func_00034458(temp_s1, temp_a1, sp48, FW(temp_v1 + 0x78, 0) & 4, var_t0, temp_v1 + 0xDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
     temp_t6 = FW(arg0, 0x240);
     *(char **)((char *)&D_00000000 + 0x254) = temp_t6;
     FW(temp_t6, 0x158) = temp_s1;
