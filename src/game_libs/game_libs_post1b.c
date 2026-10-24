@@ -5642,13 +5642,8 @@ int gl_func_00069F64(OSMesgQueue_69F64 *mq, int **msg, int flags) {
     return 0;
 }
 
-/* game_libs_func_0006A09C: __osSetIntMask-style interrupt-mask updater. ARCHITECTURAL
- * CAP (mfc0/mtc0, not C-emittable): reads CP0 Status $12 (mfc0), rebuilds the SR/RCP
- * interrupt-enable bits from a global mask word + an MI_INTR_MASK read/write at
- * 0xA430000C, and writes Status back (mtc0 $12). The mfc0/mtc0 + the SR bit-twiddling
- * cannot be produced by IDO C (cf. reference_1080_mips3_runtime_helpers). Permanent
- * INCLUDE_ASM; the .s is the source of truth. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006A09C);
+/* game_libs_func_0006A09C = libultra osSetIntMask (game_libs copy; handwritten mfc0/mtc0 SR + MI_INTR_MASK): real source in src/libultra/game_libs/setintmask.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/setintmask.s")
 
 /* game_libs_func_0006A144 = libultra fsin/__sinf (libreultra gu/sinf.c
  * verbatim, IDO 5.3 -O2 -mips2 donor: game_libs_ido53_6A144.c). LANDED
