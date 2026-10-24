@@ -14,7 +14,10 @@
  * (literal, double literal, named float) into per-site mtc1; vb is loaded
  * before the matrix block and held in f14/f16/f18 (explicit vb.x = vb.x + ..
  * statements lose the juggle, 58.7); frame 224 vs 256. getPos keeps only the
- * first if (1) {} (the second cost 0.16: 72.58 -> 72.74). */
+ * first if (1) {} (the second cost 0.16: 72.58 -> 72.74). The else factor is a
+ * DOUBLE literal (`w *= 0.0;`): the target keeps the three mul.s by zero, a float
+ * zero folds them into plain zero stores (72.74 -> 75.62; 1004 -> 1024 bytes, AWAY
+ * from 1008 -- the muls are verified target words, the overshoot is elsewhere). */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -92,7 +95,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     } else if (t < s0->fA0) {
         w *= t - s0->fA0;
     } else {
-        w *= zero;
+        w *= 0.0;
     }
     k = (mag - s0->fB8) * s0->f118;
     e *= k;
