@@ -2062,50 +2062,62 @@ gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 //   Name pre-checked: no extern reuse (collision-safe).
 //   gl_func_00000000 = canonical never-defined USO placeholder.
 #ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int gl_ref_00031D3C();
-/* Re-decoded 2026-10-23 agent-c run 137 (77.94 -> see commit): signed `/` for the
- * scaled index and the 64-texel line count (target div / bgez-round), the
- * cursor kept in the parameter (s0 across the upload call, the `move a0,s0`
- * copy), each 2-word packet written through `p = dst; dst += 2;`, the type test
- * inline (ugen temps), and the first D+0x20 read on its own per-site alias
- * (plain `lw a3,sym`; the += then holds the base in v1). */
+/* run 140: OoT's AudioSynth_LoadWaveSamples (96.02 -> 98.32, 93 of 94 words). The
+ * noise path's gWaveSamples[8] read goes through its own per-site alias (else the
+ * base is CSE'd into a register); OS_K0_TO_PHYSICAL on both load addresses.
+ * Left: the target copies the cursor back from s0 for the upload call
+ * (`move a0,s0; addiu s0,s0,8`) where ours passes the parameter register a0
+ * directly, so a0 is busy and the later bases move v1 -> a0 (OoT verbatim
+ * `cmd++`, a named copy, a split `cmd++;`, an explicit local cursor, NCC: no). */
+extern int D_00000000;
 extern int D_1F248_dp;
-int *gl_func_0001F248(int *dst, int *a1, int *a2, int a3) {
-    int b6 = *(unsigned char *)((char *)a1 + 6);
-    int v1 = a2[8 / 4];
-    if ((unsigned)(a1[0] << 11) >> 30) {
-        int *p = dst;
-        dst += 2;
-        gl_ref_00031D3C(p, 0x580, (a3 * 2 + 0xF) & ~0xF, *(int *)((char *)&D_1F248_dp + 0x20) + 0x80000000);
-        *(int *)((char *)&D_00000000 + 0x20) += a3 * 4;
-        return dst;
-    }
-    {
-        int *p = dst;
-        dst += 2;
-        p[0] = 0x14080580;
-        p[1] = a1[0x10 / 4] + 0x80000000;
-    }
-    if (b6 != 0) {
-        v1 = (int)((unsigned int)v1 * *(unsigned char *)((char *)&D_00000000 + (b6 >> 2))) / *(unsigned char *)((char *)&D_00000000 + (b6 & 3));
-    }
-    v1 &= 0x3f;
-    {
-        int avail = 0x40 - v1;
-        if (avail < a3) {
-            int n = (a3 - avail + 0x3f) / 64;
-            if (n != 0) {
-                int *p = dst;
-                dst += 2;
-                p[0] = 0x09000000 | ((n & 0xff) << 16) | 0x580;
-                p[1] = 0x06000080;
-                a2[8 / 4] = v1;
+extern int gl_ref_00031D3C();
+#define AudioSynth_LoadBuffer gl_ref_00031D3C
+#define gWaveSamples ((s16 **)&D_00000000)
+#define sNumSamplesPerWavePeriod ((u8 *)&D_00000000)
+#define A_DUPLICATE 9
+#define DMEM_UNCOMPRESSED_NOTE 0x580
+#define WAVE_SAMPLE_COUNT 64
+#define SAMPLE_SIZE 2
+#define aDuplicate(pkt, numCopies, dmemSrc, dmemDest) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_DUPLICATE, 24, 8) | _SHIFTL(numCopies, 16, 8) | _SHIFTL(dmemSrc, 0, 16)); _a->words.w1 = _SHIFTL(dmemDest, 16, 16) | _SHIFTL(0x80, 0, 16); }
+gl_aud_Acmd *gl_func_0001F248(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState,
+                                 s32 numSamplesToLoad) {
+    s32 numSamplesAvail;
+    s32 harmonicIndexCurAndPrev = sampleState->harmonicIndexCurAndPrev;
+    s32 samplePosInt = synthState->samplePosInt;
+    s32 numDuplicates;
+
+    if (sampleState->bookOffset != 0) {
+        { gl_aud_Acmd *c = cmd; cmd++; AudioSynth_LoadBuffer(c, DMEM_UNCOMPRESSED_NOTE, ALIGN16(numSamplesToLoad * SAMPLE_SIZE), OS_K0_TO_PHYSICAL(((s16 **)&D_1F248_dp)[8])); }
+        gWaveSamples[8] += numSamplesToLoad * SAMPLE_SIZE;
+        return cmd;
+    } else {
+        aLoadBuffer(cmd++, sampleState->waveSampleAddr, DMEM_UNCOMPRESSED_NOTE, WAVE_SAMPLE_COUNT * SAMPLE_SIZE);
+        if (harmonicIndexCurAndPrev != 0) {
+            samplePosInt = samplePosInt * sNumSamplesPerWavePeriod[harmonicIndexCurAndPrev >> 2] /
+                           sNumSamplesPerWavePeriod[harmonicIndexCurAndPrev & 3];
+        }
+        samplePosInt = (u32)samplePosInt % WAVE_SAMPLE_COUNT;
+        numSamplesAvail = WAVE_SAMPLE_COUNT - samplePosInt;
+        if (numSamplesToLoad > numSamplesAvail) {
+            numDuplicates = ((numSamplesToLoad - numSamplesAvail + WAVE_SAMPLE_COUNT - 1) / WAVE_SAMPLE_COUNT);
+            if (numDuplicates != 0) {
+                aDuplicate(cmd++, numDuplicates, DMEM_UNCOMPRESSED_NOTE,
+                           DMEM_UNCOMPRESSED_NOTE + (WAVE_SAMPLE_COUNT * SAMPLE_SIZE));
             }
         }
+        synthState->samplePosInt = samplePosInt;
     }
-    return dst;
+    return cmd;
 }
+#undef AudioSynth_LoadBuffer
+#undef gWaveSamples
+#undef sNumSamplesPerWavePeriod
+#undef A_DUPLICATE
+#undef DMEM_UNCOMPRESSED_NOTE
+#undef WAVE_SAMPLE_COUNT
+#undef SAMPLE_SIZE
+#undef aDuplicate
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001F248);
 #endif
