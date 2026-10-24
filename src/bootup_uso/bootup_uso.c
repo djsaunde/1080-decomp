@@ -5791,9 +5791,12 @@ void func_00008BD4(char *b, float amt, float *dir, int a3) {
                     float *mp = (float *)(*(char **)(b + 0x170) + 0x968);
                     *mp += amt;
                 }
-                nn.x = dir[0] * negamt;
-                nn.y = dir[1] * negamt;
-                nn.z = dir[2] * negamt;
+                { /* run 156: held products, stored afterwards (target f2 / f12 / f14) */
+                float hx = dir[0] * negamt;
+                float hy = dir[1] * negamt;
+                float hz = dir[2] * negamt;
+                nn.x = hx; nn.y = hy; nn.z = hz;
+                }
                 impB = nn;
                 nnA = impB;
                 func_8bd4_heavy(*(char **)(b + 0x170), b + 0x120, &nnA, &impB);
