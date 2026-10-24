@@ -10489,10 +10489,15 @@ extern int D_00000000;
 /* Whole-body decode 2026-06-01 (prior body was a single switch, reversed tbls).
  * Loop over 4 modes s3=0..3: sub=obj+s3*16, tbl=&D+(0x5378+s3*16); drain the
  * linked list at sub->4 — while head != sub (and != 0): gl(head), gl(tbl, head),
- * re-read head=sub->4. */
+ * re-read head=sub->4.
+ * run 140: no default arm (the target's default path keeps the previous sub / tbl, so both are read
+ * from their stack homes at entry and stored back at exit: lw s1,72 / lw s2,64 ... sw); head declared
+ * between sub and tbl (tbl slot 64). Left: the four table addresses are hoisted into a2/a1/v1/v0 before
+ * the loop and rematerialised after the inner-loop calls (tried locals / loop-top assignments / fn-typed
+ * bases / NCC: all propagate the constant into each arm). */
 void gl_func_00028B0C(char *obj) {
     int s3;
-    char *sub, *tbl, *head;
+    char *sub, *head, *tbl;
 
     for (s3 = 0; s3 != 4; s3++) {
         switch (s3) {
@@ -10500,7 +10505,6 @@ void gl_func_00028B0C(char *obj) {
         case 1:  sub = obj + 0x10; tbl = (char *)&D_00000000 + 0x5388; break;
         case 2:  sub = obj + 0x20; tbl = (char *)&D_00000000 + 0x5398; break;
         case 3:  sub = obj + 0x30; tbl = (char *)&D_00000000 + 0x53A8; break;
-        default: sub = obj + 0x30; tbl = (char *)&D_00000000 + 0x53A8; break;
         }
         head = *(char **)(sub + 4);
         while (head != sub) {
