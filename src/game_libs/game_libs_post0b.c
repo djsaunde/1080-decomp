@@ -25105,6 +25105,9 @@ void gl_func_00057700(int *a0) {
  * `multu w,h` with h loaded first and the CALC_DXT shift after.
  * (4) the last switch-2 case FALLS THROUGH into the default call
  * (`temp_a1 = sp34 = FW(arg1, 0x24);`, one shared jal): 96.91.
+ * (5) the two gDPSetTile(LOADTILE) packets store w1 (0x07000000)
+ * before w0 (0xF5000100): as1 then emits the target's lui/ori order
+ * (97.06).
  * Left: the MIN/MAX/g-pointer colouring (target MIN t1, MAX1 t0 with
  * the g pointer spilled to its sp slot; ours MIN t0, MAX1 a2). */
 #ifdef NON_MATCHING
@@ -25546,8 +25549,8 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
             temp_v0_4 = FW(FW(arg0, 0xC), 0x0) + (temp_a1_9 * 8);
-            FW(temp_v0_4, 0x0) = 0xF5000100;
             FW(temp_v0_4, 0x4) = 0x07000000;
+            FW(temp_v0_4, 0x0) = 0xF5000100;
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -25960,8 +25963,8 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             temp_v0_4 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(temp_v0_4, 0x0) = 0xF5000100;
             FW(temp_v0_4, 0x4) = 0x07000000;
+            FW(temp_v0_4, 0x0) = 0xF5000100;
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
