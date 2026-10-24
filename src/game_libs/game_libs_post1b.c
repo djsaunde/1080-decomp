@@ -1976,11 +1976,11 @@ void gl_func_00065494(char *arg0) {
                 sp174[0] += *(f32 *)&spA8.a;
                 sp174[1] += *(f32 *)&spA8.b;
                 sp174[2] += *(f32 *)&spA8.c;
-                var_f0 = (FF(var_s0, 0x114) * sp134[0]) + (FF(var_s0, 0x118) * sp134[1]) + (FF(var_s0, 0x11C) * sp134[2]);
+                var_f0 = (FF(var_s0, 0x118) * sp134[1]) + (sp134[0] * FF(var_s0, 0x114)) + (FF(var_s0, 0x11C) * sp134[2]);
                 if (var_f0 > 0.0f) {
                     var_f0 = 0.0f;
                 }
-                temp_f14 = (temp_f16 * FF(arg0, 0x290)) + (FF(arg0, 0x28C) * -var_f0);
+                temp_f14 = (FF(arg0, 0x290) * temp_f16) + (FF(arg0, 0x28C) * -var_f0);
                 temp_f12 = sp134[2] * temp_f14;
                 *(f32 *)&sp78.a = sp134[0] * temp_f14;
                 *(f32 *)&sp78.b = sp134[1] * temp_f14;
