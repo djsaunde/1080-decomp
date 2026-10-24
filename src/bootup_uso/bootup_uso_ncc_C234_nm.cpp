@@ -259,7 +259,7 @@ cend:
         *(f32 *)((char *)(arg0) + 0x948) = spB4.x;
         *(f32 *)((char *)(arg0) + 0x94C) = spB4.y;
         *(f32 *)((char *)(arg0) + 0x950) = spB4.z;
-        var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x340) * *(f32 *)((char *)(arg0) + 0x940)) + (*(f32 *)((char *)(arg0) + 0x344) * *(f32 *)((char *)(arg0) + 0x944));
+        var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x940) * *(f32 *)((char *)(arg0) + 0x340)) + (*(f32 *)((char *)(arg0) + 0x944) * *(f32 *)((char *)(arg0) + 0x344));
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
@@ -286,7 +286,7 @@ cend:
     temp_f12_2 = *(f32 *)((char *)(arg0) + 0x930);
     temp_f14 = *(f32 *)((char *)(arg0) + 0x934);
     temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
-    *(f32 *)((char *)(arg0) + 0xA1C) = (f32) (*(f32 *)((char *)(arg0) + 0xA1C) + (((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14)) * temp_f16));
-    *(f32 *)((char *)(arg0) + 0xA20) = (f32) (*(f32 *)((char *)(arg0) + 0xA20) + (((*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14)) * temp_f16));
-    *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
+    *(f32 *)((char *)(arg0) + 0xA1C) = (f32) (*(f32 *)((char *)(arg0) + 0xA1C) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14))));
+    *(f32 *)((char *)(arg0) + 0xA20) = (f32) (*(f32 *)((char *)(arg0) + 0xA20) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14))));
+    *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
 }
