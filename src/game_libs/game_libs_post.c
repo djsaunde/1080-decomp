@@ -5671,93 +5671,104 @@ int game_libs_func_00023B98(int idx) {
 // (build keeps clamp in s5, arg2 in s4, node in s0). Coupled allocator
 // decision — the documented permuter-immune game_libs coloring cap. No bugs.
 #ifdef NON_MATCHING
-extern int gl_func_0001CA10();
-extern int D_00000000;
+/* run 140: OoT's AudioLoad_RelocateFont (load.c) + 1080's debug print in the
+ * instrument loop (`print(str 0x1ACA4, i, fontData[i], fontDataStartAddr)` before the
+ * relocation; blank jal) and drum isRelocated set before the envelope fix-up (84.83 ->
+ * 98.51, 161 = 161 words; replaces the NCC NM donor). Left: fontDataStartAddr / the
+ * instrument index colour s3 / s2 (target s2 / s3); declaration and initialiser orders
+ * do not move it. gl_23bdc_str is NM-only. */
+typedef struct { u32 bits; u8 *sampleAddr; } gl_23BDC_Sample;
+typedef struct { gl_23BDC_Sample *sample; f32 tuning; } gl_23BDC_TunedSample;
+typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_23BDC_TunedSample lowPitchTunedSample; gl_23BDC_TunedSample normalPitchTunedSample; gl_23BDC_TunedSample highPitchTunedSample; } gl_23BDC_Inst;
+typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_23BDC_TunedSample tunedSample; void *envelope; } gl_23BDC_Drum;
+typedef struct { gl_23BDC_TunedSample tunedSample; } gl_23BDC_Sfx;
+typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; gl_23BDC_Inst **instruments; gl_23BDC_Drum **drums; gl_23BDC_Sfx *soundEffects; } gl_23BDC_Font;
+typedef struct { char pad0[0x2030]; gl_23BDC_Font *soundFontList; } gl_23BDC_Ctx;
+#define gl_23BDC_gAudioCtx (*(gl_23BDC_Ctx *)&D_00000000)
+typedef u8 gl_23BDC_FontData;
+typedef struct { s32 a; } gl_23BDC_RelocInfo;
+extern char gl_23bdc_str[];
 extern int gl_ref_00039A30();
-void gl_func_00023BDC(s32 arg0, char *arg1, int arg2) {
-    s32 sp3C;
-    s32 sp48;
-    char *rec;
-    char **listp;
-    char *node;
-    char **slot;
-    int i;
-    u8 cnt1;
-    u16 cnt2;
-    int cnt3;
-    int k;
+#define AudioLoad_RelocateSample gl_ref_00039A30
 
-    sp3C = arg0 * 0x14;
-    rec = *(char **)((char *)&D_00000000 + 0x2030) + sp3C;
-    sp48 = (s32) *(u8 *)(rec + 0x0);
-    cnt1 = *(u8 *)(rec + 0x1);
-    cnt2 = *(u16 *)(rec + 0x4);
-    if ((*(char **)(arg1 + 0x0) != 0) && (cnt1 != 0)) {
-        *(char **)(arg1 + 0x0) = *(char **)(arg1 + 0x0) + (int)arg1;
-        if ((s32) cnt1 > 0) {
-            i = 0;
-            do {
-                slot = (char **)(*(char **)(arg1 + 0x0) + i);
-                node = *slot;
-                if (node != 0) {
-                    node = node + (int)arg1;
-                    *slot = node;
-                    if (*(u8 *)(node + 0x2) == 0) {
-                        gl_ref_00039A30(node + 4, arg1, arg2);
-                        *(u8 *)(node + 0x2) = 1;
-                        *(char **)(node + 0xC) = *(char **)(node + 0xC) + (int)arg1;
-                    }
-                }
-                i += 4;
-            } while (i != cnt1 * 4);
-        }
-    }
-    if ((*(char **)(arg1 + 0x4) != 0) && (cnt2 != 0)) {
-        *(char **)(arg1 + 0x4) = *(char **)(arg1 + 0x4) + (int)arg1;
-        if ((s32) cnt2 > 0) {
-            i = 0;
-            do {
-                node = *(char **)(arg1 + 0x4) + i;
-                if ((node != 0) && (*(int *)node != 0)) {
-                    gl_ref_00039A30(node, arg1, arg2);
-                }
-                i += 8;
-            } while (i != cnt2 * 8);
-        }
-    }
-    listp = (char **)(arg1 + 8);
-    if (sp48 >= 0x7F) {
-        sp48 = 0x7E;
-    }
-    k = 2;
-    cnt3 = sp48 + 1;
-    if (cnt3 >= 2) {
-        do {
-            node = *(char **)listp;
-            if (node != 0) {
-                gl_func_0001CA10(0x1ACA4, k, node, arg1);
-                node = *(char **)listp + (int)arg1;
-                *listp = node;
-                if (*(u8 *)(node + 0x0) == 0) {
-                    if (*(u8 *)(node + 0x1) != 0) {
-                        gl_ref_00039A30(node + 8, arg1, arg2);
-                    }
-                    gl_ref_00039A30(node + 0x10, arg1, arg2);
-                    if (*(u8 *)(node + 0x2) != 0x7F) {
-                        gl_ref_00039A30(node + 0x18, arg1, arg2);
-                    }
-                    *(u8 *)(node + 0x0) = 1;
-                    *(char **)(node + 0x4) = *(char **)(node + 0x4) + (int)arg1;
-                }
+void gl_func_00023BDC(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC_RelocInfo *sampleBankReloc) {
+    u32 soundOffset;
+    u32 soundListOffset;
+    gl_23BDC_Inst *inst;
+    gl_23BDC_Drum *drum;
+    gl_23BDC_Sfx *soundEffect;
+    s32 i;
+    s32 numDrums = gl_23BDC_gAudioCtx.soundFontList[fontId].numDrums;
+    s32 numInstruments = gl_23BDC_gAudioCtx.soundFontList[fontId].numInstruments;
+    s32 numSfx = gl_23BDC_gAudioCtx.soundFontList[fontId].numSfx;
+    u32 *fontData = (u32 *)fontDataStartAddr;
+
+#define GL23BDC_RELOC(offset) ((u32)(offset) + (u32)(fontDataStartAddr))
+
+    soundListOffset = fontData[0];
+    if ((soundListOffset != 0) && (numDrums != 0)) {
+        fontData[0] = GL23BDC_RELOC(soundListOffset);
+        for (i = 0; i < numDrums; i++) {
+            soundOffset = (u32)((gl_23BDC_Drum **)fontData[0])[i];
+            if (soundOffset == 0) {
+                continue;
             }
-            k += 1;
-            listp += 1;
-        } while (cnt3 >= k);
+            soundOffset = GL23BDC_RELOC(soundOffset);
+            ((gl_23BDC_Drum **)fontData[0])[i] = drum = (gl_23BDC_Drum *)soundOffset;
+            if (drum->isRelocated) {
+                continue;
+            }
+            AudioLoad_RelocateSample(&drum->tunedSample, fontDataStartAddr, sampleBankReloc);
+            drum->isRelocated = 1;
+            soundOffset = (u32)drum->envelope;
+            drum->envelope = (void *)GL23BDC_RELOC(soundOffset);
+        }
     }
-    *(char **)(*(char **)((char *)&D_00000000 + 0x2030) + sp3C + 0xC) = *(char **)(arg1 + 0x0);
-    *(char **)(*(char **)((char *)&D_00000000 + 0x2030) + sp3C + 0x10) = *(char **)(arg1 + 0x4);
-    *(char **)(*(char **)((char *)&D_00000000 + 0x2030) + sp3C + 0x8) = (char *)((int)arg1 + 8);
+
+    soundListOffset = fontData[1];
+    if ((soundListOffset != 0) && (numSfx != 0)) {
+        fontData[1] = GL23BDC_RELOC(soundListOffset);
+        for (i = 0; i < numSfx; i++) {
+            soundOffset = (u32)(((gl_23BDC_Sfx *)fontData[1]) + i);
+            soundEffect = (gl_23BDC_Sfx *)soundOffset;
+            if ((soundEffect == NULL) || ((u32)soundEffect->tunedSample.sample == 0)) {
+                continue;
+            }
+            AudioLoad_RelocateSample(&soundEffect->tunedSample, fontDataStartAddr, sampleBankReloc);
+        }
+    }
+
+    if (numInstruments > 126) {
+        numInstruments = 126;
+    }
+
+    for (i = 2; i <= 2 + numInstruments - 1; i++) {
+        if (fontData[i] != 0) {
+            gl_func_00000000(gl_23bdc_str, i, fontData[i], fontDataStartAddr);
+            fontData[i] = GL23BDC_RELOC(fontData[i]);
+            inst = (gl_23BDC_Inst *)fontData[i];
+            if (!inst->isRelocated) {
+                if (inst->normalRangeLo != 0) {
+                    AudioLoad_RelocateSample(&inst->lowPitchTunedSample, fontDataStartAddr, sampleBankReloc);
+                }
+                AudioLoad_RelocateSample(&inst->normalPitchTunedSample, fontDataStartAddr, sampleBankReloc);
+                if (inst->normalRangeHi != 0x7F) {
+                    AudioLoad_RelocateSample(&inst->highPitchTunedSample, fontDataStartAddr, sampleBankReloc);
+                }
+                soundOffset = (u32)inst->envelope;
+                inst->envelope = (void *)GL23BDC_RELOC(soundOffset);
+                inst->isRelocated = 1;
+            }
+        }
+    }
+
+    gl_23BDC_gAudioCtx.soundFontList[fontId].drums = (gl_23BDC_Drum **)fontData[0];
+    gl_23BDC_gAudioCtx.soundFontList[fontId].soundEffects = (gl_23BDC_Sfx *)fontData[1];
+    gl_23BDC_gAudioCtx.soundFontList[fontId].instruments = (gl_23BDC_Inst **)(fontData + 2);
 }
+#undef gl_23BDC_gAudioCtx
+#undef GL23BDC_RELOC
+#undef AudioLoad_RelocateSample
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023BDC);
 #endif
