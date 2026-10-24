@@ -18429,7 +18429,6 @@ int gl_func_0004D0B4(int a0) {
     return a0;
 }
 
-#ifdef NON_MATCHING
 /* game_libs_func_0004D0E4: 27-insn struct initializer (3-arg, leaf).
  * 2026-05-13 fix: previous C had only 2 args + wrote 1 at 0x58. Target asm
  * actually stores $a2 (third arg) at 0x58. Signature is (a0, a1, a2):
@@ -18460,7 +18459,14 @@ int gl_func_0004D0B4(int a0) {
  * (both aliased to 0x00000000). 84.62% → 89.47% (+4.85pp). Remaining 10.5%
  * is $s0/$s1 swap (self vs i loop counter) — first-assignment trick
  * regressed (87.67%) because of interaction with the leading
- * gl_func_00000000() call. */
+ * gl_func_00000000() call.
+ * EXACT 2026-10-24 (agent-g run 154), found via the sibling scan (62F08,
+ * opcode similarity 0.77, the same leaf store-run shape): (1) the D_00000000
+ * read is stored BEFORE the 0xC00 / 1 stores in source (the scheduler sinks
+ * the 0x48 store into the jr delay, and the later constants land after the
+ * lw); (2) the second `1` is an UNSIGNED constant stored through a u32 lvalue
+ * -- equal constants of different type are not CSE'd (kit LXXVII), so it gets
+ * its own `addiu t3,zero,1` like the target. */
 void game_libs_func_0004D0E4(int *a0, int a1, int a2) {
     a0[0x58/4] = a2;
     a0[0x6C/4] = a1;
@@ -18475,13 +18481,10 @@ void game_libs_func_0004D0E4(int *a0, int a1, int a2) {
     a0[0x2C/4] = 0x800;
     a0[0x38/4] = 0;
     a0[0x3C/4] = 0;
-    a0[0x4C/4] = 0xC00;
-    a0[0x64/4] = 1;
     a0[0x48/4] = D_00000000;
+    a0[0x4C/4] = 0xC00;
+    *(u32 *)&a0[0x64/4] = 1U;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004D0E4);
-#endif
 
 void game_libs_func_0004D150(int *a0, int a1, int a2, int a3) {
     a0[0x40/4] = a1;
