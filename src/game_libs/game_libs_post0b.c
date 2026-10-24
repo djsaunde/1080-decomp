@@ -207,7 +207,11 @@ int gl_func_00034458() {
  * and re-read after every call; the slot global is a pinned symbol at
  * 0x3BB34 (s1 = &slot, lw 0(s1)), the vtable record a distinct base-0
  * extern. Homes 92/84/80 = sp5C, s0, out pair in that declaration order.
- * LEFT: one extra nop before the unreachable epilogue (320 vs 316 bytes). */
+ * EXACT via the IDO 7.1 -O2 donor game_libs_o2_34548.c (REPLACE_FUNC_BODY):
+ * IDO puts the unreachable epilogue after an infinite loop on a 32-byte
+ * .text boundary; compiled here (unit starts at 0x34458) the body below
+ * gets 3 nops (320 bytes), compiled after the original unit's head (343F4
+ * + 34458) it gets the target's 2 (316). Body below = NM reference. */
 #ifdef NON_MATCHING
 extern char *D_34548_obj;
 extern char *D_34548_slot;
