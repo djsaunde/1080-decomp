@@ -6918,9 +6918,13 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
 
     {
         register f32 *tp = (f32 *)(arg0 + 0xDC);
-        spD0.x = tp[0] - *(f32 *)((char *)&D_timb5_AC20_gxy + 0); if (arg0) {}
-        spD0.y = tp[1] - *(f32 *)((char *)&D_timb5_AC20_gxy + 4);
-        spD0.z = tp[2] - *(f32 *)((char *)&D_timb5_AC20_gz + 8);
+        /* run 156: held differences (target f0 / f14 / f12), stored afterwards; ang / var_f12 / wrap are dead here */
+        ang = tp[0] - *(f32 *)((char *)&D_timb5_AC20_gxy + 0);
+        var_f12 = tp[1] - *(f32 *)((char *)&D_timb5_AC20_gxy + 4);
+        wrap = tp[2] - *(f32 *)((char *)&D_timb5_AC20_gz + 8);
+        spD0.x = ang;
+        spD0.y = var_f12;
+        spD0.z = wrap;
     }
     spE4 = spD0;
     spF4 = spE4;
