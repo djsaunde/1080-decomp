@@ -13025,7 +13025,6 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     f32 temp_f14;
     f32 temp_f16;
     f32 temp_f18;
-    f32 var_f0;
     f32 var_f4;
     s32 *var_at;
     s32 temp_v0;
@@ -13082,11 +13081,11 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             temp_f16 = *(f32 *)((char *)(arg0) + 0x50);
             temp_f0 = temp_f16 - *(f32 *)((char *)(arg0) + 0x0);
             if (0.5f <= temp_f0) {
-                var_f0 = temp_f0 + 0.5f;
-                if (2.0f <= var_f0) {
-                    var_f0 = 2.0f;
+                temp_f0 = temp_f0 + 0.5f;
+                if (2.0f <= temp_f0) {
+                    temp_f0 = 2.0f;
                 }
-                sp60 *= var_f0;
+                sp60 *= temp_f0;
             }
             *(f32 *)((char *)(arg0) + 0x50) = (f32) ((temp_f16 + *(f32 *)((char *)(arg0) + 0x0)) * 0.5f);
             *(f32 *)((char *)(arg0) + 0x44) = (f32) ((*(f32 *)((char *)(arg0) + 0x44) + temp_f18) * 0.5f);
