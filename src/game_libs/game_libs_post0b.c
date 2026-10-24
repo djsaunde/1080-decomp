@@ -2743,7 +2743,7 @@ void gl_func_00036F0C(char *arg0) {
     v[2] = (*(f32 *)((char *)(sp84) + 0xD4) * var_f14) + (*(f32 *)((char *)(sp84) + 0xD8) * var_f16) + (*(f32 *)((char *)(sp84) + 0xDC) * temp_f2);
     if (*(s32 *)((char *)(temp_v1) + 0x10) & 0x1000) {
         *(f32 *)((char *)(arg0) + 0x34) = (f32) (*(f32 *)((char *)(arg0) + 0x34) + (*(f32 *)((char *)(temp_v1) + 0x0) * 4.0f));
-        *(f32 *)((char *)(arg0) + 0x30) = (f32) (*(f32 *)((char *)(arg0) + 0x30) + (-*(f32 *)((char *)(temp_v1) + 0x4) * 4.0f));
+        *(f32 *)((char *)(arg0) + 0x30) = (f32) ((-*(f32 *)((char *)(temp_v1) + 0x4) * 4.0f) + *(f32 *)((char *)(arg0) + 0x30));
     }
     temp_f0_2 = *(f32 *)((char *)(arg0) + 0x30);
     if (temp_f0_2 < -89.0f) {
@@ -2764,10 +2764,10 @@ void gl_func_00036F0C(char *arg0) {
     *(f32 *)((char *)(arg0) + 0x40) = (f32) *(f32 *)((char *)(temp_v1_2) + 0x60);
     *(f32 *)((char *)(arg0) + 0x44) = (f32) *(f32 *)((char *)(temp_v1_3) + 0x34);
     *(f32 *)((char *)(arg0) + 0x48) = (f32) *(f32 *)((char *)(temp_v1_3) + 0x38);
-    *(f32 *)((char *)(arg0) + 0x40) = (f32) (*(f32 *)((char *)(arg0) + 0x40) + v[0]);
-    *(f32 *)((char *)(arg0) + 0x44) = (f32) (*(f32 *)((char *)(arg0) + 0x44) + v[1]);
-    *(f32 *)((char *)(arg0) + 0x48) = (f32) (*(f32 *)((char *)(arg0) + 0x48) + v[2]);
-    temp_f4 = w[0] + *(f32 *)((char *)(arg0) + 0x40);
+    *(f32 *)((char *)(arg0) + 0x40) = (f32) (v[0] + *(f32 *)((char *)(arg0) + 0x40));
+    *(f32 *)((char *)(arg0) + 0x44) = (f32) (v[1] + *(f32 *)((char *)(arg0) + 0x44));
+    *(f32 *)((char *)(arg0) + 0x48) = (f32) (v[2] + *(f32 *)((char *)(arg0) + 0x48));
+    temp_f4 = *(f32 *)((char *)(arg0) + 0x40) + w[0];
     w[0] = temp_f4;
     w[1] += *(f32 *)((char *)(arg0) + 0x44);
     w[2] += *(f32 *)((char *)(arg0) + 0x48);
