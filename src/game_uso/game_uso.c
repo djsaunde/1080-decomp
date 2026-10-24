@@ -1290,8 +1290,10 @@ void game_uso_func_00001DDC(int *a0) {
          * reuse) colour them f2 / f0 as in the target (raw 10 -> 7). */
         fz = *(float *)((char *)a0 + 0x7C);
         if (mag < fz) {
+            /* run 145: z product in fy and the st_c1.y product in mag
+             * (web reuse) colour f14 / f12 as in the target (raw 7 -> 5). */
             fy = mag - fz;
-            st_p1t.x = (fx = scaled_src->x * fy); st_p1t.y = (fz = scaled_src->y * fy); st_p1t.z = (mag = scaled_src->z * fy);
+            st_p1t.x = (fx = scaled_src->x * fy); st_p1t.y = (fz = scaled_src->y * fy); st_p1t.z = (fy = scaled_src->z * fy);
             *hopA = *(Tri3i *)&st_p1t;
             *(Tri3i *)&hopB = *hopA;
             acc.x = hopB.x; acc.y = hopB.y; acc.z = hopB.z;
@@ -1311,7 +1313,7 @@ void game_uso_func_00001DDC(int *a0) {
 
         if (1) { scaled_src = (Vec3 *)&diff; }
         if (1) { hopA = (Tri3i *)scratch; }
-        st_c1.x = (excess = scaled_src->x * speed); st_c1.y = (fy = scaled_src->y * speed); st_c1.z = (fz = scaled_src->z * speed);
+        st_c1.x = (excess = scaled_src->x * speed); st_c1.y = (mag = scaled_src->y * speed); st_c1.z = (fz = scaled_src->z * speed);
         *hopA = *(Tri3i *)&st_c1;
         *(Tri3i *)&hopB = *hopA;
         *(float *)((char *)a0 + 0x2C) = hopB.x;
