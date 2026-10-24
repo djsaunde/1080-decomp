@@ -1,0 +1,32 @@
+{
+  "function_name": "game_libs_func_0004CDB0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T23:15:55.446854+00:00",
+  "end_time": "2026-10-24T23:15:55.446877+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T23:15:55.446871+00:00",
+      "assistant_text": "cfe: the uopt dump (zdbug:5) showed a priority tie (adjsave 3.0) between packet 3's index and the CSE'd obj->0xC load, broken by itab bit; a function-scope k with a dead while (0) { k = 0; } at the top gets the earlier bit (k -> v1, load -> a0), and the E9 packet reads its index through the function-scope g (v1 web).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 83,
+  "initial_m2c_source": null,
+  "final_source": "#define GFX_4CDB0(o) (*(char **)((o) + 0xC))\n#define PACKET_4CDB0(obj, w0, w1) \\\n    g = GFX_4CDB0(obj); i = *(int *)(g + 4); *(int *)(g + 4) = i + 1; \\\n    p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (w0); p[1] = (w1)\n#define PACKET_4CDB0_I(obj, w0, w1) \\\n    { int i = *(int *)(GFX_4CDB0(obj) + 4); char *g = GFX_4CDB0(obj); unsigned int *p; *(int *)(g + 4) = i + 1; \\\n    p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (w0); p[1] = (w1); }\nextern int D_4CDB0_a;\nvoid game_libs_func_0004CDB0(char *self, int flag)\n{\n    char *obj = *(char **)((char *)&D_4CDB0_a + *(int *)((char *)&D_00000000 + 0x204) * 4 + 0x280);\n    char *g; unsigned int *p; int i; int r; char *q;\n    int k; /* packet-3 index: the dead while (0) store gives it an itab bit before the obj->0xC load */\n    while (0) { k = 0; }\n    gl_func_00000000(self + 0x174, obj);\n    r = gl_func_00000000(gl_func_00000000(self + 0x15C));\n    PACKET_4CDB0(obj, 0x06000000, r);\n    r = gl_func_00000000(gl_func_00000000(self + 0x168));\n    PACKET_4CDB0(obj, 0x06000000, r);\n    q = *(char **)(self + 0x1C0);\n    r = gl_func_00000000(*(int *)(q + 0x60));\n    { char *g = GFX_4CDB0(obj); unsigned int *p; k = *(int *)(GFX_4CDB0(obj) + 4); *(int *)(g + 4) = k + 1; p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + k * 8); p[0] = (0x06000000); p[1] = (r); }\n    if (flag) {\n        { int i; unsigned int *p; g = GFX_4CDB0(obj); i = *(int *)(g + 4); *(int *)(g + 4) = i + 1; p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (0xE9000000); p[1] = (0); }\n    }\n    *(int *)((char *)gl_func_00000000(self, 4) + 0x70) = *(int *)(self + 0x1B4);\n}\n#undef GFX_4CDB0\n#undef PACKET_4CDB0\n#undef PACKET_4CDB0_I\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}

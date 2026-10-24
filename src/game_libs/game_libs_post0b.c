@@ -18291,8 +18291,12 @@ int game_libs_func_0004CDA4(int a0) {
  * order: function/block-scope, i-first, unnamed g, post-increment, shared
  * i2/g2/p2 with the E9 packet, do{}while(0) around any/all packets (45-72),
  * all probed standalone). The 6 differing words are that a0/v1 swap
- * (lw a0,0xC(s0) / lw v1,4(a0) / addiu / sw / sll / addu a1). */
-#ifdef NON_MATCHING
+ * (lw a0,0xC(s0) / lw v1,4(a0) / addiu / sw / sll / addu a1).
+ * 2026-10-24 (agent-c run 155): EXACT. zdbug:5 showed the tie: i (block) and the CSE'd obj->0xC
+ * load both have adjsave 3.0 and the load has the lower itab bit, so it took v1 first. Packet 3's
+ * index is now a function-scope k whose dead `while (0) { k = 0; }` at the top gives it an earlier
+ * bit (k -> v1, the load piece -> a0), and the E9 packet uses the function-scope g (the v1 web of
+ * packets 1-2) with its index read through g (i -> v0, p -> a0). */
 #define GFX_4CDB0(o) (*(char **)((o) + 0xC))
 #define PACKET_4CDB0(obj, w0, w1) \
     g = GFX_4CDB0(obj); i = *(int *)(g + 4); *(int *)(g + 4) = i + 1; \
@@ -18305,6 +18309,8 @@ void game_libs_func_0004CDB0(char *self, int flag)
 {
     char *obj = *(char **)((char *)&D_4CDB0_a + *(int *)((char *)&D_00000000 + 0x204) * 4 + 0x280);
     char *g; unsigned int *p; int i; int r; char *q;
+    int k; /* packet-3 index: the dead while (0) store gives it an itab bit before the obj->0xC load */
+    while (0) { k = 0; }
     gl_func_00000000(self + 0x174, obj);
     r = gl_func_00000000(gl_func_00000000(self + 0x15C));
     PACKET_4CDB0(obj, 0x06000000, r);
@@ -18312,18 +18318,15 @@ void game_libs_func_0004CDB0(char *self, int flag)
     PACKET_4CDB0(obj, 0x06000000, r);
     q = *(char **)(self + 0x1C0);
     r = gl_func_00000000(*(int *)(q + 0x60));
-    PACKET_4CDB0_I(obj, 0x06000000, r);
+    { char *g = GFX_4CDB0(obj); unsigned int *p; k = *(int *)(GFX_4CDB0(obj) + 4); *(int *)(g + 4) = k + 1; p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + k * 8); p[0] = (0x06000000); p[1] = (r); }
     if (flag) {
-        PACKET_4CDB0_I(obj, 0xE9000000, 0);
+        { int i; unsigned int *p; g = GFX_4CDB0(obj); i = *(int *)(g + 4); *(int *)(g + 4) = i + 1; p = (unsigned int *)(*(char **)GFX_4CDB0(obj) + i * 8); p[0] = (0xE9000000); p[1] = (0); }
     }
     *(int *)((char *)gl_func_00000000(self, 4) + 0x70) = *(int *)(self + 0x1B4);
 }
 #undef GFX_4CDB0
 #undef PACKET_4CDB0
 #undef PACKET_4CDB0_I
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004CDB0);
-#endif
 
 
 /* game_libs_func_0004CEFC (0xBC, 47 words) = the old 2-word orphan
