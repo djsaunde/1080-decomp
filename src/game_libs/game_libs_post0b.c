@@ -5154,7 +5154,7 @@ void gl_func_00039E24(char *a0) {
                        *(float*)(a0 + 0x5C), *(float*)(a0 + 0x60), *(float*)(a0 + 0x64),
                        0, 0.0f) != 0) {
         T39E24 *t;
-        gl_func_00000000_39E24v(D_39E24_b, a0 + 0x2C);
+        gl_func_00000000_39E24v(D_39E24_b, a0 + 0x2C, D_39E24_b); /* run 139: 3 args -- target builds the base in a2 and copies it to a0 (or a0,a2) */
         t = (T39E24*)(int)&D_39E24_c;
         t->x *= D_39E24_b[74];
         t->y *= D_39E24_b[75];
