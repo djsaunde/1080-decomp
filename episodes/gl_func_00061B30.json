@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00061B30",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T02:29:04.932551+00:00",
+  "end_time": "2026-10-24T02:29:04.932598+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T02:29:04.932592+00:00",
+      "assistant_text": "varargs wrapper: h0,h1 named locals read on one line; plain array-extern stores",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 38,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct { char p[0x21C]; int h0; int h1; int a; int b; } St;\nextern int gl_func_00000000();\nextern short D_61B30_h0, D_61B30_h1;\nextern char D_61B30_out;\nextern char D_61B30_base[];\nextern St D_61B30_st;\nvoid gl_func_00061B30(char *fmt, ...) {\n    char *ap;\n    int h0;\n    int h1;\n    gl_func_00000000(D_61B30_base, 1);\n    *(int *)(D_61B30_base + 0x224) = 8;\n    *(int *)(D_61B30_base + 0x228) = 8;\n    h0 = D_61B30_h0; h1 = D_61B30_h1;\n    ap = (char *)(((int)&fmt + sizeof(fmt) + 3) & ~3);\n    *(int *)(D_61B30_base + 0x220) = h1;\n    *(int *)(D_61B30_base + 0x21C) = h0;\n    gl_func_00000000(&D_61B30_out, 0, fmt, ap);\n    gl_func_00000000(D_61B30_base, 0);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff 100"
+  }
+}

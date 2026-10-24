@@ -30657,29 +30657,27 @@ void game_libs_func_00061B1C(int a0, int a1) {
  * locals (v0/v1). Residual = scheduling only: the target sinks both base
  * stores below the vprintf arg setup (one in the jal delay) and puts the
  * first call's `or a0,s0` in its delay; same-line joins do not move them. */
-#ifdef NON_MATCHING
+/* 2026-10-23 EXACT (agent-g run 144): plain stores off the array extern (no
+ * `int bi` laundering, no `one` local), the two lh sources read into named
+ * locals ON ONE LINE in the order h0, h1 (separate lines or h1-first swap the
+ * v0 / v1 pair or the two store slots), then the 0x220 / 0x21C stores. */
 extern short D_61B30_h0, D_61B30_h1;
 extern char D_61B30_out;
 extern char D_61B30_base[];
 void gl_func_00061B30(char *fmt, ...) {
-    int bi = (int)D_61B30_base;
-    char *base = (char *)bi;
     char *ap;
-    int h0, h1;
-    { int one = 1; gl_func_00000000(base, one); }
-    *(int *)(base + 0x224) = 8;
-    *(int *)(base + 0x228) = 8;
-    h1 = D_61B30_h1;
-    h0 = D_61B30_h0;
+    int h0;
+    int h1;
+    gl_func_00000000(D_61B30_base, 1);
+    *(int *)(D_61B30_base + 0x224) = 8;
+    *(int *)(D_61B30_base + 0x228) = 8;
+    h0 = D_61B30_h0; h1 = D_61B30_h1;
     ap = (char *)(((int)&fmt + sizeof(fmt) + 3) & ~3);
-    *(int *)(base + 0x220) = h1;
-    *(int *)(base + 0x21C) = h0;
+    *(int *)(D_61B30_base + 0x220) = h1;
+    *(int *)(D_61B30_base + 0x21C) = h0;
     gl_func_00000000(&D_61B30_out, 0, fmt, ap);
-    gl_func_00000000(base, 0);
+    gl_func_00000000(D_61B30_base, 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00061B30);
-#endif
 
 /* gl_func_00061BC8: copy n bytes of src into a 0x80-byte stack buffer,
  * NUL-terminate at the final index, hand it to the cross-module callee
