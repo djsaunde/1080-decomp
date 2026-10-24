@@ -1659,10 +1659,6 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3C43C_NM_DONOR
 GAMELIBS_38A28_NM_DONOR := build/src/game_libs/game_libs_ncc_38A28_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038A28=$(GAMELIBS_38A28_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38A28_NM_DONOR)
-# 49DBC = NM C body lifted under NCC (agent-c run 134 sweep, cfe 96.04). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_49DBC_NM_DONOR := build/src/game_libs/game_libs_ncc_49DBC_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00049DBC=$(GAMELIBS_49DBC_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49DBC_NM_DONOR)
 # 4D468 = NM body re-decoded under NCC (agent-c run 137, cfe 78.62): new-expression node ternaries, static guard pair. Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4D468_NM_DONOR := build/src/game_libs/game_libs_ncc_4D468_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D468=$(GAMELIBS_4D468_NM_DONOR)
@@ -1754,6 +1750,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3DD28_DONOR := build/src/game_libs/game_libs_ncc_3DD28.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DD28=$(GAMELIBS_3DD28_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DD28_DONOR)
+# 49DBC = three textured-vertex builds (two-arg arg1 call, distinct base-0 a2/a3 symbols, no named scalar locals); NCC donor (agent-c run 153).
+GAMELIBS_49DBC_DONOR := build/src/game_libs/game_libs_ncc_49DBC.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00049DBC=$(GAMELIBS_49DBC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49DBC_DONOR)
 # 4E37C = registry append (inline Reg::add, tbl[n++]); NCC donor.
 GAMELIBS_4E37C_DONOR := build/src/game_libs/game_libs_ncc_4E37C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004E37C=$(GAMELIBS_4E37C_DONOR)

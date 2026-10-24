@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00049DBC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T20:24:18.410196+00:00",
+  "end_time": "2026-10-24T20:24:18.410222+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T20:24:18.410215+00:00",
+      "assistant_text": "NCC donor: two-arg arg1 call, distinct base-0 a2/a3 symbols, no empty arg2 test, no named scalar locals (sp38 u8[24] at sp+0x38).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 339,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00049DBC: three textured-vertex builds from one\n * 8-byte index record (vertex lookups, optional 0x7C alpha table, colour source by\n * flag: per-vertex call / 0x54 table / 0x50 table / the arg4 float RGB * 255).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY.\n * agent-c run 153: NM donor 97.4 -> EXACT. The arg1 path is a TWO-argument call\n * (its `lui a2` is the else-arm's hoisted address in the beqz delay slot); the else\n * call takes two DISTINCT base-0 symbols (a2 / a3 each get their own lui/addiu);\n * no empty `if (arg2) {}` test; and NO named scalar locals (each one takes a frame\n * home below the arrays: dropping temp_s1 / temp_v0_2 / temp_v1 / base and widening\n * the colour scratch to u8[24] puts sp38 at the target's sp+0x38). */\ntypedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;\ntypedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;\ntypedef float f32; typedef double f64;\n#undef NULL\n#define NULL 0\nextern \"C\" {\nextern int D_00000000;\nextern int gl_func_00000000(...);\nextern void gl_func_00000000_3cbb4m(f32);\nextern int arg3;\nextern int arg4;\nextern int arg1;\nextern void gl_func_00000000_49DBCv(...);\nextern char gl_d_49dbc_t2[];\nextern char gl_d_49dbc_t3[];\n}\nextern \"C\" u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {\n    void *spAC;\n    void *spA8;\n    void *spA4;\n    void *spA0;\n    void *sp9C;\n    void *sp98;\n    s32 sp94;\n    s32 sp90;\n    s32 sp8C;\n    s16 sp8A;\n    s16 sp88;\n    s16 sp86;\n    s16 sp84;\n    long long sp70[2];\n    long long sp60[2];\n    long long sp50[2];\n    u8 sp38[24];\n    s32 var_a0;\n\n    spAC = (void *)gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2));\n    spA8 = (void *)gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4));\n    spA4 = (void *)gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6));\n    var_a0 = *(s32 *)(arg4 + 0x38);\n    if ((var_a0 & 0x400000) && !(var_a0 & 0x100000)) {\n        spA0 = (void *)gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2));\n        sp9C = (void *)gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4));\n        sp98 = (void *)gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6));\n        var_a0 = *(s32 *)(arg4 + 0x38);\n    } else {\n        sp98 = NULL;\n        sp9C = NULL;\n        spA0 = NULL;\n    }\n    if (*(s32 *)(arg0 + 0x7C) != 0) {\n        sp84 = *(u8 *)(*(s32 *)(arg0 + 0x7C) + *(u16 *)((char *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8)) + 0x2));\n        sp86 = *(u8 *)(*(s32 *)(arg0 + 0x7C) + *(u16 *)((char *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8)) + 0x4));\n        sp88 = *(u8 *)(*(s32 *)(arg0 + 0x7C) + *(u16 *)((char *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8)) + 0x6));\n    } else {\n        sp88 = 0xFF;\n        sp8A = 0;\n        sp86 = 0xFF;\n        sp84 = 0xFF;\n    }\n    if (var_a0 & 0x2000) {\n        if (*(s32 *)(arg0 + 0x38) & 0x8000) {\n            gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2), &sp94, arg4);\n            gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4), &sp90);\n            gl_func_00000000(arg0, *(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6), &sp8C);\n        } else {\n            if (*(s32 *)(arg0 + 0x54) == 0) {\n                gl_func_00000000_49DBCv((char *)&D_00000000 + 0x20014);\n            }\n            gl_func_00000000_49DBCv((char *)&D_00000000, &sp94, *(s32 *)(arg0 + 0x54) + arg3 * 0xC);\n            *(u8 *)&sp8C = *(u8 *)&sp94;\n            *(u8 *)&sp90 = *(u8 *)&sp94;\n        }\n    } else {\n        if (*(s32 *)(arg0 + 0x50) != 0) {\n            gl_func_00000000((char *)&D_00000000, &sp94, *(s32 *)(arg0 + 0x50) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2)) * 4);\n            gl_func_00000000((char *)&D_00000000, &sp90, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4)) * 4);\n            gl_func_00000000((char *)&D_00000000, &sp8C, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6)) * 4);\n        } else {\n            sp38[0] = (u8)(s32)(u32)(*(f32 *)(arg4 + 0x0) * 255.0f);\n            sp38[1] = (s8)(s32)(u32)(*(f32 *)(arg4 + 0x4) * 255.0f);\n            sp38[2] = (s8)(s32)(u32)(*(f32 *)(arg4 + 0x8) * 255.0f);\n            gl_func_00000000((char *)&D_00000000, &sp94, sp38);\n            gl_func_00000000((char *)&D_00000000, &sp90, sp38);\n            gl_func_00000000((char *)&D_00000000, &sp8C, sp38);\n        }\n    }\n    gl_func_00000000((char *)&D_00000000, &sp50, spAC, spA0, (s32) sp84, &sp94);\n    gl_func_00000000((char *)&D_00000000, &sp60, spA8, sp9C, (s32) sp86, &sp90);\n    gl_func_00000000((char *)&D_00000000, &sp70, spA4, sp98, (s32) sp88, &sp8C);\n    if (arg1 != 0) {\n        return (u8 *)gl_func_00000000(arg2, &sp50);\n    }\n    gl_func_00000000(arg2, &sp50, gl_d_49dbc_t2, gl_d_49dbc_t3, (*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 2);\n    return NULL;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_49DBC.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
