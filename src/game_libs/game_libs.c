@@ -3881,8 +3881,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
                 if (self->unk518 == 0) {
                     self->unk500 = 1;
                 }
-                self->unk4E4 = self->unk4E4 - 1;
-                self->unk4EC = self->unk4EC + 1;
+                self->unk4E4 = self->unk4E4 - 1; self->unk4EC = self->unk4EC + 1;
             }
             if ((self->unk4EC >= 0x3D) && (func_00000000((char *)&D_00000000, 0x40100) != 0)) {
                 self->unk4E4 = 0;
