@@ -9714,43 +9714,51 @@ void gl_func_00028A68(void) {
 //   tables — byte-match needs USO mnemonic disasm. Real-C STRUCTURAL
 //   body below per the analysis (placeholder calls / fields).
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-/* Whole-body decode 2026-06-01 (prior body was a single switch, reversed tbls).
- * Loop over 4 modes s3=0..3: sub=obj+s3*16, tbl=&D+(0x5378+s3*16); drain the
- * linked list at sub->4 — while head != sub (and != 0): gl(head), gl(tbl, head),
- * re-read head=sub->4.
- * run 140: no default arm (the target's default path keeps the previous sub / tbl, so both are read
- * from their stack homes at entry and stored back at exit: lw s1,72 / lw s2,64 ... sw); head declared
- * between sub and tbl (tbl slot 64). Left: the four table addresses are hoisted into a2/a1/v1/v0 before
- * the loop and rematerialised after the inner-loop calls (tried locals / loop-top assignments / fn-typed
- * bases / NCC: all propagate the constant into each arm). */
-void gl_func_00028B0C(char *obj) {
-    int s3;
-    char *sub, *head, *tbl;
+/* gl_func_00028B0C EXACT 2026-10-24 (agent-c run 141, 73.52 -> 100): OoT's
+ * Audio_NotePoolClear (playback.c) verbatim, with gAudioCtx as a typed extern
+ * (noteFreeLists at +0x5378). The run-140 residual (the four list addresses hoisted
+ * before the loop) was the `*(T *)&D` / char-arithmetic spelling. */
+typedef struct gl_28B0C_ListItem { struct gl_28B0C_ListItem *prev; struct gl_28B0C_ListItem *next; void *u; void *pool; } gl_28B0C_ListItem;
+typedef struct { gl_28B0C_ListItem disabled; gl_28B0C_ListItem decaying; gl_28B0C_ListItem releasing; gl_28B0C_ListItem active; } gl_28B0C_NotePool;
+typedef struct { char pad[0x5378]; gl_28B0C_NotePool noteFreeLists; } gl_28B0C_Ctx;
+extern gl_28B0C_Ctx gl_28B0C_gAudioCtx;
 
-    for (s3 = 0; s3 != 4; s3++) {
-        switch (s3) {
-        case 0:  sub = obj;        tbl = (char *)&D_00000000 + 0x5378; break;
-        case 1:  sub = obj + 0x10; tbl = (char *)&D_00000000 + 0x5388; break;
-        case 2:  sub = obj + 0x20; tbl = (char *)&D_00000000 + 0x5398; break;
-        case 3:  sub = obj + 0x30; tbl = (char *)&D_00000000 + 0x53A8; break;
+void gl_func_00028B0C(gl_28B0C_NotePool *pool) {
+    s32 i;
+    gl_28B0C_ListItem *source;
+    gl_28B0C_ListItem *cur;
+    gl_28B0C_ListItem *dest;
+
+    for (i = 0; i < 4; i++) {
+        switch (i) {
+            case 0:
+                source = &pool->disabled;
+                dest = &gl_28B0C_gAudioCtx.noteFreeLists.disabled;
+                break;
+            case 1:
+                source = &pool->decaying;
+                dest = &gl_28B0C_gAudioCtx.noteFreeLists.decaying;
+                break;
+            case 2:
+                source = &pool->releasing;
+                dest = &gl_28B0C_gAudioCtx.noteFreeLists.releasing;
+                break;
+            case 3:
+                source = &pool->active;
+                dest = &gl_28B0C_gAudioCtx.noteFreeLists.active;
+                break;
         }
-        head = *(char **)(sub + 4);
-        while (head != sub) {
-            if (head == 0) {
+
+        while (1) {
+            cur = source->next;
+            if (cur == source || cur == NULL) {
                 break;
             }
-            gl_func_00000000(head);
-            gl_func_00000000(tbl, head);
-            head = *(char **)(sub + 4);
+            gl_func_00000000(cur);
+            gl_func_00000000(dest, cur);
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00028B0C);
-#endif
 
 // gl_func_00028C6C — four-template drain: gl(a0); for mode s4 = 0..3 pick
 // tmpl = &D+0x5378+s4*16 and dst = a0+s4*16, then a shared counter s0 drains
