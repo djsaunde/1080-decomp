@@ -18392,8 +18392,8 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
     char *b;
     int *p;
     int *q;
+    Vec3 zv; /* run 139: declared above r = the target slot sp+68 */
     int *r;
-    Vec3 zv;
     int pad[5];
     Vec3 v;
 
@@ -18412,8 +18412,9 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
             }
         }
         gl_func_0001CA10(o);
-        zv.x = (zv.y = 0.0f, 0.0f);
+        zv.x = 0.0f;
         zv.z = 0.0f;
+        zv.y = 0.0f;
         gl_func_0001CA10(o + 0x30, &zv);
     }
     *(int **)(self + 0x28) = &D_00000000;
