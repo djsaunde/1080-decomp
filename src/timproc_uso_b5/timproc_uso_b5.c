@@ -6984,7 +6984,7 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
                 }
                 sp5C.x = (1.0f - (TB5_F(0xF8) * TB5_F(0xF8) * two)) - (TB5_F(0xFC) * TB5_F(0xFC) * two);
                 sp5C.y = (TB5_F(0xF4) * TB5_F(0xF8) * two) + (TB5_F(0x100) * TB5_F(0xFC) * two);
-                sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0x100) * TB5_F(0xF8) * two);
+                sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0x100) * two * TB5_F(0xF8));
                 timproc_uso_b5_func_071AE0(ap, &sp5C, *(f32 *)((char *)(o) + 0x10C));
             } else {
                 if (TB5_F(0x10C) > 0.0f) {
