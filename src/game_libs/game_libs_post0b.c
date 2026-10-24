@@ -3017,9 +3017,9 @@ void gl_func_00037540(char *o) {
     if (ab < D_37540_19FC[0x19FC / 4]) {
         b = 0.0f;
     }
-    g.saved.x = FF37540(r, 0x60);
-    g.saved.y = FF37540(r, 0x64);
-    g.saved.z = FF37540(r, 0x68);
+    /* run 149: saved / vB4 triples held in block locals (kit LXXXVI): 71.85 -> 75.93, 756 -> 760 bytes */
+    { f32 h_x = FF37540(r, 0x60); f32 h_y = FF37540(r, 0x64); f32 h_z = FF37540(r, 0x68);
+    g.saved.x = h_x; g.saved.y = h_y; g.saved.z = h_z; }
     FF37540(r, 0x60) = 0.0f;
     FF37540(r, 0x64) = 0.0f;
     FF37540(r, 0x68) = 0.0f;
@@ -3027,12 +3027,8 @@ void gl_func_00037540(char *o) {
     arg.y = -b;
     arg.x = 0.0f;
     gl_func_00034458(r + 0x30, &arg, o);
-    g.vB4.x = FF37540(r, 0x50);
-    g.vB4.y = FF37540(r, 0x54);
-    g.vB4.z = FF37540(r, 0x58);
-    g.vB4.x = g.vB4.x * a;
-    g.vB4.y = g.vB4.y * a;
-    g.vB4.z = g.vB4.z * a;
+    { f32 h_x = FF37540(r, 0x50); f32 h_y = FF37540(r, 0x54); f32 h_z = FF37540(r, 0x58);
+    g.vB4.x = h_x * a; g.vB4.y = h_y * a; g.vB4.z = h_z * a; }
     FF37540(r, 0x60) = g.saved.x;
     FF37540(r, 0x64) = g.saved.y;
     FF37540(r, 0x68) = g.saved.z;
