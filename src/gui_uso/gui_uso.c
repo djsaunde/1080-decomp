@@ -897,7 +897,8 @@ done:
 #define DSDX ((s32)(((f32)(w - 1) * 1024.0f) / fw))
 #define DTDY ((s32)(((f32)(h - 1) * 1024.0f) / fh))
     PKT_BEGIN
-    _g[0] = (_SHIFTL(0xE4, 24, 8) | _SHIFTL(MAX((s16)(XH), 0), 12, 12) | _SHIFTL(MAX((s16)(YH), 0), 0, 12)); _g[1] = (_SHIFTL(0, 24, 3) | _SHIFTL(MAX((s16)(XL), 0), 12, 12) | _SHIFTL(MAX((s16)(YL), 0), 0, 12));
+    _g[0] = (_SHIFTL(0xE4, 24, 8) | _SHIFTL(MAX((s16)(XH), 0), 12, 12) | _SHIFTL(MAX((s16)(YH), 0), 0, 12));
+    _g[1] = (_SHIFTL(0, 24, 3) | _SHIFTL(MAX((s16)(XL), 0), 12, 12) | _SHIFTL(MAX((s16)(YL), 0), 0, 12));
     PKT_END
     PKT_BEGIN
     _g[0] = _SHIFTL(0xB4, 24, 8);
