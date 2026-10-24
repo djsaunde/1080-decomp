@@ -20894,7 +20894,7 @@ u32 gl_func_00050444(volatile u32 start, char *m, f32 *pos, f32 *uv, u32 max) {
     u = &(*(T2_50444 **)(m + 0x64))[n];
     u->s = t.s;
     u->t = t.t;
-    e = &(*(P3_50444 **)(m + 0x60))[*(u32 *)(m + 0x40)];
+    e = &(*(P3_50444 **)(m + 0x60))[*(s32 *)(m + 0x40)]; /* signed count read: x*6 as shifts, not multu (kit LXV) */
     e->x = p.x;
     e->y = p.y;
     e->z = p.z;
