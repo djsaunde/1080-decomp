@@ -30121,7 +30121,15 @@ int game_libs_func_000611E4(int a0, int a1) {
  * value (homed in a2, used as both float and raw int-bits). %d/%x set the
  * mode flag at &D_00000000; %f emits integer + '.' + fractional parts;
  * digits set precision/width; any other char emits a fixed glyph (&D+0x21E08)
- * and advances 10. Returns the final buffer cursor. */
+ * and advances 10. Returns the final buffer cursor.
+ * agent-g run 160 (83.02 -> 83.47): the target walks the fmt PARAMETER (s2,
+ * no copy), and its pointer bumps read through a copy of the old pointer
+ * (`or v0,s2,zero; lbu t9,0(v0); addiu s2,s2,1`) = `q = fmt, fmt = q + 1, *q`
+ * (plain *fmt++ loads off s2 directly). Only the width-digit site takes it at
+ * the target length; all four sites give 84.81 / 500 words (away from 492).
+ * Note: the target homes a2/a3 but NOT the unused a1, while IDO homes every
+ * unused register param of a function with stack params (a1 here) -- so the
+ * real arg1 is used/reassigned somewhere (reusing arg1 as c drops the home). */
 typedef union FI_0006126C {
     f32 f;
     int i;
@@ -30133,6 +30141,7 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
     int B = 6;
     int A = 6;
     int c;
+    u8 *q;
     int t;
 
     c = *fmt++;
@@ -30159,7 +30168,7 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
                 out = gl_func_00034458(out, frac, gl_func_00034458(0xA, Bm1));
             } else if ((c >= '0') && (c < ':')) {
                 A = (u8)(c - '0');
-                t = *fmt++;
+                t = (q = fmt, fmt = q + 1, *q);
                 if (t != 0) {
                     B = *fmt++ - '0'; if (arg3) {}
                 }
