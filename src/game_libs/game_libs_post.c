@@ -14074,7 +14074,7 @@ void gl_func_0002C7A4(Gl2C7A4 *o) {
     o->f04 = 1;
     sub = (Gl2BB7CSub *)((u8 *)o + 0x78);
     for (;;) {
-        r = gl_func_0003F010(sub); if (1) {}
+        r = gl_func_0003F010(sub);
         op = (u8)r;
         if (r >= 0xF2) {
             r = gl_func_0003E6E8(o, sub, op, gl_func_0003E680(sub, (u8)op));
@@ -14106,11 +14106,10 @@ void gl_func_0002C7A4(Gl2C7A4 *o) {
                 o->hE += (s8)gl_func_0003F010(sub);
                 continue;
             case 0xC9:  /* h8 = v*48, clamp to D_2074, min 1 */
-                h = gl_func_0003F010(sub) * 48;
-                o->h8 = h;
+                o->h8 = gl_func_0003F010(sub) * 48;
+                h = o->h8;
                 if (D_2C7A4_2074 < h) {
-                    o->h8 = D_2C7A4_2074;
-                    h = D_2C7A4_2074;
+                    h = o->h8 = D_2C7A4_2074; /* run 138: one lh, no reload after the store */
                 }
                 if ((s16)h > 0) {
                     continue;
