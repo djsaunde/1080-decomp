@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046050 (agent-c run 152): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2.
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046050 (agent-c run 152): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), 86.48 -> 86.70.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -60,8 +60,7 @@ extern "C" s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
         EMIT(0xF2000000, 0x1FC0FC);
     }
 
-    ch = *arg1;
-    arg1 += 1;
+    { u8 *p = arg1; arg1 = p + 1; ch = *p; }
     if (ch != 0) {
         do {
             cc = ch;
