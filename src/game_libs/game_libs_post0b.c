@@ -26147,6 +26147,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00059E80);
  * a struct/array home for the four u32 colour values, volatile-pad frame
  * sculpting, decl-order permutations of the float locals. */
 extern s32 D_00000000_3c8e0;
+extern void func_00000000_5a2c4v(); /* run 156: discarded call before the colour pack (void: frees v0) */
 void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
     s32 spBC;      /* home 0xBC */
     s32 f;         /* flags word (hoisted head load) */
@@ -26178,7 +26179,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     sp34 = arg7 + arg9;
     *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
     if (arg3 != 0) {
-        func_00000000(arg0, arg1, arg10);
+        func_00000000_5a2c4v(arg0, arg1, arg10);
         fr = *(f32 *)(arg5 + 0);
         fg = *(f32 *)(arg5 + 4);
         fb = *(f32 *)(arg5 + 8);
