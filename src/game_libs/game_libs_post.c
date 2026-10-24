@@ -13271,17 +13271,21 @@ block_83:
                     var_t9 = rv & 0xFF;
                     temp_f10_2 = D_E354_1C310[temp_v1_2];
                     if (rv < 0xB) {
+                        /* run 152 (agent-c): each arm re-truncates through the u8 copy (target re-emits
+                         * `andi a2,v0,0xff` per arm instead of reusing the pre-switch value); the odd-case
+                         * chain below is a 4-way switch (target `b .+8` arm for case 1). 88.24 -> 89.28;
+                         * FLAG: 3684 -> 3696 bytes, away from the 3684 target. */
                         switch (temp_v1_2) {        /* switch 4; irregular */
                         default:                    /* switch 4 */
-                            var_t9 = rv & 0xFF;
+                            var_t9 = var_v0_2;
                             break;
                         case 0:                     /* switch 4 */
                         case 1:                     /* switch 4 */
-                            var_t9 = (rv & 0xFF) + 1;
+                            var_t9 = var_v0_2 + 1;
                             break;
                         case 2:                     /* switch 4 */
                         case 3:                     /* switch 4 */
-                            var_t9 = rv & 0xFF;
+                            var_t9 = var_v0_2;
                             break;
                         }
                     } }
@@ -13326,17 +13330,19 @@ block_83:
                     default:                        /* odd cases */
                         temp_v1_6 = *(u8 *)((char *)(arg0) + 0x29);
                         var_v0_2 = 0x10;
-                        if (temp_v1_6 != 0) {
-                            if (temp_v1_6 != 1) {
-                                var_v0_2 = 0x1C;
-                                if (temp_v1_6 != 2) {
-                                    var_v0_2 = 8;
-                                }
-                            } else {
-                                var_v0_2 = 0x18;
-                            }
-                        } else {
+                        switch (temp_v1_6) {
+                        case 0:
                             sp50 = 6;
+                            break;
+                        case 1:
+                            var_v0_2 = 0x18;
+                            break;
+                        case 2:
+                            var_v0_2 = 0x1C;
+                            break;
+                        default:
+                            var_v0_2 = 8;
+                            break;
                         }
                         break;
                     }
