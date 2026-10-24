@@ -1810,6 +1810,14 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_5062C_DONOR := build/src/game_libs/game_libs_ncc_5062C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005062C=$(GAMELIBS_5062C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5062C_DONOR)
+# 526D0 = C++ ctor (cfront this==0 -> new protocol, inline Sub() member ctor, optional implicit memberwise copy); NCC donor, symbols renamed (names only; no bytes change).
+GAMELIBS_526D0_DONOR := build/src/game_libs/game_libs_ncc_526D0.cpp.o
+$(GAMELIBS_526D0_DONOR): src/game_libs/game_libs_ncc_526D0.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__3ObjFPvT1P3Obj=gl_func_000526D0 --redefine-sym __ct__4BaseFPv=gl_func_00000000_526d0_base --redefine-sym __vtbl__3Obj=D_00000000_526d0_vtbl $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000526D0=$(GAMELIBS_526D0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_526D0_DONOR)
 # 49B3C is still NON_MATCHING: NCC draft (by-value AIter, Pad12 dead object) is
 # 32 raw words vs the cfe body's 60; same length (160 words), so the clip holds.
 GAMELIBS_49B3C_NM_DONOR := build/src/game_libs/game_libs_ncc_49B3C.cpp.o
