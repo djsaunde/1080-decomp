@@ -6887,7 +6887,7 @@ sw_end:
         while (sp58 != 0x23) {
             var_a2 = sp58;
             if (sp58 >= 0x28U) {
-                func_00000000(&D_00008868, sp58, var_a2);
+                func_00000000(&D_00008868, sp58); /* 2-arg call: a2 holds var_a2 only by colouring (target: one or a2,a1 in the bnez delay) */
             }
             *(s32 *)((char *)&bu_90cc_gtbl + var_a2 * 4) = 0;
             sp58 += 1;
