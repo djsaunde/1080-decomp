@@ -5012,3 +5012,7 @@ gl_24378_sampleRom = 0x00000000;  /* agent-c run 141: gl_func_00024378 */
 gl_24378_AudioThread_InitMesgQueues = 0x00000000;  /* agent-c run 141: gl_func_00024378 blank jal (void prototype) */
 gl_func_000240A0_rodata = 0x00000EB4;  /* agent-c run 141: AudioLoad_AsyncLoadInner cachePolicy 5-entry jumptable in game_libs rodata at +0xEB4; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_240A0.c) */
 gl_func_0002119C_rodata = 0x00000E7C;  /* agent-c run 141: AudioHeap_ResetStep resetStatus 5-entry jumptable in game_libs rodata at +0xE7C; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2119C.c) */
+gl_func_0002AD1C_rodata = 0x00001058;  /* agent-c run 141: SeqLayerProcessScriptStep2 SQ(127.0f) literal (+0) and 15-entry jumptable (+4) in game_libs rodata at +0x1058; donor-local .rodata relocs renamed by replace-function-body.py (game_libs_o2_2AD1C.c) */
+gl_2AD1C_SeqLayerDisable = 0x00000000;  /* agent-c run 141: gl_func_0002AD1C blank jal */
+gl_2AD1C_SeqLayerNoteDecay = 0x00000000;  /* agent-c run 141: gl_func_0002AD1C blank jal */
+gl_2AD1C_gBendPitchTwoSemitonesFrequencies = 0x00000000;  /* agent-c run 141: gl_func_0002AD1C float table (USO-resolved, lo baked 0) */
