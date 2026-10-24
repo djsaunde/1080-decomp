@@ -11073,6 +11073,7 @@ extern char D_415A4_s1[], D_415A4_s2[], D_415A4_s3[], D_415A4_s4[], D_415A4_s5[]
 extern O415A4 *D_415A4_g1;
 extern int D_415A4_g2, D_415A4_g3;
 extern T415A4 D_415A4_t;
+extern T415A4 D_415A4_tA; /* run 149: second name for the a28 stores (absolute lui at like the target) */
 extern char D_415A4_u[];
 extern char D_415A4_v[];
 extern char *D_415A4_g4;
@@ -11103,11 +11104,11 @@ void gl_func_000415A4(O415A4 *self) {
     t->a8 = 320;
     t->f18 = 100.0f;
     t->f1C = 16000.0f;
-    D_415A4_t.a28 = 1030;
-    D_415A4_t.a28 = D_415A4_t.a28 | 6 | 0x400;
+    D_415A4_tA.a28 = 1030;
+    D_415A4_tA.a28 = D_415A4_tA.a28 | 6 | 0x400;
     t->a2C = 1;
-    if (1) { v = D_415A4_t.v30; }
-    v[0] = v[1] = v[2] = v[3] = 0.0f;
+    if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
+    v[3] = v[2] = v[1] = v[0] = 0.0f;
     gl_func_00000000((char *)&D_00000000 + 0x1F5D4, 0);
     gl_func_00000000(D_415A4_s4);
     gl_func_00000000();
