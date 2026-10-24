@@ -9564,13 +9564,13 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             *(f32 *)(child + 0xE4) = arg5;
             *(f32 *)(child + 0x10C) = arg6;
             *(f32 *)(child + 0x110) = arg7;
+            *(f32 *)(child + 0x114) = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
             FW(child, 0x134) = 0;
             FW(child, 0x130) = 0;
             *(f32 *)(child + 0x128) = 0.0f;
             *(f32 *)(child + 0x11C) = 0.0f;
-            *(f32 *)(child + 0x114) = arg8;
-            *(f32 *)(child + 0x124) = 0.0f;
             *(f32 *)(child + 0x120) = *(f32 *)((char *)&import_80807FB8 + 0x3F8);
+            *(f32 *)(child + 0x124) = 0.0f;
         }
     }
     {
@@ -9807,13 +9807,13 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         *(f32 *)(child + 0xE4) = arg5;
         *(f32 *)(child + 0x10C) = arg6;
         *(f32 *)(child + 0x110) = arg7;
+        *(f32 *)(child + 0x114) = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
         FW(child, 0x134) = 0;
         FW(child, 0x130) = 0;
         *(f32 *)(child + 0x128) = 0.0f;
         *(f32 *)(child + 0x11C) = 0.0f;
-        *(f32 *)(child + 0x114) = arg8;
-        *(f32 *)(child + 0x124) = 0.0f;
         *(f32 *)(child + 0x120) = *(f32 *)&import_80087FB8[1080];
+        *(f32 *)(child + 0x124) = 0.0f;
     }
     {
         char *rr = r;
