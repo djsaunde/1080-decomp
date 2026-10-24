@@ -10591,60 +10591,101 @@ extern int gl_ref_0003D66C();
 extern char *gl_ref_0003D698();
 extern char *gl_ref_0003D6E4();
 extern char *gl_ref_0003D734();
-#ifdef NON_MATCHING
-char *gl_func_000291C0(char *obj) {
-    char *r;
-    char *sub = *(char **)(obj + 0x50);
-    unsigned char mode = *(unsigned char *)(sub + 0x2);
-    if (mode & 1) {
-        char *par = *(char **)(obj + 0x2C);
-        if ((par != 0) && (obj == *(char **)(par + 0x40)) && (*(int *)(par + 0x48) == -1)) {
-            gl_ref_0003D66C(par, obj);
-            gl_func_00000000(par);
-            gl_func_00000000(*(char **)(par + 0xC) + 0x20, par);
-            return par;
+/* gl_func_000291C0 EXACT 2026-10-23 (agent-c run 140, 84.55 -> 100): OoT's
+ * Audio_AllocNote (playback.c) verbatim. The old body passed a third, uninitialised
+ * argument to every AllocNoteFrom* call (m2c surplus argument: it made the result
+ * variable live into each call and cost the callee-saved double stores). Offsets:
+ * layer->note +0x2C, layer->channel +0x50, layer bit3 = 0x08 of byte 0;
+ * channel->noteAllocPolicy +2, seqPlayer +0x4C, notePool +0x94; seqPlayer->notePool
+ * +0x9C; note->playbackState.prevParentLayer +0x40, wantedParentLayer +0x48;
+ * gAudioCtx.noteFreeLists +0x5378. */
+#define GL291C0_NO_LAYER ((gl_291C0_Layer *)(-1))
+typedef struct gl_291C0_ListItem { struct gl_291C0_ListItem *prev; struct gl_291C0_ListItem *next; void *u; struct gl_291C0_NotePool *pool; } gl_291C0_ListItem;
+typedef struct gl_291C0_NotePool { gl_291C0_ListItem disabled; gl_291C0_ListItem decaying; gl_291C0_ListItem releasing; gl_291C0_ListItem active; } gl_291C0_NotePool;
+typedef struct gl_291C0_SeqPlayer { char pad[0x9C]; gl_291C0_NotePool notePool; } gl_291C0_SeqPlayer;
+typedef struct gl_291C0_Channel { u8 b0; u8 b1; u8 noteAllocPolicy; char pad3[0x4C - 3]; gl_291C0_SeqPlayer *seqPlayer; char pad50[0x94 - 0x50]; gl_291C0_NotePool notePool; } gl_291C0_Channel;
+typedef struct gl_291C0_Layer { u8 enabled : 1; u8 finished : 1; u8 stopSomething : 1; u8 continuousNotes : 1; u8 bit3 : 1; char pad1[0x2C - 1]; struct gl_291C0_Note *note; char pad30[0x50 - 0x30]; gl_291C0_Channel *channel; } gl_291C0_Layer;
+typedef struct { char pad[0x30]; gl_291C0_Layer *prevParentLayer; gl_291C0_Layer *parentLayer; gl_291C0_Layer *wantedParentLayer; } gl_291C0_PlaybackState;
+typedef struct gl_291C0_Note { gl_291C0_ListItem listItem; gl_291C0_PlaybackState playbackState; } gl_291C0_Note;
+typedef struct { char pad0[0x5378]; gl_291C0_NotePool noteFreeLists; } gl_291C0_Ctx;
+#define gl_291C0_gAudioCtx (*(gl_291C0_Ctx *)&D_00000000)
+#define Audio_NoteReleaseAndTakeOwnership gl_ref_0003D66C
+#define Audio_AllocNoteFromDisabled (gl_291C0_Note *)gl_ref_0003D698
+#define Audio_AllocNoteFromDecaying (gl_291C0_Note *)gl_ref_0003D6E4
+#define Audio_AllocNoteFromActive (gl_291C0_Note *)gl_ref_0003D734
+#define Audio_AudioListRemove gl_func_00000000
+#define AudioSeq_AudioListPushBack gl_func_00000000
+
+gl_291C0_Note *gl_func_000291C0(gl_291C0_Layer *layer) {
+    gl_291C0_Note *note;
+    u32 policy = layer->channel->noteAllocPolicy;
+
+    if (policy & 1) {
+        note = layer->note;
+        if (note != NULL && note->playbackState.prevParentLayer == layer &&
+            note->playbackState.wantedParentLayer == GL291C0_NO_LAYER) {
+            Audio_NoteReleaseAndTakeOwnership(note, layer);
+            Audio_AudioListRemove(&note->listItem);
+            AudioSeq_AudioListPushBack(&note->listItem.pool->releasing, &note->listItem);
+            return note;
         }
     }
-    if (mode & 2) {
-        if ((r = gl_ref_0003D698(sub + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4(*(char **)(obj + 0x50) + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D734(*(char **)(obj + 0x50) + 0x94, obj, r)) != 0) {
-            return r;
+
+    if (policy & 2) {
+        if (!(note = Audio_AllocNoteFromDisabled(&layer->channel->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromDecaying(&layer->channel->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromActive(&layer->channel->notePool, layer))) {
+            goto null_return;
         }
-    } else if (mode & 4) {
-        if ((r = gl_ref_0003D698(sub + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D698(*(char **)(*(char **)(obj + 0x50) + 0x4C) + 0x9C, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4(*(char **)(obj + 0x50) + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4(*(char **)(*(char **)(obj + 0x50) + 0x4C) + 0x9C, obj, r)) != 0 ||
-            (r = gl_ref_0003D734(*(char **)(obj + 0x50) + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D734(*(char **)(*(char **)(obj + 0x50) + 0x4C) + 0x9C, obj, r)) != 0) {
-            return r;
-        }
-    } else if (mode & 8) {
-        if ((r = gl_ref_0003D698((char *)&D_00000000 + 0x5378, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4((char *)&D_00000000 + 0x5378, obj, r)) != 0 ||
-            (r = gl_ref_0003D734((char *)&D_00000000 + 0x5378, obj, r)) != 0) {
-            return r;
-        }
-    } else {
-        if ((r = gl_ref_0003D698(sub + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D698(*(char **)(*(char **)(obj + 0x50) + 0x4C) + 0x9C, obj, r)) != 0 ||
-            (r = gl_ref_0003D698((char *)&D_00000000 + 0x5378, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4(*(char **)(obj + 0x50) + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4(*(char **)(*(char **)(obj + 0x50) + 0x4C) + 0x9C, obj, r)) != 0 ||
-            (r = gl_ref_0003D6E4((char *)&D_00000000 + 0x5378, obj, r)) != 0 ||
-            (r = gl_ref_0003D734(*(char **)(obj + 0x50) + 0x94, obj, r)) != 0 ||
-            (r = gl_ref_0003D734(*(char **)(*(char **)(obj + 0x50) + 0x4C) + 0x9C, obj, r)) != 0 ||
-            (r = gl_ref_0003D734((char *)&D_00000000 + 0x5378, obj, r)) != 0) {
-            return r;
-        }
+        return note;
     }
-    *(unsigned char *)obj = (unsigned char)(*(unsigned char *)obj | 8);
-    return 0;
+
+    if (policy & 4) {
+        if (!(note = Audio_AllocNoteFromDisabled(&layer->channel->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromDisabled(&layer->channel->seqPlayer->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromDecaying(&layer->channel->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromDecaying(&layer->channel->seqPlayer->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromActive(&layer->channel->notePool, layer)) &&
+            !(note = Audio_AllocNoteFromActive(&layer->channel->seqPlayer->notePool, layer))) {
+            goto null_return;
+        }
+        return note;
+    }
+
+    if (policy & 8) {
+        if (!(note = Audio_AllocNoteFromDisabled(&gl_291C0_gAudioCtx.noteFreeLists, layer)) &&
+            !(note = Audio_AllocNoteFromDecaying(&gl_291C0_gAudioCtx.noteFreeLists, layer)) &&
+            !(note = Audio_AllocNoteFromActive(&gl_291C0_gAudioCtx.noteFreeLists, layer))) {
+            goto null_return;
+        }
+        return note;
+    }
+
+    if (!(note = Audio_AllocNoteFromDisabled(&layer->channel->notePool, layer)) &&
+        !(note = Audio_AllocNoteFromDisabled(&layer->channel->seqPlayer->notePool, layer)) &&
+        !(note = Audio_AllocNoteFromDisabled(&gl_291C0_gAudioCtx.noteFreeLists, layer)) &&
+        !(note = Audio_AllocNoteFromDecaying(&layer->channel->notePool, layer)) &&
+        !(note = Audio_AllocNoteFromDecaying(&layer->channel->seqPlayer->notePool, layer)) &&
+        !(note = Audio_AllocNoteFromDecaying(&gl_291C0_gAudioCtx.noteFreeLists, layer)) &&
+        !(note = Audio_AllocNoteFromActive(&layer->channel->notePool, layer)) &&
+        !(note = Audio_AllocNoteFromActive(&layer->channel->seqPlayer->notePool, layer)) &&
+        !(note = Audio_AllocNoteFromActive(&gl_291C0_gAudioCtx.noteFreeLists, layer))) {
+        goto null_return;
+    }
+    return note;
+
+null_return:
+    layer->bit3 = 1;
+    return NULL;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000291C0);
-#endif
+#undef gl_291C0_gAudioCtx
+#undef GL291C0_NO_LAYER
+#undef Audio_NoteReleaseAndTakeOwnership
+#undef Audio_AllocNoteFromDisabled
+#undef Audio_AllocNoteFromDecaying
+#undef Audio_AllocNoteFromActive
+#undef Audio_AudioListRemove
+#undef AudioSeq_AudioListPushBack
 
 /* gl_func_00029494: reset every record of the sym1255 record table (shared typed alias
  * D_345c0_1CC98; count +0x2070, recs +0x2CFC stride 0xD0): copy the 0x20-byte template
