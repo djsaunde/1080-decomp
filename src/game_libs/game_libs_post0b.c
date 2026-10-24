@@ -15572,6 +15572,13 @@ typedef struct NodeIter {
     int  end;       /* 0x8: last index */
 } NodeIter;
 
+/* run 151 (agent-c, 81.40 -> 88.11, 2016 -> 2052 of 2076 bytes): the 4B620
+ * iterator levers -- `p = 0; if (1) { p = &itAn; }` keeps the dead alloc(0xC)
+ * guard without homing p (the old `if (0) { f(&p); }` stored p at 96(sp)); the
+ * ctor reads `end` through the list pointer (`((s32 *)coll)[3] - 1`, target
+ * `lw 12(v0)` after `addiu v0,v0,132`); each advance is an if/else with the
+ * NULL in the else arm; and the three element reads per node use three
+ * spellings (target re-adds base + i*4 for each). */
 void gl_func_00048AEC(char *arg0) {
     f32 mtx[4][4];               /* sp+276 */
     NodeIter itB1;               /* sp+208 */
@@ -15640,25 +15647,27 @@ void gl_func_00048AEC(char *arg0) {
         if ((*(s32 *)(arg0 + 0x30) & 8) && (node = *(int **)(arg0 + 0x14)) != NULL) {
             func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158),
                           arg0 + 0x34, *(s16 *)((char *)node + 0x1E));
-            p = &itA1;
-            if (0) { func_00000000(&p); }
+            p = 0;
+            if (1) { p = &itA1; }
             it = p;
             if (it != NULL || (it = (NodeIter *)func_00000000(0xC)) != NULL) {
                 it->idx = -1;
-                it->list = (int **)(arg0 + 0x84);
-                it->end = *(s32 *)(arg0 + 0x90) - 1;
+                { char *coll = arg0 + 0x84;
+                it->list = (int **)coll;
+                it->end = ((s32 *)coll)[3] - 1; }
             }
             tmp = *p;
             itB1 = tmp;
-            node = NULL;
             if (itB1.idx < itB1.end) {
                 itB1.idx += 1;
                 node = (int *)(itB1.list[0] + itB1.idx);
+            } else {
+                node = NULL;
             }
             while (node != NULL) {
-                if (*(int *)(itB1.list[0][itB1.idx] + 0x6C) != 0) {
-                    int *p6c = (int *)*(int *)(itB1.list[0][itB1.idx] + 0x6C);
-                    s32 h = *(s16 *)(itB1.list[0][itB1.idx] + 0x8A);
+                if (*(int *)(*(int *)((char *)*(int *)itB1.list + itB1.idx * 4) + 0x6C) != 0) {
+                    int *p6c = (int *)*(int *)(((int *)*itB1.list)[itB1.idx] + 0x6C);
+                    s32 h = *(s16 *)(*(int *)((char *)itB1.list[0] + itB1.idx * 4) + 0x8A);
                     gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
                     temp = (int *)func_00000000((*(int **)((char *)p6c + 0xC))[0] + h * 8);
                     slot = (*(int **)((char *)gctx + 0xC))[1]++;
@@ -15666,10 +15675,11 @@ void gl_func_00048AEC(char *arg0) {
                     disp[0] = 0x06000000;
                     disp[1] = (int)temp;
                 }
-                node = NULL;
                 if (itB1.idx < itB1.end) {
                     itB1.idx += 1;
                     node = (int *)(itB1.list[0] + itB1.idx);
+                } else {
+                    node = NULL;
                 }
             }
         }
@@ -15688,25 +15698,27 @@ void gl_func_00048AEC(char *arg0) {
         disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
         disp[0] = 0xFA000000;
         disp[1] = 0xFFFF00FF;
-        p = &itA2;
-        if (0) { func_00000000(&p); }
+        p = 0;
+        if (1) { p = &itA2; }
         it = p;
         if (it != NULL || (it = (NodeIter *)func_00000000(0xC)) != NULL) {
             it->idx = -1;
-            it->list = (int **)(arg0 + 0x84);
-            it->end = *(s32 *)(arg0 + 0x90) - 1;
+            { char *coll = arg0 + 0x84;
+            it->list = (int **)coll;
+            it->end = ((s32 *)coll)[3] - 1; }
         }
         tmp = *p;
         itB2 = tmp;
-        node = NULL;
         if (itB2.idx < itB2.end) {
             itB2.idx += 1;
             node = (int *)(itB2.list[0] + itB2.idx);
+        } else {
+            node = NULL;
         }
         while (node != NULL) {
-            if (*(int *)(itB2.list[0][itB2.idx] + 0x6C) != 0) {
-                int *p6c = (int *)*(int *)(itB2.list[0][itB2.idx] + 0x6C);
-                s32 h = *(s16 *)(itB2.list[0][itB2.idx] + 0x8A);
+            if (*(int *)(*(int *)((char *)*(int *)itB2.list + itB2.idx * 4) + 0x6C) != 0) {
+                int *p6c = (int *)*(int *)(((int *)*itB2.list)[itB2.idx] + 0x6C);
+                s32 h = *(s16 *)(*(int *)((char *)itB2.list[0] + itB2.idx * 4) + 0x8A);
                 gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
                 temp = (int *)func_00000000((*(int **)((char *)p6c + 0xC))[0] + h * 8);
                 slot = (*(int **)((char *)gctx + 0xC))[1]++;
@@ -15714,10 +15726,11 @@ void gl_func_00048AEC(char *arg0) {
                 disp[0] = 0x06000000;
                 disp[1] = (int)temp;
             }
-            node = NULL;
             if (itB2.idx < itB2.end) {
                 itB2.idx += 1;
                 node = (int *)(itB2.list[0] + itB2.idx);
+            } else {
+                node = NULL;
             }
         }
     } else {
@@ -15726,30 +15739,33 @@ void gl_func_00048AEC(char *arg0) {
             int mode = *(s32 *)(arg0 + 0x38);
             func_00000000(*(s32 *)(arg0 + 0xAC), flagv, mode & 0x20000000, mode);
         }
-        p = &itA3;
-        if (0) { func_00000000(&p); }
+        p = 0;
+        if (1) { p = &itA3; }
         it = p;
         if (it != NULL || (it = (NodeIter *)func_00000000(0xC)) != NULL) {
             it->idx = -1;
-            it->list = (int **)(arg0 + 0x84);
-            it->end = *(s32 *)(arg0 + 0x90) - 1;
+            { char *coll = arg0 + 0x84;
+            it->list = (int **)coll;
+            it->end = ((s32 *)coll)[3] - 1; }
         }
         tmp = *p;
         itB3 = tmp;
-        node = NULL;
         if (itB3.idx < itB3.end) {
             itB3.idx += 1;
             node = (int *)(itB3.list[0] + itB3.idx);
+        } else {
+            node = NULL;
         }
         while (node != NULL) {
             int *cur = (int *)itB3.list[0][itB3.idx];
             int *vt = *(int **)((char *)cur + 0x5C);
             ((void (*)())*(int *)((char *)vt + 0x2C))(*(s16 *)((char *)vt + 0x28) + (int)cur,
                                                       arg0, vt, cur);
-            node = NULL;
             if (itB3.idx < itB3.end) {
                 itB3.idx += 1;
                 node = (int *)(itB3.list[0] + itB3.idx);
+            } else {
+                node = NULL;
             }
         }
     }
