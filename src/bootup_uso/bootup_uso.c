@@ -792,6 +792,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     VtxE68 *buf;
     s32 row;
     s32 k2;
+    volatile int padq[4]; /* run 138: frame = target */
     s32 col, x, y, vidx;
     s32 ult;
     GwE68 *arr[32];
