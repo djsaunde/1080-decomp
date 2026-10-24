@@ -7121,7 +7121,8 @@ block7:
         gl_func_00000000(*(int *)(obj + 0x1c), *(int *)(obj + 0x18), 0);
         return;
     }
-    if (sub < (unsigned int)*(int *)(obj + 0x14)) {
+    rem = *(int *)(obj + 0x14); /* run 139: one read, held in a2 (target lw a2,20(s0) before the compare) */
+    if (sub < (unsigned int)rem) {
         if (*(signed char *)(obj + 2) == 1) {
             gl_ref_00039A1C(*(int *)(obj + 8), *(int *)(obj + 0xc), sub,
                              *(short *)(reg + 2));
@@ -7131,7 +7132,6 @@ block7:
         *(int *)(obj + 0x10) = 0;
         return;
     }
-    rem = *(int *)(obj + 0x14);
     if (*(signed char *)(obj + 2) == 1) {
         gl_ref_00039A1C(*(int *)(obj + 8), *(int *)(obj + 0xc), rem,
                          *(short *)(reg + 2));
