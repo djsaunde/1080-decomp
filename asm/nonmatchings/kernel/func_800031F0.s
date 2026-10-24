@@ -1,6 +1,6 @@
 
 /* Handwritten function */
-nonmatching func_800031F0, 0xA40
+nonmatching func_800031F0, 0xA00
 
 glabel func_800031F0
     /* 41F0 800031F0 216B0001 */  addi       $t3, $t3, 0x1 /* handwritten instruction */
@@ -684,24 +684,4 @@ glabel func_800031F0
     /* 4BE4 80003BE4 00002025 */   or        $a0, $zero, $zero
     /* 4BE8 80003BE8 00000000 */  nop
     /* 4BEC 80003BEC 00000000 */  nop
-    /* 4BF0 80003BF0 00803025 */  or         $a2, $a0, $zero
-    /* 4BF4 80003BF4 8CC70000 */  lw         $a3, 0x0($a2)
-    /* 4BF8 80003BF8 27BDFFF8 */  addiu      $sp, $sp, -0x8
-    /* 4BFC 80003BFC 10E0000A */  beqz       $a3, .L80003C28
-    /* 4C00 80003C00 00000000 */   nop
-  .L80003C04:
-    /* 4C04 80003C04 14E50004 */  bne        $a3, $a1, .L80003C18
-    /* 4C08 80003C08 00000000 */   nop
-    /* 4C0C 80003C0C 8CAE0000 */  lw         $t6, 0x0($a1)
-    /* 4C10 80003C10 10000005 */  b          .L80003C28
-    /* 4C14 80003C14 ACCE0000 */   sw        $t6, 0x0($a2)
-  .L80003C18:
-    /* 4C18 80003C18 00E03025 */  or         $a2, $a3, $zero
-    /* 4C1C 80003C1C 8CC70000 */  lw         $a3, 0x0($a2)
-    /* 4C20 80003C20 14E0FFF8 */  bnez       $a3, .L80003C04
-alabel func_80003C24
-    /* 4C24 80003C24 00000000 */  nop
-  .L80003C28:
-    /* 4C28 80003C28 03E00008 */  jr         $ra
-    /* 4C2C 80003C2C 27BD0008 */   addiu     $sp, $sp, 0x8
 endlabel func_800031F0

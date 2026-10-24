@@ -14,7 +14,8 @@
 # undefined_syms_auto.txt: gl_exc_threadsave (__osThreadSave),
 # D_00000000_runthread (__osRunningThread), gl_exc_runqueue (__osRunQueue),
 # D_00000000_gim (__OSGlobalIntMask), D_00000000_rcpim (__osRcpImTable),
-# gl_exc_intofftable / gl_exc_inttable (__osIntOffTable / __osIntTable),
+# gl_exc_intofftable / gl_exc_inttable (__osIntOffTable / __osIntTable; pinned
+# to their module offsets 0x2360 / 0x2380 -- the ROM bakes the lo16 halves),
 # gl_exc_hwinttable (__osHwIntTable), gl_exc_intstack (interrupt-callback
 # stack), gl_exc_shutdown (__osShutdown), gl_exc_faultedthread
 # (__osFaultedThread), gl_exc_eventstatetab (__osEventStateTab),
@@ -171,10 +172,10 @@ glabel game_libs_func_0006A5F0
 .Lgl_interrupt_dispatch:
     lui     $at, %hi(gl_exc_intofftable)
     addu    $at, $at, $t2
-    lbu     $t2, 9056($at)
+    lbu     $t2, %lo(gl_exc_intofftable)($at)
     lui     $at, %hi(gl_exc_inttable)
     addu    $at, $at, $t2
-    lw      $t2, 9088($at)
+    lw      $t2, %lo(gl_exc_inttable)($at)
     jr      $t2
      nop
     addiu   $at, $zero, -8193

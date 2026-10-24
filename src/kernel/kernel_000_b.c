@@ -142,13 +142,13 @@ GLOBAL_ASM("src/libultra/os/exceptasm_rdb_2.s")
 /* func_800031E0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_3.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_rdb_3.s")
 
-/* func_800031F0: the __osException core (savecontext, interrupt dispatch,
+/* func_800031F0 = __osException core (savecontext, interrupt dispatch,
  * send_mesg, __osEnqueueAndYield, __osEnqueueThread, __osPopThread,
- * __osDispatchThread, __osCleanupThread; libreultra os/exceptasm.s) -- but its
- * last 0x3C bytes are the compiled-C __osDequeueThread (libultra thread.c), so
- * it stays INCLUDE_ASM until that boundary is split (the C part must come
- * from C, the rest can then move to src/libultra/os/). */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800031F0);
+ * __osDispatchThread, __osCleanupThread): handwritten, real source in
+ * src/libultra/os/exceptasm.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/exceptasm.s")
+
+INCLUDE_ASM("asm/nonmatchings/kernel", func_80003BF0);
 
 /* func_80003C30 = osDestroyThread (libultra destroythread.c), IDO 7.1 -O1.
  * BOUNDARY FIX 2026-10-20: the old func_80003C24.s was [nop; jr ra; addiu sp,8]
