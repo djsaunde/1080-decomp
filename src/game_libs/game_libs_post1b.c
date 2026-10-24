@@ -3713,13 +3713,12 @@ void game_libs_func_00067AA0(int *a0) {
     a0[9] = 0;
 }
 
-/* ROM-truth order: 67A90 (4w), 67AA0 (7w), THEN this 2-word zero pad
- * (0x67ABC/0x67AC0 -- the 8-byte gap before game_libs_func_00067AC4). Was
- * INCLUDEd before the two active fns, rotating the whole 67A90..67AC4 run.
- * Reordered 2026-06-10 (full-ROM word-diff drive). The `mtc1 $zero,$f12`
- * word at 0x67AC4 used to be bundled in here as an "alt-entry" -- it is the
- * real function's hoisted first-arg materialization (2026-09-05, below). */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00067ABC);
+/* The 2 zero words at 0x67ABC/0x67AC0 (the 8-byte gap before
+ * game_libs_func_00067AC4) are alignment padding, not a function: they are
+ * appended to game_libs_func_00067AA0 as an all-zero SUFFIX_BYTES_FORCE
+ * (Makefile, both trees; was the pseudo-function game_libs_func_00067ABC).
+ * The `mtc1 $zero,$f12` word at 0x67AC4 is the real function's hoisted
+ * first-arg materialization (2026-09-05, below). */
 
 /* game_libs_func_00067AC4 (0x24, 9 insns): call the placeholder callee with
  * (0.0f, 0.0f). bootup.uso's Sym table exports 0x67AC4 (section offset
