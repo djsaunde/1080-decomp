@@ -242,9 +242,12 @@ cend:
         *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2);
         if (temp_f12 < (f32) 0) {
             var_v0_2 = arg0 + 0x93C;
-            sp68.x = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
-            sp68.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
-            sp68.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f12;
+            { /* run 156: held products, stored afterwards (kit LXXXVI) */
+                f32 hx = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
+                f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
+                f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f12;
+                sp68.x = hx; sp68.y = hy; sp68.z = hz;
+            }
             spB4 = sp68;
             sp54 = spB4;
             *(f32 *)((char *)(arg0) + 0x920) = sp54.x;
@@ -264,9 +267,12 @@ cend:
             var_f2_2 = 0.0f;
         }
         temp_f0 = -var_f2_2;
-        sp40.x = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
-        sp40.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
-        sp40.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
+        { /* run 156: held products */
+            f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
+            f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
+            f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
+            sp40.x = hx; sp40.y = hy; sp40.z = hz;
+        }
         spB4 = sp40;
         sp54 = spB4;
         *(f32 *)((char *)(arg0) + 0x92C) = sp54.x;
