@@ -6439,7 +6439,7 @@ s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
     c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
     if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
-        cell = c[1] + c[0] * self->col->grid->w;
+        cell = c[0] * self->col->grid->w + c[1];
     }
     if (cell < 0) {
         return 0;
