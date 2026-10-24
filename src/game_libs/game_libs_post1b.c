@@ -565,18 +565,17 @@ int arg1, arg2, arg3;
     out.y = 0.0f;
     out.z = 0.0f;
     if (1) {}
-    d.x = va.x - vb.x;
-    d.y = va.y - vb.y;
-    d.z = va.z - vb.z;
+    /* run 156 (kit LXXXVI hold sweep): vector triples held in block locals, stored in the target's order */
+    { f32 h_x0 = va.x - vb.x; f32 h_y0 = va.y - vb.y; f32 h_z0 = va.z - vb.z;
+    d.z = h_z0; d.x = h_x0; d.y = h_y0; }
     t = d;
     n = t;
     count = 0;
     farg1 = 0.0f;
     gl_func_00000000(&n);
     if (va.y < (f32)0.0) {
-        s1.x = n.x * va.y;
-        s1.y = n.y * va.y;
-        s1.z = n.z * va.y;
+        { f32 h_x4 = n.x * va.y; f32 h_y4 = n.y * va.y; f32 h_z4 = n.z * va.y;
+        s1.y = h_y4; s1.x = h_x4; s1.z = h_z4; }
         t = s1;
         c1 = t;
         if (1) {}
@@ -585,9 +584,8 @@ int arg1, arg2, arg3;
         r1.z = va.z + c1.z;
         u = r1;
         w = u;
-        out.x = w.x;
-        out.y = w.y;
-        out.z = w.z;
+        { f32 h_x1 = w.x; f32 h_y1 = w.y; f32 h_z1 = w.z;
+        out.x = h_x1; out.y = h_y1; out.z = h_z1; }
         count = 1;
         if (1) {}
         farg1 = 0.0f + va.y;
@@ -599,9 +597,8 @@ int arg1, arg2, arg3;
         t = s2;
         c2 = t;
         if (1) {}
-        r2.x = vb.x + c2.x;
-        r2.y = vb.y + c2.y;
-        r2.z = vb.z + c2.z;
+        { f32 h_x2 = vb.x + c2.x; f32 h_y2 = vb.y + c2.y; f32 h_z2 = vb.z + c2.z;
+        r2.x = h_x2; r2.z = h_z2; r2.y = h_y2; }
         u = r2;
         w = u;
         out.x = w.x;
@@ -612,9 +609,8 @@ int arg1, arg2, arg3;
         farg1 += vb.y;
     }
     if (count == 2) {
-        s3.x = va.x + vb.x;
-        s3.y = va.y + vb.y;
-        s3.z = va.z + vb.z;
+        { f32 h_x3 = va.x + vb.x; f32 h_y3 = va.y + vb.y; f32 h_z3 = va.z + vb.z;
+        s3.x = h_x3; s3.z = h_z3; s3.y = h_y3; }
         t = s3;
         c3 = t;
         h.x = c3.x * 0.5f;
