@@ -14213,7 +14213,8 @@ void game_libs_func_000307A8(void) {
     if (c != 0) {
         f = D_307A8_e.acc; while (0) { f = c + c; }
         f += D_307A8_f.step;
-        D_307A8_g.cnt = c - 1;
+        c -= 1; /* run 147: the decrement lives in c (target addiu v0,v0,-1) */
+        D_307A8_g.cnt = c;
         if (1.0f < f) {
             f = 1.0f;
         }
