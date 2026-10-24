@@ -1059,119 +1059,14 @@ extern s32 D_80012D3C[];
 extern s32 D_80012D5C;
 extern s32 D_80012D5C_alias; /* distinct extern @ 0x80012D5C: breaks store<->end CSE */
 
-#ifdef NON_MATCHING
-/* NON_MATCHING: target uses a fixed 2-iter pointer loop with no zero-guard.
- * The current explicit-goto loop avoids IDO's bulk-unroll transform and emits
- * the target-sized 0x4C body, but initialization scheduling/register selection
- * still differs: IDO combines the D_80012D5C zero-store with the end pointer
- * load, while target emits a direct $at store first and reloads the end later.
- * Current score: 72.10526% (objdiff, 2026-05-08).
- *
- * Earlier structural variants tried: do-while, for(i<8), explicit end pointer,
- * 8-way unroll, same-array `end = D_80012D3C + 8`; these produced IDO's
- * subu+andi guard plus bulk-unrolled loop instead of the compact target loop.
- *
- * 2026-05-04: 5th variant attempt was `end = D_80012D3C + 8` to make the
- * end-bound a same-array compile-time-known-multiple-of-16 offset. IDO
- * STILL emits the duplicate-loop + guard. Confirms the auto-unroll +
- * guard isn't keyed on whether bounds are extern-vs-array-derived; it's
- * purely the loop-shape that triggers it. Cap unchanged.
- *
- * 2026-05-06: 6th variant attempt added an unused iteration counter `i`
- * (incremented inside the loop body) to add another phi-target that might
- * change the loop-shape detection. No effect on auto-unroll — same cap.
- * The auto-unroll trigger is more fundamental than the loop's variable
- * count; likely tied to detecting a constant trip count from the
- * extern-pointer bounds, which IDO sees through.
- *
- * 2026-05-08: 7th variant changed the loop to byte pointers with a 0x10
- * stride; no effect, same guarded bulk-unroll as the s32* loop. 8th variant
- * changed the loop to an explicit label/goto; this is kept because it removes
- * the guard/unroll and matches the target size, leaving only the init-order
- * and v0/v1 allocation differences.
- *
- * 2026-05-08 (later) 9th variant: tried `extern int D_80012D30[2]` to merge
- * D_80012D30 + D_80012D34 into a shared-base array. IDO emitted ONE shared
- * `lui a0; addiu a0` for the array base instead of fresh lui per element
- * — partial regression toward target shape — but TARGET uses `$at` as the
- * shared base (`lui at; sw zero, %lo($at); sw zero, %lo+4($at)` — IDO's
- * compact extern-store form), not `$a0`. Array form picks `$a0` because
- * it's a regular C local; the at-form is the single-insn-store recipe IDO
- * uses for naked `*(int*)&extern = 0` only when no addiu pre-add is
- * required. To force at-form for adjacent-extern stores, write each as
- * `(*(int*)&D_NAME) = 0` with NO array indexing. Reverted (no improvement
- * over baseline).
- *
- * 2026-05-08 (later2) 10th variant: explicit `*(s32*)&D_80012D5C = 0` casts
- * + swapped end/ptr declaration order (end first). No effect — IDO still
- * CSEs the &D_80012D5C between the naked-store and the `end = &...`
- * assignment. Same 20-insn diff as 8th variant baseline. Cap holds.
- * Kept anyway — the explicit-cast form is closer in style to target's
- * naked-store pattern and may help future attempts read the diff.
- *
- * 2026-05-13 11th variant: `end = D_80012D3C + 8` instead of `end = &D_80012D5C`.
- * BIG WIN: 72.10% -> 81.58%. The pointer-arithmetic expression breaks IDO's
- * CSE between the D_80012D5C naked-store and the end-pointer load, so the
- * prologue now emits `lui at; sw 0(at)` (2 insns, matching target) instead
- * of `lui v1; addiu v1; sw 0(v1)` (3 insns with $v1 CSE). The
- * `end = D_80012D3C + 8` expression doesn't reference D_80012D5C
- * syntactically, so no CSE opportunity — even though both addresses
- * resolve to the same final VRAM. Remaining diffs: (a) target merges
- * D_80012D30 + D_80012D34 stores under one `lui at` (single insn drop),
- * (b) reg allocation swap — target uses $v1 for ptr (heavy-use) and $v0
- * for end (light-use), opposite of IDO's default priority order. Diff (b)
- * is the dominant cost — IDO's reg-priority formula (refs × loop_depth)
- * always favors ptr for the lower reg #.
- *
- * 2026-05-14 12th variant: removed `#ifdef NON_MATCHING` to test the
- * naked-store + post-decrement-loop body in DEFAULT build (vs prior
- * NM-build measurements). Result: default-build emit is 80 bytes vs
- * target 76 (+4 bytes, 14 diffs concentrated at offsets 0x10-0x48). The
- * extra insn is a 4th `lui $at` for D_80012D38's store (target merges
- * D_80012D30/34 under one $at; built emits four separate lui+sw pairs).
- * INSN_PATCH can't shrink the function size; would need a C variant
- * that forces shared-$at base on two of the four naked stores. The
- * `extern int[2]` array trick picks $a0 (per 9th variant), not $at.
- * No new naked-store form found that triggers $at-base reuse. Reverted.
- *
- * 2026-06-23 13th variant: 81.58% -> 82.11%. Two refinements:
- * (1) Store D_80012D5C via a distinct extern `D_80012D5C_alias` (same
- *     VRAM, via undefined_syms_auto.txt) so the naked $at store no longer
- *     CSEs with `end = &D_80012D5C`. This lets `end` keep the clean
- *     `lui v?; addiu v?` D5C load form AND keeps the prologue store naked
- *     ($at), instead of the earlier `end = D_80012D3C + 8` workaround that
- *     re-derived end from the D3C base (extra lui + addiu N).
- * (2) Compare `end != ptr` (not `ptr != end`) -> `bne v1,v0` operand order
- *     now matches target exactly.
- * Residual = exactly TWO confirmed IDO-7.1 hard caps (verified by direct
- * cc probes of naked/array/struct/ptr-arith forms at -O1/-O2/-O3/mips1/2):
- *   (a) D_80012D34 merge: target emits `lui at,D30; sw 0(at); sw 0(at)[D34]`
- *       (one $at, two stores). IDO 7.1 NEVER reuses $at across naked
- *       absolute stores (always re-`lui at`); any base-sharing form
- *       (array[i]=0 / struct field / ptr-arith) materializes the base in a
- *       GPR (a0/v1) instead of $at. Merged-naked-$at is unreachable here.
- *   (b) reg-renumber: target gives the loop-incremented ptr the HIGHER reg
- *       (v1) and the constant bound `end` the lower (v0); IDO's priority
- *       (refs x loop_depth) always assigns the incremented loop var v0.
- *       Decl-order / assign-order / register hints do not flip it.
- * Both are emit-shape caps, not C bugs. Stays NON_MATCHING. */
-/* 2026-10-20 (agent-g run 112): 82.1 -> 94.7 as a plain zeroing loop over the
- * 11 words (IDO peels 3 and unrolls the rest x4 itself). Left: the target
- * shares one `lui at` between the D30/D34 stores and keeps the -0x10 store
- * first in the 4-store body (ours goes to the bne delay slot). */
+/* func_80001184 -- EXACT (agent-g run 144) via the IDO 7.1 NCC donor
+ * src/kernel/kernel_ncc_1184.cpp; this definition is only the splice
+ * placeholder. The old "two IDO caps" verdict (one `lui at` shared by the
+ * 0x80012D30 / 0x80012D34 stores; loop pointer in v1) was module-local data:
+ * with the 11-word table as a `static int sTab[11]`, as1 shares the `lui at`
+ * and the plain zeroing loop compiles to the target (see the donor). */
 void func_80001184(void) {
-    s32 i;
-
-    D_80012D5C = 0;
-    i = 0;
-    do {
-        (&D_80012D30)[i] = 0;
-        i++;
-    } while (i < 11);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80001184);
-#endif
 
 /* uso_find_file(path, file): split the path (func_80000660 = func_80000260:
  * dir -> D_80012FC0, name -> D_80012F80), look the directory up

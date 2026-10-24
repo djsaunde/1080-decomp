@@ -1381,6 +1381,11 @@ build/src/game_libs/game_libs_ido53_6C1B8.c.o build/non_matching/src/game_libs/g
 build/src/kernel/kernel_000_ido53_2530.c.o build/non_matching/src/kernel/kernel_000_ido53_2530.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_000_ido53_2530.c.o build/non_matching/src/kernel/kernel_000_ido53_2530.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: REPLACE_FUNC_BODY := func_80002530=$(KERNEL000_2530_DONOR)
+# 1184 = zero D_80012D5C + an 11-word module-local static table (shared `lui at`); NCC donor.
+# Its .bss reloc is renamed func_80001184_bss by the splice (pinned to 0x80012D30 in undefined_syms_auto.txt).
+KERNEL000_1184_DONOR := build/src/kernel/kernel_ncc_1184.cpp.o
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001184=$(KERNEL000_1184_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1184_DONOR)
 # func_80005C50 = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292
 # non-reloc-identical; renames map the callees to kernel addresses; the
 # switch-jumptable .rodata section reloc is renamed to func_80005C50_rodata

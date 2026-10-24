@@ -1,0 +1,32 @@
+{
+  "function_name": "func_80001184",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T01:54:24.538870+00:00",
+  "end_time": "2026-10-24T01:54:24.538894+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T01:54:24.538889+00:00",
+      "assistant_text": "shared lui at = static table; NCC donor with .bss reloc pinned",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 19,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_80001184 (0x4C / 19 words): zero the\n * running allocation total D_80012D5C, then an 11-word table at 0x80012D30.\n *\n * The target shares ONE `lui at` between the 0x80012D30 / 0x80012D34 stores:\n * as1 does that only for accesses to the SAME file-local (static) symbol\n * (kit LX), so the table is module-local data -- `static int sTab[11]`. The\n * plain zeroing loop then compiles to the target exactly (IDO peels three\n * stores and unrolls the rest x4; the loop bound is &sTab[11] = 0x80012D5C).\n * cfe gives the identical bytes; NCC only because a .cpp donor stays out of\n * the C_FILES link. The splice renames the .bss reloc to func_80001184_bss,\n * pinned to 0x80012D30 in undefined_syms_auto.txt. */\nextern \"C\" int D_80012D5C;\nstatic int sTab[11];\nextern \"C\" void func_80001184(void) {\n    int i;\n\n    D_80012D5C = 0;\n    i = 0;\n    do {\n        sTab[i] = 0;\n        i++;\n    } while (i < 11);\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_ncc_1184.cpp",
+    "segment": "kernel",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff 100"
+  }
+}
