@@ -53,28 +53,5 @@ extern void func_80005350(void*, s32);
  *   0x125 = 0x100|0x25 = clr_sig1 + clr_sstep + clr_dma_busy + clr_halt
  *
  * Default build is INCLUDE_ASM. */
-#ifdef NON_MATCHING
-void func_80008054(void) {
-    volatile u32* busy;
-    volatile u32* statusReg;
-    u32 status;
-
-    busy = (volatile u32*)0xA4040018;
-loop_busy:
-    status = *busy;
-    if (status != 0) {
-        goto loop_busy;
-    }
-
-    statusReg = (volatile u32*)0xA4040010;
-    *statusReg = 0x82;
-loop_status:
-    status = *statusReg;
-    status &= 3;
-    if (status == 0) {
-        goto loop_status;
-    }
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80008054);
-#endif
+/* func_80008054: handwritten assembly, real source in src/handwritten/kernel/sp_control.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
+GLOBAL_ASM("src/handwritten/kernel/sp_control.s")
