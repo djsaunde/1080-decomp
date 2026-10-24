@@ -2818,7 +2818,7 @@ extern void gl_func_00000000_201B8v();
 int gl_func_000201B8(int mode, int size, int op, int arg3) {
     gl_201B8_Pool *cfg;
     int k;
-    unsigned int v;
+    int v; /* int: sub->ent[v] scales by multu with the held 12 like the target */
     int a;
     int *r;
     unsigned char st0;
@@ -2951,7 +2951,7 @@ tail:
             }
         }
         r = &cfg->sub.base;
-        switch (sub->cur) {
+        switch ((unsigned)sub->cur) { /* unsigned key: case-1 compare loads li at,1 (no CSE with the held 1 in t1) */
         case 0:
             *(SC4_ *)&(sub->ent[0].w0) = *(SC4_ *)&(r[0]);
             sub->ent[0].hA = arg3;
