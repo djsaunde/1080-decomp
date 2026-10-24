@@ -6142,6 +6142,7 @@ typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C,
 extern BuW90 bu_90cc_d44_01, bu_90cc_d44_02, bu_90cc_d44_03, bu_90cc_d44_04, bu_90cc_d44_05, bu_90cc_d44_06, bu_90cc_d44_07, bu_90cc_d44_08, bu_90cc_d44_09, bu_90cc_d44_10, bu_90cc_d08_01, bu_90cc_d08_02, bu_90cc_d08_03, bu_90cc_d08_04, bu_90cc_d80_01, bu_90cc_d80_02, bu_90cc_d80_03;
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
+extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
     s32 sp174;
     Vec3 vpos;
@@ -6897,7 +6898,7 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x8F8) = func_00000000(&bu_90cc_gdev, 2, 0);
         *(s32 *)((char *)(arg0) + 0x8FC) = func_00000000(&bu_90cc_gdev, 3, 0);
         if (sp174 != 0) {
-            temp_v0_5 = (char *)&D_00000000;
+            temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {
                 var_v1 = *(s32 *)&bu_90cc_d00_b;
                 do {
