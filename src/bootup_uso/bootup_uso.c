@@ -7398,8 +7398,8 @@ void func_0000B75C(char *arg0) {
     *(f32 *)((char *)(arg0) + 0x970) = var_f2;
     if ((*(s32 *)((char *)(arg0) + 0x9A8) & 1) || (*(s32 *)((char *)(arg0) + 0xA50) == 0)) {
         *(f32 *)((char *)(arg0) + 0xA04) = (f32) *(f32 *)((char *)(arg0) + 0x3CC);
-        *(f32 *)((char *)(arg0) + 0xA08) = (f32) -*(f32 *)((char *)(arg0) + 0x3C0);
         *(f32 *)((char *)(arg0) + 0xA0C) = (f32) *(f32 *)((char *)(arg0) + 0x3B4);
+        *(f32 *)((char *)(arg0) + 0xA08) = (f32) -*(f32 *)((char *)(arg0) + 0x3C0);
     } else {
         temp_f0_2 = *(f32 *)((char *)(arg0) + 0x9D8);
         var_f12 = *(f32 *)((char *)(arg0) + 0x9E0);

@@ -4066,8 +4066,8 @@ void game_uso_func_0000591C(int *a0) {
         axis_src = *(float **)((char*)self + 0x30);
         axis_src = (float *)((int)axis_src + 0x318);
         fsel = *(float*)((char*)self + 0xA8);
-        x = *axis_src * fsel;
         y = *(float *)((int)axis_src + 4) * fsel;
+        x = *axis_src * fsel;
         z = *(float *)((int)axis_src + 8) * fsel;
         scaled_axis.x = x;
         scaled_axis.y = y;
@@ -4104,8 +4104,8 @@ void game_uso_func_0000591C(int *a0) {
                 sub = *(char**)((char*)self + 0x30);
                 if (*(float*)((char*)self + 0xB4) <= *(float*)(sub + 0x348)) {
                     vsel = 1;
-                    *(int*)((char*)self + 0x74) = 1;
                     t0 = 1;
+                    *(int*)((char*)self + 0x74) = 1;
                 }
             }
         }
