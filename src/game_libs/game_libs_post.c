@@ -9510,82 +9510,127 @@ int gl_func_00028510(int a0, int a1) {
 //   load — byte-match needs USO mnemonic disasm. Real-C STRUCTURAL
 //   body below per the analysis (placeholder calls / fields).
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-extern int gl_func_0003D414();
-void gl_func_00028604(char *obj, int tag) {
-    char *owner, *node, *node2, *dst;
-    int prev;
-    if ((int)obj == -1) return;
-    *(unsigned char *)obj &= ~0x08;
-    if (*(char **)(obj + 0x2C) == 0) return;
-    owner = *(char **)(obj + 0x2C);
-    if ((int)obj == *(int *)(owner + 0x48)) {
-        *(int *)(owner + 0x48) = -1;
-    }
-    prev = *(int *)(owner + 0x44);
-    if ((int)obj != prev) {
-        if (-1 != prev) return;
-        if (-1 != *(int *)(owner + 0x48)) return;
-        if ((int)obj != *(int *)(owner + 0x40)) return;
-        if (tag == 6) return;
-        *(unsigned char *)(owner + 0x60) = *(unsigned char *)(owner + 0x60) | 0x10;
-        *(float *)(owner + 0x6C) = *(float *)((char *)&D_00000000 + 0x2050);
+/* gl_func_00028604 EXACT 2026-10-23 (agent-c run 141, 93.34 -> 100): OoT's
+ * Audio_SeqLayerDecayRelease (playback.c) in the older form without the filterBuf
+ * copy (attrs->filter = channel->filter directly; combFilterSize before
+ * combFilterGain). Load-bearing: the Stereo union type for layer / channel / attrs
+ * stereo (the 1-byte union copies re-read layer->stereo, which the old NM faked with a
+ * volatile read); NoteSampleState bitField0 with `volatile u8 enabled` as in OoT;
+ * ADSR states DECAY = 6 / RELEASE = 7; 256.0f is an lui/mtc1 immediate (no rodata).
+ * Offsets: note playbackState at +0x30 (prev / parent / wanted layer +0x40..0x48,
+ * attributes +0x4C, adsr action +0x60, sustain +0x64, fadeOutVel +0x6C, current
+ * +0x70), ticksPerUpdateInv 0x2050, adsrDecayTable 0x2CF8. */
+typedef union { struct { u8 unused : 2; u8 bit2 : 2; u8 strongRight : 1; u8 strongLeft : 1; u8 stereoHeadsetEffects : 1; u8 usesHeadsetPanEffects : 1; } s; u8 asByte; } gl_28604_Stereo;
+typedef struct { u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 rest : 29; } gl_28604_SeqPlayer;
+typedef struct { u8 unk0 : 1; u8 hang : 1; u8 decay : 1; u8 release : 1; u8 state : 4; } gl_28604_AdsrBits;
+typedef struct {
+    char pad0[3]; u8 muteBehavior; u8 targetReverbVol; char pad5; u8 someOtherPriority; char pad7[0xC - 7];
+    u8 gain; char padD[2]; u8 combFilterGain; char pad10[0x20 - 0x10]; u16 combFilterSize;
+    char pad22[0x4C - 0x22]; gl_28604_SeqPlayer *seqPlayer; char pad50[0x8C - 0x50];
+    u8 adsrDecayIndex; u8 adsrSustain; char pad8e[0xDC - 0x8E]; s16 *filter; gl_28604_Stereo stereo;
+} gl_28604_Channel;
+typedef struct gl_28604_Layer {
+    u8 bits0; gl_28604_Stereo stereo; char pad2[4]; u8 notePan; char pad7[0x18 - 7]; u8 adsrDecayIndex;
+    char pad19[0x2C - 0x19]; struct gl_28604_Note *note; char pad30[0x40 - 0x30];
+    f32 noteVelocity; f32 noteFreqScale; char pad48[0x50 - 0x48]; gl_28604_Channel *channel;
+} gl_28604_Layer;
+typedef struct { u8 reverb; u8 gain; u8 pan; gl_28604_Stereo stereo; u8 combFilterGain; char pad5; u16 combFilterSize; f32 freqScale; f32 velocity; s16 *filter; } gl_28604_Attrs;
+typedef struct gl_28604_Note {
+    char pad0[0xC]; char *pool; char pad10[0x30 - 0x10];
+    u8 priority; char pad31[3]; u8 unk_04; char pad35[0x40 - 0x35];
+    gl_28604_Layer *prevParentLayer; gl_28604_Layer *parentLayer; gl_28604_Layer *wantedParentLayer;
+    gl_28604_Attrs attributes;
+    union { gl_28604_AdsrBits s; u8 asByte; } action; char pad61[3]; f32 sustain; char pad68[4]; f32 fadeOutVel; f32 current;
+    char pad74[0xB0 - 0x74];
+    struct { volatile u8 enabled : 1; u8 needsInit : 1; u8 finished : 1; u8 rest : 5; } bitField0;
+} gl_28604_Note;
+typedef struct { char pad0[0x2050]; f32 ticksPerUpdateInv; char pad2054[0x2CF8 - 0x2054]; f32 *adsrDecayTable; } gl_28604_Ctx;
+#define gl_28604_gAudioCtx (*(gl_28604_Ctx *)&D_00000000)
+#define gl_28604_NO_LAYER ((gl_28604_Layer *)(-1))
+
+void gl_func_00028604(gl_28604_Layer *layer, s32 target) {
+    gl_28604_Note *note;
+    gl_28604_Attrs *attrs;
+    gl_28604_Channel *channel;
+
+    if (layer == gl_28604_NO_LAYER) {
         return;
     }
-    dst = owner + 0x4C;
-    if ((*(unsigned char *)(owner + 0x60) & 0xF) != 6) {
-        *(float *)(dst + 8) = *(float *)(obj + 0x44);
-        *(float *)(dst + 0xC) = *(float *)(obj + 0x40);
-        *(unsigned char *)(dst + 2) = *(unsigned char *)(obj + 6);
-        node = *(char **)(obj + 0x50);
-        if (node != 0) {
-            node2 = *(char **)(obj + 0x50);
-            *(unsigned char *)(dst + 0) = *(unsigned char *)(node + 4);
-            *(unsigned char *)(dst + 1) = *(unsigned char *)(node + 0xC);
-            *(int *)(dst + 0x10) = *(int *)(node + 0xDC);
-            *(unsigned short *)(dst + 6) = *(unsigned short *)(node + 0x20);
-            *(unsigned char *)(dst + 4) = *(unsigned char *)(node + 0xF);
-            if ((*(int *)(*(char **)(node + 0x4C)) << 2) < 0
-                && (*(unsigned char *)(node + 3) & 8)) {
-                *(unsigned char *)(owner + 0xB0) = *(unsigned char *)(owner + 0xB0) | 0x20;
-            }
-            if (*(volatile unsigned char *)(obj + 1) == 0) {
-                *(unsigned char *)(dst + 3) = *(unsigned char *)(node2 + 0xE0);
-            } else {
-                *(unsigned char *)(dst + 3) = *(unsigned char *)(obj + 1); if (node) {}
-            }
-            *(unsigned char *)(owner + 0x30) = *(unsigned char *)(node2 + 6);
-        } else {
-            *(unsigned char *)(dst + 3) = *(unsigned char *)(obj + 1);
-            *(unsigned char *)(owner + 0x30) = 1;
+
+    layer->bits0 &= ~8;
+
+    if (layer->note == NULL) {
+        return;
+    }
+
+    note = layer->note;
+    attrs = &note->attributes;
+
+    if (note->wantedParentLayer == layer) {
+        note->wantedParentLayer = gl_28604_NO_LAYER;
+    }
+
+    if (note->parentLayer != layer) {
+        if (note->parentLayer == gl_28604_NO_LAYER && note->wantedParentLayer == gl_28604_NO_LAYER &&
+            note->prevParentLayer == layer && target != 6) {
+            note->fadeOutVel = gl_28604_gAudioCtx.ticksPerUpdateInv;
+            note->action.s.release = 1;
         }
-        *(int *)(owner + 0x40) = *(int *)(owner + 0x44);
-        *(int *)(owner + 0x44) = -1;
-        if (tag == 7) {
-            *(unsigned char *)(owner + 0x60) = *(unsigned char *)(owner + 0x60) | 0x10;
-            *(unsigned char *)(owner + 0x34) = 2;
-            *(float *)(owner + 0x6C) = *(float *)((char *)&D_00000000 + 0x2050);
-        } else {
-            *(unsigned char *)(owner + 0x34) = 1;
-            *(unsigned char *)(owner + 0x60) = *(unsigned char *)(owner + 0x60) | 0x20;
-            if (*(unsigned char *)(obj + 0x18) == 0) {
-                *(float *)(owner + 0x6C) = *(float *)(*(int *)((char *)&D_00000000 + 0x2CF8) + *(unsigned char *)(*(char **)(obj + 0x50) + 0x8C) * 4);
-            } else {
-                *(float *)(owner + 0x6C) = *(float *)(*(int *)((char *)&D_00000000 + 0x2CF8) + *(unsigned char *)(obj + 0x18) * 4);
+        return;
+    }
+
+    if (note->action.s.state != 6) {
+        attrs->freqScale = layer->noteFreqScale;
+        attrs->velocity = layer->noteVelocity;
+        attrs->pan = layer->notePan;
+
+        if (layer->channel != NULL) {
+            channel = layer->channel;
+            attrs->reverb = channel->targetReverbVol;
+            attrs->gain = channel->gain;
+            attrs->filter = channel->filter;
+            attrs->combFilterSize = channel->combFilterSize;
+            attrs->combFilterGain = channel->combFilterGain;
+            if (channel->seqPlayer->muted && (channel->muteBehavior & 8)) {
+                note->bitField0.finished = 1;
             }
-            *(float *)(owner + 0x64) = *(float *)(owner + 0x70) * (float)(int)*(unsigned char *)(*(char **)(obj + 0x50) + 0x8D) * 0.00390625f;
+
+            if (layer->stereo.asByte == 0) {
+                attrs->stereo = channel->stereo;
+            } else {
+                attrs->stereo = layer->stereo;
+            }
+            note->priority = channel->someOtherPriority;
+        } else {
+            attrs->stereo = layer->stereo;
+            note->priority = 1;
+        }
+
+        note->prevParentLayer = note->parentLayer;
+        note->parentLayer = gl_28604_NO_LAYER;
+        if (target == 7) {
+            note->fadeOutVel = gl_28604_gAudioCtx.ticksPerUpdateInv;
+            note->action.s.release = 1;
+            note->unk_04 = 2;
+        } else {
+            note->unk_04 = 1;
+            note->action.s.decay = 1;
+            if (layer->adsrDecayIndex == 0) {
+                note->fadeOutVel = gl_28604_gAudioCtx.adsrDecayTable[layer->channel->adsrDecayIndex];
+            } else {
+                note->fadeOutVel = gl_28604_gAudioCtx.adsrDecayTable[layer->adsrDecayIndex];
+            }
+            note->sustain = ((f32)(s32)(layer->channel->adsrSustain) * note->current) / 256.0f;
         }
     }
-    if (tag == 6) {
-        gl_func_00000000(owner);
-        gl_func_0003D414(*(int *)(owner + 0xC) + 0x10);
+
+    if (target == 6) {
+        gl_func_00000000(note);
+        gl_func_0003D414(note->pool + 0x10, note);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00028604);
-#endif
+#undef gl_28604_gAudioCtx
+#undef gl_28604_NO_LAYER
 
 extern int gl_ref_0003CC70();
 int gl_func_0002886C(int a0) {
