@@ -6709,115 +6709,131 @@ void game_libs_func_000253C4(gl_253C4_TunedSample *tunedSample, gl_253C4_FontDat
 // the blez with sum in v1 (an indexed `for` instead triggers the x4 unroller);
 // sh==1 test -- target computes sh in v1 and copies `or a3,v1` in the bne delay,
 // ours colours sh straight into a3 (bnel); a named sh2 local regresses (-1.4).
-#ifdef NON_MATCHING
-/* registry base D_00000000_345c0 (held in s1) declared above */
-extern char D_25504_tab, D_25504_2b0, D_25504_1684;  /* separately materialised bases */
-extern int gl_ref_00038248();
-extern int gl_ref_0003959C();
-#define GB ((char *)&D_00000000_345c0)
-#define GW(o) (*(s32 *)(GB + (o)))
-/* word0: 4-bit pad | 2-bit sh | 2-bit pad | 24-bit msk (cf. game_libs_func_000258C0) */
-typedef struct Desc25504 {
-    unsigned pad0 : 4;
-    unsigned sh : 2;
-    unsigned pad1 : 2;
-    unsigned msk : 24;
-    s32 key;
-} Desc25504;
-/* Run 127 (agent-c, raw 106 -> 76; --noreg 2): ret declared 7th (frame 104,
- * cur home sp+92 as the target); the first loop is a plain indexed `for` whose
- * IV init is the target's first `or s5,zero,zero` (no x4 unroll once the bound
- * is re-read from the global); `(s32)e->sh` as the else-arm argument keeps sh in
- * v1 with the target's `or a3,v1` copy in the bne delay (plain e->sh coalesced
- * into a3 and as1 stole a lui into a bnel). Left: the t-ring runs one register
- * low from the first loop on (target burns t0/t1 before the word load), the
- * first-loop -16 / lim / sum colours, and the main-loop slot address in v0
- * where the target has a t-temp. */
-void gl_func_00025504(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
-    s32 sum;
-    s32 i;
-    s32 cur;
-    Desc25504 *e;
-    s32 sh;
-    s32 idx;
-    s32 ret;
+/* gl_func_00025504 = AudioLoad_RelocateFontAndPreloadSamples (OoT load.c), EXACT
+ * (run 143, agent-c; was a 97.28 m2c NM). OoT body under a typed gAudioCtx extern with
+ * the 1080 deltas: preload-stack writes and the final StartAsyncLoad read as indexed
+ * members (held 20, multu) instead of preload / topPreload pointers; no
+ * `sampleRamAddr = NULL` per iteration (the target carries it round the loop in its
+ * home, declared third); four-argument AllocSampleCache, no disk-drive arm; the
+ * `if (sample) {}` after the sample load fixes the s1 / s2 choice (base / ramAddr). */
+typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_25504_Sample;
+typedef struct { u32 endAndMediumKey; gl_25504_Sample *sample; u8 *ramAddr; u32 encodedInfo; s32 isFree; } gl_25504_Req;
+typedef struct { s32 sampleBankId1; s32 sampleBankId2; u32 baseAddr1; u32 baseAddr2; u32 medium1; u32 medium2; } gl_25504_RelocInfo;
+typedef struct { s16 numEntries; s16 unkMediumParam; } gl_25504_Table;
+typedef struct {
+    char pad0[0x430]; gl_25504_Sample *usedSamples[0x80]; gl_25504_Req preloadSampleStack[0x80]; s32 numUsedSamples; s32 preloadSampleStackTop;
+    char pad1038[0x1684 - 0x1038]; char preloadSampleQueue[0x18]; char pad169C[0x2024 - 0x169C]; gl_25504_Table *sampleBankTable;
+} gl_25504_Ctx;
+extern gl_25504_Ctx gl_25504_gAudioCtx;
+#define gAudioCtx gl_25504_gAudioCtx
+extern s32 gl_25504_D_8016B780;
+#define D_8016B780 gl_25504_D_8016B780
+extern void gl_25504_RelocateFont(s32, void *, gl_25504_RelocInfo *);
+extern u8 *gl_25504_AllocSampleCache(u32, s32, void *, s8);
+extern void gl_25504_SyncDmaUnkMedium(u32, u8 *, u32, s32);
+extern void gl_25504_SyncDma(u32, u8 *, u32, s32);
+extern void gl_25504_StartAsyncLoad(u32, u8 *, u32, s32, s32, void *, u32);
+#define AudioLoad_RelocateFont gl_25504_RelocateFont
+#define AudioHeap_AllocSampleCache gl_25504_AllocSampleCache
+#define AudioLoad_SyncDmaUnkMedium gl_25504_SyncDmaUnkMedium
+#define AudioLoad_SyncDma gl_25504_SyncDma
+#define AudioLoad_StartAsyncLoad gl_25504_StartAsyncLoad
+#define ALIGN16(val) (((val) + 0xF) & ~0xF)
 
-    ret = 0;
-    if (GW(0x1034) != 0) {
-        ret = 1;
+void gl_func_00025504(s32 fontId, void *fontData, gl_25504_RelocInfo *sampleBankReloc, s32 isAsync) {
+    gl_25504_Req *preload;
+    gl_25504_Req *topPreload;
+    u8 *sampleRamAddr;
+    gl_25504_Sample *sample;
+    s32 size;
+    s32 nChunks;
+    s32 preloadInProgress;
+    s32 i;
+
+    preloadInProgress = 0;
+    if (gAudioCtx.preloadSampleStackTop != 0) {
+        preloadInProgress = 1;
     } else {
-        *(s32 *)(&D_25504_2b0 + 0x2B0) = 0;
+        D_8016B780 = 0;
     }
-    GW(0x1030) = 0;
-    gl_ref_00038248(arg0, arg1, arg2);
-    sum = 0;
-    for (i = 0; i < GW(0x1030); i++) {
-        idx = ((*(Desc25504 **)(&D_25504_tab + 0x430 + i * 4))->msk + 15) & -16;
-        sum += idx;
-        while (0) { idx = idx + 0; } /* run 130: dead loop in the sum loop: sum a1 / lim a2 as the target (76 -> 74) */
+
+    gAudioCtx.numUsedSamples = 0;
+    AudioLoad_RelocateFont(fontId, fontData, sampleBankReloc);
+
+    size = 0;
+    for (i = 0; i < gAudioCtx.numUsedSamples; i++) {
+        size += ALIGN16(gAudioCtx.usedSamples[i]->size);
     }
-    for (i = 0; i < GW(0x1030); i++) {
-        if (GW(0x1034) == 120) {
-            break;
-        } if (1) {}
-        e = *(Desc25504 **)(GB + 0x430 + i * 4);
-        switch (arg3) {
-        case 0:
-            sh = e->sh;
-            if (arg2[4] == sh) {
-                cur = gl_func_0001CA10(e->msk, arg2[0], e->key, (s8)sh);
-            } else if (arg2[5] == sh) {
-                cur = gl_func_0001CA10(e->msk, arg2[1], e->key, (s8)sh);
-            }
-            break;
-        case 1:
-            sh = e->sh;
-            if (arg2[4] == sh) {
-                cur = gl_func_0001CA10(e->msk, arg2[0], e->key, (s8)sh);
-            } else if (arg2[5] == sh) {
-                cur = gl_func_0001CA10(e->msk, arg2[1], e->key, (s8)sh);
-            }
+    if (size && size) {}
+
+    for (i = 0; i < gAudioCtx.numUsedSamples; i++) {
+        if (gAudioCtx.preloadSampleStackTop == 120) {
             break;
         }
-        if (cur == 0) {
+
+        sample = gAudioCtx.usedSamples[i];
+        if (sample) {}
+        switch (isAsync) {
+            case 0:
+                if (sample->medium == sampleBankReloc->medium1) {
+                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr, sample->medium);
+                } else if (sample->medium == sampleBankReloc->medium2) {
+                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr, sample->medium);
+                }
+                break;
+
+            case 1:
+                if (sample->medium == sampleBankReloc->medium1) {
+                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId1, sample->sampleAddr, sample->medium);
+                } else if (sample->medium == sampleBankReloc->medium2) {
+                    sampleRamAddr = AudioHeap_AllocSampleCache(sample->size, sampleBankReloc->sampleBankId2, sample->sampleAddr, sample->medium);
+                }
+                break;
+        }
+        if (sampleRamAddr == NULL) {
             continue;
         }
-        switch (arg3) {
-        case 0:
-            if (e->sh == 1) {
-                gl_func_0001CA10(e->key, cur, e->msk, *(s16 *)(GW(0x2024) + 2));
-                e->key = cur;
-                e->sh = 0;
-            } else {
-                gl_func_0001CA10(e->key, cur, e->msk, (s32)e->sh);
-                e->key = cur;
-                e->sh = 0;
-            }
-            break;
-        case 1:
-            GW(GW(0x1034) * 0x14 + 0x634) = (s32)e;
-            GW(GW(0x1034) * 0x14 + 0x638) = cur;
-            idx = GW(0x1034);
-            GW(idx * 0x14 + 0x63C) = (idx << 24) | 0xFFFFFF;
-            GW(GW(0x1034) * 0x14 + 0x640) = 0;
-            GW(GW(0x1034) * 0x14 + 0x630) = e->key + e->msk + e->sh;
-            GW(0x1034) += 1;
-            break;
+
+        switch (isAsync) {
+            case 0:
+                if (sample->medium == 1) {
+                    AudioLoad_SyncDmaUnkMedium((u32)sample->sampleAddr, sampleRamAddr, sample->size, gAudioCtx.sampleBankTable->unkMediumParam);
+                    sample->sampleAddr = sampleRamAddr;
+                    sample->medium = 0;
+                } else {
+                    AudioLoad_SyncDma((u32)sample->sampleAddr, sampleRamAddr, sample->size, sample->medium);
+                    sample->sampleAddr = sampleRamAddr;
+                    sample->medium = 0;
+                }
+                break;
+
+            case 1:
+                gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop].sample = sample;
+                gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop].ramAddr = sampleRamAddr;
+                gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop].encodedInfo = (gAudioCtx.preloadSampleStackTop << 24) | 0xFFFFFF;
+                gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop].isFree = 0;
+                gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop].endAndMediumKey = (u32)sample->sampleAddr + sample->size + sample->medium;
+                gAudioCtx.preloadSampleStackTop++;
+                break;
         }
     }
-    idx = GW(0x1034);
-    GW(0x1030) = 0;
-    if (idx != 0 && ret == 0) {
-        e = *(Desc25504 **)(GB + idx * 0x14 + 0x620);
-        gl_ref_0003959C(e->key, GW(idx * 0x14 + 0x624), e->msk, e->sh, (e->msk >> 12) + 1,
-                        &D_25504_1684 + 0x1684, GW(idx * 0x14 + 0x628)); if (idx) {}
+    gAudioCtx.numUsedSamples = 0;
+
+    if (gAudioCtx.preloadSampleStackTop != 0 && !preloadInProgress) {
+        sample = gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].sample;
+        nChunks = (sample->size >> 12) + 1;
+        AudioLoad_StartAsyncLoad((u32)sample->sampleAddr, gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].ramAddr, sample->size, sample->medium, nChunks,
+                                 &gAudioCtx.preloadSampleQueue, gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].encodedInfo);
     }
 }
-#undef GB
-#undef GW
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00025504);
-#endif
+#undef gAudioCtx
+#undef D_8016B780
+#undef AudioLoad_RelocateFont
+#undef AudioHeap_AllocSampleCache
+#undef AudioLoad_SyncDmaUnkMedium
+#undef AudioLoad_SyncDma
+#undef AudioLoad_StartAsyncLoad
+#undef ALIGN16
 
 
 /* game_libs_func_000258C0 (0x1C0, 112 insns): config-descriptor apply +
