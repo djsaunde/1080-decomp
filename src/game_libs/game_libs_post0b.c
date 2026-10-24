@@ -17168,6 +17168,14 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004B2F4);
 // plain `&local`. Both stem from an inlined iterator-constructor returning
 // by value (the it->it2->it3 triple stack copy) that standard C can't
 // reconstruct without the original helper. Body INCLUDE_ASM-preserved.
+// run 151 (agent-c, 86.21 -> 94.41, 1172 -> 1228 of 1236 bytes): the dead
+// guard IS reachable in C -- `itp = 0; if (1) { itp = &it; }` keeps the
+// `&it != 0 || alloc(0xC)` test (kit LXIV (d)); the two element reads of each
+// call are two different address spellings (`(*p)[i]` and `*(s32 *)((char *)*p
+// + i * 4)`: the target CSEs the i*4 but not the add); and the iterator advance
+// is `if (i < n) {...} else { cur = 0; }` (the 0 is hoisted above the compare
+// and the then-arm ends with a `b` to the join). Residual: self in s4 / 5 saved
+// regs, frame 0xB0 vs 0x108 (iterator copies at sp+96/108/164 in the target).
 #ifdef NON_MATCHING
 extern int D_00000000;
 /* Gfx command word pair appended to a dynamic display list. */
@@ -17242,8 +17250,9 @@ char *gl_func_0004B620(char *arg0, char *arg1) {
         DL_APPEND(self->unkCC, 0xBB000001, 0x80008000);
         gl_func_00000000(self->unkCC);
 
-        itp = &it;
-        if ((&it != 0) || ((itp = (Iter620 *) gl_func_00000000(0xC)) != 0)) {
+        itp = 0;
+        if (1) { itp = &it; }
+        if ((itp != 0) || ((itp = (Iter620 *) gl_func_00000000(0xC)) != 0)) {
             f32 *coll = &self->unk84;
             itp->idx = -1;
             itp->ptr = (s32 **) coll;
@@ -17251,23 +17260,25 @@ char *gl_func_0004B620(char *arg0, char *arg1) {
         }
         it2 = it;
         it3 = it2;
-        cur = 0;
         if (it3.idx < it3.count) {
             it3.idx += 1;
             cur = (s32 *) ((char *) *it3.ptr + (it3.idx * 4));
+        } else {
+            cur = 0;
         }
         if (cur != 0) {
             do {
                 node = (s32 *) (*it3.ptr)[it3.idx];
                 node[0x64 / 4] = (s32) gl_func_00000000(0, (char *)&D_00000000 + 0x20110, 0x14, 0, 0, 0, 0);
-                gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (char *)(*it3.ptr)[it3.idx] + 0x34);
-                gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (char *)(*it3.ptr)[it3.idx] + 0x34);
-                gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (*it3.ptr)[it3.idx], 0);
+                gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (char *)*(s32 *)((char *)*it3.ptr + it3.idx * 4) + 0x34);
+                gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (char *)*(s32 *)((char *)*it3.ptr + it3.idx * 4) + 0x34);
+                gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], *(s32 *)((char *)*it3.ptr + it3.idx * 4), 0);
                 gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4]);
-                cur = 0;
                 if (it3.idx < it3.count) {
                     it3.idx += 1;
                     cur = (s32 *) ((char *) *it3.ptr + (it3.idx * 4));
+                } else {
+                    cur = 0;
                 }
             } while (cur != 0);
         }

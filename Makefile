@@ -651,7 +651,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 149: 454C4 NM dl-count increments as `+= 1` (2016 -> 2024 bytes, target 2028): 0x2e928 -> 0x2e930 (62F08 NM offset 0x2e8e0).
 # agent-c run 149: 4F2DC NM vec70 held (1052 -> 1060 bytes, target 1064): 0x2e930 -> 0x2e938 (62F08 NM offset 0x2e8e8).
 # agent-c run 149: 37540 NM saved / vB4 held (756 -> 760 bytes, target 764): 0x2e938 -> 0x2e93c (62F08 NM offset 0x2e8ec).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e93c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 151: 4B620 NM in-place iterator ctor guard + split element reads (1172 -> 1228 bytes, target 1236): 0x2e93c -> 0x2e974 (62F08 NM offset 0x2e924).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e974 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
