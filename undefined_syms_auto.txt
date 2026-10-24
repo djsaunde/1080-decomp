@@ -5132,3 +5132,4 @@ bu_ca0_desc = 0x00000000;  /* agent-g run 150: func_00000CA0 donor vtable (renam
 bu_ca0_g = 0x00000000;  /* agent-g run 150: func_00000CA0 imported word (blank lui at/sw) */
 bu_ca0_g_b = 0x00000000;  /* agent-g run 150: func_00000CA0 second imported word, [1] = target func_00000000 + 0x4 */
 bu_ca0_box = 0x00000000;  /* agent-g run 150: func_00000CA0 vertex-corner table (blank lui/addiu v1) */
+gl_func_00000000_68dd4v = 0x00000000;

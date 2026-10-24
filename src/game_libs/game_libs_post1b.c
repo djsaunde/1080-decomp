@@ -4894,7 +4894,13 @@ void gl_func_00068D18(int *self) {
     }
 }
 
-/* gl_func_00068DD4: script-op handler (85 words). NM 97.39 -> 98.71
+/* gl_func_00068DD4: script-op handler (85 words). EXACT (agent-g run 155): the residual
+ * colours were two levers: (1) the leading discarded call goes through a void alias
+ * (gl_func_00000000_68dd4v, pinned 0) -- the K&R int return kept a dead v0 def that
+ * pushed every later value one register up (kit IX); (2) the two stream reads share
+ * TWO int locals the way the target's colours pair them: A = cursor pp then q2 (v0),
+ * B = value v then cursor pp2 (v1), q (t1) own, v2 (a2) own.
+ * History: NM 97.39 -> 98.71
  * (2026-10-14 agent-g, was 87.24 -> 97.39). Two stream reads through the
  * cursor idiom (`pp = *self; q = *pp; *pp = q + 1; v = *q; self[1] = v;`),
  * the first indexing the &D table (`(&D_00000000)[v]`), the second feeding
@@ -4913,11 +4919,11 @@ void gl_func_00068D18(int *self) {
  * fixes x=t0/q1=t1 but turns q2 into a ring temp), `*(*pp)++`, v-first
  * order, store-then-reload, no-v assignment-expression args (same 19),
  * reusing p/o as read2 cursors, decl reorder (no effect). */
-#ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef int (*GP_00068DD4)();
+extern void gl_func_00000000_68dd4v(void);
 void gl_func_00068DD4(char *arg0) {
     int *p;
     s32 sp30;
@@ -4929,20 +4935,22 @@ void gl_func_00068DD4(char *arg0) {
     int *q;
     int v;
     char *x;
+    int A;
+    int B;
 
-    gl_func_00000000();
+    gl_func_00000000_68dd4v();
     x = (char *)FW(FW(arg0, 0x3C), 0xC);
     FW(x, 0xB0) = 8;
-    pp = *(int ***)arg0;
-    q = *pp;
-    *pp = q + 1;
-    v = *q;
-    FW(arg0, 4) = v;
-    sp30 = (&D_00000000)[v];
-    pp = *(int ***)arg0;
-    q = *pp;
-    *pp = q + 1;
-    v = *q;
+    A = *(int *)arg0;
+    q = *(int **)A;
+    *(int **)A = q + 1;
+    B = *q;
+    FW(arg0, 4) = B;
+    sp30 = (&D_00000000)[B];
+    B = *(int *)arg0;
+    A = *(int *)B;
+    *(int *)B = A + 4;
+    v = *(int *)A;
     FW(arg0, 4) = v;
     sp2C = (char *)gl_func_00000000(0, (char *)&D_00000000 + 0x2C568, v, 0);
     gl_func_00000000(FW(sp2C, 0x44) * 8);
@@ -4965,9 +4973,6 @@ mid:
     gl_func_00000000(FW(FW(arg0, 0x3C), 0xC), sp24);
     gl_func_00000000(sp24);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00068DD4);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_00068F28(int *dst) {
