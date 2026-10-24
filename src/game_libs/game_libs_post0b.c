@@ -2700,6 +2700,9 @@ out:
  * fs0 (callee-saved zero) vs ft5, sp84 caching, t/f register rotation. */
 extern void gl_func_00034458_36F0C(f32, f32 *, f32 *);  /* (angle, &out, &out): angle single in f12; NM-only blank alias (target jal 0) */
 extern f64 D_000019E8;  /* game_libs data f64 at 0x19E8 (target lui at,0 + ldc1 0x19E8(at)) */
+/* run 151 (agent-c, 87.89 -> 91.26): the 3x3 rotate reads the homed sp84 ONCE
+ * (target `lw t2,132(sp)` then all nine lwc1 off t2); through the volatile it was
+ * re-read per element (984 -> 956 bytes, target 968). */
 void gl_func_00036F0C(char *arg0) {
     char *volatile sp84;
     f32 v[3];
@@ -2722,6 +2725,7 @@ void gl_func_00036F0C(char *arg0) {
     char *temp_v1;
     char *temp_v1_2;
     char *temp_v1_3;
+    char *m;
 
     sp84 = *(s32 *)((char *)(arg0) + 0x14);
     var_f14 = 0.0f;
@@ -2757,10 +2761,11 @@ void gl_func_00036F0C(char *arg0) {
     } else {
         *(s32 *)((char *)(arg0) + 0x3C) = 0;
     }
+    m = sp84;
     temp_f2 = -var_f12;
-    v[0] = (*(f32 *)((char *)(sp84) + 0xB4) * var_f14) + (*(f32 *)((char *)(sp84) + 0xB8) * var_f16) + (*(f32 *)((char *)(sp84) + 0xBC) * temp_f2);
-    v[1] = (*(f32 *)((char *)(sp84) + 0xC4) * var_f14) + (*(f32 *)((char *)(sp84) + 0xC8) * var_f16) + (*(f32 *)((char *)(sp84) + 0xCC) * temp_f2);
-    v[2] = (*(f32 *)((char *)(sp84) + 0xD4) * var_f14) + (*(f32 *)((char *)(sp84) + 0xD8) * var_f16) + (*(f32 *)((char *)(sp84) + 0xDC) * temp_f2);
+    v[0] = (*(f32 *)((char *)(m) + 0xB4) * var_f14) + (*(f32 *)((char *)(m) + 0xB8) * var_f16) + (*(f32 *)((char *)(m) + 0xBC) * temp_f2);
+    v[1] = (*(f32 *)((char *)(m) + 0xC4) * var_f14) + (*(f32 *)((char *)(m) + 0xC8) * var_f16) + (*(f32 *)((char *)(m) + 0xCC) * temp_f2);
+    v[2] = (*(f32 *)((char *)(m) + 0xD4) * var_f14) + (*(f32 *)((char *)(m) + 0xD8) * var_f16) + (*(f32 *)((char *)(m) + 0xDC) * temp_f2);
     if (*(s32 *)((char *)(temp_v1) + 0x10) & 0x1000) {
         *(f32 *)((char *)(arg0) + 0x34) = (f32) (*(f32 *)((char *)(arg0) + 0x34) + (*(f32 *)((char *)(temp_v1) + 0x0) * 4.0f));
         *(f32 *)((char *)(arg0) + 0x30) = (f32) ((-*(f32 *)((char *)(temp_v1) + 0x4) * 4.0f) + *(f32 *)((char *)(arg0) + 0x30));
