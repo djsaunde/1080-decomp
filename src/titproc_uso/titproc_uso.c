@@ -289,7 +289,20 @@ void titproc_uso_func_0000056C(Vec3 *dst) {
  * RESIDUAL (~6%): whole-body callee-saved coloring rotated one notch vs target
  * (target d=s0,rr=s1,arg=s2,r=s3,d16=s8; build rr=s0,d=s1,r=s2,arg=s3,d16=s4)
  * = the allocator priority-order class; insn count 359 vs 356 (+3 from the
- * d16-web addiu + a duplicated done=1 li). Frame 160 vs 104. Stays NM. */
+ * d16-web addiu + a duplicated done=1 li). Frame 160 vs 104. Stays NM.
+ * 2026-10-24 agent-g run 149: 356/356 words, frame 104, only d/t colour
+ * swap (s1/s0 vs target s0/s1) + 2 addu operand orders left:
+ *  - the 07ACE0 arg is the ADDRESS CONSTANT `(char *)&import_00020098 + 0x10`
+ *    (not `d + 0x10`): uopt hoists it into s8 from the prologue (lui/addiu)
+ *    as in the target, killing the per-case `addiu s4,s1,16` remat (-3 insns);
+ *  - `done = 1` AFTER the first call of cases 4/5/7/9 (it fills the jal delay
+ *    as `addiu s6,zero,1`; before the call uopt copies it from the hoisted
+ *    constant-1 register: `or s6,s7`); `one` dropped for the literal 1;
+ *  - cfe gives every declared referenced local a home: six locals (d, done,
+ *    s5v 3rd = home 92, r, t, mask) = the target's frame; t carries the rr /
+ *    r1 / flag / 01EFC8 / av webs; case 3 is one comma statement;
+ *    the uopt spill temp of mask lands at 68 as in the target.
+ *    decl order, if(1) sweeps, register/unsigned, dead uses: s0/s1 fixed. */
 extern int titproc_uso_func_0120A8();
 extern int titproc_uso_func_0027E8();
 extern int titproc_uso_func_000C54();
@@ -307,12 +320,14 @@ extern int import_000B3268();
 
 #ifdef NON_MATCHING
 void titproc_uso_func_000005DC(char *a0, int a1) {
-    int d = (int)&import_00020098;
-    char *arg = a0;
-    int done = 0;
-    int one = 1;
-    int *r, *rr;
+    int d;
+    int done;
     int s5v;
+    int *r;
+    int t;
+    int mask;
+    d = (int)&import_00020098;
+    done = 0;
     do {
         switch (a1) {
         case 0: {
@@ -320,143 +335,137 @@ void titproc_uso_func_000005DC(char *a0, int a1) {
             done = 1;
             *(int *)(d + 0x68) = 0;
             *(int *)(d + 0x8C) = 0x820000;
-            r = (int *)titproc_uso_func_0027E8(d, 2, 9, one);
-            rr = r;
-            titproc_uso_func_07ACE0(d + 0x10, r); if (a0) {}
-            if (*(int *)((char *)rr + 0x14) != 0) {
-                *(int *)((char *)rr + 0x4) = one;
+            r = (int *)titproc_uso_func_0027E8(d, 2, 9, 1);
+            t = (int)r;
+            titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r); if (a0) {}
+            if (*(int *)((char *)t + 0x14) != 0) {
+                *(int *)((char *)t + 0x4) = 1;
             }
-            *(int *)((char *)rr + 0x14) = d;
-            titproc_uso_func_01DA48(arg, 0, titproc_uso_func_000C54(0, r));
+            *(int *)((char *)t + 0x14) = d;
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_000C54(0, r));
             break;
         }
         case 1:
-            titproc_uso_func_000B6C(arg, -1);
+            titproc_uso_func_000B6C(a0, -1);
             done = 1;
-            import_000B3268(arg, 0x9FFF0, 0x10000, *(int *)arg);
+            import_000B3268(a0, 0x9FFF0, 0x10000, *(int *)a0);
             *(int *)(d + 0x44) = 2;
             break;
         case 2:
-            titproc_uso_func_000C0C(arg);
+            titproc_uso_func_000C0C(a0);
             *(int *)(d + 0x40) = 0;
             break;
         case 3: {
-            int a4 = *(int *)(d + 0x44);
-            *(int *)(d + 0x44) = 0;
+            *(int *)(d + 0x40) = *(int *)(d + 0x44), *(int *)(d + 0x44) = 0;
             s5v = 0x800000;
-            *(int *)(d + 0x40) = a4;
             break;
         }
         case 4: {
-            int r1;
-            int mask = ((s5v | 0x10000) | 0x80000) | 0x898;
+            mask = ((s5v | 0x10000) | 0x80000) | 0x898;
+            t = titproc_uso_func_000418();
             done = 1;
-            r1 = titproc_uso_func_000418();
-            titproc_uso_func_0120A8(d, 4, r1, 0);
-            r = (int *)titproc_uso_func_0027E8(d, r1, 10, one);
-            rr = r;
-            titproc_uso_func_07ACE0(d + 0x10, r);
-            if (*(int *)((char *)rr + 0x14) != 0) {
-                *(int *)((char *)rr + 0x4) = one;
+            titproc_uso_func_0120A8(d, 4, t, 0);
+            r = (int *)titproc_uso_func_0027E8(d, t, 10, 1);
+            t = (int)r;
+            titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r);
+            if (*(int *)((char *)t + 0x14) != 0) {
+                *(int *)((char *)t + 0x4) = 1;
             }
-            *(int *)((char *)rr + 0x14) = d;
-            titproc_uso_func_011CD8(d, one);
-            titproc_uso_func_01DA48(arg, 0, titproc_uso_func_001E9C(0, mask, r, 0));
+            *(int *)((char *)t + 0x14) = d;
+            titproc_uso_func_011CD8(d, 1);
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask, r, 0));
             *(int *)(d + 0x40) = 0;
             break;
         }
         case 5: {
-            int r1;
-            int mask = ((s5v | 0x1010000) | 0x80000) | 0x898;
+            mask = ((s5v | 0x1010000) | 0x80000) | 0x898;
+            t = titproc_uso_func_000418();
             done = 1;
-            r1 = titproc_uso_func_000418();
-            titproc_uso_func_0120A8(d, 4, r1, 0);
-            r = (int *)titproc_uso_func_0027E8(d, r1, 11, 2);
-            rr = r;
-            titproc_uso_func_07ACE0(d + 0x10, r);
-            if (*(int *)((char *)rr + 0x14) != 0) {
-                *(int *)((char *)rr + 0x4) = one;
+            titproc_uso_func_0120A8(d, 4, t, 0);
+            r = (int *)titproc_uso_func_0027E8(d, t, 11, 2);
+            t = (int)r;
+            titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r);
+            if (*(int *)((char *)t + 0x14) != 0) {
+                *(int *)((char *)t + 0x4) = 1;
             }
-            *(int *)((char *)rr + 0x14) = d;
-            titproc_uso_func_011CD8(d, one);
-            titproc_uso_func_01DA48(arg, 0, titproc_uso_func_001E9C(0, mask, r, 0));
+            *(int *)((char *)t + 0x14) = d;
+            titproc_uso_func_011CD8(d, 1);
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask, r, 0));
             *(int *)(d + 0x40) = 0;
             break;
         }
         case 6:
-            titproc_uso_func_000C0C(arg);
+            titproc_uso_func_000C0C(a0);
             s5v = 0x2100000;
             *(int *)(d + 0x40) = 10;
             break;
         case 7: {
-            int t, av;
-            int flag = s5v & 0x2000000;
-            int mask = (s5v | 0x8020000) | 0x80000;
+            t = s5v & 0x2000000;
+            mask = (s5v | 0x8020000) | 0x80000;
+            titproc_uso_func_000B6C(a0, 2);
             done = 1;
-            titproc_uso_func_000B6C(arg, 2);
-            *(char *)(d + 0x181) = titproc_uso_func_01EF10(*(int *)(*(int *)arg + 8));
-            *(char *)(d + 0x182) = titproc_uso_func_01EF44(*(int *)(*(int *)arg + 8));
-            *(char *)(d + 0x183) = titproc_uso_func_01EF94(*(int *)(*(int *)arg + 8));
-            if (flag != 0) {
-                titproc_uso_func_0120A8(d, 10, titproc_uso_func_01EFC8(*(int *)(*(int *)arg + 8)), 2);
+            *(char *)(d + 0x181) = titproc_uso_func_01EF10(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x182) = titproc_uso_func_01EF44(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x183) = titproc_uso_func_01EF94(*(int *)(*(int *)a0 + 8));
+            if (t != 0) {
+                titproc_uso_func_0120A8(d, 10, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 2);
             } else {
-                titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)arg + 8)), 0);
+                titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 0);
             }
             *(int *)(d + 0x34) = 6;
-            t = titproc_uso_func_01EFC8(*(int *)(*(int *)arg + 8));
+            t = titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8));
             *(int *)(d + 0x64) = t;
-            r = (int *)titproc_uso_func_0027E8(d, t, 4, one);
-            *(int *)(d + 0x34) = one;
-            rr = r;
-            titproc_uso_func_07ACE0(d + 0x10, r);
-            if (*(int *)((char *)rr + 0x14) != 0) {
-                *(int *)((char *)rr + 0x4) = one;
+            r = (int *)titproc_uso_func_0027E8(d, t, 4, 1);
+            *(int *)(d + 0x34) = 1;
+            t = (int)r;
+            titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r);
+            if (*(int *)((char *)t + 0x14) != 0) {
+                *(int *)((char *)t + 0x4) = 1;
             }
-            *(int *)((char *)rr + 0x14) = d;
-            titproc_uso_func_011CD8(d, one);
-            av = *(int *)arg;
-            titproc_uso_func_01DA48(arg, 0, titproc_uso_func_001E9C(0, mask + *(int *)(*(int *)(av + 8) + 4), r, av));
+            *(int *)((char *)t + 0x14) = d;
+            titproc_uso_func_011CD8(d, 1);
+            t = *(int *)a0;
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask + *(int *)(*(int *)(t + 8) + 4), r, t));
             *(int *)(d + 0x40) = 11;
             break;
         }
         case 8:
-            titproc_uso_func_000C0C(arg);
+            titproc_uso_func_000C0C(a0);
             s5v = 0x2100000;
             *(int *)(d + 0x40) = 9;
             break;
         case 9: {
-            int t, av;
-            int flag = s5v & 0x2000000;
-            int mask = (s5v | 0x8020000) | 0x80000;
+            t = s5v & 0x2000000;
+            mask = (s5v | 0x8020000) | 0x80000;
+            titproc_uso_func_000B6C(a0, 1);
             done = 1;
-            titproc_uso_func_000B6C(arg, one);
-            *(char *)(d + 0x181) = titproc_uso_func_01EF10(*(int *)(*(int *)arg + 8));
-            *(char *)(d + 0x182) = titproc_uso_func_01EF44(*(int *)(*(int *)arg + 8));
-            *(char *)(d + 0x183) = titproc_uso_func_01EF94(*(int *)(*(int *)arg + 8));
-            if (flag != 0) {
-                titproc_uso_func_0120A8(d, 10, titproc_uso_func_01EFC8(*(int *)(*(int *)arg + 8)), one);
+            *(char *)(d + 0x181) = titproc_uso_func_01EF10(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x182) = titproc_uso_func_01EF44(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x183) = titproc_uso_func_01EF94(*(int *)(*(int *)a0 + 8));
+            if (t != 0) {
+                titproc_uso_func_0120A8(d, 10, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 1);
             } else {
-                titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)arg + 8)), 0);
+                titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 0);
             }
-            t = titproc_uso_func_01EFC8(*(int *)(*(int *)arg + 8));
+            t = titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8));
             *(int *)(d + 0x64) = t;
-            r = (int *)titproc_uso_func_0027E8(d, t, 4, one);
-            rr = r;
-            titproc_uso_func_07ACE0(d + 0x10, r);
-            if (*(int *)((char *)rr + 0x14) != 0) {
-                *(int *)((char *)rr + 0x4) = one;
+            r = (int *)titproc_uso_func_0027E8(d, t, 4, 1);
+            t = (int)r;
+            titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r);
+            if (*(int *)((char *)t + 0x14) != 0) {
+                *(int *)((char *)t + 0x4) = 1;
             }
-            *(int *)((char *)rr + 0x14) = d;
-            titproc_uso_func_011CD8(d, one);
-            av = *(int *)arg;
-            titproc_uso_func_01DA48(arg, 0, titproc_uso_func_001E9C(0, mask + *(int *)(*(int *)(av + 8) + 4), r, av));
+            *(int *)((char *)t + 0x14) = d;
+            titproc_uso_func_011CD8(d, 1);
+            t = *(int *)a0;
+            titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask + *(int *)(*(int *)(t + 8) + 4), r, t));
             *(int *)(d + 0x40) = 11;
             break;
         }
         case 10:
             break;
         case 11:
-            titproc_uso_func_000C0C(arg);
+            titproc_uso_func_000C0C(a0);
             *(int *)(d + 0x40) = *(int *)(d + 0x44);
             break;
         }
