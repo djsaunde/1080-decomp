@@ -1184,6 +1184,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
             gp = gl_1dcb4_f1(gp, arg1, k, arg3);
         }
         if (i < n2) {
+            if (arg1) {} /* run 142: block split, 87.66 -> 94.4 (if-split sweep) */
             q = (u8 *)&buf[i];
             do {
                 v = *q;
