@@ -13357,6 +13357,9 @@ void gl_func_00044CC4(int a0, int a1) {
  * lever to force the v0=a3+0x378 hoist into the bnel-likely slot
  * (the frame-0x20 a3-spill + sole-base depends on it). 4 attempts
  * spent; truly a focused-pass-only cap. */
+/* run 148 (agent-c): the NM comparison object is now the NCC donor
+ * src/game_libs/game_libs_ncc_44CE8_nm.cpp (pool base rematerialised, frame 32;
+ * one colour left). This cfe body stays as the readable reference. */
 extern int gl_func_00000000();
 extern int D_00000000;
 int gl_func_00044CE8(int a0, int a1, int a2) {
