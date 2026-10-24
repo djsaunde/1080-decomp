@@ -1419,10 +1419,10 @@ void func_000024B8(char *arg0) {
         }
         v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
         s0 = v1 + 0x134; if (1) {}
-        *(f32 *)s0 = *(f32 *)s0 + FF(FW(arg0, 0x38), 4) * two;
+        *(f32 *)s0 = FF(FW(arg0, 0x38), 4) * two + *(f32 *)s0;
         s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
         s0 += 0x138;
-        *(f32 *)s0 = *(f32 *)s0 + FF(FW(arg0, 0x38), 0) * two;
+        *(f32 *)s0 = FF(FW(arg0, 0x38), 0) * two + *(f32 *)s0;
         return;
     }
     if (t0 != 0) {
