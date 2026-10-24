@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0002119C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T03:53:39.406704+00:00",
+  "end_time": "2026-10-24T03:53:39.406719+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T03:53:39.406715+00:00",
+      "assistant_text": "Exact match: OoT AudioHeap_ResetStep verbatim (volatile u8 resetStatus) minus DiscardSampleBanks, IDO 7.1 -O2 donor splice; jumptable pinned at +0xE7C.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 191,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* IDO 7.1 -O2 donor for gl_func_0002119C (0x2FC / 191 words) = OoT's\n * AudioHeap_ResetStep (heap.c) verbatim, minus the AudioHeap_DiscardSampleBanks\n * call (1080 has only the sample-cache discard); resetStatus is `volatile u8` as in\n * OoT (each case re-reads it). Spliced into game_libs_post.c.o via\n * REPLACE_FUNC_BODY; the splice renames the donor-local .rodata jumptable reloc\n * (resetStatus switch, 5 entries) to gl_func_0002119C_rodata, pinned to the USO\n * table. gAudioCtx offsets: specUnk4 0x2034, maxAiBufferLength 0x203C,\n * numSequencePlayers 0x2048, ticksPerUpdateInv 0x2050, numNotes 0x2070,\n * aiBuffers 0x2140, aiBufLengths 0x214C, resetStatus 0x2CF0,\n * audioResetFadeOutFramesLeft 0x2CF4, notes 0x2CFC (stride 0xD0), seqPlayers\n * 0x2D00 (stride 0x160). */\ntypedef struct {\n    u8 unk0 : 1; u8 hang : 1; u8 decay : 1; u8 release : 1; u8 state : 4;\n} gl_2119C_AdsrBits;\ntypedef struct {\n    char pad00[0x60]; union { gl_2119C_AdsrBits s; u8 asByte; } action; char pad61[0x6C - 0x61]; f32 fadeOutVel;\n    char pad70[0xB0 - 0x70];\n    struct { u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 rest : 29; } bitField0;\n    char padB4[0xD0 - 0xB4];\n} gl_2119C_Note;\ntypedef struct { char pad[0x160]; } gl_2119C_SeqPlayer;\ntypedef struct {\n    char pad0[0x2034]; s16 specUnk4; char pad2036[0x203C - 0x2036]; s16 maxAiBufferLength;\n    char pad203e[0x2048 - 0x203E]; s16 numSequencePlayers; char pad204a[0x2050 - 0x204A]; f32 ticksPerUpdateInv;\n    char pad2054[0x2070 - 0x2054]; s32 numNotes; char pad2074[0x2140 - 0x2074];\n    s16 *aiBuffers[3]; s16 aiBufLengths[3]; char pad2152[0x2CF0 - 0x2152];\n    volatile u8 resetStatus; char pad2cf1[3]; s32 audioResetFadeOutFramesLeft; char pad2cf8[4]; gl_2119C_Note *notes;\n    gl_2119C_SeqPlayer seqPlayers[4];\n} gl_2119C_Ctx;\nextern int D_00000000;\n#define gAudioCtx (*(gl_2119C_Ctx *)&D_00000000)\nextern int gl_func_00000000();\nextern int gl_func_00035668();\nextern int gl_func_0003579C();\nextern int gl_func_00036AD0();\nextern int gl_func_00035B04();\n#define AudioSeq_SequencePlayerDisableAsFinished gl_func_00000000\n#define AudioHeap_UpdateReverbs gl_func_00035668\n#define AudioHeap_ClearCurrentAiBuffer gl_func_0003579C\n#define AudioHeap_DiscardSampleCaches gl_func_00036AD0\n#define AudioHeap_Init gl_func_00035B04\n\ns32 gl_func_0002119C(void) {\n    s32 i;\n    s32 j;\n    s32 sp24;\n\n    if (gAudioCtx.specUnk4 == 2) {\n        sp24 = 2;\n    } else {\n        sp24 = 1;\n    }\n\n    switch (gAudioCtx.resetStatus) {\n        case 5:\n            for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {\n                AudioSeq_SequencePlayerDisableAsFinished(&gAudioCtx.seqPlayers[i]);\n            }\n            gAudioCtx.audioResetFadeOutFramesLeft = 2 / sp24;\n            gAudioCtx.resetStatus--;\n            break;\n\n        case 4:\n            if (gAudioCtx.audioResetFadeOutFramesLeft != 0) {\n                gAudioCtx.audioResetFadeOutFramesLeft--;\n                AudioHeap_UpdateReverbs();\n            } else {\n                for (i = 0; i < gAudioCtx.numNotes; i++) {\n                    if (gAudioCtx.notes[i].bitField0.enabled &&\n                        gAudioCtx.notes[i].action.s.state != 0) {\n                        gAudioCtx.notes[i].fadeOutVel = gAudioCtx.ticksPerUpdateInv;\n                        gAudioCtx.notes[i].action.s.release = 1;\n                    }\n                }\n                gAudioCtx.audioResetFadeOutFramesLeft = 8 / sp24;\n                gAudioCtx.resetStatus--;\n            }\n            break;\n\n        case 3:\n            if (gAudioCtx.audioResetFadeOutFramesLeft != 0) {\n                gAudioCtx.audioResetFadeOutFramesLeft--;\n                AudioHeap_UpdateReverbs();\n            } else {\n                gAudioCtx.audioResetFadeOutFramesLeft = 2 / sp24;\n                gAudioCtx.resetStatus--;\n            }\n            break;\n\n        case 2:\n            AudioHeap_ClearCurrentAiBuffer();\n            if (gAudioCtx.audioResetFadeOutFramesLeft != 0) {\n                gAudioCtx.audioResetFadeOutFramesLeft--;\n            } else {\n                gAudioCtx.resetStatus--;\n                AudioHeap_DiscardSampleCaches();\n            }\n            break;\n\n        case 1:\n            AudioHeap_Init();\n            gAudioCtx.resetStatus = 0;\n            for (i = 0; i < 3; i++) {\n                gAudioCtx.aiBufLengths[i] = gAudioCtx.maxAiBufferLength;\n                for (j = 0; j < 0x580; j++) {\n                    gAudioCtx.aiBuffers[i][j] = 0;\n                }\n            }\n            break;\n    }\n\n    if (gAudioCtx.resetStatus < 3) {\n        return 0;\n    }\n\n    return 1;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_2119C.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0002119C.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "Verified with rdiff --raw --pins (0 diff words) and full ROM build (byte-identical)."
+  }
+}

@@ -5011,3 +5011,4 @@ gl_24378_fontRom = 0x00000000;  /* agent-c run 141: gl_func_00024378 */
 gl_24378_sampleRom = 0x00000000;  /* agent-c run 141: gl_func_00024378 */
 gl_24378_AudioThread_InitMesgQueues = 0x00000000;  /* agent-c run 141: gl_func_00024378 blank jal (void prototype) */
 gl_func_000240A0_rodata = 0x00000EB4;  /* agent-c run 141: AudioLoad_AsyncLoadInner cachePolicy 5-entry jumptable in game_libs rodata at +0xEB4; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_240A0.c) */
+gl_func_0002119C_rodata = 0x00000E7C;  /* agent-c run 141: AudioHeap_ResetStep resetStatus 5-entry jumptable in game_libs rodata at +0xE7C; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2119C.c) */

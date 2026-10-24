@@ -3351,146 +3351,18 @@ void game_libs_func_00021130(void) {
 //   placeholder jal-0 handler need USO reloc infra. Name
 //   pre-checked: no extern reuse (collision-safe). gl_func_00000000
 //   = canonical never-defined USO placeholder for the handler.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-/* Redecode 2026-07-31 (agent-h, 24378 lever kit). Target holds &D in $s1 for
- * the WHOLE fn (2-insn lui/addiu; our proxy prelude costs ~3 insns at top but
- * buys every body access as offset($s1)). Decode fixes vs the 2026-06-01 body:
- *  - SINGLE bounds check: bare switch (default: end), no pre-`if(st>=5)` (the
- *    old body double-emitted sltiu/beqz).
- *  - case-0 record cursor is a FRESH lui/addiu with %lo 11520 baked
- *    (&D+0x2D00 per-site extern), stride 0x160, i spilled across the K&R call.
- *  - timer early-outs store `t-1` BEFORE the 35668 call (sw sits in the jal
- *    delay slot -> store precedes call in C order).
- *  - case-1 sweep reloads the 0x2070 count ONLY inside the mutate arm (old
- *    body reloaded every iteration); flag test is `(u32)w >> 31`.
- *  - case-4 clear is stride-8 four-sh with the *(int*)(p+0x2140) pointer
- *    RELOADED per store (no x4/stride-32 unroll, no i/2 sra fixup): two
- *    walking pointers p(+4)/q(+2) from fresh &D / &D+12 materializations.
- *  - return is the BRANCHY ternary (li v0,1; cond -> move v0,zero), not
- *    slti/xori.
- * Jumptable itself still can't byte-match w/o rodata (documented). */
-extern int gl_func_00035668();
-extern int gl_func_0003579C();
-extern int gl_func_00036AD0();
-extern int gl_func_00035B04();
-extern u8 gl_d_2119C[];        /* held base -> $s1 (whole-fn) */
-extern char gl_d_2119C_proxy;  /* link-time-0 proxy: reloc sum defeats IDO const-fold so B stays held (docs/PATTERNS proxy-extern lever) */
-extern u8 gl_d_2119C_rec[];    /* case-0 record cursor site (&D+0x2D00) */
-extern u8 gl_d_2119C_p[];      /* case-4 clear-loop walking base (&D) */
-extern u8 gl_d_2119C_e[];      /* case-4 end sentinel (&D+12) */
-#define GL2119C_STATE (*(volatile unsigned char *)(B + 0x2CF0))
-extern void gl_2119c_fb();
+/* gl_func_0002119C EXACT 2026-10-23 (agent-c run 141, 92.61 -> 100): OoT's
+ * AudioHeap_ResetStep verbatim (case order 5..1, `volatile u8 resetStatus` as in
+ * OoT's AudioContext), minus the DiscardSampleBanks call. The old decode read the
+ * jumptable index as "state - 1" with the cases renumbered. WIRED via
+ * REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2 donor unit
+ * game_libs_o2_2119C.c (191/191 words); the splice renames the donor-local
+ * .rodata jumptable reloc to gl_func_0002119C_rodata, pinned to the USO table at
+ * +0xE7C. Body below is a placeholder for the splice. */
 int gl_func_0002119C(void) {
-    char *B;
-    int md;
-    int t;
-    int n;
-    int i;
-    int j;
-    char *rec;
-    char *r;
-    char *p;
-    char *q;
-    char *e;
-
-    B = (char *)gl_2119c_fb; /* run 139: fn-typed blank base (target lui s1 / addiu s1,s1,0, no reloc) replaces the proxy-sum */
-    if (*(short *)(B + 0x2034) == 2) {
-        md = 2;
-    } else {
-        md = 1;
-    }
-    switch (GL2119C_STATE - 1) {
-    case 0:
-        n = *(short *)(B + 0x2048);
-        i = 0;
-        if (n > 0) {
-            rec = (char *)gl_d_2119C_rec + 0x2D00;
-            do {
-                gl_func_00000000(rec);
-                n = *(short *)(B + 0x2048);
-                rec += 0x160;
-                i++;
-            } while (i < n);
-        }
-        *(int *)(B + 0x2CF4) = 2 / md;
-        GL2119C_STATE = GL2119C_STATE - 1;
-        break;
-    case 1:
-        t = *(int *)(B + 0x2CF4);
-        if (t != 0) {
-            *(int *)(B + 0x2CF4) = t - 1;
-            gl_func_00035668();
-            break;
-        }
-        n = *(int *)(B + 0x2070);
-        i = 0;
-        if (n > 0) {
-            do {
-                r = (char *)(*(int *)(B + 0x2CFC) + i * 208);
-                if ((*(unsigned int *)(r + 176) >> 31) != 0) {
-                    if ((*(unsigned char *)(r + 96) & 0xF) != 0) {
-                        *(float *)(r + 108) = *(float *)(B + 0x2050);
-                        r = (char *)(*(int *)(B + 0x2CFC) + i * 208);
-                        *(unsigned char *)(r + 96) =
-                            (*(unsigned char *)(r + 96) & 0xEF) | 0x10;
-                        n = *(int *)(B + 0x2070);
-                    }
-                }
-                i++;
-            } while (i < n);
-        }
-        *(int *)(B + 0x2CF4) = 8 / md;
-        GL2119C_STATE = GL2119C_STATE - 1;
-        break;
-    case 2:
-        t = *(int *)(B + 0x2CF4);
-        if (t != 0) {
-            *(int *)(B + 0x2CF4) = t - 1;
-            gl_func_00035668();
-            break;
-        }
-        *(int *)(B + 0x2CF4) = 2 / md;
-        GL2119C_STATE = GL2119C_STATE - 1;
-        break;
-    case 3:
-        gl_func_0003579C();
-        t = *(int *)(B + 0x2CF4);
-        if (t != 0) {
-            *(int *)(B + 0x2CF4) = t - 1;
-        } else {
-            GL2119C_STATE = GL2119C_STATE - 1;
-            gl_func_00036AD0();
-        }
-        break;
-    case 4:
-        gl_func_00035B04();
-        p = (char *)gl_d_2119C_p;
-        GL2119C_STATE = 0, e = (char *)gl_d_2119C_e + 12;
-        q = p;
-        do {
-            *(short *)(q + 0x214C) = *(short *)(B + 0x203C);
-            j = 0;
-            while (1) {
-                *(volatile short *)(*(volatile int *)(p + 0x2140) + j) = 0;
-                *(volatile short *)(*(volatile int *)(p + 0x2140) + j + 2) = 0;
-                *(volatile short *)(*(volatile int *)(p + 0x2140) + j + 4) = 0;
-                *(volatile short *)(*(volatile int *)(p + 0x2140) + j + 6) = 0;
-                j += 8;
-                if (j == 2816) {
-                    break;
-                }
-            }
-            p += 4;
-            q += 2;
-        } while (p != e);
-        break;
-    }
-    return (GL2119C_STATE < 3) ? 0 : 1;
+    volatile int ret = 0;
+    return ret;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002119C);
-#endif
 
 // gl_func_00021498 — sprite record-set (re)build state (0x894, 549 insns).
 // Base = bootup.uso Data sym1255 @0x345C0 through the typed alias D_345c0_21498;
