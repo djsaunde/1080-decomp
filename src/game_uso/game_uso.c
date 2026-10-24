@@ -2018,6 +2018,11 @@ out:
  *  (3) temp-pool phase shifts: p's def lands v0 (candidate m) vs target t8
  *      (pure temp), cascading the whole t-reg pool one slot; fp pool starts
  *      f4 vs target f6. Same class as docs W4 #3.
+ * 2026-10-23 (agent-g run 143) 66.15 -> 68.18 (240 -> 247 of 252 words): the
+ * zeros are NOT 0.0f literals: the side / w[1] zero stores are double literals
+ * (`= 0.0`) and the else-branch factor is `(f32)0.0`. All five then share the
+ * one held f20 zero (mtc1 zero,$f20 once) AND the three else muls survive
+ * (residual class 2 above closed); any one of the three left as 0.0f loses it.
  * INCLUDE_ASM stays the build path so ROM is byte-correct. */
 #ifdef NON_MATCHING
 extern float game_uso_func_070238(float);
@@ -2095,9 +2100,9 @@ void game_uso_func_00003558(char *s0) {
 
     mag = game_uso_func_070238(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
 
-    side[0] = 0.0f;
+    side[0] = 0.0;
     side[1] = e[1] * *(float *)(s0 + 0x130);
-    side[2] = 0.0f;
+    side[2] = 0.0;
     game_uso_func_072EE8(p + 0x30, (Vec3 *)side);
 
     game_uso_func_071028((Vec3 *)e);
@@ -2108,7 +2113,7 @@ void game_uso_func_00003558(char *s0) {
     w[1] = *(float *)(m + 0x34);
     w[2] = *(float *)(m + 0x38);
     w[0] = w[0] - va[0];
-    w[1] = 0.0f;
+    w[1] = 0.0;
     w[2] = w[2] - va[2];
 
     t = game_uso_func_070238(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
@@ -2125,9 +2130,9 @@ void game_uso_func_00003558(char *s0) {
         w[1] = w[1] * sc;
         w[2] = w[2] * sc;
     } else {
-        w[0] = w[0] * 0.0f;
-        w[1] = w[1] * 0.0f;
-        w[2] = w[2] * 0.0f;
+        w[0] = w[0] * (f32)0.0;
+        w[1] = w[1] * (f32)0.0;
+        w[2] = w[2] * (f32)0.0;
     }
 
     k = (mag - *(float *)(s0 + 0xB8)) * *(float *)(s0 + 0x118);
