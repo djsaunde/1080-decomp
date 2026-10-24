@@ -77,10 +77,8 @@ void gl_func_00071304(void *mq, void *m, unsigned int retraceCount) {
     gl_func_00000000_rstint711(saveMask);
 }
 
-/* game_libs_func_00071370: leading-nop FPU-control-reg wrapper
- * (cfc1/ctc1 pair, libreultra __osSetFpcCsr-style). Hand-written MIPS
- * asm; INCLUDE_ASM stays. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00071370);
+/* game_libs_func_00071370 = __osSetFpcCsr (game_libs libultra copy, + 1 leading pad word): handwritten cfc1/ctc1 assembly, real source in src/libultra/game_libs/setfpccsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/setfpccsr.s")
 
 /* gl_func_00071384 = libultra osPfsInitPak (io/pfsinitpak.c verbatim,
  * 1080 2.0-era OSPfs layout) -- the pfs-family head. The old NM body

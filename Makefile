@@ -2265,6 +2265,16 @@ BIN_O_FILES := $(patsubst assets/%.bin,build/assets/%.bin.o,$(BIN_FILES))
 # See feedback_non_matching_build_for_fuzzy_scoring.md.
 C_O_FILES_NM := $(patsubst src/%.c,build/non_matching/src/%.c.o,$(C_FILES))
 
+# Handwritten assembly sources (libultra .s and other hand-coded routines).
+# They are real assembly source, assembled in place inside their host .c unit
+# via asm-processor GLOBAL_ASM("src/libultra/...") -- no `nonmatching` marker,
+# so objdiff scores the assembled bytes. Make every host object depend on them
+# so editing a .s rebuilds both trees. See
+# docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources.
+HANDWRITTEN_S_FILES := $(shell find src/libultra -name '*.s' -type f 2>/dev/null)
+HANDWRITTEN_HOSTS := $(shell grep -rl --include='*.c' 'GLOBAL_ASM."src/libultra/' src 2>/dev/null)
+$(foreach h,$(HANDWRITTEN_HOSTS),$(eval build/$(h).o build/non_matching/$(h).o: $(HANDWRITTEN_S_FILES)))
+
 # Yay0-recompressed blocks (built from C, not extracted from baserom)
 YAY0_O_FILES := build/assets/mgrproc_uso_block1_yay0.bin.o                 build/assets/game_uso_block1_yay0.bin.o                 build/assets/timproc_uso_block1_yay0.bin.o                 build/assets/timproc_uso_block3_yay0.bin.o                 build/assets/timproc_uso_block5_yay0.bin.o                 build/assets/map4_data_uso_block2_yay0.bin.o
 

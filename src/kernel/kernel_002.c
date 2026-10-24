@@ -98,27 +98,6 @@ s32 func_80004BE0(RecvMesgQueue *mq, s32 *msg, s32 flag) {
 #pragma GLOBAL_ASM("asm/nonmatchings/kernel/func_80004BE0_pad.s")
 
 
-/* __osProbeTLB (libultra). Hand-written CP0/TLB assembly: probes the TLB for
- * the page mapping a virtual address and returns its physical address (or -1).
- * Byte-for-byte identical to libreultra/oot/papermario __osProbeTLB
- * (references/papermario/src/os/__osProbeTLB.s). Uses mfc0/mtc0 $10 (EntryHi),
- * tlbp, tlbr, mfc0 $0/$2/$3/$5 (Index/EntryLo0/EntryLo1/PageMask) — none of
- * which IDO C can emit, so this is a permanent hand-written INCLUDE_ASM cap
- * (same class as __osSetFpcCsr). Counterpart C wrapper would be
- * osVirtualToPhysical (libreultra src/os/virtualtophysical.c).
- *
- * The 1080 __osException dispatcher (func_800031F0) jal's the address-compute
- * tail at 0x80004DB8 directly as a code-share, which is why splat emits a
- * second label (func_80004DB8) mid-function; that tail must keep its own
- * symbol so the exception handler's jal resolves. Both fragments together
- * span 0x80004D20..0x80004DD4 (+2 alignment nops) and reconstruct the single
- * __osProbeTLB byte-exactly.
- * 2026-06-24 REFERENCE-CONFIRMED (decomp-search): __osProbeTLB is HANDWRITTEN .s in BOTH
- * libreultra (src/os/probetlb.s) and oot (src/libultra/os/probetlb.s) — uses tlbp/mtc0/
- * mfc0 (privileged, no C form). So INCLUDE_ASM is CANONICAL/PERMANENT here; 0.0% fuzzy is
- * correct (not a pending decode). */
-INCLUDE_ASM("asm/nonmatchings/kernel", __osProbeTLB);
-
-/* __osProbeTLB address-compute tail (shared jal target from __osException). */
-/* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80004DB8);
+/* __osProbeTLB (+ splat-split tail func_80004DB8, a jal target of __osException): libultra handwritten tlbp/tlbr CP0 assembly, real source in src/libultra/os/probetlb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/probetlb.s")
+GLOBAL_ASM("src/libultra/os/probetlb_2.s")

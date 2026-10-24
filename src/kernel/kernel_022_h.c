@@ -70,10 +70,7 @@ extern OSEventState __osEventStateTab[];
 /* func_8000969C split out to kernel_054.c (-O1, NON_MATCHING) */
 
 
-/* __osSetFpcCsr — hand-written assembly in libultra (cfc1 $v0,$31; ctc1 $a0,$31;
- * jr $ra; nop). Matches libreultra/src/os/setfpccsr.s exactly. IDO doesn't
- * parse GCC inline asm, so there's no C form; INCLUDE_ASM is correct. */
-/* 2026-06-24 REFERENCE-CONFIRMED (decomp-search): __osSetFpcCsr is HANDWRITTEN .s in
- * libreultra (src/os/setfpccsr.s) and oot (src/libultra/os/setfpccsr.s) — ctc1/cfc1 FPU
- * control reg (no C form). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is correct. */
-INCLUDE_ASM("asm/nonmatchings/kernel", __osSetFpcCsr);
+/* __osSetFpcCsr: libultra handwritten assembly (cfc1/ctc1 on the FPU control
+ * register; no C form). Real assembly source lives in src/libultra/os/; see
+ * docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/setfpccsr.s")
