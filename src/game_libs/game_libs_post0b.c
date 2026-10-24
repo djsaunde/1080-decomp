@@ -8185,7 +8185,12 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  * s1/p2 sentinel chain gives the a0-based `sw zero`. 90.52 -> 93.88, 48 words
  * = target. LEFT: tmp is coalesced into o's s0, so the home store is
  * `sw s0,76` before the arg setup (volatile) instead of the target's
- * `sw a0,76` in the jal delay; tmp[1] / if(0)&tmp / comma forms all store s0. */
+ * `sw a0,76` in the jal delay; tmp[1] / if(0)&tmp / comma forms all store s0.
+ * 2026-10-24 (agent-c run 148): read the arg0+0x40 word into a block-scoped x
+ * FIRST, then `gl(tmp = o, x)`: the volatile home store drops into the jal
+ * delay slot after the argument setup (target order). LEFT (1 word): the
+ * delay-slot store takes o's s0 (target the a0 argument copy); a copy local,
+ * arg0 reuse, tmp = a = o and an empty test after the call are all flat. */
 void *gl_func_0003E0F0(char *arg0) {
     char *volatile tmp;
     volatile int padA[4];
@@ -8215,8 +8220,7 @@ void *gl_func_0003E0F0(char *arg0) {
         zero[2] = 0.0f;
         gl_func_00000000(o + 0x30, zero);
     }
-    tmp = o;
-    gl_func_00000000(tmp, *(int *)(arg0 + 0x40));
+    { int x = *(int *)(arg0 + 0x40); gl_func_00000000(tmp = o, x); }
     return tmp;
 }
 
