@@ -1877,179 +1877,149 @@ int arg5;
     return (int)dl;
 }
 
-// gl_func_0001EF20 — STRUCTURAL PASS (0x328 / 202 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
-// bundle). A tween/step sprite-strip emitter in the game_libs
-// graphics family. -0x68 frame, ra/s1/s0 saved, a3 at sp+0x74.
-//
-//   ret gl_func_0001EF20(Gfx *dst, S *src, T *a2, int a3) {
-//     int x0 = (src->h_8  << 4) & 0xFFFF;       // scaled geom hw
-//     int x1 = (src->h_A  << 4) & 0xFFFF;
-//     int g  = a2->h_10;                         // compare key
-//     byte m = src->b_5;
-//     int g2 = a2->h_12;
-//     if (g == x0) { ... fast/degenerate path ... }
-//     int step = (x0 - x1) / (a3 >> 3);          // guarded sdiv
-//                                                 // (break 7 / break 6
-//                                                 //  div0 + ovf traps)
-//     ... ~160 words: loop advancing an accumulator by `step`,
-//         emitting interpolated F3D/sprite GBI commands into dst
-//         each iteration; cleanup + return ...
-//   }
-//
-// Struct-typing reference: src struct — halfwords src->8 / src->0xA
-//   (start/end coordinate, each <<4 fixed-point scaled), byte src->5
-//   (mode flag). a2 — halfwords a2->0x10 / a2->0x12 (comparison key /
-//   limit). The per-step delta is a signed division of the scaled
-//   coordinate range by (a3 >> 3); the two `break 7` / `break 6`
-//   words are the standard GCC div-by-zero / INT_MIN-overflow trap
-//   sequence, not real code paths. The remaining body is the
-//   interpolation loop that writes the sprite strip into the dst
-//   Gfx cursor. Sibling of the gl_func_0001EE78 F3D-emitter family.
-// Caps (DEFERRED): CLEAN single jr $ra. Tween/step sprite-strip
-//   emitter (gl_func_0001EE78 F3D family). Real-C STRUCTURAL body
-//   below per the analysis (scaled coords x0/x1 = src->8/->0xA <<4,
-//   compare key a2->0x10, guarded sdiv step = (x0-x1)/(a3>>3), then
-//   interpolation loop emitting GBI command pairs into dst). The
-//   break 7 / break 6 words are the standard GCC div0 / INT_MIN
-//   trap sequence (not real paths). Byte-match deferred — ~202-insn
-//   guarded-sdiv + multi-iteration emit, placeholder jals need USO
-//   reloc infra. Name pre-checked: no extern reuse (collision-safe).
-//   gl_func_00000000 = canonical never-defined USO placeholder.
-// gl_func_0001EF20 — CORRECTED RECONSTRUCTION (agent-e, 58.18->63.04% NM).
-// Decode-bug fixes vs prior pass:
-//   * field reads now u16/u8 (lhu/lbu), NOT 32-bit FW (prior used lw+lwl/lwr
-//     at wrong offsets — a1->8/->A/->5, a2->0x10/->0x12/->4);
-//   * a2->4 write is a BYTE store (sb), a2->0x10/->0x12 are HALFWORD stores
-//     (sh) — prior emitted sw / swl/swr;
-//   * var_t1 = (a2->b4 & 0x7F) computed LATE (matches target's andi-before-
-//     multu liveness) instead of early — saved one cross-call live value.
-//   * three baked USO jals wired to gl_ref_00031BC8 / 00031D00 / 00031D8C
-//     (undefined_syms_auto absolutes; were placeholder game_libs_func_0003443C
-//     R_MIPS_26).
-// REDECODE PASS 3 (agent-h, 66.94 -> 71.28% NM). Decode fixes:
-//   * branch test is *(u16*)arg1 & 1 (lhu), NOT lw — offset 0 is read at
-//     THREE widths (lhu for the test, lw for the v1w bitfield source,
-//     lbu for the &1<<2 term);
-//   * switch(arg5) has a DEFAULT arm (gfx = D_1A2DC, same cell the inline
-//     path loads) — prior C left gfx undefined off 1/2;
-//   * step/dm/t4 locals are s16 (sh/lh spill pairs + sll/sra-16 on the
-//     div results); keyCopy/raCopy are separate s32 copies of key/rk
-//     (target: move t1,t5 / move t3,ra) — copies feed the divs, the calls
-//     and the a2 writeback; the raw u16s feed the inline-path emit words;
-//   * cursor = arg0 homed to s0 at fn top (target move s0,a0; prior C
-//     spilled a0). Emitted body is now SIZE-EXACT (202/202 words).
-// RESIDUAL: uopt homing class. Target memory-homes 7 locals at sp
-//   40/48/52/80/82/84/86 (only s0=cursor, s1=arg1 get s-regs; rk rides
-//   $ra as scratch); our build s-regs them (frame -0x98/-0xA8). Probed
-//   2026-07-18: plain struct with target layout = scalarized to s-regs
-//   (6337C-lever inverse), volatile struct = over-pins (immediate
-//   sw/lw pairs + sh-truncated div results target lacks; 214 words).
-//   Only dm+keyCopy are volatile-consistent in the target; the rest have
-//   register phases — mixed homing not reachable by either lever.
-//   Likely original = expression-heavy source whose CSE temps (not named
-//   vars) crossed the calls; uopt memory-homes temps. NON_MATCHING.
-#ifdef NON_MATCHING
-
+/* Audio synthesis (the Zelda/EAD audio driver shared with OoT: 1EE78 =
+ * AudioSynth_FinalResample, 1EF20 = AudioSynth_ProcessEnvelope, 1F248 =
+ * AudioSynth_LoadWaveSamples, 1F3C8 = AudioSynth_ApplyHaasEffect; see
+ * references/oot/src/audio/internal/synthesis.c). Shared aspMain ABI macros and
+ * the NoteSampleState / NoteSynthesisState views, #undef'd after 1F3C8. In 1080 the
+ * sample-state bitfields are ONE u32 bitfield run (the reads are lw / lbu / lhu by
+ * position), followed by the u8 gain at +2. */
+typedef struct { u32 w0; u32 w1; } gl_aud_Awords;
+typedef union { gl_aud_Awords words; long long force_structure_alignment; } gl_aud_Acmd;
+#define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
+#define A_CLEARBUFF 2
+#define A_ADDMIXER 4
+#define A_RESAMPLE_ZOH 6
+#define A_SETBUFF 8
+#define A_DMEMMOVE 10
+#define A_LOADBUFF 20
+#define A_SAVEBUFF 21
+#define A_INIT 1
+#define OS_K0_TO_PHYSICAL(x) (u32)(((char *)(x)-0x80000000))
+#define ALIGN16(val) (((val) + 0xF) & ~0xF)
+#define ALIGN64(val) (((val) + 0x3F) & ~0x3F)
+#define aClearBuffer(pkt, dmem, size) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_CLEARBUFF, 24, 8) | _SHIFTL(dmem, 0, 24); _a->words.w1 = (u32)(size); }
+#define aLoadBuffer(pkt, addrSrc, dmemDest, size) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_LOADBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemDest, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrSrc); }
+#define aSaveBuffer(pkt, dmemSrc, addrDest, size) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SAVEBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemSrc, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrDest); }
+#define aSetBuffer(pkt, f, i, o, c) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SETBUFF, 24, 8) | _SHIFTL(f, 16, 8) | _SHIFTL(i, 0, 16)); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define aDMEMMove(pkt, i, o, c) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_DMEMMOVE, 24, 8) | _SHIFTL(i, 0, 24); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define aAddMixer(pkt, count, dmemi, dmemo, a4) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_ADDMIXER, 24, 8) | _SHIFTL(count >> 4, 16, 8) | _SHIFTL(a4, 0, 16)); _a->words.w1 = _SHIFTL(dmemi, 16, 16) | _SHIFTL(dmemo, 0, 16); }
+#define aResampleZoh(pkt, pitch, pitchAccu) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_RESAMPLE_ZOH, 24, 8) | _SHIFTL(pitch, 0, 16)); _a->words.w1 = _SHIFTL(pitchAccu, 0, 16); }
+#define DMEM_TEMP 0x3C0
+#define DMEM_HAAS_TEMP 0x5C0
+#define DMEM_LEFT_CH 0x940
+#define DMEM_RIGHT_CH 0xAE0
+#define A_ENVSETUP1 18
+#define A_ENVMIXER 19
+#define A_ENVSETUP2 22
+#define DMEM_1CH_SIZE 0x1A0
+#define aEnvSetup1(pkt, a, b, c, d) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_ENVSETUP1, 24, 8) | _SHIFTL(a, 16, 8) | _SHIFTL(b, 0, 16)); _a->words.w1 = _SHIFTL(c, 16, 16) | _SHIFTL(d, 0, 16); }
+#define aEnvSetup2(pkt, volLeft, volRight) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_ENVSETUP2, 24, 8); _a->words.w1 = (_SHIFTL(volLeft, 16, 16) | _SHIFTL(volRight, 0, 16)); }
+#define aEnvMixer(pkt, dmemi, count, swapLR, x0, x1, x2, x3, m, bits) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (bits | _SHIFTL(dmemi >> 4, 16, 8) | _SHIFTL(count, 8, 8) | _SHIFTL(swapLR, 4, 1) | _SHIFTL(x0, 3, 1) | _SHIFTL(x1, 2, 1) | _SHIFTL(x2, 1, 1) | _SHIFTL(x3, 0, 1)); _a->words.w1 = (u32)(m); }
+typedef struct {
+    u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1;
+    u32 stereoStrongRight : 1; u32 stereoStrongLeft : 1; u32 stereoHeadsetEffects : 1; u32 usesHeadsetPanEffects : 1;
+    u32 reverbIndex : 3; u32 bookOffset : 2; u32 isSyntheticWave : 1; u32 hasTwoParts : 1; u32 useHaasEffect : 1;
+    u8 gain; u8 haasEffectLeftDelaySize; u8 haasEffectRightDelaySize; u8 reverbVol; u8 harmonicIndexCurAndPrev; u8 combFilterSize;
+    u16 targetVolLeft; u16 targetVolRight; u16 frequencyFixedPoint; u16 combFilterGain;
+    s16 *waveSampleAddr;
+} gl_aud_SampleState;
+typedef struct { char pad[0x80]; s32 haasEffectDelayState[1]; } gl_aud_SynthBufs;
+typedef struct {
+    u8 restart; u8 sampleDmaIndex; u8 prevHaasEffectLeftDelaySize; u8 prevHaasEffectRightDelaySize; u8 reverbVol; u8 numParts;
+    u16 samplePosFrac; s32 samplePosInt; gl_aud_SynthBufs *synthesisBuffers; s16 curVolLeft; s16 curVolRight;
+} gl_aud_SynthState;
 extern int gl_ref_00031BC8();
 extern int gl_ref_00031D00();
 extern int gl_ref_00031D8C();
+extern u32 gl_aud_sEnvMixerOp;                  /* 0x1A2D0, pinned */
+extern u32 gl_aud_sEnvMixerLeftHaasDmemDests;   /* 0x1A2D4, pinned */
+extern u32 gl_aud_sEnvMixerRightHaasDmemDests;  /* 0x1A2D8, pinned */
+extern u32 gl_aud_sEnvMixerDefaultDmemDests;    /* 0x1A2DC, pinned */
+#define AudioSynth_ClearBuffer gl_ref_00031BC8
+#define AudioSynth_EnvSetup1 gl_ref_00031D00
+#define AudioSynth_EnvSetup2 gl_ref_00031D8C
 
-char *gl_func_0001EF20(char *arg0, char *arg1, char *arg2, s32 arg3, u16 arg4, s32 arg5) {
-    char *dst;
-    char *tmp;
-    s32 x0;
-    s32 x1;
-    u16 key;
-    u16 rk;
-    u8 mode;
-    s16 stepA;
-    s16 stepB;
-    s16 dm;
-    s16 t4v;
-    s32 m;
-    s32 keyCopy;
-    s32 raCopy;
-    s32 n;
-    s32 modeM;
-    s32 v1w;
-    s32 gfx;
+/* gl_func_0001EF20 EXACT 2026-10-23 (agent-c run 140, 71.65 -> 100): OoT's
+ * AudioSynth_ProcessEnvelope verbatim; the three dmemDests words and the
+ * envmixer op are the module data at 0x1A2D0..0x1A2DC (pinned externs: absolute
+ * casts give each load its own temp register instead of a1). */
+gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState, s32 aiBufLen,
+                                 u16 dmemSrc, s32 haasEffectDelaySide, s32 flags) {
+    u32 dmemDests;
+    u16 curVolLeft;
+    u16 targetVolLeft;
+    s32 phi_t1;
+    s16 reverbVol;
+    u16 curVolRight;
+    s16 rampLeft;
+    s16 rampRight;
+    s16 rampReverb;
+    s16 sourceReverbVol;
+    u16 targetVolRight;
+    s32 pad;
 
-    dst = arg0;
-    x0 = (*(u16 *)(arg1 + 0x8) << 4) & 0xFFFF;
-    x1 = (*(u16 *)(arg1 + 0xA) << 4) & 0xFFFF;
-    key = *(u16 *)(arg2 + 0x10);
-    mode = *(u8 *)(arg1 + 0x5);
-    rk = *(u16 *)(arg2 + 0x12);
-    keyCopy = key;
-    if (key != x0) {
-        n = arg3 >> 3;
-        stepA = (x0 - keyCopy) / n;
+    curVolLeft = synthState->curVolLeft;
+    targetVolLeft = sampleState->targetVolLeft;
+    targetVolLeft <<= 4;
+    reverbVol = sampleState->reverbVol;
+    curVolRight = synthState->curVolRight;
+    targetVolRight = sampleState->targetVolRight;
+    targetVolRight <<= 4;
+
+    if (targetVolLeft != curVolLeft) {
+        rampLeft = (targetVolLeft - curVolLeft) / (aiBufLen >> 3);
     } else {
-        stepA = 0;
-        n = arg3 >> 3;
+        rampLeft = 0;
     }
-    raCopy = rk;
-    if (rk != x1) {
-        stepB = (x1 - raCopy) / n;
+    if (targetVolRight != curVolRight) {
+        rampRight = (targetVolRight - curVolRight) / (aiBufLen >> 3);
     } else {
-        stepB = 0;
+        rampRight = 0;
     }
-    t4v = *(u8 *)(arg2 + 0x4);
-    modeM = mode & 0x7F;
-    if (t4v != mode) {
-        m = t4v & 0x7F;
-        dm = ((modeM - m) << 9) / n;
-        *(u8 *)(arg2 + 0x4) = mode;
+
+    sourceReverbVol = synthState->reverbVol;
+    phi_t1 = sourceReverbVol & 0x7F;
+
+    if (sourceReverbVol != reverbVol) {
+        rampReverb = (((reverbVol & 0x7F) - phi_t1) << 9) / (aiBufLen >> 3);
+        synthState->reverbVol = reverbVol;
     } else {
-        dm = 0;
-        m = t4v & 0x7F;
+        rampReverb = 0;
     }
-    *(u16 *)(arg2 + 0x10) = keyCopy + (stepA * n);
-    *(u16 *)(arg2 + 0x12) = raCopy + (stepB * n);
-    if (*(u16 *)(arg1 + 0x0) & 1) {
-        tmp = dst;
-        dst += 8;
-        gl_ref_00031BC8(tmp, 0x5C0, 0x1A0, stepA);
-        tmp = dst;
-        dst += 8;
-        gl_ref_00031D00(tmp, m * 2, dm, stepA, stepB);
-        tmp = dst;
-        dst += 8;
-        gl_ref_00031D8C(tmp, keyCopy, raCopy);
-        switch (arg5) {
-        case 1:
-            gfx = *(s32 *)0x1A2D4;
-            break;
-        case 2:
-            gfx = *(s32 *)0x1A2D8;
-            break;
-        default:
-            gfx = *(s32 *)0x1A2DC;
-            break;
+
+    synthState->curVolLeft = curVolLeft + (rampLeft * (aiBufLen >> 3));
+    synthState->curVolRight = curVolRight + (rampRight * (aiBufLen >> 3));
+
+    if (sampleState->useHaasEffect) {
+        AudioSynth_ClearBuffer(cmd++, DMEM_HAAS_TEMP, DMEM_1CH_SIZE);
+        AudioSynth_EnvSetup1(cmd++, phi_t1 * 2, rampReverb, rampLeft, rampRight);
+        AudioSynth_EnvSetup2(cmd++, curVolLeft, curVolRight);
+
+        switch (haasEffectDelaySide) {
+            case 1:
+                dmemDests = gl_aud_sEnvMixerLeftHaasDmemDests;
+                break;
+            case 2:
+                dmemDests = gl_aud_sEnvMixerRightHaasDmemDests;
+                break;
+            default:
+                dmemDests = gl_aud_sEnvMixerDefaultDmemDests;
+                break;
         }
     } else {
-        *(s32 *)(dst + 0x0) = (((m * 2) & 0xFF) << 0x10) | 0x12000000 | (dm & 0xFFFF);
-        *(s32 *)(dst + 0x4) = (stepA << 0x10) | (stepB & 0xFFFF);
-        dst += 8;
-        *(s32 *)(dst + 0x0) = 0x16000000;
-        *(s32 *)(dst + 0x4) = (key << 0x10) | (rk & 0xFFFF);
-        dst += 8;
-        gfx = *(s32 *)0x1A2DC;
+        aEnvSetup1(cmd++, phi_t1 * 2, rampReverb, rampLeft, rampRight);
+        aEnvSetup2(cmd++, curVolLeft, curVolRight);
+        dmemDests = gl_aud_sEnvMixerDefaultDmemDests;
     }
-    v1w = *(s32 *)(arg1 + 0x0);
-    *(s32 *)(dst + 0x4) = gfx;
-    *(s32 *)(dst + 0x0) = ((((s32) arg4 >> 4) & 0xFF) << 0x10) | *(s32 *)0x1A2D0 | ((arg3 & 0xFF) << 8)
-        | ((((t4v & 0x80) >> 7) & 1) << 4)
-        | ((((u32) (v1w << 6) >> 0x1F) & 1) << 3)
-        | ((*(u8 *)(arg1 + 0x0) & 1) << 2)
-        | ((((u32) (v1w << 4) >> 0x1F) & 1) << 1)
-        | (((u32) (v1w << 5) >> 0x1F) & 1);
-    return dst + 8;
+
+    aEnvMixer(cmd++, dmemSrc, aiBufLen, (sourceReverbVol & 0x80) >> 7, sampleState->stereoHeadsetEffects,
+              sampleState->usesHeadsetPanEffects, sampleState->stereoStrongRight,
+              sampleState->stereoStrongLeft, dmemDests, gl_aud_sEnvMixerOp);
+
+    return cmd;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001EF20);
-#endif
+
 
 // gl_func_0001F248 — STRUCTURAL PASS (0x180 / 96 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
@@ -2149,60 +2119,8 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001F248);
  * buffer at synthesisBuffers + 0x80 minus K0). sampleState delay sizes at +3 / +4,
  * synthState previous sizes at +2 / +3, synthesisBuffers at +0xC. The trailing
  * three zero words stay an all-zero SUFFIX_BYTES_FORCE (game_libs_func_0001F6A8's
- * alignment pad). Macros are local to this function (#undef'd after). */
-#undef _SHIFTL
-#undef A_CLEARBUFF
-#undef A_ADDMIXER
-#undef A_RESAMPLE_ZOH
-#undef A_SETBUFF
-#undef A_DMEMMOVE
-#undef A_LOADBUFF
-#undef A_SAVEBUFF
-#undef A_INIT
-#undef OS_K0_TO_PHYSICAL
-#undef ALIGN16
-#undef ALIGN64
-#undef aClearBuffer
-#undef aLoadBuffer
-#undef aSaveBuffer
-#undef aSetBuffer
-#undef aDMEMMove
-#undef aAddMixer
-#undef aResampleZoh
-#undef DMEM_TEMP
-#undef DMEM_HAAS_TEMP
-#undef DMEM_LEFT_CH
-#undef DMEM_RIGHT_CH
-typedef struct { u32 w0; u32 w1; } gl_1F3C8_Awords;
-typedef union { gl_1F3C8_Awords words; long long force_structure_alignment; } gl_1F3C8_Acmd;
-#define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
-#define A_CLEARBUFF 2
-#define A_ADDMIXER 4
-#define A_RESAMPLE_ZOH 6
-#define A_SETBUFF 8
-#define A_DMEMMOVE 10
-#define A_LOADBUFF 20
-#define A_SAVEBUFF 21
-#define A_INIT 1
-#define OS_K0_TO_PHYSICAL(x) (u32)(((char *)(x)-0x80000000))
-#define ALIGN16(val) (((val) + 0xF) & ~0xF)
-#define ALIGN64(val) (((val) + 0x3F) & ~0x3F)
-#define aClearBuffer(pkt, dmem, size) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_CLEARBUFF, 24, 8) | _SHIFTL(dmem, 0, 24); _a->words.w1 = (u32)(size); }
-#define aLoadBuffer(pkt, addrSrc, dmemDest, size) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_LOADBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemDest, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrSrc); }
-#define aSaveBuffer(pkt, dmemSrc, addrDest, size) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SAVEBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemSrc, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrDest); }
-#define aSetBuffer(pkt, f, i, o, c) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SETBUFF, 24, 8) | _SHIFTL(f, 16, 8) | _SHIFTL(i, 0, 16)); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
-#define aDMEMMove(pkt, i, o, c) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_DMEMMOVE, 24, 8) | _SHIFTL(i, 0, 24); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
-#define aAddMixer(pkt, count, dmemi, dmemo, a4) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_ADDMIXER, 24, 8) | _SHIFTL(count >> 4, 16, 8) | _SHIFTL(a4, 0, 16)); _a->words.w1 = _SHIFTL(dmemi, 16, 16) | _SHIFTL(dmemo, 0, 16); }
-#define aResampleZoh(pkt, pitch, pitchAccu) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_RESAMPLE_ZOH, 24, 8) | _SHIFTL(pitch, 0, 16)); _a->words.w1 = _SHIFTL(pitchAccu, 0, 16); }
-#define DMEM_TEMP 0x3C0
-#define DMEM_HAAS_TEMP 0x5C0
-#define DMEM_LEFT_CH 0x940
-#define DMEM_RIGHT_CH 0xAE0
-typedef struct { char pad[0x80]; s32 haasEffectDelayState[1]; } gl_1F3C8_SynthBufs;
-typedef struct { u8 pad0[3]; u8 haasEffectLeftDelaySize; u8 haasEffectRightDelaySize; } gl_1F3C8_SampleState;
-typedef struct { u8 pad0[2]; u8 prevHaasEffectLeftDelaySize; u8 prevHaasEffectRightDelaySize; u8 pad4[8]; gl_1F3C8_SynthBufs *synthesisBuffers; } gl_1F3C8_SynthState;
-
-gl_1F3C8_Acmd *gl_func_0001F3C8(gl_1F3C8_Acmd *cmd, gl_1F3C8_SampleState *sampleState, gl_1F3C8_SynthState *synthState, s32 size, s32 flags, s32 haasEffectDelaySide) {
+ * alignment pad). Uses the audio block above 1EF20; its macros are #undef'd after. */
+gl_aud_Acmd *gl_func_0001F3C8(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState, s32 size, s32 flags, s32 haasEffectDelaySide) {
     u16 dmemDest;
     u16 pitch;
     u8 prevHaasEffectDelaySize;
@@ -2259,6 +2177,16 @@ gl_1F3C8_Acmd *gl_func_0001F3C8(gl_1F3C8_Acmd *cmd, gl_1F3C8_SampleState *sample
 
     return cmd;
 }
+#undef A_ENVSETUP1
+#undef A_ENVMIXER
+#undef A_ENVSETUP2
+#undef DMEM_1CH_SIZE
+#undef aEnvSetup1
+#undef aEnvSetup2
+#undef aEnvMixer
+#undef AudioSynth_ClearBuffer
+#undef AudioSynth_EnvSetup1
+#undef AudioSynth_EnvSetup2
 #undef _SHIFTL
 #undef A_CLEARBUFF
 #undef A_ADDMIXER

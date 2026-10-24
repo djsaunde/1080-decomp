@@ -4980,3 +4980,7 @@ bu_90cc_fz2 = 0x00000000;  /* func_000090CC NM: fn-typed blank base of the sp174
 gl_221d8_fg = 0x00000000;  /* gl_func_000221D8 NM: fn-typed blank base of the &D block held in s6 */
 gl_253c4_fd = 0x00000000;  /* game_libs_func_000253C4 NM: fn-typed blank base of the &D block */
 gl_2119c_fb = 0x00000000;  /* gl_func_0002119C NM: fn-typed blank base of the &D block held in s1 */
+gl_aud_sEnvMixerOp = 0x0001A2D0;  /* gl_func_0001EF20: sEnvMixerOp module data word (lui 2 / lw -0x5D30, baked) */
+gl_aud_sEnvMixerLeftHaasDmemDests = 0x0001A2D4;  /* gl_func_0001EF20: sEnvMixerLeftHaasDmemDests */
+gl_aud_sEnvMixerRightHaasDmemDests = 0x0001A2D8;  /* gl_func_0001EF20: sEnvMixerRightHaasDmemDests */
+gl_aud_sEnvMixerDefaultDmemDests = 0x0001A2DC;  /* gl_func_0001EF20: sEnvMixerDefaultDmemDests */
