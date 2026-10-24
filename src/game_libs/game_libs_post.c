@@ -10757,97 +10757,83 @@ int gl_func_0002A014(int a0, unsigned char a1) {
 // splice (GAMELIBS_2A07C_DONOR + REPLACE_FUNC_BODY on the post objects +
 // game_libs_func_0002A07C_rodata = 0x1020 pin + C_FILES filter-out).
 #ifdef NON_MATCHING
-/* NM (agent-c 2026-09-11): 117/119 words, LCS 100 by strict operand match
- * (was 92.03 on the headless 2A080). Residual = the two copy-prop-immune
- * pure copies already logged by the 2026-07-30 redecode (3E1B0 class):
- * the target's `or v0,a2,zero` in the beqz delay slot (opcode copy that
- * the 250/249/245 and 243/242 compares read from v0 -- ours compares a2
- * directly) and the loop arm's `or a0,v0,zero; sll t0,a0,2` index copy
- * (ours `sll t1,v0,2`); everything downstream is the same tree with the
- * ring one register off. Spellings that fold: named copy, `register`,
- * `switch (cmd)`, unsigned param/local, `switch (a2 - 242)` with 0..13
- * cases, volatile launder, `a0 = (char *)n` index, `n = n - 1` else-arm
- * redefinition; `a2 -= 242` before the switch DOES materialise `or
- * v0,a2,zero` but keeps the normalised value in a2 (`sltiu at,a2`), and a
- * dead `if (cmd == 0) a2 = 1;` costs 3 words. Loop-arm shape lever that
- * landed: inline deref for the FIRST +0x18 read (`a1[a1[0x18] + 0x13] -= 1`
- * = ring t5), named `n` for the second (colours v0). Pop arm: guard first,
- * then `m = (n - 1) & 0xFF` = one v1 web (addiu in the bnez delay slot). */
+/* run 141 (agent-c): OoT's AudioSeq_HandleScriptFlowControl verbatim (93.87 -> 96.58;
+ * 119 = 119 words). Left: the depth temp of the CALL / LOOP arms colours t1 (target
+ * v0), every later temp one t-register off; splitting `depth++` or the SM64 comma form
+ * is worse. Exact route once that falls: the 29CCC-recipe donor with
+ * game_libs_func_0002A07C_rodata = 0x1020. */
 extern int gl_func_0003F05C();
-int game_libs_func_0002A07C(char *a0, char *a1, int a2, int a3) {
-    int cmd;
-    int m;
-    int n;
+typedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2A07C_SeqScriptState;
+typedef struct { char pad[0x18]; u8 *seqData; } gl_2A07C_SeqPlayer;
+extern int gl_func_0003F05C();
 
-    cmd = a2;
-    switch (a2) {
-        case 255:
-            n = *(unsigned char *)(a1 + 0x18);
-            if (n == 0) {
+s32 game_libs_func_0002A07C(gl_2A07C_SeqPlayer *seqPlayer, gl_2A07C_SeqScriptState *state, s32 cmd, s32 cmdArg) {
+    switch (cmd) {
+        case 0xFF:
+            if (state->depth == 0) {
                 return -1;
             }
-            m = (n - 1) & 0xFF;
-            *(unsigned char *)(a1 + 0x18) = m;
-            *(int *)a1 = ((int *)a1)[m + 1];
+            state->pc = state->stack[--state->depth];
             break;
-        case 253:
-            return gl_func_0003F05C(a1);
-        case 254:
+
+        case 0xFD:
+            return gl_func_0003F05C(state);
+
+        case 0xFE:
             return 1;
-        case 252:
-            n = *(unsigned char *)(a1 + 0x18);
-            ((int *)a1)[n + 1] = *(int *)a1;
-            *(unsigned char *)(a1 + 0x18) += 1;
-            *(int *)a1 = *(int *)(a0 + 0x18) + (a3 & 0xFFFF);
+
+        case 0xFC:
+            state->stack[state->depth++] = state->pc;
+            state->pc = seqPlayer->seqData + (u16)cmdArg;
             break;
-        case 248:
-            n = *(unsigned char *)(a1 + 0x18);
-            *(char *)(a1 + n + 0x14) = a3;
-            ((int *)a1)[*(unsigned char *)(a1 + 0x18) + 1] = *(int *)a1;
-            *(unsigned char *)(a1 + 0x18) += 1;
+
+        case 0xF8:
+            state->remLoopIters[state->depth] = cmdArg;
+            state->stack[state->depth++] = state->pc;
             break;
-        case 247:
-            *(unsigned char *)(a1 + *(unsigned char *)(a1 + 0x18) + 0x13) -= 1;
-            n = *(unsigned char *)(a1 + 0x18);
-            m = n;
-            if (*(unsigned char *)(a1 + n + 0x13) != 0) {
-                *(int *)a1 = ((int *)a1)[m];
+
+        case 0xF7:
+            state->remLoopIters[state->depth - 1]--;
+            if (state->remLoopIters[state->depth - 1] != 0) {
+                state->pc = state->stack[state->depth - 1];
             } else {
-                *(unsigned char *)(a1 + 0x18) = n - 1;
+                state->depth--;
             }
             break;
-        case 246:
-            *(unsigned char *)(a1 + 0x18) -= 1;
+
+        case 0xF6:
+            state->depth--;
             break;
-        case 245:
-        case 249:
-        case 250:
-        case 251:
-            if (cmd == 250) {
-                if (*(signed char *)(a1 + 0x19) != 0) break;
+
+        case 0xF5:
+        case 0xF9:
+        case 0xFA:
+        case 0xFB:
+            if (cmd == 0xFA && state->value != 0) {
+                break;
             }
-            if (cmd == 249) {
-                if (*(signed char *)(a1 + 0x19) >= 0) break;
+            if (cmd == 0xF9 && state->value >= 0) {
+                break;
             }
-            if (cmd == 245) {
-                if (*(signed char *)(a1 + 0x19) < 0) break;
+            if (cmd == 0xF5 && state->value < 0) {
+                break;
             }
-            *(int *)a1 = *(int *)(a0 + 0x18) + (a3 & 0xFFFF);
+            state->pc = seqPlayer->seqData + (u16)cmdArg;
             break;
-        case 242:
-        case 243:
-        case 244:
-            if (cmd == 243) {
-                if (*(signed char *)(a1 + 0x19) != 0) break;
+
+        case 0xF2:
+        case 0xF3:
+        case 0xF4:
+            if (cmd == 0xF3 && state->value != 0) {
+                break;
             }
-            if (cmd == 242) {
-                if (*(signed char *)(a1 + 0x19) >= 0) break;
+            if (cmd == 0xF2 && state->value >= 0) {
+                break;
             }
-            *(int *)a1 = *(int *)a1 + (signed char)a3;
-            break;
-        default:
+            state->pc += (s8)(cmdArg & 0xFF);
             break;
     }
+
     return 0;
 }
 #else
