@@ -6525,6 +6525,14 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
     asyncLoad->curRamAddr += asyncLoad->chunkSize;
 }
 
+#undef gAudioCtx
+#undef AudioLoad_GetSampleBank
+#undef AudioLoad_RelocateFontAndPreloadSamples
+#undef AudioLoad_AsyncDmaUnkMedium
+#undef AudioLoad_AsyncDma
+#undef ASYNC_TBLTYPE
+#undef ASYNC_ID
+#undef ASYNC_STATUS
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000250C8);
 #endif
