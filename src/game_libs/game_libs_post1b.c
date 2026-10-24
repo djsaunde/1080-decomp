@@ -5783,8 +5783,9 @@ void gl_func_0006A5B0(int a0) {
  * trampolines (lui k0/addiu k0/jr k0) at the head, sd/ld 64-bit register
  * saves, 11 CP0 words (mfc0/mtc0), and dispatch tables 3 insns in.
  * Inexpressible in IDO C (reference_1080_mips3_runtime_helpers class):
- * PERMANENT INCLUDE_ASM -- do not graft or decode. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006A5F0);
+ * Now real assembly source (below). */
+/* game_libs_func_0006A5F0 = __osExceptionPreamble + __osException (game_libs libultra copy): real source in src/libultra/game_libs/exceptasm.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/exceptasm.s")
 
 /* game_libs_func_0006AD68 = libultra __osPopThread (os/exceptasm.s) --
  * HANDWRITTEN assembly (LEAF in the exception-handler file; verified
