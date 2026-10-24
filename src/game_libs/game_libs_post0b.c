@@ -21069,6 +21069,10 @@ extern int D_00000000;
  * of a stack home), the vtable store is written before the 0xFFFF store, and
  * the back-link copy n is block-scoped. RESIDUAL: the target spills n (copy of
  * o) to 40(sp) and l to 44(sp) instead of reusing s0 for n. */
+/* agent-g run 155: the discarded link call goes through a void alias (kit IX dead-v0 lever):
+ * l now reloads into v0 as in the target, 95.00 -> 95.56. Residual: n (copy of o) spilled to 40 and
+ * reloaded into a1 in the target; here it stays coalesced with o in s0. */
+extern void gl_func_00000000_51448v();
 void gl_func_00051448(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int D_51448_vt;
@@ -21093,7 +21097,7 @@ void gl_func_00051448(char *a0) {
     l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);
     {
     char *n = o;
-    gl_func_00000000(l + 0x10, n);
+    gl_func_00000000_51448v(l + 0x10, n);
     if (*(int *)(n + 0x14) != 0) {
         *(int *)(n + 4) = 1;
     }
