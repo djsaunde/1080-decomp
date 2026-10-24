@@ -12022,6 +12022,7 @@ extern char gl_d_42938_qd;
 } while (0)
 
 void game_libs_func_00042938(void) {
+    volatile int padq[10]; /* run 138: frame = target */
     char *e;
     char *cx, *nd;
     int n;
