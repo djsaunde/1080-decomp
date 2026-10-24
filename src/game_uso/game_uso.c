@@ -5642,7 +5642,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         q = (f32 *)((int)arg2 + 0x30);
         p = 0; if (1) { p = &sp1D4; }
         w = p;
-        lenf = (sp1B0.x * dotv.x) + (sp1B0.z * dotv.z);
+        lenf = (sp1B0.x * dotv.x) + (dotv.z * sp1B0.z);
         if (w != NULL || (w = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
             tz = *(f32 *)((int)q + 8);
             tx = *q;
@@ -5660,7 +5660,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         *(f32 *)(arg1 + 0x8C) = sp11C.z;
 
         two = 2.0f;
-        dot = lenf + ((*(f32 *)(*(s32 *)(arg1 + 0x30) + 0x348) * *(f32 *)(arg1 + 0xDC)) / 2);
+        dot = lenf + ((*(f32 *)(arg1 + 0xDC) * *(f32 *)(*(s32 *)(arg1 + 0x30) + 0x348)) / 2);
         prodA.x = sp1B0.x * dot;
         prodA.y = sp1B0.y * dot;
         prodA.z = sp1B0.z * dot;
@@ -5743,7 +5743,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
     *(Tri3i *)&sp174 = *(Tri3i *)&sp90;
     *(Tri3i *)&spB4 = *(Tri3i *)&sp174;
 
-    if ((((spCC.x * spC0.x) + (spCC.z * spC0.z)) * 0.5f) < ((spCC.x * spB4.x) + (spCC.z * spB4.z))) {
+    if ((((spCC.x * spC0.x) + (spCC.z * spC0.z)) * 0.5f) < ((spCC.z * spB4.z) + (spB4.x * spCC.x))) {
         *(Tri3i *)&sp174 = *(Tri3i *)(arg1 + 0x84);
         *(f32 *)(arg1 + 0x90) = sp174.x;
         *(f32 *)(arg1 + 0x94) = sp174.y;
@@ -5791,7 +5791,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         *(Tri3i *)&sp174 = *(Tri3i *)&sp48;
         *(Tri3i *)&sp6C = *(Tri3i *)&sp174;
 
-        dot = (spCC.x * sp6C.x) + (spCC.z * sp6C.z)
+        dot = (sp6C.x * spCC.x) + (spCC.z * sp6C.z)
             + (*(f32 *)(*(s32 *)(arg1 + 0x30) + 0x348) * *(f32 *)(arg1 + 0xDC));
         sp3C.x = spCC.x * dot;
         sp3C.y = spCC.y * dot;
@@ -5802,7 +5802,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         *(f32 *)(arg1 + 0x88) += sp78.y;
         *(f32 *)(arg1 + 0x8C) += sp78.z;
 
-        lenf = 250.0f * *(f32 *)(arg3 + 0x54) * *(f32 *)(arg1 + 0xE0);
+        lenf = 250.0f * *(f32 *)(arg1 + 0xE0) * *(f32 *)(arg3 + 0x54);
         sp60.x *= lenf;
         sp60.y *= lenf;
         sp60.z *= lenf;
