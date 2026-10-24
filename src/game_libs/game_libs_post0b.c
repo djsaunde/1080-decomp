@@ -20589,7 +20589,7 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
     rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg1 * 8) + 4) * 6);
     sum[0] = sum[0] + rec[0]; sum[1] += rec[1]; sum[2] += rec[2];
     rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg1 * 8) + 6) * 6);
-    sum[0] = sum[0] + rec[0]; sum[1] += rec[1]; sum[2] += rec[2];
+    sum[0] = rec[0] + sum[0]; sum[1] += rec[1]; sum[2] += rec[2];
     v[4].x = sum[0]; v[4].y = sum[1]; v[4].z = sum[2];
     rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg2 * 8) + 2) * 6);
     sum[0] = rec[0]; sum[1] = rec[1]; sum[2] = rec[2];
