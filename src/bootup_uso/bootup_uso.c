@@ -951,9 +951,9 @@ void func_00001A44(char *a0) {
     func_1a44_emit(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count],
                    (f32)*(s32 *)(a0 + 0x2C), (f32)*(s32 *)(a0 + 0x30), (f32)*(s32 *)(a0 + 0x34),
                    1.0f,
-                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA0) * *(f32 *)(g + 0x128),
-                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA4) * *(f32 *)(g + 0x12C),
-                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA8) * *(f32 *)(g + 0x130));
+                   *(f32 *)(g + 0x128) * *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA0),
+                   *(f32 *)(g + 0x12C) * *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA4),
+                   *(f32 *)(g + 0x130) * *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA8));
     W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x01020040,
           func_1a44_emit2(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count]));
     _n = (*(Ms1A44 **)(gc + 0x3C))->count;
