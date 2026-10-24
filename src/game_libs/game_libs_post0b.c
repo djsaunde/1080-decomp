@@ -11358,6 +11358,7 @@ void gl_func_00041D40(s32 arg0) {
     char *L;
     char *e;
     char **r;
+    volatile int padq[10]; /* run 138: frame = target */
 
     gl_func_00034458((char *)&D_00000000 + 0x1F6B4);
     FW(*(char **)&D_00000000, 0xC) = 0;
