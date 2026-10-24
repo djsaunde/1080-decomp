@@ -14454,6 +14454,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00046790);
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000469A8)();
+/* run 151 (agent-c, 64.91 -> 67.64) DECODE fixes read from the target: both vtable
+ * deltas are s16 (`lh 96(v0)` / `lh 24(s0)`); self->0x240 is re-read after the
+ * first vcall (the target reloads it, no sp spill); the 0x240 store goes to
+ * &D_00000000 + 0x254 (`lui/addiu v1; sw 596(v1)`), not absolute 0x254.
+ * FLAG: length 384 -> 380 (target 412) -- the removed spill pair was wrong, the
+ * remaining gap is the target's s0 copy of the vcall result, the held
+ * self+0x100 / self+0x78 pointers and the sp+72 home of the 0x148->0xF0 word. */
 void gl_func_000469A8(char *arg0, s32 arg1) {
     s32 sp48;
     s32 temp_a1;
@@ -14473,20 +14480,20 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     gl_func_00034458(temp_s1);
     temp_v1 = FW(arg0, 0x240);
     temp_v0 = FW(temp_v1, 0x28);
+    temp_a1 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
     temp_v1 = FW(arg0, 0x240);
-    temp_a1 = ((GP_000469A8)FW(temp_v0, 0x64))(FW(temp_v0, 0x60) + temp_v1);
     sp48 = FW(FW(temp_v1, 0x148), 0xF0);
     var_t0 = (FW((temp_v1 + 0x100), 0x4) & 2) != 0;
     if (var_t0 != 0) {
-        var_t0 = (FW(temp_v1, 0x78) & 2) != 0;
+        var_t0 = (FW(temp_v1 + 0x78, 0) & 2) != 0;
     }
-    gl_func_00034458(temp_s1, temp_a1, sp48, FW(temp_v1, 0x78) & 4, var_t0, temp_v1 + 0xDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
+    gl_func_00034458(temp_s1, temp_a1, sp48, FW(temp_v1 + 0x78, 0) & 4, var_t0, temp_v1 + 0xDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
     temp_t6 = FW(arg0, 0x240);
-    *(char **)0x254 = temp_t6;
+    *(char **)((char *)&D_00000000 + 0x254) = temp_t6;
     FW(temp_t6, 0x158) = temp_s1;
     temp_v0_2 = FW(arg0, 0x290);
     temp_s0 = FW(temp_v0_2, 0x28);
-    ((GP_000469A8)FW(temp_s0, 0x1C))(FW(temp_s0, 0x18) + temp_v0_2);
+    ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
     temp_a3 = FW(temp_s1, 0xC);
     temp_a1_2 = FW(temp_a3, 0x4);
     FW(temp_a3, 0x4) = (s32) (temp_a1_2 + 1);
