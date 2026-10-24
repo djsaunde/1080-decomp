@@ -720,7 +720,13 @@ void timproc_uso_b1_func_000011D0(char *a0) {
  * one-level typed-member spelling and (f32)255 cast-literal both no-op
  * (two-level chain unavailable — direct member).  Frame 328 vs 336
  * (one[] sits 312-324 vs target 320-332; the 8B slot pair returns if
- * the rotation is fixed?). */
+ * the rotation is fixed?).
+ * 2026-10-24 (agent-g run 160) 85.58 -> 85.69, 229 -> 233 of 238 words: the
+ * glyph loop is an INDEX loop `for (i = 0; i < count; i++)` over buf[i] with
+ * x = pos6 + i * 13 (uopt strength-reduces both and LFTRs the test to
+ * i*13 != count*13, but keeps count live in a caller-saved register spilled
+ * around every call -- the target's t1 / sp+152 juggle); padq dropped (frame
+ * stays 336); sum order count*13 + pt4 + pt2 + pt3 (target addu order). */
 void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
     f32 one[4];
     char buf[128];
@@ -733,7 +739,6 @@ void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
     volatile s16 *pt4;
     volatile s16 *pt2;
     volatile s16 *pt3;
-    volatile int padq[2]; /* run 138: frame = target */
     int min, sec;
     int glyph;
     int x, pos4, posA1, pos6;
@@ -772,31 +777,22 @@ void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
         pt4 = *(volatile s16 **)(arg0 + 0x70C);
         pt2 = *(volatile s16 **)(arg0 + 0x6DC);
         pt3 = *(volatile s16 **)(arg0 + 0x6C4);
-        x = 160 - ((count * 13 + pt2[0x10] + pt3[0x10] + pt4[0x10] + 16) / 2);
+        x = 160 - ((count * 13 + pt4[0x10] + pt2[0x10] + pt3[0x10] + 16) / 2);
         pos4 = pt3[0x10] + x + 4;
         posA1 = pt2[0x10] + pos4 + 4;
         pos6 = pt4[0x10] + posA1 + 8;
         xmid = arg1 + 0x32;
         timproc_uso_b1_func_000000B0(w6FC, posA1, xmid, 2);
-        p = buf;
-        i = 0;
-        xp = pos6;
-        if (count > 0) {
-            bound = count * 13;
-            do {
-                c = *p;
-                if (c == 0x5B) {
-                    *p = 0xA;
-                } else if (c == 0x5D) {
-                    *p = 0xB;
-                } else {
-                    *p = c - 0x30;
-                }
-                timproc_uso_b1_func_000000B0(p714, xp, (arg1 - *(s16 *)(*(char **)(arg0 + 0x724) + 0x22) / 2) + 0x32, *p * glyph, glyph);
-                i += 0xD;
-                p += 1;
-                xp += 0xD;
-            } while (i != bound);
+        for (i = 0; i < count; i++) {
+            c = buf[i];
+            if (c == 0x5B) {
+                buf[i] = 0xA;
+            } else if (c == 0x5D) {
+                buf[i] = 0xB;
+            } else {
+                buf[i] = c - 0x30;
+            }
+            timproc_uso_b1_func_000000B0(p714, pos6 + i * 13, (arg1 - *(s16 *)(*(char **)(arg0 + 0x724) + 0x22) / 2) + 0x32, buf[i] * glyph, glyph);
         }
         timproc_uso_b1_func_000000B0(saved64, (s32)(255.0f * *(f32 *)(arg0 + 0x72C)), one, 0xFF);
         timproc_uso_b1_func_000000B0(saved64, pos4, xmid, 2);
