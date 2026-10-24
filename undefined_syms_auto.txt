@@ -5022,3 +5022,4 @@ gl_2B09C_bufParams = 0x00000000;  /* agent-c run 141: gl_func_0002B09C audio buf
 gl_func_0002B5F4_rodata = 0x000010AC;  /* agent-c run 141: SeqLayerProcessScriptStep3 SQ(127.0f) literal in game_libs rodata at +0x10AC; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2B5F4.c) */
 gl_2B5F4_audioRandom = 0x00000000;  /* agent-c run 141: gl_func_0002B5F4 audioRandom base (+0x2154) */
 gl_func_0002C7A4_rodata = 0x000013E0;  /* agent-c run 141: SequencePlayerProcessSequence jumptables (45 entries at +0x13E0, 113 at +0x1494) in game_libs rodata; donor-local .rodata relocs renamed by replace-function-body.py (game_libs_o2_2C7A4.c) */
+gl_27E24_gAudioCtx = 0x00000000;  /* agent-c run 141: gl_func_00027E24 typed gAudioCtx extern (resampleRate 0x204C, ticksPerUpdateInv 0x2050, numNotes 0x2070, notes 0x2CFC) */

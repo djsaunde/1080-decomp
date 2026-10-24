@@ -9044,231 +9044,197 @@ void game_libs_func_00027DC0(char *a0) {
  * tested locals that could be uninitialised there; the one empty test left is on
  * act inside proc (always assigned on every path into proc). 96.91 -> 97.02 fuzzy,
  * 318 -> 316 words (target 318). */
-#ifdef NON_MATCHING
-typedef struct { unsigned flag:1, live:1, b29:1, p3:8, mode:2, rest:19; } gl_27E24_Bits;
+/* gl_func_00027E24 EXACT 2026-10-24 (agent-c run 141, 97.37 -> 100): OoT's
+ * Audio_ProcessNotes (playback.c) in the older form: Audio_InitSampleState takes
+ * (note, &attrs) (no sampleStates[] entry), the two disabling arms inside `out:` end
+ * with `goto skip` instead of `continue` (the loop tail is shared), and the
+ * combFilterGain copy precedes combFilterSize. Load-bearing: gAudioCtx as a TYPED
+ * extern struct (gl_27E24_gAudioCtx; the `*(T *)&D` cast form emits the notes[i]
+ * addu base-first), NoteSampleState bitField0 + bitField1 as one u32 bitfield run
+ * (lw tests), the Stereo union copies (the held &sampleStateAttrs.stereo in s7 the
+ * old NM could not produce), playbackState / sampleState pointer locals. */
+typedef union { struct { u8 unused : 2; u8 bit2 : 2; u8 strongRight : 1; u8 strongLeft : 1; u8 stereoHeadsetEffects : 1; u8 usesHeadsetPanEffects : 1; } s; u8 asByte; } gl_27E24_Stereo;
+typedef struct { u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 rest : 29; } gl_27E24_SeqPlayer;
 typedef struct {
-    char p0[3];
-    unsigned char b3;
-    unsigned char b4;
-    char p5[4];
-    unsigned char b9;
-    char pA[2];
-    unsigned char bC;
-    char pD[2];
-    unsigned char bF;
-    char p10[0x10];
-    unsigned short h20;
-    char p22[0x4C - 0x22];
-    gl_27E24_Bits *bits;
-    char p50[0xDC - 0x50];
-    int wDC;
-    unsigned char bE0;
-} gl_27E24_Def;
+    char pad0[3]; u8 muteBehavior; u8 targetReverbVol; char pad5[4]; u8 bookOffset; char padA[2]; u8 gain; char padD[2]; u8 combFilterGain;
+    char pad10[0x20 - 0x10]; u16 combFilterSize; char pad22[0x4C - 0x22]; gl_27E24_SeqPlayer *seqPlayer;
+    char pad50[0xDC - 0x50]; s16 *filter; gl_27E24_Stereo stereo;
+} gl_27E24_Channel;
+typedef struct gl_27E24_Layer {
+    u8 enabled : 1; u8 finished : 1; u8 muted : 1; u8 continuousNotes : 1; u8 bit3 : 1; u8 ignoreDrumPan : 1; u8 bit1 : 1; u8 notePropertiesNeedInit : 1;
+    gl_27E24_Stereo stereo; char pad2[4]; u8 notePan; char pad7[0x2C - 7]; struct gl_27E24_Note *note; char pad30[0x40 - 0x30];
+    f32 noteVelocity; f32 noteFreqScale; char pad48[0x50 - 0x48]; gl_27E24_Channel *channel;
+} gl_27E24_Layer;
+typedef struct { u8 reverb; u8 gain; u8 pan; gl_27E24_Stereo stereo; u8 combFilterGain; char pad5; u16 combFilterSize; f32 freqScale; f32 velocity; s16 *filter; } gl_27E24_Attrs;
+typedef struct { u8 reverbVol; u8 gain; u8 pan; gl_27E24_Stereo stereo; f32 frequency; f32 velocity; char padC[4]; s16 *filter; u8 combFilterGain; char pad15; u16 combFilterSize; } gl_27E24_SampleStateAttrs;
+typedef struct { u8 unk0 : 1; u8 hang : 1; u8 decay : 1; u8 release : 1; u8 state : 4; } gl_27E24_AdsrBits;
+typedef struct { char pad0[0xC]; char *pool; } gl_27E24_ListItem;
 typedef struct {
-    union { gl_27E24_Bits bf; unsigned char b[4]; } u;
-    char p4[2];
-    unsigned char b6;
-    char p7[0x2C - 7];
-    void *owner;
-    char p30[0x40 - 0x30];
-    float f40;
-    float f44;
-    char p48[8];
-    gl_27E24_Def *def;
-} gl_27E24_Obj;
-typedef struct { unsigned char b0, b1, b2, b3, b4; char p5; unsigned short h6; float f8, fC; int w10; } gl_27E24_Snd;
-typedef struct { unsigned x:3, on:1, nib:4, rest:24; } gl_27E24_St;
+    u8 priority; char pad1[3]; u8 unk_04; char pad5[3]; f32 portamentoFreqScale; f32 vibratoFreqScale;
+    struct gl_27E24_Layer *prevParentLayer; struct gl_27E24_Layer *parentLayer; struct gl_27E24_Layer *wantedParentLayer;
+    gl_27E24_Attrs attributes;
+    struct { union { gl_27E24_AdsrBits s; u8 asByte; } action; char pad1[0xB]; f32 fadeOutVel; } adsr;
+    char pad40[0x80 - 0x40];
+} gl_27E24_PlaybackState;
 typedef struct {
-    unsigned char b0;
-    char p1[3];
-    unsigned char b4;
-    char p5[3];
-    float f8;
-    float fC;
-    char p10[4];
-    int obj;
-    int w18;
-    gl_27E24_Snd snd;
-    gl_27E24_St st;
-    char p34[8];
-    float f3C;
-} gl_27E24_Sub;
-typedef struct {
-    char p0[0xC];
-    char *c;
-    char p10[0x30 - 0x10];
-    gl_27E24_Sub s;
-    char p70[0xB0 - 0x70];
-    gl_27E24_Bits e;
-    char pB4[0xD0 - 0xB4];
-} gl_27E24_Rec;
-typedef struct {
-    char p0[0x204C];
-    float f204C;
-    float f2050;
-    char p2054[0x2070 - 0x2054];
-    int count;
-    char p2074[0x2CFC - 0x2074];
-    gl_27E24_Rec *recs;
-} gl_27E24_GS;
-typedef struct {
-    unsigned char b0, b1, b2, b3;
-    float f4;
-    float f8;
-    char pC[4];
-    int w10;
-    unsigned char b14;
-    char p15;
-    unsigned short h16;
-} gl_27E24_Buf;
-extern gl_27E24_GS D_345c0_27E24;
-extern float gl_func_00000000_27E24f();
+    union {
+        struct { u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1; u32 stopLoop : 1; u32 hasTwoParts : 1; u32 isSyntheticWave : 1; u32 usesHeadsetPanEffects : 1; u32 rest : 24; } bitField0;
+        struct { u32 b0 : 8; u32 reverbIndex : 3; u32 bookOffset : 2; u32 isSyntheticWave : 1; u32 hasTwoParts : 1; u32 useHaasEffect : 1; u32 rest : 16; } bitField1;
+    } u;
+} gl_27E24_SampleState;
+typedef struct gl_27E24_Note {
+    gl_27E24_ListItem listItem; char pad10[0x30 - 0x10];
+    gl_27E24_PlaybackState playbackState;
+    gl_27E24_SampleState sampleState;
+    char padB4[0xD0 - 0xB4];
+} gl_27E24_Note;
+typedef struct { char pad[0x204C]; f32 resampleRate; f32 ticksPerUpdateInv; char pad2054[0x2070 - 0x2054]; s32 numNotes; char pad2074[0x2CFC - 0x2074]; gl_27E24_Note *notes; } gl_27E24_Ctx;
+extern gl_27E24_Ctx gl_27E24_gAudioCtx;
+
+#define gl_27E24_NO_LAYER ((gl_27E24_Layer *)(-1))
+extern f32 gl_func_00000000_27E24f();
 extern void gl_ref_0003BE70();
 extern void gl_ref_0003D414();
 
 void gl_func_00027E24(void) {
-    gl_27E24_Rec *r;
-    gl_27E24_Sub *s;
-    gl_27E24_Bits *e;
-    gl_27E24_Obj *o;
-    gl_27E24_Def *d;
-    gl_27E24_Obj *w;
-    gl_27E24_Snd *q;
-    gl_27E24_Buf buf;
-    unsigned char v;
-    float f;
-    unsigned char *pb;
-    int i;
-    unsigned char act;
-    int pad0;
-    int pad1;
+    s32 pad[2];
+    gl_27E24_Attrs *attrs;
+    gl_27E24_SampleState *sampleState2;
+    gl_27E24_SampleState *sampleState;
+    gl_27E24_Note *note;
+    gl_27E24_PlaybackState *playbackState;
+    gl_27E24_SampleStateAttrs sampleStateAttrs;
+    u8 bookOffset;
+    f32 scale;
+    s32 i;
 
-    pb = &buf.b3;
-    for (i = 0; i < D_345c0_27E24.count; i++) {
-        r = &D_345c0_27E24.recs[i];
-        s = &r->s;
-        if (s->obj != -1) {
-            o = (gl_27E24_Obj *)s->obj;
-            if ((unsigned)o < 0x7FFFFFFF) continue;
-            if (o->owner != r && s->b4 == 0) {
-                s->st.on = 1;
-                s->f3C = D_345c0_27E24.f2050;
-                s->b0 = 1;
-                s->b4 = 2;
-                act = s->b0;
-                goto chk;
-            } else if (o->u.bf.flag || s->b4 != 0 || s->b0 <= 0) {
-                if (o->def->bits == NULL) {
-                    gl_func_00000000(o->def);
-                    s->b0 = 1;
-                    s->b4 = 1;
-                    continue;
-                }
-                if (!o->def->bits->b29 || !(o->def->b3 & 0x40)) {
-                    act = s->b0;
-                    goto chk;
-                }
-                goto detach;
-            } else {
-            detach:
-                gl_func_00000000(o);
-                gl_func_00000000(r);
-                gl_ref_0003D414(r->c + 0x10, r);
-                s->b0 = 1;
-                s->b4 = 2;
+    for (i = 0; i < gl_27E24_gAudioCtx.numNotes; i++) {
+        note = &gl_27E24_gAudioCtx.notes[i];
+        playbackState = &note->playbackState;
+        if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
+            if ((u32)playbackState->parentLayer < 0x7FFFFFFF) {
+                continue;
             }
-        } else if (s->b4 == 0 && s->b0 > 0) {
+
+            if (note != playbackState->parentLayer->note && playbackState->unk_04 == 0) {
+                playbackState->adsr.action.s.release = 1;
+                playbackState->adsr.fadeOutVel = gl_27E24_gAudioCtx.ticksPerUpdateInv;
+                playbackState->priority = 1;
+                playbackState->unk_04 = 2;
+                goto out;
+            } else if (!playbackState->parentLayer->enabled && playbackState->unk_04 == 0 &&
+                       playbackState->priority >= 1) {
+            } else if (playbackState->parentLayer->channel->seqPlayer == NULL) {
+                gl_func_00000000(playbackState->parentLayer->channel);
+                playbackState->priority = 1;
+                playbackState->unk_04 = 1;
+                continue;
+            } else if (playbackState->parentLayer->channel->seqPlayer->muted &&
+                       (playbackState->parentLayer->channel->muteBehavior & 0x40)) {
+            } else {
+                goto out;
+            }
+
+            gl_func_00000000(playbackState->parentLayer);
+            gl_func_00000000(&note->listItem);
+            gl_ref_0003D414(note->listItem.pool + 0x10, &note->listItem);
+            playbackState->priority = 1;
+            playbackState->unk_04 = 2;
+        } else if (playbackState->unk_04 == 0 && playbackState->priority >= 1) {
             continue;
         }
-        act = s->b0;
-    chk:
-        if (act != 0) {
-            e = &r->e;
-            act = s->b4;
-            if (act > 0 || e->b29) {
-                if (s->st.nib == 0 || e->b29) {
-                    if (s->w18 != -1) {
-                        gl_func_00000000(r);
-                        w = (gl_27E24_Obj *)s->w18;
-                        if (w->def != NULL) {
-                            gl_func_00000000(r, w);
-                            gl_func_00000000(r);
-                            gl_func_00000000(r);
-                            gl_func_00000000(r);
-                            gl_func_00000000(r->c + 0x30, r);
-                            s->w18 = -1;
-                            goto proc;
+
+    out:
+        if (playbackState->priority != 0) {
+            if (1) {}
+            sampleState = &note->sampleState;
+            if (playbackState->unk_04 >= 1 || sampleState->u.bitField0.finished) {
+                if (playbackState->adsr.action.s.state == 0 || sampleState->u.bitField0.finished) {
+                    if (playbackState->wantedParentLayer != gl_27E24_NO_LAYER) {
+                        gl_func_00000000(note);
+                        if (playbackState->wantedParentLayer->channel != NULL) {
+                            gl_func_00000000(note, playbackState->wantedParentLayer);
+                            gl_func_00000000(note);
+                            gl_func_00000000(note);
+                            gl_func_00000000(&note->listItem);
+                            gl_func_00000000(note->listItem.pool + 0x30, &note->listItem);
+                            playbackState->wantedParentLayer = gl_27E24_NO_LAYER;
+                        } else {
+                            gl_func_00000000(note);
+                            gl_func_00000000(&note->listItem);
+                            gl_func_00000000(note->listItem.pool, &note->listItem);
+                            playbackState->wantedParentLayer = gl_27E24_NO_LAYER;
+                            goto skip;
                         }
-                        gl_func_00000000(r, w);
-                        gl_func_00000000(r);
-                        gl_func_00000000(r->c, r);
-                        s->w18 = -1;
                     } else {
-                        o = (gl_27E24_Obj *)s->obj;
-                        if ((int)o != -1) o->u.b[0] |= 2;
-                        gl_func_00000000(r);
-                        gl_func_00000000(r);
-                        gl_func_00000000(r->c, r);
-                    }
-                } else {
-                    goto proc;
-                }
-            } else if (s->st.nib == 0) {
-                o = (gl_27E24_Obj *)s->obj;
-                if ((int)o != -1) o->u.b[0] |= 2;
-                gl_func_00000000(r);
-                gl_func_00000000(r);
-                gl_func_00000000(r->c, r);
-            } else {
-            proc:
-                f = gl_func_00000000_27E24f(&s->st);
-                gl_func_00000000(r);
-                q = &s->snd;
-                if (s->b4 == 1 || s->b4 == 2) {
-                    buf.f4 = q->f8;
-                    buf.f8 = q->fC;
-                    buf.b2 = q->b2;
-                    buf.b0 = q->b0;
-                    *pb = q->b3;
-                    buf.b1 = q->b1;
-                    buf.w10 = q->w10;
-                    buf.b14 = q->b4;
-                    buf.h16 = q->h6;
-                    v = e->mode;
-                } else {
-                    o = (gl_27E24_Obj *)s->obj;
-                    d = o->def;
-                    buf.f4 = o->f44;
-                    buf.f8 = o->f40;
-                    buf.b2 = o->b6;
-                    if (o->u.b[1] == 0) {
-                        *pb = d->bE0;
-                    } else {
-                        *pb = o->u.b[1]; if (act) {}
-                    }
-                    buf.b0 = d->b4;
-                    buf.b1 = d->bC;
-                    buf.w10 = d->wDC;
-                    buf.b14 = d->bF;
-                    buf.h16 = d->h20;
-                    v = d->b9 & 7;
-                    if (d->bits->b29 && (d->b3 & 8)) {
-                        buf.f4 = 0.0f;
-                        buf.f8 = 0.0f;
+                        if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
+                            playbackState->parentLayer->bit1 = 1;
+                        }
+                        gl_func_00000000(note);
+                        gl_func_00000000(&note->listItem);
+                        gl_func_00000000(note->listItem.pool, &note->listItem);
+                        goto skip;
                     }
                 }
-                buf.f4 *= s->fC * s->f8;
-                buf.f4 *= D_345c0_27E24.f204C;
-                buf.f8 *= f;
-                gl_ref_0003BE70(r, &buf);
-                e->mode = v;
+            } else if (playbackState->adsr.action.s.state == 0) {
+                if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
+                    playbackState->parentLayer->bit1 = 1;
+                }
+                gl_func_00000000(note);
+                gl_func_00000000(&note->listItem);
+                gl_func_00000000(note->listItem.pool, &note->listItem);
+                goto skip;
             }
+
+            scale = gl_func_00000000_27E24f(&playbackState->adsr);
+            gl_func_00000000(note);
+            attrs = &playbackState->attributes;
+            if (playbackState->unk_04 == 1 || playbackState->unk_04 == 2) {
+                sampleStateAttrs.frequency = attrs->freqScale;
+                sampleStateAttrs.velocity = attrs->velocity;
+                sampleStateAttrs.pan = attrs->pan;
+                sampleStateAttrs.reverbVol = attrs->reverb;
+                sampleStateAttrs.stereo = attrs->stereo;
+                sampleStateAttrs.gain = attrs->gain;
+                sampleStateAttrs.filter = attrs->filter;
+                sampleStateAttrs.combFilterGain = attrs->combFilterGain;
+                sampleStateAttrs.combFilterSize = attrs->combFilterSize;
+                bookOffset = sampleState->u.bitField1.bookOffset;
+            } else {
+                gl_27E24_Layer *layer = playbackState->parentLayer;
+                gl_27E24_Channel *channel = layer->channel;
+
+                sampleStateAttrs.frequency = layer->noteFreqScale;
+                sampleStateAttrs.velocity = layer->noteVelocity;
+                sampleStateAttrs.pan = layer->notePan;
+                if (layer->stereo.asByte == 0) {
+                    sampleStateAttrs.stereo = channel->stereo;
+                } else {
+                    sampleStateAttrs.stereo = layer->stereo;
+                }
+                sampleStateAttrs.reverbVol = channel->targetReverbVol;
+                sampleStateAttrs.gain = channel->gain;
+                sampleStateAttrs.filter = channel->filter;
+                sampleStateAttrs.combFilterGain = channel->combFilterGain;
+                sampleStateAttrs.combFilterSize = channel->combFilterSize;
+                bookOffset = channel->bookOffset & 0x7;
+
+                if (channel->seqPlayer->muted && (channel->muteBehavior & 8)) {
+                    sampleStateAttrs.frequency = 0.0f;
+                    sampleStateAttrs.velocity = 0.0f;
+                }
+            }
+
+            sampleStateAttrs.frequency *= playbackState->vibratoFreqScale * playbackState->portamentoFreqScale;
+            sampleStateAttrs.frequency *= gl_27E24_gAudioCtx.resampleRate;
+            sampleStateAttrs.velocity *= scale;
+            gl_ref_0003BE70(note, &sampleStateAttrs);
+            sampleState->u.bitField1.bookOffset = bookOffset;
+        skip:;
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00027E24);
-#endif
+#undef gl_27E24_NO_LAYER
 
 /* game_libs_func_0002831C: range-bucket lookup returning &rec[0]/[1]/[2]
  * (a0+8/+16/+24). splat mis-split the two later branch targets into
