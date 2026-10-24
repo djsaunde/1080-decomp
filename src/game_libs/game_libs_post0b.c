@@ -29758,6 +29758,9 @@ void game_libs_func_0006087C(int *a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000608A4)();
+/* 2026-10-23 agent-g (run 143) 78.36 -> 83.91 (109 -> 114 of 116 words): decode fix -- the
+ * callee's first argument and the 0x21C..0x228 stores are the &D_00000000 context (target holds it
+ * in s4: `addiu a0,s4,0`, `sw ..,0x224(s4)`), not a literal 0 / absolute addresses. */
 void gl_func_000608A4(char *arg0, s32 arg1) {
     s32 sp64;
     s32 sp60;
@@ -29771,7 +29774,7 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
     char *temp_a1;
 
     if (arg1 != 0) {
-        gl_func_00034458(0, (char *)1);
+        gl_func_00034458((char *)&D_00000000, (char *)1);
     }
     sp64 = 0x408;
     sp60 = 0;
@@ -29779,7 +29782,7 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
         FW(arg0, 0x24) = 8;
         FW(arg0, 0x28) = 8;
     } else {
-        gl_func_00034458(0, (int)arg0 + 0x48);
+        gl_func_00034458((char *)&D_00000000, (int)arg0 + 0x48);
     }
     temp_a1 = FW(arg0, 0x2C);
     temp_lo = FW(arg0, 0x1C) * FW(arg0, 0x24);
@@ -29787,14 +29790,14 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
     if (var_s5 >= 0x123) {
         var_s5 = 0x122;
     }
-    gl_func_00034458(0, temp_a1, FW(arg0, 0x30), temp_lo + 8, (FW(arg0, 0x14) * FW(arg0, 0x28)) + 0x10, &sp60);
-    *(s32 *)0x224 = 8;
-    *(s32 *)0x228 = 8;
-    *(s32 *)0x21C = FW(arg0, 0x2C) + 4;
-    *(s32 *)0x220 = FW(arg0, 0x30) + 1;
-    gl_func_00034458(0, FW(arg0, 0x40), var_s5);
-    *(s32 *)0x224 = FW(arg0, 0x24);
-    *(s32 *)0x228 = FW(arg0, 0x28);
+    gl_func_00034458((char *)&D_00000000, temp_a1, FW(arg0, 0x30), temp_lo + 8, (FW(arg0, 0x14) * FW(arg0, 0x28)) + 0x10, &sp60);
+    *(s32 *)((char *)&D_00000000 + 0x224) = 8;
+    *(s32 *)((char *)&D_00000000 + 0x228) = 8;
+    *(s32 *)((char *)&D_00000000 + 0x21C) = FW(arg0, 0x2C) + 4;
+    *(s32 *)((char *)&D_00000000 + 0x220) = FW(arg0, 0x30) + 1;
+    gl_func_00034458((char *)&D_00000000, FW(arg0, 0x40), var_s5);
+    *(s32 *)((char *)&D_00000000 + 0x224) = FW(arg0, 0x24);
+    *(s32 *)((char *)&D_00000000 + 0x228) = FW(arg0, 0x28);
     temp_a0 = FW(arg0, 0x18);
     var_v1 = temp_a0 + FW(arg0, 0x14);
     var_s2 = temp_a0;
@@ -29803,9 +29806,9 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
         var_s0 = temp_a0 * 8;
         do {
             if (FW(arg0, 0x10) < FW((FW(arg0, 0x0) + var_s0), 0x4)) {
-                *(s32 *)0x220 = var_s3;
-                *(s32 *)0x21C = FW(arg0, 0x2C) + 4;
-                gl_func_00034458(0, *(int*)(FW(arg0, 0x0) + var_s0) + FW(arg0, 0x10), var_s5);
+                *(s32 *)((char *)&D_00000000 + 0x220) = var_s3;
+                *(s32 *)((char *)&D_00000000 + 0x21C) = FW(arg0, 0x2C) + 4;
+                gl_func_00034458((char *)&D_00000000, *(int*)(FW(arg0, 0x0) + var_s0) + FW(arg0, 0x10), var_s5);
                 var_v1 = FW(arg0, 0x18) + FW(arg0, 0x14);
             }
             var_s2 += 1;
@@ -29813,7 +29816,7 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
             var_s3 += FW(arg0, 0x28);
         } while (var_s2 < var_v1);
     }
-    gl_func_00034458(0, 0);
+    gl_func_00034458((char *)&D_00000000, 0);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000608A4);
