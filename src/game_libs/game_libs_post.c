@@ -12222,70 +12222,67 @@ void gl_func_0002AB34(char *o) {
 //   layout gl_func_000230D0 / 00023914 use) — byte-match needs USO
 //   mnemonic disasm. Real-C STRUCTURAL body below per the analysis.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-/* 2026-07 full re-decode vs real target words (old body missed the whole
- * detach/reattach tail): block-A success FALLS INTO the shared tail via goto;
- * a1==0 adds an extra pre-call; the classifier result is WRITTEN BACK to
- * o->0x2C (sw in beq delay = unconditional); tail re-validates o->0x2C
- * ownership (entry+0x44 backlink) before the final notify call. Constant-1
- * compares are constant-first (`1 == bit`), backlink compares var-first.
- * Size exact (87 words) via named `b` (destructive two-statement web -> v1)
- * + named `one`. RESIDUAL (~31/87 renamed): our `one` web steals $a1
- * (relocating the a1 param to a3, o to a2, prologue +1 rotated) where the
- * target holds 1 in dead $a0 and o in a3; def-order swap / plain `a1 == 1`
- * don't flip it — coloring-preference cap, stays NM wrap. */
-int gl_func_0002ABC0(char *o, int a1) {
-    int w = *(int *)o;
-    char *list;
-    char *a2;
-    char *n;
-    int e0, b, one;
+/* gl_func_0002ABC0 EXACT 2026-10-23 (agent-c run 140, 84.24 -> 100): OoT's
+ * AudioSeq_SeqLayerProcessScriptStep5 (seqplayer.c) verbatim, with the layer flags as
+ * one u32 bitfield run (lw + shifts) and `sameTunedSample` declared u32: then its
+ * `== 1` test shares the unsigned constant 1 the bitfield compares hold in a0 (an s32
+ * parameter gets its own `li at,1`). All five callees are blank USO jals. */
+typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; } gl_2ABC0_Sample;
+typedef struct { gl_2ABC0_Sample *sample; f32 tuning; } gl_2ABC0_TunedSample;
+typedef struct gl_2ABC0_Layer {
+    u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 continuousNotes : 1; u32 bit3 : 1; u32 ignoreDrumPan : 1; u32 bit1 : 1; u32 notePropertiesNeedInit : 1;
+    char pad1[0x2C - 4]; struct gl_2ABC0_Note *note; char pad30[0x4C - 0x30]; gl_2ABC0_TunedSample *tunedSample;
+} gl_2ABC0_Layer;
+typedef struct { char pad[0x30]; gl_2ABC0_Layer *prevParentLayer; gl_2ABC0_Layer *parentLayer; gl_2ABC0_Layer *wantedParentLayer; } gl_2ABC0_PlaybackState;
+typedef struct gl_2ABC0_Note { char listItem[0x10]; gl_2ABC0_PlaybackState playbackState; } gl_2ABC0_Note;
+#define Audio_InitSyntheticWave gl_func_00000000
+#define Audio_SeqLayerNoteDecay gl_func_00000000
+#define Audio_AllocNote (gl_2ABC0_Note *)gl_func_00000000
+#define Audio_NoteVibratoInit gl_func_00000000
+#define Audio_NotePortamentoInit gl_func_00000000
 
-    if ((w << 2) >= 0) {
-        list = *(char **)(o + 0x4C);
-        if (list != 0) {
-            e0 = *(int *)(*(int **)list);
-            if (((unsigned)e0 >> 0x1C) == 2 && ((unsigned)(e0 << 4) >> 0x1E) != 0) {
-                *(unsigned char *)o = *(unsigned char *)o | 0x20;
-                return -1;
-            }
-        }
+s32 gl_func_0002ABC0(gl_2ABC0_Layer *layer, u32 sameTunedSample) {
+    gl_2ABC0_Note *note;
+
+    if (!layer->muted && (layer->tunedSample != NULL) && (layer->tunedSample->sample->codec == 2) &&
+        (layer->tunedSample->sample->medium != 0)) {
+        layer->muted = 1;
+        return -1;
     }
-    b = w << 3;
-    one = 1;                 /* named const web -> dead a0 across all 4 compares */
-    b = (unsigned)b >> 0x1F; /* destructive two-statement web -> v1, retested */
-    if ((one == b) && (one == ((unsigned)(w << 6) >> 0x1F))) {
+
+    if (layer->continuousNotes == 1 && layer->bit1 == 1) {
         return 0;
     }
-    if (one == b) {
-        a2 = *(char **)(o + 0x2C);
-        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) { /* run 139: the old empty test on n here read n before any assignment (banned); every legal test / init spelling scores the same as none */
-            if (*(char **)(o + 0x4C) == 0) {
-                gl_func_00000000(a2, o);
-            }
-            goto tail;
+
+    if (layer->continuousNotes == 1 && layer->note != NULL && layer->bit3 && sameTunedSample == 1 &&
+        layer->note->playbackState.parentLayer == layer) {
+        if (layer->tunedSample == NULL) {
+            Audio_InitSyntheticWave(layer->note, layer);
+        }
+    } else {
+        if (!sameTunedSample) {
+            Audio_SeqLayerNoteDecay(layer);
+        }
+
+        layer->note = Audio_AllocNote(layer);
+        if (layer->note != NULL && layer->note->playbackState.parentLayer == layer) {
+            Audio_NoteVibratoInit(layer->note);
         }
     }
-    if (a1 == 0) {
-        gl_func_00000000(o);
+
+    if (layer->note != NULL && layer->note->playbackState.parentLayer == layer) {
+        note = layer->note;
+
+        Audio_NotePortamentoInit(note);
     }
-    n = (char *)gl_func_00000000(o);
-    *(char **)(o + 0x2C) = n;
-    if (n != 0) {
-        if (o == *(char **)(n + 0x44)) {
-            gl_func_00000000(n);
-        }
-    }
-tail:
-    a2 = *(char **)(o + 0x2C);
-    if ((a2 != 0) && (o == *(char **)(a2 + 0x44))) {
-        gl_func_00000000(a2);
-    }
+
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002ABC0);
-#endif
+#undef Audio_InitSyntheticWave
+#undef Audio_SeqLayerNoteDecay
+#undef Audio_AllocNote
+#undef Audio_NoteVibratoInit
+#undef Audio_NotePortamentoInit
 
 // gl_func_0002AD1C — STRUCTURAL PASS (0x380 / 224 words ≈ 0.9KB, no
 // episode). Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION
