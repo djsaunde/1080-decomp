@@ -377,8 +377,8 @@ void *h2hproc_uso_func_00000620(char *p, int a1, int a2, int a3arg) {
         *(int *)(p + 0x28) = (int)&D_h2h_620_d3;
         *(int *)(p + 0x568) = 0;
         gl_func_00000000(p, a1, &D_00000000 + 0x3C8, a2);
-        *(int *)(p + 0x528) = 0;
         *(int *)(p + 0x6A8) = a3arg;
+        *(int *)(p + 0x528) = 0;
         gl_func_00000000(p);
         gl_func_00000000(&D_00000000 + 0x3D8, 0);
         if ((a3 = (char *)gl_func_00000000(0xF0)) != 0) {
