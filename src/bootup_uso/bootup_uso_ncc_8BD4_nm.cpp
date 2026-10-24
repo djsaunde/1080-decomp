@@ -6,6 +6,8 @@
  * -> destination), products held in locals. Compound `+=` / `|=` on the ctx
  * fields are written `x = x + 1` (edg takes the lvalue address for compound
  * assignment: an extra addiu per site). 91.85 -> 96.67, 208 words (= cfe; target 209).
+ * The skip set as three chained `if (!skip) skip = code == K;` statements (one bnez per
+ * test like the target): 96.67 -> 96.83, 209 words = target.
  * RESIDUAL: the code copy into a1 for the skip chain, negamt colour (target ft4),
  * homes (inline locals take 6 frame words; frame 0xC8 vs 0xB8).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
@@ -34,7 +36,9 @@ extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
     if (fl & 0x1F0) {
         if (amt < 0.0f) {
             code = (int)func_00000000(*(int *)(*(char **)&D_00000000 + 0x84), *(int *)(b + 0x14C));
-            skip = (code == 0x61 || code == 0x62 || code == 0x63);
+            skip = code == 0x61;
+            if (!skip) skip = code == 0x62;
+            if (!skip) skip = code == 0x63;
             if (!skip) {
                 *(int *)((*(char **)(b + 0x170)) + 0x938) = *(int *)((*(char **)(b + 0x170)) + 0x938) + 1;
                 *(short *)((*(char **)(b + 0x170)) + 0x9A4) = (short)code;
