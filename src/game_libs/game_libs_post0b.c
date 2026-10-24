@@ -6417,6 +6417,9 @@ extern char D_3BE1C_1EE9C[];
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
+/* run 151 (agent-c, 76.33 -> 76.69): the grid cell index is an if/else with
+ * `cell = -1` in the else arm (target `b join` after the multiply; 1524 -> 1528 of
+ * 1568 bytes). The list pointer in the same form scores lower here. */
 s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     s32 cnt;
     s32 cell;
@@ -6460,11 +6463,12 @@ s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     p.x *= D_3BE1C_128[0];
     p.y *= D_3BE1C_128[1];
     p.z *= D_3BE1C_128[2];
-    cell = -1;
     c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
     c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
     if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
         cell = c[0] * self->col->grid->w + c[1];
+    } else {
+        cell = -1;
     }
     if (cell < 0) {
         return 0;
