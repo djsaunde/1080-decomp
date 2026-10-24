@@ -5665,7 +5665,7 @@ int *gl_func_0003AE58(int *a0, int *a1) {
             tbl = *(int*)((char*)a1 + 0x4C);
             while (1) {
                 if (tbl != 0) {
-                    ent = *(int*)((char*)a1 + 0x68) + *(short*)(tbl + i * 2) * 8;
+                    ent = *(short*)(tbl + i * 2) * 8 + *(int*)((char*)a1 + 0x68);
                 } else {
                     ent = *(int*)((char*)a1 + 0x68) + i * 8;
                 }
