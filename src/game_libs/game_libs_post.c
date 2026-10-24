@@ -10302,95 +10302,77 @@ int game_libs_func_00029934(int *a0) {
 //   div/sub + cvt.s.w) — byte-match needs USO mnemonic disasm.
 //   Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-/* Whole-body FP decode 2026-07-10; structural redecode 2026-07-30 (43.45->71.84):
- * real jal = baked 0x0C00F7E8 -> gl_ref_0003DFA0 (not reloc-zero extern);
- * if(mode!=0) first (snap block placed last, beqzl); snap reloads cfg16 twice
- * (sh to obj->h_18 blocks CSE across cfg base); mode1 path genuinely reloads
- * obj->h_18 for its decrement (volatile reread reproduces it; plain reread is
- * CSEd to the original reg). Residuals: mode homed a1-vs-v0 + one copy insn,
- * branch-likely senses flipped on the mode dispatch pair, tail 1.0f reg f12/f14.
- * (was 34-insn timer-only stub, 18.9% fuzzy).
- * Per-object dual-channel keyframe tween. obj->h_1A (0x1A) = frame countdown;
- * while nonzero, tick down and return 1.0f. On expiry (==0), if the config ptr
- * obj->w_0 != -1, advance two symmetric interpolation channels:
- *   ch A: float obj->f_C, counter obj->h_18, config h at +22/+26
- *   ch B: float obj->f_10, counter obj->h_16, config h at +20/+24
- * each channel: mode 0 = snap-to-target-on-equal + optional reset, mode 1 =
- * load target directly, mode>=2 = linear step cur += (target-cur)/mode. Final:
- * if obj->f_C==0 return 1.0f, else helper() indexes a rodata float curve at
- * &D+0x200 and returns (curve[i]-1)*(f_C/4096)+1. Returns float ($f0). jal +
- * curve table are reloc-blind (&D_00000000); branch-likely FP schedule. */
-extern int gl_ref_0003DFA0();
-float gl_func_00029978(char *obj) {
-    unsigned short t = *(unsigned short *)(obj + 0x1A);
-    int cfg = *(int *)(obj + 0x0);
-    unsigned short mode;
-    int idx;
-    float fc;
+/* gl_func_00029978 EXACT 2026-10-24 (agent-c run 142, 71.84 -> 100): SM64 (Shindou)
+ * get_vibrato_freq_scale / OoT AudioEffects_GetVibratoFreqScale in the SM64 form (the
+ * gPitchBendFrequencyScale curve, [128] at +0x200), with OoT's held `channel` local
+ * and NO_CHANNEL guard: reading vib->seqChannel through the local keeps it in v1 (the
+ * member re-read after the extent store cost a reload). */
+typedef struct {
+    char pad0[0x14]; u16 vibratoRateTarget; u16 vibratoExtentTarget; u16 vibratoRateChangeDelay;
+    u16 vibratoExtentChangeDelay;
+} gl_29978_SequenceChannel;
+typedef struct {
+    gl_29978_SequenceChannel *seqChannel; u32 time; s16 *curve; f32 extent; f32 rate; u8 active; char pad15;
+    u16 rateChangeTimer; u16 extentChangeTimer; u16 delay;
+} gl_29978_VibratoState;
+extern s32 gl_ref_0003DFA0(gl_29978_VibratoState *);
+extern f32 gl_29978_gPitchBendFrequencyScale[];
+#define get_vibrato_pitch_change gl_ref_0003DFA0
+#define gPitchBendFrequencyScale gl_29978_gPitchBendFrequencyScale
+#define NO_CHANNEL ((gl_29978_SequenceChannel *)-1)
 
-    if (t != 0) {
-        *(short *)(obj + 0x1A) = t - 1;
-        return 1.0f;
+f32 gl_func_00029978(gl_29978_VibratoState *vib) {
+    s32 pitchChange;
+    f32 extent;
+    f32 result;
+    gl_29978_SequenceChannel *channel = vib->seqChannel;
+
+    if (vib->delay != 0) {
+        vib->delay--;
+        return 1;
     }
 
-    if (cfg != -1) {
-        /* channel A: obj->f_C / obj->h_18 / cfg[+22], cfg[+26] */
-        mode = *(unsigned short *)(obj + 0x18);
-        if (mode != 0) {
-            if (mode == 1) {
-                *(float *)(obj + 0xC) = (float)(int)*(unsigned short *)(cfg + 22);
-                *(short *)(obj + 0x18) = *(volatile unsigned short *)(obj + 0x18) - 1;
+    if (channel != NO_CHANNEL) {
+        if (vib->extentChangeTimer) {
+            if (vib->extentChangeTimer == 1) {
+                vib->extent = (s32)channel->vibratoExtentTarget;
             } else {
-                float cur = *(float *)(obj + 0xC);
-                *(float *)(obj + 0xC) =
-                    cur + ((float)(int)*(unsigned short *)(cfg + 22) - cur) / (float)(int)mode;
-                *(short *)(obj + 0x18) = mode - 1;
+                vib->extent +=
+                    ((s32)channel->vibratoExtentTarget - vib->extent) / (s32)vib->extentChangeTimer;
             }
-        } else {
-            if ((int)*(float *)(obj + 0xC) != (int)*(unsigned short *)(cfg + 22)) {
-                unsigned short c1a = *(unsigned short *)(cfg + 26);
-                *(short *)(obj + 0x18) = c1a;
-                if (c1a == 0) {
-                    *(float *)(obj + 0xC) = (float)(int)*(unsigned short *)(cfg + 22);
-                }
+
+            vib->extentChangeTimer--;
+        } else if (channel->vibratoExtentTarget != (s32)vib->extent) {
+            if ((vib->extentChangeTimer = channel->vibratoExtentChangeDelay) == 0) {
+                vib->extent = (s32)channel->vibratoExtentTarget;
             }
         }
 
-        /* channel B: obj->f_10 / obj->h_16 / cfg[+20], cfg[+24] */
-        mode = *(unsigned short *)(obj + 0x16);
-        if (mode != 0) {
-            if (mode == 1) {
-                *(float *)(obj + 0x10) = (float)(int)*(unsigned short *)(cfg + 20);
-                *(short *)(obj + 0x16) = *(volatile unsigned short *)(obj + 0x16) - 1;
+        if (vib->rateChangeTimer) {
+            if (vib->rateChangeTimer == 1) {
+                vib->rate = (s32)channel->vibratoRateTarget;
             } else {
-                float cur = *(float *)(obj + 0x10);
-                *(float *)(obj + 0x10) =
-                    cur + ((float)(int)*(unsigned short *)(cfg + 20) - cur) / (float)(int)mode;
-                *(short *)(obj + 0x16) = mode - 1;
+                vib->rate += ((s32)channel->vibratoRateTarget - vib->rate) / (s32)vib->rateChangeTimer;
             }
-        } else {
-            if ((int)*(float *)(obj + 0x10) != (int)*(unsigned short *)(cfg + 20)) {
-                unsigned short c18 = *(unsigned short *)(cfg + 24);
-                *(short *)(obj + 0x16) = c18;
-                if (c18 == 0) {
-                    *(float *)(obj + 0x10) = (float)(int)*(unsigned short *)(cfg + 20);
-                }
+
+            vib->rateChangeTimer--;
+        } else if (channel->vibratoRateTarget != (s32)vib->rate) {
+            if ((vib->rateChangeTimer = channel->vibratoRateChangeDelay) == 0) {
+                vib->rate = (s32)channel->vibratoRateTarget;
             }
         }
     }
 
-    if (0.0f == *(float *)(obj + 0xC)) {
+    if (vib->extent == 0) {
         return 1.0f;
     }
-    idx = gl_ref_0003DFA0(obj);
-    fc = *(float *)(obj + 0xC);
-    return (((float *)((char *)&D_00000000 + 0x200))[idx] - 1.0f) * (fc * (1.0f / 4096.0f))
-           + 1.0f;
+
+    pitchChange = get_vibrato_pitch_change(vib);
+    extent = (f32)vib->extent / 4096.0f;
+
+    result = 1.0f + extent * (gPitchBendFrequencyScale[pitchChange + 128] - 1.0f);
+    return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00029978);
-#endif
 
 // gl_func_00029B6C — STRUCTURAL PASS (0x49C / 295 words ≈ 1.2KB, no
 // episode). Raw-.word USO form (game_libs). BOUNDARY NOTE: LARGE
