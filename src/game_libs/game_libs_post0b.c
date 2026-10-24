@@ -20566,7 +20566,7 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
     sum[0] = rec[0]; sum[1] = rec[1]; sum[2] = rec[2];
     rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg2 * 8) + 4) * 6);
     sum[0] += rec[0]; sum[1] += rec[1]; sum[2] += rec[2];
-    rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg2 * 8) + 6) * 6);
+    rec = (s16 *) (*(u16 *)(*(s32 *)(arg0 + 0x68) + (arg2 * 8) + 6) * 6 + *(s32 *)(arg0 + 0x60));
     sum[0] += rec[0]; sum[1] += rec[1]; sum[2] += rec[2];
     v[3].x = sum[0]; v[3].y = sum[1]; v[3].z = sum[2];
     do {
@@ -20596,9 +20596,9 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
         v[0].z = tp->z - v[3].z;
     } while (0);
     pl = (f32 *) (*(s32 *)(arg0 + 0x54) + (arg1 * 12));
-    dot1 = (v[1].x * pl[0]) + (v[1].y * pl[1]) + (v[1].z * pl[2]);
+    dot1 = (pl[0] * v[1].x) + (v[1].y * pl[1]) + (pl[2] * v[1].z);
     pl = (f32 *) (*(s32 *)(arg0 + 0x54) + (arg2 * 12));
-    dot2 = (v[0].x * pl[0]) + (v[0].y * pl[1]) + (v[0].z * pl[2]);
+    dot2 = (pl[1] * v[0].y) + (pl[0] * v[0].x) + (pl[2] * v[0].z);
     if ((dot1 >= zero) && (dot2 >= zero)) {
         ret = 1;
     }
