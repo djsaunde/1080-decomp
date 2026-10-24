@@ -25798,7 +25798,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             sp9C = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
             *sp9C = 0xF3000000;
-            temp_a0_6 = ((s32) (((*(s16 *)((char *)arg1 + 0x20)) * (*(s16 *)((char *)arg1 + 0x22))) + 1) >> 1) - 1;
+            temp_a0_6 = ((s32) (((*(s16 *)((char *)arg1 + 0x22)) * (*(s16 *)((char *)arg1 + 0x20))) + 1) >> 1) - 1;
             temp_t1 = (temp_a0_6 < 0x7FF) ? temp_a0_6 : 0x7FF;
             temp_v0_6 = (*(s16 *)((char *)arg1 + 0x20)) / 8;
             if (temp_v0_6 <= 0) {
