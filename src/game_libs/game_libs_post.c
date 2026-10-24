@@ -6411,100 +6411,120 @@ void gl_func_00025044(int a0) {
 // reads obj->14 directly and rem is loaded for the second branch. LEFT: frame
 // 104 vs 96 (two extra slots), rem homed at 48 instead of coloured a2, the
 // 3998c call takes sub reloaded into a2 (target a1 reload, a2 = t2).
+// Run 143 (agent-c) 92.31 -> 97.62: OoT AudioLoad_ProcessAsyncLoad with
+// FinishAsyncLoad inline. The target spills bytesRemaining and fontId to ONE
+// slot (sp+36) because both are compiler temps in the temp area below the
+// locals, not declared variables: re-reading asyncLoad->bytesRemaining at each
+// use (no cached local) moves it from its home (+84) to +36. LEFT: case-1
+// fontId still homed at +84, the retMsg web coloured v0 (target a1 + v0 copy).
 #ifdef NON_MATCHING
-extern int gl_func_00000000();
+typedef struct { void *a; void *b; s32 validCount; s32 first; s32 msgCount; void *msg; } gl_250C8_OSMesgQueue;
+typedef struct {
+    s8 status; s8 delay; s8 medium; u8 *ramAddr; u32 curDevAddr; u8 *curRamAddr; u32 bytesRemaining; u32 chunkSize;
+    u32 retMsg; gl_250C8_OSMesgQueue *retQueue; gl_250C8_OSMesgQueue msgQueue;
+} gl_250C8_AudioAsyncLoad;
+typedef struct { s32 sampleBankId1; s32 sampleBankId2; s32 baseAddr1; s32 baseAddr2; u32 medium1; u32 medium2; } gl_250C8_SampleBankRelocInfo;
+typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; char pad4[0x10]; } gl_250C8_SoundFont;
+typedef struct { s16 numEntries; s16 unkMediumParam; } gl_250C8_AudioTable;
+typedef struct { char pad0[0x2024]; gl_250C8_AudioTable *sampleBankTable; char pad2028[8]; gl_250C8_SoundFont *soundFontList; } gl_250C8_Ctx;
+extern gl_250C8_Ctx gl_250C8_gAudioCtx;
+#define gAudioCtx gl_250C8_gAudioCtx
+extern s32 gl_250C8_osRecvMesg(void *, void *, s32);
+extern s32 gl_250C8_osSendMesg(void *, void *, s32);
+extern void gl_250C8_SetSeqLoadStatus(s32, s32);
+extern void gl_250C8_SetSampleFontLoadStatus(s32, s32);
+extern void gl_250C8_SetFontLoadStatus(s32, s32);
+extern s32 gl_ref_00037DCC(s32, u32 *);
+extern s32 gl_ref_00039B70(s32, void *, gl_250C8_SampleBankRelocInfo *, s32);
+extern void gl_ref_00039A1C(u32, void *, u32, s32);
+extern void gl_ref_0003998C(gl_250C8_AudioAsyncLoad *, u32);
+#define AudioLoad_GetSampleBank gl_ref_00037DCC
+#define AudioLoad_RelocateFontAndPreloadSamples gl_ref_00039B70
+#define AudioLoad_AsyncDmaUnkMedium gl_ref_00039A1C
+#define AudioLoad_AsyncDma gl_ref_0003998C
+#define ASYNC_TBLTYPE(x) (((x) >> 16) & 0xFF)
+#define ASYNC_ID(x) (((x) >> 8) & 0xFF)
+#define ASYNC_STATUS(x) ((x) & 0xFF)
 
-extern int gl_ref_00037DCC();
-extern int gl_ref_00039B70();
-extern int gl_ref_00039A1C();
-extern int gl_ref_0003998C();
-void gl_func_000250C8(char *obj, int arg1) {
-    char *reg;
-    int mode;
-    unsigned int field18;
-    int kind;
-    char *rec;
-    int c2, c3;
-    int buf[6];
-    unsigned int rem;
-    unsigned int sub;
+void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
+    gl_250C8_AudioTable *sampleBankTable = gAudioCtx.sampleBankTable;
+    u32 retMsg;
+    u32 fontId;
+    u32 pad;
+    void *doneMsg;
+    u32 sampleBankId1;
+    u32 sampleBankId2;
+    gl_250C8_SampleBankRelocInfo sampleBankReloc;
 
-    mode = *(signed char *)(obj + 1);
-    reg = *(char **)((char *)&D_00000000 + 0x2024);
-    if (mode >= 2) {
-        *(char *)(obj + 1) = (char)(mode - 1);
+    if (asyncLoad->delay >= 2) {
+        asyncLoad->delay--;
         return;
     }
-    if (mode == 1) {
-        *(char *)(obj + 1) = 0;
-        goto block7;
-    }
-    if (arg1 != 0) {
-        gl_func_00000000(obj + 0x20, 0, 1);
-        *(char *)(obj + 0) = 0;
+
+    if (asyncLoad->delay == 1) {
+        asyncLoad->delay = 0;
+    } else if (resetStatus != 0) {
+        gl_250C8_osRecvMesg(&asyncLoad->msgQueue, NULL, 1);
+        asyncLoad->status = 0;
+        return;
+    } else if (gl_250C8_osRecvMesg(&asyncLoad->msgQueue, NULL, 0) == -1) {
         return;
     }
-    if (gl_func_00000000(obj + 0x20, 0, 0) == -1) {
-        return;
-    }
-block7:
-    sub = *(int *)(obj + 0x10);
-    if (sub == 0) {
-        field18 = *(int *)(obj + 0x18);
-        kind = (field18 >> 16) & 0xff;
-        switch (kind) {
-        case 0:
-            gl_func_00000000((field18 >> 8) & 0xff, field18 & 0xff);
-            break;
-        case 2:
-            gl_func_00000000((field18 >> 8) & 0xff, field18 & 0xff);
-            break;
-        case 1:
-            sub = (field18 >> 8) & 0xff;
-            gl_func_00000000(sub, field18 & 0xff); if (1) {}
-            rec = *(char **)((char *)&D_00000000 + 0x2030) + sub * 0x14;
-            c2 = *(unsigned char *)(rec + 2);
-            c3 = *(unsigned char *)(rec + 3);
-            buf[0] = c2;
-            buf[1] = c3;
-            if (c2 != 0xff) {
-                buf[2] = gl_ref_00037DCC(c2, &buf[4]);
-            } else {
-                buf[2] = 0;
-            }
-            if (c3 != 0xff) {
-                buf[3] = gl_ref_00037DCC(c3, &buf[5]);
-            } else {
-                buf[3] = 0;
-            }
-            gl_ref_00039B70(sub, *(int *)(obj + 4), &buf[0], 1);
-            break;
+
+    if (asyncLoad->bytesRemaining == 0) {
+        if (1) {}
+        switch ((s32)ASYNC_TBLTYPE(asyncLoad->retMsg)) {
+            case 0:
+                gl_250C8_SetSeqLoadStatus(ASYNC_ID(asyncLoad->retMsg), ASYNC_STATUS(asyncLoad->retMsg));
+                break;
+
+            case 2:
+                gl_250C8_SetSampleFontLoadStatus(ASYNC_ID(asyncLoad->retMsg), ASYNC_STATUS(asyncLoad->retMsg));
+                break;
+
+            case 1:
+                fontId = ASYNC_ID(asyncLoad->retMsg);
+                gl_250C8_SetFontLoadStatus(fontId, ASYNC_STATUS(asyncLoad->retMsg));
+                sampleBankId1 = gAudioCtx.soundFontList[fontId].sampleBankId1;
+                sampleBankId2 = gAudioCtx.soundFontList[fontId].sampleBankId2;
+                sampleBankReloc.sampleBankId1 = sampleBankId1;
+                sampleBankReloc.sampleBankId2 = sampleBankId2;
+                sampleBankReloc.baseAddr1 =
+                    sampleBankId1 != 0xFF ? AudioLoad_GetSampleBank(sampleBankId1, &sampleBankReloc.medium1) : 0;
+                sampleBankReloc.baseAddr2 =
+                    sampleBankId2 != 0xFF ? AudioLoad_GetSampleBank(sampleBankId2, &sampleBankReloc.medium2) : 0;
+                AudioLoad_RelocateFontAndPreloadSamples(fontId, asyncLoad->ramAddr, &sampleBankReloc, 1);
+                break;
         }
-        *(char *)(obj + 0) = 0;
-        gl_func_00000000(*(int *)(obj + 0x1c), *(int *)(obj + 0x18), 0);
+
+        asyncLoad->status = 0;
+        gl_250C8_osSendMesg(asyncLoad->retQueue, (void *)asyncLoad->retMsg, 0);
         return;
     }
-    rem = *(int *)(obj + 0x14); /* run 139: one read, held in a2 (target lw a2,20(s0) before the compare) */
-    if (sub < (unsigned int)rem) {
-        if (*(signed char *)(obj + 2) == 1) {
-            gl_ref_00039A1C(*(int *)(obj + 8), *(int *)(obj + 0xc), sub,
-                             *(short *)(reg + 2));
+
+    if (asyncLoad->bytesRemaining < asyncLoad->chunkSize) {
+        if (asyncLoad->medium == 1) {
+            AudioLoad_AsyncDmaUnkMedium(asyncLoad->curDevAddr, asyncLoad->curRamAddr, asyncLoad->bytesRemaining,
+                                        sampleBankTable->unkMediumParam);
         } else {
-            gl_ref_0003998C(obj, sub, sub);
+            AudioLoad_AsyncDma(asyncLoad, asyncLoad->bytesRemaining);
         }
-        *(int *)(obj + 0x10) = 0;
+        asyncLoad->bytesRemaining = 0;
         return;
     }
-    if (*(signed char *)(obj + 2) == 1) {
-        gl_ref_00039A1C(*(int *)(obj + 8), *(int *)(obj + 0xc), rem,
-                         *(short *)(reg + 2));
+
+    if (asyncLoad->medium == 1) {
+        AudioLoad_AsyncDmaUnkMedium(asyncLoad->curDevAddr, asyncLoad->curRamAddr, asyncLoad->chunkSize,
+                                    sampleBankTable->unkMediumParam);
     } else {
-        gl_ref_0003998C(obj, rem, rem);
+        AudioLoad_AsyncDma(asyncLoad, asyncLoad->chunkSize);
     }
-    rem = *(int *)(obj + 0x14);
-    *(int *)(obj + 0x10) = *(int *)(obj + 0x10) - rem, *(int *)(obj + 8) = *(int *)(obj + 8) + rem;
-    *(int *)(obj + 0xc) = *(int *)(obj + 0xc) + rem;
+
+    asyncLoad->bytesRemaining -= asyncLoad->chunkSize;
+    asyncLoad->curDevAddr += asyncLoad->chunkSize;
+    asyncLoad->curRamAddr += asyncLoad->chunkSize;
 }
+
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000250C8);
 #endif
