@@ -9678,7 +9678,11 @@ void game_libs_func_00027DC0(char *a0) {
  * barrier, ternary store); a guarded non-dominating def `if (count > 0) pb = ...` does
  * produce s7 but adds a spill + a second blez (93.6). Also: release blocks give `beq
  * a0,s3` (target `beq s3,a0`; comparing s->obj instead flips the reg to v0), and the
- * else arm keeps obj in a0 with o->b1 CSE'd (target v1 + a re-load in the bnezl slot). */
+ * else arm keeps obj in a0 with o->b1 CSE'd (target v1 + a re-load in the bnezl slot).
+ * 2026-10-23 run 139 policy fix: the old post-loop `if (act) {}` and `if (pad0) {}`
+ * tested locals that could be uninitialised there; the one empty test left is on
+ * act inside proc (always assigned on every path into proc). 96.91 -> 97.02 fuzzy,
+ * 318 -> 316 words (target 318). */
 #ifdef NON_MATCHING
 typedef struct { unsigned flag:1, live:1, b29:1, p3:8, mode:2, rest:19; } gl_27E24_Bits;
 typedef struct {
@@ -9879,7 +9883,7 @@ void gl_func_00027E24(void) {
                     if (o->u.b[1] == 0) {
                         *pb = d->bE0;
                     } else {
-                        *pb = o->u.b[1]; if (pad0) {}
+                        *pb = o->u.b[1]; if (act) {}
                     }
                     buf.b0 = d->b4;
                     buf.b1 = d->bC;
@@ -9899,7 +9903,7 @@ void gl_func_00027E24(void) {
                 e->mode = v;
             }
         }
-    } if (act) {}
+    }
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00027E24);
