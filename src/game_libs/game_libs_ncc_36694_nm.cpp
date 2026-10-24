@@ -34,14 +34,12 @@ extern "C" V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_
     V3_36694 *res;
 
     d = n.x * p.x + n.y * p.y + n.z * p.z;
-    vAC.x = n.x * d;
-    vAC.y = n.y * d;
-    vAC.z = n.z * d;
+    { f32 h_x0 = n.x * d; f32 h_y0 = n.y * d; f32 h_z0 = n.z * d;
+    vAC.x = h_x0; vAC.z = h_z0; vAC.y = h_y0; }
     vBC = vAC;
     vE4 = vBC;
-    v78.x = p.x - vE4.x;
-    v78.y = p.y - vE4.y;
-    v78.z = p.z - vE4.z;
+    { f32 h_x1 = p.x - vE4.x; f32 h_y1 = p.y - vE4.y; f32 h_z1 = p.z - vE4.z;
+    v78.x = h_x1; v78.z = h_z1; v78.y = h_y1; }
     v8C = v78;
     v5C = v8C;
     px = v5C.x;
@@ -59,15 +57,13 @@ extern "C" V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_
         vD8.z = pz;
         vD8.x = px;
         vD8.y = py;
-        v3C.x = vD8.x * one;
-        v3C.y = vD8.y * one;
-        v3C.z = vD8.z * one;
+        { f32 h_x2 = vD8.x * one; f32 h_y2 = vD8.y * one; f32 h_z2 = vD8.z * one;
+        v3C.y = h_y2; v3C.z = h_z2; v3C.x = h_x2; }
         vBC = v3C;
         v48 = vBC;
         len = gl_sqrtf_36694(len2);
-        v30.x = v48.x / len;
-        v30.y = v48.y / len;
-        v30.z = v48.z / len;
+        { f32 h_x3 = v48.x / len; f32 h_y3 = v48.y / len; f32 h_z3 = v48.z / len;
+        v30.x = h_x3; v30.y = h_y3; v30.z = h_z3; }
         v8C = v30;
         res = &v8C;
     } else {
