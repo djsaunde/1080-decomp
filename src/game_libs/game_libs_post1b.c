@@ -573,7 +573,7 @@ int arg1, arg2, arg3;
     count = 0;
     farg1 = 0.0f;
     gl_func_00000000(&n);
-    if (va.y < 0.0f) {
+    if (va.y < (f32)0.0) {
         s1.x = n.x * va.y;
         s1.y = n.y * va.y;
         s1.z = n.z * va.y;

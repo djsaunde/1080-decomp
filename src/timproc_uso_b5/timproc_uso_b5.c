@@ -6379,7 +6379,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
         M2C_FIELD(pv0, s32 **, 0x14) = var_s2;
         pv0 = timproc_uso_b5_func_055750(0x168);
         if (pv0 != 0) {
-            timproc_uso_b5_func_0546DC(pv0, timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f);
+            timproc_uso_b5_func_0546DC(pv0, timproc_uso_b5_D_807FECF8 + 0x1488, (f32)0.0, 0.0f, 0.0f);
             M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FED00 + 0x4AC);
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FED00 + 0x1490);
             pw0 = timproc_uso_b5_func_055750(0x16C);
@@ -6623,7 +6623,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
         ps1 = M2C_FIELD(sp120, char **, 0x28);
         spF0 = M2C_FIELD(ps1, void *(**)(void *, s32, s32, f32, f32, f32, f32, f32, f32), 0x5C)(M2C_FIELD(ps1, s16 *, 0x58) + sp120, 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
         ps1 = M2C_FIELD(sp120, char **, 0x28);
-        ps0 = M2C_FIELD(ps1, void *(**)(void *, s32, s32, f32, f32, f32, f32, f32, f32), 0x5C)(M2C_FIELD(ps1, s16 *, 0x58) + sp120, 1, 3, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
+        ps0 = M2C_FIELD(ps1, void *(**)(void *, s32, s32, f32, f32, f32, f32, f32, f32), 0x5C)(M2C_FIELD(ps1, s16 *, 0x58) + sp120, 1, 3, -220.0f, 200.0f, -400.0f, (f32)0.0, 0.0f, 0.0f);
         timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, M2C_FIELD(M2C_FIELD(((char *)&import_800201EC), char **, 0x154), u16 *, 2));
         tu = M2C_FIELD(M2C_FIELD(((char *)&import_800201EC), char **, 0x154), u16 *, 2);
         switch (tu) {
@@ -6632,7 +6632,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
         case 5:
             break;
         case 1:
-            M2C_FIELD(spF0, f32 *, 0x2A4) = 0.0f;
+            M2C_FIELD(spF0, f32 *, 0x2A4) = 0.0;
             /* fallthrough */
         case 2:
             M2C_FIELD(ps0, f32 *, 0x2A4) = 0.0f;
