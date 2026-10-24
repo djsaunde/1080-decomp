@@ -6857,7 +6857,9 @@ void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
 /* 2026-10-23 (agent-g run 143) AC20 86.29 -> 90.68 (329 -> 332 of 333 words): the
  * three 071AE0 angle arguments go through a named float local (`ang = field;`
  * at the top of each block): the target loads them with lwc1 + mfc1 a2 (a named
- * f32 stays an FP value), the field passed directly is `lw a2` (kit LXV). */
+ * f32 stays an FP value), the field passed directly is `lw a2` (kit LXV).
+ * The late-arm zero test and wrap store share ONE hoisted 0.0f (literal 0.0f,
+ * not (float)0): 90.68 -> 90.77, raw 286 -> 280. */
 #define TB5_F(off) (*(f32 *)((char *)o + (off)))
 extern char D_timb5_AC20_gxy;   /* pool A: x@+0, y@+4 */
 extern char D_timb5_AC20_gz;    /* pool B: z@+8, f64 threshold@+0x338 */
@@ -6985,11 +6987,11 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
                 sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0x100) * TB5_F(0xF8) * two);
                 timproc_uso_b5_func_071AE0(ap, &sp5C, *(f32 *)((char *)(o) + 0x10C));
             } else {
-                if (TB5_F(0x10C) > (float)0) {
+                if (TB5_F(0x10C) > 0.0f) {
                             wrap = *(f32 *)((char *)&D_timb5_AC20_w3 + 0x348);
                     TB5_F(0x10C) = TB5_F(0x10C) + *(f32 *)((char *)&D_timb5_AC20_w2 + 0x34C);
                     if (wrap <= TB5_F(0x10C)) {
-                        TB5_F(0x10C) = (float)0;
+                        TB5_F(0x10C) = 0.0f;
                     }
                     sp5C.x = ((float)1 - (TB5_F(0xF8) * TB5_F(0xF8) * two)) - (TB5_F(0xFC) * TB5_F(0xFC) * two);
                     sp5C.y = (TB5_F(0xF4) * TB5_F(0xF8) * two) + (TB5_F(0x100) * TB5_F(0xFC) * two);
