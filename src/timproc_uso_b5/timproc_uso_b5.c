@@ -9432,18 +9432,18 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             one = *(f32 *)((char *)&import_80807FB8 + 0x3BC);
             FW(g2, 0x28) = (s32) (&d884_db64_gc + 0);
             FW(g2, 0x120) = 1;
-            *(f32 *)(g2 + 0x108) = 1.0f;
-            *(f32 *)(g2 + 0x10C) = 1.0f;
-            *(f32 *)(g2 + 0x110) = 1.0f;
+            *(f32 *)(g2 + 0x108) = one; /* the RoData 0x3BC constant, not 1.0f */
+            *(f32 *)(g2 + 0x10C) = one;
+            *(f32 *)(g2 + 0x110) = one;
             *(f32 *)(g2 + 0x124) = 1.0f;
         }
         FW(child, 0x108) = (s32) gc;
         timproc_uso_b5_func_04DFFC(child, gc);
         if (1) {}
         p = (char *)FW(child, 0x108);
-        *(f32 *)(p + 0xBC) = 0.0f;
-        *(f32 *)(p + 0xB8) = 0.0f;
-        *(f32 *)(p + 0xB4) = 0.0f;
+        *(f32 *)(p + 0xBC) = 0; /* int 0: one mtc1 zero (0.0f gives three) */
+        *(f32 *)(p + 0xB8) = 0;
+        *(f32 *)(p + 0xB4) = 0;
         *(f32 *)(child + 0x124) = 1.0f;
         savedbit = EE6C_L(d884_ee6c_l1) & 0x80000;
         EE6C_S(d884_ee6c_s1) = EE6C_L(d884_ee6c_l2) & 0xFFF7FFFF;
