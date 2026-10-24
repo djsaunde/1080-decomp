@@ -15530,6 +15530,7 @@ void gl_func_00048AEC(char *arg0) {
     NodeIter itA2;               /* sp+112 */
     NodeIter itB3;               /* sp+72 */
     NodeIter itA3;               /* sp+60 */
+    volatile int padq[10]; /* run 138: frame = target */
     f32 (*A)[4];
     f32 (*B)[4];
     int i, j, k;
