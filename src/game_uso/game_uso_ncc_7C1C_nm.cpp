@@ -1,13 +1,21 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for game_uso_func_00007C1C
  * (1071 words). NM object only (build/non_matching); the ROM build keeps
  * INCLUDE_ASM. The cfe NM body recompiled unchanged under NCC: 88.2 -> 89.3
- * fuzzy, 1058 -> 1065 words (toward the target's 1071). */
+ * fuzzy, 1058 -> 1065 words (toward the target's 1071).
+ * Run 143: game_uso_func_00003FAC carries its real prototype (void, three
+ * float pointers + two floats, as the cfe definition): the float args go
+ * in a3 / 16(sp) as in the target, not promoted to doubles: 89.69 -> 90.39.
+ * The resDir stage is copied BACK into scratch before result reads it (the
+ * target re-reads resDir into the stage: scratch = mD2; resDir = scratch;
+ * scratch = resDir; result = scratch): 90.39 -> 91.24, 1061 -> 1063 words;
+ * the same copy-back for the per-node lRD stage (its `if (arg0) {}` dropped):
+ * 92.25, 1064 words. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #define NULL 0
 typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
-extern "C" int game_uso_func_00003FAC(...);
+extern "C" void game_uso_func_00003FAC(float *, float *, float *, float, float);
 extern "C" {
 extern char D_00000000;
 extern int game_uso_func_055750(...);
@@ -213,6 +221,7 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
         }
         *(Tri3i *)&scratch = *(Tri3i *)&mD2;
         *(Tri3i *)&resDir = *(Tri3i *)&scratch;
+        *(Tri3i *)&scratch = *(Tri3i *)&resDir;
         result.x = scratch.x; result.y = scratch.y; result.z = scratch.z;
 
         if (mode == 1) {
@@ -328,7 +337,7 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
             }
             *(Tri3i *)&scratch = *(Tri3i *)&lF;
             *(Tri3i *)&lRD = *(Tri3i *)&scratch;
-            if (arg0) {}
+            *(Tri3i *)&scratch = *(Tri3i *)&lRD;
             hitC.x = scratch.x; hitC.y = scratch.y; hitC.z = scratch.z;
 
             if (mode == 1) {
