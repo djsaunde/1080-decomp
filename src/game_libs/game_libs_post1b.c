@@ -5803,7 +5803,7 @@ GLOBAL_ASM("src/libultra/game_libs/popthread.s")
  * os/exceptasm.s (HANDWRITTEN: mtc0/k-regs, full ld GPR + ldc1 FPR
  * restore, eret). Now real assembly source (below). */
 /* game_libs_func_0006AD78 = __osDispatchThread + __osCleanupThread (game_libs libultra copy): real source in src/libultra/game_libs/dispatchthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006AD78);
+GLOBAL_ASM("src/libultra/game_libs/dispatchthread.s")
 
 /* 14-insn linked-list traversal. Searches for `a1` in a list rooted at `a3`
  * (linked via *p == next). When found, copies *a3 (= *a1) to *a2 and returns.

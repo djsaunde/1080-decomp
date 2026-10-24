@@ -3406,6 +3406,7 @@ gl_exc_eventstatetab = 0x00000000;  /* __osEventStateTab (game_libs exceptasm.s)
 gl_exc_send_mesg = 0x00000000;  /* send_mesg (game_libs exceptasm.s, blank jal) */
 gl_exc_enqueuethread = 0x00000000;  /* __osEnqueueThread (game_libs exceptasm.s, blank jal) */
 gl_exc_dispatchthread = 0x00000000;  /* __osDispatchThread (game_libs exceptasm.s, blank j) */
+gl_exc_destroythread = 0x00000000;  /* osDestroyThread (game_libs dispatchthread.s, blank jal) */
 gl_ref_0007FE04 = 0x0007FE04;  /* __osLeoAbnormalResume: baked jal 0x7FE04 (0x0C01FF81), sibling of gl_ref_0007FEEC */
 gl_func_00000000_edma = 0x00000000;  /* osEPiRawStartDma = gl_func_0006F8A4 (blank in-segment jal) */
 D_0001B710 = 0x0001B710;
