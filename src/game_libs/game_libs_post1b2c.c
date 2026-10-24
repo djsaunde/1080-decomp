@@ -539,7 +539,8 @@ void gl_func_0006E1A4(int event, void *queue, int msg) {
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006E20C);
+/* game_libs_func_0006E214 = sqrtf (game_libs libultra copy): real source in src/libultra/game_libs/sqrtf.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/game_libs/sqrtf.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006E1A4_pad.s")
 
 /* gl_func_0006E224 = _Putfld (Plauger libc xprintf.c verbatim) -- the
