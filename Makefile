@@ -668,7 +668,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 152: 493AC NM-only NCC donor (1912 -> 1928 bytes, target 1936): 0x2e9a4 -> 0x2e9b4 (62F08 NM offset 0x2e964).
 # agent-c run 152: 46050 NM donor cursor copy for the first read (1824 -> 1828 bytes, target 1848): 0x2e9b4 -> 0x2e9b8 (62F08 NM offset 0x2e968).
 # agent-c run 152: 46050 NM donor cursor copy for the loop-bottom read (1828 -> 1832 bytes, target 1848): 0x2e9b8 -> 0x2e9bc (62F08 NM offset 0x2e96c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9bc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 152: 3B2EC NM p.x / p.z read through &p (920 -> 928 bytes, target 940): 0x2e9bc -> 0x2e9c4 (62F08 NM offset 0x2e974).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9c4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0

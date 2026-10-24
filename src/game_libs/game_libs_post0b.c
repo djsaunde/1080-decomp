@@ -6003,8 +6003,10 @@ s32 gl_func_0003B2EC(ObjB2 *self, s32 max, f32 *out, f32 x, f32 z) {
     p.z = z;
     p.y = 0.0f;
     cell = -1;
-    c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
-    c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
+    /* run 152 (agent-c, 89.45 -> 91.56): the target re-reads p.x / p.z from the stored struct (lwc1 140/148(sp));
+     * array reads through the address keep both reloads where `p.x` forwards the register (920 -> 928 bytes, target 940). */
+    c[1] = (((f32 *)&p)[0] - (f32)self->col->grid->x0) / self->col->grid->cw;
+    c[0] = (((f32 *)&p)[2] - (f32)self->col->grid->z0) / self->col->grid->ch;
     if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
         cell = c[0] * self->col->grid->w + c[1];
     }
