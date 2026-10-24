@@ -203,6 +203,10 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_63B4_NM_DONOR)
 BOOTUP_C234_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_C234_nm.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000C234=$(BOOTUP_C234_NM_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_C234_NM_DONOR)
+# 8BD4 = collision impulse; NM C body as C++ (amt in $f20 under NCC, inline V-returning helper; agent-g run 157, cfe 91.85). NM comparison object only.
+BOOTUP_8BD4_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_8BD4_nm.cpp.o
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008BD4=$(BOOTUP_8BD4_NM_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_8BD4_NM_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
