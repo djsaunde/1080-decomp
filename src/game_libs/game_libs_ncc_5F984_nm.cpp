@@ -47,9 +47,9 @@ extern "C" void gl_func_0005F984(register f32 (*m)[4], f32 (*rot)[4], f32 x, f32
     sn = len / h;
     if (rot != NULL) {
         f32 a = v.x, b = v.y, d = v.z;
-        v.x = rot[0][0] * a + rot[1][0] * b + rot[2][0] * d;
-        v.y = rot[0][1] * a + rot[1][1] * b + rot[2][1] * d;
-        v.z = rot[0][2] * a + rot[1][2] * b + rot[2][2] * d;
+        v.x = rot[1][0] * b + rot[2][0] * d + rot[0][0] * a;
+        v.y = rot[1][1] * b + rot[2][1] * d + a * rot[0][1];
+        v.z = a * rot[0][2] + rot[1][2] * b + rot[2][2] * d;
     }
     gl_func_00000000_rot5F984(R, &v, sn, cs);
     if (flag == 0) {
