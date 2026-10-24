@@ -4105,11 +4105,11 @@ void *gl_func_000223DC(int arg) {
 // but ranks it BELOW the induction/index webs (all-%lo-foldable-lw
 // use web gets the cupcosts lu->reg discount). Plus coupled 255-$at
 // vs hoisted-t0 compares and continue-path n-reload delay picks.
-#ifdef NON_MATCHING
-/* run 140: OoT's AudioHeap_DiscardSampleCaches (heap.c) over the persistent cache
- * only, with DiscardSampleCacheForFont + UnapplySampleCacheForFont written inline
- * (no sfx loop in 1080) (78.90 -> 90.42, 133 of 130 words). Left: the target frame
- * is 16 bytes larger (104) and tests the 0xFF pair with fresh `li at,255`s. */
+/* EXACT (run 144, agent-c): OoT AudioHeap_DiscardSampleCaches over the persistent
+ * cache only, DiscardSampleCacheForFont + UnapplySampleCacheForFont inline. Two source
+ * facts: one 0xFF test compared unsigned ((u32)sampleBankId1 != 0xFF) so the two 255s
+ * are separate constants (each a fresh li at,255, no hoisted t0), and a non-matching
+ * cache entry BREAKS out of the entry loop (target bnezl to the font-loop tail). */
 typedef struct { u32 bits; u8 *sampleAddr; } gl_22464_Sample;
 typedef struct { gl_22464_Sample *sample; f32 tuning; } gl_22464_TunedSample;
 typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_22464_TunedSample lowPitchTunedSample; gl_22464_TunedSample normalPitchTunedSample; gl_22464_TunedSample highPitchTunedSample; } gl_22464_Inst;
@@ -4121,7 +4121,8 @@ typedef struct { gl_22464_TableHdr header; } gl_22464_Table;
 typedef struct { char pad[0x10]; } gl_22464_Pool;
 typedef struct { gl_22464_Pool pool; gl_22464_CacheEntry entries[32]; s32 numEntries; } gl_22464_SampleCache;
 typedef struct { char pad0[0x2020]; gl_22464_Table *soundFontTable; char pad2024[0x2030 - 0x2024]; gl_22464_Font *soundFontList; char pad2034[0x26B8 - 0x2034]; gl_22464_SampleCache persistentSampleCache; } gl_22464_Ctx;
-#define gl_22464_gAudioCtx (*(gl_22464_Ctx *)&D_00000000)
+extern gl_22464_Ctx gl_22464_gAudioCtxT;
+#define gl_22464_gAudioCtx gl_22464_gAudioCtxT
 extern int gl_func_00036A04();
 #define AudioHeap_SearchCaches (void *)gl_func_00000000
 #define AudioLoad_IsFontLoadComplete gl_func_00000000
@@ -4144,32 +4145,29 @@ extern int gl_func_00036A04();
     }
 
 void gl_func_00022464(void) {
-    s32 numFonts;
-    s32 sampleBankId1;
-    s32 sampleBankId2;
     s32 fontId;
     s32 j;
-    gl_22464_CacheEntry *entry;
+    s32 numFonts;
     gl_22464_Drum *drum;
     gl_22464_Inst *inst;
     s32 instId;
     s32 drumId;
+    gl_22464_CacheEntry *entry;
+    s32 sampleBankId1;
+    s32 sampleBankId2;
 
     numFonts = gl_22464_gAudioCtx.soundFontTable->header.numEntries;
     for (fontId = 0; fontId < numFonts; fontId++) {
         sampleBankId1 = gl_22464_gAudioCtx.soundFontList[fontId].sampleBankId1;
         sampleBankId2 = gl_22464_gAudioCtx.soundFontList[fontId].sampleBankId2;
-        if ((sampleBankId1 == 0xFF) && (sampleBankId2 == 0xFF)) {
-            continue;
-        }
-        if (AudioHeap_SearchCaches(1, 3, fontId) == NULL || !AudioLoad_IsFontLoadComplete(fontId)) {
-            continue;
-        }
-
-        for (j = 0; j < gl_22464_gAudioCtx.persistentSampleCache.numEntries; j++) {
-            entry = &gl_22464_gAudioCtx.persistentSampleCache.entries[j];
-            if ((entry->sampleBankId == sampleBankId1) || (entry->sampleBankId == sampleBankId2) ||
-                (entry->sampleBankId == 0)) {
+        if ((((u32)sampleBankId1 != 0xFF) || (sampleBankId2 != 0xFF)) &&
+            (AudioHeap_SearchCaches(1, 3, fontId) != NULL) && AudioLoad_IsFontLoadComplete(fontId)) {
+            for (j = 0; j < gl_22464_gAudioCtx.persistentSampleCache.numEntries; j++) {
+                entry = &gl_22464_gAudioCtx.persistentSampleCache.entries[j];
+                if ((entry->sampleBankId != sampleBankId1) && (entry->sampleBankId != sampleBankId2) &&
+                    (entry->sampleBankId != 0)) {
+                    break;
+                }
                 GL22464_UNAPPLY(entry, fontId)
             }
         }
@@ -4182,9 +4180,6 @@ void gl_func_00022464(void) {
 #undef Audio_GetInstrumentInner
 #undef Audio_GetDrum
 #undef AudioHeap_UnapplySampleCache
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00022464);
-#endif
 
 /* game_libs_func_0002266C: 2-word all-zero inter-object ROM pad (0x2266C/0x22670;
  * the predecessor gl_func_00022464 ends at 0x2266C). bootup.uso Sym 1322 exports
