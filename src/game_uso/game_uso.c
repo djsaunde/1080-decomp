@@ -2103,8 +2103,9 @@ void game_uso_func_00003558(char *s0) {
 
     mag = game_uso_func_070238(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
 
+    k = e[1] * *(float *)(s0 + 0x130); /* run 156: held before the side[] stores (k is reassigned below) */
     side[0] = 0.0;
-    side[1] = e[1] * *(float *)(s0 + 0x130);
+    side[1] = k;
     side[2] = 0.0;
     game_uso_func_072EE8(p + 0x30, (Vec3 *)side);
 
