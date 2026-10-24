@@ -7316,7 +7316,10 @@ void func_0000B520(char *arg0) {
  *   field from memory in the target (swc1 / lwc1 2420(a3) back to back): a volatile read there gives the
  *   reload; single-read temps (temp_f2_3..8), the f0 / v0 / a0 m2c families folded (frame 208 -> 144,
  *   target 120). Note: cfe homes DO follow declaration order (sp60 moves under a f64 declared before
- *   it); objdiff fuzzy ignores sp offsets, so the frame layout only matters for an exact match. */
+ *   it); objdiff fuzzy ignores sp offsets, so the frame layout only matters for an exact match.
+ *   The {0,1,0} default zeros are DOUBLE literals and the 0x960 == 100 zeros FLOAT literals: the target
+ *   then materialises a fresh `mtc1 zero,$f12` for var_f12 instead of copying the sp6C zero (`mov.s`):
+ *   90.97 -> 91.05, 522 -> 524 words (= target). */
 extern void bu_b75c_mvf(char *, char *, f32, char *);  /* (dst, src, single float in a2, self in a3); NM-only blank alias */
 extern f64 D_000008C8, D_000008D0, D_000008D8, D_000008E8, D_000008F8, D_00000900, D_00000908;
 extern char D_00008170[];
@@ -7346,15 +7349,15 @@ void func_0000B75C(char *arg0) {
     char *var_a0;
     char *temp_a1;
 
-    sp6C[0] = 0;
-    sp6C[2] = 0;
+    sp6C[0] = 0.0;
+    sp6C[2] = 0.0;
     sp6C[1] = 1.0f;
     temp_f0 = (f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800));
     var_f12 = (f32) (temp_f0 * D_000008C8);
     sp60 = (f32) (temp_f0 * D_000008D0);
     if (*(s32 *)((char *)(arg0) + 0x960) == 0x64) {
-        var_f12 = 0;
-        sp60 = 0;
+        var_f12 = 0.0f;
+        sp60 = 0.0f;
     }
     temp_f0_2 = *(f32 *)((char *)(arg0) + 0x974);
     temp_f2 = *(f32 *)((char *)(arg0) + 0xA00);
