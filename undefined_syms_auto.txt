@@ -2898,6 +2898,7 @@ D_8C3C_child_desc = 0x00000000;
 D_8C3C_mid_desc = 0x00000000;
 D_8C3C_root_desc = 0x00000000;
 gl_func_00000000f = 0x00000000;
+gl_func_00000000 = 0x00000000;  /* blank-call placeholder (was the INCLUDE_ASM symbol at game_libs VRAM 0; that function is now game_libs_func_FFFFFFE0) */
 alloc = 0x00000000;
 D_0000CCEC = 0x0000CCEC;  /* gl_func_000038F4 baked USO fmt-string addr (lui 1/addiu CCEC) */
 D_0000CCF8 = 0x0000CCF8;  /* gl_func_000038F4 baked USO fmt-string addr */

@@ -258,17 +258,26 @@ segments:
     vram: 0x00000000
     subsegments:
       - [0xDD0A6C, c, bootup_uso]
-  - [0xDE50B8, bin, bootup_uso_post]
-  # game_libs: 468 KB of raw relocatable text (1371 functions) followed by
-  # ~11 KB of data tables. Same decomp pattern as bootup_uso: VRAM=0,
-  # external symbol defs, per-.o matching.
-  - [0xDE50D4, bin, game_libs_pre]
-  - name: game_libs
+  # game_libs_func_FFFFFFE0 (bootup.uso Text offset 0x1464C, USO export 871):
+  # the first game_libs function; its 8-word hoisted head lies 0x20 bytes before
+  # game_libs VRAM 0. Was split across the old bootup_uso_post (0xDE50B8, 0x1C)
+  # and game_libs_pre (0xDE50D4, 0x4) bins + gl_func_00000000 (run 144). Linked
+  # as its own section (tenshoe.ld .game_libs_head); the vram here is nominal.
+  - name: game_libs_head
     type: code
-    start: 0xDE50D8
+    start: 0xDE50B8
     vram: 0x00000000
     subsegments:
-      - [0xDE50D8, c, game_libs/game_libs]
+      - [0xDE50B8, c, game_libs/game_libs_head]
+  # game_libs: 468 KB of raw relocatable text (1371 functions) followed by
+  # ~11 KB of data tables. Same decomp pattern as bootup_uso: VRAM=0,
+  # external symbol defs, per-.o matching. game_libs.c starts at VRAM 0x1CC.
+  - name: game_libs
+    type: code
+    start: 0xDE52A4
+    vram: 0x000001CC
+    subsegments:
+      - [0xDE52A4, c, game_libs/game_libs]
       # 56 KB mixed blob embedded mid-text. Forensics history:
       # - Initially misidentified as RSP microcode (feedback memo).
       # - Then re-fingerprinted 2026-05-04 as DL data (234 GFX opcodes; the

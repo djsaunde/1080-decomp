@@ -1226,6 +1226,22 @@
    }
   },
   {
+   "name": "src/game_libs/game_libs_head",
+   "target_path": "expected/src/game_libs/game_libs_head.c.o",
+   "base_path": "build/non_matching/src/game_libs/game_libs_head.c.o",
+   "metadata": {
+    "source_path": "src/game_libs/game_libs_head.c",
+    "progress_categories": [
+     "game_libs"
+    ]
+   },
+   "scratch": {
+    "platform": "n64",
+    "compiler": "ido7.1",
+    "c_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+   }
+  },
+  {
    "name": "src/game_libs/game_libs",
    "target_path": "expected/src/game_libs/game_libs.c.o",
    "base_path": "build/non_matching/src/game_libs/game_libs.c.o",

@@ -387,7 +387,11 @@ build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTE
 # 16-byte padding between them. Size targets match the natural compiled
 # sizes (drift included) so no real code gets truncated; same accumulated
 # drift as main's pre-split game_libs.c.o. See feedback_non_aligned_o_split.md.
-build/src/game_libs/game_libs.c.o: TRUNCATE_TEXT := 0x8944
+build/src/game_libs/game_libs.c.o: TRUNCATE_TEXT := 0x8778
+# game_libs_head.c = game_libs_func_FFFFFFE0 (0x1EC), the first game_libs function
+# whose 0x20-byte hoisted head precedes game_libs VRAM 0 (own .game_libs_head output
+# section in tenshoe.ld; was gl_func_00000000 at the start of game_libs.c, 8944 -> 8778).
+build/src/game_libs/game_libs_head.c.o: TRUNCATE_TEXT := 0x1EC
 # 2026-05-27: removed instruction-appending PREFIX_BYTES for game_libs_func_000040EC
 # (per feedback_no_instruction_forcing_matches_policy — same class as the 0003ECDC/
 # 0005AFB0/80007FC8 cleanup above).

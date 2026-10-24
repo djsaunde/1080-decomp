@@ -3,7 +3,8 @@
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00000000);
+/* gl_func_00000000 (0x1CC) was the tail of game_libs_func_FFFFFFE0, whose 8-word
+ * hoisted head sits before VRAM 0: it moved to game_libs_head.c (its own unit). */
 
 /* gl_func_000001CC: get-or-create constructor (0x13C object, one inlined
  * 0x10C base sub-object) + colour normalize (0x13C, 79 words). EXACT in-unit.

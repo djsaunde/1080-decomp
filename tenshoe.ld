@@ -1366,41 +1366,27 @@ SECTIONS
     bootup_uso_VRAM = ADDR(.bootup_uso);
     bootup_uso_VRAM_END = .;
 
-    bootup_uso_post_ROM_START = __romPos;
-    bootup_uso_post_VRAM = ADDR(.bootup_uso_post);
-    .bootup_uso_post : AT(bootup_uso_post_ROM_START)
+    /* game_libs_func_FFFFFFE0 (bootup.uso Text offset 0x1464C): the first
+       game_libs function. Its 8-word hoisted head lies 0x20 bytes before
+       game_libs VRAM 0 (it replaced the bootup_uso_post / game_libs_pre bins),
+       so it is linked as its own section; its VRAM is nominal (no absolute
+       intra-module refs; jal targets stay in the low 256 MB region). */
+    game_libs_head_ROM_START = __romPos;
+    .game_libs_head 0x00000000 : AT(game_libs_head_ROM_START)
     {
         FILL(0x00000000);
-        bootup_uso_post_DATA_START = .;
-        build/assets/bootup_uso_post.bin.o(.data);
-        bootup_uso_post_DATA_END = .;
-        bootup_uso_post_DATA_SIZE = ABSOLUTE(bootup_uso_post_DATA_END - bootup_uso_post_DATA_START);
+        build/src/game_libs/game_libs_head.c.o(.text);
     }
-    __romPos += SIZEOF(.bootup_uso_post);
-    bootup_uso_post_ROM_END = __romPos;
-    bootup_uso_post_VRAM_END = .;
+    __romPos += SIZEOF(.game_libs_head);
+    game_libs_head_ROM_END = __romPos;
 
-    game_libs_pre_ROM_START = __romPos;
-    game_libs_pre_VRAM = ADDR(.game_libs_pre);
-    .game_libs_pre : AT(game_libs_pre_ROM_START)
-    {
-        FILL(0x00000000);
-        game_libs_pre_DATA_START = .;
-        build/assets/game_libs_pre.bin.o(.data);
-        game_libs_pre_DATA_END = .;
-        game_libs_pre_DATA_SIZE = ABSOLUTE(game_libs_pre_DATA_END - game_libs_pre_DATA_START);
-    }
-    __romPos += SIZEOF(.game_libs_pre);
-    game_libs_pre_ROM_END = __romPos;
-    game_libs_pre_VRAM_END = .;
-
-    /* game_libs text: VRAM=0 (relocatable; all LUIs upper16=0, JALs target=0
+    /* game_libs text: VRAM=0 (game_libs.c.o now starts at 0x1CC; relocatable; all LUIs upper16=0, JALs target=0
        in ROM for unresolved refs, pre-resolved intra-segment calls have
        small targets that re-resolve cleanly at VRAM=0). A 56 KB RSP microcode
        blob sits mid-text at VRAM 0xEBF8..0x1CA10 and is spliced back as a
        raw .data bin so objdiff doesn't count it against code progress. */
     game_libs_ROM_START = __romPos;
-    .game_libs 0x00000000 : AT(game_libs_ROM_START)
+    .game_libs 0x000001CC : AT(game_libs_ROM_START)
     {
         FILL(0x00000000);
         game_libs_TEXT_START = .;
