@@ -12109,7 +12109,7 @@ void game_libs_func_00042938(void) {
     four = 4.0f; if (1) {}
     two = 2.0f;
     w = 320.0f * two;
-    h = 240.0f * two;
+    h = two * 240.0f; /* run 150 operand-order sweep */
     z = (f32)0 * four;
     EM38(0xBA001402, 0);
     {
