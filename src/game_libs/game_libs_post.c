@@ -3980,64 +3980,63 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00021F40);
 //   sentinel). Byte-match deferred — scan-loop / branch schedule.
 //   Name pre-checked: no extern reuse (collision-safe).
 #ifdef NON_MATCHING
-extern int D_00000000;
-/* Whole-body decode 2026-06-01 (was 6.1% over-simplified stub). Nested-loop
- * table dispatcher: outer over count=(*(D+0x2020))->0 entries (stride 20 in the
- * table at *(D+0x2030)); match an entry when its byte[2] or byte[3] == key->2,
- * or key->2==0; on match, two gl gates then two inner loops dispatching
- * gl_func_00036A04(key, sub->field) per sub-record. */
+/* run 141 (agent-c): OoT's AudioHeap_DiscardSampleCacheEntry with
+ * AudioHeap_UnapplySampleCacheForFont written inline (instrument + drum loops, no sfx
+ * loop) and gAudioCtx as a typed extern (91.21 -> 98.87 fuzzy, 112 = 112 words; decl
+ * order fontId first puts numFonts at sp+0x40). Left: fontId / fontId*20 cursor colour
+ * s5 / s4 swapped (s4 / s5 in the target). The run-137 hand decode is replaced. */
 extern int gl_func_00036A04();
-/* Re-decoded 2026-10-23 agent-c run 137 (target: no v0 on any path = void; the
- * 0x7F test calls sub[6] only when != 127 and sub[4] ALWAYS; the match test is
- * one short-circuit condition whose `li a0,1` fills the delay slots; the
- * entry pointer is recomputed at the bottom of the first inner loop and its
- * last value feeds the second loop's count). Left: the target holds &D in s6. */
-extern void gl_221d8_fg(); /* run 139: fn-typed blank base -> the target's lui s6 / addiu s6,s6,0 held &D (no reloc) */
-void gl_func_000221D8(char *key) {
-    char *g = (char *)gl_221d8_fg;
-    int count = *(short *)(*(int *)(g + 0x2020));
-    int s5, s4, s1, s2;
-    unsigned char *e;
+typedef struct { s8 inUse; s8 origMedium; s8 sampleBankId; } gl_221D8_CacheEntry;
+typedef struct { void *sample; f32 tuning; } gl_221D8_TunedSample;
+typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_221D8_TunedSample lowPitchTunedSample; gl_221D8_TunedSample normalPitchTunedSample; gl_221D8_TunedSample highPitchTunedSample; } gl_221D8_Instrument;
+typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_221D8_TunedSample tunedSample; void *envelope; } gl_221D8_Drum;
+typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0xE]; } gl_221D8_SoundFont;
+typedef struct { s16 numEntries; } gl_221D8_Table;
+typedef struct { char pad[0x2020]; gl_221D8_Table *soundFontTable; char pad2024[0xC]; gl_221D8_SoundFont *soundFontList; } gl_221D8_Ctx;
+extern gl_221D8_Ctx gl_221D8_gAudioCtx;
 
-    if (count <= 0) {
-        return;
+void gl_func_000221D8(gl_221D8_CacheEntry *entry) {
+    s32 fontId;
+    s32 numFonts;
+    s32 sampleBankId1;
+    s32 sampleBankId2;
+
+    numFonts = gl_221D8_gAudioCtx.soundFontTable->numEntries;
+    for (fontId = 0; fontId < numFonts; fontId++) {
+        sampleBankId1 = gl_221D8_gAudioCtx.soundFontList[fontId].sampleBankId1;
+        sampleBankId2 = gl_221D8_gAudioCtx.soundFontList[fontId].sampleBankId2;
+        if (((sampleBankId1 != 0xFF) && (entry->sampleBankId == sampleBankId1)) ||
+            ((sampleBankId2 != 0xFF) && (entry->sampleBankId == sampleBankId2)) || entry->sampleBankId == 0) {
+            if (gl_func_00000000(1, 2, fontId) != 0) {
+                if (gl_func_00000000(fontId) != 0) {
+                    gl_221D8_Drum *drum;
+                    gl_221D8_Instrument *inst;
+                    s32 instId;
+                    s32 drumId;
+
+                    for (instId = 0; instId < gl_221D8_gAudioCtx.soundFontList[fontId].numInstruments; instId++) {
+                        inst = (gl_221D8_Instrument *)gl_func_00000000(fontId, instId);
+                        if (inst != NULL) {
+                            if (inst->normalRangeLo != 0) {
+                                gl_func_00036A04(entry, inst->lowPitchTunedSample.sample);
+                            }
+                            if (inst->normalRangeHi != 0x7F) {
+                                gl_func_00036A04(entry, inst->highPitchTunedSample.sample);
+                            }
+                            gl_func_00036A04(entry, inst->normalPitchTunedSample.sample);
+                        }
+                    }
+
+                    for (drumId = 0; drumId < gl_221D8_gAudioCtx.soundFontList[fontId].numDrums; drumId++) {
+                        drum = (gl_221D8_Drum *)gl_func_00000000(fontId, drumId);
+                        if (drum != NULL) {
+                            gl_func_00036A04(entry, drum->tunedSample.sample);
+                        }
+                    }
+                }
+            }
+        }
     }
-    s4 = 0;
-    s5 = 0;
-    do { /* run 139: do-while (count > 0 already tested): no second guard test */
-        int kb;
-        int v1;
-        int a0b;
-        e = (unsigned char *)*(int *)(g + 0x2030) + s4;
-        kb = *(signed char *)(key + 2);
-        v1 = e[2];
-        a0b = e[3];
-        if (!((v1 != 0xFF && v1 == kb) || (a0b != 0xFF && a0b == kb) || kb == 0)) continue;
-        if (gl_func_00000000(1, 2, s5) == 0) continue;
-        if (gl_func_00000000(s5) == 0) continue;
-        e = (unsigned char *)*(int *)(g + 0x2030) + s4;
-        for (s1 = 0; s1 < e[0]; ) {
-            int *sub = (int *)gl_func_00000000(s5, s1);
-            if (sub != 0) {
-                if (*(unsigned char *)((char *)sub + 1) != 0) {
-                    gl_func_00036A04(key, sub[8 / 4]);
-                }
-                if (*(unsigned char *)((char *)sub + 2) != 127) {
-                    gl_func_00036A04(key, sub[24 / 4]);
-                }
-                gl_func_00036A04(key, sub[16 / 4]);
-            }
-            s1++;
-            e = (unsigned char *)*(int *)(g + 0x2030) + s4;
-        }
-        for (s2 = 0; s2 < e[1]; s2++) {
-            int *sub = (int *)gl_func_00000000(s5, s2);
-            if (sub != 0) {
-                gl_func_00036A04(key, sub[4 / 4]);
-            }
-            e = (unsigned char *)*(int *)(g + 0x2030) + s4;
-        }
-    } while (s5++, s4 += 20, s5 != count);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000221D8);
