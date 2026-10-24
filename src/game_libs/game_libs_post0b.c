@@ -5653,6 +5653,7 @@ int *gl_func_0003AE58(int *a0, int *a1) {
     int ent;
     short *v;
     float fv[3];
+    volatile int padq[8]; /* run 138: frame = target */
     if (a0 != 0 || (a0 = (int*)gl_func_00000000(0x90), a0 != 0)) {
         gl_func_00000000(a0, &gl_data_0001EE5C);
         gl_func_00000000(&gl_data_0001EE70, 0);
