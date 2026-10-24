@@ -609,45 +609,16 @@ void *func_00000C10(int *arg0) {
  * scheduling, and the 2 single-int global stores want $at-fused form
  * but IDO holds D_00000000 in $v1 (shared with the 12-entry box table).
  * Stays INCLUDE_ASM (no episode). */
-#ifdef NON_MATCHING
-/* 2026-10-21 (agent-c run 115): cfront ctor re-decode from the TextReloc
- * (alloc func_055750, base ctor func_04C678(o, &D_000066A8), descriptor
- * D_0065EC, globals import_0001FFA0 +0/+4 through two aliases, box table
- * D_0065AC). Residual (97.2): the box block colours base/h/-h v0/v1/a0, the
- * target v1/a0/a1 (one candidate earlier in the target holds v0). */
-extern char D_000066A8;
-extern char bu_ca0_desc[];
-extern int bu_ca0_g[], bu_ca0_g_b[];
-extern short bu_ca0_box[];
-void *func_00000CA0(char *o, int a1, int a2, int a3) {
-    int h, nh;
-    if (o == 0) {
-        o = (char *)func_00000000(0x40);
-        if (o == 0) goto end;
-    }
-    func_00000000(o, &D_000066A8);
-    *(char **)(o + 0x28) = bu_ca0_desc;
-    if (1) { }
-    *(int *)(o + 0xC) = a1;
-    *(float *)(o + 0x34) = 1.0f;
-    *(float *)(o + 0x30) = 1.0f;
-    *(float *)(o + 0x2C) = 1.0f;
-    *(float *)(o + 0x38) = 0.0f;
-    *(int *)(o + 0x3C) = a2;
-    bu_ca0_g[0] = a3;
-    bu_ca0_g_b[1] = a3;
-    h = a3 / 2;
-    nh = -h;
-    bu_ca0_box[0] = h;   bu_ca0_box[1] = h;   bu_ca0_box[2] = h;
-    bu_ca0_box[8] = nh;  bu_ca0_box[9] = h;   bu_ca0_box[10] = h;
-    bu_ca0_box[16] = nh; bu_ca0_box[17] = nh; bu_ca0_box[18] = h;
-    bu_ca0_box[24] = h;  bu_ca0_box[25] = nh; bu_ca0_box[26] = h; if (h) {}
-end:
-    return o;
+/* func_00000CA0: EXACT via an IDO 7.1 NCC (C++) donor,
+ * src/bootup_uso/bootup_uso_ncc_CA0.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder (agent-g run 150). It is the real constructor D::D(a1, a2, a3):
+ * edg's this==0 -> new(0x40) protocol, out-of-line base ctor B(&D_000066A8)
+ * (import), D's vptr at +0x28 (the stores now schedule as in the target), and
+ * the last vertex corner written one store per source line (as1 reorders only
+ * inside a .loc line group; the cfe body colored h/-h v0/a0, 97.2). */
+void func_00000CA0(int a0, int a1, int a2, int a3) {
+    volatile int r = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000CA0);
-#endif
 
 /* func_00000D94 - verified structural decode (0xD4, 53 insns,
  * FP-threshold-gated state update).

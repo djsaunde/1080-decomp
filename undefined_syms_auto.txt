@@ -5121,3 +5121,8 @@ gl_22464_gAudioCtxT = 0x00000000;  /* agent-c run 144: gl_func_00022464 (Discard
 gl_dcb4_gAudioCtx = 0x00000000;  /* agent-c run 144: gl_func_0001DCB4 (synthesis update) typed gAudioCtx extern (numSynthesisReverbs 0x1, sampleStates 0x14, synthesisReverbs 0x18, numNotes 0x2070, notes 0x2CFC) */
 gl_221D8_gAudioCtx = 0x00000000;  /* agent-c run 144: gl_func_000221D8 (DiscardSampleCacheEntry) typed gAudioCtx extern (soundFontTable 0x2020, soundFontList 0x2030) */
 gl_32e18_blank = 0x00000000;  /* agent-c run 144: gl_func_00032E18 blank jal 0 callee alias */
+func_00000000_ca0_base = 0x00000000;  /* agent-g run 150: func_00000CA0 NCC donor base ctor (renamed __ct__1BFPc), blank jal */
+bu_ca0_desc = 0x00000000;  /* agent-g run 150: func_00000CA0 donor vtable (renamed __vtbl__1D), blank lui/addiu */
+bu_ca0_g = 0x00000000;  /* agent-g run 150: func_00000CA0 imported word (blank lui at/sw) */
+bu_ca0_g_b = 0x00000000;  /* agent-g run 150: func_00000CA0 second imported word, [1] = target func_00000000 + 0x4 */
+bu_ca0_box = 0x00000000;  /* agent-g run 150: func_00000CA0 vertex-corner table (blank lui/addiu v1) */

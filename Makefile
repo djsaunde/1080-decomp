@@ -176,6 +176,16 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_7204_DONOR := build/src/bootup_uso/bootup_uso_ncc_7204.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00007204=$(BOOTUP_7204_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7204_DONOR)
+# CA0 = D::D(int, int, int): cfront this==0 -> new protocol, out-of-line base ctor, vptr +0x28,
+# vertex-corner table (last corner one store per line: as1 reorders only within a .loc group);
+# NCC donor, symbols renamed (names only; no bytes change).
+BOOTUP_CA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CA0.cpp.o
+$(BOOTUP_CA0_DONOR): src/bootup_uso/bootup_uso_ncc_CA0.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__1DFiN21=func_00000CA0 --redefine-sym __ct__1BFPc=func_00000000_ca0_base --redefine-sym __vtbl__1D=bu_ca0_desc $@
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000CA0=$(BOOTUP_CA0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CA0_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
 BOOTUP_4948_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o

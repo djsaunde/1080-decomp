@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00000CA0",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T07:27:52.378296+00:00",
+  "end_time": "2026-10-24T07:27:52.378319+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T07:27:52.378312+00:00",
+      "assistant_text": "Exact via NCC C++ ctor donor: real D::D(int,int,int) with edg this==0->new protocol, out-of-line base ctor, B-declared virtual puts vptr at +0x28; last vertex corner written one store per line because as1 only reorders within a .loc line group.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 61,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00000CA0 (0xF4 / 61 words): the\n * constructor D::D(int, int, int) of a 0x40-byte class with a base B whose\n * ctor is out of line (B(&D_000066A8), import) and a vptr at +0x28 (B\n * declares the virtual). edg's ctor protocol supplies the get-or-create head\n * (`if (this == 0) this = new(0x40); if (this) { ... } return this;`) with the\n * alloc forwarded through an inline operator new. Body: scale (1,1,1), 0.0\n * at +0x38, a1 at +0xC, a2 at +0x3C, a3 to two imported words, then a3 / 2\n * written as the four corners of a 16-byte vertex table.\n *\n * The last corner is written as three statements on three LINES: as1 only\n * reorders inside one source-line (.loc) group, and with set(h, nh, h) on a\n * single line it issued the nh store (+0x32) before the h store (+0x30).\n * Symbols renamed after compile (names only): __ct__1DFiN21 -> func_00000CA0,\n * __ct__1BFPc -> func_00000000_ca0_base, __vtbl__1D -> bu_ca0_desc.\n * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-g run 150). */\nextern \"C\" {\nvoid *func_00000000(...);\nextern char D_000066A8;\nextern int bu_ca0_g[], bu_ca0_g_b[];\n}\ninline void *operator new(unsigned n) { return func_00000000(n); }\nstruct V { short x, y, z, w; int p, q; void set(int a, int b, int c) { x = a; y = b; z = c; } };\nextern \"C\" V bu_ca0_box[];\nstruct B { int p0[3]; int a1; int p1[6]; B(char *); virtual void g(); };\nstruct D : B { float sx, sy, sz, r; int a2; D(int a1, int a2, int a3); virtual void g(); };\nD::D(int a1_, int a2_, int a3) : B(&D_000066A8) {\n    int h, nh;\n    a1 = a1_;\n    sz = 1.0f;\n    sy = 1.0f;\n    sx = 1.0f;\n    r = 0.0f;\n    a2 = a2_;\n    bu_ca0_g[0] = a3;\n    bu_ca0_g_b[1] = a3;\n    h = a3 / 2;\n    nh = -h;\n    bu_ca0_box[0].set(h, h, h);\n    bu_ca0_box[1].set(nh, h, h);\n    bu_ca0_box[2].set(nh, nh, h);\n    bu_ca0_box[3].x = h;\n    bu_ca0_box[3].y = nh;\n    bu_ca0_box[3].z = h;\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_CA0.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00000CA0.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "ROM byte-identical (cmp tenshoe.z64 baserom.z64); 61/61 words; donor spliced via REPLACE_FUNC_BODY."
+  }
+}
