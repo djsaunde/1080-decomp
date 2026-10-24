@@ -5884,96 +5884,57 @@ void gl_func_00023E60(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
 void game_libs_func_00023F84(int a0, int a1, int a2, int a3) {
 }
 
-// game_libs_func_00023F98 (MERGED 2026-07-23: orphan 23F98 3-insn
-// lui/addiu v0 + lw t6,0x215C(v0) is this fn's own hoisted range-check
-// load — the sltiu $at,$t6,0x11 gate reads *(D+0x215C), NOT the ptr
-// arg; same mis-split family as 1FF28/1FFAC/20030/200F4; was
-// gl_func_00023FA4; 0xC+0xCC=0xD8) — STRUCTURAL PASS (no episode).
-// Raw-.word USO form (game_libs). BOUNDARY NOTE: 3-jr USO bundle
-// (named fn + 2 trailing helpers) — deferred USO re-split. The named
-// leading fn is a slot-configure-by-mode helper.
-//
-//   int gl_func_00023FA4(int id, int a1, int mode, int size) {
-//     if (*(u32*)(D+0x215C) >= 0x11) return -1;         // 17-slot cap (global count)
-//     Slot *s = (Slot*)id;
-//     void *buf;
-//     switch (mode) {                                    // beq 2 / 3
-//       case 2:  buf = *(void**)(&D_0 + 0x1644); break;
-//       case 3:  buf = *(void**)(&D_0 + 0x1648); break;
-//       default: buf = 0;                                 // none
-//     }
-//     if (size & 0xF) size = (size + 0xF) & ~0xF;          // align16
-//     s->b_2 = (byte)a1;                                   // slot tag
-//     ...                                                   // wire buf
-//   }
-//
-// Struct-typing reference: configures one of up to 0x11 (17) slots
-//   (`id` is range-checked, -1 returned on overflow). The `mode`
-//   stack arg selects which global double-buffer pointer to bind —
-//   word &D_0+0x1644 (mode 2) or &D_0+0x1648 (mode 3); other modes
-//   bind none. The slot's byte +2 is set from `a1` (a tag/type), and
-//   a requested size is rounded up to a 16-byte multiple. A
-//   per-slot resource-binding configurator in the game_libs resource
-//   subsystem (the &D_0+0x164x globals are its mode buffers).
-// Caps (DEFERRED): single jr $ra (the "3-jr bundle" note is STALE;
-//   .s is 0xDC/51 words, ONE function). Per-slot resource-binding
-//   configurator in the game_libs resource subsystem. Real-C
-//   STRUCTURAL body below per the analysis (id range-checked vs
-//   0x11, -1 on overflow; mode switch binds &D_0+0x1644 (2) /
-//   &D_0+0x1648 (3) / none; size 16-aligned; slot byte+2 = a1 tag).
-//   Byte-match deferred — mode-switch / align schedule. Name
-//   pre-checked: no extern reuse (collision-safe).
-#ifdef NON_MATCHING
-extern int D_00000000;
-extern u8 gl_d_23f98[];
-// Per-slot resource binder. Post-merge body (2026-07-23): the >=0x11 gate
-// reads the global counter *(g+0x215C) — the merged-in hoisted load — not
-// the slot ptr. mode is a SWITCH (dead duplicated default branch in target
-// = IDO switch layout): *(g+0x1644) for 2, *(g+0x1648) for 3, default
-// return 0. size (arg6) is rounded up to 16; the slot's fields are wired
-// (+2=tag byte, +4=arg7, +8=arg5, +0xC=a3, +0x10=aligned size), the bound
-// buffer's +0x14 set to 2, then a global fn-ptr at *(g) is invoked as (buf, s).
-// gl_d_23f98 array extern = held-base lever (IDO_CODEGEN "array extern forces
-// single base materialization"): reproduces the target's hoisted lui/addiu v0
-// + lw t6,0x215C(v0) orphan bytes and the 0x1644/0x1648 case loads off v0;
-// scalar &D_00000000 keeps the fnptr load folded (lui t9; lw t9,0(t9)).
-// RESIDUAL (banked): target colors s into $s0 (frame 0x20, no a0/a2 homing);
-// ours picks the free unused-param reg $a2 (frame 0x18) — no C-visible reason
-// for the s-reg (s never live past the jalr). Probes burned: while(0) s-mutate/
-// assign/read (no liveness claim), volatile pad x3 (slot elided in this TU),
-// if(1) store barrier (const-2 CSE with the case-2 compare persists; target
-// keeps macro li at,2 + fresh li t1,2). Same probe-immune const-web/coloring
-// class as the 23E60 entry-block negative.
-int game_libs_func_00023F98(char *s, int tag, int a2, int a3, int arg5, int size, int arg7, int mode) {
-    char *buf;
-    if (*(unsigned int *)(gl_d_23f98 + 0x215C) >= 0x11U) {
+/* game_libs_func_00023F98 EXACT 2026-10-23 (agent-c run 140, 80.22 -> 100): OoT's
+ * AudioLoad_Dma (load.c) verbatim: resetTimer (u32, +0x215C) > 16 -> -1, medium
+ * switch 2 / 3 -> cartHandle / driveHandle (+0x1644 / +0x1648), ALIGN16 when
+ * size % 16, the five OSIoMesg stores, cmdType = 2, then sDmaHandler(handle, mesg,
+ * direction) -- direction still sits in a2. sDmaHandler is its own symbol (own lui;
+ * through the gAudioCtx base it shared that register): pinned blank. */
+typedef struct { char pad[0x18]; } gl_23F98_MQ;
+typedef struct { u16 type; u8 pri; u8 status; gl_23F98_MQ *retQueue; } gl_23F98_IoHdr;
+typedef struct { gl_23F98_IoHdr hdr; void *dramAddr; u32 devAddr; u32 size; } gl_23F98_IoMesg;
+typedef struct { u32 cmdType; } gl_23F98_Tranx;
+typedef struct { char pad[0x14]; gl_23F98_Tranx transferInfo; } gl_23F98_PiHandle;
+typedef struct { char pad0[0x1644]; gl_23F98_PiHandle *cartHandle; gl_23F98_PiHandle *driveHandle; char pad1650[0x215C - 0x164C]; u32 resetTimer; } gl_23F98_Ctx;
+#define gl_23F98_gAudioCtx (*(gl_23F98_Ctx *)&D_00000000)
+typedef s32 (*gl_23F98_DmaHandler)(gl_23F98_PiHandle *handle, gl_23F98_IoMesg *mb, s32 direction);
+extern gl_23F98_DmaHandler gl_23f98_sDmaHandler;
+#define sDmaHandler gl_23f98_sDmaHandler
+
+s32 game_libs_func_00023F98(gl_23F98_IoMesg *mesg, u32 priority, s32 direction, u32 devAddr, void *ramAddr, u32 size,
+                 gl_23F98_MQ *reqQueue, s32 medium, const char *dmaFuncType) {
+    gl_23F98_PiHandle *handle;
+
+    if (gl_23F98_gAudioCtx.resetTimer > 16) {
         return -1;
     }
-    switch ((unsigned)(mode)) { /* unsigned key: case compares load li at,K (no held-constant CSE) */
-    case 2:
-        buf = (char *)*(int *)(gl_d_23f98 + 0x1644);
-        break;
-    case 3:
-        buf = (char *)*(int *)(gl_d_23f98 + 0x1648);
-        break;
-    default:
-        return 0;
+
+    switch (medium) {
+        case 2:
+            handle = gl_23F98_gAudioCtx.cartHandle;
+            break;
+        case 3:
+            handle = gl_23F98_gAudioCtx.driveHandle;
+            break;
+        default:
+            return 0;
     }
-    if (size & 0xF) {
-        size = (size + 0xF) & ~0xF;
+
+    if ((size % 0x10) != 0) {
+        size = ((size) + 0xF) & ~0xF;
     }
-    *(char *)(s + 2) = (char)tag;
-    *(int *)(s + 4) = arg7;
-    *(int *)(s + 0xC) = a3;
-    *(int *)(s + 0x10) = size;
-    *(int *)(s + 8) = arg5;
-    *(int *)(buf + 0x14) = 2;
-    (**(void (**)(char *, char *))&D_00000000)(buf, s);
+
+    mesg->hdr.pri = priority;
+    mesg->hdr.retQueue = reqQueue;
+    mesg->dramAddr = ramAddr;
+    mesg->devAddr = devAddr;
+    mesg->size = size;
+    handle->transferInfo.cmdType = 2;
+    sDmaHandler(handle, mesg, direction);
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00023F98);
-#endif
+#undef gl_23F98_gAudioCtx
+#undef sDmaHandler
 
 void game_libs_func_00024070(void) {}
 
