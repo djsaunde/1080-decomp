@@ -13149,7 +13149,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 temp_f18 = var_f4 * temp_f0;
                 var_v0 = (u32) temp_f18; /* recomposed (u32)float */
                 *(u8 *)((char *)(arg0) + 0x26) = (u8) var_v0;
-                sp78 *= *(f32 *)((char *)(arg0) + 0x58);
+                sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
                 *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (*(u8 *)((char *)(arg0) + 0x28) + *(u8 *)((char *)(arg0) + 0x60)) >> 1);
                 if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
