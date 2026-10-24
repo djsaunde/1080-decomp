@@ -111,15 +111,17 @@ extern UsoSlotGroup D_800182E4;
 
 /* func_80002CA4 split out to kernel_056.c (-O2 -mips3) */
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002CD0);
+/* func_80002CD0 = bzero (libultra handwritten libc/bzero.s). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/libc/bzero.s")
 
-/* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002DB0);
+/* func_80002DB0 = __osSetSR (+8 leading pad words; handwritten mtc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/setsr.s")
 
-/* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002DE0);
+/* func_80002DE0 = __osGetSR (handwritten mfc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/getsr.s")
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002DF0);
+/* func_80002DF0 = osWritebackDCache (handwritten cache ops). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/writebackdcache.s")
 
 INCLUDE_ASM("asm/nonmatchings/kernel", func_80002E70);
 

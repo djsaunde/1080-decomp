@@ -9,7 +9,8 @@
 
 /* func_80004FE0 merged into func_80004FD0 */
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80005000);
+/* func_80005000 = osInvalDCache (handwritten cache ops). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/invaldcache.s")
 
 /* func_800050C0 split out to kernel_051.c (-O1) */
 

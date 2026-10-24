@@ -67,4 +67,5 @@ extern OSEventState __osEventStateTab[];
 
 
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80009CE0);
+/* func_80009CE0 = osWritebackDCacheAll (handwritten cache ops). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/writebackdcacheall.s")
