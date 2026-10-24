@@ -1801,8 +1801,8 @@ int func_8000235C(Obj8000235C *o, int id) {
     return 0;
 }
 
-/* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800023E0);
+/* func_800023E0 = Yay0 decoder + osSetIntMask (two handwritten routines in one splat symbol), real source in src/handwritten/kernel/decode_yay0_setintmask.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). */
+GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
 
 /* func_80002530 = libultra osInitialize (KMC kernel variant). EXACT via
  * IDO 5.3 -O1 donor splice (REPLACE_FUNC_BODY, see

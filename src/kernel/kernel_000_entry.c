@@ -11,7 +11,8 @@
  * entry). IDO pads this unit's .text to 0xB0, which is where kernel_000
  * starts. */
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80000000);
+/* func_80000000: handwritten boot entry stub, real source in src/handwritten/kernel/entry.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). */
+GLOBAL_ASM("src/handwritten/kernel/entry.s")
 
 typedef struct { s32 pad[4]; u32 unk10; } UsoSegDesc0;
 extern UsoSegDesc0 D_8000A260;
