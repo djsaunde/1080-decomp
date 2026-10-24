@@ -9664,9 +9664,9 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         gsub = (char *) timproc_uso_b5_func_055750((char *)0x16C);
         if (gsub != 0) {
             timproc_uso_b5_func_0546DC(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
-            *(s32 *)(gsub + 0x120) = 1;
-            FW(gsub, 0x28) = (s32) &import_80087FB8[0];
             t = *(f32 *)(&import_80807FB8 + 1020);
+            FW(gsub, 0x28) = (s32) &import_80087FB8[0];
+            *(s32 *)(gsub + 0x120) = 1;
             *(f32 *)(gsub + 0x108) = t;
             *(f32 *)(gsub + 0x10C) = t;
             *(f32 *)(gsub + 0x110) = t;
