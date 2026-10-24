@@ -20142,7 +20142,7 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     float vec84[3];
     volatile int pad7C[2];
     float vec70[3];
-    volatile int pad60[4];
+    volatile int pad60[2];
     float vec54[3];
     char *cam;
     char *p;
@@ -20173,9 +20173,9 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
 
     *(Tri3i *)vecB4 = *(Tri3i *)vecA0;
     *(Tri3i *)vec19C = *(Tri3i *)vecB4;
-    vec70[0] = vecEC[0] + vec19C[0];
-    vec70[1] = vecEC[1] + vec19C[1];
-    vec70[2] = vecEC[2] + vec19C[2];
+    /* run 149: vec70 held in block locals, then stored (kit LXXXVI); pad60 [4] -> [2] keeps the frame: 82.71 -> 88.56 */
+    { float hx = vecEC[0] + vec19C[0]; float hy = vecEC[1] + vec19C[1]; float hz = vecEC[2] + vec19C[2];
+      vec70[0] = hx; vec70[2] = hz; vec70[1] = hy; }
     *(Tri3i *)vec84 = *(Tri3i *)vec70;
     *(Tri3i *)vec54 = *(Tri3i *)vec84;
 
