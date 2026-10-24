@@ -5790,25 +5790,25 @@ int gl_func_0003B01C(char *o, char *other) {
     }
     *(int *)(o + 0x30) = fl | 2;
     pb = (Vec3 *)(other + 0x54);
-    dx = pb->x - pa->x; if (1) {}
-    dy = pb->y - pa->y;
     dz = pb->z - pa->z; if (1) {}
+    dy = pb->y - pa->y;
+    dx = pb->x - pa->x; if (1) {}
     t.x = dx;
     t.y = dy;
     t.z = dz;
     t2 = t;
     t3 = t2;
-    n.x = t3.x;
-    n.y = t3.y;
     n.z = t3.z;
+    n.y = t3.y;
+    n.x = t3.x;
     r = gl_3B01C_f(o);
     if (0.0f <= r) {
         return 0;
     }
     t2 = *(Vec3 *)(o + 0x6C);
-    n.x = t2.x;
-    n.y = t2.y;
     n.z = t2.z;
+    n.y = t2.y;
+    n.x = t2.x;
     gl_func_00000000(&n);
     n.x = n.x * -r;
     n.y = n.y * -r;
