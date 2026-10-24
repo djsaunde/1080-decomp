@@ -839,6 +839,8 @@ void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
     char *temp_t1;
     char *temp_t2;
     char *temp_t3;
+    u8 *saved64;
+    u8 *saved60;
 
     sp138[0] = 1.0f;
     sp138[1] = 1.0f;
@@ -856,6 +858,8 @@ void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
         temp_s0 = (int)arg0 + 0x6FC;
         timproc_uso_b3_func_000000B0(temp_s0);
         timproc_uso_b3_func_000000B0(spB8, (char *)&D_b3_1240_base + 0x3D8, arg2);
+        saved64 = temp_s1;
+        saved60 = temp_s2;
         temp_v0 = timproc_uso_b3_func_000000B0(spB8);
         temp_t3 = FW(arg0, 0x70C);
         temp_t1 = FW(arg0, 0x6DC);
@@ -880,8 +884,8 @@ void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
             } while (var_s1 != (temp_v0 * 0xD));
         }
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x72C))), sp138); if (arg1) {}
-        timproc_uso_b3_func_000000B0(temp_s1, temp_s2_2, temp_a2, (char *)2);
-        timproc_uso_b3_func_000000B0(temp_s2, temp_s1_2, temp_a2, (char *)2);
+        timproc_uso_b3_func_000000B0(saved64, temp_s2_2, temp_a2, (char *)2);
+        timproc_uso_b3_func_000000B0(saved60, temp_s1_2, temp_a2, (char *)2);
     }
 }
 #else
