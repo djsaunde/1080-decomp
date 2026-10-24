@@ -4153,7 +4153,7 @@ void game_uso_func_0000591C(int *a0) {
         }
     }
     yaw_raw = game_uso_func_00003ED4(p, &transform_out, &hit_out);
-    scale = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
+    scale = yaw_raw < (f32)0.0 ? -yaw_raw : yaw_raw;
     yaw_metric = scale;
     neg = -yaw_raw;
 
@@ -5690,7 +5690,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
     if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
         tz = *(f32 *)((int)q + 8);
         tx = *q;
-        p->y = 0.0f;
+        p->y = 0.0;
         p->z = tz;
         p->x = tx;
     }
