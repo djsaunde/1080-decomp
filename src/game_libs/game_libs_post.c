@@ -5527,7 +5527,9 @@ int game_libs_func_00023B98(int idx) {
 // target spills clamp val rec->b0 to sp+0x48 + keeps arg2 in s5 + node in s1
 // (build keeps clamp in s5, arg2 in s4, node in s0). Coupled allocator
 // decision — the documented permuter-immune game_libs coloring cap. No bugs.
-#ifdef NON_MATCHING
+/* EXACT (run 144, agent-c): the drum loop written with nested ifs (no `continue`s)
+ * flips the fontDataStartAddr / index colouring to the target s2 / s3; the debug
+ * print string is the baked 0x1ACA4 off D_00000000. */
 /* run 140: OoT's AudioLoad_RelocateFont (load.c) + 1080's debug print in the
  * instrument loop (`print(str 0x1ACA4, i, fontData[i], fontDataStartAddr)` before the
  * relocation; blank jal) and drum isRelocated set before the envelope fix-up (84.83 ->
@@ -5567,22 +5569,20 @@ void gl_func_00023BDC(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC
         fontData[0] = GL23BDC_RELOC(soundListOffset);
         for (i = 0; i < numDrums; i++) {
             soundOffset = (u32)((gl_23BDC_Drum **)fontData[0])[i];
-            if (soundOffset == 0) {
-                continue;
+            if (soundOffset != 0) {
+                soundOffset = GL23BDC_RELOC(soundOffset);
+                ((gl_23BDC_Drum **)fontData[0])[i] = drum = (gl_23BDC_Drum *)soundOffset;
+                if (!drum->isRelocated) {
+                    AudioLoad_RelocateSample(&drum->tunedSample, fontDataStartAddr, sampleBankReloc);
+                    drum->isRelocated = 1;
+                    soundOffset = (u32)drum->envelope;
+                    drum->envelope = (void *)GL23BDC_RELOC(soundOffset);
+                }
             }
-            soundOffset = GL23BDC_RELOC(soundOffset);
-            ((gl_23BDC_Drum **)fontData[0])[i] = drum = (gl_23BDC_Drum *)soundOffset;
-            if (drum->isRelocated) {
-                continue;
-            }
-            AudioLoad_RelocateSample(&drum->tunedSample, fontDataStartAddr, sampleBankReloc);
-            drum->isRelocated = 1;
-            soundOffset = (u32)drum->envelope;
-            drum->envelope = (void *)GL23BDC_RELOC(soundOffset);
         }
     }
 
-    /* run 143: no soundListOffset copy here (the target loads fontData[1] into its own register); left: s2/s3 swap */
+    /* run 143: no soundListOffset copy here (the target loads fontData[1] into its own register) */
     if ((fontData[1] != 0) && (numSfx != 0)) {
         fontData[1] = GL23BDC_RELOC(fontData[1]);
         for (i = 0; i < numSfx; i++) {
@@ -5601,7 +5601,7 @@ void gl_func_00023BDC(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC
 
     for (i = 2; i <= 2 + numInstruments - 1; i++) {
         if (fontData[i] != 0) {
-            gl_func_00000000(gl_23bdc_str, i, fontData[i], fontDataStartAddr);
+            gl_func_00000000((char *)&D_00000000 + 0x1ACA4, i, fontData[i], fontDataStartAddr);
             fontData[i] = GL23BDC_RELOC(fontData[i]);
             inst = (gl_23BDC_Inst *)fontData[i];
             if (!inst->isRelocated) {
@@ -5626,9 +5626,6 @@ void gl_func_00023BDC(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC
 #undef gl_23BDC_gAudioCtx
 #undef GL23BDC_RELOC
 #undef AudioLoad_RelocateSample
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023BDC);
-#endif
 
 /* gl_func_00023E60 EXACT 2026-10-23 (agent-c run 140, 74.49 -> 100): OoT's
  * AudioLoad_SyncDma (load.c) verbatim -- `while (1) { if (size < 0x400) break; ...}`
