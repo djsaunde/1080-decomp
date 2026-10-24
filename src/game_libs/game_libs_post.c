@@ -377,32 +377,41 @@ int gl_func_0001D0AC(int code, Spec8_1CFDC spec) {
     return r;
 }
 
-#ifdef NON_MATCHING
-/* game_libs_func_0001D17C: GBI display-list builder. Writes 3 commands (6 words)
- * to a0 indexing &D + a1*344 (record stride 344), reading 2 shorts from
- * rec+0x28 / rec+0x2A OR'd with 0x0C1A0000; returns a0+24 (next DL ptr).
- * Logic exact; near-miss: target uses explicit chained cursors (a2=a0+8;
- * t0=a2+8; sw 0(a2)/0(t0); return t0+8) but IDO -O2 FOLDS both int-cursor
- * `p+=2` and struct-pointer `p++` into offset addressing (sw 8(a0)) — 31 vs
- * 33 insns (cursor-vs-offset preference, like the addiu-form RMW). Reloc-blind
- * (single &D base). */
-int *game_libs_func_0001D17C(int *a0, int a1) {
-    char *rec = (char *)&D_00000000 + a1 * 344;
-    int *p = a0;
-    p[0] = 0x0A000C80;
-    p[1] = 0x03E001A0;
-    p += 2;
-    p[0] = *(unsigned short *)(rec + 0x28) | 0x0C1A0000;
-    p[1] = 0x0E200C80;
-    p += 2;
-    p[0] = *(unsigned short *)(rec + 0x2A) | 0x0C1A0000;
-    p[1] = 0x03E00E20;
-    p += 2;
-    return p;
+/* game_libs_func_0001D17C EXACT 2026-10-23 (agent-c run 140, 96.21 -> 100): OoT's
+ * AudioSynth_LeakReverb in the older (SM64-era) index form: `(cmd, s32 reverbIndex)`
+ * with every field read written as gSynthesisReverbs[reverbIndex].leakRtl / .leakLtr
+ * (a named `reverb` pointer local colours the base v1 instead of a3). One DMEM move +
+ * two aMix packets (DMEM_WET_TEMP 0x3E0 is the scratch). Retires the NCC NM donor. */
+typedef struct { u32 w0; u32 w1; } gl_1D17C_Awords;
+typedef union { gl_1D17C_Awords words; long long force_structure_alignment; } gl_1D17C_Acmd;
+#define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
+#define A_DMEMMOVE 10
+#define DMEM_1CH_SIZE 0x1A0
+#define aDMEMMove(pkt, i, o, c) { gl_1D17C_Acmd *_a = (gl_1D17C_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_DMEMMOVE, 24, 8) | _SHIFTL(i, 0, 24); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define A_MIXER 12
+#define DMEM_WET_TEMP 0x3E0
+#define DMEM_WET_LEFT_CH 0xC80
+#define DMEM_WET_RIGHT_CH 0xE20
+#define aMix(pkt, f, g, i, o) { gl_1D17C_Acmd *_a = (gl_1D17C_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_MIXER, 24, 8) | _SHIFTL(f, 16, 8) | _SHIFTL(g, 0, 16)); _a->words.w1 = _SHIFTL(i, 16, 16) | _SHIFTL(o, 0, 16); }
+typedef struct { char pad[0x28]; u16 leakRtl; u16 leakLtr; char pad2c[0x158 - 0x2C]; } gl_1D17C_Reverb;
+#define gl_1D17C_gSynthesisReverbs ((gl_1D17C_Reverb *)&D_00000000)
+
+gl_1D17C_Acmd *game_libs_func_0001D17C(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
+    aDMEMMove(cmd++, DMEM_WET_LEFT_CH, DMEM_WET_TEMP, DMEM_1CH_SIZE);
+    aMix(cmd++, DMEM_1CH_SIZE >> 4, gl_1D17C_gSynthesisReverbs[reverbIndex].leakRtl, DMEM_WET_RIGHT_CH, DMEM_WET_LEFT_CH);
+    aMix(cmd++, DMEM_1CH_SIZE >> 4, gl_1D17C_gSynthesisReverbs[reverbIndex].leakLtr, DMEM_WET_TEMP, DMEM_WET_RIGHT_CH);
+    return cmd;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0001D17C);
-#endif
+#undef _SHIFTL
+#undef A_DMEMMOVE
+#undef DMEM_1CH_SIZE
+#undef aDMEMMove
+#undef A_MIXER
+#undef DMEM_WET_TEMP
+#undef DMEM_WET_LEFT_CH
+#undef DMEM_WET_RIGHT_CH
+#undef aMix
+#undef gl_1D17C_gSynthesisReverbs
 
 // gl_func_0001D200 — STRUCTURAL PASS (0x2C0 / 176 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
