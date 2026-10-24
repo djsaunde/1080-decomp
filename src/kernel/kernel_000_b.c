@@ -148,7 +148,28 @@ GLOBAL_ASM("src/libultra/os/exceptasm_rdb_3.s")
  * src/libultra/os/exceptasm.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm.s")
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80003BF0);
+/* func_80003BF0 = __osDequeueThread (libultra thread.c), compiled C: this
+ * unit's -O1 gives the target (prologue scheduled after the two loads, the
+ * `register` locals' empty 8-byte frame). Split out of the handwritten
+ * func_800031F0 2026-10-24 (agent-g run 158). Its runtime address is
+ * 0x80003FF0 (func_80003FF0, called by osDestroyThread below). */
+typedef struct DqThread_s { struct DqThread_s *next; } DqThread;
+
+void func_80003BF0(DqThread **queue, DqThread *t) {
+    register DqThread *pred;
+    register DqThread *succ;
+
+    pred = (DqThread *)queue;
+    succ = pred->next;
+    while (succ != 0) {
+        if (succ == t) {
+            pred->next = t->next;
+            return;
+        }
+        pred = succ;
+        succ = pred->next;
+    }
+}
 
 /* func_80003C30 = osDestroyThread (libultra destroythread.c), IDO 7.1 -O1.
  * BOUNDARY FIX 2026-10-20: the old func_80003C24.s was [nop; jr ra; addiu sp,8]
