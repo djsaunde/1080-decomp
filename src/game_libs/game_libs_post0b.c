@@ -13951,7 +13951,7 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
                 *(s8 *)(ent + 0x12) = (s32) (*(f32 *)(elem2 + 0xEC) * 120.0f);
                     dl = *(char **)(arg1 + 0xC);
                     i = *(s32 *)(dl + 4);
-                    *(s32 *)(dl + 4) = i + 1;
+                    *(s32 *)(dl + 4) += 1;
                     dent = *(char **)(*(char **)(arg1 + 0xC)) + (i * 8);
                     *(s32 *)(dent) = ((cmd & 0xFF) << 0x10) | 0x03000000 | 0x10;
                     *(s32 *)(dent + 4) = gl_func_00034458(ent + 8);
@@ -13980,7 +13980,7 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
         do {
             dl = *(char **)(arg1 + 0xC);
             i = *(s32 *)(dl + 4);
-            *(s32 *)(dl + 4) = i + 1;
+            *(s32 *)(dl + 4) += 1;
             n = cnt;
             dent2 = *(char **)(*(char **)(arg1 + 0xC)) + (i * 8);
             *(s32 *)(dent2) = 0xBC000002;
@@ -13999,19 +13999,19 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
     *(u8 *)(rec + 0xE) = *(u8 *)(rec + 6);
     dl = *(char **)(arg1 + 0xC);
     i = *(s32 *)(dl + 4);
-    *(s32 *)(dl + 4) = i + 1;
+    *(s32 *)(dl + 4) += 1;
     dent = *(char **)(*(char **)(arg1 + 0xC)) + (i * 8);
     *(s32 *)(dent) = 0x03860010;
     *(s32 *)(dent + 4) = gl_func_00034458(rec + 8);
     dl = *(char **)(arg1 + 0xC);
     i = *(s32 *)(dl + 4);
-    *(s32 *)(dl + 4) = i + 1;
+    *(s32 *)(dl + 4) += 1;
     dent2 = *(char **)(*(char **)(arg1 + 0xC)) + (i * 8);
     *(s32 *)(dent2) = 0x03880010;
     *(s32 *)(dent2 + 4) = gl_func_00034458(rec);
     dl = *(char **)(arg1 + 0xC);
     i = *(s32 *)(dl + 4);
-    *(s32 *)(dl + 4) = i + 1;
+    *(s32 *)(dl + 4) += 1;
     dent = *(char **)(*(char **)(arg1 + 0xC)) + (i * 8);
     *(s32 *)(dent) = 0xBC000002;
     *(s32 *)(dent + 4) = 0x80000040;
