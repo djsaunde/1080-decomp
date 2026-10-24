@@ -6072,244 +6072,150 @@ void game_libs_func_00024360(int a0) { D_24360_a = a0; }
 extern int D_2436C_a;
 void game_libs_func_0002436C(int a0) { D_2436C_a = a0; }
 
-// gl_func_00024378 — STRUCTURAL PASS (0x5D0 / 372 words ≈ 1.5KB, no
-// episode). Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION
-// (1 jr, no bundle). The SUBSYSTEM INITIALIZER / full reset for the
-// game_libs &D_0 state block. Large -0x80 frame.
-//
-//   void gl_func_00024378(void) {
-//     S *g = &D_0;
-//     g->w_0    = 0;                                     // base clear
-//     g->w_215C = 0;                                     // handle clr
-//     int n = *(int*)(&D_0 + 4);
-//     n = (n + 7) >> 3;                                   // round to 8
-//     if (n > 0) {                                        // zero an
-//       long *p = tbl;                                     //  8-byte-
-//       do { p[-1] = 0; p[-2] = 0; p += 2; } while (...);  //  strided
-//     }                                                    //  table
-//     char *q = (char*)g;                                  // byte clr
-//     for (int i = 0x5C30; i != 0; i--) *q++ = 0;           //  0x5C30
-//     ... reload control globals, seed default fields ...
-//   }
-//
-// Struct-typing reference: the one-time bring-up / hard reset of the
-//   whole game_libs &D_0 state region used by every subsystem decoded
-//   in this file. It zeroes the base word, the &D_0+0x215C handle
-//   slot (the same handle the gl_func_0001FEC8 / gl_func_00021F40
-//   register helpers stash), an 8-byte-strided table whose length is
-//   the word &D_0+0x4 rounded up to a multiple of 8, and a large
-//   0x5C30-byte block (the registry/record/buffer arena), then
-//   reloads control globals. The init counterpart to the
-//   gl_func_00022A9C arena init / gl_func_0002119C state driver — runs
-//   once before any of the registry/record/buffer/resource families
-//   are usable.
-// Caps (DEFERRED): CLEAN single jr $ra. SUBSYSTEM INITIALIZER / full
-//   reset of the whole game_libs &D_0 state region (init counterpart
-//   to gl_func_00022A9C arena init / gl_func_0002119C driver; runs
-//   once before any registry/record/buffer/resource family).
-//   Real-C STRUCTURAL body below per the analysis (clear base word
-//   &D_0+0, handle &D_0+0x215C; zero an 8-byte-strided table of
-//   length (&D_0+4 word + 7)>>3; clear a 0x5C30-byte arena block;
-//   reload control globals). Byte-match deferred — large multi-
-//   region clear/seed loop schedule. Name pre-checked: no extern
-//   reuse (collision-safe).
-// gl_func_00024378 — m2c DECODE (12.37% NM, no episode). game_libs non-jumptable (folded-ref heavy) via scripts/decomp-uso-cf.py.
-/* gl_func_00024378 graft attempt 2026-06-10: fresh m2c graft scored
- * 10.98 vs this body's 12.37 -- REVERTED (monotonic rule; the
- * graft~=existing tell, item 17 refined: this body is m2c-equivalent,
- * divergence is structural). Hand-refinement territory. */
-#ifdef NON_MATCHING
-
-
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-#ifndef SB
-#define SB(p, o) (*(s8 *)((char *)(p) + (o)))
-#endif
-#ifndef SH
-#define SH(p, o) (*(s16 *)((char *)(p) + (o)))
-#endif
-/* Redecode 2026-07-31 (agent-h): held-base via array extern (target keeps
- * &D in $s0 for the WHOLE fn; scalar &D_00000000+off spellings fold to
- * at-form for the singleton accesses — mixed spelling per the 23F98/1FBCC
- * array-extern held-base lever). Decode fixes vs the old m2c body:
- *  - B[0x201C..0x2028] stores four symbol ADDRESSES (lui/addiu pairs in
- *    target), NOT zeros; the seed short *(s16*)(B+0x202C) reads through the
- *    FIRST of those pointers (lh 0(t4) CSE), not *(s16*)base.
- *  - strided clear table is a u64 zero store (li t8,0/li t9,0 pair per
- *    iteration), through its own fresh symbol, not base.
- *  - sh-160 seed loop and slot-alloc loop walk their own fresh symbols
- *    (fresh lui/addiu cursors + end), not base offsets.
- *  - count*20 alloc takes 2 args; tail reporter takes (r, word) not casts.
- * Distinct zero-base externs per fresh materialization (anti-CSE). */
-extern u8 gl_d_24378[];       /* held base -> $s0 (whole-fn) */
-/* per-site scalar externs (all USO syms resolve to 0; explicit offsets keep
- * the baked %lo immediates byte-exact while distinct relocs kill uopt's
- * repeated-&D address-CSE that hoisted a held a2 base) */
-extern u8 gl_d_24378_a[];
-extern u8 gl_d_24378_b[];
-extern u8 gl_d_24378_c[];
-extern u8 gl_d_24378_d[];
-extern u8 gl_d_24378_e[];
-extern u8 gl_d_24378_f[];
-extern u8 gl_d_24378_g[];
-extern u8 gl_d_24378_h[];
-extern u8 gl_d_24378_i[];
-extern u8 gl_d_24378_j[];
-extern u8 gl_d_24378_k[];
-extern u8 gl_d_24378_l[];
-extern u8 gl_d_24378_m[];
-extern u8 gl_d_24378_n2[];
-extern u8 gl_d_24378_o[];
-extern u8 gl_d_24378_p[];
-extern u8 gl_d_24378_q[];
-extern u8 gl_d_24378_r[];
-extern u8 gl_d_24378_s[];
-extern u8 gl_d_24378_t[];
-extern u8 gl_d_24378_u[];
-extern u8 gl_d_24378_v[];
-extern u8 gl_d_24378_w[];
-extern u8 gl_d_24378_x[];
-extern u8 gl_d_24378_y[];
-extern u8 gl_d_24378_t64[];   /* u64-strided clear table */
-extern u8 gl_d_24378_seed[];  /* sh-160 seed loop cursor */
-extern u8 gl_d_24378_slot[];  /* slot-alloc loop cursor */
-extern u8 gl_d_24378_pa[];    /* pointer table entries B[0x201C..0x2028] */
-extern u8 gl_d_24378_pb[];
-extern u8 gl_d_24378_pc[];
-extern u8 gl_d_24378_pd[];
-typedef struct { char pad[0xA]; s16 x, y, z; } Src24378;
-typedef struct { s16 n; char pad[0xE]; Src24378 e[1]; } Hdr24378;
-typedef struct { u8 b0, b1, b2, b3; s16 h4; char pad[0xE]; } Dst24378;
-/* Run 109 (agent-c, 69.1 -> 95.0): the area is the GLOBAL gl_d_24378
- * itself, named at every access (FW(gl_d_24378, K)), not a `B` local.
- * uopt still CSEs &gl_d_24378 into s0, and the pre-optimisation loop
- * body is small enough for the x4 unroll + andi-3 remainder loop the
- * target has (with the B local / proxy it unrolled x2; with typed
- * struct-array views it did not unroll at all). Also: each switch arm
- * writes the float before the int; the 0x202C short is read back
- * through the just-stored 0x201C pointer and stored before the two byte
- * flags. Residual: the target keeps a dead `or a0,zero,zero` (an
- * eliminated loop counter init) live into the first call, which shifts
- * every t-register one slot; the frame is 0x80 (build 0x40).
- * Run 129 (agent-c) 323 -> 315 raw: `volatile s32 pad[16]` declared FIRST
- * gives frame 0x80 (declared last it does not grow the frame), and the decl
- * order n, i, c, q, e, mode, rem, p puts the two spill homes where the target
- * has them (p 32, c 52); the byte-clear counter is rem (not i) and the first
- * 1CA10 call takes no argument (target: nop delay).
- * 315 -> 243: the dead `or a0,zero,zero` at entry is the init of an
- * IV-eliminated counter: the u64 clear is `for (srci = 0; srci < B4 / 8;
- * srci++) t64[srci] = 0;` with the bound written in the test (re-read, so no
- * unroll; uopt rewrites it to the pointer loop and leaves the dead init). A
- * named n, or reusing i (live later -> s1), unrolls or moves it. LEFT: srci
- * colours v0 / bound a0 (target a0 / a1); the 0x14-record loop's t-ring. */
+/* gl_func_00024378 EXACT 2026-10-23 (agent-c run 141, 99.87 -> 100): OoT's
+ * AudioLoad_Init (load.c) in an older form: no heap / size parameters (the u64 heap
+ * clear runs first, straight over gAudioHeap with gAudioHeapInitSizes.heapSize,
+ * before the gAudioCtx byte clear), two cart-handle inits (0x1644 / 0x1648), and
+ * AudioLoad_InitSoundFont written inline as plain gAudioCtx.soundFontList[i] /
+ * soundFontTable->entries[i] member stores (the re-read of both table pointers per
+ * store is what gives the x4 unroll + remainder loop). Levers: a void prototype for
+ * AudioThread_InitMesgQueues (an int-returning callee coloured the aiBufLengths loop
+ * cursor v1 instead of v0); decls pad[16], i, ramAddr, numFonts (numFonts spill at
+ * sp+0x34). The tv-type floats are rodata words read through a pinned zero base. */
+typedef struct { u32 romAddr; u32 size; s8 medium; s8 cachePolicy; s16 shortData1; s16 shortData2; s16 shortData3; } gl_24378_TableEntry;
+typedef struct { s16 numEntries; s16 unkMediumParam; u32 romAddr; char pad[8]; gl_24378_TableEntry entries[1]; } gl_24378_Table;
+typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0xE]; } gl_24378_SoundFont;
+typedef struct { char pad[0x10]; } gl_24378_Pool;
+typedef struct { char pad[0x18]; } gl_24378_MesgQueue;
+typedef struct { s32 unk0; s32 heapSize; s32 initPoolSize; s32 permanentPoolSize; } gl_24378_HeapInitSizes;
+typedef struct {
+    char pad0[0x164C]; gl_24378_MesgQueue externalLoadQueue; void *externalLoadMsgBuf[8];
+    gl_24378_MesgQueue preloadSampleQueue; void *preloadSampleMsgBuf[8];
+    gl_24378_MesgQueue curAudioFrameDmaQueue; void *curAudioFrameDmaMsgBuf[0x40];
+    char pad17d4[0x1DD4 - 0x17D4];
+    gl_24378_MesgQueue syncDmaQueue; void *syncDmaMesg; char pad1df0[0x1E0C - 0x1DF0]; u32 sampleDmaCount;
+    char pad1e10[0x201C - 0x1E10];
+    gl_24378_Table *sequenceTable; gl_24378_Table *soundFontTable; gl_24378_Table *sampleBankTable; u8 *sequenceFontTable;
+    s16 numSequences; char pad202e[2]; gl_24378_SoundFont *soundFontList;
+    char pad2034[0x2076 - 0x2034]; s8 soundOutputMode; char pad2077; s32 totalTaskCount; s32 curAudioFrameDmaCount;
+    s32 rspTaskIndex; s32 curAiBufIndex; char pad2088[0x2094 - 0x2088]; void *curTask;
+    char pad2098[0x20CC - 0x2098]; s32 dataSize0; char pad20d0[0x211C - 0x20D0]; s32 dataSize1;
+    char pad2120[0x2138 - 0x2120]; f32 maxTempoTvTypeFactors; s32 refreshRate; void *aiBuffers[3];
+    s16 aiBufLengths[3]; char pad2152[0x215C - 0x2152]; u32 resetTimer; char pad2160[0x2188 - 0x2160];
+    gl_24378_Pool initPool; char pad2198[0x2528 - 0x2198]; gl_24378_Pool permanentPool;
+    char pad2538[0x2CF0 - 0x2538]; u8 resetStatus; u8 specId; char pad2cf2[0x53C8 - 0x2CF2]; void *taskStartQueueP;
+} gl_24378_Ctx;
+#define gl_24378_gAudioCtx (*(gl_24378_Ctx *)&D_00000000)
+extern void *gl_24378_gAudioCustomUpdateFunction;
+extern u8 gl_24378_gAudioHeap[];
+extern gl_24378_HeapInitSizes gl_24378_gAudioHeapInitSizes;
+extern s32 gl_24378_osTvType;
+extern u8 gl_24378_rodata[];
+extern gl_24378_Table gl_24378_gSequenceTable, gl_24378_gSoundFontTable, gl_24378_gSampleBankTable;
+extern u8 gl_24378_gSequenceFontTable[];
+extern u32 gl_24378_seqRom, gl_24378_fontRom, gl_24378_sampleRom;
+extern void gl_24378_AudioThread_InitMesgQueues(void);
 extern int gl_ref_000375CC();
-void gl_func_00024378(void) {
-    volatile s32 pad[16];
-    s32 n;
-    s32 i;
-    s32 c;
-    char *q;
-    char *e;
-    s32 mode;
-    s32 rem;
-    char *p;
-    s32 done;
-    s32 dsti;
-    s32 srci;
-    s32 r;
 
-    *(s32 *)gl_d_24378_a = 0;
-    FW(gl_d_24378, 0x215C) = 0;
-    for (srci = 0; srci < *(s32 *)(gl_d_24378_b + 4) / 8; srci++) {
-        ((long long *)gl_d_24378_t64)[srci] = 0;
+void gl_func_00024378(void) {
+    s32 pad[16];
+    s32 i;
+    void *ramAddr;
+    s32 numFonts;
+
+    gl_24378_gAudioCustomUpdateFunction = NULL;
+    gl_24378_gAudioCtx.resetTimer = 0;
+
+    for (i = 0; i < gl_24378_gAudioHeapInitSizes.heapSize / 8; i++) {
+        ((u64 *)gl_24378_gAudioHeap)[i] = 0;
     }
-    q = (char *)gl_d_24378;
-    rem = 0x5C30;
-    do {
-        rem -= 1;
-        *q = 0;
-        q += 1;
-    } while (rem >= 0);
-    mode = *(s32 *)gl_d_24378_c;
-    switch (mode) {
-    case 0:
-        *(f32 *)(gl_d_24378 + 0x2138) = *(f32 *)(gl_d_24378_d + 0xEC8);
-        FW(gl_d_24378, 0x213C) = 0x32;
-        break;
-    case 2:
-        *(f32 *)(gl_d_24378 + 0x2138) = *(f32 *)(gl_d_24378_e + 0xECC);
-        FW(gl_d_24378, 0x213C) = 0x3C;
-        break;
-    default:
-    case 1:
-        *(f32 *)(gl_d_24378 + 0x2138) = *(f32 *)(gl_d_24378_f + 0xED0);
-        FW(gl_d_24378, 0x213C) = 0x3C;
-        break;
+
+    {
+        s32 i;
+        u8 *audioContextPtr = (u8 *)&gl_24378_gAudioCtx;
+
+        for (i = 0x5C30; i >= 0; i--) {
+            *audioContextPtr++ = 0;
+        }
     }
-    gl_func_0001CA10(); if (1) {}
-    q = (char *)gl_d_24378_seed; e = (char *)gl_d_24378_seed + 6; /* run 130: one line = target lui q / lui e / addiu e / addiu q order */
-    do {
-        *(s16 *)(q + 0x214C) = 0xA0;
-        q += 2;
-    } while (q < e);
-    FW(gl_d_24378, 0x2078) = 0;
-    FW(gl_d_24378, 0x2080) = 0;
-    FW(gl_d_24378, 0x2084) = 0;
-    SB(gl_d_24378, 0x2076) = 0;
-    FW(gl_d_24378, 0x2094) = 0;
-    FW(gl_d_24378, 0x20CC) = 0;
-    FW(gl_d_24378, 0x211C) = 0;
-    gl_func_0001CA10(gl_d_24378_g + 0x1DD4, gl_d_24378_h + 0x1DEC, 1);
-    gl_func_0001CA10(gl_d_24378_i + 0x16BC, gl_d_24378_j + 0x16D4, 0x40);
-    gl_func_0001CA10(gl_d_24378_k + 0x164C, gl_d_24378_l + 0x1664, 8);
-    gl_func_0001CA10(gl_d_24378_m + 0x1684, gl_d_24378_n2 + 0x169C, 8);
-    FW(gl_d_24378, 0x207C) = 0;
-    FW(gl_d_24378, 0x1E0C) = 0;
-    FW(gl_d_24378, 0x1644) = gl_func_0001CA10();
-    FW(gl_d_24378, 0x1648) = gl_func_0001CA10();
-    gl_func_0001CA10(*(s32 *)(gl_d_24378_o + 8));
-    p = (char *)gl_d_24378_slot;
-    do {
-        r = gl_func_0001CA10(gl_d_24378_p + 0x2188, 0xB00);
-        p += 4;
-        FW(p, 0x213C) = r;
-    } while (p < (char *)gl_d_24378_slot + 12);
-    FW(gl_d_24378, 0x201C) = (s32)gl_d_24378_pa;
-    FW(gl_d_24378, 0x2020) = (s32)gl_d_24378_pb;
-    FW(gl_d_24378, 0x2024) = (s32)gl_d_24378_pc;
-    FW(gl_d_24378, 0x2028) = (s32)gl_d_24378_pd;
-    SH(gl_d_24378, 0x202C) = *(s16 *)FW(gl_d_24378, 0x201C);
-    SB(gl_d_24378, 0x2CF1) = 0;
-    SB(gl_d_24378, 0x2CF0) = 1;
-    gl_func_0001CA10();
-    gl_ref_000375CC(FW(gl_d_24378, 0x201C), *(s32 *)gl_d_24378_q, 0);
-    gl_ref_000375CC(FW(gl_d_24378, 0x2020), *(s32 *)gl_d_24378_r, 0);
-    gl_ref_000375CC(FW(gl_d_24378, 0x2024), *(s32 *)gl_d_24378_s, 0);
-    c = *(s16 *)FW(gl_d_24378, 0x2020);
-    FW(gl_d_24378, 0x2030) = gl_func_0001CA10(gl_d_24378_t + 0x2188, c * 0x14);
-    /* x4 unroll + andi-3 remainder loop come out of the plain loop once
-     * every access names the global directly (see header note).
-     * Run 130: `& 0xFF` on all four byte values (no (s8) casts): the dead
-     * masks burn the target's t-registers in every unrolled copy (240 -> 9). */
-    for (i = 0; i < c; i++) {
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x2) = (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A) >> 8) & 0xFF;
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x3) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1A) & 0xFF;
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x0) = (SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C) >> 8) & 0xFF;
-        SB(FW(gl_d_24378, 0x2030) + i * 0x14, 0x1) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1C) & 0xFF;
-        SH(FW(gl_d_24378, 0x2030) + i * 0x14, 0x4) = SH(FW(gl_d_24378, 0x2020) + i * 0x10, 0x1E);
+
+    switch (gl_24378_osTvType) {
+        case 0:
+            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + 0xEC8);
+            gl_24378_gAudioCtx.refreshRate = 50;
+            break;
+        case 2:
+            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + 0xECC);
+            gl_24378_gAudioCtx.refreshRate = 60;
+            break;
+        case 1:
+        default:
+            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + 0xED0);
+            gl_24378_gAudioCtx.refreshRate = 60;
+            break;
     }
-    r = gl_func_0001CA10(gl_d_24378_u + 0x2188, *(s32 *)(gl_d_24378_v + 0xC));
-    if (r == 0) {
-        *(s32 *)(gl_d_24378_w + 0xC) = 0;
+
+    gl_24378_AudioThread_InitMesgQueues();
+
+    for (i = 0; i < 3; i++) {
+        gl_24378_gAudioCtx.aiBufLengths[i] = 0xA0;
     }
-    gl_func_0001CA10(gl_d_24378_y + 0x2528, r, *(s32 *)(gl_d_24378_x + 0xC));
-    gl_func_0001CA10(FW(gl_d_24378, 0x53C8), FW(gl_d_24378, 0x2078), 0);
+
+    gl_24378_gAudioCtx.totalTaskCount = 0;
+    gl_24378_gAudioCtx.rspTaskIndex = 0;
+    gl_24378_gAudioCtx.curAiBufIndex = 0;
+    gl_24378_gAudioCtx.soundOutputMode = 0;
+    gl_24378_gAudioCtx.curTask = NULL;
+    gl_24378_gAudioCtx.dataSize0 = 0;
+    gl_24378_gAudioCtx.dataSize1 = 0;
+    gl_func_00000000(&gl_24378_gAudioCtx.syncDmaQueue, &gl_24378_gAudioCtx.syncDmaMesg, 1);
+    gl_func_00000000(&gl_24378_gAudioCtx.curAudioFrameDmaQueue, gl_24378_gAudioCtx.curAudioFrameDmaMsgBuf, 0x40);
+    gl_func_00000000(&gl_24378_gAudioCtx.externalLoadQueue, gl_24378_gAudioCtx.externalLoadMsgBuf, 8);
+    gl_func_00000000(&gl_24378_gAudioCtx.preloadSampleQueue, gl_24378_gAudioCtx.preloadSampleMsgBuf, 8);
+    gl_24378_gAudioCtx.curAudioFrameDmaCount = 0;
+    gl_24378_gAudioCtx.sampleDmaCount = 0;
+    *(void **)((char *)&gl_24378_gAudioCtx + 0x1644) = (void *)gl_func_00000000();
+    *(void **)((char *)&gl_24378_gAudioCtx + 0x1648) = (void *)gl_func_00000000();
+
+    gl_func_00000000(gl_24378_gAudioHeapInitSizes.initPoolSize);
+
+    for (i = 0; i < 3; i++) {
+        gl_24378_gAudioCtx.aiBuffers[i] = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, 0xB00);
+    }
+
+    gl_24378_gAudioCtx.sequenceTable = &gl_24378_gSequenceTable;
+    gl_24378_gAudioCtx.soundFontTable = &gl_24378_gSoundFontTable;
+    gl_24378_gAudioCtx.sampleBankTable = &gl_24378_gSampleBankTable;
+    gl_24378_gAudioCtx.sequenceFontTable = gl_24378_gSequenceFontTable;
+    gl_24378_gAudioCtx.numSequences = gl_24378_gAudioCtx.sequenceTable->numEntries;
+    gl_24378_gAudioCtx.specId = 0;
+    gl_24378_gAudioCtx.resetStatus = 1;
+
+    gl_func_00000000();
+
+    gl_ref_000375CC(gl_24378_gAudioCtx.sequenceTable, gl_24378_seqRom, 0);
+    gl_ref_000375CC(gl_24378_gAudioCtx.soundFontTable, gl_24378_fontRom, 0);
+    gl_ref_000375CC(gl_24378_gAudioCtx.sampleBankTable, gl_24378_sampleRom, 0);
+    numFonts = gl_24378_gAudioCtx.soundFontTable->numEntries;
+    gl_24378_gAudioCtx.soundFontList = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, numFonts * sizeof(gl_24378_SoundFont));
+
+    for (i = 0; i < numFonts; i++) {
+        gl_24378_gAudioCtx.soundFontList[i].sampleBankId1 = (gl_24378_gAudioCtx.soundFontTable->entries[i].shortData1 >> 8) & 0xFF;
+        gl_24378_gAudioCtx.soundFontList[i].sampleBankId2 = (gl_24378_gAudioCtx.soundFontTable->entries[i].shortData1) & 0xFF;
+        gl_24378_gAudioCtx.soundFontList[i].numInstruments = (gl_24378_gAudioCtx.soundFontTable->entries[i].shortData2 >> 8) & 0xFF;
+        gl_24378_gAudioCtx.soundFontList[i].numDrums = gl_24378_gAudioCtx.soundFontTable->entries[i].shortData2 & 0xFF;
+        gl_24378_gAudioCtx.soundFontList[i].numSfx = gl_24378_gAudioCtx.soundFontTable->entries[i].shortData3;
+    }
+
+    ramAddr = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, gl_24378_gAudioHeapInitSizes.permanentPoolSize);
+    if (ramAddr == NULL) {
+        gl_24378_gAudioHeapInitSizes.permanentPoolSize = 0;
+    }
+
+    gl_func_00000000(&gl_24378_gAudioCtx.permanentPool, ramAddr, gl_24378_gAudioHeapInitSizes.permanentPoolSize);
+    gl_func_00000000(gl_24378_gAudioCtx.taskStartQueueP, gl_24378_gAudioCtx.totalTaskCount, 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00024378);
-#endif
+#undef gl_24378_gAudioCtx
 
 void game_libs_func_00024948(void) {
     *(int*)((char*)&D_00000000 + 0x1590) = 0;
