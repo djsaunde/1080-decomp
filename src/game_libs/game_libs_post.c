@@ -4436,132 +4436,115 @@ void game_libs_func_00022674(void) {
 // (char*)&D_00000000+off constant-folds to per-access lui;lw and diverges hard.
 // Residual is permuter territory (coloring/frame); not reached 0 here.
 #ifdef NON_MATCHING
-
-
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-/* gl_func_00022760 state block — a single aggregate symbol accessed as an
- * array so IDO materializes the base once per block (lui;addiu) and reuses
- * it with field displacements, matching the target's single-base codegen. */
-extern u8 gl_d_00022760[];
+/* run 140: OoT's AudioLoad_DmaSampleData (load.c) nearly verbatim (85.27 -> 98.19,
+ * 206 of 207 words); WrPos-first spellings of the queue-2 / queue-1 empty tests.
+ * gAudioCtx: curAudioFrameDmaQueue 0x16BC, curAudioFrameDmaIoMsgBuf 0x17D4,
+ * curAudioFrameDmaCount 0x207C; "SUPERDMA" literal = module rodata 0x1AA84
+ * (gl_22760_superDma, NM-only). Left: the short-lived path's
+ * `if (ttl == 0) { ...; RdPos1++; }` (target: beql with the increment in the delay
+ * slot, one word longer) and two compare-operand / t-register orders. */
+typedef struct { u8 *ramAddr; u32 devAddr; u16 sizeUnused; u16 size; u8 unused; u8 reuseIndex; u8 ttl; } gl_22760_SampleDma;
+typedef struct { char pad[0x18]; } gl_22760_MQ;
+typedef struct { char pad[0x18]; } gl_22760_IoMesg;
+typedef struct {
+    char pad0[0x16BC]; gl_22760_MQ curAudioFrameDmaQueue; char pad16d4[0x17D4 - 0x16D4]; gl_22760_IoMesg curAudioFrameDmaIoMsgBuf[64];
+    char pad1dd4[0x1E08 - 0x17D4 - 64 * 0x18]; gl_22760_SampleDma *sampleDmas; u32 sampleDmaCount; u32 sampleDmaListSize1; char pad1e14[4];
+    u8 sampleDmaReuseQueue1[0x100]; u8 sampleDmaReuseQueue2[0x100];
+    u8 sampleDmaReuseQueue1RdPos; u8 sampleDmaReuseQueue2RdPos; u8 sampleDmaReuseQueue1WrPos; u8 sampleDmaReuseQueue2WrPos;
+    char pad201c[0x207C - 0x201C]; s32 curAudioFrameDmaCount;
+} gl_22760_Ctx;
+#define gl_22760_gAudioCtx (*(gl_22760_Ctx *)&D_00000000)
+extern char gl_22760_superDma[];
 extern int gl_ref_00038604();
-s32 gl_func_00022760(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    char *found;
-    s32 sp38;
-    s32 temp_s0;
-    s32 temp_v0;
-    s32 temp_v0_4;
-    s32 var_t2;
-    s32 var_t3;
-    u16 temp_v0_7;
-    u32 temp_a1;
-    u32 temp_a2;
-    u32 temp_v1_3;
-    u32 var_a0;
-    u32 var_a0_2;
-    u8 temp_t2;
-    u8 temp_v0_2;
-    u8 temp_v0_3;
-    u8 temp_v0_5;
-    u8 temp_v0_6;
-    u8 temp_v1;
-    u8 temp_v1_2;
-    u32 var_v0;
-    char *var_v1;
+#define AudioLoad_Dma gl_ref_00038604
 
-    var_t3 = 0;
-    if ((arg2 != 0) || (var_v0 = *arg3, (var_v0 < *(u32 *)(gl_d_00022760 + 0x1E10)) == 0)) {
-        temp_a2 = *(u32 *)(gl_d_00022760 + 0x1E10);
-        temp_a1 = *(u32 *)(gl_d_00022760 + 0x1E0C);
-        var_a0 = temp_a2;
-        if (temp_a2 < temp_a1) {
-            var_v1 = (char *)((var_a0 * 0x10) + *(u32 *)(gl_d_00022760 + 0x1E08));
-loop_4:
-            found = var_v1;
-            temp_v0 = arg0 - FW(var_v1, 0x4);
-            if ((temp_v0 >= 0) && ((u32) ((*(u16 *)(found + 0xA)) - arg1) >= (u32) temp_v0)) {
-                if (*(u8 *)(found + 0xE) == 0) {
-                    temp_v0_2 = gl_d_00022760[0x2019];
-                    if (gl_d_00022760[0x201B] != temp_v0_2) {
-                        temp_v1 = *(u8 *)(found + 0xD);
-                        if (temp_v0_2 != temp_v1) {
-                            gl_d_00022760[temp_v1 + 0x1F18] = gl_d_00022760[temp_v0_2 + 0x1F18];
-                            *(u8 *)((char *)(*(u32 *)(gl_d_00022760 + 0x1E08) + (gl_d_00022760[gl_d_00022760[0x2019] + 0x1F18] * 0x10)) + 0xD) = *(u8 *)(found + 0xD);
-                        }
-                        gl_d_00022760[0x2019] = gl_d_00022760[0x2019] + 1;
+void *gl_func_00022760(u32 devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s32 medium) {
+    s32 pad1;
+    gl_22760_SampleDma *dma;
+    s32 hasDma = 0;
+    u32 dmaDevAddr;
+    u32 pad2;
+    u32 dmaIndex;
+    u32 transfer;
+    s32 bufferPos;
+    u32 i;
+
+    if (arg2 != 0 || *dmaIndexRef >= gl_22760_gAudioCtx.sampleDmaListSize1) {
+        for (i = gl_22760_gAudioCtx.sampleDmaListSize1; i < gl_22760_gAudioCtx.sampleDmaCount; i++) {
+            dma = &gl_22760_gAudioCtx.sampleDmas[i];
+            bufferPos = devAddr - dma->devAddr;
+            if (0 <= bufferPos && (u32)bufferPos <= dma->size - size) {
+                if (dma->ttl == 0 && gl_22760_gAudioCtx.sampleDmaReuseQueue2WrPos != gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos) {
+                    if (dma->reuseIndex != gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos) {
+                        gl_22760_gAudioCtx.sampleDmaReuseQueue2[dma->reuseIndex] =
+                            gl_22760_gAudioCtx.sampleDmaReuseQueue2[gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos];
+                        gl_22760_gAudioCtx.sampleDmas[gl_22760_gAudioCtx.sampleDmaReuseQueue2[gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos]]
+                            .reuseIndex = dma->reuseIndex;
                     }
+                    gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos++;
                 }
-                *(u8 *)(found + 0xE) = 0x20;
-                *arg3 = var_a0;
-                return (FW(found, 0x0) + arg0) - FW(found, 0x4);
-            }
-            var_a0 += 1;
-            var_v1 += 0x10;
-            if (var_a0 < temp_a1) {
-                goto loop_4;
+                dma->ttl = 32;
+                *dmaIndexRef = (u8)i;
+                return &dma->ramAddr[devAddr - dma->devAddr];
             }
         }
+
         if (arg2 == 0) {
-            var_v0 = *arg3;
-            goto block_20;
+            goto search_short_lived;
         }
-        temp_v0_3 = gl_d_00022760[0x2019];
-        if ((gl_d_00022760[0x201B] != temp_v0_3) && (arg2 != 0)) {
-            temp_t2 = gl_d_00022760[temp_v0_3 + 0x1F18];
-            gl_d_00022760[0x2019] = temp_v0_3 + 1;
-            var_t3 = 1;
-            sp38 = temp_t2;
-            found = (char *)((temp_t2 * 0x10) + *(u32 *)(gl_d_00022760 + 0x1E08));
+
+        if (gl_22760_gAudioCtx.sampleDmaReuseQueue2WrPos != gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos && arg2 != 0) {
+            dmaIndex = gl_22760_gAudioCtx.sampleDmaReuseQueue2[gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos];
+            gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos++;
+            dma = gl_22760_gAudioCtx.sampleDmas + dmaIndex;
+            hasDma = 1;
         }
-        goto block_29;
-    }
-block_20:
-    found = (char *)((var_v0 * 0x10) + *(u32 *)(gl_d_00022760 + 0x1E08));
-    var_a0_2 = 0;
-loop_21:
-    temp_v0_4 = arg0 - FW(found, 0x4);
-    if ((temp_v0_4 >= 0) && ((u32) ((*(u16 *)(found + 0xA)) - arg1) >= (u32) temp_v0_4)) {
-        if (*(u8 *)(found + 0xE) == 0) {
-            temp_v0_5 = gl_d_00022760[0x2018];
-            temp_v1_2 = *(u8 *)(found + 0xD);
-            if (temp_v0_5 != temp_v1_2) {
-                gl_d_00022760[temp_v1_2 + 0x1E18] = gl_d_00022760[temp_v0_5 + 0x1E18];
-                *(u8 *)((char *)(*(u32 *)(gl_d_00022760 + 0x1E08) + (gl_d_00022760[gl_d_00022760[0x2018] + 0x1E18] * 0x10)) + 0xD) = *(u8 *)(found + 0xD);
+    } else {
+    search_short_lived:
+        dma = gl_22760_gAudioCtx.sampleDmas + *dmaIndexRef;
+        i = 0;
+    again:
+        bufferPos = devAddr - dma->devAddr;
+        if (0 <= bufferPos && (u32)bufferPos <= dma->size - size) {
+            if (dma->ttl == 0) {
+                if (dma->reuseIndex != gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos) {
+                    gl_22760_gAudioCtx.sampleDmaReuseQueue1[dma->reuseIndex] =
+                        gl_22760_gAudioCtx.sampleDmaReuseQueue1[gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos];
+                    gl_22760_gAudioCtx.sampleDmas[gl_22760_gAudioCtx.sampleDmaReuseQueue1[gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos]]
+                        .reuseIndex = dma->reuseIndex;
+                }
+                gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos++;
             }
-            gl_d_00022760[0x2018] = gl_d_00022760[0x2018] + 1;
+            dma->ttl = 2;
+            return dma->ramAddr + (devAddr - dma->devAddr);
         }
-        *(u8 *)(found + 0xE) = 2;
-        return (FW(found, 0x0) + arg0) - FW(found, 0x4);
-    }
-    found = (char *)((var_a0_2 * 0x10) + *(u32 *)(gl_d_00022760 + 0x1E08));
-    var_a0_2 += 1;
-    if (*(u32 *)(gl_d_00022760 + 0x1E10) >= var_a0_2) {
-        goto loop_21;
-    }
-block_29:
-    var_t2 = sp38;
-    if (var_t3 == 0) {
-        temp_v0_6 = gl_d_00022760[0x2018];
-        if (gl_d_00022760[0x201A] == temp_v0_6) {
-            return 0;
+        dma = gl_22760_gAudioCtx.sampleDmas + i++;
+        if (i <= gl_22760_gAudioCtx.sampleDmaListSize1) {
+            goto again;
         }
-        var_t2 = gl_d_00022760[temp_v0_6 + 0x1E18];
-        gl_d_00022760[0x2018] = temp_v0_6 + 1;
-        found = (char *)((var_t2 * 0x10) + *(u32 *)(gl_d_00022760 + 0x1E08));
-    } if (var_a0_2) {}
-    temp_v0_7 = *(u16 *)(found + 0xA);
-    *(u8 *)(found + 0xE) = 3;
-    temp_s0 = arg0 & ~0xF;
-    FW(found, 0x4) = temp_s0;
-    *(u16 *)(found + 0x8) = temp_v0_7;
-    temp_v1_3 = *(u32 *)(gl_d_00022760 + 0x207C);
-    *(u32 *)(gl_d_00022760 + 0x207C) = temp_v1_3 + 1;
-    sp38 = var_t2;
-    gl_ref_00038604(gl_d_00022760 + (temp_v1_3 * 0x18) + 0x17D4, 0, 0, temp_s0, FW(found, 0x0), (s32) temp_v0_7, 0x16BC, arg4, 0x1AA84);
-    *arg3 = sp38;
-    return (arg0 - temp_s0) + FW(found, 0x0);
+    }
+
+    if (!hasDma) {
+        if (gl_22760_gAudioCtx.sampleDmaReuseQueue1WrPos == gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos) {
+            return NULL;
+        }
+        dmaIndex = gl_22760_gAudioCtx.sampleDmaReuseQueue1[gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos++];
+        dma = gl_22760_gAudioCtx.sampleDmas + dmaIndex;
+        hasDma = 1;
+    }
+
+    transfer = dma->size;
+    dmaDevAddr = devAddr & ~0xF;
+    dma->ttl = 3;
+    dma->devAddr = dmaDevAddr;
+    dma->sizeUnused = transfer;
+    AudioLoad_Dma(&gl_22760_gAudioCtx.curAudioFrameDmaIoMsgBuf[gl_22760_gAudioCtx.curAudioFrameDmaCount++], 0, 0,
+                  dmaDevAddr, dma->ramAddr, transfer, &gl_22760_gAudioCtx.curAudioFrameDmaQueue, medium, gl_22760_superDma);
+    *dmaIndexRef = dmaIndex;
+    return (devAddr - dmaDevAddr) + dma->ramAddr;
 }
+#undef gl_22760_gAudioCtx
+#undef AudioLoad_Dma
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00022760);
 #endif
