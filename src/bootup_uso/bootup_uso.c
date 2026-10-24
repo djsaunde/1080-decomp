@@ -7302,7 +7302,10 @@ void func_0000B520(char *arg0) {
  *   D_00008170 call is (st->0x800, D_00008170, 1, arg0). st800->0x0 is an
  *   f32 in the A70 accumulate (target lwc1 + cvt.d.s, not lw + cvt.d.w).
  *   Residual: 20.0f/30.0f hoist, 0x974 store+reload, `sp60 *= 2.0f`
- *   (target mul.s, build add.s), sp1C/sp6C[2] reload placement, t-ring. */
+ *   (target mul.s, build add.s), sp1C/sp6C[2] reload placement, t-ring.
+ * agent-g run 152 (88.98 -> 89.48): the var_f0* phis and var_f12 / var_f12_2 are ONE variable each (m2c split
+ *   them per def; every named float costs a cfe home, frame 224 -> 208, target 120). Merging the temp_f2 /
+ *   temp_f12 families instead loses fuzzy; declaration order does not move cfe homes here. */
 extern void bu_b75c_mvf(char *, char *, f32, char *);  /* (dst, src, single float in a2, self in a3); NM-only blank alias */
 extern f64 D_000008C8, D_000008D0, D_000008D8, D_000008E8, D_000008F8, D_00000900, D_00000908;
 extern char D_00008170[];
@@ -7335,12 +7338,7 @@ void func_0000B75C(char *arg0) {
     f32 temp_f2_8;
     f32 temp_f2_9;
     f32 var_f0;
-    f32 var_f0_2;
-    f32 var_f0_3;
-    f32 var_f0_4;
-    f32 var_f0_5;
     f32 var_f12;
-    f32 var_f12_2;
     f32 var_f2;
     f32 var_f2_2;
     f64 temp_f0;
@@ -7385,7 +7383,7 @@ void func_0000B75C(char *arg0) {
     if (temp_v0 != 0) {
         sp60 = (f32) ((f64) sp60 * 0.5);
     }
-    var_f12_2 = -1.0f;
+    var_f12 = -1.0f;
     *(f32 *)((char *)(arg0) + 0x970) = (f32) (*(f32 *)((char *)(arg0) + 0x974) + *(f32 *)((char *)(arg0) + 0x978));
     if (*(s32 *)((char *)(arg0) + 0xA58) & 0x80) {
         *(f32 *)((char *)(arg0) + 0x970) = (f32) -*(f32 *)((char *)(arg0) + 0x970);
@@ -7406,10 +7404,10 @@ void func_0000B75C(char *arg0) {
     } else {
         temp_f0_6 = *(f32 *)((char *)(arg0) + 0x9D8);
         temp_f2_3 = *(f32 *)((char *)(arg0) + 0x9DC);
-        var_f12_2 = *(f32 *)((char *)(arg0) + 0x9E0);
-        *(f32 *)((char *)(arg0) + 0xA04) = (f32) ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f0_6) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3D0) * var_f12_2));
-        *(f32 *)((char *)(arg0) + 0xA08) = (f32) -((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f0_6) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C4) * var_f12_2));
-        *(f32 *)((char *)(arg0) + 0xA0C) = (f32) ((*(f32 *)((char *)(arg0) + 0x3B0) * temp_f0_6) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B8) * var_f12_2));
+        var_f12 = *(f32 *)((char *)(arg0) + 0x9E0);
+        *(f32 *)((char *)(arg0) + 0xA04) = (f32) ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f0_6) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3D0) * var_f12));
+        *(f32 *)((char *)(arg0) + 0xA08) = (f32) -((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f0_6) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C4) * var_f12));
+        *(f32 *)((char *)(arg0) + 0xA0C) = (f32) ((*(f32 *)((char *)(arg0) + 0x3B0) * temp_f0_6) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B8) * var_f12));
     }
     if (*(s32 *)((char *)(arg0) + 0x938) == 0) {
         *(s32 *)((char *)(arg0) + 0xA5C) = 0;
@@ -7478,12 +7476,12 @@ void func_0000B75C(char *arg0) {
             if (*(s32 *)((char *)(arg0) + 0x960) == 0) {
                 temp_f2_5 = *(f32 *)((char *)(arg0) + 0x3C8);
                 if (temp_f2_5 < 0.0f) {
-                    var_f0_2 = -temp_f2_5;
+                    var_f0 = -temp_f2_5;
                 } else {
-                    var_f0_2 = temp_f2_5;
+                    var_f0 = temp_f2_5;
                 }
                 temp_f2_6 = *(f32 *)((char *)(arg0) + 0x318);
-                *(f32 *)((char *)(arg0) + 0x318) = (f32) (temp_f2_6 + (temp_f2_6 * *(f32 *)((char *)(arg0) + 0x558) * var_f0_2));
+                *(f32 *)((char *)(arg0) + 0x318) = (f32) (temp_f2_6 + (temp_f2_6 * *(f32 *)((char *)(arg0) + 0x558) * var_f0));
             }
             if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < D_00000908) {
                 sp60 *= 2.0f;
@@ -7497,21 +7495,21 @@ void func_0000B75C(char *arg0) {
             }
             temp_f2_7 = *(f32 *)((char *)(arg0) + 0xA08);
             if (temp_f2_7 < 0.0f) {
-                var_f0_3 = -temp_f2_7;
+                var_f0 = -temp_f2_7;
             } else {
-                var_f0_3 = temp_f2_7;
+                var_f0 = temp_f2_7;
             }
-            if (*(f32 *)((char *)(arg0) + 0x618) < var_f0_3) {
+            if (*(f32 *)((char *)(arg0) + 0x618) < var_f0) {
                 bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3C8, temp_f2_7 * *(f32 *)((char *)(arg0) + 0x600), arg0);
             }
             temp_f2_8 = *(f32 *)((char *)(arg0) + 0xA04);
             var_a0 = arg0 + 0xCC;
             if (temp_f2_8 < 0.0f) {
-                var_f0_4 = -temp_f2_8;
+                var_f0 = -temp_f2_8;
             } else {
-                var_f0_4 = temp_f2_8;
+                var_f0 = temp_f2_8;
             }
-            if (*(f32 *)((char *)(arg0) + 0x630) < var_f0_4) {
+            if (*(f32 *)((char *)(arg0) + 0x630) < var_f0) {
                 sp24 = var_a0;
                 bu_b75c_mvf(var_a0, arg0 + 0x3BC, temp_f2_8 * *(f32 *)((char *)(arg0) + 0x600), arg0);
             }
@@ -7522,15 +7520,15 @@ block_67:
         var_v0 = var_v0_2 & 1;
     }
     if (var_v0 != 0) {
-        var_f0_5 = D_00000910;
+        var_f0 = D_00000910;
     } else {
-        var_f0_5 = *(f32 *)((char *)(arg0) + 0x7F8);
+        var_f0 = *(f32 *)((char *)(arg0) + 0x7F8);
     }
     temp_f2_9 = *(f32 *)((char *)(arg0) + 0x308);
-    *(f32 *)((char *)(arg0) + 0x2FC) = (f32) (*(f32 *)((char *)(arg0) + 0x2FC) * var_f0_5);
-    *(f32 *)((char *)(arg0) + 0x300) = (f32) (*(f32 *)((char *)(arg0) + 0x300) * var_f0_5);
-    *(f32 *)((char *)(arg0) + 0x304) = (f32) (*(f32 *)((char *)(arg0) + 0x304) * var_f0_5);
-    *(f32 *)((char *)(arg0) + 0x308) = (f32) ((f64) temp_f2_9 + ((f64) (1.0f - temp_f2_9) * (1.0 - (f64) var_f0_5)));
+    *(f32 *)((char *)(arg0) + 0x2FC) = (f32) (*(f32 *)((char *)(arg0) + 0x2FC) * var_f0);
+    *(f32 *)((char *)(arg0) + 0x300) = (f32) (*(f32 *)((char *)(arg0) + 0x300) * var_f0);
+    *(f32 *)((char *)(arg0) + 0x304) = (f32) (*(f32 *)((char *)(arg0) + 0x304) * var_f0);
+    *(f32 *)((char *)(arg0) + 0x308) = (f32) ((f64) temp_f2_9 + ((f64) (1.0f - temp_f2_9) * (1.0 - (f64) var_f0)));
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000B75C);
