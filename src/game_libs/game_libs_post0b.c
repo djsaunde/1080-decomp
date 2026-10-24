@@ -15876,10 +15876,15 @@ typedef struct {
     char pad58[0x14]; Ctx493 *ctx6C; char pad70[0xC]; s16 *rows7C; s16 n80; char pad82[8]; s16 n8A;
 } Obj493;
 #define STR493(o) ((char *)&D_00000000 + (o))
-extern int D_493AC_a, D_493AC_b, D_493AC_c;
+extern int D_493AC_a, D_493AC_b, D_493AC_c, D_493AC_d;
 #define G1C4(S) (*(s32 *)((char *)&S + 0x1C4))
-#define G214 (*(Ctx493 **)((char *)&D_00000000 + 0x214))
+#define G214 (*(Ctx493 **)((char *)&D_493AC_d + 0x214))
 #define SELF(o, T) (*(T *)(self + (o)))
+/* run 151 (agent-c, 86.86 -> 89.86): the 0x214 context read goes through its own
+ * zero-pinned alias D_493AC_d (target `lui t6; lw t6,532(t6)`; through &D_00000000
+ * it shared a held lui/addiu base with rec.p598 and pushed &rec and the 1 into
+ * s7 / s8); the +0x34 argument of the per-node call is a second element spelling
+ * (target re-adds base + i*4). Length 1904 -> 1908 (target 1936). */
 s32 gl_func_000493AC(char *self) {
     Obj493 *o;
     Grid493 *gr;
@@ -15940,7 +15945,7 @@ s32 gl_func_000493AC(char *self) {
                 gl_func_00000000(it.arr->buf[it.idx], SELF(0x9C, int));
             }
         }
-        gl_func_00000000(it.arr->buf[it.idx], it.arr->buf[it.idx] + 0x34);
+        gl_func_00000000(it.arr->buf[it.idx], *(char **)((char *)it.arr->buf + it.idx * 4) + 0x34);
         v = (it.idx < it.last) ? (++it.idx, &it.arr->buf[it.idx]) : 0;
     }
     gl_func_00000000();
