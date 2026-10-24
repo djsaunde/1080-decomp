@@ -17048,6 +17048,7 @@ void game_libs_func_0004B2F4(char *arg0) {
         cmd1 = (u32 *)(P(P(ctx, 0xC), 0) + slot2 * 8);
         cmd1[0] = ((((u32)flags & 0xFF) << 8) << 8) | 0x01000000 | 0x40;
         cmd1[1] = F_4B2F4_phys(fixed);
+        if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
         slot3 = (*(s32 **)(ctx + 0xC))[1];
