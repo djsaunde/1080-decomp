@@ -1,5 +1,9 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_0005F984: the existing cfe NM body
- * recompiled unchanged under NCC (85.13 -> 88.01, same length). NM object only; ROM build keeps INCLUDE_ASM. */
+ * recompiled unchanged under NCC (85.13 -> 88.01, same length). NM object only; ROM build keeps INCLUDE_ASM. 
+ * agent-g run 155: sibling template 5EB4C / 5ED54 -- the param is copied to a local (`m = arg0`, coloured s0
+ * as in the siblings) 90.11 -> 92.35 (181 of 184 words); volatile q0 above R and q1 below it give frame
+ * 0x100 = target: 92.46. Residual: len home 180 vs 176, v at 168 vs 160, the rot block register cycle
+ * through sp32/36. */
 typedef float f32; typedef double f64; typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef signed char s8; typedef unsigned char u8; 
 #define NULL 0
 typedef struct { f32 x, y, z; } V3_5F984;
@@ -19,8 +23,10 @@ extern void gl_func_00000000_5eaa4(f32 (*)[4], s32, f32, s32);
 extern f32 gl_func_00000000_sqrt5F984(f32);
 extern void gl_func_00000000_rot5F984(f32 (*)[4], V3_5F984 *, f32, f32);
 }
-extern "C" void gl_func_0005F984(register f32 (*m)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {
+extern "C" void gl_func_0005F984(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {
+    volatile f32 q0;
     f32 R[4][4];
+    volatile f32 q1;
     f32 len;
     V3_5F984 v;
     f32 pad[2];
@@ -30,7 +36,9 @@ extern "C" void gl_func_0005F984(register f32 (*m)[4], f32 (*rot)[4], f32 x, f32
     f32 c;
     f32 cs, sn;
     s32 i, j, k;
+    f32 (*m)[4];
 
+    m = arg0;
     len = gl_func_00000000_sqrt5F984(x * x + y * y + z * z);
     if (len == 0.0f) {
         if (flag != 0) {
