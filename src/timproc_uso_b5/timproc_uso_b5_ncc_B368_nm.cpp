@@ -3,7 +3,9 @@
  * INCLUDE_ASM. The cfe NM body lifted under NCC with the offset / scale vector read
  * from file-local statics (kit LX: x / y one object through references, z a second
  * one), as in the B624 donor: 175 -> 174 words, 87.47 -> 89.3 fuzzy (agent-g run 142).
- * RESIDUAL: head load order / shared-lui slot, FP colours in the rotate tail. */
+ * RESIDUAL: head load order / shared-lui slot, FP colours in the rotate tail.
+ * Run 156 (kit LXXXVI): head differences through held block locals (target keeps them in
+ * f2 / f12 / f14 and loads the statics first): 89.58 -> 92.71, 174 -> 173 words = target. */
 typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -49,12 +51,13 @@ extern "C" void timproc_uso_b5_func_0000B368(char *arg0) {
     f32 *sp28;
 
     sp28 = (f32 *) (arg0 + 0xDC);
-    do {
-        { f32 &x = sXY[0]; f32 &y = sXY[1];
-        d_272.f0 = sp28[0] - x;
-        d_272.f4 = sp28[1] - y; }
-        d_272.f8 = sp28[2] - sZ;
-    } while (0);
+    {
+        f32 &x = sXY[0]; f32 &y = sXY[1];
+        f32 hx = sp28[0] - x;
+        f32 hy = sp28[1] - y;
+        f32 hz = sp28[2] - sZ;
+        d_272.f0 = hx; d_272.f4 = hy; d_272.f8 = hz;
+    }
     c1_292.v = d_272;
     c2_308 = c1_292.v;
     timproc_uso_b5_func_071028(&c2_308);
