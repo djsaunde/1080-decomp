@@ -2026,7 +2026,10 @@ out:
  * (`= 0.0`) and the else-branch factor is `(f32)0.0`. All five then share the
  * one held f20 zero (mtc1 zero,$f20 once) AND the three else muls survive
  * (residual class 2 above closed); any one of the three left as 0.0f loses it.
- * INCLUDE_ASM stays the build path so ROM is byte-correct. */
+ * INCLUDE_ASM stays the build path so ROM is byte-correct.
+ * 2026-10-24 (agent-g run 160): the NM object now takes the C++ rewrite
+ * src/game_uso/game_uso_ncc_3558_nm.cpp (72.33 -> 72.58, 246 -> 251 of 252
+ * words); this cfe body is kept for reference. */
 #ifdef NON_MATCHING
 extern float game_uso_func_070238(float);
 extern void game_uso_func_071028(Vec3 *v);
