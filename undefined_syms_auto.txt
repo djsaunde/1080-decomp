@@ -4991,3 +4991,5 @@ gl_230d0_syncDmaUnkMedium = 0x00000000;  /* gl_func_000230D0: prototyped blank U
 gl_230d0_syncDma = 0x00000000;  /* gl_func_000230D0: prototyped blank USO jal (AudioLoad_SyncDma) */
 gl_23f98_sDmaHandler = 0x00000000;  /* game_libs_func_00023F98: sDmaHandler function-pointer variable (blank USO data reloc) */
 D_2A260_deflt = 0x00000000;  /* game_libs_func_0002A258: gDefaultEnvelope (blank USO data reloc; lui/addiu 0) */
+gl_1db88_saveRingBufferPart = 0x0003204C;  /* gl_func_0001DB88: prototyped alias of the baked jal 0x3204C (u16 dmem / startPos) */
+gl_1db88_saveBuffer = 0x00031D64;  /* gl_func_0001DB88: prototyped alias of the baked jal 0x31D64 */

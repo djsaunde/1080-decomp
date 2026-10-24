@@ -980,29 +980,46 @@ Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
 //     lui at/sw t0 order (tie). jals 0x3204C/0x31D64 are baked
 //     USO-LOCAL (mid-fragment targets, no in-tree symbol);
 //     gl_func_00000000 placeholder convention.
-#ifdef NON_MATCHING
-extern int gl_ref_00031D64();
-typedef struct { short h0, h1; } Spec4_1DB88;
-int gl_func_0001DB88(int a0, Spec4_1DB88 a1, short a2) {
-    Ent_1CFDC *e;
-    Rec_1CFDC *rec;
-    rec = &((Rec_1CFDC *)&D_00000000)[a1.h1];
-    e = &rec->grp[rec->attr].ent[a2]; if (a0) {}
-    if (*((unsigned char *)rec + 0x1C) == 1) {
-        a0 = gl_ref_0003204C(a0, 0xC80, e->w, e->h, a1.h1);
-        if (e->n != 0) {
-            a0 = gl_ref_0003204C(a0, (e->h + 0xC80) & 0xFFFF, 0, e->n, a1.h1);
+/* gl_func_0001DB88 EXACT 2026-10-23 (agent-c run 140, 91.59 -> 100): OoT's
+ * AudioSynth_SaveReverbSamples in the older (SM64-era) form: `(cmd, s16 reverbIndex,
+ * s16 updateIndex)`, every reverb field read as gSynthesisReverbs[reverbIndex].x (no
+ * pointer local -- that kept the first reverbIndex load in t6 and added an 8-byte
+ * frame slot), the downsample test a `switch` with `case 1` / `default` (an if/else
+ * keeps the t6 reuse), resampleFlags cleared after the switch. The ring-buffer part
+ * saver takes u16 dmem / startPos (andi / lhu): prototyped aliases of the baked jals
+ * 0x3204C / 0x31D64. */
+typedef struct { u32 w0; u32 w1; } gl_1DB88_Awords;
+typedef union { gl_1DB88_Awords words; long long force_structure_alignment; } gl_1DB88_Acmd;
+typedef struct {
+    s16 numSamplesAfterDownsampling; s16 chunkLen; s16 *toDownsampleLeft; s16 *toDownsampleRight;
+    s32 startPos; s16 lengthA; s16 lengthB;
+} gl_1DB88_RingItem;
+typedef struct {
+    char pad0[0x18]; u8 resampleFlags; char pad19[2]; u8 curFrame; u8 downsampleRate; char pad1d[0x50 - 0x1D];
+    gl_1DB88_RingItem items[2][5];
+    char pad[0x158 - 0x50 - 200];
+} gl_1DB88_Reverb;
+#define gl_1DB88_gSynthesisReverbs ((gl_1DB88_Reverb *)&D_00000000)
+extern gl_1DB88_Acmd *gl_1db88_saveRingBufferPart(gl_1DB88_Acmd *cmd, u16 dmem, u16 startPos, s32 size, s16 reverbIndex);
+extern void gl_1db88_saveBuffer(gl_1DB88_Acmd *cmd, s32 dmemSrc, s32 size, u32 addrDest);
+gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateIndex) {
+    gl_1DB88_RingItem *bufItem = &gl_1DB88_gSynthesisReverbs[reverbIndex].items[gl_1DB88_gSynthesisReverbs[reverbIndex].curFrame][updateIndex];
+
+    switch (gl_1DB88_gSynthesisReverbs[reverbIndex].downsampleRate) {
+    case 1:
+        cmd = gl_1db88_saveRingBufferPart(cmd, 0xC80, bufItem->startPos, bufItem->lengthA, reverbIndex);
+        if (bufItem->lengthB != 0) {
+            cmd = gl_1db88_saveRingBufferPart(cmd, 0xC80 + bufItem->lengthA, 0, bufItem->lengthB, reverbIndex);
         }
-    } else {
-        gl_ref_00031D64(a0, 0xC80, 0x340, *(int *)((char *)&rec->grp[rec->attr].ent[a2] + 4) + 0x80000000);
-        a0 += 8;
+        break;
+    default:
+        gl_1db88_saveBuffer(cmd++, 0xC80, 0x340, (u32)((char *)gl_1DB88_gSynthesisReverbs[reverbIndex].items[gl_1DB88_gSynthesisReverbs[reverbIndex].curFrame][updateIndex].toDownsampleLeft - 0x80000000));
+        break;
     }
-    *((char *)rec + 0x18) = 0;
-    return a0;
+    gl_1DB88_gSynthesisReverbs[reverbIndex].resampleFlags = 0;
+    return cmd;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DB88);
-#endif
+#undef gl_1DB88_gSynthesisReverbs
 
 // gl_func_0001DCB4 — STRUCTURAL PASS (0x480 / 288 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
