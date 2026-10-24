@@ -13,7 +13,8 @@
  * w.y / else-branch muls -- NCC const-propagates every spelling tried
  * (literal, double literal, named float) into per-site mtc1; vb is loaded
  * before the matrix block and held in f14/f16/f18 (explicit vb.x = vb.x + ..
- * statements lose the juggle, 58.7); frame 224 vs 256. */
+ * statements lose the juggle, 58.7); frame 224 vs 256. getPos keeps only the
+ * first if (1) {} (the second cost 0.16: 72.58 -> 72.74). */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -26,7 +27,7 @@ struct Vec3 {
 };
 struct M4 {
     float m[4][4];
-    void getPos(Vec3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; if (1) {} }
+    void getPos(Vec3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; }
 };
 struct Node { char pad[0x30]; char f30[0x70]; Vec3 pos; };
 struct Body { char pad[0x70]; M4 mtx; };
