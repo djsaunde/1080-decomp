@@ -11399,10 +11399,15 @@ void gl_func_00041A9C(char *self) {
  * (pointer-based struct copies), then walked with an inlined next():
  * `if (i < n) return &list->buf[++i]; return 0;`. */
 typedef struct { char **list; s32 i; s32 n; } It41D40;
+/* run 151 (agent-c, 91.64 -> 92.99): first advance as if/else with the null in
+ * the else arm (the 0 is hoisted above the compare, the then-arm ends in a `b`;
+ * 404 -> 408 of 412 bytes); copies declared c, b, a (target: ctor temp lowest at
+ * sp+96, the walked copy highest at sp+124). The in-loop advance stays
+ * `r = 0; if (...)` (the if/else form scores lower there). */
 void gl_func_00041D40(s32 arg0) {
-    It41D40 a;
-    It41D40 b;
     It41D40 c;
+    It41D40 b;
+    It41D40 a;
     It41D40 *p;
     char *L;
     char *e;
@@ -11427,10 +11432,11 @@ void gl_func_00041D40(s32 arg0) {
 copy:
     b = a;
     c = b;
-    r = 0;
     if (c.i < c.n) {
         c.i++;
         r = (char **)*c.list + c.i;
+    } else {
+        r = 0;
     }
     while (r != 0) {
         e = ((char **)*c.list)[c.i];
