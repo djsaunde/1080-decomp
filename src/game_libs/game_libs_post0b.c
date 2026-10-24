@@ -29576,12 +29576,12 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
         gl_func_00034458((char *)&D_00000000, (int)arg0 + 0x48);
     }
     temp_a1 = FW(arg0, 0x2C);
-    temp_lo = FW(arg0, 0x1C) * FW(arg0, 0x24);
+    temp_lo = FW(arg0, 0x24) * FW(arg0, 0x1C);
     var_s5 = temp_a1 + temp_lo;
     if (var_s5 >= 0x123) {
         var_s5 = 0x122;
     }
-    gl_func_00034458((char *)&D_00000000, temp_a1, FW(arg0, 0x30), temp_lo + 8, (FW(arg0, 0x14) * FW(arg0, 0x28)) + 0x10, &sp60);
+    gl_func_00034458((char *)&D_00000000, temp_a1, FW(arg0, 0x30), temp_lo + 8, (FW(arg0, 0x28) * FW(arg0, 0x14)) + 0x10, &sp60);
     *(s32 *)((char *)&D_00000000 + 0x224) = 8;
     *(s32 *)((char *)&D_00000000 + 0x228) = 8;
     *(s32 *)((char *)&D_00000000 + 0x21C) = FW(arg0, 0x2C) + 4;
@@ -29600,7 +29600,7 @@ void gl_func_000608A4(char *arg0, s32 arg1) {
                 *(s32 *)((char *)&D_00000000 + 0x220) = var_s3;
                 *(s32 *)((char *)&D_00000000 + 0x21C) = FW(arg0, 0x2C) + 4;
                 gl_func_00034458((char *)&D_00000000, *(int*)(FW(arg0, 0x0) + var_s0) + FW(arg0, 0x10), var_s5);
-                var_v1 = FW(arg0, 0x18) + FW(arg0, 0x14);
+                var_v1 = FW(arg0, 0x14) + FW(arg0, 0x18);
             }
             var_s2 += 1;
             var_s0 += 8;
