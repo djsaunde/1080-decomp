@@ -35,7 +35,7 @@ extern "C" void timproc_uso_b5_func_0000396C(char *arg0, s32 arg1, char *arg2, f
     B = (char *) FW(arg0, 0x29C);
     x = (*(f32 *)((char *)arg0 + 0x184) * tt) + *(f32 *)((char *)B + 0xDC);
     y = yv = ((*(f32 *)((char *)arg0 + 0x188) * tt) + *(f32 *)((char *)B + 0xE0)) + (arg4 * (1.0f - tt));
-    z = (*(f32 *)((char *)arg0 + 0x18C) * tt) + *(f32 *)((char *)B + 0xE4);
+    z = *(f32 *)((char *)B + 0xE4) + (*(f32 *)((char *)arg0 + 0x18C) * tt);
     o = (char *) arg1 + 0x30;
     if (1) {
         t = *(f32 *)((char *)arg2 + 0x0);
