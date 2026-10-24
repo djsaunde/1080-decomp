@@ -13107,8 +13107,9 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             *(f32 *)((char *)(arg0) + 0x50) = (f32) ((temp_f16 + *(f32 *)((char *)(arg0) + 0x0)) * 0.5f);
             *(f32 *)((char *)(arg0) + 0x44) = (f32) ((*(f32 *)((char *)(arg0) + 0x44) + temp_f18) * 0.5f);
             sp7D = gl_func_00043824(*(f32 *)((char *)(arg0) + 0x4) * 120.0f, (s32)((char *)&D_00000000 + 0x1C250), 0x10);
-            temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
+            /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
             temp_v1 = (gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF;
+            temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
             temp_f18 = (temp_f16 / 200.0f) + *(f32 *)((char *)&D_00000000 + 0x16E0);
             temp_v0_2 = temp_v1;
             sp78 = temp_f18;
