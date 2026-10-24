@@ -6475,6 +6475,7 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
                 sampleBankReloc.baseAddr2 =
                     sampleBankId2 != 0xFF ? AudioLoad_GetSampleBank(sampleBankId2, &sampleBankReloc.medium2) : 0;
                 AudioLoad_RelocateFontAndPreloadSamples(fontId, asyncLoad->ramAddr, &sampleBankReloc, 1);
+                if (asyncLoad) {} /* run 144: block split after the reloc call -> target a2/v0 picks in the switch (97.68 -> 98.08) */
                 break;
         }
 
