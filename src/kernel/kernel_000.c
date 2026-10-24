@@ -1798,84 +1798,62 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800021A4);
  * artifact since 0x800021D0 has no prologue and uses registers set up
  * by the 0x800021A4 prologue). */
 
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
+/* 2026-10-23 EXACT (agent-g run 144): the "arg0 vs counter saved-register
+ * contest" above was a decode shape (sibling of func_8000235C):
+ * - the error callback takes THREE arguments (msg, u, l): passing the counter
+ *   as a fourth made it live into the call block and gave IT the saved
+ *   register; with three, o takes s0 and the counter stays in a3;
+ * - u->list cached in a local `l` (one load, reused for the link);
+ * - one index local `k` for BOTH the module-table index (type >> 4) and the
+ *   entry's link index: that web takes a0 and pushes the count into a1;
+ * - plain `i < o->count` loop test: cfe's PRE puts the count reload only into
+ *   the two store arms (the miss-arm delay slot and before the latch). */
 extern s32 D_8000A3A0;
-/* USO request-list scan: walk arg0's 0xC-byte request entries (head arg0->unk3C,
- * count arg0->unk4). For each entry with flags (unk0) bit3 clear and low-3 == 1,
- * resolve the target USO via the D_80012D60 pointer table (index = flags>>4). If
- * the slot is empty, mark arg0->unk99 and bump the miss counter (D_80012BC0+0x18);
- * if the target isn't loaded yet (unk3C==0), fire the callback
- * (D_80012BC0->field_84) and bail -2; else link the entry's unk4 to the target's
- * resolved address.
- * Residual = 23 diff words (do-while form, size-exact 0x10C), all the SAME
- * single coloring decision: target puts arg0 in saved $s0 (freeing $a0 for the
- * entry-field_8 index `lh $a0,8($v1)`) and the loop counter in caller-saved
- * $a3 (=4th call-arg slot, so the callback delay is a nop); our build does the
- * reverse (arg0->$a3, counter->$s0, delay = `move a3,s0`). Everything else
- * (multu/addu operand order, index temp reg) cascades from that one swap.
- *
- * 2026-06-23 PROGRESS (agent-b): rewrote goto->do/while which MERGED the
- * count<=0 skip and loop-exit into one shared `return 0` tail (was the +2-word
- * structural diff, 56->25 words). Then `new_var = &var_v1->4` store-target
- * hoist + inline `((UsoCallbacks84*)&D_80012BC0)->field_84` (drop the `state`
- * local) trimmed 25->23. Levers that FAIL (do not re-try): decl-order swap
- * (no-op), `register`/plain `void *self=arg0` alias (30/65 words, forces a
- * copy), `register s32 var_a3` (no-op), counter-copy for call arg (no-op).
- * REGALLOC-DUMP (cc -Wo,-zdbug:6 -> uoptlist) for the do/while body: arg0 is a
- * LATE candidate (73, "not colored / -ve save") while the counter is candidate
- * 13 winning the saved slot. Permuter (>18k iters, 7 threads, reseeded from the
- * 23-word body) finds NO clean zero - its best (135 score) only matches by
- * overwriting var_a3 with the index (semantic corruption, rejected). Genuine
- * candidate-creation-order coloring cap: arg0(param, read-only) vs counter(IV
- * passed as 4th call-arg) contest for the single saved register. */
-s32 func_80002250(void *arg0) {
-    s16 temp_v0_2;
-    s32 temp_a2;
-    s32 var_a3;
-    void *temp_a1;
-    void *temp_v0;
-    void *var_v1;
-    s32 *new_var;
+typedef struct { short type; short pad; int val; short idx; short pad2; } Ent80002250;
+typedef struct {
+    char p0[4];
+    int count;
+    char p8[0x34];
+    Ent80002250 *list;
+    char p40[0x59];
+    unsigned char dirty;
+} Obj80002250;
+typedef struct { char p0[0x18]; int miss; char p1c[0x84 - 0x1C]; void (*field_84)(); } Cb80002250;
+int func_80002250(Obj80002250 *o) {
+    Ent80002250 *e;
+    Obj80002250 *u;
+    Ent80002250 *l;
+    int k;
+    int i;
 
-    temp_v0 = (void *) FW(arg0, 0x3C);
-    *(u8 *)((char *)arg0 + 0x99) = 0;
-    if (temp_v0 == NULL) {
+    o->dirty = 0;
+    if (o->list == 0) {
         return 0;
     }
-    var_a3 = 0;
-    var_v1 = temp_v0;
-    if (FW(arg0, 4) > 0) {
-        do {
-            temp_v0_2 = *(s16 *)var_v1;
-            var_a3 += 1;
-            if (!(temp_v0_2 & 8) && ((temp_v0_2 & 7) == 1)) {
-                temp_a1 = ((void **)&D_80012D60)[temp_v0_2 >> 4]; if (var_a3) {}
-                if (temp_a1 == NULL) {
-                    *(u8 *)((char *)arg0 + 0x99) = 1;
-                    FW(&D_80012BC0, 0x18) = FW(&D_80012BC0, 0x18) + 1;
-                    goto block_12;
-                }
-                temp_a2 = FW(temp_a1, 0x3C);
-                if (temp_a2 == 0) {
-                    ((UsoCallbacks84 *)&D_80012BC0)->field_84(&D_8000A3A0, temp_a1, temp_a2, var_a3);
+    i = 0;
+    e = o->list;
+    for (; i < o->count; i++) {
+        if (!(e->type & 8) && (e->type & 7) == 1) {
+            k = e->type >> 4;
+            u = ((Obj80002250 **)D_80012D60)[k];
+            if (u == 0) {
+                o->dirty = 1;
+                ((Cb80002250 *)&D_80012BC0)->miss++;
+            } else {
+                l = u->list;
+                if (l == 0) {
+                    ((Cb80002250 *)&D_80012BC0)->field_84(&D_8000A3A0, u, l);
                     return -2;
                 }
-                new_var = (s32 *)((char *)var_v1 + 4);
-                *(s16 *)var_v1 = temp_v0_2 | 8;
-                *new_var = *(s32 *)((char *)temp_a2 + (*(s16 *)((char *)var_v1 + 8)) * 0xC + 4);
+                e->type |= 8;
+                k = e->idx;
+                e->val = l[k].val;
             }
-block_12:
-            var_v1 = (char *)var_v1 + 0xC;
-        } while (var_a3 < FW(arg0, 4));
+        }
+        e++;
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002250);
-#endif
 
 /* func_8000235C: 33-insn entry-list clear-by-type helper.
  *   if no entry list at a0+0x3C, return 0.

@@ -1,0 +1,32 @@
+{
+  "function_name": "func_80002250",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T02:20:26.398026+00:00",
+  "end_time": "2026-10-24T02:20:26.398053+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T02:20:26.398047+00:00",
+      "assistant_text": "3-arg callback (counter not passed), cached l, shared index local k",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 67,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct { short type; short pad; int val; short idx; short pad2; } Ent;\ntypedef struct { char p0[4]; int count; char p8[0x34]; Ent *list; char p40[0x59]; unsigned char dirty; } Obj;\ntypedef struct { char p0[0x18]; int miss; char p1c[0x84 - 0x1C]; void (*field_84)(); } Cb;\nextern Cb D_80012BC0;\nextern Obj *D_80012D60[];\nextern int D_8000A3A0;\nint func_80002250(Obj *o) {\n    Ent *e;\n    Obj *u;\n    Ent *l;\n    int k;\n    int i;\n\n    o->dirty = 0;\n    if (o->list == 0) {\n        return 0;\n    }\n    i = 0;\n    e = o->list;\n    for (; i < o->count; i++) {\n        if (!(e->type & 8) && (e->type & 7) == 1) {\n            k = e->type >> 4;\n            u = D_80012D60[k];\n            if (u == 0) {\n                o->dirty = 1;\n                D_80012BC0.miss++;\n            } else {\n                l = u->list;\n                if (l == 0) {\n                    D_80012BC0.field_84(&D_8000A3A0, u, l);\n                    return -2;\n                }\n                e->type |= 8;\n                k = e->idx;\n                e->val = l[k].val;\n            }\n        }\n        e++;\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_000.c",
+    "segment": "kernel",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff 100"
+  }
+}
