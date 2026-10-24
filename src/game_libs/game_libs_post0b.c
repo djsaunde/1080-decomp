@@ -14399,21 +14399,20 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     char *temp_v0_2;
     char *temp_v0_3;
     char *temp_v1;
-    char *temp_v1_2;
 
     arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
     temp_s1 = FW((FW(arg0, 0x240) + (FW(arg0, 0x204) * 4)), 0x180);
     gl_func_00034458(temp_s1);
     temp_v1 = FW(arg0, 0x240);
     temp_v0 = FW(temp_v1, 0x28);
-    temp_v1_2 = FW(arg0, 0x240);
+    temp_v1 = FW(arg0, 0x240);
     temp_a1 = ((GP_000469A8)FW(temp_v0, 0x64))(FW(temp_v0, 0x60) + temp_v1);
-    sp48 = FW(FW(temp_v1_2, 0x148), 0xF0);
-    var_t0 = (FW((temp_v1_2 + 0x100), 0x4) & 2) != 0;
+    sp48 = FW(FW(temp_v1, 0x148), 0xF0);
+    var_t0 = (FW((temp_v1 + 0x100), 0x4) & 2) != 0;
     if (var_t0 != 0) {
-        var_t0 = (FW(temp_v1_2, 0x78) & 2) != 0;
+        var_t0 = (FW(temp_v1, 0x78) & 2) != 0;
     }
-    gl_func_00034458(temp_s1, temp_a1, sp48, FW(temp_v1_2, 0x78) & 4, var_t0, temp_v1_2 + 0xDC, FW(temp_v1_2, 0xC0), FW(temp_v1_2, 0xC4), FW(temp_v1_2, 0xB8), FW(temp_v1_2, 0xBC), FW(FW(temp_v1_2, 0x148), 0xB8), FW(temp_v1_2, 0x1B0));
+    gl_func_00034458(temp_s1, temp_a1, sp48, FW(temp_v1, 0x78) & 4, var_t0, temp_v1 + 0xDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
     temp_t6 = FW(arg0, 0x240);
     *(char **)0x254 = temp_t6;
     FW(temp_t6, 0x158) = temp_s1;
