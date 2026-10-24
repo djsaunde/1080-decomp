@@ -5149,20 +5149,27 @@ extern char D_39E24_a[]; extern float D_39E24_b[];
 typedef struct { char pad[0x30]; float x, y, z; } T39E24;
 extern T39E24 D_39E24_c; /* file-static at section+0xA0 */
 extern void gl_func_00000000_39E24v();
+/* 2026-10-24 (agent-g run 154): ported from its sibling bootup func_000076F4
+ * (99.82, the same code in bootup_uso): one G symbol for the root (+0x254),
+ * the call argument and the scale triple, and the camera vector read through
+ * a FUNCTION-typed alias gl_39e24_vf (+0x30.. ; the linked lo16 is the 0xA0
+ * base), which keeps the scale loads after each vector store. 95.0 -> ~99.3.
+ * Left (same as 76F4): the target materialises the vector base (lui v0)
+ * before the rematerialised G (lui a2) after the second call. */
+extern char D_39E24_g[];
+extern void gl_39e24_vf();
 void gl_func_00039E24(char *a0) {
-    if (gl_proto_39E24(*(int*)(D_39E24_a + 0x254), 3,
-                       *(float*)(a0 + 0x5C), *(float*)(a0 + 0x60), *(float*)(a0 + 0x64),
-                       0, 0.0f) != 0) {
-        T39E24 *t;
-        gl_func_00000000_39E24v(D_39E24_b, a0 + 0x2C, D_39E24_b); /* run 139: 3 args -- target builds the base in a2 and copies it to a0 (or a0,a2) */
-        t = (T39E24*)(int)&D_39E24_c;
-        t->x *= D_39E24_b[74];
-        t->y *= D_39E24_b[75];
-        t->z *= D_39E24_b[76];
-        t->y += *(float*)(a0 + 0x6C);
+    if (gl_proto_39E24(*(int *)(D_39E24_g + 0x254), 3, *(float *)(a0 + 0x5C), *(float *)(a0 + 0x60),
+                    *(float *)(a0 + 0x64), 0, 0.0f) != 0) {
+        gl_func_00000000_39E24v(D_39E24_g, a0 + 0x2C);
+        *(float *)((char *)gl_39e24_vf + 0x30) *= *(float *)(D_39E24_g + 0x128);
+        *(float *)((char *)gl_39e24_vf + 0x34) *= *(float *)(D_39E24_g + 0x12C);
+        *(float *)((char *)gl_39e24_vf + 0x38) *= *(float *)(D_39E24_g + 0x130);
+        *(float *)((char *)gl_39e24_vf + 0x34) += *(float *)(a0 + 0x6C);
         gl_func_00000000(a0);
     }
 }
+
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039E24);
 #endif
