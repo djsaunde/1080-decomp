@@ -9589,10 +9589,18 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 // 142): the old if(0) &arg1/&arg2/&gsub/&flag escape is gone -- without it
 // (or with only &arg1 / &flag) the body is 430 words (was 436, target 422)
 // and objdiff 78.2 -> 79.4; escaping &arg2 or &gsub costs it back.
-// Residual ~21%: target colors the head range of r into s0 (move s0,v0 +
-// late sw s0,92(sp) spill = live-range split around the child claim) — every
-// c/register/block-scope/escape variant tried leaves r stack-homed 68(sp),
-// so head/mid loads drift by home slot + frame 0x48 vs 0x60. Coloring cap.
+// (7) 2026-10-24 (agent-g run 154): SIBLING PORT of D884's kit-II layout
+// (opcode-sequence similarity D884 vs DF14 = 0.97): `char *volatile r` +
+// `volatile int pad0` / `pad[7]` decl sandwich, the first claim held in
+// `child` (s0) and copied to r AFTER the 3890 call (the target's late
+// sw s0,92(sp)), block-scope `rr = r` for the 0x14/0x2B0/0x2A4 and the
+// 0x2B8/0x29C/0x134 clusters, the 0x6C counter read into `child` (s0), no
+// &arg escape, and the EE6C flag word as per-site non-volatile aliases
+// (fresh lui per load, folded lo16 +4). `sub = arg2 + 10` after the 0x2A4
+// store lands it in the jal delay. 82.73 -> ~94.5, 425 words (target 422).
+// Residual: arg1 load order around the 0x2B0 store (+1 load-delay nop),
+// EE6C lw-above-sw hoists (same as D884 residual (a)), the external-data
+// jumptable lo16, tail-store order of the 0x124 zero.
 #ifdef NON_MATCHING
 
 
@@ -9617,45 +9625,53 @@ extern char timproc_uso_b5_D_807FEFE8[];
 extern char timproc_uso_b5_D_807FEFF4[];
 extern char import_80087FB8[];
 
-#define DF14_EE6C (*(volatile int *)((char *)&import_8005EE6C + 4))
 
 /* Prototyped 5-arg decl: real signature passes f32 singles (mfc1 a2/a3 +
  * swc1 16(sp) 5th arg in the jal delay); the shared unprototyped decl
  * promoted the 0.0f literals to doubles (cvt.d.s + sdc1). */
 extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
 
+extern char df14_ee6c_l1, df14_ee6c_l2, df14_ee6c_l3, df14_ee6c_l4, df14_ee6c_l5, df14_ee6c_l6, df14_ee6c_l7, df14_ee6c_l8;
+extern char df14_ee6c_s1, df14_ee6c_s2, df14_ee6c_s3, df14_ee6c_s4, df14_ee6c_s5, df14_ee6c_s6, df14_ee6c_s7;
+#define EE6C_L(s) (*(s32 *)((char *)&s + 4))
+#define EE6C_S(s) (*(s32 *)((char *)&s + 4))
 char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
-    char *r;
+    char *volatile r;
+    volatile int pad0;
     char *sub;
+    char *child;
+    volatile int pad[7];
+    s32 flag;
+    f32 *p;
+    char *gsub;
     s32 mode;
     f32 t;
-    f32 *p;
-    s32 flag;
-    char *gsub;
 
-    r = (char *) timproc_uso_b5_func_055750((char *)0x2BC);
-    if (r != 0) {
-        sub = r;
+    child = (char *) timproc_uso_b5_func_055750((char *)0x2BC);
+    if (child != 0) {
+        sub = child;
         if ((sub != 0) || ((sub = (char *) timproc_uso_b5_func_055750((char *)0x2B8)) != 0)) {
             timproc_uso_b5_func_04C678(sub, &timproc_uso_b5_D_807FEF48[5848]);
             FW(sub, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
             timproc_uso_b5_func_00002B74(sub + 0x2C);
             timproc_uso_b5_func_000032C8(sub + 0x194);
         }
-        FW(r, 0x28) = (s32) &timproc_uso_b5_D_807FEF50[2468]; FW(r, 0xC) = (s32) &timproc_uso_b5_D_807FEF50[5856];
-        timproc_uso_b5_func_00003890(r);
+        FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF50[2468]; FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF50[5856];
+        timproc_uso_b5_func_00003890(child);
     }
-    FW(r, 0x2AC) = FW(arg0, 0x6C);
-    timproc_uso_b5_func_07ACE0(arg0 + 0x10, r);
-    if (FW(r, 0x14) != 0) {
-        FW(r, 0x4) = 1;
+    r = child;
+    FW(child, 0x2AC) = FW(arg0, 0x6C);
+    timproc_uso_b5_func_07ACE0(arg0 + 0x10, child);
+    if (FW(child, 0x14) != 0) {
+        FW(child, 0x4) = 1;
     }
-    FW(r, 0x14) = (s32) arg0;
-    FW(r, 0x2B0) = arg2;
-    sub = (char *)(arg2 + 10);
-    *(f32 *)(r + 0x2A4) = (f32) arg1;
     {
-    register char *child;
+        char *rr = r;
+        FW(child, 0x14) = (s32) arg0;
+        FW(rr, 0x2B0) = arg2;
+        *(f32 *)(rr + 0x2A4) = (f32) arg1;
+        sub = (char *)(arg2 + 10);
+    }
     child = (char *) timproc_uso_b5_func_055750((char *)0x144);
     if (child != 0) {
         timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEF5C[5868], 0.0f, 0.0f, 0.0f);
@@ -9673,17 +9689,18 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         }
         FW(child, 0x108) = (s32) gsub;
         timproc_uso_b5_func_04DFFC(child, gsub);
+        if (1) {}
         p = (f32 *)((char *) FW(child, 0x108) + 0xB4);
         p[2] = 0; /* int 0: one mtc1 zero for the three stores (0.0f gives three) */
         p[1] = 0;
         p[0] = 0;
         *(f32 *)(child + 0x124) = 1.0f;
-        flag = DF14_EE6C & 0x80000;
-        DF14_EE6C = DF14_EE6C & ~0x80000;
-        DF14_EE6C = DF14_EE6C & ~1;
-        DF14_EE6C = DF14_EE6C | 2;
-        DF14_EE6C = DF14_EE6C & ~0x20000;
-        DF14_EE6C = DF14_EE6C | 0x2000;
+        flag = EE6C_L(df14_ee6c_l1) & 0x80000;
+        EE6C_S(df14_ee6c_s1) = EE6C_L(df14_ee6c_l2) & 0xFFF7FFFF;
+        EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_l3) & ~1;
+        EE6C_S(df14_ee6c_s3) = EE6C_L(df14_ee6c_l4) | 2;
+        EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_l5) & 0xFFFDFFFF;
+        EE6C_S(df14_ee6c_s5) = EE6C_L(df14_ee6c_l6) | 0x2000;
         FW(child, 0x140) = 1;
         FW(child, 0x13C) = 1;
         switch ((s32) sub) {
@@ -9757,9 +9774,9 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             break;
         }
         if (flag != 0) {
-            DF14_EE6C = DF14_EE6C | 0x80000;
+            EE6C_S(df14_ee6c_s6) = EE6C_L(df14_ee6c_l7) | 0x80000;
         } else {
-            DF14_EE6C = DF14_EE6C & ~0x80000;
+            EE6C_S(df14_ee6c_s7) = EE6C_L(df14_ee6c_l8) & 0xFFF7FFFF;
         }
         *(f32 *)(child + 0xDC) = arg3;
         *(f32 *)(child + 0xE0) = arg4;
@@ -9774,24 +9791,26 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         *(f32 *)(child + 0x124) = 0.0f;
         *(f32 *)(child + 0x120) = *(f32 *)&import_80087FB8[1080];
     }
-    FW(r, 0x2B8) = (s32) child;
-    FW(r, 0x29C) = (s32) child;
-    *(f32 *)(r + 0x134) = -32.0f;
+    {
+        char *rr = r;
+        FW(rr, 0x2B8) = (s32) child;
+        FW(rr, 0x29C) = (s32) child;
+        *(f32 *)(rr + 0x134) = -32.0f;
+    }
     sub = (char *) FW(arg0, 0x38);
     timproc_uso_b5_func_07ACE0(sub + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
     FW(child, 0x14) = (s32) sub;
-    }
-    {
-        s32 n = FW(arg0, 0x6C);
-        FW(arg0, 0x6C) = n + 1;
-        FW(arg0 + n * 4, 0x3C) = (s32) r;
-    }
+    child = (char *)FW(arg0, 0x6C);
+    FW(arg0, 0x6C) = (s32) child + 1;
+    FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;
     return r;
 }
-#undef DF14_EE6C
+#undef EE6C_L
+#undef EE6C_S
+
 #else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000DF14);
 #endif
