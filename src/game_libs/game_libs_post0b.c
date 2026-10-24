@@ -23532,9 +23532,9 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     MF54(0x13C) = d - (QF54(4) * QF54(0)) * two;
     MF54(0x140) = 1.0f - (QF54(4) * QF54(4)) * two;
     MF54(0x148) = d;
-    MF54(0x144) = d - (QF54(4) * QF54(8)) * two;
+    MF54(0x144) = d - (QF54(8) * QF54(4)) * two;
     MF54(0x14C) = d - (QF54(8) * QF54(0)) * two;
-    MF54(0x150) = d - (QF54(8) * QF54(4)) * two;
+    MF54(0x150) = d - (QF54(4) * QF54(8)) * two;
     MF54(0x158) = d;
     MF54(0x154) = 1.0f - (QF54(8) * QF54(8)) * two;
     w = QF54(0xC);
@@ -23546,7 +23546,7 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     sp90 = sp2C.v.z;
     sp8C = sp2C.v.y;
     sp88 = sp2C.v.x;
-    d = (sp2C.v.x * QF54(0) + sp2C.v.y * QF54(4) + sp2C.v.z * QF54(8)) * two;
+    d = (sp2C.v.x * QF54(0) + QF54(4) * sp2C.v.y + sp2C.v.z * QF54(8)) * two;
     MF54(0x15C) = d * QF54(0);
     MF54(0x160) = d * QF54(4);
     MF54(0x168) = 1.0f;
