@@ -4,7 +4,11 @@
  * `s32 pad[6]; pad[0] = 0;` (dead store, no code) gives frame 104 = target; two parameter empty tests after
  * the TEXRECT w1 store and after the B4 w1 store (fuzzy-scored psweep) -> 300 words / 88.7 standalone.
  * RESIDUAL: the target keeps the ring context and the first MAX temp in $s0 (s0 save), plus an extra
- * copy level in the MIN arms. */
+ * copy level in the MIN arms.
+ * agent-g run 160 (88.75 -> 89.83, 300 -> 298 words, AWAY from 303): the two empty tests read x0 instead
+ * of arg0. The target never homes arg0 (`lw t0,16(a0)` straight off the register, no `sw a0,104(sp)`);
+ * an arg0 test after the switch calls kept arg0 live across them and forced the home store + reload.
+ * x0 is homed in the target anyway (108(sp)). The two lost words are the target's s0 save/restore. */
 typedef float f32; typedef double f64; typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef signed char s8; typedef unsigned char u8;
 extern "C" {
 extern char D_00000000;
@@ -62,12 +66,12 @@ done:
 #define DTDY ((s32)(((f32)(h - 1) * 1024.0f) / fh))
     PKT_BEGIN
     _g[0] = (_SHIFTL(0xE4, 24, 8) | _SHIFTL(MAX((s16)(XH), 0), 12, 12) | _SHIFTL(MAX((s16)(YH), 0), 0, 12));
-    _g[1] = (_SHIFTL(0, 24, 3) | _SHIFTL(MAX((s16)(XL), 0), 12, 12) | _SHIFTL(MAX((s16)(YL), 0), 0, 12)); if (arg0) {}
+    _g[1] = (_SHIFTL(0, 24, 3) | _SHIFTL(MAX((s16)(XL), 0), 12, 12) | _SHIFTL(MAX((s16)(YL), 0), 0, 12)); if (x0) {}
     PKT_END
     PKT_BEGIN
     _g[0] = _SHIFTL(0xB4, 24, 8);
     _g[1] = (_SHIFTL((0 - (((s16)(XL) < 0) ? (((s16)(DSDX) < 0) ? (MAX((((s16)(XL) * (s16)(DSDX)) >> 7), 0)) : (MIN((((s16)(XL) * (s16)(DSDX)) >> 7), 0))) : 0)), 16, 16) |
-             _SHIFTL((0 - (((YL) < 0) ? (((s16)(DTDY) < 0) ? (MAX((((s16)(YL) * (s16)(DTDY)) >> 7), 0)) : (MIN((((s16)(YL) * (s16)(DTDY)) >> 7), 0))) : 0)), 0, 16)); if (arg0) {}
+             _SHIFTL((0 - (((YL) < 0) ? (((s16)(DTDY) < 0) ? (MAX((((s16)(YL) * (s16)(DTDY)) >> 7), 0)) : (MIN((((s16)(YL) * (s16)(DTDY)) >> 7), 0))) : 0)), 0, 16)); if (x0) {}
     PKT_END
     PKT_BEGIN
     _g[1] = (_SHIFTL(DSDX, 16, 16) | _SHIFTL(DTDY, 0, 16));
