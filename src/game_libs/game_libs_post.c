@@ -4109,8 +4109,9 @@ extern int gl_func_00036A04();
  * one short-circuit condition whose `li a0,1` fills the delay slots; the
  * entry pointer is recomputed at the bottom of the first inner loop and its
  * last value feeds the second loop's count). Left: the target holds &D in s6. */
+extern void gl_221d8_fg(); /* run 139: fn-typed blank base -> the target's lui s6 / addiu s6,s6,0 held &D (no reloc) */
 void gl_func_000221D8(char *key) {
-    char *g = (char *)&D_00000000;
+    char *g = (char *)gl_221d8_fg;
     int count = *(short *)(*(int *)(g + 0x2020));
     int s5, s4, s1, s2;
     unsigned char *e;
@@ -4119,7 +4120,8 @@ void gl_func_000221D8(char *key) {
         return;
     }
     s4 = 0;
-    for (s5 = 0; s5 != count; s5++, s4 += 20) {
+    s5 = 0;
+    do { /* run 139: do-while (count > 0 already tested): no second guard test */
         int kb;
         int v1;
         int a0b;
@@ -4152,7 +4154,7 @@ void gl_func_000221D8(char *key) {
             }
             e = (unsigned char *)*(int *)(g + 0x2030) + s4;
         }
-    }
+    } while (s5++, s4 += 20, s5 != count);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000221D8);
