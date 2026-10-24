@@ -6854,6 +6854,10 @@ void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
  * 0x2C (sw a0,0x2c / lw a0,0x2c per call): if(0) address-escape forces the
  * home and kills the s1 promotion. FP-pool pairs share one lui at (gxy x/y at
  * +0/+4; gz+thr at +8/+0x338 off one symbol) via literal-low derefs. */
+/* 2026-10-23 (agent-g run 143) AC20 86.29 -> 90.68 (329 -> 332 of 333 words): the
+ * three 071AE0 angle arguments go through a named float local (`ang = field;`
+ * at the top of each block): the target loads them with lwc1 + mfc1 a2 (a named
+ * f32 stays an FP value), the field passed directly is `lw a2` (kit LXV). */
 #define TB5_F(off) (*(f32 *)((char *)o + (off)))
 extern char D_timb5_AC20_gxy;   /* pool A: x@+0, y@+4 */
 extern char D_timb5_AC20_gz;    /* pool B: z@+8, f64 threshold@+0x338 */
@@ -6869,7 +6873,6 @@ extern void timproc_uso_b5_func_054CAC(void *obj);
 void timproc_uso_b5_func_0000AC20(char *arg0) {
     char *o = arg0;
     struct TimB5V3 spF4;
-    volatile s32 padF0;
     struct TimB5V3 spE4;
     volatile s32 padE0;
     volatile s32 padDC;
@@ -6899,6 +6902,7 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
     register f32 *gp;
     f32 var_f12;
     f32 wrap;
+    f32 ang;
     f32 two = 2.0f;
 
     if (0) {
@@ -6920,23 +6924,26 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
             TB5_F(0xF8) = 0.0f;
             TB5_F(0xFC) = 0.0f;
             TB5_F(0x100) = 1.0f;
+            ang = TB5_F(0x114);
             ap = o + 0xF4;
             sp4C.z = 0.0f;
             sp4C.y = 0.0f;
             sp4C.x = 1.0f;
-            timproc_uso_b5_func_071AE0(ap, &sp4C, TB5_F(0x114));
+            timproc_uso_b5_func_071AE0(ap, &sp4C, ang);
         }
         {
+            ang = TB5_F(0x110);
             sp3C.x = (float)0;
             sp3C.y = (float)0;
             sp3C.z = (float)1;
-            timproc_uso_b5_func_071AE0(ap, &sp3C, TB5_F(0x110));
+            timproc_uso_b5_func_071AE0(ap, &sp3C, ang);
         }
         {
+            ang = TB5_F(0x118);
             sp30.x = (float)0;
             sp30.z = (float)0;
             sp30.y = (float)1;
-            timproc_uso_b5_func_071AE0(ap, &sp30, TB5_F(0x118));
+            timproc_uso_b5_func_071AE0(ap, &sp30, ang);
         }
         timproc_uso_b5_func_0727A4(*(char **)((char *)(*(char **)&D_timb5_AC20_root) + 0x70) + 0xB4, &sp7C);
         import_0010806C(&sp7C, &sp6C);
