@@ -467,68 +467,13 @@ s32 func_8000058C(s32 arg0) {
  * redundant moves at -O2-no-frame. Genuine redundant-move/size cap; not
  * permuter-crackable. (Kernel = non-asm-processor so the permuter runs
  * cleanly here, unlike the game_libs asm-processor floor.) */
-#ifdef NON_MATCHING
-/* 2026-06-23: separate-cursor reconstruction lands 15 of 16 insns byte-exact.
- * Persistent cursors sp/dp (=$v0/$v1) hold src/dst; per-iteration working
- * copies p/q (=$a0/$a3) deref while sp/dp increment; rem (=$a1) snapshots the
- * count. count is decremented IN PLACE in $a2 (decrement the ARG, not a copy).
- * Register picks, snapshot order (q before rem), store-via-$a3, and the
- * bnez+addiu loop tail ALL byte-match. SOLE residual: the target's prologue
- * `or $a3,$a2` -- a DEAD count-copy IDO refuses to emit for us (DCE strips any
- * never-read copy; an empty `if(rem){}`/`(void)rem` read is itself DCE'd, and
- * forcing a read via the loop test introduces `li -1`/`bne` that costs more
- * than the one insn it buys -- see variant log). Genuine over-emit/dead-insn
- * cap (target keeps a dead copy unreachable from semantics-preserving C).
- * Per no-instruction-forcing policy, stays NON_MATCHING. */
-void func_80000598(u8* src, u8* dst, s32 count) {
-    u8 *sp, *dp, *p, *q;
-    s32 rem;
-    sp = src;
-    dp = dst;
-    if (count != 0) {
-        count--;
-        do {
-            p = sp;
-            rem = count;
-            q = dp;
-            dp++;
-            sp++;
-            *q = *p;
-            count--;
-        } while (rem != 0);
-    }
+/* 2026-10-23 EXACT (agent-g run 144) via the IDO 7.1 NCC donor
+ * src/kernel/kernel_ncc_598.cpp: the plain `while (n--) *d++ = *s++;` byte
+ * copy over char-pointer locals compiled as C++ keeps every post-increment /
+ * post-decrement temp (the "dead ABI-dance ors" above, 16/16 words); cfe
+ * folds them (12-15 words). This definition is only the splice placeholder. */
+void func_80000598(u8 *src, u8 *dst, s32 count) {
 }
-#else
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_80000598)();
-void func_80000598(u8 *arg0, u8 *arg1, s32 arg2) {
-    s32 var_a2;
-    u8 *temp_a3;
-    u8 *var_v0;
-    u8 *var_v1;
-    u8 temp_t6;
-
-    var_v0 = arg0;
-    var_v1 = arg1;
-    var_a2 = arg2 - 1;
-    if (arg2 != 0) {
-        do {
-            temp_t6 = *var_v0;
-            temp_a3 = var_v1;
-            var_v1 += 1;
-            var_v0 += 1;
-            *temp_a3 = temp_t6;
-            var_a2 -= 1;
-        } while (var_a2 != 0);
-    }
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80000598);
-#endif
-#endif
 
 /* func_800005DC (really starts at 0x5D8: the .s glabel sits on the
  * prologue word) = bounded file read, IDO 7.1 -O2: buf must be 8-aligned

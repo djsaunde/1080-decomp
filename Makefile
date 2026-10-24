@@ -1384,6 +1384,10 @@ build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: RE
 # 1184 = zero D_80012D5C + an 11-word module-local static table (shared `lui at`); NCC donor.
 # Its .bss reloc is renamed func_80001184_bss by the splice (pinned to 0x80012D30 in undefined_syms_auto.txt).
 KERNEL000_1184_DONOR := build/src/kernel/kernel_ncc_1184.cpp.o
+# 598 = `while (n--) *d++ = *s++;` byte copy; NCC keeps the post-increment temps (exact).
+KERNEL000_598_DONOR := build/src/kernel/kernel_ncc_598.cpp.o
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80000598=$(KERNEL000_598_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_598_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001184=$(KERNEL000_1184_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1184_DONOR)
 # func_80005C50 = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292

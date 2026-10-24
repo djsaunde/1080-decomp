@@ -1,0 +1,32 @@
+{
+  "function_name": "func_80000598",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T02:00:07.540049+00:00",
+  "end_time": "2026-10-24T02:00:07.540070+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T02:00:07.540066+00:00",
+      "assistant_text": "plain while(n--) *d++=*s++ under NCC keeps post-inc temps",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 16,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_80000598 (0x40 / 16 words): byte copy.\n *\n * The plain `while (n--) *d++ = *s++;` over unsigned-char locals. Under cfe\n * uopt folds the post-increment / post-decrement temporaries (12 words with\n * params, 15 with locals); the edg front end materialises each one, which is\n * exactly the target: the dead `or a3,a2` count copy before the test and the\n * per-iteration `or a0,v0` / `or a3,v1` / `or a1,a2` snapshots (the old\n * \"redundant ABI-dance move\" cap). Spliced into kernel_000.c.o. */\nextern \"C\" void func_80000598(void *src, void *dst, int n) {\n    unsigned char *s = (unsigned char *)src;\n    unsigned char *d = (unsigned char *)dst;\n    while (n--) {\n        *d++ = *s++;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_ncc_598.cpp",
+    "segment": "kernel",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff 100"
+  }
+}
