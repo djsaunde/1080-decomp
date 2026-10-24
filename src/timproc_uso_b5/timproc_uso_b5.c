@@ -3106,11 +3106,10 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
             break;
         case 0:
             timproc_uso_b5_alias(arg0, NULL);
-            temp_t0 = (char *)FW(arg0, 0x3B8); /* index read first: hoists the 952 load */
             FW(arg0, 0x3CC) = 0;
             *(f32 *)((char *)arg0 + 0x480) = 0.0f;
             *(f32 *)((char *)arg0 + 0x484) = 0.0f;
-            ((int *)((char *)&D_00000000 + 0xB8))[(int)temp_t0] = 1;
+            ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1;
             break;
         case 1:
             timproc_uso_b5_alias(arg0, (char *)1);
