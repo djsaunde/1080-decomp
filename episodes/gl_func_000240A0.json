@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000240A0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T03:46:01.004710+00:00",
+  "end_time": "2026-10-24T03:46:01.004726+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T03:46:01.004722+00:00",
+      "assistant_text": "Exact match: OoT AudioLoad_AsyncLoadInner verbatim minus GetRealTableIndex and the MEDIUM_UNK branch, compiled as an IDO 7.1 -O2 donor and spliced; jumptable reloc pinned to +0xEB4.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 164,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* IDO 7.1 -O2 donor for gl_func_000240A0 (0x290 / 164 words) = OoT's\n * AudioLoad_AsyncLoadInner (load.c), the older form without\n * AudioLoad_GetRealTableIndex (id is used directly) and without the\n * MEDIUM_UNK branch. Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY;\n * the splice renames the donor-local .rodata jumptable reloc (cachePolicy\n * switch, 5 entries, 3 and 4 shared) to gl_func_000240A0_rodata, pinned to the\n * USO table at +0xEB4. gAudioCtx load-status arrays: seq 0x2C70, font 0x2C40,\n * sample 0x2C10. Blank-jal callees are gl_func_00000000; the baked jals are\n * the pinned gl_ref_000381B0 (SearchCaches), gl_ref_00038204 (GetLoadTable),\n * gl_ref_0003959C (StartAsyncLoad). */\ntypedef struct { u32 romAddr; u32 size; s8 medium; s8 cachePolicy; s16 shortData1; s16 shortData2; s16 shortData3; } gl_240A0_TableEntry;\ntypedef struct { s16 numEntries; s16 unkMediumParam; u32 romAddr; char pad[8]; gl_240A0_TableEntry entries[1]; } gl_240A0_Table;\ntypedef struct {\n    char pad0[0x2C10]; u8 sampleFontLoadStatus[0x30]; u8 fontLoadStatus[0x30]; u8 seqLoadStatus[0x80];\n} gl_240A0_Ctx;\n#define ALIGN16(val) (((val) + 0xF) & ~0xF)\nextern int D_00000000;\n#define gAudioCtx (*(gl_240A0_Ctx *)&D_00000000)\nextern int gl_func_00000000();\nextern void *gl_ref_000381B0();\nextern gl_240A0_Table *gl_ref_00038204();\nextern int gl_ref_0003959C();\n#define AudioLoad_SearchCaches gl_ref_000381B0\n#define AudioLoad_GetLoadTable gl_ref_00038204\n#define AudioLoad_StartAsyncLoad gl_ref_0003959C\n#define osSendMesg gl_func_00000000\n#define AudioHeap_AllocPermanent (void *)gl_func_00000000\n#define AudioHeap_AllocCached (void *)gl_func_00000000\n#define AudioLoad_SetSeqLoadStatus gl_func_00000000\n#define AudioLoad_SetFontLoadStatus gl_func_00000000\n#define AudioLoad_SetSampleFontLoadStatus gl_func_00000000\n\nvoid *gl_func_000240A0(s32 tableType, s32 id, s32 nChunks, s32 retData, void *retQueue) {\n    u32 size;\n    gl_240A0_Table *sampleBankTable;\n    void *ramAddr;\n    s32 medium;\n    s8 cachePolicy;\n    u32 devAddr;\n    s32 status;\n\n    switch (tableType) {\n        case 0:\n            if (gAudioCtx.seqLoadStatus[id] == 1) {\n                return NULL;\n            }\n            break;\n        case 1:\n            if (gAudioCtx.fontLoadStatus[id] == 1) {\n                return NULL;\n            }\n            break;\n        case 2:\n            if (gAudioCtx.sampleFontLoadStatus[id] == 1) {\n                return NULL;\n            }\n            break;\n    }\n\n    ramAddr = AudioLoad_SearchCaches(tableType, id);\n    if (ramAddr != NULL) {\n        status = 2;\n        osSendMesg(retQueue, retData << 0x18, 0);\n    } else {\n        sampleBankTable = AudioLoad_GetLoadTable(tableType);\n        size = sampleBankTable->entries[id].size;\n        size = ALIGN16(size);\n        medium = sampleBankTable->entries[id].medium;\n        cachePolicy = sampleBankTable->entries[id].cachePolicy;\n        devAddr = sampleBankTable->entries[id].romAddr;\n        status = 2;\n        switch (cachePolicy) {\n            case 0:\n                ramAddr = AudioHeap_AllocPermanent(tableType, id, size);\n                if (ramAddr == NULL) {\n                    return ramAddr;\n                }\n                status = 5;\n                break;\n            case 1:\n                ramAddr = AudioHeap_AllocCached(tableType, size, 1, id);\n                if (ramAddr == NULL) {\n                    return ramAddr;\n                }\n                break;\n            case 2:\n                ramAddr = AudioHeap_AllocCached(tableType, size, 0, id);\n                if (ramAddr == NULL) {\n                    return ramAddr;\n                }\n                break;\n            case 3:\n            case 4:\n                ramAddr = AudioHeap_AllocCached(tableType, size, 2, id);\n                if (ramAddr == NULL) {\n                    return ramAddr;\n                }\n                break;\n        }\n\n        AudioLoad_StartAsyncLoad(devAddr, ramAddr, size, medium, nChunks, retQueue,\n                                 (retData << 0x18) | (tableType << 0x10) | (id << 8) | status);\n        status = 1;\n    }\n\n    switch (tableType) {\n        case 0:\n            AudioLoad_SetSeqLoadStatus(id, status);\n            break;\n        case 1:\n            AudioLoad_SetFontLoadStatus(id, status);\n            break;\n        case 2:\n            AudioLoad_SetSampleFontLoadStatus(id, status);\n            break;\n    }\n\n    return ramAddr;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_240A0.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000240A0.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "Verified with rdiff --raw --pins (0 diff words) and full ROM build (byte-identical)."
+  }
+}

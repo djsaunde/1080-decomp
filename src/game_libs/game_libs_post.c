@@ -5877,183 +5877,19 @@ int gl_func_00024080(int a0, int a1) {
     return gl_ref_00037F80(a0, a1, &scratch);
 }
 
-// gl_func_000240A0 — STRUCTURAL PASS (0x290 / 164 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
-// bundle). The UNIFIED class dispatcher over the three per-class
-// readiness state-byte arrays (the gl_func_00022D68 / gl_func_00022DE0
-// / gl_func_00022E58 predicate arrays).
-//
-//   ret gl_func_000240A0(int cls, int idx, int a2, int a3) {
-//     byte st;
-//     switch (cls) {                                    // beq 0/1/2
-//       case 0:  st = *(byte*)(&D_0 + 0x2C70 + idx); break; // 00022DE0
-//       case 1:  st = *(byte*)(&D_0 + 0x2C40 + idx); break; // 00022D68
-//       case 2:  st = *(byte*)(&D_0 + 0x2C10 + idx); break; // 00022E58
-//       default: return 0;
-//     }
-//     if (st != 1) return 0;                              // gate
-//     ... per-class action using a2 / a3 ...
-//   }
-//
-// Struct-typing reference: this is the central router that the
-//   gl_func_00022D68 / 00022DE0 / 00022E58 readiness predicates are
-//   the per-class leaves of. The `cls` arg selects which slot-state
-//   byte array to consult — &D_0+0x2C70 (class 0), &D_0+0x2C40
-//   (class 1), &D_0+0x2C10 (class 2); each is the same per-resource-
-//   class table those predicates query. It gates on the slot state
-//   == 1, then performs the class-appropriate action with the a2/a3
-//   payload. Confirms the 0x2C10/0x2C40/0x2C70 arrays are one
-//   indexed-by-class family, not three unrelated tables.
-// Caps (DEFERRED): CLEAN single jr $ra. UNIFIED class dispatcher —
-//   central router for which the gl_func_00022D68 / 00022DE0 /
-//   00022E58 readiness predicates are the per-class leaves. Real-C
-//   STRUCTURAL body below per the analysis (cls switch selects state
-//   array &D_0+0x2C70 (0) / +0x2C40 (1) / +0x2C10 (2); gate on
-//   slot-state byte == 1; then per-class action with a2/a3).
-//   Byte-match deferred — class-switch / typed-state-array schedule.
-//   Name pre-checked: no extern reuse (collision-safe).
-//   gl_func_00000000 = canonical never-defined USO placeholder.
-//
-// 2026-06-06: the `cls` switch is a REAL computed jump (jr) — m2c aborts
-//   ("Unable to determine jump table"). To decode the per-class action
-//   bodies, the jumptable must be extracted (scripts/extract-uso-jumptable.py
-//   style: feed m2c .L case labels + a jtbl_ symbol). The placeholder
-//   `return gl_func_00000000(...)` below stands in for the dispatched action;
-//   finishing needs the jumptable, not a structural rewrite.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int gl_ref_000381B0(), gl_ref_00038204();
-extern int gl_func_0003959C();
-extern int D_00000000;
-/* Decoded via jumptable extraction (scripts/uso-jumptable-to-m2c.py) — the
- * type-tag (e->0x19) computed jump at &D+0xEB4 is now a switch. The two
- * fixed-addr USO thunks (jal 0x381B0 / 0x38204) stay gl_func_00000000
- * placeholders (no symbol); gl_func_0003959C / gl_func_0001CA10 are real.
- *
- * 2026-07 full re-decode vs REAL target (previous pass diffed build-vs-build):
- * 152/164 insns exact. Levers: `int c = cls` prologue copy -> s0 promotion
- * (compares stay on a0); head + tail dispatches are 3-case switches (beq-to-
- * out-of-line-arm layout, CSE'd const 1 in v0); `case 4: break;` empty
- * trailing case forces the 5-entry jumptable; b18 homed as int (sw not sb);
- * sp4C raw-then-align double store (two statements); decl order
- * sp4C,h,sp44,b18,typ,payload,sp34 + g/c/e declared AFTER = exact frame
- * (h/typ dead homes = target holes 0x48/0x3C, e at 0x30, frame 0x50).
- * TRUE RESIDUAL vs expected/ (objdump -M no-aliases, 2026-09-06 agent-g,
- * 10 non-reloc words + 4 reloc words of 164):
- *  (a) RELOC WORDS (not a C cap -- landing route): the three baked jals
- *      0C00E06C/0C00E081/0C00E567 (= 0x381B0 / 0x38204 / 0x3959C; the
- *      wrap's placeholder calls emit blank 0C000000) are the gl_ref_ extern
- *      class (docs/MATCHING_WORKFLOW.md#feedback-nonzero-baked-jal-gl-ref-
- *      callside-2026-06-22; gl_ref_00038204 / gl_ref_0003959C already pinned,
- *      gl_ref_000381B0 = 0x381B0 would be new), and the jumptable word
- *      `lw t9,0xEB4(at)` needs the table pinned at the USO's +0xEB4 -- the
- *      2E290/343F4 donor-splice recipe (own -O2 donor TU + REPLACE_FUNC_BODY +
- *      `gl_func_000240A0_rodata = 0xEB4`). Both are raw-byte-equal once
- *      spliced; do this LAST, after (b) is solved.
- *  (b) COLOURING, unsolved (7 words): in case 0 / case 3 of the typ switch
- *      the target keeps the call result RAW in v0 for the test AND the
- *      early `return h` (`beqz zero,EPI+4; lw ra` -- the copy-free return
- *      jumps past the `lw ra`) and copies it into a fresh register only for
- *      the deferred sp44 home store (`or a1,v0` in case 0 -> `sw a1,0x44`;
- *      `or v1,v0` in case 3 -> `sw v1,0x44`). The build colours the h web
- *      $v1 in BOTH cases and returns through `or v0,v1,zero`. uoptlist
- *      (-zdbug:6, partial) shows the two h webs as candidates 52/74
- *      "assigned (constrained) 2" = $v1. Plus 3 words of arg-load order
- *      before the 3959C call: target hoists `lw a1,0x44(sp)` (sp44) above
- *      `sw t1,0x18; lw a0,0x38`, consistent with sp44 being reloaded into
- *      an a1-coloured web at the merge rather than as a plain arg load.
- *      NEGATIVE (standalone harness = in-tree bytes, ~25 spellings): sp44
- *      assigned directly in cases 1/2; `if ((h = f()) == 0)`; per-case
- *      locals h0/h3 or block-scoped `int r`; `!h`; if/else inversion (+1
- *      word); `return 0` (shrinks); `register` on sp44 (frame moves) or on
- *      h / `char *h` / `unsigned h` (all lose the 0x48 dead home = h IS a
- *      plain int in the ROM); `if (1) {}` around the store (breaks frame);
- *      goto shared `return h`; `default:` for case 4; sp34 = 5 before the
- *      test; h declared after c/e. All give the same 10 words (or worse).
- *      Next: the per-case colour (a1 vs v1) suggests the copy is sp44's OWN
- *      register web, coloured by what is free at that point -- try giving
- *      case 0 a live v1/a0 interferer, or spelling the deferred store from
- *      a second variable assigned from h after the test.
- * Run 123 (agent-c): the placeholder gl_func_0001CA10 calls are BLANK imports
- * in the ROM (jal 0) -> gl_func_00000000; the two fixed-address thunks are the
- * pinned gl_ref_000381B0 / gl_ref_00038204 (baked jals). Raw diff 20 -> 10:
- * only the jumptable %lo (donor pin 0xEB4) and the case-0/3 h colouring are
- * left. Also negative: `sp44 = f(); if (sp44 == 0) return sp44;` (-1 word),
- * `if ((h = f()) == 0)`, a block-scoped copy for the store, `sp44 = h = f()`. */
+/* gl_func_000240A0 EXACT 2026-10-23 (agent-c run 141, 99.57 -> 100): OoT's
+ * AudioLoad_AsyncLoadInner, older form (no GetRealTableIndex, no MEDIUM_UNK
+ * branch), verbatim. WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in
+ * the IDO 7.1 -O2 donor unit game_libs_o2_240A0.c (164/164 words); the splice
+ * renames the donor-local .rodata jumptable reloc (cachePolicy switch, 5 entries)
+ * to gl_func_000240A0_rodata, pinned to the USO table at +0xEB4. The old NM's
+ * "case 0 / case 3 colouring" residual was the hand decode: OoT's local set
+ * (size, sampleBankTable, ramAddr, medium, s8 cachePolicy, devAddr, status) and
+ * shared case 3 / 4 give it as is. Body below is a placeholder for the splice. */
 int gl_func_000240A0(int cls, int idx, int a2, int a3, void *a4) {
-    int sp4C, h, sp44, b18, typ, payload, sp34; /* reverse-alloc: h/typ dead homes = target frame holes 0x48/0x3C */
-    char *e;
-    char *g = (char *)&D_00000000;
-    int c = cls; /* prologue `or s0,a0` — cls promoted to s0, live across calls */
-
-    switch (cls) { /* 3-case compare chain, case bodies out-of-line */
-    case 0:
-        if (*(unsigned char *)(g + 0x2C70 + idx) == 1) return 0;
-        break;
-    case 1:
-        if (*(unsigned char *)(g + 0x2C40 + idx) == 1) return 0;
-        break;
-    case 2:
-        if (*(unsigned char *)(g + 0x2C10 + idx) == 1) return 0;
-        break;
-    }
-    sp44 = gl_ref_000381B0(c);           /* jal 0x381B0 */
-    if (sp44 != 0) {
-        sp34 = 2;
-        gl_func_00000000(a4, a3 << 0x18, 0);
-        goto block_30;
-    }
-    e = (char *)(gl_ref_00038204(c) + idx * 0x10);   /* jal 0x38204 */
-    sp4C = *(int *)(e + 0x14);
-    sp4C = (sp4C + 0xF) & ~0xF;           /* double store to same slot */
-    b18 = *(signed char *)(e + 0x18);     /* sw (word) home, not sb */
-    typ = *(signed char *)(e + 0x19);     /* lb into a0 */
-    payload = *(int *)(e + 0x10);
-    sp34 = 2;
-    switch (typ) {                        /* jtbl @ &D+0xEB4 */
-    case 0:
-        sp44 = gl_func_00000000(c, idx, sp4C); /* run 131: straight into sp44 (no h) -> v0 returned as is, a1 copy for the home */
-        if (sp44 == 0) return sp44;
-        sp34 = 5;
-        break;
-    case 1:
-        h = gl_func_00000000(c, sp4C, 1, idx);
-        sp44 = h;
-        if (h == 0) return h;
-        break;
-    case 2:
-        h = gl_func_00000000(c, sp4C, 0, idx);
-        sp44 = h;
-        if (h == 0) return h;
-        break;
-    case 3:
-        h = gl_func_00000000(c, sp4C, 2, idx);
-        if (h == 0) return h;
-        sp44 = h;
-        break;
-    case 4: /* empty trailing case — forces the 5-entry jumptable */
-        break;
-    }
-    gl_func_0003959C(payload, sp44, sp4C, b18, a2, a4,
-                     (a3 << 0x18) | (c << 0x10) | (idx << 8) | sp34);
-    sp34 = 1;
-block_30:
-    switch (c) { /* compare chain on s0, arms out-of-line */
-    case 0:
-        gl_func_00000000(idx, sp34);
-        break;
-    case 1:
-        gl_func_00000000(idx, sp34);
-        break;
-    case 2:
-        gl_func_00000000(idx, sp34);
-        break;
-    }
-    return sp44;
+    volatile int ret = cls;
+    return ret;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000240A0);
-#endif
 
 /* gl_func_00024330: was 18-insn 3-function bundle. Split via
  * split-fragments.py 2026-05-08 into parent (12 insns / 0x30, 3-jal
