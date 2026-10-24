@@ -4320,12 +4320,13 @@ void game_libs_func_00022674(void) {
 // IDO materializes the base once per block (lui;addiu;lw off) and reuses it —
 // (char*)&D_00000000+off constant-folds to per-access lui;lw and diverges hard.
 // Residual is permuter territory (coloring/frame); not reached 0 here.
-#ifdef NON_MATCHING
-/* run 140: OoT's AudioLoad_DmaSampleData (load.c) nearly verbatim (85.27 -> 98.19,
- * 206 of 207 words); WrPos-first spellings of the queue-2 / queue-1 empty tests.
+/* EXACT 2026-10-24 (agent-c run 141, 98.25 -> 100): OoT's AudioLoad_DmaSampleData
+ * (load.c) verbatim with OoT's RdPos-first empty tests, once gAudioCtx is a TYPED
+ * extern struct (gl_22760_gAudioCtxT) instead of the `*(T *)&D` cast (run 140,
+ * 98.19: 206 of 207 words, the cast form needed WrPos-first spellings).
  * gAudioCtx: curAudioFrameDmaQueue 0x16BC, curAudioFrameDmaIoMsgBuf 0x17D4,
  * curAudioFrameDmaCount 0x207C; "SUPERDMA" literal = module rodata 0x1AA84
- * (gl_22760_superDma, NM-only). Left: the short-lived path's
+ * (gl_22760_superDma, pinned 0x1AA84). Run-140 residual (now gone):
  * `if (ttl == 0) { ...; RdPos1++; }` (target: beql with the increment in the delay
  * slot, one word longer) and two compare-operand / t-register orders. */
 typedef struct { u8 *ramAddr; u32 devAddr; u16 sizeUnused; u16 size; u8 unused; u8 reuseIndex; u8 ttl; } gl_22760_SampleDma;
@@ -4338,7 +4339,8 @@ typedef struct {
     u8 sampleDmaReuseQueue1RdPos; u8 sampleDmaReuseQueue2RdPos; u8 sampleDmaReuseQueue1WrPos; u8 sampleDmaReuseQueue2WrPos;
     char pad201c[0x207C - 0x201C]; s32 curAudioFrameDmaCount;
 } gl_22760_Ctx;
-#define gl_22760_gAudioCtx (*(gl_22760_Ctx *)&D_00000000)
+extern gl_22760_Ctx gl_22760_gAudioCtxT;
+#define gl_22760_gAudioCtx gl_22760_gAudioCtxT
 extern char gl_22760_superDma[];
 extern int gl_ref_00038604();
 #define AudioLoad_Dma gl_ref_00038604
@@ -4359,7 +4361,7 @@ void *gl_func_00022760(u32 devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s32 med
             dma = &gl_22760_gAudioCtx.sampleDmas[i];
             bufferPos = devAddr - dma->devAddr;
             if (0 <= bufferPos && (u32)bufferPos <= dma->size - size) {
-                if (dma->ttl == 0 && gl_22760_gAudioCtx.sampleDmaReuseQueue2WrPos != gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos) {
+                if (dma->ttl == 0 && gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos != gl_22760_gAudioCtx.sampleDmaReuseQueue2WrPos) {
                     if (dma->reuseIndex != gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos) {
                         gl_22760_gAudioCtx.sampleDmaReuseQueue2[dma->reuseIndex] =
                             gl_22760_gAudioCtx.sampleDmaReuseQueue2[gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos];
@@ -4378,7 +4380,7 @@ void *gl_func_00022760(u32 devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s32 med
             goto search_short_lived;
         }
 
-        if (gl_22760_gAudioCtx.sampleDmaReuseQueue2WrPos != gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos && arg2 != 0) {
+        if (gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos != gl_22760_gAudioCtx.sampleDmaReuseQueue2WrPos && arg2 != 0) {
             dmaIndex = gl_22760_gAudioCtx.sampleDmaReuseQueue2[gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos];
             gl_22760_gAudioCtx.sampleDmaReuseQueue2RdPos++;
             dma = gl_22760_gAudioCtx.sampleDmas + dmaIndex;
@@ -4410,7 +4412,7 @@ void *gl_func_00022760(u32 devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s32 med
     }
 
     if (!hasDma) {
-        if (gl_22760_gAudioCtx.sampleDmaReuseQueue1WrPos == gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos) {
+        if (gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos == gl_22760_gAudioCtx.sampleDmaReuseQueue1WrPos) {
             return NULL;
         }
         dmaIndex = gl_22760_gAudioCtx.sampleDmaReuseQueue1[gl_22760_gAudioCtx.sampleDmaReuseQueue1RdPos++];
@@ -4430,9 +4432,6 @@ void *gl_func_00022760(u32 devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s32 med
 }
 #undef gl_22760_gAudioCtx
 #undef AudioLoad_Dma
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00022760);
-#endif
 
 /* gl_func_00022A9C EXACT 2026-10-23 (agent-c run 140, 79.83 -> 100): OoT's
  * AudioLoad_InitSampleDmaBuffers (load.c) with the older (SM64-era) spellings:
