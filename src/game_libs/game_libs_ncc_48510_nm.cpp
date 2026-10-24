@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23; if (arg0) {} after the temp_t8 load from a parameter-only fz sweep; round 2: if (arg4) {} after the temp_a1_2 vertex address, 85.28).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23; if (arg0) {} after the temp_t8 load from a parameter-only fz sweep; round 2: if (arg4) {} after the temp_a1_2 vertex address, 85.28;
+ * run 137: the vtable this-adjust at +8 is a short (target lh) and the id copy is a u16 load / store, 85.28 -> 86.2).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -54,7 +55,7 @@ extern "C" void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, 
                 if (FW(arg0, 0x4) >= (FW(arg0, 0x590) - 1)) {
                     temp_a1 = (char *)(FW(arg0, 0x598));
                     var_s1 = 0;
-                    ((GP_00048510)FW(temp_a1, 0xC))(FW(temp_a1, 0x8) + (int)arg0, temp_a1);
+                    ((GP_00048510)FW(temp_a1, 0xC))(*(s16 *)(temp_a1 + 0x8) + (int)arg0, temp_a1);
                     gl_func_00034458(arg0);
                     var_s2 = arg1;
                     var_s3 = &sp6C;
@@ -72,7 +73,7 @@ extern "C" void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, 
                 FW(temp_a1_2, 0x4) = (s32) FW(var_s2, 0x4);
                 FW(temp_a1_2, 0x8) = (s32) FW(var_s2, 0x8);
                 FW(temp_a1_2, 0xC) = (s32) FW(var_s2, 0xC);
-                FW(((int)arg0 + (FW(arg0, 0x4) * 2)), 0x4C4) = (u16) *(int*)((int)arg4 + (var_s1 * 2));
+                *(u16 *)(arg0 + FW(arg0, 0x4) * 2 + 0x4C4) = *(u16 *)((int)arg4 + (var_s1 * 2));
                 FW(arg0, 0x4) = (s32) (FW(arg0, 0x4) + 1);
             }
             var_t0 = FW(arg0, 0x594);
