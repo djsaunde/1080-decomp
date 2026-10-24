@@ -728,7 +728,7 @@ void game_uso_func_00000B3C(char *arg0) {
             }
         }
     }
-    f1 = 1.0f;
+    f1 = 1.0; /* double literal: keeps the target mul.s by 1.0f (a 1.0f literal folds it; kit LXV) */
     game_uso_func_00000000_fp(state,
         (f1 * (f32) *(s32 *)(s + 0x260)) / (f32) *(s32 *)((char *)kf + 0x28));
     switch (*(s32 *)(seg + 0x10)) {
