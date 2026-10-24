@@ -7393,8 +7393,7 @@ void timproc_uso_b5_func_0000B624(char *arg0) {
         M2C_FIELD(arg0, f32 *, 0xFC) = 0.0f;
         M2C_FIELD(arg0, f32 *, 0x100) = 1.0f;
         ang = M2C_FIELD(arg0, f32 *, 0x114);
-        sp48.f8 = 0.0f;
-        sp48.f4 = 0.0f;
+        sp48.f8 = 0.0f; sp48.f4 = 0.0f;
         sp48.f0 = 1.0f;
         timproc_uso_b5_func_071AE0(sp28, &sp48, ang);
         ang = M2C_FIELD(arg0, f32 *, 0x110);
