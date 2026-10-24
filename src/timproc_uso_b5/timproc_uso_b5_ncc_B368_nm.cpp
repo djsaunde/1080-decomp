@@ -97,9 +97,9 @@ extern "C" void timproc_uso_b5_func_0000B368(char *arg0) {
         s64.f8 = ang * s240.f8;
         c76.v = s64;
         s224 = c76.v;
-        M2C_FIELD(arg0, f32 *, 0xDC) = M2C_FIELD(arg0, f32 *, 0xDC) + s224.f0;
-        M2C_FIELD(arg0, f32 *, 0xE0) = M2C_FIELD(arg0, f32 *, 0xE0) + s224.f4;
-        M2C_FIELD(arg0, f32 *, 0xE4) = M2C_FIELD(arg0, f32 *, 0xE4) + s224.f8;
+        M2C_FIELD(arg0, f32 *, 0xDC) = s224.f0 + M2C_FIELD(arg0, f32 *, 0xDC);
+        M2C_FIELD(arg0, f32 *, 0xE0) = s224.f4 + M2C_FIELD(arg0, f32 *, 0xE0);
+        M2C_FIELD(arg0, f32 *, 0xE4) = s224.f8 + M2C_FIELD(arg0, f32 *, 0xE4);
         timproc_uso_b5_func_06970C_r(M2C_FIELD(arg0, void **, 0x108), M2C_FIELD(arg0, s32 *, 0x124));
         timproc_uso_b5_func_054CAC(arg0);
         M2C_FIELD(arg0, s32 *, 0x12C) = 1;
