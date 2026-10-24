@@ -123,10 +123,11 @@ GLOBAL_ASM("src/libultra/os/getsr.s")
 /* func_80002DF0 = osWritebackDCache (handwritten cache ops). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/writebackdcache.s")
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002E70);
+/* func_80002E70 = __osExceptionPreamble (first half), real source in src/libultra/os/exceptasm_preamble.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/exceptasm_preamble.s")
 
-/* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80002E78);
+/* func_80002E78 = exception vector stubs + rdb/KMC front end of __osException, real source in src/libultra/os/exceptasm_rdb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/exceptasm_rdb.s")
 
 /* func_80002F78 / func_800030D0 merged into func_80002E78.s as alabel
  * alternative entries (2026-08-22): one contiguous handwritten exception/rdb
@@ -135,11 +136,18 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80002E78);
  * forward into func_800031F0's labels. jal callers (func_80002530,
  * func_80004E50, func_800058C0) resolve via the global alabel symbols. */
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800031D0);
+/* func_800031D0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_2.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/exceptasm_rdb_2.s")
 
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800031E0);
+/* func_800031E0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_3.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+GLOBAL_ASM("src/libultra/os/exceptasm_rdb_3.s")
 
-/* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
+/* func_800031F0: the __osException core (savecontext, interrupt dispatch,
+ * send_mesg, __osEnqueueAndYield, __osEnqueueThread, __osPopThread,
+ * __osDispatchThread, __osCleanupThread; libreultra os/exceptasm.s) -- but its
+ * last 0x3C bytes are the compiled-C __osDequeueThread (libultra thread.c), so
+ * it stays INCLUDE_ASM until that boundary is split (the C part must come
+ * from C, the rest can then move to src/libultra/os/). */
 INCLUDE_ASM("asm/nonmatchings/kernel", func_800031F0);
 
 /* func_80003C30 = osDestroyThread (libultra destroythread.c), IDO 7.1 -O1.
