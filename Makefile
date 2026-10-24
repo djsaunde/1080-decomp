@@ -1595,6 +1595,9 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_5534C_DONOR := build/src/game_libs/game_libs_ncc_5534C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005534C=$(GAMELIBS_5534C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5534C_DONOR)
+GAMELIBS_558A0_DONOR := build/src/game_libs/game_libs_ncc_558A0.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000558A0=$(GAMELIBS_558A0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_558A0_DONOR)
 # 4E424 = NM C body lifted under NCC + if (param) {} (agent-c run 134, cfe 88.33 -> 90.98). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4E424_NM_DONOR := build/src/game_libs/game_libs_ncc_4E424_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E424=$(GAMELIBS_4E424_NM_DONOR)

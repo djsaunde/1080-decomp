@@ -23893,7 +23893,6 @@ void gl_func_0005532C(void) {
  * (p = *s.pp; *s.pp = p + 1; w = *p) and the mask is `s.w &= 0xFFFF` (a
  * `s.w = w & 0xFFFF` lets uopt drop the preceding s.w = w store).
  * Residual: p colours v0 and the s.pp reload a temp (target v1 / v0). */
-typedef struct { int **pp; int w; int x; int y; } St5534C;
 /* EXACT 2026-10-23 (agent-g run 142) via an IDO 7.1 NCC (C++) donor:
  * src/game_libs/game_libs_ncc_5534C.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (the cursor step is an inline member `int next() { return
@@ -23990,7 +23989,6 @@ void game_libs_func_000553E8(int *a0) {
 void gl_func_00055470(int *s) {
 }
 
-#ifdef NON_MATCHING
 /* gl_func_000558A0: 31-insn va_list-walking dispatch loop (0x7C, frame 0x20).
  *
  * Decoded structure (raw-word disasm):
@@ -24022,25 +24020,43 @@ void gl_func_00055470(int *s) {
  * parameter shape as gl_func_0005534C (no leading fp call). Residual is
  * the same v0/v1 swap (p in v0, target v1); post-increment, a named pp
  * copy and dead while(0) appearances do not move it. */
-void gl_func_000558A0(St5534C s) {
-    int *p;
-    int w;
-    p = *s.pp;
-    *s.pp = p + 1;
-    w = *p;
-    s.w = w;
-    while (w != 0) {
-        s.w &= 0xFFFF;
-        gl_func_00000000(&s);
-        p = *s.pp;
-        *s.pp = p + 1;
-        w = *p;
-        s.w = w;
-    }
+/* EXACT 2026-10-23 (agent-g run 142) via an IDO 7.1 NCC (C++) donor:
+ * src/game_libs/game_libs_ncc_558A0.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder (the cursor step is an inline member `int next() { return
+ * *(*pp)++; }`, kit LXIII). The placeholder only reserves the 31-word slot;
+ * the splice drops its text. */
+void gl_func_000558A0(char *arg0) {
+    volatile int *p = (volatile int *)arg0;
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    p[7] = 0;
+    p[8] = 0;
+    p[9] = 0;
+    p[10] = 0;
+    p[11] = 0;
+    p[12] = 0;
+    p[13] = 0;
+    p[14] = 0;
+    p[15] = 0;
+    p[16] = 0;
+    p[17] = 0;
+    p[18] = 0;
+    p[19] = 0;
+    p[20] = 0;
+    p[21] = 0;
+    p[22] = 0;
+    p[23] = 0;
+    p[24] = 0;
+    p[25] = 0;
+    p[26] = 0;
+    p[27] = 0;
+    p[28] = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000558A0);
-#endif
 
 /* gl_func_0005591C: 88-insn (0x160) -- EXACT 2026-10-15 (96.7 -> 100).
  * Two 0x4C-byte struct block-copies (IDO 3-word-unrolled copy loops):
