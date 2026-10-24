@@ -1658,11 +1658,11 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     int digit;
     int idx;
 
+    a3 = *(char **)(arg0 + 0xD4); /* run 162: read before the 1.0f stores -- the target keeps arg0 in a0 for this load and copies it to s4 late (94.07 -> 97.56) */
     spA4 = 1.0f;
     spA8 = 1.0f;
     spAC = 1.0f;
     spB0 = 1.0f;
-    a3 = *(char **)(arg0 + 0xD4);
     switch (*(int *)(a3 + 0x7E4)) {
     case 1:
         held = a3 + 0x490;
