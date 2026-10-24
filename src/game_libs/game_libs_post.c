@@ -5912,97 +5912,41 @@ void gl_func_00023BDC(s32 arg0, char *arg1, int arg2) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023BDC);
 #endif
 
-// gl_func_00023E60 — STRUCTURAL PASS (0x144 / 81 words, no episode).
-// Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
-// (named fn + 1 trailing helper) — deferred USO re-split. The named
-// leading fn is a buffer-allocate + subsystem constructor.
-//
-//   ret gl_func_00023E60(int a0, int a1, int sz) {
-//     int n   = (sz + 0xF) & ~0xF;                       // align16
-//     void *b = (*alloc)(n);                              // jal 0 USO
-//     S *t3 = &D_1DD4;
-//     S *t4 = &D_2ACC0;                                   // big table
-//     S *t6 = &D_1DF0;
-//     if (n < 0x400) n = 0x400;                            // clamp min
-//     jal 0x38604(b, 1, 0, a0, …, n, t3, t4, t6);          // 0x0C00E181
-//     ...
-//   }
-//
-// Struct-typing reference: a constructor that sizes (request rounded
-//   up to a 16-byte multiple, floored at 0x400), allocates the
-//   backing buffer via a USO-relocated allocator (`jal 0` slot), and
-//   wires up three fixed base tables — &D_1DD4, &D_1DF0 and the large
-//   &D_2ACC0 (a code/data blob) — before handing everything to the
-//   fixed init routine 0x0C00E181 (≈0x38604) along with stacked
-//   config args. A subsystem object bring-up in the game_libs
-//   resource family (companion to the gl_func_00022A9C arena init /
-//   gl_func_0001FD98 alloc helpers).
-// Caps (DEFERRED): single jr $ra (the "2-jr bundle" note is STALE;
-//   .s is 0x144/77 words, ONE function). Subsystem object bring-up
-//   (companion to gl_func_00022A9C arena init / gl_func_0001FD98
-//   alloc). Real-C STRUCTURAL body below per the analysis (size16 =
-//   (sz+0xF)&~0xF floored at 0x400; jal-0 USO-reloc alloc(n); wire
-//   three fixed base tables &D_1DD4 / &D_1DF0 / &D_2ACC0; hand to
-//   fixed init 0x38604(b,1,0,a0,..,n,t3,t4,t6)). Byte-match deferred
-//   — placeholder jal-0 alloc + fixed init need USO reloc infra.
-//   Name pre-checked: no extern reuse (collision-safe).
-//   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-/* Whole-body decode 2026-06-01 (prior body had no loop + missing a3). Chunked
- * DMA: n=(sz+15)&~15; gl(a1,n); then process n in 1024-byte chunks —
- * gl_38604(D+0x1DF0, 1, 0, src, dst, 1024, D+0x1DD4, a3, D+0x2ACC0) + gl(D+0x1DD4,
- * 0, 1), advancing src/dst by 1024; a final partial chunk uses count=n and
- * tag D+0x2ACCC.
- * 2026-07-18 pass (68.5->71.2): (a) a1-before-a0 capture order lands s2=a0/s1=a1
- * per target; (c) missing-return drop kills or-v0 + gives jr/addiu-sp tail.
- * RESIDUAL CAP (probed, all inert): target materializes the three lui/addiu
- * base pairs ONCE in the entry block between jal-0 and the sltiu guard; uopt
- * ALWAYS sinks address-const defs into the loop preheader + remats s3/s6 in
- * the tail join block (+4 insns), regardless of def placement (above/below the
- * first call), distinct placeholder externs (objdiff-relaxed, fuzzy-identical
- * to folded same-sym), if(1){} BB wrap, or inline-expression spelling. Coupled
- * residual: align expr lives in an s3 CSE-temp (guard reads temp) + or s0,s3
- * copy; two-def split of the align expr doesn't break it. Entry-block const
- * placement = uopt const-sink canonicalization cap.
- * 2026-10-14 agent-c run 63 (70.9 -> 74.1): the third table is D+0x1ACC0 /
- * 0x1ACCC, not 0x2ACC0 (target `lui s4,2; addiu s4,-21312` is the carry form of
- * 0x1ACC0). Rewritten through a typed per-site view D_23E60_g (pinned 0) with
- * member-array addresses as call args, params advanced in place, void return.
- * Residual unchanged in kind: the (sz+15)&~15 value lives in an s3 temp + `or s0,s3`
- * (target computes straight into s0), and the sltiu guard sits before the three
- * lui/addiu base pairs (target: bases first, guard after). Probed inert: u32 n,
- * if+do-while, assignment inside the call arg, two-statement n. */
+/* gl_func_00023E60 EXACT 2026-10-23 (agent-c run 140, 74.49 -> 100): OoT's
+ * AudioLoad_SyncDma (load.c) verbatim -- `while (1) { if (size < 0x400) break; ...}`
+ * with msgQueue / ioMesg locals (gAudioCtx.syncDmaQueue at +0x1DD4, syncDmaIoMesg
+ * at +0x1DF0). The two "FastCopy" literals are module rodata at 0x1ACC0 / 0x1ACCC
+ * (pinned externs; real literals would add rodata to this TU). AudioLoad_Dma =
+ * gl_func_00038604; Audio_InvalDCache / osRecvMesg are the blank USO calls. */
+typedef struct { char pad[0x18]; } gl_23E60_MQ;
+typedef struct { char pad[0x18]; } gl_23E60_IoMesg;
+typedef struct { char pad0[0x1DD4]; gl_23E60_MQ syncDmaQueue; char pad1dec[4]; gl_23E60_IoMesg syncDmaIoMesg; } gl_23E60_Ctx;
+extern char gl_23e60_fastCopy1[];  /* "FastCopy" at 0x1ACC0, pinned */
+extern char gl_23e60_fastCopy2[];  /* "FastCopy" at 0x1ACCC, pinned */
 extern int gl_func_00038604();
-typedef struct {
-    char p0[0x1DD4];
-    char t1DD4[0x1DF0 - 0x1DD4];
-    char t1DF0[0x1ACC0 - 0x1DF0];
-    char t1ACC0[0xC];
-    char t1ACCC[4];
-} gl_23E60_GS;
-extern gl_23E60_GS D_23E60_g;
-void gl_func_00023E60(int a0, int a1, int sz, int a3) {
-    int n;
+void gl_func_00023E60(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
+    gl_23E60_MQ *msgQueue = &((gl_23E60_Ctx *)&D_00000000)->syncDmaQueue;
+    gl_23E60_IoMesg *ioMesg = &((gl_23E60_Ctx *)&D_00000000)->syncDmaIoMesg;
+    size = ((size) + 0xF) & ~0xF;
 
-    n = (sz + 0xF) & ~0xF;
-    gl_func_00000000(a1, n);
-    while ((u32)n >= 0x400) {
-        gl_func_00038604(D_23E60_g.t1DF0, 1, 0, a0, a1, 0x400, D_23E60_g.t1DD4, a3, D_23E60_g.t1ACC0);
-        gl_func_00000000(D_23E60_g.t1DD4, 0, 1);
-        n -= 0x400;
-        a0 += 0x400;
-        a1 += 0x400;
+    gl_func_00000000(ramAddr, size);
+
+    while (1) {
+        if (size < 0x400) {
+            break;
+        }
+        gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, 0x400, msgQueue, medium, gl_23e60_fastCopy1);
+        gl_func_00000000(msgQueue, NULL, 1);
+        size -= 0x400;
+        devAddr += 0x400;
+        ramAddr += 0x400;
     }
-    if (n != 0) {
-        gl_func_00038604(D_23E60_g.t1DF0, 1, 0, a0, a1, n, D_23E60_g.t1DD4, a3, D_23E60_g.t1ACCC);
-        gl_func_00000000(D_23E60_g.t1DD4, 0, 1);
+
+    if (size != 0) {
+        gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, size, msgQueue, medium, gl_23e60_fastCopy2);
+        gl_func_00000000(msgQueue, NULL, 1);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00023E60);
-#endif
 
 /* Empty 4-arg stub (byte-identical sibling of matched _00024E14,
  * timproc_uso_b5_func_0000ABE0). C-emit: sw a0,0(sp); sw a1,4(sp);

@@ -4984,3 +4984,5 @@ gl_aud_sEnvMixerOp = 0x0001A2D0;  /* gl_func_0001EF20: sEnvMixerOp module data w
 gl_aud_sEnvMixerLeftHaasDmemDests = 0x0001A2D4;  /* gl_func_0001EF20: sEnvMixerLeftHaasDmemDests */
 gl_aud_sEnvMixerRightHaasDmemDests = 0x0001A2D8;  /* gl_func_0001EF20: sEnvMixerRightHaasDmemDests */
 gl_aud_sEnvMixerDefaultDmemDests = 0x0001A2DC;  /* gl_func_0001EF20: sEnvMixerDefaultDmemDests */
+gl_23e60_fastCopy1 = 0x0001ACC0;  /* gl_func_00023E60: first "FastCopy" literal (module rodata, lui 2 / addiu -0x5340 baked) */
+gl_23e60_fastCopy2 = 0x0001ACCC;  /* gl_func_00023E60: second "FastCopy" literal */
