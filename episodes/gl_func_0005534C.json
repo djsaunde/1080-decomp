@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0005534C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T00:02:31.499629+00:00",
+  "end_time": "2026-10-24T00:02:31.499651+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T00:02:31.499647+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 39,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0005534C (0x9C / 39 words): command\n * stream walker that calls the first command word as a function, then\n * dispatches the rest (low 16 bits) through the shared handler. Same\n * by-value St / inline member cursor step as gl_func_000558A0\n * (`int next() { return *(*pp)++; }`), which gives the target's p = v1 /\n * s.pp reload = v0 colouring under NCC (kit LXIII).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-g run 142). */\nextern \"C\" int gl_func_00000000(...);\nstruct St5534C {\n    int **pp;\n    int w;\n    int x;\n    int y;\n    int next() { return *(*pp)++; }\n};\nextern \"C\" void gl_func_0005534C(St5534C s) {\n    int w;\n    w = s.next();\n    s.w = w;\n    ((int (*)(St5534C *))w)(&s);\n    w = s.next();\n    s.w = w;\n    while (w != 0) {\n        s.w &= 0xFFFF;\n        gl_func_00000000(&s);\n        w = s.next();\n        s.w = w;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5534C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0005534C.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom + refresh-report 100"
+  }
+}

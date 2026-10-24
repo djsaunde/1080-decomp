@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000558A0",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T00:02:31.658318+00:00",
+  "end_time": "2026-10-24T00:02:31.658343+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T00:02:31.658338+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 31,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000558A0 (0x7C / 31 words): command\n * stream walker. The by-value parameter s = {pp, w, ...} is homed at sp+32\n * and &s goes to every callee; each command word is stored into s.w.\n * The cursor step is an inline MEMBER `int next() { return *(*pp)++; }`:\n * expanded under NCC it gives the target's colouring (cursor p in v1, the\n * s.pp reload in v0). Every cfe / NCC spelling of the step as statements\n * (p = *s.pp; *s.pp = p + 1; w = *p) or a free inline function puts p in\n * v0 (kit LXIII).\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-g run 142). */\nextern \"C\" int gl_func_00000000(...);\nstruct St558A0 {\n    int **pp;\n    int w;\n    int x;\n    int y;\n    int next() { return *(*pp)++; }\n};\nextern \"C\" void gl_func_000558A0(St558A0 s) {\n    int w;\n    w = s.next();\n    s.w = w;\n    while (w != 0) {\n        s.w &= 0xFFFF;\n        gl_func_00000000(&s);\n        w = s.next();\n        s.w = w;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_558A0.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000558A0.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom + refresh-report 100"
+  }
+}
