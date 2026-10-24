@@ -13113,7 +13113,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             temp_v0_2 = temp_v1;
             sp78 = temp_f18;
             var_f4 = (f32) (u32) temp_v0_2;
-            sp78 = temp_f18 * sp64;
+            sp78 = sp64 * temp_f18;
             temp_f10_2 = var_f4 * sp60;
             var_t9 = (u32) temp_f10_2; /* recomposed (u32)float */
             *(u8 *)((char *)(arg0) + 0x26) = (u8) (((s32) *(u8 *)((char *)(arg0) + 0x26) / 2) + ((s32) (var_t9 & 0xFF) / 2));
