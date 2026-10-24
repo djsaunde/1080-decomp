@@ -15993,95 +15993,114 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 #ifdef NON_MATCHING
 
 
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000334E8)();
+/* 2026-10-24 agent-c run 147: SIBLING PORT of gl_func_00033BE4 (scan ratio 0.94).
+ * 334E8 is 33BE4 with the source fixed to an 8-byte stack buffer (filled by the
+ * first callback, template 0x1E280), length 8 and no flag gate. buf declared
+ * first (target home sp+96); one result temp shared (avail) gives frame 104. */
+extern s32 gl_d_334e8_8a, gl_d_334e8_8b, gl_d_334e8_8c, gl_d_334e8_8d,
+           gl_d_334e8_8e, gl_d_334e8_8f, gl_d_334e8_8g, gl_d_334e8_8h;
+extern s32 gl_d_334e8_14a;
+extern s32 gl_d_334e8_24a;
+extern s32 gl_d_334e8_28a, gl_d_334e8_28b, gl_d_334e8_28c, gl_d_334e8_28d,
+           gl_d_334e8_28e, gl_d_334e8_28f, gl_d_334e8_28g, gl_d_334e8_28h;
+extern s32 gl_d_334e8_2ca, gl_d_334e8_2cb, gl_d_334e8_2cc;
+extern u8 gl_d_334e8_dst;
+extern u8 gl_ref_0001E280;
+extern u8 gl_ref_0001E29C;
+extern u8 gl_ref_0001E2B0;
 void gl_func_000334E8(void) {
-    u8 sp60;
-    s32 temp_a0;
-    s32 temp_a2;
-    s32 temp_a2_2;
-    s32 temp_t3;
-    u32 temp_v0;
-    u32 temp_v1;
-    u32 var_s2;
-    u32 var_s4;
-    u8 *var_s5;
-    u8 *var_v1;
-    u8 temp_t9;
-    char *var_a0;
+    u8 buf[8];
+    s32 src;
+    u8 *base;
+    u32 chunk;
+    s32 rem;
+    s32 mis;
+    u32 avail;
+    u32 cnt;
+    s32 cpsrc;
+    u8 *cpdst;
+    s32 sent;
 
-    gl_func_0001CA10(&sp60, 0x1E280);
-    var_s5 = &sp60;
-    var_s4 = 8;
-    gl_func_0001CA10(0);
-    do {
-        var_s2 = var_s4;
-        temp_a0 = (s32) var_s5 & 7;
-        temp_v0 = *(s32 *)0x2C - *(s32 *)8;
-        if (temp_v0 < var_s4) {
-            var_s2 = temp_v0;
-        }
-        if (var_s2 != 0) {
-            if (temp_a0 != 0) {
-                temp_v1 = 8 - temp_a0;
-                temp_v0 = 0;
-                if (temp_v1 < var_s2) {
-                    var_s2 = temp_v1;
+    gl_func_00000000(buf, &gl_ref_0001E280);
+    base = (u8 *)&D_00000000;
+    src = (s32)buf;
+    rem = 8;
+    gl_func_00000000(base);
+    {
+        sent = 0x12340002;
+    top:
+        chunk = rem;
+        mis = src & 7;
+        avail = gl_d_334e8_2ca - gl_d_334e8_8a;
+        chunk = (avail < (u32)rem) ? avail : chunk;
+        if (chunk != 0) {
+            if (mis != 0) {
+                if ((u32)(8 - mis) < chunk) {
+                    chunk = 8 - mis;
                 }
-                if (var_s2 != 0) {
-                    var_a0 = 0;
-                    var_v1 = var_s5;
+                cnt = 0;
+                if (chunk != 0) {
+                    cpdst = &gl_d_334e8_dst;
+                    cpsrc = src;
                     do {
-                        temp_t9 = *(u8 *)var_v1;
-                        temp_v0 += 1;
-                        var_v1 += 1;
-                        var_a0 += 1;
-                        *(u8 *)(var_a0 - 0x1) = temp_t9;
-                    } while (temp_v0 < var_s2);
+                        *cpdst = *(u8 *)cpsrc;
+                        cnt += 1;
+                        cpsrc += 1;
+                        cpdst += 1;
+                    } while (cnt < chunk);
                 }
-                gl_func_0001CA10(0, *(s32 *)8, 0, var_s2);
+                gl_func_00000000(base, gl_d_334e8_8b, base, chunk);
             } else {
-                gl_func_0001CA10(0, *(s32 *)8, (s32) var_s5, var_s2);
+                gl_func_00000000(base, gl_d_334e8_8c, src, chunk);
             }
-            temp_a2 = *(s32 *)8 + var_s2;
-            *(s32 *)8 = temp_a2;
-            gl_func_0001CA10(0, *(s32 *)0x28, temp_a2);
+            avail = gl_d_334e8_8d + chunk;
+            gl_d_334e8_8e = avail;
+            gl_func_00000000(base, gl_d_334e8_28a, avail);
         }
-        temp_t3 = *(s32 *)8;
-        if (*(s32 *)0x2C == temp_t3) {
-            *(s32 *)0x14 = temp_t3;
-            gl_func_0001CA10(0, *(s32 *)0x28 + 0xC, temp_t3);
-            if (*(s32 *)0x2C != *(s32 *)8) {
-                gl_func_0001CA10(0, 0x1E29C);
+        avail = gl_d_334e8_8f;
+        if (gl_d_334e8_2cb == avail) {              /* hit segment end */
+            gl_d_334e8_14a = avail;
+            gl_func_00000000(base, gl_d_334e8_28b + 12, avail);
+            if (gl_d_334e8_2cc != gl_d_334e8_8g) {
+                gl_func_00000000(base, &gl_ref_0001E29C);
             }
-            gl_func_0001CA10(0, *(s32 *)0x28 + 8, 0x12340001);
-            if (gl_func_0001CA10(0, *(s32 *)0x28 + 8) != 0x12340002) {
-                do {
-                    gl_func_0001CA10(0);
-                } while (gl_func_0001CA10(0, *(s32 *)0x28 + 8) != 0x12340002);
+            gl_func_00000000(base, gl_d_334e8_28c + 8, 0x12340001);   /* kick DMA */
+            if (gl_func_00000000(base, gl_d_334e8_28d + 8) == sent) {
+                goto spun1;
             }
-            temp_a2_2 = *(s32 *)0x24;
-            *(s32 *)8 = temp_a2_2;
-            gl_func_0001CA10(0, *(s32 *)0x28, temp_a2_2);
-            gl_func_0001CA10(0, *(s32 *)0x28 + 8, 0x12340003);
-            if (gl_func_0001CA10(0, *(s32 *)0x28 + 8) != 0x12340002) {
-                do {
-                    gl_func_0001CA10(0);
-                } while (gl_func_0001CA10(0, *(s32 *)0x28 + 8) != 0x12340002);
+        spin1:
+            gl_func_00000000(base);
+            if (gl_func_00000000(base, *(volatile s32 *)&gl_d_334e8_28e + 8) != sent) {
+                goto spin1;
             }
+        spun1:
+            avail = gl_d_334e8_24a;                 /* rebase to saved start */
+            gl_d_334e8_8h = avail;
+            gl_func_00000000(base, gl_d_334e8_28f, avail);
+            gl_func_00000000(base, gl_d_334e8_28g + 8, 0x12340003);   /* kick second DMA */
+            if (gl_func_00000000(base, gl_d_334e8_28h + 8) == sent) {
+                goto spun2;
+            }
+        spin2:
+            gl_func_00000000(base);
+            if (gl_func_00000000(base, *(volatile s32 *)&gl_d_334e8_28e + 8) != sent) {
+                goto spin2;
+            }
+        spun2:;
         }
-        var_s4 -= var_s2;
-        var_s5 += var_s2;
-        if ((s32) var_s4 < 0) {
-            gl_func_0001CA10(0, 0x1E2B0);
+        rem -= chunk;
+        src += chunk;
+        if (rem < 0) {
+            gl_func_00000000(base, &gl_ref_0001E2B0);   /* underflow diag */
         }
-        if (var_s4 != 0) {
-            gl_func_0001CA10(0);
+        if (rem != 0) {
+            gl_func_00000000(base);
         }
-    } while (var_s4 != 0);
-    gl_func_0001CA10(0);
+        if (rem != 0) {
+            goto top;
+        }
+    }
+    gl_func_00000000(base);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000334E8);
