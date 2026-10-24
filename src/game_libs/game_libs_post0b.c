@@ -202,28 +202,35 @@ int gl_func_00034458() {
 //   docs/N64_FORENSICS.md#feedback-game-libs-gl-ref-data). Real-C
 //   STRUCTURAL body below per the analysis. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
+/* 2026-10-24 agent-c run 147 (34458 sibling recipe): the loop is infinite --
+ * B34 = poll() is stored BEFORE the zero test (target sw in the beqz delay)
+ * and re-read after every call; the slot global is a pinned symbol at
+ * 0x3BB34 (s1 = &slot, lw 0(s1)), the vtable record a distinct base-0
+ * extern. Homes 92/84/80 = sp5C, s0, out pair in that declaration order.
+ * LEFT: one extra nop before the unreachable epilogue (320 vs 316 bytes). */
 #ifdef NON_MATCHING
+extern char *D_34548_obj;
+extern char *D_34548_slot;
+#define SLOT_34548 D_34548_slot
 void gl_func_00034548(void *a0) {
-    char *g = (char *)&D_00000000;
-    char *item;
+    int sp5C;
     char *s0;
-    int sp50, sp54, sp5C;
+    int sp54, sp50;
     int r5;
-    (void)a0;
-    gl_func_00000000(0xC, g + 0x3BB18, 0x10);
-    *(int *)(g + 0x3BB38) = 0;
+    gl_func_00000000(0xC, (char *)&D_00000000 + 0x3BB18, 0x10);
+    *(int *)((char *)&D_00000000 + 0x3BB38) = 0;
     for (;;) {
-        do {
-            gl_func_00000000(g + 0x3BB18, &sp5C, 1);
-            item = (char *)gl_func_00000000();
-        } while (item == 0);
-        *(int *)(g + 0x3BB34) = (int)item;
-        s0 = item + 0x20;
-        (*(int (**)())(*(char **)(*(char **)g + 0x70)))(*(int *)(s0 + 0xFC), &sp50, &sp54);
-        gl_func_00000000(g + 0x1E424);
-        gl_func_00000000(item);
-        r5 = gl_func_00000000(*(int *)(item + 0x14));
-        gl_func_00000000(g + 0x1E438, sp50, sp54, *(int *)(s0 + 0xFC), r5, *(int *)(item + 0x14));
+        gl_func_00000000((char *)&D_00000000 + 0x3BB18, &sp5C, 1);
+        if ((SLOT_34548 = (char *)gl_func_00000000()) == 0) {
+            continue;
+        }
+        s0 = SLOT_34548 + 0x20;
+        (*(int (**)())(D_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
+        gl_func_00000000((char *)&D_00000000 + 0x1E424);
+        gl_func_00000000(SLOT_34548);
+        r5 = gl_func_00000000(*(int *)(SLOT_34548 + 0x14));
+        gl_func_00000000((char *)&D_00000000 + 0x1E438, sp50, sp54, *(int *)(s0 + 0xFC), r5,
+                         *(int *)(SLOT_34548 + 0x14));
     }
 }
 #else
