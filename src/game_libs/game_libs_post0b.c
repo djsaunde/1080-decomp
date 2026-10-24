@@ -19499,35 +19499,37 @@ int gl_func_0004E3F4(char *a0) {
     return gl_ref_0006240C(a0 + 0x10);
 }
 
+/* 2026-10-24 agent-c run 147: the target reuses PARAMETER registers -- x1 -= x0
+ * (a3 -> f20), dy computed into y0's f14 web, the smaller value written back to
+ * x0 (f12) and the result into zero's f16 (`zero` keeps one mtc1 for all three
+ * compares). 168-variant role grid best; 90.98 (NCC NM donor, retired) -> 93.22,
+ * 51 -> 50 words (target 49). */
 #ifdef NON_MATCHING
-/* gl_func_0004E424: fast 3D distance estimate between (x0,y0,z0) and
- * (x1,y1,z1): abs of each delta, then max + (sum of the other two) / 2.
- * Re-decoded 2026-10-17 agent-c run 105 (old body was a 2-arg stub). */
 float gl_func_0004E424(float x0, float y0, float z0, float x1, float y1, float z1) {
-    float dy, dz;
-    float a, b, c;
+    float b;
+    float dz;
     float zero = 0.0f;
 
-    x1 -= x0;
-    dy = y1 - y0;
+    x1 = x1 - x0;
+    y0 = y1 - y0;
     dz = z1 - z0;
     if (x1 < zero) x1 = -x1;
-    if (dy < zero) dy = -dy;
+    if (y0 < zero) y0 = -y0;
     if (dz < zero) dz = -dz;
-    if (x1 < dy) {
-        a = x1;
-        b = dy;
+    if (x1 < y0) {
+        x0 = x1;
+        b = y0;
     } else {
-        a = dy;
+        x0 = y0;
         b = x1;
     }
     if (dz < b) {
-        c = b;
+        zero = b;
         b = dz;
     } else {
-        c = dz;
+        zero = dz;
     }
-    return c + (a + b) / (float)2;
+    return zero + (x0 + b) / (float)2;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E424);
