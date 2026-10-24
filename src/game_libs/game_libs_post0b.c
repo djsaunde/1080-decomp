@@ -15905,7 +15905,9 @@ extern int D_493AC_a, D_493AC_b, D_493AC_c, D_493AC_d;
  * zero-pinned alias D_493AC_d (target `lui t6; lw t6,532(t6)`; through &D_00000000
  * it shared a held lui/addiu base with rec.p598 and pushed &rec and the 1 into
  * s7 / s8); the +0x34 argument of the per-node call is a second element spelling
- * (target re-adds base + i*4). Length 1904 -> 1908 (target 1936). */
+ * (target re-adds base + i*4). Length 1904 -> 1908 (target 1936).
+ * Later in run 151 (89.86 -> 90.60): the 0x4C remap pick is an if/else with
+ * `j = i` in the else arm (kit XCIV `b .+8` fingerprint; 1908 -> 1912). */
 s32 gl_func_000493AC(char *self) {
     Obj493 *o;
     Grid493 *gr;
@@ -16064,9 +16066,10 @@ s32 gl_func_000493AC(char *self) {
         } else {
             o->lo50 = -1;
             for (i = 0; i < SELF(0x44, u32); i++) {
-                j = i;
                 if (SELF(0x4C, s16 *) != 0) {
                     j = SELF(0x4C, s16 *)[i];
+                } else {
+                    j = i;
                 }
                 if (o->key18 == *(u16 *)(SELF(0x68, char *) + j * 8)) {
                     o->f14 = 1;
