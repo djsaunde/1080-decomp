@@ -1078,6 +1078,8 @@ extern char *gl_1dcb4_f3(char *, s32, s32);
 extern char *gl_1dcb4_f4(char *, s16, s16);
 extern char *gl_1dcb4_f5(char *, s32, s32);
 #define G1DCB4 ((char *)&D_00000000)
+/* run 139 policy fix: three empty tests on locals read before any assignment (e, rec, q) removed; parameter /
+ * counter tests at the same sites score the same or worse (one keeps fuzzy but loses 5 words). */
 char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
     s32 flag;
     s8 buf[56];
@@ -1095,7 +1097,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
 
     t0 = *(s8 *)(G1DCB4 + 1);
     n2 = 0;
-    if (t0 == 0) { if (e) {}
+    if (t0 == 0) {
         i = 0;
         if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
             p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
@@ -1116,7 +1118,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
                 i = 0;
                 if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
                     p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
-                    do { if (rec) {}
+                    do {
                         e = p;
                         if ((*(u32 *)e >> 31) != 0 && k == ((u32)*(u8 *)(e + 1) >> 5)) {
                             buf[n2++] = i;
@@ -1141,7 +1143,7 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
                 p += 0x20;
             } while (i < *(s32 *)(G1DCB4 + 0x2070));
             i = 0;
-        } if (q) {}
+        }
     }
     {
         p = gp;
@@ -12508,7 +12510,7 @@ int gl_func_0002ABC0(char *o, int a1) {
     }
     if (one == b) {
         a2 = *(char **)(o + 0x2C);
-        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) { /* run 139: the old if (n) {} here tested n before any assignment (banned); every legal test / init spelling scores the same as none */
+        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) { /* run 139: the old empty test on n here read n before any assignment (banned); every legal test / init spelling scores the same as none */
             if (*(char **)(o + 0x4C) == 0) {
                 gl_func_00000000(a2, o);
             }
