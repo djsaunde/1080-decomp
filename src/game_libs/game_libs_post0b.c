@@ -14308,15 +14308,15 @@ s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
                     FI(arg0, 0x220) = FI(arg0, 0x220) + lineh;
                 }
                 if (cc < 0x80) {
-                    if (FI(arg0, 0x28C) != 0) {
-                        gl_func_00034458(arg0, ch, FI(arg0, 0x21C), FI(arg0, 0x220));
-                    } else {
+                    if (FI(arg0, 0x28C) == 0) {
                         EMIT((((((FI(arg0, 0x21C) + charw) * 4) & 0xFFF) << 0xC) | 0xE4000000) | (((FI(arg0, 0x220) + lineh) * 4) & 0xFFF),
                              (((FI(arg0, 0x21C) * 4) & 0xFFF) << 0xC) | ((FI(arg0, 0x220) * 4) & 0xFFF)); if (1) {}
                         EMIT(0xB4000000,
                             ((cc & 0xF) << 0x18) | (((((s32) (cc & 0xF0)) >> 1) << 5) & 0xFFFF));
                         EMIT(0xB3000000,
                             ((0x2000 / charw) << 0x10) | ((0x2000 / lineh) & 0xFFFF));
+                    } else {
+                        gl_func_00034458(arg0, ch, FI(arg0, 0x21C), FI(arg0, 0x220));
                     }
                 }
                 FI(arg0, 0x21C) = FI(arg0, 0x21C) + charw;

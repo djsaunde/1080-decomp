@@ -1,0 +1,113 @@
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046050 (agent-c run 152): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2.
+ * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32;
+typedef float f32;
+extern "C" {
+extern int D_00000000;
+extern int gl_func_00034458(...);
+}
+#define DI(o) (*(int *)((char *)&D_00000000 + (o)))
+#define FI(p, o) (*(int *)((char *)(p) + (o)))
+#define FP(p, o) (*(void **)((char *)(p) + (o)))
+/* held GfxCtx DL node: (arg0->0x254)->0x158, member 0xC = {head@0, count@4} */
+#define DLCTX (FP(FP(arg0, 0x254), 0x158))
+#define EMIT(w0, w1) {                                             \
+    register void *_e;                                             \
+    _c = DLCTX;                                                    \
+    _q = FP(_c, 0xC);                                              \
+    _n = FI(_q, 0x4);                                              \
+    FI(_q, 0x4) = _n + 1;                                          \
+    _e = (char *)FP(FP(_c, 0xC), 0x0) + (_n * 8);                  \
+    FI(_e, 0x0) = (w0); FI(_e, 0x4) = (w1);                        \
+}
+
+extern "C" s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
+    register s32 startx = FI(arg0, 0x21C);
+    register s32 charw;
+    register s32 lineh;
+    int *margin = &D_00000000;
+    s32 ch;
+    s32 cc;
+    void *_c;
+    void *_q;
+    int _n;
+
+    lineh = FI(arg0, 0x228);
+    charw = FI(arg0, 0x224);
+
+    if (FI(arg0, 0x28C) == 0) {
+        EMIT(0xE7000000, 0); if (1) {}
+        EMIT(0xBA001402, 0);
+        EMIT(0xB6000000, 1);
+        EMIT(0xB900031D, 0x0C087008);
+        EMIT(0xF9000000, 0x80);
+        EMIT(0xBB000001, 0x80008000);
+        EMIT(0xFCFFFFFF, 0xFFFCF279);
+        EMIT(0xBA000C02, 0);
+        EMIT(0xBA001301, 0);
+        { register void *_e;
+          _c = DLCTX;
+          _q = FP(_c, 0xC);
+          _n = FI(_q, 0x4); FI(_q, 0x4) = _n + 1;
+          _e = (char *)FP(FP(_c, 0xC), 0x0) + (_n * 8);
+          FI(_e, 0x0) = 0xFD900000; FI(_e, 0x4) = gl_func_00034458((void *)&D_00000000); }
+        EMIT(0xF5900000, 0x07000000);
+        EMIT(0xE6000000, 0);
+        EMIT(0xF3000000, 0x077FF100);
+        EMIT(0xE7000000, 0);
+        EMIT(0xF5801000, 0);
+        EMIT(0xF2000000, 0x1FC0FC);
+    }
+
+    ch = *arg1;
+    arg1 += 1;
+    if (ch != 0) {
+        do {
+            cc = ch;
+            if (ch == 10) {
+                FI(arg0, 0x21C) = startx;
+                FI(arg0, 0x220) = FI(arg0, 0x220) + lineh;
+            } else {
+                s32 x = FI(arg0, 0x21C);
+                if (charw) {}
+                if (ch == 9) {
+                    ch = 0x20;
+                    cc = 0x20;
+                } else if (ch == 0x30) {
+                    ch = 0x4F;
+                    cc = 0x4F;
+                }
+                if ((*margin - 0x14) < (x + charw)) {
+                    FI(arg0, 0x21C) = startx;
+                    FI(arg0, 0x220) = FI(arg0, 0x220) + lineh;
+                }
+                if (cc < 0x80) {
+                    if (FI(arg0, 0x28C) == 0) {
+                        EMIT((((((FI(arg0, 0x21C) + charw) * 4) & 0xFFF) << 0xC) | 0xE4000000) | (((FI(arg0, 0x220) + lineh) * 4) & 0xFFF),
+                             (((FI(arg0, 0x21C) * 4) & 0xFFF) << 0xC) | ((FI(arg0, 0x220) * 4) & 0xFFF)); if (1) {}
+                        EMIT(0xB4000000,
+                            ((cc & 0xF) << 0x18) | (((((s32) (cc & 0xF0)) >> 1) << 5) & 0xFFFF));
+                        EMIT(0xB3000000,
+                            ((0x2000 / charw) << 0x10) | ((0x2000 / lineh) & 0xFFFF));
+                    } else {
+                        gl_func_00034458(arg0, ch, FI(arg0, 0x21C), FI(arg0, 0x220));
+                    }
+                }
+                FI(arg0, 0x21C) = FI(arg0, 0x21C) + charw;
+            }
+            if (!(FI(arg0, 0x21C) < arg2)) {
+                break;
+            }
+            ch = *arg1;
+            arg1 += 1;
+        } while (ch != 0);
+    }
+
+    if (FI(arg0, 0x28C) == 0) {
+        EMIT(0xE7000000, 0);
+        EMIT(0xBB000000, -1);
+        EMIT(0xBA001402, 0x300000);
+    }
+    return 0;
+}
