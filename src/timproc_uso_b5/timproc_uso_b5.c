@@ -8038,6 +8038,10 @@ void timproc_uso_b5_func_0000C2C0(int *a0, int a1, int a2) {
 //   quotients fold). Same cap family as the resolved D14C/D884 siblings.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
+/* agent-g run 152 (91.46 -> 93.75): the mode test is `x - 1 == 0` (`== 1` hoists the constant 1 into s8
+ * across the loop: one extra callee save, frame +8) and `i = 0` sits just before the loop pointer setup
+ * (target issues `move s1,zero` late, after the vals loads). Left: the 1 in t0 at the loop top, the
+ * mv / mv2 v1 / v0 copy, and one home slot (target cols 136 / ptrs 156 / vals 176, ours anchored 4 high). */
 extern char timproc_uso_b5_D_807FFAA8_b;  /* same target sym as D_807FFAA8; split name kills %hi CSE (reloc-masked) */
 void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     s32 vals[5];
@@ -8051,7 +8055,6 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     char *hud, *e;
     int i, m, mv, mv2;
 
-    i = 0;
     if (*(s32 *)(arg0 + 0x2BC) < 10) {
         if (--*(s32 *)(arg0 + 0x2C0) < 0) {
             *(s32 *)(arg0 + 0x2C0) = 1;
@@ -8068,6 +8071,7 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     ptrs[2] = arg1 + 0x17C;
     ptrs[3] = arg1 + 0x1A0;
     ptrs[4] = arg1 + 0x1C4;
+    i = 0;
     fb = (f32 *)(&timproc_uso_b5_D_807FF538 + 0xB8);
     pv = vals;
     pp = ptrs;
@@ -8079,7 +8083,7 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
             mv = *pv; if (arg0) {}
         }
         mv2 = mv;
-        if (*(s32 *)(arg1 + 0x3BC) == 1) {
+        if (*(s32 *)(arg1 + 0x3BC) - 1 == 0) {
             timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         } else {
             timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
