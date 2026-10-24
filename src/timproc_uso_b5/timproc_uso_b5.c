@@ -7109,7 +7109,7 @@ void timproc_uso_b5_func_0000B154(char *arg0) {
     s32 var_v0;
     s32 temp_t5;
     Vec154 sp68;
-    volatile s32 pad9C[4];
+    volatile s32 pad9C[1];
     s32 *temp_a0_2;
     Vec154 sp48;
     f32 ang;
@@ -7119,11 +7119,15 @@ void timproc_uso_b5_func_0000B154(char *arg0) {
     volatile s32 pad40;
 
     sp28 = (f32 *) (arg0 + 0xDC);
+    {
+    f32 hy, hz; /* run 156: held head differences (ang is dead here); their homes take pad9C[4] -> [1] */
     do {
-        sp68.f0 = sp28[0] - import_80800000_ld0;
-        sp68.f4 = sp28[1] - import_80800000_ld4.v;
-        sp68.f8 = sp28[2] - import_80800000_ld8.v;
+        ang = sp28[0] - import_80800000_ld0;
+        hy = sp28[1] - import_80800000_ld4.v;
+        hz = sp28[2] - import_80800000_ld8.v;
+        sp68.f0 = ang; sp68.f4 = hy; sp68.f8 = hz;
     } while (0);
+    }
     sp7C.v = sp68;
     sp8C = sp7C.v;
     timproc_uso_b5_func_071028(&sp8C);
