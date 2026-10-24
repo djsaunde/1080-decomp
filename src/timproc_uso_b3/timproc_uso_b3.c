@@ -857,9 +857,11 @@ void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
         pt2 = *(char **)(arg0 + 0x6DC);
         pt3 = *(char **)(arg0 + 0x6C4);
         x = 160 - ((*(s16 *)(pt4 + 0x20) + count * 13 + *(s16 *)(pt2 + 0x20) + *(s16 *)(pt3 + 0x20) + 16) / 2);
-        pos4 = *(s16 *)(pt3 + 0x20) + x + 4;
-        posA1 = *(s16 *)(pt2 + 0x20) + pos4 + 4;
-        pos6 = *(s16 *)(pt4 + 0x20) + posA1 + 8;
+        /* the three width re-reads go through the arg0 fields again (kit LXV): uopt CSEs the
+         * pointer loads but not the lh off a different expression tree, as the target. */
+        pos4 = *(s16 *)(*(char **)(arg0 + 0x6C4) + 0x20) + x + 4;
+        posA1 = *(s16 *)(*(char **)(arg0 + 0x6DC) + 0x20) + pos4 + 4;
+        pos6 = *(s16 *)(*(char **)(arg0 + 0x70C) + 0x20) + posA1 + 8;
         xmid = arg1 + 0x32;
         timproc_uso_b3_func_000000B0(w6FC, posA1, xmid, 2);
         p = (u8 *)buf;

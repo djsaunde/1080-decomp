@@ -1116,9 +1116,10 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
         temp_t2 = FW(arg0, 0x72C);
         temp_a2 = (int)arg1 + 0x32;
         temp_s1_2 = 0xA0 - ((s32) (*(s16 *)(temp_t3 + 0x20) + (temp_v0 * 0xD) + *(s16 *)(temp_t1 + 0x20) + *(s16 *)(temp_t2 + 0x20) + 0x10) / 2);
-        temp_s2_2 = *(s16 *)(temp_t2 + 0x20) + temp_s1_2 + 4;
-        temp_a1 = *(s16 *)(temp_t1 + 0x20) + temp_s2_2 + 4;
-        sp88 = *(s16 *)(temp_t3 + 0x20) + temp_a1 + 8;
+        /* width re-reads through the arg0 fields: the target re-loads the lh (kit LXV) */
+        temp_s2_2 = *(s16 *)((char *)FW(arg0, 0x72C) + 0x20) + temp_s1_2 + 4;
+        temp_a1 = *(s16 *)((char *)FW(arg0, 0x714) + 0x20) + temp_s2_2 + 4;
+        sp88 = *(s16 *)((char *)FW(arg0, 0x744) + 0x20) + temp_a1 + 8;
         arcproc_uso_func_00001B88(temp_s0, temp_a1, temp_a2, (char *)2);
         var_s0 = spB8;
         if (temp_v0 > 0) {
