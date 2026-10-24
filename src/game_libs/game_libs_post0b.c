@@ -5957,6 +5957,9 @@ typedef struct {
 } ColB2;
 typedef struct { char pad0[0x2C]; TriB2 *tris; char pad30[0x54]; ColB2 *col; } ObjB2;
 extern int D_3B2EC_a, D_3B2EC_b;
+/* run 151 (agent-c, 88.94 -> 89.45): the cell list pointer is an if/else with
+ * `list = 0` in the else arm (924 -> 928 of 940 bytes); the cell index in the
+ * same form scores lower here (the 3BE1C twin takes the opposite pick). */
 s32 gl_func_0003B2EC(ObjB2 *self, s32 max, f32 *out, f32 x, f32 z) {
     V3B2 p;
     s32 cnt;
@@ -6003,9 +6006,10 @@ s32 gl_func_0003B2EC(ObjB2 *self, s32 max, f32 *out, f32 x, f32 z) {
     if (cell < 0) {
         return 0;
     }
-    list = 0;
     if (self->col->grid->cells[cell] != -1) {
         list = &self->col->grid->lists[self->col->grid->cells[cell]];
+    } else {
+        list = 0;
     }
     if (list == 0) {
         return 0;
