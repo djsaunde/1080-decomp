@@ -13,7 +13,9 @@
  * Run 157: the head is an inline helper returning a named non-POD V (relPos below), the
  * three subtracts held in dx / dy / dz and the frame-only locals of the if arm moved
  * into the arm: 93.72 -> 95.57, 139 words. RESIDUAL: arg0 goes to s0 before the head
- * (target: after it), sp8C 16 bytes high, 1.0f colour, the decrement temp. */
+ * (target: after it), 1.0f colour. The 0x144 countdown written as
+ * `if (c) c -= 1; if (c == 0)` (fixes the t5 temp), sp28 dropped for arg0 + 0xF4 (fixes the frame,
+ * 0xA8 -> 0x98 = target): 95.57 -> 96.07. */
 typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -51,14 +53,9 @@ static inline V relPos(const V &a) {
 }
 extern "C" void timproc_uso_b5_func_0000B624(char *arg0) {
     VecF sp8C;
-    s32 var_v0;
-    s32 temp_t5;
-    char *temp_a0_2;
-    f32 *sp28;
 
     *(V *) &sp8C = relPos(*(V *) (arg0 + 0xDC));
     timproc_uso_b5_func_071028(&sp8C);
-    sp28 = (f32 *) (arg0 + 0xF4);
     if ((f64) ((M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 0) * sp8C.f0) + (M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 4) * sp8C.f4) + (M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 8) * sp8C.f8)) < M2C_FIELD((&timproc_uso_b5_D_807FF370), f64 *, 0x350)) {
         VecF sp48;
         f32 ang;
@@ -72,31 +69,25 @@ extern "C" void timproc_uso_b5_func_0000B624(char *arg0) {
         sp48.f8 = 0.0f;
         sp48.f4 = 0.0f;
         sp48.f0 = 1.0f;
-        timproc_uso_b5_func_071AE0(sp28, &sp48, ang);
+        timproc_uso_b5_func_071AE0(arg0 + 0xF4, &sp48, ang);
         ang = M2C_FIELD(arg0, f32 *, 0x110);
         sp38.f0 = 0.0f;
         sp38.f4 = 0.0f;
         sp38.f8 = 1.0f;
-        timproc_uso_b5_func_071AE0(sp28, &sp38, ang);
+        timproc_uso_b5_func_071AE0(arg0 + 0xF4, &sp38, ang);
         ang = M2C_FIELD(arg0, f32 *, 0x118);
         sp2C.f0 = 0.0f;
         sp2C.f8 = 0.0f;
         sp2C.f4 = 1.0f;
-        timproc_uso_b5_func_071AE0(sp28, &sp2C, ang);
+        timproc_uso_b5_func_071AE0(arg0 + 0xF4, &sp2C, ang);
         timproc_uso_b5_func_06970C_i(M2C_FIELD(arg0, s32 *, 0x108), M2C_FIELD(arg0, s32 *, 0x130));
         if ((M2C_FIELD(arg0, s32 *, 0x144) != 0) || (M2C_FIELD(arg0, s32 *, 0x138) != 0)) {
             timproc_uso_b5_func_054FE0(arg0);
             timproc_uso_b5_D_807FFBBC += 1;
-            var_v0 = M2C_FIELD(arg0, s32 *, 0x144); if (arg0) {}
-            temp_t5 = var_v0 - 1;
-            if (var_v0 != 0) {
-                M2C_FIELD(arg0, s32 *, 0x144) = temp_t5;
-                var_v0 = temp_t5;
-            }
-            if (var_v0 == 0) {
-                temp_a0_2 = M2C_FIELD(arg0, char **, 0x10C);
-                if (M2C_FIELD(temp_a0_2, s32 *, 0xB0) != 0) {
-                    timproc_uso_b5_func_077C44(temp_a0_2, M2C_FIELD(arg0, s32 *, 0x140), 0, 2, 2, 1);
+            if (M2C_FIELD(arg0, s32 *, 0x144) != 0) M2C_FIELD(arg0, s32 *, 0x144) -= 1;
+            if (M2C_FIELD(arg0, s32 *, 0x144) == 0) {
+                if (M2C_FIELD(M2C_FIELD(arg0, char **, 0x10C), s32 *, 0xB0) != 0) {
+                    timproc_uso_b5_func_077C44(M2C_FIELD(arg0, char **, 0x10C), M2C_FIELD(arg0, s32 *, 0x140), 0, 2, 2, 1);
                     M2C_FIELD(M2C_FIELD(arg0, char **, 0x10C), s32 *, 0xB0) = 0;
                 }
             }
