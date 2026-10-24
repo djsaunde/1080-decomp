@@ -733,6 +733,7 @@ void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
     volatile s16 *pt4;
     volatile s16 *pt2;
     volatile s16 *pt3;
+    volatile int padq[2]; /* run 138: frame = target */
     int min, sec;
     int glyph;
     int x, pos4, posA1, pos6;
