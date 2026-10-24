@@ -413,8 +413,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
     cnt = dl[1];
     dl[1] = cnt + 1;
     cmd = (int*)(**(char***)((char*)a3 + 0xC) + cnt * 8);
-    cmd[0] = 0xBB000001;
-    cmd[1] = 0x80008000;
+    cmd[0] = 0xBB000001; cmd[1] = 0x80008000;
     {
         /* named-local divisor forces div.s (not mul*0.5); target shares this
          * one 2.0 across both divisions AND the -2.0 sub (IDO_CODEGEN
