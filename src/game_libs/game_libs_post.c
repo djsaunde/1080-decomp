@@ -6453,8 +6453,9 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
     }
 
     if (asyncLoad->bytesRemaining == 0) {
+        retMsg = asyncLoad->retMsg;
         if (1) {}
-        switch ((s32)ASYNC_TBLTYPE(asyncLoad->retMsg)) {
+        switch ((s32)ASYNC_TBLTYPE(retMsg)) {
             case 0:
                 gl_250C8_SetSeqLoadStatus(ASYNC_ID(asyncLoad->retMsg), ASYNC_STATUS(asyncLoad->retMsg));
                 break;
@@ -6479,8 +6480,12 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
                 break;
         }
 
+        /* run 149: OoT __BgCopyFinishProcess's doneMsg read before the status store, through
+         * the same retMsg variable that selects the switch (one web, a1): 98.08 -> 99.85 */
+        retMsg = asyncLoad->retMsg;
+        if (1) {}
         asyncLoad->status = 0;
-        gl_250C8_osSendMesg(asyncLoad->retQueue, (void *)asyncLoad->retMsg, 0);
+        gl_250C8_osSendMesg(asyncLoad->retQueue, (void *)retMsg, 0);
         return;
     }
 
