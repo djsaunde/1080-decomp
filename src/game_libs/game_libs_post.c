@@ -7022,65 +7022,60 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00025320);
 void game_libs_func_000253B0(int a0, int a1, int a2, int a3) {
 }
 
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000253C4)();
-/* 2026-06-20 reconstruction: 76->66 diffs. node = *arg0 + arg1 (gated unsigned
- * < 0x80000001), stored back; if (node->0 & 0xFFFFFF) and bit0 clear: bump the
- * +8/+0xC words by arg1, then a 4-way switch on bits[26:27] of node->0
- * ((node->0<<4)>>30) adds arg2->8/0xC to node->4 and folds (arg2->0x10/0x14)<<2
- * &0xC into node->0 low byte (cases 0/1; 2/3 noop); set bit0; finally if bit
- * 0x02000000 set AND bits[26:27]!=0, append node to the &D+0x430 table indexed
- * by the &D+0x1030 counter and bump it. Bare 0x1030/0x430 fixed to &D-relative.
- * Residual 66 (size 80 exact, logic correct): target COPIES node into $a2 (and
- * config arg2 into $a3) and uses $a2 as the long-lived node base while reusing
- * $v1 as the per-field add scratch; build keeps node in $v1, so the register
- * assignment cascades. Genuine node-base coloring ($a2 vs $v1) cap — needs the
- * original two-variable (store-temp vs access-base) split that can't be
- * reconstructed from the .s. */
-extern void gl_253c4_fd(); /* run 139: fn-typed blank base (target lui v0 / addiu v0,v0,0, no reloc, then lw 0x1030(v0)) */
-void game_libs_func_000253C4(u32 *arg0, s32 arg1, char *arg2) {
-    char *D = (char *)gl_253c4_fd;
-    s32 temp_v0_3;
-    u32 temp_v0;
-    u32 temp_v0_2;
-    char *node;
+/* game_libs_func_000253C4 EXACT 2026-10-23 (agent-c run 140, 73.66 -> 100): OoT's
+ * AudioLoad_RelocateSample (load.c) verbatim, including the AUDIO_RELOC
+ * `reloc = ...` assignment macro. 1080 usedSamples has 0x300 entries
+ * (gAudioCtx +0x430, numUsedSamples +0x1030); gAudioCtx is the run 139 fn-typed
+ * blank base (gl_253c4_fd, pinned 0). */
+typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; void *loop; void *book; } gl_253C4_Sample;
+typedef struct { gl_253C4_Sample *sample; f32 tuning; } gl_253C4_TunedSample;
+typedef struct { s32 sampleBankId1; s32 sampleBankId2; u32 baseAddr1; u32 baseAddr2; u32 medium1; u32 medium2; } gl_253C4_RelocInfo;
+typedef struct { char pad0[0x430]; gl_253C4_Sample *usedSamples[0x300]; s32 numUsedSamples; } gl_253C4_Ctx;
+extern void gl_253c4_fd();
+#define gl_253C4_gAudioCtx (*(gl_253C4_Ctx *)gl_253c4_fd)
+typedef u8 gl_253C4_FontData;
 
-    temp_v0 = *arg0;
-    if (temp_v0 < 0x80000001U) {
-        node = (char *)(temp_v0 + arg1);
-        *arg0 = (u32) node;
-        if ((*(s32 *)node & 0xFFFFFF) && (((u8) *(s32 *)node & 1) != 1)) {
-            *(s32 *)(node + 8) += arg1;
-            temp_v0_2 = (u32) (*(s32 *)node << 4) >> 0x1E;
-            *(s32 *)(node + 0xC) += arg1;
-            switch (temp_v0_2) {                    /* irregular */
-            case 2:
-            case 3:
-                break;
-            case 0:
-                *(s32 *)(node + 4) += *(s32 *)(arg2 + 8);
-                *(s8 *)node = (s8) (((*(s32 *)(arg2 + 0x10) << 2) & 0xC) | ((u8) *(s32 *)node & 0xFFF3));
-                break;
-            case 1:
-                *(s32 *)(node + 4) += *(s32 *)(arg2 + 0xC);
-                *(s8 *)node = (s8) (((*(s32 *)(arg2 + 0x14) << 2) & 0xC) | ((u8) *(s32 *)node & 0xFFF3));
-                break;
+void game_libs_func_000253C4(gl_253C4_TunedSample *tunedSample, gl_253C4_FontData *fontData, gl_253C4_RelocInfo *sampleBankReloc) {
+    gl_253C4_Sample *sample;
+    void *reloc;
+
+#define AUDIO_RELOC(offset, base) (reloc = (void *)((u32)(offset) + (u32)(base)))
+
+    if ((u32)tunedSample->sample <= 0x80000000) {
+
+        sample = tunedSample->sample = AUDIO_RELOC(tunedSample->sample, fontData);
+
+        if ((sample->size != 0) && (sample->isRelocated != 1)) {
+            sample->loop = AUDIO_RELOC(sample->loop, fontData);
+            sample->book = AUDIO_RELOC(sample->book, fontData);
+
+            switch (sample->medium) {
+                case 0:
+                    sample->sampleAddr = AUDIO_RELOC(sample->sampleAddr, sampleBankReloc->baseAddr1);
+                    sample->medium = sampleBankReloc->medium1;
+                    break;
+
+                case 1:
+                    sample->sampleAddr = AUDIO_RELOC(sample->sampleAddr, sampleBankReloc->baseAddr2);
+                    sample->medium = sampleBankReloc->medium2;
+                    break;
+
+                case 2:
+                case 3:
+                    break;
             }
-            *(s8 *)node |= 1;
-            temp_v0_3 = *(s32 *)node;
-            if ((temp_v0_3 & 0x02000000) && (((u32) (temp_v0_3 << 4) >> 0x1E) != 0)) {
-                *(char **)(D + *(s32 *)(D + 0x1030) * 4 + 0x430) = node;
-                *(s32 *)(D + 0x1030) += 1;
+
+            sample->isRelocated = 1;
+
+            if (sample->unk_bit26 && (sample->medium != 0)) {
+                gl_253C4_gAudioCtx.usedSamples[gl_253C4_gAudioCtx.numUsedSamples++] = sample;
             }
         }
     }
+
+#undef AUDIO_RELOC
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_000253C4);
-#endif
+#undef gl_253C4_gAudioCtx
 
 // gl_func_00025504 — STRUCTURAL PASS (0x3C8 / 242 words ≈ 1KB, no
 // episode). Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION
