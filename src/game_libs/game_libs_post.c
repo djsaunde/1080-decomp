@@ -2756,6 +2756,8 @@ void game_libs_func_000200F4(int *obj) {
 // `addiu v0,zero,1` and `addiu at,zero,1` for switch(sub->cur) case 1); unsigned v /
 // unsigned cur / 1U did not split it. (3) r (= &cfg->sub.base) colours v1, target v0.
 // (4) tail ent[v] index: target multu by the ra = 12 web, build uses the shift chain.
+// agent-c run 153 (+0.07): the mode switch arms are cfg-then-tbl on SEPARATE lines (target `lui a3; lui t2;
+// addiu a3; b; addiu t2`), and the two r[0] + r[2] sums are written r[2] + r[0] (load order mirrors).
 // (5) constant-first operand order on the 3/2/1 compares (`bne v0,t5`), not reproduced
 // by `3 == a`. (6) the alloc tail stores hA before w4 with one fewer reload.
 #ifdef NON_MATCHING
@@ -2794,9 +2796,18 @@ int gl_func_000201B8(int mode, int size, int op, int arg3) {
 
 top:
     switch (mode) {
-    case 0: tbl = G.tbls[2]; cfg = &G.pools[0]; break;
-    case 1: tbl = G.tbls[1]; cfg = &G.pools[1]; break;
-    case 2: tbl = G.tbls[0]; cfg = &G.pools[2]; break;
+    case 0:
+        cfg = &G.pools[0];
+        tbl = G.tbls[2];
+        break;
+    case 1:
+        cfg = &G.pools[1];
+        tbl = G.tbls[1];
+        break;
+    case 2:
+        cfg = &G.pools[2];
+        tbl = G.tbls[0];
+        break;
     }
     if (op == 0) {
         if (cfg->sub.ent[0].hA == -1) {
@@ -2933,12 +2944,12 @@ tail:
                     break;
                 }
                 sub->ent[1].hA = -1;
-                sub->ent[1].w0 = r[0] + r[2];
+                sub->ent[1].w0 = r[2] + r[0];
             }
             k = sub->ent[0].w0;
             break;
         case 1:
-            sub->ent[1].w0 = (r[0] + r[2] - size) & ~15;
+            sub->ent[1].w0 = (r[2] + r[0] - size) & ~15;
             sub->ent[1].hA = arg3;
             sub->ent[1].w4 = size;
             if (sub->ent[0].hA != -1 && (unsigned)sub->ent[1].w0 < (unsigned)r[1]) {
