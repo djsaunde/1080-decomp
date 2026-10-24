@@ -757,6 +757,7 @@ extern int import_8005C108[];
 #define E68_CULL(pkt, vs, ve) E68_W(pkt, E68_SHL(0xBE, 24, 8) | E68_SHL((vs) * 2, 0, 16), E68_SHL((ve) * 2, 0, 16))
 #define E68_TRI1(pkt, a, b, c) E68_W(pkt, E68_SHL(0xBF, 24, 8), E68_SHL((a) * 2, 16, 8) | E68_SHL((b) * 2, 8, 8) | E68_SHL((c) * 2, 0, 8))
 #define E68_END(pkt) E68_W(pkt, E68_SHL(0xB8, 24, 8), 0)
+extern void func_00000000_e68v(); /* run 156: discarded bzero-like call (void: frees v0) */
 void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     u32 timg;
     u32 tlut;
@@ -789,7 +790,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         *(f32 *)(self + 0x40) = 1.0f;
         *(f32 *)(self + 0x3C) = 1.0f;
         buf = (VtxE68 *)func_00000000(0x800, 16);
-        func_00000000(buf, 0x800, 0);
+        func_00000000_e68v(buf, 0x800, 0);
         vidx = 0;
         y = import_8001FFA0_h[1] / 2 - 16;
         k = 0;
