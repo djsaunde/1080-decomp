@@ -47,12 +47,5 @@
  *    disposition rather than further C grinding. */
 extern u32 D_A4040010;  /* SP_STATUS_REG */
 
-#ifdef NON_MATCHING
-s32 func_80008030(void) {
-    s32 v = 0;
-    if ((D_A4040010 & 3) == 0) v |= 1;
-    return v;
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80008030);
-#endif
+/* func_80008030: handwritten assembly, real source in src/handwritten/kernel/sp_halted.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
+GLOBAL_ASM("src/handwritten/kernel/sp_halted.s")
