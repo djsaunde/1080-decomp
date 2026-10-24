@@ -3935,76 +3935,108 @@ extern int D_00000000;
  * (5) s3=*(D+0x294C) reassign happens ONLY on the second-call-nonzero path
  * (first-call-hit keeps s3=*(D+0x2950)). Residuals: s6/s7 const-webs (&D and
  * li 1/-1 s-reg promotes), r spill slot, loop1 bound recompute shape. NM. */
+/* run 140: OoT's AudioHeap_AllocTemporarySampleCacheEntry (heap.c) nearly verbatim
+ * (62.22 -> 95.27, 166 = 166 words); the final `numEntries++` through the absolute
+ * gAudioCtx member (the cache-pointer form hoists the load above the index test).
+ * Left: the target holds &gAudioCtx in s6 for the first curRamAddr read and the
+ * preloadSampleStackTop guard (fn-typed base for all / some sites, direct member
+ * reads: worse or no change), so every later temp is one t-register higher. */
+typedef struct { u8 *startRamAddr; u8 *curRamAddr; s32 size; s32 numEntries; } gl_heap_Pool;
+typedef struct { s8 inUse; s8 origMedium; u8 sampleBankId; u8 unk_03[5]; u8 *allocatedAddr; void *sampleAddr; u32 size; } gl_heap_CacheEntry;
+typedef struct { gl_heap_Pool pool; gl_heap_CacheEntry entries[32]; s32 numEntries; } gl_heap_SampleCache;
+typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; } gl_heap_Sample;
+typedef struct { u32 endAndMediumKey; gl_heap_Sample *sample; u8 *ramAddr; u32 encodedInfo; s32 isFree; } gl_heap_PreloadReq;
+typedef struct {
+    char pad0[0x630]; gl_heap_PreloadReq preloadSampleStack[1]; char pad644[0x1034 - 0x644]; s32 preloadSampleStackTop;
+    char pad1038[0x294C - 0x1038]; gl_heap_SampleCache temporarySampleCache;
+} gl_heap_Ctx;
+#define gl_heap_gAudioCtx (*(gl_heap_Ctx *)&D_00000000)
 extern int gl_func_00036844();
-int gl_func_00021F40(void *arg) {
-    char *g = (char *)&D_00000000;
-    int s3, s2, s5, s1, r, save, a3;
-    char *a2, *s0, *v1;
+#define AudioHeap_Alloc (void *)gl_func_00000000
+#define AudioHeap_DiscardSampleCacheEntry gl_func_00036844
 
-    s3 = *(int *)(g + 0x2950);
-    r = gl_func_00000000(g + 0x294C, arg);
-    if (r == 0) {
-        save = *(int *)(g + 0x2950);
-        *(int *)(g + 0x2950) = *(int *)(g + 0x294C);
-        r = gl_func_00000000(g + 0x294C, arg);
-        if (r == 0) {
-            *(int *)(g + 0x2950) = save;
-            return 0;
+gl_heap_CacheEntry *gl_func_00021F40(u32 size) {
+    u8 *allocAfter;
+    u8 *allocBefore;
+    void *ramAddr;
+    s32 index;
+    s32 i;
+    gl_heap_CacheEntry *entry;
+    gl_heap_PreloadReq *preload;
+    gl_heap_SampleCache *cache;
+    u8 *startRamAddr;
+    u8 *endRamAddr;
+
+    cache = &gl_heap_gAudioCtx.temporarySampleCache;
+    allocBefore = cache->pool.curRamAddr;
+    ramAddr = AudioHeap_Alloc(&cache->pool, size);
+    if (ramAddr == NULL) {
+        u8 *old = cache->pool.curRamAddr;
+
+        cache->pool.curRamAddr = cache->pool.startRamAddr;
+        ramAddr = AudioHeap_Alloc(&cache->pool, size);
+        if (ramAddr == NULL) {
+            cache->pool.curRamAddr = old;
+            return NULL;
         }
-        s3 = *(int *)(g + 0x294C);
+        allocBefore = cache->pool.startRamAddr;
     }
-    a3 = *(int *)(g + 0x1034);
-    s2 = *(int *)(g + 0x2950);
-    s5 = -1;
-    s1 = 0;
-    if (a3 > 0) {
-        for (a2 = g; a2 < g + a3 * 20; a2 += 20) {
-            char *rr = a2 + 1584;
-            unsigned int base, top;
-            if (*(int *)(a2 + 1600) != 0) {
+
+    allocAfter = cache->pool.curRamAddr;
+
+    index = -1;
+    for (i = 0; i < gl_heap_gAudioCtx.preloadSampleStackTop; i++) {
+        preload = &gl_heap_gAudioCtx.preloadSampleStack[i];
+        if (!preload->isFree) {
+            startRamAddr = preload->ramAddr;
+            endRamAddr = preload->ramAddr + preload->sample->size - 1;
+
+            if (endRamAddr < allocBefore && startRamAddr < allocBefore) {
                 continue;
             }
-            base = *(int *)(rr + 8);
-            top = base + (*(int *)*(int *)(rr + 4) & 0xFFFFFF) - 1;
-            if (top < (unsigned)s3 && base < (unsigned)s3) {
+            if (endRamAddr >= allocAfter && startRamAddr >= allocAfter) {
                 continue;
             }
-            if (top < (unsigned)s2 || base < (unsigned)s2) {
-                *(int *)(rr + 16) = 1;
-                a3 = *(int *)(g + 0x1034);
-            }
+
+            preload->isFree = 1;
         }
-        s1 = 0;
     }
-    if (*(int *)(g + 0x2BDC) > 0) {
-        s0 = g + 0x294C;
-        do {
-            if (*(signed char *)(s0 + 16) != 0) {
-                unsigned int base = *(int *)(s0 + 24);
-                unsigned int top = *(int *)(s0 + 32) + base - 1;
-                if (!(top < (unsigned)s3 && base < (unsigned)s3)) {
-                    if (top < (unsigned)s2 || base < (unsigned)s2) {
-                        gl_func_00036844(s0 + 16);
-                        if (s5 == -1) {
-                            s5 = s1;
-                        }
-                    }
-                }
-            }
-            s1++;
-            s0 += 20;
-        } while (s1 < *(int *)(g + 0x2BDC));
+
+    for (i = 0; i < cache->numEntries; i++) {
+        if (!cache->entries[i].inUse) {
+            continue;
+        }
+
+        startRamAddr = cache->entries[i].allocatedAddr;
+        endRamAddr = startRamAddr + cache->entries[i].size - 1;
+
+        if (endRamAddr < allocBefore && startRamAddr < allocBefore) {
+            continue;
+        }
+        if (endRamAddr >= allocAfter && startRamAddr >= allocAfter) {
+            continue;
+        }
+
+        AudioHeap_DiscardSampleCacheEntry(&cache->entries[i]);
+        if (index == -1) {
+            index = i;
+        }
     }
-    if (s5 == -1) {
-        s5 = *(int *)(g + 0x2BDC);
-        *(int *)(g + 0x2BDC) = s5 + 1;
+
+    if (index == -1) {
+        index = gl_heap_gAudioCtx.temporarySampleCache.numEntries++;
     }
-    v1 = g + 0x294C + s5 * 20;
-    *(signed char *)(v1 + 16) = 1;
-    *(int *)(v1 + 24) = r;
-    *(int *)(v1 + 32) = (int)arg;
-    return (int)(v1 + 16);
+
+    entry = &cache->entries[index];
+    entry->inUse = 1;
+    entry->allocatedAddr = ramAddr;
+    entry->size = size;
+
+    return entry;
 }
+#undef gl_heap_gAudioCtx
+#undef AudioHeap_Alloc
+#undef AudioHeap_DiscardSampleCacheEntry
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00021F40);
 #endif
