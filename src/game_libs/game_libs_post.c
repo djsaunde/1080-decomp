@@ -3967,7 +3967,9 @@ gl_heap_CacheEntry *gl_func_00021F40(u32 size) {
 //   record match bytes +2/+3 vs key->2, 0xFF empty-slot / 0x7F
 //   sentinel). Byte-match deferred — scan-loop / branch schedule.
 //   Name pre-checked: no extern reuse (collision-safe).
-#ifdef NON_MATCHING
+/* EXACT (run 144, agent-c): the cache-entry test is a negated early `continue`
+ * (OoT DiscardSampleCacheEntry spells it as one if-block); that flips the fontId /
+ * fontId*20 cursor colouring to the target s5 / s4. */
 /* run 141 (agent-c): OoT's AudioHeap_DiscardSampleCacheEntry with
  * AudioHeap_UnapplySampleCacheForFont written inline (instrument + drum loops, no sfx
  * loop) and gAudioCtx as a typed extern (91.21 -> 98.87 fuzzy, 112 = 112 words; decl
@@ -3993,8 +3995,11 @@ void gl_func_000221D8(gl_221D8_CacheEntry *entry) {
     for (fontId = 0; fontId < numFonts; fontId++) {
         sampleBankId1 = gl_221D8_gAudioCtx.soundFontList[fontId].sampleBankId1;
         sampleBankId2 = gl_221D8_gAudioCtx.soundFontList[fontId].sampleBankId2;
-        if (((sampleBankId1 != 0xFF) && (entry->sampleBankId == sampleBankId1)) ||
-            ((sampleBankId2 != 0xFF) && (entry->sampleBankId == sampleBankId2)) || entry->sampleBankId == 0) {
+        if (!(((sampleBankId1 != 0xFF) && (entry->sampleBankId == sampleBankId1)) ||
+              ((sampleBankId2 != 0xFF) && (entry->sampleBankId == sampleBankId2)) || entry->sampleBankId == 0)) {
+            continue;
+        }
+        {
             if (gl_func_00000000(1, 2, fontId) != 0) {
                 if (gl_func_00000000(fontId) != 0) {
                     gl_221D8_Drum *drum;
@@ -4026,9 +4031,6 @@ void gl_func_000221D8(gl_221D8_CacheEntry *entry) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000221D8);
-#endif
 
 /* Guarded bitfield update: if(a1 && a0->8==a1->4){ a1->4=a0->0xC;
  * *a1 = ((a0[1]<<2)&0xC)|(*a1&~0xC); }. Structure exact; the bitfield

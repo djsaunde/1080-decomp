@@ -5119,3 +5119,4 @@ gl_25504_SyncDma = 0x00000000;  /* agent-c run 143: gl_func_00025504 blank jal *
 gl_25504_StartAsyncLoad = 0x0003959C;  /* agent-c run 143: gl_func_00025504 prototyped alias of the baked jal (AudioLoad_StartAsyncLoad) */
 gl_22464_gAudioCtxT = 0x00000000;  /* agent-c run 144: gl_func_00022464 (DiscardSampleCaches) typed gAudioCtx extern (soundFontTable 0x2020, soundFontList 0x2030, persistentSampleCache 0x26B8) */
 gl_dcb4_gAudioCtx = 0x00000000;  /* agent-c run 144: gl_func_0001DCB4 (synthesis update) typed gAudioCtx extern (numSynthesisReverbs 0x1, sampleStates 0x14, synthesisReverbs 0x18, numNotes 0x2070, notes 0x2CFC) */
+gl_221D8_gAudioCtx = 0x00000000;  /* agent-c run 144: gl_func_000221D8 (DiscardSampleCacheEntry) typed gAudioCtx extern (soundFontTable 0x2020, soundFontList 0x2030) */
