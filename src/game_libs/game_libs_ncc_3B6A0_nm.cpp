@@ -1,4 +1,5 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B6A0: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 65.26; if (max) {} after the ey difference from a parameter-only fz sweep, 198 -> 199 of 200 words; round 2: if (pt) {} after the plane distance, 70.93).
+ * run 152 (agent-c, 70.94 -> 72.22 in report.json): `while (inside && (fp += 2, tp != end))` (fp += 2 in the bne delay slot after the inside exit).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -79,8 +80,7 @@ extern "C" int gl_func_0003B6A0(char *o, int max, float *outd, char **outp, floa
                 if (fzero < cross * dir) {
                     inside = 0;
                 }
-                fp += 2;
-            } while (inside && tp != D_00000000_3b6a0tbl + 3);
+            } while (inside && (fp += 2, tp != D_00000000_3b6a0tbl + 3));
             if (inside) {
                 float *nrm = (float *)(*(char **)(s8 + 0x54) + off);
                 d = pt[0] * nrm[0] + pt[1] * nrm[1] + pt[2] * nrm[2] - *(float *)(tri + 8); if (pt) {}
