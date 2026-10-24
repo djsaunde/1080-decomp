@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_000488A0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T23:21:09.647863+00:00",
+  "end_time": "2026-10-24T23:21:09.647887+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T23:21:09.647881+00:00",
+      "assistant_text": "NCC donor: the uopt dump (zdbug:5) showed ctx / n / the ctx->dl load tied at adjsave 31.5 and coloured in itab-bit order; a named DL cursor d with a dead while (0) { d = 0; n = 0; } at the top gives d and n earlier bits (d v0, n v1, ctx a0), and c2 is read before the if (obj) {} BB split so it shares the header's unit (a2).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 112,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000488A0 (EXACT, agent-c run 155): the NM C body lifted under NCC (agent-c run 134 sweep, cfe 81.4 -> NCC 98.6, 112 words = target). Run 136: the post-increment split `n = ctx->dl->count; ctx->dl->count = n + 1;` moves count to v1.\n * Run 155 (uopt dump, -Wo,-zdbug:5): ctx, n and the ctx->dl load all have adjsave 31.5, so they colour in\n * itab-bit order. A named DL cursor d plus a dead `while (0) { d = 0; n = 0; }` at the top gives d and n bits\n * before ctx (d -> v0, n -> v1, ctx -> a0 like the target). c2 is read before the `if (obj) {}` BB split so it\n * shares the header's unit (v0/v1/a0/a1 taken -> a2). Spliced into both build trees via REPLACE_FUNC_BODY. */\ntypedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;\ntypedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;\ntypedef float f32; typedef double f64;\n#undef NULL\n#define NULL 0\ntypedef struct { float x, y, z; } Vec3;\ntypedef struct VT3FC58 { char pad[8]; short off8; char padA[2]; void (*fnC)(); char pad10[0x18]; short off28; char pad2A[2]; void (*fn2C)(); } VT3FC58;\ntypedef struct { VT3FC58 *vt0; char pad[0x24]; VT3FC58 *vt28; } O3FC58;\ntypedef struct { unsigned int w0, w1; } Gfx488A0;\ntypedef struct { Gfx488A0 *base; int count; } DLBuf488A0;\ntypedef struct { short ob[3]; unsigned short flag; short tc[2]; unsigned char cn[4]; } Vtx488A0;\ntypedef struct { char pad[0xC]; DLBuf488A0 *dl; char pad2[0xC]; Vtx488A0 **vtx; } Ctx488A0;\ntypedef struct { Ctx488A0 *ctx; int nv; int nline; int vbase; int pad; short ln[236][3]; short wd[1]; } Obj488A0;\n\nextern \"C\" char c2[];\n\nextern \"C\" char g[];\nextern \"C\" char ctx[];\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern void gl_proto_41148(int, int, int, int, int, double);\nextern short count;\nextern Vec3 vtx;\nextern f32 n[3];\nextern O3FC58 *obj;\n}\nextern \"C\" void gl_func_000488A0(Obj488A0 *obj) {\n    Ctx488A0 *c2; Gfx488A0 *g; int i; Ctx488A0 *ctx; int n;\n    DLBuf488A0 *d;\n    while (0) { d = 0; n = 0; }\n    if (obj->nv != 0) {\n        ctx = obj->ctx; d = ctx->dl; n = d->count; d->count = n + 1;\n        g = &ctx->dl->base[n];\n        g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF); c2 = obj->ctx; if (obj) {}\n        g->w1 = gl_func_00000000(*c2->vtx + obj->vbase);\n        *(int *)((char *)obj + 0x58C) += obj->nv;\n        for (i = 0; i < obj->nline; i++) {\n            if (obj->wd[i] != 1) {\n                ctx = obj->ctx; d = ctx->dl; n = d->count; d->count = n + 1;\n                g = &ctx->dl->base[n];\n                g->w0 = 0xB5000000;\n                g->w1 = ((((obj->ln[i][0] - obj->vbase) * 2) & 0xFF) << 16) | ((((obj->ln[i][1] - obj->vbase) * 2) & 0xFF) << 8) | (obj->wd[i] & 0xFF);\n            } else {\n                ctx = obj->ctx; d = ctx->dl; n = d->count; d->count = n + 1;\n                g = &ctx->dl->base[n];\n                g->w0 = 0xB5000000;\n                g->w1 = ((((obj->ln[i][0] - obj->vbase) * 2) & 0xFF) << 16) | ((((obj->ln[i][1] - obj->vbase) * 2) & 0xFF) << 8);\n            }\n        }\n    }\n    gl_func_00000000(obj);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_488A0.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}

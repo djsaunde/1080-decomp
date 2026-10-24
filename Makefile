@@ -1693,10 +1693,10 @@ GAMELIBS_34548_DONOR := build/src/game_libs/game_libs_o2_34548.c.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034548=$(GAMELIBS_34548_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003485C=$(GAMELIBS_34548_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_DONOR)
-# 488A0 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 81.4 -> 98.6). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_488A0_NM_DONOR := build/src/game_libs/game_libs_ncc_488A0_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000488A0=$(GAMELIBS_488A0_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_NM_DONOR)
+# 488A0 = line-list emitter (gSPVertex + G_LINE3D packets); NCC donor, EXACT (agent-c run 155: early-bit DL cursor d / n, c2 before the BB split).
+GAMELIBS_488A0_DONOR := build/src/game_libs/game_libs_ncc_488A0.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000488A0=$(GAMELIBS_488A0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_DONOR)
 # 34A78 = KSEG1 config-block install; the F6/F7 byte pair is one static object (shared lui at); NCC donor.
 # Its .bss reloc is renamed gl_func_00034A78_bss by the splice (pinned to 0x3B8F6 in undefined_syms_auto.txt).
 GAMELIBS_34A78_DONOR := build/src/game_libs/game_libs_ncc_34A78.cpp.o
