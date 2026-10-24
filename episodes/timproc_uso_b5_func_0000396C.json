@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_0000396C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T11:37:53.440118+00:00",
+  "end_time": "2026-10-24T11:37:53.440144+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T11:37:53.440138+00:00",
+      "assistant_text": "Exact via sibling recognition: opcode sequence identical to exact timproc_uso_b5_func_000038B0; ported its match_imports C with fields 0x184/0x188/0x18C.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 47,
+  "initial_m2c_source": null,
+  "final_source": "/* Sibling of timproc_uso_b5_func_000038B0 (identical opcode sequence; fields\n * 0x184/0x188/0x18C instead of 0x164/0x168/0x16C). Plain cfe -O2 C with the\n * same frozen context as 38B0. The shared context still declares this\n * function with the old (char *, s32, char *, f32, f32) placeholder\n * prototype; it is renamed out of the way so the typed definition below is\n * the only declaration. */\n#define timproc_uso_b5_func_0000396C timproc_uso_b5_func_0000396C_ctx_placeholder\n#include \"context_timproc_uso_b5.h\"\n#undef timproc_uso_b5_func_0000396C\nvoid timproc_uso_b5_func_0000396C(TimprocCoordinateOwner *owner, char *destination,\n                                Vec3 *source, f32 blend_arg, f32 height) {\n    f32 x, y, z;\n    f32 result_x, result_y, result_z;\n    f32 *out = (f32 *)(destination + 0x30);\n    x = owner->f_184 * owner->f_2A0 + owner->p_29C->f_DC;\n    y = owner->f_188 * owner->f_2A0 + owner->p_29C->f_E0 +\n        height * (1.0f - owner->f_2A0);\n    z = owner->f_18C * owner->f_2A0 + owner->p_29C->f_E4;\n    result_x = source->x + (x - source->x) * blend_arg;\n    result_y = source->y + (y - source->y) * blend_arg;\n    result_z = source->z + (z - source->z) * blend_arg;\n    out[12] = result_x;\n    out[13] = result_y;\n    out[14] = result_z;\n}\n",
+  "metadata": {
+    "source_path": "src/match_imports/timproc_uso_b5_func_0000396C.c",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000396C.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "report.json fuzzy 100.0 in the real build (REPLACE_FUNC_BODY splice of the match_imports object); ROM byte-identical."
+  }
+}

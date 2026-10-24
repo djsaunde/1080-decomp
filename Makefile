@@ -2737,10 +2737,7 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_2B74_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_2B74.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00002B74=$(TIMB5_2B74_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_2B74_DONOR)
-# 396C: NM-only NCC comparison donor (same 46 words as cfe; 41.8 -> 60.2 fuzzy).
-TIMB5_396C_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_396C_nm.cpp.o
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=$(TIMB5_396C_NM_DONOR)
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_396C_NM_DONOR)
+# 396C: exact via src/match_imports/timproc_uso_b5_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
 # B624: NM-only NCC comparison donor (static offset-vector objects; 88.57 -> 89.7 fuzzy, 140 -> 139 words = target).
 TIMB5_B624_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_NM_DONOR)
@@ -3334,7 +3331,13 @@ build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o: src/match
 build/src/match_imports/timproc_uso_b5_func_000038B0.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+build/src/match_imports/timproc_uso_b5_func_0000396C.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
 build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+	@mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c src/match_imports/context_timproc_uso_b5.h
@@ -3882,9 +3885,15 @@ build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf
 build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o scripts/match-origins-timproc_uso_b5_func_000038B0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000038B0.ld -e timproc_uso_b5_func_000038B0 -o $@ $@.stripped.o
+build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000396C.c.o scripts/match-origins-timproc_uso_b5_func_0000396C.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000396C.ld -e timproc_uso_b5_func_0000396C -o $@ $@.stripped.o
 build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o scripts/match-origins-timproc_uso_b5_func_000038B0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000038B0-nm.ld -e timproc_uso_b5_func_000038B0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o scripts/match-origins-timproc_uso_b5_func_0000396C-nm.ld
+	$(OBJCOPY) --strip-debug $< $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000396C-nm.ld -e timproc_uso_b5_func_0000396C -o $@ $@.stripped.o
 build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o scripts/match-origins-timproc_uso_b5_func_00005BF0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00005BF0.ld -e timproc_uso_b5_func_00005BF0 -o $@ $@.stripped.o
@@ -4263,8 +4272,12 @@ build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json $@
 build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000038B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000038B0.json $@
+build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000396C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000396C.json $@
 build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json $@
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000396C-nm.json $@
 build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00005BF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00005BF0.json $@
 build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -4632,9 +4645,13 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_fu
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001460=build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00001460.c scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000038B0=build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c scripts/match-bindings-timproc_uso_b5_func_000038B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c scripts/match-bindings-timproc_uso_b5_func_0000396C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000038B0=build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c scripts/match-bindings-timproc_uso_b5_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005BF0=build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c scripts/match-bindings-timproc_uso_b5_func_00005BF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005BF0=build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
@@ -5003,9 +5020,13 @@ build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: s
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
 build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
 build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
