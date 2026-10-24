@@ -1,4 +1,8 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00038A28: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 52.99; if (c) {} after the key >= 40 report call from a parameter-only fz sweep, 61.2, 87 -> 85 of 81 words).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00038A28: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 52.99 -> 61.2).
+ * Run 137 (61.38 -> 76.9 standalone): the out-of-range report is the switch DEFAULT and takes (code, o->0xC)
+ * (target `move a1,v0; lw a2,12(s0)`), the index key is UNSIGNED (`sltiu at,a3,40`), no separate range test.
+ * Residual: the target is a 9-entry jumptable (0x64..0x6C, `sltiu at,t6,9; jr`); edg keeps a compare chain
+ * here even with explicit 0x68..0x6C cases.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -15,14 +19,9 @@ extern char *c;
 }
 extern "C" void gl_func_00038A28(char *o, char *c) {
     int code = *(int *)c;
-    unsigned int i = (unsigned int)(code - 0x64);
     int *p;
-    int key;
+    unsigned int key;
     int r;
-    if (i >= 9) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001EC9C, *(int *)(o + 0xC));
-        return;
-    }
     switch (code) {
         case 0x64:
             p = *(int **)(c + 0x4);
@@ -39,7 +38,7 @@ extern "C" void gl_func_00038A28(char *o, char *c) {
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000((char *)&D_00000000 + 0x0001EC6C, key); if (c) {}
+                gl_func_00000000((char *)&D_00000000 + 0x0001EC6C, key); 
             }
             r = gl_func_00000000(*(char **)((char *)&D_00000000 + key * 4) + 0x10, o);
             if (*(int *)(o + 0x14) != 0) {
@@ -57,6 +56,7 @@ extern "C" void gl_func_00038A28(char *o, char *c) {
             *(char **)((char *)&D_00000000 + key * 4) = o;
             break;
         default:
+            gl_func_00000000((char *)&D_00000000 + 0x0001EC9C, code, *(int *)(o + 0xC));
             break;
     }
 }
