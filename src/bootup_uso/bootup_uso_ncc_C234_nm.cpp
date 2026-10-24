@@ -1,4 +1,7 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for func_0000C234: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.39; a second parameter empty test from round 2 gives 79.35).
+ * agent-g run 152 (79.55 -> 85.17): arg 2 of the 0x38 lookup call is a 4-byte struct BY VALUE (target `sw a1,140(sp)` + `sw a1,4(sp)` in the jal delay), the
+ * counter test is a post-increment compare on the old value (`slti v1,151`), the func_00008A7C sites are per-site symbols (target re-materialises
+ * lui/addiu per call, one shared symbol is CSE-spilled to sp+52), the 0x2C mode word reads through a data symbol (lw %lo folded), sp40 declared first.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -20,6 +23,8 @@ typedef struct {
      f32 f0;
 } C234Rec;
 extern "C" char func_00008A40[];
+struct S4C234 { s32 v; };
+extern "C" int bu_c234_sv(s32, S4C234, char *, int);
 extern "C" {
 extern float D_bu_ro_pool[];
 extern double D_bu_ro_dpool[];
@@ -34,6 +39,9 @@ extern int func_00000000(...);
 extern void func_00000008(...);
 extern float func_411c_rf(void);
 extern void func_00008A7C(...);
+extern char bu_c234_g8[];
+extern void bu_c234_v5(char *, char *, f64, f64, f64);
+extern char bu_c234_k0[], bu_c234_k1[], bu_c234_k2[], bu_c234_k3[], bu_c234_k4[];
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern s32 unk0;
@@ -51,6 +59,7 @@ extern f64 D_00000930;
 extern s32 D_000081C0[];
 }
 extern "C" void func_0000C234(char *arg0) {
+    V3C234 sp40;
     C234Rec spCC;
     f32 temp_f0;
     f32 temp_f0_2;
@@ -65,7 +74,7 @@ extern "C" void func_0000C234(char *arg0) {
     f32 var_f0;
     f32 var_f2;
     f32 var_f2_2;
-    s32 sp8C;
+    S4C234 sp8C;
     s16 temp_v0_2;
     V3C234 sp7C;
     s16 temp_v1;
@@ -76,7 +85,6 @@ extern "C" void func_0000C234(char *arg0) {
     V3C234 sp54;
     s32 temp_v1_2;
     s32 var_t0;
-    V3C234 sp40;
     char *sp3C;
     s32 var_v0;
     char *temp_a1;
@@ -187,24 +195,21 @@ c62:
 cend:
         *(s32 *)((char *)(arg0) + 0x95C) = 0;
     } else {
-        temp_v1_2 = *(s32 *)((char *)(arg0) + 0x95C);
         *(s32 *)((char *)(arg0) + 0xA4C) = 0;
         *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
-        *(s32 *)((char *)(arg0) + 0x95C) = (s32) (temp_v1_2 + 1); if (arg0) {}
         *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
-        if (temp_v1_2 >= 0x97) {
-            temp_a1_2 = *(s32 *)((char *)&func_00008A40 + 0x38);
-            sp8C = temp_a1_2;
-            temp_v0_3 = (char *)(func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_a1_2, sp3C, 0));
+        if ((*(s32 *)((char *)(arg0) + 0x95C))++ >= 0x97) {
+            sp8C.v = *(s32 *)((char *)&func_00008A40 + 0x38);
+            temp_v0_3 = (char *)(bu_c234_sv(*(s32 *)((char *)&D_00000000 + 0), sp8C, sp3C, 0));
             if (temp_v0_3 != 0) {
                 sp7C = *(V3C234 *)((char *)(temp_v0_3) + 0x30);
                 sp7C.y += 200.0f;
                 func_00000000(arg0, &sp7C);
                 *(s32 *)((char *)(arg0) + 0x95C) = 0;
-                func_00000000((char *)func_00008A7C + 0);
-                func_00000000((char *)func_00008A7C + 0x18, (char *)func_00008A7C + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
+                func_00000000(bu_c234_k0 + 0);
+                bu_c234_v5(bu_c234_k1 + 0x18, bu_c234_k2 + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
             }
         }
     }
@@ -213,9 +218,9 @@ cend:
     *(f32 *)((char *)(arg0) + 0x93C) = 0.0f;
     *(f32 *)((char *)(arg0) + 0x940) = 0.0f;
     *(f32 *)((char *)(arg0) + 0x944) = 0.0f;
-    func_00000000((char *)func_00008A7C + 0x28);
+    func_00000000(bu_c234_k3 + 0x28);
     func_00000000(arg0);
-    func_00000000((char *)func_00008A7C + 0x34);
+    func_00000000(bu_c234_k4 + 0x34);
     if (*(s32 *)((char *)(arg0) + 0x9A8) & 0x400) {
         func_00000000(arg0 + 0x808, 1);
         var_f2 = D_bu_ro_pool[0x94C / 4];
@@ -223,7 +228,7 @@ cend:
         func_00000000(arg0 + 0x808, 0);
         var_f2 = 1.0f;
     }
-    if (*(s32 *)((char *)&func_00000008 + 0x2C) != 2) {
+    if (*(s32 *)(bu_c234_g8 + 0x2C) != 2) {
         temp_f0 = *(f32 *)((char *)(arg0) + 0x91C);
         *(f32 *)((char *)(arg0) + 0x91C) = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
         func_00000000(*(s32 *)((char *)(arg0) + 0x850), *(s32 *)((char *)(arg0) + 0x91C));
