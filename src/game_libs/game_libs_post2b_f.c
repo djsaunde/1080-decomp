@@ -5,11 +5,11 @@ typedef struct { float x, y, z; } Vec3;
 
 
 
-/* game_libs_func_00074EDC: six all-zero words (0x74EDC..0x74EF4), NOT code.
- * Sym oracle 2026-09-09 (agent-g): section 0x89548 not exported, no baked
- * jal. Alignment run ahead of the vimgr.c object (osCreateViManager 74EFC);
- * always-skip class (all .word 0), kept as INCLUDE_ASM data. */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00074EDC);
+/* The six all-zero words at 0x74EDC..0x74EF4 (Sym oracle: section 0x89548
+ * not exported, no baked jal) are the tail pad of the previous object
+ * (gl_func_00074DB4, game_libs_ido53_74DB4.c) ahead of the vimgr.c object;
+ * they are appended to gl_func_00074DB4 as an all-zero SUFFIX_BYTES_FORCE
+ * (Makefile, both trees; was the pseudo-function game_libs_func_00074EDC). */
 
 /* gl_func_00074EFC = osCreateViManager + gl_func_0007507C = viMgrMain
  * (libultra vimgr.c verbatim, ONE IDO 5.3 -O1 -mips2 TU donor:
@@ -49,13 +49,15 @@ void gl_func_0007507C(char *arg0) {
  * (return D_global), matched in-place at the unit's default 7.1 -O2.
  * The symbol was mis-split as 75248 (3 leading zero pad words now in the
  * _pad sidecar); cc's natural function padding supplies the trailing
- * alignment to 0x7526C. */
+ * alignment pad (see below). */
 extern int D_75254_v;
 int game_libs_func_00075254(void) {
     return D_75254_v;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00075260);
+/* The zero word at 0x75260 is 75254's trailing alignment pad, appended to
+ * game_libs_func_00075254 as an all-zero SUFFIX_BYTES_FORCE (Makefile, both
+ * trees; was the pseudo-function game_libs_func_00075260). */
 
 /* gl_func_0007526C MATCHED 2026-06-10 as game_libs_func_00075264 (own
  * -O1 carve unit game_libs_ido_75264.c): the "dual-entry" theory was

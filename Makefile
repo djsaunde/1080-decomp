@@ -862,8 +862,15 @@ build/src/game_libs/game_libs_ido53_74D54.c.o: SUFFIX_BYTES := gl_func_00074D54=
 build/src/game_libs/game_libs_ido53_74D54.c.o: TRUNCATE_TEXT := 0x60
 build/src/game_libs/game_libs_ido53_74DB4.c.o build/non_matching/src/game_libs/game_libs_ido53_74DB4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_74DB4.c.o build/non_matching/src/game_libs/game_libs_ido53_74DB4.c.o: OPT_FLAGS := -O1
-build/src/game_libs/game_libs_ido53_74DB4.c.o: TRUNCATE_TEXT := 0x128
-build/src/game_libs/game_libs_post2b_f.c.o: TRUNCATE_TEXT := 0x388
+build/src/game_libs/game_libs_ido53_74DB4.c.o: TRUNCATE_TEXT := 0x140
+# 74DB4 object's 6-word tail pad (0x74EDC..0x74EF4, formerly the pseudo-fn
+# game_libs_func_00074EDC at the head of post2b_f) as an all-zero suffix.
+build/src/game_libs/game_libs_ido53_74DB4.c.o: SUFFIX_BYTES_FORCE := gl_func_00074DB4=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_ido53_74DB4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00074DB4=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post2b_f.c.o: TRUNCATE_TEXT := 0x370
+# 75254's trailing pad word (formerly the pseudo-fn game_libs_func_00075260).
+build/src/game_libs/game_libs_post2b_f.c.o: SUFFIX_BYTES_FORCE := game_libs_func_00075254=0x00000000
+build/non_matching/src/game_libs/game_libs_post2b_f.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := game_libs_func_00075254=0x00000000
 build/src/game_libs/game_libs_ido_75264.c.o build/non_matching/src/game_libs/game_libs_ido_75264.c.o: OPT_FLAGS := -O1
 # 2026-06-10: pad sidecar trimmed 5->2 words (0x48->0x3C). The segment truly ends at
 # VRAM 0x752A0 (ROM 0xE5A378 = game_libs_post bin start); the extra 3 zero words were
