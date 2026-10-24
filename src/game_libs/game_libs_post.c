@@ -7222,8 +7222,9 @@ typedef char *(*GP_000253C4)();
  * assignment cascades. Genuine node-base coloring ($a2 vs $v1) cap — needs the
  * original two-variable (store-temp vs access-base) split that can't be
  * reconstructed from the .s. */
+extern void gl_253c4_fd(); /* run 139: fn-typed blank base (target lui v0 / addiu v0,v0,0, no reloc, then lw 0x1030(v0)) */
 void game_libs_func_000253C4(u32 *arg0, s32 arg1, char *arg2) {
-    char *D = (char *)&D_00000000;
+    char *D = (char *)gl_253c4_fd;
     s32 temp_v0_3;
     u32 temp_v0;
     u32 temp_v0_2;
