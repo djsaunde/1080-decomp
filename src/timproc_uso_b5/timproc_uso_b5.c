@@ -7119,12 +7119,12 @@ void timproc_uso_b5_func_0000B154(char *arg0) {
     s32 var_v0;
     s32 temp_t5;
     Vec154 sp68;
+    Vec154 sp2C;
     volatile s32 pad9C[1];
     s32 *temp_a0_2;
     Vec154 sp48;
     f32 ang;
     Vec154 sp38;
-    Vec154 sp2C;
     f32 *sp28;
     volatile s32 pad40;
 

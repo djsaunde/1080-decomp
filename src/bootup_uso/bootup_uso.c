@@ -1955,8 +1955,8 @@ void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
     char *r3;
     char *obj2;
     char *obj;
-    char *p;
     char *e;
+    char *p;
     volatile int pqa[6]; /* run 138: frame 112 -> 144 = target (vec1 at 72) */
     f32 vec1[3];
     f32 vec2[3];
