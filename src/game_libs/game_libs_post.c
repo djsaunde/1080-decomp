@@ -4566,175 +4566,99 @@ block_29:
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00022760);
 #endif
 
-// gl_func_00022A9C — STRUCTURAL PASS (0x2CC / 179 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
-// bundle). The heap-arena INITIALIZER — the setup counterpart to the
-// gl_func_00022760 first-fit allocator.
-//
-//   void gl_func_00022A9C(void) {
-//     S  *g    = &D_0;
-//     int n    = g->w_2070;                            // record count
-//     int sz   = g->h_2034;                             // unit size
-//     int tot  = (n << 6) * sz;                          // arena bytes
-//     g->w_2068 = g->w_2060;                             // save base
-//     void *blk = (*alloc)(&D_2198, tot);                // jal 0 USO
-//     g->w_1E08 = blk;                                   // arena base
-//     int t3   = (n << 6) * 3;
-//     g->w_1E0C = blk;                                   // free cursor
-//     g->w_1E10 = blk + tot;                             // arena end
-//     ... seed the block-header table / link the free list ...
-//   }
-//
-// Struct-typing reference: pairs with gl_func_00022760 — it produces
-//   the very arena globals that allocator walks: word &D_0+0x1E08
-//   (block-table base), &D_0+0x1E0C (free cursor), &D_0+0x1E10 (arena
-//   end), plus &D_0+0x2068 (saved original base). Total size is the
-//   live record count &D_0+0x2070 scaled (<<6) times the unit-size
-//   halfword &D_0+0x2034 (the same count/size globals the
-//   gl_func_0002119C / gl_func_00021498 sprite subsystem uses). The
-//   backing block is obtained from a USO-relocated allocator (`jal 0`
-//   slot, resolved at load) keyed on descriptor &D_2198. This is the
-//   one-time heap bring-up for the gl_func_00022760 allocator family.
-// Caps (DEFERRED): CLEAN single jr $ra. Heap-arena INITIALIZER —
-//   one-time bring-up counterpart to the gl_func_00022760 first-fit
-//   allocator. Real-C STRUCTURAL body below per the analysis (total
-//   = (count<<6)*unit-size from &D_0+0x2070/0x2034; save base to
-//   &D_0+0x2068; jal-0 USO-reloc backing alloc keyed on &D_2198;
-//   set arena base/free/end at &D_0+0x1E08/0x1E0C/0x1E10; seed the
-//   block-header table). Byte-match deferred — placeholder jal-0
-//   allocator needs USO reloc infra + seed-loop schedule. Name
-//   pre-checked: no extern reuse (collision-safe). gl_func_00000000
-//   = canonical never-defined USO placeholder for the allocator.
-// gl_func_00022A9C — m2c DECODE (37.41% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
-// AUDIT REWRITE 2026-07 agent-h: base-pin form (21498 lever family, but the
-// CONVERSE spelling): target pins s1 = &D_0 and accesses EVERY field off(s1)
-// with no post-jal remat -- reached by direct `*(T*)((char*)&D_00000000+off)`
-// spellings and NO base local. Held pointers only for the loop/call bases:
-// desc = &D+0x2198 (s4, a0 of every alloc call), rec (s0, per-iteration).
-// Held `three = 3` (s3) keeps the lim recompute in multu (literal 3 would
-// strength-reduce). Fill loops are pointer-cursor: p = (u8*)&D + n advancing
-// to the fresh-materialized limit (u8*)&D + 0x100.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();          /* jal 0x0 USO placeholder (alloc callee) */
-#define G22(o)  (*(s32 *)((char *)&D_00000000 + (o)))
-#define GH22(o) (*(s16 *)((char *)&D_00000000 + (o)))
-#define GB22(o) (*(s8 *)((char *)&D_00000000 + (o)))
-void gl_func_00022A9C(s32 arg0) {
-    char *desc;                 /* s4: allocator descriptor &D+0x2198        */
-    char *rec;                  /* s0: current 16-byte record                */
-    s32 three;                  /* s3: held 3 (keeps lim recompute in multu) */
-    s32 cnt;                    /* s2                                        */
-    u32 n;                      /* a0: live record count                     */
-    s32 off;                    /* v1: record byte offset                    */
-    u8 *p;                      /* v0: fill cursor                           */
-    s32 v;
+/* gl_func_00022A9C EXACT 2026-10-23 (agent-c run 140, 79.83 -> 100): OoT's
+ * AudioLoad_InitSampleDmaBuffers (load.c) with the older (SM64-era) spellings:
+ * the first fill loop recomputes its bound as `specUnk4 * (numNotes * 3)` every
+ * iteration (IDO holds the 3 in s3 for the multu), and the buffer allocation size is
+ * `specUnk4 * (numNotes * 4 * sizeof(SampleDma))`. gAudioCtx offsets: sampleDmas
+ * 0x1E08, count 0x1E0C, listSize1 0x1E10, reuse queues 0x1E18 / 0x1F18, rd/wr
+ * positions 0x2018..0x201B, specUnk4 (s16) 0x2034, buf sizes 0x2060 / 0x2064 / 0x2068,
+ * numNotes 0x2070, miscPool 0x2198. */
+typedef struct { u8 *ramAddr; u32 devAddr; u16 sizeUnused; u16 size; u8 unused; u8 reuseIndex; u8 ttl; } gl_22A9C_SampleDma;
+typedef struct { char pad[0x10]; } gl_22A9C_Pool;
+typedef struct {
+    char pad0[0x1E08]; gl_22A9C_SampleDma *sampleDmas; u32 sampleDmaCount; u32 sampleDmaListSize1; char pad1e14[4];
+    u8 sampleDmaReuseQueue1[0x100]; u8 sampleDmaReuseQueue2[0x100];
+    u8 sampleDmaReuseQueue1RdPos; u8 sampleDmaReuseQueue2RdPos; u8 sampleDmaReuseQueue1WrPos; u8 sampleDmaReuseQueue2WrPos;
+    char pad201c[0x2034 - 0x201C]; s16 specUnk4; char pad2036[0x2060 - 0x2036];
+    s32 sampleDmaBufSize1; s32 sampleDmaBufSize2; s32 sampleDmaBufSize; char pad206c[4]; s32 numNotes;
+    char pad2074[0x2198 - 0x2074]; gl_22A9C_Pool miscPool;
+} gl_22A9C_Ctx;
+#define gl_22A9C_gAudioCtx (*(gl_22A9C_Ctx *)&D_00000000)
+#define AudioHeap_Alloc (void *)gl_func_00000000
+#define AudioHeap_AllocAttemptExternal (u8 *)gl_func_00000000
+#define AudioHeap_WritebackDCache gl_func_00000000
 
-    G22(0x2068) = G22(0x2060);
-    desc = (char *)&D_00000000 + 0x2198;
-    v = gl_func_00000000(desc, (G22(0x2070) << 6) * GH22(0x2034));
-    G22(0x1E08) = v;
-    if (1) {
-        three = 3;
+void gl_func_00022A9C(s32 numNotes) {
+    gl_22A9C_SampleDma *dma;
+    s32 i;
+    s32 t2;
+    s32 j;
+
+    gl_22A9C_gAudioCtx.sampleDmaBufSize = gl_22A9C_gAudioCtx.sampleDmaBufSize1;
+    gl_22A9C_gAudioCtx.sampleDmas = AudioHeap_Alloc(&gl_22A9C_gAudioCtx.miscPool, gl_22A9C_gAudioCtx.specUnk4 * (gl_22A9C_gAudioCtx.numNotes * 4 * sizeof(gl_22A9C_SampleDma)));
+    for (i = 0; i < gl_22A9C_gAudioCtx.specUnk4 * (gl_22A9C_gAudioCtx.numNotes * 3); i++) {
+        dma = &gl_22A9C_gAudioCtx.sampleDmas[gl_22A9C_gAudioCtx.sampleDmaCount];
+        dma->ramAddr = AudioHeap_AllocAttemptExternal(&gl_22A9C_gAudioCtx.miscPool, gl_22A9C_gAudioCtx.sampleDmaBufSize);
+        if (dma->ramAddr == NULL) {
+            break;
+        } else {
+            AudioHeap_WritebackDCache(dma->ramAddr, gl_22A9C_gAudioCtx.sampleDmaBufSize);
+            dma->size = gl_22A9C_gAudioCtx.sampleDmaBufSize;
+            dma->devAddr = 0;
+            dma->sizeUnused = 0;
+            dma->unused = 0;
+            dma->ttl = 0;
+            gl_22A9C_gAudioCtx.sampleDmaCount++;
+        }
     }
-    cnt = 0;
-    v = G22(0x2070) * three;
-    if (v * GH22(0x2034) > 0) {
-        do {
-            rec = (char *)(G22(0x1E0C) * 0x10) + G22(0x1E08);
-            v = gl_func_00000000(desc, G22(0x2068));
-            *(s32 *)rec = v;
-            if (v == 0) {
-                break;
-            }
-            gl_func_00000000(*(s32 *)rec, G22(0x2068));
-            *(s32 *)(rec + 0x4) = 0;
-            *(s16 *)(rec + 0x8) = 0;
-            *(s8 *)(rec + 0xC) = 0;
-            *(s8 *)(rec + 0xE) = 0;
-            *(s16 *)(rec + 0xA) = G22(0x2068);
-            cnt += 1;
-            G22(0x1E0C) += 1;
-            v = G22(0x2070) * three;
-        } while (cnt < v * GH22(0x2034));
-        cnt = 0;
+
+    for (i = 0; (u32)i < gl_22A9C_gAudioCtx.sampleDmaCount; i++) {
+        gl_22A9C_gAudioCtx.sampleDmaReuseQueue1[i] = i;
+        gl_22A9C_gAudioCtx.sampleDmas[i].reuseIndex = i;
     }
-    n = G22(0x1E0C);
-    p = (u8 *)&D_00000000;
-    off = 0;
-    if (n != 0) {
-        do {
-            *(u8 *)(p + 0x1E18) = cnt;
-            p += 1;
-            *(s8 *)(G22(0x1E08) + off + 0xD) = cnt;
-            n = G22(0x1E0C);
-            cnt += 1;
-            off += 0x10;
-        } while ((u32)cnt < n);
+
+    for (i = gl_22A9C_gAudioCtx.sampleDmaCount; i < 0x100; i++) {
+        gl_22A9C_gAudioCtx.sampleDmaReuseQueue1[i] = 0;
     }
-    if ((s32)n < 0x100) {
-        cnt = n;
-        p = (u8 *)&D_00000000 + cnt;
-        do {
-            p += 1;
-            *(u8 *)(p + 0x1E17) = 0;
-        } while (p < (u8 *)&D_00000000 + 0x100);
-        n = G22(0x1E0C);
+
+    gl_22A9C_gAudioCtx.sampleDmaReuseQueue1RdPos = 0;
+    gl_22A9C_gAudioCtx.sampleDmaReuseQueue1WrPos = gl_22A9C_gAudioCtx.sampleDmaCount;
+    gl_22A9C_gAudioCtx.sampleDmaListSize1 = gl_22A9C_gAudioCtx.sampleDmaCount;
+    gl_22A9C_gAudioCtx.sampleDmaBufSize = gl_22A9C_gAudioCtx.sampleDmaBufSize2;
+
+    for (j = 0; j < gl_22A9C_gAudioCtx.numNotes; j++) {
+        dma = &gl_22A9C_gAudioCtx.sampleDmas[gl_22A9C_gAudioCtx.sampleDmaCount];
+        dma->ramAddr = AudioHeap_AllocAttemptExternal(&gl_22A9C_gAudioCtx.miscPool, gl_22A9C_gAudioCtx.sampleDmaBufSize);
+        if (dma->ramAddr == NULL) {
+            break;
+        } else {
+            AudioHeap_WritebackDCache(dma->ramAddr, gl_22A9C_gAudioCtx.sampleDmaBufSize);
+            dma->size = gl_22A9C_gAudioCtx.sampleDmaBufSize;
+            dma->devAddr = 0U;
+            dma->sizeUnused = 0;
+            dma->unused = 0;
+            dma->ttl = 0;
+            gl_22A9C_gAudioCtx.sampleDmaCount++;
+        }
     }
-    GB22(0x2018) = 0;
-    GB22(0x201A) = n;
-    G22(0x1E10) = n;
-    cnt = 0;
-    G22(0x2068) = G22(0x2064);
-    if (G22(0x2070) > 0) {
-        do {
-            rec = (char *)(G22(0x1E0C) * 0x10) + G22(0x1E08);
-            v = gl_func_00000000(desc, G22(0x2068));
-            *(s32 *)rec = v;
-            if (v == 0) {
-                break;
-            }
-            gl_func_00000000(*(s32 *)rec, G22(0x2068));
-            *(s32 *)(rec + 0x4) = 0;
-            *(s16 *)(rec + 0x8) = 0;
-            *(s8 *)(rec + 0xC) = 0;
-            *(s8 *)(rec + 0xE) = 0;
-            *(s16 *)(rec + 0xA) = G22(0x2068);
-            cnt += 1;
-            G22(0x1E0C) += 1;
-        } while (cnt < G22(0x2070));
+
+    for (i = gl_22A9C_gAudioCtx.sampleDmaListSize1; (u32)i < gl_22A9C_gAudioCtx.sampleDmaCount; i++) {
+        gl_22A9C_gAudioCtx.sampleDmaReuseQueue2[i - gl_22A9C_gAudioCtx.sampleDmaListSize1] = i;
+        gl_22A9C_gAudioCtx.sampleDmas[i].reuseIndex = i - gl_22A9C_gAudioCtx.sampleDmaListSize1;
     }
-    n = G22(0x1E0C);
-    cnt = G22(0x1E10);
-    off = cnt << 4;
-    if ((u32)cnt < n) {
-        p = (u8 *)&D_00000000 + cnt;
-        do {
-            *(u8 *)(p - G22(0x1E10) + 0x1F18) = cnt;
-            p += 1;
-            *(s8 *)(G22(0x1E08) + off + 0xD) = cnt - G22(0x1E10);
-            n = G22(0x1E0C);
-            cnt += 1;
-            off += 0x10;
-        } while ((u32)cnt < n);
+
+    for (i = gl_22A9C_gAudioCtx.sampleDmaCount; i < 0x100; i++) {
+        gl_22A9C_gAudioCtx.sampleDmaReuseQueue2[i] = gl_22A9C_gAudioCtx.sampleDmaListSize1;
     }
-    if ((s32)n < 0x100) {
-        cnt = n;
-        p = (u8 *)&D_00000000 + cnt;
-        do {
-            p += 1;
-            *(u8 *)(p + 0x1F17) = G22(0x1E10);
-        } while (p < (u8 *)&D_00000000 + 0x100);
-        n = G22(0x1E0C);
-    }
-    GB22(0x2019) = 0;
-    GB22(0x201B) = n - G22(0x1E10);
+
+    gl_22A9C_gAudioCtx.sampleDmaReuseQueue2RdPos = 0;
+    gl_22A9C_gAudioCtx.sampleDmaReuseQueue2WrPos = gl_22A9C_gAudioCtx.sampleDmaCount - gl_22A9C_gAudioCtx.sampleDmaListSize1;
 }
-#undef G22
-#undef GH22
-#undef GB22
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00022A9C);
-#endif
+#undef gl_22A9C_gAudioCtx
+#undef AudioHeap_Alloc
+#undef AudioHeap_AllocAttemptExternal
+#undef AudioHeap_WritebackDCache
 
 // gl_func_00022D68 — STRUCTURAL PASS (0x78 / 30 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
