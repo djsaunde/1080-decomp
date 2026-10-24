@@ -1,4 +1,5 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for func_000063B4: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 76.09; a second parameter empty test from round 2 gives 82.95).
+ * agent-g run 152 (83.10 -> 83.21): pad[1] in the frame struct gives the target frame 144 (A / B at the target offsets; q lands 8 high).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -6,7 +7,7 @@ typedef float f32; typedef double f64;
 #undef NULL
 #define NULL 0
 typedef struct { float x, y, z; } Vec3;
-typedef struct { float q[4]; float pad[3]; Vec3 B; Vec3 A; } Bu63b4F;
+typedef struct { float q[4]; float pad[1]; Vec3 B; Vec3 A; } Bu63b4F;
 #define BU63B4_MC(c) ((float (*)[4])(*(char **)((c) + 0x70) + 0xB4))
 #define BU63B4_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define BU63B4_MAX(a, b) (((b) < (a)) ? (a) : (b))
