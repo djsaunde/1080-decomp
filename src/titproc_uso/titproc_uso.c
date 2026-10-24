@@ -822,6 +822,15 @@ void titproc_uso_func_0000101C(int *a0) {
  * 5th and last cross-USO jr-tN scan candidate (scorecard: 2 exact
  * matches landed, 1 control-flow fix, 1 harness gotcha, 1 double-cap,
  * 1 already-planned big decode = this). */
+/* 2026-10-24 agent-g run 162: four decode fixes read off the target, 94.13 -> 97.22,
+ * length 1136 -> 1160 (= target): case 2 calls 012150(&D) after the 0xFFF7 clear (the
+ * store rides its jal delay; the pointer is `reg + 4`, as in the 1710 sibling's case 2);
+ * the 0x40100 gate sits at the END of case 3's else arm (reached when av != 0 or the
+ * 512 gate fails, not nested inside them); the 0xA8 / 0x84 stores name their own
+ * symbols (import_00263D30 / import_00020098: per-site `lui at`, no shared base);
+ * and the clamp test re-derefs `s0->0x64 + 0x3C` instead of `*c`, so `*c` is reloaded
+ * after the compare as in the target. Left: obj/vt v0/v1 pairs, the 0x70 load web. */
+extern char import_00263D30;
 extern void gl_func_00000000_116c_v();
 void titproc_uso_func_0000116C(char *s0) {
     char *v1, *vt;
@@ -906,10 +915,12 @@ fire:
     case 2: {
         gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
         if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
-            char *reg;
             gl_func_00000000_116c_v(5);
-            reg = *(char **)((char *)&D_00000000 + 0x154);
-            *(unsigned short *)(reg + 4) = *(unsigned short *)(reg + 4) & 0xFFF7;
+            if (1) {
+                char *z = *(char **)((char *)&D_00000000 + 0x154) + 4;
+                *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
+            }
+            gl_func_00000000_116c_v((char *)&D_00000000);
             gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
             v1 = *(char **)(s0 + 0x5C);
             vt5 = *(char **)(v1 + 0x28);
@@ -932,7 +943,7 @@ fire:
         }
         if (*(int *)(*(char **)(*(char **)(s0 + 0x50) + 0x44) + 0x34) != 0) {
             c = (int *)(*(char **)(s0 + 0x64) + 0x3C);
-            if (*c < 255) {
+            if (*(int *)(*(char **)(s0 + 0x64) + 0x3C) < 255) {
                 *c = *c + 16;
                 if (*(int *)(*(char **)(s0 + 0x64) + 0x3C) >= 256) {
                     *(int *)(*(char **)(s0 + 0x64) + 0x3C) = 720;
@@ -969,21 +980,21 @@ fire:
                     *(int *)(s0 + 0x40) = 1;
                     *(int *)(s0 + 0x3C) = (*(int *)(s0 + 0x70) * 16 - *(int *)(s0 + 0x70)) * 2;
                     gl_func_00000000_116c_v(2050);
-                    /* 2026-06-10 pass 3: the 0x40100 gate + 40-byte-record
-                     * fn-ptr table call (entry field 0x90 = callback;
-                     * D->0xA8 = self, D->0x84 = index published first). */
-                    if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
-                        gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
-                        gl_func_00000000_116c_v(5);
-                        v1 = *(char **)(s0 + 0x5C);
-                        n = *(int *)(v1 + 0x7C);
-                        if (*(int *)(v1 + n * 40 + 0x90) != 0) {
-                            *(char **)((char *)&D_00000000 + 0xA8) = s0;
-                            *(int *)((char *)&D_00000000 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C);
-                            v1 = *(char **)(s0 + 0x5C);
-                            ((void (*)(void))(*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90)))();
-                        }
-                    }
+                }
+            }
+            /* 0x40100 gate + 40-byte-record fn-ptr table call (entry field
+             * 0x90 = callback; D->0xA8 = self, D->0x84 = index published
+             * first): reached on every else-arm path (target bnez/beqz to it). */
+            if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
+                gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
+                gl_func_00000000_116c_v(5);
+                v1 = *(char **)(s0 + 0x5C);
+                n = *(int *)(v1 + 0x7C);
+                if (*(int *)(v1 + n * 40 + 0x90) != 0) {
+                    *(char **)((char *)&import_00263D30 + 0xA8) = s0;
+                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C);
+                    v1 = *(char **)(s0 + 0x5C);
+                    ((void (*)(void))(*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90)))();
                 }
             }
         }
