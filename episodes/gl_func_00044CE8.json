@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00044CE8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T15:05:24.967943+00:00",
+  "end_time": "2026-10-24T15:05:24.967962+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T15:05:24.967958+00:00",
+      "assistant_text": "C++ donor: pool record alloc &p->e[p->n++] with Pool *p = &o->pool (base rematerialised as in the target); the old count rides in r (r = (Rec *)p->n) and the increment is a separate p->n++ statement, which colours the count v1 like the target (p->n = (int)r + 1 coloured a0).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 43,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00044CE8 (post0b, 43 words), EXACT.\n * Spliced into build/src and build/non_matching (REPLACE_FUNC_BODY).\n * agent-c run 148 (docs/IDO_CODEGEN.md kit LXXXVII): the pool alloc\n * `&pool->e[pool->n++]` (50 twelve-byte records at +0x378, count at +0x5D0)\n * under NCC gives the target's base shape -- the first count test folds to\n * `lw 1488(a3)`, the pool base `addiu v0,a3,888` is rematerialised in the\n * bnezl likely slot and again after the overflow call. Frame 32 = two slots\n * (r 28, p 24): every edg temp costs a slot, so the old count rides in r\n * itself (role pair).\n * agent-c run 149 (kit LXXXIX): the increment written as a separate\n * `p->n++` statement (not `p->n = (int)r + 1`) keeps the old count in its own\n * register (v1) instead of r's argument register a0 -> 100. */\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern char D_00000000[];\n}\nstruct Rec { int a, b, c; };\nstruct Pool {\n    Rec e[50];\n    int n;\n};\nstruct Obj {\n    char pad0[0x2AC];\n    Rec *slot[51];\n    Pool pool;\n};\nextern \"C\" Rec *gl_func_00044CE8(Obj *o, unsigned int i, int a2) {\n    if (i >= 50) gl_func_00000000(D_00000000 + 0x1FE94, D_00000000 + 0x1FEA8, 0x102D);\n    Rec *r;\n    Pool *p = &o->pool;\n    if (p->n >= 50) gl_func_00000000();\n    r = (Rec *)p->n; p->n++;\n    r = &p->e[(int)r];\n    o->slot[i] = r;\n    r->c = 0;\n    gl_func_00000000(r, a2);\n    return r;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_44CE8.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00044CE8.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -G 0 -non_shared -Wab,-r4300_mul -mips2 -32",
+    "verification": "report.json fuzzy 100.0 (donor spliced into build/src + build/non_matching post0b); full make ROM cmp OK."
+  }
+}

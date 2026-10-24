@@ -1631,10 +1631,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D468_NM_DONOR
 GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D688=$(GAMELIBS_4D688_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D688_NM_DONOR)
-# 44CE8 = pool record alloc under NCC (agent-c run 148, cfe 91.28): base rematerialised, frame 32. Still NON_MATCHING: NM comparison object only.
-GAMELIBS_44CE8_NM_DONOR := build/src/game_libs/game_libs_ncc_44CE8_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044CE8=$(GAMELIBS_44CE8_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_44CE8_NM_DONOR)
+# 44CE8 = pool record alloc; NCC donor, EXACT (agent-c run 148: base rematerialised, frame 32; run 149: separate p->n++ statement).
+GAMELIBS_44CE8_DONOR := build/src/game_libs/game_libs_ncc_44CE8.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044CE8=$(GAMELIBS_44CE8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_44CE8_DONOR)
 # 48510 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_48510_NM_DONOR := build/src/game_libs/game_libs_ncc_48510_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
