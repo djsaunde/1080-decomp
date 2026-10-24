@@ -16822,7 +16822,6 @@ int gl_func_0004AE40(char *self, int a1, int a2, int aux, int a4) {
     return r;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0004AFB4: 35-insn 5-arg wrapper + conditional pair-dispatch (0x8C, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
@@ -16850,20 +16849,21 @@ int gl_func_0004AE40(char *self, int a1, int a2, int aux, int a4) {
  * RESIDUAL: the offset temp colours v1 (target v0, loaded from a3's home in
  * the bnez delay slot), and `lw a0,40(sp)` schedules before `sw v0,36(sp)`.
  * Tried: early-return / goto / comma-test forms, register/void* r, unsigned
- * a3, a3 <<= 3 in place, struct-typed a0, if(1){} barriers. */
+ * a3, a3 <<= 3 in place, struct-typed a0, if(1){} barriers.
+ * 2026-10-24 (agent-c run 155): EXACT. The middle call's result is unused: calling it through a VOID blank
+ * alias (gl_func_00000000_4afb4v, pinned to 0) means it defines no v0, so the a3<<3 offset web keeps v0
+ * across it (spill 0x20 + `lw v0,32(sp)` restore, like the target). The run-131 `if (a3) {}` is dropped. */
 typedef struct { int w0; unsigned short h4, h6; } Gl4AFB4Ent;
+extern void gl_func_00000000_4afb4v(); /* void blank alias: the 2nd call defines no v0, so the a3<<3 web keeps v0 across it */
 int gl_func_0004AFB4(int *a0, int a1, int a2, int a3, int stack_arg) {
-    extern short D_S[];
+    extern short D_4AFB4_s[];
     int r = gl_func_00000000(a0, a1, a2, a3, stack_arg);
     if (a1 == 0) {
-        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h4, D_S[0]);
-        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, D_S[1]); if (a3) {} /* run 131: a3 live past the 2nd call -> offset temp v0 */
+        gl_func_00000000_4afb4v(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h4, D_4AFB4_s[0]);
+        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, D_4AFB4_s[1]);
     }
     return r;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004AFB4);
-#endif
 
 /* 26-insn entry-array iter: count re-read from a0[0xC/4] each iter
  * (callee may mutate). Naming `count` as a local regresses to 88% by

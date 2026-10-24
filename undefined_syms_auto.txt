@@ -5190,3 +5190,5 @@ func_00000000_5a2c4v = 0x00000000;  /* agent-g run 156: void alias, gl 5A2C4 NM 
 func_00000000_e68v = 0x00000000;  /* agent-g run 156: void alias, bootup E68 NM */
 gl_func_00000000_sqrt5F984 = 0x00000000;  /* agent-g run 156: 5F984 donor sqrt placeholder */
 gl_func_00000000_rot5F984 = 0x00000000;  /* agent-g run 156: 5F984 donor rotation placeholder */
+gl_func_00000000_4afb4v = 0x00000000;
+D_4AFB4_s = 0x00000000;

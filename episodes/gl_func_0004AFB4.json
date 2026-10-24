@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0004AFB4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T23:24:43.169353+00:00",
+  "end_time": "2026-10-24T23:24:43.169376+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T23:24:43.169371+00:00",
+      "assistant_text": "cfe: the middle call's result is unused; calling it through a void blank alias (pinned to 0) means it defines no v0, so the a3<<3 offset web keeps v0 across it (spill + lw v0 restore like the target).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 35,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct { int w0; unsigned short h4, h6; } Gl4AFB4Ent;\nextern void gl_func_00000000_4afb4v(); /* void blank alias: the 2nd call defines no v0, so the a3<<3 web keeps v0 across it */\nint gl_func_0004AFB4(int *a0, int a1, int a2, int a3, int stack_arg) {\n    extern short D_4AFB4_s[];\n    int r = gl_func_00000000(a0, a1, a2, a3, stack_arg);\n    if (a1 == 0) {\n        gl_func_00000000_4afb4v(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h4, D_4AFB4_s[0]);\n        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, D_4AFB4_s[1]);\n    }\n    return r;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
