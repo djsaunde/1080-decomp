@@ -20,4 +20,7 @@ int game_libs_func_00075264(unsigned int pc, unsigned int flag) {
     *(volatile unsigned int *)0xA4080000 = pc;
     return 0;
 }
-#pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/game_libs_func_00075264_pad.s")
+/* The two zero words after the body (0x75298/0x7529C) are the object's
+ * trailing alignment pad, appended to game_libs_func_00075264 as an all-zero
+ * SUFFIX_BYTES_FORCE (Makefile, both trees; was the pseudo-function
+ * game_libs_func_00075264_pad). */

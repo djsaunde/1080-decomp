@@ -877,6 +877,9 @@ build/src/kernel/kernel_003.c.o build/non_matching/src/kernel/kernel_003.c.o: OP
 build/src/kernel/kernel_005.c.o build/non_matching/src/kernel/kernel_005.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_005_b.c.o build/non_matching/src/kernel/kernel_005_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_007.c.o build/non_matching/src/kernel/kernel_007.c.o: OPT_FLAGS := -O1
+# The unit's 2-word trailing pad (formerly the _pad sidecar pseudo-fn).
+build/src/game_libs/game_libs_ido_75264.c.o: SUFFIX_BYTES_FORCE := game_libs_func_00075264=0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_ido_75264.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := game_libs_func_00075264=0x00000000,0x00000000
 build/src/kernel/kernel_009.c.o build/non_matching/src/kernel/kernel_009.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_011.c.o build/non_matching/src/kernel/kernel_011.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_013.c.o build/non_matching/src/kernel/kernel_013.c.o: OPT_FLAGS := -O1
