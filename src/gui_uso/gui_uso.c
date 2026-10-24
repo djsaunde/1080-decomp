@@ -1057,7 +1057,8 @@ void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
     idx = *(s32 *)(dl + 4);
     *(s32 *)(dl + 4) = idx + 1;
     slot1 = *(s32 *)(*(s32 *)(t + 0xC)) + idx * 8;
-    *(s32 *)slot1 = 0xBB000001; *(s32 *)(slot1 + 4) = 0x80008000;
+    *(s32 *)slot1 = 0xBB000001;
+    *(s32 *)(slot1 + 4) = 0x80008000;
 
     slot2 = *(s32 *)(arg0 + 0x10);
     sp30 = *(s16 *)(slot2 + 0x22);
@@ -1163,7 +1164,8 @@ void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
     idx = *(s32 *)(dl + 4);
     *(s32 *)(dl + 4) = idx + 1;
     w = *(s32 *)(*(s32 *)(t + 0xC)) + idx * 8;
-    *(s32 *)w = 0xB3000000; *(s32 *)(w + 4) = (slot2 << 0x10) | (u & 0xFFFF);
+    *(s32 *)w = 0xB3000000;
+    *(s32 *)(w + 4) = (slot2 << 0x10) | (u & 0xFFFF);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00003714);
