@@ -1237,588 +1237,581 @@ char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DCB4);
 #endif
 
-// gl_func_0001E134 — STRUCTURAL PASS (0xD44 / 849 words ≈ 3.4KB, no
-// episode). Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION
-// (1 jr, no bundle) — the LARGEST member of the game_libs text/sprite
-// subsystem seen so far: a sprite/record-build + DL-emit orchestrator.
-// Huge -0x160 frame, full s0-s8/ra save, a0 at sp+0x160, a3 at +0x16C.
-//
-//   ret gl_func_0001E134(a0, int *a1, a2, a3) {
-//     int w   = a1[0];                            // packed control word
-//     int idx = a0*4 - a0;                         // a0 * 3 ...
-//     idx = (idx + a0) << 4;                        // ... scaled stride
-//     int f0  = (w << 11) >> 30;                    // 2-bit subfield
-//     int f1  = (w <<  1) >> 31;                     // 1-bit subfield
-//     R *tbl  = *(R**)(&D_0 + 0x2CFC);              // record table ptr
-//     R *rec  = tbl + idx;                           // target record
-//     if (f1 != 1) {                                 // build branch
-//       rec->b_0  = 0;  rec->w_8  = 0;               // zero-init the
-//       rec->h_6  = 0;  rec->h_10 = 0;               //  record fields
-//       rec->h_12 = 0;  rec->b_2  = 0;  rec->b_3 = 0;
-//       ... populate from a1[]/a2 ...
-//     }
-//     ... ~800 words: per-element loop emitting F3D/GBI commands and
-//         delegating leaf glyph/sprite draws to the gl_func_0001CFDC
-//         family; cleanup + return ...
-//   }
-//
-// Struct-typing reference: control word a1[0] carries packed
-//   subfields decoded by shift pairs (<<11>>30 = bits, <<1>>31 = sign-
-//   ish flag). Record table is a pointer global at &D_0 + 0x2CFC;
-//   records are fixed-stride (index = a0*3 then <<4). A record R has
-//   byte fields at 0/2/3, halfwords at 6/0x10/0x12, word at 8 — all
-//   zero-initialized on the build path before being filled. This is
-//   the top-level sprite/text record builder + display-list emitter;
-//   leaf draws delegate to the gl_func_0001CFDC glyph family.
-// Caps (DEFERRED): CLEAN single jr $ra. Largest game_libs text/sprite
-//   member — record-build + DL-emit orchestrator. Real-C STRUCTURAL
-//   body below per the analysis (control word a1[0] -> packed
-//   subfields, record = (&D_0+0x2CFC ptr) + (a0*3<<4), zero-init +
-//   populate on the f1!=1 build path, then per-element command/leaf
-//   draw loop). Byte-match deferred — ~849-insn multi-phase, many
-//   runtime-patched placeholder jals (need USO reloc infra), -0x160
-//   frame s0-s8 schedule. Name pre-checked: no extern reuse
-//   (collision-safe). gl_func_00000000 = canonical never-defined USO
-//   placeholder for the leaf glyph/sprite draws.
-// gl_func_0001E134 — FULL m2c DECODE (57.2% NM, no episode). Largest non-jumptable lift yet (849w); texture-tile DMA dlist builder, 22 K&R variadic emits to game_libs_func_0003443C + 1 gl_func_0001CA10 alloc, 5 nested irregular switches.
-// Reloc-form fix pass (agent-d 2026-06-22): absolute D_BASE derefs (*(s32*)0x2CFC, *(s32*)0x10) -> FW(&D_00000000, off) so HI16/LO16 relocs emit (matches target lui/lw). Reloc-filtered word-cmp vs expected: 812->790 non-reloc diffs, size gap -14->-13 words.
-// CAP: frame still -504 (m2c) vs -352 (target); m2c over-spills ~19 temps the original kept in registers, mis-aligning the entire 800-word body. Landing needs exact-structure RE of the register/spill set (multi-session). No sibling in this builder family (DCB4 57%) has matched.
-// gl_func_0001E134 — FULL m2c DECODE (57.2% NM, no episode). Largest non-jumptable lift yet (849w); texture-tile DMA dlist builder, 22 K&R variadic emits to game_libs_func_0003443C + 1 gl_func_0001CA10 alloc, 5 nested irregular switches.
-// Reloc-form fix pass (agent-d 2026-06-22): absolute D_BASE derefs (*(s32*)0x2CFC, *(s32*)0x10) -> FW(&D_00000000, off) so HI16/LO16 relocs emit (matches target lui/lw). Reloc-filtered word-cmp vs expected: 812->790 non-reloc diffs, size gap -14->-13 words.
-// Width-fix pass (agent-e 2026-06-27): sub-word struct fields were going through the int FW macro -> swl/swr unaligned stores + word loads where target uses sb/sh/lbu/lhu. Added FB/FH byte/half accessors; corrected arg2 0x2/0x3/0x4/0x5/0x6/0x10/0x12/0x1A, arg1 0x2/0x3/0x4/0x5/0x7/0xC/0xE, +0xB0 (sp9C/temp_a3) and arg2+0 flag reads. All swl/swr eliminated. objdiff fuzzy 59.61->63.40%.
-// CAP: frame still -504 (m2c) vs -352 (target); m2c over-spills ~19 temps the original kept in registers, mis-aligning the entire 800-word body. Landing needs exact-structure RE of the register/spill set (multi-session). No sibling in this builder family (DCB4 57%) has matched.
-#ifdef NON_MATCHING
+/* gl_func_0001E134 = AudioSynth_ProcessNote (OoT synthesis.c), EXACT (run 143,
+ * agent-c; was a 65.94 m2c NM). OoT's body verbatim with the 1080 deltas:
+ * - needsInit compared as `(s32)sampleState->needsInit == 1` (both tests): the
+ *   target holds one SIGNED constant 1 for those tests, flags = A_INIT and the
+ *   numParts == 1 test; the unsigned bitfield compare gives it its own register.
+ * - SAMPLE_SIZE = sizeof(s16) as in OoT (unsigned): with a plain 2 the
+ *   aiBufLen * SAMPLE_SIZE and aiBufLen * (s32)SAMPLE_SIZE products merge and
+ *   add a register copy in the comb-filter tail.
+ * - nTrailingSamplesToIgnore is declared inside OoT's pad2[7] block (home sp+228).
+ * - older driver: samplePosInt = 0 on init (no note->startSamplePos), no
+ *   MEDIUM_UNK / NULL sampleData returns, CODEC_S16_INMEMORY = goto skip (no
+ *   S16 cases), S8Dec and the comb-filter state take OS_K0_TO_PHYSICAL pointers.
+ * Callees are prototyped aliases of the baked jals (gl_e134_*, pinned). */
+typedef struct { u32 w0; u32 w1; } gl_e134_Awords;
+typedef union { gl_e134_Awords words; long long force_structure_alignment; } gl_e134_Acmd;
+#define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
+#define A_ADPCM 1
+#define A_LOADADPCM 11
+#define A_SETLOOP 15
+#define A_SETBUFF 8
+#define A_DMEMMOVE 10
+#define A_LOADBUFF 20
+#define A_INIT 1
+#define A_CONTINUE 0
+#define A_LOOP 2
+#define OS_K0_TO_PHYSICAL(x) (u32)(((char *)(x)-0x80000000))
+#define ALIGN16(val) (((val) + 0xF) & ~0xF)
+#define ALIGN8(val) (((val) + 7) & ~7)
+#define aLoadBuffer(pkt, addrSrc, dmemDest, size) { gl_e134_Acmd *_a = (gl_e134_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_LOADBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemDest, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrSrc); }
+#define aSetBuffer(pkt, f, i, o, c) { gl_e134_Acmd *_a = (gl_e134_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SETBUFF, 24, 8) | _SHIFTL(f, 16, 8) | _SHIFTL(i, 0, 16)); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define aDMEMMove(pkt, i, o, c) { gl_e134_Acmd *_a = (gl_e134_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_DMEMMOVE, 24, 8) | _SHIFTL(i, 0, 24); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define aLoadADPCM(pkt, c, d) { gl_e134_Acmd *_a = (gl_e134_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_LOADADPCM, 24, 8) | _SHIFTL(c, 0, 24); _a->words.w1 = OS_K0_TO_PHYSICAL(d); }
+#define aSetLoop(pkt, a) { gl_e134_Acmd *_a = (gl_e134_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_SETLOOP, 24, 8); _a->words.w1 = OS_K0_TO_PHYSICAL(a); }
+#define aADPCMdec(pkt, f, s) { gl_e134_Acmd *_a = (gl_e134_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_ADPCM, 24, 8) | _SHIFTL(f, 16, 8); _a->words.w1 = OS_K0_TO_PHYSICAL(s); }
+#define DMEM_TEMP 0x3C0
+#define DMEM_UNCOMPRESSED_NOTE 0x580
+#define DMEM_COMB_TEMP 0x760
+#define DMEM_COMPRESSED_ADPCM_DATA 0x940
+#define SAMPLES_PER_FRAME 16
+#define SAMPLE_SIZE sizeof(s16)
+#define CODEC_ADPCM 0
+#define CODEC_S8 1
+#define CODEC_S16_INMEMORY 2
+#define CODEC_SMALL_ADPCM 3
+#define MEDIUM_RAM 0
 
+typedef struct { s32 order; s32 numPredictors; s16 book[1]; } gl_e134_AdpcmBook;
+typedef struct { u32 start; u32 end; u32 count; char pad[4]; s16 predictorState[16]; } gl_e134_AdpcmLoop;
+typedef struct {
+    u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24;
+    u8 *sampleAddr; gl_e134_AdpcmLoop *loop; gl_e134_AdpcmBook *book;
+} gl_e134_Sample;
+typedef struct { gl_e134_Sample *sample; f32 tuning; } gl_e134_TunedSample;
+typedef struct {
+    u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1;
+    u32 stereoStrongRight : 1; u32 stereoStrongLeft : 1; u32 stereoHeadsetEffects : 1; u32 usesHeadsetPanEffects : 1;
+    u32 reverbIndex : 3; u32 bookOffset : 2; u32 isSyntheticWave : 1; u32 hasTwoParts : 1; u32 useHaasEffect : 1;
+    u8 gain; u8 haasEffectLeftDelaySize; u8 haasEffectRightDelaySize; u8 reverbVol; u8 harmonicIndexCurAndPrev; u8 combFilterSize;
+    u16 targetVolLeft; u16 targetVolRight; u16 resamplingRateFixedPoint; u16 combFilterGain;
+    gl_e134_TunedSample *tunedSample;
+    s16 *filter;
+} gl_e134_SampleState;
+typedef struct { s16 adpcmdecState[0x20]; s16 mixEnvelopeState[0x40]; s16 combFilterState[1]; } gl_e134_SynthBufs;
+typedef struct {
+    u8 restart; u8 sampleDmaIndex; u8 prevHaasEffectLeftDelaySize; u8 prevHaasEffectRightDelaySize; u8 reverbVol; u8 numParts;
+    u16 samplePosFrac; s32 samplePosInt; gl_e134_SynthBufs *synthesisBuffers; s16 curVolLeft; s16 curVolRight;
+    char pad14[6]; u8 combFilterNeedsInit;
+} gl_e134_SynthState;
+typedef struct { char pad0[0xB0]; gl_e134_SampleState sampleState; char padC8[0xD0 - 0xB0 - sizeof(gl_e134_SampleState)]; } gl_e134_Note;
+typedef struct { char pad0[0x10]; s16 *curLoadedBook; char pad14[0x2CFC - 0x14]; gl_e134_Note *notes; } gl_e134_Ctx;
+extern gl_e134_Ctx gl_e134_gAudioCtx;
+#define gAudioCtx gl_e134_gAudioCtx
+extern s16 gl_e134_D_8012FBA8[];
 
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-#ifndef FB
-#define FB(p, o) (*(u8 *)((char *)(p) + (o)))
-#endif
-#ifndef FH
-#define FH(p, o) (*(u16 *)((char *)(p) + (o)))
-#endif
-/* PASS 2026-10-16 (agent-c, 62.23 -> 65.82 fuzzy): (1) TYPE FIX: temp_t0 (the
- * arg2->0x6 accumulator) is u32, not u16. As u16, `temp_t0 >> 16` was
- * always 0. The target keeps the 32-bit sum (`addu t0; sh t0,6(s0);
- * srl a3,t0,16`, no andi 0xffff). (2) Single-assignment m2c temp_* of the
- * same type with disjoint live ranges were merged greedily, keeping a merge
- * only when the objdiff score did not drop (each merge changes uopt
- * colouring; merging all at once scores lower). Residual: frame 0x1B8 vs
- * 0x160 (spill set), temp_a0 typed u8 adds an andi 0xff the target lacks,
- * but typing it s32 recolours the body (-3.5), so it stays u8. */
-/* Run 109 (agent-c, 65.82 -> 65.94): two decode fixes. (1) the 0x5 byte is
- * stored only when it was 1 (`if (FB(arg2, 5) == 1) FB(arg2, 5) = n;`, the
- * target's lbu/bne/sb); m2c had an empty if and an unconditional store.
- * (2) switch 2 case order is 0, 3, 1 then the shared default code (target
- * case blocks at 1b24/1b34/1b44, case 1 falls into the default); m2c had
- * 3 and 1 at the end jumping back. Residual: var_t4/var_t5 come out
- * memory-homed (sw at each def) where the target keeps them in t4/t5 and
- * spills around calls; removing the m2c spC8/spCC copy statements does not
- * fix it and costs 1.4. */
-typedef char *(*GP_0001E134)();
-extern int gl_ref_000338B4();
-extern int gl_ref_00031C4C();
-extern int gl_ref_00031DC0();
-extern int gl_ref_00031BC8();
-extern int gl_ref_000315D4();
-extern int gl_ref_00031CDC();
-extern int gl_ref_000334E4();
-extern int gl_ref_00031E10();
-extern int gl_ref_00031E64();
-extern int gl_ref_00031DDC();
-extern int gl_ref_00031EC4();
-extern int gl_ref_00031EA0();
-extern int gl_ref_00031C90();
-extern int gl_ref_00031D3C();
-extern int gl_ref_00031D64();
-extern int gl_ref_00031C00();
-extern int gl_ref_0003358C();
-extern int gl_ref_00033A34();
-s32 *gl_func_0001E134(s32 arg0, u8 *arg1, u8 *arg2, int arg3, u32 arg4, s32 *arg5, s32 *arg6) {
-    char *sp150;
-    char *sp14C;
-    s32 sp140;
-    s32 sp13C;
-    s32 sp138;
-    u16 sp136;
-    s32 sp120;
-    s32 sp110;
-    s32 sp108;                                      /* compiler-managed */
-    s32 sp104;
-    s32 sp100;
-    s32 spFC;
-    s32 spE4;
-    s32 spD4;
-    s32 spCC;
-    s32 spC8;
-    s32 spC0;
-    s32 spBC;
-    s32 spB0;                                       /* compiler-managed */
-    u16 spAE;
-    char *sp9C;
-    u32 sp8C;
-    u32 sp88;
-    u32 sp50;
-    s32 *temp_a0_10;
-    s32 *temp_a0_3;
-    s32 *temp_a0_5;
-    s32 *temp_a0_7;
-    s32 *temp_a0_9;
-    s32 *temp_s3_3;
-    s32 *temp_v0;
-    s32 *temp_v0_10;
-    s32 *temp_v0_11;
-    s32 *temp_v1_2;
-    s32 *var_s3;
-    s32 *var_s3_2;
-    s32 *var_s3_3;
-    s32 *var_s3_4;
-    s32 temp_a1_2;
-    s32 temp_a2;
-    s32 temp_t8;
-    s32 temp_v0_3;
-    s32 temp_v0_7;
-    s32 temp_v1;
-    s32 temp_v1_3;
-    s32 var_a0_2;
-    s32 var_s0;
-    s32 var_s0_2;
-    s32 var_s1;
-    s32 var_s2;
-    s32 var_s4;
-    s32 var_s5;
-    s32 var_s6;
-    s32 var_s7;
-    s32 var_s8;
-    s32 var_t0;
-    s32 var_t1;
-    s32 var_t1_2;
-    s32 var_t1_3;
-    s32 var_t3_2;
-    s32 var_t4;
-    s32 var_t5;
-    s32 var_v1;
-    u32 temp_t0;
-    u16 temp_t9;
-    u32 temp_a3_2;
-    u32 temp_t0_2;
-    u32 temp_t0_3;
-    u32 temp_t6;
-    u32 temp_v0_9;
-    u32 temp_v1_4;
-    u32 var_a0;
-    u32 var_t3;
-    u8 *temp_a2_3;
-    u8 *var_s1_2;
-    u8 temp_a0;
-    u8 var_a1;
-    u8 var_a1_2;
-    char *temp_a1;
-    char *temp_a3;
-    char *temp_s3;
-    char *temp_v0_2;
-    char *temp_v0_4;
+extern gl_e134_Acmd *gl_e134_LoadWaveSamples(gl_e134_Acmd *, gl_e134_SampleState *, gl_e134_SynthState *, s32);
+extern void *gl_e134_DmaSampleData(u32, u32, s32, u8 *, s32);
+extern void gl_e134_ClearBuffer(gl_e134_Acmd *, s32, s32);
+extern void gl_e134_func_800DB2C0(s32, s32);
+extern void gl_e134_SetBuffer(gl_e134_Acmd *, s32, s32, s32, u32);
+extern void gl_e134_S8Dec(gl_e134_Acmd *, s32, s16 *);
+extern void gl_e134_InterL(gl_e134_Acmd *, s32, s32, s32);
+extern gl_e134_Acmd *gl_e134_FinalResample(gl_e134_Acmd *, gl_e134_SynthState *, s32, u16, u16, s32);
+extern void gl_e134_UnkCmd19(gl_e134_Acmd *, s32, s32, s32, s32);
+extern void gl_e134_UnkCmd3(gl_e134_Acmd *, s32, s32, s32);
+extern void gl_e134_HiLoGain(gl_e134_Acmd *, s32, s32, s32, s32);
+extern void gl_e134_LoadFilterSize(gl_e134_Acmd *, s32, void *);
+extern void gl_e134_LoadFilterBuffer(gl_e134_Acmd *, s32, s32, void *);
+extern void gl_e134_DMemMove(gl_e134_Acmd *, s32, s32, u32);
+extern void gl_e134_LoadBuffer(gl_e134_Acmd *, s32, s32, void *);
+extern void gl_e134_SaveBuffer(gl_e134_Acmd *, s32, s32, void *);
+extern void gl_e134_Mix(gl_e134_Acmd *, s32, s32, s32, s32);
+extern gl_e134_Acmd *gl_e134_ProcessEnvelope(gl_e134_Acmd *, gl_e134_SampleState *, gl_e134_SynthState *, s32, u16, s32, s32);
+extern gl_e134_Acmd *gl_e134_ApplyHaasEffect(gl_e134_Acmd *, gl_e134_SampleState *, gl_e134_SynthState *, s32, s32, s32);
+#define AudioSynth_LoadWaveSamples gl_e134_LoadWaveSamples
+#define AudioLoad_DmaSampleData gl_e134_DmaSampleData
+#define AudioSynth_ClearBuffer gl_e134_ClearBuffer
+#define func_800DB2C0 gl_e134_func_800DB2C0
+#define AudioSynth_SetBuffer gl_e134_SetBuffer
+#define AudioSynth_S8Dec gl_e134_S8Dec
+#define AudioSynth_InterL gl_e134_InterL
+#define AudioSynth_FinalResample gl_e134_FinalResample
+#define AudioSynth_UnkCmd19 gl_e134_UnkCmd19
+#define AudioSynth_UnkCmd3 gl_e134_UnkCmd3
+#define AudioSynth_HiLoGain gl_e134_HiLoGain
+#define AudioSynth_LoadFilterSize gl_e134_LoadFilterSize
+#define AudioSynth_LoadFilterBuffer gl_e134_LoadFilterBuffer
+#define AudioSynth_DMemMove gl_e134_DMemMove
+#define AudioSynth_LoadBuffer gl_e134_LoadBuffer
+#define AudioSynth_SaveBuffer gl_e134_SaveBuffer
+#define AudioSynth_Mix gl_e134_Mix
+#define AudioSynth_ProcessEnvelope gl_e134_ProcessEnvelope
+#define AudioSynth_ApplyHaasEffect gl_e134_ApplyHaasEffect
+#define NoteSampleState gl_e134_SampleState
+#define NoteSynthesisState gl_e134_SynthState
+#define Sample gl_e134_Sample
+#define AdpcmLoop gl_e134_AdpcmLoop
+#define Note gl_e134_Note
+#define D_8012FBA8 gl_e134_D_8012FBA8
 
-    temp_v1 = FW(arg1, 0x0);
-    sp8C = (u32) (temp_v1 << 0xB) >> 0x1E;
-    var_t3 = (u32) (temp_v1 * 4) >> 0x1F;
-    var_t1 = 0;
-    temp_a3 = (arg0 * 0xD0) + FW(&D_00000000, 0x2CFC);
-    if (((u32) (temp_v1 * 2) >> 0x1F) == 1) {
-        *(u8*)((char*)arg2 + 0x0) = 0;
-        FW(arg2, 0x8) = 0;
-        FH(arg2, 0x6) = 0U;
-        FH(arg2, 0x10) = 0;
-        FH(arg2, 0x12) = 0;
-        FB(arg2, 0x2) = 0U;
-        FB(arg2, 0x3) = 0U;
-        FB(arg2, 0x5) = 0U;
-        FB(arg2, 0x1A) = 1U;
-        FB(arg2, 0x4) = (u8) FB(arg1, 0x5);
-        var_t1 = 1;
-        var_t3 = 0;
-        FB(temp_a3, 0xB0) = (u8) (FB(temp_a3, 0xB0) & 0xFFDF);
+gl_e134_Acmd *gl_func_0001E134(s32 noteIndex, NoteSampleState *sampleState, NoteSynthesisState *synthState, s16 *aiBuf,
+                       s32 aiBufLen, gl_e134_Acmd *cmd, s32 updateIndex) {
+    s32 pad1[3];
+    Sample *sample;
+    AdpcmLoop *loopInfo;
+    s32 nSamplesUntilLoopEnd;
+    s32 nSamplesInThisIteration;
+    s32 noteFinished;
+    s32 restart;
+    s32 flags;
+    u16 resamplingRateFixedPoint;
+    s32 nSamplesInFirstFrame;
+    s32 temp_t1;
+    s32 gain;
+    s32 frameIndex;
+    s32 skipBytes;
+    s32 temp_v1_6;
+    s16 *combFilterState;
+    s32 nSamplesToDecode;
+    u32 sampleAddr;
+    u32 samplesLenFixedPoint;
+    s32 samplesLenAdjusted;
+    s32 nSamplesProcessed;
+    s32 loopEndPos;
+    s32 nSamplesToProcess;
+    s32 phi_s4;
+    s32 nFirstFrameSamplesToIgnore;
+    s32 pad2a[3];
+    s32 nTrailingSamplesToIgnore;
+    s32 pad2b[3];
+    s32 frameSize;
+    s32 nFramesToDecode;
+    s32 skipInitialSamples;
+    s32 sampleDataStart;
+    u8 *sampleData;
+    s32 nParts;
+    s32 curPart;
+    s32 sampleDataStartPad;
+    s32 haasEffectDelaySide;
+    s32 resampledTempLen;
+    u16 sampleDmemBeforeResampling;
+    s32 sampleDataOffset;
+    s32 combFilterDmem;
+    s32 s5;
+    Note *note;
+    u32 numSamplesToLoad;
+    u16 combFilterSize;
+    u16 combFilterGain;
+    s16 *filter;
+    s32 bookOffset;
+    s32 finished;
+    s32 aligned;
+    s16 addr;
+    u16 unused;
+
+    bookOffset = sampleState->bookOffset;
+    finished = sampleState->finished;
+    note = &gAudioCtx.notes[noteIndex];
+    flags = A_CONTINUE;
+
+    if ((s32)sampleState->needsInit == 1) {
+        flags = A_INIT;
+        synthState->restart = 0;
+        synthState->samplePosInt = 0;
+        synthState->samplePosFrac = 0;
+        synthState->curVolLeft = 0;
+        synthState->curVolRight = 0;
+        synthState->prevHaasEffectLeftDelaySize = 0;
+        synthState->prevHaasEffectRightDelaySize = 0;
+        synthState->reverbVol = sampleState->reverbVol;
+        synthState->numParts = 0;
+        synthState->combFilterNeedsInit = 1;
+        note->sampleState.finished = 0;
+        finished = 0;
     }
-    temp_t9 = FH(arg1, 0xC);
-    sp136 = temp_t9;
-    temp_a0 = ((u32) (FW(arg1, 0x0) << 0xE) >> 0x1F) + 1;
-    temp_t0 = ((temp_t9 & 0xFFFF) * arg4 * 2) + FH(arg2, 0x6);
-    FH(arg2, 0x6) = temp_t0;
-    if (FB(arg2, 0x5) == 1) {
-        FB(arg2, 0x5) = temp_a0;
-    }
-    var_v1 = FW(arg1, 0x0);
-    if (var_v1 & 0x40000) {
-        temp_a3_2 = temp_t0 >> 0x10;
-        sp50 = temp_a3_2;
-        temp_v0 = gl_ref_000338B4(arg5, arg1, arg2, temp_a3_2);
-        temp_a2 = FW(arg2, 0x8);
-        spAE = (temp_a2 * 2) + 0x580;
-        FW(arg2, 0x8) = (s32) (temp_a2 + sp50);
-        var_v1 = FW(arg1, 0x0);
-        arg5 = temp_v0;
+
+    resamplingRateFixedPoint = sampleState->resamplingRateFixedPoint;
+    nParts = sampleState->hasTwoParts + 1;
+    samplesLenFixedPoint = (resamplingRateFixedPoint * aiBufLen * 2) + synthState->samplePosFrac;
+    numSamplesToLoad = samplesLenFixedPoint >> 16;
+    synthState->samplePosFrac = samplesLenFixedPoint & 0xFFFF;
+
+    if (synthState->numParts == 1 && nParts == 2) {
+    } else if (synthState->numParts == 2 && nParts == 1) {
     } else {
-        temp_t6 = temp_t0 >> 0x10;
-        temp_v0_2 = *(int*)(FW(arg1, 0x10));
-        temp_a1 = FW(temp_v0_2, 0x8);
-        sp100 = FW(temp_a1, 0x4);
-        spB0 = 0;
-        spBC = 0;
-        sp110 = FW(temp_v0_2, 0x4);
-        if ((s32) temp_a0 > 0) {
-            spC0 = (s32) temp_a0;
-            var_a0 = temp_t6;
-            sp50 = temp_t6;
-            sp150 = temp_v0_2;
-            sp14C = temp_a1;
-            sp9C = temp_a3;
-            sp138 = var_t1;
-            sp88 = var_t3;
-            var_s7 = spD4;
-            var_s3_2 = arg5;
-            var_t5 = spCC;
-            var_t4 = spC8;
-loop_7:
-            var_t3_2 = 0;
-            var_s6 = 0;
-            temp_t0_2 = (u32) FW(sp150, 0x0) >> 0x1C;
-            if (spC0 == 1) {
-                goto block_11;
-            }
-            if (var_a0 & 1) {
-                sp108 = (var_a0 & ~1) + (spBC * 2);
+    }
+
+    synthState->numParts = nParts;
+
+    if (sampleState->isSyntheticWave) {
+        cmd = AudioSynth_LoadWaveSamples(cmd, sampleState, synthState, numSamplesToLoad);
+        sampleDmemBeforeResampling = DMEM_UNCOMPRESSED_NOTE + (synthState->samplePosInt * (s32)SAMPLE_SIZE);
+        synthState->samplePosInt += numSamplesToLoad;
+    } else {
+        sample = sampleState->tunedSample->sample;
+        loopInfo = sample->loop;
+        loopEndPos = loopInfo->end;
+        sampleAddr = (u32)sample->sampleAddr;
+        resampledTempLen = 0;
+
+        for (curPart = 0; curPart < nParts; curPart++) {
+            nSamplesProcessed = 0;
+            s5 = 0;
+
+            if (nParts == 1) {
+                samplesLenAdjusted = numSamplesToLoad;
+            } else if (numSamplesToLoad & 1) {
+                samplesLenAdjusted = (numSamplesToLoad & ~1) + (curPart * 2);
             } else {
-block_11:
-                sp108 = var_a0;
+                samplesLenAdjusted = numSamplesToLoad;
             }
-            if ((temp_t0_2 == 0) || (temp_t0_2 == 3)) {
-                temp_v0_3 = FW(sp150, 0xC) + 8;
-                if (FW(&D_00000000, 0x10) != temp_v0_3) {
-                    switch (sp8C) {                 /* switch 1; irregular */
-                    case 1:                         /* switch 1 */
-                        *(s8 *)((char*)&D_00000000 + 0x10) = 2;
-                        break;
-                    default:                        /* switch 1 */
-                    case 2:                         /* switch 1 */
-                    case 3:                         /* switch 1 */
-                        *(s8 *)((char*)&D_00000000 + 0x10) = temp_v0_3;
-                        break;
+
+            if (sample->codec == CODEC_ADPCM || sample->codec == CODEC_SMALL_ADPCM) {
+                if (gAudioCtx.curLoadedBook != sample->book->book) {
+                    u32 nEntries;
+
+                    switch (bookOffset) {
+                        case 1:
+                            gAudioCtx.curLoadedBook = &D_8012FBA8[1];
+                            break;
+                        case 2:
+                        case 3:
+                        default:
+                            gAudioCtx.curLoadedBook = sample->book->book;
+                            break;
                     }
-                    temp_v0_4 = FW(sp150, 0xC);
-                    temp_v1_2 = var_s3_2;
-                    var_s3_2 += 8;
-                    FW(temp_v1_2, 0x0) = ((FW(temp_v0_4, 0x0) * 0x10 * FW(temp_v0_4, 0x4)) & 0xFFFFFF) | 0x0B000000;
-                    FW(temp_v1_2, 0x4) = (s32) (*(s8 *)((char*)&D_00000000 + 0x10) + 0x80000000);
-                    var_a0 = sp50;
+                    if (1) {}
+                    if (1) {}
+                    if (1) {}
+                    nEntries = SAMPLES_PER_FRAME * sample->book->order * sample->book->numPredictors;
+                    aLoadADPCM(cmd++, nEntries, gAudioCtx.curLoadedBook);
                 }
             }
-            if (sp108 != 0) {
-loop_23:
-                sp140 = 0;
-                sp13C = 0;
-                temp_a2 = FW(arg2, 0x8);
-                temp_v1 = sp108 - var_t3_2;
-                spFC = temp_v1;
-                temp_t6 = FW(sp150, 0x0);
-                var_s4 = temp_a2 & 0xF;
-                var_s5 = 0;
-                temp_v1_3 = sp100 - temp_a2;
-                temp_t0_3 = temp_t6 >> 0x1C;
-                if ((var_s4 == 0) && (FB(arg2, 0x0) == 0)) {
-                    var_s4 = 0x10;
+
+            while (nSamplesProcessed != samplesLenAdjusted) {
+                noteFinished = 0;
+                restart = 0;
+                phi_s4 = 0;
+
+                nFirstFrameSamplesToIgnore = synthState->samplePosInt & 0xF;
+                nSamplesUntilLoopEnd = loopEndPos - synthState->samplePosInt;
+                nSamplesToProcess = samplesLenAdjusted - nSamplesProcessed;
+
+                if (nFirstFrameSamplesToIgnore == 0 && !synthState->restart) {
+                    nFirstFrameSamplesToIgnore = SAMPLES_PER_FRAME;
                 }
-                temp_a1_2 = 0x10 - var_s4;
-                var_s8 = temp_a1_2;
-                if (temp_v1 < temp_v1_3) {
-                    temp_v0_3 = (s32) ((temp_v1 - temp_a1_2) + 0xF) / 16;
-                    var_s1 = temp_v0_3 * 0x10;
-                    var_s2 = temp_v0_3;
-                    var_t1_2 = (temp_a1_2 + var_s1) - temp_v1;
+                nSamplesInFirstFrame = SAMPLES_PER_FRAME - nFirstFrameSamplesToIgnore;
+
+                if (nSamplesToProcess < nSamplesUntilLoopEnd) {
+                    nFramesToDecode =
+                        (s32)(nSamplesToProcess - nSamplesInFirstFrame + SAMPLES_PER_FRAME - 1) / SAMPLES_PER_FRAME;
+                    nSamplesToDecode = nFramesToDecode * SAMPLES_PER_FRAME;
+                    nTrailingSamplesToIgnore = nSamplesInFirstFrame + nSamplesToDecode - nSamplesToProcess;
                 } else {
-                    var_s1 = temp_v1_3 - temp_a1_2;
-                    var_t1_2 = 0;
-                    if (var_s1 <= 0) {
-                        var_s1 = 0;
-                        var_s8 = temp_v1_3;
+                    nSamplesToDecode = nSamplesUntilLoopEnd - nSamplesInFirstFrame;
+                    nTrailingSamplesToIgnore = 0;
+                    if (nSamplesToDecode <= 0) {
+                        nSamplesToDecode = 0;
+                        nSamplesInFirstFrame = nSamplesUntilLoopEnd;
                     }
-                    var_s2 = (s32) (var_s1 + 0xF) / 16;
-                    if (FW(sp14C, 0x8) != 0) {
-                        sp13C = 1;
+                    nFramesToDecode = (nSamplesToDecode + SAMPLES_PER_FRAME - 1) / SAMPLES_PER_FRAME;
+                    if (loopInfo->count != 0) {
+                        restart = 1;
                     } else {
-                        sp140 = 1;
+                        noteFinished = 1;
                     }
                 }
-                switch (temp_t0_3) {                /* switch 2; irregular */
-                case 2:                             /* switch 2 */
-                    break;
-                case 0:                             /* switch 2 */
-                    var_s7 = 9;
-                    var_t5 = 0x10;
-                    var_t4 = 0;
-                    goto block_41;
-                case 3:                             /* switch 2 */
-                    var_s7 = 5;
-                    var_t5 = 0x10;
-                    var_t4 = 0;
-                    goto block_41;
-                case 1:                             /* switch 2 */
-                    var_s7 = 0x10;
-                    var_t5 = 0x10;
-                    var_t4 = 0;
-                default:                            /* switch 2 */
-block_41:
-                    var_t0 = 0;
-                    if (var_s2 != 0) {
-                        temp_a1_2 = (s32) ((temp_a2 + var_t5) - var_s4) / 16;
-                        temp_v1_4 = (u32) (temp_t6 * 0x10) >> 0x1E;
-                        if (temp_v1_4 == 0) {
-                            var_a0_2 = var_t4 + (temp_a1_2 * var_s7) + sp110;
-                            var_s0 = ((var_s2 * var_s7) + 0x1F) & ~0xF;
+
+                switch (sample->codec) {
+                    case CODEC_ADPCM:
+                        frameSize = 9;
+                        skipInitialSamples = SAMPLES_PER_FRAME;
+                        sampleDataStart = 0;
+                        break;
+
+                    case CODEC_SMALL_ADPCM:
+                        frameSize = 5;
+                        skipInitialSamples = SAMPLES_PER_FRAME;
+                        sampleDataStart = 0;
+                        break;
+
+                    case CODEC_S8:
+                        frameSize = 16;
+                        skipInitialSamples = SAMPLES_PER_FRAME;
+                        sampleDataStart = 0;
+                        break;
+
+                    case CODEC_S16_INMEMORY:
+                        goto skip;
+                }
+
+                if (nFramesToDecode != 0) {
+                    frameIndex = (synthState->samplePosInt + skipInitialSamples - nFirstFrameSamplesToIgnore) /
+                                 SAMPLES_PER_FRAME;
+                    sampleDataOffset = frameIndex * frameSize;
+                    if (sample->medium == MEDIUM_RAM) {
+                        sampleData = (u8 *)(sampleDataStart + sampleDataOffset + sampleAddr);
+                    } else {
+                        sampleData = AudioLoad_DmaSampleData(sampleDataStart + sampleDataOffset + sampleAddr,
+                                                             ALIGN16((nFramesToDecode * frameSize) + SAMPLES_PER_FRAME),
+                                                             flags, &synthState->sampleDmaIndex, sample->medium);
+                    }
+
+                    sampleDataStartPad = (u32)sampleData & 0xF;
+                    aligned = ALIGN16((nFramesToDecode * frameSize) + SAMPLES_PER_FRAME);
+                    addr = DMEM_COMPRESSED_ADPCM_DATA - aligned;
+                    aLoadBuffer(cmd++, sampleData - sampleDataStartPad, addr, aligned);
+                } else {
+                    nSamplesToDecode = 0;
+                    sampleDataStartPad = 0;
+                }
+
+                if (synthState->restart) {
+                    aSetLoop(cmd++, sample->loop->predictorState);
+                    flags = A_LOOP;
+                    synthState->restart = 0;
+                }
+
+                nSamplesInThisIteration = nSamplesToDecode + nSamplesInFirstFrame - nTrailingSamplesToIgnore;
+                if (nSamplesProcessed == 0) {
+                    if (1) {}
+                    skipBytes = nFirstFrameSamplesToIgnore * SAMPLE_SIZE;
+                } else {
+                    phi_s4 = ALIGN16(s5 + 8 * SAMPLE_SIZE);
+                }
+
+                switch (sample->codec) {
+                    case CODEC_ADPCM:
+                        aligned = ALIGN16((nFramesToDecode * frameSize) + SAMPLES_PER_FRAME);
+                        addr = DMEM_COMPRESSED_ADPCM_DATA - aligned;
+                        aSetBuffer(cmd++, 0, addr + sampleDataStartPad, DMEM_UNCOMPRESSED_NOTE + phi_s4,
+                                   nSamplesToDecode * SAMPLE_SIZE);
+                        aADPCMdec(cmd++, flags, synthState->synthesisBuffers->adpcmdecState);
+                        break;
+
+                    case CODEC_SMALL_ADPCM:
+                        aligned = ALIGN16((nFramesToDecode * frameSize) + SAMPLES_PER_FRAME);
+                        addr = DMEM_COMPRESSED_ADPCM_DATA - aligned;
+                        aSetBuffer(cmd++, 0, addr + sampleDataStartPad, DMEM_UNCOMPRESSED_NOTE + phi_s4,
+                                   nSamplesToDecode * SAMPLE_SIZE);
+                        aADPCMdec(cmd++, flags | 4, synthState->synthesisBuffers->adpcmdecState);
+                        break;
+
+                    case CODEC_S8:
+                        aligned = ALIGN16((nFramesToDecode * frameSize) + SAMPLES_PER_FRAME);
+                        addr = DMEM_COMPRESSED_ADPCM_DATA - aligned;
+                        AudioSynth_SetBuffer(cmd++, 0, addr + sampleDataStartPad, DMEM_UNCOMPRESSED_NOTE + phi_s4,
+                                             nSamplesToDecode * SAMPLE_SIZE);
+                        AudioSynth_S8Dec(cmd++, flags, (s16 *)OS_K0_TO_PHYSICAL(synthState->synthesisBuffers->adpcmdecState));
+                        break;
+                }
+
+                if (nSamplesProcessed != 0) {
+                    aDMEMMove(cmd++, DMEM_UNCOMPRESSED_NOTE + phi_s4 + (nFirstFrameSamplesToIgnore * SAMPLE_SIZE),
+                              DMEM_UNCOMPRESSED_NOTE + s5, nSamplesInThisIteration * SAMPLE_SIZE);
+                }
+
+                nSamplesProcessed += nSamplesInThisIteration;
+
+                switch (flags) {
+                    case A_INIT:
+                        skipBytes = SAMPLES_PER_FRAME * SAMPLE_SIZE;
+                        s5 = (nSamplesToDecode + SAMPLES_PER_FRAME) * SAMPLE_SIZE;
+                        break;
+
+                    case A_LOOP:
+                        s5 = nSamplesInThisIteration * SAMPLE_SIZE + s5;
+                        break;
+
+                    default:
+                        if (s5 != 0) {
+                            s5 = nSamplesInThisIteration * SAMPLE_SIZE + s5;
                         } else {
-                            spE4 = var_t1_2;
-                            sp104 = var_t3_2;
-                            spC8 = var_t4;
-                            spCC = var_t5;
-                            var_s0 = ((var_s2 * var_s7) + 0x1F) & ~0xF;
-                            temp_v0_7 = gl_func_0001CA10(var_t4 + (temp_a1_2 * var_s7) + sp110, var_s0, sp138, (int)arg2 + 1, temp_v1_4);
-                            var_a0_2 = temp_v0_7;
+                            s5 = (nFirstFrameSamplesToIgnore + nSamplesInThisIteration) * SAMPLE_SIZE;
                         }
-                        var_t0 = var_a0_2 & 0xF;
-                        FW(var_s3_2, 0x4) = (s32) ((var_a0_2 - var_t0) + 0x80000000);
-                        FW(var_s3_2, 0x0) = (((var_s0 >> 4) & 0xFF) << 0x10) | 0x14000000 | ((0x940 - var_s0) & 0xFFFF);
-                        var_a1 = FB(arg2, 0x0);
-                        var_s3_2 += 8;
+                        break;
+                }
+
+                flags = A_CONTINUE;
+
+            skip:
+                if (noteFinished) {
+                    AudioSynth_ClearBuffer(cmd++, DMEM_UNCOMPRESSED_NOTE + s5,
+                                           (samplesLenAdjusted - nSamplesProcessed) * SAMPLE_SIZE);
+                    finished = 1;
+                    note->sampleState.finished = 1;
+                    func_800DB2C0(updateIndex, noteIndex);
+                    break;
+                } else {
+                    if (restart) {
+                        synthState->restart = 1;
+                        synthState->samplePosInt = loopInfo->start;
                     } else {
-                        var_s1 = 0;
-                        var_a1 = FB(arg2, 0x0);
+                        synthState->samplePosInt += nSamplesToProcess;
                     }
-                    temp_v0 = var_s3_2;
-                    if (var_a1 != 0) {
-                        FW(temp_v0, 0x0) = 0x0F000000;
-                        var_s3_2 += 8;
-                        FW(temp_v0, 0x4) = (s32) (FW(sp150, 0x8) + 0x80000010);
-                        sp138 = 2;
-                        *(u8*)((char*)arg2 + 0x0) = 0;
-                    }
-                    temp_v0_9 = (u32) FW(sp150, 0x0) >> 0x1C;
-                    if (var_t3_2 == 0) {
-                        sp120 = var_s4 * 2;
-                    } else {
-                        var_s5 = (var_s6 + 0x1F) & ~0xF;
-                    }
-                    switch (temp_v0_9) {            /* switch 3; irregular */
-                    case 0:                         /* switch 3 */
-                        temp_v0_10 = var_s3_2;
-                        temp_s3 = var_s3_2 + 8;
-                        temp_a1 = temp_s3;
-                        var_s3_2 = temp_s3 + 8;
-                        FW(temp_v0_10, 0x0) = (((0x940 - (((var_s2 * var_s7) + 0x1F) & 0xFFF0)) + var_t0) & 0xFFFF) | 0x08000000;
-                        FW(temp_v0_10, 0x4) = (s32) (((var_s5 + 0x580) << 0x10) | ((var_s1 * 2) & 0xFFFF));
-                        FW(temp_a1, 0x0) = (s32) (((sp138 & 0xFF) << 0x10) | 0x01000000);
-                        FW(temp_a1, 0x4) = (s32) (FW(arg2, 0xC) + 0x80000000);
-                        break;
-                    case 3:                         /* switch 3 */
-                        temp_v0_11 = var_s3_2;
-                        temp_s3 = var_s3_2 + 8;
-                        temp_v0_4 = temp_s3;
-                        var_s3_2 = temp_s3 + 8;
-                        FW(temp_v0_11, 0x0) = (((0x940 - (((var_s2 * var_s7) + 0x1F) & 0xFFF0)) + var_t0) & 0xFFFF) | 0x08000000;
-                        FW(temp_v0_11, 0x4) = (s32) (((var_s5 + 0x580) << 0x10) | ((var_s1 * 2) & 0xFFFF));
-                        FW(temp_v0_4, 0x0) = (s32) ((((sp138 | 4) & 0xFF) << 0x10) | 0x01000000);
-                        FW(temp_v0_4, 0x4) = (s32) (FW(arg2, 0xC) + 0x80000000);
-                        break;
-                    case 1:                         /* switch 3 */
-                        temp_s3_3 = var_s3_2 + 8;
-                        spE4 = var_t1_2;
-                        sp104 = var_t3_2;
-                        spC8 = var_t4;
-                        spCC = var_t5;
-                        gl_ref_00031C4C(var_s3_2, 0, (s16) (0x940 - (((var_s2 * var_s7) + 0x1F) & 0xFFF0)) + var_t0, var_s5 + 0x580, var_s1 * 2);
-                        temp_a0_3 = temp_s3_3;
-                        var_s3_2 = temp_s3_3 + 8;
-                        gl_ref_00031DC0(temp_a0_3, (u8 *) sp138, FW(arg2, 0xC) + 0x80000000);
-                        break;
-                    }
-                    if (var_t3_2 != 0) {
-                        FW(var_s3_2, 0x0) = ((var_s5 + (var_s4 * 2) + 0x580) & 0xFFFFFF) | 0x0A000000;
-                        FW(var_s3_2, 0x4) = (s32) (((var_s6 + 0x580) << 0x10) | ((((var_s1 + var_s8) - var_t1_2) * 2) & 0xFFFF));
-                        var_s3_2 += 8;
-                    }
-                    temp_v0_7 = (var_s1 + var_s8) - var_t1_2;
-                    var_t3_2 += temp_v0_7;
-                    if (sp138 != 1) {
-                        sp138 = 0;
-                        if (sp138 != 2) {
-                            if (var_s6 != 0) {
-                                var_s6 += temp_v0_7 * 2;
-                            } else {
-                                var_s6 = (var_s4 + temp_v0_7) * 2;
+                }
+            }
+
+            switch (nParts) {
+                case 1:
+                    sampleDmemBeforeResampling = DMEM_UNCOMPRESSED_NOTE + skipBytes;
+                    break;
+
+                case 2:
+                    switch (curPart) {
+                        case 0:
+                            AudioSynth_InterL(cmd++, DMEM_UNCOMPRESSED_NOTE + skipBytes,
+                                              DMEM_TEMP + (SAMPLES_PER_FRAME * SAMPLE_SIZE),
+                                              ALIGN8(samplesLenAdjusted / 2));
+                            resampledTempLen = samplesLenAdjusted;
+                            sampleDmemBeforeResampling = DMEM_TEMP + (SAMPLES_PER_FRAME * SAMPLE_SIZE);
+                            if (finished) {
+                                AudioSynth_ClearBuffer(cmd++, sampleDmemBeforeResampling + resampledTempLen,
+                                                       samplesLenAdjusted + SAMPLES_PER_FRAME);
                             }
-                        } else {
-                            var_s6 += temp_v0_7 * 2;
-                        }
-                    } else {
-                        sp120 = 0x20;
-                        var_s6 = (var_s1 * 2) + 0x20;
-                        sp138 = 0;
+                            break;
+
+                        case 1:
+                            AudioSynth_InterL(cmd++, DMEM_UNCOMPRESSED_NOTE + skipBytes,
+                                              DMEM_TEMP + (SAMPLES_PER_FRAME * SAMPLE_SIZE) + resampledTempLen,
+                                              ALIGN8(samplesLenAdjusted / 2));
+                            break;
                     }
-                    break;
-                }
-                if (sp140 != 0) {
-                    temp_a0_3 = var_s3_2;
-                    sp88 = 1;
-                    var_s3_2 += 8;
-                    spC8 = var_t4;
-                    spCC = var_t5;
-                    gl_ref_00031BC8(temp_a0_3, var_s6 + 0x580, (u8 *) ((sp108 - var_t3_2) * 2));
-                    FB(sp9C, 0xB0) = (u8) (FB(sp9C, 0xB0) | 0x20);
-                    gl_ref_000315D4(arg6, (u8 *) arg0);
-                    var_a0 = sp50;
-                } else {
-                    if (sp13C != 0) {
-                        FB(arg2, 0x0) = 1;
-                        FW(arg2, 0x8) = (s32) FW(sp14C, 0x0);
-                    } else {
-                        FW(arg2, 0x8) = (s32) (FW(arg2, 0x8) + spFC);
-                    }
-                    if (var_t3_2 == sp108) {
-                        var_a0 = sp50;
-                    } else {
-                        goto loop_23;
-                    }
-                }
             }
-            switch (spC0) {                         /* switch 4; irregular */
-            case 1:                                 /* switch 4 */
-                spAE = sp120 + 0x580;
+            if (finished) {
                 break;
-            case 2:                                 /* switch 4 */
-                switch (spBC) {                     /* switch 5; irregular */
-                case 0:                             /* switch 5 */
-                    temp_a0_5 = var_s3_2;
-                    spAE = 0x3E0;
-                    var_s3_2 += 8;
-                    spC8 = var_t4;
-                    spCC = var_t5;
-                    gl_ref_00031CDC(temp_a0_5, sp120 + 0x580, (u8 *)0x3E0, (((s32) sp108 / 2) + 7) & ~7);
-                    spB0 = sp108;
-                    if (sp88 != 0) {
-                        temp_a0_5 = var_s3_2;
-                        var_s3_2 += 8;
-                        spC8 = var_t4;
-                        spCC = var_t5;
-                        gl_ref_00031BC8(temp_a0_5, sp108 + 0x3E0, sp108 + 0x10);
-                    }
-                    var_a0 = sp50;
-                    break;
-                case 1:                             /* switch 5 */
-                    temp_a0_7 = var_s3_2;
-                    var_s3_2 += 8;
-                    spC8 = var_t4;
-                    spCC = var_t5;
-                    gl_ref_00031CDC(temp_a0_7, sp120 + 0x580, spB0 + 0x3E0, (((s32) sp108 / 2) + 7) & ~7);
-                    var_a0 = sp50;
-                    break;
-                }
-                break;
-            }
-            temp_t8 = spBC + 1;
-            if (sp88 != 0) {
-                var_v1 = FW(arg1, 0x0);
-                arg5 = var_s3_2;
-            } else {
-                spBC = temp_t8;
-                if (temp_t8 == spC0) {
-                    spD4 = var_s7;
-                    spCC = var_t5;
-                    spC8 = var_t4;
-                    var_v1 = FW(arg1, 0x0);
-                    arg5 = var_s3_2;
-                } else {
-                    goto loop_7;
-                }
             }
         }
     }
-    var_t1_3 = 0;
-    if (((u32) (var_v1 * 2) >> 0x1F) == 1) {
-        var_t1_3 = 1;
-        FW(arg1, 0x0) &= 0xFFBF;
+
+    flags = A_CONTINUE;
+    if ((s32)sampleState->needsInit == 1) {
+        sampleState->needsInit = 0;
+        flags = A_INIT;
     }
-    temp_t0_3 = arg4 * 2;
-    sp138 = var_t1_3;
-    temp_v1_2 = gl_ref_000334E4(arg5, arg2, (u8 *) temp_t0_3, (u32) sp136, (s32) spAE, var_t1_3);
-    var_s3_3 = temp_v1_2;
-    if (sp8C == 3) {
-        var_s3_3 = temp_v1_2 + 8;
-        gl_ref_00031E10(temp_v1_2, (u8 *)0x3C0, (u8 *)0x3C0, temp_t0_3, 0);
+
+    cmd = AudioSynth_FinalResample(cmd, synthState, aiBufLen * (s32)SAMPLE_SIZE, resamplingRateFixedPoint,
+                                   sampleDmemBeforeResampling, flags);
+    if (bookOffset == 3) {
+        AudioSynth_UnkCmd19(cmd++, DMEM_TEMP, DMEM_TEMP, aiBufLen * SAMPLE_SIZE, 0);
     }
-    temp_a0_7 = var_s3_3;
-    if (sp8C == 2) {
-        var_s3_3 += 8;
-        gl_ref_00031E64(temp_a0_7, (u8 *)0x3C0, (u8 *)0x3C0, temp_t0_3);
+
+    if (bookOffset == 2) {
+        AudioSynth_UnkCmd3(cmd++, DMEM_TEMP, DMEM_TEMP, aiBufLen * SAMPLE_SIZE);
     }
-    temp_a0_9 = var_s3_3;
-    var_a1_2 = FB(arg1, 0x2);
-    if (var_a1_2 != 0) {
-        var_s3_3 += 8;
-        if ((s32) var_a1_2 < 0x10) {
-            var_a1_2 = 0x10;
+
+    gain = sampleState->gain;
+    if (gain != 0) {
+        if (gain < 0x10) {
+            gain = 0x10;
         }
-        gl_ref_00031DDC(temp_a0_9, (u8 *) var_a1_2, (u8 *)0x3C0, 0U, temp_t0_3 + 0x20);
+        AudioSynth_HiLoGain(cmd++, gain, DMEM_TEMP, 0, (aiBufLen + SAMPLES_PER_FRAME) * SAMPLE_SIZE);
     }
-    temp_a2_3 = FW(arg1, 0x14);
-    if (temp_a2_3 != 0) {
-        temp_s3_3 = var_s3_3 + 8;
-        gl_ref_00031EC4(var_s3_3, (u8 *) temp_t0_3, temp_a2_3);
-        temp_a0_10 = temp_s3_3;
-        var_s3_3 = temp_s3_3 + 8;
-        gl_ref_00031EA0(temp_a0_10, (u8 *) sp138, (u8 *)0x3C0, FW(arg2, 0xC) + 0x40);
+
+    filter = sampleState->filter;
+    if (filter != NULL) {
+        AudioSynth_LoadFilterSize(cmd++, aiBufLen * SAMPLE_SIZE, filter);
+        AudioSynth_LoadFilterBuffer(cmd++, flags, DMEM_TEMP, synthState->synthesisBuffers->mixEnvelopeState);
     }
-    temp_a0 = FB(arg1, 0x7);
-    temp_t0 = FH(arg1, 0xE);
-    temp_a3_2 = FW(arg2, 0xC) + 0x800000C0;
-    if ((temp_a0 != 0) && (temp_t0 != 0)) {
-        temp_a0_10 = var_s3_3 + 8;
-        gl_ref_00031C90(var_s3_3, (u8 *)0x3C0, (u8 *)0x760, temp_t0_3);
-        var_s1_2 = 0x760 - temp_a0;
-        if (FB(arg2, 0x1A) != 0) {
-            var_s1_2 = 0x760 - temp_a0;
-            var_s3_4 = temp_a0_10 + 8;
-            gl_ref_00031BC8(temp_a0_10, var_s1_2, (u8 *) temp_a0);
-            FB(arg2, 0x1A) = 0U;
+
+    combFilterSize = sampleState->combFilterSize;
+    combFilterGain = sampleState->combFilterGain;
+    combFilterState = (s16 *)OS_K0_TO_PHYSICAL(synthState->synthesisBuffers->combFilterState);
+    if ((combFilterSize != 0) && (sampleState->combFilterGain != 0)) {
+        AudioSynth_DMemMove(cmd++, DMEM_TEMP, DMEM_COMB_TEMP, aiBufLen * SAMPLE_SIZE);
+        combFilterDmem = DMEM_COMB_TEMP - combFilterSize;
+        if (synthState->combFilterNeedsInit) {
+            AudioSynth_ClearBuffer(cmd++, combFilterDmem, combFilterSize);
+            synthState->combFilterNeedsInit = 0;
         } else {
-            var_s3_4 = temp_a0_10 + 8;
-            gl_ref_00031D3C(temp_a0_10, var_s1_2, (u8 *) temp_a0, temp_a3_2);
+            AudioSynth_LoadBuffer(cmd++, combFilterDmem, combFilterSize, combFilterState);
         }
-        temp_a0_9 = var_s3_4 + 8;
-        gl_ref_00031D64(var_s3_4, (temp_t0_3 - temp_a0) + 0x3C0, (u8 *) temp_a0, temp_a3_2);
-        temp_v0_10 = temp_a0_9 + 8;
-        gl_ref_00031C00(temp_a0_9, (u8 *) ((s32) temp_t0_3 >> 4), (u8 *) temp_t0, 0x760U, (s32) var_s1_2);
-        var_s3_3 = temp_v0_10 + 8;
-        gl_ref_00031C90(temp_v0_10, var_s1_2, (u8 *)0x3C0, temp_t0_3);
+        AudioSynth_SaveBuffer(cmd++, DMEM_TEMP + (aiBufLen * SAMPLE_SIZE) - combFilterSize, combFilterSize,
+                              combFilterState);
+        AudioSynth_Mix(cmd++, (aiBufLen * (s32)SAMPLE_SIZE) >> 4, combFilterGain, DMEM_COMB_TEMP, combFilterDmem);
+        AudioSynth_DMemMove(cmd++, combFilterDmem, DMEM_TEMP, aiBufLen * SAMPLE_SIZE);
     } else {
-        FB(arg2, 0x1A) = 1U;
+        synthState->combFilterNeedsInit = 1;
     }
-    if ((FB(arg1, 0x3) != 0) || (FB(arg2, 0x2) != 0)) {
-        var_s0_2 = 1;
-    } else if ((FB(arg1, 0x4) != 0) || (var_s0_2 = 0, (FB(arg2, 0x3) != 0))) {
-        var_s0_2 = 2;
+
+    if ((sampleState->haasEffectLeftDelaySize != 0) || (synthState->prevHaasEffectLeftDelaySize != 0)) {
+        haasEffectDelaySide = 1;
+    } else if ((sampleState->haasEffectRightDelaySize != 0) || (synthState->prevHaasEffectRightDelaySize != 0)) {
+        haasEffectDelaySide = 2;
+    } else {
+        haasEffectDelaySide = 0;
     }
-    var_s3 = gl_ref_0003358C(var_s3_3, arg1, arg2, arg4, 0x3C0, var_s0_2, sp138);
-    if ((u16) FW(arg1, 0x0) & 1) {
-        if (!(sp138 & 1)) {
-            sp138 = 0;
+
+    cmd = AudioSynth_ProcessEnvelope(cmd, sampleState, synthState, aiBufLen, DMEM_TEMP, haasEffectDelaySide, flags);
+
+    if (sampleState->useHaasEffect) {
+        if (!(flags & A_INIT)) {
+            flags = A_CONTINUE;
         }
-        var_s3 = gl_ref_00033A34(var_s3, arg1, arg2, temp_t0_3, sp138, var_s0_2);
+        cmd = AudioSynth_ApplyHaasEffect(cmd, sampleState, synthState, aiBufLen * (s32)SAMPLE_SIZE, flags,
+                                         haasEffectDelaySide);
     }
-    return var_s3;
+
+    return cmd;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001E134);
-#endif
+#undef _SHIFTL
+#undef A_ADPCM
+#undef A_LOADADPCM
+#undef A_SETLOOP
+#undef A_SETBUFF
+#undef A_DMEMMOVE
+#undef A_LOADBUFF
+#undef A_INIT
+#undef A_CONTINUE
+#undef A_LOOP
+#undef OS_K0_TO_PHYSICAL
+#undef ALIGN16
+#undef ALIGN8
+#undef aLoadBuffer
+#undef aSetBuffer
+#undef aDMEMMove
+#undef aLoadADPCM
+#undef aSetLoop
+#undef aADPCMdec
+#undef DMEM_TEMP
+#undef DMEM_UNCOMPRESSED_NOTE
+#undef DMEM_COMB_TEMP
+#undef DMEM_COMPRESSED_ADPCM_DATA
+#undef SAMPLES_PER_FRAME
+#undef SAMPLE_SIZE
+#undef CODEC_ADPCM
+#undef CODEC_S8
+#undef CODEC_S16_INMEMORY
+#undef CODEC_SMALL_ADPCM
+#undef MEDIUM_RAM
+#undef gAudioCtx
+#undef AudioSynth_LoadWaveSamples
+#undef AudioLoad_DmaSampleData
+#undef AudioSynth_ClearBuffer
+#undef func_800DB2C0
+#undef AudioSynth_SetBuffer
+#undef AudioSynth_S8Dec
+#undef AudioSynth_InterL
+#undef AudioSynth_FinalResample
+#undef AudioSynth_UnkCmd19
+#undef AudioSynth_UnkCmd3
+#undef AudioSynth_HiLoGain
+#undef AudioSynth_LoadFilterSize
+#undef AudioSynth_LoadFilterBuffer
+#undef AudioSynth_DMemMove
+#undef AudioSynth_LoadBuffer
+#undef AudioSynth_SaveBuffer
+#undef AudioSynth_Mix
+#undef AudioSynth_ProcessEnvelope
+#undef AudioSynth_ApplyHaasEffect
+#undef NoteSampleState
+#undef NoteSynthesisState
+#undef Sample
+#undef AdpcmLoop
+#undef Note
+#undef D_8012FBA8
 
 // gl_func_0001EE78 — STRUCTURAL PASS (0xA8 / 42 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
