@@ -11364,7 +11364,11 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002A07C);
 //   match needs USO mnemonic disasm. Real-C STRUCTURAL body below
 //   per the analysis. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* game_libs_func_0002A258 EXACT 2026-10-23 (agent-c run 140, 95.29 -> 100):
+ * AudioSeq_InitSequenceChannel (seqplayer.c). The residual was store order: OoT sets
+ * vibratoRateTarget / vibratoRateStart (0x14 / 0x10 = 0x800) right before the extent
+ * fields, not after the flag clears; with that order the old `if (1) {}` and the
+ * hand-unrolled soundScriptIO fill are unnecessary (plain 8-iteration loop). */
 extern int D_00000000;
 extern int D_2A260_deflt; /* distinct placeholder: the obj+0x90 default-target global is a
                            * SEPARATE symbol from the sentinel base (target materializes two
@@ -11394,10 +11398,8 @@ void game_libs_func_0002A258(char *obj) {
     *p &= 0xBF;
     *p &= 0xDF;
     *p &= 0xEF;
-    *p &= 0xF7; if (1) {}
+    *p &= 0xF7;
     *p &= 0xFB;
-    *(short *)(obj + 0x14) = 2048;
-    *(short *)(obj + 0x10) = 2048;
     *(short *)(obj + 0x26) = 0;
     *p &= 0xFD;
     *(unsigned char *)(obj + 9) = 0;
@@ -11418,6 +11420,8 @@ void game_libs_func_0002A258(char *obj) {
     *(int *)(obj + 0x90) = (int)&D_2A260_deflt;
     *(unsigned char *)(obj + 0x8C) = 240;
     *(unsigned char *)(obj + 0x8D) = 0;
+    *(short *)(obj + 0x14) = 2048;
+    *(short *)(obj + 0x10) = 2048;
     *(short *)(obj + 0x16) = 0;
     *(short *)(obj + 0x12) = 0;
     *(short *)(obj + 0x18) = 0;
@@ -11429,21 +11433,12 @@ void game_libs_func_0002A258(char *obj) {
     *(float *)(obj + 0x2C) = 1.0f;
     *(float *)(obj + 0x28) = 1.0f;
     *(float *)(obj + 0x38) = 1.0f;
-    i = 0;
-    v1 = obj; do {
-        i += 4;
-        *(signed char *)(v1 + 0xD5) = -1;
-        *(signed char *)(v1 + 0xD6) = -1;
-        *(signed char *)(v1 + 0xD7) = -1;
-        v1 += 4;
-        *(signed char *)(v1 + 0xD0) = -1;
-    } while (i != 8);
+    for (i = 0; i < 8; i++) {
+        *(signed char *)(obj + 0xD4 + i) = -1;
+    }
     *(unsigned char *)obj = *(unsigned char *)obj & ~1;
     gl_func_00000000(obj + 0x94);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002A258);
-#endif
 
 // gl_func_0002A3AC — STRUCTURAL PASS (0x124 / 73 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
