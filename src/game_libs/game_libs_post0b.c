@@ -2789,8 +2789,9 @@ void gl_func_00036F0C(char *arg0) {
     *(f32 *)((char *)(arg0) + 0x48) = (f32) (v[2] + *(f32 *)((char *)(arg0) + 0x48));
     temp_f4 = *(f32 *)((char *)(arg0) + 0x40) + w[0];
     w[0] = temp_f4;
-    w[1] += *(f32 *)((char *)(arg0) + 0x44);
-    w[2] += *(f32 *)((char *)(arg0) + 0x48);
+    /* run 150 compound-assign sweep: the expanded `w = w + x` form (not `+=`) scores higher */
+    w[1] = w[1] + *(f32 *)((char *)(arg0) + 0x44);
+    w[2] = w[2] + *(f32 *)((char *)(arg0) + 0x48);
     *(f32 *)((char *)(sp84) + 0x60) = temp_f4;
     *(f32 *)((char *)(sp84) + 0x64) = w[1];
     *(f32 *)((char *)(sp84) + 0x68) = w[2];
