@@ -14007,11 +14007,15 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
             dl = *(char **)(arg1 + 0xC);
             i = *(s32 *)(dl + 4);
             *(s32 *)(dl + 4) += 1;
-            n = cnt;
             dent2 = *(char **)(*(char **)(arg1 + 0xC)) + (i * 8);
             *(s32 *)(dent2) = 0xBC000002;
+            /* run 152 (agent-c): if/else, the else-arm `n = cnt` is hoisted above `bgtz` (target or v0,s2 / b .+8 / li v0,1)
+             * and the pre-assign form let uopt rewrite cnt <= 0 as cnt*2+0x86 < 136 off the held packet word. 62.81 -> 63.85;
+             * FLAG: 2028 -> 2020 bytes (away from 2028). The elem advance in the same form scores lower (62.55). */
             if (cnt <= 0) {
                 n = 1;
+            } else {
+                n = cnt;
             }
             *(s32 *)(dent2 + 4) = (n << 5) + 0x80000020;
         } while (0);
