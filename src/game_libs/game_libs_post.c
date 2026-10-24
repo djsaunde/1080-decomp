@@ -15529,7 +15529,8 @@ void gl_func_00032DC0(Quad4 *dst) {
 // used s32* arithmetic (every member offset x4) and an int for a float temp. Real shape:
 // placement-new constructor chain, (self, int, float x, float y, float z). Open: zv
 // slot +4, -1/0x8000 materialization order, a second zero for +0xFC.
-#ifdef NON_MATCHING
+/* EXACT (run 144, agent-c): `o += 0x30;` between the zv.x and zv.y stores (the
+ * call then takes o) gives the target schedule x, a0, y, z-in-delay with the homes kept. */
 
 
 #ifndef FW
@@ -15540,6 +15541,8 @@ void gl_func_00032DC0(Quad4 *dst) {
  * (target: x, a0, y, z in the jal delay = the comma-argument form, which
  * moves the homes: with it zv 64 / v 36 vs target 68 / 32). */
 typedef char *(*GP_00032E18)();
+extern int gl_32e18_blank();  /* blank jal 0 (gl_func_0001CA10 was renamed game_libs_func_0001C9E4) */
+#define gl_func_0001CA10 gl_32e18_blank
 char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
     char *o;
     char *b;
@@ -15566,9 +15569,10 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
         }
         gl_func_0001CA10(o);
         zv.x = 0.0f;
-        zv.z = 0.0f;
+        o += 0x30;
         zv.y = 0.0f;
-        gl_func_0001CA10(o + 0x30, &zv);
+        zv.z = 0.0f;
+        gl_func_0001CA10(o, &zv);
     }
     *(int **)(self + 0x28) = &D_00000000;
     o = self + 0x110;
@@ -15617,9 +15621,7 @@ char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
 end:
     return self;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00032E18);
-#endif
+#undef gl_func_0001CA10
 
 // gl_func_00033094 — STRUCTURAL PASS (0x194 / 101 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
