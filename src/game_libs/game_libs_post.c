@@ -5580,9 +5580,9 @@ void gl_func_00023BDC(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC
         }
     }
 
-    soundListOffset = fontData[1];
-    if ((soundListOffset != 0) && (numSfx != 0)) {
-        fontData[1] = GL23BDC_RELOC(soundListOffset);
+    /* run 143: no soundListOffset copy here (the target loads fontData[1] into its own register); left: s2/s3 swap */
+    if ((fontData[1] != 0) && (numSfx != 0)) {
+        fontData[1] = GL23BDC_RELOC(fontData[1]);
         for (i = 0; i < numSfx; i++) {
             soundOffset = (u32)(((gl_23BDC_Sfx *)fontData[1]) + i);
             soundEffect = (gl_23BDC_Sfx *)soundOffset;
