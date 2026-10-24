@@ -4648,16 +4648,19 @@ extern void func_0000023C();  /* used as data-symbol base */
  * func_05C444, func_04CCA8 as void). The count increment is inside the if.
  * Residual: in the target v and the scale base are the SAME symbol held in
  * two registers, so the scale loads stay after each store; two aliases let
- * IDO hoist them. Also the 0x70/0x80 load order and the hoisted G def. */
+ * IDO hoist them. Also the 0x70/0x80 load order and the hoisted G def.
+ * Run 137 (81.75 -> 87.33): the root pointer is G+0x18 read through the same G
+ * base (target `lw a0,24(a0)`; G then stays in a2 across the test call), and
+ * the product is written 0x70 * 0x80 (load order). */
 extern int func_00000000_76f4_q(void *, int, int, int, float, int, float);
 extern char *bu_76f4_root;
 extern char bu_76f4_g[], bu_76f4_v[];
 extern int bu_76f4_cnt;
 extern void func_00000000_76f4_v();
 void func_000076F4(char *s0) {
-    if (func_00000000_76f4_q(bu_76f4_root, 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),
+    if (func_00000000_76f4_q(*(char **)(bu_76f4_g + 0x18), 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),
                     *(float *)(s0 + 0x64), 0,
-                    *(float *)(s0 + 0x80) * *(float *)(s0 + 0x70)) != 0) {
+                    *(float *)(s0 + 0x70) * *(float *)(s0 + 0x80)) != 0) {
         func_00000000_76f4_v(bu_76f4_g, s0 + 0x2C);
         *(float *)(bu_76f4_v + 0x30) *= *(float *)(bu_76f4_g + 0x128);
         *(float *)(bu_76f4_v + 0x34) *= *(float *)(bu_76f4_g + 0x12C);
