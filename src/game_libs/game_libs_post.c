@@ -3803,7 +3803,10 @@ void gl_func_00021EA8(int a0, int a1) {
 //   USO reloc infra. Name pre-checked: no extern reuse
 //   (collision-safe). gl_func_00000000 = canonical never-defined
 //   USO placeholder for the helpers.
-#ifdef NON_MATCHING
+/* EXACT (run 143, agent-c): OoT AudioHeap_AllocTemporarySampleCacheEntry under a
+ * TYPED gAudioCtx extern (gl_21F40_gAudioCtx) with OoT's own `index =
+ * cache->numEntries++;` -- run 140 needed the absolute-member spelling only
+ * because of the `*(Ctx *)&D_00000000` cast form. */
 extern int gl_func_00000000();
 extern int D_00000000;
 /* Whole-body decode 2026-06-01; REDECODE 2026-07-30 (41.49 -> 65.53): loop2 was
@@ -3832,7 +3835,8 @@ typedef struct {
     char pad0[0x630]; gl_heap_PreloadReq preloadSampleStack[1]; char pad644[0x1034 - 0x644]; s32 preloadSampleStackTop;
     char pad1038[0x294C - 0x1038]; gl_heap_SampleCache temporarySampleCache;
 } gl_heap_Ctx;
-#define gl_heap_gAudioCtx (*(gl_heap_Ctx *)&D_00000000)
+extern gl_heap_Ctx gl_21F40_gAudioCtx;
+#define gl_heap_gAudioCtx gl_21F40_gAudioCtx
 extern int gl_func_00036844();
 #define AudioHeap_Alloc (void *)gl_func_00000000
 #define AudioHeap_DiscardSampleCacheEntry gl_func_00036844
@@ -3906,7 +3910,7 @@ gl_heap_CacheEntry *gl_func_00021F40(u32 size) {
     }
 
     if (index == -1) {
-        index = gl_heap_gAudioCtx.temporarySampleCache.numEntries++;
+        index = cache->numEntries++;
     }
 
     entry = &cache->entries[index];
@@ -3919,9 +3923,6 @@ gl_heap_CacheEntry *gl_func_00021F40(u32 size) {
 #undef gl_heap_gAudioCtx
 #undef AudioHeap_Alloc
 #undef AudioHeap_DiscardSampleCacheEntry
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00021F40);
-#endif
 
 // gl_func_000221D8 — STRUCTURAL PASS (0x204 / 129 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
