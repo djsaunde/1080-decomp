@@ -33,9 +33,9 @@ extern "C" int gl_func_00033094(char *o) {
     a.z = *(float *)(o + 0xA8);
     p = *(char **)(o + 0xF4);
     if (p != 0) {
-        b.x = *(float *)(p + 0xA0);
-        b.y = *(float *)(p + 0xA4);
-        b.z = *(float *)(p + 0xA8);
+        /* run 149: held in block locals, then stored (kit LXXXVI): 80.26 -> 84.65 */
+        f32 hx = *(float *)(p + 0xA0); f32 hy = *(float *)(p + 0xA4); f32 hz = *(float *)(p + 0xA8);
+        b.x = hx; b.y = hy; b.z = hz;
     } else {
         t = *(Vec3 *)(o + 0x104);
         b.x = t.x;
