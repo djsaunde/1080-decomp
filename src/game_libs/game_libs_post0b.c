@@ -18154,7 +18154,6 @@ void gl_func_0004C928(struct A4C928 *arg0, struct Arg4C928 *arg1)
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004C928);
 #endif
 
-#ifdef NON_MATCHING
 /* gl_func_0004CCB4 — decoded 2026-05-19. MULTI-FUNCTION BUNDLE
  * (declared 0x104 / 65 words). NAMED fn = constructor, insns 1..60
  * (prologue 27BDFFD8 frame 0x28, jr ra at insn 60):
@@ -18186,40 +18185,42 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004C928);
  * The vtable gl_data abs offsets (0x21F730/0x21FC24/0x21FC3C) also
  * need symbolizing for a promote. Multi-idiom + bundle → focused
  * pass. Real decoded C of the named fn preserved; INCLUDE_ASM is
- * the build path for the whole bundle. */
+ * the build path for the whole bundle.
+ * EXACT 2026-10-24 (agent-g run 154): the trailing leaf is long split off
+ * (game_libs_func_0004CDA4) and the decode above was wrong in shape: it is
+ * the nested short-circuit alloc chain of its EXACT sibling gl_func_0003829C
+ * (opcode similarity 0.79): o1 = alloc(0xC); v1 = o1 or alloc(8); r = v1 or
+ * alloc(4); the o1 pointer stays in a2 for the second registration call, and
+ * the function returns nothing. One leading `volatile int pad0` = frame 40
+ * with the spill homes 28/32; the v1 pair stores on ONE source line give the
+ * target's t8-before-t7 addiu order (as1 reorders within a line, kit LXXVIII). */
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_0004CCB4(int a0) {
-    int o1;
-    int o2;
-    int o3;
+void gl_func_0004CCB4(int a0) {
+    volatile int pad0;
+    int *o1;
+    int *v1;
+    int *r;
+    int *p;
+    int *q;
     gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20198, 0);
-    o1 = gl_func_00000000(0xC);
-    if (o1 == 0) {
-        goto end;
+    o1 = (int *)gl_func_00000000(0xC);
+    if (o1 != 0) {
+        v1 = o1;
+        if (o1 != 0 || (p = (int *)gl_func_00000000(8), v1 = p, p != 0)) {
+            r = v1;
+            if (v1 != 0 || (q = (int *)gl_func_00000000(4), r = q, q != 0)) {
+                *r = (int)((char *)&D_00000000 + 0x1F730);
+            }
+            v1[0] = (int)((char *)&D_00000000 + 0x1FC24); v1[1] = (int)&D_00000000;
+        }
+        o1[0] = (int)((char *)&D_00000000 + 0x1FC3C);
+        o1[2] = a0;
     }
-    o2 = gl_func_00000000(o1, 8);
-    if (o2 == 0) {
-        goto end;
-    }
-    o3 = gl_func_00000000(o2, 4);
-    if (o3 == 0) {
-        goto end;
-    }
-    *(int *)o3 = (int)((char *)&D_00000000 + 0x21F730);
-    *(int *)o2 = (int)((char *)&D_00000000 + 0x21FC24);
-    *(int *)(o2 + 4) = o1;
-    *(int *)o1 = (int)((char *)&D_00000000 + 0x21FC3C);
-    *(int *)(o1 + 8) = a0;
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x201A0, 1);
+    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x201A0, o1, 1);
     gl_func_00000000(&D_00000000);
-    gl_func_00000000();
-end:
-    return a0;
+    gl_func_00000000(a0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004CCB4);
-#endif
 
 
 int game_libs_func_0004CDA4(int a0) {
