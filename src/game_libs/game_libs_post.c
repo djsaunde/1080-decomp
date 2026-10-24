@@ -1081,13 +1081,14 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 // uopt stops holding &D in an s-register (target s4), so every later access re-luis;
 // the pointer init also lands before the blez guard (target: after it). Next step:
 // keep that loop form and find what keeps &D held.
-// Run 143 (agent-c) 94.53 -> 97.57: rewritten as the SM64-era
+// Run 143 (agent-c) 94.53 -> 98.5: rewritten as the SM64-era
 // synthesis_do_one_audio_update (OoT layout, index-form reverbs): per-iteration
-// t = updateIndex * numNotes in the note loops, (s32) casts on the reverbIndex
-// bitfield compares (signed slt like the target), SAMPLE_SIZE = sizeof(s16), a
-// leading padA word so noteIndices sits at sp+132. LEFT: the strength-reduced
-// sampleState copy is scheduled after its first load, the useReverb home is
-// sp+124 (target 120) and the two spill temps sit at 92/96 (target 96/104).
+// updateIndex * numNotes in the note loops (no temp local), (s32) casts on the
+// reverbIndex bitfield compares (signed slt like the target), SAMPLE_SIZE =
+// sizeof(s16); sampleState declared FIRST and i above useReverb give the target
+// frame / homes (noteIndices 132, useReverb 120). LEFT (2 words): the target
+// loads enabled through the sampleState copy (or v0,v1; lw 0(v0)), ours
+// through the induction pointer before the copy.
 #ifdef NON_MATCHING
 typedef struct { u32 w0; u32 w1; } gl_dcb4_Awords;
 typedef union { gl_dcb4_Awords words; long long force_structure_alignment; } gl_dcb4_Acmd;
@@ -1128,14 +1129,12 @@ extern gl_dcb4_Acmd *gl_1dcb4_f5(gl_dcb4_Acmd *, s32, s32);
 #define AudioSynth_MaybeMixRingBuffer1 gl_1dcb4_f5
 
 gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 updateIndex) {
-    s32 padA;
+    gl_dcb4_SampleState *sampleState;
     u8 noteIndices[56];
     s16 count;
     s16 reverbIndex;
-    s32 useReverb;
-    s32 t;
     s32 i;
-    gl_dcb4_SampleState *sampleState;
+    s32 useReverb;
 
     count = 0;
     if (gAudioCtx.numSynthesisReverbs == 0) {
@@ -1172,9 +1171,8 @@ gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 
         }
 
         for (; i < count; i++) {
-            t = updateIndex * gAudioCtx.numNotes;
-            if (reverbIndex == (s32)gAudioCtx.sampleStates[t + noteIndices[i]].reverbIndex) {
-                cmd = AudioSynth_ProcessNote(noteIndices[i], &gAudioCtx.sampleStates[t + noteIndices[i]],
+            if (reverbIndex == (s32)gAudioCtx.sampleStates[updateIndex * gAudioCtx.numNotes + noteIndices[i]].reverbIndex) {
+                cmd = AudioSynth_ProcessNote(noteIndices[i], &gAudioCtx.sampleStates[updateIndex * gAudioCtx.numNotes + noteIndices[i]],
                                              &gAudioCtx.notes[noteIndices[i]].synthesisState, aiBuf, aiBufLen, cmd,
                                              updateIndex);
                 continue;
@@ -1195,8 +1193,7 @@ gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 
     }
 
     for (; i < count; i++) {
-        t = updateIndex * gAudioCtx.numNotes;
-        cmd = AudioSynth_ProcessNote(noteIndices[i], &gAudioCtx.sampleStates[t + noteIndices[i]],
+        cmd = AudioSynth_ProcessNote(noteIndices[i], &gAudioCtx.sampleStates[updateIndex * gAudioCtx.numNotes + noteIndices[i]],
                                      &gAudioCtx.notes[noteIndices[i]].synthesisState, aiBuf, aiBufLen, cmd, updateIndex);
     }
 
