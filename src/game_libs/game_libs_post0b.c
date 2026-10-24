@@ -25269,6 +25269,9 @@ extern int game_libs_func_00062F08_578B4();
  * spXXX names ARE target offsets, so pad_100..pad_10c / pad_f4 / pad_5c restore them, and the four
  * switch-1 arm DL pointers live in their own named homes across the 34458 call (sp1A8 / sp18C /
  * sp170 / sp154 replace temp_t1_3; sp1A8 declared right after temp_t1_3 = target sp+0x1A8). */
+/* agent-c run 153 (97.86 -> 98.18): the switch-2 default call takes TWO args (the target sets only a0/a1;
+ * passing var_a2 kept it live in a home: +sw/+lw, 2421 -> 2419 words = target length); s2_110 SetTile w1 is
+ * chain-first like its siblings, and two `(u32)(u16)` 0x2C leaves fix the final `or` operand order. */
 void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
     s32 sp1EC;
     s32 sp1E8;
@@ -25879,7 +25882,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_t3 = (sp1E8 & 0xF) << 0xE;
             temp_t4 = (sp1E4 & 3) << 8;
             temp_t5 = (sp1EC & 0xF) * 0x10;
-            FW(temp_a0, 0x4) = (s32) ((u32)((*(s16 *)((char *)arg1 + 0x2C)) & 0xF) | (u32)(((temp_t2 | 0x07000000 | temp_t3) | (((*(s16 *)((char *)arg1 + 0x2E)) & 0xF) << 0xA)) | temp_t4 | temp_t5));
+            FW(temp_a0, 0x4) = (s32) ((u32)(((temp_t2 | 0x07000000 | temp_t3) | (((*(s16 *)((char *)arg1 + 0x2E)) & 0xF) << 0xA)) | temp_t4 | temp_t5) | (u32)(u16)((*(s16 *)((char *)arg1 + 0x2C)) & 0xF));
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -25970,7 +25973,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             temp_a0 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(temp_a0, 0x0) = (s32) (((((s32) ((*(s16 *)((char *)arg1 + 0x20)) + 7) >> 3) & 0x1FF) << 9) | 0xF5880000 | temp_ra_5); FW(temp_a0, 0x4) = (s32) ((u32)(((((FW(arg1, 0x3C) & 7) << 0x18) | temp_t2 | temp_t3) | (((*(s16 *)((char *)arg1 + 0x2E)) & 0xF) << 0xA)) | temp_t4 | temp_t5) | (u32)((*(s16 *)((char *)arg1 + 0x2C)) & 0xF));
+            FW(temp_a0, 0x0) = (s32) (((((s32) ((*(s16 *)((char *)arg1 + 0x20)) + 7) >> 3) & 0x1FF) << 9) | 0xF5880000 | temp_ra_5); FW(temp_a0, 0x4) = (s32) ((u32)(((((FW(arg1, 0x3C) & 7) << 0x18) | temp_t2 | temp_t3) | (((*(s16 *)((char *)arg1 + 0x2E)) & 0xF) << 0xA)) | temp_t4 | temp_t5) | (u32)(u16)((*(s16 *)((char *)arg1 + 0x2C)) & 0xF));
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -26134,7 +26137,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             if (0) { gl_func_00034458((s32 *)&sp34); }
             temp_a1 = sp34 = FW(arg1, 0x24);
         s2_def:                                    /* switch 2 */
-            gl_func_00034458((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1, (int *) var_a2, arg0);
+            gl_func_00034458((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1);
             return;
         }
     }
