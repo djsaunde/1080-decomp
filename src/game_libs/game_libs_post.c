@@ -1081,158 +1081,146 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 // uopt stops holding &D in an s-register (target s4), so every later access re-luis;
 // the pointer init also lands before the blez guard (target: after it). Next step:
 // keep that loop form and find what keeps &D held.
+// Run 143 (agent-c) 94.53 -> 97.57: rewritten as the SM64-era
+// synthesis_do_one_audio_update (OoT layout, index-form reverbs): per-iteration
+// t = updateIndex * numNotes in the note loops, (s32) casts on the reverbIndex
+// bitfield compares (signed slt like the target), SAMPLE_SIZE = sizeof(s16), a
+// leading padA word so noteIndices sits at sp+132. LEFT: the strength-reduced
+// sampleState copy is scheduled after its first load, the useReverb home is
+// sp+124 (target 120) and the two spill temps sit at 92/96 (target 96/104).
 #ifdef NON_MATCHING
-/* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target words.
- * Callees from the baked jal targets (minus the 0x1466C game_libs base):
- * F1 = gl_func_0001DA7C, F2 = gl_func_0001E134 (the 7-arg record builder),
- * F3 = game_libs_func_0001D3E0, F4 = gl_func_0001DB88, F5 =
- * game_libs_func_0001D4B0. They are typed aliases here; the short params
- * give the target's sll/sra 16 narrowing at those sites only. The counters:
- * i (s1) is int, while n2 (s2) and k (s3) are s16. The classify-loop
- * bound is the live global count, written in the loop test. LICM hoists
- * it, but the trip count stays unknown, so there is no x4 unroll and no
- * i<n -> i!=n rewrite.
- * Run 129 (agent-c) 157 -> 150 raw, length 284 -> 288 = target: all three
- * display-list writes are the gbi `Gfx *_g = gp++` shape (copy, bump, then
- * w0 / w1 through the copy); the class field shifts are unsigned (srl).
- * LEFT: arg1 should be held in s8 (ours holds &buf there and homes arg1),
- * and loops B / C keep a per-iteration `e = p` copy in the target (moving
- * `p += 0x20` above the body keeps the copy but rotates the loop, +4 words). */
-extern char *gl_1dcb4_f1(char *, s32, s16, s16);
-extern char *gl_1dcb4_f2(s32, char *, char *, s32, s32, char *, s32);
-extern char *gl_1dcb4_f3(char *, s32, s32);
-extern char *gl_1dcb4_f4(char *, s16, s16);
-extern char *gl_1dcb4_f5(char *, s32, s32);
-#define G1DCB4 ((char *)&D_00000000)
-/* run 139 policy fix: three empty tests on locals read before any assignment (e, rec, q) removed; parameter /
- * counter tests at the same sites score the same or worse (one keeps fuzzy but loses 5 words). */
-char *gl_func_0001DCB4(s32 arg0, s32 arg1, char *gp, s32 arg3) {
-    s32 flag;
-    s8 buf[56];
-    char *rec;
-    s32 sz2;
-    s16 n2;
-    s16 k;
-    s32 i;
-    s32 t0;
-    char *p;
-    char *e;
-    u8 *q;
-    u8 *qe;
-    u32 v;
+typedef struct { u32 w0; u32 w1; } gl_dcb4_Awords;
+typedef union { gl_dcb4_Awords words; long long force_structure_alignment; } gl_dcb4_Acmd;
+#define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
+#define OS_K0_TO_PHYSICAL(x) (u32)(((char *)(x)-0x80000000))
+#define aClearBuffer(pkt, dmem, size) { gl_dcb4_Acmd *_a = (gl_dcb4_Acmd *)pkt; _a->words.w0 = _SHIFTL(2, 24, 8) | _SHIFTL(dmem, 0, 24); _a->words.w1 = (u32)(size); }
+#define aInterleave(pkt, o, l, r, c) { gl_dcb4_Acmd *_a = (gl_dcb4_Acmd *)pkt; _a->words.w0 = (_SHIFTL(13, 24, 8) | _SHIFTL((c) >> 4, 16, 8) | _SHIFTL(o, 0, 16)); _a->words.w1 = _SHIFTL(l, 16, 16) | _SHIFTL(r, 0, 16); }
+#define aSaveBuffer(pkt, dmemSrc, addrDest, size) { gl_dcb4_Acmd *_a = (gl_dcb4_Acmd *)pkt; _a->words.w0 = (_SHIFTL(21, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemSrc, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrDest); }
+#define DMEM_TEMP 0x3C0
+#define DMEM_LEFT_CH 0x940
+#define DMEM_RIGHT_CH 0xAE0
+#define DMEM_2CH_SIZE 0x340
+#define SAMPLE_SIZE sizeof(s16)
+typedef struct {
+    u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1;
+    u32 stereoStrongRight : 1; u32 stereoStrongLeft : 1; u32 stereoHeadsetEffects : 1; u32 usesHeadsetPanEffects : 1;
+    u32 reverbIndex : 3; u32 bookOffset : 2; u32 isSyntheticWave : 1; u32 hasTwoParts : 1; u32 useHaasEffect : 1;
+    char pad[0x1C];
+} gl_dcb4_SampleState;
+typedef struct { char pad[0x20]; } gl_dcb4_SynthState;
+typedef struct { char pad0[0x10]; gl_dcb4_SynthState synthesisState; char pad30[0xD0 - 0x30]; } gl_dcb4_Note;
+typedef struct { u8 resampleFlags; u8 useReverb; u8 framesToIgnore; u8 curFrame; u8 downsampleRate; s8 unk_05; char pad6[0xFA]; s16 *filterLeft; s16 *filterRight; char pad108[0x158 - 0x108]; } gl_dcb4_Reverb;
+typedef struct {
+    char unk_0; s8 numSynthesisReverbs; char pad2[0x12]; gl_dcb4_SampleState *sampleStates;
+    gl_dcb4_Reverb synthesisReverbs[4]; char pad578[0x2070 - 0x578]; s32 numNotes; char pad2074[0x2CFC - 0x2074]; gl_dcb4_Note *notes;
+} gl_dcb4_Ctx;
+extern gl_dcb4_Ctx gl_dcb4_gAudioCtx;
+#define gAudioCtx gl_dcb4_gAudioCtx
+extern gl_dcb4_Acmd *gl_1dcb4_f1(gl_dcb4_Acmd *, s32, s16, s16);
+extern gl_dcb4_Acmd *gl_1dcb4_f2(s32, gl_dcb4_SampleState *, gl_dcb4_SynthState *, s16 *, s32, gl_dcb4_Acmd *, s32);
+extern gl_dcb4_Acmd *gl_1dcb4_f3(gl_dcb4_Acmd *, s32, s32);
+extern gl_dcb4_Acmd *gl_1dcb4_f4(gl_dcb4_Acmd *, s16, s16);
+extern gl_dcb4_Acmd *gl_1dcb4_f5(gl_dcb4_Acmd *, s32, s32);
+#define AudioSynth_LoadReverbSamples gl_1dcb4_f1
+#define AudioSynth_ProcessNote gl_1dcb4_f2
+#define AudioSynth_FilterReverb gl_1dcb4_f3
+#define AudioSynth_SaveReverbSamples gl_1dcb4_f4
+#define AudioSynth_MaybeMixRingBuffer1 gl_1dcb4_f5
 
-    t0 = *(s8 *)(G1DCB4 + 1);
-    n2 = 0;
-    if (t0 == 0) {
-        i = 0;
-        if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
-            p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
-            do {
-                if ((*(u32 *)p >> 31) != 0) {
-                    buf[n2++] = i;
-                }
-                i++;
-                p += 0x20;
-            } while (i < *(s32 *)(G1DCB4 + 0x2070));
-            i = 0;
+gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 updateIndex) {
+    s32 padA;
+    u8 noteIndices[56];
+    s16 count;
+    s16 reverbIndex;
+    s32 useReverb;
+    s32 t;
+    s32 i;
+    gl_dcb4_SampleState *sampleState;
+
+    count = 0;
+    if (gAudioCtx.numSynthesisReverbs == 0) {
+        for (i = 0; i < gAudioCtx.numNotes; i++) {
+            if (gAudioCtx.sampleStates[gAudioCtx.numNotes * updateIndex + i].enabled) {
+                noteIndices[count++] = i;
+            }
         }
-        k = 0;
     } else {
-        k = 0;
-        if (t0 > 0) {
-            do {
-                i = 0;
-                if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
-                    p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
-                    do {
-                        e = p;
-                        if ((*(u32 *)e >> 31) != 0 && k == ((u32)*(u8 *)(e + 1) >> 5)) {
-                            buf[n2++] = i;
-                        }
-                        i++;
-                        p += 0x20;
-                    } while (i < *(s32 *)(G1DCB4 + 0x2070));
+        for (reverbIndex = 0; reverbIndex < gAudioCtx.numSynthesisReverbs; reverbIndex++) {
+            for (i = 0; i < gAudioCtx.numNotes; i++) {
+                sampleState = &gAudioCtx.sampleStates[gAudioCtx.numNotes * updateIndex + i];
+                if (sampleState->enabled && (s32)sampleState->reverbIndex == reverbIndex) {
+                    noteIndices[count++] = i;
                 }
-                k++;
-            } while (k < t0);
-            k = 0;
-        }
-        i = 0;
-        if (*(s32 *)(G1DCB4 + 0x2070) > 0) {
-            p = *(char **)(G1DCB4 + 0x14) + ((*(s32 *)(G1DCB4 + 0x2070) * arg3) << 5);
-            do {
-                e = p;
-                if ((*(u32 *)e >> 31) != 0 && (s32)((u32)*(u8 *)(e + 1) >> 5) >= t0) {
-                    buf[n2++] = i;
-                }
-                i++;
-                p += 0x20;
-            } while (i < *(s32 *)(G1DCB4 + 0x2070));
-            i = 0;
-        }
-    }
-    {
-        p = gp;
-        gp += 8;
-        *(s32 *)(p + 0) = 0x02000940;
-        *(s32 *)(p + 4) = 0x340;
-    }
-    for (; k < *(s8 *)(G1DCB4 + 1); k++) {
-        rec = G1DCB4 + k * 0x158;
-        flag = *(u8 *)(rec + 0x19); if (arg0) {}
-        if (flag != 0) {
-            gp = gl_1dcb4_f1(gp, arg1, k, arg3);
-        }
-        if (i < n2) {
-            if (arg1) {} /* run 142: block split, 87.66 -> 94.4 (if-split sweep) */
-            q = (u8 *)&buf[i];
-            do {
-                v = *q;
-                e = *(char **)(G1DCB4 + 0x14) + (v << 5) + ((arg3 * *(s32 *)(G1DCB4 + 0x2070)) << 5);
-                if (k != (*(u8 *)(e + 1) >> 5)) {
-                    break;
-                }
-                gp = gl_1dcb4_f2(v, ((v + arg3 * *(s32 *)(G1DCB4 + 0x2070)) << 5) + *(char **)(G1DCB4 + 0x14),
-                                 v * 0xD0 + *(char **)(G1DCB4 + 0x2CFC) + 0x10, arg0, arg1, gp, arg3);
-                i++;
-                q++;
-            } while (i < n2);
-        }
-        if (flag != 0) {
-            if (*(s32 *)(rec + 0x118) != 0 || *(s32 *)(rec + 0x11C) != 0) {
-                gp = gl_1dcb4_f3(gp, arg1 * 2, k);
             }
-            gp = gl_1dcb4_f4(gp, k, arg3);
-            if (*(s8 *)(rec + 0x1D) != -1) {
-                gp = gl_1dcb4_f5(gp, k, arg3);
+        }
+
+        for (i = 0; i < gAudioCtx.numNotes; i++) {
+            sampleState = &gAudioCtx.sampleStates[gAudioCtx.numNotes * updateIndex + i];
+            if (sampleState->enabled && (s32)sampleState->reverbIndex >= gAudioCtx.numSynthesisReverbs) {
+                noteIndices[count++] = i;
             }
         }
     }
-    sz2 = arg1 * 2;
-    if (i < n2) {
-        q = (u8 *)&buf[i];
-        qe = (u8 *)&buf[n2];
-        do {
-            v = *q;
-            gp = gl_1dcb4_f2(v, ((v + arg3 * *(s32 *)(G1DCB4 + 0x2070)) << 5) + *(char **)(G1DCB4 + 0x14),
-                             v * 0xD0 + *(char **)(G1DCB4 + 0x2CFC) + 0x10, arg0, arg1, gp, arg3);
-            q++;
-        } while (q < qe);
+
+    aClearBuffer(cmd++, DMEM_LEFT_CH, DMEM_2CH_SIZE);
+
+    i = 0;
+    for (reverbIndex = 0; reverbIndex < gAudioCtx.numSynthesisReverbs; reverbIndex++) {
+        useReverb = gAudioCtx.synthesisReverbs[reverbIndex].useReverb;
+        if (useReverb) {
+            cmd = AudioSynth_LoadReverbSamples(cmd, aiBufLen, reverbIndex, updateIndex);
+        }
+
+        for (; i < count; i++) {
+            t = updateIndex * gAudioCtx.numNotes;
+            if (reverbIndex == (s32)gAudioCtx.sampleStates[t + noteIndices[i]].reverbIndex) {
+                cmd = AudioSynth_ProcessNote(noteIndices[i], &gAudioCtx.sampleStates[t + noteIndices[i]],
+                                             &gAudioCtx.notes[noteIndices[i]].synthesisState, aiBuf, aiBufLen, cmd,
+                                             updateIndex);
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        if (useReverb) {
+            if (gAudioCtx.synthesisReverbs[reverbIndex].filterLeft != NULL || gAudioCtx.synthesisReverbs[reverbIndex].filterRight != NULL) {
+                cmd = AudioSynth_FilterReverb(cmd, aiBufLen * SAMPLE_SIZE, reverbIndex);
+            }
+            cmd = AudioSynth_SaveReverbSamples(cmd, reverbIndex, updateIndex);
+            if (gAudioCtx.synthesisReverbs[reverbIndex].unk_05 != -1) {
+                cmd = AudioSynth_MaybeMixRingBuffer1(cmd, reverbIndex, updateIndex);
+            }
+        }
     }
-    {
-        p = gp;
-        gp += 8;
-        *(s32 *)(p + 0) = (((sz2 >> 4) & 0xFF) << 16) | 0x0D000000 | 0x3C0;
-        *(s32 *)(p + 4) = 0x09400AE0;
+
+    for (; i < count; i++) {
+        t = updateIndex * gAudioCtx.numNotes;
+        cmd = AudioSynth_ProcessNote(noteIndices[i], &gAudioCtx.sampleStates[t + noteIndices[i]],
+                                     &gAudioCtx.notes[noteIndices[i]].synthesisState, aiBuf, aiBufLen, cmd, updateIndex);
     }
-    {
-        p = gp;
-        gp += 8;
-        *(s32 *)(p + 0) = ((((sz2 * 2) >> 4) & 0xFF) << 16) | 0x15000000 | 0x3C0;
-        *(s32 *)(p + 4) = arg0 + 0x80000000;
-    }
-    return gp;
+
+    aInterleave(cmd++, DMEM_TEMP, DMEM_LEFT_CH, DMEM_RIGHT_CH, 2 * aiBufLen);
+    aSaveBuffer(cmd++, DMEM_TEMP, aiBuf, 2 * (aiBufLen * (s32)SAMPLE_SIZE));
+
+    return cmd;
 }
+#undef _SHIFTL
+#undef OS_K0_TO_PHYSICAL
+#undef aClearBuffer
+#undef aInterleave
+#undef aSaveBuffer
+#undef DMEM_TEMP
+#undef DMEM_LEFT_CH
+#undef DMEM_RIGHT_CH
+#undef DMEM_2CH_SIZE
+#undef SAMPLE_SIZE
+#undef gAudioCtx
+#undef AudioSynth_LoadReverbSamples
+#undef AudioSynth_ProcessNote
+#undef AudioSynth_FilterReverb
+#undef AudioSynth_SaveReverbSamples
+#undef AudioSynth_MaybeMixRingBuffer1
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001DCB4);
 #endif
