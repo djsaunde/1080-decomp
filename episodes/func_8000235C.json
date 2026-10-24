@@ -1,0 +1,32 @@
+{
+  "function_name": "func_8000235C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T01:57:30.680641+00:00",
+  "end_time": "2026-10-24T01:57:30.680662+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T01:57:30.680658+00:00",
+      "assistant_text": "fresh decode: cached count re-read in hit arm; init order i,n,e",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 31,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct { short type; short pad; int a; int b; } Ent;\ntypedef struct { char p0[4]; int count; char p8[0x34]; Ent *list; char p40[0x59]; unsigned char dirty; } Obj;\nint func_8000235C(Obj *o, int id) {\n    Ent *e;\n    int i;\n    int n;\n\n    if (o->list == 0) {\n        return 0;\n    }\n    i = 0;\n    n = o->count;\n    e = o->list;\n    for (; i < n; i++) {\n        if ((e->type & 7) == 1 && (e->type >> 4) == id && (e->type & 8)) {\n            e->type &= ~8;\n            o->dirty = 1;\n            n = o->count;\n        }\n        e++;\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_000.c",
+    "segment": "kernel",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff 100"
+  }
+}

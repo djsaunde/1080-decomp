@@ -1433,6 +1433,10 @@ build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: RE
 build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: TRUNCATE_TEXT := 0x190
 # kernel_000 tail: C-body path leaves a 4-byte alignment residue after the
 # func_800029A0_pad block (.text 0x29B4 vs ROM-true 0x29B0) — trim it.
+# func_8000235C (exact C, 0x7C) + the two all-zero alignment words before the 16-aligned
+# handwritten func_800023E0 (the INCLUDE_ASM .s carried them: 0x84).
+build/src/kernel/kernel_000.c.o: SUFFIX_BYTES_FORCE := func_8000235C=0x00000000,0x00000000
+build/non_matching/src/kernel/kernel_000.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_8000235C=0x00000000,0x00000000
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: TRUNCATE_TEXT := 0x2900  # was 0x29B0 before the entry stub + func_80000060 (0xB0) moved to kernel_000_entry.c
 build/src/game_libs/game_libs_ido53_6D0F4.c.o build/non_matching/src/game_libs/game_libs_ido53_6D0F4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6D0F4.c.o build/non_matching/src/game_libs/game_libs_ido53_6D0F4.c.o: OPT_FLAGS := -O1

@@ -1963,39 +1963,43 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_80002250);
  * before the ptr-init (to flip the coloring) reorders the prologue insns and
  * sends the entry ptr to $a3 instead. The two can't be satisfied together via
  * statement order (scheduler-tie + coloring). Genuine ugen coloring cap. */
-#ifdef NON_MATCHING
-int func_8000235C(int *a0, int a1) {
-    int a3;
-    int v1;
-    short *a2;
-    int v0;
+/* 2026-10-23 EXACT (agent-g run 144): the "ugen coloring cap" above was a
+ * decode shape. Fresh decode: a for loop over a cached count `n` that is
+ * RE-READ inside the hit arm after the dirty-flag store (that store-then-load
+ * order is source order), the entry pointer stepped at the end of the body,
+ * and the three inits in the order i, n, e after the null test (a 72-variant
+ * decl x init-order sweep: only init order i, n, e gives the target's
+ * i = v1 / n = a1 / e = a2 / id = a3 colouring; declaration order is free). */
+typedef struct { short type; short pad; int a; int b; } Ent8000235C;
+typedef struct {
+    char p0[4];
+    int count;
+    char p8[0x34];
+    Ent8000235C *list;
+    char p40[0x59];
+    unsigned char dirty;
+} Obj8000235C;
+int func_8000235C(Obj8000235C *o, int id) {
+    Ent8000235C *e;
+    int i;
+    int n;
 
-    v0 = a0[0x3C / 4];
-    if (v0 == 0) return 0;
-
-    a3 = a1;
-    a1 = a0[0x4 / 4];
-    a2 = (short*)v0;
-    v1 = 0;
-    if (a1 <= 0) goto end;
-
-    do {
-        v0 = a2[0];
-        v1++;
-        if (((v0 & 0x7) == 1) && (a3 == (v0 >> 4)) && (v0 & 0x8)) {
-            *a2 = (short)(v0 & ~0x8);
-            *(unsigned char*)((char*)a0 + 0x99) = 1;
-            a1 = a0[0x4 / 4];
+    if (o->list == 0) {
+        return 0;
+    }
+    i = 0;
+    n = o->count;
+    e = o->list;
+    for (; i < n; i++) {
+        if ((e->type & 7) == 1 && (e->type >> 4) == id && (e->type & 8)) {
+            e->type &= ~8;
+            o->dirty = 1;
+            n = o->count;
         }
-        a2 = (short*)((char*)a2 + 0xC);
-    } while (v1 < a1);
-
-end:
+        e++;
+    }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_8000235C);
-#endif
 
 /* 2026-06-24 reference-confirmed PRIVILEGED-ASM handwritten (CP0/TLB/FPU: mtc0/mfc0/tlbwi/ctc1/cfc1 — no C form, like libreultra src/os/*.s). INCLUDE_ASM is canonical/permanent; 0.0% fuzzy is CORRECT, not a pending decode. */
 INCLUDE_ASM("asm/nonmatchings/kernel", func_800023E0);
