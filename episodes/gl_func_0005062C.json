@@ -1,0 +1,30 @@
+{
+  "function_name": "gl_func_0005062C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T03:45:25.340870+00:00",
+  "end_time": "2026-10-24T03:45:25.340884+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T03:45:25.340880+00:00",
+      "assistant_text": "NCC donor; operator+(const V3&, const P3&) with explicit (P3 &) right operands moves the first operator+ return slot to sp+356; recursion and callees as blank jal-0 aliases",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 689,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0005062C (0xAC4 / 689 words) -- EXACT.\n *\n * REPLACE_FUNC_BODY-spliced over the placeholder in both post0b objects\n * (Makefile GAMELIBS_5062C_DONOR); callees are blank USO imports (jal 0,\n * zero-valued aliases in undefined_syms_auto.txt; the recursion too is a\n * blank import in the ROM, hence the _rec alias).\n *\n * Recursive triangle subdivider (agent-g run 114, from the run-113 draft):\n * three normal callbacks, an |n0+n1+n2| / 2 < scale*4 stop test, six edge\n * midpoints, then four recursive calls or six vertex + four triangle emits.\n * What each piece pins (docs/IDO_CODEGEN.md#ncc-5062c-subdivider-run114):\n * - V3(float, float, float) forwards to an inline set(float, float, float):\n *   gives the target FP colouring of every + / divide (x f12, y f0, z f2).\n * - the midpoint sums go through NAMED locals declared first (s1..s6, the\n *   top-of-frame slots 580..520, first declared highest) with the implicit\n *   operator=: (s1 = v0 + (P3 &)v1) / 2.0f.\n * - the store into m01 is a by-value member returning V3 & (assign).\n * - the abs is a macro, not an inline.\n * - float ax/ay/az are declared BEFORE the int handles.\n * - (run 115) V3 derives from a POD P3: the first operator+ ctor temporary\n *   sits at the target's sp+336.\n * - (run 146) the last word, the first operator+ return slot (sp+356, was\n *   348): operator+ takes (const V3 &, const P3 &) and every call site casts\n *   its right operand to P3 & explicitly. edg allocates that explicit\n *   derived-to-base reference temporary AFTER the return slot (an implicit\n *   conversion, or (P3, P3) / (V3, V3) parameters, put it before or drop it).\n */\nstruct P3 { float x, y, z; };\nstruct V3 : P3 {\n    V3() {}\n    V3(float a, float b, float c) { set(a, b, c); }\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    V3 &assign(V3 v) { set(v); return *this; }\n};\ninline V3 operator+(const V3 &a, const P3 &b) { return V3(a.x + b.x, a.y + b.y, a.z + b.z); }\ninline V3 operator/(const V3 &v, float s) { return V3(v.x / s, v.y / s, v.z / s); }\n#define fab(f) ((f) < 0.0f ? -(f) : (f))\nextern \"C\" {\nvoid gl_func_00000000_5062c_nrm(V3 *, V3 *, V3 *);\nint gl_func_00000000_5062c_vtx(int, int, V3 *, V3 *, int);\nvoid gl_func_00000000_5062c_tri(int, int, int, int, int, int);\nint gl_func_00000000_5062c_rec(int, int, int, int, int, int, int, V3, V3, V3, V3, V3, V3);\n}\nextern \"C\" int gl_func_0005062C(int scale, int a1, int level, int a3, int a4, int a5, int a6,\n                                V3 v0, V3 v1, V3 v2, V3 t0, V3 t1, V3 t2) {\n    V3 s1, s2, s3, s4, s5, s6;\n    V3 m01, m12, m20, u01, u12, u20;\n    V3 n0, n1, n2;\n    float ax, ay, az;\n    int h0, h1, h2, h3, h4, h5;\n\n    gl_func_00000000_5062c_nrm(&v0, &v1, &n0);\n    gl_func_00000000_5062c_nrm(&v1, &v2, &n1);\n    gl_func_00000000_5062c_nrm(&v2, &v0, &n2);\n    ax = fab(n0.x + n1.x + n2.x);\n    ay = fab(n0.y + n1.y + n2.y);\n    az = fab(n0.z + n1.z + n2.z);\n    if ((ax + ay + az) / 2.0f < (float)(scale * 4)) {\n        level = 1;\n    }\n    m01.assign((s1 = v0 + (P3 &)v1) / 2.0f);\n    m12.assign((s2 = v1 + (P3 &)v2) / 2.0f);\n    m20.assign((s3 = v2 + (P3 &)v0) / 2.0f);\n    u01.assign((s4 = t0 + (P3 &)t1) / 2.0f);\n    u12.assign((s5 = t1 + (P3 &)t2) / 2.0f);\n    u20.assign((s6 = t2 + (P3 &)t0) / 2.0f);\n    if (--level != 0) {\n        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, v0, m01, m20, t0, u01, u20);\n        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m01, v1, m12, u01, t1, u12);\n        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m20, m12, v2, u20, u12, t2);\n        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m01, m12, m20, u01, u12, u20);\n    } else {\n        h0 = gl_func_00000000_5062c_vtx(a1, a3, &v0, &t0, a4);\n        h1 = gl_func_00000000_5062c_vtx(a1, a3, &v1, &t1, a4);\n        h2 = gl_func_00000000_5062c_vtx(a1, a3, &v2, &t2, a4);\n        h3 = gl_func_00000000_5062c_vtx(a1, a3, &m01, &u01, a4);\n        h4 = gl_func_00000000_5062c_vtx(a1, a3, &m12, &u12, a4);\n        h5 = gl_func_00000000_5062c_vtx(a1, a3, &m20, &u20, a4);\n        gl_func_00000000_5062c_tri(a3, a5, h0, h3, h5, a6);\n        gl_func_00000000_5062c_tri(a3, a5, h3, h1, h4, a6);\n        gl_func_00000000_5062c_tri(a3, a5, h5, h4, h2, a6);\n        gl_func_00000000_5062c_tri(a3, a5, h3, h4, h5, a6);\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5062C.cpp",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2"
+  }
+}

@@ -1,37 +1,30 @@
-/* IDO 7.1 NCC (C++) body for gl_func_0005062C (0xAC4 / 689 words) -- NON_MATCHING.
+/* IDO 7.1 NCC (C++) donor for gl_func_0005062C (0xAC4 / 689 words) -- EXACT.
  *
- * Spliced into the NON_MATCHING post0b object only (REPLACE_FUNC_BODY on
- * build/non_matching/..., like the 65EE4 NM donor); the ROM keeps INCLUDE_ASM.
- * All 689 instructions are identical to the target once stack offsets are
- * masked, and 688 with exact offsets; the only residual is the first
- * statement's operator+ return slot at sp+348 (target sp+356): the target
- * allocates it above the two pool slots that sit between it and the
- * operator+ ctor temporary (sp+336, now right), this source below them.
+ * REPLACE_FUNC_BODY-spliced over the placeholder in both post0b objects
+ * (Makefile GAMELIBS_5062C_DONOR); callees are blank USO imports (jal 0,
+ * zero-valued aliases in undefined_syms_auto.txt; the recursion too is a
+ * blank import in the ROM, hence the _rec alias).
  *
  * Recursive triangle subdivider (agent-g run 114, from the run-113 draft):
  * three normal callbacks, an |n0+n1+n2| / 2 < scale*4 stop test, six edge
  * midpoints, then four recursive calls or six vertex + four triangle emits.
  * What each piece pins (docs/IDO_CODEGEN.md#ncc-5062c-subdivider-run114):
  * - V3(float, float, float) forwards to an inline set(float, float, float):
- *   gives the target FP colouring of every + / divide (x f12, y f0, z f2);
- *   assigning the members in the ctor body does not.
+ *   gives the target FP colouring of every + / divide (x f12, y f0, z f2).
  * - the midpoint sums go through NAMED locals declared first (s1..s6, the
  *   top-of-frame slots 580..520, first declared highest) with the implicit
- *   operator=: (s1 = v0 + v1) / 2.0f. An unnamed const-ref temporary is laid
- *   out in the opposite order.
- * - the store into m01 is a by-value member returning V3 & (assign); the
- *   reference return adds the two pool slots below the divide temp.
- * - the abs is a macro, not an inline: an inline float fab() moves the
- *   result from f12 to f2 and adds two pool slots.
- * - float ax/ay/az are declared BEFORE the int handles (their three unused
- *   slots sit between n2 and h0, as in the target).
- * - no dead address escape is needed for the int params: with this shape
- *   uopt keeps them in their arg homes on its own.
- * - (run 115) V3 derives from a POD P3 and operator+ takes const P3 &: the
- *   first operator+ ctor temporary moves to the target's sp+336 (685 -> 688
- *   of 689 words). The one word left is the operator+ return slot, now
- *   allocated below the two conversion slots (sp+348, target sp+356).
- * Callees are blank USO imports (jal 0); the NM object is not linked. */
+ *   operator=: (s1 = v0 + (P3 &)v1) / 2.0f.
+ * - the store into m01 is a by-value member returning V3 & (assign).
+ * - the abs is a macro, not an inline.
+ * - float ax/ay/az are declared BEFORE the int handles.
+ * - (run 115) V3 derives from a POD P3: the first operator+ ctor temporary
+ *   sits at the target's sp+336.
+ * - (run 146) the last word, the first operator+ return slot (sp+356, was
+ *   348): operator+ takes (const V3 &, const P3 &) and every call site casts
+ *   its right operand to P3 & explicitly. edg allocates that explicit
+ *   derived-to-base reference temporary AFTER the return slot (an implicit
+ *   conversion, or (P3, P3) / (V3, V3) parameters, put it before or drop it).
+ */
 struct P3 { float x, y, z; };
 struct V3 : P3 {
     V3() {}
@@ -40,14 +33,14 @@ struct V3 : P3 {
     void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }
     V3 &assign(V3 v) { set(v); return *this; }
 };
-inline V3 operator+(const P3 &a, const P3 &b) { return V3(a.x + b.x, a.y + b.y, a.z + b.z); }
+inline V3 operator+(const V3 &a, const P3 &b) { return V3(a.x + b.x, a.y + b.y, a.z + b.z); }
 inline V3 operator/(const V3 &v, float s) { return V3(v.x / s, v.y / s, v.z / s); }
 #define fab(f) ((f) < 0.0f ? -(f) : (f))
 extern "C" {
 void gl_func_00000000_5062c_nrm(V3 *, V3 *, V3 *);
 int gl_func_00000000_5062c_vtx(int, int, V3 *, V3 *, int);
 void gl_func_00000000_5062c_tri(int, int, int, int, int, int);
-int gl_func_0005062C(int, int, int, int, int, int, int, V3, V3, V3, V3, V3, V3);
+int gl_func_00000000_5062c_rec(int, int, int, int, int, int, int, V3, V3, V3, V3, V3, V3);
 }
 extern "C" int gl_func_0005062C(int scale, int a1, int level, int a3, int a4, int a5, int a6,
                                 V3 v0, V3 v1, V3 v2, V3 t0, V3 t1, V3 t2) {
@@ -66,17 +59,17 @@ extern "C" int gl_func_0005062C(int scale, int a1, int level, int a3, int a4, in
     if ((ax + ay + az) / 2.0f < (float)(scale * 4)) {
         level = 1;
     }
-    m01.assign((s1 = v0 + v1) / 2.0f);
-    m12.assign((s2 = v1 + v2) / 2.0f);
-    m20.assign((s3 = v2 + v0) / 2.0f);
-    u01.assign((s4 = t0 + t1) / 2.0f);
-    u12.assign((s5 = t1 + t2) / 2.0f);
-    u20.assign((s6 = t2 + t0) / 2.0f);
+    m01.assign((s1 = v0 + (P3 &)v1) / 2.0f);
+    m12.assign((s2 = v1 + (P3 &)v2) / 2.0f);
+    m20.assign((s3 = v2 + (P3 &)v0) / 2.0f);
+    u01.assign((s4 = t0 + (P3 &)t1) / 2.0f);
+    u12.assign((s5 = t1 + (P3 &)t2) / 2.0f);
+    u20.assign((s6 = t2 + (P3 &)t0) / 2.0f);
     if (--level != 0) {
-        gl_func_0005062C(scale, a1, level, a3, a4, a5, a6, v0, m01, m20, t0, u01, u20);
-        gl_func_0005062C(scale, a1, level, a3, a4, a5, a6, m01, v1, m12, u01, t1, u12);
-        gl_func_0005062C(scale, a1, level, a3, a4, a5, a6, m20, m12, v2, u20, u12, t2);
-        gl_func_0005062C(scale, a1, level, a3, a4, a5, a6, m01, m12, m20, u01, u12, u20);
+        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, v0, m01, m20, t0, u01, u20);
+        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m01, v1, m12, u01, t1, u12);
+        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m20, m12, v2, u20, u12, t2);
+        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m01, m12, m20, u01, u12, u20);
     } else {
         h0 = gl_func_00000000_5062c_vtx(a1, a3, &v0, &t0, a4);
         h1 = gl_func_00000000_5062c_vtx(a1, a3, &v1, &t1, a4);

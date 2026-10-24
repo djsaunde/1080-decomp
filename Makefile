@@ -1806,13 +1806,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3DB38_DONOR := build/src/game_libs/game_libs_ncc_3DB38.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003DB38=$(GAMELIBS_3DB38_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DB38_DONOR)
-# 5062C is still NON_MATCHING: its closest source is C++ (an NCC .cpp that is
-# instruction-identical except one 4-byte edg stack slot). Only the NM
-# comparison object receives it; the ROM keeps INCLUDE_ASM. The splice grows
-# the NM body (placeholder -> 689 words), which moves the post0b clip below.
-GAMELIBS_5062C_NM_DONOR := build/src/game_libs/game_libs_ncc_5062C.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005062C=$(GAMELIBS_5062C_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5062C_NM_DONOR)
+# 5062C = recursive triangle subdivider; NCC (C++) donor (explicit (P3 &) right operands pin the edg temp slots).
+GAMELIBS_5062C_DONOR := build/src/game_libs/game_libs_ncc_5062C.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005062C=$(GAMELIBS_5062C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5062C_DONOR)
 # 49B3C is still NON_MATCHING: NCC draft (by-value AIter, Pad12 dead object) is
 # 32 raw words vs the cfe body's 60; same length (160 words), so the clip holds.
 GAMELIBS_49B3C_NM_DONOR := build/src/game_libs/game_libs_ncc_49B3C.cpp.o

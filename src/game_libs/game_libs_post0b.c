@@ -20913,20 +20913,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00050444);
 #endif
 
 // gl_func_0005062C (0xAC4 / 689 words): recursive triangle subdivider, C++.
-// The NON_MATCHING source is src/game_libs/game_libs_ncc_5062C.cpp.
-#ifdef NON_MATCHING
-/* 2026-10-21 (agent-g run 114): the NON_MATCHING body is now the IDO 7.1 NCC
- * (C++) source src/game_libs/game_libs_ncc_5062C.cpp, spliced over this
- * placeholder in the NON_MATCHING object only (Makefile
- * GAMELIBS_5062C_NM_DONOR). It is instruction-identical to the target except
- * one 4-byte edg stack slot (4 words); see that file's header. The cfe
- * transcription that was here scored 65.4. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_5062C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 146). */
 s32 gl_func_0005062C(void) {
-    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005062C);
-#endif
 
 /* gl_func_000510F0: triangle -> 3 positions + 3 texcoords, passed BY VALUE
  * to a USO emit callback (0x2DC / 183 words). EXACT 2026-10-16 agent-g.
