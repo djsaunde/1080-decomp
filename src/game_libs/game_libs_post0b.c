@@ -7488,9 +7488,12 @@ void gl_func_0003D68C(int *a0) {
  * closes pure-regalloc, not structural). Killed; not permuter-class. */
 #ifdef NON_MATCHING
 struct gl_3D71C_blk { int w[16]; };
+/* run 137: the test callee takes its two floats as FLOAT (prototyped: lwc1 /
+ * swc1 to 16(sp) / 24(sp)); the unprototyped call promoted them to double. */
+extern int gl_3D71C_test(int, int, int, int, float, int, float);
 void gl_func_0003D71C(int *a0) {
     int *s0 = a0;
-    if (func_00000000(*(int *)((char *)&D_00000000 + 0x254), 3,
+    if (gl_3D71C_test(*(int *)((char *)&D_00000000 + 0x254), 3,
                        *(int *)((char *)s0 + 0x30),
                        *(int *)((char *)s0 + 0x34),
                        *(float *)((char *)s0 + 0x38), 0, 0.0f) != 0) {
