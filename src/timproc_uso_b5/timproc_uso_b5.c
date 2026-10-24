@@ -7282,7 +7282,8 @@ void timproc_uso_b5_func_0000B368(char *arg0) {
         s92.f8 = import_80800000_ld8.v * timb5_B368_gscale;
         c1_292.v = s92;
         s240 = c1_292.v; if (arg0) {}
-        ang = M2C_FIELD(arg0, f32 *, 0x128); s64.f0 = ang * s240.f0;
+        ang = M2C_FIELD(arg0, f32 *, 0x128);
+        s64.f0 = ang * s240.f0;
         s64.f4 = ang * s240.f4;
         s64.f8 = ang * s240.f8;
         c76.v = s64;
