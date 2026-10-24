@@ -47,7 +47,7 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
         sp3C = dx;
         d4 = (*(f32*)((char*)temp_v0 + 0xD4));
         sp38 = dy;
-        len = gl_func_00000000_sqf((dy * dy) + (dx * dx)); if (arg2) {}
+        len = gl_func_00000000_sqf((dx * dx) + (dy * dy)); if (arg2) {}
         vx = sp3C; if (arg2) {}
         vy = sp38;
         if (len != 0.0f) {
