@@ -264,8 +264,14 @@ void h2hproc_uso_func_000005B0(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-#ifdef NON_MATCHING
 /* h2hproc_uso_func_00000620: 178-insn / 0x2CC orchestrator constructor.
+ * EXACT 2026-10-24 (agent-g run 154): rewritten on the skeleton of its exact
+ * sibling arcproc_uso_func_00000A3C (opcode-sequence similarity 0.81; also
+ * timproc_b1 097C 0.82 / mgrproc E04): nested short-circuit base ctors with
+ * one o1/o2/o3 chain, the 3-arg registration call through the void alias
+ * gl_func_00000000_620v (frees v0 for the vtable base w), one reused o1 for
+ * every re-read object pointer, the stream word through D_h2h_620_r with the
+ * table as &D_00000000. The history below documents the old NM decodes.
  * Decode pass — 74.07% fuzzy (was 57.5). Applies the triple alloc-cascade
  * recipe from feedback_alloc_or_passthrough_cascade_includes_dead_arms.md
  * (verified +4.64pp on n64proc_uso_func_00000100 sibling).
@@ -351,84 +357,83 @@ void h2hproc_uso_func_000005B0(Vec3 *dst) {
  *   separate temp is forbidden — it goes to a1 when live into the call),
  *   p+16 temp at 0x24 vs mine 0x20, lw a3arg hoisted above sw zero. */
 extern char D_h2h_620_d0, D_h2h_620_d1, D_h2h_620_d2, D_h2h_620_d3;
-extern int  D_h2h_620_e0;
-extern char D_h2h_620_e1;
+extern char D_h2h_620_r;
+extern void gl_func_00000000_620v();
 
-void *h2hproc_uso_func_00000620(char *p, int a1, int a2, int a3arg) {
-    char *a3;            /* level-2 (0x6A8) + grandchild + vt + node: ONE web / one home 0x34 */
-    char * volatile r;   /* level-3 (0x50) + grandchild: volatile-homed (store-in-delay, reload-every-use) */
-    char *child;         /* level-4 (0x2C) */
-    char *v0;            /* alloc temp / dispatch base */
+void *h2hproc_uso_func_00000620(char *obj, int a1, int a2, int a3) {
+    char *o1;
+    char *o2;
+    char *o3;
+    char *w;
 
-    if ((p != 0) || (p = (char *)gl_func_00000000(0x6BC), (p != 0))) {
-        a3 = p;
-        if ((p != 0) || (a3 = (char *)gl_func_00000000(0x6A8), (a3 != 0))) {
-            r = a3;
-            if ((a3 != 0) || ((r = (char *)gl_func_00000000(0x50)) != 0)) {
-                child = r;
-                if ((child != 0) || ((child = (char *)gl_func_00000000(0x2C)) != 0)) { gl_func_00000000(child, &D_00000000 + 0x3C0); *(int *)(child + 0x28) = (int)&D_h2h_620_d0;
-                }
-                *(int *)(r + 0x28) = (int)&D_h2h_620_d1;
-            }
-            *(int *)(a3 + 0x28) = (int)&D_h2h_620_d2;
-            gl_func_00000000(a3 + 0x50); if (child) {}
+    if (obj != 0 || (obj = (char *)gl_func_00000000(0x6BC)) != 0) {
+    o1 = obj;
+    if (o1 != 0 || (o1 = (char *)gl_func_00000000(0x6A8)) != 0) {
+        o2 = o1;
+        if (o2 != 0 || (o2 = (char *)gl_func_00000000(0x50)) != 0) {
+            o3 = o2;
+            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3C0); *(int *)(o3 + 0x28) = (int)&D_h2h_620_d0; }
+            *(int *)(o2 + 0x28) = (int)&D_h2h_620_d1;
         }
-        *(int *)(p + 0x28) = (int)&D_h2h_620_d3;
-        *(int *)(p + 0x568) = 0;
-        gl_func_00000000(p, a1, &D_00000000 + 0x3C8, a2);
-        *(int *)(p + 0x6A8) = a3arg;
-        *(int *)(p + 0x528) = 0;
-        gl_func_00000000(p);
-        gl_func_00000000(&D_00000000 + 0x3D8, 0);
-        if ((a3 = (char *)gl_func_00000000(0xF0)) != 0) {
-            r = a3;
-            gl_func_00000000(a3);
-            *(int *)(r + 0x28) = (int)&D_00000000;
-            a3 = r;
+        *(int *)(o1 + 0x28) = (int)&D_h2h_620_d2;
+        gl_func_00000000(o1 + 0x50);
+    }
+    *(int *)(obj + 0x28) = (int)&D_h2h_620_d3;
+    *(int *)(obj + 0x568) = 0;
+    gl_func_00000000(obj, a1, (char *)&D_00000000 + 0x3C8, a2);
+    *(int *)(obj + 0x6A8) = a3;
+    *(int *)(obj + 0x528) = 0;
+    gl_func_00000000(obj);
+    gl_func_00000000((char *)&D_00000000 + 0x3D8, 0);
+
+    {
+        o2 = (char *)gl_func_00000000(0xF0);
+        if (o2 != 0) {
+            gl_func_00000000(o2);
+            *(int *)(o2 + 0x28) = (int)&D_00000000;
         }
-        *(int *)(p + 0x6B0) = (int)a3;
-        *(int *)((char *)&D_00000000 + 0x138) = (int)a3;
-        gl_func_00000000(*(int *)(p + 0x6B0), p, *(int *)(p + 0x568));
-        if (1) {}
-        v0 = *(char **)(p + 0x6B0);
-        a3 = *(char **)(v0 + 0x28);
-        ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
-        if (1) {}
-        a3 = *(char **)(p + 0x6B0);
-        gl_func_00000000(p + 0x10, a3);
-        if (*(int *)(a3 + 0x14) != 0) {
-            *(int *)(a3 + 0x4) = 1;
+        *(int *)(obj + 0x6B0) = (int)o2;
+        *(char **)((char *)&D_00000000 + 0x138) = o2;
+
+        gl_func_00000000_620v(*(int *)(obj + 0x6B0), obj, *(int *)(obj + 0x568));
+
+        w = *(char **)(obj + 0x6B0);
+        o1 = *(char **)(w + 0x28);
+        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
+
+        o1 = *(char **)(obj + 0x6B0);
+        gl_func_00000000(obj + 16, o1);
+        if (*(int *)(o1 + 0x14) != 0) {
+            *(int *)(o1 + 0x4) = 1;
         }
-        *(int *)(a3 + 0x14) = (int)p;
-        gl_func_00000000(p, a1);
-        *(int *)(p + 0x48) = gl_func_00000000(0);
-        gl_func_00000000(*(int *)(p + 0x48), p);
-        gl_func_00000000(*(int *)(p + 0x48),
-                         (D_h2h_620_e0 + 3) << 16, -1, &D_h2h_620_e1);
-        gl_func_00000000(*(int *)(p + 0x48),
-                         ((D_h2h_620_e0 + 3) << 16) | 8, -1, &D_h2h_620_e1);
-        *(int *)(*(char **)(p + 0x48) + 0x30) = *(int *)(p + 0x568);
-        gl_func_00000000(*(int *)(p + 0x48));
-        a3 = *(char **)(p + 0x48);
-        gl_func_00000000(p + 0x10, a3);
-        if (*(int *)(a3 + 0x14) != 0) {
-            *(int *)(a3 + 0x4) = 1;
+        *(int *)(o1 + 0x14) = (int)obj;
+
+        gl_func_00000000(obj, a1);
+        *(int *)(obj + 0x48) = gl_func_00000000(0);
+        gl_func_00000000(*(int *)(obj + 0x48), obj);
+        gl_func_00000000(*(int *)(obj + 0x48), (*(int *)&D_h2h_620_r + 3) << 16, -1, &D_00000000);
+        gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &D_00000000);
+        *(int *)(*(int *)(obj + 0x48) + 0x30) = *(int *)(obj + 0x568);
+        gl_func_00000000(*(int *)(obj + 0x48));
+        o1 = *(char **)(obj + 0x48);
+        gl_func_00000000(obj + 16, o1);
+        if (*(int *)(o1 + 0x14) != 0) {
+            *(int *)(o1 + 0x4) = 1;
         }
-        *(int *)(a3 + 0x14) = (int)p;
-        a3 = *(char **)((char *)&D_00000000 + 0x190);
-        gl_func_00000000(p + 0x10, a3);
-        if (*(int *)(a3 + 0x14) != 0) {
-            *(int *)(a3 + 0x4) = 1;
+        *(int *)(o1 + 0x14) = (int)obj;
+
+        o1 = *(char **)((char *)&D_00000000 + 0x190);
+        gl_func_00000000(obj + 16, o1);
+        if (*(int *)(o1 + 0x14) != 0) {
+            *(int *)(o1 + 0x4) = 1;
         }
-        *(int *)(a3 + 0x14) = (int)p;
+        *(int *)(o1 + 0x14) = (int)obj;
         gl_func_00000000(*(int *)((char *)&D_00000000 + 0x190), 1, 0);
         gl_func_00000000();
     }
-    return p;
+    }
+    return obj;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2hproc_uso_func_00000620);
-#endif
 
 /* h2hproc_uso_func_000008E4: empty leaf with an unused int param.
  * IDO -O2 spills the incoming a0 to its caller-shadow slot at sp+0 even
