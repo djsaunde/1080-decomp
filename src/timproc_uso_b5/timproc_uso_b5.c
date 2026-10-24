@@ -2512,6 +2512,17 @@ extern char D_b5_4118_s31;
 typedef struct { f32 unk0,unk4,unk8,unkC; } Q;
 typedef char *(*FP4)();
 typedef struct { char *p; } P1;
+/* run 161 (agent-g, 99.14 -> 99.77, 2 words from exact): (1) the empty
+ * `case 2/4/5/6: break;` arms go LAST in the switch: placed first they stop
+ * uopt from giving arg0 a register piece inside case 0 (the target loads the
+ * homed arg0 once into v0 there; ours reloaded it per access); (2) the case
+ * 0/1 calls go to the real VOID callee 00008D90 (an int-returning alias keeps
+ * the piece out of v0); (3) case 0's table index is read inline in the last
+ * statement (a temp_t0 local is a uopt variable in v0/v1, target t2);
+ * (4) `0x3C0 = arg5` before `0x414 = arg9` (as1 then issues the arg5 load and
+ * the 0.5f lui like the target). LEFT: case 0's `b` delay slot holds the
+ * a2 reload (target: the table store; the target emits the reload first). */
+void timproc_uso_b5_func_00008D90(int *a0, int a1);
 char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
     volatile int pad0;
     P1 sp3A0;
@@ -3103,21 +3114,15 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
         FW(arg0, 0x48C) = 0;
         FW(arg0, 0x490) = 0;
         switch (FW(arg0, 0x3C8) - 1) {
-        case 2:
-        case 4:
-        case 5:
-        case 6:
-            break;
         case 0:
-            timproc_uso_b5_alias(arg0, NULL);
-            temp_t0 = (char *)FW(arg0, 0x3B8); /* index read first: hoists the 952 load */
+            timproc_uso_b5_func_00008D90((int *)arg0, 0);
             FW(arg0, 0x3CC) = 0;
             *(f32 *)((char *)arg0 + 0x480) = 0.0f;
             *(f32 *)((char *)arg0 + 0x484) = 0.0f;
-            ((int *)((char *)&D_00000000 + 0xB8))[(int)temp_t0] = 1;
+            ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1;
             break;
         case 1:
-            timproc_uso_b5_alias(arg0, (char *)1);
+            timproc_uso_b5_func_00008D90((int *)arg0, 1);
             FW(arg0, 0x3CC) = 6;
             *(f32 *)((char *)arg0 + 0x480) = 1.0f;
             *(f32 *)((char *)arg0 + 0x484) = 1.0f;
@@ -3132,9 +3137,14 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
             *(f32 *)((char *)arg0 + 0x480) = 1.0f;
             *(f32 *)((char *)arg0 + 0x484) = 1.0f;
             break;
+        case 2:
+        case 4:
+        case 5:
+        case 6:
+            break;
         }
-        FW(arg0, 0x414) = arg9;
         FW(arg0, 0x3C0) = arg5;
+        FW(arg0, 0x414) = arg9;
         temp_f0 = *(f32 *)((char *)FW(FW(arg9, 0xC), 0x70) + 0x14C);
         FW(arg0, 0x4B8) = 0;
         FW(arg0, 0x4B4) = 0;
