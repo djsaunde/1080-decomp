@@ -1118,7 +1118,7 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
                 var_s2 += 0xD;
             } while (var_s1 != (temp_v0 * 0xD));
         }
-        arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x77C))), sp138); if (arg1) {}
+        arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x77C))), sp138);
         arcproc_uso_func_00001B88(saved64, temp_s2_2, temp_a2, (char *)2);
         arcproc_uso_func_00001B88(saved60, temp_s1_2, temp_a2, (char *)2);
     }
