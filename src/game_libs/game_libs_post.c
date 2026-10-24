@@ -12508,7 +12508,7 @@ int gl_func_0002ABC0(char *o, int a1) {
     }
     if (one == b) {
         a2 = *(char **)(o + 0x2C);
-        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) { if (n) {}
+        if ((a2 != 0) && ((w << 4) < 0) && (a1 == one) && (o == *(char **)(a2 + 0x44))) { /* run 139: the old if (n) {} here tested n before any assignment (banned); every legal test / init spelling scores the same as none */
             if (*(char **)(o + 0x4C) == 0) {
                 gl_func_00000000(a2, o);
             }
