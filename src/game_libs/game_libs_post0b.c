@@ -8152,34 +8152,48 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  *   extern "C" Obj *gl_func_0003E0F0(char *arg0) {
  *       Obj *p; return link(p, new Obj, arg0); }
  * Left: frame 72 vs 80, the store takes s0 (target the a0 copy), W4 member
- * this a1 (target a0). docs/IDO_CODEGEN.md#kit-xxviii-agent-c-run-123 #4. */
+ * this a1 (target a0). docs/IDO_CODEGEN.md#kit-xxviii-agent-c-run-123 #4.
+ * 2026-10-24 (agent-g run 154): rebuilt on its EXACT sibling gl_func_00037AF0
+ * (opcode similarity 0.85): first-declared tmp + volatile padA[4] + float
+ * zero[3] give frame 80 / zero[] at 48 / tmp home 76 exactly, and 37AF0's
+ * s1/p2 sentinel chain gives the a0-based `sw zero`. 90.52 -> 93.88, 48 words
+ * = target. LEFT: tmp is coalesced into o's s0, so the home store is
+ * `sw s0,76` before the arg setup (volatile) instead of the target's
+ * `sw a0,76` in the jal delay; tmp[1] / if(0)&tmp / comma forms all store s0. */
 void *gl_func_0003E0F0(char *arg0) {
-    char *s0 = (char *)gl_func_00000000(0xB4);
-    if (s0 != 0) {
-        int *v1;
-        f32 vec3[3];
-        gl_func_00000000(s0, (char *)&D_00000000 + 0x1F2E4);
-        *(char **)(s0 + 0x28) = (char *)&D_00000000;
-        v1 = (int *)(s0 + 0x2C);
-        if (s0 == (char *)-44) {
-            v1 = (int *)gl_func_00000000(4);
-            if (v1 == 0) goto L9d0c;
+    char *volatile tmp;
+    volatile int padA[4];
+    float zero[3];
+    char *o;
+    int *s1;
+    int *p2;
+    o = (char *)gl_func_00000000(0xB4);
+    if (o != 0) {
+        gl_func_00000000(o, (char *)&D_00000000 + 0x1F2E4);
+        *(char **)(o + 0x28) = (char *)&D_00000000;
+        s1 = (int *)(o + 0x2C);
+        if (o == (char *)-0x2C) {
+            s1 = (int *)gl_func_00000000(0x04);
+            if (s1 == 0) goto vecinit;
         }
-        if (v1 != 0) goto store;
-        v1 = (int *)gl_func_00000000(4);
-        if (v1 == 0) goto L9d0c;
-    store:
-        *v1 = 0;
-    L9d0c:
-        gl_func_00000000(s0);
-        vec3[0] = 0.0f;
-        vec3[1] = 0.0f;
-        vec3[2] = 0.0f;
-        gl_func_00000000(s0 + 0x30, vec3);
+        p2 = s1;
+        if (s1 == 0) {
+            p2 = (int *)gl_func_00000000(0x04);
+            if (p2 == 0) goto vecinit;
+        }
+        *p2 = 0;
+    vecinit:
+        gl_func_00000000(o);
+        zero[0] = 0.0f;
+        zero[1] = 0.0f;
+        zero[2] = 0.0f;
+        gl_func_00000000(o + 0x30, zero);
     }
-    gl_func_00000000(s0, *(int *)(arg0 + 0x40));
-    return s0;
+    tmp = o;
+    gl_func_00000000(tmp, *(int *)(arg0 + 0x40));
+    return tmp;
 }
+
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E0F0);
 #endif

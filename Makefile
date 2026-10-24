@@ -631,7 +631,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 148: 578B4 NM gbi decode (2408 -> 2411 of 2419 words): 0x2e890 -> 0x2e89c (62F08 NM offset 0x2e84c).
 # agent-g run 152: 578B4 NM var_t0 phis merged into one variable (2411 -> 2421 of 2419 words): 0x2e89c -> 0x2e8c4 (62F08 NM offset 0x2e874).
 # agent-g run 153: 5F984 NM donor operand order (173 -> 179 of 184 words): 0x2e8c4 -> 0x2e8dc (62F08 NM offset 0x2e88c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8dc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-g run 154: 3E0F0 NM 37AF0-sibling layout (47 -> 48 words, target 48): 0x2e8dc -> 0x2e8e0 (62F08 NM offset 0x2e890).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e8e0 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
