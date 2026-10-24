@@ -829,7 +829,12 @@ void titproc_uso_func_0000101C(int *a0) {
  * 512 gate fails, not nested inside them); the 0xA8 / 0x84 stores name their own
  * symbols (import_00263D30 / import_00020098: per-site `lui at`, no shared base);
  * and the clamp test re-derefs `s0->0x64 + 0x3C` instead of `*c`, so `*c` is reloaded
- * after the compare as in the target. Left: obj/vt v0/v1 pairs, the 0x70 load web. */
+ * after the compare as in the target. Then 97.22 -> 98.96: each vt site loads the vtable
+ * through a fresh `s0->off` deref BEFORE naming the object (`vt = *(*(s0 + K) + 0x28);
+ * v1 = *(s0 + K);` -- obj v1 / vt v0 as in the target), and the case-1 else arm's
+ * counter is `* 30` (IDO's own sll/subu/sll expansion keeps the load a t-temp; the other
+ * three sites score higher spelled out). Left: the 4-entry table (sltiu 4, no cfe form),
+ * const 40 in a1 (target v0), the t-ring around the 0x70 counter sites. */
 extern char import_00263D30;
 extern void gl_func_00000000_116c_v();
 void titproc_uso_func_0000116C(char *s0) {
@@ -853,8 +858,8 @@ void titproc_uso_func_0000116C(char *s0) {
                 return;
             }
         }
+        vt = *(char **)(*(char **)(s0 + 0x58) + 0x28);
         v1 = *(char **)(s0 + 0x58);
-        vt = *(char **)(v1 + 0x28);
         (*(void (**)(int))(vt + 0x5C))((int)(v1 + *(short *)(vt + 0x58)));
         gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
         *(int *)(s0 + 0x40) = *(int *)(s0 + 0x40) + 1;
@@ -875,8 +880,8 @@ void titproc_uso_func_0000116C(char *s0) {
             v = v - 1;
         }
         if (v == 0) {
+            vt2 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
             v1 = *(char **)(s0 + 0x54);
-            vt2 = *(char **)(v1 + 0x28);
             (*(void (**)(int))(vt2 + 0x5C))((int)(v1 + *(short *)(vt2 + 0x58)));
         }
         *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x3C) - 1;
@@ -897,17 +902,17 @@ fire:
         gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
         gl_func_00000000_116c_v(*(int *)(s0 + 0x54));
         if (*(unsigned short *)(*(char **)((char *)&D_00000000 + 0x154) + 4) & 8) {
+            vt3 = *(char **)(*(char **)(s0 + 0x60) + 0x28);
             v1 = *(char **)(s0 + 0x60);
-            vt3 = *(char **)(v1 + 0x28);
             (*(void (**)(int))(vt3 + 0x5C))((int)(v1 + *(short *)(vt3 + 0x58)));
             *(int *)(s0 + 0x40) = 2;
             gl_func_00000000_116c_v(144);
         } else {
+            vt4 = *(char **)(*(char **)(s0 + 0x5C) + 0x28);
             v1 = *(char **)(s0 + 0x5C);
-            vt4 = *(char **)(v1 + 0x28);
             (*(void (**)(int))(vt4 + 0x5C))((int)(v1 + *(short *)(vt4 + 0x58)));
             *(int *)(s0 + 0x40) = 3;
-            *(int *)(s0 + 0x3C) = (*(int *)(s0 + 0x74) * 16 - *(int *)(s0 + 0x74)) * 2;
+            *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x74) * 30;
             gl_func_00000000_116c_v(144);
         }
         break;
@@ -922,8 +927,8 @@ fire:
             }
             gl_func_00000000_116c_v((char *)&D_00000000);
             gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
+            vt5 = *(char **)(*(char **)(s0 + 0x5C) + 0x28);
             v1 = *(char **)(s0 + 0x5C);
-            vt5 = *(char **)(v1 + 0x28);
             (*(void (**)(int))(vt5 + 0x5C))((int)(v1 + *(short *)(vt5 + 0x58)));
             *(int *)(s0 + 0x40) = 3;
             *(int *)(s0 + 0x3C) = (*(int *)(s0 + 0x74) * 16 - *(int *)(s0 + 0x74)) * 2;
@@ -969,12 +974,12 @@ fire:
             }
             if (av == 0) {
                 if (gl_func_00000000((char *)&D_00000000, 512) != 0) {
+                    vt7 = *(char **)(*(char **)(s0 + 0x58) + 0x28);
                     v1 = *(char **)(s0 + 0x58);
-                    vt7 = *(char **)(v1 + 0x28);
                     (*(void (**)(int))(vt7 + 0x5C))((int)(v1 + *(short *)(vt7 + 0x58)));
                     gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
+                    vt8 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
                     v1 = *(char **)(s0 + 0x54);
-                    vt8 = *(char **)(v1 + 0x28);
                     (*(void (**)(int))(vt8 + 0x5C))((int)(v1 + *(short *)(vt8 + 0x58)));
                     gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
                     *(int *)(s0 + 0x40) = 1;
