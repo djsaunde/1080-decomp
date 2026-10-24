@@ -366,8 +366,7 @@ void *h2hproc_uso_func_00000620(char *p, int a1, int a2, int a3arg) {
             r = a3;
             if ((a3 != 0) || ((r = (char *)gl_func_00000000(0x50)) != 0)) {
                 child = r;
-                if ((child != 0) || ((child = (char *)gl_func_00000000(0x2C)) != 0)) {
-                    gl_func_00000000(child, &D_00000000 + 0x3C0); *(int *)(child + 0x28) = (int)&D_h2h_620_d0;
+                if ((child != 0) || ((child = (char *)gl_func_00000000(0x2C)) != 0)) { gl_func_00000000(child, &D_00000000 + 0x3C0); *(int *)(child + 0x28) = (int)&D_h2h_620_d0;
                 }
                 *(int *)(r + 0x28) = (int)&D_h2h_620_d1;
             }
