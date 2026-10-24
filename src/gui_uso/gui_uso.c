@@ -428,7 +428,7 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
         do {
             if (*s7 != 0x20) {
                 float f0 = (float)s6 * arg4;
-                int s4 = (int)((float)arg2 + (spD4 * arg4)) * 4;
+                int s4 = (int)((spD4 * arg4) + (float)arg2) * 4;
                 short s1 = ((int)((float)arg2 + (spD4 * arg4)) + (int)f0) * 4;
                 int f10b = (int)(((float)(s6 - 1) * 1024.0f) / f0);
                 short ca0, ca1;
