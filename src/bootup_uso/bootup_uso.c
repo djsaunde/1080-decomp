@@ -1369,6 +1369,8 @@ extern int D_00000064;
 extern int D_24B8_tbl;
 typedef struct { int w; } W24B8;
 typedef void (*VF_24B8)();
+/* agent-g run 155: the discarded placeholder calls go through a void alias (kit IX dead-v0 lever): 94.87 -> 95.21. */
+extern void func_00000000_24b8v();
 void func_000024B8(char *arg0) {
     char *s0;
     char *v0;
@@ -1384,7 +1386,7 @@ void func_000024B8(char *arg0) {
     if (D_00000064 == 1) {
         v0 = (char *)FW(arg0, 0x38);
         r = 0;
-        func_00000000((FW(v0, 0x10) & 0x400) != 0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]);
+        func_00000000_24b8v((FW(v0, 0x10) & 0x400) != 0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]);
         t0 = r;
     }
     s0 = (char *)FW(arg0, 0x38);
@@ -1395,7 +1397,7 @@ void func_000024B8(char *arg0) {
     if (FW(arg0, 0x4C) != 0) {
         f32 two = 2.0f;
         if (t0 != 0) {
-            func_00000000(arg0, 0);
+            func_00000000_24b8v(arg0, 0);
             v0 = (char *)FW(arg0, 0x30);
             s0 = (char *)FW(v0, 0x28);
             ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, 3, 0);
@@ -1436,12 +1438,12 @@ void func_000024B8(char *arg0) {
         if (p != 0 && (int)p != FW(arg0, 0x44)) {
             k = FW(p, 0x3C);
             if ((u32)k >= 3 && (u32)k < 0x13) {
-                func_00000000(arg0, 0);
+                func_00000000_24b8v(arg0, 0);
                 v0 = (char *)FW(arg0, 0x30);
                 s0 = (char *)FW(v0, 0x28);
                 ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k, p);
             } else {
-                func_00000000(arg0, 1);
+                func_00000000_24b8v(arg0, 1);
                 v0 = (char *)FW(arg0, 0x34);
                 s0 = (char *)FW(v0, 0x28);
                 ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k, p);
