@@ -5811,9 +5811,10 @@ int gl_func_0003B01C(char *o, char *other) {
     n.y = t2.y;
     n.x = t2.x;
     gl_func_00000000(&n);
-    n.x = n.x * -r;
-    n.y = n.y * -r;
-    n.z = n.z * -r;
+    /* run 150: compound `*=` gives the target's mul operand order (n first) */
+    n.x *= -r;
+    n.y *= -r;
+    n.z *= -r;
     *(int *)(o + 0x30) |= 1;
     return 1;
 }
