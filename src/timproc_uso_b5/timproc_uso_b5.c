@@ -6964,21 +6964,21 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
             timproc_uso_b5_func_0714D4(ap, &sp6C, var_f12, 0);
         }
         {
-            sp5C.x = (TB5_F(0xF4) * TB5_F(0xFC) * two) + (TB5_F(0x100) * TB5_F(0xF8) * two);
-            sp5C.y = (TB5_F(0xF8) * TB5_F(0xFC) * two) - (TB5_F(0x100) * TB5_F(0xF4) * two);
+            sp5C.x = (TB5_F(0x100) * TB5_F(0xF8) * two) + (TB5_F(0xFC) * TB5_F(0xF4) * two);
+            sp5C.y = (TB5_F(0xFC) * TB5_F(0xF8) * two) - (TB5_F(0xF4) * TB5_F(0x100) * two);
             sp5C.z = (1.0f - (TB5_F(0xF4) * TB5_F(0xF4) * two)) - (TB5_F(0xF8) * TB5_F(0xF8) * two);
             timproc_uso_b5_func_071AE0(ap, &sp5C, 1.5707964f);
         }
         {
             sp5C.x = ((float)1 - (TB5_F(0xF8) * TB5_F(0xF8) * two)) - (TB5_F(0xFC) * TB5_F(0xFC) * two);
             sp5C.y = (TB5_F(0xF4) * TB5_F(0xF8) * two) + (TB5_F(0x100) * TB5_F(0xFC) * two);
-            sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0x100) * TB5_F(0xF8) * two);
+            sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0xF8) * TB5_F(0x100) * two);
             timproc_uso_b5_func_071AE0(ap, &sp5C, 1.5707964f);
         }
         {
             if ((*(s32 *)((char *)(o) + 0x12C) != 0) && (*(s32 *)((char *)(o) + 0x130) != 0)) {
                     wrap = *(f32 *)((char *)&D_timb5_AC20_w0 + 0x340);
-                TB5_F(0x10C) = TB5_F(0x10C) + *(f32 *)((char *)&D_timb5_AC20_w1 + 0x344);
+                TB5_F(0x10C) = *(f32 *)((char *)&D_timb5_AC20_w1 + 0x344) + TB5_F(0x10C);
                 if (wrap <= TB5_F(0x10C)) {
                     TB5_F(0x10C) = TB5_F(0x10C) - wrap;
                 }
@@ -6989,13 +6989,13 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
             } else {
                 if (TB5_F(0x10C) > 0.0f) {
                             wrap = *(f32 *)((char *)&D_timb5_AC20_w3 + 0x348);
-                    TB5_F(0x10C) = TB5_F(0x10C) + *(f32 *)((char *)&D_timb5_AC20_w2 + 0x34C);
+                    TB5_F(0x10C) = *(f32 *)((char *)&D_timb5_AC20_w2 + 0x34C) + TB5_F(0x10C);
                     if (wrap <= TB5_F(0x10C)) {
                         TB5_F(0x10C) = 0.0f;
                     }
                     sp5C.x = ((float)1 - (TB5_F(0xF8) * TB5_F(0xF8) * two)) - (TB5_F(0xFC) * TB5_F(0xFC) * two);
                     sp5C.y = (TB5_F(0xF4) * TB5_F(0xF8) * two) + (TB5_F(0x100) * TB5_F(0xFC) * two);
-                    sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0x100) * TB5_F(0xF8) * two);
+                    sp5C.z = (TB5_F(0xF4) * TB5_F(0xFC) * two) - (TB5_F(0xF8) * TB5_F(0x100) * two);
                     timproc_uso_b5_func_071AE0(ap, &sp5C, *(f32 *)((char *)(o) + 0x10C));
                 }
             }
