@@ -8181,7 +8181,6 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  * (a0 vs v1) and the `bnel`-vs-`bne` flavor on the sub-alloc test. The 0xC4
  * symbol size includes one trailing splat-boundary word (`lw t6,0x10(a0)`)
  * belonging to the next function. Byte-match deferred to the return-spill cap. */
-#ifdef NON_MATCHING
 /* Run 123 (agent-c): best NCC draft, raw 8 words (this cfe body: 11). The
  * returned pointer is a MEMORY variable stored in the last call's delay slot
  * and reloaded at the end (sp+76 = first local's home), not the ctor's s0:
@@ -8203,14 +8202,18 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  * FIRST, then `gl(tmp = o, x)`: the volatile home store drops into the jal
  * delay slot after the argument setup (target order). LEFT (1 word): the
  * delay-slot store takes o's s0 (target the a0 argument copy); a copy local,
- * arg0 reuse, tmp = a = o and an empty test after the call are all flat. */
+ * arg0 reuse, tmp = a = o and an empty test after the call are all flat.
+ * 2026-10-24 (agent-c run 155): EXACT. Copy o into p2 and KILL o (`o = 0;`) before the call:
+ * o is dead at the call, so the volatile tmp store takes the a0 argument copy in the jal
+ * delay slot. p2 now gets a frame home, so it is declared above zero[] with padA[3]
+ * (frame 80, zero[] at 48, tmp at 76 unchanged). */
 void *gl_func_0003E0F0(char *arg0) {
     char *volatile tmp;
-    volatile int padA[4];
+    volatile int padA[3];
+    int *p2;
     float zero[3];
     char *o;
     int *s1;
-    int *p2;
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
         gl_func_00000000(o, (char *)&D_00000000 + 0x1F2E4);
@@ -8233,13 +8236,9 @@ void *gl_func_0003E0F0(char *arg0) {
         zero[2] = 0.0f;
         gl_func_00000000(o + 0x30, zero);
     }
-    { int x = *(int *)(arg0 + 0x40); gl_func_00000000(tmp = o, x); }
+    { int x = *(int *)(arg0 + 0x40); p2 = (int *)o; o = 0; gl_func_00000000(tmp = (char *)p2, x); }
     return tmp;
 }
-
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E0F0);
-#endif
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3E1B0.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */

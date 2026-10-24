@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0003E0F0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T23:05:24.115043+00:00",
+  "end_time": "2026-10-24T23:05:24.115122+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T23:05:24.115101+00:00",
+      "assistant_text": "cfe: copy o into p2 and kill o (o = 0) before the last call so the volatile tmp store takes the a0 argument copy in the jal delay slot; p2 gets a frame home, declared above zero[] with padA[3] (frame 80).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 48,
+  "initial_m2c_source": null,
+  "final_source": "void *gl_func_0003E0F0(char *arg0) {\n    char *volatile tmp;\n    volatile int padA[3];\n    int *p2;\n    float zero[3];\n    char *o;\n    int *s1;\n    o = (char *)gl_func_00000000(0xB4);\n    if (o != 0) {\n        gl_func_00000000(o, (char *)&D_00000000 + 0x1F2E4);\n        *(char **)(o + 0x28) = (char *)&D_00000000;\n        s1 = (int *)(o + 0x2C);\n        if (o == (char *)-0x2C) {\n            s1 = (int *)gl_func_00000000(0x04);\n            if (s1 == 0) goto vecinit;\n        }\n        p2 = s1;\n        if (s1 == 0) {\n            p2 = (int *)gl_func_00000000(0x04);\n            if (p2 == 0) goto vecinit;\n        }\n        *p2 = 0;\n    vecinit:\n        gl_func_00000000(o);\n        zero[0] = 0.0f;\n        zero[1] = 0.0f;\n        zero[2] = 0.0f;\n        gl_func_00000000(o + 0x30, zero);\n    }\n    { int x = *(int *)(arg0 + 0x40); p2 = (int *)o; o = 0; gl_func_00000000(tmp = (char *)p2, x); }\n    return tmp;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
