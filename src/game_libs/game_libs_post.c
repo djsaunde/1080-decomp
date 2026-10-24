@@ -6863,75 +6863,78 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00025504);
  * so the first section gets the target's in-place chain at the cost of
  * `li t3,5` + one extra sll in the loop (fewer diff words than the shared-20
  * form). A loop const of 24 (test only) makes everything but (1) exact. */
-#ifdef NON_MATCHING
-extern int D_00000000_345c0;
-extern int gl_func_00000000();
-extern int gl_ref_0003959C();
-#define REG_258C0 ((char *)&D_00000000_345c0)
-/* word0 of a descriptor: 4-bit pad | 2-bit sh | 2-bit pad | 24-bit msk */
-typedef struct Desc258 {
-    unsigned pad0 : 4;
-    unsigned sh : 2;
-    unsigned pad1 : 2;
-    unsigned msk : 24;
-    int key;
-} Desc258;
-int game_libs_func_000258C0(int a0) {
-    int v1;
-    int spv;
-    char *v0;
-    Desc258 *d;
-    int key;
-    unsigned cnt2;
+/* EXACT (run 143, agent-c): OoT AudioLoad_ProcessSamplePreloads with every
+ * preload access written as an indexed member of a TYPED gAudioCtx extern
+ * (gAudioCtx.preloadSampleStack[i].f, no preload pointer) -- that fixes both
+ * residuals above: the base takes a3 and the first-section `* 20` expands in
+ * place while the loop multiply uses the held 20. Older driver: isFree = 1 is
+ * also set after the first-section key check, and it returns 0 / 1. */
+typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_258C0_Sample;
+typedef struct { u32 endAndMediumKey; gl_258C0_Sample *sample; u8 *ramAddr; u32 encodedInfo; s32 isFree; } gl_258C0_Req;
+typedef struct { char pad0[0x630]; gl_258C0_Req preloadSampleStack[0x80]; s32 numUsedSamples; s32 preloadSampleStackTop; char pad1038[0x1684 - 0x1038]; char preloadSampleQueue[0x18]; } gl_258C0_Ctx;
+extern gl_258C0_Ctx gl_258C0_gAudioCtx;
+#define gAudioCtx gl_258C0_gAudioCtx
+extern s32 gl_258C0_osRecvMesg(void *, void *, s32);
+extern void gl_258C0_StartAsyncLoad(u32, u8 *, u32, s32, s32, void *, u32);
+#define osRecvMesg gl_258C0_osRecvMesg
+#define AudioLoad_StartAsyncLoad gl_258C0_StartAsyncLoad
 
-    if (*(int *)(REG_258C0 + 0x1034) > 0) {
-        if (a0 != 0) {
-            gl_func_00000000(REG_258C0 + 0x1684, &spv, 0);
-            *(int *)(REG_258C0 + 0x1034) = 0;
+s32 game_libs_func_000258C0(s32 resetStatus) {
+    gl_258C0_Sample *sample;
+    u32 preloadIndex;
+    u32 key;
+    u32 nChunks;
+    s32 pad;
+
+    if (gAudioCtx.preloadSampleStackTop > 0) {
+        if (resetStatus != 0) {
+            osRecvMesg(&gAudioCtx.preloadSampleQueue, &preloadIndex, 0);
+            gAudioCtx.preloadSampleStackTop = 0;
             return 0;
         }
-        if (gl_func_00000000(REG_258C0 + 0x1684, &spv, 0) == -1) {
+        if (osRecvMesg(&gAudioCtx.preloadSampleQueue, &preloadIndex, 0) == -1) {
             return 0;
         }
-        spv = (unsigned)spv >> 24;
-        if (*(int *)(REG_258C0 + spv * 20 + 0x640) == 0) {
-            d = *(Desc258 **)(REG_258C0 + spv * 20 + 0x634);
-            key = d->key + d->msk + d->sh;
-            if (key == *(int *)(REG_258C0 + spv * 20 + 0x630)) {
-                d->key = *(int *)(REG_258C0 + spv * 20 + 0x638);
-                d->sh = 0; if (1) {}
+
+        preloadIndex >>= 24;
+
+        if (gAudioCtx.preloadSampleStack[preloadIndex].isFree == 0) {
+            sample = gAudioCtx.preloadSampleStack[preloadIndex].sample;
+            key = (u32)sample->sampleAddr + sample->size + sample->medium;
+            if (key == gAudioCtx.preloadSampleStack[preloadIndex].endAndMediumKey) {
+                sample->sampleAddr = gAudioCtx.preloadSampleStack[preloadIndex].ramAddr;
+                sample->medium = 0;
             }
-            *(int *)(REG_258C0 + spv * 20 + 0x640) = 1;
+            gAudioCtx.preloadSampleStack[preloadIndex].isFree = 1;
         }
+
         while (1) {
-            v1 = *(int *)(REG_258C0 + 0x1034);
-            if (v1 <= 0) {
+            if (gAudioCtx.preloadSampleStackTop <= 0) {
                 break;
             }
-            v0 = REG_258C0 + ((v1 * 5) << 2);
-            if (*(int *)(v0 + 0x62C) == 1) {
-                *(int *)(REG_258C0 + 0x1034) = v1 - 1;
+            if (gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].isFree == 1) {
+                gAudioCtx.preloadSampleStackTop--;
                 continue;
             }
-            d = *(Desc258 **)(v0 + 0x620);
-            cnt2 = (d->msk >> 12) + 1;
-            key = d->key + d->msk + d->sh;
-            if (key != *(int *)(v0 + 0x61C)) {
-                *(int *)(v0 + 0x62C) = 1;
-                *(int *)(REG_258C0 + 0x1034) -= 1;
-                continue;
+
+            sample = gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].sample;
+            nChunks = (sample->size >> 12) + 1;
+            key = (u32)sample->sampleAddr + sample->size + sample->medium;
+            if (key != gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].endAndMediumKey) {
+                gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].isFree = 1;
+                gAudioCtx.preloadSampleStackTop--;
+            } else {
+                AudioLoad_StartAsyncLoad((u32)sample->sampleAddr, gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].ramAddr, sample->size, sample->medium,
+                                         nChunks, &gAudioCtx.preloadSampleQueue, gAudioCtx.preloadSampleStack[gAudioCtx.preloadSampleStackTop - 1].encodedInfo);
+                break;
             }
-            gl_ref_0003959C(d->key, *(int *)(v0 + 0x624), d->msk, d->sh, cnt2,
-                            REG_258C0 + 0x1684, *(int *)(v0 + 0x628));
-            break;
         }
     }
     return 1;
 }
-#undef REG_258C0
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_000258C0);
-#endif
+#undef gAudioCtx
+#undef osRecvMesg
+#undef AudioLoad_StartAsyncLoad
 
 // Add a0 to the pointer array a2[0..a1) if its key (a0[1]) isn't already
 // present (matched against a2[i][1]); append + bump count when absent.

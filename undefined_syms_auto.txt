@@ -5106,3 +5106,6 @@ gl_e134_SaveBuffer = 0x00031D64;  /* agent-c run 143: gl_func_0001E134 prototype
 gl_e134_Mix = 0x00031C00;  /* agent-c run 143: gl_func_0001E134 prototyped alias of the baked jal (1D594) */
 gl_e134_ProcessEnvelope = 0x0003358C;  /* agent-c run 143: gl_func_0001E134 prototyped alias of the baked jal (1EF20) */
 gl_e134_ApplyHaasEffect = 0x00033A34;  /* agent-c run 143: gl_func_0001E134 prototyped alias of the baked jal (1F3C8) */
+gl_258C0_gAudioCtx = 0x00000000;  /* agent-c run 143: game_libs_func_000258C0 typed gAudioCtx extern (preloadSampleStack 0x630, preloadSampleStackTop 0x1034, preloadSampleQueue 0x1684) */
+gl_258C0_osRecvMesg = 0x00000000;  /* agent-c run 143: game_libs_func_000258C0 blank jal (osRecvMesg) */
+gl_258C0_StartAsyncLoad = 0x0003959C;  /* agent-c run 143: game_libs_func_000258C0 prototyped alias of the baked jal (AudioLoad_StartAsyncLoad) */
