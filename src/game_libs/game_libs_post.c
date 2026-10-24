@@ -12995,6 +12995,10 @@ int game_libs_func_0002E290(unsigned char *o) {
  * the 0x1C test (`== 1`) shares its constant with the stateB/stateD tests
  * (target: fresh `li at,1`, then a0 for stateB/D); u32 externs for stateB/D
  * fix that but re-merge the chain constant (-0.6). */
+/* run 151 (agent-c, 84.95 -> 87.87): the two u8 -> float conversions are
+ * `(f32)(u32)x` (target: ONE bgez + cvt.s.w + the 2^32 add.s); m2c's spelled-out
+ * `f = (f32)x; if (x < 0) f += 4294967296.0f;` made IDO emit a second bgez /
+ * mov.s pair at each site (length 3724 -> 3692, target 3684). */
 extern int gl_func_000428FC();
 extern void gl_E354_emitf(s32, s32, s32, f32, s32, s32);  /* 4th arg is a single float passed in a3 (target lw a3,120(sp)) */
 extern int gl_func_00043824(float, ...);
@@ -13102,11 +13106,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             temp_f18 = (temp_f16 / 200.0f) + *(f32 *)((char *)&D_00000000 + 0x16E0);
             temp_v0_2 = temp_v1;
             sp78 = temp_f18;
-            var_f4 = (f32) temp_v0_2;
+            var_f4 = (f32) (u32) temp_v0_2;
             sp78 = temp_f18 * sp64;
-            if (temp_v1 < 0) {
-                var_f4 += 4294967296.0f;
-            }
             temp_f10_2 = var_f4 * sp60;
             var_t9 = (u32) temp_f10_2; /* recomposed (u32)float */
             *(u8 *)((char *)(arg0) + 0x26) = (u8) (((s32) *(u8 *)((char *)(arg0) + 0x26) / 2) + ((s32) (var_t9 & 0xFF) / 2));
@@ -13142,10 +13143,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             if (*(u8 *)((char *)(arg0) + 0x1C) & 1) {
                 temp_v1_3 = *(u8 *)((char *)(arg0) + 0x26);
                 temp_f0 = *(f32 *)((char *)(arg0) + 0x54);
-                var_f4 = (f32) temp_v1_3;
-                if ((s32) temp_v1_3 < 0) {
-                    var_f4 += 4294967296.0f;
-                }
+                var_f4 = (f32) (u32) temp_v1_3;
                 temp_f18 = var_f4 * temp_f0;
                 var_v0 = (u32) temp_f18; /* recomposed (u32)float */
                 *(u8 *)((char *)(arg0) + 0x26) = (u8) var_v0;
