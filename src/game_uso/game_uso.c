@@ -869,8 +869,8 @@ void game_uso_func_00000B3C(char *arg0) {
         }
     }
     if (nseg < tbl[9]) {
-        *(s32 *)(s + 0x260) = nsub;
         *(s32 *)(s + 0x254) = nseg;
+        *(s32 *)(s + 0x260) = nsub;
         *(s32 *)(s + 0x25C) = ncur;
     }
 }
