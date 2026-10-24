@@ -1647,15 +1647,15 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     volatile float spA8;
     volatile float spA4;
     char *sub;
+    char sp60[64];
+    char *held;
     char *panel;
-    char sp60[68];
     char *a3;
     char *h;
     int s0;
     int s2;
     char *s1;
     int digit;
-    char *held;
     int idx;
 
     spA4 = 1.0f;
