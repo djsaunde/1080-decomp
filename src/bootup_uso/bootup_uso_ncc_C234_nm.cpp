@@ -62,7 +62,6 @@ extern "C" void func_0000C234(char *arg0) {
     V3C234 sp40;
     C234Rec spCC;
     f32 temp_f0;
-    f32 temp_f0_2;
     f32 temp_f12;
     V3C234 spB4;
     f32 temp_f12_2;
@@ -71,7 +70,6 @@ extern "C" void func_0000C234(char *arg0) {
     f32 temp_f2;
     f32 temp_f2_2;
     f32 temp_f2_3;
-    f32 var_f0;
     f32 var_f2;
     f32 var_f2_2;
     S4C234 sp8C;
@@ -157,11 +155,11 @@ extern "C" void func_0000C234(char *arg0) {
             if (var_v0 != 0) {
                 temp_f2 = *(f32 *)((char *)(arg0) + 0x970);
                 if (temp_f2 < 0.0f) {
-                    var_f0 = -temp_f2;
+                    temp_f0 = -temp_f2;
                 } else {
-                    var_f0 = temp_f2;
+                    temp_f0 = temp_f2;
                 }
-                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[(s32) ((f32) var_v0 + (var_f0 * 3.0f))], 2);
+                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[(s32) ((f32) var_v0 + (temp_f0 * 3.0f))], 2);
             }
         }
         /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,
@@ -265,10 +263,10 @@ cend:
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
-        temp_f0_2 = -var_f2_2;
-        sp40.x = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0_2;
-        sp40.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0_2;
-        sp40.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0_2;
+        temp_f0 = -var_f2_2;
+        sp40.x = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
+        sp40.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
+        sp40.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
         spB4 = sp40;
         sp54 = spB4;
         *(f32 *)((char *)(arg0) + 0x92C) = sp54.x;
