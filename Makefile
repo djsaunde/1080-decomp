@@ -974,6 +974,13 @@ build/src/kernel/kernel_020_c.c.o build/non_matching/src/kernel/kernel_020_c.c.o
 # 2026-08-22 func_80008454 (0x44) moved from kernel_022.c into kernel_021.c (merge into func_80008430.s): 0x30+0x44 / 0x360-0x44
 build/src/kernel/kernel_021.c.o build/non_matching/src/kernel/kernel_021.c.o: TRUNCATE_TEXT := 0x168
 build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: TRUNCATE_TEXT := 0x228
+# func_8000858C = rmon __rmonGetBranchTarget, IDO 5.3 -O1 donor; its two switch-table refs
+# (.rodata +0 / +0x60) are renamed func_8000858C_rodata by the splice, pinned to 0x8000AA90.
+KERNEL022_858C_DONOR := build/src/kernel/kernel_022_ido53_858C.c.o
+build/src/kernel/kernel_022_ido53_858C.c.o build/non_matching/src/kernel/kernel_022_ido53_858C.c.o: CC := $(IDO53_DIR)/cc
+build/src/kernel/kernel_022_ido53_858C.c.o build/non_matching/src/kernel/kernel_022_ido53_858C.c.o: OPT_FLAGS := -O1
+build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: private REPLACE_FUNC_BODY += func_8000858C=$(KERNEL022_858C_DONOR)
+build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: $(KERNEL022_858C_DONOR)
 build/src/kernel/kernel_022_o1.c.o build/non_matching/src/kernel/kernel_022_o1.c.o: TRUNCATE_TEXT := 0x94
 build/src/kernel/kernel_041.c.o build/non_matching/src/kernel/kernel_041.c.o: TRUNCATE_TEXT := 0x104
 build/src/kernel/kernel_054.c.o build/non_matching/src/kernel/kernel_054.c.o: TRUNCATE_TEXT := 0xBC
@@ -2131,6 +2138,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
 # The partial backup-store donor is never linked into the default ROM.
 C_FILES := $(filter-out src/game_libs/game_libs_o2limit_65EE4.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_000_1EC8.c,$(C_FILES))
+C_FILES := $(filter-out src/kernel/kernel_022_ido53_858C.c,$(C_FILES))
 ASM_FILES := $(shell find asm -maxdepth 1 -name '*.s' -type f 2>/dev/null)
 BIN_FILES := $(shell find assets -name '*.bin' -type f)
 

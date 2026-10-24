@@ -1,0 +1,33 @@
+{
+  "function_name": "func_8000858C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T02:47:03.171933+00:00",
+  "end_time": "2026-10-24T02:47:03.171955+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T02:47:03.171951+00:00",
+      "assistant_text": "libultra rmon __rmonGetBranchTarget; IDO 5.3 -O1 donor; JALR test inst&0x7FF; two switch tables pinned via func_8000858C_rodata=0x8000AA90 (kernel +0x400 numbering)",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 138,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 5.3 -O1 donor for func_8000858C (0x228 / 138 words) = libultra rmon's\n * __rmonGetBranchTarget(method, thread, addr): decode the MIPS instruction at\n * addr (method 1 reads it through __rmonReadWordAt = func_80006A98) and return\n * the branch / jump destination, or -1. func_80009B60 = __rmonGetRegisterContents\n * (jr / jalr targets).\n *\n * The old \"dangling absolute jump tables / audio data\" verdict was the +0x400\n * kernel numbering offset: the 24-entry opcode table and the 20-entry REGIMM\n * table sit in the ROM at our 0xA690 / 0xA6F0 (runtime 0x8000AA90 / 0x8000AAF0,\n * entries = runtime case addresses). The donor's two .rodata references (+0 and\n * +0x60) are renamed func_8000858C_rodata by the splice and pinned to 0x8000AA90.\n * JALR test is `(inst & 0x7FF) == 9`; IDO 5.3 (not 7.1) gives the andi / or\n * temp copies. Kept out of C_FILES (Makefile). */\nextern unsigned int func_80006A98(unsigned int *);\nextern int func_80009B60(int, int, int);\nint func_8000858C(int method, int thread, char *addr) {\n    int inst;\n\n    if (method == 1) {\n        inst = func_80006A98((unsigned int *)addr);\n    } else {\n        inst = *(int *)addr;\n    }\n\n    switch ((inst >> 26) & 0x3F) {\n    case 0:\n        if (((inst >> 5) & 0x7FFF) == 0 && (inst & 0x3F) == 8) {\n            return func_80009B60(method, thread, (inst >> 21) & 0x1F);\n        }\n        if (((inst >> 16) & 0x1F) == 0 && (inst & 0x7FF) == 9) {\n            return func_80009B60(method, thread, (inst >> 21) & 0x1F);\n        }\n        break;\n    case 1:\n        switch ((inst >> 16) & 0x1F) {\n        case 0:\n        case 1:\n        case 2:\n        case 3:\n        case 16:\n        case 17:\n        case 18:\n        case 19:\n            return ((inst << 16) >> 14) + (int)addr + 4;\n        }\n        break;\n    case 2:\n    case 3:\n        return (((unsigned int)inst << 6) >> 4) + (((int)((unsigned int)addr + 4) >> 28) << 28);\n    case 4:\n    case 5:\n    case 20:\n    case 21:\n        return ((inst << 16) >> 14) + (int)addr + 4;\n    case 6:\n    case 7:\n    case 22:\n    case 23:\n        if (((inst >> 16) & 0x1F) == 0) {\n            return ((inst << 16) >> 14) + (int)addr + 4;\n        }\n        break;\n    case 16:\n    case 17:\n    case 18:\n    case 19:\n        if (((inst >> 21) & 0x1F) == 8) {\n            switch ((inst >> 16) & 0x1F) {\n            case 0:\n            case 1:\n            case 2:\n            case 3:\n                return ((inst << 16) >> 14) + (int)addr + 4;\n            }\n        }\n        break;\n    }\n    return -1;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_022_ido53_858C.c",
+    "asm_path": "asm/nonmatchings/kernel/func_8000858C.s",
+    "segment": "kernel",
+    "compiler": "IDO 5.3 cc",
+    "compiler_flags": "-O1 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff report 100"
+  }
+}

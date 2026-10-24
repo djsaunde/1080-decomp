@@ -124,4 +124,10 @@ extern OSEventState __osEventStateTab[];
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). See docs/N64_FORENSICS.md "Kernel rmon
  * switch fns: jumptable resolves to DATA". */
-INCLUDE_ASM("asm/nonmatchings/kernel", func_8000858C);
+/* EXACT (agent-g run 145): the comment above is superseded -- the tables are
+ * in the ROM 0x400 below the absolute addresses (kernel runtime numbering).
+ * Body = IDO 5.3 -O1 donor src/kernel/kernel_022_ido53_858C.c (ultralib
+ * __rmonGetBranchTarget); this is only the splice placeholder. */
+s32 func_8000858C(s32 method, s32 thread, char *addr) {
+    return 0;
+}
