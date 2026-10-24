@@ -9661,9 +9661,9 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         FW(child, 0x108) = (s32) gsub;
         timproc_uso_b5_func_04DFFC(child, gsub);
         p = (f32 *)((char *) FW(child, 0x108) + 0xB4);
-        p[2] = 0.0f;
-        p[1] = 0.0f;
-        p[0] = 0.0f;
+        p[2] = 0; /* int 0: one mtc1 zero for the three stores (0.0f gives three) */
+        p[1] = 0;
+        p[0] = 0;
         *(f32 *)(child + 0x124) = 1.0f;
         flag = DF14_EE6C & 0x80000;
         DF14_EE6C = DF14_EE6C & ~0x80000;
