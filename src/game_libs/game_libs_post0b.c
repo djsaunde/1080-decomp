@@ -25103,6 +25103,8 @@ void gl_func_00057700(int *a0) {
  * hoisted into t1 far above), not `t1 = 0x7FF; if (x < 0x7FF) t1 = x`.
  * (3) width read twice inline (no width local): the target multiplies
  * `multu w,h` with h loaded first and the CALC_DXT shift after.
+ * (4) the last switch-2 case FALLS THROUGH into the default call
+ * (`temp_a1 = sp34 = FW(arg1, 0x24);`, one shared jal): 96.91.
  * Left: the MIN/MAX/g-pointer colouring (target MIN t1, MAX1 t0 with
  * the g pointer spilled to its sp slot; ours MIN t0, MAX1 a2). */
 #ifdef NON_MATCHING
@@ -26048,9 +26050,7 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v0_4, 0x0) = 0xF2000000;
             FW(temp_v0_4, 0x4) = (s32) (((((FW(var_a2, 0xC) - 1) << 2) & 0xFFF) << 0xC) | (((FW(var_a2, 0x10) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
             if (0) { gl_func_00034458((s32 *)&sp34); }
-            sp34 = FW(arg1, 0x24);
-            gl_func_00034458((int *)(gl_d_578b4_s2a + 0x219C4), sp34, (int *) var_a2, arg0);
-            return;
+            temp_a1 = sp34 = FW(arg1, 0x24);
         s2_def:                                    /* switch 2 */
             gl_func_00034458((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1, (int *) var_a2, arg0);
             return;
