@@ -20180,8 +20180,8 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     *(Tri3i *)vec84 = *(Tri3i *)vec70;
     *(Tri3i *)vec54 = *(Tri3i *)vec84;
 
-    vecEC[0] = vecEC[0] * D_00000000F[0];
-    vecEC[1] = vecEC[1] * D_00000000F[1];
+    vecEC[0] *= D_00000000F[0]; /* run 150 compound-assign sweep */
+    vecEC[1] *= D_00000000F[1];
     vecEC[2] = vecEC[2] * D_00000000F[2];
     vecE0[0] = vec54[0] * D_00000000F[0];
     vecE0[1] = vec54[1] * D_00000000F[1];
