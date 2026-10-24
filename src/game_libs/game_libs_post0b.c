@@ -24912,6 +24912,9 @@ void gl_func_00057700(int *a0) {
     if (q != 0) gl_func_00000000(a0);
 }
 
+/* gl_func_000578B4 agent-c run 154: the NON_MATCHING object now takes this body ported to NCC
+ * (src/game_libs/game_libs_ncc_578B4_nm.cpp, 99.95; edg evaluates |-chains in source order, which
+ * fixes every commutative-operand residual below) -- continue from the .cpp, not from this body. */
 /* gl_func_000578B4 2026-10-21 (agent-g run 113): this function is C++ and
  * the body below is an m2c transcription. The real source is the libultra
  * gbi texture-load macros + a C++ inline Gfx *next() member; NCC draft at

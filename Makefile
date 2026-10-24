@@ -1631,6 +1631,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3DF58_NM_DONOR := build/src/game_libs/game_libs_ncc_3DF58_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DF58=$(GAMELIBS_3DF58_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DF58_NM_DONOR)
+# 578B4 = gbi texture loader (NCC 99.93 vs cfe 98.27, 2419 words = target; agent-c run 154). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_578B4_NM_DONOR := build/src/game_libs/game_libs_ncc_578B4_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000578B4=$(GAMELIBS_578B4_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_578B4_NM_DONOR)
 # 4A9F0 = stream -> grid byte copier (NCC 89.2 vs cfe 76.5, 39 -> 40 words = target, frameless). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4A9F0_NM_DONOR := build/src/game_libs/game_libs_ncc_4A9F0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_NM_DONOR)
