@@ -13858,6 +13858,11 @@ int game_libs_func_000453D8(int a0, float a, float b) {
  * cast-literal split just moves the loop web to f20/f22), and elem/elem2
  * copy-coalesce into one 196(a2) load (target keeps two webs; dead
  * if(elem2){} interference made it worse). 29.8 -> 62.1. */
+/* run 151 (agent-c, 62.61 -> 62.81): the first list advance is an if/else with
+ * `elem = 0` in the else arm (target `b join; lw a3,0(t9)`; length 2024 -> 2028 =
+ * target). The in-loop advance in the same form scores lower. Still open: the
+ * elem (a3) / elem2 (a2) copy web -- moving the copy into the loop body or a
+ * block-local e2 is flat; mul operand order of the colour products is flat. */
 void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
     char * volatile sp40;
     char * volatile sp3C;
@@ -13930,12 +13935,13 @@ void gl_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
     if (1) { } /* run 111: block-count lever, 255.0f remat in f0 (IDO_CODEGEN#hold-vs-remat-firstusecost-run111) */
     node = *(char **)(arg0 + 0x18C);
     cnt = 0;
-    elem = 0;
     sp40 = node;
     sp3C = node;
     if (node != 0) {
         sp40 = *(char **)(node + 4);
         elem = *(char **)(node);
+    } else {
+        elem = 0;
     }
     elem2 = elem;
     if (elem != 0) {
