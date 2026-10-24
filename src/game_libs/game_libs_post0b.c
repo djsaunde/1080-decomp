@@ -23856,7 +23856,6 @@ void gl_func_0005532C(void) {
     gl_func_00000000(buf);
 }
 
-#ifdef NON_MATCHING
 /* gl_func_0005534C: 73-insn (0x124) function-pointer iterator + small leaf.
  *
  * BUNDLE NOTE: 2 functions, 38 + 35 insns. Splat couldn't separate (no
@@ -23895,30 +23894,51 @@ void gl_func_0005532C(void) {
  * `s.w = w & 0xFFFF` lets uopt drop the preceding s.w = w store).
  * Residual: p colours v0 and the s.pp reload a temp (target v1 / v0). */
 typedef struct { int **pp; int w; int x; int y; } St5534C;
-void gl_func_0005534C(St5534C s) {
-    int *p;
-    int w;
-    p = *s.pp;
-    *s.pp = p + 1;
-    w = *p;
-    s.w = w;
-    ((int (*)())w)(&s);
-    p = *s.pp;
-    *s.pp = p + 1;
-    w = *p;
-    s.w = w;
-    while (w != 0) {
-        s.w &= 0xFFFF;
-        gl_func_00000000(&s);
-        p = *s.pp;
-        *s.pp = p + 1;
-        w = *p;
-        s.w = w;
-    }
+/* EXACT 2026-10-23 (agent-g run 142) via an IDO 7.1 NCC (C++) donor:
+ * src/game_libs/game_libs_ncc_5534C.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder (the cursor step is an inline member `int next() { return
+ * *(*pp)++; }`, kit LXIII). The placeholder only reserves the 39-word slot;
+ * the splice drops its text. */
+void gl_func_0005534C(char *arg0) {
+    volatile int *p = (volatile int *)arg0;
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    p[7] = 0;
+    p[8] = 0;
+    p[9] = 0;
+    p[10] = 0;
+    p[11] = 0;
+    p[12] = 0;
+    p[13] = 0;
+    p[14] = 0;
+    p[15] = 0;
+    p[16] = 0;
+    p[17] = 0;
+    p[18] = 0;
+    p[19] = 0;
+    p[20] = 0;
+    p[21] = 0;
+    p[22] = 0;
+    p[23] = 0;
+    p[24] = 0;
+    p[25] = 0;
+    p[26] = 0;
+    p[27] = 0;
+    p[28] = 0;
+    p[29] = 0;
+    p[30] = 0;
+    p[31] = 0;
+    p[32] = 0;
+    p[33] = 0;
+    p[34] = 0;
+    p[35] = 0;
+    p[36] = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005534C);
-#endif
 
 /* game_libs_func_000553E8 — EXACT 34/34 words (2026-07-08, agent-e). Reloc-free.
  * Command-stream block-skipper with nesting depth. a0[0] points to a stream
