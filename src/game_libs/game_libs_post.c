@@ -4990,117 +4990,47 @@ void game_libs_func_00023070(int a0, int a1) {
     }
 }
 
-// gl_func_000230D0 — STRUCTURAL PASS (0xE4 / 57 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
-// bundle). A packed-handle decode + dispatch.
-//
-//   ret gl_func_000230D0(H *h) {
-//     byte fl = h->b_0;
-//     if ((fl & 1) != 1) return;                        // gate bit0
-//     int  w   = h->w_0;                                 // packed word
-//     int  typ = (unsigned)w >> 30;                      // bits[31:30]
-//     int  id  = w & 0x00FFFFFF;                          // low 24 bits
-//     if (typ != 0) {
-//       int t = (typ << 24) >> 24;                        // sign-ext
-//       r = (*disp)(id, t);                                // jal 0 USO
-//       int a = h->w_4;
-//       if (r != 0) { ... }
-//     }
-//     // second decode path:
-//     int w2 = h->w_0;
-//     if (((unsigned)w2 >> 30) != 1) { ... }
-//     T *tbl = *(T**)(&D_0 + 0x2024);                      // global tbl
-//     int  a0arg = h->w_4;
-//     short hw   = h->h_2;
-//     ...
-//   }
-//
-// Struct-typing reference: `h` is a packed object handle — its first
-//   word doubles as a flags byte (bit0 = valid/active gate) and a
-//   bitfield: bits[31:30] a 2-bit type/kind selector, bits[23:0] a
-//   24-bit object id. Word h->4 and halfword h->2 are payload args
-//   passed to the dispatch. Type-selected behaviour goes through a
-//   USO-relocated routine (`jal 0` slot, resolved at load); the
-//   second path indexes a global table at &D_0+0x2024. This is the
-//   "resolve & act on a packed handle" entry of the game_libs
-//   registry/handle subsystem.
-// Caps (DEFERRED): CLEAN single jr $ra. Packed-handle decode +
-//   dispatch entry of the game_libs registry/handle subsystem.
-//   Real-C STRUCTURAL body below per the analysis (h->0 bit0 valid
-//   gate; word bits[31:30]=type, bits[23:0]=id; type!=0 -> jal-0
-//   USO-reloc disp(id, sign-ext type); second path indexes global
-//   table &D_0+0x2024 with h->4 / h->2 payload). Byte-match deferred
-//   — placeholder jal-0 dispatch needs USO reloc infra + bitfield
-//   schedule. Name pre-checked: no extern reuse (collision-safe).
-//   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
+/* gl_func_000230D0 EXACT 2026-10-23 (agent-c run 140, 72.77 -> 100): OoT's
+ * AudioLoad_SyncLoadSample (load.c). 1080 differences: AllocSampleCache takes four
+ * arguments (size, fontId, sampleAddr, s8 medium -- the s8 prototype gives the
+ * sll/sra pair), and the function returns -1 when the allocation fails (no value on
+ * the other paths). The three callees are blank USO jals (jal 0): prototyped aliases
+ * pinned to 0. Sample bitfields: codec:4, medium:2, unk:1, isRelocated:1, size:24. */
+typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_230D0_Sample;
+typedef struct { s16 numEntries; s16 unkMediumParam; } gl_230D0_Table;
+typedef struct { char pad[0x2024]; gl_230D0_Table *sampleBankTable; } gl_230D0_Ctx;
+#define gl_230D0_gAudioCtx (*(gl_230D0_Ctx *)&D_00000000)
+extern void *gl_230d0_allocSampleCache(u32 size, s32 fontId, void *sampleAddr, s8 medium);
+extern void gl_230d0_syncDmaUnkMedium(u32 devAddr, u8 *addr, u32 size, s32 unkMediumParam);
+extern void gl_230d0_syncDma(u32 devAddr, u8 *addr, u32 size, s32 medium);
+#define AudioHeap_AllocSampleCache gl_230d0_allocSampleCache
+#define AudioLoad_SyncDmaUnkMedium gl_230d0_syncDmaUnkMedium
+#define AudioLoad_SyncDma gl_230d0_syncDma
 
+s32 gl_func_000230D0(gl_230D0_Sample *sample, s32 fontId) {
+    void *sampleAddr;
 
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000230D0)();
-void gl_func_000230D0(char *arg0) {
-    s32 sp24;
-    s32 temp_v0;
-    s32 temp_v0_2;
-    s32 temp_v0_3;
-    u32 temp_v1;
-    u32 temp_v1_2;
+    if (sample->isRelocated == 1) {
+        if (sample->medium != 0) {
+            sampleAddr = AudioHeap_AllocSampleCache(sample->size, fontId, (void *)sample->sampleAddr, sample->medium);
+            if (sampleAddr == NULL) {
+                return -1;
+            }
 
-    if (((*(u8 *)arg0 & 1) == 1) && (temp_v0 = (s32) FW(arg0, 0x0), temp_v1 = (u32) (temp_v0 * 0x10) >> 0x1E, (temp_v1 != 0))) {
-        temp_v0_2 = gl_func_0001CA10(temp_v0 & 0xFFFFFF, FW(arg0, 0x4), (s8) temp_v1);
-        if (temp_v0_2 == 0) {
-            return;
+            if (sample->medium == 1) {
+                AudioLoad_SyncDmaUnkMedium((u32)sample->sampleAddr, sampleAddr, sample->size, gl_230D0_gAudioCtx.sampleBankTable->unkMediumParam);
+            } else {
+                AudioLoad_SyncDma((u32)sample->sampleAddr, sampleAddr, sample->size, sample->medium);
+            }
+            sample->medium = 0;
+            sample->sampleAddr = sampleAddr;
         }
-        temp_v0_3 = (s32) FW(arg0, 0x0);
-        temp_v1_2 = (u32) (temp_v0_3 * 0x10) >> 0x1E;
-        if (temp_v1_2 == 1) {
-            sp24 = temp_v0_2;
-            gl_func_0001CA10(FW(arg0, 0x4), temp_v0_2, temp_v0_3 & 0xFFFFFF, *(s16 *)((*(char **)0x2024) + 0x2));
-        } else {
-            sp24 = temp_v0_2;
-            gl_func_0001CA10(FW(arg0, 0x4), temp_v0_2, temp_v0_3 & 0xFFFFFF, (s16) temp_v1_2);
-        }
-        *(u8 *)arg0 = *(u8 *)arg0 & 0xFFF3;
-        FW(arg0, 0x4) = sp24;
     }
 }
-#else
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000230D0)();
-void gl_func_000230D0(char *arg0) {
-    s32 sp24;
-    s32 temp_v0;
-    s32 temp_v0_2;
-    s32 temp_v0_3;
-    u32 temp_v1;
-    u32 temp_v1_2;
-
-    if (((FW(arg0, 0x0) & 1) == 1) && (temp_v0 = (s32) FW(arg0, 0x0), temp_v1 = (u32) (temp_v0 * 0x10) >> 0x1E, (temp_v1 != 0))) {
-        temp_v0_2 = gl_func_0001CA10(temp_v0 & 0xFFFFFF, FW(arg0, 0x4), (s8) temp_v1);
-        if (temp_v0_2 == 0) {
-            return;
-        }
-        temp_v0_3 = (s32) FW(arg0, 0x0);
-        temp_v1_2 = (u32) (temp_v0_3 * 0x10) >> 0x1E;
-        if (temp_v1_2 == 1) {
-            sp24 = temp_v0_2;
-            gl_func_0001CA10(FW(arg0, 0x4), temp_v0_2, temp_v0_3 & 0xFFFFFF, FW((*(char **)0x2024), 0x2));
-        } else {
-            sp24 = temp_v0_2;
-            gl_func_0001CA10(FW(arg0, 0x4), temp_v0_2, temp_v0_3 & 0xFFFFFF, (s16) temp_v1_2);
-        }
-        FW(arg0, 0x0) = (u8) (FW(arg0, 0x0) & 0xFFF3);
-        FW(arg0, 0x4) = sp24;
-    }
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000230D0);
-#endif
+#undef gl_230D0_gAudioCtx
+#undef AudioHeap_AllocSampleCache
+#undef AudioLoad_SyncDmaUnkMedium
+#undef AudioLoad_SyncDma
 #endif
 
 // gl_func_000231B4 — STRUCTURAL PASS (0xD0 / 52 words, no episode).

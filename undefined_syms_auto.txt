@@ -4986,3 +4986,6 @@ gl_aud_sEnvMixerRightHaasDmemDests = 0x0001A2D8;  /* gl_func_0001EF20: sEnvMixer
 gl_aud_sEnvMixerDefaultDmemDests = 0x0001A2DC;  /* gl_func_0001EF20: sEnvMixerDefaultDmemDests */
 gl_23e60_fastCopy1 = 0x0001ACC0;  /* gl_func_00023E60: first "FastCopy" literal (module rodata, lui 2 / addiu -0x5340 baked) */
 gl_23e60_fastCopy2 = 0x0001ACCC;  /* gl_func_00023E60: second "FastCopy" literal */
+gl_230d0_allocSampleCache = 0x00000000;  /* gl_func_000230D0: prototyped blank USO jal (AudioHeap_AllocSampleCache, s8 medium) */
+gl_230d0_syncDmaUnkMedium = 0x00000000;  /* gl_func_000230D0: prototyped blank USO jal (AudioLoad_SyncDmaUnkMedium) */
+gl_230d0_syncDma = 0x00000000;  /* gl_func_000230D0: prototyped blank USO jal (AudioLoad_SyncDma) */
