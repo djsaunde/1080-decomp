@@ -2073,14 +2073,14 @@ void game_uso_func_00003558(char *s0) {
     stage[0] = *(float *)(m + 0x00) * buf[0]
              + *(float *)(m + 0x10) * buf[1]
              + *(float *)(m + 0x20) * buf[2];
-    stage[1] = *(float *)(m + 0x04) * buf[0]
+    stage[1] = buf[0] * *(float *)(m + 0x04)
              + *(float *)(m + 0x14) * buf[1]
              + *(float *)(m + 0x24) * buf[2];
-    stage[2] = *(float *)(m + 0x08) * buf[0]
-             + *(float *)(m + 0x18) * buf[1]
-             + *(float *)(m + 0x28) * buf[2];
-    vb[0] = vb[0] + stage[0];
-    vb[1] = vb[1] + stage[1];
+    stage[2] = buf[0] * *(float *)(m + 0x08)
+             + buf[1] * *(float *)(m + 0x18)
+             + buf[2] * *(float *)(m + 0x28);
+    vb[0] = stage[0] + vb[0];
+    vb[1] = stage[1] + vb[1];
     vb[2] = vb[2] + stage[2];
 
     d[0] = vb[0] - va[0];
@@ -2116,7 +2116,7 @@ void game_uso_func_00003558(char *s0) {
     w[1] = 0.0;
     w[2] = w[2] - va[2];
 
-    t = game_uso_func_070238(w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+    t = game_uso_func_070238(w[2] * w[2] + w[0] * w[0] + w[1] * w[1]);
     game_uso_func_071028((Vec3 *)w);
 
     if (*(float *)(s0 + 0x88) < t) {
@@ -2135,7 +2135,7 @@ void game_uso_func_00003558(char *s0) {
         w[2] = w[2] * (f32)0.0;
     }
 
-    k = (mag - *(float *)(s0 + 0xB8)) * *(float *)(s0 + 0x118);
+    k = *(float *)(s0 + 0x118) * (mag - *(float *)(s0 + 0xB8));
     e[0] = e[0] * k;
     e[1] = e[1] * k;
     e[2] = e[2] * k;
