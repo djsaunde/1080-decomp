@@ -4104,61 +4104,55 @@ extern int D_00000000;
  * or key->2==0; on match, two gl gates then two inner loops dispatching
  * gl_func_00036A04(key, sub->field) per sub-record. */
 extern int gl_func_00036A04();
-int gl_func_000221D8(char *key) {
+/* Re-decoded 2026-10-23 agent-c run 137 (target: no v0 on any path = void; the
+ * 0x7F test calls sub[6] only when != 127 and sub[4] ALWAYS; the match test is
+ * one short-circuit condition whose `li a0,1` fills the delay slots; the
+ * entry pointer is recomputed at the bottom of the first inner loop and its
+ * last value feeds the second loop's count). Left: the target holds &D in s6. */
+void gl_func_000221D8(char *key) {
     char *g = (char *)&D_00000000;
-    char *s3 = key;
     int count = *(short *)(*(int *)(g + 0x2020));
-    int s5, s4;
+    int s5, s4, s1, s2;
+    unsigned char *e;
 
     if (count <= 0) {
-        return 0;
+        return;
     }
     s4 = 0;
     for (s5 = 0; s5 != count; s5++, s4 += 20) {
-        char *e = (char *)*(int *)(g + 0x2030) + s4;
-        int kb = *(signed char *)(s3 + 2);
-        unsigned char v1 = *(unsigned char *)(e + 2);
-        unsigned char a0b = *(unsigned char *)(e + 3);
-        int matched;
-
-        if (v1 != 0xFF && v1 == kb) matched = 1;
-        else if (a0b != 0xFF && a0b == kb) matched = 1;
-        else if (kb == 0) matched = 1;
-        else matched = 0;
-        if (!matched) continue;
-
+        int kb;
+        int v1;
+        int a0b;
+        e = (unsigned char *)*(int *)(g + 0x2030) + s4;
+        kb = *(signed char *)(key + 2);
+        v1 = e[2];
+        a0b = e[3];
+        if (!((v1 != 0xFF && v1 == kb) || (a0b != 0xFF && a0b == kb) || kb == 0)) continue;
         if (gl_func_00000000(1, 2, s5) == 0) continue;
         if (gl_func_00000000(s5) == 0) continue;
-        {
-            int s1, s2;
-            int cnt1 = *(unsigned char *)((char *)*(int *)(g + 0x2030) + s4);
-            for (s1 = 0; s1 < cnt1; s1++) {
-                int *sub = (int *)gl_func_00000000(s5, s1);
-                if (sub != 0) {
-                    if (*(unsigned char *)((char *)sub + 1) != 0) {
-                        gl_func_00036A04(s3, sub[8 / 4]);
-                    }
-                    if (*(unsigned char *)((char *)sub + 2) == 127) {
-                        gl_func_00036A04(s3, sub[16 / 4]);
-                    } else {
-                        gl_func_00036A04(s3, sub[24 / 4]);
-                    }
+        e = (unsigned char *)*(int *)(g + 0x2030) + s4;
+        for (s1 = 0; s1 < e[0]; ) {
+            int *sub = (int *)gl_func_00000000(s5, s1);
+            if (sub != 0) {
+                if (*(unsigned char *)((char *)sub + 1) != 0) {
+                    gl_func_00036A04(key, sub[8 / 4]);
                 }
-                cnt1 = *(unsigned char *)((char *)*(int *)(g + 0x2030) + s4);
-            }
-            {
-                int cnt2 = *(unsigned char *)((char *)*(int *)(g + 0x2030) + s4 + 1);
-                for (s2 = 0; s2 < cnt2; s2++) {
-                    int *sub = (int *)gl_func_00000000(s5, s2);
-                    if (sub != 0) {
-                        gl_func_00036A04(s3, sub[4 / 4]);
-                    }
-                    cnt2 = *(unsigned char *)((char *)*(int *)(g + 0x2030) + s4 + 1);
+                if (*(unsigned char *)((char *)sub + 2) != 127) {
+                    gl_func_00036A04(key, sub[24 / 4]);
                 }
+                gl_func_00036A04(key, sub[16 / 4]);
             }
+            s1++;
+            e = (unsigned char *)*(int *)(g + 0x2030) + s4;
+        }
+        for (s2 = 0; s2 < e[1]; s2++) {
+            int *sub = (int *)gl_func_00000000(s5, s2);
+            if (sub != 0) {
+                gl_func_00036A04(key, sub[4 / 4]);
+            }
+            e = (unsigned char *)*(int *)(g + 0x2030) + s4;
         }
     }
-    return 0;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000221D8);
