@@ -2785,7 +2785,7 @@ int gl_func_000201B8(int mode, int size, int op, int arg3) {
     gl_201B8_Pool *cfg;
     int k;
     int v; /* int: sub->ent[v] scales by multu with the held 12 like the target */
-    int a;
+    int a; /* run 144: unused (st0 compared directly gives the target bne 3,st0 order); its home keeps the frame */
     int *r;
     unsigned char st0;
     unsigned char st1;
@@ -2831,8 +2831,7 @@ top:
                 }
             }
         }
-        a = st0;
-        if (a == 0) {
+        if (st0 == 0) {
             sub->cur = 0;
             v = 0;
             goto tail;
@@ -2841,11 +2840,11 @@ top:
             sub->cur = v = 1;
             goto tail;
         }
-        if (a == 3 && st1 == 3) {
+        if (st0 == 3 && st1 == 3) {
             v = sub->cur;
             goto tail;
         }
-        if (a == 3) {
+        if (st0 == 3) {
             sub->cur = 0;
             v = 0;
             goto tail;
@@ -2855,7 +2854,7 @@ top:
             goto tail;
         }
         if (mode == 0) {
-            if (a == 2) {
+            if (st0 == 2) {
                 for (k = 0; k < G.n2048; k++) {
                     if (G.objs[k].flag && G.objs[k].b4 == sub->ent[0].hA) break;
                 }
@@ -2875,7 +2874,7 @@ top:
                 }
             }
         } else if (mode == 1) {
-            if (a == 2) {
+            if (st0 == 2) {
                 for (k = 0; k < G.count; k++) {
                     if (G.recs[k].b33 == sub->ent[0].hA && G.recs[k].e.flag) break;
                 }
@@ -2897,12 +2896,12 @@ top:
         }
         v = sub->cur;
         if (v == 0) {
-            if (a == 1) {
+            if (st0 == 1) {
                 if (st1 == 1) goto ret0;
                 sub->cur = v = 1;
             }
         } else if (st1 == 1) {
-            if (a == 1) goto ret0;
+            if (st0 == 1) goto ret0;
             sub->cur = 0;
             v = 0;
         }
