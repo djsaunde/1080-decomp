@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0002A07C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T04:52:54.291628+00:00",
+  "end_time": "2026-10-24T04:52:54.291645+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T04:52:54.291641+00:00",
+      "assistant_text": "OoT AudioSeq_HandleScriptFlowControl; CALL/LOOP stack pushes written as depth copy + store + separate increment (fixes depth temp colour); IDO 7.1 -O2 donor, jumptable pinned at rodata +0x1020.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 119,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* IDO 7.1 -O2 donor for game_libs_func_0002A07C (0x1DC / 119 words) = OoT's\n * AudioSeq_HandleScriptFlowControl (seqplayer.c). The CALL / LOOP stack pushes are\n * written as an s32 copy of the depth, the store(s), then a separate increment (OoT's\n * stack[depth++] colours the depth t1, target v0). Spliced into game_libs_post.c.o via\n * REPLACE_FUNC_BODY; the splice renames the donor-local .rodata jumptable reloc\n * (opcodes 0xF2..0xFF) to game_libs_func_0002A07C_rodata, pinned to the USO table at\n * +0x1020. */\ntypedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2A07C_SeqScriptState;\ntypedef struct { char pad[0x18]; u8 *seqData; } gl_2A07C_SeqPlayer;\nextern int gl_func_0003F05C();\n\ns32 game_libs_func_0002A07C(gl_2A07C_SeqPlayer *seqPlayer, gl_2A07C_SeqScriptState *state, s32 cmd, s32 cmdArg) {\n    s32 d;\n    switch (cmd) {\n        case 0xFF:\n            if (state->depth == 0) {\n                return -1;\n            }\n            state->pc = state->stack[--state->depth];\n            break;\n\n        case 0xFD:\n            return gl_func_0003F05C(state);\n\n        case 0xFE:\n            return 1;\n\n        case 0xFC:\n            d = state->depth;\n            state->stack[d] = state->pc;\n            state->depth++;\n            state->pc = seqPlayer->seqData + (u16)cmdArg;\n            break;\n\n        case 0xF8:\n            d = state->depth;\n            state->remLoopIters[d] = cmdArg;\n            state->stack[state->depth] = state->pc;\n            state->depth++;\n            break;\n\n        case 0xF7:\n            state->remLoopIters[state->depth - 1]--;\n            if (state->remLoopIters[state->depth - 1] != 0) {\n                state->pc = state->stack[state->depth - 1];\n            } else {\n                state->depth--;\n            }\n            break;\n\n        case 0xF6:\n            state->depth--;\n            break;\n\n        case 0xF5:\n        case 0xF9:\n        case 0xFA:\n        case 0xFB:\n            if (cmd == 0xFA && state->value != 0) {\n                break;\n            }\n            if (cmd == 0xF9 && state->value >= 0) {\n                break;\n            }\n            if (cmd == 0xF5 && state->value < 0) {\n                break;\n            }\n            state->pc = seqPlayer->seqData + (u16)cmdArg;\n            break;\n\n        case 0xF2:\n        case 0xF3:\n        case 0xF4:\n            if (cmd == 0xF3 && state->value != 0) {\n                break;\n            }\n            if (cmd == 0xF2 && state->value >= 0) {\n                break;\n            }\n            state->pc += (s8)(cmdArg & 0xFF);\n            break;\n    }\n\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_2A07C.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0002A07C.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "Verified with rdiff --raw --pins (0 diff words) and full ROM build (byte-identical)."
+  }
+}

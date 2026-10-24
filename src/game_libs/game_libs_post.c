@@ -10583,89 +10583,17 @@ int gl_func_0002A014(int a0, unsigned char a1) {
 // Exact route when the two copies fall: the 29CCC/44B78 jumptable donor
 // splice (GAMELIBS_2A07C_DONOR + REPLACE_FUNC_BODY on the post objects +
 // game_libs_func_0002A07C_rodata = 0x1020 pin + C_FILES filter-out).
-#ifdef NON_MATCHING
-/* run 141 (agent-c): OoT's AudioSeq_HandleScriptFlowControl verbatim (93.87 -> 96.58;
- * 119 = 119 words). Left: the depth temp of the CALL / LOOP arms colours t1 (target
- * v0), every later temp one t-register off; splitting `depth++` or the SM64 comma form
- * is worse. Exact route once that falls: the 29CCC-recipe donor with
- * game_libs_func_0002A07C_rodata = 0x1020. */
-extern int gl_func_0003F05C();
-typedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2A07C_SeqScriptState;
-typedef struct { char pad[0x18]; u8 *seqData; } gl_2A07C_SeqPlayer;
-extern int gl_func_0003F05C();
-
-s32 game_libs_func_0002A07C(gl_2A07C_SeqPlayer *seqPlayer, gl_2A07C_SeqScriptState *state, s32 cmd, s32 cmdArg) {
-    switch (cmd) {
-        case 0xFF:
-            if (state->depth == 0) {
-                return -1;
-            }
-            state->pc = state->stack[--state->depth];
-            break;
-
-        case 0xFD:
-            return gl_func_0003F05C(state);
-
-        case 0xFE:
-            return 1;
-
-        case 0xFC:
-            state->stack[state->depth++] = state->pc;
-            state->pc = seqPlayer->seqData + (u16)cmdArg;
-            break;
-
-        case 0xF8:
-            state->remLoopIters[state->depth] = cmdArg;
-            state->stack[state->depth++] = state->pc;
-            break;
-
-        case 0xF7:
-            state->remLoopIters[state->depth - 1]--;
-            if (state->remLoopIters[state->depth - 1] != 0) {
-                state->pc = state->stack[state->depth - 1];
-            } else {
-                state->depth--;
-            }
-            break;
-
-        case 0xF6:
-            state->depth--;
-            break;
-
-        case 0xF5:
-        case 0xF9:
-        case 0xFA:
-        case 0xFB:
-            if (cmd == 0xFA && state->value != 0) {
-                break;
-            }
-            if (cmd == 0xF9 && state->value >= 0) {
-                break;
-            }
-            if (cmd == 0xF5 && state->value < 0) {
-                break;
-            }
-            state->pc = seqPlayer->seqData + (u16)cmdArg;
-            break;
-
-        case 0xF2:
-        case 0xF3:
-        case 0xF4:
-            if (cmd == 0xF3 && state->value != 0) {
-                break;
-            }
-            if (cmd == 0xF2 && state->value >= 0) {
-                break;
-            }
-            state->pc += (s8)(cmdArg & 0xFF);
-            break;
-    }
-
+/* game_libs_func_0002A07C EXACT 2026-10-24 (agent-c run 142, 96.64 -> 100): OoT's
+ * AudioSeq_HandleScriptFlowControl with the CALL / LOOP pushes as depth copy + store +
+ * separate increment (see the donor header). WIRED via REPLACE_FUNC_BODY donor splice:
+ * the real C lives in the IDO 7.1 -O2 donor unit game_libs_o2_2A07C.c (119/119 words);
+ * the splice renames the donor-local .rodata jumptable reloc to
+ * game_libs_func_0002A07C_rodata, pinned to the USO table at +0x1020. Body below is a
+ * placeholder for the splice. */
+s32 game_libs_func_0002A07C(void *seqPlayer, void *state, s32 cmd, s32 cmdArg) {
+    volatile int x = 0;
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002A07C);
-#endif
 
 
 // game_libs_func_0002A258 (MERGED 2026-07-23: orphan 2A258 2-insn lui/addiu

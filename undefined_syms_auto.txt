@@ -5054,3 +5054,4 @@ gl_27804_gHaasEffectDelaySizes = 0x00000000;  /* agent-c run 142: gl_func_000278
 gl_27804_gHeadsetPanVolume = 0x00000000;  /* agent-c run 142: gl_func_00027804 f32 table (USO-resolved) */
 gl_27804_gStereoPanVolume = 0x00000000;  /* agent-c run 142: gl_func_00027804 f32 table (USO-resolved) */
 gl_27804_gDefaultPanVolume = 0x00000000;  /* agent-c run 142: gl_func_00027804 f32 table (USO-resolved) */
+game_libs_func_0002A07C_rodata = 0x00001020;  /* agent-c run 142: HandleScriptFlowControl 14-entry jumptable (0xF2..0xFF) in game_libs rodata at +0x1020; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2A07C.c) */
