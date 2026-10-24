@@ -1,0 +1,33 @@
+{
+  "function_name": "func_80003BF0",
+  "project": "1080",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T16:02:02.306668+00:00",
+  "end_time": "2026-10-24T16:02:02.306698+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T16:02:02.306690+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 18,
+  "initial_m2c_source": null,
+  "final_source": "typedef struct DqThread_s { struct DqThread_s *next; } DqThread;\n\nvoid func_80003BF0(DqThread **queue, DqThread *t) {\n    register DqThread *pred;\n    register DqThread *succ;\n\n    pred = (DqThread *)queue;\n    succ = pred->next;\n    while (succ != 0) {\n        if (succ == t) {\n            pred->next = t->next;\n            return;\n        }\n        pred = succ;\n        succ = pred->next;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_000_b.c",
+    "asm_path": "asm/nonmatchings/kernel/func_80003BF0.s",
+    "segment": "kernel",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O1 -G 0 -mips2 -32",
+    "verification": "objdiff 100 + ROM cmp"
+  }
+}
