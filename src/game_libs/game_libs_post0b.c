@@ -6545,8 +6545,7 @@ s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
                 if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) {
                     ok = 0;
                 }
-                fv++;
-            } while (ok && nx < (s16 *)((char *)&D_00000000 + 6));
+            } while (ok && (fv++, nx < (s16 *)((char *)&D_00000000 + 6))); /* run 152: fv++ inside the condition = bne delay slot after the ok exit (76.69 -> 77.31) */
         }
         if (ok) {
             dist[cnt] = d / *(f32 *)((char *)&D_00000000 + 0x12C);
