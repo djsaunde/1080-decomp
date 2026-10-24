@@ -9009,8 +9009,11 @@ void func_0000E270(char *arg0, float arg1) {
  * dot and s are ONE variable (f0 across the call, spilled to its home); the
  * normalise call takes only &v[0] but arg3 stays live in a3 (spilled at 124),
  * reproduced by `if (arg3) {}`; `dot *= k` keeps dot as the first mul operand.
- * Left: the dot sum is emitted z-first (cfe canonical order; target (x+y)+z,
- * an NCC-style source order) and the 1.0f + arg4 load/mtc1 schedule + one nop;
+ * Run 153 (agent-g, 99.39 -> 99.54): the dot sum is `z + (y + x)` with the
+ * x product written v[0].x * v[1].x (cfe swaps the operands of each product
+ * and sum per expression shape; sweep of all 40 order/shape combos). Left: the
+ * 1.0f + arg4 colouring (target arg4 f16 / 1.0 ring f8, ours f14 / f6) and the
+ * ring offset it causes in the final scale block.
  * NCC compiles of this body are much worse (frame 80, no pads). */
 extern f64 bu_e2d0_k9a0;  /* rodata f64 (target func_0000098C + 0x14) */
 void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
@@ -9037,7 +9040,7 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     v[0].y = d * arg3->y - v[0].y;
     v[0].z = d * arg3->z - v[0].z;
     if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
-        dot = v[1].x * v[0].x + v[1].y * v[0].y + v[0].z * v[1].z;
+        dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[0].x * v[1].x);
         func_00000000(&v[0]); if (arg3) {} if (arg4) {} /* run 131: arg4 kept live -> the 1.0f + arg4 load/mtc1/nop schedule, length 131 */
         lim = *(f32 *)(arg0 + 0x9FC);
         dot *= *(f32 *)(arg0 + 0x9F8);
