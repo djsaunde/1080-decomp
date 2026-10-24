@@ -6870,6 +6870,7 @@ extern char D_timb5_AC20_gz;    /* pool B: z@+8, f64 threshold@+0x338 */
 extern char D_timb5_AC20_root, D_timb5_AC20_w0, D_timb5_AC20_w1,
     D_timb5_AC20_w2, D_timb5_AC20_w3;
 extern void *timproc_uso_b5_func_071028();
+extern char timproc_uso_b5_D_807FFBB0; /* AC20 dot axis (lui/addiu after the 071028 call) */
 extern void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
 extern void timproc_uso_b5_func_0727A4(void *src, void *dst);
 extern void import_0010806C(void *src, void *dst);
@@ -6923,7 +6924,8 @@ void timproc_uso_b5_func_0000AC20(char *arg0) {
     }
     spE4 = spD0;
     spF4 = spE4;
-    gp = (f32 *)timproc_uso_b5_func_071028(&spF4);
+    timproc_uso_b5_func_071028(&spF4); /* run 156: result unused; the dot uses the fixed axis vector */
+    gp = (f32 *)&timproc_uso_b5_D_807FFBB0;
     if ((f64) ((gp[0] * spF4.x) + (gp[1] * spF4.y) + (gp[2] * spF4.z)) < *(f64 *)((char *)&D_timb5_AC20_gz + 0x338)) {
         {
             TB5_F(0xF4) = 0.0f;
