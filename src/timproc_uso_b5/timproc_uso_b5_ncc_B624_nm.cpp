@@ -9,7 +9,11 @@
  * Run 156 (kit LXXXVI): the head offset vector is computed into three held locals and stored
  * afterwards (the target keeps the differences in f2 / f0 / f12 and loads all three statics
  * first): 89.84 -> 93.72, length unchanged (139 words). The reference form of x / y on top
- * gives 94.78 but 138 words (away from the target), not kept. */
+ * gives 94.78 but 138 words (away from the target), not kept.
+ * Run 157: the head is an inline helper returning a named non-POD V (relPos below), the
+ * three subtracts held in dx / dy / dz and the frame-only locals of the if arm moved
+ * into the arm: 93.72 -> 95.57, 139 words. RESIDUAL: arg0 goes to s0 before the head
+ * (target: after it), sp8C 16 bytes high, 1.0f colour, the decrement temp. */
 typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -34,32 +38,32 @@ extern void timproc_uso_b5_func_06970C_i(...);
 }
 static f32 sXY[2];
 static f32 sZ;
+
+/* The head is an inline helper returning a named V by value: NCC keeps the
+ * argument address (arg0 + 0xDC) in v0, holds the three differences and makes
+ * the ctor-temp -> return-slot -> sp8C copy chain of the target (agent-g run 157). */
+struct V { f32 x, y, z; V() {} };   /* the user-declared ctor matters (POD V = 94.63) */
+static inline V relPos(const V &a) {
+    f32 &x = sXY[0]; f32 &y = sXY[1];
+    V r; f32 dx = a.x - x; f32 dy = a.y - y; f32 dz = a.z - sZ;
+    r.x = dx; r.y = dy; r.z = dz;
+    return r;
+}
 extern "C" void timproc_uso_b5_func_0000B624(char *arg0) {
     VecF sp8C;
-    union { VecF v; s32 w[4]; } sp7C;
     s32 var_v0;
     s32 temp_t5;
-    VecF sp68;
-    volatile s32 pad9C[3];
     char *temp_a0_2;
-    VecF sp48;
-    f32 ang;
-    VecF sp38;
-    VecF sp2C;
     f32 *sp28;
 
-    sp28 = (f32 *) (arg0 + 0xDC);
-    {
-        f32 hx = sp28[0] - sXY[0];
-        f32 hy = sp28[1] - sXY[1];
-        f32 hz = sp28[2] - sZ;
-        sp68.f0 = hx; sp68.f4 = hy; sp68.f8 = hz;
-    }
-    sp7C.v = sp68;
-    sp8C = sp7C.v;
+    *(V *) &sp8C = relPos(*(V *) (arg0 + 0xDC));
     timproc_uso_b5_func_071028(&sp8C);
     sp28 = (f32 *) (arg0 + 0xF4);
     if ((f64) ((M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 0) * sp8C.f0) + (M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 4) * sp8C.f4) + (M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 8) * sp8C.f8)) < M2C_FIELD((&timproc_uso_b5_D_807FF370), f64 *, 0x350)) {
+        VecF sp48;
+        f32 ang;
+        VecF sp38;
+        VecF sp2C;
         M2C_FIELD(arg0, f32 *, 0xF4) = 0.0f;
         M2C_FIELD(arg0, f32 *, 0xF8) = 0.0f;
         M2C_FIELD(arg0, f32 *, 0xFC) = 0.0f;
