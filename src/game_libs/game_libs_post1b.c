@@ -5801,7 +5801,8 @@ GLOBAL_ASM("src/libultra/game_libs/popthread.s")
 
 /* game_libs_func_0006AD78 = the exception-handler context block from
  * os/exceptasm.s (HANDWRITTEN: mtc0/k-regs, full ld GPR + ldc1 FPR
- * restore, eret, PIF-watchdog tail). Permanent INCLUDE_ASM. */
+ * restore, eret). Now real assembly source (below). */
+/* game_libs_func_0006AD78 = __osDispatchThread + __osCleanupThread (game_libs libultra copy): real source in src/libultra/game_libs/dispatchthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006AD78);
 
 /* 14-insn linked-list traversal. Searches for `a1` in a list rooted at `a3`
@@ -5844,38 +5845,29 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006AD78);
  *   These last 3 diffs are IDO -O2 scheduler/encoder cascades from the
  *   bnel optimization; no obvious C lever. Would need INSN_PATCH for
  *   final 5-insn promotion. */
-/* gl_func_0006AF0C: 14-insn singly-linked-list unlink: walk from head a3
- * looking for node a1; when found, store a1->next into the predecessor
- * link slot *a2 (a2 trails one node behind) and stop.
- * 2026-07-07: PROVEN EXACT 14/14 at `-O1 -g3` (standalone IDO 7.1 probe;
- * this TU builds -O2, where the shape is the documented sp-8-empty-frame /
- * bnel / copy-prop cap — see docs/IDO_CODEGEN "IDO -O2 leaf with addiu
- * sp,-8 but no stack use"). The target is an -O1 -g3 ISLAND inside
- * game_libs_post1b: no branch-likely, unfilled beq/bne delays, no
- * copy-prop (lw a3,0(a2) keeps the just-moved base), and the empty 8-byte
- * frame comes from the unused `int pad;` local (-O1 allocates it, -O2
- * drops it). Two levers make it exact at -O1 -g3:
- *   (1) `int pad;` unused local = the addiu sp,-8/+8 bracket, zero insns;
- *   (2) `if (0) a0_unused = 0;` dead overwrite of the unused first param
- *       kills IDO -O1's unused-arg home store (sw a0,8(sp)) with ZERO
- *       emission (plain unused arg is homed; -g3 pins the prologue addiu
- *       ahead of the beq leaving the target's nop delay).
- * LANDED 2026-07-08 via REPLACE_FUNC_BODY donor splice: real C lives in the
- * -O1 -g3 donor unit game_libs_o1_6AF0C.c (reloc-free, byte-exact 14/14),
- * spliced over this -O2 stand-in body per the gl_func_0006BA7C / 69E04
- * precedent. */
-void gl_func_0006AF0C(int a0_unused, int *a1, int *a2, int *a3) {
-    int pad;
-    if (0) a0_unused = 0;
-    if (a3 != 0) {
-        do {
-            if (a3 == a1) {
-                *a2 = *a1;
-                break;
-            }
-            a2 = a3;
-            a3 = *(int **)a2;
-        } while (a3 != 0);
+/* gl_func_0006AF0C = libultra __osDequeueThread (os/thread.c), compiled C at
+ * -O1. BOUNDARY FIX 2026-10-24 (agent-g run 158): the function really starts
+ * 8 bytes earlier -- its first two instructions (move a2,a0; lw a3,0(a2))
+ * were the tail of the handwritten game_libs_func_0006AD78 -- so the old
+ * 14-insn fragment (fake a2/a3 parameters, -O1 -g3 levers) is now the whole
+ * 16-insn function, matched by the plain libultra C at -O1 (the kernel copy
+ * func_80003BF0 matches the same way). The -O1 donor game_libs_o1_6AF0C.c
+ * is spliced over this -O2 stand-in body (post1b builds -O2). */
+typedef struct GlDqThread_s { struct GlDqThread_s *next; } GlDqThread;
+
+void gl_func_0006AF0C(GlDqThread **queue, GlDqThread *t) {
+    register GlDqThread *pred;
+    register GlDqThread *succ;
+
+    pred = (GlDqThread *)queue;
+    succ = pred->next;
+    while (succ != 0) {
+        if (succ == t) {
+            pred->next = t->next;
+            return;
+        }
+        pred = succ;
+        succ = pred->next;
     }
 }
 

@@ -1367,10 +1367,10 @@ GAMELIBS_69E04_DONOR := build/src/game_libs/game_libs_ido53_69E04.c.o
 # gl_func_00069F64 = libultra osRecvMesg, IDO 5.3 -O1 donor (69E04 recipe).
 GAMELIBS_69F64_DONOR := build/src/game_libs/game_libs_ido53_69F64.c.o
 GAMELIBS_74C04_DONOR := build/src/game_libs/game_libs_ido53_74C04.c.o
-# gl_func_0006AF0C: 14-insn list-unlink leaf; exact only at IDO 7.1 -O1 -g3
-# (post1b is -O2). Reloc-free donor spliced in, like 6BA7C/69E04. Built by an
-# explicit direct-CC rule (below "all"): asm-processor rejects "-O1 -g3"
-# (only -O2 -g3), and the donor has no GLOBAL_ASM so it would be a no-op.
+# gl_func_0006AF0C = __osDequeueThread (16 insns since the 2026-10-24 boundary
+# fix); exact at IDO 7.1 -O1 (post1b is -O2). Reloc-free donor spliced in,
+# like 6BA7C/69E04. Built by an explicit direct-CC rule (below "all"); the
+# donor has no GLOBAL_ASM, so asm-processor would be a no-op.
 GAMELIBS_6AF0C_DONOR := build/src/game_libs/game_libs_o1_6AF0C.c.o
 # 0x6A09C..0x6BAD4 -O1 island batch (2026-07-08): plain -O1 donors (no -g3, so
 # the normal asm-processor rule works — only "-O1 -g3" is rejected). Each is
@@ -2568,10 +2568,10 @@ build/non_matching/src/game_libs/game_libs_ido53_70694.c.o: src/game_libs/game_l
 	$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 	$(POST_COMPILE)
 
-# gl_func_0006AF0C -O1 -g3 donor: direct CC, no asm-processor (see donor block).
+# gl_func_0006AF0C -O1 donor: direct CC, no asm-processor (see donor block).
 build/src/game_libs/game_libs_o1_6AF0C.c.o: src/game_libs/game_libs_o1_6AF0C.c
 	@mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) -O1 -g3 $(MIPSISET) $(CPPFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -O1 $(MIPSISET) $(CPPFLAGS) -o $@ $<
 
 # game_libs_func_00070FA0 merged unit: -O1 -g3, direct CC (asm-processor
 # rejects -O1 -g3). Same rule pair for the non_matching build.
