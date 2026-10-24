@@ -16008,7 +16008,6 @@ void gl_func_000334E8(void) {
     u32 temp_v1;
     u32 var_s2;
     u32 var_s4;
-    u32 var_v0;
     u8 *var_s5;
     u8 *var_v1;
     u8 temp_t9;
@@ -16028,7 +16027,7 @@ void gl_func_000334E8(void) {
         if (var_s2 != 0) {
             if (temp_a0 != 0) {
                 temp_v1 = 8 - temp_a0;
-                var_v0 = 0;
+                temp_v0 = 0;
                 if (temp_v1 < var_s2) {
                     var_s2 = temp_v1;
                 }
@@ -16037,11 +16036,11 @@ void gl_func_000334E8(void) {
                     var_v1 = var_s5;
                     do {
                         temp_t9 = *(u8 *)var_v1;
-                        var_v0 += 1;
+                        temp_v0 += 1;
                         var_v1 += 1;
                         var_a0 += 1;
                         *(u8 *)(var_a0 - 0x1) = temp_t9;
-                    } while (var_v0 < var_s2);
+                    } while (temp_v0 < var_s2);
                 }
                 gl_func_0001CA10(0, *(s32 *)8, 0, var_s2);
             } else {
