@@ -2140,141 +2140,149 @@ int *gl_func_0001F248(int *dst, int *a1, int *a2, int a3) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001F248);
 #endif
 
-// gl_func_0001F3C8 — STRUCTURAL PASS (0x720 / 456 words, no episode).
-// Raw-.word USO form (game_libs). BOUNDARY NOTE: 3-jr USO bundle
-// (named fn + 2 trailing helpers) — deferred USO re-split. The named
-// leading fn is a large tile-mode dispatcher + display-list builder
-// in the game_libs F3D family. -8 frame, s0 saved, args on stack.
-//
-//   ret gl_func_0001F3C8(a0, a1, R *a2, a3, int kind) {  // kind at sp+0x1C
-//     switch (kind) {                              // beq 1 / beq 2
-//       case 1:  a2->b_3 = a2->b_3src;             // tile class A
-//                a2->b_2 = 0x0940-selector; break;
-//       case 2:  a2->b_2 = a2->b_2src;             // tile class B
-//                a2->b_3 = 0x0AE0-selector; break;
-//       default: ...                                // pass-through
-//     }
-//     ... large body (~0xAA-word forward span): builds the F3D tile/
-//         load display list using the chosen 0x0940 vs 0x0AE0
-//         descriptor class, the 0x05C0 / 0x03C0 tile tags, and a
-//         per-row emit loop into the dst Gfx cursor; cleanup +
-//         return ...
-//   }
-//
-// Struct-typing reference: a2 is a tile-state record — bytes a2->2
-//   and a2->3 hold the active tile-descriptor selectors, swapped
-//   between a 0x0940-class and a 0x0AE0-class depending on the
-//   stack-passed `kind` code (1, 2, or default). The body emits the
-//   matching G_LOADBLOCK/G_SETTILE-style GBI command sequence
-//   (0x05C0 / 0x03C0 tile tags) for the selected class. Top of the
-//   gl_func_0001F248 texture/tile builder sub-family.
-// Caps (DEFERRED): single jr $ra (the "3-jr bundle" note is STALE;
-//   .s is 0x720/184 words, ONE function). Tile-mode dispatcher + DL
-//   builder (top of the gl_func_0001F248 texture/tile sub-family).
-//   Real-C STRUCTURAL body below per the analysis (kind switch 1/2/
-//   default swaps a2->2 / a2->3 tile selectors between a 0x0940 and
-//   a 0x0AE0 descriptor class, then emits the matching
-//   G_LOADBLOCK/G_SETTILE GBI sequence with 0x05C0/0x03C0 tags).
-//   Byte-match deferred — large multi-branch + placeholder jals
-//   (need USO reloc infra). Name pre-checked: no extern reuse
-//   (collision-safe). gl_func_00000000 = canonical never-defined
-//   USO placeholder for the leaf emitters.
-// gl_func_0001F3C8 — FULL m2c DECODE (56.05% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
-// gl_func_0001F3C8 — FULL m2c DECODE (NM, no episode). game_libs F3D tile-mode
-// dispatcher + display-list builder. arg2/arg1 tile-selector fields are BYTE
-// (lbu/sb at +2/+3/+4); arg2->0xC is a WORD (lw). kind code (arg5) at sp+0x1C.
-#ifdef NON_MATCHING
+/* gl_func_0001F3C8 EXACT 2026-10-23 (agent-c run 140, 63.55 -> 100): the audio
+ * driver's Haas-effect stage -- the same function as OoT's
+ * AudioSynth_ProcessHaasEffect (references/oot/src/audio/internal/synthesis.c),
+ * compiled verbatim from that source with the aspMain ABI macros (`cmd++` packet
+ * temps, _SHIFTL masks, ALIGN16 / ALIGN64) under cfe -O2. The only 1080 difference:
+ * the delay-state address goes through OS_K0_TO_PHYSICAL (`+ 0x80000080` = the
+ * buffer at synthesisBuffers + 0x80 minus K0). sampleState delay sizes at +3 / +4,
+ * synthState previous sizes at +2 / +3, synthesisBuffers at +0xC. The trailing
+ * three zero words stay an all-zero SUFFIX_BYTES_FORCE (game_libs_func_0001F6A8's
+ * alignment pad). Macros are local to this function (#undef'd after). */
+#undef _SHIFTL
+#undef A_CLEARBUFF
+#undef A_ADDMIXER
+#undef A_RESAMPLE_ZOH
+#undef A_SETBUFF
+#undef A_DMEMMOVE
+#undef A_LOADBUFF
+#undef A_SAVEBUFF
+#undef A_INIT
+#undef OS_K0_TO_PHYSICAL
+#undef ALIGN16
+#undef ALIGN64
+#undef aClearBuffer
+#undef aLoadBuffer
+#undef aSaveBuffer
+#undef aSetBuffer
+#undef aDMEMMove
+#undef aAddMixer
+#undef aResampleZoh
+#undef DMEM_TEMP
+#undef DMEM_HAAS_TEMP
+#undef DMEM_LEFT_CH
+#undef DMEM_RIGHT_CH
+typedef struct { u32 w0; u32 w1; } gl_1F3C8_Awords;
+typedef union { gl_1F3C8_Awords words; long long force_structure_alignment; } gl_1F3C8_Acmd;
+#define _SHIFTL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
+#define A_CLEARBUFF 2
+#define A_ADDMIXER 4
+#define A_RESAMPLE_ZOH 6
+#define A_SETBUFF 8
+#define A_DMEMMOVE 10
+#define A_LOADBUFF 20
+#define A_SAVEBUFF 21
+#define A_INIT 1
+#define OS_K0_TO_PHYSICAL(x) (u32)(((char *)(x)-0x80000000))
+#define ALIGN16(val) (((val) + 0xF) & ~0xF)
+#define ALIGN64(val) (((val) + 0x3F) & ~0x3F)
+#define aClearBuffer(pkt, dmem, size) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_CLEARBUFF, 24, 8) | _SHIFTL(dmem, 0, 24); _a->words.w1 = (u32)(size); }
+#define aLoadBuffer(pkt, addrSrc, dmemDest, size) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_LOADBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemDest, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrSrc); }
+#define aSaveBuffer(pkt, dmemSrc, addrDest, size) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SAVEBUFF, 24, 8) | _SHIFTL((size) >> 4, 16, 8) | _SHIFTL(dmemSrc, 0, 16)); _a->words.w1 = OS_K0_TO_PHYSICAL(addrDest); }
+#define aSetBuffer(pkt, f, i, o, c) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_SETBUFF, 24, 8) | _SHIFTL(f, 16, 8) | _SHIFTL(i, 0, 16)); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define aDMEMMove(pkt, i, o, c) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = _SHIFTL(A_DMEMMOVE, 24, 8) | _SHIFTL(i, 0, 24); _a->words.w1 = _SHIFTL(o, 16, 16) | _SHIFTL(c, 0, 16); }
+#define aAddMixer(pkt, count, dmemi, dmemo, a4) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_ADDMIXER, 24, 8) | _SHIFTL(count >> 4, 16, 8) | _SHIFTL(a4, 0, 16)); _a->words.w1 = _SHIFTL(dmemi, 16, 16) | _SHIFTL(dmemo, 0, 16); }
+#define aResampleZoh(pkt, pitch, pitchAccu) { gl_1F3C8_Acmd *_a = (gl_1F3C8_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_RESAMPLE_ZOH, 24, 8) | _SHIFTL(pitch, 0, 16)); _a->words.w1 = _SHIFTL(pitchAccu, 0, 16); }
+#define DMEM_TEMP 0x3C0
+#define DMEM_HAAS_TEMP 0x5C0
+#define DMEM_LEFT_CH 0x940
+#define DMEM_RIGHT_CH 0xAE0
+typedef struct { char pad[0x80]; s32 haasEffectDelayState[1]; } gl_1F3C8_SynthBufs;
+typedef struct { u8 pad0[3]; u8 haasEffectLeftDelaySize; u8 haasEffectRightDelaySize; } gl_1F3C8_SampleState;
+typedef struct { u8 pad0[2]; u8 prevHaasEffectLeftDelaySize; u8 prevHaasEffectRightDelaySize; u8 pad4[8]; gl_1F3C8_SynthBufs *synthesisBuffers; } gl_1F3C8_SynthState;
 
-#ifndef FB
-#define FB(p, o) (*(u8 *)((char *)(p) + (o)))
-#endif
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-char *gl_func_0001F3C8(char *arg0, char *arg1, char *arg2, s32 arg3, s32 arg4, s32 arg5) {
-    s32 temp_t1;
-    s32 temp_v0;
-    s32 var_t0;
-    s32 var_v1_2;
-    u8 var_a1;
-    u8 var_v1;
-    char *temp_a0;
-    char *temp_a0_2;
-    char *temp_a0_3;
-    char *temp_a0_4;
-    char *var_a0;
-    char *var_a0_2;
+gl_1F3C8_Acmd *gl_func_0001F3C8(gl_1F3C8_Acmd *cmd, gl_1F3C8_SampleState *sampleState, gl_1F3C8_SynthState *synthState, s32 size, s32 flags, s32 haasEffectDelaySide) {
+    u16 dmemDest;
+    u16 pitch;
+    u8 prevHaasEffectDelaySize;
+    u8 haasEffectDelaySize;
 
-    switch (arg5) {                                 /* irregular */
-    case 1:
-        var_v1 = FB(arg2, 0x2);
-        var_t0 = 0x940;
-        var_a1 = FB(arg1, 0x3);
-        FB(arg2, 0x3) = 0U;
-        FB(arg2, 0x2) = var_a1;
-block_6:
-        if (arg4 != 1) {
-            if (var_v1 != var_a1) {
-                var_v1_2 = arg3 + var_a1;
-                temp_t1 = var_v1_2 - var_v1;
-                FW(arg0, 0x0) = 0x080005C0;
-                FW(arg0, 0x4) = (s32) ((temp_t1 & 0xFFFF) | 0x03C00000);
-                temp_a0 = arg0 + 8;
-                FW(temp_a0, 0x4) = 0;
-                var_a0_2 = temp_a0 + 8;
-                FW(arg0, 0x8) = (s32) ((((s32) (((s32) (arg3 << 0xF) / 2) - 1) / (s32) ((s32) (temp_t1 - 2) / 2)) & 0xFFFF & 0xFFFF) | 0x06000000);
-            } else {
-                FW(arg0, 0x0) = 0x0A0005C0;
-                FW(arg0, 0x4) = (s32) ((arg3 & 0xFFFF) | 0x03C00000);
-                var_a0_2 = arg0 + 8;
-                var_v1_2 = arg3 + var_a1;
-            }
-            if (var_v1 != 0) {
-                FW(var_a0_2, 0x0) = (s32) (((((s32) ((var_v1 + 0xF) & 0xFFF0) >> 4) & 0xFF) << 0x10) | 0x14000000 | 0x5C0);
-                FW(var_a0_2, 0x4) = (s32) (FW(arg2, 0xC) + 0x80000080);
-                temp_a0_2 = var_a0_2 + 8;
-                FW(var_a0_2, 0x8) = 0x0A0003C0;
-                FW(temp_a0_2, 0x4) = (s32) (((var_v1 + 0x5C0) << 0x10) | ((var_v1_2 - var_v1) & 0xFFFF));
-                var_a0 = temp_a0_2 + 8;
-            } else {
-                FW(var_a0_2, 0x0) = 0x0A0003C0;
-                FW(var_a0_2, 0x4) = (s32) ((var_v1_2 & 0xFFFF) | 0x05C00000);
-                var_a0 = var_a0_2 + 8;
-            }
-        } else {
-            temp_v0 = arg3 & 0xFFFF;
-            temp_a0_3 = arg0 + 8;
-            FW(arg0, 0x4) = (s32) (temp_v0 | 0x03C00000);
-            FW(arg0, 0x0) = 0x0A0005C0;
-            temp_a0_4 = temp_a0_3 + 8;
-            FW(arg0, 0x8) = 0x020005C0;
-            FW(temp_a0_3, 0x4) = (s32) var_a1;
-            FW(temp_a0_4, 0x4) = (s32) (((var_a1 + 0x5C0) << 0x10) | temp_v0);
-            FW(temp_a0_3, 0x8) = 0x0A0003C0;
-            var_a0 = temp_a0_4 + 8;
-        }
-        if (var_a1 != 0) {
-            FW(var_a0, 0x0) = (s32) (((((s32) ((var_a1 + 0xF) & 0xFFF0) >> 4) & 0xFF) << 0x10) | 0x15000000 | ((arg3 + 0x5C0) & 0xFFFF));
-            FW(var_a0, 0x4) = (s32) (FW(arg2, 0xC) + 0x80000080);
-            var_a0 += 8;
-        }
-        FW(var_a0, 0x0) = (s32) (((((s32) ((arg3 + 0x3F) & 0xFFC0) >> 4) & 0xFF) << 0x10) | 0x04000000 | 0x7FFF);
-        FW(var_a0, 0x4) = (s32) ((var_t0 & 0xFFFF) | 0x05C00000);
-        return var_a0 + 8;
-    case 2:
-        var_a1 = FB(arg1, 0x4);
-        var_v1 = FB(arg2, 0x3);
-        var_t0 = 0xAE0;
-        FB(arg2, 0x2) = 0U;
-        FB(arg2, 0x3) = var_a1;
-        goto block_6;
-    default:
-        return arg0;
+    switch (haasEffectDelaySide) {
+        case 1:
+            dmemDest = DMEM_LEFT_CH;
+            haasEffectDelaySize = sampleState->haasEffectLeftDelaySize;
+            prevHaasEffectDelaySize = synthState->prevHaasEffectLeftDelaySize;
+            synthState->prevHaasEffectRightDelaySize = 0;
+            synthState->prevHaasEffectLeftDelaySize = haasEffectDelaySize;
+            break;
+        case 2:
+            dmemDest = DMEM_RIGHT_CH;
+            haasEffectDelaySize = sampleState->haasEffectRightDelaySize;
+            prevHaasEffectDelaySize = synthState->prevHaasEffectRightDelaySize;
+            synthState->prevHaasEffectRightDelaySize = haasEffectDelaySize;
+            synthState->prevHaasEffectLeftDelaySize = 0;
+            break;
+        default:
+            return cmd;
     }
+
+    if (flags != A_INIT) {
+        if (haasEffectDelaySize != prevHaasEffectDelaySize) {
+            pitch = (((size << 0xF) / 2) - 1) / ((size + haasEffectDelaySize - prevHaasEffectDelaySize - 2) / 2);
+            aSetBuffer(cmd++, 0, DMEM_HAAS_TEMP, DMEM_TEMP, size + haasEffectDelaySize - prevHaasEffectDelaySize);
+            aResampleZoh(cmd++, pitch, 0);
+        } else {
+            aDMEMMove(cmd++, DMEM_HAAS_TEMP, DMEM_TEMP, size);
+        }
+
+        if (prevHaasEffectDelaySize != 0) {
+            aLoadBuffer(cmd++, synthState->synthesisBuffers->haasEffectDelayState, DMEM_HAAS_TEMP,
+                        ALIGN16(prevHaasEffectDelaySize));
+            aDMEMMove(cmd++, DMEM_TEMP, DMEM_HAAS_TEMP + prevHaasEffectDelaySize,
+                      size + haasEffectDelaySize - prevHaasEffectDelaySize);
+        } else {
+            aDMEMMove(cmd++, DMEM_TEMP, DMEM_HAAS_TEMP, size + haasEffectDelaySize);
+        }
+    } else {
+        aDMEMMove(cmd++, DMEM_HAAS_TEMP, DMEM_TEMP, size);
+        aClearBuffer(cmd++, DMEM_HAAS_TEMP, haasEffectDelaySize);
+        aDMEMMove(cmd++, DMEM_TEMP, DMEM_HAAS_TEMP + haasEffectDelaySize, size);
+    }
+
+    if ((u32)haasEffectDelaySize != 0) {
+        aSaveBuffer(cmd++, DMEM_HAAS_TEMP + size, synthState->synthesisBuffers->haasEffectDelayState,
+                    ALIGN16(haasEffectDelaySize));
+    }
+
+    aAddMixer(cmd++, ALIGN64(size), DMEM_HAAS_TEMP, dmemDest, 0x7FFF);
+
+    return cmd;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001F3C8);
-#endif
+#undef _SHIFTL
+#undef A_CLEARBUFF
+#undef A_ADDMIXER
+#undef A_RESAMPLE_ZOH
+#undef A_SETBUFF
+#undef A_DMEMMOVE
+#undef A_LOADBUFF
+#undef A_SAVEBUFF
+#undef A_INIT
+#undef OS_K0_TO_PHYSICAL
+#undef ALIGN16
+#undef ALIGN64
+#undef aClearBuffer
+#undef aLoadBuffer
+#undef aSaveBuffer
+#undef aSetBuffer
+#undef aDMEMMove
+#undef aAddMixer
+#undef aResampleZoh
+#undef DMEM_TEMP
+#undef DMEM_HAAS_TEMP
+#undef DMEM_LEFT_CH
+#undef DMEM_RIGHT_CH
+
 
 /* game_libs_func_0001F6A8 EXACT 2026-10-16 (agent-c, 95.56 -> 100): fills the
  * 256-entry f32 table at D->0x2CF8 with (D->0x2054 * 256) / divisor: five fixed
