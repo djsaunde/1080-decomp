@@ -785,84 +785,65 @@ void arcproc_uso_func_00001228(int *a0) {
  * progress) colours 255.0f f10 / field f16 like the target. RESIDUAL: the
  * seq compare and both tail span reloads run one t-register behind the
  * target (t0/t1/t2 vs t1/t2/t3); parameter / local empty tests: no move. */
-#ifdef NON_MATCHING
+/* 2026-10-24 agent-c (run 148) EXACT: ported the exact mgrproc twin
+ * mgrproc_uso_func_00001C90 (sibling-scan 0.87): the whole body inside
+ * if (flag) { ... }, volatile pads bracketing ones[4] (frame map of 1C90 +
+ * one more bottom pad), the 0x77C field re-read at every use, the alpha as
+ * (int)(field * (0, (float)255)), while (0) {} before the span block and
+ * one q / w pair reused in both tails. */
 extern float D_arc125C_30, D_arc125C_34, D_arc125C_38;
-void arcproc_uso_func_0000125C(char *a0) {
-    float progress;
-    int alpha;
-    int sum;
-    int *seq;
-    float ones[4];
-    int pad0;
-    int span;
-    char *pb;
-    int hb;
-    char *pb2;
-    int hb2;
-    char *pb3;
-    int hb3;
-    int pad1[3];
-
-    if ((*(int*)(a0 + 0x4F0) & 0x10000) == 0) {
-        return;
-    }
-
-    ones[0] = 1.0f;
-    ones[1] = 1.0f;
-    ones[2] = 1.0f;
-    ones[3] = 1.0f;
-
-    if (*(int*)(a0 + 0x4E4) >= 11) {
-        if ((progress = *(float*)(a0 + 0x77C)) < D_arc125C_30) {
-            *(float*)(a0 + 0x77C) = progress + D_arc125C_34;
+void arcproc_uso_func_0000125C(char *arg0) {
+    volatile int pt_a, pt_b, pt_c, pt_d;
+    float sp50[4];
+    volatile int pmid;
+    int sp48;
+    char *p6a8;
+    char *p6d8;
+    int w;
+    char *q;
+    volatile int pad_a, pad_b, pad_c, pad_d;
+    if (*(int *)(arg0 + 0x4F0) & 0x10000) {
+        sp50[0] = 1.0f;
+        sp50[1] = 1.0f;
+        sp50[2] = 1.0f;
+        sp50[3] = 1.0f;
+        if (*(int *)(arg0 + 0x4E4) >= 0xB) {
+            if (*(float *)(arg0 + 0x77C) < D_arc125C_30) {
+                *(float *)(arg0 + 0x77C) = *(float *)(arg0 + 0x77C) + D_arc125C_34;
+            }
+        } else {
+            if (*(float *)(arg0 + 0x77C) > 0.0f) {
+                *(float *)(arg0 + 0x77C) = *(float *)(arg0 + 0x77C) - D_arc125C_38;
+            }
         }
-    } else {
-        progress = *(float*)(a0 + 0x77C);
-        if (progress > 0.0f) {
-            *(float*)(a0 + 0x77C) = progress - D_arc125C_38;
+        gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x77C) * (0, (float)255)), arg0 + 0x380, arg0 + 0x3A4);
+        gl_func_00000000(arg0 + 0x6BC);
+        gl_func_00000000(arg0 + 0x6BC, 0xA0, 0xB6, 3);
+        while (0) { w = *(short *)(arg0 + 0x20); }
+        q = *(char **)(arg0 + 0x6FC);
+        w = *(short *)(q + 0x20);
+        p6d8 = *(char **)(arg0 + 0x6E4);
+        sp48 = 0xA0 - ((*(short *)(p6d8 + 0x20) + w + 4) / 2);
+        gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x77C) * (0, (float)255)), arg0 + 0x260, arg0 + 0x284);
+        p6a8 = *(char **)(arg0 + 0x6A8);
+        if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
+            gl_func_00000000(arg0 + 0x6EC);
+            gl_func_00000000(arg0 + 0x6EC, sp48, 0x8E, 2);
+            gl_func_00000000(arg0 + 0x6D4);
+            q = *(char **)(arg0 + 0x6FC);
+            w = *(short *)(q + 0x20);
+            gl_func_00000000(arg0 + 0x6D4, sp48 + w + 4, 0x8E, 2);
+            return;
         }
+        gl_func_00000000(arg0 + 0x6D4);
+        gl_func_00000000(arg0 + 0x6D4, sp48, 0x8E, 2);
+        gl_func_00000000(arg0 + 0x6EC);
+        q = *(char **)(arg0 + 0x6E4);
+        w = *(short *)(q + 0x20);
+        gl_func_00000000(arg0 + 0x6EC, sp48 + w + 4, 0x8E, 2);
     }
-
-    progress = *(float*)(a0 + 0x77C);
-    alpha = (int)(255.0f * progress);
-    gl_func_00000000(&D_00000000, alpha, a0 + 0x380, a0 + 0x3A4);
-
-    gl_func_00000000(a0 + 0x6BC);
-    gl_func_00000000(a0 + 0x6BC, 0xA0, 0xB6, 3);
-
-    pb = *(char**)(a0 + 0x6FC);
-    if (1) {}
-    hb = *(short*)(pb + 0x20);
-    span = 0xA0 - (*(short*)(*(char**)(a0 + 0x6E4) + 0x20) + hb + 4) / 2;
-
-
-    alpha = (int)(*(float*)(a0 + 0x77C) * (progress = 255.0f));
-    gl_func_00000000(&D_00000000, alpha, a0 + 0x260, a0 + 0x284);
-
-    seq = *(int**)(a0 + 0x6A8);
-    if (seq[2] == seq[1] + 1) {
-        gl_func_00000000(a0 + 0x6EC);
-        gl_func_00000000(a0 + 0x6EC, span, 0x8E, 2);
-        gl_func_00000000(a0 + 0x6D4);
-        pb2 = *(char**)(a0 + 0x6FC);
-        if (1) {}
-        hb2 = *(short*)(pb2 + 0x20);
-        gl_func_00000000(a0 + 0x6D4, span + hb2 + 4, 0x8E, 2);
-    } else {
-        gl_func_00000000(a0 + 0x6D4);
-        gl_func_00000000(a0 + 0x6D4, span, 0x8E, 2);
-        gl_func_00000000(a0 + 0x6EC);
-        pb3 = *(char**)(a0 + 0x6E4);
-        if (1) {}
-        hb3 = *(short*)(pb3 + 0x20);
-        gl_func_00000000(a0 + 0x6EC, span + hb3 + 4, 0x8E, 2);
-    }
-
-    (void)ones;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_0000125C);
-#endif
+
 
 int arcproc_uso_func_00000000();
 
