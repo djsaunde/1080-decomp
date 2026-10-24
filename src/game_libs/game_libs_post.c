@@ -2092,43 +2092,47 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001EF20);
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 extern int gl_ref_00031D3C();
+/* Re-decoded 2026-10-23 agent-c run 137 (77.94 -> see commit): signed `/` for the
+ * scaled index and the 64-texel line count (target div / bgez-round), the
+ * cursor kept in the parameter (s0 across the upload call, the `move a0,s0`
+ * copy), each 2-word packet written through `p = dst; dst += 2;`, the type test
+ * inline (ugen temps), and the first D+0x20 read on its own per-site alias
+ * (plain `lw a3,sym`; the += then holds the base in v1). */
+extern int D_1F248_dp;
 int *gl_func_0001F248(int *dst, int *a1, int *a2, int a3) {
-    int *s0 = dst;
-    int w = a1[0];
     int b6 = *(unsigned char *)((char *)a1 + 6);
-    int typ = (unsigned)(w << 11) >> 30;
     int v1 = a2[8 / 4];
-    if (typ != 0) {
-        int sz = (a3 * 2 + 0xF) & ~0xF;
-        int dp = *(int *)((char *)&D_00000000 + 0x20);
-        int *old = s0;
-        s0 += 2;
-        gl_ref_00031D3C(old, 0x580, sz, dp + 0x80000000);
-        *(int *)((char *)&D_00000000 + 0x20) =
-            *(int *)((char *)&D_00000000 + 0x20) + a3 * 4;
-        return s0;
+    if ((unsigned)(a1[0] << 11) >> 30) {
+        int *p = dst;
+        dst += 2;
+        gl_ref_00031D3C(p, 0x580, (a3 * 2 + 0xF) & ~0xF, *(int *)((char *)&D_1F248_dp + 0x20) + 0x80000000);
+        *(int *)((char *)&D_00000000 + 0x20) += a3 * 4;
+        return dst;
     }
-    s0[0] = 0x14080580;
-    s0[1] = a1[0x10 / 4] + 0x80000000;
-    s0 += 2;
+    {
+        int *p = dst;
+        dst += 2;
+        p[0] = 0x14080580;
+        p[1] = a1[0x10 / 4] + 0x80000000;
+    }
     if (b6 != 0) {
-        unsigned int num = (unsigned int)v1 * *(unsigned char *)((char *)&D_00000000 + (b6 >> 2));
-        v1 = num / *(unsigned char *)((char *)&D_00000000 + (b6 & 3));
+        v1 = (int)((unsigned int)v1 * *(unsigned char *)((char *)&D_00000000 + (b6 >> 2))) / *(unsigned char *)((char *)&D_00000000 + (b6 & 3));
     }
     v1 &= 0x3f;
     {
         int avail = 0x40 - v1;
         if (avail < a3) {
-            int n = (a3 - avail + 0x3f) >> 6;
+            int n = (a3 - avail + 0x3f) / 64;
             if (n != 0) {
-                s0[0] = 0x09000000 | ((n & 0xff) << 16) | 0x580;
-                s0[1] = 0x06000080;
-                s0 += 2;
+                int *p = dst;
+                dst += 2;
+                p[0] = 0x09000000 | ((n & 0xff) << 16) | 0x580;
+                p[1] = 0x06000080;
                 a2[8 / 4] = v1;
             }
         }
     }
-    return s0;
+    return dst;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0001F248);
