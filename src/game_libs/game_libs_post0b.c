@@ -2989,7 +2989,7 @@ void gl_func_00037540(char *o) {
     if (ab < 2.0f) {
         a = 0.0f;
     }
-    b = D_37540_19F8[0x19F8 / 4] * FF37540(v, 0);
+    b = FF37540(v, 0) * D_37540_19F8[0x19F8 / 4];
     if (b < 0.0f) {
         ab = -b;
     } else {
@@ -3031,9 +3031,9 @@ void gl_func_00037540(char *o) {
     g.v9C.x = FF37540(r, 0xA0);
     g.v9C.y = FF37540(r, 0xA4);
     g.v9C.z = FF37540(r, 0xA8);
-    g.v9C.x = g.v9C.x + g.v6C.x;
-    g.v9C.y = g.v9C.y + g.v6C.y;
-    g.v9C.z = g.v9C.z + g.v6C.z;
+    g.v9C.x = g.v6C.x + g.v9C.x;
+    g.v9C.y = g.v6C.y + g.v9C.y;
+    g.v9C.z = g.v6C.z + g.v9C.z;
     gl_func_00034458(r + 0x30, o + 0x30, o);
     L3 = D_37540_1A00[0x1A00 / 4];
     tmp.v = g.v9C;
