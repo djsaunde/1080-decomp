@@ -4975,3 +4975,4 @@ bu_90cc_fz = 0x00000000;  /* func_000090CC NM: fn-typed blank base for the 0x814
 bu_90cc_fz2 = 0x00000000;  /* func_000090CC NM: fn-typed blank base of the sp174 list-walk head */
 gl_221d8_fg = 0x00000000;  /* gl_func_000221D8 NM: fn-typed blank base of the &D block held in s6 */
 gl_253c4_fd = 0x00000000;  /* game_libs_func_000253C4 NM: fn-typed blank base of the &D block */
+gl_2119c_fb = 0x00000000;  /* gl_func_0002119C NM: fn-typed blank base of the &D block held in s1 */

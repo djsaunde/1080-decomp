@@ -3404,6 +3404,7 @@ extern u8 gl_d_2119C_rec[];    /* case-0 record cursor site (&D+0x2D00) */
 extern u8 gl_d_2119C_p[];      /* case-4 clear-loop walking base (&D) */
 extern u8 gl_d_2119C_e[];      /* case-4 end sentinel (&D+12) */
 #define GL2119C_STATE (*(volatile unsigned char *)(B + 0x2CF0))
+extern void gl_2119c_fb();
 int gl_func_0002119C(void) {
     char *B;
     int md;
@@ -3417,7 +3418,7 @@ int gl_func_0002119C(void) {
     char *q;
     char *e;
 
-    B = (char *)gl_d_2119C + (int)&gl_d_2119C_proxy;
+    B = (char *)gl_2119c_fb; /* run 139: fn-typed blank base (target lui s1 / addiu s1,s1,0, no reloc) replaces the proxy-sum */
     if (*(short *)(B + 0x2034) == 2) {
         md = 2;
     } else {
