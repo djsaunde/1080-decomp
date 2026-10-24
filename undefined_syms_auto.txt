@@ -4970,3 +4970,6 @@ D_308AC_k2 = 0x00000000;
 gl_func_00034A78_bss = 0x0003B8F6;  /* gl_func_00034A78 NCC donor: static F6/F7 byte pair (.bss reloc renamed by the splice) */
 gl_func_0005165C_bss = 0x00000000;  /* gl_func_0005165C NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
 gl_func_00066A50_bss = 0x0003F310;  /* gl_func_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */
+gl_3d71c_dA0 = 0x000000A0;  /* gl_func_0003D71C NM: fn-typed blank base of the D+0xA0 copy destination (lui/addiu 160, no USO reloc) */
+bu_90cc_fz = 0x00000000;  /* func_000090CC NM: fn-typed blank base for the 0x814..0x81C copies (lui/addiu 0, no reloc) */
+bu_90cc_fz2 = 0x00000000;  /* func_000090CC NM: fn-typed blank base of the sp174 list-walk head */
