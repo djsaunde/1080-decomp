@@ -17257,17 +17257,20 @@ typedef struct {
     s32 unkD4;                        /* 0xD4 */
 } Obj620;
 
-/* Append a 2-word Gfx command (hi,lo) to a display-list handle expression. */
-#define DL_APPEND(handle, hi, lo)                                  \
-    do {                                                           \
-        DLList620 *_dl = (handle);                                 \
-        DLHead620 *_h = _dl->head;                                 \
-        s32 _n = _h->count;                                        \
-        Gfx620 *_cmd;                                              \
-        _h->count = _n + 1;                                        \
-        _cmd = &_dl->head->buf[_n];                                \
-        _cmd->w0 = (hi);                                           \
-        _cmd->w1 = (lo);                                           \
+/* Append a 2-word Gfx command (hi,lo) to a display-list handle expression.
+ * run 152 (agent-c, 94.41 -> 94.48): every block-scope local of the macro costs one frame word PER EXPANSION (9 expansions: frame 264 with
+ * four block locals, 136 with none); _dl/_h at function scope and _n/_cmd block-local puts it3 at the target's sp+164 (frame 200, target 176). */
+#define DL_APPEND(handle, hi, lo) \
+    do { \
+        s32 _n; \
+        Gfx620 *_cmd; \
+        _dl = (handle); \
+        _h = _dl->head; \
+        _n = _h->count; \
+        _h->count = _n + 1; \
+        _cmd = &_dl->head->buf[_n]; \
+        _cmd->w0 = (hi); \
+        _cmd->w1 = (lo); \
     } while (0)
 
 /* Inlined iterator over the collection at obj->0x84. */
@@ -17281,6 +17284,8 @@ char *gl_func_0004B620(char *arg0, char *arg1) {
     Iter620 *itp;
     s32 *cur;
     s32 *node;
+    DLList620 *_dl;
+    DLHead620 *_h;
 
     if ((arg0 != 0) || ((self = (Obj620 *) gl_func_00000000(0xD8)) != 0)) {
         Obj620 *sub = self;
