@@ -1,9 +1,13 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_0005F984: the existing cfe NM body
- * recompiled unchanged under NCC (85.13 -> 88.01, same length). NM object only; ROM build keeps INCLUDE_ASM. 
- * agent-g run 155: sibling template 5EB4C / 5ED54 -- the param is copied to a local (`m = arg0`, coloured s0
- * as in the siblings) 90.11 -> 92.35 (181 of 184 words); volatile q0 above R and q1 below it give frame
- * 0x100 = target: 92.46. Residual: len home 180 vs 176, v at 168 vs 160, the rot block register cycle
- * through sp32/36. */
+/* IDO 7.1 NCC (C++) donor for gl_func_0005F984 (rotate-by-drag matrix, 184 words). EXACT (agent-g run 156):
+ * spliced into both build/src and build/non_matching post0b with REPLACE_FUNC_BODY.
+ * History: the cfe NM body recompiled under NCC (85.13 -> 88.01); run 155 param copy `m = arg0` + volatile
+ * q0 / q1 around R (92.46). Run 156, the last two residuals:
+ * - the rot block's register cycle through sp+0x20 / 0x24: the target computes the three rotated
+ *   components into registers (f0 / f12 / f14) and stores them only afterwards (y, x, z), so ugen runs
+ *   out of FP temps and spills the inputs a / b / d. Written with dead locals reused for the results
+ *   (c, h, len: no new frame words) and every product as rot[r][c] * var in row order.
+ * - homes: NCC gives each declared local one frame word in declaration order; two scalars between q1 /
+ *   len / v and the other six between v and out put len at 0xB0, v at 0xA0 and out at 0x48. */
 typedef float f32; typedef double f64; typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef signed char s8; typedef unsigned char u8; 
 #define NULL 0
 typedef struct { f32 x, y, z; } V3_5F984;
@@ -27,16 +31,17 @@ extern "C" void gl_func_0005F984(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32 y, f3
     volatile f32 q0;
     f32 R[4][4];
     volatile f32 q1;
-    f32 len;
-    V3_5F984 v;
-    f32 pad[2];
-    f32 out[4][4];
-    f32 t[2];
     f32 h;
+    f32 len;
     f32 c;
-    f32 cs, sn;
-    s32 i, j, k;
+    V3_5F984 v;
+    f32 cs;
+    f32 sn;
+    s32 i;
+    s32 j;
+    s32 k;
     f32 (*m)[4];
+    f32 out[4][4];
 
     m = arg0;
     len = gl_func_00000000_sqrt5F984(x * x + y * y + z * z);
@@ -55,9 +60,12 @@ extern "C" void gl_func_0005F984(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32 y, f3
     sn = len / h;
     if (rot != NULL) {
         f32 a = v.x, b = v.y, d = v.z;
-        v.x = rot[1][0] * b + rot[2][0] * d + rot[0][0] * a;
-        v.y = rot[1][1] * b + rot[2][1] * d + a * rot[0][1];
-        v.z = a * rot[0][2] + rot[1][2] * b + rot[2][2] * d;
+        c = rot[0][0] * a + rot[1][0] * b + rot[2][0] * d;
+        h = rot[0][1] * a + rot[1][1] * b + rot[2][1] * d;
+        len = rot[0][2] * a + rot[1][2] * b + rot[2][2] * d;
+        v.y = h;
+        v.x = c;
+        v.z = len;
     }
     gl_func_00000000_rot5F984(R, &v, sn, cs);
     if (flag == 0) {

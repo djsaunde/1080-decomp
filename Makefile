@@ -638,7 +638,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 147: 34548 NM body back to cfe (NCC NM donor retired, 0x128 -> 0x140): 0x2e90c -> 0x2e924 (62F08 NM offset 0x2e8d4).
 # agent-c run 147: 34548 EXACT via the game_libs_o2_34548.c donor (0x140 -> 0x13c): 0x2e924 -> 0x2e920 (62F08 NM offset 0x2e8d0).
 # agent-c run 147: 4E424 NM param-reuse decode in cfe, NCC NM donor retired (51 -> 50 words, target 49): 0x2e920 -> 0x2e91c (62F08 NM offset 0x2e8cc).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e91c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-g run 156: 5F984 donor exact (724 -> 736 bytes): 0x2e91c -> 0x2e928 (62F08 NM offset 0x2e8d8).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e928 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1578,10 +1579,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_5F5F0_NM_DONOR := build/src/game_libs/game_libs_ncc_5F5F0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F5F0=$(GAMELIBS_5F5F0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F5F0_NM_DONOR)
-# 5F984 = NCC 88.0 vs cfe 85.1. Still NON_MATCHING: NM comparison object only.
-GAMELIBS_5F984_NM_DONOR := build/src/game_libs/game_libs_ncc_5F984_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F984=$(GAMELIBS_5F984_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F984_NM_DONOR)
+# 5F984 = rotate-by-drag matrix; NCC donor, EXACT (agent-g run 156: results held in registers, homes by decl order).
+GAMELIBS_5F984_DONOR := build/src/game_libs/game_libs_ncc_5F984.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F984=$(GAMELIBS_5F984_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F984_DONOR)
 # 3DF58 = extremal search over the {cur, nxt} list iterator (NCC 99.0 vs cfe 82.2). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3DF58_NM_DONOR := build/src/game_libs/game_libs_ncc_3DF58_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DF58=$(GAMELIBS_3DF58_NM_DONOR)

@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0005F984",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T13:52:46.876827+00:00",
+  "end_time": "2026-10-24T13:52:46.876853+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T13:52:46.876846+00:00",
+      "assistant_text": "C++ donor: the three rotated components go into reused dead locals (c, h, len) and are stored after all three are computed (y, x, z), which makes ugen spill the inputs through sp+0x20/0x24 as in the target; every product rot[r][c] * var in row order; two scalars between q1/len/v and six between v and out fix the NCC homes.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 184,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0005F984 (rotate-by-drag matrix, 184 words). EXACT (agent-g run 156):\n * spliced into both build/src and build/non_matching post0b with REPLACE_FUNC_BODY.\n * History: the cfe NM body recompiled under NCC (85.13 -> 88.01); run 155 param copy `m = arg0` + volatile\n * q0 / q1 around R (92.46). Run 156, the last two residuals:\n * - the rot block's register cycle through sp+0x20 / 0x24: the target computes the three rotated\n *   components into registers (f0 / f12 / f14) and stores them only afterwards (y, x, z), so ugen runs\n *   out of FP temps and spills the inputs a / b / d. Written with dead locals reused for the results\n *   (c, h, len: no new frame words) and every product as rot[r][c] * var in row order.\n * - homes: NCC gives each declared local one frame word in declaration order; two scalars between q1 /\n *   len / v and the other six between v and out put len at 0xB0, v at 0xA0 and out at 0x48. */\ntypedef float f32; typedef double f64; typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef signed char s8; typedef unsigned char u8; \n#define NULL 0\ntypedef struct { f32 x, y, z; } V3_5F984;\ntypedef struct { s32 a, b; } Pair_51AD8;\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern int w, h;\nextern void gl_func_00000000_d414(float t, int *a, int *b);\nextern short pad;\nextern void gl_func_00000000_rot5F984(f32 (*)[4], V3_5F984 *, f32, f32);\nextern char *c;\nextern Pair_51AD8 m;\nextern f32 v;\nextern void gl_func_00000000_d414(float t, int *a, int *b);\nextern void gl_func_00000000_d414(float t, int *a, int *b);\nextern void gl_func_00000000_5eaa4(f32 (*)[4], s32, f32, s32);\nextern f32 gl_func_00000000_sqrt5F984(f32);\nextern void gl_func_00000000_rot5F984(f32 (*)[4], V3_5F984 *, f32, f32);\n}\nextern \"C\" void gl_func_0005F984(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {\n    volatile f32 q0;\n    f32 R[4][4];\n    volatile f32 q1;\n    f32 h;\n    f32 len;\n    f32 c;\n    V3_5F984 v;\n    f32 cs;\n    f32 sn;\n    s32 i;\n    s32 j;\n    s32 k;\n    f32 (*m)[4];\n    f32 out[4][4];\n\n    m = arg0;\n    len = gl_func_00000000_sqrt5F984(x * x + y * y + z * z);\n    if (len == 0.0f) {\n        if (flag != 0) {\n            gl_func_00000000(m, rot);\n        }\n        return;\n    }\n    c = 100.0f;\n    h = gl_func_00000000_sqrt5F984(c * c + len * len);\n    cs = 100.0f / h;\n    v.x = -y / len;\n    v.y = -x / len;\n    v.z = -z / len;\n    sn = len / h;\n    if (rot != NULL) {\n        f32 a = v.x, b = v.y, d = v.z;\n        c = rot[0][0] * a + rot[1][0] * b + rot[2][0] * d;\n        h = rot[0][1] * a + rot[1][1] * b + rot[2][1] * d;\n        len = rot[0][2] * a + rot[1][2] * b + rot[2][2] * d;\n        v.y = h;\n        v.x = c;\n        v.z = len;\n    }\n    gl_func_00000000_rot5F984(R, &v, sn, cs);\n    if (flag == 0) {\n        for (i = 0; i < 4; i++) {\n            for (j = 0; j < 4; j++) {\n                out[i][j] = 0.0f;\n                for (k = 0; k < 4; k++) {\n                    out[i][j] += m[i][k] * R[k][j];\n                }\n            }\n        }\n        gl_func_00000000(out, m);\n    } else {\n        gl_func_00000000(R, m);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5F984.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0005F984.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -G 0 -non_shared -Wab,-r4300_mul -mips2 -32",
+    "verification": "Verified with objdiff (report.json 100.0) and ROM cmp (byte-identical)."
+  }
+}
