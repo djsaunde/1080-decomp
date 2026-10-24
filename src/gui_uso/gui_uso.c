@@ -1359,8 +1359,7 @@ void gui_func_00004568(int *a0, int a1, int a2, int a3, int a4, int a5, int a6) 
         idx = st[1];
         st[1] = idx + 1;
         slot = (int *)(((int *)s0[0xC / 4])[0]) + idx * 2;
-        slot[0] = 0xE4000000 | ((rawxm & 0xFFF) << 12) | (((a2 + a4) << 2) & 0xFFF);
-        slot[1] = (((a1 << 2) & 0xFFF) << 12) | ((a2 << 2) & 0xFFF);
+        slot[0] = 0xE4000000 | ((rawxm & 0xFFF) << 12) | (((a2 + a4) << 2) & 0xFFF); slot[1] = (((a1 << 2) & 0xFFF) << 12) | ((a2 << 2) & 0xFFF);
 
         st = (int *)s0[0xC / 4];
         idx = st[1];
@@ -1398,8 +1397,7 @@ void gui_func_00004568(int *a0, int a1, int a2, int a3, int a4, int a5, int a6) 
         if (1) {
             x0r = x0r << 0x12;
         }
-        x0r = x0r >> 0x10;
-        slot[0] = 0xE4000000 | ((cx & 0xFFF) << 12) | (cy & 0xFFF);
+        x0r = x0r >> 0x10; slot[0] = 0xE4000000 | ((cx & 0xFFF) << 12) | (cy & 0xFFF);
         cx = (x0r > 0) ? x0r : 0;
         y2 = a2 << 2;
         y0r = (short)y2;
