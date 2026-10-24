@@ -1895,7 +1895,8 @@ void gl_func_00035DAC(void) {
  * statement (the context-pointer read) of game_libs_func_00035E64 below
  * (merged 2026-09-06; the 2D36C precedent: the predecessor gl_func_00035DAC is
  * an NM wrap, so the pad stays a 2-word INCLUDE_ASM rather than a SUFFIX). */
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00035E5C);
+/* game_libs_func_00035E5C (folded 2026-10-24 agent-c run 150): 2 all-zero pad words, now an
+ * all-zero SUFFIX_BYTES_FORCE on gl_func_00035DAC; expected/ symbol deleted, gl_func_00035DAC grown by 8. */
 
 #ifdef NON_MATCHING
 /* game_libs_func_00035E64 (ex gl_func_0002E6C + the 2-word head; 0x168, 90 words).
@@ -11686,7 +11687,8 @@ end:
     return a0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004230C);
+/* game_libs_func_0004230C (folded 2026-10-24 agent-c run 150): 10 all-zero pad words, now an
+ * all-zero SUFFIX_BYTES_FORCE on gl_func_000422AC; expected/ symbol deleted, gl_func_000422AC grown by 40. */
 
 /* gl_func_00042338: 16-insn FP-zero-init wrapper. MATCHED.
  * Body: gl_func_00000000(&buf, 0.0f x7).
