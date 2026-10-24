@@ -1,5 +1,7 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23; if (arg0) {} after the temp_t8 load from a parameter-only fz sweep; round 2: if (arg4) {} after the temp_a1_2 vertex address, 85.28;
- * run 137: the vtable this-adjust at +8 is a short (target lh) and the id copy is a u16 load / store, 85.28 -> 86.2).
+ * run 137: the vtable this-adjust at +8 is a short (target lh) and the id copy is a u16 load / store, 85.28 -> 86.2;
+ * the second loop's two result stores are HALFWORDS (target sh -2(a1) / sh 20(t1); FW wrote words) and the
+ * result cursor steps one int, 86.32 -> 91.0, 135 -> 132 words = target).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -90,10 +92,10 @@ extern "C" void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, 
         do {
             var_v1 += 1;
             var_a1_2 += 2;
-            FW(var_a1_2, -0x2) = (s16) *var_v0;
+            *(s16 *)(var_a1_2 - 0x2) = (s16) *var_v0;
             temp_t8 = *(int*)var_v0; if (arg0) {}
-            var_v0 += 4;
-            FW(((int)arg0 + (FW(arg0, 0x8) * 6) + var_a0), 0x14) = (s16) temp_t8;
+            var_v0 += 1;
+            *(s16 *)((int)arg0 + (FW(arg0, 0x8) * 6) + var_a0 + 0x14) = (s16) temp_t8;
             var_a0 += 2;
         } while (var_v1 < FW(arg0, 0x594));
     }
