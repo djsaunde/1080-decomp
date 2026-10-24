@@ -1590,142 +1590,19 @@ s32 func_80001DD0(void *arg0, s32 arg1) {
     return 0;
 }
 
-#ifdef NON_MATCHING
-/* func_80001EC8: USO/module section-record loader main loop (732B, was 0%).
- * Fully decoded 2026-06-23 (agent-b). arg0 = a per-module table whose entries
- * are written by section type; arg1 = the open file handle (fed to the
- * fread-like func_800009D8). Walks 0xC-byte section records until a record of
- * type 0xB (end). For each record:
- *   - allocate/look-up the section buffer via a callbacks struct at &D_80012BC0
- *     (field 0x98 = alloc-by-size, field 0x34 = look-up-by-(value,byte)),
- *     selected by record flag bit 0 (rec[9] & 1);
- *   - type 8 (BSS): zero-fill `size` bytes; other types: read `size` bytes from
- *     the file (second func_800009D8). When flag bit0 set on a non-BSS record,
- *     run the reloc/format callback (field 0x84, with format string D_8000A384),
- *     a per-symbol look-up (field 0x34), an offset fixup (func_800027E0) and a
- *     finalize (field 0x9C);
- *   - stash the section buffer pointer at arg0[n+0xE] (n<0xE) and accumulate the
- *     section size into the global D_80012D30[n] size table;
- *   - finally dispatch on the section type (n-1, 12-way jumptable jtbl_8000A64C):
- *     most types record the raw size at arg0[n]; two types record size/0xC
- *     (entry-count: ddiv by the constant 0xC in s6); one type stamps the global
- *     symbol/module identity (D_80012C64/D_80012C68) from arg0; one type aborts
- *     with -0x1B (bad section). On read error the errno word D_80013004 is
- *     returned; a null alloc returns -0x12.
- *
- * 2026-10-20 CORRECTION (agent-g run 112): the table DOES exist. Like every
- * kernel address it is 0x400 above our numbering: jtbl_8000A64C is at our
- * 0xA24C (ROM 0xB24C), right after 1ADC's 4-entry table at 0xA23C. Entries
- * (index type-1): 1 -> 20E8 (size / s6), 2..4 -> 2118 (size / s6, a second
- * identical arm), 9 -> 20CC (stamp D_80012C64/68), 12 -> 20C4 (return
- * -0x1B), 5..8 / 10 / 11 -> 2148 = default (store size). The case labels in
- * the body below are therefore wrong. The real blocker is that the entries
- * are RUNTIME addresses (+0x400): a C switch here emits a table of
- * our-numbering .text relocs, so no kernel function with a jump table can
- * match while the kernel is linked at 0x80000000.
- * OLD CAP NOTE (its premise is wrong, see above) —
- * NOT C-FIXABLE (re-verified 2026-06-23, agent-b): the dispatch hardcodes the
- * ABSOLUTE address jtbl_8000A64C (lui 0x8001 + lo -0x59B4 => 0x8000A64C; index
- * = (type-1), sltiu 0xC, so base = the symbol). splat AUTO-minted that symbol,
- * but the retail baserom bytes at 0x8000A64C are rmon panic STRINGS ("SP Break\n"
- * /"HitCpuFault\n"), not code pointers — and an exhaustive kernel-region scan
- * finds NO case-target pointer run anywhere. The table does not exist in the
- * ROM (dead/stripped rmon code; the jumptable was never linked into retail and
- * the absolute reference dangles onto string data). There is no symbol/section
- * edit that surfaces a table, and a C switch always emits a TU-LOCAL PC-relative
- * .rodata table (at the kernel .rodata vram ~0x8000DE60) — it can neither
- * hardcode the foreign absolute 0x8000A64C nor reproduce bytes that aren't a
- * table. m2c also aborts on the `jr $t5`. The body below is logic- and shape-
- * complete for reference. See docs/N64_FORENSICS.md "Kernel rmon switch fns:
- * jumptable resolves to DATA". */
-typedef struct {
-    char pad_00[0x34];
-    void* (*lookup34)(s32, u8);   /* 0x34: resolve section by (value, byte)   */
-    char pad_38[0x4C];
-    void (*reloc84)(void*, s32, void*);  /* 0x84: reloc/format with fmt string */
-    char pad_88[0x10];
-    void* (*alloc98)(s32);        /* 0x98: allocate section buffer by size     */
-    void (*final9C)(void*);       /* 0x9C: finalize section buffer             */
-} SectionCallbacks;
-
-extern s32 func_800027E0(void*);
-extern s32 D_8000A384;
-extern s32 D_80012D30;
-
+/* func_80001EC8 -- EXACT (agent-g run 145) via the IDO 7.1 cfe donor
+ * src/kernel/kernel_000_1EC8.c; this definition is only the splice
+ * placeholder. USO section-record loader: read 12-byte records until type 11,
+ * allocate (flag bit 0: alloc98, else lookup34) or clear (type 8) each
+ * section, run the reloc callbacks, stash the buffer in mod[type + 14], add the
+ * size to the 0x80012D30 table and dispatch on the type through the 12-entry
+ * jump table the ROM already carries at jtbl_8000A64C (runtime addresses,
+ * +0x400). The old "runtime jump table" blocker is solved like
+ * func_80005C50's: the donor's .rodata reloc is renamed func_80001EC8_rodata
+ * and pinned to 0x8000A64C. */
 s32 func_80001EC8(s32* arg0, void* file) {
-    SectionCallbacks* cb = (SectionCallbacks*)&D_80012BC0;
-    s32 s7 = 0;                /* always-zero loop guard (IDO artifact) */
-    s32 rec[3];               /* 0xC-byte section record */
-    s32 type;                 /* rec[0] */
-    s32 size;                 /* rec[1] */
-    u8* flags = (u8*)rec;     /* rec bytes: flags[8]=byte field, flags[9]=flag */
-    void* buf;
-
-    do {
-        if (func_800009D8(rec, 0xC, 1, file) < 0) {
-            return D_80013004;
-        }
-        if (size = rec[1], type = rec[0], size != 0) {
-            if (((u8*)rec)[9] & 1) {
-                buf = cb->alloc98(size);
-            } else {
-                buf = cb->lookup34(size, ((u8*)rec)[8]);
-            }
-            if (buf == 0) {
-                return -0x12;
-            }
-            if (type == 8) {
-                if (size != 0) {
-                    s32 i;
-                    char* p = (char*)buf;
-                    for (i = 0; i < size; i++) {
-                        *p++ = 0;
-                    }
-                }
-            } else {
-                void* sub;
-                if (func_800009D8(buf, size, 1, file) < 0) {
-                    return D_80013004;
-                }
-                if (((u8*)rec)[9] & 1) {
-                    sub = ((void**)buf)[1];
-                    cb->reloc84(&D_8000A384, size, sub);
-                    {
-                        void* sub2 = cb->lookup34((s32)sub, ((u8*)rec)[8]);
-                        cb->reloc84(buf, func_800027E0(buf), 0); /* arg fixup */
-                        cb->final9C(buf);
-                        buf = sub2;
-                    }
-                }
-            }
-            if (type < 0xE) {
-                arg0[type + 0xE] = (s32)buf;
-            }
-        }
-        if (type < 0xE) {
-            (&D_80012D30)[type] += size;
-        }
-        switch (type) {            /* jtbl_8000A64C, indexed type-1, 12 cases */
-            case 1:
-                D_80012C64 = arg0[0];
-                D_80012C68 = ((s16*)arg0)[0x38];
-                break;
-            case 3:
-            case 7:
-                arg0[type] = (s32)((u32)size / 0xC);
-                break;
-            case 12:
-                return -0x1B;
-            default:
-                arg0[type] = size;
-                break;
-        }
-    } while (type != 0xB && s7 == 0);
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_80001EC8);
-#endif
 
 
 /* func_800021A4: 43-insn entry-list walker (absorbed func_800021D0 fragment

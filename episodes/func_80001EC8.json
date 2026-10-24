@@ -1,0 +1,33 @@
+{
+  "function_name": "func_80001EC8",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T02:42:25.669629+00:00",
+  "end_time": "2026-10-24T02:42:25.669647+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T02:42:25.669643+00:00",
+      "assistant_text": "cfe donor; index-form clear loop; int-cast table address forces rec.type reload; switch table reloc renamed func_80001EC8_rodata pinned to jtbl_8000A64C",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 183,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 cfe -O2 donor for func_80001EC8 (0x2DC / 183 words): the USO\n * section-record loader loop (see the placeholder in kernel_000.c).\n *\n * Decode (agent-g runs 144-145): a 12-byte record at 88(sp) between two unused\n * words; buf = 0 before the size test; the type-8 (BSS) arm clears the buffer\n * by INDEX (`((char *)buf)[i] = 0`; a `*p++` cursor schedules the size test\n * into a beqzl); the flag-1 reloc path writes the sub-size back into rec.size;\n * the size table add goes through an integer-cast address, so uopt treats the\n * store as aliasing the address-taken record and reloads rec.type for the\n * switch (a named-array store keeps type in a register: one word short).\n * The source-order switch emits a 12-entry table indexed type-1. The splice\n * renames its .rodata reloc to func_80001EC8_rodata, pinned so that the\n * reference resolves to jtbl_8000A64C, the table the ROM already carries\n * (runtime addresses, kernel +0x400). Kept out of C_FILES (Makefile). */\ntypedef struct { int type; unsigned int size; unsigned char b8; unsigned char flags; } Rec;\ntypedef struct {\n    char pad_00[0x34];\n    void *(*lookup34)();\n    char pad_38[0x4C];\n    void (*reloc84)();\n    char pad_88[0x10];\n    void *(*alloc98)();\n    void (*final9C)();\n} Cb;\nextern Cb D_80012BC0;\nextern int func_800009D8();\nextern int func_800027E0();\nextern int D_80013004;\nextern int D_8000A384;\nextern int D_80012D30[];\nextern int D_80012C64;\nextern int D_80012C68;\nint func_80001EC8(int *mod, void *file) {\n    int pad1;\n    Rec rec;\n    int pad2;\n    void *buf;\n    int err = 0;\n\n    do {\n        if (func_800009D8(&rec, sizeof(Rec), 1, file) < 0) {\n            return D_80013004;\n        }\n        buf = 0;\n        if (rec.size != 0) {\n            if (rec.flags & 1) {\n                buf = D_80012BC0.alloc98(rec.size);\n            } else {\n                buf = D_80012BC0.lookup34(rec.size, rec.b8);\n            }\n            if (buf == 0) {\n                return -18;\n            }\n            if (rec.type == 8) {\n                char *p;\n                unsigned int i;\n                for (i = 0; i < rec.size; i++) {\n                    ((char *)buf)[i] = 0;\n                }\n            } else {\n                if (func_800009D8(buf, rec.size, 1, file) < 0) {\n                    return D_80013004;\n                }\n                if (rec.flags & 1) {\n                    void *sub = ((void **)buf)[1];\n                    void *sub2;\n                    D_80012BC0.reloc84(&D_8000A384, rec.size, sub);\n                    sub2 = D_80012BC0.lookup34(sub, rec.b8);\n                    func_800027E0(buf, sub2);\n                    rec.size = (unsigned int)sub;\n                    D_80012BC0.final9C(buf);\n                    buf = sub2;\n                }\n            }\n            if (rec.type < 14) {\n                mod[rec.type + 14] = (int)buf;\n            }\n        }\n        if (rec.type < 14) {\n            *(int *)((unsigned int)D_80012D30 + rec.type * 4) += rec.size;\n        }\n        switch (rec.type) {\n        case 12:\n            return -27;\n        case 9:\n            D_80012C64 = *(int *)buf;\n            D_80012C68 = ((short *)mod)[0x38];\n            break;\n        case 1:\n            mod[rec.type] = rec.size / sizeof(Rec);\n            break;\n        case 2:\n        case 3:\n        case 4:\n            mod[rec.type] = rec.size / sizeof(Rec);\n            break;\n        default:\n            mod[rec.type] = rec.size;\n            break;\n        }\n    } while (rec.type != 11 && err == 0);\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_000_1EC8.c",
+    "asm_path": "asm/nonmatchings/kernel/func_80001EC8.s",
+    "segment": "kernel",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "make all cmp baserom (byte-identical) + objdiff report 100"
+  }
+}
