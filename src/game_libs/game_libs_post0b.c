@@ -21041,7 +21041,9 @@ extern int D_00000000;
  * init block); 3-float ctor proto; the 0x1BB0 RoData float read ONCE into
  * a local (the target loads it once, as for a literal). Residual: the
  * target keeps a0 in s1 and SPLITS o's web (s0 up to the call, then the
- * sp+40 spill feeds a1 for the tail); ours homes a0 and keeps o in s0. */
+ * sp+40 spill feeds a1 for the tail); ours homes a0 and keeps o in s0.
+ * 2026-10-23 agent-g (run 143) 63.15 -> 77.67: the 0x1BB0 float is read BEFORE
+ * the 0x120 / vtable stores (target order: lwc1, 1.0f, then the two sw). */
 void gl_func_00051448(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int D_51448_vt;
@@ -21053,9 +21055,9 @@ void gl_func_00051448(char *a0) {
     o = (char *)gl_func_00000000(0x16C);
     if (o != 0) {
         gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f);
+        k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
         *(int *)(o + 0x120) = 0xFFFF;
         *(int **)(o + 0x28) = &D_51448_vt;
-        k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
         *(f32 *)(o + 0x108) = k;
         *(f32 *)(o + 0x10C) = k;
         *(f32 *)(o + 0x110) = k;
