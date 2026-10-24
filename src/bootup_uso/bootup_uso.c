@@ -6141,6 +6141,7 @@ typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C,
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
 extern BuW90 bu_90cc_d44_01, bu_90cc_d44_02, bu_90cc_d44_03, bu_90cc_d44_04, bu_90cc_d44_05, bu_90cc_d44_06, bu_90cc_d44_07, bu_90cc_d44_08, bu_90cc_d44_09, bu_90cc_d44_10, bu_90cc_d08_01, bu_90cc_d08_02, bu_90cc_d08_03, bu_90cc_d08_04, bu_90cc_d80_01, bu_90cc_d80_02, bu_90cc_d80_03;
 extern void func_00000000_p4d(void *, s32, f64, f32);
+extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
     s32 sp174;
     Vec3 vpos;
@@ -6974,23 +6975,37 @@ sw_end:
             func_00000000(0xFFFF);
             func_00000000();
         }
-        *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)&D_00000000 + 0);
-        *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)&D_00000000 + 8);
-        *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)&D_00000000 + 4);
-        *(s32 *)((char *)(arg0) + 0x824) = (s32) bu_90cc_d44_03.f28;
-        *(s32 *)((char *)(arg0) + 0x820) = (s32) bu_90cc_d80_01.f08;
-        *(s32 *)((char *)(arg0) + 0x828) = (s32) bu_90cc_d08_02.f00;
-        *(s32 *)((char *)(arg0) + 0x830) = (s32) bu_90cc_d08_03.f14;
-        *(s32 *)((char *)(arg0) + 0x82C) = (s32) *(s32 *)((char *)&D_00000000 + 4);
-        *(s32 *)((char *)(arg0) + 0x834) = (s32) bu_90cc_d08_04.f10;
-        *(s32 *)((char *)(arg0) + 0x838) = (s32) bu_90cc_d44_04.f0C;
-        *(s32 *)((char *)(arg0) + 0x844) = (s32) bu_90cc_d44_05.f2C;
-        *(s32 *)((char *)(arg0) + 0x860) = (s32) bu_90cc_d80_02.f04;
+        *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)bu_90cc_fz + 0);
+        *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)bu_90cc_fz + 8);
+        *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)bu_90cc_fz + 4);
+        var_s0 = (char *)bu_90cc_d44_03.f28;
+        *(s32 *)((char *)(arg0) + 0x824) = (s32)var_s0;
+        var_s0 = (char *)bu_90cc_d80_01.f08;
+        *(s32 *)((char *)(arg0) + 0x820) = (s32)var_s0;
+        var_s1 = (char *)bu_90cc_d08_02.f00;
+        *(s32 *)((char *)(arg0) + 0x828) = (s32)var_s1;
+        var_s1 = (char *)bu_90cc_d08_03.f14;
+        *(s32 *)((char *)(arg0) + 0x830) = (s32)var_s1;
+        var_s1 = (char *)*(s32 *)((char *)&D_00000000 + 4);
+        *(s32 *)((char *)(arg0) + 0x82C) = (s32)var_s1;
+        var_s1 = (char *)bu_90cc_d08_04.f10;
+        *(s32 *)((char *)(arg0) + 0x834) = (s32)var_s1;
+        var_s1 = (char *)bu_90cc_d44_04.f0C;
+        *(s32 *)((char *)(arg0) + 0x838) = (s32)var_s1;
+        var_s0 = (char *)bu_90cc_d44_05.f2C;
+        *(s32 *)((char *)(arg0) + 0x844) = (s32)var_s0;
+        var_s0 = (char *)bu_90cc_d80_02.f04;
+        *(s32 *)((char *)(arg0) + 0x860) = (s32)var_s0;
         *(s32 *)((char *)(arg0) + 0x854) = (s32) bu_90cc_d44_06.f30;
-        *(s32 *)((char *)(arg0) + 0x85C) = (s32) bu_90cc_d44_07.f34;
-        *(s32 *)((char *)(arg0) + 0x858) = (s32) bu_90cc_d44_08.f38;
-        *(s32 *)((char *)(arg0) + 0x864) = (s32) bu_90cc_d80_03.f00;
-        *(s32 *)((char *)(arg0) + 0x874) = (s32) bu_90cc_d44_09.f14;
+        var_s0 = (char *)bu_90cc_d44_07.f34;
+        *(s32 *)((char *)(arg0) + 0x85C) = (s32)var_s0;
+        var_s0 = (char *)bu_90cc_d44_08.f38;
+        *(s32 *)((char *)(arg0) + 0x858) = (s32)var_s0;
+        var_s0 = (char *)bu_90cc_d80_03.f00;
+        *(s32 *)((char *)(arg0) + 0x864) = (s32)var_s0;
+        var_s0 = (char *)bu_90cc_d44_09.f14;
+        *(s32 *)((char *)(arg0) + 0x874) = (s32)var_s0;
+
         *(s32 *)((char *)(arg0) + 0x804) = func_00000000(0, arg0, bu_90cc_d44_10.f24);
         func_00000000(arg0);
     }
