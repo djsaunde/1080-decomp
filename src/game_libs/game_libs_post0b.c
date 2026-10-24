@@ -21049,20 +21049,25 @@ extern int D_00000000;
  * sp+40 spill feeds a1 for the tail); ours homes a0 and keeps o in s0.
  * 2026-10-23 agent-g (run 143) 63.15 -> 77.67: the 0x1BB0 float is read BEFORE
  * the 0x120 / vtable stores (target order: lwc1, 1.0f, then the two sw). */
+/* 2026-10-23 agent-g run 144: 77.67 -> 94.52 (52 words, unchanged): the first
+ * call passes a0 (the target's jal has no a0 setup because a0 already holds it;
+ * as an argument a0 is live into the call and takes s1 like the target instead
+ * of a stack home), the vtable store is written before the 0xFFFF store, and
+ * the back-link copy n is block-scoped. RESIDUAL: the target spills n (copy of
+ * o) to 40(sp) and l to 44(sp) instead of reusing s0 for n. */
 void gl_func_00051448(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int D_51448_vt;
     char *o;
-    char *n;
     char *l;
     f32 k;
-    gl_func_00000000();
+    gl_func_00000000(a0);
     o = (char *)gl_func_00000000(0x16C);
     if (o != 0) {
         gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f);
         k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
-        *(int *)(o + 0x120) = 0xFFFF;
         *(int **)(o + 0x28) = &D_51448_vt;
+        *(int *)(o + 0x120) = 0xFFFF;
         *(f32 *)(o + 0x108) = k;
         *(f32 *)(o + 0x10C) = k;
         *(f32 *)(o + 0x110) = k;
@@ -21072,12 +21077,14 @@ void gl_func_00051448(char *a0) {
     *(char **)(a0 + 0xC) = o;
     *(char **)(a0 + 0x10) = o;
     l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);
-    n = o;
+    {
+    char *n = o;
     gl_func_00000000(l + 0x10, n);
     if (*(int *)(n + 0x14) != 0) {
         *(int *)(n + 4) = 1;
     }
     *(char **)(n + 0x14) = l;
+    }
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051448);
