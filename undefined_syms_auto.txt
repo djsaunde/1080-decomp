@@ -5082,3 +5082,6 @@ gl_25C54_AllocSampleCache = 0x00000000;  /* agent-c run 142: gl_func_00025C54 bl
 gl_25C54_SyncDmaUnkMedium = 0x00000000;  /* agent-c run 142: gl_func_00025C54 blank jal */
 gl_25C54_SyncDma = 0x00000000;  /* agent-c run 142: gl_func_00025C54 blank jal */
 gl_25C54_gAudioCtx = 0x00000000;  /* agent-c run 142: gl_func_00025C54 typed gAudioCtx extern (usedSamples 0x430, preloadSampleStack 0x630, numUsedSamples 0x1030, preloadSampleStackTop 0x1034, preloadSampleQueue 0x1684, sampleBankTable 0x2024, soundFontList 0x2030) */
+gl_25320_BGLOAD = 0x0001B0C0;  /* agent-c run 142: gl_func_00025320 "BGLOAD" debug string in game_libs data */
+gl_25320_Audio_InvalDCache = 0x00000000;  /* agent-c run 142: gl_func_00025320 blank jal */
+gl_25320_osCreateMesgQueue = 0x00000000;  /* agent-c run 142: gl_func_00025320 blank jal */

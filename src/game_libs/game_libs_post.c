@@ -6547,22 +6547,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000250C8);
 //   placeholder jal-0 builders + fixed init need USO reloc infra.
 //   Name pre-checked: no extern reuse (collision-safe).
 //   gl_func_00000000 = canonical never-defined USO placeholder.
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-extern int gl_ref_00038604();
-void gl_func_00025320(char *obj, int a1) {
-    char *g = (char *)&D_00000000;
-    int sz = (a1 + 0xF) & ~0xF;
-    gl_func_00000000(*(int *)(obj + 0xC), sz);
-    gl_func_00000000(obj + 0x20, obj + 0x38, 1);
-    gl_ref_00038604(obj + 0x3C, 0, 0,
-                     *(int *)(obj + 0xC), sz, obj + 0x20,
-                     *(unsigned char *)(obj + 2), g + 0x2B0C0);
+/* gl_func_00025320 EXACT 2026-10-24 (agent-c run 142, 75.00 -> 100): OoT's
+ * AudioLoad_AsyncDma (see the donor header). WIRED via REPLACE_FUNC_BODY donor splice:
+ * the real C lives in the IDO 7.1 -O2 donor unit game_libs_o2_25320.c (36/36 words).
+ * Body below is a placeholder for the splice. */
+void gl_func_00025320(void *asyncLoad, u32 size) {
+    volatile int x = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00025320);
-#endif
 
 /* Empty 4-arg stub (sibling of _00023F84). */
 void game_libs_func_000253B0(int a0, int a1, int a2, int a3) {

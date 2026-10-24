@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00025320",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-24T05:36:40.281122+00:00",
+  "end_time": "2026-10-24T05:36:40.281138+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-24T05:36:40.281134+00:00",
+      "assistant_text": "OoT AudioLoad_AsyncDma verbatim; if (size) {} after the ALIGN16 keeps size in s1; BGLOAD string pinned at 0x1B0C0; IDO 7.1 -O2 donor.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 36,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n\n/* IDO 7.1 -O2 donor for gl_func_00025320 (0x90 / 36 words) = OoT's AudioLoad_AsyncDma\n * (load.c) verbatim; the `if (size) {}` block split after the ALIGN16 keeps size in s1\n * (without it the parameter is homed and reloaded). \"BGLOAD\" is the module string at\n * 0x1B0C0 (pinned extern). Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY. */\ntypedef struct { void *a; void *b; s32 validCount; s32 first; s32 msgCount; void *msg; } gl_25320_OSMesgQueue;\ntypedef struct {\n    s8 status; s8 delay; s8 medium; u8 *ramAddr; u32 curDevAddr; u8 *curRamAddr; u32 bytesRemaining; u32 chunkSize;\n    u32 retMsg; gl_25320_OSMesgQueue *retQueue; gl_25320_OSMesgQueue msgQueue; void *msg; char ioMesg[0x18];\n} gl_25320_AudioAsyncLoad;\nextern void gl_25320_Audio_InvalDCache(void *, u32);\nextern void gl_25320_osCreateMesgQueue(void *, void *, s32);\nextern s32 gl_ref_00038604(void *, s32, s32, u32, void *, u32, void *, s32, char *);\nextern char gl_25320_BGLOAD[];\n#define ALIGN16(x) (((x) + 0xF) & ~0xF)\n\nvoid gl_func_00025320(gl_25320_AudioAsyncLoad *asyncLoad, u32 size) {\n    size = ALIGN16(size);\n    gl_25320_Audio_InvalDCache(asyncLoad->curRamAddr, size);\n    if (size) {}\n    gl_25320_osCreateMesgQueue(&asyncLoad->msgQueue, &asyncLoad->msg, 1);\n    gl_ref_00038604(&asyncLoad->ioMesg, 0, 0, asyncLoad->curDevAddr, asyncLoad->curRamAddr, size, &asyncLoad->msgQueue,\n                    asyncLoad->medium, gl_25320_BGLOAD);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_25320.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00025320.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32",
+    "verification": "Verified with rdiff --raw --pins (0 diff words) and full ROM build (byte-identical)."
+  }
+}
