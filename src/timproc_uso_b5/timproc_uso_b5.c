@@ -9417,8 +9417,7 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             timproc_uso_b5_func_00002B74(obj + 0x2C);
             timproc_uso_b5_func_000032C8(obj + 0x194);
         }
-        FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEE98 + 0x7C4);
-        FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEE98 + 0x1628);
+        FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEE98 + 0x7C4); FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEE98 + 0x1628);
         timproc_uso_b5_func_00003890(child);
     }
     r = child;
@@ -9435,8 +9434,7 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
     child = timproc_uso_b5_func_055750((char *)0x144);
     if (child != 0) {
         timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEEA4 + 0x1634, 0.0f, 0.0f, 0.0f);
-        FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEEAC + 0x514);
-        FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEEAC + 0x163C);
+        FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEEAC + 0x514); FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEEAC + 0x163C);
         gc = timproc_uso_b5_func_055750((char *)0x16C);
         if (gc != 0) {
             f32 one;
@@ -9444,8 +9442,7 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEEB8 + 0x1648, 0.0f, 0.0f, 0.0f);
             g2 = gc;
             one = *(f32 *)((char *)&import_80807FB8 + 0x3BC);
-            FW(g2, 0x28) = (s32) (&d884_db64_gc + 0);
-            FW(g2, 0x120) = 1;
+            FW(g2, 0x28) = (s32) (&d884_db64_gc + 0); FW(g2, 0x120) = 1;
             *(f32 *)(g2 + 0x108) = one; /* the RoData 0x3BC constant, not 1.0f */
             *(f32 *)(g2 + 0x10C) = one;
             *(f32 *)(g2 + 0x110) = one;
