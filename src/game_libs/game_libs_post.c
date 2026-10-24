@@ -4227,95 +4227,82 @@ void *gl_func_000223DC(int arg) {
 // use web gets the cupcosts lu->reg discount). Plus coupled 255-$at
 // vs hoisted-t0 compares and continue-path n-reload delay picks.
 #ifdef NON_MATCHING
-/* Whole-body redecode 2026-07-31 (was 33.6% mis-decode: target never reads
- * $a0 — no key param, void return). Keyless bulk-dispatch sibling of
- * gl_func_000221D8: outer over n = **(short**)(D+0x2020) entries (stride 20
- * in table at *(D+0x2030)); skip (FF,FF) empty slots; two jal-0 USO gates
- * (1,3,i)/(i); then a middle k-loop over *(int*)(D+0x2948) records (stride
- * 20 at D+0x26C8): a record participates when its byte +2 matches the
- * entry's byte +2 or +3, or is 0; a non-matching NON-zero record byte
- * aborts to the next outer entry (break). Per participating record, the
- * same two sub-dispatch loops as 221D8 calling
- * gl_func_00036A04(rec, sub->field). */
-extern u8 gl_d_22464[];       /* &D_0 held base -> $s5 (whole-fn) */
-extern u8 gl_d_22464_rec[];   /* fresh per-outer-iter materialization for the k-record walk (&D_0) */
+/* run 140: OoT's AudioHeap_DiscardSampleCaches (heap.c) over the persistent cache
+ * only, with DiscardSampleCacheForFont + UnapplySampleCacheForFont written inline
+ * (no sfx loop in 1080) (78.90 -> 90.42, 133 of 130 words). Left: the target frame
+ * is 16 bytes larger (104) and tests the 0xFF pair with fresh `li at,255`s. */
+typedef struct { u32 bits; u8 *sampleAddr; } gl_22464_Sample;
+typedef struct { gl_22464_Sample *sample; f32 tuning; } gl_22464_TunedSample;
+typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_22464_TunedSample lowPitchTunedSample; gl_22464_TunedSample normalPitchTunedSample; gl_22464_TunedSample highPitchTunedSample; } gl_22464_Inst;
+typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_22464_TunedSample tunedSample; } gl_22464_Drum;
+typedef struct { s8 inUse; s8 origMedium; s8 sampleBankId; u8 unk_03[5]; u8 *allocatedAddr; void *sampleAddr; u32 size; } gl_22464_CacheEntry;
+typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0x14 - 6]; } gl_22464_Font;
+typedef struct { s16 numEntries; } gl_22464_TableHdr;
+typedef struct { gl_22464_TableHdr header; } gl_22464_Table;
+typedef struct { char pad[0x10]; } gl_22464_Pool;
+typedef struct { gl_22464_Pool pool; gl_22464_CacheEntry entries[32]; s32 numEntries; } gl_22464_SampleCache;
+typedef struct { char pad0[0x2020]; gl_22464_Table *soundFontTable; char pad2024[0x2030 - 0x2024]; gl_22464_Font *soundFontList; char pad2034[0x26B8 - 0x2034]; gl_22464_SampleCache persistentSampleCache; } gl_22464_Ctx;
+#define gl_22464_gAudioCtx (*(gl_22464_Ctx *)&D_00000000)
 extern int gl_func_00036A04();
-void gl_func_00022464(void) {
-    char *sub; /* s0 */
-    char *kr;  /* s1 */
-    int j1;    /* s2 */
-    int j2;    /* s3 */
-    char *rec; /* s4 */
-    char *B;   /* s5 */
-    int i;     /* s7 */
-    int c127;  /* s8 */
-    int n;
-    int e2, e3;
-    int k;
+#define AudioHeap_SearchCaches (void *)gl_func_00000000
+#define AudioLoad_IsFontLoadComplete gl_func_00000000
+#define Audio_GetInstrumentInner (gl_22464_Inst *)gl_func_00000000
+#define Audio_GetDrum (gl_22464_Drum *)gl_func_00000000
+#define AudioHeap_UnapplySampleCache gl_func_00036A04
 
-    B = (char *)gl_d_22464 - 4;
-    if (1) {
-        B += 4;
+#define GL22464_UNAPPLY(entry, fontId) \
+    for (instId = 0; instId < gl_22464_gAudioCtx.soundFontList[fontId].numInstruments; instId++) { \
+        inst = Audio_GetInstrumentInner(fontId, instId); \
+        if (inst != NULL) { \
+            if (inst->normalRangeLo != 0) { AudioHeap_UnapplySampleCache(entry, inst->lowPitchTunedSample.sample); } \
+            if (inst->normalRangeHi != 0x7F) { AudioHeap_UnapplySampleCache(entry, inst->highPitchTunedSample.sample); } \
+            AudioHeap_UnapplySampleCache(entry, inst->normalPitchTunedSample.sample); \
+        } \
+    } \
+    for (drumId = 0; drumId < gl_22464_gAudioCtx.soundFontList[fontId].numDrums; drumId++) { \
+        drum = Audio_GetDrum(fontId, drumId); \
+        if (drum != NULL) { AudioHeap_UnapplySampleCache(entry, drum->tunedSample.sample); } \
     }
-    n = **(short **)(B + 0x2020);
-    i = 0;
-    if (n <= 0) {
-        return;
-    }
-    c127 = 127;
-    do {
-        char *e = *(char **)(B + 0x2030) + i * 0x14;
-        e2 = *(unsigned char *)(e + 2);
-        e3 = *(unsigned char *)(e + 3);
-        if (e2 == 0xFF) {
-            if (e3 == 0xFF) {
-                continue;
+
+void gl_func_00022464(void) {
+    s32 numFonts;
+    s32 sampleBankId1;
+    s32 sampleBankId2;
+    s32 fontId;
+    s32 j;
+    gl_22464_CacheEntry *entry;
+    gl_22464_Drum *drum;
+    gl_22464_Inst *inst;
+    s32 instId;
+    s32 drumId;
+
+    numFonts = gl_22464_gAudioCtx.soundFontTable->header.numEntries;
+    for (fontId = 0; fontId < numFonts; fontId++) {
+        sampleBankId1 = gl_22464_gAudioCtx.soundFontList[fontId].sampleBankId1;
+        sampleBankId2 = gl_22464_gAudioCtx.soundFontList[fontId].sampleBankId2;
+        if ((sampleBankId1 == 0xFF) && (sampleBankId2 == 0xFF)) {
+            continue;
+        }
+        if (AudioHeap_SearchCaches(1, 3, fontId) == NULL || !AudioLoad_IsFontLoadComplete(fontId)) {
+            continue;
+        }
+
+        for (j = 0; j < gl_22464_gAudioCtx.persistentSampleCache.numEntries; j++) {
+            entry = &gl_22464_gAudioCtx.persistentSampleCache.entries[j];
+            if ((entry->sampleBankId == sampleBankId1) || (entry->sampleBankId == sampleBankId2) ||
+                (entry->sampleBankId == 0)) {
+                GL22464_UNAPPLY(entry, fontId)
             }
         }
-        {
-            if (gl_func_00000000(1, 3, i) != 0 && gl_func_00000000(i) != 0) {
-                rec = (char *)gl_d_22464_rec;
-                for (k = 0; k < *(int *)(B + 0x2948); k++, rec += 20) {
-                    if (e2 != *(volatile signed char *)(rec + 0x26CA)) {
-                        if (e3 != *(signed char *)(rec + 0x26CA)) {
-                            if (*(signed char *)(rec + 0x26CA) != 0) {
-                                break;
-                            }
-                        }
-                    }
-                    j1 = 0;
-                    j2 = 0;
-                    if (*(unsigned char *)(*(char **)(B + 0x2030) + i * 0x14) > 0) {
-                        do {
-                            sub = (char *)gl_func_00000000(i, j1);
-                            if (sub != 0) {
-                                kr = rec + 0x26C8;
-                                if (*(unsigned char *)(sub + 1) != 0) {
-                                    gl_func_00036A04(kr, *(int *)(sub + 8));
-                                }
-                                if (*(unsigned char *)(sub + 2) != c127) {
-                                    gl_func_00036A04(kr, *(int *)(sub + 0x18));
-                                }
-                                gl_func_00036A04(kr, *(int *)(sub + 0x10));
-                            }
-                            j1++;
-                        } while (j1 < *(unsigned char *)(*(char **)(B + 0x2030) + i * 0x14));
-                    }
-                    if (*(unsigned char *)(*(char **)(B + 0x2030) + i * 0x14 + 1) > 0) {
-                        do {
-                            sub = (char *)gl_func_00000000(i, j2);
-                            if (sub != 0) {
-                                gl_func_00036A04(rec + 0x26C8, *(int *)(sub + 4));
-                            }
-                            j2++;
-                        } while (j2 < *(unsigned char *)(*(char **)(B + 0x2030) + i * 0x14 + 1));
-                    }
-                }
-            }
-        }
-        i++;
-    } while (i != n);
+    }
 }
+#undef gl_22464_gAudioCtx
+#undef GL22464_UNAPPLY
+#undef AudioHeap_SearchCaches
+#undef AudioLoad_IsFontLoadComplete
+#undef Audio_GetInstrumentInner
+#undef Audio_GetDrum
+#undef AudioHeap_UnapplySampleCache
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00022464);
 #endif
