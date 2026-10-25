@@ -740,7 +740,10 @@ char *gl_func_0000135C(char *self) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* gl_func_000015FC: NM wrap, 2026-07-15 agent-h wave re-probe: 82 -> ~90
+/* gl_func_000015FC: EXACT via the NCC donor game_libs_ncc_15FC.cpp (a real
+ * G::G(int) constructor, spliced into both build trees, agent-g run 163); the
+ * cfe body below is the older comparison form (li 100 stays v0 under cfe).
+ * History: NM wrap, 2026-07-15 agent-h wave re-probe: 82 -> ~90
  * (76/103 .o words, 10 of the 27 diffs are %hi/%lo reloc fields). Applied the
  * 7BC-kit: ||-param-reassign head fixed the prologue (move s0/sw ra/sw a1
  * delay ALL exact now — retracts "prologue placement cap"); FW(0x28) stores

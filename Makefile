@@ -1541,6 +1541,15 @@ build/src/game_libs/game_libs_o1_6DA74.c.o build/non_matching/src/game_libs/game
 # bootup.uso RoData +0xCB8 (in-unit compile cannot bake the %lo words).
 GAMELIBS_2B94_DONOR := build/src/game_libs/game_libs_o2_2B94.c.o
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00002B94=$(GAMELIBS_2B94_DONOR)
+# 15FC = G::G(int): cfront this==0 -> new protocol, out-of-line base ctor, vptr +0x28, member ctor +0x2C;
+# NCC donor, EXACT (agent-g run 163: named self = this forbids v0 for the li 100), symbols renamed (names only).
+GAMELIBS_15FC_DONOR := build/src/game_libs/game_libs_ncc_15FC.cpp.o
+$(GAMELIBS_15FC_DONOR): src/game_libs/game_libs_ncc_15FC.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__1GFi=gl_func_000015FC --redefine-sym __ct__1BFPc=gl_func_00000000_15fc_base --redefine-sym __ct__1MFv=gl_func_00000000_15fc_m --redefine-sym __vtbl__1G=gl_data_00000000_15fc $@
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000015FC=$(GAMELIBS_15FC_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_15FC_DONOR)
 # 7344 = per-panel HUD-element updater (7-entry jumptable switch), IDO 7.1
 # -O2 donor: game_libs_o2_7344.c (225/225 word-exact). Spliced only so the
 # donor-local .rodata jumptable reloc is renamed gl_func_00007344_rodata and
