@@ -693,7 +693,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 159: 48AEC NM C++ donor push() slot assigned in the call argument (2072 -> 2064 bytes, target 2076: away, flagged): 0x2e9cc -> 0x2e9c4 (62F08 NM offset 0x2e974).
 # agent-c run 159: 48AEC NM C++ donor else-arm (gctx = GS->ctx)->push() (2064 -> 2072 bytes, target 2076): 0x2e9c4 -> 0x2e9cc (62F08 NM offset 0x2e97c).
 # agent-c run 160: 48AEC NM C++ donor named by-value else-arm slot + Flags::test() (2072 -> 2076 bytes = target): 0x2e9cc -> 0x2e9d0 (62F08 NM offset 0x2e980).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9d0 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 160: 454C4 NM-only C++ donor Obj::setLights() (cfe 2020 -> 2032 bytes, target 2028: distance 8 -> 4): 0x2e9d0 -> 0x2e9dc (62F08 NM offset 0x2e98c).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9dc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1802,6 +1803,14 @@ $(GAMELIBS_48AEC_NM_DONOR): src/game_libs/game_libs_ncc_48AEC_nm.cpp
 	$(OBJCOPY) --redefine-sym draw__3ObjFv=gl_func_00048AEC $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048AEC=$(GAMELIBS_48AEC_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48AEC_NM_DONOR)
+# 454C4 = real C++ `void Obj::setLights(Ctx *, f32 *, f32)` (agent-c run 160, cfe 63.85): stock-gbi gSPLight / gSPNumLights macros, by-value list iterator; symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_454C4_NM_DONOR := build/src/game_libs/game_libs_ncc_454C4_nm.cpp.o
+$(GAMELIBS_454C4_NM_DONOR): src/game_libs/game_libs_ncc_454C4_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym setLights__3ObjFP3CtxPff=gl_func_000454C4 $@
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000454C4=$(GAMELIBS_454C4_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_454C4_NM_DONOR)
 # 493AC = real C++ `int Mgr::run()` (agent-c run 159, was the run-152 C lift under NCC); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_493AC_NM_DONOR := build/src/game_libs/game_libs_ncc_493AC_nm.cpp.o
 $(GAMELIBS_493AC_NM_DONOR): src/game_libs/game_libs_ncc_493AC_nm.cpp
