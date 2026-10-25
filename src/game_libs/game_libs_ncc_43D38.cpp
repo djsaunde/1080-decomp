@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00043D38 (0x174 / 93 words), agent-c run 160.
+/* IDO 7.1 NCC (C++) donor for gl_func_00043D38 (0x174 / 93 words), agent-c run 160.
  * Rewritten as real C++ (was the run-134 C lift under NCC, 84.83): `void Elem::clip()` (renamed to gl_func_00043D38 with
  * objcopy) patches the element's row display list (the 493AC Elem: ctx6C, rows7C, n80): rows [lo, hi) of the global
  * state become gDPNoOp, the head slot n80 becomes gSPBranchList to the first kept row (or a NoOp), and the row after the
@@ -7,15 +7,17 @@
  * the pooled index temp, the target's a2) with `this` = the pooled context temp (a1); the branch target row index is a
  * named local read before the head packet; `lo` straight from GS (no named state pointer: frame 0x38 = target).
  * 84.83 -> 97.51, length 364 -> 372 = target. Residual: the context / index pool temps' colours swapped (a2 / a1).
- * agent-c run 161: the branch and end packets as inline Elem members `link(int i)` / `end(int i)` (their int parameter is the
- * pooled int temp, the target's a2 for both the branch row and the end row, tested against -1 in place), the head slot and
- * the else NoOp through a keep-free `at2()`, a volatile pad in link() for the 0x38 frame: 97.51 -> 99.78. Residual: the
- * nested Ctx this temp of at2 / at inside link / end takes a0 where the target keeps a1.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-c run 161: EXACT. Every packet goes through an inline Elem member so that edg's 4-byte temp pool (pooled by
+ * size, not type) hands out the target's slots: the row loop as `kill(int k)` -> `ctx6C->at2(k)` (no parameter copy, so
+ * the branch _g home lands at the target's sp+0x1C), the branch / end packets as `link(int i)` / `end(int i)` (the pooled
+ * int temp = the target's a2 for both rows, tested against -1 in place; the nested Ctx temp is the loop's, a1), and the
+ * else NoOp as `clr(Elem *e)` called with `this` (implicit this + e take two slots, so the nested Ctx temp is again the
+ * a1 one). 97.51 -> 99.78 -> 100.
+ */
 typedef short s16; typedef unsigned int u32; typedef int s32;
 extern "C" {
 extern char D_00000000[];
-u32 gl_func_00034458(...);
+u32 gl_func_00000000(...);
 }
 struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
@@ -31,8 +33,10 @@ struct GState { char pad[0x10C]; int lo; int hi; };
 struct Elem {
     char pad[0x6C]; Ctx *ctx6C; char pad70[0x7C - 0x70]; s16 *rows7C; s16 n80;
     void clip();
+    void kill(int k) { gDPNoOp(ctx6C->at2(k)); }
+    void clr(Elem *e) { gDPNoOp(e->ctx6C->at2(e->n80)); }
     void end(int i) { if (i != -1) { gSPEndDisplayList(ctx6C->at(i)); } }
-    void link(int i) { volatile int pad; gSPBranchList(ctx6C->at2(n80), gl_func_00034458(ctx6C->at(i))); }
+    void link(int i) { gSPBranchList(ctx6C->at2(n80), gl_func_00000000(ctx6C->at(i))); }
 };
 void Elem::clip() {
     if (rows7C != 0) {
@@ -41,12 +45,12 @@ void Elem::clip() {
             lo -= 1;
         }
         for (int k = lo; k < GS->hi; k++) {
-            gDPNoOp(ctx6C->at(rows7C[k]));
+            kill(rows7C[k]);
         }
         if (lo != 0) {
             link(rows7C[lo]);
         } else {
-            gDPNoOp(ctx6C->at2(n80));
+            clr(this);
         }
         end(rows7C[GS->hi]);
     }

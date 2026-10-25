@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00043D38",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T05:43:03.577260+00:00",
+  "end_time": "2026-10-25T05:43:03.577306+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T05:43:03.577299+00:00",
+      "assistant_text": "C++ donor void Elem::clip(): stock gbi packets through inline Elem members kill/link/end/clr so edg's size-pooled 4-byte temps get the target slots and colours (nested Ctx temp a1, row temp a2).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 93,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00043D38 (0x174 / 93 words), agent-c run 160.\n * Rewritten as real C++ (was the run-134 C lift under NCC, 84.83): `void Elem::clip()` (renamed to gl_func_00043D38 with\n * objcopy) patches the element's row display list (the 493AC Elem: ctx6C, rows7C, n80): rows [lo, hi) of the global\n * state become gDPNoOp, the head slot n80 becomes gSPBranchList to the first kept row (or a NoOp), and the row after the\n * last gets gSPEndDisplayList. Stock gbi macro shapes (gDma1p G_DL / G_DL_NOPUSH = 0x06010000, w1 = the\n * virtual-to-physical call). The rows go through an inline `Ctx::at(int i)` whose parameter is kept (`if (0) { i = 0; }`:\n * the pooled index temp, the target's a2) with `this` = the pooled context temp (a1); the branch target row index is a\n * named local read before the head packet; `lo` straight from GS (no named state pointer: frame 0x38 = target).\n * 84.83 -> 97.51, length 364 -> 372 = target. Residual: the context / index pool temps' colours swapped (a2 / a1).\n * agent-c run 161: EXACT. Every packet goes through an inline Elem member so that edg's 4-byte temp pool (pooled by\n * size, not type) hands out the target's slots: the row loop as `kill(int k)` -> `ctx6C->at2(k)` (no parameter copy, so\n * the branch _g home lands at the target's sp+0x1C), the branch / end packets as `link(int i)` / `end(int i)` (the pooled\n * int temp = the target's a2 for both rows, tested against -1 in place; the nested Ctx temp is the loop's, a1), and the\n * else NoOp as `clr(Elem *e)` called with `this` (implicit this + e take two slots, so the nested Ctx temp is again the\n * a1 one). 97.51 -> 99.78 -> 100.\n */\ntypedef short s16; typedef unsigned int u32; typedef int s32;\nextern \"C\" {\nextern char D_00000000[];\nu32 gl_func_00000000(...);\n}\nstruct Gfx { u32 w0, w1; };\nstruct DLHead { Gfx *buf; int count; };\nstruct Ctx { char pad[0xC]; DLHead *dl; Gfx *at(int i) { if (0) { i = 0; } return &dl->buf[i]; }\n    Gfx *at2(int i) { return &dl->buf[i]; } };\nstruct GState { char pad[0x10C]; int lo; int hi; };\n#define GS (*(GState **)(D_00000000 + 0x254))\n#define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))\n#define gDPNoOp(pkt) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL(0xC0, 24, 8); _g->w1 = 0; }\n#define gDma1p(pkt, c, s, l, p) { Gfx *_g = (Gfx *)(pkt); _g->w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | _SHIFTL((l), 0, 16)); _g->w1 = (u32)(s); }\n#define gSPBranchList(pkt, dl) gDma1p(pkt, 0x06, dl, 0, 1)\n#define gSPEndDisplayList(pkt) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL(0xB8, 24, 8); _g->w1 = 0; }\nstruct Elem {\n    char pad[0x6C]; Ctx *ctx6C; char pad70[0x7C - 0x70]; s16 *rows7C; s16 n80;\n    void clip();\n    void kill(int k) { gDPNoOp(ctx6C->at2(k)); }\n    void clr(Elem *e) { gDPNoOp(e->ctx6C->at2(e->n80)); }\n    void end(int i) { if (i != -1) { gSPEndDisplayList(ctx6C->at(i)); } }\n    void link(int i) { gSPBranchList(ctx6C->at2(n80), gl_func_00000000(ctx6C->at(i))); }\n};\nvoid Elem::clip() {\n    if (rows7C != 0) {\n        int lo = GS->lo;\n        if (lo > 0) {\n            lo -= 1;\n        }\n        for (int k = lo; k < GS->hi; k++) {\n            kill(rows7C[k]);\n        }\n        if (lo != 0) {\n            link(rows7C[lo]);\n        } else {\n            clr(this);\n        }\n        end(rows7C[GS->hi]);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_43D38.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

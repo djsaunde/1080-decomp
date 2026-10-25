@@ -1751,14 +1751,14 @@ $(GAMELIBS_48510_NM_DONOR): src/game_libs/game_libs_ncc_48510_nm.cpp
 	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_NM_DONOR)
-# 43D38 = real C++ `void Elem::clip()` (agent-c run 160; was the run-134 NCC C lift, cfe 79.55); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_43D38_NM_DONOR := build/src/game_libs/game_libs_ncc_43D38_nm.cpp.o
-$(GAMELIBS_43D38_NM_DONOR): src/game_libs/game_libs_ncc_43D38_nm.cpp
+# 43D38 = real C++ `void Elem::clip()` (agent-c run 160/161; inline Elem members kill/link/end/clr for the edg temp pool); symbol renamed (name only). EXACT NCC donor over an empty placeholder (agent-c run 161).
+GAMELIBS_43D38_DONOR := build/src/game_libs/game_libs_ncc_43D38.cpp.o
+$(GAMELIBS_43D38_DONOR): src/game_libs/game_libs_ncc_43D38.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym clip__4ElemFv=gl_func_00043D38 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043D38=$(GAMELIBS_43D38_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043D38=$(GAMELIBS_43D38_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
