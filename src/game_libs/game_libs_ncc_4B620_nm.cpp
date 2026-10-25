@@ -29,6 +29,7 @@ struct DL {
     void addE(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: no keep on the 4th packet (per-site grid) */
     void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
 };
+inline void addG(DL *d, unsigned hi, unsigned lo) { if (0) { hi = lo = 0; } Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: the first packet as a free inline, DL first */
 struct Elem { char pad[0x34]; int m34; char pad38[0x64 - 0x38]; DL *m64; };
 struct AIter;
 struct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };
@@ -69,7 +70,7 @@ Obj::Obj(void *a1) : Base(a1) {
     d0 = 0;
     d4 = 0;
     cc = (DL *)gl_func_00000000(0, S(0x20104), 0x14, 0, 0, 0, 0);
-    cc->add(0xE7000000, 0);
+    addG(cc, 0xE7000000, 0);
     cc->add(0xBA001402, 0);
     cc->add(0xB9000201, 4);
     cc->addE(0xBA000C02, 0x2000);
