@@ -771,7 +771,8 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     s32 row;
     s32 k2;
     volatile int padq[4]; /* run 138: frame = target */
-    s32 col, x, y, vidx;
+    s32 col, x, y;
+    u32 vidx; /* run 172: unsigned (88.98/89.21 -> 90.53; changes the vidx*2 web colouring) */
     s32 ult;
     GwE68 *arr[32];
     s32 k, uls;
