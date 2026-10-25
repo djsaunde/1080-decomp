@@ -697,7 +697,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 160: 42938 NM-only C++ donor (cfe 1536 -> 1556 bytes = target): 0x2e9dc -> 0x2e9f0 (62F08 NM offset 0x2e9a0).
 # agent-c run 160: 43D38 NM C++ donor Elem::clip() (364 -> 372 bytes = target): 0x2e9f0 -> 0x2e9f8 (62F08 NM offset 0x2e9a8).
 # agent-c run 160: 3B6A0 NM C++ donor Obj::below() (796 -> 800 bytes = target): 0x2e9f8 -> 0x2e9fc (62F08 NM offset 0x2e9ac).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9fc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 161: 4E00C NM C++ donor array-member clears (284 -> 292 bytes, target 300): 0x2e9fc -> 0x2ea04 (62F08 NM offset 0x2e9b4).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea04 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0

@@ -4,6 +4,10 @@
  * (`v[1] = (v[1] & 0xF00) | 0x400; v[1] = v[1] | 2; v[1] = v[1] | 1; v[1] = v[1]; v[1] = v[1] | 0x10;`): uopt forwards each
  * stored value into the next read, so the target's five stores of four ring temps come out exactly (the volatile chain
  * reused one register), 86.71 -> 90.75.
+  * agent-c run 161: the 0x148 / 0x160 tails are two sub-objects cleared by inline members with ARRAY members:
+ * `Blk { int w[6]; }` (w[0], an inline `zero(int k)` loop from 1 to 5, w[5]) and `Blk2 { int e[8]; int c; }` (an
+ * 8-trip loop that uopt unrolls x4 like the target): 90.75 -> 93.81, frame homes = target. Residual: the target keeps
+ * the unrolled 4-trip loop's IV (`li v1,1; sll; addu`) with ascending stores where ours folds it (descending).
  */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -19,6 +23,8 @@ extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern float q[4];
 }
+struct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { w[0] = 0; zero(1); w[5] = 0; } };
+struct Blk2 { int e[8]; int c; void clear() { for (int k = 0; k < 8; k++) e[k] = 0; c = 0; } };
 extern "C" void gl_func_0004E00C(int *s0) {
     int *v;
     int x;
@@ -48,21 +54,7 @@ extern "C" void gl_func_0004E00C(int *s0) {
     *(float *)((char *)s0 + 0x1D4) = 0.0f;
     *(float *)((char *)s0 + 0x1D8) = 0.0f;
     *(float *)((char *)s0 + 0x1DC) = 0.5f;
-    *(int *)((char *)s0 + 0x148) = 0;
-    q = (int *)((char *)s0 + 0x148 + 4); if (s0) {}
-    q[0] = 0;
-    q[1] = 0;
-    q[2] = 0;
-    q[3] = 0;
-    *(int *)((char *)s0 + 0x15C) = 0;
-    p = (int *)((char *)s0 + 0x160);
-    for (i = 0; i != 8; i += 4) {
-        p[0] = 0;
-        p[1] = 0;
-        p[2] = 0;
-        p[3] = 0;
-        p += 4;
-    }
-    *(int *)((char *)s0 + 0x180) = 0;
+    ((Blk *)((char *)s0 + 0x148))->clear();
+    ((Blk2 *)((char *)s0 + 0x160))->clear();
     gl_func_00000000(s0, 0);
 }
