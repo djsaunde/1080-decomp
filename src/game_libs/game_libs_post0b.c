@@ -22100,81 +22100,11 @@ void gl_func_00054210(char *a0, float *a1, int a2) {
  *   - Pattern resembles a "world-space Vec3 → normalized output" helper
  *     for AI/physics. Multiple Vec3 stack temps (sp+0x40..0x60 region).
  *
- * Multi-tick decode pending. ~214 insns of dense FPU math; NM grind for
- * register allocation likely needed once structure is mapped. Default
- * INCLUDE_ASM keeps ROM byte-correct. */
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef struct { f32 x, y, z; } V3_54264;
-#define FWV_54264(p, o) (*(volatile int *)((char *)(p) + (o)))
-void gl_func_00054264(arg0, arg1, arg2, arg3)
-char *arg0;
-f32 *arg1;
-f32 *arg2;
-s32 arg3;
-{
-    f32 u;
-    f32 v;
-    f32 t;
-    f32 w;
-    s32 idx;
-    volatile V3_54264 va;
-    volatile V3_54264 vb;
-    volatile V3_54264 vc;
-    u32 mult;
-    s16 *vp;
-    f32 one;
-    s32 extra0;
-    V3_54264 sp24;
-
-    if (1) { one = 1.0f; } else { one = arg3; }
-    if (0) { extra0 = (int)&arg1; extra0 = (int)&arg2; }
-    u = gl_func_00000000_fret();
-    v = gl_func_00000000_fret();
-    if ((u + v) > one) {
-        v = one - v;
-        u = one - u;
-    }
-    idx = arg3 * 8;
-    mult = 6;
-    vp = (s16 *)((*(u16 *)((char *)(FWV_54264(arg0, 0x68) + idx) + 0x2) * mult) + FWV_54264(arg0, 0x60));
-    va.x = vp[0];
-    va.y = vp[1];
-    va.z = vp[2];
-    vp = (s16 *)((*(u16 *)((char *)(FWV_54264(arg0, 0x68) + idx) + 0x4) * mult) + FWV_54264(arg0, 0x60));
-    vb.x = vp[0];
-    vb.y = vp[1];
-    vb.z = vp[2];
-    vp = (s16 *)((*(u16 *)((char *)(FWV_54264(arg0, 0x68) + idx) + 0x6) * mult) + FWV_54264(arg0, 0x60));
-    vc.x = vp[0];
-    vc.y = vp[1];
-    vc.z = vp[2];
-    w = (one - u) - v;
-    arg1[0] = (va.x * w) + (vb.x * u) + (vc.x * v);
-    arg1[1] = (va.y * w) + (vb.y * u) + (vc.y * v);
-    arg1[2] = (va.z * w) + (vb.z * u) + (vc.z * v);
-    mult = 12;
-    sp24 = *(V3_54264 *)(FWV_54264(arg0, 0x58) + (*(u16 *)((char *)(FWV_54264(arg0, 0x68) + idx) + 0x2) * mult));
-    va.z = sp24.z;
-    va.y = sp24.y;
-    va.x = sp24.x;
-    sp24 = *(V3_54264 *)(FWV_54264(arg0, 0x58) + (*(u16 *)((char *)(FWV_54264(arg0, 0x68) + idx) + 0x4) * mult));
-    vb.z = sp24.z;
-    vb.y = sp24.y;
-    vb.x = sp24.x;
-    sp24 = *(V3_54264 *)(FWV_54264(arg0, 0x58) + (*(u16 *)((char *)(FWV_54264(arg0, 0x68) + idx) + 0x6) * mult));
-    vc.y = sp24.y;
-    vc.x = sp24.x;
-    vc.z = sp24.z;
-    arg2[0] = (va.x * w) + (vb.x * u) + (sp24.x * v);
-    arg2[1] = (va.y * w) + (vb.y * u) + (vc.y * v);
-    arg2[2] = (va.z * w) + (vb.z * u) + (vc.z * v);
+ * (Superseded: it is Mesh::sample(), a random point in a triangle -- see the donor.) */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_54264.cpp (`void Mesh::sample(V3 &p, V3 &n,
+ * int t)`), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 175). */
+void gl_func_00054264(char *arg0, f32 *arg1, f32 *arg2, s32 arg3) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00054264);
-#endif
 
 /* gl_func_000545BC: 43-insn alloc-init + conditional sub-alloc + 4-float-copy.
  * Matched 2026-05-14 via goto-end unified-epilogue + symbol-ref-for-magic-const

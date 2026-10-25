@@ -1788,14 +1788,14 @@ $(GAMELIBS_48510_NM_DONOR): src/game_libs/game_libs_ncc_48510_nm.cpp
 	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_NM_DONOR)
-# 54264 = real C++ `void Mesh::sample(V3 &p, V3 &n, int t)` (agent-c run 175: random point in a triangle; s16 positions through an inline V3(const S3 &) ctor, normals through a by-value set(V3); cfe 85.11 -> NCC, length = target); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_54264_NM_DONOR := build/src/game_libs/game_libs_ncc_54264_nm.cpp.o
-$(GAMELIBS_54264_NM_DONOR): src/game_libs/game_libs_ncc_54264_nm.cpp
+# 54264 = real C++ `void Mesh::sample(V3 &p, V3 &n, int t)` (agent-c run 175: random point in a triangle; s16 positions through an inline V3(const S3 &) ctor, normals through a by-value set(V3), c's S3 pointer kept by `if (cs) {}` + `if (t) {}`). EXACT NCC donor over an empty placeholder; symbol renamed (name only).
+GAMELIBS_54264_DONOR := build/src/game_libs/game_libs_ncc_54264.cpp.o
+$(GAMELIBS_54264_DONOR): src/game_libs/game_libs_ncc_54264.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym sample__4MeshFR2V3T1i=gl_func_00054264 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054264=$(GAMELIBS_54264_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54264_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054264=$(GAMELIBS_54264_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54264_DONOR)
 # 43D38 = real C++ `void Elem::clip()` (agent-c run 160/161; inline Elem members kill/link/end/clr for the edg temp pool); symbol renamed (name only). EXACT NCC donor over an empty placeholder (agent-c run 161).
 GAMELIBS_43D38_DONOR := build/src/game_libs/game_libs_ncc_43D38.cpp.o
 $(GAMELIBS_43D38_DONOR): src/game_libs/game_libs_ncc_43D38.cpp

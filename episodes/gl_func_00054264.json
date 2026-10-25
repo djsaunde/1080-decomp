@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00054264",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T21:20:20.339769+00:00",
+  "end_time": "2026-10-25T21:20:20.339769+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T21:20:20.339769+00:00",
+      "assistant_text": "NCC C++ donor: void Mesh::sample(V3 &p, V3 &n, int t) = random point in a triangle. Two blank-callee calls (baked jal 0) give u, v, folded when u + v > 1; the s16 positions are converted by an inline V3(const S3 &) ctor (index * 6 stays a multu); the barycentric blend is written to p; the float normals are copied in through a by-value set(V3) (int-word copy into the one temp at sp+0x24, then float copy-out) and blended into n. c's S3 pointer named cs and kept past the p stores with `if (cs) {}` moves p's reload off v0 (as1 hoists the p load and &tmp addiu); a second dead test `if (t) {}` restores the colour priorities; two volatiles + cs give frame 0x78 and every home.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 214,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00054264 (0x358 / 214 words), agent-c run 175, spliced over an empty\n * placeholder in game_libs_post0b.c in both build trees (Makefile rename of sample__4MeshFR2V3T1i).\n * The cfe body (85.11: volatile Vec3 locals, a `mult` variable for the multu, an int-copy temp) is plain C++:\n * `void Mesh::sample(V3 &p, V3 &n, int t)` -- a uniform random point in triangle t (u, v from two calls through the\n * blank callee = the target's baked jal 0, folded when u + v > 1), the three s16 positions converted by an inline\n * `V3(const S3 &)` ctor (the `* 6` index stays a multu), the barycentric blend written to p, then the three float\n * normals copied in through a BY-VALUE `set(V3 v)` (the target's int-word copy into the one temp at sp+0x24, then\n * the float copy-out) and blended into n. Two function-scope volatiles + the named cs before `V3 a` = frame 0x78\n * and every home (98.15, length = target). c's S3 pointer as the named `cs` kept past the p stores by a trailing\n * `if (cs) {}` takes p's reload off v0 (as1 then hoists p's load and the &tmp addiu like the target, 99.02); a\n * second dead test `if (t) {}` restores the colour priorities the first one's extra blocks had flipped (t * 8 in\n * v1, the 6 / 12 constants and p in a1, u / v in fv1 / fa0) -> EXACT. */\nextern \"C\" float gl_func_00000000(...);\nstruct S3 { short x, y, z; };\nstruct V3 {\n    float x, y, z;\n    V3() {}\n    V3(const S3 &s) { x = s.x; y = s.y; z = s.z; }\n    void set(V3 v) { x = v.x; y = v.y; z = v.z; }\n};\nstruct Tri { short f0; unsigned short i[3]; };\nstruct Mesh {\n    char pad[0x58];\n    V3 *nrm;\n    int pad5c;\n    S3 *verts;\n    int pad64;\n    Tri *tris;\n    void sample(V3 &p, V3 &n, int t);\n};\nvoid Mesh::sample(V3 &p, V3 &n, int t) {\n    float u = gl_func_00000000();\n    float v = gl_func_00000000();\n    if (u + v > 1.0f) {\n        u = 1.0f - u;\n        v = 1.0f - v;\n    }\n    volatile int q0, q1;\n    S3 *cs;\n    V3 a(verts[tris[t].i[0]]);\n    V3 b(verts[tris[t].i[1]]);\n    cs = &verts[tris[t].i[2]];\n    V3 c(*cs);\n    float w = 1.0f - u - v;\n    p.x = a.x * w + b.x * u + c.x * v;\n    p.y = a.y * w + b.y * u + c.y * v;\n    p.z = a.z * w + b.z * u + c.z * v;\n    if (cs) {}\n    if (t) {}\n    a.set(nrm[tris[t].i[0]]);\n    b.set(nrm[tris[t].i[1]]);\n    c.set(nrm[tris[t].i[2]]);\n    n.x = a.x * w + b.x * u + c.x * v;\n    n.y = a.y * w + b.y * u + c.y * v;\n    n.z = a.z * w + b.z * u + c.z * v;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_54264.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}
