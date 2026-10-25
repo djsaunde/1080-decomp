@@ -4,7 +4,9 @@
  * real C++ -- every append is the gfx context's inline Ctx::next() (n read, n + 1 stored, &buf[n]), and the
  * stock 2.0I gbi.h gSPTexture / gSPScisTextureRectangle macros get `CTX->next()` as their pkt argument, so
  * the macro's two gImmp1 re-evaluations of pkt ARE the RDPHALF_1 / RDPHALF_2 appends. No pads. 95.36
- * standalone. LEFT: as 329C / 2DE0, the edg pool variable is callee-saved in the target. */
+ * standalone. LEFT: as 329C / 2DE0, the edg pool variable is callee-saved in the target.
+ * run 172 (kit CXVII): eight function-top volatile scalars give the target frame 96 (was 64; the named
+ * homes sit at the frame bottom as in the target): 95.36 -> 95.41. */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -34,6 +36,7 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; 
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) {
+    volatile s32 q0, q1, q2, q3, q4, q5, q6, q7;
     Spr *spr;
     s32 w, h;
     s32 x, y;
