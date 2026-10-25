@@ -5,8 +5,10 @@
  * multu), the barycentric blend written to p, then the three float normals copied in through a BY-VALUE
  * `set(V3 v)` (the target's int-word copy into the one temp at sp+0x24, then the float copy-out) and blended into n.
  * Three function-scope volatiles before `V3 a` = the target's frame 0x78 and homes. 85.11 -> 98.11 local, length =
- * target. Residual: p's reload is v0 (target a1), so as1 hoists the 12 constant into a1 instead of p, and the
- * &tmp addiu cannot rise above the p stores. Still NON_MATCHING: build/non_matching/ only (Makefile rename of
+ * target (98.15). Then c's S3 pointer as a named `cs` (homed in place of one volatile) kept past the p stores by a
+ * trailing `if (cs) {}`: p's reload leaves v0, so as1 hoists p's load and the &tmp addiu like the target (99.02 with
+ * the v-first fold). Residual: two pure colour swaps from the extra BBs of that dead test -- t * 8 / the 6 and 12
+ * constants / p (target v1 / a1 / a1 / a1, ours a1 / v1 / v1 / v1) and u / v (fv1 / fa0 swapped). Still NON_MATCHING: build/non_matching/ only (Makefile rename of
  * sample__4MeshFR2V3T1i). */
 extern "C" float gl_func_00000000(...);
 struct S3 { short x, y, z; };
@@ -30,17 +32,20 @@ void Mesh::sample(V3 &p, V3 &n, int t) {
     float u = gl_func_00000000();
     float v = gl_func_00000000();
     if (u + v > 1.0f) {
-        u = 1.0f - u;
         v = 1.0f - v;
+        u = 1.0f - u;
     }
-    volatile int q0, q1, q2;
+    volatile int q0, q1;
+    S3 *cs;
     V3 a(verts[tris[t].i[0]]);
     V3 b(verts[tris[t].i[1]]);
-    V3 c(verts[tris[t].i[2]]);
+    cs = &verts[tris[t].i[2]];
+    V3 c(*cs);
     float w = 1.0f - u - v;
     p.x = a.x * w + b.x * u + c.x * v;
     p.y = a.y * w + b.y * u + c.y * v;
     p.z = a.z * w + b.z * u + c.z * v;
+    if (cs) {}
     a.set(nrm[tris[t].i[0]]);
     b.set(nrm[tris[t].i[1]]);
     c.set(nrm[tris[t].i[2]]);
