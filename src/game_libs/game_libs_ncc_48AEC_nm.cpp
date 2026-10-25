@@ -14,7 +14,8 @@
  * load() and prim() append through `&dl->buf[dl->count++]` (no named count; dlcall keeps next()'s named n).
  * The arm-2 Gfx copy is masked through `Gfx *gp = &gbi` (the target's &gbi in s0).
  * push() assigns the matrix slot inside the copy call's argument (`func(src, c = mtx())`), 94.92 -> 95.21.
- * cfe body 88.11 -> 95.21; length 2052 -> 2064 (target 2076; the last step moved 2072 -> 2064, away: flagged).
+ * The else arm writes `(gctx = GS->ctx)->push(A, cmd);` (assignment as the object expression), 95.21 -> 95.67.
+ * cfe body 88.11 -> 95.67; length 2052 -> 2072 (target 2076).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 extern "C" {
@@ -101,8 +102,7 @@ void Obj::draw() {
         gctx = GS->ctx;
         gctx->push(mt, cmd);
     } else {
-        gctx = GS->ctx;
-        gctx->push(A, cmd);
+        (gctx = GS->ctx)->push(A, cmd);
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {

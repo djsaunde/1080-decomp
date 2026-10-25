@@ -691,7 +691,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 159: 48AEC NM C++ donor dlcall() / load() / prim() helpers, named-count next(), EBase vptr (2096 -> 2056 bytes, target 2076): 0x2e9e4 -> 0x2e9bc (62F08 NM offset 0x2e96c).
 # agent-c run 159: 48AEC NM C++ donor Ctx::push() for the matrix arms (2056 -> 2072 bytes, target 2076): 0x2e9bc -> 0x2e9cc (62F08 NM offset 0x2e97c).
 # agent-c run 159: 48AEC NM C++ donor push() slot assigned in the call argument (2072 -> 2064 bytes, target 2076: away, flagged): 0x2e9cc -> 0x2e9c4 (62F08 NM offset 0x2e974).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9c4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 159: 48AEC NM C++ donor else-arm (gctx = GS->ctx)->push() (2064 -> 2072 bytes, target 2076): 0x2e9c4 -> 0x2e9cc (62F08 NM offset 0x2e97c).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9cc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
