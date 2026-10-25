@@ -1234,6 +1234,7 @@ void mgrproc_uso_func_00002324(char *a0) {
     *(float *)(a0 + 0x564) = 120.0f;
 }
 
+/* NM object: replaced by the NCC comparison donor mgrproc_uso_ncc_23FC_nm.cpp (agent-g run 172). */
 #ifdef NON_MATCHING
 
 

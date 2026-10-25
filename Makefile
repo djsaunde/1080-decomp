@@ -2480,6 +2480,11 @@ MGR_O0_700_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp.o
 $(MGR_O0_700_DONOR): OPT_FLAGS := -O0
 build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00000700=$(MGR_O0_700_DONOR) mgrproc_uso_func_00000A14=$(MGR_O0_700_DONOR)
 build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: $(MGR_O0_700_DONOR)
+# 23FC = results-panel draw, the cfe NM body ported to C++ (NCC digit loop = the target's 13*i
+# counter vs 13*n bound; agent-g run 172, cfe 97.25). Still NON_MATCHING: NM comparison object only.
+MGR_23FC_NM_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_23FC_nm.cpp.o
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_000023FC=$(MGR_23FC_NM_DONOR)
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: $(MGR_23FC_NM_DONOR)
 
 # timproc_uso_b1 / b3 (Yay0-compressed): same opening -O0 run (int-reader 0x4C +
 # Quad4-reader 0x64 = 0xB0) carved into a region-0 sub-unit, same concat infra.
