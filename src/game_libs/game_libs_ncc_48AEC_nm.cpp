@@ -36,7 +36,7 @@ struct Ctx {
     DLHead *dl;
     char pad10[0x3C - 0x10];
     MtxHead *mh;
-    Gfx *next() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
+    Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
     void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w0 = hi; g->w1 = lo; }
     void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
