@@ -17362,6 +17362,8 @@ typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } S
 #define SHL4B(v, s, w) ((unsigned int)(((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
 
 typedef struct { char pad[0x30]; V4B p; } Cam4B;
+/* the 0x1C4 flag word is a separate blank USO data ref (per-site lui in the target) */
+extern int D_4BAF4_flags;
 extern Cam4B D_4BAF4_cam; /* pinned at 0xA0 (blank USO data ref, base held in a register) */
 void gl_func_0004BAF4(char *self) {
     V4B pos;
@@ -17423,7 +17425,7 @@ void gl_func_0004BAF4(char *self) {
     g = PKT4B(F4B(GS4B, 0x158, Ctx4B *));
     g->w0 = 0xEE000000;
     g->w1 = (iz & 0x7FFF) << 16;
-    if (*(s32 *)((char *)&D_00000000 + 0x1C4) & 2) {
+    if (*(s32 *)((char *)&D_4BAF4_flags + 0x1C4) & 2) {
         if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) {
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }

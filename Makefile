@@ -680,7 +680,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 152: 3B2EC NM p.x / p.z read through &p (920 -> 928 bytes, target 940): 0x2e9bc -> 0x2e9c4 (62F08 NM offset 0x2e974).
 # agent-c run 153: 578B4 NM two-arg default call (2421 -> 2419 words = target): 0x2e9c4 -> 0x2e9bc (62F08 NM offset 0x2e96c).
 # agent-c run 157: 4B620 NM-only NCC donor (1228 -> 1236 bytes = target): 0x2e9bc -> 0x2e9c4 (62F08 NM offset 0x2e974).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9c4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 157: 4BAF4 NM separate 0x1C4 flag-word symbol (1676 -> 1680 bytes, target 1692): 0x2e9c4 -> 0x2e9c8 (62F08 NM offset 0x2e978).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2e9c8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
