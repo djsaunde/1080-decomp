@@ -8,6 +8,21 @@
  * Declaration order gctx, A, B, mtx, i, j, k, mt, cmd puts gctx / mtx / cmd at the target's homes.
  * Elem's virtuals sit in a 0x5C-byte base (EBase) so the derived members keep their offsets.
  * The arm-1 setup call is an inline `Ctx::setup(Gfx *, int)` (its `this` = the GState context pool temp).
+ * The two matrix arms call one inline `Ctx::push(src, cmd)` (mtx() + the copy call + load()) on the named gctx:
+ * gctx is then stored to its home before the copy call and reloaded after it, word for word the target (kit CVII:
+ * a pointer stored once and reloaded around a call is a temp shared by an inline across that call).
+ * cfe body 88.11 -> 93.96; length 2052 -> 2072 (target 2076).
+ * Still NON_MATCHING: build/non_matching/ only. */
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048AEC (0x81C / 519 words), agent-c run 159.
+ * `void Obj::draw()` (renamed to gl_func_00048AEC with objcopy): the matrix concat into a local f32[4][4],
+ * Ctx::mtx() / next() appends on the GState context (next() with a named count `n`: the target's dl
+ * pointer in a caller-saved register, re-read for the buf; mtx() as `&mh->buf[mh->count++]`, frame 0x160 = target), load(m) / prim(hi, lo) / dlcall(p) DL helpers
+ * (named `g` / `t` per expansion, like the target's per-arm disp homes), three `AIter it = arr.iter();` loops, one per arm (block-scoped `it`, the
+ * return temp pooled across arms like the target's shared sp+196 copy temp), Elem's vptr after 0x5C data
+ * bytes (`it.cur()->draw(this)` = the slot-5 call through +0x5C), the arm-2 Gfx copy of g34.
+ * Declaration order gctx, A, B, mtx, i, j, k, mt, cmd puts gctx / mtx / cmd at the target's homes.
+ * Elem's virtuals sit in a 0x5C-byte base (EBase) so the derived members keep their offsets.
+ * The arm-1 setup call is an inline `Ctx::setup(Gfx *, int)` (its `this` = the GState context pool temp).
  * cfe body 88.11 -> 93.94; length 2052 -> 2056 (target 2076).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
@@ -30,6 +45,7 @@ struct Ctx {
     void prim(u32 hi, u32 lo) { Gfx *g = next(); g->w0 = hi; g->w1 = lo; }
     void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
+    void push(void *src, Mtx *&c) { c = mtx(); func_00000000(src, c); load(c); }
     Mtx *mtx() { return &mh->buf[mh->count++]; }
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
@@ -92,14 +108,10 @@ void Obj::draw() {
         mt = (Mtx *)((char *)&D_00000000_i + 0x3C8A0);
         func_00000000(mtx, mt);
         gctx = GS->ctx;
-        cmd = gctx->mtx();
-        func_00000000(mt, cmd);
-        gctx->load(cmd);
+        gctx->push(mt, cmd);
     } else {
         gctx = GS->ctx;
-        cmd = gctx->mtx();
-        func_00000000(A, cmd);
-        gctx->load(cmd);
+        gctx->push(A, cmd);
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
