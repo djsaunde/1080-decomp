@@ -1827,6 +1827,13 @@ $(GAMELIBS_37938_NM_DONOR): src/game_libs/game_libs_ncc_37938_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037938=$(GAMELIBS_37938_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_NM_DONOR)
+# 36A48 = best-aligned candidate loop (V3 by-value operator= returning V3 &) EXACT NCC donor over an empty placeholder (agent-c run 163).
+GAMELIBS_36A48_DONOR := build/src/game_libs/game_libs_ncc_36A48.cpp.o
+$(GAMELIBS_36A48_DONOR): src/game_libs/game_libs_ncc_36A48.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036A48=$(GAMELIBS_36A48_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36A48_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the

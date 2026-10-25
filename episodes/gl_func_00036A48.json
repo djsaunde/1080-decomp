@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00036A48",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T07:52:32.923618+00:00",
+  "end_time": "2026-10-25T07:52:32.923646+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T07:52:32.923639+00:00",
+      "assistant_text": "NCC C++ donor: V3 with a by-value 'V3 &operator=(V3 v)' -- r = cb(o, dir, arr[i]) goes return temp -> parameter word copy -> float copy into r, the float loads reused by the dot product; returning V3 & adds the 0xC temp between the parameter and return slot; r declared first; one block-scoped unused volatile fills the 0xB0 frame.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 85,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00036A48 (0x154 / 85 words), agent-c run 163.\n * Best-aligned candidate: for each arr[i], r = cb(o, dir, arr[i]) (V3 returned through a hidden\n * pointer, both V3 arguments word-copied into the outgoing area); d = r . dir; keep the index of the\n * largest d (best starts at -1.0f). Load-bearing: V3's `V3 &operator=(V3 v)` taking its argument BY\n * VALUE gives the target's return-temp -> parameter word copy -> float copy into r (the float loads\n * are reused by the dot product); returning `V3 &` (not void) costs the extra 0xC temp between the\n * parameter and the return slot; r declared first is homed at the top of the frame; one block-scoped\n * unused volatile at the end fills the 0xB0 frame. The cfe body reached 97.20. Spliced over an empty\n * placeholder in both build trees. */\ntypedef float f32;\nstruct V3 {\n    f32 x, y, z;\n    V3 &operator=(V3 v) { x = v.x; y = v.y; z = v.z; return *this; }\n};\nextern \"C\" {\nV3 gl_36A48_cb(void *, V3, V3);\n}\nextern \"C\" int gl_func_00036A48(void *o, V3 dir, V3 *arr, int n) {\n    V3 r;\n    f32 best;\n    int bi;\n    int i;\n    f32 d;\n    best = -1.0f;\n    bi = 0;\n    for (i = 0; i < n; i++) {\n        r = gl_36A48_cb(o, dir, arr[i]);\n        d = r.x * dir.x + r.y * dir.y + r.z * dir.z;\n        if (best < d) {\n            best = d;\n            bi = i;\n        }\n    }\n    { volatile int z0; }\n    return bi;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_36A48.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

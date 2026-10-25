@@ -2403,69 +2403,10 @@ Vec3 gl_func_0003695C(int a1, float x0, float y0, float u1,
     return res;
 }
 
-// gl_func_00036A48 — STRUCTURAL PASS (0x154 / 85 words, no episode).
-// Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue — large 0xB0 frame, saves FP callee-save f20). A
-// per-element marshal-and-dispatch loop.
-//
-//   void gl_func_00036A48(O *o, a1, a2, a3, ..., int n) {
-//     // n = stack arg at sp+0xC4 ; varargs saved at sp+0xB4..
-//     float k = -1.0f;                          // f20 = 0xBF800000
-//     if (n <= 0) return;
-//     for (int i = 0; i < n; i++) {
-//       T *e = (T*)(*(int*)(sp+0xC0) + step);   // indexed table
-//       // pack a call frame: o->0, o->8, e->0, e->4, varargs...
-//       arg[2]=o->w_0; arg[3]=o->w_8; arg[5]=e->w_0; arg[6]=e->w_4;
-//       callback(&buf, o, ...);                  // jal 0 (USO cb)
-//     }
-//   }
-//
-// Struct-typing reference: a variadic batch-dispatch leaf. It saves
-//   the incoming a1/a2/a3 into a varargs spill area (sp+0xB4..),
-//   reads an element count from the stack arg at sp+0xC4, and loops
-//   that many times: each iteration gathers fields from the primary
-//   object (o->0x00, o->0x08), an element of an indexed table
-//   (base at sp+0xC0, advanced per iteration; fields +0x00/+0x04),
-//   and the saved varargs, packs them into an on-stack call-frame
-//   argument block (sp+0x08..0x18+), and invokes a USO-relocated
-//   callback (jal 0 → resolved at load) — the per-element processor
-//   (formatter / emitter / draw-each). An FP callee-save (f20 holds
-//   -1.0f) implies the callback or packed args involve a float
-//   sign/scale. A "for each element, marshal args + call handler"
-//   node of the game_libs object subsystem (the iteration backbone
-//   the gl_func_0002FB74 interpreter and the emitter family use to
-//   fan a list out to a uniform handler with extra context).
-// Caps: raw-word USO + USO-relocated jal-0 per-element callback +
-//   on-stack varargs marshalling + indexed-table walk — not exact-
-//   matchable without proper USO mnemonic disasm + the element/
-//   arg structs typed; structural pass only, no byte body.
-// Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
-extern Vec3 gl_36A48_cb(void *, Vec3, Vec3);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_36A48.cpp, REPLACE_FUNC_BODY-spliced over
+ * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
 int gl_func_00036A48(void *o, Vec3 dir, Vec3 *arr, int n) {
-    float best;
-    int bi;
-    int i;
-    Vec3 v;
-    Vec3 r;
-    float d;
-
-    if (1) { Vec3 **q = &arr; int *qq = &n; }
-    best = -1.0f;
-    bi = 0;
-    for (i = 0; i < n; i++) {
-        v = r = gl_36A48_cb(o, dir, arr[i]);
-        d = r.x * dir.x + r.y * dir.y + r.z * dir.z;
-        if (best < d) {
-            best = d;
-            bi = i;
-        }
-    }
-    return bi;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036A48);
-#endif
 
 /* gl_func_00036B9C: 27-insn alloc-or-given + init constructor (sibling
  * of gl_func_0003C814 and gl_func_0003CAA0). Same `goto end` recipe
