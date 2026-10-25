@@ -1,13 +1,15 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_00063964 (280 words; this body 275, the
- * same length as the cfe NM body). NM object only; the ROM build keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_00063964 (280 words; this body 278, cfe NM
+ * body 275). NM object only; the ROM build keeps INCLUDE_ASM.
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): the cfe body's struct-copy staging (`t = d; n = t;`,
  * `t = s1; c1 = t; ... u = r1; w = u; out.x = w.x ...`) is plain C++ Vec3 arithmetic: inline by-value
  * operators (each result goes through the one shared return-copy temp at sp+220) and a BY-VALUE
  * `operator=(V3)` that copies its parameter element-wise (the u -> w -> out tail); `V3 n = va - vb;`
  * declared at its use is copy-constructed (two struct copies, no element-wise tail); fin / va / vb / out /
  * count declared first in that order give the target's homes. No pads, no empty tests. 84.94 standalone
- * (cfe NM 77.49). LEFT: the target reloads va / vb from their homes for the subtraction (ours forwards the
- * sums and spills them), the 0 + va.y accumulate, n one word low. */
+ * (cfe NM 77.49). Then `V3 out(0.0f, 0.0f, 0.0f);` CONSTRUCTED at the zeroing point (not declared up top
+ * and zeroed): probably the folded this==0 test of the ctor ends the basic block; the subtraction reloads va / vb
+ * from their homes exactly like the target (what the cfe `if (1) {}` imitated): 88.74, length 1112.
+ * LEFT: frame 312 vs 328 (low temps), the 0 + va.y accumulate. */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
@@ -26,14 +28,13 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     V3 fin;
     V3 va;
     V3 vb;
-    V3 out;
     int count;
     char *p = o->probe;
     gl_func_00000000(p, &o->pa, &va, o);
     gl_func_00000000(p, &o->pb, &vb, o);
     va += o->pos;
     vb += o->pos;
-    out.zero();
+    V3 out(0.0f, 0.0f, 0.0f);
     V3 n = va - vb;
     count = 0;
     acc = 0.0f;
