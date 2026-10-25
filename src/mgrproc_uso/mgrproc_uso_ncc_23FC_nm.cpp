@@ -14,6 +14,8 @@
  * ring runs one register behind the target from the first 0x508 increment on,
  * and the loop counter / bound / n take v1 / t0 / t1 where the target has
  * t0 / t1 / t2 (the target keeps the per-glyph 0x798 reload in v1 / v0).
+ * Run 172 later: the glyph `c` as u8 (was s32) -> the loop counter / bound / n take the target's t0 / t1 / t2
+ * (78 -> 54 words, 98.20 -> 98.70); left: c in v1 (target v0), the 0x798 reload pair and the t-ring.
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -38,7 +40,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     s32 w;
     s32 xoff;
     s32 vt;
-    s32 c;
+    u8 c;
     s32 flag;
     char *panel;
     s32 i;
