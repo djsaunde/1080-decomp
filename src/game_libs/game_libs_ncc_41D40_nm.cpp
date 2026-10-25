@@ -4,7 +4,9 @@
  * printing each element's +0xC and notifying its +0x14 owner. cfe body 92.99 (408 of 412 bytes) -> 96.11 at
  * 412 bytes = target with a block of six unused volatiles at the end (frame 0x88). Residual: the array pointer
  * load before the iterator construct (target: in the bnez delay slot), next()'s result in s1 (target v1 / a0:
- * the pooled return temp merges with a call-crossing slot) and the s1 / s2 order. Still NON_MATCHING. */
+ * the pooled return temp merges with a call-crossing slot) and the s1 / s2 order. Still NON_MATCHING. * agent-c run 164: the iterator from a free `inline AIter iter(Arr *a) { return AIter(a); }` instead of the member
+ * Arr::iter() (the member's implicit this was an extra pooled temp between the iterator objects): 95.76 -> 98.97 local.
+ */
 extern "C" {
 void *gl_func_00034458(...);
 extern char D_00000000[];
@@ -25,12 +27,12 @@ struct AIter : IBase {
     Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
     Elem *cur() { return (*a)[idx]; }
 };
-inline AIter Arr::iter() { return AIter(this); }
+inline AIter iter(Arr *a) { return AIter(a); }
 extern "C" void gl_func_00041D40(int arg0) {
     gl_func_00034458(S(0x1F6B4));
     (*(Arr **)D_00000000)->count = 0;
     gl_func_00034458(arg0);
-    AIter it = (*(Arr **)D_00000000)->iter();
+    AIter it = iter(*(Arr **)D_00000000);
     while (it.next()) {
         Elem *e = it.cur();
         gl_func_00034458(S(0x1F6C0), e->xC);
