@@ -10,6 +10,7 @@
  * target's s2), the m34 argument through an inline `p34()`, next() as `if (idx < last) return ...; return 0;`
  * (the result in v0 like the target), DLHead appends without a named count (`&head->buf[head->count++]`), `hit` declared after `rowStart`, c / e / j / m in their blocks,
  * `o->rows7C[k]` in a for loop (uopt's strength-reduced offset lands at sp+0x48 like the target).
+ * AIter(Arr *) keeps its parameter with `if (0) { arr = 0; }` (the IBase this temp then takes v1 like the target, 96.52 -> 96.63).
  * Seven `pad` words at the top are still unexplained named homes (target: 10 words above `it`; o, j, i are the other three).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8;
@@ -55,12 +56,13 @@ struct IBase {
     IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
 };
 struct AIter : IBase {
-    AIter(Arr *arr) : IBase(arr) {}
+    AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
     Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
 inline AIter Arr::iter() { return AIter(this); }
+
 struct Grid { int w; int n; char pad8[0x18 - 0x8]; s16 *tbl18; int *row1C; };
 struct Ent { u16 key; char pad[6]; };
 struct BB {
