@@ -7233,6 +7233,10 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 //   STRUCTURAL body below — basis-vector setup + cb normalize +
 //   transform-built flag skeleton only. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
+/* EXACT 2026-10-24 (agent-g run 166, docs/IDO_CODEGEN.md kit CVII) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp, REPLACE_FUNC_BODY-spliced into both trees
+ * (Makefile TIMB5_B368_DONOR; pins timproc_uso_b5_func_0000B368_bss / timb5_B368_gscale = 0).
+ * The cfe body below is the superseded NM attempt, kept for its decode notes only. */
 #ifdef NON_MATCHING
 /* PASS-3 2026-07-23 (agent-g): B624/B154-twin kit pass rebuilt from the
  * expected/.o ground truth (frame 320). Same skeleton as B154 (head delta +

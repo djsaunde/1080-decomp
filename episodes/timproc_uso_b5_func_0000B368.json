@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_0000B368",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T03:35:57.542407+00:00",
+  "end_time": "2026-10-25T03:35:57.542438+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T03:35:57.542432+00:00",
+      "assistant_text": "NCC C++ port on the AC20 recipe: static x/y + z via pointer-param rel(), pooled o->q.rot() this temp, V3 without user operator= and both scaled vectors in one expression (second return temp), frame homes via named inline locals and buffer sizes",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 173,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000B368 (0x2B4 / 173 words): AC20's sibling\n * (reference-point offset normalised, quaternion rebuilt from three axis-angle rotations, optional\n * 0727A4 / 0714D4 orientation, sE8..sF0 = f118, then pos += (pool * gscale) * f128).\n * Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY; its .bss relocs are renamed\n * timproc_uso_b5_func_0000B368_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8), the\n * gscale base timb5_B368_gscale pinned to 0. agent-g run 166 (docs/IDO_CODEGEN.md kit CVII):\n * - the AC20 recipe: file-local x / y pair + z read through rel()'s pointer parameter with an\n *   `if (0)` keeper, o->q.rot() via edg's pooled `this` temp, nested angle blocks;\n * - V3 with NO user operator= and both scaled vectors in ONE expression\n *   `s224 = (s240 = pool(...)) * o->f128`: implicit memberwise copies = the target's word copies,\n *   and the scale gets its own second return temp (sp+76, `addiu v0,sp,76`);\n * - frame homes: an arm-level `f32 ang` between s240 and s224, rel()'s x through a named\n *   reference (inline-body local, homed below rel's return temp), the 0727A4 buffer as 16 words,\n *   operator+= returning V3 &, and operator*'s factor copied into a named local `k` (homed below\n *   the scale's return temp; the reference parameter's own temp sat above it).\n * History: runs 142-157 cfe lift / relPos helpers (87.47 -> 95.71). */\ntypedef float f32; typedef int s32; typedef double f64;\n#define FW(p, o) (*(s32 *)((char *)(p) + (o)))\nextern \"C\" {\nextern char import_80087DA8;\nvoid *timproc_uso_b5_func_071028(...);\nvoid timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);\nvoid timproc_uso_b5_func_0727A4(void *src, void *dst);\nvoid import_0010806C(void *src, void *dst);\nvoid timproc_uso_b5_func_0714D4(void *quat, void *vec, f32 scale, s32 flag);\nvoid timproc_uso_b5_func_06970C(void *obj, s32 val);\nvoid timproc_uso_b5_func_054CAC(void *obj);\nextern f32 timb5_B368_gscale;\n}\nstatic float sXY[2]; static float sZ;\nstruct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }\n    V3 &operator+=(const V3 &v) { x += v.x; y += v.y; z += v.z; return *this; } };\ninline V3 rel(const V3 &a, f32 *g) { f32 &x = g[0]; if (0) { x = a.x; } return V3(a.x - x, a.y - g[1], a.z - sZ); }\ninline V3 pool(f32 *g, const f32 &s) { if (0) { g[0] = s; } return V3(g[0] * s, g[1] * s, sZ * s); }\ninline V3 operator*(const V3 &a, const f32 &s) { f32 k = s; return V3(a.x * k, a.y * k, a.z * k); }\nstruct Quat {\n    f32 x, y, z, w;\n    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }\n};\nstruct Obj {\n    char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;\n    f32 f10C, f110, f114, f118; char p11C[0x124 - 0x11C]; s32 i124; f32 f128; s32 i12C;\n};\nextern \"C\" void timproc_uso_b5_func_0000B368(Obj *o) {\n    V3 d = rel(o->pos, &sXY[0]);\n    timproc_uso_b5_func_071028(&d);\n    if (FW(o, 0x140) != 0) {\n        V3 s240;\n        f32 ang;\n        V3 s224;\n        o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;\n        { ang = o->f110; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }\n        { f32 ang = o->f10C; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f114; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }\n        if (FW(o, 0x13C) != 0) {\n            s32 m7C[16];\n            s32 m6C[4];\n            timproc_uso_b5_func_0727A4(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);\n            import_0010806C(m7C, m6C);\n            timproc_uso_b5_func_0714D4(&o->q, m6C, o->f128, 0);\n        }\n        o->sE8 = o->f118; o->sEC = o->f118; o->sF0 = o->f118;\n        s224 = (s240 = pool(&sXY[0], timb5_B368_gscale)) * o->f128;\n        o->pos += s224;\n        timproc_uso_b5_func_06970C(o->m108, o->i124);\n        timproc_uso_b5_func_054CAC(o);\n        o->i12C = 1;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000B368.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "objdiff 100; make ROM cmp identical; verify-blocks 6/6"
+  }
+}

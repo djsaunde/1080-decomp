@@ -5219,3 +5219,6 @@ D_timb5_AC20_w0 = 0x00000000;
 D_timb5_AC20_w1 = 0x00000000;
 D_timb5_AC20_w2 = 0x00000000;
 D_timb5_AC20_w3 = 0x00000000;
+/* timproc_uso_b5_func_0000B368 NCC donor: its file-local reference point (.bss reloc renamed by the splice) and the blank gscale base */
+timproc_uso_b5_func_0000B368_bss = 0x00000000;
+timb5_B368_gscale = 0x00000000;

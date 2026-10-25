@@ -2899,10 +2899,11 @@ build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_NM_DONOR)
 TIMB5_B154_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B154=$(TIMB5_B154_NM_DONOR)
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B154_NM_DONOR)
-# B368: NM-only NCC comparison donor (AC20 recipe since run 166; 99.16, frame homes left).
-TIMB5_B368_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B368_nm.cpp.o
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B368=$(TIMB5_B368_NM_DONOR)
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B368_NM_DONOR)
+# B368 = AC20's sibling (173/173 words under NCC; implicit V3 copies in one
+# expression for the second return temp, .bss relocs pinned to 0) (agent-g run 166).
+TIMB5_B368_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B368=$(TIMB5_B368_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B368_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
 # (87E8, 8894, 8940 -- and 1DA4 before them) were mis-split return blocks of
