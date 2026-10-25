@@ -1046,6 +1046,7 @@ void arcproc_uso_func_00001604(int *s0) {
  * at the tail) so that temp_v0 (s3), arg2 (s4) and arg1 (s8) all stay in
  * s-regs; IDO here spills the region pointers at birth and temp_v0 across
  * one call instead. No C spelling found that flips the split decision. */
+/* NM object: replaced by the NCC comparison donor arcproc_uso_ncc_16F4_nm.cpp (agent-g run 172). */
 #ifdef NON_MATCHING
 
 
