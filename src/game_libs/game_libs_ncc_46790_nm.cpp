@@ -1,4 +1,7 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046790: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10; q declared before dst puts dst at sp+0 as in the target, 96.54; the pixel store through an inline put(unsigned short *&, v) gives the target a2 reload, 96.61).
+ * agent-c run 160: the glyph column as `(u8)(c & 15)`: the folded byte cast burns one ugen ring slot (IDO_CODEGEN folded-byte-mask-burns-ring-slot-42f4c),
+ * which realigns every later t-register in the function, 96.64 -> 99.25. Residual: the `(c / 16) * 1024` shift and the
+ * loop's high-nibble reads one ring slot apart (t8 / t9 swapped).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -28,7 +31,7 @@ extern "C" void gl_func_00046790(char *o, unsigned char ch, int x, int y) {
     dst += y * 320 + x;
     c = ch;
     if (c < 128) {
-        idx = (c / 16) * 1024 + (c & 15) * 8;
+        idx = (c / 16) * 1024 + (u8)(c & 15) * 8;
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 8; j++) {
                 px = 0;
