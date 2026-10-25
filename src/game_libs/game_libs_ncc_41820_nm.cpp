@@ -8,8 +8,9 @@
  * The first two attaches as a FREE inline lnk(Rec *q, Self *s) with q first and kept: a member call on this
  * allocates a pooled `this` temp that took the Arr temp's slot, so q sat one slot lower (0x2C); q-first puts q in
  * the target's sp+0x30 slot and colours it a2 (97.73 -> 98.16 local).
- * Residual: the second attach's this reload is a t-ring temp (target v0), which shifts the t-ring by one through
- * the O44 tail. cfe body 94.72. Still NON_MATCHING. */
+ * A trailing dead `if (s) {}` in lnk (kit XLVI lever E; it acts through the SECOND attach) makes that attach's
+ * this reload a coloured v0 and realigns the O44 tail's t-ring (98.16 -> 98.81 local).
+ * Residual (3 words): the first attach's this reload is v0 (target v1). cfe body 94.72. Still NON_MATCHING. */
 extern "C" {
 int gl_func_00000000(...);
 void gl_func_00000000_41820v();
@@ -39,7 +40,7 @@ struct Self : SB {
     void link(Rec *q) { if (0) { q = 0; } gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
     void linkN(Rec *q) { gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
 };
-inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; }
+inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} }
 void Self::init() {
     int local[3];
     gl_func_00000000(D_00000000 + 0x1F5F0, D_41820_a++);
