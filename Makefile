@@ -1731,14 +1731,14 @@ $(GAMELIBS_4B620_NM_DONOR): src/game_libs/game_libs_ncc_4B620_nm.cpp
 	$(OBJCOPY) --redefine-sym __ct__3ObjFPv=gl_func_0004B620 --redefine-sym __ct__2BBFPcPvi=gl_func_00000000_4b620_base $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B620=$(GAMELIBS_4B620_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B620_NM_DONOR)
-# 41820 = C++ `void Self::init()` (new Arr, Self::link attach member with a kept q, new O44, closing virtual); NCC NM-only donor (agent-c run 173, cfe 94.72), symbols renamed (names only).
-GAMELIBS_41820_NM_DONOR := build/src/game_libs/game_libs_ncc_41820_nm.cpp.o
-$(GAMELIBS_41820_NM_DONOR): src/game_libs/game_libs_ncc_41820_nm.cpp
+# 41820 = C++ `void Self::init()` (new Arr, free q-first attach inline with a kept q, new O44, closing virtual); symbols renamed (names only). EXACT NCC donor over an empty placeholder (agent-c run 173).
+GAMELIBS_41820_DONOR := build/src/game_libs/game_libs_ncc_41820.cpp.o
+$(GAMELIBS_41820_DONOR): src/game_libs/game_libs_ncc_41820.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym init__4SelfFv=game_libs_func_00041820 --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=D_41820_h $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00041820=$(GAMELIBS_41820_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41820_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00041820=$(GAMELIBS_41820_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41820_DONOR)
 # 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents; NM-only donor (agent-c run 157, cfe 92.03).
 GAMELIBS_4BAF4_NM_DONOR := build/src/game_libs/game_libs_ncc_4BAF4_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004BAF4=$(GAMELIBS_4BAF4_NM_DONOR)

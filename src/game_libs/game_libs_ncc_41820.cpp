@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for game_libs_func_00041820 (0x24C / 147 words), agent-c run 173
+/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_00041820 (0x24C / 147 words), agent-c run 173, spliced over an
+ * empty placeholder in game_libs_post0b.c in both build trees
  * (from the run-164 draft, kit CXVI item 5). `void Self::init()` (rename init__4SelfFv): D_41820_e = new Arr(10)
  * (inline ctor cap / n / data = new int[c]), Self : SB (0x28 data bytes + 12 virtuals, m2C at +0x2C), the attach
  * blocks as the member Self::link(Rec *q) with a KEPT q (`if (0) { q = 0; }`: the q reload from its pooled home
@@ -10,7 +11,9 @@
  * the target's sp+0x30 slot and colours it a2 (97.73 -> 98.16 local).
  * A trailing dead `if (s) {}` in lnk (kit XLVI lever E; it acts through the SECOND attach) makes that attach's
  * this reload a coloured v0 and realigns the O44 tail's t-ring (98.16 -> 98.81 local).
- * Residual (3 words): the first attach's this reload is v0 (target v1). cfe body 94.72. Still NON_MATCHING. */
+ * The first attach through lnkB, which keeps the call result `int r = gl(...)` with a trailing `if (r) {}`: v0 stays
+ * live through that attach, so its this reload takes v1 like the target; one end-of-body volatile (not two) then puts
+ * the &m10 spill back at sp+0x1C. cfe body 94.72. */
 extern "C" {
 int gl_func_00000000(...);
 void gl_func_00000000_41820v();
@@ -41,6 +44,7 @@ struct Self : SB {
     void linkN(Rec *q) { gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
 };
 inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} }
+inline void lnkB(Rec *q, Self *s) { if (0) { q = 0; } int r = gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} if (r) {} }
 void Self::init() {
     int local[3];
     gl_func_00000000(D_00000000 + 0x1F5F0, D_41820_a++);
@@ -65,11 +69,11 @@ void Self::init() {
     m10 = 0;
     m2C = 0;
     D_41820_g = 0;
-    lnk(D_41820_f, this);
+    lnkB(D_41820_f, this);
     lnk(D_41820_b, this);
     gl_func_00000000(D_00000000_3c740);
     gl_func_00000000(D_41820_c);
     linkN(new O44);
     v12();
-    { volatile int e0, e1; }
+    { volatile int e0; }
 }

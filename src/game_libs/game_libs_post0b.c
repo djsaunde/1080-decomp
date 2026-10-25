@@ -10898,83 +10898,10 @@ void gl_func_000417CC(int *a0) {
  * pointer with a nop jalr delay (build loads fn first and fills the delay
  * with the addu; fn-local, arg-local, q-reuse, inline all give the same),
  * so the build is 4 bytes SHORTER (146 vs 147 words). objdiff 94.59. */
-#ifdef NON_MATCHING
-extern int gl_func_00000000();
-extern int D_00000000;
-extern int D_41820_a;         /* sym1800 @0x1F4C8 init counter */
-extern int import_80000310;   /* sym1820 absolute kernel global, 0x17D7 guard */
-extern int D_41820_b;         /* sym805 @0x3EF04 record pointer */
-extern int D_00000000_3c740;  /* sym73 */
-extern int D_41820_c;         /* sym154 @0x3C168 */
-extern int D_41820_d;         /* sym1799 @0x3C7B0 */
-extern int *D_41820_e;        /* sym541 @0x3C050 record pointer (stored) */
-extern int D_41820_f;         /* sym1802 @0x3C7BC record pointer */
-extern int D_41820_g;         /* sym1671 @0x1EBD0 */
-extern int D_41820_h;         /* sym1827 @0x1F748 */
-extern void gl_func_00000000_41820v();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41820.cpp (`void Self::init()`),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 173). */
 void game_libs_func_00041820(char *self) {
-    int local[3];
-    int *q;
-    int *r2;
-    int n;
-    int arg;
-    int *obj;
-
-    n = D_41820_a;
-    D_41820_a = n + 1;
-    gl_func_00000000((char *)&D_00000000 + 0x1F5F0, n);
-    if (import_80000310 != 0x17D7) {
-        gl_func_00000000((char *)&D_00000000 + 0x1F600);
-    }
-    gl_func_00000000((char *)&D_00000000 + 0x1F618);
-    gl_func_00000000(D_41820_b, 1);
-    gl_func_00000000((char *)&D_00000000 + 0x1F624);
-    gl_func_00000000(&D_00000000_3c740, 1);
-    local[0] = 0x10;
-    gl_func_00000000(self, local);
-    gl_func_00000000(&D_00000000_3c740);
-    gl_func_00000000(&D_41820_c);
-    gl_func_00000000(1);
-    gl_func_00000000(1);
-    gl_func_00000000(&D_41820_d, 100);
-    q = (int *)gl_func_00000000(20);
-    if (q != 0) {
-        q[2] = 10;
-        q[3] = 0;
-        q[0] = gl_func_00000000(40);
-    }
-    D_41820_e = q;
-    gl_func_00000000(1);
-    gl_func_00000000(D_41820_f, 1);
-    gl_func_00000000_41820v();
-    *(int *)(self + 0x10) = 0;
-    *(int *)(self + 0x2C) = 0;
-    D_41820_g = 0;
-    q = (int *)D_41820_f;
-    gl_func_00000000((int *)(self + 0x10), q);
-    if (q[5] != 0) q[1] = 1;
-    q[5] = (int)self;
-    q = (int *)D_41820_b;
-    gl_func_00000000((int *)(self + 0x10), q);
-    if (q[5] != 0) q[1] = 1;
-    q[5] = (int)self;
-    gl_func_00000000(&D_00000000_3c740);
-    gl_func_00000000(&D_41820_c);
-    r2 = (int *)gl_func_00000000(44);
-    if (r2 != 0) {
-        gl_func_00000000(r2, (char *)&D_00000000 + 0x1F630);
-        r2[10] = (int)&D_41820_h;
-    }
-    gl_func_00000000((int *)(self + 0x10), r2);
-    if (r2[5] != 0) r2[1] = 1;
-    r2[5] = (int)self;
-    obj = (int *)*(int *)(self + 0x28);
-    arg = *(short *)((char *)obj + 0x60) + (int)self;
-    ((void (*)(int))obj[0x64 / 4])(arg);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00041820);
-#endif
 
 void game_libs_func_00041A6C(int a0) {}
 

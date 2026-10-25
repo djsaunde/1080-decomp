@@ -1,0 +1,32 @@
+{
+  "function_name": "game_libs_func_00041820",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T20:20:19.567622+00:00",
+  "end_time": "2026-10-25T20:20:19.567644+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T20:20:19.567639+00:00",
+      "assistant_text": "NCC C++ donor: void Self::init() (rename init__4SelfFv). The cfe attach blocks are a FREE inline lnk(Rec *q, Self *s) with q first and kept (a member call on this allocates a pooled this temp that steals the Arr new-temp slot; q-first gives q the target's sp+0x30 home and a2), a trailing dead if (s) {} colours the second attach's this reload v0, the first attach keeps the call result (int r = gl(...); if (r) {}) so its this reload takes v1; new Arr(10) with an inline ctor, new O44 through a plain member link, closing virtual v12(); one end-of-body block volatile for frame 0x40.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 147,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_00041820 (0x24C / 147 words), agent-c run 173, spliced over an\n * empty placeholder in game_libs_post0b.c in both build trees\n * (from the run-164 draft, kit CXVI item 5). `void Self::init()` (rename init__4SelfFv): D_41820_e = new Arr(10)\n * (inline ctor cap / n / data = new int[c]), Self : SB (0x28 data bytes + 12 virtuals, m2C at +0x2C), the attach\n * blocks as the member Self::link(Rec *q) with a KEPT q (`if (0) { q = 0; }`: the q reload from its pooled home\n * and the this reload into v0 like the target; draft 93.98 -> 97.57 at 588 bytes = target), the third attach on\n * `new O44` (out-of-line base ctor B44(name), vptr = D_41820_h) through a keep-free linkN (97.73), and the closing\n * virtual v12() through the vptr at +0x28; two end-of-body block volatiles give frame 0x40.\n * The first two attaches as a FREE inline lnk(Rec *q, Self *s) with q first and kept: a member call on this\n * allocates a pooled `this` temp that took the Arr temp's slot, so q sat one slot lower (0x2C); q-first puts q in\n * the target's sp+0x30 slot and colours it a2 (97.73 -> 98.16 local).\n * A trailing dead `if (s) {}` in lnk (kit XLVI lever E; it acts through the SECOND attach) makes that attach's\n * this reload a coloured v0 and realigns the O44 tail's t-ring (98.16 -> 98.81 local).\n * The first attach through lnkB, which keeps the call result `int r = gl(...)` with a trailing `if (r) {}`: v0 stays\n * live through that attach, so its this reload takes v1 like the target; one end-of-body volatile (not two) then puts\n * the &m10 spill back at sp+0x1C. cfe body 94.72. */\nextern \"C\" {\nint gl_func_00000000(...);\nvoid gl_func_00000000_41820v();\nextern char D_00000000[];\nextern int D_41820_a;\nextern int import_80000310;\nextern char D_00000000_3c740[];\nextern char D_41820_c[], D_41820_d[];\nextern int D_41820_g;\n}\ninline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }\nstruct Rec { int f0; int f4; int f8; int fC; int f10; void *f14; };\nstruct Arr { int *data; int f4; int cap; int n; int f10; Arr(int c) { cap = c; n = 0; data = new int[c]; } };\nstruct B44 : Rec { char pad[0x28 - 0x18]; B44(char *name); };\nstruct O44 : B44 { O44() : B44(D_00000000 + 0x1F630) {} virtual void f(); };\nextern \"C\" { extern Rec *D_41820_b; extern Arr *D_41820_e; extern Rec *D_41820_f; }\nstruct SB {\n    char pad[0x10];\n    int m10;\n    char pad14[0x28 - 0x14];\n    virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6();\n    virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();\n};\nstruct Self : SB {\n    int m2C;\n    void init();\n    void link(Rec *q) { if (0) { q = 0; } gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }\n    void linkN(Rec *q) { gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }\n};\ninline void lnk(Rec *q, Self *s) { if (0) { q = 0; } gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} }\ninline void lnkB(Rec *q, Self *s) { if (0) { q = 0; } int r = gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} if (r) {} }\nvoid Self::init() {\n    int local[3];\n    gl_func_00000000(D_00000000 + 0x1F5F0, D_41820_a++);\n    if (import_80000310 != 0x17D7) {\n        gl_func_00000000(D_00000000 + 0x1F600);\n    }\n    gl_func_00000000(D_00000000 + 0x1F618);\n    gl_func_00000000(D_41820_b, 1);\n    gl_func_00000000(D_00000000 + 0x1F624);\n    gl_func_00000000(D_00000000_3c740, 1);\n    local[0] = 0x10;\n    gl_func_00000000(this, local);\n    gl_func_00000000(D_00000000_3c740);\n    gl_func_00000000(D_41820_c);\n    gl_func_00000000(1);\n    gl_func_00000000(1);\n    gl_func_00000000(D_41820_d, 100);\n    D_41820_e = new Arr(10);\n    gl_func_00000000(1);\n    gl_func_00000000(D_41820_f, 1);\n    gl_func_00000000_41820v();\n    m10 = 0;\n    m2C = 0;\n    D_41820_g = 0;\n    lnkB(D_41820_f, this);\n    lnk(D_41820_b, this);\n    gl_func_00000000(D_00000000_3c740);\n    gl_func_00000000(D_41820_c);\n    linkN(new O44);\n    v12();\n    { volatile int e0; }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_41820.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}
