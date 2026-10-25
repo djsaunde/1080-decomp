@@ -12,6 +12,7 @@
  * Then 95.07 -> 96.82: the 8 / 8 text-state words as one chained assignment, the 0x50 / 0x32 pair as
  * `m220 = (m21c = 0x32, 0x50)` (the target materialises 0x32 first), and the first print call's rectangle
  * read into named x / y / w / h locals (from one `Obj254 *o` copy) before the call.
+ * The two vtrans halfwords carry a folded `& 0xFFFF` (one ugen ring slot each): 96.82 -> 97.15.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef short s16;
 struct Rec { char pad[0x1C]; int a; char p20[0x30 - 0x20]; int b; char p34[0x44 - 0x34]; int c; char p48[0x50 - 0x48]; };
@@ -57,8 +58,8 @@ inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
     v->vscale[3] = 0;
     v->vtrans[2] = 0x1FF;
     v->vtrans[3] = 0;
-    v->vtrans[0] = (s32)(x * 4.0f + w * 2.0f);
-    v->vtrans[1] = (s32)(y * 4.0f + h * 2.0f);
+    v->vtrans[0] = (s32)(x * 4.0f + w * 2.0f) & 0xFFFF;
+    v->vtrans[1] = (s32)(y * 4.0f + h * 2.0f) & 0xFFFF;
 }
 
 extern "C" void game_libs_func_00042938(void) {
