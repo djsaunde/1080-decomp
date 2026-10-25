@@ -7818,8 +7818,8 @@ void timproc_uso_b5_func_0000BDEC(char *arg0, char *arg1, int arg2) {
                      (int)(denom * *(float *)(arg1 + 0x4A0)));
     if (*(int *)(arg0 + 0x2B4) & 0x20000) {
         c = 192.0f / denom;
+        col[0] = c; /* run 163: col[0] before the f2 divide (relocation sweep, 95.65 -> 95.82) */
         f2 = (float)255 / denom;
-        col[0] = c;
         col[1] = c;
         col[2] = c;
         col[3] = f2;
