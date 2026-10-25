@@ -6,8 +6,11 @@
  * V4 declared FIRST (frame top) and filled by an inline set(); (f128 - f12C) * f11C operand
  * order; the 0x140 counter incremented as a plain store (a ++ result took a uopt colour):
  * cfe 92.29 -> 98.87 standalone.
- * RESIDUAL: the head temp one word high / the axis temps one word low; the V4 w value is in
- * f12 (target f0: set()'s float parameters share edg's pooled float temps with V3's ctor). */
+ * Then rel() with only dx named (anchor) and z through a third pointer parameter (a pointer
+ * parameter's temp is homed ABOVE the inline's return temp, a named inline local BELOW it):
+ * head exact, 98.90. RESIDUAL: dx's home sits between the head temp and the axis vectors
+ * (target: one word lower, between a3 and the pooled this temp); the V4 w value is in f12
+ * (target f0: set()'s float parameters share edg's pooled float temps with V3's ctor). */
 typedef float f32; typedef int s32; typedef double f64;
 extern "C" {
 extern char import_8005C108;
@@ -20,7 +23,7 @@ void timproc_uso_b5_func_054CAC(void *obj);
 static float sXY[2]; static float sZ;
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void operator=(V3 o) { x = o.x; y = o.y; z = o.z; } };
 struct V4 { f32 x, y, z, w; V4() {} void set(f32 a, f32 b, f32 c, f32 d) { x = a; y = b; z = c; w = d; } };
-inline V3 rel(const V3 &a, f32 *g) { f32 dx; f32 dy; while (0) { dx = 0.0f; } dx = a.x - g[0]; dy = a.y - g[1]; return V3(dx, dy, a.z - sZ); }
+inline V3 rel(const V3 &a, f32 *g, f32 *z) { f32 dx; while (0) { dx = 0.0f; } dx = a.x - g[0]; return V3(dx, a.y - g[1], a.z - *z); }
 struct Quat {
     f32 x, y, z, w;
     void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
@@ -32,7 +35,7 @@ struct Obj {
 };
 extern "C" void timproc_uso_b5_func_0000B154(Obj *o) {
     V4 r;
-    V3 d = rel(o->pos, &sXY[0]);
+    V3 d = rel(o->pos, &sXY[0], &sZ);
     timproc_uso_b5_func_071028(&d);
     o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
     { f32 ang = o->f110; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }

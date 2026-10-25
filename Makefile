@@ -2895,7 +2895,7 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_B624_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_NM_DONOR)
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_NM_DONOR)
-# B154: NM-only NCC comparison donor (AC20 family recipe, run 166; 98.87).
+# B154: NM-only NCC comparison donor (AC20 family recipe, run 166; 98.90).
 TIMB5_B154_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B154=$(TIMB5_B154_NM_DONOR)
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B154_NM_DONOR)
