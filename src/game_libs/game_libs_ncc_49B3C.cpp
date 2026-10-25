@@ -33,7 +33,7 @@ struct LNode { Elem *data; LNode *next; };
 struct LIter {
     LNode *cur, *nx;
     LIter(LNode *h) { nx = h; }
-    Elem *next() { return (cur = nx) != 0 ? (nx = cur->next, cur->data) : 0; }
+    Elem *next() { return (cur = nx) ? (nx = nx->next, cur->data) : 0; } /* run 173: 34890 spelling (nx->next, no != 0) */
 };
 struct Sub { char pad[0x10]; LNode *head; };
 struct Obj { char pad[0x2C]; Sub *sub; char pad30[0x40 - 0x30]; int x40; int x44; char pad48[0x84 - 0x48]; Arr arr; char pad94[0x9C - 0x94]; int x9C; char padA0[4]; int xA4; };
