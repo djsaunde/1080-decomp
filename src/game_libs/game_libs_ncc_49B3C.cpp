@@ -37,6 +37,7 @@ struct LIter {
 };
 struct Sub { char pad[0x10]; LNode *head; };
 struct Obj { char pad[0x2C]; Sub *sub; char pad30[0x40 - 0x30]; int x40; int x44; char pad48[0x84 - 0x48]; Arr arr; char pad94[0x9C - 0x94]; int x9C; char padA0[4]; int xA4; };
+inline void cb5c(Elem *e) { if (0) { e = 0; } e->vt5C->fn28(e->vt5C->d24 + (char *)e); } /* run 173: the per-element callback through a kept Elem * parameter */
 inline AIter iter(Arr *a) { return AIter(a); } /* run 173: kit CXVI free iter() */
 extern "C" void gl_func_00049B3C(Obj *self) {
     gl_func_00000000(D_49B3C_s1, S(0x1FFD4), 0);
@@ -47,7 +48,7 @@ extern "C" void gl_func_00049B3C(Obj *self) {
     AIter it = iter(&self->arr);
     while (it.next()) {
         Elem *e = it.cur();
-        e->vt5C->fn28(e->vt5C->d24 + (char *)e);
+        cb5c(e);
     }
     gl_func_00000000(D_49B3C_s5, S(0x20004), &self->xA4, -1, self->arr.pad8, 0);
     if (self->sub != 0) {
