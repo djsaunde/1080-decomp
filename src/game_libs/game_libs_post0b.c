@@ -10829,80 +10829,10 @@ void game_libs_func_000412E0(void) {}
 // distinct per-section extern aliases (D_412E8_a..m, = 0 in
 // undefined_syms_auto.txt) defeat cross-section &D CSE/spill. cb =
 // gl_func_00034458 (K&R, direct jal). Full body INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-extern int D_412E8_a;
-extern int D_412E8_e;
-extern int D_412E8_f;
-extern int D_412E8_g;
-extern int D_412E8_h;
-extern int D_412E8_i;
-extern int D_412E8_j;
-extern int D_412E8_k;
-extern int D_412E8_l;
-extern int D_412E8_m;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_412E8.cpp, REPLACE_FUNC_BODY-spliced over
+ * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
 void gl_func_000412E8(void) {
-    s32 *temp_v0;
-    s32 *var_s0;
-    s32 *var_v1;
-    s32 *var_a0;
-
-    var_s0 = (s32 *)&D_412E8_a;
-    if (((s32)&D_412E8_a != 0) || (temp_v0 = (s32 *)gl_func_00034458(0x1E0), var_s0 = temp_v0, (temp_v0 != 0))) {
-        var_v1 = (s32 *)((char *)var_s0 + 0x138);
-        if ((var_s0 != (s32 *)-0x138) || (temp_v0 = (s32 *)gl_func_00034458(8), var_v1 = temp_v0, (temp_v0 != 0))) {
-            FW(var_v1, 0x4) = 0;
-            FW(var_v1, 0x0) = 0;
-        }
-        var_v1 = (s32 *)((char *)var_s0 + 0x140);
-        if ((var_s0 != (s32 *)-0x140) || (temp_v0 = (s32 *)gl_func_00034458(8), var_v1 = temp_v0, (temp_v0 != 0))) {
-            FW(var_v1, 0x4) = 0;
-            FW(var_v1, 0x0) = 0;
-        }
-        var_v1 = (s32 *)((char *)var_s0 + 0x18C);
-        if ((var_s0 != (s32 *)-0x18C) || (temp_v0 = (s32 *)gl_func_00034458(4), var_v1 = temp_v0, (temp_v0 != 0))) {
-            *var_v1 = 0;
-        }
-        var_v1 = (s32 *)((char *)var_s0 + 0x1C4);
-        if (((var_s0 != (s32 *)-0x1C4) || (temp_v0 = (s32 *)gl_func_00034458(4), var_v1 = temp_v0, (temp_v0 != 0))) && ((var_a0 = var_v1, (var_v1 != 0)) || (temp_v0 = (s32 *)gl_func_00034458(4), var_a0 = temp_v0, (temp_v0 != 0)))) {
-            *var_a0 = 0;
-        }
-    }
-    var_s0 = (s32 *)((char *)&D_412E8_e + 0x234);
-    if ((((s32)&D_412E8_e != -0x234) || (temp_v0 = (s32 *)gl_func_00034458(0xC), var_s0 = temp_v0, (temp_v0 != 0))) && ((var_v1 = var_s0, (var_s0 != 0)) || (temp_v0 = (s32 *)gl_func_00034458(8), var_v1 = temp_v0, (temp_v0 != 0)))) {
-        FW(var_v1, 0x4) = 0;
-        FW(var_v1, 0x0) = 0;
-    }
-    var_s0 = (s32 *)((char *)&D_412E8_f + 0x294);
-    if (((s32)&D_412E8_f != -0x294) || (temp_v0 = (s32 *)gl_func_00034458(0x18), var_s0 = temp_v0, (temp_v0 != 0))) {
-        gl_func_00034458(var_s0);
-    }
-    var_s0 = (s32 *)((char *)&D_412E8_g + 0x378);
-    if (((s32)&D_412E8_g != -0x378) || (temp_v0 = (s32 *)gl_func_00034458(0x25C), var_s0 = temp_v0, (temp_v0 != 0))) {
-        gl_func_00034458(var_s0, 0x32, 0xC, (char *)&D_412E8_h);
-    }
-    var_s0 = (s32 *)&D_412E8_i;
-    if (((s32)var_s0 != 0) || (temp_v0 = (s32 *)gl_func_00034458(0x1C), var_s0 = temp_v0, (temp_v0 != 0))) {
-        var_v1 = var_s0;
-        if (((var_s0 != 0) || (temp_v0 = (s32 *)gl_func_00034458(4), var_v1 = temp_v0, (temp_v0 != 0))) && ((var_a0 = var_v1, (var_v1 != 0)) || (temp_v0 = (s32 *)gl_func_00034458(4), var_a0 = temp_v0, (temp_v0 != 0)))) {
-            *var_a0 = 0;
-        }
-        FW(var_s0, 0x18) = (s32)&D_412E8_j;
-    }
-    FW((char *)&D_412E8_l, 0x18) = (s32)&D_412E8_k; if (1) {}
-    var_s0 = (s32 *)&D_412E8_m;
-    if (((s32)var_s0 != 0) || (temp_v0 = (s32 *)gl_func_00034458(4), var_s0 = temp_v0, (temp_v0 != 0))) {
-        var_v1 = var_s0;
-        if ((var_v1 != 0) || (temp_v0 = (s32 *)gl_func_00034458(4), var_v1 = temp_v0, (temp_v0 != 0))) {
-            *var_v1 = 0;
-        }
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000412E8);
-#endif
 
 /* gl_func_00041524: alloc-or-given constructor + init + vtable
  * install + sub-alloc. Ternary-alloc form (obj reuses a0/a2, single

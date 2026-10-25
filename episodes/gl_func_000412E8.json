@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_000412E8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T07:59:33.843618+00:00",
+  "end_time": "2026-10-25T07:59:33.843635+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T07:59:33.843631+00:00",
+      "assistant_text": "NCC C++ donor: the function is the __sti__ static initializer of global objects. Every this==0 protocol object is a MEMBER of a holder with no user ctor (a TU-defined object folds its own this==0 test; a member at holder+off compares &holder != -off like the target); I's W4 is a base class so the vptr store follows it; L has no user ctor (bare vtable store); G's El[50] array member gives the __vec_new(this, 50, 12, ctor) call.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 143,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000412E8 (0x23C / 143 words), agent-c run 163.\n * It is the static initializer (__sti__) of four global objects, each built through edg's cfront\n * `this == 0 -> allocate` protocol for every user-declared constructor:\n *  - D_412E8_a: a holder with NO user ctor (so no protocol of its own) whose members A (0x1E0: two\n *    8-byte pairs, a word, a wrapped word), E (0xC), F (0x18, ctor calls an out-of-line init) and G\n *    (0x25C: El[50] -> __vec_new(this, 50, 12, El::El)) sit at +0 / +0x234 / +0x294 / +0x378. A member\n *    at holder+off compares `&holder != -off` (the target's `li at, -0x234; bne`); a TU-defined object\n *    itself would have its own this==0 test folded away, which is why every protocol object is a member.\n *  - D_412E8_i: holder of I, whose W4 is a BASE (built before the vptr store at +0x18).\n *  - D_412E8_l: L has a vptr and no user ctor -> a bare vtable store.\n *  - D_412E8_m: holder of a W4.\n * The cfe body (92.24) needed per-site section aliases. The Makefile renames the __sti__ symbol and\n * the El ctor / vtables / __vec_new references (symbol names only). Spliced over an empty\n * placeholder in both build trees. */\nextern \"C\" void *gl_func_00000000(...);\ninline void *operator new(unsigned n) { return gl_func_00000000(n); }\nstruct M8 { int a, b; M8() { b = 0; a = 0; } };\nstruct M4 { int a; M4() { a = 0; } };\nstruct W4 { M4 m; W4() {} };\nstruct A { char p0[0x138]; M8 m138; M8 m140; char p148[0x18C - 0x148]; M4 m18C; char p190[0x1C4 - 0x190]; W4 w1C4; char p1C8[0x1E0 - 0x1C8]; A() {} };\nstruct E { M8 m; int x; E() {} };\nstruct F { char p[0x18]; F() { gl_func_00000000(this); } };\nstruct El { char p[0xC]; El(); };\nstruct G { El e[50]; int n; G() {} };\nstruct I : W4 { char p[0x18 - 4]; virtual void f(); I() {} };\nstruct HI { I i; };\nstruct HM { W4 w; };\nstruct L { char p[0x18]; virtual void f(); };\nstruct Big { A a; char p1[0x234 - 0x1E0]; E e; char p2[0x294 - 0x240]; F f; char p3[0x378 - 0x2AC]; G g; };\nBig D_412E8_a;\nHI D_412E8_i;\nL D_412E8_l;\nHM D_412E8_m;\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_412E8.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

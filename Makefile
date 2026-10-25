@@ -1834,6 +1834,14 @@ $(GAMELIBS_36A48_DONOR): src/game_libs/game_libs_ncc_36A48.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036A48=$(GAMELIBS_36A48_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36A48_DONOR)
+# 412E8 = static initializer (__sti__) of four global objects (cfront this==0 protocol members, base-class W4, vec_new array member) EXACT NCC donor over an empty placeholder (agent-c run 163).
+GAMELIBS_412E8_DONOR := build/src/game_libs/game_libs_ncc_412E8.cpp.o
+$(GAMELIBS_412E8_DONOR): src/game_libs/game_libs_ncc_412E8.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=gl_func_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=D_412E8_j --redefine-sym __vtbl__1L=D_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000412E8=$(GAMELIBS_412E8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_412E8_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
