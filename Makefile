@@ -2914,10 +2914,11 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_B624_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_NM_DONOR)
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_NM_DONOR)
-# B154: NM-only NCC comparison donor (AC20 family recipe, run 166; 98.90).
-TIMB5_B154_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154_nm.cpp.o
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B154=$(TIMB5_B154_NM_DONOR)
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B154_NM_DONOR)
+# B154 = AC20 / B368 sibling (133/133 words under NCC; sE8 triple through an inline with a
+# named local, .bss relocs pinned to 0) (agent-g run 167).
+TIMB5_B154_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B154=$(TIMB5_B154_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B154_DONOR)
 # B368 = AC20's sibling (173/173 words under NCC; implicit V3 copies in one
 # expression for the second return temp, .bss relocs pinned to 0) (agent-g run 166).
 TIMB5_B368_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp.o
