@@ -2646,6 +2646,10 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
 GAMEUSO_97EC_NM_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_NM_DONOR)
+# 1DDC: NM-only NCC donor (24BC sibling: Ctx accessor, M4::getPos, V3 copy chains; two block temps swapped, v0/v1, return slot -8).
+GAMEUSO_1DDC_NM_DONOR := build/src/game_uso/game_uso_ncc_1DDC_nm.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00001DDC=$(GAMEUSO_1DDC_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_1DDC_NM_DONOR)
 # 28C0: NM-only NCC donor (camera homing, V3 class; regs/one else-arm slot differ).
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
