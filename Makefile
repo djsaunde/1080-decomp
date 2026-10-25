@@ -1820,6 +1820,13 @@ $(GAMELIBS_41D40_NM_DONOR): src/game_libs/game_libs_ncc_41D40_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041D40=$(GAMELIBS_41D40_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41D40_NM_DONOR)
+# 37938 = V3 push-apart under NCC (agent-c run 162: cfe 93.73 -> 98.55, kept-parameter getPos burns the target's ring slot; same 86-word length as the cfe body). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_37938_NM_DONOR := build/src/game_libs/game_libs_ncc_37938_nm.cpp.o
+$(GAMELIBS_37938_NM_DONOR): src/game_libs/game_libs_ncc_37938_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037938=$(GAMELIBS_37938_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_NM_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
