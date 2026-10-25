@@ -9,6 +9,9 @@
  * names the count. The record index is unsigned (the target's multu in the guards, sll / addu in the tail).
  * cfe body 69.98 (1536 bytes) -> 95.07 at 1556 bytes = target. Residual: frame 0x90 vs 0x58 (named d / n per
  * expansion), t-register colours of the guard constants and the DL pool temps.
+ * Then 95.07 -> 96.82: the 8 / 8 text-state words as one chained assignment, the 0x50 / 0x32 pair as
+ * `m220 = (m21c = 0x32, 0x50)` (the target materialises 0x32 first), and the first print call's rectangle
+ * read into named x / y / w / h locals (from one `Obj254 *o` copy) before the call.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef short s16;
 struct Rec { char pad[0x1C]; int a; char p20[0x30 - 0x20]; int b; char p34[0x44 - 0x34]; int c; char p48[0x50 - 0x48]; };
@@ -83,11 +86,9 @@ extern "C" void game_libs_func_00042938(void) {
         setvp(v, 0, 0, 320, 240);
         gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80);
     }
-    G.m228 = 8;
-    G.m224 = 8;
-    G.m220 = 0x50;
-    G.m21c = 0x32;
-    func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, G.o->c0, G.o->c4, G.o->b8 + G.o->c0, G.o->c4 + G.o->bc);
+    G.m224 = G.m228 = 8;
+    G.m220 = (G.m21c = 0x32, 0x50);
+    { Obj254 *o = G.o; int x = o->c0; int y = o->c4; int w = o->b8; int h = o->bc; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x, y, w + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;
