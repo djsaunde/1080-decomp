@@ -11,7 +11,9 @@
  *   loaded value, is the pool temp (97.40 vs 96.09);
  * - IBase stores `a` before `idx` (the target's sw order).
  * Residual (98.82): the DL head / count temps of the first two appends (target v1 / s0, then s0 / s3) and
- * the &it / ++idx colours. Still NON_MATCHING: spliced into build/non_matching/ only. */
+ * the &it / ++idx colours. agent-c run 159: AIter(Arr *) keeps its parameter (`if (0) { arr = 0; }`), the
+ * IBase construct temp then colours like the target (98.82 -> 99.00, length unchanged).
+ * Still NON_MATCHING: spliced into build/non_matching/ only. */
 extern "C" {
 void *gl_func_00000000(...);
 extern char D_00000000[];
@@ -36,7 +38,7 @@ struct IBase {
     IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
 };
 struct AIter : IBase {
-    AIter(Arr *arr) : IBase(arr) {}
+    AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
     Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
