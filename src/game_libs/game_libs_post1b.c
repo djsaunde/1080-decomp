@@ -911,7 +911,8 @@ void gl_func_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
 }
 
 #ifdef NON_MATCHING
-/* gl_func_00064388: normalize-and-apply step. NM (see report for %).
+/* gl_func_00064388: normalize-and-apply step. EXACT via the NCC donor game_libs_ncc_64388.cpp
+ * (spliced into both build trees, agent-g run 163); this cfe body is the older comparison form.
  * Layout: every declared scalar owns a home slot, so the decl order interleaving
  * scalars between the Vec3 locals reproduces the target frame (0xB0) exactly:
  * m 164, len 160, g 148, spd 144, 6 scalars 120..143, t 108 (struct carrier),

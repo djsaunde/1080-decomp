@@ -1938,10 +1938,10 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_66A50_DONOR := build/src/game_libs/game_libs_ncc_66A50.cpp.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066A50=$(GAMELIBS_66A50_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66A50_DONOR)
-# 64388: NM-only NCC comparison donor (V3 class, 126/128 words; the ROM build keeps INCLUDE_ASM).
-GAMELIBS_64388_NM_DONOR := build/src/game_libs/game_libs_ncc_64388_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00064388=$(GAMELIBS_64388_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_64388_NM_DONOR)
+# 64388 = normalize-and-apply step (V3 class); NCC donor, EXACT (agent-g run 163: operator/= via dv(*this, *this, s) pre-allocates the two pointer temps operator- reuses).
+GAMELIBS_64388_DONOR := build/src/game_libs/game_libs_ncc_64388.cpp.o
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00064388=$(GAMELIBS_64388_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_64388_DONOR)
 
 GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o
 # 29CCC = envelope/keyframe stepper (9-case jumptable switch), IDO 7.1 -O2

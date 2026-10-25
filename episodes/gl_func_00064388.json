@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00064388",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T00:11:36.771346+00:00",
+  "end_time": "2026-10-25T00:11:36.771346+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T00:11:36.771346+00:00",
+      "assistant_text": "NCC donor (was NM-only, 126/128 words): the shared operator return slot sat at sp+116 (target sp+108) because operator-'s multi-use reference parameters a / b got fresh pointer temporaries below it. edg reuses freed inline-parameter temporaries per type, so operator/= forwarding to an inline dv(*this, *this, s) allocates two V3 pointer temporaries during the first statement; operator- reuses them and the return slot drops to sp+108.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 128,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00064388 (post1b, 128 words), EXACT.\n * agent-g run 148 (docs/IDO_CODEGEN.md kit LXXIV): the 5062C V3 class with a\n * by-value assign through set(v), a void operator/=, and a named `float k = s`\n * local in operator* reproduce the frame (176), every home and the FP\n * colouring; the references bound before the length test keep the target's\n * materialised addiu bases.\n * agent-g run 163 (kit CII): the last 2 words were the shared operator return\n * slot (sp+116, target sp+108). edg gives an inline function's multi-use\n * parameters temporaries from a per-type pool, freed at the end of the full\n * expression and reused later. operator/= forwarding to dv(*this, *this, s)\n * allocates two V3 pointer temporaries (d, v) above the slot during the\n * first statement; operator-'s a / b then reuse them instead of being\n * allocated below the return slot, so the slot drops to sp+108. */\nstruct P3 { float x, y, z; };\ninline void dv(P3 &d, const P3 &v, float s) { d.x = v.x / s; d.y = v.y / s; d.z = v.z / s; }\nstruct V3 : P3 {\n    V3() {}\n    V3(float a, float b, float c) { set(a, b, c); }\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void assign(V3 v) { set(v); }\n    void operator/=(float s) { dv(*this, *this, s); }\n};\nextern \"C\" {\nextern float gl_func_00000000_sq64388(float);\nextern void gl_func_00000000_n64388(V3 *);\nextern void gl_func_00000000_p64388(char *, V3 *, float);\nextern char D_00000000;\n}\ninline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, a.z - b.z); }\ninline V3 operator*(const V3 &a, float s) { float k = s; return V3(a.x * k, a.y * k, a.z * k); }\nstruct Obj {\n    float len;\n    V3 dir;\n    V3 v10;\n    V3 v1C;\n    V3 v28;\n};\nextern \"C\" void gl_func_00064388(Obj *o, char *a1, V3 *a2, float a3) {\n    V3 m;\n    V3 &rv = o->v10;\n    V3 g;\n    float spd;\n    V3 &pv = o->dir;\n    V3 &qv = o->v28;\n    if (!((double)o->len < *(double *)(&D_00000000 + 0x20C8))) {\n        o->dir /= o->len;\n        g.assign(pv - qv);\n        spd = gl_func_00000000_sq64388(o->v1C.x * o->v1C.x + o->v1C.y * o->v1C.y + o->v1C.z * o->v1C.z)\n              / *(float *)(&D_00000000 + 0x20D0) * a3;\n        gl_func_00000000_n64388(&o->v1C);\n        gl_func_00000000_p64388(a1, &o->v1C, spd);\n        m = rv * 1.0f;\n        a2->x = a2->x + m.x;\n        a2->y = a2->y + m.y;\n        a2->z = a2->z + m.z;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_64388.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
