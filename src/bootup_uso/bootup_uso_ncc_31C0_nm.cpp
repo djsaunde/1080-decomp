@@ -10,12 +10,15 @@
  * is an inline P::add(n) twice plus the vec copies, in its own block (puts the
  * V3(0, 0, -1000) temp at the bottom like the target). The `if (1) {}` splits the
  * a3v live unit so obj takes v0 / a3v v1 as in the target.
- * 202/202 words; LEFT: edg frame layout (frame 112 vs 144: target homes T 116 above the
- * KB new-temp 104 with 1 + 5 + 2 unexplained words). -1500.0f = bootup RoData +0x530/+0x534.
+ * 202/202 words; LEFT: edg frame layout (frame 128 vs 144). Run 165 (kit CV): V3's ctor
+ * forwarding to an inline set() plus the Obj ctor's V3 temp moved into an inline pos() put
+ * every home from the V3(0, 500, 0) temp down at the target offsets; still missing: a fresh
+ * KB new-temp right below Obj-this (ours reuses T's slot) and 3 more words above the V3 temp.
+ * -1500.0f = bootup RoData +0x530/+0x534.
  * Symbols renamed after compile (names only, see Makefile). */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
-struct V3 { float x, y, z; V3(float a, float b, float c) { x = a; y = b; z = c; } };
+struct V3 { float x, y, z; void set(float a, float b, float c) { x = a; y = b; z = c; } V3(float a, float b, float c) { set(a, b, c); } };
 extern "C" {
 void *fn_31c0_alloc(int);
 void  fn_31c0_fin(void *);
@@ -28,7 +31,7 @@ inline void *operator new(unsigned n) { return fn_31c0_alloc(n); }
 struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
 struct B { char p[0x28]; B(void *); virtual void g(); };
-struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { fn_31c0_fin(this); fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
+struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
 struct Obj2 : Obj { int x; Obj2() {} };
 struct B2 { char p[0x28]; B2(Obj *, float, float, float); virtual void g(); };
 struct KB : B2 { char q[0x14C - 0x2C]; float f14c; float f150; char *f154; int f158;

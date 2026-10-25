@@ -2558,11 +2558,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_3B80_DONOR := build/src/gui_uso/gui_uso_ncc_3B80.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3B80_DONOR)
-# 3714 = gui DL emitter; NCC 85.3 vs cfe 83.0. Still NON_MATCHING: NM comparison object only.
+# 3714 = gui DL emitter (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
 GUI_3714_NM_DONOR := build/src/gui_uso/gui_uso_ncc_3714_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_NM_DONOR)
-# 329C = gui sprite rect (gbi.h gSPScisTextureRectangle, sibling of 3714); NCC 88.5 vs cfe 86.7. NM comparison object only.
+# 329C = gui sprite rect (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
 GUI_329C_NM_DONOR := build/src/gui_uso/gui_uso_ncc_329C_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_NM_DONOR)
@@ -2570,7 +2570,7 @@ build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_NM_DONOR)
 GUI_4568_NM_DONOR := build/src/gui_uso/gui_uso_ncc_4568_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00004568=$(GUI_4568_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_NM_DONOR)
-# 2DE0 = gui sprite rect (gbi.h gSPScisTextureRectangle, sibling of 329C / 3714); NCC 88.7 vs cfe 81.7. NM comparison object only.
+# 2DE0 = gui sprite rect (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
 GUI_2DE0_NM_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_NM_DONOR)
