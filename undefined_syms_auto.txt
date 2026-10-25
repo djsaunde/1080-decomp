@@ -5213,3 +5213,9 @@ D_3E5E0_v1 = 0x00000000;
 D_3E5E0_v2 = 0x00000000;
 /* blank alias: the gl_func_00040070 NM donor base ctor (renamed __ct__2BBFPv) */
 gl_func_00000000_40070_base = 0x00000000;
+/* timproc_uso_b5_func_0000AC20 NCC donor: its file-local reference point (.bss reloc renamed by the splice) and four blank USO data bases */
+timproc_uso_b5_func_0000AC20_bss = 0x00000000;
+D_timb5_AC20_w0 = 0x00000000;
+D_timb5_AC20_w1 = 0x00000000;
+D_timb5_AC20_w2 = 0x00000000;
+D_timb5_AC20_w3 = 0x00000000;

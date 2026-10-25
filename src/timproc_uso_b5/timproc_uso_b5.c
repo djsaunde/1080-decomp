@@ -6857,6 +6857,10 @@ void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
 //   Real-C STRUCTURAL body below — transform block + initial scaled
 //   compose + cb chain skeleton only. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
+/* EXACT 2026-10-24 (agent-g run 166, docs/IDO_CODEGEN.md kit CVII) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp, REPLACE_FUNC_BODY-spliced into both trees
+ * (Makefile TIMB5_AC20_DONOR; its .bss relocs pinned as timproc_uso_b5_func_0000AC20_bss = 0).
+ * The cfe body below is the superseded 92.41 NM attempt, kept for its decode notes only. */
 #ifdef NON_MATCHING
 /* PASS-4 2026-07-18 (agent-g): real-callee + frame-map rewrite. The raw .s
  * carries RESOLVED jal targets (NOT func_00000000): 071028 (normalize, ret ptr),

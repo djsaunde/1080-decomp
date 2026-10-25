@@ -2884,6 +2884,12 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_2B74_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_2B74.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00002B74=$(TIMB5_2B74_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_2B74_DONOR)
+# AC20 = camera marker update (333/333 words under NCC; reference point as a
+# file-local x / y pair + z whose .bss relocs are pinned to 0, pooled o->q.rot()
+# this temp in memory) (agent-g run 166).
+TIMB5_AC20_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000AC20=$(TIMB5_AC20_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_AC20_DONOR)
 # 396C: exact via src/match_imports/timproc_uso_b5_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
 # B624: NM-only NCC comparison donor (static offset-vector objects; 88.57 -> 89.7 fuzzy, 140 -> 139 words = target).
 TIMB5_B624_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624_nm.cpp.o
