@@ -15,7 +15,10 @@
  * into the arm: 93.72 -> 95.57, 139 words. RESIDUAL: arg0 goes to s0 before the head
  * (target: after it), 1.0f colour. The 0x144 countdown written as
  * `if (c) c -= 1; if (c == 0)` (fixes the t5 temp), sp28 dropped for arg0 + 0xF4 (fixes the frame,
- * 0xA8 -> 0x98 = target): 95.57 -> 96.07. */
+ * 0xA8 -> 0x98 = target): 95.57 -> 96.07.
+ * Run 163: relPos's locals declared apart from their assignments (dz, r, dy, dx, before
+ * the two references): the return-slot temp r moves from sp+100 to the target's sp+104
+ * (96.07 -> 96.10). */
 typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -46,8 +49,12 @@ static f32 sZ;
  * the ctor-temp -> return-slot -> sp8C copy chain of the target (agent-g run 157). */
 struct V { f32 x, y, z; V() {} };   /* the user-declared ctor matters (POD V = 94.63) */
 static inline V relPos(const V &a) {
+    f32 dz;
+    V r;
+    f32 dy;
+    f32 dx;
     f32 &x = sXY[0]; f32 &y = sXY[1];
-    V r; f32 dx = a.x - x; f32 dy = a.y - y; f32 dz = a.z - sZ;
+    dx = a.x - x; dy = a.y - y; dz = a.z - sZ;
     r.x = dx; r.y = dy; r.z = dz;
     return r;
 }
