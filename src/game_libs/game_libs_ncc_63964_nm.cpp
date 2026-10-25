@@ -9,7 +9,9 @@
  * (cfe NM 77.49). Then `V3 out(0.0f, 0.0f, 0.0f);` CONSTRUCTED at the zeroing point (not declared up top
  * and zeroed): probably the folded this==0 test of the ctor ends the basic block; the subtraction reloads va / vb
  * from their homes exactly like the target (what the cfe `if (1) {}` imitated): 88.74, length 1112.
- * LEFT: frame 312 vs 328 (low temps), the 0 + va.y accumulate. */
+ * LEFT: frame 312 vs 328 (low temps), the 0 + va.y accumulate.
+ * Run 170 (kit CXV): four unused volatile ints in a block AFTER the last call are homed below every temp:
+ * frame 328 = target (the named homes were already right relative to the frame top). */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
@@ -55,4 +57,5 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     }
     fin.x = 0.0f; fin.y = -acc; fin.z = 0.0f;
     gl_func_00000000(o->tgt, &out, &fin);
+    { volatile int q0, q1, q2, q3; }
 }
