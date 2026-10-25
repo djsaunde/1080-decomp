@@ -12,7 +12,8 @@
  * gctx is then stored to its home before the copy call and reloaded after it, word for word the target (kit CVII:
  * a pointer stored once and reloaded around a call is a temp shared by an inline across that call).
  * load() and prim() append through `&dl->buf[dl->count++]` (no named count; dlcall keeps next()'s named n).
- * cfe body 88.11 -> 94.90; length 2052 -> 2072 (target 2076).
+ * The arm-2 Gfx copy is masked through `Gfx *gp = &gbi` (the target's &gbi in s0).
+ * cfe body 88.11 -> 94.92; length 2052 -> 2072 (target 2076).
  * Still NON_MATCHING: build/non_matching/ only. */
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048AEC (0x81C / 519 words), agent-c run 159.
  * `void Obj::draw()` (renamed to gl_func_00048AEC with objcopy): the matrix concat into a local f32[4][4],
@@ -127,8 +128,9 @@ void Obj::draw() {
         }
     } else if ((n14->flags & 0x80) && *(s32 *)D_00000000 != 0) {
         Gfx gbi = g34;
-        gbi.w1 = (gbi.w1 & ~0xF00) | 0x400;
-        gbi.w1 = gbi.w1 & ~0x80000;
+        Gfx *gp = &gbi;
+        gp->w1 = (gp->w1 & ~0xF00) | 0x400;
+        gp->w1 = gp->w1 & ~0x80000;
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
