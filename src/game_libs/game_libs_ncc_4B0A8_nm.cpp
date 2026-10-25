@@ -7,7 +7,8 @@
  * result for (*t->base + k * 8, t, k). Load-bearing: t and k read from TWO it.cur() calls passed to an inline
  * res(Elem *e1, Elem *e2) (the target re-reads the element pointer for k; one named e is 95.1, 576 -> 588 bytes);
  * Tex::base is a char ** (the target dereferences it); IBase writes `a = arr; idx = -1;` (emitted idx first, as the
- * target); five end-of-body block volatiles = frame 0xA8. 94.76 -> 98.73 local, length = target. Residual: the
+ * target); five end-of-body block volatiles = frame 0xA8; AIter::next() as an if / return (the first expansion's colours match:
+ * 98.73 -> 98.80 local). 94.76 -> 98.80, length = target. Residual: the
  * colours of the iterator ctor this (a3 vs t0), the two element pointers and the loop next() result, and the
  * first iterator temp 4 bytes low. Still NON_MATCHING. */
 extern "C" {
@@ -32,7 +33,7 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {}
-    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
+    Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter Arr::iter() { return AIter(this); }
