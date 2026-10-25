@@ -51,6 +51,8 @@ extern "C" void gl_func_0004BAF4(char *self) {
     int w;
     int h;
     Gfx4B *g;
+    volatile int pad0; /* run 158: two more homes below h = the target's frame 0xF0 (every sp offset then matches) */
+    volatile int pad1;
 
     {
         Cam4B *cam = &D_4BAF4_cam;
