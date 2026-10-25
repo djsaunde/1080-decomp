@@ -5203,3 +5203,5 @@ D_15FC_c88 = 0x00000C88;
 D_15FC_c8c = 0x00000C8C;
 D_15FC_c90 = 0x00000C90;
 D_15FC_c94 = 0x00000C94;
+/* blank alias: the gl_func_0004B620 NM donor base ctor (renamed __ct__2BBFPcPvi) */
+gl_func_00000000_4b620_base = 0x00000000;
