@@ -1768,6 +1768,13 @@ $(GAMELIBS_45178_DONOR): src/game_libs/game_libs_ncc_45178.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00045178=$(GAMELIBS_45178_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45178_DONOR)
+# 445AC = UI / object bootstrap as NCC C++ (agent-c run 162: source-order varargs; `gl(D_445AC_b.x1C = new A40, 0x64, 1)` = the target's v0 holder base and frame). EXACT NCC donor over an empty placeholder.
+GAMELIBS_445AC_DONOR := build/src/game_libs/game_libs_ncc_445AC.cpp.o
+$(GAMELIBS_445AC_DONOR): src/game_libs/game_libs_ncc_445AC.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000445AC=$(GAMELIBS_445AC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_445AC_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the

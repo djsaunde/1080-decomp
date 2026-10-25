@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_000445AC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T06:44:40.223376+00:00",
+  "end_time": "2026-10-25T06:44:40.223398+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T06:44:40.223393+00:00",
+      "assistant_text": "NCC C++ donor: varargs evaluated in source order (last vararg in t7 as the target, not a coloured cfe variable); the holder store written as the call argument gl(D_445AC_b.x1C = new A40, 0x64, 1) gives the v0 holder base (lui/addiu/sw 28(v0)) and drops the named-pointer home (frame 0x58); A40 inline ctor and L24 : L20 new-expression chain.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 219,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000445AC (0x36C / 219 words), agent-c run 162.\n * One-shot UI / object bootstrap: registration calls, a new-expression of A40 (inline ctor: a 32-byte\n * buffer + init call) stored into the global holder and passed on, a new-expression of L24 : L20 (the\n * list-header ctor chain with edg's this == 0 fallback) and the float-returning count read.\n * The cfe body (99.82, 6 words) evaluated the last vararg into a coloured variable (v1, target t7) and\n * folded the holder store into a t-register base; as C++ the varargs load in source order (t5 / t6 / t7)\n * and `gl(D_445AC_b.x1C = new A40, 0x64, 1)` -- the store as the call's first argument, no named\n * pointer -- makes the holder base a v0 variable with the target's lui / addiu / sw 28(v0) and frees the\n * home that a named `p` cost (frame 0x60 -> 0x58 = target). Spliced over an empty placeholder in both trees. */\ntypedef unsigned int u32;\nextern \"C\" {\nint gl_func_00000000(...);\nfloat gl_func_00000000_445f(...);\nextern char D_00000000[];\nextern int D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge;\n}\n#define S(o) (D_00000000 + (o))\ninline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }\nstruct A40 {\n    char pad[0x18];\n    char *x18;\n    char pad1C[0x28 - 0x1C];\n    A40() { x18 = (char *)gl_func_00000000(32); gl_func_00000000(this, x18, 8); }\n};\nstruct Holder { char pad[0x1C]; A40 *x1C; };\nextern \"C\" Holder D_445AC_b;\nstruct L20 {\n    int x0; int x4; int x8; int xC; int x10;\n    L20() { x8 = 10; xC = 0; x0 = gl_func_00000000(40); }\n};\nstruct L24 : L20 {\n    char *x14;\n    L24() { x14 = D_00000000; }\n};\nstruct Obj { char pad[0x20C]; int x20C; int pad210; int x214; int x218; char pad21C[0x22C - 0x21C]; L24 *x22C; char pad230[0x240 - 0x230]; int x240; char pad244[0x280 - 0x244]; int x280; int x284; };\nextern \"C\" void gl_func_000445AC(Obj *a0) {\n    gl_func_00000000(0x140, 0xF0);\n    gl_func_00000000(0x140, 0xF0);\n    gl_func_00000000(S(0x1FDE4), 0);\n    a0->x240 = gl_func_00000000(0, 0x64, S(0x1FDEC), 0x6D, 2, 0x6E, 0, 0, 0x6F, D_445AC_ga, D_445AC_gb, 0x70, 0x1E00, 0x71, 2, 0);\n    gl_func_00000000();\n    a0->x280 = gl_func_00000000(0, S(0x1FDFC), 40, 0, 0, 0, 0);\n    a0->x284 = gl_func_00000000(0, S(0x1FE04), 40, 0, 0, 0, 0);\n    *(int *)D_00000000 = gl_func_00000000(0, S(0x1FE0C), 20, 0, 0, 0, 0);\n    gl_func_00000000(a0);\n    gl_func_00000000(S(0x1FE14), 0);\n    a0->x214 = gl_func_00000000(0, S(0x1FE24), D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge);\n    gl_func_00000000();\n    gl_func_00000000(D_445AC_b.x1C = new A40, 0x64, 1);\n    a0->x22C = new L24;\n    a0->x218 = gl_func_00000000(0);\n    gl_func_00000000(a0);\n    gl_func_00000000(a0);\n    a0->x20C = 1;\n    gl_func_00000000(S(0x1FE30));\n    gl_func_00000000(a0);\n    gl_func_00000000(S(0x1FE3C));\n    a0->x20C = (u32)gl_func_00000000_445f(S(0x1FE48));\n    if ((u32)a0->x20C < 10) {\n        gl_func_00000000(S(0x1FE54));\n    }\n    gl_func_00000000(a0);\n    gl_func_00000000(0x202);\n    gl_func_00000000(a0, 1);\n    gl_func_00000000(a0);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_445AC.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

@@ -13078,72 +13078,11 @@ void game_libs_func_00044540(int *a0, int **a1) {
 // addiu split that reproduces the baked raw words). D_glob_a..e are the
 // distinct globals loaded for the two varargs registration calls. Name
 // pre-checked: no extern reuse. NON_MATCHING (95%) — no episode.
-#ifdef NON_MATCHING
-extern int D_00000000;
-extern int D_glob_a, D_glob_b, D_glob_c, D_glob_d, D_glob_e;
-extern float gl_funcf_00000000();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_445AC.cpp (source-order varargs, the holder
+ * store as the call argument `gl(D_445AC_b.x1C = new A40, 0x64, 1)`), REPLACE_FUNC_BODY-spliced over this placeholder
+ * in both build trees (agent-c run 162). The old cfe body (99.82) is retired. */
 void gl_func_000445AC(char *a0) {
-    extern int D_445AC_b;
-    char *a3;
-    char *v1;
-    int v;
-    gl_func_00000000(0x140, 0xF0);
-    gl_func_00000000(0x140, 0xF0);
-    gl_func_00000000(((char *)&D_00000000) + 0x1FDE4, 0);
-    *(int *)(a0 + 0x240) = gl_func_00000000(
-        0, 0x64, ((char *)&D_00000000) + 0x1FDEC, 0x6D,
-        2, 0x6E, 0, 0, 0x6F, D_glob_a, D_glob_b, 0x70, 0x1E00, 0x71, 2, 0);
-    gl_func_00000000();
-    *(int *)(a0 + 0x280) = gl_func_00000000(0, ((char *)&D_00000000) + 0x1FDFC, 40, 0, 0, 0, 0);
-    *(int *)(a0 + 0x284) = gl_func_00000000(0, ((char *)&D_00000000) + 0x1FE04, 40, 0, 0, 0, 0);
-    *(int *)((char *)&D_00000000) = gl_func_00000000(0, ((char *)&D_00000000) + 0x1FE0C, 20, 0, 0, 0, 0);
-    gl_func_00000000(a0);
-    gl_func_00000000(((char *)&D_00000000) + 0x1FE14, 0);
-    *(int *)(a0 + 0x214) = gl_func_00000000(
-        0, ((char *)&D_00000000) + 0x1FE24, D_glob_a, D_glob_b, D_glob_c, D_glob_d, v = D_glob_e);
-    gl_func_00000000();
-    a3 = (char *)gl_func_00000000(40);
-    if (a3 != 0) {
-        v1 = (char *)gl_func_00000000(32);
-        *(int *)(a3 + 0x18) = (int)v1;
-        gl_func_00000000(a3, v1, 8);
-    }
-    *(int *)((int)&D_445AC_b + 0x1C) = (int)a3;
-    gl_func_00000000(a3, 0x64, 1);
-    a3 = (char *)gl_func_00000000(24);
-    if (a3 != 0) {
-        v1 = a3;
-        if (a3 == 0) {
-            v1 = (char *)gl_func_00000000(20);
-            if (v1 == 0) goto skip_body;
-        }
-        *(int *)(v1 + 0x8) = 10;
-        *(int *)(v1 + 0xC) = 0;
-        *(int *)v1 = gl_func_00000000(40);
-skip_body:
-        *(int *)(a3 + 0x14) = (int)((char *)&D_00000000);
-    }
-    *(int *)(a0 + 0x22C) = (int)a3;
-    *(int *)(a0 + 0x218) = gl_func_00000000(0);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    *(int *)(a0 + 0x20C) = 1;
-    gl_func_00000000(((char *)&D_00000000) + 0x1FE30);
-    gl_func_00000000(a0);
-    gl_func_00000000(((char *)&D_00000000) + 0x1FE3C);
-    v = (unsigned int)gl_funcf_00000000(((char *)&D_00000000) + 0x1FE48);
-    *(int *)(a0 + 0x20C) = v;
-    if ((unsigned int)v < 10) {
-        gl_func_00000000(((char *)&D_00000000) + 0x1FE54);
-    }
-    gl_func_00000000(a0);
-    gl_func_00000000(0x202);
-    gl_func_00000000(a0, 1);
-    gl_func_00000000(a0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000445AC);
-#endif
 
 // gl_func_00044918 (0x1D4 / 117 words) — DECODE-CORRECTED PASS 2026-07-30,
 // 52.1 -> 85.8. Struct reset/re-init + busy-wait + flag-word rebuild:
