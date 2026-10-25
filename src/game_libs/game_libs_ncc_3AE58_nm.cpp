@@ -16,10 +16,11 @@ struct SV { short x, y, z; };
 struct Mesh { char pad[0x44]; unsigned n; char pad48[4]; short *tbl; char pad50[0x60 - 0x50]; SV *verts; char pad64[4]; Ent *ents; };
 struct Own { char pad[0x54]; char *x54; };
 struct Obj { char pad[0x2C]; char *x2C; char pad30[0x84 - 0x30]; Mesh *m; };
+inline unsigned short pick(Ent *e) { if (0) { e = 0; } return e->vi; } /* run 173: the ternary entry through a kept inline parameter */
 extern "C" Obj *gl_func_0003AE58(Obj *a0, Mesh *a1) {
     volatile int p0;
     f32 fv[3];
-    volatile int q0, q1, q2, q3, q4, q5;
+    volatile int q0, q1, q2, q3, q4;
     if (a0 != 0 || (a0 = (Obj *)gl_func_00000000(0x90)) != 0) {
         gl_func_00000000(a0, &gl_data_0001EE5C);
         gl_func_00000000(&gl_data_0001EE70, 0);
@@ -28,7 +29,7 @@ extern "C" Obj *gl_func_0003AE58(Obj *a0, Mesh *a1) {
         unsigned i;
         int off;
         for (i = 0, off = 0; i < a1->n; i++, off += 12) {
-            SV *v = &a1->verts[(a1->tbl ? &a1->ents[a1->tbl[i]] : &a1->ents[i])->vi];
+            SV *v = &a1->verts[pick(a1->tbl ? &a1->ents[a1->tbl[i]] : &a1->ents[i])];
             fv[0] = v->x;
             fv[1] = v->y;
             fv[2] = v->z;
