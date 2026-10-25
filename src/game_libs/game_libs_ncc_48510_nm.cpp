@@ -8,15 +8,20 @@
  * copy the indices out and into the next triangle (a separate loop counter k: the target's v1 / a0 / v0 IVs).
  * 91.11 -> 97.21, length = target, frame 0x78 = target. Residual: t-register colours, idx[] at sp+0x68 (target 0x6C).
  * The out[] halfword store carries a folded `& 0xFFFF` (one ugen ring slot): 97.21 -> 97.29.
+ * agent-c run 161: `int idx[3]` (the target array ends at the frame top, 0x6C) + a volatile pad for the 0x78 frame,
+ * the count read and the append through inline `Mesh::count()` / `Mesh::next()` with a `Vtx::set(const Vtx &)` copy
+ * (the pooled pointer temp a1 holds the destination like the target), and `nt = nt + 1; if (nt >= 200)` (store-forwarded
+ * ring temps instead of a coloured ++nt): 97.29 -> 98.71. Residual: ugen operand order of `nv >= max590 - 1` and
+ * `&buf[n]` (t6 / t7 / t8 permuted) and one ring slot from there on.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32;
 extern "C" {
 int gl_func_00034458(...);
 extern char D_00000000[];
 }
-struct Vtx { int w[4]; };
+struct Vtx { int w[4]; void set(const Vtx &o) { *this = o; } };
 struct VPool { Vtx *buf; int count; };
-struct Mesh { char pad[0x1C]; VPool *vp; };
+struct Mesh { char pad[0x1C]; VPool *vp; int count() { return vp->count; } Vtx *next() { return &vp->buf[vp->count++]; } };
 struct Tri { s16 v[3]; };
 struct Strip {
     Mesh *mesh;
@@ -31,7 +36,7 @@ struct Strip {
     void add(Vtx *v, s16 *out, int *full, u16 *id);
 };
 void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
-    int idx[4];
+    int idx[3]; volatile int pad;
     int i;
     *full = 0;
     for (i = 0; i < n594; i++) {
@@ -45,9 +50,8 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
             if (i == 0) {
                 *full = 1;
             }
-            idx[i] = mesh->vp->count;
-            Mesh *m = mesh;
-            m->vp->buf[m->vp->count++] = v[i];
+            idx[i] = mesh->count();
+            mesh->next()->set(v[i]);
             ids[nv] = id[i];
             nv++;
         }
@@ -56,7 +60,7 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
         out[k] = idx[k] & 0xFFFF;
         tris[nt].v[k] = idx[k];
     }
-    if (++nt >= 200) {
+    nt = nt + 1; if (nt >= 200) {
         gl_func_00034458(D_00000000 + 0x1FF44);
     }
 }
