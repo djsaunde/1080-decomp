@@ -28652,74 +28652,10 @@ void game_libs_func_0006087C(int *a0) {
     }
 }
 
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000608A4)();
-/* 2026-10-23 agent-g (run 143) 78.36 -> 83.91 (109 -> 114 of 116 words): decode fix -- the
- * callee's first argument and the 0x21C..0x228 stores are the &D_00000000 context (target holds it
- * in s4: `addiu a0,s4,0`, `sw ..,0x224(s4)`), not a literal 0 / absolute addresses. */
+/* gl_func_000608A4: EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_608A4.cpp (`void
+ * TextWin::draw(int big)`), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 175). */
 void gl_func_000608A4(char *arg0, s32 arg1) {
-    s32 sp64;
-    s32 sp60;
-    s32 temp_a0;
-    s32 temp_lo;
-    s32 var_s0;
-    s32 var_s2;
-    s32 var_s3;
-    s32 var_s5;
-    s32 var_v1;
-    char *temp_a1;
-
-    if (arg1 != 0) {
-        gl_func_00034458((char *)&D_00000000, (char *)1);
-    }
-    sp64 = 0x408;
-    sp60 = 0;
-    if (arg1 != 0) {
-        FW(arg0, 0x24) = 8;
-        FW(arg0, 0x28) = 8;
-    } else {
-        gl_func_00034458((char *)&D_00000000, (int)arg0 + 0x48);
-    }
-    temp_a1 = FW(arg0, 0x2C);
-    temp_lo = FW(arg0, 0x24) * FW(arg0, 0x1C);
-    var_s5 = temp_a1 + temp_lo;
-    if (var_s5 >= 0x123) {
-        var_s5 = 0x122;
-    }
-    gl_func_00034458((char *)&D_00000000, temp_a1, FW(arg0, 0x30), temp_lo + 8, (FW(arg0, 0x28) * FW(arg0, 0x14)) + 0x10, &sp60);
-    *(s32 *)((char *)&D_00000000 + 0x224) = 8;
-    *(s32 *)((char *)&D_00000000 + 0x228) = 8;
-    *(s32 *)((char *)&D_00000000 + 0x21C) = FW(arg0, 0x2C) + 4;
-    *(s32 *)((char *)&D_00000000 + 0x220) = FW(arg0, 0x30) + 1;
-    gl_func_00034458((char *)&D_00000000, FW(arg0, 0x40), var_s5);
-    *(s32 *)((char *)&D_00000000 + 0x224) = FW(arg0, 0x24);
-    *(s32 *)((char *)&D_00000000 + 0x228) = FW(arg0, 0x28);
-    temp_a0 = FW(arg0, 0x18);
-    var_v1 = temp_a0 + FW(arg0, 0x14);
-    var_s2 = temp_a0;
-    var_s3 = FW(arg0, 0x30) + 0xC;
-    if (temp_a0 < var_v1) {
-        var_s0 = temp_a0 * 8;
-        do {
-            if (FW(arg0, 0x10) < FW((FW(arg0, 0x0) + var_s0), 0x4)) {
-                *(s32 *)((char *)&D_00000000 + 0x220) = var_s3;
-                *(s32 *)((char *)&D_00000000 + 0x21C) = FW(arg0, 0x2C) + 4;
-                gl_func_00034458((char *)&D_00000000, *(int*)(FW(arg0, 0x0) + var_s0) + FW(arg0, 0x10), var_s5);
-                var_v1 = FW(arg0, 0x14) + FW(arg0, 0x18);
-            }
-            var_s2 += 1;
-            var_s0 += 8;
-            var_s3 += FW(arg0, 0x28);
-        } while (var_s2 < var_v1);
-    }
-    gl_func_00034458((char *)&D_00000000, 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000608A4);
-#endif
 
 /* gl_func_00060A74: 23-insn guarded one-shot init, BYTE-EXACT (NM path).
  * If a0->0x34 == 0, stash a0 into a global and forward the variadic tail to a

@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_000608A4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T21:24:20.147738+00:00",
+  "end_time": "2026-10-25T21:24:20.147738+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T21:24:20.147738+00:00",
+      "assistant_text": "NCC C++ donor: void TextWin::draw(int big). Optional big-font switch (cw = ch = 8), a by-address Pt(0, 0x408) for the frame call, right edge clipped to 290, the title call, then a per-row loop over the visible rows calling the text routine when the row length exceeds the horizontal scroll. The global context (&D_00000000) is set through inline members size(w, h) / pos(px, py), whose parameters give the target's s0 / v0 values; calls bound to gl_func_00000000 (baked jal 0).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 116,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000608A4 (0x1D0 / 116 words), agent-c run 175, spliced over an empty\n * placeholder in game_libs_post0b.c in both build trees (Makefile rename of draw__7TextWinFi).\n * `void TextWin::draw(int big)`: the cfe body (83.91, m2c temps) as a C++ text-window member -- an optional big-font\n * switch, a by-address Pt(0, 0x408) passed to the frame call, the clipped right edge (290), the title through the\n * blank callee, then one call per visible row whose length exceeds the horizontal scroll. The global draw context\n * (&D_00000000, held in s4) is set through inline members `size(w, h)` / `pos(px, py)`: their parameters are the\n * target's s0 / v0 values around the stores. Calls go to gl_func_00000000 (the target's baked jal 0). */\nextern \"C\" {\nvoid gl_func_00000000(...);\n}\nstruct Ctx { char pad[0x21C]; int x, y, cw, ch;\n    void size(int w, int h) { cw = w; ch = h; }\n    void pos(int px, int py) { x = px; y = py; }\n    void posr(int px, int py) { y = py; x = px; }\n};\nextern \"C\" Ctx D_00000000;\nstruct Pt { int a, b; Pt(int a_, int b_) { a = a_; b = b_; } };\nstruct Row { char *s; int len; };\nstruct TextWin {\n    Row *rows;\n    char *buf;\n    int pad8, padC;\n    int hs;\n    int vis;\n    int top;\n    int cols;\n    int pad20;\n    int cw;\n    int ch;\n    int x;\n    int y;\n    int pad34[3];\n    char *font;\n    int pad44;\n    char color[4];\n    void draw(int big);\n};\nvoid TextWin::draw(int big) {\n    if (big) gl_func_00000000(&D_00000000, 1);\n    Pt p(0, 0x408);\n    if (big) {\n        cw = 8;\n        ch = 8;\n    } else {\n        gl_func_00000000(&D_00000000, color);\n    }\n    int w = cols * cw;\n    int right = x + w;\n    if (right > 290) right = 290;\n    gl_func_00000000(&D_00000000, x, y, w + 8, vis * ch + 16, &p);\n    D_00000000.size(8, 8);\n    D_00000000.pos(x + 4, y + 1);\n    gl_func_00000000(&D_00000000, font, right);\n    D_00000000.size(cw, ch);\n    int yy = y + 12;\n    for (int i = top; i < top + vis; i++, yy += ch) {\n        if (hs < rows[i].len) {\n            D_00000000.pos(x + 4, yy);\n            gl_func_00000000(&D_00000000, rows[i].s + hs, right);\n        }\n    }\n    gl_func_00000000(&D_00000000, 0);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_608A4.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

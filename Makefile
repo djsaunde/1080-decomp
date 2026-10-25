@@ -713,7 +713,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 164: 59E80 NCC NM donor (NM cfe body 0x450 -> 0x444 bytes = target): 0x2ea34 -> 0x2ea28 (62F08 NM offset 0x2e9d8).
 # agent-c run 173: 41820 NCC NM donor (NM cfe body 0x248 -> 0x24C bytes = target): 0x2ea28 -> 0x2ea2c (62F08 NM offset 0x2e9dc).
 # agent-c run 175: 54264 NCC NM donor Mesh::sample() (NM cfe body 0x35C -> 0x358 bytes = target): 0x2ea2c -> 0x2ea28 (62F08 NM offset 0x2e9d8).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea28 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 175: 608A4 NCC exact donor over a placeholder (NM cfe body 0x1C8 -> 0x1D0 bytes = target): 0x2ea28 -> 0x2ea30 (62F08 NM offset 0x2e9e0).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea30 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1796,6 +1797,14 @@ $(GAMELIBS_54264_DONOR): src/game_libs/game_libs_ncc_54264.cpp
 	$(OBJCOPY) --redefine-sym sample__4MeshFR2V3T1i=gl_func_00054264 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054264=$(GAMELIBS_54264_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54264_DONOR)
+# 608A4 = real C++ `void TextWin::draw(int big)` (agent-c run 175: context set through inline size() / pos() members). EXACT NCC donor over an empty placeholder; symbol renamed (name only).
+GAMELIBS_608A4_DONOR := build/src/game_libs/game_libs_ncc_608A4.cpp.o
+$(GAMELIBS_608A4_DONOR): src/game_libs/game_libs_ncc_608A4.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym draw__7TextWinFi=gl_func_000608A4 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000608A4=$(GAMELIBS_608A4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_608A4_DONOR)
 # 43D38 = real C++ `void Elem::clip()` (agent-c run 160/161; inline Elem members kill/link/end/clr for the edg temp pool); symbol renamed (name only). EXACT NCC donor over an empty placeholder (agent-c run 161).
 GAMELIBS_43D38_DONOR := build/src/game_libs/game_libs_ncc_43D38.cpp.o
 $(GAMELIBS_43D38_DONOR): src/game_libs/game_libs_ncc_43D38.cpp
