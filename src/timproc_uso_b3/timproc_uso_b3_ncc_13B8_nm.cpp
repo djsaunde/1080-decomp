@@ -26,7 +26,7 @@ extern "C" void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
     s32 xoff;
     s32 xb;
     s32 xa;
-    s32 y;
+    volatile s32 qy;
     volatile s32 q0, q1, q2, q3, q4, q5;
 
     one[0] = 1.0f;
@@ -46,19 +46,18 @@ extern "C" void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
         timproc_uso_b3_func_000000B0(pC);
         timproc_uso_b3_func_000000B0(buf, &D_b3_1240_base + 0x3D8, arg2);
         n = timproc_uso_b3_func_000000B0(buf);
-        y = arg1 + 0x32;
         xoff = 0xA0 - (*(s16 *)((char *)FW(arg0, 0x70C) + 0x20) + n * 13 + *(s16 *)((char *)FW(arg0, 0x6DC) + 0x20) + *(s16 *)((char *)FW(arg0, 0x6C4) + 0x20) + 0x10) / 2;
         xb = *(s16 *)((char *)FW(arg0, 0x6C4) + 0x20) + xoff + 4;
         xa = *(s16 *)((char *)FW(arg0, 0x6DC) + 0x20) + xb + 4;
         x = *(s16 *)((char *)FW(arg0, 0x70C) + 0x20) + xa + 8;
-        timproc_uso_b3_func_000000B0(pC, xa, y, 2);
+        timproc_uso_b3_func_000000B0(pC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
             timproc_uso_b3_func_000000B0(tim, x + i * 13, arg1 - *(s16 *)((char *)FW(arg0, 0x724) + 0x22) / 2 + 0x32, buf[i] * w, w);
         }
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32) (255.0f * *(f32 *)(arg0 + 0x72C)), one);
-        timproc_uso_b3_func_000000B0(pA, xb, y, 2);
-        timproc_uso_b3_func_000000B0(pB, xoff, y, 2);
+        timproc_uso_b3_func_000000B0(pA, xb, arg1 + 0x32, 2);
+        timproc_uso_b3_func_000000B0(pB, xoff, arg1 + 0x32, 2);
     }
 }
 }

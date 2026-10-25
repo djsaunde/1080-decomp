@@ -21,7 +21,7 @@ extern "C" void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
     s32 xoff;
     s32 xb;
     s32 xa;
-    s32 y;
+    volatile s32 qy;
     volatile s32 q0, q1, q2, q3, q4, q5;
 
     one[0] = 1.0f;
@@ -41,19 +41,18 @@ extern "C" void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
         arcproc_uso_func_00001B88(pC);
         arcproc_uso_func_00001B88(buf, &D_00000000 + 0x3D8, arg2);
         n = arcproc_uso_func_00001B88(buf);
-        y = arg1 + 0x32;
         xoff = 0xA0 - (*(s16 *)((char *)FW(arg0, 0x744) + 0x20) + n * 13 + *(s16 *)((char *)FW(arg0, 0x714) + 0x20) + *(s16 *)((char *)FW(arg0, 0x72C) + 0x20) + 0x10) / 2;
         xb = *(s16 *)((char *)FW(arg0, 0x72C) + 0x20) + xoff + 4;
         xa = *(s16 *)((char *)FW(arg0, 0x714) + 0x20) + xb + 4;
         x = *(s16 *)((char *)FW(arg0, 0x744) + 0x20) + xa + 8;
-        arcproc_uso_func_00001B88(pC, xa, y, 2);
+        arcproc_uso_func_00001B88(pC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
             arcproc_uso_func_00001B88(tim, x + i * 13, arg1 - *(s16 *)((char *)FW(arg0, 0x75C) + 0x22) / 2 + 0x32, buf[i] * w, w);
         }
         arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * *(f32 *)(arg0 + 0x77C)), one);
-        arcproc_uso_func_00001B88(pA, xb, y, 2);
-        arcproc_uso_func_00001B88(pB, xoff, y, 2);
+        arcproc_uso_func_00001B88(pA, xb, arg1 + 0x32, 2);
+        arcproc_uso_func_00001B88(pB, xoff, arg1 + 0x32, 2);
     }
 }
 }
