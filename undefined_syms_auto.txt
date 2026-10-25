@@ -5207,3 +5207,7 @@ D_15FC_c94 = 0x00000C94;
 gl_func_00000000_4b620_base = 0x00000000;
 /* gl_func_0004BAF4 flag word (blank USO data ref, per-site lui 0 / lw 0x1C4) */
 D_4BAF4_flags = 0x00000000;
+/* gl_func_0003E5E0 NM donor vtables (blank aliases, renamed __vtbl__1K / __vtbl__3CB1 / __vtbl__3CB2) */
+D_3E5E0_vk = 0x00000000;
+D_3E5E0_v1 = 0x00000000;
+D_3E5E0_v2 = 0x00000000;
