@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0003FC58",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T08:13:31.711316+00:00",
+  "end_time": "2026-10-25T08:13:31.711335+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T08:13:31.711329+00:00",
+      "assistant_text": "NCC C++ donor: the cfe goto ladder is a plain switch under NCC (its compare chain = the target order); case 52 passes a named 'W t(msg.p12.i)' by const reference to virtual f5, homed at the frame bottom by six function-top volatile pads after 'out'; flag words read / written through separate symbols; one all-zero alignment SUFFIX word.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 187,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003FC58 (0x2E8 / 186 words + 1 all-zero pad word), agent-c run 163.\n * Message pump: read one message, set flag bit 2, dispatch on msg.type, clear bit 2 of the second\n * flag word. The cfe body (85.12) spelled the compare chain with gotos; under NCC a plain switch IS\n * the target's chain (52, 22, 10, 9, 7, 8, 21, 23, 25, 27, 28; NCC never emits a jumptable).\n * Load-bearing: case 52's argument is a named `W t(msg.p12.i)` passed by const reference to virtual\n * f5 (the target's sp+0x20 slot: named locals are homed in declaration order, so six function-top\n * volatile pads after `out` put t at the bottom of the 0x180 frame); the two flag words are read and\n * written through separate symbols (the target re-forms each address). Vptrs at +0 (O0) and +0x28\n * (O28). Spliced over an empty placeholder in both build trees; the target's trailing alignment\n * word is an all-zero SUFFIX. */\nextern \"C\" {\nvoid gl_func_00000000(...);\nextern char D_00000000[];\nextern int D_3FC58_flags, D_3FC58_flagsW, D_3FC58_flags2, D_3FC58_flags2W;\nextern char D_3FC58_s1[];\nextern char D_3FC58_g[];\n}\nstruct W { int w; W(int x) { w = x; } };\nstruct O28 { char p[0x28]; virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(const W &); };\nstruct O0 { virtual void f1(); };\nstruct Msg {\n    int type;\n    int p4;\n    int p8;\n    union { int i; float f; } p12;\n    void *p16;\n    char pad14[0x34];\n    void *obj;\n    int p4C;\n    char pad50[0x50];\n};\nextern \"C\" void gl_func_0003FC58(int arg0) {\n    Msg msg;\n    Msg out;\n    volatile int p0, p1, p2, p3, p4, p5;\n    gl_func_00000000(&msg);\n    D_3FC58_flagsW = D_3FC58_flags | 4;\n    switch (msg.type) {\n    case 52: {\n        O28 *o = (O28 *)msg.p8;\n        W t(msg.p12.i);\n        o->f5(t);\n        break;\n    }\n    case 22:\n        ((O28 *)msg.obj)->f1();\n        gl_func_00000000(D_3FC58_s1);\n        break;\n    case 10:\n        out = msg;\n        switch (msg.p8) {\n        case 1: out.p12.i = *(int *)msg.p16; break;\n        case 2: out.p12.f = *(float *)msg.p16; break;\n        }\n        out.type = 9;\n        gl_func_00000000(&out);\n        break;\n    case 9:\n        switch (msg.p8) {\n        case 0: *(short *)msg.p16 = msg.p12.i; break;\n        case 1: *(int *)msg.p16 = msg.p12.i; break;\n        case 2: *(float *)msg.p16 = msg.p12.f; break;\n        }\n        break;\n    case 7:\n        *(int *)msg.p16 &= msg.p12.i;\n        break;\n    case 8:\n        *(int *)msg.p16 |= msg.p12.i;\n        break;\n    case 21:\n        ((O0 *)msg.obj)->f1();\n        if (msg.p4C) gl_func_00000000(arg0);\n        break;\n    case 23:\n        ((O0 *)msg.obj)->f1();\n        if (msg.p4C) gl_func_00000000(arg0);\n        break;\n    case 25:\n        break;\n    case 27:\n        gl_func_00000000();\n        break;\n    case 28: {\n        O28 *o = *(O28 **)(D_3FC58_g + 0x1C8);\n        out.type = 25;\n        out.obj = o;\n        if (o == 0) {\n            gl_func_00000000(D_00000000 + 0x1F3B0);\n        } else {\n            o->f1();\n        }\n        gl_func_00000000(arg0);\n        break;\n    }\n    default:\n        gl_func_00000000(D_00000000 + 0x1F3CC, msg.type);\n        break;\n    }\n    D_3FC58_flags2W = D_3FC58_flags2 & ~4;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3FC58.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

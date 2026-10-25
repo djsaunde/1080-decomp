@@ -703,7 +703,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 162: 3AE58 NCC NM donor (NM cfe body 388 -> 380 bytes = target): 0x2ea08 -> 0x2ea00 (62F08 NM offset 0x2e9b0).
 # agent-c run 162: 41D40 NCC NM donor (NM cfe body 408 -> 412 bytes = target): 0x2ea00 -> 0x2ea04 (62F08 NM offset 0x2e9b4).
 # agent-c run 163: 4FBA4 NCC exact donor over a placeholder (NM cfe body 0x138 -> 0x15C bytes = target): 0x2ea04 -> 0x2ea28 (62F08 NM offset 0x2e9d8).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea28 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 163: 3FC58 NCC exact donor over a placeholder + all-zero pad word (NM 0x2E8 -> 0x2EC bytes = target): 0x2ea28 -> 0x2ea2c (62F08 NM offset 0x2e9dc).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea2c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1851,6 +1852,16 @@ $(GAMELIBS_4FBA4_DONOR): src/game_libs/game_libs_ncc_4FBA4.cpp
 	$(OBJCOPY) --redefine-sym __vtbl__4Base=gl_4FBA4_vtbl_base --redefine-sym __vtbl__3Der=gl_4FBA4_vtbl_der $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004FBA4=$(GAMELIBS_4FBA4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FBA4_DONOR)
+# 3FC58 = message pump (plain switch = the target compare chain; named W temp; flag aliases) EXACT NCC donor over an empty placeholder (agent-c run 163).
+GAMELIBS_3FC58_DONOR := build/src/game_libs/game_libs_ncc_3FC58.cpp.o
+$(GAMELIBS_3FC58_DONOR): src/game_libs/game_libs_ncc_3FC58.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003FC58=$(GAMELIBS_3FC58_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3FC58_DONOR)
+# 3FC58's target carries one trailing all-zero alignment word after jr ra (the donor ends at the delay slot).
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_0003FC58=0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += gl_func_0003FC58=0x00000000
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
