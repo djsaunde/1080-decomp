@@ -9,7 +9,9 @@
  * function-scope variable whose long live range takes s0 / s1, the target (cfe on cfront output) colours
  * each site's temporary separately.  NOT matchable under NCC: the target's 5-entry tail switch is a
  * jumptable (cfe; NCC always lowers a switch to a compare chain).  Symbols renamed after compile (names
- * only): __ct__6ScreenFPiT1 -> timproc_uso_b5_func_00008FC8.  NM comparison object only. */
+ * only): __ct__6ScreenFPiT1 -> timproc_uso_b5_func_00008FC8.  NM comparison object only.
+ * 87.71 -> 88.08: the item loop stores items[i] (no pp walk), the row pointers / m38 copy declared at the top
+ * (frame 368 -> 352 = target), direct `int *fp` for the kid flag RMW, third Panel explicit. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
@@ -176,8 +178,9 @@ struct B2 : B { char p2c[0xB4 - 0x2C]; V3 pos; char pc0[0xDC - 0xC0]; f32 fDC, f
 struct W16C : B2 { f32 f108, f10C, f110; char p114[0x120 - 0x114]; int i120; f32 f124; char p128[0x16C - 0x128];
     W16C(char *d) : B2(d, 0.0f, 0.0f, 0.0f) { i120 = 1; f108 = 10000000.0f; f10C = 10000000.0f; f110 = 10000000.0f; f124 = 1.0f; } virtual void v(); };
 #define WFIELDS W16C *w; f32 f10C, f110, f114; int p118; f32 f11C, f120, f124, f128, f12C; int p130; int i134; int p138; int n; int i140; int i144; Kid *kid[8]; \
-    void attachKids() { for (int i = 0; i < n; i++) { addChild(kid[i]); kid[i]->fl.clr(4); } }
+    void attachKids() { for (int i = 0; i < n; i++) { addChild(kid[i]); int *fp = &kid[i]->fl.v; *fp &= ~4; } }
 struct WBase : B2 { WFIELDS WBase(); virtual void v(); };
+extern "C" char import_80087FB8[];
 struct WA : B2 { WFIELDS
     WA() : B2(timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f) {
         name = timproc_uso_b5_D_807FEC10 + 0x13A0;
@@ -254,6 +257,8 @@ extern "C" char *timproc_uso_b5_func_00002B74(...);
 struct Screen : B { int f2c; B *m30; int f34; B *m38; char p3c[0x50 - 0x3C]; B *m50; Panel *m54; Panel *m58; Panel *m5C;
     Screen(int *arg1, int *arg2); void reg(S70 *); virtual void f1(); };
 Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
+    S70 *a, *b, *c, *d; B *o;
+    volatile int pad[4];
     name = timproc_uso_b5_D_807FE5F4 + 0x1350;
     m50 = new Sub30(this);
     add(m50);
@@ -273,20 +278,20 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
         m38->add(m5C->w);
     }
 
-    B *o = m38;
-    S70 *a = new S70a(o);
+    o = m38;
+    a = new S70a(o);
     reg(a);
     add(a);
     o = m38;
-    S70 *b = new S70b(o);
+    b = new S70b(o);
     reg(b);
     add(b);
     o = m38;
-    S70 *c = new S70c(o);
+    c = new S70c(o);
     reg(c);
     add(c);
     o = m38;
-    S70 *d = new S70d(o);
+    d = new S70d(o);
     reg(d);
     add(d);
     m54 = new Panel(timproc_uso_b5_D_807FECE4 + 0x1474, timproc_uso_b5_D_807FECEC + 0x147C);
@@ -325,12 +330,10 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     int tu = **(u16 **)((char *)&import_800201EC + 0x154);
     if (FW(&import_800200CC, 0x34) != 6) tu &= ~3;
     B *items[8];
-    B **pp = items;
     for (int i = 0; i != 8; i++) {
         B *r = c->add(1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, 4.712389f);
-        *pp = r;
+        items[i] = r;
         if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
-        pp++;
     }
     d->add(1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
     B *e2 = d->add(1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
