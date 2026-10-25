@@ -813,9 +813,9 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 buf[vidx + 2].t = 0x7C0;
                 buf[vidx + 2].z = import_8001FFA0[0] / 2;
                 buf[vidx + 3].x = x + 32; buf[vidx + 3].y = y - 16;
+                buf[vidx + 3].z = import_8001FFA0[0] / 2;
                 buf[vidx + 3].s = 0;
                 buf[vidx + 3].t = 0x7C0;
-                buf[vidx + 3].z = import_8001FFA0[0] / 2;
                 x -= 64;
                 vidx += 4;
             }
