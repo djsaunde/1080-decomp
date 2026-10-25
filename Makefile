@@ -2972,6 +2972,15 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_B368_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B368=$(TIMB5_B368_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B368_DONOR)
+# 8FC8 = timing-screen master ctor as C++ (agent-g run 169, cfe 86.64): NM comparison object only (the target's
+# tail switch is a cfe jumptable); ctor symbol renamed (names only).
+TIMB5_8FC8_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8FC8_nm.cpp.o
+$(TIMB5_8FC8_NM_DONOR): src/timproc_uso_b5/timproc_uso_b5_ncc_8FC8_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__6ScreenFPiT1=timproc_uso_b5_func_00008FC8 $@
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008FC8=$(TIMB5_8FC8_NM_DONOR)
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8FC8_NM_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
 # (87E8, 8894, 8940 -- and 1DA4 before them) were mis-split return blocks of
