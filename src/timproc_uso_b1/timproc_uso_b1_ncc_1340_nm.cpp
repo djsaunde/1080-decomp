@@ -21,7 +21,7 @@ extern "C" void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
     s32 x, pos4, posA1, pos6;
     s32 xmid;
     s32 i;
-    unsigned char c;
+    volatile s32 qc;
     s32 count;
     volatile s32 q0, q1, q2, q3, q4, q5;
 
@@ -54,13 +54,12 @@ extern "C" void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
         xmid = arg1 + 0x32;
         timproc_uso_b1_func_000000B0(w6FC, posA1, xmid, 2);
         for (i = 0; i < count; i++) {
-            c = buf[i];
-            if (c == 0x5B) {
+            if (buf[i] == 0x5B) {
                 buf[i] = 0xA;
-            } else if (c == 0x5D) {
+            } else if (buf[i] == 0x5D) {
                 buf[i] = 0xB;
             } else {
-                buf[i] = c - 0x30;
+                buf[i] = buf[i] - 0x30;
             }
             timproc_uso_b1_func_000000B0(p714, pos6 + i * 13, (arg1 - *(s16 *)(*(char **)(arg0 + 0x724) + 0x22) / 2) + 0x32, buf[i] * glyph, glyph);
         }
