@@ -11,7 +11,11 @@
  * ft0 for the w load), 99.28 -> 99.35; the zeroed float[3] lives in an inline `zero()` (z homes at the
  * target's M-20..M-28). Residual: frame 0x50 vs 0x70 (four more homes between z and the V3 temp, four below)
  * and the 0x104 element store (`sw zero` in the target, swc1 here; an int element loses the FP-zero remats:
- * uopt then splits the zero constant's live range, kit CVI). Still NON_MATCHING: build/non_matching/ only. */
+ * uopt then splits the zero constant's live range, kit CVI). 
+ * agent-c run 161: the frame (0x70 = target): four unused volatile homes in a block right after zero() in the inline
+ * Base ctor (they land between z and the V3 temp) and four more in a block after the last call of the Obj ctor (below
+ * the V3 temp), zero instructions: 99.35 -> 99.57, diff = the single 0x104 element store.
+ * Still NON_MATCHING: build/non_matching/ only. */
 typedef int s32;
 extern "C" {
 void *gl_func_00034458(...);
@@ -29,7 +33,7 @@ struct Base : BB {
     char m30[0xB4 - 0x30];
     Base(void *a1) : BB(a1) {
         gl_func_00034458(this);
-        zero();
+        zero(); { volatile int p1, p2, p3, p4; }
     }
     void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; gl_func_00034458(m30, z); }
     virtual void f();
@@ -58,5 +62,5 @@ Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
     dc.set(b4);
     e8.set(c0);
     f4.set(rq);
-    gl_func_00034458(&dc, (char *)this + 0x70);
+    gl_func_00034458(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }
 }
