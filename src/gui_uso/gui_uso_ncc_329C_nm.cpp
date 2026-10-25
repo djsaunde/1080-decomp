@@ -8,8 +8,10 @@
  * variable -- next()'s this, the switch value, the MAX temps -- into the call blocks, so uopt gives it $s0 as
  * in the target), x / y / fw / fh declared before w / h (w / h homes = target) and a named `t = spr->fmt`
  * (the target's sixth home before w; also takes t1 so spr lands in t2): 98.62, length 1144 = target.
- * LEFT: the switch compares read t (t1) instead of the pool variable (s0), and the second MAX pool temp
- * is v1 (target t2, so its zero init schedules at the join). */
+ * run 166 (kit CVII): the switch operand re-read through arg0 (`arg0->spr->fmt`, CSE'd with spr) keeps t
+ * (t1, now a phantom) out of the compares, which read the pool variable s0 as in the target: 98.69.
+ * LEFT: the second MAX pool temp (zdbug:5 bit 102, home M-56) is v1 (target t2, so its zero init
+ * schedules at the join); it is coloured with only v0 / s0 forbidden. */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -49,7 +51,7 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     w = spr->w;
     h = spr->h;
     t = spr->fmt;
-    switch (spr->fmt) {
+    switch (arg0->spr->fmt) {
     case 0x408:
         CTX->load(spr->tex, w, h);
         break;
