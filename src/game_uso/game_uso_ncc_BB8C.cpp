@@ -17,16 +17,15 @@
  * before the loop (target f22); the dot product is an inline member (moves
  * d to f2/f26 as the target); d / k / i / c are function-scope scalars
  * (frame 296); two empty if (1) {} inside getPos.
- * A dead `if (k) {}` at the very end extends k's live range over the whole
- * function: k drops below f20 in uopt's priority order and the callee-saved
- * colours come out as the target (f20 = f20 ramp, f22 = k), 72 -> 66 raw.
+ * (run 128 used a dead trailing test on k -- k is uninitialised on the
+ * early-exit path, so that is a banned empty test; removed in run 169.)
  * run 132: P2 r declared FIRST in the if block (before f24) puts it at
  * sp+132 like the target (66 -> 64 raw).
  * RESIDUAL (64 raw): the getPos this-adjust (target lwc1 160(a2); addiu
  * a2,a2,112; 52/56(a2)), the float zero hoisted above the K88 return, the
  * operator= param temp 8 bytes low (a function-scope temp, not moved by
- * inline layers or dead locals without growing the frame), the s2/s3 obj swap, and the dead
- * if leaves one epilogue nop (bc1f + nop where the target has bc1fl).
+ * inline layers or dead locals without growing the frame), the s2/s3 obj
+ * swap, and the f20/f22 callee-saved colour swap for k.
  * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM. */
 struct P3 { float x, y, z; };
 struct V3 {
@@ -112,5 +111,4 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
             }
         }
     }
-    if (k) {}
 }
