@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0003D71C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T06:55:26.142867+00:00",
+  "end_time": "2026-10-25T06:55:26.142889+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T06:55:26.142882+00:00",
+      "assistant_text": "NCC C++ donor: the copy destination as a kept named pointer (if (0) { d = 0; }) puts its addiu ahead of the source's like the target; products written o->x * factor (edg keeps written operand order).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 55,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003D71C (0xDC / 55 words), agent-c run 162.\n * Guarded camera-matrix reset: if test(G+0x254, 3, x, y, z, 0, 0.0f) copy the 0x40-byte block D+0xE8 to the\n * D+0xA0 matrix and scale its translation row by the D+0x128.. factors. The cfe body (96.00) could not order\n * the two base addius (as1 put the source first); as C++ the destination is a KEPT named pointer\n * (`if (0) { d = 0; }`), which puts its addiu (v0) ahead of the source's (t6) like the target, and each\n * product is written `o->x * factor` (edg keeps the written operand order; the factor loads first).\n * Spliced over an empty placeholder in both build trees. */\ntypedef float f32;\nstruct Blk { int w[16]; };\nstruct Obj { char pad[0x30]; f32 x, y, z; };\nextern \"C\" {\nint gl_3D71C_test(int, int, f32, f32, f32, int, f32);\nvoid gl_func_00000000(...);\nvoid gl_3d71c_dA0();\nextern char D_00000000[];\n}\nextern \"C\" void gl_func_0003D71C(Obj *o) {\n    if (gl_3D71C_test(*(int *)(D_00000000 + 0x254), 3, o->x, o->y, o->z, 0, 0.0f) != 0) {\n        Blk *d = (Blk *)gl_3d71c_dA0;\n        if (0) { d = 0; }\n        *d = *(Blk *)(D_00000000 + 0xE8);\n        *(f32 *)((char *)d + 0x30) = o->x * *(f32 *)(D_00000000 + 0x128);\n        *(f32 *)((char *)d + 0x34) = o->y * *(f32 *)(D_00000000 + 0x12C);\n        *(f32 *)((char *)d + 0x38) = o->z * *(f32 *)(D_00000000 + 0x130);\n        gl_func_00000000(o);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3D71C.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

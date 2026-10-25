@@ -7475,36 +7475,10 @@ void gl_func_0003D68C(int *a0) {
  * granularity — STRUCTURAL (IDO hand-tuned 3-word loop vs C unroll),
  * which the permuter cannot cross (session meta-finding: permuter
  * closes pure-regalloc, not structural). Killed; not permuter-class. */
-#ifdef NON_MATCHING
-struct gl_3D71C_blk { int w[16]; };
-/* run 137: the test callee takes its two floats as FLOAT (prototyped: lwc1 /
- * swc1 to 16(sp) / 24(sp)); the unprototyped call promoted them to double. */
-extern int gl_3D71C_test(int, int, int, int, float, int, float);
-/* run 139: the copy destination D+0xA0 is ONE register base in the target (lui v0 / addiu v0,v0,160 with no
- * reloc, then the 64-byte copy loop writes through it and the three products store at 48/52/56(v0)): a
- * function-typed blank symbol keeps the %lo in its own addiu so uopt holds the base (pinned 0xA0). The products
- * read the D+0x128.. factor first. Left: as1 schedules the src addiu (t6) before the dst addiu (v0). */
-extern void gl_3d71c_dA0();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3D71C.cpp, REPLACE_FUNC_BODY-spliced over
+ * this placeholder in both build trees (agent-c run 162). The old cfe NM body is retired. */
 void gl_func_0003D71C(int *a0) {
-    int *s0 = a0;
-    if (gl_3D71C_test(*(int *)((char *)&D_00000000 + 0x254), 3,
-                       *(int *)((char *)s0 + 0x30),
-                       *(int *)((char *)s0 + 0x34),
-                       *(float *)((char *)s0 + 0x38), 0, 0.0f) != 0) {
-        *(struct gl_3D71C_blk *)gl_3d71c_dA0 =
-            *(struct gl_3D71C_blk *)((char *)&D_00000000 + 0xE8);
-        *(float *)((char *)gl_3d71c_dA0 + 0x30) =
-            *(float *)((char *)&D_00000000 + 0x128) * *(float *)((char *)s0 + 0x30);
-        *(float *)((char *)gl_3d71c_dA0 + 0x34) =
-            *(float *)((char *)&D_00000000 + 0x12C) * *(float *)((char *)s0 + 0x34);
-        *(float *)((char *)gl_3d71c_dA0 + 0x38) =
-            *(float *)((char *)&D_00000000 + 0x130) * *(float *)((char *)s0 + 0x38);
-        func_00000000(s0);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003D71C);
-#endif
 
 /* gl_func_0003D7F8: 44-insn nullable-construct + init + optional quat copy.
  * STRUCTURE VERIFIED at 73% fuzzy (peaked here; <80% so kept INCLUDE_ASM

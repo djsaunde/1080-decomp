@@ -1782,6 +1782,13 @@ $(GAMELIBS_3B01C_DONOR): src/game_libs/game_libs_ncc_3B01C.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B01C=$(GAMELIBS_3B01C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B01C_DONOR)
+# 3D71C = guarded camera-matrix reset as NCC C++ (kept destination pointer orders the base addius; written product operand order). EXACT NCC donor over an empty placeholder (agent-c run 162).
+GAMELIBS_3D71C_DONOR := build/src/game_libs/game_libs_ncc_3D71C.cpp.o
+$(GAMELIBS_3D71C_DONOR): src/game_libs/game_libs_ncc_3D71C.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003D71C=$(GAMELIBS_3D71C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D71C_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
