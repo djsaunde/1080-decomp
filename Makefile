@@ -1139,6 +1139,10 @@ TIMPROC_B3_65C_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o
 TIMPROC_B3_5A4_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o
 TIMPROC_B3_B0_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o
 build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: REPLACE_FUNC_BODY := timproc_uso_b3_func_000000B0=$(TIMPROC_B3_B0_DONOR) timproc_uso_b3_func_000005A4=$(TIMPROC_B3_5A4_DONOR) timproc_uso_b3_func_0000065C=$(TIMPROC_B3_65C_DONOR)
+# 13B8 = timer-HUD draw (23FC / 1340 / arcproc 16F4 family) as C++; NM comparison object only (agent-g run 172).
+TIMPROC_B3_13B8_NM_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_ncc_13B8_nm.cpp.o
+build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: private REPLACE_FUNC_BODY += timproc_uso_b3_func_000013B8=$(TIMPROC_B3_13B8_NM_DONOR)
+build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: $(TIMPROC_B3_13B8_NM_DONOR)
 # timproc_uso_b3_func_0000217C: byte-correct real-def whose target symbol has an extra
 # trailing alignment nop (target 0x34/13w vs build 0x30/12w). Grow the non_matching
 # symbol with one all-zero word so objdiff scores 13w. ROM-neutral (non_matching .o).

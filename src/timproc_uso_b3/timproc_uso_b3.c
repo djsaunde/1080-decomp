@@ -784,6 +784,7 @@ void timproc_uso_b3_func_00001240(char *a0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
+/* NM object: replaced by the NCC comparison donor timproc_uso_b3_ncc_13B8_nm.cpp (agent-g run 172). */
 /* timproc_uso_b3_func_000013B8: 2026-10-24 agent-g run 155: body replaced by a port of
  * arcproc_uso_func_000016F4's C (opcode-identical twin, offsets -0x50 / -0x38, flag 4 -> 2):
  * 80.36 -> 85.36 (= 16F4's score). Notes below describe the previous body.
