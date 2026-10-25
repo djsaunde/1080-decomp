@@ -1,11 +1,13 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048AEC (0x81C / 519 words), agent-c run 159.
  * `void Obj::draw()` (renamed to gl_func_00048AEC with objcopy): the matrix concat into a local f32[4][4],
- * Ctx::mtx() / next() appends on the GState context (mtx() with a named count: the target's v0 / v1, next()
- * as `&dl->buf[dl->count++]`), three `AIter it = arr.iter();` loops, one per arm (block-scoped `it`, the
+ * Ctx::mtx() / next() appends on the GState context (both with a named count `n`: the target's dl / mh
+ * pointer in a caller-saved register, re-read for the buf), load(m) / prim(hi, lo) / dlcall(p) DL helpers
+ * (named `g` / `t` per expansion, like the target's per-arm disp homes), three `AIter it = arr.iter();` loops, one per arm (block-scoped `it`, the
  * return temp pooled across arms like the target's shared sp+196 copy temp), Elem's vptr after 0x5C data
  * bytes (`it.cur()->draw(this)` = the slot-5 call through +0x5C), the arm-2 Gfx copy of g34.
  * Declaration order gctx, A, B, mtx, i, j, k, mt, cmd puts gctx / mtx / cmd at the target's homes.
- * cfe body 88.11 -> 91.75; length 2052 -> 2096 (target 2076: overshoots, distance 24 -> 20).
+ * Elem's virtuals sit in a 0x5C-byte base (EBase) so the derived members keep their offsets.
+ * cfe body 88.11 -> 93.34; length 2052 -> 2056 (target 2076).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 extern "C" {
@@ -22,15 +24,20 @@ struct Ctx {
     DLHead *dl;
     char pad10[0x3C - 0x10];
     MtxHead *mh;
-    Gfx *next() { return &dl->buf[dl->count++]; }
+    Gfx *next() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
+    void load(Mtx *m) { Gfx *g = next(); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+    void prim(u32 hi, u32 lo) { Gfx *g = next(); g->w0 = hi; g->w1 = lo; }
+    void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Mtx *mtx() { int n = mh->count; mh->count = n + 1; return &mh->buf[n]; }
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
 struct Node { char pad[0x18]; int flags; char pad1c[2]; s16 m1e; };
-struct Elem {
+struct EBase {
     char pad0[0x5C];
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void draw(void *);
+};
+struct Elem : EBase {
     char pad60[0x6C - 0x60]; Ctx *ctx6C; char pad70[0x8A - 0x70]; s16 n8A;
 };
 struct AIter;
@@ -61,7 +68,6 @@ void Obj::draw() {
     int i, j, k;
     Mtx *mt;
     Mtx *cmd;
-    Gfx *g;
 
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
     if (flags30 & 0x80) {
@@ -86,16 +92,12 @@ void Obj::draw() {
         gctx = GS->ctx;
         cmd = gctx->mtx();
         func_00000000(mt, cmd);
-        g = gctx->next();
-        g->w0 = 0x01020040;
-        g->w1 = (u32)func_00000000(cmd);
+        gctx->load(cmd);
     } else {
         gctx = GS->ctx;
         cmd = gctx->mtx();
         func_00000000(A, cmd);
-        g = gctx->next();
-        g->w0 = 0x01020040;
-        g->w1 = (u32)func_00000000(cmd);
+        gctx->load(cmd);
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
@@ -104,12 +106,7 @@ void Obj::draw() {
             AIter it = arr.iter();
             while (it.next()) {
                 if (it.cur()->ctx6C != 0) {
-                    Elem *e = it.cur();
-                    Ctx *c = GS->ctx;
-                    u32 t = (u32)func_00000000(&e->ctx6C->dl->buf[it.cur()->n8A]);
-                    Gfx *d = c->next();
-                    d->w0 = 0x06000000;
-                    d->w1 = t;
+                    GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]);
                 }
             }
         }
@@ -121,18 +118,11 @@ void Obj::draw() {
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
-        g = GS->ctx->next();
-        g->w0 = 0xFA000000;
-        g->w1 = 0xFFFF00FF;
+        GS->ctx->prim(0xFA000000, 0xFFFF00FF);
         AIter it = arr.iter();
         while (it.next()) {
             if (it.cur()->ctx6C != 0) {
-                Elem *e = it.cur();
-                Ctx *c = GS->ctx;
-                u32 t = (u32)func_00000000(&e->ctx6C->dl->buf[it.cur()->n8A]);
-                Gfx *d = c->next();
-                d->w0 = 0x06000000;
-                d->w1 = t;
+                GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]);
             }
         }
     } else {
