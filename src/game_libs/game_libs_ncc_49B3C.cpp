@@ -44,11 +44,10 @@ extern "C" void gl_func_00049B3C(Obj *self) {
     gl_func_00000000(D_49B3C_s2, S(0x1FFE0), &self->x40, 0);
     gl_func_00000000(D_49B3C_s3, S(0x1FFE8), &self->x44, 0);
     gl_49B3C_regf(D_49B3C_s4, S(0x1FFF4), (char *)&self->x9C, 0.0f, 10.0f, 0);
-    { volatile int pz, py; }
+    { volatile int pz; }
     AIter it = iter(&self->arr);
     while (it.next()) {
-        Elem *e = it.cur();
-        cb5c(e);
+        cb5c(it.cur());
     }
     gl_func_00000000(D_49B3C_s5, S(0x20004), &self->xA4, -1, self->arr.pad8, 0);
     if (self->sub != 0) {
