@@ -1,104 +1,64 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for timproc_uso_b5_func_0000B368
- * (174 words, target 173). NM object only (build/non_matching); the ROM build keeps
- * INCLUDE_ASM. The cfe NM body lifted under NCC with the offset / scale vector read
- * from file-local statics (kit LX: x / y one object through references, z a second
- * one), as in the B624 donor: 175 -> 174 words, 87.47 -> 89.3 fuzzy (agent-g run 142).
- * RESIDUAL: head load order / shared-lui slot, FP colours in the rotate tail.
- * Run 156 (kit LXXXVI): head differences through held block locals (target keeps them in
- * f2 / f12 / f14 and loads the statics first): 89.58 -> 92.71, 174 -> 173 words = target.
- * Run 157: rewritten as C++ vector code. Every m2c "struct copy chain" (d_272 -> c1_292 ->
- * c2_308, s92 -> c1 -> s240, s64 -> c76 -> s224) is an inline function returning a named
- * non-POD V by value (r -> return temp -> destination); the three results are held in
- * locals; the second scale takes its factor by const reference, which gives it its own
- * return temp (sp+0x4C) as in the target; pos += through V::operator+=; the frame-only
- * locals declared in the if arm in target order: 92.71 -> 95.71, 173 words.
- * RESIDUAL: homes (target has 13 more frame words in the arm), arg0 copied to s0 before the
- * head, the 1.0f axis constant in a temp (target f12), FP ring offset in the tail. */
-typedef signed int s32;
-typedef unsigned int u32;
-typedef float f32;
-typedef double f64;
-#define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
-typedef struct { f32 f0; f32 f4; f32 f8; } Vec154;
-extern "C" int func_00000000(...);
+ * (173 words = target). NM object only (build/non_matching); the ROM build keeps INCLUDE_ASM.
+ * Run 166 (kit CVII): rewritten on the exact AC20 donor's recipe (its sibling): rel() /
+ * pool() read the file-local x / y pair through a pointer parameter (the `if (0)` keeps
+ * the parameter temporaries, so the pair loads go through `lui at` like the target, not a
+ * CSE'd v0 base), every rotation as o->q.rot() (pooled `this` temporary at sp+36), the
+ * angle blocks nested as in AC20, and the two scaled vectors COPY-INITIALISED at their use
+ * (`V3 s240 = pool(...)`: result -> shared temp -> s240 as word copies, no float element
+ * tail), the 0727A4 / 0806C buffers scoped to the 0x13C block: 95.71 -> 99.16 standalone,
+ * every instruction but the sp offsets.
+ * RESIDUAL: frame 264 vs 320 -- the target homes s240 / s224 and the three axis vectors at
+ * the top of the arm (above m7C) with single-word gaps; declaring them there needs an
+ * assignment form that still copies word-wise.
+ * History: runs 142-157 (cfe lift, relPos helpers, 87.47 -> 95.71). */
+typedef float f32; typedef int s32; typedef double f64;
+#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 extern "C" {
-extern char D_00000000;
-extern void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1);
-extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
-extern void *timproc_uso_b5_func_071028(...);
-extern void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
-extern void timproc_uso_b5_func_054CAC(void *obj);
-
+extern char import_80087DA8;
+void *timproc_uso_b5_func_071028(...);
+void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
+void timproc_uso_b5_func_0727A4(void *src, void *dst);
+void import_0010806C(void *src, void *dst);
+void timproc_uso_b5_func_0714D4(void *quat, void *vec, f32 scale, s32 flag);
+void timproc_uso_b5_func_06970C(void *obj, s32 val);
+void timproc_uso_b5_func_054CAC(void *obj);
 extern f32 timb5_B368_gscale;
-extern void timproc_uso_b5_func_06970C_r(...);
 }
-static f32 sXY[2];
-static f32 sZ;
-struct V { f32 x, y, z; V() {} V &operator+=(const V &v) { x += v.x; y += v.y; z += v.z; return *this; } };
-static inline V relPos(const V &a) {
-    f32 &x = sXY[0]; f32 &y = sXY[1];
-    V r; f32 dx = a.x - x; f32 dy = a.y - y; f32 dz = a.z - sZ;
-    r.x = dx; r.y = dy; r.z = dz;
-    return r;
-}
-static inline V poolScaled(const f32 &s) {
-    f32 &x = sXY[0]; f32 &y = sXY[1];
-    V r; f32 rx = x * s; f32 ry = y * s; f32 rz = sZ * s;
-    r.x = rx; r.y = ry; r.z = rz;
-    return r;
-}
-static inline V scaled3(const V &a, const f32 &s) {
-    V r; f32 rx = a.x * s; f32 ry = a.y * s; f32 rz = a.z * s;
-    r.x = rx; r.y = ry; r.z = rz;
-    return r;
-}
-extern "C" void timproc_uso_b5_func_0000B368(char *arg0) {
-    V d;
-
-    d = relPos(*(V *) (arg0 + 0xDC));
+static float sXY[2]; static float sZ;
+struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void operator=(V3 o) { x = o.x; y = o.y; z = o.z; }
+    void operator+=(const V3 &v) { x += v.x; y += v.y; z += v.z; } };
+inline V3 rel(const V3 &a, f32 *g) { if (0) { g[0] = a.x; } return V3(a.x - g[0], a.y - g[1], a.z - sZ); }
+inline V3 pool(f32 *g, const f32 &s) { if (0) { g[0] = s; } return V3(g[0] * s, g[1] * s, sZ * s); }
+inline V3 operator*(const V3 &a, const f32 &s) { return V3(a.x * s, a.y * s, a.z * s); }
+struct Quat {
+    f32 x, y, z, w;
+    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
+};
+struct Obj {
+    char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;
+    f32 f10C, f110, f114, f118; char p11C[0x124 - 0x11C]; s32 i124; f32 f128; s32 i12C;
+};
+extern "C" void timproc_uso_b5_func_0000B368(Obj *o) {
+    V3 d = rel(o->pos, &sXY[0]);
     timproc_uso_b5_func_071028(&d);
-    if (M2C_FIELD(arg0, s32 *, 0x140) != 0) {
-        V s240;
-        V s224;
-        V ax1;
-        V ax2;
-        V ax3;
-        V s120;
-        V s104;
-        f32 ang;
-        M2C_FIELD(arg0, f32 *, 0xF4) = 0.0f;
-        M2C_FIELD(arg0, f32 *, 0xF8) = 0.0f;
-        M2C_FIELD(arg0, f32 *, 0xFC) = 0.0f;
-        M2C_FIELD(arg0, f32 *, 0x100) = 1.0f;
-        ang = M2C_FIELD(arg0, f32 *, 0x110);
-        ax1.z = 0.0f;
-        ax1.y = 0.0f;
-        ax1.x = 1.0f;
-        timproc_uso_b5_func_071AE0(arg0 + 0xF4, &ax1, ang);
-        ang = M2C_FIELD(arg0, f32 *, 0x10C);
-        ax2.x = 0.0f;
-        ax2.y = 0.0f;
-        ax2.z = 1.0f;
-        timproc_uso_b5_func_071AE0(arg0 + 0xF4, &ax2, ang);
-        ang = M2C_FIELD(arg0, f32 *, 0x114);
-        ax3.x = 0.0f;
-        ax3.z = 0.0f;
-        ax3.y = 1.0f;
-        timproc_uso_b5_func_071AE0(arg0 + 0xF4, &ax3, ang);
-        if (M2C_FIELD(arg0, s32 *, 0x13C) != 0) {
-            func_00000000(M2C_FIELD(*(char **) &D_00000000, char **, 0x70) + 0xB4, &s120);
-            func_00000000(&s120, &s104);
-            func_00000000(arg0 + 0xF4, &s104, M2C_FIELD(arg0, s32 *, 0x128), 0);
+    if (FW(o, 0x140) != 0) {
+        o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
+        { f32 ang = o->f110; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }
+        { f32 ang = o->f10C; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f114; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
+        if (FW(o, 0x13C) != 0) {
+            s32 m7C[13];
+            s32 m6C[4];
+            timproc_uso_b5_func_0727A4(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
+            import_0010806C(m7C, m6C);
+            timproc_uso_b5_func_0714D4(&o->q, m6C, o->f128, 0);
         }
-        M2C_FIELD(arg0, f32 *, 0xE8) = M2C_FIELD(arg0, f32 *, 0x118);
-        M2C_FIELD(arg0, f32 *, 0xEC) = M2C_FIELD(arg0, f32 *, 0x118);
-        M2C_FIELD(arg0, f32 *, 0xF0) = M2C_FIELD(arg0, f32 *, 0x118);
-        {
-            s224 = scaled3(s240 = poolScaled(timb5_B368_gscale), M2C_FIELD(arg0, f32 *, 0x128));
-            *(V *) (arg0 + 0xDC) += s224;
-        }
-        timproc_uso_b5_func_06970C_r(M2C_FIELD(arg0, void **, 0x108), M2C_FIELD(arg0, s32 *, 0x124));
-        timproc_uso_b5_func_054CAC(arg0);
-        M2C_FIELD(arg0, s32 *, 0x12C) = 1;
+        o->sE8 = o->f118; o->sEC = o->f118; o->sF0 = o->f118;
+        V3 s240 = pool(&sXY[0], timb5_B368_gscale);
+        V3 s224 = s240 * o->f128;
+        o->pos += s224;
+        timproc_uso_b5_func_06970C(o->m108, o->i124);
+        timproc_uso_b5_func_054CAC(o);
+        o->i12C = 1;
     }
 }

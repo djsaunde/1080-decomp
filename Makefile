@@ -2891,11 +2891,11 @@ TIMB5_AC20_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000AC20=$(TIMB5_AC20_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_AC20_DONOR)
 # 396C: exact via src/match_imports/timproc_uso_b5_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
-# B624: NM-only NCC comparison donor (static offset-vector objects; 88.57 -> 89.7 fuzzy, 140 -> 139 words = target).
+# B624: NM-only NCC comparison donor (AC20 recipe since run 166; 99.92, two frame homes left).
 TIMB5_B624_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_NM_DONOR)
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_NM_DONOR)
-# B368: NM-only NCC comparison donor (same static offset-vector recipe as B624; 87.47 -> 89.3 fuzzy, 175 -> 174 words, target 173).
+# B368: NM-only NCC comparison donor (AC20 recipe since run 166; 99.16, frame homes left).
 TIMB5_B368_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B368_nm.cpp.o
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B368=$(TIMB5_B368_NM_DONOR)
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B368_NM_DONOR)
