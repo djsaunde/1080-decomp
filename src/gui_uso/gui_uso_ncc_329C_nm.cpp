@@ -1,11 +1,15 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_0000329C (286 words; this body 284, the
- * same length as the previous NM body). NM object only; the ROM build keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_0000329C (286 words; this body 286 = target).
+ * NM object only; the ROM build keeps INCLUDE_ASM.
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): rewritten from the cfe-shaped PKT macro body (88.70) as
  * real C++ -- every append is the gfx context's inline Ctx::next() (n read, n + 1 stored, &buf[n]), and the
  * stock 2.0I gbi.h gSPTexture / gSPScisTextureRectangle macros get `CTX->next()` as their pkt argument, so
  * the macro's two gImmp1 re-evaluations of pkt ARE the RDPHALF_1 / RDPHALF_2 appends. No pads, no empty
- * tests. 97.33 standalone. LEFT: the one edg pool variable (next()'s this, the switch value, the MAX temps)
- * is $s0 in the target (frame 88) and t1 here (frame 64) -- same variable, different register class. */
+ * tests. 97.33 standalone. Then: the three loader calls as an inline Ctx::load() (its `this` puts the pool
+ * variable -- next()'s this, the switch value, the MAX temps -- into the call blocks, so uopt gives it $s0 as
+ * in the target), x / y / fw / fh declared before w / h (w / h homes = target) and a named `t = spr->fmt`
+ * (the target's sixth home before w; also takes t1 so spr lands in t2): 98.62, length 1144 = target.
+ * LEFT: the switch compares read t (t1) instead of the pool variable (s0), and the second MAX pool temp
+ * is v1 (target t2, so its zero init schedules at the join). */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -30,28 +34,30 @@ union Gfx { Gwords words; long long force_structure_alignment; };
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
-struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
+struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     Spr *spr;
-    s32 w, h;
     s32 x, y;
     f32 fw, fh;
+    s32 t;
+    s32 w, h;
     gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);
     spr = arg0->spr;
     w = spr->w;
     h = spr->h;
+    t = spr->fmt;
     switch (spr->fmt) {
     case 0x408:
-        gui_func_00000000(CTX, spr->tex, w, h, 0, 0, w, h, 0);
+        CTX->load(spr->tex, w, h);
         break;
     case 0x120:
-        gui_func_00000000(CTX, spr->tex, w, h, 0, 0, w, h, 0);
+        CTX->load(spr->tex, w, h);
         break;
     case 0x110:
-        gui_func_00000000(CTX, spr->tex, w, h, 0, 0, w, h, 0);
+        CTX->load(spr->tex, w, h);
         break;
     }
     x = (f32)x0;
