@@ -30,7 +30,7 @@ extern "C" void gl_func_0003E5E0(char *arg0) {
     CB *node;
     char *it;
 
-    gl_func_00034458(&D_00000000_e5e0a, FW(arg0, 0xC), 0);
+    { int x = FW(arg0, 0xC); gl_func_00034458(&D_00000000_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
     node = new CB1(arg0, *(PMF *)(&D_00000000_e5e0c + 0x1EEC0));
     gl_func_00034458(&D_00000000_e5e0e, &D_00000000_e5e0f + 0x1F318, node, 0);
     node = new CB1(arg0, *(PMF *)(&D_00000000_e5e0h + 0x1EEC8));
