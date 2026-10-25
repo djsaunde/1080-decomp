@@ -5770,63 +5770,12 @@ end:
 //   transform/matrix block copy tail is documented but not fully
 //   decoded here. Byte-match deferred. Name pre-checked: no extern
 //   reuse.
-#ifdef NON_MATCHING
-/* NM decode 2026-10-17 agent-c: guarded by o->0x30 bits 1|2; sets bit 2,
- * takes d = other->pos - o->pos (+0x54) through inlined Vec3 temporaries,
- * r = cb(o); if r < 0: n = o->0x6C, cb(&n), n *= -r, set bit 1, return 1. */
-extern float gl_3B01C_f();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3B01C.cpp (V3 operator- / by-value operator=,
+ * kept position pointers, itab-order anchor, volatile frame homes), REPLACE_FUNC_BODY-spliced over this placeholder in
+ * both build trees (agent-c run 162). The old cfe body (98.63) is retired. */
 int gl_func_0003B01C(char *o, char *other) {
-    Vec3 u1, u2, u3, u4;
-    Vec3 n;
-    Vec3 u5;
-    float r;
-    float dz;
-    Vec3 t2;
-    float dx, dy;
-    Vec3 t;
-    Vec3 u6, u7;
-    Vec3 t3;
-    Vec3 *pa;
-    Vec3 *pb;
-    int fl;
-
-    pa = (Vec3 *)(o + 0x54);
-    fl = *(int *)(o + 0x30);
-    if (fl & 6) {
-        return 0;
-    }
-    *(int *)(o + 0x30) = fl | 2;
-    pb = (Vec3 *)(other + 0x54);
-    dz = pb->z - pa->z; if (1) {}
-    dy = pb->y - pa->y;
-    dx = pb->x - pa->x; if (1) {}
-    t.x = dx;
-    t.y = dy;
-    t.z = dz;
-    t2 = t;
-    t3 = t2;
-    n.z = t3.z;
-    n.y = t3.y;
-    n.x = t3.x;
-    r = gl_3B01C_f(o);
-    if (0.0f <= r) {
-        return 0;
-    }
-    t2 = *(Vec3 *)(o + 0x6C);
-    n.z = t2.z;
-    n.y = t2.y;
-    n.x = t2.x;
-    gl_func_00000000(&n);
-    /* run 150: compound `*=` gives the target's mul operand order (n first) */
-    n.x *= -r;
-    n.y *= -r;
-    n.z *= -r;
-    *(int *)(o + 0x30) |= 1;
-    return 1;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B01C);
-#endif
 
 /* game_libs_func_0003B198: 4-insn `return 0.0f` with both arg-saves spilled
  * to caller's outgoing-arg slots (no frame). Boundary fix 2026-05-27: the
