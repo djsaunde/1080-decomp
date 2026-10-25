@@ -106,7 +106,7 @@ void Obj::draw() {
             AIter it = arr.iter();
             while (it.next()) {
                 if (it.cur()->ctx6C != 0) {
-                    GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]);
+                    GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
                 }
             }
         }
@@ -122,7 +122,7 @@ void Obj::draw() {
         AIter it = arr.iter();
         while (it.next()) {
             if (it.cur()->ctx6C != 0) {
-                GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]);
+                GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
             }
         }
     } else {
