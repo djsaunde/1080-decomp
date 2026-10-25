@@ -7,6 +7,7 @@
  * mesh's pool through a named `Mesh *m` (the target holds the mesh in v0 for both vp reads) and record its id; then
  * copy the indices out and into the next triangle (a separate loop counter k: the target's v1 / a0 / v0 IVs).
  * 91.11 -> 97.21, length = target, frame 0x78 = target. Residual: t-register colours, idx[] at sp+0x68 (target 0x6C).
+ * The out[] halfword store carries a folded `& 0xFFFF` (one ugen ring slot): 97.21 -> 97.29.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32;
 extern "C" {
@@ -52,7 +53,7 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
         }
     }
     for (int k = 0; k < n594; k++) {
-        out[k] = idx[k];
+        out[k] = idx[k] & 0xFFFF;
         tris[nt].v[k] = idx[k];
     }
     if (++nt >= 200) {
