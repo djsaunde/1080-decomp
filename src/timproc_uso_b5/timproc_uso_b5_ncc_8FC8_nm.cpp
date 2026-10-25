@@ -13,7 +13,8 @@
  * 87.71 -> 88.08: the item loop stores items[i] (no pp walk), the row pointers / m38 copy declared at the top
  * (frame 368 -> 352 = target), direct `int *fp` for the kid flag RMW, third Panel explicit.
  * 88.03 -> 88.9: the WA flag RMW as one block-scope int x (and/and/and/ori/and on v0, as the target) and the three saved-bit locals volatile (the target spills them across the kid calls).
- * 88.9 -> 89.6: W-ctor field stores ordered f10C, f110, f114, f11C, i134 (store-order permutation sweep). */
+ * 88.9 -> 89.6: W-ctor field stores ordered f10C, f110, f114, f11C, i134 (store-order permutation sweep).
+ * 89.6 -> 90.36: W16C stores f108/f10C/f110 before i120, S70 row stores f34 before f6C (permutation sweeps). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
@@ -168,7 +169,7 @@ struct S70 : B { int f2C, f30, f34; B *f38; char p3c[0x6C - 0x3C]; int f6C;
         timproc_uso_b5_func_04C678(bp, D); FW(bp, 0x28) = (int)(f8fc8_e304_1 + 0xA94); } \
       FW(np, 0x28) = (int)(VT); np->name = NM; np->f2C = FW(CFG, 0x84); np->f30 = FW(CFG, 0x80); np->f6C = 0; np->f38 = o; np->f34 = FW(CFG, 0x8C); } \
     P = np; }
-#define S70CLASS(N, D, NM) struct N : S70 { N(B *o) : S70(D, o) { name = NM; f2C = FW(CFG, 0x84); f30 = FW(CFG, 0x80); f6C = 0; f34 = FW(CFG, 0x8C); } \
+#define S70CLASS(N, D, NM) struct N : S70 { N(B *o) : S70(D, o) { name = NM; f2C = FW(CFG, 0x84); f30 = FW(CFG, 0x80); f34 = FW(CFG, 0x8C); f6C = 0; } \
     virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual B *add(int, int, f32, f32, f32, f32, f32, f32); };
 S70CLASS(S70a, timproc_uso_b5_D_807FEC90 + 0x1420, timproc_uso_b5_D_807FEC98 + 0x1428)
 S70CLASS(S70b, timproc_uso_b5_D_807FECA8 + 0x1438, timproc_uso_b5_D_807FECB0 + 0x1440)
@@ -178,7 +179,7 @@ struct Kid : B { Kid(char *, char *, int); virtual void v(); };
 struct B2 : B { char p2c[0xB4 - 0x2C]; V3 pos; char pc0[0xDC - 0xC0]; f32 fDC, fE0, fE4; char pe8[0x108 - 0xE8];
     B2(char *, f32, f32, f32); void addChild(B *); virtual void v(); };
 struct W16C : B2 { f32 f108, f10C, f110; char p114[0x120 - 0x114]; int i120; f32 f124; char p128[0x16C - 0x128];
-    W16C(char *d) : B2(d, 0.0f, 0.0f, 0.0f) { i120 = 1; f108 = 10000000.0f; f10C = 10000000.0f; f110 = 10000000.0f; f124 = 1.0f; } virtual void v(); };
+    W16C(char *d) : B2(d, 0.0f, 0.0f, 0.0f) { f108 = 10000000.0f; f10C = 10000000.0f; f110 = 10000000.0f; i120 = 1; f124 = 1.0f; } virtual void v(); };
 #define WFIELDS W16C *w; f32 f10C, f110, f114; int p118; f32 f11C, f120, f124, f128, f12C; int p130; int i134; int p138; int n; int i140; int i144; Kid *kid[8]; \
     void attachKids() { for (int i = 0; i < n; i++) { addChild(kid[i]); int *fp = &kid[i]->fl.v; *fp &= ~4; } }
 struct WBase : B2 { WFIELDS WBase(); virtual void v(); };
