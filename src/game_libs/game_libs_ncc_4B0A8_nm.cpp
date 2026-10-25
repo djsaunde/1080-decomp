@@ -8,9 +8,10 @@
  * res(Elem *e1, Elem *e2) (the target re-reads the element pointer for k; one named e is 95.1, 576 -> 588 bytes);
  * Tex::base is a char ** (the target dereferences it); IBase writes `a = arr; idx = -1;` (emitted idx first, as the
  * target); five end-of-body block volatiles = frame 0xA8; AIter::next() as an if / return (the first expansion's colours match:
- * 98.73 -> 98.80 local). 94.76 -> 98.80, length = target. Residual: the
- * colours of the iterator ctor this (a3 vs t0), the two element pointers and the loop next() result, and the
- * first iterator temp 4 bytes low. Still NON_MATCHING. */
+ * 98.73 -> 98.80 local); the
+ * iterator built by a free `iter(Arr *)` instead of the member Arr::iter() puts the first iterator temp at the
+ * target's sp+0x78 (98.81). 94.76 -> 98.81, length = target. Residual: the
+ * colours of the iterator ctor this (a3 vs v1), the two element pointers and the next() results. Still NON_MATCHING. */
 extern "C" {
 void *gl_func_00034458(...);
 extern char D_00000000[];
@@ -36,7 +37,7 @@ struct AIter : IBase {
     Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
 };
-inline AIter Arr::iter() { return AIter(this); }
+inline AIter iter(Arr *a) { return AIter(a); }
 inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return gl_func_00034458(*t->base + k * 8, t, k); }
 struct Src { char pad[0x84]; Arr arr; };
 struct Base { int f0; char pad[0x24]; Base(char *name); virtual void f(); };
@@ -54,7 +55,7 @@ Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
     gl_func_00034458(f40, &p);
     gl_func_00034458(f40, &p);
     gl_func_00034458(f40, &p);
-    AIter it = s->arr.iter();
+    AIter it = iter(&s->arr);
     while (it.next()) {
         if (it.cur()->t != 0) {
             DL *d = f40;
