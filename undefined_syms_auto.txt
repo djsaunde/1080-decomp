@@ -5226,3 +5226,5 @@ gl_func_00000000f3 = 0x00000000;
 D_51448_vt = 0x00000000;
 /* timproc_uso_b5_func_0000B154 NCC donor: its file-local reference point (.bss reloc renamed by the splice) */
 timproc_uso_b5_func_0000B154_bss = 0x00000000;
+/* timproc_uso_b5_func_0000B624 NCC donor: its file-local reference point (.bss reloc renamed by the splice) */
+timproc_uso_b5_func_0000B624_bss = 0x00000000;

@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_0000B624",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T04:08:02.460500+00:00",
+  "end_time": "2026-10-25T04:08:02.460527+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T04:08:02.460520+00:00",
+      "assistant_text": "NCC C++ port on the AC20 recipe: first rotation through an inline with a kept float parameter (pooled temp reuses the head x temp, fixing the head colours without homes), third angle named at if level, second block-scoped.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 144,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000B624 (0x22C / 139 words): AC20 / B154 /\n * B368's sibling (reference-point offset normalised, facing test against D_807FFBB0, quaternion\n * rebuilt from three axis-angle rotations, 06970C, the 0x144 countdown / 077C44 tail).\n * Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY; its .bss relocs are renamed\n * timproc_uso_b5_func_0000B624_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8).\n * agent-g run 167 (docs/IDO_CODEGEN.md kit CIX):\n * - the first rotation through an inline `one(Quat &, f32 xa)` whose float parameter is kept by\n *   `if (0) { xa = 0.0f; }`: the parameter temp is a pooled float temp that reuses the head's\n *   x-difference temp (the V3 ctor's first parameter), the merged LR outranks y, and the head takes\n *   the target's colours (x f2, y f0) with no extra home (run 166 needed a named while (0) anchor\n *   costing two homes);\n * - the third angle as a named `ang3` declared at the if level (homed above the first axis vector)\n *   and the second as a block-scoped `ang` (the one home between the first and second vectors).\n * History: runs 142-166 (cfe lift 88.57 -> 96.10, NM donor 99.92). */\ntypedef float f32; typedef int s32; typedef double f64;\n#define FW(p, o) (*(s32 *)((char *)(p) + (o)))\n#define FP(p, o) (*(char **)((char *)(p) + (o)))\nextern \"C\" {\nextern char timproc_uso_b5_D_807FF370;\nextern char timproc_uso_b5_D_807FFBB0;\nextern int timproc_uso_b5_D_807FFBBC;\nvoid *timproc_uso_b5_func_071028(...);\nvoid timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);\nvoid timproc_uso_b5_func_054CAC(void *obj);\nint timproc_uso_b5_func_054FE0(...);\nint timproc_uso_b5_func_077C44(...);\nvoid timproc_uso_b5_func_06970C_i(...);\n}\nstatic float sXY[2]; static float sZ;\nstruct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };\ninline f32 dot(const V3 &a, const V3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }\ninline V3 rel(const V3 &a, f32 *g) { if (0) { g[1] = a.y; } return V3(a.x - g[0], a.y - g[1], a.z - sZ); }\nstruct Quat {\n    f32 x, y, z, w;\n    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }\n};\ninline void one(Quat &q, f32 xa) { if (0) { xa = 0.0f; } V3 a(1.0f, 0.0f, 0.0f); q.rot(&a, xa); }\nstruct Obj {\n    char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; s32 i108;\n    char *p10C; f32 f110, f114, f118;\n};\nextern \"C\" void timproc_uso_b5_func_0000B624(Obj *o) {\n    V3 d = rel(o->pos, &sXY[0]);\n    timproc_uso_b5_func_071028(&d);\n    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) {\n        o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;\n        f32 ang3;\n        one(o->q, o->f114);\n        { f32 ang = o->f110; V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); }\n        ang3 = o->f118;\n        { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang3); }\n        timproc_uso_b5_func_06970C_i(o->i108, FW(o, 0x130));\n        if (FW(o, 0x144) != 0 || FW(o, 0x138) != 0) {\n            timproc_uso_b5_func_054FE0(o);\n            timproc_uso_b5_D_807FFBBC += 1;\n            if (FW(o, 0x144) != 0) FW(o, 0x144) -= 1;\n            if (FW(o, 0x144) == 0) {\n                if (FW(o->p10C, 0xB0) != 0) {\n                    timproc_uso_b5_func_077C44(o->p10C, FW(o, 0x140), 0, 2, 2, 1);\n                    FW(o->p10C, 0xB0) = 0;\n                }\n            }\n        }\n        timproc_uso_b5_func_054CAC(o);\n        FW(o, 0x134) = 1;\n        return;\n    }\n    FW(o, 0x134) = 0;\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000B624.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "replace-body-skip: donor bytes == INCLUDE_ASM bytes in both trees; objdiff 100."
+  }
+}

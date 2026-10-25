@@ -1,17 +1,17 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for timproc_uso_b5_func_0000B624
- * (139 words = target). NM object only (build/non_matching); the ROM build keeps
- * INCLUDE_ASM. Run 166 (kit CVII): rewritten on the exact AC20 donor's recipe (its sibling):
- * the reference point as a file-local x / y pair + z read through rel()'s pointer parameter
- * (the `if (0)` keeps the a / g parameter temporaries: v0 = &o->pos and the frame homes),
- * every quaternion rotation as o->q.rot() (edg's pooled `this` temporary at sp+40), the angle
- * blocks nested as in AC20: 96.10 -> 99.86 standalone, frame 152 = target. Then the x / y
- * differences named with a dead `while (0) { dy = 0.0f; }` anchor ahead of them (uopt colours
- * unconstrained LRs in first-appearance order: dy first takes f0, dx f2 as in the target):
- * 99.92. RESIDUAL: the two named differences add two frame homes (frame 160 vs 152); every
- * home-free spelling of the anchor (expression anchors, register, block-scoped) keeps the
- * x-first colours. An exact landing would also pin the
- * timproc_uso_b5_func_0000B624_bss relocs to 0. History: runs 142-163 (cfe-lift NCC body,
- * relPos helper, 88.57 -> 96.10). */
+/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000B624 (0x22C / 139 words): AC20 / B154 /
+ * B368's sibling (reference-point offset normalised, facing test against D_807FFBB0, quaternion
+ * rebuilt from three axis-angle rotations, 06970C, the 0x144 countdown / 077C44 tail).
+ * Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY; its .bss relocs are renamed
+ * timproc_uso_b5_func_0000B624_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8).
+ * agent-g run 167 (docs/IDO_CODEGEN.md kit CIX):
+ * - the first rotation through an inline `one(Quat &, f32 xa)` whose float parameter is kept by
+ *   `if (0) { xa = 0.0f; }`: the parameter temp is a pooled float temp that reuses the head's
+ *   x-difference temp (the V3 ctor's first parameter), the merged LR outranks y, and the head takes
+ *   the target's colours (x f2, y f0) with no extra home (run 166 needed a named while (0) anchor
+ *   costing two homes);
+ * - the third angle as a named `ang3` declared at the if level (homed above the first axis vector)
+ *   and the second as a block-scoped `ang` (the one home between the first and second vectors).
+ * History: runs 142-166 (cfe lift 88.57 -> 96.10, NM donor 99.92). */
 typedef float f32; typedef int s32; typedef double f64;
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 #define FP(p, o) (*(char **)((char *)(p) + (o)))
@@ -27,13 +27,14 @@ int timproc_uso_b5_func_077C44(...);
 void timproc_uso_b5_func_06970C_i(...);
 }
 static float sXY[2]; static float sZ;
-struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void operator=(V3 o) { x = o.x; y = o.y; z = o.z; } };
+struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
 inline f32 dot(const V3 &a, const V3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-inline V3 rel(const V3 &a, f32 *g) { f32 dy; f32 dx; while (0) { dy = 0.0f; } dx = a.x - g[0]; dy = a.y - g[1]; return V3(dx, dy, a.z - sZ); }
+inline V3 rel(const V3 &a, f32 *g) { if (0) { g[1] = a.y; } return V3(a.x - g[0], a.y - g[1], a.z - sZ); }
 struct Quat {
     f32 x, y, z, w;
     void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
 };
+inline void one(Quat &q, f32 xa) { if (0) { xa = 0.0f; } V3 a(1.0f, 0.0f, 0.0f); q.rot(&a, xa); }
 struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; s32 i108;
     char *p10C; f32 f110, f114, f118;
@@ -43,8 +44,11 @@ extern "C" void timproc_uso_b5_func_0000B624(Obj *o) {
     timproc_uso_b5_func_071028(&d);
     if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) {
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
-        { f32 ang = o->f114; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }
-        { f32 ang = o->f110; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f118; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
+        f32 ang3;
+        one(o->q, o->f114);
+        { f32 ang = o->f110; V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); }
+        ang3 = o->f118;
+        { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang3); }
         timproc_uso_b5_func_06970C_i(o->i108, FW(o, 0x130));
         if (FW(o, 0x144) != 0 || FW(o, 0x138) != 0) {
             timproc_uso_b5_func_054FE0(o);

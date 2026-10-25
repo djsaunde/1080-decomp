@@ -6993,101 +6993,11 @@ void timproc_uso_b5_func_0000B61C(int a0) {}
 // below (scores ~20.7%) to avoid a fuzzy=None regression; swap in the
 // verified body once an FP-schedule match is found. Name pre-checked:
 // no extern reuse.
-#ifdef NON_MATCHING
-/* m2c redecode 2026-07-23 (agent-g, resolved-jal overlay pipeline). Kit pass
- * 2026-07-23 #2 (307B0/63F34 family recipe): per-LOAD-SITE pad-struct externs
- * for the head ref reads (at-macro lwc1 form, kills the pre-call lui/addiu
- * base pair; the post-call dot product keeps the shared &D cast form = the
- * target's materialized base), chained struct copies sp7C=sp68; sp8C=sp7C
- * (lw/sw word-copy web with CSE forwarding), volatile-pad ladder recreating
- * the target's dead frame holes (8B above sp68, 20B below it, 4B below sp48
- * — redistributes the same 32B the old layout wasted between sp28 and sp2C),
- * FP-local `ang` routing for the 071AE0 third arg (lwc1+mfc1 a2 instead of
- * the re-typed lw), and a K&R alias for 06970C so obj+0x130 passes as a raw
- * int in a1 (the shared prototyped decl cvt.s.w's it). */
-#define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
-typedef struct { f32 f0; f32 f4; f32 f8; } VecF;
-extern char timproc_uso_b5_D_807FF370;
-extern char timproc_uso_b5_D_807FFBB0;
-extern f32 timproc_uso_b5_D_807FFBB0_ld0;
-extern struct { char pad[4]; f32 v; } timproc_uso_b5_D_807FFBB0_ld4;
-extern struct { char pad[8]; f32 v; } timproc_uso_b5_D_807FFBB0_ld8;
-extern int timproc_uso_b5_D_807FFBBC;
-extern int timproc_uso_b5_func_054FE0();
-extern int timproc_uso_b5_func_077C44();
-extern void timproc_uso_b5_func_06970C_i();
-void timproc_uso_b5_func_0000B624(char *arg0) {
-    VecF sp8C;
-    union { VecF v; s32 w[4]; } sp7C;
-    s32 var_v0;
-    s32 temp_t5;
-    VecF sp68;
-    volatile s32 pad9C[3];
-    char *temp_a0_2;
-    VecF sp48;
-    f32 ang;
-    VecF sp38;
-    VecF sp2C;
-    f32 *sp28;
-
-    sp28 = (f32 *) (arg0 + 0xDC);
-    do {
-        sp68.f0 = sp28[0] - timproc_uso_b5_D_807FFBB0_ld0;
-        sp68.f4 = sp28[1] - timproc_uso_b5_D_807FFBB0_ld4.v;
-        sp68.f8 = sp28[2] - timproc_uso_b5_D_807FFBB0_ld8.v;
-    } while (0);
-    sp7C.v = sp68;
-    sp8C = sp7C.v;
-    timproc_uso_b5_func_071028(&sp8C);
-    sp28 = (f32 *) (arg0 + 0xF4);
-    if ((f64) ((M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 0) * sp8C.f0) + (M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 4) * sp8C.f4) + (M2C_FIELD((&timproc_uso_b5_D_807FFBB0), f32 *, 8) * sp8C.f8)) < M2C_FIELD((&timproc_uso_b5_D_807FF370), f64 *, 0x350)) {
-        M2C_FIELD(arg0, f32 *, 0xF4) = 0.0f;
-        M2C_FIELD(arg0, f32 *, 0xF8) = 0.0f;
-        M2C_FIELD(arg0, f32 *, 0xFC) = 0.0f;
-        M2C_FIELD(arg0, f32 *, 0x100) = 1.0f;
-        ang = M2C_FIELD(arg0, f32 *, 0x114);
-        sp48.f8 = 0.0f;
-        sp48.f4 = 0.0f;
-        sp48.f0 = 1.0f;
-        timproc_uso_b5_func_071AE0(sp28, &sp48, ang);
-        ang = M2C_FIELD(arg0, f32 *, 0x110);
-        sp38.f0 = 0.0f;
-        sp38.f4 = 0.0f;
-        sp38.f8 = 1.0f;
-        timproc_uso_b5_func_071AE0(sp28, &sp38, ang);
-        ang = M2C_FIELD(arg0, f32 *, 0x118);
-        sp2C.f0 = 0.0f;
-        sp2C.f8 = 0.0f;
-        sp2C.f4 = 1.0f;
-        timproc_uso_b5_func_071AE0(sp28, &sp2C, ang);
-        timproc_uso_b5_func_06970C_i(M2C_FIELD(arg0, s32 *, 0x108), M2C_FIELD(arg0, s32 *, 0x130));
-        if ((M2C_FIELD(arg0, s32 *, 0x144) != 0) || (M2C_FIELD(arg0, s32 *, 0x138) != 0)) {
-            timproc_uso_b5_func_054FE0(arg0);
-            timproc_uso_b5_D_807FFBBC += 1;
-            var_v0 = M2C_FIELD(arg0, s32 *, 0x144); if (arg0) {}
-            temp_t5 = var_v0 - 1;
-            if (var_v0 != 0) {
-                M2C_FIELD(arg0, s32 *, 0x144) = temp_t5;
-                var_v0 = temp_t5;
-            }
-            if (var_v0 == 0) {
-                temp_a0_2 = M2C_FIELD(arg0, char **, 0x10C);
-                if (M2C_FIELD(temp_a0_2, s32 *, 0xB0) != 0) {
-                    timproc_uso_b5_func_077C44(temp_a0_2, M2C_FIELD(arg0, s32 *, 0x140), 0, 2, 2, 1);
-                    M2C_FIELD(M2C_FIELD(arg0, char **, 0x10C), s32 *, 0xB0) = 0;
-                }
-            }
-        }
-        timproc_uso_b5_func_054CAC(arg0);
-        M2C_FIELD(arg0, s32 *, 0x134) = 1;
-        return;
-    }
-    M2C_FIELD(arg0, s32 *, 0x134) = 0;
-}
-#undef M2C_FIELD
-#else
+/* EXACT 2026-10-25 (agent-g run 167, docs/IDO_CODEGEN.md kit CIX) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp, REPLACE_FUNC_BODY-spliced into both trees
+ * (Makefile TIMB5_B624_DONOR; pin timproc_uso_b5_func_0000B624_bss = 0). The superseded cfe NM
+ * body was dropped (the "FP scheduling cap" above is retracted). */
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B624);
-#endif
 
 /* timproc_uso_b5_func_0000B850 [0xB850..0xB914), 0xC4: BOUNDARY MERGE
  * 2026-06-10 of the B8E0 tail fragment (B850's bc1f branched into it).

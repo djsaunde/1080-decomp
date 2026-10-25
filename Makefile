@@ -2910,10 +2910,11 @@ TIMB5_AC20_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000AC20=$(TIMB5_AC20_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_AC20_DONOR)
 # 396C: exact via src/match_imports/timproc_uso_b5_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
-# B624: NM-only NCC comparison donor (AC20 recipe since run 166; 99.92, two frame homes left).
-TIMB5_B624_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624_nm.cpp.o
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_NM_DONOR)
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_NM_DONOR)
+# B624 = AC20 / B154 sibling (139/139 words under NCC; first rotation through an inline with a
+# kept float parameter, .bss relocs pinned to 0) (agent-g run 167).
+TIMB5_B624_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_DONOR)
 # B154 = AC20 / B368 sibling (133/133 words under NCC; sE8 triple through an inline with a
 # named local, .bss relocs pinned to 0) (agent-g run 167).
 TIMB5_B154_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154.cpp.o
