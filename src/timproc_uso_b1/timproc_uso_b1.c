@@ -682,6 +682,7 @@ void timproc_uso_b1_func_000011D0(char *a0) {
     }
 }
 
+/* NM object: replaced by the NCC comparison donor timproc_uso_b1_ncc_1340_nm.cpp (agent-g run 172). */
 #ifdef NON_MATCHING
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))

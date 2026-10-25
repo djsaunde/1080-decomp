@@ -1129,6 +1129,10 @@ TIMPROC_B1_65C_DONOR := build/src/timproc_uso_b1/timproc_uso_b1_o0_65C.c.o
 # delays unfilled) inside the -O2 hosts; spliced via -O0 donors like 5A4/65C.
 TIMPROC_B1_B0_DONOR := build/src/timproc_uso_b1/timproc_uso_b1_o0_B0.c.o
 build/src/timproc_uso_b1/timproc_uso_b1.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: REPLACE_FUNC_BODY := timproc_uso_b1_func_000000B0=$(TIMPROC_B1_B0_DONOR) timproc_uso_b1_func_000005A4=$(TIMPROC_B1_5A4_DONOR) timproc_uso_b1_func_0000065C=$(TIMPROC_B1_65C_DONOR)
+# 1340 = timer-HUD draw (23FC / b3 13B8 family) as C++; NM comparison object only (agent-g run 172).
+TIMPROC_B1_1340_NM_DONOR := build/src/timproc_uso_b1/timproc_uso_b1_ncc_1340_nm.cpp.o
+build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: private REPLACE_FUNC_BODY += timproc_uso_b1_func_00001340=$(TIMPROC_B1_1340_NM_DONOR)
+build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: $(TIMPROC_B1_1340_NM_DONOR)
 build/src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b1/timproc_uso_b1_o0_65C.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1_o0_65C.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b1/timproc_uso_b1_o0_B0.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1_o0_B0.c.o: OPT_FLAGS := -O0
