@@ -21070,7 +21070,6 @@ void gl_func_000513CC(int* a0) {
     r2[5] = (int)a3;
 }
 
-#ifdef NON_MATCHING
 /* gl_func_00051448: 54-insn lazy constructor + cb-register +
  * field-init (clean single fn). Decoded from bare stub 2026-05-19.
  * Same family as the LANDED gl_func_00041524 (goto-end single
@@ -21106,7 +21105,10 @@ extern int D_00000000;
 /* agent-c run 158: copy + kill in the call argument (`(n = o, o = 0, n)`, the cfront inline-expansion comma
  * form) gives n its own home at sp+40 and the a1 reload; declaration order l, n, o, k sets the frame (0x30).
  * 95.56 -> 99.78. Residual: the 0x120 / vtable store pair (target stores 0x120 first but materialises the
- * vtable address first, t6 / t7). */
+ * vtable address first, t6 / t7).
+ * agent-c run 159: EXACT. The vptr store is the comma operand INSIDE the 0x120 store's value
+ * (`o->m120 = (o->vt = &vt, 0xFFFF)`, cfront's comma-expression shape): ugen evaluates the vtable
+ * address first (t6), then 0xFFFF (t7), and the stores issue 0x120 first. */
 extern void gl_func_00000000_51448v();
 void gl_func_00051448(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
@@ -21120,8 +21122,7 @@ void gl_func_00051448(char *a0) {
     if (o != 0) {
         gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f);
         k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
-        *(int **)(o + 0x28) = &D_51448_vt;
-        *(int *)(o + 0x120) = 0xFFFF;
+        *(int *)(o + 0x120) = (*(int **)(o + 0x28) = &D_51448_vt, 0xFFFF);
         *(f32 *)(o + 0x108) = k;
         *(f32 *)(o + 0x10C) = k;
         *(f32 *)(o + 0x110) = k;
@@ -21139,9 +21140,6 @@ void gl_func_00051448(char *a0) {
     *(char **)(n + 0x14) = l;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00051448);
-#endif
 
 /* gl_func_00051520: init step: base call, read one int from the stream
  * (store-first cursor), keep it at +4, look it up (&D, name 0x20E74, x),

@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00051448",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T03:02:16.172344+00:00",
+  "end_time": "2026-10-25T03:02:16.172377+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T03:02:16.172370+00:00",
+      "assistant_text": "cfe: the vptr store is a comma operand inside the 0x120 store's value (o->m120 = (o->vt = &vt, 0xFFFF)), so the vtable address is evaluated first (t6) but 0x120 is stored first, like the target; copy + kill (n = o, o = 0, n) in the link call argument gives n its own home and the a1 reload.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 54,
+  "initial_m2c_source": null,
+  "final_source": "extern void gl_func_00000000_51448v();\nvoid gl_func_00051448(char *a0) {\n    extern int gl_func_00000000f3(void *, void *, float, float, float);\n    extern int D_51448_vt;\n    char *l;\n    char *n;\n    char *o;\n    f32 k;\n    gl_func_00000000(a0);\n    o = (char *)gl_func_00000000(0x16C);\n    if (o != 0) {\n        gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f);\n        k = *(f32 *)((char *)&D_00000000 + 0x1BB0);\n        *(int *)(o + 0x120) = (*(int **)(o + 0x28) = &D_51448_vt, 0xFFFF);\n        *(f32 *)(o + 0x108) = k;\n        *(f32 *)(o + 0x10C) = k;\n        *(f32 *)(o + 0x110) = k;\n        *(f32 *)(o + 0x124) = 1.0f;\n    }\n    *(char **)(a0 + 0x28) = o;\n    *(char **)(a0 + 0xC) = o;\n    *(char **)(a0 + 0x10) = o;\n    l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);\n    {\n    gl_func_00000000_51448v(l + 0x10, (n = o, o = 0, n));\n    if (*(int *)(n + 0x14) != 0) {\n        *(int *)(n + 4) = 1;\n    }\n    *(char **)(n + 0x14) = l;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00051448.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
