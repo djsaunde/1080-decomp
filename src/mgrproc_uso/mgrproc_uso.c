@@ -1651,7 +1651,7 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     char *held;
     char *panel;
     char *a3;
-    char *h;
+    char *h; /* run 167: unused since the tail re-reads into a3 (the target reuses a3); dropping the declaration costs 0.05 */
     int s0;
     int s2;
     char *s1;
@@ -1705,13 +1705,13 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
             s0 += 1;
             s2 += 0x10;
         } while (s0 != 0x10);
-        h = *(char **)(arg0 + 0xD4);
-        if (*(int *)(h + 0x7E8) < 0x96) {
+        a3 = *(char **)(arg0 + 0xD4);
+        if (*(int *)(a3 + 0x7E8) < 0x96) {
             if (*(int *)(arg0 + 0x170) >= 0x79) {
                 *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1; if (arg0) {}
-                h = *(char **)(arg0 + 0xD4);
+                a3 = *(char **)(arg0 + 0xD4);
             }
-            import_0024E608(&import_8024CAF8, 0xFF, h + 0x4C4);
+            import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x4C4);
             panel = &import_80263D48 + 0x18;
             import_0024F2C8(panel);
             import_0024F34C(panel, 0xA0, *(int *)(arg0 + 0x170), 3);
