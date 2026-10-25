@@ -10,6 +10,7 @@
  * whole function (the target keeps it in f0 and rematerialises it after the loop's call: four words of frame / save
  * and every sp offset shifted by 8), the 0x03000000 gSPLight constant is hoisted into s5 (target `lui at` per site),
  * so n / s / rec / c sit one s-register lower than the target.
+ * The direction bytes carry a folded `& 0xFF` (one ugen ring slot each, the 42F4C idiom): 91.40 -> 91.48.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -71,9 +72,9 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
             cv = (s32)(s[0] * e->col[0] * 255.0f); l->col[0] = cv; l->colc[0] = cv;
             cv = (s32)(s[1] * e->col[1] * 255.0f); l->col[1] = cv; l->colc[1] = cv;
             cv = (s32)(s[2] * e->col[2] * 255.0f); l->col[2] = cv; l->colc[2] = cv;
-            l->dir[0] = (s32)(e->dir[0] * 120.0f);
-            l->dir[1] = (s32)(e->dir[1] * 120.0f);
-            l->dir[2] = (s32)(e->dir[2] * 120.0f);
+            l->dir[0] = (s32)(e->dir[0] * 120.0f) & 0xFF;
+            l->dir[1] = (s32)(e->dir[1] * 120.0f) & 0xFF;
+            l->dir[2] = (s32)(e->dir[2] * 120.0f) & 0xFF;
             gSPLight(c->next(), gl_func_00034458(l), n + 1);
             n++;
         }
