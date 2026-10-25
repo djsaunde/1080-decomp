@@ -1,69 +1,50 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00043D38: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 79.55; if (arg0) {} after var_v1 += 1 from a parameter-only fz sweep, 80.25; round 2: if (arg0) {} after var_v1 = var_t2, 80.41;
- * run 137: the index-table entries and arg0->0x80 are SHORT reads (target lh), 80.41 -> 84.8).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
-typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
-typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
-typedef float f32; typedef double f64;
-#undef NULL
-#define NULL 0
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-typedef struct { int w; } Word3E968;
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00043D38 (0x174 / 93 words), agent-c run 160.
+ * Rewritten as real C++ (was the run-134 C lift under NCC, 84.83): `void Elem::clip()` (renamed to gl_func_00043D38 with
+ * objcopy) patches the element's row display list (the 493AC Elem: ctx6C, rows7C, n80): rows [lo, hi) of the global
+ * state become gDPNoOp, the head slot n80 becomes gSPBranchList to the first kept row (or a NoOp), and the row after the
+ * last gets gSPEndDisplayList. Stock gbi macro shapes (gDma1p G_DL / G_DL_NOPUSH = 0x06010000, w1 = the
+ * virtual-to-physical call). The rows go through an inline `Ctx::at(int i)` whose parameter is kept (`if (0) { i = 0; }`:
+ * the pooled index temp, the target's a2) with `this` = the pooled context temp (a1); the branch target row index is a
+ * named local read before the head packet; `lo` straight from GS (no named state pointer: frame 0x38 = target).
+ * 84.83 -> 97.51, length 364 -> 372 = target. Residual: the context / index pool temps' colours swapped (a2 / a1).
+ * Still NON_MATCHING: build/non_matching/ only. */
+typedef short s16; typedef unsigned int u32; typedef int s32;
 extern "C" {
-extern Word3E968 *p;
-extern void gl_proto_41148(int, int, int, int, int, double);
-extern char *o;
-extern int gl_func_00034458(...);
+extern char D_00000000[];
+u32 gl_func_00034458(...);
 }
-extern "C" void gl_func_00043D38(char *arg0) {
-    char *sp1C;
-    s16 temp_a2;
-    s16 temp_a2_2;
-    s16 temp_a2_3;
-    s32 var_a0;
-    s32 var_t2;
-    s32 var_v1;
-    char *temp_a1;
-    char *temp_v0;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *temp_v0_4;
-    char *temp_v1;
-
-    if (FW(arg0, 0x7C) != 0) {
-        temp_v0 = *(char **)0x254;
-        var_t2 = FW(temp_v0, 0x10C);
-        if (var_t2 > 0) {
-            var_t2 -= 1;
+struct Gfx { u32 w0, w1; };
+struct DLHead { Gfx *buf; int count; };
+struct Ctx { char pad[0xC]; DLHead *dl; Gfx *at(int i) { if (0) { i = 0; } return &dl->buf[i]; } };
+struct GState { char pad[0x10C]; int lo; int hi; };
+#define GS (*(GState **)(D_00000000 + 0x254))
+#define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))
+#define gDPNoOp(pkt) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL(0xC0, 24, 8); _g->w1 = 0; }
+#define gDma1p(pkt, c, s, l, p) { Gfx *_g = (Gfx *)(pkt); _g->w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | _SHIFTL((l), 0, 16)); _g->w1 = (u32)(s); }
+#define gSPBranchList(pkt, dl) gDma1p(pkt, 0x06, dl, 0, 1)
+#define gSPEndDisplayList(pkt) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL(0xB8, 24, 8); _g->w1 = 0; }
+struct Elem {
+    char pad[0x6C]; Ctx *ctx6C; char pad70[0x7C - 0x70]; s16 *rows7C; s16 n80;
+    void clip();
+};
+void Elem::clip() {
+    if (rows7C != 0) {
+        int lo = GS->lo;
+        if (lo > 0) {
+            lo -= 1;
         }
-        var_v1 = var_t2; if (arg0) {}
-        var_a0 = var_v1 * 2;
-        if (var_t2 < FW(temp_v0, 0x110)) {
-            do {
-                var_v1 += 1; if (arg0) {}
-                temp_a2 = *(s16*)(FW(arg0, 0x7C) + var_a0);
-                var_a0 += 2;
-                temp_v0_2 = (char *)(*(int*)(FW(FW(arg0, 0x6C), 0xC)) + (temp_a2 * 8));
-                FW(temp_v0_2, 0x0) = 0xC0000000;
-                FW(temp_v0_2, 0x4) = 0;
-            } while (var_v1 < FW((*(char **)0x254), 0x110));
+        for (int k = lo; k < GS->hi; k++) {
+            gDPNoOp(ctx6C->at(rows7C[k]));
         }
-        if (var_t2 != 0) {
-            temp_a1 = (char *)(FW(arg0, 0x6C));
-            temp_a2_2 = *(s16*)(FW(arg0, 0x7C) + (var_t2 * 2));
-            temp_v1 = (char *)(*(int*)(FW(temp_a1, 0xC)) + (*(s16 *)(arg0 + 0x80) * 8));
-            FW(temp_v1, 0x0) = 0x06010000;
-            sp1C = temp_v1;
-            FW(temp_v1, 0x4) = gl_func_00034458(*(int*)(FW(FW(arg0, 0x6C), 0xC)) + (temp_a2_2 * 8), temp_a1, temp_a2_2, arg0);
+        if (lo != 0) {
+            int i = rows7C[lo];
+            gSPBranchList(ctx6C->at(n80), gl_func_00034458(&ctx6C->dl->buf[i]));
         } else {
-            temp_v0_3 = (char *)(*(int*)(FW(FW(arg0, 0x6C), 0xC)) + (*(s16 *)(arg0 + 0x80) * 8));
-            FW(temp_v0_3, 0x0) = 0xC0000000;
-            FW(temp_v0_3, 0x4) = 0;
+            gDPNoOp(&ctx6C->dl->buf[n80]);
         }
-        temp_a2_3 = *(s16*)(FW(arg0, 0x7C) + (FW((*(char **)0x254), 0x110) * 2));
-        if (temp_a2_3 != -1) {
-            temp_v0_4 = (char *)(*(int*)(FW(FW(arg0, 0x6C), 0xC)) + (temp_a2_3 * 8));
-            FW(temp_v0_4, 0x0) = 0xB8000000;
-            FW(temp_v0_4, 0x4) = 0;
+        int e = rows7C[GS->hi];
+        if (e != -1) {
+            gSPEndDisplayList(ctx6C->at(e));
         }
     }
 }
