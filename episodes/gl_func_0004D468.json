@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0004D468",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T06:03:41.957546+00:00",
+  "end_time": "2026-10-25T06:03:41.957587+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T06:03:41.957577+00:00",
+      "assistant_text": "NCC C++ donor (module init): first bind call through an inline bind(int k, int h, int id) with a kept handle parameter; its size-pooled int temp shares the node ternary's slot, the merged LR crosses a2 argument setups, so the ternary result takes the target's a3. Static guard pair .bss reloc renamed and pinned to 0x3CB00.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 124,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0004D468 (0x1F0 / 124\n * words): module init -- allocate the 0x50 owner if none, clear it, register 16\n * new 0x78-byte nodes, allocate the 0x19000-byte heap with a 0x12345678 guard\n * word, start the 0x3C950 task, set the 0x3CB00 guard pair, three bind calls.\n * agent-c run 137 (cfe NM 78.6 -> NCC 124/124 words, 9 raw left). Load-bearing:\n * each node is `p = alloc(0x78, 16u); reg(p ? p : 0, s)` (the edg new-expression\n * null test; 16u keeps the loop bound 16 out of the argument); the heap guard is\n * an UNSIGNED store (an int store CSEs 0x12345678 into s2 across the calls); the\n * 0x3CB00 guard pair is ONE static `long long = 0x1234567812345678` (one ugen\n * temp for both words, one shared `lui at`: file-local object, kit LX); each\n * bind call reads its D+0x1C argument into a block-scope int first (target loads\n * a1 before a0). Residual: the node pointer's merge register (a2 here, target a3,\n * both sites); an exact donor would also pin the renamed .bss reloc to 0x3CB00.\n * agent-c run 161: EXACT. The first bind call goes through `inline void bind(int k, int h, int id)` with the\n * handle parameter kept (`if (0) { h = 0; }`): its pooled int temp reuses the node ternary's slot (edg pools 4-byte\n * temps by size), the merged live range now crosses a2 argument setups, so the ternary result takes the target's a3\n * at both merge sites (binding all three calls that way re-ranks s1 / s2 instead). The static guard pair's .bss\n * reloc is renamed gl_func_0004D468_bss by the splice and pinned to 0x3CB00. Spliced into both build trees. */\nextern \"C\" {\nextern int gl_func_00000000(...);\nextern char D_00000000[];\nextern int D_4D468_x, D_4D468_y, D_4D468_z;\nextern char D_4D468_w[];\nextern char D_4D468_a2[];\n}\nstruct E { E() {} char pad[0x78]; };\nvoid *operator new(unsigned int n, int al);\nstatic long long sCanL;\nstruct S4D { int w0, w4, w8, wC; int w10; int w14; int w18; int w1C, w20, w24, w28, w2C; char pad30[0x14]; int w44; };\ninline void bind(int k, int h, int id) { if (0) { h = 0; } gl_func_00000000(k, h, id); }\nextern \"C\" S4D *gl_func_0004D468(S4D *s) {\n    if (s != 0 || (s = (S4D *)gl_func_00000000(0x50)) != 0) {\n    gl_func_00000000(D_00000000 + 0x201F4, 0);\n    gl_func_00000000(D_00000000 + 0x3EB00, 0xB0000B70, 0x100);\n    s->w44 = 0;\n    s->w0 = 0;\n    s->w4 = 0;\n    s->w8 = 0;\n    s->wC = 0;\n    for (int i = 0; i < 16; i++) {\n        int p = gl_func_00000000(0x78, 16u); gl_func_00000000(p ? p : 0, s);\n    }\n    { int p = gl_func_00000000(0x78, 16); s->w14 = p ? p : 0; }\n    D_4D468_x = gl_func_00000000(0xC00, 16);\n    D_4D468_y = 0x19000;\n    D_4D468_z = gl_func_00000000(D_4D468_y + 4, 64);\n    ((unsigned *)D_4D468_z)[(unsigned)D_4D468_y / 4] = 0x12345678u;\n    s->w2C = gl_func_00000000(0x400, 16);\n    gl_func_00000000(D_00000000 + 0x3C950, 4, D_4D468_a2, s, D_00000000 + 0x3EB00, 11);\n    sCanL = 0x1234567812345678LL;\n    bind(9, *(int *)(D_4D468_w + 0x1C), 102);\n    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(4, h, 101); }\n    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(14, h, 108); }\n    gl_func_00000000(D_00000000 + 0x3C950);\n    s->w20 = 0;\n    s->w1C = 0;\n    s->w24 = 0;\n    s->w28 = 0;\n    gl_func_00000000();\n    s->w20 = 0;\n    s->w1C = 0;\n    }\n    return s;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4D468.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

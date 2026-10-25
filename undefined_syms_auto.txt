@@ -5228,3 +5228,9 @@ D_51448_vt = 0x00000000;
 timproc_uso_b5_func_0000B154_bss = 0x00000000;
 /* timproc_uso_b5_func_0000B624 NCC donor: its file-local reference point (.bss reloc renamed by the splice) */
 timproc_uso_b5_func_0000B624_bss = 0x00000000;
+D_4D468_x = 0x00000000;
+D_4D468_y = 0x00000000;
+D_4D468_z = 0x00000000;
+D_4D468_w = 0x00000000;
+D_4D468_a2 = 0x00000000;
+gl_func_0004D468_bss = 0x0003CB00;

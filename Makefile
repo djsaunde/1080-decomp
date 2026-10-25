@@ -1732,10 +1732,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3C43C_NM_DONOR
 GAMELIBS_38A28_NM_DONOR := build/src/game_libs/game_libs_ncc_38A28_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038A28=$(GAMELIBS_38A28_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38A28_NM_DONOR)
-# 4D468 = NM body re-decoded under NCC (agent-c run 137, cfe 78.62): new-expression node ternaries, static guard pair. Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4D468_NM_DONOR := build/src/game_libs/game_libs_ncc_4D468_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D468=$(GAMELIBS_4D468_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D468_NM_DONOR)
+# 4D468 = module init under NCC (agent-c runs 137 / 161): node ternaries, static guard pair, first bind call through an inline bind() with a kept handle parameter. EXACT NCC donor over a placeholder; its .bss reloc is renamed gl_func_0004D468_bss by the splice (pinned to 0x3CB00).
+GAMELIBS_4D468_DONOR := build/src/game_libs/game_libs_ncc_4D468.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D468=$(GAMELIBS_4D468_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D468_DONOR)
 # 4D688 = debug-console event loop under NCC (agent-c run 137, cfe 73.76): source-order switch, static guard pair. Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D688=$(GAMELIBS_4D688_NM_DONOR)

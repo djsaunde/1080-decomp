@@ -18669,76 +18669,11 @@ void gl_func_0004D3E4(int node, int *head) {
 // across the *(int*)&D pokes + reuses 0x19000 via `addiu a0,t6,4`, while IDO
 // re-derives; the prologue arg-save order and v1/a3/s2 temp renumber are the
 // coloring-MULTISET cap class. NON_MATCHING.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_0004D468)();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4D468.cpp, REPLACE_FUNC_BODY-spliced
+ * over this placeholder in both build trees (agent-c run 161). */
 u32 gl_func_0004D468(u32 arg0) {
-    s32 temp_t1;
-    s32 var_s0;
-    u32 temp_v0;
-    u32 temp_v0_2;
-    u32 temp_v0_3;
-    u32 temp_v0_4;
-    u32 var_a3;
-    u32 var_a3_2;
-    u32 var_s1;
-
-    var_s1 = arg0;
-    if ((arg0 != 0) || (temp_v0 = gl_func_00034458(0x50U), var_s1 = temp_v0, (temp_v0 != 0))) {
-        gl_func_00034458((char *)&D_00000000 + 0x201F4, 0);
-        gl_func_00034458((char *)&D_00000000 + 0x3EB00, (char *)0xB0000B70, 0x100);
-        FW(var_s1, 0x44) = 0;
-        FW(var_s1, 0x0) = 0;
-        FW(var_s1, 0x4) = 0;
-        FW(var_s1, 0x8) = 0;
-        FW(var_s1, 0xC) = 0;
-        var_s0 = 0;
-        do {
-            temp_v0_2 = gl_func_00034458(0x78U, (char *)0x10);
-            if (temp_v0_2 != 0) {
-                var_a3 = temp_v0_2;
-            } else {
-                var_a3 = 0;
-            }
-            gl_func_00034458(var_a3, (char *) var_s1);
-            var_s0 += 1;
-        } while (var_s0 != 0x10);
-        temp_v0_3 = gl_func_00034458(0x78U, (char *)0x10);
-        if (temp_v0_3 != 0) {
-            var_a3_2 = temp_v0_3;
-        } else {
-            var_a3_2 = 0;
-        }
-        FW(var_s1, 0x14) = var_a3_2;
-        *(int*)&D_00000000 = gl_func_00034458(0xC00U, (char *)0x10);
-        *(int*)&D_00000000 = 0x19000;
-        temp_v0_4 = gl_func_00034458((char *)0x19000 + 4, (char *)0x40);
-        temp_t1 = ((u32) *(int*)&D_00000000 >> 2) * 4;
-        *(int*)&D_00000000 = temp_v0_4;
-        *(int*)(temp_v0_4 + temp_t1) = 0x12345678;
-        FW(var_s1, 0x2C) = gl_func_00034458(0x400U, (char *)0x10);
-        gl_func_00034458((char *)&D_00000000 + 0x3C950, (char *)4, 0, (char *) var_s1, (char *)&D_00000000 + 0x3EB00, 0xB);
-        *(s32 *)0x3CB00 = 0x12345678;
-        *(s32 *)0x3CB04 = 0x12345678;
-        gl_func_00034458(9U, *(char **)((char *)&D_00000000 + 0x1C), 0x66);
-        gl_func_00034458(4U, *(char **)((char *)&D_00000000 + 0x1C), 0x65);
-        gl_func_00034458(0xEU, *(char **)((char *)&D_00000000 + 0x1C), 0x6C);
-        gl_func_00034458((char *)&D_00000000 + 0x3C950);
-        FW(var_s1, 0x20) = 0;
-        FW(var_s1, 0x1C) = 0;
-        FW(var_s1, 0x24) = 0;
-        FW(var_s1, 0x28) = 0;
-        gl_func_00034458();
-        FW(var_s1, 0x20) = 0;
-        FW(var_s1, 0x1C) = 0;
-    }
-    return var_s1;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004D468);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_0004D658(int a0) {

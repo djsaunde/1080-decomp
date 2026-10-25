@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004D468 (0x1F0 / 124
+/* IDO 7.1 NCC (C++) donor for gl_func_0004D468 (0x1F0 / 124
  * words): module init -- allocate the 0x50 owner if none, clear it, register 16
  * new 0x78-byte nodes, allocate the 0x19000-byte heap with a 0x12345678 guard
  * word, start the 0x3C950 task, set the 0x3CB00 guard pair, three bind calls.
@@ -11,7 +11,11 @@
  * bind call reads its D+0x1C argument into a block-scope int first (target loads
  * a1 before a0). Residual: the node pointer's merge register (a2 here, target a3,
  * both sites); an exact donor would also pin the renamed .bss reloc to 0x3CB00.
- * Spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * agent-c run 161: EXACT. The first bind call goes through `inline void bind(int k, int h, int id)` with the
+ * handle parameter kept (`if (0) { h = 0; }`): its pooled int temp reuses the node ternary's slot (edg pools 4-byte
+ * temps by size), the merged live range now crosses a2 argument setups, so the ternary result takes the target's a3
+ * at both merge sites (binding all three calls that way re-ranks s1 / s2 instead). The static guard pair's .bss
+ * reloc is renamed gl_func_0004D468_bss by the splice and pinned to 0x3CB00. Spliced into both build trees. */
 extern "C" {
 extern int gl_func_00000000(...);
 extern char D_00000000[];
@@ -23,6 +27,7 @@ struct E { E() {} char pad[0x78]; };
 void *operator new(unsigned int n, int al);
 static long long sCanL;
 struct S4D { int w0, w4, w8, wC; int w10; int w14; int w18; int w1C, w20, w24, w28, w2C; char pad30[0x14]; int w44; };
+inline void bind(int k, int h, int id) { if (0) { h = 0; } gl_func_00000000(k, h, id); }
 extern "C" S4D *gl_func_0004D468(S4D *s) {
     if (s != 0 || (s = (S4D *)gl_func_00000000(0x50)) != 0) {
     gl_func_00000000(D_00000000 + 0x201F4, 0);
@@ -43,7 +48,7 @@ extern "C" S4D *gl_func_0004D468(S4D *s) {
     s->w2C = gl_func_00000000(0x400, 16);
     gl_func_00000000(D_00000000 + 0x3C950, 4, D_4D468_a2, s, D_00000000 + 0x3EB00, 11);
     sCanL = 0x1234567812345678LL;
-    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(9, h, 102); }
+    bind(9, *(int *)(D_4D468_w + 0x1C), 102);
     { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(4, h, 101); }
     { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(14, h, 108); }
     gl_func_00000000(D_00000000 + 0x3C950);
