@@ -5,11 +5,14 @@
  * inside segment e (0 <= dot/|e|^2 < 1) and its perpendicular distance
  * |cross| / |e| is under s->lim.
  *
- * Every instruction matches the target except: (1) the e statement's two
- * edg temporaries -- the materialised (a - b) and the (a - b) * k result
- * bound to the XZ ctor -- are homed in the opposite order (build 204/192,
- * target 192/204; dp/f as named locals, the C chain 48 -> 140 -> 180 is
- * right); (2) the FP colouring follows from that (x in $f2 vs $f12).
+ * Run 163 (agent-g): the two squared-length sums (a.x*a.x + a.z*a.z and
+ * e's) go through an inline dot(const Vec3 &, const Vec3 &): every FP
+ * colour now matches (99.15 -> 99.97). Left (6 words): the two temporaries
+ * bound to the XZ(const Vec3 &) ctor are homed in the opposite order --
+ * e's at sp+180 / f's at sp+204, target 204 / 180. edg prepends each new
+ * declaration-bound temporary to the block's list (creation order e-bound,
+ * T1 = the materialised a - b, f-bound gives f-bound 204, T1 192, e-bound
+ * 180 above e 168 / f 156); the target layout is the append order.
  * The m2 escape (`float *pm = &m2`) gives the target's spill/reload of
  * |e|^2 and the duplicate f.x / f.z loads. Run 146: cr, t and pm declared BEFORE m2
  * put m2's home at the target's sp+32 (was sp+44). Spliced into the NON_MATCHING
@@ -31,6 +34,7 @@ struct XZ : Vec3 {
     XZ(float a, float c) : Vec3(a, 0.0f, c) {}
     XZ operator-(const XZ &v) const { return XZ(x - v.x, z - v.z); }
 };
+inline float dot(const Vec3 &u, const Vec3 &v) { return u.x * v.x + u.z * v.z; }
 #define ABS(x) ((x) < 0.0f ? -(x) : (x))
 struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x318 - 0xC0]; Vec3 vel; char pad324[0x908 - 0x324]; W *other; };
 struct Self { char pad0[0x30]; W *w; char pad34[0xD0 - 0x34]; float k; float lim; };
@@ -39,10 +43,10 @@ extern "C" int game_uso_func_000097EC(Self *s) {
     if (s->w->other != 0) {
         XZ a(s->w->vel);
         XZ b(s->w->other->vel);
-        if (0.0f < a.x * a.x + a.z * a.z) {
+        if (0.0f < dot(a, a)) {
             XZ e((a - b) * s->k);
             XZ f(s->w->other->pos - s->w->pos);
-            float mag = game_uso_func_082880(e.x * e.x + e.z * e.z);
+            float mag = game_uso_func_082880(dot(e, e));
             if (0.0f < mag) {
                 float cr, t, *pm;
                 float m2 = e.x * e.x + e.z * e.z; pm = &m2;
