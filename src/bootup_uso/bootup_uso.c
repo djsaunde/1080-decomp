@@ -1920,6 +1920,8 @@ void func_000031B8(int a0) {
 //   each call (0x6C slot) vs the natural callee-saved $s0 here (regalloc
 //   divergence), plus folded f32 consts at func_000003F8+0x138/+0x13C
 //   (bootup_uso literal-pool bug). Name pre-checked: no extern reuse.
+// 2026-10-24 agent-g run 164: the NON_MATCHING object takes the C++ port
+// src/bootup_uso/bootup_uso_ncc_31C0_nm.cpp (202/202 words, frame layout left).
 #ifdef NON_MATCHING
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode of the target words.
  * cfront-style constructor code: obj = alloc(0xB8); the inlined ctor

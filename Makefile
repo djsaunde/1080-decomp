@@ -207,6 +207,15 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_C234_NM_DONOR)
 BOOTUP_8BD4_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_8BD4_nm.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008BD4=$(BOOTUP_8BD4_NM_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_8BD4_NM_DONOR)
+# 31C0 = mode-switch scene builder written as C++ (new Obj2 / new KB / out-of-line ctor(0, ...) calls; agent-g run 164,
+# cfe 93.61). 202/202 words, frame layout left. NM comparison object only; symbols renamed (names only).
+BOOTUP_31C0_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_31C0_nm.cpp.o
+$(BOOTUP_31C0_NM_DONOR): src/bootup_uso/bootup_uso_ncc_31C0_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__1BFPv=fn_31c0_init --redefine-sym __ct__2B2FP3ObjfN22=fn_31c0_B2 --redefine-sym __ct__2WAFPcP3ObjfN23iT1=fn_31c0_A1 --redefine-sym __ct__2WRFPciT1=fn_31c0_A2 --redefine-sym __ct__2W4FPcN21=fn_31c0_A4 --redefine-sym __ct__2WVFPcN21=fn_31c0_B3 --redefine-sym __vtbl__2KB=D_00007120 --redefine-sym __vtbl__3Obj=D_00000000 $@
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000031C0=$(BOOTUP_31C0_NM_DONOR)
+build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_31C0_NM_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
