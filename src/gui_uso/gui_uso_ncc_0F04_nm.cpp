@@ -11,7 +11,9 @@
  * LEFT: first-append dl / n colours swapped (target dl v0, n v1), second MAX temp v0 (target a0), frame
  * 272 vs 264.
  * run 172 (kit CXVII): the texture rectangle's slot through a post-increment-in-index next
- * (`&dl->buf[dl->n++]`): 97.25 -> 97.35 (the 1A44 increment-spelling lever). */
+ * (`&dl->buf[dl->n++]`): 97.25 -> 97.35 (the 1A44 increment-spelling lever).
+ * run 173 (kit CXIX): the texture append's next() as `int n; n = dl->n; dl->n++;` (read into n, then a
+ * separate post-increment of the field; a 6 x 6 spelling grid over the two sites): 97.35 -> 97.44. */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -36,7 +38,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
-struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
+struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; }
     Gfx *nextc() { return &dl->buf[dl->n++]; } };
 struct Glyph { int u; int v; int w; int adv; int pad; };
 struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th; Glyph *glyphs; Ctx *ctx; };
