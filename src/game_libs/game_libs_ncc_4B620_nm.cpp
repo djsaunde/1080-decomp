@@ -65,6 +65,7 @@ struct Obj : Base {
     int d4;
     Obj(void *a1);
 };
+inline void g1(Elem *e) { if (0) { e = 0; } gl_func_00000000(e->m64); } /* run 173: the last per-element call through a kept parameter */
 Obj::Obj(void *a1) : Base(a1) {
     *(char **)((char *)this + 0x28) = S(0);
     d0 = 0;
@@ -83,7 +84,7 @@ Obj::Obj(void *a1) : Base(a1) {
         gl_func_00000000(it.cur()->m64, &it.ref()->m34);
         gl_func_00000000(it.cur()->m64, &it.ref()->m34);
         gl_func_00000000(it.cur()->m64, it.cur(), 0);
-        gl_func_00000000(it.cur()->m64);
+        g1(it.cur());
     }
     d0 = (DL *)gl_func_00000000(0, S(0x2011C), 0xA, 0, 0, 0, 0);
     d0->add(0xBA001301, 0x80000);
