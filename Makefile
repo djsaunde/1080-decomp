@@ -2574,6 +2574,10 @@ build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_NM_DONOR)
 GUI_2DE0_NM_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_NM_DONOR)
+# 0F04 = gui string blitter (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
+GUI_0F04_NM_DONOR := build/src/gui_uso/gui_uso_ncc_0F04_nm.cpp.o
+build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000F04=$(GUI_0F04_NM_DONOR)
+build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0F04_NM_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)

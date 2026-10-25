@@ -387,7 +387,9 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
  *     (frame 0x118, target 0x108). The macro form of the TEXRECT words lowers
  *     fuzzy (85.3 / 85.4): kept as the int clamps. Four parameter empty tests from
  *     a fuzzy-scored PARAMS_ONLY psweep (after the sp7C store, the a3 reload, the
- *     ca1 store and the B4 word): 86.2 -> 91.2. */
+ *     ca1 store and the B4 word): 86.2 -> 91.2.
+ *   - 2026-10-24 agent-g (run 165): superseded for the NM object by the C++ donor
+ *     src/gui_uso/gui_uso_ncc_0F04_nm.cpp (inline Ctx::next() appends, 97.15). */
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5) {
