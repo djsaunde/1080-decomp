@@ -5,8 +5,11 @@
  * and the this reload into v0 like the target; draft 93.98 -> 97.57 at 588 bytes = target), the third attach on
  * `new O44` (out-of-line base ctor B44(name), vptr = D_41820_h) through a keep-free linkN (97.73), and the closing
  * virtual v12() through the vptr at +0x28; two end-of-body block volatiles give frame 0x40.
- * Residual: the first two links' q home (target sp+0x30 = the Arr temp slot, ours 0x2C) and colours (a2 / v1 / v0
- * vs a3 / v0 / t4), which shifts the t-ring by one through the O44 tail. cfe body 94.72. Still NON_MATCHING. */
+ * The first two attaches as a FREE inline lnk(Rec *q, Self *s) with q first and kept: a member call on this
+ * allocates a pooled `this` temp that took the Arr temp's slot, so q sat one slot lower (0x2C); q-first puts q in
+ * the target's sp+0x30 slot and colours it a2 (97.73 -> 98.16 local).
+ * Residual: the second attach's this reload is a t-ring temp (target v0), which shifts the t-ring by one through
+ * the O44 tail. cfe body 94.72. Still NON_MATCHING. */
 extern "C" {
 int gl_func_00000000(...);
 void gl_func_00000000_41820v();
@@ -36,6 +39,7 @@ struct Self : SB {
     void link(Rec *q) { if (0) { q = 0; } gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
     void linkN(Rec *q) { gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
 };
+inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; }
 void Self::init() {
     int local[3];
     gl_func_00000000(D_00000000 + 0x1F5F0, D_41820_a++);
@@ -60,8 +64,8 @@ void Self::init() {
     m10 = 0;
     m2C = 0;
     D_41820_g = 0;
-    link(D_41820_f);
-    link(D_41820_b);
+    lnk(D_41820_f, this);
+    lnk(D_41820_b, this);
     gl_func_00000000(D_00000000_3c740);
     gl_func_00000000(D_41820_c);
     linkN(new O44);
