@@ -11,7 +11,8 @@
  * The two matrix arms call one inline `Ctx::push(src, cmd)` (mtx() + the copy call + load()) on the named gctx:
  * gctx is then stored to its home before the copy call and reloaded after it, word for word the target (kit CVII:
  * a pointer stored once and reloaded around a call is a temp shared by an inline across that call).
- * cfe body 88.11 -> 93.96; length 2052 -> 2072 (target 2076).
+ * load() and prim() append through `&dl->buf[dl->count++]` (no named count; dlcall keeps next()'s named n).
+ * cfe body 88.11 -> 94.90; length 2052 -> 2072 (target 2076).
  * Still NON_MATCHING: build/non_matching/ only. */
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048AEC (0x81C / 519 words), agent-c run 159.
  * `void Obj::draw()` (renamed to gl_func_00048AEC with objcopy): the matrix concat into a local f32[4][4],
@@ -41,8 +42,8 @@ struct Ctx {
     char pad10[0x3C - 0x10];
     MtxHead *mh;
     Gfx *next() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
-    void load(Mtx *m) { Gfx *g = next(); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void prim(u32 hi, u32 lo) { Gfx *g = next(); g->w0 = hi; g->w1 = lo; }
+    void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+    void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w0 = hi; g->w1 = lo; }
     void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { c = mtx(); func_00000000(src, c); load(c); }
