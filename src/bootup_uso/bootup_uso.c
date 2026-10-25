@@ -721,7 +721,10 @@ void func_00000D94(char *a0) {
  * where the target spills it to 0x1CC, the frame is 0x10 short, and the
  * phase-2 vidx*2 web takes ra/s-regs where the target uses t5. Real
  * identities: dims = import_8001FFA0 {w, h}, mgr = *(import_8005C108 +
- * 0x18), vtx quad = bootup data sym163. */
+ * 0x18), vtx quad = bootup data sym163.
+ * agent-g run 169 (87.04 -> 88.82): `k = 0` set right before phase 2 (its only
+ * user) instead of before phase 1: the shorter k live range outranks buf, which
+ * is now spilled to 0x1CC and reloaded like the target. */
 extern char D_000066B0, D_000066B8;
 extern char D_e68_vtx;  /* bootup.uso data sym163 (D_0065AC): 4-vertex quad */
 typedef struct { u32 w0, w1; } GwE68;
@@ -793,7 +796,6 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         func_00000000_e68v(buf, 0x800, 0);
         vidx = 0;
         y = import_8001FFA0_h[1] / 2 - 16;
-        k = 0;
         for (row = 0; row < import_8001FFA0_h[1] / 32; row++) {
             x = import_8001FFA0[0] / 2 - 32;
             for (col = 0; col < import_8001FFA0[0] / 64; col++) {
@@ -819,6 +821,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             }
             y -= 32;
         }
+        k = 0;
         m = E68_MGR;
         ult = 0;
         for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
