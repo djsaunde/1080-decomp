@@ -6,7 +6,8 @@
  * the target: x = x0 + cx * sx is computed BEFORE the glyph-index call (the target converts x0 into a
  * callee-saved FP register there), and the glyph's u / v / w are read into named locals before the load
  * call (u, v, w loaded first, then the call's other arguments). cy / c declared last puts their homes at
- * the target's 212 / 211. No empty tests, no pads. 97.15 standalone (cfe NM 91.58).
+ * the target's 212 / 211; per glyph fh, then x, then y (best of the 6 orders). No empty tests, no pads.
+ * 97.25 standalone (cfe NM 91.58).
  * LEFT: first-append dl / n colours swapped (target dl v0, n v1), second MAX temp v0 (target a0), frame
  * 272 vs 264. */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
@@ -54,8 +55,8 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
     cy = -((f32)f->h10 / 2.0f);
     for (p = str, i = 0; i < (unsigned int)gl_func_00000000(str); p++, i++) {
         if (*p != ' ') {
-            x = (f32)x0 + cx * sx;
             fh = h * sy;
+            x = (f32)x0 + cx * sx;
             y = (f32)y0 + cy * sy;
             idx = gl_func_00000000(*p);
             c = idx;
