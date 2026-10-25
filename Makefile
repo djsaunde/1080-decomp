@@ -2915,6 +2915,11 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_B624_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_DONOR)
+# BDEC: two-arrow UI draw as C++ (150/150 words under NCC; written operand order, inline
+# int numerator) (agent-g run 167).
+TIMB5_BDEC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_BDEC.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000BDEC=$(TIMB5_BDEC_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_BDEC_DONOR)
 # B154 = AC20 / B368 sibling (133/133 words under NCC; sE8 triple through an inline with a
 # named local, .bss relocs pinned to 0) (agent-g run 167).
 TIMB5_B154_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154.cpp.o

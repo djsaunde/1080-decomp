@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b5_func_0000BDEC",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T04:24:12.083029+00:00",
+  "end_time": "2026-10-25T04:24:12.083059+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T04:24:12.083052+00:00",
+      "assistant_text": "cfe body ported to NCC: edg keeps written operand order (denom * field), the 255 numerator through an inline returning int (cvt folded after CSE), col[3] = a at the top of each arm of the second test, 5-word colour buffer for the frame.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 150,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000BDEC (0x258 / 150 words): the two-arrow\n * UI draw (centre icon at &D+0x6E8, left arrow x-30 at &D+0x700, right arrow x+30 at &D+0x718,\n * colour {c, c, c, a} with c = 192/255 or 64/255 by the 0x20000 dim flag, a = 255/255, the\n * arrows gated on arg2 & 8 when undimmed). Spliced into timproc_uso_b5.c.o (both trees) via\n * REPLACE_FUNC_BODY. agent-g run 167 (docs/IDO_CODEGEN.md kit CIX):\n * - edg keeps the written operand order: `denom * field` and `s2 + field` as in the target\n *   (cfe canonicalised them, the old \"FP-renumber tie\" cap);\n * - the alpha numerator is `(f32)full()` with an inline returning int 255: edg does not fold\n *   the call, uopt folds the cvt after its CSE pass, so the target's fresh 255.0 is loaded\n *   instead of reusing denom's f20 (`255.0f`, `(float)255` and int / short variables all CSE\n *   or keep a runtime cvt);\n * - `col[3] = a` repeated at the top of each arm of the second test (the target's shared\n *   reload / store join), the colour buffer declared first as 5 words (frame 104).\n * History: runs 2026-05-29 .. 163 (cfe body 76.0 -> 95.82). */\ntypedef float f32; typedef int s32;\nextern \"C\" {\nextern char D_00000000;\nint gl_func_00000000(...);\n}\ninline int full() { return 255; } /* the alpha numerator: an int that uopt folds after CSE */\nextern \"C\" void timproc_uso_b5_func_0000BDEC(char *arg0, char *arg1, int arg2) {\n    float col[5]; int s2; float c; float denom = 255.0f; float a;\n    s2 = *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4);\n    gl_func_00000000(arg0, *(int *)(arg1 + 0x8C), s2 + *(int *)(arg1 + 0xA4), (char *)&D_00000000 + 0x6E8,\n                     (int)(denom * *(float *)(arg1 + 0x4A0)));\n    if (*(int *)(arg0 + 0x2B4) & 0x20000) {\n        c = 192.0f / denom;\n        col[0] = c;\n        a = (f32)full() / denom;\n        col[1] = c;\n        col[2] = c;\n        col[3] = a;\n        if (arg2 & 8) {\n            gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,\n                             col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));\n        }\n    } else {\n        c = 64.0f / denom;\n        a = (f32)full() / denom;\n        col[0] = c;\n        col[1] = c;\n        col[2] = c;\n        col[3] = a;\n        gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,\n                         col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));\n    }\n    if (!(*(int *)(arg0 + 0x2B4) & 0x20000)) {\n        col[3] = a;\n        c = 192.0f / denom;\n        col[0] = c;\n        col[1] = c;\n        col[2] = c;\n        if (arg2 & 8) {\n            gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,\n                             col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));\n        }\n    } else {\n        col[3] = a;\n        c = 64.0f / denom;\n        col[0] = c;\n        col[1] = c;\n        col[2] = c;\n        gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,\n                         col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b5/timproc_uso_b5_ncc_BDEC.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000BDEC.s",
+    "segment": "timproc_uso_b5",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "replace-body-skip: donor bytes == INCLUDE_ASM bytes in the ROM tree; objdiff 100."
+  }
+}

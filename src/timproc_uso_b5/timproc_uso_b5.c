@@ -7376,62 +7376,14 @@ void timproc_uso_b5_func_0000BDA0(int *a0, int a1, int a2, int a3) {
  * output change, tested); the 1710/2E3C intractable FP-renumber tie family.
  * Stays NM. */
 extern int gl_func_00000000();
+/* EXACT 2026-10-25 (agent-g run 167, docs/IDO_CODEGEN.md kit CIX) via an IDO 7.1 NCC (C++) donor:
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_BDEC.cpp, REPLACE_FUNC_BODY-spliced into both trees
+ * (Makefile TIMB5_BDEC_DONOR). The "FP-renumber tie" above was the cfe front end: edg keeps the
+ * written operand order (denom * field, s2 + field), and the 255 numerator comes from an inline
+ * returning int 255 (its cvt is folded by uopt after CSE, so it is not merged with denom's f20).
+ * The cfe body that was here is superseded; this empty body is only the non_matching tree's
+ * splice placeholder (an INCLUDE_ASM there carries the .NON_MATCHING marker). */
 void timproc_uso_b5_func_0000BDEC(char *arg0, char *arg1, int arg2) {
-    volatile float padtop;
-    float col[4];
-    float denom = 255.0f;
-    float c;
-    float f2;
-    int s2;
-    float sp40;
-
-    s2 = *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4);
-    gl_func_00000000(arg0, *(int *)(arg1 + 0x8C), s2 + *(int *)(arg1 + 0xA4), (char *)&D_00000000 + 0x6E8,
-                     (int)(denom * *(float *)(arg1 + 0x4A0)));
-    if (*(int *)(arg0 + 0x2B4) & 0x20000) {
-        c = 192.0f / denom;
-        col[0] = c; /* run 163: col[0] before the f2 divide (relocation sweep, 95.65 -> 95.82) */
-        f2 = (float)255 / denom;
-        col[1] = c;
-        col[2] = c;
-        col[3] = f2;
-        if (arg2 & 8) {
-            sp40 = f2;
-            gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                             col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));
-            goto block_4;
-        }
-    } else {
-        c = 64.0f / denom;
-        f2 = (float)255 / denom;
-        col[0] = c;
-        col[1] = c;
-        col[2] = c;
-        col[3] = f2;
-        sp40 = f2;
-        gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                         col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));
-    block_4:
-        f2 = sp40;
-    }
-    col[3] = f2;
-    if (!(*(int *)(arg0 + 0x2B4) & 0x20000)) {
-        c = 192.0f / denom;
-        col[0] = c;
-        col[1] = c;
-        col[2] = c;
-        if (arg2 & 8) {
-            gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                             col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));
-        }
-    } else {
-        c = 64.0f / denom;
-        col[0] = c;
-        col[1] = c;
-        col[2] = c;
-        gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
-                         col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));
-    }
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000BDEC);
