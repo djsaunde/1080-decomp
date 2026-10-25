@@ -704,7 +704,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 162: 41D40 NCC NM donor (NM cfe body 408 -> 412 bytes = target): 0x2ea00 -> 0x2ea04 (62F08 NM offset 0x2e9b4).
 # agent-c run 163: 4FBA4 NCC exact donor over a placeholder (NM cfe body 0x138 -> 0x15C bytes = target): 0x2ea04 -> 0x2ea28 (62F08 NM offset 0x2e9d8).
 # agent-c run 163: 3FC58 NCC exact donor over a placeholder + all-zero pad word (NM 0x2E8 -> 0x2EC bytes = target): 0x2ea28 -> 0x2ea2c (62F08 NM offset 0x2e9dc).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea2c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 164: 34890 NCC NM donor (NM cfe body 0x148 -> 0x150 bytes = target): 0x2ea2c -> 0x2ea34 (62F08 NM offset 0x2e9e4).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea34 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1829,6 +1830,13 @@ $(GAMELIBS_37938_NM_DONOR): src/game_libs/game_libs_ncc_37938_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037938=$(GAMELIBS_37938_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_NM_DONOR)
+# 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_34890_NM_DONOR := build/src/game_libs/game_libs_ncc_34890_nm.cpp.o
+$(GAMELIBS_34890_NM_DONOR): src/game_libs/game_libs_ncc_34890_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034890=$(GAMELIBS_34890_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34890_NM_DONOR)
 # 37348 = input deadzone + two 34458 pushes under NCC (agent-c run 164: cfe 93.13 -> 98.14, kept Node * inline parameters = the target's v0 reloads; same 126-word length as the cfe body). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_37348_NM_DONOR := build/src/game_libs/game_libs_ncc_37348_nm.cpp.o
 $(GAMELIBS_37348_NM_DONOR): src/game_libs/game_libs_ncc_37348_nm.cpp
