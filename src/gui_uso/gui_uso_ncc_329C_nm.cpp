@@ -11,7 +11,9 @@
  * run 166 (kit CVII): the switch operand re-read through arg0 (`arg0->spr->fmt`, CSE'd with spr) keeps t
  * (t1, now a phantom) out of the compares, which read the pool variable s0 as in the target: 98.69.
  * LEFT: the second MAX pool temp (zdbug:5 bit 102, home M-56) is v1 (target t2, so its zero init
- * schedules at the join); it is coloured with only v0 / s0 forbidden. */
+ * schedules at the join); it is coloured with only v0 / s0 forbidden.
+ * run 172 (kit CXVII): the gSPTexture append through a post-increment next (`n = dl->n++`) while the
+ * texture rectangle keeps the explicit one: 49 -> 43 words (the 1A44 increment-spelling lever). */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -36,7 +38,8 @@ union Gfx { Gwords words; long long force_structure_alignment; };
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
-struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
+struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
+    Gfx *nextp() { int n = dl->n++; return &dl->buf[n]; } void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
@@ -46,7 +49,7 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     f32 fw, fh;
     s32 t;
     s32 w, h;
-    gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);
+    gSPTexture(CTX->nextp(), 0x8000, 0x8000, 0, 0, 1);
     spr = arg0->spr;
     w = spr->w;
     h = spr->h;
