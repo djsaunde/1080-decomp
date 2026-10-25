@@ -21103,12 +21103,17 @@ extern int D_00000000;
 /* agent-g run 155: the discarded link call goes through a void alias (kit IX dead-v0 lever):
  * l now reloads into v0 as in the target, 95.00 -> 95.56. Residual: n (copy of o) spilled to 40 and
  * reloaded into a1 in the target; here it stays coalesced with o in s0. */
+/* agent-c run 158: copy + kill in the call argument (`(n = o, o = 0, n)`, the cfront inline-expansion comma
+ * form) gives n its own home at sp+40 and the a1 reload; declaration order l, n, o, k sets the frame (0x30).
+ * 95.56 -> 99.78. Residual: the 0x120 / vtable store pair (target stores 0x120 first but materialises the
+ * vtable address first, t6 / t7). */
 extern void gl_func_00000000_51448v();
 void gl_func_00051448(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int D_51448_vt;
-    char *o;
     char *l;
+    char *n;
+    char *o;
     f32 k;
     gl_func_00000000(a0);
     o = (char *)gl_func_00000000(0x16C);
@@ -21127,8 +21132,7 @@ void gl_func_00051448(char *a0) {
     *(char **)(a0 + 0x10) = o;
     l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);
     {
-    char *n = o;
-    gl_func_00000000_51448v(l + 0x10, n);
+    gl_func_00000000_51448v(l + 0x10, (n = o, o = 0, n));
     if (*(int *)(n + 0x14) != 0) {
         *(int *)(n + 4) = 1;
     }
