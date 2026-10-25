@@ -26142,60 +26142,10 @@ void game_libs_func_0005AFB0(int *a0, int a1, int *a2) {
     a0[0] = a1;
 }
 
-#ifdef NON_MATCHING
-/* gl_func_0005AFD4: 39-insn dual-struct init (likely freelist/pool).
- * Calls func(&D+0x219F8, a1, a2, 0x10), then init s0 (= a0) and a1
- * (linked sentinel pair) plus magic value 0x87654321 + 0xFF000000.
- *
- * 97% — CORRECTED decode (prior note was wrong: t8 is NOT dead).
- * a1[0] = ((unsigned)diff >> 4) + 0xFF000000 - 1, with 0xFF000000
- * also stored to s0[0]; target keeps 0xFF000000 in $a2 (one `lui`)
- * reused for the addu AND s0[0], with `-1` a separate `addiu t9,t8,-1`.
- * Body now logic-correct (idx0-22 + most stores match). Residual is a
- * genuine IDO -O2 constant-fold cap (split-or-constant family, cf.
- * gl_func_00066B64): C `(diff>>4)+0xFF000000-1` folds the `+C1-C2`
- * into `0xFEFFFFFF` (lui+ori, 2 insns) + a re-lui for s0[0]=0xFF000000
- * → +1 length vs target's single-lui-reused + separate addiu. No C
- * form blocks the fold (explicit intermediate still propagated;
- * __asm__("") barrier regressed to 48). Un-INSN_PATCH-able (size
- * differs, 40 vs 39). NM; INCLUDE_ASM is the build path.
- *
- * Additional failed levers 2026-05-17:
- *  - `unsigned int magic = 0xFF000000` named local + reuse in t8 init and
- *    s0[0] — IDO still constant-folds each `magic` literal independently
- *    into separate lui's (size unchanged at 160B).
- *  - `register unsigned int magic` — same result (160B); register-hint
- *    doesn't override IDO's constant-propagation.
- *  - `volatile unsigned int magic` + snapshot local — REGRESSED to 164B
- *    (volatile forces stack spill, 1 insn worse).
- * The fold of `(diff>>4) + 0xFF000000 - 1 → +0xFEFFFFFF` is robust against
- * all name/storage-class levers tried. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_5AFD4.cpp, REPLACE_FUNC_BODY-spliced over
+ * this placeholder in both build trees (agent-c run 162). The old cfe NM body is retired. */
 void gl_func_0005AFD4(int *a0, int *a1, int *a2) {
-    int *s0 = a0;
-    int diff;
-    gl_func_00000000((char*)&D_00000000 + 0x000219F8, a1, a2, 0x10);
-    s0[0x24/4] = 0;
-    diff = (int)a2 - (int)a1;
-    s0[0x28/4] = diff;
-    s0[0x20/4] = 0;
-    s0[0x14/4] = (int)((char*)s0 + 0x10);
-    s0[0x18/4] = (int)((char*)s0 + 0x10);
-    s0[0x10/4] = 0;
-    s0[0x1C/4] = 0x87654321;
-    {
-        unsigned int t8 = ((unsigned int)diff >> 4) + 0xFF000000;
-        a1[1] = (int)s0;
-        a1[2] = (int)s0;
-        a1[0] = (int)(t8 - 1);
-        a1[3] = 0x87654321;
-        s0[0] = (int)0xFF000000;
-        s0[1] = (int)a1;
-        s0[2] = (int)a1;
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005AFD4);
-#endif
 
 /* gl_func_0005B070: heap block allocator (first fit over the free list at
  * the heap head; 16-byte block headers {hdr: id << 24 | size in 16-byte

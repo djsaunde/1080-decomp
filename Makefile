@@ -699,7 +699,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 160: 3B6A0 NM C++ donor Obj::below() (796 -> 800 bytes = target): 0x2e9f8 -> 0x2e9fc (62F08 NM offset 0x2e9ac).
 # agent-c run 161: 4E00C NM C++ donor array-member clears (284 -> 292 bytes, target 300): 0x2e9fc -> 0x2ea04 (62F08 NM offset 0x2e9b4).
 # agent-c run 161: 3E5E0 NM C++ donor reg0/reg1 inline registrations (600 -> 608 bytes = target): 0x2ea04 -> 0x2ea0c (62F08 NM offset 0x2e9bc).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea0c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 162: 5AFD4 NCC exact donor over a placeholder (NM cfe body 160 -> 156 bytes = target): 0x2ea0c -> 0x2ea08 (62F08 NM offset 0x2e9b8).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea08 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1789,6 +1790,13 @@ $(GAMELIBS_3D71C_DONOR): src/game_libs/game_libs_ncc_3D71C.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003D71C=$(GAMELIBS_3D71C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D71C_DONOR)
+# 5AFD4 = heap init as NCC C++ (b->hdr = sz + 0xFF000000; b->hdr--; keeps the target's add-then-decrement). EXACT NCC donor over an empty placeholder (agent-c run 162).
+GAMELIBS_5AFD4_DONOR := build/src/game_libs/game_libs_ncc_5AFD4.cpp.o
+$(GAMELIBS_5AFD4_DONOR): src/game_libs/game_libs_ncc_5AFD4.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005AFD4=$(GAMELIBS_5AFD4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5AFD4_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the

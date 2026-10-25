@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0005AFD4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T07:08:40.876612+00:00",
+  "end_time": "2026-10-25T07:08:40.876650+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T07:08:40.876642+00:00",
+      "assistant_text": "NCC C++ donor: b->hdr = (size >> 4) + 0xFF000000; b->hdr--; -- uopt forwards the first store into the decrement without re-folding the built sum, so the 0xFF000000 constant stays held in a2 (reused for the head hdr) and the -1 is a separate addiu, as in the target (the cfe body folded to 0xFEFFFFFF).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 39,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0005AFD4 (0x9C / 39 words), agent-c run 162.\n * Heap init: register the range, clear the counters, make the empty free-list head, then make the whole range\n * one block {hdr = 0xFF << 24 | size / 16, minus one; next / prev = the heap head; magic 0x87654321} and\n * link it. The cfe body (91.77, 40 words) folded `(size >> 4) + 0xFF000000 - 1` into one 0xFEFFFFFF\n * constant; the target adds 0xFF000000 (held in a2, reused for the head's hdr store) and THEN subtracts\n * one -- that is `b->hdr = (size >> 4) + 0xFF000000; b->hdr--;`: uopt forwards the first store into the\n * decrement but does not re-fold the already-built sum (`b->hdr -= 1` folds). Spliced over an empty\n * placeholder in both build trees. */\nextern \"C\" {\nvoid gl_func_00000000(...);\nextern char D_00000000[];\n}\nstruct Blk { unsigned hdr; Blk *next; Blk *prev; unsigned magic; };\nstruct Heap { Blk head; Blk list; unsigned n20; unsigned n24; int size; };\nextern \"C\" void gl_func_0005AFD4(Heap *h, Blk *b, char *end) {\n    gl_func_00000000(D_00000000 + 0x219F8, b, end, 0x10);\n    h->n24 = 0;\n    int size = end - (char *)b;\n    h->size = size;\n    h->n20 = 0;\n    h->list.next = &h->list;\n    h->list.prev = &h->list;\n    h->list.hdr = 0;\n    h->list.magic = 0x87654321;\n    b->next = &h->head;\n    b->prev = &h->head;\n    b->hdr = ((unsigned)size >> 4) + 0xFF000000;\n    b->hdr--;\n    b->magic = 0x87654321;\n    h->head.hdr = 0xFF000000;\n    h->head.next = b;\n    h->head.prev = b;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5AFD4.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}
