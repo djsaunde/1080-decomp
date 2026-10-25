@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0004FBA4",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T08:04:48.766924+00:00",
+  "end_time": "2026-10-25T08:04:48.766941+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T08:04:48.766936+00:00",
+      "assistant_text": "NCC C++ donor: o = new Der (Base re-tests this==0, Base vptr, M8 / M4 protocol members, out-of-line init; Der overrides v4 so it stores its own vptr), o->m = src->m, then an {key, p} iterator with inline 'int next() { return key = *p++ & 0xFFFF; }' drives virtual call 4 with &it; 'if (0) { gl(&src); }' keeps src in its arg home.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 87,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0004FBA4 (0x15C / 87 words), agent-c run 163.\n * Factory: o = new Der (edg's new + inline ctors: Base re-tests this == 0 with a 0x60 fallback,\n * stores the Base vptr at +0x5C, builds its M8 / M4 members through the this==0 protocol, calls\n * its out-of-line init; Der then stores its own vptr), copies src's M8 member, and walks the\n * halfword key list at *pp with an {key, p} iterator, making virtual call 4 (vtbl entry +0x20)\n * with &it for every nonzero key; *pp = it.p after. Load-bearing: the iterator's inline\n * `int next() { return key = *p++ & 0xFFFF; }` (the key in v0 like the target), Der overriding v4\n * (its own vtable store), and `if (0) { gl(&src); }` keeping src in its arg home (not an s-reg).\n * The cfe body reached 77.78. The Makefile renames both vtables (symbol names only). Spliced\n * over an empty placeholder in both build trees. */\nextern \"C\" void *gl_func_00000000(...);\ninline void *operator new(unsigned n) { return gl_func_00000000(n); }\nstruct M8 { int a, b; M8() { b = 0; a = 0; } };\nstruct M4 { int a; M4() { a = 0; } };\nstruct It { int key; unsigned *p; int next() { return key = *p++ & 0xFFFF; } };\nstruct Base {\n    char p0[0x34]; M8 m; char p3c[0x58 - 0x3C]; M4 n;\n    virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(It *);\n    Base() { gl_func_00000000(this); }\n};\nstruct Der : Base { char p60[0x90 - 0x60]; void v4(It *); Der() {} };\nextern \"C\" Der *gl_func_0004FBA4(Der *src, unsigned **pp) {\n    Der *o = new Der;\n    if (0) { gl_func_00000000(&src); }\n    o->m = src->m;\n    It it;\n    it.p = *pp;\n    while (it.next()) {\n        o->v4(&it);\n    }\n    *pp = it.p;\n    return o;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4FBA4.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}

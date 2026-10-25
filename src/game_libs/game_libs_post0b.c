@@ -19960,84 +19960,10 @@ unsigned char game_libs_func_0004FB34(unsigned char c) {
     }
 }
 
-// gl_func_0004FBA4 — STRUCTURAL PASS (0x158 / 93 words, no episode). Raw-.word
-// USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x40
-// (saves ra, s0, s1). Multi-stage lazy allocate-and-link constructor
-// (SIBLING of gl_func_0004F85C; cb = jal 0 USO-relocated alloc).
-//
-//   void *gl_func_0004FBA4(void *a0, int a1, void *a2) {
-//     void *o0 = cb1(0x90); if (!o0) return 0;        // alloc obj A (0x90)
-//     void *o1 = a2;
-//     if (o1 == 0) { o1 = cb2(0x60); if (!o1) return 0; }   // alloc obj B
-//     o1->p5C = &D_reloc;                                    // bind global
-//     if (o1 != (void*)-0x34) { v = (char*)o1 + 0x34; }       // link region
-//     void *n = cb3(0x8);                                     // alloc 0x8
-//                                                             //   list node
-//     if (n) { n->p00 = 0; n->p04 = 0; }                       // zero node
-//     // ... link n into the o1+0x34 region; further wiring off o0/o1.
-//   }
-// Same lazy multi-subobject constructor as gl_func_0004F85C: allocates a
-// 0x90 object, a 0x60 object (only if the arg is null), and a small 0x8
-// list node via cb1/cb2/cb3 (each null-checked with an early bail), binds
-// the &D_reloc module global into a1->0x5C, links via the a1+0x34 region,
-// and zero-initialises the 0x8 node. Only the sub-object sizes
-// (0x90/0x60/0x8 vs the 0x90/0x90/0x60 of 0004F85C) differ.
-//
-// Caps (DEFERRED): object struct + cb signatures untyped. Real-C
-//   STRUCTURAL body below. Byte-match deferred. Name pre-checked: no
-//   extern reuse.
-#ifdef NON_MATCHING
-extern int D_00000000;
-
-/* 2026-10-20 (agent-c run 114): re-decoded as cfront code. obj =
- * new(0x90); the inlined base ctor re-tests `this` (dead 0x60 fallback),
- * stores the base vtable, runs two one-level member ctors (8-byte at 0x34,
- * 4-byte at 0x58) and init(this); the derived vtable goes in after. Then
- * a0->0x34/0x38 are copied in, and an iterator {key, cursor} on the stack
- * walks *a1. Each nonzero halfword key makes a virtual call through vtbl
- * slot 4 ({s16 delta @0x20, fn @0x24}) with &it. *a1 = it.p at the end. */
-typedef struct { s32 key; s32 *p; } It4FBA4;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4FBA4.cpp, REPLACE_FUNC_BODY-spliced over
+ * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
 char *gl_func_0004FBA4(char *a0, s32 **a1) {
-    char *obj;
-    char *t;
-    int *m;
-    char *vt;
-    It4FBA4 it;
-
-    obj = (char *)gl_func_00000000(0x90);
-    if (obj != 0) {
-        t = obj;
-        if (t == 0) {
-            t = (char *)gl_func_00000000(0x60);
-            if (t == 0) goto derived;
-        }
-        *(void **)(t + 0x5C) = &D_00000000;
-        m = (int *)(t + 0x34);
-        if (m == 0) { m = (int *)gl_func_00000000(8); if (m == 0) goto m2; }
-        m[1] = 0;
-        m[0] = 0;
-    m2:
-        m = (int *)(t + 0x58);
-        if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto fin; }
-        *m = 0;
-    fin:
-        gl_func_00000000(t);
-    derived:
-        *(void **)(obj + 0x5C) = &D_00000000;
-    }
-    *(s32 *)(obj + 0x34) = *(s32 *)(a0 + 0x34);
-    *(s32 *)(obj + 0x38) = *(s32 *)(a0 + 0x38);
-    it.p = *a1;
-    while ((it.key = *it.p++ & 0xFFFF) != 0) {
-        vt = *(char **)(obj + 0x5C);
-        (*(void (**)())(vt + 0x24))(obj + *(s16 *)(vt + 0x20), &it);
-    }
-    *a1 = it.p;
-    return obj;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004FBA4);
-#endif
 
 
 // game_libs_func_0004FD00 -- edge-midpoint plane-side test (0x3EC / 251 words,

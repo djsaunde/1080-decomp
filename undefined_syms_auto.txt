@@ -5248,3 +5248,5 @@ gl_3B01C_f = 0x00000000;
 gl_3D71C_test = 0x00000000;
 gl_36A48_cb = 0x00000000;
 gl_412E8_vec_new = 0x00000000;
+gl_4FBA4_vtbl_base = 0x00000000;
+gl_4FBA4_vtbl_der = 0x00000000;
