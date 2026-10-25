@@ -37,13 +37,14 @@ struct LIter {
 };
 struct Sub { char pad[0x10]; LNode *head; };
 struct Obj { char pad[0x2C]; Sub *sub; char pad30[0x40 - 0x30]; int x40; int x44; char pad48[0x84 - 0x48]; Arr arr; char pad94[0x9C - 0x94]; int x9C; char padA0[4]; int xA4; };
+inline AIter iter(Arr *a) { return AIter(a); } /* run 173: kit CXVI free iter() */
 extern "C" void gl_func_00049B3C(Obj *self) {
     gl_func_00000000(D_49B3C_s1, S(0x1FFD4), 0);
     gl_func_00000000(D_49B3C_s2, S(0x1FFE0), &self->x40, 0);
     gl_func_00000000(D_49B3C_s3, S(0x1FFE8), &self->x44, 0);
     gl_49B3C_regf(D_49B3C_s4, S(0x1FFF4), (char *)&self->x9C, 0.0f, 10.0f, 0);
     { volatile int pz, py; }
-    AIter it = self->arr.iter();
+    AIter it = iter(&self->arr);
     while (it.next()) {
         Elem *e = it.cur();
         e->vt5C->fn28(e->vt5C->d24 + (char *)e);
