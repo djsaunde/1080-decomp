@@ -3417,13 +3417,13 @@ void func_000055A0(int arg0, int arg1, int arg2) {
     S4_55A0 v0, v1, v2, v3;
     S4_55A0 p1;
     V4_55A0 vec0;
-    S4_55A0 p2;
     R12_55A0 *it;
     V4_55A0 vec1, vec2;
     int var_s0, mode;
     int cnt;
     char *obj, *sub, *node;
     char *nl;
+    S4_55A0 p2;
     char *n2, *n3, *n4;
 
     if (1) { S4_55A0 *q0 = &v0, *q1 = &v1, *q2 = &v2, *q3 = &v3, *q4 = &t4, *q5 = &t5, *q10 = &t10; }

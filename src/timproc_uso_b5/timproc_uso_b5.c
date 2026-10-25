@@ -8072,9 +8072,9 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     f32 sp60; /* run 162: declared first (relocation sweep, 93.75 -> 93.79) */
     s32 vals[5];
     char *ptrs[5];
+    s32 *pv;
     f32 cols[4];
     f32 fone, fnum, fnum2;
-    s32 *pv;
     char **pp;
     f32 *fb;
     char *hud, *e;
