@@ -7,6 +7,10 @@
  * the pooled index temp, the target's a2) with `this` = the pooled context temp (a1); the branch target row index is a
  * named local read before the head packet; `lo` straight from GS (no named state pointer: frame 0x38 = target).
  * 84.83 -> 97.51, length 364 -> 372 = target. Residual: the context / index pool temps' colours swapped (a2 / a1).
+ * agent-c run 161: the branch and end packets as inline Elem members `link(int i)` / `end(int i)` (their int parameter is the
+ * pooled int temp, the target's a2 for both the branch row and the end row, tested against -1 in place), the head slot and
+ * the else NoOp through a keep-free `at2()`, a volatile pad in link() for the 0x38 frame: 97.51 -> 99.78. Residual: the
+ * nested Ctx this temp of at2 / at inside link / end takes a0 where the target keeps a1.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned int u32; typedef int s32;
 extern "C" {
@@ -15,7 +19,8 @@ u32 gl_func_00034458(...);
 }
 struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
-struct Ctx { char pad[0xC]; DLHead *dl; Gfx *at(int i) { if (0) { i = 0; } return &dl->buf[i]; } };
+struct Ctx { char pad[0xC]; DLHead *dl; Gfx *at(int i) { if (0) { i = 0; } return &dl->buf[i]; }
+    Gfx *at2(int i) { return &dl->buf[i]; } };
 struct GState { char pad[0x10C]; int lo; int hi; };
 #define GS (*(GState **)(D_00000000 + 0x254))
 #define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))
@@ -26,6 +31,8 @@ struct GState { char pad[0x10C]; int lo; int hi; };
 struct Elem {
     char pad[0x6C]; Ctx *ctx6C; char pad70[0x7C - 0x70]; s16 *rows7C; s16 n80;
     void clip();
+    void end(int i) { if (i != -1) { gSPEndDisplayList(ctx6C->at(i)); } }
+    void link(int i) { volatile int pad; gSPBranchList(ctx6C->at2(n80), gl_func_00034458(ctx6C->at(i))); }
 };
 void Elem::clip() {
     if (rows7C != 0) {
@@ -37,14 +44,10 @@ void Elem::clip() {
             gDPNoOp(ctx6C->at(rows7C[k]));
         }
         if (lo != 0) {
-            int i = rows7C[lo];
-            gSPBranchList(ctx6C->at(n80), gl_func_00034458(&ctx6C->dl->buf[i]));
+            link(rows7C[lo]);
         } else {
-            gDPNoOp(&ctx6C->dl->buf[n80]);
+            gDPNoOp(ctx6C->at2(n80));
         }
-        int e = rows7C[GS->hi];
-        if (e != -1) {
-            gSPEndDisplayList(ctx6C->at(e));
-        }
+        end(rows7C[GS->hi]);
     }
 }
