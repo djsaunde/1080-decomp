@@ -7,7 +7,8 @@
  * bytes (`it.cur()->draw(this)` = the slot-5 call through +0x5C), the arm-2 Gfx copy of g34.
  * Declaration order gctx, A, B, mtx, i, j, k, mt, cmd puts gctx / mtx / cmd at the target's homes.
  * Elem's virtuals sit in a 0x5C-byte base (EBase) so the derived members keep their offsets.
- * cfe body 88.11 -> 93.34; length 2052 -> 2056 (target 2076).
+ * The arm-1 setup call is an inline `Ctx::setup(Gfx *, int)` (its `this` = the GState context pool temp).
+ * cfe body 88.11 -> 93.90; length 2052 -> 2056 (target 2076).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 extern "C" {
@@ -28,6 +29,7 @@ struct Ctx {
     void load(Mtx *m) { Gfx *g = next(); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
     void prim(u32 hi, u32 lo) { Gfx *g = next(); g->w0 = hi; g->w1 = lo; }
     void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     Mtx *mtx() { int n = mh->count; mh->count = n + 1; return &mh->buf[n]; }
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
@@ -102,7 +104,7 @@ void Obj::draw() {
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
         if ((flags30 & 8) && n14 != 0) {
-            func_00000000(GS->ctx, &g34, n14->m1e);
+            GS->ctx->setup(&g34, n14->m1e);
             AIter it = arr.iter();
             while (it.next()) {
                 if (it.cur()->ctx6C != 0) {

@@ -10,7 +10,7 @@
  * target's s2), the m34 argument through an inline `p34()`, next() as `if (idx < last) return ...; return 0;`
  * (the result in v0 like the target), DLHead appends without a named count (`&head->buf[head->count++]`), `hit` declared after `rowStart`, c / e / j / m in their blocks,
  * `o->rows7C[k]` in a for loop (uopt's strength-reduced offset lands at sp+0x48 like the target).
- * Four `pad` words at the top are still unexplained named homes (target: 10 words above `it`).
+ * Seven `pad` words at the top are still unexplained named homes (target: 10 words above `it`; o, j, i are the other three).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8;
 extern "C" {
