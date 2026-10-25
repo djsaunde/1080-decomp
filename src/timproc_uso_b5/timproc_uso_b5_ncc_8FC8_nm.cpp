@@ -12,7 +12,8 @@
  * only): __ct__6ScreenFPiT1 -> timproc_uso_b5_func_00008FC8.  NM comparison object only.
  * 87.71 -> 88.08: the item loop stores items[i] (no pp walk), the row pointers / m38 copy declared at the top
  * (frame 368 -> 352 = target), direct `int *fp` for the kid flag RMW, third Panel explicit.
- * 88.03 -> 88.9: the WA flag RMW as one block-scope int x (and/and/and/ori/and on v0, as the target) and the three saved-bit locals volatile (the target spills them across the kid calls). */
+ * 88.03 -> 88.9: the WA flag RMW as one block-scope int x (and/and/and/ori/and on v0, as the target) and the three saved-bit locals volatile (the target spills them across the kid calls).
+ * 88.9 -> 89.6: W-ctor field stores ordered f10C, f110, f114, f11C, i134 (store-order permutation sweep). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
@@ -205,7 +206,7 @@ struct WA : B2 { WFIELDS
         i144 = 0;
         if (sb) FW(&import_8005EE6C, 4) |= 0x80000; else FW(&import_8005EE6C, 4) &= 0xFFF7FFFF;
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
-        f10C = -1.5457f; f110 = 1.5457f; i134 = 0; f11C = 0.0f; f114 = -0.0251f; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
+        f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
 struct WB : B2 { WFIELDS
     WB() : B2(timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f) {
@@ -223,7 +224,7 @@ struct WB : B2 { WFIELDS
         i144 = 0;
         if (sb) FW(&import_8005EE6C, 4) |= 0x80000; else FW(&import_8005EE6C, 4) &= 0xFFF7FFFF;
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
-        f10C = -1.5457f; f110 = 1.5457f; i134 = 0; f11C = 0.0f; f114 = -0.0251f; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
+        f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
 struct WC : B2 { WFIELDS
     WC() : B2(timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f) {
@@ -241,7 +242,7 @@ struct WC : B2 { WFIELDS
         i144 = 0;
         if (sb) FW(&import_8005EE6C, 4) |= 0x80000; else FW(&import_8005EE6C, 4) &= 0xFFF7FFFF;
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
-        f10C = -1.5457f; f110 = 1.5457f; i134 = 0; f11C = 0.0f; f114 = -0.0251f; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
+        f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
 struct C2B74 { char p[0x194 - 0x2C]; C2B74(); };
 struct NodeF { char p[0x10]; f32 f; };
