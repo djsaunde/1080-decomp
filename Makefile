@@ -208,10 +208,10 @@ BOOTUP_8BD4_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_8BD4_nm.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008BD4=$(BOOTUP_8BD4_NM_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_8BD4_NM_DONOR)
 # 1A44 = gSPMatrix + gSPDisplayList draw as C++ (camera * G operand order, w1 read before the
-# 0x06 packet's slot; agent-g run 172, cfe 92.23). NM comparison object only.
-BOOTUP_1A44_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_1A44_nm.cpp.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00001A44=$(BOOTUP_1A44_NM_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_1A44_NM_DONOR)
+# 0x06 packet's slot, `_n = ms->count++`; agent-g run 172, cfe 92.23); NCC donor, exact.
+BOOTUP_1A44_DONOR := build/src/bootup_uso/bootup_uso_ncc_1A44.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00001A44=$(BOOTUP_1A44_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_1A44_DONOR)
 # 31C0 = mode-switch scene builder written as C++ (new Obj2 / new KB / out-of-line ctor(0, ...) calls; agent-g run 164,
 # cfe 93.61). 202/202 words, frame layout left. NM comparison object only; symbols renamed (names only).
 BOOTUP_31C0_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_31C0_nm.cpp.o

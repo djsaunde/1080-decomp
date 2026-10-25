@@ -1,0 +1,32 @@
+{
+  "function_name": "func_00001A44",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T18:58:43.602385+00:00",
+  "end_time": "2026-10-25T18:58:43.602385+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T18:58:43.602385+00:00",
+      "assistant_text": "NCC C++ donor: the cfe gSPMatrix + gSPDisplayList body ported to C++. Scale products written camera * G (edg keeps source operand order); gfx-context pointer declared first (sp+52 home); the 0x06 packet's w1 read through a block-local evaluated ahead of the slot; the matrix count++ as `_n = ms->count++` and the 0x06 slot as an explicit `_n = d->count; d->count = _n + 1`, which gives the target's a1/a2 and a0/a3/t0 colours. Spliced over a placeholder in both build trees.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 115,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00001A44 (0x1CC / 115 words): gSPMatrix +\n * gSPDisplayList draw (agent-c run 114 decode) as C++. 115/115 words (agent-g run 172).\n *\n * Under NCC: the three scale products are written camera * G (edg keeps the\n * source operand order: the camera word loads first, as in the target); the\n * gfx-context pointer is declared first (its home is the target's sp+52 spill);\n * the 0x06 display-list packet reads its w1 (a0->0x38) BEFORE the slot\n * increment (the target loads it between the count load and the count store),\n * here a block-local `_b` evaluated ahead of the packet pointer -- the cfe body\n * needed an `if (g) {}` for the same shape. The last colours (matrix count++ in\n * a1 / a2, the 0x06 packet in a0 / a3 / t0) come from which increments feed the\n * shared `_n`: the matrix count++ as `_n = ms->count++` (post-increment into _n)\n * and the 0x06 packet as an explicit `_n = d->count; d->count = _n + 1` slot;\n * the other three packets use the `_n = d->count++` slot macro.\n * Spliced over the placeholder in both bootup_uso.c.o trees via REPLACE_FUNC_BODY. */\ntypedef float f32;\ntypedef int s32;\ntypedef unsigned int u32;\nextern \"C\" {\nextern int import_8005C108[];\nextern int import_8005C108_g1a44[];   /* gate read alias (same import) */\nextern char *D_bu_205CC;              /* bootup data sym161: camera root */\nextern void func_1a44_emit(void *, float, float, float, float, float, float, float);\nextern int func_1a44_emit2(void *);\n}\ntypedef struct { u32 w0, w1; } Gw1A44;\ntypedef struct { Gw1A44 *buf; s32 count; } Dl1A44;\ntypedef struct { char m[64]; } Mtx1A44;\ntypedef struct { Mtx1A44 *buf; s32 count; } Ms1A44;\n#define NEXT1A44(d) (_n = (d)->count++, &(d)->buf[_n])\n#define NEXTX1A44(d) (_n = (d)->count, (d)->count = _n + 1, &(d)->buf[_n])\n#define W1A44(pkt, a, b) { Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = (b); }\n#define W1A44B(pkt, a, b) { u32 _b = (b); Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = _b; }\nextern \"C\" void func_00001A44(char *a0) {\n    char *gc;\n    char *g;\n    s32 _n;\n\n    if (import_8005C108_g1a44[0x3C / 4] & 2) {\n        return;\n    }\n    g = (char *)import_8005C108;\n    gc = *(char **)(*(char **)(g + 0x254) + 0x158);\n    func_1a44_emit(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count],\n                   (f32)*(s32 *)(a0 + 0x2C), (f32)*(s32 *)(a0 + 0x30), (f32)*(s32 *)(a0 + 0x34),\n                   1.0f,\n                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA0) * *(f32 *)(g + 0x128),\n                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA4) * *(f32 *)(g + 0x12C),\n                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA8) * *(f32 *)(g + 0x130));\n    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x01020040,\n          func_1a44_emit2(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count]));\n    _n = (*(Ms1A44 **)(gc + 0x3C))->count++;\n    W1A44B(NEXTX1A44(*(Dl1A44 **)(gc + 0xC)), 0x06000000, *(u32 *)(a0 + 0x38));\n    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xE7000000, 0);\n    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xBA000E02, 0);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_1A44.cpp",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}
