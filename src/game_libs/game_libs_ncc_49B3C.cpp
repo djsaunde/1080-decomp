@@ -4,7 +4,7 @@
  * the target's pooled scratch is a1 (construct `this`, idx + 1, vptr) where
  * this colours v1/v0, and two spills land one slot off. Frame-exact.
  * Spliced into the NON_MATCHING comparison object only; the ROM keeps
- * INCLUDE_ASM. */
+ * INCLUDE_ASM. agent-c run 159: AIter::next() as `if (idx < last) return ...; return 0;` (96.86 -> 96.95). */
 extern "C" {
 void *gl_func_00000000(...);
 void gl_49B3C_regf(char *, char *, char *, float, float, int);
@@ -26,7 +26,7 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {}
-    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
+    Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter Arr::iter() { return AIter(this); }
