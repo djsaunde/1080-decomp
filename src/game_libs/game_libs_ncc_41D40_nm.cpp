@@ -24,7 +24,7 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
-    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
+    Elem **next() { if (idx < last) { int n = idx + 1; idx = n; return &(*a)[n]; } return 0; } /* run 173: explicit n (kit CXVII spelling) */
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter iter(Arr *a) { return AIter(a); }

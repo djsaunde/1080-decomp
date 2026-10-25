@@ -34,7 +34,7 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {}
-    Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
+    Elem **next() { if (idx < last) { int n = idx + 1; idx = n; return &(*a)[n]; } return 0; } /* run 173: explicit n (kit CXVII spelling) */
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter iter(Arr *a) { return AIter(a); }
@@ -66,5 +66,5 @@ Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
         }
     }
     gl_func_00034458(f40);
-    { volatile int e0, e1, e2, e3, e4; }
+    { volatile int e0, e1, e2, e3; }
 }

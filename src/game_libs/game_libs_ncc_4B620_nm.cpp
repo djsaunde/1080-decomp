@@ -26,6 +26,7 @@ struct DLHead { Gfx *buf; int count; };
 struct DL {
     int pad[3];
     DLHead *head;
+    void addE(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: no keep on the 4th packet (per-site grid) */
     void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
 };
 struct Elem { char pad[0x34]; int m34; char pad38[0x64 - 0x38]; DL *m64; };
@@ -71,7 +72,7 @@ Obj::Obj(void *a1) : Base(a1) {
     cc->add(0xE7000000, 0);
     cc->add(0xBA001402, 0);
     cc->add(0xB9000201, 4);
-    cc->add(0xBA000C02, 0x2000);
+    cc->addE(0xBA000C02, 0x2000);
     cc->add(0xBA001301, 0);
     cc->add(0xBB000001, 0x80008000);
     gl_func_00000000(cc);
