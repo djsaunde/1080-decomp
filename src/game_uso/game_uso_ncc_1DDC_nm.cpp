@@ -7,18 +7,20 @@
  * positions (the `addiu v1,v1,112` + 52 / 56 loads), and V3 operator* returning by value (ctor
  * temp -> pooled return slot -> by-value operator= parameter -> float copies into acc: the target's
  * three-hop copy chains). operator= forwarding to set(const V3 &) gives the target frame (384).
- * self += f23D4(a0) and vel -= diff * sel bind their temporaries at block level (the two homes
- * above ref). LEFT (99.75): those two temporaries are homed in the opposite order (edg prepends,
- * the target has the f23D4 copy on top), the key-3 source / non-3 object pointers take v0 where
- * the target has v1, and the f23D4 return slot sits 8 bytes lower (the ref read's pointer temps
- * are allocated before it). The cfe body in game_uso.c stays as the C reference (99.10). */
+ * The two homes above ref are NAMED V3s declared first in the arm (r, e) assigned through the
+ * IMPLICIT memberwise operator= (word copies from the return slot: `r = f23D4(a0); self += r;`,
+ * `e = diff * sel; a0->vel -= e;`); acc / vel take the products through a by-value put() that
+ * forwards to set(const V3 &) (the parameter-temp hop + the frame-384 reference slots).
+ * LEFT (99.77): the key-3 source / non-3 object pointers take v0 where the target has v1, and the
+ * f23D4 return slot sits 8 bytes lower (the ref read's pointer temps are allocated before it).
+ * The cfe body in game_uso.c stays as the C reference (99.10). */
 struct V3 {
     float x, y, z;
     V3() {}
     V3(float a, float b, float c) { set(a, b, c); }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }
-    V3 &operator=(V3 v) { set(v); return *this; }
+    void put(V3 v) { set(v); }
     V3 &operator+=(const V3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
     V3 &operator-=(const V3 &v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
     V3 operator*(float s) const { return V3(x * s, y * s, z * s); }
@@ -50,33 +52,37 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
         { Out *o = c.getOut(); o->goal.x = m.x; o->goal.y = m.y; o->goal.z = m.z; }
         Out *o = c.getOut(); o->pos.x = m.x; o->pos.y = m.y; o->pos.z = m.z;
     } else {
+        V3 r;
+        V3 e;
         V3 ref;
         V3 self;
         Ctx c(a0);
         V3 acc;
         ref.set(c.getOut()->pos);
         a0->obj->mtx.getPos(self);
-        self += game_uso_func_000023D4(a0);
+        r = game_uso_func_000023D4(a0);
+        self += r;
         float speed = a0->spd;
         V3 diff(self.x - ref.x, 0.0f, self.z - ref.z);
         float mag = game_uso_func_070238(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
         game_uso_func_071028(&diff);
         if (mag < a0->lim) {
-            acc = diff * (mag - a0->lim);
+            acc.put(diff * (mag - a0->lim));
         } else {
-            acc = diff * (mag - speed) * a0->sx;
+            acc.put(diff * (mag - speed) * a0->sx);
         }
         game_uso_func_072EE8(c.getOut()->acc, &acc);
-        a0->vel = diff * speed;
+        a0->vel.put(diff * speed);
         float sel = (a0->key == 2) ? a0->hB : a0->hA;
         diff.set(0.0f, 1.0f, 0.0f);
         mag = ref.y - self.y;
         if (mag < a0->vlim) {
-            acc = diff * (a0->vlim - mag);
+            acc.put(diff * (a0->vlim - mag));
         } else {
-            acc = diff * (sel - mag) * a0->sy;
+            acc.put(diff * (sel - mag) * a0->sy);
         }
         game_uso_func_072EE8(c.getOut()->acc, &acc);
-        a0->vel -= diff * sel;
+        e = diff * sel;
+        a0->vel -= e;
     }
 }
