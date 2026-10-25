@@ -711,7 +711,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 163: 3FC58 NCC exact donor over a placeholder + all-zero pad word (NM 0x2E8 -> 0x2EC bytes = target): 0x2ea28 -> 0x2ea2c (62F08 NM offset 0x2e9dc).
 # agent-c run 164: 34890 NCC NM donor (NM cfe body 0x148 -> 0x150 bytes = target): 0x2ea2c -> 0x2ea34 (62F08 NM offset 0x2e9e4).
 # agent-c run 164: 59E80 NCC NM donor (NM cfe body 0x450 -> 0x444 bytes = target): 0x2ea34 -> 0x2ea28 (62F08 NM offset 0x2e9d8).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea28 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 173: 41820 NCC NM donor (NM cfe body 0x248 -> 0x24C bytes = target): 0x2ea28 -> 0x2ea2c (62F08 NM offset 0x2e9dc).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea2c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1730,6 +1731,14 @@ $(GAMELIBS_4B620_NM_DONOR): src/game_libs/game_libs_ncc_4B620_nm.cpp
 	$(OBJCOPY) --redefine-sym __ct__3ObjFPv=gl_func_0004B620 --redefine-sym __ct__2BBFPcPvi=gl_func_00000000_4b620_base $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B620=$(GAMELIBS_4B620_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B620_NM_DONOR)
+# 41820 = C++ `void Self::init()` (new Arr, Self::link attach member with a kept q, new O44, closing virtual); NCC NM-only donor (agent-c run 173, cfe 94.72), symbols renamed (names only).
+GAMELIBS_41820_NM_DONOR := build/src/game_libs/game_libs_ncc_41820_nm.cpp.o
+$(GAMELIBS_41820_NM_DONOR): src/game_libs/game_libs_ncc_41820_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym init__4SelfFv=game_libs_func_00041820 --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=D_41820_h $@
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00041820=$(GAMELIBS_41820_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41820_NM_DONOR)
 # 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents; NM-only donor (agent-c run 157, cfe 92.03).
 GAMELIBS_4BAF4_NM_DONOR := build/src/game_libs/game_libs_ncc_4BAF4_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004BAF4=$(GAMELIBS_4BAF4_NM_DONOR)
