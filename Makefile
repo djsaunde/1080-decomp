@@ -1872,13 +1872,13 @@ $(GAMELIBS_34890_NM_DONOR): src/game_libs/game_libs_ncc_34890_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034890=$(GAMELIBS_34890_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34890_NM_DONOR)
-# 37348 = input deadzone + two 34458 pushes under NCC (agent-c run 164: cfe 93.13 -> 99.73, kept Node * inline parameters = the target's v0 reloads, block-scoped ctor-built push vector; same 126-word length as the cfe body). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_37348_NM_DONOR := build/src/game_libs/game_libs_ncc_37348_nm.cpp.o
-$(GAMELIBS_37348_NM_DONOR): src/game_libs/game_libs_ncc_37348_nm.cpp
+# 37348 = input deadzone + two pushes under NCC (agent-c run 164 / 173: kept Node * inline parameters, block-scoped ctor-built push vector, second-vector zeros through an int inline parameter). EXACT NCC donor over an empty placeholder (agent-c run 173).
+GAMELIBS_37348_DONOR := build/src/game_libs/game_libs_ncc_37348.cpp.o
+$(GAMELIBS_37348_DONOR): src/game_libs/game_libs_ncc_37348.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037348=$(GAMELIBS_37348_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37348_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037348=$(GAMELIBS_37348_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37348_DONOR)
 # 36A48 = best-aligned candidate loop (V3 by-value operator= returning V3 &) EXACT NCC donor over an empty placeholder (agent-c run 163).
 GAMELIBS_36A48_DONOR := build/src/game_libs/game_libs_ncc_36A48.cpp.o
 $(GAMELIBS_36A48_DONOR): src/game_libs/game_libs_ncc_36A48.cpp
