@@ -1,118 +1,68 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004B0A8: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.36).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
-typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
-typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
-typedef float f32; typedef double f64;
-#undef NULL
-#define NULL 0
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-typedef struct { int w; } Word3E968;
-typedef struct { char *src; s32 idx; s32 end; } Q_0004B0A8;
-extern "C" char qa[];
-extern "C" char qb[];
-extern "C" char qc[];
-typedef struct { int a, b; } P2_0004B0A8;
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004B0A8 (0x24C / 147 words), agent-c run 164 (was the
+ * run-134 C lift, 94.76). The function is the constructor `Obj::Obj(Src *s) : Base(name)` (Makefile rename of
+ * __ct__3ObjFP3Src): cfront `this == 0 -> new(0x44)`, out-of-line Base(char *) (Base = 0x28 data bytes + the
+ * virtual, so Obj's own vptr store lands at +0x28), a Pair copied from the vt+0x140 template, f0 = 2, f40 from an
+ * out-of-line `ctor(0, name, w)` call, four f40 calls with &pair, then 41D40's by-value AIter over s->arr: every
+ * element whose +0x6C is set gets a gSPDisplayList packet on f40's DL (named-d next()) whose w1 is the 0x34458
+ * result for (*t->base + k * 8, t, k). Load-bearing: t and k read from TWO it.cur() calls passed to an inline
+ * res(Elem *e1, Elem *e2) (the target re-reads the element pointer for k; one named e is 95.1, 576 -> 588 bytes);
+ * Tex::base is a char ** (the target dereferences it); IBase writes `a = arr; idx = -1;` (emitted idx first, as the
+ * target); five end-of-body block volatiles = frame 0xA8. 94.76 -> 98.73 local, length = target. Residual: the
+ * colours of the iterator ctor this (a3 vs t0), the two element pointers and the loop next() result, and the
+ * first iterator temp 4 bytes low. Still NON_MATCHING. */
 extern "C" {
-extern int D_00000000;
-extern Word3E968 *p;
-extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
-extern char *o;
-extern int gl_func_00034458(...);
-extern int  idx;
-extern int arg1;
-extern int  end;
-extern u8 gl_d_4b0a8_tbl;
-extern u8 gl_d_4b0a8_vt;
-extern u8 gl_d_4b0a8_w214;
+void *gl_func_00034458(...);
+extern char D_00000000[];
+extern char gl_d_4b0a8_tbl, gl_d_4b0a8_vt, gl_d_4b0a8_w214;
 }
-extern "C" int *gl_func_0004B0A8(int *arg0, char *arg1) {
-    int spA0[2];
-    Q_0004B0A8 sp94;
-    s32 pad90;
-    Q_0004B0A8 sp84;
-    Q_0004B0A8 sp78;
-    int *self;
-    int *ps;
-    int *res;
-    int **cur;
-    int **nxt;
-    int *vp;
-    Q_0004B0A8 *qa;
-    Q_0004B0A8 *qb;
-    Q_0004B0A8 *qc;
-    char *tmp;
-    s32 iv;
-    s32 ni;
-    int *cbres;
-    char *rec;
-    s32 cnt;
-    char *slot;
-    s32 a2v;
-    char *base2;
-    char *e1;
-    char *e2;
-    char *a1v;
-
-    self = arg0;
-    if ((arg0 != 0) || (res = (int *)gl_func_00034458(0x44), self = res, (res != 0))) {
-        gl_func_00034458(self, (char *)&D_00000000 + 0x200EC);
-        FW(self, 0x28) = (int)&gl_d_4b0a8_tbl;
-        ps = spA0;
-        *(P2_0004B0A8 *)ps = *(P2_0004B0A8 *)((char *)&gl_d_4b0a8_vt + 0x140);
-        self[0] = 2;
-        res = (int *)gl_func_00034458(0, (char *)&D_00000000 + 0x200F4, *(s32 *)((char *)&gl_d_4b0a8_w214 + 0x214));
-        FW(self, 0x40) = (int)res;
-        gl_func_00034458(res, ps);
-        gl_func_00034458(FW(self, 0x40), ps);
-        gl_func_00034458(FW(self, 0x40), ps);
-        gl_func_00034458(FW(self, 0x40), ps);
-        ps = (int *)&sp78;
-        qa = (Q_0004B0A8 *)ps;
-        if (((u32)ps > 0U) || (qa = (Q_0004B0A8 *)gl_func_00034458(0xC), (qa != 0))) {
-            tmp = arg1 + 0x84;
-            ((volatile Q_0004B0A8 *)qa)->idx = -1;
-            ((volatile Q_0004B0A8 *)qa)->src = tmp;
-            ((volatile Q_0004B0A8 *)qa)->end = FW(tmp, 0xC) - 1;
+inline void *operator new(unsigned n) { return gl_func_00034458(n); }
+struct Pair { int a, b; };
+struct Gfx { unsigned w0, w1; };
+struct DLHead { Gfx *buf; int count; };
+struct DL { char pad[0xC]; DLHead *dl; Gfx *next() { DLHead *d = dl; int n = d->count; d->count = n + 1; return &dl->buf[n]; } };
+struct Tex { char pad[0xC]; char **base; };
+struct Elem { char pad[0x6C]; Tex *t; char pad70[0x8A - 0x70]; short k; };
+struct AIter;
+struct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };
+struct IBase {
+    Arr *a;
+    int idx;
+    int last;
+    IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
+};
+struct AIter : IBase {
+    AIter(Arr *arr) : IBase(arr) {}
+    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
+    Elem *cur() { return (*a)[idx]; }
+};
+inline AIter Arr::iter() { return AIter(this); }
+inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return gl_func_00034458(*t->base + k * 8, t, k); }
+struct Src { char pad[0x84]; Arr arr; };
+struct Base { int f0; char pad[0x24]; Base(char *name); virtual void f(); };
+struct Obj : Base {
+    virtual void f();
+    char pad2c[0x40 - 0x2C];
+    DL *f40;
+    Obj(Src *s);
+};
+Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
+    Pair p = *(Pair *)(&gl_d_4b0a8_vt + 0x140);
+    f0 = 2;
+    f40 = (DL *)gl_func_00034458(0, D_00000000 + 0x200F4, *(int *)(&gl_d_4b0a8_w214 + 0x214));
+    gl_func_00034458(f40, &p);
+    gl_func_00034458(f40, &p);
+    gl_func_00034458(f40, &p);
+    gl_func_00034458(f40, &p);
+    AIter it = s->arr.iter();
+    while (it.next()) {
+        if (it.cur()->t != 0) {
+            DL *d = f40;
+            void *r = res(it.cur(), it.cur());
+            Gfx *g = d->next();
+            g->w0 = 0x06000000;
+            g->w1 = (unsigned)r;
         }
-        qb = &sp84;
-        *qb = *(Q_0004B0A8 *)ps;
-        qc = &sp94;
-        *qc = *qb;
-        if (sp94.idx < sp94.end) {
-            ni = sp94.idx + 1;
-            sp94.idx = ni;
-            cur = (int **)*(int **)sp94.src + ni;
-        } else {
-            cur = 0;
-        }
-        if (cur != 0) {
-            do {
-                iv = sp94.idx * 4;
-                if (FW(*(int **)((char *)*(int **)sp94.src + iv), 0x6C) != 0) {
-                    base2 = *(char *volatile *)sp94.src;
-                    ps = (int *)FW(self, 0x40);
-                    e1 = (char *)*(int **)(base2 + iv);
-                    e2 = *(char *volatile *)((int)base2 + iv);
-                    a1v = (char *)FW(e1, 0x6C); if (1) {}
-                    a2v = *(s16 *)(e2 + 0x8A);
-                    cbres = (int *)gl_func_00034458(*(int *)FW(a1v, 0xC) + (a2v * 8), a1v, a2v);
-                    vp = (int *)FW(ps, 0xC);
-                    cnt = vp[1];
-                    vp[1] = cnt + 1;
-                    tmp = (char *)(FW(FW(ps, 0xC), 0x0) + (cnt * 8)); if (1) {}
-                    FW(tmp, 0x0) = 0x06000000;
-                    FW(tmp, 0x4) = (int)cbres;
-                }
-                if (sp94.idx < sp94.end) {
-                    ni = sp94.idx + 1;
-                    sp94.idx = ni;
-                    nxt = (int **)*(int **)sp94.src + ni;
-                } else {
-                    nxt = 0;
-                }
-            } while (nxt != 0);
-        }
-        gl_func_00034458(FW(self, 0x40));
     }
-    return self;
+    gl_func_00034458(f40);
+    { volatile int e0, e1, e2, e3, e4; }
 }

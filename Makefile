@@ -1701,7 +1701,12 @@ $(GAMELIBS_3B6A0_NM_DONOR): src/game_libs/game_libs_ncc_3B6A0_nm.cpp
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_NM_DONOR)
 # 4B0A8 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.36). Still NON_MATCHING: NM comparison object only.
+# agent-c run 164: rewritten as the C++ constructor Obj::Obj(Src *) (94.76 -> 98.73, same 147-word length).
 GAMELIBS_4B0A8_NM_DONOR := build/src/game_libs/game_libs_ncc_4B0A8_nm.cpp.o
+$(GAMELIBS_4B0A8_NM_DONOR): src/game_libs/game_libs_ncc_4B0A8_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=gl_func_0004B0A8 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_NM_DONOR)
 # 4B620 = C++ ctor (cfront protocol, inline Base ctor, inline DL::add appends, by-value index iterator); NCC NM-only donor (agent-c run 157, cfe 94.48), ctor symbol renamed (name only).
