@@ -1738,8 +1738,12 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D688_NM_DONOR
 GAMELIBS_44CE8_DONOR := build/src/game_libs/game_libs_ncc_44CE8.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044CE8=$(GAMELIBS_44CE8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_44CE8_DONOR)
-# 48510 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23). Still NON_MATCHING: NM comparison object only.
+# 48510 = real C++ `void Strip::add()` (agent-c run 160; was the run-134 NCC C lift, cfe 80.23); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_48510_NM_DONOR := build/src/game_libs/game_libs_ncc_48510_nm.cpp.o
+$(GAMELIBS_48510_NM_DONOR): src/game_libs/game_libs_ncc_48510_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_NM_DONOR)
 # 43D38 = real C++ `void Elem::clip()` (agent-c run 160; was the run-134 NCC C lift, cfe 79.55); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.

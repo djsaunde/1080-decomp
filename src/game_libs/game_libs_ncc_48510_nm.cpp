@@ -1,107 +1,61 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 80.23; if (arg0) {} after the temp_t8 load from a parameter-only fz sweep; round 2: if (arg4) {} after the temp_a1_2 vertex address, 85.28;
- * run 137: the vtable this-adjust at +8 is a short (target lh) and the id copy is a u16 load / store, 85.28 -> 86.2;
- * the second loop's two result stores are HALFWORDS (target sh -2(a1) / sh 20(t1); FW wrote words) and the
- * result cursor steps one int, 86.32 -> 91.0, 135 -> 132 words = target).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
-typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
-typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
-typedef float f32; typedef double f64;
-#undef NULL
-#define NULL 0
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-typedef struct { int w; } Word3E968;
-typedef char *(*GP_00048510)(...);
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510 (0x210 / 132 words), agent-c run 160.
+ * Rewritten as real C++ (was the run-134 C lift under NCC, 91.11): `void Strip::add(Vtx *v, s16 *out, int *full,
+ * u16 *id)` (renamed to gl_func_00048510 with objcopy). Strip: mesh at 0, vertex / triangle counts at 4 / 8, 200
+ * 3-index triangles at 0x14, vertex ids at 0x4C4, limits at 0x590 / 0x594 and its vptr at 0x598 (a class that introduces
+ * virtuals puts the vptr after its own data: the cfront `flush()` call through vtbl+8). Per vertex: look up an existing
+ * index (`i == 0 || n594 == 2` as the flag), else flush when full (and restart at i = 0), append the vertex to the
+ * mesh's pool through a named `Mesh *m` (the target holds the mesh in v0 for both vp reads) and record its id; then
+ * copy the indices out and into the next triangle (a separate loop counter k: the target's v1 / a0 / v0 IVs).
+ * 91.11 -> 97.21, length = target, frame 0x78 = target. Residual: t-register colours, idx[] at sp+0x68 (target 0x6C).
+ * Still NON_MATCHING: build/non_matching/ only. */
+typedef short s16; typedef unsigned short u16; typedef int s32;
 extern "C" {
-extern Word3E968 *p;
-extern void gl_proto_41148(int, int, int, int, int, double);
-extern char *o;
-extern int gl_func_00034458(...);
-extern int arg3;
-extern int arg4;
-extern int arg1;
+int gl_func_00034458(...);
+extern char D_00000000[];
 }
-extern "C" void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
-    s32 sp6C;
-    s32 *var_s3;
-    s32 *var_v0;
-    s32 temp_a0;
-    s32 temp_t6;
-    s32 temp_t8;
-    s32 temp_v0;
-    s32 var_a0;
-    s32 var_a1;
-    s32 var_s1;
-    s32 var_t0;
-    s32 var_v1;
-    char *temp_a1;
-    char *temp_a1_2;
-    char *temp_v0_2;
-    char *temp_v1;
-    char *var_a1_2;
-    char *var_s2;
-
-    *arg3 = 0;
-    var_t0 = FW(arg0, 0x594);
-    var_s1 = 0;
-    if (var_t0 > 0) {
-        var_s2 = arg1;
-        var_s3 = &sp6C;
-        do {
-            var_a1 = var_s1 == 0;
-            if (var_a1 == 0) {
-                var_a1 = var_t0 == 2;
+struct Vtx { int w[4]; };
+struct VPool { Vtx *buf; int count; };
+struct Mesh { char pad[0x1C]; VPool *vp; };
+struct Tri { s16 v[3]; };
+struct Strip {
+    Mesh *mesh;
+    int nv;
+    int nt;
+    char padc[0x14 - 0xC];
+    Tri tris[200];
+    u16 ids[0x590 / 2 - 0x4C4 / 2];
+    int max590;
+    int n594;
+    virtual void flush();
+    void add(Vtx *v, s16 *out, int *full, u16 *id);
+};
+void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
+    int idx[4];
+    int i;
+    *full = 0;
+    for (i = 0; i < n594; i++) {
+        idx[i] = gl_func_00034458(this, i == 0 || n594 == 2, &v[i]);
+        if (idx[i] < 0) {
+            if (nv >= max590 - 1) {
+                flush();
+                gl_func_00034458(this);
+                i = 0;
             }
-            temp_v0 = gl_func_00034458(arg0, var_a1, var_s2);
-            *var_s3 = temp_v0;
-            if (temp_v0 < 0) {
-                if (FW(arg0, 0x4) >= (FW(arg0, 0x590) - 1)) {
-                    temp_a1 = (char *)(FW(arg0, 0x598));
-                    var_s1 = 0;
-                    ((GP_00048510)FW(temp_a1, 0xC))(*(s16 *)(temp_a1 + 0x8) + (int)arg0, temp_a1);
-                    gl_func_00034458(arg0);
-                    var_s2 = arg1;
-                    var_s3 = &sp6C;
-                }
-                if (var_s1 == 0) {
-                    *arg3 = 1;
-                }
-                *var_s3 = FW(FW(FW(arg0, 0x0), 0x1C), 0x4);
-                temp_v0_2 = (char *)(FW(arg0, 0x0));
-                temp_v1 = (char *)(FW(temp_v0_2, 0x1C));
-                temp_a0 = FW(temp_v1, 0x4);
-                FW(temp_v1, 0x4) = (s32) (temp_a0 + 1);
-                temp_a1_2 = (char *)(FW(FW(temp_v0_2, 0x1C), 0x0) + (temp_a0 * 0x10)); if (arg4) {}
-                FW(temp_a1_2, 0x0) = (s32) FW(var_s2, 0x0);
-                FW(temp_a1_2, 0x4) = (s32) FW(var_s2, 0x4);
-                FW(temp_a1_2, 0x8) = (s32) FW(var_s2, 0x8);
-                FW(temp_a1_2, 0xC) = (s32) FW(var_s2, 0xC);
-                *(u16 *)(arg0 + FW(arg0, 0x4) * 2 + 0x4C4) = *(u16 *)((int)arg4 + (var_s1 * 2));
-                FW(arg0, 0x4) = (s32) (FW(arg0, 0x4) + 1);
+            if (i == 0) {
+                *full = 1;
             }
-            var_t0 = FW(arg0, 0x594);
-            var_s1 += 1;
-            var_s2 += 0x10;
-            var_s3 += 4;
-        } while (var_s1 < var_t0);
+            idx[i] = mesh->vp->count;
+            Mesh *m = mesh;
+            m->vp->buf[m->vp->count++] = v[i];
+            ids[nv] = id[i];
+            nv++;
+        }
     }
-    var_v1 = 0;
-    if (var_t0 > 0) {
-        var_a0 = 0;
-        var_a1_2 = arg2;
-        var_v0 = &sp6C;
-        do {
-            var_v1 += 1;
-            var_a1_2 += 2;
-            *(s16 *)(var_a1_2 - 0x2) = (s16) *var_v0;
-            temp_t8 = *(int*)var_v0; if (arg0) {}
-            var_v0 += 1;
-            *(s16 *)((int)arg0 + (FW(arg0, 0x8) * 6) + var_a0 + 0x14) = (s16) temp_t8;
-            var_a0 += 2;
-        } while (var_v1 < FW(arg0, 0x594));
+    for (int k = 0; k < n594; k++) {
+        out[k] = idx[k];
+        tris[nt].v[k] = idx[k];
     }
-    temp_t6 = FW(arg0, 0x8) + 1;
-    FW(arg0, 0x8) = temp_t6;
-    if (temp_t6 >= 0xC8) {
-        gl_func_00034458((char *)0x1FF44);
+    if (++nt >= 200) {
+        gl_func_00034458(D_00000000 + 0x1FF44);
     }
 }
