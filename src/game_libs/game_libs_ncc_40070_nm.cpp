@@ -6,8 +6,12 @@
  * constant live across the member protocol, so uopt rematerialises `mtc1 zero` after every call there like the
  * target; with an int element the zero is materialised once at the join, two words short), and the Vec3 copies
  * as `set(V3 v)` with a BY-VALUE parameter (the target's int-word copy into a stack temp, then float stores).
- * cfe 95.03 -> 99.28, length = target. Residual: frame 0x50 vs 0x70 (two more homes above z, four below) and
- * the 0x104 element store (`sw zero` in the target, swc1 here). Still NON_MATCHING: build/non_matching/ only. */
+ * cfe 95.03 -> 99.28, length = target. Run 158: the 0xCC..0xD8 block is a Q4 (V3 + w, the rotation) and the
+ * 0xF4 copy is `f4.set(rq)` through `Q4::set(const Q4 &)` forwarding to the by-value V3 set (the target's
+ * ft0 for the w load), 99.28 -> 99.35; the zeroed float[3] lives in an inline `zero()` (z homes at the
+ * target's M-20..M-28). Residual: frame 0x50 vs 0x70 (four more homes between z and the V3 temp, four below)
+ * and the 0x104 element store (`sw zero` in the target, swc1 here; an int element loses the FP-zero remats:
+ * uopt then splits the zero constant's live range, kit CVI). Still NON_MATCHING: build/non_matching/ only. */
 typedef int s32;
 extern "C" {
 void *gl_func_00034458(...);
@@ -18,24 +22,21 @@ struct W4 { M4 m; W4() {} };
 struct M4f { float a; M4f() { a = 0.0f; } };
 struct W4f { M4f m; W4f() {} };
 struct V3 { float x, y, z; void set(V3 v) { x = v.x; y = v.y; z = v.z; } };
-struct Q4 { V3 v; float w; void set(V3 a, float b) { v.x = a.x; v.y = a.y; v.z = a.z; w = b; } };
+struct Q4 { V3 v; float w; void set(const Q4 &q) { v.set(q.v); w = q.w; } };
 struct BB { int pad0[2]; int flags; int pad[7]; BB(void *a1); virtual void f(); };
 struct Base : BB {
     W4 m2c;
     char m30[0xB4 - 0x30];
     Base(void *a1) : BB(a1) {
         gl_func_00034458(this);
-        float z[3];
-        z[0] = 0.0f;
-        z[1] = 0.0f;
-        z[2] = 0.0f;
-        gl_func_00034458(m30, z);
+        zero();
     }
+    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; gl_func_00034458(m30, z); }
     virtual void f();
 };
 struct Obj : Base {
-    V3 b4, c0, cc;
-    float d8;
+    V3 b4, c0;
+    Q4 rq;
     V3 dc, e8;
     Q4 f4;
     W4f m104;
@@ -43,11 +44,11 @@ struct Obj : Base {
     virtual void f();
 };
 Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
-    cc.x = 0.0f;
+    rq.v.x = 0.0f;
     flags |= 0x20000;
-    cc.y = 0.0f;
-    cc.z = 0.0f;
-    d8 = 1.0f;
+    rq.v.y = 0.0f;
+    rq.v.z = 0.0f;
+    rq.w = 1.0f;
     c0.x = 1.0f;
     c0.y = 1.0f;
     c0.z = 1.0f;
@@ -56,6 +57,6 @@ Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
     b4.z = zz;
     dc.set(b4);
     e8.set(c0);
-    f4.set(cc, d8);
+    f4.set(rq);
     gl_func_00034458(&dc, (char *)this + 0x70);
 }
