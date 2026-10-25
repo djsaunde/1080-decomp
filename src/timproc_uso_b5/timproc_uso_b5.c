@@ -6860,8 +6860,17 @@ void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
 /* EXACT 2026-10-24 (agent-g run 166, docs/IDO_CODEGEN.md kit CVII) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp, REPLACE_FUNC_BODY-spliced into both trees
  * (Makefile TIMB5_AC20_DONOR; its .bss relocs pinned as timproc_uso_b5_func_0000AC20_bss = 0).
- * The superseded 92.41 cfe NM body was dropped (agent-g run 167). */
+ * The superseded 92.41 cfe NM body was dropped (agent-g run 167); the NON_MATCHING branch below is
+ * an empty placeholder that the splice replaces. */
+#ifdef NON_MATCHING
+/* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
+ * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
+ * its own survives the splice. */
+void timproc_uso_b5_func_0000AC20(char *arg0) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000AC20);
+#endif
 
 /* timproc_uso_b5_func_0000B154: 133-insn (0x214) AI-update orchestrator.
  * Frame 0xA8, $s0/$s1 saves. Coarse structure decoded 2026-05-05:
@@ -6912,7 +6921,15 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * src/timproc_uso_b5/timproc_uso_b5_ncc_B154.cpp, REPLACE_FUNC_BODY-spliced into both trees
  * (Makefile TIMB5_B154_DONOR; pin timproc_uso_b5_func_0000B154_bss = 0). The superseded cfe NM
  * body (agent-f / agent-g 2026-07 decode, see the notes above) was dropped. */
+#ifdef NON_MATCHING
+/* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
+ * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
+ * its own survives the splice. */
+void timproc_uso_b5_func_0000B154(char *arg0) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B154);
+#endif
 
 // timproc_uso_b5_func_0000B368 — STRUCTURAL PASS (0x2BC / 175 words,
 // no episode). Raw-.word USO form. BOUNDARY NOTE: 2-jr USO bundle
@@ -6949,8 +6966,17 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 /* EXACT 2026-10-24 (agent-g run 166, docs/IDO_CODEGEN.md kit CVII) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp, REPLACE_FUNC_BODY-spliced into both trees
  * (Makefile TIMB5_B368_DONOR; pins timproc_uso_b5_func_0000B368_bss / timb5_B368_gscale = 0).
- * The superseded cfe NM body was dropped (agent-g run 167). */
+ * The superseded cfe NM body was dropped (agent-g run 167); the NON_MATCHING branch below is
+ * an empty placeholder that the splice replaces. */
+#ifdef NON_MATCHING
+/* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
+ * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
+ * its own survives the splice. */
+void timproc_uso_b5_func_0000B368(char *arg0) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B368);
+#endif
 
 /* Save-arg sentinel: void f(int a0){} → jr ra; sw a0, 0(sp).
  * docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body */
@@ -6997,7 +7023,15 @@ void timproc_uso_b5_func_0000B61C(int a0) {}
  * src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp, REPLACE_FUNC_BODY-spliced into both trees
  * (Makefile TIMB5_B624_DONOR; pin timproc_uso_b5_func_0000B624_bss = 0). The superseded cfe NM
  * body was dropped (the "FP scheduling cap" above is retracted). */
+#ifdef NON_MATCHING
+/* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
+ * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
+ * its own survives the splice. */
+void timproc_uso_b5_func_0000B624(char *arg0) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B624);
+#endif
 
 /* timproc_uso_b5_func_0000B850 [0xB850..0xB914), 0xC4: BOUNDARY MERGE
  * 2026-06-10 of the B8E0 tail fragment (B850's bc1f branched into it).
