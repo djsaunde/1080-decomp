@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_000500EC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T21:35:36.904544+00:00",
+  "end_time": "2026-10-25T21:35:36.904544+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T21:35:36.904544+00:00",
+      "assistant_text": "NCC C++ donor: int Mesh::paint(unsigned t), a triangle graph-colouring step. For each other triangle i sharing a vertex position with t (S3 inline int operator==, candidate on the left: pos[tris[i].i[n]] == pos[tris[t].i[k]]), if adj(i, t) (out-of-line, blank jal 0): colour i from a wrapping counter (D_500EC_cnt pinned 0) if uncoloured, reject when an adjacent triangle shares the colour (col[j] == col[i]), else copy it to t and return 1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 174,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000500EC (0x2B8 / 174 words), agent-c run 175, spliced over an empty\n * placeholder in game_libs_post0b.c in both build trees (Makefile renames: paint__4MeshFUi, and the out-of-line\n * adjacency test adj__4MeshFiT1 -> gl_func_00000000 = the target's baked jal 0).\n * `int Mesh::paint(unsigned t)`: the cfe body (91.66: goto layout, two constant-6 carriers, hand-spelt *6) is a\n * plain C++ graph-colouring step -- for every other triangle i sharing a vertex position with triangle t (S3\n * inline `int operator==` = the target's xor / sltiu results and the this-pointer copies), if adj(i, t): give i a\n * colour from the wrapping counter (D_500EC_cnt, pinned 0) when it has none, check no adjacent triangle shares it,\n * and copy it to t. Load-bearing: the candidate written on the LEFT (`pos[tris[i].i[n]] == pos[tris[t].i[k]]`),\n * `col[j] == col[i]` in the conflict scan. */\nextern \"C\" int D_500EC_cnt;\nstruct S3 {\n    short x, y, z;\n    int operator==(const S3 &o) const { return x == o.x && y == o.y && z == o.z; }\n};\nstruct Tri { short f0; unsigned short i[3]; };\nstruct Mesh {\n    char pad[0x44];\n    unsigned ntri;\n    char pad48[0x18];\n    S3 *pos;\n    int pad64;\n    Tri *tris;\n    char pad6C[0xC];\n    unsigned char *col;\n    int adj(int a, int b);\n    int paint(unsigned t);\n};\nint Mesh::paint(unsigned t) {\n    for (unsigned i = 0; i < ntri; i++) {\n        if (i == t) continue;\n        for (int k = 0; k < 3; k++) {\n            if (pos[tris[i].i[0]] == pos[tris[t].i[k]] || pos[tris[i].i[1]] == pos[tris[t].i[k]] || pos[tris[i].i[2]] == pos[tris[t].i[k]]) {\n                if (adj(i, t)) {\n                    int ok = 1;\n                    if (col[i] == 0) {\n                        col[i] = D_500EC_cnt;\n                        if (++D_500EC_cnt >= 13) D_500EC_cnt = 1;\n                    }\n                    for (unsigned j = 0; j < ntri; j++) {\n                        if (col[j] == col[i] && adj(j, i) == 0) {\n                            ok = 0;\n                            break;\n                        }\n                    }\n                    if (ok) {\n                        col[t] = col[i];\n                        return 1;\n                    }\n                }\n                break;\n            }\n        }\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_500EC.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}
