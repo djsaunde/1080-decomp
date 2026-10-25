@@ -1761,6 +1761,13 @@ $(GAMELIBS_43D38_DONOR): src/game_libs/game_libs_ncc_43D38.cpp
 	$(OBJCOPY) --redefine-sym clip__4ElemFv=gl_func_00043D38 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00043D38=$(GAMELIBS_43D38_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_DONOR)
+# 45178 = history clamp + gSPMatrix packet as NCC C++ (agent-c run 162: the gDma1p `_g` homed after the post-increment temp = the target's sp+0x24 spill). EXACT NCC donor over an empty placeholder; the literals' .rodata reloc is renamed gl_func_00045178_rodata (pinned to the USO RoData at +0x1B60).
+GAMELIBS_45178_DONOR := build/src/game_libs/game_libs_ncc_45178.cpp.o
+$(GAMELIBS_45178_DONOR): src/game_libs/game_libs_ncc_45178.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00045178=$(GAMELIBS_45178_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45178_DONOR)
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the

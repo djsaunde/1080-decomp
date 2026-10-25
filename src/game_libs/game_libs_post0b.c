@@ -13598,115 +13598,11 @@ void gl_func_00044EDC(char *arg0) {
 // shift-down direction and the &D_0+0x1B60..0x1B68 pool refs are exact.
 // Caps: self struct + FP-pool symbolization untyped. Full body
 // INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00045178)();
-/* Re-decoded 2026-10-17 agent-c run 105 (75.8 -> 98.3): the old m2c tail
- * was garbled; real tail = one vertex-buffer slot + one 0x01030040 display
- * list word + two Vec3 builds passed with &D. Open: lo/hi f12/f14 swap.
- * Run 123 (agent-c, raw 27 -> 14 words): the clamp bounds are LITERALS
- * (-32700.0f / 32700.0f / 32700.0f at bootup.uso RoData +0x1B60/+0x1B64/
- * +0x1B68; an exact needs a donor with gl_func_00045178_rodata = 0x1B60):
- * as constant candidates they colour lo f12 / hi f14 like the target. The
- * three &D call args are distinct zero aliases (one symbol is CSE'd into s0
- * once cD is gone; cD itself was a dead local = one frame word too many).
- * The first slot's `i = n++` gives the target's list v0 / index v1.
- * Residual: the second slot keeps the index in a3 and the packet pointer in
- * v1 (target v1 / a3, pointer spilled at sp+36, ours 40); `++`, block-scoped
- * `_g` (gbi gDma1p shape, 0x01030040 = F3DEX gSPMatrix(.., 3)), holder
- * reuse and a 576-variant spelling grid all leave it.
- * Later in run 123 (raw 14 -> 5, permuter hint): the second slot reads the
- * index into its own named int (n3) before the store through a list pointer
- * held in t, then copies it to i; lo is not a local (the literal inline), which
- * keeps the frame at 104. Left: the packet pointer's spill slot (target sp+36
- * = the temp area, ours its home at 40) + the 3 literal %lo (donor pin). */
-extern void gl_func_00000000_45178v();
-extern char D_45178_c1, D_45178_c2, D_45178_c3;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_45178.cpp (gbi gDma1p `_g` homed after the
+ * post-increment temp = the target's sp+0x24 spill), REPLACE_FUNC_BODY-spliced over this placeholder in both build
+ * trees (agent-c run 162). The old cfe body (99.99, packet-pointer spill at its home sp+0x28) is retired. */
 void gl_func_00045178(char *arg0) {
-    char *t;
-    Vec3 a;
-    Vec3 b;
-    float *q;
-    int i;
-    char *p;
-    int n3;
-    char *m;
-    float hi, v, r;
-    int *g;
-
-    {
-    v = *(f32 *)(arg0 + 0x90);
-    if (v < -32700.0f) {
-        hi = 32700.0f;
-        r = -32700.0f;
-    } else {
-        hi = 32700.0f;
-        if (hi < v) {
-            r = hi;
-        } else {
-            r = v;
-        }
-    }
-    }
-    v = *(f32 *)(arg0 + 0x94);
-    *(f32 *)(arg0 + 0x90) = r;
-    if (v < -32700.0f) {
-        r = -32700.0f;
-    } else if (hi < v) {
-        r = hi;
-    } else {
-        r = v;
-    }
-    v = *(f32 *)(arg0 + 0x98);
-    *(f32 *)(arg0 + 0x94) = r;
-    if (v < -32700.0f) {
-        r = -32700.0f;
-    } else if (hi < v) {
-        r = hi;
-    } else {
-        r = v;
-    }
-    *(f32 *)(arg0 + 0x98) = r;
-    p = *(char **)(*(char **)(arg0 + 0x254) + 0x158);
-    {
-        i = FW(FW(p, 0x3C), 4)++;
-        m = (char *)FW(FW(p, 0x3C), 0) + (i << 6);
-    }
-    gl_func_00000000_45178v((char *)&D_00000000 + 0x60, m);
-    {
-        t = (char *)FW(p, 0xC);
-        n3 = FW(FW(p, 0xC), 4);
-        i = n3;
-        FW(t, 4) = i + 1;
-        g = (int *)((char *)FW(FW(p, 0xC), 0) + i * 8);
-    }
-    g[0] = 0x01030040;
-    g[1] = gl_func_00000000(m);
-    t = *(char **)(*(char **)(arg0 + 0x254) + 0x70);
-    q = (float *)(t + 0xB4);
-    if (t != 0) {
-        a.x = q[0];
-        a.y = q[4];
-        a.z = q[8];
-        b.x = q[1];
-        b.y = q[5];
-        b.z = q[9];
-        gl_func_00000000(&D_45178_c1, &a, &b);
-        gl_func_00000000(&D_45178_c2, &a, &b);
-        a.y = 0.0f;
-        a.z = 0.0f;
-        b.x = 0.0f;
-        b.y = 0.0f;
-        a.x = 1.0f;
-        b.z = -1.0f;
-        gl_func_00000000(&D_45178_c3, &a, &b);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00045178);
-#endif
 
 /* Empty 4-arg stub (sibling of _00023F84). */
 void game_libs_func_00045394(int a0, int a1, int a2, int a3) {

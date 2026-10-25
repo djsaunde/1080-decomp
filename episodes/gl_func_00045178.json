@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00045178",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-25T06:40:16.350639+00:00",
+  "end_time": "2026-10-25T06:40:16.350694+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-25T06:40:16.350665+00:00",
+      "assistant_text": "NCC C++ donor: history clamp with literal bounds, Mtx pool slot via i = c->mh->count++, gDma1p stock macro on &c->dl->buf[n3] after n3 = c->dl->count++: the block-scoped _g is homed after the post-increment's pooled temp, giving the target's sp+0x24 packet-pointer spill (the cfe body could only spill at its named home sp+0x28). w1 call int-returning, the rest void; literal .rodata reloc renamed gl_func_00045178_rodata = 0x1B60.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 135,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00045178 (0x21C / 135 words), agent-c run 162.\n * History-lane clamp (-32700 / 32700 literals) + one Mtx slot from the context's matrix pool + one\n * stock-gbi gDma1p packet (0x01030040 = F3DEX gSPMatrix(m, 3, 64)) + three camera Vec3 calls.\n * The cfe body (99.99, 2 words) could not place the packet pointer's spill: the target spills it at\n * sp+0x24, one slot BELOW the last named local -- under NCC that is the macro's block-scoped `_g`,\n * homed after the one pooled temp of the `n3 = c->dl->count++` post-increment (kit CXII: named block\n * locals are homed after the temps allocated before them). Decl order t, a, b, q, i, c, n3, m, v, r =\n * the target's homes; the upper clamp bound is a literal (a named `hi` costs a frame word); the w1 call\n * is int-returning (gl_func_00000000_i), the others void. Spliced over an empty placeholder in both\n * build trees; the three literals' .rodata reloc is renamed gl_func_00045178_rodata (pinned 0x1B60). */\ntypedef float f32; typedef unsigned int u32;\nstruct Gfx { u32 w0, w1; };\nstruct Mtx { int m[16]; };\nstruct DLHead { Gfx *buf; int count; };\nstruct MHead { Mtx *buf; int count; };\nstruct Ctx {\n    char pad[0xC];\n    DLHead *dl;\n    char pad10[0x3C - 0x10];\n    MHead *mh;\n};\nstruct V3 { f32 x, y, z; };\nstruct Cam { char pad[0xB4]; f32 q[12]; };\nstruct Own { char pad[0x70]; Cam *cam; char pad74[0x158 - 0x74]; Ctx *ctx; };\nstruct Obj { char pad[0x90]; f32 h[3]; char pad9c[0x254 - 0x9C]; Own *own; };\nextern \"C\" {\nvoid gl_func_00000000(...);\nu32 gl_func_00000000_i(...);\nextern char D_00000000[];\nextern char D_45178_c1, D_45178_c2, D_45178_c3;\n}\n#define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))\n#define gDma1p(pkt, c, s, l, p) { Gfx *_g = (Gfx *)(pkt); _g->w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | _SHIFTL((l), 0, 16)); _g->w1 = (u32)(s); }\nextern \"C\" void gl_func_00045178(Obj *o) {\n    Cam *t;\n    V3 a, b;\n    f32 *q;\n    int i;\n    Ctx *c;\n    int n3;\n    Mtx *m;\n    f32 v, r;\n    v = o->h[0];\n    if (v < -32700.0f) { r = -32700.0f; } else { if (32700.0f < v) { r = 32700.0f; } else { r = v; } }\n    v = o->h[1];\n    o->h[0] = r;\n    if (v < -32700.0f) { r = -32700.0f; } else if (32700.0f < v) { r = 32700.0f; } else { r = v; }\n    v = o->h[2];\n    o->h[1] = r;\n    if (v < -32700.0f) { r = -32700.0f; } else if (32700.0f < v) { r = 32700.0f; } else { r = v; }\n    o->h[2] = r;\n    c = o->own->ctx;\n    i = c->mh->count++; m = &c->mh->buf[i];\n    gl_func_00000000(D_00000000 + 0x60, m);\n    n3 = c->dl->count++;\n    gDma1p(&c->dl->buf[n3], 1, gl_func_00000000_i(m), 64, 3);\n    t = o->own->cam;\n    q = t->q;\n    if (t != 0) {\n        a.x = q[0]; a.y = q[4]; a.z = q[8];\n        b.x = q[1]; b.y = q[5]; b.z = q[9];\n        gl_func_00000000(&D_45178_c1, &a, &b);\n        gl_func_00000000(&D_45178_c2, &a, &b);\n        a.y = 0.0f; a.z = 0.0f; b.x = 0.0f; b.y = 0.0f; a.x = 1.0f; b.z = -1.0f;\n        gl_func_00000000(&D_45178_c3, &a, &b);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_45178.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), objdiff 100"
+  }
+}
