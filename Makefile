@@ -1973,6 +1973,10 @@ GAMELIBS_65EE4_NM_DONOR := build/src/game_libs/game_libs_o2limit_65EE4.c.o
 build/src/game_libs/game_libs_o2limit_65EE4.c.o: OPT_FLAGS := -O2
 build/src/game_libs/game_libs_o2limit_65EE4.c.o: CC_ONLY_FLAGS := -Olimit 1
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00065EE4=$(GAMELIBS_65EE4_NM_DONOR)
+# 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165). NM comparison object only.
+GAMELIBS_63964_NM_DONOR := build/src/game_libs/game_libs_ncc_63964_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00063964=$(GAMELIBS_63964_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_63964_NM_DONOR)
 # 67D50 = memset; NCC donor (cfe capped at 2 raw).
 GAMELIBS_67D50_DONOR := build/src/game_libs/game_libs_ncc_67D50.cpp.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00067D50=$(GAMELIBS_67D50_DONOR)
