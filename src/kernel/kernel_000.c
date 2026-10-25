@@ -1204,7 +1204,16 @@ void func_800014A8(void) {
  * ori; func_80001994 gives the addiu but adds a reloc), and %hi/%lo of the
  * local labels .L80000C5C / .L800007A8 (spelled D_80000C5C / D_800007A8),
  * plus the _a alias names. A function-typed (char *)func_80000A98 + 0x1C4
- * for .L80000C5C drops it to 82.8 (base CSE again). */
+ * for .L80000C5C drops it to 82.8 (base CSE again).
+ * Run 163 (agent-g, 95.98 -> 96.62): loop 2's c and lim are written ON THE
+ * FIELD (`e->unk0 = ...; if (e->unk0 != 0)`, `e->unk4 = ...; e->unk8 =
+ * e->unk0;`, compare through `(u32)e->unk4`, then `lim = e->unk4` read BEFORE
+ * the cb + 8 store): uopt forwards the stored values, so c / lim become the
+ * target's ugen t6 / t7 and ptr / e take v1 / v0 (the old empty tests on arg1
+ * and c are gone); the cb + 0x34 store placed before cb + 0x30 gives the
+ * target's 52-then-48 order. Left: i = a0 (target a1 -- the forwarded c LR,
+ * adjsave 15, is coloured after i at 20.5), the 480 constant a1 (target a2),
+ * the loop-1 lui order, one sltu / sw swap and the no-reloc words. */
 typedef struct { s32 unk0; s32 unk4; s32 unk8; s32 unkC; u32 unk10; } UsoSegDesc;
 typedef struct { s32 unk0; s32 unk4; s32 unk8; } UsoSegEnt;
 extern void *D_8001309C;
@@ -1226,7 +1235,6 @@ void func_80001594(UsoSegDesc *arg0, u32 arg1) {
     u8 *q;
     s32 i;
     UsoSegEnt *e;
-    s32 c;
     u32 lim;
 
     func_80001584(arg0, arg1);
@@ -1238,16 +1246,16 @@ void func_80001594(UsoSegDesc *arg0, u32 arg1) {
     *(s32 *)(cb + 0x40) = (s32)func_80000DEC;
     *(s32 *)(cb + 0x8) = 0;
     *(s32 *)(cb + 0x88) = (s32)(func_800014A8_a + 0x24);
-    *(s32 *)(cb + 0x30) = (s32)(func_80000480_a + 0x30);
     *(s32 *)(cb + 0x44) = (s32)D_80000CF0;
     *(s32 *)(cb + 0x64) = (s32)func_80001088;
     *(s32 *)(cb + 0x68) = (s32)(func_800010E8_a + 0x44);
+    *(s32 *)(cb + 0x34) = (s32)(func_80000480_a + 0x30);
     *(s32 *)(cb + 0x6C) = (s32)D_80001258;
+    *(s32 *)(cb + 0x30) = (s32)(func_80000480_a + 0x30);
     *(s32 *)(cb + 0x70) = (s32)D_8000128C;
     *(s32 *)(cb + 0x74) = (s32)func_80001584;
     *(s32 *)(cb + 0x78) = (s32)(func_800014A8_a + 0x40);
     *(s32 *)(cb + 0x7C) = (s32)D_80000BD4;
-    *(s32 *)(cb + 0x34) = (s32)(func_80000480_a + 0x30);
     *(s32 *)(cb + 0x38) = 0;
     *(s32 *)(cb + 0x4C) = (s32)D_800016BC;
     *(s32 *)(cb + 0x50) = (s32)D_80001814;
@@ -1272,13 +1280,12 @@ void func_80001594(UsoSegDesc *arg0, u32 arg1) {
     for (i = 0; i < 16; i++) {
         if (arg0[i].unk0 == 0) break;
         e = (UsoSegEnt *)D_80012C70 + i;
-        c = arg0[i].unkC;
-        e->unk0 = c; if (arg1) {} if (c) {}
-        if (c != 0) {
-            lim = arg0[i].unk10;
-            e->unk8 = c;
-            e->unk4 = lim;
-            if (arg1 + 0x80000000 < lim) {
+        e->unk0 = arg0[i].unkC;
+        if (e->unk0 != 0) {
+            e->unk4 = arg0[i].unk10;
+            e->unk8 = e->unk0;
+            if (arg1 + 0x80000000 < (u32)e->unk4) {
+                lim = e->unk4;
                 *(s32 *)(cb + 0x8) = -0x17;
                 *(s32 *)(cb + 0x10) = lim;
                 break;
