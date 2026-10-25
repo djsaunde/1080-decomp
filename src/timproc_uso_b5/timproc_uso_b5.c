@@ -1838,7 +1838,10 @@ extern char D_timb5_32C8_vf0, D_timb5_32C8_vf1;
  * of the dead call, vt store before the `= 2` store in rows 2-6, two pads
  * moved from the bottom to above c, and the vec children written as
  * U / F / E / `if (1) {}` / int-zero Z. LEFT: the target loads l134 into $f2
- * (the zero takes $f0 first and conflicts with it); here l134 gets $f0. */
+ * (the zero takes $f0 first and conflicts with it); here l134 gets $f0.
+ * agent-g run 170: the uE8 name load written in the vEC statement line (before
+ * vEC.x) puts the lui at / lui t6 pair and the 0x11A0 load in target order
+ * (5 -> 3 words); l134 still $f0 (zdbug:6: candidate uilod 0x134 coloured f0). */
 char *timproc_uso_b5_func_000032C8(char *arg0) {
     struct TimB5Nm u0;
     struct TimB5Nm u1;
@@ -1929,9 +1932,8 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
-        uE8.v = B5_NAME(timproc_uso_b5_D_807FEA10, 0x11A0);
         vF8.x = *(f32 *)((char *)&D_timb5_32C8_ve0 + 0x134); vF8.y = *(f32 *)((char *)&D_timb5_32C8_ve1 + 0x138); vF8.z = *(f32 *)((char *)&D_timb5_32C8_ve0 + 0x134);
-        vEC.x = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C); vEC.y = *(f32 *)((char *)&D_timb5_32C8_ve3 + 0x140); vEC.z = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C);
+        uE8.v = B5_NAME(timproc_uso_b5_D_807FEA10, 0x11A0); vEC.x = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C); vEC.y = *(f32 *)((char *)&D_timb5_32C8_ve3 + 0x140); vEC.z = *(f32 *)((char *)&D_timb5_32C8_ve2 + 0x13C);
         if (1) {}
         v104.x = 0; v104.y = 0; v104.z = 0;
         cp0 = v104; cp1 = vF8; cp2 = vEC;

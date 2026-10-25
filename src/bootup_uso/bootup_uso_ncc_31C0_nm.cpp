@@ -14,6 +14,9 @@
  * forwarding to an inline set() plus the Obj ctor's V3 temp moved into an inline pos() put
  * every home from the V3(0, 500, 0) temp down at the target offsets; still missing: a fresh
  * KB new-temp right below Obj-this (ours reuses T's slot) and 3 more words above the V3 temp.
+ * Run 170 (kit CXV): four unused block-scoped volatile ints at the head of the inline Obj ctor
+ * body (kit CXII item 2) give the target frame (144) and every home except T / KB new-temp
+ * (target 0x74 / 0x68, ours 0x70 / 0x74) and the case-0 obj reloads (target obj copy, ours T).
  * -1500.0f = bootup RoData +0x530/+0x534.
  * Symbols renamed after compile (names only, see Makefile). */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -31,7 +34,7 @@ inline void *operator new(unsigned n) { return fn_31c0_alloc(n); }
 struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
 struct B { char p[0x28]; B(void *); virtual void g(); };
-struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
+struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { { volatile int q0, q1, q2, q3; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
 struct Obj2 : Obj { int x; Obj2() {} };
 struct B2 { char p[0x28]; B2(Obj *, float, float, float); virtual void g(); };
 struct KB : B2 { char q[0x14C - 0x2C]; float f14c; float f150; char *f154; int f158;
