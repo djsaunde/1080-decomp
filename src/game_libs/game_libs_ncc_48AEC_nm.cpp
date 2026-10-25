@@ -16,6 +16,10 @@
  * push() assigns the matrix slot inside the copy call's argument (`func(src, c = mtx())`), 94.92 -> 95.21.
  * The else arm writes `(gctx = GS->ctx)->push(A, cmd);` (assignment as the object expression), 95.21 -> 95.67.
  * cfe body 88.11 -> 95.67; length 2052 -> 2072 (target 2076).
+ * agent-c run 160: the else arm is `Mtx *c2; gctx = GS->ctx; func(A, c2 = gctx->mtx()); gctx->load(c2);` (a named
+ * by-value c2 instead of the shared `Mtx *&` cmd: the target holds it in s0 across the copy call), 95.67 -> 96.13, frame
+ * 0x158 -> 0x160 = target; the Node flag test as an inline `Flags::test(int m)` with an `if (0) { m = 0; }` parameter keep
+ * (the target's `addiu a3,a3,0x18` this temp), 96.13 -> 96.57, length 2072 -> 2076 = target.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 extern "C" {
@@ -37,12 +41,13 @@ struct Ctx {
     void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w0 = hi; g->w1 = lo; }
     void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
-    void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); }
+    void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
     Mtx *mtx() { return &mh->buf[mh->count++]; }
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
-struct Node { char pad[0x18]; int flags; char pad1c[2]; s16 m1e; };
+struct Flags { int v; int test(int m) { if (0) { m = 0; } return v & m; } };
+struct Node { char pad[0x18]; Flags flags; char pad1c[2]; s16 m1e; };
 struct EBase {
     char pad0[0x5C];
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void draw(void *);
@@ -102,7 +107,7 @@ void Obj::draw() {
         gctx = GS->ctx;
         gctx->push(mt, cmd);
     } else {
-        (gctx = GS->ctx)->push(A, cmd);
+        Mtx *c2; gctx = GS->ctx; func_00000000(A, c2 = gctx->mtx()); gctx->load(c2);
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
@@ -115,7 +120,7 @@ void Obj::draw() {
                 }
             }
         }
-    } else if ((n14->flags & 0x80) && *(s32 *)D_00000000 != 0) {
+    } else if (n14->flags.test(0x80) && *(s32 *)D_00000000 != 0) {
         Gfx gbi = g34;
         Gfx *gp = &gbi;
         gp->w1 = (gp->w1 & ~0xF00) | 0x400;
