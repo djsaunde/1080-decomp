@@ -834,7 +834,11 @@ void titproc_uso_func_0000101C(int *a0) {
  * v1 = *(s0 + K);` -- obj v1 / vt v0 as in the target), and the case-1 else arm's
  * counter is `* 30` (IDO's own sll/subu/sll expansion keeps the load a t-temp; the other
  * three sites score higher spelled out). Left: the 4-entry table (sltiu 4, no cfe form),
- * const 40 in a1 (target v0), the t-ring around the 0x70 counter sites. */
+ * const 40 in a1 (target v0), the t-ring around the 0x70 counter sites.
+ * Run 163 (98.96 -> 99.12): the 0x40100 gate's record index is read inline
+ * (`v1 + *(int *)(v1 + 0x7C) * 40 + 0x90`, no `n` local: the target's index is the
+ * ugen t2, not a uopt variable), and the case-3 counter is `* 30` as well. Const 40
+ * now colours v1 (target v0) against the object web `v1` (v0, target v1). */
 extern char import_00263D30;
 extern void gl_func_00000000_116c_v();
 void titproc_uso_func_0000116C(char *s0) {
@@ -848,7 +852,7 @@ void titproc_uso_func_0000116C(char *s0) {
     char *vt7;
     char *vt8;
     void (*fn)(int);
-    int n, t, v;
+    int t, v;
 
     switch (*(int *)(s0 + 0x40)) {
     case 0: {
@@ -983,7 +987,7 @@ fire:
                     (*(void (**)(int))(vt8 + 0x5C))((int)(v1 + *(short *)(vt8 + 0x58)));
                     gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
                     *(int *)(s0 + 0x40) = 1;
-                    *(int *)(s0 + 0x3C) = (*(int *)(s0 + 0x70) * 16 - *(int *)(s0 + 0x70)) * 2;
+                    *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x70) * 30;
                     gl_func_00000000_116c_v(2050);
                 }
             }
@@ -994,8 +998,7 @@ fire:
                 gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
                 gl_func_00000000_116c_v(5);
                 v1 = *(char **)(s0 + 0x5C);
-                n = *(int *)(v1 + 0x7C);
-                if (*(int *)(v1 + n * 40 + 0x90) != 0) {
+                if (*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90) != 0) {
                     *(char **)((char *)&import_00263D30 + 0xA8) = s0;
                     *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C);
                     v1 = *(char **)(s0 + 0x5C);
