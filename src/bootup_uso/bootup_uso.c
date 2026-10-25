@@ -921,6 +921,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000E68);
  * undecoded — body is 66/115 insns. Next pass: decode the 8-byte-entry payload
  * stores + any trailing FP from the target asm. */
 extern void func_00000188();  /* used as data-symbol base */
+/* NM object: replaced by the NCC comparison donor bootup_uso_ncc_1A44_nm.cpp (agent-g run 172). */
 #ifdef NON_MATCHING
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target
  * words and the bootup.uso reloc table. It is a gSPMatrix + gSPDisplayList
