@@ -6,8 +6,9 @@
  * vptr AFTER 0x598 data bytes (`Rec rec;` declared where the target stores the vtable), Ctx::count() /
  * noop() display-list appends on o->ctx6C, and `this->hit(0, &rec, j, o)` virtual calls.
  * Home layout (all sp offsets = target): b8 = b4 = b0 = 0 chained (two pooled temps before the
- * iterator return temp), the m38 test through a block-scoped `Elem *x = it.cur()`, next() without a named
- * count (`&head->buf[head->count++]`), `hit` declared after `rowStart`, c / e / j / m in their blocks,
+ * iterator return temp), the m38 test as an inline `Elem::test()` (its `this` is the edg pool temp: the
+ * target's s2), the m34 argument through an inline `p34()`, next() as `if (idx < last) return ...; return 0;`
+ * (the result in v0 like the target), DLHead appends without a named count (`&head->buf[head->count++]`), `hit` declared after `rowStart`, c / e / j / m in their blocks,
  * `o->rows7C[k]` in a for loop (uopt's strength-reduced offset lands at sp+0x48 like the target).
  * Four `pad` words at the top are still unexplained named homes (target: 10 words above `it`).
  * Still NON_MATCHING: build/non_matching/ only. */
@@ -40,6 +41,8 @@ struct Rec {
     virtual void f();
 };
 struct Elem {
+    int test(int m) { return m38 & m; }
+    int *p34() { return &m34; }
     char pad0[0x14]; int f14; int key18; char pad1c[0x34 - 0x1C]; int m34; int m38; char pad3c[0x50 - 0x3C];
     int lo50; int hi54; char pad58[0x6C - 0x58]; Ctx *ctx6C; char pad70[0x7C - 0x70]; s16 *rows7C; s16 n80; char pad82[8]; s16 n8A;
 };
@@ -53,7 +56,7 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {}
-    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
+    Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
@@ -97,14 +100,13 @@ int Mgr::run() {
     gl_func_00000000(S(0x1FF74));
     AIter it = arr.iter();
     while (it.next()) {
-        gl_func_00000000(it.ref());
+        gl_func_00000000(it.cur());
         if (m50 == 0) {
-            Elem *x = it.cur();
-            if (x->m38 & 0x2000) {
+            if (it.cur()->test(0x2000)) {
                 gl_func_00000000(it.cur(), m9c);
             }
         }
-        gl_func_00000000(it.cur(), &it.ref()->m34);
+        gl_func_00000000(it.cur(), it.cur()->p34());
     }
     gl_func_00000000();
     gl_func_00000000(S(0x1FF7C));
