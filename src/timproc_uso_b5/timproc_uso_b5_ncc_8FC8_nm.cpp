@@ -11,7 +11,8 @@
  * jumptable (cfe; NCC always lowers a switch to a compare chain).  Symbols renamed after compile (names
  * only): __ct__6ScreenFPiT1 -> timproc_uso_b5_func_00008FC8.  NM comparison object only.
  * 87.71 -> 88.08: the item loop stores items[i] (no pp walk), the row pointers / m38 copy declared at the top
- * (frame 368 -> 352 = target), direct `int *fp` for the kid flag RMW, third Panel explicit. */
+ * (frame 368 -> 352 = target), direct `int *fp` for the kid flag RMW, third Panel explicit.
+ * 88.03 -> 88.9: the WA flag RMW as one block-scope int x (and/and/and/ori/and on v0, as the target) and the three saved-bit locals volatile (the target spills them across the kid calls). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
@@ -188,8 +189,8 @@ struct WA : B2 { WFIELDS
         addChild(w);
         w->pos.set(0.0, 0.0, 0.0);
         f124 = 1.0f;
-        int sb = FW(f8fc8_ee6c_sb1, 4) & 0x80000;
-        FW(import_800664C4, 4) = ((FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000) & ~2;
+        volatile int sb = FW(f8fc8_ee6c_sb1, 4) & 0x80000;
+        { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; x &= ~1; x &= 0xFFFDFFFF; x |= 0x2000; x &= ~2; FW(import_800664C4, 4) = x; }
         kid[0] = new Kid(import_808064C4 + 0x13C0, import_807664C4, 0);
         kid[1] = new Kid(timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0);
         kid[2] = new Kid(timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0);
@@ -213,7 +214,7 @@ struct WB : B2 { WFIELDS
         addChild(w);
         w->pos.set(0.0, 0.0, 0.0);
         f124 = 1.0f;
-        int sb = FW(f8fc8_ee6c_sb2, 4) & 0x80000;
+        volatile int sb = FW(f8fc8_ee6c_sb2, 4) & 0x80000;
         { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
         kid[0] = new Kid(import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0);
         n = 1;
@@ -231,7 +232,7 @@ struct WC : B2 { WFIELDS
         addChild(w);
         w->pos.set(0.0, 0.0, 0.0);
         f124 = 1.0f;
-        int sb = FW(f8fc8_ee6c_sb3, 4) & 0x80000;
+        volatile int sb = FW(f8fc8_ee6c_sb3, 4) & 0x80000;
         { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
         kid[0] = new Kid(import_80803D04 + 0x1540, f8fc8_e3d04_2, 0);
         n = 1;
