@@ -736,6 +736,9 @@ extern s32 import_8001FFA0_h[]; /* same import, h reads ([1] = +4) */
 extern int import_8005C108[];
 #define E68_MGR (*(MgrE68 **)((char *)import_8005C108 + 0x18))
 #define E68_NEXT(m) (_n = (m)->dl->count++, &(m)->dl->buf[_n])
+/* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
+ * which increments feed the shared _n changes its colouring, cf. 1A44). */
+#define E68_NEXTB(m) (_n = (m)->dl->count, (m)->dl->count = _n + 1, &(m)->dl->buf[_n])
 #define E68_SHL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
 #define E68_W(pkt, a, b) { GwE68 *_g = (GwE68 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 #define E68_TILEGEN(pkt, c, tile, uls, ult, lrs, lrt) \
@@ -833,7 +836,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
-                    E68_END(E68_NEXT(m));
+                    E68_END(E68_NEXTB(m));
                     vidx += 4;
                     uls += 64;
                 }
@@ -856,7 +859,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         E68_W(E68_NEXT(m), 0xF5000100, 0x07000000);
         E68_W(E68_NEXT(m), 0xE6000000, 0);
         E68_W(E68_NEXT(m), 0xF0000000, 0x073FC000);
-        E68_W(E68_NEXT(m), 0xE7000000, 0);
+        E68_W(E68_NEXTB(m), 0xE7000000, 0);
         vp = buf;
         n = import_8001FFA0[0] / 32;
         for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
