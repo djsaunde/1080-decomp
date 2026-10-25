@@ -8,6 +8,7 @@
  * `Blk { int w[6]; }` (w[0], an inline `zero(int k)` loop from 1 to 5, w[5]) and `Blk2 { int e[8]; int c; }` (an
  * 8-trip loop that uopt unrolls x4 like the target): 90.75 -> 93.81, frame homes = target. Residual: the target keeps
  * the unrolled 4-trip loop's IV (`li v1,1; sll; addu`) with ascending stores where ours folds it (descending).
+ * agent-c run 162: Blk::clear() runs zero(1) BEFORE the w[0] / w[5] stores (93.81 -> 96.33, length unchanged).
  */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -23,7 +24,7 @@ extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern float q[4];
 }
-struct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { w[0] = 0; zero(1); w[5] = 0; } };
+struct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { zero(1); w[0] = 0; w[5] = 0; } };
 struct Blk2 { int e[8]; int c; void clear() { for (int k = 0; k < 8; k++) e[k] = 0; c = 0; } };
 extern "C" void gl_func_0004E00C(int *s0) {
     int *v;
