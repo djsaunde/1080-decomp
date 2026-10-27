@@ -26,6 +26,10 @@
  * operator= param temp 8 bytes low (a function-scope temp, not moved by
  * inline layers or dead locals without growing the frame), the s2/s3 obj
  * swap, and the f20/f22 callee-saved colour swap for k.
+ * run 180 (agent-g, kit CXXIX): the sub pointer as a NAMED function-scope local (`Sub *sb;` after
+ * norm, `sb = obj->sub; sb->mtx.getPos(q.pos);`) gives the target's this-adjust shape (lwc1 160(p);
+ * addiu p,p,112; 52/56(p)) and keeps frame 296 (93.31 -> 95.58 standalone); left: that pointer in v1/v0
+ * where the target reuses a2, plus the items above.
  * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM. */
 struct P3 { float x, y, z; };
 struct V3 {
@@ -65,11 +69,13 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
     Ray q;
     V3 world;
     V3 norm;
+    Sub *sb;
     float d;
     double k;
     unsigned int i;
     Child *c;
-    obj->sub->mtx.getPos(q.pos);
+    sb = obj->sub;
+    sb->mtx.getPos(q.pos);
     q.dir.x = 0.0f; q.dir.y = 0.0f; q.dir.z = -1.0f;
     game_uso_func_070F38(&q, (char *)import_80087DA8->body + 0xB4);
     world = ((V3 &)q.dir) * 1000.0f;
