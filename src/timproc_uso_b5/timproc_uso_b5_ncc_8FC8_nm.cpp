@@ -201,7 +201,7 @@ struct WA : B2 { WFIELDS
         kid[5] = new Kid(import_808001F4 + 0x13FC, import_807701F4, 0);
         kid[6] = new Kid(import_80802164 + 0x1408, import_80772164, 0);
         kid[7] = new Kid(import_808040D4 + 0x1414, import_807740D4, 0);
-        n = 8;
+        n = 8; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
         i140 = 0;
         attachKids();
         i144 = 0;
