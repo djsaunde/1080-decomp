@@ -11,8 +11,10 @@
  * read once into a function-scope `Col *cc` (the target's s1) and re-read into it per triangle; the
  * single-use locals ia / ib / ic, vt, qa / qb and sg DE-NAMED (macros: each named scalar costs an NCC home
  * and a colour; de-naming them took the frame to the target's 0xF0 with s0..s7 only, 83.38 -> 87.55).
- * cfe 77.27 -> 87.55 local, 1560 bytes (target 1568, cfe 1528). Residual: the face pointer is not copied
- * into s0 after the face() expansion, off spills to sp+76 (target sp+84), r is not copied into a0, the first
+ * The face() argument written as an rvalue (`i + 0`; `i | 0` is the same, a plain `i` or a named copy is
+ * not): edg then passes it through a parameter temp and the expansion's `this` copy lands in the target's v0
+ * (87.55 -> 88.59). cfe 77.27 -> 88.59 local, 1560 bytes (target 1568, cfe 1528). Residual: the face pointer
+ * is not copied into s0 after the face() expansion, off spills to sp+76 (target sp+84), r is not copied into a0, the first
  * inner MAX is evaluated as two arms (the target pre-assigns one before the branch) and the edge-loop
  * schedule. Still NON_MATCHING. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
@@ -74,7 +76,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
         int off = ((i << 2) - i) << 2;
         if (((Tri *)((char *)tris + off))->grp < 0) continue;
         cc = col;
-        Face *f = cc->face(i);
+        Face *f = cc->face(i + 0);
         int r = gl_func_00000000(cc, f->mat);
         if (r & 0x100) {
             int ok = 1;
