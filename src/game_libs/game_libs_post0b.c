@@ -22426,7 +22426,7 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     gl_func_00034458(arg0 + 0x12C);
     two = (f32)2; if (1) {}
     d = (f32)0;
-    MF54(0x12C) = 1.0f - (QF54(0) * QF54(0)) * two;
+    MF54(0x12C) = 1.0f - (QF54(0) * QF54(0)) * two; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
     MF54(0x130) = d - (QF54(0) * QF54(4)) * two;
     MF54(0x134) = d - (QF54(0) * QF54(8)) * two;
     MF54(0x138) = d;
