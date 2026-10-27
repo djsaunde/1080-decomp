@@ -35,7 +35,7 @@ extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
     if (fl & 0x1F0) {
         if (amt < 0.0f) {
             code = (int)func_00000000(*(int *)(*(char **)&D_00000000 + 0x84), *(int *)(b + 0x14C));
-            skip = code == 0x61;
+            skip = code == 0x61; if (1) {} /* run 182 (lever-sweep bbsplit) */
             if (!skip) skip = code == 0x62;
             if (!skip) skip = code == 0x63;
             if (!skip) {
