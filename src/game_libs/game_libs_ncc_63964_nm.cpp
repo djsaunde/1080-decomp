@@ -31,9 +31,8 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     V3 va;
     V3 vb;
     int count;
-    char *p = o->probe;
-    gl_func_00000000(p, &o->pa, &va, o);
-    gl_func_00000000(p, &o->pb, &vb, o);
+    gl_func_00000000(o->probe, &o->pa, &va, o);
+    gl_func_00000000(o->probe, &o->pb, &vb, o);
     va += o->pos;
     vb += o->pos;
     V3 out(0.0f, 0.0f, 0.0f);
