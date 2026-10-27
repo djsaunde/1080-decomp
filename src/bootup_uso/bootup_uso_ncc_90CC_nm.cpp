@@ -758,12 +758,12 @@ sw_end:
         wpos = vpos;
         *(f32 *)((char *)(arg0) + 0x3A4) = wpos.x;
         *(f32 *)((char *)(arg0) + 0x3A8) = wpos.y;
+        *(f32 *)((char *)(arg0) + 0x3AC) = wpos.z;
         *(s32 *)((char *)(arg0) + 0x8C0) = (s32) (1 << arg2);
         *(s32 *)((char *)(arg0) + 0x38C) = 1;
         *(s32 *)((char *)(arg0) + 0x870) = 0;
         *(s32 *)((char *)(arg0) + 0x868) = 0;
         *(s32 *)((char *)(arg0) + 0x86C) = 0;
-        *(f32 *)((char *)(arg0) + 0x3AC) = wpos.z;
         func_00000000(sp40, arg1, arg2);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 3) {
             func_00000000(bu_90cc_d87A4 + 0x5C, 0);
@@ -886,7 +886,7 @@ sw_end:
         *(char **)((char *)(arg0) + 0x840) = func_00000000(0, *(s32 *)((char *)&D_00000000 + 0), arg0);
         func_00000000();
         *(s32 *)((char *)(arg0) + 0x800) = arg4;
-        func_00000000(arg0, *(s32 *)((char *)(arg0) + 0x840));
+        var_v1 = *(s32 *)((char *)(arg0) + 0x840); func_00000000(arg0, var_v1);
         var_s0 = *(char **)((char *)(arg0) + 0x840);
         sp58 = 0;
         var_s0 += 0x18;
