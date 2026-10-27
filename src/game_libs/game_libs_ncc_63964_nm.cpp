@@ -18,8 +18,10 @@
  * adds it (target `mtc1 zero,f6; add.s f16,f6,f8`) instead of folding 0 + va.y: 88.72 -> 96.19, body 1112 -> 1116
  * (target 1120). Then an unused `{ V3 t; }` block right after n (the target's 12 unreferenced bytes at sp+196,
  * just below n) replaces the trailing volatile ints: the first arm's temps land on the target's 172 / 184 (96.33).
- * LEFT: the out zeros in their own f0 (ours share acc's f16), the arm-1 sum / operator= param 8 bytes low,
- * v0 / v1 swapped (return slot address vs count). */
+ * Then `V3 out(0, 0, 0)` through an int-parameter ctor overload (kit CXIX rule: the int -> float conversion is
+ * folded after candidate selection, so out's zeros get their own local f0 instead of joining acc's f16 LR):
+ * body 1120 = target, 98.66 (spelling-grid).
+ * LEFT: the arm-1 sum / operator= param 8 bytes low, v0 / v1 swapped (return slot address vs count). */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
@@ -29,6 +31,7 @@ struct V3 {
     void operator=(V3 o) { x = o.x; y = o.y; z = o.z; }
     void operator+=(const V3 &b) { x += b.x; y += b.y; z += b.z; }
     V3(f32 a, f32 b, f32 c) { set(a, b, c); }
+    V3(int a, int b, int c) { set(a, b, c); }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
 };
 inline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, a.z - b.z); }
@@ -44,7 +47,7 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     gl_func_00000000(o->probe, &o->pb, &vb, o);
     va += o->pos;
     vb += o->pos;
-    V3 out(0.0f, 0.0f, 0.0f); if (1) {}
+    V3 out(0, 0, 0); if (1) {}
     int count;
     V3 n = va - vb;
     { V3 t; }
