@@ -835,9 +835,9 @@ void game_uso_func_00000B3C(char *arg0) {
     if (*(s32 *)(seg + 0x0) != 1) {
         tv = *(char **)(s + 0xF4);
         *(f32 *)(tv + 0x60) = pos2.x;
-        q = (f32 *)((int)tv + 0x30);
-        *(f32 *)((int)q + 0x34) = pos2.y;
-        *(f32 *)((int)q + 0x38) = pos2.z;
+        tv += 0x30; /* run 180: target `addiu v1,v1,48` + 52/56(v1) (same register); +1 word, see kit CXXIX */
+        *(f32 *)(tv + 0x34) = pos2.y;
+        *(f32 *)(tv + 0x38) = pos2.z;
         tv = *(char **)(s + 0xF4);
         *(B3CBlk40 *)(tv + 0x70) = *(B3CBlk40 *)(tv + 0x30);
     }
