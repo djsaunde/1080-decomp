@@ -27645,12 +27645,16 @@ void gl_func_0005EF00(f32 (*m)[4], Vec3 *v, f32 angle) {
  * constant in callee-saved $f22 (here $f0, which pushes t/x/y/z one FP
  * register up) and divides x first (here y first); the two extra homes at
  * sp+60/56 are the zy/xz copies. sin/cos/sqrt are (float)->float blanks;
- * pi/180 is the pinned RoData literal D_5F0B8_dtor (+0x2054). */
+ * pi/180 is the pinned RoData literal D_5F0B8_dtor (+0x2054).
+ * agent-c run 178: xs / ys named (assigned just before first use) and the
+ * second `if (1) {}` dropped: c and the 0.0f constant land in the target's
+ * fs0 / fs1 and the frame stays 0x80 (91.73 -> 92.36 local). Left: x*s is
+ * not memory-homed (target spills it to sp+52), zy / xz homes 8 high. */
 #ifdef NON_MATCHING
 extern float gl_func_00000000_f54c(float);
 extern f32 D_5F0B8_dtor;
 void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
-    f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t, zy, xz;
+    f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t, zy, xz, xs, ys;
 
     a = angle * D_5F0B8_dtor;
     s = gl_func_00000000_f54c(a);
@@ -27662,14 +27666,16 @@ void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
     xx = x * x; yy = y * y; xy = x * y; yz = y * z; zx = z * x; zy = yz; xz = zx; if (1) {}
     mf[0][0] = (1 - c) * xx + c;
     mf[1][0] = (1 - c) * xy - z * s;
-    mf[2][0] = (1 - c) * zx + y * s; if (1) {}
+    ys = y * s;
+    mf[2][0] = (1 - c) * zx + ys;
     mf[3][0] = 0;
     mf[0][1] = (1 - c) * xy + z * s;
     mf[1][1] = (1 - c) * yy + c;
-    mf[2][1] = (1 - c) * yz - x * s;
+    xs = x * s;
+    mf[2][1] = (1 - c) * yz - xs;
     mf[3][1] = 0;
-    mf[0][2] = (1 - c) * xz - y * s;
-    mf[1][2] = (1 - c) * zy + x * s;
+    mf[0][2] = (1 - c) * xz - ys;
+    mf[1][2] = (1 - c) * zy + xs;
     mf[2][2] = (1 - c) * (z * z) + c;
     mf[3][2] = 0;
     mf[0][3] = 0;
