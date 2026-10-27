@@ -4069,7 +4069,7 @@ void game_uso_func_0000591C(int *a0) {
         y = *(float *)((int)axis_src + 4) * fsel;
         x = *axis_src * fsel;
         z = *(float *)((int)axis_src + 8) * fsel;
-        scaled_axis.x = x;
+        scaled_axis.x = x; if (1) {} /* run 182 (lever-sweep bbsplit) */
         scaled_axis.y = y;
         scaled_axis.z = z;
     }
