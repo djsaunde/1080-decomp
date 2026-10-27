@@ -3827,9 +3827,9 @@ void gl_func_000076F0(GlObj76F0 *self) {
                     case 0:                         /* switch 2 */
                         func_00000000(0x11);
                         self->unk534 = 1.0f;
-                        self->unk538 = 1.0f;
                         self->unk550 = 0.0f;
                         self->unk548 = 160.0f;
+                        self->unk538 = 1.0f; /* run 182 (lever-sweep order, +1 word toward the target) */
                         self->unk54C = 120.0f;
                         if (*(s32 *)((char *)&D_00000000_76F0 + 0x34) == 2) {
                             self->unk54C = 60.0f;
