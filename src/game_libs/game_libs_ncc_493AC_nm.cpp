@@ -12,7 +12,9 @@
  * `o->rows7C[k]` in a for loop (uopt's strength-reduced offset lands at sp+0x48 like the target).
  * AIter(Arr *) keeps its parameter with `if (0) { arr = 0; }` (the IBase this temp then takes v1 like the target, 96.52 -> 96.63).
  * Seven `pad` words at the top are still unexplained named homes (target: 10 words above `it`; o, j, i are the other three).
- * Still NON_MATCHING: build/non_matching/ only. */
+ * Still NON_MATCHING: build/non_matching/ only.
+ * agent-c run 179: `hit = 1` after the hit() call (adjacent-statement swap sweep): 96.63 -> 96.90.
+ */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8;
 extern "C" {
 extern char D_00000000[];
@@ -157,8 +159,8 @@ int Mgr::run() {
                                 if (o->key18 == tab68[j].key && *m == 0) {
                                     o->f14 = 1;
                                     cnt++;
-                                    hit = 1;
                                     this->hit(0, &rec, j, o);
+                                    hit = 1;
                                     *m = 1;
                                 }
                             }

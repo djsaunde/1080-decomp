@@ -7,6 +7,7 @@
  * across the calls (ours: one s-register, the size spilled).
  * Still NON_MATCHING: build/non_matching/ only.
  * agent-c run 179: the byte size `volatile s32 sz` (the target keeps it in s1; ours spills it either way, the volatile reload lines up the call tail): 88.70 -> 91.0 local.
+ * agent-c run 179: `ids++` after the run terminator store (adjacent-statement swap sweep): 91.19 -> 93.47.
  */
 typedef short s16; typedef int s32;
 extern "C" {
@@ -31,8 +32,8 @@ s16 *Map::build(s32 n, s16 *ids) {
                 list[t0++] = idx;
             }
         }
-        ids++;
         list[t0++] = -1;
+        ids++;
         } while (ids != end);
     }
     list[t0++] = -1;

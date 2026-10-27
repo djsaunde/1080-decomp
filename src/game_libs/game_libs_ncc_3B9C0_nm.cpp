@@ -1,6 +1,8 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B9C0: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 72.25; a second parameter empty test from round 2 gives 75.08).
  * run 152 (agent-c, 75.15 -> 76.55): `while (ok && (fv++, nx != end))` puts fv++ in the bne delay slot after the ok exit as in the target (no bnel back edge).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
+ * agent-c run 179: the next-vertex table pointer set before the verts load (adjacent-statement swap sweep): 76.54 -> 76.72.
+ */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -89,8 +91,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         qa = (&p.x)[ia];
         qb = (&p.x)[ib];
         sg = ((TriB9 *)((char *)self->tris + off))->sgn;
-        vt = col->verts;
         nx = (s16 *)&D_00000000;
+        vt = col->verts;
         fv = (u16 *)f;
         do {
             v0 = vt[fv[1]];
