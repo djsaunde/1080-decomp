@@ -757,9 +757,9 @@ void game_uso_func_00000B3C(char *arg0) {
     case 1:
         bv = *(char **)(s + 0xF4);
         pos2.x = *(f32 *)(bv + 0xA0);
-        q = (f32 *)((int)bv + 0x70); if (arg0) {}
-        pos2.y = *(f32 *)((int)q + 0x34);
-        pos2.z = *(f32 *)((int)q + 0x38);
+        bv += 0x70; /* run 180: the base pointer itself advances to the matrix (same-register addiu) */
+        pos2.y = *(f32 *)(bv + 0x34);
+        pos2.z = *(f32 *)(bv + 0x38);
         break;
     case 2:
     case 3:
