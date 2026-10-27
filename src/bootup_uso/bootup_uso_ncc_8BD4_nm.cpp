@@ -51,7 +51,7 @@ extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
                     float *ap = (float *)(*(char **)(b + 0x170) + 0xB4);
                     ap[0] += impA.x;
                     ap[1] += impA.y;
-                    ap[2] += impA.z;
+                    ap[2] += impA.z; if (1) {} /* run 182 (lever-sweep bbsplit) */
                 }
                 {
                     float *tp = (float *)(*(char **)(b + 0x170) + 0x93C);
