@@ -86,8 +86,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         } else {
             f = &col->faces[i];
         }
-        ia = ((TriB9 *)((char *)self->tris + off))->a;
         ib = ((TriB9 *)((char *)self->tris + off))->b;
+        ia = ((TriB9 *)((char *)self->tris + off))->a;
         qa = (&p.x)[ia]; if (1) {}
         qb = (&p.x)[ib];
         sg = ((TriB9 *)((char *)self->tris + off))->sgn;

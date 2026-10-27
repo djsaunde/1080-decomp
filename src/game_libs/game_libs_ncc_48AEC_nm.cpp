@@ -123,7 +123,7 @@ void Obj::draw() {
     } else if (n14->flags.test(0x80) && *(s32 *)D_00000000 != 0) {
         Gfx gbi = g34;
         Gfx *gp = &gbi;
-        gp->w1 = (gp->w1 & ~0xF00) | 0x400;
+        gp->w1 = (gp->w1 & ~0xF00) | 0x400; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
         gp->w1 = gp->w1 & ~0x80000;
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
