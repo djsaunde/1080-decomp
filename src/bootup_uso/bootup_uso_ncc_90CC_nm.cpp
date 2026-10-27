@@ -972,7 +972,8 @@ sw_end:
             *(char **)((char *)(sp158) + 0x14) = var_s1;
             func_00000000(1);
             var_s0 = *(char **)((char *)(sp164) + 0x28);
-            temp_s1 = (char *)(bu_90cc_d44_01.f28 + 0x70);
+            var_v1 = bu_90cc_d44_01.f28;
+            temp_s1 = (char *)(var_v1 + 0x70);
             ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp164, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0x10, (s32)temp_s1, *(f32 *)(bu_90cc_d8B4_01 + 4), 100.0f);
             if (*(s32 *)((char *)(arg0) + 0xA58) & 1) {
                 var_s0 = *(char **)((char *)(sp160) + 0x28);
@@ -980,10 +981,12 @@ sw_end:
                 func_00000000(sp164);
                 func_00000000(sp164);
             }
+            var_v1 = bu_90cc_d08_01.f2C;
             var_s0 = *(char **)((char *)(sp15C) + 0x28);
-            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp15C, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, bu_90cc_d08_01.f2C + 0x70, 32.0f, 74.0f);
+            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp15C, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, var_v1 + 0x70, 32.0f, 74.0f);
+            var_v1 = bu_90cc_d44_02.f04;
             var_s0 = *(char **)((char *)(sp158) + 0x28);
-            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp158, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, bu_90cc_d44_02.f04 + 0x70, 32.0f, 74.0f);
+            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp158, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, var_v1 + 0x70, 32.0f, 74.0f);
             func_00000000(0xFFFF);
             func_00000000();
         }
