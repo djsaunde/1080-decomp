@@ -58,7 +58,7 @@ void *func_00000000(...);
 #define gDma1p(pkt, c, s, l, p) { Gfx *_g = (Gfx *)(pkt); _g->w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | _SHIFTL((l), 0, 16)); _g->w1 = (u32)(s); }
 
 inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
-    v->vscale[0] = (s32)(w * 2.0f);
+    v->vscale[0] = (s32)(w * 2.0f); if (1) {}
     v->vscale[1] = (s32)(h * 2.0f);
     v->vtrans[2] = 0x1FF;
     v->vscale[2] = 0x1FF;

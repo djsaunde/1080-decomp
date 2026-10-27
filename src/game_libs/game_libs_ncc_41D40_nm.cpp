@@ -36,7 +36,7 @@ extern "C" void gl_func_00041D40(int arg0) {
     while (it.next()) {
         Elem *e = it.cur();
         gl_func_00034458(S(0x1F6C0), e->xC);
-        e = it.cur();
+        e = it.cur(); if (1) {}
         if (e->x14 != 0) {
             gl_func_00034458(e->x14 + 0x10, e);
         }

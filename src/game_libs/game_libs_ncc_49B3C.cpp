@@ -49,7 +49,7 @@ extern "C" void gl_func_00049B3C(Obj *self) {
     while (it.next()) {
         cb5c(it.cur());
     }
-    gl_func_00000000(D_49B3C_s5, S(0x20004), &self->xA4, -1, self->arr.pad8, 0);
+    gl_func_00000000(D_49B3C_s5, S(0x20004), &self->xA4, -1, self->arr.pad8, 0); if (1) {}
     if (self->sub != 0) {
         LIter li(self->sub->head);
         Elem *e;

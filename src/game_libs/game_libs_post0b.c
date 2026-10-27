@@ -19399,7 +19399,7 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     vecEC[0] = *(float *)(cam + 0xA0);
     vecEC[1] = *(float *)(cam + 0xA4);
     vecEC[2] = *(float *)(cam + 0xA8);
-    vecA0[0] = *(float *)((char *)&D_00000000C + 0x1BA8) * vecD4[0];
+    vecA0[0] = *(float *)((char *)&D_00000000C + 0x1BA8) * vecD4[0]; if (1) {}
     vecA0[1] = *(float *)((char *)&D_00000000C + 0x1BA8) * vecD4[1];
     vecA0[2] = *(float *)((char *)&D_00000000C + 0x1BA8) * vecD4[2];
 

@@ -16056,7 +16056,7 @@ void gl_func_000334E8(void) {
 
     gl_func_00000000(buf, &gl_ref_0001E280);
     base = (u8 *)&D_00000000;
-    src = (s32)buf;
+    src = (s32)buf; if (1) {}
     rem = 8;
     gl_func_00000000(base);
     {

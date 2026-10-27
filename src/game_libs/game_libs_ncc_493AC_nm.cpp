@@ -170,7 +170,7 @@ int Mgr::run() {
                         if (k < o->lo50) o->lo50 = k;
                         if (o->hi54 < k) o->hi54 = k;
                     }
-                    gl_func_00000000(&rec);
+                    gl_func_00000000(&rec); if (1) {}
                     o->rows7C[k] = o->ctx6C->count();
                     o->ctx6C->noop();
                 }

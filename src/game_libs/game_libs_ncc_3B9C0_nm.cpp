@@ -97,7 +97,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         do {
             v0 = vt[fv[1]];
             v1 = vt[f->vi[*nx++]];
-            ex = v1[ia] - v0[ia];
+            ex = v1[ia] - v0[ia]; if (1) {}
             ey = v1[ib] - v0[ib]; if (self) {}
             dx = (s32)(qa - v0[ia]); if (self) {}
             dy = (s32)(qb - v0[ib]);

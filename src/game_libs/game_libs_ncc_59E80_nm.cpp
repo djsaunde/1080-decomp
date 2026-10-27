@@ -49,7 +49,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     PKT(c, 0xBC001404, 0xFFFD);
     PKT(c, 0xBC001C04, 0xFFFD);
     if (o->f104 & 2) {
-        gl_func_00034458(c, o->s148->fF0);
+        gl_func_00034458(c, o->s148->fF0); if (1) {}
         PKT(c, 0xB7000000, 1);
     }
     gl_func_00034458(c);
