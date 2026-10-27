@@ -90,8 +90,8 @@ extern "C" void game_uso_func_00003558(S *s0) {
     game_uso_func_071028(&e);
     s0->b1->mtx.getPos(w);
     w.x = w.x - va.x;
+    w.z = w.z - va.z; /* run 182 (lever-sweep order): z before the y zero store (77.39 -> 78.78, length unchanged) */
     w.y = zero;
-    w.z = w.z - va.z;
     t = game_uso_func_070238(w.len2());
     game_uso_func_071028(&w);
     if (s0->f88 < t) {
