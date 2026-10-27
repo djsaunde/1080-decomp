@@ -7,6 +7,8 @@
  * col->faces in each arm), no empty tests. 72.22 -> 73.63, length 796 -> 800 = target. Residual: the target keeps the
  * triangle offset and count in frame homes (frame 0x80 vs 0x40; `ra` used as a variable register) where ours colours
  * them.
+ * agent-c run 178: the triangle record through an inline `triAt(const int &off)` (a reference parameter keeps
+ * off memory-homed like the target's frame home): 73.61 -> 74.51, length = target.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef short s16; typedef unsigned short u16; typedef signed char s8;
 struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
@@ -17,6 +19,7 @@ extern "C" { extern s16 D_00000000_3b6a0tbl[3]; }
 struct Obj {
     char pad[0x2C]; TriB *tris; char pad30[0x84 - 0x30]; Col *col;
     int below(int max, f32 *outd, TriB **outp, f32 *pt);
+    TriB *triAt(const int &o) { return (TriB *)((char *)tris + o); }
 };
 int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
     int nfound = 0;
@@ -29,7 +32,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
         f32 lim = -50.0f;
         int off = 0;
         for (unsigned int i = 0; i < count; i++, off += 12) {
-            TriB *t = (TriB *)((char *)tris + off);
+            TriB *t = triAt(off);
             int inside = 1;
             s16 (*verts)[3] = c->verts;
             Face *f;
