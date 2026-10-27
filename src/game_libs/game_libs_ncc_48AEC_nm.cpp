@@ -81,7 +81,6 @@ void Obj::draw() {
     f32 (*B)[4];
     f32 mtx[4][4];
     int i, j, k;
-    Mtx *mt;
     Mtx *cmd;
 
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
@@ -102,10 +101,11 @@ void Obj::draw() {
                 }
             }
         }
-        mt = (Mtx *)((char *)&D_00000000_i + 0x3C8A0);
+#define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt);
         gctx = GS->ctx;
         gctx->push(mt, cmd);
+#undef mt
     } else {
         Mtx *c2; gctx = GS->ctx; func_00000000(A, c2 = gctx->mtx()); gctx->load(c2);
     }
