@@ -870,7 +870,7 @@ sw_end:
         *(char **)((char *)(arg0) + 0x850) = var_s1;
         func_00000000(arg0, var_s1);
         var_s0 = *(char **)((char *)(arg0) + 0x850);
-        temp_f0 = 0.0f;
+        temp_f0 = fi(0);
         *(f32 *)((char *)(var_s0) + 0xB4) = temp_f0;
         *(f32 *)((char *)(var_s0) + 0xBC) = temp_f0;
         *(f32 *)((char *)(var_s0) + 0xB8) = 100.0f;
