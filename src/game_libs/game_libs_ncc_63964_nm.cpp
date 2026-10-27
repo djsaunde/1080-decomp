@@ -21,7 +21,8 @@
  * Then `V3 out(0, 0, 0)` through an int-parameter ctor overload (kit CXIX rule: the int -> float conversion is
  * folded after candidate selection, so out's zeros get their own local f0 instead of joining acc's f16 LR):
  * body 1120 = target, 98.66 (spelling-grid).
- * LEFT: the arm-1 sum / operator= param 8 bytes low, v0 / v1 swapped (return slot address vs count). */
+ * Then `count = 1;` BEFORE the arm-1 out assignment: count keeps v1 and the return-slot address v0 (99.88).
+ * LEFT: the arm-1 sum temp (target sp+144) and the shared operator= parameter (target sp+116) 8 bytes low. */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
@@ -50,13 +51,13 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     V3 out(0, 0, 0); if (1) {}
     int count;
     V3 n = va - vb;
-    { V3 t; }
+     { V3 t; }
     count = 0;
     acc = 0.0f; if (1) {}
     gl_func_00000000(&n);
     if (va.y < (f32)0.0) {
-        out = va + n * va.y;
         count = 1;
+        out = va + n * va.y;
         if (1) {} acc += va.y;
     }
     if (vb.y < 0.0f) {
