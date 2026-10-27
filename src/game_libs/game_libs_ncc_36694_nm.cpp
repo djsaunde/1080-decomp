@@ -56,9 +56,9 @@ extern "C" V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_
             py = py * m1;
         }
         one = (f32)1;
-        vD8.z = pz;
         vD8.x = px;
         vD8.y = py;
+        vD8.z = pz;
         { f32 h_x2 = vD8.x * one; f32 h_y2 = vD8.y * one; f32 h_z2 = vD8.z * one;
         v3C.y = h_y2; v3C.z = h_z2; v3C.x = h_x2; }
         vBC = v3C;
