@@ -27652,13 +27652,17 @@ void gl_func_0005EF00(f32 (*m)[4], Vec3 *v, f32 angle) {
  * second `if (1) {}` dropped: c and the 0.0f constant land in the target's
  * fs0 / fs1 and the frame stays 0x80; xs / ys declared before zy / xz put
  * the zy / xz homes at the target's sp+60 / sp+56 (91.73 -> 92.39 local).
- * Left: x*s is not memory-homed (target stores it to sp+52 and reloads),
- * and the (1-c)*xy / z*s products swap f8 / f10. */
+ * xs VOLATILE (the target stores x*s to its home and reloads it at both
+ * uses): 92.39 -> 99.56 local, length = target. Left: the xs home is 16
+ * bytes high (sp+68, target sp+52) and the (1-c)*xy / z*s products swap
+ * f8 / f10. */
 #ifdef NON_MATCHING
 extern float gl_func_00000000_f54c(float);
 extern f32 D_5F0B8_dtor;
 void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
-    f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t, xs, ys, zy, xz;
+    f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t;
+    volatile f32 xs;
+    f32 ys, zy, xz;
 
     a = angle * D_5F0B8_dtor;
     s = gl_func_00000000_f54c(a);
