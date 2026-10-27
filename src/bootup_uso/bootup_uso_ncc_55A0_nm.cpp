@@ -204,8 +204,8 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* list object (0x6C) */
-        D_55A0_k1[1] = 0x28002;
-        D_55A0_k2[0] = 0; nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
+        D_55A0_G.b = 0x28002;
+        D_55A0_G.a = 0; nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
         v3.w = D_55A0_v3.w;
         p1.w = D_55A0_v3.w;
         obj = (char *)func_00000000(0x6C);
