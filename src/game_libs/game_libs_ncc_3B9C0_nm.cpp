@@ -75,7 +75,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         if (dn > -0.0001) {
             continue;
         }
-        ok = 1;
+        ok = 1; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
         t = -(a->x * n->x + a->y * n->y + a->z * n->z - self->tris[i].d) / dn;
         p.x = a->x + d.x * t;
         p.y = a->y + d.y * t;
