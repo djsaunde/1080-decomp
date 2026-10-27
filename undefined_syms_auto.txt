@@ -3587,6 +3587,8 @@ D_34890_e = 0x00000000;  /* gl_func_00034890 per-site alias of D_00000000 (defea
 game_libs_func_00029CCC_rodata = 0x00000FF0;  /* switch(state) 9-entry jumptable: USO ships it in game_libs data at +0xFF0; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_29CCC.c) */
 /* switch(scr->0x3CC) 11-entry jumptable: USO ships it in block-5 RoData at +0x190; donor-local .rodata reloc renamed by replace-function-body.py (timproc_uso_b5_o2_5FC0.c). No trailing comment: bake-data-relocs.py parses the value. */
 timproc_uso_b5_func_00005FC0_rodata = 0x00000190;
+/* titproc_uso_func_000005DC 12-entry jumptable: titproc RoData +0x0 (target %lo(import_00263E00)); donor titproc_uso_5DC.c */
+titproc_uso_func_000005DC_rodata = 0x00000000;
 timproc_uso_b5_func_00001F14_rodata = 0x000000C8;
 timproc_uso_b5_func_00008AFC_rodata = 0x00000238;
 timproc_uso_b5_func_00002B74_rodata = 0x0000011C;
