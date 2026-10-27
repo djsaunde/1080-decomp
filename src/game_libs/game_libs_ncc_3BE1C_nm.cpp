@@ -6,9 +6,11 @@
  * D_3BE1C_128 (held base, as the target), off computed BEFORE the grp test, the material callback through a
  * `Col *cc` copy of self->col (off then spills around the call like the target), the 0x100 test as a nested
  * block instead of `continue` (no duplicated loop test), t->a / t->b read before the 0x200 branch, and the
- * edge walk as the cfe do-while with `fv++` inside the condition. cfe 77.27 -> 82.57 local, 1572 bytes
- * (target 1568, cfe 1528). Residual: one s-register too many (s8; frame 0x100 vs 0xF0), the r copy into a0,
- * the MAX/MIN arm order and FP colouring. Still NON_MATCHING. */
+ * edge walk as the cfe do-while with `fv++` inside the condition and the table read `*nx` then `nx++` as
+ * its own statement (`*nx++` reads through a copy of the old pointer that takes an s-register). cfe 77.27 ->
+ * 83.38 local, 1564 bytes (target 1568, cfe 1528). Residual: &q is hoisted into s8 (frame 0x108 vs 0xF0;
+ * a V3 q with (&q.x)[k] is identical), the r copy into a0, the first inner MAX evaluated as two arms (the
+ * target pre-assigns one arm before the branch) and FP colouring. Still NON_MATCHING. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
@@ -100,7 +102,8 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                 u16 *fv = (u16 *)f;
                 do {
                     s16 *v0 = vt[fv[1]];
-                    s16 *v1 = vt[f->vi[*nx++]];
+                                    s16 *v1 = vt[f->vi[*nx]];
+                nx++;
                     s16 ex = v1[a] - v0[a];
                     s16 ey = v1[b] - v0[b];
                     s16 dx = (int)(qa - v0[a]);
