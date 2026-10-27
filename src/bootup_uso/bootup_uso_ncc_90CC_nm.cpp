@@ -360,9 +360,9 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
                 *(s32 *)((char *)(sp8C) + 0xC) = (s32) &D_00008018_s13;
                 *(s32 *)((char *)(sp8C) + 0x14) = 0;
                 *(f32 *)((char *)(sp8C) + 0x10) = (f32) D_00000884;
-                var_s1 = (char *)&sp7C;
             }
             spFC.w = *(s32 *)((char *)&D_00000000 + 0x8790);
+            var_s1 = (char *)&sp7C;
             sp80 = var_s0 + 0x20;
             *(W90 *)var_s1 = spFC;
             if ((var_s0 != (void *)-0x20) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
