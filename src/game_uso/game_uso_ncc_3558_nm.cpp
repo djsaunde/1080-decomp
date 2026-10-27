@@ -59,7 +59,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     Vec3 va;
     va.x = c.getOut()->pos.x; va.y = c.getOut()->pos.y; va.z = c.getOut()->pos.z;
     Vec3 vb;
-    s0->b0->mtx.getPos(vb);
+    { Body *b = s0->b0; b->mtx.getPos(vb); } /* run 180: named block pointer (76.73 -> 77.2) */
     Vec3 e;
     Vec3 pad1;
     Vec3 stage;
