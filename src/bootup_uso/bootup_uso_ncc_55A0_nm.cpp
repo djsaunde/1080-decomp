@@ -100,9 +100,9 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         D_55A0_G.b = 0x28002;
         D_55A0_G.a = 0;
         D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
+        it = (R12_55A0 *)&D_00007E24;
         if (D_55A0_listchk != 0) {
             if (1) { R12_55A0 **q = &it; }
-            it = (R12_55A0 *)&D_00007E24; if (1) {}
             do {
                 func_00000000(&D_55A0_fmt, it->w, it);
                 func_00000000(D_55A0_list2, it);
