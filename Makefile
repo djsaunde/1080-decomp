@@ -2287,10 +2287,10 @@ build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY
 GAMELIBS_63964_NM_DONOR := build/src/game_libs/game_libs_ncc_63964_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00063964=$(GAMELIBS_63964_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_63964_NM_DONOR)
-# 690A8 = vertex transform (C++: inline M4::xf(V3 &) on a stack V3; run 182). NM comparison object only.
-GAMELIBS_690A8_NM_DONOR := build/src/game_libs/game_libs_ncc_690A8_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000690A8=$(GAMELIBS_690A8_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_690A8_NM_DONOR)
+# 690A8 = vertex transform; NCC donor, EXACT (agent-g run 182: inline M4::xf(V3 &) on one stack V3 declared before loop 1).
+GAMELIBS_690A8_DONOR := build/src/game_libs/game_libs_ncc_690A8.cpp.o
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000690A8=$(GAMELIBS_690A8_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_690A8_DONOR)
 # 67D50 = memset; NCC donor (cfe capped at 2 raw).
 GAMELIBS_67D50_DONOR := build/src/game_libs/game_libs_ncc_67D50.cpp.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00067D50=$(GAMELIBS_67D50_DONOR)

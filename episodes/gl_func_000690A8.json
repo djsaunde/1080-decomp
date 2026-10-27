@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000690A8",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-27T23:15:50.074346+00:00",
+  "end_time": "2026-10-27T23:15:50.074372+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-27T23:15:50.074366+00:00",
+      "assistant_text": "Exact as a C++ (NCC) donor: the cfe body approximated the vertex transform with scrambled operand orders; it is an inline M4::xf(V3 &) member applied in place to one stack V3 (the target's lwc1 112(v0); lwc1 128(v0); addiu v0,v0,112 is the matrix this temp), natural row-vector sums; V3 v declared at function scope before loop 1 so the register-coloured loop-1 compound-assignment temporary is allocated below v and costs no frame bytes (frame 48).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 191,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000690A8 (0x2FC / 191 words): vertex transform. EXACT; spliced\n * into BOTH build trees via REPLACE_FUNC_BODY over the INCLUDE_ASM body (Makefile GAMELIBS_690A8_DONOR).\n * agent-g run 182 (docs/IDO_CODEGEN.md kit CXXXI): the cfe body (86.90) needed scrambled operand orders\n * to approximate the transform; it is an inline M4 member applied to a stack V3 by reference: the\n * target's `lwc1 112(v0); lwc1 128(v0); addiu v0,v0,112` is the matrix `this` temp materialised after its\n * first two folded loads (kit CXXIX this-adjust shape), and v is ONE memory object updated in place by\n * both transforms; natural row-vector sums give every FP instruction.\n * Frame: v is declared at function scope, BEFORE loop 1. uopt only reserves frame bytes down to the\n * lowest memory-resident variable; register-coloured edg temporaries (the `-=` lvalue address of loop 1,\n * the xf `this`) cost nothing when they are allocated BELOW v, but the loop-1 temp sits above a v declared\n * inside loop 2 and pushes v (and the frame) down by 8 (99.91). The call targets are blank imports\n * (`jal 0`): gl_func_00000000 is pinned to 0. */\ntypedef float f32;\ntypedef short s16;\nextern \"C\" void *gl_func_00000000(...);\nstruct V3s { s16 x, y, z; };\nstruct Pr { s16 a, b; };\nstruct V3 { f32 x, y, z; };\nstruct M4 {\n    f32 m[4][4];\n    void xf(V3 &v) const {\n        f32 x = m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z + m[3][0];\n        f32 y = m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z + m[3][1];\n        f32 z = m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z + m[3][2];\n        v.x = x; v.y = y; v.z = z;\n    }\n};\nstruct Body { char pad[0x70]; M4 mtx; };\nstruct Tab { char pad[0x30]; s16 *s; char pad34[4]; Body *body; };\nstruct Obj { char pad[0x18]; Body *src; Pr *pairs; int count; V3s *out; M4 m28; M4 m68; };\nextern \"C\" void gl_func_000690A8(Obj *o, Tab *t, V3s *arg2) {\n    int i;\n    V3 v;\n    for (i = 0; i < o->count; i++) {\n        t->s[o->pairs[i].a] -= o->pairs[i].b;\n    }\n    o->out = (V3s *)gl_func_00000000(o->count * sizeof(V3s));\n    o->m68 = o->src->mtx;\n    gl_func_00000000(&o->src->mtx, &o->m28);\n    for (i = 0; i < o->count; i++) {\n        V3s *s = &arg2[o->pairs[i].a];\n        v.x = s->x; v.y = s->y; v.z = s->z;\n        t->body->mtx.xf(v);\n        o->m28.xf(v);\n        o->out[i].x = v.x;\n        o->out[i].y = v.y;\n        o->out[i].z = v.z;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_690A8.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000690A8.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "report.json fuzzy 100.0; make ROM cmp byte-identical; spliced via REPLACE_FUNC_BODY into game_libs_post1b.c.o (both trees)."
+  }
+}

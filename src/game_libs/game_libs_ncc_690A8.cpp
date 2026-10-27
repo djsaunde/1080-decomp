@@ -1,14 +1,15 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_000690A8 (0x2FC / 191 words).
- * NM object only (build/non_matching); the ROM keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) donor for gl_func_000690A8 (0x2FC / 191 words): vertex transform. EXACT; spliced
+ * into BOTH build trees via REPLACE_FUNC_BODY over the INCLUDE_ASM body (Makefile GAMELIBS_690A8_DONOR).
  * agent-g run 182 (docs/IDO_CODEGEN.md kit CXXXI): the cfe body (86.90) needed scrambled operand orders
  * to approximate the transform; it is an inline M4 member applied to a stack V3 by reference: the
- * target's `lwc1 112(v0); lwc1 128(v0); addiu v0,v0,112` is the matrix `this` materialised after its first
- * two folded loads (kit CXXIX this-adjust shape), and v[] is ONE memory object updated in place by both
- * transforms. Natural row-vector sums (m[0][0]*x + m[1][0]*y + m[2][0]*z + m[3][0]) give every FP
- * instruction. 191 words = target.
- * LEFT: frame 56 vs 48 -- the target homes only i and v; the compound `-=` in loop 1 makes edg home its
- * lvalue address (4 bytes -> +8 frame), while the plain `x = x - b` spelling keeps the frame but swaps
- * v0 / v1 between the pair pointer and the destination address. */
+ * target's `lwc1 112(v0); lwc1 128(v0); addiu v0,v0,112` is the matrix `this` temp materialised after its
+ * first two folded loads (kit CXXIX this-adjust shape), and v is ONE memory object updated in place by
+ * both transforms; natural row-vector sums give every FP instruction.
+ * Frame: v is declared at function scope, BEFORE loop 1. uopt only reserves frame bytes down to the
+ * lowest memory-resident variable; register-coloured edg temporaries (the `-=` lvalue address of loop 1,
+ * the xf `this`) cost nothing when they are allocated BELOW v, but the loop-1 temp sits above a v declared
+ * inside loop 2 and pushes v (and the frame) down by 8 (99.91). The call targets are blank imports
+ * (`jal 0`): gl_func_00000000 is pinned to 0. */
 typedef float f32;
 typedef short s16;
 extern "C" void *gl_func_00000000(...);
@@ -29,6 +30,7 @@ struct Tab { char pad[0x30]; s16 *s; char pad34[4]; Body *body; };
 struct Obj { char pad[0x18]; Body *src; Pr *pairs; int count; V3s *out; M4 m28; M4 m68; };
 extern "C" void gl_func_000690A8(Obj *o, Tab *t, V3s *arg2) {
     int i;
+    V3 v;
     for (i = 0; i < o->count; i++) {
         t->s[o->pairs[i].a] -= o->pairs[i].b;
     }
@@ -37,7 +39,6 @@ extern "C" void gl_func_000690A8(Obj *o, Tab *t, V3s *arg2) {
     gl_func_00000000(&o->src->mtx, &o->m28);
     for (i = 0; i < o->count; i++) {
         V3s *s = &arg2[o->pairs[i].a];
-        V3 v;
         v.x = s->x; v.y = s->y; v.z = s->z;
         t->body->mtx.xf(v);
         o->m28.xf(v);
