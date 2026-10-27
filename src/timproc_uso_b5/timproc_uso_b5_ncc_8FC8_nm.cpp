@@ -339,7 +339,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
         if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
     }
     d->add(1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
-    B *e2 = d->add(1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
+    B *volatile e2 = d->add(1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f); /* run 182 (lever-sweep volatile): e2 homed */
     B *e3 = d->add(1, 3, -220.0f, 200.0f, -400.0f, 0.0, 0.0f, 0.0f);
     timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
     switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
