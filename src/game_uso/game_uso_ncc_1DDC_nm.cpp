@@ -48,9 +48,12 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
     if (a0->key == 3) {
         V3 m;
         Ctx c(a0);
-        a0->src->mtx.getPos(m);
+        /* run 179 (spelling grid): the matrix read through a const M4 & block
+         * local and the pos copy as set(m) give every register (99.77 -> 99.92);
+         * left: the two reference homes put the frame 8 bytes over the target */
+        { const M4 &mm = a0->src->mtx; mm.getPos(m); }
         { Out *o = c.getOut(); o->goal.x = m.x; o->goal.y = m.y; o->goal.z = m.z; }
-        Out *o = c.getOut(); o->pos.x = m.x; o->pos.y = m.y; o->pos.z = m.z;
+        c.getOut()->pos.set(m);
     } else {
         V3 r;
         V3 e;
@@ -59,7 +62,7 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
         Ctx c(a0);
         V3 acc;
         ref.set(c.getOut()->pos);
-        a0->obj->mtx.getPos(self);
+        { const M4 &mm = a0->obj->mtx; mm.getPos(self); }
         r = game_uso_func_000023D4(a0);
         self += r;
         float speed = a0->spd;
