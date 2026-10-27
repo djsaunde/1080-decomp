@@ -7359,8 +7359,8 @@ void func_0000B75C(char *arg0) {
             temp_v0_2 = *(s16 *)((char *)(arg0) + 0xA6C);
             *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1);
             if (temp_v0_2 >= 0xB) {
-                temp_f12_2 = D_000008E0;
                 temp_f0_2 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * D_000008E8));
+                temp_f12_2 = D_000008E0; /* run 182 (lever-sweep order) */
                 if (temp_f0_2 < temp_f12_2) {
                     var_f2 = temp_f12_2;
                 } else {
