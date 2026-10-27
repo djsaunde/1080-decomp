@@ -142,7 +142,7 @@ void Obj::draw() {
         }
         AIter it = arr.iter();
         while (it.next()) {
-            it.cur()->draw(this);
+            it.cur()->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
         }
     }
 }
