@@ -848,7 +848,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         head = E68_NEXT(m);
         E68_VTX(head, func_00000000(&D_e68_vtx), 4, 0);
         E68_W(E68_NEXT(m), 0xBE000000, 6);
-        E68_W(E68_NEXT(m), 0xE7000000, 0);
+        E68_W(E68_NEXT(m), 0xE7000000, 0); if (1) {} /* run 182 (lever-sweep bbsplit) */
         E68_W(E68_NEXT(m), 0xBA001402, 0);
         E68_W(E68_NEXT(m), 0xBB000001, 0x80008000);
         E68_W(E68_NEXT(m), 0xB6000000, 0x33205);
