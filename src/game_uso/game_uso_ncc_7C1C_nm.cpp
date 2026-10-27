@@ -268,8 +268,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
         }
 
         metric = game_uso_func_082880(resDir.x * resDir.x + resDir.z * resDir.z);
-        hit = 0;
         thresh = *(f32 *)(arg3 + 0x54) * 250.0f;
+        hit = 0; /* run 182 (lever-sweep order) */
         if (thresh < metric) {
             game_uso_func_00003FAC(&hitA.x, &hitB.x, &resDir.x, metric, thresh);
             hit = 1;
