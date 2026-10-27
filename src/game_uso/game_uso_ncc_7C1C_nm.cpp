@@ -206,8 +206,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
 
         if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
             tz = *(f32 *)((int)q + 8);
+            p->y = 0.0f; /* run 182 (lever-sweep order; p is &mC2 or fresh memory, no alias with q) */
             tx = *q;
-            p->y = 0.0f;
             p->z = tz;
             p->x = tx;
         }
