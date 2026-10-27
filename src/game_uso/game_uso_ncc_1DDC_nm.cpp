@@ -64,7 +64,7 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
         ref.set(c.getOut()->pos);
         { const M4 &mm = a0->obj->mtx; mm.getPos(self); }
         r = game_uso_func_000023D4(a0);
-        self += r;
+        self.x += r.x; self.y += r.y; self.z += r.z; /* run 179: spelled out (grid) */
         float speed = a0->spd;
         V3 diff(self.x - ref.x, 0.0f, self.z - ref.z);
         float mag = game_uso_func_070238(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
