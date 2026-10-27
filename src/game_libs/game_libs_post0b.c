@@ -9772,86 +9772,13 @@ void gl_func_00040018(Quad4 *dst) {
 // (b) round-2 cascade accumulator colors a2 in target vs v1 here
 // (while(0) anchor inert); (c) FP-ring phase f4/f18 swap in the tail.
 // Placeholder callees (gl_func_00034458) — stays NM wrap regardless.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00040070)();
-typedef struct { int unk0,unk4,unk8,unkC,unk10,unk14,unk18,unk1C; } Q_00040070;
-extern u8 D_40070_vta[];   /* per-site baked-USO vtable aliases: distinct so the */
-extern u8 D_40070_vtb[];   /* &sym CSE doesn't fold the dead get-or-create guards */
-typedef struct { int w0, w1, w2; } W3_40070;
+/* gl_func_00040070: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_40070.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 181): Obj::Obj(void *, float, float, float);
+ * the 0x104 element is an int store and the W4f wrapper ctor tests a float zero (keeps the FP-zero
+ * constant live across the member protocol = the target's mtc1 zero after each alloc). */
 s32 *gl_func_00040070(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 *var_a2;
-    s32 *temp_v0;
-    s32 *temp_v0_2;
-    s32 *temp_v0_3;
-    f32 sp54[3];
-    s32 *temp_v0_4;
-    s32 *temp_v0_5;
-    s32 *temp_v0_6;
-    s32 *var_a0;
-    s32 *var_v1;
-    W3_40070 sp34;
-    s32 *var_a2_3;
-    s32 *var_v1_2;
-    volatile s32 pad28;
-    volatile s32 pad24;
-    s32 *sp6C;
-
-    if ((arg0 != 0) || (temp_v0 = gl_func_00034458((s32 *)0x108), arg0 = temp_v0, (temp_v0 != 0))) {
-        var_a2 = arg0;
-        if ((arg0 != 0) || (temp_v0_2 = gl_func_00034458((s32 *)0xB4), var_a2 = temp_v0_2, (temp_v0_2 != 0))) {
-            sp6C = var_a2;
-            gl_func_00034458(var_a2, arg1);
-            FW(var_a2, 0x28) = (s32) D_40070_vta;
-            var_v1 = (s32 *)((char *)var_a2 + 0x2C);
-            if (((var_a2 != (s32 *)-0x2C) || (sp6C = var_a2, temp_v0_3 = gl_func_00034458((s32 *)4), var_v1 = temp_v0_3, (temp_v0_3 != 0))) && ((var_a0 = var_v1, (var_v1 != 0)) || (sp6C = var_a2, temp_v0_4 = gl_func_00034458((s32 *)4), var_a0 = temp_v0_4, (temp_v0_4 != 0)))) {
-                *var_a0 = 0;
-            }
-            sp6C = var_a2;
-            gl_func_00034458(var_a2);
-            sp54[0] = 0.0f;
-            sp54[1] = 0.0f;
-            sp54[2] = 0.0f; if (1) {}
-            gl_func_00034458((s32 *)((char *)var_a2 + 0x30), sp54);
-        }
-        FW(arg0, 0x28) = (s32) D_40070_vtb;
-        var_a2_3 = (s32 *)((char *)arg0 + 0x104); if (1) {}
-        if (((arg0 != (s32 *)-0x104) || (temp_v0_5 = gl_func_00034458((s32 *)4), var_a2_3 = temp_v0_5, (temp_v0_5 != 0))) && ((var_v1_2 = var_a2_3, (var_a2_3 != 0)) || (temp_v0_6 = gl_func_00034458((s32 *)4), var_v1_2 = temp_v0_6, (temp_v0_6 != 0)))) {
-            *var_v1_2 = 0;
-        }
-        *(f32 *)((char *)arg0 + 0xCC) = 0.0f;
-        FW(arg0, 0x8) = (s32) (FW(arg0, 0x8) | 0x20000);
-        *(f32 *)((char *)arg0 + 0xD0) = 0.0f;
-        *(f32 *)((char *)arg0 + 0xD4) = 0.0f;
-        *(f32 *)((char *)arg0 + 0xD8) = 1.0f;
-        *(f32 *)((char *)arg0 + 0xC0) = 1.0f;
-        *(f32 *)((char *)arg0 + 0xC4) = 1.0f;
-        *(f32 *)((char *)arg0 + 0xC8) = 1.0f;
-        *(f32 *)((char *)arg0 + 0xB4) = *(f32 *)&arg2;
-        *(f32 *)((char *)arg0 + 0xB8) = *(f32 *)&arg3;
-        *(f32 *)((char *)arg0 + 0xBC) = *(f32 *)&arg4;
-        sp34 = *(W3_40070 *)((char *)arg0 + 0xB4);
-        *(f32 *)((char *)arg0 + 0xDC) = *(f32 *)&sp34.w0;
-        *(f32 *)((char *)arg0 + 0xE0) = *(f32 *)&sp34.w1;
-        *(f32 *)((char *)arg0 + 0xE4) = *(f32 *)&sp34.w2;
-        sp34 = *(W3_40070 *)((char *)arg0 + 0xC0);
-        *(f32 *)((char *)arg0 + 0xE8) = *(f32 *)&sp34.w0;
-        *(f32 *)((char *)arg0 + 0xEC) = *(f32 *)&sp34.w1;
-        *(f32 *)((char *)arg0 + 0xF0) = *(f32 *)&sp34.w2;
-        sp34 = *(W3_40070 *)((char *)arg0 + 0xCC);
-        *(f32 *)((char *)arg0 + 0xF4) = *(f32 *)&sp34.w0;
-        *(f32 *)((char *)arg0 + 0xF8) = *(f32 *)&sp34.w1;
-        *(f32 *)((char *)arg0 + 0x100) = *(f32 *)((char *)arg0 + 0xD8);
-        *(f32 *)((char *)arg0 + 0xFC) = *(f32 *)&sp34.w2;
-        gl_func_00034458((s32 *)((char *)arg0 + 0xDC), (s32 *)((char *)arg0 + 0x70));
-    }
     return arg0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00040070);
-#endif
 
 /* gl_func_000402A4: 24-insn Vec3 add-to-fields-and-call.
  *   a0->vec[0..2] += (dx, dy, dz);  // floats at offsets 0xB4/B8/BC

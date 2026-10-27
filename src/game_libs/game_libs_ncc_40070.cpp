@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00040070 (0x234 / 141 words), agent-c run 157.
+/* IDO 7.1 NCC (C++) donor for gl_func_00040070 (0x234 / 141 words), EXACT (agent-c run 181; first draft agent-c run 157).
  * A C++ constructor Obj::Obj(void *a1, float x, float y, float z) : Base(a1): cfront `this == 0 -> new(0x108)`,
  * inline Base ctor (`new(0xB4)` fallback, external BB ctor -- BB itself declares a virtual, which is what puts
  * the vptr at 0x28 -- a W4 member at 0x2C with the 4E584 nested protocol, `gl(this)`, a zeroed float[3] passed
@@ -15,7 +15,11 @@
  * agent-c run 161: the frame (0x70 = target): four unused volatile homes in a block right after zero() in the inline
  * Base ctor (they land between z and the V3 temp) and four more in a block after the last call of the Obj ctor (below
  * the V3 temp), zero instructions: 99.35 -> 99.57, diff = the single 0x104 element store.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-c run 181: EXACT. The 0x104 element is an INT store (`sw zero`, M4f { int a; }) and the FP-zero constant stays
+ * live across the W4f member protocol (the target's `mtc1 zero,$f2` after each of its two new(4) calls) because the
+ * W4f ctor itself tests a float zero: `W4f() { float z = 0.0f; if (z) {} }` -- an initialised local, folded to nothing,
+ * but it is a use of 0.0f inside the region, so uopt does not split the constant's live range there.
+ * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees). */
 typedef int s32;
 extern "C" {
 void *gl_func_00034458(...);
@@ -23,8 +27,8 @@ void *gl_func_00034458(...);
 inline void *operator new(unsigned n) { return gl_func_00034458(n); }
 struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };
-struct M4f { float a; M4f() { a = 0.0f; } };
-struct W4f { M4f m; W4f() {} };
+struct M4f { int a; M4f() { a = 0; } };
+struct W4f { M4f m; W4f() { float z = 0.0f; if (z) {} } };
 struct V3 { float x, y, z; void set(V3 v) { x = v.x; y = v.y; z = v.z; } };
 struct Q4 { V3 v; float w; void set(const Q4 &q) { v.set(q.v); w = q.w; } };
 struct BB { int pad0[2]; int flags; int pad[7]; BB(void *a1); virtual void f(); };

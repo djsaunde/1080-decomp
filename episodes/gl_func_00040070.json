@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00040070",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-27T23:04:23.343902+00:00",
+  "end_time": "2026-10-27T23:04:23.343931+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-27T23:04:23.343923+00:00",
+      "assistant_text": "C++ ctor Obj::Obj; the 0x104 element is an int store while the W4f wrapper ctor tests a float zero (float z = 0.0f; if (z) {}), keeping the FP-zero constant live across the member protocol; NCC donor spliced over an empty placeholder in both trees.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 141,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00040070 (0x234 / 141 words), EXACT (agent-c run 181; first draft agent-c run 157).\n * A C++ constructor Obj::Obj(void *a1, float x, float y, float z) : Base(a1): cfront `this == 0 -> new(0x108)`,\n * inline Base ctor (`new(0xB4)` fallback, external BB ctor -- BB itself declares a virtual, which is what puts\n * the vptr at 0x28 -- a W4 member at 0x2C with the 4E584 nested protocol, `gl(this)`, a zeroed float[3] passed\n * to gl(m30, z)), Obj's vptr, a W4f member at 0x104 whose element is a FLOAT zero (that use keeps the FP zero\n * constant live across the member protocol, so uopt rematerialises `mtc1 zero` after every call there like the\n * target; with an int element the zero is materialised once at the join, two words short), and the Vec3 copies\n * as `set(V3 v)` with a BY-VALUE parameter (the target's int-word copy into a stack temp, then float stores).\n * cfe 95.03 -> 99.28, length = target. Run 158: the 0xCC..0xD8 block is a Q4 (V3 + w, the rotation) and the\n * 0xF4 copy is `f4.set(rq)` through `Q4::set(const Q4 &)` forwarding to the by-value V3 set (the target's\n * ft0 for the w load), 99.28 -> 99.35; the zeroed float[3] lives in an inline `zero()` (z homes at the\n * target's M-20..M-28). Residual: frame 0x50 vs 0x70 (four more homes between z and the V3 temp, four below)\n * and the 0x104 element store (`sw zero` in the target, swc1 here; an int element loses the FP-zero remats:\n * uopt then splits the zero constant's live range, kit CVI). \n * agent-c run 161: the frame (0x70 = target): four unused volatile homes in a block right after zero() in the inline\n * Base ctor (they land between z and the V3 temp) and four more in a block after the last call of the Obj ctor (below\n * the V3 temp), zero instructions: 99.35 -> 99.57, diff = the single 0x104 element store.\n * agent-c run 181: EXACT. The 0x104 element is an INT store (`sw zero`, M4f { int a; }) and the FP-zero constant stays\n * live across the W4f member protocol (the target's `mtc1 zero,$f2` after each of its two new(4) calls) because the\n * W4f ctor itself tests a float zero: `W4f() { float z = 0.0f; if (z) {} }` -- an initialised local, folded to nothing,\n * but it is a use of 0.0f inside the region, so uopt does not split the constant's live range there.\n * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees). */\ntypedef int s32;\nextern \"C\" {\nvoid *gl_func_00034458(...);\n}\ninline void *operator new(unsigned n) { return gl_func_00034458(n); }\nstruct M4 { int a; M4() { a = 0; } };\nstruct W4 { M4 m; W4() {} };\nstruct M4f { int a; M4f() { a = 0; } };\nstruct W4f { M4f m; W4f() { float z = 0.0f; if (z) {} } };\nstruct V3 { float x, y, z; void set(V3 v) { x = v.x; y = v.y; z = v.z; } };\nstruct Q4 { V3 v; float w; void set(const Q4 &q) { v.set(q.v); w = q.w; } };\nstruct BB { int pad0[2]; int flags; int pad[7]; BB(void *a1); virtual void f(); };\nstruct Base : BB {\n    W4 m2c;\n    char m30[0xB4 - 0x30];\n    Base(void *a1) : BB(a1) {\n        gl_func_00034458(this);\n        zero(); { volatile int p1, p2, p3, p4; }\n    }\n    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; gl_func_00034458(m30, z); }\n    virtual void f();\n};\nstruct Obj : Base {\n    V3 b4, c0;\n    Q4 rq;\n    V3 dc, e8;\n    Q4 f4;\n    W4f m104;\n    Obj(void *a1, float x, float y, float zz);\n    virtual void f();\n};\nObj::Obj(void *a1, float x, float y, float zz) : Base(a1) {\n    rq.v.x = 0.0f;\n    flags |= 0x20000;\n    rq.v.y = 0.0f;\n    rq.v.z = 0.0f;\n    rq.w = 1.0f;\n    c0.x = 1.0f;\n    c0.y = 1.0f;\n    c0.z = 1.0f;\n    b4.x = x;\n    b4.y = y;\n    b4.z = zz;\n    dc.set(b4);\n    e8.set(c0);\n    f4.set(rq);\n    gl_func_00034458(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_40070.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}

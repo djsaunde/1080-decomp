@@ -1806,14 +1806,14 @@ $(GAMELIBS_3E5E0_NM_DONOR): src/game_libs/game_libs_ncc_3E5E0_nm.cpp
 	$(OBJCOPY) --redefine-sym __vtbl__1K=D_3E5E0_vk --redefine-sym __vtbl__3CB1=D_3E5E0_v1 --redefine-sym __vtbl__3CB2=D_3E5E0_v2 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003E5E0=$(GAMELIBS_3E5E0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3E5E0_NM_DONOR)
-# 40070 = C++ ctor (cfront protocol, inline Base ctor with W4 member, W4f float member at 0x104, by-value Vec3 set()); NCC NM-only donor (agent-c run 157, cfe 95.03), symbols renamed (names only).
-GAMELIBS_40070_NM_DONOR := build/src/game_libs/game_libs_ncc_40070_nm.cpp.o
-$(GAMELIBS_40070_NM_DONOR): src/game_libs/game_libs_ncc_40070_nm.cpp
+# 40070 = C++ ctor (cfront protocol, inline Base ctor with W4 member, W4f wrapper at 0x104 with an int element, by-value Vec3 set()); NCC donor, EXACT (agent-c run 181), symbols renamed (names only).
+GAMELIBS_40070_DONOR := build/src/game_libs/game_libs_ncc_40070.cpp.o
+$(GAMELIBS_40070_DONOR): src/game_libs/game_libs_ncc_40070.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=gl_func_00040070 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=D_40070_vtb --redefine-sym __vtbl__4Base=D_40070_vta $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040070=$(GAMELIBS_40070_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40070_NM_DONOR)
+	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=gl_func_00040070 --redefine-sym gl_func_00034458=gl_func_00000000 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=D_40070_vtb --redefine-sym __vtbl__4Base=D_40070_vta $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040070=$(GAMELIBS_40070_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40070_DONOR)
 # 3C43C = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.00). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3C43C_NM_DONOR := build/src/game_libs/game_libs_ncc_3C43C_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003C43C=$(GAMELIBS_3C43C_NM_DONOR)
