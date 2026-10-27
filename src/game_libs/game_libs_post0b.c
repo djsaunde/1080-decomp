@@ -19391,9 +19391,9 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     gl_func_00000000(vecC8);
 
     *(Tri3i *)vecB4 = *(Tri3i *)vecC8;
+    vecD4[0] = vecB4[0];
     vecD4[2] = vecB4[2];
     vecD4[1] = vecB4[1];
-    vecD4[0] = vecB4[0];
 
     cam = *(char **)(arg0 + 0x70);
     vecEC[0] = *(float *)(cam + 0xA0);
