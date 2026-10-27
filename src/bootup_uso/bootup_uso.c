@@ -4194,7 +4194,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         }
         p += count;
     } while (op != 12);
-    func_00000000();
+    func_00000000(); if (1) {} /* run 182 (lever-sweep bbsplit) */
     if (import_800200FC[0x3C / 4] == 6 || import_800200FC[0x3C / 4] == 11) {
         b4 = 5;
         b0 = 2;
