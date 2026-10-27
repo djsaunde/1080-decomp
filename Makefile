@@ -730,7 +730,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 178: 3BE1C NM NCC donor (0x5F8 -> 0x624 bytes, target 0x620): 0x2ea68 -> 0x2ea94 (62F08 NM offset 0x2ea44).
 # agent-c run 178: 3BE1C NM donor `*nx` / `nx++` split (0x624 -> 0x61C bytes): 0x2ea94 -> 0x2ea8c (62F08 NM offset 0x2ea3c).
 # agent-c run 178: 3BE1C NM donor de-named single-use locals + function-scope col copy (0x61C -> 0x618 bytes): 0x2ea8c -> 0x2ea88 (62F08 NM offset 0x2ea38).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea88 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 178: 4A308 NM donor v60 de-named, parameter empty test dropped (0x374 -> 0x364 bytes, target 0x368): 0x2ea88 -> 0x2ea78 (62F08 NM offset 0x2ea28).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea78 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -2021,7 +2022,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4E00C_NM_DONOR := build/src/game_libs/game_libs_ncc_4E00C_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E00C=$(GAMELIBS_4E00C_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E00C_NM_DONOR)
-# 4A308 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 76.89). Still NON_MATCHING: NM comparison object only.
+# 4A308 = NM C body lifted under NCC (agent-c run 134, cfe 76.89; run 178 v60 de-named, empty test dropped). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4A308_NM_DONOR := build/src/game_libs/game_libs_ncc_4A308_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A308=$(GAMELIBS_4A308_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_NM_DONOR)
