@@ -29,7 +29,6 @@ extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
     unsigned short fl = *(unsigned short *)(b + 0x174);
     int code;
     int skip;
-    float negamt;
     V impA, nnA;
     float t;
     float q;
@@ -43,12 +42,11 @@ extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
                 *(int *)((*(char **)(b + 0x170)) + 0x938) = *(int *)((*(char **)(b + 0x170)) + 0x938) + 1;
                 *(short *)((*(char **)(b + 0x170)) + 0x9A4) = (short)code;
                 if (amt < -30.0f) amt = -30.0f;
-                negamt = -amt;
                 {
                     unsigned short *fp = (unsigned short *)(*(char **)(b + 0x170) + 0xA10);
                     *fp |= *(unsigned short *)(b + 0x174);
                 }
-                impA = scaledBy(dir, (float)((double)negamt * 0.5));
+                impA = scaledBy(dir, (float)((double)-amt * 0.5));
                 {
                     float *ap = (float *)(*(char **)(b + 0x170) + 0xB4);
                     ap[0] += impA.x;
@@ -65,7 +63,7 @@ extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
                     float *mp = (float *)(*(char **)(b + 0x170) + 0x968);
                     *mp += amt;
                 }
-                nnA = scaledBy(dir, negamt);
+                nnA = scaledBy(dir, -amt); /* run 182 (lever-sweep de-naming): no named negamt */
                 func_8bd4_heavy(*(char **)(b + 0x170), b + 0x120, &nnA);
             }
         }
