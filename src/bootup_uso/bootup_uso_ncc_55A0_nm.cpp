@@ -54,6 +54,7 @@ extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
 typedef struct { int a, b; } G2_55A0;
 typedef struct { int w, x, y; } R12_55A0;
 extern G2_55A0 D_55A0_G;
+extern int D_55A0_k1[], D_55A0_k2[];
 extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
 extern char D_55A0_lb0, D_55A0_fmt, D_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&D_55A0_cfg + (o)))
@@ -203,8 +204,8 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* list object (0x6C) */
-        DI(4) = 0x28002;
-        DI(0) = 0; nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
+        D_55A0_k1[1] = 0x28002;
+        D_55A0_k2[0] = 0; nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
         v3.w = D_55A0_v3.w;
         p1.w = D_55A0_v3.w;
         obj = (char *)func_00000000(0x6C);
