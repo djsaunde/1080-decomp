@@ -232,7 +232,6 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
     f32 temp_f0;
     s32 var_v1;
     s32 temp_v0_51;
-    s32 *sp40;
 
     if ((arg0 != 0) || (temp_v0_5 = func_00000000(0xA8C), arg0 = temp_v0_5, (temp_v0_5 != 0))) {
         func_00000000(arg0, &D_00008730);
@@ -621,7 +620,6 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
             }
         }
         var_s0 = arg0 + 0x808; if (1) {}
-        sp40 = (s32 *)var_s0;
         if ((arg0 != (void *)-0x808) || (var_s0 = func_00000000(0xC), (var_s0 != 0))) {
             *(s32 *)var_s0 = 0;
         }
@@ -635,8 +633,8 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
         *(s32 *)((char *)(arg0) + 0x848) = arg1;
         *(s32 *)((char *)(arg0) + 0x8C4) = arg2;
         fq = (s32 *)arg0;
-        if (1) { fq += 6; }
-        *fq &= ~2;
+        fq += 6;
+        if (1) { *fq &= ~2; }
         *(s32 *)((char *)(arg0) + 0x8DC) = 0;
         /* target 0xA330-0xA388: beq-chain to out-of-line cases (default inline first,
          * case 7, then case 6 falling through) with per-case var_t1 = arg8|1 -- switch shape.
@@ -764,7 +762,7 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x870) = 0;
         *(s32 *)((char *)(arg0) + 0x868) = 0;
         *(s32 *)((char *)(arg0) + 0x86C) = 0;
-        func_00000000(sp40, arg1, arg2);
+        func_00000000(arg0 + 0x808, arg1, arg2);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 3) {
             func_00000000(bu_90cc_d87A4 + 0x5C, 0);
             *(char **)((char *)(arg0) + 0x86C) = func_00000000(0, bu_90cc_d87A4 + 0x64);
