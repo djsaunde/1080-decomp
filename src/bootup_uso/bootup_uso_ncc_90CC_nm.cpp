@@ -878,10 +878,10 @@ sw_end:
         func_00000000(arg0, var_s1);
         var_s0 = *(char **)((char *)(arg0) + 0x850);
         temp_f0 = fi(0);
-        *(f32 *)((char *)(var_s0) + 0xB4) = temp_f0;
-        *(f32 *)((char *)(var_s0) + 0xBC) = temp_f0;
-        *(f32 *)((char *)(var_s0) + 0xB8) = 100.0f;
         var_s0 += 0xB4;
+        *(f32 *)((char *)(var_s0) + 0x0) = temp_f0;
+        *(f32 *)((char *)(var_s0) + 0x8) = temp_f0;
+        *(f32 *)((char *)(var_s0) + 0x4) = 100.0f;
         *(char **)((char *)(arg0) + 0x840) = func_00000000(0, *(s32 *)((char *)&D_00000000 + 0), arg0);
         func_00000000();
         *(s32 *)((char *)(arg0) + 0x800) = arg4;
