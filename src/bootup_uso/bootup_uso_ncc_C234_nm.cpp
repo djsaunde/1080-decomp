@@ -270,7 +270,7 @@ cend:
         { /* run 156: held products */
             f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
             f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
-            f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
+            volatile f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0; /* run 182 (lever-sweep volatile, +2 words toward the target) */
             sp40.x = hx; sp40.y = hy; sp40.z = hz;
         }
         spB4 = sp40;
