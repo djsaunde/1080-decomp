@@ -5055,7 +5055,10 @@ done:
  * keeps the alloc size in shift form (a plain `* 6` CSEs with the loop-2 6 and
  * becomes multu). Residual: the transform FP colouring/schedule (target holds
  * v[0..2] in f8/f4/f6 and alternates f18/f10 for the matrix temps) and the
- * addu operand order of &arg2[idx]. */
+ * addu operand order of &arg2[idx].
+ * 2026-10-27 (agent-g run 182): the NM comparison object now takes the NCC (C++)
+ * donor src/game_libs/game_libs_ncc_690A8_nm.cpp (inline M4::xf(V3 &), 99.96);
+ * this cfe body is kept as the readable reference. */
 typedef struct { int _w[16]; } Mtx690A8;
 typedef struct { s16 x, y, z; } V3s690A8;
 typedef struct { s16 a, b; } Pr690A8;
