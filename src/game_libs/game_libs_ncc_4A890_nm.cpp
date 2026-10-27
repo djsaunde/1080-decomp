@@ -5,7 +5,9 @@
  * hit), each run closed by -1; the end pointer from a copy of the id cursor; then a heap copy of the list.
  * 86.41 -> 88.70 (length unchanged, 344 vs 352). Residual: the target holds the id copy and the byte size in s0 / s1
  * across the calls (ours: one s-register, the size spilled).
- * Still NON_MATCHING: build/non_matching/ only. */
+ * Still NON_MATCHING: build/non_matching/ only.
+ * agent-c run 179: the byte size `volatile s32 sz` (the target keeps it in s1; ours spills it either way, the volatile reload lines up the call tail): 88.70 -> 91.0 local.
+ */
 typedef short s16; typedef int s32;
 extern "C" {
 extern char D_00000000[];
@@ -37,7 +39,7 @@ s16 *Map::build(s32 n, s16 *ids) {
     if (t0 >= 299) {
         gl_func_00034458(D_00000000 + 0x20058);
     }
-    s32 sz = t0 * 2;
+    volatile s32 sz = t0 * 2;
     s16 *r = (s16 *)gl_func_00034458(sz);
     gl_func_00034458(r, list, sz);
     return r;

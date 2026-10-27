@@ -1,5 +1,7 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00036694: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 82.41).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
+ * agent-c run 179: v48 declared volatile (volatile-local sweep): 83.39 -> 83.88 local, length unchanged.
+ */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -21,7 +23,7 @@ extern "C" V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_
     V3_36694 v8C;
     V3_36694 v78;
     V3_36694 v5C;
-    V3_36694 v48;
+    volatile V3_36694 v48;
     V3_36694 v3C;
     V3_36694 v30;
     f32 px;
