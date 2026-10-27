@@ -22,14 +22,20 @@
  * folded after candidate selection, so out's zeros get their own local f0 instead of joining acc's f16 LR):
  * body 1120 = target, 98.66 (spelling-grid).
  * Then `count = 1;` BEFORE the arm-1 out assignment: count keeps v1 and the return-slot address v0 (99.88).
- * LEFT: the arm-1 sum temp (target sp+144) and the shared operator= parameter (target sp+116) 8 bytes low. */
+ * Then operator= forwarding to an inline `cp(const V3 &)`: its this / reference temporaries are homed AFTER the
+ * by-value parameter (the target's 8 unreferenced bytes at sp+108), which puts the arm-1 sum (sp+144), the
+ * parameter (sp+116) and every later arm on the target; the `{ V3 t; }` block is then dropped (99.96).
+ * LEFT: X (operator+ result, target sp+156) and the two operator* temps 8 bytes high -- an 8-byte gap
+ * between X and the sum that the target does not have (probably operator+'s reference temps), with the
+ * target's 12 unreferenced bytes above T2 missing instead. */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
     f32 x, y, z;
     V3() {}
     void zero() { x = y = z = 0.0f; }
-    void operator=(V3 o) { x = o.x; y = o.y; z = o.z; }
+    void operator=(V3 o) { cp(o); }
+    void cp(const V3 &o) { x = o.x; y = o.y; z = o.z; }
     void operator+=(const V3 &b) { x += b.x; y += b.y; z += b.z; }
     V3(f32 a, f32 b, f32 c) { set(a, b, c); }
     V3(int a, int b, int c) { set(a, b, c); }
@@ -51,7 +57,6 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     V3 out(0, 0, 0); if (1) {}
     int count;
     V3 n = va - vb;
-     { V3 t; }
     count = 0;
     acc = 0.0f; if (1) {}
     gl_func_00000000(&n);
