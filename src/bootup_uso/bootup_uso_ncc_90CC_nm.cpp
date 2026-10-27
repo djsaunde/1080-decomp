@@ -159,7 +159,7 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
     char *sp160;
     char *sp15C;
     char *sp158;
-    s32 var_t1;
+    s32 var_t1 = 0;
     char *var_s0;
     char *var_s1;
     char *temp_v0_5;
@@ -639,16 +639,16 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
         }
         *(s16 *)((char *)(arg0) + 0x900) = 4;
         *(s16 *)((char *)(arg0) + 0x902) = 7;
-        var_t1 = arg8;
+        
         goto sw_end;
 sw_c7:
         *(s16 *)((char *)(arg0) + 0x902) = 0x1A;
         *(s16 *)((char *)(arg0) + 0x900) = 0x19;
-        var_t1 = arg8 | 1;
+        arg8 |= 1;
         goto sw_end;
 sw_c6:
         *(s16 *)((char *)(arg0) + 0x902) = 0x18; *(s16 *)((char *)(arg0) + 0x900) = 0x17;
-        var_t1 = arg8 | 1;
+        arg8 |= 1;
 sw_end:
         sp174 = 0;
         if ((arg1 == 1) && (*(s32 *)((char *)&D_00000000 + 0x58) == *(s32 *)((char *)&D_00000000 + 0x4C))) {
@@ -709,7 +709,7 @@ sw_end:
                     *(f32 *)((char *)(arg0) + 0x8EC) = 164.0f / inv;
                 }
             }
-            var_t1 &= ~4;
+            arg8 &= ~4;
         } else {
             if (arg7 & 8) {
                 inv = 255.0f;
@@ -733,7 +733,7 @@ sw_end:
         temp_v0_51 = arg7 | 0x4800;
         *(s32 *)((char *)(arg0) + 0x8BC) = temp_v0_51;
         *(s32 *)((char *)(arg0) + 0xA58) = temp_v0_51;
-        *(s32 *)((char *)(arg0) + 0x8B8) = var_t1;
+        *(s32 *)((char *)(arg0) + 0x8B8) = arg8;
         func_00000000_p4f(temp_s1, arg0, 0x6D, 0x43160000, 200.0f);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 8) {
             *(s16 *)((char *)(arg0) + 0x88C) = 4;
