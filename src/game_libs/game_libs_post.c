@@ -2760,10 +2760,17 @@ void game_libs_func_000200F4(int *obj) {
 // addiu a3; b; addiu t2`), and the two r[0] + r[2] sums are written r[2] + r[0] (load order mirrors).
 // (5) constant-first operand order on the 3/2/1 compares (`bne v0,t5`), not reproduced
 // by `3 == a`. (6) the alloc tail stores hA before w4 with one fewer reload.
+// agent-c run 181: this is OoT AudioHeap_AllocCached (references/oot heap.c), an older revision without
+// the temporary-pool size check and the sample-bank discards; transcribed with OoT's types and control flow
+// (ternary loadStatusEntry0/1, else-if side chain, `goto done` / `if (0) { fail: }`, switch on nextSide read
+// through the cache, the CACHE_EITHER self tail call that uopt turns into the branch to the top):
+// 97.94 -> 99.11. LEFT: one swap at the entry0 ternary (`or t3,zero` vs `addiu a2` around the bne).
 #ifdef NON_MATCHING
-typedef struct { int w0; int w4; short h8; short hA; } gl_201B8_Ent;
-typedef struct { int cur; int base; int end; int size; int p10; gl_201B8_Ent ent[2]; } gl_201B8_Sub;
-typedef struct { int cur; char p4[16]; gl_201B8_Ent ent[16]; gl_201B8_Sub sub; char p100[16]; } gl_201B8_Pool;
+typedef struct { u8 *ramAddr; u32 size; s16 tableType; s16 id; } gl_201B8_Ent;
+typedef struct { u8 *start; u8 *cur; s32 size; s32 numEntries; } gl_201B8_APool;
+typedef struct { u32 nextSide; gl_201B8_APool pool; gl_201B8_Ent entries[2]; } gl_201B8_TCache;
+typedef struct { u32 numEntries; gl_201B8_APool pool; gl_201B8_Ent entries[16]; } gl_201B8_PCache;
+typedef struct { gl_201B8_PCache persistent; gl_201B8_TCache temporary; u8 pad[16]; } gl_201B8_Cache;
 typedef struct { unsigned flag:1, rest:31; unsigned char b4; char p5[0x160 - 5]; } gl_201B8_Obj;
 typedef struct {
     char p0[0x2048];
@@ -2771,9 +2778,13 @@ typedef struct {
     char p204A[0x2070 - 0x204A];
     int count;
     char p2074[0x21F8 - 0x2074];
-    gl_201B8_Pool pools[3];
+    gl_201B8_Cache seqCache;
+    gl_201B8_Cache fontCache;
+    gl_201B8_Cache sampleCache;
     char p2528[0x2C10 - 0x2528];
-    unsigned char tbls[3][0x30];
+    u8 sampleLS[0x30];
+    u8 fontLS[0x30];
+    u8 seqLS[0x30];
     char p2CA0[0x2CFC - 0x2CA0];
     gl_1CC98_Rec *recs;
     gl_201B8_Obj objs[8];
@@ -2781,213 +2792,226 @@ typedef struct {
 extern gl_201B8_GS D_345c0_201B8;
 #define G D_345c0_201B8
 extern void gl_ref_00034238();
-
 extern void gl_func_00000000_201B8v();
-int gl_func_000201B8(int mode, int size, int op, int arg3) {
-    gl_201B8_Pool *cfg;
-    int k;
-    int v; /* int: sub->ent[v] scales by multu with the held 12 like the target */
-    int a; /* run 144: unused (st0 compared directly gives the target bne 3,st0 order); its home keeps the frame */
-    int *r;
-    unsigned char st0;
-    unsigned char st1;
-    gl_201B8_Sub *sub;
-    unsigned char *tbl;
 
-top:
-    switch (mode) {
-    case 0:
-        cfg = &G.pools[0];
-        tbl = G.tbls[2];
-        break;
-    case 1:
-        cfg = &G.pools[1];
-        tbl = G.tbls[1];
-        break;
-    case 2:
-        cfg = &G.pools[2];
-        tbl = G.tbls[0];
-        break;
-    }
-    if (op == 0) {
-        if (cfg->sub.ent[0].hA == -1) {
-            sub = &cfg->sub;
-            st0 = 0;
-        } else {
-            sub = &cfg->sub; if (1) {}
-            st0 = tbl[sub->ent[0].hA];
-        }
-        if (sub->ent[1].hA == -1) {
-            st1 = 0;
-        } else {
-            st1 = tbl[sub->ent[1].hA];
-        }
-        if (mode == 1) {
-            if (st0 == 4) {
-                for (k = 0; k < G.count; k++) {
-                    if (G.recs[k].b33 == sub->ent[0].hA && G.recs[k].e.flag) break;
-                }
-                if (k == G.count) {
-                    gl_func_00000000(sub->ent[0].hA, 3);
-                    st0 = 3;
-                }
-            }
-            if (st1 == 4) {
-                for (k = 0; k < G.count; k++) {
-                    if (G.recs[k].b33 == sub->ent[1].hA && G.recs[k].e.flag) break;
-                }
-                if (k == G.count) {
-                    gl_func_00000000(sub->ent[1].hA, 3);
-                    st1 = 3;
-                }
-            }
-        }
-        if (st0 == 0) {
-            sub->cur = 0;
-            v = 0;
-            goto tail;
-        }
-        if (st1 == 0) {
-            sub->cur = v = 1;
-            goto tail;
-        }
-        if (st0 == 3 && st1 == 3) {
-            v = sub->cur;
-            goto tail;
-        }
-        if (st0 == 3) {
-            sub->cur = 0;
-            v = 0;
-            goto tail;
-        }
-        if (st1 == 3) {
-            sub->cur = v = 1;
-            goto tail;
-        }
-        if (mode == 0) {
-            if (st0 == 2) {
-                for (k = 0; k < G.n2048; k++) {
-                    if (G.objs[k].flag && G.objs[k].b4 == sub->ent[0].hA) break;
-                }
-                if (k == G.n2048) {
-                    sub->cur = 0;
-            v = 0;
-                    goto tail;
-                }
-            }
-            if (st1 == 2) {
-                for (k = 0; k < G.n2048; k++) {
-                    if (G.objs[k].flag && G.objs[k].b4 == sub->ent[1].hA) break;
-                }
-                if (k == G.n2048) {
-                    sub->cur = v = 1;
-                    goto tail;
-                }
-            }
-        } else if (mode == 1) {
-            if (st0 == 2) {
-                for (k = 0; k < G.count; k++) {
-                    if (G.recs[k].b33 == sub->ent[0].hA && G.recs[k].e.flag) break;
-                }
-                if (k == G.count) {
-                    sub->cur = 0;
-            v = 0;
-                    goto tail;
-                }
-            }
-            if (st1 == 2) {
-                for (k = 0; k < G.count; k++) {
-                    if (G.recs[k].b33 == sub->ent[1].hA && G.recs[k].e.flag) break;
-                }
-                if (k == G.count) {
-                    sub->cur = v = 1;
-                    goto tail;
-                }
-            }
-        }
-        v = sub->cur;
-        if (v == 0) {
-            if (st0 == 1) {
-                if (st1 == 1) goto ret0;
-                sub->cur = v = 1;
-            }
-        } else if (st1 == 1) {
-            if (st0 == 1) goto ret0;
-            sub->cur = 0;
-            v = 0;
-        }
-        goto tail;
-ret0:
-        return 0;
-tail:
-        if (sub->ent[v].hA != -1) {
-            tbl[sub->ent[v].hA] = 0;
-            if (mode == 1) {
-                gl_func_00000000(sub->ent[sub->cur].hA);
-            }
-        }
-        r = &cfg->sub.base;
-        switch ((unsigned)sub->cur) { /* unsigned key: case-1 compare loads li at,1 (no CSE with the held 1 in t1) */
+int gl_func_000201B8(s32 tableType, s32 size, s32 cache, s32 id) {
+    gl_201B8_Cache *loadedCache;
+    gl_201B8_TCache *temporaryCache;
+    gl_201B8_APool *temporaryPool;
+    void *persistentRamAddr;
+    void *temporaryRamAddr;
+    u8 loadStatusEntry0;
+    u8 loadStatusEntry1;
+    s32 i;
+    u8 *loadStatus;
+    
+
+    switch (tableType) {
         case 0:
-            *(SC4_ *)&(sub->ent[0].w0) = *(SC4_ *)&(r[0]);
-            sub->ent[0].hA = arg3;
-            sub->ent[0].w4 = size;
-            r[1] = r[0] + size;
-            if (sub->ent[1].hA != -1 && (unsigned)sub->ent[1].w0 < (unsigned)r[1]) {
-                tbl[sub->ent[1].hA] = 0;
-                switch (mode) {
-                case 0:
-                    gl_ref_00034238(sub->ent[1].hA);
-                    break;
-                case 1:
-                    gl_func_00000000_201B8v(sub->ent[1].hA);
-                    break;
-                }
-                sub->ent[1].hA = -1;
-                sub->ent[1].w0 = r[2] + r[0];
-            }
-            k = sub->ent[0].w0;
+            loadedCache = &G.seqCache;
+            loadStatus = G.seqLS;
             break;
         case 1:
-            sub->ent[1].w0 = (r[2] + r[0] - size) & ~15;
-            sub->ent[1].hA = arg3;
-            sub->ent[1].w4 = size;
-            if (sub->ent[0].hA != -1 && (unsigned)sub->ent[1].w0 < (unsigned)r[1]) {
-                tbl[sub->ent[0].hA] = 0;
-                switch (mode) {
-                case 0:
-                    gl_ref_00034238(sub->ent[0].hA);
-                    break;
-                case 1:
-                    gl_func_00000000_201B8v(sub->ent[0].hA);
-                    break;
-                }
-                sub->ent[0].hA = -1;
-                r[1] = r[0];
-            }
-            k = sub->ent[1].w0;
+            loadedCache = &G.fontCache;
+            loadStatus = G.fontLS;
             break;
-        default:
-            return 0;
-        }
-        sub->cur ^= 1;
-        return k;
+        case 2:
+            loadedCache = &G.sampleCache;
+            loadStatus = G.sampleLS;
+            break;
     }
-    v = gl_func_00000000(&cfg->p4, size);
-    cfg->ent[cfg->cur].w0 = v;
-    if (v == 0) {
-        if (op != 0 && op != 1) {
-            if (op == 2) {
-                op = 0;
-                goto top;
+
+    if (cache == 0) {
+        temporaryCache = &loadedCache->temporary;
+        temporaryPool = &temporaryCache->pool;
+
+        loadStatusEntry0 =
+            (temporaryCache->entries[0].id == -1) ? 0 : loadStatus[temporaryCache->entries[0].id];
+        loadStatusEntry1 =
+            (temporaryCache->entries[1].id == -1) ? 0 : loadStatus[temporaryCache->entries[1].id];
+
+        if (tableType == 1) {
+            if (loadStatusEntry0 == 4) {
+                for (i = 0; i < G.count; i++) {
+                    if (G.recs[i].b33 == temporaryCache->entries[0].id && G.recs[i].e.flag) {
+                        break;
+                    }
+                }
+                if (i == G.count) {
+                    gl_func_00000000(temporaryCache->entries[0].id, 3);
+                    loadStatusEntry0 = 3;
+                }
             }
+            if (loadStatusEntry1 == 4) {
+                for (i = 0; i < G.count; i++) {
+                    if (G.recs[i].b33 == temporaryCache->entries[1].id && G.recs[i].e.flag) {
+                        break;
+                    }
+                }
+                if (i == G.count) {
+                    gl_func_00000000(temporaryCache->entries[1].id, 3);
+                    loadStatusEntry1 = 3;
+                }
+            }
+        }
+
+        if (loadStatusEntry0 == 0) {
+            temporaryCache->nextSide = 0;
+        } else if (loadStatusEntry1 == 0) {
+            temporaryCache->nextSide = 1;
+        } else if (loadStatusEntry0 == 3 && loadStatusEntry1 == 3) {
+        } else if (loadStatusEntry0 == 3) {
+            temporaryCache->nextSide = 0;
+        } else if (loadStatusEntry1 == 3) {
+            temporaryCache->nextSide = 1;
         } else {
-            return 0;
+            if (tableType == 0) {
+                if (loadStatusEntry0 == 2) {
+                    for (i = 0; i < G.n2048; i++) {
+                        if (G.objs[i].flag && G.objs[i].b4 == temporaryCache->entries[0].id) {
+                            break;
+                        }
+                    }
+                    if (i == G.n2048) {
+                        temporaryCache->nextSide = 0;
+                        goto done;
+                    }
+                }
+                if (loadStatusEntry1 == 2) {
+                    for (i = 0; i < G.n2048; i++) {
+                        if (G.objs[i].flag && G.objs[i].b4 == temporaryCache->entries[1].id) {
+                            break;
+                        }
+                    }
+                    if (i == G.n2048) {
+                        temporaryCache->nextSide = 1;
+                        goto done;
+                    }
+                }
+            } else if (tableType == 1) {
+                if (loadStatusEntry0 == 2) {
+                    for (i = 0; i < G.count; i++) {
+                        if (G.recs[i].b33 == temporaryCache->entries[0].id && G.recs[i].e.flag) {
+                            break;
+                        }
+                    }
+                    if (i == G.count) {
+                        temporaryCache->nextSide = 0;
+                        goto done;
+                    }
+                }
+                if (loadStatusEntry1 == 2) {
+                    for (i = 0; i < G.count; i++) {
+                        if (G.recs[i].b33 == temporaryCache->entries[1].id && G.recs[i].e.flag) {
+                            break;
+                        }
+                    }
+                    if (i == G.count) {
+                        temporaryCache->nextSide = 1;
+                        goto done;
+                    }
+                }
+            }
+
+            if (temporaryCache->nextSide == 0) {
+                if (loadStatusEntry0 == 1) {
+                    if (loadStatusEntry1 == 1) {
+                        goto fail;
+                    }
+                    temporaryCache->nextSide = 1;
+                }
+            } else {
+                if (loadStatusEntry1 == 1) {
+                    if (loadStatusEntry0 == 1) {
+                        goto fail;
+                    }
+                    temporaryCache->nextSide = 0;
+                }
+            }
+
+            if (0) {
+            fail:
+                return 0;
+            }
+        }
+    done:
+        if (temporaryCache->entries[temporaryCache->nextSide].id != -1) {
+            loadStatus[temporaryCache->entries[temporaryCache->nextSide].id] = 0;
+            if (tableType == 1) {
+                gl_func_00000000(temporaryCache->entries[temporaryCache->nextSide].id);
+            }
+        }
+        switch (temporaryCache->nextSide) {
+            case 0:
+                temporaryCache->entries[0].ramAddr = temporaryPool->start;
+                temporaryCache->entries[0].id = id;
+                temporaryCache->entries[0].size = size;
+                temporaryPool->cur = temporaryPool->start + size;
+
+                if (temporaryCache->entries[1].id != -1 &&
+                    temporaryCache->entries[1].ramAddr < temporaryPool->cur) {
+                    loadStatus[temporaryCache->entries[1].id] = 0;
+                    switch (tableType) {
+                        case 0:
+                            gl_ref_00034238((s32)temporaryCache->entries[1].id);
+                            break;
+                        case 1:
+                            gl_func_00000000_201B8v((s32)temporaryCache->entries[1].id);
+                            break;
+                    }
+                    temporaryCache->entries[1].id = -1;
+                    temporaryCache->entries[1].ramAddr = temporaryPool->start + temporaryPool->size;
+                }
+                temporaryRamAddr = temporaryCache->entries[0].ramAddr;
+                break;
+
+            case 1:
+                temporaryCache->entries[1].ramAddr =
+                    (u8 *)((u32)(temporaryPool->start + temporaryPool->size - size) & ~0xF);
+                temporaryCache->entries[1].id = id;
+                temporaryCache->entries[1].size = size;
+                if (temporaryCache->entries[0].id != -1 &&
+                    temporaryCache->entries[1].ramAddr < temporaryPool->cur) {
+                    loadStatus[temporaryCache->entries[0].id] = 0;
+                    switch (tableType) {
+                        case 0:
+                            gl_ref_00034238(temporaryCache->entries[0].id);
+                            break;
+                        case 1:
+                            gl_func_00000000_201B8v(temporaryCache->entries[0].id);
+                            break;
+                    }
+                    temporaryCache->entries[0].id = -1;
+                    temporaryPool->cur = temporaryPool->start;
+                }
+                temporaryRamAddr = temporaryCache->entries[1].ramAddr;
+                break;
+
+            default:
+                return 0;
+        }
+
+        temporaryCache->nextSide ^= 1;
+        return (int)temporaryRamAddr;
+    }
+
+    persistentRamAddr = (void *)gl_func_00000000(&loadedCache->persistent.pool, size);
+    loadedCache->persistent.entries[loadedCache->persistent.numEntries].ramAddr = persistentRamAddr;
+
+    if (persistentRamAddr == NULL) {
+        switch (cache) {
+            case 2:
+                return gl_func_000201B8(tableType, size, 0, id);
+            case 0:
+            case 1:
+                return 0;
         }
     }
-    cfg->ent[cfg->cur].hA = arg3;
-    cfg->ent[cfg->cur].w4 = size;
-    return cfg->ent[cfg->cur++].w0;
+
+    loadedCache->persistent.entries[loadedCache->persistent.numEntries].id = id;
+    loadedCache->persistent.entries[loadedCache->persistent.numEntries].size = size;
+
+    return (int)loadedCache->persistent.entries[loadedCache->persistent.numEntries++].ramAddr;
 }
 #undef G
 #else
