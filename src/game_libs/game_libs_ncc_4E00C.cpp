@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004E00C: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
+/* IDO 7.1 NCC (C++) donor for gl_func_0004E00C (0x12C / 75 words), EXACT (agent-c run 181): the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).
+ * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees).
  * agent-c run 160: the 0x144 mode word as five plain read-modify-write statements through the non-volatile base
  * (`v[1] = (v[1] & 0xF00) | 0x400; v[1] = v[1] | 2; v[1] = v[1] | 1; v[1] = v[1]; v[1] = v[1] | 0x10;`): uopt forwards each
  * stored value into the next read, so the target's five stores of four ring temps come out exactly (the volatile chain
@@ -9,6 +9,10 @@
  * 8-trip loop that uopt unrolls x4 like the target): 90.75 -> 93.81, frame homes = target. Residual: the target keeps
  * the unrolled 4-trip loop's IV (`li v1,1; sll; addu`) with ascending stores where ours folds it (descending).
  * agent-c run 162: Blk::clear() runs zero(1) BEFORE the w[0] / w[5] stores (93.81 -> 96.33, length unchanged).
+ * agent-c run 181: EXACT. The kept IV (`li v1,1; sll; addu` + ascending stores) is uopt's unroll of a FIVE-trip loop:
+ * 5 mod 4 = 1 iteration (w[0]) peeled ahead, then four unrolled iterations from k = 1, then w[5] on its own:
+ * clear() = `zero(0); w[5] = 0;` (a plain 6-trip loop peels two and starts at 2; a 4-trip loop from 1 folds the IV).
+ * The inline zero(int k) parameter (rather than a for-scope `int k`) keeps the 0xE8 spill temp at the target's sp+32.
  */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -24,7 +28,7 @@ extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern float q[4];
 }
-struct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { zero(1); w[0] = 0; w[5] = 0; } };
+struct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { zero(0); w[5] = 0; } };
 struct Blk2 { int e[8]; int c; void clear() { for (int k = 0; k < 8; k++) e[k] = 0; c = 0; } };
 extern "C" void gl_func_0004E00C(int *s0) {
     int *v;

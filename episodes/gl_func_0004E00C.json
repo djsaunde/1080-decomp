@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0004E00C",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-27T22:28:50.285989+00:00",
+  "end_time": "2026-10-27T22:28:50.286007+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-27T22:28:50.286002+00:00",
+      "assistant_text": "C++ init; the 0x148 block clear is a five-trip loop (zero(0) then w[5]): uopt peels w[0] and unrolls k=1..4 keeping the IV; NCC donor spliced over an empty placeholder in both trees.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 75,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0004E00C (0x12C / 75 words), EXACT (agent-c run 181): the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).\n * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees).\n * agent-c run 160: the 0x144 mode word as five plain read-modify-write statements through the non-volatile base\n * (`v[1] = (v[1] & 0xF00) | 0x400; v[1] = v[1] | 2; v[1] = v[1] | 1; v[1] = v[1]; v[1] = v[1] | 0x10;`): uopt forwards each\n * stored value into the next read, so the target's five stores of four ring temps come out exactly (the volatile chain\n * reused one register), 86.71 -> 90.75.\n  * agent-c run 161: the 0x148 / 0x160 tails are two sub-objects cleared by inline members with ARRAY members:\n * `Blk { int w[6]; }` (w[0], an inline `zero(int k)` loop from 1 to 5, w[5]) and `Blk2 { int e[8]; int c; }` (an\n * 8-trip loop that uopt unrolls x4 like the target): 90.75 -> 93.81, frame homes = target. Residual: the target keeps\n * the unrolled 4-trip loop's IV (`li v1,1; sll; addu`) with ascending stores where ours folds it (descending).\n * agent-c run 162: Blk::clear() runs zero(1) BEFORE the w[0] / w[5] stores (93.81 -> 96.33, length unchanged).\n * agent-c run 181: EXACT. The kept IV (`li v1,1; sll; addu` + ascending stores) is uopt's unroll of a FIVE-trip loop:\n * 5 mod 4 = 1 iteration (w[0]) peeled ahead, then four unrolled iterations from k = 1, then w[5] on its own:\n * clear() = `zero(0); w[5] = 0;` (a plain 6-trip loop peels two and starts at 2; a 4-trip loop from 1 folds the IV).\n * The inline zero(int k) parameter (rather than a for-scope `int k`) keeps the 0xE8 spill temp at the target's sp+32.\n */\ntypedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;\ntypedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;\ntypedef float f32; typedef double f64;\n#undef NULL\n#define NULL 0\nstruct StackB *p;\ntypedef struct { int w; } Word3E968;\nextern \"C\" {\nextern int gl_func_00000000(...);\n\nextern void gl_49B3C_regf(char *, char *, char *, float, float, int);\nextern void gl_49B3C_regf(char *, char *, char *, float, float, int);\nextern float q[4];\n}\nstruct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { zero(0); w[5] = 0; } };\nstruct Blk2 { int e[8]; int c; void clear() { for (int k = 0; k < 8; k++) e[k] = 0; c = 0; } };\nextern \"C\" void gl_func_0004E00C(int *s0) {\n    int *v;\n    int x;\n    int *q;\n    int *p;\n    int i;\n    s0[0x1C8 / 4] = 0;\n    s0[0] = 0;\n    gl_func_00000000((char *)s0 + 0xA0);\n    gl_func_00000000((char *)s0 + 0x60);\n    gl_func_00000000((char *)s0 + 0x20);\n    s0[0xE4 / 4] = 0;\n    v = (int *)((char *)s0 + 0x140); if (s0) {}\n    v[1] = (v[1] & 0xF00) | 0x400;\n    v[1] = v[1] | 2;\n    v[1] = v[1] | 1;\n    v[1] = v[1];\n    v[1] = v[1] | 0x10;\n    *(float *)((char *)s0 + 0x130) = 1.0f;\n    *(float *)((char *)s0 + 0x12C) = 1.0f;\n    *(float *)((char *)s0 + 0x128) = 1.0f;\n    gl_func_00000000((char *)s0 + 0xE8);\n    gl_func_00000000((char *)s0 + 0xE8, (char *)s0 + 0x128);\n    s0[0x1CC / 4] = 0;\n    s0[0x18C / 4] = 0;\n    *(float *)((char *)s0 + 0x1D0) = 0.0f;\n    *(float *)((char *)s0 + 0x1D4) = 0.0f;\n    *(float *)((char *)s0 + 0x1D8) = 0.0f;\n    *(float *)((char *)s0 + 0x1DC) = 0.5f;\n    ((Blk *)((char *)s0 + 0x148))->clear();\n    ((Blk2 *)((char *)s0 + 0x160))->clear();\n    gl_func_00000000(s0, 0);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4E00C.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
