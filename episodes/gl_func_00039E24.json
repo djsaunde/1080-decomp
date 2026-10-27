@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00039E24",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-27T21:15:52.908903+00:00",
+  "end_time": "2026-10-27T21:15:52.908903+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-27T21:15:52.908903+00:00",
+      "assistant_text": "C++: camera Vec3 is a member of the same global block, scaled by an inline Cam::mul(G &) through a local reference (lui order + may-alias load order); NCC donor spliced over an empty placeholder.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 48,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00039E24 (0xC0 / 48 words), spliced into game_libs_post0b.c.o via\n * REPLACE_FUNC_BODY. (agent-c run 180) Query the root through a 7-arg prototyped call; on success hand the\n * global block and self+0x2C to a callee, then scale the camera vector (block+0xA0, Vec3 at +0x30) by the\n * block's scale triple (+0x128) and add self->0x6C to its y. The camera is a MEMBER of the same global block\n * (D+0xA0), scaled through an inline member Cam::mul(G &) called on a local reference `Cam &c = g.cam`:\n * - the reference parameter keeps each scale load after the previous vector store (may-alias), and\n * - `this` (block+0xA0, lui v0) is materialised before the re-materialised block base (lui a2) -- the order\n *   the cfe decode (99.79, gl_39e24_vf function-typed alias) could not reach;\n * - the y add through the same reference keeps the 0x34(v0) form. EXACT. */\nextern \"C\" {\nint gl_proto_39E24(int, int, float, float, float, int, float);\nvoid gl_func_00000000_39E24v(...);\nint gl_func_00000000(...);\n}\nstruct V3 { float x, y, z; };\nstruct G;\nstruct Cam { char pad[0x30]; V3 v; void mul(G &g); };\nstruct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad134[0x254 - 0x134]; int root; };\ninline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }\nextern \"C\" G D_39E24_g;\nextern \"C\" void gl_func_00039E24(char *a0) {\n    if (gl_proto_39E24(D_39E24_g.root, 3, *(float *)(a0 + 0x5C), *(float *)(a0 + 0x60),\n                    *(float *)(a0 + 0x64), 0, 0.0f) != 0) {\n        gl_func_00000000_39E24v(&D_39E24_g, a0 + 0x2C);\n        {\n            Cam &c = D_39E24_g.cam;\n            c.mul(D_39E24_g);\n            c.v.y += *(float *)(a0 + 0x6C);\n        }\n        gl_func_00000000(a0);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_39E24.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00039E24.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}

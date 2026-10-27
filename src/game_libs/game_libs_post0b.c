@@ -5014,58 +5014,12 @@ void gl_func_00039C8C(int *a0) {
     gl_func_00000000(a0);
 }
 
-#ifdef NON_MATCHING
-/* gl_func_00039E24: 48-insn helper with conditional FPU post-update.
- *   v0 = gl_func(*(int*)(D_0+0x254), 3, a0->[0x5C], a0->[0x60],
- *                a0->[0x64], 0, 0.0f)
- *   if (v0 != 0) {
- *     gl_func(&D_0, a0+0x2C);
- *     // multiply D_0[0xD0,0xD4,0xD8] by D_0[0x128,0x12C,0x130],
- *     // then D_0[0xD4] += a0->[0x6C]
- *     gl_func(a0);
- *   }
- *
- * First call has 7 args mixing float/int — needs prototyped extern to
- * suppress K&R promotion. Float values 0x5C/0x60 passed as float-bits
- * via $a2/$a3 (int regs); 0x64 passed via sp+0x10 (lwc1+swc1 pair).
- * 0x0f at sp+0x18 is a literal 0.0f.
- *
- * The middle FPU block updates 3 fields in &D_0+0xA0 (offsets 0x30,
- * 0x34, 0x38 → byte offsets 0xD0, 0xD4, 0xD8) using scaling factors at
- * &D_0+0x128/0x12C/0x130 plus a0->[0x6C] additive bias on Y.
- *
- * Cap: NOT WRITTEN — complex 7-arg call with mixed prototype + FPU
- * mid-update + conditional flow. Initial NM wrap with structural
- * notes; future passes try named-typed-extern. */
-extern int gl_proto_39E24(int, int, float, float, float, int, float);
-extern char D_39E24_a[]; extern float D_39E24_b[];
-typedef struct { char pad[0x30]; float x, y, z; } T39E24;
-extern T39E24 D_39E24_c; /* file-static at section+0xA0 */
-extern void gl_func_00000000_39E24v();
-/* 2026-10-24 (agent-g run 154): ported from its sibling bootup func_000076F4
- * (99.82, the same code in bootup_uso): one G symbol for the root (+0x254),
- * the call argument and the scale triple, and the camera vector read through
- * a FUNCTION-typed alias gl_39e24_vf (+0x30.. ; the linked lo16 is the 0xA0
- * base), which keeps the scale loads after each vector store. 95.0 -> ~99.3.
- * Left (same as 76F4): the target materialises the vector base (lui v0)
- * before the rematerialised G (lui a2) after the second call. */
-extern char D_39E24_g[];
-extern void gl_39e24_vf();
+/* gl_func_00039E24: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_39E24.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 180). The camera vector is a member of the
+ * same global block (D+0xA0), scaled by an inline Cam::mul(G &) through a local reference: the cfe decode
+ * (99.79) could not get the target's lui order (camera base before the re-materialised block base). */
 void gl_func_00039E24(char *a0) {
-    if (gl_proto_39E24(*(int *)(D_39E24_g + 0x254), 3, *(float *)(a0 + 0x5C), *(float *)(a0 + 0x60),
-                    *(float *)(a0 + 0x64), 0, 0.0f) != 0) {
-        gl_func_00000000_39E24v(D_39E24_g, a0 + 0x2C);
-        *(float *)((char *)gl_39e24_vf + 0x30) *= *(float *)(D_39E24_g + 0x128);
-        *(float *)((char *)gl_39e24_vf + 0x34) *= *(float *)(D_39E24_g + 0x12C);
-        *(float *)((char *)gl_39e24_vf + 0x38) *= *(float *)(D_39E24_g + 0x130);
-        *(float *)((char *)gl_39e24_vf + 0x34) += *(float *)(a0 + 0x6C);
-        gl_func_00000000(a0);
-    }
 }
-
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039E24);
-#endif
 
 /* gl_func_00039EE4: 38-insn standalone bundle-iterator + vtable-dispatch
  * (EXACT 38/38, 2026-07-09 agent-e). For each node in head[0] list:

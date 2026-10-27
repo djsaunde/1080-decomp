@@ -2101,6 +2101,10 @@ $(GAMELIBS_525F0_DONOR): src/game_libs/game_libs_ncc_525F0.cpp
 	$(OBJCOPY) --redefine-sym reg__4SelfFP3Tgt=gl_func_000525F0 --redefine-sym __ct__3FooFPcP4Self=gl_func_00000000_525f0_ct --redefine-sym add__3SubFP3Tgt=gl_func_00000000_525f0_add $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000525F0=$(GAMELIBS_525F0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_525F0_DONOR)
+# 39E24 = camera scale through an inline Cam::mul(G &) on a member of the same global block (Cam &c = g.cam); NCC donor (agent-c run 180).
+GAMELIBS_39E24_DONOR := build/src/game_libs/game_libs_ncc_39E24.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00039E24=$(GAMELIBS_39E24_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_39E24_DONOR)
 # 3DD28 = cfront create + virtual f(&kind) + node attach (if (a0) {} after the create call, frame pads); NCC donor.
 GAMELIBS_3DD28_DONOR := build/src/game_libs/game_libs_ncc_3DD28.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DD28=$(GAMELIBS_3DD28_DONOR)
