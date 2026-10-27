@@ -2732,7 +2732,7 @@ void game_libs_func_000200F4(int *obj) {
     gl_func_00000000(D + 0x24EC);
 }
 
-// gl_func_000201B8 -- double-buffered pool allocator (0x704, 449 insns), NM (no episode).
+// gl_func_000201B8 -- double-buffered pool allocator (0x704, 449 insns), EXACT (agent-c run 181, below).
 // mode 0/1/2 picks a Pool (sym1255 +0x21F8 / 0x2308 / 0x2418, stride 0x110) and a u8
 // state table (+0x2C70 / 0x2C40 / 0x2C10). op != 0: allocate from the pool's arena
 // (blank callee on &pool->p4), record {ptr, size, tag} in ent[cur++]; on failure with
@@ -2760,12 +2760,12 @@ void game_libs_func_000200F4(int *obj) {
 // addiu a3; b; addiu t2`), and the two r[0] + r[2] sums are written r[2] + r[0] (load order mirrors).
 // (5) constant-first operand order on the 3/2/1 compares (`bne v0,t5`), not reproduced
 // by `3 == a`. (6) the alloc tail stores hA before w4 with one fewer reload.
-// agent-c run 181: this is OoT AudioHeap_AllocCached (references/oot heap.c), an older revision without
-// the temporary-pool size check and the sample-bank discards; transcribed with OoT's types and control flow
-// (ternary loadStatusEntry0/1, else-if side chain, `goto done` / `if (0) { fail: }`, switch on nextSide read
-// through the cache, the CACHE_EITHER self tail call that uopt turns into the branch to the top):
-// 97.94 -> 99.11. LEFT: one swap at the entry0 ternary (`or t3,zero` vs `addiu a2` around the bne).
-#ifdef NON_MATCHING
+// agent-c run 181: EXACT. This is OoT AudioHeap_AllocCached (references/oot heap.c), an older revision without
+// the temporary-pool size check and the sample-bank discards, transcribed with OoT's types and control flow
+// (else-if side chain, `goto done` / `if (0) { fail: }`, switch on nextSide read through the cache, the
+// CACHE_EITHER self tail call that uopt turns into the branch back to the top): 97.94 -> 99.11. The last
+// swap (`or t3,zero` before the bne, `addiu a2` in its delay slot) is loadStatusEntry0 written as
+// `= 0; if (id == -1) {} else { = load; }` instead of the ternary: 0 hoisted, both arms kept -> 100.
 typedef struct { u8 *ramAddr; u32 size; s16 tableType; s16 id; } gl_201B8_Ent;
 typedef struct { u8 *start; u8 *cur; s32 size; s32 numEntries; } gl_201B8_APool;
 typedef struct { u32 nextSide; gl_201B8_APool pool; gl_201B8_Ent entries[2]; } gl_201B8_TCache;
@@ -2825,8 +2825,11 @@ int gl_func_000201B8(s32 tableType, s32 size, s32 cache, s32 id) {
         temporaryCache = &loadedCache->temporary;
         temporaryPool = &temporaryCache->pool;
 
-        loadStatusEntry0 =
-            (temporaryCache->entries[0].id == -1) ? 0 : loadStatus[temporaryCache->entries[0].id];
+        loadStatusEntry0 = 0;
+        if (temporaryCache->entries[0].id == -1) {
+        } else {
+            loadStatusEntry0 = loadStatus[temporaryCache->entries[0].id];
+        }
         loadStatusEntry1 =
             (temporaryCache->entries[1].id == -1) ? 0 : loadStatus[temporaryCache->entries[1].id];
 
@@ -3014,9 +3017,6 @@ int gl_func_000201B8(s32 tableType, s32 size, s32 cache, s32 id) {
     return (int)loadedCache->persistent.entries[loadedCache->persistent.numEntries++].ramAddr;
 }
 #undef G
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000201B8);
-#endif
 
 /* gl_func_000208BC: 22-insn 3-arg guard/dispatch.
  *   r = gl_func_00000000(a0, a2);
