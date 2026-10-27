@@ -7,7 +7,9 @@
  * `M &m = c->tgt->m` (the target's `addiu v1,v1,48` sub-object base), `Pad *p;` declared between c and v and
  * the move scalars between v and w (= the target's homes c 132 / v 116 / w 92), `pitch = pitch + -sy * 4`.
  * cfe body 91.26 -> 93.16 (972 B vs target 968, cfe 956). Residual: the target computes &w.y / &w.z into
- * a1 / a2 at entry and colours the move scalars f14 / f16 / f12 (ours one register up). Still NON_MATCHING. */
+ * a1 / a2 at entry and colours the move scalars f14 / f16 / f12 (ours one register up). Still NON_MATCHING.
+ * agent-c run 179: the accel step without the `a` copy (`n = accel + 1; if (accel < 100) accel = n; k = accel / 10.0f`): 93.21 -> 93.22.
+ */
 typedef float f32; typedef double f64;
 extern "C" {
 void gl_func_00034458_36F0C(f32, f32 *, f32 *);
@@ -47,10 +49,9 @@ void FreeCam::update() {
     if (p->btn & 0x80) mz -= 100.0;
     if (p->btn & 0x400) { mx = p->sx * 100.0f; my = p->sy * 100.0f; }
     if (fabs_(mx) > D_000019E8 || fabs_(my) > D_000019E8 || fabs_(mz) > D_000019E8) {
-        int a = accel;
-        int n = a + 1;
-        if (a < 100) { accel = n; a = n; }
-        f32 k = a / 10.0f;
+        int n = accel + 1;
+        if (accel < 100) { accel = n; }
+        f32 k = accel / 10.0f;
         mx += mx * k; my += my * k; mz += mz * k;
     } else {
         accel = 0;

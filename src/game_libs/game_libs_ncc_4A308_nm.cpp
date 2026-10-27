@@ -4,7 +4,9 @@
  * empty test dropped: 77.35 -> 94.24 local, 884 -> 868 bytes (target 872). Residual: frame slot layout (sp74 / sp70 /
  * sp6C / sp48 / sp58 / col at the target's m2c-named offsets; declaration order does not move them) and the
  * entry-pointer colour (v1 vs v0).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
+ * agent-c run 179: t2 (the entry+6 index) de-named too, a macro re-read at both uses: 94.47 -> 95.66.
+ */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -23,7 +25,7 @@ extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *
     char *entry = *(char **)(arg0 + 0x6C) + arg3 * 8;
 #define v60 (*(char **)(arg0 + 0x60))
     int t0 = *(unsigned short *)(entry + 4);
-    int t2 = *(unsigned short *)(entry + 6);
+#define t2 (*(unsigned short *)(entry + 6))
     char *sp7C = v60 + t0 * 6;
     char *sp78 = v60 + t2 * 6;
     char *pal = *(char **)(arg0 + 0x7C);

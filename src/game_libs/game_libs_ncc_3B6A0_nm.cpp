@@ -9,7 +9,9 @@
  * them.
  * agent-c run 178: the triangle record through an inline `triAt(const int &off)` (a reference parameter keeps
  * off memory-homed like the target's frame home): 73.61 -> 74.51, length = target.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * Still NON_MATCHING: build/non_matching/ only.
+ * agent-c run 179: de-named `a` (t->a at each use) and the -50.0f limit constant: 74.53 -> 74.59.
+ */
 typedef float f32; typedef short s16; typedef unsigned short u16; typedef signed char s8;
 struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
 struct Face { u16 mat; u16 vi[3]; };
@@ -29,7 +31,6 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
     }
     unsigned int count = c->ntri;
     if (count != 0) {
-        f32 lim = -50.0f;
         int off = 0;
         for (unsigned int i = 0; i < count; i++, off += 12) {
             TriB *t = triAt(off);
@@ -42,18 +43,17 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 f = &c->faces[i];
             }
             f32 dir = t->sgn;
-            int a = t->a;
             int b = t->b;
-            f32 qa = pt[a];
+            f32 qa = pt[t->a];
             f32 qb = pt[b];
             s16 *tp = D_00000000_3b6a0tbl;
             u16 *fp = (u16 *)f;
             do {
                 s16 *v = verts[fp[1]];
                 s16 *w = verts[f->vi[*tp++]];
-                int ax = v[a];
+                int ax = v[t->a];
                 int ay = v[b];
-                s16 ex = w[a] - ax;
+                s16 ex = w[t->a] - ax;
                 s16 ey = w[b] - ay;
                 s16 px = (int)(qa - (f32)ax);
                 s16 py = (int)(qb - (f32)ay);
@@ -64,7 +64,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             if (inside) {
                 V3 *n = (V3 *)((char *)c->nrm + off);
                 f32 d = pt[0] * n->x + pt[1] * n->y + pt[2] * n->z - t->d;
-                if (d < 0.0f && lim < d) {
+                if (d < 0.0f && -50.0f < d) {
                     if (nfound >= max) {
                         return -1;
                     }
