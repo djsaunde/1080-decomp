@@ -861,7 +861,7 @@ sw_end:
         if (var_s1 != 0) {
             func_00000000_p4d(var_s1, &D_0000885C, 0.0, 0.0f);
             temp_f0 = D_000008B4;
-            *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF; *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_d207dc;
+            *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_d207dc; *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF;
             *(f32 *)((char *)(var_s1) + 0x108) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x10C) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x110) = temp_f0;
