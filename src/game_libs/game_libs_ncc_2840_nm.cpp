@@ -51,8 +51,8 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
         vx = sp3C; if (arg2) {}
         vy = sp38;
         if (len != 0.0f) {
+            vy /= len; /* run 182 (lever-sweep order) */
             vx /= len;
-            vy /= len;
         }
         p = arg0 + 0x2E4;
         vec[0] = 1.0f;
