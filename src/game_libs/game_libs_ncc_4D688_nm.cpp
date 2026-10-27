@@ -102,8 +102,8 @@ loop_1:
         var_s6 = var_s2;
         if (var_s2 != 0) {
             if (FW(arg0, 0xC) != 0) {
-                var_s4 = 1;
                 gl_func_00034458();
+                var_s4 = 1; /* agent-c run 180: after the call (local, lever-sweep order) */
             } else {
                 FW(arg0, 0x18) = (s32) var_s2;
                 gl_func_00034458();
