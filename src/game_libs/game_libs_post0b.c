@@ -22434,8 +22434,8 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     MF54(0x140) = 1.0f - (QF54(4) * QF54(4)) * two;
     MF54(0x144) = d - (QF54(8) * QF54(4)) * two;
     MF54(0x148) = d;
-    MF54(0x14C) = d - (QF54(8) * QF54(0)) * two;
     MF54(0x150) = d - (QF54(4) * QF54(8)) * two;
+    MF54(0x14C) = d - (QF54(8) * QF54(0)) * two;
     MF54(0x154) = 1.0f - (QF54(8) * QF54(8)) * two;
     w = QF54(0xC);
     sp50.v.y = QF54(4) * w;
