@@ -241,7 +241,7 @@ cend:
         temp_f12 = *(f32 *)((char *)(arg0) + 0x968);
         *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2);
         if (temp_f12 < (f32) 0) {
-            var_v0_2 = arg0 + 0x93C;
+            var_v0_2 = arg0 + 0x93C; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
             { /* run 156: held products, stored afterwards (kit LXXXVI) */
                 f32 hx = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
                 f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
