@@ -142,7 +142,7 @@ extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
 /* per-site aliases (one symbol per access) bust the shared-base GCSE that turns lui/%lo-folded loads into base+K */
 extern u8 bu_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
-extern char bu_90cc_d00_b;  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
+extern void bu_90cc_d00_b(...);  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
 extern BuW90 bu_90cc_gcfg_ld, bu_90cc_gcfg_st, bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
@@ -177,7 +177,7 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
     W90 sp118;
     s32 var_a2;
     char *temp_s1;
-    char *temp_s1_8 = 0;
+    char *temp_s1_8;
     char *sp108;
     W90 sp104;
     W90 sp100;
@@ -906,11 +906,13 @@ sw_end:
         if (sp174 != 0) {
             temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {
-                var_v1 = *(s32 *)&bu_90cc_d00_b;
+                var_v1 = *(s32 *)(char *)bu_90cc_d00_b;
+                temp_s1_8 = (char *)(bu_90cc_d148_01 + 24);
                 do {
                     if (arg2 == var_v1) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
-                        *(s32 *)(bu_90cc_d148_01 + 24 + *(s32 *)((char *)temp_v0_5 + 0x4) * 4) = (s32)(temp_v0_5 + 8);
+                        var_s0 = temp_s1_8 + *(s32 *)((char *)temp_v0_5 + 0x4) * 4;
+                        *(s32 *)var_s0 = (s32)(temp_v0_5 + 8);
                     }
                     var_v1 = *(s32 *)((char *)(temp_v0_5) + 0x18);
                     temp_v0_5 += 0x18;
