@@ -5801,8 +5801,8 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         dot = (sp6C.x * spCC.x) + (spCC.z * sp6C.z)
             + (*(f32 *)(*(s32 *)(arg1 + 0x30) + 0x348) * *(f32 *)(arg1 + 0xDC));
         sp3C.x = spCC.x * dot;
+        sp3C.z = spCC.z * dot; /* run 182 (lever-sweep order): z before y */
         sp3C.y = spCC.y * dot;
-        sp3C.z = spCC.z * dot;
         *(Tri3i *)&sp11C = *(Tri3i *)&sp3C;
         *(Tri3i *)&sp78 = *(Tri3i *)&sp11C;
         *(f32 *)(arg1 + 0x84) += sp78.x;
