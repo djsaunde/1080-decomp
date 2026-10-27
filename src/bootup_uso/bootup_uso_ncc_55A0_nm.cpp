@@ -135,7 +135,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     if (var_s0 & 4) {
         /* actor 0 (0x74) */
         v0.w = D_55A0_v0.w;
-        p1.w = v0.w;
+        p1.w = D_55A0_v0.w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             p2.w = p1.w;
@@ -158,7 +158,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
 
         /* actor 1 (0x74) */
         v1.w = D_55A0_v1.w;
-        p1.w = v1.w;
+        p1.w = D_55A0_v1.w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             p2.w = p1.w;
@@ -181,7 +181,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
 
         /* actor 2 (0x74) */
         v2.w = D_55A0_v2.w;
-        p1.w = v2.w;
+        p1.w = D_55A0_v2.w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             p2.w = p1.w;
@@ -206,7 +206,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         DI(4) = 0x28002;
         DI(0) = 0; nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
         v3.w = D_55A0_v3.w;
-        p1.w = v3.w;
+        p1.w = D_55A0_v3.w;
         obj = (char *)func_00000000(0x6C);
         if (obj != 0) {
             p2.w = p1.w;
