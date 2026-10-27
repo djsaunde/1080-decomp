@@ -22551,12 +22551,12 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     d = (f32)0;
     MF54(0x12C) = 1.0f - (QF54(0) * QF54(0)) * two;
     MF54(0x130) = d - (QF54(0) * QF54(4)) * two;
-    MF54(0x138) = d;
     MF54(0x134) = d - (QF54(0) * QF54(8)) * two;
+    MF54(0x138) = d;
     MF54(0x13C) = d - (QF54(4) * QF54(0)) * two;
     MF54(0x140) = 1.0f - (QF54(4) * QF54(4)) * two;
-    MF54(0x148) = d;
     MF54(0x144) = d - (QF54(8) * QF54(4)) * two;
+    MF54(0x148) = d;
     MF54(0x14C) = d - (QF54(8) * QF54(0)) * two;
     MF54(0x150) = d - (QF54(4) * QF54(8)) * two;
     MF54(0x154) = 1.0f - (QF54(8) * QF54(8)) * two;
