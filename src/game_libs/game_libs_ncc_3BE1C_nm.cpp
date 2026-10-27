@@ -7,10 +7,14 @@
  * `Col *cc` copy of self->col (off then spills around the call like the target), the 0x100 test as a nested
  * block instead of `continue` (no duplicated loop test), t->a / t->b read before the 0x200 branch, and the
  * edge walk as the cfe do-while with `fv++` inside the condition and the table read `*nx` then `nx++` as
- * its own statement (`*nx++` reads through a copy of the old pointer that takes an s-register). cfe 77.27 ->
- * 83.38 local, 1564 bytes (target 1568, cfe 1528). Residual: &q is hoisted into s8 (frame 0x108 vs 0xF0;
- * a V3 q with (&q.x)[k] is identical), the r copy into a0, the first inner MAX evaluated as two arms (the
- * target pre-assigns one arm before the branch) and FP colouring. Still NON_MATCHING. */
+ * its own statement (`*nx++` reads through a copy of the old pointer that takes an s-register); self->col
+ * read once into a function-scope `Col *cc` (the target's s1) and re-read into it per triangle; the
+ * single-use locals ia / ib / ic, vt, qa / qb and sg DE-NAMED (macros: each named scalar costs an NCC home
+ * and a colour; de-naming them took the frame to the target's 0xF0 with s0..s7 only, 83.38 -> 87.55).
+ * cfe 77.27 -> 87.55 local, 1560 bytes (target 1568, cfe 1528). Residual: the face pointer is not copied
+ * into s0 after the face() expansion, off spills to sp+76 (target sp+84), r is not copied into a0, the first
+ * inner MAX is evaluated as two arms (the target pre-assigns one before the branch) and the edge-loop
+ * schedule. Still NON_MATCHING. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
@@ -50,13 +54,15 @@ struct Obj {
 };
 
 int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
+    Col *cc;
     int cnt;
     int cell;
     s16 *list;
     int i;
+    cc = col;
     cnt = 0;
-    if (col == 0) return 0;
-    if (col->grid == 0) gl_func_00000000(D_00000000 + 0x1EE9C);
+    if (cc == 0) return 0;
+    if (cc->grid == 0) gl_func_00000000(D_00000000 + 0x1EE9C);
     p.x *= D_3BE1C_128[0];
     p.y *= D_3BE1C_128[1];
     p.z *= D_3BE1C_128[2];
@@ -67,7 +73,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     while ((i = *list++) != -1) {
         int off = ((i << 2) - i) << 2;
         if (((Tri *)((char *)tris + off))->grp < 0) continue;
-        Col *cc = col;
+        cc = col;
         Face *f = cc->face(i);
         int r = gl_func_00000000(cc, f->mat);
         if (r & 0x100) {
@@ -87,23 +93,23 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                 s16 *vb = col->verts[f->vi[1]];
                 s16 *vc = col->verts[f->vi[2]];
                 int k = 2 - t->ax;
-                int ia = va[k];
-                int ib = vb[k];
-                int ic = vc[k];
+#define ia va[k]
+#define ib vb[k]
+#define ic vc[k]
                 s16 hi = MAXS(MAXS(ia, ib), ic);
                 s16 lo = MINS(MINS(ia, ib), ic);
                 if (q[k] < (f32)lo || (f32)hi < q[k]) ok = 0;
             } else {
-                f32 qa = q[a];
-                f32 qb = q[b];
-                f32 sg = t->sgn;
-                s16 (*vt)[3] = col->verts;
+#define qa q[a]
+#define qb q[b]
+#define sg ((f32)t->sgn)
+#define vt (col->verts)
                 s16 *nx = D_3BE1C_c;
                 u16 *fv = (u16 *)f;
                 do {
                     s16 *v0 = vt[fv[1]];
-                                    s16 *v1 = vt[f->vi[*nx]];
-                nx++;
+                    s16 *v1 = vt[f->vi[*nx]];
+                    nx++;
                     s16 ex = v1[a] - v0[a];
                     s16 ey = v1[b] - v0[b];
                     s16 dx = (int)(qa - v0[a]);
