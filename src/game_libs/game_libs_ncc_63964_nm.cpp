@@ -16,7 +16,10 @@
  * the V3 ctor forwarding to an inline set() (the 5062C rule), and three empty `if (1) {}` BB breaks (after the
  * out construction, after `acc = 0.0f`, before `acc += va.y`): the then-arm now rematerialises its zero and
  * adds it (target `mtc1 zero,f6; add.s f16,f6,f8`) instead of folding 0 + va.y: 88.72 -> 96.19, body 1112 -> 1116
- * (target 1120). LEFT: the out zeros in their own f0 (ours share acc's f16), a 12-byte temp block order. */
+ * (target 1120). Then an unused `{ V3 t; }` block right after n (the target's 12 unreferenced bytes at sp+196,
+ * just below n) replaces the trailing volatile ints: the first arm's temps land on the target's 172 / 184 (96.33).
+ * LEFT: the out zeros in their own f0 (ours share acc's f16), the arm-1 sum / operator= param 8 bytes low,
+ * v0 / v1 swapped (return slot address vs count). */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
@@ -44,6 +47,7 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     V3 out(0.0f, 0.0f, 0.0f); if (1) {}
     int count;
     V3 n = va - vb;
+    { V3 t; }
     count = 0;
     acc = 0.0f; if (1) {}
     gl_func_00000000(&n);
@@ -63,5 +67,4 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     }
     fin.x = 0.0f; fin.y = -acc; fin.z = 0.0f;
     gl_func_00000000(o->tgt, &out, &fin);
-    { volatile int q0, q1; }
 }
