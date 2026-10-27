@@ -888,7 +888,6 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x800) = arg4;
         var_v1 = *(s32 *)((char *)(arg0) + 0x840); func_00000000(arg0, var_v1);
         var_s0 = *(char **)((char *)(arg0) + 0x840);
-        sp58 = 0;
         var_s0 += 0x18;
         *(s32 *)var_s0 &= ~8;
         /* target 0xAC34-0xAC98: each global access is its own symbol (fresh lui per
@@ -898,13 +897,12 @@ sw_end:
         var_v1 = bu_90cc_gcfg_ld.f04; var_v1 |= 0x20000; bu_90cc_gcfg_st.f04 = var_v1;
         var_v1 = bu_90cc_gcfg_b_ld.f04; var_v1 &= 0xFFF7FFFF; var_v1 &= ~2; bu_90cc_gcfg_b_st.f04 = var_v1;
         bu_90cc_gown = (s32) arg0;
-        while (sp58 != 0x23) {
+        for (sp58 = 0; sp58 != 0x23; sp58++) {
             var_a2 = sp58;
             if (sp58 >= 0x28U) {
-                func_00000000(&D_00008868, sp58); /* 2-arg call: a2 holds var_a2 only by colouring (target: one or a2,a1 in the bnez delay) */
+                func_00000000(&D_00008868, sp58);
             }
             *(s32 *)((char *)&bu_90cc_gtbl + var_a2 * 4) = 0;
-            sp58 += 1;
         }
         *(s32 *)((char *)&bu_90cc_gpair + 4) = 0x2A003;
         *(s32 *)&bu_90cc_gpair = 0;
