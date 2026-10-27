@@ -978,9 +978,9 @@ sw_end:
                 func_00000000(sp164);
                 func_00000000(sp164);
             }
-            var_v1 = bu_90cc_d08_01.f2C;
+            temp_v0_51 = bu_90cc_d08_01.f2C;
             var_s0 = *(char **)((char *)(sp15C) + 0x28);
-            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp15C, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, var_v1 + 0x70, 32.0f, 74.0f);
+            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp15C, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, temp_v0_51 + 0x70, 32.0f, 74.0f);
             var_v1 = bu_90cc_d44_02.f04;
             var_s0 = *(char **)((char *)(sp158) + 0x28);
             ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp158, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, var_v1 + 0x70, 32.0f, 74.0f);
