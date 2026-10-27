@@ -2879,7 +2879,7 @@ void gl_func_00037540(char *o) {
     v = (char *)FW(o, 0x2C);
     a = FF37540(o, 0x3C) * FF37540(v, 4);
     if (a < 0.0f) {
-        ab = -a;
+        ab = -a; if (1) {}
     } else {
         ab = a;
     }
@@ -10707,7 +10707,7 @@ void gl_func_000415A4(O415A4 *self) {
     t->aC = 240;
     t->a8 = 320;
     t->f18 = 100.0f;
-    t->f1C = 16000.0f;
+    t->f1C = 16000.0f; if (1) {}
     D_415A4_tA.a28 = 1030;
     D_415A4_tA.a28 = D_415A4_tA.a28 | 6 | 0x400;
     t->a2C = 1;
@@ -22547,7 +22547,7 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     f32 d;
 
     gl_func_00034458(arg0 + 0x12C);
-    two = (f32)2;
+    two = (f32)2; if (1) {}
     d = (f32)0;
     MF54(0x12C) = 1.0f - (QF54(0) * QF54(0)) * two;
     MF54(0x130) = d - (QF54(0) * QF54(4)) * two;
