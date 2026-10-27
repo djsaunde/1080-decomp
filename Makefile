@@ -737,7 +737,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 179: 4F2DC NM `if (1) {}` after the vecA0[0] load (0x424 -> 0x428 bytes = target): 0x2ea94 -> 0x2ea98 (62F08 NM offset 0x2ea48).
 # agent-c run 179: 3B9C0 NM donor `if (1) {}` after the qa load (0x460 -> 0x45C bytes = target): 0x2ea98 -> 0x2ea94 (62F08 NM offset 0x2ea44).
 # agent-c run 179: 415A4 NM `if (1) {}` after the f1C store (0x1C0 -> 0x1C4 bytes = target): 0x2ea94 -> 0x2ea98 (62F08 NM offset 0x2ea48).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea98 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 179: 54E78 NM 0x164 store moved up (0x22C -> 0x228 bytes = target): 0x2ea98 -> 0x2ea94 (62F08 NM offset 0x2ea44).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea94 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0

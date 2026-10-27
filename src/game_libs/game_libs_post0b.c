@@ -22571,10 +22571,10 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     sp8C = sp2C.v.y;
     sp88 = sp2C.v.x;
     d = (sp2C.v.x * QF54(0) + QF54(4) * sp2C.v.y + sp2C.v.z * QF54(8)) * two;
+    MF54(0x164) = d * QF54(8);
     MF54(0x15C) = d * QF54(0);
     MF54(0x160) = d * QF54(4);
     MF54(0x168) = 1.0f;
-    MF54(0x164) = d * QF54(8);
     FW(&D_00000000, 0xE4) = (int)(arg0 + 0x12C);
 }
 #if 0
