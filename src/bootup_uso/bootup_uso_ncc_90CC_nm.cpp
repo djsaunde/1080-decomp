@@ -642,12 +642,12 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
         
         goto sw_end;
 sw_c7:
-        *(s16 *)((char *)(arg0) + 0x902) = 0x1A;
         *(s16 *)((char *)(arg0) + 0x900) = 0x19;
+        *(s16 *)((char *)(arg0) + 0x902) = 0x1A;
         arg8 |= 1;
         goto sw_end;
 sw_c6:
-        *(s16 *)((char *)(arg0) + 0x902) = 0x18; *(s16 *)((char *)(arg0) + 0x900) = 0x17;
+        *(s16 *)((char *)(arg0) + 0x900) = 0x17; *(s16 *)((char *)(arg0) + 0x902) = 0x18;
         arg8 |= 1;
 sw_end:
         sp174 = 0;
