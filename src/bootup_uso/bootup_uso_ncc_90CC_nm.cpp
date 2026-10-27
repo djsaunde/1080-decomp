@@ -1,6 +1,13 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for func_000090CC (agent-g run 176).
- * Mechanical port of the cfe NM body to C++ (first pass). Still NON_MATCHING:
- * spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * Port of the cfe NM body (97.15) to C++: 98.50, 2106 words = target. edg-specific fixes
+ * (docs/IDO_CODEGEN.md kit CXXIII): unreferenced fillers kept with `= 0`, the 3-word zero
+ * loop as an index loop (edg's pointer loop unrolls), literals through fi(int), arg8 is the
+ * flag candidate itself, temp_s1 carries the late +0x70 draw argument (split m2c variable),
+ * per-site vt548 alias, fn-typed second D_0 base, cfg RMW through a local.
+ * RESIDUAL: t-ring one behind the target after the 0x808 cascade, case-7 constant hoist,
+ * `lui s0; lw v0` draw-argument globals, dead `addiu s0, s0, 0xB4`, arg load order at the
+ * 5-arg call, &D_8880 delay slot, wpos.y store schedule.
+ * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
