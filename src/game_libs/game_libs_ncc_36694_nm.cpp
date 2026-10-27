@@ -52,8 +52,8 @@ extern "C" V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_
         if (pz < 0.0f) {
             m1 = (f32)-1;
             px = px * m1;
-            py = py * m1;
             pz = pz * m1;
+            py = py * m1;
         }
         one = (f32)1;
         vD8.z = pz;
@@ -70,8 +70,8 @@ extern "C" V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_
         res = &v8C;
     } else {
         if (n.z == 1.0f) {
-            vD8.z = 0.0f;
             vD8.x = 1.0f;
+            vD8.z = 0.0f;
             vD8.y = 0.0f;
         } else {
             vD8.z = 0.0f;

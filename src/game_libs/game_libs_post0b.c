@@ -2901,8 +2901,8 @@ void gl_func_00037540(char *o) {
     FF37540(r, 0x60) = 0.0f;
     FF37540(r, 0x64) = 0.0f;
     FF37540(r, 0x68) = 0.0f;
-    arg.z = 0.0f;
     arg.y = -b;
+    arg.z = 0.0f;
     arg.x = 0.0f;
     gl_func_00034458(r + 0x30, &arg, o);
     { f32 h_x = FF37540(r, 0x50); f32 h_y = FF37540(r, 0x54); f32 h_z = FF37540(r, 0x58);
@@ -2921,9 +2921,9 @@ void gl_func_00037540(char *o) {
     g.v6C.z = tmp.v.z;
     g.v6C.y = tmp.v.y;
     g.v6C.x = tmp.v.x;
-    g.v9C.x = FF37540(r, 0xA0);
-    g.v9C.y = FF37540(r, 0xA4);
     g.v9C.z = FF37540(r, 0xA8);
+    g.v9C.y = FF37540(r, 0xA4);
+    g.v9C.x = FF37540(r, 0xA0);
     g.v9C.x = g.v6C.x + g.v9C.x;
     g.v9C.y = g.v6C.y + g.v9C.y;
     g.v9C.z = g.v9C.z + g.v6C.z;
@@ -17140,8 +17140,8 @@ void gl_func_0004C5E4(char *arg0) {
     *(s16*)((char*)temp_a0_3 + 0x6) = 0;
     *(s16*)((char*)temp_a0_3 + 0xC) = 0x1FF;
     *(s16*)((char*)temp_a0_3 + 0xE) = 0;
-    *(s16*)((char*)temp_a0_3 + 0x2) = (s16) (s32) temp_f0;
     *(s16*)((char*)temp_a0_3 + 0x0) = (s16) (s32) temp_f2;
+    *(s16*)((char*)temp_a0_3 + 0x2) = (s16) (s32) temp_f0;
     *(s16*)((char*)temp_a0_3 + 0x8) = (s16) (s32) ((temp_f12 * 4.0f) + temp_f2);
     *(s16*)((char*)temp_a0_3 + 0xA) = (s16) (s32) ((temp_f14 * 4.0f) + temp_f0);
     temp_a2_2 = FW(s1v, 0xC);

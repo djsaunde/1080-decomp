@@ -40,9 +40,9 @@ extern "C" void gl_func_0004D688(char *arg0) {
     FW(arg0, 0x18) = 0;
     FW(arg0, 0x40) = (s32) DSTR(0x2021C);
     FW(arg0, 0x10) = 0;
-    var_s3 = 0;
     var_s2 = 0;
     var_s6 = 0;
+    var_s3 = 0;
     var_s4 = 0;
     gl_func_00034458(g1);
 loop_1:
@@ -64,8 +64,8 @@ loop_1:
             if ((temp_a0_2 != 0) && (FW(temp_a0_2, 0x5C) != 0)) {
                 FW(arg0, 0x3C) = (s32) DSTR(0x20248);
                 gl_func_00034458(temp_a0_2);
-                FW(arg0, 0x40) = (s32) DSTR(0x20250);
                 FW(arg0, 0x20) = 1;
+                FW(arg0, 0x40) = (s32) DSTR(0x20250);
             } else {
                 gl_func_00034458(arg0);
                 gl_func_00034458(arg0);

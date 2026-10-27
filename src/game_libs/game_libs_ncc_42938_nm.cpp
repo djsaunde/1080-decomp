@@ -60,12 +60,12 @@ void *func_00000000(...);
 inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
     v->vscale[0] = (s32)(w * 2.0f);
     v->vscale[1] = (s32)(h * 2.0f);
+    v->vtrans[2] = 0x1FF;
     v->vscale[2] = 0x1FF;
     v->vscale[3] = 0;
-    v->vtrans[2] = 0x1FF;
     v->vtrans[3] = 0;
-    v->vtrans[0] = (s32)(x * 4.0f + w * 2.0f) & 0xFFFF;
     v->vtrans[1] = (s32)(y * 4.0f + h * 2.0f) & 0xFFFF;
+    v->vtrans[0] = (s32)(x * 4.0f + w * 2.0f) & 0xFFFF;
 }
 
 extern "C" void game_libs_func_00042938(void) {
