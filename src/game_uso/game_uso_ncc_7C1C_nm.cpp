@@ -176,8 +176,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
                 p = 0; if (1) { p = &mD; }
                 if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
                     tx = mC.x - *q;
+                    p->y = 0.0f; /* run 182 (lever-sweep order; p is &mD or fresh memory) */
                     tz = mC.z - *(f32 *)((int)q + 8);
-                    p->y = 0.0f;
                     p->x = tx;
                     p->z = tz;
                 }
