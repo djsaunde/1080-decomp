@@ -56,7 +56,7 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
         c.getOut()->pos.set(m);
     } else {
         V3 r;
-        V3 e;
+        int e = 0; /* run 179: unused 4-byte home in place of V3 e (frame 0x188 -> 0x180 = target) */
         V3 ref;
         V3 self;
         Ctx c(a0);
@@ -85,7 +85,7 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
             acc.put(diff * (sel - mag) * a0->sy);
         }
         game_uso_func_072EE8(c.getOut()->acc, &acc);
-        e = diff * sel;
-        a0->vel -= e;
+        acc = diff * sel; /* the last product reuses acc (was V3 e) */
+        a0->vel -= acc;
     }
 }
