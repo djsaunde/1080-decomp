@@ -740,7 +740,9 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x8BC) = temp_v0_51;
         *(s32 *)((char *)(arg0) + 0xA58) = temp_v0_51;
         *(s32 *)((char *)(arg0) + 0x8B8) = arg8;
-        func_00000000_p4f(temp_s1, arg0, 0x6D, 0x43160000, 200.0f);
+        /* run 179: the call inside if (1) { } (a BB of its own) stops as1 copying the
+         * `arg8 &= ~4` join into the rgb30 arm; length 8436 -> 8424 = target */
+        if (1) { func_00000000_p4f(temp_s1, arg0, 0x6D, 0x43160000, 200.0f); }
         if (*(s32 *)((char *)(arg0) + 0xA58) & 8) {
             *(s16 *)((char *)(arg0) + 0x88C) = 4;
             *(s16 *)((char *)(arg0) + 0x88E) = 2;
