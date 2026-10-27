@@ -11764,11 +11764,12 @@ extern int D_2D37C_tmr;
 extern int D_2D37C_rec[];
 extern u16 D_2D37C_raw[];
 extern f32 D_2D37C_f358s[], D_2D37C_f358l[], D_2D37C_f35Cs[], D_2D37C_f35Cl[], D_2D37C_f35Cw[], D_2D37C_f360s[], D_2D37C_f360l[];   /* per-site pool aliases of &D_0+0x358/35C/360 (fresh lui at per access) */
+/* agent-c run 179: the decremented count is written as `c - 1` at the store (no named n):
+ * 680 -> 676 bytes = target, 96.69 -> see report. */
 void game_libs_func_0002D374(void) {
     int st;
     int v;
     int i;
-    int n;
     int c;
     int half;
     unsigned raw;
@@ -11819,7 +11820,6 @@ void game_libs_func_0002D374(void) {
     }
     c = TW_2D37C(0xC);
     if (c != 0) {
-        n = c - 1;
         if (c == 256) {
             raw = D_2D37C_raw[0x2E68 / 2];
             z = 0.0f;
@@ -11832,7 +11832,7 @@ void game_libs_func_0002D374(void) {
             D_2D37C_f35Cs[0x35C / 4] = z;
             D_2D37C_f358s[0x358 / 4] = fr;
         }
-        TW_2D37C(0xC) = n;
+        TW_2D37C(0xC) = c - 1;
         d = D_2D37C_f35Cl[0x35C / 4];
         d -= D_2D37C_f360l[0x360 / 4];
         D_2D37C_f35Cw[0x35C / 4] = d;
