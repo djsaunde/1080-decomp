@@ -252,7 +252,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     func_00000000(DROOT, obj, 0xFFFF);
 
     t5.w = *(int *)&D_00007E54;
-    p1.w = t5.w;
+    p1.w = *(int *)&D_00007E54;
     obj = (char *)func_00000000(0x48);
     if (obj != 0) {
         p2.w = p1.w;
@@ -271,7 +271,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     func_00000000(DROOT, func_00000000(0, (t9.w = *(int *)&D_00007E64, t9), D_55A0_g9, &M(0xC4)), 0xFFFF);
 
     t10.w = *(int *)&D_00007E68;
-    p1.w = t10.w;
+    p1.w = *(int *)&D_00007E68;
     obj = (char *)func_00000000(0x58);
     if (obj != 0) {
         func_00000000(obj, p1, D_55A0_g10, &M(0xE4));
