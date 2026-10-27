@@ -22559,11 +22559,11 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     MF54(0x144) = d - (QF54(8) * QF54(4)) * two;
     MF54(0x14C) = d - (QF54(8) * QF54(0)) * two;
     MF54(0x150) = d - (QF54(4) * QF54(8)) * two;
-    MF54(0x158) = d;
     MF54(0x154) = 1.0f - (QF54(8) * QF54(8)) * two;
     w = QF54(0xC);
     sp50.v.x = QF54(0) * w;
     sp50.v.y = QF54(4) * w;
+    MF54(0x158) = d;
     sp50.v.z = QF54(8) * w;
     sp64.v = sp50.v;
     sp2C.v = sp64.v;
@@ -25190,8 +25190,8 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xBA001402;
         *(s32 *)(p + 4) = 0x300000;
+        *(s32 *)(p + 0) = 0xBA001402;
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
@@ -25219,8 +25219,8 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xBA001402;
         *(s32 *)(p + 4) = 0x300000;
+        *(s32 *)(p + 0) = 0xBA001402;
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;

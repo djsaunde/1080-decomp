@@ -13272,9 +13272,9 @@ block_83:
                             gl_func_00043BE4(arg0, 0x10, var_v0_2, 127.0f, (s32) *(u8 *)((char *)(arg0) + 0x28));
                         }
                     }
+                    *(u8 *)((char *)(arg0) + 0x2A) = sp6B;
                     *(u16 *)((char *)(arg0) + 0x1A) = 0U;
                     *(s32 *)((char *)(arg0) + 0x48) = 5;
-                    *(u8 *)((char *)(arg0) + 0x2A) = sp6B;
                 }
                 if (*(u8 *)((char *)(arg0) + 0x16) & 4) {
                     sp50 = 4;
