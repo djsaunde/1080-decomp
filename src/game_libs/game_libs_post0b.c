@@ -17141,10 +17141,10 @@ void gl_func_0004C5E4(char *arg0) {
     *(s16*)((char*)temp_a0_3 + 0xC) = 0x1FF;
     *(s16*)((char*)temp_a0_3 + 0xE) = 0;
     *(s16*)((char*)temp_a0_3 + 0x0) = (s16) (s32) temp_f2;
+    temp_a2_2 = FW(s1v, 0xC);
     *(s16*)((char*)temp_a0_3 + 0x2) = (s16) (s32) temp_f0;
     *(s16*)((char*)temp_a0_3 + 0x8) = (s16) (s32) ((temp_f12 * 4.0f) + temp_f2);
     *(s16*)((char*)temp_a0_3 + 0xA) = (s16) (s32) ((temp_f14 * 4.0f) + temp_f0);
-    temp_a2_2 = FW(s1v, 0xC);
     temp_a1_2 = FW(temp_a2_2, 0x4);
     FW(temp_a2_2, 0x4) = (s32) (temp_a1_2 + 1);
     temp_v1_2 = FW(FW(s1v, 0xC), 0x0) + (temp_a1_2 * 8);
