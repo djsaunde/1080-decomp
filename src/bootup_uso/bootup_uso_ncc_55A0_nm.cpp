@@ -29,7 +29,7 @@ extern f32 D_bu_ro_598, D_bu_ro_59C, D_bu_ro_5A0, D_bu_ro_5A4, D_bu_ro_5A8, D_bu
 #define OF(p, o) (*(float *)((char *)(p) + (o)))
 
 /* scratch[0] == sp+0xC4. Indices below are byte-offset/4 from 0xC4. */
-#define M(off) m[((off) - 0xC4) / 4]
+#define M(off) mm[((off) - 0xC4) / 4]
 /* RUN 107 (agent-c, byvalue-struct-scan `out` tell): 51.9 -> 87.6. Every
  * sub-object ctor takes a 4-byte struct BY VALUE (`lw a1,92(sp); sw a1,4(sp)`):
  * zero-page global word -> per-object temp (v0..v3 / t4..t10, kept alive by
@@ -69,7 +69,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     R12_55A0 *it;
     S4_55A0 v0, v1, v2, v3;
     int mode;
-    int cnt = 0;
+    float *mm = m;
     S4_55A0 p1;
     char *obj;
     V4_55A0 vec0;
