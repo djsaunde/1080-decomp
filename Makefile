@@ -717,7 +717,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 175: 50444 NCC NM donor intern() (NM cfe body 0x1E4 -> 0x1E8 bytes = target): 0x2ea30 -> 0x2ea34 (62F08 NM offset 0x2e9e4).
 # agent-c run 175: 500EC NCC exact donor over a placeholder (NM cfe body 0x2A8 -> 0x2B8 bytes = target): 0x2ea34 -> 0x2ea44 (62F08 NM offset 0x2e9f4).
 # agent-c run 177: 3B2EC NM NCC donor (0x3A8 -> 0x3B8 bytes, target 0x3B4): 0x2ea44 -> 0x2ea54 (62F08 NM offset 0x2ea04).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea54 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 177: 36F0C NM NCC donor (0x3BC -> 0x3CC bytes, target 0x3C8): 0x2ea54 -> 0x2ea64 (62F08 NM offset 0x2ea14).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea64 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1719,6 +1720,14 @@ $(GAMELIBS_3B6A0_NM_DONOR): src/game_libs/game_libs_ncc_3B6A0_nm.cpp
 	$(OBJCOPY) --redefine-sym below__3ObjFiPfPP4TriBT2=gl_func_0003B6A0 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_NM_DONOR)
+# 36F0C = real C++ `void FreeCam::update()` (agent-c run 177; cfe 91.26); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_36F0C_NM_DONOR := build/src/game_libs/game_libs_ncc_36F0C_nm.cpp.o
+$(GAMELIBS_36F0C_NM_DONOR): src/game_libs/game_libs_ncc_36F0C_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym update__7FreeCamFv=gl_func_00036F0C $@
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036F0C=$(GAMELIBS_36F0C_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36F0C_NM_DONOR)
 # 3B2EC = real C++ `int Obj::height()` (agent-c run 177; cfe 91.56); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3B2EC_NM_DONOR := build/src/game_libs/game_libs_ncc_3B2EC_nm.cpp.o
 $(GAMELIBS_3B2EC_NM_DONOR): src/game_libs/game_libs_ncc_3B2EC_nm.cpp
