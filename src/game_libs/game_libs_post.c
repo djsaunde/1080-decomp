@@ -11767,14 +11767,18 @@ extern f32 D_2D37C_f358s[], D_2D37C_f358l[], D_2D37C_f35Cs[], D_2D37C_f35Cl[], D
 /* agent-c run 179: the decremented count is written as `c - 1` at the store (no named n):
  * 680 -> 676 bytes = target; the count store after the d load and no `if (half) {}`
  * (target order: `lwc1 d` then `sw t0,0xC(a2)`). Residual: z / fr colour f12 / f0 (target
- * f0 / f2) and the c-1 / half t-registers. */
+ * f0 / f2) and the c-1 / half t-registers.
+ * agent-c run 180: `raw` de-named to a #define of the u16 load (lever-sweep denaming hit):
+ * 99.59 -> 99.64, the c-1 / half t-registers now match; left: z/fr f12/f0 (target f0/f2),
+ * the post-call i reload a3 (t2) and rec[2] t2 (t3). Note the target stores z to 35C BEFORE fr
+ * to 358 (swapping the two stores reads 0.03 lower only because f0 then lines up by chance).
+ * Spelling-grid over assign order x keep-alives x store order x i spelling x decl order: flat. */
 void game_libs_func_0002D374(void) {
     int st;
     int v;
     int i;
     int c;
     int half;
-    unsigned raw;
     f32 fr;
     f32 z;
     f32 d;
@@ -11823,7 +11827,7 @@ void game_libs_func_0002D374(void) {
     c = TW_2D37C(0xC);
     if (c != 0) {
         if (c == 256) {
-            raw = D_2D37C_raw[0x2E68 / 2];
+#define raw (D_2D37C_raw[0x2E68 / 2])
             z = 0.0f;
             fr = (f32)raw;
             half = (int)raw >> 1;
