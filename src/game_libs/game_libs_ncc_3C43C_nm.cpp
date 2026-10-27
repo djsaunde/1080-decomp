@@ -1,5 +1,9 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003C43C: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.00).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
+ * agent-c run 177 (94.26 -> 96.05, 864 -> 868 bytes, target 872): the limit constant read into a block-scope
+ * `k` then copied into lim (the target's f16 constant + `mov.s f12` copy, kept apart from the -600 constant), and
+ * `0.0f + dist[best]` read into dd right after the f24 store (the target's early dist[best] load and add above the
+ * h10 store). Residual: 24 extra frame bytes below the staging records (target frame 0xE0). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -47,7 +51,7 @@ extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
     acc.y = 0.0f;
     acc.z = 0.0f;
     n = gl_func_00000000(o, 8, dist, hitbuf, r[0], r[1], r[2], 0);
-    lim = *(float *)((char *)&D_00000000 + 0x1AB8);
+    { float k = *(float *)((char *)&D_00000000 + 0x1AB8); lim = k; }
     best = -1;
     a3->count = n;
     if (n > 0) {
@@ -70,13 +74,14 @@ extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
             a3->vtx.y = tmp2.pos.y;
             a3->vtx.z = tmp2.pos.z;
             a3->f24 = *(float *)(hitbuf[best] + 8);
+            float dd = 0.0f + dist[best];
             a3->h10 = *(unsigned short *)(*(char **)(*(char **)(o + 0x84) + 0x68) + *(short *)(hitbuf[best] + 4) * 8);
             a3->idx = *(short *)(hitbuf[best] + 4);
             tmp2.pos = acc;
             a3->pos.x = tmp2.pos.x;
             a3->pos.y = tmp2.pos.y;
             a3->pos.z = tmp2.pos.z;
-            a3->dist = 0.0f + dist[best];
+            a3->dist = dd;
         } else {
             n = 0;
         }
