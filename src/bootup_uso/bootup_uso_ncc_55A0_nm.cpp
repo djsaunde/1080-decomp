@@ -150,7 +150,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
-            vec0.w = 1.0f; vec0.x = vec0.y = vec0.z = D_bu_ro_59C;
+            vec0.w = 1.0f; vec0.x = D_bu_ro_59C; vec0.y = D_bu_ro_59C; vec0.z = D_bu_ro_59C;
             func_00000000(obj + 0x5C, &vec0, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_0;
         }
@@ -173,7 +173,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
-            vec1.w = 1.0f; vec1.x = vec1.y = vec1.z = D_bu_ro_5A0;
+            vec1.w = 1.0f; vec1.x = D_bu_ro_5A0; vec1.y = D_bu_ro_5A0; vec1.z = D_bu_ro_5A0;
             func_00000000(obj + 0x5C, &vec1, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_1;
         }
