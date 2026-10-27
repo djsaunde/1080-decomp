@@ -2092,6 +2092,15 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_483BC_DONOR := build/src/game_libs/game_libs_ncc_483BC.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000483BC=$(GAMELIBS_483BC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_483BC_DONOR)
+# 525F0 = Self::reg(Tgt *): cfront `new Foo(cfg, this)` (out-of-line ctor) + member call on the +0x10 subobject;
+# NCC donor, EXACT (agent-c run 180), symbols renamed (names only).
+GAMELIBS_525F0_DONOR := build/src/game_libs/game_libs_ncc_525F0.cpp.o
+$(GAMELIBS_525F0_DONOR): src/game_libs/game_libs_ncc_525F0.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym reg__4SelfFP3Tgt=gl_func_000525F0 --redefine-sym __ct__3FooFPcP4Self=gl_func_00000000_525f0_ct --redefine-sym add__3SubFP3Tgt=gl_func_00000000_525f0_add $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000525F0=$(GAMELIBS_525F0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_525F0_DONOR)
 # 3DD28 = cfront create + virtual f(&kind) + node attach (if (a0) {} after the create call, frame pads); NCC donor.
 GAMELIBS_3DD28_DONOR := build/src/game_libs/game_libs_ncc_3DD28.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DD28=$(GAMELIBS_3DD28_DONOR)

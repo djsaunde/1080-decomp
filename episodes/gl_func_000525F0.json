@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000525F0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-27T21:06:00.610906+00:00",
+  "end_time": "2026-10-27T21:06:00.610906+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-27T21:06:00.610906+00:00",
+      "assistant_text": "C++ member function: cfront new Foo(cfg, this) through an out-of-line ctor + member call on the +0x10 subobject; NCC donor spliced over an empty placeholder.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 33,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_000525F0 (0x84 / 33 words): Self::reg(Tgt *t), a C++ member function.\n * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (symbols renamed in the Makefile, names only).\n * (agent-c run 180) The \"lazy factory call gl_func(0, &D + 0x20FC0, self)\" of the cfe decode is cfront's\n * `new Foo(cfg, this)` with an out-of-line constructor (this == 0 -> the ctor allocates), and the second call is\n * a member call on the Foo's +0x10 subobject. cfe capped at 99.55 on the obj spill reload (v1 vs the target's v0,\n * ugen temploc reuse); under NCC the same logic emits the target's fresh v0 reload: EXACT. */\nextern \"C\" {\nextern char D_00000000[];\n}\nstruct Self;\nstruct Tgt { int x0; int x4; char pad8[0xC]; struct Foo *x14; };\nstruct Sub { void add(Tgt *t); };\nstruct Foo { char pad[0x10]; Sub s; Foo(char *cfg, Self *o); };\nstruct Self { char pad[0x2C]; Foo *obj; void reg(Tgt *t); };\nvoid Self::reg(Tgt *t) {\n    if (obj == 0) obj = new Foo(D_00000000 + 0x20FC0, this);\n    Foo *f = obj;\n    f->s.add(t);\n    if (t->x14 != 0) t->x4 = 1;\n    t->x14 = f;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_525F0.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000525F0.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}

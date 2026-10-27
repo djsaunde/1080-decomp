@@ -21092,90 +21092,13 @@ void gl_func_0005256C(int *a0, int **a1) {
     }
 }
 
-#ifdef NON_MATCHING
-/* gl_func_000525F0: 33-insn lazy-init + register w/ back-link (0x84, frame 0x20).
- *
- * Decoded structure (raw-word disasm):
- *   obj = self->[0x2C];                              // cached factory result
- *   if (obj == NULL) {
- *       obj = func(self, &D_BASE + 0x20FC0, ...);   // lazy factory call w/ string sym
- *       self->[0x2C] = obj;                          // cache
- *   }
- *   func(obj + 0x10, target);                        // process call
- *   if (target->[0x14] != 0) {                       // beql conditional flag
- *       target->[0x4] = 1;
- *   }
- *   target->[0x14] = obj;                            // back-link (unconditional)
- *
- * Same tail-shape (back-link-with-conditional-flag) as gl_func_0000E66C
- * and gl_func_0000EAAC — these 3 are siblings in a linked-set finalizer
- * idiom. Different lazy-init shape (cached at self->[0x2C] here vs direct
- * factory in EAAC).
- *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
- *
- * 2026-05-28: 89.7% → 99.55%. KEY FIX: the lazy factory call is 3-arg
- * `gl_func_00000000(0, &D_00000000+0x20FC0, self)` — a0=0, a1=config, a2=self
- * (NOT `(self, config)`; the prior 2-arg decode mis-shuffled the args, and that
- * `self`-in-a2 setup is also why the target saves self/target in a2/a3 before
- * the branch). With that, structure is byte-exact (33=33). RESIDUAL (~0.5%):
- * a single $v0-vs-$v1 register-renumber on obj's finalizer reload (mine $v1,
- * target $v0) — permuter-resistant regalloc cap. Lesson: match the asm's exact
- * a0/a1/a2 arg setup, don't assume arg order/count. Stays NM.
- *
- * 2026-05-29: the E84C re-read lever (drop the `obj` local, re-read self->0x2C
- * inline for the func call + finalizer) REGRESSES here (34 vs 33 insns, obj
- * spills through the stack into a2/a3) — unlike the E6E8/EAAC family this one
- * caches at self->0x2C with a lazy-init, so re-reading forces extra spills. Keep
- * the cached-`obj` form; the $v0/$v1 renumber is the genuine residual. Don't
- * retry the re-read.
- *
- * 2026-06-04: the if(1){} BB-boundary lever does NOT apply here either (tried 4
- * placements + obj-decl-split, all unchanged at 3 diffs). The residual is a
- * SPILL-RELOAD renumber — obj is spilled to 0x1C(sp) across the process call and
- * reloaded `lw $v1,0x1C(sp)` (target `lw $v0`); the allocator picks the reload
- * reg at the reload site, which a BB boundary doesn't move. See spill-reload
- * scope caveat #2 under the if(1){} entry in docs/IDO_CODEGEN.md. Permuter-class.
- * 2026-06-10: early-pseudo (dead-init obj) NEUTRAL (99.55 unchanged) -- the
- * trick flips RESULT-pseudo coloring, not reload-site choice; third
- * confirmed boundary of the pseudo-order family (caveat #2 upheld).
- * 2026-06-11 wave-2: zdbug:6 shows obj is NOT a colored LR (-ve save,
- * home 0x1C) -- the v1-vs-v0 reload is ugen's cross-BB binding reuse
- * (same temploc rebinds the same reg). Web-split probes all undone by
- * copy-prop (fin=obj, |0/^0/+0/~~ identities, if(1) wraps, fin[1]
- * array funnel, address-taken fin), 9 variants neutral or regressed.
- * v0-reuse-after-void-call multi-arm class; uoptlist-territory.
- * 2026-06-11 ugen-crack session (-Wc,-d trace, see docs/IDO_CODEGEN
- * "UGEN OPENED"): the ugen emission trace confirms obj is bound to v1
- * at EVERY site in our build (zmove xr3 xr2 / zsw xr3 28(sp) / reload
- * zlw xr3 28(sp)) — the reload reg choice is made INSIDE ugen translate
- * (not as1, not uopt coloring; v0/v1 are not in the t6..t5 scratch
- * queue either). ugen rebinds the temploc 0x1C to its recorded last
- * register (v1); the original got a FRESH v0 at the same reload — i.e.
- * its temploc record was stale/absent at that point (mechanism not
- * reachable: probably slot-sharing or a cfe CUP-time call-result temp
- * that bound v0 first in the original ucode). New probes this session:
- * void-prototyped alias on the 2nd call (the docs dead-return-v0 lever)
- * NEUTRAL — v0-protection is not the gate; decl-split, register decl,
- * named-discarded-result t: all byte-neutral. 12+ spellings total
- * cannot reach ugen's temploc record from C. Cap stands at 99.55. */
+/* gl_func_000525F0: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_525F0.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 180). It is a member function
+ * Self::reg(Tgt *): the "lazy factory call gl_func(0, &D + 0x20FC0, self)" was cfront's
+ * `new Foo(cfg, this)` through an out-of-line ctor. The cfe decode capped at 99.55 on the obj
+ * spill reload (v1 vs v0, ugen temploc reuse; 12+ C spellings neutral); NCC emits the target's v0. */
 void gl_func_000525F0(int *self, int *target) {
-    extern int D_00000000;
-    int *obj = (int*)self[0x2C / 4];
-    if (obj == 0) {
-        obj = (int*)gl_func_00000000(0, (char*)&D_00000000 + 0x20FC0, self);
-        self[0x2C / 4] = (int)obj;
-    }
-    gl_func_00000000((char*)obj + 0x10, target);
-    if (target[0x14 / 4] != 0) {
-        target[0x4 / 4] = 1;
-    }
-    target[0x14 / 4] = (int)obj;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000525F0);
-#endif
 
 /* game_libs_func_00052674 (0x5C, 23 insns): 7-global init (USO data refs,
  * the seven D_52674_* externs are distinct 0-pinned symbols: 7 separate
