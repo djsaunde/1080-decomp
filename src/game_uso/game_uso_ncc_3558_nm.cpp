@@ -29,7 +29,7 @@ struct Vec3 {
     Vec3 operator-(const Vec3 &v) const { Vec3 r; r.x = x - v.x; r.y = y - v.y; r.z = z - v.z; return r; }
     void operator+=(const Vec3 &v) { x = x + v.x; y = y + v.y; z = z + v.z; }
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
-    float len2() const { return x * x + y * y + z * z; }
+    float len2() const { float r = x * x + y * y + z * z; return r; } /* run 180: named result (76.41 -> 76.7) */
 };
 struct M4 {
     float m[4][4];
