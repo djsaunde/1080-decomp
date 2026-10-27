@@ -41,8 +41,8 @@ extern "C" int gl_func_00033094(char *o) {
         b.x = t.x;
         b.y = t.y;
         b.x = b.x * 10.0f;
+        b.x = b.x + a.x; /* agent-c run 181: lever-sweep order hit (independent fields, no calls) */
         b.y = b.y * 10.0f;
-        b.x = b.x + a.x;
         b.y = b.y + a.y;
         b.z = t.z * 10.0f + a.z;
     }
