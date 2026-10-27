@@ -149,6 +149,7 @@ extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
 /* per-site aliases (one symbol per access) bust the shared-base GCSE that turns lui/%lo-folded loads into base+K */
 extern u8 bu_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
+extern u8 bu_90cc_d148_18[];
 extern void bu_90cc_d00_b(...);  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
 extern BuW90 bu_90cc_gcfg_ld, bu_90cc_gcfg_st, bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
@@ -926,7 +927,7 @@ sw_end:
                 } while (var_v1 != 0);
             }
         } else {
-            for (var_v1 = 0; var_v1 < 3; var_v1++) ((s32 *)(bu_90cc_d148_02 + 24))[var_v1] = 0;
+            for (var_v1 = 0; var_v1 < 3; var_v1++) ((s32 *)bu_90cc_d148_18)[var_v1] = 0;
         }
         if (*(s32 *)((char *)(arg0) + 0xA58) & 8) {
             func_00000000(arg0);
@@ -934,7 +935,7 @@ sw_end:
             func_00000000(arg0);
         }
         *(s16 *)((char *)(arg0) + 0x904) = (s16) arg3;
-        func_00000000(arg2, arg3, *(s32 *)((char *)(arg0) + 0x8B8), *(s32 *)((char *)(arg0) + 0x840), arg0);
+        { s32 v840 = *(s32 *)((char *)(arg0) + 0x840); func_00000000(arg2, arg3, *(s32 *)((char *)(arg0) + 0x8B8), v840, arg0); }
         func_00000000(arg0, *(s32 *)((char *)(arg0) + 0xA58) & 1);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 3) {
             func_00000000(&D_00008880, 0);
