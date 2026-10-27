@@ -868,7 +868,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             for (j = 0; j < n; j++) {
                 E68_DMA1P(E68_NEXT(m), 0x06, arr[i * n + j], 0, 0);
             }
-            vp += n * 4;
+            vp += n * 4; if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
         E68_END(E68_NEXT(m));
         *(GwE68 **)(self + 0x38) = head;
