@@ -11830,8 +11830,8 @@ void game_libs_func_0002D374(void) {
             if (z) {}
             if (fr) {}
             D_2D37C_f360s[0x360 / 4] = (f32)half * (1.0f / 256.0f);
-            D_2D37C_f35Cs[0x35C / 4] = z;
             D_2D37C_f358s[0x358 / 4] = fr;
+            D_2D37C_f35Cs[0x35C / 4] = z;
         }
         d = D_2D37C_f35Cl[0x35C / 4];
         TW_2D37C(0xC) = c - 1;
@@ -16078,8 +16078,8 @@ void gl_func_000334E8(void) {
                     do {
                         *cpdst = *(u8 *)cpsrc;
                         cnt += 1;
-                        cpsrc += 1;
                         cpdst += 1;
+                        cpsrc += 1;
                     } while (cnt < chunk);
                 }
                 gl_func_00000000(base, gl_d_334e8_8b, base, chunk);
@@ -16531,8 +16531,8 @@ void gl_func_00033BE4(s32 src, u32 flags) {
                     do {
                         *cpdst = *(u8 *)cpsrc;
                         cnt += 1;
-                        cpsrc += 1;
                         cpdst += 1;
+                        cpsrc += 1;
                     } while (cnt < chunk);
                 }
                 gl_func_00000000(base, gl_d_33be4_8b, base, chunk);

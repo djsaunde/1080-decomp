@@ -13801,8 +13801,8 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
         gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
     }
     temp_t6 = FW(arg0, 0x240);
-    *(char **)((char *)&D_00000000 + 0x254) = temp_t6;
     FW(temp_t6, 0x158) = temp_s1;
+    *(char **)((char *)&D_00000000 + 0x254) = temp_t6;
     temp_v0_2 = FW(arg0, 0x290);
     temp_s0 = FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
@@ -19739,8 +19739,8 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
     Vec3 *tp = &tmp;
     s32 padD;
 
-    ret = 0;
     rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg1 * 8) + 2) * 6);
+    ret = 0;
     sum[0] = rec[0]; sum[1] = rec[1]; sum[2] = rec[2];
     rec = (s16 *) (*(s32 *)(arg0 + 0x60) + *(u16 *)(*(s32 *)(arg0 + 0x68) + (arg1 * 8) + 4) * 6);
     sum[0] = sum[0] + rec[0]; sum[1] += rec[1]; sum[2] += rec[2];
@@ -19767,16 +19767,16 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
     do {
         *tp = v[2];
         v[1].x = tp->x;
-        v[1].x -= v[4].x;
         v[1].y = tp->y;
+        v[1].x -= v[4].x;
         v[1].y -= v[4].y;
         v[1].z = tp->z - v[4].z;
     } while (0);
     do {
         *tp = v[2];
         v[0].x = tp->x;
-        v[0].x -= v[3].x;
         v[0].y = tp->y;
+        v[0].x -= v[3].x;
         v[0].y -= v[3].y;
         v[0].z = tp->z - v[3].z;
     } while (0);
