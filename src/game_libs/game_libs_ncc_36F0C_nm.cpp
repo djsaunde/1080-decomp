@@ -49,8 +49,7 @@ void FreeCam::update() {
     if (p->btn & 0x80) mz -= 100.0;
     if (p->btn & 0x400) { mx = p->sx * 100.0f; my = p->sy * 100.0f; }
     if (fabs_(mx) > D_000019E8 || fabs_(my) > D_000019E8 || fabs_(mz) > D_000019E8) {
-        int n = accel + 1;
-        if (accel < 100) { accel = n; }
+        if (accel < 100) { accel = accel + 1; } /* agent-c run 180: n de-named (lever-sweep) */
         f32 k = accel / 10.0f;
         mx += mx * k; my += my * k; mz += mz * k;
     } else {
