@@ -27648,13 +27648,15 @@ void gl_func_0005EF00(f32 (*m)[4], Vec3 *v, f32 angle) {
  * pi/180 is the pinned RoData literal D_5F0B8_dtor (+0x2054).
  * agent-c run 178: xs / ys named (assigned just before first use) and the
  * second `if (1) {}` dropped: c and the 0.0f constant land in the target's
- * fs0 / fs1 and the frame stays 0x80 (91.73 -> 92.36 local). Left: x*s is
- * not memory-homed (target spills it to sp+52), zy / xz homes 8 high. */
+ * fs0 / fs1 and the frame stays 0x80; xs / ys declared before zy / xz put
+ * the zy / xz homes at the target's sp+60 / sp+56 (91.73 -> 92.39 local).
+ * Left: x*s is not memory-homed (target stores it to sp+52 and reloads),
+ * and the (1-c)*xy / z*s products swap f8 / f10. */
 #ifdef NON_MATCHING
 extern float gl_func_00000000_f54c(float);
 extern f32 D_5F0B8_dtor;
 void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
-    f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t, zy, xz, xs, ys;
+    f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t, xs, ys, zy, xz;
 
     a = angle * D_5F0B8_dtor;
     s = gl_func_00000000_f54c(a);
