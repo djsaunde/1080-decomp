@@ -81,7 +81,6 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     D_55A0_w0 = D_55A0_r0 | 8; if (1) {}
     D_55A0_G.b = 0xAA002;
     D_55A0_G.a = 0;
-    D_55A0_z0 = 0;
     var_s0 = arg2 | 0x10;
     M(0x154) = fi(0); M(0x158) = fi(0); M(0x15C) = fi(0); M(0x160) = fi(0);
     M(0x144) = fi(0); M(0x148) = fi(0); M(0x150) = fi(0);
@@ -95,6 +94,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     M(0x14C) = 1.0f; M(0x124) = 1.0f; M(0x128) = 1.0f; M(0x12C) = 1.0f; M(0x118) = 1.0f; M(0xC4) = 1.0f;
     M(0x13C) = 0.5f; M(0x108) = 0.5f; M(0xE4) = 0.5f; M(0xE8) = 0.5f; M(0xD4) = 0.5f;
     M(0xF8) = D_bu_ro_598;
+    D_55A0_z0 = 0;
 
     if (arg1 == 1) {
         D_55A0_G.b = 0x28002;
