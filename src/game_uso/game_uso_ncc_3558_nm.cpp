@@ -17,7 +17,10 @@
  * first if (1) {} (the second cost 0.16: 72.58 -> 72.74). The else factor is a
  * DOUBLE literal (`w *= 0.0;`): the target keeps the three mul.s by zero, a float
  * zero folds them into plain zero stores (72.74 -> 75.62; 1004 -> 1024 bytes, AWAY
- * from 1008 -- the muls are verified target words, the overshoot is elsewhere). */
+ * from 1008 -- the muls are verified target words, the overshoot is elsewhere).
+ * agent-g run 180: the node pointer goes through an inline Ctx accessor (a stack object holding
+ * s0->node, re-read for each use) as in the 1DDC / 24BC / 28C0 siblings: the target homes it at
+ * sp+252 and reloads it (`lw v1,252(sp)`) before both 072EE8 calls (75.62 -> 76.41). */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -50,10 +53,11 @@ float game_uso_func_070238(float);
 void game_uso_func_071028(Vec3 *);
 void game_uso_func_072EE8(void *, Vec3 *);
 }
+struct Ctx { Node *out; Ctx(S *s) { out = s->node; } Node *getOut() const { return out; } };
 extern "C" void game_uso_func_00003558(S *s0) {
-    Node *p = s0->node;
+    Ctx c(s0);
     Vec3 va;
-    va.x = p->pos.x; va.y = p->pos.y; va.z = p->pos.z;
+    va.x = c.getOut()->pos.x; va.y = c.getOut()->pos.y; va.z = c.getOut()->pos.z;
     Vec3 vb;
     s0->b0->mtx.getPos(vb);
     Vec3 e;
@@ -81,7 +85,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
         Vec3 side;
         k = e.y * s0->f130;
         side.x = zero; side.y = k; side.z = zero;
-        game_uso_func_072EE8(p->f30, &side);
+        game_uso_func_072EE8(c.getOut()->f30, &side);
     }
     game_uso_func_071028(&e);
     s0->b1->mtx.getPos(w);
@@ -100,5 +104,5 @@ extern "C" void game_uso_func_00003558(S *s0) {
     k = (mag - s0->fB8) * s0->f118;
     e *= k;
     e += w;
-    game_uso_func_072EE8(p->f30, &e);
+    game_uso_func_072EE8(c.getOut()->f30, &e);
 }
