@@ -49,7 +49,7 @@ extern "C" void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
         count = timproc_uso_b1_func_000000B0(buf);
         x = 160 - (*(s16 *)(*(char **)(arg0 + 0x70C) + 0x20) + count * 13 + *(s16 *)(*(char **)(arg0 + 0x6DC) + 0x20) + *(s16 *)(*(char **)(arg0 + 0x6C4) + 0x20) + 16) / 2;
         pos4 = *(s16 *)(*(char **)(arg0 + 0x6C4) + 0x20) + x + 4;
-        posA1 = *(s16 *)(*(char **)(arg0 + 0x6DC) + 0x20) + pos4 + 4;
+        posA1 = *(s16 *)(*(char **)(arg0 + 0x6DC) + 0x20) + pos4 + 4; if (1) {} /* run 182 (lever-sweep bbsplit) */
         pos6 = *(s16 *)(*(char **)(arg0 + 0x70C) + 0x20) + posA1 + 8;
         xmid = arg1 + 0x32;
         timproc_uso_b1_func_000000B0(w6FC, posA1, xmid, 2);

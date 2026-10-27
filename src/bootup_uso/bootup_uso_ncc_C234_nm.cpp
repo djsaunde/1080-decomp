@@ -266,7 +266,7 @@ cend:
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
-        temp_f0 = -var_f2_2;
+        temp_f0 = -var_f2_2; if (1) {} /* run 182 (lever-sweep bbsplit) */
         { /* run 156: held products */
             f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
             f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
