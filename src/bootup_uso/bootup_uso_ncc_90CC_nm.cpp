@@ -965,11 +965,11 @@ sw_end:
             *(char **)((char *)(sp158) + 0x14) = var_s1;
             func_00000000(1);
             var_s0 = *(char **)((char *)(sp164) + 0x28);
-            var_t1 = bu_90cc_d44_01.f28 + 0x70;
-            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp164, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0x10, var_t1, *(f32 *)(bu_90cc_d8B4_01 + 4), 100.0f);
+            temp_s1 = (char *)(bu_90cc_d44_01.f28 + 0x70);
+            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp164, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0x10, (s32)temp_s1, *(f32 *)(bu_90cc_d8B4_01 + 4), 100.0f);
             if (*(s32 *)((char *)(arg0) + 0xA58) & 1) {
                 var_s0 = *(char **)((char *)(sp160) + 0x28);
-                ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp160, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0xC, var_t1, *(f32 *)(bu_90cc_d8B4_02 + 8), 100.0f);
+                ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp160, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0xC, (s32)temp_s1, *(f32 *)(bu_90cc_d8B4_02 + 8), 100.0f);
                 func_00000000(sp164);
                 func_00000000(sp164);
             }
