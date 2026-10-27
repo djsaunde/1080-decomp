@@ -87,11 +87,11 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     M(0x134) = fi(0); M(0x138) = fi(0); M(0x140) = fi(0); M(0x130) = fi(0);
     M(0x114) = fi(0); M(0x11C) = fi(0); M(0x120) = fi(0);
     M(0x104) = fi(0); M(0x10C) = fi(0); M(0x110) = fi(0);
+    M(0x14C) = 1.0f; M(0x124) = 1.0f; M(0x128) = 1.0f; M(0x12C) = 1.0f; M(0x118) = 1.0f; M(0xC4) = 1.0f;
     M(0xF4) = fi(0); M(0xFC) = fi(0); M(0x100) = fi(0);
     M(0xEC) = fi(0); M(0xF0) = fi(0);
     M(0xD8) = fi(0); M(0xDC) = fi(0); M(0xE0) = fi(0);
     M(0xC8) = fi(0); M(0xCC) = fi(0); M(0xD0) = fi(0);
-    M(0x14C) = 1.0f; M(0x124) = 1.0f; M(0x128) = 1.0f; M(0x12C) = 1.0f; M(0x118) = 1.0f; M(0xC4) = 1.0f;
     M(0x13C) = 0.5f; M(0x108) = 0.5f; M(0xE4) = 0.5f; M(0xE8) = 0.5f; M(0xD4) = 0.5f;
     M(0xF8) = D_bu_ro_598;
     D_55A0_z0 = 0;
