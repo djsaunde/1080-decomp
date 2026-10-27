@@ -27656,13 +27656,16 @@ void gl_func_0005EF00(f32 (*m)[4], Vec3 *v, f32 angle) {
  * uses): 92.39 -> 99.56 local, length = target. Left: the xs home is 16
  * bytes high (sp+68, target sp+52) and the (1-c)*xy / z*s products swap
  * f8 / f10. */
-#ifdef NON_MATCHING
+/* EXACT (agent-c run 178): xs / ys VOLATILE (the target stores x*s / y*s to
+ * their homes and reloads them at each use), z*s named (zs, the CSE temp's
+ * ring slot comes before (1-c)*xy), the two unused declarations before zy / xz
+ * place every home at the target's offset (frame 0x80). */
 extern float gl_func_00000000_f54c(float);
 extern f32 D_5F0B8_dtor;
 void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
     f32 a, s, c, xx, yy, zz, xy, yz, zx, x, y, z, len, t;
-    volatile f32 xs;
-    f32 ys, zy, xz;
+    f32 zs, pad, zy, xz;
+    volatile f32 xs, ys;
 
     a = angle * D_5F0B8_dtor;
     s = gl_func_00000000_f54c(a);
@@ -27673,11 +27676,12 @@ void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
     z = axis[2] / len;
     xx = x * x; yy = y * y; xy = x * y; yz = y * z; zx = z * x; zy = yz; xz = zx; if (1) {}
     mf[0][0] = (1 - c) * xx + c;
-    mf[1][0] = (1 - c) * xy - z * s;
+    zs = z * s;
+    mf[1][0] = (1 - c) * xy - zs;
     ys = y * s;
     mf[2][0] = (1 - c) * zx + ys;
     mf[3][0] = 0;
-    mf[0][1] = (1 - c) * xy + z * s;
+    mf[0][1] = (1 - c) * xy + zs;
     mf[1][1] = (1 - c) * yy + c;
     xs = x * s;
     mf[2][1] = (1 - c) * yz - xs;
@@ -27691,9 +27695,6 @@ void game_libs_func_0005F0B8(f32 mf[4][4], f32 *axis, f32 angle) {
     mf[2][3] = 0;
     mf[3][3] = 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0005F0B8);
-#endif
 
 void game_libs_func_0005F27C(f32 *d, f32 *b, f32 *c) {
     d[0] = -c[2] * b[2] + b[1] * -c[1];
