@@ -6248,6 +6248,8 @@ extern char D_3BE1C_1EE9C[];
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
+/* agent-c run 178: the NON_MATCHING object now takes this body ported to NCC C++
+ * (src/game_libs/game_libs_ncc_3BE1C_nm.cpp, Obj::query, 82.57 local vs 77.27 here). */
 /* run 151 (agent-c, 76.33 -> 76.69): the grid cell index is an if/else with
  * `cell = -1` in the else arm (target `b join` after the multiply; 1524 -> 1528 of
  * 1568 bytes). The list pointer in the same form scores lower here. */
