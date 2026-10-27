@@ -22440,8 +22440,8 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     w = QF54(0xC);
     sp50.v.x = QF54(0) * w;
     sp50.v.y = QF54(4) * w;
-    MF54(0x158) = d;
     sp50.v.z = QF54(8) * w;
+    MF54(0x158) = d;
     sp64.v = sp50.v;
     sp2C.v = sp64.v;
     sp90 = sp2C.v.z;
