@@ -18741,9 +18741,13 @@ int gl_func_0004E3F4(char *a0) {
  * (a3 -> f20), dy computed into y0's f14 web, the smaller value written back to
  * x0 (f12) and the result into zero's f16 (`zero` keeps one mtc1 for all three
  * compares). 168-variant role grid best; 90.98 (NCC NM donor, retired) -> 93.22,
- * 51 -> 50 words (target 49). */
+ * 51 -> 50 words (target 49).
+ * agent-c run 178: z0 (the stack-passed third float) VOLATILE -- the target reads
+ * it from its home once with lwc1 next to the y1 / z1 loads: 93.22 -> 95.37 local,
+ * 49 words = target; the remaining diff is the FP colouring (a role re-grid over
+ * the new shape found nothing better). */
 #ifdef NON_MATCHING
-float gl_func_0004E424(float x0, float y0, float z0, float x1, float y1, float z1) {
+float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {
     float b;
     float dz;
     float zero = 0.0f;
