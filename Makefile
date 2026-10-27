@@ -142,6 +142,10 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_485C_DONOR := build/src/bootup_uso/bootup_uso_ncc_485C.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000485C=$(BOOTUP_485C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_485C_DONOR)
+# 76F4 = 39E24 twin, NCC donor (camera member of the global block, inline Cam::mul(G &) on a local reference).
+BOOTUP_76F4_DONOR := build/src/bootup_uso/bootup_uso_ncc_76F4.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000076F4=$(BOOTUP_76F4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_76F4_DONOR)
 # CFA0 = ground-contact / tint refresh, NCC donor (virtual hooks, V3 copies).
 BOOTUP_CFA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CFA0.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000CFA0=$(BOOTUP_CFA0_DONOR)

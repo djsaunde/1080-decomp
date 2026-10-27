@@ -1,0 +1,33 @@
+{
+  "function_name": "func_000076F4",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-27T22:06:48.398380+00:00",
+  "end_time": "2026-10-27T22:06:48.398402+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-27T22:06:48.398397+00:00",
+      "assistant_text": "Exact as a C++ (NCC) donor taking the gl_func_00039E24 shape: the camera vector is a member of the global block G (+0xA0, root at +0x254, scale at +0x128) scaled through an inline Cam::mul(G &) called on a local reference Cam &c = g.cam (lui order this-then-base, scale loads kept after stores by may-alias), y += s0->0x6C through the same reference; stack-arg product written 0x80 * 0x70 for the NCC load order.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 55,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_000076F4 (0xDC / 55 words) -- the bootup twin of gl_func_00039E24\n * (docs/IDO_CODEGEN.md kit CXXVIII / CXXIX): query the root (G+0x18) through a 7-arg prototyped call; on\n * success hand the global block and s0+0x2C to a callee, scale the camera vector by the block's scale\n * triple (+0x128) through an inline member Cam::mul(G &) called on a local reference `Cam &c = g.cam`, add\n * s0->0x6C to its y, call the second helper on s0 and bump the emit counter.\n * - the camera is a MEMBER of the same block (block+0xA0, vector at +0x30 of it; root at +0x254 -- the ROM\n *   immediates, the expected object's relocation addends read 0x20 / 0x18): `this` (lui v0) is\n *   materialised before the re-materialised block base (lui a2) and each scale load stays after the\n *   previous vector store (may-alias through the reference) -- the two things the cfe body (99.82, a\n *   function-typed vector alias) could not get together;\n * - the stack-argument product is written 0x80 * 0x70 (NCC load order; cfe wanted 0x70 * 0x80).\n * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;\n * bu_76f4_g / bu_76f4_cnt / func_00000000_76f4_q / func_00000000_76f4_v are blank (0) aliases. */\nextern \"C\" {\nint func_00000000_76f4_q(void *, int, int, int, float, int, float);\nvoid func_00000000_76f4_v(...);\nextern int bu_76f4_cnt;\n}\nstruct V3 { float x, y, z; };\nstruct G;\nstruct Cam { char pad[0x30]; V3 v; void mul(G &g); };\nstruct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad134[0x254 - 0x134]; void *root; };\ninline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }\nextern \"C\" G bu_76f4_g;\nextern \"C\" void func_000076F4(char *s0) {\n    if (func_00000000_76f4_q(bu_76f4_g.root, 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),\n                    *(float *)(s0 + 0x64), 0, *(float *)(s0 + 0x80) * *(float *)(s0 + 0x70)) != 0) {\n        func_00000000_76f4_v(&bu_76f4_g, s0 + 0x2C);\n        {\n            Cam &c = bu_76f4_g.cam;\n            c.mul(bu_76f4_g);\n            c.v.y += *(float *)(s0 + 0x6C);\n        }\n        func_00000000_76f4_v(s0);\n        bu_76f4_cnt += 1;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_76F4.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_000076F4.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "report.json fuzzy 100.0; make ROM cmp byte-identical; spliced via REPLACE_FUNC_BODY into bootup_uso.c.o (both trees)."
+  }
+}
