@@ -4077,7 +4077,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     char *L, *t;
     int *rec;
     char **gD;
-    int *gE;
+    /* run 182 (lever-sweep de-naming): gE is D_bu_1EBDC itself */
     S4_55A0 t78, t74, t70, t6C;
     int *p;
     int idx;
@@ -4200,10 +4200,9 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         b0 = 2;
     }
     gD = D_bu_776C;
-    gE = D_bu_1EBDC;
     *gD = 0;
-    *gE = 6;
-    func_00000000(D_bu_7770, arg2, idx, *gE);
+    D_bu_1EBDC[0] = 6;
+    func_00000000(D_bu_7770, arg2, idx, D_bu_1EBDC[0]);
     {
         t = D_bu_7770;
         ATTACH6808(*(char **)(obj + 0x88), t);
@@ -4214,7 +4213,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     } else {
         import_8005C108_2[0x3C / 4] = import_8005C108_3[0x3C / 4] & ~8;
     }
-    *gE = (import_8005EE64_0 = (import_8005EE64_1 & ~8) | 0x100, 6); import_8005EE6C[1] = 0xA8002;
+    D_bu_1EBDC[0] = (import_8005EE64_0 = (import_8005EE64_1 & ~8) | 0x100, 6); import_8005EE6C[1] = 0xA8002;
     import_8005EE6C[0] = 0;
     func_00000000(&D_6808_11, 0);
     p = (int *)func_00000000(0, &D_6808_12, 0, 0);
@@ -4240,7 +4239,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         func_00000000(o);
     }
     func_00000000();
-    *gE = 1;
+    D_bu_1EBDC[0] = 1;
     res = (char *)func_00000000(0, ((char *)p), b8, b4, b0);
     *(int *)(res + 0x18) &= ~0x40;
     import_8001FFF0 = func_00000000(0, ((char *)p));
@@ -4280,7 +4279,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         }
     }
     ATTACH6808(*(char **)(obj + 0x84), res);
-    *gE = 6;
+    D_bu_1EBDC[0] = 6;
     func_00000000(&D_6808_22, 0);
     *gD = (char *)func_00000000(0, &D_6808_23, -1);
     import_8005EE64_4 = import_8005EE64_5 | 8;
