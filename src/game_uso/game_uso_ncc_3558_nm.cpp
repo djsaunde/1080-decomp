@@ -57,7 +57,7 @@ struct Ctx { Node *out; Ctx(S *s) { out = s->node; } Node *getOut() const { retu
 extern "C" void game_uso_func_00003558(S *s0) {
     Ctx c(s0);
     Vec3 va;
-    va.x = c.getOut()->pos.x; va.y = c.getOut()->pos.y; va.z = c.getOut()->pos.z;
+    { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
     Vec3 vb;
     { Body *b = s0->b0; b->mtx.getPos(vb); } /* run 180: named block pointer (76.73 -> 77.2) */
     Vec3 e;
