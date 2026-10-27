@@ -13767,7 +13767,7 @@ typedef char *(*GP_000469A8)();
  * second vtable pointer are ONE variable (target: `or s0,v0` copy, then s0 = vt); bit-4 test hoisted
  * above the bit-2 if. The held +0x100 / +0x78 pointers still fold into offsets. */
 void gl_func_000469A8(char *arg0, s32 arg1) {
-    s32 sp48;
+    volatile s32 sp48; /* run 179: the target's sp+72 home */
     s32 temp_a1;
     s32 temp_a1_2;
     s32 var_t0;
@@ -17071,7 +17071,6 @@ void gl_func_0004C5E4(char *arg0) {
     char *temp_a1;
     char *temp_a2;
     char *temp_a2_2;
-    char *temp_t5;
     char *temp_v0;
     char *temp_v1;
     char *temp_v1_2;
@@ -17103,7 +17102,6 @@ void gl_func_0004C5E4(char *arg0) {
         temp_v0 = FW(arg0, 0x28);
         s1v = ((GP_0004C5E4)FW(temp_v0, 0x64))(*(s16*)((char*)temp_v0 + 0x60) + (int)arg0);
         var_v1 = (FW(arg0, 0x104) & 2) != 0;
-        temp_t5 = FW(arg0, 0x148);
         temp_a0_2 = FW(arg0, 0x78);
         if (var_v1 != 0) {
             var_v1 = (temp_a0_2 & 2) != 0;
@@ -17113,8 +17111,8 @@ void gl_func_0004C5E4(char *arg0) {
             s32 tt0 = FW(arg0, 0xC4);
             s32 tt1 = FW(arg0, 0xB8);
             s32 tt2 = FW(arg0, 0xBC);
-            s32 tt4 = FW(temp_t5, 0xB8);
-            gl_func_00034458(FW(arg0, 0x158), s1v, FW(temp_t5, 0xF0), temp_a0_2 & 4, (char *) var_v1, (int)arg0 + 0xDC, tv0, tt0, tt1, tt2, tt4, FW(arg0, 0x1B0));
+            s32 tt4 = FW(FW(arg0, 0x148), 0xB8);
+            gl_func_00034458(FW(arg0, 0x158), s1v, FW(FW(arg0, 0x148), 0xF0), temp_a0_2 & 4, (char *) var_v1, (int)arg0 + 0xDC, tv0, tt0, tt1, tt2, tt4, FW(arg0, 0x1B0));
         }
     }
     gl_func_00034458(FW(arg0, 0x158));
@@ -19382,7 +19380,6 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     char *cam;
     char *p;
     float best;
-    float d;
     int besti;
     int i;
 
@@ -19429,9 +19426,8 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     if (count != 0) {
         best = *(float *)((char *)&D_00000000D + 0x1BAC);
         for (i = 0; i < count; i++) {
-            d = dists[i];
-            if (0.0f < d && d < best) {
-                best = d;
+            if (0.0f < dists[i] && dists[i] < best) {
+                best = dists[i];
                 besti = i;
             }
         }
@@ -22540,19 +22536,17 @@ typedef struct { V3_54E78 v; s32 pad[2]; } V3P8_54E78;
 #define QF54(o) (*(f32 *)((char *)arg1 + (o)))
 #define MF54(o) (*(f32 *)((char *)arg0 + (o)))
 void gl_func_00054E78(char *arg0, char *arg1) {
-    f32 w;
+    volatile f32 w; /* run 179 */
     volatile f32 sp90;
     volatile f32 sp8C;
     volatile f32 sp88;
     V3P24_54E78 sp64;
     V3P8_54E78 sp50;
     V3P24_54E78 sp2C;
-    char *temp;
     f32 two;
     f32 d;
 
-    temp = arg0 + 0x12C;
-    gl_func_00034458(temp);
+    gl_func_00034458(arg0 + 0x12C);
     two = (f32)2;
     d = (f32)0;
     MF54(0x12C) = 1.0f - (QF54(0) * QF54(0)) * two;
@@ -22581,7 +22575,7 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     MF54(0x160) = d * QF54(4);
     MF54(0x168) = 1.0f;
     MF54(0x164) = d * QF54(8);
-    FW(&D_00000000, 0xE4) = (int)temp;
+    FW(&D_00000000, 0xE4) = (int)(arg0 + 0x12C);
 }
 #if 0
 void gl_func_00054E78_old(char *arg0, char *arg1) {
@@ -29020,7 +29014,6 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
     int B = 6;
     int A = 6;
     u8 *q;
-    int t;
 
     arg1 = (q = fmt, fmt = q + 1, *q);
     if (arg1 != 0) {
@@ -29046,8 +29039,7 @@ char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt
                 out = gl_func_00034458(out, frac, gl_func_00034458(0xA, Bm1));
             } else if ((arg1 >= '0') && (arg1 < ':')) {
                 A = (u8)(arg1 - '0');
-                t = (q = fmt, fmt = q + 1, *q);
-                if (t != 0) {
+                if ((q = fmt, fmt = q + 1, *q) != 0) {
                     B = *fmt++ - '0'; if (arg3) {}
                 }
             } else {

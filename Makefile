@@ -733,7 +733,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 178: 4A308 NM donor v60 de-named, parameter empty test dropped (0x374 -> 0x364 bytes, target 0x368): 0x2ea88 -> 0x2ea78 (62F08 NM offset 0x2ea28).
 # agent-c run 178: 5F0B8 NM volatile xs (0x1BC -> 0x1C4 bytes = target): 0x2ea78 -> 0x2ea80 (62F08 NM offset 0x2ea30).
 # agent-c run 178: 4E424 NM volatile z0 (0xC8 -> 0xC4 bytes = target): 0x2ea80 -> 0x2ea7c (62F08 NM offset 0x2ea2c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea7c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 179: 469A8 NM volatile sp48 (0x188 -> 0x190 bytes, target 0x19C) + 54E78 NM volatile w (0x21C -> 0x22C bytes, target 0x228): 0x2ea7c -> 0x2ea94 (62F08 NM offset 0x2ea44).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea94 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
