@@ -1,13 +1,19 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004D688 (0x3B8 / 238 words), agent-g run 192.
- * Event-loop driver `void Obj::run()` (renamed with objcopy). The target's dispatch is an edg `switch` in source
- * case order ('e', 'f', 'd', 'g'/'h', 'l', default: `beq K` chain + `b default`, kit CXLV); under cfe the same
- * switch becomes a jumptable, which is why the old cfe body used an if/goto chain. Under NCC the loop also holds
- * &D_4D688_g2 and the constant 1 in callee-saved registers as the target does (s7 / s1).
- * Decode fixes vs the cfe body: the 'd' case toggle is a POST-increment test (`if (n++ & 1)`: the target masks the
- * old value, `or a0,s3; andi; addiu s3,s3,1`); the 'l' case passes a third lui-zero global (D_4D688_g3, not s5).
- * Residual: the target re-materialises the 0x12345678 magic (lui at / ori at per compare) while uopt hoists it into
- * a ninth callee-saved register here (s8; frame 88 vs 80), and the counter m24 is re-read after its increment
- * (volatile m24 reproduces the reload but costs 2 words: not kept). Same length as the target.
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004D688 (0x3B8 / 238 words): the debug-console event
+ * loop as `void Obj::run()` (renamed with objcopy). agent-c run 137 (extern "C" goto form, 83.62) rewritten by
+ * agent-g run 192 as a member function with a structured for(;;) loop -> 95.45 standalone, same length as the target.
+ * Load-bearing:
+ *   - the dispatch is an edg `switch` in source case order ('e', 'f', 'd', 'g'/'h', 'l', default: plain `beq K`
+ *     chain + `b default`, kits LXI / CXLV); under cfe it would be a jumptable.
+ *   - for(;;) instead of a goto ladder: uopt hoists &D_4D688_g2 and the constant 1 into s7 / s1 as the target does.
+ *   - the 0x3CB00 guard pair is ONE static long long compared against 0x1234567812345678 (agent-c run 137): each
+ *     half re-materialises the constant in at; two int compares let uopt hoist the magic into a ninth s-register.
+ *   - `if (0) gl_func_00034458(&e);` keeps the polled event object in a stack home (spilled around the poll).
+ *   - decode fix: the 'd' toggle is a POST-increment test (`if (n++ & 1)`: the target masks the old value).
+ *   - the 'l' case passes a third lui-zero global (D_4D688_g3), not the s5 base.
+ *   - m24 volatile: the target re-reads the counter after its increment (same length as the target).
+ *   - locals initialised as statements in the order n, cur, pend, keep.
+ * Residual: the polled object is reloaded into a ring temp (target a0), which shifts the t-ring by one through the
+ * 'e' case; `keep = 1` copies s1 (target materialises 1); a 5-word alignment pad before the dead epilogue.
  * Still NON_MATCHING: build/non_matching/ only. */
 extern "C" {
 int gl_func_00034458(...);
@@ -17,6 +23,7 @@ extern int D_4D688_g2;
 extern char D_4D688_g3[];
 }
 #define DSTR(o) (D_00000000 + (o))
+static long long sG;
 struct Ev { char pad[0x1C]; int key; };
 struct Q { char pad[0x1C]; Ev *ev; };
 struct Child { char pad[0x5C]; int m5C; };
@@ -24,7 +31,9 @@ struct Obj {
     int m0, m4, m8;
     Child *mC;
     int m10, m14;
-    int m18, m1C, m20, m24, m28;
+    int m18, m1C, m20;
+    volatile int m24;
+    int m28;
     char pad2c[0x3C - 0x2C];
     char *m3C, *m40;
     void *m44;
@@ -33,23 +42,25 @@ struct Obj {
 };
 void Obj::run()
 {
-    int n = 0;
-    int pend = 0;
-    int cur = 0;
-    int keep = 0;
+    int n, pend, cur, keep;
     m48 = 0;
     m18 = 0;
     m40 = DSTR(0x2021C);
     m10 = 0;
+    n = 0;
+    cur = 0;
+    pend = 0;
+    keep = 0;
     gl_func_00034458(D_4D688_g1);
     for (;;) {
-        if ((*(int *)0x3CB00 != 0x12345678) || (*(int *)0x3CB04 != 0x12345678)) {
+        if (sG != 0x1234567812345678LL) {
             gl_func_00034458(DSTR(0x20224));
         }
         Ev *e = ((Q *)D_4D688_g1)->ev;
         D_4D688_g2 = 0;
         gl_func_00034458(e, &e->key, 1);
         int k = e->key;
+        if (0) gl_func_00034458(&e); 
         D_4D688_g2 = 1;
         switch (k) {
         case 'e':

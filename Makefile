@@ -1850,10 +1850,6 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38A28_NM_DONOR
 GAMELIBS_4D468_DONOR := build/src/game_libs/game_libs_ncc_4D468.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D468=$(GAMELIBS_4D468_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D468_DONOR)
-# 4D688 = debug-console event loop under NCC (agent-c run 137, cfe 73.76): source-order switch, static guard pair. Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D688=$(GAMELIBS_4D688_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D688_NM_DONOR)
 # 44CE8 = pool record alloc; NCC donor, EXACT (agent-c run 148: base rematerialised, frame 32; run 149: separate p->n++ statement).
 GAMELIBS_44CE8_DONOR := build/src/game_libs/game_libs_ncc_44CE8.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044CE8=$(GAMELIBS_44CE8_DONOR)
@@ -1874,7 +1870,7 @@ $(GAMELIBS_4C5E4_NM_DONOR): src/game_libs/game_libs_ncc_4C5E4_nm.cpp
 	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_NM_DONOR)
-# 4D688 = C++ `void Obj::run()` (agent-g run 192: event loop with an edg switch in source case order; cfe body 236 words -> 238 = target); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
+# 4D688 = debug-console event loop as C++ `void Obj::run()` (agent-c run 137 NCC goto form; agent-g run 192: member function, for(;;) loop holds &g2 / 1, source-order switch, static guard pair; 236 -> 238 words = target + 5-word epilogue alignment pad); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
 $(GAMELIBS_4D688_NM_DONOR): src/game_libs/game_libs_ncc_4D688_nm.cpp
 	@mkdir -p $(dir $@)
