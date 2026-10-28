@@ -10,6 +10,10 @@
  * latter with its own named image pointer) -- frame 328 = target, 97.57 -> 98.95 -- and `if (1) {}` after the
  * tim begin call (lever-sweep, 99.01). LEFT: xb / xoff / x homes and the spill slots 4-44 bytes off, the int
  * temp ring one register behind (t2 / t3 where the target has t3 / t1).
+ * agent-g run 185 (kit CXXXV): x / xb / xoff are block locals of a NESTED block opened after the count call,
+ * with the three width panels named there (`Spr *pC = &arg0->sC, ...`; the width() calls go through them, the
+ * draw calls keep `&arg0->sX`): edg allocates a block's named locals at block entry, below the enclosing
+ * block's temporaries, so the homes land on the target's 136 / 144 / 148. LEFT: spill slots 4 low, t-ring.
  * NM object only. */
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
@@ -32,13 +36,7 @@ struct Obj {
 extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     f32 one[4];
     u8 buf[0x80];
-    s32 x;
-    s32 w;
-    s32 n;
     s32 i;
-    s32 xoff;
-    s32 xb;
-    s32 xa;
 
     one[0] = 1.0f;
     one[1] = 1.0f;
@@ -47,16 +45,18 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     if (FL(arg0)->f & 2) {
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
         timproc_uso_b3_func_000000B0(&arg0->tim); if (1) {}
-        w = arg0->tim.width() / 12;
+        s32 w = arg0->tim.width() / 12;
         timproc_uso_b3_func_000000B0(&arg0->sA);
         timproc_uso_b3_func_000000B0(&arg0->sB);
         timproc_uso_b3_func_000000B0(&arg0->sC);
         timproc_uso_b3_func_000000B0(buf, &D_b3_1240_base + 0x3D8, arg2);
-        n = timproc_uso_b3_func_000000B0(buf);
-        xoff = 0xA0 - (arg0->sC.width() + n * 13 + arg0->sA.width() + arg0->sB.width() + 0x10) / 2;
-        xb = arg0->sB.width() + xoff + 4;
-        xa = arg0->sA.width() + xb + 4;
-        x = arg0->sC.width() + xa + 8;
+        s32 n = timproc_uso_b3_func_000000B0(buf);
+        {
+        Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
+        s32 xoff = 0xA0 - (pC->width() + n * 13 + pA->width() + pB->width() + 0x10) / 2;
+        s32 xb = pB->width() + xoff + 4;
+        s32 xa = pA->width() + xb + 4;
+        s32 x = pC->width() + xa + 8;
         timproc_uso_b3_func_000000B0(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
@@ -65,5 +65,6 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
         timproc_uso_b3_func_000000B0(&arg0->sA, xb, arg1 + 0x32, 2);
         timproc_uso_b3_func_000000B0(&arg0->sB, xoff, arg1 + 0x32, 2);
+        }
     }
 }
