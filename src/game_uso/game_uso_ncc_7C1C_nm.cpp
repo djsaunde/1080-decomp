@@ -45,9 +45,10 @@ struct Vec3 {
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3(float a, float b, float c) { set(a, b, c); }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
-    Vec3 &operator+=(const Vec3 &v) { x = x + v.x; y = y + v.y; z = z + v.z; return *this; }
-    Vec3 &operator-=(const Vec3 &v) { x = x - v.x; y = y - v.y; z = z - v.z; return *this; }
-    Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); }
+    /* agent-c run 201 operator-spelling grid: compound += / -= and a set()-filled operator* result, 95.20 -> 95.24 standalone */
+    Vec3 &operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
+    Vec3 &operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
+    Vec3 operator*(float s) const { Vec3 r; r.set(x * s, y * s, z * s); return r; }
 };
 struct XZ : Vec3 {
     XZ(const Vec3 &v) : Vec3(v.x, 0.0f, v.z) {}
