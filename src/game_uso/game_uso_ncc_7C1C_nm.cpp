@@ -115,8 +115,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
         }
         p = 0; if (1) { p = &nB; }
         if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tx = nA.x - *(f32 *)(arg4 + 0x0);
             tz = nA.z - *(f32 *)(arg4 + 0x8);
+            tx = nA.x - *(f32 *)(arg4 + 0x0);
             p->y = 0.0f;
             p->x = tx;
             p->z = tz;
@@ -141,8 +141,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
         p = 0; if (1) { p = &mB; }
         if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
             tx = mA.x - *q;
+            p->y = 0.0f; /* run 185 (lever-sweep): p is &mB or a fresh allocation, never node memory */
             tz = mA.z - *(f32 *)((int)q + 8);
-            p->y = 0.0f;
             p->x = tx;
             p->z = tz;
         }
@@ -166,8 +166,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
                 char *src = (char *)*(int *)(*(int *)(arg1 + 0x30) + 0x908) + 0xB4;
                 p = 0; if (1) { p = &mC; }
                 if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                    tx = *(f32 *)(src + 0x0);
                     tz = *(f32 *)(src + 0x8);
+                    tx = *(f32 *)(src + 0x0);
                     p->y = 0.0f;
                     p->x = tx;
                     p->z = tz;
@@ -285,8 +285,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
             p = 0; if (1) { p = &lA; }
 
             if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tx = *q;
                 tz = *(f32 *)((int)q + 8);
+                tx = *q;
                 p->y = 0.0f;
                 p->x = tx;
                 p->z = tz;
@@ -321,8 +321,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
             p = 0; if (1) { p = &lE; }
 
             if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tx = *q;
                 tz = *(f32 *)((int)q + 8);
+                tx = *q;
                 p->y = 0.0f;
                 p->x = tx;
                 p->z = tz;
@@ -388,8 +388,8 @@ extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *
                 float m2 = game_uso_func_082880(lRD.x * lRD.x + lRD.z * lRD.z);
                 float t2 = *(f32 *)(node + 0x54) * 250.0f;
                 if (t2 < m2) {
-                    game_uso_func_00003FAC(&fA.x, &fB.x, &lRD.x, m2, t2);
                     hit = 1;
+                    game_uso_func_00003FAC(&fA.x, &fB.x, &lRD.x, m2, t2);
                     if (notFirst) {
                         if (hitA.z * fA.x < hitA.x * fA.z) {
                             *(Tri3i *)&scratch = *(Tri3i *)&fA;
