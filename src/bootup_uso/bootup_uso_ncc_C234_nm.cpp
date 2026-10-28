@@ -74,7 +74,6 @@ extern "C" void func_0000C234(char *arg0) {
     S4C234 sp8C;
     s16 temp_v0_2;
     V3C234 sp7C;
-    s16 temp_v1;
     s32 temp_a1_2;
     V3C234 sp68;
     s32 temp_v0;
@@ -142,7 +141,7 @@ extern "C" void func_0000C234(char *arg0) {
             *(f32 *)((char *)(arg0) + 0x31C) = 10.0f;
         }
         if ((*(s32 *)((char *)(arg0) + 0x938) != 0) && (*(f32 *)((char *)(arg0) + 0x348) > 10.0f)) {
-            temp_v1 = *(s16 *)((char *)(arg0) + 0x9A0);
+#define temp_v1 (*(s16 *)((char *)(arg0) + 0x9A0)) /* run 184: de-named (lever-sweep) */
             var_v0 = 0;
             if (temp_v1 == 0x64) {
                 *(s32 *)((char *)(arg0) + 0xA5C) = 0x64;
