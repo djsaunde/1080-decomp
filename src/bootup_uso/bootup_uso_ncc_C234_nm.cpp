@@ -260,7 +260,7 @@ cend:
         *(f32 *)((char *)(arg0) + 0x948) = spB4.x;
         *(f32 *)((char *)(arg0) + 0x94C) = spB4.y;
         *(f32 *)((char *)(arg0) + 0x950) = spB4.z;
-        var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x940) * *(f32 *)((char *)(arg0) + 0x340)) + (*(f32 *)((char *)(arg0) + 0x944) * *(f32 *)((char *)(arg0) + 0x344));
+        var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x340) * *(f32 *)((char *)(arg0) + 0x940)) + (*(f32 *)((char *)(arg0) + 0x344) * *(f32 *)((char *)(arg0) + 0x944));
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
