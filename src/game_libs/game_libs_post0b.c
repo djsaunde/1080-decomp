@@ -13688,11 +13688,15 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
         if (var_t0 != 0) {
             var_t0 = (FW(p78, 0) & 2) != 0;
         }
-        gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, FW(temp_v1, 0xC0), FW(temp_v1, 0xC4), FW(temp_v1, 0xB8), FW(temp_v1, 0xBC), FW(FW(temp_v1, 0x148), 0xB8), FW(temp_v1, 0x1B0));
+        /* agent-c run 191: stack args 6..10 evaluated into locals before the call (the target loads
+         * c0/c4/b8/bc/148->b8 into t1-t4/ra, then stores them; cfront inline-argument temps), and the
+         * &D+0x254 store before the 0x158 field store (target order): 74.46 -> 90.06 standalone. */
+        { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8);
+          gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
     }
     temp_t6 = FW(arg0, 0x240);
-    FW(temp_t6, 0x158) = temp_s1;
     *(char **)((char *)&D_00000000 + 0x254) = temp_t6;
+    FW(temp_t6, 0x158) = temp_s1;
     temp_v0_2 = FW(arg0, 0x290);
     temp_s0 = FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
