@@ -13086,7 +13086,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     s32 *var_at;
     s32 temp_v0;
     s32 temp_v0_2;
-    s32 temp_v0_7;
+    u32 temp_v0_7;
     s32 temp_v1;
     s32 var_t9;
     s32 var_v0;
@@ -13413,7 +13413,7 @@ block_83:
                                 D_E354_1C738_b = 1.0f;
                             }
                         } else if (temp_v1 >= 7) {
-                            temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / D_E354_1C738_c;
+                            temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / D_E354_1C738_c; if (1) {}
                             if (temp_f10_2 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl (not !(0.5 <= x)) */
                                 temp_f10_2 = 0.5f;
                             }
@@ -13438,16 +13438,16 @@ block_83:
                         if (temp_v0_2 != 0) {
                             temp_f0 = D_E354_1C73C_b;
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1728);
-                            temp_f14 = ((1.0f - temp_f0) / (f32) temp_v0_2) + temp_f0;
-                            if (temp_f16 <= temp_f14) {
-                                temp_f14 = temp_f16;
+                            temp_f0 = ((1.0f - temp_f0) / (f32) temp_v0_2) + temp_f0;
+                            if (temp_f16 <= temp_f0) {
+                                temp_f0 = temp_f16;
                             }
-                            if (temp_f14 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl */
-                                temp_f14 = 0.5f;
+                            if (temp_f0 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl */
+                                temp_f0 = 0.5f;
                             }
                             *(s32 *)(D_E354_G + 0x14) = (s32) (temp_v0_2 - 1);
-                            D_E354_1C73C_c = temp_f14;
-                            gl_E354_setf(0x04010900, temp_f14);
+                            D_E354_1C73C_c = temp_f0;
+                            gl_E354_setf(0x04010900, temp_f0);
                         } else {
                             gl_E354_setf(0x04010900, 1.0f);
                         }
