@@ -45,6 +45,7 @@ extern "C" void gl_func_00037540(Obj *o) {
     o->v30.y = 0.0f;
     if (o->in->fl() & 4) o->v30.y = 10.0f;
     if (o->in->fl() & 8) o->v30.y = -10.0f;
+    V3 p1, p2; /* agent-g run 206: unused (no code): frame 0xA8 -> 0xC0 = target (pad-position grid): 96.32 -> 96.39 */
     V3 v6C;
     v6C = vB4;
     V3 v9C;
