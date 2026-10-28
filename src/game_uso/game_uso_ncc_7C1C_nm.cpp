@@ -30,6 +30,8 @@
  *    local). uopt CSEs `hit != 0` / its negation at the loop top and spills
  *    them to the bottom spill area (target sp+84 / 80); the named ints took
  *    an edg home instead (94.51 -> 95.10).
+ *  - lever-sweep: the loop threshold written twice instead of a named t2
+ *    (95.10 -> 95.12); the first-hit copies in hitB, hitA order (95.12).
  * LEFT: edg's long-lifetime (deferred) temporaries are listed in reverse
  * creation order (then-arm d / nA, else-arm stg / mA / mC2), so several
  * homes are 4-16 bytes off; `a` (target s2) and `out` (target s0) are not
@@ -126,10 +128,9 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
                 ((hitC.x * hitA.z <= hitC.z * hitA.x) &&
                  (hitC.z * hitB.x <= hitC.x * hitB.z))) {
                 float m2 = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
-                float t2 = n->width * 250.0f;
-                if (t2 < m2) {
+                if (n->width * 250.0f < m2) {
                     Vec3 fA, fB;
-                    game_uso_func_00003FAC(&fA.x, &fB.x, &lrd.x, m2, t2);
+                    game_uso_func_00003FAC(&fA.x, &fB.x, &lrd.x, m2, n->width * 250.0f);
                     if (hit) {
                         if (hitA.z * fA.x < hitA.x * fA.z) {
                             hitA = fA;
@@ -138,8 +139,8 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
                             hitB = fB;
                         }
                     } else {
-                        hitA = fA;
                         hitB = fB;
+                        hitA = fA;
                     }
                     hit = 1;
                 }
