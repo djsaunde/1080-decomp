@@ -140,8 +140,8 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
                             hitB = fB;
                         }
                     } else {
-                        hitB = fB;
                         hitA = fA;
+                        hitB = fB;
                     }
                     hit = 1;
                 }
