@@ -26,6 +26,7 @@ struct Obj {
 #define FL(o) (*(Flags **)((char *)(o) + 0x528))
 extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
     f32 one[4];
+    volatile s32 sp0; /* frame word above buf (the target's one / buf sit 8 bytes lower) */
     char buf[128];
     s32 min, sec;
     s32 glyph;
