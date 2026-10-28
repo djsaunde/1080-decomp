@@ -38,7 +38,7 @@ struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     volatile s32 q0, q1, q2, q3, q4, q5, q6, q7, q8, q9; /* run 184: frame words (target frame 104) */
     Spr *spr;
-    s32 w, h;
+    s32 h, w; /* run 185: h declared first (5040-order grid, 94.47 -> 94.50 standalone) */
     s32 x, y;
     f32 fw, fh;
     gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);
