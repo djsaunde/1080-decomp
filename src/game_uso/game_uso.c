@@ -574,7 +574,10 @@ void game_uso_func_00000B14(void *a0) {
  *  - run 187: the two dead target `addiu vN,vN,K` (after the 0xA58 store, after
  *    the 0xB4/B8/BC loads) come back when the pointer is advanced FIRST and the
  *    accesses go through it (`tv += 0xA58; ... *(s32 *)tv`); the segment-advance
- *    tail is shared via `goto adv` (target bnezl). Length 2828 -> 2824 = target. */
+ *    tail is shared via `goto adv` (target bnezl). Length 2828 -> 2824 = target.
+ *    obj is a one-word stack object (`char *ob[1]`) stored from tv (the target's
+ *    `lw v1,244(a0); sw v1,308(sp)` + reloads), the flag RMWs carry no msk
+ *    temp, and the up-vector sums go through block floats: 95.62 -> 99.00. */
 typedef struct { int w[16]; } B3CBlk40;
 extern Vec3* game_uso_func_000023D4(Vec3 *out, char *a1);
 extern void game_uso_func_00002714(int *a0, int a1, int a2);
@@ -585,7 +588,7 @@ extern void game_uso_func_00000000_fp(f32 *out, f32 t);
 void game_uso_func_00000B3C(char *arg0) {
     Vec3 vD;          /* 0x144 */
     Vec3 vC;          /* 0x138 */
-    char *obj;        /* 0x134 */
+    char *ob[1];      /* 0x134: obj, a one-word stack object (memory-resident) */
     int *tbl;         /* 0x130 */
     char *seg;        /* 0x12C */
     int *kf;          /* 0x128 */
@@ -622,7 +625,7 @@ void game_uso_func_00000B3C(char *arg0) {
     f32 f1;
 
     s = arg0;
-    obj = *(char **)(s + 0xF4);
+    tv = *(char **)(s + 0xF4); ob[0] = tv;
     tmp = *(s32 *)(*(char **)(s + 0x150) + 0xA54);
     if (tmp != *(s32 *)(s + 0x264)) {
         *(s32 *)(s + 0x264) = tmp;
@@ -656,13 +659,13 @@ void game_uso_func_00000B3C(char *arg0) {
                 game_uso_func_00002714(*(int **)(s + 0x154), 0, *(s32 *)(s + 0x150) + 0x318);
             }
             if (*(s32 *)(seg + 0x0) == 1) {
-                game_uso_func_00002FC8(*(int **)(obj + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
             } else {
-                game_uso_func_00002FC8(*(int **)(obj + 0xB4), 0, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 0, *(s32 *)(s + 0x150) + 0x318);
             }
             *(s32 *)(s + 0x270) = 0;
             *(s32 *)(s + 0x26C) = 0;
-            tv = *(char **)(s + 0x150); tv += 0xA58; msk = *(s32 *)tv & ~0x2000; *(s32 *)tv = msk;
+            tv = *(char **)(s + 0x150); tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
         }
     }
     one = 1;
@@ -694,35 +697,27 @@ void game_uso_func_00000B3C(char *arg0) {
             switch (*(s32 *)(s + 0x26C)) {
             case 0:
                 game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(obj + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
-                msk = *(s32 *)(tv + 0xA58) & ~0x2000;
-                tv += 0xA58;
-                *(s32 *)tv = msk;
+                tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 1:
                 game_uso_func_00002714(*(int **)(s + 0x154), 2, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(obj + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
-                msk = *(s32 *)(tv + 0xA58) & ~0x2000;
-                tv += 0xA58;
-                *(s32 *)tv = msk;
+                tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 2:
                 game_uso_func_00002714(*(int **)(s + 0x154), 3, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(obj + 0xB4), 2, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 2, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
-                msk = *(s32 *)(tv + 0xA58) | 0x2000;
-                tv += 0xA58;
-                *(s32 *)tv = msk;
+                tv += 0xA58; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             case 3:
                 game_uso_func_00002714(*(int **)(s + 0x154), 3, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(obj + 0xB4), 3, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 3, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
-                msk = *(s32 *)(tv + 0xA58) | 0x2000;
-                tv += 0xA58;
-                *(s32 *)tv = msk;
+                tv += 0xA58; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             case 4:
                 break;
