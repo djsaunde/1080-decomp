@@ -6,6 +6,11 @@
  * t declared in its own block; `q = (t < 0.0f) ? -t : t`. The surface-code call returns an unsigned char
  * (per-site alias func_8bd4_c): that brings back the target's `move a1,v0` copy of the code before the 0x62 test
  * (as a0 here). 97.77 -> 97.92. LEFT: the code copy register (a0 vs a1), the second scaledBy result 16 high.
+ * agent-c run 204: the 0x61/0x62/0x63 skip test is ONE `||` expression on an int code (the target's
+ * xori/sltiu/bnez chain with the code copy in a1 and v0 consumed by the 0x62 test), and ctx->acc accumulates
+ * through a reference-returning V3::add (the acc lvalue temp then takes v0 with the target's addiu order):
+ * 97.84 -> 98.73 standalone. LEFT: the vel += temp (a0 in the target; a ref-returning += there fixes it but
+ * grows the frame by 8) and the second scaledBy result 16 high.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef float f32;
 typedef unsigned short u16;
@@ -21,6 +26,7 @@ struct V3 {
     f32 x, y, z;
     V3() {}
     void operator+=(const V3 &o) { x += o.x; y += o.y; z += o.z; }
+    V3 &add(const V3 &o) { x += o.x; y += o.y; z += o.z; return *this; }
 };
 static inline V3 scaledBy(const V3 &d, f32 s) {
     V3 r; f32 hx = d.x * s; f32 hy = d.y * s; f32 hz = d.z * s;
@@ -37,15 +43,13 @@ struct Body { char p0[0x114]; char s114[0xC]; char s120[0x2C]; int k14C; char p1
 extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
     u16 fl = b->fl;
     int skip;
-    unsigned char code;
+    int code;
     V3 impA, nnA;
 
     if (fl & 0x1F0) {
         if (amt < 0.0f) {
             code = func_8bd4_c((*(G **)&D_00000000)->h, b->k14C);
-            skip = code == 0x61; if (1) {}
-            if (!skip) skip = code == 0x62;
-            if (!skip) skip = code == 0x63;
+            skip = code == 0x61 || code == 0x62 || code == 0x63;
             if (!skip) {
                 b->ctx->cnt++;
                 b->ctx->code = code;
@@ -53,7 +57,7 @@ extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
                 b->ctx->fl |= b->fl;
                 impA = scaledBy(*dir, (float)((double)-amt * 0.5));
                 b->ctx->vel += impA;
-                b->ctx->acc += *dir;
+                b->ctx->acc.add(*dir);
                 b->ctx->imp += amt;
                 nnA = scaledBy(*dir, -amt);
                 func_8bd4_heavy(b->ctx, b->s120, &nnA);
@@ -66,7 +70,7 @@ extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
             b->ctx->cnt++;
             b->ctx->fl |= b->fl;
             b->ctx->imp += amt;
-            b->ctx->acc += *dir;
+            b->ctx->acc.add(*dir);
             f32 t = b->ctx->f970;
             f32 q = (t < 0.0f) ? -t : t;
 
