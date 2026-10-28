@@ -4147,7 +4147,8 @@ void game_uso_func_0000591C(int *a0) {
     /* self->0x3C = (-yaw_raw * (1 + sub->348/self->B0) * self->AC) / sub->708 */
     sub = *(char**)((char*)self + 0x30);
     {
-        accel_params = (float *)((int)sub + 1784);
+        /* run 196: re-read through a0 (CSE'd load, unfolded `addiu rX,a0,1784`) */
+        accel_params = (float *)(*(char**)((char*)a0 + 0x30) + 1784);
         scale = 1.0f + (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB0));
         *(float*)((char*)self + 0x3C) =
             (neg * scale * *(float*)((char*)self + 0xAC)) / *(float *)((int)accel_params + 16);
