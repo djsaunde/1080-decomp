@@ -37,7 +37,7 @@ extern "C" void gl_func_00041D40(int arg0) {
     gl_func_00034458(S(0x1F6B4));
     (*(Arr **)D_00000000)->count = 0;
     gl_func_00034458(arg0);
-    for (AIter it = iter(*(Arr **)D_00000000); it.next(); ) {
+    for (AIter it = iter(*(Arr **)D_00000000); it.next() + 0; ) { /* agent-g run 203: folded `+ 0` on the condition moves the bottom copy's index temp v1 -> v0 (target) */
         Elem *e = it.cur();
         gl_func_00034458(S(0x1F6C0), e->xC);
         e = it.cur(); if (1) {}
