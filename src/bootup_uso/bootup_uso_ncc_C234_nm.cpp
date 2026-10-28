@@ -6,6 +6,7 @@
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
+inline void zf(float &f, int z) { f = z; }
 #undef NULL
 #define NULL 0
 typedef struct { f32 x, y, z; } V3C234;
@@ -210,9 +211,9 @@ cend:
     }
     *(f32 *)((char *)(arg0) + 0x968) = 0.0f;
     *(s32 *)((char *)(arg0) + 0x938) = 0;
-    *(f32 *)((char *)(arg0) + 0x93C) = 0.0f;
-    *(f32 *)((char *)(arg0) + 0x940) = 0.0f;
-    *(f32 *)((char *)(arg0) + 0x944) = 0.0f;
+    zf(*(f32 *)((char *)(arg0) + 0x93C), 0); /* run 196: int-zero inline (kit CLVIII): the target's own f0 zero */
+    zf(*(f32 *)((char *)(arg0) + 0x940), 0);
+    zf(*(f32 *)((char *)(arg0) + 0x944), 0);
     func_00000000(bu_c234_k3 + 0x28);
     func_00000000(arg0);
     func_00000000(bu_c234_k4 + 0x34);
