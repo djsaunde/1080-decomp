@@ -1,100 +1,76 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_00008BD4 (agent-g run 157).
- * The cfe body (91.85) was capped by amt being spilled to its arg home around each
- * call; under NCC amt lives in $f20 as in the target (sdc1/ldc1 f20, frame save).
- * The two m2c copy chains (imp -> impB -> impA, nn -> impB -> nnA) are one inline
- * helper returning a named non-POD V by value (r -> shared return temp at sp+0x84
- * -> destination), products held in locals. Compound `+=` / `|=` on the ctx
- * fields are written `x = x + 1` (edg takes the lvalue address for compound
- * assignment: an extra addiu per site). 91.85 -> 96.67, 208 words (= cfe; target 209).
- * The skip set as three chained `if (!skip) skip = code == K;` statements (one bnez per
- * test like the target): 96.67 -> 96.83, 209 words = target.
- * RESIDUAL: the code copy into a1 for the skip chain, negamt colour (target ft4),
- * homes (inline locals take 6 frame words; frame 0xC8 vs 0xB8).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for func_00008BD4 (collision impulse, 209 words).
+ * agent-g run 157 / 182: the cfe NM body under NCC (amt in $f20), 97.77.
+ * agent-g run 184 (kit CXXXIII): rewritten as C++ -- `lwc1 180(a0); addiu a0,a0,180` = an inline
+ * V3::operator+=(const V3 &) on b->ctx->vel (and ctx->acc), `addiu v1,v1,2408 / 2576` = edg's compound-assignment
+ * lvalue temps (`ctx->imp += amt`, `ctx->fl |= b->fl`), ctx->cnt as `cnt = cnt + 1`; frame 184 = target (was 200);
+ * t declared in its own block; `q = (t < 0.0f) ? -t : t`. The surface-code call returns an unsigned char
+ * (per-site alias func_8bd4_c): that brings back the target's `move a1,v0` copy of the code before the 0x62 test
+ * (as a0 here). 97.77 -> 97.92. LEFT: the code copy register (a0 vs a1), the second scaledBy result 16 high.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef float f32;
+typedef unsigned short u16;
 extern "C" {
 extern char D_00000000;
 extern int func_00000000(...);
-extern void func_8bd4_a(void *, void *, void *, float *, float);
-extern void func_8bd4_b(char *, float, float *, float);
+extern unsigned char func_8bd4_c(...);
+extern void func_8bd4_a(void *, void *, void *, void *, float);
+extern void func_8bd4_b(void *, float, void *, float);
 extern void func_8bd4_heavy(void *, void *, void *);
 }
-struct V { f32 x, y, z; V() {} };
-static inline V scaledBy(const float *d, f32 s) {
-    V r; f32 hx = d[0] * s; f32 hy = d[1] * s; f32 hz = d[2] * s;
+struct V3 {
+    f32 x, y, z;
+    V3() {}
+    void operator+=(const V3 &o) { x += o.x; y += o.y; z += o.z; }
+};
+static inline V3 scaledBy(const V3 &d, f32 s) {
+    V3 r; f32 hx = d.x * s; f32 hy = d.y * s; f32 hz = d.z * s;
     r.x = hx; r.y = hy; r.z = hz;
     return r;
 }
-extern "C" void func_00008BD4(char *b, float amt, float *dir, int a3) {
-    unsigned short fl = *(unsigned short *)(b + 0x174);
-    int code;
+struct Ctx {
+    char p0[0xB4]; V3 vel; char pC0[0x938 - 0xC0];
+    int cnt; V3 acc; char p948[0x968 - 0x948]; f32 imp; char p96C[4]; f32 f970;
+    char p974[0x9A4 - 0x974]; short code; char p9A6[0xA10 - 0x9A6]; u16 fl;
+};
+struct G { char p[0x84]; int h; };
+struct Body { char p0[0x114]; char s114[0xC]; char s120[0x2C]; int k14C; char p150[0x170 - 0x150]; Ctx *ctx; u16 fl; };
+extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
+    u16 fl = b->fl;
     int skip;
-    V impA, nnA;
-    float t;
-    float q;
+    unsigned char code;
+    V3 impA, nnA;
+
     if (fl & 0x1F0) {
         if (amt < 0.0f) {
-            code = (int)func_00000000(*(int *)(*(char **)&D_00000000 + 0x84), *(int *)(b + 0x14C));
-            skip = code == 0x61; if (1) {} /* run 182 (lever-sweep bbsplit) */
+            code = func_8bd4_c((*(G **)&D_00000000)->h, b->k14C);
+            skip = code == 0x61; if (1) {}
             if (!skip) skip = code == 0x62;
             if (!skip) skip = code == 0x63;
             if (!skip) {
-                *(int *)((*(char **)(b + 0x170)) + 0x938) = *(int *)((*(char **)(b + 0x170)) + 0x938) + 1;
-                *(short *)((*(char **)(b + 0x170)) + 0x9A4) = (short)code;
+                b->ctx->cnt++;
+                b->ctx->code = code;
                 if (amt < -30.0f) amt = -30.0f;
-                {
-                    unsigned short *fp = (unsigned short *)(*(char **)(b + 0x170) + 0xA10);
-                    *fp |= *(unsigned short *)(b + 0x174);
-                }
-                impA = scaledBy(dir, (float)((double)-amt * 0.5));
-                {
-                    float *ap = (float *)(*(char **)(b + 0x170) + 0xB4);
-                    ap[0] += impA.x;
-                    ap[1] += impA.y;
-                    ap[2] += impA.z; if (1) {} /* run 182 (lever-sweep bbsplit) */
-                }
-                {
-                    float *tp = (float *)(*(char **)(b + 0x170) + 0x93C);
-                    tp[0] += dir[0];
-                    tp[1] += dir[1];
-                    tp[2] += dir[2];
-                }
-                {
-                    float *mp = (float *)(*(char **)(b + 0x170) + 0x968);
-                    *mp += amt;
-                }
-                nnA = scaledBy(dir, -amt); /* run 182 (lever-sweep de-naming): no named negamt */
-                func_8bd4_heavy(*(char **)(b + 0x170), b + 0x120, &nnA);
+                b->ctx->fl |= b->fl;
+                impA = scaledBy(*dir, (float)((double)-amt * 0.5));
+                b->ctx->vel += impA;
+                b->ctx->acc += *dir;
+                b->ctx->imp += amt;
+                nnA = scaledBy(*dir, -amt);
+                func_8bd4_heavy(b->ctx, b->s120, &nnA);
             }
         }
         return;
     }
     if (fl & 0xF) {
         if (amt < 50.0f) {
-            *(int *)(*(char **)(b + 0x170) + 0x938) = *(int *)(*(char **)(b + 0x170) + 0x938) + 1;
-            {
-                unsigned short *gp = (unsigned short *)(*(char **)(b + 0x170) + 0xA10);
-                *gp |= *(unsigned short *)(b + 0x174);
-            }
-            {
-                float *np = (float *)(*(char **)(b + 0x170) + 0x968);
-                *np += amt;
-            }
-            {
-                float *wp = (float *)(*(char **)(b + 0x170) + 0x93C);
-                wp[0] += dir[0];
-                wp[1] += dir[1];
-                wp[2] += dir[2];
-            }
-            {
-                t = *(float *)(*(char **)(b + 0x170) + 0x970);
-                if (t < 0.0f) {
-                    q = -t;
-                } else {
-                    q = t;
-                }
-                func_8bd4_a(*(char **)(b + 0x170), b + 0x120, b + 0x114, dir, q * q);
-            }
+            b->ctx->cnt++;
+            b->ctx->fl |= b->fl;
+            b->ctx->imp += amt;
+            b->ctx->acc += *dir;
+            f32 t = b->ctx->f970;
+            f32 q = (t < 0.0f) ? -t : t;
+
+            func_8bd4_a(b->ctx, b->s120, b->s114, dir, q * q);
             func_8bd4_b(b, amt, dir, 0.1f);
         }
     }
