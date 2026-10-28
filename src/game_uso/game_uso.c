@@ -5793,23 +5793,26 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         sp60.y *= lenf;
         sp60.z *= lenf;
 
-        idx = *(s32 *)(arg1 + 0x9C) + 1;
-        idxm = idx & 3;
-        *(s32 *)(arg1 + 0x9C) = idx;
-        *(s32 *)(arg1 + 0x9C) = idxm;
-        if ((u32)idxm < 4U) {
-            switch (idxm) {
-            case 0:
-                sp60.x *= (f32)0;
-                sp60.y *= (f32)0;
-                sp60.z *= (f32)0;
-                break;
-            case 1:
-                sp60.x *= -1.0f;
-                sp60.y *= -1.0f;
-                sp60.z *= -1.0f;
-                break;
-            }
+        /* 4-entry target table (sltiu 4): no IDO front end tables <5 labels
+         * (kit CXL), so the phantom `case 4` rides the empty 2/3 arm. The
+         * masked value is stored through memory (no idx/idxm locals): the
+         * target keeps it in ugen temps t6/t8. */
+        *(s32 *)(arg1 + 0x9C) = *(s32 *)(arg1 + 0x9C) + 1;
+        switch (*(s32 *)(arg1 + 0x9C) = *(s32 *)(arg1 + 0x9C) & 3) {
+        case 0:
+            sp60.x *= (f32)0;
+            sp60.y *= (f32)0;
+            sp60.z *= (f32)0;
+            break;
+        case 1:
+            sp60.x *= -1.0f;
+            sp60.y *= -1.0f;
+            sp60.z *= -1.0f;
+            break;
+        case 2:
+        case 3:
+        case 4:
+            break;
         }
         *(f32 *)(arg1 + 0x84) += sp60.x;
         *(f32 *)(arg1 + 0x88) += sp60.y;
