@@ -16516,6 +16516,12 @@ void gl_func_00033B6C(void) {
 // s1=base pin. Direction is the WRITE/upload twin of 33EB8 (copy dest = base+0,
 // copy src = arg); kick values 0x12340001/0x12340003 literal per site, polls
 // compare against held sent.
+// agent-c run 175 (80.70 -> 93.54, the 334E8 fixes): do-while outer loop and
+// if / else window min (DECODE), and the flags PARAMETER is the one variable
+// that later carries every 0x28 ring-register read (`flags = G->p28`): the
+// target's s0 (flags gate copy, then `lui s0; lw s0,40(s0)`). The 0x28 reads
+// go through a local base pointer g so no loop-invariant &G+0x28 is hoisted.
+// Length 728 -> 720 (target 724, same distance).
 #ifdef NON_MATCHING
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sites) */
 /* per-SITE base-0 aliases (33EB8/2B5F4 r1/r2 convention): one extern per access
@@ -16543,6 +16549,7 @@ void gl_func_00033BE4(s32 src, u32 flags) {
     s32 cpsrc;
     u8 *cpdst;
     s32 sent;
+    u8 *g = &gl_d_33be4_dst;
 
     rem = flags;
     if (flags & 1) {
@@ -16553,11 +16560,15 @@ void gl_func_00033BE4(s32 src, u32 flags) {
     gl_func_00000000(base);
     if (flags != 0) {
         sent = 0x12340002;
-    top:
+        do {
         chunk = rem;
         mis = src & 7;
         avail = gl_d_33be4_2ca - gl_d_33be4_8a;
-        chunk = (avail < (u32)rem) ? avail : chunk;
+        if (avail < (u32)rem) {
+            chunk = avail;
+        } else {
+            chunk = rem;
+        }
         if (chunk != 0) {
             if (mis != 0) {
                 if ((u32)(8 - mis) < chunk) {
@@ -16580,35 +16591,35 @@ void gl_func_00033BE4(s32 src, u32 flags) {
             }
             cur = gl_d_33be4_8d + chunk;
             gl_d_33be4_8e = cur;
-            gl_func_00000000(base, gl_d_33be4_28a, cur);
+            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, cur);
         }
         cur = gl_d_33be4_8f;
         if (gl_d_33be4_2cb == cur) {              /* hit segment end */
             gl_d_33be4_14a = cur;
-            gl_func_00000000(base, gl_d_33be4_28b + 12, cur);
+            gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
             if (gl_d_33be4_2cc != gl_d_33be4_8g) {
                 gl_func_00000000(base, &gl_ref_0001E344);
             }
-            gl_func_00000000(base, gl_d_33be4_28c + 8, 0x12340001);   /* kick DMA */
-            if (gl_func_00000000(base, gl_d_33be4_28d + 8) == sent) {
+            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340001);   /* kick DMA */
+            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) == sent) {
                 goto spun1;
             }
         spin1:
             gl_func_00000000(base);
-            if (gl_func_00000000(base, *(volatile s32 *)&gl_d_33be4_28e + 8) != sent) {
+            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) != sent) {
                 goto spin1;
             }
         spun1:
             cur = gl_d_33be4_24a;                 /* rebase to saved start */
             gl_d_33be4_8h = cur;
-            gl_func_00000000(base, gl_d_33be4_28f, cur);
-            gl_func_00000000(base, gl_d_33be4_28g + 8, 0x12340003);   /* kick second DMA */
-            if (gl_func_00000000(base, gl_d_33be4_28h + 8) == sent) {
+            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, cur);
+            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340003);   /* kick second DMA */
+            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) == sent) {
                 goto spun2;
             }
         spin2:
             gl_func_00000000(base);
-            if (gl_func_00000000(base, *(volatile s32 *)&gl_d_33be4_28e + 8) != sent) {
+            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) != sent) {
                 goto spin2;
             }
         spun2:;
@@ -16621,9 +16632,7 @@ void gl_func_00033BE4(s32 src, u32 flags) {
         if (rem != 0) {
             gl_func_00000000(base);
         }
-        if (rem != 0) {
-            goto top;
-        }
+        } while (rem != 0);
     }
     gl_func_00000000(base);
 }
