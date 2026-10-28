@@ -1952,7 +1952,7 @@ $(GAMELIBS_59E80_NM_DONOR): src/game_libs/game_libs_ncc_59E80_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00059E80=$(GAMELIBS_59E80_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_59E80_NM_DONOR)
-# 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target). Still NON_MATCHING: NM comparison object only.
+# 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target; run 174: for-init list iterator -> 98.27 objdiff diff). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_34890_NM_DONOR := build/src/game_libs/game_libs_ncc_34890_nm.cpp.o
 $(GAMELIBS_34890_NM_DONOR): src/game_libs/game_libs_ncc_34890_nm.cpp
 	@mkdir -p $(dir $@)

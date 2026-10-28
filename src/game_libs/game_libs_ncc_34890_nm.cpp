@@ -27,8 +27,7 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
 inline void make(O *o, int h) { if (0) { h = 0; } X *a = new X(o); gl_func_00034458(D_34890_d, h, a, o->flags & 2); }
 extern "C" void gl_func_00034890(O *o) {
     make(o, o->h);
-    LIter it(o->list);
-    while (it.next()) {
+    for (LIter it(o->list); it.next(); ) { /* run 174: for-init iterator (kit CXXXIV): bottom-copy next() temps fresh, 98.10 -> 98.27 */
         gl_func_00034458(it.cur->data);
     }
     gl_func_00034458(D_34890_e);
