@@ -570,7 +570,11 @@ void game_uso_func_00000B14(void *a0) {
  *  - segment-advance overflow path: `if (last < ncur) { ncur = 1; nseg++; }`
  *    (graft missed the shared `nseg++` tail).
  *  - final commit guard reads tbl->0x24 (sp+0x130), not seg->0x24.
- *  - obj/s tail copies are 0x40-byte struct copies (IDO 3-word/iter loop). */
+ *  - obj/s tail copies are 0x40-byte struct copies (IDO 3-word/iter loop).
+ *  - run 187: the two dead target `addiu vN,vN,K` (after the 0xA58 store, after
+ *    the 0xB4/B8/BC loads) come back when the pointer is advanced FIRST and the
+ *    accesses go through it (`tv += 0xA58; ... *(s32 *)tv`); the segment-advance
+ *    tail is shared via `goto adv` (target bnezl). Length 2828 -> 2824 = target. */
 typedef struct { int w[16]; } B3CBlk40;
 extern Vec3* game_uso_func_000023D4(Vec3 *out, char *a1);
 extern void game_uso_func_00002714(int *a0, int a1, int a2);
@@ -658,10 +662,7 @@ void game_uso_func_00000B3C(char *arg0) {
             }
             *(s32 *)(s + 0x270) = 0;
             *(s32 *)(s + 0x26C) = 0;
-            tv = *(char **)(s + 0x150);
-            msk = *(s32 *)(tv + 0xA58) & ~0x2000;
-            *(s32 *)(tv + 0xA58) = msk;
-            tv += 0xA58;
+            tv = *(char **)(s + 0x150); tv += 0xA58; msk = *(s32 *)tv & ~0x2000; *(s32 *)tv = msk;
         }
     }
     one = 1;
@@ -824,11 +825,10 @@ void game_uso_func_00000B3C(char *arg0) {
     }
     rv = game_uso_func_000023D4(&stage, *(char **)(s + 0x154));
     *(Tri3i *)&vC = *(Tri3i *)rv;
-    tv = *(char **)(s + 0x150);
-    q = (f32 *)((int)tv + 0xB4);
-    v30.z = *(f32 *)((int)q + 8) + vC.z;
-    v30.y = *(f32 *)((int)q + 4) + vC.y;
-    v30.x = *q + vC.x; if (arg0) {}
+    tv = *(char **)(s + 0x150); tv += 0xB4;
+    v30.z = ((f32 *)tv)[2] + vC.z;
+    v30.y = ((f32 *)tv)[1] + vC.y;
+    v30.x = ((f32 *)tv)[0] + vC.x; if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;
     *(Tri3i *)&vD = *(Tri3i *)&v3C;
     game_uso_func_0000052C((int)kf, &pos2, &pos1, (int *)seg, &vD);
@@ -858,15 +858,7 @@ void game_uso_func_00000B3C(char *arg0) {
         tmp = *(s32 *)(seg + 0x34);
         ncur += 1;
         nsub = 0;
-        if (tmp < ncur) {
-            nseg += 1;
-            ncur = 1;
-        } else if (ncur == tmp) {
-            if (game_uso_func_00000674((int *)seg)) {
-                ncur = 1;
-                nseg += 1;
-            }
-        }
+        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (game_uso_func_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
     }
     if (nseg < tbl[9]) {
         *(s32 *)(s + 0x254) = nseg;
