@@ -737,9 +737,7 @@ void game_uso_func_00000B3C(char *arg0) {
     case 3:
         if (*(s32 *)(seg + 0x14) == 0) {
             *(Tri3i *)&stage = *(Tri3i *)((char *)kf + 0xC);
-            pos1.z = stage.z;
-            pos1.y = stage.y;
-            pos1.x = stage.x;
+             pos1.z = stage.z; pos1.y = stage.y; pos1.x = stage.x;
         } else {
             c1[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0xC);
             c1[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0xC);
@@ -761,9 +759,7 @@ void game_uso_func_00000B3C(char *arg0) {
     case 3:
         if (*(s32 *)(seg + 0x4) == 0) {
             *(Tri3i *)&stage = *(Tri3i *)((char *)kf + 0x0);
-            pos2.z = stage.z;
-            pos2.y = stage.y;
-            pos2.x = stage.x;
+             pos2.z = stage.z; pos2.y = stage.y; pos2.x = stage.x;
         } else {
             c2[0] = (Vec3 *) ((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] ;
             c2[1] = (Vec3 *) ((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] ;
@@ -778,14 +774,10 @@ void game_uso_func_00000B3C(char *arg0) {
         fresh.x = 0.0f;
         fresh.z = 0.0f;
         *(Tri3i *)&stage = *(Tri3i *)&fresh;
-        up.z = stage.z;
-        up.y = stage.y;
-        up.x = stage.x;
+         up.z = stage.z; up.y = stage.y; up.x = stage.x;
     } else if (*(s32 *)(seg + 0x20) == 0) {
         *(Tri3i *)&stage = *(Tri3i *)((char *)kf + 0x18);
-        up.z = stage.z;
-        up.y = stage.y;
-        up.x = stage.x;
+         up.z = stage.z; up.y = stage.y; up.x = stage.x;
     } else {
         c3[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0x18);
         c3[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x18);
