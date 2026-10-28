@@ -7215,7 +7215,6 @@ void func_0000B75C(char *arg0) {
     f32 temp_f12;
     f32 temp_f12_2;
     f32 temp_f12_3;
-    f32 temp_f14;
     f32 temp_f2;
     f32 temp_f2_2;
     f32 temp_f2_9;
@@ -7248,13 +7247,13 @@ void func_0000B75C(char *arg0) {
         sp1C = *(f32 *)((char *)(arg0) + 0x3C4);
     } else {
         temp_f0_2 = *(f32 *)((char *)(arg0) + 0x3C4);
-        sp1C = temp_f0_2;
         sp5C = -((*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (*(f32 *)((char *)(arg0) + 0x3BC) * sp6C[0]) + (temp_f0_2 * sp6C[2]));
+        sp1C = temp_f0_2; /* run 193: after sp5C (lever-sweep order, 91.74 -> 92.47, 2104 -> 2100 toward 2096) */
     }
     temp_f0_2 = *(f32 *)((char *)(arg0) + 0x978);
     temp_f2_2 = *(f32 *)((char *)(arg0) + 0x30C);
     temp_f12 = *(f32 *)((char *)(arg0) + 0x310);
-    temp_f14 = *(f32 *)((char *)(arg0) + 0x314);
+#define temp_f14 (*(f32 *)((char *)(arg0) + 0x314)) /* run 193: de-named (lever-sweep 92.47 -> 92.53) */
     *(f32 *)((char *)(arg0) + 0x978) = (f32) ((f64) ((f64) (sp5C - temp_f0_2) * D_000008D8) + temp_f0_2);
     sp58 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14);
     sp54 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12) + (sp1C * temp_f14);
@@ -7373,7 +7372,7 @@ void func_0000B75C(char *arg0) {
                 var_f0 = *(f32 *)((char *)(arg0) + 0xA08);
             }
             if (*(f32 *)((char *)(arg0) + 0x618) < var_f0) {
-                bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3C8, *(f32 *)((char *)(arg0) + 0xA08) * *(f32 *)((char *)(arg0) + 0x600), arg0);
+                bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3C8, *(f32 *)((char *)(arg0) + 0x600) * *(f32 *)((char *)(arg0) + 0xA08), arg0);
             }
             var_a0 = arg0 + 0xCC;
             if (*(f32 *)((char *)(arg0) + 0xA04) < 0.0f) {
@@ -7402,6 +7401,7 @@ block_67:
     *(f32 *)((char *)(arg0) + 0x304) = (f32) (*(f32 *)((char *)(arg0) + 0x304) * var_f0);
     *(f32 *)((char *)(arg0) + 0x308) = (f32) ((f64) temp_f2_9 + ((f64) (1.0f - temp_f2_9) * (1.0 - (f64) var_f0)));
 }
+#undef temp_f14
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000B75C);
 #endif
