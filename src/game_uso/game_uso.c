@@ -5741,8 +5741,8 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
     p = 0; if (1) { p = &sp90; }
     w = p;
     if (w != NULL || (w = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-        tx = spD8.x - *qb;
         tz = spD8.z - *(f32 *)((int)qb + 8);
+        tx = spD8.x - *qb;
         w->x = tx;
         w->y = 0.0f;
         w->z = tz;
