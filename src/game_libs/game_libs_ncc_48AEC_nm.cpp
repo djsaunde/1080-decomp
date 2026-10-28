@@ -39,14 +39,14 @@ struct Ctx {
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
     void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w0 = hi; g->w1 = lo; }
-    void dlcall(void *p) { u32 t = (u32)func_00000000(p); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    void dlcall(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
     Mtx *mtx() { return &mh->buf[mh->count++]; }
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
-struct Flags { int v; int test(int m) { if (0) { m = 0; } return v & m; } };
+struct Flags { int v; int test(int m) { if (0) { m = 0; } return (v & m) + 0 * (int)(v); } }; /* agent-c run 209: folded counted use of v (kit CXCIV lever b) */
 struct Node { char pad[0x18]; Flags flags; char pad1c[2]; s16 m1e; };
 struct EBase {
     char pad0[0x5C];
