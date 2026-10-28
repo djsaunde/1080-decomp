@@ -10,7 +10,9 @@
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 struct V3 { f32 x, y, z;
-    void set(V3 p) { x = p.x; y = p.y; z = p.z; }
+    void cp(const V3 &p) { x = p.x; y = p.y; z = p.z; }
+    void set(V3 p) { cp(p); } /* agent-g run 203 (kit CLXXIII): by-value set() forwarding to cp(const V3 &) homes
+                                 the parameter / return / copy temps on the target's sp+44 / 80 / 100 */
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
