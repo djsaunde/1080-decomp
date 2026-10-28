@@ -79,10 +79,10 @@ extern "C" void gl_func_00065494(Self *self) {
     wsum = 0.0f; /* run 186: accumulator zeros after the vector zeros (120-order grid, 90.02 -> 91.61) */
     minv = 0.0f;
     while ((node = it.next()) != 0) {
-        Vec3 n;
-        Vec3 d;
-        Hit hit;
+        Vec3 d; /* run 186: d / h / n / hit declaration order (24-order grid) */
         float h;
+        Vec3 n;
+        Hit hit;
         n.set((float)iz(), 1.0f, (float)iz());
         node->v120 = node->pos;
         d = node->pos - self->pos;
