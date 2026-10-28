@@ -11865,7 +11865,7 @@ void game_libs_func_0002D374(void) {
         d -= D_2D37C_f360l[0x360 / 4];
         D_2D37C_f35Cw[0x35C / 4] = d;
         i = (int)d;
-        if (0) { gl_func_00000000(&i); }
+        if (0 + 0 * i) { gl_func_00000000(&i); } /* agent-g run 206: folded counted use of i (kit CXCIV `+ 0 * VAR` grid): 99.67 -> 99.77 */
         gl_func_00000000(0x4E010000, i);
         gl_func_00000000_f(0x4D010000, ((f32)i + D_2D37C_f358l[0x358 / 4]) / D_2D37C_f358l[0x358 / 4]);
     }
