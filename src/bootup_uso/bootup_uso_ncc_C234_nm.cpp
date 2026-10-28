@@ -117,7 +117,7 @@ extern "C" void func_0000C234(char *arg0) {
         }
         *(s32 *)((char *)(arg0) + 0x9A8) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
-        if ((spCC.f0 < ((((spCC.e4 * *(f32 *)((char *)(arg0) + 0xDC)) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec)) * D_bu_ro_pool[0x128 / 4]) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
+        if ((spCC.f0 < ((((spCC.e4 * *(f32 *)((char *)(arg0) + 0xDC)) + (spCC.e8 * (*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4])) + (spCC.ec * *(f32 *)((char *)(arg0) + 0xE4))) * D_bu_ro_pool[0x128 / 4]) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
             *(s32 *)((char *)(arg0) + 0xA4C) = 1;
             spB4 = *(V3C234 *)&spCC.e4;
             var_t0 = 0;
@@ -235,9 +235,9 @@ cend:
         var_v0_2 = arg0 + 0x93C;
         *(f32 *)((char *)(arg0) + 0x93C) = (f32) (*(f32 *)((char *)(arg0) + 0x93C) / temp_f2_2);
         *(f32 *)((char *)(arg0) + 0x940) = (f32) (*(f32 *)((char *)(arg0) + 0x940) / temp_f2_2);
+        *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2); /* run 200: 0x944 before 0x968 (target load order; div block word-for-word) */
         *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2);
         temp_f12 = *(f32 *)((char *)(arg0) + 0x968);
-        *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2);
         if (temp_f12 < (f32) 0) {
             var_v0_2 = arg0 + 0x93C; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
             { /* run 156: held products, stored afterwards (kit LXXXVI) */
@@ -268,7 +268,7 @@ cend:
         { /* run 156: held products */
             f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
             f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
-            volatile f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0; /* run 182 (lever-sweep volatile, +2 words toward the target) */
+            f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0; /* run 200: no longer volatile (run 182's +2-word lever is surplus after the 0x944 order fix) */
             sp40.x = hx; sp40.y = hy; sp40.z = hz;
         }
         spB4 = sp40;
@@ -291,6 +291,6 @@ cend:
 #define temp_f14 (*(f32 *)((char *)(arg0) + 0x934)) /* run 184: de-named (lever-sweep) */
     temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
     *(f32 *)((char *)(arg0) + 0xA1C) = (f32) (*(f32 *)((char *)(arg0) + 0xA1C) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14))));
-    *(f32 *)((char *)(arg0) + 0xA20) = (f32) (*(f32 *)((char *)(arg0) + 0xA20) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14))));
-    *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
+    *(f32 *)((char *)(arg0) + 0xA20) = (f32) (*(f32 *)((char *)(arg0) + 0xA20) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) +(*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14))));
+    *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) +(*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
 }
