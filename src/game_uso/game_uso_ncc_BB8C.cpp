@@ -105,8 +105,10 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
             if (f20 > 1.0) f20 = 1.0f;
             if ((k = game_uso_D_807FFA90[46]) < f20) {
                 Q w;
-                w.v.x = 0.0f; w.v.y = 0.0f; w.v.z = 0.0f;
-                w.s = f20 * obj->k2;
+                w.s = f20 * obj->k2; /* run 190: scale first, zeros z, y, x (96.65 -> 98.21) */
+                w.v.z = 0.0f;
+                w.v.y = 0.0f;
+                w.v.x = 0.0f;
                 game_uso_func_05B750(import_8005C108, &w);
                 game_uso_func_05B614(import_8005C108, import_80087DA8->c, import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
             }
