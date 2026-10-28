@@ -4239,7 +4239,9 @@ void game_uso_func_0000591C(int *a0) {
         stage = *p;
         delta_b = stage;
 
-        sub = *(char**)((char*)self + 0x30);
+        /* run 198: read through the parameter (a separate expression from
+         * the self-> reads; fixes the 0xba8 / 0xc14 load order) */
+        sub = *(char**)((char*)a0 + 0x30);
         f2v = *(float*)((char*)self + 0xC0) * *(float*)(sub + 0x348);
         dist_sq = (delta_a.x * delta_a.x) + (delta_a.z * delta_a.z);
         if (0.0f == dist_sq) {
