@@ -13,7 +13,11 @@
  * run 172 (kit CXVII): the texture rectangle's slot through a post-increment-in-index next
  * (`&dl->buf[dl->n++]`): 97.25 -> 97.35 (the 1A44 increment-spelling lever).
  * run 173 (kit CXIX): the texture append's next() as `int n; n = dl->n; dl->n++;` (read into n, then a
- * separate post-increment of the field; a 6 x 6 spelling grid over the two sites): 97.35 -> 97.44. */
+ * separate post-increment of the field; a 6 x 6 spelling grid over the two sites): 97.35 -> 97.44.
+ * agent-c run 190 (kit CLVIII): the rectangle's three appends as separate macro packets (pkt / pkt2 / pkt3,
+ * the 329C / 3714 kit CLVII recipe), gridded with the texture append (4^4 spellings): texture
+ * `&dl->buf[dl->n++]`, rect `n = dl->n; dl->n++`, RDPHALF_1 `n = dl->n; dl->n = n + 1`, RDPHALF_2
+ * `&dl->buf[dl->n++]`: 97.44 -> 98.51 standalone, length 1252 = target. */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -30,16 +34,17 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 { Gfx *_g = (Gfx *)(pkt); \
 	_g->words.w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(0, 16, 8) | _SHIFTL(level, 11, 3) | _SHIFTL(tile, 8, 3) | _SHIFTL(on, 0, 8)); \
 	_g->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); }
-#define gSPScisTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+#define gSPScisTextureRectangle(pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { Gfx *_g = (Gfx *)(pkt); \
     _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)); \
     _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
-    gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
+    gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
-    gImmp1(pkt, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
+    gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; }
-    Gfx *nextc() { return &dl->buf[dl->n++]; } };
+    Gfx *nextc() { return &dl->buf[dl->n++]; }
+    Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Glyph { int u; int v; int w; int adv; int pad; };
 struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th; Glyph *glyphs; Ctx *ctx; };
 extern "C" int gl_func_00000000(...);
@@ -55,7 +60,7 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
     f32 cy;
     unsigned char c;
     h = f->h14;
-    gSPTexture(f->ctx->next(), 0x8000, 0x8000, 0, 0, 1);
+    gSPTexture(f->ctx->nextc(), 0x8000, 0x8000, 0, 0, 1);
     cx = -((f32)gl_func_00000000(f, str) / 2.0f) - 2.0f;
     cy = -((f32)f->h10 / 2.0f);
     for (p = str, i = 0; i < (unsigned int)gl_func_00000000(str); p++, i++) {
@@ -70,7 +75,7 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
             w = f->glyphs[idx].w;
             gl_func_00000000(f->ctx, f->tex, f->tw, f->th, u, v, w, h, 0);
             fw = w * sx;
-            gSPScisTextureRectangle(f->ctx->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+            gSPScisTextureRectangle(f->ctx->next(), f->ctx->nextp(), f->ctx->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
                 (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
             cx += (f32)f->glyphs[c].adv;
         } else {
