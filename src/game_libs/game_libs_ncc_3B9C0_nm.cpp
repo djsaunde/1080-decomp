@@ -43,6 +43,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     V3B9 d;
     f32 qb;
     f32 sg;
+    f32 *pp; /* run 194: the target indexes a held &p (addiu sp,184; addu idx,base) */
     s16 ex; /* run 191 lever-sweep hoist: ex declared before vt (78.55 -> 78.65) */
     s16 (*vt)[3];
     s16 *nx;
@@ -89,17 +90,18 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         }
         ib = ((TriB9 *)((char *)self->tris + off))->b;
         ia = ((TriB9 *)((char *)self->tris + off))->a;
-        qa = (&p.x)[ia]; if (1) {}
-        qb = (&p.x)[ib];
+        pp = &p.x;
+        qa = pp[ia]; if (1) {}
+        qb = pp[ib];
         sg = ((TriB9 *)((char *)self->tris + off))->sgn;
         nx = (s16 *)&D_00000000;
         vt = col->verts;
         fv = (u16 *)f;
         do {
             v0 = vt[fv[1]];
-            v1 = vt[f->vi[*nx++]];
+            v1 = vt[f->vi[*nx]]; nx++; /* run 194: no `*nx++` copy (the target steps nx in place; loop block aligns up to colours) */
             dx = (s32)(qa - v0[ia]); if (1) {} /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
-            dy = (s32)(qb - v0[ib]); if (self) {}
+            dy = (s32)(qb - v0[ib]);
             ex = v1[ia] - v0[ia]; if (self) {}
             ey = v1[ib] - v0[ib];
             if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
