@@ -10,6 +10,10 @@
  * sp70, sp6E/sp6C, entry, sp58, sp48), the tail as an early `return` of a named block-local result (no v0 variable:
  * 868 -> 872 bytes = target), and a decode fix -- the 0x20030 debug print passes the byte sp74[0], not the array:
  * 95.43 -> 99.60 (objdiff). Left: col / the spill word 4 / 8 bytes low and the entry / v60 v0-v1 swap.
+ * agent-g run 198 (kit CLXIII): a folded `+ 0 * (int)v60` on the entry statement puts the 0x60 load's
+ * candidate ahead of entry in uopt's bit order: v60 v0 / entry v1 as in the target. Left: the arg3*8 spill
+ * at 56 (target 60). Without the block-local `r` the body is word-exact but the frame is 120 (target 128):
+ * the target keeps 8 bytes of frame below the spill word that nothing in this body reserves.
  */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -37,7 +41,7 @@ extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *
     unsigned char sp48[0x10];
     int t0;
 #define pal (*(char **)(arg0 + 0x7C)) /* agent-g run 191: de-named (its home pushed col 4 bytes low) */
-    entry = *(char **)(arg0 + 0x6C) + arg3 * 8;
+    entry = *(char **)(arg0 + 0x6C) + arg3 * 8 + 0 * (int)(*(char **)(arg0 + 0x60)); /* run 198: folded, no code (kit CLXIII) */
 #define v60 (*(char **)(arg0 + 0x60))
     t0 = *(unsigned short *)(entry + 4);
 #define t2 (*(unsigned short *)(entry + 6))
