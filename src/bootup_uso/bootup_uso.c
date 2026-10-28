@@ -4060,10 +4060,12 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
             func_00000000(import_8001FFC0, t, t74);
             ATTACH6808(*(char **)(obj + 0x7C), o);
             func_00000000(o, *(int *)(obj + 0x94));
+            va = *(char **)(obj + 0x90); /* run 208: held in va / vb (the target loads a1 before a0) */
             t70.w = *(int *)&D_6808_06;
-            func_00000000(import_8001FFC0, *(int *)(obj + 0x90), t70);
+            func_00000000(import_8001FFC0, va, t70);
+            vb = *(char **)(obj + 0x94);
             t6C.w = *(int *)&D_6808_07;
-            func_00000000(import_8001FFC0, *(int *)(obj + 0x94), t6C);
+            func_00000000(import_8001FFC0, vb, t6C);
             func_00000000();
             break;
         }
