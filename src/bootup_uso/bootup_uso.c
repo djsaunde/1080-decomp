@@ -3989,8 +3989,8 @@ typedef struct { f32 x, y, z; } V3_6808;
 extern char D_6808_00, D_6808_01, D_6808_02, D_6808_03, D_6808_04, D_6808_05, D_6808_06, D_6808_07, D_6808_08, D_6808_09, D_6808_10, D_6808_11, D_6808_12, D_6808_13, D_6808_14, D_6808_15, D_6808_16, D_6808_17, D_6808_18, D_6808_19, D_6808_20, D_6808_21, D_6808_22, D_6808_23;
 extern int import_8005C108_0[], import_8005C108_1[], import_8005C108_2[], import_8005C108_3[], import_8005C108_4[], import_8005C108_5[], import_8005EE64_0, import_8005EE64_1, import_8005EE64_2, import_8005EE64_3, import_8005EE64_4, import_8005EE64_5, import_8005EE64_6, import_8005EE64_7;
 void *func_00006808(char *obj, char *arg1, s32 arg2) {
-    int g0, g00;
     S4_55A0 e4, e0;
+    int g0, g00;
     int dc;
     char *g1;
     int d4, d0;
@@ -4014,17 +4014,17 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     int op;
     V3_6808 v4C;
 
-    dc = 0;
     d4 = 0;
+    dc = 0;
     p = *(int **)(arg1 + 0x40);
     bC = 0;
     b8 = 40;
     b4 = 20;
     b0 = 1;
     import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000;
-    c8 = 0.0f;
     c4 = 0.0f;
     c0 = 0.0f;
+    c8 = 0.0f;
     func_00000000(&D_6808_00, 0);
     t = (char *)func_00000000(0);
     import_8001FFC0 = t;
