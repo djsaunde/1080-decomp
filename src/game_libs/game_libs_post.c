@@ -16527,6 +16527,14 @@ void gl_func_00033B6C(void) {
 // Length 728 -> 720 (target 724, same distance).
 // Then every ring word (+8 / +0x14 / +0x24 / +0x2C) through g as well: 93.54 -> 96.66,
 // length 720 -> 724 = target.
+// agent-c run 176 (96.66 -> 99.89): mis is reused for 8 - mis (the target keeps
+// both in a0 / v1 like the copy cursors) and is computed inside `if (chunk != 0)`;
+// the copy loop inits cpsrc first, on ONE line with cpdst, and bumps cpsrc first
+// (colour tie-break + as1 order); the +8 bump is `*(g + 8) += chunk` with the
+// call re-reading it, and the segment-end test compares two fresh reads before
+// `cur` is named (no a2-coalesced cur web); src is a LOCAL copy of the parameter
+// made after `rem = flags` (target moves s4 then s5 at entry). Residual (4 words):
+// the first arm's a0 / a1 setup order around its jal.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sites) */
 /* per-SITE base-0 aliases (33EB8/2B5F4 r1/r2 convention): one extern per access
@@ -16543,7 +16551,8 @@ extern u8 gl_d_33be4_dst;               /* base-0 alias: copy-loop dest (fresh l
 extern u8 gl_ref_0001E330;              /* baked USO data sym (lui 2 / addiu -0x1CD0) */
 extern u8 gl_ref_0001E344;              /* baked USO data sym */
 extern u8 gl_ref_0001E358;              /* baked USO data sym */
-void gl_func_00033BE4(s32 src, u32 flags) {
+void gl_func_00033BE4(s32 src0, u32 flags) {
+    s32 src;
     u8 *base;
     u32 chunk;
     s32 rem;
@@ -16556,7 +16565,7 @@ void gl_func_00033BE4(s32 src, u32 flags) {
     s32 sent;
     u8 *g = &gl_d_33be4_dst;
 
-    rem = flags;
+    rem = flags; src = src0;
     if (flags & 1) {
         base = (u8 *)&D_00000000;
         gl_func_00000000(base, &gl_ref_0001E330);
@@ -16567,7 +16576,6 @@ void gl_func_00033BE4(s32 src, u32 flags) {
         sent = 0x12340002;
         do {
         chunk = rem;
-        mis = src & 7;
         avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
         if (avail < (u32)rem) {
             chunk = avail;
@@ -16575,31 +16583,31 @@ void gl_func_00033BE4(s32 src, u32 flags) {
             chunk = rem;
         }
         if (chunk != 0) {
+            mis = src & 7;
             if (mis != 0) {
-                if ((u32)(8 - mis) < chunk) {
-                    chunk = 8 - mis;
+                mis = 8 - mis;
+                if ((u32)mis < chunk) {
+                    chunk = mis;
                 }
                 cnt = 0;
                 if (chunk != 0) {
-                    cpdst = &gl_d_33be4_dst;
-                    cpsrc = src;
+                    cpsrc = src; cpdst = &gl_d_33be4_dst;
                     do {
                         *cpdst = *(u8 *)cpsrc;
                         cnt += 1;
-                        cpdst += 1;
                         cpsrc += 1;
+                        cpdst += 1;
                     } while (cnt < chunk);
                 }
                 gl_func_00000000(base, *(s32 *)(g + 8), base, chunk);
             } else {
                 gl_func_00000000(base, *(s32 *)(g + 8), src, chunk);
             }
-            cur = *(s32 *)(g + 8) + chunk;
-            *(s32 *)(g + 8) = cur;
-            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, cur);
+            *(s32 *)(g + 8) += chunk;
+            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, *(s32 *)(g + 8));
         }
-        cur = *(s32 *)(g + 8);
-        if (*(s32 *)(g + 0x2C) == cur) {              /* hit segment end */
+        if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 8)) {    /* hit segment end */
+            cur = *(s32 *)(g + 8);
             *(s32 *)(g + 0x14) = cur;
             gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
             if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
