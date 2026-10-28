@@ -1434,39 +1434,41 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800018F0);
  * IDO 7.1/5.3 at -O1/-O2/-O3 (+-g3) lower a 4-label switch to a compare chain
  * (5 labels are needed for a table; an extra label always widens the table:
  * case 0 / 5 / 7 / 8 / -1 tested), so the switch shape is still unknown; hiptr/hival
- * are uninitialised locals homed at 0x34/0x28 in the target. */
+ * are uninitialised locals homed at 0x34/0x28 in the target.
+ * 2026-10-27 agent-g run 186 (52.46 -> ~81.8): a `case 5:` label on the
+ * default arm (same behaviour: type 5 already errored) makes cfe's cluster
+ * 5 labels long, so the 1..5 table + type-1 index appear (sltiu 5 vs the
+ * target's 4); indexed rel[i] with every info read through memory (no
+ * local) and the declaration order above give the 0x50 frame with hival /
+ * hiptr at 0x28 / 0x34. Left: base / symtab colour s3 / s2 (ours s2 / ra,
+ * one s-save short) and the per-arm `lw a0` join-copy delay fills. */
 extern char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1ADC;
 
 s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     UsoUsoRelSym_1ADC_1ADC *symtab;
-    UsoRel_1ADC *r;
-    s32 i;
-    s32 info, type, val, lo, v;
-    UsoUsoRelSym_1ADC_1ADC *sym;
-    u32 *p;
+    s32 type, val, lo, v;
     s16 *hiptr;
+    UsoUsoRelSym_1ADC_1ADC *sym;
+    s32 i;
     s32 hival;
+    u32 *p;
 
     symtab = *(UsoUsoRelSym_1ADC_1ADC **)(obj + 0x3C);
     if (base == 0 || rel == 0) {
         return 0;
     }
-    r = rel;
-    for (i = 0; i < n; i++, r++) {
-        info = r->info;
-        if (info & 8) {
+    for (i = 0; i < n; i++) {
+        if (rel[i].info & 8) {
             continue;
         }
-        type = info & 7;
-        sym = &symtab[info >> 4];
-        if (!(sym->flags & 8)) {
-            continue;
-        }
-        val = sym->value; if (1) {}
-        p = (u32 *)(base + r->offset);
-        r->orig = *p;
+        type = rel[i].info & 7;
+        sym = &symtab[rel[i].info >> 4];
+        if (sym->flags & 8) {} else { continue; }
+        val = sym->value;
+        p = (u32 *)(base + rel[i].offset);
+        rel[i].orig = *p;
         switch (type) {
         case 1:
             *p = (*p & 0xFC000000) | ((((u32)val >> 2) & 0x3FFFFFF) + (*p & 0x3FFFFFF));
@@ -1487,11 +1489,12 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
         case 4:
             *p += val;
             break;
+        case 5:
         default:
             D_80012C44(D_8000A36C, (void *)type);
             return -2;
         }
-        r->info |= 8;
+        rel[i].info |= 8;
     }
     return 0;
 }
