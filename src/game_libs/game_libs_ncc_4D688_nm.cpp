@@ -125,8 +125,8 @@ void Obj::run()
             gl_func_00034458(DSTR(0x20290));
             {
                 void *p = m44;
+                m24++; /* run 194 (lever-sweep order) */
                 m3C = DSTR(0x20298);
-                m24++;
                 if (p != 0 && (m24 & 1)) {
                     gl_func_00034458(p, 'd', 1);
                 }
