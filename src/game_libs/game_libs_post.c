@@ -14793,8 +14793,7 @@ s32 arg2;
         if (g == 1) {
             gl_func_00044F18(1);
             g = D_30AF4_w;
-        }
-        if (g == 0) {
+        } else if (g == 0) { /* agent-g run 205 decode: the g == 1 arm branches past this test (`b +0x6a0` after the reload) */
             gl_func_00044F18(2);
             g = D_30AF4_w;
         }
