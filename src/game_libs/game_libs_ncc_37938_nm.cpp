@@ -5,16 +5,18 @@
  * returning V3(...) and a by-value operator=, `if (0) { gl(&s); }` / `if (0) { gl(&a, &b); }` for the homed
  * s / a / b reloads; frame 0xD8 and every named home = target. cfe body 93.73 -> 98.55. Residual: operator-'s ctor
  * / return temps 8 above the target's, operator*'s result 4 and the by-value parameter 8 below, the final s reload
- * (target v1 then addiu a0), and one trailing word (86 vs 85, as the cfe body). Still NON_MATCHING. */
+ * (target v1 then addiu a0), and one trailing word (86 vs 85, as the cfe body). Still NON_MATCHING.
+ * agent-c run 201 (sibling port): operator* as the exact 64388 donor's FREE `operator*(const V3 &, f32 s)` with a
+ * named `f32 k = s`: operator*'s result slot moves to the target's sp+0x44 (98.49 -> 98.54 objdiff diff). */
 typedef float f32;
 struct V3 {
     f32 x, y, z;
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     V3 operator-(const V3 &o) const { return V3(x - o.x, y - o.y, z - o.z); }
-    V3 operator*(f32 k) const { return V3(x * k, y * k, z * k); }
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
 };
+inline V3 operator*(const V3 &a, f32 s) { f32 k = s; return V3(a.x * k, a.y * k, a.z * k); }
 struct M4 { f32 m[12]; V3 pos; void getPos0(V3 *v) { v->x = pos.x; v->y = pos.y; v->z = pos.z; }
     void getPos(V3 *v) { if (0) { v = 0; } v->x = pos.x; v->y = pos.y; v->z = pos.z; } };
 struct Sub { char pad[0x70]; M4 mtx; };
