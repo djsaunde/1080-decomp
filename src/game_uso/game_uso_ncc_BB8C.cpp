@@ -30,6 +30,10 @@
  * norm, `sb = obj->sub; sb->mtx.getPos(q.pos);`) gives the target's this-adjust shape (lwc1 160(p);
  * addiu p,p,112; 52/56(p)) and keeps frame 296 (93.31 -> 95.58 standalone); left: that pointer in v1/v0
  * where the target reuses a2, plus the items above.
+ * agent-c run 190 (kit CLVIII): the probe direction's two zeros through an int inline parameter
+ * (`zf(float &, int)` called with 0; the int -> float fold happens after candidate selection, kit CXIX /
+ * the 37348 z3 recipe), so they take their own zero (target f0) instead of joining the 0.0 candidate
+ * that the f20 init and the effect vector reuse: 95.58 -> 96.65 standalone, length 1012 -> 1008 = target.
  * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM. */
 struct P3 { float x, y, z; };
 struct V3 {
@@ -54,6 +58,7 @@ struct Child { char pad[0xB8]; char rec[0x1C]; int flags; float lim; };
 struct Obj { char pad[0xB4]; int b4; char padb8[0x220 - 0xB8]; Sub *sub; char pad224[0x23C - 0x224]; float lo; char pad240[0x254 - 0x240]; float k2; char pad258[0x26C - 0x258]; float lo2; char pad270[0x274 - 0x270]; unsigned int n; };
 struct Q { P3 v; float s; };
 struct P2 { int a, b; };
+inline void zf(float &f, int z) { f = z; }
 extern "C" {
 extern Glob *import_80087DA8;
 extern char import_8005C108[];
@@ -76,7 +81,7 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
     Child *c;
     sb = obj->sub;
     sb->mtx.getPos(q.pos);
-    q.dir.x = 0.0f; q.dir.y = 0.0f; q.dir.z = -1.0f;
+    zf(q.dir.x, 0); zf(q.dir.y, 0); q.dir.z = -1.0f;
     game_uso_func_070F38(&q, (char *)import_80087DA8->body + 0xB4);
     world = ((V3 &)q.dir) * 1000.0f;
     world.x += import_80087DA8->body->mtx.m[3][0] * SC(0);
