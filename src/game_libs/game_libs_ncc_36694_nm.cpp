@@ -44,7 +44,7 @@ V3 Obj::perp(V3 p, V3 n) {
     }
     if (n.z == 1.0f) {
         r.x = 1.0f;
-        r.y = 0.0f;
+        r.y = 0.0f; if (1) {} /* agent-c run 201 lever-sweep bbsplit on the sibling-kit body: 87.90 -> 89.21 standalone */
         r.z = 0.0f;
     } else {
         r.z = 0.0f;
