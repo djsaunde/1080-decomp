@@ -275,8 +275,8 @@ cend:
         sp54 = spB4;
         *(f32 *)((char *)(arg0) + 0x92C) = sp54.x;
         *(f32 *)((char *)(arg0) + 0x930) = sp54.y;
-        *(s32 *)((char *)(arg0) + 0x9D4) = 0;
         *(f32 *)((char *)(arg0) + 0x934) = sp54.z;
+        *(s32 *)((char *)(arg0) + 0x9D4) = 0; /* run 200: after the 0x934 store (statement-order grid) */
     } else {
         *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
