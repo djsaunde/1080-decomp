@@ -88,10 +88,11 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
             int ok = 1;
             V3 *n = (V3 *)((char *)col->nrm + off);
             Tri *t = (Tri *)((char *)tris + off);
-            f32 d = p.x * n->x + p.y * n->y + p.z * n->z - t->d;
+            V3 *n_al = n; /* agent-c run 195: alias copy (colour tie) */
+            f32 d = p.x * n_al->x + p.y * n_al->y + p.z * n_al->z - t->d;
             f32 q[3];
-            q[0] = p.x - n->x * d;
-            q[1] = p.y - n->y * d;
+            q[0] = p.x - n_al->x * d;
+            q[1] = p.y - n_al->y * d;
             q[2] = p.z - n->z * d;
             t = (Tri *)((char *)tris + off);
             int a = t->a;
