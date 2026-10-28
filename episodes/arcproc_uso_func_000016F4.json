@@ -1,0 +1,33 @@
+{
+  "function_name": "arcproc_uso_func_000016F4",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-28T13:28:14.578121+00:00",
+  "end_time": "2026-10-28T13:28:14.578121+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T13:28:14.578121+00:00",
+      "assistant_text": "C++ donor: timer-HUD draw with Spr/Img inline members; a folded `+ 0 * tim.pw()` term sets the edg pool-temp order so the pB width colours before its copy (kit CLXI).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 170,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for arcproc_uso_func_000016F4, EXACT (twin of timproc_uso_b3_func_000013B8;\n * see that donor). agent-g run 184 (kit CXXXIII): ported from the b3 C++ rewrite -- sprite member objects\n * (sA 0x704, sB 0x71C, sC 0x734, tim 0x74C, alpha 0x77C) and the inline `Spr::width()` with a named image pointer.\n * Same run, later: the tim panel's width / height through the members and the BB split after its begin call.\n * agent-g run 185 (kit CXXXV): x / xb / xoff are block locals of a NESTED block opened after the count call,\n * with the three width panels named there (`Spr *pC = &arg0->sC, ...`; the width() calls go through them, the\n * draw calls keep `&arg0->sX`): edg allocates a block's named locals at block entry, below the enclosing\n * block's temporaries, so the homes land on the target's 136 / 144 / 148. LEFT: spill slots 4 low, t-ring.\n * agent-g run 196 (kit CLIX): b3 13B8's Img-member port (height / panel widths through `img->gh()` / `img->gw()`,\n * tim's width keeps the named local, three volatile pads in the nested block).\n * agent-g run 197 (kit CLXI): EXACT with b3 13B8's fix (`+ 0 * arg0->tim.pw()` on the w statement sets the\n * edg pool-temp order, loop height through `tim.img->gh()`, x locals declared before the panel pointers).\n * Spliced over the placeholder in arcproc_uso_tail1.c via REPLACE_FUNC_BODY. */\ntypedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;\nextern \"C\" {\nextern char D_00000000;\nint gl_func_00000000(...);\n}\nstruct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };\nstruct Spr {\n    s32 height() { return img->gh(); }\n    char p[0x10]; Img *img; char p14[4];\n    s32 width() { Img *i = img; return i->w; }\n    s32 pw() { return img->gw(); }\n};\nstruct Flags { char p[0x14]; int f; };\nstruct Obj {\n    char p0[0x2A8]; char c2A8[0x24]; char c2CC[0x704 - 0x2CC];\n    Spr sA; Spr sB; Spr sC; Spr tim; char p764[0x77C - 0x764];\n    f32 alpha;\n};\n#define FL(o) (*(Flags **)((char *)(o) + 0x528))\nextern \"C\" void arcproc_uso_func_000016F4(Obj *arg0, s32 arg1, f32 *arg2) {\n    f32 one[4];\n    u8 buf[0x80];\n    s32 i;\n\n    one[0] = 1.0f;\n    one[1] = 1.0f;\n    one[2] = 1.0f;\n    one[3] = 1.0f;\n    if (FL(arg0)->f & 4) {\n        gl_func_00000000(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);\n        gl_func_00000000(&arg0->tim); if (1) {}\n        s32 w = arg0->tim.width() / 12 + 0 * arg0->tim.pw();\n        gl_func_00000000(&arg0->sA);\n        gl_func_00000000(&arg0->sB);\n        gl_func_00000000(&arg0->sC);\n        gl_func_00000000(buf, &D_00000000 + 0x3D8, arg2);\n        s32 n = gl_func_00000000(buf);\n        {\n        s32 xoff, xb, xa, x;\n        Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;\n        xoff = 0xA0 - (pC->pw() + n * 13 + pA->pw() + pB->pw() + 0x10) / 2;\n        xb = pB->pw() + xoff + 4;\n        xa = pA->pw() + xb + 4;\n        x = pC->pw() + xa + 8;\n        volatile s32 pad0, pad1, pad2;\n        gl_func_00000000(&arg0->sC, xa, arg1 + 0x32, 2);\n        for (i = 0; i < n; i++) {\n            buf[i] -= 0x30;\n            gl_func_00000000(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);\n        }\n        gl_func_00000000(&D_00000000, (s32)(255.0f * arg0->alpha), one);\n        gl_func_00000000(&arg0->sA, xb, arg1 + 0x32, 2);\n        gl_func_00000000(&arg0->sB, xoff, arg1 + 0x32, 2);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/arcproc_uso/arcproc_uso_ncc_16F4.cpp",
+    "asm_path": "asm/nonmatchings/arcproc_uso/arcproc_uso/arcproc_uso_func_000016F4.s",
+    "segment": "arcproc_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; verify-blocks 6/6; report 100."
+  }
+}

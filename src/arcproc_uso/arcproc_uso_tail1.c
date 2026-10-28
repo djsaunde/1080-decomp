@@ -1046,87 +1046,12 @@ void arcproc_uso_func_00001604(int *s0) {
  * at the tail) so that temp_v0 (s3), arg2 (s4) and arg1 (s8) all stay in
  * s-regs; IDO here spills the region pointers at birth and temp_v0 across
  * one call instead. No C spelling found that flips the split decision. */
-/* NM object: replaced by the NCC comparison donor arcproc_uso_ncc_16F4_nm.cpp (agent-g run 172). */
-#ifdef NON_MATCHING
-
-
-
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_000016F4)();
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/arcproc_uso/arcproc_uso_ncc_16F4.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 197, kit CLXI; twin of
+ * timproc_uso_b3_func_000013B8). The history above describes the earlier cfe decode (removed). */
 void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
-    f32 sp138[4];
-    u8 spB8[0x80];
-    s32 sp88;
-    f32 *temp_a2;
-    s32 temp_a1;
-    s32 temp_s1_2;
-    s32 temp_s2_2;
-    s32 temp_s5;
-    s32 temp_v0;
-    s32 var_s1;
-    s32 var_s2;
-    u8 *temp_s0;
-    u8 *temp_s1;
-    u8 *temp_s2;
-    u8 *temp_s7;
-    u8 *var_s0;
-    char *temp_t1;
-    char *temp_t2;
-    char *temp_t3;
-    u8 *saved64;
-    u8 *saved60;
-
-    sp138[0] = 1.0f;
-    sp138[1] = 1.0f;
-    sp138[2] = 1.0f;
-    sp138[3] = 1.0f;
-    if (FW(FW(arg0, 0x528), 0x14) & 4) {
-        arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x77C))), (int)arg0 + 0x2A8, (int)arg0 + 0x2CC);
-        temp_s7 = (int)arg0 + 0x74C;
-        arcproc_uso_func_00001B88(temp_s7);
-        temp_s1 = (int)arg0 + 0x704;
-        temp_s5 = *(s16 *)((char *)FW(arg0, 0x75C) + 0x20) / 12;
-        arcproc_uso_func_00001B88(temp_s1); if (arg2) {}
-        temp_s2 = (int)arg0 + 0x71C;
-        arcproc_uso_func_00001B88(temp_s2);
-        temp_s0 = (int)arg0 + 0x734;
-        arcproc_uso_func_00001B88(temp_s0);
-        arcproc_uso_func_00001B88(spB8, (char *)&D_00000000 + 0x3D8, arg2);
-        saved64 = temp_s1;
-        saved60 = temp_s2;
-        temp_v0 = arcproc_uso_func_00001B88(spB8);
-        temp_t3 = FW(arg0, 0x744);
-        temp_t1 = FW(arg0, 0x714);
-        temp_t2 = FW(arg0, 0x72C);
-        temp_a2 = (int)arg1 + 0x32;
-        temp_s1_2 = 0xA0 - ((s32) (*(s16 *)(temp_t3 + 0x20) + (temp_v0 * 0xD) + *(s16 *)(temp_t1 + 0x20) + *(s16 *)(temp_t2 + 0x20) + 0x10) / 2);
-        /* width re-reads through the arg0 fields: the target re-loads the lh (kit LXV) */
-        temp_s2_2 = *(s16 *)((char *)FW(arg0, 0x72C) + 0x20) + temp_s1_2 + 4;
-        temp_a1 = *(s16 *)((char *)FW(arg0, 0x714) + 0x20) + temp_s2_2 + 4;
-        sp88 = *(s16 *)((char *)FW(arg0, 0x744) + 0x20) + temp_a1 + 8;
-        arcproc_uso_func_00001B88(temp_s0, temp_a1, temp_a2, (char *)2);
-        var_s0 = spB8;
-        if (temp_v0 > 0) {
-            var_s1 = 0;
-            var_s2 = sp88; if (arg0) {}
-            do {
-                *var_s0 -= 0x30; if (arg2) {}
-                arcproc_uso_func_00001B88(temp_s7, var_s2, (arg1 - (*(s16 *)((char *)FW(arg0, 0x75C) + 0x22) / 2)) + 0x32, (char *) (*var_s0 * temp_s5), temp_s5); if (arg2) {}
-                var_s1 += 0xD;
-                var_s0 += 1;
-                var_s2 += 0xD;
-            } while (var_s1 != (temp_v0 * 0xD));
-        }
-        arcproc_uso_func_00001B88(&D_00000000, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x77C))), sp138);
-        arcproc_uso_func_00001B88(saved64, temp_s2_2, temp_a2, (char *)2);
-        arcproc_uso_func_00001B88(saved60, temp_s1_2, temp_a2, (char *)2);
-    }
+    volatile s32 r = arg1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_000016F4);
-#endif
 
 /* arcproc_uso_func_0000199C — EXACT (90/90 words incl. relocs, 2026-07-09).
  * 4-level alloc-cascade constructor: s0 = arg0 ? arg0 : alloc(0x10C), then

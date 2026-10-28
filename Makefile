@@ -2613,10 +2613,10 @@ ARCPROC_748_DONOR := build/src/arcproc_uso/arcproc_uso_o0_748.c.o
 ARCPROC_688_DONOR := build/src/arcproc_uso/arcproc_uso_o0_688.c.o
 ARCPROC_5C8_DONOR := build/src/arcproc_uso/arcproc_uso_o0_5C8.c.o
 build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: REPLACE_FUNC_BODY := arcproc_uso_func_000005C8=$(ARCPROC_5C8_DONOR) arcproc_uso_func_00000688=$(ARCPROC_688_DONOR) arcproc_uso_func_00000748=$(ARCPROC_748_DONOR)
-# 16F4 = timer-HUD draw, twin of timproc_b3 13B8 (same C++ donor, offsets mapped); NM comparison object only (agent-g run 172).
-ARCPROC_16F4_NM_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_16F4_nm.cpp.o
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_000016F4=$(ARCPROC_16F4_NM_DONOR)
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: $(ARCPROC_16F4_NM_DONOR)
+# 16F4 = timer-HUD draw, twin of timproc_b3 13B8 (same C++ donor, offsets mapped); NCC donor (agent-g run 197).
+ARCPROC_16F4_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_16F4.cpp.o
+build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_000016F4=$(ARCPROC_16F4_DONOR)
+build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: $(ARCPROC_16F4_DONOR)
 # 0x23b8 = exact len of the tail1 region (0x5c8..0x2980); clips IDO's
 # trailing pad word so arcproc_uso emits at its original segment length.
 # (Was 0x2740 = 0x240..0x2980 when func_00000240 lived in tail1 via INCLUDE_ASM;
