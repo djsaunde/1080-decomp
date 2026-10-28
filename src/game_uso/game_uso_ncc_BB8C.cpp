@@ -106,7 +106,7 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
             if ((k = game_uso_D_807FFA90[46]) < f20) {
                 Q w;
                 w.s = f20 * obj->k2; /* run 190: scale first, zeros z, y, x (96.65 -> 98.21) */
-                w.v.z = 0.0f;
+                w.v.z = 0.0f; if (1) {} /* run 190 lever-sweep bbsplit: 98.21 -> 98.25 */
                 w.v.y = 0.0f;
                 w.v.x = 0.0f;
                 game_uso_func_05B750(import_8005C108, &w);
