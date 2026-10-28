@@ -4083,8 +4083,7 @@ void game_uso_func_0000591C(int *a0) {
         if (metric_a <= *(float*)((char*)self + 0xD8)) {
             if (((v0 = state_flag) == 0) && (hit_parent != 0)
                     && (*(int*)(hit_parent + 0x84) == 0)) {
-                sub = *(char**)((char*)self + 0x30);
-                if (*(float*)((char*)self + 0xB4) <= *(float*)(sub + 0x348)) {
+                if (*(float*)((char*)self + 0xB4) <= *(float*)(*(char**)((char*)self + 0x30) + 0x348)) {
                     *(int*)((char*)self + 0x74) = 1;
                     t0 = 1;
                 }
@@ -4241,17 +4240,15 @@ void game_uso_func_0000591C(int *a0) {
         f12v = (dot * dot) / dist_sq;
     }
         if (f12v <= f2v * f2v) {
-            *(int*)((char*)self + 0x48) = 0x14;
             *(int*)((char*)self + 0x6C) = *(int*)((char*)self + 0x6C) & ~1;
+            *(int*)((char*)self + 0x48) = 0x14;
         }
         goto tail_common;
     }
     if (bits != 0) goto tail_common;
 
     /* chain2: mirrored 4 fresh-Vec3 sites, gated on parent flag bit 1 */
-    if (hit_parent == 0) goto yaw_region;
-    v0 = *(int*)(hit_parent + 0x84);
-    if (!(v0 & 1)) goto yaw_region;
+    if (hit_parent == 0 || !((v0 = *(int*)(hit_parent + 0x84)) & 1)) goto yaw_region;
     if (v0 & 0x804) {
         if (*(int*)(sub + 0x908) != 0) {
             if (!(metric_a <= -2000.0f)) goto yaw_region;
