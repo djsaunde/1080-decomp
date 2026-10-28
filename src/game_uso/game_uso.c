@@ -4150,10 +4150,12 @@ void game_uso_func_0000591C(int *a0) {
     sub = *(char**)((char*)self + 0x30);
     {
         /* run 196: self->0x30 re-read (CSE'd load, unfolded `addiu v0,a0,1784`) */
-        accel_params = (float *)(*(char**)((char*)self + 0x30) + 1784);
+        /* run 197: the 1784 base in axis_src (its own web: v0, as the target);
+         * accel_params is kept for the chain diff sites' sp+288 spill home. */
+        axis_src = (float *)(*(char**)((char*)self + 0x30) + 1784);
         *(float*)((char*)self + 0x3C) =
             (neg * (1.0f + (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB0)))
-             * *(float*)((char*)self + 0xAC)) / *(float *)((int)accel_params + 16);
+             * *(float*)((char*)self + 0xAC)) / *(float *)((int)axis_src + 16);
     }
     f2v = *(float*)((char*)self + 0x3C);
     fsel = f2v < 0.0f ? -f2v : f2v;
