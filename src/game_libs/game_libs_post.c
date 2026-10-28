@@ -13120,10 +13120,13 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 func_00000000(arg0);
                 return;
             }
-            temp_f14 = *(f32 *)((char *)(arg0) + 0x4);
             /* product-first: compute o->0x0 * o->0x4 * 100 BEFORE the o->0x32
-             * block so temp_f14 (orig o->0x4) dies early and need not spill. */
-            temp_f18 = *(f32 *)((char *)(arg0) + 0x0) * temp_f14 * 100.0f;
+             * block so temp_f14 (orig o->0x4) dies early and need not spill.
+             * run 192: o->0x0 / o->0x4 / o->0x50 stay unnamed expressions (uopt
+             * keeps them in f2 / f14 / f16 on the fall-through path and reloads
+             * them in the 0x32 block after the o->0x4 store); the product is
+             * spelled o4 * o0 (cfe swaps it to the target's lwc1 f2,0; f14,4). */
+            temp_f18 = *(f32 *)((char *)(arg0) + 0x4) * *(f32 *)((char *)(arg0) + 0x0) * 100.0f;
             temp_v1_2 = *(u8 *)((char *)(arg0) + 0x32);
             *(u8 *)((char *)(arg0) + 0x20) = 0U;
             temp_v0_2 = temp_v1_2 * 4;
@@ -13131,12 +13134,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 sp64 = D_E354_1C330[temp_v1_2];
                 temp_f0 = D_E354_1C3B0[temp_v1_2];
                 sp60 *= temp_f0;
-                *(f32 *)((char *)(arg0) + 0x4) = (f32) (temp_f14 * temp_f0);
+                *(f32 *)((char *)(arg0) + 0x4) = (f32) (*(f32 *)((char *)(arg0) + 0x4) * temp_f0);
                 *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_2 - 1);
             }
-            temp_f14 = *(f32 *)((char *)(arg0) + 0x4);
-            temp_f16 = *(f32 *)((char *)(arg0) + 0x50);
-            temp_f0 = temp_f16 - *(f32 *)((char *)(arg0) + 0x0);
+            temp_f0 = *(f32 *)((char *)(arg0) + 0x50) - *(f32 *)((char *)(arg0) + 0x0);
             if (0.5f <= temp_f0) {
                 temp_f0 = temp_f0 + 0.5f;
                 if (2.0f <= temp_f0) {
@@ -13144,7 +13145,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 }
                 sp60 *= temp_f0;
             }
-            *(f32 *)((char *)(arg0) + 0x50) = (f32) ((temp_f16 + *(f32 *)((char *)(arg0) + 0x0)) * 0.5f);
+            *(f32 *)((char *)(arg0) + 0x50) = (f32) ((*(f32 *)((char *)(arg0) + 0x50) + *(f32 *)((char *)(arg0) + 0x0)) * 0.5f);
             *(f32 *)((char *)(arg0) + 0x44) = (f32) ((*(f32 *)((char *)(arg0) + 0x44) + temp_f18) * 0.5f);
             sp7D = gl_func_00043824(*(f32 *)((char *)(arg0) + 0x4) * 120.0f, (s32)((char *)&D_00000000 + 0x1C250), 0x10);
             /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
