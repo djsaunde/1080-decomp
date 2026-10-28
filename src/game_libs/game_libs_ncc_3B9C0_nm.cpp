@@ -63,8 +63,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     if (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.0001) {
         gl_func_00000000_vnorm3(&d);
     } else {
-        zf(d.z, 0); /* run 190: zeros through an int inline parameter, z first (77.78 -> 78.55) */
-        zf(d.x, 0);
+        zf(d.x, 0); /* run 190: zeros through an int inline parameter (77.78 -> 78.55); run 193: x first = target store order */
+        zf(d.z, 0);
         d.y = -1.0f;
     }
     for (i = 0, off = 0; i < self->col->ntri; i++, off += 12) {
