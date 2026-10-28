@@ -236,7 +236,7 @@ cend:
         *(f32 *)((char *)(arg0) + 0x93C) = (f32) (*(f32 *)((char *)(arg0) + 0x93C) / temp_f2_2);
         *(f32 *)((char *)(arg0) + 0x940) = (f32) (*(f32 *)((char *)(arg0) + 0x940) / temp_f2_2);
         *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2); /* run 200: 0x944 before 0x968 (target load order; div block word-for-word) */
-        *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2);
+        *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2); if (1) {}
         temp_f12 = *(f32 *)((char *)(arg0) + 0x968);
         if (temp_f12 < (f32) 0) {
             var_v0_2 = arg0 + 0x93C; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
