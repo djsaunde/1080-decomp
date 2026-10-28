@@ -9008,10 +9008,10 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         p = (char *)FW(child, 0x108);
         *(f32 *)(p + 0xBC) = 0; /* int 0: one mtc1 zero (0.0f gives three) */
         *(f32 *)(p + 0xB8) = 0;
-        *(f32 *)(p + 0xB4) = 0;
         *(f32 *)(child + 0x124) = 1.0f;
         savedbit = EE6C_L(d884_ee6c_l1) & 0x80000;
         EE6C_S(d884_ee6c_s1) = EE6C_L(d884_ee6c_l2) & 0xFFF7FFFF;
+        *(f32 *)(p + 0xB4) = 0;
         EE6C_S(d884_ee6c_s2) = EE6C_L(d884_ee6c_l3) & ~1;
         EE6C_S(d884_ee6c_s3) = EE6C_L(d884_ee6c_l4) | 2;
         EE6C_S(d884_ee6c_s4) = EE6C_L(d884_ee6c_l5) & 0xFFFDFFFF;
