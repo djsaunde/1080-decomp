@@ -4140,8 +4140,10 @@ void game_uso_func_0000591C(int *a0) {
         }
     }
     yaw_raw = game_uso_func_00003ED4(p, &transform_out, &hit_out);
-    scale = yaw_raw < (f32)0.0 ? -yaw_raw : yaw_raw;
-    yaw_metric = scale;
+    /* run 197: abs into fsel (redefined by the accel abs below, so the copy
+     * into yaw_metric is not propagated) and `0.0f` = the shared f16 zero. */
+    fsel = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
+    yaw_metric = fsel;
     neg = -yaw_raw;
 
     /* self->0x3C = (-yaw_raw * (1 + sub->348/self->B0) * self->AC) / sub->708 */
@@ -4149,9 +4151,9 @@ void game_uso_func_0000591C(int *a0) {
     {
         /* run 196: self->0x30 re-read (CSE'd load, unfolded `addiu v0,a0,1784`) */
         accel_params = (float *)(*(char**)((char*)self + 0x30) + 1784);
-        scale = 1.0f + (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB0));
         *(float*)((char*)self + 0x3C) =
-            (neg * scale * *(float*)((char*)self + 0xAC)) / *(float *)((int)accel_params + 16);
+            (neg * (1.0f + (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB0)))
+             * *(float*)((char*)self + 0xAC)) / *(float *)((int)accel_params + 16);
     }
     f2v = *(float*)((char*)self + 0x3C);
     fsel = f2v < 0.0f ? -f2v : f2v;
