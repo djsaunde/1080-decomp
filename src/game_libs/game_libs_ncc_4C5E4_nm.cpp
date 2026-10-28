@@ -84,7 +84,7 @@ void Obj::run() {
     gl_func_00034458(dl);
     gl_func_00034458(m15C);
     gl_func_00034458(m168, dl);
-    gl_func_00034458(gl_d_4c5e4_reg + 0x294);
+    gl_func_00034458(gl_d_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
     {
     s1 = (char *)dl;
     Sub2 *e = s14c[idx];
@@ -100,8 +100,8 @@ void Obj::run() {
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
     vp->vtrans[0] = fx * 4.0f + fw;
+    vp->vscale[1] = fh; /* run 194 (lever-sweep order) */
     vp->vscale[0] = fw;
-    vp->vscale[1] = fh;
     vp->vtrans[1] = fy * 4.0f + fh;
     { Gfx *p = &d->head->buf[d->head->count++]; p->w0 = 0x03800010; p->w1 = gl_func_00034458(vp); }
     }
