@@ -859,8 +859,8 @@ void game_uso_func_00000B3C(char *arg0) {
         ncur += 1;
         nsub = 0;
         if (tmp < ncur) {
-            ncur = 1;
             nseg += 1;
+            ncur = 1;
         } else if (ncur == tmp) {
             if (game_uso_func_00000674((int *)seg)) {
                 ncur = 1;
