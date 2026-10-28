@@ -55,10 +55,10 @@ void game_uso_func_072EE8(void *, Vec3 *);
 }
 struct Ctx { Node *out; Ctx(S *s) { out = s->node; } Node *getOut() const { return out; } };
 extern "C" void game_uso_func_00003558(S *s0) {
+    Vec3 vb; /* run 191 lever-sweep hoist: vb declared first */
     Ctx c(s0);
     Vec3 va;
     { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
-    Vec3 vb;
     { Body *b = s0->b0; b->mtx.getPos(vb); } /* run 180: named block pointer (76.73 -> 77.2) */
     Vec3 e;
     Vec3 stage;
