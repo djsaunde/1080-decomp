@@ -16717,8 +16717,9 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
 // agent-c run 176 (98.71 -> 99.89): dst is a LOCAL copy of the parameter made
 // after `rem = flags` (the 33BE4 fix: target moves rem to s3, then dst to s4 in
 // the beqz delay); the new local takes one pad word (pad[3], frame 80 = target).
-// Residual (4 words): the first arm's a0 / a1 setup order around its jal.
-#ifdef NON_MATCHING
+// EXACT (same run): the first arm's a0 / a1 order around its jal is source LINE
+// layout -- `if (flags & 1) { base = ...; call(base, fmt);` on ONE line (the
+// 33BE4 fix). C on the build path.
 
 
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all 16 call sites) */
@@ -16751,9 +16752,7 @@ void gl_func_00033EB8(s32 dst0, u32 flags) {
     u8 *g = &gl_d_33eb8_src;
 
     rem = flags; dst = dst0;
-    if (flags & 1) {
-        base = (u8 *)&D_00000000;
-        gl_func_00000000(base, &gl_ref_0001E368);
+    if (flags & 1) { base = (u8 *)&D_00000000; gl_func_00000000(base, &gl_ref_0001E368);
     }
     base = (u8 *)&D_00000000;
     gl_func_00000000(base);
@@ -16823,9 +16822,6 @@ void gl_func_00033EB8(s32 dst0, u32 flags) {
     }
     gl_func_00000000(base);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00033EB8);
-#endif
 
 
 /* game_libs_func_00034180: device-object tick.  BYTE-EXACT 2026-09-05
