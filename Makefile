@@ -3270,6 +3270,11 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_2B74_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_2B74.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00002B74=$(TIMB5_2B74_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_2B74_DONOR)
+# 32C8 = 2B74's sibling panel constructor (370/370 words under NCC, ported from
+# the 2B74 donor; vec3 constants as source literals, rodata pinned at +0x134) (agent-g run 202).
+TIMB5_32C8_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_32C8.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000032C8=$(TIMB5_32C8_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_32C8_DONOR)
 # AC20 = camera marker update (333/333 words under NCC; reference point as a
 # file-local x / y pair + z whose .bss relocs are pinned to 0, pooled o->q.rot()
 # this temp in memory) (agent-g run 166).

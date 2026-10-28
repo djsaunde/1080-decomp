@@ -1804,7 +1804,11 @@ struct TimB5Nm { char *v; };
 // RETRACTED — the 2B74 struct-carrier kit form (&sym + literal-low deref)
 // emits the target bytes with HI16-only-compatible encodings; 48.76 -> 93.09
 // after full kit redecode (see the in-body comment below).
-#ifdef NON_MATCHING
+// EXACT 2026-10-28 (agent-g run 202): the cfe body below (99.96, l134 colour
+// cap) is superseded by the NCC donor src/timproc_uso_b5/timproc_uso_b5_ncc_32C8.cpp
+// (ported from the exact sibling 2B74 donor), REPLACE_FUNC_BODY-spliced over the
+// placeholder after this block; kept for reference only.
+#if 0
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
@@ -1981,9 +1985,19 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
     }
     return arg0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_000032C8);
 #endif
+/* Placeholder for the 32C8 NCC donor splice (text and relocs dropped by the
+ * splice): it only re-emits RoData +0x134..+0x14C (-2500, -1500, 2500, 1500,
+ * -pi, pi, in this order) that the INCLUDE_ASM .s carried as .late_rodata. */
+char *timproc_uso_b5_func_000032C8(char *arg0) {
+    *(volatile float *)(arg0 + 0) = -2500.0f;
+    *(volatile float *)(arg0 + 0) = -1500.0f;
+    *(volatile float *)(arg0 + 0) = 2500.0f;
+    *(volatile float *)(arg0 + 0) = 1500.0f;
+    *(volatile float *)(arg0 + 0) = -3.1415927f;
+    *(volatile float *)(arg0 + 0) = 3.1415927f;
+    return arg0;
+}
 
 
 
