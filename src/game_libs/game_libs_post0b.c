@@ -13694,7 +13694,8 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     FW(temp_v0_3, 0x0) = 0xE9000000;
     FW(temp_v0_3, 0x4) = 0;
     gl_func_00034458(temp_s1, temp_a1_2);
-    gl_func_00034458(FW(arg0, 0x218), arg1, 0, FW(temp_s1, 0x60), FW(FW(temp_s1, 0xC), 0x4), (char *)4);
+    temp_s0 = (char *)FW(FW(temp_s1, 0xC), 0x4); /* agent-c run 175: s0's third role */
+    gl_func_00034458(FW(arg0, 0x218), arg1, 0, FW(temp_s1, 0x60), temp_s0, (char *)4);
     gl_func_00034458(FW(arg0, 0x218), arg1);
 }
 #else
