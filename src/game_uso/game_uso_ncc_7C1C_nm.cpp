@@ -25,6 +25,11 @@
  *  - `x = (const Vec3 &)xzValue` binds operator=(Vec3) to the base
  *    directly; plain `x = xzValue` adds a derived-to-base copy (+9 words).
  *  - The then-arm binds the difference to a reference (94.48 -> 94.51).
+ *  - No named notFirst / firstFlag in the loop: `if (!hit || ...)`, then
+ *    `if (hit)` before `hit = 1` (same semantics: 3FAC cannot touch the
+ *    local). uopt CSEs `hit != 0` / its negation at the loop top and spills
+ *    them to the bottom spill area (target sp+84 / 80); the named ints took
+ *    an edg home instead (94.51 -> 95.10).
  * LEFT: edg's long-lifetime (deferred) temporaries are listed in reverse
  * creation order (then-arm d / nA, else-arm stg / mA / mC2), so several
  * homes are 4-16 bytes off; `a` (target s2) and `out` (target s0) are not
@@ -108,8 +113,6 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
         Vec3 hitC;
         Node *n = b->next;
         while (n != 0) {
-            int notFirst = (hit != 0);
-            int firstFlag = (notFirst == 0);
             XZ ldir = perp(XZ(n->pos) - b->pos);
             game_uso_func_071028(&ldir);
             XZ lrd = XZ(n->pos) - *pos;
@@ -119,16 +122,15 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
             } else if (mode == 2) {
                 hitC -= ldir * 250.0f * n->width * 0.5f;
             }
-            if (firstFlag ||
+            if (!hit ||
                 ((hitC.x * hitA.z <= hitC.z * hitA.x) &&
                  (hitC.z * hitB.x <= hitC.x * hitB.z))) {
                 float m2 = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
                 float t2 = n->width * 250.0f;
                 if (t2 < m2) {
                     Vec3 fA, fB;
-                    hit = 1;
                     game_uso_func_00003FAC(&fA.x, &fB.x, &lrd.x, m2, t2);
-                    if (notFirst) {
+                    if (hit) {
                         if (hitA.z * fA.x < hitA.x * fA.z) {
                             hitA = fA;
                         }
@@ -139,6 +141,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
                         hitA = fA;
                         hitB = fB;
                     }
+                    hit = 1;
                 }
                 result = hitC;
                 b = n;
