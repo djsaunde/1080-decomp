@@ -15,7 +15,7 @@ struct Cell { char pad[0xC]; char c[3]; char pad2; };
 struct Grid { Cell *cells; };
 struct G214 { char pad[0x1C]; Grid *grid; };
 struct Self { char pad[0xD4]; short base; void put(int i, char *src); };
-inline void Self::put(int i, char *src) { G214 *g = *(G214 **)((char *)&D_00000000 + 0x214); Cell *cell = &g->grid->cells[i + base]; /* run 174: index operand order i + base (spelling-grid): 89.20 -> 89.58 */ cell->c[0] = *src++; cell->c[1] = *src++; cell->c[2] = *src; }
+inline void Self::put(int i, char *src) { G214 *g = *(G214 **)((char *)&D_00000000 + 0x214); Cell *cell = &g->grid->cells[base]; cell += i; /* run 191: row first, then the column as a separate step (uopt keeps the target's (cells + base*16) + i*16 order) */ cell->c[0] = *src++; cell->c[1] = *src++; cell->c[2] = *src; }
 extern "C" void game_libs_func_0004A9F0(Self *self, char *a1, short *cursor) {
     short idx1, idx2;
     while ((idx1 = *cursor++) != -1) {
