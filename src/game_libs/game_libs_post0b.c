@@ -13698,7 +13698,8 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
           gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
     }
     temp_t6 = FW(arg0, 0x240);
-    *(char **)((char *)&D_00000000 + 0x254) = temp_t6;
+    /* agent-c run 196: int-cast address keeps the target's `lui; addiu; sw 596(rX)` */
+    *(char **)((int)&D_00000000 + 0x254) = temp_t6;
     FW(temp_t6, 0x158) = temp_s1;
     temp_v0_2 = FW(arg0, 0x290);
     temp_s0 = FW(temp_v0_2, 0x28);
