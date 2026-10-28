@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0006126C",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-28T23:00:12.613482+00:00",
+  "end_time": "2026-10-28T23:00:12.613516+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T23:00:12.613508+00:00",
+      "assistant_text": "Digit arm: ch copied from c in the range test, decremented in place (ch -= '0'; A = (u8)ch) so it gets its own live range (v1); folded + 0 * *q on c's assignment balances the expression/c colouring priority. In-unit callee called through blank alias gl_func_00034458_6126C (jal 0).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 123,
+  "initial_m2c_source": null,
+  "final_source": "typedef union FI_0006126C {\n    f32 f;\n    int i;\n    f64 d;\n} FI_0006126C;\nextern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */\nchar *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {\n    char *out = arg0;\n    int B = 6;\n    int A = 6;\n    u8 *q;\n    int c;\n    int ch;\n\n    while ((q = fmt, fmt = q + 1, *q) != 0) {\n        c = *q + 0 * *q;\n            if (*q == 'd') {\n                D_00000000 = 0;\n                out = gl_func_00034458_6126C(out, arg2.i, 0x3B9ACA00);\n            } else if (c == 'x') {\n                D_00000000 = 1;\n                out = gl_func_00034458_6126C(out, arg2.i);\n            } else if (c == 'f') {\n                int ip = (int) arg2.f;\n                int frac;\n                char *dot;\n\n                frac = (f32) gl_func_00034458_6126C(0xA, B) * (arg2.f - (f32) ip);\n                D_00000000 = 0;\n                dot = gl_func_00034458_6126C(out, ip, gl_func_00034458_6126C(0xA, A));\n                *dot = '.';\n                out = dot + 1;\n                D_00000000 = 1;\n                out = gl_func_00034458_6126C(out, frac, gl_func_00034458_6126C(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */\n            } else if ((ch = c, c >= '0') && (c < ':')) {\n                ch -= '0';\n                A = (u8)ch;\n                if ((q = fmt, fmt = q + 1, *q) != 0) {\n                    B = (q = fmt, fmt = q + 1, *q) - '0';\n                }\n            } else {\n                gl_func_00034458_6126C(out, (char *)&D_00000000 + 0x21E08);\n                out += 0xA;\n            }\n    }\n    return out;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0006126C.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1 cfe",
+    "compiler_flags": "-G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "make ROM cmp byte-identical; verify-blocks 6/6; report.json 100.0"
+  }
+}

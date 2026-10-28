@@ -5261,3 +5261,5 @@ D_000019E8 = 0x000019E8;
 D_0001EC6C = 0x0001EC6C;
 D_0001EC84 = 0x0001EC84;
 D_0001EC9C = 0x0001EC9C;
+/* gl_func_0006126C blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+gl_func_00034458_6126C = 0x00000000;

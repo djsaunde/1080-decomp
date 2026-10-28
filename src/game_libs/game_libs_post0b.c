@@ -28665,7 +28665,6 @@ int game_libs_func_000611E4(int a0, int a1) {
     return a0;
 }
 
-#ifdef NON_MATCHING
 /* printf-style mini-formatter: walks fmt (5th arg), emitting into the buffer
  * (arg0) via the external char-emit helper gl_func_00034458. arg2 holds the
  * value (homed in a2, used as both float and raw int-bits). %d/%x set the
@@ -28703,54 +28702,61 @@ int game_libs_func_000611E4(int a0, int a1) {
  * A top-tested `while ((q = fmt, fmt = q + 1, *q) != 0) { c = *q; ...` keeps the test's load as a CSE
  * expression (v1, the 'd' test reads `*q` and so stays on it) and c is a variable assigned from it (a0, the
  * `or` in the delay slot, every later test reads c). Left: the digit value still goes straight into s8
- * (target computes c - '0' into v1, then andi into s8). */
+ * (target computes c - '0' into v1, then andi into s8).
+ * agent-c run 208 (EXACT): the digit value is a variable ch copied from c in the range test
+ * (`(ch = c, c >= '0') && ...`) and then decremented in place (`ch -= '0'; A = (u8)ch;`): the
+ * self-referencing update cannot be forwarded into A, so it gets its own live range (v1, free
+ * there), and A takes the u8 truncation (andi s8,v1). The copy `ch = c` is one more counted
+ * use of c, which lifts c's priority above the `*q` expression's (c would take v1 and push the
+ * expression to a1); the folded `+ 0 * *q` on c's assignment adds the matching counted use of the
+ * expression (zero code) so the expression keeps v1. */
 typedef union FI_0006126C {
     f32 f;
     int i;
     f64 d;
 } FI_0006126C;
+extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
 char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
     char *out = arg0;
     int B = 6;
     int A = 6;
     u8 *q;
     int c;
+    int ch;
 
     while ((q = fmt, fmt = q + 1, *q) != 0) {
-        c = *q;
+        c = *q + 0 * *q;
             if (*q == 'd') {
                 D_00000000 = 0;
-                out = gl_func_00034458(out, arg2.i, 0x3B9ACA00);
+                out = gl_func_00034458_6126C(out, arg2.i, 0x3B9ACA00);
             } else if (c == 'x') {
                 D_00000000 = 1;
-                out = gl_func_00034458(out, arg2.i);
+                out = gl_func_00034458_6126C(out, arg2.i);
             } else if (c == 'f') {
                 int ip = (int) arg2.f;
                 int frac;
                 char *dot;
 
-                frac = (f32) gl_func_00034458(0xA, B) * (arg2.f - (f32) ip);
+                frac = (f32) gl_func_00034458_6126C(0xA, B) * (arg2.f - (f32) ip);
                 D_00000000 = 0;
-                dot = gl_func_00034458(out, ip, gl_func_00034458(0xA, A));
+                dot = gl_func_00034458_6126C(out, ip, gl_func_00034458_6126C(0xA, A));
                 *dot = '.';
                 out = dot + 1;
                 D_00000000 = 1;
-                out = gl_func_00034458(out, frac, gl_func_00034458(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
-            } else if ((c >= '0') && (c < ':')) {
-                A = (u8)(c - '0');
+                out = gl_func_00034458_6126C(out, frac, gl_func_00034458_6126C(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
+            } else if ((ch = c, c >= '0') && (c < ':')) {
+                ch -= '0';
+                A = (u8)ch;
                 if ((q = fmt, fmt = q + 1, *q) != 0) {
                     B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
             } else {
-                gl_func_00034458(out, (char *)&D_00000000 + 0x21E08);
+                gl_func_00034458_6126C(out, (char *)&D_00000000 + 0x21E08);
                 out += 0xA;
             }
     }
     return out;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0006126C);
-#endif
 
 extern int gl_func_00000000();
 int gl_func_00061458() {
