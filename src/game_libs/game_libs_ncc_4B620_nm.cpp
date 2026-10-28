@@ -84,7 +84,7 @@ Obj::Obj(void *a1) : Base(a1) {
     cc->addOK(0xBA001402, 0);
     cc->add(0xB9000201, 4);
     cc->addE(0xBA000C02, 0x2000);
-    cc->add(0xBA001301, 0);
+    cc->add(0xBA001301, 0); if (1) {}
     cc->add(0xBB000001, 0x80008000);
     gl_func_00000000(cc);
     AIter it = arr.iter();
