@@ -30,15 +30,15 @@ void Obj::reflect(const Plane &p) {
     { V3 t; } /* run 203: 12 unreferenced bytes below a (63964 rule): frame 152, a at sp+136 = target */
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
-    mtx.m[0][1] = 0.0f - 2.0f * (p.n.y * p.n.x);
+    mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y); /* run 203: operand-order grid (m[0][1], m[2][0], m[2][1]) */
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
     mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
-    mtx.m[2][0] = 0.0f - 2.0f * (p.n.x * p.n.z);
-    mtx.m[2][1] = 0.0f - 2.0f * (p.n.y * p.n.z); if (1) {} /* agent-g run 201: block-split position grid (the run-190 / run-195 splits after m[0][0] / m[0][2] moved here) */
+    mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
+    mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y); if (1) {} /* agent-g run 201: block-split position grid (the run-190 / run-195 splits after m[0][0] / m[0][2] moved here) */
     mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z); if (1) {}
     mtx.m[2][3] = 0.0f;
     a.set(p.n * p.d);
