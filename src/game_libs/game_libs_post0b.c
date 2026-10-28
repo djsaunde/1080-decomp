@@ -28666,51 +28666,63 @@ int game_libs_func_000611E4(int a0, int a1) {
  * the format char c (drops the a1 home store, 83.47 -> 83.89, still 492
  * bytes = target; the old-pointer copy on the first and width-digit reads).
  * All four reads through the copy: 85.11 but 500 bytes (away), not kept. */
+/* agent-g run 192 (83.89 -> 93.3, 492 -> 484 bytes; length moves away, flagged): decode fixes from the
+ * prologue and the loop's register set.
+ *  - the value parameter is an 8-byte-aligned union (it has a double member): a1 is the alignment PAD
+ *    register (never homed, never read) and the value sits in a2/a3, homed at 72/76, with fmt the 3rd
+ *    parameter at 80(sp). The old `int arg1` (reused as the format char) and `if (arg3) {}` were
+ *    stand-ins for this; the target has no arg3 test (its digit case ends with a plain `b`).
+ *  - the mode flag is stored straight into the global (`D_00000000 = 0 / 1`): uopt hoists &D and the
+ *    constant 1 into s5 / s7 as the target does; a local `int *flag` / `int one` made it split the
+ *    pointer into a second s-register inside the 'f' arm and spill A.
+ *  - all four format reads go through the old-pointer copy (`q = fmt, fmt = q + 1, *q`).
+ * Residual (2 words short): the target loads c into v1 and copies it to a0 in the first compare's
+ * delay slot (the rest of the dispatch tests a0, 'x' with a bnel); here c stays in v1. */
 typedef union FI_0006126C {
     f32 f;
     int i;
+    f64 d;
 } FI_0006126C;
-char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt) {
-    int *flag = (int *) (int) &D_00000000;
-    int one = 1;
+char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
     char *out = arg0;
     int B = 6;
     int A = 6;
     u8 *q;
+    int c;
 
-    arg1 = (q = fmt, fmt = q + 1, *q);
-    if (arg1 != 0) {
+    c = (q = fmt, fmt = q + 1, *q);
+    if (c != 0) {
         do {
-            if (arg1 == 'd') {
-                *flag = 0;
+            if (c == 'd') {
+                D_00000000 = 0;
                 out = gl_func_00034458(out, arg2.i, 0x3B9ACA00);
-            } else if (arg1 == 'x') {
-                *flag = one;
+            } else if (c == 'x') {
+                D_00000000 = 1;
                 out = gl_func_00034458(out, arg2.i);
-            } else if (arg1 == 'f') {
+            } else if (c == 'f') {
                 int Bm1 = B - 1;
                 int ip = (int) arg2.f;
                 int frac;
                 char *dot;
 
                 frac = (f32) gl_func_00034458(0xA, B) * (arg2.f - (f32) ip);
-                *flag = 0;
+                D_00000000 = 0;
                 dot = gl_func_00034458(out, ip, gl_func_00034458(0xA, A));
                 *dot = '.';
                 out = dot + 1;
-                *flag = one;
+                D_00000000 = 1;
                 out = gl_func_00034458(out, frac, gl_func_00034458(0xA, Bm1));
-            } else if ((arg1 >= '0') && (arg1 < ':')) {
-                A = (u8)(arg1 - '0');
+            } else if ((c >= '0') && (c < ':')) {
+                A = (u8)(c - '0');
                 if ((q = fmt, fmt = q + 1, *q) != 0) {
-                    B = *fmt++ - '0'; if (arg3) {}
+                    B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
             } else {
                 gl_func_00034458(out, (char *)&D_00000000 + 0x21E08);
                 out += 0xA;
             }
-            arg1 = *fmt++;
-        } while (arg1 != 0);
+            c = (q = fmt, fmt = q + 1, *q);
+        } while (c != 0);
     }
     return out;
 }
