@@ -1440,17 +1440,21 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800018F0);
  * 5 labels long, so the 1..5 table + type-1 index appear (sltiu 5 vs the
  * target's 4); indexed rel[i] with every info read through memory (no
  * local) and the declaration order above give the 0x50 frame with hival /
- * hiptr at 0x28 / 0x34. Left: base / symtab colour s3 / s2 (ours s2 / ra,
- * one s-save short) and the per-arm `lw a0` join-copy delay fills. */
+ * hiptr at 0x28 / 0x34. Then (lever-sweep de-naming, 81.88 -> 93.21) the
+ * symbol pointer is not a local: both reads index symtab afresh, which gives
+ * the target's base / symtab s3 / s2 and the per-arm `lw a0` delay fills.
+ * Left: frame 0x48 vs 0x50 (hiptr 0x30 vs 0x34: the dropped sym local had
+ * the slot; no used / unused / volatile spelling restores it without
+ * costing words), sltiu 5, val / p loads scheduled after the bound test. */
 extern char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1ADC;
 
+#define SYM_1ADC (&symtab[rel[i].info >> 4]) /* run 186: de-named (lever-sweep 81.81 -> 93.13) */
 s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     UsoUsoRelSym_1ADC_1ADC *symtab;
     s32 type, val, lo, v;
     s16 *hiptr;
-    UsoUsoRelSym_1ADC_1ADC *sym;
     s32 i;
     s32 hival;
     u32 *p;
@@ -1464,9 +1468,8 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             continue;
         }
         type = rel[i].info & 7;
-        sym = &symtab[rel[i].info >> 4];
-        if (sym->flags & 8) {} else { continue; }
-        val = sym->value;
+        if (SYM_1ADC->flags & 8) {} else { continue; }
+        val = SYM_1ADC->value;
         p = (u32 *)(base + rel[i].offset);
         rel[i].orig = *p;
         switch (type) {
@@ -1475,7 +1478,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             break;
         case 3:
             hiptr = (s16 *)p + 1;
-            hival = ((s16 *)p)[1];
+            hival = ((s16 *)p)[1]; if (1) {} /* run 186 (lever-sweep bbsplit) */
             break;
         case 2:
             lo = ((s16 *)p)[1];
@@ -1498,6 +1501,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     }
     return 0;
 }
+#undef SYM_1ADC
 #else
 INCLUDE_ASM("asm/nonmatchings/kernel", func_80001ADC);
 #endif
