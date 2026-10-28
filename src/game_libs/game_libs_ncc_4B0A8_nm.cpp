@@ -33,9 +33,9 @@ struct IBase {
     IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
 };
 struct AIter : IBase {
-    AIter(Arr *arr) : IBase(arr) {}
-    Elem **next() { if (idx < last) { int n = idx + 1; idx = n; return &(*a)[n]; } return 0; } /* run 173: explicit n (kit CXVII spelling) */
-    Elem *cur() { return (*a)[idx]; }
+    AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } } /* run 190: kept parameter */
+    Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; } /* run 190: back to ++idx (with the two levers around it) */
+    Elem *cur() { Arr &r = *a; return r[idx]; } /* run 190: local-reference read (kit CXLIV) */
 };
 inline AIter iter(Arr *a) { return AIter(a); }
 inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return gl_func_00034458(*t->base + k * 8, t, k); }
