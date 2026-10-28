@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b1_func_00001340",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-28T13:36:43.516649+00:00",
+  "end_time": "2026-10-28T13:36:43.516664+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T13:36:43.516660+00:00",
+      "assistant_text": "C++ donor: timer-HUD draw with Spr/Img inline members; folded + 0 * tim.pw() sets the edg pool-temp order (kit CLXI); count declared first in the nested block so its home lands after the pooled temps (sp+152).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 238,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b1_func_00001340 (0x3B8 / 238 words), EXACT:\n * timer HUD draw with the mm:ss.cc split (the 23FC / timproc_b3 13B8 / arcproc 16F4 family). agent-g\n * run 172 (kit CXVII): the cfe NM body as plain C++ (228 of 238 words, 86.53).\n * agent-g run 184 (kit CXXXIII): ported from the 13B8 C++ rewrite -- sprite member objects and the inline\n * `Spr::width()` with a named image pointer, no volatile pads: 239 words (target 238), 94.05 standalone.\n * Then the tim panel's width / height through the members (`tim.width() / 12`, `tim.height()`) and `if (1) {}`\n * after its begin call: 238 words = target, 98.10 standalone; xmid de-named (lever-sweep).\n * agent-g run 196 (kit CLIX): 13B8's run-185 nested block (x / pos4 / posA1 / pos6 block locals, panels named\n * there) and run-196 Img members (height / panel widths through `img->gh()` / `img->gw()`; tim's width keeps\n * the named local; three volatile pads in the block; the old `sp0` pad dropped): 98.18 -> 99.62 standalone.\n * agent-g run 198 (kit CLXI / CLXIII): EXACT. 13B8's tie-order fix (`+ 0 * arg0->tim.pw()` on the glyph\n * statement, loop height through `tim.img->gh()`, x / pos4 / posA1 / pos6 declared before the panel\n * pointers) fixes the pB-width / pA-copy pair; one[] stored in index order. The count spill (target 152)\n * is count's own frontend home: edg allocates a scope's named locals at scope entry and pooled inline\n * temporaries at first use, so declaring count at the top put it above the five pool temps (172). Declared\n * as the first local of the nested block it lands after them, directly above x (152).\n * Spliced over the placeholder in timproc_uso_b1.c via REPLACE_FUNC_BODY. */\ntypedef float f32; typedef int s32; typedef short s16;\nextern \"C\" {\nextern char D_00000000;\nint timproc_uso_b1_func_000000B0(...);\n}\nstruct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };\nstruct Spr {\n    s32 height() { return img->gh(); }\n    char p[0x10]; Img *img; char p14[4];\n    s32 width() { Img *i = img; return i->w; }\n    s32 pw() { return img->gw(); }\n};\nstruct Flags { char p[0x14]; int f; };\nstruct Obj {\n    char p0[0x2A8]; char c2A8[0x24]; char c2CC[0x6B4 - 0x2CC];\n    Spr sB; Spr sA; Spr sX; Spr sC; Spr tim;\n    f32 alpha;\n};\n#define FL(o) (*(Flags **)((char *)(o) + 0x528))\nextern \"C\" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {\n    f32 one[4];\n    char buf[128];\n    s32 min;\n    s32 sec;\n    s32 glyph;\n    s32 i;\n\n    one[0] = 1.0f;\n    one[1] = 1.0f;\n    one[2] = 1.0f;\n    one[3] = 1.0f;\n    if (FL(arg0)->f & 1) {\n        min = arg2 / 60000;\n        arg2 -= min * 60000;\n        sec = arg2 / 1000;\n        arg2 -= sec * 1000;\n        arg2 = arg2 / 10;\n        timproc_uso_b1_func_000000B0(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);\n        timproc_uso_b1_func_000000B0(&arg0->tim); if (1) {}\n        glyph = arg0->tim.width() / 12 + 0 * arg0->tim.pw();\n        timproc_uso_b1_func_000000B0(&arg0->sA);\n        timproc_uso_b1_func_000000B0(&arg0->sB);\n        timproc_uso_b1_func_000000B0(&arg0->sC);\n        timproc_uso_b1_func_000000B0(buf, &D_00000000 + 0x3F4, min, sec, arg2);\n        {\n        s32 count = timproc_uso_b1_func_000000B0(buf);\n        s32 x, pos4, posA1, pos6;\n        Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;\n        x = 160 - (pC->pw() + count * 13 + pA->pw() + pB->pw() + 16) / 2;\n        pos4 = pB->pw() + x + 4;\n        posA1 = pA->pw() + pos4 + 4;\n        pos6 = pC->pw() + posA1 + 8;\n        volatile s32 pad0, pad1, pad2;\n        timproc_uso_b1_func_000000B0(&arg0->sC, posA1, arg1 + 0x32, 2);\n        for (i = 0; i < count; i++) {\n            if (buf[i] == 0x5B) {\n                buf[i] = 0xA;\n            } else if (buf[i] == 0x5D) {\n                buf[i] = 0xB;\n            } else {\n                buf[i] = buf[i] - 0x30;\n            }\n            timproc_uso_b1_func_000000B0(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.img->gh() / 2) + 0x32, buf[i] * glyph, glyph);\n        }\n        timproc_uso_b1_func_000000B0(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);\n        timproc_uso_b1_func_000000B0(&arg0->sA, pos4, arg1 + 0x32, 2);\n        timproc_uso_b1_func_000000B0(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);\n        timproc_uso_b1_func_000000B0(&arg0->sB, x, arg1 + 0x32, 2);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b1/timproc_uso_b1_ncc_1340.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b1/timproc_uso_b1/timproc_uso_b1_func_00001340.s",
+    "segment": "timproc_uso_b1",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; report 100."
+  }
+}

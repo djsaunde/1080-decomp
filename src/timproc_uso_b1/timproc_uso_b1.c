@@ -682,11 +682,12 @@ void timproc_uso_b1_func_000011D0(char *a0) {
     }
 }
 
-/* NM object: replaced by the NCC comparison donor timproc_uso_b1_ncc_1340_nm.cpp (agent-g run 172). */
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/timproc_uso_b1/timproc_uso_b1_ncc_1340.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 198, kit CLXI / CLXIII). The history
+ * below describes the earlier cfe decode (removed). */
+void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
+    volatile s32 r = arg1;
+}
 /* timproc_uso_b1_func_00001340: 238-insn timer-HUD draw (min:sec.centis).
  * 2026-07-23 redecode 44.96 -> ~70 (frame 336 EXACT, prologue 18/18, div
  * chain + call skeleton aligned). Decode errors fixed vs old m2c body:
@@ -728,82 +729,6 @@ void timproc_uso_b1_func_000011D0(char *a0) {
  * i*13 != count*13, but keeps count live in a caller-saved register spilled
  * around every call -- the target's t1 / sp+152 juggle); padq dropped (frame
  * stays 336); sum order count*13 + pt4 + pt2 + pt3 (target addu order). */
-void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
-    f32 one[4];
-    char buf[128];
-    char *p714;
-    char *w6CC;
-    char *w6B4;
-    char *w6FC;
-    char *saved64;
-    char *saved60;
-    volatile s16 *pt4;
-    volatile s16 *pt2;
-    volatile s16 *pt3;
-    int min, sec;
-    int glyph;
-    int x, pos4, posA1, pos6;
-    int xmid;
-    char *p;
-    int i, xp, bound;
-    unsigned char c;
-    int count;
-
-    one[0] = 1.0f;
-    one[1] = 1.0f;
-    one[2] = 1.0f;
-    one[3] = 1.0f;
-    if (FW(FW(arg0, 0x528), 0x14) & 1) {
-        min = arg2 / 60000;
-        arg2 -= min * 60000;
-        sec = arg2 / 1000;
-        arg2 -= sec * 1000;
-        arg2 = arg2 / 10;
-        timproc_uso_b1_func_000000B0(&D_00000000, (s32)(255.0f * *(f32 *)(arg0 + 0x72C)), arg0 + 0x2A8, arg0 + 0x2CC);
-        p714 = arg0 + 0x714;
-        timproc_uso_b1_func_000000B0(p714);
-        glyph = *(s16 *)(*(char **)(arg0 + 0x724) + 0x20) / 12;
-        w6CC = arg0 + 0x6CC;
-        timproc_uso_b1_func_000000B0(w6CC);
-        w6B4 = arg0 + 0x6B4;
-        timproc_uso_b1_func_000000B0(w6B4);
-        w6FC = arg0 + 0x6FC;
-        timproc_uso_b1_func_000000B0(w6FC);
-        timproc_uso_b1_func_000000B0(buf, (char *)&D_00000000 + 0x3F4, min, sec, arg2);
-        saved64 = w6CC;
-        saved60 = w6B4;
-        count = timproc_uso_b1_func_000000B0(buf);
-        w6CC = 0;
-        w6B4 = 0;
-        pt4 = *(volatile s16 **)(arg0 + 0x70C);
-        pt2 = *(volatile s16 **)(arg0 + 0x6DC);
-        pt3 = *(volatile s16 **)(arg0 + 0x6C4);
-        x = 160 - ((count * 13 + pt4[0x10] + pt2[0x10] + pt3[0x10] + 16) / 2);
-        pos4 = pt3[0x10] + x + 4;
-        posA1 = pt2[0x10] + pos4 + 4;
-        pos6 = pt4[0x10] + posA1 + 8;
-        xmid = arg1 + 0x32;
-        timproc_uso_b1_func_000000B0(w6FC, posA1, xmid, 2);
-        for (i = 0; i < count; i++) {
-            c = buf[i];
-            if (c == 0x5B) {
-                buf[i] = 0xA;
-            } else if (c == 0x5D) {
-                buf[i] = 0xB;
-            } else {
-                buf[i] = c - 0x30;
-            }
-            timproc_uso_b1_func_000000B0(p714, pos6 + i * 13, (arg1 - *(s16 *)(*(char **)(arg0 + 0x724) + 0x22) / 2) + 0x32, buf[i] * glyph, glyph);
-        }
-        timproc_uso_b1_func_000000B0(saved64, (s32)(255.0f * *(f32 *)(arg0 + 0x72C)), one, 0xFF);
-        timproc_uso_b1_func_000000B0(saved64, pos4, xmid, 2);
-        timproc_uso_b1_func_000000B0(saved60, (s32)(255.0f * *(f32 *)(arg0 + 0x72C)), one, 0xFF);
-        timproc_uso_b1_func_000000B0(saved60, x, xmid, 2);
-    }
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b1/timproc_uso_b1", timproc_uso_b1_func_00001340);
-#endif
 
 /* timproc_uso_b1_func_000016F8 — EXACT (90/90 words incl. relocs, 2026-07-09).
  * Twin of arcproc_uso_func_0000199C (same 4-level alloc-cascade ctor
