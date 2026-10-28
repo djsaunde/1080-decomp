@@ -1280,7 +1280,7 @@ void func_80001594(UsoSegDesc *arg0, u32 arg1) {
     for (i = 0; i < 16; i++) {
         if (arg0[i].unk0 == 0) break;
         e = (UsoSegEnt *)D_80012C70 + i;
-        e->unk0 = arg0[i].unkC;
+        e->unk0 = arg0[i].unkC; if (1) {}
         if (e->unk0 != 0) {
             e->unk4 = arg0[i].unk10;
             e->unk8 = e->unk0;
