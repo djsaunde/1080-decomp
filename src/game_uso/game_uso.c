@@ -4122,6 +4122,7 @@ void game_uso_func_0000591C(int *a0) {
         v0 = (int)game_uso_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
+        if (1) {}
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     }
