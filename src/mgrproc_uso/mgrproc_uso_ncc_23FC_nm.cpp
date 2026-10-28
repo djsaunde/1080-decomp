@@ -16,6 +16,10 @@
  * t0 / t1 / t2 (the target keeps the per-glyph 0x798 reload in v1 / v0).
  * Run 172 later: the glyph `c` as u8 (was s32) -> the loop counter / bound / n take the target's t0 / t1 / t2
  * (78 -> 54 words, 98.20 -> 98.70); left: c in v1 (target v0), the 0x798 reload pair and the t-ring.
+ * Run 184 (kit CXXXIII): the two sprite widths through an inline `Spr::width()` that copies the image pointer
+ * into a named local (the timer-HUD family rewrite): its temporaries take the frame words three of the four
+ * volatile pads stood in for (pad0 / pad0b / pad1 dropped), then `if (1) {}` after `flag = 0` (lever-sweep):
+ * 98.62 -> 99.25 standalone.
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -32,6 +36,11 @@ void import_0024F75C(...);
 int mgrproc_uso_func_07C610(...);
 int mgrproc_uso_func_00000140(...);
 void mgrproc_uso_func_083574(...);
+}
+struct Img { char p[0x20]; s16 w; s16 h; };
+struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } };
+#define SPR(o) ((Spr *)(arg0 + (o)))
+extern "C" {
 void mgrproc_uso_func_000023FC(char *arg0) {
     f32 one[4];
     u8 buf[0x80];
@@ -44,11 +53,10 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     s32 flag;
     char *panel;
     s32 i;
-    volatile s32 pad0;
-    volatile s32 pad0b;
+
     s32 min;
     s32 sec;
-    volatile s32 pad1;
+
     s32 n;
     volatile s32 pad2;
     s32 x;
@@ -88,12 +96,12 @@ void mgrproc_uso_func_000023FC(char *arg0) {
         import_0024EAA0(&import_8024CAF8, (s32) (255.0f * *(f32 *)(arg0 + 0x7A0)), arg0 + 0x2A8, arg0 + 0x2CC);
         tim = arg0 + 0x788;
         import_0024F2C8(tim);
-        w = *(s16 *)((char *) FW(arg0, 0x798) + 0x20) / 12;
+        w = SPR(0x788)->width() / 12;
         p770 = arg0 + 0x770;
         import_0024F2C8(p770);
         mgrproc_uso_func_083574(buf, &import_80264A10 + 0x640, min, sec, t);
         n = mgrproc_uso_func_07C610(buf);
-        vt = *(s16 *)((char *) FW(arg0, 0x780) + 0x20);
+        vt = SPR(0x770)->width();
         xoff = 0xA0 - ((vt + (n * 13) + 8) / 2);
         x = vt + xoff + 8;
         import_0024F34C(p770, xoff, 0xBE, 2);
@@ -109,7 +117,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
             import_0024F75C(tim, x + i * 13, 0xBE - (*(s16 *)((char *) FW(arg0, 0x798) + 0x22) / 2), buf[i] * w, w);
         }
     }
-    flag = 0;
+    flag = 0; if (1) {}
     if ((FW((char *) FW(arg0, 0x528), 0x14) & 1) && (FW(arg0, 0x4FC) != 0) && (FW((char *) FW((char *) FW(&import_800201D0, 0x138), 0x44), 0x38) < 3)) {
         flag = 1;
     }
