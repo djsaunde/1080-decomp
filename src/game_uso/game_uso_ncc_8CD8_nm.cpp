@@ -74,7 +74,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             XZ h = s->p90 - a->pos;
             float dot = h.x * e.x + e.z * h.z + s->w->speed * s->kDC;
             s->p84 += e * dot;
-            side *= 250.0f * s->kE0 * b->width;
+            side *= s->kE0 * (250.0f * b->width); /* run 205: target muls 250 * width first, then kE0 (88.68 -> 89.48) */
             switch (s->phase = (s->phase + 1) & 3) {
             case 0:
                 side *= 0.0f;
