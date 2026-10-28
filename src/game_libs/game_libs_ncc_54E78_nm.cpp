@@ -38,8 +38,8 @@ void Obj::reflect(const Plane &p) {
     V3 a;
     a.set(p.n * p.d);
     f32 k = a.dot(p.n) * 2.0f;
+    mtx.m[3][1] = k * p.n.y; /* run 194 (lever-sweep order) */
     mtx.m[3][0] = k * p.n.x;
-    mtx.m[3][1] = k * p.n.y;
     mtx.m[3][2] = k * p.n.z;
     mtx.m[3][3] = 1.0f;
     *(M4 **)(D_00000000 + 0xE4) = &mtx;
