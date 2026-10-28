@@ -19521,6 +19521,9 @@ char *gl_func_0004FBA4(char *a0, s32 **a1) {
 // vertex triples into `short sum[3]`, convert to float (v[4] = A, v[3] = B),
 // mid = (A + B) / 2, d1 = mid - A, d2 = mid - B, return 1 iff
 // dot(d1, plane[e1]) >= 0 and dot(d2, plane[e2]) >= 0.
+// agent-c run 175: the NM comparison object now takes the real C++ `int Col::side(int, int)` from
+// src/game_libs/game_libs_ncc_4FD00_nm.cpp (REPLACE_FUNC_BODY, build/non_matching/ only): 80.29 -> 95.51,
+// length = target. The cfe body below is kept as the readable decode.
 #ifdef NON_MATCHING
 /* NM 43.0 -> see report (agent-c 2026-09-11, hand-analysis; 3rd pass).
  * Structure now reproduces the target's memory traffic exactly: the five

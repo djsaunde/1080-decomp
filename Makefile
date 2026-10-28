@@ -743,7 +743,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 179: 415A4 NM `if (1) {}` after the f1C store (0x1C0 -> 0x1C4 bytes = target): 0x2ea94 -> 0x2ea98 (62F08 NM offset 0x2ea48).
 # agent-c run 179: 54E78 NM 0x164 store moved up (0x22C -> 0x228 bytes = target): 0x2ea98 -> 0x2ea94 (62F08 NM offset 0x2ea44).
 # agent-c run 181: 4E00C NM donor -> EXACT donor (0x124 -> 0x12C bytes = target): 0x2ea94 -> 0x2ea9c (62F08 NM offset 0x2ea4c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ea9c gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 175: 4FD00 NM C++ donor (0x3CC -> 0x3EC bytes = target): 0x2ea9c -> 0x2eabc (62F08 NM offset 0x2ea6c).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eabc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1745,6 +1746,14 @@ $(GAMELIBS_3B6A0_NM_DONOR): src/game_libs/game_libs_ncc_3B6A0_nm.cpp
 	$(OBJCOPY) --redefine-sym below__3ObjFiPfPP4TriBT2=gl_func_0003B6A0 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_NM_DONOR)
+# 4FD00 = real C++ `int Col::side(int, int)` (agent-c run 175; cfe 80.29): inline face-sum with a local short vector, V3 set / += / -= / /= members; symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4FD00_NM_DONOR := build/src/game_libs/game_libs_ncc_4FD00_nm.cpp.o
+$(GAMELIBS_4FD00_NM_DONOR): src/game_libs/game_libs_ncc_4FD00_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym side__3ColFiT1=game_libs_func_0004FD00 $@
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004FD00=$(GAMELIBS_4FD00_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FD00_NM_DONOR)
 # 36F0C = real C++ `void FreeCam::update()` (agent-c run 177; cfe 91.26); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_36F0C_NM_DONOR := build/src/game_libs/game_libs_ncc_36F0C_nm.cpp.o
 $(GAMELIBS_36F0C_NM_DONOR): src/game_libs/game_libs_ncc_36F0C_nm.cpp
