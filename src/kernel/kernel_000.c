@@ -1453,8 +1453,9 @@ typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1A
 #define SYM_1ADC (&symtab[rel[i].info >> 4]) /* run 186: de-named (lever-sweep 81.81 -> 93.13) */
 s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     UsoUsoRelSym_1ADC_1ADC *symtab;
-    s32 type, val, lo, v;
+    s32 type, val, lo;
     s16 *hiptr;
+    s32 v; /* run 186: declared after hiptr (5040-order grid): hiptr home 0x34 as in the target */
     s32 i;
     s32 hival;
     u32 *p;
