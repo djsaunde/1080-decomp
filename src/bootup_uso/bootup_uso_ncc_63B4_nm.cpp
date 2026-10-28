@@ -1,88 +1,81 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_000063B4: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 76.09; a second parameter empty test from round 2 gives 82.95).
- * agent-g run 152 (83.10 -> 83.21): pad[1] in the frame struct gives the target frame 144 (A / B at the target offsets; q lands 8 high).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for func_000063B4 (minimap marker projection, 224 words).
+ * agent-g run 184 (kit CXXXIII): rewritten as C++ -- the target's `lwc1 180(v0); addiu v0,v0,180` is the matrix
+ * this-adjust tell (kit CXXXI): an inline `M3::xf(V3 &)` called twice through `ctx->view->rot`, with ctx loaded
+ * once and reloaded from the global block after both calls (the second call's view load comes from the old ctx).
+ * Frame: A, B declared first (homes 132 / 120), `Q q` declared at its use AFTER the xf calls -- xf's three
+ * register-coloured temporaries then sit above q (the target's 12 unreferenced bytes at sp+108) and q lands on
+ * sp+92: length = target (896), standalone 83.05 -> 92.89. LEFT: FP colours (f8/f6 vs f6/f4 in the xf spill
+ * shuffle) and the A.z reload into f14 in the first MIN arm.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
-typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
-typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
-typedef float f32; typedef double f64;
-#undef NULL
-#define NULL 0
-typedef struct { float x, y, z; } Vec3;
-typedef struct { float q[4]; float pad[1]; Vec3 B; Vec3 A; } Bu63b4F;
-#define BU63B4_MC(c) ((float (*)[4])(*(char **)((c) + 0x70) + 0xB4))
-#define BU63B4_MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define BU63B4_MAX(a, b) (((b) < (a)) ? (a) : (b))
-#define BU63B4_XFORM(m, v)                                                   \
-    {                                                                          \
-        x_ = (v).x; y_ = (v).y; z_ = (v).z;                                    \
-        rx_ = (m)[0][0] * x_ + (m)[1][0] * y_ + (m)[2][0] * z_;               \
-        ry_ = (m)[0][1] * x_ + (m)[1][1] * y_ + (m)[2][1] * z_;               \
-        rz_ = (m)[0][2] * x_ + (m)[1][2] * y_ + (m)[2][2] * z_;               \
-        (v).x = rx_;                                                           \
-        (v).y = ry_;                                                           \
-        (v).z = rz_;                                                           \
-    }
+typedef float f32;
 extern "C" {
 extern char D_00000000;
-extern void func_00000000_63b4_fpp(float, float *, float *);
-extern void func_477c_reg(void *, void *, void *, float, float, int);
-extern f32 func_00000000_43d4_f(void);
-extern u8 bu_63b4_c57c[];
+extern unsigned char bu_63b4_c57c[];
 extern float func_00000000_63b4_ff(float);
 extern void func_00000000_63b4_fpp(float, float *, float *);
-extern void func_00000000_63b4_pq(void *, Bu63b4F *);
+extern void func_00000000_63b4_pq(void *, void *);
 extern void func_00000000_63b4_p(void *);
 }
-extern "C" void func_000063B4(char *obj) {
-    Bu63b4F fr;
-    float inv;
-    float fn, t;
+struct V3 { f32 x, y, z; };
+struct Q { f32 x, y, z, w; Q() {} Q(f32 a, f32 b, f32 c, f32 d) { z = c; y = b; x = a; w = d; } };
+struct M3 {
+    f32 m[3][4];
+    void xf(V3 &v) const {
+        f32 x = m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z;
+        f32 y = m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z;
+        f32 z = m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z;
+        v.x = x; v.y = y; v.z = z;
+    }
+};
+struct View { char p[0xA8]; f32 scale; char pAC[0xB4 - 0xAC]; M3 rot; };
+struct Ctx { char p[0x70]; View *view; char p74[0x10C - 0x74]; int px; int py; };
+struct G { char p[0x130]; f32 k; char p134[0x254 - 0x134]; Ctx *ctx; };
+struct Rec { char p[0xC]; int o; char p10[4]; f32 d; };
+struct Rr { char p[0xA0]; Rec *r; };
+struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
+#define gG ((G *)&D_00000000)
+extern "C" void func_000063B4(Obj *obj) {
+    V3 A;
+    V3 B;
+    f32 inv = func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34));
+    A.y = 0.0f;
+    A.x = 0.0f;
+    A.z = (f32)(-obj->nb8) / inv;
+    func_00000000_63b4_fpp((f32)obj->nbc, &A.x, &A.z);
+    B.y = 0.0f;
+    B.z = A.z;
+    B.x = -A.x;
+    Ctx *ctx = gG->ctx;
+    ctx->view->rot.xf(A);
+    ctx->view->rot.xf(B);
+    ctx = gG->ctx;
+    Rec *r = obj->rr->r;
+    f32 fn = (f32)(int)((ctx->view->scale * gG->k - (f32)r->o) / r->d);
+    A.z += fn;
+    B.z += fn;
+    f32 t;
     int ix, iy;
-    float (*m)[4];
-    char *ctx;
-    char *v1;
-    float x_, y_, z_, rx_, ry_, rz_;
-    char *base;
-
-    inv = func_00000000_63b4_ff((float)*(int *)(obj + 0xBC) / *(float *)(bu_63b4_c57c + 0x34));
-    fr.A.y = 0.0f;
-    fr.A.x = 0.0f;
-    fr.A.z = (float)(-*(int *)(obj + 0xB8)) / inv;
-    func_00000000_63b4_fpp((float)*(int *)(obj + 0xBC), &fr.A.x, &fr.A.z);
-    base = (char *)&D_00000000;
-    ctx = *(char **)(base + 0x254);
-    fr.B.y = 0.0f;
-    fr.B.x = -fr.A.x;
-    fr.B.z = fr.A.z;
-    m = BU63B4_MC(ctx); if (obj) {}
-    BU63B4_XFORM(m, fr.A);
-    m = BU63B4_MC(ctx);
-    ctx = *(char **)(base + 0x254);
-    BU63B4_XFORM(m, fr.B);
-    v1 = *(char **)(*(char **)(obj + 0xB4) + 0xA0);
-    fn = (float)(int)((*(float *)(*(char **)(ctx + 0x70) + 0xA8) * *(float *)(base + 0x130) -
-                       (float)*(int *)(v1 + 0xC)) / *(float *)(v1 + 0x14));
-    fr.A.z += fn;
-    fr.B.z += fn;
-    t = BU63B4_MIN(fr.A.z, fn);
+    t = (A.z < fn) ? A.z : fn;
     ix = (int)t;
-    t = BU63B4_MIN((float)ix, fr.B.z);
+    t = ((f32)ix < B.z) ? (f32)ix : B.z;
     ix = (int)t;
-    t = BU63B4_MAX(fr.A.z, fn);
+    t = (fn < A.z) ? A.z : fn;
     iy = (int)t;
-    t = BU63B4_MAX((float)iy, fr.B.z);
+    t = (B.z < (f32)iy) ? (f32)iy : B.z;
     iy = (int)t;
-    ix -= *(int *)(obj + 0xC0);
-    iy += *(int *)(obj + 0xC0);
+    ix -= obj->org;
+    iy += obj->org;
     if (ix < 0) ix = 0;
     if (ix >= 0x80) ix = 0x7F;
     if (iy < 0) iy = 0;
     if (iy >= 0x80) iy = 0x7F;
-    *(int *)(ctx + 0x10C) = ix;
-    *(int *)(*(char **)(base + 0x254) + 0x110) = iy; if (obj) {}
-    fr.q[2] = 0.0f;
-    fr.q[1] = 0.0f;
-    fr.q[0] = 0.0f;
-    fr.q[3] = 1.0f;
-    func_00000000_63b4_pq(base, &fr);
+    ctx->px = ix;
+    gG->ctx->py = iy;
+    Q q;
+    q.z = 0.0f;
+    q.y = 0.0f;
+    q.x = 0.0f;
+    q.w = 1.0f;
+    func_00000000_63b4_pq(gG, &q);
     func_00000000_63b4_p(obj);
 }
