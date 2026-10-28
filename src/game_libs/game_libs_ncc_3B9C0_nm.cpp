@@ -25,6 +25,7 @@ extern float sqrtf(float);
 extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
 extern void gl_func_00000000_vnorm3(V3B9 *);
 }
+inline void zf(f32 &f, int z) { f = z; }
 extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
     s32 cnt;
     u32 i;
@@ -62,8 +63,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     if (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.0001) {
         gl_func_00000000_vnorm3(&d);
     } else {
-        d.x = 0.0f;
-        d.z = 0.0f;
+        zf(d.z, 0); /* run 190: zeros through an int inline parameter, z first (77.78 -> 78.55) */
+        zf(d.x, 0);
         d.y = -1.0f;
     }
     for (i = 0, off = 0; i < self->col->ntri; i++, off += 12) {
