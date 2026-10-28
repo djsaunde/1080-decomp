@@ -16051,9 +16051,6 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 //   a BYTE copy (target lbu 0(v1) / sb -1(a0)); its *(int*)var_v1 + FW word
 //   ops retyped to *(u8 *). Still NON_MATCHING: the struct base is a stripped
 //   reloc (lui 0x0), so absolute-vs-based addressing + exact bytes stay deferred.
-#ifdef NON_MATCHING
-
-
 /* 2026-10-24 agent-c run 147: SIBLING PORT of gl_func_00033BE4 (scan ratio 0.94).
  * 334E8 is 33BE4 with the source fixed to an 8-byte stack buffer (filled by the
  * first callback, template 0x1E280), length 8 and no flag gate. buf declared
@@ -16068,43 +16065,40 @@ void gl_func_000334B0(int a0, int a1, int a2) {
  * 104 (buf at sp+104) and the first `move a0,s1` schedule.
  * Then (33EB8 rule) every ring word through the g base pointer (same-base
  * accesses keep source order) and rem = 8 after the second call: 92.21 -> 96.20,
- * length 704 -> 708 = target. */
-extern s32 gl_d_334e8_8a, gl_d_334e8_8b, gl_d_334e8_8c, gl_d_334e8_8d,
-           gl_d_334e8_8e, gl_d_334e8_8f, gl_d_334e8_8g, gl_d_334e8_8h;
-extern s32 gl_d_334e8_14a;
-extern s32 gl_d_334e8_24a;
-extern s32 gl_d_334e8_28a, gl_d_334e8_28b, gl_d_334e8_28c, gl_d_334e8_28d,
-           gl_d_334e8_28e, gl_d_334e8_28f, gl_d_334e8_28g, gl_d_334e8_28h;
-extern s32 gl_d_334e8_2ca, gl_d_334e8_2cb, gl_d_334e8_2cc;
+ * length 704 -> 708 = target.
+ * agent-c run 176: EXACT (96.20 -> 100). Decode fixes, the 33BE4 set: mis is
+ * computed inside `if (chunk != 0)` and reused for 8 - mis; the copy loop inits
+ * cpsrc first on ONE line with cpdst and bumps cpsrc first; the +8 bump is `+=`
+ * with the call re-reading it; the segment-end test compares two fresh reads
+ * before `cur` is named. base is NOT a variable but one address constant
+ * (uopt hoists it into s1), and the block magic is a literal: two fewer named
+ * locals give the target frame 104; `src = (s32)p; rem = 8; call(base);` on
+ * one line gives the entry order. */
+extern int gl_func_00000000();
 extern u8 gl_d_334e8_dst;
 extern u8 gl_ref_0001E280;
 extern u8 gl_ref_0001E29C;
 extern u8 gl_ref_0001E2B0;
+#define base ((u8 *)&D_00000000)   /* one hoisted address constant, not a variable (frame + entry order) */
 void gl_func_000334E8(void) {
     u8 buf[8];
     s32 src;
-    u8 *base;
     u32 chunk;
     s32 rem;
     s32 mis;
     u32 avail;
+    s32 cur;
     u32 cnt;
     s32 cpsrc;
     u8 *cpdst;
-    s32 sent;
     u8 *g = &gl_d_334e8_dst;
     u8 *p;
 
     p = buf;
     gl_func_00000000(p, &gl_ref_0001E280);
-    base = (u8 *)&D_00000000;
-    src = (s32)p;
-    gl_func_00000000(base);
-    rem = 8;
-    sent = 0x12340002;
+    src = (s32)p; rem = 8; gl_func_00000000(base);
     do {
         chunk = rem;
-        mis = src & 7;
         avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
         if (avail < (u32)rem) {
             chunk = avail;
@@ -16112,56 +16106,56 @@ void gl_func_000334E8(void) {
             chunk = rem;
         }
         if (chunk != 0) {
+            mis = src & 7;
             if (mis != 0) {
-                if ((u32)(8 - mis) < chunk) {
-                    chunk = 8 - mis;
+                mis = 8 - mis;
+                if ((u32)mis < chunk) {
+                    chunk = mis;
                 }
                 cnt = 0;
                 if (chunk != 0) {
-                    cpdst = &gl_d_334e8_dst;
-                    cpsrc = src;
+                    cpsrc = src; cpdst = &gl_d_334e8_dst;
                     do {
                         *cpdst = *(u8 *)cpsrc;
                         cnt += 1;
-                        cpdst += 1;
                         cpsrc += 1;
+                        cpdst += 1;
                     } while (cnt < chunk);
                 }
                 gl_func_00000000(base, *(s32 *)(g + 8), base, chunk);
             } else {
                 gl_func_00000000(base, *(s32 *)(g + 8), src, chunk);
             }
-            avail = *(s32 *)(g + 8) + chunk;
-            *(s32 *)(g + 8) = avail;
-            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, avail);
+            *(s32 *)(g + 8) += chunk;
+            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, *(s32 *)(g + 8));
         }
-        avail = *(s32 *)(g + 8);
-        if (*(s32 *)(g + 0x2C) == avail) {              /* hit segment end */
-            *(s32 *)(g + 0x14) = avail;
-            gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, avail);
+        if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 8)) {    /* hit segment end */
+            cur = *(s32 *)(g + 8);
+            *(s32 *)(g + 0x14) = cur;
+            gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
             if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
                 gl_func_00000000(base, &gl_ref_0001E29C);
             }
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340001);   /* kick DMA */
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == sent) {
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == 0x12340002) {
                 goto spun1;
             }
         spin1:
             gl_func_00000000(base);
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != sent) {
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != 0x12340002) {
                 goto spin1;
             }
         spun1:
-            avail = *(s32 *)(g + 0x24);                 /* rebase to saved start */
-            *(s32 *)(g + 8) = avail;
-            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, avail);
+            cur = *(s32 *)(g + 0x24);                 /* rebase to saved start */
+            *(s32 *)(g + 8) = cur;
+            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, cur);
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340003);   /* kick second DMA */
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == sent) {
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == 0x12340002) {
                 goto spun2;
             }
         spin2:
             gl_func_00000000(base);
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != sent) {
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != 0x12340002) {
                 goto spin2;
             }
         spun2:;
@@ -16177,9 +16171,7 @@ void gl_func_000334E8(void) {
     } while (rem != 0);
     gl_func_00000000(base);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000334E8);
-#endif
+#undef base
 
 // gl_func_000337AC — STRUCTURAL PASS (0xD4 / 53 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
