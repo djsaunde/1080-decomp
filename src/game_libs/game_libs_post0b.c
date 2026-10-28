@@ -19052,12 +19052,11 @@ void game_libs_func_0004EE18(int *a0, int a1) {
 // NO named world local (adds 8-byte dead home, frame -0xB0 vs -0xA8);
 // decl split `float *src; int r; float result[16]; int c, k;` places
 // result at sp+0x5C (each scalar decl before result lifts it 4).
-// RESIDUAL CAP (2 words): loop-init base load *(o+0x70) colors $v0 here
-// vs $a1 in target (lw a1,112(s0) / addiu a0,a1,180) — pure scratch-pick
-// tie; src spelled raw-char* unfolds 0xB4 from the induction (worse).
+// EXACT (agent-c run 183): the old 2-word "scratch-pick" residual (post-call
+// *(o+0x70) base in v0, target a1) is fixed by passing the 0x14C word through
+// src first (dead-web variable reuse: its a1 call-arg web steers the reload).
 // Trailing two no-frame leaves (0x4F0A8/0x4F0BC) were already re-split
 // out of this .s (154 words = named fn exactly).
-#ifdef NON_MATCHING
 extern int aEE44_a(char *, int, int, int, float);
 extern int aEE44_c(char *, float, float, float, float, float, float, float);
 void gl_func_0004EE44(char *o) {
@@ -19071,7 +19070,11 @@ void gl_func_0004EE44(char *o) {
         if (*(char **)(o + 0x70) == 0) {
             gl_func_00000000((char *)&D_00000000 + 0x20604, *(int *)(o + 0xC));
         }
-        aEE44_a(m30, *(int *)(*(char **)(o + 0x70) + 0x14C), *(int *)(o + 0xB4), *(int *)(o + 0xAC), *(float *)(o + 0xB0));
+        /* agent-c run 183: the 0x14C word goes through src (dead-web reuse): its a1 call-arg web
+         * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would
+         * add an 8-byte dead home). */
+        src = (float *)*(int *)(*(char **)(o + 0x70) + 0x14C);
+        aEE44_a(m30, (int)src, *(int *)(o + 0xB4), *(int *)(o + 0xAC), *(float *)(o + 0xB0));
         src = (float *)(*(char **)(o + 0x70) + 0xB4);
         for (r = 0; r < 4; r++) {
             for (c = 0; c < 4; c++) {
@@ -19088,9 +19091,6 @@ void gl_func_0004EE44(char *o) {
         aEE44_c(m30, (float)(-w / 2), (float)(w / 2), (float)(-h / 2), (float)(h / 2), *(float *)(o + 0xAC), *(float *)(o + 0xB0), 1.0f);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004EE44);
-#endif
 
 /* Empty 4-arg stub (sibling of _00023F84). */
 void game_libs_func_0004F0AC(int a0, int a1, int a2, int a3) {

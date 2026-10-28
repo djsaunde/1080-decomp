@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0004EE44",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-28T00:18:14.741388+00:00",
+  "end_time": "2026-10-28T00:18:14.741404+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T00:18:14.741400+00:00",
+      "assistant_text": "Camera matrix update: the last residual (post-call *(o+0x70) loop base in v0, target a1) is a dead-web variable reuse: the 0x14C word is passed through src first, whose a1 call-arg web steers the reload; a fresh named local adds an 8-byte dead home. C body on the build path.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 154,
+  "initial_m2c_source": null,
+  "final_source": "extern int aEE44_a(char *, int, int, int, float);\nextern int aEE44_c(char *, float, float, float, float, float, float, float);\nvoid gl_func_0004EE44(char *o) {\n    char *m30 = o + 0x30;\n    gl_func_00000000(m30);\n    if (*(int *)(o + 0x7C) == 1) {\n        float *src;\n        int r;\n        float result[16];\n        int c, k;\n        if (*(char **)(o + 0x70) == 0) {\n            gl_func_00000000((char *)&D_00000000 + 0x20604, *(int *)(o + 0xC));\n        }\n        /* agent-c run 183: the 0x14C word goes through src (dead-web reuse): its a1 call-arg web\n         * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would\n         * add an 8-byte dead home). */\n        src = (float *)*(int *)(*(char **)(o + 0x70) + 0x14C);\n        aEE44_a(m30, (int)src, *(int *)(o + 0xB4), *(int *)(o + 0xAC), *(float *)(o + 0xB0));\n        src = (float *)(*(char **)(o + 0x70) + 0xB4);\n        for (r = 0; r < 4; r++) {\n            for (c = 0; c < 4; c++) {\n                result[r*4 + c] = 0.0f;\n                for (k = 0; k < 4; k++) {\n                    result[r*4 + c] += src[r*4 + k] * ((float *)m30)[k*4 + c];\n                }\n            }\n        }\n        gl_func_00000000(result, m30);\n    } else {\n        int w = *(int *)(o + 0xB8);\n        int h = *(int *)(o + 0xBC);\n        aEE44_c(m30, (float)(-w / 2), (float)(w / 2), (float)(-h / 2), (float)(h / 2), *(float *)(o + 0xAC), *(float *)(o + 0xB0), 1.0f);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cfe",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "make all + cmp baserom (ROM byte-identical), report.json 100"
+  }
+}
