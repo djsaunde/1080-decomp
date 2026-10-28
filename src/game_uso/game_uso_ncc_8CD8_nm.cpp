@@ -39,10 +39,15 @@ struct Self {
 extern "C" {
 void game_uso_func_071028(Vec3 *v);
 }
-extern "C" Vec3 game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
+/* agent-g run 205: the function returns XZ (the return temp goes straight from
+ * operator-'s slot to the caller's buffer: 36 -> 372 -> *ret, no Vec3 slicing
+ * copies), dir is a Vec3 initialised from the XZ result and e is direct-
+ * initialised: the target's three-copy chains (356 -> 372 -> 516 -> 432) at both
+ * difference sites now line up. 87.19 -> 88.68 standalone, length = target. */
+extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ bp(b->pos);
-        XZ dir = bp - a->pos;
+        Vec3 dir = bp - a->pos;
         game_uso_func_071028(&dir);
         XZ wp(s->w->pos);
         const Vec3 &d2 = wp - a->pos;
@@ -57,7 +62,7 @@ extern "C" Vec3 game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     } else {
         Vec3 pb1, pb2, pb3, pb4, pb5, pb6; /* unused: frame 456 -> 528 = target (no code) */
         XZ bp(b->pos);
-        XZ e = bp - a->pos;
+        XZ e(bp - a->pos);
         XZ f = s->p84 - s->p90;
         XZ wp(s->w->pos);
         const Vec3 &g = wp - s->p90;
