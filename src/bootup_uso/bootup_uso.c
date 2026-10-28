@@ -4030,10 +4030,10 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     b8 = 40;
     b4 = 20;
     b0 = 1;
+    c8 = 0.0f;
     import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000;
     c4 = 0.0f;
     c0 = 0.0f;
-    c8 = 0.0f;
     func_00000000(&D_6808_00, 0);
     t = (char *)func_00000000(0);
     import_8001FFC0 = t;
