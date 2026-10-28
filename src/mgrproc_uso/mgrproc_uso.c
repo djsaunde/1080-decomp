@@ -1522,7 +1522,8 @@ void mgrproc_uso_func_00002AFC(int *a0) {
  *      spills v0 0x5C across D108, reloads, addiu a2,v0,0x10. Every C spelling
  *      (plain def / multi-def / if(1) barrier / volatile / while(0) 2nd use)
  *      either folds held+0x10 back to a3+0x4A0 (spilling a3 instead) or hoists
- *      into an s-reg pre-switch. 4-word residual.
+ *      into an s-reg pre-switch. 4-word residual. RESOLVED agent-c run 204:
+ *      no held copy -- a3 itself is advanced (`a3 += 0x490`), see case 1.
  *  (4) counter/glyph s0<->s1 coloring swap in the loop (pure rename cascade);
  *      while(0) ref-boost probes inert or harmful (s2/sub swap).
  *  (5) case-3/4 tail: reusing one `a3` var for the tail h fixes the v1->a3
@@ -1561,9 +1562,11 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     spB0 = 1.0f;
     switch (*(int *)(a3 + 0x7E4)) {
     case 1:
-        held = a3 + 0x490;
-        import_0024D108(*(int *)(a3 + 0x568));
-        import_0024E608(&import_8024CAF8, 0xFF, held + 0x10);
+        a3 += 0x490; /* agent-c run 204: the sub-object pointer is advanced IN PLACE (a3 reused, not a held
+                      * copy): uopt folds the D108 arg back onto the old base (lw a0,0x568) and keeps the
+                      * advanced value in v0 with the a3 home 0x5C across the call (length = target, 97.52 -> 98.07) */
+        import_0024D108(*(int *)(a3 + 0xD8));
+        import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x10);
         mgrproc_uso_func_083574(&sp60, &import_80264A28 + 0x658);
         import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
                         import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
