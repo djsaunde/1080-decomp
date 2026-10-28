@@ -68,6 +68,7 @@ float game_uso_func_00007A98(Self *);
 }
 extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
     Vec3 result;
+    float m2; /* agent-g run 206: the walk's m2 declared at function scope (lever-sweep hoist): 95.239 -> 95.261 */
     if (out != 0) {
         *out = 0.0f;
     }
@@ -129,7 +130,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
             if (!hit ||
                 ((hitC.x * hitA.z <= hitC.z * hitA.x) &&
                  (hitC.z * hitB.x <= hitC.x * hitB.z))) {
-                float m2 = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
+                m2 = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
                 if (n->width * 250.0f < m2) {
                     Vec3 fA, fB;
                     game_uso_func_00003FAC(&fA.x, &fB.x, &lrd.x, m2, n->width * 250.0f);
