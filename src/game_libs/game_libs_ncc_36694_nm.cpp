@@ -6,6 +6,8 @@
  * sits low like the target's sp+92), flipped to z >= 0 and normalised, else the fallback axis. 84.03 -> 84.80
  * standalone, length 704 -> 716 (target 712: distance 8 -> 4). The dot product written out on the members (n * (n.x * p.x
  * + ...)) instead of n.dot(p): -> 85.80 standalone, length unchanged.
+ * agent-c run 190 (lever-sweep + order grid): the flip's negations in y, z, x order and the fallback axis's
+ * zero stores y before z: 85.80 -> 85.95 standalone, length unchanged.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 extern "C" {
@@ -29,17 +31,17 @@ V3 Obj::perp(V3 p, V3 n) {
     l = px * px + py * py + pz * pz;
     if (0.0f < l) {
         if (pz < 0.0f) {
-            px = px * -1.0f;
             py = py * -1.0f;
             pz = pz * -1.0f;
+            px = px * -1.0f;
         }
          r.x = px; r.y = py; r.z = pz;
          return (r * 1.0f) / gl_sqrtf_36694(l);
     }
     if (n.z == 1.0f) {
         r.x = 1.0f;
-        r.z = 0.0f;
         r.y = 0.0f;
+        r.z = 0.0f;
     } else {
         r.z = 0.0f;
         r.x = -n.y;
