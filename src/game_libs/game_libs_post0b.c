@@ -2911,10 +2911,12 @@ void gl_func_00037540(char *o) {
     FF37540(r, 0x64) = g.saved.y;
     FF37540(r, 0x68) = g.saved.z;
     FF37540(o, 0x34) = 0.0f;
-    if (FW(FW(o, 0x2C), 0x10) & 4) {
+    /* run 176: the ctl flags word is volatile -- the target re-reads o->2C->10 on
+     * both paths of the first test (`beqzl; lw t0,16(v0)`); 79.80 -> 81.17, 760 -> 764 = target */
+    if (((volatile s32 *)FW(o, 0x2C))[4] & 4) {
         FF37540(o, 0x34) = 10.0f;
     }
-    if (FW(FW(o, 0x2C), 0x10) & 8) {
+    if (((volatile s32 *)FW(o, 0x2C))[4] & 8) {
         FF37540(o, 0x34) = -10.0f;
     }
     tmp.v = g.vB4;
