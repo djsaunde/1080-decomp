@@ -47,20 +47,18 @@ extern "C" {
 void mgrproc_uso_func_000023FC(char *arg0) {
     f32 one[4];
     u8 buf[0x80];
-     char *p770;
+    char *p770;
     s32 t;
     s32 w;
     s32 xoff;
-     s32 vt;
+    s32 vt;
     u8 c;
     s32 flag;
     char *panel;
     s32 i;
-    s32 min;
     s32 sec;
-
     s32 n;
-
+    s32 min;
     s32 x;
 
     one[0] = 1.0f;
