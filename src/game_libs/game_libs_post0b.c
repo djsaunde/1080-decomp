@@ -28700,7 +28700,6 @@ char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
                 D_00000000 = 1;
                 out = gl_func_00034458(out, arg2.i);
             } else if (c == 'f') {
-                int Bm1 = B - 1;
                 int ip = (int) arg2.f;
                 int frac;
                 char *dot;
@@ -28711,7 +28710,7 @@ char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
                 *dot = '.';
                 out = dot + 1;
                 D_00000000 = 1;
-                out = gl_func_00034458(out, frac, gl_func_00034458(0xA, Bm1));
+                out = gl_func_00034458(out, frac, gl_func_00034458(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
             } else if ((c >= '0') && (c < ':')) {
                 A = (u8)(c - '0');
                 if ((q = fmt, fmt = q + 1, *q) != 0) {
