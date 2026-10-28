@@ -7206,8 +7206,8 @@ void func_0000B75C(char *arg0) {
     f32 sp5C;
     f32 sp58;
     f32 sp54;
-    f32 sp6C[3];
     char *sp28;
+    f32 sp6C[3];
     char *sp24;
     f32 sp1C;
     f32 sp60; /* run 201: sp6C / sp60 declaration grid (lever-sweep declmove hit) */
