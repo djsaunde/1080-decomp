@@ -84,8 +84,8 @@ extern "C" s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
                 break;
             }
             {
-                 s32 x = FI(arg0, 0x21C); 
-                if ((*margin - 0x14) < (x + charw)) {
+                /* run 190: x (o->0x21C) de-named into the test: 89.63 -> 89.66 standalone */
+                if ((*margin - 0x14) < (FI(arg0, 0x21C) + charw)) {
                     FI(arg0, 0x21C) = startx;
                     FI(arg0, 0x220) = FI(arg0, 0x220) + lineh;
                 }
