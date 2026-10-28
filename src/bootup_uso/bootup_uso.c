@@ -7247,7 +7247,7 @@ void func_0000B75C(char *arg0) {
         sp1C = *(f32 *)((char *)(arg0) + 0x3C4);
     } else {
         temp_f0_2 = *(f32 *)((char *)(arg0) + 0x3C4);
-        sp5C = -((*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (*(f32 *)((char *)(arg0) + 0x3BC) * sp6C[0]) + (temp_f0_2 * sp6C[2]));
+        sp5C = -((*(f32 *)((char *)(arg0) + 0x3BC) * sp6C[0]) + (*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (temp_f0_2 * sp6C[2]));
         sp1C = temp_f0_2; /* run 193: after sp5C (lever-sweep order, 91.74 -> 92.47, 2104 -> 2100 toward 2096) */
     }
     temp_f0_2 = *(f32 *)((char *)(arg0) + 0x978);
