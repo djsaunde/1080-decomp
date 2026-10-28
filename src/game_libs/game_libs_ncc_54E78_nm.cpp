@@ -22,6 +22,7 @@ struct M4 { f32 m[4][4]; void ident(); };
 extern "C" char D_00000000[];
 struct Obj { char pad[300]; M4 mtx; void reflect(const Plane &p); };
 void Obj::reflect(const Plane &p) {
+    V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y);
@@ -35,7 +36,6 @@ void Obj::reflect(const Plane &p) {
     mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y);
     mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z);
     mtx.m[2][3] = 0.0f;
-    V3 a;
     a.set(p.n * p.d);
     f32 k = a.dot(p.n) * 2.0f;
     mtx.m[3][1] = k * p.n.y; /* run 194 (lever-sweep order) */
