@@ -29,7 +29,7 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
-    Elem **next() { if (idx < last) { return &(*a)[++idx]; } return 0; } /* run 174: ++idx again under the for-init form */
+    Elem **next() { if (idx < last) { return &(*a)[++idx] + 0; } return 0; } /* run 174: ++idx again under the for-init form; agent-g run 203: folded `+ 0` moves the entry copy's index temp a0 -> a1 (target) */
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter iter(Arr *a) { return AIter(a); }
