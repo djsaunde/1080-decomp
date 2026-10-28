@@ -21,7 +21,8 @@
  * volatile pads stood in for (pad0 / pad0b / pad1 dropped), then `if (1) {}` after `flag = 0` (lever-sweep):
  * 98.62 -> 99.25 standalone. Then `tim` de-named (SPR(0x788) at both uses) and the volatile pad between n and x
  * replaced by two volatile pads just above min / sec (their homes 96 / 92 = target): 99.27. Then the glyph
- * height through `Spr::height()` (same named-image-pointer member) and `if (1) {}` after `c = buf[i]`: 99.49.
+ * height through `Spr::height()` (same named-image-pointer member) and `if (1) {}` after `c = buf[i]`: 99.49;
+ * its inline temporaries then replace the last two volatile pads (dropped: no pads left).
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -55,8 +56,6 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     s32 flag;
     char *panel;
     s32 i;
-    volatile s32 padE;
-    volatile s32 padF;
     s32 min;
     s32 sec;
 
