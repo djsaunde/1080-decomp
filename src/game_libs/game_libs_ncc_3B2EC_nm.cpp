@@ -70,10 +70,10 @@ int Obj::height(int max, f32 *out, f32 x, f32 z) {
         for (k = 0; k < 3; k++) {
             s16 *v0 = vt[f->vi[k]];
             s16 *v1 = vt[f->vi[D_3B2EC_c[k]]];
+            s16 dx = (int)(x - v0[0]); /* run 193: dx / dz before ex / ez (3BE1C twin decode) */
+            s16 dz = (int)(z - v0[2]);
             s16 ex = v1[0] - v0[0];
             s16 ez = v1[2] - v0[2];
-            s16 dx = (int)(x - v0[0]);
-            s16 dz = (int)(z - v0[2]);
             if (dx * ez - dz * ex < -1000) break;
         }
         if (k != 3) continue;
