@@ -7363,8 +7363,8 @@ void func_0000B75C(char *arg0) {
         } else {
             if ((sp58 < *(f32 *)((char *)(arg0) + 0x648)) && (((sp54 > 0.0f) && (sp60 < 0.0f)) || ((sp54 < 0.0f) && (sp60 > 0.0f)))) {
                 *(s32 *)((char *)(arg0) + 0xA5C) = (s32) (*(s32 *)((char *)(arg0) + 0xA5C) + 0x14);
-                sp60 = 0;
                 func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_00008170, 1, arg0);
+                sp60 = 0.0f; /* run 193: float zero shares the compare's f12 zero (target swc1 $f12), stored after the call (sp60 never escapes): 2100 -> 2096 = target */
             }
             if (*(f32 *)((char *)(arg0) + 0xA08) < 0.0f) {
                 var_f0 = -*(f32 *)((char *)(arg0) + 0xA08);
