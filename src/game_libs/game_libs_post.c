@@ -16057,7 +16057,15 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 /* 2026-10-24 agent-c run 147: SIBLING PORT of gl_func_00033BE4 (scan ratio 0.94).
  * 334E8 is 33BE4 with the source fixed to an 8-byte stack buffer (filled by the
  * first callback, template 0x1E280), length 8 and no flag gate. buf declared
- * first (target home sp+96); one result temp shared (avail) gives frame 104. */
+ * first (target home sp+96); one result temp shared (avail) gives frame 104.
+ * agent-c run 175 (74.48 -> 92.21): DECODE fixes -- the outer loop is a do-while
+ * (target back edge `bnez s4,top`, no rotated head) and the window min is an
+ * if / else (target `beqz at; nop; b; move s2,v0`, the else copy coalesced
+ * into the earlier chunk = rem); then ONE pointer variable p carries the buf
+ * address into src and every 0x28 ring-register read (`p = G->p28`): its
+ * single s0 web is the target's `lui s0; lw s0,40(s0)` / `lw a1,40(s0)` and
+ * frees s1 for base. Length 712 -> 704 (target 708). Residual: frame 112 vs
+ * 104 (buf at sp+104) and the first `move a0,s1` schedule. */
 extern s32 gl_d_334e8_8a, gl_d_334e8_8b, gl_d_334e8_8c, gl_d_334e8_8d,
            gl_d_334e8_8e, gl_d_334e8_8f, gl_d_334e8_8g, gl_d_334e8_8h;
 extern s32 gl_d_334e8_14a;
@@ -16081,19 +16089,25 @@ void gl_func_000334E8(void) {
     s32 cpsrc;
     u8 *cpdst;
     s32 sent;
+    u8 *g = &gl_d_334e8_dst;
+    u8 *p;
 
-    gl_func_00000000(buf, &gl_ref_0001E280);
+    p = buf;
+    gl_func_00000000(p, &gl_ref_0001E280);
     base = (u8 *)&D_00000000;
-    src = (s32)buf; if (1) {}
+    src = (s32)p;
     rem = 8;
     gl_func_00000000(base);
-    {
-        sent = 0x12340002;
-    top:
+    sent = 0x12340002;
+    do {
         chunk = rem;
         mis = src & 7;
         avail = gl_d_334e8_2ca - gl_d_334e8_8a;
-        chunk = (avail < (u32)rem) ? avail : chunk;
+        if (avail < (u32)rem) {
+            chunk = avail;
+        } else {
+            chunk = rem;
+        }
         if (chunk != 0) {
             if (mis != 0) {
                 if ((u32)(8 - mis) < chunk) {
@@ -16116,35 +16130,35 @@ void gl_func_000334E8(void) {
             }
             avail = gl_d_334e8_8d + chunk;
             gl_d_334e8_8e = avail;
-            gl_func_00000000(base, gl_d_334e8_28a, avail);
+            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, avail);
         }
         avail = gl_d_334e8_8f;
         if (gl_d_334e8_2cb == avail) {              /* hit segment end */
             gl_d_334e8_14a = avail;
-            gl_func_00000000(base, gl_d_334e8_28b + 12, avail);
+            gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, avail);
             if (gl_d_334e8_2cc != gl_d_334e8_8g) {
                 gl_func_00000000(base, &gl_ref_0001E29C);
             }
-            gl_func_00000000(base, gl_d_334e8_28c + 8, 0x12340001);   /* kick DMA */
-            if (gl_func_00000000(base, gl_d_334e8_28d + 8) == sent) {
+            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340001);   /* kick DMA */
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == sent) {
                 goto spun1;
             }
         spin1:
             gl_func_00000000(base);
-            if (gl_func_00000000(base, *(volatile s32 *)&gl_d_334e8_28e + 8) != sent) {
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != sent) {
                 goto spin1;
             }
         spun1:
             avail = gl_d_334e8_24a;                 /* rebase to saved start */
             gl_d_334e8_8h = avail;
-            gl_func_00000000(base, gl_d_334e8_28f, avail);
-            gl_func_00000000(base, gl_d_334e8_28g + 8, 0x12340003);   /* kick second DMA */
-            if (gl_func_00000000(base, gl_d_334e8_28h + 8) == sent) {
+            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, avail);
+            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340003);   /* kick second DMA */
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == sent) {
                 goto spun2;
             }
         spin2:
             gl_func_00000000(base);
-            if (gl_func_00000000(base, *(volatile s32 *)&gl_d_334e8_28e + 8) != sent) {
+            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != sent) {
                 goto spin2;
             }
         spun2:;
@@ -16157,10 +16171,7 @@ void gl_func_000334E8(void) {
         if (rem != 0) {
             gl_func_00000000(base);
         }
-        if (rem != 0) {
-            goto top;
-        }
-    }
+    } while (rem != 0);
     gl_func_00000000(base);
 }
 #else
