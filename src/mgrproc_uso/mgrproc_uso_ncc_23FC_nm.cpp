@@ -23,6 +23,10 @@
  * replaced by two volatile pads just above min / sec (their homes 96 / 92 = target): 99.27. Then the glyph
  * height through `Spr::height()` (same named-image-pointer member) and `if (1) {}` after `c = buf[i]`: 99.49;
  * its inline temporaries then replace the last two volatile pads (dropped: no pads left).
+ * Run 194 (kit CLIII): the run-184 `if (1) {}` after `flag = 0` dropped again -- with the later member rewrites it
+ * made the flag test's `& 1` a v0 candidate (lw v0 / andi v0,v0,1); without the split the t-ring takes it (t9 / t3)
+ * and the rest of the block's ring lines up: 99.54 -> 99.86 standalone. Left: the 0x798 image load in v0 (target
+ * t0) and the n / x homes (target 84 / 76, ours 104 / 100).
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -115,7 +119,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
             import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (SPR(0x788)->height() / 2), buf[i] * w, w);
         }
     }
-    flag = 0; if (1) {}
+    flag = 0;
     if ((FW((char *) FW(arg0, 0x528), 0x14) & 1) && (FW(arg0, 0x4FC) != 0) && (FW((char *) FW((char *) FW(&import_800201D0, 0x138), 0x44), 0x38) < 3)) {
         flag = 1;
     }
