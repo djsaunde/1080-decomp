@@ -25,6 +25,7 @@ inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
 inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00034458(n->m30, v, o); }
 extern "C" void gl_func_00037540(Obj *o) {
+    V3 vB4; /* agent-g run 206: declared first (lever-sweep hoist, report metric): 95.72 -> 96.32 */
     Node *s = o->s;
     f32 a, b, ab;
     if (0) { gl_func_00034458(&s); }
@@ -38,7 +39,6 @@ extern "C" void gl_func_00037540(Obj *o) {
     f32 hx = gr(s, hy, hz);
     sy(s, 0.0f); sz(s, 0.0f);
     { V3 v1(0.0f, -b, 0.0f); call(s, &v1, o); }
-    V3 vB4;
     vB4.set(s->v50.x, s->v50.y, s->v50.z);
     vB4 *= a;
     sx(s, hx); sy(s, hy); sz(s, hz);
