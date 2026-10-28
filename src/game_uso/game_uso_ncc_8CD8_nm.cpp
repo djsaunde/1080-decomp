@@ -55,6 +55,7 @@ extern "C" Vec3 game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         s->p90 += dir * dot;
         s->phase = 0;
     } else {
+        Vec3 pb1, pb2, pb3, pb4, pb5, pb6; /* unused: frame 456 -> 528 = target (no code) */
         XZ bp(b->pos);
         XZ e = bp - a->pos;
         XZ f = s->p84 - s->p90;
