@@ -3953,6 +3953,9 @@ void game_uso_func_0000591C(int *a0) {
      * agent-c run 196: 94.79 -> 99.03, length 4372 = target, every block
      * word-for-word up to registers except one extra `mtc1 zero` (0x3f0);
      * see docs/IDO_CODEGEN.md#kit-clxx-agent-c-run-196.
+     * agent-c run 197: 99.03 -> 99.68 (mtc1 gone; nested-selector inner
+     * temps f14; separate float/pointer webs per region), see
+     * docs/IDO_CODEGEN.md#kit-clxxii-agent-c-run-197.
      * Still not exact:
      * FP/temp allocation, scalar spills and alloc-fallback schedules differ.
      * See docs/IDO_CODEGEN.md#state-dispatch-word-copy-591c in the tooling repo.
