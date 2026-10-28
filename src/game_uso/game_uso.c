@@ -4073,19 +4073,20 @@ void game_uso_func_0000591C(int *a0) {
     /* first state region (0x184): vsel drives the transform dispatch and
      * self->0x74 may be promoted/demoted. Compares are against metric_a
      * (the live f0 of 7A98), NOT 0.0f. */
-    vsel = *(int*)((char*)self + 0x74);
+    /* agent-c run 196: dispatch on `v0 = self->0x74` (twice) and keep the
+     * field itself as the state: uopt promotes the field to v1 and v0 is the
+     * target's selector COPY (`or v0,v1` in the dispatch and on every case
+     * exit); the state_flag test assigns v0 in case 0 (no copy-free exit). */
     t0 = 0;
-    v0 = vsel;
-    switch (v0) {
+    switch (v0 = *(int*)((char*)self + 0x74)) {
     case 0:
         if (metric_a <= *(float*)((char*)self + 0xD8)) {
-            if ((state_flag == 0) && (hit_parent != 0)
+            if (((v0 = state_flag) == 0) && (hit_parent != 0)
                     && (*(int*)(hit_parent + 0x84) == 0)) {
                 sub = *(char**)((char*)self + 0x30);
                 if (*(float*)((char*)self + 0xB4) <= *(float*)(sub + 0x348)) {
-                    vsel = 1;
-                    t0 = 1;
                     *(int*)((char*)self + 0x74) = 1;
+                    t0 = 1;
                 }
             }
         }
@@ -4100,14 +4101,13 @@ void game_uso_func_0000591C(int *a0) {
                 || !(*(float*)((char*)self + 0xB4)
                      <= *(float*)(*(char**)((char*)self + 0x30) + 0x348))) {
             *(int*)((char*)self + 0x74) = 0;
-            vsel = 0;
         }
         break;
     }
 
     /* transform dispatch: 0 -> 7C1C(&stage,...,&out_w); 1 -> 8CD8(&stage,...,t0);
      * result words -> fresh V276/V264 -> V252 -> transform_out floats. */
-    switch (vsel) {
+    switch (v0 = *(int*)((char*)self + 0x74)) {
     case 0:
         v0 = game_uso_func_00007C1C(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
@@ -4231,8 +4231,7 @@ void game_uso_func_0000591C(int *a0) {
         delta_b = stage;
 
         sub = *(char**)((char*)self + 0x30);
-        f2v = *(float*)(sub + 0x348);
-        f2v = f2v * *(float*)((char*)self + 0xC0);
+        f2v = *(float*)((char*)self + 0xC0) * *(float*)(sub + 0x348);
         dist_sq = (delta_a.x * delta_a.x) + (delta_a.z * delta_a.z);
         if (0.0f == dist_sq) {
         f12v = 0.0f;
