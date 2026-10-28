@@ -20,6 +20,8 @@
  * ex / ey: the target loads v0[a] and v0[b] together and converts both before the v1[] reads; the loop block
  * now aligns word-for-word (up to colours): 88.59 -> 94.9 local, 1560 -> 1552 bytes (target 1568: away,
  * flagged; the deficit is the missing face / r copies and the two-arm inner MAX listed above).
+ * agent-c run 194: face() called on the member `col` (plain `i`), `cc = col` after it: 94.93 -> 95.40 local,
+ * 1552 -> 1556 bytes (toward 1568).
  * Still NON_MATCHING. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32;
@@ -79,8 +81,8 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     while ((i = *list++) != -1) {
         int off = ((i << 2) - i) << 2;
         if (((Tri *)((char *)tris + off))->grp < 0) continue;
+        Face *f = col->face(i);
         cc = col;
-        Face *f = cc->face(i + 0);
         int r = gl_func_00000000(cc, f->mat);
         if (r & 0x100) {
             int ok = 1;
