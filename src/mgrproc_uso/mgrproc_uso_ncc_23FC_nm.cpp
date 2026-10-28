@@ -27,6 +27,13 @@
  * made the flag test's `& 1` a v0 candidate (lw v0 / andi v0,v0,1); without the split the t-ring takes it (t9 / t3)
  * and the rest of the block's ring lines up: 99.54 -> 99.86 standalone. Left: the 0x798 image load in v0 (target
  * t0) and the n / x homes (target 84 / 76, ours 104 / 100).
+ * Run 198 (kit CLXIII, edg home order): a scope's named locals are homed at scope entry, pooled inline
+ * temporaries at first use. n / x moved into nested blocks opened after the glyph-width / vt statements
+ * (n after the first pooled temp, x after the second) and min / sec into the timer block, plus a folded
+ * `+ 0 * SPR(0x788)->width()` in the first panel test (two function-scope pool temps above min / sec, no
+ * code): min / sec / n / x homes 96 / 92 / 84 / 76 and the a0 spill 68 = target; the loop height through
+ * `img->gh()` (one pool temp) keeps the frame at 288. 99.85 -> 99.88 standalone. Left: the glyph-width image
+ * load in v0 (target t0) -- its pool variable gets v0 first (zdbug:6), nothing occupies v0 over its range.
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -44,7 +51,7 @@ int mgrproc_uso_func_07C610(...);
 int mgrproc_uso_func_00000140(...);
 void mgrproc_uso_func_083574(...);
 }
-struct Img { char p[0x20]; s16 w; s16 h; };
+struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } };
 struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } s32 height() { Img *i = img; return i->h; } };
 #define SPR(o) ((Spr *)(arg0 + (o)))
 extern "C" {
@@ -60,16 +67,12 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     s32 flag;
     char *panel;
     s32 i;
-    s32 n;
-    s32 x;
-    s32 min;
-    s32 sec; /* run 185: n / x / min / sec order from a 720-probe grid */
 
     one[0] = 1.0f;
     one[1] = 1.0f;
     one[2] = 1.0f;
     one[3] = 1.0f;
-    if (FW(arg0, 0x4F8) != 2) {
+    if (FW(arg0, 0x4F8) != 2 + 0 * SPR(0x788)->width()) {
         import_0024F2C8(&import_80263D30);
         import_0024E608(&import_80263D30, (s32) (255.0f * *(f32 *)(arg0 + 0x7A0)), one);
         import_0024F34C(&import_80263D30, 0xA0, 0x8C, 3);
@@ -91,6 +94,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     }
     if ((FW(arg0, 0x508) & 8) && (FW((char *) FW(arg0, 0x528), 0x14) & 1)) {
         t = FW((char *) FW(&import_800201D0, 0x138), 0x30);
+        s32 min, sec;
         min = t / 60000;
         t -= min * 60000;
         sec = t / 1000;
@@ -99,11 +103,15 @@ void mgrproc_uso_func_000023FC(char *arg0) {
         import_0024EAA0(&import_8024CAF8, (s32) (255.0f * *(f32 *)(arg0 + 0x7A0)), arg0 + 0x2A8, arg0 + 0x2CC);
         import_0024F2C8(SPR(0x788));
         w = SPR(0x788)->width() / 12;
-         p770 = arg0 + 0x770;
+        {
+        s32 n;
+        p770 = arg0 + 0x770;
         import_0024F2C8(p770);
         mgrproc_uso_func_083574(buf, &import_80264A10 + 0x640, min, sec, t);
         n = mgrproc_uso_func_07C610(buf);
-         vt = SPR(0x770)->width();
+        vt = SPR(0x770)->width();
+        {
+        s32 x;
         xoff = 0xA0 - ((vt + (n * 13) + 8) / 2);
         x = vt + xoff + 8;
         import_0024F34C( p770, xoff, 0xBE, 2);
@@ -116,7 +124,9 @@ void mgrproc_uso_func_000023FC(char *arg0) {
             } else {
                 buf[i] = c - 0x30;
             }
-            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (SPR(0x788)->height() / 2), buf[i] * w, w);
+            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (SPR(0x788)->img->gh() / 2), buf[i] * w, w);
+        }
+        }
         }
     }
     flag = 0;
