@@ -13189,9 +13189,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 *(u8 *)((char *)(arg0) + 0x34) = *(u8 *)((char *)(arg0) + 0x1D);
             }
             if (*(u8 *)((char *)(arg0) + 0x1C) & 1) {
-                temp_v1_3 = *(u8 *)((char *)(arg0) + 0x26);
                 temp_f0 = *(f32 *)((char *)(arg0) + 0x54);
-                var_f4 = (f32) (u32) temp_v1_3;
+                var_f4 = (f32) (u32) *(u8 *)((char *)(arg0) + 0x26);
                 temp_f18 = var_f4 * temp_f0;
                 var_v0 = (u32) temp_f18; /* recomposed (u32)float */
                 *(u8 *)((char *)(arg0) + 0x26) = (u8) var_v0;
@@ -13212,8 +13211,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 }
             } else {
                 if (D_stateF_E354 == 4) {
-                    temp_v1_3 = *(u8 *)((char *)(arg0) + 0x21);
-                    switch (temp_v1_3) {            /* switch 2; irregular */
+                    switch (*(u8 *)((char *)(arg0) + 0x21)) {            /* switch 2; irregular */
                     case 0:                         /* switch 2 */
                         *(u8 *)((char *)(arg0) + 0x28) = 0x10U;
                         break;
