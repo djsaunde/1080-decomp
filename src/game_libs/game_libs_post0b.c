@@ -28698,7 +28698,12 @@ int game_libs_func_000611E4(int a0, int a1) {
  * overwrites a0 anyway). The dispatch after 'd' runs on a block copy `d = c` (u8: a plain int copy is
  * propagated away) -- d colours a0, the 'x' test turns into the target's bnel, and the range test reads
  * c (keeps c live past the copy, so the two do not coalesce). Left: the copy is `andi a0,v1,0xff`
- * (target `or`), the range test is on v1 (target a0), the digit value goes straight into s8 (target via v1). */
+ * (target `or`), the range test is on v1 (target a0), the digit value goes straight into s8 (target via v1).
+ * agent-c run 207 (99.35 -> 99.92): the copy is not a source copy of c but `c = *q` from the loop TEST's load.
+ * A top-tested `while ((q = fmt, fmt = q + 1, *q) != 0) { c = *q; ...` keeps the test's load as a CSE
+ * expression (v1, the 'd' test reads `*q` and so stays on it) and c is a variable assigned from it (a0, the
+ * `or` in the delay slot, every later test reads c). Left: the digit value still goes straight into s8
+ * (target computes c - '0' into v1, then andi into s8). */
 typedef union FI_0006126C {
     f32 f;
     int i;
@@ -28710,18 +28715,16 @@ char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
     int A = 6;
     u8 *q;
     int c;
-    u8 d;
 
-    c = (q = fmt, fmt = q + 1, *q);
-    if (c != 0) {
-        do {
-            if (c == 'd') {
+    while ((q = fmt, fmt = q + 1, *q) != 0) {
+        c = *q;
+            if (*q == 'd') {
                 D_00000000 = 0;
                 out = gl_func_00034458(out, arg2.i, 0x3B9ACA00);
-            } else { d = c; if (d == 'x') {
+            } else if (c == 'x') {
                 D_00000000 = 1;
                 out = gl_func_00034458(out, arg2.i);
-            } else if (d == 'f') {
+            } else if (c == 'f') {
                 int ip = (int) arg2.f;
                 int frac;
                 char *dot;
@@ -28734,7 +28737,7 @@ char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
                 D_00000000 = 1;
                 out = gl_func_00034458(out, frac, gl_func_00034458(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
             } else if ((c >= '0') && (c < ':')) {
-                A = (u8)(d - '0');
+                A = (u8)(c - '0');
                 if ((q = fmt, fmt = q + 1, *q) != 0) {
                     B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
@@ -28742,9 +28745,6 @@ char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
                 gl_func_00034458(out, (char *)&D_00000000 + 0x21E08);
                 out += 0xA;
             }
-            }
-            c = (q = fmt, fmt = q + 1, *q);
-        } while (c != 0);
     }
     return out;
 }
