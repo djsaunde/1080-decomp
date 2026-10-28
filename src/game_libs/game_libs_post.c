@@ -11856,7 +11856,6 @@ void game_libs_func_0002D374(void) {
             fr = (f32)raw;
             half = (int)raw >> 1;
             if (z) {}
-            if (fr) {}
             D_2D37C_f360s[0x360 / 4] = (f32)half * (1.0f / 256.0f);
             D_2D37C_f358s[0x358 / 4] = fr;
             D_2D37C_f35Cs[0x35C / 4] = z;
