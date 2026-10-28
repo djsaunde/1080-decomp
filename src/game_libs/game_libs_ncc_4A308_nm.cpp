@@ -35,14 +35,14 @@ extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *
     char *entry;
     unsigned char sp58[0x10];
     unsigned char sp48[0x10];
-    int t0; char *pal;
+    int t0;
+#define pal (*(char **)(arg0 + 0x7C)) /* agent-g run 191: de-named (its home pushed col 4 bytes low) */
     entry = *(char **)(arg0 + 0x6C) + arg3 * 8;
 #define v60 (*(char **)(arg0 + 0x60))
     t0 = *(unsigned short *)(entry + 4);
 #define t2 (*(unsigned short *)(entry + 6))
     sp7C = v60 + t0 * 6;
     sp78 = v60 + t2 * 6;
-    pal = *(char **)(arg0 + 0x7C);
     if (pal != 0) {
         sp6C = *(unsigned char *)(pal + t0);
         sp6E = *(unsigned char *)(pal + t2);
