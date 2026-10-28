@@ -168,12 +168,12 @@ extern "C" void func_0000C234(char *arg0) {
         if (temp_v0_2 == 0x62) goto c62;
         *(f32 *)((char *)(arg0) + 0x288) = (f32) D_00000938;
         *(f32 *)((char *)(arg0) + 0x28C) = (f32) D_0000093C;
+        *(f32 *)((char *)(arg0) + 0x290) = D_00000940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
         *(u8 *)((char *)(arg0) + 0xA33) = 0;
         *(u8 *)((char *)(arg0) + 0xA32) = 0;
         *(u8 *)((char *)(arg0) + 0xA31) = 0;
         *(u8 *)((char *)(arg0) + 0xA30) = 0;
         *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x5A0);
-        *(f32 *)((char *)(arg0) + 0x290) = D_00000940;
         goto cend;
 c61:
         *(f32 *)((char *)(arg0) + 0x288) = (f32) *(f32 *)((char *)(arg0) + 0x120);
@@ -185,8 +185,8 @@ c61:
 c62:
         *(f32 *)((char *)(arg0) + 0x288) = 0.0f;
         *(f32 *)((char *)(arg0) + 0x28C) = D_00000944;
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
         *(f32 *)((char *)(arg0) + 0x290) = D_00000948;
+        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
         func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
 cend:
         *(s32 *)((char *)(arg0) + 0x95C) = 0;
