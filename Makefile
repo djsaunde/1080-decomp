@@ -746,7 +746,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 175: 4FD00 NM C++ donor (0x3CC -> 0x3EC bytes = target): 0x2ea9c -> 0x2eabc (62F08 NM offset 0x2ea6c).
 # agent-c run 176: 37540 NM volatile flags word re-read (0x2F8 -> 0x2FC bytes = target): 0x2eabc -> 0x2eac0 (62F08 NM offset 0x2ea70).
 # agent-g run 190: 4A308 NM early return of a named block-local result (0x364 -> 0x368 bytes = target): 0x2eac0 -> 0x2eac4 (62F08 NM offset 0x2ea74).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eac4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 182: 46050 NM donor switch (ch) dispatch (1832 -> 1840 bytes, target 1848): 0x2eac0 -> 0x2eac8 (62F08 NM offset 0x2ea78).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eac8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
