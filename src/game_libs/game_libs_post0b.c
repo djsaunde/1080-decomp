@@ -4253,9 +4253,9 @@ extern int D_00000000;
  * target keeps it in v0) and keeps o in a3 with call spills (target s0) -- NCC's allocation. */
 extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
 void gl_func_00038A28(char *o, char *c) {
+    char *r; /* agent-c run 191 lever-sweep declmove */
     int *p;
     unsigned int key;
-    char *r;
     int code = *(int *)c;
     switch (code) {
         case 0x64:
@@ -13657,10 +13657,10 @@ typedef char *(*GP_000469A8)();
  * second vtable pointer are ONE variable (target: `or s0,v0` copy, then s0 = vt); bit-4 test hoisted
  * above the bit-2 if. The held +0x100 / +0x78 pointers still fold into offsets. */
 void gl_func_000469A8(char *arg0, s32 arg1) {
+    s32 var_t0; /* agent-c run 191 lever-sweep hoist */
     volatile s32 sp48; /* run 179: the target's sp+72 home */
     s32 temp_a1;
     s32 temp_a1_2;
-    s32 var_t0;
     char *temp_a3;
     char *temp_s1;
     char *temp_s0;
