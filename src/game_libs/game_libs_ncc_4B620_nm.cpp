@@ -13,6 +13,10 @@
  * Residual (98.82): the DL head / count temps of the first two appends (target v1 / s0, then s0 / s3) and
  * the &it / ++idx colours. agent-c run 159: AIter(Arr *) keeps its parameter (`if (0) { arr = 0; }`), the
  * IBase construct temp then colours like the target (98.82 -> 99.00, length unchanged).
+ * agent-g run 190: appends 3..9 bump the count through an inline `DLHead::inc() { return count++; }`
+ * (`&head->buf[head->inc()]`, no keep): edg's `this` temp is the target's head-in-s0 / old-count-in-s3
+ * pair; append 2 keeps the direct `count++` with the hi / lo keep (addOK). 98.98 -> 99.37 (objdiff, NM tree).
+ * Left: appends 1-2 old count s3 (target s0), the loop's ++idx / ref temps s0<->s3, appends 5-6 g a1/v0.
  * Still NON_MATCHING: spliced into build/non_matching/ only. */
 extern "C" {
 void *gl_func_00000000(...);
@@ -21,13 +25,16 @@ extern char D_00000000[];
 #define S(o) (D_00000000 + (o))
 inline void *operator new(unsigned n) { return gl_func_00000000(n); }
 struct Gfx { unsigned w0, w1; };
-struct DLHead { Gfx *buf; int count; };
+struct DLHead { Gfx *buf; int count; int inc() { return count++; } };
 
 struct DL {
     int pad[3];
     DLHead *head;
-    void addE(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: no keep on the 4th packet (per-site grid) */
-    void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
+    void addE(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; } /* run 173: no keep on the 4th packet (per-site grid) */
+    void addO(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; }
+    void addOK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
+    void addIK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
+    void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; }
 };
 inline void addG(DL *d, unsigned hi, unsigned lo) { if (0) { hi = lo = 0; } Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: the first packet as a free inline, DL first */
 struct Elem { char pad[0x34]; int m34; char pad38[0x64 - 0x38]; DL *m64; };
@@ -45,6 +52,8 @@ struct AIter : IBase {
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
+inline void addGN(DL *d, unsigned hi, unsigned lo) { Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; }
+inline void addGI(DL *d, unsigned hi, unsigned lo) { if (0) { hi = lo = 0; } Gfx *g = &d->head->buf[d->head->inc()]; g->w0 = hi; g->w1 = lo; }
 inline AIter Arr::iter() { return AIter(this); }
 struct BB {
     char pad[0x84];
@@ -72,7 +81,7 @@ Obj::Obj(void *a1) : Base(a1) {
     d4 = 0;
     cc = (DL *)gl_func_00000000(0, S(0x20104), 0x14, 0, 0, 0, 0);
     addG(cc, 0xE7000000, 0);
-    cc->add(0xBA001402, 0);
+    cc->addOK(0xBA001402, 0);
     cc->add(0xB9000201, 4);
     cc->addE(0xBA000C02, 0x2000);
     cc->add(0xBA001301, 0);
