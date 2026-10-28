@@ -31,8 +31,8 @@ struct Obj { V3 perp(V3 p, V3 n); };
 V3 Obj::perp(V3 p, V3 n) {
     f32 px, py, pz;
     { V3 t = p - n * (n.x * p.x + n.y * p.y + n.z * p.z); px = t.x; py = t.y; pz = t.z; }
+    V3 r; /* agent-c run 202: r declared before l (decl-order grid, length unchanged): 90.61 -> 90.62 standalone */
     f32 l;
-    V3 r;
     l = px * px + py * py + pz * pz;
     if (0.0f < l) {
         if (pz < 0.0f) {
