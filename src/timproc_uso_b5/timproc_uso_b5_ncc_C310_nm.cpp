@@ -20,6 +20,7 @@ struct Col {
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr { char p[0x10]; Img *img; s32 width() { Img *i = img; return i->w; } };
 extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
+    volatile s32 sp0, sp1; /* the target's two frame words above the named locals (frame 200) */
     int i, m, mv, mv2;
     char *ptrs[5];
     Spr *hud;
