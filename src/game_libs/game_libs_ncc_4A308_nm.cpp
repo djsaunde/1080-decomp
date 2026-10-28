@@ -6,6 +6,10 @@
  * entry-pointer colour (v1 vs v0).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
  * agent-c run 179: t2 (the entry+6 index) de-named too, a macro re-read at both uses: 94.47 -> 95.66.
+ * agent-g run 190: declarations split from their assignments in the target's top-down slot order (sp7C, sp78, sp74,
+ * sp70, sp6E/sp6C, entry, sp58, sp48), the tail as an early `return` of a named block-local result (no v0 variable:
+ * 868 -> 872 bytes = target), and a decode fix -- the 0x20030 debug print passes the byte sp74[0], not the array:
+ * 95.43 -> 99.60 (objdiff). Left: col / the spill word 4 / 8 bytes low and the entry / v60 v0-v1 swap.
  */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
@@ -22,16 +26,23 @@ extern int arg4;
 extern int arg1;
 }
 extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *arg4) {
-    char *entry = *(char **)(arg0 + 0x6C) + arg3 * 8;
+    /* agent-g run 190: declarations split from the assignments, in the target's top-down slot order */
+    char *sp7C;
+    char *sp78;
+    unsigned char sp74[4];
+    unsigned char sp70[4];
+    short sp6E, sp6C;
+    char *entry;
+    unsigned char sp58[0x10];
+    unsigned char sp48[0x10];
+    int t0; char *pal;
+    entry = *(char **)(arg0 + 0x6C) + arg3 * 8;
 #define v60 (*(char **)(arg0 + 0x60))
-    int t0 = *(unsigned short *)(entry + 4);
+    t0 = *(unsigned short *)(entry + 4);
 #define t2 (*(unsigned short *)(entry + 6))
-    char *sp7C = v60 + t0 * 6;
-    char *sp78 = v60 + t2 * 6;
-    char *pal = *(char **)(arg0 + 0x7C);
-    short sp6C, sp6E;
-    unsigned char sp74[4], sp70[4], sp48[0x10], sp58[0x10];
-    int v0;
+    sp7C = v60 + t0 * 6;
+    sp78 = v60 + t2 * 6;
+    pal = *(char **)(arg0 + 0x7C);
     if (pal != 0) {
         sp6C = *(unsigned char *)(pal + t0);
         sp6E = *(unsigned char *)(pal + t2);
@@ -42,7 +53,7 @@ extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *
     if (*(char **)(arg0 + 0x50) != 0) {
         gl_func_00034458(&D_00000000, sp74, *(char **)(arg0 + 0x50) + t0 * 4);
         gl_func_00034458(&D_00000000, sp70, *(char **)(arg0 + 0x50) + *(unsigned short *)(*(char **)(arg0 + 0x6C) + arg3 * 8 + 6) * 4);
-        gl_func_00034458((char *)&D_00000000 + 0x20030, sp74, sp74[1], sp74[2]);
+        gl_func_00034458((char *)&D_00000000 + 0x20030, sp74[0], sp74[1], sp74[2]); /* run 190 decode fix: the target passes the byte (lbu a1) */
     } else {
         unsigned char col[4];
         col[0] = (u32)(*(float *)(arg4 + 0) * 255.0f);
@@ -53,9 +64,8 @@ extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *
     }
     gl_func_00034458(&D_00000000, sp48, sp7C, 0, (s32) sp6C, sp74);
     gl_func_00034458(&D_00000000, sp58, sp78, 0, (s32) sp6E, sp70);
-    v0 = 0;
-    if (arg1 != 0) {
-        v0 = gl_func_00034458(arg2, sp48);
+    if (arg1 != 0) { /* agent-g run 190: early return, no result variable (868 -> 872 B = target) */
+        int r = gl_func_00034458(arg2, sp48); return r;
     }
-    return v0;
+    return 0;
 }
