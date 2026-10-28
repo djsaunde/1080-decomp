@@ -75,9 +75,11 @@ void Obj::run() {
         int f = (m104 & 2) != 0;
         Sub *sb = sub;
         int m = m78;
+        void *pf = sb->mF0;
+        int m4 = m & 4;
         if (f) f = (m & 2) != 0;
         int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8;
-        gl_func_00034458(dl, s1, sb->mF0, m & 4, f, mDC, c0, c4, b8, bc, sb8, m1B0);
+        gl_func_00034458(dl, s1, pf, m4, f, mDC, c0, c4, b8, bc, sb8, m1B0);
     }
     gl_func_00034458(dl);
     gl_func_00034458(m15C);
@@ -85,7 +87,8 @@ void Obj::run() {
     gl_func_00034458(gl_d_4c5e4_reg + 0x294);
     {
     s1 = (char *)dl;
-    int v = gl_func_00034458(s14c[idx]->m60);
+    Sub2 *e = s14c[idx];
+    int v = gl_func_00034458(e->m60);
     { Gfx *p = &((DL *)s1)->head->buf[((DL *)s1)->head->count++]; p->w0 = 0x06000000; p->w1 = v; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
