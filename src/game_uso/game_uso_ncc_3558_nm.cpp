@@ -61,13 +61,13 @@ extern "C" void game_uso_func_00003558(S *s0) {
     Vec3 vb;
     { Body *b = s0->b0; b->mtx.getPos(vb); } /* run 180: named block pointer (76.73 -> 77.2) */
     Vec3 e;
-    Vec3 pad1;
     Vec3 stage;
-    float mag;
     Vec3 w;
     float t;
     float k;
     float zero;
+    Vec3 pad1;
+    float mag; /* run 185: declaration order from a 720-probe grid (79.09 -> 79.22) */
     zero = 0.0f;
     stage = s0->v68;
     {
