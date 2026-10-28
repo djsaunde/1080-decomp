@@ -1464,7 +1464,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
         if (!(sym->flags & 8)) {
             continue;
         }
-        val = sym->value;
+        val = sym->value; if (1) {}
         p = (u32 *)(base + r->offset);
         r->orig = *p;
         switch (type) {
