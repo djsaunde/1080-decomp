@@ -4504,10 +4504,13 @@ tail_common:
             *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
         } else {
             v0 = *(int*)((char*)self + 0x2C);
-            fsel = v0 == 3 ? *(float*)((char*)self + 0x204)
+            /* run 197: this selector in z (z's f2 web then interferes with the
+             * shared inner join temps, which colour f14 at every other site as
+             * in the target; this site's own outer is f2 instead of f12). */
+            z = v0 == 3 ? *(float*)((char*)self + 0x204)
                  : v0 == 2 ? *(float*)((char*)self + 0x1EC)
                            : *(float*)((char*)self + 0x1D4);
-            if (fsel <= metric_a) {
+            if (z <= metric_a) {
                 *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
             } else if (0.0f < metric_a) {
                 *(int*)((char*)self + 0x68) |= 1;
