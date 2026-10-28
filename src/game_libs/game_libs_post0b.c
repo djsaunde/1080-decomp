@@ -13658,6 +13658,7 @@ typedef char *(*GP_000469A8)();
  * above the bit-2 if. The held +0x100 / +0x78 pointers still fold into offsets. */
 void gl_func_000469A8(char *arg0, s32 arg1) {
     s32 var_t0; /* agent-c run 191 lever-sweep hoist */
+    volatile s32 pa, pb; /* agent-c run 191: two phantom homes give the target frame 0x58 (sp48 at 72) */
     volatile s32 sp48; /* run 179: the target's sp+72 home */
     s32 temp_a1;
     s32 temp_a1_2;
