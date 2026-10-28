@@ -20,15 +20,15 @@ struct Col {
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr { char p[0x10]; Img *img; s32 width() { Img *i = img; return i->w; } };
 extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
-    s32 vals[5];
-    char *ptrs[5];
-    s32 *pv;
-    Col cols;
-    char **pp;
-    f32 *fb;
-    Spr *hud;
-    char *e;
     int i, m, mv, mv2;
+    char *ptrs[5];
+    Spr *hud;
+    Col cols;
+    s32 vals[5];
+    char *e;
+    f32 *fb;
+    s32 *pv;
+    char **pp;
 
     if (*(s32 *)(arg0 + 0x2BC) < 10) {
         if (--*(s32 *)(arg0 + 0x2C0) < 0) {
