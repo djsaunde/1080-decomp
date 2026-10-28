@@ -77,7 +77,8 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
         result.x = d.x;
     } else {
         int mode = 0;
-        Vec3 seg = XZ(b->pos) - a->pos;
+        Node *a_al = a; /* agent-c run 195: alias copy (s-reg tie) */
+        Vec3 seg = XZ(b->pos) - a_al->pos;
         if (s->w->other != 0) {
             float dot = game_uso_func_00007A98(s);
             int active = s->active;
