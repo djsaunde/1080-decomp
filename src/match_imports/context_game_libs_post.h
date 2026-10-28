@@ -1664,28 +1664,12 @@ extern int gl_func_00000000();
 int gl_func_00033B28(int a0, int a1, int a2);
 void gl_func_00033B6C(void);
 extern int gl_func_00000000();
-extern s32 gl_d_33be4_8a, gl_d_33be4_8b, gl_d_33be4_8c, gl_d_33be4_8d,
-           gl_d_33be4_8e, gl_d_33be4_8f, gl_d_33be4_8g, gl_d_33be4_8h;
-extern s32 gl_d_33be4_14a;
-extern s32 gl_d_33be4_24a;
-extern s32 gl_d_33be4_28a, gl_d_33be4_28b, gl_d_33be4_28c, gl_d_33be4_28d,
-           gl_d_33be4_28e, gl_d_33be4_28f, gl_d_33be4_28g, gl_d_33be4_28h,
-           gl_d_33be4_28i;
-extern s32 gl_d_33be4_2ca, gl_d_33be4_2cb, gl_d_33be4_2cc;
 extern u8 gl_d_33be4_dst;
 extern u8 gl_ref_0001E330;
 extern u8 gl_ref_0001E344;
 extern u8 gl_ref_0001E358;
 void gl_func_00033BE4(s32 src, u32 flags);
 extern int gl_func_00000000();
-extern s32 gl_d_33eb8_8a, gl_d_33eb8_8b, gl_d_33eb8_8c, gl_d_33eb8_8d;
-extern s32 gl_d_33eb8_ca, gl_d_33eb8_cb, gl_d_33eb8_cc, gl_d_33eb8_cd,
-           gl_d_33eb8_ce, gl_d_33eb8_cf, gl_d_33eb8_cg, gl_d_33eb8_ch;
-extern s32 gl_d_33eb8_10a;
-extern s32 gl_d_33eb8_24a;
-extern s32 gl_d_33eb8_28a, gl_d_33eb8_28b, gl_d_33eb8_28c, gl_d_33eb8_28d,
-           gl_d_33eb8_28e, gl_d_33eb8_28f;
-extern s32 gl_d_33eb8_2ca, gl_d_33eb8_2cb, gl_d_33eb8_2cc;
 extern u8 gl_d_33eb8_src;
 extern u8 gl_ref_0001E368;
 extern u8 gl_ref_0001E37C;

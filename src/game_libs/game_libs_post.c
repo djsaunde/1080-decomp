@@ -16530,16 +16530,8 @@ void gl_func_00033B6C(void) {
 // layout -- `if (flags & 1) { base = ...; call(base, fmt);` on ONE line gives
 // the target's la a1 first / `addiu a0,s1,0` in the delay slot. C on the build path.
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sites) */
-/* per-SITE base-0 aliases (33EB8/2B5F4 r1/r2 convention): one extern per access
- * site so IDO rematerializes a fresh `lui rX,0x0; lw off(rX)` each time. */
-extern s32 gl_d_33be4_8a, gl_d_33be4_8b, gl_d_33be4_8c, gl_d_33be4_8d,
-           gl_d_33be4_8e, gl_d_33be4_8f, gl_d_33be4_8g, gl_d_33be4_8h;      /* +0x08 write cursor */
-extern s32 gl_d_33be4_14a;                                                  /* +0x14 mark */
-extern s32 gl_d_33be4_24a;                                                  /* +0x24 data start */
-extern s32 gl_d_33be4_28a, gl_d_33be4_28b, gl_d_33be4_28c, gl_d_33be4_28d,
-           gl_d_33be4_28e, gl_d_33be4_28f, gl_d_33be4_28g, gl_d_33be4_28h,
-           gl_d_33be4_28i;                                                  /* +0x28 header ptr */
-extern s32 gl_d_33be4_2ca, gl_d_33be4_2cb, gl_d_33be4_2cc;                  /* +0x2C end cursor */
+/* (the old per-site gl_d_33be4_8a.. aliases were retired in run 177: the heap
+ * words are read through the local base pointer g below) */
 extern u8 gl_d_33be4_dst;               /* base-0 alias: copy-loop dest (fresh lui/addiu into a0) */
 extern u8 gl_ref_0001E330;              /* baked USO data sym (lui 2 / addiu -0x1CD0) */
 extern u8 gl_ref_0001E344;              /* baked USO data sym */
@@ -16723,18 +16715,8 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
 
 
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all 16 call sites) */
-/* per-SITE base-0 aliases of the heap-control words (one extern per access
- * site, 2B5F4 r1/r2 convention): single-use symbols keep IDO from CSE/loop-
- * hoisting the lui;addiu address into spare s-regs -- target rematerializes
- * a fresh `lui rX,0x0; lw off(rX)` at every site. */
-extern s32 gl_d_33eb8_8a, gl_d_33eb8_8b, gl_d_33eb8_8c, gl_d_33eb8_8d;      /* +0x08 end cursor */
-extern s32 gl_d_33eb8_ca, gl_d_33eb8_cb, gl_d_33eb8_cc, gl_d_33eb8_cd,
-           gl_d_33eb8_ce, gl_d_33eb8_cf, gl_d_33eb8_cg, gl_d_33eb8_ch;      /* +0x0C read cursor */
-extern s32 gl_d_33eb8_10a;                                                  /* +0x10 block magic */
-extern s32 gl_d_33eb8_24a;                                                  /* +0x24 data start */
-extern s32 gl_d_33eb8_28a, gl_d_33eb8_28b, gl_d_33eb8_28c, gl_d_33eb8_28d,
-           gl_d_33eb8_28e, gl_d_33eb8_28f;                                  /* +0x28 header ptr */
-extern s32 gl_d_33eb8_2ca, gl_d_33eb8_2cb, gl_d_33eb8_2cc;                  /* +0x2C write cursor */
+/* (the old per-site gl_d_33eb8_8a.. aliases were retired in run 177: the heap
+ * words are read through the local base pointer g below) */
 extern u8 gl_d_33eb8_src;               /* base-0 alias: copy-loop src (fresh lui/addiu into v1) */
 extern u8 gl_ref_0001E368;              /* baked USO data sym (lui 2 / addiu -0x1C98) */
 extern u8 gl_ref_0001E37C;              /* baked USO data sym */
