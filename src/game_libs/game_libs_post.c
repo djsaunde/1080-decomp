@@ -16726,8 +16726,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00033BE4);
 // of the flush loop (cap a). The flags parameter is reused as the chunk length
 // (target s0: flags copy, then len). An unused `s32 pad[4]` declared FIRST
 // gives the target frame 80 (98.70 -> 98.71; declared last it is dropped).
-// Residual (7 words): the dst / rem parameter-copy order around the first
-// beqz and the first call's a1 / delay-slot schedule.
+// agent-c run 176 (98.71 -> 99.89): dst is a LOCAL copy of the parameter made
+// after `rem = flags` (the 33BE4 fix: target moves rem to s3, then dst to s4 in
+// the beqz delay); the new local takes one pad word (pad[3], frame 80 = target).
+// Residual (4 words): the first arm's a0 / a1 setup order around its jal.
 #ifdef NON_MATCHING
 
 
@@ -16749,8 +16751,9 @@ extern u8 gl_ref_0001E368;              /* baked USO data sym (lui 2 / addiu -0x
 extern u8 gl_ref_0001E37C;              /* baked USO data sym */
 extern u8 gl_ref_0001E394;              /* baked USO data sym */
 extern u8 gl_ref_0001E3AC;              /* baked USO data sym */
-void gl_func_00033EB8(s32 dst, u32 flags) {
-    s32 pad[4];
+void gl_func_00033EB8(s32 dst0, u32 flags) {
+    s32 pad[3];
+    s32 dst;
     u8 *base;
     s32 rem;
     s32 tmp;
@@ -16759,7 +16762,7 @@ void gl_func_00033EB8(s32 dst, u32 flags) {
     s32 cpdst;
     u8 *g = &gl_d_33eb8_src;
 
-    rem = flags;
+    rem = flags; dst = dst0;
     if (flags & 1) {
         base = (u8 *)&D_00000000;
         gl_func_00000000(base, &gl_ref_0001E368);
