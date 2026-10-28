@@ -4373,9 +4373,8 @@ yaw_region:
         }
         goto tail_common;
     } else if (v0 > 0) {
-        v0 -= 1;
-        *(int*)((char*)self + 0x4C4) = v0;
-        if (v0 == 0) {
+        *(int*)((char*)self + 0x4C4) = v0 - 1;
+        if (*(int*)((char*)self + 0x4C4) == 0) {
             game_uso_func_000074D8(self);
         }
     } else {
@@ -4415,12 +4414,17 @@ yaw_region:
     }
 
 tail_common:
+        /* agent-c run 196: the tail selector is read in EACH arm, through an
+         * unsigned lvalue (not CSE'd with the earlier int reads): the target's
+         * case-0 `b J; lw v0,44(s0)` block + case-1/default delay-slot load. */
+        v0 = *(unsigned int*)((char*)self + 0x2C);
         break;
     case 1:
+    default:
+        v0 = *(unsigned int*)((char*)self + 0x2C);
         break;
     }
     /* common tail (0xCE8-0x10F8): every path lands here. */
-    v0 = *(int*)((char*)self + 0x2C);
     fsel = v0 == 1 ? *(float*)((char*)self + 0x264)
          : v0 == 2 ? *(float*)((char*)self + 0x27C)
                    : *(float*)((char*)self + 0x294);
@@ -4428,7 +4432,6 @@ tail_common:
     {
         child_flags = (int *)((int)sub + 2648);
         if ((metric_a < fsel) && (((int)metric_a & 3) == 0)) {
-            child_flags = (int *)((int)sub + 2648);
             *child_flags |= 0x4000;
         } else {
             *child_flags &= ~0x4000;
