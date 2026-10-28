@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00049B3C",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-28T05:34:23.106766+00:00",
+  "end_time": "2026-10-28T05:34:23.106784+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T05:34:23.106779+00:00",
+      "assistant_text": "NCC donor exact: AIter::cur() via local reference Arr &r = *a (body base reload v1 / vtable a1); LI::next() as if-statement gives bottom-copy result v0; plain while loop for the list walk.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 160,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00049B3C (0x280 / 160 words), EXACT (agent-g run 190), spliced over\n * the post0b.c placeholder in both trees.\n * agent-c run 174 built the shape (E1 / E2 virtual-call element types, kept-parameter iter(), for-init list walk).\n * Last three levers (agent-g run 190): AIter::cur() reads the array through a local reference\n * (`Arr &r = *a; return r[idx];`) -- the extra edg temp puts the body's base reload in v1 and the vtable in a1;\n * LI::next() as an if-statement (`if ((cur = nxt) != 0) { nxt = nxt->next; return cur->data; } return 0;`)\n * gives the bottom copy's result v0; with that next(), the list walk is a plain `LI li(g->head); while (li.next())`\n * (the for-init form now costs the entry copy). */\nextern \"C\" {\nint gl_func_00000000(...);\nvoid gl_49B3C_regf(char *, char *, char *, float, float, int);\nextern char D_00000000[];\nextern char D_49B3C_s1[], D_49B3C_s2[], D_49B3C_s3[], D_49B3C_s4[], D_49B3C_s5[], D_49B3C_s6[];\n}\ninline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }\nstruct E1 { char pad[0x5C]; virtual void a(); virtual void b(); virtual void tick(); };\nstruct E2 { char pad[0x28]; virtual void upd(); };\nstruct Arr { E1 **data; int pad4, pad8; int count; E1 *&operator[](int i) { return data[i]; } };\nstruct IBase { Arr *a; int idx; int last; IBase(Arr *arr) {   a = arr; idx = -1; last = arr->count - 1; } };\nstruct AIter : IBase {\n    AIter(Arr *arr) : IBase(arr) {  if (0) { arr = 0; }  }\n    E1 **next() {  if (idx < last) return &(*a)[++idx]; return 0;  }\n    E1 *cur() { Arr &r = *a; return r[idx]; }\n};\ninline AIter iter(Arr *a) {  if (0) { a = 0; }  return AIter(a); }\nstruct L { E2 *data; L *next; };\nstruct LI { L *cur; L *nxt;\n  LI(L *h) {   nxt = h; }\n  E2 *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->data; } return 0; } };\ninline void callu(E2 *e) { if (0) { e = 0; } e->upd(); }\ninline void callt(E1 *e) { if (0) { e = 0; } e->tick(); }\ninline void regp(char *a, char *b, char *p) { if (0) { p = 0; } gl_func_00000000(a, b, p, 0); }\nstruct Grp { char pad[0x10]; L *head; };\nextern \"C\" void gl_func_00049B3C(char *self) {\n     \n    gl_func_00000000(D_49B3C_s1, D_00000000 + 0x1FFD4, 0);\n     regp(D_49B3C_s2, D_00000000 + 0x1FFE0, self + 64); \n     regp(D_49B3C_s3, D_00000000 + 0x1FFE8, self + 68); \n    gl_49B3C_regf(D_49B3C_s4, D_00000000 + 0x1FFF4, self + 156, 0.0f, 10.0f, 0);\n     \n     AIter it = iter((Arr *)(self + 132)); \n    while (it.next()) {\n          it.cur()->tick(); \n    }\n    gl_func_00000000(D_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}\n     if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); \n        LI li(g->head); while (li.next()) {\n             callu(li.cur->data); \n        }\n    }\n    gl_func_00000000(D_49B3C_s6);\n     \n    gl_func_00000000(self);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_49B3C.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00049B3C.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -G 0 -non_shared -Wab,-r4300_mul -mips2 -32",
+    "verification": "report.json 100.0; ROM byte-identical; donor spliced in both trees."
+  }
+}

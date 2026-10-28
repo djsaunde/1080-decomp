@@ -15298,102 +15298,14 @@ s32 gl_func_000493AC(char *self) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000493AC);
 #endif
 
-// gl_func_00049B3C — STRUCTURAL PASS (0x27C / 160 words, no episode). Raw-.word
-// USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x80
-// (saves ra). String-keyed field-registration table (cb = jal 0
-// USO-relocated registrar; string keys in the &D_0002FFD4.. table).
-//
-//   void gl_func_00049B3C(void *a0) {
-//     self = a0;                                     // spilled to sp+0x80
-//     void *g = &D_reloc;
-//     cb_begin(g, &D_0002FFD4, 0);                    // open registration
-//     cb_field(g, &D_0002FFE0, (char*)self + 0x40);   // field @0x40
-//     cb_field(g, &D_0002FFE8, (char*)self + 0x44, 10.0f);  // field @0x44,
-//                                                     //   default 10.0
-//     cb_field(g, &D_0002FFF4, (char*)self + 0x9C, 0);// field @0x9C
-//     // ... a long run of cb_field registrations, each keyed by a string
-//     //     literal in the contiguous &D_0002FFD4.. table, binding a
-//     //     self+offset field address plus a type/default (int 0 or a
-//     //     float immediate such as 0x41200000 = 10.0).
-//   }
-// Registers a fixed set of the object's fields under string-literal names
-// (keys in the &D_0002FFD4.. block), each call passing g + key + the
-// self+0xNN field address + a type/default code. Family: string-literal-
-// keyed cb field-registration table (siblings gl_func_00040DE8 /
-// 000415A4 / 0003E5E0).
-//
-// Caps (DEFERRED): self struct, the &D_0002FFxx string table and cb
-//   signature untyped; per-field offset/default list not exhaustively
-//   decoded (160-word table). Real-C STRUCTURAL body below —
-//   representative calls only. Byte-match deferred. Name pre-checked:
-//   no extern reuse.
-// gl_func_00049B3C — m2c DECODE (28.98% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
-#ifdef NON_MATCHING
-/* NM decode 2026-10-17 agent-c: four registrations, then an inlined
- * array-iterator (ctor with dead alloc(12) fallback, copied twice) walks
- * self->0x84's element pointers calling each element's vtable +0x5C slot
- * (+0x1C fn / +0x18 delta); one more registration; the {cur,next} list
- * iterator over (self->0x2C)->0x10 calls vt(+0x28)->+0xC; banner; log self. */
-typedef struct { char pad[8]; short d8; short pad2; void (*fn12)(); char pad10[8]; short d24; short pad3; void (*fn28)(); } VS49B3C;
-typedef struct { char **data; int pad4, pad8; int count; } A49B3C;
-typedef struct { A49B3C *a; int idx; int last; } AI49B3C;
-typedef struct L49B3C { char *data; struct L49B3C *next; } L49B3C;
-typedef struct { L49B3C *cur; L49B3C *next; } LI49B3C;
-extern void gl_49B3C_regf(char *, char *, char *, float, float, int);
-extern char D_49B3C_s1[], D_49B3C_s2[], D_49B3C_s3[], D_49B3C_s4[], D_49B3C_s5[], D_49B3C_s6[];
-void gl_func_00049B3C(char *self) {
-    AI49B3C ai;
-    AI49B3C aipad;
-    AI49B3C ai1;
-    AI49B3C ai0;
-    LI49B3C li;
-    AI49B3C *p;
-    A49B3C *arr;
-    char **v;
-    char *e;
-    char *l;
-    VS49B3C *vs;
-
-    if (1) { LI49B3C *q = &li; AI49B3C *q2 = &ai; char **q3 = &self; }
-    gl_func_00000000(D_49B3C_s1, (char *)&D_00000000 + 0x1FFD4, 0);
-    gl_func_00000000(D_49B3C_s2, (char *)&D_00000000 + 0x1FFE0, self + 64, 0);
-    gl_func_00000000(D_49B3C_s3, (char *)&D_00000000 + 0x1FFE8, self + 68, 0);
-    gl_49B3C_regf(D_49B3C_s4, (char *)&D_00000000 + 0x1FFF4, self + 156, 0.0f, 10.0f, 0);
-    p = &ai0;
-    if ((unsigned)p == 0) {
-        p = (AI49B3C *)gl_func_00000000(12);
-        if (p == 0) goto skip;
-    }
-    p->idx = -1;
-    p->a = arr = (A49B3C *)(self + 132);
-    p->last = arr->count - 1;
-skip:
-    ai1 = ai0;
-    ai = ai1;
-    v = ai.idx < ai.last ? &ai.a->data[++ai.idx] : 0;
-    while (v != 0) {
-        e = ai.a->data[ai.idx];
-        vs = *(VS49B3C **)(e + 92);
-        vs->fn28(e + vs->d24);
-        v = ai.idx < ai.last ? &ai.a->data[++ai.idx] : 0;
-    }
-    gl_func_00000000(D_49B3C_s5, (char *)&D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0);
-    if ((l = *(char **)(self + 44)) != 0) {
-        li.next = *(L49B3C **)(l + 16);
-        l = (li.cur = li.next) != 0 ? (li.next = li.cur->next, li.cur->data) : 0;
-        while (l != 0) {
-            e = li.cur->data;
-            vs = *(VS49B3C **)(e + 40);
-            vs->fn12(e + vs->d8);
-            l = (li.cur = li.next) != 0 ? (li.next = li.cur->next, li.cur->data) : 0;
-        }
-    }
-    gl_func_00000000(D_49B3C_s6);
-    gl_func_00000000(self);
+// gl_func_00049B3C (0x280 / 160 words): field registrations, then an array
+// iterator over self->0x84 calling each element's virtual tick(), one more
+// registration, a {cur, next} list walk over (self->0x2C)->0x10 calling each
+// element's virtual upd(); banner; log self. C++.
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_49B3C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 190). */
+void gl_func_00049B3C(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00049B3C);
-#endif
 
 // gl_func_00049DBC — DECODE PROGRESS ~58.6% (was ~46%, no episode). 339 words.
 // Raw-.word USO. ONE clean function, prologue frame 0xB0 (saves ra, s0, s1).

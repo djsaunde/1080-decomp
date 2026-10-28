@@ -1,10 +1,11 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00049B3C (0x280 / 160 words).
- * agent-c run 174: rebuilt from the run 173 draft (E1 / E2 virtual-call element types, `it.cur()->tick()` body,
- * kept-parameter iter()) with the list walk as `for (LI li(g->head); li.next(); )`: EDG keeps the for-init's
- * pooled temps for the whole statement, so the entry copy of li.next() colours its result a1 as the target.
- * 99.01 -> 99.33 (objdiff diff, run 162 donor -> this). Residual: the array body's base / vtable loads swap
- * v1 / a1, and the list loop's bottom-copy result is v1 (target v0). The same for-init form on the array loop
- * (41D40's lever) costs 16 words here. Still NON_MATCHING. */
+/* IDO 7.1 NCC (C++) donor for gl_func_00049B3C (0x280 / 160 words), EXACT (agent-g run 190), spliced over
+ * the post0b.c placeholder in both trees.
+ * agent-c run 174 built the shape (E1 / E2 virtual-call element types, kept-parameter iter(), for-init list walk).
+ * Last three levers (agent-g run 190): AIter::cur() reads the array through a local reference
+ * (`Arr &r = *a; return r[idx];`) -- the extra edg temp puts the body's base reload in v1 and the vtable in a1;
+ * LI::next() as an if-statement (`if ((cur = nxt) != 0) { nxt = nxt->next; return cur->data; } return 0;`)
+ * gives the bottom copy's result v0; with that next(), the list walk is a plain `LI li(g->head); while (li.next())`
+ * (the for-init form now costs the entry copy). */
 extern "C" {
 int gl_func_00000000(...);
 void gl_49B3C_regf(char *, char *, char *, float, float, int);
@@ -19,13 +20,13 @@ struct IBase { Arr *a; int idx; int last; IBase(Arr *arr) {   a = arr; idx = -1;
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {  if (0) { arr = 0; }  }
     E1 **next() {  if (idx < last) return &(*a)[++idx]; return 0;  }
-    E1 *cur() { return (*a)[idx]; }
+    E1 *cur() { Arr &r = *a; return r[idx]; }
 };
 inline AIter iter(Arr *a) {  if (0) { a = 0; }  return AIter(a); }
 struct L { E2 *data; L *next; };
 struct LI { L *cur; L *nxt;
   LI(L *h) {   nxt = h; }
-  E2 *next() {  return (cur = nxt) ? (nxt = nxt->next, cur->data) : 0;  } };
+  E2 *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->data; } return 0; } };
 inline void callu(E2 *e) { if (0) { e = 0; } e->upd(); }
 inline void callt(E1 *e) { if (0) { e = 0; } e->tick(); }
 inline void regp(char *a, char *b, char *p) { if (0) { p = 0; } gl_func_00000000(a, b, p, 0); }
@@ -43,7 +44,7 @@ extern "C" void gl_func_00049B3C(char *self) {
     }
     gl_func_00000000(D_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}
      if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); 
-        for (LI li(g->head); li.next(); ) {
+        LI li(g->head); while (li.next()) {
              callu(li.cur->data); 
         }
     }
