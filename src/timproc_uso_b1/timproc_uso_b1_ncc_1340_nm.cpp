@@ -5,17 +5,22 @@
  * `Spr::width()` with a named image pointer, no volatile pads: 239 words (target 238), 94.05 standalone.
  * Then the tim panel's width / height through the members (`tim.width() / 12`, `tim.height()`) and `if (1) {}`
  * after its begin call: 238 words = target, 98.10 standalone; xmid de-named (lever-sweep).
+ * agent-g run 196 (kit CLIX): 13B8's run-185 nested block (x / pos4 / posA1 / pos6 block locals, panels named
+ * there) and run-196 Img members (height / panel widths through `img->gh()` / `img->gw()`; tim's width keeps
+ * the named local; three volatile pads in the block; the old `sp0` pad dropped): 98.18 -> 99.62 standalone.
+ * LEFT: the count spill (target 152, ours 172), pB-width / pA-copy t5 <-> t0.
  * NM object only. */
 typedef float f32; typedef int s32; typedef short s16;
 extern "C" {
 extern char D_00000000;
 int timproc_uso_b1_func_000000B0(...);
 }
-struct Img { char p[0x20]; s16 w; s16 h; };
+struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
 struct Spr {
-    s32 height() { Img *i = img; return i->h; }
+    s32 height() { return img->gh(); }
     char p[0x10]; Img *img; char p14[4];
     s32 width() { Img *i = img; return i->w; }
+    s32 pw() { return img->gw(); }
 };
 struct Flags { char p[0x14]; int f; };
 struct Obj {
@@ -26,11 +31,9 @@ struct Obj {
 #define FL(o) (*(Flags **)((char *)(o) + 0x528))
 extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
     f32 one[4];
-    volatile s32 sp0; /* frame word above buf (the target's one / buf sit 8 bytes lower) */
     char buf[128];
     s32 min, sec;
     s32 glyph;
-    s32 x, pos4, posA1, pos6;
     s32 i;
     s32 count;
 
@@ -52,10 +55,13 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         timproc_uso_b1_func_000000B0(&arg0->sC);
         timproc_uso_b1_func_000000B0(buf, &D_00000000 + 0x3F4, min, sec, arg2);
         count = timproc_uso_b1_func_000000B0(buf);
-        x = 160 - (arg0->sC.width() + count * 13 + arg0->sA.width() + arg0->sB.width() + 16) / 2;
-        pos4 = arg0->sB.width() + x + 4;
-        posA1 = arg0->sA.width() + pos4 + 4;
-        pos6 = arg0->sC.width() + posA1 + 8;
+        {
+        Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
+        s32 x = 160 - (pC->pw() + count * 13 + pA->pw() + pB->pw() + 16) / 2;
+        s32 pos4 = pB->pw() + x + 4;
+        s32 posA1 = pA->pw() + pos4 + 4;
+        s32 pos6 = pC->pw() + posA1 + 8;
+        volatile s32 pad0, pad1, pad2;
         timproc_uso_b1_func_000000B0(&arg0->sC, posA1, arg1 + 0x32, 2);
         for (i = 0; i < count; i++) {
             if (buf[i] == 0x5B) {
@@ -71,5 +77,6 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         timproc_uso_b1_func_000000B0(&arg0->sA, pos4, arg1 + 0x32, 2);
         timproc_uso_b1_func_000000B0(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);
         timproc_uso_b1_func_000000B0(&arg0->sB, x, arg1 + 0x32, 2);
+        }
     }
 }

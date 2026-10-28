@@ -6,17 +6,20 @@
  * with the three width panels named there (`Spr *pC = &arg0->sC, ...`; the width() calls go through them, the
  * draw calls keep `&arg0->sX`): edg allocates a block's named locals at block entry, below the enclosing
  * block's temporaries, so the homes land on the target's 136 / 144 / 148. LEFT: spill slots 4 low, t-ring.
+ * agent-g run 196 (kit CLIX): b3 13B8's Img-member port (height / panel widths through `img->gh()` / `img->gw()`,
+ * tim's width keeps the named local, three volatile pads in the nested block).
  * NM object only. */
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
 extern char D_00000000;
 int arcproc_uso_func_00001B88(...);
 }
-struct Img { char p[0x20]; s16 w; s16 h; };
+struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
 struct Spr {
-    s32 height() { Img *i = img; return i->h; }
+    s32 height() { return img->gh(); }
     char p[0x10]; Img *img; char p14[4];
     s32 width() { Img *i = img; return i->w; }
+    s32 pw() { return img->gw(); }
 };
 struct Flags { char p[0x14]; int f; };
 struct Obj {
@@ -45,10 +48,11 @@ extern "C" void arcproc_uso_func_000016F4(Obj *arg0, s32 arg1, f32 *arg2) {
         s32 n = arcproc_uso_func_00001B88(buf);
         {
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
-        s32 xoff = 0xA0 - (pC->width() + n * 13 + pA->width() + pB->width() + 0x10) / 2;
-        s32 xb = pB->width() + xoff + 4;
-        s32 xa = pA->width() + xb + 4;
-        s32 x = pC->width() + xa + 8;
+        s32 xoff = 0xA0 - (pC->pw() + n * 13 + pA->pw() + pB->pw() + 0x10) / 2;
+        s32 xb = pB->pw() + xoff + 4;
+        s32 xa = pA->pw() + xb + 4;
+        s32 x = pC->pw() + xa + 8;
+        volatile s32 pad0, pad1, pad2;
         arcproc_uso_func_00001B88(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;

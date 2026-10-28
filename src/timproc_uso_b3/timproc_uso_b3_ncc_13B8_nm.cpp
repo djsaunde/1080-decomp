@@ -14,17 +14,23 @@
  * with the three width panels named there (`Spr *pC = &arg0->sC, ...`; the width() calls go through them, the
  * draw calls keep `&arg0->sX`): edg allocates a block's named locals at block entry, below the enclosing
  * block's temporaries, so the homes land on the target's 136 / 144 / 148. LEFT: spill slots 4 low, t-ring.
+ * agent-g run 196 (kit CLIX): the image pointer as the `this` of tiny Img members (kit CLVII) instead of a
+ * named inline local: height() and the three panel widths (`pw()`) go through `img->gh()` / `img->gw()`;
+ * only tim's width keeps the named local (its copy is the target's v0). That drops 4 named homes, so three
+ * unreferenced volatile pads in the nested block restore the spill words (100 / 96 / 88 = target).
+ * 99.04 -> 99.52 standalone. LEFT: pA-copy / pB-width t0 <-> t4.
  * NM object only. */
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
 extern char D_b3_1240_base;
 int timproc_uso_b3_func_000000B0(...);
 }
-struct Img { char p[0x20]; s16 w; s16 h; };
+struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
 struct Spr {
-    s32 height() { Img *i = img; return i->h; }
+    s32 height() { return img->gh(); }
     char p[0x10]; Img *img; char p14[4];
     s32 width() { Img *i = img; return i->w; }
+    s32 pw() { return img->gw(); }
 };
 struct Flags { char p[0x14]; int f; };
 struct Obj {
@@ -53,10 +59,11 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
         s32 n = timproc_uso_b3_func_000000B0(buf);
         {
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
-        s32 xoff = 0xA0 - (pC->width() + n * 13 + pA->width() + pB->width() + 0x10) / 2;
-        s32 xb = pB->width() + xoff + 4;
-        s32 xa = pA->width() + xb + 4;
-        s32 x = pC->width() + xa + 8;
+        s32 xoff = 0xA0 - (pC->pw() + n * 13 + pA->pw() + pB->pw() + 0x10) / 2;
+        s32 xb = pB->pw() + xoff + 4;
+        s32 xa = pA->pw() + xb + 4;
+        s32 x = pC->pw() + xa + 8;
+        volatile s32 pad0, pad1, pad2;
         timproc_uso_b3_func_000000B0(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
