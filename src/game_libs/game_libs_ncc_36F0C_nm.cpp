@@ -37,9 +37,9 @@ struct FreeCam {
 };
 static inline f32 fabs_(f32 x) { return x < 0.0f ? -x : x; }
 void FreeCam::update() {
+    V3 v; /* run 191 lever-sweep hoist: v declared first */
     Cam *volatile c = cam;
     Pad *p;
-    V3 v;
     f32 mx = 0.0f, my = 0.0f, mz;
     V3 w;
     p = ctl->pad;
