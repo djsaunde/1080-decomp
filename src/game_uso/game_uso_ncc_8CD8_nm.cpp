@@ -45,6 +45,7 @@ void game_uso_func_071028(Vec3 *v);
  * initialised: the target's three-copy chains (356 -> 372 -> 516 -> 432) at both
  * difference sites now line up. 87.19 -> 88.68 standalone, length = target. */
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
+    float dot; /* agent-g run 206: the else-arm dot declared at function scope (lever-sweep hoist): 89.475 -> 89.499 */
     if (flag != 0) {
         XZ bp(b->pos);
         Vec3 dir = bp - a->pos;
@@ -72,7 +73,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ(a->pos);
             XZ h = s->p90 - a->pos;
-            float dot = h.x * e.x + e.z * h.z + s->w->speed * s->kDC;
+            dot = h.x * e.x + e.z * h.z + s->w->speed * s->kDC;
             s->p84 += e * dot;
             side *= s->kE0 * (250.0f * b->width); /* run 205: target muls 250 * width first, then kE0 (88.68 -> 89.48) */
             switch (s->phase = (s->phase + 1) & 3) {
