@@ -755,7 +755,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 188: 38A28 NM cfe jump-table body replaces the NCC donor (316 -> 344 bytes, target 324): 0x2eadc -> 0x2eaf8 (62F08 NM offset 0x2eaa8).
 # agent-c run 193: 454C4 (2032 -> 2020), 3BE1C (1560 -> 1552), 3B9C0 (1116 -> 1104) NM donor decode fixes: 0x2eaf8 -> 0x2ead8 (62F08 NM offset 0x2ea88).
 # agent-c run 193: 3B6A0 NM donor edge-test decode (800 -> 820 bytes, target 800): 0x2ead8 -> 0x2eaec (62F08 NM offset 0x2ea9c).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eaec gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 194: 3B6A0 ++tp (820 -> 800), 3BE1C face() on col (1552 -> 1556), 3B9C0 nx stepped in place (1104 -> 1100): 0x2eaec -> 0x2ead8.
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ead8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
