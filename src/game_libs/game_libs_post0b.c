@@ -24805,11 +24805,12 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 spBC;      /* home 0xBC */
     s32 f;         /* flags word (hoisted head load) */
     s32 rgba;      /* 0xA8 */
+    char padA[12]; /* frame sculpt: colv home at 0xA4 as the target */
     s8 colv[4];    /* 0xA4..0xA7 */
     s32 cnt;       /* 0xA0 (dead home) */
     char *p;       /* 0x9C */
     char *base;    /* 0x98 */
-    char pad1[0x5C]; /* 0x3C..0x97 */
+    char pad1[0x40]; /* frame 0xC0 = target (was 0x5C: 0xD0) */
     s32 sp38;      /* 0x38 */
     s32 sp34;      /* 0x34 */
     s32 sp30;      /* 0x30 */
