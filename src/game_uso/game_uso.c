@@ -826,9 +826,8 @@ void game_uso_func_00000B3C(char *arg0) {
     rv = game_uso_func_000023D4(&stage, *(char **)(s + 0x154));
     *(Tri3i *)&vC = *(Tri3i *)rv;
     tv = *(char **)(s + 0x150); tv += 0xB4;
-    v30.z = ((f32 *)tv)[2] + vC.z;
-    v30.y = ((f32 *)tv)[1] + vC.y;
-    v30.x = ((f32 *)tv)[0] + vC.x; if (arg0) {}
+    { f32 fz, fy, fx; fz = ((f32 *)tv)[2] + vC.z; fy = ((f32 *)tv)[1] + vC.y; fx = ((f32 *)tv)[0] + vC.x; v30.z = fz; v30.y = fy; v30.x = fx; }
+    if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;
     *(Tri3i *)&vD = *(Tri3i *)&v3C;
     game_uso_func_0000052C((int)kf, &pos2, &pos1, (int *)seg, &vD);
