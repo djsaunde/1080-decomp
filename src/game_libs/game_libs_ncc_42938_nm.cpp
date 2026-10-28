@@ -15,6 +15,8 @@
  * The two vtrans halfwords carry a folded `& 0xFFFF` (one ugen ring slot each): 96.82 -> 97.15.
  * Still NON_MATCHING: build/non_matching/ only. * agent-c run 164: per-site next() spelling grid (kit CXVII): two packets on nC() (`&dl->buf[dl->count++]`) and
  * nD() (`n = dl->count; dl->count = n + 1`), the rest on the named-d next(); 96.87 -> 96.96 local.
+ * agent-c run 193: `G.m228 = G.m224 = 8` (target stores 0x228 first) and the rectangle read x / w / h / y
+ * (target loads 0xC4 last-scheduled first): report 97.39 -> 97.43, schedule rows 10 -> 6.
  */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef short s16;
 struct Rec { char pad[0x1C]; int a; char p20[0x30 - 0x20]; int b; char p34[0x44 - 0x34]; int c; char p48[0x50 - 0x48]; };
@@ -93,9 +95,9 @@ extern "C" void game_libs_func_00042938(void) {
         setvp(v, 0, 0, 320, 240);
         gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80);
     }
-    G.m224 = G.m228 = 8;
+    G.m228 = G.m224 = 8;
     G.m220 = (G.m21c = 0x32, 0x50);
-    { Obj254 *o = G.o; int x = o->c0; int y = o->c4; int w = o->b8; int h = o->bc; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x, y, w + x, y + h); }
+    { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x, y, w + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;
