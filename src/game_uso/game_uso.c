@@ -5722,6 +5722,7 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         w->z = tz;
     }
     *(Tri3i *)&sp174 = *(Tri3i *)&sp9C;
+    if (1) {}
     *(Tri3i *)&spC0 = *(Tri3i *)&sp174;
 
     basePtr = (f32 *)(*(s32 *)((int)arg1 + 0x30) + 0xB4);
