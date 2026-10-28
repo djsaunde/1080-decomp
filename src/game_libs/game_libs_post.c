@@ -16716,8 +16716,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00033BE4);
 // accesses may alias, so uopt keeps the source store-before-load order (cap b,
 // incl. the missing delay nop), and the g-relative 0x28 read is not hoisted out
 // of the flush loop (cap a). The flags parameter is reused as the chunk length
-// (target s0: flags copy, then len). Residual: frame 64 vs 80 and the first
-// call's a1 / delay-slot schedule.
+// (target s0: flags copy, then len). An unused `s32 pad[4]` declared FIRST
+// gives the target frame 80 (98.70 -> 98.71; declared last it is dropped).
+// Residual (7 words): the dst / rem parameter-copy order around the first
+// beqz and the first call's a1 / delay-slot schedule.
 #ifdef NON_MATCHING
 
 
@@ -16740,6 +16742,7 @@ extern u8 gl_ref_0001E37C;              /* baked USO data sym */
 extern u8 gl_ref_0001E394;              /* baked USO data sym */
 extern u8 gl_ref_0001E3AC;              /* baked USO data sym */
 void gl_func_00033EB8(s32 dst, u32 flags) {
+    s32 pad[4];
     u8 *base;
     s32 rem;
     s32 tmp;
