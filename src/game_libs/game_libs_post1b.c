@@ -1990,8 +1990,8 @@ void gl_func_00065494(char *arg0) {
             it[0] = (char *)temp_t4;
             var_v0 = 0;
             if (temp_t4 != 0) {
-                it[1] = (char *)FW(temp_t4, 0x4);
                 var_v0 = (char *)FW(temp_t4, 0x0);
+                it[1] = (char *)FW(temp_t4, 0x4);
             }
             var_s0 = var_v0;
         } while (var_v0 != 0);
