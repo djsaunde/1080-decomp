@@ -727,7 +727,8 @@ void game_uso_func_00000B3C(char *arg0) {
     f1 = 1.0; /* double literal: keeps the target mul.s by 1.0f (a 1.0f literal folds it; kit LXV) */
     game_uso_func_00000000_fp(state,
         (f1 * (f32) *(s32 *)(s + 0x260)) / (f32) *(s32 *)((char *)kf + 0x28));
-    switch (*(s32 *)(seg + 0x10)) {
+    ncur = *(s32 *)(seg + 0x10); /* the selector shares ncur's variable (target v1 web) */
+    switch (ncur) {
     case 1:
         pos1.x = *(f32 *)(s + 0xA0);
         pos1.y = *(f32 *)(s + 0xA4);
@@ -747,7 +748,8 @@ void game_uso_func_00000B3C(char *arg0) {
         }
         break;
     }
-    switch (*(s32 *)(seg + 0x0)) {
+    ncur = *(s32 *)(seg + 0x0);
+    switch (ncur) {
     case 1:
         bv = *(char **)(s + 0xF4);
         pos2.x = *(f32 *)(bv + 0xA0);
