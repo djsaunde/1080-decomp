@@ -15360,7 +15360,8 @@ extern f32 D_31A74_tbl[];   /* base-0 f32 table indexed by mode (lui at; addu at
 #define ACCL_31A74 (*(f32 *)((char *)&D_31A74_accl + 0x1CAC0))
 #define ACCS1_31A74 (*(f32 *)((char *)&D_31A74_accs1 + 0x1CAC0))
 #define ACCS2_31A74 (*(f32 *)((char *)&D_31A74_accs2 + 0x1CAC0))
-#define CUR_31A74 (*(int *)((char *)&D_31A74_cur + 0x1CAA8))
+extern int D_31A74_curv;   /* agent-c run 183: pinned at 0x1CAA8 itself (target addiu v0,%lo + lw/sw 0(v0)) */
+#define CUR_31A74 D_31A74_curv
 void gl_func_00031A74(int mode, f32 v, s8 sel) {
     f32 acc;
     f32 r;
