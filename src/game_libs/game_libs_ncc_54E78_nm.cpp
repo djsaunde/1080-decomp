@@ -5,7 +5,8 @@
  * stored to the sp+80 return temporary, lw/sw copies into sp+100 / the sp+44 by-value set() parameter, member
  * stores to a at sp+136) and k = 2 a.n, then the current-matrix global (&D_00000000 + 0xE4) = &mtx.
  * The diagonal ones are an int inline `i1()` (each use folds to its own 1.0f after candidate selection: length
- * = target). cfe body 86.62 -> 91.07, length = target. Residual: frame 128 vs 152 (the return / parameter temporaries sit
+ * = target). cfe body 86.62 -> 91.07, length = target. [run 203: frame and every home now = target (cp(), u, t);
+ * only the FP colouring / shared 1.0f below is left.] Old residual: frame 128 vs 152 (the return / parameter temporaries sit
  * 8-24 bytes low) and the 1.0f constants still share one FP register.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
@@ -24,7 +25,9 @@ struct M4 { f32 m[4][4]; void ident(); };
 extern "C" char D_00000000[];
 struct Obj { char pad[300]; M4 mtx; void reflect(const Plane &p); };
 void Obj::reflect(const Plane &p) {
+    volatile int u; /* agent-g run 203: homed above a (the target's 4 bytes at sp+148; a's home is always frame - 12 without it) */
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
+    { V3 t; } /* run 203: 12 unreferenced bytes below a (63964 rule): frame 152, a at sp+136 = target */
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.y * p.n.x);
