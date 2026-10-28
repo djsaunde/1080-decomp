@@ -838,8 +838,8 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
                     E68_END(E68_NEXTB(m));
-                    vidx += 4;
                     uls += 64;
+                    vidx += 4;
                 }
                 ult += 32;
             }
@@ -859,7 +859,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         E68_W(E68_NEXT(m), 0xE8000000, 0);
         E68_W(E68_NEXT(m), 0xF5000100, 0x07000000);
         E68_W(E68_NEXT(m), 0xE6000000, 0);
-        E68_W(E68_NEXT(m), 0xF0000000, 0x073FC000);
+        E68_W(E68_NEXT(m), 0xF0000000, 0x073FC000); if (1) {}
         E68_W(E68_NEXTB(m), 0xE7000000, 0);
         vp = buf;
         n = import_8001FFA0[0] / 32;
