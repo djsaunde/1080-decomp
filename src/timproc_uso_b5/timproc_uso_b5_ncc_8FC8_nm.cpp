@@ -150,7 +150,7 @@ typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
 inline void *operator new(unsigned n) { return timproc_uso_b5_func_055750(n); }
-struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void operator=(V3 v) { x = v.x; y = v.y; z = v.z; } };
+struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void seti(int a, int b, int c) { x = a; y = b; z = c; } /* run 196: int-param zeros (kit CLVIII) */ void operator=(V3 v) { x = v.x; y = v.y; z = v.z; } };
 struct Node { char p[0x10]; V3 pos; void setPos(V3 v) { pos = v; } };
 struct Fl { int v; void clr(int m) { v &= ~m; } };
 struct B { int f0; int flag; int f8; char *name; char list[4]; B *parent; Fl fl; char p1c[0x28 - 0x1C];
@@ -189,7 +189,7 @@ struct WA : B2 { WFIELDS
         name = timproc_uso_b5_D_807FEC10 + 0x13A0;
         w = new W16C(timproc_uso_b5_D_807FEC18 + 0x13A8);
         addChild(w);
-        w->pos.set(0.0, 0.0, 0.0);
+        w->pos.seti(0, 0, 0);
         f124 = 1.0f;
         volatile int sb = FW(f8fc8_ee6c_sb1, 4) & 0x80000;
         { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; x &= ~1; x &= 0xFFFDFFFF; x |= 0x2000; x &= ~2; FW(import_800664C4, 4) = x; }
@@ -232,7 +232,7 @@ struct WC : B2 { WFIELDS
         name = timproc_uso_b5_D_807FED9C + 0x152C;
         w = new W16C(timproc_uso_b5_D_807FEDA4 + 0x1534);
         addChild(w);
-        w->pos.set(0.0, 0.0, 0.0);
+        w->pos.seti(0, 0, 0);
         f124 = 1.0f;
         volatile int sb = FW(f8fc8_ee6c_sb3, 4) & 0x80000;
         { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
