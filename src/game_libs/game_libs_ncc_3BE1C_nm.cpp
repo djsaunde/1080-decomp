@@ -16,7 +16,11 @@
  * (87.55 -> 88.59). cfe 77.27 -> 88.59 local, 1560 bytes (target 1568, cfe 1528). Residual: the face pointer
  * is not copied into s0 after the face() expansion, off spills to sp+76 (target sp+84), r is not copied into a0, the first
  * inner MAX is evaluated as two arms (the target pre-assigns one before the branch) and the edge-loop
- * schedule. Still NON_MATCHING. */
+ * schedule. agent-c run 193 (decode): the edge loop computes dx / dy (qa / qb minus the first vertex) BEFORE
+ * ex / ey: the target loads v0[a] and v0[b] together and converts both before the v1[] reads; the loop block
+ * now aligns word-for-word (up to colours): 88.59 -> 94.9 local, 1560 -> 1552 bytes (target 1568: away,
+ * flagged; the deficit is the missing face / r copies and the two-arm inner MAX listed above).
+ * Still NON_MATCHING. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
@@ -112,10 +116,10 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                     s16 *v0 = vt[fv[1]];
                     s16 *v1 = vt[f->vi[*nx]];
                     nx++;
-                    s16 ex = v1[a] - v0[a];
-                    s16 ey = v1[b] - v0[b];
                     s16 dx = (int)(qa - v0[a]);
                     s16 dy = (int)(qb - v0[b]);
+                    s16 ex = v1[a] - v0[a];
+                    s16 ey = v1[b] - v0[b];
                     if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0;
                 } while (ok && (fv++, nx < D_3BE1C_c + 3));
             }
