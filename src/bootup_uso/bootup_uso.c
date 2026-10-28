@@ -7355,10 +7355,10 @@ void func_0000B75C(char *arg0) {
                 } else {
                     var_f0 = *(f32 *)((char *)(arg0) + 0x3C8);
                 }
-                *(f32 *)((char *)(arg0) + 0x318) = (f32) (*(f32 *)((char *)(arg0) + 0x318) + (*(f32 *)((char *)(arg0) + 0x318) * *(f32 *)((char *)(arg0) + 0x558) * var_f0));
+                *(f32 *)((char *)(arg0) + 0x318) += *(f32 *)((char *)(arg0) + 0x318) * *(f32 *)((char *)(arg0) + 0x558) * var_f0;
             }
             if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < D_00000908) {
-                sp60 *= 2.0f;
+                sp60 *= 2; /* run 193: int 2 keeps the target's `lui 0x4000; mtc1; mul.s` (cfe folds `* 2.0f` to add.s) */
             }
             var_a0 = arg0 + 0xCC;
         } else {
