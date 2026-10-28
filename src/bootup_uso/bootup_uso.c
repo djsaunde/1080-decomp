@@ -7293,7 +7293,7 @@ void func_0000B75C(char *arg0) {
         *(f32 *)((char *)(arg0) + 0x308) = 1.0f;
         if ((*(s32 *)((char *)(*(s32 *)((char *)(arg0) + 0x800)) + 0x10) & 0x200) && (*(s32 *)((char *)(arg0) + 0x9A8) & 1)) {
             temp_v0_2 = *(s16 *)((char *)(arg0) + 0xA6C);
-            *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1);
+            *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1); if (1) {}
             if (temp_v0_2 >= 0xB) {
                 temp_f0_2 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * D_000008E8));
                 temp_f12_2 = D_000008E0; /* run 182 (lever-sweep order) */
