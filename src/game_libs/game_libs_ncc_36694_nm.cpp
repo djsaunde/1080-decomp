@@ -8,19 +8,23 @@
  * + ...)) instead of n.dot(p): -> 85.80 standalone, length unchanged.
  * agent-c run 190 (lever-sweep + order grid): the flip's negations in y, z, x order and the fallback axis's
  * zero stores y before z: 85.80 -> 85.95 standalone, length unchanged.
+ * agent-c run 201 (sibling port): the V3 kit of the exact 64388 donor (P3 base, ctor through set(), FREE
+ * operators on const V3 & parameters, a named `f32 k = s` in operator/ only): 85.95 -> 87.90 standalone,
+ * length 716 -> 712 = target.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 extern "C" {
 extern f32 gl_sqrtf_36694(f32);
 }
-struct V3 { f32 x, y, z;
+struct P3 { f32 x, y, z; };
+struct V3 : P3 {
     V3() {}
-    V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
-    V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
-    V3 operator/(f32 s) const { return V3(x / s, y / s, z / s); }
-    V3 operator-(V3 o) const { return V3(x - o.x, y - o.y, z - o.z); }
-    f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; }
+    V3(f32 a, f32 b, f32 c) { set(a, b, c); }
+    void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
 };
+inline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, a.z - b.z); }
+inline V3 operator*(const V3 &a, f32 s) { return V3(a.x * s, a.y * s, a.z * s); }
+inline V3 operator/(const V3 &a, f32 s) { f32 k = s; return V3(a.x / k, a.y / k, a.z / k); }
 extern "C" { extern void gl_normalize_36694(V3 *); }
 struct Obj { V3 perp(V3 p, V3 n); };
 V3 Obj::perp(V3 p, V3 n) {
