@@ -28,9 +28,9 @@ struct V3 { f32 x, y, z;
 #define KV (*(V3 *)D_00000000F) /* collision kvec (&D + 0x128) */
 struct Cam { char p[0xA0]; V3 pos; char pac[0xB4 - 0xAC]; char mtx[1]; };
 extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
-    int count;
     f32 dists[8];
     int surfs[8];
+    int count; /* agent-g run 195 (declmove sweep): below dists / surfs */
     f32 hits[8][3];
     count = 0;
     V3 dir;
