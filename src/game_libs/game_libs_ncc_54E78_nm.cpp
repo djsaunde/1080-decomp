@@ -25,7 +25,7 @@ void Obj::reflect(const Plane &p) {
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y);
-    mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
+    mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z); if (1) {} /* agent-g run 190: lever-sweep bbsplit (91.01 -> 91.23) */
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
     mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
