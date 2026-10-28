@@ -72,11 +72,11 @@ void Obj::run() {
         gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, 1, f, buf, 0, 0, 8, 8, 8, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
-        int f = (m104 & 2) != 0;
-        Sub *sb = sub;
         int m = m78;
+        Sub *sb = sub;
         void *pf = sb->mF0;
         int m4 = m & 4;
+        int f = (m104 & 2) != 0;
         if (f) f = (m & 2) != 0;
         int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8;
         gl_func_00034458(dl, s1, pf, m4, f, mDC, c0, c4, b8, bc, sb8, m1B0);
