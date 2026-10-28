@@ -5166,6 +5166,10 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_NM_DONOR)
 GAMEUSO_7C1C_NM_DONOR := build/src/game_uso/game_uso_ncc_7C1C_nm.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007C1C=$(GAMEUSO_7C1C_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_7C1C_NM_DONOR)
+# 8CD8: NM-only NCC comparison donor (C++ value-class rewrite of the cfe NM body, agent-c run 199).
+GAMEUSO_8CD8_NM_DONOR := build/src/game_uso/game_uso_ncc_8CD8_nm.cpp.o
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00008CD8=$(GAMEUSO_8CD8_NM_DONOR)
+build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_8CD8_NM_DONOR)
 build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
 build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
