@@ -7203,14 +7203,14 @@ extern void bu_b75c_mvf(char *, char *, f32, char *);  /* (dst, src, single floa
 extern f64 D_000008C8, D_000008D0, D_000008D8, D_000008E8, D_000008F8, D_00000900, D_00000908;
 extern char D_00008170[];
 void func_0000B75C(char *arg0) {
-    f32 sp6C[3];
-    f32 sp60;
     f32 sp5C;
     f32 sp58;
     f32 sp54;
+    f32 sp6C[3];
     char *sp28;
     char *sp24;
     f32 sp1C;
+    f32 sp60; /* run 201: sp6C / sp60 declaration grid (lever-sweep declmove hit) */
     f32 temp_f0_2;
     f32 temp_f12;
     f32 temp_f12_2;
