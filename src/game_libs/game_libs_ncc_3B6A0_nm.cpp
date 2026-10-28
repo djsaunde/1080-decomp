@@ -45,7 +45,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
         do {
             TriB *t = triAt(off);
             int inside = 1;
-            s16 (*verts)[3] = c->verts; if (1) {}
+            s16 (*verts)[3] = c->verts;
             Face *f;
             Col *cc = c;
             if (cc->remap != 0) {
