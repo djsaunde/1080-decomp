@@ -19,7 +19,8 @@
  * Run 184 (kit CXXXIII): the two sprite widths through an inline `Spr::width()` that copies the image pointer
  * into a named local (the timer-HUD family rewrite): its temporaries take the frame words three of the four
  * volatile pads stood in for (pad0 / pad0b / pad1 dropped), then `if (1) {}` after `flag = 0` (lever-sweep):
- * 98.62 -> 99.25 standalone.
+ * 98.62 -> 99.25 standalone. Then `tim` de-named (SPR(0x788) at both uses) and the volatile pad between n and x
+ * replaced by two volatile pads just above min / sec (their homes 96 / 92 = target): 99.27.
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -44,23 +45,23 @@ extern "C" {
 void mgrproc_uso_func_000023FC(char *arg0) {
     f32 one[4];
     u8 buf[0x80];
-    char *p770;
+     char *p770;
     s32 t;
     s32 w;
     s32 xoff;
-    s32 vt;
+     s32 vt;
     u8 c;
     s32 flag;
     char *panel;
     s32 i;
-
+    volatile s32 padE;
+    volatile s32 padF;
     s32 min;
     s32 sec;
 
     s32 n;
-    volatile s32 pad2;
+
     s32 x;
-    char *tim;
 
     one[0] = 1.0f;
     one[1] = 1.0f;
@@ -94,17 +95,16 @@ void mgrproc_uso_func_000023FC(char *arg0) {
         t -= sec * 1000;
         t = t / 10;
         import_0024EAA0(&import_8024CAF8, (s32) (255.0f * *(f32 *)(arg0 + 0x7A0)), arg0 + 0x2A8, arg0 + 0x2CC);
-        tim = arg0 + 0x788;
-        import_0024F2C8(tim);
+        import_0024F2C8(SPR(0x788));
         w = SPR(0x788)->width() / 12;
-        p770 = arg0 + 0x770;
+         p770 = arg0 + 0x770;
         import_0024F2C8(p770);
         mgrproc_uso_func_083574(buf, &import_80264A10 + 0x640, min, sec, t);
         n = mgrproc_uso_func_07C610(buf);
-        vt = SPR(0x770)->width();
+         vt = SPR(0x770)->width();
         xoff = 0xA0 - ((vt + (n * 13) + 8) / 2);
         x = vt + xoff + 8;
-        import_0024F34C(p770, xoff, 0xBE, 2);
+        import_0024F34C( p770, xoff, 0xBE, 2);
         for (i = 0; i < n; i++) {
             c = buf[i];
             if (c == 0x5B) {
@@ -114,7 +114,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
             } else {
                 buf[i] = c - 0x30;
             }
-            import_0024F75C(tim, x + i * 13, 0xBE - (*(s16 *)((char *) FW(arg0, 0x798) + 0x22) / 2), buf[i] * w, w);
+            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (*(s16 *)((char *) FW(arg0, 0x798) + 0x22) / 2), buf[i] * w, w);
         }
     }
     flag = 0; if (1) {}
