@@ -106,8 +106,8 @@ void Obj::run()
             pend = cur;
             if (cur != 0) {
                 if (mC != 0) {
-                    keep = 1;
                     gl_func_00034458();
+                    keep = 1; /* after the call (local; lever-sweep order 95.45 -> 95.71) */
                 } else {
                     m18 = cur;
                     gl_func_00034458();
