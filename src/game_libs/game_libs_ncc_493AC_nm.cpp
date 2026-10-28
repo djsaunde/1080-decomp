@@ -14,6 +14,8 @@
  * Seven `pad` words at the top are still unexplained named homes (target: 10 words above `it`; o, j, i are the other three).
  * Still NON_MATCHING: build/non_matching/ only.
  * agent-c run 179: `hit = 1` after the hit() call (adjacent-statement swap sweep): 96.63 -> 96.90.
+ * agent-c run 206 (agent-g kit CLXXIX `+ 0` lever): the second loop's test as `(it.next() + 0)` -- no code, but edg
+ * shares its temporaries differently (local 96.56 -> 96.81, length unchanged). The first loop's test does not move.
  */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8;
 extern "C" {
@@ -126,7 +128,7 @@ int Mgr::run() {
     }
     Rec rec;
     it = arr.iter();
-    while (it.next()) {
+    while ((it.next() + 0)) { /* run 206: folded + 0 (kit CLXXIX) */
         o = it.cur();
         Ctx *g = *(Ctx **)((char *)&D_493AC_d + 0x214);
         o->ctx6C = g;
