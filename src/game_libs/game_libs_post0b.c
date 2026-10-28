@@ -4242,52 +4242,59 @@ extern int D_00000000;
 // template-0xEC84 arm that stores o into *(&D_0 + key*4). Out-of-range opcodes
 // fall to cb(0xEC9C, o->0xC). Byte-match deferred (jump table + jal-0 cbs
 // unsymbolized); arm bodies are the structural reconstruction.
+/* agent-c run 188: this cfe body is the NM object again (the NCC donor is retired: NCC never
+ * emits a jump table, kit CLIV; the target's `sltiu at,t6,9; jr t6` is cfe). Decode fixes read
+ * from the target: the 0x66 arm stores the looked-up RECORD to o->0x14 (target `sw v0,36(sp)`
+ * across the call, `lw v0,36(sp)`, `sw v0,20(s0)`), not the call's return; the report takes
+ * (code, o->0xC); the key is unsigned (`sltiu at,a3,40`); the three format strings are distinct
+ * symbols (each arm has its own `lui a0,0x2`; one &D_00000000 base CSE'd the lui into the head);
+ * the arms return and the report follows the switch (case 0x6C makes the 9-entry table).
+ * Residual: cfe never colours `code` across the jump-table switch (memory home + reload; the
+ * target keeps it in v0) and keeps o in a3 with call spills (target s0) -- NCC's allocation. */
+extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
 void gl_func_00038A28(char *o, char *c) {
-    int code = *(int *)c;
-    unsigned int i = (unsigned int)(code - 0x64);
     int *p;
-    int key;
-    int r;
-    if (i >= 9) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001EC9C, *(int *)(o + 0xC));
-        return;
-    }
+    unsigned int key;
+    char *r;
+    int code = *(int *)c;
     switch (code) {
         case 0x64:
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             *(int *)(o + 0x20) = *p;
-            break;
+            return;
         case 0x65:
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             *(int *)(o + 0x0C) = *p;
-            break;
+            return;
         case 0x66:
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000((char *)&D_00000000 + 0x0001EC6C, key);
+                gl_func_00000000(D_0001EC6C, key);
             }
-            r = gl_func_00000000(*(char **)((char *)&D_00000000 + key * 4) + 0x10, o);
+            r = *(char **)((char *)&D_00000000 + key * 4);
+            gl_func_00000000(r + 0x10, o);
             if (*(int *)(o + 0x14) != 0) {
                 *(int *)(o + 0x4) = 1;
             }
-            *(int *)(o + 0x14) = r;
-            break;
+            *(char **)(o + 0x14) = r;
+            return;
         case 0x67:
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000((char *)&D_00000000 + 0x0001EC84, key);
+                gl_func_00000000(D_0001EC84, key);
             }
             *(char **)((char *)&D_00000000 + key * 4) = o;
-            break;
-        default:
-            break;
+            return;
+        case 0x6C:
+            return;
     }
+    gl_func_00000000(D_0001EC9C, code, *(int *)(o + 0xC));
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038A28);
