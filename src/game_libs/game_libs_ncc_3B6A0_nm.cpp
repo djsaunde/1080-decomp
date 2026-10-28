@@ -41,7 +41,8 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
     unsigned int count = c->ntri;
     if (count != 0) {
         int off = 0;
-        for (unsigned int i = 0; i < count; i++, off += 12) {
+        unsigned int i = 0;
+        do {
             TriB *t = triAt(off);
             int inside = 1;
             s16 (*verts)[3] = c->verts; if (1) {}
@@ -80,7 +81,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                     count = c->ntri;
                 }
             }
-        }
+        } while (++i, off += 12, i < count);
     }
     return nfound;
 }
