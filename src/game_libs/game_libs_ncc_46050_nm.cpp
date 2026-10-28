@@ -1,7 +1,8 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046050 (agent-c run 152): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), both the entry read and the loop-bottom read, 86.48 -> 86.91.
  * agent-c run 182: the character dispatch is a `switch (ch)` (edg compare chain `beq 10 / beq 9 / beql 0x30 / b default`
  * with the case bodies out of line, as the target) whose newline case jumps past the advance (`goto next`), and x is read
- * after the switch: 86.91 -> 89.51, length 1832 -> 1840 (target 1848).
+ * after the switch: 86.91 -> 89.54, length 1832 -> 1840 (target 1848); charw read before lineh (s1 / s2 as the
+ * target): -> 89.63.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -36,8 +37,8 @@ extern "C" s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
     void *_q;
     int _n;
 
-    lineh = FI(arg0, 0x228);
     charw = FI(arg0, 0x224);
+    lineh = FI(arg0, 0x228);
 
     if (FI(arg0, 0x28C) == 0) {
         EMIT(0xE7000000, 0); if (1) {}
