@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for timproc_uso_b3_func_000013B8 (0x2A8 / 170 words):
+/* IDO 7.1 NCC (C++) donor for timproc_uso_b3_func_000013B8 (0x2A8 / 170 words), EXACT:
  * timer HUD draw (twin of arcproc_uso_func_000016F4 / timproc_uso_b1_func_00001340, same family as
  * mgrproc 23FC). agent-g run 172 (kit CXVII): the cfe NM body as plain C++, 162 of 171 words (89.18).
  * agent-g run 184 (kit CXXXIII): the five panels are sprite MEMBER objects of the owner (0x18 bytes each,
@@ -19,7 +19,14 @@
  * only tim's width keeps the named local (its copy is the target's v0). That drops 4 named homes, so three
  * unreferenced volatile pads in the nested block restore the spill words (100 / 96 / 88 = target).
  * 99.04 -> 99.52 standalone. LEFT: pA-copy / pB-width t0 <-> t4.
- * NM object only. */
+ * agent-g run 197 (kit CLXI): EXACT. edg pools inline temporaries into function-scope variables and
+ * uopt numbers them (itab bits) by first reference; the pB width and pB copy tied at equal priority and
+ * coloured copy first. `+ 0 * arg0->tim.pw()` on the w statement (folded, no code) makes edg create the
+ * pw() temporaries there, so the sum's pB result re-uses a pool variable first referenced in that
+ * statement (lower bit than its copy): width t4 / copy t5 as in the target. The loop height reads
+ * `tim.img->gh()` (its Img temp shares the pA copy's variable: t0), and xoff / xb / xa / x are declared
+ * before the panel pointers so their homes stay on 148 / 144 / 136.
+ * Spliced over the placeholder in timproc_uso_b3.c via REPLACE_FUNC_BODY. */
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
 extern char D_b3_1240_base;
@@ -51,23 +58,24 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     if (FL(arg0)->f & 2) {
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
         timproc_uso_b3_func_000000B0(&arg0->tim); if (1) {}
-        s32 w = arg0->tim.width() / 12;
+        s32 w = arg0->tim.width() / 12 + 0 * arg0->tim.pw();
         timproc_uso_b3_func_000000B0(&arg0->sA);
         timproc_uso_b3_func_000000B0(&arg0->sB);
         timproc_uso_b3_func_000000B0(&arg0->sC);
         timproc_uso_b3_func_000000B0(buf, &D_b3_1240_base + 0x3D8, arg2);
         s32 n = timproc_uso_b3_func_000000B0(buf);
         {
+        s32 xoff, xb, xa, x;
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
-        s32 xoff = 0xA0 - (pC->pw() + n * 13 + pA->pw() + pB->pw() + 0x10) / 2;
-        s32 xb = pB->pw() + xoff + 4;
-        s32 xa = pA->pw() + xb + 4;
-        s32 x = pC->pw() + xa + 8;
+        xoff = 0xA0 - (pC->pw() + n * 13 + pA->pw() + pB->pw() + 0x10) / 2;
+        xb = pB->pw() + xoff + 4;
+        xa = pA->pw() + xb + 4;
+        x = pC->pw() + xa + 8;
         volatile s32 pad0, pad1, pad2;
         timproc_uso_b3_func_000000B0(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
-            timproc_uso_b3_func_000000B0(&arg0->tim, x + i * 13, arg1 - arg0->tim.height() / 2 + 0x32, buf[i] * w, w);
+            timproc_uso_b3_func_000000B0(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
         }
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
         timproc_uso_b3_func_000000B0(&arg0->sA, xb, arg1 + 0x32, 2);

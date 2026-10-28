@@ -1,0 +1,33 @@
+{
+  "function_name": "timproc_uso_b3_func_000013B8",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-28T13:28:14.578121+00:00",
+  "end_time": "2026-10-28T13:28:14.578121+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T13:28:14.578121+00:00",
+      "assistant_text": "C++ donor: timer-HUD draw with Spr/Img inline members; a folded `+ 0 * tim.pw()` term sets the edg pool-temp order so the pB width colours before its copy (kit CLXI).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 170,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for timproc_uso_b3_func_000013B8 (0x2A8 / 170 words), EXACT:\n * timer HUD draw (twin of arcproc_uso_func_000016F4 / timproc_uso_b1_func_00001340, same family as\n * mgrproc 23FC). agent-g run 172 (kit CXVII): the cfe NM body as plain C++, 162 of 171 words (89.18).\n * agent-g run 184 (kit CXXXIII): the five panels are sprite MEMBER objects of the owner (0x18 bytes each,\n * image pointer at +0x10, image width / height s16 at +0x20 / +0x22) and the widths come from an inline\n * `Spr::width()` that copies the image pointer into a named local first (`Img *i = img; return i->w;`):\n * those inline locals are the target's register copies (`move ra,t3` ...) and re-reads of the widths after\n * the signed /2; no volatile pads (frame 320, target 328). Length = target (680), 89.18 -> 97.57 standalone.\n * Then the tim panel's width / height through the same members (`tim.width() / 12`, `tim.height()`, the\n * latter with its own named image pointer) -- frame 328 = target, 97.57 -> 98.95 -- and `if (1) {}` after the\n * tim begin call (lever-sweep, 99.01). LEFT: xb / xoff / x homes and the spill slots 4-44 bytes off, the int\n * temp ring one register behind (t2 / t3 where the target has t3 / t1).\n * agent-g run 185 (kit CXXXV): x / xb / xoff are block locals of a NESTED block opened after the count call,\n * with the three width panels named there (`Spr *pC = &arg0->sC, ...`; the width() calls go through them, the\n * draw calls keep `&arg0->sX`): edg allocates a block's named locals at block entry, below the enclosing\n * block's temporaries, so the homes land on the target's 136 / 144 / 148. LEFT: spill slots 4 low, t-ring.\n * agent-g run 196 (kit CLIX): the image pointer as the `this` of tiny Img members (kit CLVII) instead of a\n * named inline local: height() and the three panel widths (`pw()`) go through `img->gh()` / `img->gw()`;\n * only tim's width keeps the named local (its copy is the target's v0). That drops 4 named homes, so three\n * unreferenced volatile pads in the nested block restore the spill words (100 / 96 / 88 = target).\n * 99.04 -> 99.52 standalone. LEFT: pA-copy / pB-width t0 <-> t4.\n * agent-g run 197 (kit CLXI): EXACT. edg pools inline temporaries into function-scope variables and\n * uopt numbers them (itab bits) by first reference; the pB width and pB copy tied at equal priority and\n * coloured copy first. `+ 0 * arg0->tim.pw()` on the w statement (folded, no code) makes edg create the\n * pw() temporaries there, so the sum's pB result re-uses a pool variable first referenced in that\n * statement (lower bit than its copy): width t4 / copy t5 as in the target. The loop height reads\n * `tim.img->gh()` (its Img temp shares the pA copy's variable: t0), and xoff / xb / xa / x are declared\n * before the panel pointers so their homes stay on 148 / 144 / 136.\n * Spliced over the placeholder in timproc_uso_b3.c via REPLACE_FUNC_BODY. */\ntypedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;\nextern \"C\" {\nextern char D_b3_1240_base;\nint timproc_uso_b3_func_000000B0(...);\n}\nstruct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };\nstruct Spr {\n    s32 height() { return img->gh(); }\n    char p[0x10]; Img *img; char p14[4];\n    s32 width() { Img *i = img; return i->w; }\n    s32 pw() { return img->gw(); }\n};\nstruct Flags { char p[0x14]; int f; };\nstruct Obj {\n    char p0[0x2A8]; char c2A8[0x24]; char c2CC[0x6B4 - 0x2CC];\n    Spr sB; Spr sA; Spr sX; Spr sC; Spr tim;\n    f32 alpha;\n};\n#define FL(o) (*(Flags **)((char *)(o) + 0x528))\nextern \"C\" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {\n    f32 one[4];\n    u8 buf[0x80];\n    s32 i;\n\n    one[0] = 1.0f;\n    one[1] = 1.0f;\n    one[2] = 1.0f;\n    one[3] = 1.0f;\n    if (FL(arg0)->f & 2) {\n        timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);\n        timproc_uso_b3_func_000000B0(&arg0->tim); if (1) {}\n        s32 w = arg0->tim.width() / 12 + 0 * arg0->tim.pw();\n        timproc_uso_b3_func_000000B0(&arg0->sA);\n        timproc_uso_b3_func_000000B0(&arg0->sB);\n        timproc_uso_b3_func_000000B0(&arg0->sC);\n        timproc_uso_b3_func_000000B0(buf, &D_b3_1240_base + 0x3D8, arg2);\n        s32 n = timproc_uso_b3_func_000000B0(buf);\n        {\n        s32 xoff, xb, xa, x;\n        Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;\n        xoff = 0xA0 - (pC->pw() + n * 13 + pA->pw() + pB->pw() + 0x10) / 2;\n        xb = pB->pw() + xoff + 4;\n        xa = pA->pw() + xb + 4;\n        x = pC->pw() + xa + 8;\n        volatile s32 pad0, pad1, pad2;\n        timproc_uso_b3_func_000000B0(&arg0->sC, xa, arg1 + 0x32, 2);\n        for (i = 0; i < n; i++) {\n            buf[i] -= 0x30;\n            timproc_uso_b3_func_000000B0(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);\n        }\n        timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);\n        timproc_uso_b3_func_000000B0(&arg0->sA, xb, arg1 + 0x32, 2);\n        timproc_uso_b3_func_000000B0(&arg0->sB, xoff, arg1 + 0x32, 2);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/timproc_uso_b3/timproc_uso_b3_ncc_13B8.cpp",
+    "asm_path": "asm/nonmatchings/timproc_uso_b3/timproc_uso_b3/timproc_uso_b3_func_000013B8.s",
+    "segment": "timproc_uso_b3",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "Word-exact after link; ROM cmp clean; verify-blocks 6/6; report 100."
+  }
+}

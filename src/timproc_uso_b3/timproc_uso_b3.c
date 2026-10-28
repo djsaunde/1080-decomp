@@ -780,11 +780,12 @@ void timproc_uso_b3_func_00001240(char *a0) {
     }
 }
 
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-/* NM object: replaced by the NCC comparison donor timproc_uso_b3_ncc_13B8_nm.cpp (agent-g run 172). */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/timproc_uso_b3/timproc_uso_b3_ncc_13B8.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 197, kit CLXI). The history
+ * below describes the earlier cfe decode (removed). */
+void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
+    volatile s32 r = arg1;
+}
 /* timproc_uso_b3_func_000013B8: 2026-10-24 agent-g run 155: body replaced by a port of
  * arcproc_uso_func_000016F4's C (opcode-identical twin, offsets -0x50 / -0x38, flag 4 -> 2):
  * 80.36 -> 85.36 (= 16F4's score). Notes below describe the previous body.
@@ -817,81 +818,6 @@ void timproc_uso_b3_func_00001240(char *a0) {
  * buf an s8 web in b1 (5-arg sprintf, higher pressure) but remat here.
  * Next: find what prices an lda temp into a callee-saved reg at 2 refs
  * (uopt cupcosts?); count -> s3 should then cascade the tail exact. */
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
-    f32 sp138[4];
-    u8 spB8[0x80];
-    s32 sp88;
-    f32 *temp_a2;
-    s32 temp_a1;
-    s32 temp_s1_2;
-    s32 temp_s2_2;
-    s32 temp_s5;
-    s32 temp_v0;
-    s32 var_s1;
-    s32 var_s2;
-    u8 *temp_s0;
-    u8 *temp_s1;
-    u8 *temp_s2;
-    u8 *temp_s7;
-    u8 *var_s0;
-    char *temp_t1;
-    char *temp_t2;
-    char *temp_t3;
-    u8 *saved64;
-    u8 *saved60;
-
-    sp138[0] = 1.0f;
-    sp138[1] = 1.0f;
-    sp138[2] = 1.0f;
-    sp138[3] = 1.0f;
-    if (FW(FW(arg0, 0x528), 0x14) & 2) {
-        timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x72C))), (int)arg0 + 0x2A8, (int)arg0 + 0x2CC);
-        temp_s7 = (int)arg0 + 0x714;
-        timproc_uso_b3_func_000000B0(temp_s7);
-        temp_s1 = (int)arg0 + 0x6CC;
-        temp_s5 = *(s16 *)((char *)FW(arg0, 0x724) + 0x20) / 12;
-        timproc_uso_b3_func_000000B0(temp_s1); if (arg2) {}
-        temp_s2 = (int)arg0 + 0x6B4;
-        timproc_uso_b3_func_000000B0(temp_s2);
-        temp_s0 = (int)arg0 + 0x6FC;
-        timproc_uso_b3_func_000000B0(temp_s0);
-        timproc_uso_b3_func_000000B0(spB8, (char *)&D_b3_1240_base + 0x3D8, arg2);
-        saved64 = temp_s1;
-        saved60 = temp_s2;
-        temp_v0 = timproc_uso_b3_func_000000B0(spB8);
-        temp_t3 = FW(arg0, 0x70C);
-        temp_t1 = FW(arg0, 0x6DC);
-        temp_t2 = FW(arg0, 0x6C4);
-        temp_a2 = (int)arg1 + 0x32;
-        temp_s1_2 = 0xA0 - ((s32) (*(s16 *)(temp_t3 + 0x20) + (temp_v0 * 0xD) + *(s16 *)(temp_t1 + 0x20) + *(s16 *)(temp_t2 + 0x20) + 0x10) / 2);
-        /* width re-reads through the arg0 fields: the target re-loads the lh (kit LXV) */
-        temp_s2_2 = *(s16 *)((char *)FW(arg0, 0x6C4) + 0x20) + temp_s1_2 + 4;
-        temp_a1 = *(s16 *)((char *)FW(arg0, 0x6DC) + 0x20) + temp_s2_2 + 4;
-        sp88 = *(s16 *)((char *)FW(arg0, 0x70C) + 0x20) + temp_a1 + 8;
-        timproc_uso_b3_func_000000B0(temp_s0, temp_a1, temp_a2, (char *)2);
-        var_s0 = spB8;
-        if (temp_v0 > 0) {
-            var_s1 = 0;
-            var_s2 = sp88; if (arg0) {}
-            do {
-                *var_s0 -= 0x30; if (arg2) {}
-                timproc_uso_b3_func_000000B0(temp_s7, var_s2, (arg1 - (*(s16 *)((char *)FW(arg0, 0x724) + 0x22) / 2)) + 0x32, (char *) (*var_s0 * temp_s5), temp_s5); if (arg2) {}
-                var_s1 += 0xD;
-                var_s0 += 1;
-                var_s2 += 0xD;
-            } while (var_s1 != (temp_v0 * 0xD));
-        }
-        timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32) (255.0f * (*(f32 *)((char *)arg0 + 0x72C))), sp138);
-        timproc_uso_b3_func_000000B0(saved64, temp_s2_2, temp_a2, (char *)2);
-        timproc_uso_b3_func_000000B0(saved60, temp_s1_2, temp_a2, (char *)2);
-    }
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3", timproc_uso_b3_func_000013B8);
-#endif
 
 /* timproc_uso_b3_func_00001660 — EXACT (90/90 words incl. relocs, 2026-07-09).
  * Twin of arcproc_uso_func_0000199C (same 4-level alloc-cascade ctor
