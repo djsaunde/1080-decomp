@@ -34,9 +34,9 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
     s32 i;
     s32 count;
 
-    one[0] = 1.0f;
     one[1] = 1.0f;
     one[2] = 1.0f;
+    one[0] = 1.0f;
     one[3] = 1.0f;
     if (FL(arg0)->f & 1) {
         min = arg2 / 60000;
