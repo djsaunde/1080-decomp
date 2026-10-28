@@ -4023,8 +4023,8 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     int op;
     V3_6808 v4C;
 
-    d4 = 0;
     dc = 0;
+    d4 = 0;
     p = *(int **)(arg1 + 0x40);
     bC = 0;
     b8 = 40;
