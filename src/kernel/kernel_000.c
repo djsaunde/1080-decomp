@@ -1487,7 +1487,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             lo = ((s16 *)p)[1];
             if (hiptr != 0) {
                 v = (hival << 16) + (s16)lo + val; if (1) {} /* run 186 (lever-sweep bbsplit) */
-                *hiptr = (u32)(v - (s16)v) >> 16;
+                *hiptr = (u32)(v - (s16)v) >> 16; if (1) {}
                 hiptr = 0;
             }
             ((s16 *)p)[1] = (hival << 16) + lo + val;
