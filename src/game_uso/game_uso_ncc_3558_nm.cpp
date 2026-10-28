@@ -74,7 +74,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     zero = 0.0f;
     stage = s0->v68;
     {
-        M4 *m = &s0->b0->mtx;
+        M4 *m = &s0->b0->mtx + 0 * (int)(c.getOut()); /* agent-g run 204 (zero-lever-grid): folded `0 * inline()` term re-pools the edg temps, 81.66 -> 85.86 standalone, length unchanged */
         k = m->m[0][2] * stage.x + m->m[1][2] * stage.y + m->m[2][2] * stage.z;
         t = m->m[0][1] * stage.x + m->m[1][1] * stage.y + m->m[2][1] * stage.z;
         mag = m->m[0][0] * stage.x + m->m[1][0] * stage.y + m->m[2][0] * stage.z;
