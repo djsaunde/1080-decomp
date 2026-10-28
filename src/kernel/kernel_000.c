@@ -1443,9 +1443,10 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800018F0);
  * hiptr at 0x28 / 0x34. Then (lever-sweep de-naming, 81.88 -> 93.21) the
  * symbol pointer is not a local: both reads index symtab afresh, which gives
  * the target's base / symtab s3 / s2 and the per-arm `lw a0` delay fills.
- * Left: frame 0x48 vs 0x50 (hiptr 0x30 vs 0x34: the dropped sym local had
- * the slot; no used / unused / volatile spelling restores it without
- * costing words), sltiu 5, val / p loads scheduled after the bound test. */
+ * The frame: cfe gives unreferenced locals a home only by declaration
+ * position -- `info` / `sym` declared (unused) before hiptr restore the
+ * target's 0x50 frame with hiptr / hival at 0x34 / 0x28. Left: sltiu 5,
+ * val / p loads scheduled after the bound test, temp register picks. */
 extern char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1ADC;
@@ -1454,6 +1455,7 @@ typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1A
 s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     UsoUsoRelSym_1ADC_1ADC *symtab;
     s32 type, val, lo;
+    s32 info; UsoUsoRelSym_1ADC_1ADC *sym; /* run 186: unreferenced; their cfe homes give the target's 0x50 frame */
     s16 *hiptr;
     s32 v; /* run 186: declared after hiptr (5040-order grid): hiptr home 0x34 as in the target */
     s32 i;
