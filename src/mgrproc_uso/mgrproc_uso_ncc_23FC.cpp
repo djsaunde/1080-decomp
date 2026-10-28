@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for mgrproc_uso_func_000023FC
+/* IDO 7.1 NCC (C++) donor for mgrproc_uso_func_000023FC, EXACT (run 198, see the end of this comment)
  * (0x454 / 277 words): results-panel draw (alpha panels, mm:ss.cc timer text
  * rendered glyph by glyph, flag panel). agent-g run 172: the cfe NM body
  * ported to C++ (mgrproc is C++, like the other proc USOs).
@@ -34,7 +34,10 @@
  * code): min / sec / n / x homes 96 / 92 / 84 / 76 and the a0 spill 68 = target; the loop height through
  * `img->gh()` (one pool temp) keeps the frame at 288. 99.85 -> 99.88 standalone. Left: the glyph-width image
  * load in v0 (target t0) -- its pool variable gets v0 first (zdbug:6), nothing occupies v0 over its range.
- * Spliced into the NON_MATCHING mgrproc_uso object only. */
+ * Then EXACT: the glyph width and vt through `Spr::pw()` (`img->gw()`: pooled temporaries, reusable, where
+ * width()'s named inline local `Img *i` is a fresh variable per expansion), the loop height back through
+ * `height()`, and one unreferenced volatile word in the n block (restores the x home / spill words):
+ * the glyph image load takes t0. Spliced over the placeholder in mgrproc_uso.c via REPLACE_FUNC_BODY. */
 typedef float f32;
 typedef int s32;
 typedef unsigned char u8;
@@ -51,8 +54,8 @@ int mgrproc_uso_func_07C610(...);
 int mgrproc_uso_func_00000140(...);
 void mgrproc_uso_func_083574(...);
 }
-struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } };
-struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } s32 height() { Img *i = img; return i->h; } };
+struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
+struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } s32 height() { Img *i = img; return i->h; } s32 pw() { return img->gw(); } };
 #define SPR(o) ((Spr *)(arg0 + (o)))
 extern "C" {
 void mgrproc_uso_func_000023FC(char *arg0) {
@@ -102,14 +105,15 @@ void mgrproc_uso_func_000023FC(char *arg0) {
         t = t / 10;
         import_0024EAA0(&import_8024CAF8, (s32) (255.0f * *(f32 *)(arg0 + 0x7A0)), arg0 + 0x2A8, arg0 + 0x2CC);
         import_0024F2C8(SPR(0x788));
-        w = SPR(0x788)->width() / 12;
+        w = SPR(0x788)->pw() / 12;
         {
         s32 n;
+        volatile s32 pn;
         p770 = arg0 + 0x770;
         import_0024F2C8(p770);
         mgrproc_uso_func_083574(buf, &import_80264A10 + 0x640, min, sec, t);
         n = mgrproc_uso_func_07C610(buf);
-        vt = SPR(0x770)->width();
+        vt = SPR(0x770)->pw();
         {
         s32 x;
         xoff = 0xA0 - ((vt + (n * 13) + 8) / 2);
@@ -124,7 +128,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
             } else {
                 buf[i] = c - 0x30;
             }
-            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (SPR(0x788)->img->gh() / 2), buf[i] * w, w);
+            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (SPR(0x788)->height() / 2), buf[i] * w, w);
         }
         }
         }

@@ -1234,14 +1234,9 @@ void mgrproc_uso_func_00002324(char *a0) {
     *(float *)(a0 + 0x564) = 120.0f;
 }
 
-/* NM object: replaced by the NCC comparison donor mgrproc_uso_ncc_23FC_nm.cpp (agent-g run 172). */
-#ifdef NON_MATCHING
-
-
-
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp,
+ * REPLACE_FUNC_BODY-spliced over the placeholder below (agent-g run 198, kit CLXIII). The history
+ * below describes the earlier cfe decode (removed). */
 /* 2026-07-10 (78.23 -> 83.72 fuzzy): the four `255.0f * FW(arg0, 0x7A0)` alpha
  * expressions used an INT load of field 0x7A0 followed by cvt.s.w; the target
  * emits `lwc1 $f6,1952(s3)` (no convert) -- 0x7A0 is genuinely a FLOAT field.
@@ -1293,108 +1288,8 @@ extern void import_0024F75C();
 extern int mgrproc_uso_func_07C610();
 extern char import_80264A10;
 void mgrproc_uso_func_000023FC(char *arg0) {
-    f32 one[4];
-    u8 buf[0x80];
-    char *p770;
-    volatile s32 pad0;
-    volatile s32 pad1;
-    volatile s32 pad2;
-    volatile s32 pad3;
-    s32 min;
-    s32 sec;
-    s32 n;
-    s32 x;
-    char *tim;
-    s32 i;
-    s32 xc;
-    s32 t;
-    s32 w;
-    s32 xoff;
-    s32 vt;
-    s32 c;
-    s32 flag;
-    char *panel;
-    u8 *p;
-
-    one[0] = 1.0f;
-    one[1] = 1.0f;
-    one[2] = 1.0f;
-    one[3] = 1.0f;
-    if (FW(arg0, 0x4F8) != 2) {
-        import_0024F2C8(&import_80263D30);
-        import_0024E608(&import_80263D30, (s32) (*(f32 *)(arg0 + 0x7A0) * 255.0f), one);
-        import_0024F34C(&import_80263D30, 0xA0, 0x8C, 3);
-    }
-    import_0024EAA0(&import_8024CAF8, (s32) (*(f32 *)(arg0 + 0x7A0) * 255.0f), arg0 + 0x338, arg0 + 0x35C);
-    FW(arg0, 0x508) += 1;
-    if (FW(arg0, 0x4F8) == 0) {
-        panel = arg0 + 0x728;
-        if (mgrproc_uso_func_00000140(FW(arg0, 0x6A8)) != 0) {
-            panel = arg0 + 0x740;
-            if (FW(arg0, 0x508) & 8) {
-                import_0024F2C8(panel);
-                import_0024F34C(panel, 0xA0, 0x78, 3);
-            }
-        } else {
-            import_0024F2C8(panel);
-            import_0024F34C(panel, 0xA0, 0x78, 3);
-        }
-    }
-    if ((FW(arg0, 0x508) & 8) && (FW((char *) FW(arg0, 0x528), 0x14) & 1)) {
-        t = FW((char *) FW(&import_800201D0, 0x138), 0x30);
-        min = t / 60000;
-        t -= min * 60000;
-        sec = t / 1000;
-        t -= sec * 1000;
-        t = t / 10;
-        import_0024EAA0(&import_8024CAF8, (s32) (*(f32 *)(arg0 + 0x7A0) * 255.0f), arg0 + 0x2A8, arg0 + 0x2CC);
-        tim = arg0 + 0x788;
-        import_0024F2C8(tim);
-        w = *(s16 *)((char *) FW(arg0, 0x798) + 0x20) / 12;
-        p770 = arg0 + 0x770;
-        import_0024F2C8(p770);
-        mgrproc_uso_func_083574(buf, &import_80264A10 + 0x640, min, sec, t);
-        n = mgrproc_uso_func_07C610(buf);
-        vt = *(s16 *)((char *) FW(arg0, 0x780) + 0x20);
-        xoff = 0xA0 - (((n * 13) + vt + 8) / 2);
-        x = vt + xoff + 8;
-        import_0024F34C(p770, xoff, 0xBE, 2);
-        p = buf;
-        i = 0;
-        xc = x;
-        if (n > 0) {
-            do {
-                c = *p;
-                if (c == 0x5B) {
-                    *p = 10;
-                } else if (c == 0x5D) {
-                    *p = 11;
-                } else {
-                    *p = c - 0x30;
-                }
-                import_0024F75C(tim, xc, 0xBE - (*(s16 *)((char *) FW(arg0, 0x798) + 0x22) / 2), *p * w, w);
-                i += 13;
-                p += 1;
-                xc += 13;
-            } while (i != (n * 13));
-        }
-    }
-    flag = 0;
-    if ((FW((char *) FW(arg0, 0x528), 0x14) & 1) && (FW(arg0, 0x4FC) != 0) && (FW((char *) FW((char *) FW(&import_800201D0, 0x138), 0x44), 0x38) < 3)) {
-        flag = 1;
-    }
-    import_0024EAA0(&import_8024CAF8, (s32) (*(f32 *)(arg0 + 0x7A0) * 255.0f), arg0 + 0x2F0, arg0 + 0x314);
-    panel = arg0 + 0x758;
-    if (flag != 0) {
-        import_0024F2C8(panel);
-        if (FW(arg0, 0x508) & 8) {
-            import_0024F34C(panel, 0xA0, 0xA0, 3);
-        }
-    }
+    volatile char *r = arg0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_000023FC);
-#endif
 
 /* mgrproc_uso_func_00002850 - verified structural decode (0xF0,
  * jr-count 2 = main body + 1 bundled tail leaf).
