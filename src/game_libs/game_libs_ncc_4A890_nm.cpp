@@ -22,8 +22,9 @@ struct Map {
 s16 *Map::build(s32 n, s16 *ids) {
     s16 list[300];
     s16 t0 = 0;
+    s16 *s; /* agent-g run 195 (hoist sweep): function scope */
     if (n > 0) {
-        s16 *s = ids;
+        s = ids;
         s16 *end = s + n;
         do {
         list[t0++] = *ids;
