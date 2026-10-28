@@ -8,8 +8,9 @@
  * arguments as int (target `lui a2,0x43C8` / `lui a3,0x3F80`: a float parameter
  * reuses the hoisted 1.0 / 400.0 registers), the normal's zeros as `(float)iz()`
  * (a distinct uopt constant: the target keeps that zero in fs1 apart from the fs2
- * accumulator zero), h / w / dt as function-scope named locals (target homes:
- * n 0x134, d 0x128, hit 0xF8), and `psum += v * w` before `wsum += w` (lever-sweep
+ * accumulator zero), h / w / dt / f as function-scope named locals (target homes:
+ * n 0x134, d 0x128, hit 0xF8; after the set() step below they went back to their
+ * blocks, 89.91 -> 90.09), and `psum += v * w` before `wsum += w` (lever-sweep
  * order, 80.88 -> 86.37). Then operator- and the impulse scale build their named
  * result through the inline set(): set's parameters are evaluated before any
  * store into r, so all the field loads / subs / muls come first as in the target
@@ -71,9 +72,6 @@ extern "C" void gl_func_00065494(Self *self) {
     float wsum;
     float minv;
     Node *node;
-    float h;
-    float w;
-    float dt;
 
     count = 0;
     wsum = 0.0f;
@@ -84,6 +82,7 @@ extern "C" void gl_func_00065494(Self *self) {
         Vec3 n;
         Vec3 d;
         Hit hit;
+        float h;
         n.set((float)iz(), 1.0f, (float)iz());
         node->v120 = node->pos;
         d = node->pos - self->pos;
@@ -102,6 +101,8 @@ extern "C" void gl_func_00065494(Self *self) {
         node->f144 = h;
         node->vt[0xC].fn((Node *)(node->vt[0xC].off + (char *)node), h, &n, 0x3F800000);
         if (h < 0.0f) {
+            float w;
+            float dt;
             if (h < minv) {
                 minv = h;
             }
