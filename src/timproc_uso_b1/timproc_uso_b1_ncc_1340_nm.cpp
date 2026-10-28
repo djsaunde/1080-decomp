@@ -4,7 +4,7 @@
  * agent-g run 184 (kit CXXXIII): ported from the 13B8 C++ rewrite -- sprite member objects and the inline
  * `Spr::width()` with a named image pointer, no volatile pads: 239 words (target 238), 94.05 standalone.
  * Then the tim panel's width / height through the members (`tim.width() / 12`, `tim.height()`) and `if (1) {}`
- * after its begin call: 238 words = target, 98.10 standalone.
+ * after its begin call: 238 words = target, 98.10 standalone; xmid de-named (lever-sweep).
  * NM object only. */
 typedef float f32; typedef int s32; typedef short s16;
 extern "C" {
@@ -30,7 +30,6 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
     s32 min, sec;
     s32 glyph;
     s32 x, pos4, posA1, pos6;
-    s32 xmid;
     s32 i;
     s32 count;
 
@@ -56,8 +55,7 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         pos4 = arg0->sB.width() + x + 4;
         posA1 = arg0->sA.width() + pos4 + 4;
         pos6 = arg0->sC.width() + posA1 + 8;
-        xmid = arg1 + 0x32;
-        timproc_uso_b1_func_000000B0(&arg0->sC, posA1, xmid, 2);
+        timproc_uso_b1_func_000000B0(&arg0->sC, posA1, arg1 + 0x32, 2);
         for (i = 0; i < count; i++) {
             if (buf[i] == 0x5B) {
                 buf[i] = 0xA;
@@ -69,8 +67,8 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
             timproc_uso_b1_func_000000B0(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.height() / 2) + 0x32, buf[i] * glyph, glyph);
         }
         timproc_uso_b1_func_000000B0(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);
-        timproc_uso_b1_func_000000B0(&arg0->sA, pos4, xmid, 2);
+        timproc_uso_b1_func_000000B0(&arg0->sA, pos4, arg1 + 0x32, 2);
         timproc_uso_b1_func_000000B0(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);
-        timproc_uso_b1_func_000000B0(&arg0->sB, x, xmid, 2);
+        timproc_uso_b1_func_000000B0(&arg0->sB, x, arg1 + 0x32, 2);
     }
 }
