@@ -741,10 +741,10 @@ void game_uso_func_00000B3C(char *arg0) {
             pos1.y = stage.y;
             pos1.x = stage.x;
         } else {
-            c1[0] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x34) + 0xC);
-            c1[1] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x38) + 0xC);
-            c1[2] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x3C) + 0xC);
-            c1[3] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x40) + 0xC);
+            c1[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0xC);
+            c1[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0xC);
+            c1[2] = (Vec3 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0xC);
+            c1[3] = (Vec3 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0xC);
             game_uso_func_000000E0(&pos1, c1, state);
         }
         break;
@@ -765,10 +765,10 @@ void game_uso_func_00000B3C(char *arg0) {
             pos2.y = stage.y;
             pos2.x = stage.x;
         } else {
-            c2[0] = (Vec3 *)*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x34);
-            c2[1] = (Vec3 *)*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x38);
-            c2[2] = (Vec3 *)*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x3C);
-            c2[3] = (Vec3 *)*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x40);
+            c2[0] = (Vec3 *) ((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] ;
+            c2[1] = (Vec3 *) ((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] ;
+            c2[2] = (Vec3 *) ((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] ;
+            c2[3] = (Vec3 *) ((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] ;
             game_uso_func_000000E0(&pos2, c2, state);
         }
         break;
@@ -787,20 +787,20 @@ void game_uso_func_00000B3C(char *arg0) {
         up.y = stage.y;
         up.x = stage.x;
     } else {
-        c3[0] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x34) + 0x18);
-        c3[1] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x38) + 0x18);
-        c3[2] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x3C) + 0x18);
-        c3[3] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x40) + 0x18);
+        c3[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0x18);
+        c3[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x18);
+        c3[2] = (Vec3 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0x18);
+        c3[3] = (Vec3 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0x18);
         game_uso_func_000000E0(&up, c3, state);
     }
     selv = *(s32 *)(seg + 0x28);
     if (selv == 1) {
         *(f32 *)(s + 0x14C) = *(f32 *)((char *)kf + 0x24);
     } else if (selv == 2) {
-        w[0] = *(f32 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x34) + 0x24);
-        w[1] = *(f32 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x38) + 0x24);
-        w[2] = *(f32 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x3C) + 0x24);
-        w[3] = *(f32 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x40) + 0x24);
+        w[0] = *(f32 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0x24);
+        w[1] = *(f32 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x24);
+        w[2] = *(f32 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0x24);
+        w[3] = *(f32 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0x24);
         *(f32 *)(s + 0x14C) = game_uso_func_000000A0(w, state);
     }
     if (*(s32 *)(s + 0x268) == 0) {
@@ -811,10 +811,10 @@ void game_uso_func_00000B3C(char *arg0) {
             *(f32 *)(s + 0x138) = stage.y;
             *(f32 *)(s + 0x13C) = stage.z;
         } else if (selv == 2) {
-            c4[0] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x34) + 0x2C);
-            c4[1] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x38) + 0x2C);
-            c4[2] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x3C) + 0x2C);
-            c4[3] = (Vec3 *)(*(s32 *)(seg + *(s32 *)(s + 0x25C) * 4 + 0x40) + 0x2C);
+            c4[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0x2C);
+            c4[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x2C);
+            c4[2] = (Vec3 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0x2C);
+            c4[3] = (Vec3 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0x2C);
             game_uso_func_000000E0((Vec3 *)(s + 0x134), c4, state);
         }
     }
