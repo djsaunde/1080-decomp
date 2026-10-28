@@ -84,7 +84,7 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
             l->dir[1] = (s32)(e->dir[1] * 120.0f) & 0xFF; if (1) {}
             l->dir[2] = (s32)(e->dir[2] * 120.0f) & 0xFF;
             gSPLight(c->next(), gl_func_00034458(l), n + 1);
-            n++;
+            n++; if (1) {}
         }
     }
     if (n != 0) {
