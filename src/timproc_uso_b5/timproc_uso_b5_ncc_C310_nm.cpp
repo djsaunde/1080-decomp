@@ -20,16 +20,19 @@ struct Col {
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr { char p[0x10]; Img *img; s32 width() { Img *i = img; return i->w; } };
 extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
-    volatile s32 sp0, sp1; /* the target's two frame words above the named locals (frame 200) */
-    int i, m, mv, mv2;
+    /* agent-g run 195 (kit CLIII home rules): i first (frame top word), vals / ptrs / hud / cols top-down = the
+     * target's 176 / 156 / 152 / 136 homes; the volatile pair moved to the end (dead / volatile homes go last). */
+    int i;
+    s32 vals[5];
     char *ptrs[5];
     Spr *hud;
     Col cols;
-    s32 vals[5];
+    int m, mv, mv2;
     char *e;
     f32 *fb;
     s32 *pv;
     char **pp;
+    volatile s32 sp0, sp1;
 
     if (*(s32 *)(arg0 + 0x2BC) < 10) {
         if (--*(s32 *)(arg0 + 0x2C0) < 0) {
