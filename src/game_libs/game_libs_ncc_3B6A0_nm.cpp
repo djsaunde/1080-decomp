@@ -18,7 +18,8 @@
  * keeps a 64-byte frame).
  * agent-c run 194: the table step moved from `*tp++` in the w read to `++tp` in the loop test (the post-increment
  * copied tp into a second register; the target loads through tp and steps it in place): 87.65 -> 90.11 standalone,
- * 820 -> 800 bytes = target.
+ * 820 -> 800 bytes = target. Then (lever-sweep) `if (1) {}` after the verts read and pt[a] / pt[b] read in
+ * the loop (no named qa / qb): 90.12 -> 93.6 standalone.
  */
 typedef float f32; typedef short s16; typedef unsigned short u16; typedef signed char s8;
 struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
@@ -43,7 +44,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
         for (unsigned int i = 0; i < count; i++, off += 12) {
             TriB *t = triAt(off);
             int inside = 1;
-            s16 (*verts)[3] = c->verts;
+            s16 (*verts)[3] = c->verts; if (1) {}
             Face *f;
             if (c->remap != 0) {
                 f = &c->faces[c->remap[i]];
@@ -53,15 +54,13 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             f32 dir = t->sgn;
             int a = t->a;
             int b = t->b;
-            f32 qa = pt[a];
-            f32 qb = pt[b];
             s16 *tp = D_00000000_3b6a0tbl;
             u16 *fp = (u16 *)f;
             do {
                 s16 *v = verts[fp[1]];
                 s16 *w = verts[f->vi[*tp]];
-                s16 px = (int)(qa - v[a]);
-                s16 py = (int)(qb - v[b]);
+                s16 px = (int)(pt[a] - v[a]);
+                s16 py = (int)(pt[b] - v[b]);
                 s16 ex = w[a] - v[a];
                 s16 ey = w[b] - v[b];
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
