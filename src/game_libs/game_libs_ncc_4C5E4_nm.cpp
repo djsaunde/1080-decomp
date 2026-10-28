@@ -10,6 +10,10 @@
  * its own block (the zero quad buf then sits at the target's frame top).
  * Residual: frame 168 vs 208 (block homes / spill slots 64 / 68 vs 72 / 80), the second 2.0f literal that the
  * target re-materialises (832 vs 836 bytes), the else arm's sub / m78 / F0 order.
+ * agent-c run 205: the else arm reads m78 at both uses (no named m): the arm is then word-for-word the target up to
+ * registers (`lw a0,120(s0)`, `andi a3,a0,4` in the beqz delay) but the ugen ring shifts by 3 from the first flag
+ * test on (78.1); a folded `+ 0 * mC0` in the m4 expression re-phases it (86.87 -> 88.12 local, length unchanged).
+ * Left: the 0x148 load colours t4 (target t5) because the mC0 load is CSE-hoisted into t5.
  * Still NON_MATCHING: build/non_matching/ only. */
 extern "C" {
 int gl_func_00034458(...);
@@ -72,12 +76,11 @@ void Obj::run() {
         gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, 1, f, buf, 0, 0, 8, 8, 8, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
-        int m = m78;
         Sub *sb = sub;
         void *pf = sb->mF0;
-        int m4 = m & 4;
+        int m4 = (m78 + 0 * mC0) & 4; /* run 205: m78 read at both uses (no named m); folded 0 * mC0 = ring phase */
         int f = (m104 & 2) != 0;
-        if (f) f = (m & 2) != 0;
+        if (f) f = (m78 & 2) != 0;
         int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8;
         gl_func_00034458(dl, s1, pf, m4, f, mDC, c0, c4, b8, bc, sb8, m1B0);
     }
