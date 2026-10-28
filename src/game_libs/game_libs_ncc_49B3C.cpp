@@ -1,63 +1,53 @@
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00049B3C (0x280 / 160 words).
- * agent-c run 162 rewrite: the by-value array iterator of 4B620 (AIter(Arr *) with a kept parameter,
- * Arr::iter() returning by value) over self->0x84 calling each element's +0x5C table slot, a fifth
- * registration, the {cur, next} list iterator over self->0x2C->0x10 calling the +0x28 table, banner, log.
- * 96.95 (previous draft) -> 97.375, length = target, frame 0x80 via a block of two unused volatiles before the
- * iterator. Residual: next() / idx / base colours in the array loop (target v0 / a1 / v1), the list-iterator
- * homes 8 lower, the iterator construct temp 4 lower. Still NON_MATCHING. */
+ * agent-c run 174: rebuilt from the run 173 draft (E1 / E2 virtual-call element types, `it.cur()->tick()` body,
+ * kept-parameter iter()) with the list walk as `for (LI li(g->head); li.next(); )`: EDG keeps the for-init's
+ * pooled temps for the whole statement, so the entry copy of li.next() colours its result a1 as the target.
+ * 99.01 -> 99.33 (objdiff diff, run 162 donor -> this). Residual: the array body's base / vtable loads swap
+ * v1 / a1, and the list loop's bottom-copy result is v1 (target v0). The same for-init form on the array loop
+ * (41D40's lever) costs 16 words here. Still NON_MATCHING. */
 extern "C" {
-void *gl_func_00000000(...);
+int gl_func_00000000(...);
 void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern char D_00000000[];
 extern char D_49B3C_s1[], D_49B3C_s2[], D_49B3C_s3[], D_49B3C_s4[], D_49B3C_s5[], D_49B3C_s6[];
 }
-#define S(o) (D_00000000 + (o))
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
-struct VT { char pad[8]; short d8; short p2; void (*fn12)(void *); char pad10[8]; short d24; short p3; void (*fn28)(void *); };
-struct Elem { char pad[0x28]; VT *vt28; char pad2c[0x5C - 0x2C]; VT *vt5C; };
-struct AIter;
-struct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };
-struct IBase {
-    Arr *a;
-    int idx;
-    int last;
-    IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
-};
+inline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }
+struct E1 { char pad[0x5C]; virtual void a(); virtual void b(); virtual void tick(); };
+struct E2 { char pad[0x28]; virtual void upd(); };
+struct Arr { E1 **data; int pad4, pad8; int count; E1 *&operator[](int i) { return data[i]; } };
+struct IBase { Arr *a; int idx; int last; IBase(Arr *arr) {   a = arr; idx = -1; last = arr->count - 1; } };
 struct AIter : IBase {
-    AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
-    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
-    Elem *cur() { return (*a)[idx]; }
+    AIter(Arr *arr) : IBase(arr) {  if (0) { arr = 0; }  }
+    E1 **next() {  if (idx < last) return &(*a)[++idx]; return 0;  }
+    E1 *cur() { return (*a)[idx]; }
 };
-inline AIter Arr::iter() { return AIter(this); }
-struct LNode { Elem *data; LNode *next; };
-struct LIter {
-    LNode *cur, *nx;
-    LIter(LNode *h) { nx = h; }
-    Elem *next() { return (cur = nx) ? (nx = nx->next, cur->data) : 0; } /* run 173: 34890 spelling (nx->next, no != 0) */
-};
-struct Sub { char pad[0x10]; LNode *head; };
-struct Obj { char pad[0x2C]; Sub *sub; char pad30[0x40 - 0x30]; int x40; int x44; char pad48[0x84 - 0x48]; Arr arr; char pad94[0x9C - 0x94]; int x9C; char padA0[4]; int xA4; };
-inline void cb5c(Elem *e) { if (0) { e = 0; } e->vt5C->fn28(e->vt5C->d24 + (char *)e); } /* run 173: the per-element callback through a kept Elem * parameter */
-inline AIter iter(Arr *a) { return AIter(a); } /* run 173: kit CXVI free iter() */
-extern "C" void gl_func_00049B3C(Obj *self) {
-    gl_func_00000000(D_49B3C_s1, S(0x1FFD4), 0);
-    gl_func_00000000(D_49B3C_s2, S(0x1FFE0), &self->x40, 0);
-    gl_func_00000000(D_49B3C_s3, S(0x1FFE8), &self->x44, 0);
-    gl_49B3C_regf(D_49B3C_s4, S(0x1FFF4), (char *)&self->x9C, 0.0f, 10.0f, 0);
-    { volatile int pz; }
-    AIter it = iter(&self->arr);
+inline AIter iter(Arr *a) {  if (0) { a = 0; }  return AIter(a); }
+struct L { E2 *data; L *next; };
+struct LI { L *cur; L *nxt;
+  LI(L *h) {   nxt = h; }
+  E2 *next() {  return (cur = nxt) ? (nxt = nxt->next, cur->data) : 0;  } };
+inline void callu(E2 *e) { if (0) { e = 0; } e->upd(); }
+inline void callt(E1 *e) { if (0) { e = 0; } e->tick(); }
+inline void regp(char *a, char *b, char *p) { if (0) { p = 0; } gl_func_00000000(a, b, p, 0); }
+struct Grp { char pad[0x10]; L *head; };
+extern "C" void gl_func_00049B3C(char *self) {
+     
+    gl_func_00000000(D_49B3C_s1, D_00000000 + 0x1FFD4, 0);
+     regp(D_49B3C_s2, D_00000000 + 0x1FFE0, self + 64); 
+     regp(D_49B3C_s3, D_00000000 + 0x1FFE8, self + 68); 
+    gl_49B3C_regf(D_49B3C_s4, D_00000000 + 0x1FFF4, self + 156, 0.0f, 10.0f, 0);
+     
+     AIter it = iter((Arr *)(self + 132)); 
     while (it.next()) {
-        cb5c(it.cur());
+          it.cur()->tick(); 
     }
-    gl_func_00000000(D_49B3C_s5, S(0x20004), &self->xA4, -1, self->arr.pad8, 0); if (1) {}
-    if (self->sub != 0) {
-        LIter li(self->sub->head);
-        Elem *e;
-        while ((e = li.next()) != 0) {
-            Elem *d = li.cur->data;
-            d->vt28->fn12(d->vt28->d8 + (char *)d);
+    gl_func_00000000(D_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}
+     if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); 
+        for (LI li(g->head); li.next(); ) {
+             callu(li.cur->data); 
         }
     }
     gl_func_00000000(D_49B3C_s6);
+     
     gl_func_00000000(self);
 }

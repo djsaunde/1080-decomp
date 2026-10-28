@@ -2264,6 +2264,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_526D0_DONOR)
 # 49B3C is still NON_MATCHING: NCC draft (by-value AIter, Pad12 dead object) is
 # 32 raw words vs the cfe body's 60; same length (160 words), so the clip holds.
+# agent-c run 174: donor rebuilt with a for-init list iterator (99.01 -> 99.33 objdiff diff, 160 words, clip unchanged).
 GAMELIBS_49B3C_NM_DONOR := build/src/game_libs/game_libs_ncc_49B3C.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: REPLACE_FUNC_BODY += gl_func_00049B3C=$(GAMELIBS_49B3C_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49B3C_NM_DONOR)
