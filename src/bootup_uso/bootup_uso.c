@@ -803,20 +803,24 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         for (row = 0; row < import_8001FFA0_h[1] / 32; row++) {
             x = import_8001FFA0[0] / 2 - 32;
             for (col = 0; col < import_8001FFA0[0] / 64; col++) {
+                /* run 192: per-vertex store order x, y, z, s, t (vertex 2: t before s) -- greedy statement-order grid, 92.78 -> 93.36 standalone */
                 buf[vidx + 0].x = x + 32;
                 buf[vidx + 0].y = y + 16;
-                buf[vidx + 0].s = 0;
                 buf[vidx + 0].z = import_8001FFA0[0] / 2;
-                buf[vidx + 0].t = 0; buf[vidx + 1].x = x - 32;
-                buf[vidx + 1].y = y + 16; if (1) {} /* run 182 (lever-sweep bbsplit) */
+                buf[vidx + 0].s = 0;
+                buf[vidx + 0].t = 0;
+                buf[vidx + 1].x = x - 32;
+                buf[vidx + 1].y = y + 16; if (1) {}
+                buf[vidx + 1].z = import_8001FFA0[0] / 2;
                 buf[vidx + 1].s = 0xFC0;
                 buf[vidx + 1].t = 0;
-                buf[vidx + 1].z = import_8001FFA0[0] / 2;
-                buf[vidx + 2].x = x - 32; buf[vidx + 2].y = y - 16;
-                buf[vidx + 2].s = 0xFC0;
-                buf[vidx + 2].t = 0x7C0;
+                buf[vidx + 2].x = x - 32;
+                buf[vidx + 2].y = y - 16;
                 buf[vidx + 2].z = import_8001FFA0[0] / 2;
-                buf[vidx + 3].x = x + 32; buf[vidx + 3].y = y - 16;
+                buf[vidx + 2].t = 0x7C0;
+                buf[vidx + 2].s = 0xFC0;
+                buf[vidx + 3].x = x + 32;
+                buf[vidx + 3].y = y - 16;
                 buf[vidx + 3].z = import_8001FFA0[0] / 2;
                 buf[vidx + 3].s = 0;
                 buf[vidx + 3].t = 0x7C0;
@@ -866,7 +870,8 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
             E68_VTX(E68_NEXT(m), func_00000000(vp), n * 4, 0);
             for (j = 0; j < n; j++) {
-                E68_DMA1P(E68_NEXT(m), 0x06, arr[i * n + j], 0, 0);
+                /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
+                { GwE68 *dl = arr[i * n + j]; E68_DMA1P(E68_NEXT(m), 0x06, dl, 0, 0); }
             }
             vp += n * 4; if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
