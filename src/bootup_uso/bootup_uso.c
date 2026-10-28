@@ -1343,7 +1343,11 @@ extern int D_00000064;
 extern int D_24B8_tbl;
 typedef struct { int w; } W24B8;
 typedef void (*VF_24B8)();
-/* agent-g run 155: the discarded placeholder calls go through a void alias (kit IX dead-v0 lever): 94.87 -> 95.21. */
+/* agent-g run 155: the discarded placeholder calls go through a void alias (kit IX dead-v0 lever): 94.87 -> 95.21.
+ * agent-g run 189 (kit CXLII): the target's second saved register s0 also carries the first call's
+ * `(cfg->0x10 & 0x400) != 0` argument (`lw s0,16(v0); andi s0,s0,0x400; sltu a0,zero,s0`), so that
+ * value goes through the reused s0 variable: arg0 moves to s1 and the multi-role var to s0 as in the
+ * target (length = target); the t0 latch and k share one int variable. 95.21 -> see report. */
 extern void func_00000000_24b8v();
 void func_000024B8(char *arg0) {
     char *s0;
@@ -1353,24 +1357,24 @@ void func_000024B8(char *arg0) {
     volatile int pad;
     W24B8 tb;
     int r;
-    int t0;
     int k;
 
-    t0 = 0;
+    k = 0;
     if (D_00000064 == 1) {
         v0 = (char *)FW(arg0, 0x38);
         r = 0;
-        func_00000000_24b8v((FW(v0, 0x10) & 0x400) != 0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]);
-        t0 = r;
+        s0 = (char *)((FW(v0, 0x10) & 0x400) != 0);
+        func_00000000_24b8v((int)s0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]);
+        k = r;
     }
     s0 = (char *)FW(arg0, 0x38);
     if (FW(s0, 0x18) & 0x40) {
-        t0 = 1;
+        k = 1;
         FW(arg0, 0x4C) = (FW(arg0, 0x4C) != 0) == 0;
     }
     if (FW(arg0, 0x4C) != 0) {
         f32 two = 2.0f;
-        if (t0 != 0) {
+        if (k != 0) {
             func_00000000_24b8v(arg0, 0);
             v0 = (char *)FW(arg0, 0x30);
             s0 = (char *)FW(v0, 0x28);
@@ -1401,7 +1405,7 @@ void func_000024B8(char *arg0) {
         *(f32 *)s0 = FF(FW(arg0, 0x38), 0) * two + *(f32 *)s0;
         return;
     }
-    if (t0 != 0) {
+    if (k != 0) {
         FW(arg0, 0x48) = 10000;
     }
     s0 = (char *)FW(arg0, 0x48);
