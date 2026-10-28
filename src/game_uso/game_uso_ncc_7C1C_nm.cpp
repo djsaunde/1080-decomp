@@ -1,439 +1,167 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for game_uso_func_00007C1C
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_00007C1C
  * (1071 words). NM object only (build/non_matching); the ROM build keeps
- * INCLUDE_ASM. The cfe NM body recompiled unchanged under NCC: 88.2 -> 89.3
- * fuzzy, 1058 -> 1065 words (toward the target's 1071).
- * Run 143: game_uso_func_00003FAC carries its real prototype (void, three
- * float pointers + two floats, as the cfe definition): the float args go
- * in a3 / 16(sp) as in the target, not promoted to doubles: 89.69 -> 90.39.
- * The resDir stage is copied BACK into scratch before result reads it (the
- * target re-reads resDir into the stage: scratch = mD2; resDir = scratch;
- * scratch = resDir; result = scratch): 90.39 -> 91.24, 1061 -> 1063 words;
- * the same copy-back for the per-node lRD stage (its `if (arg0) {}` dropped):
- * 92.25, 1064 words. */
-typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
-typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
-#define NULL 0
-typedef struct { float x, y, z; } Vec3;
-typedef struct { int a, b, c; } Tri3i;
-extern "C" void game_uso_func_00003FAC(float *, float *, float *, float, float);
+ * INCLUDE_ASM.
+ *
+ * Steering target in the XZ plane: returns (by value, hidden a0) the offset
+ * from *pos to node b (a when b == NULL), widened by +-250 * b->width / 2
+ * along the segment normal when the opponent sits ahead (mode 1 / 2), then
+ * walks b->next while the next node's offset stays inside the hitA / hitB
+ * wedge (3FAC computes the wedge edges).
+ *
+ * Run 186 (agent-c): rewritten from the cfe emulation into C++ value
+ * classes (6A30 recipe): every `bnez &stack; jal 055750(12)` guard is the
+ * edg ctor protocol of a derived XZ temporary (XZ(const Vec3 &) /
+ * XZ(float, float), base-initialiser forwarding to Vec3(a, b, c)), every
+ * word-copy chain through sp+852 / 540 / 508 is an inline by-value return
+ * through edg's pooled return slots, and `result = v` is a by-value
+ * operator= (copy into the pooled slot, then float stores).
+ *  - The loop's direction is ONE full-expression,
+ *    `XZ ldir = perp(XZ(n->pos) - b->pos);`: operator-'s return slot (852)
+ *    stays busy until the end of the full-expression, so perp returns
+ *    through the second pooled slot (540, the target's s2) and the
+ *    operator- result is copied into a binding temporary (380). With a
+ *    named lseg perp used 852 and s2 never appeared (89.37 -> 94.48, length
+ *    1068 -> 1071 = target).
+ *  - `x = (const Vec3 &)xzValue` binds operator=(Vec3) to the base
+ *    directly; plain `x = xzValue` adds a derived-to-base copy (+9 words).
+ *  - The then-arm binds the difference to a reference (94.48 -> 94.51).
+ * LEFT: edg's long-lifetime (deferred) temporaries are listed in reverse
+ * creation order (then-arm d / nA, else-arm stg / mA / mC2), so several
+ * homes are 4-16 bytes off; `a` (target s2) and `out` (target s0) are not
+ * kept in callee-saved registers.
+ * History (cfe emulation, runs 143-185): 88.2 -> 92.59. */
+extern "C" void *game_uso_func_055750(unsigned);
+struct Vec3 {
+    void *operator new(unsigned n) { return game_uso_func_055750(n); }
+    float x, y, z;
+    Vec3() {}
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    Vec3(float a, float b, float c) { set(a, b, c); }
+    Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
+    Vec3 &operator+=(const Vec3 &v) { x = x + v.x; y = y + v.y; z = z + v.z; return *this; }
+    Vec3 &operator-=(const Vec3 &v) { x = x - v.x; y = y - v.y; z = z - v.z; return *this; }
+    Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); }
+};
+struct XZ : Vec3 {
+    XZ(const Vec3 &v) : Vec3(v.x, 0.0f, v.z) {}
+    XZ(float a, float c) : Vec3(a, 0.0f, c) {}
+};
+inline XZ operator-(const XZ &a, const Vec3 &b) { return XZ(a.x - b.x, a.z - b.z); }
+inline XZ perp(const Vec3 &v) { return XZ(v.z, -v.x); }
+struct Node { char pad0[0x2C]; Node *next; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; };
+struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; char pad34C[0x908 - 0x34C]; W *other; };
+struct Self { char pad0[0x30]; W *w; char pad34[0xA0 - 0x34]; float lim; int active; char padA8[0xCC - 0xA8]; float range; };
 extern "C" {
 extern char D_00000000;
-extern int game_uso_func_055750(...);
-extern void game_uso_func_047484(int *dst, int a, int b, int c, float f);
-extern void game_uso_func_047484(int *dst, int a, int b, int c, float f);
-extern void game_uso_func_047484(int *dst, int a, int b, int c, float f);
-extern float game_uso_func_082880(float);
-extern void game_uso_func_071028(Vec3 *v);
-extern float game_uso_func_082880(float);
-extern float game_uso_func_00007A98(int *);
+void game_uso_func_00003FAC(float *, float *, float *, float, float);
+float game_uso_func_082880(float);
+void game_uso_func_071028(Vec3 *v);
+float game_uso_func_00007A98(Self *);
 }
-extern "C" int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
-                           char *arg4, f32 *arg5) {
-    Vec3 result;                     /* sp+932 */
-    Vec3 cpA;                        /* sp+920 */
-    Vec3 nA;                         /* sp+908 */
-    Vec3 scratch;                    /* sp+852 shared word-copy stage */
-    Vec3 nB;                         /* sp+840 */
-    Vec3 stg1;                       /* sp+820 */
-    Vec3 mA;                         /* sp+808 */
-    Vec3 mC2;                        /* sp+796 */
-    int mode;                        /* sp+792 */
-    Vec3 stg2;                       /* sp+780 */
-    Vec3 segDir;                     /* sp+768 */
-    Vec3 resDir;                     /* sp+756 */
-    Vec3 hitA;                       /* sp+736 */
-    Vec3 hitB;                       /* sp+724 */
-    int hit;                         /* sp+720 */
-    Vec3 hitC;                       /* sp+704 */
-    Vec3 mB;                         /* sp+692 */
-    Vec3 mE;                         /* sp+652 */
-    Vec3 mC;                         /* sp+640 */
-    Vec3 mD;                         /* sp+628 */
-    Vec3 mP;                         /* sp+616 */
-    Vec3 mD2;                        /* sp+604 */
-    Vec3 s1c;                        /* sp+592 */
-    Vec3 s1bb;                       /* sp+580 */
-    Vec3 s1b;                        /* sp+568 */
-    Vec3 s1a;                        /* sp+556 */
-    Vec3 mid2;                       /* sp+540 shared mid stage */
-    Vec3 s1m2;                       /* sp+528 */
-    Vec3 mid3;                       /* sp+508 shared mid stage */
-    Vec3 s1m3;                       /* sp+496 */
-    Vec3 s2c;                        /* sp+460 */
-    Vec3 s2bb;                       /* sp+448 */
-    Vec3 s2b;                        /* sp+436 */
-    Vec3 s2a;                        /* sp+424 */
-    Vec3 s2m2;                       /* sp+412 */
-    Vec3 s2m3;                       /* sp+400 */
-    Vec3 lSeg;                       /* sp+380 */
-    Vec3 lA;                         /* sp+368 */
-    Vec3 lE;                         /* sp+356 */
-    Vec3 lDir;                       /* sp+344 */
-    Vec3 lRD;                        /* sp+332 */
-    Vec3 lB;                         /* sp+320 */
-    Vec3 lP;                         /* sp+308 */
-    Vec3 lF;                         /* sp+296 */
-    Vec3 l1c;                        /* sp+284 */
-    Vec3 l1bb;                       /* sp+272 */
-    Vec3 l1b;                        /* sp+260 */
-    Vec3 l1a;                        /* sp+248 */
-    Vec3 l1m2;                       /* sp+236 */
-    Vec3 l1m3;                       /* sp+224 */
-    Vec3 l2c;                        /* sp+208 */
-    Vec3 l2bb;                       /* sp+196 */
-    Vec3 l2b;                        /* sp+184 */
-    Vec3 l2a;                        /* sp+172 */
-    Vec3 l2m2;                       /* sp+160 */
-    Vec3 l2m3;                       /* sp+148 */
-    Vec3 fA;                         /* sp+136 */
-    Vec3 fB;                         /* sp+124 */
-    Vec3 n0;                         /* sp+112 */
-    Vec3 n1;                         /* sp+100 */
-    Vec3 n2;                         /* sp+88 */
-    int notFirst;                    /* sp+84 */
-    int firstFlag;                   /* sp+80 */
-    Vec3 *p;
-    f32 *q;
-    char *node;
-    float k;
-    float metric, thresh;
-    f32 tx, tz;
-
-    if (arg5 != NULL) {
-        *arg5 = 0.0f;
+extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
+    Vec3 result;
+    if (out != 0) {
+        *out = 0.0f;
     }
-
-    if (arg3 == NULL) {
-        q = (f32 *)((int)arg2 + 0x30);
-        p = 0; if (1) { p = &nA; }
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tx = *q;
-            tz = *(f32 *)((int)q + 8);
-            p->y = 0.0f;
-            p->x = tx;
-            p->z = tz;
-        }
-        p = 0; if (1) { p = &nB; }
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tz = nA.z - *(f32 *)(arg4 + 0x8);
-            tx = nA.x - *(f32 *)(arg4 + 0x0);
-            p->y = 0.0f;
-            p->x = tx;
-            p->z = tz;
-        }
-        *(Tri3i *)&scratch = *(Tri3i *)&nB;
-        *(Tri3i *)&cpA = *(Tri3i *)&scratch;
+    if (b == 0) {
+        const Vec3 &d = XZ(a->pos) - *pos;
         result.y = 0.0f;
-        result.z = cpA.z;
-        result.x = cpA.x;
+        result.z = d.z;
+        result.x = d.x;
     } else {
-        mode = 0;
-        q = (f32 *)((int)arg3 + 0x30);
-        p = 0; if (1) { p = &mA; }
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tz = *(f32 *)((int)q + 8);
-            tx = *q;
-            p->y = 0.0f;
-            p->z = tz;
-            p->x = tx;
-        }
-        q = (f32 *)((int)arg2 + 0x30);
-        p = 0; if (1) { p = &mB; }
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tx = mA.x - *q;
-            p->y = 0.0f; /* run 185 (lever-sweep): p is &mB or a fresh allocation, never node memory */
-            tz = mA.z - *(f32 *)((int)q + 8);
-            p->x = tx;
-            p->z = tz;
-        }
-        *(Tri3i *)&scratch = *(Tri3i *)&mB;
-        *(Tri3i *)&stg1 = *(Tri3i *)&scratch;
-        *(Tri3i *)&stg2 = *(Tri3i *)&stg1;
-
-        if (*(int *)(*(int *)(arg1 + 0x30) + 0x908) != 0) {
-            float dot = game_uso_func_00007A98((int *)arg1);
-            int active = *(int *)(arg1 + 0xA4);
+        int mode = 0;
+        Vec3 seg = XZ(b->pos) - a->pos;
+        if (s->w->other != 0) {
+            float dot = game_uso_func_00007A98(s);
+            int active = s->active;
             if (active == 0) {
-                if (*(f32 *)(arg1 + 0xA0) <= dot) {
+                if (s->lim <= dot) {
                     active = 1;
-                    *(int *)(arg1 + 0xA4) = 1;
+                    s->active = 1;
                 }
-            } else if (dot <= -*(f32 *)(arg1 + 0xA0)) {
-                *(int *)(arg1 + 0xA4) = 0;
+            } else if (dot <= -s->lim) {
+                s->active = 0;
                 active = 0;
             }
-            if (active == 1 && dot <= *(f32 *)((char *)&D_00000000 + 0xFC)) {
-                char *src = (char *)*(int *)(*(int *)(arg1 + 0x30) + 0x908) + 0xB4;
-                p = 0; if (1) { p = &mC; }
-                if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                    tz = *(f32 *)(src + 0x8);
-                    tx = *(f32 *)(src + 0x0);
-                    p->y = 0.0f;
-                    p->x = tx;
-                    p->z = tz;
-                }
-                q = (f32 *)((int)arg2 + 0x30);
-                p = 0; if (1) { p = &mD; }
-                if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                    tx = mC.x - *q;
-                    p->y = 0.0f; /* run 182 (lever-sweep order; p is &mD or fresh memory) */
-                    tz = mC.z - *(f32 *)((int)q + 8);
-                    p->x = tx;
-                    p->z = tz;
-                }
-                *(Tri3i *)&scratch = *(Tri3i *)&mD;
-                *(Tri3i *)&mE = *(Tri3i *)&scratch;
-                mode = (stg2.x * mE.z <= stg2.z * mE.x) ? 2 : 1;
+            if (active == 1 && dot <= *(float *)((char *)&D_00000000 + 0xFC)) {
+                XZ e = XZ(s->w->other->pos) - a->pos;
+                mode = (seg.x * e.z <= seg.z * e.x) ? 2 : 1;
             }
         }
-
-        p = 0; if (1) { p = &mP; }
-
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tx = stg2.z;
-            tz = -stg2.x;
-            p->y = 0.0f;
-            p->x = tx;
-            p->z = tz;
-        }
-        *(Tri3i *)&scratch = *(Tri3i *)&mP;
-        *(Tri3i *)&segDir = *(Tri3i *)&scratch;
-        game_uso_func_071028(&segDir);
-
-        q = (f32 *)((int)arg3 + 0x30);
-
-        p = 0; if (1) { p = &mC2; }
-
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tz = *(f32 *)((int)q + 8);
-            p->y = 0.0f; /* run 182 (lever-sweep order; p is &mC2 or fresh memory, no alias with q) */
-            tx = *q;
-            p->z = tz;
-            p->x = tx;
-        }
-        p = 0; if (1) { p = &mD2; }
-        if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-            tx = mC2.x - *(f32 *)(arg4 + 0x0);
-            tz = mC2.z - *(f32 *)(arg4 + 0x8);
-            p->y = 0.0f;
-            p->x = tx;
-            p->z = tz;
-        }
-        *(Tri3i *)&scratch = *(Tri3i *)&mD2;
-        *(Tri3i *)&resDir = *(Tri3i *)&scratch;
-        *(Tri3i *)&scratch = *(Tri3i *)&resDir;
-        result.x = scratch.x; result.y = scratch.y; result.z = scratch.z;
-
+        XZ dir = perp(seg);
+        game_uso_func_071028(&dir);
+        XZ rd = XZ(b->pos) - *pos;
+        result = (const Vec3 &)rd;
         if (mode == 1) {
-            s1a.x = segDir.x * 250.0f;
-            s1a.y = segDir.y * 250.0f;
-            s1a.z = segDir.z * 250.0f;
-            *(Tri3i *)&scratch = *(Tri3i *)&s1a;
-            *(Tri3i *)&s1b = *(Tri3i *)&scratch;
-            k = *(f32 *)(arg3 + 0x54);
-            if (arg0) {}
-            s1m2.x = s1b.x * k;
-            s1m2.y = s1b.y * k;
-            s1m2.z = s1b.z * k;
-            *(Tri3i *)&mid2 = *(Tri3i *)&s1m2;
-            *(Tri3i *)&s1bb = *(Tri3i *)&mid2;
-            s1m3.x = s1bb.x * 0.5f;
-            s1m3.y = s1bb.y * 0.5f;
-            s1m3.z = s1bb.z * 0.5f;
-            *(Tri3i *)&mid3 = *(Tri3i *)&s1m3;
-            *(Tri3i *)&s1c = *(Tri3i *)&mid3;
-            result.x += s1c.x;
-            result.y += s1c.y;
-            result.z += s1c.z;
+            result += dir * 250.0f * b->width * 0.5f;
         } else if (mode == 2) {
-            s2a.x = segDir.x * 250.0f;
-            s2a.y = segDir.y * 250.0f;
-            s2a.z = segDir.z * 250.0f;
-            *(Tri3i *)&scratch = *(Tri3i *)&s2a;
-            *(Tri3i *)&s2b = *(Tri3i *)&scratch;
-            k = *(f32 *)(arg3 + 0x54);
-            s2m2.x = s2b.x * k;
-            s2m2.y = s2b.y * k;
-            s2m2.z = s2b.z * k;
-            *(Tri3i *)&mid2 = *(Tri3i *)&s2m2;
-            *(Tri3i *)&s2bb = *(Tri3i *)&mid2;
-            s2m3.x = s2bb.x * 0.5f;
-            s2m3.y = s2bb.y * 0.5f;
-            s2m3.z = s2bb.z * 0.5f;
-            *(Tri3i *)&mid3 = *(Tri3i *)&s2m3;
-            *(Tri3i *)&s2c = *(Tri3i *)&mid3;
-            result.x -= s2c.x;
-            result.y -= s2c.y;
-            result.z -= s2c.z;
+            result -= dir * 250.0f * b->width * 0.5f;
         }
-
-        metric = game_uso_func_082880(resDir.x * resDir.x + resDir.z * resDir.z);
-        thresh = *(f32 *)(arg3 + 0x54) * 250.0f;
-        hit = 0; /* run 182 (lever-sweep order) */
+        float metric = game_uso_func_082880(rd.x * rd.x + rd.z * rd.z);
+        float thresh = b->width * 250.0f;
+        Vec3 hitA, hitB;
+        int hit = 0;
         if (thresh < metric) {
-            game_uso_func_00003FAC(&hitA.x, &hitB.x, &resDir.x, metric, thresh);
+            game_uso_func_00003FAC(&hitA.x, &hitB.x, &rd.x, metric, thresh);
             hit = 1;
         }
-
-        node = *(char **)(arg3 + 0x2C);
-        while (node != NULL) {
-            notFirst = (hit != 0);
-            firstFlag = (notFirst == 0);
-
-            q = (f32 *)((int)node + 0x30);
-
-            p = 0; if (1) { p = &lA; }
-
-            if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tz = *(f32 *)((int)q + 8);
-                tx = *q;
-                p->y = 0.0f;
-                p->x = tx;
-                p->z = tz;
-            }
-            q = (f32 *)((int)arg3 + 0x30);
-            p = 0; if (1) { p = &lB; }
-            if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tz = lA.z - *(f32 *)((int)q + 8);
-                tx = lA.x - *q;
-                p->y = 0.0f;
-                p->z = tz;
-                p->x = tx;
-            }
-            *(Tri3i *)&scratch = *(Tri3i *)&lB;
-            *(Tri3i *)&lSeg = *(Tri3i *)&scratch;
-
-            p = 0; if (1) { p = &lP; }
-
-            if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tx = lSeg.z;
-                tz = -lSeg.x;
-                p->y = 0.0f;
-                p->x = tx;
-                p->z = tz;
-            }
-            *(Tri3i *)&mid2 = *(Tri3i *)&lP;
-            *(Tri3i *)&lDir = *(Tri3i *)&mid2;
-            game_uso_func_071028(&lDir);
-
-            q = (f32 *)((int)node + 0x30);
-
-            p = 0; if (1) { p = &lE; }
-
-            if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tz = *(f32 *)((int)q + 8);
-                tx = *q;
-                p->y = 0.0f;
-                p->x = tx;
-                p->z = tz;
-            }
-            p = 0; if (1) { p = &lF; }
-            if (p != NULL || (p = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
-                tx = lE.x - *(f32 *)(arg4 + 0x0);
-                tz = lE.z - *(f32 *)(arg4 + 0x8);
-                p->y = 0.0f;
-                p->x = tx;
-                p->z = tz;
-            }
-            *(Tri3i *)&scratch = *(Tri3i *)&lF;
-            *(Tri3i *)&lRD = *(Tri3i *)&scratch;
-            *(Tri3i *)&scratch = *(Tri3i *)&lRD;
-            hitC.x = scratch.x; hitC.y = scratch.y; hitC.z = scratch.z;
-
+        Vec3 hitC;
+        Node *n = b->next;
+        while (n != 0) {
+            int notFirst = (hit != 0);
+            int firstFlag = (notFirst == 0);
+            XZ ldir = perp(XZ(n->pos) - b->pos);
+            game_uso_func_071028(&ldir);
+            XZ lrd = XZ(n->pos) - *pos;
+            hitC = (const Vec3 &)lrd;
             if (mode == 1) {
-                l1a.x = lDir.x * 250.0f;
-                l1a.y = lDir.y * 250.0f;
-                l1a.z = lDir.z * 250.0f;
-                *(Tri3i *)&scratch = *(Tri3i *)&l1a;
-                *(Tri3i *)&l1b = *(Tri3i *)&scratch;
-                k = *(f32 *)(node + 0x54);
-                l1m2.x = l1b.x * k;
-                l1m2.y = l1b.y * k;
-                l1m2.z = l1b.z * k;
-                *(Tri3i *)&mid2 = *(Tri3i *)&l1m2;
-                *(Tri3i *)&l1bb = *(Tri3i *)&mid2;
-                l1m3.x = l1bb.x * 0.5f;
-                l1m3.y = l1bb.y * 0.5f;
-                l1m3.z = l1bb.z * 0.5f;
-                *(Tri3i *)&mid3 = *(Tri3i *)&l1m3;
-                *(Tri3i *)&l1c = *(Tri3i *)&mid3;
-                hitC.x += l1c.x;
-                hitC.y += l1c.y;
-                hitC.z += l1c.z;
+                hitC += ldir * 250.0f * n->width * 0.5f;
             } else if (mode == 2) {
-                l2a.x = lDir.x * 250.0f;
-                l2a.y = lDir.y * 250.0f;
-                l2a.z = lDir.z * 250.0f;
-                *(Tri3i *)&scratch = *(Tri3i *)&l2a;
-                *(Tri3i *)&l2b = *(Tri3i *)&scratch;
-                k = *(f32 *)(node + 0x54);
-                l2m2.x = l2b.x * k;
-                l2m2.y = l2b.y * k;
-                l2m2.z = l2b.z * k;
-                *(Tri3i *)&mid2 = *(Tri3i *)&l2m2;
-                *(Tri3i *)&l2bb = *(Tri3i *)&mid2;
-                l2m3.x = l2bb.x * 0.5f;
-                l2m3.y = l2bb.y * 0.5f;
-                l2m3.z = l2bb.z * 0.5f;
-                *(Tri3i *)&mid3 = *(Tri3i *)&l2m3;
-                *(Tri3i *)&l2c = *(Tri3i *)&mid3;
-                hitC.x -= l2c.x;
-                hitC.y -= l2c.y;
-                hitC.z -= l2c.z;
+                hitC -= ldir * 250.0f * n->width * 0.5f;
             }
-
             if (firstFlag ||
                 ((hitC.x * hitA.z <= hitC.z * hitA.x) &&
                  (hitC.z * hitB.x <= hitC.x * hitB.z))) {
-                float m2 = game_uso_func_082880(lRD.x * lRD.x + lRD.z * lRD.z);
-                float t2 = *(f32 *)(node + 0x54) * 250.0f;
+                float m2 = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
+                float t2 = n->width * 250.0f;
                 if (t2 < m2) {
+                    Vec3 fA, fB;
                     hit = 1;
-                    game_uso_func_00003FAC(&fA.x, &fB.x, &lRD.x, m2, t2);
+                    game_uso_func_00003FAC(&fA.x, &fB.x, &lrd.x, m2, t2);
                     if (notFirst) {
                         if (hitA.z * fA.x < hitA.x * fA.z) {
-                            *(Tri3i *)&scratch = *(Tri3i *)&fA;
-                            hitA.x = scratch.x; hitA.y = scratch.y; hitA.z = scratch.z;
+                            hitA = fA;
                         }
                         if (hitB.x * fB.z < hitB.z * fB.x) {
-                            *(Tri3i *)&scratch = *(Tri3i *)&fB;
-                            hitB.x = scratch.x; hitB.y = scratch.y; hitB.z = scratch.z;
+                            hitB = fB;
                         }
                     } else {
-                        *(Tri3i *)&scratch = *(Tri3i *)&fA;
-                        hitA.x = scratch.x; hitA.y = scratch.y; hitA.z = scratch.z;
-                        *(Tri3i *)&scratch = *(Tri3i *)&fB;
-                        hitB.x = scratch.x; hitB.y = scratch.y; hitB.z = scratch.z;
+                        hitA = fA;
+                        hitB = fB;
                     }
                 }
-                *(Tri3i *)&scratch = *(Tri3i *)&hitC;
-                result.x = scratch.x; result.y = scratch.y; result.z = scratch.z;
-                arg3 = node;
-                node = *(char **)(node + 0x2C);
+                result = hitC;
+                b = n;
+                n = n->next;
                 continue;
             }
             break;
         }
-
-        if (node != NULL &&
+        if (n != 0 &&
             game_uso_func_082880(result.x * result.x + result.z * result.z) <
-                *(f32 *)(*(int *)(arg1 + 0x30) + 0x348) * *(f32 *)(arg1 + 0xCC)) {
-            *(Tri3i *)&n0 = *(Tri3i *)&hitC;
+                s->w->speed * s->range) {
+            Vec3 n0 = hitC;
             game_uso_func_071028(&n0);
-            *(Tri3i *)&n1 = *(Tri3i *)&hitA;
+            Vec3 n1 = hitA;
             game_uso_func_071028(&n1);
-            *(Tri3i *)&n2 = *(Tri3i *)&hitB;
+            Vec3 n2 = hitB;
             game_uso_func_071028(&n2);
             if ((n0.x * n2.x + n0.z * n2.z) < (n0.x * n1.x + n0.z * n1.z)) {
-                *(Tri3i *)&scratch = *(Tri3i *)&hitA;
-                result.x = scratch.x; result.y = scratch.y; result.z = scratch.z;
+                result = hitA;
             } else {
-                *(Tri3i *)&scratch = *(Tri3i *)&hitB;
-                result.x = scratch.x; result.y = scratch.y; result.z = scratch.z;
+                result = hitB;
             }
         }
     }
-
-    *(Tri3i *)arg0 = *(Tri3i *)&result;
-    return (int)arg0;
+    return result;
 }
