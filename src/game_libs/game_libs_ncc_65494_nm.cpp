@@ -10,23 +10,27 @@
  * (a distinct uopt constant: the target keeps that zero in fs1 apart from the fs2
  * accumulator zero), h / w / dt / f as function-scope named locals (target homes:
  * n 0x134, d 0x128, hit 0xF8), and `psum += v * w` before `wsum += w` (lever-sweep
- * order, 80.88 -> 86.37). Left: the target leaves self + 0x2FC uncoloured (spill
- * home 0x6C, no s8; ours colours it s8: +1 save word), operator- loads all six
- * fields before its stores (a float-temp spelling does it but drops two words),
- * operator* likewise. */
+ * order, 80.88 -> 86.37). Then operator- and the impulse scale build their named
+ * result through the inline set(): set's parameters are evaluated before any
+ * store into r, so all the field loads / subs / muls come first as in the target
+ * (86.37 -> 89.91; a float-temp spelling also reorders them but drops two words).
+ * Left: the target leaves self + 0x2FC uncoloured (spill home 0x6C, no s8; ours
+ * colours it s8: +1 save word) and keeps psum's product loads ahead of its stores
+ * (the set() form on that operator* does not move them). */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
     Vec3(float a, float b, float c) { x = a; y = b; z = c; }
     void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    Vec3 operator-(const Vec3 &v) const { Vec3 r; r.x = x - v.x; r.y = y - v.y; r.z = z - v.z; return r; }
+    Vec3 operator-(const Vec3 &v) const { Vec3 r; r.set(x - v.x, y - v.y, z - v.z); return r; }
     Vec3 operator*(float s) const { Vec3 r; r.x = x * s; r.y = y * s; r.z = z * s; return r; }
+    Vec3 sc(float s) const { Vec3 r; r.set(x * s, y * s, z * s); return r; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
     void operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; }
     void operator*=(float s) { x *= s; y *= s; z *= s; }
     void operator/=(float s) { x /= s; y /= s; z /= s; }
-    float dot(const Vec3 &v) const { float r = x * v.x + y * v.y + z * v.z; return r; }
+    float dot(const Vec3 &v) const {  float r = x * v.x + y * v.y + z * v.z; return r;  }
 };
 struct V3P { float x, y, z; };
 inline int iz() { return 0; }
@@ -111,7 +115,7 @@ extern "C" void gl_func_00065494(Self *self) {
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
-            gl_func_00062F64_d(self, &node->v120, n * (self->f290 * w + self->f28C * -dt));
+            gl_func_00062F64_d(self, &node->v120, n.sc(self->f290 * w + self->f28C * -dt));
         }
     }
     if (count != 0) {
