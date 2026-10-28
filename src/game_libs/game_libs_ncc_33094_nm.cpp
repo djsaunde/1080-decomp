@@ -21,16 +21,17 @@ extern void gl_33094_emit(void *, float, float, float, float, float, float, floa
 extern char D_33094_k[];
 }
 extern "C" int gl_func_00033094(char *o) {
+    Vec3 b; /* agent-c run 188: b above a, six frame words before t -- frame 144 and the a / b homes at the target's 120 / 132 */
     Vec3 a;
-    Vec3 b;
+    volatile int q0, q1, q2, q3, q4, q5;
     Vec3 t;
     Vec3 *k;
     char *p;
 
     if (1) { Vec3 *q = &a; q = &b; }
-    a.x = *(float *)(o + 0xA0);
+    a.z = *(float *)(o + 0xA8); /* run 188: z, y, x (the target's load / store order) */
     a.y = *(float *)(o + 0xA4);
-    a.z = *(float *)(o + 0xA8);
+    a.x = *(float *)(o + 0xA0);
     p = *(char **)(o + 0xF4);
     if (p != 0) {
         /* run 149: held in block locals, then stored (kit LXXXVI): 80.26 -> 84.65 */
