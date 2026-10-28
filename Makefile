@@ -2136,6 +2136,13 @@ $(GAMELIBS_36694_NM_DONOR): src/game_libs/game_libs_ncc_36694_nm.cpp
 	$(OBJCOPY) --redefine-sym perp__3ObjF2V3T1=gl_func_00036694 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036694=$(GAMELIBS_36694_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36694_NM_DONOR)
+# 37540 = C++ sibling of the exact 37348 donor (agent-c run 200; kept Node * inline parameters, ctor-built vB4 / v9C, by-value operator= copies). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_37540_NM_DONOR := build/src/game_libs/game_libs_ncc_37540_nm.cpp.o
+$(GAMELIBS_37540_NM_DONOR): src/game_libs/game_libs_ncc_37540_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037540=$(GAMELIBS_37540_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37540_NM_DONOR)
 # 42778 = normalised Vec3 -> fixed-point screen pair (len reused for the inverse, pad[12] frame words); NCC donor.
 GAMELIBS_42778_DONOR := build/src/game_libs/game_libs_ncc_42778.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00042778=$(GAMELIBS_42778_DONOR)
