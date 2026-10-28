@@ -74,10 +74,10 @@ extern "C" void gl_func_00065494(Self *self) {
     Node *node;
 
     count = 0;
-    wsum = 0.0f;
-    minv = 0.0f;
     nsum.z = 0.0f; nsum.y = 0.0f; nsum.x = 0.0f;
     psum.z = 0.0f; psum.y = 0.0f; psum.x = 0.0f;
+    wsum = 0.0f; /* run 186: accumulator zeros after the vector zeros (120-order grid, 90.02 -> 91.61) */
+    minv = 0.0f;
     while ((node = it.next()) != 0) {
         Vec3 n;
         Vec3 d;
