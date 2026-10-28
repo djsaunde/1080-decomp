@@ -5787,9 +5787,9 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         w = p;
         if (w != NULL || (w = (Vec3 *)game_uso_func_055750(0xC)) != NULL) {
             tx = *qb - *q;
+            w->y = 0.0f;
             tz = *(f32 *)((int)qb + 8) - *(f32 *)((int)q + 8);
             w->x = tx;
-            w->y = 0.0f;
             w->z = tz;
         }
         *(Tri3i *)&sp174 = *(Tri3i *)&sp48;
