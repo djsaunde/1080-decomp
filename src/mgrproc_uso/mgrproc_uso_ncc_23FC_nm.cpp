@@ -56,10 +56,10 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     s32 flag;
     char *panel;
     s32 i;
-    s32 sec;
     s32 n;
-    s32 min;
     s32 x;
+    s32 min;
+    s32 sec; /* run 185: n / x / min / sec order from a 720-probe grid */
 
     one[0] = 1.0f;
     one[1] = 1.0f;
