@@ -34,7 +34,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     dlist(c, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
-    PKTD(c, 0xBA000602, 0);
+    PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
     PKT(c, 0xBA000C02, 0x2000);
     PKT(c, 0xBA001301, 0x80000);
     PKT(c, 0xFCFFFFFF, 0xFFFE793C);
