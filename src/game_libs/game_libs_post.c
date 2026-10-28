@@ -13367,9 +13367,8 @@ block_83:
                         var_v0_2 = 0x38;
                         break;
                     default:                        /* odd cases */
-                        temp_v1_6 = *(u8 *)((char *)(arg0) + 0x29);
                         var_v0_2 = 0x10;
-                        switch (temp_v1_6) {
+                        switch (*(u8 *)((char *)(arg0) + 0x29)) {
                         case 0:
                             sp50 = 6;
                             break;
