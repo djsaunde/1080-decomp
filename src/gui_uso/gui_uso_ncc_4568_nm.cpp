@@ -3,7 +3,12 @@
  * gSPTextureRectangle (x, y >= 0) / gSPScisTextureRectangle (else) pair with tile 0, s = t = 0, written
  * with the real macro text (each gImmp1(pkt, ...) re-evaluates c->next(), one packet per word pair)
  * over the context's inline next() append: 85.8 (cfe open-coded body) -> 91.8. RESIDUAL: the first
- * packet's w0 / w1 store order and the temp ring (target stores w0 first, computes xl / yl after it). */
+ * packet's w0 / w1 store order and the temp ring (target stores w0 first, computes xl / yl after it).
+ * agent-c run 185: split shifts on the first packet's y / xh / yh (phantom ugen ring slots) make
+ * the first arm word-exact; a named `int xl` in the Scis arm gives the target's `or t2,a1` copy
+ * (91.79 -> 96.01). Every word now matches modulo registers except the first MAX arm's delay slot
+ * (target nop, here `or a0,v1`). LEFT: MAX pool temps (target t0 / pkt t1, here v1 / t0). The target
+ * object has 198 words: its `addiu sp,sp,8` delay slot sits past TRUNCATE_TEXT 0x4738. */
 #include "gui_ncc_gbi.h"
 typedef short s16;
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -62,8 +67,12 @@ struct Ctx {
 };
 extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
     if (x >= 0 && y >= 0) {
-        gSPTextureRectangle(c->next(), x << 2, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        /* run 185: split shifts on y / xh / yh re-phase the ugen temp ring (first packet now
+         * word-exact; 91.79 -> 95.68) */
+        gSPTextureRectangle(c->next(), x << 2, y << 1 << 1, (x + w) << 1 << 1, (y + h) << 1 << 1, 0, 0, 0, dsdx, dtdy);
     } else {
-        gSPScisTextureRectangle(c->next(), x << 2, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        /* run 185: xl named once (the target's `or t2,a1` copy + a3 for yl; 95.68 -> 96.01) */
+        int xl = x << 2;
+        gSPScisTextureRectangle(c->next(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     }
 }
