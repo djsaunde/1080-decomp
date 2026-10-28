@@ -271,7 +271,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     if (FW(&import_800200CC, 0x34) != 2) {
         NEWPANEL(m5C, timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C)
         add(m5C);
-        m5C->w = (WBase *)new WA;
+        m5C->w = (WBase *)new WA + 0; /* run 206: folded + 0 (kit CLXXIX: edg temp sharing) */
         m5C->b.n22C.setPos(V3(110.0f, -96.0f, -510.0f));
         m5C->b.n24C.setPos(V3(0.0377f, 0.0f, 0.0f));
         m5C->b.n284.f = 1.936f;
@@ -334,13 +334,13 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     if (FW(&import_800200CC, 0x34) != 6) tu &= ~3;
     B *items[8];
     for (int i = 0; i != 8; i++) {
-        B *r = c->add(1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, 4.712389f);
+        B *r = c->add(1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, 4.712389f) + 0; /* run 206: folded + 0 */
         items[i] = r;
         if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
     }
     d->add(1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
-    B *volatile e2 = d->add(1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f); /* run 182 (lever-sweep volatile): e2 homed */
-    B *e3 = d->add(1, 3, -220.0f, 200.0f, -400.0f, 0.0, 0.0f, 0.0f);
+    B *volatile e2 = d->add(1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f) + 0; /* run 182 (lever-sweep volatile): e2 homed; run 206 folded + 0 */
+    B *e3 = d->add(1, 3, -220.0f, 200.0f, -400.0f, 0.0, 0.0f, 0.0f) + 0; /* run 206: folded + 0 */
     timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
     switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
     case 1:
