@@ -14,7 +14,7 @@ struct V3 { f32 x, y, z;
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
-    f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; }
+    f32 dot(const V3 &o) const { return y * o.y + x * o.x + z * o.z; } /* run 200: y term first (operand-order grid) */
 };
 inline int i1() { return 1; }
 struct Plane { V3 n; f32 d; };
@@ -25,21 +25,21 @@ void Obj::reflect(const Plane &p) {
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x); if (1) {} /* agent-g run 195: lever-sweep bbsplit after the a-top move */
-    mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y);
+    mtx.m[0][1] = 0.0f - 2.0f * (p.n.y * p.n.x);
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z); if (1) {} /* agent-g run 190: lever-sweep bbsplit (91.01 -> 91.23) */
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
     mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
-    mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
-    mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y);
+    mtx.m[2][0] = 0.0f - 2.0f * (p.n.x * p.n.z);
+    mtx.m[2][1] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z);
     mtx.m[2][3] = 0.0f;
     a.set(p.n * p.d);
     f32 k = a.dot(p.n) * 2.0f;
-    mtx.m[3][1] = k * p.n.y; /* run 194 (lever-sweep order) */
-    mtx.m[3][0] = k * p.n.x;
+    mtx.m[3][0] = k * p.n.x; /* run 200: back to x-first with the y-first dot (target stores 348 first) */
+    mtx.m[3][1] = k * p.n.y;
     mtx.m[3][2] = k * p.n.z;
     mtx.m[3][3] = 1.0f;
     *(M4 **)(D_00000000 + 0xE4) = &mtx;
