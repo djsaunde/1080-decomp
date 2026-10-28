@@ -13162,9 +13162,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             if (temp_f16 == 0.0f) {
                 *(u8 *)((char *)(arg0) + 0x26) = 0U;
             }
-            temp_v1_2 = *(u8 *)((char *)(arg0) + 0x1D);
-            if (*(u8 *)((char *)(arg0) + 0x34) != temp_v1_2) {
-                if (temp_v1_2 == 1) {
+            if (*(u8 *)((char *)(arg0) + 0x34) != *(u8 *)((char *)(arg0) + 0x1D)) {
+                if (*(u8 *)((char *)(arg0) + 0x1D) == 1) {
                     var_v0 = 0x40;
                 } else {
                     var_v0 = 8;
