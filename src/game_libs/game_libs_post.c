@@ -13336,14 +13336,13 @@ block_83:
                         if ((*(s32 *)(D_E354_G + 0) /* M2C unset $t4 */ == 4) || (*(u8 *)((char *)(arg0) + 0x1C) & 1)) {
                             gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, (s32) *(u8 *)((char *)(arg0) + 0x28)); var_v0_2 = 0; /* M2C: v0-after-void-call */
                         } else {
-                            temp_v1_5 = *(u8 *)((char *)(arg0) + 0x2E);
-                            if (temp_v1_5 == 1) {
+                            var_v0_3 = *(u8 *)((char *)(arg0) + 0x2E); /* run 192: selector and result share v0 */
+                            if (var_v0_3 == 1) {
                                 var_v0_3 = 0x7F;
+                            } else if (var_v0_3 == 3) {
+                                var_v0_3 = 0;
                             } else {
                                 var_v0_3 = 0x40;
-                                if (temp_v1_5 == 3) {
-                                    var_v0_3 = 0;
-                                }
                             }
                             if (*(u8 *)((char *)(arg0) + 0x1E) != 0) {
                                 var_v0_3 = (0x7F - var_v0_3) & 0xFF;
