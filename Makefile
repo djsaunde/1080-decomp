@@ -747,7 +747,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 176: 37540 NM volatile flags word re-read (0x2F8 -> 0x2FC bytes = target): 0x2eabc -> 0x2eac0 (62F08 NM offset 0x2ea70).
 # agent-g run 190: 4A308 NM early return of a named block-local result (0x364 -> 0x368 bytes = target): 0x2eac0 -> 0x2eac4 (62F08 NM offset 0x2ea74).
 # agent-c run 182: 46050 NM donor switch (ch) dispatch (1832 -> 1840 bytes, target 1848): 0x2eac0 -> 0x2eac8 (62F08 NM offset 0x2ea78).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eac8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-c run 182: 36694 NM real C++ donor (704 -> 716 bytes, target 712): 0x2eac8 -> 0x2ead4 (62F08 NM offset 0x2ea84).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ead4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -2105,8 +2106,12 @@ $(GAMELIBS_493AC_NM_DONOR): src/game_libs/game_libs_ncc_493AC_nm.cpp
 	$(OBJCOPY) --redefine-sym run__3MgrFv=gl_func_000493AC --redefine-sym __vtbl__3Rec=D_00000000 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000493AC=$(GAMELIBS_493AC_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_493AC_NM_DONOR)
-# 36694 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 82.41). Still NON_MATCHING: NM comparison object only.
+# 36694 = real C++ `V3 Obj::perp(V3, V3)` (agent-c run 182; was the run-134 NCC C lift, cfe 82.41); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_36694_NM_DONOR := build/src/game_libs/game_libs_ncc_36694_nm.cpp.o
+$(GAMELIBS_36694_NM_DONOR): src/game_libs/game_libs_ncc_36694_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym perp__3ObjF2V3T1=gl_func_00036694 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036694=$(GAMELIBS_36694_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36694_NM_DONOR)
 # 42778 = normalised Vec3 -> fixed-point screen pair (len reused for the inverse, pad[12] frame words); NCC donor.
