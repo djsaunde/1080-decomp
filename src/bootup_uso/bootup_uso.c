@@ -830,7 +830,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             y -= 32;
         }
         k = 0;
-        m = E68_MGR;
+        m = E68_MGR + 0 * *cfg; /* agent-c run 209: folded counted use of *cfg (kit CXCIV lever b) */
         ult = 0;
         for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
             vidx = 0;
@@ -4138,7 +4138,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         b4 = 5;
         b0 = 2;
     }
-    gD = D_bu_776C;
+    gD = D_bu_776C + 0 * *arg1; /* agent-c run 209: folded counted use of *arg1 (kit CXCIV lever b), 95.62 -> 95.65 */
     *gD = 0;
     D_bu_1EBDC[0] = 6;
     func_00000000(D_bu_7770, arg2, idx, D_bu_1EBDC[0]);
@@ -7376,7 +7376,7 @@ void func_0000B75C(char *arg0) {
             if (*(f32 *)((char *)(arg0) + 0x618) < var_f0) {
                 bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3C8, *(f32 *)((char *)(arg0) + 0x600) * *(f32 *)((char *)(arg0) + 0xA08), arg0);
             }
-            var_a0 = arg0 + 0xCC;
+            var_a0 = arg0 + 0xCC + 0 * *arg0; /* agent-c run 209: folded counted use (kit CXCIV lever b) */
             if (*(f32 *)((char *)(arg0) + 0xA04) < 0.0f) {
                 var_f0 = -*(f32 *)((char *)(arg0) + 0xA04);
             } else {

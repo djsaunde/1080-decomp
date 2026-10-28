@@ -4006,7 +4006,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
                     self->unk48->unk80 = 0x40000;
                 }
             } else if (func_00000000((char *)&D_00000000, temp) != 0) {
-                vt = self->vt;
+                vt = self->vt + 0 * temp; /* agent-c run 209: folded counted use (kit CXCIV lever b) */
                 vt->e[26].fn(vt->e[26].off + (char *)self);
                 self->unk48->unk80 = 0;
             }
