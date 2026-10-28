@@ -11,6 +11,11 @@
  * off memory-homed like the target's frame home): 73.61 -> 74.51, length = target.
  * Still NON_MATCHING: build/non_matching/ only.
  * agent-c run 179: de-named `a` (t->a at each use) and the -50.0f limit constant: 74.53 -> 74.59.
+ * agent-c run 193 (decode, 3BE1C twin): the edge test computes px / py (qa / qb minus the first vertex) before
+ * ex / ey, straight from v[] (no named ax / ay); `a` named again for the qa read: the edge loop now aligns
+ * word-for-word (M 47 -> 122, X 55 -> 10 words): 74.59 -> 87.65, 800 -> 820 bytes (target 800: AWAY, flagged;
+ * the extra words are the nfound / this homes -- the target spills this at sp+128 in a 128-byte frame, ours
+ * keeps a 64-byte frame).
  */
 typedef float f32; typedef short s16; typedef unsigned short u16; typedef signed char s8;
 struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
@@ -43,20 +48,19 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 f = &c->faces[i];
             }
             f32 dir = t->sgn;
+            int a = t->a;
             int b = t->b;
-            f32 qa = pt[t->a];
+            f32 qa = pt[a];
             f32 qb = pt[b];
             s16 *tp = D_00000000_3b6a0tbl;
             u16 *fp = (u16 *)f;
             do {
                 s16 *v = verts[fp[1]];
                 s16 *w = verts[f->vi[*tp++]];
-                int ax = v[t->a];
-                int ay = v[b];
-                s16 ex = w[t->a] - ax;
-                s16 ey = w[b] - ay;
-                s16 px = (int)(qa - (f32)ax);
-                s16 py = (int)(qb - (f32)ay);
+                s16 px = (int)(qa - v[a]);
+                s16 py = (int)(qb - v[b]);
+                s16 ex = w[a] - v[a];
+                s16 ey = w[b] - v[b];
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
                     inside = 0;
                 }
