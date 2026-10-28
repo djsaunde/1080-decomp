@@ -57,10 +57,9 @@ struct Obj {
 };
 void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     Lights *rec = c->lights();
-    LElem *v = amb;
-    u32 r = (u32)(v->col[0] * s[0] * 255.0f) & 0xFF;
-    u32 g = (u32)(v->col[1] * s[1] * 255.0f) & 0xFF;
-    u32 b = (u32)(v->col[2] * s[2] * 255.0f) & 0xFF;
+    u32 r = (u32)(amb->col[0] * s[0] * 255.0f) & 0xFF;
+    u32 g = (u32)(amb->col[1] * s[1] * 255.0f) & 0xFF;
+    u32 b = (u32)(amb->col[2] * s[2] * 255.0f) & 0xFF;
     if (k != 1.0) {
         r = (u32)MIN(r * k, 255.0f) & 0xFF;
         g = (u32)MIN(g * k, 255.0f) & 0xFF;
