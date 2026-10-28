@@ -13679,9 +13679,11 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
     temp_v1 = FW(arg0, 0x240);
     {
-        char *p100 = temp_v1 + 0x100;
+        /* agent-c run 196: p100 / pDC from a re-read of arg0->0x240 (CSE'd load, unfolded
+         * `addiu a2,v1,256` / `addiu t7,v1,220` held like the target; kit CLXX 5.) */
+        char *p100 = FW(arg0, 0x240) + 0x100;
         char *p78 = temp_v1 + 0x78;
-        char *pDC = temp_v1 + 0xDC;
+        char *pDC = FW(arg0, 0x240) + 0xDC;
         s32 m4;
         sp48 = FW(FW(temp_v1, 0x148), 0xF0);
         m4 = FW(p78, 0) & 4;
