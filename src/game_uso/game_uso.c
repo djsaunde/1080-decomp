@@ -619,7 +619,7 @@ void game_uso_func_00000B3C(char *arg0) {
     Vec3 *c1[4];      /* 0x98 */
     Vec3 *c2[4];      /* 0x88 */
     Vec3 fresh;       /* 0x7C */
-    f32 fx;           /* 0x78 */
+    f32 fz;           /* 0x78 */
     Vec3 *c3[4];      /* 0x68 */
     f32 w[4];         /* 0x58 */
     Vec3 *c4[4];      /* 0x48 */
@@ -812,7 +812,9 @@ void game_uso_func_00000B3C(char *arg0) {
     }
     *(Tri3i *)&vC = *(Tri3i *)game_uso_func_000023D4(&stage, *(char **)(s + 0x154));
     tv = *(char **)(s + 0x150); tv += 0xB4;
-    { f1 = ((f32 *)tv)[2] + vC.z; fy = ((f32 *)tv)[1] + vC.y; fx = ((f32 *)tv)[0] + vC.x; v30.z = f1; v30.y = fy; v30.x = fx; }
+    /* run 185: x / y / z sums in source order through f1 / fy / fz (the f1 home
+     * is the highest: target z sum in f12 stored last; 99.79 -> 99.80) */
+    { f1 = ((f32 *)tv)[0] + vC.x; fy = ((f32 *)tv)[1] + vC.y; fz = ((f32 *)tv)[2] + vC.z; v30.z = fz; v30.y = fy; v30.x = f1; }
     if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;
     *(Tri3i *)&vD = *(Tri3i *)&v3C;
