@@ -16065,7 +16065,10 @@ void gl_func_000334B0(int a0, int a1, int a2) {
  * address into src and every 0x28 ring-register read (`p = G->p28`): its
  * single s0 web is the target's `lui s0; lw s0,40(s0)` / `lw a1,40(s0)` and
  * frees s1 for base. Length 712 -> 704 (target 708). Residual: frame 112 vs
- * 104 (buf at sp+104) and the first `move a0,s1` schedule. */
+ * 104 (buf at sp+104) and the first `move a0,s1` schedule.
+ * Then (33EB8 rule) every ring word through the g base pointer (same-base
+ * accesses keep source order) and rem = 8 after the second call: 92.21 -> 96.20,
+ * length 704 -> 708 = target. */
 extern s32 gl_d_334e8_8a, gl_d_334e8_8b, gl_d_334e8_8c, gl_d_334e8_8d,
            gl_d_334e8_8e, gl_d_334e8_8f, gl_d_334e8_8g, gl_d_334e8_8h;
 extern s32 gl_d_334e8_14a;
@@ -16096,13 +16099,13 @@ void gl_func_000334E8(void) {
     gl_func_00000000(p, &gl_ref_0001E280);
     base = (u8 *)&D_00000000;
     src = (s32)p;
-    rem = 8;
     gl_func_00000000(base);
+    rem = 8;
     sent = 0x12340002;
     do {
         chunk = rem;
         mis = src & 7;
-        avail = gl_d_334e8_2ca - gl_d_334e8_8a;
+        avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
         if (avail < (u32)rem) {
             chunk = avail;
         } else {
@@ -16124,19 +16127,19 @@ void gl_func_000334E8(void) {
                         cpsrc += 1;
                     } while (cnt < chunk);
                 }
-                gl_func_00000000(base, gl_d_334e8_8b, base, chunk);
+                gl_func_00000000(base, *(s32 *)(g + 8), base, chunk);
             } else {
-                gl_func_00000000(base, gl_d_334e8_8c, src, chunk);
+                gl_func_00000000(base, *(s32 *)(g + 8), src, chunk);
             }
-            avail = gl_d_334e8_8d + chunk;
-            gl_d_334e8_8e = avail;
+            avail = *(s32 *)(g + 8) + chunk;
+            *(s32 *)(g + 8) = avail;
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, avail);
         }
-        avail = gl_d_334e8_8f;
-        if (gl_d_334e8_2cb == avail) {              /* hit segment end */
-            gl_d_334e8_14a = avail;
+        avail = *(s32 *)(g + 8);
+        if (*(s32 *)(g + 0x2C) == avail) {              /* hit segment end */
+            *(s32 *)(g + 0x14) = avail;
             gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, avail);
-            if (gl_d_334e8_2cc != gl_d_334e8_8g) {
+            if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
                 gl_func_00000000(base, &gl_ref_0001E29C);
             }
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340001);   /* kick DMA */
@@ -16149,8 +16152,8 @@ void gl_func_000334E8(void) {
                 goto spin1;
             }
         spun1:
-            avail = gl_d_334e8_24a;                 /* rebase to saved start */
-            gl_d_334e8_8h = avail;
+            avail = *(s32 *)(g + 0x24);                 /* rebase to saved start */
+            *(s32 *)(g + 8) = avail;
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, avail);
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340003);   /* kick second DMA */
             if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == sent) {
@@ -16522,6 +16525,8 @@ void gl_func_00033B6C(void) {
 // target's s0 (flags gate copy, then `lui s0; lw s0,40(s0)`). The 0x28 reads
 // go through a local base pointer g so no loop-invariant &G+0x28 is hoisted.
 // Length 728 -> 720 (target 724, same distance).
+// Then every ring word (+8 / +0x14 / +0x24 / +0x2C) through g as well: 93.54 -> 96.66,
+// length 720 -> 724 = target.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sites) */
 /* per-SITE base-0 aliases (33EB8/2B5F4 r1/r2 convention): one extern per access
@@ -16563,7 +16568,7 @@ void gl_func_00033BE4(s32 src, u32 flags) {
         do {
         chunk = rem;
         mis = src & 7;
-        avail = gl_d_33be4_2ca - gl_d_33be4_8a;
+        avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
         if (avail < (u32)rem) {
             chunk = avail;
         } else {
@@ -16585,19 +16590,19 @@ void gl_func_00033BE4(s32 src, u32 flags) {
                         cpsrc += 1;
                     } while (cnt < chunk);
                 }
-                gl_func_00000000(base, gl_d_33be4_8b, base, chunk);
+                gl_func_00000000(base, *(s32 *)(g + 8), base, chunk);
             } else {
-                gl_func_00000000(base, gl_d_33be4_8c, src, chunk);
+                gl_func_00000000(base, *(s32 *)(g + 8), src, chunk);
             }
-            cur = gl_d_33be4_8d + chunk;
-            gl_d_33be4_8e = cur;
+            cur = *(s32 *)(g + 8) + chunk;
+            *(s32 *)(g + 8) = cur;
             flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, cur);
         }
-        cur = gl_d_33be4_8f;
-        if (gl_d_33be4_2cb == cur) {              /* hit segment end */
-            gl_d_33be4_14a = cur;
+        cur = *(s32 *)(g + 8);
+        if (*(s32 *)(g + 0x2C) == cur) {              /* hit segment end */
+            *(s32 *)(g + 0x14) = cur;
             gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
-            if (gl_d_33be4_2cc != gl_d_33be4_8g) {
+            if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
                 gl_func_00000000(base, &gl_ref_0001E344);
             }
             flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340001);   /* kick DMA */
@@ -16610,8 +16615,8 @@ void gl_func_00033BE4(s32 src, u32 flags) {
                 goto spin1;
             }
         spun1:
-            cur = gl_d_33be4_24a;                 /* rebase to saved start */
-            gl_d_33be4_8h = cur;
+            cur = *(s32 *)(g + 0x24);                 /* rebase to saved start */
+            *(s32 *)(g + 8) = cur;
             flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, cur);
             flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340003);   /* kick second DMA */
             if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) == sent) {
