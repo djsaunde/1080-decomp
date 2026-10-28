@@ -1,66 +1,48 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00033094: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 70.95).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
-typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
-typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
-typedef float f32; typedef double f64;
-#undef NULL
-#define NULL 0
-typedef struct { float x, y, z; } Vec3;
-typedef struct { int w0, w1; } GfxPair1EE78;
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00033094 (0x194 / 101 words).
+ * agent-c run 202: rewritten as real C++ on the exact 432BC donor's V3 kit (was the run-134 C lift under NCC,
+ * 87.65): a = o->pos and b = p->pos through set(f32, f32, f32) (edg evaluates the arguments right to left:
+ * the target's z, y, x loads into registers before the stores); the else arm `b = o->v104; b *= 10; b += a;`
+ * with a BY-VALUE operator= (the word copy into the sp+0x54 parameter temp, then set(const V3 &)) -- uopt
+ * forwards b.z and keeps the b.x / b.y stores the target has; a and b then scaled by the k vector through
+ * mul(const V3 &). Operator-body order grid (kit CLXXX): set y, x, z; *= x, z, y; += y, z, x. The two unused
+ * volatiles sit in a block at the end (frame 0x90). 87.65 -> 93.46 standalone, length 404 = target.
+ * Left: the FP colours of a (target x f12 / y f0 / z f2, ours f0 / f2 / f12) and the else-arm's a.x reload,
+ * the parameter temp 8 below the target's sp+0x54. Still NON_MATCHING: build/non_matching/ only. */
+typedef float f32;
+struct V3 { f32 x, y, z;
+    void set(const V3 &v) { y = v.y; x = v.x; z = v.z; }
+    void operator=(V3 v) { set(v); }
+    void operator*=(f32 s) { x *= s; z *= s; y *= s; }
+    void operator+=(const V3 &o) { y = y + o.y; z = z + o.z; x = x + o.x; }
+    void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
+    void mul(const V3 &k) { x = x * k.x; y = y * k.y; z = z * k.z; }
+};
+struct Obj { char pad[0xA0]; V3 pos; char padAC[0xF4 - 0xAC]; Obj *p; char padF8[0x104 - 0xF8]; V3 v104;
+    char pad110[0x130 - 0x110]; int x130, x134, x138; char pad13C[4]; V3 v140; };
 extern "C" {
 extern int gl_func_00000000(...);
-extern signed char k;
-extern GfxPair1EE78 *p;
-extern int x;
-extern int y;
-extern int gl_ref_000400A4(char *, unsigned char, char *, char *);
-extern int gl_func_00000000_f(int, float);
-extern void gl_33094_emit(void *, float, float, float, float, float, float, float, float, float);
-extern void gl_func_00043BE4(char *o, int event, int zero, float vol, int idx);
 extern void gl_33094_emit(void *, float, float, float, float, float, float, float, float, float);
 extern char D_33094_k[];
 }
-extern "C" int gl_func_00033094(char *o) {
-    Vec3 b; /* agent-c run 188: b above a, six frame words before t -- frame 144 and the a / b homes at the target's 120 / 132 */
-    Vec3 a;
-    volatile int q0, q1, q2, q3, q4, q5;
-    Vec3 t;
-    Vec3 *k;
-    char *p;
-
-    if (1) { Vec3 *q = &a; q = &b; }
-    a.z = *(float *)(o + 0xA8); /* run 188: z, y, x (the target's load / store order) */
-    a.y = *(float *)(o + 0xA4);
-    a.x = *(float *)(o + 0xA0);
-    p = *(char **)(o + 0xF4);
-    if (p != 0) {
-        /* run 149: held in block locals, then stored (kit LXXXVI): 80.26 -> 84.65 */
-        f32 hx = *(float *)(p + 0xA0); f32 hy = *(float *)(p + 0xA4); f32 hz = *(float *)(p + 0xA8);
-        b.x = hx; b.y = hy; b.z = hz;
+extern "C" int gl_func_00033094(Obj *o) {
+    V3 b;
+    V3 a;
+    a.set(o->pos.x, o->pos.y, o->pos.z);
+    if (o->p != 0) {
+        b.set(o->p->pos.x, o->p->pos.y, o->p->pos.z);
     } else {
-        t = *(Vec3 *)(o + 0x104);
-        b.x = t.x;
-        b.y = t.y;
-        b.x = b.x * 10.0f;
-        b.x = b.x + a.x; /* agent-c run 181: lever-sweep order hit (independent fields, no calls) */
-        b.y = b.y * 10.0f;
-        b.z = t.z * 10.0f + a.z;
-        b.y = b.y + a.y; /* agent-c run 174: lever-sweep order hit (b.y / b.z independent locals, no calls): 87.00 -> 87.22 */
+        b = o->v104;
+        b *= 10.0f;
+        b += a;
     }
-    /* agent-c run 183 decode fix: D_33094_k is pinned AT 0x128 (the target's `addiu v0,v0,0x128` + lwc1 0/4/8(v0));
-     * the old `D_33094_k + 296` read 0x250 (offset counted twice). */
-    k = (Vec3 *)D_33094_k;
-    a.x = a.x * k->x;
-    a.y = a.y * k->y;
-    a.z = a.z * k->z;
-    b.x = b.x * k->x;
-    b.y = b.y * k->y;
-    b.z = b.z * k->z;
-    gl_33094_emit(o + 0xB4, a.x, a.y, a.z, b.x, b.y, b.z,
-                  *(float *)(o + 0x140), *(float *)(o + 0x144), *(float *)(o + 0x148));
-    if (*(int *)(o + 0x130) != 0) {
-        gl_func_00000000(o + 0xB4, 1, *(int *)(o + 0x138), 0);
-        gl_func_00000000(o + 0xB4, 0, *(int *)(o + 0x134), 0);
+    V3 *k = (V3 *)D_33094_k;
+    a.mul(*k);
+    b.mul(*k);
+    gl_33094_emit((char *)o + 0xB4, a.x, a.y, a.z, b.x, b.y, b.z, o->v140.x, o->v140.y, o->v140.z);
+    if (o->x130 != 0) {
+        gl_func_00000000((char *)o + 0xB4, 1, o->x138, 0);
+        gl_func_00000000((char *)o + 0xB4, 0, o->x134, 0);
     }
+    { volatile int q0, q1; }
     return 1;
 }
