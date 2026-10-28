@@ -99,9 +99,9 @@ void Obj::run() {
     Vp *vp = &d->vph->buf[d->vph->count++];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
+    vp->vtrans[0] = fx * 4.0f + fw;
     vp->vscale[0] = fw;
     vp->vscale[1] = fh;
-    vp->vtrans[0] = fx * 4.0f + fw;
     vp->vtrans[1] = fy * 4.0f + fh;
     { Gfx *p = &d->head->buf[d->head->count++]; p->w0 = 0x03800010; p->w1 = gl_func_00034458(vp); }
     }
