@@ -25,9 +25,12 @@ struct Vec3 {
     float x, y, z;
     Vec3() {}
     Vec3(float a, float b, float c) { x = a; y = b; z = c; }
-    void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; }
+    void operator=(Vec3 v) { z = v.z; y = v.y; x = v.x; } /* agent-c run 201: z, y, x (the 37540 by-value operator= kit): 79.23 -> 80.26 standalone, 1024 -> 1016 bytes (target 1008, toward) */
     Vec3 operator-(const Vec3 &v) const { Vec3 r; r.x = x - v.x; r.y = y - v.y; r.z = z - v.z; return r; }
-    void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
+    /* agent-c run 201 order grid: += in x, z, y order, one component per line: 80.26 -> 81.66 standalone */
+    void operator+=(const Vec3 &v) {  x += v.x;
+ z += v.z;
+ y += v.y;  }
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
     float len2() const { float r = x * x + y * y + z * z; return r; } /* run 180: named result (76.41 -> 76.7) */
 };
