@@ -3950,8 +3950,9 @@ void game_uso_func_0000591C(int *a0) {
      * Group transform loads/stores in X/Y/Z source order. Reuse child_flags
      * and accel_params at the child-copy/second-delta sites, with their homes
      * at sp+320 and sp+288. These lifetimes do not overlap their other uses.
-     * Current C is 4384 bytes versus 4372 target, with the 464-byte frame;
-     * only 177/1093 raw words agree at the same offsets (formerly 116).
+     * agent-c run 196: 94.79 -> 99.03, length 4372 = target, every block
+     * word-for-word up to registers except one extra `mtc1 zero` (0x3f0);
+     * see docs/IDO_CODEGEN.md#kit-clxx-agent-c-run-196.
      * Still not exact:
      * FP/temp allocation, scalar spills and alloc-fallback schedules differ.
      * See docs/IDO_CODEGEN.md#state-dispatch-word-copy-591c in the tooling repo.
@@ -4164,7 +4165,8 @@ void game_uso_func_0000591C(int *a0) {
     bits = *(int*)((char*)self + 0x6C);
     if (bits & 1) {
         if ((resolved_state & 1) && !(resolved_state & 2)) {
-            *(int*)((char*)self + 0x6C) = bits & ~1; *(int*)((char*)self + 0x48) = 0x14;
+            *(int*)((char*)self + 0x6C) = bits & ~1;
+            *(int*)((char*)self + 0x48) = 0x14;
             if (resolved_state & 4) {
                 out_flags = 0x20;
             } else if (resolved_state & 0x800) {
