@@ -8,7 +8,7 @@
  * arguments as int (target `lui a2,0x43C8` / `lui a3,0x3F80`: a float parameter
  * reuses the hoisted 1.0 / 400.0 registers), the normal's zeros as `(float)iz()`
  * (a distinct uopt constant: the target keeps that zero in fs1 apart from the fs2
- * accumulator zero), h / w / dt / f as function-scope named locals (target homes:
+ * accumulator zero), h / w / dt as function-scope named locals (target homes:
  * n 0x134, d 0x128, hit 0xF8), and `psum += v * w` before `wsum += w` (lever-sweep
  * order, 80.88 -> 86.37). Then operator- and the impulse scale build their named
  * result through the inline set(): set's parameters are evaluated before any
@@ -80,7 +80,6 @@ extern "C" void gl_func_00065494(Self *self) {
     minv = 0.0f;
     nsum.z = 0.0f; nsum.y = 0.0f; nsum.x = 0.0f;
     psum.z = 0.0f; psum.y = 0.0f; psum.x = 0.0f;
-    float f;
     while ((node = it.next()) != 0) {
         Vec3 n;
         Vec3 d;
@@ -119,7 +118,7 @@ extern "C" void gl_func_00065494(Self *self) {
         }
     }
     if (count != 0) {
-        f = (float)count;
+        float f = (float)count; /* block-local again after the set() step (89.91 -> 90.02) */
         nsum.y /= f; nsum.x /= f; nsum.z /= f;
         psum /= wsum;
         nsum *= -minv * self->f288;
