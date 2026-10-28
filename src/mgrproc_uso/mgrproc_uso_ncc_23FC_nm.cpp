@@ -20,7 +20,8 @@
  * into a named local (the timer-HUD family rewrite): its temporaries take the frame words three of the four
  * volatile pads stood in for (pad0 / pad0b / pad1 dropped), then `if (1) {}` after `flag = 0` (lever-sweep):
  * 98.62 -> 99.25 standalone. Then `tim` de-named (SPR(0x788) at both uses) and the volatile pad between n and x
- * replaced by two volatile pads just above min / sec (their homes 96 / 92 = target): 99.27.
+ * replaced by two volatile pads just above min / sec (their homes 96 / 92 = target): 99.27. Then the glyph
+ * height through `Spr::height()` (same named-image-pointer member) and `if (1) {}` after `c = buf[i]`: 99.49.
  * Spliced into the NON_MATCHING mgrproc_uso object only. */
 typedef float f32;
 typedef int s32;
@@ -39,7 +40,7 @@ int mgrproc_uso_func_00000140(...);
 void mgrproc_uso_func_083574(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; };
-struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } };
+struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } s32 height() { Img *i = img; return i->h; } };
 #define SPR(o) ((Spr *)(arg0 + (o)))
 extern "C" {
 void mgrproc_uso_func_000023FC(char *arg0) {
@@ -106,7 +107,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
         x = vt + xoff + 8;
         import_0024F34C( p770, xoff, 0xBE, 2);
         for (i = 0; i < n; i++) {
-            c = buf[i];
+            c = buf[i]; if (1) {}
             if (c == 0x5B) {
                 buf[i] = 10;
             } else if (c == 0x5D) {
@@ -114,7 +115,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
             } else {
                 buf[i] = c - 0x30;
             }
-            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (*(s16 *)((char *) FW(arg0, 0x798) + 0x22) / 2), buf[i] * w, w);
+            import_0024F75C(SPR(0x788), x + i * 13, 0xBE - (SPR(0x788)->height() / 2), buf[i] * w, w);
         }
     }
     flag = 0; if (1) {}
