@@ -770,9 +770,7 @@ void game_uso_func_00000B3C(char *arg0) {
         break;
     }
     if ((*(s32 *)(seg + 0x0) == 1) && (*(s32 *)(seg + 0x10) == 1)) {
-        fresh.y = 1.0f;
-        fresh.x = 0.0f;
-        fresh.z = 0.0f;
+        fresh.x = 0.0f; fresh.y = 1.0f; fresh.z = 0.0f;
         *(Tri3i *)&stage = *(Tri3i *)&fresh;
          up.z = stage.z; up.y = stage.y; up.x = stage.x;
     } else if (*(s32 *)(seg + 0x20) == 0) {
