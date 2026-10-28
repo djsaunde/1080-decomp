@@ -599,30 +599,32 @@ void game_uso_func_00000B3C(char *arg0) {
     s32 nsub;         /* 0xF0 */
     s32 ncur;         /* 0xEC */
     s32 nseg;         /* 0xE8 */
+    /* run 185 (agent-c): scalar homes declared where the target frame has its
+     * one-word gaps (1 / 6 / 3 / 1 words after nseg / zv / stage / fresh);
+     * the unused q / msk, rv, the `one` constant and the block floats are gone
+     * (adv shares tmp, fz is f1): frame 360 -> 336 = target, every stack
+     * offset now matches. */
+    char *s;          /* 0xE4 */
     Vec3 zv;          /* 0xD8 */
+    char *tv;
+    s32 cur;
+    s32 node;
+    s32 selv;
+    s32 st;
+    char *bv;         /* 0xC0 */
     Vec3 stage;       /* 0xB4 */
+    s32 tmp;
+    f32 f1;
+    f32 fy;           /* 0xA8 */
     Vec3 *c1[4];      /* 0x98 */
     Vec3 *c2[4];      /* 0x88 */
     Vec3 fresh;       /* 0x7C */
+    f32 fx;           /* 0x78 */
     Vec3 *c3[4];      /* 0x68 */
     f32 w[4];         /* 0x58 */
     Vec3 *c4[4];      /* 0x48 */
     Vec3 v3C;         /* 0x3C */
     Vec3 v30;         /* 0x30 */
-    char *s;
-    char *tv;
-    f32 *q;
-    Vec3 *rv;
-    s32 cur;
-    s32 node;
-    s32 selv;
-    s32 st;
-    char *bv;
-    s32 adv;
-    s32 tmp;
-    s32 one;
-    s32 msk;
-    f32 f1;
 
     s = arg0;
     tv = *(char **)(s + 0xF4); ob[0] = tv;
@@ -631,7 +633,6 @@ void game_uso_func_00000B3C(char *arg0) {
         *(s32 *)(s + 0x264) = tmp;
         game_uso_func_00000940(s);
     }
-    one = 1;
     tbl = ((int **)(s + 0x158))[*(s32 *)(s + 0x250)];
     cur = *(s32 *)(s + 0x25C);
     node = ((s32 *)((char *)tbl + 4))[*(s32 *)(s + 0x254)];
@@ -639,10 +640,10 @@ void game_uso_func_00000B3C(char *arg0) {
     seg = 0;
     if (1) { seg = ((char **)(s + 0x1D4))[node]; }
     kf = ((int **)(seg + 0x38))[cur];
-    if (one == cur) {
+    if (1 == cur) {
         if (*(s32 *)(s + 0x260) == 0) {
             if (*(char **)(s + 0x268) != 0) {
-                *(s32 *)(s + 0x130) = one;
+                *(s32 *)(s + 0x130) = 1;
                 zv.z = 0.0f;
                 zv.y = 0.0f;
                 zv.x = 0.0f;
@@ -653,7 +654,7 @@ void game_uso_func_00000B3C(char *arg0) {
             } else {
                 *(s32 *)(s + 0x130) = (*(s32 *)(seg + 0x30) == 0) == 0;
             }
-            if (one == *(s32 *)(seg + 0x10)) {
+            if (1 == *(s32 *)(seg + 0x10)) {
                 game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
             } else {
                 game_uso_func_00002714(*(int **)(s + 0x154), 0, *(s32 *)(s + 0x150) + 0x318);
@@ -668,14 +669,13 @@ void game_uso_func_00000B3C(char *arg0) {
             tv = *(char **)(s + 0x150); tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
         }
     }
-    one = 1;
-    if ((one == *(s32 *)(seg + 0x0)) && (one == *(s32 *)(seg + 0x10))) {
-        adv = 0;
+    if ((1 == *(s32 *)(seg + 0x0)) && (1 == *(s32 *)(seg + 0x10))) {
+        tmp = 0; /* the advance flag shares tmp */
         st = *(s32 *)(s + 0x26C);
         if (st == 3) {
             tv = *(char **)(s + 0x274);
             if (!(*(s32 *)(tv + 0x10) & 0x80)) {
-                adv = 1;
+                tmp = 1;
                 *(s32 *)(s + 0x26C) = *(s32 *)(s + 0x270);
             }
         } else {
@@ -683,17 +683,17 @@ void game_uso_func_00000B3C(char *arg0) {
             if (*(s32 *)(tv + 0x10) & 0x80) {
                 *(s32 *)(s + 0x270) = st;
                 *(s32 *)(s + 0x26C) = 3;
-                adv = 1;
+                tmp = 1;
             } else if (*(s32 *)(tv + 0x18) & 0x40) {
                 tmp = st + 1;
                 *(s32 *)(s + 0x26C) = tmp;
                 if (tmp >= 3) {
                     *(s32 *)(s + 0x26C) = 0;
                 }
-                adv = 1;
+                tmp = 1;
             }
         }
-        if (adv != 0) {
+        if (tmp != 0) {
             switch (*(s32 *)(s + 0x26C)) {
             case 0:
                 game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
@@ -738,7 +738,7 @@ void game_uso_func_00000B3C(char *arg0) {
     case 3:
         if (*(s32 *)(seg + 0x14) == 0) {
             *(Tri3i *)&stage = *(Tri3i *)((char *)kf + 0xC);
-             pos1.z = stage.z; pos1.y = stage.y; pos1.x = stage.x;
+             pos1.x = stage.x; pos1.y = stage.y; pos1.z = stage.z;
         } else {
             c1[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0xC);
             c1[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0xC);
@@ -761,7 +761,7 @@ void game_uso_func_00000B3C(char *arg0) {
     case 3:
         if (*(s32 *)(seg + 0x4) == 0) {
             *(Tri3i *)&stage = *(Tri3i *)((char *)kf + 0x0);
-             pos2.z = stage.z; pos2.y = stage.y; pos2.x = stage.x;
+             pos2.x = stage.x; pos2.y = stage.y; pos2.z = stage.z;
         } else {
             c2[0] = (Vec3 *) ((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] ;
             c2[1] = (Vec3 *) ((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] ;
@@ -774,10 +774,10 @@ void game_uso_func_00000B3C(char *arg0) {
     if ((*(s32 *)(seg + 0x0) == 1) && (*(s32 *)(seg + 0x10) == 1)) {
         fresh.x = 0.0f; fresh.y = 1.0f; fresh.z = 0.0f;
         *(Tri3i *)&stage = *(Tri3i *)&fresh;
-         up.z = stage.z; up.y = stage.y; up.x = stage.x;
+         up.x = stage.x; up.y = stage.y; up.z = stage.z;
     } else if (*(s32 *)(seg + 0x20) == 0) {
         *(Tri3i *)&stage = *(Tri3i *)((char *)kf + 0x18);
-         up.z = stage.z; up.y = stage.y; up.x = stage.x;
+         up.x = stage.x; up.y = stage.y; up.z = stage.z;
     } else {
         c3[0] = (Vec3 *)(((s32 *)(seg + 0x34))[*(s32 *)(s + 0x25C)] + 0x18);
         c3[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x18);
@@ -810,10 +810,9 @@ void game_uso_func_00000B3C(char *arg0) {
             game_uso_func_000000E0((Vec3 *)(s + 0x134), c4, state);
         }
     }
-    rv = game_uso_func_000023D4(&stage, *(char **)(s + 0x154));
-    *(Tri3i *)&vC = *(Tri3i *)rv;
+    *(Tri3i *)&vC = *(Tri3i *)game_uso_func_000023D4(&stage, *(char **)(s + 0x154));
     tv = *(char **)(s + 0x150); tv += 0xB4;
-    { f32 fz, fy, fx; fz = ((f32 *)tv)[2] + vC.z; fy = ((f32 *)tv)[1] + vC.y; fx = ((f32 *)tv)[0] + vC.x; v30.z = fz; v30.y = fy; v30.x = fx; }
+    { f1 = ((f32 *)tv)[2] + vC.z; fy = ((f32 *)tv)[1] + vC.y; fx = ((f32 *)tv)[0] + vC.x; v30.z = f1; v30.y = fy; v30.x = fx; }
     if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;
     *(Tri3i *)&vD = *(Tri3i *)&v3C;
