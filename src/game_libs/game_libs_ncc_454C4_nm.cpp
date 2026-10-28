@@ -11,6 +11,12 @@
  * and every sp offset shifted by 8), the 0x03000000 gSPLight constant is hoisted into s5 (target `lui at` per site),
  * so n / s / rec / c sit one s-register lower than the target.
  * The direction bytes carry a folded `& 0xFF` (one ugen ring slot each, the 42F4C idiom): 91.40 -> 91.48.
+ * agent-c run 193 (decode): the target issues all six colour loads (s[0..2], e->col[0..2]) before the first
+ * colour store, which the per-component `cv = ..; l->col[i] = cv; l->colc[i] = cv;` form cannot give (the Light
+ * byte stores may alias the float loads); the three products are computed first into c0 / c1 / c2 and stored
+ * after (colc[0] first, as the target's schedule), and the bb split sits after dir[0] too: 91.71 -> 95.72
+ * report, 2032 -> 2020 bytes (target 2028: moved past it, flagged; the remaining words are the hoisted
+ * 0x03000000 / 255.0f constants and the fs1 save listed above).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -68,11 +74,13 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     while ((e = it.next()) != 0) {
         if (!(e->flags & 0x80) && (e->flags & 2)) {
             Light *l = &rec->l[n];
-            s32 cv;
-            cv = (s32)(s[0] * e->col[0] * 255.0f); l->col[0] = cv; l->colc[0] = cv;
-            cv = (s32)(s[1] * e->col[1] * 255.0f); l->col[1] = cv; l->colc[1] = cv;
-            cv = (s32)(s[2] * e->col[2] * 255.0f); l->col[2] = cv; l->colc[2] = cv;
-            l->dir[0] = (s32)(e->dir[0] * 120.0f) & 0xFF;
+            s32 c0 = (s32)(s[0] * e->col[0] * 255.0f);
+            s32 c1 = (s32)(s[1] * e->col[1] * 255.0f);
+            s32 c2 = (s32)(s[2] * e->col[2] * 255.0f);
+            l->colc[0] = c0; l->col[0] = c0;
+            l->col[1] = c1; l->colc[1] = c1;
+            l->col[2] = c2; l->colc[2] = c2;
+            l->dir[0] = (s32)(e->dir[0] * 120.0f) & 0xFF; if (1) {}
             l->dir[1] = (s32)(e->dir[1] * 120.0f) & 0xFF; if (1) {}
             l->dir[2] = (s32)(e->dir[2] * 120.0f) & 0xFF;
             gSPLight(c->next(), gl_func_00034458(l), n + 1);
