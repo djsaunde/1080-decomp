@@ -38,10 +38,12 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     PKT(c, 0xBA000C02, 0x2000);
     PKT(c, 0xBA001301, 0x80000);
     PKT(c, 0xFCFFFFFF, 0xFFFE793C);
+    if (1) {} /* agent-g run 202 (paired bbsplit grid, with the one after 0xB9) */
     PKT(c, 0xB6000000, -1);
     PKT(c, 0xB7000000, 0x22204);
     PKT(c, 0xBA001402, 0);
     PKT(c, 0xB9000002, 0);
+    if (1) {}
     PKT(c, 0xF9000000, 0xFF00FA);
     PKT(c, 0xFA000000, 0xFFFF);
     PKT(c, 0xBC000404, 3);
