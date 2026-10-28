@@ -160,7 +160,7 @@ struct B { int f0; int flag; int f8; char *name; char list[4]; B *parent; Fl fl;
 struct Sub30 : B { void *owner; Sub30(void *o) : B(timproc_uso_b5_D_807FEBCC + 0x135C) { name = timproc_uso_b5_D_807FEBD4 + 0x1364; owner = o; } virtual void v(); };
 struct Sub2C : B { Sub2C() : B(timproc_uso_b5_D_807FEBE0 + 0x1370) { name = timproc_uso_b5_D_807FEBE8 + 0x1378; } void init() { timproc_uso_b5_func_04C678(this, timproc_uso_b5_D_807FEBE0 + 0x1370); FW(this, 0x28) = (int)(timproc_uso_b5_D_807FEBE8 + 0xCC4); name = timproc_uso_b5_D_807FEBE8 + 0x1378; } virtual void v(); };
 struct S70 : B { int f2C, f30, f34; B *f38; char p3c[0x6C - 0x3C]; int f6C;
-    S70(char *d, B *o) : B(d) { f38 = o; }
+    S70(char *d) : B(d) {} /* run 186: f38 = o moved to the derived ctor bodies (after f6C, as the target stores it) */
     virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10();
     virtual B *add(int, int, f32, f32, f32, f32, f32, f32); };
 #define CFG (*(char **)((char *)&import_80020098 + 0x134))
@@ -169,7 +169,7 @@ struct S70 : B { int f2C, f30, f34; B *f38; char p3c[0x6C - 0x3C]; int f6C;
         timproc_uso_b5_func_04C678(bp, D); FW(bp, 0x28) = (int)(f8fc8_e304_1 + 0xA94); } \
       FW(np, 0x28) = (int)(VT); np->name = NM; np->f2C = FW(CFG, 0x84); np->f30 = FW(CFG, 0x80); np->f6C = 0; np->f38 = o; np->f34 = FW(CFG, 0x8C); } \
     P = np; }
-#define S70CLASS(N, D, NM) struct N : S70 { N(B *o) : S70(D, o) { name = NM; f2C = FW(CFG, 0x84); f30 = FW(CFG, 0x80); f34 = FW(CFG, 0x8C); f6C = 0; } \
+#define S70CLASS(N, D, NM) struct N : S70 { N(B *o) : S70(D) { name = NM; f2C = FW(CFG, 0x84); f30 = FW(CFG, 0x80); f34 = FW(CFG, 0x8C); f6C = 0; f38 = o; } \
     virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual B *add(int, int, f32, f32, f32, f32, f32, f32); };
 S70CLASS(S70a, timproc_uso_b5_D_807FEC90 + 0x1420, timproc_uso_b5_D_807FEC98 + 0x1428)
 S70CLASS(S70b, timproc_uso_b5_D_807FECA8 + 0x1438, timproc_uso_b5_D_807FECB0 + 0x1440)
