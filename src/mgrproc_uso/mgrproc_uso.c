@@ -1649,9 +1649,9 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     volatile float spA4;
     char *sub;
     char sp60[64];
+    char *a3; /* agent-g run 195 (declmove sweep): above held / panel */
     char *held;
     char *panel;
-    char *a3;
     char *h; /* run 167: unused since the tail re-reads into a3 (the target reuses a3); dropping the declaration costs 0.05 */
     int s0;
     int s2;
