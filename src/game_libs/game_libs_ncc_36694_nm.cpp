@@ -4,7 +4,8 @@
  * the in-plane component t = p - n * n.dot(p) through by-value V3 operators (the target's A -> B -> C copy chains
  * are operator*'s V3 result / return temporary / operator-'s by-value parameter), t block-scoped (its frame slot
  * sits low like the target's sp+92), flipped to z >= 0 and normalised, else the fallback axis. 84.03 -> 84.80
- * standalone, length 704 -> 716 (target 712: distance 8 -> 4).
+ * standalone, length 704 -> 716 (target 712: distance 8 -> 4). The dot product written out on the members (n * (n.x * p.x
+ * + ...)) instead of n.dot(p): -> 85.80 standalone, length unchanged.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 extern "C" {
@@ -22,7 +23,7 @@ extern "C" { extern void gl_normalize_36694(V3 *); }
 struct Obj { V3 perp(V3 p, V3 n); };
 V3 Obj::perp(V3 p, V3 n) {
     f32 px, py, pz;
-    { V3 t = p - n * n.dot(p); px = t.x; py = t.y; pz = t.z; }
+    { V3 t = p - n * (n.x * p.x + n.y * p.y + n.z * p.z); px = t.x; py = t.y; pz = t.z; }
     f32 l;
     V3 r;
     l = px * px + py * py + pz * pz;
