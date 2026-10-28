@@ -22,8 +22,9 @@ struct V3 : P3 {
     V3(f32 a, f32 b, f32 c) { set(a, b, c); }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
 };
-inline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, a.z - b.z); }
-inline V3 operator*(const V3 &a, f32 s) { return V3(a.x * s, a.y * s, a.z * s); }
+/* run 201 grid: operator- through a named, set()-filled result and operator* with the named k (frame 0xE8 -> 0xF0 = target): 89.21 -> 90.61 standalone */
+inline V3 operator-(const V3 &a, const V3 &b) { V3 r; r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
+inline V3 operator*(const V3 &a, f32 s) { f32 k = s; return V3(a.x * k, a.y * k, a.z * k); }
 inline V3 operator/(const V3 &a, f32 s) { f32 k = s; return V3(a.x / k, a.y / k, a.z / k); }
 extern "C" { extern void gl_normalize_36694(V3 *); }
 struct Obj { V3 perp(V3 p, V3 n); };
