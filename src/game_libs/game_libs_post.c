@@ -16705,6 +16705,14 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00033BE4);
 //       shapes/order EXACTLY but stack-allocates locals — the target pairs -O1-like
 //       unhoisted per-site global access with -O2 regalloc; not reachable at any
 //       single flag setting tried (-O2, -O2 -g3, -O1, volatile variants).
+// agent-c run 175 (90.83 -> 98.70, length = target): BOTH caps above were one
+// cause -- the heap-control words are fields of ONE struct reached through a
+// local base pointer g (`*(s32 *)(g + off)`), not per-site globals: same-base
+// accesses may alias, so uopt keeps the source store-before-load order (cap b,
+// incl. the missing delay nop), and the g-relative 0x28 read is not hoisted out
+// of the flush loop (cap a). The flags parameter is reused as the chunk length
+// (target s0: flags copy, then len). Residual: frame 64 vs 80 and the first
+// call's a1 / delay-slot schedule.
 #ifdef NON_MATCHING
 
 
@@ -16728,12 +16736,12 @@ extern u8 gl_ref_0001E394;              /* baked USO data sym */
 extern u8 gl_ref_0001E3AC;              /* baked USO data sym */
 void gl_func_00033EB8(s32 dst, u32 flags) {
     u8 *base;
-    u32 len;
     s32 rem;
     s32 tmp;
     u32 cnt;
     u8 *src;
     s32 cpdst;
+    u8 *g = &gl_d_33eb8_src;
 
     rem = flags;
     if (flags & 1) {
@@ -16744,60 +16752,60 @@ void gl_func_00033EB8(s32 dst, u32 flags) {
     gl_func_00000000(base);
     if (flags != 0) {
         do {
-            gl_d_33eb8_8a = gl_func_00000000(base, gl_d_33eb8_28a);
-            if (gl_d_33eb8_2ca == gl_d_33eb8_ca) {
-                tmp = gl_func_00000000(base, gl_d_33eb8_28b + 8);
-                gl_d_33eb8_10a = tmp;
+            *(s32 *)(g + 8) = gl_func_00000000(base, *(s32 *)(g + 0x28));
+            if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 0xC)) {
+                tmp = gl_func_00000000(base, *(s32 *)(g + 0x28) + 8);
+                *(s32 *)(g + 0x10) = tmp;
                 if (tmp == 0x12340001) {
-                    if (gl_d_33eb8_2cb != gl_d_33eb8_cb) {
+                    if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 0xC)) {
                         gl_func_00000000(base, &gl_ref_0001E37C);
                     }
-                    if (gl_d_33eb8_2cc != gl_d_33eb8_8b) {
+                    if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
                         gl_func_00000000(base, &gl_ref_0001E394);
                     }
-                    gl_func_00000000(base, gl_d_33eb8_28c + 8, 0x12340002); if (1) {}
-                    tmp = gl_d_33eb8_24a;
-                    gl_d_33eb8_cc = tmp;
-                    gl_d_33eb8_8c = tmp;
-                    if (gl_func_00000000(base, gl_d_33eb8_28d + 8) == 0x12340003) {
+                    gl_func_00000000(base, *(s32 *)(g + 0x28) + 8, 0x12340002); if (1) {}
+                    tmp = *(s32 *)(g + 0x24);
+                    *(s32 *)(g + 0xC) = tmp;
+                    *(s32 *)(g + 8) = tmp;
+                    if (gl_func_00000000(base, *(s32 *)(g + 0x28) + 8) == 0x12340003) {
                         goto flushed;
                     }
                 flush:
                     gl_func_00000000(base);
-                    if (gl_func_00000000(base, *(volatile s32 *)&gl_d_33eb8_28e + 8) != 0x12340003) {
+                    if (gl_func_00000000(base, *(s32 *)(g + 0x28) + 8) != 0x12340003) {
                         goto flush;
                     }
                 flushed:
-                    gl_func_00000000(base, gl_d_33eb8_28f + 8, 0x12340002);
+                    gl_func_00000000(base, *(s32 *)(g + 0x28) + 8, 0x12340002);
                 }
             }
-            len = gl_d_33eb8_8d - gl_d_33eb8_cd;
-            if ((u32)rem < len) {
-                len = rem;
+            flags = *(s32 *)(g + 8) - *(s32 *)(g + 0xC);
+            if ((u32)rem < flags) {
+                flags = rem;
             }
-            if (len != 0) {
+            if (flags != 0) {
                 if ((dst & 7) != 0) {
-                    if ((u32)(8 - (dst & 7)) < len) {
-                        len = 8 - (dst & 7); if (len) {}
+                    if ((u32)(8 - (dst & 7)) < flags) {
+                        flags = 8 - (dst & 7); if (flags) {}
                     }
                     cnt = 0;
-                    gl_func_00000000(base, gl_d_33eb8_ce, base, len);
-                    if (len != 0) {
+                    gl_func_00000000(base, *(s32 *)(g + 0xC), base, flags);
+                    if (flags != 0) {
                         src = (cpdst = dst, &gl_d_33eb8_src);
                         do {
                             *(u8 *)cpdst = *src;
                             cnt += 1;
                             cpdst += 1;
                             src += 1;
-                        } while (cnt < len);
+                        } while (cnt < flags);
                     }
                 } else {
-                    gl_func_00000000(base, gl_d_33eb8_cf, dst, len);
+                    gl_func_00000000(base, *(s32 *)(g + 0xC), dst, flags);
                 }
-                gl_d_33eb8_ch = gl_d_33eb8_cg + len;
+                *(s32 *)(g + 0xC) = *(s32 *)(g + 0xC) + flags;
             }
-            rem -= len;
-            dst += len;
+            rem -= flags;
+            dst += flags;
             if (rem < 0) {
                 gl_func_00000000(base, &gl_ref_0001E3AC);
             }
