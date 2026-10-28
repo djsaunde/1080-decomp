@@ -16,6 +16,9 @@
  * word-for-word (M 47 -> 122, X 55 -> 10 words): 74.59 -> 87.65, 800 -> 820 bytes (target 800: AWAY, flagged;
  * the extra words are the nfound / this homes -- the target spills this at sp+128 in a 128-byte frame, ours
  * keeps a 64-byte frame).
+ * agent-c run 194: the table step moved from `*tp++` in the w read to `++tp` in the loop test (the post-increment
+ * copied tp into a second register; the target loads through tp and steps it in place): 87.65 -> 90.11 standalone,
+ * 820 -> 800 bytes = target.
  */
 typedef float f32; typedef short s16; typedef unsigned short u16; typedef signed char s8;
 struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
@@ -56,7 +59,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             u16 *fp = (u16 *)f;
             do {
                 s16 *v = verts[fp[1]];
-                s16 *w = verts[f->vi[*tp++]];
+                s16 *w = verts[f->vi[*tp]];
                 s16 px = (int)(qa - v[a]);
                 s16 py = (int)(qb - v[b]);
                 s16 ex = w[a] - v[a];
@@ -64,7 +67,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
                     inside = 0;
                 }
-            } while (inside && (fp++, tp != D_00000000_3b6a0tbl + 3));
+            } while (inside && (fp++, ++tp != D_00000000_3b6a0tbl + 3));
             if (inside) {
                 V3 *n = (V3 *)((char *)c->nrm + off);
                 f32 d = pt[0] * n->x + pt[1] * n->y + pt[2] * n->z - t->d;
