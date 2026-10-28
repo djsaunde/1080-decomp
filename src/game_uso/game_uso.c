@@ -633,6 +633,7 @@ void game_uso_func_00000B3C(char *arg0) {
         *(s32 *)(s + 0x264) = tmp;
         game_uso_func_00000940(s);
     }
+    tmp = 1; /* run 185: tmp also holds the constant 1 (target `bne t0,v0` operand order) */
     tbl = ((int **)(s + 0x158))[*(s32 *)(s + 0x250)];
     cur = *(s32 *)(s + 0x25C);
     node = ((s32 *)((char *)tbl + 4))[*(s32 *)(s + 0x254)];
@@ -640,10 +641,10 @@ void game_uso_func_00000B3C(char *arg0) {
     seg = 0;
     if (1) { seg = ((char **)(s + 0x1D4))[node]; }
     kf = ((int **)(seg + 0x38))[cur];
-    if (1 == cur) {
+    if (tmp == cur) {
         if (*(s32 *)(s + 0x260) == 0) {
             if (*(char **)(s + 0x268) != 0) {
-                *(s32 *)(s + 0x130) = 1;
+                *(s32 *)(s + 0x130) = tmp;
                 zv.z = 0.0f;
                 zv.y = 0.0f;
                 zv.x = 0.0f;
@@ -654,7 +655,7 @@ void game_uso_func_00000B3C(char *arg0) {
             } else {
                 *(s32 *)(s + 0x130) = (*(s32 *)(seg + 0x30) == 0) == 0;
             }
-            if (1 == *(s32 *)(seg + 0x10)) {
+            if (tmp == *(s32 *)(seg + 0x10)) {
                 game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
             } else {
                 game_uso_func_00002714(*(int **)(s + 0x154), 0, *(s32 *)(s + 0x150) + 0x318);
