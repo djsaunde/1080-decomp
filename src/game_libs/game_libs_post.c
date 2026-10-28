@@ -14249,7 +14249,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003061C);
  * v0,0xC(v0)`, +1 word); two aliases re-load. IDO 5.3 -O2 emits .text
  * identical to 7.1 here; -O1 (either) homes c/f (frame 0x20/0x28). A named
  * `c = hold` local, `if (hold) hold--;` in place, and the 1.0f constant as a
- * named local all keep (3). */
+ * named local all keep (3).
+ * agent-c run 177: residuals (1)/(2) are gone under NCC with the 308AC
+ * file-local static block for the two pairs (NM donor
+ * game_libs_ncc_307A8_nm.cpp, 65 words = target, 96.38 -> 99.46); (3) stays. */
 #ifdef NON_MATCHING
 extern int D_00000000_1c0a8;
 extern int gl_func_00000000_f(int, float);

@@ -2361,6 +2361,10 @@ build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_27804_NM_DONOR)
 GAMELIBS_33094_NM_DONOR := build/src/game_libs/game_libs_ncc_33094_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00033094=$(GAMELIBS_33094_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_33094_NM_DONOR)
+# 307A8 = fade timer tick under NCC with the 308AC file-local static block for the two shared-`lui at` pairs (agent-c run 177: cfe 96.38, 268 -> 260 bytes = target). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_307A8_NM_DONOR := build/src/game_libs/game_libs_ncc_307A8_nm.cpp.o
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000307A8=$(GAMELIBS_307A8_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_307A8_NM_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E290=$(GAMELIBS_2E290_DONOR)
 # 343F4 = selector -> 0xC-stride table-entry address (8-entry jumptable switch,
 # cases 2/3/5/1 + default), IDO 7.1 -O2 donor: game_libs_o2_343F4.c (25/25
