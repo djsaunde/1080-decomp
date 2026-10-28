@@ -71,7 +71,7 @@ void Obj::run() {
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
         gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, 1, f, buf, 0, 0, 8, 8, 8, m1B0);
     } else {
-        s1 = (char *)vt->fn((char *)this + vt->off);
+        s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         int f = (m104 & 2) != 0;
         Sub *sb = sub;
         int m = m78;
