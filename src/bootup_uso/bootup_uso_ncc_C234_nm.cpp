@@ -65,7 +65,6 @@ extern "C" void func_0000C234(char *arg0) {
     f32 temp_f12;
     V3C234 spB4;
     f32 temp_f12_2;
-    f32 temp_f14;
     f32 temp_f16;
     f32 temp_f2;
     f32 temp_f2_2;
@@ -290,7 +289,7 @@ cend:
     }
     temp_f2_3 = *(f32 *)((char *)(arg0) + 0x92C);
     temp_f12_2 = *(f32 *)((char *)(arg0) + 0x930);
-    temp_f14 = *(f32 *)((char *)(arg0) + 0x934);
+#define temp_f14 (*(f32 *)((char *)(arg0) + 0x934)) /* run 184: de-named (lever-sweep) */
     temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
     *(f32 *)((char *)(arg0) + 0xA1C) = (f32) (*(f32 *)((char *)(arg0) + 0xA1C) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14))));
     *(f32 *)((char *)(arg0) + 0xA20) = (f32) (*(f32 *)((char *)(arg0) + 0xA20) + (temp_f16 * ((*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14))));
