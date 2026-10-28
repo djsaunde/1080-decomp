@@ -14713,7 +14713,7 @@ s32 arg2;
         }
         D_30AF4_n = *cp;
         if (m == 0 && sub == 0) {
-            *(s32 *)(gb + 0xC) = 256;
+            gl_state_30AF4.fC = 256; /* run 205: direct member store (not through gb): 92.71 -> 93.17 */
             gl_func_emit(0x83010000, 2000);
             D_30AF4_o = 14;
         } else if (D_30AF4_p == 1) {
