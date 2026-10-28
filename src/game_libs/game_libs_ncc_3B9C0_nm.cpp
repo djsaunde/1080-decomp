@@ -43,12 +43,12 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     V3B9 d;
     f32 qb;
     f32 sg;
+    s16 ex; /* run 191 lever-sweep hoist: ex declared before vt (78.55 -> 78.65) */
     s16 (*vt)[3];
     s16 *nx;
     u16 *fv;
     s16 *v0;
     s16 *v1;
-    s16 ex;
     s16 ey;
     s16 dx;
     s16 dy;
