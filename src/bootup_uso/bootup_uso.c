@@ -9129,7 +9129,8 @@ extern char D_func_00000008_data;
  * Tried local-arg variant; no change. Prologue instruction-scheduling cap. */
 void func_0000E9FC(void) {
     func_00000000(&D_func_0000E9FC_arg1);
-    *(int*)(&D_func_00000008_data + 0x20) = (int)&D_func_0000E9FC_arg2;
+    /* pin D_func_00000008_data = 0x8: + 0x18 = the target's absolute 0x20 (run 192 decode scan: + 0x20 double-counted the pin, linked 0x28) */
+    *(int*)(&D_func_00000008_data + 0x18) = (int)&D_func_0000E9FC_arg2;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E9FC);
