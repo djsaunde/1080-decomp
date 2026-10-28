@@ -16525,9 +16525,10 @@ void gl_func_00033B6C(void) {
 // (colour tie-break + as1 order); the +8 bump is `*(g + 8) += chunk` with the
 // call re-reading it, and the segment-end test compares two fresh reads before
 // `cur` is named (no a2-coalesced cur web); src is a LOCAL copy of the parameter
-// made after `rem = flags` (target moves s4 then s5 at entry). Residual (4 words):
-// the first arm's a0 / a1 setup order around its jal.
-#ifdef NON_MATCHING
+// made after `rem = flags` (target moves s4 then s5 at entry).
+// EXACT (same run): the first arm's a0 / a1 order around its jal is source LINE
+// layout -- `if (flags & 1) { base = ...; call(base, fmt);` on ONE line gives
+// the target's la a1 first / `addiu a0,s1,0` in the delay slot. C on the build path.
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sites) */
 /* per-SITE base-0 aliases (33EB8/2B5F4 r1/r2 convention): one extern per access
  * site so IDO rematerializes a fresh `lui rX,0x0; lw off(rX)` each time. */
@@ -16558,9 +16559,7 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
     u8 *g = &gl_d_33be4_dst;
 
     rem = flags; src = src0;
-    if (flags & 1) {
-        base = (u8 *)&D_00000000;
-        gl_func_00000000(base, &gl_ref_0001E330);
+    if (flags & 1) { base = (u8 *)&D_00000000; gl_func_00000000(base, &gl_ref_0001E330);
     }
     base = (u8 *)&D_00000000;
     gl_func_00000000(base);
@@ -16641,9 +16640,6 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
     }
     gl_func_00000000(base);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00033BE4);
-#endif
 
 // gl_func_00033EB8 — STRUCTURAL PASS (0x2D0 / 180 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
