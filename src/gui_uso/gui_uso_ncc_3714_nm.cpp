@@ -38,10 +38,10 @@ struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) {
     volatile s32 q0, q1, q2, q3, q4, q5, q6, q7;
-    Spr *spr;
-    s32 w, h;
     s32 x, y;
+    s32 w, h;
     f32 fw, fh;
+    Spr *spr;
     gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);
     spr = arg0->spr;
     h = spr->h;
