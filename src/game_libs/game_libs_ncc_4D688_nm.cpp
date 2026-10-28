@@ -14,6 +14,11 @@
  *   - locals initialised as statements in the order n, cur, pend, keep.
  * Residual: the polled object is reloaded into a ring temp (target a0), which shifts the t-ring by one through the
  * 'e' case; `keep = 1` copies s1 (target materialises 1); a 5-word alignment pad before the dead epilogue.
+ * agent-g run 204: the target's poll-object slot sp+56 is a REGISTER LR spilled to its named home (reloaded into
+ * a0), not an address-taken local: `int k;` declared before e (k takes sp+60, e sp+56) and the `&e` keep
+ * replaced by a dead multi-def `if (0) { e = 0; }`; the t-ring lines up. Then a statement grid: m3C before the
+ * volatile m24++, and the 'g'/'h' handover as `m4 = m8; m8 = 0; m28 = 0;` (no named t): 53 -> 2 words off
+ * (standalone 95.76 -> 96.95). Left: the old-n copy of `n++ & 1` in v0 (target a0, hoisted into the switch delay).
  * Still NON_MATCHING: build/non_matching/ only. */
 extern "C" {
 int gl_func_00034458(...);
@@ -56,11 +61,12 @@ void Obj::run()
         if (sG != 0x1234567812345678LL) {
             gl_func_00034458(DSTR(0x20224));
         }
+        int k; /* run 204: homed above e */
         Ev *e = ((Q *)D_4D688_g1)->ev;
         D_4D688_g2 = 0;
         gl_func_00034458(e, &e->key, 1);
-        int k = e->key;
-        if (0) gl_func_00034458(&e); 
+        k = e->key;
+        if (0) { e = 0; } /* run 204: dead multi-def (register LR spilled to its home), not &e */
         D_4D688_g2 = 1;
         switch (k) {
         case 'e':
@@ -125,8 +131,8 @@ void Obj::run()
             gl_func_00034458(DSTR(0x20290));
             {
                 void *p = m44;
-                m24++; /* run 194 (lever-sweep order) */
-                m3C = DSTR(0x20298);
+                m3C = DSTR(0x20298); /* run 204: back before m24++ */
+                m24++;
                 if (p != 0 && (m24 & 1)) {
                     gl_func_00034458(p, 'd', 1);
                 }
@@ -140,12 +146,9 @@ void Obj::run()
             if (m4 != 0) {
                 gl_func_00034458(DSTR(0x202B4));
             }
-            {
-                int t = m8;
-                m8 = 0;
-                m28 = 0;
-                m4 = t;
-            }
+            m4 = m8; /* run 204: no named t (target reads m8 into a ring temp) */
+            m8 = 0;
+            m28 = 0;
             if (m18 == 0) {
                 gl_func_00034458(this);
             }
