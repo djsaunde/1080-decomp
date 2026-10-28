@@ -4342,12 +4342,13 @@ yaw_region:
      * yaw_metric; the ==0-gate is the 3ED4 out-param hit_out; the |4 gate is
      * (double)yaw < 0.125; |8 is conditional on product > 1.0. */
     sub = *(char**)((char*)self + 0x30);
+    f2v = *(float*)(sub + 0x348);
     if (*(float*)((char*)self + 0xBC) <= yaw_metric) {
-        if (*(float*)(sub + 0x348) < 50.0f) {
+        if (f2v < 50.0f) {
             out_flags |= 0x40;
         }
     }
-    if (*(float*)(sub + 0x348) < *(float*)((char*)self + 0xB4)) {
+    if (f2v < *(float*)((char*)self + 0xB4)) {
         if (hit_out == 0) {
             if ((double)yaw_metric < 0.125) {
                 if (*(int*)((char*)&import_80020110 + 0x78) == 0) {
@@ -4356,7 +4357,7 @@ yaw_region:
             }
         }
     }
-    if (1.0f < (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB8)) * accel_metric) {
+    if (1.0f < (f2v / *(float*)((char*)self + 0xB8)) * accel_metric) {
         out_flags |= 8;
     }
 
