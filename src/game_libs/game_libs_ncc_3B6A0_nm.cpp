@@ -47,10 +47,11 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             int inside = 1;
             s16 (*verts)[3] = c->verts; if (1) {}
             Face *f;
-            if (c->remap != 0) {
-                f = &c->faces[c->remap[i]];
+            Col *cc = c;
+            if (cc->remap != 0) {
+                f = &cc->faces[cc->remap[i]];
             } else {
-                f = &c->faces[i];
+                f = &cc->faces[i];
             }
             f32 dir = t->sgn;
             int a = t->a;
