@@ -6,8 +6,10 @@
  * `Spr::width()` that copies the image pointer into a named local first (`Img *i = img; return i->w;`):
  * those inline locals are the target's register copies (`move ra,t3` ...) and re-reads of the widths after
  * the signed /2; no volatile pads (frame 320, target 328). Length = target (680), 89.18 -> 97.57 standalone.
- * LEFT: xoff / xa / x homes 24 bytes high (the target has nine more 4-byte vreg homes above them) and the
- * last two panel draws' argument reload order.
+ * Then the tim panel's width / height through the same members (`tim.width() / 12`, `tim.height()`, the
+ * latter with its own named image pointer) -- frame 328 = target, 97.57 -> 98.95 -- and `if (1) {}` after the
+ * tim begin call (lever-sweep, 99.01). LEFT: xb / xoff / x homes and the spill slots 4-44 bytes off, the int
+ * temp ring one register behind (t2 / t3 where the target has t3 / t1).
  * NM object only. */
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
@@ -16,6 +18,7 @@ int timproc_uso_b3_func_000000B0(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr {
+    s32 height() { Img *i = img; return i->h; }
     char p[0x10]; Img *img; char p14[4];
     s32 width() { Img *i = img; return i->w; }
 };
@@ -43,8 +46,8 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     one[3] = 1.0f;
     if (FL(arg0)->f & 2) {
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        timproc_uso_b3_func_000000B0(&arg0->tim);
-        w = arg0->tim.img->w / 12;
+        timproc_uso_b3_func_000000B0(&arg0->tim); if (1) {}
+        w = arg0->tim.width() / 12;
         timproc_uso_b3_func_000000B0(&arg0->sA);
         timproc_uso_b3_func_000000B0(&arg0->sB);
         timproc_uso_b3_func_000000B0(&arg0->sC);
@@ -57,7 +60,7 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
         timproc_uso_b3_func_000000B0(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
-            timproc_uso_b3_func_000000B0(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->h / 2 + 0x32, buf[i] * w, w);
+            timproc_uso_b3_func_000000B0(&arg0->tim, x + i * 13, arg1 - arg0->tim.height() / 2 + 0x32, buf[i] * w, w);
         }
         timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
         timproc_uso_b3_func_000000B0(&arg0->sA, xb, arg1 + 0x32, 2);

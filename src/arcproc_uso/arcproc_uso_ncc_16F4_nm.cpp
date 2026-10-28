@@ -1,6 +1,7 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for arcproc_uso_func_000016F4 (twin of timproc_uso_b3_func_000013B8;
  * see that donor). agent-g run 184 (kit CXXXIII): ported from the b3 C++ rewrite -- sprite member objects
  * (sA 0x704, sB 0x71C, sC 0x734, tim 0x74C, alpha 0x77C) and the inline `Spr::width()` with a named image pointer.
+ * Same run, later: the tim panel's width / height through the members and the BB split after its begin call.
  * NM object only. */
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
@@ -9,6 +10,7 @@ int arcproc_uso_func_00001B88(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr {
+    s32 height() { Img *i = img; return i->h; }
     char p[0x10]; Img *img; char p14[4];
     s32 width() { Img *i = img; return i->w; }
 };
@@ -36,8 +38,8 @@ extern "C" void arcproc_uso_func_000016F4(Obj *arg0, s32 arg1, f32 *arg2) {
     one[3] = 1.0f;
     if (FL(arg0)->f & 4) {
         arcproc_uso_func_00001B88(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        arcproc_uso_func_00001B88(&arg0->tim);
-        w = arg0->tim.img->w / 12;
+        arcproc_uso_func_00001B88(&arg0->tim); if (1) {}
+        w = arg0->tim.width() / 12;
         arcproc_uso_func_00001B88(&arg0->sA);
         arcproc_uso_func_00001B88(&arg0->sB);
         arcproc_uso_func_00001B88(&arg0->sC);
@@ -50,7 +52,7 @@ extern "C" void arcproc_uso_func_000016F4(Obj *arg0, s32 arg1, f32 *arg2) {
         arcproc_uso_func_00001B88(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
-            arcproc_uso_func_00001B88(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->h / 2 + 0x32, buf[i] * w, w);
+            arcproc_uso_func_00001B88(&arg0->tim, x + i * 13, arg1 - arg0->tim.height() / 2 + 0x32, buf[i] * w, w);
         }
         arcproc_uso_func_00001B88(&D_00000000, (s32)(255.0f * arg0->alpha), one);
         arcproc_uso_func_00001B88(&arg0->sA, xb, arg1 + 0x32, 2);

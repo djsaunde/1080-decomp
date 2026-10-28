@@ -3,6 +3,8 @@
  * run 172 (kit CXVII): the cfe NM body as plain C++ (228 of 238 words, 86.53).
  * agent-g run 184 (kit CXXXIII): ported from the 13B8 C++ rewrite -- sprite member objects and the inline
  * `Spr::width()` with a named image pointer, no volatile pads: 239 words (target 238), 94.05 standalone.
+ * Then the tim panel's width / height through the members (`tim.width() / 12`, `tim.height()`) and `if (1) {}`
+ * after its begin call: 238 words = target, 98.10 standalone.
  * NM object only. */
 typedef float f32; typedef int s32; typedef short s16;
 extern "C" {
@@ -11,6 +13,7 @@ int timproc_uso_b1_func_000000B0(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr {
+    s32 height() { Img *i = img; return i->h; }
     char p[0x10]; Img *img; char p14[4];
     s32 width() { Img *i = img; return i->w; }
 };
@@ -42,8 +45,8 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         arg2 -= sec * 1000;
         arg2 = arg2 / 10;
         timproc_uso_b1_func_000000B0(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        timproc_uso_b1_func_000000B0(&arg0->tim);
-        glyph = arg0->tim.img->w / 12;
+        timproc_uso_b1_func_000000B0(&arg0->tim); if (1) {}
+        glyph = arg0->tim.width() / 12;
         timproc_uso_b1_func_000000B0(&arg0->sA);
         timproc_uso_b1_func_000000B0(&arg0->sB);
         timproc_uso_b1_func_000000B0(&arg0->sC);
@@ -63,7 +66,7 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
             } else {
                 buf[i] = buf[i] - 0x30;
             }
-            timproc_uso_b1_func_000000B0(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.img->h / 2) + 0x32, buf[i] * glyph, glyph);
+            timproc_uso_b1_func_000000B0(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.height() / 2) + 0x32, buf[i] * glyph, glyph);
         }
         timproc_uso_b1_func_000000B0(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);
         timproc_uso_b1_func_000000B0(&arg0->sA, pos4, xmid, 2);
