@@ -1609,9 +1609,9 @@ void gl_func_000033E4(char *a0) {
  * materializes the hoisted 1.0f/10.625f constants inside the save sequence
  * and loads step LAST (after the EC store); every placement of `step =`
  * / the EC store / named constant locals keeps the constants right after
- * the step load. Plus the jumptable %lo and the four step-load %lo words
- * (0xCC8/0xCEC/0xCF0/0xCF4, all 0.1f; literals would merge, so a landing
- * would pin the four externs and the donor _rodata, 2E290 route). */
+ * the step load. Plus the jumptable %lo (step loads 0xCC8/0xCEC/0xCF0/0xCF4,
+ * all 0.1f, are base-0 externs + the offset -- literals would merge; run 184
+ * decode-scan: the bare externs read address 0, `--raw --pins` 15 -> 12). */
 extern f32 D_00000000_3430_cc8;
 extern f32 D_00000000_3430_cec;
 extern f32 D_00000000_3430_cf0;
@@ -1624,7 +1624,7 @@ void gl_func_00003430(char *arg0) {
     char *s0;
     s32 *p;
 
-    step = D_00000000_3430_cc8;
+    step = *(f32 *)((char *)&D_00000000_3430_cc8 + 0xCC8);
     FW(arg0, 0xEC) = 1;
     for (i = 0; i != 8; i++) {
         s0 = ((char **)(arg0 + 0x2C))[i];
@@ -1719,7 +1719,7 @@ void gl_func_00003430(char *arg0) {
             if (gl_func_00000000(s0, 0xB4) != 0) {
                 FW(s0, 0x94) = 7;
             }
-            step = D_00000000_3430_cec;
+            step = *(f32 *)((char *)&D_00000000_3430_cec + 0xCEC);
             break;
         case 7:
             if (FW(s0, 0x98) != 0) {
@@ -1735,7 +1735,7 @@ void gl_func_00003430(char *arg0) {
                 FW(s0, 0x74) = 0xFF;
             }
             gl_func_00000000(s0, 0x104);
-            step = D_00000000_3430_cf0;
+            step = *(f32 *)((char *)&D_00000000_3430_cf0 + 0xCF0);
             break;
         case 8:
             FW(s0, 0x74) += 0x10;
@@ -1749,7 +1749,7 @@ void gl_func_00003430(char *arg0) {
             if (gl_func_00000000(s0, 0x104) != 0) {
                 FW(s0, 0x94) = 0;
             }
-            step = D_00000000_3430_cf4;
+            step = *(f32 *)((char *)&D_00000000_3430_cf4 + 0xCF4);
             break;
         }
     }
