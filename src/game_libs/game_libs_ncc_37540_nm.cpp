@@ -8,11 +8,11 @@
  * a BY-VALUE operator= (the word copy into the sp+28 parameter temp, then z, y, x). Length = target (764).
  * cfe body 81.17 -> 93.58. LEFT: zero / a colouring (target zero f14, a f16; build swapped), t-register numbering. */
 typedef float f32;
-struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } 
+struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { z = c; y = b; x = a; } 
     void operator=(V3 v) { z = v.z; y = v.y; x = v.x; }
     void operator*=(f32 k) { x *= k; y *= k; z *= k; }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
-    void operator+=(const V3 &o) { x = x + o.x; y = y + o.y; z = z + o.z; }
+    void operator+=(const V3 &o) { z = z + o.z; y = y + o.y; x = x + o.x; } /* agent-c run 201 operator order grid: z, y, x (+ ctor z, y, x): 93.47 -> 95.61 standalone */
 };
 struct Node { char pad[0x30]; char m30[0x20]; V3 v50; char pad5C[4]; V3 v60; char pad6C[0xA0 - 0x6C]; V3 vA0; };
 struct Inp { f32 x, y; int pad[2]; volatile int flags; int fl() { return flags; } };
