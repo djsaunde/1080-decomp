@@ -4001,7 +4001,7 @@ void game_uso_func_0000591C(int *a0) {
     Vec3 delta_b; /* sp+204 */
     Vec3 *p; /* sp+200 */
     float x; /* sp+196 */
-    float y; /* sp+192 */
+    float *hsrc; /* sp+192: hit_parent+48 source of the two diff sites (run 196) */
     Vec3 diff_a; /* sp+180 */
     float z; /* sp+176 */
     float *axis_src; /* sp+172 */
@@ -4046,11 +4046,11 @@ void game_uso_func_0000591C(int *a0) {
         axis_src = *(float **)((char*)self + 0x30);
         axis_src = (float *)((int)axis_src + 0x318);
         fsel = *(float*)((char*)self + 0xA8);
-        y = *(float *)((int)axis_src + 4) * fsel;
+        scale = *(float *)((int)axis_src + 4) * fsel;
         x = *axis_src * fsel;
         z = *(float *)((int)axis_src + 8) * fsel;
         scaled_axis.x = x; if (1) {} /* run 182 (lever-sweep bbsplit) */
-        scaled_axis.y = y;
+        scaled_axis.y = scale;
         scaled_axis.z = z;
     }
     *(Tri3i *)&stage = *(Tri3i *)&scaled_axis;
@@ -4112,13 +4112,13 @@ void game_uso_func_0000591C(int *a0) {
             &staged_axis, &out_w);
         *(Tri3i *)&res_a = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_a;
-        x = res_c.x; y = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = y; transform_out.z = z;
+        x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     case 1:
         v0 = (int)game_uso_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
-        x = res_c.x; y = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = y; transform_out.z = z;
+        x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     }
 
@@ -4189,12 +4189,12 @@ void game_uso_func_0000591C(int *a0) {
 
         p = 0;
         if (1) { p = &diff_a; }
-        src = (float *)((int)hit_parent + 48);
+        hsrc = (float *)((int)hit_parent + 48);
         {
             delta_a_dst = p;
             if (delta_a_dst != 0 || (delta_a_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
-                x = pos_a.x - *src;
-                z = pos_a.z - *(float *)((int)src + 8);
+                x = pos_a.x - *hsrc;
+                z = pos_a.z - *(float *)((int)hsrc + 8);
                 delta_a_dst->y = 0.0f;
                 delta_a_dst->x = x;
                 delta_a_dst->z = z;
@@ -4268,12 +4268,12 @@ void game_uso_func_0000591C(int *a0) {
 
     p = 0;
     if (1) { p = &diff_e; }
-    src = (float *)((int)hit_parent + 48);
+    hsrc = (float *)((int)hit_parent + 48);
     {
         delta_e_dst = p;
         if (delta_e_dst != 0 || (delta_e_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
-            x = pos_e.x - *src;
-            z = pos_e.z - *(float *)((int)src + 8);
+            x = pos_e.x - *hsrc;
+            z = pos_e.z - *(float *)((int)hsrc + 8);
             delta_e_dst->y = 0.0f;
             delta_e_dst->x = x;
             delta_e_dst->z = z;
