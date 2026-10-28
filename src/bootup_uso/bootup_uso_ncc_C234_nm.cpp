@@ -63,8 +63,8 @@ extern "C" void func_0000C234(char *arg0) {
     C234Rec spCC;
     f32 temp_f0;
     f32 temp_f12;
-    V3C234 spB4;
     f32 temp_f12_2;
+    V3C234 spB4; /* agent-g run 195 (declmove sweep): below temp_f12_2 */
     f32 temp_f16;
     f32 temp_f2;
     f32 temp_f2_3;
