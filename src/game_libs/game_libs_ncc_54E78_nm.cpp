@@ -24,7 +24,7 @@ struct Obj { char pad[300]; M4 mtx; void reflect(const Plane &p); };
 void Obj::reflect(const Plane &p) {
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
     mtx.ident();
-    mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
+    mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x); if (1) {} /* agent-g run 195: lever-sweep bbsplit after the a-top move */
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y);
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z); if (1) {} /* agent-g run 190: lever-sweep bbsplit (91.01 -> 91.23) */
     mtx.m[0][3] = 0.0f;
