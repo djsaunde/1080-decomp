@@ -835,7 +835,7 @@ void game_uso_func_00000B3C(char *arg0) {
     *(f32 *)(s + 0x140) = stage.x;
     *(f32 *)(s + 0x144) = stage.y;
     *(f32 *)(s + 0x148) = stage.z;
-    nsub = *(s32 *)(s + 0x260) + 1;
+    nsub = *(s32 *)(s + 0x260); nsub += 1;
     ncur = *(s32 *)(s + 0x25C);
     nseg = *(s32 *)(s + 0x254);
     if (!(nsub < *(s32 *)((char *)kf + 0x28))) {
