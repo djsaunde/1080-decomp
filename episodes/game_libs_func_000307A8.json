@@ -1,0 +1,32 @@
+{
+  "function_name": "game_libs_func_000307A8",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-10-28T19:53:21.103138+00:00",
+  "end_time": "2026-10-28T19:53:21.103158+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T19:53:21.103153+00:00",
+      "assistant_text": "NCC donor over the 308AC file-local static block; last residual was the hold count as a uopt candidate (v1) vs the target's ugen ring (t8/t9). Spelling the decrement's re-read as (&D_307A8_i.fC)[0] stops uopt CSE with the test load (no live range), while ugen reuses the identical lw already in t8 from the fall-through predecessor: word-exact 65/65.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 65,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_000307A8 (0x104 / 65 words), agent-c run 177 / agent-g run 202.\n * Fade timer tick over the 8-word state block that the exact sibling 308AC (game_libs_ncc_308AC.cpp) reads as a\n * FILE-LOCAL static: as1 shares one `lui at` between two accesses only when both hit the same LOCAL symbol and\n * uopt has not CSE'd the address. So the two target pairs -- the zeroing stores `lui at; sw zero,12(at);\n * sw zero,8(at)` and the down-arm loads `lui at; lwc1 $f0,16(at); lwc1 $f2,20(at)` -- are two references to\n * fields of the static A308 in ONE block, and every other access is a per-site extern alias (D_307A8_x, the cfe\n * body's 349E0 alias-budget rule) so no address is CSE'd into v0. This removes the two extra `lui at` words the\n * cfe body could not lose (68 -> 65 words = target). The `while (0) { f = c + c; }` / `if (c) {}` keep-alives\n * are the cfe body's (load order of the up arm; c live into the else arm).\n * agent-g run 202: the last residual (hold count a uopt candidate in v1 where the target has the ugen ring t8 / t9)\n * goes with the decrement's re-read spelled `(&D_307A8_i.fC)[0]`: uopt no longer CSEs it with the test's load\n * (different ucode shape, so no live range), while ugen still sees the same `lw 12(sym)` already in t8 from the\n * fall-through predecessor and reuses it -- one load, t8 / t9, word-exact (plain `D_307A8_i.fC`, a volatile or\n * unsigned re-read, the static block and `((int *)&D_307A8_i)[3]` all keep the candidate or reload).\n * Spliced into game_libs_post.c.o (build and non_matching); the .bss reloc to A308 is renamed\n * game_libs_func_000307A8_bss by the splice (pinned to 0, the 308AC recipe). */\ntypedef float f32;\ntypedef struct { int mode; int f4; int f8; int fC; f32 f10; f32 f14; f32 f18; f32 f1C; } St308;\nstatic St308 A308;\nextern \"C\" St308 D_307A8_a, D_307A8_d, D_307A8_e, D_307A8_f, D_307A8_g, D_307A8_h, D_307A8_i, D_307A8_j,\n    D_307A8_m, D_307A8_n, D_307A8_o, D_307A8_p;\nextern \"C\" int D_00000000_1c0a8;\nextern \"C\" void gl_func_00000000_f(int, f32);\nextern \"C\" void game_libs_func_000307A8(void) {\n    int c;\n    f32 f;\n    f32 fl;\n    if (D_307A8_a.mode == 0) {\n        if (D_00000000_1c0a8 != 5) {\n            return;\n        }\n        { int &r = A308.fC; int &q = A308.f8; r = 0; q = 0; }\n    }\n    c = D_307A8_d.f8;\n    if (c != 0) {\n        f = D_307A8_e.f10; while (0) { f = c + c; }\n        f += D_307A8_f.f18;\n        c -= 1;\n        D_307A8_g.f8 = c;\n        if (1.0f < f) {\n            f = 1.0f;\n        }\n        D_307A8_h.f10 = f;\n    } else if (D_307A8_i.fC != 0) {\n        D_307A8_j.fC = (&D_307A8_i.fC)[0] - 1;\n    } else {\n        { f32 &r = A308.f10; f32 &q = A308.f14; f = r; fl = q; } if (c) {}\n        f -= D_307A8_m.f1C;\n        D_307A8_n.f10 = f;\n        if (f < fl) {\n            D_307A8_o.f10 = fl;\n        }\n    }\n    f = D_307A8_p.f10;\n    gl_func_00000000_f(0x01000800, f);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_307A8.cpp",
+    "segment": "game_libs",
+    "compiler": "ido7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "make: ROM byte-identical to baserom; objdiff report 100.0 (build/non_matching vs expected)"
+  }
+}

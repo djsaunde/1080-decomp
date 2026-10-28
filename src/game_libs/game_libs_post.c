@@ -14246,54 +14246,14 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003061C);
  * `c = hold` local, `if (hold) hold--;` in place, and the 1.0f constant as a
  * named local all keep (3).
  * agent-c run 177: residuals (1)/(2) are gone under NCC with the 308AC
- * file-local static block for the two pairs (NM donor
- * game_libs_ncc_307A8_nm.cpp, 65 words = target, 96.38 -> 99.46); (3) stays. */
-#ifdef NON_MATCHING
-extern int D_00000000_1c0a8;
-extern int gl_func_00000000_f(int, float);
-typedef struct S307A8 { int flag; int w4; int cnt; int hold; float acc; float floor_; float step; float dec; } S307A8;
-/* per-site aliases of Data sym1448 @0x338 (alias budget: no two accesses of one
- * symbol in a call-free stretch, or uopt holds the base) */
-extern S307A8 D_307A8_a, D_307A8_b, D_307A8_c, D_307A8_d, D_307A8_e, D_307A8_f, D_307A8_g,
-              D_307A8_h, D_307A8_i, D_307A8_j, D_307A8_k, D_307A8_l, D_307A8_m, D_307A8_n, D_307A8_o, D_307A8_p;
+ * file-local static block for the two pairs (65 words = target, 96.38 -> 99.46).
+ * EXACT (agent-g run 202) via the IDO 7.1 NCC (C++) donor
+ * src/game_libs/game_libs_ncc_307A8.cpp, spliced over this empty placeholder:
+ * (3) goes with the hold-count re-read spelled `(&D_307A8_i.fC)[0] - 1` (uopt
+ * keeps no candidate; ugen reuses the t8 load from the fall-through test). The
+ * cfe C body (96.38) is in git history before this commit. */
 void game_libs_func_000307A8(void) {
-    int c;
-    float f;
-    float fl;
-    if (D_307A8_a.flag == 0) {
-        if (D_00000000_1c0a8 != 5) {
-            return;
-        }
-        D_307A8_b.hold = 0;
-        D_307A8_c.cnt = 0;
-    }
-    c = D_307A8_d.cnt;
-    if (c != 0) {
-        f = D_307A8_e.acc; while (0) { f = c + c; }
-        f += D_307A8_f.step;
-        c -= 1; /* run 147: the decrement lives in c (target addiu v0,v0,-1) */
-        D_307A8_g.cnt = c;
-        if (1.0f < f) {
-            f = 1.0f;
-        }
-        D_307A8_h.acc = f;
-    } else if (D_307A8_i.hold != 0) {
-        D_307A8_j.hold = D_307A8_i.hold - 1;
-    } else {
-        f = D_307A8_k.acc; if (c) {}
-        fl = D_307A8_l.floor_;
-        f -= D_307A8_m.dec;
-        D_307A8_n.acc = f;
-        if (f < fl) {
-            D_307A8_o.acc = fl;
-        }
-    }
-    f = D_307A8_p.acc;
-    gl_func_00000000_f(0x01000800, f);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_000307A8);
-#endif
 
 
 /* game_libs_func_000308AC -- EXACT (run 136) via an IDO 7.1 NCC (C++) donor:
