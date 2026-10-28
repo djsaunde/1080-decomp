@@ -67,7 +67,6 @@ extern "C" void func_0000C234(char *arg0) {
     f32 temp_f12_2;
     f32 temp_f16;
     f32 temp_f2;
-    f32 temp_f2_2;
     f32 temp_f2_3;
     f32 var_f2;
     f32 var_f2_2;
@@ -231,7 +230,7 @@ cend:
     }
     temp_v0_4 = *(s32 *)((char *)(arg0) + 0x938);
     if (temp_v0_4 != 0) {
-        temp_f2_2 = (f32) temp_v0_4;
+#define temp_f2_2 ((f32) temp_v0_4) /* run 184: de-named (lever-sweep) */
         var_v0_2 = arg0 + 0x93C;
         *(f32 *)((char *)(arg0) + 0x93C) = (f32) (*(f32 *)((char *)(arg0) + 0x93C) / temp_f2_2);
         *(f32 *)((char *)(arg0) + 0x940) = (f32) (*(f32 *)((char *)(arg0) + 0x940) / temp_f2_2);
