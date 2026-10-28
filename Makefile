@@ -1874,6 +1874,14 @@ $(GAMELIBS_4C5E4_NM_DONOR): src/game_libs/game_libs_ncc_4C5E4_nm.cpp
 	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_NM_DONOR)
+# 4D688 = C++ `void Obj::run()` (agent-g run 192: event loop with an edg switch in source case order; cfe body 236 words -> 238 = target); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
+$(GAMELIBS_4D688_NM_DONOR): src/game_libs/game_libs_ncc_4D688_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004D688 $@
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D688=$(GAMELIBS_4D688_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D688_NM_DONOR)
 # 54264 = real C++ `void Mesh::sample(V3 &p, V3 &n, int t)` (agent-c run 175: random point in a triangle; s16 positions through an inline V3(const S3 &) ctor, normals through a by-value set(V3), c's S3 pointer kept by `if (cs) {}` + `if (t) {}`). EXACT NCC donor over an empty placeholder; symbol renamed (name only).
 GAMELIBS_54264_DONOR := build/src/game_libs/game_libs_ncc_54264.cpp.o
 $(GAMELIBS_54264_DONOR): src/game_libs/game_libs_ncc_54264.cpp
