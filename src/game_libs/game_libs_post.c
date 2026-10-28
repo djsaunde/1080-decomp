@@ -15761,7 +15761,7 @@ int gl_func_00033094(char *o) {
         b.y = b.y + a.y;
         b.z = t.z * 10.0f + a.z;
     }
-    k = (Vec3 *)(D_33094_k + 296);
+    k = (Vec3 *)D_33094_k; /* agent-c run 183: pinned at 0x128 itself (was + 296: offset counted twice) */
     a.x = a.x * k->x;
     a.y = a.y * k->y;
     a.z = a.z * k->z;

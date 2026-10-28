@@ -46,7 +46,9 @@ extern "C" int gl_func_00033094(char *o) {
         b.z = t.z * 10.0f + a.z;
         b.y = b.y + a.y; /* agent-c run 174: lever-sweep order hit (b.y / b.z independent locals, no calls): 87.00 -> 87.22 */
     }
-    k = (Vec3 *)(D_33094_k + 296);
+    /* agent-c run 183 decode fix: D_33094_k is pinned AT 0x128 (the target's `addiu v0,v0,0x128` + lwc1 0/4/8(v0));
+     * the old `D_33094_k + 296` read 0x250 (offset counted twice). */
+    k = (Vec3 *)D_33094_k;
     a.x = a.x * k->x;
     a.y = a.y * k->y;
     a.z = a.z * k->z;
