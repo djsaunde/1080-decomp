@@ -70,7 +70,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     }
     for (i = 0, off = 0; i < self->col->ntri; i++, off += 12) {
         n = (V3B9 *)((char *)self->col->nrm + off); /* run 194: normal pointer before the group test (target lw 84(s5) ahead of the bltzl) */
-        if (((TriB9 *)((char *)self->tris + off))->grp < 0) {
+        ObjB9 *self_al = self;
+        if (((TriB9 *)((char *)self_al->tris + off))->grp < 0) {
             continue;
         }
         dn = n->x * d.x + n->y * d.y + n->z * d.z;
