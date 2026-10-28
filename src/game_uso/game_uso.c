@@ -845,8 +845,8 @@ void game_uso_func_00000B3C(char *arg0) {
         if (tmp < ncur) goto adv; else if (ncur == tmp) { if (game_uso_func_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
     }
     if (nseg < tbl[9]) {
-        *(s32 *)(s + 0x254) = nseg;
         *(s32 *)(s + 0x260) = nsub;
+        *(s32 *)(s + 0x254) = nseg;
         *(s32 *)(s + 0x25C) = ncur;
     }
 }
