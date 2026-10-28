@@ -1871,6 +1871,13 @@ $(GAMELIBS_4C5E4_NM_DONOR): src/game_libs/game_libs_ncc_4C5E4_nm.cpp
 	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_NM_DONOR)
+# 4F2DC = screen-point raycast picker as C++ (agent-g run 194: V3 by-value operator= / operator* / operator+ temporaries; cfe 90.36, length = target). Still NON_MATCHING: NM comparison object only.
+GAMELIBS_4F2DC_NM_DONOR := build/src/game_libs/game_libs_ncc_4F2DC_nm.cpp.o
+$(GAMELIBS_4F2DC_NM_DONOR): src/game_libs/game_libs_ncc_4F2DC_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004F2DC=$(GAMELIBS_4F2DC_NM_DONOR)
+build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4F2DC_NM_DONOR)
 # 4D688 = debug-console event loop as C++ `void Obj::run()` (agent-c run 137 NCC goto form; agent-g run 192: member function, for(;;) loop holds &g2 / 1, source-order switch, static guard pair; 236 -> 238 words = target + 5-word epilogue alignment pad); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
 $(GAMELIBS_4D688_NM_DONOR): src/game_libs/game_libs_ncc_4D688_nm.cpp
