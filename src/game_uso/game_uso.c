@@ -5681,8 +5681,8 @@ void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32
         *(Tri3i *)&sp1BC = *(Tri3i *)&sp174;
         *(f32 *)(arg1 + 0x90) += sp1BC.x;
         *(f32 *)(arg1 + 0x94) += sp1BC.y;
-        *(s32 *)(arg1 + 0x9C) = 0;
         *(f32 *)(arg1 + 0x98) += sp1BC.z;
+        *(s32 *)(arg1 + 0x9C) = 0;
         goto tail;
     }
 
