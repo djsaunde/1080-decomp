@@ -14685,8 +14685,8 @@ s32 arg2;
         m = D_30AF4_m;
         w = 35;
         if (m == 4) {
-            *cp = 13;
             wv = 523;
+            *cp = 13;
         } else {
             switch (sub) {
             case 0:
