@@ -85,10 +85,10 @@ extern "C" void game_libs_func_00042938(void) {
     }
     gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
     gImmp1(G.o->ctx->next(), 0xB6, -1);
-    gSPSetOtherMode(G.o->ctx->next(), 0xB9, 3, 29, 0x442478);
+    gSPSetOtherMode(G.o->ctx->next() + 0, 0xB9, 3, 29, 0x442478); /* agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone) */
     func_00000000(G.o->ctx, *(int *)(G.o->p148 + 0xF0));
-    gImmp1(G.o->ctx->nD(), 0xB7, 1);
-    gSPSetOtherMode(G.o->ctx->next(), 0xBA, 20, 2, 0);
+    gImmp1(G.o->ctx->nD() + 0, 0xB7, 1);
+    gSPSetOtherMode(G.o->ctx->next() + 0, 0xBA, 20, 2, 0);
     {
         Ctx *c = G.o->ctx;
         Vp *v = c->vpnext();
