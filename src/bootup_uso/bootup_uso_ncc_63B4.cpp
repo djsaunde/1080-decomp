@@ -1,12 +1,17 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_000063B4 (minimap marker projection, 224 words).
- * agent-g run 184 (kit CXXXIII): rewritten as C++ -- the target's `lwc1 180(v0); addiu v0,v0,180` is the matrix
- * this-adjust tell (kit CXXXI): an inline `M3::xf(V3 &)` called twice through `ctx->view->rot`, with ctx loaded
- * once and reloaded from the global block after both calls (the second call's view load comes from the old ctx).
- * Frame: A, B declared first (homes 132 / 120), `Q q` declared at its use AFTER the xf calls -- xf's three
- * register-coloured temporaries then sit above q (the target's 12 unreferenced bytes at sp+108) and q lands on
- * sp+92: length = target (896), standalone 83.05 -> 92.89. LEFT: FP colours (f8/f6 vs f6/f4 in the xf spill
- * shuffle) and the A.z reload into f14 in the first MIN arm.
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+/* IDO 7.1 NCC (C++) donor for func_000063B4 (minimap marker projection, 0x380 / 224 words), EXACT.
+ * agent-g run 184 (docs/IDO_CODEGEN.md kit CXXXIII). The cfe body sat at 83.21 with frame-struct tricks; the
+ * target is C++:
+ * - the matrix this-adjust tell `lwc1 180(v0); addiu v0,v0,180` (kit CXXXI) = an inline `M3::xf(V3 &)` called
+ *   twice through `ctx->view->rot`; ctx is loaded once before the calls and reloaded from the global block
+ *   after both (the second call's view load comes from the old ctx, after the first call's stores);
+ * - A's three stores through an inline `set()` (x, y, z) and the A.z / B.z accumulates through an inline
+ *   `addz()` member (the A.z reload into f14 in the first MIN arm, plus the mtc1-delay fill at the top);
+ *   `inv` is not named (de-named, kit CXXIV);
+ * - frame: A, B declared first (homes 132 / 120); `Q q` (POD) declared after ctx / r / fn and before t / ix /
+ *   iy, so exactly three named scalars sit above it (the target's 12 unreferenced bytes) and q lands on
+ *   sp+92; `if (1) {}` before q's stores.
+ * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;
+ * func_00000000_63b4_* are blank (0) aliases, bu_63b4_c57c = func_0000057C (target reloc func_0000057C + 0x34). */
 typedef float f32;
 extern "C" {
 extern char D_00000000;
@@ -16,8 +21,13 @@ extern void func_00000000_63b4_fpp(float, float *, float *);
 extern void func_00000000_63b4_pq(void *, void *);
 extern void func_00000000_63b4_p(void *);
 }
-struct V3 { f32 x, y, z; };
-struct Q { f32 x, y, z, w; Q() {} Q(f32 a, f32 b, f32 c, f32 d) { z = c; y = b; x = a; w = d; } };
+struct V3 {
+    f32 x, y, z;
+    V3() {}
+    void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
+    void addz(f32 d) { z += d; }
+};
+struct Q { f32 x, y, z, w; };
 struct M3 {
     f32 m[3][4];
     void xf(V3 &v) const {
@@ -37,22 +47,20 @@ struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
 extern "C" void func_000063B4(Obj *obj) {
     V3 A;
     V3 B;
-    f32 inv = func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34));
-    A.y = 0.0f;
-    A.x = 0.0f;
-    A.z = (f32)(-obj->nb8) / inv;
+    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34)));
     func_00000000_63b4_fpp((f32)obj->nbc, &A.x, &A.z);
     B.y = 0.0f;
-    B.z = A.z;
     B.x = -A.x;
+    B.z = A.z;
     Ctx *ctx = gG->ctx;
     ctx->view->rot.xf(A);
     ctx->view->rot.xf(B);
     ctx = gG->ctx;
     Rec *r = obj->rr->r;
     f32 fn = (f32)(int)((ctx->view->scale * gG->k - (f32)r->o) / r->d);
-    A.z += fn;
-    B.z += fn;
+    A.addz(fn);
+    B.addz(fn);
+    Q q;
     f32 t;
     int ix, iy;
     t = (A.z < fn) ? A.z : fn;
@@ -71,7 +79,7 @@ extern "C" void func_000063B4(Obj *obj) {
     if (iy >= 0x80) iy = 0x7F;
     ctx->px = ix;
     gG->ctx->py = iy;
-    Q q;
+    if (1) {}
     q.z = 0.0f;
     q.y = 0.0f;
     q.x = 0.0f;

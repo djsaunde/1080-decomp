@@ -1,0 +1,33 @@
+{
+  "function_name": "func_000063B4",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-28T00:08:28.642368+00:00",
+  "end_time": "2026-10-28T00:08:28.642368+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-28T00:08:28.642368+00:00",
+      "assistant_text": "Exact as a C++ (NCC) donor: the target tell `lwc1 180(v0); addiu v0,v0,180` is an inline M3::xf(V3 &) called twice through ctx->view->rot (ctx loaded once, reloaded from the global block after both calls); A initialised through an inline set(), A.z/B.z += fn through an inline addz() (A.z reload into f14 in the first MIN arm), inv de-named; frame: A, B declared first, POD Q q declared after ctx/r/fn and before t/ix/iy (three named scalars above it), if (1) {} before q stores.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 224,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_000063B4 (minimap marker projection, 0x380 / 224 words), EXACT.\n * agent-g run 184 (docs/IDO_CODEGEN.md kit CXXXIII). The cfe body sat at 83.21 with frame-struct tricks; the\n * target is C++:\n * - the matrix this-adjust tell `lwc1 180(v0); addiu v0,v0,180` (kit CXXXI) = an inline `M3::xf(V3 &)` called\n *   twice through `ctx->view->rot`; ctx is loaded once before the calls and reloaded from the global block\n *   after both (the second call's view load comes from the old ctx, after the first call's stores);\n * - A's three stores through an inline `set()` (x, y, z) and the A.z / B.z accumulates through an inline\n *   `addz()` member (the A.z reload into f14 in the first MIN arm, plus the mtc1-delay fill at the top);\n *   `inv` is not named (de-named, kit CXXIV);\n * - frame: A, B declared first (homes 132 / 120); `Q q` (POD) declared after ctx / r / fn and before t / ix /\n *   iy, so exactly three named scalars sit above it (the target's 12 unreferenced bytes) and q lands on\n *   sp+92; `if (1) {}` before q's stores.\n * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;\n * func_00000000_63b4_* are blank (0) aliases, bu_63b4_c57c = func_0000057C (target reloc func_0000057C + 0x34). */\ntypedef float f32;\nextern \"C\" {\nextern char D_00000000;\nextern unsigned char bu_63b4_c57c[];\nextern float func_00000000_63b4_ff(float);\nextern void func_00000000_63b4_fpp(float, float *, float *);\nextern void func_00000000_63b4_pq(void *, void *);\nextern void func_00000000_63b4_p(void *);\n}\nstruct V3 {\n    f32 x, y, z;\n    V3() {}\n    void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }\n    void addz(f32 d) { z += d; }\n};\nstruct Q { f32 x, y, z, w; };\nstruct M3 {\n    f32 m[3][4];\n    void xf(V3 &v) const {\n        f32 x = m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z;\n        f32 y = m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z;\n        f32 z = m[0][2] * v.x + m[1][2] * v.y + m[2][2] * v.z;\n        v.x = x; v.y = y; v.z = z;\n    }\n};\nstruct View { char p[0xA8]; f32 scale; char pAC[0xB4 - 0xAC]; M3 rot; };\nstruct Ctx { char p[0x70]; View *view; char p74[0x10C - 0x74]; int px; int py; };\nstruct G { char p[0x130]; f32 k; char p134[0x254 - 0x134]; Ctx *ctx; };\nstruct Rec { char p[0xC]; int o; char p10[4]; f32 d; };\nstruct Rr { char p[0xA0]; Rec *r; };\nstruct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };\n#define gG ((G *)&D_00000000)\nextern \"C\" void func_000063B4(Obj *obj) {\n    V3 A;\n    V3 B;\n    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34)));\n    func_00000000_63b4_fpp((f32)obj->nbc, &A.x, &A.z);\n    B.y = 0.0f;\n    B.x = -A.x;\n    B.z = A.z;\n    Ctx *ctx = gG->ctx;\n    ctx->view->rot.xf(A);\n    ctx->view->rot.xf(B);\n    ctx = gG->ctx;\n    Rec *r = obj->rr->r;\n    f32 fn = (f32)(int)((ctx->view->scale * gG->k - (f32)r->o) / r->d);\n    A.addz(fn);\n    B.addz(fn);\n    Q q;\n    f32 t;\n    int ix, iy;\n    t = (A.z < fn) ? A.z : fn;\n    ix = (int)t;\n    t = ((f32)ix < B.z) ? (f32)ix : B.z;\n    ix = (int)t;\n    t = (fn < A.z) ? A.z : fn;\n    iy = (int)t;\n    t = (B.z < (f32)iy) ? (f32)iy : B.z;\n    iy = (int)t;\n    ix -= obj->org;\n    iy += obj->org;\n    if (ix < 0) ix = 0;\n    if (ix >= 0x80) ix = 0x7F;\n    if (iy < 0) iy = 0;\n    if (iy >= 0x80) iy = 0x7F;\n    ctx->px = ix;\n    gG->ctx->py = iy;\n    if (1) {}\n    q.z = 0.0f;\n    q.y = 0.0f;\n    q.x = 0.0f;\n    q.w = 1.0f;\n    func_00000000_63b4_pq(gG, &q);\n    func_00000000_63b4_p(obj);\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_63B4.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_000063B4.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "report.json fuzzy 100.0; make ROM cmp byte-identical; spliced via REPLACE_FUNC_BODY into bootup_uso.c.o (both trees)."
+  }
+}

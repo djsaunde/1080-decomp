@@ -199,10 +199,10 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # Still NON_MATCHING (operator temp slots, case-6 zero colour): NM comparison object only.
 BOOTUP_D900_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_D900.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
-# 63B4 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 76.09). Still NON_MATCHING: NM comparison object only.
-BOOTUP_63B4_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_63B4_nm.cpp.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000063B4=$(BOOTUP_63B4_NM_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_63B4_NM_DONOR)
+# 63B4 = minimap marker projection, NCC donor (C++: inline M3::xf(V3 &) through ctx->view->rot; agent-g run 184). EXACT.
+BOOTUP_63B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_63B4.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000063B4=$(BOOTUP_63B4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_63B4_DONOR)
 # C234 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 77.39). Still NON_MATCHING: NM comparison object only.
 BOOTUP_C234_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_C234_nm.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000C234=$(BOOTUP_C234_NM_DONOR)
