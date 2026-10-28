@@ -9345,7 +9345,7 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         char *rr = r;
         FW(rr, 0x2B8) = (s32) child;
         FW(rr, 0x29C) = (s32) child;
-        *(f32 *)(rr + 0x134) = -32.0f;
+        *(f32 *)(rr + 0x134) = -32.0f; if (1) {}
     }
     sub = (char *) FW(arg0, 0x38);
     timproc_uso_b5_func_07ACE0(sub + 0x10, child);
