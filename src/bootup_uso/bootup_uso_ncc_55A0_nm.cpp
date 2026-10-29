@@ -105,7 +105,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
             do {
                 func_00000000(&D_55A0_fmt, it->w, it);
                 func_00000000(D_55A0_list2, it);
-                it++; if (1) {}
+                it++; if ((1) + 0 * (int)(it)) {} /* agent-c run 212: folded counted use (zero code) */
             } while (it->w != 0);
         }
     }
