@@ -4172,7 +4172,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000(((char *)p));
     func_00000000();
     do { g00 = import_8005EE64_3; g00 &= ~0x100; import_8005EE64_2 = g00; } while (0);
-    *(int *)((char *)p + 0x30) |= 0x40;
+    g00 = (int)p; if (1) { g00 += 0x30; } *(int *)g00 |= 0x40; /* agent-g run 222: target addiu v0,s1,48 + lw/sw 0(v0) (block word-exact, +1 word) */
     import_8005C108_4[0x3C / 4] = import_8005C108_5[0x3C / 4] & ~8;
     func_00000000();
     func_00000000(&D_6808_16, 0);
