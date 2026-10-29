@@ -1776,10 +1776,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3DF58_NM_DONOR := build/src/game_libs/game_libs_ncc_3DF58_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003DF58=$(GAMELIBS_3DF58_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DF58_NM_DONOR)
-# 578B4 = gbi texture loader (NCC 99.93 vs cfe 98.27, 2419 words = target; agent-c run 154). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_578B4_NM_DONOR := build/src/game_libs/game_libs_ncc_578B4_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000578B4=$(GAMELIBS_578B4_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_578B4_NM_DONOR)
+# 578B4 = gbi texture loader (NCC 99.93 vs cfe 98.27, 2419 words = target; agent-c run 154). EXACT NCC donor over an empty placeholder (agent-c run 236: FD50 pointer + tmem as one non-propagated variable, arg2 copy in its own variable; 0x34458 calls via the 0-pinned gl_578b4_c34458).
+GAMELIBS_578B4_DONOR := build/src/game_libs/game_libs_ncc_578B4.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000578B4=$(GAMELIBS_578B4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_578B4_DONOR)
 # 4A9F0 = stream -> grid byte copier (NCC, frameless; agent-c run 133). EXACT NCC donor over an empty placeholder (agent-c run 217: inner-body `if (1) {}` + one-expression cell address).
 GAMELIBS_4A9F0_DONOR := build/src/game_libs/game_libs_ncc_4A9F0.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_DONOR)

@@ -23563,7 +23563,10 @@ void gl_func_00057700(int *a0) {
  * (97.06).
  * Left: the MIN/MAX/g-pointer colouring (target MIN t1, MAX1 t0 with
  * the g pointer spilled to its sp slot; ours MIN t0, MAX1 a2). */
-#ifdef NON_MATCHING
+/* gl_func_000578B4: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_578B4.cpp,
+ * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c run 236).
+ * The superseded m2c decode is kept for reference under GL_578B4_OLD_DECODE (never defined). */
+#ifdef GL_578B4_OLD_DECODE
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
@@ -24455,7 +24458,8 @@ void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000578B4);
+void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
+}
 #endif
 
 #ifdef NON_MATCHING
