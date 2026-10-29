@@ -1,5 +1,5 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_00063964 (280 words; this body 278, cfe NM
- * body 275). NM object only; the ROM build keeps INCLUDE_ASM.
+ * body 275). EXACT since agent-c run 238 (see the end of this comment).
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): the cfe body's struct-copy staging (`t = d; n = t;`,
  * `t = s1; c1 = t; ... u = r1; w = u; out.x = w.x ...`) is plain C++ Vec3 arithmetic: inline by-value
  * operators (each result goes through the one shared return-copy temp at sp+220) and a BY-VALUE
@@ -27,12 +27,19 @@
  * parameter (sp+116) and every later arm on the target; the `{ V3 t; }` block is then dropped (99.96).
  * LEFT: X (operator+ result, target sp+156) and the two operator* temps 8 bytes high -- an 8-byte gap
  * between X and the sum that the target does not have (probably operator+'s reference temps), with the
- * target's 12 unreferenced bytes above T2 missing instead. */
+ * target's 12 unreferenced bytes above T2 missing instead.
+ * agent-c run 238: EXACT (99.964 -> 100). The gap words are edg's function-wide POINTER TEMP POOL slots (the
+ * inline calls' this / reference temps), homed where each slot is first allocated; arm 1 allocated two of them
+ * between its own temporaries. A dead `if (0) { *va.me()->me() += *vb.me(); }` before the arm (zero-code
+ * `V3 *me() { return this; }`, nested so three slots are live at once) allocates them earlier, above the arm's
+ * temporaries: operator+ result sp+156, operator* temps sp+172 / 184, as in the target. Spliced over a
+ * placeholder on both build paths. */
 typedef float f32;
 extern "C" void gl_func_00000000(...);
 struct V3 {
     f32 x, y, z;
     V3() {}
+    V3 *me() { return this; }
     void zero() { x = y = z = 0.0f; }
     void operator=(V3 o) { cp(o); }
     void cp(const V3 &o) { x = o.x; y = o.y; z = o.z; }
@@ -60,6 +67,7 @@ extern "C" void gl_func_00063964(O *o, f32 acc, int a2, int a3) {
     count = 0;
     acc = 0.0f; if (1) {}
     gl_func_00000000(&n);
+    if (0) { *va.me()->me() += *vb.me(); } /* agent-c run 238: zero-code pool-slot allocation (see header) */
     if (va.y < (f32)0.0) {
         count = 1;
         out = va + n * va.y;

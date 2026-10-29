@@ -2388,10 +2388,11 @@ GAMELIBS_65EE4_NM_DONOR := build/src/game_libs/game_libs_o2limit_65EE4.c.o
 build/src/game_libs/game_libs_o2limit_65EE4.c.o: OPT_FLAGS := -O2
 build/src/game_libs/game_libs_o2limit_65EE4.c.o: CC_ONLY_FLAGS := -Olimit 1
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00065EE4=$(GAMELIBS_65EE4_NM_DONOR)
-# 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165). NM comparison object only.
-GAMELIBS_63964_NM_DONOR := build/src/game_libs/game_libs_ncc_63964_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00063964=$(GAMELIBS_63964_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_63964_NM_DONOR)
+# 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
+# EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.
+GAMELIBS_63964_DONOR := build/src/game_libs/game_libs_ncc_63964.cpp.o
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00063964=$(GAMELIBS_63964_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_63964_DONOR)
 # 65494 = child-list contact solve (C++ port of the cfe NM body: list iterator, by-value Vec3 operator=; agent-g run 186; agent-c runs 213-215: operator* parameter temp from `* -h`). EXACT NCC donor over an empty placeholder (blank USO jals: 0-pinned gl_func_00062F64 aliases).
 GAMELIBS_65494_DONOR := build/src/game_libs/game_libs_ncc_65494.cpp.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00065494=$(GAMELIBS_65494_DONOR)

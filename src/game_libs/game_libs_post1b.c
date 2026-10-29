@@ -518,7 +518,10 @@ end:
  * unfolded); the K&R/address-taken spelling reloads arg0 into t6 and keeps
  * farg1 in memory, while an ANSI `(char *, f32, int, int)` def (all four
  * still homed) fixes farg1 but scores lower (73.7: arg0 -> s0 colouring). */
-#ifdef NON_MATCHING
+/* gl_func_00063964: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_63964.cpp, REPLACE_FUNC_BODY-spliced
+ * over the placeholder below on both build paths (agent-c run 238). The superseded in-unit decode is kept
+ * for reference under GAMELIBS_63964_OLD_DECODE (never defined). */
+#ifdef GAMELIBS_63964_OLD_DECODE
 void gl_func_00063964(arg0, arg1, arg2, arg3)
 char *arg0;
 int arg1, arg2, arg3;
@@ -629,7 +632,9 @@ int arg1, arg2, arg3;
     gl_func_00000000(*(int **)(parg0 + 0x108), &out, &fin);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00063964);
+void gl_func_00063964(char *o) {
+    volatile char *r = o;
+}
 #endif
 
 /* gl_func_00063DC4: alloc-if-null constructor + Vec3-magnitude (EXACT 48/48).
