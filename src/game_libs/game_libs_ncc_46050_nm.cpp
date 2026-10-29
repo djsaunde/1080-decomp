@@ -46,8 +46,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     s32 ch;
     s32 cc;
 
-    charw = o->cw;
-    lineh = o->lh;
+    charw = o->cw; lineh = o->lh; /* agent-g run 228: one line (kit CCXXXIV line order): 92.20 -> 92.23 */
 
     if (o->mode == 0) {
         gW(CTX->next(), 0xE7000000, 0); if (1) {}
