@@ -15340,7 +15340,6 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
         CUR_31A74 = mode;
         gl_func_00000000(0x6000A00, (s8)mode);
     }
-    sel += 63; /* agent-g run 211: above the 255 test (target addiu a2,63 in the bne delay slot) */
     if (mode == 255) {
         gl_func_00000000(0x6000A02, (s8)mode);
         return;
@@ -15364,6 +15363,7 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
     if (1.0f < r) {
         r = 1.0f;
     }
+    sel += 63; /* agent-g run 225: next to its first use (target: addiu a2,63 hoisted into the 255-test bne delay slot, sll/sra in the v block) */
     if (sel >= 127) {
         sel = 127;
     }
