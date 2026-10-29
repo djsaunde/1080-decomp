@@ -86,8 +86,8 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
         int r = gl_func_00000000(cc, f->mat) + 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568) */
         if (r & 0x100) {
             int ok = 1;
+            Tri *t = (Tri *)((char *)tris + off); /* agent-g run 224: t before n (sweep 97.33 -> 97.60) */
             V3 *n = (V3 *)((char *)col->nrm + off);
-            Tri *t = (Tri *)((char *)tris + off);
             V3 *n_al = n; /* agent-c run 195: alias copy (colour tie) */
             f32 d = p.x * n_al->x + p.y * n_al->y + p.z * n_al->z - t->d;
             f32 q[3];
