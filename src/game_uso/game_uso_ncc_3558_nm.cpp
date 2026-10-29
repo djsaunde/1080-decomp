@@ -23,10 +23,17 @@
  *    spill juggle with mixed b0+112 / b0+128 then `addiu v0,v0,112`
  *    addressing); op- computes into named a / b / c after r (the 4 words
  *    between r and bt).
- * RESIDUAL: frame 264 vs 256 -- every home matches from the top but ugen
- * reserves two more spill words (40..55 vs 40..47); the target loads vb into
- * f14 / f16 / f18 at the top of the matrix block and adds each row as it
- * completes (ours loads vb after the stage stores). */
+ * 3. vb (and va) are uopt REGISTER candidates in the target: vb is reloaded
+ *    into f14 / f16 / f18 at the top of the matrix block and each row is
+ *    added as it completes. A member call on vb (`vb - va`, getPos(vb))
+ *    takes its address through an edg this / reference temp and keeps it in
+ *    memory; direct field stores plus a free by-value `mk(vb.x - va.x, ...)`
+ *    (named return r -> return temp -> binding temp -> e, the same copy chain)
+ *    make both vreg, frame 256 (88.56 -> 89.21 with one `if (1) {}` after the
+ *    stage copy).
+ * RESIDUAL: the target stores vb after its init and reloads it in the block
+ * (split LR; ours keeps it in f14..f18 throughout), va.y is held in f20 until
+ * the block (target reloads va from 240..248), tmp at 148 vs 140. */
 struct Vec3 {
     float x, y, z;
     void operator=(Vec3 v) { z = v.z; y = v.y; x = v.x; }
@@ -37,6 +44,7 @@ struct Vec3 {
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
     float len2() const { float r = x * x + y * y + z * z; return r; }
 };
+inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.y = q; r.z = u; return r; }
 struct M4 {
     float m[4][4];
     void getPos(Vec3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; }
@@ -73,9 +81,10 @@ extern "C" void game_uso_func_00003558(S *s0) {
     Vec3 w;
     float t;
     { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
-    { Body *b = s0->b0; b->mtx.getPos(vb); }
+    { Body *b = s0->b0; vb.x = b->mtx.m[3][0]; if (1) {} vb.y = b->mtx.m[3][1]; vb.z = b->mtx.m[3][2]; }
     zero = 0.0f;
     stage = s0->v68;
+    if (1) {}
     {
         M4 *m = &s0->b0->mtx;
         const Vec3 &v = stage;
@@ -85,7 +94,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
         stage.x = x; stage.y = y; stage.z = z;
     }
     vb.x += stage.x; vb.z += stage.z; vb.y += stage.y;
-    e = vb - va;
+    e = mk(vb.x - va.x, vb.y - va.y, vb.z - va.z);
     s0->v3C = e;
     mag = game_uso_func_070238(e.len2());
     {
