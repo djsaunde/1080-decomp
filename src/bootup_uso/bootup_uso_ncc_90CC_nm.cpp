@@ -661,7 +661,7 @@ sw_end:
             sp174 = 1;
         }
         if ((*(s32 *)((char *)&D_00000000 + 0x34) == 3) && (*(s32 *)((char *)&D_00000000 + 0x4C) == *(u8 *)((char *)&D_00000000 + 0x17D)) && (arg1 == 2)) {
-            sp174 = 1;
+            sp174 = 1 + 0 * (int)(sp174); /* agent-c run 212: folded counted use (zero code) */
         }
         if ((arg2 == 7) || (arg2 == 6)) {
             if (arg7 & 8) {
