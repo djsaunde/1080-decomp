@@ -3,76 +3,79 @@
  * with the case bodies out of line, as the target) whose newline case jumps past the advance (`goto next`), and x is read
  * after the switch: 86.91 -> 89.54, length 1832 -> 1840 (target 1848); charw read before lineh (s1 / s2 as the
  * target): -> 89.63.
+ * agent-g run 220: rewritten as real C++ (the 2DE0 / 329C kit): every display-list append is the gfx context's
+ * inline Ctx::next() reached through o->sub->ctx, the fixed packets are plain word pairs, and the glyph is the
+ * stock gbi.h gSPTextureRectangle with `CTX->next()` as its pkt argument (its two gImmp1 re-evaluations ARE the
+ * RDPHALF_1 / RDPHALF_2 appends; s = (cc & 0xF) << 8, t = ((cc & 0xF0) >> 1) << 5, dsdx / dtdy = 0x2000 / charw
+ * / lineh): length 1840 -> 1848 = target. The right-margin word is read as an ARRAY global (`D_46050_m[0]`):
+ * through `&D_00000000` / a held `int *` uopt folds it into `lui; lw %lo` per iteration, as an array element
+ * the address is a loop-invariant web hoisted into s8 as in the target (which then also stops the 0xE4000000
+ * constant from taking s8). 89.71 -> 92.20 standalone. LEFT: the first two prologue appends read o from a0
+ * (target) and use v0 / a1 for the dl / count temps; cc is a3 (target a0); the E4 w1 / B4 / B3 schedule.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
 typedef float f32;
 extern "C" {
-extern int D_00000000;
+extern int D_00000000; extern int D_46050_m[];
 extern int gl_func_00034458(...);
 }
-#define DI(o) (*(int *)((char *)&D_00000000 + (o)))
-#define FI(p, o) (*(int *)((char *)(p) + (o)))
-#define FP(p, o) (*(void **)((char *)(p) + (o)))
-/* held GfxCtx DL node: (arg0->0x254)->0x158, member 0xC = {head@0, count@4} */
-#define DLCTX (FP(FP(arg0, 0x254), 0x158))
-#define EMIT(w0, w1) {                                             \
-    register void *_e;                                             \
-    _c = DLCTX;                                                    \
-    _q = FP(_c, 0xC);                                              \
-    _n = FI(_q, 0x4);                                              \
-    FI(_q, 0x4) = _n + 1;                                          \
-    _e = (char *)FP(FP(_c, 0xC), 0x0) + (_n * 8);                  \
-    FI(_e, 0x0) = (w0); FI(_e, 0x4) = (w1);                        \
-}
-
-extern "C" s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
-    register s32 startx = FI(arg0, 0x21C);
-    register s32 charw;
-    register s32 lineh;
-    int *margin = &D_00000000;
+#define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
+struct Gwords { unsigned int w0, w1; };
+union Gfx { Gwords words; long long force_structure_alignment; };
+#define gImmp1(pkt, c, p0) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = _SHIFTL((c), 24, 8); _g->words.w1 = (unsigned int)(p0); }
+#define gW(pkt, a, b) { Gfx *_g = (Gfx *)(pkt); _g->words.w0 = (a); _g->words.w1 = (b); }
+#define G_TEXRECT 0xe4
+#define G_RDPHALF_1 0xb4
+#define G_RDPHALF_2 0xb3
+#define gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+{ Gfx *_g = (Gfx *)(pkt); \
+  _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(xh, 12, 12) | _SHIFTL(yh, 0, 12)); \
+  _g->words.w1 = (_SHIFTL(tile, 24, 3) | _SHIFTL(xl, 12, 12) | _SHIFTL(yl, 0, 12)); \
+  gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16))); \
+  gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); }
+struct DL { Gfx *buf; int n; };
+struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } };
+struct Sub { char pad[0x158]; Ctx *ctx; };
+struct Font { char pad[0x21C]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
+#define CTX (o->sub->ctx)
+extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
+    s32 startx = o->x;
+    s32 charw;
+    s32 lineh;
     s32 ch;
     s32 cc;
-    void *_c;
-    void *_q;
-    int _n;
 
-    charw = FI(arg0, 0x224);
-    lineh = FI(arg0, 0x228);
+    charw = o->cw;
+    lineh = o->lh;
 
-    if (FI(arg0, 0x28C) == 0) {
-        EMIT(0xE7000000, 0); if (1) {}
-        EMIT(0xBA001402, 0);
-        EMIT(0xB6000000, 1);
-        EMIT(0xB900031D, 0x0C087008);
-        EMIT(0xF9000000, 0x80);
-        EMIT(0xBB000001, 0x80008000);
-        EMIT(0xFCFFFFFF, 0xFFFCF279);
-        EMIT(0xBA000C02, 0);
-        EMIT(0xBA001301, 0);
-        { register void *_e;
-          _c = DLCTX;
-          _q = FP(_c, 0xC);
-          _n = FI(_q, 0x4); FI(_q, 0x4) = _n + 1;
-          _e = (char *)FP(FP(_c, 0xC), 0x0) + (_n * 8);
-          FI(_e, 0x0) = 0xFD900000; FI(_e, 0x4) = gl_func_00034458((void *)&D_00000000); }
-        EMIT(0xF5900000, 0x07000000);
-        EMIT(0xE6000000, 0);
-        EMIT(0xF3000000, 0x077FF100);
-        EMIT(0xE7000000, 0);
-        EMIT(0xF5801000, 0);
-        EMIT(0xF2000000, 0x1FC0FC);
+    if (o->mode == 0) {
+        gW(CTX->next(), 0xE7000000, 0); if (1) {}
+        gW(CTX->next(), 0xBA001402, 0);
+        gW(CTX->next(), 0xB6000000, 1);
+        gW(CTX->next(), 0xB900031D, 0x0C087008);
+        gW(CTX->next(), 0xF9000000, 0x80);
+        gW(CTX->next(), 0xBB000001, 0x80008000);
+        gW(CTX->next(), 0xFCFFFFFF, 0xFFFCF279);
+        gW(CTX->next(), 0xBA000C02, 0);
+        gW(CTX->next(), 0xBA001301, 0);
+        gW(CTX->next(), 0xFD900000, gl_func_00034458((void *)&D_00000000));
+        gW(CTX->next(), 0xF5900000, 0x07000000);
+        gW(CTX->next(), 0xE6000000, 0);
+        gW(CTX->next(), 0xF3000000, 0x077FF100);
+        gW(CTX->next(), 0xE7000000, 0);
+        gW(CTX->next(), 0xF5801000, 0);
+        gW(CTX->next(), 0xF2000000, 0x1FC0FC);
     }
 
     { u8 *p = arg1; arg1 = p + 1; ch = *p; }
     if (ch != 0) {
         do {
             cc = ch;
-             
             switch (ch) {
             case 10:
-                FI(arg0, 0x21C) = startx;
-                FI(arg0, 0x220) = FI(arg0, 0x220) + lineh;
+                o->x = startx;
+                o->y = o->y + lineh;
                 goto next;
             case 9:
                 ch = 0x20;
@@ -83,38 +86,31 @@ extern "C" s32 gl_func_00046050(void *arg0, u8 *arg1, s32 arg2) {
                 cc = 0x4F;
                 break;
             }
-            {
-                /* run 190: x (o->0x21C) de-named into the test: 89.63 -> 89.66 standalone */
-                if ((*margin - 0x14) < (FI(arg0, 0x21C) + charw)) {
-                    FI(arg0, 0x21C) = startx;
-                    FI(arg0, 0x220) = FI(arg0, 0x220) + lineh;
-                }
-                if (cc < 0x80) {
-                    if (FI(arg0, 0x28C) == 0) {
-                        EMIT((((((FI(arg0, 0x21C) + charw) * 4) & 0xFFF) << 0xC) | 0xE4000000) | (((FI(arg0, 0x220) + lineh) * 4) & 0xFFF),
-                             ((FI(arg0, 0x220) * 4) & 0xFFF) | (((FI(arg0, 0x21C) * 4) & 0xFFF) << 0xC)); /* run 193: 0x220 read first, as the target */  if (1) {} 
-                        EMIT(0xB4000000,
-                            ((cc & 0xF) << 0x18) | (((((s32) (cc & 0xF0)) >> 1) << 5) & 0xFFFF));
-                        EMIT(0xB3000000,
-                            ((0x2000 / charw) << 0x10) | ((0x2000 / lineh) & 0xFFFF));
-                    } else {
-                        gl_func_00034458(arg0, ch, FI(arg0, 0x21C), FI(arg0, 0x220));
-                    }
-                }
-                FI(arg0, 0x21C) = FI(arg0, 0x21C) + charw;
+            if ((D_46050_m[0] - 0x14) < (o->x + charw)) {
+                o->x = startx;
+                o->y = o->y + lineh;
             }
+            if (cc < 0x80) {
+                if (o->mode == 0) {
+                    gSPTextureRectangle(CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
+                        (cc & 0xF) << 8, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
+                } else {
+                    gl_func_00034458(o, ch, o->x, o->y);
+                }
+            }
+            o->x = o->x + charw;
         next:
-            if (!(FI(arg0, 0x21C) < arg2)) {
+            if (!(o->x < arg2)) {
                 break;
             }
             { u8 *p = arg1; arg1 = p + 1; ch = *p; }
         } while (ch != 0);
     }
 
-    if (FI(arg0, 0x28C) == 0) {
-        EMIT(0xE7000000, 0);
-        EMIT(0xBB000000, -1);
-        EMIT(0xBA001402, 0x300000);
+    if (o->mode == 0) {
+        gW(CTX->next(), 0xE7000000, 0);
+        gW(CTX->next(), 0xBB000000, -1);
+        gW(CTX->next(), 0xBA001402, 0x300000);
     }
     return 0;
 }
