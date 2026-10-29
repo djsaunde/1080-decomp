@@ -8,6 +8,9 @@
  * Still NON_MATCHING: build/non_matching/ only.
  * agent-c run 179: the byte size `volatile s32 sz` (the target keeps it in s1; ours spills it either way, the volatile reload lines up the call tail): 88.70 -> 91.0 local.
  * agent-c run 179: `ids++` after the run terminator store (adjacent-statement swap sweep): 91.19 -> 93.47.
+ * agent-c run 216: the loop walks the COPY `s` and the end pointer comes from the parameter (`end = ids + n`):
+ * the parameter's live range then takes s0 from entry (the target's leading `or s0,a2,zero`, s0 reused for
+ * the list base after the loop): 93.47 -> 94.73. Left: the byte size in s1 (ours spills it) + t-reg rotation.
  */
 typedef short s16; typedef int s32;
 extern "C" {
@@ -25,17 +28,17 @@ s16 *Map::build(s32 n, s16 *ids) {
     s16 *s; /* agent-g run 195 (hoist sweep): function scope */
     if (n > 0) {
         s = ids;
-        s16 *end = s + n;
+        s16 *end = ids + n;
         do {
-        list[t0++] = *ids;
+        list[t0++] = *s;
         for (int idx = 0; idx < count(); idx++) {
-            if (*ids == tbl[idx]) {
+            if (*s == tbl[idx]) {
                 list[t0++] = idx;
             }
         }
         list[t0++] = -1;
-        ids++;
-        } while (ids != end);
+        s++;
+        } while (s != end);
     }
     list[t0++] = -1;
     if (t0 >= 299) {
