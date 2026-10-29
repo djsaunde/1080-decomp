@@ -57,7 +57,7 @@ extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
     if (n > 0) {
         for (i = 0; i < n; i++) {
             if (ABS3(dist[i]) < lim && dist[i] > -600.0f && dist[i] > -s) {
-                best = i;
+                best = i + 0 * (int)(r); /* agent-g run 210: folded counted use of r (zero-use sweep): 96.08 -> 96.78, 868 -> 872 bytes = target */
                 lim = ABS3(dist[i]);
             }
         }
