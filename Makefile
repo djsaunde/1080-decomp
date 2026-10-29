@@ -1795,14 +1795,16 @@ $(GAMELIBS_54E78_NM_DONOR): src/game_libs/game_libs_ncc_54E78_nm.cpp
 	$(OBJCOPY) --redefine-sym reflect__3ObjFRC5Plane=gl_func_00054E78 --redefine-sym ident__2M4Fv=gl_func_00034458 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054E78=$(GAMELIBS_54E78_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54E78_NM_DONOR)
-# 36F0C = real C++ `void FreeCam::update()` (agent-c run 177; cfe 91.26); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_36F0C_NM_DONOR := build/src/game_libs/game_libs_ncc_36F0C_nm.cpp.o
-$(GAMELIBS_36F0C_NM_DONOR): src/game_libs/game_libs_ncc_36F0C_nm.cpp
+# 36F0C = real C++ `void FreeCam::update()` (agent-c run 177 lift); symbol renamed (name only). EXACT NCC donor over an empty placeholder
+# (agent-g run 219: const-ref setter values + the x store through an accessor-kept Cam * taken before w += pos). The donor-local
+# .rodata reloc of the 0.8 literal is renamed gl_func_00036F0C_rodata and pinned to the USO RoData at +0x19E8.
+GAMELIBS_36F0C_DONOR := build/src/game_libs/game_libs_ncc_36F0C.cpp.o
+$(GAMELIBS_36F0C_DONOR): src/game_libs/game_libs_ncc_36F0C.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym update__7FreeCamFv=gl_func_00036F0C $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036F0C=$(GAMELIBS_36F0C_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36F0C_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036F0C=$(GAMELIBS_36F0C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36F0C_DONOR)
 # 3B2EC = real C++ `int Obj::height()` (agent-c run 177; cfe 91.56); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3B2EC_NM_DONOR := build/src/game_libs/game_libs_ncc_3B2EC_nm.cpp.o
 $(GAMELIBS_3B2EC_NM_DONOR): src/game_libs/game_libs_ncc_3B2EC_nm.cpp

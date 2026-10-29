@@ -2625,7 +2625,6 @@ out:
 //   untyped. Real-C STRUCTURAL body below — flag-fetch + per-bit
 //   conditional skeleton only (three representative arms).
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
 /* PASS-2 2026-06-10 (big-swing): FULL m2c graft (242 insns; 5% COP1,
  * 3 f64; no unset-markers; prior body replaced -- preserved in git). */
 /* PASS-3 2026-10-16 (agent-c, 38.57 -> 83.70): DECODE fixes. Every field read
@@ -2639,115 +2638,14 @@ out:
  * sp84 is memory-homed in the target (sw at entry, lw per statement); volatile
  * gives the reloads but over-reloads inside the dot-product block. Residual:
  * fs0 (callee-saved zero) vs ft5, sp84 caching, t/f register rotation. */
-extern void gl_func_00034458_36F0C(f32, f32 *, f32 *);  /* (angle, &out, &out): angle single in f12; NM-only blank alias (target jal 0) */
-extern f64 D_000019E8;  /* game_libs data f64 at 0x19E8 (target lui at,0 + ldc1 0x19E8(at)) */
 /* run 151 (agent-c, 87.89 -> 91.26): the 3x3 rotate reads the homed sp84 ONCE
  * (target `lw t2,132(sp)` then all nine lwc1 off t2); through the volatile it was
- * re-read per element (984 -> 956 bytes, target 968). */
+ * re-read per element (984 -> 956 bytes, target 968).
+ * EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_36F0C.cpp
+ * (real `void FreeCam::update()`; agent-g run 219, NM history there),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void gl_func_00036F0C(char *arg0) {
-    char *volatile sp84;
-    f32 v[3];
-    f32 w[3];
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f2;
-    f32 temp_f4;
-    f32 var_f0;
-    f32 var_f0_2;
-    f32 var_f12;
-    f32 var_f14;
-    f32 var_f16;
-    f32 var_f2;
-    f32 var_f2_2;
-    f64 temp_f18;
-    s32 temp_t1;
-    s32 temp_v0;
-    s32 var_v0;
-    char *temp_v1;
-    char *temp_v1_2;
-    char *temp_v1_3;
-    char *m;
-
-    sp84 = *(s32 *)((char *)(arg0) + 0x14);
-    var_f14 = 0.0f;
-    temp_v1 = *(s32 *)((char *)(*(s32 *)((char *)(arg0) + 0x4C)) + 0xB4);
-    v[2] = 0.0f;
-    v[1] = 0.0f;
-    v[0] = 0.0f;
-    temp_v0 = *(s32 *)((char *)(temp_v1) + 0x10);
-    var_f16 = 0.0f;
-    var_f12 = 0.0f;
-    if (temp_v0 & 0x40) {
-        var_f12 = (f32) ((f64) var_f12 + 100.0);
-    }
-    if (temp_v0 & 0x80) {
-        var_f12 = (f32) ((f64) var_f12 - 100.0);
-    }
-    if (temp_v0 & 0x400) {
-        var_f14 = *(f32 *)((char *)(temp_v1) + 0x0) * 100.0f;
-        var_f16 = *(f32 *)((char *)(temp_v1) + 0x4) * 100.0f;
-    }
-    temp_f18 = D_000019E8;
-    if ((temp_f18 < (f64) ((var_f14 < 0.0f) ? -var_f14 : var_f14)) || (temp_f18 < (f64) ((var_f16 < 0.0f) ? -var_f16 : var_f16)) || (temp_f18 < (f64) ((var_f12 < 0.0f) ? -var_f12 : var_f12))) {
-        var_v0 = *(s32 *)((char *)(arg0) + 0x3C);
-        temp_t1 = var_v0 + 1;
-        if (var_v0 < 0x64) {
-            *(s32 *)((char *)(arg0) + 0x3C) = temp_t1;
-            var_v0 = temp_t1;
-        }
-        temp_f0 = (f32) var_v0 / 10.0f;
-        var_f14 += var_f14 * temp_f0;
-        var_f16 += var_f16 * temp_f0;
-        var_f12 += var_f12 * temp_f0;
-    } else {
-        *(s32 *)((char *)(arg0) + 0x3C) = 0;
-    }
-    m = sp84;
-    temp_f2 = -var_f12;
-    v[0] = (*(f32 *)((char *)(m) + 0xB4) * var_f14) + (*(f32 *)((char *)(m) + 0xB8) * var_f16) + (*(f32 *)((char *)(m) + 0xBC) * temp_f2);
-    v[1] = (*(f32 *)((char *)(m) + 0xC4) * var_f14) + (*(f32 *)((char *)(m) + 0xC8) * var_f16) + (*(f32 *)((char *)(m) + 0xCC) * temp_f2);
-    v[2] = (*(f32 *)((char *)(m) + 0xD4) * var_f14) + (*(f32 *)((char *)(m) + 0xD8) * var_f16) + (*(f32 *)((char *)(m) + 0xDC) * temp_f2);
-    if (*(s32 *)((char *)(temp_v1) + 0x10) & 0x1000) {
-        *(f32 *)((char *)(arg0) + 0x34) = (f32) (*(f32 *)((char *)(arg0) + 0x34) + (*(f32 *)((char *)(temp_v1) + 0x0) * 4.0f));
-        *(f32 *)((char *)(arg0) + 0x30) = (f32) ((-*(f32 *)((char *)(temp_v1) + 0x4) * 4.0f) + *(f32 *)((char *)(arg0) + 0x30));
-    }
-    temp_f0_2 = *(f32 *)((char *)(arg0) + 0x30);
-    if (temp_f0_2 < -89.0f) {
-        var_f2_2 = -89.0f;
-    } else if (temp_f0_2 > 89.0f) {
-        var_f2_2 = 89.0f;
-    } else {
-        var_f2_2 = temp_f0_2;
-    }
-    *(f32 *)((char *)(arg0) + 0x30) = var_f2_2;
-    w[1] = 0.0f;
-    w[0] = 0.0f;
-    w[2] = *(f32 *)((char *)(arg0) + 0x2C);
-    gl_func_00034458_36F0C(*(f32 *)((char *)(arg0) + 0x30), &w[1], &w[2]);
-    gl_func_00034458_36F0C(*(f32 *)((char *)(arg0) + 0x34), &w[0], &w[2]);
-    temp_v1_2 = *(s32 *)((char *)(sp84) + 0xF4);
-    temp_v1_3 = temp_v1_2 + 0x30;
-    *(f32 *)((char *)(arg0) + 0x40) = (f32) *(f32 *)((char *)(temp_v1_2) + 0x60);
-    *(f32 *)((char *)(arg0) + 0x44) = (f32) *(f32 *)((char *)(temp_v1_3) + 0x34);
-    *(f32 *)((char *)(arg0) + 0x48) = (f32) *(f32 *)((char *)(temp_v1_3) + 0x38);
-    *(f32 *)((char *)(arg0) + 0x40) = (f32) (v[0] + *(f32 *)((char *)(arg0) + 0x40));
-    *(f32 *)((char *)(arg0) + 0x44) = (f32) (v[1] + *(f32 *)((char *)(arg0) + 0x44));
-    *(f32 *)((char *)(arg0) + 0x48) = (f32) (v[2] + *(f32 *)((char *)(arg0) + 0x48));
-    temp_f4 = *(f32 *)((char *)(arg0) + 0x40) + w[0];
-    w[0] = temp_f4;
-    /* run 150 compound-assign sweep: the expanded `w = w + x` form (not `+=`) scores higher */
-    w[1] = w[1] + *(f32 *)((char *)(arg0) + 0x44);
-    w[2] = w[2] + *(f32 *)((char *)(arg0) + 0x48);
-    *(f32 *)((char *)(sp84) + 0x60) = temp_f4;
-    *(f32 *)((char *)(sp84) + 0x64) = w[1];
-    *(f32 *)((char *)(sp84) + 0x68) = w[2];
-    *(f32 *)((char *)(*(s32 *)((char *)(sp84) + 0xF4)) + 0x60) = (f32) *(f32 *)((char *)(arg0) + 0x40);
-    *(f32 *)((char *)(*(s32 *)((char *)(sp84) + 0xF4)) + 0x64) = (f32) *(f32 *)((char *)(arg0) + 0x44);
-    *(f32 *)((char *)(*(s32 *)((char *)(sp84) + 0xF4)) + 0x68) = (f32) *(f32 *)((char *)(arg0) + 0x48);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036F0C);
-#endif
 
 /* gl_func_000372D4 - verified structural decode (29-insn br=0 deterministic;
  * t6-spill + p+48 sub-struct base-reuse = struct-base divergence class ->

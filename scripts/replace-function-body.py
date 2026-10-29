@@ -380,6 +380,11 @@ class Elf:
             d_sym_idx = r_info >> 8
             d_sym = list(donor.iter_symtab(d_symtab_idx))[d_sym_idx][1]
             sym_name = donor.strtab_string(d_strtab_idx, d_sym[0])
+            if sym_name == "" and (d_sym[3] & 0xF) == 3:
+                # STT_SECTION symbol with no string-table name (objcopy
+                # --redefine-sym rewrites section symbols with st_name 0):
+                # take the name from the section header it points at.
+                sym_name = donor.section_name(d_sym[5])
             if sym_name.startswith("."):
                 # Donor-LOCAL section symbol (e.g. an IDO switch jumptable in the
                 # donor's .rodata). Importing it verbatim as a global ".rodata"
