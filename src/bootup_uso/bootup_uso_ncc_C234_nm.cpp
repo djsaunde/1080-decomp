@@ -244,10 +244,13 @@ cend:
         if (temp_f12 < (f32) 0) {
             var_v0_2 = arg0 + 0x93C; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
             { /* run 156: held products, stored afterwards (kit LXXXVI) */
-                f32 hx = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
-                f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
-                f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f12;
-                sp68.x = hx; sp68.y = hy; sp68.z = hz;
+                /* agent-g run 232: the target's mov.s copy (z scaled by a copy in f0, y's product back into f12):
+                 * the copy is taken before temp_f12 is overwritten by the y product, so uopt cannot propagate it */
+                temp_f0 = temp_f12;
+                f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f12;
+                temp_f12 = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
+                f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
+                sp68.x = hx; sp68.y = temp_f12; sp68.z = hz;
             }
             spB4 = sp68;
             sp54 = spB4;
