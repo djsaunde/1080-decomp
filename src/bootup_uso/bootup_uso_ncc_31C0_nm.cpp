@@ -35,7 +35,7 @@ struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
 struct B { char p[0x28]; B(void *); virtual void g(); };
 struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { { volatile int q0, q1, q2, q3; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
-struct Obj2 : Obj { int x; Obj2() {} };
+struct Obj2 : Obj { int x; Obj2() { Obj2 *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the Obj2 this temp (kit CCLV) */
 struct B2 { char p[0x28]; B2(Obj *, float, float, float); virtual void g(); };
 struct KB : B2 { char q[0x14C - 0x2C]; float f14c; float f150; char *f154; int f158;
     KB(Obj *o, char *a) : B2(o, 0.0f, 500.0f, -1500.0f) { f158 = 0; f154 = a; f150 = f14c; } virtual void g(); };
@@ -54,7 +54,9 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
     Obj *obj;
     /* agent-c run 237: the folded a3v read keeps obj off edg's new-temp (no copy propagation),
      * so the case-0 link / 0xB4 store read obj's own home (sp+0x78) as in the target: 99.955 -> 99.965 */
-    obj = (Obj *)((int)(Obj *)new Obj2 + 0 * FW(a3v, 0));
+    /* agent-c run 238: no (Obj *) conversion on the new result (its edg temp sat above the new-temp; the new-temp
+     * is now the first temporary, sp+0x74 as in the target): 99.965 -> 99.975 */
+    obj = (Obj *)((int)new Obj2 + 0 * FW(a3v, 0));
     switch (mode) {
     case 0:
     case 2:
