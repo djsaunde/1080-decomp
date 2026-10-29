@@ -1,7 +1,7 @@
 /* timproc_uso_b5_func_00008FC8 (0x1960 / 1624 words) -- the timing-screen master
  * constructor Screen::Screen(int *, int *), written as cfront-style C for IDO 7.1 cfe -O2
- * (agent-c run 222).  NON_MATCHING comparison donor: spliced over the unit's C body in the
- * NM object only (Makefile TIMB5_8FC8_NM_DONOR); the target's 5-entry tail switch is a cfe
+ * (agent-c runs 222-225).  EXACT donor: spliced over the unit's empty placeholder in both build
+ * trees (Makefile TIMB5_8FC8_DONOR); the target's 5-entry tail switch is a cfe
  * jumptable (renamed timproc_uso_b5_func_00008FC8_rodata by the splice, pinned to the
  * USO RoData +0x324 table), which the NCC donor (timproc_uso_b5_ncc_8FC8_nm.cpp, 93.39)
  * cannot produce.
@@ -31,7 +31,8 @@
  * above sb3: sb3 home 0x68) in s0 -- nine empty blocks in the loop body drop their priority below t, and one
  * empty block in W16C drops _wp's below t so it still finds s0 already paid; the kid passed as the call
  * argument through _at (a1), the site-2/3 zero fills through _at (a1), site 3's +0x284 store through w.
- * Open: site 3 &t1 copy pointer (split LR piece) v0, target a2. */
+ * 99.96 -> EXACT: no empty block inside site 3's +0x284 store, so the site-3 &t1 copy pointer's split
+ * piece shares its block with the following FP(self, 0x58) temp (v0) and lands in a2 like sites 1/2. */
 #include "common.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
@@ -335,7 +336,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             { n = FP(self, 0x58) + 0x22C; *(VecH *)&t1 = v3a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v3b.f0 = *(f32 *)&DS_2DC; v3b.f4 = DF_2E0; v3b.f8 = DF_2E4;
             { n = FP(self, 0x58) + 0x24C; *(VecH *)&t1 = v3b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { w = FP(self, 0x58) + 0x284; if (1) {} FF(w, 0x10) = DF_2E8; }
+            { w = FP(self, 0x58) + 0x284; FF(w, 0x10) = DF_2E8; }
             { w = FP(FP(self, 0x58), 0x2B8); FP(FP(self, 0x58), 0x29C) = w; }
             FF(FP(FP(self, 0x58), 0x2B8), 0x12C) = DF_2EC;
             FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;

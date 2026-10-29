@@ -2760,7 +2760,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o1_6EF64.c src/timproc_uso_b1/ti
 C_FILES := $(filter-out src/game_libs/game_libs_o2_23914.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_E270.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_6808.c,$(C_FILES))
-C_FILES := $(filter-out src/timproc_uso_b5/timproc_uso_b5_8FC8_nm.c,$(C_FILES))
+C_FILES := $(filter-out src/timproc_uso_b5/timproc_uso_b5_8FC8.c,$(C_FILES))
 
 # The controller-read donor contributes only through its host splice.
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
@@ -3367,11 +3367,12 @@ $(TIMB5_8FC8_NCC_REF): src/timproc_uso_b5/timproc_uso_b5_ncc_8FC8_nm.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym __ct__6ScreenFPiT1=timproc_uso_b5_func_00008FC8 $@
-# agent-c run 222: the NM comparison object is now the cfront-style cfe C donor timproc_uso_b5_8FC8_nm.c
-# (94.36 standalone, jumptable included; its .rodata reloc is renamed timproc_uso_b5_func_00008FC8_rodata).
-TIMB5_8FC8_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_8FC8_nm.c.o
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008FC8=$(TIMB5_8FC8_NM_DONOR)
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8FC8_NM_DONOR)
+# 8FC8 EXACT (agent-c run 225, 1624/1624 words): the cfront-style cfe C donor timproc_uso_b5_8FC8.c
+# (agent-c runs 222-225), spliced over the unit's empty placeholder in both trees; its 5-entry jumptable
+# .rodata reloc is renamed timproc_uso_b5_func_00008FC8_rodata and pinned to USO RoData +0x324.
+TIMB5_8FC8_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_8FC8.c.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008FC8=$(TIMB5_8FC8_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8FC8_DONOR)
 # C310 = HUD ring update + colour panel draw as C++ (Col::set(int, int, int, int), Spr::width(); agent-g run 184,
 # cfe 94.88): NM comparison object only.
 TIMB5_C310_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_C310_nm.cpp.o

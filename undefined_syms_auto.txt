@@ -3540,10 +3540,75 @@ timproc_uso_b5_func_00002B74_rodata = 0x0000011C;
 timproc_uso_b5_func_00004118_rodata = 0x0000014C;
 /* timproc_uso_b5_func_0000D884: 14-entry jumptable at block-5 RoData +0x3C0 (target %lo(D_807FF3E0)+0x3C0); donor timproc_uso_b5_D884.c */
 timproc_uso_b5_func_0000D884_rodata = 0x000003C0;
-/* timproc_uso_b5_func_00008FC8: 5-entry jumptable at block-5 RoData +0x324 (target %lo(D_807FF344)+0x324); NM donor timproc_uso_b5_8FC8_nm.c */
+/* timproc_uso_b5_func_00008FC8: 5-entry jumptable at block-5 RoData +0x324 (target %lo(D_807FF344)+0x324); donor timproc_uso_b5_8FC8.c */
 timproc_uso_b5_func_00008FC8_rodata = 0x00000324;
-/* timproc_uso_b5_func_00008FC8: import_8005EE6C alias for the site-3 flag-restore store (NM donor) */
+/* timproc_uso_b5_func_00008FC8: import_8005EE6C alias for the site-3 flag-restore store */
 f8fc8_ee6c_r3 = 0x00000000;
+/* timproc_uso_b5_func_00008FC8 (agent-c run 225): reloc-free RoData float pool reads (lui at,0 + lwc1 off(at)) */
+DF_244 = 0x00000244;
+DF_248 = 0x00000248;
+DF_24C = 0x0000024C;
+DF_250 = 0x00000250;
+DF_254 = 0x00000254;
+DF_258 = 0x00000258;
+DF_25C = 0x0000025C;
+DS_260 = 0x00000260;
+DF_264 = 0x00000264;
+DF_268 = 0x00000268;
+DF_26C = 0x0000026C;
+DF_278 = 0x00000278;
+DF_27C = 0x0000027C;
+DF_280 = 0x00000280;
+DF_284 = 0x00000284;
+DF_288 = 0x00000288;
+DF_28C = 0x0000028C;
+DF_290 = 0x00000290;
+DS_294 = 0x00000294;
+DS_298 = 0x00000298;
+DF_29C = 0x0000029C;
+DF_2A0 = 0x000002A0;
+DF_2A4 = 0x000002A4;
+DF_2A8 = 0x000002A8;
+DF_2AC = 0x000002AC;
+DF_2B0 = 0x000002B0;
+DF_2B4 = 0x000002B4;
+DF_2BC = 0x000002BC;
+DF_2C0 = 0x000002C0;
+DF_2C4 = 0x000002C4;
+DF_2C8 = 0x000002C8;
+DF_2CC = 0x000002CC;
+DF_2D0 = 0x000002D0;
+DF_2D4 = 0x000002D4;
+DS_2D8 = 0x000002D8;
+DS_2DC = 0x000002DC;
+DF_2E0 = 0x000002E0;
+DF_2E4 = 0x000002E4;
+DF_2E8 = 0x000002E8;
+DF_2EC = 0x000002EC;
+DF_2F0 = 0x000002F0;
+DF_2F4 = 0x000002F4;
+DF_2F8 = 0x000002F8;
+DF_2FC = 0x000002FC;
+DF_300 = 0x00000300;
+DF_304 = 0x00000304;
+DF_308 = 0x00000308;
+DF_30C = 0x0000030C;
+DF_310 = 0x00000310;
+DF_314 = 0x00000314;
+DF_318 = 0x00000318;
+/* timproc_uso_b5_func_00008FC8: per-site aliases of D_807FE304 (S70 vtables), D_807E3D04, import_8005EE6C (flag reads), import_80020098 (S70 cfg) */
+f8fc8_e304_1 = 0x00000000;
+f8fc8_e304_2 = 0x00000000;
+f8fc8_e304_3 = 0x00000000;
+f8fc8_e304_4 = 0x00000000;
+f8fc8_e3d04_2 = 0x00000000;
+f8fc8_ee6c_sb1 = 0x00000000;
+f8fc8_ee6c_sb2 = 0x00000000;
+f8fc8_ee6c_sb3 = 0x00000000;
+import_80020098_a = 0x00000000;
+import_80020098_b = 0x00000000;
+import_80020098_c = 0x00000000;
+import_80020098_d = 0x00000000;
 /* timproc_uso_b5_func_0000D884: import_8005EE6C per-pair aliases, the gc vtable alias of D_807FDB64, the reloc-free case 0-7 third argument */
 d884_ee6c_l1 = 0x00000000;
 d884_ee6c_l2 = 0x00000000;
