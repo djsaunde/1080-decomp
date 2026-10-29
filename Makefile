@@ -776,7 +776,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 216: 454C4 NM donor without the named Light pointer / dir `& 0xFF`, one more bb (2020 -> 2028 bytes = target): 0x2eadc -> 0x2eae4 (62F08 NM offset 0x2ea94).
 # agent-g run 218: 36F0C NM donor pitch clamp as an if / return inline (972 -> 968 bytes = target): 0x2eae4 -> 0x2eae0 (62F08 NM offset 0x2ea90).
 # agent-g run 220: 46050 NM donor as C++ appends + stock gSPTextureRectangle (1840 -> 1848 bytes = target): 0x2eae0 -> 0x2eae8 (62F08 NM offset 0x2ea98).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eae8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c gl_func_00037938=0x158
+# agent-c run 234: 5A2C4 NM block-local DL cursors + u8 colour read-back (1788 -> 1804 bytes = target): 0x2eae8 -> 0x2eaf8 (62F08 NM offset 0x2eaa8).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eaf8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c gl_func_00037938=0x158
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
