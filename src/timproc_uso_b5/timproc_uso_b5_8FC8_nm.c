@@ -156,12 +156,12 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define ADD(T, N) { _at = (T); w = (N); timproc_uso_b5_func_07ACE0(_at + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = _at; }
 #define CFGS(S) FP(&S, 0x134)
 /* S70 row: cfront ctor(this) with nested base-ctor allocation check */
-#define NEWS70(P, D, VT, VT2, NM, S) { n = FP(self, 0x38); w = ALLOC(0x70); \
-    if (w) { t = w; if (t || (t = ALLOC(0x70))) { \
-        timproc_uso_b5_func_04C678(t, D); FP(t, 0x28) = (VT); } \
-      FP(w, 0x28) = (VT2); FP(w, 0xC) = NM; FW(w, 0x2C) = FW(CFGS(S), 0x84); FW(w, 0x30) = FW(CFGS(S), 0x80); \
-       FW(w, 0x34) = FW(CFGS(S), 0x8C); FP(w, 0x38) = n; FW(w, 0x6C) = 0;  } \
-    P = w; }
+#define NEWS70(P, D, VT, VT2, NM, S) { n = FP(self, 0x38); t = ALLOC(0x70); \
+    if (t) { w = t; if (w || (w = ALLOC(0x70))) { \
+        timproc_uso_b5_func_04C678(w, D); FP(w, 0x28) = (VT); } \
+      FP(t, 0x28) = (VT2); FP(t, 0xC) = NM; FW(t, 0x2C) = FW(CFGS(S), 0x84); FW(t, 0x30) = FW(CFGS(S), 0x80); \
+       FW(t, 0x34) = FW(CFGS(S), 0x8C); FP(t, 0x38) = n; FW(t, 0x6C) = 0;  } \
+    P = t; }
 #define NEWPANEL(P, D, NM, VT) { w = ALLOC(0x2BC); \
     if (w) { _wp = w; if (_wp || (_wp = ALLOC(0x2B8))) { \
         timproc_uso_b5_func_04C678(_wp, D); FP(_wp, 0x28) = &timproc_uso_b5_D_807FDB64; \
@@ -169,7 +169,7 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
       FP(w, 0x28) = (VT); FP(w, 0xC) = NM; timproc_uso_b5_func_00003890(w); } \
     P = w; }
 #define W16C(P, D, F0) { _wp = ALLOC(0x16C); \
-    if (_wp) { timproc_uso_b5_func_0546DC(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FW(_wp, 0x120) = 1; FP(_wp, 0x28) = import_80087FB8; \
+    if (_wp) { timproc_uso_b5_func_0546DC(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FP(_wp, 0x28) = import_80087FB8; FW(_wp, 0x120) = 1; \
       FF(_wp, 0x108) = fv; FF(_wp, 0x10C) = fv; FF(_wp, 0x110) = fv; FF(_wp, 0x124) = 1.0f; } \
     P = _wp; }
 #define SETI(P, V) { P = (V) + 0xB4; if (1) {} FF(P, 0) = 0; if (1) {} FF(P, 4) = 0; if (1) {} FF(P, 8) = 0; }
@@ -241,24 +241,24 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             { n = FP(self, 0x5C) + 0x22C; *(VecH *)&t1 = v1a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v1b.f0 = *(f32 *)&DS_260; v1b.f4 = 0.0f; v1b.f8 = 0.0f;
             { n = FP(self, 0x5C) + 0x24C; *(VecH *)&t1 = v1b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { t = FP(self, 0x5C) + 0x284; if (1) {} FF(t, 0x10) = DF_264; }
-            FP(FP(self, 0x5C), 0x29C) = FP(FP(self, 0x5C), 0x2B8);
+            { w = FP(self, 0x5C) + 0x284; if (1) {} FF(w, 0x10) = DF_264; }
+            { w = FP(FP(self, 0x5C), 0x2B8); FP(FP(self, 0x5C), 0x29C) = w; }
             FF(FP(FP(self, 0x5C), 0x2B8), 0x12C) = DF_268;
             FF(FP(FP(self, 0x5C), 0x2B8), 0x128) = DF_26C;
             ADDV(t, FP(self, 0x38), FP(FP(self, 0x5C), 0x2B8));
         }
         NEWS70(a, timproc_uso_b5_D_807FEC90 + 0x1420, f8fc8_e304_1 + 0xA94, timproc_uso_b5_D_807FEC98 + 0xB04, timproc_uso_b5_D_807FEC98 + 0x1428, import_80020098_a)
         timproc_uso_b5_func_0000A95C(self, a);
-        ADDW(_at, w, self, a);
+        ADDW(_at, t, self, a);
         NEWS70(b, timproc_uso_b5_D_807FECA8 + 0x1438, f8fc8_e304_2 + 0xA94, timproc_uso_b5_D_807FECB0 + 0xB74, timproc_uso_b5_D_807FECB0 + 0x1440, import_80020098_b)
         timproc_uso_b5_func_0000A95C(self, b);
-        ADD(self, b);
+        ADDW(_at, t, self, b);
         NEWS70(c, timproc_uso_b5_D_807FECBC + 0x144C, f8fc8_e304_3 + 0xA94, timproc_uso_b5_D_807FECC4 + 0xBE4, timproc_uso_b5_D_807FECC4 + 0x1454, import_80020098_c)
         timproc_uso_b5_func_0000A95C(self, c);
-        ADD(self, c);
+        ADDW(_at, t, self, c);
         NEWS70(d, timproc_uso_b5_D_807FECD0 + 0x1460, f8fc8_e304_4 + 0xA94, timproc_uso_b5_D_807FECD8 + 0xC54, timproc_uso_b5_D_807FECD8 + 0x1468, import_80020098_d)
         timproc_uso_b5_func_0000A95C(self, d);
-        ADD(self, d);
+        ADDW(_at, t, self, d);
         {
             NEWPANEL(FP(self, 0x54), timproc_uso_b5_D_807FECE4 + 0x1474, timproc_uso_b5_D_807FECEC + 0x147C, timproc_uso_b5_D_807FECEC + 0x8B4)
             ADD(self, FP(self, 0x54));
@@ -283,8 +283,8 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             { n = FP(self, 0x54) + 0x22C; *(VecH *)&t1 = v2a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v2b.f0 = *(f32 *)&DS_298; v2b.f4 = DF_29C; v2b.f8 = DF_2A0;
             { n = FP(self, 0x54) + 0x24C; *(VecH *)&t1 = v2b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { t = FP(self, 0x54) + 0x284; if (1) {} FF(t, 0x10) = DF_2A4; }
-            FP(FP(self, 0x54), 0x29C) = FP(FP(self, 0x54), 0x2B8);
+            { w = FP(self, 0x54) + 0x284; if (1) {} FF(w, 0x10) = DF_2A4; }
+            { w = FP(FP(self, 0x54), 0x2B8); FP(FP(self, 0x54), 0x29C) = w; }
             FF(FP(FP(self, 0x54), 0x2B8), 0x12C) = DF_2A8;
             FF(FP(FP(self, 0x54), 0x2B8), 0x128) = DF_2AC;
             ADDV(t, FP(self, 0x38), FP(FP(self, 0x54), 0x2B8));
@@ -317,7 +317,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             v3b.f0 = *(f32 *)&DS_2DC; v3b.f4 = DF_2E0; v3b.f8 = DF_2E4;
             { n = FP(self, 0x58) + 0x24C; *(VecH *)&t1 = v3b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             { u = FP(self, 0x58) + 0x284; if (1) {} FF(u, 0x10) = DF_2E8; }
-            FP(FP(self, 0x58), 0x29C) = FP(FP(self, 0x58), 0x2B8);
+            { w = FP(FP(self, 0x58), 0x2B8); FP(FP(self, 0x58), 0x29C) = w; }
             FF(FP(FP(self, 0x58), 0x2B8), 0x12C) = DF_2EC;
             FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;
             ADDV(t, FP(self, 0x38), FP(FP(self, 0x58), 0x2B8));
