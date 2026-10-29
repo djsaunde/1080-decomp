@@ -2000,6 +2000,10 @@ $(GAMELIBS_37938_NM_DONOR): src/game_libs/game_libs_ncc_37938_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037938=$(GAMELIBS_37938_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_NM_DONOR)
+# agent-g run 212: 37938's jr-ra delay nop (0x37A8C) moved into its .s (0x154 -> 0x158); the one genuine
+# alignment word before game_libs_func_00037A94 is an all-zero suffix (replaces the 8-byte _pad.s block).
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_00037938=0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += gl_func_00037938=0x00000000
 # 59E80 = fixed render-state DL as stock-gbi-style packets on an inline next() under NCC (agent-c run 164: cfe 93.99 -> 97.75; NM body 0x450 -> 0x444 bytes = target). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_59E80_NM_DONOR := build/src/game_libs/game_libs_ncc_59E80_nm.cpp.o
 $(GAMELIBS_59E80_NM_DONOR): src/game_libs/game_libs_ncc_59E80_nm.cpp

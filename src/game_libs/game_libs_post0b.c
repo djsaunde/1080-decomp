@@ -3122,9 +3122,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00037938);
 
 /* 0x37A90 is a single alignment nop (NOT an unfilled-delay stub — the prior
  * -g3 note was wrong). The empty function is at 0x37A94; splat mis-placed the
- * symbol on the leading pad nop. Declared the nop as a local pad; the real
- * `void f(void){}` (jr ra; nop) is below. */
-#pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00037938_pad.s")
+ * symbol on the leading pad nop. The real `void f(void){}` (jr ra; nop) is
+ * below. agent-g run 212: 0x37A8C (gl_func_00037938's jr-ra delay nop) is now in
+ * its .s, and the 0x37A90 pad is an all-zero SUFFIX_BYTES_FORCE on 37938 (a
+ * one-word GLOBAL_ASM pad block emits 8 bytes). */
 
 void game_libs_func_00037A94(void) {
 }
