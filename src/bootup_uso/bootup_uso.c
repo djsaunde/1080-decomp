@@ -3988,6 +3988,7 @@ extern int import_8001FFF0;
 extern char *D_bu_7770;
 extern char *D_bu_776C[];
 extern int D_bu_1EBDC[];
+extern void func_00000000_6808_v();
 typedef struct { int count : 16; unsigned op : 16; } Rec6808;
 typedef struct { f32 x, y, z; } V3_6808;
 #define ATTACH6808(list, x) { \
@@ -4167,8 +4168,8 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000();
     func_00000000(&D_6808_15, 0);
     func_00000000(((char *)p));
-    func_00000000();
-    g0 = import_8005EE64_3; g0 &= ~0x100; import_8005EE64_2 = g0;
+    func_00000000_6808_v(); /* agent-g run 222: void alias (the dead int return blocks v0 in the next block) */
+    g00 = import_8005EE64_3; g00 &= ~0x100; import_8005EE64_2 = g00; /* run 222: on g00 with site 1 (target v0), x40 alone on g0 (v1) */
     *(int *)((char *)p + 0x30) |= 0x40;
     import_8005C108_4[0x3C / 4] = import_8005C108_5[0x3C / 4] & ~8;
     func_00000000();
