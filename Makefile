@@ -225,8 +225,10 @@ $(BOOTUP_31C0_NM_DONOR): src/bootup_uso/bootup_uso_ncc_31C0_nm.cpp
 	$(OBJCOPY) --redefine-sym __ct__1BFPv=fn_31c0_init --redefine-sym __ct__2B2FP3ObjfN22=fn_31c0_B2 --redefine-sym __ct__2WAFPcP3ObjfN23iT1=fn_31c0_A1 --redefine-sym __ct__2WRFPciT1=fn_31c0_A2 --redefine-sym __ct__2W4FPcN21=fn_31c0_A4 --redefine-sym __ct__2WVFPcN21=fn_31c0_B3 --redefine-sym __vtbl__2KB=D_00007120 --redefine-sym __vtbl__3Obj=D_00000000 $@
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000031C0=$(BOOTUP_31C0_NM_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_31C0_NM_DONOR)
-# 90CC = alloc-cascade constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 97.15). NM comparison object only.
-BOOTUP_90CC_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_90CC_nm.cpp.o
+# 90CC = alloc-cascade constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 97.15), then back
+# to cfront-style C for cfe (agent-c run 226, bootup_uso_90CC_nm.c: the target's draw-call addu order and
+# single site-2 base load are cfe-only; the NCC donor .cpp is kept as a reference). NM comparison object only.
+BOOTUP_90CC_NM_DONOR := build/src/bootup_uso/bootup_uso_90CC_nm.c.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000090CC=$(BOOTUP_90CC_NM_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_90CC_NM_DONOR)
 # 55A0 = scene/HUD constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 94.35). NM comparison object only.
@@ -2761,6 +2763,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o2_23914.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_E270.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_6808.c,$(C_FILES))
 C_FILES := $(filter-out src/timproc_uso_b5/timproc_uso_b5_8FC8.c,$(C_FILES))
+C_FILES := $(filter-out src/bootup_uso/bootup_uso_90CC_nm.c,$(C_FILES))
 
 # The controller-read donor contributes only through its host splice.
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
