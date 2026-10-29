@@ -60,40 +60,45 @@ extern f64 D_00000930;
 extern s32 D_000081C0[];
 }
 extern "C" void func_0000C234(char *arg0) {
-    V3C234 sp40;
+    /* agent-g run 232: frame fit (NCC homes every used local in declaration order, top down): 20 used scalars in the
+     * target's gaps (1 / spCC / 3 / spB4 / 9 / sp8C / 1 / sp7C / 2 / sp68 / 2 / sp54 / 2 / sp40) give frame 0xf8 and
+     * every struct offset of the target; the block products are function-scope ga..ge, temp_a1 / temp_v0 de-named */
+    s16 temp_v0_2;
     C234Rec spCC;
     f32 temp_f0;
     f32 temp_f12;
     f32 temp_f12_2;
-    V3C234 spB4; /* agent-g run 195 (declmove sweep): below temp_f12_2 */
+    V3C234 spB4;
     f32 temp_f16;
     f32 temp_f2;
     f32 temp_f2_3;
     f32 var_f2;
     f32 var_f2_2;
-    S4C234 sp8C;
-    s16 temp_v0_2;
-    V3C234 sp7C;
-    s32 temp_a1_2;
-    V3C234 sp68;
-    s32 temp_v0;
     s32 temp_v0_4;
-    V3C234 sp54;
-    s32 temp_v1_2;
     s32 var_t0;
     char *sp3C;
     s32 var_v0;
-    char *temp_a1;
+    S4C234 sp8C;
     char *temp_v0_3;
+    V3C234 sp7C;
     char *var_v0_2;
+    f32 ga;
+    V3C234 sp68;
+    f32 gb;
+    f32 gc;
+    V3C234 sp54;
+    f32 gd;
+    f32 ge;
+    V3C234 sp40;
+    s32 temp_a1_2;
+    s32 temp_v1_2;
 
 
-    temp_v0 = *(s32 *)((char *)(arg0) + 0xA80);
+#define temp_v0 (*(s32 *)((char *)(arg0) + 0xA80))
     if (temp_v0 != 0) {
         *(s32 *)((char *)(arg0) + 0xA80) = (s32) (temp_v0 - 1);
     }
     spB4 = *(V3C234 *)((char *)(arg0) + 0xB4);
-    temp_a1 = arg0 + 0xDC;
     *(f32 *)((char *)(arg0) + 0x890) = spB4.x;
     *(f32 *)((char *)(arg0) + 0x894) = spB4.y;
     *(f32 *)((char *)(arg0) + 0x898) = spB4.z;
@@ -107,8 +112,8 @@ extern "C" void func_0000C234(char *arg0) {
     spCC.e8 = 1.0f;
     *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4]; /* agent-g run 231: above the 0x9A2 store (as1 line order: the pool load issues before the spCC stores) */
     *(s16 *)((char *)(arg0) + 0x9A2) = 0; if (arg0) {}
-    sp3C = temp_a1;
-    if (func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_a1, 0x457A0000, &spCC) != 0) {
+    sp3C = arg0 + 0xDC;
+    if (func_00000000(*(s32 *)((char *)&D_00000000 + 0), sp3C, 0x457A0000, &spCC) != 0) {
         *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             *(s16 *)((char *)(arg0) + 0x9A2) = *(s16 *)((char *)(arg0) + 0x9A0);
@@ -248,10 +253,10 @@ cend:
                 /* agent-g run 232: the target's mov.s copy (z scaled by a copy in f0, y's product back into f12):
                  * the copy is taken before temp_f12 is overwritten by the y product, so uopt cannot propagate it */
                 temp_f0 = temp_f12;
-                f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f12;
+                ga = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f12;
                 temp_f12 = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
-                f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
-                sp68.x = hx; sp68.y = temp_f12; sp68.z = hz;
+                gb = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0;
+                sp68.x = ga; sp68.y = temp_f12; sp68.z = gb;
             }
             spB4 = sp68;
             sp54 = spB4;
@@ -273,10 +278,10 @@ cend:
         }
         temp_f0 = -var_f2_2; if (1) {} /* run 182 (lever-sweep bbsplit) */
         { /* run 156: held products */
-            f32 hx = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
-            f32 hy = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
-            f32 hz = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0; /* run 200: no longer volatile (run 182's +2-word lever is surplus after the 0x944 order fix) */
-            sp40.x = hx; sp40.y = hy; sp40.z = hz;
+            gc = *(f32 *)((char *)(var_v0_2) + 0x0) * temp_f0;
+            gd = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f0;
+            ge = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0; /* run 200: no longer volatile (run 182's +2-word lever is surplus after the 0x944 order fix) */
+            sp40.x = gc; sp40.y = gd; sp40.z = ge;
         }
         spB4 = sp40;
         sp54 = spB4;
