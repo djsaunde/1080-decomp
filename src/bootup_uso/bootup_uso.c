@@ -1387,7 +1387,7 @@ void func_000024B8(char *arg0) {
             FF(FW(FW(arg0, 0x2C), 0x70), 0x14C) = 85.0f;
         }
         s0 = (char *)FW(arg0, 0x38); if (arg0) {}
-        if (FW(s0, 0x10) & 8) {
+        if ((FW(s0, 0x10) & 8) + 0 * (int)(*arg0)) { /* agent-c run 210: folded counted use (zero code) */
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
             if (FF(v1, 0x14C) < 120.0f) {
                 s0 = v1 + 0x14C + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use of the arg0 web (zero code) */
@@ -1403,7 +1403,7 @@ void func_000024B8(char *arg0) {
             }
         }
         v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
-        s0 = v1 + 0x134; if (1) {}
+        s0 = v1 + 0x134 + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use (zero code) */
         *(f32 *)s0 = FF(FW(arg0, 0x38), 4) * two + *(f32 *)s0;
         s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
         s0 += 0x138;
