@@ -25,6 +25,7 @@ extern char *timproc_uso_b5_func_00002B74(); extern char *timproc_uso_b5_func_00
 typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 extern char timproc_uso_b5_D_807FDB64;
 extern char import_8005EE6C;
+extern char f8fc8_ee6c_r3; /* site-3 flag-restore store: separate symbol keeps the address un-CSE'd */
 extern char import_80807FB8;
 extern struct DBlk_8D38 import_800201EC;
 extern int timproc_uso_b5_func_055750();
@@ -309,7 +310,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 FW(w, 0x140) = 0;
                 ATTACH(t, w)
                 FW(w, 0x144) = 0;
-                RESTORE(sb3)
+                if (sb3) { do { _x = FW(&import_8005EE6C, 4); _x |= 0x80000; FW(&f8fc8_ee6c_r3, 4) = _x; } while (0); } else { do { _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = _x; } while (0); }
                 WTAIL(w, DF_2BC, DF_2C0, DF_2C4, DF_2C8, DF_2CC, DF_2D0, DF_2D4)
             }
             FP(FP(self, 0x58), 0x2B8) = w;
