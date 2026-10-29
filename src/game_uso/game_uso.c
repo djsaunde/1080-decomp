@@ -4383,7 +4383,10 @@ yaw_region:
         goto tail_common;
     }
     v0 = *(int*)((char*)self + 0x4C4);
-    if (v0 == 0x10000) {
+    /* agent-c run 237: `v0 * 1` makes the left operand a non-isvar at uopt input,
+     * so the ==/!= swap gives the target's const-first `bne v1, v0` (an inline
+     * field read instead adds a v1 load LR that pushes the 0x10000 to a1) */
+    if (v0 * 1 == 0x10000) {
         v0 = *(int*)((char*)self + 0x2C);
         fsel = v0 == 3 ? *(float*)((char*)self + 0x2DC)
              : v0 == 2 ? *(float*)((char*)self + 0x2C4)
