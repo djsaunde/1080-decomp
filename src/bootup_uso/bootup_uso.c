@@ -6956,19 +6956,24 @@ void func_0000B520(char *arg0) {
  *   (93.94 -> 93.95: the -0.2f clamp bound). */
 extern void bu_b75c_mvf(char *, char *, f32, char *);  /* (dst, src, single float in a2, self in a3); NM-only blank alias */
 extern char D_00008170[];
+/* agent-g run 223 (kit CCXXII frame count): the target frame (120) holds 19 home words with sp6C at the top
+ * (frame-12) and sp60 / sp5C / sp58 / sp54 at frame-24..-36; the target's sp+0x1C / 0x24 / 0x28 words are
+ * uopt spill slots under the homes (sp28 / sp24 were dead m2c names). Dropping the dead sp28 / sp24 stores,
+ * declaring sp6C first and the two clamp constants as literals gives frame 120 with sp6C / sp60 / sp5C /
+ * sp58 / sp54 at the target offsets (93.95 -> 94.00). Left: sp1C is still a named home (target spills
+ * that value to sp+0x1C); de-naming it re-colours the FP block (92.47). */
+#define temp_f12_2 (-0.2f)
+#define temp_f12_3 (0.2f)
 void func_0000B75C(char *arg0) {
+    f32 sp6C[3];
+    f32 sp1C;
+    s32 var_v0;
+    f32 sp60;
     f32 sp5C;
     f32 sp58;
     f32 sp54;
-    char *sp28;
-    f32 sp6C[3];
-    char *sp24;
-    f32 sp1C;
-    f32 sp60; /* run 201: sp6C / sp60 declaration grid (lever-sweep declmove hit) */
     f32 temp_f0_2;
     f32 temp_f12;
-    f32 temp_f12_2;
-    f32 temp_f12_3;
     f32 temp_f2;
     f32 temp_f2_2;
     f32 temp_f2_9;
@@ -6977,7 +6982,6 @@ void func_0000B75C(char *arg0) {
     f32 var_f2;
     f64 temp_f0;
     s16 temp_v0_2;
-    s32 var_v0;
     char *var_a0;
     char *temp_a1;
 
@@ -7050,11 +7054,9 @@ void func_0000B75C(char *arg0) {
             *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1); if (1) {}
             if (temp_v0_2 >= 0xB) {
                 temp_f0_2 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * 0.015));
-                temp_f12_2 = -0.2f; /* run 182 (lever-sweep order) */
                 if (temp_f0_2 < temp_f12_2) {
                     var_f2 = temp_f12_2;
                 } else {
-                    temp_f12_3 = 0.2f;
                     if (temp_f12_3 < temp_f0_2) {
                         var_f2 = temp_f12_3;
                     } else {
@@ -7070,11 +7072,8 @@ void func_0000B75C(char *arg0) {
             } else {
                 var_a0 = arg0 + 0xCC + 0 * (int)(*arg0); /* agent-c run 211: folded counted use (zero code) */
                 temp_a1 = arg0 + 0x3C8;
-                sp28 = temp_a1;
-                sp24 = var_a0;
                 bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) ((sp6C[0] * *(f32 *)((char *)(arg0) + 0x3BC)) + (*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (sp6C[2] * *(f32 *)((char *)(arg0) + 0x3C4))) * -0.1), arg0);
                 if (*(s32 *)((char *)(arg0) + 0xA18) != 0) {
-                    sp24 = var_a0;
                     bu_b75c_mvf(var_a0, temp_a1, *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x690), arg0);
                     bu_b75c_mvf(var_a0, arg0 + 0x3BC, *(f32 *)((char *)(*(s32 *)((char *)(arg0) + 0x800)) + 0x4) * *(f32 *)((char *)(arg0) + 0x660), arg0);
                     bu_b75c_mvf(var_a0, arg0 + 0x3B0, *(f32 *)((char *)(arg0) + 0x678) * -*(f32 *)(*(s32 *)((char *)(arg0) + 0x800)), arg0);
@@ -7135,7 +7134,6 @@ void func_0000B75C(char *arg0) {
                 var_f0 = *(f32 *)((char *)(arg0) + 0xA04);
             }
             if (*(f32 *)((char *)(arg0) + 0x630) < var_f0) {
-                sp24 = var_a0;
                 bu_b75c_mvf(var_a0, arg0 + 0x3BC, *(f32 *)((char *)(arg0) + 0xA04) * *(f32 *)((char *)(arg0) + 0x600), arg0);
             }
         }
@@ -7156,6 +7154,8 @@ block_67:
     *(f32 *)((char *)(arg0) + 0x308) = (f32) ((f64) temp_f2_9 + ((f64) (1.0f - temp_f2_9) * (1.0 - (f64) var_f0)));
 }
 #undef temp_f14
+#undef temp_f12_2
+#undef temp_f12_3
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000B75C);
 #endif
