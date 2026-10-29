@@ -1,6 +1,7 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_00065494 (0x538 / 334 words):
- * the per-frame contact solve over the self->0x39C child list. NM object only
- * (build/non_matching); the ROM keeps INCLUDE_ASM. agent-g run 186: whole-function
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00065494 (0x538 / 334 words), spliced over the
+ * empty placeholder in game_libs_post1b.c (both trees): the per-frame contact solve over the
+ * self->0x39C child list. The four calls are blank USO jals (0-pinned aliases of the in-unit
+ * gl_func_00062F64 callees). agent-g run 186: whole-function
  * C++ port of the cfe NM body (80.62): the {cur, nxt} list iterator with an if/return
  * next(), Vec3 value class with the by-value operator= (word copy into the pooled
  * parameter temp, then float stores), named-result operator- / operator* / dot, the
@@ -26,7 +27,11 @@
  * more outer home); the 3-float ctor forwarding to set() fixes the s1 / s2 / s3
  * permutation; later steps (see the inline notes, docs kit CCV) put every sp home on the
  * target (99.91). Left: the three operator* products colour f0 / f2 / f12, the target
- * f2 / f12 / f14 (an f0 phantom live across them). */
+ * f2 / f12 / f14 (an f0 phantom live across them).
+ * agent-c run 215: EXACT. `psum += node->v120 * -h` and `k = -h * ...` (w still named for
+ * wsum): the -h argument becomes operator*'s parameter temp, CSE'd with w, and its live
+ * range is the f0 phantom; its home takes the place of dot()'s const-ref pointer home,
+ * so dot() goes back to the plain member form and every sp offset stays on the target. */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -41,7 +46,7 @@ struct Vec3 {
     void operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; }
     void operator*=(float s) { x *= s; y *= s; z *= s; }
     void operator/=(float s) { x /= s; y /= s; z /= s; }
-    float dot(const Vec3 &v) const { const Vec3 &u = *this; return u.x * v.x + u.y * v.y + u.z * v.z; } /* run 214: pointer home, no phantom FP result (dt in f0) */
+    float dot(const Vec3 &v) const { return x * v.x + y * v.y + z * v.z; } /* run 215: plain form (the run 214 const-ref pointer home made room for the op* temp) */
 };
 struct V3P { float x, y, z; };
 inline int iz() { return 0; }
@@ -82,7 +87,7 @@ struct Self {
 };
 extern "C" {
 extern int D_00000000[];
-void gl_func_00062F64(void *, Vec3 *, Vec3 *);
+void gl_func_00062F64_65494(void *, Vec3 *, Vec3 *);
 int gl_func_00062F64_b(int, Vec3 *, int, Hit *);
 void gl_func_00062F64_d(Self *, Vec3 *, const Vec3 &);
 void gl_func_00062F64_e(Self *, Vec3 *, Vec3 *);
@@ -112,7 +117,7 @@ extern "C" void gl_func_00065494(Self *self) {
         n.x = (float)iz(); n.y = 1.0f; n.z = (float)iz();
         node->v120 = node->pos;
         d = node->pos - self->pos;
-        gl_func_00062F64(self->f2FC, &d, &node->v114);
+        gl_func_00062F64_65494(self->f2FC, &d, &node->v114);
         node->v114 -= d;
         node->v114 += self->v318;
         if (gl_func_00062F64_b(D_00000000[0], &node->v120, 0x43C80000, &hit) != 0) {
@@ -133,14 +138,15 @@ extern "C" void gl_func_00065494(Self *self) {
             nsum += n;
             count++;
             w = -h;
-            psum += node->v120 * w;
+            psum += node->v120 * -h; /* run 215: the -h argument is an operator* parameter temp (s = -h,
+                                      * CSE'd with w): its LR holds f0 across the products (f2 / f12 / f14) */
             wsum += w;
             dt = node->v114.dot(n);
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
             if (1) {} /* run 214: BB split before the impulse: k colours f14 ahead of w (f16) */
-            Vec3 imp = n.sc(k = w * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
+            Vec3 imp = n.sc(k = -h * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
             const Vec3 &ri = imp; /* its pointer home is the target's sp+0x98 */
             gl_func_00062F64_d(self, &node->v120, ri);
         }
