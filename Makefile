@@ -1754,10 +1754,10 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DF58_NM_DONOR
 GAMELIBS_578B4_NM_DONOR := build/src/game_libs/game_libs_ncc_578B4_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000578B4=$(GAMELIBS_578B4_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_578B4_NM_DONOR)
-# 4A9F0 = stream -> grid byte copier (NCC 89.2 vs cfe 76.5, 39 -> 40 words = target, frameless). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4A9F0_NM_DONOR := build/src/game_libs/game_libs_ncc_4A9F0_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_NM_DONOR)
+# 4A9F0 = stream -> grid byte copier (NCC, frameless; agent-c run 133). EXACT NCC donor over an empty placeholder (agent-c run 217: inner-body `if (1) {}` + one-expression cell address).
+GAMELIBS_4A9F0_DONOR := build/src/game_libs/game_libs_ncc_4A9F0.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_DONOR)
 # 46790 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_46790_NM_DONOR := build/src/game_libs/game_libs_ncc_46790_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046790=$(GAMELIBS_46790_NM_DONOR)

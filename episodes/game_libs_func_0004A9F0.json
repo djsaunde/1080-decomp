@@ -1,0 +1,32 @@
+{
+  "function_name": "game_libs_func_0004A9F0",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-29T06:35:12.760327+00:00",
+  "end_time": "2026-10-29T06:35:12.760344+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T06:35:12.760340+00:00",
+      "assistant_text": "NCC donor: inline Self::put member (self as this in a3, frameless); if (1) {} after the put call so the cursor re-read colours v0 (target) not t1; cell address as one expression &cells[base] + i so the row sum takes a ugen temp and the byte loads land on t6/t7/t9.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 40,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_0004A9F0 (0xA0 / 40 words),\n * spliced over the empty placeholder in game_libs_post0b.c (both trees): copy\n * 3-byte source records (a1 + idx1 * 4) into grid cells (+0xC) of D+0x214's\n * grid at self->0xD4 + idx2, driven by a -1 terminated halfword stream.\n * NCC (agent-c run 133): frameless with self in a3 (the cfe body promotes self\n * to s0 with a frame). Load-bearing: the cell store is an inline member\n * Self::put(i, src) (self is then `this`, a copy in a3), the source pointer is\n * passed as an expression (loop-invariant temp t0), and the grid root is a named\n * local in put (v0).\n * agent-c run 217: EXACT. (1) An `if (1) {}` after the put call ends the inner\n * body's block before the cursor re-read: the cursor copy then colours v0 (the\n * dead grid root's register, target) instead of t1, and the -1 / &D registers\n * drop back to t1 / t2. (2) The cell address as ONE expression,\n * `&cells[base] + i`: the row sum goes to a ugen temp (t4) and the cell to v1,\n * which also puts the byte loads on the target's t6 / t7 / t9 (the run-191\n * two-step `cell += i` kept both sums in v1). */\nextern \"C\" int D_00000000;\nstruct Cell { char pad[0xC]; char c[3]; char pad2; };\nstruct Grid { Cell *cells; };\nstruct G214 { char pad[0x1C]; Grid *grid; };\nstruct Self { char pad[0xD4]; short base; void put(int i, char *src); };\ninline void Self::put(int i, char *src) { G214 *g = *(G214 **)((char *)&D_00000000 + 0x214); Cell *cell = &g->grid->cells[base] + i; cell->c[0] = *src++; cell->c[1] = *src++; cell->c[2] = *src; }\nextern \"C\" void game_libs_func_0004A9F0(Self *self, char *a1, short *cursor) {\n    short idx1, idx2;\n    while ((idx1 = *cursor++) != -1) {\n        while ((idx2 = *cursor++) != -1) { self->put(idx2, a1 + idx1 * 4); if (1) {} }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4A9F0.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "objdiff 100% (NM object) + full ROM build byte-identical to baserom"
+  }
+}

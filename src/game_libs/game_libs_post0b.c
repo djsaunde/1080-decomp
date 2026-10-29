@@ -15624,27 +15624,12 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004A890);
  * value isn't C-steerable (cf. game_uso_func_00007538 s0-vs-leaf). Stays NM.
  * Run 133 (agent-c): under NCC it IS steerable -- the NM comparison object now
  * uses src/game_libs/game_libs_ncc_4A9F0_nm.cpp (inline Self::put member, self
- * as `this` in a3, frameless, 40 words, 89.25). */
-#ifdef NON_MATCHING
+ * as `this` in a3, frameless, 40 words, 89.25).
+ * EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4A9F0.cpp
+ * (agent-c run 217), REPLACE_FUNC_BODY-spliced over this placeholder in both
+ * build trees. */
 void game_libs_func_0004A9F0(short *self, char *a1, short *cursor) {
-    short idx1, idx2;
-
-    while ((idx1 = *cursor++) != -1) {
-        char *src = a1 + idx1 * 4;
-        while ((idx2 = *cursor++) != -1) {
-            int *vt = *(int**)((char*)&D_00000000 + 0x214);
-            int *node = *(int**)((char*)vt + 0x1C);
-            int g = *(short*)((char*)self + 0xD4);
-            char *cell = (char*)(*(int*)node + (g << 4) + (idx2 << 4));
-            cell[0xC] = src[0];
-            cell[0xD] = src[1];
-            cell[0xE] = src[2];
-        }
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004A9F0);
-#endif
 
 void gl_func_0004AA90(int *a0, int a1) {
     int v0 = a0[0x30/4];
