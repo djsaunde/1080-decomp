@@ -3988,7 +3988,6 @@ extern int import_8001FFF0;
 extern char *D_bu_7770;
 extern char *D_bu_776C[];
 extern int D_bu_1EBDC[];
-extern void func_00000000_6808_v();
 typedef struct { int count : 16; unsigned op : 16; } Rec6808;
 typedef struct { f32 x, y, z; } V3_6808;
 #define ATTACH6808(list, x) { \
@@ -4154,8 +4153,11 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         import_8005C108_2[0x3C / 4] = import_8005C108_3[0x3C / 4] & ~8;
     }
     /* agent-g run 221: flag RMWs through the dummy-home locals g00 / g0 (target v0 chain: lw v0; and v0; ori v0;
-     * sw v0); the empty block keeps the mode-word address from hoisting above the bC branch into v0 */
-    D_bu_1EBDC[0] = 6; g00 = import_8005EE64_1; g00 &= ~8; g00 |= 0x100; import_8005EE64_0 = g00; if (1) {} import_8005EE6C[1] = 0xA8002;
+     * sw v0); the empty block keeps the mode-word address from hoisting above the bC branch into v0.
+     * agent-g run 222: all four flag RMWs on g00 inside do { } while (0) (a macro body): the loop labels give each
+     * RMW its own block, so the block-granular v0 conflict with the preceding call's return (dead or stored) and
+     * with the final return copy is gone -> all four in v0 like the target (98.34 -> 99.28); x40 stays alone on g0 (v1) */
+    D_bu_1EBDC[0] = 6; do { g00 = import_8005EE64_1; g00 &= ~8; g00 |= 0x100; import_8005EE64_0 = g00; } while (0); if (1) {} import_8005EE6C[1] = 0xA8002;
     import_8005EE6C[0] = 0;
     func_00000000(&D_6808_11, 0);
     p = (int *)func_00000000(0, &D_6808_12, 0, 0);
@@ -4168,8 +4170,8 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000();
     func_00000000(&D_6808_15, 0);
     func_00000000(((char *)p));
-    func_00000000_6808_v(); /* agent-g run 222: void alias (the dead int return blocks v0 in the next block) */
-    g00 = import_8005EE64_3; g00 &= ~0x100; import_8005EE64_2 = g00; /* run 222: on g00 with site 1 (target v0), x40 alone on g0 (v1) */
+    func_00000000();
+    do { g00 = import_8005EE64_3; g00 &= ~0x100; import_8005EE64_2 = g00; } while (0);
     *(int *)((char *)p + 0x30) |= 0x40;
     import_8005C108_4[0x3C / 4] = import_8005C108_5[0x3C / 4] & ~8;
     func_00000000();
@@ -4225,7 +4227,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     D_bu_1EBDC[0] = 6;
     func_00000000(&D_6808_22, 0);
     *gD = (char *)func_00000000(0, &D_6808_23, -1);
-    g0 = import_8005EE64_5; g0 |= 8; import_8005EE64_4 = g0;
+    do { g00 = import_8005EE64_5; g00 |= 8; import_8005EE64_4 = g00; } while (0);
     func_00000000(*gD);
     if (d4 != 0) {
         func_00000000(*gD, 1, d4);
@@ -4235,7 +4237,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         ATTACH6808(*(char **)(obj + 0x80), t);
     }
     func_00000000();
-    g0 = import_8005EE64_7; g0 &= ~8; import_8005EE64_6 = g0;
+    do { g00 = import_8005EE64_7; g00 &= ~8; import_8005EE64_6 = g00; } while (0);
     return res;
 }
 #else
