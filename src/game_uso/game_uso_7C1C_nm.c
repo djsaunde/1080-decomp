@@ -32,13 +32,19 @@ extern float game_uso_func_00007A98(Self *);
 #define SUB2(Q, PP, T, A, B) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); tx = (A).x - vp->x; tz = (A).z - vp->z; PP->x = tx; PP->y = 0.0f; PP->z = tz; }
 #define SUB2S(Q, PP, T, A, B) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); sa = (A).x - vp->x; sc = (A).z - vp->z; PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 /* perp(v) = XZ(v.z, -v.x); the do-while block keeps sa / sc as coloured values */
-#define XZG2S(Q, PP, T, A, C) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { sc = (A); sa = (C); } while (0); PP->x = sc; PP->y = 0.0f; PP->z = sa; }
+#define XZG2S(Q, PP, T, A, C) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { tx = (A); tz = (C); } while (0); PP->x = tx; PP->y = 0.0f; PP->z = tz; }
 /* XZ(a, c) */
-#define XZGPS(PP, A, C) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { ty = (A); tz = (C); } while (0); PP->x = ty; PP->y = 0.0f; PP->z = tz; }
+#define XZGPS(PP, A, C) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { m2 = (A); tz = (C); } while (0); PP->x = m2; PP->y = 0.0f; PP->z = tz; }
 /* Vec3 r; r.set(v * s) */
 #define MULS(R, V, S) vp = &(V); tx = vp->x * (S); ty = vp->y * (S); tz = vp->z * (S); (R).x = tx; (R).y = ty; (R).z = tz;
 /* the same with the temporaries rotated (third operator* level at three sites) */
 #define MULR(R, V, S) vp = &(V); ty = vp->x * (S); tz = vp->y * (S); tx = vp->z * (S); (R).x = ty; (R).y = tz; (R).z = tx;
+/* operator*(width) sites: a fourth shared temp m2 takes z (target f14), and the
+ * site sits in its own basic blocks (empty blocks around it) so the width load
+ * does not share a live unit with tz and colours f0 (run 231) */
+#define MULW(R, V, S) if (1) {} vp = &(V); tx = vp->x * (S); ty = vp->y * (S); m2 = vp->z * (S); (R).x = tx; (R).y = ty; (R).z = m2;
+/* the main mode-1 third-level site: x through m2 */
+#define MULM(R, V, S) vp = &(V); m2 = vp->x * (S); ty = vp->y * (S); tz = vp->z * (S); (R).x = m2; (R).y = ty; (R).z = tz;
 
 #define METV tx
 #define THRV ty
@@ -171,16 +177,16 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         if (mode == 1) {
             MULS(r1a, dir, 250.0f)
             R = r1a; V1a = R;
-            MULS(r2a, V1a, b->width)
-            P2 = r2a; V2a = P2;
-            MULS(r3a, V2a, 0.5f)
+            MULW(r2a, V1a, b->width)
+            P2 = r2a; V2a = P2; if (1) {}
+            MULM(r3a, V2a, 0.5f)
             P3 = r3a; V3a = P3;
             result.x += V3a.x; result.y += V3a.y; result.z += V3a.z;
         } else if (mode == 2) {
             MULS(r1b, dir, 250.0f)
             R = r1b; V1b = R;
-            MULS(r2b, V1b, b->width)
-            P2 = r2b; V2b = P2;
+            MULW(r2b, V1b, b->width)
+            P2 = r2b; V2b = P2; if (1) {}
             MULR(r3b, V2b, 0.5f)
             P3 = r3b; V3b = P3;
             result.x -= V3b.x; result.y -= V3b.y; result.z -= V3b.z;
@@ -213,16 +219,16 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             if (mode == 1) {
                 MULS(r1c, ldir, 250.0f)
                 R = r1c; V1c = R;
-                MULS(r2c, V1c, n->width)
-                P2 = r2c; V2c = P2;
+                MULW(r2c, V1c, n->width)
+                P2 = r2c; V2c = P2; if (1) {}
                 MULR(r3c, V2c, 0.5f)
                 P3 = r3c; V3c = P3;
                 hitC.x += V3c.x; hitC.y += V3c.y; hitC.z += V3c.z;
             } else if (mode == 2) {
                 MULS(r1d, ldir, 250.0f)
                 R = r1d; V1d = R;
-                MULS(r2d, V1d, n->width)
-                P2 = r2d; V2d = P2;
+                MULW(r2d, V1d, n->width)
+                P2 = r2d; V2d = P2; if (1) {}
                 MULR(r3d, V2d, 0.5f)
                 P3 = r3d; V3d = P3;
                 hitC.x -= V3d.x; hitC.y -= V3d.y; hitC.z -= V3d.z;
