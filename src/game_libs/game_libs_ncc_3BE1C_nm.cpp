@@ -52,8 +52,7 @@ struct Obj {
         cx = (p.x - col->grid->x0) / col->grid->cw;
         cz = (p.z - col->grid->z0) / col->grid->ch;
     }
-    int cellOf(const V3 &p) {
-        int cx, cz;
+    int cellOf(const V3 &p, int &cx, int &cz) { /* agent-g run 238: cx / cz are query()'s locals (98.34 -> 98.51) */
         toCell(p, cx, cz);
         if (cx >= 0 && cx < col->grid->w && cz >= 0 && cz < col->grid->h) return cx + cz * col->grid->w; /* agent-g run 231: cx first (operand-commute sweep), 97.60 -> 98.16 */
         return -1;
@@ -70,11 +69,12 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     cc = col;
     cnt = 0;
     if (cc == 0) return 0;
-    if (cc->grid == 0) gl_func_00000000(D_00000000 + 0x1EE9C);
+    if ((cc->grid == 0) + 0 * (int)(col)) gl_func_00000000(D_00000000 + 0x1EE9C); /* agent-g run 238: folded counted use (zero-use sweep): 98.51 -> 98.56 */
     p.x *= D_3BE1C_128[0];
     p.y *= D_3BE1C_128[1];
     p.z *= D_3BE1C_128[2];
-    cell = cellOf(p);
+    int cx, cz;
+    cell = cellOf(p, cx, cz);
     if (cell < 0) return 0;
     list = this->list(cell);
     if (list == 0) return 0;
