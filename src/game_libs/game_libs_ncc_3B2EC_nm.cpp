@@ -36,7 +36,7 @@ struct Obj {
     int cellOf(const V3 &p) {
         int cx, cz;
         toCell(p, cx, cz);
-        if (cx >= 0 && cx < col->grid->w && cz >= 0 && cz < col->grid->h) return cz * col->grid->w + cx;
+        if (cx >= 0 && cx < col->grid->w && cz >= 0 && cz < col->grid->h) return cx + cz * col->grid->w; /* agent-g run 211: cx first (target addu a0, cx, prod): 99.20 -> 99.83 */
         return -1;
     }
     s16 *list(int cell) { return col->grid->cells[cell] != -1 ? &col->grid->lists[col->grid->cells[cell]] : 0; }
@@ -61,9 +61,9 @@ int Obj::height(int max, f32 *out, f32 x, f32 z) {
     list = this->list(cell);
     if (list == 0) return 0; /* agent-g run 211: run-210 counted use dropped after the trailing-block fix (98.67 -> 99.20) */
     while ((i = *list++) != -1) {
-        int off = ((i << 2) - i) << 2;
+        int off = i * 12; /* agent-g run 211: the multiply's shift expansion builds off in s2 directly (target sll s2 / subu s2 / sll s2) */
         V3 *n = (V3 *)((char *)col->nrm + off);
-        if ((!(n->y > 0.0f)) + 0 * (int)(col->nrm)) continue; /* agent-g run 210: folded counted use (zero-use sweep): 96.05 -> 96.22, length unchanged */
+        if (!(n->y > 0.0f)) continue; /* agent-g run 211: run-210 counted use dropped with i * 12 (nrm load back in t6): 99.83 -> 99.92 */
         Face *f = col->face(i);
         s16 (*vt)[3] = col->verts;
         int k;
