@@ -259,7 +259,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             game_uso_func_071028(&n1);
             n2 = hitB;
             game_uso_func_071028(&n2);
-            if (((n0.x * n2.x + n0.z * n2.z) < (n0.x * n1.x + n0.z * n1.z)) + 0 * (int)(n1.z + n2.z)) {
+            if (((n0.x * n2.x + n0.z * n2.z) < (n0.x * n1.x + n0.z * n1.z)) + 0 * (int)(n0.x * n2.x + n0.z * n2.z + n0.z)) {
                 R = hitA; result.x = R.x; result.y = R.y; result.z = R.z;
             } else {
                 R = hitB; result.x = R.x; result.y = R.y; result.z = R.z;
