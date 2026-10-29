@@ -1,0 +1,32 @@
+{
+  "function_name": "func_00008BD4",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-29T22:22:39.180028+00:00",
+  "end_time": "2026-10-29T22:22:39.180043+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T22:22:39.180039+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 98.83 NM donor: the second scaling is its own inline whose result V3 r is declared after its three scalar products (f32 hx, hy, hz; V3 r;), so the scalar homes sit above r and r lands at the target's sp+64; the else arm's |f970| is a single variable (one home fewer, frame 184); vel += impA goes through a named reference (V3 &v = b->ctx->vel; v += impA;) so the vel pointer takes a0 with the target's load / addiu order. Spliced over a placeholder on both build paths.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 209,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) NM-only comparison donor for func_00008BD4 (collision impulse, 209 words).\n * agent-g run 157 / 182: the cfe NM body under NCC (amt in $f20), 97.77.\n * agent-g run 184 (kit CXXXIII): rewritten as C++ -- `lwc1 180(a0); addiu a0,a0,180` = an inline\n * V3::operator+=(const V3 &) on b->ctx->vel (and ctx->acc), `addiu v1,v1,2408 / 2576` = edg's compound-assignment\n * lvalue temps (`ctx->imp += amt`, `ctx->fl |= b->fl`), ctx->cnt as `cnt = cnt + 1`; frame 184 = target (was 200);\n * t declared in its own block; `q = (t < 0.0f) ? -t : t`. The surface-code call returns an unsigned char\n * (per-site alias func_8bd4_c): that brings back the target's `move a1,v0` copy of the code before the 0x62 test\n * (as a0 here). 97.77 -> 97.92. LEFT: the code copy register (a0 vs a1), the second scaledBy result 16 high.\n * agent-c run 204: the 0x61/0x62/0x63 skip test is ONE `||` expression on an int code (the target's\n * xori/sltiu/bnez chain with the code copy in a1 and v0 consumed by the 0x62 test), and ctx->acc accumulates\n * through a reference-returning V3::add (the acc lvalue temp then takes v0 with the target's addiu order):\n * 97.84 -> 98.73 standalone. LEFT: the vel += temp (a0 in the target; a ref-returning += there fixes it but\n * grows the frame by 8) and the second scaledBy result 16 high.\n * agent-c run 238: EXACT (98.83 -> 100). (1) The second scaling is its own inline (scaledBy2) whose result r is\n * declared AFTER hx / hy / hz (`f32 hx, hy, hz; V3 r; hx = ...`): the three scalar homes then sit above r, so r\n * lands 16 bytes lower (target sp+64); (2) the else arm's |f970| is one variable (`q = f970; q = q < 0 ? -q : q;`),\n * one home fewer below r, so the frame stays 184; (3) vel += impA through a named reference\n * (`V3 &v = b->ctx->vel; v += impA;`): the vel pointer takes a0 with the target's lwc1 / addiu order.\n * Spliced over a placeholder on both build paths via REPLACE_FUNC_BODY. */\ntypedef float f32;\ntypedef unsigned short u16;\nextern \"C\" {\nextern char D_00000000;\nextern int func_00000000(...);\nextern unsigned char func_8bd4_c(...);\nextern void func_8bd4_a(void *, void *, void *, void *, float);\nextern void func_8bd4_b(void *, float, void *, float);\nextern void func_8bd4_heavy(void *, void *, void *);\n}\nstruct V3 {\n    f32 x, y, z;\n    V3() {}\n    void operator+=(const V3 &o) { x += o.x; y += o.y; z += o.z; }\n    V3 &add(const V3 &o) { x += o.x; y += o.y; z += o.z; return *this; }\n};\nstatic inline V3 scaledBy(const V3 &d, f32 s) {\n    V3 r; f32 hx = d.x * s; f32 hy = d.y * s; f32 hz = d.z * s;\n    r.x = hx; r.y = hy; r.z = hz;\n    return r;\n}\nstatic inline V3 scaledBy2(const V3 &d, f32 s) {\n    f32 hx, hy, hz; V3 r; hx = d.x * s; hy = d.y * s; hz = d.z * s;\n    r.x = hx; r.y = hy; r.z = hz;\n    return r;\n}\nstruct Ctx {\n    char p0[0xB4]; V3 vel; char pC0[0x938 - 0xC0];\n    int cnt; V3 acc; char p948[0x968 - 0x948]; f32 imp; char p96C[4]; f32 f970;\n    char p974[0x9A4 - 0x974]; short code; char p9A6[0xA10 - 0x9A6]; u16 fl;\n};\nstruct G { char p[0x84]; int h; };\nstruct Body { char p0[0x114]; char s114[0xC]; char s120[0x2C]; int k14C; char p150[0x170 - 0x150]; Ctx *ctx; u16 fl; };\nextern \"C\" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {\n    u16 fl = b->fl;\n    int skip;\n    int code;\n    V3 impA, nnA;\n\n    if (fl & 0x1F0) {\n        if (amt < 0.0f) {\n            code = func_8bd4_c((*(G **)&D_00000000)->h, b->k14C);\n            skip = code == 0x61 || code == 0x62 || code == 0x63;\n            if (!skip) {\n                b->ctx->cnt++;\n                b->ctx->code = code;\n                if (amt < -30.0f) amt = -30.0f;\n                b->ctx->fl |= b->fl;\n                impA = scaledBy(*dir, (float)((double)-amt * 0.5));\n                { V3 &v = b->ctx->vel; v += impA; }\n                b->ctx->acc.add(*dir);\n                b->ctx->imp += amt;\n                nnA = scaledBy2(*dir, -amt);\n                func_8bd4_heavy(b->ctx, b->s120, &nnA);\n            }\n        }\n        return;\n    }\n    if (fl & 0xF) {\n        if (amt < 50.0f) {\n            b->ctx->cnt++;\n            b->ctx->fl |= b->fl;\n            b->ctx->imp += amt;\n            b->ctx->acc.add(*dir);\n            f32 q = b->ctx->f970;\n            q = (q < 0.0f) ? -q : q;\n            func_8bd4_a(b->ctx, b->s120, b->s114, dir, q * q);\n            func_8bd4_b(b, amt, dir, 0.1f);\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_8BD4.cpp",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "full make ROM cmp byte-identical; verify-blocks 6/6; report.json fuzzy 100.0"
+  }
+}

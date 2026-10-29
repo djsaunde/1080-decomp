@@ -208,10 +208,12 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_C234_DONOR := build/src/bootup_uso/bootup_uso_ncc_C234.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000C234=$(BOOTUP_C234_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_C234_DONOR)
-# 8BD4 = collision impulse; NM C body as C++ (amt in $f20 under NCC, inline V-returning helper; agent-g run 157, cfe 91.85). NM comparison object only.
-BOOTUP_8BD4_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_8BD4_nm.cpp.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008BD4=$(BOOTUP_8BD4_NM_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_8BD4_NM_DONOR)
+# 8BD4 = collision impulse; NM C body as C++ (amt in $f20 under NCC, inline V-returning helper; agent-g run 157, cfe 91.85).
+# EXACT in agent-c run 238 (second scaling inline with r declared after its scalars, one |f970| variable, vel += through
+# a named reference), spliced over the placeholder on both paths.
+BOOTUP_8BD4_DONOR := build/src/bootup_uso/bootup_uso_ncc_8BD4.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008BD4=$(BOOTUP_8BD4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_8BD4_DONOR)
 # 1A44 = gSPMatrix + gSPDisplayList draw as C++ (camera * G operand order, w1 read before the
 # 0x06 packet's slot, `_n = ms->count++`; agent-g run 172, cfe 92.23); NCC donor, exact.
 BOOTUP_1A44_DONOR := build/src/bootup_uso/bootup_uso_ncc_1A44.cpp.o

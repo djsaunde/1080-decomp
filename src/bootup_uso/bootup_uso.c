@@ -5377,7 +5377,10 @@ end:
 //   Frame-gap note: target locals impA@A0 nnA@94 impB@84 imp@74 nn@40
 //   (+0x28 mid-gap, +0x10 low-gap); padded-carrier-struct probe ballooned
 //   frame 0xF0 (cfe no-overlay) — offsets stay shifted, weigh light.
-#ifdef NON_MATCHING
+/* func_00008BD4: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_8BD4.cpp, REPLACE_FUNC_BODY-spliced
+ * over the placeholder below on both build paths (agent-c run 238). The superseded in-unit decode is kept
+ * for reference under BOOTUP_8BD4_OLD_DECODE (never defined). */
+#ifdef BOOTUP_8BD4_OLD_DECODE
 /* typed-float protos (0x0-aliases): float args (q*q; amt, 0.1f) pass single,
  * not K&R double-promote. */
 extern void func_8bd4_a(void *, void *, void *, float *, float);
@@ -5473,7 +5476,9 @@ void func_00008BD4(char *b, float amt, float *dir, int a3) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00008BD4);
+void func_00008BD4(char *b) {
+    volatile char *r = b;
+}
 #endif
 
 /* func_00008F18: 36-insn (0x90) optional-alloc + multi-call init. */

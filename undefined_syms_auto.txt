@@ -5402,6 +5402,8 @@ func_00000000_63b4_fpp = 0x00000000;
 func_00000000_63b4_pq = 0x00000000;
 func_00000000_63b4_p = 0x00000000;
 func_8bd4_c = 0x00000000;
+/* func_00008BD4 NCC donor (agent-c run 238): target reloc jal func_00000000 */
+func_8bd4_heavy = 0x00000000;
 D_49B3C_s1 = 0x00000000;
 D_49B3C_s2 = 0x00000000;
 D_49B3C_s3 = 0x00000000;

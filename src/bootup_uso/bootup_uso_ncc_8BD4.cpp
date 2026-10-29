@@ -11,7 +11,12 @@
  * through a reference-returning V3::add (the acc lvalue temp then takes v0 with the target's addiu order):
  * 97.84 -> 98.73 standalone. LEFT: the vel += temp (a0 in the target; a ref-returning += there fixes it but
  * grows the frame by 8) and the second scaledBy result 16 high.
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * agent-c run 238: EXACT (98.83 -> 100). (1) The second scaling is its own inline (scaledBy2) whose result r is
+ * declared AFTER hx / hy / hz (`f32 hx, hy, hz; V3 r; hx = ...`): the three scalar homes then sit above r, so r
+ * lands 16 bytes lower (target sp+64); (2) the else arm's |f970| is one variable (`q = f970; q = q < 0 ? -q : q;`),
+ * one home fewer below r, so the frame stays 184; (3) vel += impA through a named reference
+ * (`V3 &v = b->ctx->vel; v += impA;`): the vel pointer takes a0 with the target's lwc1 / addiu order.
+ * Spliced over a placeholder on both build paths via REPLACE_FUNC_BODY. */
 typedef float f32;
 typedef unsigned short u16;
 extern "C" {
@@ -30,6 +35,11 @@ struct V3 {
 };
 static inline V3 scaledBy(const V3 &d, f32 s) {
     V3 r; f32 hx = d.x * s; f32 hy = d.y * s; f32 hz = d.z * s;
+    r.x = hx; r.y = hy; r.z = hz;
+    return r;
+}
+static inline V3 scaledBy2(const V3 &d, f32 s) {
+    f32 hx, hy, hz; V3 r; hx = d.x * s; hy = d.y * s; hz = d.z * s;
     r.x = hx; r.y = hy; r.z = hz;
     return r;
 }
@@ -56,10 +66,10 @@ extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
                 if (amt < -30.0f) amt = -30.0f;
                 b->ctx->fl |= b->fl;
                 impA = scaledBy(*dir, (float)((double)-amt * 0.5));
-                b->ctx->vel += impA;
+                { V3 &v = b->ctx->vel; v += impA; }
                 b->ctx->acc.add(*dir);
                 b->ctx->imp += amt;
-                nnA = scaledBy(*dir, -amt);
+                nnA = scaledBy2(*dir, -amt);
                 func_8bd4_heavy(b->ctx, b->s120, &nnA);
             }
         }
@@ -71,9 +81,8 @@ extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
             b->ctx->fl |= b->fl;
             b->ctx->imp += amt;
             b->ctx->acc.add(*dir);
-            f32 t = b->ctx->f970;
-            f32 q = (t < 0.0f) ? -t : t;
-
+            f32 q = b->ctx->f970;
+            q = (q < 0.0f) ? -q : q;
             func_8bd4_a(b->ctx, b->s120, b->s114, dir, q * q);
             func_8bd4_b(b, amt, dir, 0.1f);
         }
