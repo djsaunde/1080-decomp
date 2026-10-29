@@ -24586,9 +24586,10 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     func_00000000(arg0, arg1, arg10);
     /* agent-c run 234: the head append and the five arg3-block appends are BLOCKS with their own
      * base / cnt / p (each block's trio = 3 home words: 6 x 3 = 18 of the target's middle frame words,
-     * frame 0xC0 with no pad arrays, and each append's cursor web colours on its own like the target) */
+     * frame 0xC0 with no pad arrays, and each append's cursor web colours on its own like the target).
+     * agent-c run 235: the head block uses the function-level base (one home word fewer: the uopt
+     * spill slots of sp38 / sp34 move up to the target's 0x38 / 0x34) */
     {
-        char *base;
         s32 cnt;
         char *p;
         base = *(char **)(arg0 + 0xC);
@@ -24633,8 +24634,8 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             cnt = *(s32 *)(base + 4);
             *(s32 *)(base + 4) = cnt + 1;
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 4) = 0x300000 + 0 * (int)(cnt); /* agent-c run 234: folded counted use (zero-use-sweep, 94.71 -> 94.78) */
-            *(s32 *)(p + 0) = 0xBA001402;
+            /* agent-c run 234: folded counted use (zero-use-sweep, 94.71 -> 94.78); run 235: p+0 first, both on one line (as1 line order) */
+            *(s32 *)(p + 0) = 0xBA001402; *(s32 *)(p + 4) = 0x300000 + 0 * (int)(cnt);
         }
         {
             char *base;
@@ -24678,8 +24679,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 4) = 0x300000;
-        *(s32 *)(p + 0) = 0xBA001402;
+        *(s32 *)(p + 0) = 0xBA001402; *(s32 *)(p + 4) = 0x300000; /* agent-c run 235: p+0 first, one line */
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
