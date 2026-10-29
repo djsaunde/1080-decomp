@@ -52,7 +52,9 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
     char *r2;
     char *r3;
     Obj *obj;
-    obj = new Obj2;
+    /* agent-c run 237: the folded a3v read keeps obj off edg's new-temp (no copy propagation),
+     * so the case-0 link / 0xB4 store read obj's own home (sp+0x78) as in the target: 99.955 -> 99.965 */
+    obj = (Obj *)((int)(Obj *)new Obj2 + 0 * FW(a3v, 0));
     switch (mode) {
     case 0:
     case 2:
