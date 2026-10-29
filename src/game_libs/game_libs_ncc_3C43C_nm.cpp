@@ -36,8 +36,8 @@ extern Vec3 vtx;
 extern float f24;
 }
 extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
+    char *hitbuf[8]; /* agent-g run 224: hitbuf before dist (sweep 98.24 -> 98.26) */
     float dist[8];
-    char *hitbuf[8];
     Vec3 acc;
     GLHit3C43C tmp;
     GLHit3C43C tmp2;
