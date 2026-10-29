@@ -55,7 +55,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         float lenf = dir.x * d2.x + d2.z * dir.z;
         s->p90 = (const Vec3 &)XZ(a->pos);
         s->p84 = s->p90;
-        float dot = lenf + (s->kDC * s->w->speed) / 2;
+        float dot = lenf + (s->w->speed * s->kDC) / 2; /* agent-g run 231 (operand-commute sweep): speed first, 89.51 -> 90.41 */
         s->p84 += dir * dot;
         dot = lenf - (s->w->speed * s->kDC) / 2;
         s->p90 += dir * dot;
