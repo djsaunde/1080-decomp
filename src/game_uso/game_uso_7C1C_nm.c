@@ -35,6 +35,8 @@ extern float game_uso_func_00007A98(Self *);
 #define XZGPS(PP, A, C) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { sa = (A); sc = (C); } while (0); PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 /* Vec3 r; r.set(v * s) */
 #define MULS(R, V, S) vp = &(V); tx = vp->x * (S); ty = vp->y * (S); tz = vp->z * (S); (R).x = tx; (R).y = ty; (R).z = tz;
+/* the same with the temporaries rotated (third operator* level at three sites) */
+#define MULR(R, V, S) vp = &(V); ty = vp->x * (S); tz = vp->y * (S); tx = vp->z * (S); (R).x = ty; (R).y = tz; (R).z = tx;
 
 #define METV tx
 #define THRV ty
@@ -177,7 +179,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             R = r1b; V1b = R;
             MULS(r2b, V1b, b->width)
             P2 = r2b; V2b = P2;
-            MULS(r3b, V2b, 0.5f)
+            MULR(r3b, V2b, 0.5f)
             P3 = r3b; V3b = P3;
             result.x -= V3b.x; result.y -= V3b.y; result.z -= V3b.z;
         }
@@ -211,7 +213,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 R = r1c; V1c = R;
                 MULS(r2c, V1c, n->width)
                 P2 = r2c; V2c = P2;
-                MULS(r3c, V2c, 0.5f)
+                MULR(r3c, V2c, 0.5f)
                 P3 = r3c; V3c = P3;
                 hitC.x += V3c.x; hitC.y += V3c.y; hitC.z += V3c.z;
             } else if (mode == 2) {
@@ -219,7 +221,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 R = r1d; V1d = R;
                 MULS(r2d, V1d, n->width)
                 P2 = r2d; V2d = P2;
-                MULS(r3d, V2d, 0.5f)
+                MULR(r3d, V2d, 0.5f)
                 P3 = r3d; V3d = P3;
                 hitC.x -= V3d.x; hitC.y -= V3d.y; hitC.z -= V3d.z;
             }
