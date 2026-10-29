@@ -37,7 +37,6 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     f32 t;
     s32 ok;
     V3B9 p;
-    s32 ia;
     s32 ib;
     f32 qa;
     V3B9 d;
@@ -79,18 +78,19 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             continue;
         }
         ok = 1; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
-        t = -(a->x * n->x + a->y * n->y + a->z * n->z - self->tris[i].d) / dn;
-        p.x = a->x + d.x * t;
+        f32 nz = n->z; /* agent-c run 235: n->z named for the t sum (fs reg like the target: fs2 save, 94.27 -> 94.90, 1096 -> 1104 of 1116) */
+        t = -(a->x * n->x + a->y * n->y + a->z * nz - self->tris[i].d) / dn;
+        p.x = a->x + d.x * t; if (1) {} /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
-        col = self->col;
+        col = self->col; if (1) {} /* agent-c run 235 (lever-sweep bbsplit, 95.06 -> 95.08) */
         if (col->remap != 0) {
-            f = &col->faces[col->remap[i]];
+            f = &col->faces[col->remap[i]] + 0 * (int)(n); /* agent-c run 235: folded counted use (zero-use-sweep, 95.08 -> 95.14) */
         } else {
             f = &col->faces[i];
         }
         ib = ((TriB9 *)((char *)self->tris + off))->b + 0 * (int)(self_al->tris); /* agent-g run 210: second pass: 92.70 -> 93.89 */
-        ia = ((TriB9 *)((char *)self->tris + off))->a;
+#define ia (((TriB9 *)((char *)self->tris + off))->a) /* agent-c run 235: ia de-named (lever-sweep denaming, 95.00 -> 95.07) */
         pp = &p.x;
         qa = pp[ia]; if (1) {}
         qb = pp[ib];
