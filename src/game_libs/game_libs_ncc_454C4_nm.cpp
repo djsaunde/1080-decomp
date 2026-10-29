@@ -29,6 +29,9 @@
  * expression as c->next() and the w0 store gets its own LR (v0, the w0 store stays in the bgtz delay slot):
  * 99.92 -> 99.95. Residual: e copy-propagated as the inline return temp a3 into the second flags test and the
  * colour loads (five words; target a2).
+ * agent-g run 217: the copy-propagation of e into the inline's pooled return temp stops at the first bb whose
+ * block also redefines that edg temp (the gSPLight block's c->next()); with the bb split BEFORE dir[0] the dir
+ * block holds c->next() and dir[0] reads e (a2) as in the target: 99.95 -> 99.96 (four words left).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -90,7 +93,8 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
             rec->l[n].colc[0] = c0; rec->l[n].col[0] = c0;
             rec->l[n].col[1] = c1; rec->l[n].colc[1] = c1;
             rec->l[n].col[2] = c2; rec->l[n].colc[2] = c2;
-            rec->l[n].dir[0] = (s32)(e->dir[0] * 120.0f); if (1) {}
+            if (1) {}
+            rec->l[n].dir[0] = (s32)(e->dir[0] * 120.0f);
             rec->l[n].dir[1] = (s32)(e->dir[1] * 120.0f);
             rec->l[n].dir[2] = (s32)(e->dir[2] * 120.0f);
             gSPLight(c->next(), gl_func_00034458(&rec->l[n]), n + 1);
