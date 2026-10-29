@@ -91,7 +91,7 @@ void Obj::run() {
     {
     s1 = (char *)dl;
     Sub2 *e = s14c[idx];
-    int v = gl_func_00034458(e->m60);
+    int v = gl_func_00034458(e->m60) + 0 * (int)(idx); /* agent-c run 210: folded counted use of the member idx (zero code) */
     { Gfx *p = &((DL *)s1)->head->buf[((DL *)s1)->head->count++]; p->w0 = 0x06000000; p->w1 = v; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
