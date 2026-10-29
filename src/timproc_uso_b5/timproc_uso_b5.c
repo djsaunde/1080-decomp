@@ -9096,11 +9096,8 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
             }
             break;
         }
-        if (savedbit != 0) {
-            EE6C_S(d884_ee6c_s6) = EE6C_L(d884_ee6c_l7) | 0x80000;
-        } else {
-            EE6C_S(d884_ee6c_s7) = EE6C_L(d884_ee6c_l8) & 0xFFF7FFFF;
-        }
+        /* run 216: one source line = one .loc group: as1 hoists the else arm's lui first (target t2 then t0) */
+        if (savedbit) EE6C_S(d884_ee6c_s6) = EE6C_L(d884_ee6c_l7) | 0x80000; else EE6C_S(d884_ee6c_s7) = EE6C_L(d884_ee6c_l8) & 0xFFF7FFFF;
         {
             *(f32 *)(child + 0xDC) = arg3;
             *(f32 *)(child + 0xE0) = arg4;
@@ -9339,11 +9336,8 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         case 13:
             break;
         }
-        if (flag != 0) {
-            EE6C_S(df14_ee6c_s6) = EE6C_L(df14_ee6c_l7) | 0x80000;
-        } else {
-            EE6C_S(df14_ee6c_s7) = EE6C_L(df14_ee6c_l8) & 0xFFF7FFFF;
-        }
+        /* run 216: one line (D884's lui order fix) */
+        if (flag) EE6C_S(df14_ee6c_s6) = EE6C_L(df14_ee6c_l7) | 0x80000; else EE6C_S(df14_ee6c_s7) = EE6C_L(df14_ee6c_l8) & 0xFFF7FFFF;
         *(f32 *)(child + 0xDC) = arg3;
         *(f32 *)(child + 0xE0) = arg4;
         *(f32 *)(child + 0xE4) = arg5;
