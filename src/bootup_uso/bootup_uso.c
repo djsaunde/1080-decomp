@@ -4152,7 +4152,9 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     } else {
         import_8005C108_2[0x3C / 4] = import_8005C108_3[0x3C / 4] & ~8;
     }
-    D_bu_1EBDC[0] = (import_8005EE64_0 = (import_8005EE64_1 & ~8) | 0x100, 6); import_8005EE6C[1] = 0xA8002;
+    /* agent-g run 221: flag RMWs through the dummy-home locals g00 / g0 (target v0 chain: lw v0; and v0; ori v0;
+     * sw v0); the empty block keeps the mode-word address from hoisting above the bC branch into v0 */
+    D_bu_1EBDC[0] = 6; g00 = import_8005EE64_1; g00 &= ~8; g00 |= 0x100; import_8005EE64_0 = g00; if (1) {} import_8005EE6C[1] = 0xA8002;
     import_8005EE6C[0] = 0;
     func_00000000(&D_6808_11, 0);
     p = (int *)func_00000000(0, &D_6808_12, 0, 0);
@@ -4166,7 +4168,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000(&D_6808_15, 0);
     func_00000000(((char *)p));
     func_00000000();
-    import_8005EE64_2 = import_8005EE64_3 & ~0x100;
+    g0 = import_8005EE64_3; g0 &= ~0x100; import_8005EE64_2 = g0;
     *(int *)((char *)p + 0x30) |= 0x40;
     import_8005C108_4[0x3C / 4] = import_8005C108_5[0x3C / 4] & ~8;
     func_00000000();
@@ -4221,7 +4223,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     D_bu_1EBDC[0] = 6;
     func_00000000(&D_6808_22, 0);
     *gD = (char *)func_00000000(0, &D_6808_23, -1);
-    import_8005EE64_4 = import_8005EE64_5 | 8;
+    g0 = import_8005EE64_5; g0 |= 8; import_8005EE64_4 = g0;
     func_00000000(*gD);
     if (d4 != 0) {
         func_00000000(*gD, 1, d4);
@@ -4231,7 +4233,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         ATTACH6808(*(char **)(obj + 0x80), t);
     }
     func_00000000();
-    import_8005EE64_6 = import_8005EE64_7 & ~8;
+    g0 = import_8005EE64_7; g0 &= ~8; import_8005EE64_6 = g0;
     return res;
 }
 #else
