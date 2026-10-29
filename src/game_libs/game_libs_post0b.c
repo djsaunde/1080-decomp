@@ -4272,7 +4272,8 @@ void gl_func_00038A28(char *o, char *c) {
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
             key = *p;
-            if (key >= 40) {
+            /* agent-g run 207: folded counted use of code (kit CXCIV) */
+            if (key >= 40 + 0 * code) {
                 gl_func_00000000(D_0001EC6C, key);
             }
             r = *(char **)((char *)&D_00000000 + key * 4);
