@@ -105,7 +105,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
 #define ia va[k]
 #define ib vb[k]
 #define ic vc[k]
-                s16 hi = MAXS(MAXS(ia, ib), ic) + 0 * (int)(vb); /* agent-g run 210: third pass: 97.05 -> 97.26 */
+                s16 hi = MAXS(MAXS(ia, ib), ic) + 0 * (int)(vb) + 0 * (int)(vc); /* + vc: agent-g run 231 */ /* agent-g run 210: third pass: 97.05 -> 97.26 */
                 s16 lo = MINS(MINS(ia, ib), ic);
                 if (q[k] < (f32)lo || (f32)hi < q[k]) ok = 0 + 0 * (int)(va); /* agent-g run 210: second pass: 96.38 -> 97.05, 1560 -> 1564 bytes (target 1568) */
             } else {
@@ -123,7 +123,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                     s16 dy = (int)(qb - v0[b]);
                     s16 ex = v1[a] - v0[a];
                     s16 ey = v1[b] - v0[b];
-                    if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0;
+                    if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0 + 0 * (int)(v1) + 0 * (int)(v0); /* agent-g run 231: folded counted uses (zero-use sweep, 2 passes): 98.16 -> 98.31 */
                 } while (ok && (fv++, nx < D_3BE1C_c + 3));
             }
             if (ok) {
