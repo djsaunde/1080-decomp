@@ -24,7 +24,10 @@
  * (S70 outer t / inner w, rows bound through t, the +0x284 and 0x2B8 -> 0x29C copies through w, the
  * site-2/3 zero fills through u which site 3's +0x284 store reads again), one-line vtable / name store
  * pairs, the hide store through items[i], and the site-3 restore store through alias f8fc8_ee6c_r3.
- * Open: sites 1/2 triple mtc1 zero (one shared f0 here), sites 2/3 loop counter in s0. */
+ * 98.88 -> 99.03 (agent-c run 224): the kid-position zeros spelled 0.f / .0f / 0.00f (three uopt constants,
+ * none coloured): sites 1/2 get the target's three mtc1 zero.  The body is now 4 words long; those are the
+ * sites 2/3 loop-counter spill / reload pairs that the shared-zero f0 had been hiding.
+ * Open: sites 2/3 loop counter in s0 (ours: P in s0, counter spilled), site 2 P colour a1 (ours a2). */
 #include "common.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
@@ -179,7 +182,9 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
     if (_wp) { timproc_uso_b5_func_0546DC(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FP(_wp, 0x28) = import_80087FB8; FW(_wp, 0x120) = 1; \
       FF(_wp, 0x108) = fv; FF(_wp, 0x10C) = fv; FF(_wp, 0x110) = fv; FF(_wp, 0x124) = 1.0f; } \
     P = _wp; }
-#define SETI(P, V) { P = (V) + 0xB4; if (1) {} FF(P, 0) = 0; if (1) {} FF(P, 4) = 0; if (1) {} FF(P, 8) = 0; }
+/* three DIFFERENT spellings of 0: cfe passes float literals to uopt as text, so each spelling is its own
+ * constant candidate with one use per site (never coloured: three ugen mtc1 zero, as in the target) */
+#define SETI(P, V) { P = (V) + 0xB4; if (1) {} FF(P, 0) = 0.f; if (1) {} FF(P, 4) = .0f; if (1) {} FF(P, 8) = 0.00f; }
 #define SETE(P, V) { P = (V); if (1) {} FF(P, 0xB4) = 0.0; if (1) {} FF(P, 0xB8) = 0.0; if (1) {} FF(P, 0xBC) = 0.0; }
 #define ATTACH(P, W) {  int _i;  for (_i = 0; _i < FW(W, 0x13C); _i++) { timproc_uso_b5_func_04DFFC(W, FP(W, 0x148 + _i * 4));  { P = FP(W, 0x148 + _i * 4) + 0x18; *(int *)P &= ~4; }  } }
 #define ATTACH1(P, W) { for (i1 = 0; i1 < FW(W, 0x13C); i1++) { timproc_uso_b5_func_04DFFC(W, FP(W, 0x148 + i1 * 4)); { P = FP(W, 0x148 + i1 * 4) + 0x18; *(int *)P &= ~4; } } }
