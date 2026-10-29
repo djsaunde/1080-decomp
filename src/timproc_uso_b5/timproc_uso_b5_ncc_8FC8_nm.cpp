@@ -207,7 +207,7 @@ struct WA : B2 { WFIELDS
         i140 = 0;
         attachKids();
         i144 = 0;
-        if (sb) FW(&import_8005EE6C, 4) |= 0x80000; else FW(&import_8005EE6C, 4) &= 0xFFF7FFFF;
+        if (sb) { do { int x = FW(&import_8005EE6C, 4); x |= 0x80000; FW(&import_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = x; } while (0); }
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
@@ -225,7 +225,7 @@ struct WB : B2 { WFIELDS
         i140 = 0;
         attachKids();
         i144 = 0;
-        if (sb) FW(&import_8005EE6C, 4) |= 0x80000; else FW(&import_8005EE6C, 4) &= 0xFFF7FFFF;
+        if (sb) { do { int x = FW(&import_8005EE6C, 4); x |= 0x80000; FW(&import_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = x; } while (0); }
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
@@ -243,7 +243,7 @@ struct WC : B2 { WFIELDS
         i140 = 0;
         attachKids();
         i144 = 0;
-        if (sb) FW(&import_8005EE6C, 4) |= 0x80000; else FW(&import_8005EE6C, 4) &= 0xFFF7FFFF;
+        if (sb) { do { int x = FW(&import_8005EE6C, 4); x |= 0x80000; FW(&import_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = x; } while (0); }
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
