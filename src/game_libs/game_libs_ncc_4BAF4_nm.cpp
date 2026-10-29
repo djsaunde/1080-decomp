@@ -52,7 +52,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     int h;
     Gfx4B *g;
     volatile int pad0; /* run 158: two more homes below h = the target's frame 0xF0 (every sp offset then matches) */
-    volatile int pad1;
+    int e; /* agent-g run 233: the clip half-extent, in pad1's home slot (frame kept) */
 
     {
         Cam4B *cam = &D_4BAF4_cam;
@@ -79,13 +79,15 @@ extern "C" void gl_func_0004BAF4(char *self) {
     pos.y += F4B(self, 0xBC, f32);
     x = pos.x;
     y = pos.y;
-    w = spr->w + 0 * y; /* agent-c run 209: folded counted use of y */
+    w = spr->w; /* agent-g run 233: the folded `+ 0 * y` dropped (x / y back in a0 / a1 after the e change) */
     h = spr->h;
-    if (F4B(GS4B, 0xC0, int) + F4B(GS4B, 0xB8, volatile int) < x || F4B(GS4B, 0xC4, int) + F4B(GS4B, 0xBC, volatile int) < y ||
-        x < F4B(GS4B, 0xC0, int) - F4B(GS4B, 0xB8, volatile int) || y < F4B(GS4B, 0xC4, int) - F4B(GS4B, 0xBC, volatile int)) {
+    /* agent-g run 233 (kit CCXLIV): each volatile half-extent read assigned to ONE local e -- the target's four
+     * reloads share one coloured register (a3), and the centre 0xC0 now loads before 0xB8 like the target */
+    if ((e = F4B(GS4B, 0xB8, volatile int), F4B(GS4B, 0xC0, int) + e < x) || (e = F4B(GS4B, 0xBC, volatile int), F4B(GS4B, 0xC4, int) + e < y) ||
+        (e = F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - e) || (e = F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - e)) {
         return;
     }
-    ctx = F4B(GS4B, 0x158, Ctx4B *) + 0 * (int)(spr->w); /* agent-c run 209: folded counted use of w (kit CXCIV lever b); run 211: + spr->w; agent-g run 231: the `0 * w` term dropped again (96.36 -> 96.82) */
+    ctx = F4B(GS4B, 0x158, Ctx4B *) + 0 * (int)(spr->h); /* agent-g run 233: spr->h (97.00 -> 97.03); agent-c run 209: folded counted use of w (kit CXCIV lever b); run 211: + spr->w; agent-g run 231: the `0 * w` term dropped again (96.36 -> 96.82) */
     r = gl_func_00000000(F4B(F4B(self, 0xCC, char *), 0x60, int));
     g = PKT4B(ctx);
     g->w0 = 0x06000000;
