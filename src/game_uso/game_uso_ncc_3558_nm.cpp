@@ -100,8 +100,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     {
         Vec3 side;
         k = e.y * s0->f130;
-        side.x = zero; side.y = k; side.z = zero;
-        game_uso_func_072EE8(c.getOut()->f30, &side);
+        side.x = zero; side.y = k; side.z = zero; game_uso_func_072EE8(c.getOut()->f30, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */
     }
     game_uso_func_071028(&e);
     s0->b1->mtx.getPos(w);
