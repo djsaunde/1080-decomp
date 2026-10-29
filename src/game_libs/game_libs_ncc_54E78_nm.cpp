@@ -17,7 +17,7 @@ struct V3 { f32 x, y, z;
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
-    f32 dot(const V3 &o) const { return y * o.y + x * o.x + z * o.z; } /* run 200: y term first (operand-order grid) */
+    f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; } /* run 200: y term first (operand-order grid); agent-g run 231: back to x first (stale after later levers, 98.22 -> 98.66) */
 };
 inline int i1() { return 1; }
 struct Plane { V3 n; f32 d; };
