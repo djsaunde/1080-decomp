@@ -67,7 +67,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     V4_55A0 vec1, vec2;
     R12_55A0 *it;
     S4_55A0 v0, v1, v2, v3;
-    int mode;
+    int mode_kd = 0; /* agent-c run 219 (kit CCXVI): mode de-named, its home kept */
     float *mm = m;
     S4_55A0 p1;
     char *obj;
@@ -117,7 +117,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     if ((arg1 == 6) || (arg1 == 0xB)) {
         var_s0 &= ~0x704;
     }
-    mode = CFG55A0(0x34);
+#define mode (CFG55A0(0x34))
     if (mode == 5) {
         var_s0 |= 1;
     }
