@@ -812,7 +812,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 buf[vidx + 0].s = 0;
                 buf[vidx + 0].t = 0;
                 buf[vidx + 1].x = x - 32;
-                buf[vidx + 1].y = y + 16; if (1) {}
+                buf[vidx + 1].y = y + 16; /* run 233: the old if (1) {} here dropped (96.56 -> 96.72) */
                 buf[vidx + 1].z = import_8001FFA0[0] / 2;
                 buf[vidx + 1].s = 0xFC0;
                 buf[vidx + 1].t = 0;
