@@ -4,7 +4,11 @@
  * slot), and the matrix product as `mtx[i][j] = mtx[i][j] + ...` (the `+=` form costs two more temp words):
  * frame 0xC0 = target, every home = target, 203 words = target, 98.37. Residual: flags | 2 in place (target
  * keeps flags in a2 and builds the operand in t5), the 0xE4 load slot, and the last two DL slots' v0 / v1 / a2
- * colours. Still NON_MATCHING: build/non_matching/ only. */
+ * colours. agent-c run 239: flags | 2 inside the packet expression (`(flags | 2) & 0xFF) << 16`, no store back)
+ * with a folded `+ 0 * (int)(flags)` use on the pre-call `fixed` sum (gives flags the weight for a register:
+ * without it flags is left in its home) builds the operand in t5 as the target: 99.36 -> 99.41; left: the last
+ * two DL slots' v0 / v1 / a0 / a2 colours (a named `s32 *h` count pointer gives slot3 v1 but costs 8 frame bytes).
+ * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32;
 extern "C" {
 extern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;
@@ -46,13 +50,12 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
         flags = W(g, 0x1F4);
         slot1 = (*(s32 **)(ctx + 0x3C))[1];
         (*(s32 **)(ctx + 0x3C))[1] = slot1 + 1;
-        fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6);
+        fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6) + 0 * (int)(flags);
         F_4B2F4_pack(&D_4B2F4_fixed + 0x3C8A0, fixed);
-        flags |= 2;
         slot2 = (*(s32 **)(ctx + 0xC))[1];
         (*(s32 **)(ctx + 0xC))[1] = slot2 + 1;
         cmd1 = (u32 *)(P(P(ctx, 0xC), 0) + slot2 * 8);
-        cmd1[0] = ((((u32)flags & 0xFF) << 8) << 8) | 0x01000000 | 0x40;
+        cmd1[0] = (((u32)(flags | 2) & 0xFF) << 16) | 0x01000000 | 0x40;
         cmd1[1] = F_4B2F4_phys(fixed);
         if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
         g = &D_4B2F4_state;
