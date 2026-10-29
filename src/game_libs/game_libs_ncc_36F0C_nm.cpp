@@ -38,13 +38,14 @@ struct FreeCam {
 static inline f32 fabs_(f32 x) { return x < 0.0f ? -x : x; }
 static inline f32 clamp_(f32 x, f32 lo, f32 hi) { if (x < lo) return lo; if (x > hi) return hi; return x; }
 void FreeCam::update() {
-    Cam *volatile c = cam;
+    Cam *c = cam;
+    if (&c == 0) return; /* agent-g run 218: folded address test = c address-taken (memory-resident, reloaded after each aliasing store) instead of volatile: the xform read lands in t2 like the target: 99.17 -> 99.46 */
     Pad *p;
     V3 v; /* agent-g run 218: back after p (target homes c -4 / v -20 / w -44, needs the named h below) */
     f32 mx = 0.0f, my = 0.0f, mz;
     V3 w;
     p = ctl->pad;
-    v.z = 0.0f; v.y = 0.0f; v.x = 0.0f;
+    v.x = 0.0f; v.y = 0.0f; v.z = 0.0f; /* agent-g run 218: x / y / z (stores come out z first, as in the target) */
     mz = 0.0f;
     f64 h = 100.0; /* agent-g run 218: a named double step = the target's 8 extra home bytes (frame 128 -> 136 = target): 94.42 -> 94.53 */
     if (p->btn & 0x40) mz += h;
@@ -65,7 +66,7 @@ void FreeCam::update() {
     }
     pitch = clamp_(pitch, -89.0f, 89.0f); /* agent-g run 218: if / return inline = one result temp (f2), no outer-ternary mov.s: 968 B = target */
     f32 d = dist; /* agent-g run 218: dist read before the w stores (target lwc1 44(a0) ahead of the pitch store): 94.52 -> 99.16 */
-    w.y = 0.0f; w.x = 0.0f; w.z = d;
+    w.x = 0.0f; w.y = 0.0f; w.z = d;
     gl_func_00034458_36F0C(pitch, &w.y, &w.z);
     gl_func_00034458_36F0C(yaw, &w.x, &w.z);
     M &m = c->tgt->m;
