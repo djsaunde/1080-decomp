@@ -14605,7 +14605,7 @@ s32 arg2;
         break;
     case 2:                             /* body C @0x118 */
         gl_func_00042364(2);
-        gl_cmd_30AF4 = 16;
+        gl_cmd_30AF4 = 16 + 0 * prev; /* agent-g run 207: folded counted use (kit CXCIV) */
         gl_func_emit(CMD_B3);
         flag = 1;
         break;
