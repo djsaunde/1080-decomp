@@ -211,9 +211,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
         timproc_uso_b5_func_04C678(self, timproc_uso_b5_D_807FEBB8 + 0x1348);
         FP(self, 0x28) = timproc_uso_b5_D_807FE5F4;
         FP(self, 0xC) = timproc_uso_b5_D_807FE5F4 + 0x1350;
-        { char *p = ALLOC(0x30); if (p) { timproc_uso_b5_func_04C678(p, timproc_uso_b5_D_807FEBCC + 0x135C);
-            FP(p, 0x28) = timproc_uso_b5_D_807FEBD4; FP(p, 0xC) = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(p, 0x2C) = self; }
-          FP(self, 0x50) = p; }
+        { char *p = ALLOC(0x30); w = p; if (w) { timproc_uso_b5_func_04C678(w, timproc_uso_b5_D_807FEBCC + 0x135C); FP(w, 0x28) = timproc_uso_b5_D_807FEBD4; FP(w, 0xC) = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(w, 0x2C) = self; } FP(self, 0x50) = w; }
         ADD(self, FP(self, 0x50));
         timproc_uso_b5_func_0000A928(self);
         { char *p = ALLOC(0x2C); char *q; if (p) { timproc_uso_b5_func_04C678(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
@@ -271,7 +269,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 FP(w, 0xC) = timproc_uso_b5_D_807FED00 + 0x1490;
                 W16C(FP(w, 0x108), timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270))
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
-                SETE(u, FP(w, 0x108))
+                SETI(u, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
                 sb2 = FW(f8fc8_ee6c_sb2, 4) & 0x80000; { _x = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0); FW(w, 0x13C) = 1; if (1) {}
                 FW(w, 0x140) = 0;
@@ -318,7 +316,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             { n = FP(self, 0x58) + 0x22C; *(VecH *)&t1 = v3a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v3b.f0 = *(f32 *)&DS_2DC; v3b.f4 = DF_2E0; v3b.f8 = DF_2E4;
             { n = FP(self, 0x58) + 0x24C; *(VecH *)&t1 = v3b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { t = FP(self, 0x58) + 0x284; if (1) {} FF(t, 0x10) = DF_2E8; }
+            { u = FP(self, 0x58) + 0x284; if (1) {} FF(u, 0x10) = DF_2E8; }
             FP(FP(self, 0x58), 0x29C) = FP(FP(self, 0x58), 0x2B8);
             FF(FP(FP(self, 0x58), 0x2B8), 0x12C) = DF_2EC;
             FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;
@@ -342,7 +340,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             if (FW(&import_800200CC, 0x34) != 6) tu &= ~3;
             for (i = 0; i != 8; i++) {
                 char *r;
-                VSEL(u, c) r = VCALL(u, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f,  DF_320);
+                VSEL(w, c) r = VCALL(w, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, FF(import_808000CC, 0x320));
                 items[i] = r;
                 if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
             }
