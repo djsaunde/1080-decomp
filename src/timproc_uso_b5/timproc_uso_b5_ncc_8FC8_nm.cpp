@@ -20,6 +20,8 @@ typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64
 #define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
 extern "C" {
 extern char import_800200CC, import_80020098;
+extern char import_80020098_a, import_80020098_b, import_80020098_c, import_80020098_d; /* agent-c run 221: per-row aliases of import_80020098 (target re-forms the address in v0 per S70 row; one shared symbol is hoisted into s0) + the row ctors' `B *const &o`: 91.56 -> 91.82 */
+#define CFGS(S) (*(char **)((char *)&S + 0x134))
 char *timproc_uso_b5_func_00002B74(...);
 char *timproc_uso_b5_func_000032C8(...);
 char *timproc_uso_b5_func_00003890(...);
@@ -169,12 +171,12 @@ struct S70 : B { int f2C, f30, f34; B *f38; char p3c[0x6C - 0x3C]; int f6C;
         timproc_uso_b5_func_04C678(bp, D); FW(bp, 0x28) = (int)(f8fc8_e304_1 + 0xA94); } \
       FW(np, 0x28) = (int)(VT); np->name = NM; np->f2C = FW(CFG, 0x84); np->f30 = FW(CFG, 0x80); np->f6C = 0; np->f38 = o; np->f34 = FW(CFG, 0x8C); } \
     P = np; }
-#define S70CLASS(N, D, NM) struct N : S70 { N(B *o) : S70(D) { name = NM; f2C = FW(CFG, 0x84); f30 = FW(CFG, 0x80); f34 = FW(CFG, 0x8C); f6C = 0; f38 = o; } \
+#define S70CLASS(N, D, NM, S) struct N : S70 { N(B *const &o) : S70(D) { name = NM; f2C = FW(CFGS(S), 0x84); f30 = FW(CFGS(S), 0x80); f34 = FW(CFGS(S), 0x8C); f6C = 0; f38 = o; } \
     virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual B *add(int, int, f32, f32, f32, f32, f32, f32); };
-S70CLASS(S70a, timproc_uso_b5_D_807FEC90 + 0x1420, timproc_uso_b5_D_807FEC98 + 0x1428)
-S70CLASS(S70b, timproc_uso_b5_D_807FECA8 + 0x1438, timproc_uso_b5_D_807FECB0 + 0x1440)
-S70CLASS(S70c, timproc_uso_b5_D_807FECBC + 0x144C, timproc_uso_b5_D_807FECC4 + 0x1454)
-S70CLASS(S70d, timproc_uso_b5_D_807FECD0 + 0x1460, timproc_uso_b5_D_807FECD8 + 0x1468)
+S70CLASS(S70a, timproc_uso_b5_D_807FEC90 + 0x1420, timproc_uso_b5_D_807FEC98 + 0x1428, import_80020098_a)
+S70CLASS(S70b, timproc_uso_b5_D_807FECA8 + 0x1438, timproc_uso_b5_D_807FECB0 + 0x1440, import_80020098_b)
+S70CLASS(S70c, timproc_uso_b5_D_807FECBC + 0x144C, timproc_uso_b5_D_807FECC4 + 0x1454, import_80020098_c)
+S70CLASS(S70d, timproc_uso_b5_D_807FECD0 + 0x1460, timproc_uso_b5_D_807FECD8 + 0x1468, import_80020098_d)
 struct Kid : B { Kid(char *, char *, int); virtual void v(); };
 struct B2 : B { char p2c[0xB4 - 0x2C]; V3 pos; char pc0[0xDC - 0xC0]; f32 fDC, fE0, fE4; char pe8[0x108 - 0xE8];
     B2(char *, f32, f32, f32); void addChild(B *); virtual void v(); };
