@@ -130,15 +130,18 @@ int Mgr::run() {
     it = arr.iter();
     while ((it.next() + 0)) { /* run 206: folded + 0 (kit CLXXIX) */
         o = it.cur();
-        Ctx *g = *(Ctx **)((char *)&D_493AC_d + 0x214);
-        o->ctx6C = g;
-        int cnt = 0;
-        o->n8A = g->count();
+        /* agent-g run 233 (kit CCXLIV): the context pointer is a ugen temp (t6) in the target, not a coloured
+         * local: stored to o->ctx6C and re-read through the member (uopt forwards the store), rec.ctx taken before
+         * the rec stores that would kill the forwarding; `g` kept as a home-keeping local (frame offsets) */
+        Ctx *g = 0;
+        o->ctx6C = *(Ctx **)((char *)&D_493AC_d + 0x214);
+        o->n8A = o->ctx6C->count();
+        rec.ctx = o->ctx6C;
         rec.n58C = 0;
         rec.f594 = 3;
         rec.f590 = 32;
-        rec.ctx = g;
         gl_func_00000000(&rec);
+        int cnt = 0; /* agent-g run 233: after the call (the target's `or s5,zero,zero` follows the &rec argument) */
         if (G1C4(D_493AC_b) & 8) {
             int k = 0;
             if (grid == 0) {
