@@ -1,4 +1,11 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_000097EC (0x39C / 231 words).
+/* IDO 7.1 NCC (C++) EXACT donor for game_uso_func_000097EC (0x39C / 231 words), spliced over the empty
+ * placeholder in game_uso.c on both build paths.
+ *
+ * agent-g run 237 (EXACT): the two XZ ctor arguments are named Vec3 locals assigned in the ctor argument
+ * (`XZ e(pe = (a - b) * s->k)`), pe declared in the if block and pf + e + f in a nested block. Named locals
+ * are laid out in declaration order (earlier = higher), edg temporaries above them in reverse creation order;
+ * pe (204) above the a - b temporary (192), the nested block's pf (180), e (168), f (156) = the target's
+ * homes. The one remaining temporary (a - b) is the only one in the if block's temp list.
  *
  * XZ-plane proximity test: a/b = XZ projections of w->vel and w->other->vel;
  * e = XZ((a - b) * k), f = XZ(other->pos - pos); returns 1 when f projects
@@ -44,8 +51,11 @@ extern "C" int game_uso_func_000097EC(Self *s) {
         XZ a(s->w->vel);
         XZ b(s->w->other->vel);
         if (0.0f < dot(a, a)) {
-            XZ e((a - b) * s->k);
-            XZ f(s->w->other->pos - s->w->pos);
+            Vec3 pe;
+            {
+            Vec3 pf;
+            XZ e(pe = (a - b) * s->k);
+            XZ f(pf = s->w->other->pos - s->w->pos);
             float mag = game_uso_func_082880(dot(e, e));
             if (0.0f < mag) {
                 float cr, t, *pm;
@@ -53,6 +63,7 @@ extern "C" int game_uso_func_000097EC(Self *s) {
                 cr = ABS(e.z * f.x - e.x * f.z);
                 t = (e.x * f.x + e.z * f.z) / *pm;
                 if (0.0f <= t && t < 1.0f && cr / mag < s->lim) ret = 1;
+            }
             }
         }
     }

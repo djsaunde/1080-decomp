@@ -3018,10 +3018,11 @@ build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0F04_NM_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
-# 97EC: NM-only NCC donor (XZ derived-ctor protocol x5; two edg temp homes swapped vs target).
-GAMEUSO_97EC_NM_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_NM_DONOR)
-build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_NM_DONOR)
+# 97EC: EXACT NCC donor over an empty placeholder (XZ derived-ctor protocol x5; agent-g run 237: named
+# Vec3 ctor arguments, pe in the if block and pf / e / f in a nested block = the target's temp homes).
+GAMEUSO_97EC_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_DONOR)
 # 1DDC: NM-only NCC donor (24BC sibling: Ctx accessor, M4::getPos, V3 copy chains; two block temps swapped, v0/v1, return slot -8).
 GAMEUSO_1DDC_NM_DONOR := build/src/game_uso/game_uso_ncc_1DDC_nm.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00001DDC=$(GAMEUSO_1DDC_NM_DONOR)

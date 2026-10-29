@@ -5929,16 +5929,12 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00008CD8);
 //   exact-matchable without proper USO mnemonic disasm; structural
 //   pass only, no byte body.
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
-/* NM body = the NCC donor src/game_uso/game_uso_ncc_97EC.cpp (spliced into
- * the NON_MATCHING object only; 229/231 words up to two swapped temp homes
- * and the FP colouring they cause). This placeholder is replaced. */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_uso/game_uso_ncc_97EC.cpp,
+ * REPLACE_FUNC_BODY-spliced over the placeholder below in both build trees
+ * (agent-g run 237). */
 int game_uso_func_000097EC(char *a0) {
     return *(int *)(a0 + 0x30);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000097EC);
-#endif
 
 extern void game_uso_func_047B1C();
 extern char game_uso_D_807FEDB8;
