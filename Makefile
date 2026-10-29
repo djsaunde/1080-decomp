@@ -763,7 +763,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 206: 469A8 NM folded `+ 0 * arg1` counted use (408 -> 412 bytes = target): 0x2eadc -> 0x2eae0 (62F08 NM offset 0x2ea90).
 # agent-g run 207: 38A28 NM folded `+ 0 * code` (344 -> 324 bytes = target): 0x2eae0 -> 0x2eacc (62F08 NM offset 0x2ea7c).
 # agent-g run 210: 3C43C (868 -> 872), 3B6A0 (796 -> 800), 3BE1C (1556 -> 1568) NM donor counted uses, all toward / = target: 0x2eacc -> 0x2eae0 (62F08 NM offset 0x2ea90).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eadc gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c
+# agent-g run 212: 37938 boundary (delay nop into the .s, the 2-word _pad.s block -> a 1-word suffix): 0x2eadc -> 0x2ead8 (62F08 NM offset 0x2ea88), + gl_func_00037938=0x158 trim of the suffix out of the symbol.
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2ead8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c gl_func_00037938=0x158
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
