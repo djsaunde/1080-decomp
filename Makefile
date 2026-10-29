@@ -5249,7 +5249,7 @@ GAMEUSO_3558_NM_DONOR := build/src/game_uso/game_uso_ncc_3558_nm.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00003558=$(GAMEUSO_3558_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_NM_DONOR)
 # 7C1C: NM-only donor. Was the NCC comparison donor game_uso_ncc_7C1C_nm.cpp (96.35); now the
-# cfront-style cfe C port game_uso_7C1C_nm.c (agent-c run 230, kit CCXXXVIII), filtered out of C_FILES.
+# cfront-style cfe C port game_uso_7C1C_nm.c (agent-c run 230, kit CCXL), filtered out of C_FILES.
 GAMEUSO_7C1C_NM_DONOR := build/src/game_uso/game_uso_7C1C_nm.c.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007C1C=$(GAMEUSO_7C1C_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_7C1C_NM_DONOR)

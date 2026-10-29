@@ -2,7 +2,7 @@
  * (agent-c run 230, from agent-g's run 229 port c7c7.c). NM object only: spliced
  * over the INCLUDE_ASM placeholder in build/non_matching (GAMEUSO_7C1C_NM_DONOR);
  * the ROM build keeps INCLUDE_ASM. Replaces the NCC donor game_uso_ncc_7C1C_nm.cpp
- * (96.35) as the NM body. Kit CCXXXVIII in docs/IDO_CODEGEN.md has the levers.
+ * (96.35) as the NM body. Kit CCXL in docs/IDO_CODEGEN.md has the levers.
  *
  * Steering target in the XZ plane (see the NCC donor for the C++ shape): every
  * bnez &stack / jal 055750(12) guard is a cfront ctor temporary, the pooled
