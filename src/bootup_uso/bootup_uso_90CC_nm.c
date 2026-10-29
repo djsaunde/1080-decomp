@@ -9,7 +9,8 @@
  * join block, so as1 stops copying the `arg8 &= ~4` join and hoisting the d148 / &D_8880 address
  * loads), `var_s0 = temp_s1_8; var_s0 += ...` for the base-first addu, and each draw-argument global
  * loaded into var_s0 first (the target's `lui s0, %hi(g); lw v0, %lo(g)(s0)`).
- * 99.90 standalone, 2106 words = target. RESIDUAL (6 rows): site 1's global value in v1 (target v0),
+ * Site 1: `if (1) {}` after the preceding call + a value variable other than var_v1 (v0), the d148 list
+ * walk's id in cg (v1). 99.90 standalone, 2106 words = target. RESIDUAL (4 rows, both as1 order):
  * `lw v1, 0(t6)` scheduled one slot early in the d148 list walk, vpos.z / 5th-arg store order.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef unsigned char u8;
@@ -917,17 +918,17 @@ sw_end:
         if (sp174 != 0) {
             temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {
-                var_v1 = *(s32 *)(char *)bu_90cc_d00_b;
+                cg = *(s32 *)(char *)bu_90cc_d00_b;
                 temp_s1_8 = (char *)(bu_90cc_d148_01 + 24);
                 do {
-                    if (arg2 == var_v1) {
+                    if (arg2 == cg) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
                         var_s0 = temp_s1_8; var_s0 += *(s32 *)((char *)temp_v0_5 + 0x4) * 4 + 0 * (int)(arg2);
                         *(s32 *)var_s0 = (s32)(temp_v0_5 + 8);
                     }
-                    var_v1 = *(s32 *)((char *)(temp_v0_5) + 0x18);
+                    cg = *(s32 *)((char *)(temp_v0_5) + 0x18);
                     temp_v0_5 += 0x18;
-                } while (var_v1 != 0);
+                } while (cg != 0);
             }
         } else {
             { s32 i; for (i = 0; i < 3; i++) ((s32 *)bu_90cc_d148_18)[i] = 0; }
@@ -974,11 +975,14 @@ sw_end:
                 *(s32 *)((char *)(sp158) + 0x4) = 1;
             }
             *(char **)((char *)(sp158) + 0x14) = var_s1;
-            func_00000000(1);
+            func_00000000(1); if (1) {}
+            /* a call does not end a uopt basic block: without the split, the sp158 temp's v0 live range
+             * covers this block and the site-1 value cannot take v0. Each draw-argument global goes
+             * through var_s0 (overwritten next) for the target's `lui s0, %hi(g); lw v0, %lo(g)(s0)`. */
             var_s0 = (char *)bu_90cc_d44_01.f28;
-            var_v1 = (s32)var_s0;
+            var_s0_3 = (s32 *)var_s0;
             var_s0 = *(char **)((char *)(sp164) + 0x28);
-            temp_s1 = (char *)(var_v1 + 0x70);
+            temp_s1 = (char *)((s32)var_s0_3 + 0x70);
             ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp164, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0x10, (s32)temp_s1, *(f32 *)(bu_90cc_d8B4_01 + 4), 100.0f);
             if (*(s32 *)((char *)(arg0) + 0xA58) & 1) {
                 var_s0 = *(char **)((char *)(sp160) + 0x28); 
