@@ -7316,7 +7316,7 @@ void func_0000B75C(char *arg0) {
             if (*(s32 *)((char *)(arg0) + 0x9A8) & 1) {
                 bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3B0, -*(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x678), arg0);
             } else {
-                var_a0 = arg0 + 0xCC;
+                var_a0 = arg0 + 0xCC + 0 * (int)(*arg0); /* agent-c run 211: folded counted use (zero code) */
                 temp_a1 = arg0 + 0x3C8;
                 sp28 = temp_a1;
                 sp24 = var_a0;
