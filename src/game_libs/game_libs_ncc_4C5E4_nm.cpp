@@ -71,9 +71,9 @@ void Obj::run() {
         int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
         s1 = (char *)sub->mF0;
         if (f) f = (m78 & 2) != 0;
-        float buf[4]; int one = 1, za = 0, zb = 0, e1 = 8, e2 = 8, e3 = 8; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72) */
+        float buf[4]; int one = 1, za = 0, e1 = 8, e2 = 8, e3 = 8; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72) */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, za, zb, e1, e2, e3, m1B0);
+        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, za, za, e1, e2, e3, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = sub;
@@ -106,7 +106,7 @@ void Obj::run() {
     vp->vscale[0] = fw; /* agent-g run 224: [0] before [1] (sweep 88.65 -> 88.67; was the run-194 [1]-first order) */
     vp->vscale[1] = fh;
     vp->vtrans[1] = fy * 4.0f + fh;
-    { Gfx *p = &d->head->buf[d->head->count++]; p->w0 = 0x03800010; p->w1 = gl_func_00034458(vp); }
+    { Gfx *p = &d->head->buf[d->head->count++]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = gl_func_00034458(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
     }
     gl_func_00034458(this);
     gl_func_00034458(gl_d_4c5e4_arg, this);
