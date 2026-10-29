@@ -19,13 +19,17 @@
  * (spill home 0x6C, no s8) as in the target; registers then line up (91.68 -> 95.29),
  * and operator* returning `Vec3(x * s, y * s, z * s)` evaluates all three products
  * before the stores into the by-value temp, as the target (95.29 -> 98.54, 1336 =
- * target length). Left: frame 384 vs 392 (block-temp homes shifted), the
- * operator- sub / store interleave. */
+ * target length).
+ * agent-c run 214: frame 392 = target with every named home exact: operator= returns
+ * Vec3 & (frame 384 -> 392 with a named w), loop-block scalars h / w / dt declared
+ * first then n / d / hit (n at 0x134, d 0x128, hit 0xF8), f at function scope (one
+ * more outer home); the 3-float ctor forwarding to set() fixes the s1 / s2 / s3
+ * permutation. Left: edg temp homes below hit, FP colours of w / dt. */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
-    Vec3(float a, float b, float c) { x = a; y = b; z = c; }
-    void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; }
+    Vec3(float a, float b, float c) { set(a, b, c); }
+    Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3 operator-(const Vec3 &v) const { Vec3 r; r.set(x - v.x, y - v.y, z - v.z); return r; }
     Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); } /* run 213: ctor form, products before stores */
@@ -75,6 +79,7 @@ extern "C" void gl_func_00065494(Self *self) {
     float wsum;
     float minv;
     Node *node;
+    float f;
 
     count = 0;
     nsum.x = 0.0f; nsum.y = 0.0f; nsum.z = 0.0f;
@@ -82,9 +87,11 @@ extern "C" void gl_func_00065494(Self *self) {
     wsum = 0.0f; /* run 186: accumulator zeros after the vector zeros (120-order grid, 90.02 -> 91.61) */
     minv = 0.0f;
     while ((node = it.next()) != 0) {
-        Vec3 d; /* run 186: d / h / n / hit declaration order (24-order grid) */
         float h;
+        float w;
+        float dt;
         Vec3 n;
+        Vec3 d;
         Hit hit;
         n.set((float)iz(), 1.0f, (float)iz());
         node->v120 = node->pos;
@@ -104,13 +111,12 @@ extern "C" void gl_func_00065494(Self *self) {
         node->f144 = h;
         node->vt[0xC].fn((Node *)(node->vt[0xC].off + (char *)node), h, &n, 0x3F800000);
         if (h < 0.0f) {
-            float dt;
             if (h < minv) {
                 minv = h;
             }
             nsum += n;
             count++;
-#define w (-h) /* agent-c run 213: de-named w (lever-sweep, 98.54 -> 98.58 standalone) */
+            w = -h;
             psum += node->v120 * w;
             wsum += w;
             dt = node->v114.dot(n);
@@ -121,7 +127,7 @@ extern "C" void gl_func_00065494(Self *self) {
         }
     }
     if (count != 0) {
-        float f = (float)count; /* block-local again after the set() step (89.91 -> 90.02) */
+        f = (float)count;
         nsum.y /= f; nsum.x /= f; nsum.z /= f;
         psum /= wsum;
         nsum *= -minv * self->f288;
