@@ -147,8 +147,8 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
                     }
                     hit = 1;
                 }
-                result = hitC;
                 b = n;
+                result = hitC; /* agent-g run 224: after `b = n` (sweep 96.31 -> 96.33) */
                 n = n->next + 0 * (int)(n->next); /* agent-g run 210: folded counted use (zero-use sweep): 95.26 -> 96.14, same length */
                 continue;
             }
