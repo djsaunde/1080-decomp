@@ -160,7 +160,7 @@ int Mgr::run() {
                             int j;
                             while ((j = grid->tbl18[e++]) != -1) {
                                 u8 *m = buf + j;
-                                if (o->key18 == tab68[j].key && *m == 0) {
+                                if (tab68[j].key == o->key18 && *m == 0) { /* agent-g run 233: table key first (target load order) */
                                     o->f14 = 1;
                                     cnt++;
                                     this->hit(0, &rec, j, o);
@@ -187,7 +187,7 @@ int Mgr::run() {
                 } else {
                     j = i;
                 }
-                if (o->key18 == tab68[j].key) {
+                if (tab68[j].key == o->key18) {
                     o->f14 = 1;
                     cnt++;
                     this->hit(0, &rec, j, o);
