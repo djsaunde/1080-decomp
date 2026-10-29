@@ -4132,12 +4132,16 @@ void game_uso_func_0000591C(int *a0) {
      * alloc fallback. */
     p = 0;
     if (1) { p = &scratch_xz; }
+    /* agent-g run 207: the folded `+ 0 * (int)src` / `accel_params` uses
+     * (kit CXCIV) lift those source pointers above their copy destinations
+     * in uopt's colouring priority (src v1 as the target); the a0-read 1784
+     * base keeps the post-3ED4 block out of the self->0x30 prefetch web. */
     {
         scratch_dst = p;
         src = (float *)((int)*(char**)((char*)self + 0x30) + 968);
-        if (scratch_dst != 0 || (scratch_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
-            fsel = *src;
-            z = *(float *)((int)src + 8);
+        if (scratch_dst != 0 || (scratch_dst = (Vec3*)game_uso_func_055750(0xC + 0 * (int)src)) != 0) {
+            fsel = src[0 * ((int)src | 1)];
+            z = *(float *)((int)src + 8 + 0 * (int)src);
             scratch_dst->x = fsel;
             scratch_dst->z = z;
             scratch_dst->y = 0.0f;
@@ -4156,7 +4160,7 @@ void game_uso_func_0000591C(int *a0) {
         /* run 196: self->0x30 re-read (CSE'd load, unfolded `addiu v0,a0,1784`) */
         /* run 197: the 1784 base in axis_src (its own web: v0, as the target);
          * accel_params is kept for the chain diff sites' sp+288 spill home. */
-        axis_src = (float *)(*(char**)((char*)self + 0x30) + 1784);
+        axis_src = (float *)(*(char**)((char*)a0 + 0x30) + 1784);
         *(float*)((char*)self + 0x3C) =
             (neg * (1.0f + (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB0)))
              * *(float*)((char*)self + 0xAC)) / *(float *)((int)axis_src + 16);
@@ -4231,13 +4235,13 @@ void game_uso_func_0000591C(int *a0) {
             delta_b_dst = p;
             if (delta_b_dst != 0 || (delta_b_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
                 x = pos_c.x - *accel_params;
-                z = pos_c.z - *(float *)((int)accel_params + 8);
+                z = pos_c.z - *(float *)((int)accel_params + 8 + 0 * (int)accel_params);
                 delta_b_dst->y = 0.0f;
                 delta_b_dst->x = x;
                 delta_b_dst->z = z;
             }
         }
-        stage = *p;
+        stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
         delta_b = stage;
 
         /* run 198: read through the parameter (a separate expression from
@@ -4312,13 +4316,13 @@ void game_uso_func_0000591C(int *a0) {
         delta_g_dst = p;
         if (delta_g_dst != 0 || (delta_g_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
             x = pos_g.x - *accel_params;
-            z = pos_g.z - *(float *)((int)accel_params + 8);
+            z = pos_g.z - *(float *)((int)accel_params + 8 + 0 * (int)accel_params);
             delta_g_dst->y = 0.0f;
             delta_g_dst->x = x;
             delta_g_dst->z = z;
         }
     }
-    stage = *p;
+    stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
     delta_g = stage;
 
     sub = *(char**)((char*)self + 0x30);
