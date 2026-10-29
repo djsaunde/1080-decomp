@@ -838,7 +838,9 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 uls = 0;
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
                     E68_CULL(arr[k++] = E68_NEXT(m), vidx, vidx + 3);
-                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
+                    /* agent-c run 233: the width read spelled *(s32 *)(int)&w (95.31 -> 96.42, length 3020 -> 3032 of 3036):
+                     * its hoisted address adds the one live value that makes uopt spill the (ult + 31) << 2 invariant to 0x54 like the target */
+                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, *(s32 *)(int)&import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
                     E68_END(E68_NEXTB(m));
