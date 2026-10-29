@@ -39,7 +39,7 @@ struct Vec3 {
     void operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; }
     void operator*=(float s) { x *= s; y *= s; z *= s; }
     void operator/=(float s) { x /= s; y /= s; z /= s; }
-    float dot(const Vec3 &v) const {  float r = x * v.x + y * v.y + z * v.z; return r;  }
+    float dot(const Vec3 &v) const { const Vec3 &u = *this; return u.x * v.x + u.y * v.y + u.z * v.z; } /* run 214: pointer home, no phantom FP result (dt in f0) */
 };
 struct V3P { float x, y, z; };
 inline int iz() { return 0; }
