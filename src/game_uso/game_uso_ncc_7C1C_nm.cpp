@@ -79,7 +79,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
         result.x = d.x;
     } else {
         int mode = 0;
-        Node *a_al = a; /* agent-c run 195: alias copy (s-reg tie) */
+        Node *a_al = a + 0 * (int)(out); /* agent-c run 195: alias copy (s-reg tie); agent-g run 210: folded counted use of out, 96.14 -> 96.19 */
         Vec3 seg = XZ(b->pos) - a_al->pos;
         if (s->w->other != 0) {
             float dot = game_uso_func_00007A98(s);
@@ -149,7 +149,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
                 }
                 result = hitC;
                 b = n;
-                n = n->next;
+                n = n->next + 0 * (int)(n->next); /* agent-g run 210: folded counted use (zero-use sweep): 95.26 -> 96.14, same length */
                 continue;
             }
             break;
@@ -163,7 +163,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
             game_uso_func_071028(&n1);
             Vec3 n2 = hitB;
             game_uso_func_071028(&n2);
-            if ((n0.x * n2.x + n0.z * n2.z) < (n0.x * n1.x + n0.z * n1.z)) {
+            if (((n0.x * n2.x + n0.z * n2.z) < (n0.x * n1.x + n0.z * n1.z)) + 0 * (int)(n2.z)) { /* agent-g run 210: folded use of the unit normal's z (|z| <= 1, no cvt emitted; FP colouring only): 96.19 -> 96.31 */
                 result = hitA;
             } else {
                 result = hitB;
