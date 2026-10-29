@@ -9028,12 +9028,8 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         ((f32 *)p)[1] = 0;
         ((f32 *)p)[0] = 0;
         *(f32 *)(child + 0x124) = 1.0f;
-        savedbit = EE6C_L(d884_ee6c_l1) & 0x80000;
-        EE6C_S(d884_ee6c_s1) = EE6C_L(d884_ee6c_l2) & 0xFFF7FFFF;
-        EE6C_S(d884_ee6c_s2) = EE6C_L(d884_ee6c_l3) & ~1;
-        EE6C_S(d884_ee6c_s3) = EE6C_L(d884_ee6c_l4) | 2;
-        EE6C_S(d884_ee6c_s4) = EE6C_L(d884_ee6c_l5) & 0xFFFDFFFF;
-        EE6C_S(d884_ee6c_s5) = EE6C_L(d884_ee6c_l6) | 0x2000;
+        /* run 216: the flag chain as one source line (one .loc group): the savedbit spill moves next to the last RMW like the target */
+        savedbit = EE6C_L(d884_ee6c_l1) & 0x80000; EE6C_S(d884_ee6c_s1) = EE6C_L(d884_ee6c_l2) & 0xFFF7FFFF; EE6C_S(d884_ee6c_s2) = EE6C_L(d884_ee6c_l3) & ~1; EE6C_S(d884_ee6c_s3) = EE6C_L(d884_ee6c_l4) | 2; EE6C_S(d884_ee6c_s4) = EE6C_L(d884_ee6c_l5) & 0xFFFDFFFF; EE6C_S(d884_ee6c_s5) = EE6C_L(d884_ee6c_l6) | 0x2000;
         FW(child, 0x140) = 1;
         FW(child, 0x13C) = 1;
         switch (arg2) {
@@ -9258,12 +9254,8 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         p[1] = 0;
         p[0] = 0;
         *(f32 *)(child + 0x124) = 1.0f;
-        flag = EE6C_L(df14_ee6c_l1) & 0x80000;
-        EE6C_S(df14_ee6c_s1) = EE6C_L(df14_ee6c_l2) & 0xFFF7FFFF;
-        EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_l3) & ~1;
-        EE6C_S(df14_ee6c_s3) = EE6C_L(df14_ee6c_l4) | 2;
-        EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_l5) & 0xFFFDFFFF;
-        EE6C_S(df14_ee6c_s5) = EE6C_L(df14_ee6c_l6) | 0x2000;
+        /* run 216: flag chain on one line (as D884) */
+        flag = EE6C_L(df14_ee6c_l1) & 0x80000; EE6C_S(df14_ee6c_s1) = EE6C_L(df14_ee6c_l2) & 0xFFF7FFFF; EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_l3) & ~1; EE6C_S(df14_ee6c_s3) = EE6C_L(df14_ee6c_l4) | 2; EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_l5) & 0xFFFDFFFF; EE6C_S(df14_ee6c_s5) = EE6C_L(df14_ee6c_l6) | 0x2000;
         FW(child, 0x140) = 1;
         FW(child, 0x13C) = 1;
         switch ((s32) sub) {
