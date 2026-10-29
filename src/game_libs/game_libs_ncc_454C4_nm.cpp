@@ -20,9 +20,11 @@
  * agent-g run 216: one more bb (`if (1) {}` after the last packet) drops both hoisted constants; no named `Light *l`
  * (every store through `rec->l[n]`, the target's v0 base for the dir bytes too), `n` declared before the iterator
  * (iterator at sp+60 / 64, frame 88) and plain direction bytes without the `& 0xFF`: 2020 -> 2028 bytes = target,
- * the body lines up word-for-word up to registers (six s-registers). Residual is colouring only: rec / c swapped
- * (s5 / s4 vs the target's s4 / s5, an adjsave tie broken by bitpos), e copy-propagated as a3 into the second
- * flags test and the colour loads (target a2), t-register numbering.
+ * the body lines up word-for-word up to registers (six s-registers). The final bb lever as `if (rec) {}` (an
+ * emission-free rec reference) breaks the rec / c adjsave tie (3.2 / 3.2, c won on bitpos) so rec takes s4 and c
+ * s5 as in the target: 98.28 -> 98.66. Residual is colouring only: e copy-propagated as the inline return temp a3
+ * into the second flags test and the colour loads (target a2), the latch's `it.nxt` load coloured v0 (target t7,
+ * a ugen-local register), the clamp temp v1 (target v0) and the t-register numbering that follows.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -100,5 +102,5 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     rec->l[0].colc[0] = rec->a.colc[0]; rec->l[0].colc[1] = rec->a.colc[1]; rec->l[0].colc[2] = rec->a.colc[2];
     gSPLight(c->next(), gl_func_00034458(&rec->l[0]), 1);
     gSPLight(c->next(), gl_func_00034458(&rec->a), 2);
-    gSPNumLights(c->next(), 1); if (1) {}
+    gSPNumLights(c->next(), 1); if (rec) {}
 }
