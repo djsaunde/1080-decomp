@@ -38,7 +38,7 @@ extern struct DBlk_8D38 import_800201EC;
 extern int timproc_uso_b5_func_055750();
 extern int timproc_uso_b5_func_04C678();
 extern int timproc_uso_b5_func_07ACE0();
-extern int timproc_uso_b5_func_04DFFC();
+extern void timproc_uso_b5_func_04DFFC();
 extern int timproc_uso_b5_func_05D0E0();
 extern int timproc_uso_b5_func_04C774();
 extern void timproc_uso_b5_func_048E7C();
