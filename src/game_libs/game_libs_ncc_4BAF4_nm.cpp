@@ -85,7 +85,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         x < F4B(GS4B, 0xC0, int) - F4B(GS4B, 0xB8, volatile int) || y < F4B(GS4B, 0xC4, int) - F4B(GS4B, 0xBC, volatile int)) {
         return;
     }
-    ctx = F4B(GS4B, 0x158, Ctx4B *) + 0 * w; /* agent-c run 209: folded counted use of w (kit CXCIV lever b) */
+    ctx = F4B(GS4B, 0x158, Ctx4B *) + 0 * w + 0 * (int)(spr->w); /* agent-c run 209: folded counted use of w (kit CXCIV lever b); run 211: + spr->w */
     r = gl_func_00000000(F4B(F4B(self, 0xCC, char *), 0x60, int));
     g = PKT4B(ctx);
     g->w0 = 0x06000000;
