@@ -152,7 +152,7 @@ typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
 inline void *operator new(unsigned n) { return timproc_uso_b5_func_055750(n); }
-struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void seti(int a, int b, int c) { V3 *t = this; if (1) {} t->x = a; t->y = b; t->z = c; } /* run 196: int-param zeros (kit CLVIII); run 221: held this + if (1) = the target's x / y / z store order */ void operator=(V3 v) { x = v.x; y = v.y; z = v.z; } };
+struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void seti(int a, int b, int c) { V3 *t = this; if (1) {} t->x = a; if (1) {} t->y = b; if (1) {} t->z = c; } /* run 196: int-param zeros (kit CLVIII); run 221: held this + if (1) = the target's x / y / z store order */ void operator=(V3 v) { x = v.x; y = v.y; z = v.z; } };
 struct Node { char p[0x10]; V3 pos; void setPos(V3 v) { pos = v; } };
 struct Fl { int v; void clr(int m) { v &= ~m; } };
 struct B { int f0; int flag; int f8; char *name; char list[4]; B *parent; Fl fl; char p1c[0x28 - 0x1C];
