@@ -24,9 +24,11 @@
  * emission-free rec reference) breaks the rec / c adjsave tie (3.2 / 3.2, c won on bitpos) so rec takes s4 and c
  * s5 as in the target: 98.28 -> 98.66. The iterator tests the member it copied from (`cur = nxt; if (nxt)`):
  * `cur` is then no register candidate (it was LR {640|1} in v0), the latch value stays a ring temp (t7, store-
- * forwarded across the branch) and the whole t-register ring lines up: 98.66 -> 99.92. Residual: e copy-
- * propagated as the inline return temp a3 into the second flags test and the colour loads (target a2), and the
- * clamp temp v1 (target v0; it shares edg's int temp LR with the post-increment counts).
+ * forwarded across the branch) and the whole t-register ring lines up: 98.66 -> 99.92. The gSPNumLights clamp
+ * shared edg's int temp with the post-increment counts (v1); the clamp in a named `m` assigned in the same full
+ * expression as c->next() and the w0 store gets its own LR (v0, the w0 store stays in the bgtz delay slot):
+ * 99.92 -> 99.95. Residual: e copy-propagated as the inline return temp a3 into the second flags test and the
+ * colour loads (five words; target a2).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -97,7 +99,7 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     }
     if (n != 0) {
         gSPLight(c->next(), gl_func_00034458(&rec->a), n + 1);
-        gSPNumLights(c->next(), n <= 0 ? 1 : n);
+        { Gfx *_g; int m; _g = c->next(), _g->w0 = (_SHIFTL(0xBC, 24, 8) | _SHIFTL(0, 8, 16) | _SHIFTL(2, 0, 8)), m = n <= 0 ? 1 : n; _g->w1 = NUML(m); }
         return;
     }
     rec->l[0].col[0] = rec->a.col[0]; rec->l[0].col[1] = rec->a.col[1]; rec->l[0].col[2] = rec->a.col[2];
