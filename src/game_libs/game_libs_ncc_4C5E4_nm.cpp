@@ -103,8 +103,8 @@ void Obj::run() {
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
     vp->vtrans[0] = fx * 4.0f + fw;
-    vp->vscale[1] = fh; /* run 194 (lever-sweep order) */
-    vp->vscale[0] = fw;
+    vp->vscale[0] = fw; /* agent-g run 224: [0] before [1] (sweep 88.65 -> 88.67; was the run-194 [1]-first order) */
+    vp->vscale[1] = fh;
     vp->vtrans[1] = fy * 4.0f + fh;
     { Gfx *p = &d->head->buf[d->head->count++]; p->w0 = 0x03800010; p->w1 = gl_func_00034458(vp); }
     }
