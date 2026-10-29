@@ -1242,13 +1242,14 @@ void func_80001594(UsoSegDesc *arg0, u32 arg1) {
     func_80000874(arg0);
     cb = (s32)&D_80012BC0;
     *(s32 *)(cb + 0x3C) = (s32)func_80001994;
-    *(s32 *)(cb + 0x84) = (s32)(func_800014A8_a + 0x24);
     *(s32 *)(cb + 0x40) = (s32)func_80000DEC;
     *(s32 *)(cb + 0x8) = 0;
-    *(s32 *)(cb + 0x88) = (s32)(func_800014A8_a + 0x24);
     *(s32 *)(cb + 0x44) = (s32)D_80000CF0;
     *(s32 *)(cb + 0x64) = (s32)func_80001088;
     *(s32 *)(cb + 0x68) = (s32)(func_800010E8_a + 0x44);
+    /* agent-c run 228: the 0x84 / 0x88 stores after 0x68 (the shared 14A8+0x24 lui issues after the 0x64 / 0x68 stores) */
+    *(s32 *)(cb + 0x84) = (s32)(func_800014A8_a + 0x24);
+    *(s32 *)(cb + 0x88) = (s32)(func_800014A8_a + 0x24);
     *(s32 *)(cb + 0x34) = (s32)(func_80000480_a + 0x30);
     *(s32 *)(cb + 0x6C) = (s32)D_80001258;
     *(s32 *)(cb + 0x30) = (s32)(func_80000480_a + 0x30);
@@ -1269,13 +1270,10 @@ void func_80001594(UsoSegDesc *arg0, u32 arg1) {
     *(s32 *)(cb + 0x5C) = (s32)D_800016AC;
     *(s32 *)(cb + 0x60) = (s32)D_80001860;
     *(s32 *)(cb + 0x94) = (s32)D_8000189C;
-    q = (u8 *)&D_800130A0;
-    p = D_80012D60;
-    do {
+    /* agent-c run 228: as1 line ties -- p / q / do on one line (bound lui first), the three body stores on one line (sltu before the sw) */
+    p = D_80012D60; q = (u8 *)&D_800130A0; do {
         q += 0x9C;
-        *p = 0;
-        q[-0x2A] = 0;
-        p++;
+        *p = 0; q[-0x2A] = 0; p++;
     } while (q < (u8 *)&D_800182E4);
     for (i = 0; i < 16; i++) {
         if (arg0[i].unk0 == 0) break;
