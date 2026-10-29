@@ -1565,14 +1565,17 @@ void gl_func_000033E4(char *a0) {
     gl_func_00000000(a0 + 0x138);
 }
 
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-#ifndef FF
-#define FF(p, o) (*(f32 *)((char *)(p) + (o)))
-#endif
-/* PASS-2 2026-06-22 (big-swing): full float-typed reconstruction of the 8-way
+/* gl_func_00003430: 8-slot state-machine updater (0x4C4, 305 words) -- EXACT
+ * via the IDO 7.1 -O2 donor src/game_libs/game_libs_o2_3430.c
+ * (REPLACE_FUNC_BODY splice, agent-c run 218). The "step" is the literal
+ * 0.1f, not a variable: uopt keeps it in caller-saved f2 and rematerialises
+ * it after the calls of cases 6/7/8 (one fresh .rodata literal per load =
+ * the four 0.1f words at 0xCC8/0xCEC/0xCF0/0xCF4 around the jumptable at
+ * 0xCCC); three trailing `if (1) {}` make a callee-saved f24 too expensive.
+ * The donor's .rodata reloc is renamed gl_func_00003430_rodata and pinned
+ * to bootup.uso RoData +0xCC8. Body below is a placeholder for the splice.
+ * Decode history (field spellings carried into the donor):
+ * PASS-2 2026-06-22 (big-swing): full float-typed reconstruction of the 8-way
  * state-machine jumptable; FF=f32 fields, FW=int fields per mnemonics.
  * Distinct externs per pool/global ref defeat the &D_00000000 base-pointer
  * CSE hoist (target reloads `lui at` each use).
@@ -1612,178 +1615,9 @@ void gl_func_000033E4(char *a0) {
  * the step load. Plus the jumptable %lo (step loads 0xCC8/0xCEC/0xCF0/0xCF4,
  * all 0.1f, are base-0 externs + the offset -- literals would merge; run 184
  * decode-scan: the bare externs read address 0, `--raw --pins` 15 -> 12). */
-extern f32 D_00000000_3430_cc8;
-extern f32 D_00000000_3430_cec;
-extern f32 D_00000000_3430_cf0;
-extern f32 D_00000000_3430_cf4;
 void gl_func_00003430(char *arg0) {
-    f32 step;
-    f32 temp;
-    s32 i;
-    s32 j;
-    char *s0;
-    s32 *p;
-
-    step = *(f32 *)((char *)&D_00000000_3430_cc8 + 0xCC8);
-    FW(arg0, 0xEC) = 1;
-    for (i = 0; i != 8; i++) {
-        s0 = ((char **)(arg0 + 0x2C))[i];
-        switch (FW(s0, 0x94)) {
-        case 3:
-            FF(s0, 0xA8) = FF(s0, 0xAC) + FF(s0, 0xA8);
-            temp = FF(s0, 0xA8);
-            FW(s0, 0x74) = 0;
-            FW(s0, 0x9C) = FW(s0, 0x9C) - 1;
-            FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-            FF(s0, 0x5C) = temp + FF(s0, 0x5C);
-            if (110.0f < FF(s0, 0x5C)) {
-                FF(s0, 0xA8) = -temp;
-            }
-            if (FW(s0, 0x78) < 0xFF) {
-                FW(s0, 0x78) += 0x20;
-                if (FW(s0, 0x78) >= 0x100) {
-                    FW(s0, 0x78) = 0xFF;
-                }
-            }
-            if (FF(s0, 0x88) < 1.0f) {
-                FF(s0, 0x88) = step + FF(s0, 0x88);
-                FF(s0, 0x8C) = step + FF(s0, 0x8C);
-            } else {
-                FF(s0, 0x88) = 1.0f;
-                FF(s0, 0x8C) = 1.0f;
-            }
-            if (FW(s0, 0x9C) < 0) {
-                FW(s0, 0x94) = 4;
-                FF(s0, 0xA4) = (100.0f - FF(s0, 0x44)) / 10.625f;
-                FF(s0, 0xA8) = (40.0f - FF(s0, 0x5C)) / 10.625f;
-            }
-            if (FW(s0, 0x7C) != 0) {
-                FW(arg0, 0xEC) = 0;
-            }
-            break;
-        case 4:
-            if (FW(s0, 0x78) != 0) {
-                FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-                FF(s0, 0x5C) = FF(s0, 0xA8) + FF(s0, 0x5C);
-                FW(s0, 0x78) -= 0x20;
-                if (FW(s0, 0x78) < 0) {
-                    FW(s0, 0x78) = 0;
-                    FW(s0, 0x94) = 0;
-                    p = (s32 *)(FW(*(char **)((char *)&D_00000000 + 0x138), 0x44) + 0x18);
-                    *p = FW(s0, 0x98) + *p;
-                }
-            }
-            if (FW(s0, 0x7C) != 0) {
-                FW(arg0, 0xEC) = 0;
-            }
-            break;
-        case 1:
-            FF(s0, 0xA8) = FF(s0, 0xAC) + FF(s0, 0xA8);
-            FW(s0, 0x74) = 0;
-            FW(s0, 0x9C) = FW(s0, 0x9C) - 1;
-            FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-            FF(s0, 0x5C) = FF(s0, 0xA8) + FF(s0, 0x5C);
-            if (FW(s0, 0x78) < 0xFF) {
-                FW(s0, 0x78) += 0x20;
-                if (FW(s0, 0x78) >= 0x100) {
-                    FW(s0, 0x78) = 0xFF;
-                }
-            }
-            if (FW(s0, 0x9C) < 0) {
-                FW(s0, 0x94) = 2;
-                FF(s0, 0xA4) = (200.0f - FF(s0, 0x44)) / 10.625f;
-                FF(s0, 0xA8) = (20.0f - FF(s0, 0x5C)) / 10.625f;
-            }
-            FW(arg0, 0xEC) = 0;
-            break;
-        case 2:
-            if (FW(s0, 0x78) != 0) {
-                FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-                FF(s0, 0x5C) = FF(s0, 0xA8) + FF(s0, 0x5C);
-                FW(s0, 0x78) -= 0x18;
-                if (FW(s0, 0x78) < 0) {
-                    FW(s0, 0x78) = 0;
-                    FW(s0, 0x94) = 0;
-                }
-            }
-            FW(arg0, 0xEC) = 0;
-            break;
-        case 5:
-            FW(s0, 0x9C) -= 1;
-            if (FW(s0, 0x9C) < 0) {
-                FW(s0, 0x94) = 6;
-                FW(s0, 0x74) = 0;
-            }
-            break;
-        case 6:
-            if (gl_func_00000000(s0, 0xB4) != 0) {
-                FW(s0, 0x94) = 7;
-            }
-            step = *(f32 *)((char *)&D_00000000_3430_cec + 0xCEC);
-            break;
-        case 7:
-            if (FW(s0, 0x98) != 0) {
-                FW(s0, 0x98) -= 0x32;
-            }
-            if (FW(s0, 0x98) <= 0) {
-                FW(s0, 0x98) = 0;
-                FW(s0, 0x94) = 8;
-            }
-            gl_func_00000000(s0 + 0xB4, (char *)&D_00000000 + 0xCCE8, FW(s0, 0x98));
-            FW(s0, 0x74) += 0x10;
-            if (FW(s0, 0x74) >= 0x100) {
-                FW(s0, 0x74) = 0xFF;
-            }
-            gl_func_00000000(s0, 0x104);
-            step = *(f32 *)((char *)&D_00000000_3430_cf0 + 0xCF0);
-            break;
-        case 8:
-            FW(s0, 0x74) += 0x10;
-            if (FW(s0, 0x74) >= 0x100) {
-                FW(s0, 0x74) = 0xFF;
-            }
-            FW(s0, 0x78) -= 8;
-            if (FW(s0, 0x78) < 0) {
-                FW(s0, 0x78) = 0;
-            }
-            if (gl_func_00000000(s0, 0x104) != 0) {
-                FW(s0, 0x94) = 0;
-            }
-            step = *(f32 *)((char *)&D_00000000_3430_cf4 + 0xCF4);
-            break;
-        }
-    }
-    for (j = 0; j != 4; j++) {
-        if (((s32 *)(arg0 + 0x8C))[j] < 0x80) {
-            ((s32 *)(arg0 + 0x8C))[j] += 1;
-            if (((s32 *)(arg0 + 0x8C))[j] < 0x70) {
-                if (((s32 *)(arg0 + 0x9C))[j] < 0xFF) {
-                    ((s32 *)(arg0 + 0x9C))[j] += 0x10;
-                    if (((s32 *)(arg0 + 0x9C))[j] >= 0x100) {
-                        ((s32 *)(arg0 + 0x9C))[j] = 0xFF;
-                    }
-                }
-            } else {
-                if (((s32 *)(arg0 + 0x9C))[j] > 0) {
-                    ((s32 *)(arg0 + 0x9C))[j] -= 0x10;
-                    if (((s32 *)(arg0 + 0x9C))[j] < 0) {
-                        ((s32 *)(arg0 + 0x9C))[j] = 0;
-                        ((s32 *)(arg0 + 0xBC))[j] = 0x64;
-                    }
-                }
-            }
-        }
-        if (FW(arg0, 0x88) != 0) {
-            ((s32 *)(arg0 + 0xBC))[j] = ((s32 *)(arg0 + 0xBC))[j] - 2;
-        }
-    }
-    if (FW(arg0, 0x88) > 0) {
-        FW(arg0, 0x88) -= 2;
-    }
+    *(s32 *)(arg0 + 0xEC) = 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00003430);
-#endif
 
 /* gl_func_000038F4 — EXACT MATCH 138/138 words (2026-07-03, agent-e w5).
  * Was 118/138. Fix stack, in order:
