@@ -13150,11 +13150,12 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
             temp_v1 = (gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF;
             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
-            temp_f18 = (temp_f16 / 200.0f) + *(f32 *)((char *)&D_00000000 + 0x16E0);
+            temp_f18 = temp_f16 / 200.0f;
+            temp_f18 += *(f32 *)((char *)&D_00000000 + 0x16E0); /* agent-g run 225: split (target loads o->0 before the literal) */
             temp_v0_2 = temp_v1;
             sp78 = temp_f18;
             var_f4 = (f32) (u32) temp_v0_2;
-            sp78 = sp64 * temp_f18;
+            sp78 = temp_f18 * sp64;
             temp_f10_2 = var_f4 * sp60;
             var_t9 = (u32) temp_f10_2; /* recomposed (u32)float */
             *(u8 *)((char *)(arg0) + 0x26) = (u8) (((s32) *(u8 *)((char *)(arg0) + 0x26) / 2) + ((s32) (var_t9 & 0xFF) / 2));
