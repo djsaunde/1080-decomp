@@ -248,7 +248,7 @@ struct WC : B2 { WFIELDS
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
 struct C2B74 { char p[0x194 - 0x2C]; C2B74(); };
-struct NodeF { char p[0x10]; f32 f; };
+struct NodeF { char p[0x10]; f32 f; void set(f32 v) { NodeF *t = this; if (1) {} t->f = v; } }; /* run 221: target forms &n284 (addiu sN,0x284; swc1 0x10(sN)): length 6484 -> 6496 = target */
 struct C32C8 { char p[0x22C - 0x194]; Node n22C; char p248[0x24C - 0x248]; Node n24C; char p268[0x284 - 0x268]; NodeF n284; char p298[0x29C - 0x298]; B2 *m29C; char p2a0[0x2B8 - 0x2A0]; C32C8(); };
 struct M2B8 : B { C2B74 a; C32C8 b; M2B8(char *d) : B(d) {} virtual void v(); };
 struct Panel : M2B8 { WBase *w; Panel(char *d, char *n) : M2B8(d) { name = n; init(); } void init(); virtual void v(); };
@@ -276,7 +276,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
         m5C->w = (WBase *)new WA + 0; /* run 206: folded + 0 (kit CLXXIX: edg temp sharing) */
         m5C->b.n22C.setPos(V3(110.0f, -96.0f, -510.0f));
         m5C->b.n24C.setPos(V3(0.0377f, 0.0f, 0.0f));
-        m5C->b.n284.f = 1.936f;
+        m5C->b.n284.set(1.936f);
         m5C->b.m29C = m5C->w;
         m5C->w->f12C = 0.296f;
         m5C->w->f128 = 0.496f;
@@ -304,7 +304,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     m54->w = (WBase *)new WB;
     m54->b.n22C.setPos(V3(-750.0f, 528.0f, 180.0f));
     m54->b.n24C.setPos(V3(-1.5582f, 1.5457f, -0.0251f));
-    m54->b.n284.f = 0.728f;
+    m54->b.n284.set(0.728f);
     m54->b.m29C = m54->w;
     m54->w->f12C = 0.288f;
     m54->w->f128 = 0.972f;
@@ -314,7 +314,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     m58->w = (WBase *)new WC;
     m58->b.n22C.setPos(V3(-750.0f, 528.0f, -480.0f));
     m58->b.n24C.setPos(V3(-1.5582f, 1.5457f, -0.0251f));
-    m58->b.n284.f = 0.728f;
+    m58->b.n284.set(0.728f);
     m58->b.m29C = m58->w;
     m58->w->f12C = 0.34f;
     m58->w->f128 = 1.0f;
