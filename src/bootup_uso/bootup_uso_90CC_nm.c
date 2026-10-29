@@ -2,7 +2,7 @@
  * The target is cfe output (cfront-style C), not edg: the draw-call this-adjust is `addu a0, delta, ptr`
  * and the site-2 vptr base is loaded once, which only cfe gives. Mechanical port of the NCC donor
  * bootup_uso_ncc_90CC_nm.cpp (98.10 as plain C), then the edg-only fixes were reverted or redone for cfe
- * (docs/IDO_CODEGEN.md kit CCXXXI): if-goto dispatch with `if (1) {}` in both case bodies (beq 7 first),
+ * (docs/IDO_CODEGEN.md kit CCXXXII): if-goto dispatch with `if (1) {}` in both case bodies (beq 7 first),
  * compare operands in target load order, the 0xB4 block written as offsets then `var_s0 += 0xB4`
  * with `temp_f0 = 0;` (the literal `0`, not `0.0f`: one shared f0 zero), no `if (1) {}` after the
  * site-2 vptr load, an empty `if (1) {}` closing the `arg2 == 6` arm (gives the arg1 reload its own
