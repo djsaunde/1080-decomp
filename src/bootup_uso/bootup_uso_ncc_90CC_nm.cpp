@@ -614,7 +614,7 @@ extern "C" void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg
             *(W90 *)var_s1 = sp90;
             if ((var_s0 != (void *)-0x2A8) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
-                *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s38;
+                *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s38 + 0 * (int)(arg2); /* agent-c run 212: folded counted use (zero code) */
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
@@ -918,7 +918,7 @@ sw_end:
                 do {
                     if (arg2 == var_v1) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
-                        var_s0 = temp_s1_8 + *(s32 *)((char *)temp_v0_5 + 0x4) * 4;
+                        var_s0 = temp_s1_8 + *(s32 *)((char *)temp_v0_5 + 0x4) * 4 + 0 * (int)(arg2); /* agent-c run 212: folded counted use (zero code) */
                         *(s32 *)var_s0 = (s32)(temp_v0_5 + 8);
                     }
                     var_v1 = *(s32 *)((char *)(temp_v0_5) + 0x18);
