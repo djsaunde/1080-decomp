@@ -1390,7 +1390,7 @@ void func_000024B8(char *arg0) {
         if (FW(s0, 0x10) & 8) {
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
             if (FF(v1, 0x14C) < 120.0f) {
-                s0 = v1 + 0x14C; if (1) {}
+                s0 = v1 + 0x14C + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use of the arg0 web (zero code) */
                 *(f32 *)s0 = *(f32 *)s0 + two;
             }
         }
