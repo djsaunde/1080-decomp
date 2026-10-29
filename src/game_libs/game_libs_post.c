@@ -15362,13 +15362,14 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
     if (sel >= 127) {
         sel = 127;
     }
+    ACCS2_31A74 = r; /* agent-g run 234: the 0x1CAC0 store before the sel clamp (target: sel spill sb before the jal, swc1 in its delay slot) */
     if (sel < 0) {
         sel = 0;
     }
     /* agent-g run 211: char-prototyped callee (target lb a2 + sll/sra a1 re-extension at the call)
      * and no trailing `if (r) {}` (it kept r live across the call: 0x20 frame vs target 0x18).
      * 90.73 -> 91.55, 560 -> 564 bytes = target length. */
-    gl_func_00000000_f(0x1000A00, ACCS2_31A74 = r), gl_func_00000000_c(0x3000A00, sel);
+    gl_func_00000000_f(0x1000A00, r), gl_func_00000000_c(0x3000A00, sel);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00031A74);
