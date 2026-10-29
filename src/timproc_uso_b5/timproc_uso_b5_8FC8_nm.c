@@ -339,7 +339,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 char *r;
                 VSEL(w, c) r = VCALL(w, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, FF(import_808000CC, 0x320));
                 items[i] = r;
-                if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
+                if (!(tu & (1U << i))) FF(items[i], 0x2A4) = 0.0f;
             }
             VSEL(w, d) VCALL(w, d), 1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
             VSEL(w, d) e2 = VCALL(w, d), 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
