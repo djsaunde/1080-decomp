@@ -11852,13 +11852,14 @@ void game_libs_func_0002D374(void) {
     if (c != 0) {
         if (c == 256) {
 #define raw (D_2D37C_raw[0x2E68 / 2])
-            z = 0.0f;
+            z = 0; /* agent-g run 227: own literal spelling (kit CCXXVIII), not the 0x1010300 call's 0.0f */
             fr = (f32)raw;
             half = (int)raw >> 1;
             if (z) {}
             D_2D37C_f360s[0x360 / 4] = (f32)half * (1.0f / 256.0f);
-            D_2D37C_f358s[0x358 / 4] = fr;
             D_2D37C_f35Cs[0x35C / 4] = z;
+            D_2D37C_f358s[0x358 / 4] = fr;
+            if (z) {} /* agent-g run 227: a second counted use of the 0 constant in the store block lifts its LR's adjsave to fr's: constant f0 / fr f2 = target */
         }
         d = D_2D37C_f35Cl[0x35C / 4];
         TW_2D37C(0xC) = c - 1;
