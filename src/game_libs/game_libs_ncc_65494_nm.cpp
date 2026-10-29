@@ -93,7 +93,6 @@ extern "C" void gl_func_00065494(Self *self) {
     float wsum;
     float minv;
     Node *node;
-    float f;
 
     count = 0;
     nsum.x = 0.0f; nsum.y = 0.0f; nsum.z = 0.0f;
@@ -104,6 +103,7 @@ extern "C" void gl_func_00065494(Self *self) {
         float h;
         float w;
         float dt;
+        float k; /* run 214: named impulse scale (no sc() parameter temp below sc's r) */
         Vec3 n;
         Vec3 d;
         Hit hit;
@@ -137,13 +137,13 @@ extern "C" void gl_func_00065494(Self *self) {
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
-            Vec3 imp = n.sc(w * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
-            gl_func_00062F64_d(self, &node->v120, imp);
+            Vec3 imp = n.sc(k = w * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
+            const Vec3 &ri = imp; /* its pointer home is the target's sp+0x98 */
+            gl_func_00062F64_d(self, &node->v120, ri);
         }
     }
     if (count != 0) {
-        f = (float)count;
-        nsum /= f; /* run 214: operator/= gives the target's y / x / z division schedule */
+        nsum /= (float)count; /* run 214: operator/= gives the target's y / x / z division schedule */
         psum /= wsum;
         nsum *= -minv * self->f288;
         gl_func_00062F64_e(self, &psum, &nsum);
