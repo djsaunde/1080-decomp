@@ -31,11 +31,11 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     f32 hits[8][3];
     int count; /* agent-g run 195 (declmove sweep): below dists / surfs; agent-g run 224: below hits too */
     count = 0;
+    V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
     dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_00000000B + 0x128);
     gl_func_00000000(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
     gl_func_00000000(&dir);
-    V3 d;
     d = dir;
     Cam *cam = *(Cam **)(arg0 + 0x70);
     V3 start; start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
