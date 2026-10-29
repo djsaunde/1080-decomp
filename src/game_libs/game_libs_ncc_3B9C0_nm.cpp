@@ -61,7 +61,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     d.x = b->x - a->x;
     d.y = b->y - a->y;
     d.z = b->z - a->z;
-    if (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.0001) {
+    if (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.00001) {
         gl_func_00000000_vnorm3(&d);
     } else {
         zf(d.x, 0); /* run 190: zeros through an int inline parameter (77.78 -> 78.55); run 193: x first = target store order */
