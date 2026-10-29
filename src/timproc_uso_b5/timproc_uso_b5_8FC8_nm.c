@@ -1,0 +1,370 @@
+/* timproc_uso_b5_func_00008FC8 (0x1960 / 1624 words) -- the timing-screen master
+ * constructor Screen::Screen(int *, int *), written as cfront-style C for IDO 7.1 cfe -O2
+ * (agent-c run 222).  NON_MATCHING comparison donor: spliced over the unit's C body in the
+ * NM object only (Makefile TIMB5_8FC8_NM_DONOR); the target's 5-entry tail switch is a cfe
+ * jumptable (renamed timproc_uso_b5_func_00008FC8_rodata by the splice, pinned to the
+ * USO RoData +0x324 table), which the NCC donor (timproc_uso_b5_ncc_8FC8_nm.cpp, 93.39)
+ * cannot produce.
+ *
+ * cfront lowering: `this` is the parameter itself (`if (arg0 || (arg0 = new(0x60)))`), the
+ * inline members are expanded in place as statement macros (B::add, the S70 / Panel / W16C
+ * ctors with the nested base-ctor allocation check, V3::seti, attachKids, the 0x80000 flag
+ * restore) and the inline temporaries are a FEW function-scope pointers reused across all
+ * expansions (w / _wp / n / t / _at): one variable per temporary site leaves uopt with too
+ * many candidates (frame 0x280, everything spilled).  Which pointer each expansion reuses
+ * decides the s0 / s1 colouring.  86.64 (m2c body) -> 94.36 standalone. */
+#include "common.h"
+struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
+extern char import_80020098; extern char import_800200CC;
+extern char *timproc_uso_b5_func_00002B74(); extern char *timproc_uso_b5_func_000032C8(); extern char *timproc_uso_b5_func_00003890();
+typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
+extern char timproc_uso_b5_D_807FDB64;
+extern char import_8005EE6C;
+extern char import_80807FB8;
+extern struct DBlk_8D38 import_800201EC;
+extern int timproc_uso_b5_func_055750();
+extern int timproc_uso_b5_func_04C678();
+extern int timproc_uso_b5_func_07ACE0();
+extern int timproc_uso_b5_func_04DFFC();
+extern int timproc_uso_b5_func_05D0E0();
+extern int timproc_uso_b5_func_04C774();
+extern void timproc_uso_b5_func_048E7C();
+extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
+extern int timproc_uso_b5_func_0000A95C();
+void timproc_uso_b5_func_0000A928(int *a0);
+extern char import_80063D04[];
+extern char import_800664C4[];
+extern char import_807664C4[];
+extern char import_80768434[];
+extern char import_8076A3A4[];
+extern char import_8076C314[];
+extern char import_8076E284[];
+extern char import_807701F4[];
+extern char import_80772164[];
+extern char import_807740D4[];
+extern char import_808000CC[];
+extern char import_808001F4[];
+extern char import_80802164[];
+extern char import_80803D04[];
+extern char import_808040D4[];
+extern char import_808064C4[];
+extern char import_80087FB8[];
+extern char timproc_uso_b5_D_807E3D04[];
+extern char timproc_uso_b5_D_807F8434[];
+extern char timproc_uso_b5_D_807FA3A4[];
+extern char timproc_uso_b5_D_807FC314[];
+extern char timproc_uso_b5_D_807FE284[];
+extern char timproc_uso_b5_D_807FE304[];
+extern char timproc_uso_b5_D_807FE5F4[];
+extern char timproc_uso_b5_D_807FEBB8[];
+extern char timproc_uso_b5_D_807FEBCC[];
+extern char timproc_uso_b5_D_807FEBD4[];
+extern char timproc_uso_b5_D_807FEBE0[];
+extern char timproc_uso_b5_D_807FEBE8[];
+extern char timproc_uso_b5_D_807FEBF4[];
+extern char timproc_uso_b5_D_807FEBFC[];
+extern char timproc_uso_b5_D_807FEC08[];
+extern char timproc_uso_b5_D_807FEC10[];
+extern char timproc_uso_b5_D_807FEC18[];
+extern char timproc_uso_b5_D_807FEC90[];
+extern char timproc_uso_b5_D_807FEC98[];
+extern char timproc_uso_b5_D_807FECA8[];
+extern char timproc_uso_b5_D_807FECB0[];
+extern char timproc_uso_b5_D_807FECBC[];
+extern char timproc_uso_b5_D_807FECC4[];
+extern char timproc_uso_b5_D_807FECD0[];
+extern char timproc_uso_b5_D_807FECD8[];
+extern char timproc_uso_b5_D_807FECE4[];
+extern char timproc_uso_b5_D_807FECEC[];
+extern char timproc_uso_b5_D_807FECF8[];
+extern char timproc_uso_b5_D_807FED00[];
+extern char timproc_uso_b5_D_807FED08[];
+extern char timproc_uso_b5_D_807FED80[];
+extern char timproc_uso_b5_D_807FED88[];
+extern char timproc_uso_b5_D_807FED94[];
+extern char timproc_uso_b5_D_807FED9C[];
+extern char timproc_uso_b5_D_807FEDA4[];
+extern char timproc_uso_b5_D_807FEE1C[];
+extern char timproc_uso_b5_D_807FEE6C[];
+extern f32 DF_244;
+extern f32 DF_248;
+extern f32 DF_24C;
+extern f32 DF_250;
+extern f32 DF_254;
+extern f32 DF_258;
+extern f32 DF_25C;
+extern s32 DS_260;
+extern f32 DF_264;
+extern f32 DF_268;
+extern f32 DF_26C;
+extern f32 DF_278;
+extern f32 DF_27C;
+extern f32 DF_280;
+extern f32 DF_284;
+extern f32 DF_288;
+extern f32 DF_28C;
+extern f32 DF_290;
+extern s32 DS_294;
+extern s32 DS_298;
+extern f32 DF_29C;
+extern f32 DF_2A0;
+extern f32 DF_2A4;
+extern f32 DF_2A8;
+extern f32 DF_2AC;
+extern f32 DF_2B0;
+extern f32 DF_2B4;
+extern f32 DF_2BC;
+extern f32 DF_2C0;
+extern f32 DF_2C4;
+extern f32 DF_2C8;
+extern f32 DF_2CC;
+extern f32 DF_2D0;
+extern f32 DF_2D4;
+extern s32 DS_2D8;
+extern s32 DS_2DC;
+extern f32 DF_2E0;
+extern f32 DF_2E4;
+extern f32 DF_2E8;
+extern f32 DF_2EC;
+extern f32 DF_2F0;
+extern f32 DF_2F4;
+extern f32 DF_2F8;
+extern f32 DF_2FC;
+extern f32 DF_300;
+extern f32 DF_304;
+extern f32 DF_308;
+extern f32 DF_30C;
+extern f32 DF_310;
+extern f32 DF_314;
+extern f32 DF_318;
+extern f32 DF_320;
+extern char f8fc8_e304_1[], f8fc8_e304_2[], f8fc8_e304_3[], f8fc8_e304_4[], f8fc8_e3d04_2[], f8fc8_ee6c_sb1[], f8fc8_ee6c_sb2[], f8fc8_ee6c_sb3[];
+extern char import_80020098_a, import_80020098_b, import_80020098_c, import_80020098_d;
+#define FW(p, o) (*(int *)((char *)(p) + (o)))
+#define FF(p, o) (*(f32 *)((char *)(p) + (o)))
+#define FP(p, o) (*(char **)((char *)(p) + (o)))
+#define ALLOC(n) ((char *)timproc_uso_b5_func_055750(n))
+/* inline B::add(B *n): list insert + parent link */
+#define ADDV(V, T, N) { V = (T); w = (N); timproc_uso_b5_func_07ACE0(V + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = V; }
+#define ADDW(V, W, T, N) { V = (T); W = (N); timproc_uso_b5_func_07ACE0(V + 0x10, W); if (1) {} if (FP(W, 0x14)) FW(W, 4) = 1; FP(W, 0x14) = V; }
+#define ADD(T, N) { _at = (T); w = (N); timproc_uso_b5_func_07ACE0(_at + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = _at; }
+#define CFGS(S) FP(&S, 0x134)
+/* S70 row: cfront ctor(this) with nested base-ctor allocation check */
+#define NEWS70(P, D, VT, VT2, NM, S) { n = FP(self, 0x38); w = ALLOC(0x70); \
+    if (w) { t = w; if (t || (t = ALLOC(0x70))) { \
+        timproc_uso_b5_func_04C678(t, D); FP(t, 0x28) = (VT); } \
+      FP(w, 0x28) = (VT2); FP(w, 0xC) = NM; FW(w, 0x2C) = FW(CFGS(S), 0x84); FW(w, 0x30) = FW(CFGS(S), 0x80); \
+       FW(w, 0x34) = FW(CFGS(S), 0x8C); FP(w, 0x38) = n; FW(w, 0x6C) = 0;  } \
+    P = w; }
+#define NEWPANEL(P, D, NM, VT) { w = ALLOC(0x2BC); \
+    if (w) { _wp = w; if (_wp || (_wp = ALLOC(0x2B8))) { \
+        timproc_uso_b5_func_04C678(_wp, D); FP(_wp, 0x28) = &timproc_uso_b5_D_807FDB64; \
+        timproc_uso_b5_func_00002B74(_wp + 0x2C); timproc_uso_b5_func_000032C8(_wp + 0x194); } \
+      FP(w, 0x28) = (VT); FP(w, 0xC) = NM; timproc_uso_b5_func_00003890(w); } \
+    P = w; }
+#define W16C(P, D, F0) { _wp = ALLOC(0x16C); \
+    if (_wp) { timproc_uso_b5_func_0546DC(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FW(_wp, 0x120) = 1; FP(_wp, 0x28) = import_80087FB8; \
+      FF(_wp, 0x108) = fv; FF(_wp, 0x10C) = fv; FF(_wp, 0x110) = fv; FF(_wp, 0x124) = 1.0f; } \
+    P = _wp; }
+#define SETI(P, V) { P = (V) + 0xB4; if (1) {} FF(P, 0) = 0; if (1) {} FF(P, 4) = 0; if (1) {} FF(P, 8) = 0; }
+#define SETE(P, V) { P = (V); if (1) {} FF(P, 0xB4) = 0.0; if (1) {} FF(P, 0xB8) = 0.0; if (1) {} FF(P, 0xBC) = 0.0; }
+#define ATTACH(P, W) {  int _i;  for (_i = 0; _i < FW(W, 0x13C); _i++) { timproc_uso_b5_func_04DFFC(W, FP(W, 0x148 + _i * 4));  { P = FP(W, 0x148 + _i * 4) + 0x18; *(int *)P &= ~4; }  } }
+#define RESTORE(SB) if (SB) { do {   _x = FW(&import_8005EE6C, 4); _x |= 0x80000; FW(&import_8005EE6C, 4) = _x; } while (0); } else { do {   _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = _x; } while (0); }
+#define WTAIL(W, F0, F1, F2, F3, F4, F5, F6) FF(W, 0xDC) = F0; FF(W, 0xE0) = 720.0f; FF(W, 0xE4) = -220.0f; \
+    FF(W, 0x10C) = F1; FF(W, 0x110) = F2; FF(W, 0x114) = F3; FF(W, 0x11C) = 0.0f; FW(W, 0x134) = 0; FF(W, 0x120) = F4; FF(W, 0x124) = 1.0f; FF(W, 0x12C) = F5; FF(W, 0x128) = F6;
+typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
+#define VF(R) (*(AddFn *)(FP(R, 0x28) + 0x5C))
+#define VT(R) (*(s16 *)(FP(R, 0x28) + 0x58) + (R))
+#define self ((char *)arg0)
+void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
+    char *a, *b, *c, *d;
+    char *items[8];
+    VecH v1, v2, t1, t2;
+    char *_at, *w, *_wp, *n, *t, *u;
+    int _x;
+    f32 fv;
+    volatile int pad[14];
+    if (arg0 || (arg0 = (void **)ALLOC(0x60))) {
+        timproc_uso_b5_func_04C678(self, timproc_uso_b5_D_807FEBB8 + 0x1348);
+        FP(self, 0x28) = timproc_uso_b5_D_807FE5F4;
+        FP(self, 0xC) = timproc_uso_b5_D_807FE5F4 + 0x1350;
+        { char *p = ALLOC(0x30); if (p) { timproc_uso_b5_func_04C678(p, timproc_uso_b5_D_807FEBCC + 0x135C);
+            FP(p, 0x28) = timproc_uso_b5_D_807FEBD4; FP(p, 0xC) = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(p, 0x2C) = self; }
+          FP(self, 0x50) = p; }
+        ADD(self, FP(self, 0x50));
+        timproc_uso_b5_func_0000A928(self);
+        { char *p = ALLOC(0x2C); char *q; if (p) { timproc_uso_b5_func_04C678(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
+            FP(p, 0x28) = timproc_uso_b5_D_807FEBE8 + 0xCC4; FP(p, 0xC) = timproc_uso_b5_D_807FEBE8 + 0x1378; }
+          q = FP(self, 0x30); FP(self, 0x38) = p;  ADD(q, p); }
+
+        if (FW(&import_800200CC, 0x34) != 2) {
+            NEWPANEL(FP(self, 0x5C), timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C, timproc_uso_b5_D_807FEBFC + 0x8B4)
+            ADD(self, FP(self, 0x5C));
+            w = ALLOC(0x168);
+            if (w) {
+                volatile int sb;
+                timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
+                FP(w, 0x28) = timproc_uso_b5_D_807FEC10 + 0x4AC;
+                FP(w, 0xC) = timproc_uso_b5_D_807FEC10 + 0x13A0;
+                W16C(FP(w, 0x108), timproc_uso_b5_D_807FEC18 + 0x13A8, FF(&import_80807FB8, 0x23C))
+                timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
+                SETI(t, FP(w, 0x108))
+                FF(w, 0x124) = 1.0f;
+                sb = FW(f8fc8_ee6c_sb1, 4) & 0x80000;
+                { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; x &= ~1; x &= 0xFFFDFFFF; x |= 0x2000; x &= ~2; FW(import_800664C4, 4) = x; }
+                FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_808064C4 + 0x13C0, import_807664C4, 0);
+                FP(w, 0x14C) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0);
+                FP(w, 0x150) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0);
+                FP(w, 0x154) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FC314 + 0x13E4, import_8076C314, 0);
+                FP(w, 0x158) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FE284 + 0x13F0, import_8076E284, 0);
+                FP(w, 0x15C) = timproc_uso_b5_func_05D0E0(0, import_808001F4 + 0x13FC, import_807701F4, 0);
+                FP(w, 0x160) = timproc_uso_b5_func_05D0E0(0, import_80802164 + 0x1408, import_80772164, 0);
+                FP(w, 0x164) = timproc_uso_b5_func_05D0E0(0, import_808040D4 + 0x1414, import_807740D4, 0);
+                FW(w, 0x13C) = 8; if (1) {}
+                FW(w, 0x140) = 0;
+                ATTACH(t, w)
+                FW(w, 0x144) = 0;
+                RESTORE(sb)
+                WTAIL(w, DF_244, DF_248, DF_24C, DF_250, DF_254, DF_258, DF_25C)
+            }
+            FP(FP(self, 0x5C), 0x2B8) = w;
+            v1.f0 = 110.0f; v1.f4 = -96.0f; v1.f8 = -510.0f;
+            { n = FP(self, 0x5C) + 0x22C; t1 = v1; t2 = t1; FF(n, 0x10) = t2.f0; FF(n, 0x14) = t2.f4; FF(n, 0x18) = t2.f8; }
+            v2.f0 = *(f32 *)&DS_260; v2.f4 = 0.0f; v2.f8 = 0.0f;
+            { n = FP(self, 0x5C) + 0x24C; t1 = v2; t2 = t1; FF(n, 0x10) = t2.f0; FF(n, 0x14) = t2.f4; FF(n, 0x18) = t2.f8; }
+            { t = FP(self, 0x5C) + 0x284; if (1) {} FF(t, 0x10) = DF_264; }
+            FP(FP(self, 0x5C), 0x29C) = FP(FP(self, 0x5C), 0x2B8);
+            FF(FP(FP(self, 0x5C), 0x2B8), 0x12C) = DF_268;
+            FF(FP(FP(self, 0x5C), 0x2B8), 0x128) = DF_26C;
+            ADDV(t, FP(self, 0x38), FP(FP(self, 0x5C), 0x2B8));
+        }
+
+        NEWS70(a, timproc_uso_b5_D_807FEC90 + 0x1420, f8fc8_e304_1 + 0xA94, timproc_uso_b5_D_807FEC98 + 0xB04, timproc_uso_b5_D_807FEC98 + 0x1428, import_80020098_a)
+        timproc_uso_b5_func_0000A95C(self, a);
+        ADDW(_at, w, self, a);
+        NEWS70(b, timproc_uso_b5_D_807FECA8 + 0x1438, f8fc8_e304_2 + 0xA94, timproc_uso_b5_D_807FECB0 + 0xB74, timproc_uso_b5_D_807FECB0 + 0x1440, import_80020098_b)
+        timproc_uso_b5_func_0000A95C(self, b);
+        ADD(self, b);
+        NEWS70(c, timproc_uso_b5_D_807FECBC + 0x144C, f8fc8_e304_3 + 0xA94, timproc_uso_b5_D_807FECC4 + 0xBE4, timproc_uso_b5_D_807FECC4 + 0x1454, import_80020098_c)
+        timproc_uso_b5_func_0000A95C(self, c);
+        ADD(self, c);
+        NEWS70(d, timproc_uso_b5_D_807FECD0 + 0x1460, f8fc8_e304_4 + 0xA94, timproc_uso_b5_D_807FECD8 + 0xC54, timproc_uso_b5_D_807FECD8 + 0x1468, import_80020098_d)
+        timproc_uso_b5_func_0000A95C(self, d);
+        ADD(self, d);
+
+        {
+            NEWPANEL(FP(self, 0x54), timproc_uso_b5_D_807FECE4 + 0x1474, timproc_uso_b5_D_807FECEC + 0x147C, timproc_uso_b5_D_807FECEC + 0x8B4)
+            ADD(self, FP(self, 0x54));
+            w = ALLOC(0x168);
+            if (w) {
+                volatile int sb;
+                timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f);
+                FP(w, 0x28) = timproc_uso_b5_D_807FED00 + 0x4AC;
+                FP(w, 0xC) = timproc_uso_b5_D_807FED00 + 0x1490;
+                W16C(FP(w, 0x108), timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270))
+                timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
+                SETE(t, FP(w, 0x108))
+                FF(w, 0x124) = 1.0f;
+                sb = FW(f8fc8_ee6c_sb2, 4) & 0x80000;
+                { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
+                FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0);
+                FW(w, 0x13C) = 1; if (1) {}
+                FW(w, 0x140) = 0;
+                ATTACH(t, w)
+                FW(w, 0x144) = 0;
+                RESTORE(sb)
+                WTAIL(w, DF_278, DF_27C, DF_280, DF_284, DF_288, DF_28C, DF_290)
+            }
+            FP(FP(self, 0x54), 0x2B8) = w;
+            v1.f0 = *(f32 *)&DS_294; v1.f4 = 528.0f; v1.f8 = 180.0f;
+            { n = FP(self, 0x54) + 0x22C; t1 = v1; t2 = t1; FF(n, 0x10) = t2.f0; FF(n, 0x14) = t2.f4; FF(n, 0x18) = t2.f8; }
+            v2.f0 = *(f32 *)&DS_298; v2.f4 = DF_29C; v2.f8 = DF_2A0;
+            { n = FP(self, 0x54) + 0x24C; t1 = v2; t2 = t1; FF(n, 0x10) = t2.f0; FF(n, 0x14) = t2.f4; FF(n, 0x18) = t2.f8; }
+            { t = FP(self, 0x54) + 0x284; if (1) {} FF(t, 0x10) = DF_2A4; }
+            FP(FP(self, 0x54), 0x29C) = FP(FP(self, 0x54), 0x2B8);
+            FF(FP(FP(self, 0x54), 0x2B8), 0x12C) = DF_2A8;
+            FF(FP(FP(self, 0x54), 0x2B8), 0x128) = DF_2AC;
+            ADDV(t, FP(self, 0x38), FP(FP(self, 0x54), 0x2B8));
+        }
+        {
+            NEWPANEL(FP(self, 0x58), timproc_uso_b5_D_807FED80 + 0x1510, timproc_uso_b5_D_807FED88 + 0x1518, timproc_uso_b5_D_807FED88 + 0x8B4)
+            ADD(self, FP(self, 0x58));
+            w = ALLOC(0x168);
+            if (w) {
+                volatile int sb;
+                timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
+                FP(w, 0x28) = timproc_uso_b5_D_807FED9C + 0x4AC;
+                FP(w, 0xC) = timproc_uso_b5_D_807FED9C + 0x152C;
+                { _wp = ALLOC(0x16C);
+                  if (_wp) { timproc_uso_b5_func_0546DC(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); FP(_wp, 0x28) = import_80087FB8;
+                    FF(_wp, 0x108) = DF_2B0; FF(_wp, 0x10C) = DF_2B4; FW(_wp, 0x120) = 1; FF(_wp, 0x110) = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); FF(_wp, 0x124) = 1.0f; }
+                  FP(w, 0x108) = _wp; }
+                timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
+                SETI(t, FP(w, 0x108))
+                FF(w, 0x124) = 1.0f;
+                sb = FW(f8fc8_ee6c_sb3, 4) & 0x80000;
+                { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
+                FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0);
+                FW(w, 0x13C) = 1; if (1) {}
+                FW(w, 0x140) = 0;
+                ATTACH(t, w)
+                FW(w, 0x144) = 0;
+                RESTORE(sb)
+                WTAIL(w, DF_2BC, DF_2C0, DF_2C4, DF_2C8, DF_2CC, DF_2D0, DF_2D4)
+            }
+            FP(FP(self, 0x58), 0x2B8) = w;
+            v1.f0 = *(f32 *)&DS_2D8; v1.f4 = 528.0f; v1.f8 = -480.0f;
+            { n = FP(self, 0x58) + 0x22C; t1 = v1; t2 = t1; FF(n, 0x10) = t2.f0; FF(n, 0x14) = t2.f4; FF(n, 0x18) = t2.f8; }
+            v2.f0 = *(f32 *)&DS_2DC; v2.f4 = DF_2E0; v2.f8 = DF_2E4;
+            { n = FP(self, 0x58) + 0x24C; t1 = v2; t2 = t1; FF(n, 0x10) = t2.f0; FF(n, 0x14) = t2.f4; FF(n, 0x18) = t2.f8; }
+            { t = FP(self, 0x58) + 0x284; if (1) {} FF(t, 0x10) = DF_2E8; }
+            FP(FP(self, 0x58), 0x29C) = FP(FP(self, 0x58), 0x2B8);
+            FF(FP(FP(self, 0x58), 0x2B8), 0x12C) = DF_2EC;
+            FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;
+            ADDV(t, FP(self, 0x38), FP(FP(self, 0x58), 0x2B8));
+        }
+        VF(a)(VT(a), 1, 5, 0.0f, -150.0f, -1000.0f, 0.0f, 0.0f, 0.0f);
+        VF(a)(VT(a), 1, 3, 750.0f, -150.0f, DF_2F0, 0.0f, 0.0f, 0.0f);
+        VF(a)(VT(a), 1, 4, 750.0f, -150.0f, DF_2F4, 0.0f, 0.0f, 0.0f);
+        VF(a)(VT(a), 1, 2, 750.0f, -150.0f, DF_2F8, 0.0f, 0.0f, 0.0f);
+        VF(a)(VT(a), 1, 1, 750.0f, -150.0f, DF_2FC, 0.0f, 0.0f, 0.0f);
+        VF(b)(VT(b), 1, 0, 400.0f, -150.0f, -1000.0f, 0.0f, DF_300, 0.0f);
+        VF(b)(VT(b), 1, 1, 750.0f, 200.0f, DF_304, 0.0f, 0.0f, 0.0f);
+        VF(b)(VT(b), 1, 2, 750.0f, 200.0f, DF_308, 0.0f, 0.0f, 0.0f);
+        VF(b)(VT(b), 1, 3, 400.0f, -150.0f, -1000.0f, 0.0f, DF_30C, 0.0f);
+        VF(b)(VT(b), 1, 4, 400.0f, -150.0f, -1000.0f, 0.0f, DF_310, 0.0f);
+        VF(b)(VT(b), 1, 5, 400.0f, -150.0f, -1000.0f, 0.0f, DF_314, 0.0f);
+        VF(b)(VT(b), 1, 6, 400.0f, -150.0f, -1000.0f, 0.0f, DF_318, 0.0f);
+        VF(b)(VT(b), 1, 7, 400.0f, -150.0f, -1000.0f, 0.0f, FF(import_808000CC, 0x31C), 0.0f);
+        {
+            int tu = **(u16 **)((char *)&import_800201EC + 0x154);
+            int i;
+            char *volatile e2;
+            char *e3;
+            if (FW(&import_800200CC, 0x34) != 6) tu &= ~3;
+            for (i = 0; i != 8; i++) {
+                char *r = VF(c)(VT(c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f,  DF_320 );
+                items[i] = r;
+                if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
+            }
+            VF(d)(VT(d), 1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
+            e2 = VF(d)(VT(d), 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
+            e3 = VF(d)(VT(d), 1, 3, -220.0f, 200.0f, -400.0f,  0.0f , 0.0f, 0.0f);
+            timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
+            switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
+            case 1:
+                 FF(e2, 0x2A4) = 0.0f; FF(e3, 0x2A4) = 0.0f; break;
+            case 2:
+                FF(e3, 0x2A4) = 0.0f;
+                break;
+            case 3: case 4: case 5:
+                break;
+            }
+        }
+        timproc_uso_b5_func_04C774(self, 1, arg1);
+        timproc_uso_b5_func_04C774(FP(self, 0x50), 1, arg2);
+        (*(void (**)(void *))(FP(self, 0x28) + 0x24))(*(s16 *)(FP(self, 0x28) + 0x20) + self);
+        { char *m = FP(self, 0x38); (*(void (**)(void *))(FP(m, 0x28) + 0x24))(*(s16 *)(FP(m, 0x28) + 0x20) + m); }
+    }
+    return arg0;
+}

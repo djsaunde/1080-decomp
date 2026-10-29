@@ -3540,6 +3540,8 @@ timproc_uso_b5_func_00002B74_rodata = 0x0000011C;
 timproc_uso_b5_func_00004118_rodata = 0x0000014C;
 /* timproc_uso_b5_func_0000D884: 14-entry jumptable at block-5 RoData +0x3C0 (target %lo(D_807FF3E0)+0x3C0); donor timproc_uso_b5_D884.c */
 timproc_uso_b5_func_0000D884_rodata = 0x000003C0;
+/* timproc_uso_b5_func_00008FC8: 5-entry jumptable at block-5 RoData +0x324 (target %lo(D_807FF344)+0x324); NM donor timproc_uso_b5_8FC8_nm.c */
+timproc_uso_b5_func_00008FC8_rodata = 0x00000324;
 /* timproc_uso_b5_func_0000D884: import_8005EE6C per-pair aliases, the gc vtable alias of D_807FDB64, the reloc-free case 0-7 third argument */
 d884_ee6c_l1 = 0x00000000;
 d884_ee6c_l2 = 0x00000000;
