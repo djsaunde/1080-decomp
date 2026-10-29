@@ -105,8 +105,8 @@ extern "C" void func_0000C234(char *arg0) {
     spCC.ec = 0.0f;
     spCC.e4 = 0.0f;
     spCC.e8 = 1.0f;
+    *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4]; /* agent-g run 231: above the 0x9A2 store (as1 line order: the pool load issues before the spCC stores) */
     *(s16 *)((char *)(arg0) + 0x9A2) = 0; if (arg0) {}
-    *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4];
     sp3C = temp_a1;
     if (func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_a1, 0x457A0000, &spCC) != 0) {
         *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
@@ -117,7 +117,10 @@ extern "C" void func_0000C234(char *arg0) {
         }
         *(s32 *)((char *)(arg0) + 0x9A8) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
-        if ((spCC.f0 < ((((spCC.e4 * *(f32 *)((char *)(arg0) + 0xDC)) + (spCC.e8 * (*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4])) + (spCC.ec * *(f32 *)((char *)(arg0) + 0xE4))) * D_bu_ro_pool[0x128 / 4]) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
+        /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
+         * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
+        temp_f16 = 4.0f + (D_bu_ro_pool[0x128 / 4] * (((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))));
+        if ((spCC.f0 < temp_f16) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
             *(s32 *)((char *)(arg0) + 0xA4C) = 1;
             spB4 = *(V3C234 *)&spCC.e4;
             var_t0 = 0;
