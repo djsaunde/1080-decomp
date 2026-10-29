@@ -42,7 +42,7 @@ struct Vec3 {
  z += v.z;
  y += v.y;  }
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
-    float len2() const { float r = x * x + y * y + z * z; return r; }
+    float len2() const { float r = y * y + x * x + z * z; return r; } /* agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
 };
 inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.y = q; r.z = u; return r; }
 struct M4 {
@@ -90,7 +90,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
         const Vec3 &v = stage;
         float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
         float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
-        float z = m->m[0][2] * v.x + m->m[1][2] * v.y + m->m[2][2] * v.z;
+        float z = m->m[0][2] * v.x + m->m[2][2] * v.z + m->m[1][2] * v.y;
         stage.x = x; stage.y = y; stage.z = z;
     }
     vb.x += stage.x; vb.z += stage.z; vb.y += stage.y;
@@ -116,7 +116,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     } else {
         w *= 0.0f;
     }
-    k2 = (mag - s0->fB8) * s0->f118;
+    k2 = s0->f118 * (mag - s0->fB8);
     e *= k2;
     e += w;
     game_uso_func_072EE8(c.getOut()->f30, &e);
