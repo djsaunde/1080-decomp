@@ -4035,7 +4035,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     c4 = 0.0f;
     c0 = 0.0f;
     func_00000000(&D_6808_00, 0);
-    t = (char *)func_00000000(0);
+    t = (char *)func_00000000(0) + 0 * (int)(*arg1); /* agent-c run 211: folded counted use (zero code) */
     import_8001FFC0 = t;
     ATTACH6808(*(char **)(obj + 0x84), t);
     bA0 = 0.0f;
