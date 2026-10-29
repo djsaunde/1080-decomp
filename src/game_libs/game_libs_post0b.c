@@ -10551,7 +10551,7 @@ void gl_func_000415A4(O415A4 *self) {
     D_415A4_g2 = gl_func_00000000(0);
     D_415A4_g3 = gl_func_00000000(0);
     t = &D_415A4_t;
-    t->a4 = 2;
+    t->a4 = 2 + 0 * (int)(t->v30); /* agent-g run 210: folded counted use of the v30 address (zero-use sweep): 93.38 -> 94.44 */
     t->a0 = 0;
     t->a10 = 0;
     t->a14 = 0;
