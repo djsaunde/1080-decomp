@@ -4253,10 +4253,11 @@ extern int D_00000000;
  * target keeps it in v0) and keeps o in a3 with call spills (target s0) -- NCC's allocation. */
 extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
 void gl_func_00038A28(char *o, char *c) {
-    char *r; /* agent-c run 191 lever-sweep declmove */
-    int *p;
-    unsigned int key;
+    unsigned int key; /* agent-g run 207: order + pad give the target's 64-byte frame and homes */
     int code = *(int *)c;
+    volatile int pad[4];
+    char *r;
+    int *p;
     switch (code) {
         case 0x64:
             p = *(int **)(c + 0x4);
