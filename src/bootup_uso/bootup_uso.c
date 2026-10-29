@@ -802,7 +802,9 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         y = import_8001FFA0_h[1] / 2 - 16;
         for (row = 0; row < import_8001FFA0_h[1] / 32; row++) {
             x = import_8001FFA0[0] / 2 - 32;
-            for (col = 0; col < import_8001FFA0[0] / 64; col++) {
+            /* agent-c run 233: the column counter is n (reused, assigned again before phase 3): col's web
+             * then takes the target's s3 (96.42 -> 96.54); col stays declared for its home */
+            for (n = 0; n < import_8001FFA0[0] / 64; n++) {
                 /* run 192: per-vertex store order x, y, z, s, t (vertex 2: t before s) -- greedy statement-order grid, 92.78 -> 93.36 standalone */
                 buf[vidx + 0].x = x + 32;
                 buf[vidx + 0].y = y + 16;
