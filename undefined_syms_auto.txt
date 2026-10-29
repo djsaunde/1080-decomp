@@ -3549,6 +3549,15 @@ d884_ee6c_s4 = 0x00000000;
 d884_ee6c_s7 = 0x00000000;
 d884_db64_gc = 0x00000000;
 import_00000000 = 0x00000000;
+/* timproc_uso_b5_func_0000DF14: 14-entry jumptable at block-5 RoData +0x400 (target %lo(D_807FF420)+0x400); donor timproc_uso_b5_DF14.c */
+timproc_uso_b5_func_0000DF14_rodata = 0x00000400;
+/* timproc_uso_b5_func_0000DF14: import_8005EE6C per-pair aliases */
+df14_ee6c_l1 = 0x00000000;
+df14_ee6c_l2 = 0x00000000;
+df14_ee6c_s1 = 0x00000000;
+df14_ee6c_s2 = 0x00000000;
+df14_ee6c_s4 = 0x00000000;
+df14_ee6c_s7 = 0x00000000;
 game_libs_func_00044B78_rodata = 0x00001B3C;  /* switch(mode & 0xFF) 9-entry jumptable: USO ships it in bootup.uso RoData at +0x1B3C; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_44B78.c) */
 D_44B78_modes = 0x00000000;  /* OSViMode table base (bootup.uso Data sym1947 @0x2D700), zero alias: game_libs_func_00044B78 arms bake +0x0/0x50/0xA0/0x280/0x320/0x3C0/0x960 */
 gl_ref_00001014_f = 0x00001014;  /* 32767.0f literal (game_libs data), game_libs_func_00029CCC */
