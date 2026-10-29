@@ -830,7 +830,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             y -= 32;
         }
         k = 0;
-        m = E68_MGR + 0 * *cfg; /* agent-c run 209: folded counted use of *cfg (kit CXCIV lever b) */
+        m = E68_MGR + 0 * arg3; /* agent-c run 209: folded counted use (kit CXCIV lever b); agent-g run 221: of arg3, not *cfg -- cfg's LR then ends at its two loads and takes s0 (arg2 s1) like the target */
         ult = 0;
         for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
             vidx = 0;
