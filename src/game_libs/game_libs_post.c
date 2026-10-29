@@ -14552,7 +14552,7 @@ s32 arg2;
     s32 wv;          /* a3, spill sp+48 : trailing emit arg (523/21/20/22/256) */
     s32 prev;        /* sp+44 : old value of gl_state_30AF4.f0 */
     s32 w;           /* sp+40 : emit-arg value carried across calls (35/60) */
-    s32 gb;          /* sp+36 : int-cast &gl_state base (case 9) */
+    s32 sv;          /* sp+36 : int-cast &gl_state base (case 9), then the case-10 sub copy */
     /* agent-g run 225: the target's sp+28 is a SPILL slot (mode loaded once into t9, `sw t9,28(sp)`
      * across the calls, three reloads for the second switch). A function that spills keeps every cfe
      * local's home, so the target has only these five locals: the old volatile modeSel / pads and the
@@ -14580,7 +14580,7 @@ s32 arg2;
     gl_func_emit();
     gl_func_000460D0();
 
-    gb = (s32)&gl_state_30AF4;
+    sv = (s32)&gl_state_30AF4;
     switch (mode) {                     /* switch 1 @0xC0: sltiu 14, jtbl +0x1874 */
     case 0:                             /* body A @0xE0 */
         gl_func_00042364(1);
@@ -14713,7 +14713,7 @@ s32 arg2;
         break;
     case 9:                             /* body J @0x4AC */
         gl_func_00042364(3);
-        *(s32 *)gb = sub;
+        *(s32 *)sv = sub;
         if (sub == 1) {
             gl_cmd_30AF4 = 5;
         } else {
@@ -14726,7 +14726,9 @@ s32 arg2;
         gl_func_00042364(7);
         gl_cmd_30AF4 = 18;
         gl_func_emit(0x81000F00, 0);
-        if ((D_30AF4_s = sub) == 2) {
+        sv = sub; /* agent-g run 225: through the named copy (target lui at; sw %lo direct store, then bne on the same t5) */
+        D_30AF4_s = sv;
+        if (sv == 2) {
             gl_func_emit(0x81001300, 0);
         }
         gl_func_emit(CMD_B3);
