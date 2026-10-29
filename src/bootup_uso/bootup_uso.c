@@ -4163,7 +4163,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000(((char *)p), d0);
     func_00000000();
     func_00000000(&D_6808_14, 0);
-    *(int *)(((char *)p) + 0x50) = func_00000000(*(int *)(((char *)p) + 0x40) * 4);
+    g0 = *(int *)(((char *)p) + 0x40); *(int *)(((char *)p) + 0x50) = func_00000000(g0 * 4); /* agent-g run 221: target lw v1,64(s1); sll a0,v1,2 */
     func_00000000();
     func_00000000(&D_6808_15, 0);
     func_00000000(((char *)p));
