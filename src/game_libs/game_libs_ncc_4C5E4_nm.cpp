@@ -71,9 +71,9 @@ void Obj::run() {
         int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
         s1 = (char *)sub->mF0;
         if (f) f = (m78 & 2) != 0;
-        float buf[4];
+        float buf[4]; int one = 1, za = 0, zb = 0, e1 = 8, e2 = 8, e3 = 8; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72) */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, 1, f, buf, 0, 0, 8, 8, 8, m1B0);
+        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, za, zb, e1, e2, e3, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = sub;
