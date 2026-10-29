@@ -119,8 +119,9 @@ extern "C" void func_0000C234(char *arg0) {
         *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
         /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
-        temp_f16 = 4.0f + (D_bu_ro_pool[0x128 / 4] * (((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))));
-        if ((spCC.f0 < temp_f16) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
+        /* agent-g run 232: the scaled sum alone on the line, `+ 4.0f` in the test (product first in the add, spCC.f0 loads before it): 98.68 -> 99.10 */
+        temp_f16 = (D_bu_ro_pool[0x128 / 4] * (((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))));
+        if ((spCC.f0 < temp_f16 + 4.0f) ||(*(s32 *)((char *)(arg0) + 0x938) != 0)) {
             *(s32 *)((char *)(arg0) + 0xA4C) = 1;
             spB4 = *(V3C234 *)&spCC.e4;
             var_t0 = 0;
