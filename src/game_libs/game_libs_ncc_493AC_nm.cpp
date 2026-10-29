@@ -120,7 +120,7 @@ int Mgr::run() {
     int total = 0;
     u8 *buf;
     if (G1C4(D_493AC_a) & 8) {
-        flags30 |= 0x80;
+        pad1 = (int)this; if (1) { pad1 += 0x30; } *(int *)pad1 |= 0x80; /* agent-g run 221: pointer mutation behind if (1) = the target's addiu v0,s6,48 + lw/sw 0(v0) */
         buf = (u8 *)gl_func_00000000(D_00000000, n44);
         for (u32 i2 = 0; i2 < n44; i2++) {
             buf[i2] = 0;
