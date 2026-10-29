@@ -12,8 +12,12 @@
  * pass 1 node v0 with temps a0 / a1, pass 2 node a1); declaration order and
  * scope, a separate pass-2 variable, `= 0` inits, param reuse, if/else ref,
  * loop shapes, branch order and psweep ifpos / w0pos / w1pos / all3: no
- * change. Spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
-extern "C" float D_3DF5C_1AD0[], D_3DF5C_1AD4[], D_3DF5C_1AD8[], D_3DF5C_1ADC[];
+ * change.
+ * EXACT (agent-g run 236): a dead `while (0) { n = 0; it.next(); }` ahead of the pass-1 loop moves the first
+ * occurrence of n and the next() temps earlier, so the unconstrained (bitpos-order) colouring assigns them the
+ * target's v0 / a0 / a1. Spliced over the game_libs_post0b.c placeholder on both build paths; the pool constants
+ * are gl_3df58_k* zero pins (target: lui at,0 / lwc1 0x1AD0.. with no reloc). */
+extern "C" float gl_3df58_k1ad0[], gl_3df58_k1ad4[], gl_3df58_k1ad8[], gl_3df58_k1adc[];
 struct Node { char pad[0x64]; float f; };
 struct Link { Node *obj; Link *next; };
 struct Iter {
@@ -27,16 +31,19 @@ extern "C" Node *gl_func_0003DF58(Owner *o, Node *a1) {
     Node *best = 0;
     Iter it(o->head);
     if (o->x38) {
-        float ref = a1 ? a1->f : D_3DF5C_1AD0[0x1AD0 / 4];
-        float lim = D_3DF5C_1AD4[0x1AD4 / 4];
+        float ref = a1 ? a1->f : gl_3df58_k1ad0[0x1AD0 / 4];
+        float lim = gl_3df58_k1ad4[0x1AD4 / 4];
         Node *n;
+        /* agent-g run 236: dead loop = earlier first occurrence (bitpos) of n and of the next() temps, so the
+         * unconstrained colouring gives pass-1 n v0, the nxt temp a0 and the shared next() result a1 (target) */
+        while (0) { n = 0; it.next(); }
         for (n = it.first(); n; n = it.next()) {
             float v = n->f;
             if (v < ref && lim < v) { best = n; lim = v; }
         }
     } else {
-        float ref = a1 ? a1->f : D_3DF5C_1AD8[0x1AD8 / 4];
-        float lim = D_3DF5C_1ADC[0x1ADC / 4];
+        float ref = a1 ? a1->f : gl_3df58_k1ad8[0x1AD8 / 4];
+        float lim = gl_3df58_k1adc[0x1ADC / 4];
         Node *n;
         for (n = it.next(); n; n = it.next()) {
             float v = n->f;

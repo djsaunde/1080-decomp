@@ -7677,7 +7677,10 @@ char *game_libs_func_0003DE48(char *arg0, char *arg1, s32 arg2) {
 //   own symbol). Real-C STRUCTURAL body below — the named fn (dual
 //   extremal-search) only. Byte-match deferred. Name pre-checked: no
 //   extern reuse.
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3DF58.cpp, REPLACE_FUNC_BODY-spliced over
+ * the placeholder below in both build trees (agent-g run 236). The superseded cfe decode is kept for reference
+ * under GL_3DF58_OLD_DECODE (never defined). */
+#ifdef GL_3DF58_OLD_DECODE
 /* Whole-body decode 2026-06-01; 2026-09-04 agent-g: if/else (NOT sequential) two
  * passes selected by a0->0x38 != 0; memory-homed 2-word iterator struct
  * {cur@4(sp), next@8(sp)} whose .next is seeded from an UNINITIALIZED scalar
@@ -7731,7 +7734,8 @@ char *gl_func_0003DF58(char *a0, char *a1) {
     return best;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003DF58);
+char *gl_func_0003DF58(char *a0, char *a1) {
+}
 #endif
 
 int game_libs_func_0003E0C0(int a0, int a1) {

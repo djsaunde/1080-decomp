@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0003DF58",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-29T21:22:22.988603+00:00",
+  "end_time": "2026-10-29T21:22:22.988619+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T21:22:22.988616+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.06 NM donor: the 16-word residual was the v0 / a0 / a1 assignment of pass-1 n, the it.nxt temp and the shared next() result. zdbug:5 showed these are coloured in bitpos (first-occurrence) order with unchanged priorities; a dead while (0) { n = 0; it.next(); } ahead of the pass-1 loop moves their first occurrences earlier and gives the target's colours. Spliced over a placeholder on both paths; pool constants zero-pinned.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 90,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003DF58 (0x168 / 90\n * words): extremal search over the owner's child list through the stack\n * {cur, nxt} iterator of 3D48C / 3D54C (cur sp+4, nxt sp+8): with o->0x38 set,\n * the largest +0x64 value below ref (a1's or the 0x1AD0 literal) and above the\n * 0x1AD4 bound; otherwise the smallest above ref (0x1AD8) and below 0x1ADC.\n * NCC 99.0 vs cfe 82.2 (agent-c run 133). The old cfe note's \"uninitialised\n * iterator seed\" was the first word `lw t6,0x10(a0)` (o->head) once the\n * 3DF5C boundary moved to 3DF58. Pass 1 enters through an inline first() (the\n * 3DDC0 / 3D54C edg-temp trick: node copied out of the next() temp), pass 2\n * through next() (coalesced), both as in the target.\n * Still NON_MATCHING (16 words): the two node webs swap v0 / a1 (target\n * pass 1 node v0 with temps a0 / a1, pass 2 node a1); declaration order and\n * scope, a separate pass-2 variable, `= 0` inits, param reuse, if/else ref,\n * loop shapes, branch order and psweep ifpos / w0pos / w1pos / all3: no\n * change.\n * EXACT (agent-g run 236): a dead `while (0) { n = 0; it.next(); }` ahead of the pass-1 loop moves the first\n * occurrence of n and the next() temps earlier, so the unconstrained (bitpos-order) colouring assigns them the\n * target's v0 / a0 / a1. Spliced over the game_libs_post0b.c placeholder on both build paths; the pool constants\n * are gl_3df58_k* zero pins (target: lui at,0 / lwc1 0x1AD0.. with no reloc). */\nextern \"C\" float gl_3df58_k1ad0[], gl_3df58_k1ad4[], gl_3df58_k1ad8[], gl_3df58_k1adc[];\nstruct Node { char pad[0x64]; float f; };\nstruct Link { Node *obj; Link *next; };\nstruct Iter {\n    Link *cur, *nxt;\n    Iter(Link *head) { nxt = head; }\n    Node *first() { return next(); }\n    Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }\n};\nstruct Owner { char pad[0x10]; Link *head; char pad14[0x24]; int x38; };\nextern \"C\" Node *gl_func_0003DF58(Owner *o, Node *a1) {\n    Node *best = 0;\n    Iter it(o->head);\n    if (o->x38) {\n        float ref = a1 ? a1->f : gl_3df58_k1ad0[0x1AD0 / 4];\n        float lim = gl_3df58_k1ad4[0x1AD4 / 4];\n        Node *n;\n        /* agent-g run 236: dead loop = earlier first occurrence (bitpos) of n and of the next() temps, so the\n         * unconstrained colouring gives pass-1 n v0, the nxt temp a0 and the shared next() result a1 (target) */\n        while (0) { n = 0; it.next(); }\n        for (n = it.first(); n; n = it.next()) {\n            float v = n->f;\n            if (v < ref && lim < v) { best = n; lim = v; }\n        }\n    } else {\n        float ref = a1 ? a1->f : gl_3df58_k1ad8[0x1AD8 / 4];\n        float lim = gl_3df58_k1adc[0x1ADC / 4];\n        Node *n;\n        for (n = it.next(); n; n = it.next()) {\n            float v = n->f;\n            if (ref < v && v < lim) { best = n; lim = v; }\n        }\n    }\n    return best;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3DF58.cpp",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "full make ROM cmp byte-identical; verify-blocks 6/6; report.json fuzzy 100.0"
+  }
+}

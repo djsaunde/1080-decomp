@@ -5452,3 +5452,8 @@ bu_c234_k930 = 0x00000930;
 bu_c234_k940 = 0x00000940;
 bu_c234_k944 = 0x00000944;
 bu_c234_k948 = 0x00000948;
+/* gl_func_0003DF58 NCC donor (agent-g run 236): FP pool constants, target lui at,0 / lwc1 0x1AD0..0x1ADC(at) with no reloc */
+gl_3df58_k1ad0 = 0x00000000;
+gl_3df58_k1ad4 = 0x00000000;
+gl_3df58_k1ad8 = 0x00000000;
+gl_3df58_k1adc = 0x00000000;
