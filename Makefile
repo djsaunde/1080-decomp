@@ -2156,14 +2156,15 @@ $(GAMELIBS_48AEC_NM_DONOR): src/game_libs/game_libs_ncc_48AEC_nm.cpp
 	$(OBJCOPY) --redefine-sym draw__3ObjFv=gl_func_00048AEC $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048AEC=$(GAMELIBS_48AEC_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48AEC_NM_DONOR)
-# 454C4 = real C++ `void Obj::setLights(Ctx *, f32 *, f32)` (agent-c run 160, cfe 63.85): stock-gbi gSPLight / gSPNumLights macros, by-value list iterator; symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_454C4_NM_DONOR := build/src/game_libs/game_libs_ncc_454C4_nm.cpp.o
-$(GAMELIBS_454C4_NM_DONOR): src/game_libs/game_libs_ncc_454C4_nm.cpp
+# 454C4 = real C++ `void Obj::setLights(Ctx *, f32 *, f32)` (agent-c run 160, cfe 63.85): stock-gbi gSPLight / gSPNumLights macros, by-value list iterator; symbols renamed (names only). EXACT NCC donor over an empty
+# placeholder (agent-c run 240: nested pool hold in the second flags test + post-loop reads of e that lower its priority).
+GAMELIBS_454C4_DONOR := build/src/game_libs/game_libs_ncc_454C4.cpp.o
+$(GAMELIBS_454C4_DONOR): src/game_libs/game_libs_ncc_454C4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym setLights__3ObjFP3CtxPff=gl_func_000454C4 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000454C4=$(GAMELIBS_454C4_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_454C4_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000454C4=$(GAMELIBS_454C4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_454C4_DONOR)
 # 42938 = real C++ (agent-c run 160, cfe 69.98): stock-gbi packets through G.o->ctx->next(), inline viewport setter, guarded one-time inits. Still NON_MATCHING: NM comparison object only.
 GAMELIBS_42938_NM_DONOR := build/src/game_libs/game_libs_ncc_42938_nm.cpp.o
 $(GAMELIBS_42938_NM_DONOR): src/game_libs/game_libs_ncc_42938_nm.cpp

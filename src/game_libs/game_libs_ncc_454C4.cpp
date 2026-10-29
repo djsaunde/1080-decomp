@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_000454C4 (0x7EC / 507 words), agent-c run 160.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000454C4 (0x7EC / 507 words), agent-c run 160 lift, agent-c run 240 exact.
  * The light setup: `void Obj::setLights(Ctx *c, f32 *s, f32 k)` (renamed to gl_func_000454C4 with objcopy) fills a
  * Lights record (Ambient + Light[4], 0x48 bytes) taken from the context's light pool with `&lp->buf[lp->count++]`,
  * the ambient colour from the 0x194 element scaled by s[] and clamped by k, then walks the 0x18C node list with a
@@ -32,10 +32,16 @@
  * agent-g run 217: the copy-propagation of e into the inline's pooled return temp stops at the first bb whose
  * block also redefines that edg temp (the gSPLight block's c->next()); with the bb split BEFORE dir[0] the dir
  * block holds c->next() and dir[0] reads e (a2) as in the target: 99.95 -> 99.96 (four words left).
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-c run 240 (EXACT, 99.96 -> 100): the nested pool hold `(it.me()->me(), e->flags & 2)` stops the
+ * propagation so the second test and the colour loads read e (body word-for-word up to registers, but e's
+ * adjsave rises 13.7 -> 27 and it takes a1 ahead of c2; the return / dl pool temp then takes v1). e is 0 after
+ * the loop, so post-loop reads of it are well defined: one folded `+ 0 * (int)e` in the n path's gSPLight count
+ * and `if (e) {}` / folded reads in the default path (before its first call) add low-weight ref units that drop
+ * e below c2 (16.6 -> 13.8), and the extra bb units split the pool temp so the count temp takes v1 first.
+ * The four 0x34458 calls go through gl_454c4_c34458 (pinned 0: the target's blank USO jal words). */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
-u32 gl_func_00034458(...);
+u32 gl_454c4_c34458(...);
 }
 struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
@@ -64,6 +70,7 @@ struct LIter {
     Node *cur;
     Node *nxt;
     LIter(Node *h) { nxt = h; }
+    LIter *me() { return this; }
     LElem *next() { cur = nxt; if (nxt) { nxt = cur->next; return cur->data; } return 0; }
 };
 struct Obj {
@@ -86,7 +93,7 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     LIter it(lights);
     LElem *e;
     while ((e = it.next()) != 0) {
-        if (!(e->flags & 0x80) && (e->flags & 2)) {
+        if (!(e->flags & 0x80) && (it.me()->me(), e->flags & 2)) {
             s32 c0 = (s32)(s[0] * e->col[0] * 255.0f);
             s32 c1 = (s32)(s[1] * e->col[1] * 255.0f);
             s32 c2 = (s32)(s[2] * e->col[2] * 255.0f);
@@ -97,18 +104,25 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
             rec->l[n].dir[0] = (s32)(e->dir[0] * 120.0f);
             rec->l[n].dir[1] = (s32)(e->dir[1] * 120.0f);
             rec->l[n].dir[2] = (s32)(e->dir[2] * 120.0f);
-            gSPLight(c->next(), gl_func_00034458(&rec->l[n]), n + 1);
+            gSPLight(c->next(), gl_454c4_c34458(&rec->l[n]), n + 1);
             n++; if (1) {}
         }
     }
     if (n != 0) {
-        gSPLight(c->next(), gl_func_00034458(&rec->a), n + 1);
+        gSPLight(c->next(), gl_454c4_c34458(&rec->a), n + 1 + 0 * (int)e);
         { Gfx *_g; int m; _g = c->next(), _g->w0 = (_SHIFTL(0xBC, 24, 8) | _SHIFTL(0, 8, 16) | _SHIFTL(2, 0, 8)), m = n <= 0 ? 1 : n; _g->w1 = NUML(m); }
         return;
     }
-    rec->l[0].col[0] = rec->a.col[0]; rec->l[0].col[1] = rec->a.col[1]; rec->l[0].col[2] = rec->a.col[2];
-    rec->l[0].colc[0] = rec->a.colc[0]; rec->l[0].colc[1] = rec->a.colc[1]; rec->l[0].colc[2] = rec->a.colc[2];
-    gSPLight(c->next(), gl_func_00034458(&rec->l[0]), 1);
-    gSPLight(c->next(), gl_func_00034458(&rec->a), 2);
+    if (e) {}
+    rec->l[0].col[0] = rec->a.col[0];
+    rec->l[0].col[1] = rec->a.col[1];
+    rec->l[0].col[2] = rec->a.col[2];
+    rec->l[0].colc[0] = rec->a.colc[0];
+    if (e) {}
+    rec->l[0].colc[1] = rec->a.colc[1];
+    if (e) {}
+    rec->l[0].colc[2] = rec->a.colc[2] + 0 * (int)e;
+    gSPLight(c->next(), gl_454c4_c34458(&rec->l[0]), 1);
+    gSPLight(c->next(), gl_454c4_c34458(&rec->a), 2);
     gSPNumLights(c->next(), 1); if (rec) {}
 }
