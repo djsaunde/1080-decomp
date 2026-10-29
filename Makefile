@@ -2103,10 +2103,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4E00C_DONOR := build/src/game_libs/game_libs_ncc_4E00C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E00C=$(GAMELIBS_4E00C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E00C_DONOR)
-# 4A308 = NM C body lifted under NCC (agent-c run 134, cfe 76.89; run 178 v60 de-named, empty test dropped). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4A308_NM_DONOR := build/src/game_libs/game_libs_ncc_4A308_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A308=$(GAMELIBS_4A308_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_NM_DONOR)
+# 4A308 = record -> colour/vertex setup (NCC; agent-c run 134 lift). EXACT NCC donor over an empty placeholder (agent-c run 219: entry as an expression = the target's ugen temp word below the spill).
+GAMELIBS_4A308_DONOR := build/src/game_libs/game_libs_ncc_4A308.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A308=$(GAMELIBS_4A308_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_DONOR)
 # 4A890 = real C++ `s16 *Map::build()` (agent-c run 160; was the run-134 NCC C lift, cfe 60.66); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4A890_NM_DONOR := build/src/game_libs/game_libs_ncc_4A890_nm.cpp.o
 $(GAMELIBS_4A890_NM_DONOR): src/game_libs/game_libs_ncc_4A890_nm.cpp

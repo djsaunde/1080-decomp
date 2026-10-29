@@ -15340,55 +15340,18 @@ u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
 //   Real-C STRUCTURAL body below — record/table lookup + a
 //   representative sub-field extraction skeleton. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
 /* PASS 2026-10-16 (agent-c, 31.85 -> 76.89): the three colour bytes are (u32)
  * float conversions (target cfc1/ctc1 rounding-mode sequence, 9 cfc1; the
  * old (s8)(int) spelling emitted trunc.w.s and dropped ~90 words), and the
  * calls' first argument is the base-0 symbol address &D_00000000 (target
  * lui a0,0 / addiu a0,0), not literal 0; the 0x20030 one is &D + 0x20030.
  * Residual: t0 * 6 as multu (every spelling gives shift-add), call arg
- * decode for the two 6-arg calls, the v0 = 0 / arg1 tail. */
+ * decode for the two 6-arg calls, the v0 = 0 / arg1 tail.
+ * EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4A308.cpp
+ * (agent-c run 219; NM history there), REPLACE_FUNC_BODY-spliced over this
+ * placeholder in both build trees. */
 s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *arg4) {
-    char *entry = *(char **)(arg0 + 0x6C) + arg3 * 8;
-    char *v60 = *(char **)(arg0 + 0x60);
-    int t0 = *(unsigned short *)(entry + 4);
-    int t2 = *(unsigned short *)(entry + 6);
-    char *sp7C = v60 + t0 * 6;
-    char *sp78 = v60 + t2 * 6;
-    char *pal = *(char **)(arg0 + 0x7C);
-    short sp6C, sp6E;
-    unsigned char sp74[4], sp70[4], sp48[0x10], sp58[0x10];
-    int v0;
-    if (pal != 0) {
-        sp6C = *(unsigned char *)(pal + t0);
-        sp6E = *(unsigned char *)(pal + t2);
-    } else {
-        sp6E = 0xFF;
-        sp6C = 0xFF;
-    }
-    if (*(char **)(arg0 + 0x50) != 0) {
-        gl_func_00034458(&D_00000000, sp74, *(char **)(arg0 + 0x50) + t0 * 4);
-        gl_func_00034458(&D_00000000, sp70, *(char **)(arg0 + 0x50) + *(unsigned short *)(*(char **)(arg0 + 0x6C) + arg3 * 8 + 6) * 4);
-        gl_func_00034458((char *)&D_00000000 + 0x20030, sp74, sp74[1], sp74[2]);
-    } else {
-        unsigned char col[4];
-        col[0] = (u32)(*(float *)(arg4 + 0) * 255.0f);
-        col[1] = (u32)(*(float *)(arg4 + 4) * 255.0f);
-        col[2] = (u32)(*(float *)(arg4 + 8) * 255.0f);
-        gl_func_00034458(&D_00000000, sp74, col);
-        gl_func_00034458(&D_00000000, sp70, col);
-    }
-    gl_func_00034458(&D_00000000, sp48, sp7C, 0, (s32) sp6C, sp74);
-    gl_func_00034458(&D_00000000, sp58, sp78, 0, (s32) sp6E, sp70);
-    v0 = 0;
-    if (arg1 != 0) {
-        v0 = gl_func_00034458(arg2, sp48);
-    }
-    return v0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004A308);
-#endif
 
 /* gl_func_0004A670: 30-insn alloc-or-given + init + cond-followup. Mirror
  * of gl_func_00048A74 with alloc size 0xDC instead of 0xC0. Same `||`
