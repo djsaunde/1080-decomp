@@ -871,7 +871,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
          * in-loop `sll n,2; sll 4; addu` step, never hoisted), and the h re-read goes through the
          * (int) + 4 address the target holds in s8 -- 94.59 -> 95.10 standalone */
         for (i = 0; i < *(s32 *)((int)import_8001FFA0_h + 4) / 64; i++) {
-            E68_VTX(E68_NEXT(m), func_00000000(&vp[i * (n * 4)]), n * 4, 0);
+            E68_VTX(E68_NEXT(m), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
             for (j = 0; j < n; j++) {
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 { GwE68 *dl = arr[i * n + j]; E68_DMA1P(E68_NEXT(m), 0x06, dl, 0, 0); }
