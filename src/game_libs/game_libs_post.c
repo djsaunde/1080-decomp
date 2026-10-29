@@ -14619,7 +14619,7 @@ s32 arg2;
             }
         }
         D_30AF4_h = sub;
-        gl_cmd_30AF4 = D_30AF4_h + 4;
+        gl_cmd_30AF4 = D_30AF4_h + 4; if (1) {}
         if (D_30AF4_i != 0 && D_30AF4_h == 6) {
             gl_cmd_30AF4 = 7;
         }
@@ -14660,8 +14660,8 @@ s32 arg2;
         {
         w = 35;
         if (D_30AF4_m == 4) {
-            wv = 523;
             gl_cmd_30AF4 = 13;
+            wv = 523;
         } else {
             switch (sub) {
             case 0:
