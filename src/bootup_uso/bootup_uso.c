@@ -4031,7 +4031,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     b4 = 20;
     b0 = 1;
     c8 = 0.0f;
-    import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000 + 0 * (int)(import_8005EE6C_r[1]); /* agent-c run 211: folded counted use (zero code) */
+    import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000; /* agent-g run 222: no folded use (the read is the target's ugen t9 temp) */
     c4 = 0.0f;
     c0 = 0.0f;
     func_00000000(&D_6808_00, 0);
@@ -4138,7 +4138,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         b4 = 5;
         b0 = 2;
     }
-    gD = D_bu_776C + 0 * *arg1; /* agent-c run 209: folded counted use of *arg1 (kit CXCIV lever b), 95.62 -> 95.65 */
+    gD = (char **)(int)D_bu_776C; /* agent-g run 222: int-cast base keeps &D_bu_776C held in s4 without stretching arg1 (no sw a1 home) */
     *gD = 0; if (1) {} /* agent-c run 219 (lever-sweep bbsplit) */
     D_bu_1EBDC[0] = 6;
     func_00000000(D_bu_7770, arg2, idx, D_bu_1EBDC[0]);
