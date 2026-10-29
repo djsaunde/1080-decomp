@@ -32,12 +32,13 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     f32 *fb;
     s32 *pv;
     char **pp;
-    volatile s32 sp0, sp1;
+    volatile s32 sp0, sp1, sp2; /* agent-c run 218: third word = the target's 200 frame with the field-form counters */
 
     if (*(s32 *)(arg0 + 0x2BC) < 10) {
-        if (--*(s32 *)(arg0 + 0x2C0) < 0) {
-            *(s32 *)(arg0 + 0x2C0) = 1;
+        *(s32 *)(arg0 + 0x2C0) -= 1; /* run 218: field form (load / adjust in ugen temps t7 / t8) */
+        if (*(s32 *)(arg0 + 0x2C0) < 0) {
             *(s32 *)(arg0 + 0x2BC) += 2;
+            *(s32 *)(arg0 + 0x2C0) = 1; /* run 218: the constant-1 LR (t0) shared with the loop's == 1 */
         }
     }
     vals[0] = *(s32 *)(arg0 + 0x1C4);
@@ -45,8 +46,8 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     vals[2] = *(s32 *)(arg0 + 0x1F4);
     vals[3] = *(s32 *)(arg0 + 0x20C);
     vals[4] = *(s32 *)(arg0 + 0x224);
-    ptrs[1] = arg1 + 0x158;
     ptrs[0] = arg1 + 0x134;
+    ptrs[1] = arg1 + 0x158;
     ptrs[2] = arg1 + 0x17C;
     ptrs[3] = arg1 + 0x1A0;
     ptrs[4] = arg1 + 0x1C4;
@@ -55,17 +56,17 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     pv = vals;
     pp = ptrs;
     do {
-        m = *(s32 *)(arg0 + 0x2BC);
+        m = *(s32 *)(arg0 + 0x2BC); if (m) {} /* run 218: m v0 / selection v1 / copy v0 as the target */
         if (m < *pv) {
-            mv = m;
+            mv2 = m;
         } else {
-            mv = *pv; if (arg0) {}
+            mv2 = *pv;
         }
-        mv2 = mv;
-        if ((*(s32 *)(arg1 + 0x3BC) - 1 == 0) + 0 * (int)(*arg0)) { /* agent-c run 211: folded counted use (zero code) */
-            timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+        mv = mv2 + 0 * (int)(*arg0); /* run 218: folded counted use keeps the target's `move v0,v1` copy */
+        if (*(s32 *)(arg1 + 0x3BC) == 1) { /* run 218: `== 1` = the target's held 1 (t0, rematerialised at the loop top) */
+            timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         } else {
-            timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+            timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         }
         i++;
         pv++;
@@ -74,7 +75,7 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     } while (i != 5);
     e = *(char **)(arg0 + 0x2B8);
     if (*(s32 *)(e + 0x130) == 0) {
-        if (0.0f == *(f32 *)(e + 0x10C)) {
+        if (*(f32 *)(e + 0x10C) == 0.0f) {
             if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
                 cols.set(105, 255, 155, 255);
                 timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
@@ -85,7 +86,8 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
                 hud = (Spr *)(&timproc_uso_b5_D_807FFA90 + 0x610);
             }
             timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols.c, (int)hud, 0xFF);
-            if ((++*(s32 *)(arg0 + 0x2C4)) & 8) {
+            *(s32 *)(arg0 + 0x2C4) += 1;
+            if (*(s32 *)(arg0 + 0x2C4) & 8) {
                 cols.set(233, 247, 0, 255);
                 if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
                     timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - hud->width() / 2 - 2, *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x628), 0xFF);
