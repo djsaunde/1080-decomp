@@ -4133,7 +4133,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         }
         p += count;
     } while (op != 12);
-    func_00000000(); if (1) {} /* run 182 (lever-sweep bbsplit) */
+    func_00000000(); /* agent-g run 222: no bbsplit -- the dead return then blocks v0, the settings word takes v1 like the target */
     if (import_800200FC[0x3C / 4] == 6 || import_800200FC[0x3C / 4] == 11) {
         b4 = 5;
         b0 = 2;
@@ -4141,7 +4141,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     gD = (char **)(int)D_bu_776C; /* agent-g run 222: int-cast base keeps &D_bu_776C held in s4 without stretching arg1 (no sw a1 home) */
     *gD = 0; if (1) {} /* agent-c run 219 (lever-sweep bbsplit) */
     D_bu_1EBDC[0] = 6;
-    func_00000000(D_bu_7770, arg2, idx, D_bu_1EBDC[0]);
+    func_00000000(D_bu_7770, arg2, idx); /* agent-g run 222: 3 args -- the target's a3 = 6 is the compare constant's colour (a3 free at a 3-arg call), not a 4th arg */
     {
         t = D_bu_7770;
         ATTACH6808(*(char **)(obj + 0x88), t);
