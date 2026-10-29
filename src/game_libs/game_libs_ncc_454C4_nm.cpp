@@ -22,9 +22,11 @@
  * (iterator at sp+60 / 64, frame 88) and plain direction bytes without the `& 0xFF`: 2020 -> 2028 bytes = target,
  * the body lines up word-for-word up to registers (six s-registers). The final bb lever as `if (rec) {}` (an
  * emission-free rec reference) breaks the rec / c adjsave tie (3.2 / 3.2, c won on bitpos) so rec takes s4 and c
- * s5 as in the target: 98.28 -> 98.66. Residual is colouring only: e copy-propagated as the inline return temp a3
- * into the second flags test and the colour loads (target a2), the latch's `it.nxt` load coloured v0 (target t7,
- * a ugen-local register), the clamp temp v1 (target v0) and the t-register numbering that follows.
+ * s5 as in the target: 98.28 -> 98.66. The iterator tests the member it copied from (`cur = nxt; if (nxt)`):
+ * `cur` is then no register candidate (it was LR {640|1} in v0), the latch value stays a ring temp (t7, store-
+ * forwarded across the branch) and the whole t-register ring lines up: 98.66 -> 99.92. Residual: e copy-
+ * propagated as the inline return temp a3 into the second flags test and the colour loads (target a2), and the
+ * clamp temp v1 (target v0; it shares edg's int temp LR with the post-increment counts).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -57,7 +59,7 @@ struct LIter {
     Node *cur;
     Node *nxt;
     LIter(Node *h) { nxt = h; }
-    LElem *next() { cur = nxt; if (cur) { nxt = cur->next; return cur->data; } return 0; }
+    LElem *next() { cur = nxt; if (nxt) { nxt = cur->next; return cur->data; } return 0; }
 };
 struct Obj {
     char pad[0x18C]; Node *lights; char pad190[4]; LElem *amb;
