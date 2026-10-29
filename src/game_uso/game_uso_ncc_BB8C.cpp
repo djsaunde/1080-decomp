@@ -95,7 +95,7 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
         float f24 = (d - obj->lo) / (1.0f - obj->lo);
         if (f24 > 1.0) f24 = 1.0f;
         f24 *= obj->sub->k; if (1) {} /* agent-c run 194 (lever-sweep bbsplit) */
-        if (f24 < game_uso_D_807FFA88[45]) return;
+        if ((f24 < game_uso_D_807FFA88[45]) + 0 * (int)(obj->sub)) return; /* agent-g run 210: folded counted use (zero-use sweep): 98.50 -> 98.52 */
         r.b = 1033;
         r.a = 0;
         float f20 = 0.0f;
