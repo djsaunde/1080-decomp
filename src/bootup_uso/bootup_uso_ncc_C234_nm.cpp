@@ -300,10 +300,10 @@ cend:
     }
     temp_f2_3 = *(f32 *)((char *)(arg0) + 0x92C);
     temp_f12_2 = *(f32 *)((char *)(arg0) + 0x930);
-    temp_f14 = *(f32 *)((char *)(arg0) + 0x934);
     temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
     /* agent-g run 232: each dot product in temp_f0 (the target's sums are all in f0, which pushes 0x910 out of f0), then `sum * scale` */
-    temp_f0 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14);
+    /* agent-g run 234: 0x934 assigned inside its first use (target loads 0x3C4 before 0x934) */
+    temp_f0 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * (temp_f14 = *(f32 *)((char *)(arg0) + 0x934)));
     *(f32 *)((char *)(arg0) + 0xA1C) = *(f32 *)((char *)(arg0) + 0xA1C) + (temp_f0 * temp_f16);
     temp_f0 = (*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14);
     *(f32 *)((char *)(arg0) + 0xA20) = *(f32 *)((char *)(arg0) + 0xA20) + (temp_f0 * temp_f16);
