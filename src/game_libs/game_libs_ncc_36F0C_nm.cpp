@@ -37,16 +37,17 @@ struct FreeCam {
 };
 static inline f32 fabs_(f32 x) { return x < 0.0f ? -x : x; }
 void FreeCam::update() {
-    V3 v; /* run 191 lever-sweep hoist: v declared first */
     Cam *volatile c = cam;
     Pad *p;
+    V3 v; /* agent-g run 218: back after p (target homes c -4 / v -20 / w -44, needs the named h below) */
     f32 mx = 0.0f, my = 0.0f, mz;
     V3 w;
     p = ctl->pad;
     v.z = 0.0f; v.y = 0.0f; v.x = 0.0f;
     mz = 0.0f;
-    if (p->btn & 0x40) mz += 100.0;
-    if (p->btn & 0x80) mz -= 100.0;
+    f64 h = 100.0; /* agent-g run 218: a named double step = the target's 8 extra home bytes (frame 128 -> 136 = target): 94.42 -> 94.53 */
+    if (p->btn & 0x40) mz += h;
+    if (p->btn & 0x80) mz -= h;
     if (p->btn & 0x400) { mx = p->sx * 100.0f; my = p->sy * 100.0f; }
     f64 th = 0.8; /* agent-g run 217 (kit CCXIV): RoData 0x19E8 is the double literal 0.8 (named: frame 128 kept): 93.31 -> 94.43 */
     if (fabs_(mx) > th || fabs_(my) > th || fabs_(mz) > th) {
