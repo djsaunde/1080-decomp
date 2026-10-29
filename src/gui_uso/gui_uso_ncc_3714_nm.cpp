@@ -46,9 +46,9 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     Spr *spr;
     gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);
     spr = arg0->spr;
-    h = spr->h;
+    h = spr->h + 0 * (int)(spr->w); /* agent-g run 210: folded counted use (zero-use sweep): 96.51 -> 97.27 */
     gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0);
-    w = arg4;
+    w = arg4 + 0 * (int)(arg4); /* agent-g run 210: second sweep pass: 97.27 -> 97.41 */
     x = (f32)arg1 + (-((f32)w / 2) * arg5);
     fw = w * arg5;
     y = (f32)arg2 + (-((f32)h / 2) * arg6);
