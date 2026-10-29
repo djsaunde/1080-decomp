@@ -237,6 +237,11 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_55A0_NM_DONOR)
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E270=$(BOOTUP_E270_DONOR)
+# 6808 = scene/screen constructor (13-way record dispatch); IDO 7.1 -O2 donor
+# bootup_uso_o2_6808.c over an empty placeholder (agent-g run 223). EXACT.
+# Jumptable reloc renamed func_00006808_rodata, pinned to 0x5B4.
+BOOTUP_6808_DONOR := build/src/bootup_uso/bootup_uso_o2_6808.c.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006808=$(BOOTUP_6808_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o: TRUNCATE_TEXT := 0x334
 build/src/bootup_uso/bootup_uso_F434.c.o build/non_matching/src/bootup_uso/bootup_uso_F434.c.o: OPT_FLAGS := -O0
@@ -2754,6 +2759,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o1_6EF64.c src/timproc_uso_b1/ti
 # agent-c run 122 donor units (kept off the long filter-out line above to avoid merge conflicts)
 C_FILES := $(filter-out src/game_libs/game_libs_o2_23914.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_E270.c,$(C_FILES))
+C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_6808.c,$(C_FILES))
 
 # The controller-read donor contributes only through its host splice.
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
