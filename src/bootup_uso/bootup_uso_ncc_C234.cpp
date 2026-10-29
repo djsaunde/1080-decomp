@@ -2,7 +2,8 @@
  * agent-g run 152 (79.55 -> 85.17): arg 2 of the 0x38 lookup call is a 4-byte struct BY VALUE (target `sw a1,140(sp)` + `sw a1,4(sp)` in the jal delay), the
  * counter test is a post-increment compare on the old value (`slti v1,151`), the func_00008A7C sites are per-site symbols (target re-materialises
  * lui/addiu per call, one shared symbol is CSE-spilled to sp+52), the 0x2C mode word reads through a data symbol (lw %lo folded), sp40 declared first.
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * EXACT (agent-g run 236): spliced over the bootup_uso.c placeholder on both build paths via REPLACE_FUNC_BODY; the
+ * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / func_00000940 + addend). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -56,7 +57,10 @@ extern f32 e4;
 extern f32 e8;
 extern f32 ec;
 extern f32 f0;
-extern f64 D_00000930;
+extern f64 bu_c234_k930;
+extern f32 bu_c234_k940;
+extern f32 bu_c234_k944;
+extern f32 bu_c234_k948;
 extern s32 D_000081C0[];
 }
 extern "C" void func_0000C234(char *arg0) {
@@ -139,7 +143,7 @@ extern "C" void func_0000C234(char *arg0) {
             *(f32 *)((char *)(arg0) + 0x9E4) = spCC.f0;
             /* agent-g run 233: the compare stored directly -- the 0/1 is a ugen temp (t0), not a uopt-coloured
              * local (v0); this moves the ugen round-robin on by one, as the target's t1/t2 below */
-            *(s32 *)((char *)(arg0) + 0xA50) = (D_00000930 < (f64) *(f32 *)((char *)(arg0) + 0x9DC));
+            *(s32 *)((char *)(arg0) + 0xA50) = (bu_c234_k930 <(f64) *(f32 *)((char *)(arg0) + 0x9DC));
         } else {
             *(s32 *)((char *)(arg0) + 0xA4C) = 0;
             *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
@@ -180,7 +184,7 @@ extern "C" void func_0000C234(char *arg0) {
         if (temp_v0_2 == 0x62) goto c62;
         *(f32 *)((char *)(arg0) + 0x288) = (f32) D_00000938;
         *(f32 *)((char *)(arg0) + 0x28C) = (f32) D_0000093C;
-        *(f32 *)((char *)(arg0) + 0x290) = D_00000940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
+        *(f32 *)((char *)(arg0) + 0x290) = bu_c234_k940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
         *(u8 *)((char *)(arg0) + 0xA33) = 0;
         *(u8 *)((char *)(arg0) + 0xA32) = 0;
         *(u8 *)((char *)(arg0) + 0xA31) = 0;
@@ -196,8 +200,8 @@ c61:
         goto cend;
 c62:
         *(f32 *)((char *)(arg0) + 0x288) = 0.0f;
-        *(f32 *)((char *)(arg0) + 0x28C) = D_00000944;
-        *(f32 *)((char *)(arg0) + 0x290) = D_00000948;
+        *(f32 *)((char *)(arg0) + 0x28C) = bu_c234_k944;
+        *(f32 *)((char *)(arg0) + 0x290) = bu_c234_k948;
         *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
         func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
 cend:
@@ -245,12 +249,15 @@ cend:
     }
     temp_v0_4 = *(s32 *)((char *)(arg0) + 0x938);
     if (temp_v0_4 != 0) {
-#define temp_f2_2 ((f32) temp_v0_4) /* run 184: de-named (lever-sweep) */
+        /* agent-g run 236: the divisor is a named variable kept by a folded memory read (kit CCXLVIII), so uopt
+         * colours it (f2) instead of leaving the cvt to ugen (f0) */
+        temp_f2_3 = (f32) (temp_v0_4 + 0 * (int)(*arg0));
+#define temp_f2_2 temp_f2_3
         var_v0_2 = arg0 + 0x93C;
         *(f32 *)((char *)(arg0) + 0x93C) = (f32) (*(f32 *)((char *)(arg0) + 0x93C) / temp_f2_2);
         *(f32 *)((char *)(arg0) + 0x940) = (f32) (*(f32 *)((char *)(arg0) + 0x940) / temp_f2_2);
         *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2); /* run 200: 0x944 before 0x968 (target load order; div block word-for-word) */
-        *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2); if (1) {}
+        *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2); /* agent-g run 236: no BB split here: temp_f12 shares the divisor's block, so it cannot take f2 (f12), ga gets f2 */
         temp_f12 = *(f32 *)((char *)(arg0) + 0x968);
         if (temp_f12 < (f32) 0) {
             var_v0_2 = arg0 + 0x93C; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */

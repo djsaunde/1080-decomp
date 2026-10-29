@@ -7372,7 +7372,10 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000BF8C);
 //   byte-match blocked by deferred pool symbolization. Real-C
 //   STRUCTURAL body below — per-frame entity physics/state update
 //   skeleton. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* func_0000C234: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_C234.cpp, REPLACE_FUNC_BODY-spliced
+ * over the placeholder below on both build paths (agent-g run 236). The superseded in-unit decode is kept
+ * for reference under BOOTUP_C234_OLD_DECODE (never defined). */
+#ifdef BOOTUP_C234_OLD_DECODE
 /* PASS-2 2026-06-10 (big-swing): FULL m2c graft (550 insns, table-free,
  * 0 M2C_ERRORs).
  * PASS-3 2026-07-11 (agent-g): width decode fixes (fuzzy 57.95->63.93%).
@@ -7679,7 +7682,9 @@ cend:
     *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000C234);
+void func_0000C234(char *arg0) {
+    volatile char *r = arg0;
+}
 #endif
 
 void func_0000CACC(char *a0) {

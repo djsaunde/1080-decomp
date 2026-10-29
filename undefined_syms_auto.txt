@@ -5439,3 +5439,16 @@ import_8005EE64_6808_4 = 0x00000000;
 import_8005EE64_6808_5 = 0x00000000;
 import_8005EE64_6808_6 = 0x00000000;
 import_8005EE64_6808_7 = 0x00000000;
+/* func_0000C234 NCC donor (agent-g run 236): values from the target relocs (jal func_00000000, func_00008A7C + addend, func_00000008 + 0x2C, .L00000930, func_00000940 + 0x0 / 0x4 / 0x8) */
+bu_c234_sv = 0x00000000;
+bu_c234_v5 = 0x00000000;
+bu_c234_k0 = 0x00008A7C;
+bu_c234_k1 = 0x00008A7C;
+bu_c234_k2 = 0x00008A7C;
+bu_c234_k3 = 0x00008A7C;
+bu_c234_k4 = 0x00008A7C;
+bu_c234_g8 = 0x00000008;
+bu_c234_k930 = 0x00000930;
+bu_c234_k940 = 0x00000940;
+bu_c234_k944 = 0x00000944;
+bu_c234_k948 = 0x00000948;
