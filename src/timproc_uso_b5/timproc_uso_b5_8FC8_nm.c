@@ -27,7 +27,11 @@
  * 98.88 -> 99.03 (agent-c run 224): the kid-position zeros spelled 0.f / .0f / 0.00f (three uopt constants,
  * none coloured): sites 1/2 get the target's three mtc1 zero.  The body is now 4 words long; those are the
  * sites 2/3 loop-counter spill / reload pairs that the shared-zero f0 had been hiding.
- * Open: sites 2/3 loop counter in s0 (ours: P in s0, counter spilled), site 2 P colour a1 (ours a2). */
+ * 99.03 -> 99.96 (agent-c run 225, length = target): sites 2/3 counters i2 / i3 (function scope, declared
+ * above sb3: sb3 home 0x68) in s0 -- nine empty blocks in the loop body drop their priority below t, and one
+ * empty block in W16C drops _wp's below t so it still finds s0 already paid; the kid passed as the call
+ * argument through _at (a1), the site-2/3 zero fills through _at (a1), site 3's +0x284 store through w.
+ * Open: site 3 &t1 copy pointer (split LR piece) v0, target a2. */
 #include "common.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
@@ -181,12 +185,16 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define W16C(P, D, F0) { _wp = ALLOC(0x16C); \
     if (_wp) { timproc_uso_b5_func_0546DC(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FP(_wp, 0x28) = import_80087FB8; FW(_wp, 0x120) = 1; \
       FF(_wp, 0x108) = fv; FF(_wp, 0x10C) = fv; FF(_wp, 0x110) = fv; FF(_wp, 0x124) = 1.0f; } \
-    P = _wp; }
+    if (1) {} P = _wp; }
 /* three DIFFERENT spellings of 0: cfe passes float literals to uopt as text, so each spelling is its own
  * constant candidate with one use per site (never coloured: three ugen mtc1 zero, as in the target) */
 #define SETI(P, V) { P = (V) + 0xB4; if (1) {} FF(P, 0) = 0.f; if (1) {} FF(P, 4) = .0f; if (1) {} FF(P, 8) = 0.00f; }
 #define SETE(P, V) { P = (V); if (1) {} FF(P, 0xB4) = 0.0; if (1) {} FF(P, 0xB8) = 0.0; if (1) {} FF(P, 0xBC) = 0.0; }
-#define ATTACH(P, W) {  int _i;  for (_i = 0; _i < FW(W, 0x13C); _i++) { timproc_uso_b5_func_04DFFC(W, FP(W, 0x148 + _i * 4));  { P = FP(W, 0x148 + _i * 4) + 0x18; *(int *)P &= ~4; }  } }
+/* sites 2/3: the kid is read into P and passed as the call argument (an LR live into a call as its
+ * argument is forbidden v0/v1: P lands in a1 like the target), the counter is its own function-scope
+ * variable, and nine empty blocks in the loop body lower the counter's priority below the first s0 user
+ * so it is coloured with an already-paid s0 instead of v1 + spill/reload around the call */
+#define ATTACH(P, W, I) { for (I = 0; I < FW(W, 0x13C); I++) { P = FP(W, 0x148 + I * 4); timproc_uso_b5_func_04DFFC(W, P); { P = FP(W, 0x148 + I * 4) + 0x18; *(int *)P &= ~4; } if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}  } }
 #define ATTACH1(P, W) { for (i1 = 0; i1 < FW(W, 0x13C); i1++) { timproc_uso_b5_func_04DFFC(W, FP(W, 0x148 + i1 * 4)); { P = FP(W, 0x148 + i1 * 4) + 0x18; *(int *)P &= ~4; } } }
 #define RESTORE(SB) if (SB) { do {   _x = FW(&import_8005EE6C, 4); _x |= 0x80000; FW(&import_8005EE6C, 4) = _x; } while (0); } else { do {   _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = _x; } while (0); }
 #define WTAIL(W, F0, F1, F2, F3, F4, F5, F6) FF(W, 0xDC) = F0; FF(W, 0xE0) = 720.0f; FF(W, 0xE4) = -220.0f; \
@@ -218,6 +226,8 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
     char *u;
     int _x;
     f32 fv;
+    int i2;
+    int i3;
     volatile int sb3;
     if (arg0 || (arg0 = (void **)ALLOC(0x60))) {
         timproc_uso_b5_func_04C678(self, timproc_uso_b5_D_807FEBB8 + 0x1348);
@@ -279,11 +289,11 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 FP(w, 0x28) = timproc_uso_b5_D_807FED00 + 0x4AC; FP(w, 0xC) = timproc_uso_b5_D_807FED00 + 0x1490;
                 W16C(FP(w, 0x108), timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270))
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
-                SETI(u, FP(w, 0x108))
+                SETI(_at, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
                 sb2 = FW(f8fc8_ee6c_sb2, 4) & 0x80000; { _x = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0); FW(w, 0x13C) = 1; if (1) {}
                 FW(w, 0x140) = 0;
-                ATTACH(t, w)
+                ATTACH(_at, w, i2)
                 FW(w, 0x144) = 0;
                 RESTORE(sb2)
                 WTAIL(w, DF_278, DF_27C, DF_280, DF_284, DF_288, DF_28C, DF_290)
@@ -311,11 +321,11 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                     FF(_wp, 0x108) = DF_2B0; FF(_wp, 0x10C) = DF_2B4; FF(_wp, 0x110) = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); FW(_wp, 0x120) = 1; FF(_wp, 0x124) = 1.0f; }
                   FP(w, 0x108) = _wp; }
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
-                SETI(u, FP(w, 0x108))
+                SETI(_at, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
                 sb3 = FW(f8fc8_ee6c_sb3, 4) & 0x80000; { _x = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0); FW(w, 0x13C) = 1; if (1) {}
                 FW(w, 0x140) = 0;
-                ATTACH(t, w)
+                ATTACH(_at, w, i3)
                 FW(w, 0x144) = 0;
                 if (sb3) { do { _x = FW(&import_8005EE6C, 4); _x |= 0x80000; FW(&f8fc8_ee6c_r3, 4) = _x; } while (0); } else { do { _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = _x; } while (0); }
                 WTAIL(w, DF_2BC, DF_2C0, DF_2C4, DF_2C8, DF_2CC, DF_2D0, DF_2D4)
@@ -325,7 +335,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             { n = FP(self, 0x58) + 0x22C; *(VecH *)&t1 = v3a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v3b.f0 = *(f32 *)&DS_2DC; v3b.f4 = DF_2E0; v3b.f8 = DF_2E4;
             { n = FP(self, 0x58) + 0x24C; *(VecH *)&t1 = v3b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { u = FP(self, 0x58) + 0x284; if (1) {} FF(u, 0x10) = DF_2E8; }
+            { w = FP(self, 0x58) + 0x284; if (1) {} FF(w, 0x10) = DF_2E8; }
             { w = FP(FP(self, 0x58), 0x2B8); FP(FP(self, 0x58), 0x29C) = w; }
             FF(FP(FP(self, 0x58), 0x2B8), 0x12C) = DF_2EC;
             FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;
