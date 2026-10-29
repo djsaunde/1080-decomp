@@ -24791,7 +24791,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         *(s32 *)(p + 0) = 0xE7000000;
         *(s32 *)(p + 4) = 0;
     }
-    if (arg4 != 0) {
+    if ((arg4 != 0) + 0 * (int)(arg4)) { /* agent-c run 212: folded counted use (zero code) */
         sp30 = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
         sp2C = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         func_00000000(arg0, arg2, arg10);
