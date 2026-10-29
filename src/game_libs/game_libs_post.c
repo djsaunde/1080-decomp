@@ -15309,6 +15309,7 @@ void game_libs_func_00031A64(void) {
 //   + sll/sra re-extension vs our folded `lb a1` (dead-if on sel = no-op).
 #ifdef NON_MATCHING
 extern int gl_func_00000000_f(int, float);
+extern int gl_func_00000000_c(int, s8);
 extern int D_31A74_st, D_31A74_g2, D_31A74_g3, D_31A74_accl, D_31A74_accs1, D_31A74_accs2, D_31A74_cur;
 extern f32 D_31A74_1968[], D_31A74_196C[], D_31A74_1970[], D_31A74_1974[];   /* per-site pool aliases (fresh lui at) */
 extern f32 D_31A74_tbl[];   /* base-0 f32 table indexed by mode (lui at; addu at,idx; lwc1 0(at)) */
@@ -15347,11 +15348,11 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
         CUR_31A74 = mode;
         gl_func_00000000(0x6000A00, (s8)mode);
     }
+    sel += 63; /* agent-g run 211: above the 255 test (target addiu a2,63 in the bne delay slot) */
     if (mode == 255) {
         gl_func_00000000(0x6000A02, (s8)mode);
         return;
     }
-    sel += 63;
     v = v - D_31A74_1970[0x1970 / 4];
     lp = &D_31A74_tbl[mode];
     if (v < 0.0f) {
@@ -15377,8 +15378,10 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
     if (sel < 0) {
         sel = 0;
     }
-    gl_func_00000000_f(0x1000A00, ACCS2_31A74 = r), gl_func_00000000(0x3000A00, sel);
-    if (r) {}
+    /* agent-g run 211: char-prototyped callee (target lb a2 + sll/sra a1 re-extension at the call)
+     * and no trailing `if (r) {}` (it kept r live across the call: 0x20 frame vs target 0x18).
+     * 90.73 -> 91.55, 560 -> 564 bytes = target length. */
+    gl_func_00000000_f(0x1000A00, ACCS2_31A74 = r), gl_func_00000000_c(0x3000A00, sel);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00031A74);

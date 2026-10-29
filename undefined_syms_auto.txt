@@ -1142,6 +1142,7 @@ D_00041710 = 0x00041710;  /* gl_func_0006A304 fixup-object base: real USO-local 
 gl_func_00000000_va = 0x00000000;
 gl_func_00000000_42338 = 0x00000000;
 gl_func_00000000_f = 0x00000000;
+gl_func_00000000_c = 0x00000000;
 gl_func_00000000_s = 0x00000000;  /* prototyped f32(f32) blank (sqrtf) for game_libs_func_00063F34 */
 D_63F34_20A0 = 0x00000000;  /* game_libs_func_00063F34 per-constant alias of D_00000000 (f64 at +0x20A0) */
 D_63F34_20A8 = 0x00000000;  /* game_libs_func_00063F34 per-constant alias of D_00000000 (f64 at +0x20A8) */
