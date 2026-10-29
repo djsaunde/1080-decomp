@@ -770,7 +770,6 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     VtxE68 *buf;
     s32 row;
     s32 k2;
-    volatile int padq[4]; /* run 138: frame = target */
     s32 col, x, y;
     u32 vidx; /* run 172: unsigned (88.98/89.21 -> 90.53; changes the vidx*2 web colouring) */
     s32 ult;
@@ -782,6 +781,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     MgrE68 *m;
     VtxE68 *vp;
     s32 _n;
+    volatile int padq[4]; /* run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target) */
 
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
