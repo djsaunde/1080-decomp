@@ -28,9 +28,10 @@ extern float game_uso_func_00007A98(Self *);
 #define XZV(P, T, V) vp = (V); P = &(T); if (P || (P = (Vec3 *)game_uso_func_055750(12))) { tx = vp->x; tz = vp->z; P->x = tx; P->y = 0.0f; P->z = tz; }
 #define SUB2(Q, PP, T, A, B) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); tx = (A).x - vp->x; tz = (A).z - vp->z; PP->x = tx; PP->y = 0.0f; PP->z = tz; }
 #define SUB2S(Q, PP, T, A, B) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); sa = (A).x - vp->x; sc = (A).z - vp->z; PP->x = sa; PP->y = 0.0f; PP->z = sc; }
-#define XZG2(Q, PP, T, A, C) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { tx = (A); tz = (C); PP->x = tx; PP->y = 0.0f; PP->z = tz; }
+/* perp(v) = XZ(v.z, -v.x); the do-while block keeps sa / sc as coloured values */
+#define XZG2S(Q, PP, T, A, C) Q = &(T); PP = Q; if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { sa = (A); sc = (C); } while (0); PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 /* XZ(a, c) */
-#define XZGP(PP, A, C) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { tx = (A); tz = (C); PP->x = tx; PP->y = 0.0f; PP->z = tz; }
+#define XZGPS(PP, A, C) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { do { sa = (A); sc = (C); } while (0); PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 /* Vec3 r; r.set(v * s) */
 #define MULS(R, V, S) vp = &(V); tx = vp->x * (S); ty = vp->y * (S); tz = vp->z * (S); (R).x = tx; (R).y = ty; (R).z = tz;
 
@@ -123,7 +124,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         R = t348;
         d = R;
         result.y = 0.0f;
-        result.z = d.z; result.x = d.x;
+        result.x = d.x; result.z = d.z;
     } else {
         mode = 0;
         XZU2(p, t328, &b->pos)
@@ -147,10 +148,14 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 SUB2VS(q, p, t274, t280, &a->pos)
                 R = t274;
                 e = R;
-                mode = (seg.x * e.z <= seg.z * e.x) ? 2 : 1;
+                if (seg.x * e.z <= seg.z * e.x) {
+                    mode = 2;
+                } else {
+                    mode = 1;
+                }
             }
         }
-        XZG2(q, vp, t268, seg.z, -seg.x)
+        XZG2S(q, vp, t268, seg.z, -seg.x)
         R = t268; dir = R;
         game_uso_func_071028(&dir);
         XZU2(p, t31c, &b->pos)
@@ -189,7 +194,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             SUBQ2(pB, t170, &b->pos)
             R = t140;
             lbind = R;
-            XZGP(pC, lbind.z, -lbind.x)
+            XZGPS(pC, lbind.z, -lbind.x)
             P2 = t134;
             ldir = P2;
             game_uso_func_071028(&ldir);
