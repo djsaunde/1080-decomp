@@ -136,7 +136,7 @@ extern "C" void gl_func_00065494(Self *self) {
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
-            gl_func_00062F64_d(self, &node->v120, n.sc(w * self->f290 + self->f28C * -dt));
+            { gl_func_00062F64_d(self, &node->v120, n.sc(w * self->f290 + self->f28C * -dt)); } /* run 214: own block homes its bound temp below the += one */
         }
     }
     if (count != 0) {
