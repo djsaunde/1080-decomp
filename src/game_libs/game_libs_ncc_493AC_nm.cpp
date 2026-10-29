@@ -138,8 +138,7 @@ int Mgr::run() {
         o->n8A = o->ctx6C->count();
         rec.ctx = o->ctx6C;
         rec.n58C = 0;
-        rec.f594 = 3;
-        rec.f590 = 32;
+        rec.f590 = 32; rec.f594 = 3; /* agent-g run 233: one line (32 materialised first, stores 0x674 then 0x670 as the target) */
         gl_func_00000000(&rec);
         int cnt = 0; /* agent-g run 233: after the call (the target's `or s5,zero,zero` follows the &rec argument) */
         if (G1C4(D_493AC_b) & 8) {
