@@ -223,8 +223,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             w = ALLOC(0x168);
             if (w) {
                 timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
-                FP(w, 0x28) = timproc_uso_b5_D_807FEC10 + 0x4AC;
-                FP(w, 0xC) = timproc_uso_b5_D_807FEC10 + 0x13A0;
+                FP(w, 0x28) = timproc_uso_b5_D_807FEC10 + 0x4AC; FP(w, 0xC) = timproc_uso_b5_D_807FEC10 + 0x13A0;
                 W16C(FP(w, 0x108), timproc_uso_b5_D_807FEC18 + 0x13A8, FF(&import_80807FB8, 0x23C))
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
                 SETI(t, FP(w, 0x108))
@@ -265,8 +264,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             w = ALLOC(0x168);
             if (w) {
                 timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f);
-                FP(w, 0x28) = timproc_uso_b5_D_807FED00 + 0x4AC;
-                FP(w, 0xC) = timproc_uso_b5_D_807FED00 + 0x1490;
+                FP(w, 0x28) = timproc_uso_b5_D_807FED00 + 0x4AC; FP(w, 0xC) = timproc_uso_b5_D_807FED00 + 0x1490;
                 W16C(FP(w, 0x108), timproc_uso_b5_D_807FED08 + 0x1498, FF(&import_80807FB8, 0x270))
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
                 SETI(u, FP(w, 0x108))
@@ -295,8 +293,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             w = ALLOC(0x168);
             if (w) {
                 timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
-                FP(w, 0x28) = timproc_uso_b5_D_807FED9C + 0x4AC;
-                FP(w, 0xC) = timproc_uso_b5_D_807FED9C + 0x152C;
+                FP(w, 0x28) = timproc_uso_b5_D_807FED9C + 0x4AC; FP(w, 0xC) = timproc_uso_b5_D_807FED9C + 0x152C;
                 { _wp = ALLOC(0x16C);
                   if (_wp) { timproc_uso_b5_func_0546DC(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); FP(_wp, 0x28) = import_80087FB8;
                     FF(_wp, 0x108) = DF_2B0; FF(_wp, 0x10C) = DF_2B4; FF(_wp, 0x110) = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); FW(_wp, 0x120) = 1; FF(_wp, 0x124) = 1.0f; }
