@@ -7200,9 +7200,12 @@ void func_0000B520(char *arg0) {
  *   it); objdiff fuzzy ignores sp offsets, so the frame layout only matters for an exact match.
  *   The {0,1,0} default zeros are DOUBLE literals and the 0x960 == 100 zeros FLOAT literals: the target
  *   then materialises a fresh `mtc1 zero,$f12` for var_f12 instead of copying the sp6C zero (`mov.s`):
- *   90.97 -> 91.05, 522 -> 524 words (= target). */
+ *   90.97 -> 91.05, 522 -> 524 words (= target).
+ * agent-c run 219 (kit CCXIV literal scan): the RoData words at 0x8C8..0x910 are B75C's literal pool
+ *   (0.8 at both 0x900 and 0x908 = one constant read twice, one pool word per load): 0.15, -0.04,
+ *   0.4, 0.015, -0.1, 0.8, 0.8 doubles and -0.2f, 0.2f, 0.724f floats, written as literals
+ *   (93.94 -> 93.95: the -0.2f clamp bound). */
 extern void bu_b75c_mvf(char *, char *, f32, char *);  /* (dst, src, single float in a2, self in a3); NM-only blank alias */
-extern f64 D_000008C8, D_000008D0, D_000008D8, D_000008E8, D_000008F8, D_00000900, D_00000908;
 extern char D_00008170[];
 void func_0000B75C(char *arg0) {
     f32 sp5C;
@@ -7233,8 +7236,8 @@ void func_0000B75C(char *arg0) {
     sp6C[2] = 0.0;
     sp6C[1] = 1.0f;
     temp_f0 = (f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800));
-    var_f12 = (f32) (temp_f0 * D_000008C8);
-    sp60 = (f32) (temp_f0 * D_000008D0);
+    var_f12 = (f32) (temp_f0 * 0.15);
+    sp60 = (f32) (temp_f0 * -0.04);
     if (*(s32 *)((char *)(arg0) + 0x960) == 0x64) {
         var_f12 = 0.0f;
         sp60 = 0.0f;
@@ -7256,7 +7259,7 @@ void func_0000B75C(char *arg0) {
     temp_f2_2 = *(f32 *)((char *)(arg0) + 0x30C);
     temp_f12 = *(f32 *)((char *)(arg0) + 0x310);
 #define temp_f14 (*(f32 *)((char *)(arg0) + 0x314)) /* run 193: de-named (lever-sweep 92.47 -> 92.53) */
-    *(f32 *)((char *)(arg0) + 0x978) = (f32) ((f64) ((f64) (sp5C - temp_f0_2) * D_000008D8) + temp_f0_2);
+    *(f32 *)((char *)(arg0) + 0x978) = (f32) ((f64) ((f64) (sp5C - temp_f0_2) * 0.4) + temp_f0_2);
     sp58 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14);
     sp54 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12) + (sp1C * temp_f14);
     if (var_v0 != 0) {
@@ -7297,12 +7300,12 @@ void func_0000B75C(char *arg0) {
             temp_v0_2 = *(s16 *)((char *)(arg0) + 0xA6C);
             *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1); if (1) {}
             if (temp_v0_2 >= 0xB) {
-                temp_f0_2 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * D_000008E8));
-                temp_f12_2 = D_000008E0; /* run 182 (lever-sweep order) */
+                temp_f0_2 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * 0.015));
+                temp_f12_2 = -0.2f; /* run 182 (lever-sweep order) */
                 if (temp_f0_2 < temp_f12_2) {
                     var_f2 = temp_f12_2;
                 } else {
-                    temp_f12_3 = D_000008F0;
+                    temp_f12_3 = 0.2f;
                     if (temp_f12_3 < temp_f0_2) {
                         var_f2 = temp_f12_3;
                     } else {
@@ -7320,7 +7323,7 @@ void func_0000B75C(char *arg0) {
                 temp_a1 = arg0 + 0x3C8;
                 sp28 = temp_a1;
                 sp24 = var_a0;
-                bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) ((sp6C[0] * *(f32 *)((char *)(arg0) + 0x3BC)) + (*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (sp6C[2] * *(f32 *)((char *)(arg0) + 0x3C4))) * D_000008F8), arg0);
+                bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) ((sp6C[0] * *(f32 *)((char *)(arg0) + 0x3BC)) + (*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (sp6C[2] * *(f32 *)((char *)(arg0) + 0x3C4))) * -0.1), arg0);
                 if (*(s32 *)((char *)(arg0) + 0xA18) != 0) {
                     sp24 = var_a0;
                     bu_b75c_mvf(var_a0, temp_a1, *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x690), arg0);
@@ -7331,7 +7334,7 @@ void func_0000B75C(char *arg0) {
         }
         var_v0 = *(s32 *)((char *)(arg0) + 0x9A8) & 1;
         if (var_v0 != 0) {
-            if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < D_00000900) {
+            if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < 0.8) {
                 *(f32 *)((char *)(arg0) + 0x318) = 0;
             }
             bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3B0, -*(f32 *)((char *)(arg0) + 0xA70), arg0);
@@ -7358,7 +7361,7 @@ void func_0000B75C(char *arg0) {
                 }
                 *(f32 *)((char *)(arg0) + 0x318) += *(f32 *)((char *)(arg0) + 0x318) * *(f32 *)((char *)(arg0) + 0x558) * var_f0;
             }
-            if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < D_00000908) {
+            if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < 0.8) {
                 sp60 *= 2; /* run 193: int 2 keeps the target's `lui 0x4000; mtc1; mul.s` (cfe folds `* 2.0f` to add.s) */
             }
             var_a0 = arg0 + 0xCC;
@@ -7393,7 +7396,7 @@ block_67:
         var_v0 = var_v0 & 1;
     }
     if (var_v0 != 0) {
-        var_f0 = D_00000910;
+        var_f0 = 0.724f;
     } else {
         var_f0 = *(f32 *)((char *)(arg0) + 0x7F8);
     }
