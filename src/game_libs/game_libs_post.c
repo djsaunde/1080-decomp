@@ -11779,7 +11779,11 @@ void gl_func_0002D2F4(void) {
 //   (right placement but a `mov.s $f0,$f2` phi and the base flips again),
 //   z initialised at function scope (same as no hack). Open lever: a source
 //   construct that keeps fr/z as candidates without an extra basic block.
-#ifdef NON_MATCHING
+// EXACT (agent-g run 228, 99.91 -> 100): the post-call 0x358 reload is written into fr
+//   (`fr = f358; cb(0x4D010000, ((f32)i + fr) / fr)`) and an `if (fr) {}` sits before
+//   the 256-block 0x358 store, so the 256-block fr web colours first (f2) and the reload
+//   web takes the same register (target `lwc1 $f2, 0x358`). See docs/IDO_CODEGEN.md
+//   kit CCXXXIII.
 extern int gl_func_00000000_f(int, float);
 extern int gl_ref_000423C4(), gl_ref_00041E9C(), gl_ref_00042490(), gl_ref_00041ED4(), gl_ref_00046324(), gl_ref_00044E14();
 extern int D_2D37C_mode, D_2D37C_flag, D_2D37C_st, D_2D37C_arg, D_2D37C_g5, D_2D37C_g13, D_2D37C_gz, D_2D37C_g1, D_2D37C_g4;
@@ -11858,6 +11862,7 @@ void game_libs_func_0002D374(void) {
             if (z) {}
             D_2D37C_f360s[0x360 / 4] = (f32)half * (1.0f / 256.0f);
             D_2D37C_f35Cs[0x35C / 4] = z;
+            if (fr) {} /* agent-g run 228: with the reload below also written into fr, a use here lifts this fr web's priority so it colours first (f2) and the reload web takes the same register */
             D_2D37C_f358s[0x358 / 4] = fr;
             if (z) {} /* agent-g run 227: a second counted use of the 0 constant in the store block lifts its LR's adjsave to fr's: constant f0 / fr f2 = target */
         }
@@ -11868,7 +11873,8 @@ void game_libs_func_0002D374(void) {
         i = (int)d;
         if (0) { gl_func_00000000(&i); } /* agent-g run 226/227: i homed at its decl slot (frame 0x28, i at 0x1c = target) */
         gl_func_00000000(0x4E010000, i);
-        gl_func_00000000_f(0x4D010000, ((f32)i + D_2D37C_f358l[0x358 / 4]) / D_2D37C_f358l[0x358 / 4]);
+        fr = D_2D37C_f358l[0x358 / 4]; /* agent-g run 228: the post-call 0x358 reload is fr (target f2, not a fresh f0 temp) */
+        gl_func_00000000_f(0x4D010000, ((f32)i + fr) / fr);
         if (i) {} /* agent-g run 227: a post-call read of i splits its web -- the reload goes uncoloured (t2, rec[2] t3 = target) instead of a3 */
     }
     if (D_2D37C_rec[2] != 0) {
@@ -11877,9 +11883,7 @@ void game_libs_func_0002D374(void) {
     gl_ref_00044E14();
     gl_func_00000000();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002D374);
-#endif
+#undef raw
 
 /* gl_func_0002D620: boundary-corrected (orphan-fn delete+merge). The 2-word
  * orphan game_libs_func_0002D618 (`lui t6,0; lw t6,0(t6)`) was a splat mis-split
