@@ -293,7 +293,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     c = new S70c(o);
     reg(c);
     add(c);
-    o = m38;
+    o = m38 + 0 * (int)(m38); /* agent-c run 212: folded counted use (zero code) */
     d = new S70d(o);
     reg(d);
     add(d);
