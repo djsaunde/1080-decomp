@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_00001DDC",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-29T23:49:48.558646+00:00",
+  "end_time": "2026-10-29T23:49:48.558663+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T23:49:48.558660+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.969 NM donor. Frame: the named V3 e for the last product, no named references in the key-3 arm, a dead if (0) { r = f23D4(a0); } before the matrix read (removes the 8-byte hole above edg's pooled return slot) and a two-int block { int p1 = 0, p2 = 0; } (8 bytes below it) put every home at the target offset (slot sp+252, frame 384). Without the named const M4 & the two matrix pointers merged into edg's first pool temp LR (v0); reading through an inline M4::me() (mtx.me()->getPos(v)) gives each its own LR, which takes v1 as in the target. Spliced over a placeholder on both build paths.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 382,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for game_uso_func_00001DDC (0x5F8 / 382 words), spliced over a placeholder in\n * both build trees (agent-c run 240).\n *\n * agent-c run 240 (99.969 -> 100): the frame comes from the named V3 e (last product), no named references in\n * the key-3 arm, a dead `if (0) { r = f23D4(a0); }` before the matrix read (drops the 8-byte hole above the\n * pooled return slot) and a two-int block `{ int p1 = 0, p2 = 0; }` (puts the 8 bytes below it: slot sp+252).\n * Without the named `const M4 &mm` the two matrix pointers joined edg's first pool temp (v0); reading through\n * an inline `mtx.me()->getPos(v)` gives each its own LR, which takes v1 as in the target.\n *\n * agent-g run 168 (docs/IDO_CODEGEN.md kit CXI): the 24BC / 28C0 sibling written as real C++ --\n * the same Self layout, the inline Ctx accessor (a stack object holding a0->out, re-read for every\n * use: the target's `sw t7,300(sp)` / `lw v0,300(sp)` home), M4::getPos for the two transform\n * positions (the `addiu v1,v1,112` + 52 / 56 loads), and V3 operator* returning by value (ctor\n * temp -> pooled return slot -> by-value operator= parameter -> float copies into acc: the target's\n * three-hop copy chains). operator= forwarding to set(const V3 &) gives the target frame (384).\n * The two homes above ref are NAMED V3s declared first in the arm (r, e) assigned through the\n * IMPLICIT memberwise operator= (word copies from the return slot: `r = f23D4(a0); self += r;`,\n * `e = diff * sel; a0->vel -= e;`); acc / vel take the products through a by-value put() that\n * forwards to set(const V3 &) (the parameter-temp hop + the frame-384 reference slots).\n * LEFT (99.77): the key-3 source / non-3 object pointers take v0 where the target has v1, and the\n * f23D4 return slot sits 8 bytes lower (the ref read's pointer temps are allocated before it).\n * The cfe body in game_uso.c stays as the C reference (99.10). */\nstruct V3 {\n    float x, y, z;\n    V3() {}\n    V3(float a, float b, float c) { set(a, b, c); }\n    void set(float a, float b, float c) { x = a; y = b; z = c; }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    void put(V3 v) { set(v); }\n    V3 &operator+=(const V3 &v) { x += v.x; y += v.y; z += v.z; return *this; }\n    V3 &operator-=(const V3 &v) { x -= v.x; y -= v.y; z -= v.z; return *this; }\n    V3 operator*(float s) const { return V3(x * s, y * s, z * s); }\n};\nstruct M4 {\n    float m[4][4];\n    const M4 *me() const { return this; }\n    void getPos(V3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; }\n};\nstruct Out { char pad[0x30]; char acc[0x30]; V3 goal; char pad6c[0x34]; V3 pos; };\nstruct Body { char pad[0x70]; M4 mtx; };\nstruct Self { char pad[0x14]; Out *out; char pad18[0x2C - 0x18]; V3 vel; Body *obj; Body *src; int key;\n              char pad44[0x7C - 0x44]; float lim; char pad80[0x94 - 0x80]; float spd; char pad98[0xAC - 0x98]; float sx;\n              char padb0[0xC4 - 0xB0]; float vlim; char padc8[0xDC - 0xC8]; float hA; char pade0[0xF4 - 0xE0]; float hB;\n              char padf8[0x10C - 0xF8]; float sy; };\nextern \"C\" {\nV3 game_uso_func_000023D4(Self *a1);\nfloat game_uso_func_070238(float);\nvoid game_uso_func_071028(V3 *);\nvoid game_uso_func_072EE8(void *, V3 *);\n}\nstruct Ctx { Out *out; Ctx(Self *s) { out = s->out; }\n    Out *getOut() const { return out; } };\nextern \"C\" void game_uso_func_00001DDC(Self *a0) {\n    if (a0->key == 0) return;\n    if (a0->key == 3) {\n        V3 m;\n        Ctx c(a0);\n        a0->src->mtx.me()->getPos(m);\n        c.getOut()->goal.set(m);\n        c.getOut()->pos.set(m);\n    } else {\n        V3 r;\n        V3 e;\n        V3 ref;\n        V3 self;\n        Ctx c(a0);\n        V3 acc;\n        ref.set(c.getOut()->pos);\n        if (0) { r = game_uso_func_000023D4(a0); }\n        { int p1 = 0, p2 = 0; }\n        a0->obj->mtx.me()->getPos(self);\n        r = game_uso_func_000023D4(a0);\n        self.x += r.x; self.y += r.y; self.z += r.z; /* run 179: spelled out (grid) */\n        float speed = a0->spd;\n        V3 diff(self.x - ref.x, 0.0f, self.z - ref.z);\n        float mag = game_uso_func_070238(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);\n        game_uso_func_071028(&diff);\n        if (mag < a0->lim) {\n            acc.put(diff * (mag - a0->lim));\n        } else {\n            acc.put(diff * (mag - speed) * a0->sx);\n        }\n        game_uso_func_072EE8(c.getOut()->acc, &acc);\n        a0->vel.put(diff * speed);\n        float sel = (a0->key == 2) ? a0->hB : a0->hA;\n        diff.set(0.0f, 1.0f, 0.0f);\n        mag = ref.y - self.y;\n        if (mag < a0->vlim) {\n            acc.put(diff * (a0->vlim - mag));\n        } else {\n            acc.put(diff * (sel - mag) * a0->sy);\n        }\n        game_uso_func_072EE8(c.getOut()->acc, &acc);\n        e = diff * sel;\n        a0->vel -= e;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_1DDC.cpp",
+    "asm_path": "asm/nonmatchings/game_uso/game_uso/game_uso_func_00001DDC.s",
+    "segment": "game_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "full make ROM cmp byte-identical; verify-blocks 6/6; non_matching_objects 0 errors; report fuzzy 100.0"
+  }
+}

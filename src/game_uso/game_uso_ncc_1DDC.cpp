@@ -1,5 +1,11 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_00001DDC (0x5F8 / 382 words; this body 382 = target).
- * NM object only; the ROM build keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) EXACT donor for game_uso_func_00001DDC (0x5F8 / 382 words), spliced over a placeholder in
+ * both build trees (agent-c run 240).
+ *
+ * agent-c run 240 (99.969 -> 100): the frame comes from the named V3 e (last product), no named references in
+ * the key-3 arm, a dead `if (0) { r = f23D4(a0); }` before the matrix read (drops the 8-byte hole above the
+ * pooled return slot) and a two-int block `{ int p1 = 0, p2 = 0; }` (puts the 8 bytes below it: slot sp+252).
+ * Without the named `const M4 &mm` the two matrix pointers joined edg's first pool temp (v0); reading through
+ * an inline `mtx.me()->getPos(v)` gives each its own LR, which takes v1 as in the target.
  *
  * agent-g run 168 (docs/IDO_CODEGEN.md kit CXI): the 24BC / 28C0 sibling written as real C++ --
  * the same Self layout, the inline Ctx accessor (a stack object holding a0->out, re-read for every
@@ -27,6 +33,7 @@ struct V3 {
 };
 struct M4 {
     float m[4][4];
+    const M4 *me() const { return this; }
     void getPos(V3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; }
 };
 struct Out { char pad[0x30]; char acc[0x30]; V3 goal; char pad6c[0x34]; V3 pos; };
@@ -48,21 +55,20 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
     if (a0->key == 3) {
         V3 m;
         Ctx c(a0);
-        /* run 179 (spelling grid): the matrix read through a const M4 & block
-         * local and the pos copy as set(m) give every register (99.77 -> 99.92);
-         * left: the two reference homes put the frame 8 bytes over the target */
-        { const M4 &mm = a0->src->mtx; mm.getPos(m); }
-        { Out *o = c.getOut(); o->goal.x = m.x; o->goal.y = m.y; o->goal.z = m.z; }
+        a0->src->mtx.me()->getPos(m);
+        c.getOut()->goal.set(m);
         c.getOut()->pos.set(m);
     } else {
         V3 r;
-        int e = 0; /* run 179: unused 4-byte home in place of V3 e (frame 0x188 -> 0x180 = target) */
+        V3 e;
         V3 ref;
         V3 self;
         Ctx c(a0);
         V3 acc;
         ref.set(c.getOut()->pos);
-        { const M4 &mm = a0->obj->mtx; mm.getPos(self); }
+        if (0) { r = game_uso_func_000023D4(a0); }
+        { int p1 = 0, p2 = 0; }
+        a0->obj->mtx.me()->getPos(self);
         r = game_uso_func_000023D4(a0);
         self.x += r.x; self.y += r.y; self.z += r.z; /* run 179: spelled out (grid) */
         float speed = a0->spd;
@@ -85,7 +91,7 @@ extern "C" void game_uso_func_00001DDC(Self *a0) {
             acc.put(diff * (sel - mag) * a0->sy);
         }
         game_uso_func_072EE8(c.getOut()->acc, &acc);
-        acc = diff * sel; /* the last product reuses acc (was V3 e) */
-        a0->vel -= acc;
+        e = diff * sel;
+        a0->vel -= e;
     }
 }

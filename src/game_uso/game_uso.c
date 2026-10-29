@@ -1346,7 +1346,11 @@ void game_uso_func_00001DDC(int *a0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00001DDC);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_uso/game_uso_ncc_1DDC.cpp (agent-g run 168 lift,
+ * agent-c run 240 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+void game_uso_func_00001DDC(int *a0) {
+}
 #endif
 
 /* game_uso_func_000023D4: rotate a Vec3 by the upper-3x3 of a column-major

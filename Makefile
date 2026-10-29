@@ -3028,10 +3028,12 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
 GAMEUSO_97EC_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_DONOR)
-# 1DDC: NM-only NCC donor (24BC sibling: Ctx accessor, M4::getPos, V3 copy chains; two block temps swapped, v0/v1, return slot -8).
-GAMEUSO_1DDC_NM_DONOR := build/src/game_uso/game_uso_ncc_1DDC_nm.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00001DDC=$(GAMEUSO_1DDC_NM_DONOR)
-build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_1DDC_NM_DONOR)
+# 1DDC: EXACT NCC donor over a placeholder (24BC sibling: Ctx accessor, M4::getPos, V3 copy chains; agent-c run 240:
+# getPos through an inline `mtx.me()` gives both matrix pointers their own LR (v1); named V3 e, dead early f23D4 call
+# and a two-int block before the matrix read = the target's homes).
+GAMEUSO_1DDC_DONOR := build/src/game_uso/game_uso_ncc_1DDC.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00001DDC=$(GAMEUSO_1DDC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_1DDC_DONOR)
 # 28C0: NM-only NCC donor (camera homing, V3 class; regs/one else-arm slot differ).
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
