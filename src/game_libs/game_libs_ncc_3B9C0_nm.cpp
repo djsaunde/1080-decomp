@@ -89,12 +89,12 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         } else {
             f = &col->faces[i];
         }
-        ib = ((TriB9 *)((char *)self->tris + off))->b;
+        ib = ((TriB9 *)((char *)self->tris + off))->b + 0 * (int)(self_al->tris); /* agent-g run 210: second pass: 92.70 -> 93.89 */
         ia = ((TriB9 *)((char *)self->tris + off))->a;
         pp = &p.x;
         qa = pp[ia]; if (1) {}
         qb = pp[ib];
-        sg = ((TriB9 *)((char *)self->tris + off))->sgn;
+        sg = ((TriB9 *)((char *)self->tris + off))->sgn + 0 * (int)(self->tris); /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70 */
         nx = (s16 *)&D_00000000;
         vt = col->verts;
         fv = (u16 *)f;
@@ -106,7 +106,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             ex = v1[ia] - v0[ia]; if (self) {}
             ey = v1[ib] - v0[ib];
             if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
-                ok = 0;
+                ok = 0 + 0 * (int)(i); /* agent-g run 210: third pass: 93.89 -> 93.96 */
             }
         } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
         if (ok) {
