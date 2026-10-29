@@ -29,7 +29,8 @@ struct Vec3 {
     float x, y, z;
     Vec3() {}
     Vec3(float a, float b, float c) { set(a, b, c); }
-    Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
+    void cp(const Vec3 &v) { x = v.x; y = v.y; z = v.z; }
+    void operator=(Vec3 v) { cp(v); } /* run 214: cp()'s reference / this temps homed below the by-value param */
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3 operator-(const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
     Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); } /* run 213: ctor form, products before stores */
@@ -136,7 +137,8 @@ extern "C" void gl_func_00065494(Self *self) {
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
-            { gl_func_00062F64_d(self, &node->v120, n.sc(w * self->f290 + self->f28C * -dt)); } /* run 214: own block homes its bound temp below the += one */
+            Vec3 imp = n.sc(w * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
+            gl_func_00062F64_d(self, &node->v120, imp);
         }
     }
     if (count != 0) {
