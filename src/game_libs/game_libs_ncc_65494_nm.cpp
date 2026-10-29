@@ -15,9 +15,12 @@
  * result through the inline set(): set's parameters are evaluated before any
  * store into r, so all the field loads / subs / muls come first as in the target
  * (86.37 -> 89.91; a float-temp spelling also reorders them but drops two words).
- * Left: the target leaves self + 0x2FC uncoloured (spill home 0x6C, no s8; ours
- * colours it s8: +1 save word) and keeps psum's product loads ahead of its stores
- * (the set() form on that operator* does not move them). */
+ * agent-c run 213: four trailing `if (1) {}` blocks leave self + 0x2FC uncoloured
+ * (spill home 0x6C, no s8) as in the target; registers then line up (91.68 -> 95.29),
+ * and operator* returning `Vec3(x * s, y * s, z * s)` evaluates all three products
+ * before the stores into the by-value temp, as the target (95.29 -> 98.54, 1336 =
+ * target length). Left: frame 384 vs 392 (block-temp homes shifted), the
+ * operator- sub / store interleave. */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -25,7 +28,7 @@ struct Vec3 {
     void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3 operator-(const Vec3 &v) const { Vec3 r; r.set(x - v.x, y - v.y, z - v.z); return r; }
-    Vec3 operator*(float s) const { Vec3 r; r.x = x * s; r.y = y * s; r.z = z * s; return r; }
+    Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); } /* run 213: ctor form, products before stores */
     Vec3 sc(float s) const { Vec3 r; r.set(x * s, y * s, z * s); return r; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
     void operator-=(const Vec3 &v) { x -= v.x; y -= v.y; z -= v.z; }
@@ -125,4 +128,7 @@ extern "C" void gl_func_00065494(Self *self) {
         nsum *= -minv * self->f288;
         gl_func_00062F64_e(self, &psum, &nsum);
     }
+    if (1) {} if (1) {} if (1) {} if (1) {} /* agent-c run 213: four empty blocks raise the BB count so the
+                                                * self + 0x2FC address stays uncoloured (spill home 0x6C, no s8),
+                                                * as in the target (91.68 -> 95.29 standalone) */
 }
