@@ -4031,7 +4031,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     b4 = 20;
     b0 = 1;
     c8 = 0.0f;
-    import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000;
+    import_8005EE6C[1] = import_8005EE6C_r[1] | 0x20000 + 0 * (int)(import_8005EE6C_r[1]); /* agent-c run 211: folded counted use (zero code) */
     c4 = 0.0f;
     c0 = 0.0f;
     func_00000000(&D_6808_00, 0);
