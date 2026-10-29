@@ -17,7 +17,14 @@
  * row pointers 0x12C..0x120, items 0x100, e2 0xF0, the n spill home 0xE0, v1a / v1b, sb1 0xC0, the
  * site-1 loop counter home 0xBC, the two by-value V3 copies 0x94 / 0x84, sb2 0x80, sb3 0x68), one
  * V3 temporary per setPos site, and the kid ctor run of each widget written on ONE source line
- * (comma expression; the line layout moves the result stores behind the next call's arguments). */
+ * (comma expression; the line layout moves the result stores behind the next call's arguments).
+ * 96.01 -> 98.81 (agent-c run 223, length = target): no local may sit in t0 (uopt-coloured variables
+ * leave ugen's temp ring one short -- the item loop holds its vtable in w and reads its float through
+ * import_808000CC + 0x320, a named extern's address was hoisted into s0), per-expansion temp roles
+ * (S70 outer t / inner w, rows bound through t, the +0x284 and 0x2B8 -> 0x29C copies through w, the
+ * site-2/3 zero fills through u which site 3's +0x284 store reads again), one-line vtable / name store
+ * pairs, the hide store through items[i], and the site-3 restore store through alias f8fc8_ee6c_r3.
+ * Open: sites 1/2 triple mtc1 zero (one shared f0 here), sites 2/3 loop counter in s0. */
 #include "common.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
