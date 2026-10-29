@@ -4267,7 +4267,9 @@ void gl_func_00038A28(char *o, char *c) {
         case 0x65:
             p = *(int **)(c + 0x4);
             *(int **)(c + 0x4) = p + 1;
-            *(int *)(o + 0x0C) = *p;
+            /* agent-g run 208: the value through key (target a3, as the key arms) */
+            key = *p;
+            *(int *)(o + 0x0C) = key;
             return;
         case 0x66:
             p = *(int **)(c + 0x4);
