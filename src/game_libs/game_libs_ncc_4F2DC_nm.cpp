@@ -11,8 +11,6 @@ typedef float f32;
 extern "C" {
 int gl_func_00000000(...);
 extern int D_00000000B;
-extern int D_00000000C;
-extern int D_00000000D;
 extern int D_00000000E;
 extern f32 D_00000000F[3];
 }
@@ -41,7 +39,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     d = dir;
     Cam *cam = *(Cam **)(arg0 + 0x70);
     V3 start; start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
-    V3 end = start + d * *(f32 *)((char *)&D_00000000C + 0x1BA8);
+    V3 end = start + d * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
     start *= KV; if (1) {}
     V3 e(end.x * KV.x, end.y * KV.y, end.z * KV.z);
     char *p = *(char **)&D_00000000E + 0 * (int)(cam); /* agent-c run 209: folded counted use of cam */
@@ -50,7 +48,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     }
     int besti = -1;
     if (count != 0) {
-        f32 best = *(f32 *)((char *)&D_00000000D + 0x1BAC);
+        f32 best = 100000.0f;
         for (int i = 0; i < count; i++) {
             if (0.0f < dists[i] && dists[i] < best) {
                 best = dists[i];
