@@ -6979,7 +6979,7 @@ extern char D_00008170[];
 #define temp_f12_3 (0.2f)
 void func_0000B75C(char *arg0) {
     f32 sp6C[3];
-    f32 sp1C;
+    f32 sp1Ck = 0; /* agent-g run 235: home keeper (sp1C declared last: its home is the target's sp+0x1C) */
     s32 var_v0;
     f32 sp60;
     f32 sp5C;
@@ -6997,6 +6997,7 @@ void func_0000B75C(char *arg0) {
     s16 temp_v0_2;
     char *var_a0;
     char *temp_a1;
+    f32 sp1C;
 
     sp6C[0] = 0.0;
     sp6C[2] = 0.0;
