@@ -1,4 +1,4 @@
-/* IDO 7.1 cfe (C) NM-only comparison donor for func_000090CC (agent-c run 226).
+/* IDO 7.1 cfe (C) EXACT donor for func_000090CC (agent-c run 226 decode, exact in run 227).
  * The target is cfe output (cfront-style C), not edg: the draw-call this-adjust is `addu a0, delta, ptr`
  * and the site-2 vptr base is loaded once, which only cfe gives. Mechanical port of the NCC donor
  * bootup_uso_ncc_90CC_nm.cpp (98.10 as plain C), then the edg-only fixes were reverted or redone for cfe
@@ -10,9 +10,9 @@
  * loads), `var_s0 = temp_s1_8; var_s0 += ...` for the base-first addu, and each draw-argument global
  * loaded into var_s0 first (the target's `lui s0, %hi(g); lw v0, %lo(g)(s0)`).
  * Site 1: `if (1) {}` after the preceding call + a value variable other than var_v1 (v0), the d148 list
- * walk's id in cg (v1). 99.90 standalone, 2106 words = target. RESIDUAL (4 rows, both as1 order):
- * `lw v1, 0(t6)` scheduled one slot early in the d148 list walk, vpos.z / 5th-arg store order.
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * walk's id in cg (v1). Run 227 (as1 orders equal-ready instructions by source line): cg's load on the
+ * `do` line, and vpos.z stored in a goto block (`if (1) {}` keeps its own line, after the call's line)
+ * so the 5th-argument store goes first. 2106 words, exact. REPLACE_FUNC_BODY-spliced on both paths. */
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -114,8 +114,8 @@ extern char bu_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; ex
 typedef void (*Vfn_ff)(char *, s32, s32, void *, s32, s32, f32, f32);
 typedef struct { s32 w; } W90;
 extern char D_00008778;
-extern void func_00000000_p4f(void *, char *, s32, s32, f32);
-extern void func_00000000_iipif(s32, s32, void *, f32, f32);
+extern void bu_90cc_call_p4f(void *, char *, s32, s32, f32);
+extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
 /* PASS-2 2026-06-10 (big-swing): FULL 2106-insn m2c graft replacing the
  * 30-insn stub. Raw-word pipeline: .s words -> objdump blob -> label-
  * resolved .s -> m2c (1084 lines, 0 errors, 163 labels). All callees
@@ -159,7 +159,7 @@ typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C,
 extern BuW90 bu_90cc_gcfg_ld, bu_90cc_gcfg_st, bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
 extern BuW90 bu_90cc_d44_01, bu_90cc_d44_02, bu_90cc_d44_03, bu_90cc_d44_04, bu_90cc_d44_05, bu_90cc_d44_06, bu_90cc_d44_07, bu_90cc_d44_08, bu_90cc_d44_09, bu_90cc_d44_10, bu_90cc_d08_01, bu_90cc_d08_02, bu_90cc_d08_03, bu_90cc_d08_04, bu_90cc_d80_01, bu_90cc_d80_02, bu_90cc_d80_03;
-extern void func_00000000_p4d(void *, char *, f64, f32);
+extern void bu_90cc_call_p4d(void *, char *, f64, f32);
 extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 
@@ -746,7 +746,7 @@ sw_end:
          * 8424 = target) and gives arg2 the target t3 */
         if (1) { *(s32 *)((char *)(arg0) + 0xA58) = temp_v0_51; }
         *(s32 *)((char *)(arg0) + 0x8B8) = arg8 + 0 * (int)(arg7); /* agent-c run 212: folded counted use (zero code) */
-        func_00000000_p4f(temp_s1, arg0, 0x6D, 0x43160000, 200.0f);
+        bu_90cc_call_p4f(temp_s1, arg0, 0x6D, 0x43160000, 200.0f);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 8) {
             *(s16 *)((char *)(arg0) + 0x88C) = 4;
             *(s16 *)((char *)(arg0) + 0x88E) = 2;
@@ -755,9 +755,11 @@ sw_end:
         }
         func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_s1);
         vpos.x = arg5;
-        vpos.z = arg6;
         vpos.y = 0.0f;
-        func_00000000_iipif(*(s32 *)((char *)&D_00000000 + 0), 1, &vpos.y, arg5, arg6);
+        goto bu_90cc_lz;
+    bu_90cc_lc: bu_90cc_call_iipif(*(s32 *)((char *)&D_00000000 + 0), 1, &vpos.y, arg5, arg6); goto bu_90cc_le;
+    bu_90cc_lz: if (1) {} vpos.z = arg6; goto bu_90cc_lc;
+    bu_90cc_le: ;
         vpos.y += D_000008B0;
         wpos = vpos;
         *(f32 *)((char *)(arg0) + 0x3A4) = wpos.x;
@@ -871,7 +873,7 @@ sw_end:
         func_00000000(&D_0000884C, 0);
         var_s1 = func_00000000(0x16C);
         if (var_s1 != 0) {
-            func_00000000_p4d(var_s1, &D_0000885C, 0.0, 0.0f);
+            bu_90cc_call_p4d(var_s1, &D_0000885C, 0.0, 0.0f);
             temp_f0 = D_000008B4;
             *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_d207dc; *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF;
             *(f32 *)((char *)(var_s1) + 0x108) = temp_f0;
@@ -918,9 +920,8 @@ sw_end:
         if (sp174 != 0) {
             temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {
-                cg = *(s32 *)(char *)bu_90cc_d00_b;
                 temp_s1_8 = (char *)(bu_90cc_d148_01 + 24);
-                do {
+                cg = *(s32 *)(char *)bu_90cc_d00_b; do { /* run 227: cg's load on the `do` line = as1 issues it after the d148 address */
                     if (arg2 == cg) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
                         var_s0 = temp_s1_8; var_s0 += *(s32 *)((char *)temp_v0_5 + 0x4) * 4 + 0 * (int)(arg2);

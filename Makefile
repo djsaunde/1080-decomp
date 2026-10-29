@@ -125,7 +125,7 @@ build/src/bootup_uso/bootup_uso_o0_12DA4.c.o build/non_matching/src/bootup_uso/b
 # the bootup split chain — see the 0x1F0 / 0x184C entries.)
 # Trim .text sizes + reduce sh_addralign to 4 so split .o files link at the
 # exact non-16-aligned offsets in bootup_uso. See feedback_non_aligned_o_split.md.
-build/src/bootup_uso/bootup_uso.c.o: TRUNCATE_TEXT := 0xF1F0
+build/src/bootup_uso/bootup_uso.c.o: private TRUNCATE_TEXT := 0xF1F0
 # 2DA4 = subsystem init + 12-way jumptable dispatch, IDO 7.1 -O2 donor:
 # bootup_uso_o2_2DA4.c (123/123 word-exact). Spliced only so the donor-local
 # .rodata jumptable reloc is renamed func_00002DA4_rodata and pinned to the
@@ -227,10 +227,11 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += f
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_31C0_NM_DONOR)
 # 90CC = alloc-cascade constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 97.15), then back
 # to cfront-style C for cfe (agent-c run 226, bootup_uso_90CC_nm.c: the target's draw-call addu order and
-# single site-2 base load are cfe-only; the NCC donor .cpp is kept as a reference). NM comparison object only.
-BOOTUP_90CC_NM_DONOR := build/src/bootup_uso/bootup_uso_90CC_nm.c.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000090CC=$(BOOTUP_90CC_NM_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_90CC_NM_DONOR)
+# single site-2 base load are cfe-only; the NCC donor .cpp is kept as a reference). EXACT in agent-c run 227
+# (bootup_uso_90CC.c: two as1 source-line order fixes), spliced over the placeholder on both paths.
+BOOTUP_90CC_DONOR := build/src/bootup_uso/bootup_uso_90CC.c.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000090CC=$(BOOTUP_90CC_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_90CC_DONOR)
 # 55A0 = scene/HUD constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 94.35). NM comparison object only.
 BOOTUP_55A0_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_55A0_nm.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000055A0=$(BOOTUP_55A0_NM_DONOR)
@@ -2747,7 +2748,7 @@ build/assets/timproc_uso_block5_yay0.bin: YAY0_TEXT_SIZE := 0xE620
 # sits at 0xEC80. All-zero pad words, FORCE for the same skip-path reason.
 # func_000087A4 (2026-10-16): exact C body ends at 0x8914; three all-zero file-end
 # alignment pad words to func_00008920 (0x8914..0x891C). FORCE for the same reason.
-build/src/bootup_uso/bootup_uso.c.o: SUFFIX_BYTES_FORCE := func_000087A4=0x00000000,0x00000000,0x00000000 func_00004948=0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EE8C=0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
+build/src/bootup_uso/bootup_uso.c.o: private SUFFIX_BYTES_FORCE := func_000087A4=0x00000000,0x00000000,0x00000000 func_00004948=0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EE8C=0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
 # Mirror onto the non_matching object so report.json/objdiff score the trailing
 # alignment-nop word (splat-symbol-boundary trailing-delay-nop class).
 # func_0000F1B4 likewise: matching build has SUFFIX_BYTES (3 all-zero pad words to
@@ -2763,7 +2764,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o2_23914.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_E270.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_6808.c,$(C_FILES))
 C_FILES := $(filter-out src/timproc_uso_b5/timproc_uso_b5_8FC8.c,$(C_FILES))
-C_FILES := $(filter-out src/bootup_uso/bootup_uso_90CC_nm.c,$(C_FILES))
+C_FILES := $(filter-out src/bootup_uso/bootup_uso_90CC.c,$(C_FILES))
 
 # The controller-read donor contributes only through its host splice.
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))

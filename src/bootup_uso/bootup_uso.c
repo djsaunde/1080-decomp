@@ -5560,7 +5560,10 @@ void func_00008FA8(int *self) {
     }
 }
 
-#ifdef NON_MATCHING
+/* func_000090CC: EXACT via the IDO 7.1 cfe donor src/bootup_uso/bootup_uso_90CC.c, REPLACE_FUNC_BODY-spliced
+ * over the placeholder below on both build paths (agent-c run 227). The superseded in-unit decode is kept
+ * for reference under BOOTUP_90CC_OLD_DECODE (never defined). */
+#ifdef BOOTUP_90CC_OLD_DECODE
 /* func_000090CC: 2106-insn (0x20E8) alloc-cascade constructor.
  * Sibling of recently-matched func_00008F18 (alloc + multi-call init,
  * 36 insns) — much larger version with ~10+ alloc-or-use cascades.
@@ -6615,7 +6618,10 @@ sw_end:
     return arg0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000090CC);
+void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
+    volatile char *r = arg0;
+    return 0;
+}
 #endif
 
 // func_0000B1B4 — STRUCTURAL PASS (0x2E8 / 186 insns, no episode).
