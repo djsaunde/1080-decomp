@@ -11,9 +11,11 @@
  * (SUB sites through sa / sc), and int gN placeholders keep every frame home at
  * its target address (frame 0x3B0).
  * The active flag is re-read after the stores (uopt forwards the stored value,
- * the target's v0). Length = target (1071 words, opcode-identical); LEFT: FP
- * colours (b->width f0, third-level set() temps, perp x) and the ugen t-ring
- * one register late from the loop's t164 site on. */
+ * the target's v0). Length = target (1071 words, opcode-identical). The empty
+ * block at the loop-body top (run 231) lets the &t128 guard address colour, so
+ * the ugen t-ring lines up from the t164 site on (98.52 -> 99.81). LEFT: FP
+ * colours (b->width f0 / z f14, main third-level x f14, loop perp x f14), the
+ * hitC copy load order, the final compare's sum / n0.x swap. */
 typedef struct { float x, y, z; } Vec3;
 typedef struct Node { char pad0[0x2C]; struct Node *next; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; } Node;
 typedef struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; char pad34C[0x908 - 0x34C]; struct W *other; } W;
@@ -191,7 +193,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             hit = 1;
         }
         n = b->next;
-        for (; n != 0; n = n->next + 0 * (int)(n->next)) {
+        for (; n != 0; n = n->next + 0 * (int)(n->next)) { if (1) {}
             p = &t170; pC = &t134; pB = &t140; XZV(q, t170, &n->pos)
             SUBQ2(pB, t170, &b->pos)
             R = t140;
