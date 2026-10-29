@@ -64,19 +64,24 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     float m[40]; /* sp+0xC4 .. sp+0x163 */
     int var_s0;
     char *nl;
-    V4_55A0 vec1, vec2;
+    /* agent-g run 235 frame map (every target sp offset but vec2's): the list object's nl is its own nl0 (target
+     * home 0x84, the old mode_kd slot), the trailing 0x48 actor's inner pointer is s5 (home 0x78, obj's old slot;
+     * obj / n4 live in s-regs, their homes moved into the never-accessed 0x9C..0xBB gap), vec1 / vec2 are block
+     * locals of the actor-1 / actor-2 blocks (target 0x44 / 0x28), n3 last at function scope (target spill 0x54),
+     * no block-scope q pointers (their block home sat at 0x54) */
+    V4_55A0 vecp1; char *obj; char *n4; int vk1; int vk2;
     R12_55A0 *it;
     S4_55A0 v0, v1, v2, v3;
-    int mode_kd = 0; /* agent-c run 219 (kit CCXVI): mode de-named, its home kept */
+    char *nl0;
     float *mm = m;
     S4_55A0 p1;
-    char *obj;
+    char *s5;
     V4_55A0 vec0;
     char *sub, *node;
     S4_55A0 p2;
-    char *n2, *n3, *n4;
+    char *n2, *n3;
 
-    if (1) { S4_55A0 *q0 = &v0, *q1 = &v1, *q2 = &v2, *q3 = &v3, *q4 = &t4, *q5 = &t5, *q10 = &t10, *q6 = &p1; }
+    if (0 * ((int)&v0 + (int)&v1 + (int)&v2 + (int)&v3 + (int)&t4 + (int)&t5 + (int)&t10 + (int)&p1 + (int)&it + (int)&vecp1 + (int)&vk1 + (int)&vk2)) {}
     D_55A0_w0 = D_55A0_r0 | 8; if (1) {}
     D_55A0_G.b = 0xAA002;
     D_55A0_G.a = 0;
@@ -101,7 +106,6 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
         it = (R12_55A0 *)&D_00007E24;
         if (D_55A0_listchk != 0) {
-            if (1) { R12_55A0 **q = &it; }
             do {
                 func_00000000(&D_55A0_fmt, it->w, it);
                 func_00000000(D_55A0_list2, it);
@@ -161,6 +165,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         p1.w = D_55A0_v1.w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
+            V4_55A0 vec1;
             p2.w = p1.w;
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
@@ -184,6 +189,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         p1.w = D_55A0_v2.w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
+            int b0 = 0; int b1 = 0; V4_55A0 vec2;
             p2.w = p1.w;
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
@@ -205,7 +211,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         /* list object (0x6C) */
         D_55A0_G.b = 0x28002;
         D_55A0_G.a = 0;
-        nl = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
+        nl0 = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
         v3.w = D_55A0_v3.w;
         p1.w = D_55A0_v3.w;
         obj = (char *)func_00000000(0x6C);
@@ -213,7 +219,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
             p2.w = p1.w;
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
-                func_00000000(sub, p2, nl);
+                func_00000000(sub, p2, nl0);
                 OI(sub, 0x28) = (int)&D_55A0_s28_3;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_3;
@@ -257,10 +263,10 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     obj = (char *)func_00000000(0x48);
     if (obj != 0) {
         p2.w = p1.w;
-        sub = obj;
-        if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(sub, p2, D_55A0_g5);
-            OI(sub, 0x28) = (int)&D_55A0_s28_5;
+        s5 = obj;
+        if (s5 != 0 || (s5 = (char *)func_00000000(0x48)) != 0) {
+            func_00000000(s5, p2, D_55A0_g5);
+            OI(s5, 0x28) = (int)&D_55A0_s28_5;
         }
         OI(obj, 0x28) = (int)&D_55A0_o28_5;
     }
