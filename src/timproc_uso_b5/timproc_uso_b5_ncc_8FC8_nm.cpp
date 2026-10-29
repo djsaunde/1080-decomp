@@ -221,7 +221,7 @@ struct WB : B2 { WFIELDS
         volatile int sb = FW(f8fc8_ee6c_sb2, 4) & 0x80000;
         { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
         kid[0] = new Kid(import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0);
-        n = 1;
+        n = 1; if (1) {} /* run 221: keeps the target's `blez` loop guard on the stored 1 (decode fix) */
         i140 = 0;
         attachKids();
         i144 = 0;
@@ -239,7 +239,7 @@ struct WC : B2 { WFIELDS
         volatile int sb = FW(f8fc8_ee6c_sb3, 4) & 0x80000;
         { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
         kid[0] = new Kid(import_80803D04 + 0x1540, f8fc8_e3d04_2, 0);
-        n = 1;
+        n = 1; if (1) {} /* run 221: target `blez` guard */
         i140 = 0;
         attachKids();
         i144 = 0;
