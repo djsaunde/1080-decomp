@@ -37,6 +37,15 @@ struct FreeCam {
 };
 static inline f32 fabs_(f32 x) { return x < 0.0f ? -x : x; }
 static inline f32 clamp_(f32 x, f32 lo, f32 hi) { if (x < lo) return lo; if (x > hi) return hi; return x; }
+/* agent-g run 218: the tail stores through inline setters whose Cam * parameter is kept (`if (0) { n = 0; }`, the 37348
+ * idiom): every reload of c is a v0 parameter web and m's chain v1, as in the target: 99.46 -> 99.73 */
+static inline void spx(Cam *n, f32 v) { if (0) { n = 0; } n->pos.x = v; }
+static inline void spy(Cam *n, f32 v) { if (0) { n = 0; } n->pos.y = v; }
+static inline void spz(Cam *n, f32 v) { if (0) { n = 0; } n->pos.z = v; }
+static inline void tgx(Cam *n, f32 v) { if (0) { n = 0; } n->tgt->m.t.x = v; }
+static inline void tgy(Cam *n, f32 v) { if (0) { n = 0; } n->tgt->m.t.y = v; }
+static inline void tgz(Cam *n, f32 v) { if (0) { n = 0; } n->tgt->m.t.z = v; }
+static inline M &tm(Cam *n) { if (0) { n = 0; } return n->tgt->m; }
 void FreeCam::update() {
     Cam *c = cam;
     if (&c == 0) return; /* agent-g run 218: folded address test = c address-taken (memory-resident, reloaded after each aliasing store) instead of volatile: the xform read lands in t2 like the target: 99.17 -> 99.46 */
@@ -69,10 +78,10 @@ void FreeCam::update() {
     w.x = 0.0f; w.y = 0.0f; w.z = d;
     gl_func_00034458_36F0C(pitch, &w.y, &w.z);
     gl_func_00034458_36F0C(yaw, &w.x, &w.z);
-    M &m = c->tgt->m;
+    M &m = tm(c);
     pos.x = m.t.x; pos.y = m.t.y; pos.z = m.t.z;
     pos += v;
     w += pos;
-    c->pos.x = w.x; c->pos.y = w.y; c->pos.z = w.z;
-    c->tgt->m.t.x = pos.x; c->tgt->m.t.y = pos.y; c->tgt->m.t.z = pos.z;
+    spx(c, w.x); spy(c, w.y); spz(c, w.z);
+    tgx(c, pos.x); tgy(c, pos.y); tgz(c, pos.z);
 }
