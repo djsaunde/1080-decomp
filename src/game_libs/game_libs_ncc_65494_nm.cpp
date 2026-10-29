@@ -31,7 +31,7 @@ struct Vec3 {
     Vec3(float a, float b, float c) { set(a, b, c); }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    Vec3 operator-(const Vec3 &v) const { Vec3 r; r.set(x - v.x, y - v.y, z - v.z); return r; }
+    Vec3 operator-(const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
     Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); } /* run 213: ctor form, products before stores */
     Vec3 sc(float s) const { Vec3 r; r.set(x * s, y * s, z * s); return r; }
     void operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; }
@@ -93,7 +93,7 @@ extern "C" void gl_func_00065494(Self *self) {
         Vec3 n;
         Vec3 d;
         Hit hit;
-        n.set((float)iz(), 1.0f, (float)iz());
+        n.x = (float)iz(); n.y = 1.0f; n.z = (float)iz();
         node->v120 = node->pos;
         d = node->pos - self->pos;
         gl_func_00062F64(self->f2FC, &d, &node->v114);
