@@ -6979,8 +6979,8 @@ void func_0000B75C(char *arg0) {
     f32 temp_f2_9;
     f32 var_f0;
     f32 var_f12;
+    f64 temp_f0; /* agent-g run 224: before var_f2 (the a0 spill slot moves to the target's sp+0x24) */
     f32 var_f2;
-    f64 temp_f0;
     s16 temp_v0_2;
     char *var_a0;
     char *temp_a1;
