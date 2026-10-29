@@ -748,7 +748,7 @@ sw_end:
             *(s16 *)((char *)(arg0) + 0x88C) = 4;
             *(s16 *)((char *)(arg0) + 0x88E) = 2;
         } else {
-            *(s16 *)((char *)(arg0) + 0x88C) = 5; *(s16 *)((char *)(arg0) + 0x88E) = 1;
+            *(s16 *)((char *)(arg0) + 0x88E) = 1; *(s16 *)((char *)(arg0) + 0x88C) = 5; /* agent-c run 221: 0x88E first on the line = the target's 1 / 5 constant order */
         }
         func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_s1);
         vpos.x = arg5;
@@ -895,8 +895,10 @@ sw_end:
          * site, reload between the |= and &= statements) -- per-site blank aliases
          * bust the m2c &D_00000000 base GCSE that had cached one addiu base reg. */
         *(s32 *)&bu_90cc_g8_st = *(s32 *)&bu_90cc_g8_ld | 8;
-        var_v1 = bu_90cc_gcfg_ld.f04; var_v1 |= 0x20000; bu_90cc_gcfg_st.f04 = var_v1;
-        var_v1 = bu_90cc_gcfg_b_ld.f04; var_v1 &= 0xFFF7FFFF; var_v1 &= ~2; bu_90cc_gcfg_b_st.f04 = var_v1;
+        /* agent-c run 221 (kit CCXXI): the two RMW chains on the dummy-home var_t1 (not the shared var_v1 name)
+         * inside do { } while (0) blocks get v0 as the target */
+        do { var_t1 = bu_90cc_gcfg_ld.f04; var_t1 |= 0x20000; bu_90cc_gcfg_st.f04 = var_t1; } while (0);
+        do { var_t1 = bu_90cc_gcfg_b_ld.f04; var_t1 &= 0xFFF7FFFF; var_t1 &= ~2; bu_90cc_gcfg_b_st.f04 = var_t1; } while (0);
         bu_90cc_gown = (s32) arg0;
         for (sp58 = 0; sp58 != 0x23; sp58++) {
             var_a2 = sp58;
