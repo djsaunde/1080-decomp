@@ -24633,7 +24633,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             cnt = *(s32 *)(base + 4);
             *(s32 *)(base + 4) = cnt + 1;
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 4) = 0x300000;
+            *(s32 *)(p + 4) = 0x300000 + 0 * (int)(cnt); /* agent-c run 234: folded counted use (zero-use-sweep, 94.71 -> 94.78) */
             *(s32 *)(p + 0) = 0xBA001402;
         }
         {
@@ -24652,7 +24652,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             s32 cnt;
             char *p;
             base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
+            cnt = *(s32 *)(base + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85) */
             *(s32 *)(base + 4) = cnt + 1;
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
             *(s32 *)(p + 0) = 0xE7000000;
