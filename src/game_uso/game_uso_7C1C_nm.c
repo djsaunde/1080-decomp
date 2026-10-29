@@ -10,9 +10,10 @@
  * Vec3::set / XZ ctor goes through the shared float temporaries tx / ty / tz
  * (SUB sites through sa / sc), and int gN placeholders keep every frame home at
  * its target address (frame 0x3B0).
- * LEFT: the s->active = 1 store takes a separate constant temp (target stores
- * the active register), which shifts the ugen t-register ring by one for the
- * rest of the function. */
+ * The active flag is re-read after the stores (uopt forwards the stored value,
+ * the target's v0). Length = target (1071 words, opcode-identical); LEFT: FP
+ * colours (b->width f0, third-level set() temps, perp x) and the ugen t-ring
+ * one register late from the loop's t164 site on. */
 typedef struct { float x, y, z; } Vec3;
 typedef struct Node { char pad0[0x2C]; struct Node *next; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; } Node;
 typedef struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; char pad34C[0x908 - 0x34C]; struct W *other; } W;
@@ -136,13 +137,12 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
             active = s->active;
             if (active == 0) {
                 if (s->lim <= DOTV) {
-                    active = 1;
                     s->active = 1;
                 }
             } else if (DOTV <= -s->lim) {
                 s->active = 0;
-                active = 0;
             }
+            active = s->active;
             if (active == 1 && DOTV <= *(float *)((char *)&D_00000000 + 0xFC)) {
                 XZV(p, t280, &s->w->other->pos)
                 SUB2VS(q, p, t274, t280, &a->pos)
