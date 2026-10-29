@@ -64,7 +64,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         Vec3 pb1, pb2, pb3, pb4, pb5, pb6; /* unused: frame 456 -> 528 = target (no code) */
         XZ bp(b->pos);
         XZ e(bp - a->pos);
-        XZ f = s->p84 - s->p90;
+        XZ f = s->p84 - s->p90; if (1) {} /* agent-g run 224 (bb sweep): 89.499 -> 89.506 */
         XZ wp(s->w->pos);
         const Vec3 &g = wp - s->p90;
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.z * g.z + g.x * e.x) {
