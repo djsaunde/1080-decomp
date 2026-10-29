@@ -75,8 +75,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
     if (b == 0) {
         const Vec3 &d = XZ(a->pos) - *pos;
         result.y = 0.0f;
-        result.z = d.z;
-        result.x = d.x;
+        result.z = d.z; result.x = d.x; /* agent-g run 228: one line (kit CCXXXIV): 96.331 -> 96.347 */
     } else {
         int mode = 0;
         Node *a_al = a + 0 * (int)(out); /* agent-c run 195: alias copy (s-reg tie); agent-g run 210: folded counted use of out, 96.14 -> 96.19 */
