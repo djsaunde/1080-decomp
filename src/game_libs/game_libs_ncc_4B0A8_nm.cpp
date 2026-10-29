@@ -36,6 +36,7 @@ struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } } /* run 190: kept parameter */
     Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; } /* run 190: back to ++idx (with the two levers around it) */
     Elem *cur() { Arr &r = *a; return r[idx]; } /* run 190: local-reference read (kit CXLIV) */
+    AIter *me() { return this; } /* agent-c run 238: zero-code pool hold for the loop increment (kit CCLIV) */
 };
 inline AIter iter(Arr *a) { return AIter(a); }
 inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return gl_func_00034458(*t->base + k * 8, t, k); }
@@ -56,7 +57,10 @@ Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
     gl_func_00034458(f40, &p);
     gl_func_00034458(f40, &p);
     AIter it = iter(&s->arr);
-    while (it.next()) {
+    /* agent-c run 238: the increment holds three pool slots while edg emits the rotated bottom copy of
+     * it.next(), so its result / pointer / ++idx temps take the target's a0 / v1 / v0 (99.56 -> 99.71); the
+     * three hold homes replace the four end-of-body volatile pads (frame 0xA8 kept, 99.83) */
+    for (; it.next(); it.me()->me()->me()) {
         if (it.cur()->t != 0) {
             DL *d = f40;
             void *r = res(it.cur(), it.cur());
@@ -66,5 +70,4 @@ Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
         }
     }
     gl_func_00034458(f40);
-    { volatile int e0, e1, e2, e3; }
 }
