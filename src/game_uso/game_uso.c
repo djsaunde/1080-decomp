@@ -3923,6 +3923,12 @@ void game_uso_func_0000AB98(void *);
 void game_uso_func_000071A4(int *);
 int game_uso_func_00006FA8(int *);
 void game_uso_func_00007538();
+#endif
+/* game_uso_func_0000591C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
+ * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c
+ * run 237). The superseded in-unit body is kept for its decode history under
+ * GAMEUSO_591C_OLD_DECODE (never defined). */
+#ifdef GAMEUSO_591C_OLD_DECODE
 void game_uso_func_0000591C(int *a0) {
     /* 2026-09-09: 76.42 -> 81.96 -> 88.18 -> 91.19 -> 92.85 -> 93.99 -> 94.09% NM.
      * Word-typed staging copies preserve
@@ -4568,7 +4574,9 @@ commit_flags:
     game_uso_func_00007538(self, out_flags);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_0000591C);
+void game_uso_func_0000591C(int *a0) {
+    volatile int *ret = a0;
+}
 #endif
 
 /* V3_6A30 is outside the NM block: the exact game_uso_func_00006CF0 uses it. */

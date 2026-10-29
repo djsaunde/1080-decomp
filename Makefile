@@ -2776,6 +2776,7 @@ C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_6808.c,$(C_FILES))
 C_FILES := $(filter-out src/timproc_uso_b5/timproc_uso_b5_8FC8.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_90CC.c,$(C_FILES))
 C_FILES := $(filter-out src/game_uso/game_uso_7C1C.c,$(C_FILES))
+C_FILES := $(filter-out src/game_uso/game_uso_591C.c,$(C_FILES))
 
 # The controller-read donor contributes only through its host splice.
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
@@ -5259,6 +5260,12 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_NM_DONOR)
 GAMEUSO_7C1C_DONOR := build/src/game_uso/game_uso_7C1C.c.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007C1C=$(GAMEUSO_7C1C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_7C1C_DONOR)
+# 591C: EXACT (agent-c run 237) via the cfe C donor game_uso_591C.c (the in-unit NM body plus the
+# `v0 * 1` const-first compare and the selector inner joins through `scale`), filtered out of C_FILES
+# and spliced over the placeholder on both paths. No rodata / late_rodata.
+GAMEUSO_591C_DONOR := build/src/game_uso/game_uso_591C.c.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000591C=$(GAMEUSO_591C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_591C_DONOR)
 # 8CD8: NM-only NCC comparison donor (C++ value-class rewrite of the cfe NM body, agent-c run 199).
 GAMEUSO_8CD8_NM_DONOR := build/src/game_uso/game_uso_ncc_8CD8_nm.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00008CD8=$(GAMEUSO_8CD8_NM_DONOR)
