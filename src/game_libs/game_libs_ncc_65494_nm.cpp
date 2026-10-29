@@ -44,9 +44,22 @@ struct V3P { float x, y, z; };
 inline int iz() { return 0; }
 struct Hit { V3P v; float d; short idx; short pad0; int pad1[7]; };
 struct Node;
-struct VEnt { short off; short pad; void (*fn)(Node *, float, Vec3 *, int); };
-struct Node {
-    char pad0[0x28]; VEnt *vt;
+struct NB { /* run 214: a real virtual call (vptr 0x28, slot 12 = vtbl +0x60) gives addu a0,t2,s0 */
+    char pad0[0x28];
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual void f10();
+    virtual void f11();
+    virtual void contact(float, Vec3 *, int);
+};
+struct Node : NB {
     char pad2C[0xDC - 0x2C]; Vec3 pos;
     char padE8[0x114 - 0xE8]; Vec3 v114; Vec3 v120;
     char pad12C[0x144 - 0x12C]; float f144; int pad148; int idx;
@@ -109,7 +122,7 @@ extern "C" void gl_func_00065494(Self *self) {
         }
         h -= self->f218;
         node->f144 = h;
-        node->vt[0xC].fn((Node *)(node->vt[0xC].off + (char *)node), h, &n, 0x3F800000);
+        node->contact(h, &n, 0x3F800000);
         if (h < 0.0f) {
             if (h < minv) {
                 minv = h;
@@ -123,12 +136,12 @@ extern "C" void gl_func_00065494(Self *self) {
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
-            gl_func_00062F64_d(self, &node->v120, n.sc(self->f290 * w + self->f28C * -dt));
+            gl_func_00062F64_d(self, &node->v120, n.sc(w * self->f290 + self->f28C * -dt));
         }
     }
     if (count != 0) {
         f = (float)count;
-        nsum.y /= f; nsum.x /= f; nsum.z /= f;
+        nsum /= f; /* run 214: operator/= gives the target's y / x / z division schedule */
         psum /= wsum;
         nsum *= -minv * self->f288;
         gl_func_00062F64_e(self, &psum, &nsum);
