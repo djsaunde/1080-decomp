@@ -7018,7 +7018,7 @@ void func_0000B75C(char *arg0) {
     temp_f12 = *(f32 *)((char *)(arg0) + 0x310);
 #define temp_f14 (*(f32 *)((char *)(arg0) + 0x314)) /* run 193: de-named (lever-sweep 92.47 -> 92.53) */
     *(f32 *)((char *)(arg0) + 0x978) = (f32) ((f64) ((f64) (sp5C - temp_f0_2) * 0.4) + temp_f0_2);
-    sp58 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14);
+    sp58 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12) + (temp_f14 * *(f32 *)((char *)(arg0) + 0x3D0));
     sp54 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12) + (sp1C * temp_f14);
     if (var_v0 != 0) {
         sp60 = (f32) ((f64) sp60 * 0.5);
@@ -7058,7 +7058,7 @@ void func_0000B75C(char *arg0) {
             temp_v0_2 = *(s16 *)((char *)(arg0) + 0xA6C);
             *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1); if (1) {}
             if (temp_v0_2 >= 0xB) {
-                temp_f0_2 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * 0.015));
+                temp_f0_2 = (f32) (((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * 0.015) + (f64) *(f32 *)((char *)(arg0) + 0xA70)); /* agent-g run 231: product first (operand-commute sweep) */
                 if (temp_f0_2 < temp_f12_2) {
                     var_f2 = temp_f12_2;
                 } else {
