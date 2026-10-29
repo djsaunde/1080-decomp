@@ -1,4 +1,11 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B2EC (0x3B4 / 237 words), agent-c run 177.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003B2EC (0x3B4 / 237 words), spliced over a placeholder in both
+ * build trees (agent-g run 238; was the agent-c run 177 NM-only comparison donor).
+ * agent-g run 238 (kit CCLIV): the last 3 words were the `*list++` old-value copy at the loop bottom (target t4,
+ * here v0). edg rotates the loop and emits the condition twice; each copy's old-value temp comes from edg's
+ * pointer temp pool, first free slot first. In the target the bottom copy shares the second pool slot (-88, the
+ * face() ternary temp, t4) while the entry copy has the first (-84, v0): a for-increment of nested zero-code
+ * inline calls `me()->me()` holds the first slot while the bottom condition is evaluated. Zero code emitted. */
+/* History (agent-c run 177):
  * Real C++ `int Obj::height(int max, f32 *out, f32 x, f32 z)` (ground heights under (x, z)), not a C lift:
  * the cell lookup through inline Obj members toCell(const V3 &, int &, int &) / cellOf() / list() (reference
  * parameters = the target's memory p and cx / cz homes and the self->col reloads), Col::face(i) with the remap
@@ -29,6 +36,7 @@ struct Col {
 struct Obj {
     char pad0[0x2C]; Tri *tris; char pad30[0x54]; Col *col;
     int height(int max, f32 *out, f32 x, f32 z);
+    Obj *me() { return this; }
     void toCell(const V3 &p, int &cx, int &cz) {
         cx = (p.x - col->grid->x0) / col->grid->cw;
         cz = (p.z - col->grid->z0) / col->grid->ch;
@@ -60,7 +68,7 @@ int Obj::height(int max, f32 *out, f32 x, f32 z) {
     if (cell < 0) return 0;
     list = this->list(cell);
     if (list == 0) return 0; /* agent-g run 211: run-210 counted use dropped after the trailing-block fix (98.67 -> 99.20) */
-    while ((i = *list++) != -1) {
+    for (; (i = *list++) != -1; me()->me()) { /* agent-g run 238: holds pool slot 1 at the bottom test (99.92 -> 100) */
         int off = i * 12; /* agent-g run 211: the multiply's shift expansion builds off in s2 directly (target sll s2 / subu s2 / sll s2) */
         V3 *n = (V3 *)((char *)col->nrm + off);
         if (!(n->y > 0.0f)) continue; /* agent-g run 211: run-210 counted use dropped with i * 12 (nrm load back in t6): 99.83 -> 99.92 */

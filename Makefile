@@ -1824,14 +1824,15 @@ $(GAMELIBS_36F0C_DONOR): src/game_libs/game_libs_ncc_36F0C.cpp
 	$(OBJCOPY) --redefine-sym update__7FreeCamFv=gl_func_00036F0C $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036F0C=$(GAMELIBS_36F0C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36F0C_DONOR)
-# 3B2EC = real C++ `int Obj::height()` (agent-c run 177; cfe 91.56); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3B2EC_NM_DONOR := build/src/game_libs/game_libs_ncc_3B2EC_nm.cpp.o
-$(GAMELIBS_3B2EC_NM_DONOR): src/game_libs/game_libs_ncc_3B2EC_nm.cpp
+# 3B2EC = real C++ `int Obj::height()` (agent-c run 177; cfe 91.56); symbol renamed (name only). EXACT NCC donor over an empty
+# placeholder (agent-g run 238: `for (; (i = *list++) != -1; me()->me())` puts the bottom old-value copy in edg's second pointer temp).
+GAMELIBS_3B2EC_DONOR := build/src/game_libs/game_libs_ncc_3B2EC.cpp.o
+$(GAMELIBS_3B2EC_DONOR): src/game_libs/game_libs_ncc_3B2EC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym height__3ObjFiPffT3=gl_func_0003B2EC $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B2EC=$(GAMELIBS_3B2EC_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B2EC_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B2EC=$(GAMELIBS_3B2EC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B2EC_DONOR)
 # 3BE1C = real C++ `int Obj::query()` (agent-c run 178; cfe 77.27); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3BE1C_NM_DONOR := build/src/game_libs/game_libs_ncc_3BE1C_nm.cpp.o
 $(GAMELIBS_3BE1C_NM_DONOR): src/game_libs/game_libs_ncc_3BE1C_nm.cpp
