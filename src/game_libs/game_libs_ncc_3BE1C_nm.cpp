@@ -55,7 +55,7 @@ struct Obj {
     int cellOf(const V3 &p) {
         int cx, cz;
         toCell(p, cx, cz);
-        if (cx >= 0 && cx < col->grid->w && cz >= 0 && cz < col->grid->h) return cz * col->grid->w + cx;
+        if (cx >= 0 && cx < col->grid->w && cz >= 0 && cz < col->grid->h) return cx + cz * col->grid->w; /* agent-g run 231: cx first (operand-commute sweep), 97.60 -> 98.16 */
         return -1;
     }
     s16 *list(int cell) { return col->grid->cells[cell] != -1 ? &col->grid->lists[col->grid->cells[cell]] : 0; }
