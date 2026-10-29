@@ -566,19 +566,22 @@ SECTIONS
     gui_uso_VRAM = ADDR(.gui_uso);
     gui_uso_VRAM_END = .;
 
-    gui_uso_post_ROM_START = __romPos;
-    gui_uso_post_VRAM = ADDR(.gui_uso_post);
-    .gui_uso_post : AT(gui_uso_post_ROM_START)
+    /* gui_uso_tail (was gui_uso_post at 0x591DB0): its first word, the
+       `addiu sp,sp,8` at 0x591DB0, is gui_func_00004568's jr-ra delay slot
+       and now belongs to the gui_uso c segment (agent-g run 212). */
+    gui_uso_tail_ROM_START = __romPos;
+    gui_uso_tail_VRAM = ADDR(.gui_uso_tail);
+    .gui_uso_tail : AT(gui_uso_tail_ROM_START)
     {
         FILL(0x00000000);
-        gui_uso_post_DATA_START = .;
-        build/assets/gui_uso_post.bin.o(.data);
-        gui_uso_post_DATA_END = .;
-        gui_uso_post_DATA_SIZE = ABSOLUTE(gui_uso_post_DATA_END - gui_uso_post_DATA_START);
+        gui_uso_tail_DATA_START = .;
+        build/assets/gui_uso_tail.bin.o(.data);
+        gui_uso_tail_DATA_END = .;
+        gui_uso_tail_DATA_SIZE = ABSOLUTE(gui_uso_tail_DATA_END - gui_uso_tail_DATA_START);
     }
-    __romPos += SIZEOF(.gui_uso_post);
-    gui_uso_post_ROM_END = __romPos;
-    gui_uso_post_VRAM_END = .;
+    __romPos += SIZEOF(.gui_uso_tail);
+    gui_uso_tail_ROM_END = __romPos;
+    gui_uso_tail_VRAM_END = .;
 
     n64proc_uso_pre_ROM_START = __romPos;
     n64proc_uso_pre_VRAM = ADDR(.n64proc_uso_pre);

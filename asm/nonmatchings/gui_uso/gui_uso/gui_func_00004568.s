@@ -1,4 +1,4 @@
-nonmatching gui_func_00004568, 0x318
+nonmatching gui_func_00004568, 0x31C
 
 glabel gui_func_00004568
     /* 591A98 00004568 27BDFFF8 */  .word 0x27BDFFF8
@@ -199,4 +199,5 @@ glabel gui_func_00004568
     /* 591DA4 00004874 ACED0004 */  .word 0xACED0004
     /* 591DA8 00004878 8FB00004 */  .word 0x8FB00004
     /* 591DAC 0000487C 03E00008 */  .word 0x03E00008
+    /* 591DB0 00004880 27BD0008 */  .word 0x27BD0008
 endlabel gui_func_00004568

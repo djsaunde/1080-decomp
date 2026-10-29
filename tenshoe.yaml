@@ -121,7 +121,9 @@ segments:
     symbol_name_format: gui_$VRAM
     subsegments:
       - [0x58D530, c, gui_uso/gui_uso]
-  - [0x591DB0, bin, gui_uso_post]
+  # 0x591DB0 = gui_func_00004568's jr-ra delay slot (addiu sp,sp,8): part of
+  # the c segment, so the tail bin starts one word later (agent-g run 212).
+  - [0x591DB4, bin, gui_uso_tail]
   - [0x5926B4, bin, n64proc_uso_pre]
   - name: n64proc_uso
     type: code

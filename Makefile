@@ -84,7 +84,7 @@ build/src/gui_uso/gui_uso_zcopy_0.c.o: TRUNCATE_TEXT := 0x148
 build/src/gui_uso/gui_uso_zcopy_0.c.o: PREFIX_BYTES := gui_func_00000000=0x1000736F
 build/non_matching/src/gui_uso/gui_uso_zcopy_0.c.o: NON_MATCHING_PREFIX_BYTES := gui_func_00000000=0x1000736F
 build/src/gui_uso/gui_uso.c.o: SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000 gui_func_00003B80=0x00000000,0x00000000,0x00000000
-build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x4738
+build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x473C
 # Mirror the suffix onto the non_matching object so report.json/objdiff (which
 # compare build/non_matching vs expected) score the trailing alignment-nop word.
 # splat-symbol-boundary trailing-delay-nop class — see docs/MATCHING_WORKFLOW.md.
