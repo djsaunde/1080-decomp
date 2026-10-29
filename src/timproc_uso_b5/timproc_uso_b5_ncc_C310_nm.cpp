@@ -62,7 +62,7 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
             mv = *pv; if (arg0) {}
         }
         mv2 = mv;
-        if (*(s32 *)(arg1 + 0x3BC) - 1 == 0) {
+        if ((*(s32 *)(arg1 + 0x3BC) - 1 == 0) + 0 * (int)(*arg0)) { /* agent-c run 211: folded counted use (zero code) */
             timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         } else {
             timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
