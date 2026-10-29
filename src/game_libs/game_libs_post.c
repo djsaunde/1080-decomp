@@ -13068,36 +13068,35 @@ extern s32 gl_E354_setf(s32, f32);  /* (cmd, single float in a1): target mfc1 a1
 extern f32 D_E354_1C738_a, D_E354_1C738_b, D_E354_1C738_c, D_E354_1C73C_a, D_E354_1C73C_b, D_E354_1C73C_c;  /* scalar globals: target lui at,2 + folded %lo per access */
 extern char D_E354_G[];  /* array view: target holds &G (lui/addiu v1) for the +0/+0x14 counters */
 void gl_func_0002E354(char *arg0, s32 arg1) {
+    /* agent-g run 224: declaration order and count from the target frame (0x80: saves end 0x28,
+     * spill 0x2C, 20 home words 0x30..0x7F): sp7D at frame-3 behind two u8s, three words before
+     * sp6B (frame-21) whose word holds three more u8s, var_v0's home at frame-40 (the target's
+     * `sw v0, 0x58(sp)` across the 0x90000000 call; m2c's sp58 / sp2C names were that home and
+     * the (s8) spill), sp50 at frame-48; unused temp_f14 / var_at / temp_t9_2 / temp_v1_6
+     * dropped and var_a2_3 folded into var_t9 (disjoint ranges). Every home on the target. */
+    u8 temp_v1_2;
+    u8 temp_v1_3;
     u8 sp7D;
     f32 sp78;
-    u8 sp6B;
-    f32 sp64;
-    f32 sp60;
-    s32 sp58;
-    u32 sp50;
-    s32 sp2C;
     f32 temp_f0;
     f32 temp_f10_2;
-    f32 temp_f14;
-    f32 temp_f16;
-    f32 temp_f18;
     f32 var_f4;
-    s32 *var_at;
+    u8 sp6B;
+    u8 temp_v1_4;
+    u8 temp_v1_5;
+    u8 var_v0_2;
+    f32 sp64;
+    f32 sp60;
+    f32 temp_f16;
+    s32 var_v0;
+    f32 temp_f18;
+    u32 sp50;
     s32 temp_v0;
     s32 temp_v0_2;
     u32 temp_v0_7;
     s32 temp_v1;
     s32 var_t9;
-    s32 var_v0;
     s32 var_v0_3;
-    s32 var_a2_3;
-    u32 temp_t9_2;
-    u8 temp_v1_2;
-    u8 temp_v1_3;
-    u8 temp_v1_4;
-    u8 temp_v1_5;
-    u8 temp_v1_6;
-    u8 var_v0_2;
 
     sp64 = 1.0f;
     temp_v0 = D_cfg_E354;
@@ -13171,17 +13170,13 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 temp_v1_3 = *(u8 *)((char *)(arg0) + 0x21);
                 switch (temp_v1_3) {                /* switch 1; irregular */
                 case 0:                             /* switch 1 */
-                    sp58 = var_v0;
                     func_00000000(0x90000000, 6);
-                    sp2C = (s32) (s8) var_v0;
                     func_00000000(0x0500FF00, (s8) var_v0);
                     func_00000000(0x05020000, (s8) var_v0);
                     break;
                 case 1:                             /* switch 1 */
                 case 2:                             /* switch 1 */
-                    sp58 = var_v0;
                     func_00000000(0x90000000, 0x60);
-                    sp2C = (s32) (s8) var_v0;
                     func_00000000(0x0500FF00, (s8) var_v0);
                     func_00000000(0x05020100, (s8) var_v0);
                     break;
@@ -13475,11 +13470,11 @@ block_83:
                     /* fallthrough */
                 case 1:                             /* switch 6 */
                     if (*(f32 *)((char *)(arg0) + 0x4) > 0.5f) {
-                        var_a2_3 = *(s8 *)((char *)(arg0) + 0x18);
+                        var_t9 = *(s8 *)((char *)(arg0) + 0x18);
                         if (*(u8 *)((char *)(arg0) + 0x1E) == 0) {
-                            var_a2_3 = -var_a2_3;
+                            var_t9 = -var_t9;
                         }
-                        func_00000000(*(u8 *)((char *)(arg0) + 0x21), *(u8 *)((char *)(arg0) + 0x15), var_a2_3);
+                        func_00000000(*(u8 *)((char *)(arg0) + 0x21), *(u8 *)((char *)(arg0) + 0x15), var_t9);
                     } else {
                         func_00000000(*(u8 *)((char *)(arg0) + 0x21));
                     }
