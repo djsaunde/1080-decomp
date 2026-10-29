@@ -97,7 +97,7 @@ void Obj::run() {
 #define d ((DL *)s1)
     float fw = (float)x * 2.0f;
     float fx = (float)w;
-    float fh = (float)y * 2.0f;
+    float fh = 2.0f * (float)y; /* agent-g run 231 (operand-commute sweep): 88.67 -> 88.69 */
     float fy = (float)h;
     Vp *vp = &d->vph->buf[d->vph->count++];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
