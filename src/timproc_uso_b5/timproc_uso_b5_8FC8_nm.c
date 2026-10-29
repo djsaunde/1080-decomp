@@ -181,6 +181,9 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
 #define VF(R) (*(AddFn *)(FP(R, 0x28) + 0x5C))
 #define VT(R) (*(s16 *)(FP(R, 0x28) + 0x58) + (R))
+/* virtual call through a held vtable pointer V (the target keeps it in s1 / a register local) */
+#define VSEL(V, R) V = FP(R, 0x28);
+#define VCALL(V, R) (*(AddFn *)(V + 0x5C))(*(s16 *)(V + 0x58) + (R)
 #define self ((char *)arg0)
 void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
     VecH v2a, v2b, v3a, v3b;
@@ -320,30 +323,31 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;
             ADDV(t, FP(self, 0x38), FP(FP(self, 0x58), 0x2B8));
         }
-        VF(a)(VT(a), 1, 5, 0.0f, -150.0f, -1000.0f, 0.0f, 0.0f, 0.0f);
-        VF(a)(VT(a), 1, 3, 750.0f, -150.0f, DF_2F0, 0.0f, 0.0f, 0.0f);
-        VF(a)(VT(a), 1, 4, 750.0f, -150.0f, DF_2F4, 0.0f, 0.0f, 0.0f);
-        VF(a)(VT(a), 1, 2, 750.0f, -150.0f, DF_2F8, 0.0f, 0.0f, 0.0f);
-        VF(a)(VT(a), 1, 1, 750.0f, -150.0f, DF_2FC, 0.0f, 0.0f, 0.0f);
-        VF(b)(VT(b), 1, 0, 400.0f, -150.0f, -1000.0f, 0.0f, DF_300, 0.0f);
-        VF(b)(VT(b), 1, 1, 750.0f, 200.0f, DF_304, 0.0f, 0.0f, 0.0f);
-        VF(b)(VT(b), 1, 2, 750.0f, 200.0f, DF_308, 0.0f, 0.0f, 0.0f);
-        VF(b)(VT(b), 1, 3, 400.0f, -150.0f, -1000.0f, 0.0f, DF_30C, 0.0f);
-        VF(b)(VT(b), 1, 4, 400.0f, -150.0f, -1000.0f, 0.0f, DF_310, 0.0f);
-        VF(b)(VT(b), 1, 5, 400.0f, -150.0f, -1000.0f, 0.0f, DF_314, 0.0f);
-        VF(b)(VT(b), 1, 6, 400.0f, -150.0f, -1000.0f, 0.0f, DF_318, 0.0f);
-        VF(b)(VT(b), 1, 7, 400.0f, -150.0f, -1000.0f, 0.0f, FF(import_808000CC, 0x31C), 0.0f);
+        VSEL(w, a) VCALL(w, a), 1, 5, 0.0f, -150.0f, -1000.0f, 0.0f, 0.0f, 0.0f);
+        VSEL(w, a) VCALL(w, a), 1, 3, 750.0f, -150.0f, DF_2F0, 0.0f, 0.0f, 0.0f);
+        VSEL(w, a) VCALL(w, a), 1, 4, 750.0f, -150.0f, DF_2F4, 0.0f, 0.0f, 0.0f);
+        VSEL(w, a) VCALL(w, a), 1, 2, 750.0f, -150.0f, DF_2F8, 0.0f, 0.0f, 0.0f);
+        VSEL(w, a) VCALL(w, a), 1, 1, 750.0f, -150.0f, DF_2FC, 0.0f, 0.0f, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 0, 400.0f, -150.0f, -1000.0f, 0.0f, DF_300, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 1, 750.0f, 200.0f, DF_304, 0.0f, 0.0f, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 2, 750.0f, 200.0f, DF_308, 0.0f, 0.0f, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 3, 400.0f, -150.0f, -1000.0f, 0.0f, DF_30C, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 4, 400.0f, -150.0f, -1000.0f, 0.0f, DF_310, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 5, 400.0f, -150.0f, -1000.0f, 0.0f, DF_314, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 6, 400.0f, -150.0f, -1000.0f, 0.0f, DF_318, 0.0f);
+        VSEL(w, b) VCALL(w, b), 1, 7, 400.0f, -150.0f, -1000.0f, 0.0f, FF(import_808000CC, 0x31C), 0.0f);
         {
             tu = **(u16 **)((char *)&import_800201EC + 0x154);
             if (FW(&import_800200CC, 0x34) != 6) tu &= ~3;
             for (i = 0; i != 8; i++) {
-                char *r = VF(c)(VT(c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f,  DF_320 );
+                char *r;
+                VSEL(u, c) r = VCALL(u, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f,  DF_320);
                 items[i] = r;
                 if (!(tu & (1 << i))) FF(r, 0x2A4) = 0.0f;
             }
-            VF(d)(VT(d), 1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
-            e2 = VF(d)(VT(d), 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
-            e3 = VF(d)(VT(d), 1, 3, -220.0f, 200.0f, -400.0f,  0.0f , 0.0f, 0.0f);
+            VSEL(w, d) VCALL(w, d), 1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
+            VSEL(w, d) e2 = VCALL(w, d), 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
+            VSEL(w, d) e3 = VCALL(w, d), 1, 3, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
             timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
             switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
             case 1:
@@ -357,8 +361,8 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
         }
         timproc_uso_b5_func_04C774(self, 1, arg1);
         timproc_uso_b5_func_04C774(FP(self, 0x50), 1, arg2);
-        (*(void (**)(void *))(FP(self, 0x28) + 0x24))(*(s16 *)(FP(self, 0x28) + 0x20) + self);
-        { char *m = FP(self, 0x38); (*(void (**)(void *))(FP(m, 0x28) + 0x24))(*(s16 *)(FP(m, 0x28) + 0x20) + m); }
+        w = FP(self, 0x28); (*(void (**)(void *))(w + 0x24))(*(s16 *)(w + 0x20) + self);
+        { char *m = FP(self, 0x38); w = FP(m, 0x28); (*(void (**)(void *))(w + 0x24))(*(s16 *)(w + 0x20) + m); }
     }
     return arg0;
 }
