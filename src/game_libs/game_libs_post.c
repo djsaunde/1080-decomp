@@ -13104,7 +13104,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     if (temp_v0 != 0) {
         if (temp_v0 == 4) {
             temp_v1 = D_stateC_E354;
-            if ((((u32)temp_v1 == 1) || ((u32)temp_v1 == 2) || ((u32)temp_v1 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
+            if ((((u32)temp_v1 == 1) || ((u32)temp_v1 == 2) || ((u32)temp_v1 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1U) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
                 *(u8 *)((char *)(arg0) + 0x21) = 2U;
                 *(f32 *)((char *)(arg0) + 0x54) = 0.0f;
             }
@@ -13190,7 +13190,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 var_v0 = (u32) temp_f18 + 0 * (int)(*arg0); /* recomposed (u32)float; agent-g run 209 folded use (3692 -> 3688) */
                 *(u8 *)((char *)(arg0) + 0x26) = (u8) var_v0;
                 sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
-                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (*(u8 *)((char *)(arg0) + 0x28) + *(u8 *)((char *)(arg0) + 0x60)) >> 1);
+                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (*(u8 *)((char *)(arg0) + 0x60) + *(u8 *)((char *)(arg0) + 0x28)) >> 1); /* agent-g run 224: 0x60 first (target lbu v0,0x60 before lbu 0x28) */
                 if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
                     func_00000000(0x03020000, (s8) *(u8 *)((char *)(arg0) + 0x28));
@@ -13245,14 +13245,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                     var_v0_2 = 1;
                     if (*(u8 *)((char *)(arg0) + 0x14) == 1) {
                         temp_v1_5 = *(u8 *)((char *)(arg0) + 0x15);
-                        if (temp_v1_5 != 1) {
-                            if (temp_v1_5 != 2) {
-                                var_v0 = 2;
-                            } else {
-                                var_v0 = 1;
-                            }
-                        } else {
-                            var_v0 = 0;
+                        switch (temp_v1_5) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
+                        case 1: var_v0 = 0; break;
+                        case 2: var_v0 = 1; break;
+                        default: var_v0 = 2; break;
                         }
                     }
                     switch (*(u8 *)((char *)(arg0) + 0x22)) {
