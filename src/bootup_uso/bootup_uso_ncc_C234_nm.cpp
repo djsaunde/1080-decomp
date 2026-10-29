@@ -116,7 +116,7 @@ extern "C" void func_0000C234(char *arg0) {
     /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
      * temp area): the folded read of *arg0 stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
-    if (func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = arg0 + 0xDC + 0 * (int)(*arg0), 0x457A0000, &spCC) != 0) {
+    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = arg0 + 0xDC + 0 * (int)(*arg0), 0x457A0000, &spCC)) != 0) {
         *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             *(s16 *)((char *)(arg0) + 0x9A2) = *(s16 *)((char *)(arg0) + 0x9A0);
@@ -208,7 +208,9 @@ cend:
         *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
         *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
-        if ((*(s32 *)((char *)(arg0) + 0x95C))++ >= 0x97) {
+        /* agent-g run 235: the call result held in var_v0 with a folded use at the compare: its v0 LR now overlaps
+         * the post-increment's old value, which colours v1 like the target (99.85 -> 99.87) */
+        if ((*(s32 *)((char *)(arg0) + 0x95C))++ + 0 * var_v0 >= 0x97) {
             sp8C.v = *(s32 *)((char *)&func_00008A40 + 0x38);
             temp_v0_3 = (char *)(bu_c234_sv(*(s32 *)((char *)&D_00000000 + 0), sp8C, sp3C, 0));
             if (temp_v0_3 != 0) {
