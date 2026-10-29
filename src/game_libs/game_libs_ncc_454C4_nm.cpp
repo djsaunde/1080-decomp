@@ -17,6 +17,12 @@
  * after (colc[0] first, as the target's schedule), and the bb split sits after dir[0] too: 91.71 -> 95.72
  * report, 2032 -> 2020 bytes (target 2028: moved past it, flagged; the remaining words are the hoisted
  * 0x03000000 / 255.0f constants and the fs1 save listed above).
+ * agent-g run 216: one more bb (`if (1) {}` after the last packet) drops both hoisted constants; no named `Light *l`
+ * (every store through `rec->l[n]`, the target's v0 base for the dir bytes too), `n` declared before the iterator
+ * (iterator at sp+60 / 64, frame 88) and plain direction bytes without the `& 0xFF`: 2020 -> 2028 bytes = target,
+ * the body lines up word-for-word up to registers (six s-registers). Residual is colouring only: rec / c swapped
+ * (s5 / s4 vs the target's s4 / s5, an adjsave tie broken by bitpos), e copy-propagated as a3 into the second
+ * flags test and the colour loads (target a2), t-register numbering.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef unsigned char u8; typedef signed char s8;
 extern "C" {
@@ -67,22 +73,21 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     }
     rec->a.col[0] = r; rec->a.col[1] = g; rec->a.col[2] = b;
     rec->a.colc[0] = r; rec->a.colc[1] = g; rec->a.colc[2] = b;
-    LIter it(lights);
     int n = 0;
+    LIter it(lights);
     LElem *e;
     while ((e = it.next()) != 0) {
         if (!(e->flags & 0x80) && (e->flags & 2)) {
-            Light *l = &rec->l[n];
             s32 c0 = (s32)(s[0] * e->col[0] * 255.0f);
             s32 c1 = (s32)(s[1] * e->col[1] * 255.0f);
             s32 c2 = (s32)(s[2] * e->col[2] * 255.0f);
-            l->colc[0] = c0; l->col[0] = c0;
-            l->col[1] = c1; l->colc[1] = c1;
-            l->col[2] = c2; l->colc[2] = c2;
-            l->dir[0] = (s32)(e->dir[0] * 120.0f) & 0xFF; if (1) {}
-            l->dir[1] = (s32)(e->dir[1] * 120.0f) & 0xFF; if (1) {}
-            l->dir[2] = (s32)(e->dir[2] * 120.0f) & 0xFF;
-            gSPLight(c->next(), gl_func_00034458(l), n + 1);
+            rec->l[n].colc[0] = c0; rec->l[n].col[0] = c0;
+            rec->l[n].col[1] = c1; rec->l[n].colc[1] = c1;
+            rec->l[n].col[2] = c2; rec->l[n].colc[2] = c2;
+            rec->l[n].dir[0] = (s32)(e->dir[0] * 120.0f); if (1) {}
+            rec->l[n].dir[1] = (s32)(e->dir[1] * 120.0f);
+            rec->l[n].dir[2] = (s32)(e->dir[2] * 120.0f);
+            gSPLight(c->next(), gl_func_00034458(&rec->l[n]), n + 1);
             n++; if (1) {}
         }
     }
@@ -95,5 +100,5 @@ void Obj::setLights(Ctx *c, f32 *s, f32 k) {
     rec->l[0].colc[0] = rec->a.colc[0]; rec->l[0].colc[1] = rec->a.colc[1]; rec->l[0].colc[2] = rec->a.colc[2];
     gSPLight(c->next(), gl_func_00034458(&rec->l[0]), 1);
     gSPLight(c->next(), gl_func_00034458(&rec->a), 2);
-    gSPNumLights(c->next(), 1);
+    gSPNumLights(c->next(), 1); if (1) {}
 }
