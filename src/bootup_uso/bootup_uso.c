@@ -4139,7 +4139,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
         b0 = 2;
     }
     gD = D_bu_776C + 0 * *arg1; /* agent-c run 209: folded counted use of *arg1 (kit CXCIV lever b), 95.62 -> 95.65 */
-    *gD = 0;
+    *gD = 0; if (1) {} /* agent-c run 219 (lever-sweep bbsplit) */
     D_bu_1EBDC[0] = 6;
     func_00000000(D_bu_7770, arg2, idx, D_bu_1EBDC[0]);
     {
