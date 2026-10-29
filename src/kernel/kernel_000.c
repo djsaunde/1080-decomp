@@ -1477,7 +1477,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
         rel[i].orig = *p;
         switch (type) {
         case 1:
-            *p = (*p & 0xFC000000) | ((((u32)val >> 2) & 0x3FFFFFF) + (*p & 0x3FFFFFF));
+            *p = (*p & 0xFC000000) | ((((u32)val >> 2) & 0x3FFFFFF) + (*p & 0x3FFFFFF)) + 0 * (int)(*p); /* agent-c run 210: folded counted use (zero code, kit CXCIV) */
             break;
         case 3:
             hiptr = (s16 *)p + 1;
