@@ -4230,7 +4230,7 @@ void game_uso_func_0000591C(int *a0) {
 
         p = 0;
         if (1) { p = &diff_b; }
-        accel_params = (float *)((int)hit_parent + 48);
+        accel_params = (float *)((int)hit_parent + 48 + 0 * (int)child_flags);
         {
             delta_b_dst = p;
             if (delta_b_dst != 0 || (delta_b_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
@@ -4311,7 +4311,7 @@ void game_uso_func_0000591C(int *a0) {
 
     p = 0;
     if (1) { p = &diff_g; }
-    accel_params = (float *)((int)hit_parent + 48);
+    accel_params = (float *)((int)hit_parent + 48 + 0 * (int)child_flags);
     {
         delta_g_dst = p;
         if (delta_g_dst != 0 || (delta_g_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
