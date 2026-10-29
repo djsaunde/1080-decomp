@@ -8308,8 +8308,13 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
   timproc_uso_b5_func_00003F58();
 }
 
-#ifdef NON_MATCHING
-/* timproc_uso_b5_func_0000CEB4: three HUD-emit calls (func_00004068) with an
+/* timproc_uso_b5_func_0000CEB4: EXACT via the IDO 7.1 cfe -O2 donor
+ * src/timproc_uso_b5/timproc_uso_b5_CEB4.c (REPLACE_FUNC_BODY splice, agent-c
+ * run 218): the grey at RoData 0x394/0x398/0x39C is the LITERAL 0.3f (four
+ * 0x3E99999A words from 0x390, one per l.s), and an `if (1) {}` closing each
+ * white arm. Its .rodata reloc is renamed timproc_uso_b5_func_0000CEB4_rodata,
+ * pinned to RoData +0x390. Body below is a placeholder for the splice.
+ * History: three HUD-emit calls (func_00004068) with an
  * RGBA colour that is white when a0->0x2AC selects that slot and
  * a0->0x2A0 > 0.5, else the per-slot grey D[0x394/0x398/0x39C].
  * 2026-10-17 agent-g (run 106) 12.9 -> 92.4 (was a 30-insn stub). Levers:
@@ -8328,38 +8333,8 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
  * 96.9 standalone. RESIDUAL: the then-arm keeps one `swc1 $f2,64(sp)` in the
  * `b join` delay slot (target: the join's `lw a1`), and blocks 2/3 materialise
  * the 1.0 constant before the D load (target after). */
-extern int gl_func_00000000();
-extern char D_00000000;
 void timproc_uso_b5_func_0000CEB4(char *a0, int a1) {
-    f32 v[4];
-    s32 pad[6];
-    f32 f;
-    v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    if (*(s32 *)(a0 + 0x2AC) == 0 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
-        v[0] = v[0];
-    } else {
-        f = *(f32 *)(&D_00000000 + 0x394);
-        v[0] = f; v[1] = f; v[2] = f; v[3] = f;
-    }
-    timproc_uso_b5_func_00004068((int)a0, *(s32 *)(a0 + 0x44), *(s32 *)(a0 + 0x5C), v, (int)(&timproc_uso_b5_D_807FFB08 + 0x688), 0xFF);
-    f = *(f32 *)(&D_00000000 + 0x398);
-    if (*(s32 *)(a0 + 0x2AC) == 1 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
-        v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    } else {
-        v[0] = f; v[1] = f; v[2] = f; v[3] = f;
-    }
-    timproc_uso_b5_func_00004068((int)a0, *(s32 *)(a0 + 0xD4), *(s32 *)(a0 + 0xEC), v, (int)(&timproc_uso_b5_D_807FFB20 + 0x6A0), 0xFF);
-    f = *(f32 *)(&D_00000000 + 0x39C);
-    if (*(s32 *)(a0 + 0x2AC) == 2 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
-        v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    } else {
-        v[0] = f; v[1] = f; v[2] = f; v[3] = f;
-    }
-    timproc_uso_b5_func_00004068((int)a0, *(s32 *)(a0 + 0x104), *(s32 *)(a0 + 0x11C), v, (int)(&timproc_uso_b5_D_807FFB38 + 0x6B8), 0xFF);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000CEB4);
-#endif
 
 void timproc_uso_b5_func_0000D058(int *a0, float a1) {
     *(float*)((char*)a0 + 0x2A0) = a1;

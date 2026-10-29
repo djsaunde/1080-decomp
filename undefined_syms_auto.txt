@@ -3551,6 +3551,7 @@ d884_db64_gc = 0x00000000;
 import_00000000 = 0x00000000;
 /* timproc_uso_b5_func_0000DF14: 14-entry jumptable at block-5 RoData +0x400 (target %lo(D_807FF420)+0x400); donor timproc_uso_b5_DF14.c */
 timproc_uso_b5_func_0000DF14_rodata = 0x00000400;
+timproc_uso_b5_func_0000CEB4_rodata = 0x00000390;
 /* timproc_uso_b5_func_0000DF14: import_8005EE6C per-pair aliases */
 df14_ee6c_l1 = 0x00000000;
 df14_ee6c_l2 = 0x00000000;
