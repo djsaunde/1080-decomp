@@ -51,7 +51,7 @@ extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
     acc.y = 0.0f;
     acc.z = 0.0f;
     n = gl_func_00000000(o, 8, dist, hitbuf, r[0], r[1], r[2], 0);
-    { float k = *(float *)((char *)&D_00000000 + 0x1AB8); lim = k; }
+    lim = 1000000.0f; /* agent-g run 217 (kit CCXIV): bootup.uso RoData 0x1AB8 = 0x49742400 is the literal 1e6, no k copy: 96.78 -> 98.24 */
     best = -1;
     a3->count = n;
     if (n > 0) {
