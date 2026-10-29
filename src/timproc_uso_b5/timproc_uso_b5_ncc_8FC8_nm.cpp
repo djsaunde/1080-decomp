@@ -158,7 +158,7 @@ struct Fl { int v; void clr(int m) { v &= ~m; } };
 struct B { int f0; int flag; int f8; char *name; char list[4]; B *parent; Fl fl; char p1c[0x28 - 0x1C];
     B(char *); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
     void setup(int, int *);
-    void add(B *n) { timproc_uso_b5_func_07ACE0(list, n); if (n->parent) n->flag = 1; n->parent = this; } };
+    void add(B *n) { timproc_uso_b5_func_07ACE0(list, n); if (1) {} if (n->parent) n->flag = 1; n->parent = this; } };
 struct Sub30 : B { void *owner; Sub30(void *o) : B(timproc_uso_b5_D_807FEBCC + 0x135C) { name = timproc_uso_b5_D_807FEBD4 + 0x1364; owner = o; } virtual void v(); };
 struct Sub2C : B { Sub2C() : B(timproc_uso_b5_D_807FEBE0 + 0x1370) { name = timproc_uso_b5_D_807FEBE8 + 0x1378; } void init() { timproc_uso_b5_func_04C678(this, timproc_uso_b5_D_807FEBE0 + 0x1370); FW(this, 0x28) = (int)(timproc_uso_b5_D_807FEBE8 + 0xCC4); name = timproc_uso_b5_D_807FEBE8 + 0x1378; } virtual void v(); };
 struct S70 : B { int f2C, f30, f34; B *f38; char p3c[0x6C - 0x3C]; int f6C;
