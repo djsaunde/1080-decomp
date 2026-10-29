@@ -4108,6 +4108,13 @@ void game_uso_func_0000591C(int *a0) {
         break;
     }
 
+    /* agent-g run 208: the scratch guard pointer is set up before the transform
+     * dispatch (the self->0x30 prefetch web then spans only the three arm exits
+     * and the scratch block: 8 / 4 = 2.0), and the empty do-while in the copy
+     * body splits the destination's store block (10 / 5 = 2.0); the tie goes to
+     * the prefetch, which takes a0 first, so the destination colours a1. */
+    p = 0;
+    if (1) { p = &scratch_xz; }
     /* transform dispatch: 0 -> 7C1C(&stage,...,&out_w); 1 -> 8CD8(&stage,...,t0);
      * result words -> fresh V276/V264 -> V252 -> transform_out floats. */
     switch (v0 = *(int*)((char*)self + 0x74)) {
@@ -4130,8 +4137,6 @@ void game_uso_func_0000591C(int *a0) {
     /* dead-sentinel copy-or-alloc scratch (target 0x394-0x3E8): the guard
      * pointer stays &scratch_xz for the 3ED4 call; copy pointer may be the
      * alloc fallback. */
-    p = 0;
-    if (1) { p = &scratch_xz; }
     /* agent-g run 207: the folded `+ 0 * (int)src` / `accel_params` uses
      * (kit CXCIV) lift those source pointers above their copy destinations
      * in uopt's colouring priority (src v1 as the target); the a0-read 1784
@@ -4142,6 +4147,7 @@ void game_uso_func_0000591C(int *a0) {
         if (scratch_dst != 0 || (scratch_dst = (Vec3*)game_uso_func_055750(0xC + 0 * (int)src)) != 0) {
             fsel = src[0 * ((int)src | 1)];
             z = *(float *)((int)src + 8 + 0 * (int)src);
+            do { } while (0);
             scratch_dst->x = fsel;
             scratch_dst->z = z;
             scratch_dst->y = 0.0f;
