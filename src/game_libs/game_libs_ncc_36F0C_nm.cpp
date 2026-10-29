@@ -36,6 +36,7 @@ struct FreeCam {
     void update();
 };
 static inline f32 fabs_(f32 x) { return x < 0.0f ? -x : x; }
+static inline f32 clamp_(f32 x, f32 lo, f32 hi) { if (x < lo) return lo; if (x > hi) return hi; return x; }
 void FreeCam::update() {
     Cam *volatile c = cam;
     Pad *p;
@@ -62,8 +63,9 @@ void FreeCam::update() {
         yaw = yaw + p->sx * 4.0f;
         pitch = pitch + -p->sy * 4.0f;
     }
-    pitch = pitch < -89.0f ? -89.0f : pitch > 89.0f ? 89.0f : pitch;
-    w.y = 0.0f; w.x = 0.0f; w.z = dist;
+    pitch = clamp_(pitch, -89.0f, 89.0f); /* agent-g run 218: if / return inline = one result temp (f2), no outer-ternary mov.s: 968 B = target */
+    f32 d = dist; /* agent-g run 218: dist read before the w stores (target lwc1 44(a0) ahead of the pitch store): 94.52 -> 99.16 */
+    w.y = 0.0f; w.x = 0.0f; w.z = d;
     gl_func_00034458_36F0C(pitch, &w.y, &w.z);
     gl_func_00034458_36F0C(yaw, &w.x, &w.z);
     M &m = c->tgt->m;
