@@ -4422,7 +4422,8 @@ yaw_region:
         } else {
             f2v = 1.0f;
         }
-        if (accel_metric <= f2v * *(float*)((char*)self + 0xC4)) {
+        /* agent-g run 209: the folded `*a0` use orders the product's operands (f2, f8) */
+        if (((accel_metric <= f2v * *(float*)((char*)self + 0xC4)) + 0 * (int)(*a0))) {
             out_flags |= 2;
             goto tail_common;
         }
