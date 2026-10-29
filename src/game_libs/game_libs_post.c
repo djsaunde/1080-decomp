@@ -14552,15 +14552,12 @@ s32 arg2;
     s32 wv;          /* a3, spill sp+48 : trailing emit arg (523/21/20/22/256) */
     s32 prev;        /* sp+44 : old value of gl_state_30AF4.f0 */
     s32 w;           /* sp+40 : emit-arg value carried across calls (35/60) */
-    volatile s32 padBC[2];  /* sp+32/36 (unused target slots) */
-    volatile u32 modeSel; /* sp+28 : copy of `mode`, switch-2 selector (volatile = 1 store + 2 loads, its own slot) */
-    volatile s32 padD[1];   /* sp+24 (unused target slot) */
-    s32 g;           /* scratch global reads */
-    s32 m;           /* scratch global reads */
-    s32 c;           /* scratch cmd read */
-    s32 sv;          /* named sub copy (t9/t8 webs in cases 4/6) */
-    s32 c13, c14;    /* named const webs, case 5 (a0=13, v1=14->16) */
-    s32 gb;          /* int-cast &gl_state base (pre-switch v0 hoist, case-6 fC) */
+    s32 gb;          /* sp+36 : int-cast &gl_state base (case 9) */
+    /* agent-g run 225: the target's sp+28 is a SPILL slot (mode loaded once into t9, `sw t9,28(sp)`
+     * across the calls, three reloads for the second switch). A function that spills keeps every cfe
+     * local's home, so the target has only these five locals: the old volatile modeSel / pads and the
+     * g / m / c / sv / c13 / c14 / cp scratch locals are gone (direct global reads; sub forwarded
+     * through the D_30AF4_h store). Frame 0x38, spill and all homes on target. */
 
     flag = 0;
     if (gl_state_30AF4.f0 == 1) {
@@ -14583,7 +14580,6 @@ s32 arg2;
     gl_func_emit();
     gl_func_000460D0();
 
-    modeSel = mode; if (1) {}
     gb = (s32)&gl_state_30AF4;
     switch (mode) {                     /* switch 1 @0xC0: sltiu 14, jtbl +0x1874 */
     case 0:                             /* body A @0xE0 */
@@ -14622,17 +14618,15 @@ s32 arg2;
                 gl_func_emit();
             }
         }
-        sv = sub;
-        D_30AF4_h = sv;
-        gl_cmd_30AF4 = sv + 4;
-        g = D_30AF4_i;
-        if (g != 0 && sv == 6) {
+        D_30AF4_h = sub;
+        gl_cmd_30AF4 = D_30AF4_h + 4;
+        if (D_30AF4_i != 0 && D_30AF4_h == 6) {
             gl_cmd_30AF4 = 7;
         }
-        if (g == 4) {
+        if (D_30AF4_i == 4) {
             gl_func_00042364(4);
             gl_cmd_30AF4 = D_30AF4_j + 18; if (1) {}
-        } else if (sv == 0) {
+        } else if (D_30AF4_h == 0) {
             gl_func_00042364(6);
         } else {
             gl_func_00042364(3);
@@ -14641,80 +14635,68 @@ s32 arg2;
         D_30AF4_k = 14;
         break;
     case 5:                             /* body F @0x268 */
-        {
-            s32 *cp = &gl_cmd_30AF4;
-            c = *cp;
-            c13 = 13;
-            if (c == c13) {
-                break;
-            }
-            if (c == 15) {
-                break;
-            }
-            c14 = 14;
-            if (c == c14) {
-                break;
-            }
-            if (prev == 8) {
-                break;
-            }
-            g = D_30AF4_l;
-            if (g == c14) {
-                *cp = c14;
-            } else {
-                c14 = 16;
-                if (g != c14) {
-                    *cp = c13;
-                } else {
-                    *cp = c14;
-                }
-            }
-            gl_func_emit(((u8 *)cp)[3]);
+        if (gl_cmd_30AF4 == 13) {
+            break;
         }
+        if (gl_cmd_30AF4 == 15) {
+            break;
+        }
+        if (gl_cmd_30AF4 == 14) {
+            break;
+        }
+        if (prev == 8) {
+            break;
+        }
+        if (D_30AF4_l == 14) {
+            gl_cmd_30AF4 = 14;
+        } else if (D_30AF4_l != 16) {
+            gl_cmd_30AF4 = 13;
+        } else {
+            gl_cmd_30AF4 = 16;
+        }
+        gl_func_emit(CMD_B3);
         break;
     case 6:                             /* body G @0x2DC */
         {
-        s32 *cp = &gl_cmd_30AF4;
-        m = D_30AF4_m;
         w = 35;
-        if (m == 4) {
+        if (D_30AF4_m == 4) {
             wv = 523;
-            *cp = 13;
+            gl_cmd_30AF4 = 13;
         } else {
             switch (sub) {
             case 0:
                 wv = 21;
-                if (m != 0) {
-                    *cp = 14;
+                if (D_30AF4_m != 0) {
+                    gl_cmd_30AF4 = 14;
                 }
                 break;
             case 1:
-                *cp = 13;
+                gl_cmd_30AF4 = 13;
                 wv = 20;
                 break;
             case 2:
-                *cp = 13;
+                gl_cmd_30AF4 = 13;
                 wv = 22;
                 w = 60;
                 break;
             case 3:
             default:
-                *cp = 14;
+                gl_cmd_30AF4 = 14;
                 wv = 256;
                 break;
             }
         }
-        D_30AF4_n = *cp;
-        if (m == 0 && sub == 0) {
+        D_30AF4_n = gl_cmd_30AF4;
+        if (D_30AF4_m == 0 && sub == 0) {
             gl_state_30AF4.fC = 256; /* run 205: direct member store (not through gb): 92.71 -> 93.17 */
             gl_func_emit(0x83010000, 2000);
             D_30AF4_o = 14;
         } else if (D_30AF4_p == 1) {
             gl_func_emit(0x46010000, 0);
-            gl_func_emit(((u8 *)cp)[3], w + 10);
+            gl_func_emit(CMD_B3, w + 10);
         } else {
             gl_func_emit(0x83010000, 80);
-            gl_func_emit(((u8 *)cp)[3], w);
+            gl_func_emit(CMD_B3, w);
         }
         gl_func_emit(wv);
         }
@@ -14764,7 +14746,7 @@ s32 arg2;
         gl_func_emit();
         gl_func_00041F0C();
         gl_func_00041F44();
-        if (modeSel != 4) {
+        if (mode != 4) {
             gl_func_emit(0, 0);
         }
     }
@@ -14777,57 +14759,45 @@ s32 arg2;
         D_30AF4_v = 4;
     }
 
-    switch (modeSel) {                  /* switch 2 @0x634: sltiu 12, jtbl +0x18B0 */
+    switch (mode) {                  /* switch 2 @0x634: sltiu 12, jtbl +0x18B0 */
     case 0:                             /* @0x654 */
         if (prev == 0) {
             break;
         }
-        g = D_30AF4_w;
-        if (g == 1) {
+        if (D_30AF4_w == 1) {
             gl_func_00044F18(1);
-            g = D_30AF4_w;
-        } else if (g == 0) { /* agent-g run 205 decode: the g == 1 arm branches past this test (`b +0x6a0` after the reload) */
+        } else if (D_30AF4_w == 0) { /* agent-g run 205 decode: the == 1 arm branches past this test (`b +0x6a0` after the reload) */
             gl_func_00044F18(2);
-            g = D_30AF4_w;
         }
-        m = D_30AF4_x;
-        if (m == 1 || m == 3) {
-            switch (g) {                /* switch 3 @0x6BC: sltiu 8, jtbl +0x18E0 */
+        if (D_30AF4_x == 1 || D_30AF4_x == 3) {
+            switch (D_30AF4_w) {                /* switch 3 @0x6BC: sltiu 8, jtbl +0x18E0 */
             case 0:
                 gl_func_emit(0x1F);
-                g = D_30AF4_w;
                 break;
             case 1:
                 gl_func_emit(0x1B);
-                g = D_30AF4_w;
                 break;
             case 2:
                 gl_func_emit(0x1D);
-                g = D_30AF4_w;
                 break;
             case 3:
                 gl_func_emit(0x19);
-                g = D_30AF4_w;
                 break;
             case 4:
                 gl_func_emit(0x1E);
-                g = D_30AF4_w;
                 break;
             case 5:
                 gl_func_emit(0x1C);
-                g = D_30AF4_w;
                 break;
             case 6:
                 gl_func_emit(0x1A);
-                g = D_30AF4_w;
                 break;
             case 7:
                 gl_func_emit(0x18);
-                g = D_30AF4_w;
                 break;
             }
         }
-        if (g == 8) {
+        if (D_30AF4_w == 8) {
             gl_func_emit(0xBC);
         }
         break;
