@@ -75,7 +75,7 @@ extern "C" void func_0000C234(char *arg0) {
     f32 var_f2;
     f32 var_f2_2;
     s32 temp_v0_4;
-    s32 var_t0;
+    f32 temp_f14; /* agent-g run 233: takes var_t0's home slot (0x934 held in a variable: tail f12/f14/f16 order) */
     char *sp3C;
     s32 var_v0;
     S4C234 sp8C;
@@ -125,19 +125,18 @@ extern "C" void func_0000C234(char *arg0) {
         /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
         /* agent-g run 232: the scaled sum alone on the line, `+ 4.0f` in the test (product first in the add, spCC.f0 loads before it): 98.68 -> 99.10 */
-        temp_f2_3 = (D_bu_ro_pool[0x128 / 4] * (((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))));
-        if ((spCC.f0 < temp_f2_3 + 4.0f) ||(*(s32 *)((char *)(arg0) + 0x938) != 0)) {
+        /* agent-g run 233: the scaled sum in temp_f0 (target mul.s into f0) */
+        temp_f0 = (D_bu_ro_pool[0x128 / 4] * (((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))));
+        if ((spCC.f0 < temp_f0 + 4.0f) ||(*(s32 *)((char *)(arg0) + 0x938) != 0)) {
             *(s32 *)((char *)(arg0) + 0xA4C) = 1;
             spB4 = *(V3C234 *)&spCC.e4;
-            var_t0 = 0;
             *(f32 *)((char *)(arg0) + 0x9D8) = spB4.x;
             *(f32 *)((char *)(arg0) + 0x9DC) = spB4.y;
             *(f32 *)((char *)(arg0) + 0x9E0) = spB4.z;
             *(f32 *)((char *)(arg0) + 0x9E4) = spCC.f0;
-            if (D_00000930 < (f64) *(f32 *)((char *)(arg0) + 0x9DC)) {
-                var_t0 = 1;
-            }
-            *(s32 *)((char *)(arg0) + 0xA50) = var_t0;
+            /* agent-g run 233: the compare stored directly -- the 0/1 is a ugen temp (t0), not a uopt-coloured
+             * local (v0); this moves the ugen round-robin on by one, as the target's t1/t2 below */
+            *(s32 *)((char *)(arg0) + 0xA50) = (D_00000930 < (f64) *(f32 *)((char *)(arg0) + 0x9DC));
         } else {
             *(s32 *)((char *)(arg0) + 0xA4C) = 0;
             *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
@@ -166,7 +165,8 @@ extern "C" void func_0000C234(char *arg0) {
                 } else {
                     temp_f0 = temp_f2;
                 }
-                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[(s32) ((f32) var_v0 + (temp_f0 * 3.0f))], 2);
+                var_v0 = (s32) ((f32) var_v0 + (temp_f0 * 3.0f)); /* agent-g run 233: index in var_v0 (target mfc1 v0, coloured, not a ugen temp) */
+                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[var_v0], 2);
             }
         }
         /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,
@@ -300,7 +300,7 @@ cend:
     }
     temp_f2_3 = *(f32 *)((char *)(arg0) + 0x92C);
     temp_f12_2 = *(f32 *)((char *)(arg0) + 0x930);
-#define temp_f14 (*(f32 *)((char *)(arg0) + 0x934)) /* run 184: de-named (lever-sweep) */
+    temp_f14 = *(f32 *)((char *)(arg0) + 0x934);
     temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
     /* agent-g run 232: each dot product in temp_f0 (the target's sums are all in f0, which pushes 0x910 out of f0), then `sum * scale` */
     temp_f0 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14);
