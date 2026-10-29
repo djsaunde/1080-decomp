@@ -31,9 +31,8 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
     u32 list;
     if (W(&D_4B2F4_flags, 0x1C4) & 1) {
         g = &D_4B2F4_state;
-        b = *(f32 (**)[4])(g + 0xE4);
-        a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0);
-        for (i = 0; i < 4; i++) {
+        /* agent-c run 228: b / a / loop on one line (as1 line tie: the b load issues after the a / bound addresses; 98.37 -> 99.36) */
+        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0); for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
                 for (k = 0; k < 4; k++) {
