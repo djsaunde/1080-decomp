@@ -4238,13 +4238,15 @@ void game_uso_func_0000591C(int *a0) {
         if (1) { p = &diff_b; }
         accel_params = (float *)((int)hit_parent + 48 + 0 * (int)child_flags);
         {
-            delta_b_dst = p;
-            if (delta_b_dst != 0 || (delta_b_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+            /* agent-g run 228: the destination pointer is child_flags again (its a1 web
+             * from the pos_c site), so it colours a1 as in the target; 99.926 -> 99.949 */
+            child_flags = (int *)p;
+            if (child_flags != 0 || (child_flags = (int *)game_uso_func_055750(0xC)) != 0) {
                 x = pos_c.x - *accel_params;
                 z = pos_c.z - *(float *)((int)accel_params + 8 + 0 * (int)accel_params);
-                delta_b_dst->y = 0.0f;
-                delta_b_dst->x = x;
-                delta_b_dst->z = z;
+                ((Vec3 *)child_flags)->y = 0.0f;
+                ((Vec3 *)child_flags)->x = x;
+                ((Vec3 *)child_flags)->z = z;
             }
         }
         stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
@@ -4319,13 +4321,13 @@ void game_uso_func_0000591C(int *a0) {
     if (1) { p = &diff_g; }
     accel_params = (float *)((int)hit_parent + 48 + 0 * (int)child_flags);
     {
-        delta_g_dst = p;
-        if (delta_g_dst != 0 || (delta_g_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+        child_flags = (int *)p; /* agent-g run 228: child_flags' a1 web (as at the diff_b site) */
+        if (child_flags != 0 || (child_flags = (int *)game_uso_func_055750(0xC)) != 0) {
             x = pos_g.x - *accel_params;
             z = pos_g.z - *(float *)((int)accel_params + 8 + 0 * (int)accel_params);
-            delta_g_dst->y = 0.0f;
-            delta_g_dst->x = x;
-            delta_g_dst->z = z;
+            ((Vec3 *)child_flags)->y = 0.0f;
+            ((Vec3 *)child_flags)->x = x;
+            ((Vec3 *)child_flags)->z = z;
         }
     }
     stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
@@ -4460,12 +4462,16 @@ tail_common:
     }
 
     if (*(float*)(*(char**)((char*)self + 0x30) + 0x348) < 30.0f) {
-        v0 = *(int*)((char*)self + 0x54) + 1;
-        *(int*)((char*)self + 0x54) = v0;
-        if (v0 >= 75) {
+        /* agent-g run 228: the counter in its own block-scope variable, with child_flags
+         * read again after the store, so child_flags' v0 range reaches this block and the
+         * counter colours v1 (target `lw v1, 0x54(s0)`); 99.903 -> 99.926 */
+        { int cnt; cnt = *(int*)((char*)self + 0x54) + 1;
+        *(int*)((char*)self + 0x54) = cnt;
+        if (child_flags) {}
+        if (cnt >= 75) {
             *(int*)((char*)self + 0x54) = 0;
             game_uso_func_00007424(self);
-        }
+        } }
     } else {
         *(int*)((char*)self + 0x54) = 0;
     }
