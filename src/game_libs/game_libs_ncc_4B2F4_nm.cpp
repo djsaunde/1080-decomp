@@ -7,7 +7,11 @@
  * colours. agent-c run 239: flags | 2 inside the packet expression (`(flags | 2) & 0xFF) << 16`, no store back)
  * with a folded `+ 0 * (int)(flags)` use on the pre-call `fixed` sum (gives flags the weight for a register:
  * without it flags is left in its home) builds the operand in t5 as the target: 99.36 -> 99.41; left: the last
- * two DL slots' v0 / v1 / a0 / a2 colours (a named `s32 *h` count pointer gives slot3 v1 but costs 8 frame bytes).
+ * two DL slots' v0 / v1 / a0 / a2 colours. Then: both late DL counts read through a block-scoped named
+ * `s32 *h` (the count pointer as a uopt variable: slot v1, last block's h a0 as the target), with the last
+ * slot / packet pointer MERGED into slot3 / cmd2 (one variable each instead of two: the merge pays back the 8
+ * frame bytes the named h homes cost, frame 0xC0 kept): 99.41 -> 99.63. Left: the first h takes v0 (target
+ * a2) and the t-ring of the last block is one register off.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32;
 extern "C" {
@@ -60,17 +64,15 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
         if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
-        slot3 = (*(s32 **)(ctx + 0xC))[1];
-        (*(s32 **)(ctx + 0xC))[1] = slot3 + 1;
+        { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
         cmd2[0] = 0xFA000100;
         cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;
         ctx = P(P(g, 0x254), 0x158);
         list = F_4B2F4_list(P(P(arg0, 0x40), 0x60));
-        slot4 = (*(s32 **)(ctx + 0xC))[1];
-        (*(s32 **)(ctx + 0xC))[1] = slot4 + 1;
-        cmd3 = (u32 *)(P(P(ctx, 0xC), 0) + slot4 * 8);
-        cmd3[0] = 0x06000000;
-        cmd3[1] = list;
+        { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
+        cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
+        cmd2[0] = 0x06000000;
+        cmd2[1] = list;
     }
 }
