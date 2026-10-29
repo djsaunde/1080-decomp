@@ -13282,7 +13282,8 @@ block_81:
             } else {
 block_83:
                 if (*(u16 *)((char *)(arg0) + 0x1A) != 0) {
-                    if (*(s32 *)((char *)(arg0) + 0x48) == 0) {
+                    temp_v1 = *(s32 *)((char *)(arg0) + 0x48); /* agent-g run 231: test operands on their own lines (hoist sweep) */
+                    if (temp_v1 == 0) {
                         temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
                         var_v0_2 = 0x11;
                         if (75.0f <= temp_f16) {
@@ -13457,10 +13458,12 @@ block_83:
                     }
                     temp_v0_2 = D_raceD_E354;
                     if ((temp_v0_2 != 0) && (temp_v0_2 != 1) && (temp_v0_2 != 8)) {
-                        if (*(s32 *)((char *)(arg0) + 0x48) != 0) {
+                        temp_v1 = *(s32 *)((char *)(arg0) + 0x48);
+                        if (temp_v1 != 0) {
                             *(u8 *)((char *)(arg0) + 0x33) = 0x1AU;
                         }
-                        if (*(f32 *)((char *)&D_00000000 + 0x172C) < *(f32 *)((char *)(arg0) + 0xC)) {
+                        temp_f0 = *(f32 *)((char *)&D_00000000 + 0x172C);
+                        if (temp_f0 < *(f32 *)((char *)(arg0) + 0xC)) {
                             temp_v1_3 = *(u8 *)((char *)(arg0) + 0x33) + 1;
                             *(u8 *)((char *)(arg0) + 0x33) = temp_v1_3;
                             if ((temp_v1_3 & 0xFF) == 0x19) {
