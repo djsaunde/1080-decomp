@@ -9019,20 +9019,23 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         FW(child, 0x108) = (s32) gc;
         timproc_uso_b5_func_04DFFC(child, gc);
         if (1) {}
-        p = (char *)FW(child, 0x108);
-        *(f32 *)(p + 0xBC) = 0; /* int 0: one mtc1 zero (0.0f gives three) */
-        *(f32 *)(p + 0xB8) = 0;
+        /* agent-c run 216: DF14's p shape -- p = base + 0xB4 and the three zero stores together before the
+         * flag block: the target's 180(v0) store position and its dead `addiu v0,v0,180` (p kept live past
+         * the stores) both line up (421 -> 422 words, target 420: the two extra words are the flag block's
+         * unshared `lui at`, unchanged; every other word up to the switch matches). */
+        p = (char *)FW(child, 0x108) + 0xB4;
+        ((f32 *)p)[2] = 0; /* int 0: one mtc1 zero (0.0f gives three) */
+        ((f32 *)p)[1] = 0;
+        ((f32 *)p)[0] = 0;
         *(f32 *)(child + 0x124) = 1.0f;
         savedbit = EE6C_L(d884_ee6c_l1) & 0x80000;
         EE6C_S(d884_ee6c_s1) = EE6C_L(d884_ee6c_l2) & 0xFFF7FFFF;
-        *(f32 *)(p + 0xB4) = 0;
         EE6C_S(d884_ee6c_s2) = EE6C_L(d884_ee6c_l3) & ~1;
         EE6C_S(d884_ee6c_s3) = EE6C_L(d884_ee6c_l4) | 2;
         EE6C_S(d884_ee6c_s4) = EE6C_L(d884_ee6c_l5) & 0xFFFDFFFF;
         EE6C_S(d884_ee6c_s5) = EE6C_L(d884_ee6c_l6) | 0x2000;
         FW(child, 0x140) = 1;
         FW(child, 0x13C) = 1;
-        p += 0xB4;
         switch (arg2) {
         case 11:
             if (MODE == 3) {
