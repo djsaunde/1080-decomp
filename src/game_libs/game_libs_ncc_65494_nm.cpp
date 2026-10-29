@@ -24,7 +24,9 @@
  * Vec3 & (frame 384 -> 392 with a named w), loop-block scalars h / w / dt declared
  * first then n / d / hit (n at 0x134, d 0x128, hit 0xF8), f at function scope (one
  * more outer home); the 3-float ctor forwarding to set() fixes the s1 / s2 / s3
- * permutation. Left: edg temp homes below hit, FP colours of w / dt. */
+ * permutation; later steps (see the inline notes, docs kit CCV) put every sp home on the
+ * target (99.91). Left: the three operator* products colour f0 / f2 / f12, the target
+ * f2 / f12 / f14 (an f0 phantom live across them). */
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -137,6 +139,7 @@ extern "C" void gl_func_00065494(Self *self) {
             if (dt > 0.0f) {
                 dt = 0.0f;
             }
+            if (1) {} /* run 214: BB split before the impulse: k colours f14 ahead of w (f16) */
             Vec3 imp = n.sc(k = w * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
             const Vec3 &ri = imp; /* its pointer home is the target's sp+0x98 */
             gl_func_00062F64_d(self, &node->v120, ri);
