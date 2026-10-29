@@ -580,7 +580,12 @@ void game_uso_func_00000B14(void *a0) {
  *    temp, and the up-vector sums go through block floats: 95.62 -> 99.00. */
 typedef struct { int w[16]; } B3CBlk40;
 extern Vec3* game_uso_func_000023D4(Vec3 *out, char *a1);
-extern void game_uso_func_00002714(int *a0, int a1, int a2);
+/* agent-g run 239: 2714 declared K&R (the prototyped definition follows later in the file) so the two
+ * literal-1 arguments can be written `1u`: an unsigned constant is a different uopt expression from the
+ * int 1 that the `tmp = 1` / `1 == ...` LR (t0) holds, so those two call sites materialise
+ * `addiu a1,zero,1` as in the target instead of `or a1,t0,zero` (an unsigned 1 for an int parameter
+ * is well-defined for an unprototyped call, C99 6.5.2.2p6): 99.83 -> 99.9986. */
+extern void game_uso_func_00002714();
 extern void game_uso_func_00002FC8(int *a0, int a1, int a2);
 /* real callee = game_uso_func_00000000 (basis evaluator); distinct name to get
  * the prototyped float-in-$a1 ABI (jal word is placeholder 0x0C000000 anyway) */
@@ -656,7 +661,7 @@ void game_uso_func_00000B3C(char *arg0) {
                 *(s32 *)(s + 0x130) = (*(s32 *)(seg + 0x30) == 0) == 0;
             }
             if (tmp == *(s32 *)(seg + 0x10)) {
-                game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002714(*(int **)(s + 0x154), 1u, *(s32 *)(s + 0x150) + 0x318);
             } else {
                 game_uso_func_00002714(*(int **)(s + 0x154), 0, *(s32 *)(s + 0x150) + 0x318);
             }
@@ -697,7 +702,7 @@ void game_uso_func_00000B3C(char *arg0) {
         if (tmp != 0) {
             switch (*(s32 *)(s + 0x26C)) {
             case 0:
-                game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
+                game_uso_func_00002714(*(int **)(s + 0x154), 1u, *(s32 *)(s + 0x150) + 0x318);
                 game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
                 tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
