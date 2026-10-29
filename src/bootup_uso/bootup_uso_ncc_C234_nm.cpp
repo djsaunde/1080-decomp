@@ -76,7 +76,7 @@ extern "C" void func_0000C234(char *arg0) {
     f32 var_f2_2;
     s32 temp_v0_4;
     f32 temp_f14; /* agent-g run 233: takes var_t0's home slot (0x934 held in a variable: tail f12/f14/f16 order) */
-    char *sp3C;
+    s32 sp3Ck; /* agent-g run 235: sp3C's old slot, now the first call's argument 0 (evaluated before sp3C's def) */
     s32 var_v0;
     S4C234 sp8C;
     char *temp_v0_3;
@@ -92,6 +92,7 @@ extern "C" void func_0000C234(char *arg0) {
     V3C234 sp40;
     s32 temp_a1_2;
     s32 temp_v1_2;
+    char *sp3C; /* agent-g run 235: last home = the target's sp+0x3C (kit CCXLVIII) */
 
 
 #define temp_v0 (*(s32 *)((char *)(arg0) + 0xA80))
@@ -112,8 +113,10 @@ extern "C" void func_0000C234(char *arg0) {
     spCC.e8 = 1.0f;
     *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4]; /* agent-g run 231: above the 0x9A2 store (as1 line order: the pool load issues before the spCC stores) */
     *(s16 *)((char *)(arg0) + 0x9A2) = 0; if (arg0) {}
-    sp3C = arg0 + 0xDC;
-    if (func_00000000(*(s32 *)((char *)&D_00000000 + 0), sp3C, 0x457A0000, &spCC) != 0) {
+    /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
+     * temp area): the folded read of *arg0 stops uopt copy-propagating it; defined in the argument list after
+     * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
+    if (func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = arg0 + 0xDC + 0 * (int)(*arg0), 0x457A0000, &spCC) != 0) {
         *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             *(s16 *)((char *)(arg0) + 0x9A2) = *(s16 *)((char *)(arg0) + 0x9A0);
