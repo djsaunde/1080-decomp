@@ -1589,6 +1589,12 @@ build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(
 KERNEL000_1EC8_DONOR := build/src/kernel/kernel_000_1EC8.c.o
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001EC8=$(KERNEL000_1EC8_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1EC8_DONOR)
+# 1594 = USO loader init; cfe -O2 donor (kept out of C_FILES below; agent-c run 229: the
+# slot-clear loop as a one-line index loop on i gives the func_80000480+0x30 CSE a2).
+# Its two local-label targets are pinned as func_80001594_L80000C5C / _L800007A8 in undefined_syms_auto.txt.
+KERNEL000_1594_DONOR := build/src/kernel/kernel_000_1594.c.o
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001594=$(KERNEL000_1594_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1594_DONOR)
 # func_80005C50 = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292
 # non-reloc-identical; renames map the callees to kernel addresses; the
 # switch-jumptable .rodata section reloc is renamed to func_80005C50_rodata
@@ -2771,6 +2777,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
 # The partial backup-store donor is never linked into the default ROM.
 C_FILES := $(filter-out src/game_libs/game_libs_o2limit_65EE4.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_000_1EC8.c,$(C_FILES))
+C_FILES := $(filter-out src/kernel/kernel_000_1594.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_022_ido53_858C.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_054_c_ido53_9474.c,$(C_FILES))
 ASM_FILES := $(shell find asm -maxdepth 1 -name '*.s' -type f 2>/dev/null)
