@@ -14532,11 +14532,16 @@ typedef struct {
 } GlState30AF4;
 
 extern GlState30AF4 gl_state_30AF4;
-extern s32 gl_cmd_30AF4;
+/* agent-g run 226: gl_cmd / D_l / D_r are u32 -- the case-5 14 and the 16 (cases 5/8) are
+ * unsigned constant webs coloured into v1 (target beq v1 / bnel v1 / sw v1); 97.0 -> 97.8,
+ * 2116 -> 2112 bytes = target length. */
+extern u32 gl_cmd_30AF4;
 extern s32 D_30AF4_b, D_30AF4_c, D_30AF4_d, D_30AF4_e;
 extern s32 D_30AF4_f, D_30AF4_g, D_30AF4_h, D_30AF4_i, D_30AF4_j, D_30AF4_k;
-extern s32 D_30AF4_l, D_30AF4_m, D_30AF4_n, D_30AF4_o, D_30AF4_p, D_30AF4_q;
-extern s32 D_30AF4_r, D_30AF4_s, D_30AF4_t, D_30AF4_v, D_30AF4_w, D_30AF4_x;
+extern u32 D_30AF4_l;
+extern s32 D_30AF4_m, D_30AF4_n, D_30AF4_o, D_30AF4_p, D_30AF4_q;
+extern u32 D_30AF4_r;
+extern s32 D_30AF4_s, D_30AF4_t, D_30AF4_v, D_30AF4_w, D_30AF4_x;
 extern f32 D_30AF4_flt;
 extern char gl_data_30AF4_45010, gl_data_30AF4_45F78;  /* baked arena addresses (lui/addiu absolute) */
 
@@ -14553,6 +14558,7 @@ s32 arg2;
     s32 prev;        /* sp+44 : old value of gl_state_30AF4.f0 */
     s32 w;           /* sp+40 : emit-arg value carried across calls (35/60) */
     s32 sv;          /* sp+36 : int-cast &gl_state base (case 9), then the case-10 sub copy */
+    s32 hv;          /* agent-g run 226: case-4 copy of D_30AF4_h for the `== 0` test (target `or v0,t9`) */
     /* agent-g run 225: the target's sp+28 is a SPILL slot (mode loaded once into t9, `sw t9,28(sp)`
      * across the calls, three reloads for the second switch). A function that spills keeps every cfe
      * local's home, so the target has only these five locals: the old volatile modeSel / pads and the
@@ -14619,6 +14625,7 @@ s32 arg2;
             }
         }
         D_30AF4_h = sub;
+        hv = D_30AF4_h;
         gl_cmd_30AF4 = D_30AF4_h + 4; if (1) {}
         if (D_30AF4_i != 0 && D_30AF4_h == 6) {
             gl_cmd_30AF4 = 7;
@@ -14626,7 +14633,7 @@ s32 arg2;
         if (D_30AF4_i == 4) {
             gl_func_00042364(4);
             gl_cmd_30AF4 = D_30AF4_j + 18; if (1) {}
-        } else if (D_30AF4_h == 0) {
+        } else if (hv == 0) {
             gl_func_00042364(6);
         } else {
             gl_func_00042364(3);
@@ -14667,7 +14674,7 @@ s32 arg2;
             case 0:
                 wv = 21;
                 if (D_30AF4_m != 0) {
-                    gl_cmd_30AF4 = 14;
+                    *(s32 *)&gl_cmd_30AF4 = 14;
                 }
                 break;
             case 1:
@@ -14681,7 +14688,7 @@ s32 arg2;
                 break;
             case 3:
             default:
-                gl_cmd_30AF4 = 14;
+                *(s32 *)&gl_cmd_30AF4 = 14; /* agent-g run 226: int-typed 14 (temp per store) vs the case-5 u32 14 web (v1) */
                 wv = 256;
                 break;
             }
