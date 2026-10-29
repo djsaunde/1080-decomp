@@ -703,7 +703,7 @@ void titproc_uso_func_0000116C(char *s0) {
     char *vt7;
     char *vt8;
     void (*fn)(int);
-    int t, v;
+    int v;
 
     switch (*(int *)(s0 + 0x40)) {
     case 0: {
@@ -718,7 +718,9 @@ void titproc_uso_func_0000116C(char *s0) {
         (*(void (**)(int))(vt + 0x5C))((int)(v1 + *(short *)(vt + 0x58)));
         gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
         *(int *)(s0 + 0x40) = *(int *)(s0 + 0x40) + 1;
-        *(int *)(s0 + 0x3C) = (*(int *)(s0 + 0x70) * 16 - *(int *)(s0 + 0x70)) * 2;
+        /* agent-c run 234: a plain `* 30` (ugen expands it in place on a ring temp) instead of the
+         * spelled-out (x * 16 - x) * 2, which uopt CSEs into a coloured value */
+        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x70) * 30;
         *(int *)(s0 + 0x68) = 40;
         gl_func_00000000_116c_v(13);
         break;
@@ -732,7 +734,7 @@ void titproc_uso_func_0000116C(char *s0) {
         v = *(int *)(s0 + 0x68);
         if (v != 0) {
             *(int *)(s0 + 0x68) = v - 1; if (s0) {}
-            v = v - 1;
+            v = *(int *)(s0 + 0x68); /* agent-c run 234: read back (store-forwarded: ring temp + copy like the target) */
         }
         if (v == 0) {
             vt2 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
@@ -786,7 +788,7 @@ fire:
             v1 = *(char **)(s0 + 0x5C);
             (*(void (**)(int))(vt5 + 0x5C))((int)(v1 + *(short *)(vt5 + 0x58)));
             *(int *)(s0 + 0x40) = 3;
-            *(int *)(s0 + 0x3C) = (*(int *)(s0 + 0x74) * 16 - *(int *)(s0 + 0x74)) * 2;
+            *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x74) * 30;
         }
         break;
     }
@@ -795,8 +797,7 @@ fire:
          * chain actually lives INSIDE the gate-confirmed sub-branch;
          * the real spine is t==0-init then the counter clamp pair. */
         int *c;
-        t = *(int *)(s0 + 0x3C);
-        if (t == 0) {
+        if (*(int *)(s0 + 0x3C) == 0) { /* agent-c run 234: tested directly (the target re-reads it as a ring temp, no named t) */
             *(int *)((char *)&D_00000000 + 0x34) = 1;
             v = gl_func_00000000();
             gl_func_00000000_116c_v(s0, v, 0);
