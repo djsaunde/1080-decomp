@@ -24567,19 +24567,16 @@ extern void func_00000000_5a2c4v(); /* run 156: discarded call before the colour
 void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
     s32 spBC;      /* home 0xBC */
     s32 f;         /* flags word (hoisted head load) */
-    s32 rgba;      /* 0xA8 */
-    char padA[12]; /* frame sculpt: colv home at 0xA4 as the target */
-    s8 colv[4];    /* 0xA4..0xA7 */
-    s32 cnt;       /* 0xA0 (dead home) */
-    char *p;       /* 0x9C */
-    char *base;    /* 0x98 */
-    char pad1[0x40]; /* frame 0xC0 = target (was 0x5C: 0xD0) */
-    s32 sp38;      /* 0x38 */
-    s32 sp34;      /* 0x34 */
-    s32 sp30;      /* 0x30 */
-    s32 sp2C;      /* 0x2C */
-    char pad2[8];  /* 0x24..0x2B */
-    f32 fr, fg, fb, fa;
+    s32 rgba;
+    s32 cnt;       /* arg4-block appends use the function-level cursor trio */
+    char *p;
+    char *base;
+    u8 colv[4];    /* 0xA4..0xA7 (declared last of the top group: lands at 0xA4 with no pads) */
+    s32 sp38;
+    s32 sp34;
+    s32 sp30;
+    s32 sp2C;
+    f32 fr, fg, fb, fa; u8 r, g, b;
 
     f = D_00000000_3c8e0;
     spBC = 0;
@@ -24587,14 +24584,22 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         spBC = (&D_00000000)[func_00000000()];
     }
     func_00000000(arg0, arg1, arg10);
-    base = *(char **)(arg0 + 0xC);
-    cnt = *(s32 *)(base + 4);
-    *(s32 *)(base + 4) = cnt + 1;
-    p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-    *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF);
-    sp38 = arg6 + arg8;
-    sp34 = arg7 + arg9;
-    *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
+    /* agent-c run 234: the head append and the five arg3-block appends are BLOCKS with their own
+     * base / cnt / p (each block's trio = 3 home words: 6 x 3 = 18 of the target's middle frame words,
+     * frame 0xC0 with no pad arrays, and each append's cursor web colours on its own like the target) */
+    {
+        char *base;
+        s32 cnt;
+        char *p;
+        base = *(char **)(arg0 + 0xC);
+        cnt = *(s32 *)(base + 4);
+        *(s32 *)(base + 4) = cnt + 1;
+        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+        *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF);
+        sp38 = arg6 + arg8;
+        sp34 = arg7 + arg9;
+        *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
+    }
     if (arg3 != 0) {
         func_00000000_5a2c4v(arg0, arg1, arg10);
         fr = *(f32 *)(arg5 + 0);
@@ -24605,37 +24610,65 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         colv[1] = (u32)(fg * 255.0f);
         colv[2] = (u32)(fb * 255.0f);
         colv[3] = (u32)(fa * 255.0f);
-        base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xF7000000;
-        rgba = (((s32)(u32)(fr * 255.0f) << 8) & 0xF800) | (((s32)(u32)(fg * 255.0f) * 8) & 0x7C0) | (((s32)(u32)(fb * 255.0f) >> 2) & 0x3E) | (arg11 & 1);
-        *(s32 *)(p + 4) = (rgba << 0x10) | rgba;
-        base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 4) = 0x300000;
-        *(s32 *)(p + 0) = 0xBA001402;
-        base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
-        *(s32 *)(p + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
-        base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xE7000000;
-        *(s32 *)(p + 4) = 0;
-        base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xE7000000;
-        *(s32 *)(p + 4) = 0;
+        /* agent-c run 234: the RGBA5551 pack reads the stored u8 colour back (uopt forwards the sb values:
+         * the target's r spill to 0x20 + `or t1,t6` / `or a1,t7` copies at the merge), b / g / r order */
+        b = colv[2]; g = colv[1]; r = colv[0];
+        {
+            char *base;
+            s32 cnt;
+            char *p;
+            base = *(char **)(arg0 + 0xC);
+            cnt = *(s32 *)(base + 4);
+            *(s32 *)(base + 4) = cnt + 1;
+            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            *(s32 *)(p + 0) = 0xF7000000;
+            rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
+            *(s32 *)(p + 4) = (rgba << 0x10) | rgba;
+        }
+        {
+            char *base;
+            s32 cnt;
+            char *p;
+            base = *(char **)(arg0 + 0xC);
+            cnt = *(s32 *)(base + 4);
+            *(s32 *)(base + 4) = cnt + 1;
+            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            *(s32 *)(p + 4) = 0x300000;
+            *(s32 *)(p + 0) = 0xBA001402;
+        }
+        {
+            char *base;
+            s32 cnt;
+            char *p;
+            base = *(char **)(arg0 + 0xC);
+            cnt = *(s32 *)(base + 4);
+            *(s32 *)(base + 4) = cnt + 1;
+            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            *(s32 *)(p + 0) = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
+            *(s32 *)(p + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
+        }
+        {
+            char *base;
+            s32 cnt;
+            char *p;
+            base = *(char **)(arg0 + 0xC);
+            cnt = *(s32 *)(base + 4);
+            *(s32 *)(base + 4) = cnt + 1;
+            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            *(s32 *)(p + 0) = 0xE7000000;
+            *(s32 *)(p + 4) = 0;
+        }
+        {
+            char *base;
+            s32 cnt;
+            char *p;
+            base = *(char **)(arg0 + 0xC);
+            cnt = *(s32 *)(base + 4);
+            *(s32 *)(base + 4) = cnt + 1;
+            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            *(s32 *)(p + 0) = 0xE7000000;
+            *(s32 *)(p + 4) = 0;
+        }
     }
     if ((arg4 != 0) + 0 * (int)(arg4)) { /* agent-c run 212: folded counted use (zero code) */
         sp30 = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
