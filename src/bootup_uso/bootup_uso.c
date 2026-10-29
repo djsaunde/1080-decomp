@@ -4182,7 +4182,8 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
     func_00000000();
     D_bu_1EBDC[0] = 1;
     res = (char *)func_00000000(0, ((char *)p), b8, b4, b0);
-    *(int *)(res + 0x18) &= ~0x40;
+    /* agent-g run 221: pointer mutation behind an if (1) barrier = the target's addiu v1,v0,24 + lw/sw 0(v1) */
+    rec = (int *)res; if (1) { rec += 0x18 / 4; } *rec &= ~0x40;
     import_8001FFF0 = func_00000000(0, ((char *)p));
     func_00000000(&D_6808_17, 0);
     if (dc != 0) {
