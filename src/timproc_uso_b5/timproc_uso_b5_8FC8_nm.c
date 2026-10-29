@@ -302,7 +302,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                     FF(_wp, 0x108) = DF_2B0; FF(_wp, 0x10C) = DF_2B4; FF(_wp, 0x110) = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); FW(_wp, 0x120) = 1; FF(_wp, 0x124) = 1.0f; }
                   FP(w, 0x108) = _wp; }
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
-                SETI(t, FP(w, 0x108))
+                SETI(u, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
                 sb3 = FW(f8fc8_ee6c_sb3, 4) & 0x80000; { _x = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0); FW(w, 0x13C) = 1; if (1) {}
                 FW(w, 0x140) = 0;
