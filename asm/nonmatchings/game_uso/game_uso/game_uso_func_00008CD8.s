@@ -718,5 +718,12 @@ endlabel game_uso_func_00008CD8
 .late_rodata
 /* +0x100..+0x110: own 4-entry jumptable (lw %lo 0x100 at 0x969C) */
 .word 0x000096A8, 0x0000970C, 0x000096A8, 0x000096E0
+/* Moved from game_uso_func_000097EC.s (97EC is now a C/NCC donor, no INCLUDE_ASM): */
+/* +0x110..+0x114: float of C fn game_uso_func_0000A7D8 (lwc1 %lo 0x110) */
+.word 0x7F7FFFFF
+/* +0x114..+0x118: float of C fn game_uso_func_0000AB98 (lwc1 %lo 0x114) */
+.word 0x7F7FFFFF
+/* +0x118..+0x120: two zero words before the 8-aligned doubles (unreferenced) */
+.word 0x00000000, 0x00000000
 
 .text
