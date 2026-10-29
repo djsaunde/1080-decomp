@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00038A28",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-10-29T02:24:30.920579+00:00",
+  "end_time": "2026-10-29T02:24:30.920618+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T02:24:30.920608+00:00",
+      "assistant_text": "Exact via donor splice (agent-g run 209): 9-entry jumptable pinned at RoData +0x1A1C; selector copied to key + dead kill in the default (selector web loses its a1 argument preference -> v0), default third arg through p (a2 preference -> case cursors a2, key a3), case-0x64 cursor via key, same-line p/call.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 81,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for gl_func_00038A28 -- opcode-record interpreter step\n * (0x144 / 81 words; 81/81 word-exact apart from reloc fields).\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the\n * 29CCC / 52CD4 / 3AC5C recipe, docs/MATCHING_WORKFLOW.md#post0b-jumptable-\n * donor-52cd4). The C switch over opcodes 0x64..0x6C puts its 9-entry\n * jumptable in the donor's local .rodata; the splice renames that reloc to\n * gl_func_00038A28_rodata, pinned to 0x1A1C in undefined_syms_auto.txt (the\n * target's `lw t6,0x1A1C(at)`). The three baked lui/addiu message addresses\n * are the existing D_0001EC6C / D_0001EC84 / D_0001EC9C pins; the callbacks\n * are `jal 0` in the ROM (0-pinned gl_func_00000000).\n *\n * Register levers (agent-g runs 207-209, docs/IDO_CODEGEN.md kit CXCI):\n *  - case 0x64's cursor is `key` (the key arms' a3), the other arms' cursor p;\n *  - the default's third argument goes through p: its call-argument\n *    preference (a2) puts every case cursor in a2, so key takes a3;\n *  - `key = code; code = 0;` in the default: the selector's web ends at the\n *    copy (no a1 argument preference of its own), so it colours v0; the\n *    report argument is the copy's own web (a1);\n *  - the p assignment and the call share one source line (as1 order\n *    lui/addiu/lw before the jal);\n *  - declaration order + pad[4] give the 64-byte frame and the 60 / 36 homes. */\n#include \"common.h\"\n\nextern int gl_func_00000000();\nextern int D_00000000;\nextern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];\n\nvoid gl_func_00038A28(char *o, char *c) {\n    unsigned int key;\n    int code;\n    volatile int pad[4];\n    char *r;\n    int *p;\n    switch (code = *(int *)c) {\n        case 0x64:\n            key = *(unsigned int *)(c + 0x4);\n            *(unsigned int *)(c + 0x4) = key + 4;\n            *(int *)(o + 0x20) = *(int *)key;\n            return;\n        case 0x65:\n            p = *(int **)(c + 0x4);\n            *(int **)(c + 0x4) = p + 1;\n            key = *p;\n            *(int *)(o + 0x0C) = key;\n            return;\n        case 0x66:\n            p = *(int **)(c + 0x4);\n            *(int **)(c + 0x4) = p + 1;\n            key = *p;\n            if (key >= 40) {\n                gl_func_00000000(D_0001EC6C, key);\n            }\n            r = *(char **)((char *)&D_00000000 + key * 4);\n            gl_func_00000000(r + 0x10, o);\n            if (*(int *)(o + 0x14) != 0) {\n                *(int *)(o + 0x4) = 1;\n            }\n            *(char **)(o + 0x14) = r;\n            return;\n        case 0x67:\n            p = *(int **)(c + 0x4);\n            *(int **)(c + 0x4) = p + 1;\n            key = *p;\n            if (key >= 40) {\n                gl_func_00000000(D_0001EC84, key);\n            }\n            *(char **)((char *)&D_00000000 + key * 4) = o;\n            return;\n        case 0x6C:\n            return;\n    }\n    key = code; code = 0;\n    p = *(int **)(o + 0xC); gl_func_00000000(D_0001EC9C, key, p);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_38A28.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00038A28.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul"
+  }
+}

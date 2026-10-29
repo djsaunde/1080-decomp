@@ -4252,60 +4252,14 @@ extern int D_00000000;
  * Residual: cfe never colours `code` across the jump-table switch (memory home + reload; the
  * target keeps it in v0) and keeps o in a3 with call spills (target s0) -- NCC's allocation. */
 extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
-void gl_func_00038A28(char *o, char *c) {
-    unsigned int key; /* agent-g run 207: order + pad give the target's 64-byte frame and homes */
-    volatile int pad[5]; /* agent-g run 209: [5] takes the dropped `code` home (frame 64) */
-    char *r;
-    int *p;
-    /* agent-g run 209: the selector as a plain expression (no `code` variable): its web
-     * ends at the default call and no longer blocks the case-arm registers */
-    switch (*(int *)c) {
-        case 0x64:
-            /* agent-g run 209: this arm's cursor is `key` (target a3, the key arms' register) */
-            key = *(unsigned int *)(c + 0x4);
-            *(unsigned int *)(c + 0x4) = key + 4;
-            *(int *)(o + 0x20) = *(int *)key;
-            return;
-        case 0x65:
-            p = *(int **)(c + 0x4);
-            *(int **)(c + 0x4) = p + 1;
-            /* agent-g run 208: the value through key (target a3, as the key arms) */
-            key = *p;
-            *(int *)(o + 0x0C) = key;
-            return;
-        case 0x66:
-            p = *(int **)(c + 0x4);
-            *(int **)(c + 0x4) = p + 1;
-            key = *p;
-            if (key >= 40) {
-                gl_func_00000000(D_0001EC6C, key);
-            }
-            r = *(char **)((char *)&D_00000000 + key * 4);
-            gl_func_00000000(r + 0x10, o);
-            if (*(int *)(o + 0x14) != 0) {
-                *(int *)(o + 0x4) = 1;
-            }
-            *(char **)(o + 0x14) = r;
-            return;
-        case 0x67:
-            p = *(int **)(c + 0x4);
-            *(int **)(c + 0x4) = p + 1;
-            key = *p;
-            if (key >= 40) {
-                gl_func_00000000(D_0001EC84, key);
-            }
-            *(char **)((char *)&D_00000000 + key * 4) = o;
-            return;
-        case 0x6C:
-            return;
-    }
-    /* agent-g run 209: the third argument through p (its call-argument preference puts the
-     * case cursors in a2, so key takes a3), on the call's line (as1 order lui/addiu/lw) */
-    p = *(int **)(o + 0xC); gl_func_00000000(D_0001EC9C, *(int *)c, p);
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00038A28);
 #endif
+/* gl_func_00038A28: EXACT (agent-g run 209). WIRED via REPLACE_FUNC_BODY donor splice:
+ * the real C lives in the IDO 7.1 -O2 donor unit game_libs_o2_38A28.c; the splice renames
+ * the donor-local jumptable reloc to gl_func_00038A28_rodata, pinned to the USO RoData at
+ * +0x1A1C. Body below is a placeholder for the splice. */
+void gl_func_00038A28(char *o, char *c) {
+    *(volatile int *)(o + 4) = 7;
+}
 
 void game_libs_func_00038B6C(int a0) {}
 
