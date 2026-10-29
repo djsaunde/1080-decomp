@@ -1368,8 +1368,7 @@ void func_000024B8(char *arg0) {
     if (D_00000064 == 1) {
         v0 = (char *)FW(arg0, 0x38);
         r = 0;
-        s0 = (char *)((FW(v0, 0x10) & 0x400) != 0);
-        func_00000000_24b8v((int)s0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]);
+        s0 = (char *)((FW(v0, 0x10) & 0x400) != 0); func_00000000_24b8v((int)s0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
         k = r;
     }
     s0 = (char *)FW(arg0, 0x38);
