@@ -67,7 +67,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
         gW(CTX->next(), 0xF2000000, 0x1FC0FC);
     }
 
-    { u8 *p = arg1; arg1 = p + 1; ch = *p; }
+    { u8 *p = arg1 + 0 * (int)(arg2); arg1 = p + 1; ch = *p; } /* agent-g run 231: folded counted use of arg2 (zero-use sweep): 92.23 -> 92.25 */
     if (ch != 0) {
         do {
             cc = ch;
@@ -102,7 +102,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             if (!(o->x < arg2)) {
                 break;
             }
-            { u8 *p = arg1; arg1 = p + 1; ch = *p; }
+            { u8 *p = arg1 + 0 * (int)(o); arg1 = p + 1; ch = *p; }
         } while (ch != 0);
     }
 
