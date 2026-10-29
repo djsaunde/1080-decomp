@@ -48,7 +48,8 @@ void FreeCam::update() {
     if (p->btn & 0x40) mz += 100.0;
     if (p->btn & 0x80) mz -= 100.0;
     if (p->btn & 0x400) { mx = p->sx * 100.0f; my = p->sy * 100.0f; }
-    if (fabs_(mx) > D_000019E8 || fabs_(my) > D_000019E8 || fabs_(mz) > D_000019E8) {
+    f64 th = 0.8; /* agent-g run 217 (kit CCXIV): RoData 0x19E8 is the double literal 0.8 (named: frame 128 kept): 93.31 -> 94.43 */
+    if (fabs_(mx) > th || fabs_(my) > th || fabs_(mz) > th) {
         if (accel < 100) { accel = accel + 1; } /* agent-c run 180: n de-named (lever-sweep) */
         f32 k = accel / 10.0f;
         mx += mx * k; my += my * k; mz += mz * k;
