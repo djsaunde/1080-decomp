@@ -68,7 +68,7 @@ void Obj::run() {
     gl_func_00034458(m15C, dl);
     char *s1;
     if (*(int *)(gl_d_4c5e4_flag + 0x1C4) & 2) {
-        int f = (m104 & 2) != 0;
+        int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
         s1 = (char *)sub->mF0;
         if (f) f = (m78 & 2) != 0;
         float buf[4];
