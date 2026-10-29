@@ -1,38 +1,41 @@
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for game_uso_func_00003558
  * (0x3F0 / 252 words). NM object only (build/non_matching); the ROM keeps
- * INCLUDE_ASM. agent-g run 160: the cfe NM body in game_uso.c emulated C++
- * with Tri3i word copies and pad arrays (72.33, 246 words); this is the same
- * routine written as C++: Vec3 value class with a BY-VALUE operator=
- * (`stage = s0->v68`, `s0->v3C = e`: word copy into the param temp at
- * sp+140, then float stores), an operator- with a named return (r at sp+104
- * -> return temp -> binding temp sp+76 -> e), M4::getPos (the target's
- * `lwc1 160(v0); addiu v0,v0,112; 52/56(v0)` base), and the rotated triple
- * held in the dead mag / t / k before the stage stores, which brings back the
- * sp+40/44 FP juggle of the matrix block (kit LXXXVI).
- * RESIDUAL: the target keeps one zero in $f20 (sdc1 save) for the side /
- * w.y / else-branch muls -- NCC const-propagates every spelling tried
- * (literal, double literal, named float) into per-site mtc1; vb is loaded
- * before the matrix block and held in f14/f16/f18 (explicit vb.x = vb.x + ..
- * statements lose the juggle, 58.7); frame 224 vs 256. getPos keeps only the
- * first if (1) {} (the second cost 0.16: 72.58 -> 72.74). The else factor is a
- * DOUBLE literal (`w *= 0.0;`): the target keeps the three mul.s by zero, a float
- * zero folds them into plain zero stores (72.74 -> 75.62; 1004 -> 1024 bytes, AWAY
- * from 1008 -- the muls are verified target words, the overshoot is elsewhere).
- * agent-g run 180: the node pointer goes through an inline Ctx accessor (a stack object holding
- * s0->node, re-read for each use) as in the 1DDC / 24BC / 28C0 siblings: the target homes it at
- * sp+252 and reloads it (`lw v1,252(sp)`) before both 072EE8 calls (75.62 -> 76.41). */
+ * INCLUDE_ASM. History: agent-g run 160 C++ rewrite (Vec3 value class, BY-VALUE
+ * operator= word copy into the param temp, operator- with a named return
+ * r -> return temp -> binding temp -> e, M4::getPos, Ctx node accessor homed at
+ * sp+252 and reloaded before both 072EE8 calls), agent-c run 201 (op= z, y, x),
+ * agent-g runs 180-204 (decl order, named block pointers): 85.86.
+ *
+ * agent-g run 214 (structural pass, kit CCIX): 85.86 -> 88.56.
+ * 1. Vec3 has NO constructors. Every object of a class with an inline
+ *    `Vec3() {}` (and the Ctx(S *) ctor) costs edg a labelled basic block;
+ *    uopt's callee-saved first-use cost grows with the BB count (0.25 x BBs
+ *    above 16), and above ~19 BBs the target's ONE zero held in callee-saved
+ *    $f20 (mtc1 once; side x/z, w.y store + reload, the three live else muls)
+ *    is split and rematerialised per site instead. The old donor had 25 BBs,
+ *    this one 15: the f20 web, the `sdc1 $f20` save and the w.y reload now
+ *    come out as in the target.
+ * 2. Frame homes fitted top-down to the target's map: c 252, va 240, vb 228,
+ *    e 216, three function-scope scalars (k, zero, k2), stage 192, mag 188,
+ *    w 176, t 172, tmp 140, r 104, bt 76, side 56. The matrix block is a
+ *    named-pointer block with a `const Vec3 &v = stage` reference and named
+ *    x / y / z (the target's 6 temp words between tmp and r, and the sp+40/44
+ *    spill juggle with mixed b0+112 / b0+128 then `addiu v0,v0,112`
+ *    addressing); op- computes into named a / b / c after r (the 4 words
+ *    between r and bt).
+ * RESIDUAL: frame 264 vs 256 -- every home matches from the top but ugen
+ * reserves two more spill words (40..55 vs 40..47); the target loads vb into
+ * f14 / f16 / f18 at the top of the matrix block and adds each row as it
+ * completes (ours loads vb after the stage stores). */
 struct Vec3 {
     float x, y, z;
-    Vec3() {}
-    Vec3(float a, float b, float c) { x = a; y = b; z = c; }
-    void operator=(Vec3 v) { z = v.z; y = v.y; x = v.x; } /* agent-c run 201: z, y, x (the 37540 by-value operator= kit): 79.23 -> 80.26 standalone, 1024 -> 1016 bytes (target 1008, toward) */
-    Vec3 operator-(const Vec3 &v) const { Vec3 r; r.x = x - v.x; r.y = y - v.y; r.z = z - v.z; return r; }
-    /* agent-c run 201 order grid: += in x, z, y order, one component per line: 80.26 -> 81.66 standalone */
+    void operator=(Vec3 v) { z = v.z; y = v.y; x = v.x; }
+    Vec3 operator-(const Vec3 &v) const { Vec3 r; float a = x - v.x; float b = y - v.y; float c = z - v.z; r.x = a; r.y = b; r.z = c; return r; }
     void operator+=(const Vec3 &v) {  x += v.x;
  z += v.z;
  y += v.y;  }
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
-    float len2() const { float r = x * x + y * y + z * z; return r; } /* run 180: named result (76.41 -> 76.7) */
+    float len2() const { float r = x * x + y * y + z * z; return r; }
 };
 struct M4 {
     float m[4][4];
@@ -56,31 +59,32 @@ float game_uso_func_070238(float);
 void game_uso_func_071028(Vec3 *);
 void game_uso_func_072EE8(void *, Vec3 *);
 }
-struct Ctx { Node *out; Ctx(S *s) { out = s->node; } Node *getOut() const { return out; } };
+struct Ctx { Node *out; Node *getOut() const { return out; } };
 extern "C" void game_uso_func_00003558(S *s0) {
-    Vec3 vb; /* run 191 lever-sweep hoist: vb declared first */
-    Ctx c(s0);
+    Ctx c = { s0->node };
     Vec3 va;
-    { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
-    { Body *b = s0->b0; b->mtx.getPos(vb); } /* run 180: named block pointer (76.73 -> 77.2) */
+    Vec3 vb;
     Vec3 e;
-    Vec3 stage;
-    Vec3 w;
-    float t;
     float k;
     float zero;
-    Vec3 pad1;
-    float mag; /* run 185: declaration order from a 720-probe grid (79.09 -> 79.22) */
+    float k2;
+    Vec3 stage;
+    float mag;
+    Vec3 w;
+    float t;
+    { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
+    { Body *b = s0->b0; b->mtx.getPos(vb); }
     zero = 0.0f;
     stage = s0->v68;
     {
-        M4 *m = &s0->b0->mtx + 0 * (int)(c.getOut()); /* agent-g run 204 (zero-lever-grid): folded `0 * inline()` term re-pools the edg temps, 81.66 -> 85.86 standalone, length unchanged */
-        k = m->m[0][2] * stage.x + m->m[1][2] * stage.y + m->m[2][2] * stage.z;
-        t = m->m[0][1] * stage.x + m->m[1][1] * stage.y + m->m[2][1] * stage.z;
-        mag = m->m[0][0] * stage.x + m->m[1][0] * stage.y + m->m[2][0] * stage.z;
-        stage.y = t; stage.x = mag; stage.z = k;
+        M4 *m = &s0->b0->mtx;
+        const Vec3 &v = stage;
+        float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
+        float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
+        float z = m->m[0][2] * v.x + m->m[1][2] * v.y + m->m[2][2] * v.z;
+        stage.x = x; stage.y = y; stage.z = z;
     }
-    vb += stage;
+    vb.x += stage.x; vb.z += stage.z; vb.y += stage.y;
     e = vb - va;
     s0->v3C = e;
     mag = game_uso_func_070238(e.len2());
@@ -93,7 +97,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     game_uso_func_071028(&e);
     s0->b1->mtx.getPos(w);
     w.x = w.x - va.x;
-    w.z = w.z - va.z; /* run 182 (lever-sweep order): z before the y zero store (77.39 -> 78.78, length unchanged) */
+    w.z = w.z - va.z;
     w.y = zero;
     t = game_uso_func_070238(w.len2());
     game_uso_func_071028(&w);
@@ -102,10 +106,10 @@ extern "C" void game_uso_func_00003558(S *s0) {
     } else if (t < s0->fA0) {
         w *= t - s0->fA0;
     } else {
-        w *= 0.0;
+        w *= 0.0f;
     }
-    k = (mag - s0->fB8) * s0->f118;
-    e *= k;
+    k2 = (mag - s0->fB8) * s0->f118;
+    e *= k2;
     e += w;
     game_uso_func_072EE8(c.getOut()->f30, &e);
 }
