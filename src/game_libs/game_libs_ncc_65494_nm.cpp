@@ -104,14 +104,13 @@ extern "C" void gl_func_00065494(Self *self) {
         node->f144 = h;
         node->vt[0xC].fn((Node *)(node->vt[0xC].off + (char *)node), h, &n, 0x3F800000);
         if (h < 0.0f) {
-            float w;
             float dt;
             if (h < minv) {
                 minv = h;
             }
             nsum += n;
             count++;
-            w = -h;
+#define w (-h) /* agent-c run 213: de-named w (lever-sweep, 98.54 -> 98.58 standalone) */
             psum += node->v120 * w;
             wsum += w;
             dt = node->v114.dot(n);
