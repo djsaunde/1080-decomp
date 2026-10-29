@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00050444",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-10-29T00:13:35.290764+00:00",
+  "end_time": "2026-10-29T00:13:35.290795+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T00:13:35.290789+00:00",
+      "assistant_text": "NCC C++ donor unsigned intern(int start, Mesh *m, float *pos, float *uv, unsigned max): vertex intern with S3/S2 inline operator==. Folded + 0 * (int)(pos) on the return keeps pos homed (kit CXCIV counted use), argument-first operator== operands, (m->n += 1) count bump puts element pointer/count in v0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 122,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00050444 (0x1E8 / 122 words), REPLACE_FUNC_BODY-spliced over the empty\n * placeholder in game_libs_post0b.c in both build trees (symbol `intern` renamed in the Makefile).\n * Vertex intern: truncate the position (3 floats) and uv (2) to s16 keys, scan the mesh's position / uv tables\n * from `start` for an equal pair (S3 / S2 inline `operator==` returning int = the target's xor / sltiu results),\n * else append both (member-wise inline operator=) and bump the count, warning at max. The position key is built\n * by an inline S3(float, float, float) ctor (all three loads first, like the target), the uv key member-wise;\n * `int start` (signed) gives the loop counter straight in a0. agent-c run 175: cfe 86.72 -> NCC 91.83, length = target.\n * agent-c run 209 (kit CXCIV lever b, then a spelling grid): 91.94 -> 100.\n * - a folded `+ 0 * (int)(pos)` on the final return is zero code, but counts as a use of pos for uopt: pos then\n *   keeps its memory home (`sw a2,0x38(sp)`, base reloaded into t7) as in the target, re-phasing the t-ring (98.30);\n * - operator== written member-of-the-argument first (`o.x == x && ...`): the target loads the key from its home\n *   before the table element (98.73);\n * - the count bump `(m->n += 1) >= max` instead of `++m->n >= max`: the element pointer and the count take v0 and\n *   the == results v1, as in the target (100). */\nextern \"C\" {\nvoid gl_func_00000000(...);\nextern char D_00000000[];\n}\nstruct S3 {\n    short x, y, z;\n    S3() {}\n    S3(float a, float b, float c) { x = a; y = b; z = c; }\n    void operator=(const S3 &o) { x = o.x; y = o.y; z = o.z; }\n    int operator==(const S3 &o) const { return o.x == x && o.y == y && o.z == z; }\n};\nstruct S2 {\n    short s, t;\n    S2() {}\n    S2(float a, float b) { s = a; t = b; }\n    void operator=(const S2 &o) { s = o.s; t = o.t; }\n    int operator==(const S2 &o) const { return o.s == s && o.t == t; }\n};\nstruct Mesh { char pad[0x40]; unsigned n; char pad44[0x1C]; S3 *pos; S2 *uv; };\nextern \"C\" unsigned intern(int start, Mesh *m, float *pos, float *uv, unsigned max) {\n    if (m->uv == 0) gl_func_00000000(D_00000000 + 0x20E3C);\n    S3 p(pos[0], pos[1], pos[2]);\n    S2 t;\n    t.s = uv[0];\n    t.t = uv[1];\n    for (int i = start; i < m->n; i++) {\n        if (p == m->pos[i]) {\n            if (t == m->uv[i]) return i;\n        }\n    }\n    m->uv[m->n] = t;\n    m->pos[m->n] = p;\n    if ((m->n += 1) >= max) gl_func_00000000(D_00000000 + 0x20E4C);\n    return m->n - 1 + 0 * (int)(pos);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_50444.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "objdiff 100 vs expected/ (build + non_matching), ROM byte-identical"
+  }
+}

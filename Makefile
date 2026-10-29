@@ -1904,14 +1904,14 @@ $(GAMELIBS_608A4_DONOR): src/game_libs/game_libs_ncc_608A4.cpp
 	$(OBJCOPY) --redefine-sym draw__7TextWinFi=gl_func_000608A4 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000608A4=$(GAMELIBS_608A4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_608A4_DONOR)
-# 50444 = vertex intern as NCC C++ (agent-c run 175: S3 / S2 keys with inline int operator==, args-first S3 ctor, int start; cfe 86.72 -> NCC, length = target); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_50444_NM_DONOR := build/src/game_libs/game_libs_ncc_50444_nm.cpp.o
-$(GAMELIBS_50444_NM_DONOR): src/game_libs/game_libs_ncc_50444_nm.cpp
+# 50444 = vertex intern as NCC C++ (agent-c run 175: S3 / S2 keys with inline int operator==, args-first S3 ctor, int start; agent-c run 209: folded + 0 * (int)(pos) on the return, argument-first operator==, (m->n += 1) bump). EXACT NCC donor over an empty placeholder; symbol renamed (name only).
+GAMELIBS_50444_DONOR := build/src/game_libs/game_libs_ncc_50444.cpp.o
+$(GAMELIBS_50444_DONOR): src/game_libs/game_libs_ncc_50444.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym intern=gl_func_00050444 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00050444=$(GAMELIBS_50444_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_50444_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00050444=$(GAMELIBS_50444_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_50444_DONOR)
 # 500EC = real C++ `int Mesh::paint(unsigned t)` (agent-c run 175: triangle colouring with S3 inline operator==). EXACT NCC donor over an empty placeholder; symbols renamed (names only; adj() is the blank jal 0).
 GAMELIBS_500EC_DONOR := build/src/game_libs/game_libs_ncc_500EC.cpp.o
 $(GAMELIBS_500EC_DONOR): src/game_libs/game_libs_ncc_500EC.cpp

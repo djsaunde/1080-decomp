@@ -19692,70 +19692,11 @@ int gl_func_000503A4(int *self, int cap, int b, int c, int d, int e) {
 // the exact found/append index arithmetic are representative. Caps:
 // Tbl struct and cb1/cb2 prototypes untyped (USO-relocated). Full body
 // INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-typedef char *(*GP_00050444)();
-/* gl_func_00050444: vertex dedup: truncate pos (3 floats) and uv (2) to
- * shorts, search the position/uv tables from `start` for an equal pair,
- * else append both and bump the count (warn at max). 2026-10-17 agent-g
- * (run 105) 53.1 -> 84.5: typed short-struct rewrite; f32 x/y/z locals give
- * the loads-first order; the loop is ROLLED in the target, and only a
- * `volatile` start (reloaded from its home, as the target reloads a0 after
- * the call) stops IDO unrolling it by 2. Residual: the volatile reloads
- * start twice (i*6 via multu, target sll/subu once) and the struct homes
- * sit at 36/44 vs 40/36. */
-typedef struct { s16 x, y, z; } P3_50444;
-typedef struct { s16 s, t; } T2_50444;
-u32 gl_func_00050444(volatile u32 start, char *m, f32 *pos, f32 *uv, u32 max) {
-    P3_50444 p;
-    T2_50444 t;
-    u32 i;
-    u32 n;
-    P3_50444 *e;
-    T2_50444 *u;
-    s32 eq;
-    f32 x, y, z;
-    if (1) { P3_50444 *pp = &p; T2_50444 *tt = &t; }
-
-    if (*(int *)(m + 0x64) == 0) {
-        gl_func_00034458((char *)&D_00000000 + 0x20E3C);
-    }
-    x = pos[0];
-    y = pos[1];
-    z = pos[2];
-    p.x = x;
-    p.y = y;
-    p.z = z;
-    t.s = uv[0];
-    t.t = uv[1];
-    n = *(u32 *)(m + 0x40);
-    for (i = start, e = &(*(P3_50444 **)(m + 0x60))[start]; i < n; i++, e++) {
-        eq = p.x == e->x && p.y == e->y && p.z == e->z;
-        if (eq) {
-            u = &(*(T2_50444 **)(m + 0x64))[i];
-            eq = t.s == u->s && t.t == u->t;
-            if (eq) {
-                return i;
-            }
-        }
-    }
-    u = &(*(T2_50444 **)(m + 0x64))[n];
-    u->s = t.s;
-    u->t = t.t;
-    e = &(*(P3_50444 **)(m + 0x60))[*(s32 *)(m + 0x40)]; /* signed count read: x*6 as shifts, not multu (kit LXV) */
-    e->x = p.x;
-    e->y = p.y;
-    e->z = p.z;
-    if (++*(u32 *)(m + 0x40) >= max) {
-        gl_func_00034458((char *)&D_00000000 + 0x20E4C);
-    }
-    return *(u32 *)(m + 0x40) - 1;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_50444.cpp (`unsigned intern(int start,
+ * Mesh *m, float *pos, float *uv, unsigned max)`), REPLACE_FUNC_BODY-spliced over this placeholder in both
+ * build trees (agent-c run 209). */
+u32 gl_func_00050444(int start, char *m, f32 *pos, f32 *uv, u32 max) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00050444);
-#endif
 
 // gl_func_0005062C (0xAC4 / 689 words): recursive triangle subdivider, C++.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_5062C.cpp,
