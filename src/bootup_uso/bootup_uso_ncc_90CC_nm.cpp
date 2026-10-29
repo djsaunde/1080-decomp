@@ -656,7 +656,7 @@ sw_c6:
         *(s16 *)((char *)(arg0) + 0x900) = 0x17; *(s16 *)((char *)(arg0) + 0x902) = 0x18;
         arg8 |= 1;
 sw_end:
-        sp174 = 0;
+        sp174 = 0 + 0 * (int)(arg8); /* agent-c run 212: folded counted use (zero code) */
         if ((arg1 == 1) && (*(s32 *)((char *)&D_00000000 + 0x4C) == *(s32 *)((char *)&D_00000000 + 0x58))) {
             sp174 = 1;
         }
@@ -742,7 +742,7 @@ sw_end:
          * stops as1 copying the `arg8 &= ~4` join into the rgb30 arm (length 8436 ->
          * 8424 = target) and gives arg2 the target t3 */
         if (1) { *(s32 *)((char *)(arg0) + 0xA58) = temp_v0_51; }
-        *(s32 *)((char *)(arg0) + 0x8B8) = arg8;
+        *(s32 *)((char *)(arg0) + 0x8B8) = arg8 + 0 * (int)(arg7); /* agent-c run 212: folded counted use (zero code) */
         func_00000000_p4f(temp_s1, arg0, 0x6D, 0x43160000, 200.0f);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 8) {
             *(s16 *)((char *)(arg0) + 0x88C) = 4;
