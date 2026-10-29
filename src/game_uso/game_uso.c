@@ -5094,7 +5094,12 @@ int game_uso_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
     return (int)r;
 }
 
-#ifdef NON_MATCHING
+/* game_uso_func_00007C1C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_7C1C.c,
+ * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c run 231,
+ * kits CCXL / CCXLI). The placeholder re-emits the unit's .rodata +0xFC word (3000.0f) the
+ * donor reads through game_uso_func_00007C1C_rodata (= 0) + 0xFC. The superseded in-unit
+ * decode is kept for reference under GAMEUSO_7C1C_OLD_DECODE (never defined). */
+#ifdef GAMEUSO_7C1C_OLD_DECODE
 /* game_uso_func_00007C1C: 0x10BC (1071 insns). Collision/penetration sweep:
  * builds an xz-plane "closest approach" vector by walking the arg3->0x2C
  * collider chain. Re-decoded 2026-06-24 from expected/.o via fan-out subagent.
@@ -5527,7 +5532,11 @@ int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
     return (int)arg0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00007C1C);
+int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
+                           char *arg4, f32 *arg5) {
+    *arg5 = 3000.0f;
+    return 0;
+}
 #endif
 
 #ifdef NON_MATCHING

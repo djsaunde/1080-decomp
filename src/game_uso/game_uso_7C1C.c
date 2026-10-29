@@ -1,26 +1,26 @@
-/* game_uso_func_00007C1C NON_MATCHING donor, cfront-style C for IDO 7.1 cfe -O2
- * (agent-c run 230, from agent-g's run 229 port c7c7.c). NM object only: spliced
- * over the INCLUDE_ASM placeholder in build/non_matching (GAMEUSO_7C1C_NM_DONOR);
- * the ROM build keeps INCLUDE_ASM. Replaces the NCC donor game_uso_ncc_7C1C_nm.cpp
- * (96.35) as the NM body. Kit CCXL in docs/IDO_CODEGEN.md has the levers.
+/* game_uso_func_00007C1C: EXACT donor, cfront-style C for IDO 7.1 cfe -O2 (agent-c
+ * runs 230-231, from agent-g's run 229 port c7c7.c), REPLACE_FUNC_BODY-spliced over
+ * the placeholder in src/game_uso/game_uso.c on both build paths (GAMEUSO_7C1C_DONOR).
+ * The NCC donor game_uso_ncc_7C1C_nm.cpp is kept as a C++-shape reference. Kits CCXL /
+ * CCXLI in docs/IDO_CODEGEN.md have the levers.
  *
- * Steering target in the XZ plane (see the NCC donor for the C++ shape): every
- * bnez &stack / jal 055750(12) guard is a cfront ctor temporary, the pooled
- * return slots are R (s1, 0x354), P2 (s2, 0x21C) and P3 (0x1FC), each inline
- * Vec3::set / XZ ctor goes through the shared float temporaries tx / ty / tz
- * (SUB sites through sa / sc), and int gN placeholders keep every frame home at
- * its target address (frame 0x3B0).
- * The active flag is re-read after the stores (uopt forwards the stored value,
- * the target's v0). Length = target (1071 words, opcode-identical). The empty
- * block at the loop-body top (run 231) lets the &t128 guard address colour, so
- * the ugen t-ring lines up from the t164 site on (98.52 -> 99.81). LEFT: FP
- * colours (b->width f0 / z f14, main third-level x f14, loop perp x f14), the
- * hitC copy load order, the final compare's sum / n0.x swap. */
+ * Steering target in the XZ plane: every bnez &stack / jal 055750(12) guard is a
+ * cfront ctor temporary, the pooled return slots are R (s1, 0x354), P2 (s2, 0x21C)
+ * and P3 (0x1FC), each inline Vec3::set / XZ ctor goes through the shared float
+ * temporaries tx / ty / tz (SUB sites through sa / sc, a fourth m2 at the width
+ * sites / main third-level x / loop perp x), and int gN placeholders keep every frame
+ * home at its target address (frame 0x3B0).
+ * The active flag is re-read after the stores (uopt forwards the stored value, the
+ * target's v0). Empty blocks: sixteen before the return (firstUseCost: P3 off s3),
+ * one at the loop-body top (the &t128 guard address colours, so the ugen t-ring
+ * lines up), two around each width site (the width load gets its own live unit).
+ * The final compare's folded use only steers the colouring order of n0.x / n0.z /
+ * the first sum (unit normals: the int conversion is in range). */
 typedef struct { float x, y, z; } Vec3;
 typedef struct Node { char pad0[0x2C]; struct Node *next; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; } Node;
 typedef struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; char pad34C[0x908 - 0x34C]; struct W *other; } W;
 typedef struct Self { char pad0[0x30]; W *w; char pad34[0xA0 - 0x34]; float lim; int active; char padA8[0xCC - 0xA8]; float range; } Self;
-extern char D_00000000;
+extern char game_uso_func_00007C1C_rodata; /* = 0: game_uso RoData base (+0xFC = 3000.0f, re-emitted by the host placeholder) */
 extern void *game_uso_func_055750(unsigned);
 extern void game_uso_func_00003FAC(float *, float *, float *, float, float);
 extern float game_uso_func_082880(float);
@@ -153,7 +153,7 @@ Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 s->active = 0;
             }
             active = s->active;
-            if (active == 1 && DOTV <= *(float *)((char *)&D_00000000 + 0xFC)) {
+            if (active == 1 && DOTV <= *(float *)((char *)&game_uso_func_00007C1C_rodata + 0xFC)) {
                 XZV(p, t280, &s->w->other->pos)
                 SUB2VS(q, p, t274, t280, &a->pos)
                 R = t274;

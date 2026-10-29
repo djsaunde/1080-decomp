@@ -4289,6 +4289,7 @@ D_74e8_h = 0x000000F0;  /* func_000074E8: = func_000000F0 (expected reloc base; 
 game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor: its 1/6 float literal = game_uso RoData item 0 (lui 0 / lwc1 0); renamed donor-local .rodata reloc, content re-emitted by the host placeholder */
 D_43D8_fmin = 0x00000000;  /* game_uso_func_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
 D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
+game_uso_func_00007C1C_rodata = 0x00000000;
 gl_ref_0001E6B0 = 0x0001E6B0;  /* gl_func_00035B1C blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* gl_func_00039E24 camera block (same blank USO data ref as D_4BAF4_cam: base 0xA0, fields at +0x30) */
 D_34EB4_flags = 0x00000000;  /* gl_func_00034EB4 flags-word test: distinct zero alias so the test does not share base's s3 */
