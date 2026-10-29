@@ -13134,7 +13134,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 temp_f0 = D_E354_1C3B0[temp_v1_2];
                 sp60 *= temp_f0;
                 *(f32 *)((char *)(arg0) + 0x4) = (f32) (*(f32 *)((char *)(arg0) + 0x4) * temp_f0);
-                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_2 - 1);
+                /* agent-g run 209: folded counted use of arg0 (zero-use sweep) */
+                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_2 - 1) + 0 * (int)(arg0);
             }
             temp_f0 = *(f32 *)((char *)(arg0) + 0x50) - *(f32 *)((char *)(arg0) + 0x0);
             if (0.5f <= temp_f0) {
@@ -13191,7 +13192,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 temp_f0 = *(f32 *)((char *)(arg0) + 0x54);
                 var_f4 = (f32) (u32) *(u8 *)((char *)(arg0) + 0x26);
                 temp_f18 = var_f4 * temp_f0;
-                var_v0 = (u32) temp_f18; /* recomposed (u32)float */
+                var_v0 = (u32) temp_f18 + 0 * (int)(*arg0); /* recomposed (u32)float; agent-g run 209 folded use (3692 -> 3688) */
                 *(u8 *)((char *)(arg0) + 0x26) = (u8) var_v0;
                 sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
                 *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (*(u8 *)((char *)(arg0) + 0x28) + *(u8 *)((char *)(arg0) + 0x60)) >> 1);
