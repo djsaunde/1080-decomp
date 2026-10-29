@@ -79,7 +79,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     pos.y += F4B(self, 0xBC, f32);
     x = pos.x;
     y = pos.y;
-    w = spr->w;
+    w = spr->w + 0 * y; /* agent-c run 209: folded counted use of y */
     h = spr->h;
     if (F4B(GS4B, 0xC0, int) + F4B(GS4B, 0xB8, volatile int) < x || F4B(GS4B, 0xC4, int) + F4B(GS4B, 0xBC, volatile int) < y ||
         x < F4B(GS4B, 0xC0, int) - F4B(GS4B, 0xB8, volatile int) || y < F4B(GS4B, 0xC4, int) - F4B(GS4B, 0xBC, volatile int)) {

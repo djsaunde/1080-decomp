@@ -18,7 +18,7 @@ struct Col {
     void set(int r, int g, int b, int a) { c[0] = r / 255.0f; c[1] = g / 255.0f; c[2] = b / 255.0f; c[3] = a / 255.0f; }
 };
 struct Img { char p[0x20]; s16 w; s16 h; };
-struct Spr { char p[0x10]; Img *img; s32 width() { Img *i = img; return i->w; } };
+struct Spr { char p[0x10]; Img *img; s32 width() { Img *i = img; return i->w + 0 * (int)(i); } /* agent-c run 209: folded counted use of i */ };
 extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     /* agent-g run 195 (kit CLIII home rules): i first (frame top word), vals / ptrs / hud / cols top-down = the
      * target's 176 / 156 / 152 / 136 homes; the volatile pair moved to the end (dead / volatile homes go last). */

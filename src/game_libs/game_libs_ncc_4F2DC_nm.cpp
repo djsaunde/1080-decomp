@@ -44,7 +44,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     V3 end = start + d * *(f32 *)((char *)&D_00000000C + 0x1BA8);
     start *= KV; if (1) {}
     V3 e(end.x * KV.x, end.y * KV.y, end.z * KV.z);
-    char *p = *(char **)&D_00000000E;
+    char *p = *(char **)&D_00000000E + 0 * (int)(cam); /* agent-c run 209: folded counted use of cam */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
     }
