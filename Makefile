@@ -1845,13 +1845,15 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3BE1C_NM_DONOR)
 # 4B0A8 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.36). Still NON_MATCHING: NM comparison object only.
 # agent-c run 164: rewritten as the C++ constructor Obj::Obj(Src *) (94.76 -> 99.22, same 147-word length).
-GAMELIBS_4B0A8_NM_DONOR := build/src/game_libs/game_libs_ncc_4B0A8_nm.cpp.o
-$(GAMELIBS_4B0A8_NM_DONOR): src/game_libs/game_libs_ncc_4B0A8_nm.cpp
+# agent-c run 240: EXACT NCC donor over a placeholder (cur() without the named reference, next() through me(), an
+# initialised two-int block after the loop); blank-jal / blank lui-addiu relocs renamed to 0-pinned aliases.
+GAMELIBS_4B0A8_DONOR := build/src/game_libs/game_libs_ncc_4B0A8.cpp.o
+$(GAMELIBS_4B0A8_DONOR): src/game_libs/game_libs_ncc_4B0A8.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=gl_func_0004B0A8 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_NM_DONOR)
+	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=gl_func_0004B0A8 --redefine-sym __ct__4BaseFPc=gl_4b0a8_base --redefine-sym __vtbl__3Obj=gl_4b0a8_vtbl --redefine-sym gl_func_00034458=gl_4b0a8_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_DONOR)
 # 4B620 = C++ ctor (cfront protocol, inline Base ctor, inline DL::add appends, by-value index iterator); NCC NM-only donor (agent-c run 157, cfe 94.48), ctor symbol renamed (name only).
 GAMELIBS_4B620_NM_DONOR := build/src/game_libs/game_libs_ncc_4B620_nm.cpp.o
 $(GAMELIBS_4B620_NM_DONOR): src/game_libs/game_libs_ncc_4B620_nm.cpp

@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004B0A8",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-29T23:54:48.319479+00:00",
+  "end_time": "2026-10-29T23:54:48.319494+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-29T23:54:48.319491+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.83 NM donor. The iterator ctor this (edg pool temp -60, t0) reached the loop through the ++idx temps and met cur()'s named Arr &r temp (a3, priority 20). cur() as return (*a)[idx]; and next() reading through *me()->a move the pool temps so this takes a3 with every other colour unchanged; the two homes this drops are paid back by an initialised { int p1 = 0, p2 = 0; } after the loop (frame 0xA8). Spliced over a placeholder on both build paths; blank jal / lui-addiu relocations renamed to 0-pinned gl_4b0a8_c34458 / gl_4b0a8_base / gl_4b0a8_vtbl.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 147,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0004B0A8 (0x24C / 147 words), agent-c run 164 (was the\n * run-134 C lift, 94.76). The function is the constructor `Obj::Obj(Src *s) : Base(name)` (Makefile rename of\n * __ct__3ObjFP3Src): cfront `this == 0 -> new(0x44)`, out-of-line Base(char *) (Base = 0x28 data bytes + the\n * virtual, so Obj's own vptr store lands at +0x28), a Pair copied from the vt+0x140 template, f0 = 2, f40 from an\n * out-of-line `ctor(0, name, w)` call, four f40 calls with &pair, then 41D40's by-value AIter over s->arr: every\n * element whose +0x6C is set gets a gSPDisplayList packet on f40's DL (named-d next()) whose w1 is the 0x34458\n * result for (*t->base + k * 8, t, k). Load-bearing: t and k read from TWO it.cur() calls passed to an inline\n * res(Elem *e1, Elem *e2) (the target re-reads the element pointer for k; one named e is 95.1, 576 -> 588 bytes);\n * Tex::base is a char ** (the target dereferences it); IBase writes `a = arr; idx = -1;` (emitted idx first, as the\n * target); five end-of-body block volatiles = frame 0xA8; AIter::next() as an if / return (the first expansion's colours match:\n * 98.73 -> 98.80 local); the\n * iterator built by a free `iter(Arr *)` instead of the member Arr::iter() puts the first iterator temp at the\n * target's sp+0x78 (98.81). 94.76 -> 98.81, length = target. Residual: the\n * colours of the iterator ctor this (a3 vs v1), the two element pointers and the next() results.\n * agent-c run 240: EXACT (99.83 -> 100). The iterator ctor `this` (lr -60, t0) reached the loop through the ++idx temps\n * and met cur()'s `Arr &r` temp (a3, priority 20); cur() as `return (*a)[idx];` and next() through `*me()->a` move the\n * pool temps so `this` takes a3 (12.5) with every other colour unchanged; the two dropped homes are paid back by an\n * initialised `{ int p1 = 0, p2 = 0; }` after the loop (frame 0xA8). Spliced over a placeholder in both build trees;\n * the blank jal / lui-addiu relocations go to the 0-pinned gl_4b0a8_c34458 / gl_4b0a8_base / gl_4b0a8_vtbl (Makefile). */\nextern \"C\" {\nvoid *gl_func_00034458(...);\nextern char D_00000000[];\nextern char gl_d_4b0a8_tbl, gl_d_4b0a8_vt, gl_d_4b0a8_w214;\n}\ninline void *operator new(unsigned n) { return gl_func_00034458(n); }\nstruct Pair { int a, b; };\nstruct Gfx { unsigned w0, w1; };\nstruct DLHead { Gfx *buf; int count; };\nstruct DL { char pad[0xC]; DLHead *dl; Gfx *next() { DLHead *d = dl; int n = d->count; d->count = n + 1; return &dl->buf[n]; } };\nstruct Tex { char pad[0xC]; char **base; };\nstruct Elem { char pad[0x6C]; Tex *t; char pad70[0x8A - 0x70]; short k; };\nstruct AIter;\nstruct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };\nstruct IBase {\n    Arr *a;\n    int idx;\n    int last;\n    IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }\n};\nstruct AIter : IBase {\n    AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } } /* run 190: kept parameter */\n    Elem **next() { if (idx < last) return &(*me()->a)[++idx]; return 0; } /* run 240: through me() */\n    Elem *cur() { return (*a)[idx]; } /* run 240: no named reference (was kit CXLIV's local-reference read) */\n    AIter *me() { return this; } /* agent-c run 238: zero-code pool hold for the loop increment (kit CCLIV) */\n};\ninline AIter iter(Arr *a) { return AIter(a); }\ninline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return gl_func_00034458(*t->base + k * 8, t, k); }\nstruct Src { char pad[0x84]; Arr arr; };\nstruct Base { int f0; char pad[0x24]; Base(char *name); virtual void f(); };\nstruct Obj : Base {\n    virtual void f();\n    char pad2c[0x40 - 0x2C];\n    DL *f40;\n    Obj(Src *s);\n};\nObj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {\n    Pair p = *(Pair *)(&gl_d_4b0a8_vt + 0x140);\n    f0 = 2;\n    f40 = (DL *)gl_func_00034458(0, D_00000000 + 0x200F4, *(int *)(&gl_d_4b0a8_w214 + 0x214));\n    gl_func_00034458(f40, &p);\n    gl_func_00034458(f40, &p);\n    gl_func_00034458(f40, &p);\n    gl_func_00034458(f40, &p);\n    AIter it = iter(&s->arr);\n    /* agent-c run 238: the increment holds three pool slots while edg emits the rotated bottom copy of\n     * it.next(), so its result / pointer / ++idx temps take the target's a0 / v1 / v0 (99.56 -> 99.71); the\n     * three hold homes replace the four end-of-body volatile pads (frame 0xA8 kept, 99.83) */\n    for (; it.next(); it.me()->me()->me()) {\n        if (it.cur()->t != 0) {\n            DL *d = f40;\n            void *r = res(it.cur(), it.cur());\n            Gfx *g = d->next();\n            g->w0 = 0x06000000;\n            g->w1 = (unsigned)r;\n        }\n    }\n    { int p1 = 0, p2 = 0; }\n    gl_func_00034458(f40);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4B0A8.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004B0A8.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "full make ROM cmp byte-identical; verify-blocks 6/6; non_matching_objects 0 errors; report fuzzy 100.0"
+  }
+}

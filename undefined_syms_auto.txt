@@ -3154,6 +3154,10 @@ gl_d_578b4_s2b = 0x00000000;  /* gl_func_000578B4: base-0 alias -- 0x219C4 addiu
 gl_578b4_c34458 = 0x00000000;
 /* gl_func_000454C4 NCC donor: the 4 gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
 gl_454c4_c34458 = 0x00000000;
+/* gl_func_0004B0A8 NCC donor: blank USO jal words (0x34458 calls, Base ctor) and the blank lui/addiu vtable */
+gl_4b0a8_c34458 = 0x00000000;
+gl_4b0a8_base = 0x00000000;
+gl_4b0a8_vtbl = 0x00000000;
 gl_d_49dbc_t2 = 0x00000000;   /* gl_func_00049DBC: base-0 alias -- else-arm final call arg2 (lui/addiu a2) */
 gl_d_49dbc_t3 = 0x00000000;   /* gl_func_00049DBC: base-0 alias -- else-arm final call arg3 (own lui/addiu a3; distinct sym busts the CSE) */
 gl_func_00000000_49DBCv = 0x00000000;  /* gl_func_00049DBC: void alias of the blank-call placeholder (0x54 palette path calls) */
