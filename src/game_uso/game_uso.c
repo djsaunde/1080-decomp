@@ -4050,12 +4050,13 @@ void game_uso_func_0000591C(int *a0) {
         axis_src = *(float **)((char*)self + 0x30);
         axis_src = (float *)((int)axis_src + 0x318);
         fsel = *(float*)((char*)self + 0xA8);
-        scale = *(float *)((int)axis_src + 4) * fsel;
-        z = *(float *)((int)axis_src + 8) * fsel;
+        /* agent-g run 228 (variable x order grid): z component in `scale`, y in `z`, z first: 99.972 -> 99.973 */
+        scale = *(float *)((int)axis_src + 8) * fsel;
+        z = *(float *)((int)axis_src + 4) * fsel;
         x = *axis_src * fsel;
         scaled_axis.x = x; if (1) {} /* run 182 (lever-sweep bbsplit) */
-        scaled_axis.y = scale;
-        scaled_axis.z = z;
+        scaled_axis.y = z;
+        scaled_axis.z = scale;
     }
     *(Tri3i *)&stage = *(Tri3i *)&scaled_axis;
     *(Tri3i *)&copy2 = *(Tri3i *)&stage;
