@@ -6897,7 +6897,7 @@ void func_0000B520(char *arg0) {
 
 // func_0000B75C — STRUCTURAL PASS (0x830 / 524 insns, no episode).
 // agent-g run 242: the NM comparison object now uses the NCC port bootup_uso_ncc_B75C_nm.cpp (edg-shaped,
-// 98.76); the cfe body below is kept as the reference lift.
+// 99.97, 524 words, frame 120); the cfe body below is kept as the reference lift.
 // Per-frame camera/transform interpolation update over a large scene-
 // state struct (compute-heavy: f64 lerp/curve math, only 11 dispatcher
 // calls; ~70 accesses to the state struct via a3 = a0).
