@@ -1,6 +1,8 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_000055A0 (agent-g run 176).
- * Mechanical port of the cfe NM body. Still NON_MATCHING: spliced into
- * build/non_matching/ only via REPLACE_FUNC_BODY. */
+/* IDO 7.1 NCC (C++) donor for func_000055A0 (agent-g run 176: mechanical port of the cfe NM body).
+ * EXACT in agent-g run 241, REPLACE_FUNC_BODY-spliced over the bootup_uso.c placeholder on both build paths.
+ * Reloc binding from the target relocations: every blank (reloc-free) lui/addiu pair references a 0-pinned
+ * D_55A0_* name (gRoot -> D_55A0_root, the list table -> D_55A0_it0), the others are pinned to their target
+ * addresses in undefined_syms_auto.txt. */
 typedef unsigned char u8;
 typedef signed short s16;
 typedef signed int s32;
@@ -9,7 +11,7 @@ typedef struct { int w; } SC4_;
 extern "C" {
 extern char D_00000000;
 extern int func_00000000(...);
-extern void *gRoot; /* zero-page USO-GOT global; reloaded per use (no CSE) */
+extern void *D_55A0_root; /* zero-page USO-GOT global (gRoot); reloaded per use (no CSE) */
 /* tail-block init globals (decode-progress 2026-06-26): the four transform-group
  * registrations + final 0x58 block pass a distinct per-group global as arg2
  * (D_00007E58..68), the first 0x48 node uses &D_00007E48 and func_00007E50's
@@ -17,13 +19,13 @@ extern void *gRoot; /* zero-page USO-GOT global; reloaded per use (no CSE) */
 extern int D_00007E48, D_00007E54, D_00007E58, D_00007E5C, D_00007E60, D_00007E64, D_00007E68;
 extern char D_00007600;
 extern void func_00007E50(int *a0);
-extern int D_00007E20, D_00007E24; /* arg1==1 list-init globals (decode 2026-06-26) */
+extern int D_00007E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
 extern int D_00007E34; /* actor-0 sub-init preload value (decode 2026-06-26) */
 extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
-#define DROOT ((int *)gRoot)
+#define DROOT ((int *)D_55A0_root)
 #define DI(o) (*(int *)((char *)&D_00000000 + (o)))
 #define DF(o) (*(float *)((char *)&D_00000000 + (o)))
-extern f32 D_bu_ro_598, D_bu_ro_59C, D_bu_ro_5A0, D_bu_ro_5A4, D_bu_ro_5A8, D_bu_ro_5AC;  /* per-address RoData pool scalars (func_0000057C + K): target re-emits lui at per load */
+extern f32 D_55A0_ro598, D_55A0_ro59C, D_55A0_ro5A0, D_55A0_ro5A4, D_55A0_ro5A8, D_55A0_ro5AC;  /* per-address RoData pool scalars (func_0000057C + K): target re-emits lui at per load */
 #define DP(o) ((void *)((char *)&D_00000000 + (o)))
 #define OI(p, o) (*(int *)((char *)(p) + (o)))
 #define OF(p, o) (*(float *)((char *)(p) + (o)))
@@ -97,14 +99,14 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     M(0xD8) = fi(0); M(0xDC) = fi(0); M(0xE0) = fi(0);
     M(0xC8) = fi(0); M(0xCC) = fi(0); M(0xD0) = fi(0);
     M(0x13C) = 0.5f; M(0x108) = 0.5f; M(0xE4) = 0.5f; M(0xE8) = 0.5f; M(0xD4) = 0.5f;
-    M(0xF8) = D_bu_ro_598;
+    M(0xF8) = D_55A0_ro598;
     D_55A0_z0 = 0;
 
     if (arg1 == 1) {
         D_55A0_G.b = 0x28002;
         D_55A0_G.a = 0;
         D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
-        it = (R12_55A0 *)&D_00007E24;
+        it = (R12_55A0 *)&D_55A0_it0;
         if (D_55A0_listchk != 0) {
             do {
                 func_00000000(&D_55A0_fmt, it->w, it);
@@ -159,7 +161,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
-            vec0.w = 1.0f; vec0.x = D_bu_ro_59C; vec0.y = D_bu_ro_59C; vec0.z = D_bu_ro_59C;
+            vec0.w = 1.0f; vec0.x = D_55A0_ro59C; vec0.y = D_55A0_ro59C; vec0.z = D_55A0_ro59C;
             func_00000000(obj + 0x5C, &vec0, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_0;
         }
@@ -183,7 +185,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(n2);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
-            vec1.w = 1.0f; vec1.x = D_bu_ro_5A0; vec1.y = D_bu_ro_5A0; vec1.z = D_bu_ro_5A0;
+            vec1.w = 1.0f; vec1.x = D_55A0_ro5A0; vec1.y = D_55A0_ro5A0; vec1.z = D_55A0_ro5A0;
             func_00000000(obj + 0x5C, &vec1, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_1;
         }
@@ -210,7 +212,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
                 func_00000000(n2);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
-            vec2.x = D_bu_ro_5A4; vec2.y = D_bu_ro_5A8; vec2.z = D_bu_ro_5AC; vec2.w = 1.0f;
+            vec2.x = D_55A0_ro5A4; vec2.y = D_55A0_ro5A8; vec2.z = D_55A0_ro5AC; vec2.w = 1.0f;
             func_00000000(obj + 0x5C, &vec2, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_2;
         }

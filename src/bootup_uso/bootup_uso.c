@@ -3307,7 +3307,10 @@ end:
     return p;
 }
 
-#ifdef NON_MATCHING
+/* func_000055A0: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_55A0.cpp, REPLACE_FUNC_BODY-spliced
+ * over the placeholder below on both build paths (agent-g run 241). The superseded in-unit decode is kept
+ * for reference under BOOTUP_55A0_OLD_DECODE (never defined). */
+#ifdef BOOTUP_55A0_OLD_DECODE
 /* func_000055A0 - STRUCTURAL PASS (big-swing 2026-06-02).
  * bootup_uso scene/HUD constructor, 0x958 (598 insns), ~52 folded jal-0
  * placeholder calls + folded D_00000000 data-pool refs.
@@ -3621,7 +3624,9 @@ void func_000055A0(int arg0, int arg1, int arg2) {
     func_00000000(DROOT, obj, 0xFFFF);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000055A0);
+void func_000055A0(char *b) {
+    volatile char *r = b;
+}
 #endif
 
 void func_00005EF8(int *dst) {

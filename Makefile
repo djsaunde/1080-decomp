@@ -235,10 +235,12 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_31C0_NM_DONOR)
 BOOTUP_90CC_DONOR := build/src/bootup_uso/bootup_uso_90CC.c.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000090CC=$(BOOTUP_90CC_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_90CC_DONOR)
-# 55A0 = scene/HUD constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 94.35). NM comparison object only.
-BOOTUP_55A0_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_55A0_nm.cpp.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000055A0=$(BOOTUP_55A0_NM_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_55A0_NM_DONOR)
+# 55A0 = scene/HUD constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 94.35). EXACT in agent-g
+# run 241 (list iterator as a plain register variable, whole-struct v / p1 copies, a dead nested call-result temp before
+# actor 2 for vec2's home), spliced over the placeholder on both paths.
+BOOTUP_55A0_DONOR := build/src/bootup_uso/bootup_uso_ncc_55A0.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000055A0=$(BOOTUP_55A0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_55A0_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
