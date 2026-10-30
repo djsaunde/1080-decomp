@@ -206,7 +206,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
             }
-            OF(obj, 0x58) = 1.0f; OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0;
+            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
             vec2.x = D_bu_ro_5A4; vec2.y = D_bu_ro_5A8; vec2.z = D_bu_ro_5AC; vec2.w = 1.0f;
             func_00000000(obj + 0x5C, &vec2, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_2;
