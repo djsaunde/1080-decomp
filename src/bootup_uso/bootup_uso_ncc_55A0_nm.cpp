@@ -81,7 +81,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
     S4_55A0 p2;
     char *n2, *n3;
 
-    if (0 * ((int)&v0 + (int)&v1 + (int)&v2 + (int)&v3 + (int)&t4 + (int)&t5 + (int)&t10 + (int)&p1 + (int)&it + (int)&vecp1 + (int)&vk1 + (int)&vk2)) {}
+    if (0 * ((int)&v0 + (int)&v1 + (int)&v2 + (int)&v3 + (int)&t4 + (int)&t5 + (int)&t10 + (int)&p1 + (int)&vecp1 + (int)&vk1 + (int)&vk2)) {}
     D_55A0_w0 = D_55A0_r0 | 8; if (1) {}
     D_55A0_G.b = 0xAA002;
     D_55A0_G.a = 0;
@@ -109,8 +109,12 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
             do {
                 func_00000000(&D_55A0_fmt, it->w, it);
                 func_00000000(D_55A0_list2, it);
-                it++; if ((1) + 0 * (int)(it)) {} /* agent-c run 212: folded counted use (zero code) */
+                it++;
             } while (it->w != 0);
+            /* agent-g run 241: `it` is a plain register variable in the target (a2, spilled to its home 0x98 around
+             * the two calls, never stored back after it++): no &it in the frame-home list; six post-loop reads add
+             * adjsave units so it loses the s-register (fewer than six: s1). 97.29 -> 98.07, length = target. */
+            if (it) {} if (it) {} if (it) {} if (it) {} if (it) {} if (it) {}
         }
     }
 
@@ -138,8 +142,7 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
 
     if (var_s0 & 4) {
         /* actor 0 (0x74) */
-        v0.w = D_55A0_v0.w;
-        p1.w = D_55A0_v0.w;
+        v0.w = p1.w = D_55A0_v0.w; /* agent-g run 241: one load, two stores (98.07 -> 98.22) */
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             p2.w = p1.w;
