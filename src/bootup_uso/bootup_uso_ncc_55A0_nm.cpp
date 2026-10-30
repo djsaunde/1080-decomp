@@ -190,6 +190,9 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* actor 2 (0x74) */
+        /* agent-g run 241: a dead nested call-result temp grows edg's pool here, so the dead-stored call-result
+         * vreg is homed above vec2 (vec2 sp+0x28 = target) instead of below it */
+        if (0) { func_00000000(func_00000000(0)); }
         v2 = D_55A0_v2;
         p1 = v2;
         obj = (char *)func_00000000(0x74);
