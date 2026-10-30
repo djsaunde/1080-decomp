@@ -38,8 +38,8 @@ struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { { volatile
 struct Obj2 : Obj { int x; Obj2() { Obj2 *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the Obj2 this temp (kit CCLV) */
 struct B2 { char p[0x28]; B2(Obj *, float, float, float); virtual void g(); };
 struct KB : B2 { char q[0x14C - 0x2C]; float f14c; float f150; char *f154; int f158;
-    KB(Obj *o, char *a) : B2(o, 0.0f, 500.0f, -1500.0f) { f158 = 0; f154 = a; f150 = f14c; } virtual void g(); };
-struct WA { WA(char *, Obj *, float, float, float, int, char *); };
+    KB(Obj2 *o, char *a) : B2(o, 0.0f, 500.0f, -1500.0f) { f158 = 0; f154 = a; f150 = f14c; } virtual void g(); };
+struct WA { WA(char *, Obj2 *, float, float, float, int, char *); };
 struct WR { WR(char *, int, char *); };
 struct W4 { W4(char *, char *, char *); };
 struct WV { WV(char *, char *, char *); };
@@ -51,12 +51,13 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
     char *v;
     char *r2;
     char *r3;
-    Obj *obj;
-    /* agent-c run 237: the folded a3v read keeps obj off edg's new-temp (no copy propagation),
-     * so the case-0 link / 0xB4 store read obj's own home (sp+0x78) as in the target: 99.955 -> 99.965 */
-    /* agent-c run 238: no (Obj *) conversion on the new result (its edg temp sat above the new-temp; the new-temp
-     * is now the first temporary, sp+0x74 as in the target): 99.965 -> 99.975 */
-    obj = (Obj *)((int)new Obj2 + 0 * FW(a3v, 0));
+    Obj2 *obj;
+    /* agent-c run 241 (kit CCLX): obj is an Obj2 * (plain `obj = new Obj2`, no conversion temp); uses that need no
+     * conversion (WA / KB take an Obj2 *) are copy-propagated to edg's new-temp (the case-0 WA argument reads sp+0x74
+     * as in the target), while a DERIVED-TO-BASE conversion on a use blocks the propagation there (the case-0 link /
+     * 0xB4 store spelled (Obj *)obj read obj's own home sp+0x78 as in the target). Replaces the run-237 folded a3v
+     * read (which kept every use off the new-temp): 99.975 -> see report. */
+    obj = new Obj2;
     switch (mode) {
     case 0:
     case 2:
@@ -66,8 +67,8 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
         fn_31c0_link(w, r2);
         FW(w, 0x154) = (int)r2;
         r3 = (char *)new W4(w, r2, D_00007490);
-        fn_31c0_link(obj, r3);
-        FW(obj, 0xB4) = (int)r3;
+        fn_31c0_link((Obj *)obj, r3);
+        FW((Obj *)obj, 0xB4) = (int)r3;
         FW(r3, 0xC) = (int)D_000074A4;
         break;
     case 1:
