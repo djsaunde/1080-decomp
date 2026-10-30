@@ -142,7 +142,9 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
 
     if (var_s0 & 4) {
         /* actor 0 (0x74) */
-        v0.w = p1.w = D_55A0_v0.w; /* agent-g run 241: one load, two stores (98.07 -> 98.22) */
+        /* agent-g run 241: whole-struct copies (one load, two stores through a ugen temp, not a coloured
+         * register; v0 stored first); the other actors copy p1 from their v: 98.07 -> 98.98 */
+        p1.w = (v0 = D_55A0_v0).w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             p2.w = p1.w;
@@ -164,8 +166,8 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* actor 1 (0x74) */
-        v1.w = D_55A0_v1.w;
-        p1.w = D_55A0_v1.w;
+        v1 = D_55A0_v1;
+        p1 = v1;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             V4_55A0 vec1;
@@ -188,8 +190,8 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* actor 2 (0x74) */
-        v2.w = D_55A0_v2.w;
-        p1.w = D_55A0_v2.w;
+        v2 = D_55A0_v2;
+        p1 = v2;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             int b0 = 0; int b1 = 0; V4_55A0 vec2;
@@ -215,8 +217,8 @@ extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
         D_55A0_G.b = 0x28002;
         D_55A0_G.a = 0;
         nl0 = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
-        v3.w = D_55A0_v3.w;
-        p1.w = D_55A0_v3.w;
+        v3 = D_55A0_v3;
+        p1 = v3;
         obj = (char *)func_00000000(0x6C);
         if (obj != 0) {
             p2.w = p1.w;
