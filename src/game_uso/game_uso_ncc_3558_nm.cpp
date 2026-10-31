@@ -47,7 +47,7 @@ struct Vec3 {
 inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.z = u; r.y = q; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62) */
 struct M4 {
     float m[4][4];
-    void getPos(Vec3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; }
+    void getPos(Vec3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; } /* agent-c run 248: the BB split moved out to before the vb getPos call */
 };
 struct Node { char pad[0x30]; char f30[0x70]; Vec3 pos; };
 struct Body { char pad[0x70]; M4 mtx; };
@@ -81,7 +81,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     Vec3 w;
     float t;
     { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
-    s0->b0->mtx.getPos(vb); /* agent-c run 247: vb through getPos (address taken = memory-resident like the target's stores after init), no `if (1) {}` after the stage copy, x / y / z adds and `e = vb - va`: 91.62 at 956 B -> 92.60 at 1008 B = target length */
+    if (1) {} s0->b0->mtx.getPos(vb); /* agent-c run 248: `if (1) {}` before this call instead of inside getPos (between v.x and v.y, both getPos uses): 92.60 -> 93.47 standalone. agent-c run 247: vb through getPos (address taken = memory-resident like the target's stores after init), no `if (1) {}` after the stage copy, x / y / z adds and `e = vb - va`: 91.62 at 956 B -> 92.60 at 1008 B = target length */
     zero = 0.0f;
     stage = s0->v68;
     {
@@ -90,9 +90,8 @@ extern "C" void game_uso_func_00003558(S *s0) {
         float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
         float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
         float z = m->m[0][2] * v.x + m->m[2][2] * v.z + m->m[1][2] * v.y;
-        stage.x = x; stage.y = y; stage.z = z;
+        stage.x = x; vb.x += x; stage.y = y; vb.y += y; stage.z = z; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48) */
     }
-    vb.x += stage.x; vb.y += stage.y; vb.z += stage.z;
     e = vb - va;
     s0->v3C = e;
     mag = game_uso_func_070238(e.len2());
