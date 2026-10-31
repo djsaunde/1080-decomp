@@ -87,7 +87,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 ex = w[a] - v[a];
                 ey = w[b] - v[b];
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
-                    inside = 0 + 0 * (int)(c); /* agent-g run 210: fourth pass: 96.22 -> 96.25 */
+                    inside = 0 + 0 * (int)(c) + 0 * (int)(cc); /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375 */
                 }
             } while (inside && (fp++, ++tp != D_00000000_3b6a0tbl + 3));
             if (inside) {
