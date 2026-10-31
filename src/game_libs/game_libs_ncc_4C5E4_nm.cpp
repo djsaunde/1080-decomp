@@ -78,10 +78,10 @@ void Obj::run() {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = sub;
         void *pf = sb->mF0;
-        int m4 = (m78 + 0 * mC0) & 4; /* run 205: m78 read at both uses (no named m); folded 0 * mC0 = ring phase */
+        int m4 = m78 & 4; /* run 205: m78 read at both uses (no named m); run 246: the folded 0 * mC0 dropped (c0 loads in the arm, v0, as the target) */
         int f = (m104 & 2) != 0;
         if (f) f = (m78 & 2) != 0;
-        int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8;
+        int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8 + 0 * (int)(sub); /* run 246: folded counted use of sub: sb = t5 (target) and the ring phase */
         gl_func_00034458(dl, s1, pf, m4, f, mDC, c0, c4, b8, bc, sb8, m1B0);
     }
     gl_func_00034458(dl);
@@ -98,6 +98,7 @@ void Obj::run() {
     float fw = (float)x * 2.0f;
     float fx = (float)w;
     float fh = 2.0f * (float)y; /* agent-g run 231 (operand-commute sweep): 88.67 -> 88.69 */
+    if (1) {} /* run 246 (bbsplit sweep on the new base) */
     float fy = (float)h;
     Vp *vp = &d->vph->buf[d->vph->count++];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
