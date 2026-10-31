@@ -22,6 +22,10 @@
  * flagged; the deficit is the missing face / r copies and the two-arm inner MAX listed above).
  * agent-c run 194: face() called on the member `col` (plain `i`), `cc = col` after it: 94.93 -> 95.40 local,
  * 1552 -> 1556 bytes (toward 1568).
+ * agent-c run 249 (98.56 -> 98.62, frame 0xF0 = target, q / cx / cz homes at the target's frame offsets): the
+ * loop locals declared at function scope BEFORE cx / cz (q after off / f / ok / t / n), toCell written out in
+ * cellOf and face() without its `r` local (3 + 1 inline homes fewer); keeping `r` block-scope matters (off + f + r
+ * hoisted together moves the loop's -1 constant).
  * Still NON_MATCHING. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32;
@@ -41,7 +45,7 @@ struct Grid {
 struct Col {
     char pad0[0x4C]; s16 *remap; char pad50[4]; V3 *nrm; char pad58[8]; s16 (*verts)[3];
     char pad64[4]; Face *faces; char pad6c[0x34]; Grid *grid;
-    Face *face(int i) { s16 *r = remap; return r ? &faces[r[i]] : &faces[i]; }
+    Face *face(int i) { return remap ? &faces[remap[i]] : &faces[i]; }
 };
 #define MAXS(a, b) ((a) > (b) ? (s16)(a) : (s16)(b))
 #define MINS(a, b) ((a) < (b) ? (s16)(a) : (s16)(b))
@@ -53,7 +57,8 @@ struct Obj {
         cz = (p.z - col->grid->z0) / col->grid->ch;
     }
     int cellOf(const V3 &p, int &cx, int &cz) { /* agent-g run 238: cx / cz are query()'s locals (98.34 -> 98.51) */
-        toCell(p, cx, cz);
+        cx = (p.x - col->grid->x0) / col->grid->cw;
+        cz = (p.z - col->grid->z0) / col->grid->ch;
         if (cx >= 0 && cx < col->grid->w && cz >= 0 && cz < col->grid->h) return cx + cz * col->grid->w; /* agent-g run 231: cx first (operand-commute sweep), 97.60 -> 98.16 */
         return -1;
     }
@@ -66,6 +71,29 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     int cell;
     s16 *list;
     int i;
+    int off;
+    Face *f;
+    int ok;
+    Tri *t;
+    V3 *n;
+    f32 q[3];
+    int a;
+    int b;
+    s16 *va;
+    s16 *vb;
+    s16 *vc;
+    int k;
+    s16 hi;
+    s16 lo;
+    s16 *nx;
+    u16 *fv;
+    s16 *v0;
+    s16 *v1;
+    s16 dx;
+    s16 dy;
+    s16 ex;
+    s16 ey;
+    int cx, cz;
     cc = col;
     cnt = 0;
     if (cc == 0) return 0;
@@ -73,56 +101,54 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     p.x *= D_3BE1C_128[0];
     p.y *= D_3BE1C_128[1];
     p.z *= D_3BE1C_128[2];
-    int cx, cz;
     cell = cellOf(p, cx, cz);
     if (cell < 0) return 0;
     list = this->list(cell);
     if (list == 0) return 0;
     while ((i = *list++) != -1) {
-        int off = ((i << 2) - i) << 2;
+        off = ((i << 2) - i) << 2;
         if (((Tri *)((char *)tris + off))->grp < 0) continue;
-        Face *f = col->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
+        f = col->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
         cc = col;
         int r = gl_func_00000000(cc, f->mat) + 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568) */
         if (r & 0x100) {
-            int ok = 1;
-            Tri *t = (Tri *)((char *)tris + off); /* agent-g run 224: t before n (sweep 97.33 -> 97.60) */
-            V3 *n = (V3 *)((char *)col->nrm + off);
+            ok = 1;
+            t = (Tri *)((char *)tris + off); /* agent-g run 224: t before n (sweep 97.33 -> 97.60) */
+            n = (V3 *)((char *)col->nrm + off);
             V3 *n_al = n; /* agent-c run 195: alias copy (colour tie) */
             f32 d = p.x * n_al->x + p.y * n_al->y + p.z * n_al->z - t->d;
-            f32 q[3];
             q[0] = p.x - n_al->x * d;
             q[1] = p.y - n_al->y * d;
             q[2] = p.z - n->z * d;
             t = (Tri *)((char *)tris + off);
-            int a = t->a;
-            int b = t->b;
+            a = t->a;
+            b = t->b;
             if (r & 0x200) {
-                s16 *va = col->verts[f->vi[0]];
-                s16 *vb = col->verts[f->vi[1]];
-                s16 *vc = col->verts[f->vi[2]];
-                int k = 2 - t->ax;
+                va = col->verts[f->vi[0]];
+                vb = col->verts[f->vi[1]];
+                vc = col->verts[f->vi[2]];
+                k = 2 - t->ax;
 #define ia va[k]
 #define ib vb[k]
 #define ic vc[k]
-                s16 hi = MAXS(MAXS(ia, ib), ic) + 0 * (int)(vb) + 0 * (int)(vc); /* + vc: agent-g run 231 */ /* agent-g run 210: third pass: 97.05 -> 97.26 */
-                s16 lo = MINS(MINS(ia, ib), ic);
+                hi = MAXS(MAXS(ia, ib), ic) + 0 * (int)(vb) + 0 * (int)(vc); /* + vc: agent-g run 231 */ /* agent-g run 210: third pass: 97.05 -> 97.26 */
+                lo = MINS(MINS(ia, ib), ic);
                 if (q[k] < (f32)lo || (f32)hi < q[k]) ok = 0 + 0 * (int)(va); /* agent-g run 210: second pass: 96.38 -> 97.05, 1560 -> 1564 bytes (target 1568) */
             } else {
 #define qa q[a]
 #define qb q[b]
 #define sg ((f32)t->sgn)
 #define vt (col->verts)
-                s16 *nx = D_3BE1C_c;
-                u16 *fv = (u16 *)f;
+                nx = D_3BE1C_c;
+                fv = (u16 *)f;
                 do {
-                    s16 *v0 = vt[fv[1]];
-                    s16 *v1 = vt[f->vi[*nx]];
+                    v0 = vt[fv[1]];
+                    v1 = vt[f->vi[*nx]];
                     nx++;
-                    s16 dx = (int)(qa - v0[a]);
-                    s16 dy = (int)(qb - v0[b]);
-                    s16 ex = v1[a] - v0[a];
-                    s16 ey = v1[b] - v0[b];
+                    dx = (int)(qa - v0[a]);
+                    dy = (int)(qb - v0[b]);
+                    ex = v1[a] - v0[a];
+                    ey = v1[b] - v0[b];
                     if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0 + 0 * (int)(v1) + 0 * (int)(v0); /* agent-g run 231: folded counted uses (zero-use sweep, 2 passes): 98.16 -> 98.31 */
                 } while (ok && (fv++, nx < D_3BE1C_c + 3));
             }
