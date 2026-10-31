@@ -43,6 +43,6 @@ extern "C" int gl_func_00033094(Obj *o) {
         gl_func_00000000((char *)o + 0xB4, 1, o->x138, 0);
         gl_func_00000000((char *)o + 0xB4, 0, o->x134, 0);
     }
-    { volatile int q0, q1; }
+    { volatile int q0, q1, q2; } /* agent-g run 256: a third volatile moves the o+0xB4 spill 60 -> 56 = target (frame 0x90 kept): 93.62 -> 93.65 */
     return 1;
 }
