@@ -13364,40 +13364,42 @@ block_83:
                             gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, var_v0_3); var_v0_2 = 0; /* M2C: v0-after-void-call */
                         }
                     }
+                    /* agent-g run 250: the event base in temp_v1 (target v0), not the shared var_v0_2 */
                     switch ((u8) sp6B) {            /* switch 5; jtbl @data+0x16F8 */
                     case 0:
                     case 2:
-                        var_v0_2 = 8;
+                        temp_v1 = 8;
                         break;
                     case 4:
                     case 6:
-                        var_v0_2 = 0xC;
+                        temp_v1 = 0xC;
                         break;
                     case 8:
-                        var_v0_2 = 0x10;
+                        temp_v1 = 0x10;
                         break;
                     case 10:
-                        var_v0_2 = 0x38;
+                        temp_v1 = 0x38;
                         break;
                     default:                        /* odd cases */
-                        var_v0_2 = 0x10;
-                        switch (*(u8 *)((char *)(arg0) + 0x29)) {
+                        temp_v1 = 0x10;
+                        temp_v1_5 = *(u8 *)((char *)(arg0) + 0x29); /* agent-g run 250: named unsigned selector */
+                        switch ((unsigned)temp_v1_5) {
                         case 0:
                             sp50 = 6;
                             break;
                         case 1:
-                            var_v0_2 = 0x18;
+                            temp_v1 = 0x18;
                             break;
                         case 2:
-                            var_v0_2 = 0x1C;
+                            temp_v1 = 0x1C;
                             break;
                         default:
-                            var_v0_2 = 8;
+                            temp_v1 = 8;
                             break;
                         }
                         break;
                     }
-                    func_00000000(arg0, var_v0_2 + ((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50));
+                    func_00000000(arg0, temp_v1 +((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50));
                     *(s32 *)((char *)(arg0) + 0x48) = 0xA;
                     *(u8 *)((char *)(arg0) + 0x29) = 0U;
                     *(u8 *)((char *)(arg0) + 0x2B) = sp6B;
