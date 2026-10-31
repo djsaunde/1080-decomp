@@ -44,7 +44,7 @@ struct Vec3 {
  y += v.y;  }
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
     float len2x() const { float r = x * x + y * y + z * z; return r; } /* agent-c run 248: e's length in x, y, z order (w keeps len2): 93.484 -> 93.492 */
-    float len2() const { float r = y * y + x * x + z * z; return r; } /* agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
+    float len2() const { return y * y + x * x + z * z; } /* agent-g run 259: the named result moved out to the caller's function-scope l (see below); agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
 };
 inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.z = u; r.y = q; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62) */
 struct M4 {
@@ -82,6 +82,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     float mag;
     Vec3 w;
     float t;
+    float l;
     { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
     if (1) {} s0->b0->mtx.getPos(vb); /* agent-c run 248: `if (1) {}` before this call instead of inside getPos (between v.x and v.y, both getPos uses): 92.60 -> 93.47 standalone. agent-c run 247: vb through getPos (address taken = memory-resident like the target's stores after init), no `if (1) {}` after the stage copy, x / y / z adds and `e = vb - va`: 91.62 at 956 B -> 92.60 at 1008 B = target length */
     zero = 0.0f;
@@ -107,7 +108,8 @@ extern "C" void game_uso_func_00003558(S *s0) {
     w.x = w.x - va.x;
     w.z = w.z - va.z;
     w.y = zero;
-    t = game_uso_func_070238(w.len2());
+    l = w.len2(); /* agent-g run 259 (kit CCXCIII): len2's named r was an inline-expansion home at the frame bottom (every low object 8 above the target); as a function-scope l declared after t its home sits in the decl region instead -- the sp-offset set now equals the target's (93.61 -> 93.68 standalone) */
+    t = game_uso_func_070238(l);
     game_uso_func_071028(&w);
     if (s0->f88 < t) {
         w *= t - s0->f88;
