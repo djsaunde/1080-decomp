@@ -35,7 +35,9 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
-    Gfx *nextb() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; } };
+    Gfx *nextb() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
+    /* agent-c run 255: the result through a named inline local (the 46050 nextr() lever) on the RDPHALF_2 append: 97.94 -> 98.19 */
+    Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; } };
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
@@ -54,6 +56,6 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     fw = w * arg5;
     y = (f32)arg2 + (-((f32)h / 2) * arg6);
     fh = h * arg6;
-    gSPScisTextureRectangle(CTX->nextb(), me(CTX)->nC() + 0, me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(CTX->nextb(), me(CTX)->nC() + 0, CTX->nR1(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
