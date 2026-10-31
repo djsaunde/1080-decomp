@@ -9432,9 +9432,9 @@ void gl_func_000402A4(int *a0, float dx, float dy, float dz) {
 // the 120..132 gap); `sp = &self->scl` + `sp->z` store (the alias that keeps
 // the pos-copy loads below the scale stores); if(1) after the first quat
 // product and before `y = *sp` (FP ring = target); dead `while (0)` anchor
-// orders the FP candidates a,b,kt,d. Residual: K1 colours f18 (target f14)
-// and c/d f16/f14 (target f16/f18); the &self->m30 spill takes 32(sp) vs
-// 36(sp). Exact route: the 44B78 donor splice (game_libs_func_..._rodata =
+// orders the FP candidates a,b,kt,d. agent-g run 261: FP colours = target
+// (code-free tests, see case 0x72). Residual: the &self->m30 spill takes
+// 32(sp) vs 36(sp) (item &scl is live at the call node, kit CCXCVI). Exact route: the 44B78 donor splice (game_libs_func_..._rodata =
 // 0x1AE4, D_40304_k001 = 0x1AE0).
 #ifdef NON_MATCHING
 typedef struct { float m[16]; } Mtx44_40304;
@@ -9484,13 +9484,14 @@ void gl_func_00040304(Obj40304 *self, Cmd40304 *cmd) {
             break;
         case 0x72:
             while (0) { a = 0; b = 0; kt = 0; d = kt * (1.0f / 32767.0f); }
-            p = cmd->cur; cmd->cur = p + 1; v = *p;
+            p = cmd->cur; if (1) {} cmd->cur = p + 1; v = *p; /* agent-g run 261: BB split after the p load (p's LR N 1 -> 2, priority 3.0 -> 1.5) keeps v above p (v0) once the tests below split v's range */
             sp = &self->scl;
             a = v[3] * (1.0f / 32767.0f);
             if (1) {}
             b = v[4] * (1.0f / 32767.0f);
             c = v[5] * (1.0f / 32767.0f);
             d = v[6] * (1.0f / 32767.0f);
+            if (a != b) {} if (a != b) {} /* agent-g run 261 (kit CCXCV priorities): code-free tests set the FP colour order a, b, kt, K1, c, d = target f0 / f2 / f12 / f14 / f16 / f18 */
             self->q[0] = a;
             self->q[1] = b;
             self->q[2] = c;
@@ -9499,6 +9500,7 @@ void gl_func_00040304(Obj40304 *self, Cmd40304 *cmd) {
             self->pos.y = v[1];
             self->pos.z = v[2];
             kt = D_40304_k001;
+            if (a != kt) {} if (a != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {}
             a = v[7] * kt;
             b = v[8] * kt;
             c = v[9] * kt;
