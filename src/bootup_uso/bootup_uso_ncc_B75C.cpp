@@ -13,8 +13,13 @@
  * Run 243 (99.97 -> 99.98): `temp_a1 = arg0 + 0x3B0;` as the first 0x9A8 & 1 arm's call argument gives the
  * 0.8 compare block the target hoist order (arg0 + 0x3B0 before arg0 + 0xCC) and puts the a0 / a1 spills in
  * the target's relative order (a0 below a1).
- * Left: the a0 / a1 spill words (sp+0x20 / 0x24; target sp+0x24 / 0x28 with sp+0x20 unused).
- * Still NON_MATCHING: build/non_matching/ only. */
+ * EXACT (agent-c run 258, 99.98 -> 100): uopt `spilltemps` gives every colourable expression a temp slot BEFORE
+ * colouring, in expression-bit order, first-fit on the BB region (kit CCXCIII). Reading the 0x990 word in place at
+ * both tests (no var_v0 copy) makes that load a cross-BB expression ahead of the 0x3BC / 0x3C0 / 0x3C4 loads, so
+ * it takes the first slot (coloured v0: the never-stored word) and the 0x3C4 spill drops one slot; holding the
+ * dot3 value in var_f0 drops its home, moving the whole temp block up one word (target float 0x1C, unused 0x20,
+ * a0 0x24, a1 0x28). Spliced over the bootup_uso.c placeholder on both build paths; the literal pool is the donor
+ * .rodata (func_0000B75C_rodata pin = 0x8C8, same layout as the USO's 0x8C8..0x914 pool). */
 typedef float f32; typedef double f64; typedef int s32; typedef short s16;
 extern "C" {
 void bu_b75c_mvf(char *, char *, f32, char *);
@@ -56,10 +61,9 @@ void func_0000B75C(char *arg0) {
     }
     var_f0 = *(f32 *)((char *)(arg0) + 0x974);
     var_f2 = *(f32 *)((char *)(arg0) + 0xA00);
-    var_v0 = *(s32 *)((char *)(arg0) + 0x990);
     *(f32 *)((char *)(arg0) + 0x974) = (f32) (var_f0 - (var_f0 * *(f32 *)((char *)(arg0) + 0x720) * var_f2));
     *(f32 *)((char *)(arg0) + 0x974) = (f32) (*(volatile f32 *)((char *)(arg0) + 0x974) + (var_f12 * var_f2));
-    if (var_v0 != 0) {
+    if (*(s32 *)((char *)(arg0) + 0x990) != 0) {
         sp5C = 0;
     } else {
         sp5C = -((*(f32 *)((char *)(arg0) + 0x3BC) * sp6C[0]) + (*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (*(f32 *)((char *)(arg0) + 0x3C4) * sp6C[2]));
@@ -71,7 +75,7 @@ void func_0000B75C(char *arg0) {
     *(f32 *)((char *)(arg0) + 0x978) = (f32) (var_f0 + (f64) ((f64) (sp5C - var_f0) * 0.4));
     sp58 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14);
     sp54 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14);
-    if (var_v0 != 0) {
+    if (*(s32 *)((char *)(arg0) + 0x990) != 0) {
         sp60 = (f32) ((f64) sp60 * 0.5);
     }
     var_f12 = -1.0f;
@@ -130,7 +134,8 @@ void func_0000B75C(char *arg0) {
             } else {
                 var_a0 = arg0 + 0xCC;
                 temp_a1 = arg0 + 0x3C8;
-                bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) dot3(arg0, sp6C) * -0.1), arg0);
+                var_f0 = dot3(arg0, sp6C);
+                bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) var_f0 * -0.1), arg0);
                 if (*(s32 *)((char *)(arg0) + 0xA18) != 0) {
                     bu_b75c_mvf(var_a0, temp_a1, *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x690), arg0);
                     bu_b75c_mvf(var_a0, arg0 + 0x3BC, *(f32 *)((char *)(*(s32 *)((char *)(arg0) + 0x800)) + 0x4) * *(f32 *)((char *)(arg0) + 0x660), arg0);

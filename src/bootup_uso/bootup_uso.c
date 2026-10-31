@@ -6945,7 +6945,11 @@ void func_0000B520(char *arg0) {
 //   table — byte-match blocked by deferred pool symbolization.
 //   Real-C STRUCTURAL body below — per-frame camera/transform
 //   interpolation skeleton. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+/* func_0000B75C: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_B75C.cpp, REPLACE_FUNC_BODY-spliced
+ * over the placeholder below on both build paths (agent-c run 258: the 0x990 load read in place at both tests +
+ * the dot3 value held in var_f0 = the target's uopt spilltemps slot order). The superseded cfe lift is kept for
+ * reference under BOOTUP_B75C_OLD_DECODE (never defined). */
+#ifdef BOOTUP_B75C_OLD_DECODE
 /* PASS-2 2026-06-10 (big-swing): FULL m2c graft (524 insns, table-free,
  * 7 f64 ops -- mild f64, tempered expectations).
  * PASS-3 2026-07-11 (agent-g): st->0xA6C is a halfword field (target 1x lh
@@ -7195,7 +7199,9 @@ block_67:
 #undef temp_f12_2
 #undef temp_f12_3
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000B75C);
+void func_0000B75C(char *arg0) {
+    volatile char *r = arg0;
+}
 #endif
 
 /* func_0000BF8C - verified structural decode (0x2A8, 170 insns,

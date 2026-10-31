@@ -200,10 +200,11 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_D900_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_D900.cpp.o
 build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
 # B75C = camera/transform interpolation update; the cfe NM body (94.38) ported to NCC (edg-shaped: mul.s by 2.0,
-# target literal hoist order; agent-g run 242). Still NON_MATCHING: NM comparison object only.
-BOOTUP_B75C_NM_DONOR := build/src/bootup_uso/bootup_uso_ncc_B75C_nm.cpp.o
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000B75C=$(BOOTUP_B75C_NM_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B75C_NM_DONOR)
+# target literal hoist order; agent-g run 242). EXACT in agent-c run 258 (uopt spilltemps slot order: the 0x990 load read
+# in place at both tests + the dot3 value held), spliced over the placeholder on both paths.
+BOOTUP_B75C_DONOR := build/src/bootup_uso/bootup_uso_ncc_B75C.cpp.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000B75C=$(BOOTUP_B75C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B75C_DONOR)
 # 63B4 = minimap marker projection, NCC donor (C++: inline M3::xf(V3 &) through ctx->view->rot; agent-g run 184). EXACT.
 BOOTUP_63B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_63B4.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000063B4=$(BOOTUP_63B4_DONOR)

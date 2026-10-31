@@ -5521,3 +5521,7 @@ gl_3df58_k1adc = 0x00000000;
 /* gl_func_0005F5F0 NCC donor (agent-g run 247): baked USO jal placeholders (target 0x0C000000, no reloc) */
 gl_func_0005F5F0_sqrtf = 0x00000000;
 gl_func_0005F5F0_normalize = 0x00000000;
+/* func_0000B75C NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, func_00008124 + 0x4C, literal pool func_000008B4 + 0x14 = 0x8C8) */
+bu_b75c_mvf = 0x00000000;
+D_00008170 = func_00008124 + 0x4C;
+func_0000B75C_rodata = 0x000008C8;
