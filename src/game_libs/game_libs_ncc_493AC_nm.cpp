@@ -105,7 +105,7 @@ int Mgr::run() {
     gl_func_00000000(S(0x1FF6C));
     gl_func_00000000(S(0x1FF74));
     AIter it = arr.iter();
-    while (it.next()) {
+    while (it.next() + 0) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0) */
         gl_func_00000000(it.cur());
         if (m50 == 0) {
             if (it.cur()->test(0x2000)) {
@@ -128,7 +128,7 @@ int Mgr::run() {
     }
     Rec rec;
     it = arr.iter();
-    while ((it.next() + 0)) { /* run 206: folded + 0 (kit CLXXIX) */
+    while (it.next()) { /* run 206 had a folded + 0 here (kit CLXXIX); run 247 moved it to the first loop */
         o = it.cur();
         /* agent-g run 233 (kit CCXLIV): the context pointer is a ugen temp (t6) in the target, not a coloured
          * local: stored to o->ctx6C and re-read through the member (uopt forwards the store), rec.ctx taken before
