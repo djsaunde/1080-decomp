@@ -21,7 +21,10 @@
  * epilogue append): -> 98.44. Superseded by ONE site: the glyph pkt `o->me()->sub->ctx->next() + 0` (Font::me()
  * on the outer object + a folded `+ 0` on the pointer; every other append plain) -> 99.10 with the t-ring equal
  * to the target everywhere. LEFT: a consistent swap of two next() pool colours (target ctx v1 / n a2, ours a2 /
- * v1), the arg1 increment above the first test (delay slot), cc a0 (ours a2).
+ * v1), the arg1 increment above the first test (delay slot), cc a0 (ours a2). Then a greedy over per-site pkt
+ * spellings with a template zero-code `me(p)` ({CTX, me(CTX), me(me(CTX)), me(o)->sub->ctx, ...} x {next, next2}
+ * x {"", + 0}): glyph `me(CTX)->next() + 0`, first prologue and first epilogue appends `me(me(CTX))->next()`, last
+ * epilogue append `me(CTX)->next() + 0`: -> 99.36 (instruction multiset = target).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -44,12 +47,13 @@ union Gfx { Gwords words; long long force_structure_alignment; };
   _g->words.w1 = (_SHIFTL(tile, 24, 3) | _SHIFTL(xl, 12, 12) | _SHIFTL(yl, 0, 12)); \
   gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16))); \
   gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); }
+template <class T> inline T *me(T *p) { return p; }
 struct DL { Gfx *buf; int n; };
 /* agent-c run 242: next2() = the explicit `n = dl->n; dl->n = n + 1` slot (kit CV) for the first two prologue appends
  * and the last epilogue append (greedy per-site grid): their dl temp takes the target's v0, 92.27 -> 92.43 standalone */
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Sub { char pad[0x158]; Ctx *ctx; };
-struct Font { char pad[0x21C]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; Font *me() { return this; } };
+struct Font { char pad[0x21C]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
 #define CTX (o->sub->ctx)
 extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     s32 startx = o->x;
@@ -61,7 +65,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     charw = o->cw; lineh = o->lh; /* agent-g run 228: one line (kit CCXXXIV line order): 92.20 -> 92.23 */
 
     if (o->mode == 0) {
-        gW(CTX->next2(), 0xE7000000, 0); if (1) {}
+        gW(me(me(CTX))->next(), 0xE7000000, 0); if (1) {}
         gW(CTX->next2(), 0xBA001402, 0);
         gW(CTX->next(), 0xB6000000, 1);
         gW(CTX->next(), 0xB900031D, 0x0C087008);
@@ -103,7 +107,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             }
             if (cc < 0x80) {
                 if (o->mode == 0) {
-                    gSPTextureRectangle(o->me()->sub->ctx->next() + 0, o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
+                    gSPTextureRectangle(me(CTX)->next() + 0, o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
                     gl_func_00034458(o, ch, o->x, o->y);
@@ -119,9 +123,9 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     }
 
     if (o->mode == 0) {
-        gW(CTX->next(), 0xE7000000, 0);
+        gW(me(me(CTX))->next(), 0xE7000000, 0);
         gW(CTX->next(), 0xBB000000, -1);
-        gW(CTX->next2(), 0xBA001402, 0x300000);
+        gW(me(CTX)->next() + 0, 0xBA001402, 0x300000);
     }
     return 0;
 }
