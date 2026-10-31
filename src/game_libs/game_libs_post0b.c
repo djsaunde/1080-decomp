@@ -6035,93 +6035,14 @@ s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003BE1C);
 #endif
 
-// gl_func_0003C43C — PASS-2 hand re-derivation 2026-09-04 (agent-g): 12.0 -> 91.2
-// (target 0x368 / build 0x380; single clean function, one 27BDFF20 prologue).
-// Residual: 4 extra 4B scalar homes (frame 0xF0 vs 0xE0 -- every sp-relative
-// immediate shifts), lim's `mov.s f12,f2` ternary-temp copy (direct-to-f12 here;
-// `ad` temp folds away), dist[best] load not hoisted above the h10 store, and
-// f0/f14 pre-call zero coloring. Probed negative: inlining the row expression
-// (IXA or char* form) re-derives it per use with multu after each acc store
-// (row local is required); (float)0 for fzero remats the zero per region;
-// a named fzero local costs +8 frame with no codegen change (literal 0.0f is
-// the same single post-jal mtc1 web). Clip re-pinned 0x2c948->0x2cc04.
-#ifdef NON_MATCHING
-/* PASS-2 2026-09-04 (agent-g): full hand re-derivation from expected/ .o.
- * Nearest-hit picker: K&R query callback fills dist[8]/hits[8] (8 args:
- * o, 8, dist, hits, r->w0, r->w4, r->w8, 0), returns n (stored to
- * a3->h14). Scan for the smallest |dist[i]| under the FP-pool limit
- * (&D_0+0x1AB8) with dist[i] > -600.0f and dist[i] > -s (IDO unrolls the
- * loop x2 with a parity peel). On a hit: vertex row = o->p84->p54 +
- * hit->h4*12 (Vec3), accumulate into a zero Vec3, copy row to a3->v24,
- * a3->f36 = hit->f8, a3->h16 = o->p84->p68[h4*8].hu0, a3->h18 = hit->h4,
- * a3->v0 = acc, a3->f12 = 0.0f + dist[best]. Returns n, or 0 if no hit. */
-#define ABS3(x) (((x) < 0.0f) ? -(x) : (x))
-/* 0x28-byte hit record (a3's type; the two staging locals are the same type). */
-typedef struct {
-    Vec3 pos;           /* 0x00 */
-    float dist;         /* 0x0C */
-    unsigned short h10; /* 0x10 */
-    short idx;          /* 0x12 */
-    short count;        /* 0x14 */
-    Vec3 vtx;           /* 0x18 */
-    float f24;          /* 0x24 */
-} GLHit3C43C;
-extern int D_00000000;
-int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
-    float dist[8];
-    char *hitbuf[8];
-    Vec3 acc;
-    GLHit3C43C tmp;
-    GLHit3C43C tmp2;
-    int n;
-    int i;
-    int best;
-    float lim;
-    Vec3 *row;
-
-    acc.x = 0.0f;
-    acc.y = 0.0f;
-    acc.z = 0.0f;
-    n = gl_func_00000000(o, 8, dist, hitbuf, r[0], r[1], r[2], 0);
-    lim = *(float *)((char *)&D_00000000 + 0x1AB8);
-    best = -1;
-    a3->count = n;
-    if (n > 0) {
-        for (i = 0; i < n; i++) {
-            if (ABS3(dist[i]) < lim && dist[i] > -600.0f && dist[i] > -s) {
-                best = i;
-                lim = ABS3(dist[i]);
-            }
-        }
-        if (best >= 0) {
-            row = (Vec3 *)(*(char **)(*(char **)(o + 0x84) + 0x54) + *(short *)(hitbuf[best] + 4) * 12);
-            acc.x += row->x;
-            acc.y += row->y;
-            acc.z += row->z;
-            tmp.pos.x = row->x;
-            tmp.pos.y = row->y;
-            tmp.pos.z = row->z; if (1) {}
-            tmp2.pos = tmp.pos;
-            a3->vtx.x = tmp2.pos.x;
-            a3->vtx.y = tmp2.pos.y;
-            a3->vtx.z = tmp2.pos.z;
-            a3->f24 = *(float *)(hitbuf[best] + 8);
-            a3->h10 = *(unsigned short *)(*(char **)(*(char **)(o + 0x84) + 0x68) + *(short *)(hitbuf[best] + 4) * 8);
-            a3->idx = *(short *)(hitbuf[best] + 4);
-            tmp2.pos = acc;
-            a3->pos.x = tmp2.pos.x;
-            a3->pos.y = tmp2.pos.y;
-            a3->pos.z = tmp2.pos.z;
-            a3->dist = 0.0f + dist[best];
-        } else {
-            n = 0;
-        }
-    }
-    return n;
+// gl_func_0003C43C — nearest-hit picker (0x368).
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3C43C.cpp,
+ * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 250); the 1e6
+ * limit literal's donor-local .rodata reloc is pinned as gl_func_0003C43C_rodata
+ * (bootup.uso RoData +0x1AB8). */
+int gl_func_0003C43C(char *o, int *r, float s, void *a3) {
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003C43C);
-#endif
 
 // game_libs_func_0003C7A4 — STRUCTURAL PASS (0x70 / 28 insns, no episode).
 //

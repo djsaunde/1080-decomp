@@ -1898,10 +1898,10 @@ $(GAMELIBS_40070_DONOR): src/game_libs/game_libs_ncc_40070.cpp
 	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=gl_func_00040070 --redefine-sym gl_func_00034458=gl_func_00000000 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=D_40070_vtb --redefine-sym __vtbl__4Base=D_40070_vta $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040070=$(GAMELIBS_40070_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40070_DONOR)
-# 3C43C = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.00). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3C43C_NM_DONOR := build/src/game_libs/game_libs_ncc_3C43C_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003C43C=$(GAMELIBS_3C43C_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3C43C_NM_DONOR)
+# 3C43C = nearest-hit picker (struct-by-value query arg, acc cleared from int i = 0); EXACT NCC donor over a placeholder (agent-c run 250). Its 1e6 literal's .rodata reloc is renamed gl_func_0003C43C_rodata by the splice (pinned to bootup.uso RoData 0x1AB8).
+GAMELIBS_3C43C_DONOR := build/src/game_libs/game_libs_ncc_3C43C.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003C43C=$(GAMELIBS_3C43C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3C43C_DONOR)
 # 38A28: the NCC NM donor (agent-c run 134) is retired in run 188 -- the target is a cfe jump table (NCC never emits one); the cfe NM body in game_libs_post0b.c is the comparison object again.
 # 4D468 = module init under NCC (agent-c runs 137 / 161): node ternaries, static guard pair, first bind call through an inline bind() with a kept handle parameter. EXACT NCC donor over a placeholder; its .bss reloc is renamed gl_func_0004D468_bss by the splice (pinned to 0x3CB00).
 GAMELIBS_4D468_DONOR := build/src/game_libs/game_libs_ncc_4D468.cpp.o
