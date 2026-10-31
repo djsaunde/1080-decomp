@@ -13245,9 +13245,9 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             temp_v1_2 = var_v0_2;
             if (var_v0_2 != temp_v1_4) {
                 if (temp_v1_4 == 0) {
-                    temp_v1 = *(s32 *)((char *)(arg0) + 0x38);
-                    *(f32 *)((char *)(arg0) + 0x8) = (f32) ((f32) temp_v1 * 3.0f);
-                    if (temp_v1 < 0xA) {
+                    temp_v0 = *(s32 *)((char *)(arg0) + 0x38);
+                    *(f32 *)((char *)(arg0) + 0x8) = (f32) ((f32) temp_v0 * 3.0f);
+                    if (temp_v0 < 0xA) {
                         *(f32 *)((char *)(arg0) + 0x8) = 0.0f;
                     }
                     var_v0_2 = 1;
@@ -13434,11 +13434,11 @@ block_83:
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            temp_v1 = *(s32 *)(D_E354_G + 0);
-                            if (temp_v1 != 0) {
-                                temp_f16 = *(f32 *)((char *)(((temp_v1 & 0x1F) * 4)) + 0x1C430); /* agent-g run 250: through the f2 bound variable */
+                            temp_v0 = *(s32 *)(D_E354_G + 0); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep) */
+                            if (temp_v0 != 0) {
+                                temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + 0x1C430); /* agent-g run 250: through the f2 bound variable */
                                 temp_f10_2 *= temp_f16;
-                                *(s32 *)(D_E354_G + 0) = (s32) (temp_v1 - 1);
+                                *(s32 *)(D_E354_G + 0) = (s32) (temp_v0 - 1);
                             }
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1724);
                             if (temp_f16 <= temp_f10_2) {
