@@ -14,7 +14,12 @@
  * (target) and use v0 / a1 for the dl / count temps; cc is a3 (target a0); the E4 w1 / B4 / B3 schedule.
  * agent-c run 252: s is the texel column scaled to 10.5 in two steps, `((cc & 0xF) * 8) << 5` (same `andi 0xF` +
  * one `sll 24` after folding, but the deeper tree makes ugen evaluate s BEFORE t, as the target does): 92.43 ->
- * 92.78 standalone, instruction shape unchanged.
+ * 92.78 standalone, instruction shape unchanged. Then the glyph's pkt is `CTX->me()->next()`: routing `this` through
+ * a zero-code inline accessor (any of me() / me()->me() / ref() / a local copy) gives the target's whole texrect
+ * schedule (y before x in w1, 0x2000 / lineh after the RDPHALF_1 ctx load, the RDPHALF_2 word first) -- 92.78 ->
+ * 96.71; per-site pkt grid on top (me() on the 0xBA000C02 append, folded `+ 0` on the 0xE6000000 and the first
+ * epilogue append): -> 98.44. LEFT: a consistent colour permutation of the next() trio (target ctx v1 / dl a1 /
+ * n a2, ours a3 / v1 / a1 type rotations), the arg1 increment above the first test, cc a0 (ours a2).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -40,7 +45,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 struct DL { Gfx *buf; int n; };
 /* agent-c run 242: next2() = the explicit `n = dl->n; dl->n = n + 1` slot (kit CV) for the first two prologue appends
  * and the last epilogue append (greedy per-site grid): their dl temp takes the target's v0, 92.27 -> 92.43 standalone */
-struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
+struct Ctx { char pad[0xC]; DL *dl; Ctx *me() { return this; } Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Sub { char pad[0x158]; Ctx *ctx; };
 struct Font { char pad[0x21C]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
 #define CTX (o->sub->ctx)
@@ -61,11 +66,11 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
         gW(CTX->next(), 0xF9000000, 0x80);
         gW(CTX->next(), 0xBB000001, 0x80008000);
         gW(CTX->next(), 0xFCFFFFFF, 0xFFFCF279);
-        gW(CTX->next(), 0xBA000C02, 0);
+        gW(CTX->me()->next(), 0xBA000C02, 0);
         gW(CTX->next(), 0xBA001301, 0);
         gW(CTX->next(), 0xFD900000, gl_func_00034458((void *)&D_00000000));
         gW(CTX->next(), 0xF5900000, 0x07000000);
-        gW(CTX->next(), 0xE6000000, 0);
+        gW(CTX->next() + 0, 0xE6000000, 0);
         gW(CTX->next(), 0xF3000000, 0x077FF100);
         gW(CTX->next(), 0xE7000000, 0);
         gW(CTX->next(), 0xF5801000, 0);
@@ -96,7 +101,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             }
             if (cc < 0x80) {
                 if (o->mode == 0) {
-                    gSPTextureRectangle(CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
+                    gSPTextureRectangle(CTX->me()->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
                     gl_func_00034458(o, ch, o->x, o->y);
@@ -112,7 +117,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     }
 
     if (o->mode == 0) {
-        gW(CTX->next(), 0xE7000000, 0);
+        gW(CTX->next() + 0, 0xE7000000, 0);
         gW(CTX->next(), 0xBB000000, -1);
         gW(CTX->next2(), 0xBA001402, 0x300000);
     }
