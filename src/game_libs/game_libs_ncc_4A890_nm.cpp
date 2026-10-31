@@ -44,7 +44,7 @@ s16 *Map::build(s32 n, s16 *ids) {
     if (t0 >= 299) {
         gl_func_00034458(D_00000000 + 0x20058);
     }
-    volatile s32 sz = t0 * 2;
+    volatile s32 sz = t0 * 2 + 0 * (int)(n); /* agent-g run 252: folded counted use of n (zero-use sweep): 94.73 -> 94.77, 348 -> 352 bytes = target */
     s16 *r = (s16 *)gl_func_00034458(sz);
     gl_func_00034458(r, list, sz);
     return r;
