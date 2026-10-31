@@ -6,9 +6,11 @@
  * local edg keeps is a home word -- n1 declared above col gives the unused top word (col at 0xA4..0xB0, frame
  * 0xB8), the n1 / n2 string-argument names and the split case-4 panel2 give the two extra low homes (the case-1
  * spill lands at 0x5C, sp60 at 0x60, sub at 0xA0 = target). 99.45, length = target.
+ * Then the glyph pointer is advanced where it is loaded (`s1 = table[idx] + 1; digit = s1[-1] - 0x30;`): one
+ * definition of s1 instead of two, the counter takes s0 and the glyph pointer s1 as in the target, and the lbu /
+ * addiu pair stays in target order (99.45 -> 99.88).
  * Left: case 1's derived pointer (target keeps a3 + 0x490 in v0 across the D108 call; every held / reference /
- * derived-to-base spelling folds it back onto a3 or adds a null check) and the loop counter / glyph pointer
- * s0 / s1 swap. `sub` is the loop-carried conditionally-assigned value of the target (no default arm), as in
+ * derived-to-base spelling folds it back onto a3 or adds a null check). `sub` is the loop-carried conditionally-assigned value of the target (no default arm), as in
  * the cfe body. Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 extern "C" {
@@ -64,9 +66,8 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
         do {
             a3 = *(char **)(arg0 + 0xD4);
             idx = *(int *)(a3 + 0x7DC) + s0;
-            s1 = ((char **)&import_8025CAF8)[idx];
-            digit = *s1 - 0x30;
-            s1++;
+            s1 = ((char **)&import_8025CAF8)[idx] + 1;
+            digit = s1[-1] - 0x30;
             switch (digit) {
             case 0:
                 sub = a3 + 0x458;
