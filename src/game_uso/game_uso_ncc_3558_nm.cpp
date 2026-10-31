@@ -81,10 +81,9 @@ extern "C" void game_uso_func_00003558(S *s0) {
     Vec3 w;
     float t;
     { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
-    { Body *b = s0->b0; vb.x = b->mtx.m[3][0]; if (1) {} vb.y = b->mtx.m[3][1]; vb.z = b->mtx.m[3][2]; }
+    s0->b0->mtx.getPos(vb); /* agent-c run 247: vb through getPos (address taken = memory-resident like the target's stores after init), no `if (1) {}` after the stage copy, x / y / z adds and `e = vb - va`: 91.62 at 956 B -> 92.60 at 1008 B = target length */
     zero = 0.0f;
     stage = s0->v68;
-    if (1) {}
     {
         M4 *m = &s0->b0->mtx;
         const Vec3 &v = stage;
@@ -93,8 +92,8 @@ extern "C" void game_uso_func_00003558(S *s0) {
         float z = m->m[0][2] * v.x + m->m[2][2] * v.z + m->m[1][2] * v.y;
         stage.x = x; stage.y = y; stage.z = z;
     }
-    vb.x += stage.x; vb.z += stage.z; vb.y += stage.y;
-    e = mk(vb.x - va.x, vb.y - va.y, vb.z - va.z);
+    vb.x += stage.x; vb.y += stage.y; vb.z += stage.z;
+    e = vb - va;
     s0->v3C = e;
     mag = game_uso_func_070238(e.len2());
     {
