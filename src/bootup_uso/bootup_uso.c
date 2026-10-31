@@ -739,6 +739,10 @@ extern int import_8005C108[];
 /* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
  * which increments feed the shared _n changes its colouring, cf. 1A44). */
 #define E68_NEXTB(m) (_n = (m)->dl->count, (m)->dl->count = _n + 1, &(m)->dl->buf[_n])
+/* agent-g run 254: the dl pointer read as a 4-byte int (same size, same value) is a distinct uopt expression, so the
+ * phase-3 G_DL loop's dl loads form their own live range and colour v0 like the target (98.41 -> 98.61) */
+#define E68_DL_I(m) ((DlE68 *)*(s32 *)&(m)->dl)
+#define E68_NEXTBI(m) (_n = E68_DL_I(m)->count, E68_DL_I(m)->count = _n + 1, &E68_DL_I(m)->buf[_n])
 #define E68_SHL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
 #define E68_W(pkt, a, b) { GwE68 *_g = (GwE68 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 #define E68_TILEGEN(pkt, c, tile, uls, ult, lrs, lrt) \
@@ -887,7 +891,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXTB(m), 0x06, dl, 0, 0); }
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXTBI(m), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
