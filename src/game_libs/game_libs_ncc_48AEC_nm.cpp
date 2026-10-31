@@ -38,7 +38,7 @@ struct Ctx {
     MtxHead *mh;
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w0 = hi; g->w1 = lo; }
+    void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w1 = lo; g->w0 = hi; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260) */
     void dlcall(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
