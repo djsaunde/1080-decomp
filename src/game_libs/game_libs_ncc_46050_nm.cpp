@@ -36,6 +36,8 @@
  * zero-code counted loads `+ (o->f4 & 0) ...` (distinct never-loaded Font words) in the BA000C02 w1 pull the next
  * unit boundary up so the &D call argument's a0 web starts before that append (target `lui a0` there, BA001301
  * result a3) -> 99.77; the whole prologue now matches except the F5801000 append's ctx temp (t0).
+ * agent-c run 254: the entry read, `if (ch != 0) {` and `do {` joined on one source line: as1 then fills the beqz delay
+ * slot with the cursor increment (`addiu s3,s3,1`) and puts the s8 `addiu %lo` before the branch, as the target -> 99.82.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -94,9 +96,8 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
         gW(CTX->next(), 0xF2000000, 0x1FC0FC);
     }
 
-    { u8 *p = arg1 + 0 * (int)(arg2); arg1 = p + 1; ch = *p; } /* agent-g run 231: folded counted use of arg2 (zero-use sweep): 92.23 -> 92.25 */
-    if (ch != 0) {
-        do {
+    /* agent-g run 231: folded counted use of arg2 (zero-use sweep): 92.23 -> 92.25; agent-c run 254: the first read, the test and the `do` on ONE source line (as1 same-line join): 99.77 -> 99.82 */
+    { u8 *p = arg1 + 0 * (int)(arg2); arg1 = p + 1; ch = *p; } if (ch != 0) { do {
             cc = ch;
             switch (ch) {
             case 10:
