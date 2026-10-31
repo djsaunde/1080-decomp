@@ -13194,10 +13194,12 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 temp_f0 = *(f32 *)((char *)(arg0) + 0x54);
                 var_f4 = (f32) (u32) *(u8 *)((char *)(arg0) + 0x26);
                 temp_f18 = var_f4 * temp_f0;
-                var_v0 = (u32) temp_f18 + 0 * (int)(*arg0); /* recomposed (u32)float; agent-g run 209 folded use (3692 -> 3688) */
-                *(u8 *)((char *)(arg0) + 0x26) = (u8) var_v0;
+                /* agent-g run 250: the (u32) result goes straight into the store (target ugen temp t3);
+                 * the colourable variable is the o->0x60 read (target lbu v0,0x60) */
+                *(u8 *)((char *)(arg0) + 0x26) = (u32) temp_f18;
                 sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
-                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (*(u8 *)((char *)(arg0) + 0x60) + *(u8 *)((char *)(arg0) + 0x28)) >> 1); /* agent-g run 224: 0x60 first (target lbu v0,0x60 before lbu 0x28) */
+                var_v0 = *(u8 *)((char *)(arg0) + 0x60);
+                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (var_v0 + *(u8 *)((char *)(arg0) + 0x28)) >> 1);
                 if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
                     func_00000000(0x03020000, (s8) *(u8 *)((char *)(arg0) + 0x28));
