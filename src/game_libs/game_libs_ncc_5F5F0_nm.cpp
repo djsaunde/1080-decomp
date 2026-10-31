@@ -40,8 +40,8 @@ extern "C" void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32
             v[2] = zLook;
             gl_vec3_normalize_0005F5F0(v);
             z = v[2]; if (z) {}
-            y = v[1];
-            x = v[0];
+            y = v[1]; if (y) {} /* run 246: keeps on all three copy-outs (v[0..2] promoted, stored at the call */
+            x = v[0]; if (x) {} /* line after the xEye home spill as the target), the refill keep dropped */
         }
         x *= 10.0f;
         xLook = x;
@@ -49,7 +49,7 @@ extern "C" void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32
         zLook = z * 10.0f;
         v[0] = xLook;
         v[1] = yLook;
-        v[2] = zLook; if (z) {}
+        v[2] = zLook;
         d2 = 100.0f;
     }
     len = -1.0f / sqrtf(d2);
