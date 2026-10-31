@@ -30,7 +30,7 @@ s16 *Map::build(s32 n, s16 *ids) {
         s = ids;
         s16 *end = ids + n;
         do {
-        list[t0++] = *s;
+        list[t0++] = *s + 0 * (int)(*s); /* agent-g run 252: folded second read (zero-use --exprs sweep): 94.77 -> 95.51, same length */
         for (int idx = 0; idx < count(); idx++) {
             if (*s == tbl[idx]) {
                 list[t0++] = idx;
