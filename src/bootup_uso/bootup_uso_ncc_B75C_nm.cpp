@@ -10,8 +10,10 @@
  * value, slti v0,11); the {0,1,0} zeros converted from an int variable set to 0 (a distinct uopt expression:
  * the 0x960 / sp5C zeros re-materialise mtc1 zero like the target) + `if (1) {}` after them (zero in f0);
  * the single-range float temps merged into var_f0 / var_f2 (homes) and temp_f12 declared first.
- * Left: temp_a1's spill slot (sp+0x20; target sp+0x28 above var_a0's sp+0x24) and the 0.8 compare's
- * a0 / a1 hoist order (target computes arg0 + 0x3B0 first).
+ * Run 243 (99.97 -> 99.98): `temp_a1 = arg0 + 0x3B0;` as the first 0x9A8 & 1 arm's call argument gives the
+ * 0.8 compare block the target hoist order (arg0 + 0x3B0 before arg0 + 0xCC) and puts the a0 / a1 spills in
+ * the target's relative order (a0 below a1).
+ * Left: the a0 / a1 spill words (sp+0x20 / 0x24; target sp+0x24 / 0x28 with sp+0x20 unused).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef double f64; typedef int s32; typedef short s16;
 extern "C" {
@@ -123,7 +125,8 @@ void func_0000B75C(char *arg0) {
         } else {
             *(s16 *)((char *)(arg0) + 0xA6C) = 0;
             if (*(s32 *)((char *)(arg0) + 0x9A8) & 1) {
-                bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3B0, -*(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x678), arg0);
+                temp_a1 = arg0 + 0x3B0;
+                bu_b75c_mvf(arg0 + 0xCC, temp_a1, -*(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x678), arg0);
             } else {
                 var_a0 = arg0 + 0xCC;
                 temp_a1 = arg0 + 0x3C8;
