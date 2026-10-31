@@ -10209,7 +10209,7 @@ void gl_func_000415A4(O415A4 *self) {
     t->f18 = 100.0f;
     t->f1C = 16000.0f; if (1) {}
     D_415A4_tA.a28 = 1030;
-    D_415A4_tA.a28 |= 6 | 0x400; /* agent-g run 228: compound form, 94.44 -> 94.49 (same length) */
+    D_415A4_t.a28 |= 6 | 0x400; /* agent-g run 228: compound form, 94.44 -> 94.49 (same length); agent-g run 252: through D_415A4_t, not the tA alias (the 1030 store keeps the absolute lui at, the RMW goes through the held t base): 94.59 -> 94.87, same length */
     t->a2C = 1;
     if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
     v[3] = v[2] = v[1] = v[0] = 0.0f;
