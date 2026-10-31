@@ -13421,12 +13421,13 @@ block_83:
                                 D_E354_1C738_b = 1.0f;
                             }
                         } else if (temp_v1 >= 7) {
-                            temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / D_E354_1C738_c; if (1) {}
+                            temp_f16 = D_E354_1C738_c; temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / temp_f16; if (1) {} /* agent-g run 250: one bound variable (target f2) for divisor / 1.0 / 0x1724 */
                             if (temp_f10_2 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl (not !(0.5 <= x)) */
                                 temp_f10_2 = 0.5f;
                             }
-                            if (1.0f <= temp_f10_2) {
-                                temp_f10_2 = 1.0f;
+                            temp_f16 = 1.0; /* agent-g run 250: double literal (1.0f is constant-propagated into a fresh mtc1) */
+                            if (temp_f16 <= temp_f10_2) {
+                                temp_f10_2 = temp_f16;
                             }
                             temp_v1 = *(s32 *)(D_E354_G + 0);
                             if (temp_v1 != 0) {
@@ -13450,8 +13451,9 @@ block_83:
                             if (temp_f16 <= temp_f0) {
                                 temp_f0 = temp_f16;
                             }
-                            if (temp_f0 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl */
-                                temp_f0 = 0.5f;
+                            temp_f16 = 0.5; /* agent-g run 250: bound variable reused after the 0x1728 clamp (target mtc1 f2 + mov.s) */
+                            if (temp_f0 <= temp_f16) { /* run 183: target c.le.s x,0.5 + bc1fl */
+                                temp_f0 = temp_f16;
                             }
                             *(s32 *)(D_E354_G + 0x14) = (s32) (temp_v0_2 - 1);
                             D_E354_1C73C_c = temp_f0;
