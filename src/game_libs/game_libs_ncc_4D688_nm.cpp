@@ -19,6 +19,10 @@
  * replaced by a dead multi-def `if (0) { e = 0; }`; the t-ring lines up. Then a statement grid: m3C before the
  * volatile m24++, and the 'g'/'h' handover as `m4 = m8; m8 = 0; m28 = 0;` (no named t): 53 -> 2 words off
  * (standalone 95.76 -> 96.95). Left: the old-n copy of `n++ & 1` in v0 (target a0, hoisted into the switch delay).
+ * agent-g run 256: that copy now goes through the e variable (`e = (Ev *)n; n++; if ((int)e & 1)`; e is dead
+ * after `k = e->key` and its reloaded poll web sits in a0, so uopt's per-variable colour puts the copy in a0):
+ * every instruction now equals the target up to the static-guard relocations; left: ugen's `.align 5`
+ * (5 nops) before the dead epilogue.
  * Still NON_MATCHING: build/non_matching/ only. */
 extern "C" {
 int gl_func_00034458(...);
@@ -105,7 +109,9 @@ void Obj::run()
             gl_func_00034458(DSTR(0x2026C), k);
             break;
         case 'd':
-            if (n++ & 1) {
+            e = (Ev *)n; /* agent-g run 256: the old n through the dead e (its poll web reloads into a0; kit CCLXX / CCLXXX) */
+            n++;
+            if ((int)e & 1) {
                 gl_func_00034458(D_4D688_g1, k);
                 gl_func_00034458(D_4D688_g1);
             }
