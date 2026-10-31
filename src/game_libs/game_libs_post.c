@@ -13073,6 +13073,12 @@ extern f32 D_E354_1C330[], D_E354_1C3B0[], D_E354_1C310[];  /* per-table float a
 extern s32 gl_E354_setf(s32, f32);  /* (cmd, single float in a1): target mfc1 a1 / lw a1, no cvt.d.s; blank jal (NM-only, like gl_E354_emitf) */
 extern f32 D_E354_1C738_a, D_E354_1C738_b, D_E354_1C738_c, D_E354_1C73C_a, D_E354_1C73C_b, D_E354_1C73C_c;  /* scalar globals: target lui at,2 + folded %lo per access */
 extern char D_E354_G[];  /* array view: target holds &G (lui/addiu v1) for the +0/+0x14 counters */
+/* agent-g run 251: the same counters through function-typed symbols (cfe keeps a fn symbol's address as a
+ * `lui; addiu` base and puts the field offset in the access, never in the %lo): the >= 7 arm's +0 / +0x14
+ * accesses through E354_GA and the else arm's +0x14 counter through E354_GB give the target's
+ * `lui v1; addiu v1; lw/sw 0x14(v1)` (else arm word-exact up to t-registers; the bc1fl slot store returns). */
+extern void D_E354_GA(void);
+extern void D_E354_GB(void);
 void gl_func_0002E354(char *arg0, s32 arg1) {
     /* agent-g run 224: declaration order and count from the target frame (0x80: saves end 0x28,
      * spill 0x2C, 20 home words 0x30..0x7F): sp7D at frame-3 behind two u8s, three words before
@@ -13435,22 +13441,22 @@ block_83:
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            temp_v0 = *(s32 *)(D_E354_G + 0); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep) */
+                            temp_v0 = *(s32 *)((char *)D_E354_GA + 0); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep) */
                             if (temp_v0 != 0) {
                                 temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + 0x1C430); /* agent-g run 250: through the f2 bound variable */
                                 temp_f10_2 *= temp_f16;
-                                *(s32 *)(D_E354_G + 0) = (s32) (temp_v0 - 1);
+                                *(s32 *)((char *)D_E354_GA + 0) = (s32) (temp_v0 - 1);
                             }
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1724);
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            *(s32 *)(D_E354_G + 0x14) = 0x20;
+                            *(s32 *)((char *)D_E354_GA + 0x14) = 0x20;
                             D_E354_1C73C_a = temp_f10_2;
                             gl_E354_setf(0x04010900, temp_f10_2);
                         }
                     } else {
-                        temp_v0_2 = *(s32 *)(D_E354_G + 0x14);
+                        temp_v0_2 = *(s32 *)((char *)D_E354_GB + 0x14);
                         if (temp_v0_2 != 0) {
                             temp_f0 = D_E354_1C73C_b;
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1728);
@@ -13462,7 +13468,7 @@ block_83:
                             if (temp_f0 <= temp_f16) { /* run 183: target c.le.s x,0.5 + bc1fl */
                                 temp_f0 = temp_f16;
                             }
-                            *(s32 *)(D_E354_G + 0x14) = (s32) (temp_v0_2 - 1);
+                            *(s32 *)((char *)D_E354_GB + 0x14) = (s32) (temp_v0_2 - 1);
                             D_E354_1C73C_c = temp_f0;
                             gl_E354_setf(0x04010900, temp_f0);
                         } else {
