@@ -13417,15 +13417,15 @@ block_83:
             if (*(u8 *)((char *)(arg0) + 0x23) != 0) {
                 if ((D_raceA_E354 == 1) && ((temp_v0_7 = D_raceB_E354, (temp_v0_7 == 4)) || (temp_v0_7 == 0xA)) && ((temp_v0_7 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
                     if (*(u8 *)((char *)(arg0) + 0x14) == 0) {
-                        temp_v1 = *(s32 *)((char *)(arg0) + 0x38);
-                        if (temp_v1 == 0) {
+                        var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
+                        if (var_v0_3 == 0) {
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
                             D_E354_1C738_a = temp_f16;
                             if (temp_f16 == 0.0f) {
                                 temp_f16 = 1.0; /* agent-g run 250: target mtc1 f2 */
                                 D_E354_1C738_b = temp_f16;
                             }
-                        } else if (temp_v1 >= 7) {
+                        } else if (var_v0_3 >= 7) {
                             temp_f16 = D_E354_1C738_c; temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / temp_f16; if (1) {} /* agent-g run 250: one bound variable (target f2) for divisor / 1.0 / 0x1724 */
                             if (temp_f10_2 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl (not !(0.5 <= x)) */
                                 temp_f10_2 = 0.5f;
