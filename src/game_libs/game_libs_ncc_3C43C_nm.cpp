@@ -7,7 +7,9 @@
  * agent-c run 249 (98.26 -> 99.47, frame 0xE0 = target): the bottom of the frame holds only the ternary temp, the
  * uopt unroll home and two uopt temp words, so the named scalars are declared BETWEEN the staging records (tmp / tmp2
  * shrink to keep pos at the target offsets); dist before hitbuf, no zero-use on best, dd function-scope with
- * `dd = 0.0f; if (1) {} dd = dd + dist[best];`, and `r[2] + 0 * r[0]` on the call. */
+ * `dd = 0.0f; if (1) {} dd = dd + dist[best];` (99.47); then the position passed BY VALUE (`Vec3 *r`, `*r` as one
+ * struct argument: the t8 / t7 / t8 alternating struct-copy words at sp+16..24 and the r home spill + reload): 99.91.
+ * Residual: the acc zero constant is coloured f14 (target f0). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -39,7 +41,7 @@ extern short idx;
 extern Vec3 vtx;
 extern float f24;
 }
-extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
+extern "C" int gl_func_0003C43C(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
     float dist[8];
     char *hitbuf[8];
     Vec3 acc;
@@ -55,7 +57,7 @@ extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
     acc.x = 0.0f;
     acc.y = 0.0f;
     acc.z = 0.0f;
-    n = gl_func_00000000(o, 8, dist, hitbuf, r[0], r[1], r[2] + 0 * r[0], 0);
+    n = gl_func_00000000(o, 8, dist, hitbuf, *r, 0);
     lim = 1000000.0f; /* agent-g run 217 (kit CCXIV): bootup.uso RoData 0x1AB8 = 0x49742400 is the literal 1e6, no k copy: 96.78 -> 98.24 */
     best = -1;
     a3->count = n;
