@@ -12,6 +12,10 @@
  * slot / packet pointer MERGED into slot3 / cmd2 (one variable each instead of two: the merge pays back the 8
  * frame bytes the named h homes cost, frame 0xC0 kept): 99.41 -> 99.63. Left: the first h takes v0 (target
  * a2) and the t-ring of the last block is one register off.
+ * agent-c run 245: the list call's `arg0->0x40` pointer held in a NAMED variable (ugen then emits it as a uopt
+ * value outside the t-ring, so the post-call block's ring = target: t9 / t4 / t5 / t6 / t7), reusing the dead
+ * matrix pointer `b` (a fresh name costs a home: frame 0xC8): 99.63 -> 99.88. Left: the first h (v0, target a2)
+ * and that pointer (a2, target t0).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32;
 extern "C" {
@@ -69,7 +73,7 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
         cmd2[0] = 0xFA000100;
         cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;
         ctx = P(P(g, 0x254), 0x158);
-        list = F_4B2F4_list(P(P(arg0, 0x40), 0x60));
+        b = (f32 (*)[4])P(arg0, 0x40); list = F_4B2F4_list(P(b, 0x60));
         { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
         cmd2[0] = 0x06000000;
