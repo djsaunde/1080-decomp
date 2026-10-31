@@ -781,7 +781,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     MgrE68 *m;
     VtxE68 *vp;
     s32 _n;
-    volatile int padq[4]; /* run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target) */
+    volatile int padq[3]; /* run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target) */
 
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
@@ -839,15 +839,19 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             for (k2 = 0; k2 != 2; k2++) {
                 uls = 0;
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
+                    s32 vs, ve;
+                    ve = (vidx + 3) * 2; vs = vidx * 2;
                     E68_CULL(arr[k++] = E68_NEXT(m), vidx, vidx + 3);
-                    /* agent-c run 233: the width read spelled *(s32 *)(int)&w (95.31 -> 96.42, length 3020 -> 3032 of 3036):
-                     * its hoisted address adds the one live value that makes uopt spill the (ult + 31) << 2 invariant to 0x54 like the target */
-                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, *(s32 *)(int)&import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
+                    /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
+                     * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
+                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
                     E68_END(E68_NEXTB(m));
                     uls += 64;
+                    if (ve) {}
                     vidx += 4;
+                    if (vs) {}
                 }
                 ult += 32;
             }
