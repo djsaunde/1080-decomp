@@ -13198,8 +13198,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                  * the colourable variable is the o->0x60 read (target lbu v0,0x60) */
                 *(u8 *)((char *)(arg0) + 0x26) = (u32) temp_f18;
                 sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
-                var_v0 = *(u8 *)((char *)(arg0) + 0x60);
-                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (var_v0 + *(u8 *)((char *)(arg0) + 0x28)) >> 1);
+                temp_v0 = *(u8 *)((char *)(arg0) + 0x60); /* not var_v0: that variable carries an a2 argument preference */
+                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (temp_v0 + *(u8 *)((char *)(arg0) + 0x28)) >> 1);
                 if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
                     func_00000000(0x03020000, (s8) *(u8 *)((char *)(arg0) + 0x28));
