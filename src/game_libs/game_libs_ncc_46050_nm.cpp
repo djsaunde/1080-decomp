@@ -38,6 +38,9 @@
  * result a3) -> 99.77; the whole prologue now matches except the F5801000 append's ctx temp (t0).
  * agent-c run 254: the entry read, `if (ch != 0) {` and `do {` joined on one source line: as1 then fills the beqz delay
  * slot with the cursor increment (`addiu s3,s3,1`) and puts the s8 `addiu %lo` before the branch, as the target -> 99.82.
+ * Then the glyph TEXRECT append is `CTX->nextr()`, next() with its result through a named inline local
+ * (`Gfx *r = &dl->buf[dl->n++]; return r;`): it keeps the folded `+ 0`'s texrect schedule but the ctx / dl / n temps
+ * stay the pooled v1 / a1 / a2 with the result in v0, as the target -> 99.91.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -64,7 +67,9 @@ template <class T> inline T *me(T *p) { return p; }
 struct DL { Gfx *buf; int n; };
 /* agent-c run 242: next2() = the explicit `n = dl->n; dl->n = n + 1` slot (kit CV) for the first two prologue appends
  * and the last epilogue append (greedy per-site grid): their dl temp takes the target's v0, 92.27 -> 92.43 standalone */
-struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
+struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
+    /* agent-c run 254: the result through a named inline local (glyph TEXRECT append; replaces `me(CTX)->next() + 0`) */
+    Gfx *nextr() { Gfx *r = &dl->buf[dl->n++]; return r; } };
 struct Sub { char pad[0x158]; Ctx *ctx; };
 struct Font { s32 f0; s32 f4; s32 f8; s32 fC; char pad[0x21C - 0x10]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
 #define CTX (o->sub->ctx)
@@ -119,7 +124,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             }
             if (cc < 0x80) {
                 if (o->mode == 0) {
-                    gSPTextureRectangle(me(CTX)->next() + 0, CTX->next(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
+                    gSPTextureRectangle(CTX->nextr(), CTX->next(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
                     gl_func_00034458(o, ch, o->x, o->y);
