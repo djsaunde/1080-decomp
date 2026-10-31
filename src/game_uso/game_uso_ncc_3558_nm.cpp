@@ -108,7 +108,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     w.x = w.x - va.x;
     w.z = w.z - va.z;
     w.y = zero;
-    l = w.len2(); /* agent-g run 259 (kit CCXCIII): len2's named r was an inline-expansion home at the frame bottom (every low object 8 above the target); as a function-scope l declared after t its home sits in the decl region instead -- the sp-offset set now equals the target's (93.61 -> 93.68 standalone) */
+    l = w.len2(); /* agent-g run 259 (kit CCXCIV): len2's named r was an inline-expansion home at the frame bottom (every low object 8 above the target); as a function-scope l declared after t its home sits in the decl region instead -- the sp-offset set now equals the target's (93.61 -> 93.68 standalone) */
     t = game_uso_func_070238(l);
     game_uso_func_071028(&w);
     if (s0->f88 < t) {
