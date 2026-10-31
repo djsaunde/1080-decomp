@@ -13465,7 +13465,8 @@ block_83:
                         }
                     }
                 }
-                switch ((unsigned)(*(u8 *)((char *)(arg0) + 0x14))) {              /* switch 6; irregular */
+                temp_v1_4 = *(u8 *)((char *)(arg0) + 0x14); /* agent-g run 250: named selector, reused by the default arm's +2 */
+                switch ((unsigned)temp_v1_4) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
@@ -13504,7 +13505,7 @@ block_83:
                     gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, (s32) *(u8 *)((char *)(arg0) + 0x15), (s32) *(u8 *)((char *)(arg0) + 0x28));
                     break;
                 default:                            /* switch 6 */
-                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, *(u8 *)((char *)(arg0) + 0x14) + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
+                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v1_4 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
                     func_00000000(*(u8 *)((char *)(arg0) + 0x21));
                     break;
                 }
