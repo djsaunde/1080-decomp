@@ -34,6 +34,7 @@
  * RESIDUAL: the target stores vb after its init and reloads it in the block
  * (split LR; ours keeps it in f14..f18 throughout), va.y is held in f20 until
  * the block (target reloads va from 240..248), tmp at 148 vs 140. */
+template <class T> inline T *me(T *p) { return p; } /* agent-c run 253: zero-code accessor (kit CCLXXXIV) */
 struct Vec3 {
     float x, y, z;
     void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; } /* agent-g run 245: x, y, z source order (uopt emits the stores z, y, x like the target now): 91.56 -> 91.58 */
@@ -102,7 +103,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
         side.x = zero; side.y = k; side.z = zero; game_uso_func_072EE8(c.getOut()->f30, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */
     }
     game_uso_func_071028(&e);
-    s0->b1->mtx.getPos(w);
+    me(s0)->b1->mtx.getPos(w); /* agent-c run 253: accessor sweep (kit CCLXXXIV): 93.49 -> 93.61 */
     w.x = w.x - va.x;
     w.z = w.z - va.z;
     w.y = zero;
