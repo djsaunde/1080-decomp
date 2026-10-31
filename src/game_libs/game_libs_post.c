@@ -13083,6 +13083,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     u8 temp_v1_2;
     u8 temp_v1_3;
     u8 sp7D;
+    u8 temp_v1_32; /* agent-g run 251: o->0x32 web in its own u8 (target v1, not a0); byte 0x7C below sp7D */
     volatile f32 sp78; /* agent-g run 250: volatile home keeps the target's dead first swc1 0x78 */
     f32 temp_f0;
     f32 temp_f10_2;
@@ -13131,16 +13132,16 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
              * them in the 0x32 block after the o->0x4 store); the product is
              * spelled o4 * o0 (cfe swaps it to the target's lwc1 f2,0; f14,4). */
             temp_f18 = *(f32 *)((char *)(arg0) + 0x4) * *(f32 *)((char *)(arg0) + 0x0) * 100.0f;
-            temp_v1_2 = *(u8 *)((char *)(arg0) + 0x32);
+            temp_v1_32 = *(u8 *)((char *)(arg0) + 0x32);
             *(u8 *)((char *)(arg0) + 0x20) = 0U; if (1) {} /* agent-g run 250: BB split (bbsplit sweep) */
-            temp_v0_2 = temp_v1_2 * 4;
-            if (temp_v1_2 != 0) {
-                sp64 = D_E354_1C330[temp_v1_2];
-                temp_f0 = D_E354_1C3B0[temp_v1_2];
+            temp_v0_2 = temp_v1_32 * 4;
+            if (temp_v1_32 != 0) {
+                sp64 = D_E354_1C330[temp_v1_32];
+                temp_f0 = D_E354_1C3B0[temp_v1_32];
                 sp60 *= temp_f0;
                 *(f32 *)((char *)(arg0) + 0x4) = (f32) (*(f32 *)((char *)(arg0) + 0x4) * temp_f0);
                 /* agent-g run 209: folded counted use of arg0 (zero-use sweep) */
-                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_2 - 1) + 0 * (int)(arg0);
+                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_32 - 1) + 0 * (int)(arg0);
             }
             temp_f0 = *(f32 *)((char *)(arg0) + 0x50) - *(f32 *)((char *)(arg0) + 0x0);
             if (0.5f <= temp_f0) {
