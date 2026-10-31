@@ -42,7 +42,7 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
     for (i = 0; i < n594; i++) {
         idx[i] = gl_func_00034458(this, i == 0 || n594 == 2, &v[i]);
         if (idx[i] < 0) {
-            if (nv >= max590 - 1) {
+            if (nv + 1 >= max590) { /* agent-g run 258: compare spelling (max590 loaded first like the target): 98.71 -> 98.73 */
                 flush();
                 gl_func_00034458(this);
                 i = 0;
