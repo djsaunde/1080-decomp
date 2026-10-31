@@ -42,6 +42,7 @@ struct Vec3 {
  z += v.z;
  y += v.y;  }
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
+    float len2x() const { float r = x * x + y * y + z * z; return r; } /* agent-c run 248: e's length in x, y, z order (w keeps len2): 93.484 -> 93.492 */
     float len2() const { float r = y * y + x * x + z * z; return r; } /* agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
 };
 inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.z = u; r.y = q; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62) */
@@ -94,7 +95,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     }
     e = vb - va;
     s0->v3C = e;
-    mag = game_uso_func_070238(e.len2());
+    mag = game_uso_func_070238(e.len2x());
     {
         Vec3 side;
         k = e.y * s0->f130;
