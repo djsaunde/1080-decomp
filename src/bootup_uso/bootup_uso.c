@@ -886,7 +886,8 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             E68_VTX(E68_NEXT(m), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXT(m), 0x06, dl, 0, 0); }
+                /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXTB(m), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
