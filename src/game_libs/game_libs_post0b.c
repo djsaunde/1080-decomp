@@ -24218,8 +24218,6 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 cnt;       /* arg4-block appends use the function-level cursor trio */
     char *p;
     char *base;
-    char *base2;
-    char *p2;
     u8 colv[4];    /* 0xA4..0xA7 (declared last of the top group: lands at 0xA4 with no pads) */
     s32 sp38;
     s32 sp34;
@@ -24329,48 +24327,40 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
         *(s32 *)(p + 0) = 0xBA001402; *(s32 *)(p + 4) = 0x300000; /* agent-c run 235: p+0 first, one line */
-        /* agent-c run 243: the FF10 / F7 appends on a second function-level cursor pair (base2 / p2, the count
-         * in rgba, dead since the colour pack) and the sp30 / 2nd-E7 appends as blocks (per-append grid: 94.92 -> 95.16) */
-        base2 = *(char **)(arg0 + 0xC);
-        rgba = *(s32 *)(base2 + 4);
-        *(s32 *)(base2 + 4) = rgba + 1;
-        p2 = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
-        *(s32 *)(p2 + 0) = 0xFF100000 | ((arg10 - 1) & 0xFFF);
-        *(s32 *)(p2 + 4) = arg2 & 0xFFFFFF;
-        base2 = *(char **)(arg0 + 0xC);
-        rgba = *(s32 *)(base2 + 4);
-        *(s32 *)(base2 + 4) = rgba + 1;
-        p2 = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
-        *(s32 *)(p2 + 0) = 0xF7000000;
-        *(s32 *)(p2 + 4) = 0xFFFCFFFC;
-        {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 0) = sp30;
-            *(s32 *)(p + 4) = sp2C;
-        }
+        /* agent-c run 243: the FF10 / F7 appends count in rgba (dead since the colour pack). agent-g run 247: the
+         * whole arg4 path on the function-level base / p (the run-243 base2 / p2 pair and the sp30 / 2nd-E7 block
+         * trios were 8 extra home words: frame 0xE0 -> 0xC0 = target, colv at 0xA4) + a bbsplit after the 1st E7
+         * cursor (bbsplit grid on the new frame): 95.16 -> 95.17 */
+        base = *(char **)(arg0 + 0xC);
+        rgba = *(s32 *)(base + 4);
+        *(s32 *)(base + 4) = rgba + 1;
+        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
+        *(s32 *)(p + 0) = 0xFF100000 | ((arg10 - 1) & 0xFFF);
+        *(s32 *)(p + 4) = arg2 & 0xFFFFFF;
+        base = *(char **)(arg0 + 0xC);
+        rgba = *(s32 *)(base + 4);
+        *(s32 *)(base + 4) = rgba + 1;
+        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
+        *(s32 *)(p + 0) = 0xF7000000;
+        *(s32 *)(p + 4) = 0xFFFCFFFC;
+        base = *(char **)(arg0 + 0xC);
+        cnt = *(s32 *)(base + 4);
+        *(s32 *)(base + 4) = cnt + 1;
+        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+        *(s32 *)(p + 0) = sp30;
+        *(s32 *)(p + 4) = sp2C;
+        base = *(char **)(arg0 + 0xC);
+        cnt = *(s32 *)(base + 4);
+        *(s32 *)(base + 4) = cnt + 1;
+        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8; if (1) {}
+        *(s32 *)(p + 0) = 0xE7000000;
+        *(s32 *)(p + 4) = 0;
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
         *(s32 *)(p + 0) = 0xE7000000;
         *(s32 *)(p + 4) = 0;
-        {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 0) = 0xE7000000;
-            *(s32 *)(p + 4) = 0;
-        }
         func_00000000(arg0, arg1, arg10);
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
