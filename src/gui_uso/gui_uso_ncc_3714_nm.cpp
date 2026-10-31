@@ -32,6 +32,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt3 + 0, G_RDPHALF_2,(_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
+template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
     Gfx *nextb() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; } };
@@ -44,7 +45,7 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     s32 w, h;
     f32 fw, fh;
     Spr *spr;
-    gSPTexture(CTX->next(), 0x8000, 0x8000, 0, 0, 1);
+    gSPTexture(me(me(CTX))->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 97.41 -> 97.94 */
     spr = arg0->spr;
     h = spr->h + 0 * (int)(spr->w); /* agent-g run 210: folded counted use (zero-use sweep): 96.51 -> 97.27 */
     gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0);
@@ -53,6 +54,6 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     fw = w * arg5;
     y = (f32)arg2 + (-((f32)h / 2) * arg6);
     fh = h * arg6;
-    gSPScisTextureRectangle(CTX->nextb(), CTX->nC(), CTX->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(CTX->nextb(), me(CTX)->nC() + 0, me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
