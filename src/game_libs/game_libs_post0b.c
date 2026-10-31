@@ -14942,91 +14942,12 @@ void gl_func_0004A84C(char *a0) {
     }
 }
 
-// gl_func_0004A890 — STRUCTURAL PASS + BOUNDARY NOTE (0x1FC / 128 words, no
-// episode). Raw-.word USO. realjr=2, regjr=0 → 2-function BUNDLE: named fn
-// ends at the jr at 0x4A9E8 (~90w); a ~40-word no-frame leaf at 0x4A9EC
-// (DEFERRED USO RE-SPLIT — belongs to the next symbol).
-//
-// Named fn = 16-bit-coordinate bounding-box / min-max compute (single
-// prologue frame 0x2A0 — large on-stack scratch; saves ra, s0, s1):
-//   void gl_func_0004A890(void *a0, int n, short *pts) {
-//     short *out = sp + 0x48;                         // result scratch
-//     if (n <= 0) goto done;                          // blez count guard
-//     int minx = -1, maxx = ...;                       // 240AFFFF init
-//     for (i = 0; i < n; i++) {
-//       int x = (short)pts[i*?];                        // lh + sra sign-ext
-//       int y = (short)pts[i*? + 1];
-//       // track running min/max (subu/compare), also reading pts+0xD4/0xD6
-//       // bound fields; write the accumulated extents into out (sh stores)
-//     }
-//     // a second pass (from 0x4A8FC) re-walks pts via pts->0xD0 to refine
-//     // / clip the extents.
-//   done:
-//   }
-// Computes a bounding box / min-max extent over an n-element array of 16-bit
-// coordinates (sign-extended via lh + sra), seeding from a -1 sentinel and
-// accumulating into the sp+0x48 scratch, with bound fields read at
-// pts+0xD4/0xD6 and a second refinement pass over pts->0xD0. Family:
-// geometry / spatial-query (bbox extent computation; relates to the
-// segment's spatial-search / FP-pool routines). Inner min/max bookkeeping
-// representative; the blez count guard, the 16-bit lh+sra coordinate read,
-// the -1 seed and the pts+0xD4/0xD6 bound fields are exact. Trailing leaf
-// at 0x4A9EC = deferred re-split. Caps: point/pts struct untyped; bundle
-// re-split deferred. Full body INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-extern int D_00000000;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4A890.cpp (`s16 *Map::build(s32 n, s16 *ids)`,
+ * the id -> matching-entry index list builder; NM history there), REPLACE_FUNC_BODY-spliced over this placeholder
+ * in both build trees (agent-g run 257). */
 s16 *gl_func_0004A890(char *arg0, s32 arg1, s16 *arg2) {
-    s16 list[300];
-    s16 cnt;
-    s16 *result;
-    s16 *p;
-    s16 *end;
-    s32 n;
-    s32 idx;
-    s32 off;
-    s32 sz;
-    s16 t0;
-    p = arg2;
-    t0 = 0;
-    if (arg1 > 0) {
-        end = arg2 + arg1;
-        do {
-            list[t0] = *p;
-            t0 = t0 + 1;
-            n = *(s16 *)(arg0 + 0xD6) - *(s16 *)(arg0 + 0xD4);
-            if (n > 0) {
-                idx = 0;
-                off = 0;
-                do {
-                    if (*p == *(s16 *)(*(int *)(arg0 + 0xD0) + off)) {
-                        list[t0] = idx;
-                        t0 = t0 + 1;
-                        n = *(s16 *)(arg0 + 0xD6) - *(s16 *)(arg0 + 0xD4);
-                    }
-                    idx += 1;
-                    off += 2;
-                } while (idx < n);
-            }
-            p += 1;
-            list[t0] = -1;
-            t0 = t0 + 1;
-        } while (p != end);
-    }
-    list[t0] = -1;
-    t0 = t0 + 1;
-    if (t0 >= 299) {
-        cnt = t0;
-        gl_func_00034458((char *)((char *)&D_00000000 + 0x20058));
-        t0 = cnt;
-    }
-    sz = t0 * 2;
-    result = (s16 *)gl_func_00034458(sz);
-    gl_func_00034458(result, list, sz);
-    return result;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004A890);
-#endif
 
 /* game_libs_func_0004A9F0: 40-insn nested-loop stream→grid byte copier (fresh
  * decode 2026-05-28, mnemonic disasm). Reads a -1-terminated halfword stream

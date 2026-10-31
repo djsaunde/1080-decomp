@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004A890",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-31T10:29:29.206841+00:00",
+  "end_time": "2026-10-31T10:29:29.206854+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-31T10:29:29.206851+00:00",
+      "assistant_text": "NCC C++ donor: Map::build (id -> matching-entry index list, heap copy). The byte size reuses the dead parameter n (n = t0 * 2 + 0 * (int)(n)): n's size web takes s1 like the target (a separate sz always spilled); an unused volatile s32 sz keeps the target's function-scope home (frame 0x2A0); the end pointer as (s16 *)(n * 2 + (int)ids) gives the addu t6,s0 operand order.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 88,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0004A890 (0x160 / 88 words): EXACT, REPLACE_FUNC_BODY-spliced over the\n * game_libs_post0b.c placeholder in both build trees (agent-g run 257). `s16 *Map::build(s32 n, s16 *ids)` (renamed\n * to gl_func_0004A890 with objcopy, name only): for every id, the id then the indices of the map entries equal to it\n * (the entry count `hi - lo` through an inline `count()` re-read in the loop condition: the target re-loads\n * 0xD4 / 0xD6 only after a hit), each run closed by -1; then a heap copy of the list.\n * History (NM): agent-c run 160 real C++ (86.41 -> 88.70); run 179 `ids++` after the terminator store (93.47);\n * run 216 the loop walks the COPY `s`, the end pointer from the parameter (the parameter's live range takes s0\n * from entry: 94.73); agent-g run 252 spelling / zero-use levers (95.91).\n * agent-g run 257 (95.91 -> 100):\n *  - the byte size is the PARAMETER n reused (`n = t0 * 2 + 0 * (int)(n)`, n is dead after the end pointer):\n *    uopt colours n's webs together, and with the entry web live across nothing the size web takes s1 like the\n *    target (a separate `sz`, named / volatile / function-scope, always spilled); the target's function-scope\n *    home for it stays as an unused `volatile s32 sz;` (frame 0x2A0; without it 0x298);\n *  - the end pointer as integer arithmetic `(s16 *)(n * 2 + (int)ids)` gives the target's `addu t1,t6,s0`\n *    operand order (every pointer spelling -- ids + n, n + ids, &n[ids], += -- emits s0 first);\n *  - the first store is the plain `*s` again (the folded second read only helped the spilled-size shape).\n * Calls go through gl_func_00000000 (the target's jal fields are 0); D_00000000 + 0x20058 is the target's\n * absolute lui 0x2 / addiu 0x58 pair. No rodata.\n */\ntypedef short s16; typedef int s32;\nextern \"C\" {\nextern char D_00000000[];\nvoid *gl_func_00000000(...);\n}\nstruct Map {\n    char pad[0xD0]; s16 *tbl; s16 lo; s16 hi;\n    int count() { return hi - lo; }\n    s16 *build(s32 n, s16 *ids);\n};\ns16 *Map::build(s32 n, s16 *ids) {\n    s16 list[300];\n    s16 t0 = 0;\n    s16 *s; /* agent-g run 195 (hoist sweep): function scope */\n    if (n > 0) {\n        s = ids;\n        s16 *end = (s16 *)(n * 2 + (int)ids);\n        do {\n        list[t0++] = *s;\n        for (int idx = 0; idx < count(); idx++) {\n            if (tbl[idx] == *s) { /* agent-g run 252: operand order (spelling grid) */\n                list[t0++] = idx;\n            }\n        }\n        list[t0++] = -1;\n        s++;\n        } while (s != end);\n    }\n    list[t0++] = -1;\n    if (t0 >= 299) {\n        gl_func_00000000(D_00000000 + 0x20058);\n    }\n    volatile s32 sz;\n    n = t0 * 2 + 0 * (int)(n);\n    s16 *r = (s16 *)gl_func_00000000(n);\n    gl_func_00000000(r, list, n);\n    return r;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4A890.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004A890.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical; report.json 100; verify-blocks 6/6"
+  }
+}

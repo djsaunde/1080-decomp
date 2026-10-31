@@ -2145,14 +2145,14 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4A308_DONOR := build/src/game_libs/game_libs_ncc_4A308.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A308=$(GAMELIBS_4A308_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_DONOR)
-# 4A890 = real C++ `s16 *Map::build()` (agent-c run 160; was the run-134 NCC C lift, cfe 60.66); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4A890_NM_DONOR := build/src/game_libs/game_libs_ncc_4A890_nm.cpp.o
-$(GAMELIBS_4A890_NM_DONOR): src/game_libs/game_libs_ncc_4A890_nm.cpp
+# 4A890 = real C++ `s16 *Map::build()` (agent-c run 160); EXACT NCC donor over a placeholder (agent-g run 257: the byte size is the reused parameter n, end pointer as int arithmetic); symbol renamed (name only).
+GAMELIBS_4A890_DONOR := build/src/game_libs/game_libs_ncc_4A890.cpp.o
+$(GAMELIBS_4A890_DONOR): src/game_libs/game_libs_ncc_4A890.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym build__3MapFiPs=gl_func_0004A890 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A890=$(GAMELIBS_4A890_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A890_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A890=$(GAMELIBS_4A890_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A890_DONOR)
 # 3B9C0 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 72.25). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3B9C0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B9C0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B9C0=$(GAMELIBS_3B9C0_NM_DONOR)
