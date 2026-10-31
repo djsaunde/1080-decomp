@@ -25,6 +25,11 @@
  * spellings with a template zero-code `me(p)` ({CTX, me(CTX), me(me(CTX)), me(o)->sub->ctx, ...} x {next, next2}
  * x {"", + 0}): glyph `me(CTX)->next() + 0`, first prologue and first epilogue appends `me(me(CTX))->next()`, last
  * epilogue append `me(CTX)->next() + 0`: -> 99.36 (instruction multiset = target).
+ * agent-c run 253: the texrect macro takes its three appends as separate pkt arguments (the stock macro re-evaluates
+ * one pkt expression three times, so the per-site lever could not reach the RDPHALF appends): glyph TEXRECT append
+ * `me(CTX)->next() + 0`, RDPHALF_1 / RDPHALF_2 appends plain `CTX->next()` -> 99.58 (best-improvement greedy over 22
+ * sites x 15 accessor spellings, plateau). LEFT: prologue append result colours, F5801000 ctx t0, s3++ delay slot,
+ * `beq 10,ch` operand order, texrect dl / n / pkt rotation (target a1 / a2 / v0, ours v0 / a1 / a2).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -41,12 +46,12 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 #define G_TEXRECT 0xe4
 #define G_RDPHALF_1 0xb4
 #define G_RDPHALF_2 0xb3
-#define gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+#define gSPTextureRectangle(pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { Gfx *_g = (Gfx *)(pkt); \
   _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(xh, 12, 12) | _SHIFTL(yh, 0, 12)); \
   _g->words.w1 = (_SHIFTL(tile, 24, 3) | _SHIFTL(xl, 12, 12) | _SHIFTL(yl, 0, 12)); \
-  gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16))); \
-  gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); }
+  gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16))); \
+  gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); }
 template <class T> inline T *me(T *p) { return p; }
 struct DL { Gfx *buf; int n; };
 /* agent-c run 242: next2() = the explicit `n = dl->n; dl->n = n + 1` slot (kit CV) for the first two prologue appends
@@ -107,7 +112,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             }
             if (cc < 0x80) {
                 if (o->mode == 0) {
-                    gSPTextureRectangle(me(CTX)->next() + 0, o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
+                    gSPTextureRectangle(me(CTX)->next() + 0, CTX->next(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
                     gl_func_00034458(o, ch, o->x, o->y);
