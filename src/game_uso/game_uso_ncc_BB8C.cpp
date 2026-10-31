@@ -43,8 +43,9 @@ struct V3 {
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     float dot(const V3 &v) const { return x * v.x + y * v.y + z * v.z; }
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
-    V3 operator*(float s) const { return V3(x * s, y * s, z * s); }
-    V3 operator-(const V3 &v) const { return V3(x - v.x, y - v.y, z - v.z); }
+    /* agent-g run 259: named set()-filled results (the 36694 / 64388 kit) + the P2 block before norm */
+    V3 operator*(float s) const { V3 r; r.set(x * s, y * s, z * s); return r; }
+    V3 operator-(const V3 &v) const { V3 r; r.set(x - v.x, y - v.y, z - v.z); return r; }
 };
 struct M4 {
     float m[4][4];
@@ -87,6 +88,7 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
     world.x += import_80087DA8->body->mtx.m[3][0] * SC(0);
     world.y += import_80087DA8->body->mtx.m[3][1] * SC(1);
     world.z += import_80087DA8->body->mtx.m[3][2] * SC(2);
+    { P2 dzz; dzz.a = 0; } /* agent-g run 259 (kit CCXCIII): an 8-byte block home (dead store, no code) ahead of norm's temporaries + the named-result operators: norm's operator= parameter temp 156 -> 164 = target, frame 296 kept (98.52 -> 98.55 standalone) */
     norm = world - (V3 &)q.pos;
     game_uso_func_071028(&norm);
     d = -((V3 &)q.dir).dot(norm);
