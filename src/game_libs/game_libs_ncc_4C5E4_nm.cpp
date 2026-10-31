@@ -26,7 +26,13 @@ struct Gfx { unsigned w0, w1; };
 struct DLHead { Gfx *buf; int count; };
 struct Vp { short vscale[4]; short vtrans[4]; };
 struct VpHead { Vp *buf; int count; };
-struct DL { int pad[3]; DLHead *head; char pad10[0x4C - 0x10]; VpHead *vph; };
+struct DL {
+    int pad[3]; DLHead *head; char pad10[0x4C - 0x10]; VpHead *vph;
+    /* agent-c run 260: inline appends for the G_DL packet and the Vp (own edg temporaries per expansion; the second
+     * G_MOVEMEM packet pointer then colours v1 like the target) */
+    Gfx *gnext() { return &head->buf[head->count++]; }
+    Vp *vnext() { return &vph->buf[vph->count++]; }
+};
 struct Sub { char pad[0xB8]; int mB8; char padbc[0xF0 - 0xBC]; void *mF0; char padf4[0x198 - 0xF4]; DL *dl198[1]; };
 struct Sub2 { char pad[0x60]; int m60; };
 struct VT { char pad[0x60]; short off; short pad62; void *(*fn)(void *); };
@@ -72,9 +78,9 @@ void Obj::run() {
         int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
         s1 = (char *)sub->mF0;
         if (f) f = (m78 & 2) != 0;
-        float buf[4]; int one = 1, za = 0, e1 = 8, e2 = 8, e3 = 8; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72) */
+        float buf[4]; int one = 1, za = 0, e1 = 8, e2 = 8; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word) */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, za, za, e1, e2, e3, m1B0);
+        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, za, za, e1, e2, 8, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = sub;
@@ -93,7 +99,7 @@ void Obj::run() {
     s1 = (char *)dl;
     Sub2 *e = s14c[idx];
     int v = gl_func_00034458(e->m60) + 0 * (int)(idx); /* agent-c run 210: folded counted use of the member idx (zero code) */
-    { Gfx *p = &((DL *)s1)->head->buf[((DL *)s1)->head->count++]; p->w0 = 0x06000000; p->w1 = v; }
+    { Gfx *p = ((DL *)s1)->gnext(); p->w0 = 0x06000000; p->w1 = v; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
     /* agent-c run 260: the four int -> float conversions as named locals BEFORE the Vp append, the scale products
@@ -104,7 +110,7 @@ void Obj::run() {
     float ch = (float)h;
     float cx = (float)x;
     float cy = (float)y;
-    Vp *vp = &d->vph->buf[d->vph->count++];
+    Vp *vp = d->vnext();
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
     vp->vscale[0] = cx * 2.0f;
