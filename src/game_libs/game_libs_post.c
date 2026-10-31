@@ -13312,7 +13312,6 @@ block_83:
                     { int rv = gl_func_000428FC(arg0); var_v0_2 = rv; /* run 138: int return (target slti v0,11) */
                     sp6B = rv;
                     temp_v1_2 = *(u8 *)((char *)(arg0) + 0x29);
-                    var_t9 = rv & 0xFF;
                     temp_f10_2 = D_E354_1C310[temp_v1_2];
                     if (rv < 0xB) {
                         /* run 152 (agent-c): each arm re-truncates through the u8 copy (target re-emits
@@ -13332,6 +13331,11 @@ block_83:
                             var_t9 = var_v0_2;
                             break;
                         }
+                    } else {
+                        /* agent-g run 250: the >= 11 value as an else arm, not a pre-switch
+                         * assignment (uopt hoists it above the slti; the case-2/3 arm keeps
+                         * its own `b; andi` block instead of folding into the pre-switch value) */
+                        var_t9 = var_v0_2;
                     } }
                     if ((*(u16 *)((char *)(arg0) + 0x30) != 1) || (temp_v1_2 != 3)) {
                         temp_v1_5 = *(u8 *)((char *)(arg0) + 0x22);
