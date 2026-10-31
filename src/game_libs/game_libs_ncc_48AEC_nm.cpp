@@ -27,6 +27,7 @@ extern char D_00000000[];
 extern int D_00000000_g, D_00000000_h, D_00000000_i, D_00000000_j;
 void *func_00000000(...);
 }
+template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
 struct Mtx { int m[16]; };
@@ -107,7 +108,7 @@ void Obj::draw() {
         gctx->push(mt, cmd);
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx; func_00000000(A, c2 = gctx->mtx()); gctx->load(c2);
+        Mtx *c2; gctx = GS->ctx; func_00000000(A, c2 = gctx->mtx()); me(me(gctx))->load(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
