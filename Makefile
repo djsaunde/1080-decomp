@@ -1935,14 +1935,14 @@ $(GAMELIBS_4F2DC_NM_DONOR): src/game_libs/game_libs_ncc_4F2DC_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004F2DC=$(GAMELIBS_4F2DC_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4F2DC_NM_DONOR)
-# 4D688 = debug-console event loop as C++ `void Obj::run()` (agent-c run 137 NCC goto form; agent-g run 192: member function, for(;;) loop holds &g2 / 1, source-order switch, static guard pair; 236 -> 238 words = target + 5-word epilogue alignment pad); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4D688_NM_DONOR := build/src/game_libs/game_libs_ncc_4D688_nm.cpp.o
-$(GAMELIBS_4D688_NM_DONOR): src/game_libs/game_libs_ncc_4D688_nm.cpp
+# 4D688 = debug-console event loop as C++ `void Obj::run()`; EXACT NCC donor over a placeholder (agent-g run 256). The donor file reconstructs its translation unit from 4D354 (4D354 / 4D39C / 4D3E4 / 4D468 / 4D658 precede run(), sharing 4D468's guard static) so ugen's `.align 5` before the dead epilogue lands on a 32-byte boundary with no pad, as in the target; only run() is spliced (symbol renamed, name only). Its .bss reloc is renamed gl_func_0004D688_bss by the splice (pinned to 0x3CB00).
+GAMELIBS_4D688_DONOR := build/src/game_libs/game_libs_ncc_4D688.cpp.o
+$(GAMELIBS_4D688_DONOR): src/game_libs/game_libs_ncc_4D688.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004D688 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D688=$(GAMELIBS_4D688_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D688_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004D688=$(GAMELIBS_4D688_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4D688_DONOR)
 # 54264 = real C++ `void Mesh::sample(V3 &p, V3 &n, int t)` (agent-c run 175: random point in a triangle; s16 positions through an inline V3(const S3 &) ctor, normals through a by-value set(V3), c's S3 pointer kept by `if (cs) {}` + `if (t) {}`). EXACT NCC donor over an empty placeholder; symbol renamed (name only).
 GAMELIBS_54264_DONOR := build/src/game_libs/game_libs_ncc_54264.cpp.o
 $(GAMELIBS_54264_DONOR): src/game_libs/game_libs_ncc_54264.cpp
