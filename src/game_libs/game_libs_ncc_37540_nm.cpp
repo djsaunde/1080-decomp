@@ -33,9 +33,10 @@ extern "C" void gl_func_00037540(Obj *o) {
     V3 p1, p2;
     V3 v90;
     f32 hx;
+    Node *s; /* agent-g run 258: declared above v6C, set below (720-order decl grid best): 96.42 -> 96.43 */
     V3 v6C;
-    Node *s = o->s;
     f32 a, b, ab;
+    s = o->s;
     if (0) { gl_func_00034458(&s); }
     a = o->in->y * o->k3C;
     if (a < 0.0f) ab = -a; else ab = a;
