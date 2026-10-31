@@ -23977,7 +23977,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         sp30 = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
         sp2C = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         func_00000000(arg0, arg2, arg10);
-        base = *(char **)(arg0 + 0xC);
+        base = *(char **)(arg0 + 0xC); if (1) {} /* agent-c run 260 (bbsplit sweep, 95.90 -> 95.96) */
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
