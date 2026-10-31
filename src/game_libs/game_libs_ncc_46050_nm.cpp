@@ -41,6 +41,8 @@
  * Then the glyph TEXRECT append is `CTX->nextr()`, next() with its result through a named inline local
  * (`Gfx *r = &dl->buf[dl->n++]; return r;`): it keeps the folded `+ 0`'s texrect schedule but the ctx / dl / n temps
  * stay the pooled v1 / a1 / a2 with the result in v0, as the target -> 99.91.
+ * agent-c run 255: epilogue pair grid with nextr() in the spelling set: BB000000 append `CTX->nextr()`, last append
+ * `me(me(CTX))->next()` (was `me(CTX)->next() + 0`): the last append's result takes v0 as the target -> 99.95.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -141,8 +143,8 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
 
     if (o->mode == 0) {
         gW(me(me(CTX))->next(), 0xE7000000, 0);
-        gW(CTX->next(), 0xBB000000, -1);
-        gW(me(CTX)->next() + 0, 0xBA001402, 0x300000);
+        gW(CTX->nextr(), 0xBB000000, -1);
+        gW(me(me(CTX))->next(), 0xBA001402, 0x300000);
     }
     return 0;
 }
