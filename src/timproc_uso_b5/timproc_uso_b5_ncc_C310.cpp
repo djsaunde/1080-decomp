@@ -1,14 +1,17 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for timproc_uso_b5_func_0000C310 (0x400 / 256 words).
+/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000C310 (0x400 / 256 words), EXACT (agent-g run 246),
+ * spliced over the empty placeholder in timproc_uso_b5.c (both trees) via REPLACE_FUNC_BODY.
  * agent-g run 184 (kit CXXXIII): the colour channels are an inline `Col::set(int r, int g, int b, int a)` that
  * divides each INT parameter by 255.0f -- the int -> float conversion folds after uopt's candidate selection
  * (kit CXIX), which is why the target divides 105 / 155 / 255 / 233 / 247 / 0 by 255 at run time and keeps one
  * shared (f32)255 / 255.0f value across the calls (the cfe body needed `fone = (float)255`, `sp60 = sp60`
  * and a split-name alias); the HUD record is a sprite with the inline `Spr::width()` of the timer-HUD family.
  * The ring / loop half is the cfe body unchanged. Length = target (1024).
- * NM object only. */
+ * agent-g run 246 (docs/IDO_CODEGEN.md kit CCLXXI): the last word pair was the preheader order of the
+ * arg1 + 0x230 hoist vs the ptrs IV -- assigning the loop-invariant `q = arg1 + 0x230` INSIDE the loop
+ * (uopt hoists the assignment into the preheader between the IV inits, as the target) and passing q. */
 typedef float f32; typedef int s32; typedef short s16;
 extern "C" {
-extern char timproc_uso_b5_D_807FF538, timproc_uso_b5_D_807FFA78, timproc_uso_b5_D_807FFA90, timproc_uso_b5_D_807FFAA8, timproc_uso_b5_D_807FFAA8_b, timproc_uso_b5_D_807FFAD8, timproc_uso_b5_D_807FFAF0;
+extern char timproc_uso_b5_D_807FF538, timproc_uso_b5_D_807FFA78, timproc_uso_b5_D_807FFA90, timproc_uso_b5_D_807FFAA8, timproc_uso_b5_D_807FFAD8, timproc_uso_b5_D_807FFAF0;
 void timproc_uso_b5_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7);
 void timproc_uso_b5_func_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, char *arg7);
 void timproc_uso_b5_func_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6);
@@ -28,8 +31,9 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
     Spr *hud;
     Col cols;
     int mv, mv2;
+    char *q; /* run 246: assigned inside the loop (hoisted by uopt between the IV inits) */
     char *e;
-    volatile s32 sp0, sp1, sp2; /* agent-c run 218: third word = the target's 200 frame with the field-form counters */
+    volatile s32 sp0, sp1; /* agent-c run 218 / run 246: q's home replaces the third word (frame 200) */
     /* agent-g run 246: fb / pv / pp as uopt IVs (fb0 + i * 6, vals[i], ptrs[i]: no edg home, one ugen temp word
      * each below the spill, kit CCLV) and m de-named (the per-iteration read written in place: one more temp word,
      * kit CCXVI) -> the 255 / 255.0f spill at sp+96 as the target (99.89 -> 99.91). */
@@ -61,10 +65,11 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
             mv2 = vals[i];
         }
         mv = mv2 + 0 * (int)(*arg0); /* run 218: folded counted use keeps the target's `move v0,v1` copy */
+        q = arg1 + 0x230;
         if (*(s32 *)(arg1 + 0x3BC) == 1) { /* run 218: `== 1` = the target's held 1 (t0, rematerialised at the loop top) */
-            timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)(fb0 + i * 6), mv2, (s32)ptrs[i], (s32)(arg1 + 0x230), arg1);
+            timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)(fb0 + i * 6), mv2, (s32)ptrs[i], (s32)q, arg1);
         } else {
-            timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)(fb0 + i * 6), mv, (s32)ptrs[i], (s32)(arg1 + 0x230), arg1);
+            timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)(fb0 + i * 6), mv, (s32)ptrs[i], (s32)q, arg1);
         }
     }
     e = *(char **)(arg0 + 0x2B8);
@@ -86,7 +91,7 @@ extern "C" void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
                 if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
                     timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - hud->width() / 2 - 2, *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x628), 0xFF);
                 } else {
-                    timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + hud->width() / 2 + 2, *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAA8_b + 0x640), 0xFF);
+                    timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + hud->width() / 2 + 2, *(s32 *)(arg0 + 0xEC), cols.c, (int)(&timproc_uso_b5_D_807FFAA8 + 0x640), 0xFF);
                 }
             }
         }

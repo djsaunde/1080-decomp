@@ -7634,7 +7634,7 @@ void timproc_uso_b5_func_0000C2C0(int *a0, int a1, int a2) {
 //   255 color channels as runtime div.s (IDO didn't const-fold; my literal
 //   quotients fold). Same cap family as the resolved D14C/D884 siblings.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
+#if 0
 /* agent-g run 152 (91.46 -> 93.75): the mode test is `x - 1 == 0` (`== 1` hoists the constant 1 into s8
  * across the loop: one extra callee save, frame +8) and `i = 0` sits just before the loop pointer setup
  * (target issues `move s1,zero` late, after the vals loads). Left: the 1 in t0 at the loop top, the
@@ -7739,9 +7739,13 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000C310);
 #endif
+/* EXACT 2026-10-30 (agent-g run 246) via the IDO 7.1 NCC (C++) donor
+ * src/timproc_uso_b5/timproc_uso_b5_ncc_C310.cpp, REPLACE_FUNC_BODY-spliced into both trees
+ * (Makefile TIMB5_C310_DONOR); the cfe body above is superseded. No rodata (all constants are
+ * lui immediates), so this empty body is only the splice placeholder. */
+void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
+}
 
 /* 0000C710 absorbs 0000C7B4: bc1f at offset 0x94 of C710 branches PAST
  * the original 0xA4 declared size into C7B4's body; C7B4 has no prologue

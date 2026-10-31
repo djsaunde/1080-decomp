@@ -3414,10 +3414,11 @@ TIMB5_8FC8_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_8FC8.c.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008FC8=$(TIMB5_8FC8_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8FC8_DONOR)
 # C310 = HUD ring update + colour panel draw as C++ (Col::set(int, int, int, int), Spr::width(); agent-g run 184,
-# cfe 94.88): NM comparison object only.
-TIMB5_C310_NM_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_C310_nm.cpp.o
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C310=$(TIMB5_C310_NM_DONOR)
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_C310_NM_DONOR)
+# cfe 94.88). EXACT (agent-g run 246, 256/256 words under NCC; loop pointers as uopt IVs, the per-iteration
+# m read in place, q = arg1 + 0x230 assigned inside the loop), spliced over the unit's empty placeholder in both trees.
+TIMB5_C310_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_C310.cpp.o
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C310=$(TIMB5_C310_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_C310_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
 # (87E8, 8894, 8940 -- and 1DA4 before them) were mis-split return blocks of
