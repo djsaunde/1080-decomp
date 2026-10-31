@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00037938 (0x154 / 85 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00037938 (0x158 / 86 words incl. the jr-ra delay nop), agent-c run 162,
+ * EXACT agent-c run 246: REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both trees).
  * kit CXI's V3 family: a = s->mtx.pos through an inline gp(V3 *v, Node *n) with a KEPT v parameter (its pooled
  * temp burns the target's extra ugen ring register: t7 / t0 / t3 for the copy chain), b via M4::getPos0
  * (`lwc1 160(vN); addiu vN, vN, 112; 52 / 56(vN)`), arg = (b - a) * o->k through V3 operator- / operator*
@@ -13,7 +14,11 @@
  * expression (`(kk = o->k)`: its 8-byte slot puts operator-'s ctor / return temps at the target's sp+0x78 /
  * 0x84); operator= through `set(const V3 &)` (the reference temp below the by-value parameter puts it at the
  * target's sp+0x24); operator* without the named k (frame back to 0xD8). Every frame slot = target:
- * 98.6 -> 98.71. Residual: the final reload lands in v0 (target v1) and the trailing word. */
+ * 98.6 -> 98.71. Residual: the final reload lands in v0 (target v1) and the trailing word.
+ * agent-c run 246 (kit CCLXX): EXACT. The final c.out reload was the getOut() result temp, alone in its block and
+ * coloured v0 first. A named `Node *n = o->s;` (declared mid-body, after getPos0: no home shift) with a
+ * liveness-extending empty test `if (n) {}` after the arg statement makes n's LR (one LR over both webs) overlap
+ * the block's v0 owners, so the reload `n = c.getOut()` colours v1 = target (n is defined before every read). */
 typedef float f32;
 struct V3 {
     f32 x, y, z;
@@ -40,7 +45,9 @@ extern "C" void gl_func_00037938(Obj *o) {
     f32 kk;
     gp(&a, c.getOut());
     o->t->mtx.getPos0(&b);
+    Node *n = o->s;
     if (0) { gl_func_00000000(&a, &b); }
     arg = (b - a) * (kk = o->k); if (1) {}
-    gl_func_00000000(c.getOut()->m30, &arg);
+    if (n) {}
+    n = c.getOut(); gl_func_00000000(n->m30, &arg);
 }

@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00037938",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-31T02:32:31.850921+00:00",
+  "end_time": "2026-10-31T02:32:31.850935+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-31T02:32:31.850932+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.88 NM donor: the one-word residual was the final c.out reload (target lw v1,200(sp); ours v0). The reload was the getOut() result temp alone in its block, coloured v0 first. A named Node *n = o->s declared after getPos0 (no home shift) plus a liveness-extending empty test if (n) {} after the arg statement makes n's single uopt LR overlap the block's v0 owners, so n = c.getOut() colours v1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 86,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00037938 (0x158 / 86 words incl. the jr-ra delay nop), agent-c run 162,\n * EXACT agent-c run 246: REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both trees).\n * kit CXI's V3 family: a = s->mtx.pos through an inline gp(V3 *v, Node *n) with a KEPT v parameter (its pooled\n * temp burns the target's extra ugen ring register: t7 / t0 / t3 for the copy chain), b via M4::getPos0\n * (`lwc1 160(vN); addiu vN, vN, 112; 52 / 56(vN)`), arg = (b - a) * o->k through V3 operator- / operator*\n * returning V3(...) and a by-value operator=, `if (0) { gl(&s); }` / `if (0) { gl(&a, &b); }` for the homed\n * s / a / b reloads; frame 0xD8 and every named home = target. cfe body 93.73 -> 98.55. Residual: operator-'s ctor\n * / return temps 8 above the target's, operator*'s result 4 and the by-value parameter 8 below, the final s reload\n * (target v1 then addiu a0), and one trailing word (86 vs 85, as the cfe body). Still NON_MATCHING.\n * agent-c run 201 (sibling port): operator* as the exact 64388 donor's FREE `operator*(const V3 &, f32 s)` with a\n * named `f32 k = s`: operator*'s result slot moves to the target's sp+0x44 (98.49 -> 98.54 objdiff diff).\n * agent-g run 211 (frame-slot layout): s through an inline Ctx accessor (the 3558 kit: `lw vN, 200(sp);\n * addiu a0, vN, 48` reload form) with `if (1) {}` after the arg statement; the scalar `o->k` named in the\n * expression (`(kk = o->k)`: its 8-byte slot puts operator-'s ctor / return temps at the target's sp+0x78 /\n * 0x84); operator= through `set(const V3 &)` (the reference temp below the by-value parameter puts it at the\n * target's sp+0x24); operator* without the named k (frame back to 0xD8). Every frame slot = target:\n * 98.6 -> 98.71. Residual: the final reload lands in v0 (target v1) and the trailing word.\n * agent-c run 246 (kit CCLXX): EXACT. The final c.out reload was the getOut() result temp, alone in its block and\n * coloured v0 first. A named `Node *n = o->s;` (declared mid-body, after getPos0: no home shift) with a\n * liveness-extending empty test `if (n) {}` after the arg statement makes n's LR (one LR over both webs) overlap\n * the block's v0 owners, so the reload `n = c.getOut()` colours v1 = target (n is defined before every read). */\ntypedef float f32;\nstruct V3 {\n    f32 x, y, z;\n    V3() {}\n    V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }\n    V3 operator-(const V3 &o) const { return V3(x - o.x, y - o.y, z - o.z); }\n    void operator=(V3 v) { set(v); }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n};\ninline V3 operator*(const V3 &a, f32 s) { return V3(a.x * s, a.y * s, a.z * s); }\nstruct M4 { f32 m[12]; V3 pos; void getPos0(V3 *v) { v->x = pos.x; v->y = pos.y; v->z = pos.z; }\n    void getPos(V3 *v) { if (0) { v = 0; } v->x = pos.x; v->y = pos.y; v->z = pos.z; } };\nstruct Sub { char pad[0x70]; M4 mtx; };\nstruct Node { char pad[0x30]; char m30[0x70 - 0x30]; M4 mtx; };\nstruct Obj { char pad[0x14]; Node *s; char pad18[0x2C - 0x18]; Sub *t; f32 k; };\ninline void gp(V3 *v, Node *n) { if (0) { v = 0; } v->x = n->mtx.pos.x; v->y = n->mtx.pos.y; v->z = n->mtx.pos.z; }\nextern \"C\" void gl_func_00000000(...);\nstruct Ctx { Node *out; Ctx(Obj *o) { out = o->s; } Node *getOut() const { return out; } };\nextern \"C\" void gl_func_00037938(Obj *o) {\n    Ctx c(o);\n    V3 a;\n    V3 b;\n    V3 arg;\n    f32 kk;\n    gp(&a, c.getOut());\n    o->t->mtx.getPos0(&b);\n    Node *n = o->s;\n    if (0) { gl_func_00000000(&a, &b); }\n    arg = (b - a) * (kk = o->k); if (1) {}\n    if (n) {}\n    n = c.getOut(); gl_func_00000000(n->m30, &arg);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_37938.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "full make ROM byte-identical to baserom.z64; verify-blocks 6/6; report.json gl_func_00037938 100.0 (344 B)"
+  }
+}

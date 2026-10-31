@@ -2959,64 +2959,11 @@ int *gl_func_000378D0(int *a0, int a1, float a2) {
 //   colours v1 with no home and no slot), `addiu a1,sp,164` hoist position,
 //   and the final s reload lands in a0 directly (target `lw v1,200; addiu
 //   a0,v1,48` = s as a split candidate: t6 + home at entry, v1 at the end).
-#ifdef NON_MATCHING
+// EXACT agent-c run 246 via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_37938.cpp
+// (V3 push-apart; NM history there and in git), REPLACE_FUNC_BODY-spliced over this placeholder in
+// both build trees; the 0x37A90 alignment word stays the all-zero SUFFIX_BYTES_FORCE.
 void gl_func_00037938(char *o) {
-    Vec3 c2;
-    char *s;
-    Vec3 a;
-    Vec3 b;
-    Vec3 arg;
-    char pad1[8];
-    f32 mx, my, mz;
-    Vec3 c1, d;
-    char pad2[8];
-    f32 dx, dy, dz;
-    Vec3 *pd = &d;
-    Vec3 c3;
-    char pad2b[4];
-    Vec3 sc;
-    char pad3[20];
-    Vec3 c4;
-    char **ps = &s;
-    char *t;
-    f32 k;
-
-    s = *(char **)(o + 0x14);
-    a.x = *(f32 *)(s + 0xA0);
-    a.y = *(f32 *)(s + 0xA4);
-    a.z = *(f32 *)(s + 0xA8);
-    t = *(char **)(o + 0x2C);
-    b.x = *(f32 *)(t + 0xA0);
-    t += 0x70;
-    b.y = *(f32 *)(t + 0x34);
-    b.z = *(f32 *)(t + 0x38);
-    if (0) { gl_func_00000000(&a, &b); }
-    dx = b.x - a.x;
-    dy = b.y - a.y;
-    dz = b.z - a.z;
-    do {} while (0);
-    pd->x = dx;
-    pd->y = dy;
-    pd->z = dz;
-    do {} while (0);
-    c1 = d;
-    c2 = c1;
-    k = *(f32 *)(o + 0x30);
-    mx = c2.x * k;
-    my = c2.y * k;
-    mz = c2.z * k;
-    do {} while (0);
-    sc.x = mx;
-    sc.y = my;
-    sc.z = mz;
-    c3 = sc;
-    c4 = c3;
-    arg.x = c4.x; arg.y = c4.y; arg.z = c4.z;
-    gl_func_00000000(*ps + 0x30, &arg);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00037938);
-#endif
 
 /* 0x37A90 is a single alignment nop (NOT an unfilled-delay stub — the prior
  * -g3 note was wrong). The empty function is at 0x37A94; splat mis-placed the

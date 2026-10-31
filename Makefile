@@ -2037,13 +2037,14 @@ $(GAMELIBS_41D40_NM_DONOR): src/game_libs/game_libs_ncc_41D40_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041D40=$(GAMELIBS_41D40_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41D40_NM_DONOR)
-# 37938 = V3 push-apart under NCC (agent-c run 162: cfe 93.73 -> 98.55, kept-parameter getPos burns the target's ring slot; same 86-word length as the cfe body). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_37938_NM_DONOR := build/src/game_libs/game_libs_ncc_37938_nm.cpp.o
-$(GAMELIBS_37938_NM_DONOR): src/game_libs/game_libs_ncc_37938_nm.cpp
+# 37938 = V3 push-apart under NCC (agent-c run 162: cfe 93.73 -> 98.55, kept-parameter getPos burns the target's ring slot). EXACT NCC donor over an
+# empty placeholder (agent-c run 246: a named `Node *n = o->s;` kept live by `if (n) {}` past the arg statement puts the final c.out reload in v1).
+GAMELIBS_37938_DONOR := build/src/game_libs/game_libs_ncc_37938.cpp.o
+$(GAMELIBS_37938_DONOR): src/game_libs/game_libs_ncc_37938.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037938=$(GAMELIBS_37938_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00037938=$(GAMELIBS_37938_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_DONOR)
 # agent-g run 212: 37938's jr-ra delay nop (0x37A8C) moved into its .s (0x154 -> 0x158); the one genuine
 # alignment word before game_libs_func_00037A94 is an all-zero suffix (replaces the 8-byte _pad.s block).
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_00037938=0x00000000
