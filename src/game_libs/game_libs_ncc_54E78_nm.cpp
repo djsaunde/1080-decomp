@@ -28,6 +28,7 @@ void Obj::reflect(const Plane &p) {
     volatile int u; /* agent-g run 203: homed above a (the target's 4 bytes at sp+148; a's home is always frame - 12 without it) */
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
     { V3 t; } /* run 203: 12 unreferenced bytes below a (63964 rule): frame 152, a at sp+136 = target */
+    if (p.d != 0.0f) {} if (p.d != 2.0f) {} /* agent-g run 260 (kit CCXCV code-free constant lever): two empty tests add uses to the 0.0f / 2.0f LRs (no code): 2.0f -> f2, n.x -> f12 = target (98.66 -> 99.06) */
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y); /* run 203: operand-order grid (m[0][1], m[2][0], m[2][1]) */
