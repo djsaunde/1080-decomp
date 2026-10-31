@@ -11,6 +11,7 @@
  * (h's pooled slot is reused for it, so both are a1; target a2 then v1). Still NON_MATCHING. */
 extern "C" void *gl_func_00034458(...);
 inline void *operator new(unsigned n) { return gl_func_00034458(n); }
+template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct Pair { int a, b; };
 extern "C" Pair D_34890_tmpl;
 extern "C" char D_34890_d[], D_34890_e[];
@@ -27,7 +28,7 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
 inline void make(O *o, int h) { if (0) { h = 0; } X *a = new X(o); gl_func_00034458(D_34890_d, h, a, o->flags & 2); }
 extern "C" void gl_func_00034890(O *o) {
     make(o, o->h);
-    for (LIter it(o->list); it.next(); ) { /* run 174: for-init iterator (kit CXXXIV): bottom-copy next() temps fresh, 98.10 -> 98.27 */
+    for (LIter it(me(me(o))->list); it.next(); ) { /* agent-c run 252: o through a nested zero-code accessor (kit CCLXXXIV), 98.75 -> 99.57 */ /* run 174: for-init iterator (kit CXXXIV): bottom-copy next() temps fresh, 98.10 -> 98.27 */
         gl_func_00034458(it.cur->data);
     }
     gl_func_00034458(D_34890_e);
