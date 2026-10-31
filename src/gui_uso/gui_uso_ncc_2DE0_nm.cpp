@@ -20,7 +20,9 @@
  * append (rematerialised lui / addiu t3 at the yl < 0 entry and both MAX-arm exits); ours colours the
  * first two rect appends from t3 and re-forms the address (lui s0 / lw %lo) for the third. Named pointer,
  * per-append extern alias, ctx local, `if (CTX) {}`, empty-block levers and a 9^3 x 4 append-spelling
- * grid do not extend that web. */
+ * grid do not extend that web.
+ * agent-g run 256 (kit CCLXXXIV zero-code accessor, per-site greedy): the RDPHALF_2 append's ctx through
+ * `me(me(CTX))`: 96.65 -> 96.77 standalone, length unchanged (the &D web is still split at the third append). */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -44,6 +46,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
+template <class T> inline T *me(T *p) { return p; }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
     Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
@@ -76,6 +79,6 @@ extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     fw = w * sx;
     y = (f32)y0 + (-((f32)h / 2) * sy);
     fh = h * sy;
-    gSPScisTextureRectangle(CTX->next(), CTX->nC(), CTX->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(CTX->next(), CTX->nC(), me(me(CTX))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
