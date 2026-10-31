@@ -20,7 +20,7 @@ struct V3 { f32 x, y, z;
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
     V3 operator+(V3 o) const { return V3(x + o.x, y + o.y, z + o.z); }
-    void operator*=(const V3 &k) { x *= k.x; y *= k.y; z *= k.z; }
+    void operator*=(const V3 &k) { x *= k.x; z *= k.z; y *= k.y; } /* agent-g run 245: x, z, y (swap sweep, 95.665 -> 95.669) */
     void operator/=(const V3 &k) { x /= k.x; y /= k.y; z /= k.z; }
 };
 #define KV (*(V3 *)D_00000000F) /* collision kvec (&D + 0x128) */
