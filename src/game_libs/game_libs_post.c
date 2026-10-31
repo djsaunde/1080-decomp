@@ -13486,9 +13486,9 @@ block_83:
                         }
                         temp_f0 = *(f32 *)((char *)&D_00000000 + 0x172C);
                         if (temp_f0 < *(f32 *)((char *)(arg0) + 0xC)) {
-                            temp_v1_3 = *(u8 *)((char *)(arg0) + 0x33) + 1;
-                            *(u8 *)((char *)(arg0) + 0x33) = temp_v1_3;
-                            if ((temp_v1_3 & 0xFF) == 0x19) {
+                            temp_v1_5 = *(u8 *)((char *)(arg0) + 0x33) + 1;
+                            *(u8 *)((char *)(arg0) + 0x33) = temp_v1_5;
+                            if ((temp_v1_5 & 0xFF) == 0x19) {
                                 func_00000000(arg0, 0x3C);
                             }
                         }
