@@ -36,7 +36,7 @@
  * the block (target reloads va from 240..248), tmp at 148 vs 140. */
 struct Vec3 {
     float x, y, z;
-    void operator=(Vec3 v) { z = v.z; y = v.y; x = v.x; }
+    void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; } /* agent-g run 245: x, y, z source order (uopt emits the stores z, y, x like the target now): 91.56 -> 91.58 */
     Vec3 operator-(const Vec3 &v) const { Vec3 r; float a = x - v.x; float b = y - v.y; float c = z - v.z; r.x = a; r.y = b; r.z = c; return r; }
     void operator+=(const Vec3 &v) {  x += v.x;
  z += v.z;
@@ -44,7 +44,7 @@ struct Vec3 {
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
     float len2() const { float r = y * y + x * x + z * z; return r; } /* agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
 };
-inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.y = q; r.z = u; return r; }
+inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.z = u; r.y = q; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62) */
 struct M4 {
     float m[4][4];
     void getPos(Vec3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; }
