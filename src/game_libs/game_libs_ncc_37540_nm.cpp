@@ -26,6 +26,14 @@ inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
 inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00034458(n->m30, v, o); }
 extern "C" void gl_func_00037540(Obj *o) {
     V3 vB4; /* agent-g run 206: declared first (lever-sweep hoist, report metric): 95.72 -> 96.32 */
+    /* agent-g run 249 (kit CCLXXV scope rule, decl-order grid): hz / hy / p1 p2 / v90 / hx / v6C hoisted to
+     * function-scope declarations right below vB4 (no code change; hz 176 / hy 172 like the target): 96.39 -> 96.42 */
+    f32 hz;
+    f32 hy;
+    V3 p1, p2;
+    V3 v90;
+    f32 hx;
+    V3 v6C;
     Node *s = o->s;
     f32 a, b, ab;
     if (0) { gl_func_00034458(&s); }
@@ -35,8 +43,7 @@ extern "C" void gl_func_00037540(Obj *o) {
     b = o->in->x * D_37540_19F8[0x19F8 / 4];
     if (b < 0.0f) ab = -b; else ab = b;
     if (ab < D_37540_19FC[0x19FC / 4]) b = 0.0f;
-    f32 hy, hz;
-    f32 hx = gr(s, hy, hz);
+    hx = gr(s, hy, hz);
     sy(s, 0.0f); sz(s, 0.0f);
     { V3 v1(0.0f, -b, 0.0f); call(s, &v1, o); }
     vB4.set(s->v50.x, s->v50.y, s->v50.z);
@@ -45,15 +52,13 @@ extern "C" void gl_func_00037540(Obj *o) {
     o->v30.y = 0.0f;
     if (o->in->fl() & 4) o->v30.y = 10.0f;
     if (o->in->fl() & 8) o->v30.y = -10.0f;
-    V3 p1, p2; /* agent-g run 206: unused (no code): frame 0xA8 -> 0xC0 = target (pad-position grid): 96.32 -> 96.39 */
-    V3 v6C;
+    /* agent-g run 206: unused p1, p2 (no code): frame 0xA8 -> 0xC0 = target (pad-position grid): 96.32 -> 96.39 */
     v6C = vB4;
     V3 v9C;
     v9C.x = s->vA0.x; v9C.y = s->vA0.y; v9C.z = s->vA0.z;
     v9C += v6C;
     call(s, &o->v30, o);
     f32 L3 = D_37540_1A00[0x1A00 / 4];
-    V3 v90;
     v90 = v9C;
     v90 += o->v30;
     v90 += v6C;
