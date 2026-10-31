@@ -13090,7 +13090,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     char *temp_v1;
 
     arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
-    temp_s1 = FW((FW(arg0, 0x240) + (FW(arg0, 0x204) * 4)), 0x180);
+    temp_s1 = FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
     gl_func_00034458(temp_s1);
     temp_v1 = FW(arg0, 0x240);
     temp_v0 = FW(temp_v1, 0x28);
