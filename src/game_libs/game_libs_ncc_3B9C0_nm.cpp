@@ -39,6 +39,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     V3B9 p;
     s32 ib;
     f32 qa;
+    f32 nz; /* agent-g run 248 (frame scan): function scope = one more edg home word between p and d -> d at sp+160 like the target (95.14 -> 95.19) */
     V3B9 d;
     f32 qb;
     f32 sg;
@@ -78,7 +79,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             continue;
         }
         ok = 1; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
-        f32 nz = n->z; /* agent-c run 235: n->z named for the t sum (fs reg like the target: fs2 save, 94.27 -> 94.90, 1096 -> 1104 of 1116) */
+        nz = n->z; /* agent-c run 235: n->z named for the t sum (fs reg like the target: fs2 save, 94.27 -> 94.90, 1096 -> 1104 of 1116) */
         t = -(a->x * n->x + a->y * n->y + a->z * nz - self->tris[i].d) / dn;
         p.x = a->x + d.x * t; if (1) {} /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
