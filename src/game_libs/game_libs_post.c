@@ -13267,15 +13267,21 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                         gl_func_00043BE4(arg0, 0xC, var_v0, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
                         break;
                     }
-                    goto block_81;
+                    /* agent-g run 250: own read + goto past block_81 (target: the case-3/4 arm's
+                     * `b; nop` lands on this `b` instead of threading to the store) */
+                    var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+                    goto block_2C;
                 } else {
                 /* case 3 (switch 3, flattened) */
                     if (temp_v1_2 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = 0;
                         *(u8 *)((char *)(arg0) + 0x33) = 0U;
+                        goto block_81;
+                    }
+                    goto block_2C;
 block_81:
                         var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
-                    }
+block_2C:
                     *(u8 *)((char *)(arg0) + 0x2C) = var_v0_2;
                     goto block_83;
                 }
