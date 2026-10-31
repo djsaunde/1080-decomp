@@ -17891,7 +17891,8 @@ float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1
     } else {
         zero = dz;
     }
-    return zero + (x0 + b) / (float)2;
+    b = (x0 + b) / (float)2; /* agent-g run 256: the half-sum stored into b, then `b + zero` (return-spelling grid): 95.37 -> 95.47, same length */
+    return b + zero;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E424);
