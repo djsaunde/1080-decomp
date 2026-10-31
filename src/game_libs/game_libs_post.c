@@ -13418,7 +13418,8 @@ block_83:
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
                             D_E354_1C738_a = temp_f16;
                             if (temp_f16 == 0.0f) {
-                                D_E354_1C738_b = 1.0f;
+                                temp_f16 = 1.0; /* agent-g run 250: target mtc1 f2 */
+                                D_E354_1C738_b = temp_f16;
                             }
                         } else if (temp_v1 >= 7) {
                             temp_f16 = D_E354_1C738_c; temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / temp_f16; if (1) {} /* agent-g run 250: one bound variable (target f2) for divisor / 1.0 / 0x1724 */
@@ -13431,7 +13432,8 @@ block_83:
                             }
                             temp_v1 = *(s32 *)(D_E354_G + 0);
                             if (temp_v1 != 0) {
-                                temp_f10_2 *= *(f32 *)((char *)(((temp_v1 & 0x1F) * 4)) + 0x1C430);
+                                temp_f16 = *(f32 *)((char *)(((temp_v1 & 0x1F) * 4)) + 0x1C430); /* agent-g run 250: through the f2 bound variable */
+                                temp_f10_2 *= temp_f16;
                                 *(s32 *)(D_E354_G + 0) = (s32) (temp_v1 - 1);
                             }
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1724);
