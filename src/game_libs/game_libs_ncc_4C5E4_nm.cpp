@@ -103,7 +103,7 @@ void Obj::run() {
     Vp *vp = &d->vph->buf[d->vph->count++];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
-    vp->vtrans[0] = fx * 4.0f + fw;
+    vp->vtrans[0] = fx * 4.0f + fw; if (1) {} /* agent-g run 247 (lever-sweep bbsplit): 89.53 -> 89.58 */
     vp->vscale[0] = fw; /* agent-g run 224: [0] before [1] (sweep 88.65 -> 88.67; was the run-194 [1]-first order) */
     vp->vscale[1] = fh;
     vp->vtrans[1] = fy * 4.0f + fh;
