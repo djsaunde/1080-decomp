@@ -14595,8 +14595,7 @@ s32 arg2;
     s32 wv;          /* a3, spill sp+48 : trailing emit arg (523/21/20/22/256) */
     s32 prev;        /* sp+44 : old value of gl_state_30AF4.f0 */
     s32 w;           /* sp+40 : emit-arg value carried across calls (35/60) */
-    s32 sv;          /* sp+36 : int-cast &gl_state base (case 9), then the case-10 sub copy */
-    s32 hv;          /* agent-g run 226: case-4 copy of D_30AF4_h for the `== 0` test (target `or v0,t9`) */
+    s32 sv;          /* sp+36 : int-cast &gl_state base (case 9), then the case-4 h / case-10 sub copies */
     /* agent-g run 225: the target's sp+28 is a SPILL slot (mode loaded once into t9, `sw t9,28(sp)`
      * across the calls, three reloads for the second switch). A function that spills keeps every cfe
      * local's home, so the target has only these five locals: the old volatile modeSel / pads and the
@@ -14663,7 +14662,7 @@ s32 arg2;
             }
         }
         D_30AF4_h = sub;
-        hv = D_30AF4_h;
+        sv = D_30AF4_h; /* agent-g run 259: the case-4 copy held in sv (written before the switch, read only in case 9 / here / case 10) instead of a sixth local hv: 97.862 -> 97.869 */
         gl_cmd_30AF4 = D_30AF4_h + 4; if (1) {}
         if (D_30AF4_i != 0 && D_30AF4_h == 6) {
             gl_cmd_30AF4 = 7;
@@ -14671,7 +14670,7 @@ s32 arg2;
         if (D_30AF4_i == 4) {
             gl_func_00042364(4);
             gl_cmd_30AF4 = D_30AF4_j + 18; if (1) {}
-        } else if (hv == 0) {
+        } else if (sv == 0) {
             gl_func_00042364(6);
         } else {
             gl_func_00042364(3);
@@ -14705,8 +14704,8 @@ s32 arg2;
         {
         w = 35;
         if (D_30AF4_m == 4) {
-            gl_cmd_30AF4 = 13;
-            wv = 523;
+            gl_cmd_30AF4 = 13 + 0 * (int)(sub); /* agent-g run 259: folded counted use of the parameter (zero-use sweep): 97.869 -> 98.021 */
+            wv = 523 + 0 * (int)(sub); /* agent-g run 259: second pass: 98.021 -> 98.078 */
         } else {
             switch (sub) {
             case 0:
