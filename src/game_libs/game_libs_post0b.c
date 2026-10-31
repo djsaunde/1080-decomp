@@ -23883,7 +23883,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     if ((f & 0x100) && (f & 1)) {
         spBC = (&D_00000000)[func_00000000()];
     }
-    func_00000000(arg0, arg1, arg10);
+    func_00000000_5a2c4v(arg0, arg1, arg10); /* agent-c run 260: void (discarded result): frees v0 for the head block's base (target v0) */
     /* agent-c run 234: the head append and the five arg3-block appends are BLOCKS with their own
      * base / cnt / p (each block's trio = 3 home words: 6 x 3 = 18 of the target's middle frame words,
      * frame 0xC0 with no pad arrays, and each append's cursor web colours on its own like the target).
@@ -23896,7 +23896,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF);
+        *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(p); /* agent-c run 260: folded counted use of p (cnt a0 / p v1 = target) */
         sp38 = arg6 + arg8;
         sp34 = arg7 + arg9;
         *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
@@ -23945,7 +23945,9 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             cnt = *(s32 *)(base + 4);
             *(s32 *)(base + 4) = cnt + 1;
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 0) = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
+            /* agent-c run 260: the sums spelled out (same tree as the arg4 path's copy-propagated sp30), so the sp30
+             * expression item precedes sp2C's and takes the spill temp at 0x30 like the target */
+            *(s32 *)(p + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4);
             *(s32 *)(p + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         }
         {
@@ -23971,7 +23973,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             *(s32 *)(p + 4) = 0;
         }
     }
-    if ((arg4 != 0) + 0 * (int)(arg4)) { /* agent-c run 212: folded counted use (zero code) */
+    if (arg4 != 0) { /* agent-c run 260: the run-212 folded use of arg4 dropped (arg4 a ugen load like the target) */
         sp30 = 0xF6000000 | (((sp38 - 1) & 0x3FF) << 0xE) | (((sp34 - 1) & 0x3FF) * 4);
         sp2C = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         func_00000000(arg0, arg2, arg10);
@@ -24014,7 +24016,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
         *(s32 *)(p + 0) = 0xE7000000;
         *(s32 *)(p + 4) = 0;
-        func_00000000(arg0, arg1, arg10);
+        func_00000000_5a2c4v(arg0, arg1, arg10); /* agent-c run 260: void (discarded result) */
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
