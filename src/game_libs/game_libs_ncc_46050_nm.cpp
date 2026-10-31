@@ -12,6 +12,9 @@
  * the address is a loop-invariant web hoisted into s8 as in the target (which then also stops the 0xE4000000
  * constant from taking s8). 89.71 -> 92.20 standalone. LEFT: the first two prologue appends read o from a0
  * (target) and use v0 / a1 for the dl / count temps; cc is a3 (target a0); the E4 w1 / B4 / B3 schedule.
+ * agent-c run 252: s is the texel column scaled to 10.5 in two steps, `((cc & 0xF) * 8) << 5` (same `andi 0xF` +
+ * one `sll 24` after folding, but the deeper tree makes ugen evaluate s BEFORE t, as the target does): 92.43 ->
+ * 92.78 standalone, instruction shape unchanged.
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -94,7 +97,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             if (cc < 0x80) {
                 if (o->mode == 0) {
                     gSPTextureRectangle(CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
-                        (cc & 0xF) << 8, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
+                        ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
                     gl_func_00034458(o, ch, o->x, o->y);
                 }
