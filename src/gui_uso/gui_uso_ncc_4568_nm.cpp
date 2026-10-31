@@ -33,7 +33,7 @@ typedef short s16;
     gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)));	\
     gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16)));\
 }
-#define gSPScisTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+#define gSPScisTextureRectangle(pkt, pk2, pk3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 {                                                                            \
     Gfx *_g = (Gfx *)(pkt);                                                  \
                                                                              \
@@ -43,7 +43,7 @@ typedef short s16;
     _g->words.w1 = (_SHIFTL((tile), 24, 3) |                                 \
                     _SHIFTL(MAX((s16)(xl),0), 12, 12) |                      \
                     _SHIFTL(MAX((s16)(yl),0), 0, 12));                       \
-    gImmp1(pkt, G_RDPHALF_1,                                                 \
+    gImmp1(pk2, G_RDPHALF_1,                                                 \
                 (_SHIFTL(((s) -                                              \
                           (((s16)(xl) < 0) ?                                 \
                            (((s16)(dsdx) < 0) ?                              \
@@ -56,7 +56,7 @@ typedef short s16;
                             (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) :          \
                             (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)),    \
 			 0, 16)));                                           \
-    gImmp1(pkt, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) |                      \
+    gImmp1(pk3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) |                      \
                               _SHIFTL((dtdy), 0, 16)));                      \
 }
 struct DL { Gfx *buf; int n; };
@@ -64,6 +64,7 @@ struct Ctx {
     char pad[0xC];
     DL *dl;
     Gfx *next() { int n = dl->n++; return &dl->buf[n]; }
+    Gfx *nJ() { int n = dl->n++; return (Gfx *)(n * 8 + (int)dl->buf); } /* agent-g run 257: index-first append (int arithmetic) */
 };
 extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
     if (x >= 0 && y >= 0) {
@@ -73,6 +74,8 @@ extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, 
     } else {
         /* run 185: xl named once (the target's `or t2,a1` copy + a3 for yl; 95.68 -> 96.01) */
         int xl = x << 2;
-        gSPScisTextureRectangle(c->next(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        /* agent-g run 257: one pkt parameter per append (kit CCLXXXVI) and the RDPHALF_2 append through the
+         * index-first nJ(): the target's `addu t0,t8,t5` operand order (96.53 -> 96.63, same length) */
+        gSPScisTextureRectangle(c->next(), c->next(), c->nJ(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     }
 }
