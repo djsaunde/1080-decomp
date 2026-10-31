@@ -13244,7 +13244,6 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             if (var_v0_2 != temp_v1_4) {
                 if (temp_v1_4 == 0) {
                     temp_v1 = *(s32 *)((char *)(arg0) + 0x38);
-                    var_v0 = 3;
                     *(f32 *)((char *)(arg0) + 0x8) = (f32) ((f32) temp_v1 * 3.0f);
                     if (temp_v1 < 0xA) {
                         *(f32 *)((char *)(arg0) + 0x8) = 0.0f;
@@ -13257,6 +13256,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                         case 2: var_v0 = 1; break;
                         default: var_v0 = 2; break;
                         }
+                    } else {
+                        /* agent-g run 250: 3 as the else arm (uopt still hoists the li a2,3; the
+                         * case-2 arm keeps its own `b; move a2,v0` block like the target) */
+                        var_v0 = 3;
                     }
                     switch (*(u8 *)((char *)(arg0) + 0x22)) {
                     case 3: case 4:
