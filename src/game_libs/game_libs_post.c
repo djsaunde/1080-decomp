@@ -13110,8 +13110,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     sp60 = 1.0f;
     if (temp_v0 != 0) {
         if (temp_v0 == 4) {
-            temp_v1 = D_stateC_E354;
-            if ((((u32)temp_v1 == 1) || ((u32)temp_v1 == 2) || ((u32)temp_v1 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1U) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
+            temp_v0_7 = D_stateC_E354; /* agent-g run 251: u32 web (keeps temp_v1 off v0 after the switch-5 move) */
+            if ((((u32)temp_v0_7 == 1) || ((u32)temp_v0_7 == 2) || ((u32)temp_v0_7 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1U) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
                 *(u8 *)((char *)(arg0) + 0x21) = 2U;
                 *(f32 *)((char *)(arg0) + 0x54) = 0.0f;
             }
@@ -13383,8 +13383,8 @@ block_83:
                         break;
                     default:                        /* odd cases */
                         temp_v1 = 0x10;
-                        temp_v1_5 = *(u8 *)((char *)(arg0) + 0x29); /* agent-g run 250: named unsigned selector */
-                        switch ((unsigned)temp_v1_5) {
+                        temp_v0_7 = *(u8 *)((char *)(arg0) + 0x29); /* agent-g run 251: the selector in the u32 temp_v0_7 (target v1; the base takes v0) */
+                        switch ((unsigned)temp_v0_7) {
                         case 0:
                             sp50 = 6;
                             break;
