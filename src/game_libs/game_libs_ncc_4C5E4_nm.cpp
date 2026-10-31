@@ -102,14 +102,14 @@ void Obj::run() {
      * (832 -> 836 bytes, 89.59 -> 99.48) */
     float cw = (float)w;
     float ch = (float)h;
-    float cy = (float)y;
     float cx = (float)x;
+    float cy = (float)y;
     Vp *vp = &d->vph->buf[d->vph->count++];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
-    vp->vscale[1] = cy * 2.0f;
-    if (1) {}
     vp->vscale[0] = cx * 2.0f;
+    if (1) {}
+    vp->vscale[1] = cy * 2.0f;
     vp->vtrans[0] = cw * 4.0f + cx * 2.0f;
     vp->vtrans[1] = ch * 4.0f + cy * 2.0f;
     { Gfx *p = &d->head->buf[d->head->count++]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = gl_func_00034458(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
