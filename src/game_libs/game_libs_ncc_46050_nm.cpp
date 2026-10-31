@@ -35,7 +35,9 @@ union Gfx { Gwords words; long long force_structure_alignment; };
   gImmp1(pkt, G_RDPHALF_1, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16))); \
   gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); }
 struct DL { Gfx *buf; int n; };
-struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } };
+/* agent-c run 242: next2() = the explicit `n = dl->n; dl->n = n + 1` slot (kit CV) for the first two prologue appends
+ * and the last epilogue append (greedy per-site grid): their dl temp takes the target's v0, 92.27 -> 92.43 standalone */
+struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Sub { char pad[0x158]; Ctx *ctx; };
 struct Font { char pad[0x21C]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
 #define CTX (o->sub->ctx)
@@ -49,8 +51,8 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     charw = o->cw; lineh = o->lh; /* agent-g run 228: one line (kit CCXXXIV line order): 92.20 -> 92.23 */
 
     if (o->mode == 0) {
-        gW(CTX->next(), 0xE7000000, 0); if (1) {}
-        gW(CTX->next(), 0xBA001402, 0);
+        gW(CTX->next2(), 0xE7000000, 0); if (1) {}
+        gW(CTX->next2(), 0xBA001402, 0);
         gW(CTX->next(), 0xB6000000, 1);
         gW(CTX->next(), 0xB900031D, 0x0C087008);
         gW(CTX->next(), 0xF9000000, 0x80);
@@ -109,7 +111,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     if (o->mode == 0) {
         gW(CTX->next(), 0xE7000000, 0);
         gW(CTX->next(), 0xBB000000, -1);
-        gW(CTX->next(), 0xBA001402, 0x300000);
+        gW(CTX->next2(), 0xBA001402, 0x300000);
     }
     return 0;
 }
