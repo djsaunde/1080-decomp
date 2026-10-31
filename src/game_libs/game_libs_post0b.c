@@ -10208,7 +10208,7 @@ void gl_func_000415A4(O415A4 *self) {
     t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
     t->f18 = 100.0f;
     t->f1C = 16000.0f; if (1) {}
-    { int m = 1030; t->a28 = m; m |= 6; if (1) {} m |= 0x400; D_415A4_tA.a28 = m; } /* agent-g run 257: the mode word as a local m (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through a variable), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20, same length */
+    p = (char *)1030; t->a28 = (int)p; p = (char *)((int)p | 6); if (1) {} p = (char *)((int)p | 0x400); D_415A4_tA.a28 = (int)p; /* agent-g run 257: the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in p (assigned again by the alloc before any other read) instead of a new local keeps the 56-byte frame: 95.27, same length */
     t->a2C = 1;
     if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
     v[3] = v[2] = v[1] = v[0] = 0.0f;
