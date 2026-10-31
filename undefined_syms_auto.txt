@@ -5516,3 +5516,6 @@ gl_3df58_k1ad0 = 0x00000000;
 gl_3df58_k1ad4 = 0x00000000;
 gl_3df58_k1ad8 = 0x00000000;
 gl_3df58_k1adc = 0x00000000;
+/* gl_func_0005F5F0 NCC donor (agent-g run 247): baked USO jal placeholders (target 0x0C000000, no reloc) */
+gl_func_0005F5F0_sqrtf = 0x00000000;
+gl_func_0005F5F0_normalize = 0x00000000;

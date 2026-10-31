@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0005F5F0",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-10-31T03:22:44.821779+00:00",
+  "end_time": "2026-10-31T03:22:44.821794+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-31T03:22:44.821791+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.67 NM donor: the target has no x / y / z temporaries. The degenerate reset and the normalised copy-out live in v[] itself (v[i] *= 10.0f; xLook = v[i];), removing the three uopt LRs that took f22 / f24 ahead of the 10.0f constant (10.0 f26 -> f22, v[1] / v[2] f14 / f16 -> f16 / f18). Two unused volatile homes after the last declared local restore the frame (152 -> 160) and the uopt spill slots 80 / 76.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 229,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_0005F5F0 (look-at matrix, 229 words): EXACT (agent-g run 247), spliced\n * over the empty placeholder in game_libs_post0b.c on both build paths.\n * Custom guLookAtF with an eye-to-at distance clamp: if dist2 > far2 (D+0x205C = 10000.0f) or dist2 < 10.0f the\n * look vector is reset to (0, 0, 1) (dist2 < 1) or normalised in place, scaled to length 10 and dist2 forced\n * to 100. sqrtf / the normaliser are baked USO jal placeholders (target word 0x0C000000; pinned to 0).\n * History (NM): cfe capped at 85.0; NCC 98.37 with the degenerate-axis constants through int locals (NCC CSEs a\n * literal 1.0f with the d2 < 1.0f compare constant, the target rematerialises it); run 138 / 246 copy-out\n * empty tests (98.69 -> 99.67). Run 247 (kit CCLXXII): the target has NO x / y / z temporaries -- the reset\n * and the normalised copy-out live in v[] itself (`v[i] *= 10.0f; xLook = v[i];`), which removes the three\n * uopt LRs that took f22 / f24 ahead of the 10.0f constant (10.0 f26 -> f22, v[1] / v[2] f14 / f16 -> f16 /\n * f18, all 229 words up to the frame); two unused volatile homes after the last declared local restore the\n * edg home words x / y / z held (frame 152 -> 160) and put the uopt spill slots at 80 / 76 as the target. */\ntypedef float f32;\nextern \"C\" {\nextern int D_00000000;\nextern f32 gl_func_0005F5F0_sqrtf(f32);\nextern void gl_func_0005F5F0_normalize(f32 *);\n}\nextern \"C\" void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32 zAt, f32 xUp, f32 yUp, f32 zUp) {\n    f32 slen;\n    f32 len;\n    f32 xLook, yLook, zLook;\n    f32 xRight, yRight, zRight;\n    f32 v[3];\n    f32 d2;\n    f32 ulen;\n    volatile f32 pad0, pad1;\n\n    xLook = xAt - xEye;\n    yLook = yAt - yEye;\n    zLook = zAt - zEye;\n    d2 = (xLook * xLook) + (yLook * yLook) + (zLook * zLook);\n    if ((*(f32 *)((char *)&D_00000000 + 0x205C) < d2) || (d2 < 10.0f)) {\n        if (d2 < 1.0f) {\n            { int zero = 0; v[0] = zero; }\n            v[1] = 0.0f;\n            { int one = 1; v[2] = one; }\n        } else {\n            v[0] = xLook;\n            v[1] = yLook;\n            v[2] = zLook;\n            gl_func_0005F5F0_normalize(v);\n        }\n        v[0] *= 10.0f; xLook = v[0];\n        v[1] *= 10.0f; yLook = v[1];\n        v[2] *= 10.0f; zLook = v[2];\n        d2 = 100.0f;\n    }\n    len = -1.0f / gl_func_0005F5F0_sqrtf(d2);\n    xLook *= len;\n    yLook *= len;\n    zLook *= len;\n    xRight = (yUp * zLook) - (zUp * yLook);\n    yRight = (zUp * xLook) - (xUp * zLook);\n    zRight = (xUp * yLook) - (yUp * xLook);\n    slen = gl_func_0005F5F0_sqrtf((xRight * xRight) + (yRight * yRight) + (zRight * zRight));\n    if (slen < *(f32 *)((char *)&D_00000000 + 0x2060)) {\n        yRight = 0.0f;\n        xRight = 1.0f;\n        zRight = 0.0f;\n        slen = 1.0f;\n    }\n    len = 1.0f / slen;\n    xRight *= len;\n    yRight *= len;\n    zRight *= len;\n    xUp = (yLook * zRight) - (zLook * yRight);\n    yUp = (zLook * xRight) - (xLook * zRight);\n    zUp = (xLook * yRight) - (yLook * xRight);\n    ulen = 1.0f / gl_func_0005F5F0_sqrtf((xUp * xUp) + (yUp * yUp) + (zUp * zUp));\n    xUp *= ulen;\n    yUp *= ulen;\n    zUp *= ulen;\n    mf[0][0] = xRight;\n    mf[1][0] = yRight;\n    mf[2][0] = zRight;\n    mf[3][0] = -((xEye * xRight) + (yEye * yRight) + (zEye * zRight));\n    mf[0][1] = xUp;\n    mf[1][1] = yUp;\n    mf[2][1] = zUp;\n    mf[3][1] = -((xEye * xUp) + (yEye * yUp) + (zEye * zUp));\n    mf[0][2] = xLook;\n    mf[1][2] = yLook;\n    mf[2][2] = zLook;\n    mf[3][2] = -((xEye * xLook) + (yEye * yLook) + (zEye * zLook));\n    mf[0][3] = 0.0f;\n    mf[1][3] = 0.0f;\n    mf[2][3] = 0.0f;\n    mf[3][3] = 1.0f;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_5F5F0.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "full make ROM byte-identical to baserom.z64; verify-blocks 6/6; report.json gl_func_0005F5F0 100.0 (916 B)"
+  }
+}

@@ -26890,102 +26890,11 @@ void game_libs_func_0005F534(float mf[4][4], float fovy, float aspect, float nea
     mf[3][3] = 0;
 }
 
-/* 2026-10-23 agent-g (run 137): the NM comparison object now uses an IDO 7.1 NCC donor,
- * src/game_libs/game_libs_ncc_5F5F0_nm.cpp (85.0 -> 98.4); this cfe body is kept for reference. */
-#ifdef NON_MATCHING
-/* gl_func_0005F5F0 — DECODE CORRECTED (agent-f 2026-07-30): custom guLookAtF
- * (see references/libreultra/src/gu/lookat.c) with an eye-to-at distance clamp:
- * if dist2 > far2 threshold (D+0x205C) or dist2 < 10.0f, the look vector is
- * normalized (external vec3-normalize callee, jal placeholder — baked USO
- * reloc, target word 0x0C000000) and rescaled to length 10, dist2 forced to
- * 100. sqrtf is the same baked-jal placeholder class. No guMtxIdentF — the
- * constant row/column is stored explicitly at the end. */
-extern f32 sqrtf(f32);
-extern void gl_vec3_normalize_0005F5F0(f32 *); /* baked-USO callee, real target unknown */
+/* gl_func_0005F5F0 = custom guLookAtF with an eye-to-at distance clamp (see references/libreultra/src/gu/lookat.c).
+ * EXACT agent-g run 247 via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_5F5F0.cpp (cfe body / NM
+ * history there and in git), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
 void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32 zAt, f32 xUp, f32 yUp, f32 zUp) {
-    f32 xLook, yLook, zLook;
-    f32 len;
-    f32 slen;
-    f32 v[3];
-    f32 dead[2];
-    f32 x, y, z;
-    f32 xRight, yRight, zRight;
-    f32 d2;
-
-    xLook = xAt - xEye;
-    yLook = yAt - yEye;
-    zLook = zAt - zEye;
-    d2 = (xLook * xLook) + (yLook * yLook) + (zLook * zLook);
-    if ((*(f32 *)((char *)&D_00000000 + 0x205C) < d2) || (d2 < 10.0f)) {
-        if (d2 < 1.0f) {
-            x = 0.0f;
-            y = 0.0f;
-            z = (f32) 1;
-        } else {
-            v[0] = xLook;
-            v[1] = yLook;
-            v[2] = zLook;
-            gl_vec3_normalize_0005F5F0(v);
-            x = v[0];
-            y = v[1];
-            z = v[2];
-        }
-        xLook = x * 10.0f;
-        yLook = y * 10.0f;
-        zLook = z * 10.0f;
-        v[0] = xLook;
-        v[1] = yLook;
-        v[2] = zLook;
-        d2 = 100.0f;
-    }
-    len = -1.0f / sqrtf(d2);
-    xLook *= len;
-    yLook *= len;
-    zLook *= len;
-    xRight = (yUp * zLook) - (zUp * yLook);
-    yRight = (zUp * xLook) - (xUp * zLook);
-    dead[1] = yRight;
-    zRight = (xUp * yLook) - (yUp * xLook);
-    dead[0] = zRight;
-    slen = sqrtf((xRight * xRight) + (yRight * yRight) + (zRight * zRight));
-    if (slen < *(f32 *)((char *)&D_00000000 + 0x2060)) {
-        zRight = 0.0f; if (yLook) {}
-        xRight = 1.0f;
-        yRight = 0.0f;
-        slen = 1.0f;
-    }
-    len = 1.0f / slen;
-    xRight *= len;
-    yRight *= len;
-    zRight *= len;
-    xUp = (yLook * zRight) - (zLook * yRight);
-    yUp = (zLook * xRight) - (xLook * zRight);
-    zUp = (xLook * yRight) - (yLook * xRight);
-    dead[0] = zUp;
-    len = 1.0f / sqrtf((xUp * xUp) + (yUp * yUp) + (zUp * zUp));
-    xUp *= len;
-    yUp *= len;
-    zUp *= len;
-    mf[0][0] = xRight;
-    mf[1][0] = yRight;
-    mf[2][0] = zRight;
-    mf[3][0] = -((xEye * xRight) + (yEye * yRight) + (zEye * zRight));
-    mf[0][1] = xUp;
-    mf[1][1] = yUp;
-    mf[2][1] = zUp;
-    mf[3][1] = -((xEye * xUp) + (yEye * yUp) + (zEye * zUp));
-    mf[0][2] = xLook;
-    mf[1][2] = yLook;
-    mf[2][2] = zLook;
-    mf[3][2] = -((xEye * xLook) + (yEye * yLook) + (zEye * zLook));
-    mf[0][3] = 0.0f;
-    mf[1][3] = 0.0f;
-    mf[2][3] = 0.0f;
-    mf[3][3] = 1.0f;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0005F5F0);
-#endif
 
 /* 2026-10-23 agent-g (run 137): the NM comparison object uses an IDO 7.1 NCC donor,
  * src/game_libs/game_libs_ncc_5F984_nm.cpp (this body recompiled under NCC: 85.1 -> 88.2). */

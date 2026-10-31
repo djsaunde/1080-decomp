@@ -1774,10 +1774,11 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_51F5C_DONOR := build/src/game_libs/game_libs_ncc_51F5C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00051F5C=$(GAMELIBS_51F5C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_51F5C_DONOR)
-# 5F5F0 = look-at matrix; C++ (NCC 98.4 vs cfe 85.0). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_5F5F0_NM_DONOR := build/src/game_libs/game_libs_ncc_5F5F0_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F5F0=$(GAMELIBS_5F5F0_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F5F0_NM_DONOR)
+# 5F5F0 = look-at matrix; C++ (NCC 98.4 vs cfe 85.0). EXACT NCC donor over an empty placeholder (agent-g run 247: the
+# reset / normalised copy-out live in v[] itself, no x / y / z temporaries; two unused volatile homes for the frame).
+GAMELIBS_5F5F0_DONOR := build/src/game_libs/game_libs_ncc_5F5F0.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F5F0=$(GAMELIBS_5F5F0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F5F0_DONOR)
 # 5F984 = rotate-by-drag matrix; NCC donor, EXACT (agent-g run 156: results held in registers, homes by decl order).
 GAMELIBS_5F984_DONOR := build/src/game_libs/game_libs_ncc_5F984.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005F984=$(GAMELIBS_5F984_DONOR)
