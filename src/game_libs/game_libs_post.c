@@ -13132,7 +13132,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
              * spelled o4 * o0 (cfe swaps it to the target's lwc1 f2,0; f14,4). */
             temp_f18 = *(f32 *)((char *)(arg0) + 0x4) * *(f32 *)((char *)(arg0) + 0x0) * 100.0f;
             temp_v1_2 = *(u8 *)((char *)(arg0) + 0x32);
-            *(u8 *)((char *)(arg0) + 0x20) = 0U;
+            *(u8 *)((char *)(arg0) + 0x20) = 0U; if (1) {} /* agent-g run 250: BB split (bbsplit sweep) */
             temp_v0_2 = temp_v1_2 * 4;
             if (temp_v1_2 != 0) {
                 sp64 = D_E354_1C330[temp_v1_2];
