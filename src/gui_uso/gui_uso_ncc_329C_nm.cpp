@@ -22,6 +22,7 @@ extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct Gwords { unsigned int w0, w1; };
 union Gfx { Gwords words; long long force_structure_alignment; };
 #define G_TEXTURE 0xbb
@@ -52,7 +53,7 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     f32 fw, fh;
     s32 t;
     s32 w, h;
-    gSPTexture(CTX->nextp(), 0x8000, 0x8000, 0, 0, 1);
+    gSPTexture(me(me(CTX))->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37 */
     spr = arg0->spr;
     w = spr->w;
     h = spr->h;
@@ -72,6 +73,6 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fw = x1 - x0;
     y = (f32)y0;
     fh = y1 - y0;
-    gSPScisTextureRectangle(CTX->next(), CTX->nC(), CTX->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(CTX->next(), CTX->nC(), me(CTX)->nD() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
