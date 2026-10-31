@@ -30,6 +30,12 @@
  * `me(CTX)->next() + 0`, RDPHALF_1 / RDPHALF_2 appends plain `CTX->next()` -> 99.58 (best-improvement greedy over 22
  * sites x 15 accessor spellings, plateau). LEFT: prologue append result colours, F5801000 ctx t0, s3++ delay slot,
  * `beq 10,ch` operand order, texrect dl / n / pkt rotation (target a1 / a2 / v0, ours v0 / a1 / a2).
+ * Then (live units, kit XCIX): the target's first two appends share ONE uopt live unit (append 2's n is the pooled
+ * a1 like append 1, so append 3's result can take v0): drop the `if (1) {}` after append 1 and spell append 2
+ * `me(me(CTX))->next()` (greedy) -> 98.87 with the prologue word-for-word up to the BA000C02 append; then three
+ * zero-code counted loads `+ (o->f4 & 0) ...` (distinct never-loaded Font words) in the BA000C02 w1 pull the next
+ * unit boundary up so the &D call argument's a0 web starts before that append (target `lui a0` there, BA001301
+ * result a3) -> 99.77; the whole prologue now matches except the F5801000 append's ctx temp (t0).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -58,7 +64,7 @@ struct DL { Gfx *buf; int n; };
  * and the last epilogue append (greedy per-site grid): their dl temp takes the target's v0, 92.27 -> 92.43 standalone */
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Sub { char pad[0x158]; Ctx *ctx; };
-struct Font { char pad[0x21C]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
+struct Font { s32 f0; s32 f4; s32 f8; s32 fC; char pad[0x21C - 0x10]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
 #define CTX (o->sub->ctx)
 extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     s32 startx = o->x;
@@ -70,14 +76,14 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     charw = o->cw; lineh = o->lh; /* agent-g run 228: one line (kit CCXXXIV line order): 92.20 -> 92.23 */
 
     if (o->mode == 0) {
-        gW(me(me(CTX))->next(), 0xE7000000, 0); if (1) {}
-        gW(CTX->next2(), 0xBA001402, 0);
+        gW(me(me(CTX))->next(), 0xE7000000, 0);
+        gW(me(me(CTX))->next(), 0xBA001402, 0);
         gW(CTX->next(), 0xB6000000, 1);
         gW(CTX->next(), 0xB900031D, 0x0C087008);
         gW(CTX->next(), 0xF9000000, 0x80);
         gW(CTX->next(), 0xBB000001, 0x80008000);
         gW(CTX->next(), 0xFCFFFFFF, 0xFFFCF279);
-        gW(CTX->next(), 0xBA000C02, 0);
+        gW(CTX->next(), 0xBA000C02, 0 + (o->f4 & 0) + (o->f8 & 0) + (o->fC & 0));
         gW(CTX->next(), 0xBA001301, 0);
         gW(CTX->next(), 0xFD900000, gl_func_00034458((void *)&D_00000000));
         gW(CTX->next(), 0xF5900000, 0x07000000);
