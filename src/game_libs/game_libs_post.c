@@ -13083,7 +13083,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     u8 temp_v1_2;
     u8 temp_v1_3;
     u8 sp7D;
-    f32 sp78;
+    volatile f32 sp78; /* agent-g run 250: volatile home keeps the target's dead first swc1 0x78 */
     f32 temp_f0;
     f32 temp_f10_2;
     f32 var_f4;
