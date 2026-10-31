@@ -11,6 +11,8 @@
  * agent-c run 201 (sibling port): the V3 kit of the exact 64388 donor (P3 base, ctor through set(), FREE
  * operators on const V3 & parameters, a named `f32 k = s` in operator/ only): 85.95 -> 87.90 standalone,
  * length 716 -> 712 = target.
+ * agent-c run 245: 96-variant operand / term order grid on the dot product (commutations only): the z term first
+ * and the x product written p.x * n.x: 90.68 -> 90.96, length unchanged.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 extern "C" {
@@ -30,7 +32,7 @@ extern "C" { extern void gl_normalize_36694(V3 *); }
 struct Obj { V3 perp(V3 p, V3 n); };
 V3 Obj::perp(V3 p, V3 n) {
     f32 px, py, pz;
-    { V3 t = p - n * (n.x * p.x + n.y * p.y + n.z * p.z); px = t.x; py = t.y; pz = t.z; }
+    { V3 t = p - n * (n.z * p.z + (p.x * n.x + n.y * p.y)); px = t.x; py = t.y; pz = t.z; }
     V3 r; /* agent-c run 202: r declared before l (decl-order grid, length unchanged): 90.61 -> 90.62 standalone */
     f32 l;
     l = px * px + py * py + pz * pz;
