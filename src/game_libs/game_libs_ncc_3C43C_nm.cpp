@@ -3,7 +3,11 @@
  * agent-c run 177 (94.26 -> 96.05, 864 -> 868 bytes, target 872): the limit constant read into a block-scope
  * `k` then copied into lim (the target's f16 constant + `mov.s f12` copy, kept apart from the -600 constant), and
  * `0.0f + dist[best]` read into dd right after the f24 store (the target's early dist[best] load and add above the
- * h10 store). Residual: 24 extra frame bytes below the staging records (target frame 0xE0). */
+ * h10 store). Residual: 24 extra frame bytes below the staging records (target frame 0xE0).
+ * agent-c run 249 (98.26 -> 99.47, frame 0xE0 = target): the bottom of the frame holds only the ternary temp, the
+ * uopt unroll home and two uopt temp words, so the named scalars are declared BETWEEN the staging records (tmp / tmp2
+ * shrink to keep pos at the target offsets); dist before hitbuf, no zero-use on best, dd function-scope with
+ * `dd = 0.0f; if (1) {} dd = dd + dist[best];`, and `r[2] + 0 * r[0]` on the call. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -36,28 +40,29 @@ extern Vec3 vtx;
 extern float f24;
 }
 extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
-    char *hitbuf[8]; /* agent-g run 224: hitbuf before dist (sweep 98.24 -> 98.26) */
     float dist[8];
+    char *hitbuf[8];
     Vec3 acc;
-    GLHit3C43C tmp;
-    GLHit3C43C tmp2;
     int n;
     int i;
+    float dd;
+    struct { Vec3 pos; int pad[4]; } tmp;
     int best;
     float lim;
+    struct { Vec3 pos; int pad[5]; } tmp2;
     Vec3 *row;
 
     acc.x = 0.0f;
     acc.y = 0.0f;
     acc.z = 0.0f;
-    n = gl_func_00000000(o, 8, dist, hitbuf, r[0], r[1], r[2], 0);
+    n = gl_func_00000000(o, 8, dist, hitbuf, r[0], r[1], r[2] + 0 * r[0], 0);
     lim = 1000000.0f; /* agent-g run 217 (kit CCXIV): bootup.uso RoData 0x1AB8 = 0x49742400 is the literal 1e6, no k copy: 96.78 -> 98.24 */
     best = -1;
     a3->count = n;
     if (n > 0) {
         for (i = 0; i < n; i++) {
             if (ABS3(dist[i]) < lim && dist[i] > -600.0f && dist[i] > -s) {
-                best = i + 0 * (int)(r); /* agent-g run 210: folded counted use of r (zero-use sweep): 96.08 -> 96.78, 868 -> 872 bytes = target */
+                best = i;
                 lim = ABS3(dist[i]);
             }
         }
@@ -74,7 +79,7 @@ extern "C" int gl_func_0003C43C(char *o, int *r, float s, GLHit3C43C *a3) {
             a3->vtx.y = tmp2.pos.y;
             a3->vtx.z = tmp2.pos.z;
             a3->f24 = *(float *)(hitbuf[best] + 8);
-            float dd = 0.0f + dist[best];
+            dd = 0.0f; if (1) {} dd = dd + dist[best];
             a3->h10 = *(unsigned short *)(*(char **)(*(char **)(o + 0x84) + 0x68) + *(short *)(hitbuf[best] + 4) * 8);
             a3->idx = *(short *)(hitbuf[best] + 4);
             tmp2.pos = acc;
