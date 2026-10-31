@@ -55,11 +55,12 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
     f32 d;
     unsigned int i;
     int nfound = 0;
+    unsigned int count; /* agent-g run 256: declared here (was at its first assignment), count's home sp+56 = target: 96.31 -> 96.325 */
     Col *c = col;
     if (c == 0) {
         return 0;
     }
-    unsigned int count = c->ntri;
+    count = c->ntri;
     if (count != 0) {
         int off = 0;
         i = 0;
