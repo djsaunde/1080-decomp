@@ -64,8 +64,9 @@ void Obj::run() {
     m1C0 = a180[idx];
     *(short *)(gl_d_4c5e4_sh + 0x208) = gl_func_00034458(g, mAC, mB0);
     m1B4 = 0;
+    g = m15C; /* agent-g run 260 (kit CCXCIII spilltemps): the m15C address first mentioned before the sub load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)sub + idx * 4))[0x198 / 4];
-    gl_func_00034458(m15C, dl);
+    gl_func_00034458(g, dl);
     char *s1;
     if (*(int *)(gl_d_4c5e4_flag + 0x1C4) & 2) {
         int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
