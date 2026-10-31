@@ -854,6 +854,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     uls += 64;
                     vidx += 4;
                     if (vs) {} if (ve) {}
+                    if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
                 ult += 32;
             }
