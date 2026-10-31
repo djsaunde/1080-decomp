@@ -10208,7 +10208,7 @@ void gl_func_000415A4(O415A4 *self) {
     t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
     t->f18 = 100.0f;
     t->f1C = 16000.0f; if (1) {}
-    p = (char *)1030; t->a28 = (int)p; p = (char *)((int)p | 6); if (1) {} p = (char *)((int)p | 0x400); D_415A4_tA.a28 = (int)p; /* agent-g run 257: the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in p (assigned again by the alloc before any other read) instead of a new local keeps the 56-byte frame: 95.27, same length */
+    v = (float *)1030; t->a28 = (int)v; v = (float *)((int)v | 6); if (1) {} v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v; /* agent-g run 257: the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in an existing local (v, assigned again below before any other read) instead of a new one keeps the 56-byte frame, and v's web takes v0 like the target's chain: 95.58 with the p reuse at the vcall, same length */
     t->a2C = 1;
     if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
     v[3] = v[2] = v[1] = v[0] = 0.0f;
@@ -10223,7 +10223,8 @@ void gl_func_000415A4(O415A4 *self) {
         gl_func_00000000(p, 1);
     }
     *(char **)(D_415A4_g4 + 0x34) = p;
-    self->vt->fn6C(self->vt->off68 + (char *)self);
+    p = (char *)self->vt;
+    ((VT415A4 *)p)->fn6C(((VT415A4 *)p)->off68 + (char *)self); /* agent-g run 257: the vtable held in the dead p (its alloc web sits in a2) -- the target loads vt into a2 and self into v0: 95.27 -> 95.53 */
     gl_func_00000000(D_415A4_s6, self);
 }
 #else
