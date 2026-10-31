@@ -33,6 +33,27 @@ struct Obj {
     TriB *triAt(const int &o) { return (TriB *)((char *)tris + o); }
 };
 int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
+    /* agent-g run 248 (frame scan): NCC gives every function-scope local an edg home word even when uopt
+     * promotes it; block-scoped ones get none. The loop locals declared here (fp and off stay in their
+     * blocks) give the target frame 0x80 with off's home at sp+48 (was 0x40): 96.245 -> 96.31. */
+    TriB *t;
+    int inside;
+    s16 (*verts)[3];
+    Face *f;
+    Col *cc;
+    f32 dir;
+    int a;
+    int b;
+    s16 *tp;
+    s16 *v;
+    s16 *w;
+    s16 px;
+    s16 py;
+    s16 ex;
+    s16 ey;
+    V3 *n;
+    f32 d;
+    unsigned int i;
     int nfound = 0;
     Col *c = col;
     if (c == 0) {
@@ -41,37 +62,36 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
     unsigned int count = c->ntri;
     if (count != 0) {
         int off = 0;
-        unsigned int i = 0;
+        i = 0;
         do {
-            TriB *t = triAt(off);
-            int inside = 1;
-            s16 (*verts)[3] = c->verts;
-            Face *f;
-            Col *cc = c;
+            t = triAt(off);
+            inside = 1;
+            verts = c->verts;
+            cc = c;
             if (cc->remap != 0) {
                 f = &cc->faces[cc->remap[i]];
             } else {
                 f = &cc->faces[i];
             }
-            f32 dir = t->sgn;
-            int a = t->a + 0 * (int)(cc->remap); /* agent-g run 210: third pass: 96.15 -> 96.22 */
-            int b = t->b;
-            s16 *tp = D_00000000_3b6a0tbl + 0 * (int)(off); /* agent-g run 210: second pass: 96.02 -> 96.15, 796 -> 800 bytes = target */
+            dir = t->sgn;
+            a = t->a + 0 * (int)(cc->remap); /* agent-g run 210: third pass: 96.15 -> 96.22 */
+            b = t->b;
+            tp = D_00000000_3b6a0tbl + 0 * (int)(off); /* agent-g run 210: second pass: 96.02 -> 96.15, 796 -> 800 bytes = target */
             u16 *fp = (u16 *)f;
             do {
-                s16 *v = verts[fp[1]];
-                s16 *w = verts[f->vi[*tp]];
-                s16 px = (int)(pt[a] - v[a]) + 0 * (int)(inside); /* agent-g run 210: folded counted use (zero-use sweep): 95.80 -> 96.02, length unchanged */
-                s16 py = (int)(pt[b] - v[b]);
-                s16 ex = w[a] - v[a];
-                s16 ey = w[b] - v[b];
+                v = verts[fp[1]];
+                w = verts[f->vi[*tp]];
+                px = (int)(pt[a] - v[a]) + 0 * (int)(inside); /* agent-g run 210: folded counted use (zero-use sweep): 95.80 -> 96.02, length unchanged */
+                py = (int)(pt[b] - v[b]);
+                ex = w[a] - v[a];
+                ey = w[b] - v[b];
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
                     inside = 0 + 0 * (int)(c); /* agent-g run 210: fourth pass: 96.22 -> 96.25 */
                 }
             } while (inside && (fp++, ++tp != D_00000000_3b6a0tbl + 3));
             if (inside) {
-                V3 *n = (V3 *)((char *)c->nrm + off);
-                f32 d = pt[0] * n->x + pt[1] * n->y + pt[2] * n->z - t->d;
+                n = (V3 *)((char *)c->nrm + off);
+                d = pt[0] * n->x + pt[1] * n->y + pt[2] * n->z - t->d;
                 if (d < 0.0f && -50.0f < d) {
                     if (nfound >= max) {
                         return -1;
