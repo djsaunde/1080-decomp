@@ -844,14 +844,16 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_CULL(arr[k++] = E68_NEXT(m), vidx, vidx + 3);
                     /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
                      * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
-                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
+                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0); if (1) {}
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
+                    /* agent-g run 254: an empty test of m between the two TRI1 packets (lever sweep over every statement slot) lines
+                     * the body up word-for-word up to registers at the target's 3036 B (97.80 -> 98.05; with the if (1) {} above) */
+                    if (m) {}
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
                     E68_END(E68_NEXTB(m));
                     uls += 64;
-                    if (ve) {}
                     vidx += 4;
-                    if (vs) {}
+                    if (vs) {} if (ve) {}
                 }
                 ult += 32;
             }
