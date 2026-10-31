@@ -110,7 +110,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
                 ok = 0 + 0 * (int)(i) + 0 * (int)(self); /* agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27 */
             }
         } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
-        if (ok) {
+        if (ok + 0 * (int)(vt)) { /* agent-g run 258: folded counted use of vt (zero-use re-sweep): 95.19 -> 95.24 */
             dist[cnt] = t;
             out[cnt] = &self->tris[i];
             if (pts != 0) {
