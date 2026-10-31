@@ -1470,7 +1470,9 @@ void mgrproc_uso_func_00002AFC(int *a0) {
     }
 }
 
-#ifdef NON_MATCHING
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp,
+ * REPLACE_FUNC_BODY-spliced over the placeholder below (agent-c run 244, kit CCLXVII). The history
+ * below describes the earlier cfe decode (removed). */
 /* mgrproc_uso_func_00002B7C: number/glyph display dispatcher (switch arg0->0xD4->
  * 0x7E4). a3 = arg0->0xD4 (the mgr sub-object); s4 = arg0.
  *
@@ -1538,99 +1540,8 @@ extern int import_0024E060();
 extern int import_0024D704();
 extern int mgrproc_uso_func_083574();
 void mgrproc_uso_func_00002B7C(char *arg0) {
-    volatile int pad;
-    volatile float spB0;
-    volatile float spAC;
-    volatile float spA8;
-    volatile float spA4;
-    char *sub;
-    char sp60[64];
-    char *a3; /* agent-g run 195 (declmove sweep): above held / panel */
-    char *held;
-    char *panel;
-    char *h; /* run 167: unused since the tail re-reads into a3 (the target reuses a3); dropping the declaration costs 0.05 */
-    int s0;
-    int s2;
-    char *s1;
-    int digit;
-    int idx;
-
-    a3 = *(char **)(arg0 + 0xD4); /* run 162: read before the 1.0f stores -- the target keeps arg0 in a0 for this load and copies it to s4 late (94.07 -> 97.56) */
-    spA4 = 1.0f;
-    spA8 = 1.0f;
-    spAC = 1.0f;
-    spB0 = 1.0f;
-    switch (*(int *)(a3 + 0x7E4)) {
-    case 1:
-        a3 += 0x490; /* agent-c run 204: the sub-object pointer is advanced IN PLACE (a3 reused, not a held
-                      * copy): uopt folds the D108 arg back onto the old base (lw a0,0x568) and keeps the
-                      * advanced value in v0 with the a3 home 0x5C across the call (length = target, 97.52 -> 98.07) */
-        import_0024D108(*(int *)(a3 + 0xD8));
-        import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x10);
-        mgrproc_uso_func_083574(&sp60, &import_80264A28 + 0x658);
-        import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
-                        import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
-                        0x46, &sp60);
-        mgrproc_uso_func_083574(&sp60, &import_80264A3C + 0x66C);
-        import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
-                        import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
-                        0x64, &sp60);
-        return;
-    case 3:
-        s2 = -1 - *(int *)(a3 + 0x7E0);
-        import_0024D108(*(int *)(a3 + 0x568));
-        s0 = 0;
-        do {
-            a3 = *(char **)(arg0 + 0xD4);
-            idx = *(int *)(a3 + 0x7DC) + s0;
-            s1 = ((char **)&import_8025CAF8)[idx];
-            digit = *s1 - 0x30;
-            s1++;
-            switch (digit) {
-            case 0:
-                sub = a3 + 0x458;
-                break;
-            case 1:
-                sub = a3 + 0x47C;
-                break;
-            case 2:
-                sub = a3 + 0x4A0;
-                break;
-            }
-            import_0024E608(&import_8024CAF8, 0xFF, sub);
-            import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
-                            import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, s1),
-                            s2, s1);
-            s0 += 1;
-            s2 += 0x10;
-        } while (s0 != 0x10);
-        a3 = *(char **)(arg0 + 0xD4);
-        if (*(int *)(a3 + 0x7E8) < 0x96) {
-            if (*(int *)(arg0 + 0x170) >= 0x79) {
-                *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1; if (arg0) {}
-                a3 = *(char **)(arg0 + 0xD4);
-            }
-            import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x4C4);
-            panel = &import_80263D48 + 0x18;
-            import_0024F2C8(panel);
-            import_0024F34C(panel, 0xA0, *(int *)(arg0 + 0x170), 3);
-        }
-        return;
-    case 4:
-        if (*(int *)(arg0 + 0x170) >= 0x79) {
-            *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1; if (arg0) {}
-            a3 = *(char **)(arg0 + 0xD4);
-        }
-        import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x4C4);
-        panel = &import_80263D48 + 0x18;
-        import_0024F2C8(panel);
-        import_0024F34C(panel, 0xA0, *(int *)(arg0 + 0x170), 3);
-        break;
-    }
+    volatile char *r = arg0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00002B7C);
-#endif
 
 /* mgrproc_uso_func_00002E3C: historical name, true entry 0x2E34.
  * a0->0x68++; state = X(a0->0x50); target = a0 + (state == 1 ? 0x120 : 0x138);

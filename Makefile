@@ -2734,10 +2734,10 @@ MGR_23FC_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp.o
 build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_000023FC=$(MGR_23FC_DONOR)
 build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: $(MGR_23FC_DONOR)
 # 2B7C = number / glyph display dispatcher as C++ (unused `Col col;` with an inline ctor = the four 1.0f
-# stores; agent-c run 243, cfe 98.24). Still NON_MATCHING: NM comparison object only.
-MGR_2B7C_NM_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_2B7C_nm.cpp.o
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002B7C=$(MGR_2B7C_NM_DONOR)
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: $(MGR_2B7C_NM_DONOR)
+# stores; agent-c run 243, cfe 98.24). EXACT NCC donor (agent-c run 244: case-1 panel pointer p in v0).
+MGR_2B7C_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp.o
+build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002B7C=$(MGR_2B7C_DONOR)
+build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: $(MGR_2B7C_DONOR)
 
 # timproc_uso_b1 / b3 (Yay0-compressed): same opening -O0 run (int-reader 0x4C +
 # Quad4-reader 0x64 = 0xB0) carved into a region-0 sub-unit, same concat infra.

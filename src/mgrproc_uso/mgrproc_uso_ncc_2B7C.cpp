@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for mgrproc_uso_func_00002B7C (0x2B8 / 174 words), agent-c run 243.
+/* IDO 7.1 NCC (C++) donor for mgrproc_uso_func_00002B7C (0x2B8 / 174 words), EXACT (agent-c run 244, see the
+ * end of this comment). History: agent-c run 243 (NM donor).
  * The in-tree cfe body (mgrproc_uso.c, 98.24) compiled verbatim under NCC scores 98.17; the four volatile 1.0f
  * "ghost" stores of the cfe body are an unused C++ colour object with an inline constructor (`Col col;` -- the
  * ctor's `this` keeps the object in memory, so the stores survive without volatile): 99.39, and the first
@@ -9,9 +10,19 @@
  * Then the glyph pointer is advanced where it is loaded (`s1 = table[idx] + 1; digit = s1[-1] - 0x30;`): one
  * definition of s1 instead of two, the counter takes s0 and the glyph pointer s1 as in the target, and the lbu /
  * addiu pair stays in target order (99.45 -> 99.88).
- * Left: case 1's derived pointer (target keeps a3 + 0x490 in v0 across the D108 call; every held / reference /
- * derived-to-base spelling folds it back onto a3 or adds a null check). `sub` is the loop-carried conditionally-assigned value of the target (no default arm), as in
- * the cfe body. Still NON_MATCHING: build/non_matching/ only. */
+ * Run 244 (kit CCLXVII), EXACT: case 1's panel pointer is its own variable p (homed at sp+0x5C, declared right
+ * after sp60), the case-1 value the target keeps in v0 across the D108 call. A plain `p = a3 + 0x490` is
+ * copy-propagated into p + 0x10 = a3 + 0x4A0 (a3 is then the value held across the call); a dead re-read of a3
+ * after the D108 call stops that, and p then takes a callee-saved register because s0..s3 are already in use
+ * (cost 0) by the case-3 loop variables and nothing in case 1 interferes with them. The target's v0 needs p to
+ * interfere with the s0..s3 owners: empty tests on s1 / s2 / sub / s0 before the E608 call and on sub after it
+ * keep those loop variables live (unset, from function entry) through case 1, `if (p) {}` raises p's weight,
+ * and D108 is declared void (its return value is never used anywhere), which takes v0 off p's forbidden set.
+ * The empty tests on unset locals rely on the uninitialised-local exception (docs/MATCHING_WORKFLOW.md): the
+ * target itself reads the never-written home of `sub` (`lw s3,0xA0(sp)` at 0x2CA4, before the case-3 loop; the
+ * only store to 0xA0(sp) is `sw s3,0xA0(sp)` at 0x2D58, after it). `sub` is the loop-carried
+ * conditionally-assigned value of the target (no default arm), as in the cfe body.
+ * Spliced over the placeholder in mgrproc_uso.c via REPLACE_FUNC_BODY (both build paths). */
 typedef float f32;
 extern "C" {
 extern char import_8024CAF8;
@@ -22,7 +33,7 @@ extern char import_8025CAF8;
 extern char import_80264A28;
 extern char import_80264A3C;
 extern char import_80263D48;
-extern int import_0024D108(...);
+extern void import_0024D108(...);
 extern int import_0024E060(...);
 extern int import_0024D704(...);
 extern int mgrproc_uso_func_083574(...);
@@ -34,6 +45,7 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     Col col;
     char *sub;
     char sp60[64];
+    char *p;
     char *a3;
     char *panel;
     int s0;
@@ -47,9 +59,18 @@ void mgrproc_uso_func_00002B7C(char *arg0) {
     a3 = *(char **)(arg0 + 0xD4);
     switch (*(int *)(a3 + 0x7E4)) {
     case 1:
-        a3 += 0x490;
-        import_0024D108(*(int *)(a3 + 0xD8));
-        import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x10);
+        p = a3 + 0x490;
+        if (p) {}
+        import_0024D108(*(int *)(a3 + 0x568));
+        a3 = *(char **)(arg0 + 0xD4);
+        /* Uninitialised-local exception: the target reads sub's never-written home (`lw s3,0xA0(sp)` at 0x2CA4). */
+        if (s1) {}
+        if (s2) {}
+        if (sub) {}
+        if (s0) {}
+        import_0024E608(&import_8024CAF8, 0xFF, p + 0x10);
+        /* Uninitialised-local exception: the target reads sub's never-written home (`lw s3,0xA0(sp)` at 0x2CA4). */
+        if (sub) {}
         mgrproc_uso_func_083574(&sp60, (n1 = &import_80264A28 + 0x658));
         import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
                         import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
