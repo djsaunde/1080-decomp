@@ -78,9 +78,9 @@ void Obj::run() {
         int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
         s1 = (char *)sub->mF0;
         if (f) f = (m78 & 2) != 0;
-        float buf[4]; int one = 1, za = 0, e1 = 8, e2 = 8; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word) */
+        float buf[4]; int one = 1; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word); run 261: za / e1 / e2 dropped for the named hh / nn / vh / vn homes */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, za, za, e1, e2, 8, m1B0);
+        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = sub;
@@ -96,10 +96,14 @@ void Obj::run() {
     gl_func_00034458(m168, dl);
     gl_func_00034458(gl_d_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
     {
-    s1 = (char *)dl;
+    /* agent-c run 261 (kit CCXCIX): the G_DL / G_MOVEMEM appends share ONE named head (hh) and ONE named count
+     * (nn) -- the target's a2 / a1 in both -- and the Vp append has its own named vh / vn (v1 / t0); folded uses
+     * of nn and vh raise their uopt priorities above hh's, so hh is coloured after v1 / a0 / a1 are taken
+     * (99.59 -> 99.95) */
+    s1 = (char *)dl; DLHead *hh; int nn;
     Sub2 *e = s14c[idx];
     int v = gl_func_00034458(e->m60) + 0 * (int)(idx); /* agent-c run 210: folded counted use of the member idx (zero code) */
-    { Gfx *p = ((DL *)s1)->gnext(); p->w0 = 0x06000000; p->w1 = v; }
+    { hh = ((DL *)s1)->head; nn = hh->count++; Gfx *p = &((DL *)s1)->head->buf[nn]; p->w0 = 0x06000000; p->w1 = v + 0 * nn; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
     /* agent-c run 260: the four int -> float conversions as named locals BEFORE the Vp append, the scale products
@@ -110,7 +114,7 @@ void Obj::run() {
     float ch = (float)h;
     float cx = (float)x;
     float cy = (float)y;
-    Vp *vp = d->vnext();
+    VpHead *vh = d->vph; int vn = vh->count; vh->count = vn + 1; Vp *vp = &d->vph->buf[vn + 0 * (int)vh];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;
     vp->vscale[0] = cx * 2.0f;
@@ -118,7 +122,7 @@ void Obj::run() {
     vp->vscale[1] = cy * 2.0f;
     vp->vtrans[0] = cw * 4.0f + cx * 2.0f;
     vp->vtrans[1] = ch * 4.0f + cy * 2.0f;
-    { Gfx *p = &d->head->buf[d->head->count++]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = gl_func_00034458(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
+    { hh = d->head; nn = hh->count++; Gfx *p = &d->head->buf[nn]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = gl_func_00034458(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
     }
     gl_func_00034458(this);
     gl_func_00034458(gl_d_4c5e4_arg, this);
