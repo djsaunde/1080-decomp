@@ -17390,34 +17390,39 @@ int gl_func_0004E3F4(char *a0) {
  * agent-c run 178: z0 (the stack-passed third float) VOLATILE -- the target reads
  * it from its home once with lwc1 next to the y1 / z1 loads: 93.22 -> 95.37 local,
  * 49 words = target; the remaining diff is the FP colouring (a role re-grid over
- * the new shape found nothing better). */
+ * the new shape found nothing better).
+ * agent-g run 263: the target's colours say dy is its OWN local (f0) and the max lives in y0's f14
+ * (b = y0); `dy = y1 - y0` alone leaves the expression item y1 - y0 alive (y0 is not redefined), uopt
+ * colours the item (f2) and copies it into dy (mov.s) -- the dead store `y1 = dy;` kills the item
+ * (operand redefined, no code): 95.47 -> 96.90, 49 words. Left: zero (const + tail var) f2 / dz f16
+ * swapped (target zero f16, dz f2). */
 #ifdef NON_MATCHING
 float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {
-    float b;
+    float dy;
     float dz;
     float zero = 0.0f;
 
     x1 = x1 - x0;
-    y0 = y1 - y0;
+    dy = y1 - y0; y1 = dy;
     dz = z1 - z0;
     if (x1 < zero) x1 = -x1;
-    if (y0 < zero) y0 = -y0;
+    if (dy < zero) dy = -dy;
     if (dz < zero) dz = -dz;
-    if (x1 < y0) {
+    if (x1 < dy) {
         x0 = x1;
-        b = y0;
+        y0 = dy;
     } else {
-        x0 = y0;
-        b = x1;
+        x0 = dy;
+        y0 = x1;
     }
-    if (dz < b) {
-        zero = b;
-        b = dz;
+    if (dz < y0) {
+        zero = y0;
+        y0 = dz;
     } else {
         zero = dz;
     }
-    b = (x0 + b) / (float)2; /* agent-g run 256: the half-sum stored into b, then `b + zero` (return-spelling grid): 95.37 -> 95.47, same length */
-    return b + zero;
+    y0 = (x0 + y0) / (float)2;
+    return y0 + zero;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E424);
