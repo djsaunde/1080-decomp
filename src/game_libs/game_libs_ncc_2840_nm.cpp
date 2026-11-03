@@ -18,22 +18,24 @@ extern int gl_func_00000000(...);
 extern f32 gl_func_00000000_sqf(f32);
 }
 extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
+    /* agent-g run 263: declaration order from a random home-layout search (the volatile pads are
+     * unreferenced home-keeping words) */
     f32 vec[4];
-    f32 vx;
-    f32 vy;
-    f32 b4;
+    char *p;
     f32 d4;
+    char *temp_v0;
+    f32 dy;
+    volatile int u1;
+    f32 len;
+    f32 b4;
+    volatile int u2;
+    f32 dx;
     f32 f0;
     f32 f16;
     f32 f2;
+    volatile int u3;
     f32 f18;
-    f32 sp3C;
-    volatile f32 sp38;
-    f32 len;
-    f32 dx;
-    f32 dy;
-    char *p;
-    char *temp_v0;
+    volatile int u0;
 
     temp_v0 = (char *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
     f0 = (*(f32*)((char*)temp_v0 + 0xBC));
@@ -42,27 +44,25 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     f18 = (*(f32*)((char*)temp_v0 + 0xA8));
     if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {
         b4 = (*(f32*)((char*)temp_v0 + 0xB4));
-        dx = arg2 - f16;
-        dy = arg3 - f18;
-        sp3C = dx;
+        /* agent-g run 263: plain dx / dy variables (the target keeps both in their homes across the
+         * calls); `dx = arg2 - f16` alone leaves the item arg2 - f16 coloured and copied into dx (spill
+         * temps 28 / 32) -- the dead parameter stores arg2 = dx / arg3 = dy kill the items (no code):
+         * the run-139 volatile sp38 / sp3C copies go (92.82 -> 94.00, + home search 94.18) */
+        dx = arg2 - f16; arg2 = dx;
+        dy = arg3 - f18; arg3 = dy;
         d4 = (*(f32*)((char*)temp_v0 + 0xD4));
-        sp38 = dy;
-        len = gl_func_00000000_sqf((dx * dx) + (dy * dy)); if (arg2) {}
-        vx = sp3C; if (arg2) {}
-        vy = sp38;
+        len = gl_func_00000000_sqf((dx * dx) + (dy * dy));
         if (len != 0.0f) {
-            vy /= len; /* run 182 (lever-sweep order) */
-            vx /= len;
+            dx /= len;
+            dy /= len;
         }
         p = arg0 + 0x2E4;
         vec[0] = 1.0f;
         vec[2] = 0.0f;
         vec[3] = 0.0f;
-        sp3C = vx;
-        sp38 = vy;
         vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));
         gl_func_00000000(p);
         gl_func_00000000(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
-        gl_func_00000000(p, (s32) ((((b4 * sp3C) + (d4 * sp38)) * 150.0f) + (f32) (FW(arg0, 0x164) - 0xC)), arg4 - 8, 0);
+        gl_func_00000000(p, (s32) ((((b4 * dx) + (d4 * dy)) * 150.0f) + (f32) (FW(arg0, 0x164) - 0xC)), arg4 - 8, 0);
     }
 }
