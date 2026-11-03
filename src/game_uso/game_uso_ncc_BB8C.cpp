@@ -118,6 +118,7 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
         k = game_uso_D_807FFA98[47];
         for (i = 0, c = (Child *)obj; i < obj->n; i++, c = (Child *)((char *)c + 36)) {
             if (c->lim < d) {
+                if (f24 != f20) {} /* agent-g run 262 (kit CCXCVII priorities): code-free test in the loop raises f20's priority above k's: f20 / f22 callee-saved colours = target (98.55 -> 98.83) */
                 if (c->flags & 1) {
                     if (k < f20) game_uso_func_0000B750(c->rec, obj->b4, &world, &norm, f20);
                 } else {
