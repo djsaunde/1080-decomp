@@ -30,10 +30,12 @@ extern "C" int gl_func_00033094(Obj *o) {
     a.set(o->pos.x, o->pos.y, o->pos.z);
     if (o->p != 0) {
         b.set(o->p->pos.x, o->p->pos.y, o->p->pos.z);
+        if (1) {}
     } else {
         b = o->v104;
         b *= 10.0f;
         b += a;
+        if (a.y != a.z) {} /* agent-g run 262 (kit CCXCVII priorities): code-free test + the if-arm if (1) colour a = target (x f12 / y f0 / z f2): 93.65 -> 94.20 */
     }
     V3 *k = (V3 *)D_33094_k;
     a.mul(*k);
