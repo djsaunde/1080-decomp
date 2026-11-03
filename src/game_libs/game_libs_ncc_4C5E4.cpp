@@ -1,4 +1,6 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004C5E4 (0x344 / 209 words), agent-g run 191.
+/* IDO 7.1 NCC (C++) donor for gl_func_0004C5E4 (0x344 / 209 words) -- EXACT (agent-c run 261), spliced over the
+ * post0b placeholder on both build paths via REPLACE_FUNC_BODY (gl_func_00034458 calls renamed to the blank
+ * gl_func_0004C5E4_c34458 = 0: the target's jal words are blank USO calls). First NM donor: agent-g run 191.
  * The cfe NM body (79.69, 212 words) ported to C++: `void Obj::run()` (renamed with objcopy). Registers this
  * object in the module global, picks its DL from the sub-object's per-index table, issues one of two draw calls
  * (flag 0x1C4 & 2: a zero colour quad; else through the cfront virtual at vtbl+0x60/+0x64), then appends a
@@ -14,7 +16,8 @@
  * registers (`lw a0,120(s0)`, `andi a3,a0,4` in the beqz delay) but the ugen ring shifts by 3 from the first flag
  * test on (78.1); a folded `+ 0 * mC0` in the m4 expression re-phases it (86.87 -> 88.12 local, length unchanged).
  * Left: the 0x148 load colours t4 (target t5) because the mC0 load is CSE-hoisted into t5.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-c runs 260 / 261: named viewport conversions (length = target), named shared head / count for the two
+ * G_DL appends, then folded counted uses in the else arm: EXACT. */
 extern "C" {
 int gl_func_00034458(...);
 extern char D_00000000[];
@@ -89,7 +92,11 @@ void Obj::run() {
         int f = (m104 & 2) != 0;
         if (f) f = (m78 & 2) != 0;
         int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8 + 0 * (int)(sub); /* run 246: folded counted use of sub: sb = t5 (target) and the ring phase */
-        gl_func_00034458(dl, s1, pf, m4, f, mDC, c0, c4, b8, bc, sb8, m1B0);
+        /* agent-c run 261 (kit CCXCIX): folded counted uses lift f (3 uses) and c0 / c4 / b8 / bc (2 each) to priority
+         * 3.0 and the codeless sub-load item to 2.0, so that item is coloured after bc and takes t3 -- sb8 then gets
+         * the target's t4 (99.95 -> 100). `0 * (signed char)f` / `0 * (unsigned)(sub)` keep the folds distinct
+         * expressions (a repeated `0 * f` is one CSE item that gets a colour of its own). */
+        gl_func_00034458(dl, s1, pf, m4, f + 0 * f, mDC, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(sub), m1B0);
     }
     gl_func_00034458(dl);
     gl_func_00034458(m15C);

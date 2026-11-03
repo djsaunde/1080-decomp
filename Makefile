@@ -1923,14 +1923,14 @@ $(GAMELIBS_48510_NM_DONOR): src/game_libs/game_libs_ncc_48510_nm.cpp
 	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_NM_DONOR)
-# 4C5E4 = C++ `void Obj::run()` (agent-g run 191: the cfe NM body ported to NCC, 212 -> 208 of 209 words); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4C5E4_NM_DONOR := build/src/game_libs/game_libs_ncc_4C5E4_nm.cpp.o
-$(GAMELIBS_4C5E4_NM_DONOR): src/game_libs/game_libs_ncc_4C5E4_nm.cpp
+# 4C5E4 = C++ `void Obj::run()` (agent-g run 191: the cfe NM body ported to NCC); EXACT NCC donor over a placeholder (agent-c run 261). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_0004C5E4_c34458 = 0.
+GAMELIBS_4C5E4_DONOR := build/src/game_libs/game_libs_ncc_4C5E4.cpp.o
+$(GAMELIBS_4C5E4_DONOR): src/game_libs/game_libs_ncc_4C5E4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_NM_DONOR)
+	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 --redefine-sym gl_func_00034458=gl_func_0004C5E4_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_DONOR)
 # 4F2DC = screen-point raycast picker as C++ (agent-g run 194: V3 by-value operator= / operator* / operator+ temporaries; cfe 90.36, length = target). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4F2DC_NM_DONOR := build/src/game_libs/game_libs_ncc_4F2DC_nm.cpp.o
 $(GAMELIBS_4F2DC_NM_DONOR): src/game_libs/game_libs_ncc_4F2DC_nm.cpp
