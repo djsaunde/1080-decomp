@@ -2035,13 +2035,14 @@ $(GAMELIBS_3AE58_NM_DONOR): src/game_libs/game_libs_ncc_3AE58_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003AE58=$(GAMELIBS_3AE58_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3AE58_NM_DONOR)
-# 41D40 = registry dump with the by-value array iterator under NCC (agent-c run 162: cfe 92.99 -> 96.11, length = target; run 164: free iter() -> 99.32; run 174: for-init iterator, 99.17 -> 99.26 objdiff diff). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_41D40_NM_DONOR := build/src/game_libs/game_libs_ncc_41D40_nm.cpp.o
-$(GAMELIBS_41D40_NM_DONOR): src/game_libs/game_libs_ncc_41D40_nm.cpp
+# 41D40 = registry dump with the by-value array iterator under NCC (agent-c run 162: cfe 92.99 -> 96.11, length = target; run 164: free iter() -> 99.32; run 174: for-init iterator, 99.17 -> 99.26 objdiff diff). EXACT NCC donor over a placeholder (agent-c run 262: explicit if / do-while with a named-pointer bottom advance). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00041D40_c34458 = 0.
+GAMELIBS_41D40_DONOR := build/src/game_libs/game_libs_ncc_41D40.cpp.o
+$(GAMELIBS_41D40_DONOR): src/game_libs/game_libs_ncc_41D40.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041D40=$(GAMELIBS_41D40_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41D40_NM_DONOR)
+	$(OBJCOPY) --redefine-sym gl_func_00034458=gl_func_00041D40_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041D40=$(GAMELIBS_41D40_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41D40_DONOR)
 # 37938 = V3 push-apart under NCC (agent-c run 162: cfe 93.73 -> 98.55, kept-parameter getPos burns the target's ring slot). EXACT NCC donor over an
 # empty placeholder (agent-c run 246: a named `Node *n = o->s;` kept live by `if (n) {}` past the arg statement puts the final c.out reload in v1).
 GAMELIBS_37938_DONOR := build/src/game_libs/game_libs_ncc_37938.cpp.o

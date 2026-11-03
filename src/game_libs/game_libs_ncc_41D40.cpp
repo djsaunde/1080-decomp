@@ -11,6 +11,11 @@
  * a1) in the entry copy, and the bottom copy's array / index temps swap v0 / v1.
  * agent-c run 164: the iterator from a free `inline AIter iter(Arr *a) { return AIter(a); }` instead of the member
  * Arr::iter() (the member's implicit this was an extra pooled temp between the iterator objects): 95.76 -> 98.97 local.
+ * agent-c run 262: EXACT (99.90 -> 100). The walk is written as `{ AIter it = ..; if (it.first() + 0) do { .. }
+ * while (it.adv() + 0); }` (the two tests as separate source expressions) with the bottom advance naming its index
+ * and array pointer; the dead volatile block shrinks 4 -> 3 for the frame. Spliced over the post0b placeholder on
+ * both build paths; the gl_func_00034458 calls are renamed to the blank gl_func_00041D40_c34458 = 0 (the target's
+ * jal words are blank USO calls).
  */
 extern "C" {
 void *gl_func_00034458(...);
@@ -29,7 +34,12 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
-    Elem **next() { if (idx < last) { return &(*a)[++idx] + 0; } return 0; } /* run 174: ++idx again under the for-init form; agent-g run 203: folded `+ 0` moves the entry copy's index temp a0 -> a1 (target) */
+    /* agent-c run 262: the entry test and the loop-bottom test are separate source expressions (explicit
+     * `if (..) do { } while (..)`): the entry copy is the ?: form, the bottom copy names the index and the
+     * array pointer (`int i = ++idx; Arr *p = a;`), so the bottom array load is its own uopt live range (v1)
+     * instead of sharing the edg temp that holds the entry copy's idx + 1 (a1). */
+    Elem **first() { return idx < last ? &(*a)[++idx] + 0 : 0; }
+    Elem **adv() { if (idx < last) { int i = ++idx; Arr *p = a; return &(*p)[i] + 0; } return 0; }
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter iter(Arr *a) { return AIter(a); }
@@ -37,14 +47,14 @@ extern "C" void gl_func_00041D40(int arg0) {
     gl_func_00034458(S(0x1F6B4));
     (*(Arr **)D_00000000)->count = 0;
     gl_func_00034458(arg0);
-    for (AIter it = iter(*(Arr **)D_00000000); it.next() + 0; ) { /* agent-g run 203: folded `+ 0` on the condition moves the bottom copy's index temp v1 -> v0 (target) */
+    { AIter it = iter(*(Arr **)D_00000000); if (it.first() + 0) do {
         Elem *e = it.cur();
         gl_func_00034458(S(0x1F6C0), e->xC);
         e = it.cur(); if (1) {}
         if (e->x14 != 0) {
             gl_func_00034458(e->x14 + 0x10, e);
         }
-    }
-    { volatile int q0, q1, q2, q3; }
+    } while (it.adv() + 0); }
+    { volatile int q0, q1, q2; }
     gl_func_00034458();
 }

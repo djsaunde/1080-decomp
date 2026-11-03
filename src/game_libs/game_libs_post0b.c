@@ -10419,73 +10419,13 @@ void gl_func_00041A9C(char *self) {
 // the bounds guard are exact; copied-field offsets representative. Caps:
 // Reg/node struct, &D_reloc and cb signatures untyped. Full body
 // INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-/* 2026-10-20 (agent-c run 114): re-decoded as inlined C++ list-iterator
- * code. The ctor is built on the stack (dead `this == 0` alloc(12)
- * fallback): {list, i = -1, n = count - 1}. It is copy-constructed twice
- * (pointer-based struct copies), then walked with an inlined next():
- * `if (i < n) return &list->buf[++i]; return 0;`. */
-typedef struct { char **list; s32 i; s32 n; } It41D40;
-/* run 151 (agent-c, 91.64 -> 92.99): first advance as if/else with the null in
- * the else arm (the 0 is hoisted above the compare, the then-arm ends in a `b`;
- * 404 -> 408 of 412 bytes); copies declared c, b, a (target: ctor temp lowest at
- * sp+96, the walked copy highest at sp+124). The in-loop advance stays
- * `r = 0; if (...)` (the if/else form scores lower there). */
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41D40.cpp
+ * (by-value array iterator walk as an explicit if / do-while), REPLACE_FUNC_BODY-
+ * spliced over this placeholder on both build paths (agent-c run 262). Its
+ * gl_func_00034458 calls are renamed to the blank gl_func_00041D40_c34458 = 0
+ * (the target's jal words are blank USO calls). */
 void gl_func_00041D40(s32 arg0) {
-    It41D40 c;
-    It41D40 b;
-    It41D40 a;
-    It41D40 *p;
-    char *L;
-    char *e;
-    char **r;
-    volatile int padq[10]; /* run 138: frame = target */
-
-    gl_func_00034458((char *)&D_00000000 + 0x1F6B4);
-    FW(*(char **)&D_00000000, 0xC) = 0;
-    gl_func_00034458(arg0);
-    p = 0;
-    if (1) {
-        p = &a;
-    }
-    L = *(char **)&D_00000000;
-    if (p == 0) {
-        p = (It41D40 *)gl_func_00034458(0xC);
-        if (p == 0) goto copy;
-    }
-    p->i = -1;
-    p->list = (char **)L;
-    p->n = FW(L, 0xC) - 1;
-copy:
-    b = a;
-    c = b;
-    if (c.i < c.n) {
-        c.i++;
-        r = (char **)*c.list + c.i;
-    } else {
-        r = 0;
-    }
-    while (r != 0) {
-        e = ((char **)*c.list)[c.i];
-        gl_func_00034458((char *)&D_00000000 + 0x1F6C0, FW(e, 0xC));
-        e = ((char **)*c.list)[c.i];
-        if (FW(e, 0x14) != 0) {
-            gl_func_00034458((char *)FW(e, 0x14) + 0x10, e);
-        }
-        r = 0;
-        if (c.i < c.n) {
-            c.i++;
-            r = (char **)*c.list + c.i;
-        }
-    }
-    gl_func_00034458();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00041D40);
-#endif
 
 // gl_func_00041EDC — NM WRAP 97.29 (2026-10-16 agent-c; was 80.2). cb-scoped
 // list-iterate-and-dispatch: cb1(&D+0x1F6D0); walk the {cur,next} cursor
