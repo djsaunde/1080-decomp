@@ -49,8 +49,8 @@ V3 Obj::perp(V3 p, V3 n) {
             px = px * -1.0f;
             py = py * -1.0f;
             pz = pz * -1.0f;
-        }
-         r.x = px; r.y = py; r.z = pz;
+        } if (py) {} /* run 265: code-free float tests (kit CCC random search on the new layout): 94.05 -> 95.44 */
+         r.x = px; r.y = py; r.z = pz; if (l) {}
          return (r * 1.0f) / gl_sqrtf_36694(l);
     }
     if (n.z == 1.0f) {
@@ -62,6 +62,6 @@ V3 Obj::perp(V3 p, V3 n) {
         r.x = -n.y;
         r.y = n.x;
         gl_normalize_36694(&r);
-    }
+    } if (px) {} /* run 265: second round, 95.44 -> 95.49 */
     return r;
 }
