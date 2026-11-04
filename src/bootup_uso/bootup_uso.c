@@ -1389,16 +1389,16 @@ void func_000024B8(char *arg0) {
     char *s0;
     int k2;
 
-    k = 0;
+    k = 0; if (arg0[0x4C]) {} /* agent-g run 275: with the folded use in the gate block, one zero-code arg0[0x4C] candidate across the head takes v1, so the latch colours t0 like the target */
     if (D_00000064 == 1) {
-        v0 = (char *)FW(arg0, 0x38);
+        v0 = (char *)FW(arg0, 0x38) + 0 * (int)(arg0[0x4C]);
         r = 0;
         s0 = (char *)((FW(v0, 0x10) & 0x400) != 0); func_00000000_24b8v((int)s0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
         k = r;
     }
     s0 = (char *)FW(arg0, 0x38);
-    if ((FW(s0, 0x18) & 0x40) + 0 * (int)(arg0[0x4C])) {
-        k = 1 + 0 * (int)(arg0[0x4C]);
+    if (FW(s0, 0x18) & 0x40) {
+        k = 1;
         FW(arg0, 0x4C) = (FW(arg0, 0x4C) != 0) == 0;
     }
     if (FW(arg0, 0x4C) != 0) {
@@ -1411,10 +1411,10 @@ void func_000024B8(char *arg0) {
             FF(FW(FW(arg0, 0x2C), 0x70), 0x14C) = 85.0f;
         }
         s0 = (char *)FW(arg0, 0x38); if (arg0) {}
-        if ((FW(s0, 0x10) & 8) + 0 * (int)(*arg0)) { /* agent-c run 210: folded counted use (zero code) */
+        if (FW(s0, 0x10) & 8) { /* agent-g run 275: agent-c's run-210 folded use dropped here and in the 0x134 copy; the 0x14C copy counts s0 instead (the head candidate re-phases the temp ring) */
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} /* agent-g run 275: empty blocks in the cam web (1 / 2 / 1) lower its priority below the cfg CSE */
             if (FF(v1, 0x14C) < 120.0f) {
-                s0 = v1 + 0x14C + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use of the arg0 web (zero code) */
+                s0 = v1 + 0x14C + 0 * (int)(*s0); if (1) {} /* folded counted use of s0 (= cfg, set above; zero code) */
                 *(f32 *)s0 = *(f32 *)s0 + two;
             }
         }
@@ -1427,7 +1427,7 @@ void func_000024B8(char *arg0) {
             }
         }
         v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {}
-        s0 = v1 + 0x134 + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use (zero code) */
+        s0 = v1 + 0x134; if (1) {}
         *(f32 *)s0 = FF(FW(arg0, 0x38), 4) * two + *(f32 *)s0;
         s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
         s0 += 0x138;
