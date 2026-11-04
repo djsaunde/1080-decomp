@@ -26,12 +26,15 @@ struct V3 { f32 x, y, z;
 #define KV (*(V3 *)D_00000000F) /* collision kvec (&D + 0x128) */
 struct Cam { char p[0xA0]; V3 pos; char pac[0xB4 - 0xAC]; char mtx[1]; };
 extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
+    /* agent-c run 280 (declaration-order grid, 120): count and padt FIRST -- dists / surfs / hits then sit at the
+     * target's 376 / 344 / 248 (were 392 / 360 / 264); `count = 0;` must stay right after count's declaration (after
+     * the V3 padt ctor it costs 4.7 points), 95.692 -> 95.714 */
+    int count; /* agent-g run 195 / 224 placed it below the arrays (pre run-280 order) */
+    count = 0;
+    V3 padt; /* agent-c run 278: unreferenced 12-byte object = the target's frame 424 (was 408), 95.684 -> 95.692 */
     f32 dists[8];
     int surfs[8];
     f32 hits[8][3];
-    int count; /* agent-g run 195 (declmove sweep): below dists / surfs; agent-g run 224: below hits too */
-    count = 0;
-    V3 padt; /* agent-c run 278: unreferenced 12-byte object = the target's frame 424 (was 408), 95.684 -> 95.692 */
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
     dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_00000000B + 0x128);
