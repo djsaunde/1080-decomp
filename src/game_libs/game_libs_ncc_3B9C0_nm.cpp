@@ -97,14 +97,15 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
          * counted uses of ib / ia on pp and of pp on sg re-colour it (zero-use sweep: 94.19 -> 95.52) */
         pp = &p.x + 0 * (int)(ib) + 0 * (int)(ia);
         qa = pp[ia]; qb = pp[ib]; if (1) {}
-        sg = ((TriB9 *)((char *)self->tris + off))->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70 */
+        sg = ((TriB9 *)((char *)self->tris + off))->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); if (1) {} /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
         nx = (s16 *)&D_00000000;
         vt = col->verts;
         fv = (u16 *)f;
         do {
-            v0 = vt[fv[1]];
+            v0 = vt[fv[1]]; if (qa != 0.0f) {} /* agent-c run 273: a code-free 0.0f use inside the inner loop (qa set before the loop) raises the
+                                                 * hoisted 0.0f constant's priority over the n->x / n->y / n->z loads: f14 like the target (95.52 -> 95.56) */
             v1 = vt[f->vi[*nx]]; nx++; /* run 194: no `*nx++` copy (the target steps nx in place; loop block aligns up to colours) */
-            dx = (s32)(qa - v0[ia]); if (1) {} /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
+            dx = (s32)(qa - v0[ia]); /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
             dy = (s32)(qb - v0[ib]);
             ex = v1[ia] - v0[ia]; if (self) {}
             ey = v1[ib] - v0[ib];
