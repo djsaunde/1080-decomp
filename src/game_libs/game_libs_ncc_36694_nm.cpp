@@ -44,7 +44,7 @@ V3 Obj::perp(V3 p, V3 n) {
     V3 a = n * ((n.x * p.x + n.y * p.y) + n.z * p.z);
     V3 r;
     f32 l;
-    f32 px, py, pz;
+    f32 px, py = 0.0f, pz; /* agent-c run 281: py initialised at its declaration (declaration-init sweep), 95.876 -> 95.899 */
     { const V3 &t = p - a; px = t.x; py = t.y; pz = t.z; }
     l = px * px + py * py + pz * pz;
     if (0.0f < l) {
