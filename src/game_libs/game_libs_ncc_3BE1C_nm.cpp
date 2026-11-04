@@ -106,12 +106,12 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     list = this->list(cell);
     if (list == 0) return 0;
     while ((i = *list++) != -1) {
-        off = ((i << 2) - i) << 2;
+        off = i * 12; /* agent-g run 266: ugen's multiply-by-constant expansion builds sll / subu / sll in the destination register (target a2 throughout); the shift spelling took a t temp and shifted the t ring */
         if (((Tri *)((char *)tris + off))->grp < 0) continue;
         f = col->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
         cc = col;
         int r = gl_func_00000000(cc, f->mat) + 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568) */
-        if (r & 0x100) {
+        if ((r & 0x100) + 0 * (int)(cc)) { /* agent-g run 266: folded counted use of cc (zero-use sweep on the i * 12 body): 98.62 -> 98.78 */
             ok = 1;
             t = (Tri *)((char *)tris + off); /* agent-g run 224: t before n (sweep 97.33 -> 97.60) */
             n = (V3 *)((char *)col->nrm + off);
