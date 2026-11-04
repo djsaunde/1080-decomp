@@ -98,7 +98,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         } else {
             f = &col->faces[i];
         }
-        ib = (&self->tris[i])->b + 0 * (int)(self_al->tris); /* agent-g run 210: second pass: 92.70 -> 93.89 */
+        ib = (&self->tris[i])->b + 0 * (int)(self_al->tris) + 0 * (int)(col->remap); /* agent-g run 210: second pass: 92.70 -> 93.89; agent-c run 284: + col->remap (zero-use --exprs re-sweep after the off split, 96.00 -> 96.05) */
 #define ia ((&self->tris[i])->a) /* agent-c run 235: ia de-named (lever-sweep denaming, 95.00 -> 95.07) */
         /* agent-c run 266: qa / qb loads in ONE basic block (the `if (1) {}` moved after qb): the target's held
          * `addiu t9,sp,184` &p base is CSE'd for both loads inside the iteration (1104 -> 1108 of 1116); folded
