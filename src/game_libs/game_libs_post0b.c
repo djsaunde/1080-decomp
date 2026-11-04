@@ -12739,6 +12739,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
     temp_s1 = FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
     gl_func_00034458(temp_s1);
+    if (temp_s1) {} /* agent-g run 278: code-free tests on temp_s1 after this call and after the temp_t6 read (random test search, 2 rounds): 95.36 -> 95.65, length = target */
     temp_v1 = FW(arg0, 0x240);
     temp_v0 = FW(temp_v1, 0x28);
     temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
@@ -12763,6 +12764,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
           gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
     }
     temp_t6 = FW(arg0, 0x240);
+    if (temp_s1) {}
     /* agent-c run 196: int-cast address keeps the target's `lui; addiu; sw 596(rX)` */
     *(char **)((int)&D_00000000 + 0x254) = temp_t6;
     FW(temp_t6, 0x158) = temp_s1;
