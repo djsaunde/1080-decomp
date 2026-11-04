@@ -23388,7 +23388,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
         *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(p); /* agent-c run 260: folded counted use of p (cnt a0 / p v1 = target) */
         sp38 = arg6 + arg8;
-        sp34 = arg7 + arg9; if (sp38 != sp34) {}
+        sp34 = arg7 + arg9; /* agent-c run 274: the run-263 sp38 / sp34 empty test dropped (mv.py, 98.04 -> 98.06) */
         *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
     }
     if (arg3 != 0) {
