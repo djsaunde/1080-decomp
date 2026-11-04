@@ -52,7 +52,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     int h;
     Gfx4B *g;
     volatile int pad0; /* run 158: two more homes below h = the target's frame 0xF0 (every sp offset then matches) */
-    int e; /* agent-g run 233: the clip half-extent, in pad1's home slot (frame kept) */
+    char *d; /* agent-g run 233: the clip half-extent e, in pad1's home slot (frame kept); agent-g run 266: one local d for the half-extent AND the self->0xCC pointer */
 
     {
         Cam4B *cam = &D_4BAF4_cam;
@@ -85,12 +85,14 @@ extern "C" void gl_func_0004BAF4(char *self) {
     if (iz != iz) {}
     /* agent-g run 233 (kit CCXLIV): each volatile half-extent read assigned to ONE local e -- the target's four
      * reloads share one coloured register (a3), and the centre 0xC0 now loads before 0xB8 like the target */
-    if ((e = F4B(GS4B, 0xB8, volatile int), F4B(GS4B, 0xC0, int) + e < x) || (e = F4B(GS4B, 0xBC, volatile int), F4B(GS4B, 0xC4, int) + e < y) ||
-        (e = F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - e) || (e = F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - e)) {
+    /* agent-g run 266: the half-extent reads go into d (int -> char * -> int round trip, 32-bit), and d is then
+     * re-assigned self->0xCC for the dlist call: the pointer takes v0 like the target (97.39 -> 97.54) */
+    if ((d = (char *)F4B(GS4B, 0xB8, volatile int), F4B(GS4B, 0xC0, int) + (int)d < x) || (d = (char *)F4B(GS4B, 0xBC, volatile int), F4B(GS4B, 0xC4, int) + (int)d < y) ||
+        (d = (char *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)d) || (d = (char *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)d)) {
         return;
     }
-    ctx = F4B(GS4B, 0x158, Ctx4B *) + 0 * (int)(spr->h); /* agent-g run 233: spr->h (97.00 -> 97.03); agent-c run 209: folded counted use of w (kit CXCIV lever b); run 211: + spr->w; agent-g run 231: the `0 * w` term dropped again (96.36 -> 96.82) */
-    r = gl_func_00000000(F4B(F4B(self, 0xCC, char *), 0x60, int));
+    ctx = F4B(GS4B, 0x158, Ctx4B *); /* agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
+    d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
     if (r) {}
     g = PKT4B(ctx);
     g->w0 = 0x06000000;
