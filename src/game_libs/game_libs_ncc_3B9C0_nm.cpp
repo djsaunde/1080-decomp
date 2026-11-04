@@ -92,10 +92,12 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         }
         ib = ((TriB9 *)((char *)self->tris + off))->b + 0 * (int)(self_al->tris); /* agent-g run 210: second pass: 92.70 -> 93.89 */
 #define ia (((TriB9 *)((char *)self->tris + off))->a) /* agent-c run 235: ia de-named (lever-sweep denaming, 95.00 -> 95.07) */
-        pp = &p.x;
-        qa = pp[ia]; if (1) {}
-        qb = pp[ib];
-        sg = ((TriB9 *)((char *)self->tris + off))->sgn + 0 * (int)(self->tris); /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70 */
+        /* agent-c run 266: qa / qb loads in ONE basic block (the `if (1) {}` moved after qb): the target's held
+         * `addiu t9,sp,184` &p base is CSE'd for both loads inside the iteration (1104 -> 1108 of 1116); folded
+         * counted uses of ib / ia on pp and of pp on sg re-colour it (zero-use sweep: 94.19 -> 95.52) */
+        pp = &p.x + 0 * (int)(ib) + 0 * (int)(ia);
+        qa = pp[ia]; qb = pp[ib]; if (1) {}
+        sg = ((TriB9 *)((char *)self->tris + off))->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70 */
         nx = (s16 *)&D_00000000;
         vt = col->verts;
         fv = (u16 *)f;
