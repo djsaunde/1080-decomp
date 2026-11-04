@@ -13426,9 +13426,12 @@ block_83:
                 }
             }
             if (*(u8 *)((char *)(arg0) + 0x23) != 0) {
+                /* agent-g run 269: o->0x14 read into the u8 temp_v1_2 BEFORE the race test and re-read into the same
+                 * variable at switch 6 (target t0 throughout; the old s32 temp_v1 selector took a0 and needed the
+                 * `or v0,a0` copy that stole the raceC lui's delay slot): 98.15 -> 98.24, length 3688 -> 3684 */
+                temp_v1_2 = *(u8 *)((char *)(arg0) + 0x14);
                 if ((D_raceA_E354 == 1) && ((temp_v0_7 = D_raceB_E354, (temp_v0_7 == 4)) || (temp_v0_7 == 0xA)) && ((temp_v0_7 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
-                    temp_v1 = *(u8 *)((char *)(arg0) + 0x14); /* agent-g run 268: the switch-6 selector variable (target holds o->0x14 in t0 from here to switch 6): 98.05 -> 98.15 */
-                    if (temp_v1 == 0) {
+                    if (temp_v1_2 == 0) {
                         var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
                         if (var_v0_3 == 0) {
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
@@ -13481,8 +13484,7 @@ block_83:
                         }
                     }
                 }
-                temp_v1 = *(u8 *)((char *)(arg0) + 0x14); /* agent-g run 250: named s32 selector (no u8 re-mask copy), reused by the default arm's +2 */
-                switch ((unsigned)temp_v1) {              /* switch 6; irregular */
+                temp_v1_2 = *(u8 *)((char *)(arg0) + 0x14); switch ((unsigned)temp_v1_2) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
@@ -13521,7 +13523,7 @@ block_83:
                     gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, (s32) *(u8 *)((char *)(arg0) + 0x15), (s32) *(u8 *)((char *)(arg0) + 0x28));
                     break;
                 default:                            /* switch 6 */
-                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v1 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
+                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v1_2 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
                     func_00000000(*(u8 *)((char *)(arg0) + 0x21));
                     break;
                 }
