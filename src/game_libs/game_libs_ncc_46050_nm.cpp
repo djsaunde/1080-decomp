@@ -43,6 +43,9 @@
  * stay the pooled v1 / a1 / a2 with the result in v0, as the target -> 99.91.
  * agent-c run 255: epilogue pair grid with nextr() in the spelling set: BB000000 append `CTX->nextr()`, last append
  * `me(me(CTX))->next()` (was `me(CTX)->next() + 0`): the last append's result takes v0 as the target -> 99.95.
+ * agent-c run 267: `switch (ch | 0)` (the selector becomes an edg pool temp; the first compare is emitted constant-first,
+ * the target's `beq s5,a1`) + `if (1) {}` after `cc = ch` (kit CCC random test search): 99.95 -> 99.97. LEFT: only the
+ * F5801000 append's ctx in t0 (a separate LR in the target; ours shares edg var -28, v1).
  * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
@@ -105,8 +108,8 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
 
     /* agent-g run 231: folded counted use of arg2 (zero-use sweep): 92.23 -> 92.25; agent-c run 254: the first read, the test and the `do` on ONE source line (as1 same-line join): 99.77 -> 99.82 */
     { u8 *p = arg1 + 0 * (int)(arg2); arg1 = p + 1; ch = *p; } if (ch != 0) { do {
-            cc = ch;
-            switch (ch) {
+            cc = ch; if (1) {}
+            switch (ch | 0) { /* agent-c run 267: a non-variable selector (edg stores it in a pool temp and emits `10 == sel` for the first case: the target's `beq s5,a1`) + the BB split above (o->x load back in v0): 99.95 -> 99.97 */
             case 10:
                 o->x = startx;
                 o->y = o->y + lineh;
