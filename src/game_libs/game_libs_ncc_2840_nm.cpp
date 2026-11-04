@@ -23,11 +23,11 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     f32 vec[4];
     char *p;
     f32 d4;
+    f32 b4; /* agent-g run 271: moved up (single-move decl sweep): b4's home at 84 = target */
     char *temp_v0;
     f32 dy;
     volatile int u1;
     f32 len;
-    f32 b4;
     volatile int u2;
     f32 dx;
     f32 f0;
