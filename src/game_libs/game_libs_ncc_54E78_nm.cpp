@@ -28,7 +28,9 @@ void Obj::reflect(const Plane &p) {
     volatile int u; /* agent-g run 203: homed above a (the target's 4 bytes at sp+148; a's home is always frame - 12 without it) */
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
     { V3 t; } /* run 203: 12 unreferenced bytes below a (63964 rule): frame 152, a at sp+136 = target */
-    if (p.d != 0.0f) {} if (p.d != 2.0f) {} /* agent-g run 260 (kit CCXCV code-free constant lever): two empty tests add uses to the 0.0f / 2.0f LRs (no code): 2.0f -> f2, n.x -> f12 = target (98.66 -> 99.06) */
+    /* agent-g run 260 (kit CCXCV code-free constant lever): two empty tests add uses to the 0.0f / 2.0f LRs (no code): 2.0f -> f2, n.x -> f12 = target (98.66 -> 99.06).
+     * agent-c run 273: the two tests moved to right after the m[2][3] = 0.0f store (and the two `if (1) {}` splits dropped):
+     * the test block ends the 0.0f LR before the product block, so 0.0f takes f0 and n.y f14 like the target (99.06 -> 99.48) */
     mtx.ident();
     mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y); /* run 203: operand-order grid (m[0][1], m[2][0], m[2][1]) */
@@ -39,9 +41,9 @@ void Obj::reflect(const Plane &p) {
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
     mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
-    mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y); if (1) {} /* agent-g run 201: block-split position grid (the run-190 / run-195 splits after m[0][0] / m[0][2] moved here) */
-    mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z); if (1) {}
-    mtx.m[2][3] = 0.0f;
+    mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y); /* agent-g run 201: block-split position grid (the run-190 / run-195 splits after m[0][0] / m[0][2] moved here; agent-c run 273: dropped) */
+    mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z);
+    mtx.m[2][3] = 0.0f; if (p.d != 2.0f) {} if (p.d != 0.0f) {}
     a.set(p.n * p.d);
     f32 k = a.dot(p.n) * 2.0f;
     mtx.m[3][0] = k * p.n.x; /* run 200: back to x-first with the y-first dot (target stores 348 first) */
