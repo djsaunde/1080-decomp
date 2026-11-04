@@ -12771,6 +12771,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
          * c0/c4/b8/bc/148->b8 into t1-t4/ra, then stores them; cfront inline-argument temps), and the
          * &D+0x254 store before the 0x158 field store (target order): 74.46 -> 90.06 standalone. */
         { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8);
+          if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
           gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
     }
     temp_t6 = FW(arg0, 0x240);
