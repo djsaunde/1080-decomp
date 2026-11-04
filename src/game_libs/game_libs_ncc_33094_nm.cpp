@@ -10,10 +10,12 @@
  * the parameter temp 8 below the target's sp+0x54. Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32;
 struct V3 { f32 x, y, z;
-    void set(const V3 &v) { y = v.y; x = v.x; z = v.z; }
+    /* agent-g run 266: member-order grid over set / *= / += (216 orders): x y z, x y z, z y x keeps the
+     * target's dead-store pattern (x / y intermediates stored, z only at the end): 94.20 -> 94.31 */
+    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }
     void operator=(V3 v) { set(v); }
-    void operator*=(f32 s) { x *= s; z *= s; y *= s; }
-    void operator+=(const V3 &o) { y = y + o.y; z = z + o.z; x = x + o.x; }
+    void operator*=(f32 s) { x *= s; y *= s; z *= s; }
+    void operator+=(const V3 &o) { z = z + o.z; y = y + o.y; x = x + o.x; }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     void mul(const V3 &k) { x = x * k.x; y = y * k.y; z = z * k.z; }
 };
