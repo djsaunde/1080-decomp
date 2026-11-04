@@ -46,13 +46,17 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     f18 = (*(f32*)((char*)temp_v0 + 0xA8)); if (f0 != f2) {} if (f0 != f2) {} /* agent-g run 271 (kit CCCXX priorities): two code-free tests on f0 / f2 (was one on f16 / f18, run 263) -- f0 / f2 colour before the two CSE'd sums, which then take f12 / f14 and leave f16 / f18 to 0xA0 / 0xA8 like the target: 94.48 -> 95.21 */
     if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {
         b4 = (*(f32*)((char*)temp_v0 + 0xB4));
+        /* agent-g run 276: d4 read right after b4 and WITHOUT the run-263 code-free `if (d4 != dx) {}` -- that
+         * test kept a coloured piece of d4 (f0, target reads it into the ugen temp f6), which put the ugen FP
+         * ring one step off for dx * dx / dy * dy and everything after; read before dx / dy, its store frees
+         * f6 for dy * dy as in the target (statement-order grid b4 / d4 / dx / dy): 95.26 -> 99.88 */
+        d4 = (*(f32*)((char*)temp_v0 + 0xD4));
         /* agent-g run 263: plain dx / dy variables (the target keeps both in their homes across the
          * calls); `dx = arg2 - f16` alone leaves the item arg2 - f16 coloured and copied into dx (spill
          * temps 28 / 32) -- the dead parameter stores arg2 = dx / arg3 = dy kill the items (no code):
          * the run-139 volatile sp38 / sp3C copies go (92.82 -> 94.00, + home search 94.18) */
         dx = arg2 - f16; arg2 = dx;
         dy = arg3 - f18; arg3 = dy;
-        d4 = (*(f32*)((char*)temp_v0 + 0xD4)); if (d4 != dx) {} /* agent-g run 263: code-free test (94.18 -> 94.48) */
         len = gl_func_00000000_sqf((dx * dx) + (dy * dy));
         if (len != 0.0f) {
             dx /= len;
@@ -65,6 +69,7 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
         vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));
         gl_func_00000000(p);
         gl_func_00000000(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
-        gl_func_00000000(p, (s32) ((((b4 * dx) + (d4 * dy)) * 150.0f) + (f32) (FW(arg0, 0x164) - 0xC)), arg4 - 8, 0);
+        /* agent-g run 276: the (f32) term first (target add.s f8,f10,f6 = cvt + product): 99.88 -> 99.97 */
+        gl_func_00000000(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * dx) + (d4 * dy)) * 150.0f)), arg4 - 8, 0);
     }
 }
