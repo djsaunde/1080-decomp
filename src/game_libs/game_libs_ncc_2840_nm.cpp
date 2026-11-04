@@ -41,7 +41,7 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     f0 = (*(f32*)((char*)temp_v0 + 0xBC));
     f16 = (*(f32*)((char*)temp_v0 + 0xA0));
     f2 = (*(f32*)((char*)temp_v0 + 0xDC));
-    f18 = (*(f32*)((char*)temp_v0 + 0xA8));
+    f18 = (*(f32*)((char*)temp_v0 + 0xA8)); if (f16 != f18) {} /* agent-g run 263: code-free test (random search, length kept) */
     if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {
         b4 = (*(f32*)((char*)temp_v0 + 0xB4));
         /* agent-g run 263: plain dx / dy variables (the target keeps both in their homes across the
@@ -50,7 +50,7 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
          * the run-139 volatile sp38 / sp3C copies go (92.82 -> 94.00, + home search 94.18) */
         dx = arg2 - f16; arg2 = dx;
         dy = arg3 - f18; arg3 = dy;
-        d4 = (*(f32*)((char*)temp_v0 + 0xD4));
+        d4 = (*(f32*)((char*)temp_v0 + 0xD4)); if (d4 != dx) {} /* agent-g run 263: code-free test (94.18 -> 94.48) */
         len = gl_func_00000000_sqf((dx * dx) + (dy * dy));
         if (len != 0.0f) {
             dx /= len;
