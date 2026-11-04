@@ -70,10 +70,15 @@ extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, 
     if (x >= 0 && y >= 0) {
         /* run 185: split shifts on y / xh / yh re-phase the ugen temp ring (first packet now
          * word-exact; 91.79 -> 95.68) */
+        /* agent-c run 283: code-free y << 2 test = the y << 2 expression's LR id is created here, before the
+         * Scis arm's packet pointer (kit CCCXXXVIII creation order): y << 2 a3 / pkt t1 like the target */
+        if (y << 2) {}
         gSPTextureRectangle(c->next(), x << 2, y << 1 << 1, (x + w) << 1 << 1, (y + h) << 1 << 1, 0, 0, 0, dsdx, dtdy);
     } else {
         /* run 185: xl named once (the target's `or t2,a1` copy + a3 for yl; 95.68 -> 96.01) */
         int xl = x << 2;
+        /* agent-c run 283: code-free test creates the (s16)xh LR before the packet pointer: xh t0 like the target */
+        if ((s16)((x + w) << 2) > 0) {}
         /* agent-g run 257: one pkt parameter per append (kit CCLXXXVI) and the RDPHALF_2 append through the
          * index-first nJ(): the target's `addu t0,t8,t5` operand order (96.53 -> 96.63, same length) */
         gSPScisTextureRectangle(c->next(), c->next(), c->nJ(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
