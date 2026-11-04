@@ -13421,11 +13421,10 @@ block_83:
                     *(u8 *)((char *)(arg0) + 0x16) = (u8) (*(u8 *)((char *)(arg0) + 0x16) & 0xFFFB);
                 }
             }
-            temp_v0 = *(s32 *)((char *)(arg0) + 0x48);
-            temp_v0_2 = temp_v0 - 1;
-            if (temp_v0 != 0) {
-                *(s32 *)((char *)(arg0) + 0x48) = temp_v0_2;
-                if (temp_v0_2 == 0) {
+            /* agent-g run 270: field test + pre-decrement in the test (target ugen temps v0 / t9, no
+             * coloured variable; m2c's temp_v0 / temp_v0_2 pair took v0 / v1): 98.79 -> 99.01 */
+            if (*(s32 *)((char *)(arg0) + 0x48) != 0) {
+                if (--*(s32 *)((char *)(arg0) + 0x48) == 0) {
                     *(u8 *)((char *)(arg0) + 0x2D) = 0;
                 }
             }
