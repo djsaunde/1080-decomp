@@ -129,7 +129,7 @@ void Obj::draw() {
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
-        func_00000000(GS->ctx, &gbi);
+        func_00000000(GS->ctx, &gbi); if (this) {} /* agent-c run 276: code-free test after the fourth copy call (sweep), 97.447 -> 97.476 */
         GS->ctx->prim(0xFA000000, 0xFFFF00FF);
         AIter it = arr.iter();
         while (it.next()) {
