@@ -18,6 +18,13 @@
  * body (kit CXII item 2) give the target frame (144) and every home except T / KB new-temp
  * (target 0x74 / 0x68, ours 0x70 / 0x74) and the case-0 obj reloads (target obj copy, ours T).
  * -1500.0f = bootup RoData +0x530/+0x534.
+ * agent-c run 270: the KB new-temp at the target's 0x68 (M-40). Two pool levers (kit CCCIV): an unused Obj(void *u)
+ * parameter fed `this` from Obj2's mem-initialiser takes a pool entry at M-40 BEFORE the member M / N `this` temps
+ * (they move to M-44 / M-48, one volatile pad dropped to keep frame 144), and case 1 goes through a two-statement
+ * inline mk(o, a) whose parameter temps fill M-28 / M-36 first, so the new-temp lands on the u entry (M-40) instead
+ * of edg's Obj2 new-temp T. (mk alone puts the new-temp on the M-this entry and that merged variable is spilled in
+ * the M / N protocol; u alone changes nothing.) 99.98 -> 99.995. Left: the KB / B2 `o` argument reads obj's home
+ * (sp+0x78) where the target reads T (sp+0x74): mk's `o` temp is T's entry, so T is redefined on that path.
  * Symbols renamed after compile (names only, see Makefile). */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
@@ -34,8 +41,8 @@ inline void *operator new(unsigned n) { return fn_31c0_alloc(n); }
 struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
 struct B { char p[0x28]; B(void *); virtual void g(); };
-struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj() : B(D_00007460) { { volatile int q0, q1, q2, q3; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
-struct Obj2 : Obj { int x; Obj2() { Obj2 *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the Obj2 this temp (kit CCLV) */
+struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj(void *u) : B(D_00007460) { { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
+struct Obj2 : Obj { int x; Obj2() : Obj(this) { Obj2 *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the Obj2 this temp (kit CCLV) */
 struct B2 { char p[0x28]; B2(Obj *, float, float, float); virtual void g(); };
 struct KB : B2 { char q[0x14C - 0x2C]; float f14c; float f150; char *f154; int f158;
     KB(Obj2 *o, char *a) : B2(o, 0.0f, 500.0f, -1500.0f) { f158 = 0; f154 = a; f150 = f14c; } virtual void g(); };
@@ -45,6 +52,7 @@ struct W4 { W4(char *, char *, char *); };
 struct WV { WV(char *, char *, char *); };
 struct P { char p[0x10]; char list[4];
     void add(char *n) { fn_31c0_tail(list, n); if (FW(n, 0x14) != 0) FW(n, 0x4) = 1; FW(n, 0x14) = (int)this; } };
+inline KB *mk(Obj2 *o, char *a) { if (0) { o = 0; } return new KB(o, a); }
 extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
     char *w;
     char *h;
@@ -72,7 +80,7 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
         FW(r3, 0xC) = (int)D_000074A4;
         break;
     case 1:
-        h = (char *)new KB(obj, a3v);
+        h = (char *)mk(obj, a3v); /* run 270: param temps first, new-temp on the u entry */
         v = (char *)new WV(a3v, a3v, D_000074B0);
         fn_31c0_link(obj, v);
         FW(v, 0xC) = (int)D_000074C4;
