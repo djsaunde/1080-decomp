@@ -13078,7 +13078,11 @@ extern char D_E354_G[];  /* array view: target holds &G (lui/addiu v1) for the +
  * accesses through E354_GA and the else arm's +0x14 counter through E354_GB give the target's
  * `lui v1; addiu v1; lw/sw 0x14(v1)` (else arm word-exact up to t-registers; the bc1fl slot store returns). */
 extern void D_E354_GA(void);
-extern void D_E354_GB(void);
+/* agent-g run 270 DECODE: the bootup.uso TextRelocs name the bases -- GA = import_000202BC (sym 1439), GB =
+ * the module's own D_01C084 (sym 1425), the same symbol for the >= 7 arm's 0x20 store and the else arm's counter.
+ * As a typed s32 array the two arms' GB lda become ONE live range: uopt splits it at the GA register (v1) and
+ * re-materialises it at the 0x1724 block like the target (lui v1; addiu v1; sw 0x14(v1)). */
+extern s32 D_E354_GB[];
 void gl_func_0002E354(char *arg0, s32 arg1) {
     /* agent-g run 224: declaration order and count from the target frame (0x80: saves end 0x28,
      * spill 0x2C, 20 home words 0x30..0x7F): sp7D at frame-3 behind two u8s, three words before
@@ -13452,7 +13456,7 @@ block_83:
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            temp_v0 = *(s32 *)((char *)D_E354_GA + 0) + 0 * (int)(var_v0_3); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep); run 269: folded use of var_v0_3 (zero-use sweep) */
+                            temp_v0 = *(s32 *)((char *)D_E354_GA + 0); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep); run 270: no folded use of var_v0_3 (it held v1 into this arm; the target's o->0x38 is v0 and GA takes v1) */
                             if (temp_v0 != 0) {
                                 temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + 0x1C430); /* agent-g run 250: through the f2 bound variable */
                                 temp_f10_2 *= temp_f16;
@@ -13465,12 +13469,12 @@ block_83:
                             /* agent-g run 269 decode: the 0x20 store is the GB fade counter that the else arm counts
                              * down ((1 - f) / n + f lerp), not a GA field (both bases are 0-placeholder lda's; the
                              * target recomputes the base for this store instead of reusing the GA register) */
-                            *(s32 *)((char *)D_E354_GB + 0x14) = 0x20;
+                            D_E354_GB[5] = 0x20;
                             D_E354_1C73C_a = temp_f10_2;
                             gl_E354_setf(0x04010900, temp_f10_2); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         }
                     } else {
-                        temp_v0 = *(s32 *)((char *)D_E354_GB + 0x14);
+                        temp_v0 = D_E354_GB[5];
                         if (temp_v0 != 0) {
                             temp_f0 = D_E354_1C73C_b;
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1728);
@@ -13482,7 +13486,7 @@ block_83:
                             if (temp_f0 <= temp_f16) { /* run 183: target c.le.s x,0.5 + bc1fl */
                                 temp_f0 = temp_f16;
                             }
-                            *(s32 *)((char *)D_E354_GB + 0x14) = (s32) (temp_v0 - 1);
+                            D_E354_GB[5] = (s32) (temp_v0 - 1);
                             D_E354_1C73C_c = temp_f0;
                             gl_E354_setf(0x04010900, temp_f0); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         } else {
