@@ -111,13 +111,11 @@ extern "C" void game_libs_func_00042938(void) {
         func_00000000(&G, &gl_d_42938_qd, 320);
         return;
     }
-    Rec *r = &gl_d_42938_rec[gl_d_42938_idx];
-    int lo1 = gl_d_42938_sa;
-    int va = gl_d_42938_pa;
-    r->a = (((((va >> 16) & 0xFFFF) + lo1) % 65535) << 16) | (((va & 0xFFFF) + lo1) % 65535);
-    int vb = gl_d_42938_pb;
-    int lo2 = gl_d_42938_sb;
-    r->b = (((((vb >> 16) & 0xFFFF) + lo2) % 65535) << 16) | (((vb & 0xFFFF) + lo2) % 65535);
-    int vc = gl_d_42938_pc;
-    r->c = (((((vc >> 16) & 0xFFFF) + lo2) % 65535) << 16) | (((vc & 0xFFFF) + lo2) % 65535);
+    /* agent-c run 279: the tail written with NO named locals (the record via a macro, every global read
+     * inline): six dead frame homes gone (frame 0x88 -> 0x70, target 0x58) and the 0x2E0 store pair
+     * re-ordered; 97.60 -> 98.11 */
+#define R (&gl_d_42938_rec[gl_d_42938_idx])
+    R->a = (((((gl_d_42938_pa >> 16) & 0xFFFF) + gl_d_42938_sa) % 65535) << 16) | (((gl_d_42938_pa & 0xFFFF) + gl_d_42938_sa) % 65535);
+    R->b = (((((gl_d_42938_pb >> 16) & 0xFFFF) + gl_d_42938_sb) % 65535) << 16) | (((gl_d_42938_pb & 0xFFFF) + gl_d_42938_sb) % 65535);
+    R->c = (((((gl_d_42938_pc >> 16) & 0xFFFF) + gl_d_42938_sb) % 65535) << 16) | (((gl_d_42938_pc & 0xFFFF) + gl_d_42938_sb) % 65535);
 }
