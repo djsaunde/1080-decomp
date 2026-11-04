@@ -23397,9 +23397,9 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         fg = *(f32 *)(arg5 + 4);
         fb = *(f32 *)(arg5 + 8);
         fa = *(f32 *)(arg5 + 0xC);
+        colv[2] = (u32)(fb * 255.0f); /* agent-c run 274: b converted first (lever-sweep order, 98.06 -> 98.35) */
         colv[0] = (u32)(fr * 255.0f);
         colv[1] = (u32)(fg * 255.0f);
-        colv[2] = (u32)(fb * 255.0f);
         colv[3] = (u32)(fa * 255.0f);
         /* agent-c run 234: the RGBA5551 pack reads the stored u8 colour back (uopt forwards the sb values:
          * the target's r spill to 0x20 + `or t1,t6` / `or a1,t7` copies at the merge), b / g / r order */
