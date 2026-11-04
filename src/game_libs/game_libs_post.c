@@ -13144,8 +13144,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             temp_f18 = *(f32 *)((char *)(arg0) + 0x4) * *(f32 *)((char *)(arg0) + 0x0) * 100.0f;
             temp_v1_32 = *(u8 *)((char *)(arg0) + 0x32);
             *(u8 *)((char *)(arg0) + 0x20) = 0U; if (1) {} /* agent-g run 250: BB split (bbsplit sweep) */
-            temp_v0_2 = temp_v1_32 * 4;
-            if (temp_v1_32 != 0) {
+            if (temp_v1_32) { /* agent-g run 271: truth test (no colourable (s32) cvt web, frees a0 for the hoisted 1); dead temp_v0_2 = temp_v1_32 * 4 dropped */
                 sp64 = D_E354_1C330[temp_v1_32];
                 temp_f0 = D_E354_1C3B0[temp_v1_32];
                 sp60 *= temp_f0;
