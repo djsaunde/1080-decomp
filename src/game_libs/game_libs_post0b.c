@@ -9419,7 +9419,7 @@ void gl_func_000402A4(int *a0, float dx, float dy, float dz) {
 }
 
 
-// gl_func_00040304 -- NM decode 2026-10-17 agent-c (207/207 words, 8 words off).
+// gl_func_00040304 -- decode 2026-10-17 agent-c; EXACT agent-g run 264.
 // Transform-command handler: switch on cmd->op 0x6D..0x72 through the USO
 // RoData jumptable at +0x1AE4 (0x70/0x71 = default holes, so the switch keeps
 // the target's `sll` in the bound-check delay). 0x6D/0x6E/0x6F decode a Vec3 /
@@ -9433,100 +9433,16 @@ void gl_func_000402A4(int *a0, float dx, float dy, float dz) {
 // the pos-copy loads below the scale stores); if(1) after the first quat
 // product and before `y = *sp` (FP ring = target); dead `while (0)` anchor
 // orders the FP candidates a,b,kt,d. agent-g run 261: FP colours = target
-// (code-free tests, see case 0x72). Residual: the &self->m30 spill takes
-// 32(sp) vs 36(sp) (item &scl is live at the call node, kit CCXCVI). Exact route: the 44B78 donor splice (game_libs_func_..._rodata =
-// 0x1AE4, D_40304_k001 = 0x1AE0).
-#ifdef NON_MATCHING
-typedef struct { float m[16]; } Mtx44_40304;
-typedef struct {
-    char pad0[0x30];
-    Mtx44_40304 m30;      /* 0x30 */
-    Mtx44_40304 m70;      /* 0x70 */
-    float padB0;
-    Vec3 pos;       /* 0xB4 */
-    Vec3 scl;       /* 0xC0 */
-    float q[4];     /* 0xCC */
-    Vec3 pos2;      /* 0xDC */
-    Vec3 scl2;      /* 0xE8 */
-    float q2[4];    /* 0xF4 */
-} Obj40304;
-typedef struct { int op; short **cur; } Cmd40304;
-extern float D_40304_k001;
-extern void gl_func_00000000_q(float *, float, float, float);
-
-void gl_func_00040304(Obj40304 *self, Cmd40304 *cmd) {
-    Vec3 z;
-    Vec3 *sp;
-    short **p;
-    float kt;
-    Vec3 x;
-    Vec3 pad2[3];
-    Vec3 y;
-    short *v;
-    float a, b, c, d;
-
-    switch (cmd->op) {
-        case 0x6D:
-            gl_func_00000000(cmd, &self->scl);
-            x = self->scl;
-            self->scl2.x = x.x; self->scl2.y = x.y; self->scl2.z = x.z;
-            break;
-        case 0x6E:
-            gl_func_00000000(cmd, &z);
-            gl_func_00000000_q(self->q, z.x, z.y, z.z);
-            x = *(Vec3 *)self->q;
-            self->q2[0] = x.x; self->q2[1] = x.y; self->q2[2] = x.z; self->q2[3] = self->q[3];
-            break;
-        case 0x6F:
-            gl_func_00000000(cmd, &self->pos);
-            x = self->pos;
-            self->pos2.x = x.x; self->pos2.y = x.y; self->pos2.z = x.z;
-            break;
-        case 0x72:
-            while (0) { a = 0; b = 0; kt = 0; d = kt * (1.0f / 32767.0f); }
-            p = cmd->cur; if (1) {} cmd->cur = p + 1; v = *p; /* agent-g run 261: BB split after the p load (p's LR N 1 -> 2, priority 3.0 -> 1.5) keeps v above p (v0) once the tests below split v's range */
-            sp = &self->scl;
-            a = v[3] * (1.0f / 32767.0f);
-            if (1) {}
-            b = v[4] * (1.0f / 32767.0f);
-            c = v[5] * (1.0f / 32767.0f);
-            d = v[6] * (1.0f / 32767.0f);
-            if (a != b) {} if (a != b) {} /* agent-g run 261 (kit CCXCV priorities): code-free tests set the FP colour order a, b, kt, K1, c, d = target f0 / f2 / f12 / f14 / f16 / f18 */
-            self->q[0] = a;
-            self->q[1] = b;
-            self->q[2] = c;
-            self->q[3] = d;
-            self->pos.x = v[0];
-            self->pos.y = v[1];
-            self->pos.z = v[2];
-            kt = D_40304_k001;
-            if (a != kt) {} if (a != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {}
-            a = v[7] * kt;
-            b = v[8] * kt;
-            c = v[9] * kt;
-            self->scl.x = a;
-            self->scl.y = b;
-            sp->z = c;
-            x = self->pos;
-            self->pos2.x = x.x; self->pos2.y = x.y; self->pos2.z = x.z;
-            if (1) {}
-            y = *sp;
-            self->scl2.x = y.x; self->scl2.y = y.y; self->scl2.z = y.z;
-            y = *(Vec3 *)self->q;
-            self->q2[0] = y.x; self->q2[1] = y.y; self->q2[2] = y.z; self->q2[3] = self->q[3];
-            gl_func_00000000(&self->pos2, &self->m30, sp);
-            self->m70 = self->m30;
-            break;
-        case 0x70:
-        case 0x71:
-        default:
-            gl_func_00000000(self, cmd);
-            break;
-    }
+// (code-free tests, see case 0x72). agent-g run 264: case 0x72's sp as a
+// distinct folded item + case 0x6D's 3-argument call close the m30 spill slot.
+// WIRED via REPLACE_FUNC_BODY donor splice (agent-g run 264): the real C lives
+// in the IDO 7.1 -O2 donor unit game_libs_o2_40304.c (207/207 word-exact); the
+// splice renames the donor-local .rodata reloc (6-entry jumptable + 1/32767
+// literal) to gl_func_00040304_rodata, pinned to the USO RoData at +0x1AE4.
+// Body below is a placeholder for the splice.
+void gl_func_00040304(int *self, int *cmd) {
+    volatile int *r = cmd;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00040304);
-#endif
 
 // gl_func_00040640 -- NM decode 2026-10-17 agent-c (205/205 words, 5 words off).
 // Per-state diagnostic dump + child-list walk: switch on self->0xB0 (cases

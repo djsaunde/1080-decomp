@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00040304",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-04T00:25:29.223791+00:00",
+  "end_time": "2026-11-04T00:25:29.223806+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-04T00:25:29.223802+00:00",
+      "assistant_text": "IDO 7.1 -O2 donor spliced over a post0b placeholder (jumptable .rodata renamed gl_func_00040304_rodata = 0x1AE4). Case 0x72's sp spelled as a distinct folded item ((int)&self->scl | 0 * (int)v) with &self->m30 mentioned first, and case 0x6D passes &self->scl as a third argument with the a1 copy folded (| 0 * (int)cmd): the m30 spill moves to 36(sp) = target.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 207,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for gl_func_00040304 -- transform-command handler\n * (0x33C / 207 words; 207/207 word-exact apart from reloc fields).\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the\n * 29CCC / 44B78 / 52CD4 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-\n * switch-jumptable-rodata-rename). The C switch over op 0x6D..0x72 puts its\n * 6-entry jumptable at donor .rodata +0 and the 1/32767 literal right behind\n * it at +0x18; the splice renames that reloc to gl_func_00040304_rodata,\n * pinned to 0x1AE4 in undefined_syms_auto.txt (USO RoData: table +0x1AE4,\n * literal +0x1AFC). The 0.01f scale is a memory load of D_40304_k001 (+0x1AE0).\n *\n * Load-bearing (agent-g run 264, kits CCC / CCCII / CCCIV):\n *  - case 0x72's sp is a DIFFERENT expression item from case 0x6D's\n *    &self->scl (`(int)&self->scl | 0 * (int)v`, no code), and &self->m30 is\n *    mentioned first (`m3`, dead): case 0x72's m30 spill then takes 36(sp).\n *  - case 0x6D passes &self->scl as the third argument too (the target sets\n *    a2 = self + 0xC0 before the call), with the a1 copy spelled as a folded\n *    `| 0 * (int)cmd`: item a2, `or a1,a2,zero`, cmd a3 = target.\n *  - frame map by decl order (Vec3 z/x/y at 132/108/60); if (1) after the\n *    p load / first quat product / before `y = *sp`; the dead `while (0)`\n *    anchor and the code-free float tests set the FP colour order. */\n#include \"common.h\"\n\ntypedef struct { float x, y, z; } Vec3;\ntypedef struct { float m[16]; } Mtx44_40304;\ntypedef struct {\n    char pad0[0x30];\n    Mtx44_40304 m30;      /* 0x30 */\n    Mtx44_40304 m70;      /* 0x70 */\n    float padB0;\n    Vec3 pos;       /* 0xB4 */\n    Vec3 scl;       /* 0xC0 */\n    float q[4];     /* 0xCC */\n    Vec3 pos2;      /* 0xDC */\n    Vec3 scl2;      /* 0xE8 */\n    float q2[4];    /* 0xF4 */\n} Obj40304;\ntypedef struct { int op; short **cur; } Cmd40304;\nextern float D_40304_k001;\nextern int gl_func_00000000();\nextern void gl_func_00040304_quat(float *, float, float, float);\n\nvoid gl_func_00040304(Obj40304 *self, Cmd40304 *cmd) {\n    Vec3 z;\n    Vec3 *sp;\n    short **p;\n    float kt;\n    Vec3 x;\n    float pad2[8];\n    void *m3;\n    Vec3 y;\n    short *v;\n    float a, b, c, d;\n\n    m3 = &self->m30;\n    switch (cmd->op) {\n        case 0x6D:\n            gl_func_00000000(cmd, (Vec3 *)((int)&self->scl | 0 * (int)cmd), &self->scl);\n            x = self->scl;\n            self->scl2.x = x.x; self->scl2.y = x.y; self->scl2.z = x.z;\n            break;\n        case 0x6E:\n            gl_func_00000000(cmd, &z);\n            gl_func_00040304_quat(self->q, z.x, z.y, z.z);\n            x = *(Vec3 *)self->q;\n            self->q2[0] = x.x; self->q2[1] = x.y; self->q2[2] = x.z; self->q2[3] = self->q[3];\n            break;\n        case 0x6F:\n            gl_func_00000000(cmd, &self->pos);\n            x = self->pos;\n            self->pos2.x = x.x; self->pos2.y = x.y; self->pos2.z = x.z;\n            break;\n        case 0x72:\n            while (0) { a = 0; b = 0; kt = 0; d = kt * (1.0f / 32767.0f); }\n            p = cmd->cur; if (1) {} cmd->cur = p + 1; v = *p;\n            sp = (Vec3 *)((int)&self->scl | 0 * (int)v);\n            a = v[3] * (1.0f / 32767.0f);\n            if (1) {}\n            b = v[4] * (1.0f / 32767.0f);\n            c = v[5] * (1.0f / 32767.0f);\n            d = v[6] * (1.0f / 32767.0f);\n            if (a != b) {} if (a != b) {}\n            self->q[0] = a;\n            self->q[1] = b;\n            self->q[2] = c;\n            self->q[3] = d;\n            self->pos.x = v[0];\n            self->pos.y = v[1];\n            self->pos.z = v[2];\n            kt = D_40304_k001;\n            if (a != kt) {} if (a != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {}\n            a = v[7] * kt;\n            b = v[8] * kt;\n            c = v[9] * kt;\n            self->scl.x = a;\n            self->scl.y = b;\n            sp->z = c;\n            x = self->pos;\n            self->pos2.x = x.x; self->pos2.y = x.y; self->pos2.z = x.z;\n            if (1) {}\n            y = *sp;\n            self->scl2.x = y.x; self->scl2.y = y.y; self->scl2.z = y.z;\n            y = *(Vec3 *)self->q;\n            self->q2[0] = y.x; self->q2[1] = y.y; self->q2[2] = y.z; self->q2[3] = self->q[3];\n            gl_func_00000000(&self->pos2, &self->m30, sp);\n            self->m70 = self->m30;\n            break;\n        case 0x70:\n        case 0x71:\n        default:\n            gl_func_00000000(self, cmd);\n            break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_40304.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00040304.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "ROM byte-identical; verify-blocks 6/6; objdiff 100% (report.json)"
+  }
+}
