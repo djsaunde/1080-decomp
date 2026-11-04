@@ -25,10 +25,14 @@ struct LIter {
 struct Base { Base() {} virtual void f(); };
 struct Mid : Base { O *o; Pair p; Mid(O *oo) { o = oo; p = D_34890_tmpl; } };
 struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
-inline void make(O *o, int h) { if (0) { h = 0; } X *a = new X(o); gl_func_00034458(D_34890_d, h, a, o->flags & 2); }
+/* agent-c run 267: make(int h, O *o) (h's parameter temp is the first pool entry = the target's M-12 word) with the
+ * loop test written out as next()'s ternary in the for condition (no inline call: no `this` temp in the loop, so h's
+ * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`
+ * plain: 99.57 -> 99.64 standalone. LEFT: the two ternary result colours (target a2 / v1, ours v0 / a1). */
+inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); gl_func_00034458(D_34890_d, h, a, o->flags & 2); }
 extern "C" void gl_func_00034890(O *o) {
-    make(o, o->h);
-    for (LIter it(me(me(o))->list); it.next(); ) { /* agent-c run 252: o through a nested zero-code accessor (kit CCLXXXIV), 98.75 -> 99.57 */ /* run 174: for-init iterator (kit CXXXIV): bottom-copy next() temps fresh, 98.10 -> 98.27 */
+    make(o->h, o);
+    for (LIter it(o->list); (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0; ) { /* agent-c run 252: o through a nested zero-code accessor (kit CCLXXXIV), 98.75 -> 99.57 */ /* run 174: for-init iterator (kit CXXXIV): bottom-copy next() temps fresh, 98.10 -> 98.27 */
         gl_func_00034458(it.cur->data);
     }
     gl_func_00034458(D_34890_e);
