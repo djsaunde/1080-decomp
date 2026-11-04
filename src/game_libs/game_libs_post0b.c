@@ -12772,6 +12772,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     temp_s0 = FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
     temp_a3 = FW(temp_s1, 0xC);
+    if (temp_s1) {} /* agent-g run 278: third random-test round: 95.65 -> 95.80 */
     temp_a1_2 = FW(temp_a3, 0x4);
     FW(temp_a3, 0x4) = (s32) (temp_a1_2 + 1);
     temp_v0_3 = FW(FW(temp_s1, 0xC), 0x0) + (temp_a1_2 * 8);
