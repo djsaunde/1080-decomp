@@ -8,7 +8,12 @@
  * run 172 (kit CXVII): eight function-top volatile scalars give the target frame 96 (was 64; the named
  * homes sit at the frame bottom as in the target): 95.36 -> 95.41.
  * run 189 (kit CLVII): the rectangle's three appends spelled separately (pkt / pkt2 / pkt3 in the
- * macro): rect as `n + 1`, RDPHALF_1 as `n = dl->n; dl->n++`, RDPHALF_2 as `n = dl->n++`. Same as 329C. */
+ * macro): rect as `n + 1`, RDPHALF_1 as `n = dl->n; dl->n++`, RDPHALF_2 as `n = dl->n++`. Same as 329C.
+ * agent-c run 268 (kit CCCXII): the gSPTexture append alone in its own basic block (`if (arg4) {}` before it,
+ * `if (1) {}` after it): in the entry block (incoming a0-a3 precoloured) or the loader-call block (a1 argument) the
+ * shared ctx / MAX pool var could not take a1; isolated it gets the target's a1 everywhere (98.33 -> 98.18 before
+ * re-tuning), then a hill-climb over code-free tests / per-pkt accessors (rect pkts me(me())->nD() / me(me())->nR1()
+ * / me()->nD(), `if (arg3) {}` after the loader, plain `w = arg4`): -> 98.95. */
 typedef float f32; typedef int s32; typedef unsigned int u32; typedef short s16;
 extern "C" { extern char D_00000000; extern int gui_func_00000000(...); }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -48,15 +53,16 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     s32 w, h;
     f32 fw, fh;
     Spr *spr;
-    gSPTexture(me(me(CTX))->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 97.41 -> 97.94 */
+    if (arg4) {} /* agent-c run 268: BB split -- the texture append in a block of its own (ctx a1 as the target) */
+    gSPTexture(me(me(CTX))->nD(), 0x8000, 0x8000, 0, 0, 1); if (1) {} /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 97.41 -> 97.94 */
     spr = arg0->spr;
     h = spr->h + 0 * (int)(spr->w); /* agent-g run 210: folded counted use (zero-use sweep): 96.51 -> 97.27 */
-    gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0); if (h != arg4) {} if (1) {} /* agent-c run 263: code-free test + BB split after the loader call (kit CCC random search): 98.25 -> 98.33 */
-    w = arg4 + 0 * (int)(arg4); /* agent-g run 210: second sweep pass: 97.27 -> 97.41 */
+    gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0); if (arg3) {} if (1) {} /* agent-c run 263: code-free test + BB split after the loader call (kit CCC random search): 98.25 -> 98.33; run 268 re-tune: `if (arg3) {}` */
+    w = arg4; /* run 268 re-tune: the agent-g run 210 folded use dropped */
     x = (f32)arg1 + (-((f32)w / 2) * arg5);
     fw = w * arg5;
     y = (f32)arg2 + (-((f32)h / 2) * arg6);
     fh = h * arg6;
-    gSPScisTextureRectangle(me(me(CTX))->nR1(), me(CTX)->nC() + 0, me(CTX)->nC(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nR1(), me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
