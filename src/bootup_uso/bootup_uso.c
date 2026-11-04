@@ -1408,7 +1408,7 @@ void func_000024B8(char *arg0) {
         }
         s0 = (char *)FW(arg0, 0x38); if (arg0) {}
         if ((FW(s0, 0x10) & 8) + 0 * (int)(*arg0)) { /* agent-c run 210: folded counted use (zero code) */
-            v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
+            v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} /* agent-g run 275: empty blocks in the cam web (1 / 2 / 1) lower its priority below the cfg CSE */
             if (FF(v1, 0x14C) < 120.0f) {
                 s0 = v1 + 0x14C + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use of the arg0 web (zero code) */
                 *(f32 *)s0 = *(f32 *)s0 + two;
@@ -1416,13 +1416,13 @@ void func_000024B8(char *arg0) {
         }
         s0 = (char *)FW(arg0, 0x38);
         if (FW(s0, 0x10) & 4) {
-            v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
+            v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} if (1) {}
             if (FF(v1, 0x14C) > 45.0f) {
-                s0 = v1 + 0x14C; if (1) {}
+                s0 = v1 + 0x14C + 0 * (int)(*s0); if (1) {} /* agent-g run 275: folded counted use of s0 (= cfg, set above): the copy keeps s0 (target addiu s0,v1,332), not a v0 CSE temp */
                 *(f32 *)s0 = *(f32 *)s0 - two;
             }
         }
-        v1 = (char *)FW(FW(arg0, 0x2C), 0x70);
+        v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {}
         s0 = v1 + 0x134 + 0 * (int)(*arg0); if (1) {} /* agent-c run 210: folded counted use (zero code) */
         *(f32 *)s0 = FF(FW(arg0, 0x38), 4) * two + *(f32 *)s0;
         s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
