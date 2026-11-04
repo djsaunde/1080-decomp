@@ -13250,10 +13250,11 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 *(u8 *)((char *)(arg0) + 0x16) = (u8) (*(u8 *)((char *)(arg0) + 0x16) & ~1);
             }
             var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
-            temp_v1_4 = *(u8 *)((char *)(arg0) + 0x2C);
             temp_v1_2 = var_v0_2;
-            if (var_v0_2 != temp_v1_4) {
-                if (temp_v1_4 == 0) {
+            /* agent-g run 272: o->0x2C read in place at both tests (lever-sweep denaming; no store between them):
+             * target `beql v0,v1` operand order, 99.767 -> 99.777 */
+            if (var_v0_2 != *(u8 *)((char *)(arg0) + 0x2C)) {
+                if (*(u8 *)((char *)(arg0) + 0x2C) == 0) {
                     temp_v0 = *(s32 *)((char *)(arg0) + 0x38);
                     *(f32 *)((char *)(arg0) + 0x8) = (f32) ((f32) temp_v0 * 3.0f);
                     if (temp_v0 < 0xA) {
