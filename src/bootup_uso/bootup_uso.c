@@ -1418,7 +1418,7 @@ void func_000024B8(char *arg0) {
                 *(f32 *)s0 = *(f32 *)s0 + two;
             }
         }
-        s0 = (char *)FW(arg0, 0x38);
+        s0 = (char *)FW(arg0, 0x38); if (FW(arg0, 0x38)) {} /* agent-g run 275: code-free test = one more use of the cfg CSE (priority) */
         if (FW(s0, 0x10) & 4) {
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} if (1) {}
             if (FF(v1, 0x14C) > 45.0f) {
@@ -1427,7 +1427,7 @@ void func_000024B8(char *arg0) {
             }
         }
         v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {}
-        s0 = v1 + 0x134; if (1) {}
+        s0 = v1 + 0x134 + 0 * (int)(*s0); if (1) {} /* folded use of s0 (= cfg): the copy stays in s0 (target addiu s0,v1,308) */
         *(f32 *)s0 = FF(FW(arg0, 0x38), 4) * two + *(f32 *)s0;
         s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
         s0 += 0x138;
