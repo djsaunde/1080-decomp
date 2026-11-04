@@ -12744,6 +12744,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
     temp_s1 = FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
     gl_func_00034458(temp_s1);
+    if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free test of the arg0->0x240 reload right after the call (expression-test sweep, kit CCCXLI): 97.52 -> 97.57 */
     if (temp_s1) {} /* agent-g run 278: code-free tests on temp_s1 after this call and after the temp_t6 read (random test search, 2 rounds): 95.36 -> 95.65, length = target */
     temp_v1 = FW(arg0, 0x240);
     temp_v0 = FW(temp_v1, 0x28);
