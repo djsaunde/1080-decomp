@@ -25,7 +25,7 @@ struct V3 : P3 {
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
 };
 /* run 201 grid: operator- through a named, set()-filled result and operator* with the named k (frame 0xE8 -> 0xF0 = target): 89.21 -> 90.61 standalone */
-/* agent-c run 265 (kit CCCV): operator- / operator* plain V3(...) returns (no named r / k): the product's s parameter is
+/* agent-c run 265 (kit CCCVI): operator- / operator* plain V3(...) returns (no named r / k): the product's s parameter is
  * the only float pool entry, so the result / inner temps sit at M-52 / M-68 like the target */
 inline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, a.z - b.z); }
 inline V3 operator*(const V3 &a, f32 s) { return V3(a.x * s, a.y * s, a.z * s); }
@@ -33,7 +33,7 @@ inline V3 operator/(const V3 &a, f32 s) { f32 k = s; return V3(a.x / k, a.y / k,
 extern "C" { extern void gl_normalize_36694(V3 *); }
 struct Obj { V3 perp(V3 p, V3 n); };
 V3 Obj::perp(V3 p, V3 n) {
-    /* agent-c run 265 (kit CCCV, edg frame order = declaration order at block entry): the target's first frame word M-12
+    /* agent-c run 265 (kit CCCVI, edg frame order = declaration order at block entry): the target's first frame word M-12
      * is a V3 local holding n * dot (operator-'s subtrahend at sp+228), then r (M-24), l (M-28), px / py / pz; the
      * difference bound to a const reference in a block; flip in x, y, z order. 90.96 -> 94.00, length 712 = target.
      * Residual: the target's sub copy goes through a FRESH entry M-100 (shared with the first return's value temp) and
