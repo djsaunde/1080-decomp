@@ -13094,7 +13094,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     u8 temp_v1_3;
     u8 sp7D;
     u8 temp_v1_32; /* agent-g run 251: o->0x32 web in its own u8 (target v1, not a0); byte 0x7C below sp7D */
-    volatile f32 sp78; /* agent-g run 250: volatile home keeps the target's dead first swc1 0x78 */
+    f32 sp78; /* agent-g run 271: plain (not volatile); its own sum build keeps both target swc1 0x78 */
     f32 temp_f0;
     f32 temp_f10_2;
     f32 var_f4;
@@ -13120,7 +13120,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
     sp60 = 1.0f;
     if (temp_v0 != 0) {
         if (temp_v0 == 4) {
-            temp_v0_7 = D_stateC_E354; /* agent-g run 251: u32 web (keeps temp_v1 off v0 after the switch-5 move) */
+            temp_v0_7 = D_stateC_E354; /* agent-g run 251: u32 web (keeps temp_v1 off v0 after the switch-5 move) */ if (1) {} /* agent-g run 271: BB split lengthens sp60's LR so the o->0*o->4*100 product (temp_f18) colours f18 first */
             if ((((u32)temp_v0_7 == 1) || ((u32)temp_v0_7 == 2) || ((u32)temp_v0_7 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1U) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
                 *(u8 *)((char *)(arg0) + 0x21) = 2U;
                 *(f32 *)((char *)(arg0) + 0x54) = 0.0f;
@@ -13167,12 +13167,12 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
             temp_v1 = (gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF;
             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
-            temp_f18 = temp_f16 / 200.0f;
-            temp_f18 += *(f32 *)((char *)&D_00000000 + 0x16E0); /* agent-g run 225: split (target loads o->0 before the literal) */
+            /* agent-g run 271: the o->0 / 200 + D_16E0 sum is a ugen ring temp in the target (f4), not a
+             * coloured variable: built in sp78 itself (plain memory home, two stores kept) instead of temp_f18 */
+            sp78 = temp_f16 / 200.0f; sp78 += *(f32 *)((char *)&D_00000000 + 0x16E0);
             temp_v0_2 = temp_v1;
-            sp78 = temp_f18;
             var_f4 = (f32) (u32) temp_v0_2;
-            sp78 = sp64 * temp_f18; /* agent-g run 231: operand-commute sweep */
+            sp78 = sp78 * sp64;
             temp_f10_2 = var_f4 * sp60;
             var_t9 = (u32) temp_f10_2; /* recomposed (u32)float */
             *(u8 *)((char *)(arg0) + 0x26) = (u8) (((s32) *(u8 *)((char *)(arg0) + 0x26) / 2) + ((s32) (var_t9 & 0xFF) / 2));
@@ -13203,11 +13203,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             }
             if (*(u8 *)((char *)(arg0) + 0x1C) & 1) {
                 temp_f0 = *(f32 *)((char *)(arg0) + 0x54);
-                var_f4 = (f32) (u32) *(u8 *)((char *)(arg0) + 0x26);
-                temp_f18 = var_f4 * temp_f0;
                 /* agent-g run 250: the (u32) result goes straight into the store (target ugen temp t3);
-                 * the colourable variable is the o->0x60 read (target lbu v0,0x60) */
-                *(u8 *)((char *)(arg0) + 0x26) = (u32) temp_f18;
+                 * the colourable variable is the o->0x60 read (target lbu v0,0x60)
+                 * agent-g run 271: the whole (f32)(u32) o->0x26 * temp_f0 chain inline (target ugen f10/f4) */
+                *(u8 *)((char *)(arg0) + 0x26) = (u32) ((f32) (u32) *(u8 *)((char *)(arg0) + 0x26) * temp_f0);
                 sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
                 temp_v0 = *(u8 *)((char *)(arg0) + 0x60); /* not var_v0: that variable carries an a2 argument preference */
                 *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (temp_v0 + *(u8 *)((char *)(arg0) + 0x28)) >> 1);
