@@ -13496,7 +13496,7 @@ block_83:
                 switch ((unsigned)temp_v0_2) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
-                        *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
+                        if (1) {} *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1); /* agent-g run 270: BB split (leading-if(1) sweep) */
                     }
                     if ((*(u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
                         func_00000000(0x20, 0x12, 0);
