@@ -13494,8 +13494,8 @@ block_83:
                 switch ((unsigned)temp_v0_2) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
-                        if (1) {} *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1); /* agent-g run 270: BB split (leading-if(1) sweep) */
-                    }
+                        *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
+                    } if (1) {} /* agent-g run 271: BB split after the D_raceC arm (was leading inside it, run 270): the 0x38 load is a ugen temp (t3) again */
                     if ((*(u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
                         func_00000000(0x20, 0x12, 0);
                     }
