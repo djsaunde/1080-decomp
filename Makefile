@@ -792,7 +792,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-g run 252: 4A890 NM donor folded `+ 0 * n` counted use (348 -> 352 bytes = target): 0x2eb00 -> 0x2eb04 (62F08 NM offset 0x2eab4).
 # agent-g run 256: 4D688 EXACT donor (NM body 0x3CC with the 5-word epilogue pad -> 0x3B8 = target): 0x2eb04 -> 0x2eaf0 (62F08 NM offset 0x2eaa0).
 # agent-c run 260: 4C5E4 NM donor viewport conversions as named locals (832 -> 836 bytes = target): 0x2eaf0 -> 0x2eaf4 (62F08 NM offset 0x2eaa4).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eaf4 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c gl_func_00037938=0x158
+# agent-c run 266: 3B9C0 NM donor qa / qb loads in one basic block (1104 -> 1108 bytes, target 1116): 0x2eaf4 -> 0x2eaf8 (62F08 NM offset 0x2eaa8).
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eaf8 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c gl_func_00037938=0x158
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
