@@ -19,18 +19,20 @@ extern f32 gl_func_00000000_sqf(f32);
 }
 extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
     /* agent-g run 263: declaration order from a random home-layout search (the volatile pads are
-     * unreferenced home-keeping words) */
+     * unreferenced home-keeping words)
+     * agent-g run 273: pair-swap hill climb on the order (dy <-> f0, then d4 <-> temp_v0): dy's home at 56 and
+     * d4's at 80 = target (95.23 -> 95.26); p (home 32, target 40) is the one home left */
     f32 vec[4];
     char *p;
-    f32 d4;
-    f32 b4; /* agent-g run 271: moved up (single-move decl sweep): b4's home at 84 = target */
     char *temp_v0;
-    f32 dy;
+    f32 b4; /* agent-g run 271: moved up (single-move decl sweep): b4's home at 84 = target */
+    f32 d4;
+    f32 f0;
     volatile int u1;
     f32 len;
     volatile int u2;
     f32 dx;
-    f32 f0;
+    f32 dy;
     f32 f16;
     f32 f2;
     volatile int u3;
