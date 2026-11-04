@@ -1289,7 +1289,7 @@ s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
     RelSym18F0 *syms = *(RelSym18F0 **)((char *)arg0 + 0x3C);
     RelSym18F0 *s;
     s32 i;
-    s32 found;
+    s32 found = 0; /* agent-c run 281: initialised at the declaration (found's web then spans the loop), 94.19 -> 94.76 */
 
     if (arg1 == 0 || arg2 == 0) {
         return 0;
