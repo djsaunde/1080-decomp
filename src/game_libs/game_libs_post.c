@@ -13147,8 +13147,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 temp_f0 = D_E354_1C3B0[temp_v1_32];
                 sp60 *= temp_f0;
                 *(f32 *)((char *)(arg0) + 0x4) = (f32) (*(f32 *)((char *)(arg0) + 0x4) * temp_f0);
-                /* agent-g run 209: folded counted use of arg0 (zero-use sweep) */
-                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_32 - 1) + 0 * (int)(arg0);
+                /* agent-g run 281: no folded use here any more (run 209's `+ 0 * (int)(arg0)` only cost one ugen
+                 * temp: ours used t5 for the decrement, target t4); the temp is spent at the (u8) narrowing of
+                 * temp_v1 below instead */
+                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_32 - 1);
             }
             temp_f0 = *(f32 *)((char *)(arg0) + 0x50) - *(f32 *)((char *)(arg0) + 0x0);
             if (0.5f <= temp_f0) {
@@ -13162,7 +13164,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             *(f32 *)((char *)(arg0) + 0x44) = (f32) ((*(f32 *)((char *)(arg0) + 0x44) + temp_f18) * 0.5f);
             sp7D = gl_func_00043824(*(f32 *)((char *)(arg0) + 0x4) * 120.0f, (s32)((char *)&D_00000000 + 0x1C250), 0x10);
             /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
-            temp_v1 = (gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF;
+            temp_v1 = (u8)((gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF); /* agent-g run 281: a value-preserving (u8) narrowing of the masked product: costs the one ugen temp the target spends between the o->0x32 decrement (t4) and the `sll t6 / andi t7` here (99.848 -> 99.859, same length) */
             /* agent-g run 271: the o->0 / 200 + D_16E0 sum is a ugen ring temp in the target (f4), not a
              * coloured variable: built in sp78 itself (plain memory home, two stores kept) instead of temp_f18;
              * temp_f16 assigned inside the division (target materialises 200.0f before the o->0 load).
