@@ -23692,12 +23692,12 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         s32 cnt;
         char *p;
         base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
+        cnt = *(s32 *)(base + 4); if (1) {} /* agent-c run 263: with the sp38 / sp34 test below (kit CCC random code-free test search): 95.96 -> 96.01 */
         *(s32 *)(base + 4) = cnt + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
         *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(p); /* agent-c run 260: folded counted use of p (cnt a0 / p v1 = target) */
         sp38 = arg6 + arg8;
-        sp34 = arg7 + arg9;
+        sp34 = arg7 + arg9; if (sp38 != sp34) {}
         *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
     }
     if (arg3 != 0) {
