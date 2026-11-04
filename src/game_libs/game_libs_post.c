@@ -6434,7 +6434,15 @@ void gl_func_00025044(int a0) {
 // locals, not declared variables: re-reading asyncLoad->bytesRemaining at each
 // use (no cached local) moves it from its home (+84) to +36. LEFT: case-1
 // fontId still homed at +84, the retMsg web coloured v0 (target a1 + v0 copy).
-#ifdef NON_MATCHING
+// Run 278 (agent-g) 99.85 -> EXACT: the OoT FinishAsyncLoad body as written --
+// every case reads the retMsg local, fontId = ASYNC_ID(retMsg) (copy-propagated:
+// its value is a uopt temp spilled to the bytesRemaining word +36, not a home),
+// and the done message sent straight from asyncLoad->retMsg -- once the callees
+// take the message / font id as u32 (no u32 -> s32 / u32 -> void * conversion on
+// the argument): the osSendMesg message is OSMesg = a 32-bit word; with the
+// void * parameter the cast kept the reload in a separate web (a3 + copy to a1),
+// with u32 the reload loads straight into a1 and the retMsg web splits a1 / v0
+// like the target. The run-144 / run-149 levers are no longer needed.
 typedef struct { void *a; void *b; s32 validCount; s32 first; s32 msgCount; void *msg; } gl_250C8_OSMesgQueue;
 typedef struct {
     s8 status; s8 delay; s8 medium; u8 *ramAddr; u32 curDevAddr; u8 *curRamAddr; u32 bytesRemaining; u32 chunkSize;
@@ -6447,12 +6455,12 @@ typedef struct { char pad0[0x2024]; gl_250C8_AudioTable *sampleBankTable; char p
 extern gl_250C8_Ctx gl_250C8_gAudioCtx;
 #define gAudioCtx gl_250C8_gAudioCtx
 extern s32 gl_250C8_osRecvMesg(void *, void *, s32);
-extern s32 gl_250C8_osSendMesg(void *, void *, s32);
+extern s32 gl_250C8_osSendMesg(void *, u32, s32);
 extern void gl_250C8_SetSeqLoadStatus(s32, s32);
 extern void gl_250C8_SetSampleFontLoadStatus(s32, s32);
-extern void gl_250C8_SetFontLoadStatus(s32, s32);
+extern void gl_250C8_SetFontLoadStatus(u32, s32);
 extern s32 gl_ref_00037DCC(s32, u32 *);
-extern s32 gl_ref_00039B70(s32, void *, gl_250C8_SampleBankRelocInfo *, s32);
+extern s32 gl_ref_00039B70(u32, void *, gl_250C8_SampleBankRelocInfo *, s32);
 extern void gl_ref_00039A1C(u32, void *, u32, s32);
 extern void gl_ref_0003998C(gl_250C8_AudioAsyncLoad *, u32);
 #define AudioLoad_GetSampleBank gl_ref_00037DCC
@@ -6490,19 +6498,18 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
 
     if (asyncLoad->bytesRemaining == 0) {
         retMsg = asyncLoad->retMsg;
-        if (1) {}
         switch ((s32)ASYNC_TBLTYPE(retMsg)) {
             case 0:
-                gl_250C8_SetSeqLoadStatus(ASYNC_ID(asyncLoad->retMsg), ASYNC_STATUS(asyncLoad->retMsg));
+                gl_250C8_SetSeqLoadStatus(ASYNC_ID(retMsg), ASYNC_STATUS(retMsg));
                 break;
 
             case 2:
-                gl_250C8_SetSampleFontLoadStatus(ASYNC_ID(asyncLoad->retMsg), ASYNC_STATUS(asyncLoad->retMsg));
+                gl_250C8_SetSampleFontLoadStatus(ASYNC_ID(retMsg), ASYNC_STATUS(retMsg));
                 break;
 
             case 1:
-                fontId = ASYNC_ID(asyncLoad->retMsg);
-                gl_250C8_SetFontLoadStatus(fontId, ASYNC_STATUS(asyncLoad->retMsg));
+                fontId = ASYNC_ID(retMsg);
+                gl_250C8_SetFontLoadStatus(fontId, ASYNC_STATUS(retMsg));
                 sampleBankId1 = gAudioCtx.soundFontList[fontId].sampleBankId1;
                 sampleBankId2 = gAudioCtx.soundFontList[fontId].sampleBankId2;
                 sampleBankReloc.sampleBankId1 = sampleBankId1;
@@ -6512,16 +6519,10 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
                 sampleBankReloc.baseAddr2 =
                     sampleBankId2 != 0xFF ? AudioLoad_GetSampleBank(sampleBankId2, &sampleBankReloc.medium2) : 0;
                 AudioLoad_RelocateFontAndPreloadSamples(fontId, asyncLoad->ramAddr, &sampleBankReloc, 1);
-                if (asyncLoad) {} /* run 144: block split after the reloc call -> target a2/v0 picks in the switch (97.68 -> 98.08) */
                 break;
         }
-
-        /* run 149: OoT __BgCopyFinishProcess's doneMsg read before the status store, through
-         * the same retMsg variable that selects the switch (one web, a1): 98.08 -> 99.85 */
-        retMsg = asyncLoad->retMsg;
-        if (1) {}
         asyncLoad->status = 0;
-        gl_250C8_osSendMesg(asyncLoad->retQueue, (void *)retMsg, 0);
+        gl_250C8_osSendMesg(asyncLoad->retQueue, asyncLoad->retMsg, 0);
         return;
     }
 
@@ -6556,9 +6557,6 @@ void gl_func_000250C8(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
 #undef ASYNC_TBLTYPE
 #undef ASYNC_ID
 #undef ASYNC_STATUS
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000250C8);
-#endif
 
 // gl_func_00025320 — STRUCTURAL PASS (0x1E4 / 121 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 3-jr USO bundle
