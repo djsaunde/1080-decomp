@@ -35,7 +35,8 @@ inline void zf(f32 &f, int z) { f = z; }
 extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
     s32 cnt;
     u32 i;
-    s32 opad;
+    s16 *v0; /* agent-c run 285: v0 takes the dead-stored opad's word and ey shares ex's word: the declared-word
+              * count below off falls to the target's (zdbug:1 lowest M -124 -> -116), frame 240 -> 232 (96.52 -> 96.65) */
     ColB9 *col;
     FaceB9 *f;
     V3B9 *n;
@@ -50,19 +51,17 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     f32 qb;
     f32 sg;
     f32 *pp; /* run 194: the target indexes a held &p (addiu sp,184; addu idx,base) */
+    s16 ey;
     s16 ex; /* run 191 lever-sweep hoist: ex declared before vt (78.55 -> 78.65) */
     s16 (*vt)[3];
     s16 *nx;
     u16 *fv;
     s32 off;
-    s16 *v0;
     s16 *v1;
-    s16 ey;
     s16 dx;
     s16 dy;
 
     cnt = 0;
-    opad = 0;
     if (self->col == 0) {
         return 0;
     }
