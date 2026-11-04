@@ -46,7 +46,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     if (1) {}
     PKT(c, 0xF9000000, 0xFF00FA);
     PKT(c, 0xFA000000, 0xFFFF);
-    PKT(c, 0xBC000404, 3);
+    PKT(c, 0xBC000404, 3); if (c->dl) {} /* agent-g run 276: code-free test (random test search): the 0xBC000C04 packet pointer takes a1 like the target: 98.50 -> 98.55 */
     PKTC(c, 0xBC000C04, 3); /* agent-g run 269: nextC() spelling (single-site spelling sweep): 98.48 -> 98.50 */
     PKT(c, 0xBC001404, 0xFFFD);
     PKT(c, 0xBC001C04, 0xFFFD);
