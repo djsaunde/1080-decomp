@@ -13259,8 +13259,8 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                     }
                     var_v0_2 = 1;
                     if (*(u8 *)((char *)(arg0) + 0x14) == 1) {
-                        temp_v1_5 = *(u8 *)((char *)(arg0) + 0x15);
-                        switch (temp_v1_5) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
+                        temp_v1 = *(u8 *)((char *)(arg0) + 0x15); /* agent-g run 269: s32 temp_v1 + (u8) switch cast (target v1, no `or v1,v0` copy): 98.24 -> 98.41 */
+                        switch ((u8)temp_v1) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
                         case 1: var_v0 = 0; break;
                         case 2: var_v0 = 1; break;
                         default: var_v0 = 2; break;
