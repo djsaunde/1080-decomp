@@ -1374,16 +1374,20 @@ typedef void (*VF_24B8)();
  * value goes through the reused s0 variable: arg0 moves to s1 and the multi-role var to s0 as in the
  * target (length = target); the t0 latch and k share one int variable. 95.21 -> see report. */
 extern void func_00000000_24b8v();
+/* agent-g run 275: the latch (k) and the p->0x3C value (k2) are separate variables: the target spills the
+ * latch to its own home at 76 and k2 at 44. Decl order k / v0 / v1 / p / pad / tb / r / s0 / k2 puts every
+ * home on the target (76 / 64 / 56 / 44; the run-272 pad2 is no longer needed). The folded arg0[0x4C]
+ * uses in the toggle test and `k = 1` are one zero-code CSE candidate across the head. */
 void func_000024B8(char *arg0) {
-    char *s0;
+    int k;
     char *v0;
     char *v1;
     char *p;
     volatile int pad;
     W24B8 tb;
     int r;
-    volatile int pad2; /* agent-g run 272: unreferenced home-keeping word (frame sweep): tb's by-value home at 56 like the target */
-    int k;
+    char *s0;
+    int k2;
 
     k = 0;
     if (D_00000064 == 1) {
@@ -1393,8 +1397,8 @@ void func_000024B8(char *arg0) {
         k = r;
     }
     s0 = (char *)FW(arg0, 0x38);
-    if (FW(s0, 0x18) & 0x40) {
-        k = 1;
+    if ((FW(s0, 0x18) & 0x40) + 0 * (int)(arg0[0x4C])) {
+        k = 1 + 0 * (int)(arg0[0x4C]);
         FW(arg0, 0x4C) = (FW(arg0, 0x4C) != 0) == 0;
     }
     if (FW(arg0, 0x4C) != 0) {
@@ -1439,17 +1443,17 @@ void func_000024B8(char *arg0) {
         tb.w = D_00007324;
         p = (char *)func_00000000(D_24B8_tbl, tb, FW(arg0, 0x40) + 0xB4, 0);
         if (p != 0 && (int)p != FW(arg0, 0x44)) {
-            k = FW(p, 0x3C);
-            if ((u32)k >= 3 && (u32)k < 0x13) {
+            k2 = FW(p, 0x3C);
+            if ((u32)k2 >= 3 && (u32)k2 < 0x13) {
                 func_00000000_24b8v(arg0, 0);
                 v0 = (char *)FW(arg0, 0x30);
                 s0 = (char *)FW(v0, 0x28);
-                ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k, p);
+                ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k2, p);
             } else {
                 func_00000000_24b8v(arg0, 1);
                 v0 = (char *)FW(arg0, 0x34);
                 s0 = (char *)FW(v0, 0x28);
-                ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k, p);
+                ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k2, p);
             }
             FW(arg0, 0x48) = 0; if (p) {}
             FW(arg0, 0x44) = (int)p;
