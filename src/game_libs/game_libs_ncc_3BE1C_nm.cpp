@@ -97,7 +97,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     cc = col;
     cnt = 0;
     if (cc == 0) return 0;
-    if ((cc->grid == 0) + 0 * (int)(col)) gl_func_00000000(D_00000000 + 0x1EE9C); /* agent-g run 238: folded counted use (zero-use sweep): 98.51 -> 98.56 */
+    if (cc->grid == 0) gl_func_00000000(D_00000000 + 0x1EE9C); /* agent-g run 277: the run-238 folded use of col dropped (inert after the face() change below; kit CCCXXIX prune) */
     p.x *= D_3BE1C_128[0];
     p.y *= D_3BE1C_128[1];
     p.z *= D_3BE1C_128[2];
@@ -108,8 +108,11 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     while ((i = *list++) != -1) {
         off = i * 12; /* agent-g run 266: ugen's multiply-by-constant expansion builds sll / subu / sll in the destination register (target a2 throughout); the shift spelling took a t temp and shifted the t ring */
         if (((Tri *)((char *)tris + off))->grp < 0) continue;
-        f = col->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
+        /* agent-g run 277: cc = col BEFORE the face() expansion and face() called on the rvalue `cc + i * 0`: the
+         * col load lands in cc's colour s1 (target `lw s1,132(s5)`, the call argument `or a0,s1`) and the
+         * expansion's `this` temp is the v0 copy; on `col->face(i)` the load took t0 (99.11 -> 99.17) */
         cc = col;
+        f = (cc + i * 0)->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
         int r = gl_func_00000000(cc, f->mat) | 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568); agent-g run 267: `|` not `+` -- the `+ 0` form kept an `addu a0,v0,zero` for the result copy, `| 0` gives the target's `or a0,v0,zero` (98.78 -> 98.94) */
         if ((r & 0x100) + 0 * (int)(cc)) { /* agent-g run 266: folded counted use of cc (zero-use sweep on the i * 12 body): 98.62 -> 98.78 */
             ok = 1;
