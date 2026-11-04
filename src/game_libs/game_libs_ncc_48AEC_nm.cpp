@@ -77,9 +77,10 @@ struct Obj {
     void draw();
 };
 void Obj::draw() {
-    Ctx *gctx;
     f32 (*A)[4];
     f32 (*B)[4];
+    Ctx *gctx; /* agent-c run 280 (120-order grid of gctx / A / B / mtx / cmd): after A / B its home is the target's sp+348
+                * again on the run-266 0x168 frame (was 356), 97.476 -> 97.484 */
     f32 mtx[4][4];
     int i, j, k;
     Mtx *cmd;
