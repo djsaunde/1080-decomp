@@ -47,7 +47,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     PKT(c, 0xF9000000, 0xFF00FA);
     PKT(c, 0xFA000000, 0xFFFF);
     PKT(c, 0xBC000404, 3);
-    PKT(c, 0xBC000C04, 3);
+    PKTC(c, 0xBC000C04, 3); /* agent-g run 269: nextC() spelling (single-site spelling sweep): 98.48 -> 98.50 */
     PKT(c, 0xBC001404, 0xFFFD);
     PKT(c, 0xBC001C04, 0xFFFD);
     if (o->f104 & 2) {
