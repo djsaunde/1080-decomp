@@ -83,7 +83,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             continue;
         }
         dn = n->x * d.x + n->y * d.y + n->z * d.z;
-        if (dn > -0.0001) {
+        if ((dn > -0.0001) + 0 * (int)(n->z)) { /* agent-c run 284: folded n->z use (zero-use --exprs, 96.05 -> 96.11) */
             continue;
         }
         ok = 1; /* agent-c run 180 (lever-sweep bbsplit) */
