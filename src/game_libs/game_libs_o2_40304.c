@@ -9,7 +9,7 @@
  * pinned to 0x1AE4 in undefined_syms_auto.txt (USO RoData: table +0x1AE4,
  * literal +0x1AFC). The 0.01f scale is a memory load of D_40304_k001 (+0x1AE0).
  *
- * Load-bearing (agent-g run 264, kits CCC / CCCII / CCCIV):
+ * Load-bearing (agent-g run 264, kits CCC / CCCII / CCCV):
  *  - case 0x72's sp is a DIFFERENT expression item from case 0x6D's
  *    &self->scl (`(int)&self->scl | 0 * (int)v`, no code), and &self->m30 is
  *    mentioned first (`m3`, dead): case 0x72's m30 spill then takes 36(sp).
