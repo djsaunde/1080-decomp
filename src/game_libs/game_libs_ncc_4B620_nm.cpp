@@ -48,7 +48,8 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
-    Elem **next() { return idx < last ? &(*a)[++idx] : 0; }
+    Elem **next() { return idx < last ? &(*a)[idx = idx + 1] : 0; } /* agent-c run 272: `idx = idx + 1` (not ++idx): the loop's
+                                                                    * new-index temp s0 and the &it reload s3 like the target, 99.66 -> 99.68 */
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
