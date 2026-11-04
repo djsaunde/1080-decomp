@@ -23397,17 +23397,20 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     }
     if (arg3 != 0) {
         func_00000000_5a2c4v(arg0, arg1, arg10);
-        fb = *(f32 *)(arg5 + 8); /* agent-c run 274: b read first too (lever-sweep order, 98.35 -> 98.41) */
-        fg = *(f32 *)(arg5 + 4); /* agent-c run 276: b / g / r read order too */
+        /* agent-c run 277: r / g / b / a read + convert + read-back order = the target's own order (lwc1 f2 = +0,
+         * sb 0xA4 first: the run-274/276 b-first order scored higher but loaded/stored at the wrong offsets);
+         * with the code-free base test on the F7 w1 line: 98.89 -> 98.92 */
         fr = *(f32 *)(arg5 + 0);
+        fg = *(f32 *)(arg5 + 4);
+        fb = *(f32 *)(arg5 + 8);
         fa = *(f32 *)(arg5 + 0xC);
-        colv[2] = (u32)(fb * 255.0f); /* agent-c run 274: b converted first (lever-sweep order, 98.06 -> 98.35) */
-        colv[1] = (u32)(fg * 255.0f); /* agent-c run 276: b / g / r conversion order (read x conversion permutation grid, 98.47 -> 98.89) */
         colv[0] = (u32)(fr * 255.0f);
+        colv[1] = (u32)(fg * 255.0f);
+        colv[2] = (u32)(fb * 255.0f);
         colv[3] = (u32)(fa * 255.0f);
         /* agent-c run 234: the RGBA5551 pack reads the stored u8 colour back (uopt forwards the sb values:
-         * the target's r spill to 0x20 + `or t1,t6` / `or a1,t7` copies at the merge), b / g / r order */
-        b = colv[2]; g = colv[1]; r = colv[0];
+         * the target's r spill to 0x20 + `or t1,t6` / `or a1,t7` copies at the merge) */
+        r = colv[0]; g = colv[1]; b = colv[2];
         {
             char *base;
             s32 cnt;
@@ -23418,7 +23421,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
             *(s32 *)(p + 0) = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
-            *(s32 *)(p + 4) = (rgba << 0x10) | rgba; if (g) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45) */
+            *(s32 *)(p + 4) = (rgba << 0x10) | rgba; if (g) {} if (base) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45) */
         }
         {
             char *base;
