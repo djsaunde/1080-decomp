@@ -12749,6 +12749,10 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     temp_v0 = FW(temp_v1, 0x28);
     temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
     temp_v1 = FW(arg0, 0x240);
+    /* agent-g run 281: code-free tests of two of the block's loads (temp_v1->0x148, ->0xC0) before the block (kit
+     * CCCXL creation order; expression-test sweep): 96.02 -> 97.52, same length */
+    if (FW(temp_v1, 0x148)) {}
+    if (FW(temp_v1, 0xC0)) {}
     {
         /* agent-c run 196: p100 / pDC from a re-read of arg0->0x240 (CSE'd load, unfolded
          * `addiu a2,v1,256` / `addiu t7,v1,220` held like the target; kit CLXX 5.) */
