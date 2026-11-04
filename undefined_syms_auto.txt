@@ -5342,6 +5342,11 @@ D_4BAF4_flags = 0x00000000;
 D_3E5E0_vk = 0x00000000;
 D_3E5E0_v1 = 0x00000000;
 D_3E5E0_v2 = 0x00000000;
+/* gl_func_0003E5E0 EXACT donor (agent-c run 270): vtable words as the target's absolute USO values, blank jal words */
+gl_3e5e0_vk = 0x0001F0D8;
+gl_3e5e0_v1 = 0x0001F1F8;
+gl_3e5e0_v2 = 0x0001F210;
+gl_3e5e0_c34458 = 0x00000000;
 /* blank alias: the gl_func_00040070 NM donor base ctor (renamed __ct__2BBFPv) */
 gl_func_00000000_40070_base = 0x00000000;
 /* timproc_uso_b5_func_0000AC20 NCC donor: its file-local reference point (.bss reloc renamed by the splice) and four blank USO data bases */

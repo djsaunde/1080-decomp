@@ -7897,87 +7897,16 @@ void gl_func_0003E594(int *a0) {
 // single-member-struct saved, per-stage node1/node2 — ALL converge to identical
 // 75.04 codegen. Same divergent-regalloc class as docs/IDO_CODEGEN.md
 // spill-vs-sreg entries; needs uoptlist coloring dump to crack.
+// agent-c run 270: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_3E5E0.cpp (three `new`
+// member-function callback objects; the loop as a free inline with a dummy pool parameter, CB's ctor with
+// mem-initialisers), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees.
 #ifdef NON_MATCHING
-
-
-
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-extern char D_00000000_e5e0a, D_00000000_e5e0b, D_00000000_e5e0c, D_00000000_e5e0d,
-    D_00000000_e5e0e, D_00000000_e5e0f, D_00000000_e5e0g, D_00000000_e5e0h,
-    D_00000000_e5e0i, D_00000000_e5e0j, D_00000000_e5e0k, D_00000000_e5e0l,
-    D_00000000_e5e0m, D_00000000_e5e0n, D_00000000_e5e0o, D_00000000_e5e0p,
-    D_00000000_e5e0q, D_00000000_e5e0r, D_00000000_e5e0s;
-typedef struct { s32 w0, w1; } PairE5E0;
-void gl_func_0003E5E0(char *arg0) {
-    s32 *node;
-    s32 *rec;
-    s32 *key;
-    s32 *saved;
-    s32 *n3;
-    s32 *r3;
-    s32 *k3;
-    s32 *saved2;
-    char *it;
-
-    gl_func_00034458(&D_00000000_e5e0a, FW(arg0, 0xC), 0);
-    node = (s32 *)gl_func_00034458(0x10);
-    if (node != 0) {
-        rec = node;
-        if ((rec != 0) || (saved = node, rec = (s32 *)gl_func_00034458(0x10), node = saved, (rec != 0))) {
-            key = rec;
-            if ((key != 0) || (saved = node, key = (s32 *)gl_func_00034458(4), node = saved, (key != 0))) {
-                *key = (s32)(&D_00000000_e5e0b + 0x1F0D8);
-            }
-            FW(rec, 0x4) = (s32)arg0;
-            *(PairE5E0 *)(rec + 2) = *(PairE5E0 *)(&D_00000000_e5e0c + 0x1EEC0);
-        }
-        *node = (s32)(&D_00000000_e5e0d + 0x1F1F8);
-    }
-    gl_func_00034458(&D_00000000_e5e0e, &D_00000000_e5e0f + 0x1F318, node, 0);
-    node = (s32 *)gl_func_00034458(0x10);
-    if (node != 0) {
-        rec = node;
-        if ((rec != 0) || (saved = node, rec = (s32 *)gl_func_00034458(0x10), node = saved, (rec != 0))) {
-            key = rec;
-            if ((key != 0) || (saved = node, key = (s32 *)gl_func_00034458(4), node = saved, (key != 0))) {
-                *key = (s32)(&D_00000000_e5e0g + 0x1F0D8);
-            }
-            FW(rec, 0x4) = (s32)arg0;
-            *(PairE5E0 *)(rec + 2) = *(PairE5E0 *)(&D_00000000_e5e0h + 0x1EEC8);
-        }
-        *node = (s32)(&D_00000000_e5e0i + 0x1F1F8);
-    }
-    gl_func_00034458(&D_00000000_e5e0j, &D_00000000_e5e0k + 0x1F324, node, 1);
-    gl_func_00034458(&D_00000000_e5e0l, &D_00000000_e5e0m + 0x1F330, 0);
-    it = (char *)FW(arg0, 0x2C);
-    if (it != 0) {
-        do {
-            n3 = (s32 *)gl_func_00034458(0x10);
-            if (n3 != 0) {
-                r3 = n3;
-                if ((r3 != 0) || ((r3 = (s32 *)gl_func_00034458(0x10)) != 0)) {
-                    k3 = r3;
-                    if ((k3 != 0) || (saved2 = r3, k3 = (s32 *)gl_func_00034458(4), r3 = saved2, (k3 != 0))) {
-                        *k3 = (s32)(&D_00000000_e5e0n + 0x1F0D8);
-                    }
-                    FW(r3, 0x4) = (s32)it;
-                    *(PairE5E0 *)(r3 + 2) = *(PairE5E0 *)(&D_00000000_e5e0o + 0x1EED0);
-                }
-                *n3 = (s32)(&D_00000000_e5e0p + 0x1F210);
-            }
-            gl_func_00034458(&D_00000000_e5e0q, it + 0x2C, n3);
-            it = (char *)FW(it, 0x30);
-        } while (it != 0);
-    }
-    gl_func_00034458(&D_00000000_e5e0r);
-    gl_func_00034458(&D_00000000_e5e0s);
-    gl_func_00034458(arg0);
-}
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E5E0);
 #endif
+void gl_func_0003E5E0(char *arg0) {
+}
 
 extern int gl_func_00000000();
 void gl_func_0003E840(int a0) {

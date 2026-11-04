@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003E5E0 (0x260 / 152 words), agent-c run 157.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003E5E0 (0x260 / 152 words), agent-c run 157 (NM lift) / run 270 (exact).
  * The cfe body's nested alloc-or-given blocks are three `new` expressions of member-function callback
  * objects: a 4-byte polymorphic root K (vptr only), CB : K holding {obj, PMF} (no virtuals of its own, so its
  * ctor stores no vptr), and the two leaf classes CB1 / CB2 whose empty ctors store their vptr LAST -- the
@@ -21,6 +21,11 @@
  * spill to M-12 like the target. 99.36 -> 99.90, length 608 = target. Left: frame 0x40 vs 0x38 (the loop's CB2 `this` /
  * o / PMF / CB `this` temps take three fresh entries M-32 .. M-44; the target's CB2 `this` sits on M-24), so every
  * sp offset above the args is +8.
+ * agent-c run 270, EXACT: CB's ctor with mem-initialisers (`: obj(o), pmf(p) {}`, a simple routine: no o / PMF
+ * parameter temps in either registration or the loop) frees two entries per expansion, and ONE dummy loop parameter
+ * then puts the loop's new-temp on reg0's CB `this` entry and its CB2 `this` on M-24: frame 0x38, every home = target.
+ * Spliced over a placeholder in both build trees; the vtables / the blank jal are renamed to pinned absolutes
+ * (gl_3e5e0_vk / _v1 / _v2 = the target's 0x1F0D8 / 0x1F1F8 / 0x1F210, gl_3e5e0_c34458 = 0) in the Makefile.
  */
 typedef int s32;
 extern "C" {
@@ -36,14 +41,14 @@ struct K { virtual void f(); };
 struct CB : K {
     void *obj;
     PMF pmf;
-    CB(void *o, const PMF &p) { obj = o; pmf = p; }
+    CB(void *o, const PMF &p) : obj(o), pmf(p) {} /* run 270: mem-initialisers -- no o / p pool temps */
 };
 struct CB1 : CB { CB1(void *o, const PMF &p) : CB(o, p) {} virtual void f(); };
 struct CB2 : CB { CB2(void *o, const PMF &p) : CB(o, p) {} virtual void f(); };
 inline void reg0(char *a) { gl_func_00034458(&D_00000000_e5e0e, &D_00000000_e5e0f + 0x1F318, new CB1(a, *(PMF *)(&D_00000000_e5e0c + 0x1EEC0)), 0); }
 inline void reg1(char *a) { gl_func_00034458(&D_00000000_e5e0j, &D_00000000_e5e0k + 0x1F324, new CB1(a, *(PMF *)(&D_00000000_e5e0h + 0x1EEC8)), 1); }
-inline void loop(char *it, int d0, int d1, int d2) {
-    if (0) { it = 0; d0 = 0; d1 = 0; d2 = 0; } /* run 270: the three dummies hold pool entries during the body */
+inline void loop(char *it, int d0) {
+    if (0) { it = 0; d0 = 0; } /* run 270: the dummy holds a pool entry during the body */
     if (it != 0) {
         do {
             gl_func_00034458(&D_00000000_e5e0q, it + 0x2C, new CB2(it, *(PMF *)(&D_00000000_e5e0o + 0x1EED0)));
@@ -57,7 +62,7 @@ extern "C" void gl_func_0003E5E0(char *arg0) {
     reg0(arg0);
     reg1(arg0);
     gl_func_00034458(&D_00000000_e5e0l, &D_00000000_e5e0m + 0x1F330, 0);
-    loop((char *)FW(arg0, 0x2C), 1, 1, 1);
+    loop((char *)FW(arg0, 0x2C), 1);
     gl_func_00034458(&D_00000000_e5e0r);
     gl_func_00034458(&D_00000000_e5e0s);
     gl_func_00034458(arg0);
