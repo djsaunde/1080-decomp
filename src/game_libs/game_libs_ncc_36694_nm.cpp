@@ -38,7 +38,10 @@ V3 Obj::perp(V3 p, V3 n) {
      * difference bound to a const reference in a block; flip in x, y, z order. 90.96 -> 94.00, length 712 = target.
      * Residual: the target's sub copy goes through a FRESH entry M-100 (shared with the first return's value temp) and
      * the bound difference sits at M-148; ours reuses the product's M-52 return temp and binds at M-136. */
-    V3 a = n * (n.z * p.z + (n.x * p.x + n.y * p.y)); /* run 265: 96-variant dot order grid on the new layout, 94.00 -> 94.05; agent-c run 272: x product as n.x * p.x (after the run-265 code-free tests), 95.49 -> 95.52 */
+    /* agent-c run 278: the dot in the target's operand order (`add.s f0,f8,f4` = the x / y sum first, the z product
+     * second); the run-265 / 272 tests on py / l / px (fitted to the z-first order) dropped and one code-free test of
+     * n.z in the else arm instead (random test search on the new order): 95.52 -> 95.88 */
+    V3 a = n * ((n.x * p.x + n.y * p.y) + n.z * p.z);
     V3 r;
     f32 l;
     f32 px, py, pz;
@@ -49,8 +52,8 @@ V3 Obj::perp(V3 p, V3 n) {
             px = px * -1.0f;
             py = py * -1.0f;
             pz = pz * -1.0f;
-        } if (py) {} /* run 265: code-free float tests (kit CCC random search on the new layout): 94.05 -> 95.44 */
-         r.x = px; r.y = py; r.z = pz; if (l) {}
+        }
+         r.x = px; r.y = py; r.z = pz;
          return (r * 1.0f) / gl_sqrtf_36694(l);
     }
     if (n.z == 1.0f) {
@@ -60,8 +63,8 @@ V3 Obj::perp(V3 p, V3 n) {
     } else {
         r.z = 0.0f;
         r.x = -n.y;
-        r.y = n.x;
+        r.y = n.x; if (n.z) {}
         gl_normalize_36694(&r);
-    } if (px) {} /* run 265: second round, 95.44 -> 95.49 */
+    }
     return r;
 }
