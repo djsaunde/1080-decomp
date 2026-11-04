@@ -38,7 +38,7 @@ V3 Obj::perp(V3 p, V3 n) {
      * difference bound to a const reference in a block; flip in x, y, z order. 90.96 -> 94.00, length 712 = target.
      * Residual: the target's sub copy goes through a FRESH entry M-100 (shared with the first return's value temp) and
      * the bound difference sits at M-148; ours reuses the product's M-52 return temp and binds at M-136. */
-    V3 a = n * (n.z * p.z + (p.x * n.x + n.y * p.y)); /* run 265: 96-variant dot order grid on the new layout, 94.00 -> 94.05 */
+    V3 a = n * (n.z * p.z + (n.x * p.x + n.y * p.y)); /* run 265: 96-variant dot order grid on the new layout, 94.00 -> 94.05; agent-c run 272: x product as n.x * p.x (after the run-265 code-free tests), 95.49 -> 95.52 */
     V3 r;
     f32 l;
     f32 px, py, pz;
