@@ -23414,7 +23414,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
             *(s32 *)(p + 0) = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
-            *(s32 *)(p + 4) = (rgba << 0x10) | rgba;
+            *(s32 *)(p + 4) = (rgba << 0x10) | rgba; if (g) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45) */
         }
         {
             char *base;
