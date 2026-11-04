@@ -20,7 +20,7 @@ struct V3 { f32 x, y, z;
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
     V3 operator+(V3 o) const { return V3(x + o.x, y + o.y, z + o.z); }
-    void operator*=(const V3 &k) { x *= k.x; z *= k.z; y *= k.y; } /* agent-g run 245: x, z, y (swap sweep, 95.665 -> 95.669) */
+    void operator*=(const V3 &k) { y *= k.y; x *= k.x; z *= k.z; } /* agent-g run 245: x, z, y (swap sweep, 95.665 -> 95.669); agent-c run 276: y, x, z with the e ctor's x product KV-first (order x operand grid, 95.669 -> 95.684) */
     void operator/=(const V3 &k) { x /= k.x; y /= k.y; z /= k.z; }
 };
 #define KV (*(V3 *)D_00000000F) /* collision kvec (&D + 0x128) */
@@ -41,7 +41,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     V3 start; start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
     V3 end = start + d * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
     start *= KV; if (1) {}
-    V3 e(end.x * KV.x, end.y * KV.y, end.z * KV.z);
+    V3 e(KV.x * end.x, end.y * KV.y, end.z * KV.z);
     char *p = *(char **)&D_00000000E + 0 * (int)(cam); /* agent-c run 209: folded counted use of cam */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
