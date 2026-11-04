@@ -13184,7 +13184,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 } else {
                     var_v0 = 8;
                 }
-                temp_v1_3 = *(u8 *)((char *)(arg0) + 0x21);
+                temp_v1_3 = *(u8 *)((char *)(arg0) + 0x21); if (var_v0 != temp_v1_3) {} /* agent-g run 272: code-free compare (both set on every path): a use of var_v0 in the switch head block raises its priority */
                 switch (temp_v1_3) {                /* switch 1; irregular */
                 case 0:                             /* switch 1 */
                     func_00000000(0x90000000, 6);
@@ -13263,22 +13263,24 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                     if (*(u8 *)((char *)(arg0) + 0x14) == 1) {
                         temp_v1 = *(u8 *)((char *)(arg0) + 0x15); /* agent-g run 269: s32 temp_v1 + (u8) switch cast (target v1, no `or v1,v0` copy): 98.24 -> 98.41 */
                         switch ((u8)temp_v1) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
-                        case 1: var_v0 = 0; break;
-                        case 2: var_v0 = 1; break;
-                        default: var_v0 = 2; break;
+                        /* agent-g run 272: the 0..3 a2 pick in var_t9, not var_v0 (target: two variables -- the
+                         * 8 / 0x40 pick keeps var_v0's home 0x58 and colours alone, this one is the a2 web) */
+                        case 1: var_t9 = 0; break;
+                        case 2: var_t9 = 1; break;
+                        default: var_t9 = 2; break;
                         }
                     } else {
                         /* agent-g run 250: 3 as the else arm (uopt still hoists the li a2,3; the
                          * case-2 arm keeps its own `b; move a2,v0` block like the target) */
-                        var_v0 = 3;
+                        var_t9 = 3;
                     }
                     switch (*(u8 *)((char *)(arg0) + 0x22)) {
                     case 3: case 4:
-                        gl_func_00043BE4(arg0, 8, var_v0, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
+                        gl_func_00043BE4(arg0, 8, var_t9, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
                         break;
                     case 1: case 2: case 5:
                     default:
-                        gl_func_00043BE4(arg0, 0xC, var_v0, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
+                        gl_func_00043BE4(arg0, 0xC, var_t9, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
                         break;
                     }
                     /* agent-g run 250: own read + goto past block_81 (target: the case-3/4 arm's
@@ -13356,9 +13358,9 @@ block_83:
                         var_t9 = var_v0_2;
                     } }
                     if ((*(u16 *)((char *)(arg0) + 0x30) != 1) || (temp_v1_2 != 3)) {
-                        temp_v1_3 = *(u8 *)((char *)(arg0) + 0x22);
-                        if ((s32) temp_v1_3 >= 6) {
-                            var_t9 = temp_v1_3 + 0xE;
+                        temp_v1_5 = *(u8 *)((char *)(arg0) + 0x22); /* agent-g run 272: own u8 (the o->0x21 switch-1 web alone in temp_v1_3) */
+                        if ((s32) temp_v1_5 >= 6) {
+                            var_t9 = temp_v1_5 + 0xE;
                         }
                         if ((*(s32 *)(D_E354_G + 0) /* M2C unset $t4 */ == 4) || (*(u8 *)((char *)(arg0) + 0x1C) & 1)) {
                             gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, (s32) *(u8 *)((char *)(arg0) + 0x28)); var_v0_2 = 0; /* M2C: v0-after-void-call */
