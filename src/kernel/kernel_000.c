@@ -1248,8 +1248,8 @@ void func_800018B0(void* arg0) {
  * func_80001994 (0x148) back in (was split at the internal early-return
  * `bnez a2; jr ra; v0=0` ~0x80001900, NOT a function boundary). True
  * size 0x1EC (123 insns, ends 0x80001AD8); func_80001ADC is the next
- * genuine function. func_80001994 = 0x80001994 added to
- * undefined_syms_auto.txt for the in-function `bnel ...,0x80001994`.
+ * genuine function. (The asm's in-function `bnel ...,0x80001994` now
+ * targets the local label .L80001994, agent-c run 282.)
  * Per docs/MATCHING_WORKFLOW.md#feedback-split-fragments-over-splits-
  * on-internal-early-return.
  * Structural decode: s32 func_800018F0(tbl a0, a1, a2, s32 a3, ...)
@@ -1261,9 +1261,8 @@ void func_800018B0(void* arg0) {
  *   links via *a2 chain (t1=a2, rec->0x4/0x8 copied), sets flags
  *   (&~8 etc.), returns 1; no match returns 0. a0->0x3C = record
  *   table base; record: +0 s16 header (bit0-2 kind, bit3 flag, >>4
- *   id), +0x4 / +0x8 link words. Caps <80: beql/bnel branch-likely
- *   x3 + multu/mflo index + cross-block b-to-shared-tail. Full body
- *   INCLUDE_ASM-preserved. INCLUDE_ASM (no episode; tautology-trap). */
+ *   id), +0x4 / +0x8 link words. (Early decode notes; the exact C
+ *   body below supersedes them.) */
 /* USO relocation/fixup applier: walk arg2's 0xC-byte fixup records (count arg3,
  * processed two-per-iteration after an odd-count peel). For each record whose
  * flag (unk0/unkC) bit3 is set and whose target table slot (arg0->unk3C indexed
