@@ -31,7 +31,8 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
      * the V3 padt ctor it costs 4.7 points), 95.692 -> 95.714 */
     int count; /* agent-g run 195 / 224 placed it below the arrays (pre run-280 order) */
     count = 0;
-    V3 padt; /* agent-c run 278: unreferenced 12-byte object = the target's frame 424 (was 408), 95.684 -> 95.692 */
+    V3(); /* agent-c run 278: an unreferenced 12-byte object `V3 padt` here = the target's frame 424; agent-c run 280: an
+           * empty-ctor TEMPORARY instead (no code) puts count at the target's sp+408 under it, 95.714 -> 95.722 */
     f32 dists[8];
     int surfs[8];
     f32 hits[8][3];
