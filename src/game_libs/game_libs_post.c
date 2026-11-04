@@ -13165,15 +13165,20 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             temp_v1 = (gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF;
             /* agent-g run 271: the o->0 / 200 + D_16E0 sum is a ugen ring temp in the target (f4), not a
              * coloured variable: built in sp78 itself (plain memory home, two stores kept) instead of temp_f18;
-             * temp_f16 assigned inside the division (target materialises 200.0f before the o->0 load) */
-            sp78 = (temp_f16 = *(f32 *)((char *)(arg0) + 0x0)) / 200.0f; sp78 += *(f32 *)((char *)&D_00000000 + 0x16E0);
+             * temp_f16 assigned inside the division (target materialises 200.0f before the o->0 load).
+             * agent-g run 280: the o->0 == 0 test below reads the field itself (a load expression ranks above
+             * the literal: target `c.eq.s $f4,$f2`, zero first; through the named temp_f16 it was `$f2,$f4`), and
+             * the sum is written K + o->0 / 200 in one statement (same value: one IEEE add, operands commuted);
+             * with temp_f16 gone from this line its web no longer interferes with the o->0 load web (f2 kept):
+             * 99.8263 -> 99.8371, same length */
+            sp78 = *(f32 *)((char *)&D_00000000 + 0x16E0) + *(f32 *)((char *)(arg0) + 0x0) / 200.0f;
             temp_v0_2 = temp_v1;
             var_f4 = (f32) (u32) temp_v0_2;
             sp78 = sp78 * sp64;
             temp_f10_2 = var_f4 * sp60;
             var_t9 = (u32) temp_f10_2; /* recomposed (u32)float */
             *(u8 *)((char *)(arg0) + 0x26) = (u8) (((s32) *(u8 *)((char *)(arg0) + 0x26) / 2) + ((s32) (var_t9 & 0xFF) / 2));
-            if (temp_f16 == 0.0f) {
+            if (*(f32 *)((char *)(arg0) + 0x0) == 0.0f) {
                 *(u8 *)((char *)(arg0) + 0x26) = 0U;
             }
             if (*(u8 *)((char *)(arg0) + 0x34) != *(u8 *)((char *)(arg0) + 0x1D)) {
