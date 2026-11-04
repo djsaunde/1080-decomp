@@ -13498,17 +13498,15 @@ block_83:
                     if ((*(u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
                         func_00000000(0x20, 0x12, 0);
                     }
-                    temp_v0_2 = D_raceD_E354;
-                    if ((temp_v0_2 != 0) && (temp_v0_2 != 1) && (temp_v0_2 != 8)) {
+                    var_v0_3 = D_raceD_E354; /* agent-g run 269: var_v0_3, not the selector temp_v0_2 (target v1) */
+                    if ((var_v0_3 != 0) && (var_v0_3 != 1) && (var_v0_3 != 8)) {
                         temp_v1 = *(s32 *)((char *)(arg0) + 0x48);
                         if (temp_v1 != 0) {
                             *(u8 *)((char *)(arg0) + 0x33) = 0x1AU;
                         }
                         temp_f0 = *(f32 *)((char *)&D_00000000 + 0x172C);
                         if (temp_f0 < *(f32 *)((char *)(arg0) + 0xC)) {
-                            temp_v1_5 = *(u8 *)((char *)(arg0) + 0x33) + 1;
-                            *(u8 *)((char *)(arg0) + 0x33) = temp_v1_5;
-                            if ((temp_v1_5 & 0xFF) == 0x19) {
+                            if ((++*(u8 *)((char *)(arg0) + 0x33) & 0xFF) == 0x19) { /* agent-g run 269: pre-increment in the test (target ugen temps t7 / t8 / t9, no variable) */
                                 func_00000000(arg0, 0x3C);
                             }
                         }
