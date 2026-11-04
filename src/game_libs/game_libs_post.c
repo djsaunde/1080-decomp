@@ -13499,7 +13499,10 @@ block_83:
                     if (D_raceC_E354 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
                     } if (1) {} /* agent-g run 271: BB split after the D_raceC arm (was leading inside it, run 270): the 0x38 load is a ugen temp (t3) again */
-                    if ((*(u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
+                    /* agent-g run 276 (kit CCCXXX): a volatile read of o->0x21 here -- the target loads it into the ugen
+                     * temp t2 (bnezl slot + test), ours had it in the coloured a0 web, one ugen ring step short for the
+                     * rest of switch 6 */
+                    if ((*(volatile u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
                         func_00000000(0x20, 0x12, 0);
                     }
                     var_v0_3 = D_raceD_E354; /* agent-g run 269: var_v0_3, not the selector temp_v0_2 (target v1) */
@@ -13510,7 +13513,7 @@ block_83:
                         }
                         /* agent-g run 270: the 0x172C literal read in place (target ugen ft0, not the coloured temp_f0) */
                         if (*(f32 *)((char *)&D_00000000 + 0x172C) < *(f32 *)((char *)(arg0) + 0xC)) {
-                            if ((++*(u8 *)((char *)(arg0) + 0x33) & 0xFF) == 0x19) { /* agent-g run 269: pre-increment in the test (target ugen temps t7 / t8 / t9, no variable) */
+                            if (++*(u8 *)((char *)(arg0) + 0x33) == 0x19) { /* agent-g run 276: no & 0xFF (with the volatile o->0x21 read above, the inc / andi temps t8 / t9 like the target) */ /* agent-g run 269: pre-increment in the test (target ugen temps t7 / t8 / t9, no variable) */
                                 func_00000000(arg0, 0x3C);
                             }
                         }
