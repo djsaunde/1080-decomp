@@ -17311,12 +17311,16 @@ int gl_func_0004E3F4(char *a0) {
  * (b = y0); `dy = y1 - y0` alone leaves the expression item y1 - y0 alive (y0 is not redefined), uopt
  * colours the item (f2) and copies it into dy (mov.s) -- the dead store `y1 = dy;` kills the item
  * (operand redefined, no code): 95.47 -> 96.90, 49 words. Left: zero (const + tail var) f2 / dz f16
- * swapped (target zero f16, dz f2). */
+ * swapped (target zero f16, dz f2).
+ * agent-g run 264: the max as its OWN variable m (zero stays the constant only) and the halved sum as
+ * `x0 = ..; return m + x0;` (a ugen temp, not y0's f14): zero / m f16, dz f2 = target, 96.90 -> 98.73.
+ * Left: y1 / z1 load into f4 / f6 (target loads straight into dy's f0 / dz's f2). */
 #ifdef NON_MATCHING
 float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {
     float dy;
     float dz;
     float zero = 0.0f;
+    float m;
 
     x1 = x1 - x0;
     dy = y1 - y0; y1 = dy;
@@ -17332,13 +17336,13 @@ float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1
         y0 = x1;
     }
     if (dz < y0) {
-        zero = y0;
+        m = y0;
         y0 = dz;
     } else {
-        zero = dz;
+        m = dz;
     }
-    y0 = (x0 + y0) / (float)2;
-    return y0 + zero;
+    x0 = (x0 + y0) / (float)2;
+    return m + x0;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E424);
