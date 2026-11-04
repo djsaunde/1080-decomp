@@ -1,14 +1,16 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gl_func_00002840 (110 words;
- * this body 110 = target). NM object only; the ROM build keeps INCLUDE_ASM. cfe body
- * under NCC + `if (arg2) {}`: 89.75 -> 90.81. Run 139: the target stores dy into its
- * stack home before the sqrt call and reloads it after (no spill-slot copy): declaring
- * sp38 VOLATILE reproduces that and fixes the length (111 -> 110); sp3C / sp38 moved
- * after f18 and len / dx / dy before p put both homes at 60 / 56 (target). Two
- * parameter empty tests (after the sqrt call and after vx = sp3C) 92.45 -> 92.82.
- * RESIDUAL: sp3C is still register-allocated (spill at 32, home 92; the target
- * keeps it in its home at 60 like sp38); making sp3C volatile too fixes that but
- * shifts the whole FP colouring (f16 / f18 locals -> f14 / f16): 83.1. p spills at
- * 32 (target 40). */
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00002840 (0x1B8 / 110 words), spliced over a placeholder in both
+ * build trees (agent-g run 277). History: NM comparison donor since run 139 (cfe 89.75 -> NCC 90.81), 99.97 at
+ * run 276 with every home on the target except p (spill word sp+0x20, target sp+0x28).
+ * agent-g run 277: p is an ADDRESS-TAKEN local in the target. The words below p are not temps: with p scalar
+ * (copy-propagated, its uses become the item arg0 + 0x2E4) the value lives in a uopt spill temp placed directly
+ * under the locals, so its slot only follows the local count (frame = 24 + locals + temps, rounded to 8; the
+ * &vec argument adds one unused word). With the code-free `if (&p == 0) {}` p stays a memory variable stored to
+ * its OWN home after the computation, the call-1 argument still forwarded in a0 and the value reloaded after
+ * each call: p declared after f18 (home M-72 = sp+0x28), one pad word where p was (keeps b4 / d4 / dx / dy at
+ * M-28 / M-32 / M-52 / M-56) and one after it (frame 0x70). Memory p also needs its assignment AFTER
+ * vec[0] = 1.0f: before it, uopt hoists arg0 + 0x2E4 above the len != 0 branch; after it, the target's
+ * join block (arg0 reload in the bc1tl delay, lui for D + 0xCB4 above the branch). 99.97 -> 100.
+ * The run-139 .. 276 levers below are unchanged. */
 typedef int s32;
 typedef float f32;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -21,9 +23,10 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     /* agent-g run 263: declaration order from a random home-layout search (the volatile pads are
      * unreferenced home-keeping words)
      * agent-g run 273: pair-swap hill climb on the order (dy <-> f0, then d4 <-> temp_v0): dy's home at 56 and
-     * d4's at 80 = target (95.23 -> 95.26); p (home 32, target 40) is the one home left */
+     * d4's at 80 = target (95.23 -> 95.26)
+     * agent-g run 277: p moved after f18 (home sp+0x28 = target) with pad words pz / py */
     f32 vec[4];
-    char *p;
+    volatile int pz;
     char *temp_v0;
     f32 b4; /* agent-g run 271: moved up (single-move decl sweep): b4's home at 84 = target */
     f32 d4;
@@ -35,9 +38,9 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     f32 dy;
     f32 f16;
     f32 f2;
-    volatile int u3;
     f32 f18;
-    volatile int u0;
+    char *p;
+    volatile int py;
 
     temp_v0 = (char *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
     f0 = (*(f32*)((char*)temp_v0 + 0xBC));
@@ -62,8 +65,9 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
             dx /= len;
             dy /= len;
         }
-        p = arg0 + 0x2E4;
+        if (&p == 0) {} /* agent-g run 277: code-free test on p's address: p is a memory variable (home sp+0x28) */
         vec[0] = 1.0f;
+        p = arg0 + 0x2E4; /* agent-g run 277: after vec[0] (before it, uopt hoists the add above the branch) */
         vec[2] = 0.0f;
         vec[3] = 0.0f;
         vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));

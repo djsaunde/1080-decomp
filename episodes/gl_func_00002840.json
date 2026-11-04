@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00002840",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-04T14:50:12.644704+00:00",
+  "end_time": "2026-11-04T14:50:12.644754+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-04T14:50:12.644749+00:00",
+      "assistant_text": "NCC C++ donor. The last diff was p's slot (sp+0x20 vs target sp+0x28): a scalar p is copy-propagated and its value lives in a uopt spill temp placed directly under the locals, so the slot only tracks the local count. In the target p is an address-taken local: a code-free if (&p == 0) {} keeps it a memory variable stored to its own home, with the call-1 argument forwarded in a0 and reloads after each call. p declared after f18 (home M-72 = sp+0x28) with pad words where p was and after it (frame 0x70); its assignment placed after vec[0] = 1.0f (before it, uopt hoists arg0 + 0x2E4 above the len != 0 branch). 99.97 -> 100.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 110,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00002840 (0x1B8 / 110 words), spliced over a placeholder in both\n * build trees (agent-g run 277). History: NM comparison donor since run 139 (cfe 89.75 -> NCC 90.81), 99.97 at\n * run 276 with every home on the target except p (spill word sp+0x20, target sp+0x28).\n * agent-g run 277: p is an ADDRESS-TAKEN local in the target. The words below p are not temps: with p scalar\n * (copy-propagated, its uses become the item arg0 + 0x2E4) the value lives in a uopt spill temp placed directly\n * under the locals, so its slot only follows the local count (frame = 24 + locals + temps, rounded to 8; the\n * &vec argument adds one unused word). With the code-free `if (&p == 0) {}` p stays a memory variable stored to\n * its OWN home after the computation, the call-1 argument still forwarded in a0 and the value reloaded after\n * each call: p declared after f18 (home M-72 = sp+0x28), one pad word where p was (keeps b4 / d4 / dx / dy at\n * M-28 / M-32 / M-52 / M-56) and one after it (frame 0x70). Memory p also needs its assignment AFTER\n * vec[0] = 1.0f: before it, uopt hoists arg0 + 0x2E4 above the len != 0 branch; after it, the target's\n * join block (arg0 reload in the bc1tl delay, lui for D + 0xCB4 above the branch). 99.97 -> 100.\n * The run-139 .. 276 levers below are unchanged. */\ntypedef int s32;\ntypedef float f32;\n#define FW(p, o) (*(int *)((char *)(p) + (o)))\nextern \"C\" {\nextern int D_00000000;\nextern int gl_func_00000000(...);\nextern f32 gl_func_00000000_sqf(f32);\n}\nextern \"C\" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {\n    /* agent-g run 263: declaration order from a random home-layout search (the volatile pads are\n     * unreferenced home-keeping words)\n     * agent-g run 273: pair-swap hill climb on the order (dy <-> f0, then d4 <-> temp_v0): dy's home at 56 and\n     * d4's at 80 = target (95.23 -> 95.26)\n     * agent-g run 277: p moved after f18 (home sp+0x28 = target) with pad words pz / py */\n    f32 vec[4];\n    volatile int pz;\n    char *temp_v0;\n    f32 b4; /* agent-g run 271: moved up (single-move decl sweep): b4's home at 84 = target */\n    f32 d4;\n    f32 f0;\n    volatile int u1;\n    f32 len;\n    volatile int u2;\n    f32 dx;\n    f32 dy;\n    f32 f16;\n    f32 f2;\n    f32 f18;\n    char *p;\n    volatile int py;\n\n    temp_v0 = (char *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);\n    f0 = (*(f32*)((char*)temp_v0 + 0xBC));\n    f16 = (*(f32*)((char*)temp_v0 + 0xA0));\n    f2 = (*(f32*)((char*)temp_v0 + 0xDC));\n    f18 = (*(f32*)((char*)temp_v0 + 0xA8)); if (f0 != f2) {} if (f0 != f2) {} /* agent-g run 271 (kit CCCXX priorities): two code-free tests on f0 / f2 (was one on f16 / f18, run 263) -- f0 / f2 colour before the two CSE'd sums, which then take f12 / f14 and leave f16 / f18 to 0xA0 / 0xA8 like the target: 94.48 -> 95.21 */\n    if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {\n        b4 = (*(f32*)((char*)temp_v0 + 0xB4));\n        /* agent-g run 276: d4 read right after b4 and WITHOUT the run-263 code-free `if (d4 != dx) {}` -- that\n         * test kept a coloured piece of d4 (f0, target reads it into the ugen temp f6), which put the ugen FP\n         * ring one step off for dx * dx / dy * dy and everything after; read before dx / dy, its store frees\n         * f6 for dy * dy as in the target (statement-order grid b4 / d4 / dx / dy): 95.26 -> 99.88 */\n        d4 = (*(f32*)((char*)temp_v0 + 0xD4));\n        /* agent-g run 263: plain dx / dy variables (the target keeps both in their homes across the\n         * calls); `dx = arg2 - f16` alone leaves the item arg2 - f16 coloured and copied into dx (spill\n         * temps 28 / 32) -- the dead parameter stores arg2 = dx / arg3 = dy kill the items (no code):\n         * the run-139 volatile sp38 / sp3C copies go (92.82 -> 94.00, + home search 94.18) */\n        dx = arg2 - f16; arg2 = dx;\n        dy = arg3 - f18; arg3 = dy;\n        len = gl_func_00000000_sqf((dx * dx) + (dy * dy));\n        if (len != 0.0f) {\n            dx /= len;\n            dy /= len;\n        }\n        if (&p == 0) {} /* agent-g run 277: code-free test on p's address: p is a memory variable (home sp+0x28) */\n        vec[0] = 1.0f;\n        p = arg0 + 0x2E4; /* agent-g run 277: after vec[0] (before it, uopt hoists the add above the branch) */\n        vec[2] = 0.0f;\n        vec[3] = 0.0f;\n        vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));\n        gl_func_00000000(p);\n        gl_func_00000000(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);\n        /* agent-g run 276: the (f32) term first (target add.s f8,f10,f6 = cvt + product): 99.88 -> 99.97 */\n        gl_func_00000000(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * dx) + (d4 * dy)) * 150.0f)), arg4 - 8, 0);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_2840.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical (REPLACE_FUNC_BODY over placeholder, both trees), verify-blocks 6/6, report.json 100"
+  }
+}

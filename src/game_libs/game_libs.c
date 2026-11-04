@@ -1291,84 +1291,13 @@ void gl_func_000025A8(char *arg0, s32 arg1) {
     *(s32 *)(arg0 + 0x1F0) = arg1;
 }
 
-/* NM object: replaced by the NCC comparison donor game_libs_ncc_2840_nm.cpp (90.8). */
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-/* Redecode 2026-07-30 (42.88->89.55): the length call is a PROTOTYPED float(float)
- * (single-prec $f12, no cvt.d.s pair) -> gl_func_00000000_sqf, direct jal (the old
- * fn-ptr cast emitted jalr); D_00000000+0 brightness global is a FLOAT load (lwc1);
- * a1 args are plain (s32) truncs (the (f32)(s32) form round-tripped through cvt.d);
- * dx/dy = reg temps spilled at creation + sp3C/sp38 memory pair re-stored after the
- * normalize if (m2c's original two-web shape was right).
- * 2026-10-15 (89.55->89.75): frame now exact (0x70). lhs/rhs inlined (two fewer
- * named homes) and decls reordered to the target slot map: vec 0x60, two
- * never-touched names (sp3C/sp38, copy-propagated away) 0x58/0x5C, b4 0x54,
- * d4 0x50, f0/f16/f2/f18 0x40-0x4C, vx/vy 0x3C/0x38 (the write-back pair the
- * target re-stores before the 2nd call), then len/p/temp_v0, dx/dy last.
- * Residual (one coloring decision): the target splits the dx live range at
- * the sqrt call -- block A stores dx straight to vx's home 0x3C/0x38, the
- * post-call range loads it into f2/f14, divides in place (bc1tl skips) and
- * re-stores at the join. Here dx/dy stay one range across the call: spilled
- * to temps 0x20/0x1C, reloaded, then mov.s into vx/vy in the bc1t delay
- * (+2 insns), which also moves the p spill 0x28 -> 0x20 and renumbers
- * f12/f16/f18. Tried: single dx var (80.5), memory array d[2] (73.9),
- * array + reg copies (71.4), struct pair, register dx, vx = dx before the
- * call (81.8), sqrt arg via CSE'd raw exprs / named temp, 0.0f != len. */
-extern f32 gl_func_00000000_sqf(f32);  /* prototyped: single-prec $f12, no K&R promotion */
+/* gl_func_00002840: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_2840.cpp
+ * (agent-g run 277; REPLACE_FUNC_BODY splice over the placeholder below, both build
+ * trees). The donor's p is address-taken by a code-free `if (&p == 0) {}`, so it is
+ * stored to its own home sp+0x28 like the target instead of a uopt spill temp (the
+ * cfe decode that preceded the NCC donor is in git history). */
 void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
-    f32 vec[4];
-    f32 sp3C;
-    f32 sp38;
-    f32 b4;
-    f32 d4;
-    f32 f0;
-    f32 f16;
-    f32 f2;
-    f32 f18;
-    f32 vx;
-    f32 vy;
-    f32 len;
-    char *p;
-    char *temp_v0;
-    f32 dx;
-    f32 dy;
-
-    temp_v0 = FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
-    f0 = (*(f32*)((char*)temp_v0 + 0xBC));
-    f16 = (*(f32*)((char*)temp_v0 + 0xA0));
-    f2 = (*(f32*)((char*)temp_v0 + 0xDC));
-    f18 = (*(f32*)((char*)temp_v0 + 0xA8));
-    if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {
-        b4 = (*(f32*)((char*)temp_v0 + 0xB4));
-        dx = arg2 - f16;
-        dy = arg3 - f18;
-        sp3C = dx;
-        d4 = (*(f32*)((char*)temp_v0 + 0xD4));
-        sp38 = dy;
-        len = gl_func_00000000_sqf((dx * dx) + (dy * dy));
-        vx = sp3C;
-        vy = sp38;
-        if (len != 0.0f) {
-            vx /= len;
-            vy /= len;
-        }
-        p = arg0 + 0x2E4;
-        vec[0] = 1.0f;
-        vec[2] = 0.0f;
-        vec[3] = 0.0f;
-        sp3C = vx;
-        sp38 = vy;
-        vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));
-        gl_func_00000000(p);
-        gl_func_00000000(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
-        gl_func_00000000(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * sp3C) + (d4 * sp38)) * 150.0f)), arg4 - 8, 0);
-    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00002840);
-#endif
 
 /* gl_func_000029F8: list walk -> per-item marker draw (0x19C, 103 words).
  * scale = (f32)obj[0xEC] - (f32)obj[0x8C]; a by-value 4-byte key read from

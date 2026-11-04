@@ -1715,10 +1715,12 @@ build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o
 # the table at bootup.uso RoData +0xC9C.
 GAMELIBS_25A8_DONOR := build/src/game_libs/game_libs_o2_25A8.c.o
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000025A8=$(GAMELIBS_25A8_DONOR)
-# 2840: NM-only NCC comparison donor (same 111 words as cfe; 89.75 -> 90.81 fuzzy).
-GAMELIBS_2840_NM_DONOR := build/src/game_libs/game_libs_ncc_2840_nm.cpp.o
-build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00002840=$(GAMELIBS_2840_NM_DONOR)
-build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_2840_NM_DONOR)
+# 2840 = facing-gated HUD marker draw (sqrt-normalised delta, three blank calls); EXACT NCC donor over a
+# placeholder (agent-g run 277: p address-taken by a code-free `if (&p == 0) {}`, so it is stored to its own
+# home sp+0x28 instead of a uopt spill temp). Relocs: D_00000000 / gl_func_00000000 / gl_func_00000000_sqf (all 0).
+GAMELIBS_2840_DONOR := build/src/game_libs/game_libs_ncc_2840.cpp.o
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00002840=$(GAMELIBS_2840_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_2840_DONOR)
 GAMELIBS_68990_DONOR := build/src/game_libs/game_libs_o2_68990.c.o
 # 44B78 = video-mode selector (9-case jumptable switch), IDO 7.1 -O2 donor:
 # game_libs_o2_44B78.c (73/73 word-exact). Spliced only so the C switch's
