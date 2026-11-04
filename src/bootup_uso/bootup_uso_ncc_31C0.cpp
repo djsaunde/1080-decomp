@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for func_000031C0 (0x328 / 202 words).
+/* IDO 7.1 NCC (C++) EXACT donor for func_000031C0 (0x328 / 202 words), REPLACE_FUNC_BODY-spliced over the
+ * placeholder in bootup_uso.c on both build paths (agent-c run 271; was the _nm comparison donor).
  * agent-g run 164 (docs/IDO_CODEGEN.md kit CIV): the cfe body was C++ decoded as C.
  * `obj = new Obj2` (global inline operator new -> edg keeps the new-temp T and copies it
  * to obj at the join; Obj2 adds 4 bytes to the 0xB4 Obj, so the inlined Obj ctor's
@@ -25,6 +26,9 @@
  * of edg's Obj2 new-temp T. (mk alone puts the new-temp on the M-this entry and that merged variable is spilled in
  * the M / N protocol; u alone changes nothing.) 99.98 -> 99.995. Left: the KB / B2 `o` argument reads obj's home
  * (sp+0x78) where the target reads T (sp+0x74): mk's `o` temp is T's entry, so T is redefined on that path.
+ * agent-c run 271: EXACT -- case 1 through a folded-zero conditional whose DEAD arm holds the dummy pool temp (see
+ * case 1), and `if (obj) {}` for the tail's `if (1) {}`. The two -1500.0f literals are the donor's .rodata +0 / +4,
+ * renamed by the splice to func_000031C0_rodata (pinned to the RoData offset 0x530).
  * Symbols renamed after compile (names only, see Makefile). */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
@@ -52,7 +56,8 @@ struct W4 { W4(char *, char *, char *); };
 struct WV { WV(char *, char *, char *); };
 struct P { char p[0x10]; char list[4];
     void add(char *n) { fn_31c0_tail(list, n); if (FW(n, 0x14) != 0) FW(n, 0x4) = 1; FW(n, 0x14) = (int)this; } };
-inline KB *mk(Obj2 *o, char *a) { if (0) { o = 0; } return new KB(o, a); }
+/* agent-c run 271: a dummy whose parameter temp is allocated in the DEAD arm of a folded-zero conditional (case 1) */
+inline char *dm(char *a) { if (0) { a = 0; } return a; }
 extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
     char *w;
     char *h;
@@ -80,8 +85,12 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
         FW(r3, 0xC) = (int)D_000074A4;
         break;
     case 1:
-        h = (char *)mk(obj, a3v); /* run 270: param temps first, new-temp on the u entry */
-        v = (char *)new WV(a3v, a3v, D_000074B0);
+        /* agent-c run 271 (EXACT): the KB new-temp on the target's fresh pool entry WITHOUT any live write to T's entry.
+         * `mode * 0` is a folded zero (no code; uopt deletes the dead arm), but edg allocates dm's parameter temp in the
+         * dead arm first and keeps it for the whole full-expression, so the new-temp of the live arm lands past it (sp+0x68)
+         * while T (sp+0x74) is never redefined on this path: the KB / B2 `o` argument copy-propagates obj -> T and reads
+         * sp+0x74 like the target. The WV new shares the arm; link / store stay statements (link reads obj's home). */
+        (mode * 0) ? (void)dm(a3v) : (void)(h = (char *)new KB(obj, a3v), v = (char *)new WV(a3v, a3v, D_000074B0));
         fn_31c0_link(obj, v);
         FW(v, 0xC) = (int)D_000074C4;
         break;
@@ -93,7 +102,7 @@ extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
     FF(obj, 0x64) = FF(a3v, 0x3A8);
     FF(obj, 0x68) = FF(a3v, 0x3AC);
     FF(h, 0x60) = FF(a3v, 0x3A4);
-    if (1) {}
+    if (obj) {} /* run 271: code-free test instead of the run-237 if (1) {} (obj v0 / a3v v1 in the tail as in the target) */
     FF(h, 0x64) = FF(a3v, 0x3A8);
     FF(h, 0x68) = FF(a3v, 0x3AC);
     fn_31c0_vec(h + 0x30, V3(0.0f, 0.0f, -1000.0f));

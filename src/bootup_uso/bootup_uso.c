@@ -1921,9 +1921,17 @@ void func_000031B8(int a0) {
 //   each call (0x6C slot) vs the natural callee-saved $s0 here (regalloc
 //   divergence), plus folded f32 consts at func_000003F8+0x138/+0x13C
 //   (bootup_uso literal-pool bug). Name pre-checked: no extern reuse.
-// 2026-10-24 agent-g run 164: the NON_MATCHING object takes the C++ port
-// src/bootup_uso/bootup_uso_ncc_31C0_nm.cpp (202/202 words, frame layout left).
-#ifdef NON_MATCHING
+// 2026-10-24 agent-g run 164: C++ port src/bootup_uso/bootup_uso_ncc_*31C0*.cpp.
+// 2026-11-04 agent-c run 271: EXACT via the IDO 7.1 NCC (C++) donor
+// src/bootup_uso/bootup_uso_ncc_31C0.cpp, REPLACE_FUNC_BODY-spliced over the
+// placeholder below on both build paths (the old cfe decode is in git history:
+// a cfront-style ctor, mode switch 0/2 vs 1, attach + Vec3-copy tail).
+typedef struct { int w; } SC4_; /* run 131 struct-copy lever (31C0); also used by a later NM body */
+void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
+    volatile int r = 0;
+    return 0;
+}
+#if 0
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode of the target words.
  * cfront-style constructor code: obj = alloc(0xB8); the inlined ctor
  * re-tests `this` (dead alloc(0xB4) fallback), and the member sub-object at
@@ -2043,9 +2051,7 @@ post:
     if (1) { } if (1) { }
     return h;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000031C0);
-#endif
+#endif /* superseded cfe decode (reference only) */
 
 /* func_000034E8 - verified structural decode (0x150, 84 insns,
  * tagged-arg-block object builder + wire). Cross-symbol data refs:
