@@ -1929,14 +1929,14 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_44CE8_DONOR := build/src/game_libs/game_libs_ncc_44CE8.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044CE8=$(GAMELIBS_44CE8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_44CE8_DONOR)
-# 48510 = real C++ `void Strip::add()` (agent-c run 160; was the run-134 NCC C lift, cfe 80.23); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_48510_NM_DONOR := build/src/game_libs/game_libs_ncc_48510_nm.cpp.o
-$(GAMELIBS_48510_NM_DONOR): src/game_libs/game_libs_ncc_48510_nm.cpp
+# 48510 = real C++ `void Strip::add()` (agent-c run 160; was the run-134 NCC C lift, cfe 80.23); EXACT NCC donor over a placeholder (agent-c run 271). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00048510_c34458 = 0.
+GAMELIBS_48510_DONOR := build/src/game_libs/game_libs_ncc_48510.cpp.o
+$(GAMELIBS_48510_DONOR): src/game_libs/game_libs_ncc_48510.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_NM_DONOR)
+	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 --redefine-sym gl_func_00034458=gl_func_00048510_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_DONOR)
 # 4C5E4 = C++ `void Obj::run()` (agent-g run 191: the cfe NM body ported to NCC); EXACT NCC donor over a placeholder (agent-c run 261). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_0004C5E4_c34458 = 0.
 GAMELIBS_4C5E4_DONOR := build/src/game_libs/game_libs_ncc_4C5E4.cpp.o
 $(GAMELIBS_4C5E4_DONOR): src/game_libs/game_libs_ncc_4C5E4.cpp

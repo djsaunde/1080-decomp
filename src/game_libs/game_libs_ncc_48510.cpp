@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048510 (0x210 / 132 words), agent-c run 160.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00048510 (0x210 / 132 words), agent-c run 160 (lift) / run 271 (exact),
+ * REPLACE_FUNC_BODY-spliced over the placeholder in game_libs_post0b.c on both build paths.
  * Rewritten as real C++ (was the run-134 C lift under NCC, 91.11): `void Strip::add(Vtx *v, s16 *out, int *full,
  * u16 *id)` (renamed to gl_func_00048510 with objcopy). Strip: mesh at 0, vertex / triangle counts at 4 / 8, 200
  * 3-index triangles at 0x14, vertex ids at 0x4C4, limits at 0x590 / 0x594 and its vptr at 0x598 (a class that introduces
@@ -13,7 +14,10 @@
  * (the pooled pointer temp a1 holds the destination like the target), and `nt = nt + 1; if (nt >= 200)` (store-forwarded
  * ring temps instead of a coloured ++nt): 97.29 -> 98.71. Residual: ugen operand order of `nv >= max590 - 1` and
  * `&buf[n]` (t6 / t7 / t8 permuted) and one ring slot from there on.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-c run 271: EXACT (98.73 -> 100) -- the full test spelled `max590 - 1 < nv + 1` (ugen computes max590 - 1
+ * first and compares the loaded nv against it, the target's addiu / slt order), and the out[] halfword store without
+ * the folded `& 0xFFFF` (the s16 store truncates anyway; the mask's ring slot was the one-slot offset that remained).
+ * gl_func_00034458 is renamed to gl_func_00048510_c34458 (blank USO jal words, pinned 0). */
 typedef short s16; typedef unsigned short u16; typedef int s32;
 extern "C" {
 int gl_func_00034458(...);
@@ -42,7 +46,7 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
     for (i = 0; i < n594; i++) {
         idx[i] = gl_func_00034458(this, i == 0 || n594 == 2, &v[i]);
         if (idx[i] < 0) {
-            if (nv + 1 >= max590) { /* agent-g run 258: compare spelling (max590 loaded first like the target): 98.71 -> 98.73 */
+            if (max590 - 1 < nv + 1) { /* agent-g run 258: compare spelling (max590 loaded first like the target): 98.71 -> 98.73; agent-c run 271: `max590 - 1 < nv + 1` -> 99.05 */
                 flush();
                 gl_func_00034458(this);
                 i = 0;
@@ -57,7 +61,7 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
         }
     }
     for (int k = 0; k < n594; k++) {
-        out[k] = idx[k] & 0xFFFF;
+        out[k] = idx[k]; /* agent-c run 271: no folded & 0xFFFF (99.05 -> 100) */
         tris[nt].v[k] = idx[k];
     }
     nt = nt + 1; if (nt >= 200) {

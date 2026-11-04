@@ -5544,3 +5544,5 @@ fn_31c0_A2 = 0x00000000;
 fn_31c0_A4 = 0x00000000;
 fn_31c0_B3 = 0x00000000;
 func_000031C0_rodata = 0x00000530;
+/* gl_func_00048510 EXACT NCC donor (agent-c run 271): blank USO jal words */
+gl_func_00048510_c34458 = 0x00000000;

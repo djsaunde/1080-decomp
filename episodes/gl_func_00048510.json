@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00048510",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-04T05:44:50.830811+00:00",
+  "end_time": "2026-11-04T05:44:50.830847+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-04T05:44:50.830842+00:00",
+      "assistant_text": "NCC C++ donor void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) (renamed to gl_func_00048510). Two spellings finished it: the full test written max590 - 1 < nv + 1 (ugen then computes max590 - 1 first and compares the loaded nv against it: the target's lw / addiu -1 / slt order, 98.73 -> 99.05), and the out[] halfword store without the folded & 0xFFFF (the s16 store truncates anyway; the mask burned one ugen ring slot, which was the one-slot t-register offset left in the copy loop, 99.05 -> 100).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 132,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00048510 (0x210 / 132 words), agent-c run 160 (lift) / run 271 (exact),\n * REPLACE_FUNC_BODY-spliced over the placeholder in game_libs_post0b.c on both build paths.\n * Rewritten as real C++ (was the run-134 C lift under NCC, 91.11): `void Strip::add(Vtx *v, s16 *out, int *full,\n * u16 *id)` (renamed to gl_func_00048510 with objcopy). Strip: mesh at 0, vertex / triangle counts at 4 / 8, 200\n * 3-index triangles at 0x14, vertex ids at 0x4C4, limits at 0x590 / 0x594 and its vptr at 0x598 (a class that introduces\n * virtuals puts the vptr after its own data: the cfront `flush()` call through vtbl+8). Per vertex: look up an existing\n * index (`i == 0 || n594 == 2` as the flag), else flush when full (and restart at i = 0), append the vertex to the\n * mesh's pool through a named `Mesh *m` (the target holds the mesh in v0 for both vp reads) and record its id; then\n * copy the indices out and into the next triangle (a separate loop counter k: the target's v1 / a0 / v0 IVs).\n * 91.11 -> 97.21, length = target, frame 0x78 = target. Residual: t-register colours, idx[] at sp+0x68 (target 0x6C).\n * The out[] halfword store carries a folded `& 0xFFFF` (one ugen ring slot): 97.21 -> 97.29.\n * agent-c run 161: `int idx[3]` (the target array ends at the frame top, 0x6C) + a volatile pad for the 0x78 frame,\n * the count read and the append through inline `Mesh::count()` / `Mesh::next()` with a `Vtx::set(const Vtx &)` copy\n * (the pooled pointer temp a1 holds the destination like the target), and `nt = nt + 1; if (nt >= 200)` (store-forwarded\n * ring temps instead of a coloured ++nt): 97.29 -> 98.71. Residual: ugen operand order of `nv >= max590 - 1` and\n * `&buf[n]` (t6 / t7 / t8 permuted) and one ring slot from there on.\n * agent-c run 271: EXACT (98.73 -> 100) -- the full test spelled `max590 - 1 < nv + 1` (ugen computes max590 - 1\n * first and compares the loaded nv against it, the target's addiu / slt order), and the out[] halfword store without\n * the folded `& 0xFFFF` (the s16 store truncates anyway; the mask's ring slot was the one-slot offset that remained).\n * gl_func_00034458 is renamed to gl_func_00048510_c34458 (blank USO jal words, pinned 0). */\ntypedef short s16; typedef unsigned short u16; typedef int s32;\nextern \"C\" {\nint gl_func_00034458(...);\nextern char D_00000000[];\n}\nstruct Vtx { int w[4]; void set(const Vtx &o) { *this = o; } };\nstruct VPool { Vtx *buf; int count; };\nstruct Mesh { char pad[0x1C]; VPool *vp; int count() { return vp->count; } Vtx *next() { return &vp->buf[vp->count++]; } };\nstruct Tri { s16 v[3]; };\nstruct Strip {\n    Mesh *mesh;\n    int nv;\n    int nt;\n    char padc[0x14 - 0xC];\n    Tri tris[200];\n    u16 ids[0x590 / 2 - 0x4C4 / 2];\n    int max590;\n    int n594;\n    virtual void flush();\n    void add(Vtx *v, s16 *out, int *full, u16 *id);\n};\nvoid Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {\n    int idx[3]; volatile int pad;\n    int i;\n    *full = 0;\n    for (i = 0; i < n594; i++) {\n        idx[i] = gl_func_00034458(this, i == 0 || n594 == 2, &v[i]);\n        if (idx[i] < 0) {\n            if (max590 - 1 < nv + 1) { /* agent-g run 258: compare spelling (max590 loaded first like the target): 98.71 -> 98.73; agent-c run 271: `max590 - 1 < nv + 1` -> 99.05 */\n                flush();\n                gl_func_00034458(this);\n                i = 0;\n            }\n            if (i == 0) {\n                *full = 1;\n            }\n            idx[i] = mesh->count();\n            mesh->next()->set(v[i]);\n            ids[nv] = id[i];\n            nv++;\n        }\n    }\n    for (int k = 0; k < n594; k++) {\n        out[k] = idx[k]; /* agent-c run 271: no folded & 0xFFFF (99.05 -> 100) */\n        tris[nt].v[k] = idx[k];\n    }\n    nt = nt + 1; if (nt >= 200) {\n        gl_func_00034458(D_00000000 + 0x1FF44);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_48510.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00048510.s",
+    "segment": "game_libs_post0b",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical (REPLACE_FUNC_BODY over placeholder, both trees), verify-blocks 6/6, report.json 100"
+  }
+}

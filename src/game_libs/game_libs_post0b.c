@@ -13562,7 +13562,13 @@ void gl_func_000483BC(char *a0) {
 // blez skip-all, the cb1 per-element dispatch and the self->0x590->4 bound
 // are exact. Caps: self struct + cb signature untyped. Full body
 // INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
+/* gl_func_00048510: EXACT via the IDO 7.1 NCC (C++) donor src/game_libs/game_libs_ncc_48510.cpp
+ * (`void Strip::add(Vtx *, s16 *, int *, u16 *)`), REPLACE_FUNC_BODY-spliced over this placeholder on
+ * both build paths (agent-c run 271). The old cfe structural pass is kept below for reference only. */
+void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
+    volatile int r = 0;
+}
+#if 0
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
@@ -13652,9 +13658,7 @@ void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
         gl_func_00034458((char *)0x1FF44);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00048510);
-#endif
+#endif /* superseded cfe structural pass (reference only) */
 
 /* gl_func_00048720: 16-byte-key record search -- returns matching
  * record index in [a0->0xC, a0->0xC + a0->4), else -1. EXACT 59/59
