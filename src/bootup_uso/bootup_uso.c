@@ -1382,6 +1382,7 @@ void func_000024B8(char *arg0) {
     volatile int pad;
     W24B8 tb;
     int r;
+    volatile int pad2; /* agent-g run 272: unreferenced home-keeping word (frame sweep): tb's by-value home at 56 like the target */
     int k;
 
     k = 0;
