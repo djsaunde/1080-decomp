@@ -13300,19 +13300,23 @@ block_2C:
             } else {
 block_83:
                 if (*(u16 *)((char *)(arg0) + 0x1A) != 0) {
-                    temp_v1 = *(s32 *)((char *)(arg0) + 0x48); /* agent-g run 231: test operands on their own lines (hoist sweep) */
-                    if (temp_v1 == 0) {
+                    /* agent-g run 268 DECODE: sp6B IS the 0x11 / 0x12 / 0x13 pick (one v0 variable spilled to its
+                     * home 0x6B), not a copy of var_v0_2: the target spills it after the pick (`sb v0,0x6b`), moves
+                     * the a2 argument before the 25.0 test, re-spills it just before the jal and reloads it into v0
+                     * on every path (incl. the 0x48 != 0 bnezl slot) for the 0x2A store; region now word-exact up to
+                     * the t-ring. The 0x48 test reads the field directly (target ugen temp t2). 97.93 -> 98.05;
+                     * length 3684 -> 3688: the old length was a coincidence (the missing re-spill offset the
+                     * extra switch-6 selector copy `or v1,a0` that still steals the raceC lui's delay slot). */
+                    if (*(s32 *)((char *)(arg0) + 0x48) == 0) {
                         temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
-                        var_v0_2 = 0x11;
+                        sp6B = 0x11;
                         if (75.0f <= temp_f16) {
-                            var_v0_2 = 0x13;
+                            sp6B = 0x13;
                         } else if (50.0f <= temp_f16) {
-                            var_v0_2 = 0x12;
+                            sp6B = 0x12;
                         }
-                        sp6B = var_v0_2;
                         if (25.0f <= temp_f16) {
-                            sp6B = var_v0_2;
-                            gl_func_00043BE4(arg0, 0x10, var_v0_2, 127.0f, (s32) *(u8 *)((char *)(arg0) + 0x28));
+                            gl_func_00043BE4(arg0, 0x10, sp6B, 127.0f, (s32) *(u8 *)((char *)(arg0) + 0x28));
                         }
                     }
                     *(u8 *)((char *)(arg0) + 0x2A) = sp6B;
