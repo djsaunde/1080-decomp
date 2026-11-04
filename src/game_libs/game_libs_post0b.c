@@ -17314,39 +17314,13 @@ int gl_func_0004E3F4(char *a0) {
  * swapped (target zero f16, dz f2).
  * agent-g run 264: the max as its OWN variable m (zero stays the constant only) and the halved sum as
  * `x0 = ..; return m + x0;` (a ugen temp, not y0's f14): zero / m f16, dz f2 = target, 96.90 -> 98.73.
- * Left: y1 / z1 load into f4 / f6 (target loads straight into dy's f0 / dz's f2). */
-#ifdef NON_MATCHING
+ * Then: dy / dz copied from y1 / z1 first, the parameters zeroed (copy-then-zero hint drop), both
+ * subtractions on one line (loads straight into f0 / f2 in the target's order), halved sum via x1: EXACT.
+ * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2 donor unit
+ * game_libs_o2_4E424.c (49/49 words). Body below is a placeholder for the splice. */
 float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {
-    float dy;
-    float dz;
-    float zero = 0.0f;
-    float m;
-
-    x1 = x1 - x0;
-    dy = y1 - y0; y1 = dy;
-    dz = z1 - z0;
-    if (x1 < zero) x1 = -x1;
-    if (dy < zero) dy = -dy;
-    if (dz < zero) dz = -dz;
-    if (x1 < dy) {
-        x0 = x1;
-        y0 = dy;
-    } else {
-        x0 = dy;
-        y0 = x1;
-    }
-    if (dz < y0) {
-        m = y0;
-        y0 = dz;
-    } else {
-        m = dz;
-    }
-    x0 = (x0 + y0) / (float)2;
-    return m + x0;
+    return x0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004E424);
-#endif
 
 extern int gl_func_00000000();
 void gl_func_0004E4E8(int *dst) {

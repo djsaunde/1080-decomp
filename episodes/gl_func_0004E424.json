@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_0004E424",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-04T01:01:56.354010+00:00",
+  "end_time": "2026-11-04T01:01:56.354023+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-04T01:01:56.354020+00:00",
+      "assistant_text": "IDO 7.1 -O2 donor spliced over a post0b placeholder. z0 volatile; dy / dz copied from y1 / z1 first, the parameters zeroed (copy-then-zero), both subtractions on one line (loads straight into f0 / f2 in target order); the max as its own variable m so zero and m share f16; halved sum via the dead x1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 49,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for gl_func_0004E424 -- 3D distance estimate\n * (0xC4 / 49 words; 49/49 word-exact), agent-g run 264.\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the\n * 40304 / 52CD4 recipe; no relocations, no rodata: the 2.0f is lui / mtc1).\n * |dx|, |dy|, |dz| sorted into min / mid / max; returns max + (min + mid) / 2.\n *\n * Load-bearing (history in the post0b placeholder comment):\n *  - z0 (the stack-passed third float) is VOLATILE: the target reads it from its\n *    home once, next to the y1 / z1 loads (agent-c run 178).\n *  - dy / dz are copies of y1 / z1 taken first, then the parameters are zeroed\n *    (copy-then-zero hint drop: y1 / z1 are never read again), then both\n *    subtractions on one line: the loads go straight into dy's f0 / dz's f2 in\n *    the target's y1, z1, z0 order (kit CCCII: a plain `dy = y1 - y0` leaves the\n *    item y1 - y0 coloured and copied).\n *  - the max is its own variable m (zero stays the 0.0f constant only; zero / m\n *    then share f16) and the halved sum goes through x1 (dead by then).\n */\nfloat gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {\n    float dy;\n    float dz;\n    float zero = 0.0f;\n    float m;\n\n    x1 = x1 - x0;\n    dy = y1; y1 = 0;\n    dz = z1; z1 = 0;\n    dy -= y0; dz = dz - z0;\n    if (x1 < zero) x1 = -x1;\n    if (dy < zero) dy = -dy;\n    if (dz < zero) dz = -dz;\n    if (x1 < dy) {\n        x0 = x1;\n        y0 = dy;\n    } else {\n        x0 = dy;\n        y0 = x1;\n    }\n    if (dz < y0) {\n        m = y0;\n        y0 = dz;\n    } else {\n        m = dz;\n    }\n    x1 = (x0 + y0) / (float)2;\n    return m + x1;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_4E424.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_0004E424.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "ROM byte-identical; verify-blocks 6/6; objdiff 100% (report.json)"
+  }
+}
