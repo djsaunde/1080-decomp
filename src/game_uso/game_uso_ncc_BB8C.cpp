@@ -1,4 +1,9 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_0000BB8C (0x3F0 / 252 words).
+/* IDO 7.1 NCC (C++) donor for game_uso_func_0000BB8C (0x3F0 / 252 words) -- EXACT agent-g run 264
+ * (252/252 words), spliced over the game_uso.c placeholder on both build paths. The run 264 steps
+ * are commented in place: sb reassigned to its matrix address + passed as the transform call's third
+ * argument (a2), the folded obj->sub use dropped, the named w.s product, a folded ->b use on the ->c
+ * argument, and the child pointer indexed from i. Its own three doubles (+0x168..0x180) and the
+ * following strings are emitted as .late_rodata from game_uso_func_0000B4B8.s.
  *
  * Contact-response sweep (sibling of the 1DDC / 28C0 camera family): probe
  * ray q = {dir (0, 0, -1), pos = sub matrix translation}, rotated by
@@ -34,7 +39,7 @@
  * (`zf(float &, int)` called with 0; the int -> float fold happens after candidate selection, kit CXIX /
  * the 37348 z3 recipe), so they take their own zero (target f0) instead of joining the 0.0 candidate
  * that the f20 init and the effect vector reuse: 95.58 -> 96.65 standalone, length 1012 -> 1008 = target.
- * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM. */
+ */
 struct P3 { float x, y, z; };
 struct V3 {
     float x, y, z;
@@ -64,7 +69,7 @@ extern "C" {
 extern Glob *import_80087DA8;
 extern char import_8005C108[];
 extern double game_uso_D_807FFA88[], game_uso_D_807FFA90[], game_uso_D_807FFA98[];
-void game_uso_func_070F38(Ray *, void *);
+void game_uso_func_070F38(Ray *, void *, void *);
 void game_uso_func_071028(V3 *);
 void game_uso_func_05B750(void *, Q *);
 void game_uso_func_05B614(void *, int, int, int, int, P2 *);
@@ -80,10 +85,14 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
     double k;
     unsigned int i;
     Child *c;
+    /* agent-g run 264: the target leaves &sb->mtx in a2 across the transform call (a third argument), and sb
+     * itself is that same a2 register before the +0x70 adjust: sb reassigned to its own matrix address
+     * (one variable, a2) and passed as the third argument -- the head block = target (98.83 -> 98.95) */
     sb = obj->sub;
-    sb->mtx.getPos(q.pos);
+    sb = (Sub *)&sb->mtx;
+    ((M4 *)sb)->getPos(q.pos);
     zf(q.dir.x, 0); zf(q.dir.y, 0); q.dir.z = -1.0f;
-    game_uso_func_070F38(&q, (char *)import_80087DA8->body + 0xB4);
+    game_uso_func_070F38(&q, (char *)import_80087DA8->body + 0xB4, sb);
     world = ((V3 &)q.dir) * 1000.0f;
     world.x += import_80087DA8->body->mtx.m[3][0] * SC(0);
     world.y += import_80087DA8->body->mtx.m[3][1] * SC(1);
@@ -97,7 +106,7 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
         float f24 = (d - obj->lo) / (1.0f - obj->lo);
         if (f24 > 1.0) f24 = 1.0f;
         f24 *= obj->sub->k; if (1) {} /* agent-c run 194 (lever-sweep bbsplit) */
-        if ((f24 < game_uso_D_807FFA88[45]) + 0 * (int)(obj->sub)) return; /* agent-g run 210: folded counted use (zero-use sweep): 98.50 -> 98.52 */
+        if (f24 < game_uso_D_807FFA88[45]) return; /* agent-g run 264: the run-210 folded obj->sub use dropped (the reload is then a ugen temp: t0, 1033 t1 = target) */
         r.b = 1033;
         r.a = 0;
         float f20 = 0.0f;
@@ -107,16 +116,19 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
             if (f20 > 1.0) f20 = 1.0f;
             if ((k = game_uso_D_807FFA90[46]) < f20) {
                 Q w;
-                w.s = f20 * obj->k2; /* run 190: scale first, zeros z, y, x (96.65 -> 98.21) */
+                float s = f20 * obj->k2; w.s = s; /* run 190: scale first, zeros z, y, x (96.65 -> 98.21); run 264: named product (f0) */
                 w.v.z = 0.0f; if (1) {} /* run 190 lever-sweep bbsplit: 98.21 -> 98.25 */
                 w.v.y = 0.0f;
                 w.v.x = 0.0f;
                 game_uso_func_05B750(import_8005C108, &w);
-                game_uso_func_05B614(import_8005C108, import_80087DA8->c, import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
+                /* run 264: folded counted use of ->b on the ->c argument: c is a coloured LR (v1), &r the t2 ugen temp = target */
+                game_uso_func_05B614(import_8005C108, import_80087DA8->c + 0 * (int)(import_80087DA8->b), import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
             }
         }
         k = game_uso_D_807FFA98[47];
-        for (i = 0, c = (Child *)obj; i < obj->n; i++, c = (Child *)((char *)c + 36)) {
+        /* run 264: c indexed from i (uopt's strength-reduced pointer starts in the preheader, i = 0 fills the guard's delay slot) */
+        for (i = 0; i < obj->n; i++) {
+            c = (Child *)((char *)obj + i * 36);
             if (c->lim < d) {
                 if (f24 != f20) {} /* agent-g run 262 (kit CCXCVII priorities): code-free test in the loop raises f20's priority above k's: f20 / f22 callee-saved colours = target (98.55 -> 98.83) */
                 if (c->flags & 1) {

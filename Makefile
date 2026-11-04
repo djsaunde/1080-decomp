@@ -3065,10 +3065,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # 28C0: NM-only NCC donor (camera homing, V3 class; regs/one else-arm slot differ).
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
-# BB8C: NM-only NCC donor (contact sweep, V3 operator temporaries; agent-g run 128).
-GAMEUSO_BB8C_NM_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_NM_DONOR)
-build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_BB8C_NM_DONOR)
+# BB8C = contact sweep, V3 operator temporaries (NCC donor, 252/252 words; agent-g run 128, exact run 264).
+GAMEUSO_BB8C_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_BB8C_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol

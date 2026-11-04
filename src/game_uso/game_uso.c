@@ -7476,7 +7476,16 @@ extern char game_uso_D_807FFA88, game_uso_D_807FFA90, game_uso_D_807FFA98;
 extern void game_uso_func_070F38();
 extern void game_uso_func_05B750();
 extern void game_uso_func_05B614();
+#endif
+/* game_uso_func_0000BB8C: EXACT via REPLACE_FUNC_BODY donor splice (agent-g run 264): the real body
+ * is the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_BB8C.cpp (252/252 words). Its three
+ * doubles (RoData +0x168..0x180) are emitted as .late_rodata from game_uso_func_0000B4B8.s.
+ * Body below is a placeholder for the splice. */
 void game_uso_func_0000BB8C(char *arg0) {
+    volatile char *ret = arg0;
+}
+#if 0
+void game_uso_func_0000BB8C_old_cfe(char *arg0) {
     f32 q[6];          /* sp+272: {x,y,z, a,b,c} input to transform 070F38 */
     Vec3 scaled;       /* sp+192 */
     Vec3 tmp;          /* sp+164 */
@@ -7588,8 +7597,6 @@ void game_uso_func_0000BB8C(char *arg0) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_0000BB8C);
 #endif
 
 /* MATCHED 2026-05-31. The prior "no C-level lever to swap the loop-pre-header
