@@ -41,7 +41,7 @@ extern "C" void gl_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 a
     f0 = (*(f32*)((char*)temp_v0 + 0xBC));
     f16 = (*(f32*)((char*)temp_v0 + 0xA0));
     f2 = (*(f32*)((char*)temp_v0 + 0xDC));
-    f18 = (*(f32*)((char*)temp_v0 + 0xA8)); if (f16 != f18) {} /* agent-g run 263: code-free test (random search, length kept) */
+    f18 = (*(f32*)((char*)temp_v0 + 0xA8)); if (f0 != f2) {} if (f0 != f2) {} /* agent-g run 271 (kit CCCXX priorities): two code-free tests on f0 / f2 (was one on f16 / f18, run 263) -- f0 / f2 colour before the two CSE'd sums, which then take f12 / f14 and leave f16 / f18 to 0xA0 / 0xA8 like the target: 94.48 -> 95.21 */
     if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {
         b4 = (*(f32*)((char*)temp_v0 + 0xB4));
         /* agent-g run 263: plain dx / dy variables (the target keeps both in their homes across the
