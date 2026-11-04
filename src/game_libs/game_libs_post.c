@@ -13418,7 +13418,10 @@ block_83:
                         }
                         break;
                     }
-                    func_00000000(arg0, temp_v1 +((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50));
+                    /* agent-g run 280: remainder first, the base as the comma expression `(0, temp_v1)` (an expression
+                     * operand ranks like the remainder, so the base stays first: target `addu a1,v0,t2`; plain
+                     * `temp_v1 + rem` / `rem + temp_v1` both give `addu a1,t2,v0`): 99.8371 -> 99.8480 */
+                    func_00000000(arg0, ((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50) + (0, temp_v1));
                     *(s32 *)((char *)(arg0) + 0x48) = 0xA;
                     *(u8 *)((char *)(arg0) + 0x29) = 0U;
                     *(u8 *)((char *)(arg0) + 0x2B) = sp6B;
