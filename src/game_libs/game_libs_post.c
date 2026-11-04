@@ -13513,6 +13513,7 @@ block_83:
                     if ((*(volatile u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
                         func_00000000(0x20, 0x12, 0);
                     }
+                    if (D_raceD_E354) {} /* agent-g run 281: code-free test of the same global first (kit CCCXL creation order): the raceD load then colours v1 like the target (`lui v1; lw v1; beqzl v1`, was v0): 99.859 -> 99.891 */
                     var_v0_3 = D_raceD_E354; /* agent-g run 269: var_v0_3, not the selector temp_v0_2 (target v1) */
                     if ((var_v0_3 != 0) && (var_v0_3 != 1) && (var_v0_3 != 8)) {
                         temp_v1 = *(s32 *)((char *)(arg0) + 0x48);
