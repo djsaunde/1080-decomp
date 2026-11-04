@@ -1264,10 +1264,6 @@ void func_800018B0(void* arg0) {
  *   id), +0x4 / +0x8 link words. Caps <80: beql/bnel branch-likely
  *   x3 + multu/mflo index + cross-block b-to-shared-tail. Full body
  *   INCLUDE_ASM-preserved. INCLUDE_ASM (no episode; tautology-trap). */
-#ifdef NON_MATCHING
-#ifndef FW
-#define FW(p, o) (*(s32 *)((char *)(p) + (o)))
-#endif
 /* USO relocation/fixup applier: walk arg2's 0xC-byte fixup records (count arg3,
  * processed two-per-iteration after an odd-count peel). For each record whose
  * flag (unk0/unkC) bit3 is set and whose target table slot (arg0->unk3C indexed
@@ -1284,12 +1280,18 @@ typedef struct { s16 info; s16 pad2; s32 a; s32 b; } RelSym18F0;
 typedef struct { s32 info; s32 off; s32 val; } RelEnt18F0;
 /* agent-c run 281: the record array read straight through the parameter (no `rel = arg2` local): the
  * peel's `bnezl found` + duplicated first load and the hoisted t5 ~8 mask appear, length 488 -> 492 =
- * target (89.39 -> 94.11). Left: register picks (target 12 / 1 constants in v1 / a0, i t0, found t3). */
+ * target (89.39 -> 94.11).
+ * agent-c run 282: EXACT. The last diffs were register picks: the target's hoisted constants 12 / 1 are
+ * CONSTRAINED live ranges (>= 22 interfering LRs; uopt colours constrained LRs by priority, then the rest in
+ * LR-id order), and found is created after the slot pointer s. So: no declaration init for found (its LR id
+ * follows s), and the store address held in a named pointer with a code-free test (one more LR in the loop
+ * pushes 12 / 1 over the constrained threshold; the address LR takes t0), arg1 bound through a dead
+ * assignment so it is the addu's first operand. */
 s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
     RelSym18F0 *syms = *(RelSym18F0 **)((char *)arg0 + 0x3C);
     RelSym18F0 *s;
     s32 i;
-    s32 found = 0; /* agent-c run 281: initialised at the declaration (found's web then spans the loop), 94.19 -> 94.76 */
+    s32 found;
 
     if (arg1 == 0 || arg2 == 0) {
         return 0;
@@ -1307,15 +1309,17 @@ s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
             if (found == 0) {
                 continue;
             }
-            *(s32 *)(arg1 + ((RelEnt18F0 *)arg2)[i].off) = ((RelEnt18F0 *)arg2)[i].val;
+            {
+                s32 t;
+                s32 *p = (s32 *)(((RelEnt18F0 *)arg2)[i].off + (t = arg1));
+                if (p) {}
+                *p = ((RelEnt18F0 *)arg2)[i].val;
+            }
             ((RelEnt18F0 *)arg2)[i].info &= ~8;
         }
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800018F0);
-#endif
 
 #ifdef NON_MATCHING
 /* func_80001ADC: USO/overlay relocation applier (NM decode, 2026-10-17 agent-g).
