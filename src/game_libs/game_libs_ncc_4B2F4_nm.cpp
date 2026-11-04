@@ -16,6 +16,10 @@
  * value outside the t-ring, so the post-call block's ring = target: t9 / t4 / t5 / t6 / t7), reusing the dead
  * matrix pointer `b` (a fresh name costs a home: frame 0xC8): 99.63 -> 99.88. Left: the first h (v0, target a2)
  * and that pointer (a2, target t0).
+ * agent-g run 265 (kit CCCV argscan, register evidence): at the list call the target still holds the FA packet
+ * pointer in a1 and the first count pointer h in a2 (h coloured a2, the arg0->0x40 pointer pushed off a2 to t0),
+ * so the call takes them as arguments: `F_4B2F4_list(P(b, 0x60), cmd2, h1)` with h1 function-scoped:
+ * 99.88 -> 99.95. Left: that pointer (v0, target t0).
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef unsigned int u32; typedef int s32;
 extern "C" {
@@ -23,7 +27,7 @@ extern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;
 extern void F_4B2F4_copy(f32 (*)[4], void *);
 extern void F_4B2F4_pack(void *, void *);
 extern u32 F_4B2F4_phys(void *);
-extern u32 F_4B2F4_list(void *);
+extern u32 F_4B2F4_list(void *, u32 *, s32 *);
 }
 #define W(p, o) (*(s32 *)((char *)(p) + (o)))
 #define P(p, o) (*(char **)((char *)(p) + (o)))
@@ -41,6 +45,7 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
     s32 slot4;
     u32 *cmd2, *cmd3;
     u32 list;
+    s32 *h1;
     if (W(&D_4B2F4_flags, 0x1C4) & 1) {
         g = &D_4B2F4_state;
         /* agent-c run 228: b / a / loop on one line (as1 line tie: the b load issues after the a / bound addresses; 98.37 -> 99.36) */
@@ -68,12 +73,12 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
         if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
         g = &D_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
-        { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
+        h1 = *(s32 **)(ctx + 0xC); slot3 = h1[1]; h1[1] = slot3 + 1;
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
         cmd2[0] = 0xFA000100;
         cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;
         ctx = P(P(g, 0x254), 0x158);
-        b = (f32 (*)[4])P(arg0, 0x40); list = F_4B2F4_list(P(b, 0x60));
+        b = (f32 (*)[4])P(arg0, 0x40); list = F_4B2F4_list(P(b, 0x60), cmd2, h1);
         { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
         cmd2[0] = 0x06000000;
