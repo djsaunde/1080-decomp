@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00046050 (agent-c run 152): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), both the entry read and the loop-bottom read, 86.48 -> 86.91.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00046050 (agent-c run 268; history: agent-c run 152 NM): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), both the entry read and the loop-bottom read, 86.48 -> 86.91.
  * agent-c run 182: the character dispatch is a `switch (ch)` (edg compare chain `beq 10 / beq 9 / beql 0x30 / b default`
  * with the case bodies out of line, as the target) whose newline case jumps past the advance (`goto next`), and x is read
  * after the switch: 86.91 -> 89.54, length 1832 -> 1840 (target 1848); charw read before lineh (s1 / s2 as the
@@ -46,7 +46,13 @@
  * agent-c run 267: `switch (ch | 0)` (the selector becomes an edg pool temp; the first compare is emitted constant-first,
  * the target's `beq s5,a1`) + `if (1) {}` after `cc = ch` (kit CCC random test search): 99.95 -> 99.97. LEFT: only the
  * F5801000 append's ctx in t0 (a separate LR in the target; ours shares edg var -28, v1).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY. */
+ * agent-c run 268: EXACT. The F5801000 append is `{ Ctx *c = CTX; gW(f2(c), ...); }` with the two-statement free
+ * inline f2 (`Ctx *k = p; if (0) { p = 0; } return &k->dl->buf[k->dl->n++];`): the parameter temp takes the first
+ * pool entry (var -28) as a copy of the block local c, so n / dl stay on the -32 / -36 entries while the ctx uses read
+ * the inline local k, its own low-priority live range coloured t0 (the dead `p = 0` keeps the copy from being
+ * propagated back into -28). -28 then has one use fewer and ties below -36, so the RDPHALF_1 append in the glyph is
+ * next0() (`+ 0 * (int)this`, a folded counted use of the this temp) to keep -28 above -36: 99.97 -> 100.
+ * EXACT: REPLACE_FUNC_BODY-spliced over the placeholder in both build trees. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32;
 typedef float f32;
@@ -74,10 +80,14 @@ struct DL { Gfx *buf; int n; };
  * and the last epilogue append (greedy per-site grid): their dl temp takes the target's v0, 92.27 -> 92.43 standalone */
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { return &dl->buf[dl->n++]; } Gfx *next2() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
     /* agent-c run 254: the result through a named inline local (glyph TEXRECT append; replaces `me(CTX)->next() + 0`) */
-    Gfx *nextr() { Gfx *r = &dl->buf[dl->n++]; return r; } };
+    Gfx *nextr() { Gfx *r = &dl->buf[dl->n++]; return r; }
+    /* agent-c run 268: next() with a folded counted use of `this` (RDPHALF_1 append) */
+    Gfx *next0() { return &dl->buf[dl->n++] + 0 * (int)this; } };
 struct Sub { char pad[0x158]; Ctx *ctx; };
 struct Font { s32 f0; s32 f4; s32 f8; s32 fC; char pad[0x21C - 0x10]; s32 x; s32 y; s32 cw; s32 lh; char pad22c[0x254 - 0x22C]; Sub *sub; char pad258[0x28C - 0x258]; s32 mode; };
 #define CTX (o->sub->ctx)
+/* agent-c run 268: the F5801000 append (two statements -> p gets a pool temp; ctx read through the local k) */
+inline Gfx *f2(Ctx *p) { Ctx *k = p; if (0) { p = 0; } return &k->dl->buf[k->dl->n++]; }
 extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
     s32 startx = o->x;
     s32 charw;
@@ -102,7 +112,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
         gW(CTX->next(), 0xE6000000, 0);
         gW(CTX->next(), 0xF3000000, 0x077FF100);
         gW(CTX->next(), 0xE7000000, 0);
-        gW(CTX->next(), 0xF5801000, 0);
+        { Ctx *c = CTX; gW(f2(c), 0xF5801000, 0); }
         gW(CTX->next(), 0xF2000000, 0x1FC0FC);
     }
 
@@ -129,7 +139,7 @@ extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
             }
             if (cc < 0x80) {
                 if (o->mode == 0) {
-                    gSPTextureRectangle(CTX->nextr(), CTX->next(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
+                    gSPTextureRectangle(CTX->nextr(), CTX->next0(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
                     gl_func_00034458(o, ch, o->x, o->y);

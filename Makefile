@@ -2172,10 +2172,14 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_3B9C0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B9C0_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B9C0=$(GAMELIBS_3B9C0_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B9C0_NM_DONOR)
-# 46050 = NM C body lifted under NCC (agent-c run 152). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_46050_NM_DONOR := build/src/game_libs/game_libs_ncc_46050_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046050=$(GAMELIBS_46050_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46050_NM_DONOR)
+# 46050 = textured-font string renderer as C++ (agent-c run 152 NM lift, agent-g run 220 C++ appends); EXACT NCC donor over a placeholder (agent-c run 268: the F5801000 append's ctx through a two-statement free inline's local = the target's t0). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00046050_c34458 = 0.
+GAMELIBS_46050_DONOR := build/src/game_libs/game_libs_ncc_46050.cpp.o
+$(GAMELIBS_46050_DONOR): src/game_libs/game_libs_ncc_46050.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym gl_func_00034458=gl_func_00046050_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046050=$(GAMELIBS_46050_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46050_DONOR)
 # 48AEC = real C++ `void Obj::draw()` (agent-c run 159, cfe 88.11); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_48AEC_NM_DONOR := build/src/game_libs/game_libs_ncc_48AEC_nm.cpp.o
 $(GAMELIBS_48AEC_NM_DONOR): src/game_libs/game_libs_ncc_48AEC_nm.cpp

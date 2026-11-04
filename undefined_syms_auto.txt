@@ -3495,6 +3495,7 @@ gl_d_4c5e4_arg = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- tail-call bas
 gl_d_4c5e4_clr = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- final 0x254 clear */
 gl_func_0004C5E4_c34458 = 0x00000000;  /* gl_func_0004C5E4 NCC donor: its gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00041D40_c34458 = 0x00000000;  /* gl_func_00041D40 NCC donor: its gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
+gl_func_00046050_c34458 = 0x00000000;  /* gl_func_00046050 NCC donor: its gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
 gl_d_4b0a8_tbl = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- handler-table bind self->0x28 */
 gl_d_4b0a8_vt = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- +0x140 2-word vtable copy source */
 gl_d_4b0a8_w214 = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- +0x214 word arg of sub-registration */
