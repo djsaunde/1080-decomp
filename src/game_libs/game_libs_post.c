@@ -13507,8 +13507,8 @@ block_83:
                         if (temp_v1 != 0) {
                             *(u8 *)((char *)(arg0) + 0x33) = 0x1AU;
                         }
-                        temp_f0 = *(f32 *)((char *)&D_00000000 + 0x172C);
-                        if (temp_f0 < *(f32 *)((char *)(arg0) + 0xC)) {
+                        /* agent-g run 270: the 0x172C literal read in place (target ugen ft0, not the coloured temp_f0) */
+                        if (*(f32 *)((char *)&D_00000000 + 0x172C) < *(f32 *)((char *)(arg0) + 0xC)) {
                             if ((++*(u8 *)((char *)(arg0) + 0x33) & 0xFF) == 0x19) { /* agent-g run 269: pre-increment in the test (target ugen temps t7 / t8 / t9, no variable) */
                                 func_00000000(arg0, 0x3C);
                             }
@@ -13537,7 +13537,9 @@ block_83:
                 gl_func_000438F4(arg0);
             }
             if ((D_stateE_E354 == 1) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
-                gl_func_00044C38((s32) ((*(f32 *)((char *)(arg0) + 0x10) + 1.0f) * 63.5f));
+                /* agent-g run 270: the o->0x10 + 1 sum in temp_f0 (target add.s into the coloured f0) */
+                temp_f0 = *(f32 *)((char *)(arg0) + 0x10) + 1.0f;
+                gl_func_00044C38((s32) (temp_f0 * 63.5f));
             }
         }
     }
