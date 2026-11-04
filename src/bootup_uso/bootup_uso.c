@@ -1413,16 +1413,16 @@ void func_000024B8(char *arg0) {
         s0 = (char *)FW(arg0, 0x38); if (arg0) {}
         if (FW(s0, 0x10) & 8) { /* agent-g run 275: agent-c's run-210 folded use dropped here and in the 0x134 copy; the 0x14C copy counts s0 instead (the head candidate re-phases the temp ring) */
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} /* agent-g run 275: empty blocks in the cam web (1 / 2 / 1) lower its priority below the cfg CSE */
-            if (FF(v1, 0x14C) < 120.0f) {
+            if (FF(v1, 0x14C) < 120.0f) { if (arg0[0x40]) {} /* agent-g run 275: zero-code arg0[0x40] candidate over the cam-only blocks (three sites) takes v0 there, so cam colours v1 and the cfg CSE v0 like the target */
                 s0 = v1 + 0x14C + 0 * (int)(*s0); if (1) {} /* folded counted use of s0 (= cfg, set above; zero code) */
                 *(f32 *)s0 = *(f32 *)s0 + two;
             }
         }
-        s0 = (char *)FW(arg0, 0x38); if (FW(arg0, 0x38)) {} /* agent-g run 275: code-free test = one more use of the cfg CSE (priority) */
+        s0 = (char *)FW(arg0, 0x38);
         if (FW(s0, 0x10) & 4) {
             v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} if (1) {}
-            if (FF(v1, 0x14C) > 45.0f) {
-                s0 = v1 + 0x14C + 0 * (int)(*s0); if (1) {} /* agent-g run 275: folded counted use of s0 (= cfg, set above): the copy keeps s0 (target addiu s0,v1,332), not a v0 CSE temp */
+            if (FF(v1, 0x14C) > 45.0f) { if (arg0[0x40]) {}
+                s0 = v1 + 0x14C + 0 * (int)(*s0) + 0 * (int)(arg0[0x40]); if (1) {} /* agent-g run 275: folded counted use of s0 (= cfg, set above): the copy keeps s0 (target addiu s0,v1,332), not a v0 CSE temp */
                 *(f32 *)s0 = *(f32 *)s0 - two;
             }
         }
