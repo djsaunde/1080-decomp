@@ -13428,10 +13428,13 @@ block_83:
             if (*(u8 *)((char *)(arg0) + 0x23) != 0) {
                 /* agent-g run 269: o->0x14 read into the u8 temp_v1_2 BEFORE the race test and re-read into the same
                  * variable at switch 6 (target t0 throughout; the old s32 temp_v1 selector took a0 and needed the
-                 * `or v0,a0` copy that stole the raceC lui's delay slot): 98.15 -> 98.24, length 3688 -> 3684 */
-                temp_v1_2 = *(u8 *)((char *)(arg0) + 0x14);
+                 * `or v0,a0` copy that stole the raceC lui's delay slot): 98.15 -> 98.24, length 3688 -> 3684.
+                 * Second pass: the selector lives in temp_v0_2 and is re-read right after each setf call instead
+                 * of at switch 6 (target: no reload on the call-free D_E354_1C738 paths, `lbu t0,0x14` only
+                 * after the calls); the GB counter read uses temp_v0. 98.41 -> 98.45 (with the GB store below). */
+                temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                 if ((D_raceA_E354 == 1) && ((temp_v0_7 = D_raceB_E354, (temp_v0_7 == 4)) || (temp_v0_7 == 0xA)) && ((temp_v0_7 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
-                    if (temp_v1_2 == 0) {
+                    if (temp_v0_2 == 0) {
                         var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
                         if (var_v0_3 == 0) {
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
@@ -13449,7 +13452,7 @@ block_83:
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            temp_v0 = *(s32 *)((char *)D_E354_GA + 0); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep) */
+                            temp_v0 = *(s32 *)((char *)D_E354_GA + 0) + 0 * (int)(var_v0_3); /* agent-g run 250: temp_v0, not temp_v1 (variable-split sweep); run 269: folded use of var_v0_3 (zero-use sweep) */
                             if (temp_v0 != 0) {
                                 temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + 0x1C430); /* agent-g run 250: through the f2 bound variable */
                                 temp_f10_2 *= temp_f16;
@@ -13459,16 +13462,19 @@ block_83:
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            *(s32 *)((char *)D_E354_GA + 0x14) = 0x20;
+                            /* agent-g run 269 decode: the 0x20 store is the GB fade counter that the else arm counts
+                             * down ((1 - f) / n + f lerp), not a GA field (both bases are 0-placeholder lda's; the
+                             * target recomputes the base for this store instead of reusing the GA register) */
+                            *(s32 *)((char *)D_E354_GB + 0x14) = 0x20;
                             D_E354_1C73C_a = temp_f10_2;
-                            gl_E354_setf(0x04010900, temp_f10_2);
+                            gl_E354_setf(0x04010900, temp_f10_2); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         }
                     } else {
-                        temp_v0_2 = *(s32 *)((char *)D_E354_GB + 0x14);
-                        if (temp_v0_2 != 0) {
+                        temp_v0 = *(s32 *)((char *)D_E354_GB + 0x14);
+                        if (temp_v0 != 0) {
                             temp_f0 = D_E354_1C73C_b;
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1728);
-                            temp_f0 = ((1.0f - temp_f0) / (f32) temp_v0_2) + temp_f0;
+                            temp_f0 = ((1.0f - temp_f0) / (f32) temp_v0) + temp_f0;
                             if (temp_f16 <= temp_f0) {
                                 temp_f0 = temp_f16;
                             }
@@ -13476,15 +13482,15 @@ block_83:
                             if (temp_f0 <= temp_f16) { /* run 183: target c.le.s x,0.5 + bc1fl */
                                 temp_f0 = temp_f16;
                             }
-                            *(s32 *)((char *)D_E354_GB + 0x14) = (s32) (temp_v0_2 - 1);
+                            *(s32 *)((char *)D_E354_GB + 0x14) = (s32) (temp_v0 - 1);
                             D_E354_1C73C_c = temp_f0;
-                            gl_E354_setf(0x04010900, temp_f0);
+                            gl_E354_setf(0x04010900, temp_f0); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         } else {
-                            gl_E354_setf(0x04010900, 1.0f);
+                            gl_E354_setf(0x04010900, 1.0f); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         }
                     }
                 }
-                temp_v1_2 = *(u8 *)((char *)(arg0) + 0x14); switch ((unsigned)temp_v1_2) {              /* switch 6; irregular */
+                switch ((unsigned)temp_v0_2) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
@@ -13523,7 +13529,7 @@ block_83:
                     gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, (s32) *(u8 *)((char *)(arg0) + 0x15), (s32) *(u8 *)((char *)(arg0) + 0x28));
                     break;
                 default:                            /* switch 6 */
-                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v1_2 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
+                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v0_2 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
                     func_00000000(*(u8 *)((char *)(arg0) + 0x21));
                     break;
                 }
