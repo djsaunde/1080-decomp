@@ -13454,9 +13454,12 @@ block_83:
                  * take one colour; temp_v1, live across the 0x29 switch at v0, forbade it v0); compared as (u32) like
                  * the old u32 web (value-preserving: the word is compared with 4 / 10 only); the 0x14 selector moves
                  * into var_v0 (its 8 / 0x40 web is dead here; target t0, the constant 4 then takes v1):
-                 * 99.8914 -> 99.8969, same length */
+                 * 99.8914 -> 99.8969, same length.
+                 * Second pass: no variable at all -- the raceB word read in place at each compare (one CSE'd load
+                 * web, no intervening store); a load expression ranks like a computed operand (kit CCCXXXIX), so
+                 * the hoisted 4 goes first like the target's `beq v1,v0` / `bne v1,v0`: 99.9077 -> 99.9294 */
                 var_v0 = *(u8 *)((char *)(arg0) + 0x14);
-                if ((D_raceA_E354 == 1) && ((temp_v0 = D_raceB_E354, ((u32)temp_v0 == 4)) || ((u32)temp_v0 == 0xA)) && (((u32)temp_v0 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
+                if ((D_raceA_E354 == 1) && (((u32)D_raceB_E354 == 4) || ((u32)D_raceB_E354 == 0xA)) && (((u32)D_raceB_E354 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
                     if (var_v0 == 0) {
                         var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
                         if (var_v0_3 == 0) {
