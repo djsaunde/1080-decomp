@@ -13267,8 +13267,13 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                     }
                     var_v0_2 = 1;
                     if (*(u8 *)((char *)(arg0) + 0x14) == 1) {
-                        temp_v1 = *(u8 *)((char *)(arg0) + 0x15); /* agent-g run 269: s32 temp_v1 + (u8) switch cast (target v1, no `or v1,v0` copy): 98.24 -> 98.41 */
-                        switch ((u8)temp_v1) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
+                        /* agent-g run 282 (zdbug:5 dump): o->0x15 read into var_t9 itself and switched on without a
+                         * cast (the s32 holds the u8 value; every arm then overwrites it). temp_v1 (v0 for the
+                         * whole function) made its web live here and forbade v0 to the hoisted constant 1 (target
+                         * `addiu v0,zero,1`, ours t0): 99.8969 -> 99.9077, same length. Was: agent-g run 269: s32
+                         * temp_v1 + (u8) switch cast (target v1, no `or v1,v0` copy): 98.24 -> 98.41 */
+                        var_t9 = *(u8 *)((char *)(arg0) + 0x15);
+                        switch (var_t9) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
                         /* agent-g run 272: the 0..3 a2 pick in var_t9, not var_v0 (target: two variables -- the
                          * 8 / 0x40 pick keeps var_v0's home 0x58 and colours alone, this one is the a2 web) */
                         case 1: var_t9 = 0; break;
