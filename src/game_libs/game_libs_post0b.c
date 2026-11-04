@@ -23393,9 +23393,9 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     }
     if (arg3 != 0) {
         func_00000000_5a2c4v(arg0, arg1, arg10);
+        fb = *(f32 *)(arg5 + 8); /* agent-c run 274: b read first too (lever-sweep order, 98.35 -> 98.41) */
         fr = *(f32 *)(arg5 + 0);
         fg = *(f32 *)(arg5 + 4);
-        fb = *(f32 *)(arg5 + 8);
         fa = *(f32 *)(arg5 + 0xC);
         colv[2] = (u32)(fb * 255.0f); /* agent-c run 274: b converted first (lever-sweep order, 98.06 -> 98.35) */
         colv[0] = (u32)(fr * 255.0f);
