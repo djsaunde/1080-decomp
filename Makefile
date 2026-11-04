@@ -2032,13 +2032,13 @@ $(GAMELIBS_5AFD4_DONOR): src/game_libs/game_libs_ncc_5AFD4.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0005AFD4=$(GAMELIBS_5AFD4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5AFD4_DONOR)
-# 4B2F4 = DL matrix submission under NCC (agent-c run 162: cfe body 98.23 -> 98.37, frame / homes / length = target). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4B2F4_NM_DONOR := build/src/game_libs/game_libs_ncc_4B2F4_nm.cpp.o
-$(GAMELIBS_4B2F4_NM_DONOR): src/game_libs/game_libs_ncc_4B2F4_nm.cpp
+# 4B2F4 = DL matrix submission under NCC (agent-c run 162: cfe body 98.23 -> 98.37, frame / homes / length = target). EXACT NCC donor over a placeholder (agent-g run 265: the arg0->0x40 pointer in the dead loop counter i, `i != 4`).
+GAMELIBS_4B2F4_DONOR := build/src/game_libs/game_libs_ncc_4B2F4.cpp.o
+$(GAMELIBS_4B2F4_DONOR): src/game_libs/game_libs_ncc_4B2F4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004B2F4=$(GAMELIBS_4B2F4_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B2F4_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004B2F4=$(GAMELIBS_4B2F4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B2F4_DONOR)
 # 3AE58 = mesh-vertex table build under NCC (agent-c run 162: cfe 92.91 -> 98.37, loop rotation / frame / length = target). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_3AE58_NM_DONOR := build/src/game_libs/game_libs_ncc_3AE58_nm.cpp.o
 $(GAMELIBS_3AE58_NM_DONOR): src/game_libs/game_libs_ncc_3AE58_nm.cpp

@@ -15280,8 +15280,11 @@ int *gl_func_0004B0A8(int *arg0, char *arg1) {
  * permuter search suggested the two-stage byte shift; retained only this
  * equivalent expression, not its uninitialized-store/empty-condition edits.
  * Zero-valued link aliases preserve the ROM's runtime relocation addends.
+ * EXACT agent-g run 265 via REPLACE_FUNC_BODY donor splice: the real body is the IDO 7.1 NCC (C++)
+ * donor src/game_libs/game_libs_ncc_4B2F4.cpp (203/203 words). The old cfe body is kept under
+ * #if 0 below; the function body after it is a placeholder for the splice.
  */
-#ifdef NON_MATCHING
+#if 0
 extern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;
 extern void F_4B2F4_copy(f32 (*)[4], void *);
 extern void F_4B2F4_pack(void *, void *);
@@ -15289,7 +15292,7 @@ extern u32 F_4B2F4_phys(void *);
 extern u32 F_4B2F4_list(void *);
 #define W(p, o) (*(s32 *)((char *)(p) + (o)))
 #define P(p, o) (*(char **)((char *)(p) + (o)))
-void game_libs_func_0004B2F4(char *arg0) {
+void game_libs_func_0004B2F4_old_cfe(char *arg0) {
     s32 i, j, k;
     f32 mtx[4][4];
     f32 (*a)[4];
@@ -15348,9 +15351,10 @@ void game_libs_func_0004B2F4(char *arg0) {
 }
 #undef W
 #undef P
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004B2F4);
 #endif
+void game_libs_func_0004B2F4(char *arg0) {
+    volatile char *ret = arg0;
+}
 
 // gl_func_0004B620 — STRUCTURAL PASS (0x4CC / 309 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function (large constructor). Single

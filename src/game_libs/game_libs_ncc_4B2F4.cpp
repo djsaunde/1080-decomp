@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for game_libs_func_0004B2F4 (0x32C / 203 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) donor for game_libs_func_0004B2F4 (0x32C / 203 words), agent-c run 162; EXACT agent-g run 265.
  * The cfe body (98.23) compiled under NCC with: no `if (0) f(&arg0)` home keep (NCC homes arg0 anyway), the
  * Mtx and DL slot reads as explicit `n = h->count; h->count = n + 1;` (each post-increment costs an edg temp
  * slot), and the matrix product as `mtx[i][j] = mtx[i][j] + ...` (the `+=` form costs two more temp words):
@@ -20,7 +20,11 @@
  * pointer in a1 and the first count pointer h in a2 (h coloured a2, the arg0->0x40 pointer pushed off a2 to t0),
  * so the call takes them as arguments: `F_4B2F4_list(P(b, 0x60), cmd2, h1)` with h1 function-scoped:
  * 99.88 -> 99.95. Left: that pointer (v0, target t0).
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-g run 265 EXACT (99.95 -> 100): the arg0->0x40 pointer held in the outer loop counter i (an int, cast
+ * back for the read; i is dead after the loop) with the loop test spelled `i != 4` (same trip count). i's LR
+ * spans the matrix loop, where v0 / v1 / a0-a3 / t1 / t2 are all busy, so the shared LR takes t0 like the
+ * target; `i != 4` keeps uopt's `bne` exit test (with i referenced after the loop, `i < 4` becomes sltu/bnez).
+ * Spliced over a placeholder on both build paths. */
 typedef float f32; typedef unsigned int u32; typedef int s32;
 extern "C" {
 extern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;
@@ -49,7 +53,7 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
     if (W(&D_4B2F4_flags, 0x1C4) & 1) {
         g = &D_4B2F4_state;
         /* agent-c run 228: b / a / loop on one line (as1 line tie: the b load issues after the a / bound addresses; 98.37 -> 99.36) */
-        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0); for (i = 0; i < 4; i++) {
+        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0); for (i = 0; i != 4; i++) {
             for (j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
                 for (k = 0; k < 4; k++) {
@@ -78,7 +82,7 @@ extern "C" void game_libs_func_0004B2F4(char *arg0) {
         cmd2[0] = 0xFA000100;
         cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;
         ctx = P(P(g, 0x254), 0x158);
-        b = (f32 (*)[4])P(arg0, 0x40); list = F_4B2F4_list(P(b, 0x60), cmd2, h1);
+        i = (s32)P(arg0, 0x40); list = F_4B2F4_list(P(i, 0x60), cmd2, h1);
         { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);
         cmd2[0] = 0x06000000;

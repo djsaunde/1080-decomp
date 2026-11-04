@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_0004B2F4",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-04T01:28:21.230548+00:00",
+  "end_time": "2026-11-04T01:28:21.230548+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-04T01:28:21.230548+00:00",
+      "assistant_text": "IDO 7.1 NCC (C++) donor spliced over a post0b placeholder. The list call takes the FA packet pointer and the first count pointer h1 (held in a1 / a2 by the target at that call); the arg0->0x40 pointer is held in the dead outer loop counter i (its LR spans the matrix loop, so it takes t0 like the target) with the loop test spelled i != 4 (keeps the bne exit test).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 203,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for game_libs_func_0004B2F4 (0x32C / 203 words), agent-c run 162; EXACT agent-g run 265.\n * The cfe body (98.23) compiled under NCC with: no `if (0) f(&arg0)` home keep (NCC homes arg0 anyway), the\n * Mtx and DL slot reads as explicit `n = h->count; h->count = n + 1;` (each post-increment costs an edg temp\n * slot), and the matrix product as `mtx[i][j] = mtx[i][j] + ...` (the `+=` form costs two more temp words):\n * frame 0xC0 = target, every home = target, 203 words = target, 98.37. Residual: flags | 2 in place (target\n * keeps flags in a2 and builds the operand in t5), the 0xE4 load slot, and the last two DL slots' v0 / v1 / a2\n * colours. agent-c run 239: flags | 2 inside the packet expression (`(flags | 2) & 0xFF) << 16`, no store back)\n * with a folded `+ 0 * (int)(flags)` use on the pre-call `fixed` sum (gives flags the weight for a register:\n * without it flags is left in its home) builds the operand in t5 as the target: 99.36 -> 99.41; left: the last\n * two DL slots' v0 / v1 / a0 / a2 colours. Then: both late DL counts read through a block-scoped named\n * `s32 *h` (the count pointer as a uopt variable: slot v1, last block's h a0 as the target), with the last\n * slot / packet pointer MERGED into slot3 / cmd2 (one variable each instead of two: the merge pays back the 8\n * frame bytes the named h homes cost, frame 0xC0 kept): 99.41 -> 99.63. Left: the first h takes v0 (target\n * a2) and the t-ring of the last block is one register off.\n * agent-c run 245: the list call's `arg0->0x40` pointer held in a NAMED variable (ugen then emits it as a uopt\n * value outside the t-ring, so the post-call block's ring = target: t9 / t4 / t5 / t6 / t7), reusing the dead\n * matrix pointer `b` (a fresh name costs a home: frame 0xC8): 99.63 -> 99.88. Left: the first h (v0, target a2)\n * and that pointer (a2, target t0).\n * agent-g run 265 (kit CCCV argscan, register evidence): at the list call the target still holds the FA packet\n * pointer in a1 and the first count pointer h in a2 (h coloured a2, the arg0->0x40 pointer pushed off a2 to t0),\n * so the call takes them as arguments: `F_4B2F4_list(P(b, 0x60), cmd2, h1)` with h1 function-scoped:\n * 99.88 -> 99.95. Left: that pointer (v0, target t0).\n * agent-g run 265 EXACT (99.95 -> 100): the arg0->0x40 pointer held in the outer loop counter i (an int, cast\n * back for the read; i is dead after the loop) with the loop test spelled `i != 4` (same trip count). i's LR\n * spans the matrix loop, where v0 / v1 / a0-a3 / t1 / t2 are all busy, so the shared LR takes t0 like the\n * target; `i != 4` keeps uopt's `bne` exit test (with i referenced after the loop, `i < 4` becomes sltu/bnez).\n * Spliced over a placeholder on both build paths. */\ntypedef float f32; typedef unsigned int u32; typedef int s32;\nextern \"C\" {\nextern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;\nextern void F_4B2F4_copy(f32 (*)[4], void *);\nextern void F_4B2F4_pack(void *, void *);\nextern u32 F_4B2F4_phys(void *);\nextern u32 F_4B2F4_list(void *, u32 *, s32 *);\n}\n#define W(p, o) (*(s32 *)((char *)(p) + (o)))\n#define P(p, o) (*(char **)((char *)(p) + (o)))\nextern \"C\" void game_libs_func_0004B2F4(char *arg0) {\n    s32 i, j, k;\n    f32 mtx[4][4];\n    f32 (*a)[4];\n    f32 (*b)[4];\n    char *g;\n    s32 flags;\n    char *fixed;\n    char *ctx;\n    s32 slot1, slot2, slot3;\n    u32 *cmd1;\n    s32 slot4;\n    u32 *cmd2, *cmd3;\n    u32 list;\n    s32 *h1;\n    if (W(&D_4B2F4_flags, 0x1C4) & 1) {\n        g = &D_4B2F4_state;\n        /* agent-c run 228: b / a / loop on one line (as1 line tie: the b load issues after the a / bound addresses; 98.37 -> 99.36) */\n        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0); for (i = 0; i != 4; i++) {\n            for (j = 0; j < 4; j++) {\n                mtx[i][j] = 0.0f;\n                for (k = 0; k < 4; k++) {\n                    mtx[i][j] = mtx[i][j] + a[i][k] * b[k][j];\n                }\n            }\n        }\n        F_4B2F4_copy(mtx, &D_4B2F4_fixed + 0x3C8A0);\n        g = &D_4B2F4_state;\n        ctx = P(P(g, 0x254), 0x158);\n        flags = W(g, 0x1F4);\n        slot1 = (*(s32 **)(ctx + 0x3C))[1];\n        (*(s32 **)(ctx + 0x3C))[1] = slot1 + 1;\n        fixed = P(P(ctx, 0x3C), 0) + (slot1 << 6) + 0 * (int)(flags);\n        F_4B2F4_pack(&D_4B2F4_fixed + 0x3C8A0, fixed);\n        slot2 = (*(s32 **)(ctx + 0xC))[1];\n        (*(s32 **)(ctx + 0xC))[1] = slot2 + 1;\n        cmd1 = (u32 *)(P(P(ctx, 0xC), 0) + slot2 * 8);\n        cmd1[0] = (((u32)(flags | 2) & 0xFF) << 16) | 0x01000000 | 0x40;\n        cmd1[1] = F_4B2F4_phys(fixed);\n        if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */\n        g = &D_4B2F4_state;\n        ctx = P(P(g, 0x254), 0x158);\n        h1 = *(s32 **)(ctx + 0xC); slot3 = h1[1]; h1[1] = slot3 + 1;\n        cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);\n        cmd2[0] = 0xFA000100;\n        cmd2[1] = (u32)(*(f32 *)(g + 0x24C) * 255.0f) & 0xFF;\n        ctx = P(P(g, 0x254), 0x158);\n        i = (s32)P(arg0, 0x40); list = F_4B2F4_list(P(i, 0x60), cmd2, h1);\n        { s32 *h = *(s32 **)(ctx + 0xC); slot3 = h[1]; h[1] = slot3 + 1; }\n        cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);\n        cmd2[0] = 0x06000000;\n        cmd2[1] = list;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_4B2F4.cpp",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_0004B2F4.s",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-O2 -mips2 -32 -G 0 -non_shared -Wab,-r4300_mul",
+    "verification": "ROM byte-identical; verify-blocks 6/6; objdiff 100% (report.json)"
+  }
+}
