@@ -1343,8 +1343,7 @@ end:
 //   4 dispatcher calls; IDO here colors arg0 into a single saved reg (frame 0x40 vs
 //   target 0x50). Permuter 3205->2810 plateau (only 0x14C-hoist nudge, no crack) —
 //   classic coloring/two-saved-reg barrier. Genuine type/value/CSE bugs all fixed.
-// Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-#ifdef NON_MATCHING
+// agent-g run 276: exact (the C below compiles to the target bytes).
 /* 2026-10-16 agent-c rewrite: gate read through D_00000064 (pinned 0x64 ==
  * func_00000044+0x20, folds into the lw like the target); the two cfg->0x10
  * reads stay separate because the second is read as u32 (one type CSEs them);
@@ -1455,14 +1454,14 @@ void func_000024B8(char *arg0) {
                 s0 = (char *)FW(v0, 0x28);
                 ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k2, p);
             }
-            FW(arg0, 0x48) = 0; if (p) {}
+            /* agent-g run 276: the 0x44 store written first (no test on p): the tail reload of p is then
+             * an uncoloured split piece read into the ugen temp t6 like the target (the scheduler still
+             * issues the 0x48 store first). 99.91 -> 100. */
             FW(arg0, 0x44) = (int)p;
+            FW(arg0, 0x48) = 0;
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000024B8);
-#endif
 
 void func_00002774(char *a0, int a1) {
     if (*(int*)(a0 + 0x18) & 8) {
