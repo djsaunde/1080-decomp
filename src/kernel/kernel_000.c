@@ -1282,31 +1282,33 @@ void func_800018B0(void* arg0) {
  * i register picks. */
 typedef struct { s16 info; s16 pad2; s32 a; s32 b; } RelSym18F0;
 typedef struct { s32 info; s32 off; s32 val; } RelEnt18F0;
+/* agent-c run 281: the record array read straight through the parameter (no `rel = arg2` local): the
+ * peel's `bnezl found` + duplicated first load and the hoisted t5 ~8 mask appear, length 488 -> 492 =
+ * target (89.39 -> 94.11). Left: register picks (target 12 / 1 constants in v1 / a0, i t0, found t3). */
 s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
     RelSym18F0 *syms = *(RelSym18F0 **)((char *)arg0 + 0x3C);
-    RelEnt18F0 *rel = arg2;
     RelSym18F0 *s;
     s32 i;
     s32 found;
 
-    if (arg1 == 0 || rel == 0) {
+    if (arg1 == 0 || arg2 == 0) {
         return 0;
     }
     for (i = 0; i < arg3; i++) {
-        if (!(rel[i].info & 8)) {
+        if (!(((RelEnt18F0 *)arg2)[i].info & 8)) {
             continue;
         }
         {
             found = 0;
-            s = syms; s += rel[i].info >> 4; /* agent-c run 278: pointer += index (target `addu t4,v0,t8`: base first), 89.19 -> 89.39 */
+            s = syms; s += ((RelEnt18F0 *)arg2)[i].info >> 4; /* agent-c run 278: pointer += index (target `addu t4,v0,t8`: base first), 89.19 -> 89.39 */
             if ((s->info & 7) == 1 && (s->info >> 4) == arg4 && (s->info & 8)) {
                 found = 1;
             }
             if (found == 0) {
                 continue;
             }
-            *(s32 *)(arg1 + rel[i].off) = rel[i].val;
-            rel[i].info &= ~8;
+            *(s32 *)(arg1 + ((RelEnt18F0 *)arg2)[i].off) = ((RelEnt18F0 *)arg2)[i].val;
+            ((RelEnt18F0 *)arg2)[i].info &= ~8;
         }
     }
     return 0;
