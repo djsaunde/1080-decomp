@@ -43,7 +43,7 @@ struct Ctx {
     void dlcall(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
-    Mtx *mtx() { return &mh->buf[mh->count++]; }
+    Mtx *mtx() { int n = mh->count++; return &mh->buf[n]; } /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
