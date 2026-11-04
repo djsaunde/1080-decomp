@@ -23741,12 +23741,12 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             s32 cnt;
             char *p;
             base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
+            cnt = *(s32 *)(base + 4); if (1) {} /* agent-c run 263: with the cnt test on the F6 w0 line (kit CCC random search): 96.01 -> 96.08 */
             *(s32 *)(base + 4) = cnt + 1;
             p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
             /* agent-c run 260: the sums spelled out (same tree as the arg4 path's copy-propagated sp30), so the sp30
              * expression item precedes sp2C's and takes the spill temp at 0x30 like the target */
-            *(s32 *)(p + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4);
+            *(s32 *)(p + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (cnt) {}
             *(s32 *)(p + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         }
         {
