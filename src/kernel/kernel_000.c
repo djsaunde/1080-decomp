@@ -1298,7 +1298,7 @@ s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
         }
         {
             found = 0;
-            s = &syms[rel[i].info >> 4];
+            s = syms; s += rel[i].info >> 4; /* agent-c run 278: pointer += index (target `addu t4,v0,t8`: base first), 89.19 -> 89.39 */
             if ((s->info & 7) == 1 && (s->info >> 4) == arg4 && (s->info & 8)) {
                 found = 1;
             }
