@@ -13166,10 +13166,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
             sp7D = gl_func_00043824(*(f32 *)((char *)(arg0) + 0x4) * 120.0f, (s32)((char *)&D_00000000 + 0x1C250), 0x10);
             /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
             temp_v1 = (gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF;
-            temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
             /* agent-g run 271: the o->0 / 200 + D_16E0 sum is a ugen ring temp in the target (f4), not a
-             * coloured variable: built in sp78 itself (plain memory home, two stores kept) instead of temp_f18 */
-            sp78 = temp_f16 / 200.0f; sp78 += *(f32 *)((char *)&D_00000000 + 0x16E0);
+             * coloured variable: built in sp78 itself (plain memory home, two stores kept) instead of temp_f18;
+             * temp_f16 assigned inside the division (target materialises 200.0f before the o->0 load) */
+            sp78 = (temp_f16 = *(f32 *)((char *)(arg0) + 0x0)) / 200.0f; sp78 += *(f32 *)((char *)&D_00000000 + 0x16E0);
             temp_v0_2 = temp_v1;
             var_f4 = (f32) (u32) temp_v0_2;
             sp78 = sp78 * sp64;
@@ -13207,7 +13207,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                  * the colourable variable is the o->0x60 read (target lbu v0,0x60)
                  * agent-g run 271: the whole (f32)(u32) o->0x26 * temp_f0 chain inline (target ugen f10/f4) */
                 *(u8 *)((char *)(arg0) + 0x26) = (u32) ((f32) (u32) *(u8 *)((char *)(arg0) + 0x26) * temp_f0);
-                sp78 = sp78 * *(f32 *)((char *)(arg0) + 0x58); /* run 150 sweep: expanded form */
+                sp78 *= *(f32 *)((char *)(arg0) + 0x58); /* agent-g run 271: compound form (now that sp78 is plain, target loads sp78 into f6 first) */
                 temp_v0 = *(u8 *)((char *)(arg0) + 0x60); /* not var_v0: that variable carries an a2 argument preference */
                 *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (temp_v0 + *(u8 *)((char *)(arg0) + 0x28)) >> 1);
                 if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
