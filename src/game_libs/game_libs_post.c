@@ -13427,7 +13427,8 @@ block_83:
             }
             if (*(u8 *)((char *)(arg0) + 0x23) != 0) {
                 if ((D_raceA_E354 == 1) && ((temp_v0_7 = D_raceB_E354, (temp_v0_7 == 4)) || (temp_v0_7 == 0xA)) && ((temp_v0_7 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
-                    if (*(u8 *)((char *)(arg0) + 0x14) == 0) {
+                    temp_v1 = *(u8 *)((char *)(arg0) + 0x14); /* agent-g run 268: the switch-6 selector variable (target holds o->0x14 in t0 from here to switch 6): 98.05 -> 98.15 */
+                    if (temp_v1 == 0) {
                         var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
                         if (var_v0_3 == 0) {
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
