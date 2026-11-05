@@ -64,7 +64,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         return;
     }
     iz = (pos.z + 1.0f) * 16384.0f + F4B(self, 0xC8, f32);
-    if (1) {} if (1) {} /* agent-g run 262 (kit CCC random code-free test search): with the iz / r tests below, 97.03 -> 97.39 */
+    if (1) {} if (1) {} /* agent-g run 262 (kit CCC random code-free test search): 97.03 -> 97.39 (agent-c run 288: the paired iz / r tests below dropped, byte-identical -- any two of the four levers are redundant) */
     if (F4B(self, 0xC4, int) != 0) {
         s = (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
         sx = F4B(self, 0xB0, f32) * s;
@@ -82,7 +82,6 @@ extern "C" void gl_func_0004BAF4(char *self) {
     y = pos.y;
     w = spr->w; /* agent-g run 233: the folded `+ 0 * y` dropped (x / y back in a0 / a1 after the e change) */
     h = spr->h;
-    if (iz != iz) {}
     /* agent-g run 233 (kit CCXLIV): each volatile half-extent read assigned to ONE local e -- the target's four
      * reloads share one coloured register (a3), and the centre 0xC0 now loads before 0xB8 like the target */
     /* agent-g run 266: the half-extent reads go into d (int -> char * -> int round trip, 32-bit), and d is then
@@ -93,7 +92,6 @@ extern "C" void gl_func_0004BAF4(char *self) {
     }
     ctx = F4B(GS4B, 0x158, Ctx4B *); /* agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
     d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
-    if (r) {}
     g = PKT4B(ctx);
     g->w0 = 0x06000000;
     g->w1 = r;
