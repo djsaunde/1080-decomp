@@ -36,11 +36,13 @@ void Obj::reflect(const Plane &p) {
      * agent-c run 273: the two tests moved to right after the m[2][3] = 0.0f store (and the two `if (1) {}` splits dropped):
      * the test block ends the 0.0f LR before the product block, so 0.0f takes f0 and n.y f14 like the target (99.06 -> 99.48) */
     mtx.ident();
-    mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x);
+    mtx.m[0][0] = i1() - 2.0f * (p.n.x * idv(p.n.x)); /* agent-g run 301: idv() on the RIGHT n.x (one-site operand wrap sweep on the moved-block base): n.y / n.z take the target's f14 / f16, 99.746 -> 99.819 */
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y); /* run 203: operand-order grid (m[0][1], m[2][0], m[2][1]) */
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
+    if (1) {} /* agent-g run 301: BB split before m[1][1] (found as a position grid of the `{ V3 t; }` block, whose empty
+               * constructor call splits the block the same way): p.d / z * d take the target's f18 / f14 (99.638 -> 99.746) */
     mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
