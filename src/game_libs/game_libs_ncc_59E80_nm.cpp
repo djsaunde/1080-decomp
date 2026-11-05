@@ -33,9 +33,14 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     /* agent-c run 293: two packet pointers shared by packet pairs (random pair search over the 19 packets): gs by
      * the 0xBC000404 / 0xBC001C04 ClipRatio words (99.231 -> 99.341), gt by the second 0x06 / the 0xB9 packet
      * (-> 99.396), same length; agent-c run 294: gt dropped (inert once the 0x06 packets went back on dlist()), and
-     * gu shared by the 0xBA000C02 / 0xBC001404 packets (exhaustive pair search on the dlist body): 99.505 -> 99.560 */
+     * gu shared by the 0xBA000C02 / 0xBC001404 packets (exhaustive pair search on the dlist body): 99.505 -> 99.560.
+     * agent-c run 295: uopt colours each packet pointer as a block-granular LR (zdbug:5 `active` sets), so packets
+     * the target gives the SAME register share one pointer variable: gv = the v0 packets (0x602 / 0x1301 / 0xF9 /
+     * 0xC04 / last 0xB7), gu = the a0 packets (0xC02 / 0xB7 / 0xFA / 0x1404), gs = the a1 packets (0xB6 / 0x1402 /
+     * 0x404) plus 0x1C04 (99.560 -> 99.615 -> 99.670), and 0x1402 on nextB() (-> 99.725), same length */
     Gfx *gu;
     Gfx *gs;
+    Gfx *gv;
     PKT(c, 0xBC000006, 0);
     r1 = gl_func_00034458(D_00000000);
     /* agent-c run 293 wrote these two packets in place (98.663 -> 99.231: the 0x402 packet pointer takes t1 and
@@ -46,26 +51,26 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     dlist(c, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
-    PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
+    { gv = c->next(); gv->w0 = 0xBA000602; gv->w1 = 0; } /* agent-c run 208: plain next() (97.86 -> 98.48) */
     { gu = c->next(); gu->w0 = 0xBA000C02; gu->w1 = 0x2000; }
     if (1) {}
-    PKT(c, 0xBA001301, 0x80000);
+    { gv = c->next(); gv->w0 = 0xBA001301; gv->w1 = 0x80000; }
     PKT(c, 0xFCFFFFFF, 0xFFFE793C);
     if (1) {} /* agent-g run 202 (paired bbsplit grid, with the one after 0xB9) */
-    PKT(c, 0xB6000000, -1);
-    PKT(c, 0xB7000000, 0x22204);
-    PKT(c, 0xBA001402, 0);
+    { gs = c->next(); gs->w0 = 0xB6000000; gs->w1 = -1; }
+    { gu = c->next(); gu->w0 = 0xB7000000; gu->w1 = 0x22204; }
+    { gs = c->nextB(); gs->w0 = 0xBA001402; gs->w1 = 0; }
     PKT(c, 0xB9000002, 0);
     if (1) {}
-    PKT(c, 0xF9000000, 0xFF00FA);
-    PKT(c, 0xFA000000, 0xFFFF);
+    { gv = c->next(); gv->w0 = 0xF9000000; gv->w1 = 0xFF00FA; }
+    { gu = c->next(); gu->w0 = 0xFA000000; gu->w1 = 0xFFFF; }
     { gs = c->next(); gs->w0 = 0xBC000404; gs->w1 = 3; }
-    PKTC(c, 0xBC000C04, 3); /* agent-g run 269: nextC() spelling (single-site spelling sweep): 98.48 -> 98.50 */
+    { gv = c->nextC(); gv->w0 = 0xBC000C04; gv->w1 = 3; } /* agent-g run 269: nextC() spelling: 98.48 -> 98.50 */
     { gu = c->next(); gu->w0 = 0xBC001404; gu->w1 = 0xFFFD; }
     { gs = c->next(); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
         gl_func_00034458(c, o->s148->fF0); if (1) {}
-        PKT(c, 0xB7000000, 1);
+        { gv = c->next(); gv->w0 = 0xB7000000; gv->w1 = 1; }
     }
     gl_func_00034458(c);
 }
