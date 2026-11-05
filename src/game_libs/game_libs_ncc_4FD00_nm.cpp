@@ -29,13 +29,16 @@ struct Col {
      * search from a +4 B lead back to the target length): sum()'s first face read through me(this), the two normal
      * reads through me(me(this)) (the first via gn()): 95.506 -> 97.992, same length */
     V3 *gn() { return nrm; }
-    void sum(V3 &o, int f) { SV s; s.set(verts[me(this)->faces[f].vi[0]]); s += verts[faces[f].vi[1]]; s += verts[faces[f].vi[2]]; o.set(s); }
+    /* agent-g run 294: the short accumulator is ONE caller local passed by reference (the target homes both sums' SV
+     * at the same sp+68; per-expansion inline locals got two homes): 97.992 -> 98.088, same length */
+    void sum(V3 &o, int f, SV &s) { s.set(verts[me(this)->faces[f].vi[0]]); s += verts[faces[f].vi[1]]; s += verts[faces[f].vi[2]]; o.set(s); }
     int side(int f1, int f2);
 };
 int Col::side(int f1, int f2) {
     V3 a, b, mid, d1, d2;
-    sum(a, f1);
-    sum(b, f2);
+    SV s;
+    sum(a, f1, s);
+    sum(b, f2, s);
     mid.set(a);
     mid += b;
     mid /= 2.0f;
