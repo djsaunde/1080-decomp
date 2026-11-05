@@ -10054,13 +10054,13 @@ void gl_func_000415A4(O415A4 *self) {
     (D_415A4_g1 = self)->pC = (char *)&D_00000000 + 0x1F5D0;
     D_415A4_g2 = gl_func_00000000(0);
     D_415A4_g3 = gl_func_00000000(0);
-    v = (float *)1030;
     t = &D_415A4_t;
     t->a4 = 2 + 0 * (int)(t->v30); /* agent-g run 210: folded counted use of the v30 address (zero-use sweep): 93.38 -> 94.44 */
     t->a0 = 0;
     t->a10 = 0;
     t->a14 = 0;
     t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
+    v = (float *)1030; /* agent-c run 303: after the a8 / aC line (target `li v0,1030` after `li t0,240`): 99.26 -> 99.42 */
     t->f18 = 100.0f;
     t->f1C = 16000.0f; if (1) {} D_415A4_tA.a28 = (int)v;
     v = (float *)((int)v | 2);
