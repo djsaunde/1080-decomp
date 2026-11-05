@@ -94,7 +94,10 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         p.x = a->x + d.x * t; /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
-        col = self->col; /* agent-c run 287: run 235's `if (1) {}` here and its + n use below dropped (stale, removal sweep flat at 99.07) */
+        unused = (int)self->col; col = self->col; /* agent-c run 287: run 235's `if (1) {}` here and its + n use below dropped (stale, removal sweep flat at 99.07);
+                                                   * the self->col value copied into the unused parameter (kit CCCXLVII (b): fresh web, no home) and folded on
+                                                   * the nx line in col's place (kit CCCXLVIII phantom): col's own LR now ends at its last real use, before
+                                                   * &tris[i], and takes v0 like the target (99.07 -> 99.12) */
         if (col->remap != 0) {
             f = &col->faces[col->remap[i]];
         } else {
@@ -109,7 +112,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         pp = &p.x + 0 * (int)(ib) + 0 * (int)(ia);
         qa = pp[ia]; qb = pp[ib]; if (1) {}
         sg = (&self->tris[i])->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); /* agent-c run 287: the trailing `if (1) {}` dropped (stale); agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
-        nx = (s16 *)&D_00000000 + 0 * (int)(col); /* agent-c run 286: folded col use (zero-use sweep after the vt change, 95.30 -> 99.01) */
+        nx = (s16 *)&D_00000000 + 0 * (unused + unused); /* agent-c run 287: the phantom pair in col's place; agent-c run 286: folded col use (zero-use sweep after the vt change, 95.30 -> 99.01) */
         vt = self->col->verts; /* agent-c run 286: the target loads verts from the self->col web (lw t5,96(s5)), not from col */
         fv = (u16 *)f;
         do {
