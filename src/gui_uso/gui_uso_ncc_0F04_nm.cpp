@@ -66,7 +66,6 @@ struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th;
     Ctx *gc() { return ctx; } /* agent-g run 293: member getter (zero-code; its `this` is one more edg pool temp) */ };
 extern "C" int gl_func_00000000(...);
 extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsigned char *str) {
-    Gfx *gpa, *gpb;
     f32 cx;
     s32 h;
     unsigned char *p;
@@ -77,6 +76,13 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
     s32 u, v;
     f32 cy;
     unsigned char c;
+    /* agent-g run 294: the packet pointers declared AFTER cy / c (their homes then sit below cy, which moves cy / c to the
+     * target's 212 / 211) plus two dead-stored frame words (two more homes below c: frame 256 -> the target's 264):
+     * 99.764 -> 99.808 */
+    Gfx *gpa, *gpb;
+    s32 z1, z2;
+    z1 = 0;
+    z2 = 0;
     h = f->h14;
     /* agent-g run 292: the texture and RDPHALF_2 appends through a nested zero-code accessor me(me(f->ctx))
      * (kit CCLXXXIV per-pkt accessor grid, 81 + 241 combos): 98.588 -> 98.843 standalone */
