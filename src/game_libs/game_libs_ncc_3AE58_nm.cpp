@@ -36,8 +36,10 @@ extern "C" Obj *gl_func_0003AE58(Obj *a0, Mesh *a1) {
             SV *v = &a1->verts[(a1->tbl ? &a1->ents[a1->tbl[i]] : &a1->ents[i])->vi];
             fv[0] = v->x;
             fv[1] = v->y;
-            fv[2] = v->z; if (a0->x2C) {}
-            gl_func_00000000(a0->x2C + off, fv, ((Own *)a0->m)->x54 + off, i);
+            fv[2] = v->z;
+            /* agent-c run 285: the run-272 `if (a0->x2C) {}` BB split replaced by a folded use on the call argument:
+             * the merge's block again holds the call's argument setup (a0-a3 forbidden) -> merge t0 like the target */
+            gl_func_00000000(a0->x2C + off + 0 * (int)(a0->x2C), fv, ((Own *)a0->m)->x54 + off, i);
         }
         gl_func_00000000();
     }
