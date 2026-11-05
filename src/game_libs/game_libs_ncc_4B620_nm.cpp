@@ -37,6 +37,7 @@ struct DL {
     void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; }
 };
 inline void addG(DL *d, unsigned hi, unsigned lo) { if (0) { hi = lo = 0; } Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: the first packet as a free inline, DL first */
+template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
 struct Elem { char pad[0x34]; int m34; char pad38[0x64 - 0x38]; DL *m64; };
 struct AIter;
 struct Arr { Elem **data; int pad4, pad8; int count; Elem *&operator[](int i) { return data[i]; } AIter iter(); };
@@ -90,8 +91,10 @@ Obj::Obj(void *a1) : Base(a1) {
     gl_func_00000000(cc);
     AIter it = arr.iter();
     while (it.next()) {
-        it.cur()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
-        gl_func_00000000(it.cur()->m64, &it.ref()->m34);
+        /* agent-g run 292: the first two element accesses through zero-code accessors (kit CCLXXXIV grid over the
+         * nine it. sites, 163): 99.676 -> 99.693 */
+        me(me(&it))->cur()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
+        gl_func_00000000(it.cur()->m64, &me(&it)->ref()->m34);
         gl_func_00000000(it.cur()->m64, &it.ref()->m34);
         gl_func_00000000(it.cur()->m64, it.cur(), 0);
         g1(it.cur());
