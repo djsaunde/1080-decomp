@@ -14651,7 +14651,8 @@ extern void gl_func_00030AF4_44F18v(); /* void-result alias of gl_func_00044F18 
 extern void gl_func_00030AF4_42364v(); /* void-result alias of gl_func_00042364 (case-9 call, result never read) */
 extern void gl_func_00030AF4_460D0v(); /* void-result alias of gl_func_000460D0 (result never read; an int result defines v0 in the hoist's block) */
 void gl_func_00030AF4(mode, sub, arg2)
-u32 mode;
+s32 mode; /* agent-g run 288: s32 (stored to the s32 gl_state.f0; only == / != tests and the two switches read it):
+           * the switch-1 jump index then takes a fresh ugen temp (target `sll t0,t9,2`) -> 100.0 */
 u32 sub;
 s32 arg2;
 {
@@ -14704,7 +14705,8 @@ s32 arg2;
         break;
     case 2:                             /* body C @0x118 */
         gl_func_00042364(2);
-        gl_cmd_30AF4 = 16 + 0 * prev; /* agent-g run 207: folded counted use (kit CXCIV) */
+        gl_cmd_30AF4 = 16; /* agent-g run 288: plain constant (the run-207 `+ 0 * prev` fold kept 16 inside a uadd,
+                            * a ugen ring temp; plain, it joins the coloured {16} constant LR of cases 5 / 8: target v1) */
         gl_func_emit(CMD_B3);
         flag = 1;
         break;
