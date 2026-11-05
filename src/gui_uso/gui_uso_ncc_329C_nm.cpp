@@ -53,7 +53,8 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     f32 fw, fh;
     s32 t;
     s32 w, h;
-    gSPTexture(me(me(CTX))->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37 */
+    gSPTexture(CTX->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
+                                                      * agent-g run 293: depth 0 here with the joint rect grid below */
     spr = arg0->spr;
     w = spr->w;
     h = spr->h;
@@ -73,6 +74,8 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fw = x1 - x0;
     y = (f32)y0;
     fh = y1 - y0;
-    gSPScisTextureRectangle(CTX->next(), CTX->nC(), me(CTX)->nD() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    /* agent-g run 293: joint accessor-depth x append-method grid over the four appends (200 random of 20736 + local
+     * search): TEXRECT / RDPHALF_1 through nD() at depth 2, RDPHALF_2 through next() at depth 1: 99.371 -> 99.476 */
+    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nD(), me(CTX)->next() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
