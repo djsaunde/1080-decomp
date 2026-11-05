@@ -389,10 +389,17 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
  *     a fuzzy-scored PARAMS_ONLY psweep (after the sp7C store, the a3 reload, the
  *     ca1 store and the B4 word): 86.2 -> 91.2.
  *   - 2026-10-24 agent-g (run 165): superseded for the NM object by the C++ donor
- *     src/gui_uso/gui_uso_ncc_0F04_nm.cpp (inline Ctx::next() appends, 97.15). */
-#ifdef NON_MATCHING
+ *     src/gui_uso/gui_uso_ncc_0F04_nm.cpp (inline Ctx::next() appends, 97.15).
+ *   - 2026-11-05 agent-g (run 294): EXACT via the IDO 7.1 NCC donor
+ *     src/gui_uso/gui_uso_ncc_0F04.cpp (REPLACE_FUNC_BODY, both trees). This
+ *     empty function is the splice host; the cfe reconstruction below is kept
+ *     for reference only (not compiled). */
+void gui_func_00000F04(void) {
+}
+
+#if 0
 extern int gl_func_00000000();
-void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5) {
+void gui_func_00000F04_cfe(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5) {
     float var_f22;
     int s6;
     unsigned char *s7;
@@ -489,8 +496,6 @@ void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, u
         } while (idx < (unsigned int)gl_func_00000000(arg5));
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00000F04);
 #endif
 
 /* Text-width accumulator with glyph-table lookup.

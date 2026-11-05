@@ -3047,6 +3047,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_3B80_DONOR := build/src/gui_uso/gui_uso_ncc_3B80.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3B80_DONOR)
+# 0F04: glyph-string blitter (313/313; agent-g run 294, kit CCCLXVI): inline Ctx appends as the gbi.h pkt
+# arguments, shared packet pointers declared after cy / c, a void alias for the never-read glyph-load result.
+GUI_0F04_DONOR := build/src/gui_uso/gui_uso_ncc_0F04.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000F04=$(GUI_0F04_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0F04_DONOR)
 # 3714 = gui DL emitter (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
 GUI_3714_NM_DONOR := build/src/gui_uso/gui_uso_ncc_3714_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_NM_DONOR)
@@ -3063,10 +3068,6 @@ build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_NM_DONOR)
 GUI_2DE0_NM_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_NM_DONOR)
-# 0F04 = gui string blitter (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
-GUI_0F04_NM_DONOR := build/src/gui_uso/gui_uso_ncc_0F04_nm.cpp.o
-build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000F04=$(GUI_0F04_NM_DONOR)
-build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0F04_NM_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)

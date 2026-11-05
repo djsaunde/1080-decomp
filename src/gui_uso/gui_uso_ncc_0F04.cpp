@@ -1,5 +1,6 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_00000F04 (313 words; this body 315, the
- * same length as the cfe NM body). NM object only; the ROM build keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) EXACT donor for gui_func_00000F04 (313 words, 1252 bytes): spliced over the empty
+ * placeholder in gui_uso.c on both build trees (REPLACE_FUNC_BODY). agent-g run 294: EXACT (kit CCCLXVI).
+ * History (was the NON_MATCHING comparison donor gui_uso_ncc_0F04_nm.cpp):
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): the string blitter rewritten as C++ in the 329C / 2DE0
  * style -- each append is the font context's inline Ctx::next() (n read, n + 1 stored, &buf[n]) passed as
  * the pkt of the stock 2.0I gbi.h gSPTexture / gSPScisTextureRectangle macros. Two source-order facts from
@@ -60,6 +61,7 @@ template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit C
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; }
     Gfx *nextc() { return &dl->buf[dl->n++]; }
+    Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; } /* agent-g run 294: named result (the RDPHALF_2 append) */
     Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Glyph { int u; int v; int w; int adv; int pad; };
 struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th; Glyph *glyphs; Ctx *ctx;
@@ -81,10 +83,9 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
     unsigned char c;
     /* agent-g run 294: the packet pointers declared AFTER cy / c (their homes then sit below cy, which moves cy / c to the
      * target's 212 / 211) plus two dead-stored frame words (two more homes below c: frame 256 -> the target's 264):
-     * 99.764 -> 99.808 */
+     * 99.764 -> 99.808 (the two dead-stored words were later replaced by the named n / r homes of the TEXRECT
+     * nextp() and RDPHALF_2 nR1() appends, below) */
     Gfx *gpa, *gpb;
-    s32 z1;
-    z1 = 0; /* agent-g run 294: one dead-stored frame word (the TEXRECT nextp()'s named n is the other home) */
     h = f->h14;
     /* agent-g run 292: the texture and RDPHALF_2 appends through a nested zero-code accessor me(me(f->ctx))
      * (kit CCLXXXIV per-pkt accessor grid, 81 + 241 combos): 98.588 -> 98.843 standalone */
@@ -107,8 +108,10 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
              * next / nextp / nextc; 200 random of 1728, then a local search): the TEXRECT packet through
              * nextc() at depth 3 and the RDPHALF_2 packet back at depth 0: 98.843 -> 99.681; then the ctx read of the
              * TEXRECT / RDPHALF_2 packets through the gc() member getter (the RDPHALF_2 one via me(f)): -> 99.744 */
-            /* agent-g run 294: with the void load the TEXRECT append through nextp() (joint grid): 99.808 -> 99.904 */
-            gSPScisTextureRectangleS(gpa, gpb, gpa, me(me(me(f->gc())))->nextp(), f->ctx->nextp(), me(f)->gc()->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+            /* agent-g run 294: with the void load the TEXRECT append through nextp() (joint grid): 99.808 -> 99.904;
+             * the RDPHALF_2 append as me(f->gc())->nR1() (receiver grid): -> 99.994, its named r the frame's last
+             * home word, so the run-294 dead-stored frame word goes: EXACT */
+            gSPScisTextureRectangleS(gpa, gpb, gpa, me(me(me(f->gc())))->nextp(), f->ctx->nextp(), me(f->gc())->nR1(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
                 (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
             cx += (f32)f->glyphs[c].adv;
         } else {
