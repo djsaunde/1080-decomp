@@ -76,11 +76,10 @@ extern "C" void gl_func_00037540(Obj *o) {
     v9C.x = s->vA0.x; v9C.y = s->vA0.y; v9C.z = s->vA0.z;
     *pv += v6C;
     call(s, &o->v30, o);
-    f32 L3 = 0.9f;
     v90 = v9C;
     v90 += o->v30;
     v90 += v6C;
-    o->v30.x = o->v30.x * L3;
-    o->v30.z = o->v30.z * L3;
+    o->v30.x = o->v30.x * 0.9f; /* agent-c run 293: the named `f32 L3 = 0.9f` dropped (stale after the pv change; remove-one sweep): 97.728 -> 97.749 */
+    o->v30.z = o->v30.z * 0.9f;
     call(s, &vB4, o);
 }
