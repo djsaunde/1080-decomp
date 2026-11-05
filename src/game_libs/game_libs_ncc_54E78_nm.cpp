@@ -20,6 +20,7 @@ struct V3 { f32 x, y, z;
     f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; } /* run 200: y term first (operand-order grid); agent-g run 231: back to x first (stale after later levers, 98.22 -> 98.66) */
 };
 inline int i1() { return 1; }
+inline f32 sq(f32 v) { return v * v; } /* agent-g run 300: m[1][1]'s square through a zero-code inline (its parameter temp is a variable: the product block's y lands in f12 like the target), 99.529 -> 99.565 */
 struct Plane { V3 n; f32 d; };
 struct M4 { f32 m[4][4]; void ident(); };
 extern "C" char D_00000000[];
@@ -37,7 +38,7 @@ void Obj::reflect(const Plane &p) {
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
-    mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
+    mtx.m[1][1] = i1() - 2.0f * sq(p.n.y);
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
     mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
