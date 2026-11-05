@@ -14648,6 +14648,7 @@ extern char gl_data_30AF4_45010, gl_data_30AF4_45F78;  /* baked arena addresses 
 
 extern void gl_func_emit_30AF4v();
 extern void gl_func_00030AF4_44F18v(); /* void-result alias of gl_func_00044F18 for 30AF4's never-read calls */
+extern void gl_func_00030AF4_42364v(); /* void-result alias of gl_func_00042364 (case-9 call, result never read) */
 void gl_func_00030AF4(mode, sub, arg2)
 u32 mode;
 u32 sub;
@@ -14772,7 +14773,7 @@ s32 arg2;
         {
         w = 35;
         if (D_30AF4_m == 4) {
-            gl_cmd_30AF4 = 13 + 0 * (int)(sub); /* agent-g run 259: folded counted use of the parameter (zero-use sweep): 97.869 -> 98.021 */
+            gl_cmd_30AF4 = 13; /* agent-g run 286: the run-259 `+ 0 * (int)(sub)` fold dropped (it only compensated the case-9 ring; with case 9 fixed the 13 sits in a0 like the target) */
             wv = 523 + 0 * (int)(sub); /* agent-g run 259: second pass: 98.021 -> 98.078 */
         } else {
             switch (sub) {
@@ -14826,9 +14827,14 @@ s32 arg2;
         }
         break;
     case 9:                             /* body J @0x4AC */
-        gl_func_00042364(3);
-        *(s32 *)sv = sub;
-        if (sub == 1) {
+        gl_func_00030AF4_42364v(3); /* agent-g run 286: void alias of gl_func_00042364 (result never read): frees v0 for sv */
+        /* agent-g run 286: sv re-set to &gl_state and kept a variable by the code-free test (target `lui v0; addiu v0`
+         * after the call = this def, coloured v0); the store and the == 1 test go through the global (the test reads
+         * back the value just stored = sub), so sub stays a ugen temp like the target's t9 */
+        sv = (u32)&gl_state_30AF4;
+        if (sv) {}
+        gl_state_30AF4.f0 = sub;
+        if (gl_state_30AF4.f0 == 1) {
             gl_cmd_30AF4 = 5;
         } else {
             gl_cmd_30AF4 = 17;
