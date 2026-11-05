@@ -109,7 +109,7 @@ int Mgr::run() {
     gl_func_00000000(S(0x1FF74));
     AIter it = arr.iter();
     while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
-        gl_func_00000000(it.cur());
+        { Elem *e1 = it.cur(); gl_func_00000000(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
         if (m50 == 0) {
             if (it.cur()->test(0x2000)) {
                 gl_func_00000000(it.cur(), m9c);
@@ -135,8 +135,8 @@ int Mgr::run() {
         o = it.cur();
         /* agent-g run 233 (kit CCXLIV): the context pointer is a ugen temp (t6) in the target, not a coloured
          * local: stored to o->ctx6C and re-read through the member (uopt forwards the store), rec.ctx taken before
-         * the rec stores that would kill the forwarding; `g` kept as a home-keeping local (frame offsets) */
-        Ctx *g = 0;
+         * the rec stores that would kill the forwarding; `g` kept as a home-keeping local (frame offsets) --
+         * agent-c run 299: g dropped, the first loop's block-scoped e1 now holds that home word */
         o->ctx6C = *(Ctx **)((char *)&D_493AC_d + 0x214);
         o->n8A = o->ctx6C->count();
         rec.ctx = o->ctx6C;
