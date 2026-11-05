@@ -10062,8 +10062,15 @@ void gl_func_000415A4(O415A4 *self) {
     t->a14 = 0;
     t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
     t->f18 = 100.0f;
-    t->f1C = 16000.0f; if (1) {}
-    D_415A4_tA.a28 = (int)v; if (1) {} v = (float *)((int)v | 6); v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v; /* agent-c run 302: v = 1030 assigned before t (target `li v0,1030` among the record constants), one split after the first store: 97.35 -> 97.70. agent-c run 300: split after the first store (line-split sweep, as1 source-line tie): 97.30 -> 97.35 */
+    t->f1C = 16000.0f; if (1) {} D_415A4_tA.a28 = (int)v;
+    v = (float *)((int)v | 2);
+    v = (float *)((int)v | 6); if (1) {}
+    v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v;
+    D_415A4_t.a2C = 1; /* agent-c run 303: a value-preserving `| 2` (1030 already has bit 1) ahead of the `| 6`: uopt folds
+     * only the FIRST identity OR on the known constant, so the target's `ori 6` / `ori 0x400` chain both survive; the a2C
+     * store through the plain D_415A4_t name reuses the record base v1 like the target (t->a2C went absolute); line
+     * layout from a random line-join / BB-split sweep (200): 97.70 -> 99.26, same length. */
+    /* agent-c run 302: v = 1030 assigned before t (target `li v0,1030` among the record constants), one split after the first store: 97.35 -> 97.70. agent-c run 300: split after the first store (line-split sweep, as1 source-line tie): 97.30 -> 97.35 */
     /* agent-g run 279: the mode word held in v from the start (int -> pointer conversions keep it a separate web),
      * BOTH stores through the absolute tA name (target `lui at; sw t1,40(at)` twice): the first store keeps its own
      * `addiu t1,1030` and the ori chain survives (grid of holder / stores / BB splits): 95.92 -> 97.30, same length.
@@ -10072,7 +10079,6 @@ void gl_func_000415A4(O415A4 *self) {
      * just-stored word back (store-forwarded into a register after constant folding, so the ors stay unfolded like the
      * target's ori chain; target addiu v0,1030 hoisted with the record constants): 95.58 -> 95.92, same length.
      * agent-g run 257 (previous spelling `v = 1030; t->a28 = v; v |= 6; if (1) {} v |= 0x400; tA.a28 = v`): the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in an existing local (v, assigned again below before any other read) instead of a new one keeps the 56-byte frame, and v's web takes v0 like the target's chain: 95.58 with the p reuse at the vcall, same length */
-    t->a2C = 1;
     if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
     v[3] = v[2] = v[1] = v[0] = 0.0f;
     gl_func_00000000((char *)&D_00000000 + 0x1F5D4, 0);
