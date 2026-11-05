@@ -47,7 +47,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     V3 end = start + d * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
     start *= KV; if (1) {}
     V3 e(KV.x * end.x, end.y * KV.y, end.z * KV.z);
-    char *p = *(char **)&D_00000000E + 0 * (int)(cam); /* agent-c run 209: folded counted use of cam */
+    char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
     }
