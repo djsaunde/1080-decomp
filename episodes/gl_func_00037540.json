@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00037540",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-05T16:02:00.142929+00:00",
+  "end_time": "2026-11-05T16:02:00.142950+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-05T16:02:00.142945+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 97.770 NM donor (agent-c run 298, kit CCCLXX). The target re-reads all three v9C words after storing them (never store-forwarded) while keeping v6C / the copy temp in f6 / f8 / f10, and its plain stores stay freely scheduled. v9C becomes a union of a plain P3 and a volatile view VW (layout-compatible common initial sequence): the += reads each component through the volatile view and writes the plain one. That reproduces the block, lets the run-288 if (1) {} split and the run-293 *pv route go, operator= / += re-gridded to x, y, z, and an unused pad9C home keeps the frame word pv held (192). Spliced over a placeholder on both build paths; blank jal words via gl_func_00000000, the three literals through the renamed .rodata reloc pinned as gl_func_00037540_rodata = 0x19F8.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 191,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00037540 (0x2FC / 191 words), REPLACE_FUNC_BODY-spliced over the\n * placeholder in game_libs_post0b.c on both build paths (agent-c run 200 lift, agent-c run 298 exact).\n * Sibling of the exact 37348 donor: s = o->s homed (`if (0) gl(&s)`), every s access through a kept Node * inline\n * parameter, block-scoped ctor-built push vector, volatile flag word through Inp::fl(). The saved v60 is read in a\n * block through a kept-parameter id() (one s load); vB4 = set() then `*=`; v6C is a by-value copy of vB4 (the word\n * copy into the sp+28 parameter temp, then x, y, z), v90 a by-value copy of v9C.\n * agent-c run 298 (kit CCCLXX): v9C is a union of a plain P3 and a VOLATILE view VW (layout-compatible, so reading\n * the volatile view inspects the stored P3's common initial sequence). The `+=` reads each component through the\n * volatile view and writes the plain one: the target re-reads all three v9C words after their stores (never\n * forwarded) while keeping v6C / the copy temp in f6 / f8 / f10, and the plain stores stay freely scheduled\n * (`lwc1 f6,160(sp)` above `swc1 f4,156(sp)`). With it the run-288 `if (1) {}` and the run-293 `*pv` route are\n * gone; operator= / `+=` re-gridded to x, y, z; the frame word pv held is kept by an unused `pad9C` home.\n * 97.770 -> 100. The three pool words are source literals (bootup.uso RoData 0x19F8 / 0x19FC / 0x1A00 = 0.06f,\n * 0.65f, 0.9f; agent-g run 289 literal audit): the donor's .rodata reloc is renamed by the splice to\n * gl_func_00037540_rodata and pinned to 0x19F8 in undefined_syms_auto.txt (the USO already ships the words).\n * The three calls are blank USO jal words: gl_func_00000000. */\ntypedef float f32;\nstruct P3 { f32 x, y, z; };\nstruct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }\n    void operator=(P3 v) { x = v.x; y = v.y; z = v.z; }\n    void copy(V3 v) { x = v.x; y = v.y; z = v.z; }\n    void operator*=(f32 k) { x *= k; y *= k; z *= k; }\n    void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }\n    void operator+=(const V3 &o) { x = x + o.x; y = y + o.y; z = z + o.z; }\n};\nstruct VW { volatile f32 x, y, z; };\nunion VU { P3 v; VW w; };\nstruct Node { char pad[0x30]; char m30[0x20]; V3 v50; char pad5C[4]; V3 v60; char pad6C[0xA0 - 0x6C]; V3 vA0; };\nstruct Inp { f32 x, y; int pad[2]; volatile int flags; int fl() { return flags; } };\nstruct Obj { char pad[0x14]; Node *s; char pad18[0x2C - 0x18]; Inp *in; V3 v30; f32 k3C; };\nextern \"C\" void gl_func_00000000(...);\ninline Node *id(Node *n) { if (0) { n = 0; } return n; }\ninline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }\ninline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }\ninline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }\ninline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }\nextern \"C\" void gl_func_00037540(Obj *o) {\n    /* declaration order = the target's homes (agent-g runs 206 / 249 / 288): vB4 first, hz 176 / hy 172, hx at the\n     * 168 spill word, v9C / v90 at 156 / 144, the unused p1 / p2 frame pads, v6C 108, then b, a, s 96, ab */\n    V3 vB4;\n    f32 hz;\n    f32 hy;\n    f32 hx;\n    VU u9C;\n    V3 v90;\n    V3 p1, p2;\n    V3 v6C;\n    f32 b;\n    f32 a;\n    Node *s;\n    f32 ab;\n    s = o->s;\n    if (0) { gl_func_00000000(&s); }\n    int pad9C = 0;\n    a = o->in->y * o->k3C;\n    if (a < 0.0f) ab = -a; else ab = a;\n    if (ab < 2.0f) a = 0.0f;\n    b = o->in->x * 0.06f;\n    if (b < 0.0f) ab = -b; else ab = b;\n    if (ab < 0.65f) b = 0.0f;\n    { Node *n = id(s); hx = n->v60.x; hy = n->v60.y; hz = n->v60.z; n->v60.x = 0.0f; }\n    sy(s, 0.0f); sz(s, 0.0f);\n    { V3 v1(0.0f, -b, 0.0f); call(s, &v1, o); }\n    vB4.set(s->v50.x, s->v50.y, s->v50.z);\n    vB4 *= a;\n    sx(s, hx); sy(s, hy); sz(s, hz);\n    o->v30.y = 0.0f;\n    if (o->in->fl() & 4) o->v30.y = 10.0f;\n    if (o->in->fl() & 8) o->v30.y = -10.0f;\n    v6C.copy(vB4);\n    u9C.v.x = s->vA0.x; u9C.v.y = s->vA0.y; u9C.v.z = s->vA0.z;\n    u9C.v.x = u9C.w.x + v6C.x; u9C.v.y = u9C.w.y + v6C.y; u9C.v.z = u9C.w.z + v6C.z;\n    call(s, &o->v30, o);\n    v90 = u9C.v;\n    v90 += o->v30;\n    v90 += v6C;\n    o->v30.x = o->v30.x * 0.9f;\n    o->v30.z = o->v30.z * 0.9f;\n    call(s, &vB4, o);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_37540.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "objdiff 100 vs expected/src/game_libs/game_libs_post0b.c.o; ROM byte-identical; verify-blocks 6/6"
+  }
+}

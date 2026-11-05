@@ -2844,7 +2844,11 @@ void gl_func_00037540(char *o) {
     gl_func_00034458(r + 0x30, &g.vB4, o);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00037540);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_37540.cpp (agent-c run 200 lift,
+ * agent-c run 298 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+void gl_func_00037540(char *o) {
+}
 #endif
 
 /* gl_func_0003783C: builds Vec3 (0, a0->f2C, 0) and calls the placeholder

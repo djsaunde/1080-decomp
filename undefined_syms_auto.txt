@@ -3122,6 +3122,8 @@ gl_func_00000000_rgim = 0x00000000;  /* __osResetGlobalIntMask (blank jal) */
 gl_func_00000000_sgim = 0x00000000;  /* __osSetGlobalIntMask (blank jal) */
 gl_func_00000000_yield = 0x00000000;  /* osYieldThread (blank jal) */
 gl_func_0006DD14_rodata = 0x000023B0;  /* switch(hdr.type) jumptable: USO ships it in its data segment at +0x23B0; donor-local .rodata reloc renamed by replace-function-body.py (table content already in ROM data) */
+/* gl_func_00037540 NCC donor: its .rodata literals 0.06f / 0.65f / 0.9f (renamed by the splice) -> the USO RoData words at +0x19F8 / +0x19FC / +0x1A00 */
+gl_func_00037540_rodata = 0x000019F8;
 /* 6F8A4 = osEPiRawStartDma donor (2026-07-30), IDO 5.3 -O1. */
 D_00000000_curhdl = 0x00000000;  /* __osCurrentHandle[2] (runtime reloc table) */
 gl_func_00000000_vtop = 0x00000000;  /* osVirtualToPhysical (blank jal) */
