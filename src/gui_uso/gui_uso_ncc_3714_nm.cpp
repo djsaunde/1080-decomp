@@ -62,7 +62,7 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
       _g->words.w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(0, 16, 8) | _SHIFTL(0, 11, 3) | _SHIFTL(0, 8, 3) | _SHIFTL(1, 0, 8)); _g->words.w1 = (_SHIFTL(0x8000, 16, 16) | _SHIFTL(0x8000, 0, 16)); }
     spr = arg0->spr;
     h = spr->h + 0 * (int)(spr->w); /* agent-g run 210: folded counted use (zero-use sweep): 96.51 -> 97.27 */
-    gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0); if (arg3) {} if (1) {} /* agent-c run 263: code-free test + BB split after the loader call (kit CCC random search): 98.25 -> 98.33; run 268 re-tune: `if (arg3) {}` */
+    gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0); /* agent-c run 287: the `if (arg3) {} if (1) {}` pair after this call dropped (stale: removal sweep, instruction stream identical at 99.00); agent-c run 263: code-free test + BB split after the loader call (kit CCC random search): 98.25 -> 98.33; run 268 re-tune: `if (arg3) {}` */
     w = arg4; /* run 268 re-tune: the agent-g run 210 folded use dropped */
     x = (f32)arg1 + (-((f32)w / 2) * arg5);
     fw = w * arg5;
