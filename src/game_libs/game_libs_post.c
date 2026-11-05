@@ -14647,6 +14647,7 @@ extern char gl_data_30AF4_45010, gl_data_30AF4_45F78;  /* baked arena addresses 
 #define CMD_B3 (((u8 *)&gl_cmd_30AF4)[3])
 
 extern void gl_func_emit_30AF4v();
+extern void gl_func_00030AF4_44F18v(); /* void-result alias of gl_func_00044F18 for 30AF4's never-read calls */
 void gl_func_00030AF4(mode, sub, arg2)
 u32 mode;
 u32 sub;
@@ -14859,7 +14860,7 @@ s32 arg2;
     }
 
     if (D_30AF4_t != 5) {
-        gl_func_00044F18(0);
+        gl_func_00030AF4_44F18v(0); /* agent-g run 285: void alias of gl_func_00044F18 (result never read) */
     } else {
         *(f32 *)&gl_state_30AF4.f14 = D_30AF4_flt;
         gl_func_emit(0, 100, gl_state_30AF4.f4);
@@ -14872,35 +14873,38 @@ s32 arg2;
             break;
         }
         if (D_30AF4_w == 1) {
-            gl_func_00044F18(1);
+            gl_func_00030AF4_44F18v(1);
         } else if (D_30AF4_w == 0) { /* agent-g run 205 decode: the == 1 arm branches past this test (`b +0x6a0` after the reload) */
-            gl_func_00044F18(2);
+            gl_func_00030AF4_44F18v(2);
         }
         if (D_30AF4_x == 1 || D_30AF4_x == 3) {
+            /* agent-g run 285 (kit CCCXLVII lever a): the eight switch-3 emits never read their
+             * result, so they call through the void alias gl_func_emit_30AF4v (an int result
+             * defines v0 inside the D_30AF4_w range); with the void 44F18 sites: 98.078 -> 98.485 */
             switch (D_30AF4_w) {                /* switch 3 @0x6BC: sltiu 8, jtbl +0x18E0 */
             case 0:
-                gl_func_emit(0x1F);
+                gl_func_emit_30AF4v(0x1F);
                 break;
             case 1:
-                gl_func_emit(0x1B);
+                gl_func_emit_30AF4v(0x1B);
                 break;
             case 2:
-                gl_func_emit(0x1D);
+                gl_func_emit_30AF4v(0x1D);
                 break;
             case 3:
-                gl_func_emit(0x19);
+                gl_func_emit_30AF4v(0x19);
                 break;
             case 4:
-                gl_func_emit(0x1E);
+                gl_func_emit_30AF4v(0x1E);
                 break;
             case 5:
-                gl_func_emit(0x1C);
+                gl_func_emit_30AF4v(0x1C);
                 break;
             case 6:
-                gl_func_emit(0x1A);
+                gl_func_emit_30AF4v(0x1A);
                 break;
             case 7:
-                gl_func_emit(0x18);
+                gl_func_emit_30AF4v(0x18);
                 break;
             }
         }
