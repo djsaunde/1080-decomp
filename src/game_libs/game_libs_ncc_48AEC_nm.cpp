@@ -105,7 +105,7 @@ void Obj::draw() {
         }
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt);
-        gctx = GS->ctx;
+        gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
         gctx->push(mt, cmd);
 #undef mt
     } else {
