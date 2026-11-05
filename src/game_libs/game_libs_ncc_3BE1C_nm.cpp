@@ -145,9 +145,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
 #define qb q[b]
 #define sg ((f32)t->sgn)
 #define vt (col->verts)
-                nx = D_3BE1C_c;
-                fv = (u16 *)f;
-                do {
+                nx = D_3BE1C_c; fv = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie: the q[b] lwc1 before nx's addiu %lo, as the target): 99.27 -> 99.78 */
                     v0 = vt[fv[1]];
                     v1 = vt[f->vi[*nx]];
                     nx++;
