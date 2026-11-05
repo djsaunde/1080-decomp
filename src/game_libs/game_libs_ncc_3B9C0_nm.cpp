@@ -46,7 +46,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     V3B9 p;
     s32 ib;
     f32 qa;
-    f32 nz; /* agent-g run 248 (frame scan): function scope = one more edg home word between p and d -> d at sp+160 like the target (95.14 -> 95.19) */
+    f32 num; /* agent-c run 286: the t numerator (was nz, agent-g run 248: function scope = one more edg home word between p and d -> d at sp+160 like the target, 95.14 -> 95.19) */
     V3B9 d;
     f32 qb;
     f32 sg;
@@ -86,8 +86,10 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             continue;
         }
         ok = 1; /* agent-c run 180 (lever-sweep bbsplit) */
-        nz = n->z; /* agent-c run 235: n->z named for the t sum (fs reg like the target: fs2 save, 94.27 -> 94.90, 1096 -> 1104 of 1116) */
-        t = -(a->x * n->x + a->y * n->y + a->z * nz - self->tris[i].d) / dn;
+        /* agent-c run 286: the target keeps the numerator before the negation in its own LR (sub.s f2 / neg.s / div.s);
+         * a named num with n->z read inline (run 235's named nz dropped: its copy-propagated variable was a phantom
+         * float LR across the loop that kept the 0.0f constant off f14) re-aligns the t / p block: 97.13 -> 98.94 */
+        num = a->x * n->x + a->y * n->y + a->z * n->z - self->tris[i].d; t = -num / dn;
         p.x = a->x + d.x * t; /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
@@ -118,7 +120,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib];
             if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
-                ok = 0 + 0 * (int)(i) + 0 * (int)(nz) + 0 * ((int)(f) + (int)(f)); /* agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
+                ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)); /* agent-c run 286: the run-285 nz use dropped with nz; agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
             }
         } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
         if (ok + 0 * (int)(vt)) { /* agent-g run 258: folded counted use of vt (zero-use re-sweep): 95.19 -> 95.24 */
