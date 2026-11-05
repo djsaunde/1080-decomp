@@ -109,7 +109,7 @@ void Obj::draw() {
         gctx->push(mt, cmd);
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx; func_00000000(A, c2 = gctx->mtx()); me(me(gctx))->load(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29 */
+        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = gctx->mtx()); me(me(gctx))->load(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
