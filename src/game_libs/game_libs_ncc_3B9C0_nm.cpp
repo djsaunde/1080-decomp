@@ -88,8 +88,9 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         ok = 1; /* agent-c run 180 (lever-sweep bbsplit) */
         /* agent-c run 286: the target keeps the numerator before the negation in its own LR (sub.s f2 / neg.s / div.s);
          * a named num with n->z read inline (run 235's named nz dropped: its copy-propagated variable was a phantom
-         * float LR across the loop that kept the 0.0f constant off f14) re-aligns the t / p block: 97.13 -> 98.94 */
-        num = a->x * n->x + a->y * n->y + a->z * n->z - self->tris[i].d; t = -num / dn;
+         * float LR across the loop that kept the 0.0f constant off f14) re-aligns the t / p block: 97.13 -> 98.94;
+         * the d subtraction outside num: frame 240 -> 232 (target), 98.94 -> 99.00 */
+        num = a->x * n->x + a->y * n->y + a->z * n->z; t = -(num - self->tris[i].d) / dn;
         p.x = a->x + d.x * t; /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
