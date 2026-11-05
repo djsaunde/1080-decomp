@@ -125,13 +125,14 @@ int Mgr::run() {
     if (G1C4(D_493AC_a) & 8) {
         pad1 = (int)this; if (1) { pad1 += 0x30; } *(int *)pad1 |= 0x80; /* agent-g run 221: pointer mutation behind if (1) = the target's addiu v0,s6,48 + lw/sw 0(v0) */
         buf = (u8 *)gl_func_00000000(D_00000000, n44);
-        for (u32 i2 = 0; i2 < n44; i2++) {
-            buf[i2] = 0;
+        for (pad2 = 0; pad2 < n44; pad2++) { /* agent-c run 302: the clear loop counts in the (zeroed, otherwise dead) pad2 word, not a block-scoped u32 i2: i2's edg temp word sat between the two iter() return temps (second one at sp+132, target sp+136); with it gone and the `Ctx *g = 0;` home-keeping local back in the second loop every sp offset is the target's (pad2 < n44 compares unsigned like i2 did): 99.6467 -> 99.6488, same length */
+            buf[pad2] = 0;
         }
     }
     Rec rec;
     it = arr.iter();
     while (it.next()) { /* run 206 had a folded + 0 here (kit CLXXIX); run 247 moved it to the first loop */
+        Ctx *g = 0;
         o = it.cur();
         /* agent-g run 233 (kit CCXLIV): the context pointer is a ugen temp (t6) in the target, not a coloured
          * local: stored to o->ctx6C and re-read through the member (uopt forwards the store), rec.ctx taken before
