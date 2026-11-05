@@ -50,7 +50,8 @@ extern "C" void gl_func_00037540(Obj *o) {
     f32 ab;
     s = o->s;
     if (0) { gl_func_00034458(&s); }
-    a = o->in->y * o->k3C;
+    V3 *pv = &v9C; /* agent-c run 293: v9C's += through a pointer (`*pv += v6C`): 97.634 -> 97.728, same length; the target still re-reads v9C after its stores (open) */
+    a =o->in->y * o->k3C;
     if (a < 0.0f) ab = -a; else ab = a;
     if (ab < 2.0f) a = 0.0f;
     b = o->in->x * 0.06f;
@@ -73,7 +74,7 @@ extern "C" void gl_func_00037540(Obj *o) {
     v6C = vB4;
     if (1) {} /* v9C's old declaration point (agent-g run 288) */
     v9C.x = s->vA0.x; v9C.y = s->vA0.y; v9C.z = s->vA0.z;
-    v9C += v6C;
+    *pv += v6C;
     call(s, &o->v30, o);
     f32 L3 = 0.9f;
     v90 = v9C;
