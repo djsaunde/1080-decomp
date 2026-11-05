@@ -14759,10 +14759,10 @@ s32 arg2;
         }
         if (D_30AF4_l == 14) {
             gl_cmd_30AF4 = 14;
-        } else if (D_30AF4_l != 16) {
-            gl_cmd_30AF4 = 13;
-        } else {
+        } else if (D_30AF4_l == 16) { /* agent-g run 285: == 16 arm first (target `bnel v1,v0` to the 13 store, fall-through 16; was `!= 16` -> beql): 98.648 -> 98.790 */
             gl_cmd_30AF4 = 16;
+        } else {
+            gl_cmd_30AF4 = 13;
         }
         gl_func_emit(CMD_B3);
         break;
