@@ -785,7 +785,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     MgrE68 *m;
     VtxE68 *vp;
     s32 _n;
-    volatile int padq[3]; /* run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target) */
+    int padq[3]; /* agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target) */
 
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
@@ -864,9 +864,9 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     if ((vs) + 0 * (int)(vs)) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21) */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
-                ult += 32 + 0 * (int)(ult) + 0 * (int)(uls); /* agent-g run 291: folded counted uses of ult and uls
-                                                                * (both set on every path here; zero-use sweep on
-                                                                * the CULL form, 98.564 -> 98.630) */
+                ult += 32 + 0 * (int)(ult); /* agent-g run 291: folded counted use of ult (set on every path here;
+                                             * zero-use sweep on the CULL form, 98.564 -> 98.630); agent-g run 293:
+                                             * the run-291 uls fold dropped (byte-identical) */
             }
         }
         m = E68_MGR;

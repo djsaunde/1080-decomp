@@ -68,6 +68,7 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     fw = w * arg5;
     y = (f32)arg2 + (-((f32)h / 2) * arg6);
     fh = h * arg6;
-    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nR1(), me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    /* agent-g run 293: the RDPHALF_1 packet back on nD() (the run-255 nR1 is inert: byte-identical) */
+    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nD(), me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }

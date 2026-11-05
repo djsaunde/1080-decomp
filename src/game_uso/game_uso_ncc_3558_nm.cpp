@@ -46,7 +46,8 @@ struct Vec3 {
     float len2x() const { float r = x * x + y * y + z * z; return r; } /* agent-c run 248: e's length in x, y, z order (w keeps len2): 93.484 -> 93.492 */
     float len2() const { return y * y + x * x + z * z; } /* agent-g run 259: the named result moved out to the caller's function-scope l (see below); agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
 };
-inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.z = u; r.y = q; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62) */
+inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.y = q; r.z = u; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62);
+                                                                         * agent-g run 293: back to x, y, z (mk() is no longer called; byte-identical) */
 struct M4 {
     float m[4][4];
     void getPos(Vec3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; } /* agent-c run 248: the BB split moved out to before the vb getPos call */
