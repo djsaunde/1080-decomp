@@ -5187,6 +5187,7 @@ D_2C7A4_2074 = 0x00002074;
 D_2C7A4_2154 = 0x00002154;
 D_30AF4_flt = 0x000018AC;
 D_33094_k = 0x00000128;
+gl_33094_emit = 0x00000000;  /* gl_func_00033094's emit call: the target's baked `jal 0` word (agent-g run 289) */
 D_E354_1C310 = 0x0001C310;
 D_E354_1C330 = 0x0001C330;
 D_E354_1C3B0 = 0x0001C3B0;

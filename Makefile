@@ -2476,10 +2476,11 @@ GAMELIBS_29CCC_DONOR := build/src/game_libs/game_libs_o2_29CCC.c.o
 # (origin/main carries game_libs_func_00029CCC on the same unit).
 GAMELIBS_2E290_DONOR := build/src/game_libs/game_libs_o2_2E290.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY := game_libs_func_00029CCC=$(GAMELIBS_29CCC_DONOR)
-# 33094 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 70.95). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_33094_NM_DONOR := build/src/game_libs/game_libs_ncc_33094_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00033094=$(GAMELIBS_33094_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_33094_NM_DONOR)
+# 33094 = camera look-at update as real C++ on the V3 kit (agent-c run 202; agent-g run 289: named `f32 ten` scale
+# factor + += order x y z). EXACT NCC donor over an empty placeholder (agent-g run 289).
+GAMELIBS_33094_DONOR := build/src/game_libs/game_libs_ncc_33094.cpp.o
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00033094=$(GAMELIBS_33094_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_33094_DONOR)
 # 307A8 = EXACT NCC (C++) donor: fade timer tick with the 308AC file-local static block for the two shared-`lui at` pairs
 # (agent-c run 177: 260 bytes = target) and the hold-count re-read spelled `(&D_307A8_i.fC)[0]` so uopt keeps no
 # candidate and ugen reuses the t8 load (agent-g run 202). Its .bss reloc is renamed game_libs_func_000307A8_bss (pinned to 0).

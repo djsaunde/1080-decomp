@@ -15795,57 +15795,13 @@ end:
 //   child-deref — byte-match needs USO mnemonic disasm + object's
 //   Vec3/child layout typed. Real-C STRUCTURAL body below per the
 //   analysis. Byte-match deferred. Name pre-checked: no extern reuse.
-#ifdef NON_MATCHING
-/* NM decode 2026-10-17 agent-c: eye = o->pos (+0xA0); target = parent->pos
- * (o->0xF4) or o->pos + o->dir(+0x104) * 10; both scaled by a module Vec3;
- * emit (o + 0xB4, eye, target, o->up(+0x140)), then two optional calls keyed
- * by o->0x130. */
-extern void gl_33094_emit(void *, float, float, float, float, float, float, float, float, float);
-extern char D_33094_k[];
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_33094.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder in both build trees (agent-g run 289). The structural notes above predate the decode: the routine is
+ * the camera look-at update (eye = o->pos; target = parent pos or o->pos + o->v104 * 10; both scaled by the
+ * module vector D_33094_k at 0x128; emitted with the up vector o->v140). */
 int gl_func_00033094(char *o) {
-    Vec3 a;
-    Vec3 b;
-    Vec3 t;
-    Vec3 *k;
-    char *p;
-
-    if (1) { Vec3 *q = &a; q = &b; }
-    a.x = *(float *)(o + 0xA0);
-    a.y = *(float *)(o + 0xA4);
-    a.z = *(float *)(o + 0xA8);
-    p = *(char **)(o + 0xF4);
-    if (p != 0) {
-        b.x = *(float *)(p + 0xA0);
-        b.y = *(float *)(p + 0xA4);
-        b.z = *(float *)(p + 0xA8);
-    } else {
-        t = *(Vec3 *)(o + 0x104);
-        b.x = t.x;
-        b.y = t.y;
-        b.x = b.x * 10.0f;
-        b.y = b.y * 10.0f;
-        b.x = b.x + a.x;
-        b.y = b.y + a.y;
-        b.z = t.z * 10.0f + a.z;
-    }
-    k = (Vec3 *)D_33094_k; /* agent-c run 183: pinned at 0x128 itself (was + 296: offset counted twice) */
-    a.x = a.x * k->x;
-    a.y = a.y * k->y;
-    a.z = a.z * k->z;
-    b.x = b.x * k->x;
-    b.y = b.y * k->y;
-    b.z = b.z * k->z;
-    gl_33094_emit(o + 0xB4, a.x, a.y, a.z, b.x, b.y, b.z,
-                  *(float *)(o + 0x140), *(float *)(o + 0x144), *(float *)(o + 0x148));
-    if (*(int *)(o + 0x130) != 0) {
-        gl_func_00000000(o + 0xB4, 1, *(int *)(o + 0x138), 0);
-        gl_func_00000000(o + 0xB4, 0, *(int *)(o + 0x134), 0);
-    }
-    return 1;
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00033094);
-#endif
 
 // gl_func_00033228 — STRUCTURAL PASS (0x8C / 35 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
