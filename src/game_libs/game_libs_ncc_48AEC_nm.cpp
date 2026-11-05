@@ -39,14 +39,14 @@ struct Ctx {
     MtxHead *mh;
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void prim(u32 hi, u32 lo) { Gfx *g = &dl->buf[dl->count++]; g->w1 = lo; g->w0 = hi; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260) */
+    void prim(u32 hi, u32 lo) { Gfx *g = next(); g->w1 = lo; g->w0 = hi; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
     void dlcall(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
     Mtx *mtx() { int n = mh->count++; return &mh->buf[n]; } /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
     /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
      * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
-    Gfx *nextQ() { DLHead *dd = dl; int n = dl->count++; return &dl->buf[n]; }
+    Gfx *nextQ() { DLHead *dd = dl; return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
     Mtx *mtxQ() { MtxHead *dd = mh; int n = mh->count++; return &mh->buf[n]; }
     void pushQ(void *src, Mtx *&c) { func_00000000(src, c = mtxQ()); load(c); }
@@ -83,13 +83,14 @@ struct Obj {
     void draw();
 };
 void Obj::draw() {
+    /* agent-g run 294: -g3 homes vs the target's offsets put gctx at the frame top (vfp-4) with A / B below it; the
+     * 120-order grid with gctx first: mtx declared last, 97.715 -> 97.719 (frame still 0x170, target 0x160) */
+    Ctx *gctx;
     f32 (*A)[4];
     f32 (*B)[4];
-    Ctx *gctx; /* agent-c run 280 (120-order grid of gctx / A / B / mtx / cmd): after A / B its home is the target's sp+348
-                * again on the run-266 0x168 frame (was 356), 97.476 -> 97.484 */
-    f32 mtx[4][4];
     int i, j, k;
     Mtx *cmd;
+    f32 mtx[4][4];
 
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
     if (flags30 & 0x80) {
