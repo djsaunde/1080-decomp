@@ -39,7 +39,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
      * agent-g run 288's split after the 0x402 packet and run 276's `if (c->dl) {}` are inert on this body (dropped) */
     PKTC(c, 0x06000000, r1);
     r2 = gl_func_00034458(D_00000000);
-    { gt = c->nextD(); gt->w0 = 0x06000000; gt->w1 = r2; }
+    { gt = c->nextD(); gt->w0 = 0x06000000; gt->w1 = r2 + 0 * (int)(gt); } /* agent-c run 293: folded counted use of gt (zero-use sweep --exprs on the shared-pointer body): 99.396 -> 99.505 */
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
     PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
