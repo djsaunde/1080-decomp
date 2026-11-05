@@ -25,7 +25,7 @@ typedef float f32; typedef short s16; typedef unsigned short u16; typedef signed
 struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
 struct Face { u16 mat; u16 vi[3]; };
 struct V3 { f32 x, y, z; };
-struct Col { char pad[0x44]; unsigned int ntri; char pad48[4]; s16 *remap; char pad50[4]; V3 *nrm; char pad58[8]; s16 (*verts)[3]; char pad64[4]; Face *faces; };
+struct Col { char pad[0x44]; unsigned int ntri; char pad48[4]; s16 *remap; char pad50[4]; V3 *nrm; char pad58[8]; s16 (*verts)[3]; char pad64[4]; Face *faces; Face *face(int i) { return remap ? &faces[remap[i]] : &faces[i]; } };
 extern "C" { extern s16 D_00000000_3b6a0tbl[3]; }
 struct Obj {
     char pad[0x2C]; TriB *tris; char pad30[0x84 - 0x30]; Col *col;
@@ -65,19 +65,21 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
         int off = 0;
         i = 0;
         do {
+            /* agent-c run 304: the face lookup through the inline Col::face() called on the rvalue `c + off * 0`
+             * (the 3BE1C form): the expansion's `this` temp is the target's `move v0,s8` copy that the faces loads
+             * use (a plain `cc = c` copy always copy-propagates); written FIRST after t (as1 line order: the copy
+             * and the remap test before inside = 1), the tp fold moved from off to t (the tbl address is
+             * rematerialised in the inner-loop preheader like the target's lui / addiu a2), agent-g run 210's
+             * remap fold on a dropped, a / b on one line and the inside store's folds on f / pt (c then takes
+             * s8 as the target): 96.85 -> 97.45, same length */
             t = triAt(off);
-            inside = 1;
+            f = (c + off * 0)->face(i);
             verts = c->verts;
             cc = c;
-            if (cc->remap != 0) {
-                f = &cc->faces[cc->remap[i]];
-            } else {
-                f = &cc->faces[i];
-            }
+            inside = 1;
             dir = t->sgn;
-            a = t->a + 0 * (int)(cc->remap); /* agent-g run 210: third pass: 96.15 -> 96.22 */
-            b = t->b;
-            tp = D_00000000_3b6a0tbl + 0 * (int)(off); /* agent-g run 210: second pass: 96.02 -> 96.15, 796 -> 800 bytes = target */
+            a = t->a; b = t->b;
+            tp = D_00000000_3b6a0tbl + 0 * (int)(t);
             u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
                 w = verts[f->vi[*tp]];
@@ -86,7 +88,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 ex = w[a] - v[a];
                 ey = w[b] - v[b];
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
-                    inside = 0 + 0 * (int)(c) + 0 * (int)(cc) + 0 * (int)(f); /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375; agent-c run 304: + f with the px fold of inside dropped -- f outranks inside (target f = t4 colours before inside, which then takes s2): 96.65 -> 96.85 */
+                    inside = 0 + 0 * (int)(f) + 0 * (int)(pt); /* agent-c run 304 (second step): c / cc folds replaced by pt; earlier: */ /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375; agent-c run 304: + f with the px fold of inside dropped -- f outranks inside (target f = t4 colours before inside, which then takes s2): 96.65 -> 96.85 */
                 }
             } while (inside && (fp++, ++tp != D_00000000_3b6a0tbl + 3));
             if (inside) {
