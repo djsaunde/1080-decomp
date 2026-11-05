@@ -44,6 +44,12 @@ struct Ctx {
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
     Mtx *mtx() { int n = mh->count++; return &mh->buf[n]; } /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
+    /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
+     * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
+    Gfx *nextQ() { DLHead *dd = dl; int n = dl->count++; return &dl->buf[n]; }
+    void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
+    Mtx *mtxQ() { MtxHead *dd = mh; int n = mh->count++; return &mh->buf[n]; }
+    void pushQ(void *src, Mtx *&c) { func_00000000(src, c = mtxQ()); load(c); }
 };
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
@@ -106,7 +112,7 @@ void Obj::draw() {
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt);
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        gctx->push(mt, cmd);
+        me(me(gctx))->pushQ(mt, cmd);
 #undef mt
     } else {
         Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = gctx->mtx()); me(me(gctx))->load(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
@@ -118,7 +124,7 @@ void Obj::draw() {
             AIter it = arr.iter();
             while (it.next()) {
                 if (it.cur()->ctx6C != 0) {
-                    GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
+                    GS->ctx->dlcallQ(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
                 }
             }
         }
