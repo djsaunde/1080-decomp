@@ -14886,7 +14886,10 @@ s32 arg2;
     if (D_30AF4_t != 5) {
         gl_func_00030AF4_44F18v(0); /* agent-g run 285: void alias of gl_func_00044F18 (result never read) */
     } else {
-        *(f32 *)&((GlState30AF4 *)sv)->f14 = D_30AF4_flt;
+        *(f32 *)&((GlState30AF4 *)sv)->f14 = 0.1f; /* agent-g run 288: a literal, not the extern D_30AF4_flt: bootup.uso
+                                                    * RoData 0x18AC (ROM 0xD9FE44 + 0x18AC) = 0x3DCCCCCD = 0.1f sits between
+                                                    * the switch-1 (0x1874) and switch-2 (0x18B0) jump tables = IDO's in-order
+                                                    * literal + jtbl emission */
         gl_func_emit(0, 100, ((GlState30AF4 *)sv)->f4);
         D_30AF4_v = 4;
     }
