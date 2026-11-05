@@ -24,26 +24,30 @@ struct Obj { char pad[0x104]; int f104; char pad108[0x148 - 0x108]; Sub *s148; }
 #define PKTB(c, a, b) { Gfx *_g = (c)->nextB(); _g->w0 = (a); _g->w1 = (b); }
 #define PKTC(c, a, b) { Gfx *_g = (c)->nextC(); _g->w0 = (a); _g->w1 = (b); }
 #define PKTD(c, a, b) { Gfx *_g = (c)->nextD(); _g->w0 = (a); _g->w1 = (b); }
+/* agent-c run 294: the two DisplayList packets back on an inline dlist() (kit CCCLXIII): its parameter temps are one
+ * LR across both packets' blocks, so packet 2's n skips a2 like the target (dl a1 / n a3 in packets 2 and 3); the
+ * code-free `d` read of c->dl before next() keeps the in-place body's 0xFFFD / t1 sharing */
+inline void dlist(Ctx *c, int v) { DLHead *d = c->dl; Gfx *_g = c->next(); _g->w0 = 0x06000000; _g->w1 = v; }
 extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     int r1, r2;
     /* agent-c run 293: two packet pointers shared by packet pairs (random pair search over the 19 packets): gs by
      * the 0xBC000404 / 0xBC001C04 ClipRatio words (99.231 -> 99.341), gt by the second 0x06 / the 0xB9 packet
-     * (-> 99.396), same length */
-    Gfx *gt;
+     * (-> 99.396), same length; agent-c run 294: gt dropped (inert once the 0x06 packets went back on dlist()), and
+     * gu shared by the 0xBA000C02 / 0xBC001404 packets (exhaustive pair search on the dlist body): 99.505 -> 99.560 */
+    Gfx *gu;
     Gfx *gs;
     PKT(c, 0xBC000006, 0);
     r1 = gl_func_00034458(D_00000000);
-    /* agent-c run 293: the two DisplayList packets written in place (nextC() / nextD() spellings) instead of
-     * through the run-164 inline dlist(c, v) -- stale after the later BB splits / spellings (kit CCCXXIX re-test):
-     * the 0x402 packet pointer now takes t1 and 0xFFFD reuses it like the target: 98.663 -> 99.231, same length;
-     * agent-g run 288's split after the 0x402 packet and run 276's `if (c->dl) {}` are inert on this body (dropped) */
-    PKTC(c, 0x06000000, r1);
+    /* agent-c run 293 wrote these two packets in place (98.663 -> 99.231: the 0x402 packet pointer takes t1 and
+     * 0xFFFD reuses it); agent-c run 294: back on dlist() with its code-free `d` read, which keeps that sharing and
+     * gives packets 2 / 3 the target's registers (99.505 kept at this step, then the gu pair below) */
+    dlist(c, r1);
     r2 = gl_func_00034458(D_00000000);
-    { gt = c->nextD(); gt->w0 = 0x06000000; gt->w1 = r2 + 0 * (int)(gt); } /* agent-c run 293: folded counted use of gt (zero-use sweep --exprs on the shared-pointer body): 99.396 -> 99.505 */
+    dlist(c, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
     PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
-    PKT(c, 0xBA000C02, 0x2000);
+    { gu = c->next(); gu->w0 = 0xBA000C02; gu->w1 = 0x2000; }
     if (1) {}
     PKT(c, 0xBA001301, 0x80000);
     PKT(c, 0xFCFFFFFF, 0xFFFE793C);
@@ -51,13 +55,13 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     PKT(c, 0xB6000000, -1);
     PKT(c, 0xB7000000, 0x22204);
     PKT(c, 0xBA001402, 0);
-    { gt = c->next(); gt->w0 = 0xB9000002; gt->w1 = 0; }
+    PKT(c, 0xB9000002, 0);
     if (1) {}
     PKT(c, 0xF9000000, 0xFF00FA);
     PKT(c, 0xFA000000, 0xFFFF);
     { gs = c->next(); gs->w0 = 0xBC000404; gs->w1 = 3; }
     PKTC(c, 0xBC000C04, 3); /* agent-g run 269: nextC() spelling (single-site spelling sweep): 98.48 -> 98.50 */
-    PKT(c, 0xBC001404, 0xFFFD);
+    { gu = c->next(); gu->w0 = 0xBC001404; gu->w1 = 0xFFFD; }
     { gs = c->next(); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
         gl_func_00034458(c, o->s148->fF0); if (1) {}
