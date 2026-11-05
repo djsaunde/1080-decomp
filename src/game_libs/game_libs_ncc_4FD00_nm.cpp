@@ -10,6 +10,7 @@
  * are not hoisted to the entry, and `li v0,0` is scheduled late.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef short s16; typedef unsigned short u16;
+template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
 struct SV { s16 x, y, z;
     void set(const SV &o) { x = o.x; y = o.y; z = o.z; }
     SV &operator+=(const SV &o) { x = x + o.x; y = y + o.y; z = z + o.z; return *this; } };
@@ -24,7 +25,11 @@ struct V3 { f32 x, y, z;
 struct Face { u16 mat; u16 vi[3]; };
 struct Col {
     char pad[0x54]; V3 *nrm; char pad58[8]; SV *verts; char pad64[4]; Face *faces;
-    void sum(V3 &o, int f) { SV s; s.set(verts[faces[f].vi[0]]); s += verts[faces[f].vi[1]]; s += verts[faces[f].vi[2]]; o.set(s); }
+    /* agent-g run 293: a zero-code nrm getter plus me() accessors (kit CCCLXIV getter / accessor grid, then a local
+     * search from a +4 B lead back to the target length): sum()'s first face read through me(this), the two normal
+     * reads through me(me(this)) (the first via gn()): 95.506 -> 97.992, same length */
+    V3 *gn() { return nrm; }
+    void sum(V3 &o, int f) { SV s; s.set(verts[me(this)->faces[f].vi[0]]); s += verts[faces[f].vi[1]]; s += verts[faces[f].vi[2]]; o.set(s); }
     int side(int f1, int f2);
 };
 int Col::side(int f1, int f2) {
@@ -38,8 +43,8 @@ int Col::side(int f1, int f2) {
     d1 -= a;
     d2.set(mid);
     d2 -= b;
-    f32 p1 = d1 * nrm[f1];
-    f32 p2 = d2 * nrm[f2];
+    f32 p1 = d1 * me(me(this))->gn()[f1];
+    f32 p2 = d2 * me(me(this))->nrm[f2];
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
