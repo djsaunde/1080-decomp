@@ -81,12 +81,12 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
                 w = verts[f->vi[*tp]];
-                px = (int)(pt[a] - v[a]) + 0 * (int)(inside); /* agent-g run 210: folded counted use (zero-use sweep): 95.80 -> 96.02, length unchanged */
+                px = (int)(pt[a] - v[a]); /* agent-g run 210's folded `+ 0 * (int)(inside)` dropped by agent-c run 304 (see the f fold below) */
                 py = (int)(pt[b] - v[b]);
                 ex = w[a] - v[a];
                 ey = w[b] - v[b];
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
-                    inside = 0 + 0 * (int)(c) + 0 * (int)(cc); /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375 */
+                    inside = 0 + 0 * (int)(c) + 0 * (int)(cc) + 0 * (int)(f); /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375; agent-c run 304: + f with the px fold of inside dropped -- f outranks inside (target f = t4 colours before inside, which then takes s2): 96.65 -> 96.85 */
                 }
             } while (inside && (fp++, ++tp != D_00000000_3b6a0tbl + 3));
             if (inside) {
