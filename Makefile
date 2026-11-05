@@ -2045,13 +2045,15 @@ $(GAMELIBS_4B2F4_DONOR): src/game_libs/game_libs_ncc_4B2F4.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004B2F4=$(GAMELIBS_4B2F4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B2F4_DONOR)
-# 3AE58 = mesh-vertex table build under NCC (agent-c run 162: cfe 92.91 -> 98.37, loop rotation / frame / length = target). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3AE58_NM_DONOR := build/src/game_libs/game_libs_ncc_3AE58_nm.cpp.o
-$(GAMELIBS_3AE58_NM_DONOR): src/game_libs/game_libs_ncc_3AE58_nm.cpp
+# 3AE58 = mesh-vertex table build under NCC (agent-c run 162: cfe 92.91 -> 98.37, loop rotation / frame / length = target).
+# agent-c run 287: EXACT NCC donor over a placeholder (phantom pk + named dst argument); the blank jal / lui-addiu words
+# bind to the existing gl_func_00000000 = 0 and gl_data_0001EE5C / gl_data_0001EE70 pins (no new symbols).
+GAMELIBS_3AE58_DONOR := build/src/game_libs/game_libs_ncc_3AE58.cpp.o
+$(GAMELIBS_3AE58_DONOR): src/game_libs/game_libs_ncc_3AE58.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003AE58=$(GAMELIBS_3AE58_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3AE58_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003AE58=$(GAMELIBS_3AE58_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3AE58_DONOR)
 # 41D40 = registry dump with the by-value array iterator under NCC (agent-c run 162: cfe 92.99 -> 96.11, length = target; run 164: free iter() -> 99.32; run 174: for-init iterator, 99.17 -> 99.26 objdiff diff). EXACT NCC donor over a placeholder (agent-c run 262: explicit if / do-while with a named-pointer bottom advance). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00041D40_c34458 = 0.
 GAMELIBS_41D40_DONOR := build/src/game_libs/game_libs_ncc_41D40.cpp.o
 $(GAMELIBS_41D40_DONOR): src/game_libs/game_libs_ncc_41D40.cpp

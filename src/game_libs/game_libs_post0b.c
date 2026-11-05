@@ -5356,7 +5356,12 @@ int *gl_func_0003AE58(int *a0, int *a1) {
     return a0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003AE58);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3AE58.cpp (agent-c run 162 lift,
+ * agent-c run 287 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+int *gl_func_0003AE58(int *a0, int *a1) {
+    return a0;
+}
 #endif
 
 extern int gl_func_00000000();

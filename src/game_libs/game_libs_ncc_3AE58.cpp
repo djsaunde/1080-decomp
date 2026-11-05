@@ -1,4 +1,6 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003AE58 (0x17C / 95 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003AE58 (0x17C / 95 words), agent-c run 162 lift, agent-c run 287
+ * exact (phantom pk + named dst argument, see the loop); REPLACE_FUNC_BODY-spliced over a placeholder on both
+ * build paths. History below.
  * Mesh-vertex table build: the cfront `this == 0 -> alloc(0x90)` protocol, two registrations, the count * 12
  * array, then a for loop over the mesh entries (optional short index table) converting each entry's short
  * vertex to a float triple passed by address. The cfe body (92.91) had the loop rotated wrong (beq / beq vs
@@ -24,7 +26,8 @@ struct Obj { char pad[0x2C]; char *x2C; char pad30[0x84 - 0x30]; Mesh *m; };
 extern "C" Obj *gl_func_0003AE58(Obj *a0, Mesh *a1) {
     volatile int p0;
     f32 fv[3];
-    volatile int q0, q1, q2, q3, q4, q5, q6;
+    volatile int q0, q1, q2, q3;
+    int pk; /* agent-c run 287: phantom int LR (two frame words: q4 / q5 / q6 dropped, frame 0x70 kept) */
     if (a0 != 0 || (a0 = (Obj *)gl_func_00000000(0x90)) != 0) {
         gl_func_00000000(a0, &gl_data_0001EE5C);
         gl_func_00000000(&gl_data_0001EE70, 0);
@@ -33,13 +36,19 @@ extern "C" Obj *gl_func_0003AE58(Obj *a0, Mesh *a1) {
         unsigned i;
         int off;
         for (i = 0, off = 0; i < a1->n; i++, off += 12) {
-            SV *v = &a1->verts[(a1->tbl ? &a1->ents[a1->tbl[i]] : &a1->ents[i])->vi];
+            pk = (int)a1->tbl; SV *v = &a1->verts[(a1->tbl ? &a1->ents[a1->tbl[i]] : &a1->ents[i])->vi];
             fv[0] = v->x;
             fv[1] = v->y;
             fv[2] = v->z;
             /* agent-c run 285: the run-272 `if (a0->x2C) {}` BB split replaced by a folded use on the call argument:
              * the merge's block again holds the call's argument setup (a0-a3 forbidden) -> merge t0 like the target */
-            gl_func_00000000(a0->x2C + off + 0 * (int)(a0->x2C), fv, ((Own *)a0->m)->x54 + off, i);
+            /* agent-c run 287: the x2C fold replaced by the kit CCCXLVI phantom pk (set from the tbl load at the top of
+             * every iteration, folded `0 * (pk + pk)` on the call argument: its LR takes v1 across the merge, so the
+             * merge colours t0 while the x2C load stays a ugen temp), and the destination argument named: dst is
+             * evaluated before the call's first argument, so the ugen ring gives m / x54 / x2C t2 / t3 / t4 like the
+             * target (99.79 -> 100) */
+            char *dst = ((Own *)a0->m)->x54 + off;
+            gl_func_00000000(a0->x2C + off + 0 * (pk + pk), fv, dst, i);
         }
         gl_func_00000000();
     }

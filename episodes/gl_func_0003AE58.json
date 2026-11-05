@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_0003AE58",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-05T02:35:20.552831+00:00",
+  "end_time": "2026-11-05T02:35:20.552845+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-05T02:35:20.552841+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.79 NM donor (agent-c run 287). The run-285 folded x2C use made the x2C load a v1 LR so the merge took t0, but the ugen ring was one off. Replacing it with a phantom int pk (pk = (int)a1->tbl at the top of every iteration, folded 0 * (pk + pk) on the call argument) keeps v1 occupied across the merge (t0) while x2C stays a ugen temp; naming the destination argument (char *dst = m->x54 + off before the call) makes ugen evaluate m / x54 before x2C: t2 / t3 / t4 like the target. Two volatile pads dropped for pk's home (frame 0x70). Spliced over a placeholder on both build paths; blank relocs bind to the existing gl_func_00000000 / gl_data_0001EE5C / gl_data_0001EE70 pins.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 95,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003AE58 (0x17C / 95 words), agent-c run 162 lift, agent-c run 287\n * exact (phantom pk + named dst argument, see the loop); REPLACE_FUNC_BODY-spliced over a placeholder on both\n * build paths. History below.\n * Mesh-vertex table build: the cfront `this == 0 -> alloc(0x90)` protocol, two registrations, the count * 12\n * array, then a for loop over the mesh entries (optional short index table) converting each entry's short\n * vertex to a float triple passed by address. The cfe body (92.91) had the loop rotated wrong (beq / beq vs\n * the target's `bnezl at, loop; lw v0, 0x4C(s2)`) and a 0x20 volatile-array pad; under NCC the plain for loop\n * gives the target's rotation and delay-slot reload, `f32 fv[3]` at function top with one volatile scalar\n * above and six below gives frame 0x70 / fv at sp+0x60: 98.37, 95 words = target. Residual: the entry-pointer\n * merge variable colours v1 (target t0) and the t-ring is one register early. Still NON_MATCHING.\n * agent-c run 272: the entry's vi read inline (no pick(): the lhu is a ugen temp like the target's t6, frame back to\n * 0x70 with two more volatile pads below fv) plus a code-free `if (a0->x2C) {}` after the fv stores (its load LR is\n * coloured t0 and CSE'd into the call's x2C argument, which puts the ring after the merge on the target's t6 / t5 /\n * t8 / t9 ...): 99.26 -> 99.63. LEFT: the merge variable v1 (target t0; zdbug:5 forbidden [v0 a0-a3 s0], nothing\n * coloured before it takes v1) and the x2C argument load t0 (target t4). */\ntypedef float f32;\nextern \"C\" {\nint gl_func_00000000(...);\nextern char gl_data_0001EE5C, gl_data_0001EE70;\n}\nstruct Ent { short a; unsigned short vi; int pad; };\nstruct SV { short x, y, z; };\nstruct Mesh { char pad[0x44]; unsigned n; char pad48[4]; short *tbl; char pad50[0x60 - 0x50]; SV *verts; char pad64[4]; Ent *ents; };\nstruct Own { char pad[0x54]; char *x54; };\nstruct Obj { char pad[0x2C]; char *x2C; char pad30[0x84 - 0x30]; Mesh *m; };\nextern \"C\" Obj *gl_func_0003AE58(Obj *a0, Mesh *a1) {\n    volatile int p0;\n    f32 fv[3];\n    volatile int q0, q1, q2, q3;\n    int pk; /* agent-c run 287: phantom int LR (two frame words: q4 / q5 / q6 dropped, frame 0x70 kept) */\n    if (a0 != 0 || (a0 = (Obj *)gl_func_00000000(0x90)) != 0) {\n        gl_func_00000000(a0, &gl_data_0001EE5C);\n        gl_func_00000000(&gl_data_0001EE70, 0);\n        a0->m = a1;\n        a0->x2C = (char *)gl_func_00000000(a1->n * 12);\n        unsigned i;\n        int off;\n        for (i = 0, off = 0; i < a1->n; i++, off += 12) {\n            pk = (int)a1->tbl; SV *v = &a1->verts[(a1->tbl ? &a1->ents[a1->tbl[i]] : &a1->ents[i])->vi];\n            fv[0] = v->x;\n            fv[1] = v->y;\n            fv[2] = v->z;\n            /* agent-c run 285: the run-272 `if (a0->x2C) {}` BB split replaced by a folded use on the call argument:\n             * the merge's block again holds the call's argument setup (a0-a3 forbidden) -> merge t0 like the target */\n            /* agent-c run 287: the x2C fold replaced by the kit CCCXLVI phantom pk (set from the tbl load at the top of\n             * every iteration, folded `0 * (pk + pk)` on the call argument: its LR takes v1 across the merge, so the\n             * merge colours t0 while the x2C load stays a ugen temp), and the destination argument named: dst is\n             * evaluated before the call's first argument, so the ugen ring gives m / x54 / x2C t2 / t3 / t4 like the\n             * target (99.79 -> 100) */\n            char *dst = ((Own *)a0->m)->x54 + off;\n            gl_func_00000000(a0->x2C + off + 0 * (pk + pk), fv, dst, i);\n        }\n        gl_func_00000000();\n    }\n    return a0;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_3AE58.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "objdiff 100 vs expected/src/game_libs/game_libs_post0b.c.o; ROM byte-identical; verify-blocks 6/6"
+  }
+}
