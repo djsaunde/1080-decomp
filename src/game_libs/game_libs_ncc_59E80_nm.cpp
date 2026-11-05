@@ -59,6 +59,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     if (1) {} /* agent-g run 202 (paired bbsplit grid, with the one after 0xB9) */
     { gs = c->next(); gs->w0 = 0xB6000000; gs->w1 = -1; }
     { gu = c->next(); gu->w0 = 0xB7000000; gu->w1 = 0x22204; }
+    if (1) {} /* agent-c run 295: BB split after the 0xB7 packet (99.725 -> 99.780) */
     { gs = c->nextB(); gs->w0 = 0xBA001402; gs->w1 = 0; }
     PKT(c, 0xB9000002, 0);
     if (1) {}
