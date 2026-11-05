@@ -66,7 +66,9 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     { gv = c->next(); gv->w0 = 0xF9000000; gv->w1 = 0xFF00FA; }
     { gu = c->next(); gu->w0 = 0xFA000000; gu->w1 = 0xFFFF; }
     { gs = c->next(); gs->w0 = 0xBC000404; gs->w1 = 3; }
-    { gv = c->nextC(); gv->w0 = 0xBC000C04; gv->w1 = 3; } /* agent-g run 269: nextC() spelling: 98.48 -> 98.50 */
+    /* agent-g run 269: nextC() spelling: 98.48 -> 98.50; agent-c run 295: folded counted use of c on the pointer
+     * (zero-use sweep on the shared-pointer body): 99.780 -> 99.835 */
+    { gv = c->nextC() + 0 * (int)(c); gv->w0 = 0xBC000C04; gv->w1 = 3; }
     { gu = c->next(); gu->w0 = 0xBC001404; gu->w1 = 0xFFFD; }
     { gs = c->next(); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
