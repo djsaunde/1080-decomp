@@ -14837,7 +14837,8 @@ s32 arg2;
          * back the value just stored = sub), so sub stays a ugen temp like the target's t9 */
         sv = (u32)&gl_state_30AF4;
         if (sv) {}
-        *(s32 *)sv = sub; /* agent-g run 287: store + read-back through sv (with the pre-switch hoist) */
+        *(s32 *)sv = sub; /* agent-g run 287: store + read-back through sv (with the pre-switch hoist the global
+                           * spelling above loses the v0 base); sub is now a coloured piece (v1) here, target t9 */
         if (*(s32 *)sv == 1) {
             gl_cmd_30AF4 = 5;
         } else {
