@@ -18,6 +18,7 @@ template <int K> struct PadK { int a[K]; PadK() {} }; /* agent-c run 289: unrefe
 struct V3 { f32 x, y, z;
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
+    void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } /* agent-c run 290: the ctor's body for the early-declared e */
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
     V3 operator+(const V3 &o) const { return V3(o.x + x, o.y + y, z + o.z); } /* agent-c run 289: by const reference -- the
@@ -39,7 +40,11 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     f32 dists[8];
     int surfs[8];
     f32 hits[8][3];
-    PadK<4> pz; /* agent-c run 289: unreferenced pad object (kit CCCLI): frame 408 -> 424 = target, 95.722 -> 95.733 */
+    V3 start; /* agent-c run 290 (kit CCCLII home order, -g3 names): start / e declared right after hits -- start M-188,
+               * e M-200, d M-212, dir M-224 = the target's homes; the early declarations need a code-free statement at
+               * start's old position (the pz pad below, or `if (1) {}`) or `d * k` reads the copied registers (1040 / 1052
+               * bytes): 95.7707 -> 95.7932 (start) -> 95.8421 (e through set()) */
+    V3 e;
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
     dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_00000000B + 0x128);
@@ -47,10 +52,10 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     gl_func_00000000(&dir);
     d = dir;
     Cam *cam = *(Cam **)(arg0 + 0x70);
-    V3 start; start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
+    PadK<4> pz; /* agent-c run 289: unreferenced pad object (kit CCCLI), frame 424 = target */ start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
     V3 end = start + d * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
     start *= KV; if (1) {}
-    V3 e(KV.x * end.x, end.y * KV.y, end.z * KV.z);
+    e.set(KV.x * end.x, end.y * KV.y, end.z * KV.z);
     char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
