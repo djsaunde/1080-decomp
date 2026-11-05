@@ -12795,7 +12795,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     if (temp_s1) {} /* agent-g run 278: third random-test round: 95.65 -> 95.80 */
     temp_a1_2 = FW(temp_a3, 0x4);
     FW(temp_a3, 0x4) = (s32) (temp_a1_2 + 1);
-    temp_v0_3 = FW(FW(temp_s1, 0xC), 0x0) + (0, temp_a1_2 * 8); /* agent-g run 280: the scaled index as a comma expression (comma-wrap sweep; kit CCCXXXIX operand rank): 95.87 -> 96.02, same length */
+    temp_v0_3 = FW(FW(temp_s1, 0xC), 0x0) + temp_a1_2 * 8; /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
     FW(temp_v0_3, 0x0) = 0xE9000000;
     FW(temp_v0_3, 0x4) = 0;
     gl_func_00034458(temp_s1, temp_a1_2);
