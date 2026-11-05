@@ -47,6 +47,8 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
     /* agent-g run 293: nD() with a dead load of dl first (kit CCCLXIII lever; code-free, the read is CSE'd into the
      * real access) on the texture and RDPHALF_1 appends: 99.476 -> 99.528 */
     Gfx *nDQ() { DL *dd = dl; int n = dl->n++; return &dl->buf[n]; }
+    /* agent-g run 293: the RDPHALF_2 append through a named-result form (3714's nR1, kit CCLV): 99.528 -> 99.580 */
+    Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; }
     void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
@@ -80,6 +82,6 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fh = y1 - y0;
     /* agent-g run 293: joint accessor-depth x append-method grid over the four appends (200 random of 20736 + local
      * search): TEXRECT / RDPHALF_1 through nD() at depth 2, RDPHALF_2 through next() at depth 1: 99.371 -> 99.476 */
-    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->next() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
