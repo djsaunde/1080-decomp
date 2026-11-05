@@ -23,6 +23,7 @@ typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
 #define GS4B (*(char **)((char *)&D_00000000 + 0x254))
 #define F4B(p, o, T) (*(T *)((char *)(p) + (o)))
+template <class T> inline T *me(T *p) { return p; } /* agent-g run 296: zero-code accessor (kit CCLXXXIV) */
 #define PKT4B(c) ((c)->next())
 #ifndef MAX
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -130,10 +131,13 @@ extern "C" void gl_func_0004BAF4(char *self) {
                     (MAX((((s16)(y << 2) * (s16)((u16)(s32)(1024.0f / sy))) >> 7), 0)) :
                     (MIN((((s16)(y << 2) * (s16)((u16)(s32)(1024.0f / sy))) >> 7), 0))) : 0)), 0, 16));
     }
+    /* agent-g run 296: the RDPHALF_2 append's receiver through five nested zero-code me() accessors and the final
+     * append's through two (receiver-depth grid 0-7 over the three appends, 200 + local 176): the RDPHALF_2 / final
+     * appends' dl / count colours move toward the target's (97.879 -> 98.009, same length) */
     {
-        F4B(GS4B, 0x158, Ctx4B *)->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
+        me(me(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
     ctx = F4B(GS4B, 0x158, Ctx4B *);
     r = gl_func_00000000(F4B(F4B(self, 0xD0, char *), 0x60, int));
-    ctx->add(0x06000000, r);
+    me(me(ctx))->add(0x06000000, r);
 }
