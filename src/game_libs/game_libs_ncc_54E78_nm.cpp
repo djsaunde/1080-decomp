@@ -20,7 +20,9 @@ struct V3 { f32 x, y, z;
     f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; } /* run 200: y term first (operand-order grid); agent-g run 231: back to x first (stale after later levers, 98.22 -> 98.66) */
 };
 inline int i1() { return 1; }
-inline f32 sq(f32 v) { return v * v; } /* agent-g run 300: m[1][1]'s square through a zero-code inline (its parameter temp is a variable: the product block's y lands in f12 like the target), 99.529 -> 99.565 */
+template <class T> inline T idv(T v) { return v; } /* agent-g run 301: zero-code by-value identity inline (kit CCCLXXX). The run-300 sq() on m[1][1]
+    (99.529 -> 99.565) is superseded: idv() on m[2][2]'s LEFT n.z operand + a volatile pad below a (frame 152 kept): the x * d product
+    of the translation block now takes f0 -- the register 0.0f held until the m[1][3] store -- like the target (99.565 -> 99.638) */
 struct Plane { V3 n; f32 d; };
 struct M4 { f32 m[4][4]; void ident(); };
 extern "C" char D_00000000[];
@@ -28,6 +30,7 @@ struct Obj { char pad[300]; M4 mtx; void reflect(const Plane &p); };
 void Obj::reflect(const Plane &p) {
     volatile int u; /* agent-g run 203: homed above a (the target's 4 bytes at sp+148; a's home is always frame - 12 without it) */
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
+    volatile int u2; /* agent-g run 301: frame shaping only (never accessed): with idv()'s parameter home the frame drops to 144 without it */
     { V3 t; } /* run 203: 12 unreferenced bytes below a (63964 rule): frame 152, a at sp+136 = target */
     /* agent-g run 260 (kit CCXCV code-free constant lever): two empty tests add uses to the 0.0f / 2.0f LRs (no code): 2.0f -> f2, n.x -> f12 = target (98.66 -> 99.06).
      * agent-c run 273: the two tests moved to right after the m[2][3] = 0.0f store (and the two `if (1) {}` splits dropped):
@@ -38,12 +41,12 @@ void Obj::reflect(const Plane &p) {
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
-    mtx.m[1][1] = i1() - 2.0f * sq(p.n.y);
+    mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
     mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
     mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y); /* agent-g run 201: block-split position grid (the run-190 / run-195 splits after m[0][0] / m[0][2] moved here; agent-c run 273: dropped) */
-    mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z);
+    mtx.m[2][2] = i1() - 2.0f * (idv(p.n.z) * p.n.z);
     mtx.m[2][3] = 0.0f; if (p.d != 2.0f) {} /* agent-c run 287: the `p.d != 0.0f` test dropped (stale: removal sweep, instruction stream identical at 99.48) */ a.set(p.n * p.d); /* agent-g run 298 (kit CCCLXXIV source-line scheduling,
         line-join sweep): a.set() on the test's line -- as1 now issues the p.d load after the p.n loads like the target (99.478 -> 99.529) */
     f32 k = a.dot(p.n) * 2.0f;
