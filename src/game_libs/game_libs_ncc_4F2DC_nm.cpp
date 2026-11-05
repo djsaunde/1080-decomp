@@ -51,9 +51,13 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     gl_func_00000000(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
     gl_func_00000000(&dir);
     d = dir;
+    /* agent-g run 297: the product reads d through a const reference (zero code): uopt no longer forwards the
+     * operator= parameter temp's words to the `d * k` reads, which now load d's own home (sp+212..220) like the
+     * target (operator= return / pointer / reference forms, 18): 95.8421 -> 95.8534 */
+    const V3 &dr = d;
     Cam *cam = *(Cam **)(arg0 + 0x70);
     PadK<4> pz; /* agent-c run 289: unreferenced pad object (kit CCCLI), frame 424 = target */ start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
-    V3 end = start + d * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
+    V3 end = start + dr * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
     start *= KV; if (1) {}
     e.set(KV.x * end.x, end.y * KV.y, end.z * KV.z);
     char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
