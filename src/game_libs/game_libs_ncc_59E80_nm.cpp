@@ -24,19 +24,19 @@ struct Obj { char pad[0x104]; int f104; char pad108[0x148 - 0x108]; Sub *s148; }
 #define PKTB(c, a, b) { Gfx *_g = (c)->nextB(); _g->w0 = (a); _g->w1 = (b); }
 #define PKTC(c, a, b) { Gfx *_g = (c)->nextC(); _g->w0 = (a); _g->w1 = (b); }
 #define PKTD(c, a, b) { Gfx *_g = (c)->nextD(); _g->w0 = (a); _g->w1 = (b); }
-inline void dlist(Ctx *c, int v) { PKT(c, 0x06000000, v); }
 extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     int r1, r2;
     PKT(c, 0xBC000006, 0);
     r1 = gl_func_00034458(D_00000000);
-    dlist(c, r1);
+    /* agent-c run 293: the two DisplayList packets written in place (nextC() / nextD() spellings) instead of
+     * through the run-164 inline dlist(c, v) -- stale after the later BB splits / spellings (kit CCCXXIX re-test):
+     * the 0x402 packet pointer now takes t1 and 0xFFFD reuses it like the target: 98.663 -> 99.231, same length;
+     * agent-g run 288's split after the 0x402 packet and run 276's `if (c->dl) {}` are inert on this body (dropped) */
+    PKTC(c, 0x06000000, r1);
     r2 = gl_func_00034458(D_00000000);
-    dlist(c, r2);
+    PKTD(c, 0x06000000, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
-    if (1) {} /* agent-g run 288: paired code-free BB splits after the 0x402 and 0xC02 packets (all-pairs grid over
-               * the first ten packet gaps; either alone is byte-identical): the 0xC02 / 0x2000 packet pointers take
-               * v0 / a0 like the target: 98.553 -> 98.663, same length */
     PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
     PKT(c, 0xBA000C02, 0x2000);
     if (1) {}
@@ -50,7 +50,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     if (1) {}
     PKT(c, 0xF9000000, 0xFF00FA);
     PKT(c, 0xFA000000, 0xFFFF);
-    PKT(c, 0xBC000404, 3); if (c->dl) {} /* agent-g run 276: code-free test (random test search): the 0xBC000C04 packet pointer takes a1 like the target: 98.50 -> 98.55 */
+    PKT(c, 0xBC000404, 3);
     PKTC(c, 0xBC000C04, 3); /* agent-g run 269: nextC() spelling (single-site spelling sweep): 98.48 -> 98.50 */
     PKT(c, 0xBC001404, 0xFFFD);
     PKT(c, 0xBC001C04, 0xFFFD);
