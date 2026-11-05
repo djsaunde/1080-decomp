@@ -12811,7 +12811,11 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     FW(temp_v0_3, 0x4) = 0;
     gl_func_00034458(temp_s1, temp_a1_2);
     temp_s0 = (char *)FW(FW(temp_s1, 0xC), 0x4); /* agent-c run 175: s0's third role */
-    gl_func_00034458(FW(arg0, 0x218), arg1, 0, FW(temp_s1, 0x60), temp_s0, (char *)4);
+    /* agent-c run 304 (kit CCCLXXVIII variable reuse): the 0x60 argument assigned to temp_a3 inside the argument list --
+     * temp_a3 (the target's a3 for the temp_s1->0xC web above) is reused for the later a3 argument, so its first web
+     * colours a3 instead of v1; as an assignment expression in the call the load keeps its argument-order slot after
+     * the a0 load (a separate statement issues it first): 98.641 -> 98.786, same length */
+    gl_func_00034458(FW(arg0, 0x218), arg1, 0, (temp_a3 = FW(temp_s1, 0x60)), temp_s0, (char *)4);
     gl_func_00034458(FW(arg0, 0x218), arg1);
 }
 #else
