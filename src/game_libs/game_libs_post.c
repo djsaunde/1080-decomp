@@ -14689,6 +14689,7 @@ s32 arg2;
     sv = (s32)&gl_state_30AF4 + 0 * (int)(flag); /* agent-g run 286: folded use of flag (0 here) makes the cast a
                                                   * uadd CSE, not the bare ucvt with its reserved spill word: the
                                                   * mode-selector spill moves 24 -> 28 like the target (98.790 -> 98.797) */
+    if (sv) {} /* agent-g run 287: code-free use keeps the base a variable LR: the target's pre-switch `lui; addiu` hoist */
     switch (mode) {                     /* switch 1 @0xC0: sltiu 14, jtbl +0x1874 */
     case 0:                             /* body A @0xE0 */
         gl_func_00042364(1);
@@ -14833,8 +14834,8 @@ s32 arg2;
          * back the value just stored = sub), so sub stays a ugen temp like the target's t9 */
         sv = (u32)&gl_state_30AF4;
         if (sv) {}
-        gl_state_30AF4.f0 = sub;
-        if (gl_state_30AF4.f0 == 1) {
+        *(s32 *)sv = sub; /* agent-g run 287: store + read-back through sv (with the pre-switch hoist) */
+        if (*(s32 *)sv == 1) {
             gl_cmd_30AF4 = 5;
         } else {
             gl_cmd_30AF4 = 17;
@@ -14873,11 +14874,12 @@ s32 arg2;
         }
     }
 
+    sv = (u32)&gl_state_30AF4; /* agent-g run 287: target materialises &gl_state before the D_t test (lui; beq; addiu) */
     if (D_30AF4_t != 5) {
         gl_func_00030AF4_44F18v(0); /* agent-g run 285: void alias of gl_func_00044F18 (result never read) */
     } else {
-        *(f32 *)&gl_state_30AF4.f14 = D_30AF4_flt;
-        gl_func_emit(0, 100, gl_state_30AF4.f4);
+        *(f32 *)&((GlState30AF4 *)sv)->f14 = D_30AF4_flt;
+        gl_func_emit(0, 100, ((GlState30AF4 *)sv)->f4);
         D_30AF4_v = 4;
     }
 
