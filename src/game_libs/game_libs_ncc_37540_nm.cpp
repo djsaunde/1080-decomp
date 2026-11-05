@@ -30,12 +30,19 @@ extern "C" void gl_func_00037540(Obj *o) {
      * function-scope declarations right below vB4 (no code change; hz 176 / hy 172 like the target): 96.39 -> 96.42 */
     f32 hz;
     f32 hy;
-    V3 p1, p2;
-    V3 v90;
+    /* agent-g run 288 (kit CCCLII home order, -g3 name map vs the target's sp offsets): hx right below hy (M-24 = the
+     * target's 168 spill word is its home), v9C / v90 at M-36 / M-48 (target 156 / 144), the unused p1 / p2 pads, v6C
+     * M-84 (108), then b, a M-92 (100), s M-96 (96), ab; v9C declared here with a code-free `if (1) {}` left at its old
+     * mid-block declaration point (kit CCCLIV): 96.429 -> 96.518, same length */
     f32 hx;
-    Node *s; /* agent-g run 258: declared above v6C, set below (720-order decl grid best): 96.42 -> 96.43 */
+    V3 v9C;
+    V3 v90;
+    V3 p1, p2;
     V3 v6C;
-    f32 a, b, ab;
+    f32 b;
+    f32 a;
+    Node *s;
+    f32 ab;
     s = o->s;
     if (0) { gl_func_00034458(&s); }
     a = o->in->y * o->k3C;
@@ -55,7 +62,7 @@ extern "C" void gl_func_00037540(Obj *o) {
     if (o->in->fl() & 8) o->v30.y = -10.0f;
     /* agent-g run 206: unused p1, p2 (no code): frame 0xA8 -> 0xC0 = target (pad-position grid): 96.32 -> 96.39 */
     v6C = vB4;
-    V3 v9C;
+    if (1) {} /* v9C's old declaration point (agent-g run 288) */
     v9C.x = s->vA0.x; v9C.y = s->vA0.y; v9C.z = s->vA0.z;
     v9C += v6C;
     call(s, &o->v30, o);
