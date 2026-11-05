@@ -62,9 +62,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
     }
     count = c->ntri;
     if (count != 0) {
-        int off = 0;
-        i = 0;
-        do {
+        int off = 0; i = 0; do { /* agent-c run 304: one line (as1 tie: the tbl-end addiu and the off home store first, as the target): 97.45 -> 97.50 */
             /* agent-c run 304: the face lookup through the inline Col::face() called on the rvalue `c + off * 0`
              * (the 3BE1C form): the expansion's `this` temp is the target's `move v0,s8` copy that the faces loads
              * use (a plain `cc = c` copy always copy-propagates); written FIRST after t (as1 line order: the copy
@@ -73,12 +71,13 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
              * remap fold on a dropped, a / b on one line and the inside store's folds on f / pt (c then takes
              * s8 as the target): 96.85 -> 97.45, same length */
             t = triAt(off);
+            verts = c->verts; /* agent-c run 304 (third step): before the face lookup (target verts load ahead of the remap branch): 97.50 -> 97.55 */
             f = (c + off * 0)->face(i);
-            verts = c->verts;
             cc = c;
             inside = 1;
             dir = t->sgn;
-            a = t->a; b = t->b;
+            a = t->a;
+            b = t->b;
             tp = D_00000000_3b6a0tbl + 0 * (int)(t);
             u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
