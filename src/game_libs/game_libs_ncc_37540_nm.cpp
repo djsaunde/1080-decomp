@@ -18,7 +18,10 @@ struct Node { char pad[0x30]; char m30[0x20]; V3 v50; char pad5C[4]; V3 v60; cha
 struct Inp { f32 x, y; int pad[2]; volatile int flags; int fl() { return flags; } };
 struct Obj { char pad[0x14]; Node *s; char pad18[0x2C - 0x18]; Inp *in; V3 v30; f32 k3C; };
 extern "C" void gl_func_00034458(...);
-extern "C" f32 D_37540_19F8[], D_37540_19FC[], D_37540_1A00[];
+/* agent-g run 289 (decode fix, kit CCCLV literal audit): the three pool words are source LITERALS, not externs --
+ * bootup.uso RoData (ROM 0xD9FE44 + off) 0x19F8 = 0x3D75C28F = 0.06f, 0x19FC = 0x3F266666 = 0.65f, 0x1A00 =
+ * 0x3F666666 = 0.9f (37348's own 0.06f / 0.65f pair sits right before them at 0x19F0 / 0x19F4, in code order);
+ * the former D_37540_19F8 / _19FC / _1A00 aliases are gone: 96.518 -> 97.565 standalone, same length. */
 inline f32 gr(Node *n, f32 &y, f32 &z) { if (0) { n = 0; } f32 x = n->v60.x; y = n->v60.y; z = n->v60.z; n->v60.x = 0.0f; return x; }
 inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
@@ -48,9 +51,9 @@ extern "C" void gl_func_00037540(Obj *o) {
     a = o->in->y * o->k3C;
     if (a < 0.0f) ab = -a; else ab = a;
     if (ab < 2.0f) a = 0.0f;
-    b = o->in->x * D_37540_19F8[0x19F8 / 4];
+    b = o->in->x * 0.06f;
     if (b < 0.0f) ab = -b; else ab = b;
-    if (ab < D_37540_19FC[0x19FC / 4]) b = 0.0f;
+    if (ab < 0.65f) b = 0.0f;
     hx = gr(s, hy, hz);
     sy(s, 0.0f); sz(s, 0.0f);
     { V3 v1(0.0f, -b, 0.0f); call(s, &v1, o); }
@@ -66,7 +69,7 @@ extern "C" void gl_func_00037540(Obj *o) {
     v9C.x = s->vA0.x; v9C.y = s->vA0.y; v9C.z = s->vA0.z;
     v9C += v6C;
     call(s, &o->v30, o);
-    f32 L3 = D_37540_1A00[0x1A00 / 4];
+    f32 L3 = 0.9f;
     v90 = v9C;
     v90 += o->v30;
     v90 += v6C;
