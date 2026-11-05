@@ -78,8 +78,8 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             dir = t->sgn;
             a = t->a;
             b = t->b;
-            tp = D_00000000_3b6a0tbl + 0 * (int)(t);
-            u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
+            /* agent-c run 304 (sixth step): tp on the inner do line (as1 tie: the hoisted &pt[b] / &pt[a] before tp's lui, as the target): 98.675 -> 99.675 */
+            tp = D_00000000_3b6a0tbl + 0 * (int)(t); u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
                 w = verts[f->vi[*tp]];
                 px = (int)(pt[a] - v[a]); /* agent-g run 210's folded `+ 0 * (int)(inside)` dropped by agent-c run 304 (see the f fold below) */
