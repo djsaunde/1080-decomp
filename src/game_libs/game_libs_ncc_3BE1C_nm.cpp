@@ -114,12 +114,15 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
         cc = col;
         f = (cc + i * 0)->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
         int r = gl_func_00000000(cc, f->mat) | 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568); agent-g run 267: `|` not `+` -- the `+ 0` form kept an `addu a0,v0,zero` for the result copy, `| 0` gives the target's `or a0,v0,zero` (98.78 -> 98.94) */
-        if ((r & 0x100) + 0 * (int)(cc)) { /* agent-g run 266: folded counted use of cc (zero-use sweep on the i * 12 body): 98.62 -> 98.78 */
+        if (r & 0x100) { /* agent-c run 292: agent-g run 266's folded `+ 0 * (int)(cc)` here dropped -- stale after the t->d fix below (kit CCCXXIX re-test): 98.98 -> 99.268 */
             ok = 1;
-            t = (Tri *)((char *)tris + off); /* agent-g run 224: t before n (sweep 97.33 -> 97.60) */
             n = (V3 *)((char *)col->nrm + off);
             V3 *n_al = n; /* agent-c run 195: alias copy (colour tie) */
-            f32 d = p.x * n_al->x + p.y * n_al->y + p.z * n_al->z - t->d;
+            /* agent-c run 292 (kit CCCXXX): t->d read through the plain expression, not the variable t (the first
+             * `t = tris + off` assignment dropped): the target computes this address into a ugen temp (`addu t7,t9,a2`;
+             * `lwc1 $f6,8(t7)`) and only the SECOND t (for a / b) is t's coloured v1 -- ours had a coloured split
+             * piece of t here: 99.166 -> 97.98 (ring phase), then 99.268 with the fold above removed */
+            f32 d = p.x * n_al->x + p.y * n_al->y + p.z * n_al->z - ((Tri *)((char *)tris + off))->d;
             q[0] = p.x - n_al->x * d;
             q[1] = p.y - n_al->y * d;
             q[2] = p.z - n->z * d;
