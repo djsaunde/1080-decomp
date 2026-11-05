@@ -14802,7 +14802,7 @@ s32 arg2;
                 break;
             }
         }
-        D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv) + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path); agent-g run 287: second fold (random fold search): 99.451 -> 99.555 */
+        D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path); agent-g run 288: back to one fold (the run-287 second fold only compensated the case-9 ring; with one fold the hoist takes v0, D_m v1, 13 a0 like the target) */
         if (sv) {}
         if (D_30AF4_m == 0 && sub == 0) {
             ((GlState30AF4 *)sv)->fC = 256; /* agent-g run 285: through sv (== &gl_state here: set before the switch, reassigned only in cases 4 / 10): with the four folds above 98.485 -> 98.648, same length.
@@ -14838,8 +14838,10 @@ s32 arg2;
         sv = (u32)&gl_state_30AF4;
         if (sv) {}
         *(s32 *)sv = sub; /* agent-g run 287: store + read-back through sv (with the pre-switch hoist the global
-                           * spelling above loses the v0 base); sub is now a coloured piece (v1) here, target t9 */
-        if (*(s32 *)sv == 1) {
+                           * spelling above loses the v0 base) */
+        if (*(u32 *)sv == 1) { /* agent-g run 288: the read-back as u32 (same word, well-defined) is a no-code cvt
+                                * of the forwarded sub: sub stays a ugen ring temp (target t9) and the cvt takes
+                                * the second ring slot (t0), so cases 9-11 + the tail realign: 99.555 -> 99.905 */
             gl_cmd_30AF4 = 5;
         } else {
             gl_cmd_30AF4 = 17;
