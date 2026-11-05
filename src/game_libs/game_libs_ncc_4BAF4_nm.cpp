@@ -113,7 +113,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
         _g->w0 = (SHL4B(0xE4, 24, 8) |
                   SHL4B(MAX((s16)((x + (int)(w * sx)) << 2), 0), 12, 12) |
-                  SHL4B(MAX((s16)((y + (int)(h * sy) - 1) << 2), 0), 0, 12));
+                  SHL4B((((s16)((y + (int)(h * sy) - 1) << 2)) <= 0 ? 0 : ((s16)((y + (int)(h * sy) - 1) << 2))), 0, 12)); /* agent-c run 288 (fork C): this MAX as `E <= 0 ? 0 : E` -- the zero is no longer set before the branch, 97.54 -> 97.88 */
         _g->w1 = (SHL4B(0, 24, 3) |
                   SHL4B(MAX((s16)(x << 2), 0), 12, 12) |
                   SHL4B(MAX((s16)(y << 2), 0), 0, 12)); /* agent-c run 287: this line's `if (1) {}` and the one after the block dropped (stale: instruction stream identical, 97.54) */
