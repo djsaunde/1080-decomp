@@ -47,7 +47,8 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
     Gfx *nextc() { return &dl->buf[dl->n++]; }
     Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } };
 struct Glyph { int u; int v; int w; int adv; int pad; };
-struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th; Glyph *glyphs; Ctx *ctx; };
+struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th; Glyph *glyphs; Ctx *ctx;
+    Ctx *gc() { return ctx; } /* agent-g run 293: member getter (zero-code; its `this` is one more edg pool temp) */ };
 extern "C" int gl_func_00000000(...);
 extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsigned char *str) {
     f32 cx;
@@ -80,8 +81,9 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
             fw = w * sx;
             /* agent-g run 293: joint accessor-depth x append-method grid over the three rect packets (depth 0-3,
              * next / nextp / nextc; 200 random of 1728, then a local search): the TEXRECT packet through
-             * nextc() at depth 3 and the RDPHALF_2 packet back at depth 0: 98.843 -> 99.681 */
-            gSPScisTextureRectangle(me(me(me(f->ctx)))->nextc(), f->ctx->nextp(), f->ctx->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+             * nextc() at depth 3 and the RDPHALF_2 packet back at depth 0: 98.843 -> 99.681; then the ctx read of the
+             * TEXRECT / RDPHALF_2 packets through the gc() member getter (the RDPHALF_2 one via me(f)): -> 99.744 */
+            gSPScisTextureRectangle(me(me(me(f->gc())))->nextc(), f->ctx->nextp(), me(f)->gc()->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
                 (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
             cx += (f32)f->glyphs[c].adv;
         } else {
