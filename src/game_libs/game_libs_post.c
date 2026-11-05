@@ -14685,7 +14685,9 @@ s32 arg2;
     gl_func_emit();
     gl_func_000460D0();
 
-    sv = (s32)&gl_state_30AF4;
+    sv = (s32)&gl_state_30AF4 + 0 * (int)(flag); /* agent-g run 286: folded use of flag (0 here) makes the cast a
+                                                  * uadd CSE, not the bare ucvt with its reserved spill word: the
+                                                  * mode-selector spill moves 24 -> 28 like the target (98.790 -> 98.797) */
     switch (mode) {                     /* switch 1 @0xC0: sltiu 14, jtbl +0x1874 */
     case 0:                             /* body A @0xE0 */
         gl_func_00042364(1);
