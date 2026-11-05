@@ -14805,9 +14805,9 @@ s32 arg2;
         D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path) */
         if (sv) {}
         if (D_30AF4_m == 0 && sub == 0) {
-            ((GlState30AF4 *)sv)->fC = 256; /* agent-g run 285: through sv (== &gl_state here: set before the switch, reassigned only in cases 4 / 10): with the four folds above 98.485 -> 98.648, same length. The target's pre-switch
-             * `lui v0` hoist (a ucvt CSE LR of the int cast) still missing; with `if (sv) {}` after the def it appears but in t0 /
-             * v1 (v0 forbidden by the int 460D0 result and the case-6 0 * sub umpy LR) and the mode spill moves 28 -> 24 */
+            ((GlState30AF4 *)sv)->fC = 256; /* agent-g run 285: through sv (== &gl_state here: set before the switch, reassigned only in cases 4 / 10): with the four folds above 98.485 -> 98.648, same length.
+             * agent-g run 287: the target's pre-switch `lui v0` hoist is now present (pre-switch `if (sv) {}`) and coloured v0
+             * (void 460D0 alias + the two case-6 `if (sv) {}`) */
             gl_func_emit(0x83010000, 2000);
             D_30AF4_o = 14;
         } else if (D_30AF4_p == 1) {
