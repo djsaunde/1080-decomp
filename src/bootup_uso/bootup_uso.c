@@ -845,7 +845,11 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
                     s32 vs, ve;
                     ve = (vidx + 3) * 2; vs = vidx * 2;
-                    E68_CULL(arr[k++] = E68_NEXT(m), vidx, vidx + 3);
+                    /* agent-g run 291: the CULL packet on the named vs / ve (the gSPCullDisplayList operands
+                     * pre-scaled) instead of recomputing (vidx) * 2 / (vidx + 3) * 2: two fewer coloured items in
+                     * the packet BBs, so gen_outparcode's per-BB store temps fit the spilltemps pool and the frame
+                     * bottom loses its two emit-time words -- the spills sit at the target's 76 / 80 / 84 */
+                    E68_W(arr[k++] = E68_NEXT(m), E68_SHL(0xBE, 24, 8) | E68_SHL(vs, 0, 16), E68_SHL(ve, 0, 16));
                     /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
                      * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
                     E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0); if (1) {}
@@ -860,7 +864,9 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     if ((vs) + 0 * (int)(vs)) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21) */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
-                ult += 32;
+                ult += 32 + 0 * (int)(ult) + 0 * (int)(uls); /* agent-g run 291: folded counted uses of ult and uls
+                                                                * (both set on every path here; zero-use sweep on
+                                                                * the CULL form, 98.564 -> 98.630) */
             }
         }
         m = E68_MGR;
