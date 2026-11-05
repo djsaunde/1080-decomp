@@ -24,6 +24,7 @@ struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
 struct Vp { s16 vscale[4]; s16 vtrans[4]; };
 struct VpHead { Vp *buf; int count; };
+template <int K> struct PadK { int a[K]; PadK() {} }; /* agent-c run 288: unreferenced frame pad (a class type with a ctor: edg keeps its home) */
 struct Ctx {
     char pad[0xC];
     DLHead *dl;
@@ -71,6 +72,11 @@ inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
 }
 
 extern "C" void game_libs_func_00042938(void) {
+    /* agent-c run 288: the frame is sized by the home of the one spilled variable (the gSPViewport packet pointer,
+     * spilled across the func_00000000(v) call at sp+40): as the gDma1p macro's block-local _g it sat at M-72 (frame
+     * 112); a function-scope g under 11 pad words sits at M-48 = the target's frame 88 (98.11311 -> 98.118256) */
+    PadK<11> pz;
+    Gfx *g;
     if (gl_d_42938_fa[0] == 0) {
         gl_d_42938_fa[0] = 1;
         gl_d_42938_pa = gl_d_42938_rec[gl_d_42938_idx].a;
@@ -93,7 +99,7 @@ extern "C" void game_libs_func_00042938(void) {
         Ctx *c = G.o->ctx;
         Vp *v = c->vpnext();
         setvp(v, 0, 0, 320, 240);
-        gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80);
+        { g = (Gfx *)(c->next()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
     G.m228 = G.m224 = 8;
     G.m220 = (G.m21c = 0x32, 0x50);
