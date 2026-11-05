@@ -15440,7 +15440,7 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
             gl_func_00000000_f(0x1000A00, acc);
             return;
         z31a74:
-            if (1) {} ACCS1_31A74 = acc; goto c31a74;
+            ACCS1_31A74 = acc; goto c31a74;
         }
         if (D_31A74_st == 4) {
             if (D_31A74_g2 != 0) {
@@ -15482,14 +15482,22 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
     if (sel >= 127) {
         sel = 127;
     }
-    ACCS2_31A74 = r; /* agent-g run 234: the 0x1CAC0 store before the sel clamp (target: sel spill sb before the jal, swc1 in its delay slot) */
     if (sel < 0) {
         sel = 0;
     }
     /* agent-g run 211: char-prototyped callee (target lb a2 + sll/sra a1 re-extension at the call)
      * and no trailing `if (r) {}` (it kept r live across the call: 0x20 frame vs target 0x18).
-     * 90.73 -> 91.55, 560 -> 564 bytes = target length. */
+     * 90.73 -> 91.55, 560 -> 564 bytes = target length.
+     * agent-c run 300: the 0x1CAC0 store in a goto block written AFTER the calls, with an
+     * `if (1) {}` first so the merged block keeps the store's own (higher) source line: as1 then
+     * schedules the sel spill sb before it and the swc1 fills the jal delay slot (97.73 -> 98.12).
+     * Only ONE such if(1)-split goto block merges per function, so mode 1's has no split. */
+    goto z31t;
+c31t:
     gl_func_00000000_f(0x1000A00, r), gl_func_00000000_c(0x3000A00, sel);
+    return;
+z31t:
+    if (1) {} ACCS2_31A74 = r; goto c31t;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00031A74);
