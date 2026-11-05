@@ -65,6 +65,9 @@ struct Glyph { int u; int v; int w; int adv; int pad; };
 struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th; Glyph *glyphs; Ctx *ctx;
     Ctx *gc() { return ctx; } /* agent-g run 293: member getter (zero-code; its `this` is one more edg pool temp) */ };
 extern "C" int gl_func_00000000(...);
+/* agent-g run 294: the glyph texture-load call through a VOID alias (its result is never read; the target's
+ * TEXRECT append right after the call takes v0 for dl, which a discarded int result keeps busy) */
+extern "C" void gui_func_00000F04_load(...);
 extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsigned char *str) {
     f32 cx;
     s32 h;
@@ -80,9 +83,8 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
      * target's 212 / 211) plus two dead-stored frame words (two more homes below c: frame 256 -> the target's 264):
      * 99.764 -> 99.808 */
     Gfx *gpa, *gpb;
-    s32 z1, z2;
-    z1 = 0;
-    z2 = 0;
+    s32 z1;
+    z1 = 0; /* agent-g run 294: one dead-stored frame word (the TEXRECT nextp()'s named n is the other home) */
     h = f->h14;
     /* agent-g run 292: the texture and RDPHALF_2 appends through a nested zero-code accessor me(me(f->ctx))
      * (kit CCLXXXIV per-pkt accessor grid, 81 + 241 combos): 98.588 -> 98.843 standalone */
@@ -99,13 +101,14 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
             u = f->glyphs[idx].u;
             v = f->glyphs[idx].v;
             w = f->glyphs[idx].w;
-            gl_func_00000000(f->ctx, f->tex, f->tw, f->th, u, v, w, h, 0);
+            gui_func_00000F04_load(f->ctx, f->tex, f->tw, f->th, u, v, w, h, 0);
             fw = w * sx;
             /* agent-g run 293: joint accessor-depth x append-method grid over the three rect packets (depth 0-3,
              * next / nextp / nextc; 200 random of 1728, then a local search): the TEXRECT packet through
              * nextc() at depth 3 and the RDPHALF_2 packet back at depth 0: 98.843 -> 99.681; then the ctx read of the
              * TEXRECT / RDPHALF_2 packets through the gc() member getter (the RDPHALF_2 one via me(f)): -> 99.744 */
-            gSPScisTextureRectangleS(gpa, gpb, gpa, me(me(me(f->gc())))->nextc(), f->ctx->nextp(), me(f)->gc()->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+            /* agent-g run 294: with the void load the TEXRECT append through nextp() (joint grid): 99.808 -> 99.904 */
+            gSPScisTextureRectangleS(gpa, gpb, gpa, me(me(me(f->gc())))->nextp(), f->ctx->nextp(), me(f)->gc()->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
                 (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
             cx += (f32)f->glyphs[c].adv;
         } else {
