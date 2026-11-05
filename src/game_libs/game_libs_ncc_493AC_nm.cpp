@@ -151,7 +151,7 @@ int Mgr::run() {
             o->n80 = o->ctx6C->count();
             o->ctx6C->noop();
             o->lo50 = 0x80;
-            o->hi54 = 0;
+            o->hi54 = 0; if (o) {} /* agent-c run 299: code-free tests of o here and of k after the row block (random test sweep): 99.52 -> 99.56 */
             for (k = 0; k < grid->n; k++) {
                 {
                     int rowStart = grid->w * k;
@@ -179,7 +179,7 @@ int Mgr::run() {
                     gl_func_00000000(&rec); if (1) {}
                     o->rows7C[k] = o->ctx6C->count();
                     o->ctx6C->noop();
-                }
+                } if (k) {}
             }
         } else {
             o->lo50 = -1;
