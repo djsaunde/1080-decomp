@@ -26,6 +26,11 @@ struct Obj { char pad[0x104]; int f104; char pad108[0x148 - 0x108]; Sub *s148; }
 #define PKTD(c, a, b) { Gfx *_g = (c)->nextD(); _g->w0 = (a); _g->w1 = (b); }
 extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     int r1, r2;
+    /* agent-c run 293: two packet pointers shared by packet pairs (random pair search over the 19 packets): gs by
+     * the 0xBC000404 / 0xBC001C04 ClipRatio words (99.231 -> 99.341), gt by the second 0x06 / the 0xB9 packet
+     * (-> 99.396), same length */
+    Gfx *gt;
+    Gfx *gs;
     PKT(c, 0xBC000006, 0);
     r1 = gl_func_00034458(D_00000000);
     /* agent-c run 293: the two DisplayList packets written in place (nextC() / nextD() spellings) instead of
@@ -34,7 +39,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
      * agent-g run 288's split after the 0x402 packet and run 276's `if (c->dl) {}` are inert on this body (dropped) */
     PKTC(c, 0x06000000, r1);
     r2 = gl_func_00034458(D_00000000);
-    PKTD(c, 0x06000000, r2);
+    { gt = c->nextD(); gt->w0 = 0x06000000; gt->w1 = r2; }
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
     PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
@@ -46,14 +51,14 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     PKT(c, 0xB6000000, -1);
     PKT(c, 0xB7000000, 0x22204);
     PKT(c, 0xBA001402, 0);
-    PKT(c, 0xB9000002, 0);
+    { gt = c->next(); gt->w0 = 0xB9000002; gt->w1 = 0; }
     if (1) {}
     PKT(c, 0xF9000000, 0xFF00FA);
     PKT(c, 0xFA000000, 0xFFFF);
-    PKT(c, 0xBC000404, 3);
+    { gs = c->next(); gs->w0 = 0xBC000404; gs->w1 = 3; }
     PKTC(c, 0xBC000C04, 3); /* agent-g run 269: nextC() spelling (single-site spelling sweep): 98.48 -> 98.50 */
     PKT(c, 0xBC001404, 0xFFFD);
-    PKT(c, 0xBC001C04, 0xFFFD);
+    { gs = c->next(); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
         gl_func_00034458(c, o->s148->fF0); if (1) {}
         PKT(c, 0xB7000000, 1);
