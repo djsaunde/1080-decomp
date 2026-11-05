@@ -775,7 +775,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     s32 row;
     s32 k2;
     s32 col, x, y;
-    u32 vidx; /* run 172: unsigned (88.98/89.21 -> 90.53; changes the vidx*2 web colouring) */
+    s32 vidx; /* run 172: unsigned (88.98/89.21 -> 90.53; changes the vidx*2 web colouring); agent-g run 291: signed again on the CULL-on-vs/ve body (98.642 -> 98.650; the values are small and non-negative, so the semantics are unchanged) */
     s32 ult;
     GwE68 *arr[32];
     s32 k, uls;
