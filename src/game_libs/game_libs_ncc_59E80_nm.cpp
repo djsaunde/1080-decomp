@@ -61,6 +61,7 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     { gu = c->next(); gu->w0 = 0xB7000000; gu->w1 = 0x22204; }
     if (1) {} /* agent-c run 295: BB split after the 0xB7 packet (99.725 -> 99.780) */
     { gs = c->nextB(); gs->w0 = 0xBA001402; gs->w1 = 0; }
+    if (1) {} /* agent-c run 296: BB split after 0x1402 (its nextB n leaves the shared next() temps' block: v1) */
     PKT(c, 0xB9000002, 0);
     if (1) {}
     { gv = c->next(); gv->w0 = 0xF9000000; gv->w1 = 0xFF00FA; }
@@ -68,9 +69,11 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     { gs = c->next(); gs->w0 = 0xBC000404; gs->w1 = 3; }
     /* agent-g run 269: nextC() spelling: 98.48 -> 98.50; agent-c run 295: folded counted use of c on the pointer
      * (zero-use sweep on the shared-pointer body): 99.780 -> 99.835 */
-    { gv = c->nextC() + 0 * (int)(c); gv->w0 = 0xBC000C04; gv->w1 = 3; }
+    /* agent-c run 296: with the split after 0x1402, the fold moved to the 0x1C04 packet (its nextC temp takes the
+     * target's a3) and 0xC04 back on next(): 99.835 -> 99.890 */
+    { gv = c->next(); gv->w0 = 0xBC000C04; gv->w1 = 3; }
     { gu = c->next(); gu->w0 = 0xBC001404; gu->w1 = 0xFFFD; }
-    { gs = c->next(); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
+    { gs = c->nextC() + 0 * (int)(c); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
         gl_func_00034458(c, o->s148->fF0); if (1) {}
         { gv = c->next(); gv->w0 = 0xB7000000; gv->w1 = 1; }
