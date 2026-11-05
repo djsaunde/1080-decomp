@@ -46,8 +46,10 @@ int Col::side(int f1, int f2) {
     d1 -= a;
     d2.set(mid);
     d2 -= b;
-    f32 p1 = d1 * me(me(this))->gn()[f1];
-    f32 p2 = d2 * me(me(this))->nrm[f2];
+    /* agent-g run 296: both normal reads through four nested zero-code me() accessors (depth grid 0-6 x 0-6, 49):
+     * the `p2 >= 0` result's `or v0,zero,zero` now sits before the second face sum as in the target (98.088 -> 98.586) */
+    f32 p1 = d1 * me(me(me(me(this))))->gn()[f1];
+    f32 p2 = d2 * me(me(me(me(this))))->nrm[f2];
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
