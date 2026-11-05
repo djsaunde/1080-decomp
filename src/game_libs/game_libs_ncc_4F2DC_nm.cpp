@@ -20,8 +20,9 @@ struct V3 { f32 x, y, z;
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
-    V3 operator+(const V3 &o) const { return V3(x + o.x, y + o.y, z + o.z); } /* agent-c run 289: by const reference -- the
-        * operand temporary bound to it is a full-expression temporary, homed at the frame top (the target's 412) */
+    V3 operator+(const V3 &o) const { return V3(o.x + x, o.y + y, z + o.z); } /* agent-c run 289: by const reference -- the
+        * operand temporary bound to it is a full-expression temporary, homed at the frame top (the target's 412);
+        * then the x / y sums operand-first (8-way order grid, 95.733 -> 95.771) */
     void operator*=(const V3 &k) { y *= k.y; x *= k.x; z *= k.z; } /* agent-g run 245: x, z, y (swap sweep, 95.665 -> 95.669); agent-c run 276: y, x, z with the e ctor's x product KV-first (order x operand grid, 95.669 -> 95.684) */
     void operator/=(const V3 &k) { x /= k.x; y /= k.y; z /= k.z; }
 };
