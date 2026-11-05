@@ -43,7 +43,11 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
-    Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
+    Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
+    /* agent-g run 293: nD() with a dead load of dl first (kit CCCLXIII lever; code-free, the read is CSE'd into the
+     * real access) on the texture and RDPHALF_1 appends: 99.476 -> 99.528 */
+    Gfx *nDQ() { DL *dd = dl; int n = dl->n++; return &dl->buf[n]; }
+    void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
@@ -53,7 +57,7 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     f32 fw, fh;
     s32 t;
     s32 w, h;
-    gSPTexture(CTX->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
+    gSPTexture(CTX->nDQ(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
                                                       * agent-g run 293: depth 0 here with the joint rect grid below */
     spr = arg0->spr;
     w = spr->w;
@@ -76,6 +80,6 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fh = y1 - y0;
     /* agent-g run 293: joint accessor-depth x append-method grid over the four appends (200 random of 20736 + local
      * search): TEXRECT / RDPHALF_1 through nD() at depth 2, RDPHALF_2 through next() at depth 1: 99.371 -> 99.476 */
-    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nD(), me(CTX)->next() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->next() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
