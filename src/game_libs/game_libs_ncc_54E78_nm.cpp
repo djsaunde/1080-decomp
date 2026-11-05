@@ -43,8 +43,8 @@ void Obj::reflect(const Plane &p) {
     mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
     mtx.m[2][1] = 0.0f - 2.0f * (p.n.z * p.n.y); /* agent-g run 201: block-split position grid (the run-190 / run-195 splits after m[0][0] / m[0][2] moved here; agent-c run 273: dropped) */
     mtx.m[2][2] = i1() - 2.0f * (p.n.z * p.n.z);
-    mtx.m[2][3] = 0.0f; if (p.d != 2.0f) {} /* agent-c run 287: the `p.d != 0.0f` test dropped (stale: removal sweep, instruction stream identical at 99.48) */
-    a.set(p.n * p.d);
+    mtx.m[2][3] = 0.0f; if (p.d != 2.0f) {} /* agent-c run 287: the `p.d != 0.0f` test dropped (stale: removal sweep, instruction stream identical at 99.48) */ a.set(p.n * p.d); /* agent-g run 298 (kit CCCLXXIV source-line scheduling,
+        line-join sweep): a.set() on the test's line -- as1 now issues the p.d load after the p.n loads like the target (99.478 -> 99.529) */
     f32 k = a.dot(p.n) * 2.0f;
     mtx.m[3][0] = k * p.n.x; /* run 200: back to x-first with the y-first dot (target stores 348 first) */
     mtx.m[3][1] = k * p.n.y;
