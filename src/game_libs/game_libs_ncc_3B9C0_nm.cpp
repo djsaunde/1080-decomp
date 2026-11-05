@@ -109,7 +109,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         /* agent-c run 266: qa / qb loads in ONE basic block (the `if (1) {}` moved after qb): the target's held
          * `addiu t9,sp,184` &p base is CSE'd for both loads inside the iteration (1104 -> 1108 of 1116); folded
          * counted uses of ib / ia on pp and of pp on sg re-colour it (zero-use sweep: 94.19 -> 95.52) */
-        pp = &p.x + 0 * (int)(ib) + 0 * (int)(ia);
+        pp = &p.x + 0 * (int)(ib); /* agent-c run 287: the + ia fold dropped (stale after the col phantom, removal sweep flat) */
         qa = pp[ia]; qb = pp[ib]; if (1) {}
         sg = (&self->tris[i])->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); /* agent-c run 287: the trailing `if (1) {}` dropped (stale); agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
         nx = (s16 *)&D_00000000 + 0 * (unused + unused); /* agent-c run 287: the phantom pair in col's place; agent-c run 286: folded col use (zero-use sweep after the vt change, 95.30 -> 99.01) */
