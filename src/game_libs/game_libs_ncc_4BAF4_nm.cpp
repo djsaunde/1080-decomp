@@ -37,6 +37,7 @@ typedef struct { char pad[0x30]; V4B p; } Cam4B;
 /* the 0x1C4 flag word is a separate blank USO data ref (per-site lui in the target) */
 
 extern "C" Cam4B D_4BAF4_cam;
+template <class T> inline T idv(T v) { return v; } /* agent-g run 300: zero-code by-value identity inline (one-site wrap sweep) */
 extern "C" void gl_func_0004BAF4(char *self) {
     V4B pos;
     f32 out[17];
@@ -87,7 +88,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
      * reloads share one coloured register (a3), and the centre 0xC0 now loads before 0xB8 like the target */
     /* agent-g run 266: the half-extent reads go into d (int -> char * -> int round trip, 32-bit), and d is then
      * re-assigned self->0xCC for the dlist call: the pointer takes v0 like the target (97.39 -> 97.54) */
-    if ((d = (char *)F4B(GS4B, 0xB8, volatile int), F4B(GS4B, 0xC0, int) + (int)d < x) || (d = (char *)F4B(GS4B, 0xBC, volatile int), F4B(GS4B, 0xC4, int) + (int)d < y) ||
+    if ((d = (char *)F4B(GS4B, 0xB8, volatile int), F4B(GS4B, 0xC0, int) + (int)d < x) || (d = (char *)F4B(GS4B, 0xBC, volatile int), F4B(GS4B, 0xC4, int) + (int)idv(d) < y) ||
         (d = (char *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)d) || (d = (char *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)d)) {
         return;
     }
