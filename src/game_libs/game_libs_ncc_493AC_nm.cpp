@@ -62,6 +62,8 @@ struct IBase {
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
     Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
+    /* agent-c run 299: the first loop's own copy of next() (same body): its result leaves the s2 pool temp (target v0) */
+    Elem **next1() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
@@ -105,7 +107,7 @@ int Mgr::run() {
     gl_func_00000000(S(0x1FF6C));
     gl_func_00000000(S(0x1FF74));
     AIter it = arr.iter();
-    while (it.next() + 0) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0) */
+    while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
         gl_func_00000000(it.cur());
         if (m50 == 0) {
             if (it.cur()->test(0x2000)) {
@@ -159,13 +161,13 @@ int Mgr::run() {
                         if (e != -1) {
                             int j;
                             while ((j = grid->tbl18[e++]) != -1) {
-                                u8 *m = buf + j;
+                                u8 *m = buf + j + 0 * e; /* agent-c run 299: folded counted use: e outranks the pool temp (target s1) */
                                 if (tab68[j].key == o->key18 && *m == 0) { /* agent-g run 233: table key first (target load order) */
                                     o->f14 = 1;
                                     cnt++;
                                     this->hit(0, &rec, j, o);
                                     hit = 1;
-                                    *m = 1;
+                                    *m = 1 + 0 * (int)m; /* agent-c run 299: folded use: m stays above e (target s0) */
                                 }
                             }
                         }
