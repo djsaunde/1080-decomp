@@ -69,6 +69,9 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     y = (f32)arg2 + (-((f32)h / 2) * arg6);
     fh = h * arg6;
     /* agent-g run 293: the RDPHALF_1 packet back on nD() (the run-255 nR1 is inert: byte-identical) */
+    /* agent-g run 295: the dsdx term reads the parameter, `arg4 - 1` (w == arg4 here: w is set from arg4 above and
+     * never reassigned), so w's last use is fw and its reload no longer outlives the rect pointer: w-reload t3 /
+     * rect pointer t2 like the target (w / arg4 use-substitution grid, 47): 99.004 -> 99.141 */
     gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nD(), me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
-        (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
+        (s32)(((f32)(arg4 - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
