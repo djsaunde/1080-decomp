@@ -14649,6 +14649,7 @@ extern char gl_data_30AF4_45010, gl_data_30AF4_45F78;  /* baked arena addresses 
 extern void gl_func_emit_30AF4v();
 extern void gl_func_00030AF4_44F18v(); /* void-result alias of gl_func_00044F18 for 30AF4's never-read calls */
 extern void gl_func_00030AF4_42364v(); /* void-result alias of gl_func_00042364 (case-9 call, result never read) */
+extern void gl_func_00030AF4_460D0v(); /* void-result alias of gl_func_000460D0 (result never read; an int result defines v0 in the hoist's block) */
 void gl_func_00030AF4(mode, sub, arg2)
 u32 mode;
 u32 sub;
@@ -14684,7 +14685,7 @@ s32 arg2;
     gl_state_30AF4.f0 = 0;
     gl_state_30AF4.f18 = 0;
     gl_func_emit();
-    gl_func_000460D0();
+    gl_func_00030AF4_460D0v(); /* agent-g run 287: void alias (result never read): the int result forbade v0 to the pre-switch hoist */
 
     sv = (s32)&gl_state_30AF4 + 0 * (int)(flag); /* agent-g run 286: folded use of flag (0 here) makes the cast a
                                                   * uadd CSE, not the bare ucvt with its reserved spill word: the
@@ -14773,6 +14774,7 @@ s32 arg2;
     case 6:                             /* body G @0x2DC */
         {
         w = 35;
+        if (sv) {} /* agent-g run 287: two counted code-free uses of the hoist LR lift it over the D_30AF4_m load LR: hoist takes v0, D_m v1 */
         if (D_30AF4_m == 4) {
             gl_cmd_30AF4 = 13; /* agent-g run 286: the run-259 `+ 0 * (int)(sub)` fold dropped (it only compensated the case-9 ring; with case 9 fixed the 13 sits in a0 like the target) */
             wv = 523 + 0 * (int)(sub); /* agent-g run 259: second pass: 98.021 -> 98.078 */
@@ -14801,6 +14803,7 @@ s32 arg2;
             }
         }
         D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path) */
+        if (sv) {}
         if (D_30AF4_m == 0 && sub == 0) {
             ((GlState30AF4 *)sv)->fC = 256; /* agent-g run 285: through sv (== &gl_state here: set before the switch, reassigned only in cases 4 / 10): with the four folds above 98.485 -> 98.648, same length. The target's pre-switch
              * `lui v0` hoist (a ucvt CSE LR of the int cast) still missing; with `if (sv) {}` after the def it appears but in t0 /
