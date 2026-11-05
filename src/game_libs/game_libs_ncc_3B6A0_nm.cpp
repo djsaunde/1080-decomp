@@ -70,7 +70,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
              * rematerialised in the inner-loop preheader like the target's lui / addiu a2), agent-g run 210's
              * remap fold on a dropped, a / b on one line and the inside store's folds on f / pt (c then takes
              * s8 as the target): 96.85 -> 97.45, same length */
-            t = triAt(off);
+            t = triAt(off); if (pt) {} /* agent-c run 304 (fourth step): code-free test of pt (the cc copy, inside = 1 and the verts load then issue in the target's order): 97.55 -> 97.80 */
             verts = c->verts; /* agent-c run 304 (third step): before the face lookup (target verts load ahead of the remap branch): 97.50 -> 97.55 */
             f = (c + off * 0)->face(i);
             cc = c;
@@ -85,7 +85,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 px = (int)(pt[a] - v[a]); /* agent-g run 210's folded `+ 0 * (int)(inside)` dropped by agent-c run 304 (see the f fold below) */
                 py = (int)(pt[b] - v[b]);
                 ex = w[a] - v[a];
-                ey = w[b] - v[b];
+                ey = w[b] - v[b]; if (pt) {} /* agent-c run 304 (fifth step): a second code-free pt test in the edge loop -- pt outranks the 6 constant (target pt = s3, 6 = s4): 97.80 -> 98.675 */
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
                     inside = 0 + 0 * (int)(f) + 0 * (int)(pt); /* agent-c run 304 (second step): c / cc folds replaced by pt; earlier: */ /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375; agent-c run 304: + f with the px fold of inside dropped -- f outranks inside (target f = t4 colours before inside, which then takes s2): 96.65 -> 96.85 */
                 }
