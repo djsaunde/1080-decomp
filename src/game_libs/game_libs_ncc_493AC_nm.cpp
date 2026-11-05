@@ -111,6 +111,7 @@ int Mgr::run() {
     while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
         { Elem *e1 = it.cur(); gl_func_00000000(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
         if (m50 == 0) {
+            if (it.cur()) {} /* agent-c run 302: code-free test of the current element (random test sweep): 99.6488 -> 99.6798 */
             if (it.cur()->test(0x2000)) {
                 gl_func_00000000(it.cur(), m9c);
             }
