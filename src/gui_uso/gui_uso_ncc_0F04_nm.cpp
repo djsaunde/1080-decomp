@@ -78,7 +78,10 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
             w = f->glyphs[idx].w;
             gl_func_00000000(f->ctx, f->tex, f->tw, f->th, u, v, w, h, 0);
             fw = w * sx;
-            gSPScisTextureRectangle(f->ctx->next(), f->ctx->nextp(), me(me(f->ctx))->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+            /* agent-g run 293: joint accessor-depth x append-method grid over the three rect packets (depth 0-3,
+             * next / nextp / nextc; 200 random of 1728, then a local search): the TEXRECT packet through
+             * nextc() at depth 3 and the RDPHALF_2 packet back at depth 0: 98.843 -> 99.681 */
+            gSPScisTextureRectangle(me(me(me(f->ctx)))->nextc(), f->ctx->nextp(), f->ctx->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
                 (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
             cx += (f32)f->glyphs[c].adv;
         } else {
