@@ -14,12 +14,14 @@ extern int D_00000000B;
 extern int D_00000000E;
 extern f32 D_00000000F[3];
 }
+template <int K> struct PadK { int a[K]; PadK() {} }; /* agent-c run 289: unreferenced frame pad (a class with a ctor keeps its home) */
 struct V3 { f32 x, y, z;
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
-    V3 operator+(V3 o) const { return V3(x + o.x, y + o.y, z + o.z); }
+    V3 operator+(const V3 &o) const { return V3(x + o.x, y + o.y, z + o.z); } /* agent-c run 289: by const reference -- the
+        * operand temporary bound to it is a full-expression temporary, homed at the frame top (the target's 412) */
     void operator*=(const V3 &k) { y *= k.y; x *= k.x; z *= k.z; } /* agent-g run 245: x, z, y (swap sweep, 95.665 -> 95.669); agent-c run 276: y, x, z with the e ctor's x product KV-first (order x operand grid, 95.669 -> 95.684) */
     void operator/=(const V3 &k) { x /= k.x; y /= k.y; z /= k.z; }
 };
@@ -31,11 +33,12 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
      * the V3 padt ctor it costs 4.7 points), 95.692 -> 95.714 */
     int count; /* agent-g run 195 / 224 placed it below the arrays (pre run-280 order) */
     count = 0;
-    V3(); /* agent-c run 278: an unreferenced 12-byte object `V3 padt` here = the target's frame 424; agent-c run 280: an
-           * empty-ctor TEMPORARY instead (no code) puts count at the target's sp+408 under it, 95.714 -> 95.722 */
+    /* agent-c run 278 / 280: an empty-ctor `V3();` temporary here stood in for the frame-top word block; agent-c run 289:
+     * that block is operator+'s const-reference operand temporary (see V3), so the stand-in is gone */
     f32 dists[8];
     int surfs[8];
     f32 hits[8][3];
+    PadK<4> pz; /* agent-c run 289: unreferenced pad object (kit CCCLI): frame 408 -> 424 = target, 95.722 -> 95.733 */
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
     dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_00000000B + 0x128);
