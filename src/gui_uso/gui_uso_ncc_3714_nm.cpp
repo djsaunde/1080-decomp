@@ -47,13 +47,10 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n; dl->n = n + 1; 
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
-extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) {
-    volatile s32 q0, q1, q2, q3, q4, q5, q6, q7;
-    s32 x, y;
-    s32 w, h;
-    f32 fw, fh;
-    Spr *spr;
-    if (arg4) {} /* agent-c run 268: BB split -- the texture append in a block of its own (ctx a1 as the target) */
+/* agent-g run 299 (kit CCCLXXIV source-line lever): the signature, the declarations and the `if (arg4) {}` split on ONE
+ * line -- the entry block's arg1 home store (sw a1,100(sp)) now shares the first statement's line, so as1 issues the
+ * CTX address addiu before it like the target (99.141 -> 99.922; signature x declaration x first-test joins, 24) */
+extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) { volatile s32 q0, q1, q2, q3, q4, q5, q6, q7; s32 x, y; s32 w, h; f32 fw, fh; Spr *spr; if (arg4) {} /* agent-c run 268: BB split -- the texture append in a block of its own (ctx a1 as the target) */
     /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 97.41 -> 97.94. agent-c run 269 (kit CCCXIV): the gSPTexture
      * macro written out with the BB split BETWEEN the packet allocation and its two stores (and none before spr): the alloc
      * block keeps the ctx on a1, while _g now also lives in the loader-call block, where the call's argument registers are
