@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00035B1C",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-05T20:23:07.032180+00:00",
+  "end_time": "2026-11-05T20:23:07.032199+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-05T20:23:07.032195+00:00",
+      "assistant_text": "In-tree IDO 7.1 C promoted from the 98.77 NM body (agent-c run 302). The vtable store moves into the if(1)-split goto block as if (1) { STORE; } goto c35; so it keeps a higher line and as1 issues it after the member test's addiu v1 / li at; c35 now starts with p = o + 4; q = p; so ugen numbers the vtable la (t6) before p's o + 4 (t7), giving the target's t8 for the a3 load and the rest of the temp ring. No pre-goto code and no pad. Baked 0x1E6B0 via the gl_ref_0001E6B0 pin.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 77,
+  "initial_m2c_source": null,
+  "final_source": "/* gl_func_00035B1C (0x134 / 77 words): list-append constructor. The old\n * bundle note is stale: the .s is one function now (the three tail leaves are\n * their own symbols at 0x35C50 / 0x35C58 / 0x35C60).\n *   o = o ? o : alloc(0x10); if (o) { o->0C = &D (vtable); placement-construct\n *   the 4-byte member at o+4 (alloc(4) if &o->4 is null) to 0; o->08 = a3;\n *   for each node of a1->04 list: if node->4 == a2, report(0x1E6B0, &a2);\n *   append o at the list tail; o->0 = 0; o->4 = a2 }; return o.\n * EXACT (agent-c run 302): a2 and the per-node temp are 4-byte STRUCTS\n * (W35B1C): the struct copies keep `sw t1,0(s1)` through s1 = &tmp and\n * `lw t8,0(s3)` through s3 = &a2; a3 is read through a pointer so it stays in\n * its home; decl order a3p, q, last, s0, tmp, p gives frame 0x50 with tmp at\n * 0x3C and p's spill at 0x34. The vtable store is issued after the member\n * test's `addiu v1` / `li at` (kits CCCLXXIV / CCCLXXVII): it sits in a goto\n * block placed after the body, `if (1) { STORE; } goto c35;` (the BB-split\n * keeps its own higher line while ugen emits it first), and c35 starts with\n * `p = o + 4; q = p;` so ugen numbers the la (t6) before p's o + 4 (t7) like the\n * target (t8 for the a3 load). The baked 0x1E6B0 address is the\n * gl_ref_0001E6B0 pin. */\nextern char gl_ref_0001E6B0;\ntypedef struct { int v; } W35B1C;\nchar *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {\n    int *a3p = &a3;\n    W35B1C *q;\n    char *last;\n    char *s0;\n    W35B1C tmp;\n    W35B1C *p;\n    if (o != 0 || (o = (char *)gl_func_00000000(0x10)) != 0) {\n        goto z35;\n    c35:\n        p = (W35B1C *)(o + 4); q = p;\n        if ((W35B1C *)(o + 4) != 0 || (q = (W35B1C *)gl_func_00000000(4)) != 0) q->v = 0;\n        *(int *)(o + 8) = *a3p;\n        for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) {\n            tmp = *(W35B1C *)(s0 + 4);\n            if (tmp.v == a2.v) gl_func_00000000(&gl_ref_0001E6B0, &a2);\n        }\n        last = 0;\n        for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) last = s0;\n        if (last != 0) *(char **)last = o; else *(char **)(a1 + 4) = o;\n        *(char **)o = 0;\n        *p = a2;\n        goto e35;\n    z35:\n        if (1) { *(int **)(o + 0xC) = &D_00000000; } goto c35;\n    }\ne35:\n    return o;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post0b.c",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1",
+    "compiler_flags": "-G 0 -non_shared -Xcpluscomm -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "objdiff 100 vs expected/src/game_libs/game_libs_post0b.c.o; ROM byte-identical; verify-blocks 6/6"
+  }
+}

@@ -1707,20 +1707,17 @@ void gl_func_00035AE0(int *dst) {
  *   the 4-byte member at o+4 (alloc(4) if &o->4 is null) to 0; o->08 = a3;
  *   for each node of a1->04 list: if node->4 == a2, report(0x1E6B0, &a2);
  *   append o at the list tail; o->0 = 0; o->4 = a2 }; return o.
- * NM (2026-10-15 agent-c, 66.3 -> 2 words off): a2 and the per-node temp are
- * 4-byte STRUCTS (W35B1C): the struct copies keep `sw t1,0(s1)` through
- * s1 = &tmp and `lw t8,0(s3)` through s3 = &a2 (plain ints fold to sp offsets);
- * a3 is read through a pointer so it stays in its home (an int a3 takes an
- * s-reg); decl order a3p, q, last, s0, tmp, p gives frame 0x50 with tmp at 0x3C
- * and p's spill at 0x34; `if (o != 0 || (o = alloc) != 0) { ... } return o;`
- * gives the shared epilogue. Residual: the target schedules the vtable store
- * `sw t6,12(s4)` after `addiu v1,s4,4; addiu at,zero,-4` (just before the bne);
- * every build has it right after `addiu t6`. Not moved by: statement order
- * (store before/after p and q), any one-line join of the four statements
- * (32 variants), a named &D local, p volatile or address-taken, storing
- * through p+8, 5 min of permuter. The baked 0x1E6B0 address needs a
- * gl_ref_0001E6B0 pin when this goes on the build path. */
-#ifdef NON_MATCHING
+ * EXACT (agent-c run 302): a2 and the per-node temp are 4-byte STRUCTS
+ * (W35B1C): the struct copies keep `sw t1,0(s1)` through s1 = &tmp and
+ * `lw t8,0(s3)` through s3 = &a2; a3 is read through a pointer so it stays in
+ * its home; decl order a3p, q, last, s0, tmp, p gives frame 0x50 with tmp at
+ * 0x3C and p's spill at 0x34. The vtable store is issued after the member
+ * test's `addiu v1` / `li at` (kits CCCLXXIV / CCCLXXVII): it sits in a goto
+ * block placed after the body, `if (1) { STORE; } goto c35;` (the BB-split
+ * keeps its own higher line while ugen emits it first), and c35 starts with
+ * `p = o + 4; q = p;` so ugen numbers the la (t6) before p's o + 4 (t7) like the
+ * target (t8 for the a3 load). The baked 0x1E6B0 address is the
+ * gl_ref_0001E6B0 pin. */
 extern char gl_ref_0001E6B0;
 typedef struct { int v; } W35B1C;
 char *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {
@@ -1729,16 +1726,11 @@ char *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {
     char *last;
     char *s0;
     W35B1C tmp;
-    int pad; /* agent-c run 301: frame word between tmp and p (p's spill back at the target's sp+52) */
     W35B1C *p;
     if (o != 0 || (o = (char *)gl_func_00000000(0x10)) != 0) {
-        /* agent-c run 301 (kit CCCLXXVII): the vtable store and p in an if(1)-split goto block (kit CCCLXXIV line
-         * keeping): the store keeps its own higher line, so as1 issues it after `addiu v1` / `li at` like the target;
-         * the c block must start with the real `o + 4 != 0` test (a c block starting with an assignment does not
-         * merge): 97.40 -> 98.77, same length. Residual: one ugen temp short after the block (t7 vs t8 onward). */
-        q = (W35B1C *)(o + 4);
         goto z35;
     c35:
+        p = (W35B1C *)(o + 4); q = p;
         if ((W35B1C *)(o + 4) != 0 || (q = (W35B1C *)gl_func_00000000(4)) != 0) q->v = 0;
         *(int *)(o + 8) = *a3p;
         for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) {
@@ -1752,14 +1744,11 @@ char *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {
         *p = a2;
         goto e35;
     z35:
-        if (1) {} *(int **)(o + 0xC) = &D_00000000; p = q; goto c35;
+        if (1) { *(int **)(o + 0xC) = &D_00000000; } goto c35;
     }
 e35:
     return o;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035B1C);
-#endif
 
 void game_libs_func_00035C50(int a0) {}
 
