@@ -41,6 +41,20 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
+/* agent-g run 293 (kit CCCLXV shared packet pointers): the same macros writing through a caller-named Gfx pointer:
+ * texture / RDPHALF_2 share gpa, TEXRECT / RDPHALF_1 share gpb (all 15 partitions tried): 99.580 -> 99.601 */
+#define gImmp1S(VV, pkt, c, p0) { VV = (Gfx *)(pkt); VV->words.w0 = _SHIFTL((c), 24, 8); VV->words.w1 = (unsigned int)(p0); }
+#define gSPTextureS(VV, pkt, s, t, level, tile, on) \
+{ VV = (Gfx *)(pkt); \
+	VV->words.w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(0, 16, 8) | _SHIFTL(level, 11, 3) | _SHIFTL(tile, 8, 3) | _SHIFTL(on, 0, 8)); \
+	VV->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); }
+#define gSPScisTextureRectangleS(V1, V2, V3, pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+{ V1 = (Gfx *)(pkt); \
+    V1->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)); \
+    V1->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    gImmp1S(V2, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
+                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
+    gImmp1S(V3, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
     Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
@@ -54,12 +68,13 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
+    Gfx *gpa, *gpb;
     Spr *spr;
     s32 x, y;
     f32 fw, fh;
     s32 t;
     s32 w, h;
-    gSPTexture(CTX->nDQ(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
+    gSPTextureS(gpa, CTX->nDQ(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
                                                       * agent-g run 293: depth 0 here with the joint rect grid below */
     spr = arg0->spr;
     w = spr->w;
@@ -82,6 +97,6 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fh = y1 - y0;
     /* agent-g run 293: joint accessor-depth x append-method grid over the four appends (200 random of 20736 + local
      * search): TEXRECT / RDPHALF_1 through nD() at depth 2, RDPHALF_2 through next() at depth 1: 99.371 -> 99.476 */
-    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangleS(gpb, gpb, gpa, me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
