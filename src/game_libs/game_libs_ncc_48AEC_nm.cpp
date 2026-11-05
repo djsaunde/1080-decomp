@@ -110,7 +110,7 @@ void Obj::draw() {
             }
         }
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
-        func_00000000(mtx, mt);
+        func_00000000(mtx, mt); if (this) {} /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
         me(me(gctx))->pushQ(mt, cmd);
 #undef mt
