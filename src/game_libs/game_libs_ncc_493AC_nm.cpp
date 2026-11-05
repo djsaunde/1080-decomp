@@ -69,6 +69,7 @@ struct AIter : IBase {
 };
 inline AIter Arr::iter() { return AIter(this); }
 
+template <class T> inline T *me(T *p) { return p; }
 struct Grid { int w; int n; char pad8[0x18 - 0x8]; s16 *tbl18; int *row1C; };
 struct Ent { u16 key; char pad[6]; };
 struct BB {
@@ -149,7 +150,7 @@ int Mgr::run() {
                 gl_func_00000000(S(0x1FF90), S(0x1FFA0), 3287);
             }
             o->n80 = o->ctx6C->count();
-            o->ctx6C->noop();
+            me(me(o->ctx6C))->noop(); /* agent-c run 299: zero-code accessor depth 2 on this receiver (random depth search, kit CCCLXXI lever): 99.56 -> 99.62 */
             o->lo50 = 0x80;
             o->hi54 = 0; if (o) {} /* agent-c run 299: code-free tests of o here and of k after the row block (random test sweep): 99.52 -> 99.56 */
             for (k = 0; k < grid->n; k++) {
