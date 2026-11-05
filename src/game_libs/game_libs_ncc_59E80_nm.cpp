@@ -70,10 +70,11 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     /* agent-g run 269: nextC() spelling: 98.48 -> 98.50; agent-c run 295: folded counted use of c on the pointer
      * (zero-use sweep on the shared-pointer body): 99.780 -> 99.835 */
     /* agent-c run 296: with the split after 0x1402, the fold moved to the 0x1C04 packet (its nextC temp takes the
-     * target's a3) and 0xC04 back on next(): 99.835 -> 99.890 */
+     * target's a3) and 0xC04 back on next(): 99.835 -> 99.890; then the fold's counted use on o->f104 instead of c
+     * (fold spelling grid): the o reload keeps the target's v0, 99.890 -> 99.945 */
     { gv = c->next(); gv->w0 = 0xBC000C04; gv->w1 = 3; }
     { gu = c->next(); gu->w0 = 0xBC001404; gu->w1 = 0xFFFD; }
-    { gs = c->nextC() + 0 * (int)(c); gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
+    { gs = c->nextC() + 0 * o->f104; gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
         gl_func_00034458(c, o->s148->fF0); if (1) {}
         { gv = c->next(); gv->w0 = 0xB7000000; gv->w1 = 1; }
