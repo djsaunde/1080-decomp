@@ -109,8 +109,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         pp = &p.x + 0 * (int)(ib) + 0 * (int)(ia);
         qa = pp[ia]; qb = pp[ib]; if (1) {}
         sg = (&self->tris[i])->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); if (1) {} /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
-        nx = (s16 *)&D_00000000;
-        vt = col->verts;
+        nx = (s16 *)&D_00000000 + 0 * (int)(col); /* agent-c run 286: folded col use (zero-use sweep after the vt change, 95.30 -> 99.01) */
+        vt = self->col->verts; /* agent-c run 286: the target loads verts from the self->col web (lw t5,96(s5)), not from col */
         fv = (u16 *)f;
         do {
             v0 = vt[fv[1]]; /* agent-c run 273: a code-free 0.0f use inside the inner loop (qa set before the loop, the test after the dx line) raises
