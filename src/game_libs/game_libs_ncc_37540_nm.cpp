@@ -8,11 +8,13 @@
  * a BY-VALUE operator= (the word copy into the sp+28 parameter temp, then z, y, x). Length = target (764).
  * cfe body 81.17 -> 93.58. LEFT: zero / a colouring (target zero f14, a f16; build swapped), t-register numbering. */
 typedef float f32;
-struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { z = c; y = b; x = a; } 
-    void operator=(V3 v) { z = v.z; y = v.y; x = v.x; }
+/* agent-g run 289: member orders re-gridded after the block-scoped v60 read below (ctor x, y, z; operator= y, x, z;
+ * += z, x, y; 72 orders): 97.267 -> 97.634 */
+struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
+    void operator=(V3 v) { y = v.y; x = v.x; z = v.z; }
     void operator*=(f32 k) { x *= k; y *= k; z *= k; }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
-    void operator+=(const V3 &o) { z = z + o.z; y = y + o.y; x = x + o.x; } /* agent-c run 201 operator order grid: z, y, x (+ ctor z, y, x): 93.47 -> 95.61 standalone */
+    void operator+=(const V3 &o) { z = z + o.z; x = x + o.x; y = y + o.y; } /* agent-c run 201 operator order grid: z, y, x (+ ctor z, y, x): 93.47 -> 95.61 standalone */
 };
 struct Node { char pad[0x30]; char m30[0x20]; V3 v50; char pad5C[4]; V3 v60; char pad6C[0xA0 - 0x6C]; V3 vA0; };
 struct Inp { f32 x, y; int pad[2]; volatile int flags; int fl() { return flags; } };
@@ -22,7 +24,7 @@ extern "C" void gl_func_00034458(...);
  * bootup.uso RoData (ROM 0xD9FE44 + off) 0x19F8 = 0x3D75C28F = 0.06f, 0x19FC = 0x3F266666 = 0.65f, 0x1A00 =
  * 0x3F666666 = 0.9f (37348's own 0.06f / 0.65f pair sits right before them at 0x19F0 / 0x19F4, in code order);
  * the former D_37540_19F8 / _19FC / _1A00 aliases are gone: 96.518 -> 97.565 standalone, same length. */
-inline f32 gr(Node *n, f32 &y, f32 &z) { if (0) { n = 0; } f32 x = n->v60.x; y = n->v60.y; z = n->v60.z; n->v60.x = 0.0f; return x; }
+inline Node *id(Node *n) { if (0) { n = 0; } return n; }
 inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
@@ -54,7 +56,11 @@ extern "C" void gl_func_00037540(Obj *o) {
     b = o->in->x * 0.06f;
     if (b < 0.0f) ab = -b; else ab = b;
     if (ab < 0.65f) b = 0.0f;
-    hx = gr(s, hy, hz);
+    /* agent-g run 289: the saved v60 read in a block through a kept-parameter id() (one s load, like the old gr()), x
+     * assigned straight to hx: hx's register LR now spills to hx's own home sp+168 like the target (gr()'s local x
+     * took a fresh sp+72 slot) and the push vector below moves to the target's sp+68: 97.565 -> 97.267 alone, 97.634
+     * with the V3 member re-grid (a plain `Node *n = s` hoists the s load into the first compare block: 94.20) */
+    { Node *n = id(s); hx = n->v60.x; hy = n->v60.y; hz = n->v60.z; n->v60.x = 0.0f; }
     sy(s, 0.0f); sz(s, 0.0f);
     { V3 v1(0.0f, -b, 0.0f); call(s, &v1, o); }
     vB4.set(s->v50.x, s->v50.y, s->v50.z);
