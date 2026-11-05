@@ -12664,14 +12664,14 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     char *temp_v1;
 
     arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
-    temp_s1 = FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
+    temp_s1 = (char *)FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
     gl_func_00034458(temp_s1);
     if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free test of the arg0->0x240 reload right after the call (expression-test sweep, kit CCCXLI): 97.52 -> 97.57 */
     if (temp_s1) {} /* agent-g run 278: code-free tests on temp_s1 after this call and after the temp_t6 read (random test search, 2 rounds): 95.36 -> 95.65, length = target */
-    temp_v1 = FW(arg0, 0x240);
-    temp_v0 = FW(temp_v1, 0x28);
+    temp_v1 = (char *)FW(arg0, 0x240);
+    temp_v0 = (char *)FW(temp_v1, 0x28);
     temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
-    temp_v1 = FW(arg0, 0x240);
+    temp_v1 = (char *)FW(arg0, 0x240);
     /* agent-g run 281: code-free tests of two of the block's loads (temp_v1->0x148, ->0xC0) before the block (kit
      * CCCXL creation order; expression-test sweep): 96.02 -> 97.52, same length */
     if (FW(temp_v1, 0x148)) {}
@@ -12679,9 +12679,9 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     {
         /* agent-c run 196: p100 / pDC from a re-read of arg0->0x240 (CSE'd load, unfolded
          * `addiu a2,v1,256` / `addiu t7,v1,220` held like the target; kit CLXX 5.) */
-        char *p100 = FW(arg0, 0x240) + 0x100;
+        char *p100 = (char *)(FW(arg0, 0x240) + 0x100);
         s32 p78 = (s32)(temp_v1 + 0x78) + 0 * arg1; /* agent-g run 279: p78 an int (pointer -> int conversion): the +0x78 base is held in a register like the target's t1 (`lw a3,0(t1)` / `lw t0,0(t1)`) instead of folding into 120(v1): 95.80 -> 95.87. agent-g run 206: folded counted use of arg1 (kit CXCIV grid): 94.24 -> 95.12, 408 -> 412 bytes = target */
-        char *pDC = FW(arg0, 0x240) + 0xDC;
+        char *pDC = (char *)(FW(arg0, 0x240) + 0xDC);
         s32 m4;
         sp48 = FW(FW(temp_v1, 0x148), 0xF0);
         m4 = FW(p78, 0) & 4;
@@ -12700,19 +12700,19 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
           if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
           gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
     }
-    temp_t6 = FW(arg0, 0x240);
+    temp_t6 = (char *)FW(arg0, 0x240);
     if (temp_s1) {}
     /* agent-c run 196: int-cast address keeps the target's `lui; addiu; sw 596(rX)` */
     *(char **)((int)&D_00000000 + 0x254) = temp_t6;
-    FW(temp_t6, 0x158) = temp_s1;
-    temp_v0_2 = FW(arg0, 0x290);
-    temp_s0 = FW(temp_v0_2, 0x28);
+    FW(temp_t6, 0x158) = (int)temp_s1;
+    temp_v0_2 = (char *)FW(arg0, 0x290);
+    temp_s0 = (char *)FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
-    temp_a3 = FW(temp_s1, 0xC);
+    temp_a3 = (char *)FW(temp_s1, 0xC);
     if (temp_s1) {} /* agent-g run 278: third random-test round: 95.65 -> 95.80 */
     temp_a1_2 = FW(temp_a3, 0x4);
     FW(temp_a3, 0x4) = (s32) (temp_a1_2 + 1);
-    temp_v0_3 = FW(FW(temp_s1, 0xC), 0x0) + temp_a1_2 * 8; /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
+    temp_v0_3 = (char *)(FW(FW(temp_s1, 0xC), 0x0) + temp_a1_2 * 8); /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
     FW(temp_v0_3, 0x0) = 0xE9000000;
     FW(temp_v0_3, 0x4) = 0;
     gl_func_00034458(temp_s1, temp_a1_2);
@@ -12721,7 +12721,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
      * temp_a3 (the target's a3 for the temp_s1->0xC web above) is reused for the later a3 argument, so its first web
      * colours a3 instead of v1; as an assignment expression in the call the load keeps its argument-order slot after
      * the a0 load (a separate statement issues it first): 98.641 -> 98.786, same length */
-    gl_func_00034458(FW(arg0, 0x218), arg1, 0, (temp_a3 = FW(temp_s1, 0x60)), temp_s0, (char *)4);
+    gl_func_00034458(FW(arg0, 0x218), arg1, 0, (temp_a3 = (char *)FW(temp_s1, 0x60)), temp_s0, (char *)4);
     gl_func_00034458(FW(arg0, 0x218), arg1);
 }
 #else
