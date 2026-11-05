@@ -40,8 +40,8 @@ struct Vec3 {
     void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; } /* agent-g run 245: x, y, z source order (uopt emits the stores z, y, x like the target now): 91.56 -> 91.58 */
     Vec3 operator-(const Vec3 &v) const { Vec3 r; float a = x - v.x; float b = y - v.y; float c = z - v.z; r.x = a; r.y = b; r.z = c; return r; }
     void operator+=(const Vec3 &v) {  x += v.x;
- z += v.z;
- y += v.y;  }
+ y += v.y;
+ z += v.z;  } /* agent-c run 288 (fork B): x, y, z (the target's tail `e += w` adds) together with the k2 operand swap below: 93.68 -> 93.85 */
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
     float len2x() const { float r = x * x + y * y + z * z; return r; } /* agent-c run 248: e's length in x, y, z order (w keeps len2): 93.484 -> 93.492 */
     float len2() const { return y * y + x * x + z * z; } /* agent-g run 259: the named result moved out to the caller's function-scope l (see below); agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
@@ -118,7 +118,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
     } else {
         w *= 0.0f;
     }
-    k2 = s0->f118 * (mag - s0->fB8);
+    k2 = (mag - s0->fB8) * s0->f118; /* agent-c run 288: operands swapped (target mul.s f0,f10,f4) */
     e *= k2;
     e += w;
     game_uso_func_072EE8(c.getOut()->f30, &e);
