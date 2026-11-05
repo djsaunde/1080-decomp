@@ -13081,6 +13081,10 @@ extern void D_E354_GA(void);
  * As a typed s32 array the two arms' GB lda become ONE live range: uopt splits it at the GA register (v1) and
  * re-materialises it at the 0x1724 block like the target (lui v1; addiu v1; sw 0x14(v1)). */
 extern s32 D_E354_GB[];
+/* agent-g run 284: the switch-1 0x90000000 command call through a VOID prototype (its result is never read; blank jal,
+ * NM-only like gl_E354_emitf). With an int result the call defines v0 inside the 8 / 0x40 pick's live range and uopt
+ * forbids the pick v0 (zdbug:5 `forbidden: [1 ...]`); the target keeps the pick in v0 across these calls. */
+extern void gl_E354_v(s32, s32);
 void gl_func_0002E354(char *arg0, s32 arg1) {
     /* agent-g run 224: declaration order and count from the target frame (0x80: saves end 0x28,
      * spill 0x2C, 20 home words 0x30..0x7F): sp7D at frame-3 behind two u8s, three words before
@@ -13189,16 +13193,21 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 } else {
                     var_v0 = 8;
                 }
-                temp_v1_3 = *(u8 *)((char *)(arg0) + 0x21); if (var_v0 != temp_v1_3) {} /* agent-g run 272: code-free compare (both set on every path): a use of var_v0 in the switch head block raises its priority */
-                switch (temp_v1_3) {                /* switch 1; irregular */
+                /* agent-g run 284: the selector in the (otherwise unused) parameter arg1, not the u8 temp_v1_3: an
+                 * s32 web has no u8 -> int cvt LR (the cvt phantom took v0 at adjsave 2.5), and the parameter adds no
+                 * home word (a new local moved the (s8) spill 0x2C -> 0x28); temp_v1_3 stays declared for the frame */
+                arg1 = *(u8 *)((char *)(arg0) + 0x21); if (var_v0 != arg1) {} /* agent-g run 272: code-free compare (both set on every path): a use of var_v0 in the switch head block raises its priority */
+                switch (arg1) {                     /* switch 1; irregular */
                 case 0:                             /* switch 1 */
-                    func_00000000(0x90000000, 6);
+                    /* agent-g run 284: folded counted uses of the pick in each arm's first call (kit CCCXLVI adjsave):
+                     * pick 1.25 -> 3.25, coloured ahead of the arg1 selector (2.5): pick v0 / selector v1 like the target */
+                    gl_E354_v(0x90000000, 6 + 0 * (int)(var_v0 + var_v0 + var_v0));
                     func_00000000(0x0500FF00, (s8) var_v0);
                     func_00000000(0x05020000, (s8) var_v0);
                     break;
                 case 1:                             /* switch 1 */
                 case 2:                             /* switch 1 */
-                    func_00000000(0x90000000, 0x60);
+                    gl_E354_v(0x90000000, 0x60 + 0 * (int)(var_v0 + var_v0 + var_v0));
                     func_00000000(0x0500FF00, (s8) var_v0);
                     func_00000000(0x05020100, (s8) var_v0);
                     break;
@@ -13277,8 +13286,10 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                          * whole function) made its web live here and forbade v0 to the hoisted constant 1 (target
                          * `addiu v0,zero,1`, ours t0): 99.8969 -> 99.9077, same length. Was: agent-g run 269: s32
                          * temp_v1 + (u8) switch cast (target v1, no `or v1,v0` copy): 98.24 -> 98.41 */
-                        var_t9 = *(u8 *)((char *)(arg0) + 0x15);
-                        switch (var_t9) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
+                        /* agent-g run 284: o->0x15 held in arg1 (the switch-1 selector's variable, coloured v1 like the
+                         * target's `lbu v1,21(s0)`; every arm below writes var_t9, so the pick stays alone in a2) */
+                        arg1 = *(u8 *)((char *)(arg0) + 0x15);
+                        switch (arg1) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
                         /* agent-g run 272: the 0..3 a2 pick in var_t9, not var_v0 (target: two variables -- the
                          * 8 / 0x40 pick keeps var_v0's home 0x58 and colours alone, this one is the a2 web) */
                         case 1: var_t9 = 0; break;
