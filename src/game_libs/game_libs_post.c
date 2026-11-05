@@ -14802,7 +14802,7 @@ s32 arg2;
                 break;
             }
         }
-        D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path) */
+        D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv) + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path); agent-g run 287: second fold (random fold search): 99.451 -> 99.555 */
         if (sv) {}
         if (D_30AF4_m == 0 && sub == 0) {
             ((GlState30AF4 *)sv)->fC = 256; /* agent-g run 285: through sv (== &gl_state here: set before the switch, reassigned only in cases 4 / 10): with the four folds above 98.485 -> 98.648, same length.
