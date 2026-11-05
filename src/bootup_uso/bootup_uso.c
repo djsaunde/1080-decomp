@@ -837,14 +837,14 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         }
         k = 0;
         m = E68_MGR + 0 * arg3; /* agent-c run 209: folded counted use (kit CXCIV lever b); agent-g run 221: of arg3, not *cfg -- cfg's LR then ends at its two loads and takes s0 (arg2 s1) like the target */
-        ult = 0;
+        ult = 0; if (m) {} /* agent-g run 291: code-free test, see the `if (j) {}` below */
         for (i = 0; i < import_8001FFA0_h[1] / 64; i++) {
             vidx = 0;
             for (k2 = 0; k2 != 2; k2++) {
                 uls = 0;
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
                     s32 vs, ve;
-                    ve = (vidx + 3) * 2; vs = vidx * 2;
+                    ve = (vidx + 3) * 2; vs = vidx * 2; if (j) {} /* agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642) */
                     /* agent-g run 291: the CULL packet on the named vs / ve (the gSPCullDisplayList operands
                      * pre-scaled) instead of recomputing (vidx) * 2 / (vidx + 3) * 2: two fewer coloured items in
                      * the packet BBs, so gen_outparcode's per-BB store temps fit the spilltemps pool and the frame
