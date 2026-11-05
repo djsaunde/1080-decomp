@@ -13255,7 +13255,12 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                 *(u8 *)((char *)(arg0) + 0x16) = (u8) (*(u8 *)((char *)(arg0) + 0x16) & ~1);
             }
             var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
-            temp_v1_2 = var_v0_2;
+            /* agent-g run 283 (zdbug:5 dump): the target's `or t0,v0` copy is the 0x14 SELECTOR variable of switch 6
+             * (t0: its 0x23-block web forbids v0..a3), not a separate u8 temp: any plain copy was copy-propagated
+             * into the zero test (the a0 register was the u8 -> int cvt LR); the value-preserving re-read of o->0x14
+             * into var_v0_2 in the else arm (no store in between) kills the propagation, and the BB split after
+             * the copy keeps var_v0_2 ahead of the copy's cvt for v0: 99.9294 -> 99.9403, same length */
+            temp_v0_2 = var_v0_2; if (1) {}
             /* agent-g run 272: o->0x2C read in place at both tests (lever-sweep denaming; no store between them):
              * target `beql v0,v1` operand order, 99.767 -> 99.777 */
             if (var_v0_2 != *(u8 *)((char *)(arg0) + 0x2C)) {
@@ -13300,7 +13305,7 @@ void gl_func_0002E354(char *arg0, s32 arg1) {
                     goto block_2C;
                 } else {
                 /* case 3 (switch 3, flattened) */
-                    if (temp_v1_2 == 0) {
+                    var_v0_2 = *(u8 *)((char *)(arg0) + 0x14); if (temp_v0_2 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = 0;
                         *(u8 *)((char *)(arg0) + 0x33) = 0U;
                         goto block_81;
@@ -13458,9 +13463,11 @@ block_83:
                  * Second pass: no variable at all -- the raceB word read in place at each compare (one CSE'd load
                  * web, no intervening store); a load expression ranks like a computed operand (kit CCCXXXIX), so
                  * the hoisted 4 goes first like the target's `beq v1,v0` / `bne v1,v0`: 99.9077 -> 99.9294 */
-                var_v0 = *(u8 *)((char *)(arg0) + 0x14);
+                /* agent-g run 283: the selector in temp_v0_2 (its earlier `temp_v0_2 = temp_v1` web is dead here),
+                 * var_v0 keeps only the 8 / 0x40 pick */
+                temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                 if ((D_raceA_E354 == 1) && (((u32)D_raceB_E354 == 4) || ((u32)D_raceB_E354 == 0xA)) && (((u32)D_raceB_E354 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
-                    if (var_v0 == 0) {
+                    if (temp_v0_2 == 0) {
                         var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
                         if (var_v0_3 == 0) {
                             temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
@@ -13492,8 +13499,8 @@ block_83:
                              * down ((1 - f) / n + f lerp), not a GA field (both bases are 0-placeholder lda's; the
                              * target recomputes the base for this store instead of reusing the GA register) */
                             D_E354_GB[5] = 0x20;
-                            D_E354_1C73C_a = temp_f10_2;
-                            gl_E354_setf(0x04010900, temp_f10_2); var_v0 = *(u8 *)((char *)(arg0) + 0x14);
+                            D_E354_1C73C_a = temp_f10_2; if (temp_v0_2) {} /* agent-g run 283: code-free read of the selector (set at the block head on every path) */
+                            gl_E354_setf(0x04010900, temp_f10_2); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         }
                     } else {
                         temp_v0 = D_E354_GB[5];
@@ -13510,13 +13517,13 @@ block_83:
                             }
                             D_E354_GB[5] = (s32) (temp_v0 - 1);
                             D_E354_1C73C_c = temp_f0;
-                            gl_E354_setf(0x04010900, temp_f0); var_v0 = *(u8 *)((char *)(arg0) + 0x14);
+                            gl_E354_setf(0x04010900, temp_f0); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         } else {
-                            gl_E354_setf(0x04010900, 1.0f); var_v0 = *(u8 *)((char *)(arg0) + 0x14);
+                            gl_E354_setf(0x04010900, 1.0f); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
                         }
                     }
                 }
-                switch ((unsigned)var_v0) {              /* switch 6; irregular */
+                switch ((unsigned)temp_v0_2) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
                         *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
@@ -13557,7 +13564,7 @@ block_83:
                     gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, (s32) *(u8 *)((char *)(arg0) + 0x15), (s32) *(u8 *)((char *)(arg0) + 0x28));
                     break;
                 default:                            /* switch 6 */
-                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, var_v0 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
+                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v0_2 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
                     func_00000000(*(u8 *)((char *)(arg0) + 0x21));
                     break;
                 }
