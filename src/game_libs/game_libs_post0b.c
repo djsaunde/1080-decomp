@@ -1729,12 +1729,17 @@ char *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {
     char *last;
     char *s0;
     W35B1C tmp;
+    int pad; /* agent-c run 301: frame word between tmp and p (p's spill back at the target's sp+52) */
     W35B1C *p;
     if (o != 0 || (o = (char *)gl_func_00000000(0x10)) != 0) {
-        *(int **)(o + 0xC) = &D_00000000;
-        p = (W35B1C *)(o + 4);
-        q = p;
-        if (q != 0 || (q = (W35B1C *)gl_func_00000000(4)) != 0) q->v = 0;
+        /* agent-c run 301 (kit CCCLXXVII): the vtable store and p in an if(1)-split goto block (kit CCCLXXIV line
+         * keeping): the store keeps its own higher line, so as1 issues it after `addiu v1` / `li at` like the target;
+         * the c block must start with the real `o + 4 != 0` test (a c block starting with an assignment does not
+         * merge): 97.40 -> 98.77, same length. Residual: one ugen temp short after the block (t7 vs t8 onward). */
+        q = (W35B1C *)(o + 4);
+        goto z35;
+    c35:
+        if ((W35B1C *)(o + 4) != 0 || (q = (W35B1C *)gl_func_00000000(4)) != 0) q->v = 0;
         *(int *)(o + 8) = *a3p;
         for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) {
             tmp = *(W35B1C *)(s0 + 4);
@@ -1745,7 +1750,11 @@ char *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {
         if (last != 0) *(char **)last = o; else *(char **)(a1 + 4) = o;
         *(char **)o = 0;
         *p = a2;
+        goto e35;
+    z35:
+        if (1) {} *(int **)(o + 0xC) = &D_00000000; p = q; goto c35;
     }
+e35:
     return o;
 }
 #else
