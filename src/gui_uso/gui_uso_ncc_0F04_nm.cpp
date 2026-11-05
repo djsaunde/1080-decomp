@@ -41,6 +41,21 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
+/* agent-g run 293 (kit CCCLXV shared packet pointers): the same macros writing through a caller-named Gfx pointer, so
+ * packets the target keeps in one register share one variable (texture / TEXRECT / RDPHALF_2 = gpa, RDPHALF_1 = gpb;
+ * all 15 partitions of the four packets tried): 99.744 -> 99.764 */
+#define gImmp1S(VV, pkt, c, p0) { VV = (Gfx *)(pkt); VV->words.w0 = _SHIFTL((c), 24, 8); VV->words.w1 = (unsigned int)(p0); }
+#define gSPTextureS(VV, pkt, s, t, level, tile, on) \
+{ VV = (Gfx *)(pkt); \
+	VV->words.w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(0, 16, 8) | _SHIFTL(level, 11, 3) | _SHIFTL(tile, 8, 3) | _SHIFTL(on, 0, 8)); \
+	VV->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); }
+#define gSPScisTextureRectangleS(V1, V2, V3, pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
+{ V1 = (Gfx *)(pkt); \
+    V1->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)); \
+    V1->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    gImmp1S(V2, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
+                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
+    gImmp1S(V3, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; }
@@ -51,6 +66,7 @@ struct Font { char p0[4]; int tex; char p8[8]; int h10; int h14; int tw; int th;
     Ctx *gc() { return ctx; } /* agent-g run 293: member getter (zero-code; its `this` is one more edg pool temp) */ };
 extern "C" int gl_func_00000000(...);
 extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsigned char *str) {
+    Gfx *gpa, *gpb;
     f32 cx;
     s32 h;
     unsigned char *p;
@@ -64,7 +80,7 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
     h = f->h14;
     /* agent-g run 292: the texture and RDPHALF_2 appends through a nested zero-code accessor me(me(f->ctx))
      * (kit CCLXXXIV per-pkt accessor grid, 81 + 241 combos): 98.588 -> 98.843 standalone */
-    gSPTexture(me(me(f->ctx))->nextc(), 0x8000, 0x8000, 0, 0, 1);
+    gSPTextureS(gpa, me(me(f->ctx))->nextc(), 0x8000, 0x8000, 0, 0, 1);
     cx = -((f32)gl_func_00000000(f, str) / 2.0f) - 2.0f;
     cy = -((f32)f->h10 / 2.0f);
     for (p = str, i = 0; i < (unsigned int)gl_func_00000000(str); p++, i++) {
@@ -83,7 +99,7 @@ extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsig
              * next / nextp / nextc; 200 random of 1728, then a local search): the TEXRECT packet through
              * nextc() at depth 3 and the RDPHALF_2 packet back at depth 0: 98.843 -> 99.681; then the ctx read of the
              * TEXRECT / RDPHALF_2 packets through the gc() member getter (the RDPHALF_2 one via me(f)): -> 99.744 */
-            gSPScisTextureRectangle(me(me(me(f->gc())))->nextc(), f->ctx->nextp(), me(f)->gc()->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+            gSPScisTextureRectangleS(gpa, gpb, gpa, me(me(me(f->gc())))->nextc(), f->ctx->nextp(), me(f)->gc()->nextc(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
                 (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
             cx += (f32)f->glyphs[c].adv;
         } else {
