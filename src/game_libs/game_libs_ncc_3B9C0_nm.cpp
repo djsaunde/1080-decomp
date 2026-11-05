@@ -94,9 +94,9 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         p.x = a->x + d.x * t; /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
-        col = self->col; if (1) {} /* agent-c run 235 (lever-sweep bbsplit, 95.06 -> 95.08) */
+        col = self->col; /* agent-c run 287: run 235's `if (1) {}` here and its + n use below dropped (stale, removal sweep flat at 99.07) */
         if (col->remap != 0) {
-            f = &col->faces[col->remap[i]] + 0 * (int)(n); /* agent-c run 235: folded counted use (zero-use-sweep, 95.08 -> 95.14) */
+            f = &col->faces[col->remap[i]];
         } else {
             f = &col->faces[i];
         }
@@ -108,7 +108,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
          * counted uses of ib / ia on pp and of pp on sg re-colour it (zero-use sweep: 94.19 -> 95.52) */
         pp = &p.x + 0 * (int)(ib) + 0 * (int)(ia);
         qa = pp[ia]; qb = pp[ib]; if (1) {}
-        sg = (&self->tris[i])->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); if (1) {} /* agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
+        sg = (&self->tris[i])->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); /* agent-c run 287: the trailing `if (1) {}` dropped (stale); agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
         nx = (s16 *)&D_00000000 + 0 * (int)(col); /* agent-c run 286: folded col use (zero-use sweep after the vt change, 95.30 -> 99.01) */
         vt = self->col->verts; /* agent-c run 286: the target loads verts from the self->col web (lw t5,96(s5)), not from col */
         fv = (u16 *)f;
@@ -124,7 +124,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
                 ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)) + 0 * (int)(num); /* agent-c run 286: the run-285 nz use dropped with nz; + num (set before the loop on every path; zero-use --keep-float, 99.01 -> 99.07); agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
             }
         } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
-        if (ok + 0 * (int)(vt)) { /* agent-g run 258: folded counted use of vt (zero-use re-sweep): 95.19 -> 95.24 */
+        if (ok) { /* agent-c run 287: agent-g run 258's folded vt use dropped (stale) */
             dist[cnt] = t;
             out[cnt] = &self->tris[i];
             if (pts != 0) {
