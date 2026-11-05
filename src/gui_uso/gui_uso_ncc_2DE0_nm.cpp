@@ -79,6 +79,10 @@ extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     fw = w * sx;
     y = (f32)y0 + (-((f32)h / 2) * sy);
     fh = h * sy;
-    gSPScisTextureRectangle(CTX->next(), CTX->nC(), me(me(CTX))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
-        (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
+    /* agent-c run 295 (kit CCCXXXVI int <-> pointer local): the RDPHALF_2 append's ctx read through an int copy of
+     * &D_00000000 with a folded counted use in the dtdy argument -- the &D web now spans the RDPHALF_1 MAX / MIN arms
+     * (rematerialised lui / addiu inside them like the target's t3): 96.766 -> 96.848, 1196 -> 1204 bytes (target 1212) */
+    int pc = (int)&D_00000000;
+    gSPScisTextureRectangle(CTX->next(), CTX->nC(), me(me((*(Ctx **)pc)))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+        (s32)(((f32)(w - 1) * 1024.0f) / fw), ((s32)(((f32)(h - 1) * 1024.0f) / fh) + 0 * (int)(pc)));
 }
