@@ -118,7 +118,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib];
             if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
-                ok = 0 + 0 * (int)(i); /* agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
+                ok = 0 + 0 * (int)(i) + 0 * (int)(nz); /* agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
             }
         } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
         if (ok + 0 * (int)(vt)) { /* agent-g run 258: folded counted use of vt (zero-use re-sweep): 95.19 -> 95.24 */
