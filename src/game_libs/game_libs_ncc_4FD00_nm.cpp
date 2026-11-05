@@ -47,9 +47,10 @@ int Col::side(int f1, int f2) {
     d2.set(mid);
     d2 -= b;
     /* agent-g run 296: both normal reads through four nested zero-code me() accessors (depth grid 0-6 x 0-6, 49):
-     * the extra `or v0,zero,zero` ours emitted inside the second face sum is gone (98.088 -> 98.586, same length) */
+     * the extra `or v0,zero,zero` ours emitted inside the second face sum is gone (98.088 -> 98.586, same length);
+     * then the second read also through gn() at depth 5 (random joint search + depth x getter grid, 169): -> 98.645 */
     f32 p1 = d1 * me(me(me(me(this))))->gn()[f1];
-    f32 p2 = d2 * me(me(me(me(this))))->nrm[f2];
+    f32 p2 = d2 * me(me(me(me(me(this)))))->gn()[f2];
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
