@@ -68,12 +68,14 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
-    Gfx *gpa, *gpb;
     Spr *spr;
     s32 x, y;
     f32 fw, fh;
     s32 t;
     s32 w, h;
+    /* agent-g run 294: the packet pointers declared LAST (homes below the named locals): frame 96 -> the target's 88,
+     * 99.601 -> 99.633 */
+    Gfx *gpa, *gpb;
     gSPTextureS(gpa, CTX->nDQ(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
                                                       * agent-g run 293: depth 0 here with the joint rect grid below */
     spr = arg0->spr;
