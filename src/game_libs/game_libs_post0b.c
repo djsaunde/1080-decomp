@@ -23343,7 +23343,11 @@ void gl_func_00059E80(char *arg0, char *arg1)
   gl_func_00034458(arg0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00059E80);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_59E80.cpp (agent-c run 164 lift,
+ * agent-c run 296 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+void gl_func_00059E80(char *arg0, char *arg1) {
+}
 #endif
 
 #ifdef NON_MATCHING

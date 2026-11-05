@@ -2074,13 +2074,15 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # alignment word before game_libs_func_00037A94 is an all-zero suffix (replaces the 8-byte _pad.s block).
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_00037938=0x00000000
 build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += gl_func_00037938=0x00000000
-# 59E80 = fixed render-state DL as stock-gbi-style packets on an inline next() under NCC (agent-c run 164: cfe 93.99 -> 97.75; NM body 0x450 -> 0x444 bytes = target). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_59E80_NM_DONOR := build/src/game_libs/game_libs_ncc_59E80_nm.cpp.o
-$(GAMELIBS_59E80_NM_DONOR): src/game_libs/game_libs_ncc_59E80_nm.cpp
+# 59E80 = fixed render-state DL as stock-gbi-style packets on an inline next() under NCC (agent-c run 164: cfe 93.99 -> 97.75; NM body 0x450 -> 0x444 bytes = target).
+# agent-c run 296: EXACT NCC donor over a placeholder (shared packet pointers, at(d) for the 0x1402 packet, no BB splits);
+# the blank jal words go through the 0-pinned gl_func_00034458_59E80 alias, the blank lui / addiu through the D_00000000 pin.
+GAMELIBS_59E80_DONOR := build/src/game_libs/game_libs_ncc_59E80.cpp.o
+$(GAMELIBS_59E80_DONOR): src/game_libs/game_libs_ncc_59E80.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00059E80=$(GAMELIBS_59E80_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_59E80_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00059E80=$(GAMELIBS_59E80_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_59E80_DONOR)
 # 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target; run 174: for-init list iterator -> 98.27 objdiff diff). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_34890_NM_DONOR := build/src/game_libs/game_libs_ncc_34890_nm.cpp.o
 $(GAMELIBS_34890_NM_DONOR): src/game_libs/game_libs_ncc_34890_nm.cpp

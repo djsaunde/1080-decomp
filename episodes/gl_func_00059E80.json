@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00059E80",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-05T13:42:55.217141+00:00",
+  "end_time": "2026-11-05T13:42:55.217155+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-05T13:42:55.217151+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.835 NM donor (agent-c run 296). The 0x1402 packet appends through an inline at(DLHead *d) with the head passed in: the post-increment's old count lands in the shared next() pool temp (the target's v1, the same LR as the 0xB9 packet's dl) while d keeps its own LR (v0); with that, all four earlier if (1) {} BB splits are dropped so the 0xB9 pointer sees d / gu / gs live and takes a3. The 0x1C04 packet uses nextC() with a folded counted use of o->f104 (its return temp lives into the o-test block as a3 and leaves v0 to the o reload). Packet pointers shared by register class (gv / gu / gs, kit CCCLXV). Spliced over a placeholder on both build paths; blank jal words via the 0-pinned gl_func_00034458_59E80 alias, lui / addiu via the D_00000000 pin.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 273,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00059E80 (0x444 / 273 words): lift agent-c run 164, exact agent-c run 296.\n * Fixed render-state display list (kit CX family): gSPSegment(0, 0), two gSPDisplayList(sub-DL builder results),\n * SetOtherMode_H texture LOD / alpha dither / colour dither / bilerp / perspective, SetCombine, clear + set\n * geometry mode, cycle type, alpha compare, blend + prim colour, gSPClipRatio(3) as four movewords, then the\n * optional z-buffer gSPSetGeometryMode(1) after the 0xF0 sub-call and the final call. Packets on\n * `Ctx::next() { int n = dl->count++; return &dl->buf[n]; }`; the two DisplayList packets through an inline\n * dlist(c, v). REPLACE_FUNC_BODY-spliced over the placeholder in game_libs_post0b.c on both build paths.\n * The gl_func_00034458 calls are the target's blank USO jal words (0x0C000000): they go through the 0-pinned\n * gl_func_00034458_59E80 alias (undefined_syms_auto.txt); D_00000000 is the existing 0 pin (blank lui / addiu). */\nextern \"C\" int gl_func_00034458_59E80(...);\nextern \"C\" char D_00000000[];\nstruct Gfx { unsigned int w0, w1; };\nstruct DLHead { Gfx *buf; int count; };\n/* agent-c run 296: the 0x1402 packet appends through at(d) with the DL head passed in: its post-increment's old count\n * lands in the shared next() pool temp (the target's v1, the 0xB9 packet's dl), d keeps its own LR (v0) */\nstruct Ctx { char pad[0xC]; DLHead *dl;\n    Gfx *next() { int n = dl->count++; return &dl->buf[n]; }\n    Gfx *nextC() { return &dl->buf[dl->count++]; }\n    Gfx *at(DLHead *d) { int n = d->count++; return &dl->buf[n]; } };\nstruct Sub { char pad[0xF0]; int fF0; };\nstruct Obj { char pad[0x104]; int f104; char pad108[0x148 - 0x108]; Sub *s148; };\n#define PKT(c, a, b) { Gfx *_g = (c)->next(); _g->w0 = (a); _g->w1 = (b); }\n/* agent-c run 294: the two DisplayList packets on an inline dlist() (kit CCCLXIII): its parameter temps are one\n * LR across both packets' blocks, so packet 2's n skips a2 like the target (dl a1 / n a3 in packets 2 and 3); the\n * code-free `d` read of c->dl before next() keeps the 0xFFFD / t1 sharing */\ninline void dlist(Ctx *c, int v) { DLHead *d = c->dl; Gfx *_g = c->next(); _g->w0 = 0x06000000; _g->w1 = v; }\nextern \"C\" void gl_func_00059E80(Ctx *c, Obj *o) {\n    int r1, r2;\n    /* agent-c runs 293-295 (kit CCCLXV): uopt colours each packet pointer as a block-granular LR, so packets the\n     * target gives the SAME register share one pointer variable: gv = the v0 packets (0x602 / 0x1301 / 0xF9 /\n     * 0xC04 / last 0xB7), gu = the a0 packets (0xC02 / 0xB7 / 0xFA / 0x1404), gs = the a1 packets (0xB6 / 0x1402 /\n     * 0x404) plus 0x1C04 */\n    Gfx *gu;\n    Gfx *gs;\n    Gfx *gv;\n    PKT(c, 0xBC000006, 0);\n    r1 = gl_func_00034458_59E80(D_00000000);\n    dlist(c, r1);\n    r2 = gl_func_00034458_59E80(D_00000000);\n    dlist(c, r2);\n    PKT(c, 0xBA001001, 0);\n    PKT(c, 0xBA000402, 0);\n    { gv = c->next(); gv->w0 = 0xBA000602; gv->w1 = 0; }\n    { gu = c->next(); gu->w0 = 0xBA000C02; gu->w1 = 0x2000; }\n    { gv = c->next(); gv->w0 = 0xBA001301; gv->w1 = 0x80000; }\n    PKT(c, 0xFCFFFFFF, 0xFFFE793C);\n    { gs = c->next(); gs->w0 = 0xB6000000; gs->w1 = -1; }\n    { gu = c->next(); gu->w0 = 0xB7000000; gu->w1 = 0x22204; }\n    /* agent-c run 296: with at() here the four earlier `if (1) {}` BB splits are all removed -- one block from the\n     * 0xC02 packet to the ClipRatio words, so the 0xB9 pointer sees gu / gs / d live and takes the target's a3 */\n    { DLHead *d = c->dl; gs = c->at(d); gs->w0 = 0xBA001402; gs->w1 = 0; }\n    PKT(c, 0xB9000002, 0);\n    { gv = c->next(); gv->w0 = 0xF9000000; gv->w1 = 0xFF00FA; }\n    { gu = c->next(); gu->w0 = 0xFA000000; gu->w1 = 0xFFFF; }\n    { gs = c->next(); gs->w0 = 0xBC000404; gs->w1 = 3; }\n    { gv = c->next(); gv->w0 = 0xBC000C04; gv->w1 = 3; }\n    { gu = c->next(); gu->w0 = 0xBC001404; gu->w1 = 0xFFFD; }\n    /* agent-c run 296: nextC() with a folded counted use of o->f104 -- its return temp is live into the o-test\n     * block (the target's a3) and leaves v0 to the o reload */\n    { gs = c->nextC() + 0 * o->f104; gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }\n    if (o->f104 & 2) {\n        gl_func_00034458_59E80(c, o->s148->fF0); if (1) {}\n        { gv = c->next(); gv->w0 = 0xB7000000; gv->w1 = 1; }\n    }\n    gl_func_00034458_59E80(c);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_59E80.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "objdiff 100 vs expected/src/game_libs/game_libs_post0b.c.o; ROM byte-identical; verify-blocks 6/6"
+  }
+}
