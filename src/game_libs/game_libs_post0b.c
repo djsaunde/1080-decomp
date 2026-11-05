@@ -10054,6 +10054,7 @@ void gl_func_000415A4(O415A4 *self) {
     (D_415A4_g1 = self)->pC = (char *)&D_00000000 + 0x1F5D0;
     D_415A4_g2 = gl_func_00000000(0);
     D_415A4_g3 = gl_func_00000000(0);
+    v = (float *)1030;
     t = &D_415A4_t;
     t->a4 = 2 + 0 * (int)(t->v30); /* agent-g run 210: folded counted use of the v30 address (zero-use sweep): 93.38 -> 94.44 */
     t->a0 = 0;
@@ -10062,8 +10063,7 @@ void gl_func_000415A4(O415A4 *self) {
     t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
     t->f18 = 100.0f;
     t->f1C = 16000.0f; if (1) {}
-    v = (float *)1030; if (1) {} D_415A4_tA.a28 = (int)v;
-    v = (float *)((int)v | 6); if (1) {} v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v; /* agent-c run 300: split after the first store (line-split sweep, as1 source-line tie): 97.30 -> 97.35 */
+    D_415A4_tA.a28 = (int)v; if (1) {} v = (float *)((int)v | 6); v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v; /* agent-c run 302: v = 1030 assigned before t (target `li v0,1030` among the record constants), one split after the first store: 97.35 -> 97.70. agent-c run 300: split after the first store (line-split sweep, as1 source-line tie): 97.30 -> 97.35 */
     /* agent-g run 279: the mode word held in v from the start (int -> pointer conversions keep it a separate web),
      * BOTH stores through the absolute tA name (target `lui at; sw t1,40(at)` twice): the first store keeps its own
      * `addiu t1,1030` and the ori chain survives (grid of holder / stores / BB splits): 95.92 -> 97.30, same length.
