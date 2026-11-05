@@ -1,4 +1,6 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B6A0 (0x320 / 200 words), agent-c run 160.
+/* IDO 7.1 NCC (C++) donor for gl_func_0003B6A0 (0x320 / 200 words). EXACT (agent-c run 304): spliced into
+ * game_libs_post0b.c.o on both build trees via REPLACE_FUNC_BODY; the next-vertex table is D_3B6A0_tbl (pinned 0,
+ * the target's blank lui / addiu). Originally agent-c run 160:
  * Rewritten as real C++ (was the run-134 C lift under NCC with two parameter empty tests, 72.22): `int Obj::below(int max,
  * f32 *outd, TriB **outp, f32 *pt)` (renamed to gl_func_0003B6A0 with objcopy): for every collision triangle, the 2D
  * edge-sign test on the triangle's dropped axis pair (`{a, b}` from the Tri record, the {1, 2, 0} next-vertex table) and,
@@ -9,7 +11,7 @@
  * them.
  * agent-c run 178: the triangle record through an inline `triAt(const int &off)` (a reference parameter keeps
  * off memory-homed like the target's frame home): 73.61 -> 74.51, length = target.
- * Still NON_MATCHING: build/non_matching/ only.
+ * (Was NON_MATCHING until agent-c run 304; now exact, see the header.)
  * agent-c run 179: de-named `a` (t->a at each use) and the -50.0f limit constant: 74.53 -> 74.59.
  * agent-c run 193 (decode, 3BE1C twin): the edge test computes px / py (qa / qb minus the first vertex) before
  * ex / ey, straight from v[] (no named ax / ay); `a` named again for the qa read: the edge loop now aligns
@@ -26,7 +28,7 @@ struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
 struct Face { u16 mat; u16 vi[3]; };
 struct V3 { f32 x, y, z; };
 struct Col { char pad[0x44]; unsigned int ntri; char pad48[4]; s16 *remap; char pad50[4]; V3 *nrm; char pad58[8]; s16 (*verts)[3]; char pad64[4]; Face *faces; Face *face(int i) { return remap ? &faces[remap[i]] : &faces[i]; } };
-extern "C" { extern s16 D_00000000_3b6a0tbl[3]; }
+extern "C" { extern s16 D_3B6A0_tbl[3]; }
 struct Obj {
     char pad[0x2C]; TriB *tris; char pad30[0x84 - 0x30]; Col *col;
     int below(int max, f32 *outd, TriB **outp, f32 *pt);
@@ -74,22 +76,22 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             verts = c->verts; /* agent-c run 304 (third step): before the face lookup (target verts load ahead of the remap branch): 97.50 -> 97.55 */
             f = (c + off * 0)->face(i);
             cc = c;
-            inside = 1;
+            inside = 1; if (inside) {} /* agent-c run 304 (EXACT step): code-free test of inside right after its store -- inside outranks pt again (target inside = s2, pt = s3): 99.75 -> 100 */
             dir = t->sgn;
             a = t->a;
             b = t->b;
             /* agent-c run 304 (sixth step): tp on the inner do line (as1 tie: the hoisted &pt[b] / &pt[a] before tp's lui, as the target): 98.675 -> 99.675 */
-            tp = D_00000000_3b6a0tbl + 0 * (int)(t); u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
+            tp = D_3B6A0_tbl + 0 * (int)(t); u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
                 w = verts[f->vi[*tp]];
                 px = (int)(pt[a] - v[a]); /* agent-g run 210's folded `+ 0 * (int)(inside)` dropped by agent-c run 304 (see the f fold below) */
                 py = (int)(pt[b] - v[b]);
                 ex = w[a] - v[a];
-                ey = w[b] - v[b]; if (pt) {} /* agent-c run 304 (fifth step): a second code-free pt test in the edge loop -- pt outranks the 6 constant (target pt = s3, 6 = s4): 97.80 -> 98.675 */
+                ey = w[b] - v[b]; if (pt) {} if (f) {} if (verts) {} /* seventh step: + code-free f / verts tests (f / verts back above a*2 / b*2): 99.675 -> 99.75; */ /* agent-c run 304 (fifth step): a second code-free pt test in the edge loop -- pt outranks the 6 constant (target pt = s3, 6 = s4): 97.80 -> 98.675 */
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
                     inside = 0 + 0 * (int)(f) + 0 * (int)(pt); /* agent-c run 304 (second step): c / cc folds replaced by pt; earlier: */ /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375; agent-c run 304: + f with the px fold of inside dropped -- f outranks inside (target f = t4 colours before inside, which then takes s2): 96.65 -> 96.85 */
                 }
-            } while (inside && (fp++, ++tp != D_00000000_3b6a0tbl + 3));
+            } while (inside && (fp++, ++tp != D_3B6A0_tbl + 3));
             if (inside) {
                 n = (V3 *)((char *)c->nrm + off);
                 d = pt[0] * n->x + pt[1] * n->y + pt[2] * n->z - t->d;

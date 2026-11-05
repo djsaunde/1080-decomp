@@ -5553,107 +5553,13 @@ s32 gl_func_0003B2EC(char *self) {
 // uses a2 (&D_0) with s5 = &D_0+6 end pointer. Superseded the 2026-06
 // STRUCTURAL "6-iteration FP pipeline" skeleton (the 6 is the s16 vertex
 // stride, not a trip count).
-#ifdef NON_MATCHING
-/* PASS-2 2026-09-04 (agent-g): full hand re-derivation from expected/ .o.
- * Point-in-triangle-prism query: for each 12-byte tri record of o->p2C
- * (b0/b1 = projection axes, b3 = winding sign, f8 = plane offset), take the
- * face (s8->p68[remap ? remap[i] : i], 8B, s16 vertex idx at +2/+4/+6) and
- * its s16 vertex triples (s8->p60, 6B stride), project the query point pt
- * onto the two axes and run the 3-edge cross-product test through the
- * static next-vertex table (&D_0 .. +6 = {1,2,0}); if inside, plane distance
- * d = dot(pt, s8->p54[i]) - tri->f8 in (-50, 0) is recorded to outd/outp
- * (capped at max -> returns -1). Returns the number found. */
-extern short D_00000000_3b6a0tbl[3];
-int gl_func_0003B6A0(char *o, int max, float *outd, char **outp, float *pt) {
-    char *s8;
-    int i;
-    int off;
-    unsigned int count;
-    int nfound;
-    int inside;
-    short *rem;
-    char *tri;
-    char *face;
-    char *verts;
-    char *fp;
-    short *tp;
-    int a, b;
-    int ax, ay;
-    short ex, ey, px, py;
-    float dir;
-    float qa, qb;
-    float cross;
-    float d;
-    char *v;
-    char *w;
-    float fzero;
-    float lim;
-
-    nfound = 0;
-    s8 = *(char **)(o + 0x84);
-    if (s8 == 0) {
-        return 0;
-    }
-    count = *(int *)(s8 + 0x44);
-    if (count != 0) {
-        lim = -50.0f;
-        fzero = 0.0f;
-        off = 0;
-        for (i = 0; i < count; i++) {
-            rem = *(short **)(s8 + 0x4C);
-            tri = *(char **)(o + 0x2C) + off;
-            inside = 1;
-            verts = *(char **)(s8 + 0x60);
-            if (rem != 0) {
-                face = *(char **)(s8 + 0x68) + rem[i] * 8;
-            } else {
-                face = *(char **)(s8 + 0x68) + i * 8;
-            }
-            dir = (float)*(signed char *)(tri + 3);
-            a = *(signed char *)(tri + 0);
-            b = *(signed char *)(tri + 1);
-            qa = pt[a];
-            qb = pt[b];
-            tp = D_00000000_3b6a0tbl;
-            fp = face;
-            do {
-                v = verts + *(unsigned short *)(fp + 2) * 6;
-                w = verts + *(unsigned short *)(face + *tp * 2 + 2) * 6;
-                tp++;
-                ax = *(short *)(v + a * 2);
-                ay = *(short *)(v + b * 2);
-                ex = *(short *)(w + a * 2) - ax;
-                ey = *(short *)(w + b * 2) - ay;
-                px = (int)(qa - (float)ax);
-                py = (int)(qb - (float)ay);
-                cross = (float)ex * (float)py - (float)ey * (float)px;
-                if (fzero < cross * dir) {
-                    inside = 0;
-                }
-                fp += 2;
-            } while (inside && tp != D_00000000_3b6a0tbl + 3);
-            if (inside) {
-                float *nrm = (float *)(*(char **)(s8 + 0x54) + off);
-                d = pt[0] * nrm[0] + pt[1] * nrm[1] + pt[2] * nrm[2] - *(float *)(tri + 8);
-                if (d < fzero && lim < d) {
-                    if (nfound < max) {
-                        outd[nfound] = d;
-                        outp[nfound++] = *(char **)(o + 0x2C) + i * 12;
-                        s8 = *(char **)(o + 0x84);
-                        count = *(int *)(s8 + 0x44);
-                    } else {
-                        return -1;
-                    }
-                }
-            }
-            off += 12;
-        }
-    }
-    return nfound;
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3B6A0.cpp
+ * (real `int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt)`; agent-c run 160 lift, agent-c run 304 exact),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. The earlier C lift (agent-g pass 2,
+ * 66.6) is in git history. */
+int gl_func_0003B6A0(char *o) {
+    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B6A0);
-#endif
 
 // gl_func_0003B9C0 — STRUCTURAL PASS (0x45C / 279 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one

@@ -1821,14 +1821,15 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_46790_NM_DONOR := build/src/game_libs/game_libs_ncc_46790_nm.cpp.o
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046790=$(GAMELIBS_46790_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_NM_DONOR)
-# 3B6A0 = real C++ `int Obj::below()` (agent-c run 160; was the run-134 NCC C lift, cfe 65.26); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3B6A0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B6A0_nm.cpp.o
-$(GAMELIBS_3B6A0_NM_DONOR): src/game_libs/game_libs_ncc_3B6A0_nm.cpp
+# 3B6A0 = real C++ `int Obj::below()` (agent-c run 160; was the run-134 NCC C lift, cfe 65.26); symbol renamed (name only).
+# agent-c run 304: EXACT NCC donor over the placeholder on both build trees (the next-vertex table D_3B6A0_tbl pinned 0).
+GAMELIBS_3B6A0_DONOR := build/src/game_libs/game_libs_ncc_3B6A0.cpp.o
+$(GAMELIBS_3B6A0_DONOR): src/game_libs/game_libs_ncc_3B6A0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym below__3ObjFiPfPP4TriBT2=gl_func_0003B6A0 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_DONOR)
 # 4FD00 = real C++ `int Col::side(int, int)` (agent-c run 175; cfe 80.29): inline face-sum with a local short vector, V3 set / += / -= / /= members; symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_4FD00_NM_DONOR := build/src/game_libs/game_libs_ncc_4FD00_nm.cpp.o
 $(GAMELIBS_4FD00_NM_DONOR): src/game_libs/game_libs_ncc_4FD00_nm.cpp
