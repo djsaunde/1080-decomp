@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_00003714 (256 words; this body 256).
- * NM object only; the ROM build keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) donor for gui_func_00003714 (256 words; this body 256). EXACT (agent-g run 300):
+ * spliced into gui_uso.c.o on both build trees via REPLACE_FUNC_BODY.
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): rewritten from the cfe-shaped PKT macro body (93.54) as
  * real C++ -- every append is the gfx context's inline Ctx::next() (n read, n + 1 stored, &buf[n]), and the
  * stock 2.0I gbi.h gSPTexture / gSPScisTextureRectangle macros get `CTX->next()` as their pkt argument, so
@@ -69,6 +69,11 @@ extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 a
     /* agent-g run 295: the dsdx term reads the parameter, `arg4 - 1` (w == arg4 here: w is set from arg4 above and
      * never reassigned), so w's last use is fw and its reload no longer outlives the rect pointer: w-reload t3 /
      * rect pointer t2 like the target (w / arg4 use-substitution grid, 47): 99.004 -> 99.141 */
-    gSPScisTextureRectangle(me(me(CTX))->nD(), me(me(CTX))->nD(), me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    /* agent-g run 300 (EXACT): the rectangle packet pointer is the spr variable reused (spr is dead after the
+     * loader call; the Gfx * round-trips through the cast). One variable = one uopt live range over both
+     * values, so spr's range spans the rectangle blocks too: lower priority, it colours after the texture
+     * append's dl / n (v0 / v1) and _g (t0) and lands in t1 as the target (99.922 -> 100). */
+    spr = (Spr *)me(me(CTX))->nD();
+    gSPScisTextureRectangle((Gfx *)spr, me(me(CTX))->nD(), me(CTX)->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(arg4 - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }

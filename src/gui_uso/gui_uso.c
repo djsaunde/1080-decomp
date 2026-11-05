@@ -1029,8 +1029,15 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_0000329C);
 #endif
 
 /* 2026-10-23 agent-g (run 137): the NM comparison object uses an IDO 7.1 NCC donor,
- * src/gui_uso/gui_uso_ncc_3714_nm.cpp (this body recompiled under NCC: 83.0 -> 85.4). */
-#ifdef NON_MATCHING
+ * src/gui_uso/gui_uso_ncc_3714_nm.cpp (this body recompiled under NCC: 83.0 -> 85.4).
+ * 2026-11-05 agent-g (run 300): EXACT via the IDO 7.1 NCC donor
+ * src/gui_uso/gui_uso_ncc_3714.cpp (REPLACE_FUNC_BODY, both trees). This empty
+ * function is the splice host; the cfe reconstruction below is kept for
+ * reference only (not compiled). */
+void gui_func_00003714(void) {
+}
+
+#if 0
 /* gui_func_00003714: f-scroll sibling of gui_func_0000329C, rebuilt 2026-08-22
  * in the 2DE0 kit shape 68.5 -> 83.0. Levers: volatile-deref held base (t4 web
  * + post-call remat, matches ALL packet loads incl. final); two = (f32)2
@@ -1042,7 +1049,7 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_0000329C);
  * u=bx/by<<2/dtdy; frame -96 EXACT. Residual: t-var a1-vs-t0 coloring (target
  * reuses homed arg1's reg for the gctx/clamp web), bx a3-vs-a2 cascade, sp30
  * home 48-vs-52, beq-to-next then-arm artifacts. */
-void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) {
+void gui_func_00003714_cfe(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) {
     char * volatile *dp = (char * volatile *)&D_00000000;
     char *t;    /* $a1: gctx / x-clamp accumulator */
     s32 dl;     /* $v0: dlring / (s16)dsdx */
@@ -1174,8 +1181,6 @@ void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
     *(s32 *)w = 0xB3000000;
     *(s32 *)(w + 4) = (slot2 << 0x10) | (u & 0xFFFF);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00003714);
 #endif
 
 /* gui_uso_func_00003B14: 27-insn / 0x6C RDP G_FILLRECT display-list builder.

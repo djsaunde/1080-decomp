@@ -3055,10 +3055,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_0F04_DONOR := build/src/gui_uso/gui_uso_ncc_0F04.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000F04=$(GUI_0F04_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0F04_DONOR)
-# 3714 = gui DL emitter (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
-GUI_3714_NM_DONOR := build/src/gui_uso/gui_uso_ncc_3714_nm.cpp.o
-build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_NM_DONOR)
-build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_NM_DONOR)
+# 3714: sprite DL emitter (256/256; agent-g run 300): inline Ctx appends as the gbi.h pkt arguments, the
+# rectangle packet pointer held in the reused spr variable (spr lands in t1 as the target).
+GUI_3714_DONOR := build/src/gui_uso/gui_uso_ncc_3714.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_DONOR)
 # 329C = gui sprite rect (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
 GUI_329C_NM_DONOR := build/src/gui_uso/gui_uso_ncc_329C_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_NM_DONOR)
