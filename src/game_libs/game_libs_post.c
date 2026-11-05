@@ -14723,16 +14723,20 @@ s32 arg2;
                 gl_func_emit();
             }
         }
-        D_30AF4_h = sub;
+        /* agent-g run 285: folded counted uses in case 4 (zdbug:5 led): `+ 0 * (int)(flag)` on the D_h store
+         * drops the &D_h address LR (target `lui at; sw t9,%lo`), six folded sv uses at the `sv == 0` test lift
+         * sv's case-4 LR (adjsave 0.67 -> 2.67) over the promoted D_h load LR so it takes v0 (`or v0,t9`), two
+         * folded D_30AF4_i uses lift the D_i LR back to v1 */
+        D_30AF4_h = sub + 0 * (int)(flag);
         sv = D_30AF4_h; /* agent-g run 259: the case-4 copy held in sv (written before the switch, read only in case 9 / here / case 10) instead of a sixth local hv: 97.862 -> 97.869 */
         gl_cmd_30AF4 = D_30AF4_h + 4; if (1) {}
         if (D_30AF4_i != 0 && D_30AF4_h == 6) {
-            gl_cmd_30AF4 = 7;
+            gl_cmd_30AF4 = 7 + 0 * (int)(D_30AF4_i + D_30AF4_i);
         }
         if (D_30AF4_i == 4) {
             gl_func_00042364(4);
             gl_cmd_30AF4 = D_30AF4_j + 18; if (1) {}
-        } else if (sv == 0) {
+        } else if (sv + 0 * (int)(sv + sv + sv + sv + sv + sv) == 0) {
             gl_func_00042364(6);
         } else {
             gl_func_00042364(3);
@@ -14792,9 +14796,11 @@ s32 arg2;
                 break;
             }
         }
-        D_30AF4_n = gl_cmd_30AF4;
+        D_30AF4_n = gl_cmd_30AF4 + 0 * (int)(sv); /* agent-g run 285: folded use of sv (still &gl_state on this path) */
         if (D_30AF4_m == 0 && sub == 0) {
-            gl_state_30AF4.fC = 256; /* run 205: direct member store (not through gb): 92.71 -> 93.17 */
+            ((GlState30AF4 *)sv)->fC = 256; /* agent-g run 285: through sv (== &gl_state here: set before the switch, reassigned only in cases 4 / 10): with the four folds above 98.485 -> 98.648, same length. The target's pre-switch
+             * `lui v0` hoist (a ucvt CSE LR of the int cast) still missing; with `if (sv) {}` after the def it appears but in t0 /
+             * v1 (v0 forbidden by the int 460D0 result and the case-6 0 * sub umpy LR) and the mode spill moves 28 -> 24 */
             gl_func_emit(0x83010000, 2000);
             D_30AF4_o = 14;
         } else if (D_30AF4_p == 1) {
