@@ -12,6 +12,7 @@ typedef float f32;
  * += z, x, y; 72 orders): 97.267 -> 97.634 */
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     void operator=(V3 v) { y = v.y; x = v.x; z = v.z; }
+    void copy(V3 v) { x = v.x; y = v.y; z = v.z; } /* agent-c run 296: x, y, z member copy for v6C (per-site order grid) */
     void operator*=(f32 k) { x *= k; y *= k; z *= k; }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     void operator+=(const V3 &o) { z = z + o.z; x = x + o.x; y = y + o.y; } /* agent-c run 201 operator order grid: z, y, x (+ ctor z, y, x): 93.47 -> 95.61 standalone */
@@ -71,7 +72,7 @@ extern "C" void gl_func_00037540(Obj *o) {
     if (o->in->fl() & 4) o->v30.y = 10.0f;
     if (o->in->fl() & 8) o->v30.y = -10.0f;
     /* agent-g run 206: unused p1, p2 (no code): frame 0xA8 -> 0xC0 = target (pad-position grid): 96.32 -> 96.39 */
-    v6C = vB4;
+    v6C.copy(vB4); /* agent-c run 296: by-value copy in x, y, z order (operator= stays y, x, z for v90): 97.749 -> 97.770 */
     if (1) {} /* v9C's old declaration point (agent-g run 288) */
     v9C.x = s->vA0.x; v9C.y = s->vA0.y; v9C.z = s->vA0.z;
     *pv += v6C;
