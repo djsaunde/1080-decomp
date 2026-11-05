@@ -78,8 +78,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             a = t->a + 0 * (int)(cc->remap); /* agent-g run 210: third pass: 96.15 -> 96.22 */
             b = t->b;
             tp = D_00000000_3b6a0tbl + 0 * (int)(off); /* agent-g run 210: second pass: 96.02 -> 96.15, 796 -> 800 bytes = target */
-            u16 *fp = (u16 *)f;
-            do {
+            u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
                 w = verts[f->vi[*tp]];
                 px = (int)(pt[a] - v[a]) + 0 * (int)(inside); /* agent-g run 210: folded counted use (zero-use sweep): 95.80 -> 96.02, length unchanged */
