@@ -10023,7 +10023,11 @@ end:
 // separate lui (first 1030, then the ori'd value) and the Vec4 through a
 // +0x30 base register, in source order; every spelling probed (one symbol
 // via pointer + direct, two symbols, |= chain, single OR) reorders or merges.
-#ifdef NON_MATCHING
+// EXACT agent-c run 303 (see docs/IDO_CODEGEN.md kit CCCLXXXI): `| 2` identity
+// OR first (uopt folds only the first one), a BB split after the g3 call (the
+// mode word's live range leaves the call block, so v0 is allowed: target v0),
+// the a4 fold dropped (its t->v30 address CSE held a second register), one
+// folded use of the final mode word, and the a2C store on the Vec4 line.
 typedef struct { char pad[0x68]; short off68; char pad6A[2]; void (*fn6C)(); } VT415A4;
 typedef struct { char pad[0xC]; void *pC; char pad10[0x18]; VT415A4 *vt; } O415A4;
 typedef struct { int a0, a4, a8, aC, a10, a14; float f18, f1C; char pad20[8]; int a28; int a2C; float v30[4]; } T415A4;
@@ -10054,8 +10058,9 @@ void gl_func_000415A4(O415A4 *self) {
     (D_415A4_g1 = self)->pC = (char *)&D_00000000 + 0x1F5D0;
     D_415A4_g2 = gl_func_00000000(0);
     D_415A4_g3 = gl_func_00000000(0);
+    if (1) {} /* agent-c run 303: BB split (the mode word v leaves the call block: v0 allowed) */
     t = &D_415A4_t;
-    t->a4 = 2 + 0 * (int)(t->v30); /* agent-g run 210: folded counted use of the v30 address (zero-use sweep): 93.38 -> 94.44 */
+    t->a4 = 2; /* agent-c run 303: agent-g run 210's `+ 0 * (int)(t->v30)` fold dropped (its address CSE took the Vec4 base off v0) */
     t->a0 = 0;
     t->a10 = 0;
     t->a14 = 0;
@@ -10065,8 +10070,8 @@ void gl_func_000415A4(O415A4 *self) {
     t->f1C = 16000.0f; if (1) {} D_415A4_tA.a28 = (int)v;
     v = (float *)((int)v | 2);
     v = (float *)((int)v | 6); if (1) {}
-    v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v;
-    D_415A4_t.a2C = 1; /* agent-c run 303: a value-preserving `| 2` (1030 already has bit 1) ahead of the `| 6`: uopt folds
+    v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v + 0 * (int)(v);
+    /* agent-c run 303: the folded use of v ranks the mode word above t (v0 / v1 as the target); a value-preserving `| 2` (1030 already has bit 1) ahead of the `| 6`: uopt folds
      * only the FIRST identity OR on the known constant, so the target's `ori 6` / `ori 0x400` chain both survive; the a2C
      * store through the plain D_415A4_t name reuses the record base v1 like the target (t->a2C went absolute); line
      * layout from a random line-join / BB-split sweep (200): 97.70 -> 99.26, same length. */
@@ -10080,7 +10085,7 @@ void gl_func_000415A4(O415A4 *self) {
      * target's ori chain; target addiu v0,1030 hoisted with the record constants): 95.58 -> 95.92, same length.
      * agent-g run 257 (previous spelling `v = 1030; t->a28 = v; v |= 6; if (1) {} v |= 0x400; tA.a28 = v`): the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in an existing local (v, assigned again below before any other read) instead of a new one keeps the 56-byte frame, and v's web takes v0 like the target's chain: 95.58 with the p reuse at the vcall, same length */
     if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
-    v[3] = v[2] = v[1] = v[0] = 0.0f;
+    D_415A4_t.a2C = 1; v[3] = v[2] = v[1] = v[0] = 0.0f; /* agent-c run 303: a2C on the Vec4 line (as1 source-line tie: the base's addiu before the a2C sw) */
     gl_func_00000000((char *)&D_00000000 + 0x1F5D4, 0);
     gl_func_00000000(D_415A4_s4);
     gl_func_00000000();
@@ -10096,9 +10101,6 @@ void gl_func_000415A4(O415A4 *self) {
     ((VT415A4 *)p)->fn6C(((VT415A4 *)p)->off68 + (char *)self); /* agent-g run 257: the vtable held in the dead p (its alloc web sits in a2) -- the target loads vt into a2 and self into v0: 95.27 -> 95.53 */
     gl_func_00000000(D_415A4_s6, self);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000415A4);
-#endif
 
 /* gl_func_00041768: 25-insn 3-call vtable-dispatch.
  *   func(0x1F5E4);

@@ -5629,3 +5629,17 @@ gl_250C8_osSendMesg = 0x00000000;
 gl_250C8_SetSeqLoadStatus = 0x00000000;
 gl_250C8_SetSampleFontLoadStatus = 0x00000000;
 gl_250C8_SetFontLoadStatus = 0x00000000;
+/* gl_func_000415A4 (agent-c run 303 exact): blank-USO data refs, in-place addends (lui/addiu 0 + offsets) */
+D_415A4_z = 0x00000000;
+D_415A4_s1 = 0x00000000;
+D_415A4_s2 = 0x00000000;
+D_415A4_s3 = 0x00000000;
+D_415A4_s4 = 0x00000000;
+D_415A4_s5 = 0x00000000;
+D_415A4_s6 = 0x00000000;
+D_415A4_g1 = 0x00000000;
+D_415A4_g2 = 0x00000000;
+D_415A4_g3 = 0x00000000;
+D_415A4_g4 = 0x00000000;
+D_415A4_t = 0x00000000;
+D_415A4_tA = 0x00000000;
