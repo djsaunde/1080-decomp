@@ -34,8 +34,12 @@ extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
     dlist(c, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
+    if (1) {} /* agent-g run 288: paired code-free BB splits after the 0x402 and 0xC02 packets (all-pairs grid over
+               * the first ten packet gaps; either alone is byte-identical): the 0xC02 / 0x2000 packet pointers take
+               * v0 / a0 like the target: 98.553 -> 98.663, same length */
     PKT(c, 0xBA000602, 0); /* agent-c run 208: plain next() (re-scored with functionRelocDiffs=none: 97.86 -> 98.48) */
     PKT(c, 0xBA000C02, 0x2000);
+    if (1) {}
     PKT(c, 0xBA001301, 0x80000);
     PKT(c, 0xFCFFFFFF, 0xFFFE793C);
     if (1) {} /* agent-g run 202 (paired bbsplit grid, with the one after 0xB9) */
