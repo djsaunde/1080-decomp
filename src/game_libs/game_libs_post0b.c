@@ -23328,6 +23328,17 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 sp30;
     s32 sp2C;
     f32 fr, fg, fb, fa; u8 r, g, b;
+    /* agent-g run 306: the head / arg3-block append trios hoisted out of their blocks, declared in the same order
+     * (same cfe homes, byte-identical), so the arg4-path appends can REUSE them: the target's arg4 appends colour
+     * their base / cnt / p differently per append (one shared function-level trio colours them all alike); a
+     * coordinate-descent + random search over which existing trio each arg4 append reads (zdbug:5/6 colouring
+     * replay: every colour = priority order + interference, 0 mispredictions) gives 99.290 -> 99.490 */
+    s32 hc; char *hp;
+    char *b1; s32 c1; char *p1;
+    char *b2; s32 c2; char *p2;
+    char *b3; s32 c3; char *p3;
+    char *b4; s32 c4; char *p4;
+    char *b5; s32 c5; char *p5;
 
     f = D_00000000_3c8e0;
     spBC = 0;
@@ -23344,16 +23355,14 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
      * agent-c run 235: the head block uses the function-level base (one home word fewer: the uopt
      * spill slots of sp38 / sp34 move up to the target's 0x38 / 0x34) */
     {
-        s32 cnt;
-        char *p;
         base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4); /* agent-c run 288: the run-263 `if (1) {}` here (paired with the sp38 / sp34 test dropped in run 274) is inert next to the p fold below: removed, byte-identical */
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(p); /* agent-c run 260: folded counted use of p (cnt a0 / p v1 = target) */
+        hc = *(s32 *)(base + 4); /* agent-c run 288: the run-263 `if (1) {}` here (paired with the sp38 / sp34 test dropped in run 274) is inert next to the hp fold below: removed, byte-identical */
+        *(s32 *)(base + 4) = hc + 1;
+        hp = *(char **)(*(char **)(arg0 + 0xC) + 0) + hc * 8;
+        *(s32 *)(hp + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(hp); /* agent-c run 260: folded counted use of hp (hc a0 / hp v1 = target) */
         sp38 = arg6 + arg8;
         sp34 = arg7 + arg9; /* agent-c run 274: the run-263 sp38 / sp34 empty test dropped (mv.py, 98.04 -> 98.06) */
-        *(s32 *)(p + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
+        *(s32 *)(hp + 4) =((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
     }
     if (arg3 != 0) {
         func_00000000_5a2c4v(arg0, arg1, arg10);
@@ -23372,62 +23381,47 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
          * the target's r spill to 0x20 + `or t1,t6` / `or a1,t7` copies at the merge) */
         r = colv[0]; g = colv[1]; b = colv[2];
         {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 0) = 0xF7000000;
+            b1 = *(char **)(arg0 + 0xC);
+            c1 = *(s32 *)(b1 + 4);
+            *(s32 *)(b1 + 4) = c1 + 1;
+            p1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8;
+            *(s32 *)(p1 + 0) = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
-            *(s32 *)(p + 4) = (rgba << 0x10) | rgba; if (g) {} if (base + 0 * (int)(rgba)) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
+            *(s32 *)(p1 + 4) = (rgba << 0x10) | rgba; if (g) {} if (b1 + 0 * (int)(rgba)) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
         }
         {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            b2 = *(char **)(arg0 + 0xC);
+            c2 = *(s32 *)(b2 + 4);
+            *(s32 *)(b2 + 4) = c2 + 1;
+            p2 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c2 * 8;
             /* agent-c run 234: folded counted use (zero-use-sweep, 94.71 -> 94.78); run 235: p+0 first, both on one line (as1 line order) */
-            *(s32 *)(p + 0) = 0xBA001402; *(s32 *)(p + 4) = 0x300000 + 0 * (int)(cnt);
+            *(s32 *)(p2 + 0) = 0xBA001402; *(s32 *)(p2 + 4) = 0x300000 + 0 * (int)(c2);
         }
         {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4); if (1) {} /* agent-c run 263: with the cnt test on the F6 w0 line (kit CCC random search): 96.01 -> 96.08 */
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+            b3 = *(char **)(arg0 + 0xC);
+            c3 = *(s32 *)(b3 + 4); if (1) {} /* agent-c run 263: with the cnt test on the F6 w0 line (kit CCC random search): 96.01 -> 96.08 */
+            *(s32 *)(b3 + 4) = c3 + 1;
+            p3 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c3 * 8;
             /* agent-c run 260: the sums spelled out (same tree as the arg4 path's copy-propagated sp30), so the sp30
              * expression item precedes sp2C's and takes the spill temp at 0x30 like the target */
-            *(s32 *)(p + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (cnt) {}
-            *(s32 *)(p + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
+            *(s32 *)(p3 + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (c3) {}
+            *(s32 *)(p3 + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         }
         {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85) */
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 0) = 0xE7000000;
-            *(s32 *)(p + 4) = 0;
+            b4 = *(char **)(arg0 + 0xC);
+            c4 = *(s32 *)(b4 + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85) */
+            *(s32 *)(b4 + 4) = c4 + 1;
+            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c4 * 8;
+            *(s32 *)(p4 + 0) = 0xE7000000;
+            *(s32 *)(p4 + 4) = 0;
         }
         {
-            char *base;
-            s32 cnt;
-            char *p;
-            base = *(char **)(arg0 + 0xC);
-            cnt = *(s32 *)(base + 4);
-            *(s32 *)(base + 4) = cnt + 1;
-            p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-            *(s32 *)(p + 0) = 0xE7000000;
-            *(s32 *)(p + 4) = 0;
+            b5 = *(char **)(arg0 + 0xC);
+            c5 = *(s32 *)(b5 + 4);
+            *(s32 *)(b5 + 4) = c5 + 1;
+            p5 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c5 * 8;
+            *(s32 *)(p5 + 0) = 0xE7000000;
+            *(s32 *)(p5 + 4) = 0;
         }
     }
     if (arg4 != 0) { /* agent-c run 260: the run-212 folded use of arg4 dropped (arg4 a ugen load like the target) */
@@ -23437,8 +23431,8 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         base = *(char **)(arg0 + 0xC); if (1) {} /* agent-c run 260 (bbsplit sweep, 95.90 -> 95.96) */
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xBA001402; *(s32 *)(p + 4) = 0x300000; /* agent-c run 235: p+0 first, one line */
+        p5 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8; /* agent-g run 306: the arg4 appends' packet pointers reuse p5 / p / base / b4 / p3 / b1 (and b4 as one base) */
+        *(s32 *)(p5 + 0) = 0xBA001402; *(s32 *)(p5 + 4) = 0x300000; /* agent-c run 235: p+0 first, one line */
         /* agent-c run 243: the FF10 / F7 appends count in rgba (dead since the colour pack). agent-g run 247: the
          * whole arg4 path on the function-level base / p (the run-243 base2 / p2 pair and the sp30 / 2nd-E7 block
          * trios were 8 extra home words: frame 0xE0 -> 0xC0 = target, colv at 0xA4) + a bbsplit after the 1st E7
@@ -23458,28 +23452,28 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = sp30;
-        *(s32 *)(p + 4) = sp2C;
+        base = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+        *(s32 *)(base + 0) = sp30;
+        *(s32 *)(base + 4) = sp2C;
+        b4 = *(char **)(arg0 + 0xC);
+        cnt = *(s32 *)(b4 + 4);
+        *(s32 *)(b4 + 4) = cnt + 1;
+        b4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8; if (1) {}
+        *(s32 *)(b4 + 0) = 0xE7000000;
+        *(s32 *)(b4 + 4) = 0;
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8; if (1) {}
-        *(s32 *)(p + 0) = 0xE7000000;
-        *(s32 *)(p + 4) = 0;
-        base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xE7000000;
-        *(s32 *)(p + 4) = 0;
+        p3 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+        *(s32 *)(p3 + 0) = 0xE7000000;
+        *(s32 *)(p3 + 4) = 0;
         func_00000000_5a2c4v(arg0, arg1, arg10); /* agent-c run 260: void (discarded result) */
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
-        p = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p + 0) = 0xE7000000;
-        *(s32 *)(p + 4) = 0;
+        b1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+        *(s32 *)(b1 + 0) = 0xE7000000;
+        *(s32 *)(b1 + 4) = 0;
         func_00000000(arg0, arg1, arg10);
     }
 }
