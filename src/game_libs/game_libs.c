@@ -3692,7 +3692,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
             vt->e[21].fn(vt->e[21].off + (char *)self);
         }
     }
-    switch (self->unk4DC) {               /* switch 3; compare chain */
+    switch (var_v0 = self->unk4DC) {      /* switch 3; compare chain. agent-c run 326: selector stored in var_v0 (dead store; var_v0 is re-assigned before its only read) */
     case 1:                                         /* switch 3 */
         if (self->unk4F0 & 0x10000) {
             if (D_76F0_fadeA < 1.0f) {
