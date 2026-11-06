@@ -2088,13 +2088,17 @@ $(GAMELIBS_59E80_DONOR): src/game_libs/game_libs_ncc_59E80.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00059E80=$(GAMELIBS_59E80_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_59E80_DONOR)
-# 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target; run 174: for-init list iterator -> 98.27 objdiff diff). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_34890_NM_DONOR := build/src/game_libs/game_libs_ncc_34890_nm.cpp.o
-$(GAMELIBS_34890_NM_DONOR): src/game_libs/game_libs_ncc_34890_nm.cpp
+# 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target; run 174: for-init list iterator -> 98.27 objdiff diff).
+# agent-g run 321: EXACT NCC donor over a placeholder on both build paths (block-scope rv kept live across the bottom
+# step); Base / X vtables -> the target's absolute USO words (gl_34890_vb / gl_34890_vx), gl_func_00034458 -> the blank
+# jal words (gl_34890_c34458 = 0), D_34890_tmpl pinned at 0x1E1B0, no .rodata.
+GAMELIBS_34890_DONOR := build/src/game_libs/game_libs_ncc_34890.cpp.o
+$(GAMELIBS_34890_DONOR): src/game_libs/game_libs_ncc_34890.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034890=$(GAMELIBS_34890_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34890_NM_DONOR)
+	$(OBJCOPY) --redefine-sym __vtbl__4Base=gl_34890_vb --redefine-sym __vtbl__1X=gl_34890_vx --redefine-sym gl_func_00034458=gl_34890_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034890=$(GAMELIBS_34890_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34890_DONOR)
 # 37348 = input deadzone + two pushes under NCC (agent-c run 164 / 173: kept Node * inline parameters, block-scoped ctor-built push vector, second-vector zeros through an int inline parameter). EXACT NCC donor over an empty placeholder (agent-c run 173).
 GAMELIBS_37348_DONOR := build/src/game_libs/game_libs_ncc_37348.cpp.o
 $(GAMELIBS_37348_DONOR): src/game_libs/game_libs_ncc_37348.cpp

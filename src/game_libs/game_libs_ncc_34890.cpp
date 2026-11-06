@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00034890 (0x150 / 84 words), agent-c run 164.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00034890 (0x150 / 84 words), agent-c run 164 lift, agent-g run 321 exact
+ * (spliced over a placeholder on both build paths; the residual notes below are history).
  * `new X(o)` with inline cfront-protocol constructors: X : Mid : Base (Base = vptr only, 4 bytes; Mid stores the
  * owner at +4 and copies the 8-byte template D+0x1E1B0 to +8; X stores its vptr). Under NCC each inlined
  * constructor gets the `this == 0 -> operator new(sizeof)` fallback, which is exactly the target's alloc
@@ -8,7 +9,7 @@
  * spill / reload around each alloc. cfe body 90.35 (0x148 bytes) -> 98.10, length 0x150 = target.
  * Residual: h's spill slot 0x28 (target 0x2C, our top slot is make's o parameter), the Mid / Base this
  * colours (target a3 / v1, ours v1 / a0: zdbug:5 priorities Mid 2.0 > Base 1.5) and the next() result
- * (h's pooled slot is reused for it, so both are a1; target a2 then v1). Still NON_MATCHING. */
+ * (h's pooled slot is reused for it, so both are a1; target a2 then v1). */
 extern "C" void *gl_func_00034458(...);
 inline void *operator new(unsigned n) { return gl_func_00034458(n); }
 template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
@@ -20,8 +21,10 @@ struct O { char pad[0xC]; int h; Link *list; char pad14[4]; int flags; };
 struct LIter {
     Link *cur, *nxt;
     LIter(Link *l) { nxt = l; }
-    void *next() { return (cur = nxt) ? (nxt = nxt->next, cur->data) : 0; }
+    void *nxi() { void *res; if (cur = nxt) { nxt = nxt->next; res = cur->data; } else res = 0; return res; }
 };
+template <class T> inline T I2(T v) { if (0) { v = 0; } return v; } /* zero-code kept-parameter identity (pool entry) */
+template <class T> inline T I3(T v) { if (1) {} return v; } /* zero-code identity with a BB-split lever */
 /* agent-g run 311: a code-free `if (this) {}` in the Base ctor (one more counted use of the Base this temp) with the X
  * base initialiser back to plain `Mid(oo)` (below): the Mid / Base this colours stay a3 / v1 without the accessor's
  * parameter temp, so the Mid this spill home is the target's 0x1C (was 0x18), 99.798 -> 99.821 */
@@ -38,8 +41,16 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
 inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); gl_func_00034458(D_34890_d, h, a, o->flags & 2); }
 extern "C" void gl_func_00034890(O *o) {
     make(o->h, o);
-    for (LIter it(me(o)->list); (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0; ) { /* agent-c run 252: o through a nested zero-code accessor (kit CCLXXXIV), 98.75 -> 99.57 */ /* run 174: for-init iterator (kit CXXXIV): bottom-copy next() temps fresh, 98.10 -> 98.27 */
-        gl_func_00034458(it.cur->data);
+    /* agent-g run 319 (kit CDXI): the loop as `if (top) do ... while (I3(it.nxi()))` with two `I2(0)` pool entries in
+     * the top test -- h keeps its a1 / M-12 weight through the as1-removed copy, the bottom step is if / else into res.
+     * agent-g run 321: the body call's result kept in a block-scope rv with one code-free test after the loop: rv
+     * (v0) is live across the bottom step, so the bottom result takes v1 like the target; block scope keeps the
+     * frame homes at the target's offsets (a function-scope rv shifts every home by 4): 99.821 -> 100 */
+    LIter it(me(o)->list);
+    if ((I2(0), I2(0), (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0)) {
+        void *rv;
+        do { rv = gl_func_00034458(it.cur->data); } while (I3(it.nxi()));
+        if (rv) {}
     }
     gl_func_00034458(D_34890_e);
 }

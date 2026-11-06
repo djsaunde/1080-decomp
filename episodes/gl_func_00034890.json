@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00034890",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-06T15:33:32.583243+00:00",
+  "end_time": "2026-11-06T15:33:32.583262+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-06T15:33:32.583258+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from the 99.821 NM donor (agent-g run 321). The only residual was the bottom loop step's result in v0 (target v1). Keeping the body call's result in a block-scope void *rv with one code-free if (rv) {} after the do-while makes rv (v0) live across the bottom step, so the step result is coloured v1; a function-scope rv shifts every frame home by 4, block scope keeps the target's offsets.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 84,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00034890 (0x150 / 84 words), agent-c run 164 lift, agent-g run 321 exact\n * (spliced over a placeholder on both build paths; the residual notes below are history).\n * `new X(o)` with inline cfront-protocol constructors: X : Mid : Base (Base = vptr only, 4 bytes; Mid stores the\n * owner at +4 and copies the 8-byte template D+0x1E1B0 to +8; X stores its vptr). Under NCC each inlined\n * constructor gets the `this == 0 -> operator new(sizeof)` fallback, which is exactly the target's alloc\n * cascade (0x10 / 0x10 / 4) with the nested null skips. Then register(&D, h, a, o->flags & 2), a by-value\n * {cur, nxt} iterator over o->0x10 calling f(it.cur->data), and f(&D). h is a KEPT inline parameter of make()\n * (`if (0) { h = 0; }`): a named h stays memory-homed; the kept pooled temp is coloured a1 with the target's\n * spill / reload around each alloc. cfe body 90.35 (0x148 bytes) -> 98.10, length 0x150 = target.\n * Residual: h's spill slot 0x28 (target 0x2C, our top slot is make's o parameter), the Mid / Base this\n * colours (target a3 / v1, ours v1 / a0: zdbug:5 priorities Mid 2.0 > Base 1.5) and the next() result\n * (h's pooled slot is reused for it, so both are a1; target a2 then v1). */\nextern \"C\" void *gl_func_00034458(...);\ninline void *operator new(unsigned n) { return gl_func_00034458(n); }\ntemplate <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */\nstruct Pair { int a, b; };\nextern \"C\" Pair D_34890_tmpl;\nextern \"C\" char D_34890_d[], D_34890_e[];\nstruct Link { void *data; Link *next; };\nstruct O { char pad[0xC]; int h; Link *list; char pad14[4]; int flags; };\nstruct LIter {\n    Link *cur, *nxt;\n    LIter(Link *l) { nxt = l; }\n    void *nxi() { void *res; if (cur = nxt) { nxt = nxt->next; res = cur->data; } else res = 0; return res; }\n};\ntemplate <class T> inline T I2(T v) { if (0) { v = 0; } return v; } /* zero-code kept-parameter identity (pool entry) */\ntemplate <class T> inline T I3(T v) { if (1) {} return v; } /* zero-code identity with a BB-split lever */\n/* agent-g run 311: a code-free `if (this) {}` in the Base ctor (one more counted use of the Base this temp) with the X\n * base initialiser back to plain `Mid(oo)` (below): the Mid / Base this colours stay a3 / v1 without the accessor's\n * parameter temp, so the Mid this spill home is the target's 0x1C (was 0x18), 99.798 -> 99.821 */\nstruct Base { Base() { if (this) {} } virtual void f(); };\nstruct Mid : Base { O *o; Pair p; Mid(O *oo) { o = oo; p = D_34890_tmpl; } };\n/* agent-g run 310: the Mid base initialiser through the zero-code accessor, together with `me(o)` on the loop's list read\n * below (random joint draw over the ctor / make / loop lever families; each alone is flat): the loop's top next() copy\n * takes the target's a2, 99.643 -> 99.798. agent-g run 311: plain `Mid(oo)` again, with the Base `if (this) {}` above. */\nstruct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };\n/* agent-c run 267: make(int h, O *o) (h's parameter temp is the first pool entry = the target's M-12 word) with the\n * loop test written out as next()'s ternary in the for condition (no inline call: no `this` temp in the loop, so h's\n * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`\n * plain: 99.57 -> 99.64 standalone. LEFT: the two ternary result colours (target a2 / v1, ours v0 / a1). */\ninline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); gl_func_00034458(D_34890_d, h, a, o->flags & 2); }\nextern \"C\" void gl_func_00034890(O *o) {\n    make(o->h, o);\n    /* agent-g run 319 (kit CDXI): the loop as `if (top) do ... while (I3(it.nxi()))` with two `I2(0)` pool entries in\n     * the top test -- h keeps its a1 / M-12 weight through the as1-removed copy, the bottom step is if / else into res.\n     * agent-g run 321: the body call's result kept in a block-scope rv with one code-free test after the loop: rv\n     * (v0) is live across the bottom step, so the bottom result takes v1 like the target; block scope keeps the\n     * frame homes at the target's offsets (a function-scope rv shifts every home by 4): 99.821 -> 100 */\n    LIter it(me(o)->list);\n    if ((I2(0), I2(0), (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0)) {\n        void *rv;\n        do { rv = gl_func_00034458(it.cur->data); } while (I3(it.nxi()));\n        if (rv) {}\n    }\n    gl_func_00034458(D_34890_e);\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_34890.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "objdiff 100 vs expected/src/game_libs/game_libs_post0b.c.o; ROM byte-identical; verify-blocks 6/6; non_matching_objects 0 errors"
+  }
+}

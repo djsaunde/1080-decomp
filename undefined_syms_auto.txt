@@ -5422,6 +5422,11 @@ gl_3e5e0_vk = 0x0001F0D8;
 gl_3e5e0_v1 = 0x0001F1F8;
 gl_3e5e0_v2 = 0x0001F210;
 gl_3e5e0_c34458 = 0x00000000;
+/* gl_func_00034890 EXACT donor (agent-g run 321): Base / X vtable words and the template pair as the target's absolute USO values, blank jal words */
+gl_34890_vb = 0x0001E1E8;
+gl_34890_vx = 0x0001E238;
+gl_34890_c34458 = 0x00000000;
+D_34890_tmpl = 0x0001E1B0;
 /* blank alias: the gl_func_00040070 NM donor base ctor (renamed __ct__2BBFPv) */
 gl_func_00000000_40070_base = 0x00000000;
 /* timproc_uso_b5_func_0000AC20 NCC donor: its file-local reference point (.bss reloc renamed by the splice) and four blank USO data bases */
