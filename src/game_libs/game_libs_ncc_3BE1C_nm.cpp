@@ -133,13 +133,19 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                 va = col->verts[f->vi[0]];
                 vb = col->verts[f->vi[1]];
                 vc = col->verts[f->vi[2]];
-                k = 2 - t->ax | 0 * (int)(r); /* agent-g run 267: folded counted use of r, `|` form (zero-use sweep with `|`): 98.94 -> 99.00 */
+                /* agent-g run 323 (kit CDXV): the target colours k * 2 (v0) BEFORE va / vb (a0 / a1) and ia / ib after
+                 * them (a3 / a2). The earlier folded uses (r here, vb / vc / ia on hi, va on ok) kept va / vb live through
+                 * the clamp tree, so ia / ib outranked them; instead: no folds there, a dead `if (0) {}` right after k
+                 * (k * 2 becomes local to the block after it and wins the 20.0 tie that va took by LR order), one
+                 * folded use of va / vb each in k's line (adjsave 10 -> 15) and three `if (1) {}` splitters before lo
+                 * (ia 18 -> 15 below va / vb, ib 13.3): 99.778 -> 99.995, same length */
+                k = 2 - t->ax | 0 * ((int)va + (int)vb); if (0) { lo = 0; }
 #define ia va[k]
 #define ib vb[k]
 #define ic vc[k]
-                hi = MAXS(MAXS(ia, ib), ic) + 0 * (int)(vb) + 0 * (int)(vc) + 0 * (int)(ia); /* + vc: agent-g run 231; + ia: agent-g run 267 (99.00 -> 99.12) */ /* agent-g run 210: third pass: 97.05 -> 97.26 */
-                lo = MINS(MINS(ia, ib), ic);
-                if (q[k] < (f32)lo || (f32)hi < q[k]) ok = 0 + 0 * (int)(va); /* agent-g run 210: second pass: 96.38 -> 97.05, 1560 -> 1564 bytes (target 1568) */
+                hi = MAXS(MAXS(ia, ib), ic);
+                if (1) {} if (1) {} if (1) {} lo = MINS(MINS(ia, ib), ic);
+                if (q[k] < (f32)lo || (f32)hi < q[k]) ok = 0;
             } else {
 #define qa q[a]
 #define qb q[b]
