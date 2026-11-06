@@ -15432,15 +15432,11 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
             } else {
                 acc = 0.0f;
             }
-            /* agent-g run 228 (kit CCXXXIV): the 0x1CAC0 store in a jump-free goto block written
-             * after the call, so as1 issues the argument mfc1 before the store's lui at (target
-             * join `mfc1 a1; lui at; jal; swc1`, mfc1 copied into the b delay slot): 95.28 -> 97.16 */
-            goto z31a74;
-        c31a74:
+            /* agent-c run 310: agent-g run 228's goto block here (store written after the call) is
+             * inert since run 300's tail split -- the plain order compiles byte-identically */
+            ACCS1_31A74 = acc;
             gl_func_00000000_f(0x1000A00, acc);
             return;
-        z31a74:
-            ACCS1_31A74 = acc; goto c31a74;
         }
         if (D_31A74_st == 4) {
             if (D_31A74_g2 != 0) {
