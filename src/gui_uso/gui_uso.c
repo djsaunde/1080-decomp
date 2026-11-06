@@ -932,7 +932,14 @@ done:
 INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002DE0);
 #endif
 
-#ifdef NON_MATCHING
+/* 2026-11-06 agent-g (run 309): EXACT via the IDO 7.1 NCC donor
+ * src/gui_uso/gui_uso_ncc_329C.cpp (REPLACE_FUNC_BODY, both trees). This empty
+ * function is the splice host; the cfe reconstruction below is kept for
+ * reference only (not compiled). */
+void gui_func_0000329C(void) {
+}
+
+#if 0
 /* gui_func_0000329C: int-arg sibling of gui_func_00002DE0. Re-decoded
  * 2026-10-15 (74.1 -> 85.3) as the stock libultra gbi.h macros: gSPTexture
  * (0xBB000001/0x80008000), a 3-way texture-load dispatch on spr->0x24, then
@@ -1024,8 +1031,6 @@ done:
 #undef MAX
 #undef MIN
 #undef _SHIFTL
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_0000329C);
 #endif
 
 /* 2026-10-23 agent-g (run 137): the NM comparison object uses an IDO 7.1 NCC donor,

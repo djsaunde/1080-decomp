@@ -1,5 +1,8 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_0000329C (286 words; this body 286 = target).
- * NM object only; the ROM build keeps INCLUDE_ASM.
+/* IDO 7.1 NCC (C++) EXACT donor for gui_func_0000329C (286 words = target), spliced over an empty placeholder in
+ * both trees (REPLACE_FUNC_BODY). agent-g run 309 (docs/IDO_CODEGEN.md kit CCCXCVIII): the target's t2 is ONE
+ * variable for spr, the yh / yl MAX results AND the RDPHALF_1 x middle `?:` result, so the x middle arm assigns into
+ * spr too; a code-free I2(0) pool entry stands where the removed middle temporary was (the MIN temp keeps its pool
+ * slot), then the appends and loader calls re-gridded: 99.965 -> EXACT.
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): rewritten from the cfe-shaped PKT macro body (88.70) as
  * real C++ -- every append is the gfx context's inline Ctx::next() (n read, n + 1 stored, &buf[n]), and the
  * stock 2.0I gbi.h gSPTexture / gSPScisTextureRectangle macros get `CTX->next()` as their pkt argument, so
@@ -47,6 +50,9 @@ union Gfx { Gwords words; long long force_structure_alignment; };
  * MAX results, so those clamps assign INTO spr in each arm (spr is dead by the rect statement; both arms write it
  * before the comma read; int <-> pointer casts explicit) */
 #define MAXSPR(e) ((((e)) > 0 ? (spr = (Spr *)(int)(e)) : (spr = (Spr *)0)), (int)spr)
+/* agent-g run 309: the RDPHALF_1 x middle `?:` also assigns into spr in both arms and the outer arm reads (int)spr
+ * (every read follows its own write); `I2(0)` is a discarded zero-code pool entry in the removed middle temporary's
+ * place, so the MIN temporary keeps its shared slot (v0 like the target). */
 #define gImmp1S(VV, pkt, c, p0) { VV = (Gfx *)(pkt); VV->words.w0 = _SHIFTL((c), 24, 8); VV->words.w1 = (unsigned int)(p0); }
 #define gSPTextureS(VV, pkt, s, t, level, tile, on) \
 { VV = (Gfx *)(pkt); \
@@ -56,7 +62,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 { V1 = (Gfx *)(pkt); \
     V1->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAXSPR((s16)(yh)), 0, 12)); \
     V1->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAXSPR((s16)(yl)), 0, 12)); \
-    gImmp1S(V2, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
+    gImmp1S(V2, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (I2(0), ((((s16)(dsdx) < 0) ? ((spr = (Spr *)(int)((MAX((((s16)(xl)*(s16)(dsdx))>>7),0)))), (int)spr) : ((spr = (Spr *)(int)((MIN((((s16)(xl)*(s16)(dsdx))>>7),0)))), (int)spr)), (int)spr)) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1S(V3, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
@@ -71,6 +77,7 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
     Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; }
     void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
+template <class T> inline T I2(T v) { if (0) { v = 0; } return v; } /* agent-g run 309: zero-code kept-parameter identity (kit CCCXCV) */
 template <class T> inline T I4(T v) { T r = v; return r; } /* agent-g run 308: zero-code named-local identity (kit CCCXCV) */
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
@@ -83,7 +90,8 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     /* agent-g run 294: the packet pointers declared LAST (homes below the named locals): frame 96 -> the target's 88,
      * 99.601 -> 99.633 */
     Gfx *gpa, *gpb, *gpc; /* agent-g run 308: RDPHALF_1 through its own gpc (target t1; TEXRECT gpb t0): 99.843 -> 99.965 */
-    gSPTextureS(gpa, I4(me(CTX))->nextp(), 0x8000, 0x8000, 0, 0, 1); /* agent-g run 308: through a named-local inline (kit CCCXCV
+    gSPTextureS(gpa, me(me(CTX))->nD(), 0x8000, 0x8000, 0, 0, 1); /* agent-g run 309: me(me(CTX))->nD() (append grid on
+                                                      * the merged-spr body); was, run 308: through a named-local inline (kit CCCXCV
                                                       * I4: a pool entry before n moves the texture count into the later appends' count
                                                       * variable -- the target's v1) and nextp(): 99.738 -> 99.843 */ /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
                                                       * agent-g run 293: depth 0 here with the joint rect grid below */
@@ -93,15 +101,16 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     h = spr->h;
     t = spr->fmt;
     if (spr) {}
-    switch (arg0->spr->fmt) {
+    switch (arg0->spr->fmt) { /* agent-g run 309: loader calls through zero-code accessors (200-variant grid): the
+                               * load `this` pool entry no longer shares the x MAX temp's slot (a0 preference) */
     case 0x408:
-        CTX->load(spr->tex, w, h);
+        me(CTX)->load(spr->tex, w, h);
         break;
     case 0x120:
-        CTX->load(spr->tex, w, h);
+        I4(CTX)->load(me(spr)->tex, w, h);
         break;
     case 0x110:
-        CTX->load(spr->tex, w, h);
+        me(CTX)->load(me(spr)->tex, w, h);
         break;
     }
     x = (f32)x0;
@@ -110,6 +119,7 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fh = y1 - y0;
     /* agent-g run 293: joint accessor-depth x append-method grid over the four appends (200 random of 20736 + local
      * search): TEXRECT / RDPHALF_1 through nD() at depth 2, RDPHALF_2 through next() at depth 1: 99.371 -> 99.476 */
-    gSPScisTextureRectangleS(gpb, gpc, gpa, me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    /* agent-g run 309: re-gridded on the merged-spr body: TEXRECT nextp() at depth 2, RDPHALF_1 next() via I4 */
+    gSPScisTextureRectangleS(gpb, gpc, gpa, me(me(CTX))->nextp(), I4(me(CTX))->next(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }

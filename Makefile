@@ -3065,10 +3065,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_3714_DONOR := build/src/gui_uso/gui_uso_ncc_3714.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_DONOR)
-# 329C = gui sprite rect (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
-GUI_329C_NM_DONOR := build/src/gui_uso/gui_uso_ncc_329C_nm.cpp.o
-build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_NM_DONOR)
-build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_NM_DONOR)
+# 329C: gui sprite rect (286/286; agent-g run 309, kit CCCXCVIII): inline Ctx appends as the gbi.h pkt arguments,
+# spr = the yh / yl MAX results and the RDPHALF_1 x middle ?: result (one variable, the target's t2).
+GUI_329C_DONOR := build/src/gui_uso/gui_uso_ncc_329C.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_DONOR)
 # 4568: gui texture rect (gbi.h gSPTextureRectangle / gSPScisTextureRectangle pair; 199/199, agent-c run 308):
 # Ctx::next(DL *) with an unused pool parameter separates the append's post-increment slot from the MAX ternaries.
 GUI_4568_DONOR := build/src/gui_uso/gui_uso_ncc_4568.cpp.o
