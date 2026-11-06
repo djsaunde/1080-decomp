@@ -41,7 +41,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 	_g->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); }
 #define gSPScisTextureRectangle(pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { Gfx *_g = (Gfx *)(pkt); \
-    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)); \
+    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(I4(MAX((s16)(xh),0)), 12, 12) | _SHIFTL(I2(MAX((s16)(yh),0)), 0, 12)); \
     _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
@@ -51,6 +51,11 @@ template <class T> inline T *me(T *p) { return p; }
  * written out with the clamp's 0 RESULT (not the compare's 0) through the zero-code I(0 + dtdy * 0): 96.848 -> 96.914,
  * same length (a whole-operand I() on the compare side gives 1212 bytes = target but slt / beqz compares, lower). */
 inline int I(int v) { return v; }
+/* agent-c run 309 (kit CCCIV temp rule): the TEXRECT w0 MAX results through two zero-code inlines that each take an edg pool
+ * temp -- I4 (a named local) on xh, I2 (an `if (0)` assigned parameter) on yh: the w0 statement's pool entries shift, so the
+ * RDPHALF_1 MAX / MIN arm temps and the RDPHALF_2 append's dl / n take the target's v0 / v1 (96.914 -> 97.096, same length) */
+inline int I2(int v) { if (0) { v = 0; } return v; }
+inline int I4(int v) { int r = v; return r; }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
     Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; } void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
