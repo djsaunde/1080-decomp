@@ -15407,7 +15407,12 @@ void game_libs_func_00031A64(void) {
 //   mfc1 a1 duplicated into both arms (join-block first insn) vs ours after
 //   the join; `addiu a2,63` delay-slot fill vs `lui a0`; tail reload `lb a2`
 //   + sll/sra re-extension vs our folded `lb a1` (dead-if on sel = no-op).
-#ifdef NON_MATCHING
+// agent-c run 324: EXACT. The mode-1 store is the body of a one-pass `for` whose
+//   STEP holds the call: the call's source line (the for header) is then lower than
+//   the store's, so as1 schedules the call's `mfc1 a1` ahead of the store's `lui at`
+//   (join-block first insn -> copied into the `b` delay slot), while the tail keeps
+//   agent-c run 300's if(1)-split goto block. `mode = 1` is value-preserving (mode
+//   == 1 here), `mode = 0` is a dead store before the return.
 extern int gl_func_00000000_f(int, float);
 extern int gl_func_00000000_c(int, s8);
 extern int D_31A74_st, D_31A74_g2, D_31A74_g3, D_31A74_accl, D_31A74_accs1, D_31A74_accs2, D_31A74_cur;
@@ -15432,10 +15437,9 @@ void gl_func_00031A74(int mode, f32 v, s8 sel) {
             } else {
                 acc = 0.0f;
             }
-            /* agent-c run 310: agent-g run 228's goto block here (store written after the call) is
-             * inert since run 300's tail split -- the plain order compiles byte-identically */
+            for (mode = 1; mode; gl_func_00000000_f(0x1000A00, acc), mode = 0) {
             ACCS1_31A74 = acc;
-            gl_func_00000000_f(0x1000A00, acc);
+            }
             return;
         }
         if (D_31A74_st == 4) {
@@ -15495,9 +15499,6 @@ c31t:
 z31t:
     if (1) {} ACCS2_31A74 = r; goto c31t;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00031A74);
-#endif
 
 void game_libs_func_00031CA8(int *a0, int a1, int a2) { *(int*)((char*)a0 + 0) = a1; *(int*)((char*)a0 + 8) = a2; *(int*)((char*)a0 + 0xC) = 0; }
 

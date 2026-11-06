@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00031A74",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-11-06T17:51:17.128353+00:00",
+  "end_time": "2026-11-06T17:51:17.128373+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-06T17:51:17.128369+00:00",
+      "assistant_text": "post 31A74 promoted in place from the 98.12 NM body (agent-c run 324). The mode-1 store ACCS1 = acc became the body of a one-pass for whose STEP holds the call (for (mode = 1; mode; f(0x1000A00, acc), mode = 0) { store; }): the call's source line (the for header) is lower than the store's, so as1 schedules the call's mfc1 a1 before the store's lui at, the join block starts with mfc1 and as1 copies it into the b delay slot like the target. The tail keeps run 300's if(1)-split goto block (only one such block merges per function).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 141,
+  "initial_m2c_source": null,
+  "final_source": "// gl_func_00031A74 \u2014 full hand re-derivation from ground truth (2026-09-04\n// agent-g). Audio/ramp level driver: (mode, f32 v, s8 sel) prototyped (v in\n// a1 -> mtc1 f12; sel char-homed at 32(sp)+3).\n//   mode==1: st=G_st; if st not in {4,11}: acc=D+0x1CAC0; acc = (pool[1968]<acc)\n//     ? acc*pool[196C] : 0; store; cb(0x1000A00, acc); return.  st==4 && G2: return.\n//   if (G3!=4 && mode==3) return.  cur=D+0x1CAA8: if (mode!=cur) {cur=mode;\n//     cb(0x6000A00,(s8)mode)}.  mode==255: cb(0x6000A02,(s8)mode); return.\n//   sel += 63 (char); dv = v - pool[1970]; r = dv<0 ? 1 : (dv<tbl[mode] ?\n//     (tbl-dv)/tbl : 0); r *= pool[1974]; clamp r to [0,1]; clamp sel to\n//     [0,127]; D+0x1CAC0 = r; cb(0x1000A00, r); cb(0x3000A00, sel).\n// Levers: v reassigned in place (v -= pool) = f12 candidate w/ 28(sp) spill;\n//   per-site ACC aliases (fused lui at/lwc1 -13632); compound `*=` = dest-first\n//   mul operand order; inline D_st derefs = const-first beq; hoisted\n//   `lp = &tbl[mode]` = lui at/addu at above the bc1f.\n// RESIDUAL (15.8 -> 86.3): cur word is a real USO symbol at 0x1CAA8 (target\n//   lui 2/addiu -13656 exact base, +0 offsets) \u2014 base-0 alias + 0x1CAA8 cast\n//   CSEs as the 32K-aligned base 0x18000 (+0x4AA8 offsets); a 0x1CAA8-valued\n//   alias fuses (lui/lw) and its inline addend can't be scored by objdiff.\n//   mfc1 a1 duplicated into both arms (join-block first insn) vs ours after\n//   the join; `addiu a2,63` delay-slot fill vs `lui a0`; tail reload `lb a2`\n//   + sll/sra re-extension vs our folded `lb a1` (dead-if on sel = no-op).\n// agent-c run 324: EXACT. The mode-1 store is the body of a one-pass `for` whose\n//   STEP holds the call: the call's source line (the for header) is then lower than\n//   the store's, so as1 schedules the call's `mfc1 a1` ahead of the store's `lui at`\n//   (join-block first insn -> copied into the `b` delay slot), while the tail keeps\n//   agent-c run 300's if(1)-split goto block. `mode = 1` is value-preserving (mode\n//   == 1 here), `mode = 0` is a dead store before the return.\nextern int gl_func_00000000_f(int, float);\nextern int gl_func_00000000_c(int, s8);\nextern int D_31A74_st, D_31A74_g2, D_31A74_g3, D_31A74_accl, D_31A74_accs1, D_31A74_accs2, D_31A74_cur;\nextern f32 D_31A74_1968[], D_31A74_196C[], D_31A74_1970[], D_31A74_1974[];   /* per-site pool aliases (fresh lui at) */\nextern f32 D_31A74_tbl[];   /* base-0 f32 table indexed by mode (lui at; addu at,idx; lwc1 0(at)) */\n#define ACCL_31A74 (*(f32 *)((char *)&D_31A74_accl + 0x1CAC0))\n#define ACCS1_31A74 (*(f32 *)((char *)&D_31A74_accs1 + 0x1CAC0))\n#define ACCS2_31A74 (*(f32 *)((char *)&D_31A74_accs2 + 0x1CAC0))\nextern int D_31A74_curv;   /* agent-c run 183: pinned at 0x1CAA8 itself (target addiu v0,%lo + lw/sw 0(v0)) */\n#define CUR_31A74 D_31A74_curv\nvoid gl_func_00031A74(int mode, f32 v, s8 sel) {\n    f32 acc;\n    f32 r;\n    f32 lim;\n    f32 *lp;\n\n    if (mode == 1) {\n        if (D_31A74_st != 4 && D_31A74_st != 11) {\n            acc = ACCL_31A74;\n            if (D_31A74_1968[0x1968 / 4] < acc) {\n                acc *= D_31A74_196C[0x196C / 4];\n            } else {\n                acc = 0.0f;\n            }\n            for (mode = 1; mode; gl_func_00000000_f(0x1000A00, acc), mode = 0) {\n            ACCS1_31A74 = acc;\n            }\n            return;\n        }\n        if (D_31A74_st == 4) {\n            if (D_31A74_g2 != 0) {\n                return;\n            }\n        }\n    }\n    if (D_31A74_g3 != 4 && mode == 3) {\n        return;\n    }\n    if (mode != CUR_31A74) {\n        CUR_31A74 = mode;\n        gl_func_00000000(0x6000A00, (s8)mode);\n    }\n    if (mode == 255) {\n        gl_func_00000000(0x6000A02, (s8)mode);\n        return;\n    }\n    v = v - D_31A74_1970[0x1970 / 4];\n    lp = &D_31A74_tbl[mode];\n    if (v < 0.0f) {\n        r = 1.0f;\n    } else {\n        lim = *lp;\n        if (v < lim) {\n            r = (lim - v) / lim;\n        } else {\n            r = 0.0f;\n        }\n    }\n    r *= D_31A74_1974[0x1974 / 4];\n    if (r < 0.0f) {\n        r = 0.0f;\n    }\n    if (1.0f < r) {\n        r = 1.0f;\n    }\n    sel += 63; /* agent-g run 225: next to its first use (target: addiu a2,63 hoisted into the 255-test bne delay slot, sll/sra in the v block) */\n    if (sel >= 127) {\n        sel = 127;\n    }\n    if (sel < 0) {\n        sel = 0;\n    }\n    /* agent-g run 211: char-prototyped callee (target lb a2 + sll/sra a1 re-extension at the call)\n     * and no trailing `if (r) {}` (it kept r live across the call: 0x20 frame vs target 0x18).\n     * 90.73 -> 91.55, 560 -> 564 bytes = target length.\n     * agent-c run 300: the 0x1CAC0 store in a goto block written AFTER the calls, with an\n     * `if (1) {}` first so the merged block keeps the store's own (higher) source line: as1 then\n     * schedules the sel spill sb before it and the swc1 fills the jal delay slot (97.73 -> 98.12).\n     * Only ONE such if(1)-split goto block merges per function, so mode 1's has no split. */\n    goto z31t;\nc31t:\n    gl_func_00000000_f(0x1000A00, r), gl_func_00000000_c(0x3000A00, sel);\n    return;\nz31t:\n    if (1) {} ACCS2_31A74 = r; goto c31t;\n}\n",
+  "metadata": {
+    "source_path": "/tmp/claude-1000/c324/ep/gl_func_00031A74.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00031A74.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2 -32 -G 0",
+    "verification": "ROM byte-identical, verify-blocks 6/6, objdiff report 100.0 (564 B)."
+  }
+}
