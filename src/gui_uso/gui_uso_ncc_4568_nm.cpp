@@ -63,19 +63,17 @@ struct DL { Gfx *buf; int n; };
 struct Ctx {
     char pad[0xC];
     DL *dl;
-    Gfx *next() { int n = dl->n++; return &dl->buf[n]; }
+    /* agent-c run 308 (kit CCCXCII): next() with an unused int parameter, passed a variable (a constant argument is
+     * dropped by edg): the parameter takes an edg pool entry, so the post-increment old value no longer shares the
+     * MAX ternaries' entry; uopt then colours the Scis arm's (s16)yl / xl in t2 / t3 and t3 leaves the ugen pool for the
+     * whole function, so the first arm is the plain macro (its run-185 split shifts, run-283 y << 2 test and run-306
+     * folded masks removed): 97.010 -> 98.141, same length */
+    Gfx *next(int k) { int n = dl->n++; return &dl->buf[n]; }
     Gfx *nJ() { int n = dl->n++; return (Gfx *)(n * 8 + (int)dl->buf); } /* agent-g run 257: index-first append (int arithmetic) */
 };
 extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
     if (x >= 0 && y >= 0) {
-        /* run 185: split shifts on y / xh / yh re-phase the ugen temp ring (first packet now
-         * word-exact; 91.79 -> 95.68) */
-        /* agent-c run 283: code-free y << 2 test = the y << 2 expression's LR id is created here, before the
-         * Scis arm's packet pointer (kit CCCXXXVIII creation order): y << 2 a3 / pkt t1 like the target */
-        if (y << 2) {}
-        /* agent-c run 306 (kit CCCLXXXVIII ring lever): value-preserving folded masks on the RDPHALF_2 operands (the macro
-         * keeps their low 16 bits anyway), two on dsdx and one on dtdy, re-phase the ugen ring: 96.935 -> 97.010 */
-        gSPTextureRectangle(c->next(), x << 2, y << 1 << 1, (x + w) << 1 << 1, (y + h) << 1 << 1, 0, 0, 0, (dsdx) & 0xFFFF & 0xFFFF, (dtdy) & 0xFFFF);
+        gSPTextureRectangle(c->next(x), x << 2, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     } else {
         /* run 185: xl named once (the target's `or t2,a1` copy + a3 for yl; 95.68 -> 96.01) */
         int xl = x << 2;
@@ -83,6 +81,6 @@ extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, 
         if ((s16)((x + w) << 2) > 0) {}
         /* agent-g run 257: one pkt parameter per append (kit CCLXXXVI) and the RDPHALF_2 append through the
          * index-first nJ(): the target's `addu t0,t8,t5` operand order (96.53 -> 96.63, same length) */
-        gSPScisTextureRectangle(c->next(), c->next(), c->nJ(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        gSPScisTextureRectangle(c->next(x), c->next(x), c->nJ(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     }
 }
