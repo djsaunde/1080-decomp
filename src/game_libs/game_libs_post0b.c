@@ -5815,7 +5815,7 @@ extern char D_3BE1C_1EE9C[];
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 /* agent-c run 178: the NON_MATCHING object now takes this body ported to NCC C++
- * (src/game_libs/game_libs_ncc_3BE1C_nm.cpp, Obj::query, 88.59 local vs 77.27 here). */
+ * (src/game_libs/game_libs_ncc_3BE1C.cpp, Obj::query, 88.59 local vs 77.27 here; EXACT agent-g run 325). */
 /* run 151 (agent-c, 76.33 -> 76.69): the grid cell index is an if/else with
  * `cell = -1` in the else arm (target `b join` after the multiply; 1524 -> 1528 of
  * 1568 bytes). The list pointer in the same form scores lower here. */
@@ -5949,7 +5949,13 @@ s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     return cnt;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003BE1C);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3BE1C.cpp
+ * (real `int Obj::query(int max, f32 *dist, Tri **out, V3 p)`; agent-c run 178 lift, agent-g run 325 exact),
+ * REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference)
+ * in both build trees. */
+int gl_func_0003BE1C(char *o) {
+    return 0;
+}
 #endif
 
 // gl_func_0003C43C — nearest-hit picker (0x368).

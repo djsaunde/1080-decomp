@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003BE1C (0x620 / 392 words), agent-c run 178.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003BE1C (0x620 / 392 words), agent-c run 178 lift, agent-g run 325 exact
+ * (spliced over a placeholder on both build paths; the residual notes below are history).
  * Real C++ `int Obj::query(int max, f32 *dist, Tri **out, V3 p)` (vertical ray / ground query, sibling of
  * 3B2EC Obj::height and 3B9C0), ported from the run-110..152 cfe body (77.27): the grid lookup through the
  * same inline Obj members toCell(const V3 &, int &, int &) / cellOf() / list() as 3B2EC (the cell-index
@@ -26,7 +27,7 @@
  * loop locals declared at function scope BEFORE cx / cz (q after off / f / ok / t / n), toCell written out in
  * cellOf and face() without its `r` local (3 + 1 inline homes fewer); keeping `r` block-scope matters (off + f + r
  * hoisted together moves the loop's -1 constant).
- * Still NON_MATCHING. */
+ * agent-g run 325: EXACT (alias in va + edge-loop split + v0[a] test, see the loop). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
@@ -117,14 +118,17 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
         if (r & 0x100) { /* agent-c run 292: agent-g run 266's folded `+ 0 * (int)(cc)` here dropped -- stale after the t->d fix below (kit CCCXXIX re-test): 98.98 -> 99.268 */
             ok = 1;
             n = (V3 *)((char *)col->nrm + off);
-            V3 *n_al = n; /* agent-c run 195: alias copy (colour tie) */
+            /* agent-g run 325: the run-195 alias copy `V3 *n_al = n` (colour tie) now rides in va (dead store, va is
+             * re-assigned before every read in the 0x200 branch): same colours, and n_al's home is gone, so the off
+             * call-save slot sits at M-156 like the target (frame 240 comes from the edge-loop split below) */
+            va = (s16 *)n;
             /* agent-c run 292 (kit CCCXXX): t->d read through the plain expression, not the variable t (the first
              * `t = tris + off` assignment dropped): the target computes this address into a ugen temp (`addu t7,t9,a2`;
              * `lwc1 $f6,8(t7)`) and only the SECOND t (for a / b) is t's coloured v1 -- ours had a coloured split
              * piece of t here: 99.166 -> 97.98 (ring phase), then 99.268 with the fold above removed */
-            f32 d = p.x * n_al->x + p.y * n_al->y + p.z * n_al->z - ((Tri *)((char *)tris + off))->d;
-            q[0] = p.x - n_al->x * d;
-            q[1] = p.y - n_al->y * d;
+            f32 d = p.x * ((V3 *)va)->x + p.y * ((V3 *)va)->y + p.z * ((V3 *)va)->z - ((Tri *)((char *)tris + off))->d;
+            q[0] = p.x - ((V3 *)va)->x * d;
+            q[1] = p.y - ((V3 *)va)->y * d;
             q[2] = p.z - n->z * d;
             t = (Tri *)((char *)tris + off);
             a = t->a;
@@ -156,10 +160,17 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                     v1 = vt[f->vi[*nx]];
                     nx++;
                     dx = (int)(qa - v0[a]);
+                    if (1) {}
                     dy = (int)(qb - v0[b]);
                     ex = v1[a] - v0[a];
                     ey = v1[b] - v0[b];
-                    if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0 + 0 * (int)(v1) + 0 * (int)(v0); /* agent-g run 231: folded counted uses (zero-use sweep, 2 passes): 98.16 -> 98.31 */
+                    if (v0[a] + v0[a] + v0[a]) {}
+                    /* agent-g run 325 (kit CDXVII): the `if (1) {}` after dx splits the loop body (uopt) and ugen's unaccessed
+                     * area above the saves grows 20 -> 28 bytes: frame 240 with the off call-save at M-156 (sp+84) as the
+                     * target. The split makes v0[b] local to the second half (adjsave 300) and v0[a] span both (200); the
+                     * code-free test of v0[a] (three uses in one test at the end of the block, no new block) lifts it to the
+                     * tie, which v0[a] wins by LR order (v0 / v1 as the target). The run-231 folds of v1 / v0 on ok dropped. */
+                    if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0;
                 } while (ok && (fv++, nx < D_3BE1C_c + 3));
             }
             if (ok) {

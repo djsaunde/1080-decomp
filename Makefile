@@ -1867,14 +1867,15 @@ $(GAMELIBS_3B2EC_DONOR): src/game_libs/game_libs_ncc_3B2EC.cpp
 	$(OBJCOPY) --redefine-sym height__3ObjFiPffT3=gl_func_0003B2EC $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B2EC=$(GAMELIBS_3B2EC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B2EC_DONOR)
-# 3BE1C = real C++ `int Obj::query()` (agent-c run 178; cfe 77.27); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3BE1C_NM_DONOR := build/src/game_libs/game_libs_ncc_3BE1C_nm.cpp.o
-$(GAMELIBS_3BE1C_NM_DONOR): src/game_libs/game_libs_ncc_3BE1C_nm.cpp
+# 3BE1C = real C++ `int Obj::query()` (agent-c run 178; cfe 77.27); symbol renamed (name only).
+# agent-g run 325: EXACT NCC donor over the placeholder on both build trees (D_3BE1C_c / D_3BE1C_128 pinned as before).
+GAMELIBS_3BE1C_DONOR := build/src/game_libs/game_libs_ncc_3BE1C.cpp.o
+$(GAMELIBS_3BE1C_DONOR): src/game_libs/game_libs_ncc_3BE1C.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym query__3ObjFiPfPP3Tri2V3=gl_func_0003BE1C $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003BE1C=$(GAMELIBS_3BE1C_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3BE1C_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003BE1C=$(GAMELIBS_3BE1C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3BE1C_DONOR)
 # 4B0A8 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.36). Still NON_MATCHING: NM comparison object only.
 # agent-c run 164: rewritten as the C++ constructor Obj::Obj(Src *) (94.76 -> 99.22, same 147-word length).
 # agent-c run 240: EXACT NCC donor over a placeholder (cur() without the named reference, next() through me(), an
