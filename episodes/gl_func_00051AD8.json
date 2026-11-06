@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_00051AD8",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-11-06T19:19:02.361296+00:00",
+  "end_time": "2026-11-06T19:19:02.361315+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-06T19:19:02.361311+00:00",
+      "assistant_text": "Donor-splice exact. The NM body was 240/240 words except the bound-check delay slot (as1 stole the default head lui a0,2). A folded counted use of pp in case 211 (out->w54 = src->w54 + 0 * (int)(pp); pp set earlier in that case) found by zero-use-sweep makes as1 keep the fall-through sll. Jumptable reloc renamed gl_func_00051AD8_rodata = 0x1BB4.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 240,
+  "initial_m2c_source": null,
+  "final_source": "void gl_func_00051AD8(State_51AD8 *out, Strm_51AD8 *s) {\n    s32 *r;\n    s32 op;\n    State_51AD8 **pp;\n    s32 *x;\n    State_51AD8 *src;\n    s32 v;\n    u8 *b;\n    u8 hi[1];\n    s32 *p;\n    s32 *q;\n\n    switch (s->op) {\n    case 200:\n        q = s->cur; s->cur = q + 1;\n        break;\n    case 209:\n        q = s->cur; s->cur = q + 1; out->w44 = *q;\n        break;\n    case 204:\n        p = s->cur; s->cur = p + 1; q = (s32 *)*p;\n        out->m.a = 0;\n        out->m.b = (s32)q;\n        break;\n    case 210:\n        q = s->cur; s->cur = q + 1; b = (u8 *)*q;\n        out->w58.v = *(s32 *)b;\n        out->b32 = b[0];\n        hi[0] = gl_func_00000000(b[1]);\n        out->h30 = (hi[0] << 8) | gl_func_00000000(b[2]);\n        break;\n    case 208:\n        p = s->cur; s->cur = p + 1; q = (s32 *)*p;\n        r = (s32 *)gl_func_00000000(&D_00000000, q);\n        out->w48 = r;\n        out->m = *(Pair_51AD8 *)(r + 1);\n        break;\n    case 207:\n        q = s->cur; s->cur = q + 1; out->m.a = *q;\n        break;\n    case 206:\n        p = s->cur; s->cur = p + 1; q = (s32 *)*p;\n        out->m.b &= ~(s32)q;\n        break;\n    case 205:\n        p = s->cur; s->cur = p + 1; q = (s32 *)*p;\n        out->m.b |= (s32)q;\n        break;\n    case 202:\n        q = s->cur; s->cur = q + 1; v = *q;\n        pp = &gl_ref_00000160_51AD8[v];\n        if (*pp != 0) {\n            s->cur += 4;\n            out->q = (*pp)->q;\n        } else {\n            gl_func_00000000(s, out);\n        }\n        break;\n    case 201:\n        gl_func_00000000(s, out);\n        break;\n    case 203:\n        q = s->cur; s->cur = q + 1; out->w24 = *q;\n        q = s->cur; s->cur = q + 1; out->w1C = *q;\n        q = s->cur; s->cur = q + 1; out->h20 = *q;\n        q = s->cur; s->cur = q + 1; out->h22 = *q;\n        q = s->cur; s->cur = q + 1; out->w28 = (s16)*q;\n        q = s->cur; s->cur = q + 1; out->h2C = *q;\n        q = s->cur; s->cur = q + 1; out->h2E = *q;\n        break;\n    case 211:\n        q = s->cur; s->cur = q + 1; v = *q;\n        pp = &gl_ref_00000148_51AD8[v];\n        if (*pp == 0) {\n            gl_func_00000000((char *)&D_00000000 + 0x20F14);\n        }\n        src = *pp;\n        out->q = src->q;\n        out->f10 = src->f10;\n        out->w14 = src->w14;\n        out->w18 = src->w18;\n        out->w1C = src->w1C;\n        out->h20 = src->h20;\n        out->h22 = src->h22;\n        out->w24 = src->w24;\n        out->w28 = src->w28;\n        out->h2C = src->h2C;\n        out->h2E = src->h2E;\n        out->h30 = src->h30;\n        out->b32 = src->b32;\n        out->m = src->m;\n        out->w3C = src->w3C;\n        out->w40 = src->w40;\n        out->w44 = src->w44;\n        out->w48 = src->w48;\n        out->w4C = src->w4C;\n        out->w50 = src->w50;\n        out->w54 = src->w54 + 0 * (int)(pp); /* folded counted use of pp (set above in this case; zero code) */\n        out->w58 = src->w58;\n        break;\n    default:\n        gl_func_00000000((char *)&D_00000000 + 0x20F20, op = s->op);\n        break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_51AD8.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_00051AD8.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -Wab,-r4300_mul",
+    "verification": "ROM byte-identical; verify-blocks 6/6; report 100.0 (960 B)"
+  }
+}
