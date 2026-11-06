@@ -76,7 +76,10 @@ struct BB {
     char pad0[0xC]; int m0c; char pad10[0x28 - 0x10];
     virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6();
     virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-    virtual void hit(int, Rec *, int, Elem *);
+    /* agent-g run 312: int return (result never read here): the target colours the grid loop as if v0 were
+     * clobbered by a value-returning call inside the j loop (tbl18 v1, grid a0, end v0); with a void hit()
+     * uopt keeps v0 for the tbl18 load and rotates grid / w / end (99.680 -> 99.917, same length) */
+    virtual int hit(int, Rec *, int, Elem *);
 };
 struct Mgr : BB {
     int m2c; int flags30; char pad34[0x44 - 0x34]; u32 n44; char pad48[4]; s16 *remap4C; int m50; char pad54[0x68 - 0x54];
