@@ -45,11 +45,14 @@ struct IBase {
     Arr *a;
     int idx;
     int last;
-    IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
+    /* agent-g run 310: kept ctor parameter (dead `if (0)` store) together with `idx += 1` in next() below -- a random
+     * joint draw over the iterator / append lever families (the `+=` alone is 98.62, the keep alone flat): 99.693 -> 99.725 */
+    IBase(Arr *arr) { if (0) { arr = 0; } a = arr; idx = -1; last = arr->count - 1; }
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
-    Elem **next() { return idx < last ? &(*a)[idx = idx + 1] : 0; } /* agent-c run 272: `idx = idx + 1` (not ++idx): the loop's
+    Elem **next() { return idx < last ? &(*a)[idx += 1] : 0; } /* agent-g run 310: `idx += 1` (with the IBase keep above);
+                                                                    * was, agent-c run 272: `idx = idx + 1` (not ++idx): the loop's
                                                                     * new-index temp s0 and the &it reload s3 like the target, 99.66 -> 99.68 */
     Elem *cur() { return (*a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
