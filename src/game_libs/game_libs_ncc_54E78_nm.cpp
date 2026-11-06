@@ -16,13 +16,17 @@ struct V3 { f32 x, y, z;
                                  the parameter / return / copy temps on the target's sp+44 / 80 / 100 */
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
-    V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
+    V3 operator*(const f32 &s) const; /* agent-g run 303: s by const reference + idv(s) on the x product (defined below idv()) */
     f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; } /* run 200: y term first (operand-order grid); agent-g run 231: back to x first (stale after later levers, 98.22 -> 98.66) */
 };
 inline int i1() { return 1; }
 template <class T> inline T idv(T v) { return v; } /* agent-g run 301: zero-code by-value identity inline (kit CCCLXXX). The run-300 sq() on m[1][1]
     (99.529 -> 99.565) is superseded: idv() on m[2][2]'s LEFT n.z operand + a volatile pad below a (frame 152 kept): the x * d product
     of the translation block now takes f0 -- the register 0.0f held until the m[1][3] store -- like the target (99.565 -> 99.638) */
+inline V3 V3::operator*(const f32 &s) const { return V3(x * idv(s), y * s, z * s); } /* agent-g run 303: the by-value
+    idv(s) parameter is a pool slot created inside the translation full-expression: the operator* result / set() copy
+    temporaries move from sp+76 / +92 to the target's +80 / +100 (with the u2 pad dropped: frame 152 kept); then idv() on
+    m[1][1]'s left n.y (one-site wrap sweep on that base) gives n.y / n.z / d the target's f14 / f16 / f18: 99.819 -> 99.855 */
 struct Plane { V3 n; f32 d; };
 struct M4 { f32 m[4][4]; void ident(); };
 extern "C" char D_00000000[];
@@ -30,7 +34,6 @@ struct Obj { char pad[300]; M4 mtx; void reflect(const Plane &p); };
 void Obj::reflect(const Plane &p) {
     volatile int u; /* agent-g run 203: homed above a (the target's 4 bytes at sp+148; a's home is always frame - 12 without it) */
     V3 a; /* agent-g run 195: declared at the top (NCC homes it first, the frame-top aggregate) */
-    volatile int u2; /* agent-g run 301: frame shaping only (never accessed): with idv()'s parameter home the frame drops to 144 without it */
     { V3 t; } /* run 203: 12 unreferenced bytes below a (63964 rule): frame 152, a at sp+136 = target */
     /* agent-g run 260 (kit CCXCV code-free constant lever): two empty tests add uses to the 0.0f / 2.0f LRs (no code): 2.0f -> f2, n.x -> f12 = target (98.66 -> 99.06).
      * agent-c run 273: the two tests moved to right after the m[2][3] = 0.0f store (and the two `if (1) {}` splits dropped):
@@ -43,7 +46,7 @@ void Obj::reflect(const Plane &p) {
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
     if (1) {} /* agent-g run 301: BB split before m[1][1] (found as a position grid of the `{ V3 t; }` block, whose empty
                * constructor call splits the block the same way): p.d / z * d take the target's f18 / f14 (99.638 -> 99.746) */
-    mtx.m[1][1] = i1() - 2.0f * (p.n.y * p.n.y);
+    mtx.m[1][1] = i1() - 2.0f * (idv(p.n.y) * p.n.y); /* agent-g run 303: see operator* */
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
     mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
