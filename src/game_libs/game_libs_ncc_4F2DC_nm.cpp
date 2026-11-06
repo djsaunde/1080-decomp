@@ -24,11 +24,16 @@ struct V3 { f32 x, y, z;
     V3 operator+(const V3 &o) const { return V3(o.x + x, o.y + y, z + o.z); } /* agent-c run 289: by const reference -- the
         * operand temporary bound to it is a full-expression temporary, homed at the frame top (the target's 412);
         * then the x / y sums operand-first (8-way order grid, 95.733 -> 95.771) */
-    void operator*=(const V3 &k) { y *= k.y; x *= k.x; z *= k.z; } /* agent-g run 245: x, z, y (swap sweep, 95.665 -> 95.669); agent-c run 276: y, x, z with the e ctor's x product KV-first (order x operand grid, 95.669 -> 95.684) */
+    void operator*=(const V3 &k) { x *= k.x; y *= k.y; z *= k.z; } /* agent-g run 303: x, y, z (with e *= KV below; earlier
+        order sweeps: agent-g run 245, agent-c run 276) */
     void operator/=(const V3 &k) { x /= k.x; y /= k.y; z /= k.z; }
 };
 #define KV (*(V3 *)D_00000000F) /* collision kvec (&D + 0x128) */
-struct Cam { char p[0xA0]; V3 pos; char pac[0xB4 - 0xAC]; char mtx[1]; };
+/* agent-g run 303: the camera position is the translation row of an M4 at cam + 0x70 (game_uso 3558's Body::mtx.getPos
+ * shape: the target computes this = cam + 0x70, `addiu v1,v1,112`); the `if (1) {}` between x and y keeps the y / z
+ * reads off the folded cam-relative addresses */
+struct M4 { f32 m[4][4]; void getPos(V3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; } };
+struct Cam { char p[0x70]; M4 m; char pac[0xB4 - 0xB0]; char mtx[1]; };
 extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     /* agent-c run 280 (declaration-order grid, 120): count and padt FIRST -- dists / surfs / hits then sit at the
      * target's 376 / 344 / 248 (were 392 / 360 / 264); `count = 0;` must stay right after count's declaration (after
@@ -56,10 +61,14 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
      * target (operator= return / pointer / reference forms, 18): 95.8421 -> 95.8534 */
     const V3 &dr = d;
     Cam *cam = *(Cam **)(arg0 + 0x70);
-    PadK<4> pz; /* agent-c run 289: unreferenced pad object (kit CCCLI), frame 424 = target */ start.x = cam->pos.x; start.y = cam->pos.y; start.z = cam->pos.z;
-    V3 end = start + dr * -100000.0f; /* agent-c run 218: bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5 */
-    start *= KV; if (1) {}
-    e.set(KV.x * end.x, end.y * KV.y, end.z * KV.z);
+    if (1) {} /* agent-g run 303: was agent-c run 289's PadK<4> pz frame pad (no longer needed: frame 424 = target) */ cam->m.getPos(start);
+    /* agent-g run 303: the target's `end` (sp+84, below the operator temporaries) is e's by-value operator= parameter --
+     * e = start + dr * -1e5 (bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5), start *= KV, then e *= KV
+     * (same values as e.set(KV.x * end.x, ...)): start.x stays in f18 across the add and the scale like the target,
+     * 95.853 -> 97.365, length 1064 = target */
+    e = start + dr * -100000.0f;
+    start *= KV;
+    e *= KV;
     char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
