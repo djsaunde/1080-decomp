@@ -82,7 +82,7 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     s32 w, h;
     /* agent-g run 294: the packet pointers declared LAST (homes below the named locals): frame 96 -> the target's 88,
      * 99.601 -> 99.633 */
-    Gfx *gpa, *gpb;
+    Gfx *gpa, *gpb, *gpc; /* agent-g run 308: RDPHALF_1 through its own gpc (target t1; TEXRECT gpb t0): 99.843 -> 99.965 */
     gSPTextureS(gpa, I4(me(CTX))->nextp(), 0x8000, 0x8000, 0, 0, 1); /* agent-g run 308: through a named-local inline (kit CCCXCV
                                                       * I4: a pool entry before n moves the texture count into the later appends' count
                                                       * variable -- the target's v1) and nextp(): 99.738 -> 99.843 */ /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
@@ -110,6 +110,6 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     fh = y1 - y0;
     /* agent-g run 293: joint accessor-depth x append-method grid over the four appends (200 random of 20736 + local
      * search): TEXRECT / RDPHALF_1 through nD() at depth 2, RDPHALF_2 through next() at depth 1: 99.371 -> 99.476 */
-    gSPScisTextureRectangleS(gpb, gpb, gpa, me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangleS(gpb, gpc, gpa, me(me(CTX))->nD(), me(me(CTX))->nDQ(), me(CTX)->nR1() + 0, x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), (s32)(((f32)(h - 1) * 1024.0f) / fh));
 }
