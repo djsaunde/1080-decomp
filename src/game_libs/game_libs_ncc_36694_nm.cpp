@@ -31,6 +31,8 @@ inline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, 
 inline V3 operator*(const V3 &a, f32 s) { return V3(a.x * s, a.y * s, a.z * s); }
 inline V3 operator/(const V3 &a, f32 s) { f32 k = s; return V3(a.x / k, a.y / k, a.z / k); }
 extern "C" { extern void gl_normalize_36694(V3 *); }
+/* agent-c run 312 (kit CDI): a discarded zero-code float pool entry (kit CCCXCVIII I2 form) */
+inline f32 F2(f32 v) { if (0) { v = 0; } return v; }
 struct Obj { V3 perp(V3 p, V3 n); };
 V3 Obj::perp(V3 p, V3 n) {
     /* agent-c run 265 (kit CCCVI, edg frame order = declaration order at block entry): the target's first frame word M-12
@@ -45,7 +47,7 @@ V3 Obj::perp(V3 p, V3 n) {
     V3 r;
     f32 l;
     f32 px, py = 0.0f, pz; /* agent-c run 281: py initialised at its declaration (declaration-init sweep), 95.876 -> 95.899 */
-    { const V3 &t = p - a; px = t.x; py = t.y; pz = t.z; }
+    { const V3 &t = (F2(0.0f), p - a); px = t.x; py = t.y; pz = t.z; } /* agent-c run 312: F2 entry in the binding -- the three sub.s results take the target's f2 / f12 / f14: 95.899 -> 96.067, same length */
     l = px * px + py * py + pz * pz;
     if (0.0f < l) {
         if (pz < 0.0f) {
