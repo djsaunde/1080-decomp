@@ -3590,9 +3590,9 @@ void gl_func_000076F0(GlObj76F0 *self) {
                     case 0:                         /* switch 2 */
                         func_00000000(0x11);
                         self->unk534 = 1.0f;
+                        self->unk538 = 1.0f; /* agent-c run 326: field order again (shares the 1.0 `lui at` as in the target), with the 0x4E0 == 7 dead store below */
                         self->unk548 = 160.0f;
                         self->unk550 = 0.0f;
-                        self->unk538 = 1.0f; /* run 182 (lever-sweep order, +1 word toward the target) */
                         self->unk54C = 120.0f;
                         if (*(s32 *)((char *)&D_00000000_76F0 + 0x34) == 2) {
                             self->unk54C = 60.0f;
@@ -3687,7 +3687,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
                  temp = self->unk4F8, (temp == 0)) || (temp == 5))) {
             func_00000000(self);
         }
-        if (self->unk4E0 == 7) {
+        if ((var_v0 = self->unk4E0) == 7) { /* agent-c run 326: dead store (var_v0 re-assigned before its only read) */
             vt = self->vt;
             vt->e[21].fn(vt->e[21].off + (char *)self);
         }
