@@ -12677,8 +12677,9 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
     temp_v1 = (char *)FW(arg0, 0x240);
     /* agent-g run 281: code-free tests of two of the block's loads (temp_v1->0x148, ->0xC0) before the block (kit
-     * CCCXL creation order; expression-test sweep): 96.02 -> 97.52, same length */
-    if (FW(temp_v1, 0x148)) {}
+     * CCCXL creation order; expression-test sweep): 96.02 -> 97.52, same length.
+     * agent-c run 318: the 0x148 test moved from here to right after the a10 declaration below (the first 0x148
+     * load becomes the target's ugen t6 / t8 pair, the a10 reload a coloured expression): 99.175 -> 99.369 */
     if (FW(temp_v1, 0xC0)) {}
     {
         /* agent-c run 196: p100 / pDC from a re-read of arg0->0x240 (CSE'd load, unfolded
@@ -12698,7 +12699,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
         /* agent-g run 282: folded counted use of p100 in a10 (zero-use sweep re-run): p100's LR reaches the argument
          * block: 97.96 -> 98.06, same length; second sweep pass: a second counted use there (two refs in the
          * unit): 98.06 -> 98.20, same length */
-        { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8) + 0 * (int)(p100);
+        { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8) + 0 * (int)(p100); if (FW(temp_v1, 0x148)) {}
           if (FW(temp_v1, 0xC0)) {} /* agent-g run 281: then a temp_v1 field test ahead of it (0xC0 / 0xC4 / 0xB8 / 0xBC equal): 97.86 -> 97.96 */
           if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
           /* agent-c run 318: the sixth argument written in the call (`temp_v1 + 0xDC`, no pDC local): the target's
