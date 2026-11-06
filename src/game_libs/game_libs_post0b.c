@@ -12639,9 +12639,9 @@ void gl_func_00046790(char *o, unsigned char ch, int x, int y) {
 // detail representative; the cb1/cb2 shape, the
 // self->0x240[self->0x204]+0x180 resolution, the vt->0x64 dispatch (arg
 // (short)vt->0x60 + obj) and the obj+0x100/0x78/0xDC config offsets are
-// exact. Caps: self/obj/vtable struct + cb signatures untyped. Full body
-// INCLUDE_ASM-preserved.
-#ifdef NON_MATCHING
+// exact. Caps: self/obj/vtable struct + cb signatures untyped.
+// agent-c run 322: EXACT (412 B) on both build paths; the five callee slots are the USO's blank `jal 0` imports
+// (no relocation in the target), bound to the existing gl_func_00000000 = 0 pin.
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
@@ -12671,15 +12671,19 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     char *temp_v0_3;
     char *temp_v1;
 
-    arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
+    arg1 = gl_func_00000000(FW(arg0, 0x218), 0);
     temp_s1 = (char *)FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
-    gl_func_00034458(temp_s1);
+    gl_func_00000000(temp_s1);
     /* agent-g run 281's code-free arg0->0x240 test here moved below the var_t0 store (agent-c run 320): here it made
      * the first 0x240 load a CSE'd expression coloured a1; without it the load is temp_v1 itself (v1, target) */
     if (temp_s1) {} /* agent-g run 278: code-free tests on temp_s1 after this call and after the temp_t6 read (random test search, 2 rounds): 95.36 -> 95.65, length = target */
     temp_v1 = (char *)FW(arg0, 0x240);
     temp_v0 = (char *)FW(temp_v1, 0x28);
-    temp_s0 = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
+    /* agent-c run 322 (kit CDXII lever, agent-g run 321): the vcall result also held in a block-scoped rv, tested
+     * once in the argument block, keeps v0 busy from the vcall to there (temp_v1 / p78 / the 0x148 reload / a6..a9
+     * can no longer take v0); scope closes after the block, so no new home */
+    { char *rv;
+    temp_s0 = rv = ((GP_000469A8)FW(temp_v0, 0x64))(*(s16 *)(temp_v0 + 0x60) + temp_v1);
     temp_v1 = (char *)FW(arg0, 0x240);
     /* agent-g run 281: code-free tests of two of the block's loads (temp_v1->0x148, ->0xC0) before the block (kit
      * CCCXL creation order; expression-test sweep): 96.02 -> 97.52, same length.
@@ -12695,10 +12699,14 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
         sp48 = FW(FW(temp_v1, 0x148), 0xF0);
         m4 = FW(p78, 0) & 4;
         var_t0 = (FW(p100, 0x4) & 2) != 0;
-        if (FW(arg0, 0x240)) {} /* agent-c run 320: agent-g run 281's arg0->0x240 test moved here, plus a temp_s0 test after the second vcall and the third temp_s1 test dropped (keeps temp_s0 coloured before temp_s1, s0/s1 like the target): 99.515 -> 99.660 */
+        if (FW(arg0, 0x240) + (FW(arg0, 0x240) | 1) + (FW(arg0, 0x240) ^ 2) + (FW(arg0, 0x240) & 3) + m4 + (m4 | 1) + (m4 ^ 2) + (m4 & 3) + (int)p100 + ((int)p100 | 1) + (int)temp_v1 + ((int)temp_v1 | 1) + ((int)temp_v1 ^ 2) + ((int)temp_v1 & 3) + ((int)temp_v1 - 4) + (m4 + 9) + ((m4 + 9) | 1) + ((m4 + 9) ^ 2)) {} /* agent-c run 320: agent-g run 281's arg0->0x240 test moved here, plus a temp_s0 test after the second vcall and the third temp_s1 test dropped (keeps temp_s0 coloured before temp_s1, s0/s1 like the target): 99.515 -> 99.660.
+             * agent-c run 322: distinct uses in this ONE test (kit CDXIII (b), no new block) raise the arg0->0x240 LR,
+             * m4, p100 and temp_v1 above p78, and the CSE'd (m4 + 9) is a code-free expression LR in this block: with rv
+             * on v0 they fill v1 / a0..a3 / t0 before p78, which takes the target's t1 */
         if (var_t0 != 0) {
             var_t0 = (FW(p78, 0) & 2) != 0;
         }
+        if ((var_t0 | 1) + (var_t0 ^ 2) + (var_t0 & 3) + (var_t0 - 4)) {} /* agent-c run 322: var_t0 coloured before the 0x148 reload (t0) */
         /* agent-c run 191: stack args 6..10 evaluated into locals before the call (the target loads
          * c0/c4/b8/bc/148->b8 into t1-t4/ra, then stores them; cfront inline-argument temps), and the
          * &D+0x254 store before the 0x158 field store (target order): 74.46 -> 90.06 standalone. */
@@ -12706,13 +12714,19 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
          * block: 97.96 -> 98.06, same length; second sweep pass: a second counted use there (two refs in the
          * unit): 98.06 -> 98.20, same length */
         { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8) + 0 * (int)(p100); if (FW(temp_v1, 0x148)) {}
+          if (rv) {} /* agent-c run 322: rv's one test (see the vcall) */
           if (FW(temp_v1, 0xC0)) {} /* agent-g run 281: then a temp_v1 field test ahead of it (0xC0 / 0xC4 / 0xB8 / 0xBC equal): 97.86 -> 97.96 */
           if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
           /* agent-c run 318: the sixth argument written in the call (`temp_v1 + 0xDC`, no pDC local): the target's
            * `addiu t7,v1,220` is a ugen temp held across the var_t0 beqz (ours was a coloured local in ra) */
-          gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, temp_v1 + 0xDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
+          /* agent-c run 322: a6..a9 raised above the 0x148 reload by one multi-use test (kit CDXIII (b)), and the
+           * folded `0 * FW(temp_v1, 0x148)` on a10 keeps the reload's CSE'd LR live into the call block (argument
+           * registers forbidden): it is coloured after a6..a9 and takes t5, a10 ra, like the target */
+          if ((a6 | a7 | a8 | a9) + (a6 ^ a7 ^ a8 ^ a9) + (a6 & a7 & a8 & a9)) {}
+          gl_func_00000000(temp_s1, temp_s0, sp48, m4, var_t0, temp_v1 + 0xDC, a6, a7, a8, a9, a10 + 0 * FW(temp_v1, 0x148), FW(temp_v1, 0x1B0)); }
     }
     if (temp_s1) {}
+    }
     /* agent-c run 196: int-cast address keeps the target's `lui; addiu; sw 596(rX)`.
      * agent-c run 318: the &D+0x254 store and the 0x158 store as ONE chained assignment over a fresh arg0->0x240
      * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
@@ -12731,18 +12745,15 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     temp_v0_3 = (char *)(FW(FW(temp_s1, 0xC), 0x0) + temp_a1_2 * 8); /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
     FW(temp_v0_3, 0x0) = 0xE9000000;
     FW(temp_v0_3, 0x4) = 0;
-    gl_func_00034458(temp_s1, temp_a1_2);
+    gl_func_00000000(temp_s1, temp_a1_2);
     temp_s0 = (char *)FW(FW(temp_s1, 0xC), 0x4); /* agent-c run 175: s0's third role */
     /* agent-c run 304 (kit CCCLXXVIII variable reuse): the 0x60 argument assigned to temp_a3 inside the argument list --
      * temp_a3 (the target's a3 for the temp_s1->0xC web above) is reused for the later a3 argument, so its first web
      * colours a3 instead of v1; as an assignment expression in the call the load keeps its argument-order slot after
      * the a0 load (a separate statement issues it first): 98.641 -> 98.786, same length */
-    gl_func_00034458(FW(arg0, 0x218), arg1, 0, (temp_a3 = (char *)FW(temp_s1, 0x60)), temp_s0, (char *)4);
-    gl_func_00034458(FW(arg0, 0x218), arg1);
+    gl_func_00000000(FW(arg0, 0x218), arg1, 0, (temp_a3 = (char *)FW(temp_s1, 0x60)), temp_s0, (char *)4);
+    gl_func_00000000(FW(arg0, 0x218), arg1);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000469A8);
-#endif
 
 extern int gl_func_00000000();
 int gl_func_00046B44() {
