@@ -43,6 +43,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 { Gfx *_g = (Gfx *)(pkt); \
     _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(I4(MAX((s16)(xh),0)), 12, 12) | _SHIFTL(I2(MAX((s16)(yh),0)), 0, 12)); \
     _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    if ((s16)(xh)) {} /* agent-c run 309: code-free test of (s16)xh after w1 (kit CCC random test search over body + macro slots, 200): 97.096 -> 97.360 */ \
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
