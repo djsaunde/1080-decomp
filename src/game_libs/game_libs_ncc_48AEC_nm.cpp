@@ -84,12 +84,14 @@ struct Obj {
 };
 void Obj::draw() {
     /* agent-g run 294: -g3 homes vs the target's offsets put gctx at the frame top (vfp-4) with A / B below it; the
-     * 120-order grid with gctx first: mtx declared last, 97.715 -> 97.719 (frame still 0x170, target 0x160) */
+     * 120-order grid with gctx first: mtx declared last, 97.715 -> 97.719 (frame still 0x170, target 0x160).
+     * agent-c run 307 (full 720-order grid, 150 random): i / j / k and cmd ahead of gctx (mtx still last): cmd's home
+     * at sp+348 / gctx sp+352 under the frame top, 97.719 -> 97.726, same length */
+    int i, j, k;
+    Mtx *cmd;
     Ctx *gctx;
     f32 (*A)[4];
     f32 (*B)[4];
-    int i, j, k;
-    Mtx *cmd;
     f32 mtx[4][4];
 
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
