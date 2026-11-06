@@ -40,6 +40,10 @@ typedef short s16;
     _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) |                              \
                     _SHIFTL(MAX((s16)(xh),0), 12, 12) |                      \
                     _SHIFTL(MAX((s16)(yh),0), 0, 12));                       \
+    /* agent-c run 308: code-free test of the caller's (s16)(x << 2) (the expression uopt copy-propagates for xl) \
+     * between the packet pointer and w1: its LR id lands after the packet's and before (s16)yl's, so the three \
+     * unconstrained LRs colour t1 / t2 / t3 like the target (99.196 -> 99.623) */ \
+    if ((s16)((x) << 2) > 0) {}                                               \
     _g->words.w1 = (_SHIFTL((tile), 24, 3) |                                 \
                     _SHIFTL(MAX((s16)(xl),0), 12, 12) |                      \
                     _SHIFTL(MAX((s16)(yl),0), 0, 12));                       \
