@@ -82,7 +82,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             continue;
         }
         dn = n->x * d.x + n->y * d.y + n->z * d.z;
-        if ((dn > -0.0001) + 0 * (int)(n->z)) { /* agent-c run 284: folded n->z use (zero-use --exprs, 96.05 -> 96.11) */
+        if (dn > -0.0001) { /* agent-g run 327: agent-c run 284's folded n->z use dropped (n->z back at 15, coloured after n->x / n->y: f20 like the target) */
             continue;
         }
         ok = 1; /* agent-c run 180 (lever-sweep bbsplit) */
@@ -124,7 +124,9 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib];
             if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 0.0f) {
-                ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)) + 0 * (int)(num); /* agent-c run 286: the run-285 nz use dropped with nz; + num (set before the loop on every path; zero-use --keep-float, 99.01 -> 99.07); agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
+                ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)); if (qa != 0.0f) {} /* agent-g run 327: the + num fold dropped (num no longer spans
+                                                                     * the inner loop) and a code-free 0.0f test here (raises the hoisted 0.0f over n->x / n->y / n->z):
+                                                                     * 0.0f f14 / n->z f20 like the target, 99.122 -> 99.211 (grid r8, 156); agent-c run 286: the run-285 nz use dropped with nz; + num (set before the loop on every path; zero-use --keep-float, 99.01 -> 99.07); agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
             }
         } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
         if (ok) { /* agent-c run 287: agent-g run 258's folded vt use dropped (stale) */
