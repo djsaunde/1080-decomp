@@ -3632,7 +3632,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
                 self->unk4DC = 1;
                 func_00000000(*(s32 *)((char *)&D_00000000 + 0x138));
             }
-            if (-self->unk4E8 >= self->unk4E4) {
+            if (-self->unk4E8 >= (var_v0 = self->unk4E4)) { /* agent-c run 326: dead store into var_v0 (re-assigned before its only read) */
                 self->unk4E0 = 2;
             }
             break;
