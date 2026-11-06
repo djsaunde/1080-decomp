@@ -59,9 +59,10 @@ V3 Obj::perp(V3 p, V3 n) {
          return (r * 1.0f) / gl_sqrtf_36694(l);
     }
     if (n.z == 1.0f) {
-        r.x = 1.0f;
-        r.y = 0.0f; if (1) {} /* agent-c run 201 lever-sweep bbsplit on the sibling-kit body: 87.90 -> 89.21 standalone */
+        /* agent-g run 313: stores in the target's z / x / y order (store-order grid x bbsplit position, 24): 96.067 -> 96.079 */
         r.z = 0.0f;
+        r.x = 1.0f; if (1) {} /* agent-c run 201 lever-sweep bbsplit on the sibling-kit body: 87.90 -> 89.21 standalone */
+        r.y = 0.0f;
     } else {
         r.z = 0.0f;
         r.x = -n.y;
