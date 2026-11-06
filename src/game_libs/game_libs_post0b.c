@@ -23416,9 +23416,9 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             *(s32 *)(p4 + 4) = 0;
         }
         {
-            b5 = *(char **)(arg0 + 0xC);
-            c5 = *(s32 *)(b5 + 4);
-            *(s32 *)(b5 + 4) = c5 + 1;
+            b2 = *(char **)(arg0 + 0xC); /* agent-g run 306: this base reuses b2 (reuse-map search, 99.557 -> 99.623) */
+            c5 = *(s32 *)(b2 + 4);
+            *(s32 *)(b2 + 4) = c5 + 1;
             p5 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c5 * 8;
             *(s32 *)(p5 + 0) = 0xE7000000;
             *(s32 *)(p5 + 4) = 0;
