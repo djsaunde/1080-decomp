@@ -1371,9 +1371,9 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
         if (rel[i].info & 8) {
             continue;
         }
-        type = rel[i].info & 7;
+        val = SYM_1ADC->value; /* agent-c run 326: value read before the flags test (same symtab entry; unused on the continue path) */
         if (SYM_1ADC->flags & 8) {} else { continue; }
-        val = SYM_1ADC->value;
+        type = rel[i].info & 7;
         p = (u32 *)(base + rel[i].offset);
         rel[i].orig = *p;
         switch (type) {
