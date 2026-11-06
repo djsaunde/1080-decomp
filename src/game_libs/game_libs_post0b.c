@@ -20777,7 +20777,11 @@ void gl_func_00054E78_old(char *arg0, char *arg1) {
 }
 #endif /* 0 (old body) */
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00054E78);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_54E78.cpp (agent-c run 175 lift,
+ * agent-g run 304 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+void gl_func_00054E78(char *arg0, char *arg1) {
+}
 #endif
 
 /* game_libs_func_000550A0: 11-insn "change-detector" float setter.

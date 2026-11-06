@@ -1838,14 +1838,15 @@ $(GAMELIBS_4FD00_NM_DONOR): src/game_libs/game_libs_ncc_4FD00_nm.cpp
 	$(OBJCOPY) --redefine-sym side__3ColFiT1=game_libs_func_0004FD00 $@
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004FD00=$(GAMELIBS_4FD00_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FD00_NM_DONOR)
-# 54E78 = real C++ `void Obj::reflect(const Plane &)` (agent-c run 175; cfe 86.62): plane-reflection matrix, translation via V3 operator* / by-value set(); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_54E78_NM_DONOR := build/src/game_libs/game_libs_ncc_54E78_nm.cpp.o
-$(GAMELIBS_54E78_NM_DONOR): src/game_libs/game_libs_ncc_54E78_nm.cpp
+# 54E78 = real C++ `void Obj::reflect(const Plane &)` (agent-c run 175 lift; cfe 86.62): plane-reflection matrix, translation via V3 operator* / by-value set(); symbols renamed (names only).
+# agent-g run 304: EXACT NCC donor over a placeholder on both build paths (the shared idv() pool variable starts in the m[0][0] block; operator*'s folded int pool temp).
+GAMELIBS_54E78_DONOR := build/src/game_libs/game_libs_ncc_54E78.cpp.o
+$(GAMELIBS_54E78_DONOR): src/game_libs/game_libs_ncc_54E78.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym reflect__3ObjFRC5Plane=gl_func_00054E78 --redefine-sym ident__2M4Fv=gl_func_00034458 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054E78=$(GAMELIBS_54E78_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54E78_NM_DONOR)
+	$(OBJCOPY) --redefine-sym reflect__3ObjFRC5Plane=gl_func_00054E78 --redefine-sym ident__2M4Fv=gl_func_00000000 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00054E78=$(GAMELIBS_54E78_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54E78_DONOR)
 # 36F0C = real C++ `void FreeCam::update()` (agent-c run 177 lift); symbol renamed (name only). EXACT NCC donor over an empty placeholder
 # (agent-g run 219: const-ref setter values + the x store through an accessor-kept Cam * taken before w += pos). The donor-local
 # .rodata reloc of the 0.8 literal is renamed gl_func_00036F0C_rodata and pinned to the USO RoData at +0x19E8.

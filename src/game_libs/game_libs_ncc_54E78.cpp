@@ -1,14 +1,17 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00054E78 (0x228 / 138 words), agent-c run 175.
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00054E78 (0x228 / 138 words), agent-c run 175 lift, agent-g run 304 exact.
  * Real C++ `void Obj::reflect(const Plane &p)` (renamed with objcopy; ident() renamed to the gl_func_00034458
  * placeholder): mtx (at this+300) = identity call, then the plane-reflection matrix I - 2 n n^T written row by row
  * through the reference, the translation row from `a.set(p.n * p.d)` (the target's three back-to-back products
  * stored to the sp+80 return temporary, lw/sw copies into sp+100 / the sp+44 by-value set() parameter, member
  * stores to a at sp+136) and k = 2 a.n, then the current-matrix global (&D_00000000 + 0xE4) = &mtx.
- * The diagonal ones are an int inline `i1()` (each use folds to its own 1.0f after candidate selection: length
- * = target). cfe body 86.62 -> 91.07, length = target. [run 203: frame and every home now = target (cp(), u, t);
- * only the FP colouring / shared 1.0f below is left.] Old residual: frame 128 vs 152 (the return / parameter temporaries sit
- * 8-24 bytes low) and the 1.0f constants still share one FP register.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * The diagonal ones are an int inline `i1()` (each use folds to its own 1.0f after candidate selection).
+ * agent-g run 304 (docs/IDO_CODEGEN.md kit CCCLXXXIX): the zero-code identity idv() on the RIGHT n.x of the m[0][0]
+ * square (and on the left n.y / n.z of the m[1][1] / m[2][2] squares) is one shared edg pool variable whose uopt
+ * live range now starts in the m[0][0] block: it colours f12 before n.y / n.z, which take the target's f14 / f16
+ * (the run-303 code-free n.z test after m[0][0] is dropped). operator* keeps a 4-byte pool temporary inside the
+ * translation full-expression (the folded `- 0 * idv(0)`: the result / copy temporaries stay at the target's
+ * sp+80 / +100) and routes the y product through idv() with the x product named first: x*d / y*d / z*d take
+ * f0 / f12 / f14 in the target's order. Byte-exact (552 bytes). */
 typedef float f32;
 struct V3 { f32 x, y, z;
     void cp(const V3 &p) { x = p.x; y = p.y; z = p.z; }
@@ -16,17 +19,16 @@ struct V3 { f32 x, y, z;
                                  the parameter / return / copy temps on the target's sp+44 / 80 / 100 */
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
-    V3 operator*(const f32 &s) const; /* agent-g run 303: s by const reference + idv(s) on the x product (defined below idv()) */
+    V3 operator*(const f32 &s) const; /* defined below idv() */
     f32 dot(const V3 &o) const { return x * o.x + y * o.y + z * o.z; } /* run 200: y term first (operand-order grid); agent-g run 231: back to x first (stale after later levers, 98.22 -> 98.66) */
 };
 inline int i1() { return 1; }
-template <class T> inline T idv(T v) { return v; } /* agent-g run 301: zero-code by-value identity inline (kit CCCLXXX). The run-300 sq() on m[1][1]
-    (99.529 -> 99.565) is superseded: idv() on m[2][2]'s LEFT n.z operand + a volatile pad below a (frame 152 kept): the x * d product
-    of the translation block now takes f0 -- the register 0.0f held until the m[1][3] store -- like the target (99.565 -> 99.638) */
-inline V3 V3::operator*(const f32 &s) const { return V3(x * idv(s), y * s, z * s); } /* agent-g run 303: the by-value
-    idv(s) parameter is a pool slot created inside the translation full-expression: the operator* result / set() copy
-    temporaries move from sp+76 / +92 to the target's +80 / +100 (with the u2 pad dropped: frame 152 kept); then idv() on
-    m[1][1]'s left n.y (one-site wrap sweep on that base) gives n.y / n.z / d the target's f14 / f16 / f18: 99.819 -> 99.855 */
+template <class T> inline T idv(T v) { return v; } /* agent-g run 301: zero-code by-value identity inline (kit CCCLXXX) */
+inline V3 V3::operator*(const f32 &s) const { f32 a = x * s - 0 * idv(0); return V3(a, idv(y * s), z * s); } /* agent-g run 304:
+    `- 0 * idv(0)` folds to nothing (x * s - 0.0f is the identity for every float, -0 included) but its int pool temporary
+    is created inside the translation full-expression like run 303's idv(s) (frame 152, temps at the target's sp+80 /
+    +100) without a float pool read in the product block; idv(y * s) with the x product named first gives the
+    target's product registers and issue order */
 struct Plane { V3 n; f32 d; };
 struct M4 { f32 m[4][4]; void ident(); };
 extern "C" char D_00000000[];
@@ -39,17 +41,15 @@ void Obj::reflect(const Plane &p) {
      * agent-c run 273: the two tests moved to right after the m[2][3] = 0.0f store (and the two `if (1) {}` splits dropped):
      * the test block ends the 0.0f LR before the product block, so 0.0f takes f0 and n.y f14 like the target (99.06 -> 99.48) */
     mtx.ident();
-    mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x); if (p.n.z != 2.0f) {} /* agent-g run 303: the run-301 idv() on the right n.x dropped
-        (with operator*'s idv(s) it kept the shared pool variable live into the translation block: y * d / z * d one register
-        high) and a code-free test of n.z right after this store instead (random test / wrap search on that base): products
-        f12 / f14 and n.y f14 like the target, 99.855 -> 99.891 */
+    mtx.m[0][0] = i1() - 2.0f * (p.n.x * idv(p.n.x)); /* agent-g run 304: idv() on the right n.x (the pool variable's first
+        register-worthy block), the run-303 n.z test dropped */
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y); /* run 203: operand-order grid (m[0][1], m[2][0], m[2][1]) */
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
     mtx.m[0][3] = 0.0f;
     mtx.m[1][0] = 0.0f - 2.0f * (p.n.y * p.n.x);
     if (1) {} /* agent-g run 301: BB split before m[1][1] (found as a position grid of the `{ V3 t; }` block, whose empty
                * constructor call splits the block the same way): p.d / z * d take the target's f18 / f14 (99.638 -> 99.746) */
-    mtx.m[1][1] = i1() - 2.0f * (idv(p.n.y) * p.n.y); /* agent-g run 303: see operator* */
+    mtx.m[1][1] = i1() - 2.0f * (idv(p.n.y) * p.n.y);
     mtx.m[1][2] = 0.0f - 2.0f * (p.n.y * p.n.z);
     mtx.m[1][3] = 0.0f;
     mtx.m[2][0] = 0.0f - 2.0f * (p.n.z * p.n.x);
