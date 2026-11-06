@@ -23409,9 +23409,9 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         }
         {
             b4 = *(char **)(arg0 + 0xC);
-            c4 = *(s32 *)(b4 + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85) */
-            *(s32 *)(b4 + 4) = c4 + 1;
-            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c4 * 8;
+            p3 = (char *)*(s32 *)(b4 + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85); agent-g run 307: the count in p3 (cast both ways), the F6 packet pointer's variable: one a3 LR for both like the target (zdbug replay: the target's a3 users are one variable; 99.767 -> 99.800) */
+            *(s32 *)(b4 + 4) = (s32)p3 + 1;
+            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + (s32)p3 * 8;
             *(s32 *)(p4 + 0) = 0xE7000000;
             *(s32 *)(p4 + 4) = 0;
         }
