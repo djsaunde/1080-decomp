@@ -21,7 +21,8 @@ struct V3 { f32 x, y, z;
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } /* agent-c run 290: the ctor's body for the early-declared e */
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
-    V3 operator+(const V3 &o) const { return V3(o.x + x, o.y + y, z + o.z); } /* agent-c run 289: by const reference -- the
+    V3 operator+(const V3 &o) const { return V3(x + o.x, y + o.y, z + o.z); } /* agent-g run 303: all three sums this-first
+        (the target's add.s operand order once start.x stays in f18). agent-c run 289: by const reference -- the
         * operand temporary bound to it is a full-expression temporary, homed at the frame top (the target's 412);
         * then the x / y sums operand-first (8-way order grid, 95.733 -> 95.771) */
     void operator*=(const V3 &k) { x *= k.x; y *= k.y; z *= k.z; } /* agent-g run 303: x, y, z (with e *= KV below; earlier
@@ -59,22 +60,23 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     /* agent-g run 297: the product reads d through a const reference (zero code): uopt no longer forwards the
      * operator= parameter temp's words to the `d * k` reads, which now load d's own home (sp+212..220) like the
      * target (operator= return / pointer / reference forms, 18): 95.8421 -> 95.8534 */
-    const V3 &dr = d;
-    Cam *cam = *(Cam **)(arg0 + 0x70);
-    if (1) {} /* agent-g run 303: was agent-c run 289's PadK<4> pz frame pad (no longer needed: frame 424 = target) */ cam->m.getPos(start);
+    /* agent-g run 303: the run-297 `const V3 &dr = d` view and the named cam dropped (stale after the e = ... form); the
+     * getPos receiver is the rvalue *(Cam **)(arg0 + 0x70) (kit CCCLXXXV): the target's dead `addiu v1,v1,112` this-temp
+     * appears after the three cam-relative loads; besti declared in the count block. 97.365 -> 97.474 */
+    if (1) {} /* agent-g run 303: was agent-c run 289's PadK<4> pz frame pad (no longer needed: frame 424 = target) */ (*(Cam **)(arg0 + 0x70))->m.getPos(start);
     /* agent-g run 303: the target's `end` (sp+84, below the operator temporaries) is e's by-value operator= parameter --
      * e = start + dr * -1e5 (bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5), start *= KV, then e *= KV
      * (same values as e.set(KV.x * end.x, ...)): start.x stays in f18 across the add and the scale like the target,
      * 95.853 -> 97.365, length 1064 = target */
-    e = start + dr * -100000.0f;
+    e = start + d * -100000.0f;
     start *= KV;
     e *= KV;
     char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
     }
-    int besti = -1;
     if (count != 0) {
+        int besti = -1;
         f32 best = 100000.0f;
         for (int i = 0; i < count; i++) {
             if (0.0f < dists[i] && dists[i] < best) {
