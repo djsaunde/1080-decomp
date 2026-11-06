@@ -12670,7 +12670,8 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     arg1 = gl_func_00034458(FW(arg0, 0x218), 0);
     temp_s1 = (char *)FW(((FW(arg0, 0x204) * 4) + FW(arg0, 0x240)), 0x180); /* agent-g run 257: index term first (operand-order lever): 95.12 -> 95.36 */
     gl_func_00034458(temp_s1);
-    if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free test of the arg0->0x240 reload right after the call (expression-test sweep, kit CCCXLI): 97.52 -> 97.57 */
+    /* agent-g run 281's code-free arg0->0x240 test here moved below the var_t0 store (agent-c run 320): here it made
+     * the first 0x240 load a CSE'd expression coloured a1; without it the load is temp_v1 itself (v1, target) */
     if (temp_s1) {} /* agent-g run 278: code-free tests on temp_s1 after this call and after the temp_t6 read (random test search, 2 rounds): 95.36 -> 95.65, length = target */
     temp_v1 = (char *)FW(arg0, 0x240);
     temp_v0 = (char *)FW(temp_v1, 0x28);
@@ -12690,6 +12691,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
         sp48 = FW(FW(temp_v1, 0x148), 0xF0);
         m4 = FW(p78, 0) & 4;
         var_t0 = (FW(p100, 0x4) & 2) != 0;
+        if (FW(arg0, 0x240)) {} /* agent-c run 320: agent-g run 281's arg0->0x240 test moved here, plus a temp_s0 test after the second vcall and the third temp_s1 test dropped (keeps temp_s0 coloured before temp_s1, s0/s1 like the target): 99.515 -> 99.660 */
         if (var_t0 != 0) {
             var_t0 = (FW(p78, 0) & 2) != 0;
         }
@@ -12717,8 +12719,9 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
     temp_v0_2 = (char *)FW(arg0, 0x290);
     temp_s0 = (char *)FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
+    if (temp_s0) {} /* agent-c run 320 (see the var_t0 note) */
     temp_a3 = (char *)FW(temp_s1, 0xC);
-    if (temp_s1) {} /* agent-g run 278: third random-test round: 95.65 -> 95.80 */
+    /* agent-g run 278's third temp_s1 test (95.65 -> 95.80) dropped in agent-c run 320 */
     temp_a1_2 = FW(temp_a3, 0x4);
     FW(temp_a3, 0x4) = (s32) (temp_a1_2 + 1);
     temp_v0_3 = (char *)(FW(FW(temp_s1, 0xC), 0x0) + temp_a1_2 * 8); /* agent-c run 294: agent-g run 280's comma-wrapped scaled index `(0, temp_a1_2 * 8)` dropped -- stale after the later tests / p100 folds (kit CCCLXI lever re-test): 98.204 -> 98.641, same length */
