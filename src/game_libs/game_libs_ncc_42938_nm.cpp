@@ -67,8 +67,8 @@ inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
     v->vscale[2] = 0x1FF;
     v->vscale[3] = 0;
     v->vtrans[2] = 0x1FF;
-    v->vtrans[0] = (s32)(x * 4.0f + w * 2.0f) & 0xFFFF;
-    v->vtrans[1] = (s32)(y * 4.0f + h * 2.0f) & 0xFFFF;
+    v->vtrans[0] = ((s32)(x * 4.0f + w * 2.0f) & 0xFFFF) & 0xFFFF; /* agent-c run 306: the folded mask doubled here and dropped on vtrans[1] (mask-count grid, 81 + 150): one ugen ring slot moved between the two halfwords, 98.118 -> 98.589 */
+    v->vtrans[1] = (s32)(y * 4.0f + h * 2.0f);
 }
 
 extern "C" void game_libs_func_00042938(void) {
