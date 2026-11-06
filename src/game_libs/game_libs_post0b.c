@@ -23355,14 +23355,14 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
      * agent-c run 235: the head block uses the function-level base (one home word fewer: the uopt
      * spill slots of sp38 / sp34 move up to the target's 0x38 / 0x34) */
     {
-        base = *(char **)(arg0 + 0xC);
-        hc = *(s32 *)(base + 4); /* agent-c run 288: the run-263 `if (1) {}` here (paired with the sp38 / sp34 test dropped in run 274) is inert next to the hp fold below: removed, byte-identical */
-        *(s32 *)(base + 4) = hc + 1;
+        b5 = *(char **)(arg0 + 0xC); /* agent-g run 306: the head base in b5 (fn-level base has v0 forbidden by its arg4-path blocks) */
+        hc = *(s32 *)(b5 + 4); /* agent-c run 288: the run-263 `if (1) {}` here (paired with the sp38 / sp34 test dropped in run 274) is inert next to the hp fold below: removed, byte-identical */
+        *(s32 *)(b5 + 4) = hc + 1;
         hp = *(char **)(*(char **)(arg0 + 0xC) + 0) + hc * 8;
-        *(s32 *)(hp + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(hp); /* agent-c run 260: folded counted use of hp (hc a0 / hp v1 = target) */
+        *(s32 *)(hp + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(hp) + 0 * (int)(b5) + 0 * ((int)(b5) >> 1); /* agent-c run 260: folded counted use of hp (hc a0 / hp v1 = target); agent-g run 306: two DISTINCT folded uses of b5 (one repeated form is CSE'd into a v0 expression LR) raise its priority (3.0 -> 4.5) above hp's 4.0, so b5 colours first: v0 / hp v1 = target */
         sp38 = arg6 + arg8;
         sp34 = arg7 + arg9; /* agent-c run 274: the run-263 sp38 / sp34 empty test dropped (mv.py, 98.04 -> 98.06) */
-        *(s32 *)(hp + 4) =((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
+        *(s32 *)(hp + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
     }
     if (arg3 != 0) {
         func_00000000_5a2c4v(arg0, arg1, arg10);
