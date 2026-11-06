@@ -22,12 +22,15 @@ struct LIter {
     LIter(Link *l) { nxt = l; }
     void *next() { return (cur = nxt) ? (nxt = nxt->next, cur->data) : 0; }
 };
-struct Base { Base() {} virtual void f(); };
+/* agent-g run 311: a code-free `if (this) {}` in the Base ctor (one more counted use of the Base this temp) with the X
+ * base initialiser back to plain `Mid(oo)` (below): the Mid / Base this colours stay a3 / v1 without the accessor's
+ * parameter temp, so the Mid this spill home is the target's 0x1C (was 0x18), 99.798 -> 99.821 */
+struct Base { Base() { if (this) {} } virtual void f(); };
 struct Mid : Base { O *o; Pair p; Mid(O *oo) { o = oo; p = D_34890_tmpl; } };
 /* agent-g run 310: the Mid base initialiser through the zero-code accessor, together with `me(o)` on the loop's list read
  * below (random joint draw over the ctor / make / loop lever families; each alone is flat): the loop's top next() copy
- * takes the target's a2, 99.643 -> 99.798 */
-struct X : Mid { X(O *oo) : Mid(me(oo)) {} virtual void f(); };
+ * takes the target's a2, 99.643 -> 99.798. agent-g run 311: plain `Mid(oo)` again, with the Base `if (this) {}` above. */
+struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
 /* agent-c run 267: make(int h, O *o) (h's parameter temp is the first pool entry = the target's M-12 word) with the
  * loop test written out as next()'s ternary in the for condition (no inline call: no `this` temp in the loop, so h's
  * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`
