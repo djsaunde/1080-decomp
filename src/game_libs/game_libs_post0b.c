@@ -14327,7 +14327,11 @@ s32 gl_func_000493AC(char *self) {
     return 1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000493AC);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_493AC.cpp (agent-c run 159 lift,
+ * agent-g run 312 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+s32 gl_func_000493AC(char *self) {
+}
 #endif
 
 // gl_func_00049B3C (0x280 / 160 words): field registrations, then an array

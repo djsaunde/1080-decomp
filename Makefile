@@ -2218,14 +2218,16 @@ $(GAMELIBS_42938_NM_DONOR): src/game_libs/game_libs_ncc_42938_nm.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00042938=$(GAMELIBS_42938_NM_DONOR)
 build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42938_NM_DONOR)
-# 493AC = real C++ `int Mgr::run()` (agent-c run 159, was the run-152 C lift under NCC); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_493AC_NM_DONOR := build/src/game_libs/game_libs_ncc_493AC_nm.cpp.o
-$(GAMELIBS_493AC_NM_DONOR): src/game_libs/game_libs_ncc_493AC_nm.cpp
+# 493AC = real C++ `int Mgr::run()` (agent-c run 159, was the run-152 C lift under NCC); symbols renamed (names only).
+# agent-g run 312: EXACT NCC donor over a placeholder on both build paths (virtual int hit(), cur2(), accessor-depth
+# pool-slot picks); blank jal words through gl_func_00000000, the Rec vtable reloc through D_00000000, no .rodata.
+GAMELIBS_493AC_DONOR := build/src/game_libs/game_libs_ncc_493AC.cpp.o
+$(GAMELIBS_493AC_DONOR): src/game_libs/game_libs_ncc_493AC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym run__3MgrFv=gl_func_000493AC --redefine-sym __vtbl__3Rec=D_00000000 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000493AC=$(GAMELIBS_493AC_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_493AC_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000493AC=$(GAMELIBS_493AC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_493AC_DONOR)
 # 36694 = real C++ `V3 Obj::perp(V3, V3)` (agent-c run 182; was the run-134 NCC C lift, cfe 82.41); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
 GAMELIBS_36694_NM_DONOR := build/src/game_libs/game_libs_ncc_36694_nm.cpp.o
 $(GAMELIBS_36694_NM_DONOR): src/game_libs/game_libs_ncc_36694_nm.cpp

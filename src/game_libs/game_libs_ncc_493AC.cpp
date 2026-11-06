@@ -1,4 +1,7 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_000493AC (0x790 / 484 words).
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000493AC (0x790 / 484 words), REPLACE_FUNC_BODY-spliced over the
+ * placeholder in game_libs_post0b.c on both build paths (agent-g run 312, kit CDIV: virtual int hit(), cur2() on
+ * one p34-call argument, me(me()) on the k-loop's closing noop, the AIter ctor's dead block dropped and three
+ * zero-code me0() levels inside Arr::iter()).
  * agent-c run 159: rewritten as real C++ (was the run-152 C lift under NCC, 92.20). `int Mgr::run()`
  * (renamed to gl_func_000493AC with objcopy): BB declares the virtuals (vptr at 0x28, slot 12 = the per-hit
  * callback, edg {d, f} entries at 0x60 / 0x64), two `AIter` loops over `arr` (the 4B620 iterator: by-value
@@ -10,9 +13,8 @@
  * target's s2), the m34 argument through an inline `p34()`, next() as `if (idx < last) return ...; return 0;`
  * (the result in v0 like the target), DLHead appends without a named count (`&head->buf[head->count++]`), `hit` declared after `rowStart`, c / e / j / m in their blocks,
  * `o->rows7C[k]` in a for loop (uopt's strength-reduced offset lands at sp+0x48 like the target).
- * AIter(Arr *) keeps its parameter with `if (0) { arr = 0; }` (the IBase this temp then takes v1 like the target, 96.52 -> 96.63).
+ * AIter(Arr *) kept its parameter with `if (0) { arr = 0; }` (96.52 -> 96.63; dropped in agent-g run 312, see iter()).
  * Seven `pad` words at the top are still unexplained named homes (target: 10 words above `it`; o, j, i are the other three).
- * Still NON_MATCHING: build/non_matching/ only.
  * agent-c run 179: `hit = 1` after the hit() call (adjacent-statement swap sweep): 96.63 -> 96.90.
  * agent-c run 206 (agent-g kit CLXXIX `+ 0` lever): the second loop's test as `(it.next() + 0)` -- no code, but edg
  * shares its temporaries differently (local 96.56 -> 96.81, length unchanged). The first loop's test does not move.
@@ -26,6 +28,7 @@ void *gl_func_00000000(...);
 #define S(o) (D_00000000 + (o))
 #define G1C4(S_) (*(s32 *)((char *)&S_ + 0x1C4))
 inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+template <class T> inline T *me0(T *p) { return p; } /* agent-g run 312: zero-code accessor declared before Arr::iter() */
 struct Gfx { u32 w0, w1; };
 inline void gnoop(Gfx *g) { g->w0 = 0xC0000000; g->w1 = 0; }
 struct DLHead { Gfx *buf; int count; };
@@ -74,7 +77,10 @@ struct AIter : IBase {
     Elem *cur2() { Arr *x = a; return (*x)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
-inline AIter Arr::iter() { return AIter(this); }
+/* agent-g run 312 (EXACT): the IBase-this pool slot is picked by accessor depth INSIDE iter() -- three zero-code
+ * me0() levels on the ctor argument put both constructions' IBase `this` copy in the target's v1 var without any
+ * call-site pool words ahead of the by-value return temps (the call-site me(me(me(me(&arr)))) form left them 8 low) */
+inline AIter Arr::iter() { return AIter(me0(me0(me0(this)))); }
 
 template <class T> inline T *me(T *p) { return p; }
 struct Grid { int w; int n; char pad8[0x18 - 0x8]; s16 *tbl18; int *row1C; };
@@ -117,7 +123,7 @@ int Mgr::run() {
     gl_func_00000000();
     gl_func_00000000(S(0x1FF6C));
     gl_func_00000000(S(0x1FF74));
-    AIter it = me(me(me(me(&arr))))->iter(); /* agent-g run 312: zero-code accessor depth 4 on BOTH iter() constructions (joint depth x ctor grid): the IBase-this copies take the target's v1 without the old dead-block dilution (depth 2 on one only: 99.948; depth 4 on both: 99.996, the iter return temps then sit 8 low) */
+    AIter it = arr.iter();
     while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
         { Elem *e1 = it.cur(); gl_func_00000000(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
         if (m50 == 0) {
@@ -141,7 +147,7 @@ int Mgr::run() {
         }
     }
     Rec rec;
-    it = me(me(me(me(&arr))))->iter();
+    it = arr.iter();
     while (it.next()) { /* run 206 had a folded + 0 here (kit CLXXIX); run 247 moved it to the first loop */
         Ctx *g = 0;
         o = it.cur();
