@@ -1,0 +1,32 @@
+{
+  "function_name": "gl_func_00046790",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-06T03:01:49.857841+00:00",
+  "end_time": "2026-11-06T03:01:49.857856+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-06T03:01:49.857852+00:00",
+      "assistant_text": "IDO 7.1 NCC donor finished from 99.254: ugen temporaries replayed as a FIFO free queue showed the target needs one extra temporary between the div and the row shift; (c / 16) << 5 << 5 gives two ugen shifts that as1 merges into the target's single sll, and the (u8) burn on the column is dropped.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 134,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for gl_func_00046790: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10; q declared before dst puts dst at sp+0 as in the target, 96.54; the pixel store through an inline put(unsigned short *&, v) gives the target a2 reload, 96.61).\n * agent-c run 160: the glyph column as `(u8)(c & 15)`: the folded byte cast burns one ugen ring slot (IDO_CODEGEN folded-byte-mask-burns-ring-slot-42f4c),\n * which realigns every later t-register in the function, 96.64 -> 99.25. Residual: the `(c / 16) * 1024` shift and the\n * loop's high-nibble reads one ring slot apart (t8 / t9 swapped).\n * agent-g run 305: EXACT. ugen's temporaries come from a FIFO free queue (IDO_CODEGEN kit CCCXCI); replaying it, the\n * target needs ONE extra temporary between the div and the row shift and no (u8) burn. The row offset written as two\n * shifts `(c / 16) << 5 << 5` (c / 16 is 0..7 here, so the shifts are well-defined and equal * 1024) gives ugen\n * `sll $24,$14,5; sll $25,$24,5`, which as1 merges into the single `sll t9,t6,10` of the target: 99.25 -> 100.\n * Spliced over a placeholder on both build trees via REPLACE_FUNC_BODY; D_46790_g / D_46790_font pinned 0 (blank USO words). */\ntypedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;\ntypedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;\ntypedef float f32; typedef double f64;\n#undef NULL\n#define NULL 0\nextern \"C\" {\nextern void gl_proto_41148(int, int, int, int, int, double);\nextern char *o;\nextern char *c;\nextern short idx;\nextern float q[4];\nextern char D_46790_g[];\nextern unsigned char D_46790_font[];\n}\nstatic inline void put(unsigned short *&d, unsigned short v) { *d++ = v; }\nextern \"C\" void gl_func_00046790(char *o, unsigned char ch, int x, int y) {\n    unsigned short **q;\n    unsigned short *dst;\n    int c;\n    int idx;\n    int i, j;\n    unsigned short px;\n\n    if (1) { q = &dst; }\n    dst = *(unsigned short **)(*(char **)(D_46790_g + 576) + *(int *)(o + 516) * 4 + 244);\n    dst += y * 320 + x;\n    c = ch;\n    if (c < 128) {\n        idx = ((c / 16) << 5 << 5) + (c & 15) * 8;\n        for (i = 0; i < 8; i++) {\n            for (j = 0; j < 8; j++) {\n                px = 0;\n                if (idx & 1) {\n                    if (D_46790_font[idx >> 1] & 0xF) px = 0xFFFE;\n                } else {\n                    if (D_46790_font[idx >> 1] & 0xF0) px = 0xFFFE;\n                }\n                put(dst, px);\n                idx++;\n            }\n            dst += 312;\n            idx += 120;\n        }\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_ncc_46790.cpp",
+    "segment": "game_libs",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "objdiff 100 vs expected/src/game_libs/game_libs_post0b.c.o; ROM byte-identical; verify-blocks 6/6"
+  }
+}

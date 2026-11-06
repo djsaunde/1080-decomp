@@ -1817,10 +1817,11 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4A9F0_DONOR := build/src/game_libs/game_libs_ncc_4A9F0.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004A9F0=$(GAMELIBS_4A9F0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_DONOR)
-# 46790 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_46790_NM_DONOR := build/src/game_libs/game_libs_ncc_46790_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046790=$(GAMELIBS_46790_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_NM_DONOR)
+# 46790 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10).
+# agent-g run 305: EXACT NCC donor over a placeholder on both build paths (row offset as two shifts: ugen FIFO, kit CCCXCI; D_46790_g / D_46790_font pinned 0).
+GAMELIBS_46790_DONOR := build/src/game_libs/game_libs_ncc_46790.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046790=$(GAMELIBS_46790_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_DONOR)
 # 3B6A0 = real C++ `int Obj::below()` (agent-c run 160; was the run-134 NCC C lift, cfe 65.26); symbol renamed (name only).
 # agent-c run 304: EXACT NCC donor over the placeholder on both build trees (the next-vertex table D_3B6A0_tbl pinned 0).
 GAMELIBS_3B6A0_DONOR := build/src/game_libs/game_libs_ncc_3B6A0.cpp.o
