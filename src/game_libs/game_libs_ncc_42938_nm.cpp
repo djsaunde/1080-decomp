@@ -65,7 +65,9 @@ inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
     v->vscale[1] = (s32)(h * 2.0f);
     v->vscale[2] = 0x1FF;
     v->vscale[3] = 0;
-    v->vtrans[0] = ((s32)(x * 4.0f + w * 2.0f) & 0xFFFF) & 0xFFFF; /* agent-c run 306: the folded mask doubled here and dropped on vtrans[1] (mask-count grid, 81 + 150): one ugen ring slot moved between the two halfwords, 98.118 -> 98.589 */
+    v->vtrans[0] = (s32)(x * 4.0f + w * 2.0f); /* agent-c run 306: the folded mask doubled here and dropped on vtrans[1] (mask-count grid, 81 + 150): one ugen ring slot moved between the two halfwords, 98.118 -> 98.589.
+        agent-c run 307 (kit CCCXC 5., FIFO model): no mask at all -- vtrans[0] stays in the mfc1's own t8 and the setvp
+        block + gDma1p packet are register-exact; the ring after the call is re-phased by the split constant stores below */
     v->vtrans[1] = (s32)(y * 4.0f + h * 2.0f);
     v->vtrans[2] = 0x1FF; /* agent-c run 306: the eight stores back in field order on the new mask base (store-order random + move search, 200 + 58 + 162): 98.589 -> 98.650 */
     v->vtrans[3] = 0;
@@ -101,8 +103,12 @@ extern "C" void game_libs_func_00042938(void) {
         setvp(v, 0, 0, 320, 240);
         { g = (Gfx *)(c->next()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
-    G.m228 = G.m224 = 8;
-    G.m220 = (G.m21c = 0x32, 0x50);
+    /* agent-c run 307: the four constant stores as separate statements in this order (24-order grid with the unmasked
+     * vtrans[0]): the after-call ring back in phase, 98.650 -> 98.838 */
+    G.m228 = 8;
+    G.m21c = 0x32;
+    G.m220 = 0x50;
+    G.m224 = 8;
     { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x, y, w + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
