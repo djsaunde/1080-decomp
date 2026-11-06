@@ -23384,10 +23384,10 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             b1 = *(char **)(arg0 + 0xC);
             c1 = *(s32 *)(b1 + 4);
             *(s32 *)(b1 + 4) = c1 + 1;
-            p1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8;
-            *(s32 *)(p1 + 0) = 0xF7000000;
+            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8; /* agent-g run 306: this packet pointer in p4 (reuse-map search, 99.523 -> 99.557); p1 stays a frame-only home */
+            *(s32 *)(p4 + 0) = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
-            *(s32 *)(p1 + 4) = (rgba << 0x10) | rgba; if (g) {} if (b1 + 0 * (int)(rgba)) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
+            *(s32 *)(p4 + 4) = (rgba << 0x10) | rgba; if (g) {} if (b1 + 0 * (int)(rgba)) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
         }
         {
             b2 = *(char **)(arg0 + 0xC);
