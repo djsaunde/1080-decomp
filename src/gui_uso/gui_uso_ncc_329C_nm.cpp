@@ -61,7 +61,9 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1S(V3, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 struct DL { Gfx *buf; int n; };
 struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nC() { int n; n = dl->n; dl->n++; return &dl->buf[n]; } Gfx *nD() { int n = dl->n++; return &dl->buf[n]; }
-    Gfx *nextp() { int n = dl->n; dl->n = n + 1; return &dl->buf[n]; }
+    /* agent-g run 308: the texture append only; folded counted use of dl (the dl load's LR then colours before the
+     * texture count: base v0 / count v1 like the target) */
+    Gfx *nextp() { int n = dl->n + 0 * (int)(dl); dl->n = n + 1; return &dl->buf[n]; }
     /* agent-g run 293: nD() with a dead load of dl first (kit CCCLXIII lever; code-free, the read is CSE'd into the
      * real access) on the texture and RDPHALF_1 appends: 99.476 -> 99.528 */
     Gfx *nDQ() { DL *dd = dl; int n = dl->n++; return &dl->buf[n]; }
@@ -69,6 +71,7 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
     Gfx *nR1() { Gfx *r = &dl->buf[dl->n++]; return r; }
     void load(int t, s32 w, s32 h) { gui_func_00000000(this, t, w, h, 0, 0, w, h, 0); } };
 #define CTX (*(Ctx **)&D_00000000)
+template <class T> inline T I4(T v) { T r = v; return r; } /* agent-g run 308: zero-code named-local identity (kit CCCXCV) */
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
@@ -80,7 +83,9 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     /* agent-g run 294: the packet pointers declared LAST (homes below the named locals): frame 96 -> the target's 88,
      * 99.601 -> 99.633 */
     Gfx *gpa, *gpb;
-    gSPTextureS(gpa, CTX->nDQ(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
+    gSPTextureS(gpa, I4(me(CTX))->nextp(), 0x8000, 0x8000, 0, 0, 1); /* agent-g run 308: through a named-local inline (kit CCCXCV
+                                                      * I4: a pool entry before n moves the texture count into the later appends' count
+                                                      * variable -- the target's v1) and nextp(): 99.738 -> 99.843 */ /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
                                                       * agent-g run 293: depth 0 here with the joint rect grid below */
     spr = arg0->spr;
     w = arg0->spr->w; /* agent-g run 308: through arg0 (same value; one more use of the CSE'd arg0->spr load, which
