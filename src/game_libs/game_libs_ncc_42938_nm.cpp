@@ -103,12 +103,12 @@ extern "C" void game_libs_func_00042938(void) {
         setvp(v, 0, 0, 320, 240);
         { g = (Gfx *)(c->next()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
-    /* agent-c run 307: the four constant stores as separate statements in this order (24-order grid with the unmasked
-     * vtrans[0]): the after-call ring back in phase, 98.650 -> 98.838 */
+    /* agent-c run 307: the chained `G.m228 = G.m224 = 8` split into two statements (store-order grid with the unmasked
+     * vtrans[0]): the after-call ring back in phase, 98.650 -> 98.838; then the 0x32 / 0x50 pair back in its run-157
+     * comma form (57 forms x orders): -> 98.856 */
     G.m228 = 8;
-    G.m21c = 0x32;
-    G.m220 = 0x50;
     G.m224 = 8;
+    G.m220 = (G.m21c = 0x32, 0x50);
     { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x, y, w + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
