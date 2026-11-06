@@ -45,7 +45,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MS((s16)(yl)), 0, 12) + 0 * (int)_g); /* agent-c run 310: folded use of the TEXRECT packet pointer (raises its LR over the xh MAX: t1 like the target), 97.442 -> 97.492 */ \
     if ((s16)(xh)) {} /* agent-c run 309: code-free test of (s16)xh after w1 (kit CCC random test search over body + macro slots, 200): 97.096 -> 97.360 */ \
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (spr = (Spr *)(int)(MIN((((s16)(xl)*(s16)(dsdx))>>7),0)), (int)spr)) : 0)), 16, 16) | \
-                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
+                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0 * (xq = I(0 + (dtdy) * 0))) ? (((s16)(yl)*(s16)(dtdy))>>7) : xq) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
     if (spr) {} \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 template <class T> inline T *me(T *p) { return p; }
@@ -71,8 +71,9 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n; n = dl->n; dl->n++; ret
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
 extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
-    volatile s32 q0, q1, q2, q3, q4;
+    volatile s32 q0, q1, q2, q3;
     s32 t;
+    s32 xq; /* agent-c run 311: the RDPHALF_1 t-term MAX arm's zero evaluated BEFORE its test, into xq inside a folded `0 * (xq = I(..))` comparand, and xq as the else value (q4's frame word): the target's early zero + copy, blez kept: 97.492 -> 97.772, 1204 -> 1208 bytes (target 1212) */
     f32 fw, fh;
     s32 x, y;
     Spr *spr;
