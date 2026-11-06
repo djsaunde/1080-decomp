@@ -23384,18 +23384,18 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             b1 = *(char **)(arg0 + 0xC);
             c1 = *(s32 *)(b1 + 4);
             *(s32 *)(b1 + 4) = c1 + 1;
-            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8; /* agent-g run 306: this packet pointer in p4 (reuse-map search, 99.523 -> 99.557); p1 stays a frame-only home */
-            *(s32 *)(p4 + 0) = 0xF7000000;
+            b4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8; /* agent-g run 306: this packet pointer in p4 (reuse-map search, 99.523 -> 99.557), then b4 (99.623 -> 99.678); p1 stays a frame-only home */
+            *(s32 *)(b4 + 0) = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
-            *(s32 *)(p4 + 4) = (rgba << 0x10) | rgba; if (g) {} if (b1 + 0 * (int)(rgba)) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
+            *(s32 *)(b4 + 4) = (rgba << 0x10) | rgba; if (g) {} if (b1 + 0 * (int)(rgba)) {} /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
         }
         {
             b2 = *(char **)(arg0 + 0xC);
-            c2 = *(s32 *)(b2 + 4);
-            *(s32 *)(b2 + 4) = c2 + 1;
-            p2 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c2 * 8;
+            c5 = *(s32 *)(b2 + 4); /* agent-g run 306: the count in c5 (reuse map) */
+            *(s32 *)(b2 + 4) = c5 + 1;
+            p2 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c5 * 8;
             /* agent-c run 234: folded counted use (zero-use-sweep, 94.71 -> 94.78); run 235: p+0 first, both on one line (as1 line order) */
-            *(s32 *)(p2 + 0) = 0xBA001402; *(s32 *)(p2 + 4) = 0x300000 + 0 * (int)(c2);
+            *(s32 *)(p2 + 0) = 0xBA001402; *(s32 *)(p2 + 4) = 0x300000 + 0 * (int)(c5);
         }
         {
             b3 = *(char **)(arg0 + 0xC);
@@ -23443,16 +23443,16 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
         *(s32 *)(p + 0) = 0xFF100000 | ((arg10 - 1) & 0xFFF);
         *(s32 *)(p + 4) = arg2 & 0xFFFFFF;
-        base = *(char **)(arg0 + 0xC);
-        rgba = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = rgba + 1;
+        p3 = *(char **)(arg0 + 0xC); /* agent-g run 306: this base in p3 and the next count in c2 (reuse map, 99.623 -> 99.678) */
+        rgba = *(s32 *)(p3 + 4);
+        *(s32 *)(p3 + 4) = rgba + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
         *(s32 *)(p + 0) = 0xF7000000;
         *(s32 *)(p + 4) = 0xFFFCFFFC;
         base = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = cnt + 1;
-        base = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
+        c2 = *(s32 *)(base + 4);
+        *(s32 *)(base + 4) = c2 + 1;
+        base = *(char **)(*(char **)(arg0 + 0xC) + 0) + c2 * 8;
         *(s32 *)(base + 0) = sp30;
         *(s32 *)(base + 4) = sp2C;
         b4 = *(char **)(arg0 + 0xC);
