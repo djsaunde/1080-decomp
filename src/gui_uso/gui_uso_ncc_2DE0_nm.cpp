@@ -41,13 +41,20 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 	_g->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); }
 #define gSPScisTextureRectangle(pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { Gfx *_g = (Gfx *)(pkt); \
-    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(I4(MAX((s16)(xh),0)), 12, 12) | _SHIFTL(I2(MAX((s16)(yh),0)), 0, 12)); \
-    _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(I4(MAX((s16)(xh),0)), 12, 12) | _SHIFTL(I2(MS((s16)(yh))), 0, 12)); \
+    _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MS((s16)(yl)), 0, 12)); \
     if ((s16)(xh)) {} /* agent-c run 309: code-free test of (s16)xh after w1 (kit CCC random test search over body + macro slots, 200): 97.096 -> 97.360 */ \
-    gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
+    gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (spr = (Spr *)(int)(MIN((((s16)(xl)*(s16)(dsdx))>>7),0)), (int)spr)) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
+    if (spr) {} \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 template <class T> inline T *me(T *p) { return p; }
+/* agent-c run 310 (kit CCCXCIV one-variable reading): the target's t0 holds spr through the loader switch AND the TEXRECT
+ * yh / yl MAX results AND the RDPHALF_1 s-term MIN result -- one source variable, so those clamps are assigned INTO spr
+ * (int <-> pointer casts; each read follows its own write) and spr gets a code-free test before the RDPHALF_2 append
+ * (lower priority, later block), plus `if (pc) {}` after the call (random test search): 97.360 -> 97.442, same length.
+ * Every yh / yl / s-term role now colours t0 like the target. */
+#define MS(a) (((a) > 0 ? (spr = (Spr *)(int)(a)) : (spr = (Spr *)0)), (int)spr)
 /* agent-c run 305 (inline helper on a folded copy, kit CCCLXXXV 3B6A0 form; kit CCCLXXXVI): the RDPHALF_1 t-term's MAX / MIN
  * written out with the clamp's 0 RESULT (not the compare's 0) through the zero-code I(0 + dtdy * 0): 96.848 -> 96.914,
  * same length (a whole-operand I() on the compare side gives 1212 bytes = target but slt / beqz compares, lower). */
@@ -95,4 +102,5 @@ extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     int pc = (int)&D_00000000;
     gSPScisTextureRectangle(CTX->next(), CTX->nC(), me(me((*(Ctx **)pc)))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), ((s32)(((f32)(h - 1) * 1024.0f) / fh) + 0 * (int)(pc)));
+    if (pc) {}
 }
