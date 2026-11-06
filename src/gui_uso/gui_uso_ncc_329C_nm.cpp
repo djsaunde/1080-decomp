@@ -43,6 +43,10 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 /* agent-g run 293 (kit CCCLXV shared packet pointers): the same macros writing through a caller-named Gfx pointer:
  * texture / RDPHALF_2 share gpa, TEXRECT / RDPHALF_1 share gpb (all 15 partitions tried): 99.580 -> 99.601 */
+/* agent-g run 308 (kit CCCXCVII clamp-into-the-local reading): the target's t2 is spr (`lw t2,16(a0)`) AND the yh / yl
+ * MAX results, so those clamps assign INTO spr in each arm (spr is dead by the rect statement; both arms write it
+ * before the comma read; int <-> pointer casts explicit) */
+#define MAXSPR(e) ((((e)) > 0 ? (spr = (Spr *)(int)(e)) : (spr = (Spr *)0)), (int)spr)
 #define gImmp1S(VV, pkt, c, p0) { VV = (Gfx *)(pkt); VV->words.w0 = _SHIFTL((c), 24, 8); VV->words.w1 = (unsigned int)(p0); }
 #define gSPTextureS(VV, pkt, s, t, level, tile, on) \
 { VV = (Gfx *)(pkt); \
@@ -50,8 +54,8 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 	VV->words.w1 = (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)); }
 #define gSPScisTextureRectangleS(V1, V2, V3, pkt, pkt2, pkt3, xl, yl, xh, yh, tile, s, t, dsdx, dtdy) \
 { V1 = (Gfx *)(pkt); \
-    V1->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAX((s16)(yh),0), 0, 12)); \
-    V1->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAX((s16)(yl),0), 0, 12)); \
+    V1->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(MAX((s16)(xh),0), 12, 12) | _SHIFTL(MAXSPR((s16)(yh)), 0, 12)); \
+    V1->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MAXSPR((s16)(yl)), 0, 12)); \
     gImmp1S(V2, pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((s16)(dsdx) < 0) ? (MAX((((s16)(xl)*(s16)(dsdx))>>7),0)) : (MIN((((s16)(xl)*(s16)(dsdx))>>7),0))) : 0)), 16, 16) | \
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (MAX((((s16)(yl)*(s16)(dtdy))>>7),0)) : (MIN((((s16)(yl)*(s16)(dtdy))>>7),0))) : 0)), 0, 16))); \
     gImmp1S(V3, pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
@@ -79,9 +83,11 @@ extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     gSPTextureS(gpa, CTX->nDQ(), 0x8000, 0x8000, 0, 0, 1); /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 99.06 -> 99.37;
                                                       * agent-g run 293: depth 0 here with the joint rect grid below */
     spr = arg0->spr;
-    w = spr->w;
+    w = arg0->spr->w; /* agent-g run 308: through arg0 (same value; one more use of the CSE'd arg0->spr load, which
+                       * then colours before the spr variable -- replay wish) with the code-free spr test below */
     h = spr->h;
     t = spr->fmt;
+    if (spr) {}
     switch (arg0->spr->fmt) {
     case 0x408:
         CTX->load(spr->tex, w, h);
