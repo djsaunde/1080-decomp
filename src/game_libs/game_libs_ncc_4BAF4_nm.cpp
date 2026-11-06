@@ -66,7 +66,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         return;
     }
     iz = (pos.z + 1.0f) * 16384.0f + F4B(self, 0xC8, f32);
-    if (1) {} if (1) {} /* agent-g run 262 (kit CCC random code-free test search): 97.03 -> 97.39 (agent-c run 288: the paired iz / r tests below dropped, byte-identical -- any two of the four levers are redundant) */
+    if (1) {} /* agent-g run 262 (kit CCC random code-free test search): 97.03 -> 97.39 (agent-c run 288: the paired iz / r tests below dropped, byte-identical -- any two of the four levers are redundant; agent-c run 307: the second `if (1) {}` here dropped, byte-identical) */
     if (F4B(self, 0xC4, int) != 0) {
         s = (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
         sx = F4B(self, 0xB0, f32) * s;
