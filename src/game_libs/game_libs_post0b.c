@@ -23284,9 +23284,10 @@ void gl_func_00059E80(char *arg0, char *arg1) {
 }
 #endif
 
-#ifdef NON_MATCHING
 /* game_libs_func_0005A2C4: DL-emit fn (ED/F7/BA/F6/E7/FF10 GBI cmd builder,
- * 0x70C, 451 insns, frame 0xC0). 2026-06-20 (agent-b) structural
+ * 0x70C, 451 insns, frame 0xC0). EXACT (agent-g run 308): promoted out of NON_MATCHING over its
+ * INCLUDE_ASM; the target words carry no relocations (blank jal / lui 0 = the zero-valued pins).
+ * 2026-06-20 (agent-b) structural
  * reconstruction; logic byte-region-exact against the target.
  *
  * MERGED 2026-09-06 (agent-c): bootup.uso Sym table exports section 0x6E930 =
@@ -23483,9 +23484,6 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         func_00000000(arg0, arg1, arg10);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0005A2C4);
-#endif
 
 s32 *gl_func_0005A9D0(s32 *arg0, s32 arg1) {
   s32 *base;
