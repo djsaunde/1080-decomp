@@ -21,7 +21,9 @@ struct V3 { f32 x, y, z;
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
     void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } /* agent-c run 290: the ctor's body for the early-declared e */
     void operator=(V3 v) { x = v.x; y = v.y; z = v.z; }
-    V3 operator*(f32 s) const { return V3(x * s, y * s, z * s); }
+    V3 operator*(f32 s) const { V3 r; r.set(x * s, y * s, z * s); return r; } /* agent-c run 307: named result
+        filled through set() (the literal then loads into f14 like the target; frame -24 restored by the block pad
+        before p below), 97.489 -> 97.752 */
     V3 operator+(const V3 &o) const { return V3(x + o.x, y + o.y, z + o.z); } /* agent-g run 303: all three sums this-first
         (the target's add.s operand order once start.x stays in f18). agent-c run 289: by const reference -- the
         * operand temporary bound to it is a full-expression temporary, homed at the frame top (the target's 412);
@@ -72,6 +74,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     e = start + d * idv(-100000.0f); /* agent-g run 303: zero-code identity on the literal (expression-form sweep), 97.474 -> 97.489 */
     start *= KV;
     e *= KV;
+    { PadK<6> pq; } /* agent-c run 307: unreferenced block-scope frame pad (frame 424 = target with the named operator* result) */
     char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
