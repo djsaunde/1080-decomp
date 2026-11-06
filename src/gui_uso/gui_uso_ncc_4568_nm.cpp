@@ -69,7 +69,7 @@ struct Ctx {
      * whole function, so the first arm is the plain macro (its run-185 split shifts, run-283 y << 2 test and run-306
      * folded masks removed): 97.010 -> 98.141, same length */
     Gfx *next(int k) { int n = dl->n++; return &dl->buf[n]; }
-    Gfx *nJ() { int n = dl->n++; return (Gfx *)(n * 8 + (int)dl->buf); } /* agent-g run 257: index-first append (int arithmetic) */
+    Gfx *nJ(int k) { int n = dl->n++; return (Gfx *)(n * 8 + (int)dl->buf); } /* agent-g run 257: index-first append (int arithmetic); agent-c run 308: the same unused pool parameter (98.141 -> 99.196) */
 };
 extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
     if (x >= 0 && y >= 0) {
@@ -81,6 +81,6 @@ extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, 
         if ((s16)((x + w) << 2) > 0) {}
         /* agent-g run 257: one pkt parameter per append (kit CCLXXXVI) and the RDPHALF_2 append through the
          * index-first nJ(): the target's `addu t0,t8,t5` operand order (96.53 -> 96.63, same length) */
-        gSPScisTextureRectangle(c->next(x), c->next(x), c->nJ(), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        gSPScisTextureRectangle(c->next(x), c->next(x), c->nJ(x), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     }
 }
