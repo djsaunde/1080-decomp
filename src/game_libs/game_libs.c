@@ -3760,16 +3760,20 @@ void gl_func_000076F0(GlObj76F0 *self) {
                 }
             }
         } else {
-            temp = self->unk48->unk80;
-            if (temp == 0) {
+            /* agent-c run 326: its own variable (var_v0) with the counted fold
+             * inside the call argument (not after the call): the value no longer
+             * lives across the call, so no a1 spill slot (frame 48 -> 40, the
+             * target's) and the colour is v0 + `move a1,v0` as in the target. */
+            var_v0 = self->unk48->unk80;
+            if (var_v0 == 0) {
                 if (func_00000000((char *)&D_00000000, 0x100) != 0) {
                     self->unk48->unk80 = 0x100;
                 }
                 if (func_00000000((char *)&D_00000000, 0x40000) != 0) {
                     self->unk48->unk80 = 0x40000;
                 }
-            } else if (func_00000000((char *)&D_00000000, temp) != 0) {
-                vt = self->vt + 0 * temp; /* agent-c run 209: folded counted use (kit CXCIV lever b) */
+            } else if (func_00000000((char *)&D_00000000, var_v0 + 0 * var_v0) != 0) {
+                vt = self->vt;
                 vt->e[26].fn(vt->e[26].off + (char *)self);
                 self->unk48->unk80 = 0;
             }
