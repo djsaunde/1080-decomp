@@ -1,5 +1,7 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for gui_func_00004568 (198 words; this body 199).
- * NM object only; the ROM build keeps INCLUDE_ASM. Run 144: the function is the libultra gbi.h
+/* IDO 7.1 NCC (C++) EXACT donor for gui_func_00004568 (199 words = the .s 0x31C), spliced over the empty host in
+ * gui_uso.c on both trees (REPLACE_FUNC_BODY). agent-c run 308 (kit CCCXCII): Ctx::next() takes an unused DL *
+ * parameter (passed c->dl) whose edg pool entry separates the post-increment old value from the MAX ternary
+ * results; the first arm is then the plain gbi macro. History below. Run 144: the function is the libultra gbi.h
  * gSPTextureRectangle (x, y >= 0) / gSPScisTextureRectangle (else) pair with tile 0, s = t = 0, written
  * with the real macro text (each gImmp1(pkt, ...) re-evaluates c->next(), one packet per word pair)
  * over the context's inline next() append: 85.8 (cfe open-coded body) -> 91.8. RESIDUAL: the first
@@ -72,20 +74,21 @@ struct Ctx {
      * MAX ternaries' entry; uopt then colours the Scis arm's (s16)yl / xl in t2 / t3 and t3 leaves the ugen pool for the
      * whole function, so the first arm is the plain macro (its run-185 split shifts, run-283 y << 2 test and run-306
      * folded masks removed): 97.010 -> 98.141, same length */
-    Gfx *next(int k) { int n = dl->n++; return &dl->buf[n]; }
+    /* agent-c run 308: the parameter typed DL * and passed c->dl (an int parameter's LR, coloured t0, stole the
+     * first arm's second packet pointer's t0): EXACT */
+    Gfx *next(DL *k) { int n = dl->n++; return &dl->buf[n]; }
 };
 extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
     if (x >= 0 && y >= 0) {
-        gSPTextureRectangle(c->next(x), x << 2, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        gSPTextureRectangle(c->next(c->dl), x << 2, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     } else {
         /* run 185: xl named once (the target's `or t2,a1` copy + a3 for yl; 95.68 -> 96.01) */
         int xl = x << 2;
-        /* agent-c run 283: code-free test creates the (s16)xh LR before the packet pointer: xh t0 like the target */
-        if ((s16)((x + w) << 2) > 0) {}
-        /* agent-g run 257: one pkt parameter per append (kit CCLXXXVI). agent-c run 308: all three appends through
-         * next(x) (the run-257 index-first nJ() for the RDPHALF_2 packet, then nJ(x) with the pool parameter
+        /* (agent-c run 308: the run-283 code-free `(s16)((x + w) << 2) > 0` test here is inert after the pool
+         * parameter and was dropped.) agent-g run 257: one pkt parameter per append (kit CCLXXXVI). agent-c run 308:
+         * all three appends through next() (the run-257 index-first nJ() for the RDPHALF_2 packet, then nJ(x) with the pool parameter
          * (99.196), are stale once the pool entries moved): the last packet's loads come before the index
          * multiply and the Scis arm is word-exact (99.623 -> 99.849) */
-        gSPScisTextureRectangle(c->next(x), c->next(x), c->next(x), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
+        gSPScisTextureRectangle(c->next(c->dl), c->next(c->dl), c->next(c->dl), xl, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     }
 }

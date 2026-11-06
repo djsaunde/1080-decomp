@@ -3069,10 +3069,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_329C_NM_DONOR := build/src/gui_uso/gui_uso_ncc_329C_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_NM_DONOR)
 build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_NM_DONOR)
-# 4568 = gui texture rect (gbi.h gSPTextureRectangle / gSPScisTextureRectangle pair); NCC 91.8 vs cfe 85.8. NM comparison object only.
-GUI_4568_NM_DONOR := build/src/gui_uso/gui_uso_ncc_4568_nm.cpp.o
-build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00004568=$(GUI_4568_NM_DONOR)
-build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_NM_DONOR)
+# 4568: gui texture rect (gbi.h gSPTextureRectangle / gSPScisTextureRectangle pair; 199/199, agent-c run 308):
+# Ctx::next(DL *) with an unused pool parameter separates the append's post-increment slot from the MAX ternaries.
+GUI_4568_DONOR := build/src/gui_uso/gui_uso_ncc_4568.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00004568=$(GUI_4568_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_DONOR)
 # 2DE0 = gui sprite rect (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
 GUI_2DE0_NM_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0_nm.cpp.o
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_NM_DONOR)

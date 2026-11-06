@@ -1299,7 +1299,15 @@ void gui_uso_func_0000413C(void) {
 void gui_uso_func_00004354(void) {
 }
 
-#ifdef NON_MATCHING
+/* 2026-11-05 agent-c (run 308): EXACT via the IDO 7.1 NCC donor
+ * src/gui_uso/gui_uso_ncc_4568.cpp (REPLACE_FUNC_BODY, both trees): the real
+ * gbi.h gSPTextureRectangle / gSPScisTextureRectangle macro bodies over an
+ * inline Ctx::next(DL *) append. This empty function is the splice host; the
+ * cfe reconstruction below is kept for reference only (not compiled). */
+void gui_func_00004568(void) {
+}
+
+#if 0
 /* gui_func_00004568: 198-insn / 0x318 RDP TEXRECT display-list builder.
  *
  * 2026-05-07 first-pass structural decode. Frame -8 ($s0 + nothing else;
@@ -1361,7 +1369,7 @@ extern int gl_func_00000000();
  * param-var reuse for slot/sy webs (a1=slot cast, a2=sy) -> IDO homes a3 and
  * drops s0, net negative; xs/yt whole-arm web merges -> same homing cascade.
  * Both probed and reverted this pass. */
-void gui_func_00004568(int *a0, int a1, int a2, int a3, int a4, int a5, int a6) {
+void gui_func_00004568_cfe(int *a0, int a1, int a2, int a3, int a4, int a5, int a6) {
     int *s0 = a0;
     int *st, *slot, idx;
 
@@ -1465,6 +1473,4 @@ void gui_func_00004568(int *a0, int a1, int a2, int a3, int a4, int a5, int a6) 
         slot[1] = (a5 << 16) | (a6 & 0xFFFF);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00004568);
 #endif
