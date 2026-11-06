@@ -97,9 +97,12 @@ extern "C" void gl_func_0004BAF4(char *self) {
     g = PKT4B(ctx);
     g->w0 = 0x06000000;
     g->w1 = r;
-    F4B(GS4B, 0x158, Ctx4B *)->add(0xEE000000, (iz & 0x7FFF) << 16);
+    /* agent-c run 306 (kit CCCLXXXVIII ring lever): one doubled (value-preserving) iz mask here = one ugen ring slot, so
+     * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
+     * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
+    F4B(GS4B, 0x158, Ctx4B *)->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16);
     if (*(s32 *)((char *)&D_4BAF4_flags + 0x1C4) & 2) {
-        if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) {
+        if ((F4B(self, 0x30, int) & 8 & 8 & 8 & 8) && F4B(self, 0x14, char *) != 0) {
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }
     } else {
