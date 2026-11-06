@@ -12685,7 +12685,6 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
          * `addiu a2,v1,256` / `addiu t7,v1,220` held like the target; kit CLXX 5.) */
         char *p100 = (char *)(FW(arg0, 0x240) + 0x100);
         s32 p78 = (s32)(temp_v1 + 0x78) + 0 * arg1; /* agent-g run 279: p78 an int (pointer -> int conversion): the +0x78 base is held in a register like the target's t1 (`lw a3,0(t1)` / `lw t0,0(t1)`) instead of folding into 120(v1): 95.80 -> 95.87. agent-g run 206: folded counted use of arg1 (kit CXCIV grid): 94.24 -> 95.12, 408 -> 412 bytes = target */
-        char *pDC = (char *)(FW(arg0, 0x240) + 0xDC);
         s32 m4;
         sp48 = FW(FW(temp_v1, 0x148), 0xF0);
         m4 = FW(p78, 0) & 4;
@@ -12699,16 +12698,20 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
         /* agent-g run 282: folded counted use of p100 in a10 (zero-use sweep re-run): p100's LR reaches the argument
          * block: 97.96 -> 98.06, same length; second sweep pass: a second counted use there (two refs in the
          * unit): 98.06 -> 98.20, same length */
-        { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8) + 0 * (int)(p100) + 0 * (int)(p100);
+        { s32 a6 = FW(temp_v1, 0xC0), a7 = FW(temp_v1, 0xC4), a8 = FW(temp_v1, 0xB8), a9 = FW(temp_v1, 0xBC), a10 = FW(FW(temp_v1, 0x148), 0xB8) + 0 * (int)(p100);
           if (FW(temp_v1, 0xC0)) {} /* agent-g run 281: then a temp_v1 field test ahead of it (0xC0 / 0xC4 / 0xB8 / 0xBC equal): 97.86 -> 97.96 */
           if (FW(arg0, 0x240)) {} /* agent-g run 281: code-free arg0 load test between the argument locals and the call (any arg0 field: 0x240 / 0x218 / 0x290 equal): 97.57 -> 97.86 */
-          gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, pDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
+          /* agent-c run 318: the sixth argument written in the call (`temp_v1 + 0xDC`, no pDC local): the target's
+           * `addiu t7,v1,220` is a ugen temp held across the var_t0 beqz (ours was a coloured local in ra) */
+          gl_func_00034458(temp_s1, temp_s0, sp48, m4, var_t0, temp_v1 + 0xDC, a6, a7, a8, a9, a10, FW(temp_v1, 0x1B0)); }
     }
-    temp_t6 = (char *)FW(arg0, 0x240);
     if (temp_s1) {}
-    /* agent-c run 196: int-cast address keeps the target's `lui; addiu; sw 596(rX)` */
-    *(char **)((int)&D_00000000 + 0x254) = temp_t6;
-    FW(temp_t6, 0x158) = (int)temp_s1;
+    /* agent-c run 196: int-cast address keeps the target's `lui; addiu; sw 596(rX)`.
+     * agent-c run 318: the &D+0x254 store and the 0x158 store as ONE chained assignment over a fresh arg0->0x240
+     * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
+     * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
+     * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
+    FW(*(char **)((int)&D_00000000 + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&D_00000000, 0x158) = (int)temp_s1 + 0 * (int)&D_00000000;
     temp_v0_2 = (char *)FW(arg0, 0x290);
     temp_s0 = (char *)FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
