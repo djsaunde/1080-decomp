@@ -5563,6 +5563,10 @@ D_0001EC9C = 0x0001EC9C;
 gl_func_00034458_6126C = 0x00000000;
 gl_func_00038A28_rodata = 0x00001A1C;
 gl_func_00036F0C_rodata = 0x000019E8;
+/* game_libs_func_0004F2DC (agent-c run 307 exact NCC donor): -1e5 / 1e5 literals at USO RoData 0x1BA8 / 0x1BAC; blank-USO data refs with in-place addends */
+game_libs_func_0004F2DC_rodata = 0x00001BA8;
+D_4F2DC_b = 0x00000000;
+D_4F2DC_e = 0x00000000;
 /* func_00006808 (bootup_uso_o2_6808.c donor): jumptable at func_0000057C+0x38, reloc-free base-0 globals, func_00000188+0x3C flag RMWs */
 func_00006808_rodata = 0x000005B4;
 D_00007EB8 = 0x00007EB8;

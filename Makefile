@@ -1951,13 +1951,15 @@ $(GAMELIBS_4C5E4_DONOR): src/game_libs/game_libs_ncc_4C5E4.cpp
 	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 --redefine-sym gl_func_00034458=gl_func_0004C5E4_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_DONOR)
-# 4F2DC = screen-point raycast picker as C++ (agent-g run 194: V3 by-value operator= / operator* / operator+ temporaries; cfe 90.36, length = target). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4F2DC_NM_DONOR := build/src/game_libs/game_libs_ncc_4F2DC_nm.cpp.o
-$(GAMELIBS_4F2DC_NM_DONOR): src/game_libs/game_libs_ncc_4F2DC_nm.cpp
+# 4F2DC = screen-point raycast picker as C++ (agent-g run 194: V3 by-value operator= / operator* / operator+ temporaries; cfe 90.36, length = target).
+# agent-c run 307: EXACT NCC donor over a placeholder on both build paths (named operator* result, operator+ / block pads). Its .rodata reloc
+# (the -1e5 / 1e5 literals) is renamed game_libs_func_0004F2DC_rodata by the splice (pinned to the USO RoData at 0x1BA8).
+GAMELIBS_4F2DC_DONOR := build/src/game_libs/game_libs_ncc_4F2DC.cpp.o
+$(GAMELIBS_4F2DC_DONOR): src/game_libs/game_libs_ncc_4F2DC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004F2DC=$(GAMELIBS_4F2DC_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4F2DC_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004F2DC=$(GAMELIBS_4F2DC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4F2DC_DONOR)
 # 4D688 = debug-console event loop as C++ `void Obj::run()`; EXACT NCC donor over a placeholder (agent-g run 256). The donor file reconstructs its translation unit from 4D354 (4D354 / 4D39C / 4D3E4 / 4D468 / 4D658 precede run(), sharing 4D468's guard static) so ugen's `.align 5` before the dead epilogue lands on a 32-byte boundary with no pad, as in the target; only run() is spliced (symbol renamed, name only). Its .bss reloc is renamed gl_func_0004D688_bss by the splice (pinned to 0x3CB00).
 GAMELIBS_4D688_DONOR := build/src/game_libs/game_libs_ncc_4D688.cpp.o
 $(GAMELIBS_4D688_DONOR): src/game_libs/game_libs_ncc_4D688.cpp

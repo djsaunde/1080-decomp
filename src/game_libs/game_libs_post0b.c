@@ -17737,7 +17737,12 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
     return 0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004F2DC);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4F2DC.cpp (agent-g run 194 lift,
+ * agent-c run 307 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
+    return 0;
+}
 #endif
 
 // gl_func_0004F704 — STRUCTURAL PASS (0x154 / 86 words, no episode). Raw-.word

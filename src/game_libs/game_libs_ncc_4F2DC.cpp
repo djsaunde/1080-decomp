@@ -6,12 +6,15 @@
  * and parameter temporaries (160 -> 180 -> 412, 112 -> 132 -> 84), `start *= kvec` in place and the scaled end
  * point through the ctor (no temporary). `if (1) {}` after `start *= kvec` (lever-sweep bbsplit) keeps the
  * kvec loads after the in-place products. cfe body 90.36 -> 94.78 standalone, length = target (1064).
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-c run 307: EXACT (named operator* result via set(), pads in operator+ and before p, no code-free test before
+ * the getPos call). Spliced over a placeholder on both build paths. Blank-USO data refs carry in-place addends:
+ * D_4F2DC_b / D_4F2DC_e = 0, D_00000000F = 0x128 (kvec), the donor .rodata (-1e5 / 1e5) renamed
+ * game_libs_func_0004F2DC_rodata by the splice and pinned to the USO RoData at 0x1BA8. */
 typedef float f32;
 extern "C" {
 int gl_func_00000000(...);
-extern int D_00000000B;
-extern int D_00000000E;
+extern int D_4F2DC_b;
+extern int D_4F2DC_e;
 extern f32 D_00000000F[3];
 }
 template <int K> struct PadK { int a[K]; PadK() {} }; /* agent-c run 289: unreferenced frame pad (a class with a ctor keeps its home) */
@@ -58,7 +61,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     V3 e;
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
-    dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_00000000B + 0x128);
+    dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_4F2DC_b + 0x128);
     gl_func_00000000(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
     gl_func_00000000(&dir);
     d = dir;
@@ -68,7 +71,10 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     /* agent-g run 303: the run-297 `const V3 &dr = d` view and the named cam dropped (stale after the e = ... form); the
      * getPos receiver is the rvalue *(Cam **)(arg0 + 0x70) (kit CCCLXXXV): the target's dead `addiu v1,v1,112` this-temp
      * appears after the three cam-relative loads; besti declared in the count block. 97.365 -> 97.474 */
-    if (1) {} /* agent-g run 303: was agent-c run 289's PadK<4> pz frame pad (no longer needed: frame 424 = target) */ (*(Cam **)(arg0 + 0x70))->m.getPos(start);
+    /* agent-g run 303: was agent-c run 289's PadK<4> pz frame pad (no longer needed: frame 424 = target); agent-c run 307:
+     * the run-303 `if (1) {}` here dropped -- with the operator+ pad the cam pointer then takes v1 and the dead this-temp
+     * `addiu v1,v1,112` follows the three loads like the target, 98.534 -> 100 */
+    (*(Cam **)(arg0 + 0x70))->m.getPos(start);
     /* agent-g run 303: the target's `end` (sp+84, below the operator temporaries) is e's by-value operator= parameter --
      * e = start + dr * -1e5 (bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5), start *= KV, then e *= KV
      * (same values as e.set(KV.x * end.x, ...)): start.x stays in f18 across the add and the scale like the target,
@@ -77,7 +83,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
     start *= KV;
     e *= KV;
     { PadK<4> pq; } /* agent-c run 307: unreferenced block-scope frame pad (frame 424 = target with the named operator* result) */
-    char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
+    char *p = *(char **)&D_4F2DC_e; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
     }
