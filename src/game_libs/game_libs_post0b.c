@@ -23437,18 +23437,21 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
          * whole arg4 path on the function-level base / p (the run-243 base2 / p2 pair and the sp30 / 2nd-E7 block
          * trios were 8 extra home words: frame 0xE0 -> 0xC0 = target, colv at 0xA4) + a bbsplit after the 1st E7
          * cursor (bbsplit grid on the new frame): 95.16 -> 95.17 */
-        base = *(char **)(arg0 + 0xC);
-        rgba = *(s32 *)(base + 4);
-        *(s32 *)(base + 4) = rgba + 1;
+        /* agent-g run 307: the FF10 / F7 appends' base and the F7 packet pointer live in cnt (cast both ways): the
+         * target's v0 is ONE variable that is the BA / 2nd-E7 / 3rd-E7 count AND these pointers (zdbug:5/6 replay +
+         * the target's per-append colours read as variables; 99.800 -> 99.900) */
+        cnt = (s32)*(char **)(arg0 + 0xC);
+        rgba = *(s32 *)((char *)cnt + 4);
+        *(s32 *)((char *)cnt + 4) = rgba + 1;
         p = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8;
         *(s32 *)(p + 0) = 0xFF100000 | ((arg10 - 1) & 0xFFF);
         *(s32 *)(p + 4) = arg2 & 0xFFFFFF;
-        p3 = *(char **)(arg0 + 0xC); /* agent-g run 306: this base in p3 and the next count in c2 (reuse map, 99.623 -> 99.678) */
-        rgba = *(s32 *)(p3 + 4);
-        *(s32 *)(p3 + 4) = rgba + 1;
-        b1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8; /* agent-g run 307: this packet pointer in b1 and the next base in p (reuse-map walk, 99.678 -> 99.712; both needed) */
-        *(s32 *)(b1 + 0) = 0xF7000000;
-        *(s32 *)(b1 + 4) = 0xFFFCFFFC;
+        cnt = (s32)*(char **)(arg0 + 0xC); /* agent-g run 306: the next count in c2 (reuse map, 99.623 -> 99.678) */
+        rgba = *(s32 *)((char *)cnt + 4);
+        *(s32 *)((char *)cnt + 4) = rgba + 1;
+        cnt = (s32)(*(char **)(*(char **)(arg0 + 0xC) + 0) + rgba * 8); /* agent-g run 307: the next base in p (reuse-map walk, 99.678 -> 99.712) */
+        *(s32 *)((char *)cnt + 0) = 0xF7000000;
+        *(s32 *)((char *)cnt + 4) = 0xFFFCFFFC;
         p = *(char **)(arg0 + 0xC);
         c2 = *(s32 *)(p + 4);
         *(s32 *)(p + 4) = c2 + 1;
@@ -23456,9 +23459,9 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         *(s32 *)(base + 0) = sp30;
         *(s32 *)(base + 4) = sp2C;
         b4 = *(char **)(arg0 + 0xC);
-        cnt = *(s32 *)(b4 + 4);
-        *(s32 *)(b4 + 4) = cnt + 1;
-        b4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8; if (1) {}
+        c4 = *(s32 *)(b4 + 4); /* agent-g run 307: this count in c4 (free since the arg3 E7 count moved to p3; 99.900 -> 99.933) */
+        *(s32 *)(b4 + 4) = c4 + 1;
+        b4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c4 * 8; if (1) {}
         *(s32 *)(b4 + 0) = 0xE7000000;
         *(s32 *)(b4 + 4) = 0;
         base = *(char **)(arg0 + 0xC);
