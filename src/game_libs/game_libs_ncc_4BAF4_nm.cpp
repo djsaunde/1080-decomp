@@ -142,6 +142,8 @@ extern "C" void gl_func_0004BAF4(char *self) {
         me(me(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
     ctx = F4B(GS4B, 0x158, Ctx4B *);
-    r = gl_func_00000000(F4B(F4B(self, 0xD0, char *), 0x60, int));
+    /* agent-g run 321: the self->0xD0 pointer through d with a BB split before the call (kit CDXII): the pointer is a
+     * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length */
+    d = F4B(self, 0xD0, char *); if (1) {} r = gl_func_00000000(F4B(d, 0x60, int));
     me(me(ctx))->add(0x06000000, r);
 }
