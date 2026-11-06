@@ -65,6 +65,10 @@ struct AIter : IBase {
     /* agent-c run 299: the first loop's own copy of next() (same body): its result leaves the s2 pool temp (target v0) */
     Elem **next1() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
+    /* agent-g run 312: cur() with a named copy of `a` (a code-free inline local = one more edg pool entry), used for
+     * the first p34-call argument: the second argument's p34 `this` then shares the operator[] index slot (the
+     * target's a2, ours was the `a` slot's v1): 99.917 -> 99.938, same length */
+    Elem *cur2() { Arr *x = a; return (*x)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
 inline AIter Arr::iter() { return AIter(this); }
@@ -119,7 +123,7 @@ int Mgr::run() {
                 gl_func_00000000(it.cur(), m9c);
             }
         }
-        gl_func_00000000(it.cur(), it.cur()->p34());
+        gl_func_00000000(it.cur2(), it.cur()->p34());
     }
     gl_func_00000000();
     gl_func_00000000(S(0x1FF7C));
