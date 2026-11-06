@@ -117,7 +117,7 @@ int Mgr::run() {
     gl_func_00000000();
     gl_func_00000000(S(0x1FF6C));
     gl_func_00000000(S(0x1FF74));
-    AIter it = me(me(&arr))->iter(); /* agent-g run 312: zero-code accessor depth 2 = one IBase-this pool slot deeper (-1536, the target's v1) */
+    AIter it = me(me(me(me(&arr))))->iter(); /* agent-g run 312: zero-code accessor depth 4 on BOTH iter() constructions (joint depth x ctor grid): the IBase-this copies take the target's v1 without the old dead-block dilution (depth 2 on one only: 99.948; depth 4 on both: 99.996, the iter return temps then sit 8 low) */
     while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
         { Elem *e1 = it.cur(); gl_func_00000000(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
         if (m50 == 0) {
@@ -141,7 +141,7 @@ int Mgr::run() {
         }
     }
     Rec rec;
-    it = arr.iter();
+    it = me(me(me(me(&arr))))->iter();
     while (it.next()) { /* run 206 had a folded + 0 here (kit CLXXIX); run 247 moved it to the first loop */
         Ctx *g = 0;
         o = it.cur();
