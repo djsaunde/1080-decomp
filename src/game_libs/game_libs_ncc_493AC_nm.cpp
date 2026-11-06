@@ -60,7 +60,10 @@ struct IBase {
     IBase(Arr *arr) { a = arr; idx = -1; last = arr->count - 1; }
 };
 struct AIter : IBase {
-    AIter(Arr *arr) : IBase(arr) { if (0) { arr = 0; } }
+    /* agent-g run 312: the run-1xx `if (0) { arr = 0; }` dropped -- the kept parameter put BOTH iter() constructions'
+     * IBase `this` into the -1536 pool var, diluting its uopt priority below the -1532 var's; the first loop's
+     * iter() now gets that slot through me(me(&arr)) instead (see run()) */
+    AIter(Arr *arr) : IBase(arr) {}
     Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     /* agent-c run 299: the first loop's own copy of next() (same body): its result leaves the s2 pool temp (target v0) */
     Elem **next1() { if (idx < last) return &(*a)[++idx]; return 0; }
@@ -114,7 +117,7 @@ int Mgr::run() {
     gl_func_00000000();
     gl_func_00000000(S(0x1FF6C));
     gl_func_00000000(S(0x1FF74));
-    AIter it = arr.iter();
+    AIter it = me(me(&arr))->iter(); /* agent-g run 312: zero-code accessor depth 2 = one IBase-this pool slot deeper (-1536, the target's v1) */
     while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
         { Elem *e1 = it.cur(); gl_func_00000000(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
         if (m50 == 0) {
@@ -188,7 +191,7 @@ int Mgr::run() {
                     }
                     gl_func_00000000(&rec); if (1) {}
                     o->rows7C[k] = o->ctx6C->count();
-                    o->ctx6C->noop();
+                    me(me(o->ctx6C))->noop(); /* agent-g run 312: accessor depth 2 = the head / count temps in the -1536 / -1532 pool vars like the n80 append (target v1 / a2); with the iter() change above their uopt order is the target's */
                 } if (k) {}
             }
         } else {
