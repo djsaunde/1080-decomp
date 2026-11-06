@@ -12713,6 +12713,7 @@ void gl_func_000469A8(char *arg0, s32 arg1) {
      * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
      * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
     FW(*(char **)((int)&D_00000000 + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&D_00000000, 0x158) = (int)temp_s1 + 0 * (int)&D_00000000;
+    if (temp_s0) {} /* agent-c run 318: code-free test of the vcall result after the store (random test search): temp_v0_2 takes v0 like the target, 99.369 -> 99.515 */
     temp_v0_2 = (char *)FW(arg0, 0x290);
     temp_s0 = (char *)FW(temp_v0_2, 0x28);
     ((GP_000469A8)FW(temp_s0, 0x1C))(*(s16 *)(temp_s0 + 0x18) + temp_v0_2);
