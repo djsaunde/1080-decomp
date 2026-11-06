@@ -23387,7 +23387,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             p1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8; /* agent-g run 306: this packet pointer in p4 (reuse-map search, 99.523 -> 99.557), then b4 (99.623 -> 99.678); agent-g run 307: in p1 (its own bb-local LR: a0 is no longer intrinsically forbidden, zdbug replay -> a0 = target), with the code-free r test below */
             *(s32 *)(p1 + 0) = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
-            *(s32 *)(p1 + 4) = (rgba << 0x10) | rgba; if (g) {} if (b1 + 0 * (int)(rgba)) {} if (r) {} /* agent-g run 307: code-free r test (r's LR spans more blocks: lower priority, so b / rgba take a1 / a2 first; 99.712 -> 99.723) */ /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
+            *(s32 *)(p1 + 4) = (rgba << 0x10) | rgba; if (g) {} if (r) {} if (b1 + 0 * (int)(rgba) + 0 * ((int)(rgba) >> 1)) {} /* agent-g run 307 (zdbug:5/6 replay-driven): code-free r test next to g's (r's LR spans g's block: adjsave 2.0 -> 1.5, coloured after b, before g on the LR-id tie) + a second DISTINCT folded rgba use (the rgba expression LR back above r): r t0 / g t1 / b a1 / rgba a2 = target, 99.712 -> 99.723 -> 99.767 */ /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
         }
         {
             b2 = *(char **)(arg0 + 0xC);
