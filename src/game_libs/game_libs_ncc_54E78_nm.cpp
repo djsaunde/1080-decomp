@@ -39,7 +39,10 @@ void Obj::reflect(const Plane &p) {
      * agent-c run 273: the two tests moved to right after the m[2][3] = 0.0f store (and the two `if (1) {}` splits dropped):
      * the test block ends the 0.0f LR before the product block, so 0.0f takes f0 and n.y f14 like the target (99.06 -> 99.48) */
     mtx.ident();
-    mtx.m[0][0] = i1() - 2.0f * (p.n.x * idv(p.n.x)); /* agent-g run 301: idv() on the RIGHT n.x (one-site operand wrap sweep on the moved-block base): n.y / n.z take the target's f14 / f16, 99.746 -> 99.819 */
+    mtx.m[0][0] = i1() - 2.0f * (p.n.x * p.n.x); if (p.n.z != 2.0f) {} /* agent-g run 303: the run-301 idv() on the right n.x dropped
+        (with operator*'s idv(s) it kept the shared pool variable live into the translation block: y * d / z * d one register
+        high) and a code-free test of n.z right after this store instead (random test / wrap search on that base): products
+        f12 / f14 and n.y f14 like the target, 99.855 -> 99.891 */
     mtx.m[0][1] = 0.0f - 2.0f * (p.n.x * p.n.y); /* run 203: operand-order grid (m[0][1], m[2][0], m[2][1]) */
     mtx.m[0][2] = 0.0f - 2.0f * (p.n.x * p.n.z);
     mtx.m[0][3] = 0.0f;
