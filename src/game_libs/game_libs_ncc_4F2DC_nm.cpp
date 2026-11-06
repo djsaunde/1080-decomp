@@ -15,6 +15,7 @@ extern int D_00000000E;
 extern f32 D_00000000F[3];
 }
 template <int K> struct PadK { int a[K]; PadK() {} }; /* agent-c run 289: unreferenced frame pad (a class with a ctor keeps its home) */
+template <class T> inline T idv(T v) { return v; } /* agent-g run 303: zero-code by-value identity (kit CCCLXXX) */
 struct V3 { f32 x, y, z;
     V3() {}
     V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }
@@ -68,7 +69,7 @@ extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
      * e = start + dr * -1e5 (bootup.uso RoData 0x1BA8 / 0x1BAC are the literals -1e5 / 1e5), start *= KV, then e *= KV
      * (same values as e.set(KV.x * end.x, ...)): start.x stays in f18 across the add and the scale like the target,
      * 95.853 -> 97.365, length 1064 = target */
-    e = start + d * -100000.0f;
+    e = start + d * idv(-100000.0f); /* agent-g run 303: zero-code identity on the literal (expression-form sweep), 97.474 -> 97.489 */
     start *= KV;
     e *= KV;
     char *p = *(char **)&D_00000000E; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
