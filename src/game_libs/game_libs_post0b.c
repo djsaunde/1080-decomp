@@ -23327,7 +23327,8 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 sp34;
     s32 sp30;
     s32 sp2C;
-    f32 fr, fg, fb, fa; u8 r, g, b;
+    f32 fr, fg, fb, fa; u8 r, b;
+    s32 g; /* agent-g run 308: s32 -- the arg4 path's 2nd-E7 packet pointer is ALSO g (target t1 for both: one variable; zdbug:5/6 replay) */
     /* agent-g run 306: the head / arg3-block append trios hoisted out of their blocks, declared in the same order
      * (same cfe homes, byte-identical), so the arg4-path appends can REUSE them: the target's arg4 appends colour
      * their base / cnt / p differently per append (one shared function-level trio colours them all alike); a
@@ -23336,7 +23337,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 hc; char *hp;
     char *b1; s32 c1; char *p1;
     char *b2; s32 c2; char *p2;
-    char *b3; s32 c3; char *p3;
+    char *b3; s32 c3;
     char *b4; s32 c4; char *p4;
     char *b5; s32 c5; char *p5;
 
@@ -23386,7 +23387,7 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             *(s32 *)(b1 + 4) = c1 + 1;
             p1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c1 * 8; /* agent-g run 306: this packet pointer in p4 (reuse-map search, 99.523 -> 99.557), then b4 (99.623 -> 99.678); agent-g run 307: in p1 (its own bb-local LR: a0 is no longer intrinsically forbidden, zdbug replay -> a0 = target), with the code-free r test below */
             *(s32 *)(p1 + 0) = 0xF7000000;
-            rgba = ((r << 8) & 0xF800) | ((g * 8) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1);
+            rgba = ((r << 8) & 0xF800) | ((g << 3) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1); /* agent-g run 308: `g << 3` (an s32 `g * 8` becomes its own umpy expression LR) */
             *(s32 *)(p1 + 4) = (rgba << 0x10) | rgba; if (g) {} if (r) {} if (b1 + 0 * (int)(rgba) + 0 * ((int)(rgba) >> 1)) {} /* agent-g run 307 (zdbug:5/6 replay-driven): code-free r test next to g's (r's LR spans g's block: adjsave 2.0 -> 1.5, coloured after b, before g on the LR-id tie) + a second DISTINCT folded rgba use (the rgba expression LR back above r): r t0 / g t1 / b a1 / rgba a2 = target, 99.712 -> 99.723 -> 99.767 */ /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
         }
         {
@@ -23401,17 +23402,17 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
             b3 = *(char **)(arg0 + 0xC);
             c3 = *(s32 *)(b3 + 4); if (1) {} /* agent-c run 263: with the cnt test on the F6 w0 line (kit CCC random search): 96.01 -> 96.08 */
             *(s32 *)(b3 + 4) = c3 + 1;
-            p3 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c3 * 8;
+            b1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c3 * 8; /* agent-g run 308: the F6 packet pointer / E7 count in b1 (the target's a3 users: F7 base, F6 pointer, E7 count, 3rd-E7 pointer = one variable) */
             /* agent-c run 260: the sums spelled out (same tree as the arg4 path's copy-propagated sp30), so the sp30
              * expression item precedes sp2C's and takes the spill temp at 0x30 like the target */
-            *(s32 *)(p3 + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (c3) {}
-            *(s32 *)(p3 + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
+            *(s32 *)(b1 + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (c3) {}
+            *(s32 *)(b1 + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         }
         {
             b4 = *(char **)(arg0 + 0xC);
-            p3 = (char *)*(s32 *)(b4 + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85); agent-g run 307: the count in p3 (cast both ways), the F6 packet pointer's variable: one a3 LR for both like the target (zdbug replay: the target's a3 users are one variable; 99.767 -> 99.800) */
-            *(s32 *)(b4 + 4) = (s32)p3 + 1;
-            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + (s32)p3 * 8;
+            b1 = (char *)*(s32 *)(b4 + 4); if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85); agent-g run 307: the count in the F6 packet pointer's variable (cast both ways): one a3 LR for both like the target (zdbug replay: the target's a3 users are one variable; 99.767 -> 99.800) */
+            *(s32 *)(b4 + 4) = (s32)b1 + 1;
+            p4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + (s32)b1 * 8;
             *(s32 *)(p4 + 0) = 0xE7000000;
             *(s32 *)(p4 + 4) = 0;
         }
@@ -23458,25 +23459,27 @@ void game_libs_func_0005A2C4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         base = *(char **)(*(char **)(arg0 + 0xC) + 0) + c2 * 8;
         *(s32 *)(base + 0) = sp30;
         *(s32 *)(base + 4) = sp2C;
-        b4 = *(char **)(arg0 + 0xC);
-        c4 = *(s32 *)(b4 + 4); /* agent-g run 307: this count in c4 (free since the arg3 E7 count moved to p3; 99.900 -> 99.933) */
+        b4 = *(char **)(arg0 + 0xC); if (1) {} /* agent-g run 308: the bbsplit moved up from the pointer line (the E7 count joins the const 0xE700's block: a3 neighbour -> const t2) */
+        c4 = *(s32 *)(b4 + 4); /* agent-g run 307: this count in c4 (99.900 -> 99.933) */
         *(s32 *)(b4 + 4) = c4 + 1;
-        b4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c4 * 8; if (1) {}
+        b4 = *(char **)(*(char **)(arg0 + 0xC) + 0) + c4 * 8;
         *(s32 *)(b4 + 0) = 0xE7000000;
-        *(s32 *)(b4 + 4) = 0;
+        *(s32 *)(b4 + 4) = 0 * (int)(b4); /* agent-g run 308: folded use of b4 (adjsave 3.0 -> 3.33: coloured t0 before g) */
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
-        p3 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
-        *(s32 *)(p3 + 0) = 0xE7000000;
-        *(s32 *)(p3 + 4) = 0;
+        /* agent-g run 308: this packet pointer is g (cast both ways; g's colour value is dead here and g is always
+         * written before this read): the target's t1 = g + this pointer (zdbug:5/6 replay -> g t1, const 0xE700 t2) */
+        g = (s32)(*(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8);
+        *(s32 *)((char *)g + 0) = 0xE7000000;
+        *(s32 *)((char *)g + 4) = 0;
         func_00000000_5a2c4v(arg0, arg1, arg10); /* agent-c run 260: void (discarded result) */
         base = *(char **)(arg0 + 0xC);
         cnt = *(s32 *)(base + 4);
         *(s32 *)(base + 4) = cnt + 1;
         b1 = *(char **)(*(char **)(arg0 + 0xC) + 0) + cnt * 8;
         *(s32 *)(b1 + 0) = 0xE7000000;
-        *(s32 *)(b1 + 4) = 0;
+        *(s32 *)(b1 + 4) = 0 + 0 * (int)(b1); /* agent-g run 308: folded use of b1 (adjsave 3.25 -> 3.5: a3 before b4) */
         func_00000000(arg0, arg1, arg10);
     }
 }
