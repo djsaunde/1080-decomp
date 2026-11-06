@@ -73,7 +73,9 @@ extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, 
         /* agent-c run 283: code-free y << 2 test = the y << 2 expression's LR id is created here, before the
          * Scis arm's packet pointer (kit CCCXXXVIII creation order): y << 2 a3 / pkt t1 like the target */
         if (y << 2) {}
-        gSPTextureRectangle(c->next(), x << 2, y << 1 << 1, (x + w) << 1 << 1, (y + h) << 1 << 1, 0, 0, 0, dsdx, dtdy);
+        /* agent-c run 306 (kit CCCLXXXVIII ring lever): value-preserving folded masks on the RDPHALF_2 operands (the macro
+         * keeps their low 16 bits anyway), two on dsdx and one on dtdy, re-phase the ugen ring: 96.935 -> 97.010 */
+        gSPTextureRectangle(c->next(), x << 2, y << 1 << 1, (x + w) << 1 << 1, (y + h) << 1 << 1, 0, 0, 0, (dsdx) & 0xFFFF & 0xFFFF, (dtdy) & 0xFFFF);
     } else {
         /* run 185: xl named once (the target's `or t2,a1` copy + a3 for yl; 95.68 -> 96.01) */
         int xl = x << 2;
