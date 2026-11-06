@@ -47,7 +47,7 @@ union Gfx { Gwords words; long long force_structure_alignment; };
                  _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 template <class T> inline T *me(T *p) { return p; }
-/* agent-c run 305 (inline helper on a folded copy, kit CCCLXXXIII 3B6A0 form): the RDPHALF_1 t-term's MAX / MIN
+/* agent-c run 305 (inline helper on a folded copy, kit CCCLXXXV 3B6A0 form; kit CCCLXXXVI): the RDPHALF_1 t-term's MAX / MIN
  * written out with the clamp's 0 RESULT (not the compare's 0) through the zero-code I(0 + dtdy * 0): 96.848 -> 96.914,
  * same length (a whole-operand I() on the compare side gives 1212 bytes = target but slt / beqz compares, lower). */
 inline int I(int v) { return v; }
