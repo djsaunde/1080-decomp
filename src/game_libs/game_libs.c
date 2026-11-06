@@ -3591,8 +3591,8 @@ void gl_func_000076F0(GlObj76F0 *self) {
                         func_00000000(0x11);
                         self->unk534 = 1.0f;
                         self->unk538 = 1.0f; /* agent-c run 326: field order again (shares the 1.0 `lui at` as in the target), with the 0x4E0 == 7 dead store below */
+                        self->unk550 = 0.0f; /* agent-c run 326: 0.0 before 160 (FP ring: 0.0 f8, 160 f10 as in the target) */
                         self->unk548 = 160.0f;
-                        self->unk550 = 0.0f;
                         self->unk54C = 120.0f;
                         if (*(s32 *)((char *)&D_00000000_76F0 + 0x34) == 2) {
                             self->unk54C = 60.0f;
