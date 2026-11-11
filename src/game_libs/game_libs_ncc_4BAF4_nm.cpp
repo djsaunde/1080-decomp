@@ -62,7 +62,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         pos.y = cam->p.y;
         pos.z = cam->p.z;
     }
-    if (gl_func_00000000(GS4B, &pos, 1, out) == 0) {
+    if ((r = (u32)gl_func_00000000(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
         return;
     }
     iz = (pos.z + 1.0f) * 16384.0f + F4B(self, 0xC8, f32);
@@ -74,8 +74,8 @@ extern "C" void gl_func_0004BAF4(char *self) {
     } else {
         sx = F4B(self, 0xB0, f32);
         sy = F4B(self, 0xB4, f32);
-    }
-    spr = F4B(self, 0x84, Spr4B **)[F4B(self, 0xC0, s16)];
+    } if (self) {}
+    spr =F4B(self, 0x84, Spr4B **)[F4B(self, 0xC0, s16)];
     pos.x -= (f32)(spr->w >> 1) * sx;
     pos.y -= (f32)(spr->h >> 1) * sy;
     pos.x += F4B(self, 0xB8, f32);
@@ -88,10 +88,11 @@ extern "C" void gl_func_0004BAF4(char *self) {
      * reloads share one coloured register (a3), and the centre 0xC0 now loads before 0xB8 like the target */
     /* agent-g run 266: the half-extent reads go into d (int -> char * -> int round trip, 32-bit), and d is then
      * re-assigned self->0xCC for the dlist call: the pointer takes v0 like the target (97.39 -> 97.54) */
-    if ((d = (char *)F4B(GS4B, 0xB8, volatile int), F4B(GS4B, 0xC0, int) + (int)d < x) || (d = (char *)F4B(GS4B, 0xBC, volatile int), F4B(GS4B, 0xC4, int) + (int)idv(d) < y) ||
-        (d = (char *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)d) || (d = (char *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)d)) {
+    /* agent-g run 332: the half-extents through ctx (the target's ext / ctx share a3), operand order `x > ext + C0` */
+    if ((ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x > (int)ctx + F4B(GS4B, 0xC0, int)) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y > (int)idv(ctx) + F4B(GS4B, 0xC4, int)) ||
+        (ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)ctx) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)ctx)) {
         return;
-    }
+    } if (r) {}
     ctx = F4B(GS4B, 0x158, Ctx4B *); /* agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
     d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
     g = PKT4B(ctx);
@@ -102,12 +103,14 @@ extern "C" void gl_func_0004BAF4(char *self) {
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
     F4B(GS4B, 0x158, Ctx4B *)->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16);
     if (*(s32 *)((char *)&D_4BAF4_flags + 0x1C4) & 2) {
-        if ((F4B(self, 0x30, int) & 8 & 8 & 8 & 8) && F4B(self, 0x14, char *) != 0) {
+        if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { if (ctx) {} /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }
     } else {
         ctx = F4B(GS4B, 0x158, Ctx4B *);
-        r = gl_func_00000000(F4B(spr->dl64, 0x60, int));
+        /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a
+         * coloured LR, `lw v0,100(t2); lw a0,96(v0)`), not a ugen temp: 99.007 -> 99.137, same length */
+        d = spr->dl64; r = gl_func_00000000(F4B(d, 0x60, int));
         g = PKT4B(ctx);
         g->w0 = 0x06000000;
         g->w1 = r;
