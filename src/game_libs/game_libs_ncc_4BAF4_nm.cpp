@@ -88,8 +88,9 @@ extern "C" void gl_func_0004BAF4(char *self) {
      * reloads share one coloured register (a3), and the centre 0xC0 now loads before 0xB8 like the target */
     /* agent-g run 266: the half-extent reads go into d (int -> char * -> int round trip, 32-bit), and d is then
      * re-assigned self->0xCC for the dlist call: the pointer takes v0 like the target (97.39 -> 97.54) */
-    /* agent-g run 332: the half-extents through ctx (the target's ext / ctx share a3), operand order `x > ext + C0` */
-    if ((ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x > (int)ctx + F4B(GS4B, 0xC0, int)) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y > (int)idv(ctx) + F4B(GS4B, 0xC4, int)) ||
+    /* agent-g run 332: the half-extents through ctx (the target's ext / ctx share a3), operand order `x > ext + C0`;
+     * agent-g run 335: the second test as `y > C4 + ext` with the idv() dropped (`addu t9,t0,a3` order): 99.291 -> 99.303 */
+    if ((ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x > (int)ctx + F4B(GS4B, 0xC0, int)) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y > F4B(GS4B, 0xC4, int) + (int)ctx) ||
         (ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)ctx) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)ctx)) {
         return;
     } if (r) {}
