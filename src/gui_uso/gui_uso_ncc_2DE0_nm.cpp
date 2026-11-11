@@ -47,7 +47,13 @@ union Gfx { Gwords words; long long force_structure_alignment; };
     /* agent-g run 310: the s-term in exact sibling 329C's shape -- MAX and MIN arms both assign into spr, the middle `?:` \
      * reads (int)spr (every read follows its own write): with the run-310 append receivers below, 97.772 -> 97.805 */ \
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((((s16)(dsdx) < 0) ? ((spr = (Spr *)(int)((MAX((((s16)(xl)*(s16)(dsdx))>>7),0)))), (int)spr) : ((spr = (Spr *)(int)((MIN((((s16)(xl)*(s16)(dsdx))>>7),0)))), (int)spr)), (int)spr)) : 0)), 16, 16) | \
-                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0 * (xq = I(0 + (dtdy) * 0))) ? (((s16)(yl)*(s16)(dtdy))>>7) : xq) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0)), 0, 16))); \
+                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? (((((s16)(yl)*(s16)(dtdy))>>7) > 0 * (xq = I(0 + (dtdy) * 0))) ? ((((s16)(yl)*(s16)(dtdy))>>7) + 0 * pc) : (xq + 0 * pc)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0 * pc)), 0, 16))); \
+    /* agent-c run 330: folded uses of the caller's pc (the int copy of &D_00000000, set before this macro on every path) \
+     * in BOTH inner-MAX exits and in the yl >= 0 arm's zero, the old dtdy-argument fold and the trailing `if (pc) {}` \
+     * dropped: pc's web is now re-formed at the MAX exits (lui / addiu like the target's t3) and copied from the lda \
+     * web elsewhere, 1208 -> 1212 bytes = target, 97.805 -> 98.399 (random joint draw over pc folds / tests, 330 vars). \
+     * Left: pc is its own LR (a1, `move a1,t3` copies at B2 and in the yl >= 0 arm) where the target re-forms the lda \
+     * LR itself in t3, so the t-term takes v1 instead of a1. */ \
     if (spr) {} \
     gImmp1(pkt3, G_RDPHALF_2, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); }
 template <class T> inline T *me(T *p) { return p; }
@@ -102,11 +108,12 @@ extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     fh = h * sy;
     /* agent-c run 295 (kit CCCXXXVI int <-> pointer local): the RDPHALF_2 append's ctx read through an int copy of
      * &D_00000000 with a folded counted use in the dtdy argument -- the &D web now spans the RDPHALF_1 MAX / MIN arms
-     * (rematerialised lui / addiu inside them like the target's t3): 96.766 -> 96.848, 1196 -> 1204 bytes (target 1212) */
+     * (rematerialised lui / addiu inside them like the target's t3): 96.766 -> 96.848, 1196 -> 1204 bytes (target 1212).
+     * agent-c run 330: the dtdy-argument fold moved into the t-term (see the macro): pc is read only by the macro folds
+     * and the RDPHALF_2 receiver now. */
     int pc = (int)&D_00000000;
     /* agent-g run 310: TEXRECT me(CTX)->next(), RDPHALF_1 nD(), RDPHALF_2 at accessor depth 1 (same grid): with the 329C
      * s-term the RDPHALF_1 s-term MIN copy takes spr's t0 and the RDPHALF_2 dl / n take v0 / v1 like the target */
     gSPScisTextureRectangle(me(CTX)->next(), CTX->nD(), me((*(Ctx **)pc))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
-        (s32)(((f32)(w - 1) * 1024.0f) / fw), ((s32)(((f32)(h - 1) * 1024.0f) / fh) + 0 * (int)(pc)));
-    if (pc) {}
+        (s32)(((f32)(w - 1) * 1024.0f) / fw), ((s32)(((f32)(h - 1) * 1024.0f) / fh)));
 }
