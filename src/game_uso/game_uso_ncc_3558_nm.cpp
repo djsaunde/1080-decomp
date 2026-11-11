@@ -44,7 +44,7 @@ struct Vec3 {
  z += v.z;  } /* agent-c run 288 (fork B): x, y, z (the target's tail `e += w` adds) together with the k2 operand swap below: 93.68 -> 93.85 */
     void operator*=(float s) { x = x * s; y = y * s; z = z * s; }
     float len2x() const { float r = x * x + y * y + z * z; return r; } /* agent-c run 248: e's length in x, y, z order (w keeps len2): 93.484 -> 93.492 */
-    float len2() const { return y * y + x * x + z * z; } /* agent-g run 259: the named result moved out to the caller's function-scope l (see below); agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
+    float len2() const { return x * x + y * y + z * z; } /* agent-c run 340: back to x, y, z on the promoted-vb body (the tail's FP temp order re-phases the whole function's ring): 97.063 -> 99.881; agent-g run 259: the named result moved out to the caller's function-scope l (see below); agent-g run 231 (operand-commute sweep, 3 rounds): y first, z row m22 term second, k2 = f118 * (..): 89.98 -> 91.56 */
 };
 inline Vec3 mk(float a, float b, float c) { Vec3 r; float p = a; float q = b; float u = c; r.x = p; r.y = q; r.z = u; return r; } /* agent-g run 245: x, z, y store order (91.58 -> 91.62);
                                                                          * agent-g run 293: back to x, y, z (mk() is no longer called; byte-identical) */
