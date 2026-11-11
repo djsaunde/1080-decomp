@@ -19,10 +19,14 @@ int gl_func_00000000(...);
 typedef struct { u32 w0, w1; } Gfx4B;
 typedef struct { Gfx4B *buf; int n; } GP4B;
 template <class T> inline T *me2(T *p) { return p; } /* agent-g run 335: zero-code accessor for the Ctx4B inlines below */
+/* agent-g run 336: put4B() stores through a parameter temp (edg reuses those pool words) instead of addF()'s local g
+ * (one fresh word per inline site), which pays for nextF()'s named count n: the ctx packets' count is now its own
+ * per-site LR, no longer the expression packets' count pool word: 99.409 -> 99.444, same length and frame */
+inline void put4B(Gfx4B *g, u32 hi, u32 lo) { g->w0 = hi; g->w1 = lo; }
 /* agent-g run 335 (kit CDXXVII): nextF() / addF() for the three ctx-variable packets (first, else arm, final). The
  * four me2() on the count side hold edg pool words before the `n++` temp, so these packets' count / gfx words are no
  * longer the words the expression-receiver packets (0xEE, TEXRECT, B4, B3) use for their receiver: 99.303 -> 99.409 */
-struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addF(u32 hi, u32 lo) { Gfx4B *g = nextF(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
+struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
 #define GS4B (*(char **)((char *)&D_00000000 + 0x254))
