@@ -101,7 +101,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     /* agent-c run 306 (kit CCCLXXXVIII ring lever): one doubled (value-preserving) iz mask here = one ugen ring slot, so
      * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
-    F4B(GS4B, 0x158, Ctx4B *)->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16);
+    me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
     if (*(s32 *)((char *)&D_4BAF4_flags + 0x1C4) & 2) {
         if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { if (ctx) {} /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
@@ -140,7 +140,8 @@ extern "C" void gl_func_0004BAF4(char *self) {
     }
     /* agent-g run 296: the RDPHALF_2 append's receiver through five nested zero-code me() accessors and the final
      * append's through two (receiver-depth grid 0-7 over the three appends, 200 + local 176): the RDPHALF_2 / final
-     * appends' dl / count colours move toward the target's (97.879 -> 98.009, same length) */
+     * appends' dl / count colours move toward the target's (97.879 -> 98.009, same length); agent-g run 332: the final
+     * append at depth 0 and the 0xEE append at depth 2 on the else-arm-d base */
     {
         me(me(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
@@ -148,5 +149,5 @@ extern "C" void gl_func_0004BAF4(char *self) {
     /* agent-g run 321: the self->0xD0 pointer through d with a BB split before the call (kit CDXII): the pointer is a
      * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length */
     d = F4B(self, 0xD0, char *); if (1) {} r = gl_func_00000000(F4B(d, 0x60, int));
-    me(me(ctx))->add(0x06000000, r);
+    ctx->add(0x06000000, r);
 }
