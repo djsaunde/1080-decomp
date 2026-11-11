@@ -93,7 +93,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         (ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)ctx) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)ctx)) {
         return;
     } if (r) {}
-    ctx = F4B(GS4B, 0x158, Ctx4B *); /* agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
+    ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
     d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
     g = PKT4B(ctx);
     g->w0 = 0x06000000;
@@ -107,7 +107,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }
     } else {
-        ctx = F4B(GS4B, 0x158, Ctx4B *);
+        ctx = me(me(F4B(GS4B, 0x158, Ctx4B *)));
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a
          * coloured LR, `lw v0,100(t2); lw a0,96(v0)`), not a ugen temp: 99.007 -> 99.137, same length */
         d = spr->dl64; r = gl_func_00000000(F4B(d, 0x60, int));
