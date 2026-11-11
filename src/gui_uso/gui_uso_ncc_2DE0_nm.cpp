@@ -43,11 +43,15 @@ union Gfx { Gwords words; long long force_structure_alignment; };
 { Gfx *_g = (Gfx *)(pkt); \
     _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(I4(MAX((s16)(xh),0)), 12, 12) | _SHIFTL(I2(MS((s16)(yh))), 0, 12)); \
     _g->words.w1 = (_SHIFTL((tile), 24, 3) | _SHIFTL(MAX((s16)(xl),0), 12, 12) | _SHIFTL(MS((s16)(yl)), 0, 12) + 0 * (int)_g); /* agent-c run 310: folded use of the TEXRECT packet pointer (raises its LR over the xh MAX: t1 like the target), 97.442 -> 97.492 */ \
-    if ((s16)(xh)) {} /* agent-c run 309: code-free test of (s16)xh after w1 (kit CCC random test search over body + macro slots, 200): 97.096 -> 97.360 */ \
+    /* agent-c run 309 had a code-free `if ((s16)(xh)) {}` here (97.096 -> 97.360); agent-c run 333 dropped it: with the \
+     * TEXRECT append as nextp() (no phantom n LR holding a0) the shorter (s16)xh LR outranks x's and takes a0 like the target */ \
     /* agent-g run 310: the s-term in exact sibling 329C's shape -- MAX and MIN arms both assign into spr, the middle `?:` \
      * reads (int)spr (every read follows its own write): with the run-310 append receivers below, 97.772 -> 97.805 */ \
     gImmp1(pkt2, G_RDPHALF_1, (_SHIFTL(((s) - (((s16)(xl) < 0) ? (((((s16)(dsdx) < 0) ? ((spr = (Spr *)(int)((MAX((((s16)(xl)*(s16)(dsdx))>>7),0)))), (int)spr) : ((spr = (Spr *)(int)((MIN((((s16)(xl)*(s16)(dsdx))>>7),0)))), (int)spr)), (int)spr)) : 0)), 16, 16) | \
-                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? ((xq = I(0 + (dtdy) * 0)), ((((s16)(yl)*(s16)(dtdy))>>7) > 0 ? (xq = (((s16)(yl)*(s16)(dtdy))>>7)) : xq)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0 * pc)), 0, 16))); \
+                 _SHIFTL(((t) - (((yl) < 0) ? (((s16)(dtdy) < 0) ? ((xq = I(0 + (dtdy) * 0 + 0 * (int)_g)), ((((s16)(yl)*(s16)(dtdy))>>7) > 0 ? (xq = (((s16)(yl)*(s16)(dtdy))>>7)) : xq)) : (((((s16)(yl)*(s16)(dtdy))>>7) < 0) ? (((s16)(yl)*(s16)(dtdy))>>7) : I(0 + (dtdy) * 0))) : 0 * pc + 0 * (int)_g)), 0, 16))); \
+    /* agent-c run 333: two folded uses of the RDPHALF_1 packet pointer _g inside the t-term arms (any two of seven \
+     * s-/t-term slots, 21 pairs equal): its LR outranks the &D lda LR, so the packet takes t2 and the lda t3 like the \
+     * target (with the nextp() TEXRECT append and no xh test): 98.960 -> 99.109, same length. */ \
     /* agent-c run 331: the inner MAX as `r = 0; if (v > 0) r = v` with xq as the result carrier (the as0 + as1 oracle on \
      * the target shows ugen's zero-then-copy form: `move v1,zero` before the test, one copy out): xq = v1 and the \
      * false exit's copy folds away like the target; the yl >= 0 arm keeps the folded `0 * pc` use and the dtdy argument \
@@ -113,6 +117,6 @@ extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     int pc = (int)&D_00000000;
     /* agent-g run 310: TEXRECT me(CTX)->next(), RDPHALF_1 nD(), RDPHALF_2 at accessor depth 1 (same grid): with the 329C
      * s-term the RDPHALF_1 s-term MIN copy takes spr's t0 and the RDPHALF_2 dl / n take v0 / v1 like the target */
-    gSPScisTextureRectangle(me(CTX)->next(), CTX->nD(), me((*(Ctx **)pc))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
+    gSPScisTextureRectangle(me(CTX)->nextp(), CTX->nD(), /* agent-c run 333: TEXRECT nextp() */ me((*(Ctx **)pc))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,
         (s32)(((f32)(w - 1) * 1024.0f) / fw), ((s32)(((f32)(h - 1) * 1024.0f) / fh) + 0 * (int)(&D_00000000))); /* agent-c run 331: folded &D use back (98.960 needs it) */
 }
