@@ -3688,7 +3688,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
                  temp = self->unk4F8, (temp == 0)) || (temp == 5))) {
             func_00000000(self);
         }
-        if ((var_v0 = self->unk4E0) == 7) { /* agent-c run 326: dead store (var_v0 re-assigned before its only read) */
+        if (self->unk4E0 == 7) { /* agent-c run 328: run 326's var_v0 dead store dropped (with the switch-3 break form below) */
             vt = self->vt;
             vt->e[21].fn(vt->e[21].off + (char *)self);
         }
@@ -3707,11 +3707,15 @@ void gl_func_000076F0(GlObj76F0 *self) {
             if (D_76F0_fadeC < 1.0f) {
                 D_76F0_fadeC += 0.1f;
             }
+            if (self->unk4DC) {} /* agent-c run 328: code-free test (the 0x4DC load web lives through the fades: switch-3 `move v0,v1` selector copy as in the target) */
         }
-        if ((self->unk4DC != 0) && (self->unk30 == 0)) {
-            if (self->unk4F4 > 0) {
+        /* agent-c run 328: the false exits as `break`s -- they reach the post-switch `!= 2` test
+         * straight (`beqzl v1; li at,2`), only the store / call paths go through the reload */
+        if (self->unk4DC == 0) break;
+        if (self->unk30 != 0) break;
+        if (self->unk4F4 <= 0) break;
                 self->unk4F4 = self->unk4F4 - 1;
-                if (self->unk4F4 == 0) {
+                if ((temp = self->unk4F4) == 0) { /* agent-c run 328: dead store (temp is re-assigned before its reads) */
                     if (((u32)self->unk4F0 << 11) >> 31) {
                         vt = self->vt;
                         vt->e[23].fn(vt->e[23].off + (char *)self);
@@ -3721,11 +3725,11 @@ void gl_func_000076F0(GlObj76F0 *self) {
                         vt->e[24].fn(vt->e[24].off + (char *)self);
                     }
                 }
-            }
-        }
         break;
     case 2:                                         /* switch 3 */
-        if ((self->unk4F0 & 0x10000) && (self->unk500 != 0)) {
+        if (!(self->unk4F0 & 0x10000)) break; /* agent-c run 328: break exits (see case 1) */
+        if (self->unk500 == 0) break;
+        {
             if (D_76F0_fadeA > 0.0f) {
                 D_76F0_fadeA -= 0.05f;
                 if (D_76F0_fadeA < 0.0f) {
