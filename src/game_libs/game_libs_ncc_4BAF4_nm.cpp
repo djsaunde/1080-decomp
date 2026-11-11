@@ -26,7 +26,7 @@ inline void put4B(Gfx4B *g, u32 hi, u32 lo) { g->w0 = hi; g->w1 = lo; }
 /* agent-g run 335 (kit CDXXVII): nextF() / addF() for the three ctx-variable packets (first, else arm, final). The
  * four me2() on the count side hold edg pool words before the `n++` temp, so these packets' count / gfx words are no
  * longer the words the expression-receiver packets (0xEE, TEXRECT, B4, B3) use for their receiver: 99.303 -> 99.409 */
-struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
+struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
 #define GS4B (*(char **)((char *)&D_00000000 + 0x254))
@@ -104,7 +104,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     } if (r) {}
     ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
     d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
-    ctx->addF(0x06000000, r);
+    ctx->addO(0x06000000, r); /* agent-g run 336: the first packet alone keeps the run-335 pool-count append (addO) */
     /* agent-c run 306 (kit CCCLXXXVIII ring lever): one doubled (value-preserving) iz mask here = one ugen ring slot, so
      * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
