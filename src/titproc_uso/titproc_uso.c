@@ -848,11 +848,11 @@ fire:
              * first): reached on every else-arm path (target bnez/beqz to it). */
             if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
                 gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
-                gl_func_00000000_116c_v(5);
+                gl_func_00000000_116c_v(5); if (*(char **)(s0 + 0x5C)) {} /* agent-c run 328: code-free tests of the 0x5C object (here and below): gate object v1 as in the target */
                 v1 = *(char **)(s0 + 0x5C);
                 if (*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90) != 0) {
                     *(char **)((char *)&import_00263D30 + 0xA8) = s0;
-                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C);
+                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C); if (*(char **)(s0 + 0x5C)) {}
                     v1 = *(char **)(s0 + 0x5C);
                     ((void (*)(void))(*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90)))();
                 }
