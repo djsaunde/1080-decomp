@@ -57,7 +57,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         s->p84 = s->p90;
         float dot = lenf + (s->w->speed * s->kDC) / 2; /* agent-g run 231 (operand-commute sweep): speed first, 89.51 -> 90.41 */
         s->p84 += dir * dot;
-        dot = lenf - (s->w->speed * s->kDC) / 2;
+        dot = lenf - (s->w->speed * s->kDC) / 2; if (s) {} /* agent-c run 328: code-free test (sweep, 90.41 -> 90.43) */
         s->p90 += dir * dot;
         s->phase = 0;
     } else {
