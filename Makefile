@@ -3088,10 +3088,11 @@ build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_
 GUI_4568_DONOR := build/src/gui_uso/gui_uso_ncc_4568.cpp.o
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00004568=$(GUI_4568_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_DONOR)
-# 2DE0 = gui sprite rect (C++: inline Ctx::next() as the gbi.h pkt argument; run 165). NM comparison object only.
-GUI_2DE0_NM_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0_nm.cpp.o
-build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_NM_DONOR)
-build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_NM_DONOR)
+# 2DE0: gui sprite rect, 329C's f32-scale sibling (303/303; agent-c run 337, kit CDXXVIII): the &D lda LR
+# cost-split around the yl < 0 arm (no &D / pc folds, s-term MAX through spr, TEXRECT append me(CTX)->nD()).
+GUI_2DE0_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0.cpp.o
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)

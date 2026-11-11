@@ -840,7 +840,14 @@ void gui_func_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
 INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002BB0);
 #endif
 
-#ifdef NON_MATCHING
+/* 2026-11-11 agent-c (run 337): EXACT via the IDO 7.1 NCC donor
+ * src/gui_uso/gui_uso_ncc_2DE0.cpp (REPLACE_FUNC_BODY, both trees). This empty
+ * function is the splice host; the cfe reconstruction below is kept for
+ * reference only (not compiled). */
+void gui_func_00002DE0(void) {
+}
+
+#if 0
 /* gui_func_00002DE0: f32-scale sibling of gui_func_0000329C. Re-decoded
  * 2026-10-15 (77.5 -> 80.7) with the same stock gbi.h macro text as 329C:
  * gSPTexture, a 3-way texture-load dispatch on spr->0x24, then
@@ -928,8 +935,6 @@ done:
 #undef MAX
 #undef MIN
 #undef _SHIFTL
-#else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002DE0);
 #endif
 
 /* 2026-11-06 agent-g (run 309): EXACT via the IDO 7.1 NCC donor

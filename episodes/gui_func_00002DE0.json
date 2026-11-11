@@ -1,0 +1,33 @@
+{
+  "function_name": "gui_func_00002DE0",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-11T18:04:46.119344+00:00",
+  "end_time": "2026-11-11T18:04:46.119362+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-11T18:04:46.119358+00:00",
+      "assistant_text": "Exact from the run-333 NCC donor (99.109): the target's &D lda (t3) is one uopt LR cost-split around the yl < 0 arm. Dropping every folded &D / pc use, the xq-zero and _g t-term folds and the pre-RDPHALF_2 spr test makes the lda's save equal its call cost (split); the s-term MAX through spr (329C shape) keeps every other colour; the TEXRECT append as me(CTX)->nD() instead of nextp() removes the one interference neighbour that kept the split piece out of the yl >= 0 arm.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 303,
+  "initial_m2c_source": null,
+  "final_source": "extern \"C\" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {\n    volatile s32 q0, q1, q2, q3; /* frame pads: w / h homes at the target's 0x3C / 0x38 */\n    s32 t;\n    s32 zq; s32 xq;\n    f32 fw, fh;\n    s32 x, y;\n    Spr *spr;\n    s32 w, h;\n    gSPTexture(CTX->nD(), 0x8000, 0x8000, 0, 0, 1);\n    spr = arg0->spr;\n    w = spr->w;\n    h = spr->h;\n    switch (spr->fmt) {\n    case 0x408:\n        CTX->load(spr->tex, w, h);\n        break;\n    case 0x120:\n        CTX->load(spr->tex, w, h);\n        break;\n    case 0x110:\n        CTX->load(spr->tex, w, h);\n        break;\n    }\n    x = (f32)x0 + (-((f32)w / 2) * sx);\n    fw = w * sx;\n    y = (f32)y0 + (-((f32)h / 2) * sy);\n    fh = h * sy;\n    int pc = (int)&D_00000000; /* the RDPHALF_2 append's ctx through an int copy of &D_00000000 (kit CCCXXXVI) */\n    gSPScisTextureRectangle(me(CTX)->nD(), CTX->nD(), me((*(Ctx **)pc))->nD(), x << 2, y << 2, (x + (s32)fw) << 2, (y + (s32)fh) << 2, 0, 0, 0,\n        (s32)(((f32)(w - 1) * 1024.0f) / fw), ((s32)(((f32)(h - 1) * 1024.0f) / fh)));\n}\n",
+  "metadata": {
+    "source_path": "src/gui_uso/gui_uso_ncc_2DE0.cpp",
+    "asm_path": "asm/nonmatchings/gui_uso/gui_uso/gui_func_00002DE0.s",
+    "segment": "gui_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "objdiff 100.0 standalone vs expected; instruction words identical; full gate: ROM byte-identical to baserom, verify-blocks 6/6, non_matching_objects 0 errors, report 100.0 (1212 B)."
+  }
+}
