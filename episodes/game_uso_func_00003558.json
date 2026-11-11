@@ -1,0 +1,33 @@
+{
+  "function_name": "game_uso_func_00003558",
+  "project": "1080-agent-c",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-11T20:20:04.910229+00:00",
+  "end_time": "2026-11-11T20:20:04.910244+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-11T20:20:04.910240+00:00",
+      "assistant_text": "Exact from the run-340 NCC donor (93.85 at start): an if (1) {} before operator-'s return ends the vb promotion region so the write-back precedes the return-temp copy; natural x/y/z orders re-phase the FP ring; getPos's this and the matrix pointer as one reassigned M4 *m (both v0), rows' locals in an inner block, me() on the node read and on va, block splits around the ctx init (kit CDXXXII).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 252,
+  "initial_m2c_source": null,
+  "final_source": "extern \"C\" void game_uso_func_00003558(S *s0) {\n    if (1) {} Ctx c = { s0->node }; if (1) {} /* agent-c run 340: block splits around the ctx init (constrained climb, kit CDXXXII 6) */\n    Vec3 va;\n    Vec3 vb;\n    Vec3 e;\n    float k;\n    float zero;\n    float k2;\n    Vec3 stage;\n    float mag;\n    Vec3 w;\n    float t;\n    float l;\n    { Node *o = me(c.getOut()); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; } /* agent-c run 340: me() on the node read keeps the ctx pool word's live range in the first blocks (ctx reloads v1 like the target) */\n    /* agent-c run 248 / 247: vb through getPos (address taken = memory-resident like the target's stores after init).\n     * agent-c run 340 (kit CDXXXII 6): getPos's `this` and the matrix pointer are ONE variable m, reassigned before the\n     * matrix rows (the target reloads s0->b0 after the stage copy, both in v0); the rows' locals sit in an inner block\n     * opened after the stage copy so the frame homes keep their order (tmp 140, r 104, bt 76). */\n    {\n        M4 *m;\n        (m = &s0->b0->mtx)->getPos(vb);\n        zero = 0.0f;\n        stage = s0->v68;\n        {\n            m = &s0->b0->mtx;\n            const Vec3 &v = stage;\n            float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;\n            float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;\n            float z = m->m[0][2] * v.x + m->m[1][2] * v.y + m->m[2][2] * v.z; /* agent-c run 340: natural x / y / z term order on the promoted-vb body (target loads m12 before m22): 95.786 -> 97.063 */\n            stage.x = x; stage.y = y; stage.z = z; vb.x += x; vb.y += y; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48); agent-c run 340: stage stores grouped first again (kit CDXXX 5 vm5 form) */\n        }\n    }\n    if (1) {} /* agent-c run 340: with the operator- split, uopt promotes vb.x / y / z over the block (kit CDXXX 5) */\n    e = vb - *me(&va); /* agent-c run 340: me() on va (one pool word: the op- temporaries at the target's 104..112) */\n    s0->v3C = e;\n    mag = game_uso_func_070238(e.len2x());\n    {\n        Vec3 side;\n        k = e.y * s0->f130;\n        side.x = zero; side.y = k; side.z = zero; game_uso_func_072EE8(c.getOut()->f30, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */\n    }\n    game_uso_func_071028(&e);\n    me(s0)->b1->mtx.getPos(w); /* agent-c run 253: accessor sweep (kit CCLXXXIV): 93.49 -> 93.61 */\n    w.x = w.x - va.x;\n    w.z = w.z - va.z;\n    w.y = zero;\n    l = w.len2(); /* agent-g run 259 (kit CCXCIV): len2's named r was an inline-expansion home at the frame bottom (every low object 8 above the target); as a function-scope l declared after t its home sits in the decl region instead -- the sp-offset set now equals the target's (93.61 -> 93.68 standalone) */\n    t = game_uso_func_070238(l);\n    game_uso_func_071028(&w);\n    if (s0->f88 < t) {\n        w *= t - s0->f88;\n    } else if (t < s0->fA0) {\n        w *= t - s0->fA0;\n    } else {\n        w *= 0.0f;\n    }\n    k2 = (mag - s0->fB8) * s0->f118; /* agent-c run 288: operands swapped (target mul.s f0,f10,f4) */\n    e *= k2;\n    e += w;\n    game_uso_func_072EE8(c.getOut()->f30, &e);\n}\n",
+  "metadata": {
+    "source_path": "src/game_uso/game_uso_ncc_3558.cpp",
+    "asm_path": "projects/1080-agent-c/asm/nonmatchings/game_uso/game_uso/game_uso_func_00003558.s",
+    "segment": "game_uso",
+    "compiler": "ido7.1-NCC",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Wab,-r4300_mul",
+    "verification": "objdiff 100.0 standalone vs expected; 252/252 instruction words byte-identical; full gate: ROM byte-identical to baserom, verify-blocks 6/6, non_matching_objects 0 errors, report 100.0 (1008 B)."
+  }
+}

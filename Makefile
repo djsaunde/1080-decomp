@@ -5375,10 +5375,11 @@ build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000
 build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E5C8=build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
 build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-# 3558: NM-only NCC comparison donor (C++ value-class rewrite of the cfe NM body, agent-g run 160).
-GAMEUSO_3558_NM_DONOR := build/src/game_uso/game_uso_ncc_3558_nm.cpp.o
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00003558=$(GAMEUSO_3558_NM_DONOR)
-build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_NM_DONOR)
+# 3558: EXACT (agent-c run 340, kit CDXXXII) via the NCC (C++) donor game_uso_ncc_3558.cpp (was the NM-only
+# comparison donor _nm.cpp, agent-g run 160 value-class rewrite), spliced over the placeholder on both paths.
+GAMEUSO_3558_DONOR := build/src/game_uso/game_uso_ncc_3558.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00003558=$(GAMEUSO_3558_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_DONOR)
 # 7C1C: EXACT (agent-c run 231) via the cfront-style cfe C donor game_uso_7C1C.c (kits CCXL / CCXLI),
 # filtered out of C_FILES and spliced over the placeholder on both paths. The placeholder re-emits the
 # RoData +0xFC float (3000.0f) the donor reads through game_uso_func_00007C1C_rodata (= 0) + 0xFC.

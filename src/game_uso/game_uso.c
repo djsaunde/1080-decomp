@@ -2018,12 +2018,18 @@ out:
  * INCLUDE_ASM stays the build path so ROM is byte-correct.
  * 2026-10-24 (agent-g run 160): the NM object now takes the C++ rewrite
  * src/game_uso/game_uso_ncc_3558_nm.cpp (72.33 -> 72.58, 246 -> 251 of 252
- * words); this cfe body is kept for reference. */
+ * words); this cfe body is kept for reference.
+ * 2026-11-11 (agent-c run 340): EXACT via REPLACE_FUNC_BODY donor splice of the
+ * IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_3558.cpp (1008 / 1008 bytes,
+ * kit CDXXXII). The cfe body below is reference only (#if 0); the function
+ * compiled on both paths is the placeholder after it. */
 #ifdef NON_MATCHING
 extern float game_uso_func_070238(float);
 extern void game_uso_func_071028(Vec3 *v);
 extern void game_uso_func_072EE8(char *dst, Vec3 *v);
+#endif
 
+#if 0 /* cfe reference body (pre-NCC), not compiled */
 void game_uso_func_00003558(char *s0) {
     char * volatile p;       /* home sp+0xFC (reloaded per use) */
     float va[3];             /* sp+0xF0 */
@@ -2143,7 +2149,10 @@ void game_uso_func_00003558(char *s0) {
 
 
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00003558);
+void game_uso_func_00003558(char *s0) {
+    /* placeholder; the body is spliced from game_uso_ncc_3558.cpp (no rodata / data) */
+    s0[0] = 0;
+}
 #endif
 
 void game_uso_func_00003948(char *a0) {

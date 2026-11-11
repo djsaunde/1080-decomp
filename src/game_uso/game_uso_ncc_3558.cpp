@@ -1,6 +1,9 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for game_uso_func_00003558
- * (0x3F0 / 252 words). NM object only (build/non_matching); the ROM keeps
- * INCLUDE_ASM. History: agent-g run 160 C++ rewrite (Vec3 value class, BY-VALUE
+/* IDO 7.1 NCC (C++) donor for game_uso_func_00003558 (0x3F0 / 252 words): EXACT
+ * (agent-c run 340, 1008 / 1008 bytes), REPLACE_FUNC_BODY-spliced over the
+ * placeholder in game_uso.c on both paths (MATCHING_WORKFLOW
+ * #game-uso-ncc-cplusplus-donor-recipe). Was the NM-only comparison donor
+ * game_uso_ncc_3558_nm.cpp (93.85 at the start of run 340; kit CDXXXII).
+ * History: agent-g run 160 C++ rewrite (Vec3 value class, BY-VALUE
  * operator= word copy into the param temp, operator- with a named return
  * r -> return temp -> binding temp -> e, M4::getPos, Ctx node accessor homed at
  * sp+252 and reloaded before both 072EE8 calls), agent-c run 201 (op= z, y, x),
@@ -72,7 +75,7 @@ void game_uso_func_072EE8(void *, Vec3 *);
 }
 struct Ctx { Node *out; Node *getOut() const { return out; } };
 extern "C" void game_uso_func_00003558(S *s0) {
-    Ctx c = { s0->node };
+    if (1) {} Ctx c = { s0->node }; if (1) {} /* agent-c run 340: block splits around the ctx init (constrained climb, kit CDXXXII 6) */
     Vec3 va;
     Vec3 vb;
     Vec3 e;
@@ -84,20 +87,27 @@ extern "C" void game_uso_func_00003558(S *s0) {
     Vec3 w;
     float t;
     float l;
-    { Node *o = c.getOut(); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; }
-    if (1) {} s0->b0->mtx.getPos(vb); /* agent-c run 248: `if (1) {}` before this call instead of inside getPos (between v.x and v.y, both getPos uses): 92.60 -> 93.47 standalone. agent-c run 247: vb through getPos (address taken = memory-resident like the target's stores after init), no `if (1) {}` after the stage copy, x / y / z adds and `e = vb - va`: 91.62 at 956 B -> 92.60 at 1008 B = target length */
-    zero = 0.0f;
-    stage = s0->v68;
+    { Node *o = me(c.getOut()); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; } /* agent-c run 340: me() on the node read keeps the ctx pool word's live range in the first blocks (ctx reloads v1 like the target) */
+    /* agent-c run 248 / 247: vb through getPos (address taken = memory-resident like the target's stores after init).
+     * agent-c run 340 (kit CDXXXII 6): getPos's `this` and the matrix pointer are ONE variable m, reassigned before the
+     * matrix rows (the target reloads s0->b0 after the stage copy, both in v0); the rows' locals sit in an inner block
+     * opened after the stage copy so the frame homes keep their order (tmp 140, r 104, bt 76). */
     {
-        M4 *m = &s0->b0->mtx;
-        const Vec3 &v = stage;
-        float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
-        float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
-        float z = m->m[0][2] * v.x + m->m[1][2] * v.y + m->m[2][2] * v.z; /* agent-c run 340: natural x / y / z term order on the promoted-vb body (target loads m12 before m22): 95.786 -> 97.063 */
-        stage.x = x; stage.y = y; stage.z = z; vb.x += x; vb.y += y; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48); agent-c run 340: stage stores grouped first again (kit CDXXX 5 vm5 form) */
+        M4 *m;
+        (m = &s0->b0->mtx)->getPos(vb);
+        zero = 0.0f;
+        stage = s0->v68;
+        {
+            m = &s0->b0->mtx;
+            const Vec3 &v = stage;
+            float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
+            float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
+            float z = m->m[0][2] * v.x + m->m[1][2] * v.y + m->m[2][2] * v.z; /* agent-c run 340: natural x / y / z term order on the promoted-vb body (target loads m12 before m22): 95.786 -> 97.063 */
+            stage.x = x; stage.y = y; stage.z = z; vb.x += x; vb.y += y; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48); agent-c run 340: stage stores grouped first again (kit CDXXX 5 vm5 form) */
+        }
     }
     if (1) {} /* agent-c run 340: with the operator- split, uopt promotes vb.x / y / z over the block (kit CDXXX 5) */
-    e = vb - va;
+    e = vb - *me(&va); /* agent-c run 340: me() on va (one pool word: the op- temporaries at the target's 104..112) */
     s0->v3C = e;
     mag = game_uso_func_070238(e.len2x());
     {
