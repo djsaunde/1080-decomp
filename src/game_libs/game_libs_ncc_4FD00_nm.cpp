@@ -6,15 +6,14 @@
  * d = mid - a / mid - b through a by-value `V3::set(V3)` (the target's lw/sw copy into the sp+20 temp followed by
  * member stores), both dots named before the test, `return 1` / `return 0`.
  * cfe body 80.29 -> 95.51, length 972 -> 1004 = target.
- * Residual: the two inline SV locals get two homes (target shares one at sp+68), the &temp / &mid / 12 constants
- * are not hoisted to the entry, and `li v0,0` is scheduled late.
+ * Residual (agent-c run 347): the 2.0f divisor in $f2 (target $f0) and the two normal pointers (a3-base t1 / v1,
+ * target t0-base v1 / v1); every other instruction and sp offset = target.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef short s16; typedef unsigned short u16;
 template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
 struct SV { s16 x, y, z;
     void set(const SV &o) { x = o.x; y = o.y; z = o.z; }
     SV &operator+=(const SV &o) { x = x + o.x; y = y + o.y; z = z + o.z; return *this; }
-    void add(const SV &o) { x = x + o.x; y = y + o.y; z = z + o.z; } /* agent-c run 346: += without the SV & return (no pooled return temp) */
 };
 struct V3 { f32 x, y, z;
     void set(V3 p) { x = p.x; y = p.y; z = p.z; }
@@ -33,21 +32,21 @@ struct Col {
     V3 *gn() { return nrm; }
     /* agent-g run 294: the short accumulator is ONE caller local passed by reference (the target homes both sums' SV
      * at the same sp+68; per-expansion inline locals got two homes): 97.992 -> 98.088, same length */
-    void sum(V3 &o, int f, SV &s) { s.set(verts[me(this)->faces[f].vi[0]]); s += verts[faces[f].vi[1]]; s += verts[faces[f].vi[2]]; o.set(s); }
-    /* agent-c run 346 (kit CDXXXVIII): the second face sum. edg binds a later wrapper expansion's parameters through
-     * pool temps, so the committed second sum() put both `+=` references on a fresh pool word (t0); a dead extra
-     * parameter fed an address plus the void add() (no reference-return temp) puts s.set's reference back on the
-     * first sum's word (v0, like the target) and saves two pool words; with p1 / p2 block-scoped and one volatile
-     * pad word below the by-value V3 temp, the frame is 136 with the temp at sp+20 and every sp offset = target.
-     * Left: the two adds' shared reference word in t0 (target v0), hence `move v0,zero` / the normal pointers. */
-    void sum2(V3 &o, int f, SV &s, int d0) { s.set(verts[faces[f].vi[0]]); s.add(verts[this->faces[f].vi[1]]); s.add(verts[this->faces[f].vi[2]]); o.set(s); }
+    /* agent-c run 347: BOTH face sums in ONE inline expansion (separate statements inside one wrapper). A second
+     * wrapper expansion binds its parameters through pool temps and keeps a reused reference word held for the whole
+     * expansion (run 346: the second sum's adds on a fresh word, t0); inside a single expansion every reference --
+     * all six vertex pointers -- shares one pool word, one LR in v0 like the target, and `move v0,zero` lands after
+     * the sums (98.685 -> 99.004 with the second sum's first read through me(this) and normal-read depths 7 / 4). */
+    void sums(V3 &a, int f1, V3 &b, int f2, SV &s) {
+        s.set(verts[me(this)->faces[f1].vi[0]]); s += verts[faces[f1].vi[1]]; s += verts[faces[f1].vi[2]]; a.set(s);
+        s.set(verts[me(this)->faces[f2].vi[0]]); s += verts[faces[f2].vi[1]]; s += verts[faces[f2].vi[2]]; b.set(s);
+    }
     int side(int f1, int f2);
 };
 int Col::side(int f1, int f2) {
     V3 a, b, mid, d1, d2;
     SV s;
-    sum(a, f1, s);
-    sum2(b, f2, s, (int)&s); /* d0: dead parameter (never read) */
+    sums(a, f1, b, f2, s);
     mid.set(a);
     mid += b;
     mid /= 2.0f;
@@ -57,11 +56,12 @@ int Col::side(int f1, int f2) {
     d2 -= b;
     /* agent-g run 296: both normal reads through four nested zero-code me() accessors (depth grid 0-6 x 0-6, 49):
      * the extra `or v0,zero,zero` ours emitted inside the second face sum is gone (98.088 -> 98.586, same length);
-     * then the second read also through gn() at depth 5 (random joint search + depth x getter grid, 169): -> 98.645 */
+     * then the second read also through gn() at depth 5 (random joint search + depth x getter grid, 169): -> 98.645;
+     * agent-c run 347: depths 7 / 4 with the single sums() expansion (random climb) */
     {
     volatile int pad4FD00; /* agent-c run 346: unused pad word, homed below the V3 temp (never read) */
-    f32 p1 = d1 * me(me(me(me(this))))->gn()[f1];
-    f32 p2 = d2 * me(me(me(me(me(this)))))->gn()[f2];
+    f32 p1 = d1 * me(me(me(me(me(me(me(this)))))))->gn()[f1];
+    f32 p2 = d2 * me(me(me(me(this))))->gn()[f2];
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
