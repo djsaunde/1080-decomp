@@ -93,7 +93,7 @@ extern "C" void game_uso_func_00003558(S *s0) {
         const Vec3 &v = stage;
         float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
         float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
-        float z = m->m[0][2] * v.x + m->m[2][2] * v.z + m->m[1][2] * v.y;
+        float z = m->m[0][2] * v.x + m->m[1][2] * v.y + m->m[2][2] * v.z; /* agent-c run 340: natural x / y / z term order on the promoted-vb body (target loads m12 before m22): 95.786 -> 97.063 */
         stage.x = x; stage.y = y; stage.z = z; vb.x += x; vb.y += y; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48); agent-c run 340: stage stores grouped first again (kit CDXXX 5 vm5 form) */
     }
     if (1) {} /* agent-c run 340: with the operator- split, uopt promotes vb.x / y / z over the block (kit CDXXX 5) */
