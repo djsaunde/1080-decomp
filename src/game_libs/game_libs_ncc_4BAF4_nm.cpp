@@ -18,7 +18,11 @@ int gl_func_00000000(...);
 }
 typedef struct { u32 w0, w1; } Gfx4B;
 typedef struct { Gfx4B *buf; int n; } GP4B;
-struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
+template <class T> inline T *me2(T *p) { return p; } /* agent-g run 335: zero-code accessor for the Ctx4B inlines below */
+/* agent-g run 335 (kit CDXXVII): nextF() / addF() for the three ctx-variable packets (first, else arm, final). The
+ * four me2() on the count side hold edg pool words before the `n++` temp, so these packets' count / gfx words are no
+ * longer the words the expression-receiver packets (0xEE, TEXRECT, B4, B3) use for their receiver: 99.303 -> 99.409 */
+struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addF(u32 hi, u32 lo) { Gfx4B *g = nextF(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
 #define GS4B (*(char **)((char *)&D_00000000 + 0x254))
@@ -52,8 +56,8 @@ extern "C" void gl_func_0004BAF4(char *self) {
     int y;
     int w;
     int h;
-    Gfx4B *g;
-    volatile int pad0; /* run 158: two more homes below h = the target's frame 0xF0 (every sp offset then matches) */
+    /* run 158: two more homes below h = the target's frame 0xF0 (every sp offset then matches); agent-g run 335: g and
+     * pad0 dropped -- the addF() parameter words of the ctx packets take their 8 bytes (frame still 0xF0) */
     char *d; /* agent-g run 233: the clip half-extent e, in pad1's home slot (frame kept); agent-g run 266: one local d for the half-extent AND the self->0xCC pointer */
 
     {
@@ -96,9 +100,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     } if (r) {}
     ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
     d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
-    g = PKT4B(ctx);
-    g->w0 = 0x06000000;
-    g->w1 = r;
+    ctx->addF(0x06000000, r);
     /* agent-c run 306 (kit CCCLXXXVIII ring lever): one doubled (value-preserving) iz mask here = one ugen ring slot, so
      * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
@@ -112,9 +114,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a
          * coloured LR, `lw v0,100(t2); lw a0,96(v0)`), not a ugen temp: 99.007 -> 99.137, same length */
         d = spr->dl64; r = gl_func_00000000(F4B(d, 0x60, int));
-        g = PKT4B(ctx);
-        g->w0 = 0x06000000;
-        g->w1 = r;
+        ctx->addF(0x06000000, r);
     }
     {
         Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *)))))); /* agent-g run 332: both TEXRECT packets' receivers at depth 3 (grid 0-4 x 0-4 x 0xEE 1-3): 99.196 -> 99.243 */
@@ -146,9 +146,9 @@ extern "C" void gl_func_0004BAF4(char *self) {
     {
         me(me(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
-    ctx = F4B(GS4B, 0x158, Ctx4B *);
+    ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 335: through two me() with the addF() packets */
     /* agent-g run 321: the self->0xD0 pointer through d with a BB split before the call (kit CDXII): the pointer is a
      * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length */
     d = F4B(self, 0xD0, char *); if (1) {} r = gl_func_00000000(F4B(d, 0x60, int));
-    ctx->add(0x06000000, r);
+    ctx->addF(0x06000000, r);
 }
