@@ -116,7 +116,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         g->w1 = r;
     }
     {
-        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
+        Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *)))))); /* agent-g run 332: both TEXRECT packets' receivers at depth 3 (grid 0-4 x 0-4 x 0xEE 1-3): 99.196 -> 99.243 */
         _g->w0 = (SHL4B(0xE4, 24, 8) |
                   SHL4B(MAX((s16)((x + (int)(w * sx)) << 2), 0), 12, 12) |
                   SHL4B(((((s16)((y + (int)(h * sy) - 1) << 2)) > 0 ? (d = (char *)(int)((s16)((y + (int)(h * sy) - 1) << 2))) : (d = (char *)0)), (int)d), 0, 12)); /* agent-c run 288 (fork C): this MAX as `E <= 0 ? 0 : E` -- the zero is no longer set before the branch, 97.54 -> 97.88. agent-c run 310 (kit CCCXCIV one-variable reading): the target's v0 holds d (the 0xCC pointer) AND this MAX result AND the w1 yl MAX result -- both clamps assigned into d in each arm (int <-> pointer casts), plain `E > 0` order again: 98.617 -> 98.960, same length */
@@ -125,7 +125,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
                   SHL4B(((((s16)(y << 2)) > 0 ? (d = (char *)(int)((s16)(y << 2))) : (d = (char *)0)), (int)d), 0, 12)); /* agent-c run 287: this line's `if (1) {}` and the one after the block dropped (stale: instruction stream identical, 97.54) */
     }
     {
-        Gfx4B *_g = (Gfx4B *)(PKT4B(F4B(GS4B, 0x158, Ctx4B *)));
+        Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))));
         _g->w0 = SHL4B(0xB4, 24, 8);
         _g->w1 = (SHL4B((0 -
                    (((s16)(x << 2) < 0) ?
