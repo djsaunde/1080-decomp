@@ -75,7 +75,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         sx = F4B(self, 0xB0, f32);
         sy = F4B(self, 0xB4, f32);
     } if (self) {}
-    spr =F4B(self, 0x84, Spr4B **)[F4B(self, 0xC0, s16)];
+    spr = F4B(self, 0x84, Spr4B **)[F4B(self, 0xC0, s16)];
     pos.x -= (f32)(spr->w >> 1) * sx;
     pos.y -= (f32)(spr->h >> 1) * sy;
     pos.x += F4B(self, 0xB8, f32);
