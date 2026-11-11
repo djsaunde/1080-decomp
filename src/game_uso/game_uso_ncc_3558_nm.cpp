@@ -38,7 +38,7 @@ template <class T> inline T *me(T *p) { return p; } /* agent-c run 253: zero-cod
 struct Vec3 {
     float x, y, z;
     void operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; } /* agent-g run 245: x, y, z source order (uopt emits the stores z, y, x like the target now): 91.56 -> 91.58 */
-    Vec3 operator-(const Vec3 &v) const { Vec3 r; float a = x - v.x; float b = y - v.y; float c = z - v.z; r.x = a; r.y = b; r.z = c; return r; }
+    Vec3 operator-(const Vec3 &v) const { Vec3 r; float a = x - v.x; float b = y - v.y; float c = z - v.z; r.x = a; r.y = b; r.z = c; if (1) {} return r; } /* agent-c run 340: BB split before the return copy -- the promoted vb (kit CDXXX 5) is written back before the r -> return-temp chain like the target: 93.853 -> 95.786 (with the `if (1) {}` before `e = vb - va` and the stage stores grouped) */
     void operator+=(const Vec3 &v) {  x += v.x;
  y += v.y;
  z += v.z;  } /* agent-c run 288 (fork B): x, y, z (the target's tail `e += w` adds) together with the k2 operand swap below: 93.68 -> 93.85 */
@@ -94,8 +94,9 @@ extern "C" void game_uso_func_00003558(S *s0) {
         float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
         float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
         float z = m->m[0][2] * v.x + m->m[2][2] * v.z + m->m[1][2] * v.y;
-        stage.x = x; vb.x += x; stage.y = y; vb.y += y; stage.z = z; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48) */
+        stage.x = x; stage.y = y; stage.z = z; vb.x += x; vb.y += y; vb.z += z; /* agent-c run 248: adds interleaved in the block (93.47 -> 93.48); agent-c run 340: stage stores grouped first again (kit CDXXX 5 vm5 form) */
     }
+    if (1) {} /* agent-c run 340: with the operator- split, uopt promotes vb.x / y / z over the block (kit CDXXX 5) */
     e = vb - va;
     s0->v3C = e;
     mag = game_uso_func_070238(e.len2x());
