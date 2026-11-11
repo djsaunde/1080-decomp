@@ -90,8 +90,8 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
          * the d subtraction outside num: frame 240 -> 232 (target), 98.94 -> 99.00 */
         /* agent-g run 343 (kit CDXXXII term-order lever, kit CDV / CDVI num form): d subtracted INSIDE num (`sub.s f2`
          * = num's own LR, then neg / div: every FP register of the target), with a code-free `if (1) {}` before the
-         * remap test (BB split: the remap block's shape and length back to the target's) and dx / dy carried in b /
-         * pp below (no s16 homes: frame 240 -> 232 = target): 99.211 -> 99.247 */
+         * remap test (BB split: the remap block's shape and length back to the target's) and dx / dy carried in
+         * self_al / pp below (no s16 homes: frame 240 -> 232 = target): 99.211 -> 99.319 */
         num = a->x * n->x + a->y * n->y + a->z * n->z - self->tris[i].d; t = -num / dn;
         p.x = a->x + d.x * t; /* agent-c run 235 (lever-sweep bbsplit, 94.90 -> 95.00) */
         p.y = a->y + d.y * t;
@@ -121,13 +121,14 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             v0 = vt[fv[1]]; /* agent-c run 273: a code-free 0.0f use inside the inner loop (qa set before the loop, the test after the dx line) raises
                              * the hoisted 0.0f constant's priority over the n->x / n->y / n->z loads: f14 like the target (95.52 -> 95.72) */
             v1 = vt[f->vi[*nx]]; nx++; /* run 194: no `*nx++` copy (the target steps nx in place; loop block aligns up to colours) */
-            /* agent-g run 343 (kit CDVI carriers): dx in b (dead after d = b - a at the top), dy in pp (dead after the
-             * qa / qb / sg reads above), both re-written here before every read: value-preserving s16 truncation */
-            b = (V3B9 *)(int)(s16)(s32)(qa - v0[ia]); /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
+            /* agent-g run 343 (kit CDVI carriers): dx in self_al (block local, dead after the grp test / ib fold), dy in
+             * pp (dead after the qa / qb / sg reads above), both re-written here before every read: value-preserving s16
+             * truncation; dx in b first (99.247: b's top LR then shared the loop colour t0, target v0) -> self_al 99.319 */
+            self_al = (ObjB9 *)(int)(s16)(s32)(qa - v0[ia]); /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
             pp = (f32 *)(int)(s16)(s32)(qb - v0[ib]);
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib];
-            if (((f32)ex * (f32)(int)pp - (f32)ey * (f32)(int)b) * sg > 0.0f) {
+            if (((f32)ex * (f32)(int)pp - (f32)ey * (f32)(int)self_al) * sg > 0.0f) {
                 ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)); if (qa != 0.0f) {} /* agent-g run 327: the + num fold dropped (num no longer spans
                                                                      * the inner loop) and a code-free 0.0f test here (raises the hoisted 0.0f over n->x / n->y / n->z):
                                                                      * 0.0f f14 / n->z f20 like the target, 99.122 -> 99.211 (grid r8, 156); agent-c run 286: the run-285 nz use dropped with nz; + num (set before the loop on every path; zero-use --keep-float, 99.01 -> 99.07); agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
