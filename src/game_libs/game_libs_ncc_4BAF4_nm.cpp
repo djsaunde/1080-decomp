@@ -146,13 +146,15 @@ extern "C" void gl_func_0004BAF4(char *self) {
     /* agent-g run 296: the RDPHALF_2 append's receiver through five nested zero-code me() accessors and the final
      * append's through two (receiver-depth grid 0-7 over the three appends, 200 + local 176): the RDPHALF_2 / final
      * appends' dl / count colours move toward the target's (97.879 -> 98.009, same length); agent-g run 332: the final
-     * append at depth 0 and the 0xEE append at depth 2 on the else-arm-d base */
+     * append at depth 0 and the 0xEE append at depth 2 on the else-arm-d base; agent-g run 336: this one at depth 2 */
     {
-        me(me(me(me(me(F4B(GS4B, 0x158, Ctx4B *))))))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
+        me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
     ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 335: through two me() with the addF() packets */
     /* agent-g run 321: the self->0xD0 pointer through d with a BB split before the call (kit CDXII): the pointer is a
-     * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length */
-    d = F4B(self, 0xD0, char *); if (1) {} r = gl_func_00000000(F4B(d, 0x60, int));
+     * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length; agent-g run 336: the BB split
+     * dropped together with the B3 receiver at me() depth 2 (random mutation round on the put4B base, both needed):
+     * 99.444 -> 99.480 */
+    d = F4B(self, 0xD0, char *); r = gl_func_00000000(F4B(d, 0x60, int));
     ctx->addF(0x06000000, r);
 }
