@@ -8924,36 +8924,16 @@ void func_0000E9A4(Quad4 *dst) {
     *dst = buf;
 }
 
-/* func_0000E9FC: 12-insn 1-call wrapper. 2-diff NM cap (NOT matched — the top
- * comment previously claimed "matched via two levers", but the second was an
- * INSN_PATCH, REMOVED 2026-05-23 as match-faking). One genuine lever DOES apply:
- *  - `extern char D_func_00000008_data;` (DATA-decl alias of func_00000008)
- *    enables splat-fold on `lui at, %hi(func_00000008); sw t6, 0x20(at)`.
- *    Function-decl alias would force a separate %hi+%lo pair (14 insns).
- *    Recipe: docs/IDO_CODEGEN.md feedback-ido-extern-char-vs-extern-fn-folds-lo-offset.
- * Residual 2 diffs are the prologue `sw ra,0x14(sp)` ↔ `lui a0,%hi(D)`
- * scheduling swap: IDO -O2 emits sw-then-lui, target has lui-then-sw. Pure
- * instruction-scheduling cap, unreachable from C (the INSN_PATCH that used to
- * bridge it is banned). Identical cap on sibling func_00006204 in the same .o
- * (77.78%); both honest NM, default INCLUDE_ASM exact. */
-extern char D_func_0000E9FC_arg1;
-extern char D_func_0000E9FC_arg2;
-extern char D_func_00000008_data;
-#ifdef NON_MATCHING
-/* 3→2 diffs: store offset is 0x20 (the prior comment claiming a 0x20->0x28
- * "correction" was BACKWARDS — the target stores at func_00000008+0x20
- * (`sw t6,32(at)`); 0x28 was a regression that added a 3rd diff). Residual 2
- * diffs are a prologue lui-$4 / sw-$31 SCHEDULING swap — target hoists the
- * call-arg lui before the ra-save; IDO ugen with our C emits ra-save first.
- * Tried local-arg variant; no change. Prologue instruction-scheduling cap. */
+/* func_0000E9FC: EXACT via an IDO 7.1 NCC (C++) donor,
+ * src/bootup_uso/bootup_uso_ncc_E9FC.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder (agent-c run 349). It is the edg static initializer (__sti__)
+ * for a global object of a class whose inline ctor calls the out-of-line base
+ * ctor and then stores the vtable address into the vptr at +0x28 (the ROM
+ * word is `sw t6, 0x28(at)` with the object at 0); same end-of-TU line
+ * mechanism as func_00006204 (`lui a0` above `sw ra`). */
 void func_0000E9FC(void) {
-    func_00000000(&D_func_0000E9FC_arg1);
-    /* pin D_func_00000008_data = 0x8: + 0x18 = the target's absolute 0x20 (run 192 decode scan: + 0x20 double-counted the pin, linked 0x28) */
-    *(int*)(&D_func_00000008_data + 0x18) = (int)&D_func_0000E9FC_arg2;
+    volatile int r = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E9FC);
-#endif
 
 extern char D_00008D70;
 extern char D_00008D7C;

@@ -199,8 +199,13 @@ $(BOOTUP_6204_DONOR): src/bootup_uso/bootup_uso_ncc_6204.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=func_00006204 --redefine-sym __ct__8Bu6204ObFv=func_00000000 $@
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006204=$(BOOTUP_6204_DONOR)
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR)
+BOOTUP_E9FC_DONOR := build/src/bootup_uso/bootup_uso_ncc_E9FC.cpp.o
+$(BOOTUP_E9FC_DONOR): src/bootup_uso/bootup_uso_ncc_E9FC.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=func_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006204=$(BOOTUP_6204_DONOR) func_0000E9FC=$(BOOTUP_E9FC_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR) $(BOOTUP_E9FC_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
 BOOTUP_4948_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o

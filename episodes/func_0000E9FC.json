@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000E9FC",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-11-12T15:45:51.160938+00:00",
+  "end_time": "2026-11-12T15:45:51.160953+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-12T15:45:51.160949+00:00",
+      "assistant_text": "Exact via NCC donor: the edg static initializer (__sti__) of a global object of class Dv : B, whose inline ctor calls the out-of-line B::B() then stores &vtbl into the vptr at +0x28 (B holds 10 words). Same end-of-TU line mechanism as func_00006204 puts the argument lui above sw ra. __sti__<timestamp> renamed to func_0000E9FC via nm lookup; base ctor -> func_00000000, vtbl -> D_func_0000E9FC_arg2, object keeps C linkage as D_func_0000E9FC_arg1.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 12,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_0000E9FC (0x30 / 12 words): the static\n * initializer (edg `__sti__<stamp>`) NCC generates for a namespace-scope\n * object of a class Dv whose inline default constructor calls the out-of-line\n * base constructor B::B() and then stores Dv's vtable address into the vptr.\n * B holds 0x28 bytes of data, so the vptr (declared by Dv's first virtual)\n * sits at +0x28: `sw t6, 0x28(at)` with the object at 0.\n *\n * Same mechanism as func_00006204 (see bootup_uso_ncc_6204.cpp): the __sti__\n * is emitted at the end of the translation unit and its prologue carries the\n * last source line, while the constructor call carries the earlier object\n * definition line, which is why `lui a0` is scheduled above `sw ra`.\n *\n * Symbols renamed after compile (names only, no bytes change):\n * __sti__<timestamp> -> func_0000E9FC, __ct__9BuE9FCBasFv -> func_00000000,\n * __vtbl__8BuE9FCOb -> D_func_0000E9FC_arg2. The object keeps C linkage under\n * its pinned name D_func_0000E9FC_arg1. */\nstruct BuE9FCBas {\n    BuE9FCBas();\n    int w[10];\n};\n\nstruct BuE9FCOb : BuE9FCBas {\n    BuE9FCOb() {}\n    virtual void v();\n};\n\nextern \"C\" {\nBuE9FCOb D_func_0000E9FC_arg1;\n}\n\n/* end of the translation unit: the __sti__ prologue takes this later line */\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_E9FC.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000E9FC.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "ROM byte-identical (cmp tenshoe.z64 baserom.z64); 12/12 words; objdiff 100; donor spliced via REPLACE_FUNC_BODY."
+  }
+}
