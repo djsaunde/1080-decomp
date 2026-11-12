@@ -8,7 +8,8 @@
  * (`vt->e[k].fn(vt->e[k].off + self)`) are plain C++ virtual calls on a class whose vptr is at +0x28 (entry k =
  * virtual function k: same code as the explicit form). 99.0 (cfe) -> 99.0035. agent-h run 364 (kit CDLI):
  * the 4F4 test re-reads the field after the store (as1 forwards it: the target's `or t3,t2,zero`) and its bit
- * test is one signed shift (`sll t5; bgezl t5`), 99.0035 -> 99.2981 (2312 B: the head's extra word is left).
+ * test is one signed shift (`sll t5; bgezl t5`), 99.0035 -> 99.2981 (2312 B: the head's extra word is left);
+ * the final bit-19 test as one signed shift too (`sll t3; bgezl t3`), -> 99.3328.
  * LEFT: the head `beqzl at; lw t3,0x500(s0)` (target: `beqz at` with the table-index `sll` in the delay slot,
  * although the default block starts with the same `lw t3,0x500(s0)`), t6/t7 ring swaps, a v0/v1 swap on the
  * unk4DC switch value and the float-literal %lo offsets (RoData layout, scored as relocations). */
@@ -305,7 +306,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
         ((VO76 *)self)->m37();
         break;
     }
-    if ((((u32)self->unk4F0 << 12) >> 31)
+    if (((s32)((u32)self->unk4F0 << 12) < 0)
         && ((func_00000000((char *)&D_00000000, 0x300) != 0) || (func_00000000((char *)&D_00000000, 0x40000) != 0))) {
         ((VO76 *)self)->m27();
     }
