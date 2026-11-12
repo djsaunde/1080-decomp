@@ -28,7 +28,9 @@
  *     `s->phase++; switch (s->phase &= 3)`, a net gain in this basin, 91.182 -> 91.288 (2824 of 2836 B);
  *   - agent-h run 363: kept-identity K3 (`p = p`, kit CDXLVIII: an extra pool word without a block split) on
  *     dir's `a` operand and the return's `s` receiver (both needed), 91.288 -> 91.358, then on the else-arm
- *     dot's kDC receiver (`K3(s)->kDC`; a sweep over every s / a / b access), 91.358 -> 91.714.
+ *     dot's kDC receiver (`K3(s)->kDC`; a sweep over every s / a / b access), 91.358 -> 91.714; then K1
+ *     (`if (0) { p = 0; }`: the dead block splits uopt blocks) on the receivers of the two flag-arm `+=`
+ *     and the else-arm wpos view (greedy K1 / K3 climb), 91.714 -> 92.254.
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here (a0 only at the d2 site, where &w->pos holds v1); pool-slot offsets. */
@@ -60,6 +62,7 @@ extern "C" {
 void game_uso_func_071028(Vec3 *v);
 }
 template <class T> inline T *K3(T *p) { p = p; return p; } /* kept identity: zero code */
+template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* kept identity with a dead block */
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(XZ(b->pos) - K3(a)->pos);
@@ -71,15 +74,15 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         s->p90 = (const Vec3 &)XZ(a->pos);
         s->p84 = s->p90;
         float dot = lenf + (s->w->speed * s->kDC) / 2;
-        s->p84 += dir * dot;
+        K1(s)->p84 += dir * dot;
         dot = lenf - (s->w->speed * s->kDC) / 2;
-        s->p90 += dir * dot;
+        K1(s)->p90 += dir * dot;
         s->phase = 0;
     } else {
         Vec3 pad1, pad2, pad3; /* unused (no code) */
         XZ e(XZ(b->pos) - a->pos);
         const Vec3 &f = s->p84 - s->p90;
-        const Vec3 &wpos = s->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
+        const Vec3 &wpos = K1(s)->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
         XZ g = XZ(wpos) - s->p90;
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
