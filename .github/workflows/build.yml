@@ -41,6 +41,12 @@ jobs:
             | tar xz -C tools/ido-static-recomp/build/5.3/out
           chmod +x tools/ido-static-recomp/build/5.3/out/*
 
+      - name: Fetch MIPSpro 7.2.1 C++ front end (per-function *_mp72_*.cpp donors)
+        run: |
+          # qemu-irix links libglib-2.0 (preinstalled on the runner) and libpcre.so.3
+          sudo apt-get install -y libpcre3
+          bash tools/fetch-mipspro721.sh
+
       - name: Build C objects (no baserom required)
         run: make RUN_CC_CHECK=0 -j$(nproc) objects
 
