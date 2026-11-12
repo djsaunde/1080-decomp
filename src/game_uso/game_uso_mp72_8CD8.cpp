@@ -21,7 +21,9 @@
  *     (with `XZ(s->w->pos)` written directly uopt moves s into s0 and the body loses 28 words), h a const
  *     reference and the return's w->pos through a view (random structural sampling + climb), -> 90.755;
  *   - d2 as the const-ref-bound difference of the same w->pos temporary form, lenf with dir first in both
- *     products, the return written directly (two-change neighbourhood sampling), -> 90.798.
+ *     products, the return written directly (two-change neighbourhood sampling), -> 90.798;
+ *   - the flag-arm w->pos temporary written directly (no view; in this basin s stays in a1), -> 91.182
+ *     (flag-arm guard homes 504 / 360 / 480 / 340 vs the target's 504 / 356 / 480 / 332).
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here; the target's double phase store (`sw t6` = phase + 1, then `sw t8` = & 3:
@@ -59,8 +61,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         if (1) {}
         game_uso_func_071028(&dir);
         if (1) {}
-        const Vec3 &wpos = s->w->pos; /* zero-code view (see g below) */
-        const Vec3 &d2 = XZ(wpos) - a->pos;
+        const Vec3 &d2 = XZ(s->w->pos) - a->pos;
         float lenf = dir.x * d2.x + dir.z * d2.z;
         s->p90 = (const Vec3 &)XZ(a->pos);
         s->p84 = s->p90;
