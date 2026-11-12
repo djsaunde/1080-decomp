@@ -36,7 +36,11 @@ struct DL {
     void addIK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
     void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; }
 };
-inline void addG(DL *d, unsigned hi, unsigned lo) { if (0) { hi = lo = 0; } Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; } /* run 173: the first packet as a free inline, DL first */
+template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* agent-g run 359: kept-parameter identity */
+/* run 173: the first packet as a free inline, DL first. agent-g run 359: the count through a kept-parameter DL
+ * (`K1(d)->head->count++`) with only hi kept puts the old count on the target's s0 word and the head on v1
+ * (one pool word between the count and head temps), 99.725 -> 99.773 */
+inline void addG(DL *d, unsigned hi, unsigned lo) { if (0) { hi = 0; } Gfx *g = &d->head->buf[K1(d)->head->count++]; g->w0 = hi; g->w1 = lo; }
 template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
 struct Elem { char pad[0x34]; int m34; char pad38[0x64 - 0x38]; DL *m64; };
 struct AIter;
