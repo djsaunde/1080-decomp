@@ -783,10 +783,12 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     GwE68 *head;
     s32 j, n;
     MgrE68 *m;
+    MgrE68 *m2; /* agent-c run 353 (kit CDXLIII): phase 3's own MGR variable (the target's phase-2 m is v0, phase-3 m s1: two LRs) */
     VtxE68 *vp;
     s32 _n;
-    int padq[3]; /* agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target) */
+    int padq[2]; /* agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
 
+    if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
         *(void **)(self + 0x28) = &D_00000000;
@@ -849,11 +851,11 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                      * pre-scaled) instead of recomputing (vidx) * 2 / (vidx + 3) * 2: two fewer coloured items in
                      * the packet BBs, so gen_outparcode's per-BB store temps fit the spilltemps pool and the frame
                      * bottom loses its two emit-time words -- the spills sit at the target's 76 / 80 / 84 */
-                    E68_W(arr[k++] = E68_NEXT(m), E68_SHL(0xBE, 24, 8) | E68_SHL(vs, 0, 16), E68_SHL(ve, 0, 16));
+                    E68_W(arr[k++] = E68_NEXTB(m), E68_SHL(0xBE, 24, 8) | E68_SHL(vs, 0, 16), E68_SHL(ve, 0, 16));
                     /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
                      * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
                     E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0); if (1) {}
-                    E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2);
+                    E68_TRI1(E68_NEXTB(m), vidx, vidx + 1, vidx + 2);
                     /* agent-g run 254: an empty test of m between the two TRI1 packets (lever sweep over every statement slot) lines
                      * the body up word-for-word up to registers at the target's 3036 B (97.80 -> 98.05; with the if (1) {} above) */
                     if (m) {}
@@ -869,23 +871,25 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                                              * the run-291 uls fold dropped (byte-identical) */
             }
         }
-        m = E68_MGR;
-        head = E68_NEXT(m);
+        /* agent-c run 353: phase 3 through m2 (explicit-increment appends, head on the int view; random
+         * climb on the two-variable body, 97.80 -> 98.709 with the padq[2] / &self changes above) */
+        m2 = E68_MGR;
+        head = E68_NEXTBI(m2);
         E68_VTX(head, func_00000000(&D_e68_vtx), 4, 0);
-        E68_W(E68_NEXT(m), 0xBE000000, 6);
-        E68_W(E68_NEXT(m), 0xE7000000, 0); if (1) {} /* run 182 (lever-sweep bbsplit); agent-c run 288: the run-210 folded h use dropped (inert, byte-identical) */
-        E68_W(E68_NEXT(m), 0xBA001402, 0);
-        E68_W(E68_NEXT(m), 0xBB000001, 0x80008000);
-        E68_W(E68_NEXT(m), 0xB6000000, 0x33205); if (1) {} /* run 182 (lever-sweep bbsplit) */
-        E68_W(E68_NEXT(m), 0xB900031D, 0x0C084000);
-        E68_W(E68_NEXT(m), 0xFC357E6A, 0x11FCF67B);
-        E68_W(E68_NEXT(m), 0xBA000E02, 0x8000);
-        E68_W(E68_NEXT(m), 0xFD100000, tlut);
-        E68_W(E68_NEXT(m), 0xE8000000, 0);
-        E68_W(E68_NEXT(m), 0xF5000100, 0x07000000);
-        E68_W(E68_NEXT(m), 0xE6000000, 0);
-        E68_W(E68_NEXT(m), 0xF0000000, 0x073FC000); if (1) {}
-        E68_W(E68_NEXTB(m), 0xE7000000, 0);
+        E68_W(E68_NEXTB(m2), 0xBE000000, 6);
+        E68_W(E68_NEXTB(m2), 0xE7000000, 0); if (1) {} /* run 182 (lever-sweep bbsplit); agent-c run 288: the run-210 folded h use dropped (inert, byte-identical) */
+        E68_W(E68_NEXTB(m2), 0xBA001402, 0);
+        E68_W(E68_NEXTB(m2), 0xBB000001, 0x80008000);
+        E68_W(E68_NEXTB(m2), 0xB6000000, 0x33205); if (1) {} /* run 182 (lever-sweep bbsplit) */
+        E68_W(E68_NEXTB(m2), 0xB900031D, 0x0C084000);
+        E68_W(E68_NEXTB(m2), 0xFC357E6A, 0x11FCF67B);
+        E68_W(E68_NEXTB(m2), 0xBA000E02, 0x8000); if (m2) {}
+        E68_W(E68_NEXTB(m2), 0xFD100000, tlut);
+        E68_W(E68_NEXTB(m2), 0xE8000000, 0);
+        E68_W(E68_NEXTB(m2), 0xF5000100, 0x07000000);
+        E68_W(E68_NEXTB(m2), 0xE6000000, 0);
+        E68_W(E68_NEXTB(m2), 0xF0000000, 0x073FC000); if (1) {}
+        E68_W(E68_NEXTB(m2), 0xE7000000, 0);
         vp = buf;
         n = import_8001FFA0[0] / 32;
         /* agent-c run 233: the row pointer is &vp[i * (n * 4)] (uopt strength-reduces it: the target's
@@ -893,15 +897,15 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
          * address the target holds in s8 -- 94.59 -> 95.10 standalone; spelled (int)&h[1] the +4 folds
          * into the lui/addiu pair (sym+4) like the target -- 95.17 -> 95.31 */
         for (i = 0; i < *(s32 *)(int)&import_8001FFA0_h[1] / 64; i++) {
-            E68_VTX(E68_NEXT(m), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
+            E68_VTX(E68_NEXTB(m2), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXTBI(m), 0x06, dl, 0, 0); }
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXTBI(m2), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
-        E68_END(E68_NEXT(m));
+        E68_END(E68_NEXTB(m2));
         *(GwE68 **)(self + 0x38) = head;
     }
     return self;
