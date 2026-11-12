@@ -67,6 +67,10 @@ struct AIter : IBase {
                                                                     * was, agent-c run 272: `idx = idx + 1` (not ++idx): the loop's
                                                                     * new-index temp s0 and the &it reload s3 like the target, 99.66 -> 99.68 */
     Elem *cur() { return (*a)[idx]; }
+    /* agent-g run 366: the first and last element reads through a zero-code me(this) inside the accessor -- one more edg
+     * pool temp ahead of operator[]'s `this`, so the Arr * lands in the old-count slot (s3) and the element in the cc
+     * slot (s2) like the target, 99.854 -> 99.935 */
+    Elem *curM() { return (*me(this)->a)[idx]; }
     Elem *&ref() { return (*a)[idx]; }
 };
 inline void addGN(DL *d, unsigned hi, unsigned lo) { Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; }
@@ -110,12 +114,13 @@ Obj::Obj(void *a1) : Base(a1) {
          * nine it. sites, 163): 99.676 -> 99.693.
          * agent-g run 366: with appends 2 / 5 on set0 the pool slots shift, so the receivers were re-drawn: plain
          * `it.` on the first two, kept identities (K3) on the last two `cur()`s -- all six appends and the frame
-         * exact, the loop-bottom ?: temp back in a0: 99.822 -> 99.854 */
-        it.cur()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
+         * exact, the loop-bottom ?: temp back in a0: 99.822 -> 99.854; then the first / last reads through curM()
+         * (99.935; left: the two ref() addresses in s3, target s0 = the appends' head slot) */
+        it.curM()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
         gl_func_00000000(it.cur()->m64, &it.ref()->m34);
         gl_func_00000000(it.cur()->m64, &it.ref()->m34);
         gl_func_00000000(it.cur()->m64, K3(&it)->cur(), 0);
-        g1(K3(&it)->cur());
+        g1(it.curM());
     }
     d0 = (DL *)gl_func_00000000(0, S(0x2011C), 0xA, 0, 0, 0, 0);
     d0->add(0xBA001301, 0x80000);
