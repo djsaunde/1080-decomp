@@ -1392,7 +1392,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
                 *hiptr = (u32)(v - (s16)v) >> 16; if (1) {}
                 hiptr = 0;
             }
-            ((s16 *)p)[1] = (hival << 16) + lo + val;
+            ((s16 *)p)[1] = (hival << 16) + (u16)(lo & 0xFFFF) + val; /* agent-h run 361: same low half; the folded mask / cast burn two ugen ring temps (target tail t6 / t7), 95.66 -> 96.26 */
             break;
         case 4:
             *p += val;
