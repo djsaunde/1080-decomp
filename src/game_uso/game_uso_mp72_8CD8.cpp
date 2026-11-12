@@ -25,7 +25,10 @@
  *   - the flag-arm w->pos temporary written directly (no view; in this basin s stays in a1), -> 91.182
  *     (flag-arm guard homes 504 / 360 / 480 / 340 vs the target's 504 / 356 / 480 / 332);
  *   - agent-h run 361: the target's double phase store (`sw t6` = phase + 1, then `sw t8` = & 3) as
- *     `s->phase++; switch (s->phase &= 3)`, a net gain in this basin, 91.182 -> 91.288 (2824 of 2836 B).
+ *     `s->phase++; switch (s->phase &= 3)`, a net gain in this basin, 91.182 -> 91.288 (2824 of 2836 B);
+ *   - agent-h run 363: kept-identity K3 (`p = p`, kit CDXLVIII: an extra pool word without a block split) on
+ *     dir's `a` operand and the return's `s` receiver (both needed), 91.288 -> 91.358, then on the else-arm
+ *     dot's kDC receiver (`K3(s)->kDC`; a sweep over every s / a / b access), 91.358 -> 91.714.
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here (a0 only at the d2 site, where &w->pos holds v1); pool-slot offsets. */
@@ -56,9 +59,10 @@ struct Self {
 extern "C" {
 void game_uso_func_071028(Vec3 *v);
 }
+template <class T> inline T *K3(T *p) { p = p; return p; } /* kept identity: zero code */
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
-        XZ dir(XZ(b->pos) - a->pos);
+        XZ dir(XZ(b->pos) - K3(a)->pos);
         if (1) {}
         game_uso_func_071028(&dir);
         if (1) {}
@@ -83,7 +87,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ(a->pos);
             const Vec3 &h = s->p90 - a->pos;
-            float dot = h.x * e.x + e.z * h.z + s->w->speed * s->kDC;
+            float dot = h.x * e.x + e.z * h.z + s->w->speed * K3(s)->kDC;
             s->p84 += e * dot;
             side *= s->kE0 * (250.0f * b->width); /* the target muls 250 * width first, then kE0 */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
@@ -101,5 +105,5 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             s->p84 += side;
         }
     }
-    return s->p84 - s->w->pos;
+    return K3(s)->p84 - s->w->pos;
 }
