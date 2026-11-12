@@ -1631,6 +1631,15 @@ build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(
 KERNEL000_1594_DONOR := build/src/kernel/kernel_000_1594.c.o
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001594=$(KERNEL000_1594_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1594_DONOR)
+# 1ADC = USO relocation applier; EXACT MIPSpro 7.2.1 donor (native 4-entry type table; agent-h run 363),
+# built by tools/ncc721.sh like the other *_mp72_* donors. Its .rodata reloc is renamed func_80001ADC_rodata
+# by the splice and pinned to the ROM table jtbl_8000A63C (donor .rodata +0) in undefined_syms_auto.txt.
+build/src/kernel/kernel_mp72_%.cpp.o: src/kernel/kernel_mp72_%.cpp $(TOOLS)/ncc721.sh
+	@mkdir -p $(dir $@)
+	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
+KERNEL000_1ADC_DONOR := build/src/kernel/kernel_mp72_1ADC.cpp.o
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001ADC=$(KERNEL000_1ADC_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1ADC_DONOR)
 # func_80005C50 = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292
 # non-reloc-identical; renames map the callees to kernel addresses; the
 # switch-jumptable .rodata section reloc is renamed to func_80005C50_rodata

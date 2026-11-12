@@ -1,0 +1,33 @@
+{
+  "function_name": "func_80001ADC",
+  "project": "1080-agent-h",
+  "model": "claude-manual",
+  "start_time": "2026-11-12T20:23:14.956567+00:00",
+  "end_time": "2026-11-12T20:23:14.956583+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-12T20:23:14.956579+00:00",
+      "assistant_text": "Exact via a MIPSpro 7.2.1 C++ donor (native 4-entry table). The four head statements inside the flags test's then-arm keep their source lines (after an empty then-arm uopt drops them), so as1's line tie-break issues the val load after addiu as in the target; i = i after the R_26 store gives that arm's loop tail a later line (sw before the end-pointer sll, info reload in the delay slot); (u16)(lo & 0xFFFF) burns two ugen ring temps.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 134,
+  "initial_m2c_source": null,
+  "final_source": "extern \"C\" s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {\n    s32 info; UsoRelSym_1ADC *sym;\n    UsoRelSym_1ADC *symtab;\n    s32 type, val, lo;\n    s16 *hiptr;\n    s32 v;\n    s32 i;\n    s32 hival;\n    u32 *p;\n\n    symtab = *(UsoRelSym_1ADC **)(obj + 0x3C);\n    if (0) { info = 0; sym = 0; }\n    if (base == 0 || rel == 0) {\n        return 0;\n    }\n    for (i = 0; i < n; i++) {\n        if (rel[i].info & 8) {\n            continue;\n        }\n        if ((&symtab[rel[i].info >> 4])->flags & 8) {\n            type = rel[i].info & 7;\n            p = (u32 *)(base + rel[i].offset);\n            val = (&symtab[rel[i].info >> 4])->value;\n            rel[i].orig = *p;\n        } else { continue; }\n        switch (type) {\n        case 1:\n            *p = ((((u32)val >> 2) & 0x3FFFFFF) + (*p & 0x3FFFFFF)) | (*p & 0xFC000000);\n            i = i;\n            break;\n        case 3:\n            hiptr = (s16 *)p + 1;\n            hival = ((s16 *)p)[1];\n            break;\n        case 2:\n            lo = ((s16 *)p)[1];\n            /* faithful uninitialised read (MATCHING_WORKFLOW extension 2026-11-12): hiptr / hival are unset on a\n             * LO16-before-HI16 path; the target reads both homes before any write (lw t4,0x28(sp) at 0x80001B30,\n             * lw t2,0x34(sp) at 0x80001B34; stores only at the loop exit 0x80001CCC / 0x80001CD0) */\n            if (hiptr) {\n                v = (hival << 16) + (s16)lo + val;\n                *hiptr = (u32)(v - (s16)v) >> 16;\n                hiptr = 0;\n            }\n            ((s16 *)p)[1] = (hival << 16) + (u16)(lo & 0xFFFF) + val;\n            break;\n        case 4:\n            *p = *p + val;\n            break;\n        default:\n            D_80012C44(D_8000A36C, (void *)type);\n            return -2;\n        }\n        rel[i].info = rel[i].info | 8;\n    }\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/kernel/kernel_mp72_1ADC.cpp",
+    "asm_path": "asm/nonmatchings/kernel/func_80001ADC.s",
+    "segment": "kernel",
+    "compiler": "MIPSpro 7.2.1 edgcpfe (EDG 2.29, Mar 1998) + IDO 7.1 uopt/ugen/as1 (tools/ncc721.sh)",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32 (NCC driver flags, front end swapped)",
+    "verification": "ROM byte-identical; verify-blocks 6/6; objdiff 100 (536 B); donor spliced via REPLACE_FUNC_BODY on both trees; func_80001ADC_rodata pinned to jtbl_8000A63C."
+  }
+}
