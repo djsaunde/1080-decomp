@@ -858,7 +858,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_TRI1(E68_NEXTB(m), vidx, vidx + 1, vidx + 2); if (timg) {} /* agent-c run 353: with the `if (uls) {}` below (climb, 98.709 -> 98.742; either alone byte-identical) */
                     /* agent-g run 254: an empty test of m between the two TRI1 packets (lever sweep over every statement slot) lines
                      * the body up word-for-word up to registers at the target's 3036 B (97.80 -> 98.05; with the if (1) {} above) */
-                    if (m) {} if (uls) {}
+                    /* agent-c run 353: the run-254 `if (m) {}` and the `if (uls) {}` here dropped once the phase-3 loop counts through uls (98.748 -> 98.781) */
                     E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
                     E68_END(E68_NEXTB(m));
                     uls += 64;
