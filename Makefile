@@ -190,6 +190,17 @@ $(BOOTUP_CA0_DONOR): src/bootup_uso/bootup_uso_ncc_CA0.cpp
 	$(OBJCOPY) --redefine-sym __ct__1DFiN21=func_00000CA0 --redefine-sym __ct__1BFPc=func_00000000_ca0_base --redefine-sym __vtbl__1D=bu_ca0_desc $@
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000CA0=$(BOOTUP_CA0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CA0_DONOR)
+# 6204 / E9FC = edg static initializers (__sti__) for two global objects: the __sti__ is emitted at the
+# end of the TU (prologue = last line) and the ctor call carries the earlier definition line, hence
+# `lui a0` above `sw ra` (agent-c run 349). NCC donors; the __sti__ name embeds a compile timestamp, so
+# it is looked up with nm before the rename (names only; no bytes change).
+BOOTUP_6204_DONOR := build/src/bootup_uso/bootup_uso_ncc_6204.cpp.o
+$(BOOTUP_6204_DONOR): src/bootup_uso/bootup_uso_ncc_6204.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=func_00006204 --redefine-sym __ct__8Bu6204ObFv=func_00000000 $@
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006204=$(BOOTUP_6204_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
 BOOTUP_4948_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o

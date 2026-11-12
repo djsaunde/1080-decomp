@@ -3770,22 +3770,17 @@ void func_00006194(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* 77.78% NM (7/9 words): target "lui a0; sw ra; jal", C "sw ra; lui a0;
- * jal". No matching C found; this is NOT proof of an unreachable cap.
- * IDO 7.1 -Wab,-R traces the same-line probe: sw ra and lui have equal
- * aftercycles/latency (2/1); the newly ready sw ra is visited first.
- * An unused int argument reverses that tie through its home-store
- * dependency, but adds a non-target instruction. Prototype, pointer,
- * control-flow, neighboring-function and IDO 5.3 probes did not match.
- * See docs/IDO_CODEGEN.md#as1-ready-list-wrapper-6204 in the agent repo.
- * The old 2-word INSN_PATCH was removed as match-faking; do not restore. */
-#ifdef NON_MATCHING
+/* func_00006204: EXACT via an IDO 7.1 NCC (C++) donor,
+ * src/bootup_uso/bootup_uso_ncc_6204.cpp, REPLACE_FUNC_BODY-spliced over this
+ * placeholder (agent-c run 349). It is not a hand-written function but the
+ * edg static initializer (__sti__) for a global object with an out-of-line
+ * constructor: the __sti__ prologue carries the translation unit's LAST line
+ * and the ctor call the object definition's earlier line, so `lui a0` is
+ * scheduled above `sw ra` (no C function can give the call an earlier line
+ * than its own `{`). */
 void func_00006204(void) {
-    func_00000000(&D_00000000);
+    volatile int r = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00006204);
-#endif
 
 void func_00006228(char *a0) {
     func_0000502C((int*)(a0 + 0x3C));

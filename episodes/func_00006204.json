@@ -1,0 +1,33 @@
+{
+  "function_name": "func_00006204",
+  "project": "1080-agent-c",
+  "model": "claude-manual",
+  "start_time": "2026-11-12T15:45:45.345954+00:00",
+  "end_time": "2026-11-12T15:45:45.345981+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-12T15:45:45.345975+00:00",
+      "assistant_text": "Exact via NCC donor: the function is the edg static initializer (__sti__) of a global object with an out-of-line default ctor. The __sti__ is emitted at end of TU so its prologue carries the last source line while the ctor call carries the earlier object-definition line; as1 therefore schedules the argument lui above sw ra (impossible for any C function, whose call cannot precede its own { line). Needs >=1 source line after the definition. __sti__<timestamp> renamed to func_00006204 via nm lookup; ctor renamed func_00000000.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 9,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for func_00006204 (0x24 / 9 words): NOT a hand-written\n * function -- it is the static initializer (edg `__sti__<stamp>`) that NCC\n * generates for a namespace-scope object whose class has an out-of-line\n * default constructor. Body = `T::T(&obj)`.\n *\n * Why every C spelling failed (agent-c run 349, toolchain forensics): the\n * target schedules `lui a0` ABOVE `sw ra`. In a normal function the prologue\n * and the first statement share the `{` line, so as1's tie-break keeps\n * `sw ra` first (kit CDXVIII). edg emits the __sti__ at the END of the\n * translation unit (its prologue carries the last source line) while the\n * constructor call carries the OBJECT DEFINITION's line, which is earlier, so\n * the argument `lui` outranks `sw ra`. Requires at least one source line after\n * the definition (a definition on the file's last line gives `sw ra` first).\n *\n * Symbols renamed after compile (names only, no bytes change):\n * __sti__<timestamp> -> func_00006204, __ct__8Bu6204ObFv -> func_00000000.\n * The object keeps C linkage under its pinned name D_00000000. */\nstruct Bu6204Ob {\n    Bu6204Ob();\n    int w;\n};\n\nextern \"C\" {\nBu6204Ob D_00000000;\n}\n\n/* end of the translation unit: the __sti__ prologue takes this later line */\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_ncc_6204.cpp",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_00006204.s",
+    "segment": "bootup_uso",
+    "compiler": "IDO 7.1 NCC",
+    "compiler_flags": "-G 0 -non_shared -Wab,-r4300_mul -O2 -mips2 -32",
+    "verification": "ROM byte-identical (cmp tenshoe.z64 baserom.z64); 9/9 words; objdiff 100; donor spliced via REPLACE_FUNC_BODY."
+  }
+}
