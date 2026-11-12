@@ -558,7 +558,36 @@ void game_uso_func_00000B14(void *a0) {
     game_uso_func_00000000(a0);
 }
 
-#ifdef NON_MATCHING
+/* game_uso_func_00000B3C: spline path-follow update (706 words). EXACT 2026-11-12 (agent-h run 355)
+ * through the MIPSpro 7.2.1 C++ front end donor src/game_uso/game_uso_mp72_B3C.cpp (tools/ncc721.sh =
+ * period edgcpfe EDG 2.29 + the IDO 7.1 back end), REPLACE_FUNC_BODY-spliced in both trees. Its
+ * `switch (s->0x26C)` has 4 dense labels lowered as a 4-entry jump table, which only EDG 2.29's switch
+ * rule produces (docs/TOOLING_DECOMP.md "Toolchain forensics III"). The placeholder below only
+ * re-emits the function's 16 RoData words (+0x50..+0x90: the 4-word table, then the mrk / mk1..mk9 /
+ * mkl / mkr strings) at its place in the layout, as the INCLUDE_ASM .s did with .late_rodata; IDO merges
+ * equal literals, so the stand-ins are distinct, and none has a zero low half (those load by lui).
+ * Its text and relocs are dropped by the splice. The cfe body it came from (99.9986: the same logic,
+ * plus a phantom `case 4:` that cfe needs for a table) is kept under #if 0 for reference. */
+void game_uso_func_00000B3C(char *arg0) {
+    *(volatile float *)arg0 = 1.1f;
+    *(volatile float *)arg0 = 1.2f;
+    *(volatile float *)arg0 = 1.3f;
+    *(volatile float *)arg0 = 1.4f;
+    *(volatile float *)arg0 = 1.6f;
+    *(volatile float *)arg0 = 1.7f;
+    *(volatile float *)arg0 = 1.8f;
+    *(volatile float *)arg0 = 1.9f;
+    *(volatile float *)arg0 = 2.1f;
+    *(volatile float *)arg0 = 2.2f;
+    *(volatile float *)arg0 = 2.3f;
+    *(volatile float *)arg0 = 2.4f;
+    *(volatile float *)arg0 = 2.6f;
+    *(volatile float *)arg0 = 2.7f;
+    *(volatile float *)arg0 = 2.8f;
+    *(volatile float *)arg0 = 2.9f;
+}
+
+#if 0
 /* Spline path-follow update (706w). Full reconstruction 2026-07-30 from the
  * expected .o (0xB3C..0x1640), recipe-style (fresh-Vec3 staging + per-hop copy
  * chains + int-cast joins). Decode fixes vs the prior m2c graft:
@@ -859,9 +888,7 @@ void game_uso_func_00000B3C(char *arg0) {
         *(s32 *)(s + 0x25C) = ncur;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00000B3C);
-#endif
+#endif /* cfe reference body of game_uso_func_00000B3C */
 
 void game_uso_func_00001644(int *a0) {
     int i;

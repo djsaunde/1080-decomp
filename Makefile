@@ -3131,6 +3131,22 @@ GAMEUSO_BB8C_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_BB8C_DONOR)
 
+# MIPSpro 7.2.1 C++ donors (src/<seg>/<seg>_mp72_<OFF>.cpp): the period MIPSpro 7.2.1 o32 edgcpfe (EDG 2.29,
+# Mar 1998) + the IDO 7.1 back end with the NCC flags, via tools/ncc721.sh (install: tools/fetch-mipspro721.sh).
+# Only for functions whose target needs EDG 2.29's switch rule (a 4-label jump table); never for existing
+# NCC donors (87 / 214 of them change under it). See docs/MATCHING_WORKFLOW.md "MIPSpro 7.2.1 donor recipe".
+# These pattern rules beat build/src/%.cpp.o (shorter stem).
+NCC721 := $(TOOLS)/ncc721.sh
+build/src/game_uso/game_uso_mp72_%.cpp.o: src/game_uso/game_uso_mp72_%.cpp $(NCC721)
+	@mkdir -p $(dir $@)
+	$(NCC721) $< $@ $(OPT_FLAGS)
+# B3C: spline path-follow update (706/706; agent-h run 355): its 4-label `switch (s->0x26C)` is a native
+# 4-entry table under EDG 2.29. Table at RoData +0x50 = in-place %lo (layout-only 0000 / 940 copies in the
+# donor); game_uso_func_00000B3C_rodata pinned to 0. Host body = a placeholder re-emitting the 16 RoData words.
+GAMEUSO_B3C_DONOR := build/src/game_uso/game_uso_mp72_B3C.cpp.o
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00000B3C=$(GAMEUSO_B3C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B3C_DONOR)
+
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol
 # injection = the POST_COMPILE from the donor block above.
