@@ -23,11 +23,12 @@
  *   - d2 as the const-ref-bound difference of the same w->pos temporary form, lenf with dir first in both
  *     products, the return written directly (two-change neighbourhood sampling), -> 90.798;
  *   - the flag-arm w->pos temporary written directly (no view; in this basin s stays in a1), -> 91.182
- *     (flag-arm guard homes 504 / 360 / 480 / 340 vs the target's 504 / 356 / 480 / 332).
+ *     (flag-arm guard homes 504 / 360 / 480 / 340 vs the target's 504 / 356 / 480 / 332);
+ *   - agent-h run 361: the target's double phase store (`sw t6` = phase + 1, then `sw t8` = & 3) as
+ *     `s->phase++; switch (s->phase &= 3)`, a net gain in this basin, 91.182 -> 91.288 (2824 of 2836 B).
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
- * b->pos sites) and v1 here; the target's double phase store (`sw t6` = phase + 1, then `sw t8` = & 3:
- * `s->phase++; switch (s->phase &= 3)` reproduces it, 90.40 in this basin); pool-slot offsets. */
+ * b->pos sites) and v1 here (a0 only at the d2 site, where &w->pos holds v1); pool-slot offsets. */
 extern "C" void *game_uso_func_055750(unsigned);
 struct Vec3 {
     void *operator new(unsigned n) { return game_uso_func_055750(n); }
@@ -85,7 +86,8 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             float dot = h.x * e.x + e.z * h.z + s->w->speed * s->kDC;
             s->p84 += e * dot;
             side *= s->kE0 * (250.0f * b->width); /* the target muls 250 * width first, then kE0 */
-            switch (s->phase = (s->phase + 1) & 3) {
+            s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
+            switch (s->phase &= 3) {
             case 0:
                 side *= 0.0f;
                 break;

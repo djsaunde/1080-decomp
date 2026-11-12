@@ -1386,6 +1386,7 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             break;
         case 2:
             lo = ((s16 *)p)[1];
+            /* faithful uninitialised read (MATCHING_WORKFLOW extension 2026-11-12): hiptr / hival are unset on a LO16-before-HI16 path; the target reads both homes before any write (lw t4,0x28(sp) at 0x80001B30, lw t2,0x34(sp) at 0x80001B34; stores only at the loop exit 0x80001CCC / 0x80001CD0) */
             if (hiptr != 0) {
                 v = (hival << 16) + (s16)lo + val; if (1) {} /* run 186 (lever-sweep bbsplit) */
                 *hiptr = (u32)(v - (s16)v) >> 16; if (1) {}
