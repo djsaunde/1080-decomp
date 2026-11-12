@@ -15,8 +15,11 @@
  *     (the target multiplies e first in both products), 90.55 -> 90.567;
  *   - four unused Vec3 in the flag arm (frame 528 = target, no code) and two `if (1) {}` block splits
  *     after dir's construction and the normalise call, -> 90.602;
- *   - the flag-arm b->pos also a temporary inside dir's initialiser, with one unused Vec3 there and three
- *     in the else arm: bp / last copy hop / dir at the target's 504 / 516 / 432, -> 90.621.
+ *   - the flag-arm b->pos also a temporary inside dir's initialiser, with three unused Vec3 in the else
+ *     arm: bp / last copy hop / dir at the target's 504 / 516 / 432, -> 90.621;
+ *   - d2 a named XZ, the else-arm w->pos a temporary inside g's initialiser read through a const-ref view
+ *     (with `XZ(s->w->pos)` written directly uopt moves s into s0 and the body loses 28 words), h a const
+ *     reference and the return's w->pos through a view (random structural sampling + climb), -> 90.755.
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here; the target's double phase store (`sw t6` = phase + 1, then `sw t8` = & 3:
@@ -50,13 +53,12 @@ void game_uso_func_071028(Vec3 *v);
 }
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
-        Vec3 pad0; /* unused (no code): with pad1..3 frame 528 and the target's flag-arm homes */
         XZ dir(XZ(b->pos) - a->pos);
         if (1) {}
         game_uso_func_071028(&dir);
         if (1) {}
         XZ wp(s->w->pos);
-        const Vec3 &d2 = wp - a->pos;
+        XZ d2 = wp - a->pos;
         float lenf = dir.x * d2.x + d2.z * dir.z;
         s->p90 = (const Vec3 &)XZ(a->pos);
         s->p84 = s->p90;
@@ -69,14 +71,14 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         Vec3 pad1, pad2, pad3; /* unused (no code) */
         XZ e(XZ(b->pos) - a->pos);
         const Vec3 &f = s->p84 - s->p90;
-        XZ wp(s->w->pos);
-        const Vec3 &g = wp - s->p90;
+        const Vec3 &wpos = s->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
+        XZ g = XZ(wpos) - s->p90;
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
             game_uso_func_071028(&e);
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ(a->pos);
-            XZ h = s->p90 - a->pos;
+            const Vec3 &h = s->p90 - a->pos;
             float dot = h.x * e.x + e.z * h.z + s->w->speed * s->kDC;
             s->p84 += e * dot;
             side *= s->kE0 * (250.0f * b->width); /* the target muls 250 * width first, then kE0 */
@@ -94,5 +96,6 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             s->p84 += side;
         }
     }
-    return s->p84 - s->w->pos;
+    const Vec3 &wq = s->w->pos; /* zero-code view */
+    return s->p84 - wq;
 }
