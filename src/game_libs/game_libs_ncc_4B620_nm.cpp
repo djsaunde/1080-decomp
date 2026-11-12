@@ -24,6 +24,7 @@ extern char D_00000000[];
 }
 #define S(o) (D_00000000 + (o))
 inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+template <class T> inline T *K3(T *p) { p = p; return p; } /* agent-g run 362: value-preserving identity (pool word, no block split) */
 struct Gfx { unsigned w0, w1; };
 struct DLHead { Gfx *buf; int count; int inc() { return count++; } };
 
@@ -32,7 +33,10 @@ struct DL {
     DLHead *head;
     void addE(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; } /* run 173: no keep on the 4th packet (per-site grid) */
     void addO(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; }
-    void addOK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
+    /* agent-g run 362: the count through a self-assigning identity (`K3(this)->head->count++`, only hi kept): one pool
+     * word between count and head WITHOUT K1's `if (0)` block split, so g stays in append 1's block (its uopt live range
+     * interferes with append 1's v0 / v1 / a0 and takes a1) and the old count takes s0 like the target, 99.773 -> 99.822 */
+    void addOK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[K3(this)->head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = 0; } }
     void addIK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
     void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; }
 };
