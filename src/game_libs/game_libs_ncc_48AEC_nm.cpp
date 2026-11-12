@@ -127,7 +127,7 @@ void Obj::draw() {
             AIter it = arr.iter();
             while (it.next()) {
                 if (it.cur()->ctx6C != 0) {
-                    GS->ctx->dlcallQ(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
+                    GS->ctx->dlcallQ(&it.ref()->ctx6C->dl->buf[it.ref()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821 */
                 }
             }
         }
