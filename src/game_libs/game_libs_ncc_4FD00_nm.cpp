@@ -6,8 +6,8 @@
  * d = mid - a / mid - b through a by-value `V3::set(V3)` (the target's lw/sw copy into the sp+20 temp followed by
  * member stores), both dots named before the test, `return 1` / `return 0`.
  * cfe body 80.29 -> 95.51, length 972 -> 1004 = target.
- * Residual (agent-c run 347): the 2.0f divisor in $f2 (target $f0) and the two normal pointers (a3-base t1 / v1,
- * target t0-base v1 / v1); every other instruction and sp offset = target.
+ * Residual (agent-c run 348): the two normal pointers (v1-base a3 / t1, target t0-base v1 / v1: ours computes the
+ * second pointer before the first dot); every other instruction and sp offset = target.
  * Still NON_MATCHING: build/non_matching/ only. */
 typedef float f32; typedef short s16; typedef unsigned short u16;
 template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
@@ -58,10 +58,14 @@ int Col::side(int f1, int f2) {
      * the extra `or v0,zero,zero` ours emitted inside the second face sum is gone (98.088 -> 98.586, same length);
      * then the second read also through gn() at depth 5 (random joint search + depth x getter grid, 169): -> 98.645;
      * agent-c run 347: depths 7 / 4 with the single sums() expansion (random climb) */
+    /* agent-c run 348: BOTH normal references bound before either dot (depths 7 / 8, pad dropped): the second
+     * pointer's binding moves uopt's 20-load block boundary in front of p1, so the 2.0f divisor takes $f0 like the
+     * target (99.004 -> 99.024, same length, frame 136) */
     {
-    volatile int pad4FD00; /* agent-c run 346: unused pad word, homed below the V3 temp (never read) */
-    f32 p1 = d1 * me(me(me(me(me(me(me(this)))))))->gn()[f1];
-    f32 p2 = d2 * me(me(me(me(this))))->gn()[f2];
+    V3 &n1 = me(me(me(me(me(me(me(this)))))))->gn()[f1];
+    V3 &n2 = me(me(me(me(me(me(me(me(this))))))))->gn()[f2];
+    f32 p1 = d1 * n1;
+    f32 p2 = d2 * n2;
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
