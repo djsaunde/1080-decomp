@@ -5,7 +5,7 @@
  * The target dispatches the 4-label `switch (type)` (1..4) through a native 4-entry jump table, which only
  * EDG 2.29's switch rule produces (cfe needs a phantom `case 5:` and gets sltiu 5). The donor's .rodata
  * reloc is renamed func_80001ADC_rodata by the splice and pinned to the ROM table jtbl_8000A63C (table at
- * donor .rodata +0). Levers (kits CDXLVII / CDXLVIII):
+ * donor .rodata +0). Levers (kits CDXLVII / CDXLIX):
  *   - the four head statements sit INSIDE the flags test's then-arm (`if (flags & 8) { ... } else { continue; }`):
  *     written after an empty then-arm they land in a join block that uopt folds into the test's fall-through
  *     with every statement LOC dropped, so the whole head carries the test's line and as1 breaks the
