@@ -3560,6 +3560,9 @@ extern f32 D_76F0_fadeA;
 extern f32 D_76F0_fadeB;
 extern f32 D_76F0_fadeC;
 
+/* agent-h run 355: the NON_MATCHING object takes this body through the MIPSpro 7.2.1 C++ front end
+ * (src/game_libs/game_libs_mp72_76F0.cpp, NM-only REPLACE_FUNC_BODY): the target's two 4-entry tables are
+ * native there, so the phantom `case 4:` labels go (99.0 -> 99.0035). This cfe body stays as the reference. */
 void gl_func_000076F0(GlObj76F0 *self) {
     s32 sp24;
     s32 sp20;
