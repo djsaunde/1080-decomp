@@ -25,7 +25,10 @@ extern char D_00000000[];
 #define S(o) (D_00000000 + (o))
 inline void *operator new(unsigned n) { return gl_func_00000000(n); }
 template <class T> inline T *K3(T *p) { p = p; return p; } /* agent-g run 362: value-preserving identity (pool word, no block split) */
-struct Gfx { unsigned w0, w1; };
+/* agent-g run 366: a zero-low-word setter (appends 2 and 5 both write lo = 0). Its `this` is an edg POOL temp, so
+ * the two appends that go through it share ONE live range (one colour, a1 like the target), which no named
+ * per-expansion `g` can do; with no second parameter the pool costs the frame nothing (`set(a, b)` moved the frame) */
+struct Gfx { unsigned w0, w1; void set0(unsigned a) { w0 = a; w1 = 0; } };
 struct DLHead { Gfx *buf; int count; int inc() { return count++; } };
 
 struct DL {
@@ -36,7 +39,8 @@ struct DL {
     /* agent-g run 362: the count through a self-assigning identity (`K3(this)->head->count++`, only hi kept): one pool
      * word between count and head WITHOUT K1's `if (0)` block split, so g stays in append 1's block (its uopt live range
      * interferes with append 1's v0 / v1 / a0 and takes a1) and the old count takes s0 like the target, 99.773 -> 99.822 */
-    void addOK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[K3(this)->head->count++]; g->w0 = hi; g->w1 = lo; if (0) { hi = 0; } }
+    void addOK(unsigned hi, unsigned lo) { head->buf[K3(this)->head->count++].set0(hi); if (0) { hi = 0; } } /* run 366: through set0 */
+    void adds(unsigned hi, unsigned lo) { head->buf[head->inc()].set0(hi); } /* agent-g run 366: append 5, shares set0's pool temp with append 2 */
     void addIK(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; if (0) { hi = lo = 0; } }
     void add(unsigned hi, unsigned lo) { Gfx *g = &head->buf[head->inc()]; g->w0 = hi; g->w1 = lo; }
 };
@@ -97,18 +101,21 @@ Obj::Obj(void *a1) : Base(a1) {
     cc->addOK(0xBA001402, 0);
     cc->add(0xB9000201, 4);
     cc->addE(0xBA000C02, 0x2000);
-    cc->add(0xBA001301, 0); if (1) {}
+    cc->adds(0xBA001301, 0); if (1) {}
     cc->add(0xBB000001, 0x80008000);
     gl_func_00000000(cc);
     AIter it = arr.iter();
     while (it.next()) {
         /* agent-g run 292: the first two element accesses through zero-code accessors (kit CCLXXXIV grid over the
-         * nine it. sites, 163): 99.676 -> 99.693 */
-        me(me(&it))->cur()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
-        gl_func_00000000(it.cur()->m64, &me(&it)->ref()->m34);
+         * nine it. sites, 163): 99.676 -> 99.693.
+         * agent-g run 366: with appends 2 / 5 on set0 the pool slots shift, so the receivers were re-drawn: plain
+         * `it.` on the first two, kept identities (K3) on the last two `cur()`s -- all six appends and the frame
+         * exact, the loop-bottom ?: temp back in a0: 99.822 -> 99.854 */
+        it.cur()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
         gl_func_00000000(it.cur()->m64, &it.ref()->m34);
-        gl_func_00000000(it.cur()->m64, it.cur(), 0);
-        g1(it.cur());
+        gl_func_00000000(it.cur()->m64, &it.ref()->m34);
+        gl_func_00000000(it.cur()->m64, K3(&it)->cur(), 0);
+        g1(K3(&it)->cur());
     }
     d0 = (DL *)gl_func_00000000(0, S(0x2011C), 0xA, 0, 0, 0, 0);
     d0->add(0xBA001301, 0x80000);
