@@ -39,17 +39,21 @@ struct Ctx {
     MtxHead *mh;
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void prim(u32 hi, u32 lo) { Gfx *g = next(); g->w1 = lo; g->w0 = hi; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
-    void dlcall(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    void prim(u32 hi, u32 lo) { Gfx *g = nextQ(); g->w0 = hi; g->w1 = lo; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
+    void dlcall(void *p) { DLHead *dd = dl; u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
-    Mtx *mtx() { int n = mh->count++; return &mh->buf[n]; } /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
+    Mtx *mtx() { return &mh->buf[mh->count++]; } /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
     /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
      * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
-    Gfx *nextQ() { DLHead *dd = dl; return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
+    Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
-    Mtx *mtxQ() { MtxHead *dd = mh; int n = mh->count++; return &mh->buf[n]; }
-    void pushQ(void *src, Mtx *&c) { func_00000000(src, c = mtxQ()); load(c); }
+    /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
+     * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
+     * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
+    void ld(Mtx *m) { if (0) { m = 0; } Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+    void ld2(Mtx *m) { Gfx *g = dl->buf + dl->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+    void cp(void *src, Mtx *c) { func_00000000(src, c); ld(c); }
 };
 /* agent-g run 352: kept-parameter wrapper (kit CDXXIX I2 form) on the loops' element reads: the two ctx6C tests and the
  * third loop's draw() receiver, 97.821 -> 97.869 */
@@ -90,8 +94,6 @@ void Obj::draw() {
      * 120-order grid with gctx first: mtx declared last, 97.715 -> 97.719 (frame still 0x170, target 0x160).
      * agent-c run 307 (full 720-order grid, 150 random): i / j / k and cmd ahead of gctx (mtx still last): cmd's home
      * at sp+348 / gctx sp+352 under the frame top, 97.719 -> 97.726, same length */
-    int i, j, k;
-    Mtx *cmd;
     Ctx *gctx;
     f32 (*A)[4];
     f32 (*B)[4];
@@ -107,30 +109,30 @@ void Obj::draw() {
     B = *(f32 (**)[4])(D_00000000 + 0xE4);
     A = (f32 (*)[4])((char *)&D_00000000_j + 0xA0);
     if (B != 0) {
-        for (i = 0; i < 4; i++) {
-            for (j = 0; j < 4; j++) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
-                for (k = 0; k < 4; k++) {
+                for (int k = 0; k < 4; k++) {
                     mtx[i][j] += A[i][k] * B[k][j];
                 }
             }
         }
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
-        func_00000000(mtx, mt); if (this) {} /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
+        func_00000000(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        me(me(gctx))->pushQ(mt, cmd);
+        { Mtx *c; c = me(me(gctx))->mtx(); gctx->cp(mt, c); }
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = gctx->mtx()); me(me(gctx))->load(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(gctx)->mtx()); me(me(gctx))->ld2(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
         if ((flags30 & 8) && n14 != 0) {
-            GS->ctx->setup(&g34, n14->m1e);
+            GS->ctx->setup(&g34, n14->m1e); if (1) {}
             AIter it = arr.iter();
             while (it.next()) {
                 if (I2(it.cur())->ctx6C != 0) {
-                    GS->ctx->dlcallQ(&it.ref()->ctx6C->dl->buf[it.ref()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821 */
+                    GS->ctx->dlcallQ(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
                 }
             }
         }
@@ -144,7 +146,7 @@ void Obj::draw() {
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi); if (this) {} /* agent-c run 276: code-free test after the fourth copy call (sweep), 97.447 -> 97.476 */
-        GS->ctx->prim(0xFA000000, 0xFFFF00FF);
+        me(GS->ctx)->prim(0xFA000000, 0xFFFF00FF);
         AIter it = arr.iter();
         while (it.next()) {
             if (I2(it.cur())->ctx6C != 0) {
