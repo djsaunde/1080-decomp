@@ -3146,6 +3146,13 @@ build/src/game_uso/game_uso_mp72_%.cpp.o: src/game_uso/game_uso_mp72_%.cpp $(NCC
 GAMEUSO_B3C_DONOR := build/src/game_uso/game_uso_mp72_B3C.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00000B3C=$(GAMEUSO_B3C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B3C_DONOR)
+build/src/titproc_uso/titproc_uso_mp72_%.cpp.o: src/titproc_uso/titproc_uso_mp72_%.cpp $(NCC721)
+	@mkdir -p $(dir $@)
+	$(NCC721) $< $@ $(OPT_FLAGS)
+# titproc 116C: NM-only MIPSpro 7.2.1 donor (native 4-entry table, no phantom case 4; 99.514 -> 99.586).
+TITPROC_116C_NM_DONOR := build/src/titproc_uso/titproc_uso_mp72_116C.cpp.o
+build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_0000116C=$(TITPROC_116C_NM_DONOR)
+build/non_matching/src/titproc_uso/titproc_uso.c.o: $(TITPROC_116C_NM_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol

@@ -689,7 +689,10 @@ void titproc_uso_func_0000101C(int *a0) {
  * Run 163 (98.96 -> 99.12): the 0x40100 gate's record index is read inline
  * (`v1 + *(int *)(v1 + 0x7C) * 40 + 0x90`, no `n` local: the target's index is the
  * ugen t2, not a uopt variable), and the case-3 counter is `* 30` as well. Const 40
- * now colours v1 (target v0) against the object web `v1` (v0, target v1). */
+ * now colours v1 (target v0) against the object web `v1` (v0, target v1).
+ * agent-h run 355: the NON_MATCHING object takes this body through the MIPSpro 7.2.1 C++ front end
+ * (src/titproc_uso/titproc_uso_mp72_116C.cpp, NM-only REPLACE_FUNC_BODY): the target's 4-entry table is
+ * native there, so the phantom `case 4:` goes (99.514 -> 99.586). This cfe body stays as the reference. */
 extern char import_00263D30;
 extern void gl_func_00000000_116c_v();
 void titproc_uso_func_0000116C(char *s0) {
