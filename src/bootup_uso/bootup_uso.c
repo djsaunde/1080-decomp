@@ -901,7 +901,9 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P(E68_NEXTBI(m2), 0x06, dl, 0, 0); }
+                /* agent-c run 353: the count in the dead phase-2 uls (written first) instead of _n -- the arr[] IV then
+                 * takes the target's a1 (98.742 -> 98.748; j scores the same) */
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((uls = E68_DL_I(m2)->count, E68_DL_I(m2)->count = uls + 1, &E68_DL_I(m2)->buf[uls]), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
