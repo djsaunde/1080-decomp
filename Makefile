@@ -5439,8 +5439,9 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_591C_DONOR := build/src/game_uso/game_uso_591C.c.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000591C=$(GAMEUSO_591C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_591C_DONOR)
-# 8CD8: NM-only NCC comparison donor (C++ value-class rewrite of the cfe NM body, agent-c run 199).
-GAMEUSO_8CD8_NM_DONOR := build/src/game_uso/game_uso_ncc_8CD8_nm.cpp.o
+# 8CD8: NM-only MIPSpro 7.2.1 donor (native 4-entry phase table; spellings rebuilt on EDG 2.29, agent-h run 357:
+# NCC 90.43 -> 90.60). Built by the game_uso_mp72_% pattern rule above.
+GAMEUSO_8CD8_NM_DONOR := build/src/game_uso/game_uso_mp72_8CD8.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00008CD8=$(GAMEUSO_8CD8_NM_DONOR)
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_8CD8_NM_DONOR)
 build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
