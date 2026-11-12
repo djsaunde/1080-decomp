@@ -51,6 +51,9 @@ struct Ctx {
     Mtx *mtxQ() { MtxHead *dd = mh; int n = mh->count++; return &mh->buf[n]; }
     void pushQ(void *src, Mtx *&c) { func_00000000(src, c = mtxQ()); load(c); }
 };
+/* agent-g run 352: kept-parameter wrapper (kit CDXXIX I2 form) on the loops' element reads: the two ctx6C tests and the
+ * third loop's draw() receiver, 97.821 -> 97.869 */
+template <class T> inline T I2(T v) { if (0) { v = 0; } return v; }
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
 struct Flags { int v; int test(int m) { if (0) { m = 0; } return (v & m) + 0 * (int)(v); } }; /* agent-c run 209: folded counted use of v (kit CXCIV lever b) */
@@ -126,7 +129,7 @@ void Obj::draw() {
             GS->ctx->setup(&g34, n14->m1e);
             AIter it = arr.iter();
             while (it.next()) {
-                if (it.cur()->ctx6C != 0) {
+                if (I2(it.cur())->ctx6C != 0) {
                     GS->ctx->dlcallQ(&it.ref()->ctx6C->dl->buf[it.ref()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821 */
                 }
             }
@@ -144,7 +147,7 @@ void Obj::draw() {
         GS->ctx->prim(0xFA000000, 0xFFFF00FF);
         AIter it = arr.iter();
         while (it.next()) {
-            if (it.cur()->ctx6C != 0) {
+            if (I2(it.cur())->ctx6C != 0) {
                 GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
             }
         }
@@ -154,7 +157,7 @@ void Obj::draw() {
         }
         AIter it = arr.iter();
         while (it.next()) {
-            it.cur()->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
+            I2(it.cur())->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
         }
     }
 }
