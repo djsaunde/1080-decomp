@@ -3158,10 +3158,12 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 build/src/titproc_uso/titproc_uso_mp72_%.cpp.o: src/titproc_uso/titproc_uso_mp72_%.cpp $(NCC721)
 	@mkdir -p $(dir $@)
 	$(NCC721) $< $@ $(OPT_FLAGS)
-# titproc 116C: NM-only MIPSpro 7.2.1 donor (native 4-entry table, no phantom case 4; 99.514 -> 99.586).
-TITPROC_116C_NM_DONOR := build/src/titproc_uso/titproc_uso_mp72_116C.cpp.o
-build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_0000116C=$(TITPROC_116C_NM_DONOR)
-build/non_matching/src/titproc_uso/titproc_uso.c.o: $(TITPROC_116C_NM_DONOR)
+# titproc 116C: EXACT MIPSpro 7.2.1 donor (native 4-entry table; agent-h run 364, kit CDLI), spliced over a
+# placeholder in both trees. Table at donor .rodata+0x30 (lay_5DC) = the in-place %lo;
+# titproc_uso_func_0000116C_rodata pinned to 0 in undefined_syms_auto.txt.
+TITPROC_116C_DONOR := build/src/titproc_uso/titproc_uso_mp72_116C.cpp.o
+build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_0000116C=$(TITPROC_116C_DONOR)
+build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: $(TITPROC_116C_DONOR)
 build/src/game_libs/game_libs_mp72_%.cpp.o: src/game_libs/game_libs_mp72_%.cpp $(NCC721)
 	@mkdir -p $(dir $@)
 	$(NCC721) $< $@ $(OPT_FLAGS)

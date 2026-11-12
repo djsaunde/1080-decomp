@@ -566,7 +566,18 @@ void titproc_uso_func_0000101C(int *a0) {
     }
 }
 
-#ifdef NON_MATCHING
+/* titproc_uso_func_0000116C: title-screen sequence state machine (290 words). EXACT 2026-11-12 (agent-h
+ * run 364) through the MIPSpro 7.2.1 C++ front end donor src/titproc_uso/titproc_uso_mp72_116C.cpp
+ * (tools/ncc721.sh), REPLACE_FUNC_BODY-spliced in both trees: its 4-label `switch (s0->0x40)` is a native
+ * 4-entry jump table only under EDG 2.29. The table's .rodata reloc is renamed
+ * titproc_uso_func_0000116C_rodata by the splice and pinned to 0 (in-place %lo 0x30, the donor's lay_5DC
+ * puts the table at .rodata+0x30). This placeholder's text and relocs are dropped by the splice (the
+ * INCLUDE_ASM .s carried no RoData). The cfe body (99.514, phantom `case 4:`) stays under #if 0. */
+void titproc_uso_func_0000116C(char *s0) {
+    *(volatile int *)s0 = 0;
+}
+
+#if 0
 /* Partial structural decode 2026-06-01. 4-case state machine (jr-table on
  * s0->0x40, written as an if-chain) advancing a title-screen sequence: each
  * state runs a timer, fires a virtual method on a sub-object, and transitions
@@ -867,8 +878,6 @@ fire:
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", titproc_uso_func_0000116C);
 #endif
 
 /* titproc_uso_func_000015F4 — alloc-or-passthrough constructor. The second

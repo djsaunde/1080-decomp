@@ -3599,6 +3599,7 @@ game_libs_func_00029CCC_rodata = 0x00000FF0;  /* switch(state) 9-entry jumptable
 timproc_uso_b5_func_00005FC0_rodata = 0x00000190;
 /* titproc_uso_func_000005DC 12-entry jumptable: titproc RoData +0x0 (target %lo(import_00263E00)); donor titproc_uso_5DC.c */
 titproc_uso_func_000005DC_rodata = 0x00000000;
+titproc_uso_func_0000116C_rodata = 0x00000000;  /* titproc_uso_func_0000116C MIPSpro 7.2.1 donor: its 4-entry switch table reloc (renamed by the splice); in-place %lo 0x30 */
 timproc_uso_b5_func_00001F14_rodata = 0x000000C8;
 timproc_uso_b5_func_00008AFC_rodata = 0x00000238;
 timproc_uso_b5_func_00002B74_rodata = 0x0000011C;

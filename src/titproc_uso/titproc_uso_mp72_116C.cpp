@@ -1,15 +1,15 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) NON_MATCHING donor for titproc_uso_func_0000116C (290 words),
- * compiled by tools/ncc721.sh and spliced into the non_matching object only (agent-h run 355). The ROM
- * build keeps INCLUDE_ASM.
- *
- * The target's `switch (s0->0x40)` has 4 labels lowered as a 4-entry jump table (sltiu 4), which only
- * EDG 2.29's switch rule produces; the cfe NM body in titproc_uso.c needs a phantom `case 4:` (sltiu 5).
- * This is that body (agent-g / agent-c runs 145..234) with the phantom label dropped and the vtable
- * this-adjust written `(*(short *)(vt + 0x58) + (int)v1)` (edg puts `ptr + short` pointer-first).
- * 99.514 (cfe) -> 99.586. lay_5DC only puts this function's table at .rodata+0x30 (the target's %lo:
- * 5DC's 12-word table is titproc RoData +0x0); it is not spliced.
- * LEFT (22 words, the cfe residual set): the constant 40 colours a1 (target v0) at its three sites, and
- * in case 3 the s0->0x64 object loads take v0 with `c` in v1 (target: v1 / v0). */
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for titproc_uso_func_0000116C (290 words), built by
+ * tools/ncc721.sh and spliced over a placeholder in both trees (agent-h runs 355 / 364). Its 4-label
+ * `switch (s0->0x40)` is a native 4-entry table only under EDG 2.29 (the cfe body needs a phantom case 4).
+ * lay_5DC only puts the table at .rodata+0x30 (5DC's 12-word table is RoData +0x0); it is not spliced.
+ * Run 364 (kit CDLI): the case-3 pointer is ONE variable `v1` for the then-arm, the else-arm's &D, the fade
+ * and the 0x40100 record; with `c = v1 + 0x3C` from it, uopt sinks c's addu into the then-arm, so the then
+ * block starts by READING v1 and as1 xbb can no longer hoist the else-arm's `la v1` into the if-head (it
+ * pulls the addu back instead: the target's `addiu v0,v1,60; slti; beqz; nop`). The `if (1) {}` splits in the fade / record
+ * spread v1's live range over more uopt blocks: its priority drops below `c`'s, so `c` and the constant 40
+ * take v0 and the pointer v1 as in the target. The record's code-free `if (*(char **)(s0 + 0x5C)) {}`
+ * tests are gone (they made a second record-pointer LR). Unused d3 kept from the earlier body.
+ */
 extern "C" {
 extern int gl_func_00000000(...);
 extern char D_00000000;
@@ -126,27 +126,40 @@ fire:
             gl_func_00000000_116c_v(s0, v, 0);
         }
         if (*(int *)(*(char **)(*(char **)(s0 + 0x50) + 0x44) + 0x34) != 0) {
-            c = (int *)(*(char **)(s0 + 0x64) + 0x3C);
-            if (*(int *)(*(char **)(s0 + 0x64) + 0x3C) < 255) {
+            v1 = *(char **)(s0 + 0x64);
+            c = (int *)(v1 + 0x3C);
+            if (*(int *)(v1 + 0x3C) < 255) {
                 *c = *c + 16;
-                if (*(int *)(*(char **)(s0 + 0x64) + 0x3C) >= 256) {
-                    *(int *)(*(char **)(s0 + 0x64) + 0x3C) = 720;
+                if (1) {}
+                v1 = *(char **)(s0 + 0x64);
+                if (*(int *)(v1 + 0x3C) >= 256) {
+                    *(int *)(v1 + 0x3C) = 720;
                 }
             } else {
-                d3 = (char *)&D_00000000;
-                vt6 = *(char **)(d3 + 0x28);
-                (*(void (**)(int))(vt6 + 0x64))((*(short *)(vt6 + 0x60) + (int)d3));
+                v1 = (char *)&D_00000000;
+                vt6 = *(char **)(v1 + 0x28);
+                (*(void (**)(int))(vt6 + 0x64))((*(short *)(vt6 + 0x60) + (int)v1));
             }
         } else {
             int av;
             v1 = *(char **)(s0 + 0x64);
+            if (1) {}
+            if (1) {}
             av = *(int *)(v1 + 0x3C);
+            if (1) {}
+            if (1) {}
+            if (1) {}
             c = (int *)(v1 + 0x3C);
             if (av > 0) {
                 *c = *c - 16;
                 v1 = *(char **)(s0 + 0x64);
+                if (1) {}
+                if (1) {}
                 av = *(int *)(v1 + 0x3C);
+                if (1) {}
+                if (1) {}
                 if (av < 0) {
+                    if (1) {}
                     *(int *)(v1 + 0x3C) = 0;
                     av = *(int *)(*(char **)(s0 + 0x64) + 0x3C);
                 }
@@ -168,12 +181,15 @@ fire:
             }
             if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
                 gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
-                gl_func_00000000_116c_v(5); if (*(char **)(s0 + 0x5C)) {}
+                gl_func_00000000_116c_v(5);
                 v1 = *(char **)(s0 + 0x5C);
+                if (1) {}
+                if (1) {}
                 if (*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90) != 0) {
                     *(char **)((char *)&import_00263D30 + 0xA8) = s0;
-                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C); if (*(char **)(s0 + 0x5C)) {}
+                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C);
                     v1 = *(char **)(s0 + 0x5C);
+                    if (1) {}
                     ((void (*)(void))(*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90)))();
                 }
             }
