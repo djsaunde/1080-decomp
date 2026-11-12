@@ -14,7 +14,9 @@
  *   - `+=` written with compound members, 90.51 -> 90.55; the else-arm second dot as e.x * g.x + e.z * g.z
  *     (the target multiplies e first in both products), 90.55 -> 90.567;
  *   - four unused Vec3 in the flag arm (frame 528 = target, no code) and two `if (1) {}` block splits
- *     after dir's construction and the normalise call, -> 90.602.
+ *     after dir's construction and the normalise call, -> 90.602;
+ *   - the flag-arm b->pos also a temporary inside dir's initialiser, with one unused Vec3 there and three
+ *     in the else arm: bp / last copy hop / dir at the target's 504 / 516 / 432, -> 90.621.
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here; the target's double phase store (`sw t6` = phase + 1, then `sw t8` = & 3:
@@ -48,9 +50,8 @@ void game_uso_func_071028(Vec3 *v);
 }
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
-        Vec3 pb0, pb1, pb2, pb3; /* unused: frame 528 = target (no code) */
-        XZ bp(b->pos);
-        XZ dir(bp - a->pos);
+        Vec3 pad0; /* unused (no code): with pad1..3 frame 528 and the target's flag-arm homes */
+        XZ dir(XZ(b->pos) - a->pos);
         if (1) {}
         game_uso_func_071028(&dir);
         if (1) {}
@@ -65,6 +66,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         s->p90 += dir * dot;
         s->phase = 0;
     } else {
+        Vec3 pad1, pad2, pad3; /* unused (no code) */
         XZ e(XZ(b->pos) - a->pos);
         const Vec3 &f = s->p84 - s->p90;
         XZ wp(s->w->pos);
