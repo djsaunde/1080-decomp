@@ -148,7 +148,7 @@ void Obj::draw() {
         AIter it = arr.iter();
         while (it.next()) {
             if (I2(it.cur())->ctx6C != 0) {
-                GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]);
+                GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
     } else {
