@@ -35,7 +35,8 @@
  *     block sits INSIDE the chain temp's span, between the Vec3 temporary and the copy into the pooled return
  *     slot), so that chain temp's adjsave drops below the address constants it competed with, 92.254 -> 94.353;
  *     then the second flag-arm `+=` receiver without K1, -> 94.426; KR1's pool words grew the frame to 544,
- *     so one else-arm pad Vec3 goes (frame 528 = target again), -> 94.509.
+ *     so one else-arm pad Vec3 goes (frame 528 = target again), -> 94.509; d2 and f bound through KR1 too
+ *     (their chain temps lowered the same way) with one pad Vec3 left for the frame, -> 94.561.
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here (a0 only at the d2 site, where &w->pos holds v1); pool-slot offsets. */
@@ -75,7 +76,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         if (1) {}
         game_uso_func_071028(&dir);
         if (1) {}
-        const Vec3 &d2 = XZ(s->w->pos) - a->pos;
+        const Vec3 &d2 = KR1(XZ(s->w->pos) - a->pos);
         float lenf = dir.x * d2.x + dir.z * d2.z;
         s->p90 = (const Vec3 &)XZ(a->pos);
         s->p84 = s->p90;
@@ -85,9 +86,9 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         s->p90 += dir * dot;
         s->phase = 0;
     } else {
-        Vec3 pad1, pad2; /* unused (no code); run 368: two, not three, since KR1's pool words (frame 528) */
+        Vec3 pad1; /* unused (no code); run 368: one, since the KR1 pool words (frame 528) */
         XZ e(XZ(b->pos) - a->pos);
-        const Vec3 &f = s->p84 - s->p90;
+        const Vec3 &f = KR1(s->p84 - s->p90);
         const Vec3 &wpos = K1(s)->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
         XZ g = XZ(wpos) - s->p90;
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
