@@ -38,8 +38,10 @@ struct Ctx {
     Gfx *nD() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
     /* agent-g run 375: nA()'s named post-increment count plus a code-free `if (n) {}` (a counted use: the count's adjsave
      * rises) for the 0xB6 packet, whose ctx / dl / n / slot now colour a2 / v0 / v1 / a1 like the target: 98.856 -> 98.933;
-     * a second test with 0xB7 on next() (no `+ 0`) and the gDma1p slot back on next(): 99.087 -> 99.126 */
-    Gfx *nE() { int n = dl->count++; if (n) {} if (n) {} return &dl->buf[n]; }
+     * a second test with 0xB7 on next() (no `+ 0`) and the gDma1p slot back on next(): 99.087 -> 99.126.
+     * agent-g run 377: that nE() (two tests) retired: after the rect-call folds below, the 0xB6 packet is on nC() and the
+     * 0xB9 packet on nF() (one test), 99.164 -> 99.383 -> 99.422 */
+    Gfx *nF() { int n = dl->count++; if (n) {} return &dl->buf[n]; }
 };
 struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx; };
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
@@ -96,8 +98,8 @@ extern "C" void game_libs_func_00042938(void) {
         gl_d_42938_pc = gl_d_42938_rec[gl_d_42938_idx].c;
     }
     gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
-    gImmp1(G.o->ctx->nE(), 0xB6, -1);
-    gSPSetOtherMode(G.o->ctx->nC(), 0xB9, 3, 29, 0x442478); /* agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
+    gImmp1(G.o->ctx->nC(), 0xB6, -1);
+    gSPSetOtherMode(G.o->ctx->nF(), 0xB9, 3, 29, 0x442478); /* agent-g run 377: on nF() (see nF()); agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
     func_00000000(G.o->ctx, *(int *)(G.o->p148 + 0xF0));
     gImmp1(G.o->ctx->next(), 0xB7, 1);
     gSPSetOtherMode(G.o->ctx->next(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087 */
@@ -113,7 +115,10 @@ extern "C" void game_libs_func_00042938(void) {
     G.m228 = 8;
     G.m224 = 8;
     G.m220 = (G.m21c = 0x32, 0x50);
-    { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x, y, w + x, y + h); }
+    /* agent-g run 377: two folded counted uses of DISTINCT globals on the x / y arguments (zero code; one alone flips to
+     * the 1548-byte basin): the call unit gains the occupants that push the gDma1p slot / the 8 constant to the target's
+     * t4 / t5 and h to t3 (99.126 -> 99.164 with `0 * (int)G.o->ctx` on x, then the B6 / B9 re-spell, then these two) */
+    { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gl_d_42938_ia), y + 0 * (gl_d_42938_sa), w + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;
