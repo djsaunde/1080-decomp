@@ -42,12 +42,20 @@ struct Ctx {
      * agent-g run 377: that nE() (two tests) retired: after the rect-call folds below, the 0xB6 packet is on nC() and the
      * 0xB9 packet on nF() (one test), 99.164 -> 99.383 -> 99.422 */
     Gfx *nF() { int n = dl->count++; if (n) {} return &dl->buf[n]; }
+    /* agent-g run 381: nF() with two code-free tests (two counted uses of the count word) for the 0xB7 packet */
+    Gfx *nE() { int n = dl->count++; if (n) {} if (n) {} return &dl->buf[n]; }
     /* agent-g run 379: the viewport slot through a named post-increment count (vA) taken from a zero-code `me()` view of
      * the ctx: c / vph colour a2 / t0 like the target (99.627 -> 99.666 -> 99.692) */
     Vp *vA() { int n = vph->count++; return &vph->buf[n]; }
     Ctx *me() { return this; }
 };
-struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx; };
+extern "C" void gl_func_00000000_void(...);
+/* agent-g run 381: the ctx call as a member `cf()` reached through a zero-code `me()` hop: edg puts the inner `this`
+ * (G.o) in its SECOND pool word, the 0xB9 count's word, so the count and the call's G.o are one uopt variable and
+ * share v1 in one block like the target */
+struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx;
+    Obj254 *me() { return this; }
+    void cf() { gl_func_00000000_void(ctx, *(int *)(p148 + 0xF0)); } };
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
 extern "C" {
 extern u32 gl_d_42938_idx;
@@ -108,9 +116,13 @@ extern "C" void game_libs_func_00042938(void) {
     }
     gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
     gImmp1(G.o->ctx->nC(), 0xB6, -1);
-    gSPSetOtherMode(G.o->ctx->nF(), 0xB9, 3, 29, 0x442478); /* agent-g run 377: on nF() (see nF()); then a folded two-term G.o use (zero code): the guard &idx / 80 take the target's t2 / t3, 99.563 -> 99.627 (agent-g run 379: replaced by the guard folds above, it took t0 from &rec); agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
-    gl_func_00000000_void(G.o->ctx, *(int *)(G.o->p148 + 0xF0)); /* agent-g run 377: void alias (the result is never read; no v0 def in the post-call unit): 99.422 -> 99.460 */
-    gImmp1(G.o->ctx->nF(), 0xB7, 1); /* agent-g run 377: 0xB7 on nF() and 0xBA on nC() as a pair after the void alias (either alone is worse): 99.460 -> 99.537 */
+    /* agent-g run 381: a code-free block cut before 0xB9, the 0xB9 packet on nA() (no test) in the call's block, the call
+     * as `G.o->me()->cf()` and 0xB7 on nE(): the 0xB9 dl / count / slot and the call's G.o take the target's v0 / v1 /
+     * a3 / v1 (99.884 -> 99.923) */
+    if (1) {}
+    gSPSetOtherMode(G.o->ctx->nA(), 0xB9, 3, 29, 0x442478); /* agent-g run 377: on nF() (see nF()); then a folded two-term G.o use (zero code): the guard &idx / 80 take the target's t2 / t3, 99.563 -> 99.627 (agent-g run 379: replaced by the guard folds above, it took t0 from &rec); agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
+    G.o->me()->cf(); /* gl_func_00000000_void(G.o->ctx, *(int *)(G.o->p148 + 0xF0)); agent-g run 377: void alias (the result is never read; no v0 def in the post-call unit): 99.422 -> 99.460 */
+    gImmp1(G.o->ctx->nE(), 0xB7, 1); /* agent-g run 377: 0xB7 on nF() and 0xBA on nC() as a pair after the void alias (either alone is worse): 99.460 -> 99.537 */
     gSPSetOtherMode(G.o->ctx->nC(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087 */
     {
         Ctx *c = G.o->ctx->me();
