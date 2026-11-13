@@ -42,6 +42,10 @@ struct Ctx {
      * agent-g run 377: that nE() (two tests) retired: after the rect-call folds below, the 0xB6 packet is on nC() and the
      * 0xB9 packet on nF() (one test), 99.164 -> 99.383 -> 99.422 */
     Gfx *nF() { int n = dl->count++; if (n) {} return &dl->buf[n]; }
+    /* agent-g run 379: the viewport slot through a named post-increment count (vA) taken from a zero-code `me()` view of
+     * the ctx: c / vph colour a2 / t0 like the target (99.627 -> 99.666 -> 99.692) */
+    Vp *vA() { int n = vph->count++; return &vph->buf[n]; }
+    Ctx *me() { return this; }
 };
 struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx; };
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
@@ -105,10 +109,10 @@ extern "C" void game_libs_func_00042938(void) {
     gImmp1(G.o->ctx->nF(), 0xB7, 1); /* agent-g run 377: 0xB7 on nF() and 0xBA on nC() as a pair after the void alias (either alone is worse): 99.460 -> 99.537 */
     gSPSetOtherMode(G.o->ctx->nC(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087 */
     {
-        Ctx *c = G.o->ctx;
-        Vp *v = c->vpnext();
+        Ctx *c = G.o->ctx->me();
+        Vp *v = c->me()->me()->vA(); /* agent-g run 379: two zero-code me() hops move vA()'s EDG pool temps to fresh slots (vph / count t0 / v0 like the target) with the gDma1p slot on nA(): 99.692 -> 99.769 */
         setvp(v, 0, 0, 320, 240);
-        { g = (Gfx *)(c->next()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
+        { g = (Gfx *)(c->nA()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
     /* agent-c run 307: the chained `G.m228 = G.m224 = 8` split into two statements (store-order grid with the unmasked
      * vtrans[0]): the after-call ring back in phase, 98.650 -> 98.838; then the 0x32 / 0x50 pair back in its run-157
