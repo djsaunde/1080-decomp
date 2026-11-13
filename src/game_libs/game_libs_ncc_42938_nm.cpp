@@ -118,8 +118,10 @@ extern "C" void game_libs_func_00042938(void) {
     G.m220 = (G.m21c = 0x32, 0x50);
     /* agent-g run 377: two folded counted uses of DISTINCT globals on the x / y arguments (zero code; one alone flips to
      * the 1548-byte basin): the call unit gains the occupants that push the gDma1p slot / the 8 constant to the target's
-     * t4 / t5 and h to t3 (99.126 -> 99.164 with `0 * (int)G.o->ctx` on x, then the B6 / B9 re-spell, then these two) */
-    { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gl_d_42938_ia), y + 0 * (gl_d_42938_sa), w + x, y + h); }
+     * t4 / t5 and h to t3 (99.126 -> 99.164 with `0 * (int)G.o->ctx` on x, then the B6 / B9 re-spell, then these two);
+     * then `+ 0 * (w + w)` (two more counted uses of w: it now colours before the x / y phantoms, t0 like the target):
+     * 99.537 -> 99.563 */
+    { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gl_d_42938_ia) + 0 * (w + w), y + 0 * (gl_d_42938_sa), w + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;
