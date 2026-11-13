@@ -102,8 +102,8 @@ extern "C" void game_libs_func_00042938(void) {
     gImmp1(G.o->ctx->nC(), 0xB6, -1);
     gSPSetOtherMode(G.o->ctx->nF(), 0xB9, 3, 29, 0x442478); /* agent-g run 377: on nF() (see nF()); agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
     gl_func_00000000_void(G.o->ctx, *(int *)(G.o->p148 + 0xF0)); /* agent-g run 377: void alias (the result is never read; no v0 def in the post-call unit): 99.422 -> 99.460 */
-    gImmp1(G.o->ctx->next(), 0xB7, 1);
-    gSPSetOtherMode(G.o->ctx->next(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087 */
+    gImmp1(G.o->ctx->nF(), 0xB7, 1); /* agent-g run 377: 0xB7 on nF() and 0xBA on nC() as a pair after the void alias (either alone is worse): 99.460 -> 99.537 */
+    gSPSetOtherMode(G.o->ctx->nC(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087 */
     {
         Ctx *c = G.o->ctx;
         Vp *v = c->vpnext();
