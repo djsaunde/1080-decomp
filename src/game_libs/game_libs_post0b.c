@@ -10871,7 +10871,11 @@ void game_libs_func_00042938(void) {
                       (((vc & 0xFFFF) + lo2) % 65535);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00042938);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_42938.cpp (agent-c run 160 lift,
+ * agent-g run 381 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+void game_libs_func_00042938(void) {
+}
 #endif
 
 // Vec3-float-to-signed-byte quantizer (leaf, raw-word USO, no relocs).

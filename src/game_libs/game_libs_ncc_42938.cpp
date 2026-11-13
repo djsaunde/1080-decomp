@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for game_libs_func_00042938 (0x614 / 389 words), agent-c run 160.
+/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_00042938 (0x614 / 389 words), agent-c run 160 lift, agent-g run 381
+ * exact (REPLACE_FUNC_BODY-spliced over a placeholder on both build paths).
  * A C++ frame-setup / text-overlay draw: three guarded one-time initialisations (edg's function-local static
  * shape: flag = 1, then the value from the 0x50-stride record table), stock-gbi packets appended through the
  * global state's context (`G.o->ctx->next()`, gDPSetScissor with its 4.0F float scaling, clear / set geometry
@@ -13,7 +14,7 @@
  * `m220 = (m21c = 0x32, 0x50)` (the target materialises 0x32 first), and the first print call's rectangle
  * read into named x / y / w / h locals (from one `Obj254 *o` copy) before the call.
  * The two vtrans halfwords carry a folded `& 0xFFFF` (one ugen ring slot each): 96.82 -> 97.15.
- * Still NON_MATCHING: build/non_matching/ only. * agent-c run 164: per-site next() spelling grid (kit CXVII): two packets on nC() (`&dl->buf[dl->count++]`) and
+ * (Until agent-g run 381: NON_MATCHING, build/non_matching/ only.) * agent-c run 164: per-site next() spelling grid (kit CXVII): two packets on nC() (`&dl->buf[dl->count++]`) and
  * nD() (`n = dl->count; dl->count = n + 1`), the rest on the named-d next(); 96.87 -> 96.96 local.
  * agent-c run 193: `G.m228 = G.m224 = 8` (target stores 0x228 first) and the rectangle read x / w / h / y
  * (target loads 0xC4 last-scheduled first): report 97.39 -> 97.43, schedule rows 10 -> 6.
@@ -98,6 +99,11 @@ extern "C" void game_libs_func_00042938(void) {
      * 112); a function-scope g under 11 pad words sits at M-48 = the target's frame 88 (98.11311 -> 98.118256) */
     PadK<11> pz;
     Gfx *g;
+    /* agent-g run 381: ONE function-scope int `t` carries the 0xBA dl head, the viewport's Vp head and the print call's
+     * w (so the 0xBA / viewport pointer is one uopt variable live into the print-call block, where v1 and a0..a3 are taken:
+     * it colours t0 like the target), and ONE `n` carries both counts (v0): 99.923 -> 100 */
+    int t;
+    int n;
     /* agent-g run 379: a folded constant address AHEAD of the index in each guard (`0 * (int)&gl_d_42938_z + idx`, zero
      * code): its constant LR piece is numbered between &rec and &idx, so with equal adjsave uopt colours &rec (t0), then
      * it (t1, no code), then &idx / 80 (t2 / t3) -- the target's guard colours; the 0xB9 G.o phantom that held t0 is
@@ -123,10 +129,14 @@ extern "C" void game_libs_func_00042938(void) {
     gSPSetOtherMode(G.o->ctx->nA(), 0xB9, 3, 29, 0x442478); /* agent-g run 377: on nF() (see nF()); then a folded two-term G.o use (zero code): the guard &idx / 80 take the target's t2 / t3, 99.563 -> 99.627 (agent-g run 379: replaced by the guard folds above, it took t0 from &rec); agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
     G.o->me()->cf(); /* gl_func_00000000_void(G.o->ctx, *(int *)(G.o->p148 + 0xF0)); agent-g run 377: void alias (the result is never read; no v0 def in the post-call unit): 99.422 -> 99.460 */
     gImmp1(G.o->ctx->nE(), 0xB7, 1); /* agent-g run 377: 0xB7 on nF() and 0xBA on nC() as a pair after the void alias (either alone is worse): 99.460 -> 99.537 */
-    gSPSetOtherMode(G.o->ctx->nC(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087 */
+    /* agent-g run 375: 0xBA `+ 0` dropped (with the gDma1p slot on nA() at that step): 99.049 -> 99.087.
+     * agent-g run 381: 0xBA moved into the viewport block, its dl head and the Vp head through `t` and both counts
+     * through `n` (written out: no inline next() / vA() for these two) */
     {
         Ctx *c = G.o->ctx->me();
-        Vp *v = c->me()->me()->vA(); /* agent-g run 379: two zero-code me() hops move vA()'s EDG pool temps to fresh slots (vph / count t0 / v0 like the target) with the gDma1p slot on nA(): 99.692 -> 99.769 */
+        { t = (int)c->dl; n = ((DLHead *)t)->count; ((DLHead *)t)->count = n + 1; gSPSetOtherMode(&c->dl->buf[n], 0xBA, 20, 2, 0); }
+        c = G.o->ctx->me();
+        t = (int)c->vph; n = ((VpHead *)t)->count; ((VpHead *)t)->count = n + 1; Vp *v = &c->vph->buf[n]; /* agent-g run 379: Vp *v = c->me()->me()->vA(): two zero-code me() hops move vA()'s EDG pool temps to fresh slots (vph / count t0 / v0 like the target) with the gDma1p slot on nA(): 99.692 -> 99.769 */
         setvp(v, 0, 0, 320, 240);
         { g = (Gfx *)(c->nA()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
@@ -141,7 +151,8 @@ extern "C" void game_libs_func_00042938(void) {
      * t4 / t5 and h to t3 (99.126 -> 99.164 with `0 * (int)G.o->ctx` on x, then the B6 / B9 re-spell, then these two);
      * then `+ 0 * (w + w)` (two more counted uses of w: it now colours before the x / y phantoms, t0 like the target):
      * 99.537 -> 99.563 */
-    { Obj254 *o = G.o; int x = o->c0; int w = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gl_d_42938_ia) + 0 * (w + w), y + 0 * (gl_d_42938_sa), w + x, y + h); }
+    /* agent-g run 381: w is the function-scope `t` (see the top) */
+    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gl_d_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;

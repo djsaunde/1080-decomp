@@ -2257,13 +2257,16 @@ $(GAMELIBS_454C4_DONOR): src/game_libs/game_libs_ncc_454C4.cpp
 	$(OBJCOPY) --redefine-sym setLights__3ObjFP3CtxPff=gl_func_000454C4 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000454C4=$(GAMELIBS_454C4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_454C4_DONOR)
-# 42938 = real C++ (agent-c run 160, cfe 69.98): stock-gbi packets through G.o->ctx->next(), inline viewport setter, guarded one-time inits. Still NON_MATCHING: NM comparison object only.
-GAMELIBS_42938_NM_DONOR := build/src/game_libs/game_libs_ncc_42938_nm.cpp.o
-$(GAMELIBS_42938_NM_DONOR): src/game_libs/game_libs_ncc_42938_nm.cpp
+# 42938 = real C++ (agent-c run 160, cfe 69.98): stock-gbi packets through G.o->ctx->next(), inline viewport setter, guarded one-time inits.
+# agent-g run 381: EXACT NCC donor over a placeholder on both build paths (ctx call as G.o->me()->cf() in the count
+# pool word; one function-scope t / n for the 0xBA / viewport heads + counts and the print call's w); blank jals
+# through func_00000000 / the pinned gl_func_00000000_void, data through the pinned gl_d_42938_* symbols, no .rodata.
+GAMELIBS_42938_DONOR := build/src/game_libs/game_libs_ncc_42938.cpp.o
+$(GAMELIBS_42938_DONOR): src/game_libs/game_libs_ncc_42938.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00042938=$(GAMELIBS_42938_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42938_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00042938=$(GAMELIBS_42938_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42938_DONOR)
 # 493AC = real C++ `int Mgr::run()` (agent-c run 159, was the run-152 C lift under NCC); symbols renamed (names only).
 # agent-g run 312: EXACT NCC donor over a placeholder on both build paths (virtual int hit(), cur2(), accessor-depth
 # pool-slot picks); blank jal words through gl_func_00000000, the Rec vtable reloc through D_00000000, no .rodata.
