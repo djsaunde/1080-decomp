@@ -96,15 +96,15 @@ extern "C" void game_libs_func_00042938(void) {
     }
     gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
     gImmp1(G.o->ctx->nE(), 0xB6, -1);
-    gSPSetOtherMode(G.o->ctx->next() + 0, 0xB9, 3, 29, 0x442478); /* agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone) */
+    gSPSetOtherMode(G.o->ctx->nC(), 0xB9, 3, 29, 0x442478); /* agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone); agent-g run 375: on nC() with no `+ 0` after the nE() change (packet-inline random round), 98.933 -> 99.049 */
     func_00000000(G.o->ctx, *(int *)(G.o->p148 + 0xF0));
     gImmp1(G.o->ctx->nD() + 0, 0xB7, 1);
-    gSPSetOtherMode(G.o->ctx->next() + 0, 0xBA, 20, 2, 0);
+    gSPSetOtherMode(G.o->ctx->next(), 0xBA, 20, 2, 0); /* agent-g run 375: `+ 0` dropped together with the gDma1p slot on nA(): 99.049 -> 99.087 */
     {
         Ctx *c = G.o->ctx;
         Vp *v = c->vpnext();
         setvp(v, 0, 0, 320, 240);
-        { g = (Gfx *)(c->next()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
+        { g = (Gfx *)(c->nA()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
     /* agent-c run 307: the chained `G.m228 = G.m224 = 8` split into two statements (store-order grid with the unmasked
      * vtrans[0]): the after-call ring back in phase, 98.650 -> 98.838; then the 0x32 / 0x50 pair back in its run-157
