@@ -36,6 +36,9 @@ struct Ctx {
     Gfx *nB() { DLHead *d = dl; int n = d->count; d->count = n + 1; return &dl->buf[n]; }
     Gfx *nC() { return &dl->buf[dl->count++]; }
     Gfx *nD() { int n = dl->count; dl->count = n + 1; return &dl->buf[n]; }
+    /* agent-g run 375: nA()'s named post-increment count plus a code-free `if (n) {}` (a counted use: the count's adjsave
+     * rises) for the 0xB6 packet, whose ctx / dl / n / slot now colour a2 / v0 / v1 / a1 like the target: 98.856 -> 98.933 */
+    Gfx *nE() { int n = dl->count++; if (n) {} return &dl->buf[n]; }
 };
 struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx; };
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
@@ -92,7 +95,7 @@ extern "C" void game_libs_func_00042938(void) {
         gl_d_42938_pc = gl_d_42938_rec[gl_d_42938_idx].c;
     }
     gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
-    gImmp1(G.o->ctx->next(), 0xB6, -1);
+    gImmp1(G.o->ctx->nE(), 0xB6, -1);
     gSPSetOtherMode(G.o->ctx->next() + 0, 0xB9, 3, 29, 0x442478); /* agent-g run 203: folded `+ 0` packet args re-pool the EDG temps (97.16 -> 97.31 standalone) */
     func_00000000(G.o->ctx, *(int *)(G.o->p148 + 0xF0));
     gImmp1(G.o->ctx->nD() + 0, 0xB7, 1);
