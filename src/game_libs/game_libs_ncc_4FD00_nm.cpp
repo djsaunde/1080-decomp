@@ -61,11 +61,20 @@ int Col::side(int f1, int f2) {
     /* agent-c run 348: BOTH normal references bound before either dot (depths 7 / 8, pad dropped): the second
      * pointer's binding moves uopt's 20-load block boundary in front of p1, so the 2.0f divisor takes $f0 like the
      * target (99.004 -> 99.024, same length, frame 136) */
+    /* agent-h run 378: both dots inline (p1 depth 7, p2 depth 5) after two folded `f1 = f1 + 0 * (int)&d1;` kills
+     * (kit CDLXIV): p1's depth-7 chain spills gn()'s return to the edg pool word -100 and reads it in bb 1, so the
+     * sums' dead -100 store survives in bb 0 (t0) and K6 takes t1 like the target; the &d1 folds are counted
+     * zero-code refs that move the bb 1 / bb 2 boundary in front of p1 (2.0f in $f0) without extending &s into
+     * bb 1 (99.024 -> 99.084, same length); then p2 also at depth 7 behind `f2 = f2 + 0 * (int)nrm; f2 = f2;`:
+     * the bb-2 fold keeps p2's operator* `o` store (pool word -128) from being forwarded, so n1 and n2 are ONE
+     * variable LR like the target's shared v1 (99.084 -> 99.781) */
     {
-    V3 &n1 = me(me(me(me(me(me(me(this)))))))->gn()[f1];
-    V3 &n2 = me(me(me(me(me(me(me(me(this))))))))->gn()[f2];
-    f32 p1 = d1 * n1;
-    f32 p2 = d2 * n2;
+    f1 = f1 + 0 * (int)&d1;
+    f1 = f1 + 0 * (int)&d1;
+    f32 p1 = d1 * me(me(me(me(me(me(me(this)))))))->gn()[f1];
+    f2 = f2 + 0 * (int)nrm;
+    f2 = f2;
+    f32 p2 = d2 * me(me(me(me(me(me(me(this)))))))->gn()[f2];
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
