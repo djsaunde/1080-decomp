@@ -4496,7 +4496,6 @@ void gl_func_00039624(int *a0, int *a1) {
     }
 }
 
-#ifdef NON_MATCHING
 /* gl_func_000396FC: 153-insn (0x264) message handler, switch on a1[0]
  * (109..114; 6-entry jumptable at bootup.uso RoData +0x1A64, arms 109 ->
  * +0x38, 110 -> +0x60, 111 -> +0x88, 112 -> +0xB0, 113 -> +0xF8, 114 ->
@@ -4529,84 +4528,20 @@ void gl_func_00039624(int *a0, int *a1) {
  * distinct here. Tried: default first / after the switch with returns /
  * goto label / extra labels, (unsigned) and rebased switch values, int
  * return, same-line default, arg spellings, IDO 5.3; permuter 80k iters
- * found nothing. When the steal is cracked, land via the 52CD4 donor
- * recipe (table + literal ride one gl_func_000396FC_rodata pin = 0x1A64). */
-typedef struct { int m[16]; } Mtx16_396FC;
-typedef struct { f32 v[10]; } Xform_396FC;
+ * found nothing.
+ * EXACT 2026-11-13 (agent-h run 371): the target's as1 input had an `.alias`
+ * between case 114's closing `b` and the default label, which makes the
+ * default block unreachable in as1's CFG (kit CDL), so xbb fills the slot
+ * from the jump block. Two zero-byte struct copies from &D_00000000 at the
+ * end of case 114 give that directive with no surviving code. WIRED via
+ * REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2 donor
+ * unit game_libs_o2_396FC.c (153/153 word-exact); the splice renames the
+ * donor-local .rodata reloc to gl_func_000396FC_rodata, pinned to the USO
+ * RoData at +0x1A64 (table; the 1/32767 literal rides it at +0x1A7C).
+ * Body below is a placeholder for the splice. */
 void gl_func_000396FC(int *a0, int *a1) {
-    int b3[3];
-    int b2[3];
-    int b1[3];
-    int *q;
-    short *s;
-    Mtx16_396FC *m;
-    f32 x;
-    f32 y;
-    Xform_396FC xf;
-    f32 z;
-    f32 w;
-    int *p;
-    int pad1;
-    short *s2;
-    switch (a1[0]) {
-    case 109:
-        gl_func_00000000(a1, b1);
-        if (1) {}
-        gl_func_00000000((char *)a0 + 0x30, b1);
-        break;
-    case 110:
-        gl_func_00000000(a1, b2);
-        if (1) {}
-        gl_func_00000000((char *)a0 + 0x30, b2);
-        break;
-    case 111:
-        gl_func_00000000(a1, b3);
-        if (1) {}
-        gl_func_00000000((char *)a0 + 0x30, b3);
-        break;
-    case 112:
-        q = (int *)a1[1]; a1[1] = (int)(q + 1);
-        s = (short *)*q;
-        *(Mtx16_396FC *)((char *)a0 + 0x30) = *(Mtx16_396FC *)s;
-        break;
-    case 113:
-        p = (int *)((char *)a0 + 0x2C);
-        if (1) {
-            *p |= 2;
-        }
-        break;
-    case 114:
-        q = (int *)a1[1]; a1[1] = (int)(q + 1); s = (short *)*q;
-        x = s[3] * (1.0f / 32767.0f);
-        y = s[4] * (1.0f / 32767.0f);
-        z = s[5] * (1.0f / 32767.0f);
-        w = s[6] * (1.0f / 32767.0f);
-        s2 = s;
-        xf.v[6] = x;
-        xf.v[7] = y;
-        xf.v[8] = z;
-        xf.v[9] = w;
-        xf.v[0] = s2[0];
-        xf.v[1] = s2[1];
-        xf.v[2] = s2[2];
-        x = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[7];
-        y = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[8];
-        z = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[9];
-        xf.v[3] = x;
-        xf.v[4] = y;
-        xf.v[5] = z;
-        m = (Mtx16_396FC *)((char *)a0 + 0x30);
-        gl_func_00000000(&xf, m);
-        *(Mtx16_396FC *)((char *)a0 + 0x70) = *m;
-        break;
-    default:
-        gl_func_00000000(a0, a1);
-        break;
-    }
+    volatile int *ret = a0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000396FC);
-#endif
 
 /* gl_func_00039960: 10-insn 2-arg-add wrapper. Calls
  * gl_func(a1+0xD0, a0+0x30). Splat bundles a 2-insn alt-entry leaf

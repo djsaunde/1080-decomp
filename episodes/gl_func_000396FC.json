@@ -1,0 +1,33 @@
+{
+  "function_name": "gl_func_000396FC",
+  "project": "1080-agent-h",
+  "model": "claude-manual",
+  "start_time": "2026-11-13T18:26:19.596951+00:00",
+  "end_time": "2026-11-13T18:26:19.596969+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-13T18:26:19.596965+00:00",
+      "assistant_text": "Exact via an IDO 7.1 -O2 donor spliced into post0b. The last word was the bound-check delay slot: as1 xbb moved the default head into it. Two zero-byte struct copies from &D_00000000 at the end of case 114 make a uopt LR whose .alias lands between the arm's b and the default label, so as1 treats the default block as unreachable and fills the slot from the jump block (sll t7).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 153,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for gl_func_000396FC -- message handler, switch on a1[0]\n * (109..114, 6-entry jumptable) (0x264 / 153 words; 153/153 word-exact\n * standalone apart from the two .rodata reloc fields).\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the\n * 29CCC / 52CD4 / 51AD8 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-\n * jumptable-rodata-rename). The donor .rodata holds the jumptable at +0 and\n * the 1/32767 literal at +0x18; the splice renames that reloc to\n * gl_func_000396FC_rodata, pinned to 0x1A64 in undefined_syms_auto.txt\n * (the USO ships the table at +0x1A64 and the literal at +0x1A7C).\n *\n * EXACT 2026-11-13 (agent-h run 371): the last word was the bound check's\n * delay slot (ours: as1 xbb moved the default head `or a0,a3` into it; the\n * target keeps the fall-through `sll t7,t7,2`). An `.alias` directive between\n * case 114's closing `b` and the default label makes the default block\n * unreachable in as1's CFG (kit CDL), so xbb fills the slot from the jump\n * block instead. The two zero-byte struct copies at the end of case 114 make\n * &D_00000000 one uopt LR (`la $2`) that ugen tags `.noalias $2,$sp` and\n * closes after the arm's `b`; they emit no surviving code (as1 deletes the\n * dead `la` / `addu` address temps). Everything else is agent-c's 2026-10-15 decode\n * (docs/IDO_CODEGEN.md#param-split-spill-home-396fc). */\n#include \"common.h\"\n\nextern int D_00000000;\nextern int gl_func_00000000();\n\ntypedef struct { int m[16]; } Mtx16_396FC;\ntypedef struct { char c[0]; } Z0_396FC;\ntypedef struct { f32 v[10]; } Xform_396FC;\n\nvoid gl_func_000396FC(int *a0, int *a1) {\n    int b3[3];\n    int b2[3];\n    int b1[3];\n    int *q;\n    short *s;\n    Mtx16_396FC *m;\n    f32 x;\n    f32 y;\n    Xform_396FC xf;\n    f32 z;\n    f32 w;\n    int *p;\n    int pad1;\n    short *s2;\n    switch (a1[0]) {\n    case 109:\n        gl_func_00000000(a1, b1);\n        if (1) {}\n        gl_func_00000000((char *)a0 + 0x30, b1);\n        break;\n    case 110:\n        gl_func_00000000(a1, b2);\n        if (1) {}\n        gl_func_00000000((char *)a0 + 0x30, b2);\n        break;\n    case 111:\n        gl_func_00000000(a1, b3);\n        if (1) {}\n        gl_func_00000000((char *)a0 + 0x30, b3);\n        break;\n    case 112:\n        q = (int *)a1[1]; a1[1] = (int)(q + 1);\n        s = (short *)*q;\n        *(Mtx16_396FC *)((char *)a0 + 0x30) = *(Mtx16_396FC *)s;\n        break;\n    case 113:\n        p = (int *)((char *)a0 + 0x2C);\n        if (1) {\n            *p |= 2;\n        }\n        break;\n    case 114:\n        q = (int *)a1[1]; a1[1] = (int)(q + 1); s = (short *)*q;\n        x = s[3] * (1.0f / 32767.0f);\n        y = s[4] * (1.0f / 32767.0f);\n        z = s[5] * (1.0f / 32767.0f);\n        w = s[6] * (1.0f / 32767.0f);\n        s2 = s;\n        xf.v[6] = x;\n        xf.v[7] = y;\n        xf.v[8] = z;\n        xf.v[9] = w;\n        xf.v[0] = s2[0];\n        xf.v[1] = s2[1];\n        xf.v[2] = s2[2];\n        x = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[7];\n        y = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[8];\n        z = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[9];\n        xf.v[3] = x;\n        xf.v[4] = y;\n        xf.v[5] = z;\n        m = (Mtx16_396FC *)((char *)a0 + 0x30);\n        gl_func_00000000(&xf, m);\n        *(Mtx16_396FC *)((char *)a0 + 0x70) = *m;\n        *(Z0_396FC *)&xf = *(Z0_396FC *)&D_00000000;\n        *(Z0_396FC *)b1 = *(Z0_396FC *)&D_00000000;\n        break;\n    default:\n        gl_func_00000000(a0, a1);\n        break;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_o2_396FC.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/gl_func_000396FC.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -Wab,-r4300_mul",
+    "verification": "ROM byte-identical; verify-blocks 6/6; report 100.0 (612 B)"
+  }
+}
