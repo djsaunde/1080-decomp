@@ -30,11 +30,16 @@
  *     dir's `a` operand and the return's `s` receiver (both needed), 91.288 -> 91.358, then on the else-arm
  *     dot's kDC receiver (`K3(s)->kDC`; a sweep over every s / a / b access), 91.358 -> 91.714; then K1
  *     (`if (0) { p = 0; }`: the dead block splits uopt blocks) on the receivers of the two flag-arm `+=`
- *     and the else-arm wpos view (greedy K1 / K3 climb), 91.714 -> 92.254.
+ *     and the else-arm wpos view (greedy K1 / K3 climb), 91.714 -> 92.254;
+ *   - agent-h run 368 (kit CDLIV): operator* returns through KR1 (a kept const-ref identity whose `if (0)` dead
+ *     block sits INSIDE the chain temp's span, between the Vec3 temporary and the copy into the pooled return
+ *     slot), so that chain temp's adjsave drops below the address constants it competed with, 92.254 -> 94.353;
+ *     then the second flag-arm `+=` receiver without K1, -> 94.426.
  * LEFT: the XZ(const Vec3 &) ctor `this` is coloured a0 in the target (its fall-through `addiu a0,zero,12`
  * then cannot fill the guard's delay slot, so as1 emits `bnezl a0` + the b reload: +1 word at both
  * b->pos sites) and v1 here (a0 only at the d2 site, where &w->pos holds v1); pool-slot offsets. */
 extern "C" void *game_uso_func_055750(unsigned);
+template <class T> inline const T &KR1(const T &r) { const T *p = &r; if (0) { p = 0; } return *p; } /* kept const-ref identity with a dead block */
 struct Vec3 {
     void *operator new(unsigned n) { return game_uso_func_055750(n); }
     float x, y, z;
@@ -44,7 +49,7 @@ struct Vec3 {
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     Vec3 &operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
     Vec3 &operator*=(float s) { x = x * s; y = y * s; z = z * s; return *this; }
-    Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); }
+    Vec3 operator*(float s) const { return KR1(Vec3(x * s, y * s, z * s)); }
 };
 struct XZ : Vec3 {
     XZ(const Vec3 &v) : Vec3(v.x, 0.0f, v.z) {}
@@ -76,7 +81,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         float dot = lenf + (s->w->speed * s->kDC) / 2;
         K1(s)->p84 += dir * dot;
         dot = lenf - (s->w->speed * s->kDC) / 2;
-        K1(s)->p90 += dir * dot;
+        s->p90 += dir * dot;
         s->phase = 0;
     } else {
         Vec3 pad1, pad2, pad3; /* unused (no code) */
