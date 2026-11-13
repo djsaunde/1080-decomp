@@ -1918,14 +1918,17 @@ $(GAMELIBS_4B0A8_DONOR): src/game_libs/game_libs_ncc_4B0A8.cpp
 	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=gl_func_0004B0A8 --redefine-sym __ct__4BaseFPc=gl_4b0a8_base --redefine-sym __vtbl__3Obj=gl_4b0a8_vtbl --redefine-sym gl_func_00034458=gl_4b0a8_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_DONOR)
-# 4B620 = C++ ctor (cfront protocol, inline Base ctor, inline DL::add appends, by-value index iterator); NCC NM-only donor (agent-c run 157, cfe 94.48), ctor symbol renamed (name only).
-GAMELIBS_4B620_NM_DONOR := build/src/game_libs/game_libs_ncc_4B620_nm.cpp.o
-$(GAMELIBS_4B620_NM_DONOR): src/game_libs/game_libs_ncc_4B620_nm.cpp
+# 4B620 = C++ ctor (cfront protocol, inline Base ctor, inline DL::add appends, by-value index iterator); NCC donor (agent-c run 157, cfe 94.48), ctor symbol renamed (name only).
+# agent-g run 366: EXACT NCC donor over a placeholder on both build paths (pooled Gfx::set0 appends, per-site
+# element accessors curM() / static satD()); blank jal words through gl_func_00000000 / the pinned
+# gl_func_00000000_4b620_base (BB ctor), string relocs through D_00000000, no .rodata.
+GAMELIBS_4B620_DONOR := build/src/game_libs/game_libs_ncc_4B620.cpp.o
+$(GAMELIBS_4B620_DONOR): src/game_libs/game_libs_ncc_4B620.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym __ct__3ObjFPv=gl_func_0004B620 --redefine-sym __ct__2BBFPcPvi=gl_func_00000000_4b620_base $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B620=$(GAMELIBS_4B620_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B620_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B620=$(GAMELIBS_4B620_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B620_DONOR)
 # 41820 = C++ `void Self::init()` (new Arr, free q-first attach inline with a kept q, new O44, closing virtual); symbols renamed (names only). EXACT NCC donor over an empty placeholder (agent-c run 173).
 GAMELIBS_41820_DONOR := build/src/game_libs/game_libs_ncc_41820.cpp.o
 $(GAMELIBS_41820_DONOR): src/game_libs/game_libs_ncc_41820.cpp

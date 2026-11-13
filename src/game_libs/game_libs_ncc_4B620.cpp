@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0004B620 (0x4D4 / 309 words), agent-c run 157.
+/* IDO 7.1 NCC (C++) EXACT donor (agent-g run 366) for gl_func_0004B620 (0x4D4 / 309 words), agent-c run 157.
  * The function is a C++ constructor Obj::Obj(void *a1) : Base(a1): cfront's `this == 0 -> new(0xD8)`
  * protocol, the inline Base ctor (its own `new(0xCC)` fallback, external BB ctor, FP / field defaults),
  * the vptr store at 0x28, two display lists built with an inline DL::add, and a walk of the element array
@@ -17,7 +17,8 @@
  * (`&head->buf[head->inc()]`, no keep): edg's `this` temp is the target's head-in-s0 / old-count-in-s3
  * pair; append 2 keeps the direct `count++` with the hi / lo keep (addOK). 98.98 -> 99.37 (objdiff, NM tree).
  * Left: appends 1-2 old count s3 (target s0), the loop's ++idx / ref temps s0<->s3, appends 5-6 g a1/v0.
- * Still NON_MATCHING: spliced into build/non_matching/ only. */
+ * agent-g run 366: EXACT -- spliced over the gl_func_0004B620 placeholder in both build trees (see the run-366
+ * notes on set0 / curM() / satD() below). */
 extern "C" {
 void *gl_func_00000000(...);
 extern char D_00000000[];
@@ -71,6 +72,10 @@ struct AIter : IBase {
      * pool temp ahead of operator[]'s `this`, so the Arr * lands in the old-count slot (s3) and the element in the cc
      * slot (s2) like the target, 99.854 -> 99.935 */
     Elem *curM() { return (*me(this)->a)[idx]; }
+    /* agent-g run 366: a static element read (no `this` pool temp, no operator[] `this`): on the two ref() statements
+     * the element takes the cc slot and the ref() address the next free pool slot after one parameter word -- the
+     * appends' head slot (s0) like the target -- while the ref() itself goes through me(&it); 99.935 -> 100 */
+    static Elem *satD(Arr *p, int i) { return p->data[i]; }
     Elem *&ref() { return (*a)[idx]; }
 };
 inline void addGN(DL *d, unsigned hi, unsigned lo) { Gfx *g = &d->head->buf[d->head->count++]; g->w0 = hi; g->w1 = lo; }
@@ -117,8 +122,8 @@ Obj::Obj(void *a1) : Base(a1) {
          * exact, the loop-bottom ?: temp back in a0: 99.822 -> 99.854; then the first / last reads through curM()
          * (99.935; left: the two ref() addresses in s3, target s0 = the appends' head slot) */
         it.curM()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
-        gl_func_00000000(it.cur()->m64, &it.ref()->m34);
-        gl_func_00000000(it.cur()->m64, &it.ref()->m34);
+        gl_func_00000000(AIter::satD(it.a, it.idx)->m64, &me(&it)->ref()->m34);
+        gl_func_00000000(AIter::satD(it.a, it.idx)->m64, &me(&it)->ref()->m34);
         gl_func_00000000(it.cur()->m64, K3(&it)->cur(), 0);
         g1(it.curM());
     }
