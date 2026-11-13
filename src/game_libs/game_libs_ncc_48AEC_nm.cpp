@@ -81,6 +81,7 @@ struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {}
     Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
+    Elem *curM() { return (*me(this)->a)[idx]; } /* agent-g run 369: per-site accessor with an internal zero-code me(this) (kit CDLII 6.) */
     Elem *&ref() { return (*a)[idx]; }
 };
 inline AIter Arr::iter() { return AIter(this); }
@@ -131,8 +132,10 @@ void Obj::draw() {
             GS->ctx->setup(&g34, n14->m1e); if (1) {}
             AIter it = arr.iter();
             while (it.next()) {
-                if (I2(it.cur())->ctx6C != 0) {
-                    GS->ctx->dlcallQ(&it.cur()->ctx6C->dl->buf[it.ref()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
+                /* agent-g run 369: the ctx6C test through curM() and n8A back through cur(), and the second loop's test
+                 * through curM() (per-site accessor rounds, 200 + 200): 98.037 -> 98.085 -> 98.297, same length */
+                if (I2(it.curM())->ctx6C != 0) {
+                    GS->ctx->dlcallQ(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
                 }
             }
         }
@@ -149,7 +152,7 @@ void Obj::draw() {
         me(GS->ctx)->prim(0xFA000000, 0xFFFF00FF);
         AIter it = arr.iter();
         while (it.next()) {
-            if (I2(it.cur())->ctx6C != 0) {
+            if (I2(it.curM())->ctx6C != 0) {
                 GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
