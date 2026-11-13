@@ -3438,7 +3438,17 @@ void game_libs_func_000076E0(int a0) {
 void game_libs_func_000076E8(int a0) {
 }
 
-#ifdef NON_MATCHING
+/* gl_func_000076F0: per-frame state machine (577 words). EXACT 2026-11-13 (agent-h run 368, kit CDLIV)
+ * through the MIPSpro 7.2.1 C++ front end donor src/game_libs/game_libs_mp72_76F0.cpp (tools/ncc721.sh),
+ * REPLACE_FUNC_BODY-spliced in both trees: its 4-label switches are native 4-entry jump tables only under
+ * EDG 2.29. The donor .rodata reloc is renamed gl_func_000076F0_rodata by the splice and pinned to the
+ * game_libs RoData at +0xE04 (tables + float literals in the target's order). This placeholder's text and
+ * relocs are dropped by the splice (the INCLUDE_ASM .s carried no RoData). The cfe body stays under #if 0. */
+void gl_func_000076F0(char *self) {
+    *(volatile int *)self = 0;
+}
+
+#if 0
 /* PASS-1 2026-06-10 (big-swing): FULL m2c graft, THREE small sparse
  * jumptables synthesized (bounds 6/4/4, full head coverage; order
  * approximate). First C body for this fn.
@@ -3813,8 +3823,6 @@ void gl_func_000076F0(GlObj76F0 *self) {
         vt->e[27].fn(vt->e[27].off + (char *)self);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000076F0);
 #endif
 
 // gl_func_00007FF4 — FULL DECODE, 99.98% (220/222 words byte-exact).

@@ -1,7 +1,15 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) NON_MATCHING donor for gl_func_000076F0 (577 words), compiled by
- * tools/ncc721.sh and spliced into the non_matching object only (agent-h run 355). The ROM build keeps
- * INCLUDE_ASM.
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) donor for gl_func_000076F0 (577 words), compiled by
+ * tools/ncc721.sh and REPLACE_FUNC_BODY-spliced in both trees over a placeholder. EXACT (agent-h run 368,
+ * kit CDLIV): the bit-16 test is one signed shift (ugen gives it t9, off the t-ring, as in the target), the
+ * case-1 end test reads unk4E4 first (`a < 1 - b`: ugen order t6 = 4E4, t7 = 4E8, t8 = -4E8) instead of the old
+ * `var_v0 =` ring hack, and the m28 / 4F8 test is split from the call by `if (1) {}` (temp then colours v0).
+ * The ring fix puts the unk4D8 switch selector in t7, so t7 is dead at the switch-1 default (as1 treats a
+ * jump-table `jr` as reading every register), and as1 xbb then moves the table-index `sll` into the bound-check
+ * delay slot instead of the old `beqzl` + default-head copy (2312 -> 2308 B).
+ * The donor .rodata (table 1, table 2, 5 floats, table 3) is the target's layout from game_libs RoData +0xE04:
+ * gl_func_000076F0_rodata is pinned to 0xE04.
  *
+ * History:
  * The target lowers `switch (sp20)` (0..3) and `switch (self->unk4D8)` (0..3) as 4-entry jump tables, which only
  * EDG 2.29's switch rule produces; the cfe NM body in game_libs.c needs phantom `case 4:` labels. This is that
  * body (agent-g / agent-c runs) with the phantom labels dropped; the 16 cfront-style vtable calls
@@ -9,10 +17,7 @@
  * virtual function k: same code as the explicit form). 99.0 (cfe) -> 99.0035. agent-h run 364 (kit CDLI):
  * the 4F4 test re-reads the field after the store (as1 forwards it: the target's `or t3,t2,zero`) and its bit
  * test is one signed shift (`sll t5; bgezl t5`), 99.0035 -> 99.2981 (2312 B: the head's extra word is left);
- * the final bit-19 test as one signed shift too (`sll t3; bgezl t3`), -> 99.3328.
- * LEFT: the head `beqzl at; lw t3,0x500(s0)` (target: `beqz at` with the table-index `sll` in the delay slot,
- * although the default block starts with the same `lw t3,0x500(s0)`), t6/t7 ring swaps, a v0/v1 swap on the
- * unk4DC switch value and the float-literal %lo offsets (RoData layout, scored as relocations). */
+ * the final bit-19 test as one signed shift too (`sll t3; bgezl t3`), -> 99.3328; run 368 -> 100. */
 struct VO76 {
     char pad[0x28];
     virtual int m1(); virtual int m2(); virtual int m3(); virtual int m4(); virtual int m5(); virtual int m6();
@@ -149,14 +154,14 @@ void gl_func_000076F0(GlObj76F0 *self) {
             }
             if ((sp24 == 1) && (sp20 == 0)) {
                 func_00000000((char *)&D_00000000, 1);
-                if (((u32)self->unk4F0 << 15) >> 31) {
+                if ((s32)((u32)self->unk4F0 << 15) < 0) {
                     func_00000000((char *)self + 0x588);
                 }
                 *(s32 *)((char *)&D_00000000 + 0x78) = 0;
                 self->unk4DC = 1;
                 func_00000000(*(s32 *)((char *)&D_00000000 + 0x138));
             }
-            if (-self->unk4E8 >= (var_v0 = self->unk4E4)) {
+            if (self->unk4E4 < 1 - self->unk4E8) {
                 self->unk4E0 = 2;
             }
             break;
@@ -202,10 +207,13 @@ void gl_func_000076F0(GlObj76F0 *self) {
             }
             break;
         }
-        if ((self->unk500 != 0)
-            && ((((VO76 *)self)->m28(),
-                 temp = self->unk4F8, (temp == 0)) || (temp == 5))) {
-            func_00000000(self);
+        if (self->unk500 != 0) {
+            ((VO76 *)self)->m28();
+            if (1) {}
+            temp = self->unk4F8;
+            if ((temp == 0) || (temp == 5)) {
+                func_00000000(self);
+            }
         }
         if (self->unk4E0 == 7) {
             ((VO76 *)self)->m21();

@@ -3170,10 +3170,12 @@ build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc
 build/src/game_libs/game_libs_mp72_%.cpp.o: src/game_libs/game_libs_mp72_%.cpp $(NCC721)
 	@mkdir -p $(dir $@)
 	$(NCC721) $< $@ $(OPT_FLAGS)
-# game_libs 76F0: NM-only MIPSpro 7.2.1 donor (two native 4-entry tables, no phantom case 4; 99.0 -> 99.0035).
-GAMELIBS_76F0_NM_DONOR := build/src/game_libs/game_libs_mp72_76F0.cpp.o
-build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000076F0=$(GAMELIBS_76F0_NM_DONOR)
-build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_76F0_NM_DONOR)
+# game_libs 76F0: EXACT MIPSpro 7.2.1 donor (two native 4-entry tables; agent-h run 368, kit CDLIV), spliced over
+# a placeholder in both trees. Donor .rodata = target RoData layout from +0xE04 (table 1, table 2, 5 floats,
+# table 3); gl_func_000076F0_rodata pinned to 0xE04 and D_76F0_fadeA/B/C to 0 in undefined_syms_auto.txt.
+GAMELIBS_76F0_DONOR := build/src/game_libs/game_libs_mp72_76F0.cpp.o
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000076F0=$(GAMELIBS_76F0_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_76F0_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor
 # (asm-processor rejects -O3; the file has no GLOBAL_ASM). Symbol
