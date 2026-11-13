@@ -98,8 +98,10 @@ extern "C" void gl_func_0004BAF4(char *self) {
      * re-assigned self->0xCC for the dlist call: the pointer takes v0 like the target (97.39 -> 97.54) */
     /* agent-g run 332: the half-extents through ctx (the target's ext / ctx share a3), operand order `x > ext + C0`;
      * agent-g run 335: the second test as `y > C4 + ext` with the idv() dropped (`addu t9,t0,a3` order): 99.291 -> 99.303 */
-    if ((ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x > (int)ctx + F4B(GS4B, 0xC0, int)) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y > F4B(GS4B, 0xC4, int) + (int)ctx) ||
-        (ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)ctx) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)ctx)) {
+    /* agent-g run 369: the first / third half-extent reads through d and the second through r (only the last one stays
+     * in ctx): the C0 centre takes a2 like the target (ext / ctx / centre variable grid, 161): 99.515 -> 99.539 */
+    if ((d = (char *)F4B(GS4B, 0xB8, volatile int), x > (int)d + F4B(GS4B, 0xC0, int)) || (r = (u32)F4B(GS4B, 0xBC, volatile int), y > F4B(GS4B, 0xC4, int) + (int)r) ||
+        (d = (char *)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)d) || (ctx = (Ctx4B *)F4B(GS4B, 0xBC, volatile int), y < F4B(GS4B, 0xC4, int) - (int)ctx)) {
         return;
     } if (r) {}
     ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
