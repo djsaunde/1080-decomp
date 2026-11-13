@@ -1869,14 +1869,17 @@ $(GAMELIBS_3B6A0_DONOR): src/game_libs/game_libs_ncc_3B6A0.cpp
 	$(OBJCOPY) --redefine-sym below__3ObjFiPfPP4TriBT2=gl_func_0003B6A0 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B6A0=$(GAMELIBS_3B6A0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B6A0_DONOR)
-# 4FD00 = real C++ `int Col::side(int, int)` (agent-c run 175; cfe 80.29): inline face-sum with a local short vector, V3 set / += / -= / /= members; symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_4FD00_NM_DONOR := build/src/game_libs/game_libs_ncc_4FD00_nm.cpp.o
-$(GAMELIBS_4FD00_NM_DONOR): src/game_libs/game_libs_ncc_4FD00_nm.cpp
+# 4FD00 = real C++ `int Col::side(int, int)` (agent-c run 175; cfe 80.29): inline face-sum with a local short vector, V3 set / += / -= / /= members; symbol renamed (name only).
+# agent-h run 383: EXACT NCC donor over a placeholder on both build paths (named normal pointer before the folds, a
+# fresh pad64 load fold on its second binding, two folds of the pinned gl_func_00000000 address as the second bb-1
+# phantom); no relocs, no .rodata.
+GAMELIBS_4FD00_DONOR := build/src/game_libs/game_libs_ncc_4FD00.cpp.o
+$(GAMELIBS_4FD00_DONOR): src/game_libs/game_libs_ncc_4FD00.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym side__3ColFiT1=game_libs_func_0004FD00 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004FD00=$(GAMELIBS_4FD00_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FD00_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0004FD00=$(GAMELIBS_4FD00_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FD00_DONOR)
 # 54E78 = real C++ `void Obj::reflect(const Plane &)` (agent-c run 175 lift; cfe 86.62): plane-reflection matrix, translation via V3 operator* / by-value set(); symbols renamed (names only).
 # agent-g run 304: EXACT NCC donor over a placeholder on both build paths (the shared idv() pool variable starts in the m[0][0] block; operator*'s folded int pool temp).
 GAMELIBS_54E78_DONOR := build/src/game_libs/game_libs_ncc_54E78.cpp.o

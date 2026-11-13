@@ -17974,8 +17974,8 @@ char *gl_func_0004FBA4(char *a0, s32 **a1) {
 // mid = (A + B) / 2, d1 = mid - A, d2 = mid - B, return 1 iff
 // dot(d1, plane[e1]) >= 0 and dot(d2, plane[e2]) >= 0.
 // agent-c run 175: the NM comparison object now takes the real C++ `int Col::side(int, int)` from
-// src/game_libs/game_libs_ncc_4FD00_nm.cpp (REPLACE_FUNC_BODY, build/non_matching/ only): 80.29 -> 95.51,
-// length = target. The cfe body below is kept as the readable decode.
+// src/game_libs/game_libs_ncc_4FD00.cpp (REPLACE_FUNC_BODY): 80.29 -> 95.51, length = target; agent-h run 383:
+// EXACT, spliced in both build trees. The cfe body below is kept as the readable decode.
 #ifdef NON_MATCHING
 /* NM 43.0 -> see report (agent-c 2026-09-11, hand-analysis; 3rd pass).
  * Structure now reproduces the target's memory traffic exactly: the five
@@ -18066,7 +18066,12 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
     return ret;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004FD00);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4FD00.cpp (agent-c run 175 lift,
+ * agent-h run 383 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees. */
+s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
+    return 0;
+}
 #endif
 
 // gl_func_000500EC — FULL DECODE (0x2B8 / 174 words, no episode).

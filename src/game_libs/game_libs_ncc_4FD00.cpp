@@ -1,4 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for game_libs_func_0004FD00 (0x3EC / 251 words), agent-c run 175.
+/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_0004FD00 (0x3EC / 251 words), agent-c run 175 lift,
+ * agent-h run 383 exact (REPLACE_FUNC_BODY over a placeholder in both build trees; the history below is kept).
  * Real C++ `int Col::side(int f1, int f2)` (renamed with objcopy): the collision record of the 3B6A0 donor (faces at
  * +0x68, s16 vertex triples at +0x60, face normals at +0x54). Sums each face's three vertices in a short vector
  * (an inline `Col::sum(V3 &, int)` with its own local SV -- the target's double `move` on the forwarded third add is
@@ -7,8 +8,7 @@
  * member stores), both dots named before the test, `return 1` / `return 0`.
  * cfe body 80.29 -> 95.51, length 972 -> 1004 = target.
  * Residual (agent-c run 348): the two normal pointers (v1-base a3 / t1, target t0-base v1 / v1: ours computes the
- * second pointer before the first dot); every other instruction and sp offset = target.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * second pointer before the first dot); every other instruction and sp offset = target. */
 typedef float f32; typedef short s16; typedef unsigned short u16;
 template <class T> inline T *me(T *p) { return p; } /* zero-code accessor (kit CCLXXXIV) */
 struct SV { s16 x, y, z;
@@ -43,6 +43,7 @@ struct Col {
     }
     int side(int f1, int f2);
 };
+extern "C" void gl_func_00000000(...); /* pinned blank-call placeholder (address folded, zero code, no reloc) */
 int Col::side(int f1, int f2) {
     V3 a, b, mid, d1, d2;
     SV s;
@@ -68,13 +69,23 @@ int Col::side(int f1, int f2) {
      * bb 1 (99.024 -> 99.084, same length); then p2 also at depth 7 behind `f2 = f2 + 0 * (int)nrm; f2 = f2;`:
      * the bb-2 fold keeps p2's operator* `o` store (pool word -128) from being forwarded, so n1 and n2 are ONE
      * variable LR like the target's shared v1 (99.084 -> 99.781) */
+    /* agent-h run 380 (kit CDLXVI): a named `V3 *n` bound BEFORE the folds wins $v1 (uopt colours in ucode
+     * first-appearance order); the second binding's fold on a fresh dead load of the object's own pad64 word keeps
+     * n2 from being copy-propagated, so n1 = n2 = ONE LR (v1) and the nrm load is the -100 pool word (t0) like the
+     * target. agent-h run 383 (kit CDLXIX): the bb-2 `&s` fold is gone (its constant -68 was a t2 LR passing
+     * through bb 1) and two of the &d1 folds are folds of the pinned placeholder's address instead: the
+     * placeholder fold is a second zero-code phantom LR in bb 1 (t1), so the sp+20 copy temp (-116) colours t2,
+     * &mid t3 and 12 t4 like the target -> 100 (1004 B). */
     {
+    V3 *n = &me(me(me(me(me(me(me(this)))))))->gn()[f1];
     f1 = f1 + 0 * (int)&d1;
+    f1 = f1 + 0 * (int)&gl_func_00000000;
     f1 = f1 + 0 * (int)&d1;
-    f32 p1 = d1 * me(me(me(me(me(me(me(this)))))))->gn()[f1];
-    f2 = f2 + 0 * (int)nrm;
+    f1 = f1 + 0 * (int)&gl_func_00000000;
+    f32 p1 = d1 * *n;
     f2 = f2;
-    f32 p2 = d2 * me(me(me(me(me(me(me(this)))))))->gn()[f2];
+    n = &(me(me(me(me(me(me(me(this)))))))->gn() + 0 * *(int *)&pad64[0])[f2];
+    f32 p2 = d2 * *n;
     if (p1 >= 0.0f && p2 >= 0.0f) {
         return 1;
     }
