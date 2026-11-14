@@ -269,6 +269,11 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E270=$(BOOTUP_E270_DONOR)
+# E2D0 = plane reflect / scale helper; the f64 literal 0.1 is in bootup.uso RoData
+# +0x9A0 (func_0000E2D0_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
+# (agent-h run 408: code-free tests after the 9F8 line rotate the FP temp ring).
+BOOTUP_E2D0_DONOR := build/src/bootup_uso/bootup_uso_o2_E2D0.c.o
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E2D0=$(BOOTUP_E2D0_DONOR)
 # 6808 = scene/screen constructor (13-way record dispatch); IDO 7.1 -O2 donor
 # bootup_uso_o2_6808.c over an empty placeholder (agent-g run 223). EXACT.
 # Jumptable reloc renamed func_00006808_rodata, pinned to 0x5B4.
@@ -2892,6 +2897,7 @@ C_FILES := $(filter-out src/game_libs/game_libs_o1_6EF64.c src/timproc_uso_b1/ti
 # agent-c run 122 donor units (kept off the long filter-out line above to avoid merge conflicts)
 C_FILES := $(filter-out src/game_libs/game_libs_o2_23914.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_E270.c,$(C_FILES))
+C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_E2D0.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_o2_6808.c,$(C_FILES))
 C_FILES := $(filter-out src/timproc_uso_b5/timproc_uso_b5_8FC8.c,$(C_FILES))
 C_FILES := $(filter-out src/bootup_uso/bootup_uso_90CC.c,$(C_FILES))

@@ -8720,8 +8720,14 @@ void func_0000E270(char *arg0, float arg1) {
  * Caps <80: very FP-heavy (dozens of mul.s/add.s/sub.s, two
  * dot-products, two reflections, two |.|^2) + func_00000000 reloc
  * + spilled f-temps + the file-split needed to fold the pool load. Full body
- * INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode). */
-#ifdef NON_MATCHING
+ * INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode).
+ * EXACT (agent-h run 408) via the IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
+ * (REPLACE_FUNC_BODY, func_0000E2D0_rodata = 0x9A0 for the 0.1 literal). The
+ * in-unit body is the same C (keeps the .text size). The post-call FP ring:
+ * the two code-free tests after the 9F8 line hand ugen a shared v[]
+ * sub-expression that it evaluates into ring temps which as1 deletes as dead,
+ * so the FIFO rotates into the target's 1.0 f8 / arg4 f16 / sum f18 order;
+ * comparing against lim / dot keeps lim f2 / -lim f12; arg4 is not kept. */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
@@ -8772,9 +8778,10 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     v[0].z = d * arg3->z - v[0].z;
     if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
         dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[0].x * v[1].x);
-        func_00000000(&v[0]); if (arg3) {} if (arg4) {} /* run 131: arg4 kept live -> the 1.0f + arg4 load/mtc1/nop schedule, length 131 */
+        func_00000000(&v[0]); if (arg3) {}
         lim = *(f32 *)(arg0 + 0x9FC);
         dot *= *(f32 *)(arg0 + 0x9F8);
+        if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != lim) {} if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != dot) {}
         if (dot < -lim) {
             dot = -lim;
         }
@@ -8788,9 +8795,6 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
         func_00000000(arg0, arg1, &v[0]);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000E2D0);
-#endif
 
 /* func_0000E4DC - verified structural decode (0xAC, 43 insns).
  * Per-frame update/teardown over a composite object a0 (= s2). Uses

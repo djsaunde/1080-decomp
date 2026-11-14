@@ -1,0 +1,33 @@
+{
+  "function_name": "func_0000E2D0",
+  "project": "1080-agent-h",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-14T20:05:32.277060+00:00",
+  "end_time": "2026-11-14T20:05:32.277077+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-14T20:05:32.277073+00:00",
+      "assistant_text": "Two code-free tests on a shared v[] sub-expression after the 9F8 line make ugen emit dead ring-temp loads/ops (deleted by as1), rotating the FP temp FIFO into the target's tail order; arg4 not kept live. IDO 7.1 -O2 donor spliced over the in-unit body for the 0.1 RoData literal.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 131,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 -O2 donor for func_0000E2D0 -- plane reflect / scale helper (0x20C / 131 words).\n *\n * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the E270 recipe):\n * the f64 literal 0.1 lives in bootup.uso RoData at +0x9A0 (target reloc\n * func_0000098C + 0x14); the donor-local .rodata reloc is renamed\n * func_0000E2D0_rodata and pinned to 0x9A0.\n *\n * The post-call FP temp ring (1.0 f8 / arg4 f16 / sum f18, then f4 f10 f16 /\n * f6 f8 f18 in the scale block) comes from the two code-free tests after the\n * 9F8 line (agent-h run 408): uopt deletes the tests only after ugen has been\n * handed the shared sub-expression, so ugen loads and combines the v[] terms\n * into ring temps that as1 then deletes as dead. Those zero-code pop / free\n * pairs rotate the FIFO into the target's order. Comparing against lim and\n * dot (not constants) also leaves lim in f2 and -lim in f12. arg4 is NOT kept\n * live, so it is a ring temp as in the target. */\n#include \"common.h\"\n\ntypedef struct { float x, y, z; } Vec3;\nextern float func_00000000_4948_ff(float);\nvoid func_00000000();\n\nvoid func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {\n    Vec3 v[2];\n    f32 d;\n    f32 lim;\n    f32 s;\n    int X;\n    f32 dot;\n    int pad[7];\n\n    v[1].x = arg2->x;\n    v[1].y = arg2->y;\n    v[1].z = arg2->z;\n    d = v[1].z * arg3->z + (v[1].y * arg3->y + v[1].x * arg3->x);\n    v[1].x = d * arg3->x - v[1].x;\n    v[1].y = d * arg3->y - v[1].y;\n    v[1].z = d * arg3->z - v[1].z; if (1) {}\n    v[0].x = *(f32 *)(arg0 + 0x3BC);\n    v[0].y = *(f32 *)(arg0 + 0x3C0);\n    v[0].z = *(f32 *)(arg0 + 0x3C4);\n    d = v[0].z * arg3->z + (v[0].y * arg3->y + v[0].x * arg3->x);\n    v[0].x = d * arg3->x - v[0].x;\n    v[0].y = d * arg3->y - v[0].y;\n    v[0].z = d * arg3->z - v[0].z;\n    if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {\n        dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[0].x * v[1].x);\n        func_00000000(&v[0]); if (arg3) {}\n        lim = *(f32 *)(arg0 + 0x9FC);\n        dot *= *(f32 *)(arg0 + 0x9F8);\n        if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != lim) {} if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != dot) {}\n        if (dot < -lim) {\n            dot = -lim;\n        }\n        if (lim < dot) {\n            dot = lim;\n        }\n        dot *= 1.0f + arg4;\n        v[0].x *= dot;\n        v[0].y *= dot;\n        v[0].z *= dot;\n        func_00000000(arg0, arg1, &v[0]);\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/bootup_uso/bootup_uso_o2_E2D0.c",
+    "asm_path": "asm/nonmatchings/bootup_uso/func_0000E2D0.s",
+    "segment": "bootup_uso",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Verified: make ROM byte-identical (tenshoe.z64 OK), verify-blocks 6/6, non_matching_objects clean, objdiff report 100.0 (99.542 NM before), no exacts lost (3283 -> 3284)."
+  }
+}
