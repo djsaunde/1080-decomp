@@ -776,6 +776,7 @@ extern int import_8005C108[];
 #define E68_VTX(pkt, v, n, v0) E68_DMA1P(pkt, 0x04, v, ((n) << 10) | (sizeof(VtxE68) * (n) - 1), (v0) * 2)
 #define E68_CULL(pkt, vs, ve) E68_W(pkt, E68_SHL(0xBE, 24, 8) | E68_SHL((vs) * 2, 0, 16), E68_SHL((ve) * 2, 0, 16))
 #define E68_TRI1(pkt, a, b, c) E68_W(pkt, E68_SHL(0xBF, 24, 8), E68_SHL((a) * 2, 16, 8) | E68_SHL((b) * 2, 8, 8) | E68_SHL((c) * 2, 0, 8))
+#define E68_TRI1S(pkt, a, b, c) E68_W(pkt, E68_SHL(0xBF, 24, 8), E68_SHL(a, 16, 8) | E68_SHL(b, 8, 8) | E68_SHL(c, 0, 8)) /* agent-h run 403: E68_TRI1 with the operands already scaled by 2 */
 #define E68_END(pkt) E68_W(pkt, E68_SHL(0xB8, 24, 8), 0)
 #define E68_M10(p) (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) /* agent-h run 389 (kit CDLXXV): flat, unparenthesised -- each term is one counted use of p */
 #define E68_M80(p) E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p)
@@ -864,12 +865,16 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 uls = 0;
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
                     s32 vs, ve;
-                    vs = vidx * 2; ve = (vidx + 3) * 2; if (uls) {} /* agent-h run 403: the test on uls, not j (see `ult += 32` below); agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642); agent-h run 393: vs assigned first -- the two dead `or` copies come out in the target's order (vs copy, then ve copy), 99.302 -> 99.308 */
+                    vs = vidx * 2; if (uls) {} /* agent-h run 403: ve is assigned inside the CULL packet below; the test on uls, not j (see `ult += 32` below); agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642); agent-h run 393: vs assigned first -- the two dead `or` copies come out in the target's order (vs copy, then ve copy), 99.302 -> 99.308 */
                     /* agent-g run 291: the CULL packet on the named vs / ve (the gSPCullDisplayList operands
                      * pre-scaled) instead of recomputing (vidx) * 2 / (vidx + 3) * 2: two fewer coloured items in
                      * the packet BBs, so gen_outparcode's per-BB store temps fit the spilltemps pool and the frame
                      * bottom loses its two emit-time words -- the spills sit at the target's 76 / 80 / 84 */
-                    E68_W(arr[k++] = E68_NEXTB(m), E68_SHL(0xBE, 24, 8) | E68_SHL(vs, 0, 16), E68_SHL(ve, 0, 16));
+                    /* agent-h run 403: ve assigned in the CULL w1 operand, after the arr[k] store in evaluation order --
+                     * uopt numbers the arr address IV before the (vidx + 3) * 2 IV, so in their adjsave tie (620, with
+                     * the second TRI1 on the pre-scaled ve) arr is coloured first and takes ra, the ve IV s0, like the
+                     * target; 4 more folded vs uses below put the dead vs / ve copies in a3 / t0 (99.914 -> 99.980) */
+                    E68_W(arr[k++] = E68_NEXTB(m), E68_SHL(0xBE, 24, 8) | E68_SHL(vs, 0, 16), E68_SHL(ve = (vidx + 3) * 2, 0, 16));
                     /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
                      * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
                     /* agent-h run 397: every phase-2 append on the explicit increment (E68_NEXTB): the NEXT post-increment
@@ -881,11 +886,11 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     /* agent-g run 254: an empty test of m between the two TRI1 packets (lever sweep over every statement slot) lines
                      * the body up word-for-word up to registers at the target's 3036 B (97.80 -> 98.05; with the if (1) {} above) */
                     /* agent-c run 353: the run-254 `if (m) {}` and the `if (uls) {}` here dropped once the phase-3 loop counts through uls (98.748 -> 98.781) */
-                    E68_TRI1(E68_NEXTB(m), vidx, vidx + 2, vidx + 3);
+                    E68_TRI1S(E68_NEXTB(m), vidx * 2, (vidx + 2) * 2, ve); /* agent-h run 403: pre-scaled operands, the third through ve (= (vidx + 3) * 2): one fewer use of the ve IV (4100 -> 3100) */
                     E68_END(E68_NEXTB(m));
                     uls += 64;
                     vidx += 4;
-                    if ((vs) + 0 * ((int)(vs) + (int)(vs) + E68_M80(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + (int)(uls) + (int)(uls) + (int)(vs) + (int)(vs))) {} if ((ve) + 0 * ((int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve))) {} /* agent-h run 397: on the all-NEXTB body 120 m / 2 uls / 1 j / 5 vs folds and 6 folded ve uses (grids); */ /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
+                    if ((vs) + 0 * ((int)(vs) + (int)(vs) + E68_M80(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + (int)(uls) + (int)(uls) + (int)(vs) + (int)(vs) + (int)(vs) + (int)(vs) + (int)(vs) + (int)(vs))) {} if ((ve) + 0 * ((int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve))) {} /* agent-h run 397: on the all-NEXTB body 120 m / 2 uls / 1 j / 5 vs folds and 6 folded ve uses (grids); */ /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
                 /* agent-h run 403: j's in-loop folded use and `if (j) {}` dropped and one folded use here, after the
