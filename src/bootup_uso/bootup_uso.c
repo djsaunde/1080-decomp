@@ -767,6 +767,8 @@ extern int import_8005C108[];
 #define E68_CULL(pkt, vs, ve) E68_W(pkt, E68_SHL(0xBE, 24, 8) | E68_SHL((vs) * 2, 0, 16), E68_SHL((ve) * 2, 0, 16))
 #define E68_TRI1(pkt, a, b, c) E68_W(pkt, E68_SHL(0xBF, 24, 8), E68_SHL((a) * 2, 16, 8) | E68_SHL((b) * 2, 8, 8) | E68_SHL((c) * 2, 0, 8))
 #define E68_END(pkt) E68_W(pkt, E68_SHL(0xB8, 24, 8), 0)
+#define E68_M10(p) (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) /* agent-h run 389 (kit CDLXXIV): flat, unparenthesised -- each term is one counted use of p */
+#define E68_M80(p) E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p)
 extern void func_00000000_e68v(); /* run 156: discarded bzero-like call (void: frees v0) */
 void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     u32 timg;
@@ -803,6 +805,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         *(f32 *)(self + 0x40) = 1.0f;
         *(f32 *)(self + 0x3C) = 1.0f;
         buf = (VtxE68 *)func_00000000(0x800, 16);
+        if (arg2 != 0x123456) {}
         func_00000000_e68v(buf, 0x800, 0);
         vidx = 0;
         y = import_8001FFA0_h[1] / 2 - 16;
@@ -820,6 +823,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 buf[vidx + 1].x = x - 32;
                 buf[vidx + 1].y = y + 16; /* run 233: the old if (1) {} here dropped (96.56 -> 96.72) */
                 buf[vidx + 1].z = import_8001FFA0[0] / 2;
+        if (arg2) {}
                 buf[vidx + 1].s = 0xFC0;
                 buf[vidx + 1].t = 0;
                 buf[vidx + 2].x = x - 32;
@@ -830,6 +834,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 buf[vidx + 3].x = x + 32;
                 buf[vidx + 3].y = y - 16;
                 buf[vidx + 3].z = import_8001FFA0[0] / 2;
+        if (arg3 != 0x123456) {}
                 buf[vidx + 3].s = 0;
                 buf[vidx + 3].t = 0x7C0;
                 x -= 64;
@@ -855,7 +860,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
                      * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
                     E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0); if (1) {}
-                    E68_TRI1(E68_NEXTB(m), vidx, vidx + 1, vidx + 2); if (timg) {} /* agent-c run 353: with the `if (uls) {}` below (climb, 98.709 -> 98.742; either alone byte-identical) */
+                    E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2); if (timg) {} /* agent-c run 353: with the `if (uls) {}` below (climb, 98.709 -> 98.742; either alone byte-identical) */
                     /* agent-g run 254: an empty test of m between the two TRI1 packets (lever sweep over every statement slot) lines
                      * the body up word-for-word up to registers at the target's 3036 B (97.80 -> 98.05; with the if (1) {} above) */
                     /* agent-c run 353: the run-254 `if (m) {}` and the `if (uls) {}` here dropped once the phase-3 loop counts through uls (98.748 -> 98.781) */
@@ -863,7 +868,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_END(E68_NEXTB(m));
                     uls += 64;
                     vidx += 4;
-                    if ((vs) + 0 * (int)(vs)) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21) */
+                    if ((vs) + 0 * ((int)(vs) + E68_M80(m))) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXIV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860 */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
                 ult += 32 + 0 * (int)(ult); /* agent-g run 291: folded counted use of ult (set on every path here;
@@ -892,6 +897,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         E68_W(E68_NEXTB(m2), 0xE7000000, 0);
         vp = buf;
         n = import_8001FFA0[0] / 32;
+        if (arg4 != 0x654321) {}
         /* agent-c run 233: the row pointer is &vp[i * (n * 4)] (uopt strength-reduces it: the target's
          * in-loop `sll n,2; sll 4; addu` step, never hoisted), and the h re-read goes through the
          * address the target holds in s8 -- 94.59 -> 95.10 standalone; spelled (int)&h[1] the +4 folds
