@@ -137,8 +137,8 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ((int)a, (int)a, (int)a, a->pos);
             const Vec3 &h = subp2((int)a, (int)a, s->p90, a->pos);
-            float dot = h.x * e.x + e.z * h.z + K3(s)->w->speed * K3(s)->kDC;
-            if (h.x * e.x + e.z * h.z) {} /* run 422: the partial h.e sum as a uopt CSE too (no ring pop) */
+            float dot = h.x * e.x + e.z * h.z; /* run 422: the h.e partial in a uopt register (target f12, no ring pop) */
+            dot += K3(s)->w->speed * K3(s)->kDC;
             K1(s)->p84 += e * dot;
             side *= (250.0f * b->width) * s->kE0; /* the target muls 250 * width first, then kE0 (run 422: as the left operand) */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
