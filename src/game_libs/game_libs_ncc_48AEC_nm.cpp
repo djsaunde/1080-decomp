@@ -42,7 +42,7 @@ struct Ctx {
     void prim(u32 hi, u32 lo) { Gfx *g = nextQ(); g->w0 = hi; g->w1 = lo; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
-    Mtx *mtx() { if (mh->count) {} return &mh->buf[mh->count++]; } /* agent-g run 407: code-free count test, with arm 1's GS->ctx test 98.397 -> 98.426 */ /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
+    Mtx *mtx() { return &mh->buf[mh->count++]; } /* agent-g run 424: plain (the run-407 code-free count test dropped) with the arm-1 receiver at depth 4 / else depth 3: arm-1 count on pool slot 5 (v0, with it.a) and mh on slot 6 (v1), B v1; 99.684 -> 99.713 */ /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
     /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
      * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
     /* agent-g run 417: the loop bodies' 0x06 packet as an inline taking the element's ctx and n8A as parameters
@@ -140,10 +140,10 @@ void Obj::draw() {
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        { Mtx *c; if (GS->ctx) {} c = me(me(gctx))->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
+        { Mtx *c; if (GS->ctx) {} c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(me(gctx))->mtx()); me(me(gctx))->ld2((int)c2, c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(me(me(gctx)))->mtx()); me(me(gctx))->ld2((int)c2, c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
