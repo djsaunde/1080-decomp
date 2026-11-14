@@ -788,13 +788,13 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     s32 k, uls;
     s32 i;
     GwE68 *head;
-    s32 c3; /* agent-h run 397: phase-3 count (see E68_NEXTC); padq drops one word, frame still 0x1D8 */
+    /* agent-h run 399: the run-397 phase-3 count c3 dropped (see the G_DL loop); padq back to 3 words */
     s32 j, n;
     MgrE68 *m;
     MgrE68 *m2; /* agent-c run 353 (kit CDXLIII): phase 3's own MGR variable (the target's phase-2 m is v0, phase-3 m s1: two LRs) */
     VtxE68 *vp;
     s32 _n;
-    int padq[2]; /* agent-h run 397: back to 2 words with c3 in the all-NEXTB phase 2 (the spill temps sit at the target's 76 / 80 / 84 again); agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
+    int padq[3]; /* agent-h run 399: 3 words without c3; agent-h run 397: back to 2 words with c3 in the all-NEXTB phase 2 (the spill temps sit at the target's 76 / 80 / 84 again); agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
 
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
@@ -904,8 +904,8 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         E68_W(E68_NEXTB(m2), 0xE8000000, 0);
         E68_W(E68_NEXTB(m2), 0xF5000100, 0x07000000); if (1) {} /* agent-h run 397: phase-3 bbsplit (99.322 -> 99.361) */
         E68_W(E68_NEXTB(m2), 0xE6000000, 0);
-        E68_W(E68_NEXTC(m2), 0xF0000000, 0x073FC000); if (1) {}
-        E68_W(E68_NEXTC(m2), 0xE7000000, 0);
+        E68_W(E68_NEXTB(m2), 0xF0000000, 0x073FC000); if (1) {}
+        E68_W(E68_NEXTB(m2), 0xE7000000, 0);
         vp = buf;
         n = import_8001FFA0[0] / 32;
         if (arg4 != 0x654321) {}
@@ -914,17 +914,20 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
          * address the target holds in s8 -- 94.59 -> 95.10 standalone; spelled (int)&h[1] the +4 folds
          * into the lui/addiu pair (sym+4) like the target -- 95.17 -> 95.31 */
         for (i = 0; i < *(s32 *)(int)&import_8001FFA0_h[1] / 64; i++) {
-            E68_VTX(E68_NEXTC(m2), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
+            E68_VTX(E68_NEXTB(m2), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
                 /* agent-c run 353: the count in the dead phase-2 uls (written first) instead of _n -- the arr[] IV then
                  * takes the target's a1 (98.742 -> 98.748; j scores the same) */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((c3 = E68_DL_I(m2)->count, E68_DL_I(m2)->count = c3 + 1, &E68_DL_I(m2)->buf[c3]), 0x06, dl, 0, 0); }
+                /* agent-h run 399: the four outer phase-3 appends back on _n (a1 like the target) and the G_DL count
+                 * in the dead tlut: its live range spans phases 1-3, so its priority falls below the arr[] IV and it
+                 * takes the target's a2 (arr a1) -- 99.592 -> 99.671 (a fresh local takes v1; arg4 scores the same) */
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((tlut = E68_DL_I(m2)->count, E68_DL_I(m2)->count = tlut + 1, &E68_DL_I(m2)->buf[tlut]), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
-        E68_END(E68_NEXTC(m2));
+        E68_END(E68_NEXTB(m2));
         *(GwE68 **)(self + 0x38) = head;
     }
     return self;
