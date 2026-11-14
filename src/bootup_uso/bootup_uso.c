@@ -864,7 +864,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 uls = 0;
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
                     s32 vs, ve;
-                    vs = vidx * 2; ve = (vidx + 3) * 2; if (j) {} /* agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642); agent-h run 393: vs assigned first -- the two dead `or` copies come out in the target's order (vs copy, then ve copy), 99.302 -> 99.308 */
+                    vs = vidx * 2; ve = (vidx + 3) * 2; if (uls) {} /* agent-h run 403: the test on uls, not j (see `ult += 32` below); agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642); agent-h run 393: vs assigned first -- the two dead `or` copies come out in the target's order (vs copy, then ve copy), 99.302 -> 99.308 */
                     /* agent-g run 291: the CULL packet on the named vs / ve (the gSPCullDisplayList operands
                      * pre-scaled) instead of recomputing (vidx) * 2 / (vidx + 3) * 2: two fewer coloured items in
                      * the packet BBs, so gen_outparcode's per-BB store temps fit the spilltemps pool and the frame
@@ -885,10 +885,13 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_END(E68_NEXTB(m));
                     uls += 64;
                     vidx += 4;
-                    if ((vs) + 0 * ((int)(vs) + (int)(vs) + E68_M80(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + (int)(uls) + (int)(uls) + (int)(j) + (int)(vs) + (int)(vs))) {} if ((ve) + 0 * ((int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve))) {} /* agent-h run 397: on the all-NEXTB body 120 m / 2 uls / 1 j / 5 vs folds and 6 folded ve uses (grids); */ /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
+                    if ((vs) + 0 * ((int)(vs) + (int)(vs) + E68_M80(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + (int)(uls) + (int)(uls) + (int)(vs) + (int)(vs))) {} if ((ve) + 0 * ((int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve))) {} /* agent-h run 397: on the all-NEXTB body 120 m / 2 uls / 1 j / 5 vs folds and 6 folded ve uses (grids); */ /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
-                ult += 32; /* agent-h run 393 (kit CDLXXIX): the run-291 folded ult use dropped -- ult's lower
+                /* agent-h run 403: j's in-loop folded use and `if (j) {}` dropped and one folded use here, after the
+                 * loop: j appears in one more block at depth 2 (save 3200 over 6 blocks = 533, below the 620 of the
+                 * +2 / +4 IVs and arr), so j is coloured after them and takes s3, the IVs s1 / s2 (99.867 -> 99.907) */
+                ult += 32 + 0 * ((int)j); /* agent-h run 393 (kit CDLXXIX): the run-291 folded ult use dropped -- ult's lower
                             * priority lets the target's earlier LRs take a1 / t0 and ult falls to t1 (99.262 -> 99.295) */
             }
         }
