@@ -44,8 +44,12 @@
  *     at dir, d2, f, h and the return. The sp+468 / sp+132 chain temps now take the target's v1 (their ctor
  *     `this` a0), 94.564 -> 96.275, 2828 B (target 2836), frame 544 (target 528). The dummy KR1 words cost the
  *     frame; every spelling that puts the sp+372 pool in a2 also puts s in s0 (2712 B).
- * LEFT: pool a3 (the else-arm `wpos` view LR and f's plain chain temp colour a2 first; lowering either moves the
- * dir / d2 ctor-this word to a1 and s to s0); frame 544; pool-slot offsets. */
+ *   - agent-c run 411 (kit CDXCVI): h as plain subp2 (frame 536), dir as subp1 with a 2-dummy XZ(b->pos) (dir's
+ *     conversion `this` leaves the d2-conversion-`v` word and takes a0 as in the target), g as subp1, K1 moved from
+ *     the flag-arm `+=` to the else-arm one, K3 on the p90 store and the h-dot speed read: frame 528 = target,
+ *     pool at the target's sp+372 / M-156, 96.275 -> 96.683, 2832 B (target 2836).
+ * LEFT: pool a3 (plain chain temps + `wpos` view colour a2 first); the else-arm XZ(wpos) `this` shares its word with
+ * perp's `this` (v1; target a0 / v1); d2's conversion `v` home sp+400 vs the target's sp+416. */
 extern "C" void *game_uso_func_055750(unsigned);
 template <class T> inline const T &KR1(const T &r) { const T *p = &r; if (0) { p = 0; } return *p; } /* kept const-ref identity with a dead block */
 struct Vec3 {
@@ -71,6 +75,7 @@ inline XZ operator-(const Vec3 &a, const Vec3 &b) { return KR1(XZ(a.x - b.x, a.z
 inline XZ sub1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return KR1(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ sub2(int z0, int z1, const Vec3 &a, const Vec3 &b) { z0 = z0; z1 = z1; return KR1(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ subp1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return XZ(a.x - b.x, a.z - b.z); }
+inline XZ subp2(int z0, int z1, const Vec3 &a, const Vec3 &b) { z0 = z0; z1 = z1; return XZ(a.x - b.x, a.z - b.z); }
 inline XZ perp(const Vec3 &v) { return XZ(v.z, -v.x); }
 struct Node { char pad0[0x30]; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; };
 struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; };
@@ -85,16 +90,15 @@ template <class T> inline T *K3(T *p) { p = p; return p; } /* kept identity: zer
 template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* kept identity with a dead block */
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
-        XZ dir(sub2((int)a, (int)a, XZ((int)a, b->pos), K3(a)->pos));
-        if (1) {}
+        XZ dir(subp1((int)a, XZ((int)a, (int)a, b->pos), K3(a)->pos));
         game_uso_func_071028(&dir);
         if (1) {}
         const Vec3 &d2 = subp1((int)a, XZ((int)a, s->w->pos), a->pos);
         float lenf = dir.x * d2.x + dir.z * d2.z;
-        s->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
+        K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
         s->p84 = s->p90;
         float dot = lenf + (s->w->speed * s->kDC) / 2;
-        K1(s)->p84 += KR1(dir * dot);
+        s->p84 += KR1(dir * dot);
         dot = lenf - (s->w->speed * s->kDC) / 2;
         s->p90 += dir * dot;
         s->phase = 0;
@@ -102,15 +106,15 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         XZ e(XZ((int)a, (int)a, (int)a, b->pos) - a->pos);
         const Vec3 &f = subp1((int)a, s->p84, s->p90);
         const Vec3 &wpos = K1(s)->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
-        XZ g = XZ(wpos) - s->p90;
+        XZ g = subp1((int)a, XZ(wpos), s->p90);
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
             game_uso_func_071028(&e);
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ((int)a, (int)a, (int)a, a->pos);
-            const Vec3 &h = sub1((int)a, s->p90, a->pos);
-            float dot = h.x * e.x + e.z * h.z + s->w->speed * K3(s)->kDC;
-            s->p84 += e * dot;
+            const Vec3 &h = subp2((int)a, (int)a, s->p90, a->pos);
+            float dot = h.x * e.x + e.z * h.z + K3(s)->w->speed * K3(s)->kDC;
+            K1(s)->p84 += e * dot;
             side *= s->kE0 * (250.0f * b->width); /* the target muls 250 * width first, then kE0 */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
             switch (s->phase &= 3) {
