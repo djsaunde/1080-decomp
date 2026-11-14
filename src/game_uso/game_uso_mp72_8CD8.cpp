@@ -59,7 +59,8 @@
  *     an XZ member copy of operator* (used by the else-arm `e * dot`), -> 97.472 (2832 B).
  *   - agent-c run 418 (kit DII, edg frame-word model): d2 is a temporary inside lenf's initialiser through an
  *     inline dot2 (no named d2 word: lenf at the target's M-100), 97.472 -> 97.528; dir's `a` without K3 and
- *     subp2 (the flag-arm `if (1) {}` no longer needed), -> 97.533 (2832 B, pool a2 at sp+372).
+ *     subp2 (the flag-arm `if (1) {}` no longer needed), -> 97.533 (2832 B, pool a2 at sp+372); f as a named
+ *     XZ value (`XZ f = subp2(...)`, the target's M-336 between e and g) with g bound as `const XZ &`, -> 97.537.
  * LEFT: the else-arm XZ(wpos) `this` shares its word with perp's `this` (v1; target a0 / v1); d2's conversion `v`
  * home sp+400 vs the target's sp+416 (in the target d2's and g's `v` are one word: a direct XZ(K1(s)->w->pos) at g
  * does join them, but the conversion-`this` word then outranks e1189 and s falls to s0, 2712 B); f0 / f12 swaps at
@@ -125,10 +126,10 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         s->phase = 0;
     } else {
         XZ e(XZ((int)a, (int)a, (int)a, b->pos) - a->pos);
-        const Vec3 &f = subp1((int)a, s->p84, s->p90);
+        XZ f = subp2((int)a, (int)a, s->p84, s->p90); /* run 418: a named value at the target's M-336 */
         const Vec3 &wpos = K1(s)->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
         if (1) {} if (1) {} if (1) {} if (1) {} /* run 414: wpos LR 6 -> 10 blocks, priority 1.0 -> 0.75 */
-        XZ g = subp1((int)a, XZ(wpos), s->p90);
+        const XZ &g = subp1((int)a, XZ(wpos), s->p90);
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
             game_uso_func_071028(&e);
