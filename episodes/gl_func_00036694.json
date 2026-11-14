@@ -1,0 +1,28 @@
+{
+  "function_name": "gl_func_00036694",
+  "project": "1080-agent-g",
+  "model": "claude-manual",
+  "start_time": "2026-11-14T18:49:07.772184+00:00",
+  "end_time": "2026-11-14T18:49:07.772201+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-14T18:49:07.772197+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 178,
+  "initial_m2c_source": null,
+  "final_source": "V3 Obj::perp(V3 p, V3 n) {\n    V3 a;\n    V3 r;\n    f32 l;\n    id(p);\n    r.assign(p - (a = id(n) * ((n.x * p.x + n.y * p.y) + n.z * p.z)));\n    f32 m = lsq2(r);\n    if ((m > 0.0f) | (0 * ((r.y != 0.0f) | (r.x == 0.0f) | (r.z > 0.0f)))) {\n        if ((r.z < 0.0f) | (0 * ((r.z != r.x) | (r.z > 0.0f)))) {\n            r.x = r.x * -1.0f;\n            r.y = r.y * -1.0f;\n            r.z = r.z * -1.0f;\n        }\n        l = m;\n        return (r * 1.0f) / gl_sqrtf_36694((const f32 &)l);\n    }\n    if ((n.z == 1.0f) | (0 * ((p.x != 1.0f)))) {\n        r.z = 0.0f;\n        r.x = 1.0f; if (1) {}\n        r.y = 0.0f;\n    } else {\n        r.z = 0.0f;\n        r.x = -n.y;\n        r.y = n.x;\n        gl_normalize_36694(&r);\n    }\n    if ((n.x != 0.0f) | (n.y != 0.0f) | (n.z != 0.0f) | (p.x != 0.0f) | (p.y != 0.0f) | (p.z != 0.0f)) {}\n    return r;\n}\n",
+  "metadata": {
+    "source_path": "/tmp/claude-1000/g401/body36694.cpp"
+  }
+}

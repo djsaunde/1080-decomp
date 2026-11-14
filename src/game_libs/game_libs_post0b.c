@@ -2343,7 +2343,13 @@ V3_36694 *gl_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_36694 n) {
     return out;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036694);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_36694.cpp (agent-c run 182 lift,
+ * agent-g run 401 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees; the two blank USO jal words are pinned as
+ * gl_sqrtf_36694 / gl_normalize_36694 = 0. */
+void *gl_func_00036694(void *out) {
+    return out;
+}
 #endif
 
 // gl_func_0003695C — STRUCTURAL PASS (0xEC / 59 words, no episode).

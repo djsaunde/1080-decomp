@@ -2287,14 +2287,17 @@ $(GAMELIBS_493AC_DONOR): src/game_libs/game_libs_ncc_493AC.cpp
 	$(OBJCOPY) --redefine-sym run__3MgrFv=gl_func_000493AC --redefine-sym __vtbl__3Rec=D_00000000 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000493AC=$(GAMELIBS_493AC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_493AC_DONOR)
-# 36694 = real C++ `V3 Obj::perp(V3, V3)` (agent-c run 182; was the run-134 NCC C lift, cfe 82.41); symbol renamed (name only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_36694_NM_DONOR := build/src/game_libs/game_libs_ncc_36694_nm.cpp.o
-$(GAMELIBS_36694_NM_DONOR): src/game_libs/game_libs_ncc_36694_nm.cpp
+# 36694 = real C++ `V3 Obj::perp(V3, V3)` (agent-c run 182; was the run-134 NCC C lift, cfe 82.41); symbol renamed (name only).
+# agent-g run 401: EXACT NCC donor over a placeholder on both build trees (|r|^2 through an inline lsq2() so m, not a
+# sum expression LR, is compared; counted zero-code uses order r.z's f2 piece ahead of v.z / m). The two calls are
+# blank USO jal words: gl_sqrtf_36694 / gl_normalize_36694 pinned 0. No .rodata (constants via lui / mtc1).
+GAMELIBS_36694_DONOR := build/src/game_libs/game_libs_ncc_36694.cpp.o
+$(GAMELIBS_36694_DONOR): src/game_libs/game_libs_ncc_36694.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym perp__3ObjF2V3T1=gl_func_00036694 $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036694=$(GAMELIBS_36694_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36694_NM_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00036694=$(GAMELIBS_36694_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36694_DONOR)
 # 37540 = C++ sibling of the exact 37348 donor (agent-c run 200; kept Node * inline parameters, ctor-built vB4, by-value copies).
 # agent-c run 298: EXACT NCC donor over a placeholder (v9C as a P3 / volatile-view union: unforwarded re-reads);
 # the blank jal words go through gl_func_00000000, the three pool literals through the renamed .rodata reloc,
