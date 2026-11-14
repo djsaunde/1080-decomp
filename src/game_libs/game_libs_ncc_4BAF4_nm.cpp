@@ -26,7 +26,7 @@ inline void put4B(Gfx4B *g, u32 hi, u32 lo) { g->w0 = hi; g->w1 = lo; }
 /* agent-g run 335 (kit CDXXVII): nextF() / addF() for the three ctx-variable packets (first, else arm, final). The
  * four me2() on the count side hold edg pool words before the `n++` temp, so these packets' count / gfx words are no
  * longer the words the expression-receiver packets (0xEE, TEXRECT, B4, B3) use for their receiver: 99.303 -> 99.409 */
-struct Ctx4B { char pad[0xC]; GP4B *gfx; int ex() { return (int)this; } int gt(int v, int c) { return v > c + (int)this; } void dlc(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextF(), 0x06000000, r); } void dlG(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextG(), 0x06000000, r); } void dlM(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextG(), 0x06000000, r); } Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } Gfx4B *nextG() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n + 0 * n]; } void addG(u32 hi, u32 lo) { put4B(me2(this)->nextG(), hi, lo); } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
+struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *nextP(int n) { gfx->n = n + 1; return &gfx->buf[n]; } void dlS(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextP(gfx->n), 0x06000000, r); } int ex() { return (int)this; } int gt(int v, int c) { return v > c + (int)this; } void dlc(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextF(), 0x06000000, r); } void dlG(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextG(), 0x06000000, r); } void dlM(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextG(), 0x06000000, r); } Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } Gfx4B *nextG() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n + 0 * n]; } void addG(u32 hi, u32 lo) { put4B(me2(this)->nextG(), hi, lo); } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
 #define GS4B (*(char **)((char *)&D_00000000 + 0x254))
@@ -46,6 +46,9 @@ typedef struct { char pad[0x30]; V4B p; } Cam4B;
 
 extern "C" Cam4B D_4BAF4_cam;
 template <class T> inline T idv(T v) { return v; } /* agent-g run 300: zero-code by-value identity inline (one-site wrap sweep) */
+/* agent-c run 402 (kit CDLXXXVI): the B4 x clamp's MAX through a by-value int inline -- its parameter is an edg
+ * pool word, so the merge temps move onto the target's v1 / a1 (99.693 -> 99.835) */
+inline int mx4B(int v) { return MAX(v, 0); }
 extern "C" void gl_func_0004BAF4(char *self) {
     V4B pos;
     f32 out[17];
@@ -59,7 +62,8 @@ extern "C" void gl_func_0004BAF4(char *self) {
     /* agent-c runs 391 / 400 / 402 (kits CDLXXVIII, CDLXXXV): the inline-ctx basin -- no named ctx / s / cam; r / d open
      * an inner block after pos.x, x..h a second one; the three 0x06 packets are ONE Ctx4B inline member each (dlG / dlc /
      * dlM) so their `this` is the single a3 pool word; the clip extents are read through Ctx4B gt() / ex() `this`; the
-     * first packet as dlG and the 0xEE append as add() at depth 2: 99.586 -> 99.681, same length */
+     * first packet as dlG and the 0xEE append as add() at depth 2: 99.586 -> 99.681; the else-arm packet as dlS
+     * (count = nextP()'s by-value int parameter) and the B4 x MAX through mx4B(): -> 99.894, same length */
 
     pos.x = F4B(me((Ctx4B *)&D_4BAF4_cam), 0x30, f32);
     {
@@ -129,7 +133,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
     } else {
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a
          * coloured LR, `lw v0,100(t2); lw a0,96(v0)`), not a ugen temp: 99.007 -> 99.137, same length */
-        me(me(me(F4B(GS4B, 0x158, Ctx4B *))))->dlc(d = spr->dl64);
+        me(me(F4B(GS4B, 0x158, Ctx4B *)))->dlS(d = spr->dl64); /* agent-c run 402: the count as nextP()'s by-value parameter (a reused edg pool word, kit CDLXXXVI) */
     }
     {
         Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *)))))); /* agent-g run 332: both TEXRECT packets' receivers at depth 3 (grid 0-4 x 0-4 x 0xEE 1-3): 99.196 -> 99.243 */
@@ -146,7 +150,7 @@ extern "C" void gl_func_0004BAF4(char *self) {
         _g->w1 = (SHL4B((0 -
                    (((s16)(x << 2) < 0) ?
                    (((s16)((u16)(s32)(1024.0f / sx)) < 0) ?
-                    (MAX((((s16)(x << 2) * (s16)((u16)(s32)(1024.0f / sx))) >> 7), 0)) :
+                    (mx4B((((s16)(x << 2) * (s16)((u16)(s32)(1024.0f / sx))) >> 7))) :
                     (MIN((((s16)(x << 2) * (s16)((u16)(s32)(1024.0f / sx))) >> 7), 0))) : 0)), 16, 16) |
                   SHL4B((0 -
                    (((y << 2) < 0) ?
