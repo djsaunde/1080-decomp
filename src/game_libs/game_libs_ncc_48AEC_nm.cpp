@@ -52,7 +52,7 @@ struct Ctx {
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
     void ld(Mtx *m) { if (0) { m = 0; } Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void ld2(Mtx *m) { if (dl) {} Gfx *g = dl->buf + dl->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */
+    void ld2(int z0, Mtx *m) { if (dl) {} Gfx *g = dl->buf + dl->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */
     void cp(void *src, Mtx *c) { func_00000000(src, c); ld(c); }
     /* agent-g run 407: arm 1 as cS() (the copy call) + lE3() (the 0x01 packet). The count is a by-value parameter
      * behind three unused non-constant leading parameters (kit CDXC), so it lands on the else arm's c2 word: one
@@ -130,7 +130,7 @@ void Obj::draw() {
         { Mtx *c; c = me(gctx)->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(me(gctx))->mtx()); me(me(gctx))->ld2(c2); /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(me(gctx))->mtx()); me(me(gctx))->ld2((int)c2, c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
