@@ -46,6 +46,12 @@ struct Ctx {
     Mtx *mtx() { if (mh->count) {} return &mh->buf[mh->count++]; } /* agent-g run 407: code-free count test, with arm 1's GS->ctx test 98.397 -> 98.426 */ /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
     /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
      * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
+    /* agent-g run 417: the loop bodies' 0x06 packet as an inline taking the element's ctx and n8A as parameters
+     * (`GS->ctx->dcQ(it.cur()->ctx6C, it.cur()->n8A)`): the target's ctx6C / n8A are uopt variables (v0 / v1), not
+     * ugen temps. dcQ reuses n for the call result (one pool word fewer, so arm 2's / loop 3's homes stay on the
+     * target's); dc3 keeps the unused dd word. With the plain loop tests and the plain Flags::test, 98.484 -> 99.071 */
+    void dcQ(Ctx *c, int n) { n = (int)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = (u32)n; }
+    void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
@@ -68,7 +74,7 @@ struct Ctx {
 template <class T> inline T I2(T v) { if (0) { v = 0; } return v; }
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
-struct Flags { int v; int test(int m) { if (0) { m = 0; } return (v & m) + 0 * (int)(v); } }; /* agent-c run 209: folded counted use of v (kit CXCIV lever b) */
+struct Flags { int v; int test(int m) { return v & m; } }; /* agent-g run 417: plain (the run-209 folded use of v / kept m made v a uopt LR in v0; the target reads it into a ugen temp, t4) */
 struct Node { char pad[0x18]; Flags flags; char pad1c[2]; s16 m1e; };
 struct EBase {
     char pad0[0x5C];
@@ -142,8 +148,8 @@ void Obj::draw() {
             while (it.next()) {
                 /* agent-g run 369: the ctx6C test through curM() and n8A back through cur(), and the second loop's test
                  * through curM() (per-site accessor rounds, 200 + 200): 98.037 -> 98.085 -> 98.297, same length */
-                if (I2(it.curM())->ctx6C != 0) {
-                    GS->ctx->dlcallQ(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
+                if (it.cur()->ctx6C != 0) { /* agent-g run 417: plain test (kit CDXCVIII 4.) */
+                    GS->ctx->dcQ(it.cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
                 }
             }
         }
@@ -160,8 +166,8 @@ void Obj::draw() {
         me(GS->ctx)->prim(0xFA000000, 0xFFFF00FF);
         AIter it = arr.iter();
         while (it.next()) {
-            if (I2(it.curM())->ctx6C != 0) {
-                GS->ctx->dlcall(&it.cur()->ctx6C->dl->buf[it.cur()->n8A]); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
+            if (it.cur()->ctx6C != 0) {
+                GS->ctx->dc3(it.cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
     } else {
