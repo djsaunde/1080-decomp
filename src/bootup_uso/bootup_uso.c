@@ -757,9 +757,13 @@ extern int import_8005C108[];
     E68_W(pkt, E68_SHL(0xF5, 24, 8) | E68_SHL(fmt, 21, 3) | E68_SHL(siz, 19, 2) | E68_SHL(line, 9, 9) | E68_SHL(tmem, 0, 9), \
           E68_SHL(tile, 24, 3) | E68_SHL(pal, 20, 4) | E68_SHL(cmt, 18, 2) | E68_SHL(maskt, 14, 4) | \
           E68_SHL(shiftt, 10, 4) | E68_SHL(cms, 8, 2) | E68_SHL(masks, 4, 4) | E68_SHL(shifts, 0, 4))
+/* agent-h run 399: E68_W with two folded (zero-code) uses of the packet pointer -- on the first LOADTEXTILE
+ * packet they raise its priority over the CULL packet temp, so it takes a0 and the CULL packet a2 like the
+ * target (99.671 -> 99.709; the three phase-2 spill temps move up one slot, 76/80/84 -> 80/84/88) */
+#define E68_WF2(pkt, a, b) { GwE68 *_g = (GwE68 *)(pkt); _g->w0 = (a) + 0 * ((int)_g + (int)_g); _g->w1 = (b); }
 #define E68_LOADTEXTILE(pkt, timg, fmt, siz, width, height, uls, ult, lrs, lrt, pal, cms, cmt, masks, maskt, shifts, shiftt) \
 { \
-    E68_W(pkt, E68_SHL(0xFD, 24, 8) | E68_SHL(fmt, 21, 3) | E68_SHL(siz, 19, 2) | E68_SHL((width) - 1, 0, 12), (u32)(timg)); \
+    E68_WF2(pkt, E68_SHL(0xFD, 24, 8) | E68_SHL(fmt, 21, 3) | E68_SHL(siz, 19, 2) | E68_SHL((width) - 1, 0, 12), (u32)(timg)); \
     E68_SETTILE(pkt, fmt, siz, (((((lrs) - (uls) + 1) * 1) + 7) >> 3), 0, 7, 0, cmt, maskt, shiftt, cms, masks, shifts); \
     E68_W(pkt, E68_SHL(0xE6, 24, 8), 0); \
     E68_TILEGEN(pkt, 0xF4, 7, (uls) << 2, (ult) << 2, (lrs) << 2, (lrt) << 2); \
