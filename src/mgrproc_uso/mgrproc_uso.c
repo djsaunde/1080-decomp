@@ -721,7 +721,6 @@ void mgrproc_uso_func_0000179C(int *a0) {
 void mgrproc_uso_func_00001814(int a0) {}
 void mgrproc_uso_func_0000181C(int a0) {}
 
-#ifdef NON_MATCHING
 /* Full structural decode 2026-06-01. Per-frame state machine: sub-state
  * gate on s0->0x7D4, a 5-case timer-countdown dispatch on s0->0x7E4 (each
  * decrements the s0->0x7E8 timer and transitions at 0), and a phase-1 init
@@ -751,7 +750,11 @@ void mgrproc_uso_func_0000181C(int a0) {}
  * both switch values are plain expressions (no phase/state locals), and
  * case 3's counter is stored unconditionally before the >= 16 wrap, spelled
  * through the field (the re-read forwards the stored t9). RESIDUAL: the
- * outer switch value takes v1 (target v0) and the jtbl displacement above. */
+ * outer switch value takes v1 (target v0) and the jtbl displacement above.
+ * 2026-11-14 agent-h (run 412) EXACT: the jtbl is NOT external (kit CCLX):
+ * the credit strings below fill RoData +0x30..+0x5B8 so the table lands at
+ * +0x5B8; the `li at,1` hoist is stopped by as1's xbb candidate cap with ten
+ * code-free guarded zero-byte copies at case 0's head (kit CDXCV). */
 extern int import_000A7B90();
 extern void import_00096228();
 extern int import_000B2888();
@@ -765,16 +768,64 @@ extern int mgrproc_uso_func_01FA1C();
 extern void mgrproc_uso_func_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
 extern int mgrproc_uso_func_00F954();
+/* RoData +0x30..+0x5B8 (0x588 bytes, assets/mgrproc_uso_pre.bin +0x74): the staff-credit
+ * strings. A file-scope const array is emitted at the start of this TU's .rodata, so
+ * 1824's jump table lands at RoData +0x5B8 as in the ROM (data placement only). */
+const char mgrproc_uso_rodata_credits[0x588] =
+    "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0"
+    "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0"
+    "0EXECUTIVE PRODUCER\0" "1HIROSHI YAMAUCHI\0\0\0" "2 \0\0" "0PRODUCER\0\0\0" "1SHIGERU MIYAMOTO\0\0\0"
+    "2 \0\0" "0DIRECTORS\0\0" "1MASAMICHI ABE\0\0" "1MITSUHIRO TAKANO\0\0\0" "2 \0\0" "0ASSISTANT DIRECTOR\0"
+    "1HIRO YAMADA\0\0\0\0" "2 \0\0" "0MAIN PROGRAMMER\0\0\0\0" "1GILES GODDARD\0\0" "2 \0\0" "0PROGRAMMER\0"
+    "1COLIN REED\0" "2 \0\0" "0COM AI / CAMERA\0\0\0\0" "0PROGRAMMER\0" "1SHUNSAKU KITAMURA\0\0" "2 \0\0"
+    "0ART DIRECTOR\0\0\0" "1YOSHITAKA NISHIKAWA\0\0\0\0" "2 \0\0" "0CG CHARACTER DESIGNER\0\0"
+    "1HIROAKI TAKENAKA\0\0\0" "2 \0\0" "0CG MAP DESIGNER\0\0\0\0" "1KATSUHIKO KANNO\0\0\0\0" "2 \0\0"
+    "02D DESIGNER\0\0\0\0" "1TOMOAKI NAKAHARA\0\0\0" "2 \0\0" "03D ANIMATOR\0\0\0\0" "1HIDEKI OKAWA\0\0\0"
+    "2 \0\0" "0MOTION CAPTURE\0" "1SHINYA TAKAHASHI\0\0\0" "1TSUYOSHI WATANABE\0\0" "1JIN IKEDA\0\0"
+    "1HIROSHI MATSUNAGA\0\0" "2 \0\0" "0SOUND COMPOSER\0" "1KENTA NAGATA\0\0\0" "2 \0\0" "0SOUND ENGINEER\0"
+    "1HIDEAKI SHIMIZU\0\0\0\0" "2 \0\0" "0VOICE SAMPLES\0\0" "1DON BEAVER\0" "1JOHN HALL\0\0"
+    "1HIRO YAMADA\0\0\0\0" "1WATARU YAMAGUCHI\0\0\0" "1GILES GODDARD\0\0" "1MICHIKO YOMO\0\0\0"
+    "1SATORU TAKIZAWA\0\0\0\0" "2 \0\0" "0TECHNICAL SUPPORT\0\0" "1HIRONOBU KAKUI\0" "1SHIN HASEGAWA\0\0"
+    "2 \0\0" "0PROGRESS MANAGEMENT\0\0\0\0" "1KIMIYOSHI FUKUI\0\0\0\0" "1KEIZO KATO\0" "2 \0\0"
+    "0SPECIAL THANKS TO\0\0" "1ATSUSHI TEJIMA\0" "1HAJIME KITAGAWA\0\0\0\0" "1JIM WORNELL\0\0\0\0"
+    "1KAYOMI McDONALD\0\0\0\0" "1COLIN PALMER\0\0\0" "2 \0\0" "1SUPER MARIO CLUB STAFF\0"
+    "1EAD DEBUGGING STAFF\0\0\0\0" "1NOA DEBUGGING STAFF\0\0\0\0" "2 \0\0" "1LAMAR SNOWBOARDS, INC.\0"
+    "1TOMMY HILFIGER U.S.A., INC.\0\0\0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0"
+    "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0"
+    "2 \0\0" "9 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0"
+    "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0" "2 \0\0";
+typedef struct { char c[0]; } Z0_1824; /* zero-byte copy type (kit CDLVI) */
+/* One guarded zero-byte copy: uopt keeps the `if` (its body is a statement),
+ * ugen emits nothing for the body, so the output is `bne $2,K,$L; $L:`; as1
+ * then deletes the branch-to-next (and its dead `li at,K`) but keeps $L as a
+ * block boundary. Each guard costs two ugen temps (ring of 10). */
+#define MGR1824_EMPTY_BB(k) \
+    if (sel == (k)) *(Z0_1824 *)(char *)(sel + 0x10) = *(Z0_1824 *)(char *)(sel + 0x20)
 void mgrproc_uso_func_00001824(char *s0) {
     char *v0;
     char *r;
     char *vt;
+    int sel;
 
     v0 = (char *)import_000A7B90(&import_80020098, 1);
     import_00096228(*(signed char *)(v0 + 8), *(signed char *)(v0 + 9));
     *(int *)(s0 + 0x7EC) = *(int *)(s0 + 0x7EC) + 1;
-    switch (*(int *)(s0 + 0x7D4)) {
+    sel = *(int *)(s0 + 0x7D4);
+    switch (sel) {
     case 0:
+        /* Ten empty as1 blocks at case 0's head: bb5's xbb candidate scan
+         * (at most 11 dominated candidates) stops before the outer compare
+         * block, so `li at,1` is not hoisted above the beqz (kit CDXCIV/V). */
+        MGR1824_EMPTY_BB(7);
+        MGR1824_EMPTY_BB(8);
+        MGR1824_EMPTY_BB(9);
+        MGR1824_EMPTY_BB(10);
+        MGR1824_EMPTY_BB(11);
+        MGR1824_EMPTY_BB(12);
+        MGR1824_EMPTY_BB(13);
+        MGR1824_EMPTY_BB(14);
+        MGR1824_EMPTY_BB(15);
+        MGR1824_EMPTY_BB(16);
         switch (*(int *)(s0 + 0x7E4)) {
         case 0:
             if (--*(int *)(s0 + 0x7E8) == 0) {
@@ -835,10 +886,10 @@ void mgrproc_uso_func_00001824(char *s0) {
         }
         break;
     }
+    /* code-free test: keeps s0's LR across the last calls so uopt still
+     * colours it s0 with the extra blocks (callee firstUseCost grows with BBs) */
+    if (s0) {}
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00001824);
-#endif
 
 void mgrproc_uso_func_00001A5C(int a0) {
 }
