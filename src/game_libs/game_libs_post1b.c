@@ -2108,25 +2108,22 @@ void gl_func_00065EB4(int a0) {
  * G.size = SZ; G.end = B + 0x10 + SZ; f(&G, B + 4, ...); f(&G, G.base, G.data);
  * G.f8 = read(&G, G.base); G.fC = read(&G, G.base + 4); G.f34 = 0; next(&G).
  *
- * STATUS: 89.73% NM, up from 35.55% (2026-09-09, agent-h). The prior
- * plain -O1 diagnosis was incomplete: -O1 emits 149 words for this body,
- * including one redundant argument move per region. IDO 7.1 -O2 -Olimit 1
- * exercises uopt's size-limit fallback and emits 146 words, frame 0x18,
- * without the global optimizations that distort the ordinary -O2 build.
- * This is a closer compiler-path candidate, not proof of original flags.
+ * STATUS: 96.30% NM (agent-g run 390), up from 89.73 (-O2 -Olimit 1
+ * fallback donor, agent-h) and 35.55. Plain IDO 7.1 -O2: the target's
+ * a2-born data constant is a uopt-coloured local (d) and its a1-first
+ * call-2 / call-3 argument loads are block-scoped temporaries coloured a1;
+ * the fallback cannot produce either (ugen puts every temporary of a
+ * non-leaf function in a callee-saved register). The per-access record
+ * views (D_65EE4_g_q..w, pinned = 0) keep uopt from holding the record
+ * address in a register, so every access re-materialises it as the target
+ * does. Left: 12 words, the f8 store / call-4 base load pair of regions
+ * 1 and 2 (shared view, address coloured v1, load hoisted above the store).
  *
- * The Makefile uses game_libs_o2limit_65EE4.c ONLY for this function in
+ * The Makefile uses game_libs_o2_65EE4.c ONLY for this function in
  * build/non_matching. Keep that donor and the C below synchronized.
  * The default object retains INCLUDE_ASM. The donor is a complete compiler
- * output, never edited instructions. 95/146 raw ROM words agree. Remaining:
- * G.data starts with `lui tN; ori a2,tN,lo` instead of `lui a2; ori a2,a2,lo`,
- * advancing the rolling temporary registers; call-2/read argument loads
- * are scheduled after &G instead of before it. Ordinary -O1 adds three
- * moves; full -O2 shares constants and holds &G in s0 (102 words, frame 32).
- * Typed/void callee prototypes, literal versus derived/signed constants,
- * pointer fields, neutral integer expressions and register/local probes
- * did not resolve these residuals. Volatile adds unwanted loads.
- * See docs/IDO_CODEGEN.md#size-limit-fallback-65ee4. No exact episode. */
+ * output, never edited instructions.
+ * See docs/IDO_CODEGEN.md kit CDLXXVI. No exact episode. */
 typedef struct {
     char pad0[8];
     int f8, fC;          /* 0x08, 0x0C: words read back from base / base+4 */
@@ -2138,16 +2135,19 @@ typedef struct {
     int f34;             /* 0x34: cleared before the successor call */
 } Save65EE4;
 extern Save65EE4 D_65EE4_g;   /* sym1520 (BSS 0x3F030), = 0 in undefined_syms_auto.txt */
+/* per-access views of the same sym1520 record, all pinned = 0 like D_65EE4_g */
+extern Save65EE4 D_65EE4_g_q, D_65EE4_g_r, D_65EE4_g_s, D_65EE4_g_t, D_65EE4_g_u, D_65EE4_g_v, D_65EE4_g_w;
 extern int func_00000000();
-#define SAVE65EE4_BLOCK(B, SZ) \
-    D_65EE4_g.base = (B); D_65EE4_g.data = (B) + 0x10; \
-    D_65EE4_g.size = (SZ); D_65EE4_g.end = (B) + 0x10 + (SZ); \
-    func_00000000(&D_65EE4_g, (B) + 4, D_65EE4_g.data); \
-    func_00000000(&D_65EE4_g, D_65EE4_g.base, D_65EE4_g.data); \
-    D_65EE4_g.f8 = func_00000000(&D_65EE4_g, D_65EE4_g.base); \
-    D_65EE4_g.fC = func_00000000(&D_65EE4_g, D_65EE4_g.base + 4); \
-    D_65EE4_g.f34 = 0; \
-    func_00000000(&D_65EE4_g);
+#define SAVE65EE4_BLOCK(B, SZ) { \
+    int d; \
+    D_65EE4_g.base = (B); if (1) {} D_65EE4_g_q.data = d = (B) + 0x10; \
+    D_65EE4_g_r.size = (SZ); D_65EE4_g_s.end = (B) + 0x10 + (SZ); \
+    func_00000000(&D_65EE4_g_t, (B) + 4, d); \
+    { int b2 = D_65EE4_g_u.base; func_00000000(&D_65EE4_g_v, b2, D_65EE4_g.data); } \
+    { int b3 = D_65EE4_g_q.base; D_65EE4_g_w.f8 = func_00000000(&D_65EE4_g_r, b3); } \
+    D_65EE4_g_t.fC = func_00000000(&D_65EE4_g_s, D_65EE4_g_w.base + 4); \
+    D_65EE4_g_u.f34 = 0; \
+    func_00000000(&D_65EE4_g_v); }
 void game_libs_func_00065EE4(void) {
     SAVE65EE4_BLOCK(0xB1FF0000, 0x2700)
     SAVE65EE4_BLOCK(0xB1FF2710, 0x9C30)

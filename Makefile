@@ -2494,10 +2494,10 @@ build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += gl_func_0006C084=$(GAMELIBS_6C084_DONOR)
 # 65EE4 is still NON_MATCHING. Only the NM comparison object receives this
 # complete compiler-produced body; the default ROM retains INCLUDE_ASM.
-# -O2's size-limit fallback is closer than plain -O1 (146 vs 149 words).
-GAMELIBS_65EE4_NM_DONOR := build/src/game_libs/game_libs_o2limit_65EE4.c.o
-build/src/game_libs/game_libs_o2limit_65EE4.c.o: OPT_FLAGS := -O2
-build/src/game_libs/game_libs_o2limit_65EE4.c.o: CC_ONLY_FLAGS := -Olimit 1
+# Plain -O2 with per-access record views (agent-g run 390, 89.73 -> 96.30); the
+# old -O2 -Olimit 1 fallback donor cannot colour the a2 / a1 locals the target has.
+GAMELIBS_65EE4_NM_DONOR := build/src/game_libs/game_libs_o2_65EE4.c.o
+build/src/game_libs/game_libs_o2_65EE4.c.o: OPT_FLAGS := -O2
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00065EE4=$(GAMELIBS_65EE4_NM_DONOR)
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
 # EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.
@@ -2902,7 +2902,7 @@ C_FILES := $(filter-out src/game_uso/game_uso_591C.c,$(C_FILES))
 # The controller-read donor contributes only through its host splice.
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6C084.c,$(C_FILES))
 # The partial backup-store donor is never linked into the default ROM.
-C_FILES := $(filter-out src/game_libs/game_libs_o2limit_65EE4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o2_65EE4.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_000_1EC8.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_000_1594.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_022_ido53_858C.c,$(C_FILES))
@@ -2941,7 +2941,7 @@ O_FILES     := $(BIN_O_FILES) $(YAY0_O_FILES) $(C_O_FILES) $(ASM_O_FILES)
 all: verify
 
 # Keep explicit donor dependencies below all so bare make still verifies ROM.
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/game_libs/game_libs_o2limit_65EE4.c
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/game_libs/game_libs_o2_65EE4.c
 
 # game_uso C++ donors (IDO 7.1 NCC). game_uso is C++; functions whose codegen
 # only edg produces (pointer-to-member compare/call, ...) are compiled from a
