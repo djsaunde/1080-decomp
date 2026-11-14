@@ -853,7 +853,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 uls = 0;
                 for (j = 0; j < import_8001FFA0[0] / 64; j++) {
                     s32 vs, ve;
-                    ve = (vidx + 3) * 2; vs = vidx * 2; if (j) {} /* agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642) */
+                    vs = vidx * 2; ve = (vidx + 3) * 2; if (j) {} /* agent-g run 291: code-free test (random lever search, with the `if (m) {}` after `ult = 0`: 98.630 -> 98.642); agent-h run 393: vs assigned first -- the two dead `or` copies come out in the target's order (vs copy, then ve copy), 99.302 -> 99.308 */
                     /* agent-g run 291: the CULL packet on the named vs / ve (the gSPCullDisplayList operands
                      * pre-scaled) instead of recomputing (vidx) * 2 / (vidx + 3) * 2: two fewer coloured items in
                      * the packet BBs, so gen_outparcode's per-BB store temps fit the spilltemps pool and the frame
