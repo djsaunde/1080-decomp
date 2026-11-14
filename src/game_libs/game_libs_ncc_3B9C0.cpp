@@ -1,6 +1,14 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003B9C0: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 72.25; a second parameter empty test from round 2 gives 75.08).
+/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003B9C0 (0x45C / 279 words), agent-c run 387: REPLACE_FUNC_BODY-spliced
+ * over the placeholder in game_libs_post0b.c on both build trees. The two double literals' donor-local .rodata reloc
+ * is renamed by the splice to gl_func_0003B9C0_rodata (pinned to the USO RoData +0x1AA8); the blank jal words are
+ * gl_func_0003B9C0_sqrtf / gl_func_00000000_vnorm3 and the next-vertex table D_3B9C0_c (all pinned 0).
+ * agent-c run 387 (re-decode from the target asm, then ported here): p[ia] / p[ib] / sgn read in the edge loop (no
+ * qa / qb / sg variables: the &p lda stays an uncoloured ugen base), ia named (iav), stale folds dropped, the face
+ * pick without the `if (1) {}` split with the then-arm remap read through self->col (the test's col->remap is then
+ * the target's coloured a0 LR in the p block), and off declared last after an unused volatile pad: EXACT.
+ * History (NM-only donor):
+ * the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 72.25; a second parameter empty test from round 2 gives 75.08).
  * run 152 (agent-c, 75.15 -> 76.55): `while (ok && (fv++, nx != end))` puts fv++ in the bne delay slot after the ok exit as in the target (no bnel back edge).
- * Still NON_MATCHING: spliced into build/non_matching/ only via REPLACE_FUNC_BODY.
  * agent-c run 179: the next-vertex table pointer set before the verts load (adjacent-statement swap sweep): 76.54 -> 76.72.
  * agent-c run 284: the target's b / a / sgn reads use the i * 12 base it keeps in a1 for tris[i].d (off is spilled to
  * sp+128 at the body top and reloaded for the += 12), so they are written as tris[i] (verified decode fix); with the
@@ -27,7 +35,7 @@ extern int D_00000000;
 extern signed char b;
 extern char *p;
 extern void gl_func_00034458_36F0C(f32, f32 *, f32 *);
-extern float sqrtf(float);
+extern float gl_func_0003B9C0_sqrtf(float); /* blank USO jal (pinned 0) */
 extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
 extern void gl_func_00000000_vnorm3(V3B9 *);
 }
@@ -50,13 +58,13 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     V3B9 d;
     f32 *pp; /* run 194: the target indexes a held &p (addiu sp,184; addu idx,base) */
     s16 ey;
-    volatile s32 vpad; /* agent-c run 387: unused volatile pad -- the home word the dropped sg / qa / qb names held (frame 224 -> 232 = target) */
     s16 ex; /* run 191 lever-sweep hoist: ex declared before vt (78.55 -> 78.65) */
     s16 (*vt)[3];
     s16 *nx;
     u16 *fv;
-    s32 off;
     s16 *v1;
+    volatile s32 vpad; /* agent-c run 387: unused volatile pad, then off declared LAST: off's spill home at sp+128 like the target */
+    s32 off;
 
     cnt = 0;
     if (self->col == 0) {
@@ -65,7 +73,7 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     d.x = b->x - a->x;
     d.y = b->y - a->y;
     d.z = b->z - a->z;
-    if (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.00001) {
+    if (gl_func_0003B9C0_sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.00001) {
         gl_func_00000000_vnorm3(&d);
     } else {
         zf(d.x, 0); /* run 190: zeros through an int inline parameter (77.78 -> 78.55); run 193: x first = target store order */
@@ -99,8 +107,10 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
                                                    * the self->col value copied into the unused parameter (kit CCCXLVII (b): fresh web, no home) and folded on
                                                    * the nx line in col's place (kit CCCXLVIII phantom): col's own LR now ends at its last real use, before
                                                    * &tris[i], and takes v0 like the target (99.07 -> 99.12) */
-        if (1) {} if (col->remap != 0) {
-            f = &col->faces[col->remap[i]];
+        /* agent-c run 387: no `if (1) {}` split here (the remap load shares the p block with the loop-top tris LR, so
+         * it takes a0 like the target); the then-arm remap read through self->col (same value) keeps the block shape */
+        if (col->remap != 0) {
+            f = &col->faces[self->col->remap[i]];
         } else {
             f = &col->faces[i];
         }

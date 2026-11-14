@@ -2231,10 +2231,17 @@ $(GAMELIBS_4A890_DONOR): src/game_libs/game_libs_ncc_4A890.cpp
 	$(OBJCOPY) --redefine-sym build__3MapFiPs=gl_func_0004A890 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004A890=$(GAMELIBS_4A890_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A890_DONOR)
-# 3B9C0 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 72.25). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_3B9C0_NM_DONOR := build/src/game_libs/game_libs_ncc_3B9C0_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B9C0=$(GAMELIBS_3B9C0_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B9C0_NM_DONOR)
+# 3B9C0 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 72.25).
+# agent-c run 387: EXACT NCC donor over a placeholder on both build trees (p[ia] / p[ib] / sgn read in the edge loop,
+# face pick without the BB split, off declared last). The donor-local .rodata (1e-5 / -1e-4 doubles) is renamed by the
+# splice to gl_func_0003B9C0_rodata (pinned to RoData 0x1AA8); gl_func_0003B9C0_sqrtf / gl_func_00000000_vnorm3 are
+# blank USO jal words and D_3B9C0_c the next-vertex table (all pinned 0).
+GAMELIBS_3B9C0_DONOR := build/src/game_libs/game_libs_ncc_3B9C0.cpp.o
+$(GAMELIBS_3B9C0_DONOR): src/game_libs/game_libs_ncc_3B9C0.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B9C0=$(GAMELIBS_3B9C0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B9C0_DONOR)
 # 46050 = textured-font string renderer as C++ (agent-c run 152 NM lift, agent-g run 220 C++ appends); EXACT NCC donor over a placeholder (agent-c run 268: the F5801000 append's ctx through a two-statement free inline's local = the target's t0). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00046050_c34458 = 0.
 GAMELIBS_46050_DONOR := build/src/game_libs/game_libs_ncc_46050.cpp.o
 $(GAMELIBS_46050_DONOR): src/game_libs/game_libs_ncc_46050.cpp

@@ -5659,7 +5659,13 @@ s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9
     return cnt;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003B9C0);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3B9C0.cpp (agent-c run 134 lift,
+ * agent-c run 387 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
+ * (kept as the C reference) in both build trees; the two double literals' donor-local .rodata reloc is
+ * pinned as gl_func_0003B9C0_rodata (RoData +0x1AA8). */
+s32 gl_func_0003B9C0(char *self) {
+    return 0;
+}
 #endif
 
 // gl_func_0003BE1C — RECONSTRUCTION (0x620 / 392 words, no episode).
