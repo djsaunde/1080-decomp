@@ -40,7 +40,6 @@ struct Ctx {
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
     void prim(u32 hi, u32 lo) { Gfx *g = nextQ(); g->w0 = hi; g->w1 = lo; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
-    void dlcall(void *p) { DLHead *dd = dl; u32 t = (u32)func_00000000(p) + 0 * (int)(dl); /* run 209: folded counted use */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     void setup(Gfx *g, int z) { func_00000000(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
     Mtx *mtx() { if (mh->count) {} return &mh->buf[mh->count++]; } /* agent-g run 407: code-free count test, with arm 1's GS->ctx test 98.397 -> 98.426 */ /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
@@ -53,10 +52,11 @@ struct Ctx {
      * dc3 its unused dd word, homes = target), 99.071 -> 99.100; a folded `n + 0 * n` in dcQ and a code-free
      * `if (c) {}` in dc3 raise c / n (pooled across both loops) over the cur() temps: c v0 / n v1 like the target,
      * 99.100 -> 99.119; n's element through `me(&it)->cur()` (its own pool word, not next()'s): 99.119 -> 99.283 */
-    void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
+    /* agent-g run 419: dcQ reuses n for the call result (no t word: keeps the frame homes once next() takes one more
+     * pool slot below); the unused dlcall() / dlcallQ() inlines are removed (byte-neutral) */
+    void dcQ(Ctx *c, int n) { n = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = n; }
     void dc3(Ctx *c, int n) { if (c) {} DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
-    void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
@@ -96,7 +96,9 @@ struct IBase {
 };
 struct AIter : IBase {
     AIter(Arr *arr) : IBase(arr) {}
-    Elem **next() { if (idx < last) return &(*a)[++idx]; return 0; }
+    /* agent-g run 419: `a` through me(this) puts ++idx on pool slot 4 (with arm 2's dl head, the loop elem2 and loop 3's
+     * vptr: the target's a2 family) and it.a on slot 5 (kit DIV pool-slot oracle) */
+    Elem **next() { if (idx < last) return &(*me(this)->a)[++idx]; return 0; }
     Elem *cur() { return (*a)[idx]; }
     Elem *curM() { return (*me(this)->a)[idx]; } /* agent-g run 369: per-site accessor with an internal zero-code me(this) (kit CDLII 6.) */
     Elem *&ref() { return (*a)[idx]; }
@@ -138,10 +140,10 @@ void Obj::draw() {
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        { Mtx *c; if (GS->ctx) {} c = me(gctx)->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
+        { Mtx *c; if (GS->ctx) {} c = me(me(gctx))->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(gctx)->mtx()); me(me(gctx))->ld2((int)c2, c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(me(gctx))->mtx()); me(me(gctx))->ld2((int)c2, c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
@@ -164,7 +166,7 @@ void Obj::draw() {
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi); if (this) {} /* agent-c run 276: code-free test after the fourth copy call (sweep), 97.447 -> 97.476 */
-        me(GS->ctx)->prim(0xFA000000, 0xFFFF00FF);
+        me(me(GS->ctx))->prim(0xFA000000, 0xFFFF00FF); /* agent-g run 419: dl head on pool slot 4, count on slot 3; both mtx() counts on slot 3 (me(me(gctx))) */
         AIter it = arr.iter();
         while (it.next()) {
             if (it.cur()->ctx6C != 0) {
@@ -176,10 +178,8 @@ void Obj::draw() {
             func_00000000(ac, a8, g34.w1 & 0x20000000, g34.w1);
         }
         AIter it = arr.iter();
-        /* agent-h run 420: the loop test written twice (kit CCCI) with the bottom copy through the kept-parameter I2(): the
-         * bottom next() result gets its own pool word instead of sharing the top copy's (M-116), 99.505 -> 99.553 */
-        if (it.next()) do {
-            it.cur()->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
-        } while (I2(it.next()));
+        while (it.next()) {
+            it.cur()->draw(this); /* agent-c run 181's `if (1) {}` dropped (agent-g run 419, 99.540 -> 99.684) */
+        }
     }
 }
