@@ -1947,10 +1947,13 @@ $(GAMELIBS_41820_DONOR): src/game_libs/game_libs_ncc_41820.cpp
 	$(OBJCOPY) --redefine-sym init__4SelfFv=game_libs_func_00041820 --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=D_41820_h $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_00041820=$(GAMELIBS_41820_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41820_DONOR)
-# 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents; NM-only donor (agent-c run 157, cfe 92.03).
-GAMELIBS_4BAF4_NM_DONOR := build/src/game_libs/game_libs_ncc_4BAF4_nm.cpp.o
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004BAF4=$(GAMELIBS_4BAF4_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4BAF4_NM_DONOR)
+# 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents (agent-c run 157, cfe 92.03).
+# agent-c run 405: EXACT NCC donor over a placeholder on both build trees (the three 0x06 packets' counts as the 5th
+# by-value parameter of nQ4(): one edg pool word = one live range with the B4 y-MIN merge, coloured a2). The blank USO
+# data refs stay pinned (D_4BAF4_cam = 0xA0, D_4BAF4_flags = 0); the jal words go through gl_func_00000000.
+GAMELIBS_4BAF4_DONOR := build/src/game_libs/game_libs_ncc_4BAF4.cpp.o
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004BAF4=$(GAMELIBS_4BAF4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4BAF4_DONOR)
 # 3E5E0 = three `new` member-function callback objects (K root vptr, CB {obj, PMF}, CB1 / CB2 leaves); EXACT NCC donor over a placeholder (agent-c run 270: CB ctor mem-initialisers + the loop as a free inline with one dummy pool parameter). Symbols renamed (names only): vtables -> the target's absolute vtable words (gl_3e5e0_vk / _v1 / _v2), gl_func_00034458 -> the blank USO jal words (gl_3e5e0_c34458 = 0).
 GAMELIBS_3E5E0_DONOR := build/src/game_libs/game_libs_ncc_3E5E0.cpp.o
 $(GAMELIBS_3E5E0_DONOR): src/game_libs/game_libs_ncc_3E5E0.cpp

@@ -15458,7 +15458,11 @@ void gl_func_0004BAF4(char *self) {
     g->w1 = r;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004BAF4);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4BAF4.cpp (agent-c run 157 lift, agent-c run 405
+ * exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference) in
+ * both build trees; the blank USO data refs stay pinned (D_4BAF4_cam = 0xA0, D_4BAF4_flags = 0). */
+void gl_func_0004BAF4(char *self) {
+}
 #endif
 
 /* gl_func_0004C190: alloc-or-given VARARGS constructor. If a0 is null,
