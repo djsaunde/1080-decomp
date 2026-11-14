@@ -57,6 +57,9 @@
  *   - agent-c run 415 (kit CDXCIX): the flag-arm dot as one named `float dot = lenf;` read by both `+=`
  *     operands (`dot + half` / `dot - half`) instead of a reassigned local: 97.289 -> 97.458, frame 528; then
  *     an XZ member copy of operator* (used by the else-arm `e * dot`), -> 97.472 (2832 B).
+ *   - agent-c run 418 (kit DII, edg frame-word model): d2 is a temporary inside lenf's initialiser through an
+ *     inline dot2 (no named d2 word: lenf at the target's M-100), 97.472 -> 97.528; dir's `a` without K3 and
+ *     subp2 (the flag-arm `if (1) {}` no longer needed), -> 97.533 (2832 B, pool a2 at sp+372).
  * LEFT: the else-arm XZ(wpos) `this` shares its word with perp's `this` (v1; target a0 / v1); d2's conversion `v`
  * home sp+400 vs the target's sp+416 (in the target d2's and g's `v` are one word: a direct XZ(K1(s)->w->pos) at g
  * does join them, but the conversion-`this` word then outranks e1189 and s falls to s0, 2712 B); f0 / f12 swaps at
@@ -108,13 +111,12 @@ void game_uso_func_071028(Vec3 *v);
 }
 template <class T> inline T *K3(T *p) { p = p; return p; } /* kept identity: zero code */
 template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* kept identity with a dead block */
+inline float dot2(const Vec3 &u, const Vec3 &v) { return u.x * v.x + u.z * v.z; }
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
-        XZ dir(subp1((int)a, XZ((int)a, (int)a, b->pos), K3(a)->pos));
+        XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
         game_uso_func_071028(&dir);
-        if (1) {}
-        const Vec3 &d2 = subp1((int)a, XZ((int)a, s->w->pos), a->pos);
-        float lenf = dir.x * d2.x + dir.z * d2.z;
+        float lenf = dot2(dir, sub1((int)a, XZ(s->w->pos), K3(a)->pos)); /* run 418: d2 a temporary, lenf M-100 */
         float dot = lenf; /* run 415: one named dot read by both operands, 97.289 -> 97.458, frame 528 */
         K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
         s->p84 = s->p90;
