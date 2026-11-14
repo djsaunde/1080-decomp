@@ -873,7 +873,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     if ((vs) + 0 * ((int)(vs) + E68_M80(m) + (int)(uls) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(vs) + (int)(vs))) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
-                ult += 32; /* agent-h run 393 (kit CDLXXVIII): the run-291 folded ult use dropped -- ult's lower
+                ult += 32; /* agent-h run 393 (kit CDLXXIX): the run-291 folded ult use dropped -- ult's lower
                             * priority lets the target's earlier LRs take a1 / t0 and ult falls to t1 (99.262 -> 99.295) */
             }
         }
