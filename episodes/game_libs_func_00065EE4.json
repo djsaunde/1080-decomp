@@ -1,0 +1,33 @@
+{
+  "function_name": "game_libs_func_00065EE4",
+  "project": "1080-agent-g",
+  "model": "claude-opus-5-5",
+  "start_time": "2026-11-14T15:15:43.539203+00:00",
+  "end_time": "2026-11-14T15:15:43.539223+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-14T15:15:43.539219+00:00",
+      "assistant_text": "agent-g run 392: re-decode from the USO reloc table. The function initialises THREE separate 0x40-byte BSS records (sym1520 / 1542 / 1544), one per unrolled region, not one record. Each region: Save65EE4 *s = &record; if (s != 0) {} (cfront this==0 style test that uopt folds for a global address; the leftover block structure keeps the pointer uncoloured so every access re-materialises lui like the target), then base / data / size / end stores, f662E8(s, B + 4, s->data), block-scoped base temporaries for calls 2 and 3 (a1 loaded first), f8 / fC reads through f66210, f34 = 0, successor f6612C(s). Each region sits on ONE source line: as1 schedules jal delay slots by source line (per-statement lines give 21 differing words). In-unit callees go through blank aliases pinned to 0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 146,
+  "initial_m2c_source": null,
+  "final_source": "void game_libs_func_00065EE4(void) {\n    { Save65EE4 *s = &D_65EE4_rgn0; if (s != 0) {} s->base = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FF0000 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }\n    { Save65EE4 *s = &D_65EE4_rgn1; if (s != 0) {} s->base = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; gl_func_000662E8_65EE4(s, 0xB1FF2710 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }\n    { Save65EE4 *s = &D_65EE4_rgn2; if (s != 0) {} s->base = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FFC350 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_post1b.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs/game_libs_func_00065EE4.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Verified: make ROM byte-identical (tenshoe.z64 OK), verify-blocks 6/6, objdiff report 100.0 (98.15 NM before), no exacts lost."
+  }
+}
