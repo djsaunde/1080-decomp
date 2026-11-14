@@ -787,7 +787,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     s32 row;
     s32 k2;
     s32 col, x, y;
-    s32 vidx; /* run 172: unsigned (88.98/89.21 -> 90.53; changes the vidx*2 web colouring); agent-g run 291: signed again on the CULL-on-vs/ve body (98.642 -> 98.650; the values are small and non-negative, so the semantics are unchanged) */
+    u32 vidx; /* agent-h run 403: unsigned again on the j-after-IVs body -- the three phase-2 spill temps move to the target's 76 / 80 / 84 (99.907 -> 99.914; vidx is a non-negative vertex index, so the semantics are unchanged); run 172: unsigned (88.98/89.21 -> 90.53; changes the vidx*2 web colouring); agent-g run 291: signed again on the CULL-on-vs/ve body (98.642 -> 98.650; the values are small and non-negative, so the semantics are unchanged) */
     s32 ult;
     GwE68 *arr[32];
     s32 k, uls;
