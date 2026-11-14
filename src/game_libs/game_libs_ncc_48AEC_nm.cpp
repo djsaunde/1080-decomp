@@ -54,8 +54,11 @@ struct Ctx {
      * 99.100 -> 99.119; n's element through `me(&it)->cur()` (its own pool word, not next()'s): 99.119 -> 99.283 */
     /* agent-g run 419: dcQ reuses n for the call result (no t word: keeps the frame homes once next() takes one more
      * pool slot below); the unused dlcall() / dlcallQ() inlines are removed (byte-neutral) */
-    void dcQ(Ctx *c, int n) { n = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = n; }
-    void dc3(Ctx *c, int n) { if (c) {} DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    /* agent-g run 424: dcQ's slot count read through a u32 view of dl (kit CDLXXXIX) so loop 1's dl is no longer the
+     * same uopt expression as loop 2's (that cross-loop dl LR held v1 over n), and dc3 without its code-free `if (c) {}`:
+     * loop-1 / loop-2 n v1 and the loop-3 bottom copy like the target, 99.713 -> 99.742 */
+    void dcQ(Ctx *c, int n) { n = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x06000000; g->w1 = n; }
+    void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
