@@ -794,7 +794,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     MgrE68 *m2; /* agent-c run 353 (kit CDXLIII): phase 3's own MGR variable (the target's phase-2 m is v0, phase-3 m s1: two LRs) */
     VtxE68 *vp;
     s32 _n;
-    int padq[1]; /* agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
+    int padq[2]; /* agent-h run 397: back to 2 words with c3 in the all-NEXTB phase 2 (the spill temps sit at the target's 76 / 80 / 84 again); agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
 
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
@@ -867,16 +867,20 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_W(arr[k++] = E68_NEXTB(m), E68_SHL(0xBE, 24, 8) | E68_SHL(vs, 0, 16), E68_SHL(ve, 0, 16));
                     /* agent-g run 253: plain width read again (the old *(s32 *)(int)&w stand-in dropped); the scaled CULL operand
                      * copies vs / ve, kept live by empty tests AFTER the IV increments, give the target's dead `or` copies (96.83 -> 97.80) */
-                    E68_LOADTEXTILE(E68_NEXT(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0); if (1) {}
-                    E68_TRI1(E68_NEXT(m), vidx, vidx + 1, vidx + 2); if (timg) {} /* agent-c run 353: with the `if (uls) {}` below (climb, 98.709 -> 98.742; either alone byte-identical) */
+                    /* agent-h run 397: every phase-2 append on the explicit increment (E68_NEXTB): the NEXT post-increment
+                     * temp was an extra live range (a0) -- the target's count shares a1 with _n. Without the old
+                     * `if (1) {}` after LOADTEXTILE the body is 759 words again (that split cost the target's 84(sp)
+                     * spill), then the fold counts below re-tuned: 99.361 -> 99.592 */
+                    E68_LOADTEXTILE(E68_NEXTB(m), timg, 2, 1, import_8001FFA0[0], 0, uls, ult, uls + 63, ult + 31, 0, 0, 0, 6, 5, 0, 0);
+                    E68_TRI1(E68_NEXTB(m), vidx, vidx + 1, vidx + 2); if (timg) {} /* agent-c run 353: with the `if (uls) {}` below (climb, 98.709 -> 98.742; either alone byte-identical) */
                     /* agent-g run 254: an empty test of m between the two TRI1 packets (lever sweep over every statement slot) lines
                      * the body up word-for-word up to registers at the target's 3036 B (97.80 -> 98.05; with the if (1) {} above) */
                     /* agent-c run 353: the run-254 `if (m) {}` and the `if (uls) {}` here dropped once the phase-3 loop counts through uls (98.748 -> 98.781) */
-                    E68_TRI1(E68_NEXT(m), vidx, vidx + 2, vidx + 3);
+                    E68_TRI1(E68_NEXTB(m), vidx, vidx + 2, vidx + 3);
                     E68_END(E68_NEXTB(m));
                     uls += 64;
                     vidx += 4;
-                    if ((vs) + 0 * ((int)(vs) + E68_M80(m) + (int)(uls) + (int)(uls) + (int)(uls) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(vs) + (int)(vs))) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
+                    if ((vs) + 0 * ((int)(vs) + (int)(vs) + E68_M80(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + E68_M10(m) + (int)(uls) + (int)(uls) + (int)(j) + (int)(vs) + (int)(vs))) {} if ((ve) + 0 * ((int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve) + (int)(ve))) {} /* agent-h run 397: on the all-NEXTB body 120 m / 2 uls / 1 j / 5 vs folds and 6 folded ve uses (grids); */ /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
                 ult += 32; /* agent-h run 393 (kit CDLXXIX): the run-291 folded ult use dropped -- ult's lower
