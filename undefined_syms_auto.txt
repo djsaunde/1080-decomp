@@ -5417,6 +5417,10 @@ gl_func_00000000_51448v = 0x00000000;  /* agent-g run 155: void alias, 51448 NM 
 func_00000000_24b8v = 0x00000000;  /* agent-g run 155: void alias, bootup 24B8 NM */
 func_00000000_5a2c4v = 0x00000000;  /* agent-g run 156: void alias, gl 5A2C4 NM */
 func_00000000_e68v = 0x00000000;  /* agent-g run 156: void alias, bootup E68 NM */
+import_8001FFA0 = 0x00000000;  /* agent-h run 406: bootup E68 (exact) grid dims, w reads: blank lui/lw (+0) */
+import_8001FFA0_h = 0x00000000;  /* agent-h run 406: bootup E68 (exact) grid dims, h reads ([1] = +4, target func_00000000 + 0x4) */
+import_8005C108_e68 = 0x000001FC;  /* agent-h run 406: bootup E68 (exact) MGR import, target reloc func_000001FC + 0x18 = 0x214 */
+D_e68_vtx = 0x00000000;  /* agent-h run 406: bootup E68 (exact) quad vertex data, blank lui/addiu a0 */
 gui_func_00000F04_load = 0x00000000;  /* agent-g run 294: void alias (glyph load, result never read), gui 0F04 NM */
 gl_func_00000000_sqrt5F984 = 0x00000000;  /* agent-g run 156: 5F984 donor sqrt placeholder */
 gl_func_00000000_rot5F984 = 0x00000000;  /* agent-g run 156: 5F984 donor rotation placeholder */

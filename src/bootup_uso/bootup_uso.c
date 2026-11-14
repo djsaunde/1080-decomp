@@ -662,8 +662,7 @@ void func_00000D94(char *a0) {
     }
 }
 
-// func_00000E68 — FIRST STRUCTURAL PASS (0xBDC / 759 insns, multi-run target,
-// no episode). Procedural tiled quad-mesh + index-buffer builder/constructor
+// func_00000E68 — 0xBDC / 759 insns (exact since agent-h run 406). Procedural tiled quad-mesh + index-buffer builder/constructor
 // (terrain/water-surface grid for the bootup/title scene).
 //
 //   void *func_00000E68(void *self, Cfg *a1, void *owner2, void *owner3,
@@ -695,11 +694,9 @@ void func_00000D94(char *a0) {
 //   func_00000000 + 0x4 = a placeholder/folded data ref (same JAL-target-0
 //   + folded-pool family as the func_0000098C/func_00000044 literal-pool bug,
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
-// Caps (DEFERRED): 759-insn dual-phase builder, multi-run target —
-//   byte-match deferred. Real-C STRUCTURAL body below — procedural
-//   tiled quad-mesh + index-buffer builder skeleton. Name pre-checked:
+// EXACT (agent-h run 406, 759 words): promoted in place, INCLUDE_ASM dropped.
+//   Procedural tiled quad-mesh + index-buffer builder. Name pre-checked:
 //   no extern reuse.
-#ifdef NON_MATCHING
 /* PASS-9 2026-10-20 (agent-c run 114): FRESH HAND DECODE 73.5 -> 86.9.
  * The body is three phases of real libultra F3DEX GBI macros, written out
  * here as E68_* clones of the 2.0I gbi.h expansions (scaled-down _SHIFTL,
@@ -734,7 +731,8 @@ typedef struct { s16 x, y, z; u16 flag; s16 s, t; u8 cn[4]; } VtxE68;
 extern s32 import_8001FFA0[];   /* screen/grid dims {w, h}: w reads */
 extern s32 import_8001FFA0_h[]; /* same import, h reads ([1] = +4) */
 extern int import_8005C108[];
-#define E68_MGR (*(MgrE68 **)((char *)import_8005C108 + 0x18))
+extern int import_8005C108_e68[]; /* agent-h run 406: the same import, pinned at the target's link value (USO reloc func_000001FC: +0x18 = 0x214) */
+#define E68_MGR (*(MgrE68 **)((char *)import_8005C108_e68 + 0x18))
 #define E68_NEXT(m) (_n = (m)->dl->count++, &(m)->dl->buf[_n])
 /* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
  * which increments feed the shared _n changes its colouring, cf. 1A44). */
@@ -906,9 +904,16 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
          * takes t0 in both phases (ult falls to t1) like the target; the G_DL loop then reads dl through the u32
          * view (E68_DL_U), a distinct uopt expression from the head's s32 view, so the head dl takes v1 and the
          * loop dl v0 as in the target (99.709 -> 99.867) */
-        m2 = E68_MGR + 0 * ((int)m);
-        head = E68_NEXTBI(m2);
-        E68_VTX(head, func_00000000(&D_e68_vtx), 4, 0);
+        /* agent-h run 406: EXACT. The head packet in its own block-local _h, written to head through a u32 view
+         * (`*(u32 *)&head = (u32)_h`, same value): copy propagation no longer merges _h into the long head LR,
+         * so _h is a one-block LR coloured early -- with one folded use (`_h[0 * (int)_h]`, adjsave 3 -> 4) it
+         * wins its tie with the head dl and takes v0, the dl v1 and MGR t0 like the target; the run-403 m fold
+         * (which kept m in v0 through this block) is dropped (99.980 -> 100) */
+        m2 = E68_MGR;
+        { GwE68 *_h = E68_NEXTBI(m2);
+          _h[0 * ((int)_h)].w0 = E68_SHL(0x04, 24, 8) | E68_SHL(0, 16, 8) | E68_SHL(((4) << 10) | (sizeof(VtxE68) * (4) - 1), 0, 16);
+          *(u32 *)&head = (u32)_h;
+          head->w1 = (u32)(func_00000000(&D_e68_vtx)); }
         E68_W(E68_NEXTB(m2), 0xBE000000, 6);
         E68_W(E68_NEXTB(m2), 0xE7000000, 0); if (1) {} /* run 182 (lever-sweep bbsplit); agent-c run 288: the run-210 folded h use dropped (inert, byte-identical) */
         E68_W(E68_NEXTB(m2), 0xBA001402, 0);
@@ -949,9 +954,6 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     }
     return self;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000E68);
-#endif
 
 /* func_00001A44 - verified structural decode (0x1CC, 115 insns,
  * FP transform/draw + DL list-append). Same family as
