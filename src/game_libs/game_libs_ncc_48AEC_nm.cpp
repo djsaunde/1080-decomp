@@ -52,7 +52,9 @@ struct Ctx {
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
     void ld(Mtx *m) { if (0) { m = 0; } Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void ld2(int z0, Mtx *m) { if (dl) {} Gfx *g = dl->buf + dl->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */
+    void ld2(int z0, Mtx *m) { if (*(u32 *)&dl) {} Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */
+    /* agent-g run 413: the test and the count's head read through a u32 view of dl (kit CDLXXXIX): the else-arm
+     * dl is no longer the same uopt expression as arm 1's, so arm 1's dl LR takes v0 like the target (98.455 -> 98.484) */
     void cp(void *src, Mtx *c) { func_00000000(src, c); ld(c); }
     /* agent-g run 407: arm 1 as cS() (the copy call) + lE3() (the 0x01 packet). The count is a by-value parameter
      * behind three unused non-constant leading parameters (kit CDXC), so it lands on the else arm's c2 word: one
