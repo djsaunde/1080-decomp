@@ -54,7 +54,7 @@ struct Ctx {
      * `if (c) {}` in dc3 raise c / n (pooled across both loops) over the cur() temps: c v0 / n v1 like the target,
      * 99.100 -> 99.119; n's element through `me(&it)->cur()` (its own pool word, not next()'s): 99.119 -> 99.283 */
     void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
-    void dc3(Ctx *c, int n) { if (c) {} DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    void dc3(Ctx *c, int n) { if (c) {} DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
