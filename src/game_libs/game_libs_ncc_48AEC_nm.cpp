@@ -48,10 +48,13 @@ struct Ctx {
      * allocation and the first loop's dlcall() packet, push() through a depth-2 accessor: 97.532 -> 97.669 */
     /* agent-g run 417: the loop bodies' 0x06 packet as an inline taking the element's ctx and n8A as parameters
      * (`GS->ctx->dcQ(it.cur()->ctx6C, it.cur()->n8A)`): the target's ctx6C / n8A are uopt variables (v0 / v1), not
-     * ugen temps. dcQ reuses n for the call result (one pool word fewer, so arm 2's / loop 3's homes stay on the
-     * target's); dc3 keeps the unused dd word. With the plain loop tests and the plain Flags::test, 98.484 -> 99.071 */
-    void dcQ(Ctx *c, int n) { n = (int)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = (u32)n; }
-    void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+     * ugen temps. With the plain loop tests and the plain Flags::test, 98.484 -> 99.071 (dcQ reusing n for the call
+     * result). Then: arm 2's gbi masked in place (no gp pointer: one word fewer, so dcQ keeps its own t and loop 2's
+     * dc3 its unused dd word, homes = target), 99.071 -> 99.100; a folded `n + 0 * n` in dcQ and a code-free
+     * `if (c) {}` in dc3 raise c / n (pooled across both loops) over the cur() temps: c v0 / n v1 like the target,
+     * 99.100 -> 99.119; n's element through `me(&it)->cur()` (its own pool word, not next()'s): 99.119 -> 99.283 */
+    void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
+    void dc3(Ctx *c, int n) { if (c) {} DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     void dlcallQ(void *p) { u32 t = (u32)func_00000000(p) + 0 * (int)(dl); Gfx *g = nextQ(); g->w0 = 0x06000000; g->w1 = t; }
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
@@ -149,16 +152,14 @@ void Obj::draw() {
                 /* agent-g run 369: the ctx6C test through curM() and n8A back through cur(), and the second loop's test
                  * through curM() (per-site accessor rounds, 200 + 200): 98.037 -> 98.085 -> 98.297, same length */
                 if (it.cur()->ctx6C != 0) { /* agent-g run 417: plain test (kit CDXCVIII 4.) */
-                    GS->ctx->dcQ(it.cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
+                    GS->ctx->dcQ(it.cur()->ctx6C, me(&it)->cur()->n8A); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
                 }
             }
         }
     } else if (n14->flags.test(0x80) && *(s32 *)D_00000000 != 0) {
-        Gfx *gp; /* agent-g run 352: gp declared before gbi (frame-locked subset grid vs the run-350 basin), 97.726 -> 97.734 */
         Gfx gbi = g34;
-        gp = &gbi;
-        gp->w1 = (gp->w1 & ~0xF00) | 0x400; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
-        gp->w1 = gp->w1 & ~0x80000;
+        gbi.w1 = (gbi.w1 & ~0xF00) | 0x400; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
+        gbi.w1 = gbi.w1 & ~0x80000;
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
         func_00000000(GS->ctx, &gbi);
@@ -167,7 +168,7 @@ void Obj::draw() {
         AIter it = arr.iter();
         while (it.next()) {
             if (it.cur()->ctx6C != 0) {
-                GS->ctx->dc3(it.cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
+                GS->ctx->dc3(it.cur()->ctx6C, me(&it)->cur()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
     } else {
