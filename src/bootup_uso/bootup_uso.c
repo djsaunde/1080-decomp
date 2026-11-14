@@ -739,6 +739,11 @@ extern int import_8005C108[];
 /* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
  * which increments feed the shared _n changes its colouring, cf. 1A44). */
 #define E68_NEXTB(m) (_n = (m)->dl->count, (m)->dl->count = _n + 1, &(m)->dl->buf[_n])
+/* agent-h run 397 (kit CDLXXXI): the phase-3 G_DL loop counts in its own variable c3, and the last four phase-3
+ * appends (F0, E7, the per-row VTX, END) count through it too -- c3's live range then shares blocks with the
+ * phase-3 dl (v1), so the loop count avoids v1 and the loop colours like the target (99.308 -> 99.322). uls loses
+ * its phase-3 uses, so the phase-2 fold carries 3 uls terms (was 1) to keep uls in t4. */
+#define E68_NEXTC(m) (c3 = (m)->dl->count, (m)->dl->count = c3 + 1, &(m)->dl->buf[c3])
 /* agent-g run 254: the dl pointer read as a 4-byte int (same size, same value) is a distinct uopt expression, so the
  * phase-3 G_DL loop's dl loads form their own live range and colour v0 like the target (98.41 -> 98.61) */
 #define E68_DL_I(m) ((DlE68 *)*(s32 *)&(m)->dl)
@@ -783,12 +788,13 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     s32 k, uls;
     s32 i;
     GwE68 *head;
+    s32 c3; /* agent-h run 397: phase-3 count (see E68_NEXTC); padq drops one word, frame still 0x1D8 */
     s32 j, n;
     MgrE68 *m;
     MgrE68 *m2; /* agent-c run 353 (kit CDXLIII): phase 3's own MGR variable (the target's phase-2 m is v0, phase-3 m s1: two LRs) */
     VtxE68 *vp;
     s32 _n;
-    int padq[2]; /* agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
+    int padq[1]; /* agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
 
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
@@ -870,7 +876,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                     E68_END(E68_NEXTB(m));
                     uls += 64;
                     vidx += 4;
-                    if ((vs) + 0 * ((int)(vs) + E68_M80(m) + (int)(uls) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(vs) + (int)(vs))) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
+                    if ((vs) + 0 * ((int)(vs) + E68_M80(m) + (int)(uls) + (int)(uls) + (int)(uls) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(j) + (int)(vs) + (int)(vs))) {} if (ve) {} /* agent-g run 254: folded counted use of vs (zero-use sweep, 98.17 -> 98.21); agent-h run 389 (kit CDLXXV): + 80 folded uses of m at this depth raise m's uopt priority (save / blocks) above the count load and dl, so m is coloured first and takes v0 like the target; with the first TRI1 back on NEXT and the four param / constant tests in phase 1 / 3 (random climb) 98.781 -> 98.860; then 20 folded uls and 3 folded j uses here (greedy per-variable fold sweep) plus `if (arg2) {}` / `if (arg3) {}` in phase 1 (climb): 98.860 -> 99.137; two more folded vs uses (random fold combos): 99.183; the vertex-1 `if (arg2) {}` as a constant test: 99.216; `if (vidx) {}` in front of it: 99.262; agent-h run 393: without the ult fold, a fold-count grid (uls 0..25 x j 0..5) gives 1 uls + 5 j (uls falls to t4 like the target) and the vertex-2 `if (arg2) {}` is inert: 99.302 */
                     if (1) {} /* agent-g run 254 (lever sweep, 98.05 -> 98.17: the vs / ve IVs take the target's s1 / s2) */
                 }
                 ult += 32; /* agent-h run 393 (kit CDLXXIX): the run-291 folded ult use dropped -- ult's lower
@@ -892,10 +898,10 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         E68_W(E68_NEXTB(m2), 0xBA000E02, 0x8000); if (m2) {}
         E68_W(E68_NEXTB(m2), 0xFD100000, tlut);
         E68_W(E68_NEXTB(m2), 0xE8000000, 0);
-        E68_W(E68_NEXTB(m2), 0xF5000100, 0x07000000);
+        E68_W(E68_NEXTB(m2), 0xF5000100, 0x07000000); if (1) {} /* agent-h run 397: phase-3 bbsplit (99.322 -> 99.361) */
         E68_W(E68_NEXTB(m2), 0xE6000000, 0);
-        E68_W(E68_NEXTB(m2), 0xF0000000, 0x073FC000); if (1) {}
-        E68_W(E68_NEXTB(m2), 0xE7000000, 0);
+        E68_W(E68_NEXTC(m2), 0xF0000000, 0x073FC000); if (1) {}
+        E68_W(E68_NEXTC(m2), 0xE7000000, 0);
         vp = buf;
         n = import_8001FFA0[0] / 32;
         if (arg4 != 0x654321) {}
@@ -904,17 +910,17 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
          * address the target holds in s8 -- 94.59 -> 95.10 standalone; spelled (int)&h[1] the +4 folds
          * into the lui/addiu pair (sym+4) like the target -- 95.17 -> 95.31 */
         for (i = 0; i < *(s32 *)(int)&import_8001FFA0_h[1] / 64; i++) {
-            E68_VTX(E68_NEXTB(m2), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
+            E68_VTX(E68_NEXTC(m2), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
                 /* agent-c run 353: the count in the dead phase-2 uls (written first) instead of _n -- the arr[] IV then
                  * takes the target's a1 (98.742 -> 98.748; j scores the same) */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((uls = E68_DL_I(m2)->count, E68_DL_I(m2)->count = uls + 1, &E68_DL_I(m2)->buf[uls]), 0x06, dl, 0, 0); }
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((c3 = E68_DL_I(m2)->count, E68_DL_I(m2)->count = c3 + 1, &E68_DL_I(m2)->buf[c3]), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
-        E68_END(E68_NEXTB(m2));
+        E68_END(E68_NEXTC(m2));
         *(GwE68 **)(self + 0x38) = head;
     }
     return self;
