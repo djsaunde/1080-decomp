@@ -140,7 +140,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             float dot = h.x * e.x + e.z * h.z + K3(s)->w->speed * K3(s)->kDC;
             if (h.x * e.x + e.z * h.z) {} /* run 422: the partial h.e sum as a uopt CSE too (no ring pop) */
             K1(s)->p84 += e * dot;
-            side *= s->kE0 * (250.0f * b->width); /* the target muls 250 * width first, then kE0 */
+            side *= (250.0f * b->width) * s->kE0; /* the target muls 250 * width first, then kE0 (run 422: as the left operand) */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
             switch (s->phase &= 3) {
             case 0:
