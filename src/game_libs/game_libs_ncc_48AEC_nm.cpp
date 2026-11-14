@@ -176,8 +176,10 @@ void Obj::draw() {
             func_00000000(ac, a8, g34.w1 & 0x20000000, g34.w1);
         }
         AIter it = arr.iter();
-        while (it.next()) {
+        /* agent-h run 420: the loop test written twice (kit CCCI) with the bottom copy through the kept-parameter I2(): the
+         * bottom next() result gets its own pool word instead of sharing the top copy's (M-116), 99.505 -> 99.553 */
+        if (it.next()) do {
             it.cur()->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
-        }
+        } while (I2(it.next()));
     }
 }
