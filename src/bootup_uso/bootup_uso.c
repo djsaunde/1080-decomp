@@ -739,7 +739,7 @@ extern int import_8005C108[];
 /* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
  * which increments feed the shared _n changes its colouring, cf. 1A44). */
 #define E68_NEXTB(m) (_n = (m)->dl->count, (m)->dl->count = _n + 1, &(m)->dl->buf[_n])
-/* agent-h run 397 (kit CDLXXXI): the phase-3 G_DL loop counts in its own variable c3, and the last four phase-3
+/* agent-h run 397 (kit CDLXXXII): the phase-3 G_DL loop counts in its own variable c3, and the last four phase-3
  * appends (F0, E7, the per-row VTX, END) count through it too -- c3's live range then shares blocks with the
  * phase-3 dl (v1), so the loop count avoids v1 and the loop colours like the target (99.308 -> 99.322). uls loses
  * its phase-3 uses, so the phase-2 fold carries 3 uls terms (was 1) to keep uls in t4. */
