@@ -61,7 +61,7 @@ struct Ctx {
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
     void ld(Mtx *m) { if (0) { m = 0; } Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
-    void ld2(int z0, Mtx *m) { if (*(u32 *)&dl) {} Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */
+    void ld2(int z0, Mtx *m) { if (1) {} if (*(u32 *)&dl) {} Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); } /* agent-g run 407: code-free test of dl (98.329 -> 98.368) */
     /* agent-g run 413: the test and the count's head read through a u32 view of dl (kit CDLXXXIX): the else-arm
      * dl is no longer the same uopt expression as arm 1's, so arm 1's dl LR takes v0 like the target (98.455 -> 98.484) */
     void cp(void *src, Mtx *c) { func_00000000(src, c); ld(c); }
@@ -151,8 +151,8 @@ void Obj::draw() {
             while (it.next()) {
                 /* agent-g run 369: the ctx6C test through curM() and n8A back through cur(), and the second loop's test
                  * through curM() (per-site accessor rounds, 200 + 200): 98.037 -> 98.085 -> 98.297, same length */
-                if (it.cur()->ctx6C != 0) { /* agent-g run 417: plain test (kit CDXCVIII 4.) */
-                    GS->ctx->dcQ(it.cur()->ctx6C, me(&it)->cur()->n8A); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
+                if (me(&it)->cur()->ctx6C != 0) { /* agent-g run 417: plain test (kit CDXCVIII 4.); loop 1's test and loop 2's ctx element through me(&it)->cur() (random accessor round), 99.312 -> 99.389 */
+                    GS->ctx->dcQ(it.cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
                 }
             }
         }
@@ -168,7 +168,7 @@ void Obj::draw() {
         AIter it = arr.iter();
         while (it.next()) {
             if (it.cur()->ctx6C != 0) {
-                GS->ctx->dc3(it.cur()->ctx6C, me(&it)->cur()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
+                GS->ctx->dc3(me(&it)->cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
     } else {
@@ -177,7 +177,7 @@ void Obj::draw() {
         }
         AIter it = arr.iter();
         while (it.next()) {
-            I2(it.cur())->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
+            it.cur()->draw(this); if (1) {} /* agent-c run 181: lever-sweep bbsplit hit */
         }
     }
 }
