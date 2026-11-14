@@ -2494,7 +2494,7 @@ build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += gl_func_0006C084=$(GAMELIBS_6C084_DONOR)
 # 65EE4 is still NON_MATCHING. Only the NM comparison object receives this
 # complete compiler-produced body; the default ROM retains INCLUDE_ASM.
-# Plain -O2 with per-access record views (agent-g run 390, 89.73 -> 96.30); the
+# Plain -O2 with per-access record views (agent-g run 390, 89.73 -> 98.15); the
 # old -O2 -Olimit 1 fallback donor cannot colour the a2 / a1 locals the target has.
 GAMELIBS_65EE4_NM_DONOR := build/src/game_libs/game_libs_o2_65EE4.c.o
 build/src/game_libs/game_libs_o2_65EE4.c.o: OPT_FLAGS := -O2

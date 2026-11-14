@@ -2108,16 +2108,17 @@ void gl_func_00065EB4(int a0) {
  * G.size = SZ; G.end = B + 0x10 + SZ; f(&G, B + 4, ...); f(&G, G.base, G.data);
  * G.f8 = read(&G, G.base); G.fC = read(&G, G.base + 4); G.f34 = 0; next(&G).
  *
- * STATUS: 96.30% NM (agent-g run 390), up from 89.73 (-O2 -Olimit 1
+ * STATUS: 98.15% NM (agent-g run 390), up from 89.73 (-O2 -Olimit 1
  * fallback donor, agent-h) and 35.55. Plain IDO 7.1 -O2: the target's
  * a2-born data constant is a uopt-coloured local (d) and its a1-first
  * call-2 / call-3 argument loads are block-scoped temporaries coloured a1;
  * the fallback cannot produce either (ugen puts every temporary of a
  * non-leaf function in a callee-saved register). The per-access record
- * views (D_65EE4_g_q..w, pinned = 0) keep uopt from holding the record
+ * views (D_65EE4_g_q..y, pinned = 0) keep uopt from holding the record
  * address in a register, so every access re-materialises it as the target
- * does. Left: 12 words, the f8 store / call-4 base load pair of regions
- * 1 and 2 (shared view, address coloured v1, load hoisted above the store).
+ * does; the per-region view choice is a sampled assignment. Left: 6 words,
+ * region 1's f8 store / call-4 base load pair (shared view, address
+ * coloured v1, load hoisted above the store).
  *
  * The Makefile uses game_libs_o2_65EE4.c ONLY for this function in
  * build/non_matching. Keep that donor and the C below synchronized.
@@ -2136,23 +2137,29 @@ typedef struct {
 } Save65EE4;
 extern Save65EE4 D_65EE4_g;   /* sym1520 (BSS 0x3F030), = 0 in undefined_syms_auto.txt */
 /* per-access views of the same sym1520 record, all pinned = 0 like D_65EE4_g */
-extern Save65EE4 D_65EE4_g_q, D_65EE4_g_r, D_65EE4_g_s, D_65EE4_g_t, D_65EE4_g_u, D_65EE4_g_v, D_65EE4_g_w;
+extern Save65EE4 D_65EE4_g_q, D_65EE4_g_r, D_65EE4_g_s, D_65EE4_g_t, D_65EE4_g_u,
+                 D_65EE4_g_v, D_65EE4_g_w, D_65EE4_g_x, D_65EE4_g_y;
 extern int func_00000000();
-#define SAVE65EE4_BLOCK(B, SZ) { \
+/* one region; the view arguments name the record view of each access, in source order */
+#define SAVE65EE4_BLOCK(B, SZ, VB, VD, VS, VE, C1, L2, C2, D2, L3, F8, C3, FC, C4, Z, C5) { \
     int d; \
-    D_65EE4_g.base = (B); if (1) {} D_65EE4_g_q.data = d = (B) + 0x10; \
-    D_65EE4_g_r.size = (SZ); D_65EE4_g_s.end = (B) + 0x10 + (SZ); \
-    func_00000000(&D_65EE4_g_t, (B) + 4, d); \
-    { int b2 = D_65EE4_g_u.base; func_00000000(&D_65EE4_g_v, b2, D_65EE4_g.data); } \
-    { int b3 = D_65EE4_g_q.base; D_65EE4_g_w.f8 = func_00000000(&D_65EE4_g_r, b3); } \
-    D_65EE4_g_t.fC = func_00000000(&D_65EE4_g_s, D_65EE4_g_w.base + 4); \
-    D_65EE4_g_u.f34 = 0; \
-    func_00000000(&D_65EE4_g_v); }
+    VB.base = (B); if (1) {} VD.data = d = (B) + 0x10; \
+    VS.size = (SZ); VE.end = (B) + 0x10 + (SZ); \
+    func_00000000(&C1, (B) + 4, d); \
+    { int b2 = L2.base; func_00000000(&C2, b2, D2.data); } \
+    { int b3 = L3.base; F8.f8 = func_00000000(&C3, b3); } \
+    FC.fC = func_00000000(&C4, F8.base + 4); \
+    Z.f34 = 0; \
+    func_00000000(&C5); }
+#define V65EE4(c) D_65EE4_g_##c
+#define G65EE4 D_65EE4_g
 void game_libs_func_00065EE4(void) {
-    SAVE65EE4_BLOCK(0xB1FF0000, 0x2700)
-    SAVE65EE4_BLOCK(0xB1FF2710, 0x9C30)
-    SAVE65EE4_BLOCK(0xB1FFC350, 0x2700)
+    SAVE65EE4_BLOCK(0xB1FF0000, 0x2700, V65EE4(v), G65EE4, V65EE4(q), V65EE4(t), V65EE4(u), V65EE4(t), V65EE4(q), V65EE4(s), V65EE4(t), V65EE4(y), V65EE4(q), V65EE4(q), V65EE4(x), V65EE4(y), V65EE4(s))
+    SAVE65EE4_BLOCK(0xB1FF2710, 0x9C30, V65EE4(r), V65EE4(x), V65EE4(v), G65EE4, V65EE4(t), V65EE4(u), V65EE4(w), V65EE4(t), V65EE4(s), V65EE4(y), V65EE4(y), V65EE4(s), V65EE4(w), V65EE4(v), V65EE4(w))
+    SAVE65EE4_BLOCK(0xB1FFC350, 0x2700, V65EE4(u), V65EE4(x), V65EE4(s), V65EE4(v), V65EE4(w), V65EE4(q), V65EE4(t), V65EE4(v), V65EE4(s), V65EE4(x), G65EE4, V65EE4(x), V65EE4(v), V65EE4(w), V65EE4(q))
 }
+#undef V65EE4
+#undef G65EE4
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00065EE4);
 #endif
