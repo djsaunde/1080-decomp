@@ -54,10 +54,16 @@
  *     separate XZ(float, float, int) ctor used only by those three, plus four after the wpos binding, take them to
  *     10-11 blocks (3 / 4 = 0.75) while the slot only falls to 24 / 31 = 0.774, still below s (1.39): pool a2,
  *     every chain temp a3, s a1, 96.683 -> 97.289 (2832 B).
+ *   - agent-c run 415 (kit CDXCIX): the flag-arm dot as one named `float dot = lenf;` read by both `+=`
+ *     operands (`dot + half` / `dot - half`) instead of a reassigned local: 97.289 -> 97.458, frame 528; then
+ *     an XZ member copy of operator* (used by the else-arm `e * dot`), -> 97.472 (2832 B).
  * LEFT: the else-arm XZ(wpos) `this` shares its word with perp's `this` (v1; target a0 / v1); d2's conversion `v`
  * home sp+400 vs the target's sp+416 (in the target d2's and g's `v` are one word: a direct XZ(K1(s)->w->pos) at g
  * does join them, but the conversion-`this` word then outranks e1189 and s falls to s0, 2712 B); f0 / f12 swaps at
- * the sub / operator* sites. */
+ * the sub / operator* sites; `s->p84 = s->p90` in the target copies through its own by-value operator= temp
+ * (sp+284), which a chained `s->p84 = K3(s)->p90 = (const Vec3 &)XZ(...)` reproduces (2836 B = target; with the
+ * flag-arm KR1 dropped, e as subp1 over the 3-dummy XZ(b->pos): frame 528, pool a2 sp+372, s a1, but 97.223 on
+ * the remaining slot order, kit CDXCIX). */
 extern "C" void *game_uso_func_055750(unsigned);
 template <class T> inline const T &KR1(const T &r) { const T *p = &r; if (0) { p = 0; } return *p; } /* kept const-ref identity with a dead block */
 struct Vec3 {
@@ -78,6 +84,9 @@ struct XZ : Vec3 {
     XZ(int z0, int z1, const Vec3 &v) : Vec3(v.x, 0.0f, v.z) { z0 = z0; z1 = z1; }
     XZ(int z0, int z1, int z2, const Vec3 &v) : Vec3(v.x, 0.0f, v.z) { z0 = z0; z1 = z1; z2 = z2; }
     XZ(float a, float c) : Vec3(a, 0.0f, c) {}
+    /* run 415: XZ's own copy of Vec3::operator* (only `e * dot` uses it; the dir products are byte-identical
+     * either way): the else-arm product's float temps leave the Vec3 operator's words, 97.458 -> 97.472 */
+    Vec3 operator*(float s) const { return KR1(Vec3(x * s, y * s, z * s)); }
     /* agent-h run 414: code-free block splits inside the plain-return (subp1 / subp2 / perp) chain temps' ctor:
      * their `this` address LRs grow from 7 to 11 blocks, uopt priority 3/3 = 1.0 -> 3/4 = 0.75 */
     XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} }
@@ -106,12 +115,11 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         if (1) {}
         const Vec3 &d2 = subp1((int)a, XZ((int)a, s->w->pos), a->pos);
         float lenf = dir.x * d2.x + dir.z * d2.z;
+        float dot = lenf; /* run 415: one named dot read by both operands, 97.289 -> 97.458, frame 528 */
         K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
         s->p84 = s->p90;
-        float dot = lenf + (s->w->speed * s->kDC) / 2;
-        s->p84 += KR1(dir * dot);
-        dot = lenf - (s->w->speed * s->kDC) / 2;
-        s->p90 += dir * dot;
+        s->p84 += KR1(dir * (dot + (s->w->speed * s->kDC) / 2));
+        s->p90 += dir * (dot - (s->w->speed * s->kDC) / 2);
         s->phase = 0;
     } else {
         XZ e(XZ((int)a, (int)a, (int)a, b->pos) - a->pos);
