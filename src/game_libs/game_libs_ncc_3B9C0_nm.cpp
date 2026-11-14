@@ -45,13 +45,12 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
     s32 ok;
     V3B9 p;
     s32 ib;
-    f32 qa;
+    s32 iav; /* agent-c run 387: ia named again (one tris[i].a load, the target's v1 role) */
     f32 num; /* agent-c run 286: the t numerator (was nz, agent-g run 248: function scope = one more edg home word between p and d -> d at sp+160 like the target, 95.14 -> 95.19) */
     V3B9 d;
-    f32 qb;
-    f32 sg;
     f32 *pp; /* run 194: the target indexes a held &p (addiu sp,184; addu idx,base) */
     s16 ey;
+    volatile s32 vpad; /* agent-c run 387: unused volatile pad -- the home word the dropped sg / qa / qb names held (frame 224 -> 232 = target) */
     s16 ex; /* run 191 lever-sweep hoist: ex declared before vt (78.55 -> 78.65) */
     s16 (*vt)[3];
     s16 *nx;
@@ -105,15 +104,21 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
         } else {
             f = &col->faces[i];
         }
+        iav = (&self->tris[i])->a;
         ib = (&self->tris[i])->b + 0 * (int)(self_al->tris) + 0 * (int)(col->remap); /* agent-g run 210: second pass: 92.70 -> 93.89; agent-c run 284: + col->remap (zero-use --exprs re-sweep after the off split, 96.00 -> 96.05) */
             if (0) { f = 0; } /* agent-c run 285: dead multi-def of f (no code; insertion sweep): the i * 12 base a1 like the target, 96.65 -> 96.77 */
-#define ia ((&self->tris[i])->a) /* agent-c run 235: ia de-named (lever-sweep denaming, 95.00 -> 95.07) */
+#define ia iav /* agent-c run 235: ia de-named (95.00 -> 95.07); agent-c run 387: named again with the qa / qb change below */
         /* agent-c run 266: qa / qb loads in ONE basic block (the `if (1) {}` moved after qb): the target's held
          * `addiu t9,sp,184` &p base is CSE'd for both loads inside the iteration (1104 -> 1108 of 1116); folded
          * counted uses of ib / ia on pp and of pp on sg re-colour it (zero-use sweep: 94.19 -> 95.52) */
         pp = &p.x + 0 * (int)(ib); /* agent-c run 287: the + ia fold dropped (stale after the col phantom, removal sweep flat) */
-        qa = pp[ia]; qb = pp[ib]; if (1) {}
-        sg = (&self->tris[i])->sgn + 0 * (int)(self->tris) + 0 * (int)(pp); /* agent-c run 287: the trailing `if (1) {}` dropped (stale); agent-g run 210: folded counted use (int add before the s8 -> f32 conversion): 92.55 -> 92.70; agent-c run 273: the dx split moved here */
+        /* agent-c run 387 (re-decode, the exact 3BE1C sibling's q[a] form): no qa / qb / sg variables -- p[ia] / p[ib]
+         * and the sgn read are written IN the edge loop and uopt hoists them to the preheader; the &p lda is then an
+         * uncoloured ugen base (`addiu t9,sp,184` reused for both loads, kits CDLXVIII 4. / CDLXXII said unreachable with
+         * named qa / qb) and the sgn load schedules between them like the target; the old sg line's slot keeps a
+         * code-free `if (pp) {}`: 99.319 -> 99.660, same length */
+        if (1) {}
+        if (pp) {}
         nx = (s16 *)&D_00000000 + 0 * (unused + unused); /* agent-c run 287: the phantom pair in col's place; agent-c run 286: folded col use (zero-use sweep after the vt change, 95.30 -> 99.01) */
         vt = self->col->verts; /* agent-c run 286: the target loads verts from the self->col web (lw t5,96(s5)), not from col */
         fv = (u16 *)f;
@@ -124,12 +129,12 @@ extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3
             /* agent-g run 343 (kit CDVI carriers): dx in self_al (block local, dead after the grp test / ib fold), dy in
              * pp (dead after the qa / qb / sg reads above), both re-written here before every read: value-preserving s16
              * truncation; dx in b first (99.247: b's top LR then shared the loop colour t0, target v0) -> self_al 99.319 */
-            self_al = (ObjB9 *)(int)(s16)(s32)(qa - v0[ia]); /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
-            pp = (f32 *)(int)(s16)(s32)(qb - v0[ib]);
+            self_al = (ObjB9 *)(int)(s16)(s32)((&p.x)[ia] - v0[ia]); /* run 193: dx / dy before ex / ey (3BE1C twin decode) */
+            pp = (f32 *)(int)(s16)(s32)((&p.x)[ib] - v0[ib]);
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib];
-            if (((f32)ex * (f32)(int)pp - (f32)ey * (f32)(int)self_al) * sg > 0.0f) {
-                ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)); if (qa != 0.0f) {} /* agent-g run 327: the + num fold dropped (num no longer spans
+            if (((f32)ex * (f32)(int)pp - (f32)ey * (f32)(int)self_al) * (f32)(&self->tris[i])->sgn > 0.0f) {
+                ok = 0 + 0 * (int)(i) + 0 * ((int)(f) + (int)(f)); if (p.x != 0.0f) {} /* agent-c run 387: the 0.0f test on p.x (qa is gone) */ /* agent-g run 327: the + num fold dropped (num no longer spans
                                                                      * the inner loop) and a code-free 0.0f test here (raises the hoisted 0.0f over n->x / n->y / n->z):
                                                                      * 0.0f f14 / n->z f20 like the target, 99.122 -> 99.211 (grid r8, 156); agent-c run 286: the run-285 nz use dropped with nz; + num (set before the loop on every path; zero-use --keep-float, 99.01 -> 99.07); agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
             }
