@@ -748,6 +748,7 @@ extern int import_8005C108[];
  * phase-3 G_DL loop's dl loads form their own live range and colour v0 like the target (98.41 -> 98.61) */
 #define E68_DL_I(m) ((DlE68 *)*(s32 *)&(m)->dl)
 #define E68_NEXTBI(m) (_n = E68_DL_I(m)->count, E68_DL_I(m)->count = _n + 1, &E68_DL_I(m)->buf[_n])
+#define E68_DL_U(m) ((DlE68 *)*(u32 *)&(m)->dl) /* agent-h run 403: same value as E68_DL_I, a separate uopt expression */
 #define E68_SHL(v, s, w) ((u32)(((u32)(v) & ((0x01 << (w)) - 1)) << (s)))
 #define E68_W(pkt, a, b) { GwE68 *_g = (GwE68 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 #define E68_TILEGEN(pkt, c, tile, uls, ult, lrs, lrt) \
@@ -893,7 +894,11 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         }
         /* agent-c run 353: phase 3 through m2 (explicit-increment appends, head on the int view; random
          * climb on the two-variable body, 97.80 -> 98.709 with the padq[2] / &self changes above) */
-        m2 = E68_MGR;
+        /* agent-h run 403: a folded use of the phase-2 m keeps m live into the phase-3 head, so the MGR value
+         * takes t0 in both phases (ult falls to t1) like the target; the G_DL loop then reads dl through the u32
+         * view (E68_DL_U), a distinct uopt expression from the head's s32 view, so the head dl takes v1 and the
+         * loop dl v0 as in the target (99.709 -> 99.867) */
+        m2 = E68_MGR + 0 * ((int)m);
         head = E68_NEXTBI(m2);
         E68_VTX(head, func_00000000(&D_e68_vtx), 4, 0);
         E68_W(E68_NEXTB(m2), 0xBE000000, 6);
@@ -927,7 +932,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
                 /* agent-h run 399: the four outer phase-3 appends back on _n (a1 like the target) and the G_DL count
                  * in the dead tlut: its live range spans phases 1-3, so its priority falls below the arr[] IV and it
                  * takes the target's a2 (arr a1) -- 99.592 -> 99.671 (a fresh local takes v1; arg4 scores the same) */
-                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((tlut = E68_DL_I(m2)->count, E68_DL_I(m2)->count = tlut + 1, &E68_DL_I(m2)->buf[tlut]), 0x06, dl, 0, 0); }
+                { GwE68 *dl = arr[i * n + col]; E68_DMA1P((tlut = E68_DL_U(m2)->count, E68_DL_U(m2)->count = tlut + 1, &E68_DL_U(m2)->buf[tlut]), 0x06, dl, 0, 0); }
             }
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
