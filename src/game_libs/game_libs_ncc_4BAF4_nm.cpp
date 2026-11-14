@@ -26,7 +26,7 @@ inline void put4B(Gfx4B *g, u32 hi, u32 lo) { g->w0 = hi; g->w1 = lo; }
 /* agent-g run 335 (kit CDXXVII): nextF() / addF() for the three ctx-variable packets (first, else arm, final). The
  * four me2() on the count side hold edg pool words before the `n++` temp, so these packets' count / gfx words are no
  * longer the words the expression-receiver packets (0xEE, TEXRECT, B4, B3) use for their receiver: 99.303 -> 99.409 */
-struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } Gfx4B *nextG() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n + 0 * n]; } void addG(u32 hi, u32 lo) { put4B(me2(this)->nextG(), hi, lo); } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
+struct Ctx4B { char pad[0xC]; GP4B *gfx; int ex() { return (int)this; } int gt(int v, int c) { return v > c + (int)this; } void dlc(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextF(), 0x06000000, r); } void dlG(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextG(), 0x06000000, r); } void dlM(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextG(), 0x06000000, r); } Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } Gfx4B *nextG() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n + 0 * n]; } void addG(u32 hi, u32 lo) { put4B(me2(this)->nextG(), hi, lo); } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
 #define GS4B (*(char **)((char *)&D_00000000 + 0x254))
@@ -53,32 +53,28 @@ extern "C" void gl_func_0004BAF4(char *self) {
     f32 sx;
     f32 sy;
     Spr4B *spr;
-    Ctx4B *ctx;
-    f32 s;
-    u32 r;
-    int x;
-    int y;
-    int w;
-    int h;
     /* run 158: two more homes below h = the target's frame 0xF0 (every sp offset then matches); agent-g run 335: g and
      * pad0 dropped -- the addF() parameter words of the ctx packets take their 8 bytes (frame still 0xF0) */
-    char *d; /* agent-g run 233: the clip half-extent e, in pad1's home slot (frame kept); agent-g run 266: one local d for the half-extent AND the self->0xCC pointer */
+    /* agent-g run 233: the clip half-extent e, in pad1's home slot (frame kept); agent-g run 266: one local d for the half-extent AND the self->0xCC pointer */
+    /* agent-c runs 391 / 400 / 402 (kits CDLXXVIII, CDLXXXV): the inline-ctx basin -- no named ctx / s / cam; r / d open
+     * an inner block after pos.x, x..h a second one; the three 0x06 packets are ONE Ctx4B inline member each (dlG / dlc /
+     * dlM) so their `this` is the single a3 pool word; the clip extents are read through Ctx4B gt() / ex() `this`; the
+     * first packet as dlG and the 0xEE append as add() at depth 2: 99.586 -> 99.681, same length */
 
+    pos.x = F4B(me((Ctx4B *)&D_4BAF4_cam), 0x30, f32);
     {
-        Cam4B *cam = &D_4BAF4_cam;
-        pos.x = cam->p.x;
-        pos.y = cam->p.y;
-        pos.z = cam->p.z;
-    }
-    if ((r = (u32)gl_func_00000000(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
+    u32 r;
+    char *d;
+    pos.y = D_4BAF4_cam.p.y;
+    pos.z = D_4BAF4_cam.p.z;
+    if ((d = (char *)gl_func_00000000(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
         return;
     }
-    iz = (pos.z + 1.0f) * 16384.0f + F4B(self, 0xC8, f32);
+    iz = (pos.z + 1.0f) * 16384.0f + F4B(me((Ctx4B *)self), 0xC8, f32);
     if (1) {} /* agent-g run 262 (kit CCC random code-free test search): 97.03 -> 97.39 (agent-c run 288: the paired iz / r tests below dropped, byte-identical -- any two of the four levers are redundant; agent-c run 307: the second `if (1) {}` here dropped, byte-identical) */
     if (F4B(self, 0xC4, int) != 0) {
-        s = (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
-        sx = F4B(self, 0xB0, f32) * s;
-        sy = F4B(self, 0xB4, f32) * s;
+        sx = F4B(self, 0xB0, f32) * (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
+        sy = F4B(self, 0xB4, f32) * (f32)((f64)(f32)F4B(GS4B, 0xBC, int) * 0.5 * (f64)out[0]);
     } else {
         sx = F4B(self, 0xB0, f32);
         sy = F4B(self, 0xB4, f32);
@@ -88,6 +84,11 @@ extern "C" void gl_func_0004BAF4(char *self) {
     pos.y -= (f32)(spr->h >> 1) * sy;
     pos.x += F4B(self, 0xB8, f32);
     pos.y += F4B(self, 0xBC, f32);
+    {
+    int x;
+    int y;
+    int w;
+    int h;
     x = pos.x;
     y = pos.y;
     w = spr->w; /* agent-g run 233: the folded `+ 0 * y` dropped (x / y back in a0 / a1 after the e change) */
@@ -102,28 +103,33 @@ extern "C" void gl_func_0004BAF4(char *self) {
      * in ctx): the C0 centre takes a2 like the target (ext / ctx / centre variable grid, 161): 99.515 -> 99.539 */
     /* agent-g run 372: with the first packet's count coloured before ctx (addG below), the extent carriers re-gridded
      * (ctx / d / r / by-value idv(idv()) pool temp per read, `x > C0 + ext` order): 99.539 -> 99.586, same length */
-    if ((ctx = (Ctx4B *)F4B(GS4B, 0xB8, volatile int), x > F4B(GS4B, 0xC0, int) + (int)ctx) || (d = (char *)F4B(GS4B, 0xBC, volatile int), y > F4B(GS4B, 0xC4, int) + (int)d) ||
-        (r = (u32)F4B(GS4B, 0xB8, volatile int), x < F4B(GS4B, 0xC0, int) - (int)r) || (y < F4B(GS4B, 0xC4, int) - idv(idv(F4B(GS4B, 0xBC, volatile int))))) {
+    if ((((Ctx4B *)F4B(GS4B, 0xB8, volatile int))->gt(x, F4B(GS4B, 0xC0, int) + 0 * (int)d))) {
         return;
-    } if (r) {}
-    ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
-    d = F4B(self, 0xCC, char *); r = gl_func_00000000(F4B(d, 0x60, int));
-    ctx->addG(0x06000000, r); /* agent-g run 372: addG's named count with a folded counted use (`n + 0 * n`, adjsave 3.0 -> 4.0) is coloured
+    }
+    if ((((Ctx4B *)F4B(GS4B, 0xBC, volatile int))->gt(y, F4B(GS4B, 0xC4, int)))) {
+        return;
+    }
+    if ((x < F4B(GS4B, 0xC0, int) - ((Ctx4B *)F4B(GS4B, 0xB8, volatile int))->ex())) {
+        return;
+    }
+    if ((y < F4B(GS4B, 0xC4, int) - ((Ctx4B *)F4B(GS4B, 0xBC, volatile int))->ex())) {
+        return;
+    } r = (u32)d; if (r) {}
+    /* agent-g run 332: this and the else-arm ctx load through two me() (depth grid over the three ctx loads, 63): 99.243 -> 99.291; agent-g run 266: the folded `+ 0 * (int)(spr->h)` (runs 209-233) dropped with the d change */
+    F4B(GS4B, 0x158, Ctx4B *)->dlG(F4B(self, 0xCC, char *)); /* agent-g run 372: addG's named count with a folded counted use (`n + 0 * n`, adjsave 3.0 -> 4.0) is coloured
                                * BEFORE ctx: this packet's ctx / gfx / count = the target's a3 / a0 / a2 (was a2 / a0 / v1 via run 336's addO) */
     /* agent-c run 306 (kit CCCLXXXVIII ring lever): one doubled (value-preserving) iz mask here = one ugen ring slot, so
      * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
     me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
     if (*(s32 *)((char *)&D_4BAF4_flags + 0x1C4) & 2) {
-        if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { if (ctx) {} /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
+        if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }
     } else {
-        ctx = me(me(F4B(GS4B, 0x158, Ctx4B *)));
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a
          * coloured LR, `lw v0,100(t2); lw a0,96(v0)`), not a ugen temp: 99.007 -> 99.137, same length */
-        d = spr->dl64; r = gl_func_00000000(F4B(d, 0x60, int));
-        ctx->addF(0x06000000, r);
+        me(me(me(F4B(GS4B, 0x158, Ctx4B *))))->dlc(d = spr->dl64);
     }
     {
         Gfx4B *_g = (Gfx4B *)(PKT4B(me(me(me(F4B(GS4B, 0x158, Ctx4B *)))))); /* agent-g run 332: both TEXRECT packets' receivers at depth 3 (grid 0-4 x 0-4 x 0xEE 1-3): 99.196 -> 99.243 */
@@ -155,11 +161,11 @@ extern "C" void gl_func_0004BAF4(char *self) {
     {
         me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(SHL4B(0xB3, 24, 8), (SHL4B(((u16)(s32)(1024.0f / sx)), 16, 16) | SHL4B(((u16)(s32)(1024.0f / sy)), 0, 16)));
     }
-    ctx = me(me(F4B(GS4B, 0x158, Ctx4B *))); /* agent-g run 335: through two me() with the addF() packets */
     /* agent-g run 321: the self->0xD0 pointer through d with a BB split before the call (kit CDXII): the pointer is a
      * coloured LR (the target's v0) instead of a ugen temp, 98.960 -> 99.007, same length; agent-g run 336: the BB split
      * dropped together with the B3 receiver at me() depth 2 (random mutation round on the put4B base, both needed):
      * 99.444 -> 99.480 */
-    d = F4B(self, 0xD0, char *); r = gl_func_00000000(F4B(d, 0x60, int));
-    ctx->addF(0x06000000, r);
+    F4B(GS4B, 0x158, Ctx4B *)->dlM(F4B(self, 0xD0, char *));
+    }
+    }
 }
