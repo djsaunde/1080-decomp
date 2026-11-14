@@ -130,6 +130,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         const Vec3 &wpos = K1(s)->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
         if (1) {} if (1) {} if (1) {} if (1) {} /* run 414: wpos LR 6 -> 10 blocks, priority 1.0 -> 0.75 */
         const XZ &g = subp1((int)a, XZ(wpos), s->p90);
+        if (e.x * f.x + e.z * f.z) {} /* run 422: code-free test, the e.f sum becomes a uopt CSE (target f0, no ring pop) */
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
             game_uso_func_071028(&e);
@@ -137,6 +138,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             s->p84 = (const Vec3 &)XZ((int)a, (int)a, (int)a, a->pos);
             const Vec3 &h = subp2((int)a, (int)a, s->p90, a->pos);
             float dot = h.x * e.x + e.z * h.z + K3(s)->w->speed * K3(s)->kDC;
+            if (h.x * e.x + e.z * h.z) {} /* run 422: the partial h.e sum as a uopt CSE too (no ring pop) */
             K1(s)->p84 += e * dot;
             side *= s->kE0 * (250.0f * b->width); /* the target muls 250 * width first, then kE0 */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
