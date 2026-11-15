@@ -7128,64 +7128,64 @@ void CharacterItem_updateHighlight_0000B850(char *a0, float target) {
     }
 }
 
-void CharacterItem_toggleVariant_0000B914(SelItemEx *it) {
+void CharacterItem_toggleVariant_0000B914(SelCharacterItem *it) {
     it->base.flags ^= 0x20000;
 }
 
-void CharacterItem_playPickAnim_0000B928(SelItemEx *it) {
-    char *p = it->model;
-    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 1, 1, 1);
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
+void CharacterItem_playPickAnim_0000B928(SelCharacterItem *it) {
+    SelCharModel *p = it->model;
+    gl_func_00000000(p->anim, p->animSet, 3, 1, 1, 1);
+    *(int*)((char*)it->model->anim + 0xB0) = 0;
+    *(int*)((char*)it->model->anim + 0x64) = -1000;
 }
 
-void CharacterItem_playAcceptAnim_0000B98C(SelItemEx *it) {
-    char *p = it->model;
-    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 2, 3, 1, 1);
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
+void CharacterItem_playAcceptAnim_0000B98C(SelCharacterItem *it) {
+    SelCharModel *p = it->model;
+    gl_func_00000000(p->anim, p->animSet, 2, 3, 1, 1);
+    *(int*)((char*)it->model->anim + 0xB0) = 0;
+    *(int*)((char*)it->model->anim + 0x64) = -1000;
 }
 
-void CharacterItem_confirm_0000B9F0(SelItemEx *it) {
-    char *p = it->model;
-    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 2, 1, 1);
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = 2;
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
-    *(int*)(it->model + 0x144) = 0x10;
+void CharacterItem_confirm_0000B9F0(SelCharacterItem *it) {
+    SelCharModel *p = it->model;
+    gl_func_00000000(p->anim, p->animSet, 3, 2, 1, 1);
+    *(int*)((char*)it->model->anim + 0x64) = 2;
+    *(int*)((char*)it->model->anim + 0xB0) = 0;
+    it->model->animMode = 0x10;
 }
 
-void CharacterItem_focus_0000BA60(SelItemEx *it) {
-    char *p = it->model;
-    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 0, 2, 2, 1);
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
-    *(int*)(it->model + 0x138) = 1;
-    *(int*)(it->model + 0x144) = 0;
+void CharacterItem_focus_0000BA60(SelCharacterItem *it) {
+    SelCharModel *p = it->model;
+    gl_func_00000000(p->anim, p->animSet, 0, 2, 2, 1);
+    *(int*)((char*)it->model->anim + 0xB0) = 0;
+    *(int*)((char*)it->model->anim + 0x64) = -1000;
+    it->model->focused = 1;
+    it->model->animMode = 0;
     it->barCount = 0;
     it->barTimer = 2;
 }
 
-void CharacterItem_unfocus_0000BAE8(SelItemEx *it) {
-    char *p = it->model;
-    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 2, 1, 1);
-    *(int*)(it->model + 0x138) = 0;
-    *(int*)(it->model + 0x144) = 0x20;
+void CharacterItem_unfocus_0000BAE8(SelCharacterItem *it) {
+    SelCharModel *p = it->model;
+    gl_func_00000000(p->anim, p->animSet, 3, 2, 1, 1);
+    it->model->focused = 0;
+    it->model->animMode = 0x20;
 }
 
-void CharacterItem_onStageLeave_0000BB44(SelItemEx *it) {
-    *(int*)(it->model + 0x138) = 0;
-    *(int*)(it->model + 0x144) = 8;
+void CharacterItem_onStageLeave_0000BB44(SelCharacterItem *it) {
+    it->model->focused = 0;
+    it->model->animMode = 8;
 }
 
 void CharacterItem_onStageReturn_0000BB5C(int a0) {
 }
 
-void CharacterItem_setChosen_0000BB64(SelItemEx *it, int unused) {
-    *(int*)(it->model + 0x13C) = 1;
+void CharacterItem_setChosen_0000BB64(SelCharacterItem *it, int unused) {
+    it->model->chosen = 1;
 }
 
-void CharacterItem_clearChosen_0000BB78(SelItemEx *it, int unused) {
-    *(int*)(it->model + 0x13C) = 0;
+void CharacterItem_clearChosen_0000BB78(SelCharacterItem *it, int unused) {
+    it->model->chosen = 0;
 }
 
 /* 16-insn float-quad copy: v0 = a0->_2B8; copies 4 floats from
@@ -7228,9 +7228,9 @@ void CharacterItem_update_0000BB88(int *a0) {
 
 /* 5-insn float store: stores a1 to a0->_2A0 and (a0->_2B8)->_120.
  * Float arg passed in $a1 (int reg), so IDO emits mtc1 to FPU first. */
-void CharacterItem_setAlpha_0000BBC8(SelItemEx *it, float a1) {
+void CharacterItem_setAlpha_0000BBC8(SelCharacterItem *it, float a1) {
     it->base.alpha = a1;
-    *(float*)(it->model + 0x120) = a1;
+    it->model->alpha = a1;
 }
 
 #ifdef NON_MATCHING
@@ -7489,37 +7489,37 @@ void BoardItem_playAcceptAnim_0000C110(int a0) {
 void BoardItem_confirm_0000C118(int a0) {
 }
 
-void BoardItem_focus_0000C120(SelItemEx *it) {
-    *(int*)(it->model + 0x12C) = 1;
-    *(float*)(it->model + 0x10C) = 0.0f;
+void BoardItem_focus_0000C120(SelBoardItem *it) {
+    it->model->focused = 1;
+    it->model->spin = 0.0f;
     it->barCount = 0;
     it->barTimer = 2;
-    *(int*)(it->model + 0x130) = 1;
+    it->model->lit = 1;
 }
 
-void BoardItem_unfocus_0000C150(SelItemEx *it) {
-    *(int*)(it->model + 0x12C) = 0;
-    *(int*)(it->model + 0x130) = 0;
+void BoardItem_unfocus_0000C150(SelBoardItem *it) {
+    it->model->focused = 0;
+    it->model->lit = 0;
 }
 
-void BoardItem_onStageLeave_0000C164(SelItemEx *it) {
-    *(int*)(it->model + 0x130) = 0;
+void BoardItem_onStageLeave_0000C164(SelBoardItem *it) {
+    it->model->lit = 0;
 }
 
-void BoardItem_onStageReturn_0000C170(SelItemEx *it) {
-    *(int*)(it->model + 0x130) = 1;
+void BoardItem_onStageReturn_0000C170(SelBoardItem *it) {
+    it->model->lit = 1;
 }
 
-void BoardItem_toggleVariant_0000C180(SelItemEx *it) {
+void BoardItem_toggleVariant_0000C180(SelBoardItem *it) {
     it->base.flags ^= 0x20;
 }
 
-void BoardItem_setChosen_0000C190(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x134) = 1;
+void BoardItem_setChosen_0000C190(SelBoardItem *it, int a1) {
+    it->model->chosen = 1;
 }
 
-void BoardItem_clearChosen_0000C1A4(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x134) = 0;
+void BoardItem_clearChosen_0000C1A4(SelBoardItem *it, int a1) {
+    it->model->chosen = 0;
 }
 
 /* BoardItem_update_0000C1B4: 16-insn 4-float copy + cross-USO call.
@@ -7567,9 +7567,9 @@ void BoardItem_update_0000C1B4(int *a0) {
  * from the Yay0 gap (no .s, missing from build; bytes from block_5). o32
  * float-after-int arg arrives in $a1 -> mtc1; inline-deref of a0->0x2B8
  * keeps the dest pointer in $t6 (byte-exact). */
-void BoardItem_setAlpha_0000C1F4(SelItemEx *it, float val) {
+void BoardItem_setAlpha_0000C1F4(SelBoardItem *it, float val) {
     it->base.alpha = val;
-    *(float*)(it->model + 0x120) = val;
+    it->model->alpha = val;
 }
 
 extern char D_b5_C208_table0;
@@ -7823,11 +7823,11 @@ void CourseItem_updateHighlight_0000C710(char *a0, float a1u) {
 
 /* timproc_uso_b5_func_0000C7B4 MERGED into C710 2026-06-10 (bc1f tail fragment, third of the fade-helper family). */
 
-void CourseItem_copyState_0000C7E8(SelItemEx *it, SelItemEx *other) {
-    *(float *)(other->model + 0x128) = *(float *)(it->model + 0x128);
-    *(float *)(other->model + 0x124) = *(float *)(it->model + 0x124);
-    *(int *)(other->model + 0x130) = *(int *)(it->model + 0x130);
-    *(int *)(other->model + 0x13C) = *(int *)(it->model + 0x13C);
+void CourseItem_copyState_0000C7E8(SelCourseItem *it, SelCourseItem *other) {
+    other->model->mapFade = it->model->mapFade;
+    other->model->highlight = it->model->highlight;
+    other->model->focused = it->model->focused;
+    other->model->unk13C = it->model->unk13C;
 }
 
 void CourseItem_toggleVariant_0000C82C(int a0) {
@@ -7842,29 +7842,29 @@ void CourseItem_playAcceptAnim_0000C83C(int a0) {
 void CourseItem_confirm_0000C844(int a0) {
 }
 
-void CourseItem_focus_0000C84C(SelItemEx *it) {
-    *(int*)(it->model + 0x130) = 1;
+void CourseItem_focus_0000C84C(SelCourseItem *it) {
+    it->model->focused = 1;
 }
 
-void CourseItem_unfocus_0000C85C(SelItemEx *it) {
-    *(int*)(it->model + 0x130) = 0;
-    *(int*)(it->model + 0x134) = 0;
+void CourseItem_unfocus_0000C85C(SelCourseItem *it) {
+    it->model->focused = 0;
+    it->model->lit = 0;
 }
 
 void CourseItem_onStageLeave_0000C870(int a0) {
 }
 
-void CourseItem_onStageReturn_0000C878(SelItemEx *it) {
-    *(int*)(it->model + 0x134) = 1;
+void CourseItem_onStageReturn_0000C878(SelCourseItem *it) {
+    it->model->lit = 1;
 }
 
-void CourseItem_setChosen_0000C888(SelItemEx *it, int a1) {
+void CourseItem_setChosen_0000C888(SelCourseItem *it, int a1) {
     (void)a1;
-    *(int*)(it->model + 0x138) = 1;
+    it->model->chosen = 1;
 }
 
-void CourseItem_clearChosen_0000C89C(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x138) = 0;
+void CourseItem_clearChosen_0000C89C(SelCourseItem *it, int a1) {
+    it->model->chosen = 0;
 }
 
 /* 51-insn / 0xCC float clamp + copy. Pattern:
@@ -7988,9 +7988,9 @@ void CourseItem_update_0000C8AC(int *a0) {
 }
 
 
-void CourseItem_setAlpha_0000C978(SelItemEx *it, float a1) {
+void CourseItem_setAlpha_0000C978(SelCourseItem *it, float a1) {
     it->base.alpha = a1;
-    *(float*)(it->model + 0x11C) = a1;
+    it->model->alpha = a1;
 }
 
 // CourseItem_drawLabel_0000C98C — STRUCTURAL PASS (0x1B4 / 109 words,
@@ -8142,24 +8142,24 @@ void TesuriItem_playAcceptAnim_0000CC14(int a0) {}
 
 void TesuriItem_confirm_0000CC1C(int a0) {}
 
-void TesuriItem_focus_0000CC24(SelItemEx *it) {
-    *(int*)(it->model + 0x134) = 1;
+void TesuriItem_focus_0000CC24(SelTesuriItem *it) {
+    it->model->focused = 1;
 }
 
-void TesuriItem_unfocus_0000CC34(SelItemEx *it) {
-    *(int*)(it->model + 0x134) = 0;
+void TesuriItem_unfocus_0000CC34(SelTesuriItem *it) {
+    it->model->focused = 0;
 }
 
 void TesuriItem_onStageLeave_0000CC40(int a0) {}
 
 void TesuriItem_onStageReturn_0000CC48(int a0) {}
 
-void TesuriItem_setChosen_0000CC50(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x138) = 1;
+void TesuriItem_setChosen_0000CC50(SelTesuriItem *it, int a1) {
+    it->model->chosen = 1;
 }
 
-void TesuriItem_clearChosen_0000CC64(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x138) = 0;
+void TesuriItem_clearChosen_0000CC64(SelTesuriItem *it, int a1) {
+    it->model->chosen = 0;
 }
 
 /* Sibling of BoardItem_update_0000C1B4 (4-float copy + cross-USO call + 5-insn
@@ -8195,9 +8195,9 @@ void TesuriItem_update_0000CC74(int *a0) {
 
 /* TesuriItem_setAlpha_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
  * instead of 0x120), RECOVERED 2026-05-28 from the Yay0 gap. */
-void TesuriItem_setAlpha_0000CCB4(SelItemEx *it, float val) {
+void TesuriItem_setAlpha_0000CCB4(SelTesuriItem *it, float val) {
     it->base.alpha = val;
-    *(float*)(it->model + 0x11C) = val;
+    it->model->alpha = val;
 }
 
 /* TesuriItem_drawLabel_0000CCC8: 23-insn (0x5C) 6-arg cross-USO call
@@ -8285,24 +8285,24 @@ void LevelItem_playAcceptAnim_0000CE0C(int a0) {}
 
 void LevelItem_confirm_0000CE14(int a0) {}
 
-void LevelItem_focus_0000CE1C(SelItemEx *it) {
-    *(int*)(it->model + 0x130) = 1;
+void LevelItem_focus_0000CE1C(SelLevelItem *it) {
+    it->model->focused = 1;
 }
 
-void LevelItem_unfocus_0000CE2C(SelItemEx *it) {
-    *(int*)(it->model + 0x130) = 0;
+void LevelItem_unfocus_0000CE2C(SelLevelItem *it) {
+    it->model->focused = 0;
 }
 
 void LevelItem_onStageLeave_0000CE38(int a0) {}
 
 void LevelItem_onStageReturn_0000CE40(int a0) {}
 
-void LevelItem_setChosen_0000CE48(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x138) = 1;
+void LevelItem_setChosen_0000CE48(SelLevelItem *it, int a1) {
+    it->model->chosen = 1;
 }
 
-void LevelItem_clearChosen_0000CE5C(SelItemEx *it, int a1) {
-    *(int*)(it->model + 0x138) = 0;
+void LevelItem_clearChosen_0000CE5C(SelLevelItem *it, int a1) {
+    it->model->chosen = 0;
 }
 
 /* 4-float load-batched store + jal. Clean NM body 2026-06-21 (agent-d):
@@ -8373,9 +8373,9 @@ void LevelItem_update_0000CE6C(int *a0) {
 void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
 }
 
-void LevelItem_setAlpha_0000D058(SelItemEx *it, float a1) {
+void LevelItem_setAlpha_0000D058(SelLevelItem *it, float a1) {
     it->base.alpha = a1;
-    *(float*)(it->model + 0x11C) = a1;
+    it->model->alpha = a1;
 }
 
 /* MATCHED (byte-exact, 28/28). Sibling of the A97C/A9EC family — the prior

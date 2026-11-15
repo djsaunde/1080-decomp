@@ -41,6 +41,83 @@ typedef struct SelItemEx {
     s32 barTimer;           /* 0x2C0 */
 } SelItemEx;
 
+/* ---- per-class display models (SelItemEx.model; the QNode state each item class
+ * creates). Only the fields the item virtuals touch are named; `view` is the
+ * four floats each class's update copies in from the item (+0x25C.. / +0x294),
+ * `highlight` the f32 that updateHighlight fades toward its target, `focused`
+ * the int that forces the highlight target to 1. ---- */
+
+typedef struct SelCharModel {   /* SelCharacter (vtbl Data 0x57C) */
+    char pad000[0x10C];
+    s32 anim;               /* 0x10C: the SelCharAnim player (+0x64 / +0xB0 reset on each anim) */
+    f32 view[4];            /* 0x110 */
+    f32 alpha;              /* 0x120: setAlpha */
+    char pad124[0x130 - 0x124];
+    f32 highlight;          /* 0x130 */
+    char pad134[0x138 - 0x134];
+    s32 focused;            /* 0x138 */
+    s32 chosen;             /* 0x13C: setChosen / clearChosen */
+    s32 animSet;            /* 0x140: arg 2 of every anim change */
+    s32 animMode;           /* 0x144: 0 focus, 8 onStageLeave, 0x10 confirm, 0x20 unfocus */
+} SelCharModel;
+
+typedef struct SelBoardModel {  /* SelBoard (vtbl Data 0x444) */
+    char pad000[0x10C];
+    f32 spin;               /* 0x10C: reset to 0 on focus */
+    f32 view[4];            /* 0x110 */
+    f32 alpha;              /* 0x120 */
+    f32 highlight;          /* 0x124 */
+    char pad128[0x12C - 0x128];
+    s32 focused;            /* 0x12C */
+    s32 lit;                /* 0x130: set by focus / onStageReturn, cleared by unfocus / onStageLeave */
+    s32 chosen;             /* 0x134 */
+} SelBoardModel;
+
+typedef struct SelCourseModel { /* SelCourseMap (vtbl Data 0x514) */
+    char pad000[0x10C];
+    f32 view[4];            /* 0x10C */
+    f32 alpha;              /* 0x11C */
+    char pad120[0x124 - 0x120];
+    f32 highlight;          /* 0x124 */
+    f32 mapFade;            /* 0x128: CourseItem_update fades it while `lit` */
+    char pad12C[0x130 - 0x12C];
+    s32 focused;            /* 0x130 */
+    s32 lit;                /* 0x134: onStageReturn sets, unfocus clears */
+    s32 chosen;             /* 0x138 */
+    s32 unk13C;             /* 0x13C: copied by copyState */
+} SelCourseModel;
+
+typedef struct SelTesuriModel { /* SelTesuri (vtbl Data 0x4AC) */
+    char pad000[0x10C];
+    f32 view[4];            /* 0x10C */
+    f32 alpha;              /* 0x11C */
+    char pad120[0x124 - 0x120];
+    f32 highlight;          /* 0x124 */
+    char pad128[0x134 - 0x128];
+    s32 focused;            /* 0x134 */
+    s32 chosen;             /* 0x138 */
+} SelTesuriModel;
+
+typedef struct SelLevelModel {  /* LevelItem's model */
+    char pad000[0x10C];
+    f32 view[4];            /* 0x10C */
+    f32 alpha;              /* 0x11C */
+    char pad120[0x124 - 0x120];
+    f32 highlight;          /* 0x124 */
+    char pad128[0x130 - 0x128];
+    s32 focused;            /* 0x130 */
+    char pad134[0x138 - 0x134];
+    s32 chosen;             /* 0x138 */
+} SelLevelModel;
+
+/* SelItemEx with the model typed per class. */
+#define SEL_ITEM_CLASS(T, M) typedef struct T { SelItem base; M *model; s32 barCount; s32 barTimer; } T
+SEL_ITEM_CLASS(SelCharacterItem, SelCharModel);
+SEL_ITEM_CLASS(SelBoardItem, SelBoardModel);
+SEL_ITEM_CLASS(SelCourseItem, SelCourseModel);
+SEL_ITEM_CLASS(SelTesuriItem, SelTesuriModel);
+SEL_ITEM_CLASS(SelLevelItem, SelLevelModel);
+
 typedef struct SelItemList {
     char pad00[0x3C];
     SelItem *items[12];     /* 0x3C */
@@ -117,6 +194,12 @@ SELECT_ASSERT(item_id, (int)&((SelItem *)0)->id == 0x2B0);
 SELECT_ASSERT(item_size, sizeof(SelItem) == 0x2B8);
 SELECT_ASSERT(itemex_model, (int)&((SelItemEx *)0)->model == 0x2B8);
 SELECT_ASSERT(itemex_size, sizeof(SelItemEx) == 0x2C4);
+SELECT_ASSERT(charmodel_mode, (int)&((SelCharModel *)0)->animMode == 0x144);
+SELECT_ASSERT(boardmodel_chosen, (int)&((SelBoardModel *)0)->chosen == 0x134);
+SELECT_ASSERT(coursemodel_13c, (int)&((SelCourseModel *)0)->unk13C == 0x13C);
+SELECT_ASSERT(tesurimodel_chosen, (int)&((SelTesuriModel *)0)->chosen == 0x138);
+SELECT_ASSERT(levelmodel_chosen, (int)&((SelLevelModel *)0)->chosen == 0x138);
+SELECT_ASSERT(charitem_size, sizeof(SelCharacterItem) == 0x2C4);
 SELECT_ASSERT(list_count, (int)&((SelItemList *)0)->count == 0x6C);
 SELECT_ASSERT(mgr_lists, (int)&((SelItemsMgr *)0)->lists == 0x40);
 SELECT_ASSERT(selmgr_busy, (int)&((SelectionMgr *)0)->busy == 0x4C);
