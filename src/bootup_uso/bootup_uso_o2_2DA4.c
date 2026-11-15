@@ -29,6 +29,7 @@
  *  - `a1` declared before `v1` puts their spill homes at sp+0x1C / sp+0x18.
  *  - `v | 0x80000 | 0x2000 | 0x20000` stays unfolded (lui/or, ori, lui/or). */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int func_00000000();
 extern void func_00000000_2DA4_v();
@@ -55,7 +56,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     func_00000000_2DA4_v(D_2DA4_obj);
     v = *(int *)((char *)&D_2DA4_cfg + 4);
     v = v | 0x80000 | 0x2000 | 0x20000;
-    *(int *)((char *)&D_00000000 + 4) = v;
+    *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
     switch (arg1) {
     case 2: func_00000000_2DA4_v(arg0, arg2); break;
     case 4: func_00000000_2DA4_v(arg0, arg2); break;

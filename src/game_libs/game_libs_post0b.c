@@ -936,8 +936,8 @@ void app_loadUso(int a0, int a1) {
      * made it a colored LR -> $v0 for both vtable-base loads; inlining the
      * *(int**)&D deref into each call expression keeps the base in the ugen
      * temp pool -> fresh $t6/$t7 per statement, matching. */
-    ((void(*)(int, int))(*(int**)&D_00000000)[0x74/4])(a0, a1);
-    rv = ((int(*)(int))(*(int**)&D_00000000)[0x40/4])(a1);
+    ((void(*)(int, int))(*(int**)&gSysApi)[0x74/4])(a0, a1);
+    rv = ((int(*)(int))(*(int**)&gSysApi)[0x40/4])(a1);
     if (rv < 0) {
         gl_func_00000000((char*)&D_00000000 + 0x1E510, a1, rv);
     }
@@ -950,7 +950,7 @@ void app_loadUso(int a0, int a1) {
  * the indirect call (no named table/fn locals) puts the fn ptr in $t9 (canonical
  * jalr reg) + table in $t6 to match; named locals force $v0/$v1. */
 void app_unloadUso(int a0, int a1) {
-    int rc = ((int(*)(int))(*(int**)&D_00000000)[0x44/4])(a1);
+    int rc = ((int(*)(int))(*(int**)&gSysApi)[0x44/4])(a1);
     if (rc < 0) {
         gl_func_00000000((char*)&D_00000000 + 0x1E534, a1, rc);
     }
@@ -1494,7 +1494,7 @@ extern int D_00000000;
  * call argument before writing an allocator-cap note.
  * EXACT (unwrapped run 95): func_00000000 and D_00000000 are real symbols at 0. */
 int fs_gdlFileInfo(int a0, int a1, int a2) {
-    int r = ((int(*)(int,int))(*(int**)&D_00000000)[0x48/4])(a1, a2);
+    int r = ((int(*)(int,int))(*(int**)&gSysApi)[0x48/4])(a1, a2);
     if (r < 0) {
         func_00000000((char*)&D_00000000 + 0x1E64C, a1, r);
     }
@@ -4609,7 +4609,7 @@ int *SNode_ctor(int *self) {
         self = (int *)gl_func_00000000(0x88);
         if (self == NULL) goto out;
     }
-    gl_func_00000000(self, (char *)&D_00000000 + 0x1ECF4);
+    gl_func_00000000(self, sSNodeName);
     ((Node *)self)->vptr = (s32)&SNode_vtbl;
     self[0x84/4] = 0;
     *(float *)((char *)self + 0x74) = 0.0f;
@@ -5329,7 +5329,7 @@ int NullCollShape_ctor(char *a0) {
         a0 = (char*)gl_func_00000000(0x90);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, ((char *)&D_00000000 + 0x0001EE7C));
+    gl_func_00000000(a0, (sNullCollShapeName));
     *(int*)(a0 + 0x84) = 0;
 end:
     return (int)a0;
@@ -5990,7 +5990,7 @@ int CollObjMgr_ctor(int *a0) {
         a0 = (int*)gl_func_00000000(0x34);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, (char*)&D_00000000 + 0x1EEAC);
+    gl_func_00000000(a0, sCollObjMgrName);
     ((Node *)a0)->vptr = (s32)&CollObjMgr_vtbl;
     a0[0x2C/4] = 0;
     a0[0x30/4] = 0;
@@ -7467,7 +7467,7 @@ void *MNode_ctor(char *arg0) {
     int *s1;
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
-        gl_func_00000000(o, (char *)&D_00000000 + 0x1F2E4);
+        gl_func_00000000(o, sMNodeName);
         ((Node *)o)->vptr = (s32)&MNode_vtbl;
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
@@ -9778,9 +9778,9 @@ int heap_new(unsigned int s1, int arg1) {
     }
     if (*(int *)((char *)&D_00000000 + 0x20) == 1 ||
         *(int *)((char *)&D_00000000 + 0x20) == 7) {
-        s0 = (int *)gl_func_00000000(&D_00000000, s1);
+        s0 = (int *)gl_func_00000000(&gMainHeap, s1);
     } else {
-        s0 = (int *)gl_func_00000000(&D_00000000, s1);
+        s0 = (int *)gl_func_00000000(&gMainHeap, s1);
     }
     if (s0 == 0) {
         gl_func_00000000();
@@ -9836,7 +9836,7 @@ void mem_delete(int a0) {
     if (*(int*)((char*)&D_00000000 + 0x3C160) != 0) {
         gl_func_00000000((char*)&D_00000000 + 0x1F5B8, a0);
     }
-    gl_func_00000000(&D_00000000, a0);
+    gl_func_00000000(&gMainHeap, a0);
 }
 
 void app_stub_000412E0(void) {}
@@ -10295,7 +10295,7 @@ int app_setHeapMode(void *a0) {
  * bundle: `lui v0; jr ra; lw v0,0x20(v0)` after app_setHeapMode's
  * proper jr ra at 0x420E0). */
 int app_getHeapMode(void) {
-    return *(int*)((char*)&D_00000000 + 0x20);
+    return *(int*)((char*)&gMainHeap + 0x20);
 }
 
 extern int gl_func_00000000();
@@ -10324,12 +10324,12 @@ extern int D_00000000;
 void heap_printStats(void) {
     unsigned int r;
     gl_func_00000000();
-    r = gl_func_00000000(&D_00000000); gl_func_00000000((int)((char *)&D_00000000 + 0x1F6EC), r >> 10,
-                     (unsigned int)gl_func_00000000(&D_00000000) >> 10);
+    r = gl_func_00000000(&gMainHeap); gl_func_00000000((int)((char *)&D_00000000 + 0x1F6EC), r >> 10,
+                     (unsigned int)gl_func_00000000(&gMainHeap) >> 10);
     gl_func_00000000((int)((char *)&D_00000000 + 0x1F704),
-                     (unsigned int)gl_func_00000000(&D_00000000) >> 10,
-                     *(unsigned int *)((char *)&D_00000000 + 0x28) >> 10);
-    gl_func_00000000(&D_00000000);
+                     (unsigned int)gl_func_00000000(&gMainHeap) >> 10,
+                     *(unsigned int *)((char *)&gMainHeap + 0x28) >> 10);
+    gl_func_00000000(&gMainHeap);
     gl_func_00000000();
 }
 
@@ -17251,11 +17251,11 @@ typedef struct { int w; } Q1E760;
 typedef struct { int w[2]; } Q2E760;
 extern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
 void Window_func_0004E760(char *a0) {
-    char *base = (char *)&D_00000000;
+    char *base = (char *)&gWindowDefaults;
     char *vt;
     *(int *)(a0 + 0x8) |= 0x80;
     vt = *(char **)(a0 + 0x28);
-    *(Q4E760 *)(a0 + 0xDC) = *(Q4E760 *)((char *)&D_00000000 + 0x30);
+    *(Q4E760 *)(a0 + 0xDC) = *(Q4E760 *)((char *)&gWindowDefaults + 0x30);
     *(int *)(a0 + 0xC0) = *(int *)(base + 0x10);
     *(int *)(a0 + 0xC4) = *(int *)(base + 0x14);
     *(int *)(a0 + 0xB8) = *(int *)(base + 0x8);
@@ -17263,7 +17263,7 @@ void Window_func_0004E760(char *a0) {
     *(int *)(a0 + 0x7C) = *(int *)(base + 0x2C);
     *(float *)(a0 + 0xAC) = *(float *)(base + 0x18);
     *(float *)(a0 + 0xB0) = *(float *)(base + 0x1C);
-    *(Q1E760 *)(a0 + 0x78) = *(Q1E760 *)((char *)&D_00000000 + 0x28);
+    *(Q1E760 *)(a0 + 0x78) = *(Q1E760 *)((char *)&gWindowDefaults + 0x28);
     *(int *)(a0 + 0x70) = 0;
     *(Q2E760 *)(a0 + 0x100) = *(Q2E760 *)base;
     *(float *)(a0 + 0x84) = D_4e760_f0[0x1B70 / 4];
@@ -20032,7 +20032,7 @@ void *CMod_ctor(void *a0, float a1, float a2, float a3, float a4) {
         a0 = (void*)gl_func_00000000(0x3C);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, ((char *)&D_00000000 + 0x0002107C));
+    gl_func_00000000(a0, (sCModName));
     *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
     v1 = (float*)((char*)a0 + 0x2C);
     if ((char*)a0 + 0x2C == 0) {
@@ -26052,13 +26052,13 @@ int MemTracker_buildName(int a0, int a1) {
  * only diffs (capacity v0-vs-t6 lowest-free tie + cascade); the later
  * notes above resolved them. */
 char *MemTracker_listAppend(int a0) {
-  char *p = *((char **) (&D_00000000));
+  char *p = *((char **) (&gMemTrackerMgr));
   int capacity;
   int count;
   p += 0x2C;
   if (*((int *) (p + 0x8)) <= (count = *((int *) (p + 0xC))))
   {
-    gl_func_00000000((char *)(&D_00000000) + 0x21C40, count);
+    gl_func_00000000((char *)(&gMemTrackerMgr) + 0x21C40, count);
     capacity = *((int *) (p + 0x34));
     count = *((int *) (p + 0xC));
   }
@@ -26080,7 +26080,7 @@ void MemTracker_ctor(int *a0, int a1) {
     if (v0 != 0) {
         gl_func_00000000((char*)a0 + 0x24, &local_buf[2]);
     }
-    if (*(int*)&D_00000000 == 0) {
+    if (*(int*)&gMemTrackerMgr == 0) {
         gl_func_00000000((char*)&D_00000000 + 0x21C68);
     }
     *(int*)((char*)a0 + 0x18) = 0;
@@ -26152,7 +26152,7 @@ int memtrack_find(char *a0) {
     char buf[0x64];
     char *g;
     if (gl_func_00000000(a0, buf)) a0 = buf;
-    g = *(char**)&D_00000000;
+    g = *(char**)&gMemTrackerMgr;
     if (g != NULL) return gl_func_00000000(g, a0, *(int*)(g + 0x44));
     return 0;
 }
@@ -26365,7 +26365,7 @@ char *MemTrackerMgr_ctor(char *o) {
         o = (char *)gl_func_00000000(72);
         if (o == 0) goto out;
     }
-    gl_func_00000000(o, (char *)&D_00000000 + 0x21CE8);
+    gl_func_00000000(o, sMemTrackerMgrName);
     *(int **)(o + 0x28) = &MemTrackerMgr_vtbl_sym_a_00060370;
     p = (int *)(o + 44);
     if (p != 0 || (p = (int *)gl_func_00000000(20)) != 0) {
@@ -26375,9 +26375,9 @@ char *MemTrackerMgr_ctor(char *o) {
     }
     D_global_00060370 = o;
     gl_func_00000000(o);
-    a = (char *)gl_func_00000000((char *)&D_00000000 + 0x21CF8, 0);
+    a = (char *)gl_func_00000000(sMemTrackTotal, 0);
     b = gl_func_00000000(&gSysLib_sym_b_00060370);
-    c = (char *)gl_func_00000000((char *)&D_00000000 + 0x21D00, 0);
+    c = (char *)gl_func_00000000(sMemTrackBootUp, 0);
     gl_func_00000000();
     *(int *)(c + 8) = b;
     *(int *)(a + 8) += b;
@@ -26743,7 +26743,7 @@ int* ConsoleMgr_ctor(int *s0) {
         s0 = (int*)gl_func_00000000(0x3C);
         if (s0 == 0) goto end;
     }
-    gl_func_00000000(s0, (char*)&D_00000000 + 0x21D88);
+    gl_func_00000000(s0, sConsoleMgrName);
     s0[0x28/4] = (int)&ConsoleMgr_vtbl;
     s0[0x34/4] = 0;
     s0[0x30/4] = 0;

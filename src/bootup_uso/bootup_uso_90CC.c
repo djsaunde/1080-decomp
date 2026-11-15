@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* IDO 7.1 cfe (C) EXACT donor for SnowBoarder_ctor (agent-c run 226 decode, exact in run 227).
  * The target is cfe output (cfront-style C), not edg: the draw-call this-adjust is `addu a0, delta, ptr`
  * and the site-2 vptr base is loaded once, which only cfe gives. Mechanical port of the NCC donor
@@ -1013,7 +1014,7 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x828) = (s32)var_s1;
         var_s1 = (char *)bu_90cc_d08_03.f14;
         *(s32 *)((char *)(arg0) + 0x830) = (s32)var_s1;
-        var_s1 = (char *)*(s32 *)((char *)&D_00000000 + 4);
+        var_s1 = (char *)*(s32 *)((char *)&gNodeGlobals + 4);
         *(s32 *)((char *)(arg0) + 0x82C) = (s32)var_s1;
         var_s1 = (char *)bu_90cc_d08_04.f10;
         *(s32 *)((char *)(arg0) + 0x834) = (s32)var_s1;

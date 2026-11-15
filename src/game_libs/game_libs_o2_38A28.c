@@ -21,6 +21,7 @@
  *    lui/addiu/lw before the jal);
  *  - declaration order + pad[4] give the 64-byte frame and the 60 / 36 homes. */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -51,7 +52,7 @@ void Node_doCommand(char *o, char *c) {
             if (key >= 40) {
                 gl_func_00000000(D_0001EC6C, key);
             }
-            r = *(char **)((char *)&D_00000000 + key * 4);
+            r = *(char **)((char *)&gNodeGlobals + key * 4);
             gl_func_00000000(r + 0x10, o);
             if (*(int *)(o + 0x14) != 0) {
                 *(int *)(o + 0x4) = 1;
@@ -65,7 +66,7 @@ void Node_doCommand(char *o, char *c) {
             if (key >= 40) {
                 gl_func_00000000(D_0001EC84, key);
             }
-            *(char **)((char *)&D_00000000 + key * 4) = o;
+            *(char **)((char *)&gNodeGlobals + key * 4) = o;
             return;
         case 0x6C:
             return;

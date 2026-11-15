@@ -28,7 +28,7 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
             ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
-        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCAFC);
+        ((Gadget *)arg0)->node.name = (s32)(sTimeGadgetName);
         gl_func_00000000(((Gadget *)arg0)->sprite0, 0x50000);
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x50007);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -91,7 +91,7 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
             }
             ((Node *)sub)->vptr = (s32)&BestGadget_vtbl;
         }
-        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB20);
+        ((Gadget *)arg0)->node.name = (s32)(sBestTimeGadgetName);
         gl_func_00000000(((Gadget *)arg0)->sprite0, 0x5001B);
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x5001D);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -144,7 +144,7 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
             }
             ((Node *)sub)->vptr = (s32)&BestGadget_vtbl;
         }
-        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB48);
+        ((Gadget *)arg0)->node.name = (s32)(sBestScoreGadgetName);
         gl_func_00000000(((Gadget *)arg0)->sprite0, 0x5001E);
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x5001D);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -309,7 +309,7 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
         ((CountDownGadget *)arg0)->colour[1] = 80.0f / d255;
         ((CountDownGadget *)arg0)->colour[2] = 80.0f / d255;
         ((CountDownGadget *)arg0)->colour[3] = 0.0f / d255;
-        ((CountDownGadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB8C);
+        ((CountDownGadget *)arg0)->node.name = (s32)(sCountDownGadgetName);
         ((CountDownGadget *)arg0)->unkA4 = 0;
         ((CountDownGadget *)arg0)->unkA8 = 0xFF;
         ((CountDownGadget *)arg0)->arg1 = a1;
@@ -437,7 +437,7 @@ void *PointsGadget_ctor(char *s0, int a1) {
     ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
     gl_func_00000000(sub + 0x2C);
 skip_init:
-    ((Gadget *)s0)->node.name = (s32)((char*)&D_00000000 + 0xCBC8);
+    ((Gadget *)s0)->node.name = (s32)(sPointsGadgetName);
     gl_func_00000000(((Gadget *)s0)->sprite0, 0x050001);
     gl_func_00000000(((Gadget *)s0)->sprite1, 0x050007);
     gl_func_00000000(s0, ((Gadget *)s0)->sprite1, ((Gadget *)s0)->sprite0);
@@ -494,7 +494,7 @@ int PointsGadget_ctor_00000ED0(int a0, int a1) {
     gl_func_00000000(node + 0x2C);
 initfields:
     v = *(float*)((char*)&D_00000000 + 0xC74);
-    *(int*)(a0 + 0xC) = (int)((char*)&D_00000000 + 0xCBE8);
+    *(int*)(a0 + 0xC) = (int)(sPointsGadgetName_CBE8);
     *(int*)(a0 + 0x74) = 0;
     *(int*)(a0 + 0x78) = 255;
     *(float*)(a0 + 0x64) = v;
@@ -534,7 +534,7 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
             ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
-        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCC04);
+        ((Gadget *)arg0)->node.name = (s32)(sSpeedGadgetName);
         gl_func_00000000(((Gadget *)arg0)->sprite0, 0x50002);
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x50008);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
@@ -1208,7 +1208,7 @@ char *CourseGadget_ctor(char *arg0, s32 arg1) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCB4);
         *(s32 *)(arg0 + 0x28) = (s32)&CourseGadget_vtbl;
         gl_func_00000000(arg0 + 0x2C);
-        *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCCBC);
+        *(s32 *)(arg0 + 0xC) = (s32)(sCourseGadgetName);
         *(s32 *)(arg0 + 0x1C0) = arg1;
         *(f32 *)(arg0 + 0x1DC) = 0.0f;
         *(f32 *)(arg0 + 0x1D4) = 0.0f;
@@ -1393,7 +1393,7 @@ char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x168), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCD0);
         *(int *)(arg0 + 0x28) = (int)&PointsGadget_vtbl_CA4C;
-        FW(arg0, 0xC) = (int)((char *)&D_00000000 + 0xCCD8);
+        FW(arg0, 0xC) = (int)(sPointsGadgetName_CCD8);
         FW(arg0, 0x50) = arg3;
         FW(arg0, 0x54) = arg1;
         FW(arg0, 0x58) = arg2;
@@ -4095,7 +4095,7 @@ int RaceProcess_callGlobalSlot11_00008674(int unused) {
     int *obj = *(int**)((char*)&D_00000000 + 0x28);
     volatile int *spill = &unused;
     (void)spill;
-    return ((int (*)(int))obj[0x64/4])((int)((char*)&D_00000000 + *(s16*)((char*)obj + 0x60)));
+    return ((int (*)(int))obj[0x64/4])((int)((char*)&gSnowBoard + *(s16*)((char*)obj + 0x60)));
 }
 
 /* RaceProcess_raiseMessage: 31-insn FPU-only updater on two adjacent floats

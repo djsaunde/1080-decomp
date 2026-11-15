@@ -1762,7 +1762,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     func_00000000_2DA4_v(D_2DA4_obj);
     v = *(int *)((char *)&D_2DA4_cfg + 4);
     v = v | 0x80000 | 0x2000 | 0x20000;
-    *(int *)((char *)&D_00000000 + 4) = v;
+    *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
     switch (arg1) {
     case 2: func_00000000_2DA4_v(arg0, arg2); break;
     case 4: func_00000000_2DA4_v(arg0, arg2); break;
@@ -6621,7 +6621,7 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x828) = (s32)var_s1;
         var_s1 = (char *)bu_90cc_d08_03.f14;
         *(s32 *)((char *)(arg0) + 0x830) = (s32)var_s1;
-        var_s1 = (char *)*(s32 *)((char *)&D_00000000 + 4);
+        var_s1 = (char *)*(s32 *)((char *)&gNodeGlobals + 4);
         *(s32 *)((char *)(arg0) + 0x82C) = (s32)var_s1;
         var_s1 = (char *)bu_90cc_d08_04.f10;
         *(s32 *)((char *)(arg0) + 0x834) = (s32)var_s1;

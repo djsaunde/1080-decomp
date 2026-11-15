@@ -2595,14 +2595,14 @@ void list_append(int **head, int data) {
  * expected. Plain (compiled in BOTH build paths) so it counts in report.json
  * (was trapped in the #else branch -> fuzzy=None / uncounted). */
 void sys_setSegBase_000666E4(int a0) {
-    *(int *)&D_00000000 = a0;
+    *(int *)&gBootBss = a0;
 }
 
 /* sys_getSegBase_000666F0: getter for the segment-base int global (return *D).
  * Byte-exact plain C (offset-0 &D_00000000 ref, reloc-aware match like 000666E4).
  * Was trapped as INCLUDE_ASM in block A's #else -> fuzzy=None / uncounted. */
 int sys_getSegBase_000666F0(void) {
-    return *(int *)&D_00000000;
+    return *(int *)&gBootBss;
 }
 
 /* Returns the address constant 0x41310 (a code label inside game_libs).
@@ -2693,25 +2693,25 @@ void boot_main_00066850(s32 arg0) {
     gl_func_00062F64_66850(0xFE);
     gl_func_00062F64_66850(0x96, (char*)&D_00000000 + 0x41688, (char*)&D_00000000 + 0x415C0, 0x32);
     gl_func_00062F64_66850();
-    gl_func_00062F64_66850((char*)&D_00000000 + 0xA0);
+    gl_func_00062F64_66850((char*)&gl_osViModeTable + 0xA0);
     gl_func_00062F64_66850(0x42);
     gl_func_00062F64_66850(1);
-    temp_a1 = FW(*(int**)&D_00000000, 0xC);
+    temp_a1 = FW(*(int**)&gSysApi, 0xC);
     if (temp_a1 != 0) {
-        gl_func_00062F64_66850((char*)&D_00000000 + 0x2114, temp_a1, FW(*(int**)&D_00000000, 0x14), FW(*(int**)&D_00000000, 0x1C));
+        gl_func_00062F64_66850((char*)&D_00000000 + 0x2114, temp_a1, FW(*(int**)&gSysApi, 0x14), FW(*(int**)&gSysApi, 0x1C));
     }
-    temp_a1_2 = FW(*(int**)&D_00000000, 0x8);
+    temp_a1_2 = FW(*(int**)&gSysApi, 0x8);
     if (temp_a1_2 != 0) {
-        gl_func_00062F64_66850((char*)&D_00000000 + 0x2138, temp_a1_2, FW(*(int**)&D_00000000, 0x10));
+        gl_func_00062F64_66850((char*)&D_00000000 + 0x2138, temp_a1_2, FW(*(int**)&gSysApi, 0x10));
     }
-    gl_func_00062F64_66850(FW(*(int**)&D_00000000, 0x0), FW(*(int**)&D_00000000, 0x4));
-    gl_func_00062F64_66850((char*)&D_00000000 + 0x2154, (u32) (FW(*(int**)&D_00000000, 0x0) + 0x80000000) >> 0xA);
-    FW(*(int**)&D_00000000, 0x80) = (int)&D_gl66850_h0;
-    FW(*(int**)&D_00000000, 0x34) = (int)&D_gl66850_h1;
-    FW(*(int**)&D_00000000, 0x84) = (int)&D_gl66850_h2;
-    FW(*(int**)&D_00000000, 0x98) = (int)&D_gl66850_h3;
-    FW(*(int**)&D_00000000, 0x9C) = (int)&D_gl66850_h4;
-    FW(*(int**)&D_00000000, 0x94) = (int)&D_gl66850_h5;
+    gl_func_00062F64_66850(FW(*(int**)&gSysApi, 0x0), FW(*(int**)&gSysApi, 0x4));
+    gl_func_00062F64_66850((char*)&D_00000000 + 0x2154, (u32) (FW(*(int**)&gSysApi, 0x0) + 0x80000000) >> 0xA);
+    FW(*(int**)&gSysApi, 0x80) = (int)&D_gl66850_h0;
+    FW(*(int**)&gSysApi, 0x34) = (int)&D_gl66850_h1;
+    FW(*(int**)&gSysApi, 0x84) = (int)&D_gl66850_h2;
+    FW(*(int**)&gSysApi, 0x98) = (int)&D_gl66850_h3;
+    FW(*(int**)&gSysApi, 0x9C) = (int)&D_gl66850_h4;
+    FW(*(int**)&gSysApi, 0x94) = (int)&D_gl66850_h5;
     gl_func_00062F64_66850((char*)&D_00000000 + 0x216C);
     gl_func_00062F64_66850();
 }
@@ -4458,7 +4458,7 @@ int *ImageFileMgr_ctor(int *a0, int a1) {
         a0 = (int *)gl_func_00000000(0x38);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, (char *)&D_00000000 + 0x2B420, 0);
+    gl_func_00000000(a0, sImageFileMgrName, 0);
     a0[0xA] = (int)&ImageFileMgr_vtbl;
     if (a1 != 0) {
         gl_func_00000000(a0, 1, a1);

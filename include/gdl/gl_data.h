@@ -173,4 +173,50 @@
 #define ImageFileMgr_vtbl      D_00000000 /* Data+0x2B350 Sym 2477: vtable (11 Text ptrs in span, slot +0x1C Node_display); vptr store by ImageFileMgr_ctor */
 #define SkinMgr_vtbl           D_00000000 /* Data+0x2C490 Sym 2501: vtable (11 Text ptrs in span, slot +0x1C SkinMgr_update); vptr store by SkinMgr_ctor */
 
+
+/* ---- Bss / Data objects, wave 2 (agent-a run 491; `uso-data-sites.py object <Sym>`) ---- */
+#define gNodeGlobals           D_00000000 /* Bss+0x3C058 Sym 550, 160 bytes = 40 Node pointers: Node_doCommand cmd 0x67 stores the node at [id], cmd 0x66 links a child under [id] (both check id < 40: "Global out of range %d", Data+0x1EC6C); SnowBoarder_ctor registers its sub-nodes; MCamera/BaseLight_doCommand forward to it */
+#define gSnowBoard             D_00000000 /* Bss+0x58 Sym 326, 128 bytes: the static SnowBoard app object (SnowBoard_staticCtor_0000E9FC = its edg __sti: base ctor, then the vptr at +0x28); GameFlow_startMode / restart / loadProcUso and Process_exit (+0x30) use it */
+#define gSysApi                D_00000000 /* Bss+0x416A0 Sym 1558, 4 bytes: POINTER to a system function table: +0x40 usoLoad(name) ("usoLoad() error loading file %s: %d", app_loadUso; "cant reload mainuso %d", boot_reloadMainUso), +0x44 unload(name), +0x4C remote openFile (fs_gdlOpenFile), +0x70 thread stack query (dbg_printThreads), +0x74 (app_loadUso); +0x0 / +0x4 = the memory range ("memory %x %x"). boot_main_00066850 installs game_libs entries: +0x34 mem_heapNewThunk, +0x80 dma_readChunked, +0x84 dbg_printf, +0x94 sys_timeInFrames, +0x98 / +0x9C heap_tempAlloc/FreeDefault; app_initSystem sets +0x8C / +0x90. Owner of the table itself not identified (kernel-side?) */
+#define gBootBss               D_00000000 /* Bss+0x3F150 Sym 2422, 9552 bytes: the boot TU's static block (one exported Sym covers it): +0x0 segment base (sys_setSegBase/getSegBase), +0x1C0/+0x1C4 and +0x2370/+0x2374 the two 0x12345678 stack canaries (boot_checkStacks), +0x21C0 the boot thread (OSThread, boot_startThread), +0x2470 its stack / queue (boot_main) */
+#define gSndCueQueues          D_00000000 /* Bss+0x338 Sym 1448, 352 bytes: the snd cue queues (snd_TriggerChannel8Cue/TickChannel8Fade/SetChannel8Mode at +0x0..+0x1C, snd_RequestCue +0x30, snd_RequestCue2 +0xF8, snd_SetPlayer2ChannelIO 4 x 0x60 rows). agent-c area: alias only */
+#define gPolyFlags_3EEC4       D_00000000 /* Bss+0x3EEC4 Sym 289, 4 bytes: render flag word (game_createMap sets/clears bits 0x8 / 0x100 per map pass; SnowBoarder_ctor |= 8); zeroed by the CMod static ctor (CMod_vfn0_0005165C). agent-b area: alias only */
+#define gPolyGeomMode_3EEC8    D_00000000 /* Bss+0x3EEC8 Sym 290, 8 bytes: two mode words, [1] = geometry-mode-like bits (BasePolyShape_func_00052674 sets 1|0x2000|0x8000|0x20000, game_createMap 0xA8002 / |0x20000); [0] cleared with it. agent-b area: alias only */
+#define gMainHeap              D_00000000 /* Bss+0x3C770 Sym 1797, 44 bytes: the default heap object: heap_printStats prints its free/largest and used/size (+0x28 = size; "%dk/%dk used/size"), app_setHeapMode / getHeapMode swap +0x20; heap_new, mem_delete, app_freeAllOfType use it */
+#define gWindowDefaults        D_00000000 /* Bss+0x3EC20 Sym 324, 64 bytes: Window defaults template: Window_func_0004E760 copies +0x0/+0x8../+0x2C/+0x30 into each new Window; App_main fills it; game_create3DWindow / createProcessWindow read +0x30 */
+#define gMemTrackerMgr         D_00000000 /* Bss+0x3EEF0 Sym 2306, POINTER to the MemTrackerMgr singleton: MemTrackerMgr_ctor stores `this` there; memtrack_begin / end / find walk its head / tail */
+#define gl_osViModeTable       D_00000000 /* Data+0x2D700 Sym 1947, 3360 bytes = 42 x 0x50 OSViMode (type byte i at entry i, NTSC/PAL/MPAL x 14): game_libs' libultra osViModeTable; gfx_setVideoMode indexes it */
+
+/* ---- string / path tables (DataRelocs point at RoData strings; agent-a run 491) ---- */
+#define gBoardModelUsoPaths    D_00000000 /* Data+0x8338 Sym 486, 9 char*: "rom/tahoe151.uso", "rom/merlot147.uso", ... the board model USOs (SnowBoarder_loadBoardModel / createBoardShape) */
+#define gBoardBinPaths         D_00000000 /* Data+0x8360 Sym 487, 10 char*: "rom/board1.bin", ... (SnowBoarder_func_0000CAE8) */
+#define gPlayerBinPaths        D_00000000 /* Data+0x8388 Sym 488, 8 char*: "rom/player1.bin" .. (SnowBoarder_func_0000CAE8) */
+#define gBoarderUsoPaths       D_00000000 /* Data+0x83AC Sym 489, 8 char*: "rom/boarder1.uso" .. (SnowBoarder_loadBoardModel) */
+#define gProcUsoPaths          D_00000000 /* Data+0xC510 Sym 727, 7 char*: "rom/genproc.uso", "rom/nameent.uso", "rom/gamegfx.uso", "rom/charsel.uso", "rom/charsps.uso", "rom/charfir.uso", "rom/charmap.uso" (app_launchGenProc, app_launchNameEnt, app_createGame_*) */
+#define gGameModeNames         D_00000000 /* Data+0xC450 Sym 852, 10 char*: "N64DEMO", "TITLEDEMO", "HEAD2HEAD", "MULTIGAMERACE", ... (GameFlow_startMode) */
+#define gPlaceNames            D_00000000 /* Data+0xCF58 Sym 952, 3 char*: "1st", "2nd", "3rd" (no direct site) */
+#define gFaultFlagNames        D_00000000 /* Data+0x21130 Sym 2229, 82 char*: "BD", "IP8", "IP7", ... Cause / Status bit names (fault_printFlags, fault_printThread, ProcNodeList) */
+
+/* ---- class-name strings passed to the Node base ctor (Data-base sites; agent-a run 491) ---- */
+#define sTimeGadgetName        GL_DATA(0xCAFC)  /* "TimeGadget" (TimeGadget_ctor) */
+#define sBestTimeGadgetName    GL_DATA(0xCB20)  /* "BestTimeGadget" */
+#define sBestScoreGadgetName   GL_DATA(0xCB48)  /* "BestScoreGadget" */
+#define sCountDownGadgetName   GL_DATA(0xCB8C)  /* "CountDownGadget" */
+#define sPointsGadgetName      GL_DATA(0xCBC8)  /* "PointsGadget" (PointsGadget_ctor) */
+#define sPointsGadgetName_CBE8 GL_DATA(0xCBE8)  /* "PointsGadget" (PointsGadget_ctor_00000ED0) */
+#define sSpeedGadgetName       GL_DATA(0xCC04)  /* "SpeedGadget" */
+#define sCourseGadgetName      GL_DATA(0xCCBC)  /* "CourseGadget" */
+#define sPointsGadgetName_CCD8 GL_DATA(0xCCD8)  /* "PointsGadget" (PointsGadget_ctor_00003138) */
+#define sSNodeName             GL_DATA(0x1ECF4) /* "Snode" (SNode_ctor) */
+#define sNullCollShapeName     GL_DATA(0x1EE7C) /* "NullCollShape" */
+#define sCollObjMgrName        GL_DATA(0x1EEAC) /* "CollObjMgr" */
+#define sMNodeName             GL_DATA(0x1F2E4) /* "<MNode>" (MNode_ctor) */
+#define sCModName              GL_DATA(0x2107C) /* "CMod" */
+#define sMemTrackerMgrName     GL_DATA(0x21CE8) /* "MemTrackerMgr" */
+#define sMemTrackTotal         GL_DATA(0x21CF8) /* "Total": MemTrackerMgr_ctor's first tracker */
+#define sMemTrackBootUp        GL_DATA(0x21D00) /* "BootUp": its second tracker */
+#define sConsoleMgrName        GL_DATA(0x21D88) /* "ConsoleMgr" */
+#define sAnimDataMgrName       GL_DATA(0x220DC) /* "AnimDataMgr" (agent-b area: not converted) */
+#define sImageFileMgrName      GL_DATA(0x2B420) /* "ImageFileMgr" */
+
 #endif
