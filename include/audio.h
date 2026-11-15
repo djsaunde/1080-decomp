@@ -17,8 +17,7 @@
  * function that proves each one is cited); everything else is padding. This
  * is the 1080 layout, not OoT's: OoT's context is larger and shifted (OoT
  * notes at 0x3530, here 0x2CFC). Sub-structures whose fields are not yet
- * verified are opaque blocks of their verified stride (SynthesisReverb,
- * AudioAsyncLoad; Note 0xD0 / NoteSampleState are not modelled yet).
+ * verified are opaque blocks of their verified stride (AudioAsyncLoad).
  * Opt-in header: include it only in TUs that do not already typedef these
  * names (a duplicate typedef is a cfe error). */
 
@@ -32,9 +31,104 @@ typedef struct AudioAllocPool {
     /* 0xC */ s32 numEntries;
 } AudioAllocPool; /* size = 0x10 */
 
-/* Opaque until their fields are verified; the strides are verified. */
-typedef struct SynthesisReverb { u8 data[0x158]; } SynthesisReverb; /* AudioSynth_*: reverbIndex * 0x158 */
+/* Opaque until its fields are verified; the stride is verified. */
 typedef struct AudioAsyncLoad { u8 data[0x54]; } AudioAsyncLoad;   /* AudioLoad_ProcessAsyncLoads: 16 x 0x54 */
+
+/* AudioSynth_ProcessNote's views (game_libs_post.c gl_e134_*): the OoT sample
+ * header with the u32 codec/medium/size bitfield word, the flat ADPCM loop
+ * (no separate header struct) and the codebook. */
+typedef struct AdpcmLoop {
+    /* 0x00 */ u32 start;
+    /* 0x04 */ u32 end;
+    /* 0x08 */ u32 count;
+    /* 0x0C */ char unk_0C[4];
+    /* 0x10 */ s16 predictorState[16];
+} AdpcmLoop; /* size = 0x30 */
+
+typedef struct AdpcmBook {
+    /* 0x0 */ s32 order;
+    /* 0x4 */ s32 numPredictors;
+    /* 0x8 */ s16 book[1];
+} AdpcmBook;
+
+typedef struct Sample {
+    /* 0x0 */ u32 codec : 4;
+    /* 0x0 */ u32 medium : 2;
+    /* 0x0 */ u32 unk_bit26 : 1;
+    /* 0x0 */ u32 isRelocated : 1;
+    /* 0x1 */ u32 size : 24;
+    /* 0x4 */ u8 *sampleAddr;
+    /* 0x8 */ AdpcmLoop *loop;
+    /* 0xC */ AdpcmBook *book;
+} Sample; /* size = 0x10 */
+
+typedef struct TunedSample {
+    /* 0x0 */ Sample *sample;
+    /* 0x4 */ f32 tuning;
+} TunedSample; /* size = 0x8 */
+
+/* 0x14 (the SM64-era item; OoT's is 0x1C). AudioSynth_InitNextRingBuf (every
+ * field), AudioSynth_SaveReverbSamples (toDownsampleLeft),
+ * AudioSynth_LoadRingBuffer1AtTemp / LoadAuxBufferC (startPos low half 0xE,
+ * lengthA 0x10, lengthB 0x12). */
+typedef struct ReverbRingBufferItem {
+    /* 0x00 */ s16 numSamplesAfterDownsampling;
+    /* 0x02 */ s16 chunkLen;
+    /* 0x04 */ s16 *toDownsampleLeft;
+    /* 0x08 */ s16 *toDownsampleRight;
+    /* 0x0C */ s32 startPos;
+    /* 0x10 */ s16 lengthA;
+    /* 0x12 */ s16 lengthB;
+} ReverbRingBufferItem; /* size = 0x14 */
+
+/* 0x158 (AudioSynth_*: reverbIndex * 0x158 from gAudioCtx+0x18). The OoT
+ * fields up to 0x13, then OoT's unk_14..unk_1B are absent (everything from
+ * nextRingBufPos on is OoT - 8), the ring items are 0x14 and there is no
+ * items2. Offsets from the AudioHeap_Init reverb setup (game_libs_post.c
+ * gl_21498_Slot: settings -> downsampleRate 0x4, windowSize 0x6 = n * 64 /
+ * downsampleRate, decayRatio 0xC, volume 0xA, leakRtl/Ltr 0x10/0x12, unk_05,
+ * unk_08, useReverb = 8, ring buffers 0x20/0x24, nextRingBufPos 0x14 = 0,
+ * unk_18 = 0, curFrame 0x3 = 0, framesToIgnore 0x2 = 2, resampleFlags 0x0 = 1,
+ * bufSizePerChan 0x1C, tunedSample.sample = &sample, sample.loop = &loop,
+ * loop start/end/count, unk_0E = 0x8000 / downsampleRate, the four 32-byte
+ * resample states 0x28..0x34, filters 0x100..0x10C); AudioHeap_UpdateReverbs
+ * (decayRatio -= decayRatio / 4); AudioSynth_InitNextRingBuf (items 0x38);
+ * AudioSynth_LeakReverb (leakRtl / leakLtr); AudioSynth_FilterReverb (filters);
+ * AudioSynth_MaybeMixRingBuffer1 (downsampleRate == 1 of reverb unk_05,
+ * unk_08); AudioSynth_LoadAuxBufferC (resampleFlags, unk_0E, unk_28 / unk_2C).
+ * Types follow the matched 1080 readers (u16 where they load with lhu). */
+typedef struct SynthesisReverb {
+    /* 0x000 */ u8 resampleFlags;
+    /* 0x001 */ u8 useReverb;
+    /* 0x002 */ u8 framesToIgnore;
+    /* 0x003 */ u8 curFrame;
+    /* 0x004 */ u8 downsampleRate;
+    /* 0x005 */ s8 unk_05;
+    /* 0x006 */ u16 windowSize;
+    /* 0x008 */ u16 unk_08;
+    /* 0x00A */ s16 volume;
+    /* 0x00C */ u16 decayRatio;
+    /* 0x00E */ u16 unk_0E;
+    /* 0x010 */ u16 leakRtl;
+    /* 0x012 */ u16 leakLtr;
+    /* 0x014 */ s32 nextRingBufPos;
+    /* 0x018 */ s32 unk_18;            /* OoT unk_20 */
+    /* 0x01C */ s32 bufSizePerChan;
+    /* 0x020 */ s16 *leftRingBuf;
+    /* 0x024 */ s16 *rightRingBuf;
+    /* 0x028 */ void *unk_28;          /* OoT unk_30..unk_3C: resample states */
+    /* 0x02C */ void *unk_2C;
+    /* 0x030 */ void *unk_30;
+    /* 0x034 */ void *unk_34;
+    /* 0x038 */ ReverbRingBufferItem items[2][5];
+    /* 0x100 */ s16 *filterLeft;
+    /* 0x104 */ s16 *filterRight;
+    /* 0x108 */ s16 *filterLeftState;
+    /* 0x10C */ s16 *filterRightState;
+    /* 0x110 */ TunedSample tunedSample;
+    /* 0x118 */ Sample sample;
+    /* 0x128 */ AdpcmLoop loop;
+} SynthesisReverb; /* size = 0x158 */
 
 /* AudioSeq_AudioListPushBack (0x2A884): prev 0x0, next 0x4, count/value 0x8
  * (list->u.count++), pool 0xC (item->pool = list->pool). */
@@ -228,6 +322,163 @@ typedef struct SequenceLayer {
     /* 0x70 */ AudioListItem listItem;
 } SequenceLayer; /* size = 0x80 */
 
+/* Note 0xD0 = listItem 0x0, synthesisState 0x10, playbackState 0x30,
+ * sampleState 0xB0 (OoT's order; OoT's playbackState is larger). Verified by
+ * Audio_InitSampleState (sampleState 0xB0, stereoHeadsetEffects 0x35),
+ * Audio_NoteSetResamplingRate (bitField1 0xB1, resamplingRateFixedPoint
+ * 0xBC), Audio_NoteInit (parentLayer 0x44, adsr 0x60, adsrVolScaleUnused
+ * 0x36, unk_04 0x34, sampleState = gDefaultNoteSub, 32 bytes), Audio_NoteDisable
+ * (needsInit / enabled / finished, priority 0x30, prev/parentLayer 0x40/0x44 =
+ * NO_LAYER, adsr state, adsr.current 0x70), Audio_AllocNote (wantedParentLayer
+ * 0x48), Audio_ProcessNotes (attributes 0x4C, adsr fadeOutVel 0x6C),
+ * Audio_SeqLayerDecayRelease (sustain 0x64), Audio_NoteVibratoUpdate /
+ * Audio_NotePortamentoInit (portamento 0x80, vibratoState 0x8C, active 0xA0,
+ * portamento/vibratoFreqScale 0x38/0x3C), AudioSynth_ProcessNote
+ * (NoteSampleState / NoteSynthesisState). */
+
+/* AudioSynth_ProcessNote's synthesis state (gl_e134_SynthState). */
+typedef struct NoteSynthesisState {
+    /* 0x00 */ u8 restart;
+    /* 0x01 */ u8 sampleDmaIndex;
+    /* 0x02 */ u8 prevHaasEffectLeftDelaySize;
+    /* 0x03 */ u8 prevHaasEffectRightDelaySize;
+    /* 0x04 */ u8 reverbVol;
+    /* 0x05 */ u8 numParts;
+    /* 0x06 */ u16 samplePosFrac;
+    /* 0x08 */ s32 samplePosInt;
+    /* 0x0C */ void *synthesisBuffers;
+    /* 0x10 */ s16 curVolLeft;
+    /* 0x12 */ s16 curVolRight;
+    /* 0x14 */ char unk_14[6];
+    /* 0x1A */ u8 combFilterNeedsInit;
+    /* 0x1B */ char unk_1B[5];
+} NoteSynthesisState; /* size = 0x20 */
+
+/* 0x14 (Audio_ProcessNotes gl_27E24_Attrs, Audio_SeqLayerDecayRelease). Older
+ * than OoT: no filterBuf, combFilterGain is the u8 and combFilterSize the u16. */
+typedef struct NoteAttributes {
+    /* 0x00 */ u8 reverb;
+    /* 0x01 */ u8 gain;
+    /* 0x02 */ u8 pan;
+    /* 0x03 */ Stereo stereo;
+    /* 0x04 */ u8 combFilterGain;
+    /* 0x05 */ char unk_05;
+    /* 0x06 */ u16 combFilterSize;
+    /* 0x08 */ f32 freqScale;
+    /* 0x0C */ f32 velocity;
+    /* 0x10 */ s16 *filter;
+} NoteAttributes; /* size = 0x14 */
+
+/* 0x20, OoT's AdsrState. Audio_AdsrInit (action 0x0, delay 0x2, sustain 0x4,
+ * current 0x10, envelope 0x1C), Audio_SeqLayerDecayRelease / AudioHeap_ResetStep
+ * (action bits, fadeOutVel 0xC). */
+typedef struct AdsrState {
+    /* 0x00 */ union {
+        struct {
+            u8 unk_bit0 : 1;
+            u8 hang : 1;
+            u8 decay : 1;
+            u8 release : 1;
+            u8 state : 4;
+        } s;
+        u8 asByte;
+    } action;
+    /* 0x01 */ u8 envIndex;
+    /* 0x02 */ s16 delay;
+    /* 0x04 */ f32 sustain;
+    /* 0x08 */ f32 velocity;
+    /* 0x0C */ f32 fadeOutVel;
+    /* 0x10 */ f32 current;
+    /* 0x14 */ f32 target;
+    /* 0x18 */ char unk_18[4];
+    /* 0x1C */ void *envelope;
+} AdsrState; /* size = 0x20 */
+
+/* 0xC (Audio_GetPortamentoFreqScale: mode u8, cur / speed u16, extent f32;
+ * Audio_NotePortamentoInit copies the layer's 12 bytes). SM64-era form. */
+typedef struct Portamento {
+    /* 0x0 */ u8 mode;
+    /* 0x2 */ u16 cur;
+    /* 0x4 */ u16 speed;
+    /* 0x8 */ f32 extent;
+} Portamento; /* size = 0xC */
+
+/* 0x1C, OoT's VibratoState (Audio_GetVibratoFreqScale donor gl_29978_*,
+ * Audio_GetVibratoPitchChange time / curve / rate). */
+typedef struct VibratoState {
+    /* 0x00 */ SequenceChannel *channel;
+    /* 0x04 */ u32 time;
+    /* 0x08 */ s16 *curve;
+    /* 0x0C */ f32 depth;
+    /* 0x10 */ f32 rate;
+    /* 0x14 */ u8 active;
+    /* 0x16 */ u16 rateChangeTimer;
+    /* 0x18 */ u16 depthChangeTimer;
+    /* 0x1A */ u16 delay;
+} VibratoState; /* size = 0x1C */
+
+typedef struct NotePlaybackState {
+    /* 0x00 */ u8 priority;
+    /* 0x01 */ u8 waveId;
+    /* 0x02 */ u8 harmonicIndex;
+    /* 0x03 */ u8 fontId;
+    /* 0x04 */ u8 unk_04;
+    /* 0x05 */ u8 stereoHeadsetEffects;
+    /* 0x06 */ s16 adsrVolScaleUnused;
+    /* 0x08 */ f32 portamentoFreqScale;
+    /* 0x0C */ f32 vibratoFreqScale;
+    /* 0x10 */ SequenceLayer *prevParentLayer;
+    /* 0x14 */ SequenceLayer *parentLayer;
+    /* 0x18 */ SequenceLayer *wantedParentLayer;
+    /* 0x1C */ NoteAttributes attributes;
+    /* 0x30 */ AdsrState adsr;
+    /* 0x50 */ Portamento portamento;
+    /* 0x5C */ VibratoState vibratoState;
+    /* 0x78 */ char unk_78[8];
+} NotePlaybackState; /* size = 0x80 */
+
+/* 0x20 (the 0x18 named by AudioSynth_ProcessNote, then padding to the note
+ * end; Audio_NoteInit copies 32 bytes). The flag bits are a u32 bitfield run
+ * as most matched donors declare them (AudioSynth_ProcessNote,
+ * Audio_ProcessNotes, AudioThread_ProcessGlobalCmd, AudioHeap_ResetStep);
+ * Audio_InitSampleState's donor uses u8 containers -- the container type
+ * steers IDO's loads, so keep the donor's own when converting. */
+typedef struct NoteSampleState {
+    /* 0x00 */ u32 enabled : 1;
+    /* 0x00 */ u32 needsInit : 1;
+    /* 0x00 */ u32 finished : 1;
+    /* 0x00 */ u32 unused : 1;
+    /* 0x00 */ u32 stereoStrongRight : 1;
+    /* 0x00 */ u32 stereoStrongLeft : 1;
+    /* 0x00 */ u32 stereoHeadsetEffects : 1;
+    /* 0x00 */ u32 usesHeadsetPanEffects : 1;
+    /* 0x01 */ u32 reverbIndex : 3;
+    /* 0x01 */ u32 bookOffset : 2;
+    /* 0x01 */ u32 isSyntheticWave : 1;
+    /* 0x01 */ u32 hasTwoParts : 1;
+    /* 0x01 */ u32 useHaasEffect : 1;
+    /* 0x02 */ u8 gain;
+    /* 0x03 */ u8 haasEffectLeftDelaySize;
+    /* 0x04 */ u8 haasEffectRightDelaySize;
+    /* 0x05 */ u8 reverbVol;
+    /* 0x06 */ u8 harmonicIndexCurAndPrev;
+    /* 0x07 */ u8 combFilterSize;
+    /* 0x08 */ u16 targetVolLeft;
+    /* 0x0A */ u16 targetVolRight;
+    /* 0x0C */ u16 resamplingRateFixedPoint;
+    /* 0x0E */ u16 combFilterGain;
+    /* 0x10 */ TunedSample *tunedSample;
+    /* 0x14 */ s16 *filter;
+    /* 0x18 */ char unk_18[8];
+} NoteSampleState; /* size = 0x20 */
+
+typedef struct Note {
+    /* 0x00 */ AudioListItem listItem;
+    /* 0x10 */ NoteSynthesisState synthesisState;
+    /* 0x30 */ NotePlaybackState playbackState;
+    /* 0xB0 */ NoteSampleState sampleState;
+} Note; /* size = 0xD0 */
+
 typedef struct AudioContext {
     /* 0x0000 */ char unk_0000;
     /* 0x0001 */ s8 numSynthesisReverbs;              /* DoOneAudioUpdate */
@@ -322,7 +573,7 @@ typedef struct AudioContext {
     /* 0x2CF2 */ char unk_2CF2[2];
     /* 0x2CF4 */ s32 audioResetFadeOutFramesLeft;
     /* 0x2CF8 */ f32 *adsrDecayTable;
-    /* 0x2CFC */ void *notes;                         /* Note[numNotes], stride 0xD0 */
+    /* 0x2CFC */ Note *notes;                         /* Note[numNotes] */
     /* 0x2D00 */ SequencePlayer seqPlayers[4];
     /* 0x3280 */ SequenceLayer sequenceLayers[64];   /* AudioSeq_InitLayerFreelist */
     /* 0x5280 */ SequenceChannel sequenceChannelNone; /* InitSequenceChannel early-out, InitSequencePlayer */
@@ -382,6 +633,17 @@ typedef char audio_notepool_size_assert[sizeof(NotePool) == 0x40 ? 1 : -1];
 typedef char audio_scriptstate_size_assert[sizeof(SeqScriptState) == 0x1C ? 1 : -1];
 typedef char audio_channel_size_assert[sizeof(SequenceChannel) == 0xE4 ? 1 : -1];
 typedef char audio_layer_size_assert[sizeof(SequenceLayer) == 0x80 ? 1 : -1];
+typedef char audio_ringitem_size_assert[sizeof(ReverbRingBufferItem) == 0x14 ? 1 : -1];
+typedef char audio_sample_size_assert[sizeof(Sample) == 0x10 ? 1 : -1];
+typedef char audio_adpcmloop_size_assert[sizeof(AdpcmLoop) == 0x30 ? 1 : -1];
+typedef char audio_synthstate_size_assert[sizeof(NoteSynthesisState) == 0x20 ? 1 : -1];
+typedef char audio_attrs_size_assert[sizeof(NoteAttributes) == 0x14 ? 1 : -1];
+typedef char audio_adsrstate_size_assert[sizeof(AdsrState) == 0x20 ? 1 : -1];
+typedef char audio_portamento_size_assert[sizeof(Portamento) == 0xC ? 1 : -1];
+typedef char audio_vibrato_size_assert[sizeof(VibratoState) == 0x1C ? 1 : -1];
+typedef char audio_playback_size_assert[sizeof(NotePlaybackState) == 0x80 ? 1 : -1];
+typedef char audio_samplestate_size_assert[sizeof(NoteSampleState) == 0x20 ? 1 : -1];
+typedef char audio_note_size_assert[sizeof(Note) == 0xD0 ? 1 : -1];
 #define AUDIO_ASSERT_MEMBER(type, field, off) \
     typedef char audio_##type##_##field##_assert[(int)&((type *)0)->field == (off) ? 1 : -1]
 AUDIO_ASSERT_MEMBER(SequencePlayer, tempo, 0x008);
@@ -410,5 +672,32 @@ AUDIO_ASSERT_MEMBER(SequenceLayer, adsr, 0x18);
 AUDIO_ASSERT_MEMBER(SequenceLayer, channel, 0x50);
 AUDIO_ASSERT_MEMBER(SequenceLayer, scriptState, 0x54);
 AUDIO_ASSERT_MEMBER(SequenceLayer, listItem, 0x70);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, windowSize, 0x006);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, leakRtl, 0x010);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, nextRingBufPos, 0x014);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, leftRingBuf, 0x020);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, items, 0x038);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, filterLeft, 0x100);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, tunedSample, 0x110);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, sample, 0x118);
+AUDIO_ASSERT_MEMBER(SynthesisReverb, loop, 0x128);
+AUDIO_ASSERT_MEMBER(NoteSynthesisState, curVolLeft, 0x10);
+AUDIO_ASSERT_MEMBER(NoteSynthesisState, combFilterNeedsInit, 0x1A);
+AUDIO_ASSERT_MEMBER(NotePlaybackState, adsrVolScaleUnused, 0x06);
+AUDIO_ASSERT_MEMBER(NotePlaybackState, prevParentLayer, 0x10);
+AUDIO_ASSERT_MEMBER(NotePlaybackState, attributes, 0x1C);
+AUDIO_ASSERT_MEMBER(NotePlaybackState, adsr, 0x30);
+AUDIO_ASSERT_MEMBER(NotePlaybackState, portamento, 0x50);
+AUDIO_ASSERT_MEMBER(NotePlaybackState, vibratoState, 0x5C);
+AUDIO_ASSERT_MEMBER(AdsrState, fadeOutVel, 0x0C);
+AUDIO_ASSERT_MEMBER(AdsrState, envelope, 0x1C);
+AUDIO_ASSERT_MEMBER(VibratoState, active, 0x14);
+AUDIO_ASSERT_MEMBER(VibratoState, delay, 0x1A);
+AUDIO_ASSERT_MEMBER(NoteSampleState, gain, 0x02);
+AUDIO_ASSERT_MEMBER(NoteSampleState, resamplingRateFixedPoint, 0x0C);
+AUDIO_ASSERT_MEMBER(NoteSampleState, tunedSample, 0x10);
+AUDIO_ASSERT_MEMBER(Note, synthesisState, 0x10);
+AUDIO_ASSERT_MEMBER(Note, playbackState, 0x30);
+AUDIO_ASSERT_MEMBER(Note, sampleState, 0xB0);
 
 #endif /* AUDIO_H */
