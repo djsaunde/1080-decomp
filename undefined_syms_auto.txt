@@ -3160,7 +3160,7 @@ gl_d_578b4_s2a = 0x00000000;  /* gfx_loadTexture: base-0 alias -- 0x219C4 addiu-
 gl_d_578b4_s2b = 0x00000000;  /* gfx_loadTexture: base-0 alias -- 0x219C4 addiu-form const, switch-2 default call arg0 (distinct sym per site: busts cross-site lui CSE) */
 /* gfx_loadTexture NCC donor: the 15 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_578b4_c34458 = 0x00000000;
-/* BaseMat_func_000454C4 NCC donor: the 4 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
+/* gfx_emitLights_000454C4 NCC donor: the 4 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_454c4_c34458 = 0x00000000;
 /* Shadow_ctor_0004B0A8 NCC donor: blank USO jal words (0x34458 calls, Base ctor) and the blank lui/addiu vtable */
 gl_4b0a8_c34458 = 0x00000000;

@@ -1,6 +1,6 @@
-nonmatching BaseMat_func_00045CB0, 0x170
+nonmatching gfx_emitOneLight_00045CB0, 0x170
 
-glabel BaseMat_func_00045CB0
+glabel gfx_emitOneLight_00045CB0
     /* E2AD88 00045CB0 27BDFFC0 */  .word 0x27BDFFC0
     /* E2AD8C 00045CB4 AFBF0014 */  .word 0xAFBF0014
     /* E2AD90 00045CB8 AFA40040 */  .word 0xAFA40040
@@ -93,4 +93,4 @@ glabel BaseMat_func_00045CB0
     /* E2AEEC 00045E14 27BD0040 */  .word 0x27BD0040
     /* E2AEF0 00045E18 03E00008 */  .word 0x03E00008
     /* E2AEF4 00045E1C 00000000 */  .word 0x00000000
-endlabel BaseMat_func_00045CB0
+endlabel gfx_emitOneLight_00045CB0

@@ -12308,13 +12308,13 @@ int gfx_calcPerspNorm_000453D8(int a0, float a, float b) {
     return r & 0xFFFF;
 }
 
-// BaseMat_func_000454C4 — STRUCTURAL PASS (0x7E8 / 507 words, no episode). Raw-.word
+// gfx_emitLights_000454C4 — STRUCTURAL PASS (0x7E8 / 507 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function (very large). Single prologue
 // frame 0x58 (saves ra + s0..s5 + f20). Per-element FP transform +
 // quantize-to-byte batch processor (FP-heavy; relates to the segment's
 // geometry serialize / byte-pack routines).
 //
-//   void BaseMat_func_000454C4(void *out, Batch a1) {
+//   void gfx_emitLights_000454C4(void *out, Batch a1) {
 //     int n = a1->p2C;                              // element count
 //     float CS = 255.0f;                             // 0x437F0000 colour scale
 //     a1->p04 += 1;                                  // bump a write/seq index
@@ -12344,15 +12344,15 @@ int gfx_calcPerspNorm_000453D8(int a0, float a, float b) {
  * (real `void Obj::setLights(Ctx *c, f32 *s, f32 k)`; agent-c run 160 lift, agent-c run 240 exact),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. The earlier C lifts (PASS-2 2026-07-30,
  * agent-c runs 111-152, 63.85) are in git history. */
-void BaseMat_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
+void gfx_emitLights_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
 }
 
-// BaseMat_func_00045CB0 — STRUCTURAL PASS (0x16C / 92 words, no episode). Raw-.word
+// gfx_emitOneLight_00045CB0 — STRUCTURAL PASS (0x16C / 92 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x40
 // (saves ra). FP Vec3-to-quantized-byte interleaved packer (the single-
-// element counterpart of BaseMat_func_000454C4's batch loop).
+// element counterpart of gfx_emitLights_000454C4's batch loop).
 //
-//   void BaseMat_func_00045CB0(Out a0, Batch a1) {
+//   void gfx_emitOneLight_00045CB0(Out a0, Batch a1) {
 //     int meta = a1->p2C;
 //     float CS = 255.0f;                             // 0x437F0000 colour scale
 //     int idx = a1->p04; a1->p04 = idx + 1;          // bump write index
@@ -12375,7 +12375,7 @@ void BaseMat_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
 // immediates) and writes each quantized lane interleaved at 4-byte stride
 // into the output record (a 4-vertex / RGBA-style strided buffer fill).
 // Family: FP geometry / colour-quantize-and-pack (the per-element packer
-// that BaseMat_func_000454C4 drives in a loop; relates to gl_func_000430E4 /
+// that gfx_emitLights_000454C4 drives in a loop; relates to gl_func_000430E4 /
 // 00043484). Exact byte-store fan-out representative; the a1->0x04 index
 // bump, the 255.0 scale, the trunc-to-byte conversion and the stride-4
 // interleaved layout are exact. Redecoded 2026-07-18 (67.87 -> 95.86):
@@ -12389,7 +12389,7 @@ void BaseMat_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3) {
 // parity shift. Coloring-multiset class.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_45CB0.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 126). */
-void BaseMat_func_00045CB0(s32 arg0, char *arg1, float *arg2) {
+void gfx_emitOneLight_00045CB0(s32 arg0, char *arg1, float *arg2) {
 }
 
 // gfx_setupMatTextures_00045E20 — STRUCTURAL PASS (0x1D0 / 117 words, no episode). Raw-.word

@@ -2282,8 +2282,8 @@ GAMELIBS_454C4_DONOR := build/src/game_libs/game_libs_ncc_454C4.cpp.o
 $(GAMELIBS_454C4_DONOR): src/game_libs/game_libs_ncc_454C4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym setLights__3ObjFP3CtxPff=BaseMat_func_000454C4 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_func_000454C4=$(GAMELIBS_454C4_DONOR)
+	$(OBJCOPY) --redefine-sym setLights__3ObjFP3CtxPff=gfx_emitLights_000454C4 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitLights_000454C4=$(GAMELIBS_454C4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_454C4_DONOR)
 # 42938 = real C++ (agent-c run 160, cfe 69.98): stock-gbi packets through G.o->ctx->next(), inline viewport setter, guarded one-time inits.
 # agent-g run 381: EXACT NCC donor over a placeholder on both build paths (ctx call as G.o->me()->cf() in the count
@@ -2465,7 +2465,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E244_DONOR)
 # 45CB0 = light record fill + light packets through two inline next() pools (C++); NCC donor.
 GAMELIBS_45CB0_DONOR := build/src/game_libs/game_libs_ncc_45CB0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_func_00045CB0=$(GAMELIBS_45CB0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitOneLight_00045CB0=$(GAMELIBS_45CB0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45CB0_DONOR)
 # 46FA8 = gDPFillRectangle + gDPPipeSync through the context's inline next() (C++); NCC donor.
 GAMELIBS_46FA8_DONOR := build/src/game_libs/game_libs_ncc_46FA8.cpp.o

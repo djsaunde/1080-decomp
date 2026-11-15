@@ -1666,10 +1666,10 @@ extern void gl_func_00000000_f(float);
 void gfx_floatPairThunk_000453A8(int a0, float b, float c);
 void _asmpp_func109(void);
 void _asmpp_func110(void);
-void BaseMat_func_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3);
+void gfx_emitLights_000454C4(char *arg0, char *arg1, char *arg2, f32 arg3);
 typedef struct { s32 x; } GL45CB0Word;
 extern u32 gl_45CB0_virtual_to_physical(const void *);
-u32 BaseMat_func_00045CB0(GL45CB0Word arg0, GL470E4Object *arg1, const Vec3 *arg2);
+u32 gfx_emitOneLight_00045CB0(GL45CB0Word arg0, GL470E4Object *arg1, const Vec3 *arg2);
 typedef struct GLRenderNode {
     u8 pad00[0x18];
     s32 field18;

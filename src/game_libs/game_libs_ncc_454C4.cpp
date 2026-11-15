@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) EXACT donor for BaseMat_func_000454C4 (0x7EC / 507 words), agent-c run 160 lift, agent-c run 240 exact.
- * The light setup: `void Obj::setLights(Ctx *c, f32 *s, f32 k)` (renamed to BaseMat_func_000454C4 with objcopy) fills a
+/* IDO 7.1 NCC (C++) EXACT donor for gfx_emitLights_000454C4 (0x7EC / 507 words), agent-c run 160 lift, agent-c run 240 exact.
+ * The light setup: `void Obj::setLights(Ctx *c, f32 *s, f32 k)` (renamed to gfx_emitLights_000454C4 with objcopy) fills a
  * Lights record (Ambient + Light[4], 0x48 bytes) taken from the context's light pool with `&lp->buf[lp->count++]`,
  * the ambient colour from the 0x194 element scaled by s[] and clamped by k, then walks the 0x18C node list with a
  * by-value list iterator (`LIter`: cur / nxt in memory, the target's sp+0x3C / 0x40 pair) and emits one stock-gbi
