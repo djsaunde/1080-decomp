@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int gl_func_00000000();
 
@@ -15,7 +16,7 @@ void n64proc_uso_func_0000000C(void) {
 
 extern char D_00000000;
 
-extern char gl_d_n64p14[];
+extern char gl_d_n64p14[]; /* the bootup input manager import */
 void n64_procMain(int arg0, int arg1) {
     char *base = gl_d_n64p14;
     char *base10 = gl_d_n64p14 + 0x10;
@@ -42,7 +43,7 @@ void n64_procMain(int arg0, int arg1) {
             *(int*)((char*)cur + 0x14) = (int)base;
             break;
         }
-        arg1 = *(int*)(gl_d_n64p14 + 0x40);
+        arg1 = ((InputMgr *)gl_d_n64p14)->procState;
     } while (flag == 0);
 }
 
@@ -166,7 +167,7 @@ void N64DemoProcess_handleInput(int *a0) {
         if (a0[0x54/4] >= 0x100) a0[0x54/4] = 0xFF;
         a0[0x3C/4]--;
         if (a0[0x3C/4] == 0 || (a0[0x3C/4] < 0x55 && gl_func_00000000(&D_00000000, 0x40100) != 0)) {
-            *(int*)((char*)&D_00000000 + 0x40) = 1;
+            ((InputMgr *)&D_00000000)->procState = 1;
             gl_func_00000000(a0, 0, 0);
         }
         break;

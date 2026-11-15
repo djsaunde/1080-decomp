@@ -6,6 +6,7 @@
  * RoData +0x0. Decode history: see the note above the placeholder in
  * titproc_uso.c. */
 #include "common.h"
+#include "game/input.h" /* d = the bootup input manager import */
 extern char import_00020098;
 extern int titproc_uso_func_0120A8();
 extern int titproc_uso_func_0027E8();
@@ -37,7 +38,7 @@ void tit_procMain(char *a0, int a1) {
         case 0: {
             titproc_uso_func_0120A8(d, 0, 0, 0);
             done = 1;
-            *(int *)(d + 0x68) = 0;
+            ((InputMgr *)d)->level = 0;
             *(int *)(d + 0x8C) = 0x820000;
             r = (int *)titproc_uso_func_0027E8(d, 2, 9, 1);
             t = (int)r;
@@ -53,14 +54,14 @@ void tit_procMain(char *a0, int a1) {
             titproc_uso_func_000B6C(a0, -1);
             done = 1;
             import_000B3268(a0, 0x9FFF0, 0x10000, *(int *)a0);
-            *(int *)(d + 0x44) = 2;
+            ((InputMgr *)d)->nextProcState = 2;
             break;
         case 2:
             titproc_uso_func_000C0C(a0);
-            *(int *)(d + 0x40) = 0;
+            ((InputMgr *)d)->procState = 0;
             break;
         case 3: {
-            *(int *)(d + 0x40) = *(int *)(d + 0x44), *(int *)(d + 0x44) = 0;
+            ((InputMgr *)d)->procState = ((InputMgr *)d)->nextProcState, ((InputMgr *)d)->nextProcState = 0;
             s5v = 0x800000;
             break;
         }
@@ -78,7 +79,7 @@ void tit_procMain(char *a0, int a1) {
             *(int *)((char *)t + 0x14) = d;
             titproc_uso_func_011CD8(d, 1);
             titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask, r, 0));
-            *(int *)(d + 0x40) = 0;
+            ((InputMgr *)d)->procState = 0;
             break;
         }
         case 5: {
@@ -95,13 +96,13 @@ void tit_procMain(char *a0, int a1) {
             *(int *)((char *)t + 0x14) = d;
             titproc_uso_func_011CD8(d, 1);
             titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, mask, r, 0));
-            *(int *)(d + 0x40) = 0;
+            ((InputMgr *)d)->procState = 0;
             break;
         }
         case 6:
             titproc_uso_func_000C0C(a0);
             s5v = 0x2100000;
-            *(int *)(d + 0x40) = 10;
+            ((InputMgr *)d)->procState = 10;
             break;
         case 7: {
             t = s5v & 0x2000000;
@@ -116,11 +117,11 @@ void tit_procMain(char *a0, int a1) {
             } else {
                 titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 0);
             }
-            *(int *)(d + 0x34) = 6;
+            ((InputMgr *)d)->nextFlowMode = 6;
             t = titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8));
-            *(int *)(d + 0x64) = t;
+            ((InputMgr *)d)->course = t;
             r = (int *)titproc_uso_func_0027E8(d, t, 4, 1);
-            *(int *)(d + 0x34) = 1;
+            ((InputMgr *)d)->nextFlowMode = 1;
             t = (int)r;
             titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r);
             if (*(int *)((char *)t + 0x14) != 0) {
@@ -130,13 +131,13 @@ void tit_procMain(char *a0, int a1) {
             titproc_uso_func_011CD8(d, 1);
             t = *(int *)a0;
             titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, (int)&((char (*)[2])mask)[0][*(int *)(*(int *)(t + 8) + 4)], r, t));
-            *(int *)(d + 0x40) = 11;
+            ((InputMgr *)d)->procState = 11;
             break;
         }
         case 8:
             titproc_uso_func_000C0C(a0);
             s5v = 0x2100000;
-            *(int *)(d + 0x40) = 9;
+            ((InputMgr *)d)->procState = 9;
             break;
         case 9: {
             t = s5v & 0x2000000;
@@ -152,7 +153,7 @@ void tit_procMain(char *a0, int a1) {
                 titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 0);
             }
             t = titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8));
-            *(int *)(d + 0x64) = t;
+            ((InputMgr *)d)->course = t;
             r = (int *)titproc_uso_func_0027E8(d, t, 4, 1);
             t = (int)r;
             titproc_uso_func_07ACE0((char *)&import_00020098 + 0x10, r);
@@ -163,17 +164,17 @@ void tit_procMain(char *a0, int a1) {
             titproc_uso_func_011CD8(d, 1);
             t = *(int *)a0;
             titproc_uso_func_01DA48(a0, 0, titproc_uso_func_001E9C(0, (int)&((char (*)[2])mask)[0][*(int *)(*(int *)(t + 8) + 4)], r, t));
-            *(int *)(d + 0x40) = 11;
+            ((InputMgr *)d)->procState = 11;
             break;
         }
         case 10:
             break;
         case 11:
             titproc_uso_func_000C0C(a0);
-            *(int *)(d + 0x40) = *(int *)(d + 0x44);
+            ((InputMgr *)d)->procState = ((InputMgr *)d)->nextProcState;
             break;
         }
-        a1 = *(int *)(d + 0x40);
+        a1 = ((InputMgr *)d)->procState;
     } while (done == 0);
     /* t is uninitialised on the case-1 exit path. Allowed only because the target
      * itself relies on an uninitialised local in this same function: its prologue

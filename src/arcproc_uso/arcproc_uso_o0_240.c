@@ -2,14 +2,8 @@
 
 extern int gl_func_00000000();
 extern int D_arc240_A, D_arc240_B, D_arc240_C;
-extern struct DArc {
-    char _p40[0x40];
-    int f40;
-    int f44;
-    int f48;
-    char _p4c[0x64 - 0x4c];
-    int f64;
-} D_00000000;
+#include "game/input.h"
+extern InputMgr D_00000000; /* the bootup input manager (Bss 0xF8) import */
 
 /* -O0 donor for arc_procMain (226-insn / 0x388 11-way state-machine
  * dispatcher). VERIFIED BYTE-EXACT: isolated -O0 build = 226/226 words, 0 raw
@@ -40,7 +34,7 @@ extern struct DArc {
  *    cases 5/7/8/10), b1 (case-10 &D base), b2 (base+0x10 then base copy).
  *  - switch(a1) with a1 used DIRECTLY (no `state` local) and NO default: the
  *    switch emits the sltiu/beqz bound-check, out-of-range falls to the loop tail.
- *  - All D+offset globals via the extern struct member (D_00000000.f44) so IDO
+ *  - All D+offset globals via the extern struct member (D_00000000.nextProcState) so IDO
  *    $at-fuses to lui+sw; the (char*)&D+off cast would emit lui+addiu+sw.
  *  - case 5: `((int**)a0)[2][((int**)a0)[2][1]+3]` — the INT** cast makes IDO -O0
  *    CSE the two identical a0[2] lvalue paths into one load (no named-q spill);
@@ -55,34 +49,34 @@ void arc_procMain(int a0, int a1) {
         switch (a1) {
         case 0:
             gl_func_00000000(a0, 1, 3, 1);
-            D_00000000.f44 = 3;
-            D_00000000.f48 = 10;
+            D_00000000.nextProcState = 3;
+            D_00000000.thenProcState = 10;
             done = 1;
             break;
         case 1:
             gl_func_00000000(a0, 1, 3, 1);
-            D_00000000.f44 = 4;
-            D_00000000.f48 = 9;
+            D_00000000.nextProcState = 4;
+            D_00000000.thenProcState = 9;
             done = 1;
             break;
         case 2:
             gl_func_00000000(a0, 1, 3, 2);
-            D_00000000.f44 = 4;
-            D_00000000.f48 = 9;
+            D_00000000.nextProcState = 4;
+            D_00000000.thenProcState = 9;
             done = 1;
             break;
         case 3:
             gl_func_00000000(a0);
-            D_00000000.f40 = 4;
+            D_00000000.procState = 4;
             break;
         case 4:
             gl_func_00000000(a0);
-            D_00000000.f40 = 5;
+            D_00000000.procState = 5;
             break;
         case 5: {
             gl_func_00000000(&D_arc240_A, *(int *)((char *)&D_arc240_B + 4));
-            D_00000000.f64 = ((int **)a0)[2][((int **)a0)[2][1] + 3];
-            gl_func_00000000(&D_arc240_C, 4, D_00000000.f64, 3);
+            D_00000000.course = ((int **)a0)[2][((int **)a0)[2][1] + 3];
+            gl_func_00000000(&D_arc240_C, 4, D_00000000.course, 3);
             v = gl_func_00000000(a0, ((int *)a0)[0], 1);
             r = gl_func_00000000(0, 0x450000, v, ((int *)a0)[2], ((int *)a0)[0]);
             gl_func_00000000(a0, 0, r);
@@ -94,8 +88,8 @@ void arc_procMain(int a0, int a1) {
             done = 1;
             break;
         case 7:
-            r = gl_func_00000000(D_00000000.f64);
-            gl_func_00000000(a0, (D_00000000.f64 | 0x8000) | r, 0x8000, ((int *)a0)[0]);
+            r = gl_func_00000000(D_00000000.course);
+            gl_func_00000000(a0, (D_00000000.course | 0x8000) | r, 0x8000, ((int *)a0)[0]);
             done = 1;
             break;
         case 8:
@@ -106,7 +100,7 @@ void arc_procMain(int a0, int a1) {
             break;
         case 9:
             gl_func_00000000(a0);
-            D_00000000.f40 = 10;
+            D_00000000.procState = 10;
             break;
         case 10:
             r = gl_func_00000000(0, 1, 0);
@@ -121,6 +115,6 @@ void arc_procMain(int a0, int a1) {
             done = 1;
             break;
         }
-        a1 = D_00000000.f40;
+        a1 = D_00000000.procState;
     } while (done == 0);
 }
