@@ -1870,7 +1870,7 @@ void DNode_solveContacts(char *arg0) {
  */
 typedef struct Node659D0 {char *data; struct Node659D0 *next;} Node659D0;
 #define VEC_FIELD_659D0(p, o) (*(float *)((char *)(p) + (o)))
-void DNode_func_000659D0(char *self) {
+void DNode_updateAttached(char *self) {
     Node659D0 *it[2];
     float x,y,z;
     char *child;
@@ -2064,12 +2064,12 @@ float DNode_getF198_00065E3C(char *a0) {
 }
 
 extern int gl_func_00000000();
-int DNode_func_00065E44(char *a0) {
+int DNode_saveData(char *a0) {
     return gl_func_00000000(a0 + 0x108);
 }
 
 extern int gl_func_00000000();
-int DNode_func_00065E64(char *a0) {
+int DNode_loadData(char *a0) {
     return gl_func_00000000(a0 + 0x108);
 }
 
@@ -3306,11 +3306,11 @@ void pad_threadEntry_00067370(void) {
     gl_func_00000000();
 }
 
-/* pad_func_00067394: 26-insn rv-store + sign-flip-or-assert + call.
+/* pad_open: 26-insn rv-store + sign-flip-or-assert + call.
  *   rv = func(a0, a1); a0->[0x64] = rv;
  *   if (a1 > 0) a1 = -a1; else func(&D, a0);
  *   func(a0, a1); return 1; */
-int pad_func_00067394(int *a0, int a1) {
+int pad_open(int *a0, int a1) {
     int rv = func_00000000(a0, a1);
     a0[0x64/4] = rv;
     if (a1 >= 0) {
@@ -3357,14 +3357,14 @@ void pad_setPause_00067470(int* a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void pad_func_000674DC(int *a0) {
+void pad_clearSlot(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
         gl_func_00000000(gl_func_00000000, v - 1, 0);
     }
 }
 
-int pad_func_00067510(int *a0) {
+int pad_isSlotState2(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
         return gl_func_00000000(&gSysLib, v - 1);
@@ -3390,7 +3390,7 @@ int pad_testButton_00067550(int *a0) {
     return v0;
 }
 
-/* pad_func_000675A4: input-debounce / flag-update routine (1048B).
+/* pad_update: input-debounce / flag-update routine (1048B).
  * WAVE-3 2026-07-15 (agent-h): word-diff 134 -> 46 (all residual are pure
  * reg-number cells; objdiff fuzzy is register-blind so stays ~95.1). Fixed:
  * de-named 0x10->0x14 handoff (ring t4, un-shifts head ring); temp_t0 typed
@@ -3442,7 +3442,7 @@ int pad_testButton_00067550(int *a0) {
  * (a literal is a constant candidate coloured after the 0.0f one, which
  * fixes the zero/threshold f12/f14 swap). Body below is a placeholder for
  * the splice. */
-void pad_func_000675A4(char *arg0) {
+void pad_update(char *arg0) {
     volatile int ret = 0;
     if (arg0[0x34] != 0) {
         ret = 1;
@@ -3545,13 +3545,13 @@ void pad_clear_00067AA0(int *a0) {
 }
 
 /* The 2 zero words at 0x67ABC/0x67AC0 (the 8-byte gap before
- * math_func_00067AC4) are alignment padding, not a function: they are
+ * math_atan2sZero_00067AC4) are alignment padding, not a function: they are
  * appended to pad_clear_00067AA0 as an all-zero SUFFIX_BYTES_FORCE
  * (Makefile, both trees; was the pseudo-function game_libs_func_00067ABC).
  * The `mtc1 $zero,$f12` word at 0x67AC4 is the real function's hoisted
  * first-arg materialization (2026-09-05, below). */
 
-/* math_func_00067AC4 (0x24, 9 insns): call the placeholder callee with
+/* math_atan2sZero_00067AC4 (0x24, 9 insns): call the placeholder callee with
  * (0.0f, 0.0f). bootup.uso's Sym table exports 0x67AC4 (section offset
  * 0x7C130 = ROM 0xE4CB9C - 0xDD0A6C); 0x67ABC / 0x67AC0 / 0x67AC8 are not
  * exported. IDO 7.1 -O2 schedules the `mtc1 $zero,$f12` (first 0.0f arg)
@@ -3561,7 +3561,7 @@ void pad_clear_00067AA0(int *a0) {
  * #orphan-sweep-agent-c-25th-h2hproc-timproc); retired 2026-09-05. */
 extern int game_libs_func_00067AC4_inner(float, float);
 
-void math_func_00067AC4(void) {
+void math_atan2sZero_00067AC4(void) {
     game_libs_func_00067AC4_inner(0.0f, 0.0f);
 }
 
@@ -3785,7 +3785,7 @@ unsigned char *str_findLast(unsigned char *a0, int a1) {
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_67D50.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 137). */
-void *str_func_00067D50(void *s, int c, int n) {
+void *str_fill(void *s, int c, int n) {
 }
 
 /* Returns 0 (sibling of matched _0003D480). */
@@ -4337,7 +4337,7 @@ void BinFileMgr_check_000685C0(int *a0, unsigned int a1) {
 
 extern int gl_func_00000000();
 
-int BinFileMgr_func_0006869C(void) {
+int BinFileMgr_getAcquire(void) {
     int r = gl_func_00000000();
     char *p = *(char**)(r + 0x1C);
     (*(int(**)(int))(p + 0x14))(*(short*)(p + 0x10) + r);
@@ -4346,14 +4346,14 @@ int BinFileMgr_func_0006869C(void) {
 
 extern int gl_func_00000000();
 
-void BinFileMgr_func_000686D8(void) {
+void BinFileMgr_getRelease(void) {
     char *r = (char*)gl_func_00000000();
     char *p = *(char**)(r + 0x1C);
     (*(int(**)(char*))(p + 0x1C))(r + *(short*)(p + 0x18));
 }
 
 extern int gl_func_00000000();
-int BinFileMgr_func_0006870C() {
+int BinFileMgr_checkVoid() {
     gl_func_00000000();
     return 0;
 }

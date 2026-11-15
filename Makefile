@@ -500,8 +500,8 @@ build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # console_formatHex8: .s began with 5 all-zero pad words (ROM 0x61040-0x61053); the real
 # body starts at 0x61054. Pad -> 61030 SUFFIX (both builds); expected/ metadata: 61030 size
 # 0x10->0x24, 61040 value +0x14, size 0xb4->0xa0 (2026-10-15).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_clearList=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_clearList=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_clearList=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_toggleVisible=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_clearList=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_toggleVisible=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # RcpTask_ctor's leading zero word (0x4D0B0) is vFP1_invokeFn_0004D084's all-zero tail pad (agent-c run 122):
 # 4D0B4 is plain C again; the NM symbol of 4D084 is resized back to 0x2c in the clip line below.
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += vFP1_invokeFn_0004D084=0x00000000
@@ -509,8 +509,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # game_libs_func_00035E5C (2 words) / game_libs_func_0004230C (10 words): all-zero inter-function pads
 # folded into their exact predecessors as zero SUFFIX words (agent-c run 150; expected/ symbols deleted
 # with scripts/elf-symtab-delete.py, predecessors grown; .text + relocs unchanged).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_skipRecords=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_skipRecords=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # hostio_readQuadParm_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
 # vs target 0x2c (nop is baserom alignment). Resize non_matching symbol to 0x2c so
 # objdiff scores 11w not 12w. ROM-neutral (non_matching .o only). (Same class as EBC8.)
@@ -643,7 +643,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # Clip re-probed 2026-10-16 agent-g (sys_fatal NM stub -> real decode, +0x40):
 # 62F08 NM offset 0x2e31c + 0x50.
 # Clip re-probed 2026-10-16 agent-g (sys_fatal NM stub -> real decode, +0x40;
-# math_func_0005F984 NM stub -> real decode, -0xA0):
+# math_mtxRotateByVector NM stub -> real decode, -0xA0):
 # 62F08 NM offset 0x2e27c + 0x50.
 # Re-probed 2026-10-17 agent-c (App_main NM decode, 112 vs 113 words): 0x2e494 -> 0x2e474.
 # Re-probed 2026-10-17 agent-c run 104 (coll_contactPushOut / PolyShape_hostioParms stubs -> real decodes): 0x2e494 -> 0x2e654;
@@ -1838,7 +1838,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E584_DONOR)
 # 5D134 = quaternion rotate about axis i (Givens pairs); NCC donor (cfe capped at 96.5).
 GAMELIBS_5D134_DONOR := build/src/game_libs/game_libs_ncc_5D134.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += math_func_0005D134=$(GAMELIBS_5D134_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += math_quatRotateAxis=$(GAMELIBS_5D134_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5D134_DONOR)
 # 51F5C = token-stream interpreter (switch = edg case-order compare chain); NCC donor.
 GAMELIBS_51F5C_DONOR := build/src/game_libs/game_libs_ncc_51F5C.cpp.o
@@ -1851,7 +1851,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F5F0_DONOR)
 # 5F984 = rotate-by-drag matrix; NCC donor, EXACT (agent-g run 156: results held in registers, homes by decl order).
 GAMELIBS_5F984_DONOR := build/src/game_libs/game_libs_ncc_5F984.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += math_func_0005F984=$(GAMELIBS_5F984_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += math_mtxRotateByVector=$(GAMELIBS_5F984_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5F984_DONOR)
 # 578B4 = gbi texture loader (NCC 99.93 vs cfe 98.27, 2419 words = target; agent-c run 154). EXACT NCC donor over an empty placeholder (agent-c run 236: FD50 pointer + tmem as one non-propagated variable, arg2 copy in its own variable; 0x34458 calls via the 0-pinned gl_578b4_c34458).
 GAMELIBS_578B4_DONOR := build/src/game_libs/game_libs_ncc_578B4.cpp.o
@@ -2135,7 +2135,7 @@ $(GAMELIBS_37938_DONOR): src/game_libs/game_libs_ncc_37938.cpp
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SeekNode_update=$(GAMELIBS_37938_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37938_DONOR)
 # agent-g run 212: 37938's jr-ra delay nop (0x37A8C) moved into its .s (0x154 -> 0x158); the one genuine
-# alignment word before Node_func_00037A94 is an all-zero suffix (replaces the 8-byte _pad.s block).
+# alignment word before Node_stub_00037A94 is an all-zero suffix (replaces the 8-byte _pad.s block).
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += SeekNode_update=0x00000000
 build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += SeekNode_update=0x00000000
 # 59E80 = fixed render-state DL as stock-gbi-style packets on an inline next() under NCC (agent-c run 164: cfe 93.99 -> 97.75; NM body 0x450 -> 0x444 bytes = target).
@@ -2224,7 +2224,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # 5534C / 558A0 = command-stream walkers; NCC donors: the cursor step is an inline member
 # `int next() { return *(*pp)++; }` (kit LXIII: gives the target's p = v1 colouring).
 GAMELIBS_5534C_DONOR := build/src/game_libs/game_libs_ncc_5534C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += nodelist_func_0005534C=$(GAMELIBS_5534C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += nodelist_walk_0005534C=$(GAMELIBS_5534C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5534C_DONOR)
 GAMELIBS_558A0_DONOR := build/src/game_libs/game_libs_ncc_558A0.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += nodelist_dispatchList_000558A0=$(GAMELIBS_558A0_DONOR)
@@ -2401,7 +2401,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38C98_DONOR)
 # 35DAC = re-init / step loop over one-word stack objects (addresses hoisted into s0-s4); NCC donor.
 GAMELIBS_35DAC_DONOR := build/src/game_libs/game_libs_ncc_35DAC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Parms_func_00035DAC=$(GAMELIBS_35DAC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Parms_skipRecords=$(GAMELIBS_35DAC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_35DAC_DONOR)
 # 372D4 = sub-node position copy + rot reset + virtual slot 3 (smart-pointer handle local); NCC donor.
 GAMELIBS_372D4_DONOR := build/src/game_libs/game_libs_ncc_372D4.cpp.o
@@ -2507,10 +2507,10 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := boot_reloadMainUso_000669B8=$(GAMELIBS_669AC_DONOR) gl_osPiRawReadIo_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_osSendMesg=$(GAMELIBS_69E04_DONOR) gl_osRecvMesg=$(GAMELIBS_69F64_DONOR) gl___osDequeueThread=$(GAMELIBS_6AF0C_DONOR) gl__VirtualToPhysicalTask=$(GAMELIBS_6A304_DONOR) gl_osDestroyThread=$(GAMELIBS_6AF44_DONOR) gl___osLeoResume=$(GAMELIBS_6B880_DONOR) gl_osPiReadIo=$(GAMELIBS_6B974_DONOR) gl_osContInit=$(GAMELIBS_6BAD4_DONOR) gl___osLeoAbnormalResume=$(GAMELIBS_6B7A0_DONOR) gl___osLeoInterrupt=$(GAMELIBS_6B0FC_DONOR) fsin=$(GAMELIBS_6A144_DONOR) ImageFile_load_00068990=$(GAMELIBS_68990_DONOR) osSpTaskLoad=$(GAMELIBS_6A420_DONOR)
 # 675A4 = input debounce / stick flags, IDO 7.1 -O2 donor: game_libs_o2_675A4.c
 # (262/262 word-exact). Spliced so the donor-local .rodata reloc of the 0.2
-# dead-zone double literal is renamed pad_func_000675A4_rodata and pinned to
+# dead-zone double literal is renamed pad_update_rodata and pinned to
 # bootup.uso RoData +0x2200. Uses += (composes with the := line above).
 GAMELIBS_675A4_DONOR := build/src/game_libs/game_libs_o2_675A4.c.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += pad_func_000675A4=$(GAMELIBS_675A4_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += pad_update=$(GAMELIBS_675A4_DONOR)
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl___osContGetInitData=$(GAMELIBS_6C11C_DONOR) gl_osCreateThread=$(GAMELIBS_6BF34_DONOR) gl___osPackRequestData=$(GAMELIBS_6C1B8_DONOR) gl_osDriveRomInit=$(GAMELIBS_6C2A4_DONOR)
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += osContStartReadData=$(GAMELIBS_6C084_DONOR)
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
@@ -2528,7 +2528,7 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_690A8_DONOR)
 # 67D50 = memset; NCC donor (cfe capped at 2 raw).
 GAMELIBS_67D50_DONOR := build/src/game_libs/game_libs_ncc_67D50.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += str_func_00067D50=$(GAMELIBS_67D50_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += str_fill=$(GAMELIBS_67D50_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_67D50_DONOR)
 # 66EEC = message pump: switch on the message type (edg source-order compare chain); NCC donor.
 # The donor .cpp opens with a 0x18-byte phase function so as1's 32-byte dead-epilogue alignment
@@ -3946,16 +3946,16 @@ build/src/match_imports/SNode_handleMsg.c.o: src/match_imports/SNode_handleMsg.c
 build/non_matching/src/match_imports/SNode_handleMsg.c.o: src/match_imports/SNode_handleMsg.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/CollShape_func_0003A58C.c.o: src/match_imports/CollShape_func_0003A58C.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/coll_raySphere.c.o: src/match_imports/coll_raySphere.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o: src/match_imports/CollShape_func_0003A58C.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/coll_raySphere.c.o: src/match_imports/coll_raySphere.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/CollShape_func_0003CBB4.c.o: src/match_imports/CollShape_func_0003CBB4.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/CollObj_sphereHitTest.c.o: src/match_imports/CollObj_sphereHitTest.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o: src/match_imports/CollShape_func_0003CBB4.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o: src/match_imports/CollObj_sphereHitTest.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/ItemMgr_Load.c.o: src/match_imports/ItemMgr_Load.c src/match_imports/context_game_libs_post0b_o2_3E39C.h
@@ -4516,18 +4516,18 @@ build/src/match_imports/SNode_handleMsg.c.o.linked.elf: build/src/match_imports/
 build/non_matching/src/match_imports/SNode_handleMsg.c.o.linked.elf: build/non_matching/src/match_imports/SNode_handleMsg.c.o scripts/match-origins-SNode_handleMsg-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SNode_handleMsg-nm.ld -e SNode_handleMsg -o $@ $@.stripped.o
-build/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf: build/src/match_imports/CollShape_func_0003A58C.c.o scripts/match-origins-CollShape_func_0003A58C.ld
+build/src/match_imports/coll_raySphere.c.o.linked.elf: build/src/match_imports/coll_raySphere.c.o scripts/match-origins-coll_raySphere.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CollShape_func_0003A58C.ld -e CollShape_func_0003A58C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf: build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o scripts/match-origins-CollShape_func_0003A58C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-coll_raySphere.ld -e coll_raySphere -o $@ $@.stripped.o
+build/non_matching/src/match_imports/coll_raySphere.c.o.linked.elf: build/non_matching/src/match_imports/coll_raySphere.c.o scripts/match-origins-coll_raySphere-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CollShape_func_0003A58C-nm.ld -e CollShape_func_0003A58C -o $@ $@.stripped.o
-build/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf: build/src/match_imports/CollShape_func_0003CBB4.c.o scripts/match-origins-CollShape_func_0003CBB4.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-coll_raySphere-nm.ld -e coll_raySphere -o $@ $@.stripped.o
+build/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf: build/src/match_imports/CollObj_sphereHitTest.c.o scripts/match-origins-CollObj_sphereHitTest.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CollShape_func_0003CBB4.ld -e CollShape_func_0003CBB4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf: build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o scripts/match-origins-CollShape_func_0003CBB4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CollObj_sphereHitTest.ld -e CollObj_sphereHitTest -o $@ $@.stripped.o
+build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf: build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o scripts/match-origins-CollObj_sphereHitTest-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CollShape_func_0003CBB4-nm.ld -e CollShape_func_0003CBB4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CollObj_sphereHitTest-nm.ld -e CollObj_sphereHitTest -o $@ $@.stripped.o
 build/src/match_imports/ItemMgr_Load.c.o.linked.elf: build/src/match_imports/ItemMgr_Load.c.o scripts/match-origins-ItemMgr_Load.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-ItemMgr_Load.ld -e ItemMgr_Load -o $@ $@.stripped.o
@@ -5000,14 +5000,14 @@ build/src/match_imports/SNode_handleMsg.c.o.linked.elf.bound.elf: build/src/matc
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SNode_handleMsg.json $@
 build/non_matching/src/match_imports/SNode_handleMsg.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SNode_handleMsg.c.o.linked.elf scripts/match-bindings-SNode_handleMsg-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SNode_handleMsg-nm.json $@
-build/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf: build/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf scripts/match-bindings-CollShape_func_0003A58C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CollShape_func_0003A58C.json $@
-build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf scripts/match-bindings-CollShape_func_0003A58C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CollShape_func_0003A58C-nm.json $@
-build/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf: build/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf scripts/match-bindings-CollShape_func_0003CBB4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CollShape_func_0003CBB4.json $@
-build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf scripts/match-bindings-CollShape_func_0003CBB4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CollShape_func_0003CBB4-nm.json $@
+build/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf: build/src/match_imports/coll_raySphere.c.o.linked.elf scripts/match-bindings-coll_raySphere.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-coll_raySphere.json $@
+build/non_matching/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/coll_raySphere.c.o.linked.elf scripts/match-bindings-coll_raySphere-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-coll_raySphere-nm.json $@
+build/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf: build/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf scripts/match-bindings-CollObj_sphereHitTest.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CollObj_sphereHitTest.json $@
+build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf scripts/match-bindings-CollObj_sphereHitTest-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CollObj_sphereHitTest-nm.json $@
 build/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf: build/src/match_imports/ItemMgr_Load.c.o.linked.elf scripts/match-bindings-ItemMgr_Load.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-ItemMgr_Load.json $@
 build/non_matching/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/ItemMgr_Load.c.o.linked.elf scripts/match-bindings-ItemMgr_Load-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5378,14 +5378,14 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNode_han
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/SNode_handleMsg.c scripts/match-bindings-SNode_handleMsg.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNode_handleMsg=build/non_matching/src/match_imports/SNode_handleMsg.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/SNode_handleMsg.c scripts/match-bindings-SNode_handleMsg-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollShape_func_0003A58C=build/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/CollShape_func_0003A58C.c scripts/match-bindings-CollShape_func_0003A58C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollShape_func_0003A58C=build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/CollShape_func_0003A58C.c scripts/match-bindings-CollShape_func_0003A58C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollShape_func_0003CBB4=build/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/CollShape_func_0003CBB4.c scripts/match-bindings-CollShape_func_0003CBB4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollShape_func_0003CBB4=build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/CollShape_func_0003CBB4.c scripts/match-bindings-CollShape_func_0003CBB4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_raySphere=build/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/coll_raySphere.c scripts/match-bindings-coll_raySphere.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_raySphere=build/non_matching/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/coll_raySphere.c scripts/match-bindings-coll_raySphere-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollObj_sphereHitTest=build/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/CollObj_sphereHitTest.c scripts/match-bindings-CollObj_sphereHitTest.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollObj_sphereHitTest=build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/CollObj_sphereHitTest.c scripts/match-bindings-CollObj_sphereHitTest-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ItemMgr_Load=build/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/ItemMgr_Load.c scripts/match-bindings-ItemMgr_Load.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ItemMgr_Load=build/non_matching/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf
@@ -5784,14 +5784,14 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/SNode_handleMs
 build/src/match_imports/SNode_handleMsg.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/SNode_handleMsg.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/SNode_handleMsg.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf
-build/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/CollShape_func_0003A58C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf
-build/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/CollShape_func_0003CBB4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf
+build/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/coll_raySphere.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf
+build/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/CollObj_sphereHitTest.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf
 build/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/ItemMgr_Load.c.o.linked.elf.bound.elf

@@ -1,0 +1,12 @@
+nonmatching DNode_saveData, 0x20
+
+glabel DNode_saveData
+    /* E4AF1C 00065E44 27BDFFE8 */  .word 0x27BDFFE8
+    /* E4AF20 00065E48 AFBF0014 */  .word 0xAFBF0014
+    /* E4AF24 00065E4C 0C000000 */  .word 0x0C000000
+    /* E4AF28 00065E50 24840108 */  .word 0x24840108
+    /* E4AF2C 00065E54 8FBF0014 */  .word 0x8FBF0014
+    /* E4AF30 00065E58 27BD0018 */  .word 0x27BD0018
+    /* E4AF34 00065E5C 03E00008 */  .word 0x03E00008
+    /* E4AF38 00065E60 00000000 */  .word 0x00000000
+endlabel DNode_saveData

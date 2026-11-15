@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for nodelist_func_0005534C (0x9C / 39 words): command
+/* IDO 7.1 NCC (C++) donor for nodelist_walk_0005534C (0x9C / 39 words): command
  * stream walker that calls the first command word as a function, then
  * dispatches the rest (low 16 bits) through the shared handler. Same
  * by-value St / inline member cursor step as nodelist_dispatchList_000558A0
@@ -13,7 +13,7 @@ struct St5534C {
     int y;
     int next() { return *(*pp)++; }
 };
-extern "C" void nodelist_func_0005534C(St5534C s) {
+extern "C" void nodelist_walk_0005534C(St5534C s) {
     int w;
     w = s.next();
     s.w = w;

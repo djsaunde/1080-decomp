@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for pad_func_000675A4 -- input-debounce / flag-update
+/* IDO 7.1 -O2 donor for pad_update -- input-debounce / flag-update
  * routine (0x418 / 262 words). PROVEN EXACT 262/262 words; the link-resolved
  * words are the blank jal and the HI/LO pair of the dead-zone literal.
  *
@@ -9,7 +9,7 @@
  * uopt constant candidate coloured after the 0.0f literal (target zero f12 /
  * threshold f14); the old named `f64 temp_f14 = gl_D_2200_thr.v` web was
  * coloured first and swapped them (the 8-word residue). The donor-local
- * .rodata reloc is renamed pad_func_000675A4_rodata and pinned to +0x2200.
+ * .rodata reloc is renamed pad_update_rodata and pinned to +0x2200.
  *
  * Load-bearing shapes kept from the NM body (docs/IDO_CODEGEN.md
  * #store-forward-ring-across-bb-and-scaled-index-first-675a4): the 0x18
@@ -23,7 +23,7 @@ extern int gl_func_00000000();
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void pad_func_000675A4(char *arg0) {
+void pad_update(char *arg0) {
     f32 temp_f0;
     f32 temp_f2;
     f32 var_f0;

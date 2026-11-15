@@ -4345,7 +4345,7 @@ int *ColourItem_create_000088B4(int *arg0) {
  * moved to game_libs_post.c (correct file for VRAM past 0x8944 cap of
  * game_libs.c). */
 
-/* AnimDataMgr_func_000622C8 split off from AnimDataMgr_wait_00062298 bundle on
+/* AnimDataMgr_initPool split off from AnimDataMgr_wait_00062298 bundle on
  * 2026-05-08; decompiled to C body in game_libs_post.c. */
 
 /* AudioLoad_SetDmaHandler + AudioLoad_SetUnusedHandler split off from
@@ -4377,10 +4377,10 @@ int *ColourItem_create_000088B4(int *arg0) {
 
 /* Window_updateAspect + Window_stub_0004EB4C split off from Window_doCommand bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
-/* ItemType_buildItems, _0003EB98 split off from ItemMgr_func_0003EB3C bundle
+/* ItemType_buildItems, _0003EB98 split off from ItemMgr_firstItemOfType bundle
  * 2026-05-08; decompiled in game_libs_post.c. */
 
-/* item_func_0003E9C0 split off from ItemMgr_func_0003E968 bundle 2026-05-08;
+/* ItemType_setNext split off from ItemMgr_registerTemplate bundle 2026-05-08;
  * decompiled in game_libs_post.c. */
 
 /* gfx_emptyStub_00046048 split off from gfx_waitRetrace bundle 2026-05-08;

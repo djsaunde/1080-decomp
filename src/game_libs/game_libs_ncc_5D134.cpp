@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for math_func_0005D134 (0xBC / 47 words): rotate the
+/* IDO 7.1 NCC (C++) donor for math_quatRotateAxis (0xBC / 47 words): rotate the
  * quaternion q = (w, x, y, z) about axis i (1-based) by the half-angle pair (c, s) --
  * the (q[i], q[0]) and (q[j], q[k]) Givens pairs. Under cfe it capped at 96.5 (FP
  * operand order + pointer colours); under NCC: `(f32)1 * s` written at both uses (no t
@@ -7,7 +7,7 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 typedef float f32;
 typedef int s32;
-extern "C" void math_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
+extern "C" void math_quatRotateAxis(f32 *q, f32 c, f32 s, s32 i) {
     s32 j, k;
     f32 a;
     f32 *pk, *pj;

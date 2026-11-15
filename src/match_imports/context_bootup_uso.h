@@ -1290,7 +1290,7 @@ void Snower_display(int *a0);
 extern char D_00007FD4;
 extern char D_00007FDC;
 void Snower_hostioParms(int *a0);
-void Snower_func_00008448(char *a0);
+void Snower_saveData(char *a0);
 void Snower_readParms(char *a0);
 extern char D_00007968;
 extern char D_00007FE4;

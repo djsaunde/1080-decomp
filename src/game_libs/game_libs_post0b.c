@@ -1764,12 +1764,12 @@ e35:
     return o;
 }
 
-void Parms_func_00035C50(int a0) {}
+void Parms_stub_00035C50(int a0) {}
 
-void Parms_func_00035C58(int a0) {}
+void Parms_save(int a0) {}
 
 /* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
-void Parms_func_00035C60(int a0, int a1) {
+void Parms_hostio(int a0, int a1) {
 }
 
 // Parms_load_00035C6C — STRUCTURAL PASS (0x140 / 80 words, no episode).
@@ -1848,12 +1848,12 @@ int Parms_load_00035C6C(char *l) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Parms_load_00035C6C);
 #endif
 
-// Parms_func_00035DAC — STRUCTURAL PASS (0xC0 / 48 words, no episode).
+// Parms_skipRecords — STRUCTURAL PASS (0xC0 / 48 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). An iterator-driven nested-loop processor — SIBLING of
 // Parms_load_00035C6C (shares the 0x012844 iterator-init helper).
 //
-//   void Parms_func_00035DAC(void) {
+//   void Parms_skipRecords(void) {
 //     It it;                                    // local sp+0x34..0x4C
 //     it.f_48 = 0;
 //     fixed_iter_init_012844(&it);              // jal 0x012844 FIXED
@@ -1898,17 +1898,17 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Parms_load_00035C6C);
 //   reg-promotion regalloc cap. Name pre-checked: no extern reuse.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_35DAC.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 133). */
-void Parms_func_00035DAC(void) {
+void Parms_skipRecords(void) {
 }
 
 
 /* game_libs_func_00035E5C: 2-word all-zero inter-function ROM pad (0x35E5C/0x35E60).
  * The `lui t6; lw t6,0(t6)` that used to follow it is the hoisted first
  * statement (the context-pointer read) of coll_pushClear_00035E64 below
- * (merged 2026-09-06; the 2D36C precedent: the predecessor Parms_func_00035DAC is
+ * (merged 2026-09-06; the 2D36C precedent: the predecessor Parms_skipRecords is
  * an NM wrap, so the pad stays a 2-word INCLUDE_ASM rather than a SUFFIX). */
 /* game_libs_func_00035E5C (folded 2026-10-24 agent-c run 150): 2 all-zero pad words, now an
- * all-zero SUFFIX_BYTES_FORCE on Parms_func_00035DAC; expected/ symbol deleted, Parms_func_00035DAC grown by 8. */
+ * all-zero SUFFIX_BYTES_FORCE on Parms_skipRecords; expected/ symbol deleted, Parms_skipRecords grown by 8. */
 
 #ifdef NON_MATCHING
 /* coll_pushClear_00035E64 (ex gl_func_0002E6C + the 2-word head; 0x168, 90 words).
@@ -2994,7 +2994,7 @@ void SeekNode_update(char *o) {
  * its .s, and the 0x37A90 pad is an all-zero SUFFIX_BYTES_FORCE on 37938 (a
  * one-word GLOBAL_ASM pad block emits 8 bytes). */
 
-void Node_func_00037A94(void) {
+void Node_stub_00037A94(void) {
 }
 
 /* dbg_printIndent: 21-insn count-bounded loop. Calls
@@ -3264,7 +3264,7 @@ void fs_gdlReadQuad_00037E40(Quad4 *dst) {
     *dst = buf;
 }
 
-void Node_func_00037E98(int *a0, float *a1) {
+void cmd_readFixedVec3(int *a0, float *a1) {
     float scale = *(float*)((char*)&D_00000000 + 0x1A14);
     int *p;
     p = (int*)a0[1];
@@ -3278,7 +3278,7 @@ void Node_func_00037E98(int *a0, float *a1) {
     a1[2] = (float)*p / scale;
 }
 
-void cmd_func_00037F10(int *a0, float *a1) {
+void cmd_readFixed(int *a0, float *a1) {
     int *p = (int*)a0[1];
     a0[1] = (int)(p + 1);
     *a1 = (float)*p / *(float*)((char*)&D_00000000 + 0x1A18);
@@ -3288,20 +3288,20 @@ void cmd_func_00037F10(int *a0, float *a1) {
  * but blocked by that file's TRUNCATE_TEXT=0x8944 cap, since VRAM 0x37F40
  * lies in game_libs_post.c's range). Moved here 2026-05-07 alongside
  * sibling fragments 37E98 + 37F10 (still INCLUDE_ASM, await body decode). */
-void Node_func_00037F40(int **a0, int *a1) {
+void cmd_readInt(int **a0, int *a1) {
     int *p = a0[1];
     a0[1] = p + 1;
     *a1 = *p;
 }
 
-void cmd_func_00037F58(int a0, char *a1) {
+void cmd_readFixedQuad(int a0, char *a1) {
     gl_func_00000000(a0, a1);
     gl_func_00000000(a0, a1 + 4);
     gl_func_00000000(a0, a1 + 8);
     gl_func_00000000(a0, a1 + 0xC);
 }
 
-/* Node_func_00037FAC: 24-insn alloc-or-given with dead-code twin-check. The
+/* Node_newTag_00037FAC: 24-insn alloc-or-given with dead-code twin-check. The
  * working register is $a1 (IDO copies the param to $a1 to free $a0 for the
  * second alloc call). Spill of $a1 across the second jal lands at 0x18 (a0's
  * home slot), not 0x1C (a1's own home), because IDO tracks the spill against
@@ -3310,7 +3310,7 @@ void cmd_func_00037F58(int a0, char *a1) {
  * param) + goto-to-shared-epilogue. A 2-param form (int a0, int a1) maps the
  * working pseudo to a1's home 0x1C; a fresh-local form (int r = a0) bumps the
  * frame to -0x20 with a different reg. */
-int Node_func_00037FAC(int a0) {
+int Node_newTag_00037FAC(int a0) {
     int v1;
     if (a0 == 0) {
         a0 = gl_func_00000000(4);
@@ -3559,7 +3559,7 @@ void Node_Save(char *o) {
     }
 }
 
-void Node_func_00038294(int a0) {
+void Node_stub_00038294(int a0) {
 }
 
 // Node_hostioLink — STRUCTURAL PASS (0xC4 / 49 words, no episode).
@@ -4139,29 +4139,29 @@ void Node_vslot9_00038B7C(int a0, int a1) {
 
 /* D_X setter (sibling of matched AudioThread_SetExtWord_000275B0). */
 extern int D_38B88;
-void Node_func_00038B88(int a0) {
+void Node_setDisplayMask(int a0) {
     D_38B88 = a0;
 }
 
 /* D_X getter — paired with the 00038B88 setter above (reads the same global).
  * Byte-exact via the reloc-blind segment-base convention (D_38B88 = 0x0 in
  * undefined_syms, same as the matched setter). No episode (reloc-blind base). */
-int Node_func_00038B94(void) {
+int Node_getDisplayMask(void) {
     return D_38B88;
 }
 
 /* D_X setter (sibling of matched AudioThread_SetExtWord_000275B0). */
 extern int D_38BA0;
-void Node_func_00038BA0(int a0) {
+void Node_setNewNodeMask(int a0) {
     D_38BA0 = a0;
 }
 
 /* D_X getter — paired with the 00038BA0 setter above (reads the same global). */
-int Node_func_00038BAC(void) {
+int Node_getNewNodeMask(void) {
     return D_38BA0;
 }
 
-/* Node_func_00038BB8 — EXACT 19/19 words (2026-07-08, agent-e). Vtable dispatch
+/* Node_sendMsg14 — EXACT 19/19 words (2026-07-08, agent-e). Vtable dispatch
  * with a stack-built request: req{count=14, buf_ptr=&buf, return_slot=0} at
  * sp+0x2C, payload short a1 at sp+0x3C; calls (*(a0->0x28)->0x34)(a0 +
  * (short)(a0->0x28)->0x30, &req) and returns req.return_slot.
@@ -4186,7 +4186,7 @@ typedef struct {
     short pad;
 } ReqStruct_38BB8;
 
-int Node_func_00038BB8(int *a0, int a1) {
+int Node_sendMsg14(int *a0, int a1) {
     ReqStruct_38BB8 req;
     volatile int pad0;
     volatile int pad1;
@@ -4272,18 +4272,18 @@ void ScreenWindow_func_00038C70(int a0, int a1, int a2) {
 void Node_printContents(char *o, int a1) {
 }
 
-void Node_func_00038D5C(int *a0, int a1) {
+void Node_setUnk24(int *a0, int a1) {
     a0[0x24/4] = a1;
 }
 
-/* Node_func_00038D64: 23-insn sub-object initializer (two sub-struct init
+/* MNode_initMatrices: 23-insn sub-object initializer (two sub-struct init
  * calls, two zero stores, two flag ORs). 2026-10-14 EXACT (agent-c): self
  * colours a1 (first call takes one arg, docs/IDO_CODEGEN.md#c8b8-param-in-a1-
  * means-single-arg-call); the `addiu v0,a1,0x18; lw/ori/sw 0(v0)` unfolded
  * pointer is the goto-mid anti-fold (docs/IDO_CODEGEN.md#goto-mid-pointer-
  * antifold-65060) -- same 0x18 |= 0x10 idiom as DNode_init_00065060. */
 extern int gl_func_00000000();
-void Node_func_00038D64(char *a0) {
+void MNode_initMatrices(char *a0) {
     int *p;
     gl_func_00000000(a0 + 0x30);
     gl_func_00000000(a0 + 0x70);
@@ -4573,7 +4573,7 @@ int *MNode_vslot10_00039988(int *a0) {
     return (int*)((char*)a0 + 0x70);
 }
 
-void MNode_func_00039990(int *a0, int *a1) {
+void MNode_addChild(int *a0, int *a1) {
     gl_func_00000000(a0 + 4);
     if (a1[0x14/4] != 0) {
         a1[0x4/4] = 1;
@@ -5028,7 +5028,7 @@ int coll_boxOverlap_0003A164(float *a0, float *a1) {
     return 0;
 }
 
-/* CollShape_func_0003A58C hand re-derivation 2026-07-31: sphere-vs-segment
+/* coll_raySphere hand re-derivation 2026-07-31: sphere-vs-segment
  * intersection writing the hit point (then the normalized (hit-c)/r
  * vector) through *out.
  *   dir = normalize(b-a); dot = (c-a).dir; disc = r^2 - (|c-a|^2 - dot^2)
@@ -5048,7 +5048,7 @@ int coll_boxOverlap_0003A164(float *a0, float *a1) {
  * home reloads, if (r) keeps r colourable in f20, and two pad words restore the frame (0x140) and home offsets. */
 extern void gl_func_00000000_3a58cn(Vec3 *);   /* normalize-in-place slot */
 extern float gl_func_00000000_3a58cs(float);   /* sqrt slot */
-int CollShape_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
+int coll_raySphere(float *a, float *b, float *c, float r, float *out) {
     Vec3 step;
     Vec3 v_oc;
     Vec3 v_ca;
@@ -5146,7 +5146,7 @@ int CollShape_func_0003A58C(float *a, float *b, float *c, float r, float *out) {
     return 1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CollShape_func_0003A58C);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", coll_raySphere);
 #endif
 
 extern int gl_func_00000000();
@@ -5173,7 +5173,7 @@ void coll_zeroQuad_0003AA40(float *dst) {
     dst[2] = 0.0f;
 }
 
-/* CollShape_func_0003AA5C (0x200 / 128 insns, BYTE-EXACT 2026-09-05 agent-c).
+/* CollShape_initTriPlane (0x200 / 128 insns, BYTE-EXACT 2026-09-05 agent-c).
  * Boundary merge: the former 3-word "game_libs_func_0003AC50" symbol
  * (sb t2,3(a0); jr ra; nop) was this function's own `sign = -1` else block --
  * the trailing bc1fl at 0x3AC40 lands on 3AC50+4 with 3AC50's first word
@@ -5201,7 +5201,7 @@ typedef struct {
 
 #define FABS_3AA5C(x) (((x) < 0.0f) ? -(x) : (x))
 
-void CollShape_func_0003AA5C(AxisInfo_3AA5C *o, Vec3 *a, Vec3 *b, int tag) {
+void CollShape_initTriPlane(AxisInfo_3AA5C *o, Vec3 *a, Vec3 *b, int tag) {
     signed char axis;
     o->dot = b->x * a->x + b->y * a->y + b->z * a->z;
     o->tag = tag;
@@ -6209,12 +6209,12 @@ void CollObj_initCylinder(char *a0, int a1, int a2, float a3, float a4) {
     *(float*)(a0 + 0x38) = a4;
 }
 
-// CollShape_func_0003CBB4 — STRUCTURAL PASS (0x3E0 / 248 words, no episode).
+// CollObj_sphereHitTest — STRUCTURAL PASS (0x3E0 / 248 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — large 0xD0 FP frame). A gated FP proximity / distance
 // test between two objects.
 //
-//   ? CollShape_func_0003CBB4(A *a, B *b, ? c) {
+//   ? CollObj_sphereHitTest(A *a, B *b, ? c) {
 //     if (b->w_8 != 1) return ...;                // type/active gate
 //     float dx = a->f_20 - b->f_20;               // per-component
 //     dx = (dx < 0.0f) ? -dx : dx;                //   abs delta
@@ -6252,7 +6252,7 @@ void CollObj_initCylinder(char *a0, int a1, int a2, float a3, float a4) {
 extern s32 gl_func_00000000_3cbb4r(f32 *, f32 *, f32 *, f32, f32 *);
 extern void gl_func_00000000_3cbb4m(f32);
 extern void gl_func_00000000_3cbb4n(f32 *);
-s32 CollShape_func_0003CBB4(char *arg0, char *arg1, char *arg2) {
+s32 CollObj_sphereHitTest(char *arg0, char *arg1, char *arg2) {
     s32 ret;
     f32 *av;
     f32 *bv;
@@ -6331,7 +6331,7 @@ s32 CollShape_func_0003CBB4(char *arg0, char *arg1, char *arg2) {
     return ret;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CollShape_func_0003CBB4);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CollObj_sphereHitTest);
 #endif
 
 extern int gl_ref_0004F018();
@@ -6462,12 +6462,12 @@ out:
     return o;
 }
 
-/* ItemType_func_0003D228: 24-insn helper. Calls gl_func(a0+0x10, a1); if
+/* ItemType_addItem: 24-insn helper. Calls gl_func(a0+0x10, a1); if
  * a1->[0x14] was non-zero sets a1->[0x4]=1; stores a1->[0x14]=a0; then
  * indirect-calls (a0->[0x28])->[0x64](a0 + (short)v0->[0x60], a1, a0).
  * MATCHED: inlining the fn-ptr call (no `fn` local) forces $t9 for the
  * call register (MIPS jalr-t9 convention). */
-void ItemType_func_0003D228(int *a0, int *a1) {
+void ItemType_addItem(int *a0, int *a1) {
     int *v0;
     gl_func_00000000((char*)a0 + 0x10, a1);
     if (a1[0x14/4] != 0) {
@@ -6481,7 +6481,7 @@ void ItemType_func_0003D228(int *a0, int *a1) {
 
 extern int gl_func_00000000();
 
-void ItemType_func_0003D288(char *a0, int a1) {
+void ItemType_removeItem(char *a0, int a1) {
     char *vt;
     gl_func_00000000(a0 + 0x10, a1);
     vt = *(char**)(a0 + 0x28);
@@ -6515,7 +6515,7 @@ void ItemType_func_0003D288(char *a0, int a1) {
 //   aggregate node of the game_libs object subsystem (same
 //   intrusive-list convention — head at +0x10, next at +0x04 — as
 //   the Node_updateChildren / 0003C86C processor family; pairs with
-//   the iterator API helpers Parms_load_00035C6C / Parms_func_00035DAC).
+//   the iterator API helpers Parms_load_00035C6C / Parms_skipRecords).
 // Caps (DEFERRED): raw-word USO + intrusive-list count + fixed
 //   intra-USO call (0x01459B) + second-list walk; list structs
 //   untyped. Real-C STRUCTURAL body below. Byte-match deferred.
@@ -7004,7 +7004,7 @@ end:
 //   returning the matching node (or stopping early when the cursor
 //   reaches the third-arg target). A spatial-query / find-by-
 //   position node of the game_libs object subsystem — the
-//   list-search counterpart of the CollShape_func_0003CBB4 proximity test
+//   list-search counterpart of the CollObj_sphereHitTest proximity test
 //   and the CollShape_nearestHit spatial-query wrapper (same
 //   collection convention: list head +0x10, next +0x04, position
 //   triple at +0x30).
@@ -7051,7 +7051,7 @@ char *ColourItemType_vslot12_0003DA14(char *o, char *ref, char *excl) {
 //   &D_0+0x1AB8 query limit). A find-min/max-by-position node of
 //   the game_libs object subsystem, the value-extremum counterpart
 //   to ColourItemType_vslot12_0003DA14's nearest-by-vector search and the
-//   CollShape_func_0003CBB4 / CollShape_nearestHit spatial-query family
+//   CollObj_sphereHitTest / CollShape_nearestHit spatial-query family
 //   (same collection convention: list head +0x10, next +0x04,
 //   scalar at +0x38).
 // Caps (DEFERRED): raw-word USO + intrusive-list walk + FP
@@ -7707,7 +7707,7 @@ void ItemMgr_removeItems(int **a0) {
 }
 
 extern int gl_func_00000000();
-void ItemMgr_func_0003E54C(int *a0, int a1) {
+void ItemMgr_removeItem(int *a0, int a1) {
     int *item = (int*)a0[0xB];
     while (item != 0) {
         gl_func_00000000(item, a1);
@@ -7715,11 +7715,11 @@ void ItemMgr_func_0003E54C(int *a0, int a1) {
     }
 }
 
-/* ItemMgr_func_0003E594: walks linked list a0->[0x2C].next... and for each node
+/* ItemMgr_rebuildAll: walks linked list a0->[0x2C].next... and for each node
  * calls obj->fn(node + obj->off), where obj = node->[0x28], fn = obj->[0x64],
  * off = obj->[0x60] (signed short). beql/bnel branch-likely loop. */
 typedef int (*gl_e594_fn_t)();
-void ItemMgr_func_0003E594(int *a0) {
+void ItemMgr_rebuildAll(int *a0) {
     int *node = (int*)*(int*)((char*)a0 + 0x2C);
     if (node != 0) {
         do {
@@ -7793,11 +7793,11 @@ void ItemMgr_errUnknownType(int a0) {
     gl_func_00000000(((char *)&D_00000000 + 0x0001F338));
 }
 
-// ItemMgr_func_0003E868 — STRUCTURAL PASS (0x9C / 39 words, no episode). Raw-.word
+// ItemMgr_spawnItem — STRUCTURAL PASS (0x9C / 39 words, no episode). Raw-.word
 // USO. realjr=1, single prologue frame 0x40 (saves ra) → ONE clean function.
 // Two-stage virtual-dispatch factory (cb = jal 0 USO-relocated alloc/wrap):
 //
-//   void *ItemMgr_func_0003E868(void *a0, Ctx a1, int a2) {
+//   void *ItemMgr_spawnItem(void *a0, Ctx a1, int a2) {
 //     if (a1 == 0) return 0;                  // beqz a1 early-out, v1=0
 //     Vt vt = a1->p28;                        // vtable at a1->0x28
 //     short k1 = (short)vt->p58;
@@ -7815,7 +7815,7 @@ void ItemMgr_errUnknownType(int a0) {
 // arg (short)vt->0xMM + obj) + cb wrap idiom as the factory/registration
 // routines elsewhere in this segment.
 //
-/* ItemMgr_func_0003E868: EXACT. Corrections vs the sketch above: the jal-0 cb
+/* ItemMgr_spawnItem: EXACT. Corrections vs the sketch above: the jal-0 cb
  * result is unused -- obj IS the stage-1 dispatch result (cb(a1, obj) only
  * registers it); the return is one `obj` web (0 on the a1==0 path, v1).
  * Frame: obj home 0x3C, char pad1[4] = the dead word at 0x38, stk at 0x30,
@@ -7823,7 +7823,7 @@ void ItemMgr_errUnknownType(int a0) {
  * dispatch is a zero-code BB break: it makes uopt re-store obj's spill
  * (`sw v1,60(sp)`) before the second jalr, as the target does.
  * (docs/IDO_CODEGEN.md #bb-break-respill-3e868) */
-char *ItemMgr_func_0003E868(void *a0, char *a1, int a2) {
+char *ItemMgr_spawnItem(void *a0, char *a1, int a2) {
     char *obj;
     char pad1[4];
     int stk[2];
@@ -7845,7 +7845,7 @@ char *ItemMgr_func_0003E868(void *a0, char *a1, int a2) {
     return obj;
 }
 
-/* ItemMgr_func_0003E904: link-back wrapper.
+/* ItemMgr_addType: link-back wrapper.
  *   a1->[0x30] = a0->[0x2C]; a0->[0x2C] = a1;
  *   callee(&a0->[0x10], a1);          (TWO args)
  *   if (a1->[0x14] != 0) a1[1] = 1;
@@ -7854,7 +7854,7 @@ char *ItemMgr_func_0003E868(void *a0, char *a1, int a2) {
  * its home slot into the jal delay slot. The target never touches a2 before
  * the jal (a2 still holds the incoming value by coincidence), so the callee
  * takes two args; a2 is homed at entry and reloaded into t9 after the call. */
-void ItemMgr_func_0003E904(int *a0, int *a1, int a2) {
+void ItemMgr_addType(int *a0, int *a1, int a2) {
     a1[0x30/4] = a0[0x2C/4];
     a0[0x2C/4] = (int)a1;
     gl_func_00000000((char*)a0 + 0x10, a1);
@@ -7865,7 +7865,7 @@ void ItemMgr_func_0003E904(int *a0, int *a1, int a2) {
     a1[0x44/4] = a2;
 }
 
-/* ItemMgr_func_0003E968: call rec->fn(*rec->p) (a 4-byte struct passed by value),
+/* ItemMgr_registerTemplate: call rec->fn(*rec->p) (a 4-byte struct passed by value),
  * then gl_func(a0, ret, rec->arg); return ret. The struct arg is a comma
  * expression `(s.w = ..., s)`: it reserves the extra 8-byte frame block and
  * stores s directly at sp+0x20 (a separate `s.w = ...;` statement gives frame
@@ -7876,7 +7876,7 @@ typedef struct {
     int (*fn)(Word3E968);
     int arg;
 } Rec3E968;
-int ItemMgr_func_0003E968(int a0, Rec3E968 *a1) {
+int ItemMgr_registerTemplate(int a0, Rec3E968 *a1) {
     int v;
     Word3E968 s;
     v = a1->fn((s.w = a1->p->w, s));
@@ -7884,9 +7884,9 @@ int ItemMgr_func_0003E968(int a0, Rec3E968 *a1) {
     return v;
 }
 
-/* Split off from ItemMgr_func_0003E968 bundle 2026-05-08: 2-insn no-frame setter.
+/* Split off from ItemMgr_registerTemplate bundle 2026-05-08: 2-insn no-frame setter.
  * Stores a1 to a0->field_30. */
-void item_func_0003E9C0(int *a0, int a1) {
+void ItemType_setNext(int *a0, int a1) {
     *(int*)((char*)a0 + 0x30) = a1;
 }
 
@@ -7980,7 +7980,7 @@ void *ItemMgr_findType_0003EA98(int *a0, int a1) {
     return 0;
 }
 
-/* ItemMgr_func_0003EAE0: 23-insn (0x5C) dispatch wrapper. Calls
+/* ItemMgr_queryType: 23-insn (0x5C) dispatch wrapper. Calls
  * gl_func_00000000(a0, a1, a2, a3); if non-NULL, treats result as a
  * struct r where r->[0x28] is an obj with a function-ptr at r->[0x28]->[0x6C]
  * and a signed-short offset at r->[0x28]->[0x68]. Calls that fn-ptr
@@ -8004,7 +8004,7 @@ void *ItemMgr_findType_0003EA98(int *a0, int a1) {
 extern int gl_func_00000000();
 
 struct OneInt3EAE0 { int v; };
-int *ItemMgr_func_0003EAE0(int a0, int a1, int a2, int a3) {
+int *ItemMgr_queryType(int a0, int a1, int a2, int a3) {
     int *r = (int*)gl_func_00000000(a0, *(struct OneInt3EAE0 *)&a1, a2, a3);
     if (r == 0) goto end_zero;
     {
@@ -8015,7 +8015,7 @@ end_zero:
     return 0;
 }
 
-/* ItemMgr_func_0003EB3C: 21-insn (0x54) nullable-double-deref helper.
+/* ItemMgr_firstItemOfType: 21-insn (0x54) nullable-double-deref helper.
  * Boundary fix 2026-05-08: split off two trailing sentinels
  * (ItemType_buildItems + _0003EB98) which were bundled into the
  * original 0x70-byte symbol.
@@ -8039,14 +8039,14 @@ end_zero:
  * also copies it into its outgoing arg slot (sw a1,4(sp)). The second
  * r->0x10 load is a plain if/return pair (no CSE across the two returns). */
 typedef struct { int w; } S3EB3C;
-int ItemMgr_func_0003EB3C(int *a0, S3EB3C a1, S3EB3C a2) {
+int ItemMgr_firstItemOfType(int *a0, S3EB3C a1, S3EB3C a2) {
     char *r = (char *)gl_func_00000000(a0, a1);
     if (r == 0) return 0;
     if (*(int **)(r + 0x10) != 0) return **(int **)(r + 0x10);
     return 0;
 }
 
-/* Sentinels split off from ItemMgr_func_0003EB3C bundle 2026-05-08.
+/* Sentinels split off from ItemMgr_firstItemOfType bundle 2026-05-08.
  * Both match via empty/return-0 bodies per
  * docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body. */
 void ItemType_buildItems(int a0) { }
@@ -8060,11 +8060,11 @@ int hostio_readQuadParm_0003EBAC(char *a0) {
     return gl_ref_00051780(a0 + 0x10);
 }
 
-// item_func_0003EBDC — STRUCTURAL PASS (0x80 / 32 words, no episode). Raw-.word
+// MemberCallback_invoke_0003EBDC — STRUCTURAL PASS (0x80 / 32 words, no episode). Raw-.word
 // USO. realjr=1, single prologue frame 0x18 (saves ra) → ONE clean function.
 // Dispatch-through-indexed-table trampoline (handler called via jalr a2):
 //
-//   void item_func_0003EBDC(Desc a0) {
+//   void MemberCallback_invoke_0003EBDC(Desc a0) {
 //     short hi = (short)a0->p0A;
 //     short lo = (short)a0->p08;
 //     void *base = a0->p04;
@@ -8097,7 +8097,7 @@ int hostio_readQuadParm_0003EBAC(char *a0) {
  * BYTE-EXACT 32/32 via the 35A18 recipe (same-line join of arg load +
  * accumulate kills the 2-word load-order scheduler tie — see 35A18 note).
  * Reloc-free -> PROMOTED to plain C. */
-int item_func_0003EBDC(char *a0) {
+int MemberCallback_invoke_0003EBDC(char *a0) {
     char *arg;
     char *v1;
     char *entry;
@@ -8117,13 +8117,13 @@ int item_func_0003EBDC(char *a0) {
     return fnptr(arg);
 }
 
-// item_func_0003EC5C — STRUCTURAL PASS (0x80 / 32 words, no episode). Raw-.word
+// MemberCallback_invoke_0003EC5C — STRUCTURAL PASS (0x80 / 32 words, no episode). Raw-.word
 // USO. realjr=1, single prologue frame 0x18 (saves ra) → ONE clean function.
-// SIBLING: byte-for-byte identical instruction stream to item_func_0003EBDC
+// SIBLING: byte-for-byte identical instruction stream to MemberCallback_invoke_0003EBDC
 // (same 32 words, same opcodes, only the .s addresses differ) — a duplicate
 // of the dispatch-through-indexed-table trampoline. Same semantics:
 //
-//   void item_func_0003EC5C(Desc a0) {
+//   void MemberCallback_invoke_0003EC5C(Desc a0) {
 //     short hi = (short)a0->p0A;
 //     short lo = (short)a0->p08;
 //     void *base = a0->p04;
@@ -8142,20 +8142,20 @@ int item_func_0003EBDC(char *a0) {
 //     fnptr h    = e->p04;
 //     h(base + bias);                          // tail-call handler
 //   }
-// See the item_func_0003EBDC structural pass above for the full instruction-
+// See the MemberCallback_invoke_0003EBDC structural pass above for the full instruction-
 // level rationale. Family: indexed-table / fnptr-from-entry dispatch (this
 // + 0003EBDC are an adjacent duplicate pair, likely the same template
 // instantiated for two descriptor variants).
 //
 // Caps (DEFERRED): Desc/table-entry struct untyped; selector-ladder arm
-//   order inferred from branch sense. Sibling of item_func_0003EBDC —
+//   order inferred from branch sense. Sibling of MemberCallback_invoke_0003EBDC —
 //   same C body. Real-C STRUCTURAL body below. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
 /* BYTE-IDENTICAL to MemberCallback_invoke/0003A044 family. 2026-07-15 (agent-f):
  * BYTE-EXACT 32/32 via the 35A18 recipe (same-line join of arg load +
  * accumulate kills the 2-word load-order scheduler tie — see 35A18 note).
  * Reloc-free -> PROMOTED to plain C. */
-int item_func_0003EC5C(char *a0) {
+int MemberCallback_invoke_0003EC5C(char *a0) {
     char *arg;
     char *v1;
     char *entry;
@@ -19465,7 +19465,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
  * t6-first and swaps the final addu operands (78% plateau). */
 typedef struct { u16 h0, h1, h2; } Ent6_5313C;
 typedef struct { char pad[0x60]; Ent6_5313C *tbl60; char pad2[0xC]; Ent6_5313C *tbl70; } Tbls_5313C;
-Ent6_5313C *PolyShape_func_0005313C(Tbls_5313C *a0, int a1) {
+Ent6_5313C *PolyShape_getVertex(Tbls_5313C *a0, int a1) {
     Ent6_5313C *v1 = a0->tbl70;
     if (v1 != 0) {
         return &a0->tbl60[(v1 + a1)->h0];
@@ -19477,7 +19477,7 @@ Ent6_5313C *PolyShape_func_0005313C(Tbls_5313C *a0, int a1) {
  * return a0->0x64 + a1*4. Merged: the else-branch was splat-split off as
  * game_libs_func_000531AC (UNSHARED); merged back (0x20 -> 0x34). Writing the
  * non-zero return as `2 + x + a1*6` matches the addu operand order (x first). */
-int PolyShape_func_0005318C(int *a0, int a1) {
+int PolyShape_getVertexRef_0005318C(int *a0, int a1) {
     int x = a0[0x70 / 4];
     if (x != 0) {
         return 2 + x + a1 * 6;
@@ -19523,7 +19523,7 @@ int BasePolyShape_getVtxNorm(BasePolyShape *arg0, int arg1) {
  * cast -> trunc.w.s; an unsigned char target alone takes the cfc1/ctc1
  * unsigned path). */
 typedef struct { unsigned char r, g, b; } RGB5323C;
-void PolyShape_func_0005323C(char *a0, int a1, unsigned char *a2) {
+void PolyShape_getNormal8(char *a0, int a1, unsigned char *a2) {
     unsigned short *tbl;
     RGB5323C *pal;
     int idx;
@@ -19543,7 +19543,7 @@ void PolyShape_func_0005323C(char *a0, int a1, unsigned char *a2) {
     }
 }
 
-/* PolyShape_func_0005330C: nested table lookup, sibling of _0005313C with an
+/* PolyShape_getFaceVertex: nested table lookup, sibling of _0005313C with an
  * extra column index (boundary merged — 00053348 was splat's beqzl-over-split
  * v1==0 tail, folded back into this one symbol). EXACT 23/23 (2026-07-09
  * agent-e; retracts the old "branch-likely-duplication layout — permuter
@@ -19555,7 +19555,7 @@ void PolyShape_func_0005323C(char *a0, int a1, unsigned char *a2) {
  * (addu t3,v1,t2); the (char*)v1+idx*6 flat form stays operand-swapped. */
 typedef struct { u16 h0; u16 h[3]; } Ent8_5330C;
 typedef struct { char pad[0x68]; Ent8_5330C *tbl68; char pad2[4]; Ent6_5313C *tbl70; } Tbls_5330C;
-unsigned short PolyShape_func_0005330C(Tbls_5330C *a0, int a1, int a2) {
+unsigned short PolyShape_getFaceVertex(Tbls_5330C *a0, int a1, int a2) {
     Ent6_5313C *v1 = a0->tbl70;
     if (v1 != 0) {
         return v1[(a0->tbl68 + a1)->h[a2]].h0;
@@ -19572,7 +19572,7 @@ unsigned short PolyShape_func_0005330C(Tbls_5330C *a0, int a1, int a2) {
  * table entries). Shape: idx = u16 at (a0->0x68 + a1*8 + a2*2 + 2); if table B
  * (a0->0x70) non-null, idx = u16 at (B + idx*6); returns a0->0x58 + idx*12.
  * Both arms duplicate the full computation (distinct $t numbering per arm). */
-s32 PolyShape_func_00053368(void *a0, int a1, int a2) {
+s32 PolyShape_getFaceNormal(void *a0, int a1, int a2) {
     int tabB = *(int *)((char *)a0 + 0x70);
     if (tabB != 0) {
         return *(unsigned short *)(tabB +
@@ -20791,7 +20791,7 @@ void nodelist_cmdSkinShape_0005532C(void) {
     gl_func_00000000(buf);
 }
 
-/* nodelist_func_0005534C: 73-insn (0x124) function-pointer iterator + small leaf.
+/* nodelist_walk_0005534C: 73-insn (0x124) function-pointer iterator + small leaf.
  *
  * BUNDLE NOTE: 2 functions, 38 + 35 insns. Splat couldn't separate (no
  * prologue on the 2nd; per feedback_uso_split_fragments_breaks_expected_match.md
@@ -20833,7 +20833,7 @@ void nodelist_cmdSkinShape_0005532C(void) {
  * placeholder (the cursor step is an inline member `int next() { return
  * *(*pp)++; }`, kit LXIII). The placeholder only reserves the 39-word slot;
  * the splice drops its text. */
-void nodelist_func_0005534C(char *arg0) {
+void nodelist_walk_0005534C(char *arg0) {
     volatile int *p = (volatile int *)arg0;
     p[0] = 0;
     p[1] = 0;
@@ -20952,7 +20952,7 @@ void nodelist_dispatch(int *s) {
  * reproducible from standard varargs C without intrinsics).
  */
 /* 2026-10-17 agent-g (run 105) 76.5 -> 97.6: same by-value St5534C
- * parameter shape as nodelist_func_0005534C (no leading fp call). Residual is
+ * parameter shape as nodelist_walk_0005534C (no leading fp call). Residual is
  * the same v0/v1 swap (p in v0, target v1); post-increment, a named pp
  * copy and dead while(0) appearances do not move it. */
 /* EXACT 2026-10-23 (agent-g run 142) via an IDO 7.1 NCC (C++) donor:
@@ -23959,13 +23959,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Mem_dumpStats);
 #endif
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0005B90C_pad.s")
 
-/* math_func_0005BAF4: transpose the 3x3 rotation of m (m[j][i] -> r[i-1][j-1],
+/* math_mtx4ConvertLayout_0005BAF4: transpose the 3x3 rotation of m (m[j][i] -> r[i-1][j-1],
  * 1-based loops), take m[0][1..3] as the translation row, set the
  * homogeneous column, and pass r on with m. 2026-10-17 agent-g (run 105)
  * 58.9 -> EXACT on the first compile with the natural loops and the
  * scalars declared before the arrays (the matrix-family rule). */
 extern int gl_func_00000000();
-void math_func_0005BAF4(f32 (*m)[4]) {
+void math_mtx4ConvertLayout_0005BAF4(f32 (*m)[4]) {
     s32 i, j;
     f32 v[3];
     f32 r[4][4];
@@ -24238,14 +24238,14 @@ float math_det2x2(float a, float b, float c, float d) {
     return a * d - b * c;
 }
 
-/* math_func_0005C4F0: 22-insn 3-float-neg-copy + 1+3 init pattern.
+/* math_xformInitInverse_0005C4F0: 22-insn 3-float-neg-copy + 1+3 init pattern.
  *   a1[0..2] = -(a2, a3, a4)   (3 negated floats)
  *   a0[0] = 1.0f;
  *   for (i = 1; i < 4; i++) a0[i] = 0.0f;
  *
  * Byte-exact 2026-05-27 via float-typed-args sig (mtc1 a2/a3, $f12/$f14
  * at entry; lwc1 sp+0x10 for 5th arg per O32 stack-args convention). */
-void math_func_0005C4F0(float *a0, float *a1, float a2, float a3, float a4) {
+void math_xformInitInverse_0005C4F0(float *a0, float *a1, float a2, float a3, float a4) {
     int i;
     a1[0] = -a2;
     a1[1] = -a3;
@@ -24418,7 +24418,7 @@ void math_mtx4MulVec3(float *v, float *m) {
     v[2] = c;
 }
 
-/* math_func_0005C948 (0x74, 29 words): the 6-word math_func_0005C948
+/* math_vec3Cross (0x74, 29 words): the 6-word math_vec3Cross
  * orphan + gl_func_0005C960 are ONE function -- bootup.uso Sym exports text
  * 0x70FB4 (= splat 0x5C948); 0x5C960 is not exported/referenced. The old
  * "CALLER-SET-FPU cap: 8 FPU inputs at entry, inlined from hand-written asm"
@@ -24432,7 +24432,7 @@ void math_mtx4MulVec3(float *v, float *m) {
  * three result stores must sit on ONE source line (uopt keeps the y-before-x
  * store order only then; separate lines emit x, y, z). */
 typedef struct { float x, y, z; } Vec3_5C948;
-void math_func_0005C948(Vec3_5C948 *a, Vec3_5C948 *b, Vec3_5C948 *o) {
+void math_vec3Cross(Vec3_5C948 *a, Vec3_5C948 *b, Vec3_5C948 *o) {
     float z, y, x;
 
     x = a->y * b->z - a->z * b->y;
@@ -24537,7 +24537,7 @@ void math_planeFrom3Points(Plane_5CB68 *pl, Vec3_5CB68 *a, Vec3_5CB68 *b, Vec3_5
     pl->d = pl->n.x * a->x + pl->n.y * a->y + pl->n.z * a->z;
 }
 
-void math_func_0005CCC4(float *a0, float *a1) {
+void math_quatConjugate(float *a0, float *a1) {
     a1[0] = -a0[0];
     a1[1] = -a0[1];
     a1[2] = -a0[2];
@@ -24643,7 +24643,7 @@ void math_quatMul(float *a0, float *a1, float *a2) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_5D134.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 137). The cfe body
  * capped at 96.5 (23 raw): quaternion rotate about axis i by (c, s). */
-void math_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
+void math_quatRotateAxis(f32 *q, f32 c, f32 s, s32 i) {
 }
 
 /* math_quatToMtx3 (0x114, 69 words): the 7-word math_quatToMtx3
@@ -24738,7 +24738,7 @@ void math_eulerToQuat(float *out, float ax, float ay, float az)
     gl_func_00000000(q, out, out);
 }
 
-/* math_func_0005D414: three callbacks over the (x, y, z) floats -- EXACT
+/* math_vec3RotateEuler: three callbacks over the (x, y, z) floats -- EXACT
  * 2026-10-15 agent-c (1.9 -> 100). The floats are prototyped params that
  * arrive in a1..a3 because the first param is a pointer: x is used straight
  * from a1 (mtc1), y and z from their stack homes (lwc1 40/44(sp)). The
@@ -24747,7 +24747,7 @@ void math_eulerToQuat(float *out, float ax, float ay, float az)
  * with 0 args were a misread of that register layout. Blank alias
  * gl_func_00000000_d414 (pinned 0). */
 extern void gl_func_00000000_d414(float t, int *a, int *b);
-void math_func_0005D414(int *a0, float x, float y, float z) {
+void math_vec3RotateEuler(int *a0, float x, float y, float z) {
     gl_func_00000000_d414(x, a0 + 2, a0 + 1);
     gl_func_00000000_d414(y, a0, a0 + 2);
     gl_func_00000000_d414(z, a0, a0 + 1);
@@ -24873,7 +24873,7 @@ void math_quatSplitSwing(Quat_5D628 *q, Vec3f_5D628 *a, Vec3f_5D628 *b) {
     }
 }
 
-/* math_func_0005D754 -- MERGED 2026-09-09 (agent-c): the 3-word orphan
+/* math_quatScaleToMtx4 -- MERGED 2026-09-09 (agent-c): the 3-word orphan
  * `lui at,0x4000; mtc1 at,$f4; lwc1 $f2,0x1C(a0)` was the hoisted 2.0f
  * constant + first quaternion load of gl_func_0005D760 (splat mis-split;
  * 0x5D754 IS the export, sym1703, jal'd from text 0x4DF6C/0x4DFDC/0x548F4/
@@ -24898,7 +24898,7 @@ typedef struct {
     float w10, w14;
     float qx, qy, qz, qw; /* 0x18 quaternion */
 } Xform5D754;
-void math_func_0005D754(Xform5D754 *o, float m[4][4]) {
+void math_quatScaleToMtx4(Xform5D754 *o, float m[4][4]) {
     float yy = TWO_5D754 * o->qy * o->qy;
     float zz = TWO_5D754 * o->qz * o->qz;
     float xx = TWO_5D754 * o->qx * o->qx;
@@ -25020,7 +25020,7 @@ void math_mtxRotateAngle_0005DB00(int a0, int a1, float a2) {
     gl_func_00000000_5db00c(a0, a1, r1, r2);
 }
 
-/* math_func_0005DB58: EXACT (0x58 / 22 words). r = sqrt-slot(x*x + z*z) of the
+/* math_mtxRotatePitchToDir: EXACT (0x58 / 22 words). r = sqrt-slot(x*x + z*z) of the
  * Vec3 at a2, then a 4-arg cross-module call (a0, a1, r, a2->y bits). The old
  * "K&R float call unmatchable" cap is lifted by prototyped blank aliases pinned
  * at 0: gl_func_00000000_5db58a is (float)->float (f12 in, f0 out, still a
@@ -25030,7 +25030,7 @@ void math_mtxRotateAngle_0005DB00(int a0, int a1, float a2) {
  * docs/IDO_CODEGEN.md#vec3-sqlen-named-temps-5bd80. */
 extern float gl_func_00000000_5db58a(float);
 extern void gl_func_00000000_5db58b(int, int, float, int);
-void math_func_0005DB58(int a0, int a1, float *a2) {
+void math_mtxRotatePitchToDir(int a0, int a1, float *a2) {
     float x = a2[0], z = a2[2];
     gl_func_00000000_5db58b(a0, a1, gl_func_00000000_5db58a(x * x + z * z), *((int*)a2 + 1));
 }
@@ -25770,7 +25770,7 @@ void math_rotateF(f32 mf[4][4], f32 *axis, f32 angle) {
     mf[3][3] = 1;
 }
 
-void math_func_0005F27C(f32 *d, f32 *b, f32 *c) {
+void math_mtxPlanarShadow(f32 *d, f32 *b, f32 *c) {
     d[0] = -c[2] * b[2] + b[1] * -c[1];
     d[1] = b[1] * c[0];
     d[2] = b[2] * c[0];
@@ -25855,7 +25855,7 @@ void math_lookAtF(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, 
 /* 2026-10-23 agent-g (run 137): the NM comparison object uses an IDO 7.1 NCC donor,
  * src/game_libs/game_libs_ncc_5F984_nm.cpp (this body recompiled under NCC: 85.1 -> 88.2). */
 #ifdef NON_MATCHING
-/* math_func_0005F984: rotate matrix m about axis (x,y,z) (optionally taken
+/* math_mtxRotateByVector: rotate matrix m about axis (x,y,z) (optionally taken
  * through rot's upper 3x3 first): len = sqrtf(|v|^2); len==0 -> (flag ?
  * copy(m, rot) : nothing). Else h = sqrtf(100^2 + len^2), axis = -(y,x,z)/len,
  * build R = rotation(axis, sin = len/h, cos = 100/h) (placeholder call), then
@@ -25870,7 +25870,7 @@ typedef struct { f32 x, y, z; } V3_5F984;
 extern f32 gl_func_00000000_sqrt5F984(f32);
 extern void gl_func_00000000_rot5F984(f32 (*)[4], V3_5F984 *, f32, f32);
 extern int gl_func_00000000();
-void math_func_0005F984(register f32 (*m)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {
+void math_mtxRotateByVector(register f32 (*m)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {
     f32 R[4][4];
     f32 len;
     V3_5F984 v;
@@ -25918,7 +25918,7 @@ void math_func_0005F984(register f32 (*m)[4], f32 (*rot)[4], f32 x, f32 y, f32 z
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", math_func_0005F984);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", math_mtxRotateByVector);
 #endif
 
 /* 4x4 matrix load from a flat float stream: the post-increment read through a
@@ -26493,9 +26493,9 @@ end:
     return arg0;
 }
 
-void TextWin_func_000607FC(int *a0) { *(int*)((char*)a0 + 0x34) ^= 0x1; }
+void TextWin_toggleFlag34(int *a0) { *(int*)((char*)a0 + 0x34) ^= 0x1; }
 
-void ConsoleMgr_func_0006080C(int *a0) {
+void ConsoleMgr_scrollUp(int *a0) {
     int v = *(int*)((char*)a0 + 0x18);
     if (v > 0) {
         *(int*)((char*)a0 + 0x18) = v - 1;
@@ -26506,7 +26506,7 @@ void ConsoleMgr_func_0006080C(int *a0) {
 // under field 0x20. LANDED fuzzy=100. Historical INSN_PATCH (3/16,
 // register-exact reorder for t8<->t9 inner-compare-trio renumber) was
 // REMOVED 2026-05-23 as match-faking; function still lands.
-void ConsoleMgr_func_00060824(int *a0)
+void ConsoleMgr_scrollDown(int *a0)
 {
   if (a0[6] < (a0[3] - a0[5]))
   {
@@ -26518,14 +26518,14 @@ void ConsoleMgr_func_00060824(int *a0)
 }
 
 
-void ConsoleMgr_func_00060864(int *a0) {
+void ConsoleMgr_scrollLeft(int *a0) {
     int v = *(int*)((char*)a0 + 0x10);
     if (v > 0) {
         *(int*)((char*)a0 + 0x10) = v - 1;
     }
 }
 
-void ConsoleMgr_func_0006087C(int *a0) {
+void ConsoleMgr_scrollRight(int *a0) {
     int v = a0[4];
     if (v < a0[2] - a0[7]) {
         a0[4] = v + 1;
@@ -26662,7 +26662,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", TextWin_write);
 #endif
 
 
-/* TextWin_func_00060BD4 -- MERGED 2026-09-09 (agent-c): the 2-word orphan
+/* TextWin_newLine -- MERGED 2026-09-09 (agent-c): the 2-word orphan
  * `lw t6,0xC(a0); lw v0,0x20(a0)` was the hoisted count/cur head of
  * gl_func_00060BDC (splat mis-split; 0x60BD4 IS the export, sym2338, jal'd
  * from text 0x75198/0x751C8 = the two callbacks inside TextWin_write;
@@ -26673,7 +26673,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", TextWin_write);
  * filler): if there is a spare line below cur, bump cur; else rotate line 0
  * to the end (8-byte {buf,len} struct copies, index i + strength-reduced
  * i*8 in v1) and clear it. Then visible = cur - top + 1, clamped at 0.
- * Sibling of TextWin_func_00060CB8 (same {buf,len}[count] layout). */
+ * Sibling of TextWin_clear (same {buf,len}[count] layout). */
 typedef struct { char *buf; int len; } LineRec60BD4;
 typedef struct {
     LineRec60BD4 *recs;  /* 0x00 */
@@ -26686,7 +26686,7 @@ typedef struct {
     int w1c;             /* 0x1C */
     int cur;             /* 0x20 current line index */
 } LineBuf60BD4;
-void TextWin_func_00060BD4(LineBuf60BD4 *self) {
+void TextWin_newLine(LineBuf60BD4 *self) {
     int cur = self->cur;
     if (cur < self->count - 1) {
         self->cur = cur + 1;
@@ -26709,7 +26709,7 @@ void TextWin_func_00060BD4(LineBuf60BD4 *self) {
 // for each entry, clear the byte at *entry[0] and zero entry[1]; finally
 // a0->0x20 = 0. a0[0] is read inline (not a named local) so the base reloads
 // fresh for each access, matching the target's two lw a0->0 per iteration.
-void TextWin_func_00060CB8(int *a0) {
+void TextWin_clear(int *a0) {
     int i = 0;
     int off = 0;
     if (a0[3] > 0) {
@@ -26880,9 +26880,9 @@ end:
     a0[11] = cur;
 }
 
-void ConsoleMgr_func_00060FDC(int *a0) { *(int*)((char*)a0 + 0x2C) = *(int*)((char*)(*(int*)((char*)a0 + 0x2C)) + 0x38); }
+void ConsoleMgr_nextWin(int *a0) { *(int*)((char*)a0 + 0x2C) = *(int*)((char*)(*(int*)((char*)a0 + 0x2C)) + 0x38); }
 
-void ConsoleMgr_func_00060FEC(int *a0) { *(int*)((char*)a0 + 0x2C) = *(int*)((char*)(*(int*)((char*)a0 + 0x2C)) + 0x3C); }
+void ConsoleMgr_prevWin(int *a0) { *(int*)((char*)a0 + 0x2C) = *(int*)((char*)(*(int*)((char*)a0 + 0x2C)) + 0x3C); }
 
 /* Conditional flag set/clear on a0->0x18 bit 2. Merged: success-clear path
  * (61018: *p &= ~4) was splat-split off as game_libs_func_00061018, UNSHARED
@@ -26896,7 +26896,7 @@ void ConsoleMgr_setFlag_00060FFC(int *a0, int a1) {
     }
 }
 
-void ConsoleMgr_func_00061030(int *a0) { *(int*)((char*)a0 + 0x18) ^= 0x4; }
+void ConsoleMgr_toggleVisible(int *a0) { *(int*)((char*)a0 + 0x18) ^= 0x4; }
 
 /* Hex formatter: writes the 8 nibbles of arg1 (high first) as chars from the
  * hex LUT (&D_00000000), NUL-terminates, returns the end ptr. A plain rolled
@@ -26904,7 +26904,7 @@ void ConsoleMgr_func_00061030(int *a0) { *(int*)((char*)a0 + 0x18) ^= 0x4; }
  * -0x10, srav &0x1F wraparound gives v0+0x1C/0x18/0x14). The q-copy store form
  * (`q = arg0; arg0++; *q = ...`) gives the per-char `or v1,a0,zero` copies.
  * The 5 leading all-zero pad words (0x61040-0x61053) are the predecessor
- * ConsoleMgr_func_00061030's SUFFIX_BYTES_FORCE. */
+ * ConsoleMgr_toggleVisible's SUFFIX_BYTES_FORCE. */
 char *console_formatHex8(char *arg0, s32 arg1) {
     s32 i;
     char *q;
@@ -27296,7 +27296,7 @@ void console_createSystemWin(int *self) {
 
 extern int gl_func_00000000();
 
-void ConsoleDev_func_000619D4(int *a0) {
+void ConsoleDev_init(int *a0) {
     gl_func_00000000(50, 50);
     a0[0] = 0;
     a0[1] = 1;
@@ -27357,7 +27357,7 @@ void ConsoleDev_vfn3_00061B10(int a0, int a1) {
 /* two-global HALFWORD setter (*(short*)D_X=a0; *(short*)D_Y=a1) — `sh` stores.
  * Two distinct externs force the 2 luis. Reloc-blind base. No episode. */
 extern short D_61B1C_X, D_61B1C_Y;
-void ConsoleDev_func_00061B1C(int a0, int a1) {
+void ConsoleDev_setOrigin(int a0, int a1) {
     D_61B1C_X = a0;
     D_61B1C_Y = a1;
 }
@@ -27586,7 +27586,7 @@ typedef struct {
     int f18;
     int f1C;
 } GlFunc61F70Struct;
-void AnimDataMgr_func_00061F70(GlFunc61F70Struct *a0, int a1) {
+void AnimDataMgr_initEntry(GlFunc61F70Struct *a0, int a1) {
     a0->f1C = 0;
     a0->f00 = 0;
     a0->f02 = 0;
@@ -27693,7 +27693,7 @@ int AnimDataMgr_loadAsync_00062194(char *self, int a1, unsigned int a2, unsigned
 
 /* AnimDataMgr_wait_00062298: was 16-insn bundle. Split via split-fragments.py
  * 2026-05-08 into: parent AnimDataMgr_wait_00062298 (12 insns / 0x30, conditional
- * call) + AnimDataMgr_func_000622C8 (4 insns / 0x10, no-frame setter). */
+ * call) + AnimDataMgr_initPool (4 insns / 0x10, no-frame setter). */
 extern int gl_func_00000000();
 void AnimDataMgr_wait_00062298(int a0, int a1) {
     if (a1 != -1) {
@@ -27701,7 +27701,7 @@ void AnimDataMgr_wait_00062298(int a0, int a1) {
     }
 }
 
-void AnimDataMgr_func_000622C8(int *a0, int a1) {
+void AnimDataMgr_initPool(int *a0, int a1) {
     a0[1] = 0;
     a0[0] = 0;
     a0[2] = a1;
@@ -27774,7 +27774,7 @@ end:
     return (int)s2;
 }
 
-void AnimDataMgr_func_00062444(int *a0) {
+void AnimDataMgr_resetPool(int *a0) {
     int v0 = 0;
     int v1 = 0;
     if (a0[1] > 0) {
@@ -27833,7 +27833,7 @@ fail:
 }
 
 
-/* AnimDataMgr_func_000624EC: find the slot index whose (key1, key2) pair
+/* AnimDataMgr_findSlot: find the slot index whose (key1, key2) pair
  * matches, in the same 20-byte-entry table that AnimDataMgr_allocSlot allocates
  * from and AnimDataMgr_getSlot fills (entry[0x8] = key1, entry[0x4] = key2).
  * Returns the index or -1.
@@ -27867,7 +27867,7 @@ typedef struct {
     SlotEntry624EC *entries;
     int count;
 } SlotPool624EC;
-int AnimDataMgr_func_000624EC(SlotPool624EC *p, int key1, int key2) {
+int AnimDataMgr_findSlot(SlotPool624EC *p, int key1, int key2) {
     int i;
     SlotEntry624EC *e;
     int count;
@@ -27990,7 +27990,7 @@ int* AnimDataMgr_ctor(int *obj, int a1, int a2, int a3) {
 }
 
 extern int gl_func_00000000();
-int AnimDataMgr_func_000626EC(char *a0) {
+int AnimDataMgr_reset(char *a0) {
     return gl_func_00000000(a0 + 0x40);
 }
 

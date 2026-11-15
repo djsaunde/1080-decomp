@@ -4991,7 +4991,7 @@ void Snower_hostioParms(int *a0) {
  * %lo (account for %hi carry), not the flat extern. Reloc word →
  * INSN_PATCH-unsafe. One-word symbol-form cap; rest byte-exact. */
 
-void Snower_func_00008448(char *a0) {
+void Snower_saveData(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000(a0);
 }

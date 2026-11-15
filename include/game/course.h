@@ -85,7 +85,7 @@ typedef struct CourseItemTmpl {
 
 /* ---- race gates (game_libs RaceTracker_findGates) ----
  * Items of type "chk" (checkpoint) and "gtl" / "gtr" (the left / right gates of a fork) found by
- * ItemMgr_func_0003EAE0(itemMgr, type, pos, 0) nearest the rider's lastPos (SnowBoarder +0xDC).
+ * ItemMgr_queryType(itemMgr, type, pos, 0) nearest the rider's lastPos (SnowBoarder +0xDC).
  * RaceEntry.gate / gateA / gateB (include/gdl/race.h) point at them. Only the fields findGates /
  * RaceTracker_passCheckpoints read are named (agent-g run 485).
  * The course coordinate is world z: RaceTracker.courseZ / courseLength are the MapProp start.z (0xCC) and
