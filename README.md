@@ -41,6 +41,14 @@ Counts are from `report.json` (objdiff); units are grouped by source segment. Pu
 
 Matching notes (IDO codegen quirks, asm-shape patterns, the matching workflow, N64/USO forensics) live in the `docs/` directory of the [djsaunde/decomp](https://github.com/djsaunde/decomp) monorepo, not in this repo.
 
+## Readability status
+
+With every function matched, the current phase makes the source readable while keeping the ROM byte-identical: real names for functions and globals (`renames.tsv` is the ledger of every rename), shared struct headers in `include/game/` and `include/gdl/`, and raw `*(T *)(p + 0xNN)` accesses converted to fields wherever the bytes allow. Every change passes a gate that rebuilds the ROM and checks all 3,288 functions.
+
+Start with **`docs/1080_PORTING_GUIDE.md`** in the [djsaunde/decomp](https://github.com/djsaunde/decomp) monorepo. It covers the module architecture, the frame loop from `app_run` down to the rider physics, render and audio, a "where is X" index, the data formats, the N64-specific parts a port must replace, the naming and matching conventions, and the open questions. It links to the area docs: physics, camera, graphics, course, audio, system layer, modes, engine core, game classes and the USO format.
+
+Some of the source is deliberately unidiomatic, and the guide explains why: raw offsets left where a typed field would change codegen, `&D_00000000 + K` USO section-base accesses, `gl_func_00000000` cross-module calls, donor files spliced by `REPLACE_FUNC_BODY`, and `NON_MATCHING` reference bodies.
+
 ## Building
 
 Requires: `mips-linux-gnu` binutils, Python 3, IDO 7.1 and IDO 5.3 (ido-static-recomp), and the MIPSpro 7.2.1 front end (`tools/fetch-mipspro721.sh`).
