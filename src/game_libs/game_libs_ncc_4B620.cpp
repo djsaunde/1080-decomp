@@ -19,6 +19,7 @@
  * Left: appends 1-2 old count s3 (target s0), the loop's ++idx / ref temps s0<->s3, appends 5-6 g a1/v0.
  * agent-g run 366: EXACT -- spliced over the Sprite_ctor_0004B620 placeholder in both build trees (see the run-366
  * notes on set0 / curM() / satD() below). */
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern "C" {
 void *gl_func_00000000(...);
 extern char D_00000000[];
@@ -88,31 +89,31 @@ struct BB {
 struct Base : BB {
     Arr arr;            /* 0x84 */
     char pad94[0xB0 - 0x94];
-    float b0, b4, b8, bc;
-    short c0;
-    int c4;
-    float c8;
-    Base(void *a1) : BB(S(0x200FC), a1, 0) { c0 = 0; c4 = 0; b8 = 0.0f; bc = 0.0f; c8 = 0.0f; b0 = 1.0f; b4 = 1.0f; }
+    float scaleX, scaleY, unkB8, unkBC; /* sprite.h names (agent-b run 489; the "cc slot" in the notes = startDL) */
+    short unkC0;
+    int unkC4;
+    float unkC8;
+    Base(void *a1) : BB(S(0x200FC), a1, 0) { unkC0 = 0; unkC4 = 0; unkB8 = 0.0f; unkBC = 0.0f; unkC8 = 0.0f; scaleX = 1.0f; scaleY = 1.0f; } /* "sprite" */
 };
-struct Obj : Base {
-    DL *cc;
-    DL *d0;
-    int d4;
+struct Obj : Base {         /* Sprite (sprite.h) */
+    DL *startDL;            /* "SS StartDL" */
+    DL *endDL;              /* "SS EndDL" */
+    int unkD4;
     Obj(void *a1);
 };
 inline void g1(Elem *e) { if (0) { e = 0; } gl_func_00000000(e->m64); } /* run 173: the last per-element call through a kept parameter */
 Obj::Obj(void *a1) : Base(a1) {
-    *(char **)((char *)this + 0x28) = S(0);
-    d0 = 0;
-    d4 = 0;
-    cc = (DL *)gl_func_00000000(0, S(0x20104), 0x14, 0, 0, 0, 0);
-    addG(cc, 0xE7000000, 0);
-    cc->addOK(0xBA001402, 0);
-    cc->add(0xB9000201, 4);
-    cc->addE(0xBA000C02, 0x2000);
-    cc->adds(0xBA001301, 0); if (1) {}
-    cc->add(0xBB000001, 0x80008000);
-    gl_func_00000000(cc);
+    *(char **)((char *)this + 0x28) = Sprite_vtbl; /* Sym 1871 */
+    endDL = 0;
+    unkD4 = 0;
+    startDL = (DL *)gl_func_00000000(0, S(0x20104), 0x14, 0, 0, 0, 0); /* "SS StartDL" */
+    addG(startDL, 0xE7000000, 0);          /* G_RDPPIPESYNC */
+    startDL->addOK(0xBA001402, 0);         /* G_SETOTHERMODE_H cycle type: 1-cycle */
+    startDL->add(0xB9000201, 4);           /* G_SETOTHERMODE_L z source: G_ZS_PRIM */
+    startDL->addE(0xBA000C02, 0x2000);     /* texture filter: bilerp */
+    startDL->adds(0xBA001301, 0); if (1) {} /* texture persp: off */
+    startDL->add(0xBB000001, 0x80008000);  /* G_TEXTURE on */
+    gl_func_00000000(startDL);
     AIter it = arr.iter();
     while (it.next()) {
         /* agent-g run 292: the first two element accesses through zero-code accessors (kit CCLXXXIV grid over the
@@ -121,15 +122,15 @@ Obj::Obj(void *a1) : Base(a1) {
          * `it.` on the first two, kept identities (K3) on the last two `cur()`s -- all six appends and the frame
          * exact, the loop-bottom ?: temp back in a0: 99.822 -> 99.854; then the first / last reads through curM()
          * (99.935; left: the two ref() addresses in s3, target s0 = the appends' head slot) */
-        it.curM()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0);
+        it.curM()->m64 = (DL *)gl_func_00000000(0, S(0x20110), 0x14, 0, 0, 0, 0); /* "sprblock" */
         gl_func_00000000(AIter::satD(it.a, it.idx)->m64, &me(&it)->ref()->m34);
         gl_func_00000000(AIter::satD(it.a, it.idx)->m64, &me(&it)->ref()->m34);
         gl_func_00000000(it.cur()->m64, K3(&it)->cur(), 0);
         g1(it.curM());
     }
-    d0 = (DL *)gl_func_00000000(0, S(0x2011C), 0xA, 0, 0, 0, 0);
-    d0->add(0xBA001301, 0x80000);
-    d0->add(0xB9000201, 0);
-    d0->add(0xBB000000, 0x80008000);
-    gl_func_00000000(d0);
+    endDL = (DL *)gl_func_00000000(0, S(0x2011C), 0xA, 0, 0, 0, 0); /* "SS EndDL" */
+    endDL->add(0xBA001301, 0x80000);       /* texture persp: G_TP_PERSP */
+    endDL->add(0xB9000201, 0);             /* z source: G_ZS_PIXEL */
+    endDL->add(0xBB000000, 0x80008000);    /* G_TEXTURE off */
+    gl_func_00000000(endDL);
 }

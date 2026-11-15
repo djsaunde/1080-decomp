@@ -15,6 +15,7 @@
  * a1 one). 97.51 -> 99.78 -> 100.
  */
 typedef short s16; typedef unsigned int u32; typedef int s32;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern "C" {
 extern char D_00000000[];
 u32 gl_func_00000000(...);
@@ -24,7 +25,7 @@ struct DLHead { Gfx *buf; int count; };
 struct Ctx { char pad[0xC]; DLHead *dl; Gfx *at(int i) { if (0) { i = 0; } return &dl->buf[i]; }
     Gfx *at2(int i) { return &dl->buf[i]; } };
 struct GState { char pad[0x10C]; int lo; int hi; };
-#define GS (*(GState **)(D_00000000 + 0x254))
+#define GS (*(GState **)(gGfxLib + 0x254)) /* GfxLib current ScreenWindow (Sym 154) */
 #define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))
 #define gDPNoOp(pkt) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL(0xC0, 24, 8); _g->w1 = 0; }
 #define gDma1p(pkt, c, s, l, p) { Gfx *_g = (Gfx *)(pkt); _g->w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | _SHIFTL((l), 0, 16)); _g->w1 = (u32)(s); }

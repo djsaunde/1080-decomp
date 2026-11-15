@@ -28,6 +28,7 @@
  * No pool slot 7 is created before the loops, so the else g lands on vfp-124 (sp+228) = target. Symbols renamed
  * in the Makefile (names only): func_00000000 -> gl_func_00000000, D_00000000_i / _j -> D_48AEC_mt / gGfxLib_48AEC_src. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern "C" {
 extern char D_00000000[];
 extern int D_00000000_g, D_00000000_h, D_00000000_i, D_00000000_j;
@@ -106,7 +107,7 @@ template <class T> inline T I2(T v) { if (0) { v = 0; } return v; }
 inline void dZ1(void *z, Ctx *c, int n, Ctx *s) { n = (int)func_00000000(&c->dl->buf[n]); s->p6b(n, s->nextQ()); }
 inline void dY3(void *z, Ctx *c, int n, Ctx *s) { u32 t = (u32)func_00000000(&c->dl->buf[n]); Gfx *g = s->next(); g->w0 = 0x06000000; g->w1 = t; }
 struct GState { char pad[0x158]; Ctx *ctx; };
-#define GS (*(GState **)(D_00000000 + 0x254))
+#define GS (*(GState **)(gGfxLib + 0x254)) /* GfxLib current ScreenWindow (Sym 154) */
 struct Flags { int v; int test(int m) { return v & m; } }; /* agent-g run 417: plain (the run-209 folded use of v / kept m made v a uopt LR in v0; the target reads it into a ugen temp, t4) */
 struct Node { char pad[0x18]; Flags flags; char pad1c[2]; s16 m1e; };
 struct EBase {
@@ -156,7 +157,7 @@ void Obj::draw() {
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 1) {
         return;
     }
-    B = *(f32 (**)[4])(D_00000000 + 0xE4);
+    B = *(f32 (**)[4])(gGfxLib + 0xE4);
     A = (Ctx *)((char *)&D_00000000_j + 0xA0);
     if (B != 0) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}
         /* agent-g run 430: eight code-free blocks at the arm start (and no `0 * (int)B` fold in the else): B's LR
@@ -193,7 +194,7 @@ void Obj::draw() {
                 }
             }
         }
-    } else if (n14->flags.test(0x80) && *(s32 *)D_00000000 != 0) {
+    } else if (n14->flags.test(0x80) && *(s32 *)gGfxLib != 0) { /* GfxLib +0x0: gfx_setEvery4thFrameFlag */
         Gfx gbi = g34;
         gbi.w1 = (gbi.w1 & ~0xF00) | 0x400; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
         gbi.w1 = gbi.w1 & ~0x80000;

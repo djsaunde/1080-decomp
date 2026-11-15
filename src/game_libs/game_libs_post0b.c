@@ -15337,7 +15337,7 @@ typedef struct { Gfx4B *buf; int n; } GP4B;
 typedef struct { char pad[0xC]; GP4B *gfx; } Ctx4B;
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
-#define GS4B (*(char **)((char *)&D_00000000 + 0x254))
+#define GS4B (*(char **)((char *)&gGfxLib + 0x254))
 #define F4B(p, o, T) (*(T *)((char *)(p) + (o)))
 #define PKT4B(c) (cx = (c), gp = cx->gfx, gi = gp->n, gp->n = gi + 1, &cx->gfx->buf[gi])
 #ifndef MAX
@@ -15625,7 +15625,7 @@ extern int D_4C300_g8;
 extern int D_4C300_g9;
 extern int gl_func_00034458_4C300();
 typedef char *(*GP_0004C300)();
-#define G240_4C300 (*(char **)((char *)&D_00000000 + 0x240))
+#define G240_4C300 (*(char **)((char *)&gGfxLib + 0x240)) /* the main ScreenWindow */
 extern void gl_func_00034458_4C300v();
 void ScreenWindow_allocBuffers(ScreenWindow *self) {
     s32 sz;

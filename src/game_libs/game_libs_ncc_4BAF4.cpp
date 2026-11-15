@@ -11,6 +11,7 @@
  * merge copies in the scissor packets (run 157; all closed by run 405). Spliced into both build trees. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern "C" {
 extern int D_00000000;
 extern int gGfxLib_4BAF4_flags;
@@ -29,7 +30,7 @@ inline void put4B(Gfx4B *g, u32 hi, u32 lo) { g->w0 = hi; g->w1 = lo; }
 struct Ctx4B { char pad[0xC]; GP4B *gfx; Gfx4B *nextP(int n) { gfx->n = n + 1; return &gfx->buf[n]; } void dlS(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextP(gfx->n), 0x06000000, r); } int ex() { return (int)this; } Gfx4B *nQ4(int z0, int z1, int z2, int z3, int n) { gfx->n = n + 1; return &gfx->buf[n]; } void dW4(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nQ4((int)r, (int)r, (int)r, (int)r, gfx->n), 0x06000000, r); } void dM4(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nQ4((int)r, (int)r, (int)r, (int)r, gfx->n), 0x06000000, r); } int gt(int v, int c) { return v > c + (int)this; } void dlc(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextF(), 0x06000000, r); } void dlG(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(nextG(), 0x06000000, r); } void dlM(char *p) { u32 r = gl_func_00000000(*(int *)(p + 0x60)); put4B(me2(this)->nextG(), 0x06000000, r); } Gfx4B *next() { return &gfx->buf[gfx->n++]; } Gfx4B *nextF() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n]; } Gfx4B *nextG() { int n = gfx->n; gfx->n = n + 1; return &gfx->buf[n + 0 * n]; } void addG(u32 hi, u32 lo) { put4B(me2(this)->nextG(), hi, lo); } void addF(u32 hi, u32 lo) { put4B(me2(this)->nextF(), hi, lo); } Gfx4B *nextO() { return &this->gfx->buf[me2(me2(me2(me2(this))))->gfx->n++]; } void addO(u32 hi, u32 lo) { Gfx4B *g = nextO(); g->w0 = hi; g->w1 = lo; } void add(u32 hi, u32 lo) { Gfx4B *g = next(); g->w0 = hi; g->w1 = lo; } };
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
-#define GS4B (*(char **)((char *)&D_00000000 + 0x254))
+#define GS4B (*(char **)((char *)&gGfxLib + 0x254)) /* the current ScreenWindow (every D_00000000 site here is Sym 154) */
 #define F4B(p, o, T) (*(T *)((char *)(p) + (o)))
 template <class T> inline T *me(T *p) { return p; } /* agent-g run 296: zero-code accessor (kit CCLXXXIV) */
 #define PKT4B(c) ((c)->next())
