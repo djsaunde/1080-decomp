@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
-void light_func_00054D04(char *self, float *plane, Vec3 *out) {
+void light_setShadowMatrix_00054D04(char *self, float *plane, Vec3 *out) {
     Vec3 position;
     Vec3 direction;
     float nx, ny;

@@ -1897,8 +1897,8 @@ GAMELIBS_54E78_DONOR := build/src/game_libs/game_libs_ncc_54E78.cpp.o
 $(GAMELIBS_54E78_DONOR): src/game_libs/game_libs_ncc_54E78.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym reflect__3ObjFRC5Plane=light_func_00054E78 --redefine-sym ident__2M4Fv=gl_func_00000000 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_func_00054E78=$(GAMELIBS_54E78_DONOR)
+	$(OBJCOPY) --redefine-sym reflect__3ObjFRC5Plane=light_setMirrorMatrix_00054E78 --redefine-sym ident__2M4Fv=gl_func_00000000 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_setMirrorMatrix_00054E78=$(GAMELIBS_54E78_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54E78_DONOR)
 # 36F0C = real C++ `void FreeCam::update()` (agent-c run 177 lift); symbol renamed (name only). EXACT NCC donor over an empty placeholder
 # (agent-g run 219: const-ref setter values + the x store through an accessor-kept Cam * taken before w += pos). The donor-local
@@ -4036,10 +4036,10 @@ build/src/match_imports/BasePolyShape_genPointNormals.c.o: src/match_imports/Bas
 build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o: src/match_imports/BasePolyShape_genPointNormals.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/light_func_00054D04.c.o: src/match_imports/light_func_00054D04.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/light_setShadowMatrix_00054D04.c.o: src/match_imports/light_setShadowMatrix_00054D04.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/light_func_00054D04.c.o: src/match_imports/light_func_00054D04.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o: src/match_imports/light_setShadowMatrix_00054D04.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/Mem_dumpStats.c.o: src/match_imports/Mem_dumpStats.c src/match_imports/context_game_libs_post0b.h
@@ -4606,12 +4606,12 @@ build/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf: build/src/
 build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf: build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o scripts/match-origins-BasePolyShape_genPointNormals-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BasePolyShape_genPointNormals-nm.ld -e BasePolyShape_genPointNormals -o $@ $@.stripped.o
-build/src/match_imports/light_func_00054D04.c.o.linked.elf: build/src/match_imports/light_func_00054D04.c.o scripts/match-origins-light_func_00054D04.ld
+build/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf: build/src/match_imports/light_setShadowMatrix_00054D04.c.o scripts/match-origins-light_setShadowMatrix_00054D04.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-light_func_00054D04.ld -e light_func_00054D04 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/light_func_00054D04.c.o.linked.elf: build/non_matching/src/match_imports/light_func_00054D04.c.o scripts/match-origins-light_func_00054D04-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-light_setShadowMatrix_00054D04.ld -e light_setShadowMatrix_00054D04 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf: build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o scripts/match-origins-light_setShadowMatrix_00054D04-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-light_func_00054D04-nm.ld -e light_func_00054D04 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-light_setShadowMatrix_00054D04-nm.ld -e light_setShadowMatrix_00054D04 -o $@ $@.stripped.o
 build/src/match_imports/Mem_dumpStats.c.o.linked.elf: build/src/match_imports/Mem_dumpStats.c.o scripts/match-origins-Mem_dumpStats.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Mem_dumpStats.ld -e Mem_dumpStats -o $@ $@.stripped.o
@@ -5060,10 +5060,10 @@ build/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf.bound.elf: 
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BasePolyShape_genPointNormals.json $@
 build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf scripts/match-bindings-BasePolyShape_genPointNormals-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BasePolyShape_genPointNormals-nm.json $@
-build/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf: build/src/match_imports/light_func_00054D04.c.o.linked.elf scripts/match-bindings-light_func_00054D04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-light_func_00054D04.json $@
-build/non_matching/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/light_func_00054D04.c.o.linked.elf scripts/match-bindings-light_func_00054D04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-light_func_00054D04-nm.json $@
+build/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf: build/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf scripts/match-bindings-light_setShadowMatrix_00054D04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-light_setShadowMatrix_00054D04.json $@
+build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf scripts/match-bindings-light_setShadowMatrix_00054D04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-light_setShadowMatrix_00054D04-nm.json $@
 build/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf: build/src/match_imports/Mem_dumpStats.c.o.linked.elf scripts/match-bindings-Mem_dumpStats.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Mem_dumpStats.json $@
 build/non_matching/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Mem_dumpStats.c.o.linked.elf scripts/match-bindings-Mem_dumpStats-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5438,10 +5438,10 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BasePolyS
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BasePolyShape_genPointNormals.c scripts/match-bindings-BasePolyShape_genPointNormals.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BasePolyShape_genPointNormals=build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BasePolyShape_genPointNormals.c scripts/match-bindings-BasePolyShape_genPointNormals-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_func_00054D04=build/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/light_func_00054D04.c scripts/match-bindings-light_func_00054D04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_func_00054D04=build/non_matching/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/light_func_00054D04.c scripts/match-bindings-light_func_00054D04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_setShadowMatrix_00054D04=build/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/light_setShadowMatrix_00054D04.c scripts/match-bindings-light_setShadowMatrix_00054D04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_setShadowMatrix_00054D04=build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/light_setShadowMatrix_00054D04.c scripts/match-bindings-light_setShadowMatrix_00054D04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mem_dumpStats=build/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/Mem_dumpStats.c scripts/match-bindings-Mem_dumpStats.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mem_dumpStats=build/non_matching/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf
@@ -5844,10 +5844,10 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BasePolyShape_
 build/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/BasePolyShape_genPointNormals.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf
-build/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/light_func_00054D04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf
+build/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/light_setShadowMatrix_00054D04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf
 build/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/Mem_dumpStats.c.o.linked.elf.bound.elf

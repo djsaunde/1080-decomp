@@ -1,6 +1,6 @@
-nonmatching light_func_00054D04, 0x174
+nonmatching light_setShadowMatrix_00054D04, 0x174
 
-glabel light_func_00054D04
+glabel light_setShadowMatrix_00054D04
     /* E39DDC 00054D04 27BDFF90 */  .word 0x27BDFF90
     /* E39DE0 00054D08 AFA40070 */  .word 0xAFA40070
     /* E39DE4 00054D0C AFBF0014 */  .word 0xAFBF0014
@@ -94,4 +94,4 @@ glabel light_func_00054D04
     /* E39F44 00054E6C 27BD0070 */  .word 0x27BD0070
     /* E39F48 00054E70 03E00008 */  .word 0x03E00008
     /* E39F4C 00054E74 00000000 */  .word 0x00000000
-endlabel light_func_00054D04
+endlabel light_setShadowMatrix_00054D04

@@ -16982,11 +16982,11 @@ void gfx_listAppend_0004E214(char *a0) {
     gl_func_00000000(a0 + 0x18C);
 }
 
-void gfx_stub_0004E234(char *a0, int a1) {
+void gfx_setShadowLight(char *a0, int a1) {
     *(int*)(a0 + 0x190) = a1;
 }
 
-int gfx_stub_0004E23C(char *a0) {
+int gfx_getShadowLight(char *a0) {
     return *(int*)(a0 + 0x190);
 }
 
@@ -20355,7 +20355,7 @@ void LightTarget_hostioParms(int *self) {
 }
 
 #ifdef NON_MATCHING
-/* light_func_00054D04: if the subsystem is up, read the camera(?) position
+/* light_setShadowMatrix_00054D04: if the subsystem is up, read the camera(?) position
  * (obj+0xA0..0xA8) into a struct local, scale x/z by a RoData double and
  * offset y by a RoData float, negate (x -1.0f) into a Vec3 temp, pass the
  * cfront return-value copy to f3, optionally copy it out through the 3rd
@@ -20369,7 +20369,7 @@ void LightTarget_hostioParms(int *self) {
  * -1.0f materialised first here (target after the K2 load), and the out
  * param re-loaded into a2 in the beqz delay and re-homed. */
 typedef struct { f32 x, y, z; } V3_54D04;
-void light_func_00054D04(char *self, int arg1, V3_54D04 *out) {
+void light_setShadowMatrix_00054D04(char *self, int arg1, V3_54D04 *out) {
     V3_54D04 p;
     V3_54D04 v;
     s32 pad[4];
@@ -20406,7 +20406,7 @@ void light_func_00054D04(char *self, int arg1, V3_54D04 *out) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", light_func_00054D04);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", light_setShadowMatrix_00054D04);
 #endif
 
 #ifdef NON_MATCHING
@@ -20428,7 +20428,7 @@ typedef struct { V3_54E78 v; s32 pad[5]; } V3P20_54E78;
 typedef struct { V3_54E78 v; s32 pad[2]; } V3P8_54E78;
 #define QF54(o) (*(f32 *)((char *)arg1 + (o)))
 #define MF54(o) (*(f32 *)((char *)arg0 + (o)))
-void light_func_00054E78(char *arg0, char *arg1) {
+void light_setMirrorMatrix_00054E78(char *arg0, char *arg1) {
     volatile f32 w; /* run 179 */
     volatile f32 sp90;
     volatile f32 sp8C;
@@ -20518,7 +20518,7 @@ void gl_func_00054E78_old(char *arg0, char *arg1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_54E78.cpp (agent-c run 175 lift,
  * agent-g run 304 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-void light_func_00054E78(char *arg0, char *arg1) {
+void light_setMirrorMatrix_00054E78(char *arg0, char *arg1) {
 }
 #endif
 

@@ -1,6 +1,6 @@
-nonmatching light_func_00054E78, 0x228
+nonmatching light_setMirrorMatrix_00054E78, 0x228
 
-glabel light_func_00054E78
+glabel light_setMirrorMatrix_00054E78
     /* E39F50 00054E78 27BDFF68 */  .word 0x27BDFF68
     /* E39F54 00054E7C 00803025 */  .word 0x00803025
     /* E39F58 00054E80 AFBF0014 */  .word 0xAFBF0014
@@ -139,4 +139,4 @@ glabel light_func_00054E78
     /* E3A16C 00055094 AC2400E4 */  .word 0xAC2400E4
     /* E3A170 00055098 03E00008 */  .word 0x03E00008
     /* E3A174 0005509C 00000000 */  .word 0x00000000
-endlabel light_func_00054E78
+endlabel light_setMirrorMatrix_00054E78
