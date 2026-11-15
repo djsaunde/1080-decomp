@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gfx_func_00042778: normalised a2 + matrix column -> two fixed-point coordinates.
+/* IDO 7.1 NCC (C++) donor for gfx_calcHilite_00042778: normalised a2 + matrix column -> two fixed-point coordinates.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 /* (agent-c run 134) 42778 = Vec3 a2 + matrix column 2 of a1, normalised when
  * longer than 0.1 (double at RoData +0x1B30, read through D_00000000), then the
@@ -14,7 +14,7 @@
  * code instead. */
 typedef float f32; typedef double f64;
 extern "C" { extern int D_00000000; extern float gl_func_00000000_42778(float); }
-extern "C" void gfx_func_00042778(int *a0, float *a1, float *a2) {
+extern "C" void gfx_calcHilite_00042778(int *a0, float *a1, float *a2) {
     f32 len;
     f32 w, four, two;
     f32 pad[12];

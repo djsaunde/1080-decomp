@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gfx_func_000478FC (0x1B8 / 110 words): for every
+/* IDO 7.1 NCC (C++) donor for gfx_selectLights_000478FC (0x1B8 / 110 words): for every
  * child whose mask matches, mark it (flag 2), remember the 0x80 one, rebuild
  * its offset from the anchor when flag 0x40 is clear (count it, callee, dirty
  * = 1), then OR the dirty state into the owner and rescale when set; clear
@@ -19,7 +19,7 @@ struct Iter {
     Obj *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Own { char pad[0x18C]; Link *head; char pad190[4]; Obj *sel; char pad198[0xAC]; int any; int cnt; };
-extern "C" void gfx_func_000478FC(Own *ow, V3 *p, int mask, float k, int force) {
+extern "C" void gfx_selectLights_000478FC(Own *ow, V3 *p, int mask, float k, int force) {
     Iter it(ow->head);
     ow->any = 0;
     ow->cnt = 0;

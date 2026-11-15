@@ -14025,7 +14025,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer0ChannelParams_
 //   reloc-pad jal infra. Real-C STRUCTURAL body below per the
 //   analysis. Byte-match deferred. Name pre-checked: no extern reuse.
 /* CRACKED 2026-05-27 (byte-exact): same remove-local-and-recompute-inline
- * lever as gfx_func_0004E180. The `int cmd;` local made IDO spill cmd to
+ * lever as gfx_resetModelView_0004E180. The `int cmd;` local made IDO spill cmd to
  * sp+0x18 (lowest in-frame slot, pre-jal). Inlining the
  * `0x06000000|((op&0xFF)<<8)` recompute lets IDO CSE it AND schedule the
  * spill into the jal delay slot at sp+0x1C — matches target exactly.

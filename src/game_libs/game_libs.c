@@ -4382,7 +4382,7 @@ int *ColourItem_create_000088B4(int *arg0) {
 /* item_func_0003E9C0 split off from ItemMgr_func_0003E968 bundle 2026-05-08;
  * decompiled in game_libs_post.c. */
 
-/* gfx_func_00046048 split off from gfx_waitRetrace bundle 2026-05-08;
+/* gfx_emptyStub_00046048 split off from gfx_waitRetrace bundle 2026-05-08;
  * decompiled in game_libs_post.c. */
 
 /* RcpTask_ctor bundle split 2026-05-08; children INCLUDE_ASM live in

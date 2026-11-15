@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gfx_func_0004A9F0 (0xA0 / 40 words),
+/* IDO 7.1 NCC (C++) EXACT donor for MorphPoly_applyUpdateList_0004A9F0 (0xA0 / 40 words),
  * spliced over the empty placeholder in game_libs_post0b.c (both trees): copy
  * 3-byte source records (a1 + idx1 * 4) into grid cells (+0xC) of D+0x214's
  * grid at self->0xD4 + idx2, driven by a -1 terminated halfword stream.
@@ -20,7 +20,7 @@ struct Grid { Cell *cells; };
 struct G214 { char pad[0x1C]; Grid *grid; };
 struct Self { char pad[0xD4]; short base; void put(int i, char *src); };
 inline void Self::put(int i, char *src) { G214 *g = *(G214 **)((char *)&D_00000000 + 0x214); Cell *cell = &g->grid->cells[base] + i; cell->c[0] = *src++; cell->c[1] = *src++; cell->c[2] = *src; }
-extern "C" void gfx_func_0004A9F0(Self *self, char *a1, short *cursor) {
+extern "C" void MorphPoly_applyUpdateList_0004A9F0(Self *self, char *a1, short *cursor) {
     short idx1, idx2;
     while ((idx1 = *cursor++) != -1) {
         while ((idx2 = *cursor++) != -1) { self->put(idx2, a1 + idx1 * 4); if (1) {} }

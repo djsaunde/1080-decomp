@@ -1,0 +1,12 @@
+nonmatching gfx_loadIdentity_00047F48, 0x20
+
+glabel gfx_loadIdentity_00047F48
+    /* E2D020 00047F48 27BDFFE8 */  .word 0x27BDFFE8
+    /* E2D024 00047F4C AFBF0014 */  .word 0xAFBF0014
+    /* E2D028 00047F50 0C000000 */  .word 0x0C000000
+    /* E2D02C 00047F54 8C8400E0 */  .word 0x8C8400E0
+    /* E2D030 00047F58 8FBF0014 */  .word 0x8FBF0014
+    /* E2D034 00047F5C 27BD0018 */  .word 0x27BD0018
+    /* E2D038 00047F60 03E00008 */  .word 0x03E00008
+    /* E2D03C 00047F64 00000000 */  .word 0x00000000
+endlabel gfx_loadIdentity_00047F48

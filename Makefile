@@ -647,7 +647,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # 62F08 NM offset 0x2e27c + 0x50.
 # Re-probed 2026-10-17 agent-c (App_main NM decode, 112 vs 113 words): 0x2e494 -> 0x2e474.
 # Re-probed 2026-10-17 agent-c run 104 (coll_func_0003B01C / PolyShape_hostioParms stubs -> real decodes): 0x2e494 -> 0x2e654;
-# gfx_func_00046790 re-decode: 0x2e654 -> 0x2e694; agent-g run 103 math decodes: -> 0x2e674 -> 0x2e668 (54144 NM).
+# gfx_drawFbChar_00046790 re-decode: 0x2e654 -> 0x2e694; agent-g run 103 math decodes: -> 0x2e674 -> 0x2e668 (54144 NM).
 # Re-probed 2026-10-17 agent-c run 105 (Window_doCommand NM body -> donor splice): 0x2e668 -> 0x2e65c.
 # run 105 stub re-decodes (4E424 / 4E244): 0x2e65c -> 0x2e75c.
 # Window_func_00045178 tail re-decode: 0x2e75c -> 0x2e77c.
@@ -1864,12 +1864,12 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DF58_DONOR)
 # 4A9F0 = stream -> grid byte copier (NCC, frameless; agent-c run 133). EXACT NCC donor over an empty placeholder (agent-c run 217: inner-body `if (1) {}` + one-expression cell address).
 GAMELIBS_4A9F0_DONOR := build/src/game_libs/game_libs_ncc_4A9F0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_0004A9F0=$(GAMELIBS_4A9F0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += MorphPoly_applyUpdateList_0004A9F0=$(GAMELIBS_4A9F0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_DONOR)
 # 46790 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10).
 # agent-g run 305: EXACT NCC donor over a placeholder on both build paths (row offset as two shifts: ugen FIFO, kit CCCXCI; D_46790_g / D_46790_font pinned 0).
 GAMELIBS_46790_DONOR := build/src/game_libs/game_libs_ncc_46790.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00046790=$(GAMELIBS_46790_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_drawFbChar_00046790=$(GAMELIBS_46790_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_DONOR)
 # 3B6A0 = real C++ `int Obj::below()` (agent-c run 160; was the run-134 NCC C lift, cfe 65.26); symbol renamed (name only).
 # agent-c run 304: EXACT NCC donor over the placeholder on both build trees (the next-vertex table D_3B6A0_tbl pinned 0).
@@ -2210,7 +2210,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_DONOR)
 # 488A0 = line-list emitter (gSPVertex + G_LINE3D packets); NCC donor, EXACT (agent-c run 155: early-bit DL cursor d / n, c2 before the BB split).
 GAMELIBS_488A0_DONOR := build/src/game_libs/game_libs_ncc_488A0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_000488A0=$(GAMELIBS_488A0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitLineBatch_000488A0=$(GAMELIBS_488A0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_DONOR)
 # 34A78 = KSEG1 config-block install; the F6/F7 byte pair is one static object (shared lui at); NCC donor.
 # Its .bss reloc is renamed app_initSystem_bss by the splice (pinned to 0x3B8F6 in undefined_syms_auto.txt).
@@ -2328,7 +2328,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_37540_DONOR)
 # 42778 = normalised Vec3 -> fixed-point screen pair (len reused for the inverse, pad[12] frame words); NCC donor.
 GAMELIBS_42778_DONOR := build/src/game_libs/game_libs_ncc_42778.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00042778=$(GAMELIBS_42778_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_calcHilite_00042778=$(GAMELIBS_42778_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42778_DONOR)
 # 483BC = G_VTX + G_TRI1 packet emitter (488A0 struct form, early return, loop packet in its own h); NCC donor.
 GAMELIBS_483BC_DONOR := build/src/game_libs/game_libs_ncc_483BC.cpp.o
@@ -2429,11 +2429,11 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D2C8_DONOR)
 # 47F9C = child-list refresh: dirty flag on position change, copy the cached record ({cur, nxt} iterator, V3 class); NCC donor.
 GAMELIBS_47F9C_DONOR := build/src/game_libs/game_libs_ncc_47F9C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00047F9C=$(GAMELIBS_47F9C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_updateLights_00047F9C=$(GAMELIBS_47F9C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_47F9C_DONOR)
 # 478FC = child-list update: flag 2 by mask, rebuild offset vector, scale vector when dirty ({cur, nxt} iterator, Flags sub-object); NCC donor.
 GAMELIBS_478FC_DONOR := build/src/game_libs/game_libs_ncc_478FC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_000478FC=$(GAMELIBS_478FC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_selectLights_000478FC=$(GAMELIBS_478FC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_478FC_DONOR)
 # 40E90 = child-list transform refresh: copy or blend the cached record, then virtual slot 1 ({cur, nxt} iterator, first() wrapper); NCC donor.
 GAMELIBS_40E90_DONOR := build/src/game_libs/game_libs_ncc_40E90.cpp.o
@@ -2449,7 +2449,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3863C_DONOR)
 # 432BC = flagged-child transform: copy or negate src into dst, matrix-transform it between two callbacks ({cur, nxt} iterator, if-form next()); NCC donor.
 GAMELIBS_432BC_DONOR := build/src/game_libs/game_libs_ncc_432BC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_000432BC=$(GAMELIBS_432BC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_transformLightDirs_000432BC=$(GAMELIBS_432BC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_432BC_DONOR)
 # 38DC0 = child matrix refresh: for every flagged child either hand its matrix to a callback or multiply it by the owner's 4x4 ({cur, nxt} iterator, if/return next() + first(), dead if (n) {} in the j loop); NCC donor.
 GAMELIBS_38DC0_DONOR := build/src/game_libs/game_libs_ncc_38DC0.cpp.o
@@ -3970,10 +3970,10 @@ build/src/match_imports/QNode_display.c.o: src/match_imports/QNode_display.c src
 build/non_matching/src/match_imports/QNode_display.c.o: src/match_imports/QNode_display.c src/match_imports/context_game_libs_o2_40640.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gfx_func_00042684.c.o: src/match_imports/gfx_func_00042684.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gfx_func_00042684.c.o: src/match_imports/gfx_func_00042684.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/BaseMat_vslot4_000437C0.c.o: src/match_imports/BaseMat_vslot4_000437C0.c src/match_imports/context_game_libs_post0b.h
@@ -4000,16 +4000,16 @@ build/src/match_imports/GfxLib_reset.c.o: src/match_imports/GfxLib_reset.c src/m
 build/non_matching/src/match_imports/GfxLib_reset.c.o: src/match_imports/GfxLib_reset.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gfx_func_00045E20.c.o: src/match_imports/gfx_func_00045E20.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/gfx_setupMatTextures_00045E20.c.o: src/match_imports/gfx_setupMatTextures_00045E20.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gfx_func_00045E20.c.o: src/match_imports/gfx_func_00045E20.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o: src/match_imports/gfx_setupMatTextures_00045E20.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gfx_func_00046BC4.c.o: src/match_imports/gfx_func_00046BC4.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/gfx_beginView_00046BC4.c.o: src/match_imports/gfx_beginView_00046BC4.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gfx_func_00046BC4.c.o: src/match_imports/gfx_func_00046BC4.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o: src/match_imports/gfx_beginView_00046BC4.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/MorphPoly_update_4AAF0.c.o: src/match_imports/MorphPoly_update_4AAF0.c src/match_imports/context_game_libs_post0b.h
@@ -4540,12 +4540,12 @@ build/src/match_imports/QNode_display.c.o.linked.elf: build/src/match_imports/QN
 build/non_matching/src/match_imports/QNode_display.c.o.linked.elf: build/non_matching/src/match_imports/QNode_display.c.o scripts/match-origins-QNode_display-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-QNode_display-nm.ld -e QNode_display -o $@ $@.stripped.o
-build/src/match_imports/gfx_func_00042684.c.o.linked.elf: build/src/match_imports/gfx_func_00042684.c.o scripts/match-origins-gfx_func_00042684.ld
+build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf: build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o scripts/match-origins-gfx_emitStateAndPrimColour_00042684.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_func_00042684.ld -e gfx_func_00042684 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gfx_func_00042684.c.o.linked.elf: build/non_matching/src/match_imports/gfx_func_00042684.c.o scripts/match-origins-gfx_func_00042684-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_emitStateAndPrimColour_00042684.ld -e gfx_emitStateAndPrimColour_00042684 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf: build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o scripts/match-origins-gfx_emitStateAndPrimColour_00042684-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_func_00042684-nm.ld -e gfx_func_00042684 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_emitStateAndPrimColour_00042684-nm.ld -e gfx_emitStateAndPrimColour_00042684 -o $@ $@.stripped.o
 build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf: build/src/match_imports/BaseMat_vslot4_000437C0.c.o scripts/match-origins-BaseMat_vslot4_000437C0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_vslot4_000437C0.ld -e BaseMat_vslot4_000437C0 -o $@ $@.stripped.o
@@ -4570,18 +4570,18 @@ build/src/match_imports/GfxLib_reset.c.o.linked.elf: build/src/match_imports/Gfx
 build/non_matching/src/match_imports/GfxLib_reset.c.o.linked.elf: build/non_matching/src/match_imports/GfxLib_reset.c.o scripts/match-origins-GfxLib_reset-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-GfxLib_reset-nm.ld -e GfxLib_reset -o $@ $@.stripped.o
-build/src/match_imports/gfx_func_00045E20.c.o.linked.elf: build/src/match_imports/gfx_func_00045E20.c.o scripts/match-origins-gfx_func_00045E20.ld
+build/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf: build/src/match_imports/gfx_setupMatTextures_00045E20.c.o scripts/match-origins-gfx_setupMatTextures_00045E20.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_func_00045E20.ld -e gfx_func_00045E20 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gfx_func_00045E20.c.o.linked.elf: build/non_matching/src/match_imports/gfx_func_00045E20.c.o scripts/match-origins-gfx_func_00045E20-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_setupMatTextures_00045E20.ld -e gfx_setupMatTextures_00045E20 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf: build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o scripts/match-origins-gfx_setupMatTextures_00045E20-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_func_00045E20-nm.ld -e gfx_func_00045E20 -o $@ $@.stripped.o
-build/src/match_imports/gfx_func_00046BC4.c.o.linked.elf: build/src/match_imports/gfx_func_00046BC4.c.o scripts/match-origins-gfx_func_00046BC4.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_setupMatTextures_00045E20-nm.ld -e gfx_setupMatTextures_00045E20 -o $@ $@.stripped.o
+build/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf: build/src/match_imports/gfx_beginView_00046BC4.c.o scripts/match-origins-gfx_beginView_00046BC4.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_func_00046BC4.ld -e gfx_func_00046BC4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gfx_func_00046BC4.c.o.linked.elf: build/non_matching/src/match_imports/gfx_func_00046BC4.c.o scripts/match-origins-gfx_func_00046BC4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_beginView_00046BC4.ld -e gfx_beginView_00046BC4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf: build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o scripts/match-origins-gfx_beginView_00046BC4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_func_00046BC4-nm.ld -e gfx_func_00046BC4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_beginView_00046BC4-nm.ld -e gfx_beginView_00046BC4 -o $@ $@.stripped.o
 build/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf: build/src/match_imports/MorphPoly_update_4AAF0.c.o scripts/match-origins-MorphPoly_update_4AAF0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MorphPoly_update_4AAF0.ld -e MorphPoly_update_4AAF0 -o $@ $@.stripped.o
@@ -5016,10 +5016,10 @@ build/src/match_imports/QNode_display.c.o.linked.elf.bound.elf: build/src/match_
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-QNode_display.json $@
 build/non_matching/src/match_imports/QNode_display.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/QNode_display.c.o.linked.elf scripts/match-bindings-QNode_display-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-QNode_display-nm.json $@
-build/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_func_00042684.c.o.linked.elf scripts/match-bindings-gfx_func_00042684.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_func_00042684.json $@
-build/non_matching/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_func_00042684.c.o.linked.elf scripts/match-bindings-gfx_func_00042684-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_func_00042684-nm.json $@
+build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf scripts/match-bindings-gfx_emitStateAndPrimColour_00042684.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_emitStateAndPrimColour_00042684.json $@
+build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf scripts/match-bindings-gfx_emitStateAndPrimColour_00042684-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_emitStateAndPrimColour_00042684-nm.json $@
 build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf scripts/match-bindings-BaseMat_vslot4_000437C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_vslot4_000437C0.json $@
 build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5036,14 +5036,14 @@ build/src/match_imports/GfxLib_reset.c.o.linked.elf.bound.elf: build/src/match_i
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-GfxLib_reset.json $@
 build/non_matching/src/match_imports/GfxLib_reset.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/GfxLib_reset.c.o.linked.elf scripts/match-bindings-GfxLib_reset-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-GfxLib_reset-nm.json $@
-build/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_func_00045E20.c.o.linked.elf scripts/match-bindings-gfx_func_00045E20.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_func_00045E20.json $@
-build/non_matching/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_func_00045E20.c.o.linked.elf scripts/match-bindings-gfx_func_00045E20-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_func_00045E20-nm.json $@
-build/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_func_00046BC4.c.o.linked.elf scripts/match-bindings-gfx_func_00046BC4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_func_00046BC4.json $@
-build/non_matching/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_func_00046BC4.c.o.linked.elf scripts/match-bindings-gfx_func_00046BC4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_func_00046BC4-nm.json $@
+build/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf scripts/match-bindings-gfx_setupMatTextures_00045E20.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_setupMatTextures_00045E20.json $@
+build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf scripts/match-bindings-gfx_setupMatTextures_00045E20-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_setupMatTextures_00045E20-nm.json $@
+build/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf scripts/match-bindings-gfx_beginView_00046BC4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_beginView_00046BC4.json $@
+build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf scripts/match-bindings-gfx_beginView_00046BC4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_beginView_00046BC4-nm.json $@
 build/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf: build/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf scripts/match-bindings-MorphPoly_update_4AAF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MorphPoly_update_4AAF0.json $@
 build/non_matching/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf scripts/match-bindings-MorphPoly_update_4AAF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5394,10 +5394,10 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += QNode_dis
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/QNode_display.c scripts/match-bindings-QNode_display.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += QNode_display=build/non_matching/src/match_imports/QNode_display.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/QNode_display.c scripts/match-bindings-QNode_display-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00042684=build/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_func_00042684.c scripts/match-bindings-gfx_func_00042684.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00042684=build/non_matching/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_func_00042684.c scripts/match-bindings-gfx_func_00042684-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitStateAndPrimColour_00042684=build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c scripts/match-bindings-gfx_emitStateAndPrimColour_00042684.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitStateAndPrimColour_00042684=build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c scripts/match-bindings-gfx_emitStateAndPrimColour_00042684-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_vslot4_000437C0=build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_vslot4_000437C0.c scripts/match-bindings-BaseMat_vslot4_000437C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_vslot4_000437C0=build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
@@ -5414,14 +5414,14 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += GfxLib_re
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/GfxLib_reset.c scripts/match-bindings-GfxLib_reset.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += GfxLib_reset=build/non_matching/src/match_imports/GfxLib_reset.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/GfxLib_reset.c scripts/match-bindings-GfxLib_reset-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00045E20=build/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_func_00045E20.c scripts/match-bindings-gfx_func_00045E20.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00045E20=build/non_matching/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_func_00045E20.c scripts/match-bindings-gfx_func_00045E20-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00046BC4=build/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_func_00046BC4.c scripts/match-bindings-gfx_func_00046BC4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_func_00046BC4=build/non_matching/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_func_00046BC4.c scripts/match-bindings-gfx_func_00046BC4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_setupMatTextures_00045E20=build/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_setupMatTextures_00045E20.c scripts/match-bindings-gfx_setupMatTextures_00045E20.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_setupMatTextures_00045E20=build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_setupMatTextures_00045E20.c scripts/match-bindings-gfx_setupMatTextures_00045E20-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_beginView_00046BC4=build/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_beginView_00046BC4.c scripts/match-bindings-gfx_beginView_00046BC4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_beginView_00046BC4=build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_beginView_00046BC4.c scripts/match-bindings-gfx_beginView_00046BC4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += MorphPoly_update_4AAF0=build/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/MorphPoly_update_4AAF0.c scripts/match-bindings-MorphPoly_update_4AAF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += MorphPoly_update_4AAF0=build/non_matching/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf
@@ -5800,10 +5800,10 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/QNode_display.
 build/src/match_imports/QNode_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/QNode_display.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/QNode_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf
-build/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gfx_func_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf
+build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
 build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
@@ -5820,14 +5820,14 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/GfxLib_reset.c
 build/src/match_imports/GfxLib_reset.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/GfxLib_reset.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/GfxLib_reset.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf
-build/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gfx_func_00045E20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf
-build/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gfx_func_00046BC4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf
+build/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gfx_setupMatTextures_00045E20.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf
+build/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gfx_beginView_00046BC4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf
 build/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/MorphPoly_update_4AAF0.c.o.linked.elf.bound.elf

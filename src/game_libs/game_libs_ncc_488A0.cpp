@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gfx_func_000488A0 (EXACT, agent-c run 155): the NM C body lifted under NCC (agent-c run 134 sweep, cfe 81.4 -> NCC 98.6, 112 words = target). Run 136: the post-increment split `n = ctx->dl->count; ctx->dl->count = n + 1;` moves count to v1.
+/* IDO 7.1 NCC (C++) donor for gfx_emitLineBatch_000488A0 (EXACT, agent-c run 155): the NM C body lifted under NCC (agent-c run 134 sweep, cfe 81.4 -> NCC 98.6, 112 words = target). Run 136: the post-increment split `n = ctx->dl->count; ctx->dl->count = n + 1;` moves count to v1.
  * Run 155 (uopt dump, -Wo,-zdbug:5): ctx, n and the ctx->dl load all have adjsave 31.5, so they colour in
  * itab-bit order. A named DL cursor d plus a dead `while (0) { d = 0; n = 0; }` at the top gives d and n bits
  * before ctx (d -> v0, n -> v1, ctx -> a0 like the target). c2 is read before the `if (obj) {}` BB split so it
@@ -57,7 +57,7 @@ extern Vec3 vtx;
 extern f32 n[3];
 extern O3FC58 *obj;
 }
-extern "C" void gfx_func_000488A0(Obj488A0 *obj) {
+extern "C" void gfx_emitLineBatch_000488A0(Obj488A0 *obj) {
     Ctx488A0 *c2; Gfx488A0 *g; int i; Ctx488A0 *ctx; int n;
     DLBuf488A0 *d;
     while (0) { d = 0; n = 0; }
