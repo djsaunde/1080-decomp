@@ -4,7 +4,7 @@ extern s32 func_8000898C(s32, s32, s32);
 extern void func_800084D0(s32, s32);
 extern s32 func_80008BB4(s32);
 
-/* __rmonStepBreak */
+/* __rmonSetSingleStep (rmonbrk.c) */
 s32 __rmonSetSingleStep(s32 arg0, s32* arg1) {
     s32 result = func_8000898C(0, arg0, (s32)arg1);
     if (result & 3) {

@@ -11,7 +11,7 @@ typedef struct RmonThreadNode {
     s32 threadId;
 } RmonThreadNode;
 
-/* __rmonMaskIdleThreadInts — find free comm slot and configure it */
+/* __rmonGetTCB (rmontask.c): find the active thread with this id (0 if none) */
 void __rmonMaskIdleThreadInts(void) {
     register s32* node = (s32*)func_80009C30();
     while (node[1] != -1) {

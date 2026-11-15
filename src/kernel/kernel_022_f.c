@@ -73,7 +73,7 @@ extern OSEventState __osEventStateTab[];
 
 /* __rmonSetFRegisters split out to kernel_054.c (-O1) */
 
-/* rmon execute */
+/* rmonGetRcpRegister (rmonregs.c static) */
 s32 rmonGetRcpRegister(s32 a0) {
     s32 result;
     /* 2026-06-10 kernel-relayout: call with NO explicit arg (K&R decl;

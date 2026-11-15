@@ -1,6 +1,7 @@
 #include "common.h"
 
-/* 64-bit libgcc-style helpers. Compile at -O2 -mips3 so that IDO inlines the
+/* libultra libc/ll.c 64-bit helpers, named k___<name>: the plain names are
+ * the +0x400 runtime call alias pins (docs/USO_FORMAT.md section 1). Compile at -O2 -mips3 so that IDO inlines the
  * d-arithmetic instructions (dsrlv/dsllv/ddivu/dmultu/...) instead of
  * emitting `jal __ull_rshift` back to themselves.
  *
@@ -10,7 +11,7 @@ u64 k___ull_rshift(u64 a, u64 b) { return a >> b; }  /* __ull_rshift */
 u64 k___ull_rem(u64 a, u64 b) { return a % b; }   /* __ull_rem */
 u64 k___ull_div(u64 a, u64 b) { return a / b; }   /* __ull_div */
 u64 k___ll_lshift(u64 a, u64 b) { return a << b; }  /* __ll_lshift */
-u64 k___ll_rem(u64 a, u64 b) { return a % b; }   /* duplicate of A3C */
+u64 k___ll_rem(u64 a, u64 b) { return a % b; }   /* __ll_rem (unsigned left operand) */
 s64 k___ll_div(s64 a, s64 b) { return a / b; }   /* __ll_div */
 s64 k___ll_mul(s64 a, s64 b) { return a * b; }   /* __ll_mul */
 /* 64-bit-by-short divmod. Outputs *quot and *rem of (val / d) and

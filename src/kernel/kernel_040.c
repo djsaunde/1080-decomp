@@ -6,7 +6,7 @@ extern s32 D_8001FEF0;
 extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 
-/* __rmonSetBreak */
+/* SetTempBreakpoint (rmonbrk.c static) */
 void rmon_SetTempBreakpoint(s32* arg0, s32* arg1) {
     *((s32*)((char*)&rmonbrk_bss_0000 + 4)) = *arg0;
     *arg0 = 0x40D;

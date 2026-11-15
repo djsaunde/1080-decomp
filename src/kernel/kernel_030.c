@@ -5,7 +5,7 @@ extern void func_800073F8(void*, s32, s32);
 typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 id; } RmonHdr16;
 typedef struct { s32 pad0; u8 type; char pad5[7]; s32 id; } RmonMsg;
 
-/* __rmonListProcesses */
+/* __rmonSetFault (rmonmisc.c): rmon dispatchTable[10] */
 s32 __rmonSetFault(RmonMsg* msg) {
     RmonMsg* p = msg;
     RmonHdr16 hdr;

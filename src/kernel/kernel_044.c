@@ -6,7 +6,7 @@ extern s32 D_8001FF80;
 extern s32 D_8001FF84;
 extern s32 D_8001FF88;
 
-/* __rmonSaveRegs */
+/* SetUpForRCPop (rmonregs.c static): save SP DMEM/regs before an RCP register op */
 /* 2026-06-10 kernel-relayout: ROM fn starts at rmon_SetUpForRCPop (addiu included); ROM callers jal func_80008D4C (alt entry) - that name is a link-time absolute in undefined_syms_auto.txt. */
 void rmon_SetUpForRCPop(s32 extended) {
     D_8001FF80 = func_80006A98(0x04080000);

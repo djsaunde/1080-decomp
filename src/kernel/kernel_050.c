@@ -59,7 +59,7 @@ void __rmonIOputw(s32 arg0) {
     } while (totalRecv < 4);
 }
 
-/* __osRdb_ReadThread — forever-loop reading the debug read buffer. */
+/* __rmonIOhandler (rmonsio.c): rmon I/O thread, runs __rmonExecute per request. */
 void __rmonIOhandler(void) {
     s32 total;
     s32 buf;

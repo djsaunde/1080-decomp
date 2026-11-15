@@ -63,7 +63,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-/* __rmonWriteWordTo (unimplemented stub) */
+/* rmoncmds.c static NotImplemented: the dispatchTable filler, returns TV_ERROR_ILLEGAL_CALL */
 s32 rmon_NotImplemented(s32 arg0) {
     return -1;
 }

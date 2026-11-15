@@ -60,7 +60,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-/* __rmonWriteWordTo (unimplemented stub) */
+/* __rmonListBreak (rmonbrk.c): rmon dispatchTable[22], returns TV_ERROR_ILLEGAL_CALL */
 s32 __rmonListBreak(s32 arg0) {
     return -1;
 }

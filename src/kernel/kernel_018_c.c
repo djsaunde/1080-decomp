@@ -85,7 +85,7 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* __rmonWriteWordTo (unimplemented stub) */
+/* __rmonLoadProgram (rmonmem.c): rmon dispatchTable[0], returns TV_ERROR_ILLEGAL_CALL */
 s32 __rmonLoadProgram(s32 arg0) {
     return -1;
 }

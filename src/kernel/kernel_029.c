@@ -5,7 +5,7 @@ extern void func_800073F8(void*, s32, s32);
 typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 id; s32 count; } RmonHdr;
 typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
 
-/* __rmonWriteMem */
+/* __rmonGetRegionCount (rmonmem.c): rmon dispatchTable[12] */
 s32 __rmonGetRegionCount(RmonMsg* msg) {
     RmonMsg* p = msg;
     RmonHdr hdr;
@@ -21,7 +21,7 @@ s32 __rmonGetRegionCount(RmonMsg* msg) {
     return 0;
 }
 
-/* __rmonListRegisters — build register descriptor packet */
+/* __rmonGetRegions (rmonmem.c): rmon dispatchTable[13] */
 extern s32 __rmonUtilityBuffer;
 
 s32 __rmonGetRegions(char* msg) {

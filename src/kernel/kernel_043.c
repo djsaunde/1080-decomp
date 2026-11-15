@@ -2,7 +2,8 @@
 
 extern s32 func_800066F0(void*, s32, s32);
 
-/* __rmonSendData */
+/* __rmonSendHeader (rmonmain.c). Named k___rmonSendHeader: the plain name
+ * is the +0x400 runtime call alias (undefined_syms_auto.txt). */
 void k___rmonSendHeader(char* buf, s32 size, s32 domain) {
     s32 totalSent;
     char* p = buf;

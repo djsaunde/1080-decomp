@@ -63,7 +63,8 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-/* __rmonWriteWordTo (bitwise) */
+/* __osResetGlobalIntMask (os/resetglobalintmask.c). Named k___osResetGlobalIntMask:
+ * the plain name is the +0x400 runtime call alias (undefined_syms_auto.txt). */
 void k___osResetGlobalIntMask(s32 mask) {
     register s32 sr = func_800066B0();
     D_8000A3E0 &= ~(mask & ~0x401);

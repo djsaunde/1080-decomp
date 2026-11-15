@@ -6,7 +6,7 @@ extern void func_800073F8(void*, s32, s32);
 typedef struct { s32 pad0; u8 type; char pad5; s16 flags; s32 data[17]; } RmonBuf76;
 typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
 
-/* __rmonGetGRegisters */
+/* __rmonThreadStatus (rmontask.c): rmon dispatchTable[4] */
 s32 __rmonThreadStatus(RmonMsg* msg) {
     RmonMsg* p = msg;
     RmonBuf76 buf;

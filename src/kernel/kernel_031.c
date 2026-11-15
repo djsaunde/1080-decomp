@@ -5,7 +5,7 @@ extern void func_800073F8(void*, s32, s32);
 typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 pad12; } RmonAck;
 typedef struct { s32 pad0; u8 type; } RmonMsgSmall;
 
-/* __rmonSendAck */
+/* __rmonSetComm (rmonmisc.c): rmon dispatchTable[30] */
 s32 __rmonSetComm(RmonMsgSmall* msg) {
     RmonAck ack;
     ack.type = msg->type;

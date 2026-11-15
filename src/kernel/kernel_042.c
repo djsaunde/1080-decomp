@@ -15,7 +15,7 @@ extern s32 __osRdb_IP6_Ct;
 extern s32 __osRdb_IP6_CurWrite;
 extern s32 __osRdb_IP6_CurSend;
 
-/* __osRdb_IP6_Init */
+/* osInitRdb (ultralib os/initrdb.c) */
 void osInitRdb(s32 addr, u32 size) {
     s32 saveMask;
 

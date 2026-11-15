@@ -577,7 +577,7 @@ s32 uso_skip_to_end(FileState *file)
 }
 
 
-/* uso_file_check — always returns 1 (success) */
+/* uso_returnOne_800007C4: returns 1; no caller found in the ROM */
 s32 uso_returnOne_800007C4(s32 a0, s32 a1) {
     return 1;
 }
@@ -968,7 +968,8 @@ void* uso_getContext(void) {
     return &gUsoCtx;
 }
 
-/* uso_set_callbacks (no-op) */
+/* gUsoCtx dispatch stubs (uso_init fills the table): uso_nop_800010C0 is
+ * slot +144, uso_nullPrintf (varargs, spills a0-a3) slots +132/+136/+140. */
 void uso_nop_800010C0(s32 a0, s32 a1) {
 }
 
@@ -1146,7 +1147,7 @@ s32 fs_seek(s32* file, s32 whence, s32 offset) {
 void fs_closeFile(s32 arg0) {
 }
 
-/* uso_ret_zero — returns 0.0f */
+/* uso_returnZeroF_8000149C: returns 0.0f; gUsoCtx slot +148 */
 float uso_returnZeroF_8000149C(void) {
     return 0.0f;
 }
