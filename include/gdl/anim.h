@@ -149,7 +149,8 @@ typedef char AnimPose_size_check[sizeof(AnimPose) == 0x28 ? 1 : -1];
 
 /* Animator (0x130, "anim"; Animator_ctor 0x628EC (self, target, player, arg3, nodeIndex)):
  * binds one skeleton node to an AnimPlayer (appended to player->animators). anim_blendPose
- * writes dst, copies it to cur unless the mode is 2, then calls target's vtable slot 9. */
+ * writes dst, copies it to cur only when blendLeft < 2 (cur = the frozen blend-from pose while
+ * blending), then calls target's vtable slot 9. */
 typedef struct Animator {
     /* 0x000 */ Node node;
     /* 0x02C */ char pad02C[0x48 - 0x2C];
