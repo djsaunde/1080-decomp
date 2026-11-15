@@ -31,21 +31,7 @@ s32 __osIdCheckSum(u16 *ptr, u16 *csum, u16 *icsum)
  * words are 0x0C000000), so every callee is the gl_func_00000000 placeholder
  * (real identities: __osPfsSelectBank, __osContRamRead, __osContRamWrite,
  * osGetCount, __osIdCheckSum=__osIdCheckSum above). 262/262 words. */
-typedef struct {
-    int status;
-    void *queue;
-    int channel;
-    u8 id[32];
-    u8 label[32];
-    int version;
-    int dir_size;
-    int inode_table;
-    int minode_table;
-    int dir_table;
-    int inode_start_page;
-    u8 banks;
-    u8 activebank;
-} OSPfs;
+#include "libultra/os_cont.h" /* OSPfs (was a private copy) */
 
 typedef struct {
     u32 repaired;
