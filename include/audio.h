@@ -788,16 +788,18 @@ typedef struct SndHandle {
  *   snd_UpdateTimers. Those must keep the base symbol; SND_CUEQ_AT_BASE(D_00000000) is the view.
  * agent-c run 495. */
 typedef struct SndCueQueue {
-    char pad00[0x40];
-    s32 unk40;              /* 0x40..0x4C, 0x5C: cleared by snd_InitCueQueues */
-    s32 unk44;
-    s32 unk48;
-    s32 unk4C;
-    char pad50[0x5C - 0x50];
-    s32 unk5C;
-    s16 unk60;              /* snd_SetPlayer2ChannelIO_3190C reads +0x60 / +0x63 */
+    s32 ring[16];           /* 0x00: queued requests (snd_CueQueueSet_31754 = func 0x45DC0 pushes) */
+    s32 wr;                 /* 0x40: ring write index (snd_InitCueQueues clears 0x40..0x4C, 0x5C) */
+    s32 rd;                 /* 0x44: ring read index */
+    s32 timer;              /* 0x48 */
+    s32 unk4C;              /* 0x4C */
+    s32 script;             /* 0x50: the running cue script (halfword (cmd, wait) pairs) */
+    s32 mode;               /* 0x54 */
+    s32 limit;              /* 0x58 */
+    s32 pending;            /* 0x5C */
+    u16 cmd;                /* 0x60: snd_SetPlayer2ChannelIO_3190C reads +0x60 / +0x63 */
     s16 cue;                /* 0x62: queue index (snd_InitCueQueues), then the requested cue
-                             * (snd_SoundObjRequestCue); requests go to func 0x45DC0(queue, 1, id, 0x7F) */
+                             * (snd_SoundObjRequestCue) */
 } SndCueQueue;              /* 0x64 */
 
 typedef struct SndCueQueues {
@@ -815,6 +817,7 @@ typedef struct SndCueQueues {
     /* 0x30 */ SndCueQueue queue[3]; /* snd_RequestCue(i) = queue[i]; snd_RequestCue2 = queue[2] */
     char pad15C[0x160 - 0x15C];
 } SndCueQueues;
+AUDIO_ASSERT_MEMBER(SndCueQueue, pending, 0x5C);
 AUDIO_ASSERT_MEMBER(SndCueQueue, cue, 0x62);
 AUDIO_ASSERT_MEMBER(SndCueQueues, downStep, 0x1C);
 AUDIO_ASSERT_MEMBER(SndCueQueues, queue, 0x30);
