@@ -9,7 +9,7 @@
 # gl_exc_runqueue, D_00000000_runthread, D_00000000_gim, D_00000000_rcpim,
 # gl_func_00000000_popthr, gl_exc_destroythread (osDestroyThread).
 
-glabel game_libs_func_0006AD78
+glabel gl___osDispatchThread
     # __osDispatchThread: pop the run queue and make it the running thread
     lui     $a0, %hi(gl_exc_runqueue)     # __osRunQueue
     jal     gl_func_00000000_popthr       # __osPopThread
@@ -110,6 +110,6 @@ glabel game_libs_func_0006AD78
     # __osCleanupThread
     jal     gl_exc_destroythread          # osDestroyThread(NULL)
      or     $a0, $zero, $zero
-endlabel game_libs_func_0006AD78
+endlabel gl___osDispatchThread
     nop                                 # object alignment padding
     nop

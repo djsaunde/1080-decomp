@@ -6,7 +6,7 @@
  * builds -O2, so this is spliced into game_libs_post1b.c.o via
  * REPLACE_FUNC_BODY (real compiler output). Boundary fixed 2026-10-24
  * (agent-g run 158): the first two instructions used to sit at the end of
- * game_libs_func_0006AD78. */
+ * gl___osDispatchThread. */
 typedef struct GlDqThread_s { struct GlDqThread_s *next; } GlDqThread;
 
 void gl_func_0006AF0C(GlDqThread **queue, GlDqThread *t) {

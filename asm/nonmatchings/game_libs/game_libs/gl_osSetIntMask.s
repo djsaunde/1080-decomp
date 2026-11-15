@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006A09C, 0xA8
+nonmatching gl_osSetIntMask, 0xA8
 
-glabel game_libs_func_0006A09C
+glabel gl_osSetIntMask
     /* E4F174 0006A09C 00000000 */  .word 0x00000000
     /* E4F178 0006A0A0 00000000 */  .word 0x00000000
     /* E4F17C 0006A0A4 400C6000 */  .word 0x400C6000
@@ -43,4 +43,4 @@ glabel game_libs_func_0006A09C
     /* E4F210 0006A138 00000000 */  .word 0x00000000
     /* E4F214 0006A13C 03E00008 */  .word 0x03E00008
     /* E4F218 0006A140 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006A09C
+endlabel gl_osSetIntMask

@@ -9,7 +9,7 @@
  * guFrustum / guPosition wrapper bodies are byte-identical: Matrix mf at
  * sp+40, mtc1/mfc1 re-marshal of three float args, F-variant jal then
  * guMtxF2L). The old 84% NM decode ("Vec3-style float triple * D[0x24D0],
- * six game_libs_func_0006C400 calls") was this function: D[0x24D0] is the
+ * six gl_osWritebackDCache calls") was this function: D[0x24D0] is the
  * `dtor` float literal (rodata), the six calls are sinf/cosf (in-module
  * fsin 6A144 / fcos 70FCC, shipped as blank load-time relocs), and the
  * 3x3 rotation is roll/pitch/yaw with scale, row 3 = x/y/z/1.

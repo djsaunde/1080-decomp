@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006B048, 0xAC
+nonmatching gl_bzero, 0xAC
 
-glabel game_libs_func_0006B048
+glabel gl_bzero
     /* E50120 0006B048 00000000 */  .word 0x00000000
     /* E50124 0006B04C 00000000 */  .word 0x00000000
     /* E50128 0006B050 00000000 */  .word 0x00000000
@@ -44,4 +44,4 @@ glabel game_libs_func_0006B048
     /* E501C0 0006B0E8 03E00008 */  .word 0x03E00008
     /* E501C4 0006B0EC 00000000 */  .word 0x00000000
     /* E501C8 0006B0F0 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006B048
+endlabel gl_bzero

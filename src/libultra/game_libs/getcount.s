@@ -6,10 +6,10 @@
 # __osProbeTLB object, and ends after the jr: the delay-slot nop is the first
 # word of the following pad block (_pad_gl_func_0006D7CC sidecar).
 
-glabel game_libs_func_0006D94C
+glabel gl_osGetCount
     nop                                 # alignment padding (end of probetlb)
     nop
     # u32 osGetCount(void)
     mfc0    $v0, $9                    # v0 = C0_COUNT
     jr      $ra                         # (delay slot: next block's nop)
-endlabel game_libs_func_0006D94C
+endlabel gl_osGetCount

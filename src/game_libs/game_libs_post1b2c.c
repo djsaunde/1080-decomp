@@ -17,7 +17,7 @@ typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state
  * after gl_func_0006C384 was moved to its own -O1 unit
  * (game_libs_ido53_6C384.c). Same -O2 settings as the post1b2 head. */
 
-/* game_libs_func_0006C400 = libultra osWritebackDCache (os/
+/* gl_osWritebackDCache = libultra osWritebackDCache (os/
  * writebackdcache.s) -- HANDWRITTEN (cache 0x19 HIT_WRITEBACK_D loop,
  * 16-byte lines; the size>=0x2000 guard `bgeu a1,t3` branches to the
  * whole-cache label L_50 at 0x6C454: `li t0,KUSIZE; addu t1,t0,t3; addiu
@@ -31,7 +31,7 @@ typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state
  * kept in this `.s` because it sits at the unit start (re-homing it means
  * a cross-unit relayout). Not osWritebackDCacheAll (= game_libs_func_
  * 00074864). IDO C cannot emit the cache op; now real assembly source (below). */
-/* game_libs_func_0006C400 = osWritebackDCache (game_libs libultra copy): real source in src/libultra/game_libs/writebackdcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_osWritebackDCache = osWritebackDCache (game_libs libultra copy): real source in src/libultra/game_libs/writebackdcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/writebackdcache.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C384_pad.s")
 
@@ -52,7 +52,7 @@ GLOBAL_ASM("src/libultra/game_libs/writebackdcache.s")
 void gl_func_0006C484(void) {
 }
 
-/* game_libs_func_0006C714 = __ull_rshift (libgcc-style u64 >> u64, twin of the
+/* gl___ull_rshift = __ull_rshift (libgcc-style u64 >> u64, twin of the
  * kernel_056 family below). BOUNDARY FIX 2026-09-09 (twenty-sixth mis-split
  * case, docs/MATCHING_WORKFLOW #leading-nop-cap-is-inter-object-pad-sym-oracle-74844):
  * the old "game_libs_func_0006C710" symbol (0x30) carried a leading zero word;
@@ -63,35 +63,35 @@ void gl_func_0006C484(void) {
  * failure" case of #feedback-leading-nop-symbol-misplaced-on-pad; the suffix
  * shape (no sidecar) sidesteps it. Real C in the -O2 -mips3 donor
  * game_libs_mips3_6C740.c, spliced via REPLACE_FUNC_BODY (this TU is -mips2). */
-u64 game_libs_func_0006C714(u64 a, u64 b) { return a >> b; }  /* __ull_rshift */
+u64 gl___ull_rshift(u64 a, u64 b) { return a >> b; }  /* __ull_rshift */
 
 /* 64-bit libgcc helper family. LANDED 2026-06-21 as byte-identical TWIN-PORTs
  * of the matched kernel_056.c funcs (0 relocs, self-contained). Real C lives in
  * the donor unit game_libs_mips3_6C740.c (-O2 -mips3 so IDO inlines the
  * d-arithmetic); spliced in via REPLACE_FUNC_BODY because this TU is -mips2. */
-u64 game_libs_func_0006C740(u64 a, u64 b) { return a % b; }   /* __ull_rem  <- func_80002A3C */
+u64 gl___ull_rem(u64 a, u64 b) { return a % b; }   /* __ull_rem  <- func_80002A3C */
 
-u64 game_libs_func_0006C77C(u64 a, u64 b) { return a / b; }   /* __ull_div  <- func_80002A78 */
+u64 gl___ull_div(u64 a, u64 b) { return a / b; }   /* __ull_div  <- func_80002A78 */
 
-u64 game_libs_func_0006C7B8(u64 a, u64 b) { return a << b; }  /* __ll_lshift <- func_80002AB4 */
+u64 gl___ll_lshift(u64 a, u64 b) { return a << b; }  /* __ll_lshift <- func_80002AB4 */
 
 /* __ull_rem (duplicate) <- kernel func_80002AE0. TWIN-PORT, donor game_libs_mips3_6C740.c. */
-u64 game_libs_func_0006C7E4(u64 a, u64 b) { return a % b; }
+u64 gl___ll_rem(u64 a, u64 b) { return a % b; }
 
-s64 game_libs_func_0006C820(s64 a, s64 b) { return a / b; }   /* __ll_div   <- func_80002B1C */
+s64 gl___ll_div(s64 a, s64 b) { return a / b; }   /* __ll_div   <- func_80002B1C */
 
-s64 game_libs_func_0006C87C(s64 a, s64 b) { return a * b; }   /* __ll_mul   <- func_80002B78 */
+s64 gl___ll_mul(s64 a, s64 b) { return a * b; }   /* __ll_mul   <- func_80002B78 */
 
 /* 64-bit-by-short divmod. LANDED 2026-06-21 as a byte-identical TWIN-PORT of
  * kernel func_80002BA8 (kernel_056): same 0x60-byte ddivu body, no relocs.
  * Needs -O1 -mips3, which this -O2/-mips2 TU can't use, so the -O1 -mips3
  * donor (game_libs_o1_6C8AC.c) is spliced in via REPLACE_FUNC_BODY. */
-void game_libs_func_0006C8AC(u64 *quot, u64 *rem, u64 val, u16 d) {
+void gl___ull_divremi(u64 *quot, u64 *rem, u64 val, u16 d) {
     *quot = val / d;
     *rem = val % d;
 }
 
-/* gl_func_0006C90C: Euclidean (floored) signed 64-bit modulo. LANDED 2026-06-21
+/* gl___ll_mod: Euclidean (floored) signed 64-bit modulo. LANDED 2026-06-21
  * as a byte-identical TWIN-PORT of the matched kernel func_80002C08 (kernel_056):
  * identical 0x9c-byte ddiv body, no relocs. Needs -O1 -mips3 (keeps arg-homing,
  * 39 insns; the -O2 standalone form leaf-optimizes to 33 insns), which this
@@ -99,7 +99,7 @@ void game_libs_func_0006C8AC(u64 *quot, u64 *rem, u64 val, u16 d) {
  * spliced in via REPLACE_FUNC_BODY. The earlier "4 MIPS3 sub-function bundle /
  * 57 words" decode was a splat-oversize misread — the function is a single
  * 39-insn floored-mod. */
-long long gl_func_0006C90C(long long a, long long b) {
+long long gl___ll_mod(long long a, long long b) {
     long long r = a % b;
     if ((r < 0 && b > 0) || (r > 0 && b < 0)) r += b;
     return r;
@@ -107,16 +107,16 @@ long long gl_func_0006C90C(long long a, long long b) {
 
 
 /* __ll_rshift <- kernel func_80002CA4. TWIN-PORT, donor game_libs_mips3_6C740.c. */
-s64 game_libs_func_0006C9A8(s64 a, s64 b) { return a >> b; }
+s64 gl___ll_rshift(s64 a, s64 b) { return a >> b; }
 
-/* game_libs_func_0006C9D4 = __osSetSR (game_libs libultra copy): real source in src/libultra/game_libs/setsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osSetSR = __osSetSR (game_libs libultra copy): real source in src/libultra/game_libs/setsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/setsr.s")
 
-/* game_libs_func_0006C9E4: 3-insn `mfc0 v0, $12; jr ra; nop` Status-register
+/* gl___osGetSR: 3-insn `mfc0 v0, $12; jr ra; nop` Status-register
  * read. CP0 access (mfc0) is MIPS3 runtime — IDO C can't emit CP0 ops from
  * standard C. CAP class per reference_1080_mips3_runtime_helpers. Default
  * now real assembly source (below). */
-/* game_libs_func_0006C9E4 = __osGetSR (game_libs libultra copy): real source in src/libultra/game_libs/getsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osGetSR = __osGetSR (game_libs libultra copy): real source in src/libultra/game_libs/getsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/getsr.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C90C_pad.s")
 
@@ -347,17 +347,17 @@ void __osPfsGetInitData(unsigned char *pattern, void *data) {
     *pattern = 0;
 }
 
-/* game_libs_func_0006D894 = libultra __osProbeTLB (os/probetlb.s) --
+/* gl___osProbeTLB = libultra __osProbeTLB (os/probetlb.s) --
  * HANDWRITTEN, word-for-word the libreultra LEAF: mfc0 EntryHi / andi ASID /
  * mtc0 / tlbp / mfc0 Index / tlbr / PageMask + EntryLo0|1 select, with the
  * trapping `add v0,v0,t5` and the unfilled CP0 hazard nops (IDO never emits
  * either). Section 0x81F00 is 16-aligned (no inter-object pad in this .s;
- * the two zero words of game_libs_func_0006D94C are its trailing pad).
+ * the two zero words of gl_osGetCount are its trailing pad).
  * Identified 2026-09-09 (agent-g). Now real assembly source (below). */
-/* game_libs_func_0006D894 = __osProbeTLB (game_libs libultra copy): real source in src/libultra/game_libs/probetlb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osProbeTLB = __osProbeTLB (game_libs libultra copy): real source in src/libultra/game_libs/probetlb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/probetlb.s")
 
-/* game_libs_func_0006D94C = osGetCount (game_libs libultra copy): real source in src/libultra/game_libs/getcount.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_osGetCount = osGetCount (game_libs libultra copy): real source in src/libultra/game_libs/getcount.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/getcount.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006D7CC_pad.s")
 
@@ -702,7 +702,7 @@ void game_libs_func_0006F1FC(int m) {
     }
 }
 
-/* game_libs_func_0006F218 = libultra osCreateMesgQueue
+/* gl_osCreateMesgQueue = libultra osCreateMesgQueue
  * (os/createmesgqueue.c verbatim shape, IDO 5.3 -O1 donor:
  * game_libs_ido53_6F218.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice: 11/11 body words exact; the two blank hi/lo pairs =
@@ -713,14 +713,14 @@ void game_libs_func_0006F1FC(int m) {
  * 0x6F224, body 0x2C. Body below is a placeholder for the splice. */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/game_libs_func_0006F218_pad.s")
 
-void game_libs_func_0006F218(int *a0, int a1, int a2) {
+void gl_osCreateMesgQueue(int *a0, int a1, int a2) {
     volatile int ocmq_spliced = 0;
     if (a2 != 0) {
         ocmq_spliced = a2;
     }
 }
 
-/* game_libs_func_0006F254 = libultra osInvalICache (os/invalicache.s,
+/* gl_osInvalICache = libultra osInvalICache (os/invalicache.s,
  * HANDWRITTEN: `blez a1; li t3,0x4000 ICACHE_SIZE; bgeu a1,t3 -> label 3;
  * cache 0x10 HIT_INVALIDATE_I over 32-byte lines`; label 3 at 0x6F2A4 =
  * `li t0,KUSIZE; addu t1,t0,t3; addiu t1,-32; cache 0x0 INDEX_INVALIDATE_I
@@ -729,14 +729,14 @@ void game_libs_func_0006F218(int *a0, int a1, int a2) {
  * 0x80C68); 0x83910 (the old game_libs_func_0006F2A4 tail `.s`) is NOT
  * exported and has no baked jal -> one LEAF, MERGED here (0x80). The
  * leading zero word 0x6F250 (0x838BC, not exported) is osCreateMesgQueue's
- * (game_libs_func_0006F218) 16-byte object pad -> SUFFIX_BYTES_FORCE
- * game_libs_func_0006F218=0x00000000 in the Makefile; the three zero words
+ * (gl_osCreateMesgQueue) 16-byte object pad -> SUFFIX_BYTES_FORCE
+ * gl_osCreateMesgQueue=0x00000000 in the Makefile; the three zero words
  * 0x6F2C8..0x6F2D0 are THIS object's trailing pad (kept in the `.s`). Now
  * real assembly source (below). */
-/* game_libs_func_0006F254 = osInvalICache (game_libs libultra copy): real source in src/libultra/game_libs/invalicache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_osInvalICache = osInvalICache (game_libs libultra copy): real source in src/libultra/game_libs/invalicache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/invalicache.s")
 
-/* game_libs_func_0006F2D4 = libultra osInvalDCache (os/invaldcache.s,
+/* gl_osInvalDCache = libultra osInvalDCache (os/invaldcache.s,
  * HANDWRITTEN: `blez a1; li t3,0x2000 DCACHE_SIZE; bgeu a1,t3 -> label 4;
  * cache 0x15 HIT_WRITEBACK_INVALIDATE_D head/tail partial lines, cache 0x11
  * HIT_INVALIDATE_D loop; jr ra`; label 4 at 0x6F35C = `li t0,KUSIZE; addu
@@ -748,9 +748,9 @@ GLOBAL_ASM("src/libultra/game_libs/invalicache.s")
  * 0x839C8 (the old game_libs_func_0006F35C tail `.s`) is NOT exported, no
  * baked jal -> one LEAF, MERGED here (0xAC). The zero word at 0x6F380 is
  * this object's 16-byte pad before __osSpDeviceBusy (0x6F384 = 0x839F0 =
- * export sym 2524) = SUFFIX_BYTES_FORCE game_libs_func_0006F2D4=0x00000000
+ * export sym 2524) = SUFFIX_BYTES_FORCE gl_osInvalDCache=0x00000000
  * in the Makefile. Now real assembly source (below). */
-/* game_libs_func_0006F2D4 = osInvalDCache (game_libs libultra copy): real source in src/libultra/game_libs/invaldcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_osInvalDCache = osInvalDCache (game_libs libultra copy): real source in src/libultra/game_libs/invaldcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/invaldcache.s")
 
 /* gl_func_0006F38C = libultra __osSpDeviceBusy (sp.c verbatim):
@@ -760,7 +760,7 @@ GLOBAL_ASM("src/libultra/game_libs/invaldcache.s")
  * into a0 per the register hint, before the addiu-sp prologue; splat
  * split at the prologue). True entry = 0x6F384; spliced symbol covers
  * 0x6F384..0x6F3AC (pads 0x6F380 / 0x6F3B0 via SUFFIX_BYTES_FORCE on
- * game_libs_func_0006F2D4 = osInvalDCache / this symbol). This RETIRES the "sp=-8 frame
+ * gl_osInvalDCache = osInvalDCache / this symbol). This RETIRES the "sp=-8 frame
  * with no stack use has no C trigger" cap -- those sweeps probed the
  * split fragment as a standalone int-arg fn at -O2.
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
@@ -860,7 +860,7 @@ void gl_func_0006F634(void *frameBufPtr) {
  * game_libs_ido53_6F684.c (108/108 in-tree; 105/108 standalone, the three
  * reloc-addend words bake through the guPositionF_rodata / _bss
  * pins = 0x24D0 / 0x44030). The old 84% wrap ("Vec3-style float triple *
- * D[0x24D0], six game_libs_func_0006C400 calls") was this function: the
+ * D[0x24D0], six gl_osWritebackDCache calls") was this function: the
  * literal is `dtor` (pi/180), the six calls are sinf/cosf (fsin 6A144 /
  * fcos 70FCC, blank load-time relocs), and the D+0x44030 store is IDO -O3
  * writing the `static float dtor` initialiser back into .bss on entry.

@@ -77,7 +77,7 @@ void gl_func_00071304(void *mq, void *m, unsigned int retraceCount) {
     gl_func_00000000_rstint711(saveMask);
 }
 
-/* game_libs_func_00071370 = __osSetFpcCsr (game_libs libultra copy, + 1 leading pad word): handwritten cfc1/ctc1 assembly, real source in src/libultra/game_libs/setfpccsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osSetFpcCsr = __osSetFpcCsr (game_libs libultra copy, + 1 leading pad word): handwritten cfc1/ctc1 assembly, real source in src/libultra/game_libs/setfpccsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/setfpccsr.s")
 
 /* osPfsInitPak = libultra osPfsInitPak (io/pfsinitpak.c verbatim,

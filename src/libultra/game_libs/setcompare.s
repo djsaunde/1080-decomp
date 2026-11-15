@@ -5,9 +5,9 @@
 # Reference: references/oot/src/libultra/os/setcompare.s
 # void __osSetCompare(u32 value)
 
-glabel game_libs_func_00070314
+glabel gl___osSetCompare
     mtc0    $a0, $11                   # C0_COMPARE = value
     jr      $ra
      nop
-endlabel game_libs_func_00070314
+endlabel gl___osSetCompare
     nop                                 # object alignment padding

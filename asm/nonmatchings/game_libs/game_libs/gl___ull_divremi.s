@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006C8AC, 0x60
+nonmatching gl___ull_divremi, 0x60
 
-glabel game_libs_func_0006C8AC
+glabel gl___ull_divremi
     /* E51984 0006C8AC 87AF0012 */  .word 0x87AF0012
     /* E51988 0006C8B0 AFA60008 */  .word 0xAFA60008
     /* E5198C 0006C8B4 AFA7000C */  .word 0xAFA7000C
@@ -25,4 +25,4 @@ glabel game_libs_func_0006C8AC
     /* E519D8 0006C900 FCAD0000 */  .word 0xFCAD0000
     /* E519DC 0006C904 03E00008 */  .word 0x03E00008
     /* E519E0 0006C908 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006C8AC
+endlabel gl___ull_divremi

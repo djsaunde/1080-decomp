@@ -5,7 +5,7 @@
 # src/libultra/os/maptlbrdb.s.
 # splat's symbol starts with the 3 zero words that pad the preceding object.
 
-glabel game_libs_func_00073258
+glabel gl_osMapTLBRdb
     nop                                 # alignment padding (preceding object)
     nop
     nop
@@ -32,4 +32,4 @@ glabel game_libs_func_00073258
     mtc0    $t0, $10                    # restore C0_ENTRYHI
     jr      $ra
      nop
-endlabel game_libs_func_00073258
+endlabel gl_osMapTLBRdb

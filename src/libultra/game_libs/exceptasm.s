@@ -22,7 +22,7 @@
 # gl_exc_exception (__osException), gl_exc_send_mesg (send_mesg),
 # gl_exc_enqueuethread / gl_func_00000000_popthr / gl_exc_dispatchthread.
 
-glabel game_libs_func_0006A5F0
+glabel gl___osExceptionPreamble
     nop                                 # alignment padding (preceding object)
     # __osExceptionPreamble (copied to the exception vectors)
     lui     $k0, %hi(gl_exc_exception)   # __osException (USO load-time reloc)
@@ -532,4 +532,4 @@ glabel game_libs_func_0006A5F0
     sw      $a1, 0($t9)
     jr      $ra
      sw     $a0, 8($a1)
-endlabel game_libs_func_0006A5F0
+endlabel gl___osExceptionPreamble

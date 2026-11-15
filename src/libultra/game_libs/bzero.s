@@ -5,7 +5,7 @@
 # src/libultra/libc/bzero.s.
 # splat's symbol starts with the 3 zero words that pad the preceding object.
 
-glabel game_libs_func_0006B048
+glabel gl_bzero
     nop                                 # alignment padding (preceding object)
     nop
     nop
@@ -55,5 +55,5 @@ glabel game_libs_func_0006B048
 .Lgl_bzero_done:
     jr      $ra
      nop
-endlabel game_libs_func_0006B048
+endlabel gl_bzero
     nop                                 # object alignment padding

@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 -mips2 donor for game_libs_func_0006F218 = libultra
+/* IDO 5.3 -O1 -mips2 donor for gl_osCreateMesgQueue = libultra
  * osCreateMesgQueue (os/createmesgqueue.c verbatim shape). PROVEN
  * EXACT 2026-08-22: 11/11 body words identical at -O1 first compile.
  * The two lui/addiu pairs are both &__osThreadTail in libreultra; the
@@ -11,7 +11,7 @@
  * re-homed to the _pad_pre GLOBAL_ASM block in post1b2c; true entry =
  * 0x6F224, body 0x2C. os cluster: 6F17C memcpy, 6F1B0 strlen, 6F1D8
  * strchr, 6F218 osCreateMesgQueue, then handwritten cache fns.
- * POST_COMPILE renames osCreateMesgQueue -> game_libs_func_0006F218
+ * POST_COMPILE renames osCreateMesgQueue -> gl_osCreateMesgQueue
  * for the REPLACE_FUNC_BODY splice key. Spliced into
  * game_libs_post1b2c.c.o. */
 

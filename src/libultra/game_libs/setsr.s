@@ -4,9 +4,9 @@
 # Reference: references/oot/src/libultra/os/setsr.s; kernel copy
 # src/libultra/os/setsr.s.
 
-glabel game_libs_func_0006C9D4
+glabel gl___osSetSR
     mtc0    $a0, $12                   # C0_SR = value
     nop                                 # CP0 hazard
     jr      $ra
      nop
-endlabel game_libs_func_0006C9D4
+endlabel gl___osSetSR

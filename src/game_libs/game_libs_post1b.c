@@ -5422,7 +5422,7 @@ int gl_func_00069E04(OSMesgQueue_69E04 *mq, int msg, int flags) {
     return 0;
 }
 
-/* game_libs_func_00069F54 = libultra osViGetCurrentLine (io/vigetline.c
+/* gl_osViGetCurrentLine = libultra osViGetCurrentLine (io/vigetline.c
  * verbatim): `return IO_READ(VI_CURRENT_REG)` (0xA4400010). BOUNDARY FIX
  * 2026-09-09 (TWENTY-SIXTH mis-split case, docs/MATCHING_WORKFLOW
  * #leading-nop-cap-is-inter-object-pad-sym-oracle-74844): the old
@@ -5437,7 +5437,7 @@ int gl_func_00069E04(OSMesgQueue_69E04 *mq, int msg, int flags) {
  * as all-zero SUFFIX_BYTES_FORCE on gl_func_00069E04 and on this symbol
  * (post1b Makefile rule); no GLOBAL_ASM sidecar (a 1-word block emits 8
  * bytes and shifts the unit +4). 3/3 words at 7.1 -O2. */
-unsigned int game_libs_func_00069F54(void) {
+unsigned int gl_osViGetCurrentLine(void) {
     return *(volatile unsigned int *)0xA4400010;
 }
 
@@ -5475,7 +5475,7 @@ int gl_func_00069F64(OSMesgQueue_69F64 *mq, int **msg, int flags) {
     return 0;
 }
 
-/* game_libs_func_0006A09C = libultra osSetIntMask (game_libs copy; handwritten mfc0/mtc0 SR + MI_INTR_MASK): real source in src/libultra/game_libs/setintmask.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_osSetIntMask = libultra osSetIntMask (game_libs copy; handwritten mfc0/mtc0 SR + MI_INTR_MASK): real source in src/libultra/game_libs/setintmask.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/setintmask.s")
 
 /* fsin = libultra fsin/__sinf (libreultra gu/sinf.c
@@ -5611,31 +5611,31 @@ void gl_func_0006A5B0(int a0) {
     gl_func_00000000(293);
 }
 
-/* game_libs_func_0006A5F0 CLASSIFIED 2026-06-10: HANDWRITTEN exception-
+/* gl___osExceptionPreamble CLASSIFIED 2026-06-10: HANDWRITTEN exception-
  * handler code (the __osException family fingerprint): k0-register
  * trampolines (lui k0/addiu k0/jr k0) at the head, sd/ld 64-bit register
  * saves, 11 CP0 words (mfc0/mtc0), and dispatch tables 3 insns in.
  * Inexpressible in IDO C (reference_1080_mips3_runtime_helpers class):
  * Now real assembly source (below). */
-/* game_libs_func_0006A5F0 = __osExceptionPreamble + __osException (game_libs libultra copy): real source in src/libultra/game_libs/exceptasm.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osExceptionPreamble = __osExceptionPreamble + __osException (game_libs libultra copy): real source in src/libultra/game_libs/exceptasm.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/exceptasm.s")
 
-/* game_libs_func_0006AD68 = libultra __osPopThread (os/exceptasm.s) --
+/* gl___osPopThread = libultra __osPopThread (os/exceptasm.s) --
  * HANDWRITTEN assembly (LEAF in the exception-handler file; verified
  * against libreultra: lw v0,0(a0); lw t9,0(v0); jr ra; sw t9,0(a0)).
  * IDENTIFIED 2026-06-10: the old wrap ground 5 C variants chasing the
  * $t9 "allocator state" -- the t9 is simply the hand-written register
- * choice. The neighbor game_libs_func_0006AD78 is the exception
+ * choice. The neighbor gl___osDispatchThread is the exception
  * context-switch block from the same file (k-regs, ld/ldc1 GPR+FPR
  * restore, eret -- also handwritten). Now real assembly source (below);
  * reference-search-first would have caught this. */
-/* game_libs_func_0006AD68 = __osPopThread (game_libs libultra copy): real source in src/libultra/game_libs/popthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osPopThread = __osPopThread (game_libs libultra copy): real source in src/libultra/game_libs/popthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/popthread.s")
 
-/* game_libs_func_0006AD78 = the exception-handler context block from
+/* gl___osDispatchThread = the exception-handler context block from
  * os/exceptasm.s (HANDWRITTEN: mtc0/k-regs, full ld GPR + ldc1 FPR
  * restore, eret). Now real assembly source (below). */
-/* game_libs_func_0006AD78 = __osDispatchThread + __osCleanupThread (game_libs libultra copy): real source in src/libultra/game_libs/dispatchthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osDispatchThread = __osDispatchThread + __osCleanupThread (game_libs libultra copy): real source in src/libultra/game_libs/dispatchthread.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/dispatchthread.s")
 
 /* 14-insn linked-list traversal. Searches for `a1` in a list rooted at `a3`
@@ -5681,7 +5681,7 @@ GLOBAL_ASM("src/libultra/game_libs/dispatchthread.s")
 /* gl_func_0006AF0C = libultra __osDequeueThread (os/thread.c), compiled C at
  * -O1. BOUNDARY FIX 2026-10-24 (agent-g run 158): the function really starts
  * 8 bytes earlier -- its first two instructions (move a2,a0; lw a3,0(a2))
- * were the tail of the handwritten game_libs_func_0006AD78 -- so the old
+ * were the tail of the handwritten gl___osDispatchThread -- so the old
  * 14-insn fragment (fake a2/a3 parameters, -O1 -g3 levers) is now the whole
  * 16-insn function, matched by the plain libultra C at -O1 (the kernel copy
  * __osDequeueThread matches the same way). The -O1 donor game_libs_o1_6AF0C.c
@@ -5748,7 +5748,7 @@ void gl_func_0006AF44(int *target) {
     gl_func_00000000(prelim);
 }
 
-/* game_libs_func_0006B048: libc-style bzero / memset-zero (declared size 0xB4, 45 words).
+/* gl_bzero: libc-style bzero / memset-zero (declared size 0xB4, 45 words).
  *
  * Splat declares the symbol at offset 0, but the real function body starts at
  * offset 0xC (the first 3 words are leading nops — either splat misalignment
@@ -5831,7 +5831,7 @@ void gl_func_0006AF44(int *target) {
  * libc/bzero.s (the lone swl head and the tight unrolled loops are the
  * reference source verbatim; byte-identical to the kernel copy
  * bzero), so it is assembled from real assembly source below. */
-/* game_libs_func_0006B048 = bzero (game_libs libultra copy): real source in src/libultra/game_libs/bzero.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_bzero = bzero (game_libs libultra copy): real source in src/libultra/game_libs/bzero.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/bzero.s")
 
 

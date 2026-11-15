@@ -5,7 +5,7 @@
 # src/libultra/os/invalicache.s.
 
 
-glabel game_libs_func_0006F254
+glabel gl_osInvalICache
     blez    $a1, .Lgl_invICache_ret        # nbytes <= 0: nothing to do
      nop
     addiu   $t3, $zero, 0x4000          # ICACHE_SIZE
@@ -39,7 +39,7 @@ glabel game_libs_func_0006F254
      addiu  $t0, $t0, 0x20
     jr      $ra
      nop
-endlabel game_libs_func_0006F254
+endlabel gl_osInvalICache
     nop                                 # object alignment padding
     nop
     nop

@@ -1,8 +1,8 @@
-nonmatching game_libs_func_0006D94C, 0x10
+nonmatching gl_osGetCount, 0x10
 
-glabel game_libs_func_0006D94C
+glabel gl_osGetCount
     /* E52A24 0006D94C 00000000 */  .word 0x00000000
     /* E52A28 0006D950 00000000 */  .word 0x00000000
     /* E52A2C 0006D954 40024800 */  .word 0x40024800
     /* E52A30 0006D958 03E00008 */  .word 0x03E00008
-endlabel game_libs_func_0006D94C
+endlabel gl_osGetCount

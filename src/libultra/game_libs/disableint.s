@@ -6,7 +6,7 @@
 # src/libultra/os/disableint.s.
 # splat's symbol starts with the zero word that pads the preceding object.
 
-glabel game_libs_func_00070AC0
+glabel gl___osDisableInt
     nop                                 # alignment padding (preceding object)
     # u32 __osDisableInt(void)
     mfc0    $t0, $12                   # t0 = C0_SR
@@ -17,4 +17,4 @@ glabel game_libs_func_00070AC0
     nop                                 # CP0 hazard
     jr      $ra
      nop
-endlabel game_libs_func_00070AC0
+endlabel gl___osDisableInt

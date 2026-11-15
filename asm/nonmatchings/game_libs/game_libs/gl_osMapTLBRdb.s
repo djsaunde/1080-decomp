@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00073258, 0x64
+nonmatching gl_osMapTLBRdb, 0x64
 
-glabel game_libs_func_00073258
+glabel gl_osMapTLBRdb
     /* E58330 00073258 00000000 */  .word 0x00000000
     /* E58334 0007325C 00000000 */  .word 0x00000000
     /* E58338 00073260 00000000 */  .word 0x00000000
@@ -26,4 +26,4 @@ glabel game_libs_func_00073258
     /* E58388 000732B0 40885000 */  .word 0x40885000
     /* E5838C 000732B4 03E00008 */  .word 0x03E00008
     /* E58390 000732B8 00000000 */  .word 0x00000000
-endlabel game_libs_func_00073258
+endlabel gl_osMapTLBRdb

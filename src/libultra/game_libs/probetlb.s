@@ -4,9 +4,9 @@
 # Reference: references/oot/src/libultra/os/probetlb.s; kernel copy
 # src/libultra/os/probetlb.s.
 # Here the whole routine is one splat symbol (the kernel copy is split in two).
-# Its 2 trailing pad words open game_libs_func_0006D94C (getcount.s).
+# Its 2 trailing pad words open gl_osGetCount (getcount.s).
 
-glabel game_libs_func_0006D894
+glabel gl___osProbeTLB
     # Set C0_ENTRYHI based on the supplied vaddr
     mfc0    $t0, $10                    # t0 = C0_ENTRYHI (saved)
     andi    $t1, $t0, 0xFF              # TLBHI_PIDMASK
@@ -62,4 +62,4 @@ glabel game_libs_func_0006D894
     mtc0    $t0, $10                    # restore C0_ENTRYHI
     jr      $ra
      nop
-endlabel game_libs_func_0006D894
+endlabel gl___osProbeTLB

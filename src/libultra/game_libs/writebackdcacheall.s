@@ -7,7 +7,7 @@
 # splat's symbol starts with the zero word that pads the preceding object.
 #   cache op 0x01 = CACH_PD | C_IWBINV; DCACHE_SIZE 0x2000, line 0x10.
 
-glabel game_libs_func_00074860
+glabel gl_osWritebackDCacheAll
     nop                                 # alignment padding (preceding object)
     # void osWritebackDCacheAll(void)
     lui     $t0, 0x8000                 # t0 = K0BASE
@@ -21,4 +21,4 @@ glabel game_libs_func_00074860
      addiu  $t0, $t0, 0x10              # DCACHE_LINESIZE
     jr      $ra
      nop
-endlabel game_libs_func_00074860
+endlabel gl_osWritebackDCacheAll

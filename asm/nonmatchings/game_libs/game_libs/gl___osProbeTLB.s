@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006D894, 0xB8
+nonmatching gl___osProbeTLB, 0xB8
 
-glabel game_libs_func_0006D894
+glabel gl___osProbeTLB
     /* E5296C 0006D894 40085000 */  .word 0x40085000
     /* E52970 0006D898 310900FF */  .word 0x310900FF
     /* E52974 0006D89C 2401E000 */  .word 0x2401E000
@@ -47,4 +47,4 @@ glabel game_libs_func_0006D894
     /* E52A18 0006D940 40885000 */  .word 0x40885000
     /* E52A1C 0006D944 03E00008 */  .word 0x03E00008
     /* E52A20 0006D948 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006D894
+endlabel gl___osProbeTLB

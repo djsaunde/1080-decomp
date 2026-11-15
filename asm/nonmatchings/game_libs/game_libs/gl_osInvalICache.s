@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006F254, 0x80
+nonmatching gl_osInvalICache, 0x80
 
-glabel game_libs_func_0006F254
+glabel gl_osInvalICache
     /* E5432C 0006F254 18A00011 */  .word 0x18A00011
     /* E54330 0006F258 00000000 */  .word 0x00000000
     /* E54334 0006F25C 240B4000 */  .word 0x240B4000
@@ -33,4 +33,4 @@ glabel game_libs_func_0006F254
     /* E543A0 0006F2C8 00000000 */  .word 0x00000000
     /* E543A4 0006F2CC 00000000 */  .word 0x00000000
     /* E543A8 0006F2D0 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006F254
+endlabel gl_osInvalICache

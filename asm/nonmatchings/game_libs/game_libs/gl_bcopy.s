@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00070324, 0x304
+nonmatching gl_bcopy, 0x304
 
-glabel game_libs_func_00070324
+glabel gl_bcopy
     /* E553FC 00070324 10C0001A */  .word 0x10C0001A
     /* E55400 00070328 00A03825 */  .word 0x00A03825
     /* E55404 0007032C 10850018 */  .word 0x10850018
@@ -194,4 +194,4 @@ glabel game_libs_func_00070324
     /* E556F4 0007061C 24C6FFFC */  .word 0x24C6FFFC
     /* E556F8 00070620 1000FFF8 */  .word 0x1000FFF8
     /* E556FC 00070624 ACA20000 */  .word 0xACA20000
-endlabel game_libs_func_00070324
+endlabel gl_bcopy

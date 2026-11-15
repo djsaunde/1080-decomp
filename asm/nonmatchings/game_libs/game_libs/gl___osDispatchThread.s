@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006AD78, 0x18C
+nonmatching gl___osDispatchThread, 0x18C
 
-glabel game_libs_func_0006AD78
+glabel gl___osDispatchThread
     /* E4FE50 0006AD78 3C040000 */  .word 0x3C040000
     /* E4FE54 0006AD7C 0C000000 */  .word 0x0C000000
     /* E4FE58 0006AD80 24840000 */  .word 0x24840000
@@ -100,4 +100,4 @@ glabel game_libs_func_0006AD78
     /* E4FFD0 0006AEF8 00002025 */  .word 0x00002025
     /* E4FFD4 0006AEFC 00000000 */  .word 0x00000000
     /* E4FFD8 0006AF00 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006AD78
+endlabel gl___osDispatchThread

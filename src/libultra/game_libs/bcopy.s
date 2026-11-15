@@ -9,7 +9,7 @@
 # advances) and several interior `jr ra` exits. Labels follow the reference
 # source; the forward/backward copy blocks mirror each other.
 
-glabel game_libs_func_00070324
+glabel gl_bcopy
     beqz    $a2, .Lbcopy_ret
      or      $a3, $a1, $zero
     beq     $a0, $a1, .Lbcopy_ret
@@ -228,4 +228,4 @@ glabel game_libs_func_00070324
     addiu   $a2, $a2, -4
     b       .Lbcopy_backwards_4
      sw      $v0, 0($a1)
-endlabel game_libs_func_00070324
+endlabel gl_bcopy

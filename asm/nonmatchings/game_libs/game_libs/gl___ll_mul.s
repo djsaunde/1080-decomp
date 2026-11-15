@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006C87C, 0x30
+nonmatching gl___ll_mul, 0x30
 
-glabel game_libs_func_0006C87C
+glabel gl___ll_mul
     /* E51954 0006C87C AFA40000 */  .word 0xAFA40000
     /* E51958 0006C880 AFA50004 */  .word 0xAFA50004
     /* E5195C 0006C884 AFA60008 */  .word 0xAFA60008
@@ -13,4 +13,4 @@ glabel game_libs_func_0006C87C
     /* E51978 0006C8A0 0003183F */  .word 0x0003183F
     /* E5197C 0006C8A4 03E00008 */  .word 0x03E00008
     /* E51980 0006C8A8 0002103F */  .word 0x0002103F
-endlabel game_libs_func_0006C87C
+endlabel gl___ll_mul

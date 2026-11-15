@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006C400, 0x78
+nonmatching gl_osWritebackDCache, 0x78
 
-glabel game_libs_func_0006C400
+glabel gl_osWritebackDCache
     /* E514D8 0006C400 00000000 */  .word 0x00000000
     /* E514DC 0006C404 18A00011 */  .word 0x18A00011
     /* E514E0 0006C408 00000000 */  .word 0x00000000
@@ -31,4 +31,4 @@ glabel game_libs_func_0006C400
     /* E51544 0006C46C 25080010 */  .word 0x25080010
     /* E51548 0006C470 03E00008 */  .word 0x03E00008
     /* E5154C 0006C474 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006C400
+endlabel gl_osWritebackDCache

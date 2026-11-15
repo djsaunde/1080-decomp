@@ -5,7 +5,7 @@
 # src/libultra/os/invaldcache.s.
 
 
-glabel game_libs_func_0006F2D4
+glabel gl_osInvalDCache
     blez    $a1, .Lgl_invDCache_ret        # nbytes <= 0: nothing to do
      nop
     addiu   $t3, $zero, 0x2000          # DCACHE_SIZE
@@ -54,4 +54,4 @@ glabel game_libs_func_0006F2D4
      addiu  $t0, $t0, 0x10
     jr      $ra
      nop
-endlabel game_libs_func_0006F2D4
+endlabel gl_osInvalDCache

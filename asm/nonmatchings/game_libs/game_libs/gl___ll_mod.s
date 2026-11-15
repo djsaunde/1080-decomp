@@ -1,6 +1,6 @@
-nonmatching gl_func_0006C90C, 0x9C
+nonmatching gl___ll_mod, 0x9C
 
-glabel gl_func_0006C90C
+glabel gl___ll_mod
     /* E519E4 0006C90C 27BDFFF8 */  .word 0x27BDFFF8
     /* E519E8 0006C910 AFA40008 */  .word 0xAFA40008
     /* E519EC 0006C914 AFA5000C */  .word 0xAFA5000C
@@ -40,4 +40,4 @@ glabel gl_func_0006C90C
     /* E51A74 0006C99C 8FA30004 */  .word 0x8FA30004
     /* E51A78 0006C9A0 03E00008 */  .word 0x03E00008
     /* E51A7C 0006C9A4 27BD0008 */  .word 0x27BD0008
-endlabel gl_func_0006C90C
+endlabel gl___ll_mod

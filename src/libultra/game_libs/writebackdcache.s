@@ -5,7 +5,7 @@
 # src/libultra/os/writebackdcache.s.
 # splat's symbol starts with the zero word that pads the preceding object.
 
-glabel game_libs_func_0006C400
+glabel gl_osWritebackDCache
     nop                                 # alignment padding (preceding object)
     blez    $a1, .Lgl_wbDCache_ret         # nbytes <= 0: nothing to do
      nop
@@ -40,4 +40,4 @@ glabel game_libs_func_0006C400
      addiu  $t0, $t0, 0x10
     jr      $ra
      nop
-endlabel game_libs_func_0006C400
+endlabel gl_osWritebackDCache

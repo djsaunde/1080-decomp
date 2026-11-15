@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006F218, 0x2C
+nonmatching gl_osCreateMesgQueue, 0x2C
 
-glabel game_libs_func_0006F218
+glabel gl_osCreateMesgQueue
     /* E542FC 0006F224 3C0E0000 */  .word 0x3C0E0000
     /* E54300 0006F228 3C0F0000 */  .word 0x3C0F0000
     /* E54304 0006F22C 25CE0000 */  .word 0x25CE0000
@@ -12,4 +12,4 @@ glabel game_libs_func_0006F218
     /* E5431C 0006F244 AC860010 */  .word 0xAC860010
     /* E54320 0006F248 03E00008 */  .word 0x03E00008
     /* E54324 0006F24C AC850014 */  .word 0xAC850014
-endlabel game_libs_func_0006F218
+endlabel gl_osCreateMesgQueue

@@ -12,7 +12,7 @@
 #   D_00000000_gim = __OSGlobalIntMask, D_00000000_rcpim = __osRcpImTable
 #   0xA430000C = MI_INTR_MASK_REG (KSEG1)
 
-glabel game_libs_func_0006A09C
+glabel gl_osSetIntMask
     nop                                 # alignment padding (preceding object)
     nop
     # u32 osSetIntMask(u32 im)
@@ -57,4 +57,4 @@ glabel game_libs_func_0006A09C
     nop
     jr      $ra
      nop
-endlabel game_libs_func_0006A09C
+endlabel gl_osSetIntMask

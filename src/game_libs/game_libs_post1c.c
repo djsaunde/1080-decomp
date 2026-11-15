@@ -28,7 +28,7 @@ typedef struct { int a, b; } Pair2;
 typedef struct { float x, y, z; } Vec3;
 
 
-/* game_libs_func_00070314 = libultra __osSetCompare (`mtc0 a0,$11; jr ra;
+/* gl___osSetCompare = libultra __osSetCompare (`mtc0 a0,$11; jr ra;
  * nop`, handwritten os/setcompare.s -- CP0 access is not emittable from IDO
  * C). Its .s now carries the 4th (zero) word 0x70320: that word is THIS
  * object's 16-byte inter-object pad (0xC -> 0x10), not bcopy's leading nop
@@ -36,10 +36,10 @@ typedef struct { float x, y, z; } Vec3;
  * #leading-nop-cap-is-inter-object-pad-sym-oracle-74844). Oracle: section
  * 0x84980 (= 0x70314) exported sym 2639 (2 R_MIPS_26 refs), 0x8498C not.
  * Now real assembly source (below). */
-/* game_libs_func_00070314 = __osSetCompare (game_libs libultra copy): real source in src/libultra/game_libs/setcompare.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osSetCompare = __osSetCompare (game_libs libultra copy): real source in src/libultra/game_libs/setcompare.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/setcompare.s")
 
-/* game_libs_func_00070324 = libultra bcopy (HANDWRITTEN, libc/bcopy.s), 193
+/* gl_bcopy = libultra bcopy (HANDWRITTEN, libc/bcopy.s), 193
  * insns (0x304). BOUNDARY CORRECTED 2026-09-09 (agent-g): the old
  * "game_libs_func_00070320" symbol (0x308) started with __osSetCompare's pad
  * word; bootup.uso's Sym export table puts the entry at section 0x84990
@@ -58,7 +58,7 @@ GLOBAL_ASM("src/libultra/game_libs/setcompare.s")
  * opt level) and the multiple interior `jr ra` exits. The orchestrator's
  * "memmove.c-class" hypothesis is moot: libultra has no C memmove; bcopy is
  * an asm-only file in every distribution: real assembly source below. */
-/* game_libs_func_00070324 = bcopy (game_libs libultra copy): real source in src/libultra/game_libs/bcopy.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl_bcopy = bcopy (game_libs libultra copy): real source in src/libultra/game_libs/bcopy.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/bcopy.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070244_pad.s")
 
@@ -169,7 +169,7 @@ void guMtxL2F(int m) {
 }
 
 
-/* game_libs_func_00070AC0 = libultra __osDisableInt (HANDWRITTEN CP0:
+/* gl___osDisableInt = libultra __osDisableInt (HANDWRITTEN CP0:
  * `mfc0 t0,$12; li at,-2; and t1,t0,at; mtc0 t1,$12; andi v0,t0,1; nop;
  * jr ra; nop` -- the pre-2.0I form without the __OSGlobalIntMask logic).
  * Sym oracle 2026-09-09 (agent-g): true entry 0x70AC4 = section 0x85130 =
@@ -177,14 +177,14 @@ void guMtxL2F(int m) {
  * (0x8512C, not exported) is guMtxL2F's object pad. Now
  * real assembly source (below). The many blank `gl_func_00000000_disint` jals in
  * the -O1 donors resolve to this symbol at USO load time. */
-/* game_libs_func_00070AC0 = __osDisableInt (game_libs libultra copy): real source in src/libultra/game_libs/disableint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osDisableInt = __osDisableInt (game_libs libultra copy): real source in src/libultra/game_libs/disableint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/disableint.s")
 
-/* game_libs_func_00070AE4 = libultra __osRestoreInt (HANDWRITTEN CP0:
+/* gl___osRestoreInt = libultra __osRestoreInt (HANDWRITTEN CP0:
  * `mfc0 t0,$12; or t0,t0,a0; mtc0 t0,$12; nop; nop; jr ra`), section 0x85150
  * = export sym 2514 (four jal refs). The jr delay nop at 0x70AFC lives in
  * gl_func_00070A14_pad.s below. Now real assembly source (below). */
-/* game_libs_func_00070AE4 = __osRestoreInt (game_libs libultra copy): real source in src/libultra/game_libs/restoreint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* gl___osRestoreInt = __osRestoreInt (game_libs libultra copy): real source in src/libultra/game_libs/restoreint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/restoreint.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070A14_pad.s")
 

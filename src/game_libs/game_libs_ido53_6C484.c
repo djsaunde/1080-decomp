@@ -8,7 +8,7 @@
  * re-materialisations are the -O1 per-statement reload of ONE symbol, and
  * the two blank jal + (hi,lo,0,3)/(hi,lo,0,4) calls are `osClockRate * 3 / 4`
  * lowered to __ll_mul / __ull_div under -mips2 (in-unit callees
- * game_libs_func_0006C87C / game_libs_func_0006C77C; the compiler names
+ * gl___ll_mul / gl___ull_div; the compiler names
  * them itself, pinned = 0 so the words stay blank 0C000000 + USO reloc).
  * Shape keys: osClockRate and osViClock DEFINED in-TU (shared `lui at` on
  * the two-word u64 stores -- extern would split them into two at-macro
@@ -44,7 +44,7 @@ extern void gl_func_00000000_setsr(u32);            /* __osSetSR */
 extern void gl_func_00000000_setfpccsr(u32);        /* __osSetFpcCsr */
 extern s32 gl_func_00000000_sirawreadio(u32, u32 *);  /* __osSiRawReadIo */
 extern s32 gl_func_00000000_sirawwriteio(u32, u32);   /* __osSiRawWriteIo */
-extern void gl_func_00000000_wbdcache(void *, s32);   /* osWritebackDCache (= game_libs_func_0006C400, in-unit) */
+extern void gl_func_00000000_wbdcache(void *, s32);   /* osWritebackDCache (= gl_osWritebackDCache, in-unit) */
 extern void gl_func_00000000_invalicache(void *, s32);/* osInvalICache */
 extern void gl_func_00000000_maptlbrdb(void);         /* osMapTLBRdb */
 extern s32 gl_func_00000000_pirawreadio(u32, u32 *);  /* osPiRawReadIo */

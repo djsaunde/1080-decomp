@@ -835,7 +835,7 @@ float game_libs_func_00069CC4(float x);
 void _asmpp_func38(void);
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69E04;
 int gl_func_00069E04(OSMesgQueue_69E04 *mq, int msg, int flags);
-unsigned int game_libs_func_00069F54(void);
+unsigned int gl_osViGetCurrentLine(void);
 extern unsigned int gl_69F64_disable(void);
 extern void gl_69F64_restore(unsigned int);
 extern void gl_69F64_wait(Thread_69E04 **);

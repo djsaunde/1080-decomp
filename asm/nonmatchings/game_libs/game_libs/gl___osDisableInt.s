@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00070AC0, 0x24
+nonmatching gl___osDisableInt, 0x24
 
-glabel game_libs_func_00070AC0
+glabel gl___osDisableInt
     /* E55B98 00070AC0 00000000 */  .word 0x00000000
     /* E55B9C 00070AC4 40086000 */  .word 0x40086000
     /* E55BA0 00070AC8 2401FFFE */  .word 0x2401FFFE
@@ -10,4 +10,4 @@ glabel game_libs_func_00070AC0
     /* E55BB0 00070AD8 00000000 */  .word 0x00000000
     /* E55BB4 00070ADC 03E00008 */  .word 0x03E00008
     /* E55BB8 00070AE0 00000000 */  .word 0x00000000
-endlabel game_libs_func_00070AC0
+endlabel gl___osDisableInt

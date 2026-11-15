@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006A5F0, 0x778
+nonmatching gl___osExceptionPreamble, 0x778
 
-glabel game_libs_func_0006A5F0
+glabel gl___osExceptionPreamble
     /* E4F6C8 0006A5F0 00000000 */  .word 0x00000000
     /* E4F6CC 0006A5F4 3C1A0000 */  .word 0x3C1A0000
     /* E4F6D0 0006A5F8 275A0000 */  .word 0x275A0000
@@ -479,4 +479,4 @@ glabel game_libs_func_0006A5F0
     /* E4FE34 0006AD5C AF250000 */  .word 0xAF250000
     /* E4FE38 0006AD60 03E00008 */  .word 0x03E00008
     /* E4FE3C 0006AD64 ACA40008 */  .word 0xACA40008
-endlabel game_libs_func_0006A5F0
+endlabel gl___osExceptionPreamble
