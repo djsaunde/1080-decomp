@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gadget.h"
+#include "gdl/race.h"
 
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
