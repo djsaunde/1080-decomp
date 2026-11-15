@@ -4,6 +4,7 @@
 #include "gdl/gadget.h"
 #include "gdl/backup.h"
 #include "game/input.h"
+#include "uso_call.h"
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
@@ -20,7 +21,7 @@ typedef struct { float x, y, z; } Vec3;
 extern int gl_func_00000000();
 void fs_gdlReadInt_00009674(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -28,7 +29,7 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_000096B0(float *dst) {
     int pad;
     float scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -38,7 +39,7 @@ void fs_gdlReadVec3_000096EC(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&gSysLib, &raw, 12);
+    CALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -51,7 +52,7 @@ void fs_gdlReadVec3_000096EC(Vec3 *dst) {
  * jr-ra sequences), split via scripts/split-fragments.py. */
 void fs_gdlReadQuad_0000975C(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&gSysLib, &buf, 0x10);
+    CALL(fs_gdlReadFile)(&gSysLib, &buf, 0x10);
     *dst = buf;
 }
 
@@ -499,7 +500,7 @@ extern int gl_func_00000000();
 void Backup_courseRecordResetTimes(BackupCourseRecord *rec, int ia, int ib, int *src) {
     int k;
     for (k = 0; k < 3; k++) {
-        gl_func_00000000(&rec->times[k], ((ia + k) % 5) + (((ib + k) % 8) << 3), 0,
+        CALL(Backup_timeEntryInit)(&rec->times[k], ((ia + k) % 5) + (((ib + k) % 8) << 3), 0,
                          (char *)&D_00000000 + 0xD430,
                          src[k * 3], src[k * 3 + 1], src[k * 3 + 2]);
     }
@@ -529,7 +530,7 @@ extern int gl_func_00000000();
 void Backup_courseRecordResetScores(BackupCourseRecord *rec, int a1, int a2, int *a3) {
     int k;
     for (k = 0; k < 3; k++) {
-        gl_func_00000000(&rec->scores[k], ((a1 + k) % 5) + (((a2 + k) % 8) << 3),
+        CALL(Backup_scoreEntryInit)(&rec->scores[k], ((a1 + k) % 5) + (((a2 + k) % 8) << 3),
                          (char *)&D_00000000 + 0xD434, a3[k]);
     }
 }
@@ -547,8 +548,8 @@ void Backup_courseRecordClearNew(BackupCourseRecord *rec) {
     q = rec->scores;
     limit = 0x18;
     do {
-        gl_func_00000000(p);
-        gl_func_00000000(q);
+        CALL(Backup_timeEntryClearNew)(p);
+        CALL(Backup_scoreEntryClearNew)(q);
         i += 8;
         p++;
         q++;
@@ -569,11 +570,11 @@ void Backup_courseRecordSetNewNames(BackupCourseRecord *rec, int name, unsigned 
     BackupScoreEntry *sc = rec->scores;
     int s2 = 0;
     do {
-        if (gl_func_00000000(t) != 0) {
-            gl_func_00000000(t, s3, s4, s5);
+        if (CALL(Backup_timeEntryIsNew)(t) != 0) {
+            CALL(Backup_timeEntrySetName)(t, s3, s4, s5);
         }
-        if (gl_func_00000000(sc) != 0) {
-            gl_func_00000000(sc, s3, s4, s5);
+        if (CALL(Backup_scoreEntryIsNew)(sc) != 0) {
+            CALL(Backup_scoreEntrySetName)(sc, s3, s4, s5);
         }
         s2 += 8;
         t++;
@@ -594,7 +595,7 @@ int Backup_courseRecordCountNewTimes(BackupCourseRecord *rec) {
     p = rec->times;
     limit = 0x18;
     do {
-        int r = gl_func_00000000(p);
+        int r = CALL(Backup_timeEntryIsNew)(p);
         i += 8;
         if (r != 0) count += 1;
         p++;
@@ -620,7 +621,7 @@ int Backup_courseRecordCountNewScores(BackupCourseRecord *rec) {
     i = 0;
     p = rec->scores;
     for (; i != 24; i += 8) {
-        if (gl_func_00000000(p) != 0) count++;
+        if (CALL(Backup_scoreEntryIsNew)(p) != 0) count++;
         p++;
     }
     return count;
@@ -671,7 +672,7 @@ int Backup_courseRecordFindTimeRank(BackupCourseRecord *rec, int ms) {
     buf[1] = sec;
     buf[2] = (rem - sec * 1000) / 10;
     for (i = 0, entry = rec->times; i < 3; i++) {
-        if (func_00000000(entry, buf) != 0) {
+        if (FCALL(Backup_timeEntryIsSlower)(entry, buf) != 0) {
             return i;
         }
         entry++;
@@ -703,7 +704,7 @@ void Backup_courseRecordInsertTime(BackupTimeEntry *a0, int idx, int ms, int arg
         min = ms / 60000;
         rem = ms - min * 60000;
         sec = rem / 1000;
-        func_00000000((char *)a0 + idx * 8, min, sec, (rem - sec * 1000) / 10, arg3);
+        FCALL(Backup_timeEntrySet)((char *)a0 + idx * 8, min, sec, (rem - sec * 1000) / 10, arg3);
     }
 }
 
@@ -723,7 +724,7 @@ int Backup_courseRecordFindScoreRank(BackupCourseRecord *rec, int score) {
     int i = 0;
     BackupScoreEntry *entry = rec->scores;
     for (; i < 3; i++) {
-        if (func_00000000(entry, score) != 0) {
+        if (FCALL(Backup_scoreEntryIsLower)(entry, score) != 0) {
             return i;
         }
         entry++;
@@ -747,7 +748,7 @@ void Backup_courseRecordInsertScore(BackupCourseRecord *a0, int idx, int arg2) {
                 a0->scores[i] = a0->scores[i - 1];
             }
         }
-        func_00000000((char *)a0 + idx * 8 + 0x18, arg2);
+        FCALL(Backup_scoreEntrySet)((char *)a0 + idx * 8 + 0x18, arg2);
     }
 }
 
@@ -769,8 +770,8 @@ void Backup_resetCourseData_0000A670(BackupCourse *crs) {
     for (k = 0; k < BACKUP_NUM_COURSES; k++) {
         p = &crs->course[k];
         i = k * 3;
-        gl_func_00000000(p, i % 5, i % 8, (char *)&D_00000000 + 0xD268 + k * 0x24);
-        gl_func_00000000(p, i % 5, i % 8, (char *)&D_00000000 + 0xD388 + k * 0xC);
+        CALL(Backup_courseRecordResetTimes)(p, i % 5, i % 8, (char *)&D_00000000 + 0xD268 + k * 0x24);
+        CALL(Backup_courseRecordResetScores)(p, i % 5, i % 8, (char *)&D_00000000 + 0xD388 + k * 0xC);
     }
 }
 
@@ -782,7 +783,7 @@ void Backup_courseClearNew(BackupCourse *crs) {
     i = 0;
     p = crs->course;
     for (; i != sizeof(BackupCourse); i += sizeof(BackupCourseRecord)) {
-        gl_func_00000000(p);
+        CALL(Backup_courseRecordClearNew)(p);
         p++;
     }
 }
@@ -791,10 +792,10 @@ void Backup_courseSetNewNames(BackupCourse *crs, int a1, unsigned char c2, unsig
     BackupCourseRecord *p = crs->course;
     int i;
     for (i = 0; i != BACKUP_NUM_COURSES; i++) {
-        if (gl_func_00000000(p->times) != 0 || gl_func_00000000(p->scores) != 0) {
+        if (CALL(Backup_timeEntryIsNew)(p->times) != 0 || CALL(Backup_scoreEntryIsNew)(p->scores) != 0) {
             *flags |= (1 << i);
         }
-        gl_func_00000000(p, a1, c2, c3);
+        CALL(Backup_courseRecordSetNewNames)(p, a1, c2, c3);
         if (a1) {}
         p++;
     }
@@ -879,11 +880,11 @@ void Backup_ghostSetCourse(BackupGhost *a0, int a1) {
 
 /* Backup_resetGhostData_0000A990: 25-insn 5-identical-call + 2-zero-fields wrapper. */
 void Backup_resetGhostData_0000A990(BackupGhost *a0) {
-    func_00000000(a0, 0);
-    func_00000000(a0, 0);
-    func_00000000(a0, 0);
-    func_00000000(a0, 0);
-    func_00000000(a0, 0);
+    FCALL(Backup_ghostSetMode)(a0, 0);
+    FCALL(Backup_ghostSetCourse)(a0, 0);
+    FCALL(Backup_ghostSetRider)(a0, 0);
+    FCALL(Backup_ghostSetBoard)(a0, 0);
+    FCALL(Backup_ghostSetBoardFlag)(a0, 0);
     a0->count = 0;
     a0->data = 0;
 }
@@ -891,7 +892,7 @@ void Backup_resetGhostData_0000A990(BackupGhost *a0) {
 extern int gl_func_00000000();
 
 int Backup_ghostIsMode(int a0, int a1) {
-    int r = gl_func_00000000(a0, a1);
+    int r = CALL(Backup_ghostGetMode)(a0, a1);
     if (r == a1) return 1;
     return 0;
 }
@@ -910,8 +911,8 @@ int Backup_ghostIsMode(int a0, int a1) {
  * which arg regs are (re)loaded before each jal FIRST. */
 extern int gl_func_00000000();
 int Backup_ghostMatches(int a0, int a1, int a2) {
-    if (gl_func_00000000(a0, a1, a2) != a1) goto fail;
-    if (gl_func_00000000(a0) != a2) goto fail;
+    if (CALL(Backup_ghostGetMode)(a0, a1, a2) != a1) goto fail;
+    if (CALL(Backup_ghostGetCourse)(a0) != a2) goto fail;
     return 1;
 fail:
     return 0;
@@ -920,11 +921,11 @@ fail:
 /* 28-insn / 0x70 5-call wrapper followed by 2-field commit. Each call passes
  * the same a0 plus a different arg as a1; result of last call is ignored. */
 void Backup_ghostSetHeader(BackupGhost *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
-    gl_func_00000000(a0, a1);
-    gl_func_00000000(a0, a3);
-    gl_func_00000000(a0, arg5);
-    gl_func_00000000(a0, arg6);
-    gl_func_00000000(a0, a2);
+    CALL(Backup_ghostSetMode)(a0, a1);
+    CALL(Backup_ghostSetRider)(a0, a3);
+    CALL(Backup_ghostSetBoardFlag)(a0, arg5);
+    CALL(Backup_ghostSetBoard)(a0, arg6);
+    CALL(Backup_ghostSetCourse)(a0, a2);
     a0->count = arg8;
     a0->data = arg7;
 }
@@ -966,7 +967,7 @@ void Backup_ghostSetHeader(BackupGhost *a0, int a1, int a2, int a3, int arg5, in
 void Backup_resetArcadeData_0000AAEC(BackupArcade *arc) {
     int i;
     for (i = 0; i < 3; i++) {
-        gl_func_00000000(&arc->entry[i], (i | 0) + ((i + 4) << 3),
+        CALL(Backup_arcadeEntryInit)(&arc->entry[i], (i | 0) + ((i + 4) << 3),
                          (char *)&D_00000000 + 0xD438,
                          (char *)&D_00000000 + 0xD3E8 + i * 0x18);
     }
@@ -980,7 +981,7 @@ void Backup_arcadeClearNew(BackupArcade *arc) {
     i = 0;
     p = arc->entry;
     for (; i != sizeof(BackupArcade); i += sizeof(BackupArcadeEntry)) {
-        gl_func_00000000(p);
+        CALL(Backup_arcadeEntryClearNew)(p);
         p++;
     }
 }
@@ -999,8 +1000,8 @@ void Backup_arcadeClearNew(BackupArcade *arc) {
 void Backup_arcadeSetNewNames(BackupArcade *arc, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
     int i;
     for (i = 0; i < 3; i++) {
-        if (gl_func_00000000(&arc->entry[i]) != 0) {
-            gl_func_00000000(&arc->entry[i], a1, a2, a3);
+        if (CALL(Backup_arcadeEntryIsNew)(&arc->entry[i]) != 0) {
+            CALL(Backup_arcadeEntrySetName)(&arc->entry[i], a1, a2, a3);
             switch (i) {
             case 0:
                 *arg4 = (*arg4 & 3) << 1;
@@ -1034,7 +1035,7 @@ int Backup_arcadeCountNew(BackupArcade *arc) {
     p = arc->entry;
     limit = sizeof(BackupArcade);
     do {
-        int r = func_00000000(p);
+        int r = FCALL(Backup_arcadeEntryIsNew)(p);
         i += sizeof(BackupArcadeEntry);
         if (r != 0) count += 1;
         p++;
@@ -1059,7 +1060,7 @@ int Backup_arcadeFindRank(BackupArcade *arc, int score) {
     i = 0;
     p = arc->entry;
     for (; i != 3; i++) {
-        if (gl_func_00000000(p, score) != 0) return i;
+        if (CALL(Backup_arcadeEntryIsLower)(p, score) != 0) return i;
         p++;
     }
     return 3;
@@ -1085,7 +1086,7 @@ void Backup_arcadeInsert(BackupArcadeEntry *arr, s32 idx, s32 a2, s32 a3, s32 a4
                 arr[i] = arr[i - 1];
             }
         }
-        gl_func_00000000((char *)arr + idx * 32, a2, a3, a4);
+        CALL(Backup_arcadeEntrySet)((char *)arr + idx * 32, a2, a3, a4);
     }
 }
 
@@ -1143,10 +1144,10 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
     arg0[15] = 0;
     arg0[16] = 0;
     arg0[17] = 0;
-    gl_func_00000000(*(u8 *)(arg0 + 18));
-    gl_func_00000000(*(u8 *)(arg0 + 19));
-    gl_func_00000000(*(u8 *)(arg0 + 20));
-    gl_func_00000000(*(u16 *)(arg0 + 4) & 3);
+    CALL(snd_setPlayer1VolumeLevel)(*(u8 *)(arg0 + 18));
+    CALL(func_0000023C)(*(u8 *)(arg0 + 19));
+    CALL(snd_setPlayer2VolumeLevel)(*(u8 *)(arg0 + 20));
+    CALL(func_000001FC)(*(u16 *)(arg0 + 4) & 3);
     gl_flag_AFC4_bit2 = (*(u16 *)(arg0 + 4) & 4) == 4;
     do {
         temp_v0 = *(char **)((char *)&D_00000000 + 0x28);
@@ -1198,30 +1199,30 @@ extern int gl_func_00000000();
 int Backup_openSession(BackupSession *arg0, Backup *arg1, int arg2, int arg3) {
     int v1;
     if (arg0 == 0) {
-        arg0 = (BackupSession *)gl_func_00000000(sizeof(BackupSession));
+        arg0 = (BackupSession *)CALL(mem_new)(sizeof(BackupSession));
         if (arg0 == 0) goto end;
     }
     arg0->backup = arg1;
     arg0->modes = 0;
-    arg0->course = (BackupCourse *)gl_func_00000000(arg1);
-    arg0->arcade = (BackupArcade *)gl_func_00000000(arg0->backup);
-    arg0->ghost = (BackupGhost *)gl_func_00000000(arg0->backup);
+    arg0->course = (BackupCourse *)CALL(Backup_readCourse)(arg1);
+    arg0->arcade = (BackupArcade *)CALL(Backup_readArcade)(arg0->backup);
+    arg0->ghost = (BackupGhost *)CALL(Backup_readGhost)(arg0->backup);
     if (arg3 == -1) {
-        arg3 = gl_func_00000000(arg0->ghost);
+        arg3 = CALL(Backup_ghostGetCourse)(arg0->ghost);
     }
     v1 = 0;
-    if (gl_func_00000000(arg0->ghost, arg2, arg3) != 0) {
+    if (CALL(Backup_ghostMatches)(arg0->ghost, arg2, arg3) != 0) {
         v1 = 1;
     }
     if (v1 == 0) {
         {
             extern void gl_func_00000000_b0a8v();
-            gl_func_00000000_b0a8v(arg0->ghost, 0);
+            XCALL(gl_func_00000000_b0a8v, Backup_ghostSetMode)(arg0->ghost, 0);
         }
         arg0->ghost->count = 0;
         if (arg0->ghost->data != 0) {
             extern void gl_func_00000000_b0a8v();
-            gl_func_00000000_b0a8v(arg0->ghost->data);
+            XCALL(gl_func_00000000_b0a8v, mem_delete)(arg0->ghost->data);
         }
         arg0->ghost->data = 0;
     }
@@ -1233,15 +1234,15 @@ extern int gl_func_00000000();
 void Backup_closeSession(BackupSession *a0, int a1) {
     BackupGhost *inner;
     if (a0 != NULL) {
-        gl_func_00000000(a0->course);
-        gl_func_00000000(a0->arcade);
+        CALL(mem_delete)(a0->course);
+        CALL(mem_delete)(a0->arcade);
         inner = a0->ghost;
         if (inner->data != 0) {
-            gl_func_00000000(inner->data);
+            CALL(mem_delete)(inner->data);
         }
-        gl_func_00000000(a0->ghost);
+        CALL(mem_delete)(a0->ghost);
         if (a1 & 1) {
-            gl_func_00000000(a0);
+            CALL(mem_delete)(a0);
         }
     }
 }
@@ -1253,12 +1254,12 @@ int Backup_sessionCountNew(BackupSession *a0) {
     int s2 = 0;
     int sum;
     for (s0 = 0; s0 != sizeof(BackupCourse); s0 += sizeof(BackupCourseRecord)) {
-        s1 += gl_func_00000000((char *)a0->course + s0);
-        s2 += gl_func_00000000((char *)a0->course + s0);
+        s1 += CALL(Backup_courseRecordCountNewTimes)((char *)a0->course + s0);
+        s2 += CALL(Backup_courseRecordCountNewScores)((char *)a0->course + s0);
     }
     sum = s1 + s2;
     {
-        int r = gl_func_00000000(a0->arcade);
+        int r = CALL(Backup_arcadeCountNew)(a0->arcade);
         return sum + r;
     }
 }
@@ -1268,8 +1269,8 @@ int Backup_sessionCountNewCourses(BackupSession *a0) {
     int s0;
     int s2 = 0;
     for (s0 = 0; s0 != sizeof(BackupCourse); s0 += sizeof(BackupCourseRecord)) {
-        if (gl_func_00000000((char *)a0->course + s0) ||
-            gl_func_00000000((char *)a0->course + s0)) {
+        if (CALL(Backup_courseRecordCountNewTimes)((char *)a0->course + s0) ||
+            CALL(Backup_courseRecordCountNewScores)((char *)a0->course + s0)) {
             s2++;
         }
     }
@@ -1315,7 +1316,7 @@ void Backup_sessionListNewCourses(BackupSession *a0, int *a1) {
   int r;
   for (; iter != BACKUP_NUM_COURSES; iter++)
   {
-    if (gl_func_00000000((char *)a0->course + offset) || gl_func_00000000((char *)a0->course + offset))
+    if (CALL(Backup_courseRecordCountNewTimes)((char *)a0->course + offset) || CALL(Backup_courseRecordCountNewScores)((char *)a0->course + offset))
     {
       r = count; count++; a1[r] = iter;
     }
@@ -1325,7 +1326,7 @@ void Backup_sessionListNewCourses(BackupSession *a0, int *a1) {
 
 extern int gl_func_00000000();
 int Backup_sessionHasNew() {
-    int r = gl_func_00000000();
+    int r = CALL(Backup_sessionCountNew)();
     if (r != 0) return 1;
     return 0;
 }
@@ -1335,23 +1336,23 @@ extern int D_00000000;
 void Backup_writeCourseArcadeOptions_0000B3DC(BackupSession *a0) {
     int v = a0->modes;
     if ((v & (BACKUP_MODE_TIME | BACKUP_MODE_TRICK)) != 0) {
-        func_00000000(a0->backup, a0->course);
+        FCALL(Backup_writeCourse)(a0->backup, a0->course);
         v = a0->modes;
     }
     if ((v & BACKUP_MODE_ARCADE) != 0) {
-        func_00000000(a0->backup, a0->arcade);
+        FCALL(Backup_writeArcade)(a0->backup, a0->arcade);
     }
-    func_00000000(a0->backup, (int)INPUT_MGR(gInputMgr).options);
+    FCALL(Backup_writeOptions)(a0->backup, (int)INPUT_MGR(gInputMgr).options);
 }
 
 void Backup_sessionClearNew(BackupSession *a0) {
     int flags = a0->modes;
     if (flags & (BACKUP_MODE_TIME | BACKUP_MODE_TRICK)) {
-        gl_func_00000000(a0->course);
+        CALL(Backup_courseClearNew)(a0->course);
         flags = a0->modes;
     }
     if (flags & BACKUP_MODE_ARCADE) {
-        gl_func_00000000(a0->arcade);
+        CALL(Backup_arcadeClearNew)(a0->arcade);
     }
 }
 
@@ -1360,15 +1361,15 @@ extern int D_00000000;
 
 void Backup_sessionSetNewNames(BackupSession *a0, int a1, char a2, char a3) {
     if (a0->modes & BACKUP_MODE_TIME) {
-        gl_func_00000000(a0->course, a1, a2, a3,
+        CALL(Backup_courseSetNewNames)(a0->course, a1, a2, a3,
             &SETTINGS(INPUT_MGR(gInputMgr).options)->newMark[0]);
     }
     if (a0->modes & BACKUP_MODE_TRICK) {
-        gl_func_00000000(a0->course, a1, a2, a3,
+        CALL(Backup_courseSetNewNames)(a0->course, a1, a2, a3,
             &SETTINGS(INPUT_MGR(gInputMgr).options)->newMark[1]);
     }
     if (a0->modes & BACKUP_MODE_ARCADE) {
-        gl_func_00000000(a0->arcade, a1, a2, a3,
+        CALL(Backup_arcadeSetNewNames)(a0->arcade, a1, a2, a3,
             &SETTINGS(INPUT_MGR(gInputMgr).options)->newMark[2]);
     }
 }
@@ -1382,8 +1383,8 @@ void Backup_sessionSetNewNames(BackupSession *a0, int a1, char a2, char a3) {
  * 2026-09-09 -- see the successor just below. */
 extern int gl_func_00000000();
 void Backup_writeCourseArcade_0000B560(BackupSession *p) {
-    gl_func_00000000(p->backup, p->course);
-    gl_func_00000000(p->backup, p->arcade);
+    CALL(Backup_writeCourse)(p->backup, p->course);
+    CALL(Backup_writeArcade)(p->backup, p->arcade);
 }
 
 /* Backup_sessionResetCourseTimes: per-slot dispatch pair, BYTE-EXACT 35/35 (2026-09-09, agent-g)
@@ -1413,8 +1414,8 @@ void Backup_sessionResetCourseTimes(BackupSession *a0, int a1) {
     int k = a1 * 9;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD268); } while (0);
-    func_00000000(&a0->course->course[a1], n % 5, n % 8, tbl + k);
-    func_00000000(a0);
+    FCALL(Backup_courseRecordResetTimes)(&a0->course->course[a1], n % 5, n % 8, tbl + k);
+    FCALL(Backup_writeCourseArcade_0000B560)(a0);
 }
 
 /* Backup_sessionResetCourseScores: per-slot dispatch pair, BYTE-EXACT 33/33 (2026-09-09,
@@ -1445,32 +1446,32 @@ void Backup_sessionResetCourseScores(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD388); } while (0);
-    func_00000000(&a0->course->course[a1], n % 5, n % 8, tbl + n);
-    func_00000000(a0);
+    FCALL(Backup_courseRecordResetScores)(&a0->course->course[a1], n % 5, n % 8, tbl + n);
+    FCALL(Backup_writeCourseArcade_0000B560)(a0);
 }
 
 extern int gl_func_00000000();
 void Backup_sessionResetArcade(BackupSession *a0) {
-    gl_func_00000000(a0->arcade);
-    gl_func_00000000(a0);
+    CALL(Backup_resetArcadeData_0000AAEC)(a0->arcade);
+    CALL(Backup_writeCourseArcade_0000B560)(a0);
 }
 
 extern int gl_func_00000000();
 void Backup_sessionResetGhost(BackupSession *a0) {
-    gl_func_00000000(a0->ghost);
-    gl_func_00000000(a0->backup, a0->ghost);
+    CALL(Backup_resetGhostData_0000A990)(a0->ghost);
+    CALL(Backup_writeGhost)(a0->backup, a0->ghost);
 }
 
 extern int gl_func_00000000();
 extern int D_00000000;
 void Backup_resetAll_0000B710(BackupSession *a0) {
-    gl_func_00000000(a0->course);
-    gl_func_00000000(a0->arcade);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000((int)INPUT_MGR(gInputMgr).options);
-    gl_func_00000000(&gInputMgr);
-    gl_func_00000000(a0->backup, (int)INPUT_MGR(gInputMgr).options);
+    CALL(Backup_resetCourseData_0000A670)(a0->course);
+    CALL(Backup_resetArcadeData_0000AAEC)(a0->arcade);
+    CALL(Backup_writeCourseArcade_0000B560)(a0);
+    CALL(Backup_sessionResetGhost)(a0);
+    CALL(Backup_resetOptionsData_0000AFC4)((int)INPUT_MGR(gInputMgr).options);
+    CALL(input_initDefaults_00012188)(&gInputMgr);
+    CALL(Backup_writeOptions)(a0->backup, (int)INPUT_MGR(gInputMgr).options);
 }
 
 /* Backup_ctor: 59-insn alloc-if-null constructor (BBxx streaming
@@ -1482,32 +1483,32 @@ void Backup_resetAll_0000B710(BackupSession *a0) {
 extern int gl_func_00000000();
 void* Backup_ctor(void *a0) {
     if (a0 == 0) {
-        a0 = (void*)gl_func_00000000(8);
+        a0 = (void*)CALL(mem_new)(8);
         if (a0 == 0) {
             goto end;
         }
     }
     *(int*)a0 = 6400;
-    gl_func_00000000((char*)&D_00000000 + 0xD43C);
-    if (gl_func_00000000(a0) == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0xD460);
-        gl_func_00000000(a0);
+    CALL(dbg_printf)((char*)&D_00000000 + 0xD43C);
+    if (CALL(Backup_checkOptions)(a0) == 0) {
+        CALL(dbg_printf)((char*)&D_00000000 + 0xD460);
+        CALL(Backup_resetOptions)(a0);
     }
-    if (gl_func_00000000(a0) == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0xD478);
-        gl_func_00000000(a0);
+    if (CALL(Backup_checkCourse)(a0) == 0) {
+        CALL(dbg_printf)((char*)&D_00000000 + 0xD478);
+        CALL(Backup_resetCourse)(a0);
     }
-    if (gl_func_00000000(a0) == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0xD490);
-        gl_func_00000000(a0);
+    if (CALL(Backup_checkArcade)(a0) == 0) {
+        CALL(dbg_printf)((char*)&D_00000000 + 0xD490);
+        CALL(Backup_resetArcade)(a0);
     }
-    if (gl_func_00000000(a0) == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0xD4A8);
-        gl_func_00000000(a0);
+    if (CALL(Backup_checkGhost)(a0) == 0) {
+        CALL(dbg_printf)((char*)&D_00000000 + 0xD4A8);
+        CALL(Backup_resetGhost)(a0);
     }
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000((char*)&D_00000000 + 0xD4C0, 0x8004);
+    CALL(Backup_writeHeader)(a0);
+    CALL(Backup_cacheGhostBits)(a0);
+    CALL(dbg_printf)((char*)&D_00000000 + 0xD4C0, 0x8004);
 end:
     return a0;
 }
@@ -1517,10 +1518,10 @@ extern int gSysLib_data_B884_arg, gSysLib_data_B89C_arg, gSysLib_data_B8AC_arg, 
 extern int D_00000000;
 
 void Backup_read(int a0, int a1, int a2, int a3) {
-    gl_func_00000000(&gSysLib_data_B884_arg, 2);
-    gl_func_00000000(&gSysLib_data_B89C_arg, 0, (char*)&D_00000000 + 0xD4E0);
-    gl_func_00000000(&gSysLib_data_B8AC_arg, 0, a2);
-    gl_func_00000000(&gSysLib_data_B8C0_arg, a1, a3);
+    CALL(sys_setWord4_00061D80)(&gSysLib_data_B884_arg, 2);
+    CALL(fs_gdlOpenFile)(&gSysLib_data_B89C_arg, 0, (char*)&D_00000000 + 0xD4E0);
+    CALL(fs_gdlSeekFile)(&gSysLib_data_B8AC_arg, 0, a2);
+    CALL(fs_gdlReadFile)(&gSysLib_data_B8C0_arg, a1, a3);
 }
 
 extern int gl_func_00000000();
@@ -1528,10 +1529,10 @@ extern int gSysLib_data_B8FC_arg, gSysLib_data_B914_arg, gSysLib_data_B924_arg, 
 extern int D_00000000;
 
 void Backup_write(int a0, int a1, int a2, int a3) {
-    gl_func_00000000(&gSysLib_data_B8FC_arg, 2);
-    gl_func_00000000(&gSysLib_data_B914_arg, 0, (char*)&D_00000000 + 0xD4E4);
-    gl_func_00000000(&gSysLib_data_B924_arg, 0, a1);
-    gl_func_00000000(&gSysLib_data_B938_arg, a2, a3);
+    CALL(sys_setWord4_00061D80)(&gSysLib_data_B8FC_arg, 2);
+    CALL(fs_gdlOpenFile)(&gSysLib_data_B914_arg, 0, (char*)&D_00000000 + 0xD4E4);
+    CALL(fs_gdlSeekFile)(&gSysLib_data_B924_arg, 0, a1);
+    CALL(fs_gdlWriteFile)(&gSysLib_data_B938_arg, a2, a3);
 }
 
 /* Backup_wordsEqual: 69-insn word-array equality predicate. Compares a3/4 words
@@ -1575,12 +1576,12 @@ int Backup_wordsEqual(int a0, register int *a1, int *a2, int a3) {
 extern int gl_func_00000000();
 int Backup_checkHeader(int a0) {
     char buf[0x28];
-    gl_func_00000000(a0, &buf[0x08], BACKUP_SRAM_COURSE_SUM, 8);
-    gl_func_00000000(a0, &buf[0x10], BACKUP_SRAM_ARCADE_SUM, 8);
-    gl_func_00000000(a0, &buf[0x18], BACKUP_SRAM_OPTIONS_SUM, 8);
-    gl_func_00000000(a0, &buf[0x20], BACKUP_SRAM_GHOST_SUM, 8);
-    gl_func_00000000(a0, &buf[0], BACKUP_SRAM_HEADER, 8);
-    if (gl_func_00000000(&buf[0], &buf[0x08], 0x20, BACKUP_HEADER_KEY) == 0) {
+    CALL(Backup_read)(a0, &buf[0x08], BACKUP_SRAM_COURSE_SUM, 8);
+    CALL(Backup_read)(a0, &buf[0x10], BACKUP_SRAM_ARCADE_SUM, 8);
+    CALL(Backup_read)(a0, &buf[0x18], BACKUP_SRAM_OPTIONS_SUM, 8);
+    CALL(Backup_read)(a0, &buf[0x20], BACKUP_SRAM_GHOST_SUM, 8);
+    CALL(Backup_read)(a0, &buf[0], BACKUP_SRAM_HEADER, 8);
+    if (CALL(backup_checksumOk)(&buf[0], &buf[0x08], 0x20, BACKUP_HEADER_KEY) == 0) {
         return 0;
     }
     return 1;
@@ -1597,18 +1598,18 @@ extern int gl_func_00000000();
 void Backup_writeHeader(int a0) {
     char hash[8];
     char data[0x20];
-    gl_func_00000000(a0, &data[0],  BACKUP_SRAM_COURSE_SUM, 8);
-    gl_func_00000000(a0, &data[8],  BACKUP_SRAM_ARCADE_SUM, 8);
-    gl_func_00000000(a0, &data[16], BACKUP_SRAM_OPTIONS_SUM, 8);
-    gl_func_00000000(a0, &data[24], BACKUP_SRAM_GHOST_SUM, 8);
-    gl_func_00000000(hash, data, 0x20, BACKUP_HEADER_KEY);
-    gl_func_00000000(a0, BACKUP_SRAM_HEADER, hash, 8);
+    CALL(Backup_read)(a0, &data[0],  BACKUP_SRAM_COURSE_SUM, 8);
+    CALL(Backup_read)(a0, &data[8],  BACKUP_SRAM_ARCADE_SUM, 8);
+    CALL(Backup_read)(a0, &data[16], BACKUP_SRAM_OPTIONS_SUM, 8);
+    CALL(Backup_read)(a0, &data[24], BACKUP_SRAM_GHOST_SUM, 8);
+    CALL(backup_checksum)(hash, data, 0x20, BACKUP_HEADER_KEY);
+    CALL(Backup_write)(a0, BACKUP_SRAM_HEADER, hash, 8);
 }
 
 extern int gl_func_00000000();
 int Backup_readOptions(int a0) {
-    int tmp = gl_func_00000000(sizeof(BackupOptions));
-    gl_func_00000000(a0, tmp, BACKUP_SRAM_OPTIONS, sizeof(BackupOptions));
+    int tmp = CALL(mem_new)(sizeof(BackupOptions));
+    CALL(Backup_read)(a0, tmp, BACKUP_SRAM_OPTIONS, sizeof(BackupOptions));
     return tmp;
 }
 
@@ -1623,12 +1624,12 @@ int Backup_readOptions(int a0) {
 extern int gl_func_00000000();
 void Backup_writeOptions(int a0, int a1) {
     char buf[8];
-    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS, a1, sizeof(BackupOptions));
-    gl_func_00000000(buf, a1, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
-    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS_SUM, buf, 8);
-    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS_MIRROR, a1, sizeof(BackupOptions));
-    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS_MIRROR_SUM, buf, 8);
-    gl_func_00000000(a0);
+    CALL(Backup_write)(a0, BACKUP_SRAM_OPTIONS, a1, sizeof(BackupOptions));
+    CALL(backup_checksum)(buf, a1, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
+    CALL(Backup_write)(a0, BACKUP_SRAM_OPTIONS_SUM, buf, 8);
+    CALL(Backup_write)(a0, BACKUP_SRAM_OPTIONS_MIRROR, a1, sizeof(BackupOptions));
+    CALL(Backup_write)(a0, BACKUP_SRAM_OPTIONS_MIRROR_SUM, buf, 8);
+    CALL(Backup_writeHeader)(a0);
 }
 
 /* Backup_checkOptions: record-pair load/compare/store with 0xDEADBBAD sentinel.
@@ -1647,18 +1648,18 @@ int Backup_checkOptions(int *s0) {
     char cmp[8];
     char bufC[24];
     char bufD[8];
-    gl_func_00000000(s0, bufA, BACKUP_SRAM_OPTIONS, sizeof(BackupOptions));
-    gl_func_00000000(s0, bufB, BACKUP_SRAM_OPTIONS_SUM, 8);
-    gl_func_00000000(cmp, bufA, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
-    if (gl_func_00000000(cmp, bufB) == 0) {
-        gl_func_00000000(s0, bufC, BACKUP_SRAM_OPTIONS_MIRROR, sizeof(BackupOptions));
-        gl_func_00000000(s0, bufD, BACKUP_SRAM_OPTIONS_MIRROR_SUM, 8);
-        gl_func_00000000(cmp, bufC, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
-        if (gl_func_00000000(cmp, bufD) == 0) {
+    CALL(Backup_read)(s0, bufA, BACKUP_SRAM_OPTIONS, sizeof(BackupOptions));
+    CALL(Backup_read)(s0, bufB, BACKUP_SRAM_OPTIONS_SUM, 8);
+    CALL(backup_checksum)(cmp, bufA, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
+    if (CALL(backup_checksumEqual)(cmp, bufB) == 0) {
+        CALL(Backup_read)(s0, bufC, BACKUP_SRAM_OPTIONS_MIRROR, sizeof(BackupOptions));
+        CALL(Backup_read)(s0, bufD, BACKUP_SRAM_OPTIONS_MIRROR_SUM, 8);
+        CALL(backup_checksum)(cmp, bufC, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
+        if (CALL(backup_checksumEqual)(cmp, bufD) == 0) {
             return 0;
         }
-        gl_func_00000000(s0, BACKUP_SRAM_OPTIONS, bufC, sizeof(BackupOptions));
-        gl_func_00000000(s0, BACKUP_SRAM_OPTIONS_SUM, bufD, 8);
+        CALL(Backup_write)(s0, BACKUP_SRAM_OPTIONS, bufC, sizeof(BackupOptions));
+        CALL(Backup_write)(s0, BACKUP_SRAM_OPTIONS_SUM, bufD, 8);
     }
     return 1;
 }
@@ -1667,14 +1668,14 @@ extern int gl_func_00000000();
 void Backup_resetOptions(int a0) {
     int pad_arr[5];
     int scratch;
-    gl_func_00000000(&scratch);
-    gl_func_00000000(a0, &scratch);
+    CALL(Backup_resetOptionsData_0000AFC4)(&scratch);
+    CALL(Backup_writeOptions)(a0, &scratch);
 }
 
 extern int gl_func_00000000();
 int Backup_readCourse(int a0) {
-    int tmp = gl_func_00000000(sizeof(BackupCourse));
-    gl_func_00000000(a0, tmp, BACKUP_SRAM_COURSE, sizeof(BackupCourse));
+    int tmp = CALL(mem_new)(sizeof(BackupCourse));
+    CALL(Backup_read)(a0, tmp, BACKUP_SRAM_COURSE, sizeof(BackupCourse));
     return tmp;
 }
 
@@ -1698,13 +1699,13 @@ extern int gl_func_00000000();
 struct B384 { int w[96]; };
 struct B8 { int w[2]; };
 void Backup_writeCourse(int s0, BackupCourse *src) { BackupCourse buf1 = *src; struct B8 buf2;
-    gl_func_00000000(&buf1);
-    gl_func_00000000(s0, BACKUP_SRAM_COURSE, &buf1, sizeof(BackupCourse));
-    gl_func_00000000(&buf2, &buf1, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
-    gl_func_00000000(s0, BACKUP_SRAM_COURSE_SUM, &buf2, 8);
-    gl_func_00000000(s0, BACKUP_SRAM_COURSE_MIRROR, &buf1, sizeof(BackupCourse));
-    gl_func_00000000(s0, BACKUP_SRAM_COURSE_MIRROR_SUM, &buf2, 8);
-    gl_func_00000000(s0);
+    CALL(Backup_courseClearNew)(&buf1);
+    CALL(Backup_write)(s0, BACKUP_SRAM_COURSE, &buf1, sizeof(BackupCourse));
+    CALL(backup_checksum)(&buf2, &buf1, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
+    CALL(Backup_write)(s0, BACKUP_SRAM_COURSE_SUM, &buf2, 8);
+    CALL(Backup_write)(s0, BACKUP_SRAM_COURSE_MIRROR, &buf1, sizeof(BackupCourse));
+    CALL(Backup_write)(s0, BACKUP_SRAM_COURSE_MIRROR_SUM, &buf2, 8);
+    CALL(Backup_writeHeader)(s0);
 }
 
 /* Backup_checkCourse: record-pair load/compare/store, sibling of Backup_checkOptions
@@ -1718,18 +1719,18 @@ int Backup_checkCourse(int *s0) {
     char cmp[8];
     char bufC[384];
     char bufD[8];
-    gl_func_00000000(s0, bufA, BACKUP_SRAM_COURSE, sizeof(BackupCourse));
-    gl_func_00000000(s0, bufB, BACKUP_SRAM_COURSE_SUM, 8);
-    gl_func_00000000(cmp, bufA, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
-    if (gl_func_00000000(cmp, bufB) == 0) {
-        gl_func_00000000(s0, bufC, BACKUP_SRAM_COURSE_MIRROR, sizeof(BackupCourse));
-        gl_func_00000000(s0, bufD, BACKUP_SRAM_COURSE_MIRROR_SUM, 8);
-        gl_func_00000000(cmp, bufC, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
-        if (gl_func_00000000(cmp, bufD) == 0) {
+    CALL(Backup_read)(s0, bufA, BACKUP_SRAM_COURSE, sizeof(BackupCourse));
+    CALL(Backup_read)(s0, bufB, BACKUP_SRAM_COURSE_SUM, 8);
+    CALL(backup_checksum)(cmp, bufA, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
+    if (CALL(backup_checksumEqual)(cmp, bufB) == 0) {
+        CALL(Backup_read)(s0, bufC, BACKUP_SRAM_COURSE_MIRROR, sizeof(BackupCourse));
+        CALL(Backup_read)(s0, bufD, BACKUP_SRAM_COURSE_MIRROR_SUM, 8);
+        CALL(backup_checksum)(cmp, bufC, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
+        if (CALL(backup_checksumEqual)(cmp, bufD) == 0) {
             return 0;
         }
-        gl_func_00000000(s0, BACKUP_SRAM_COURSE, bufC, sizeof(BackupCourse));
-        gl_func_00000000(s0, BACKUP_SRAM_COURSE_SUM, bufD, 8);
+        CALL(Backup_write)(s0, BACKUP_SRAM_COURSE, bufC, sizeof(BackupCourse));
+        CALL(Backup_write)(s0, BACKUP_SRAM_COURSE_SUM, bufD, 8);
     }
     return 1;
 }
@@ -1738,14 +1739,14 @@ extern int gl_func_00000000();
 void Backup_resetCourse(int a0) {
     int pad_arr[95];
     int scratch;
-    gl_func_00000000(&scratch);
-    gl_func_00000000(a0, &scratch);
+    CALL(Backup_resetCourseData_0000A670)(&scratch);
+    CALL(Backup_writeCourse)(a0, &scratch);
 }
 
 extern int gl_func_00000000();
 int Backup_readArcade(int a0) {
-    int tmp = gl_func_00000000(sizeof(BackupArcade));
-    gl_func_00000000(a0, tmp, BACKUP_SRAM_ARCADE, sizeof(BackupArcade));
+    int tmp = CALL(mem_new)(sizeof(BackupArcade));
+    CALL(Backup_read)(a0, tmp, BACKUP_SRAM_ARCADE, sizeof(BackupArcade));
     return tmp;
 }
 
@@ -1761,13 +1762,13 @@ int Backup_readArcade(int a0) {
  * leftovers (a1 survives because the copy reads through t8). */
 typedef struct { int w[24]; } Buf60;
 void Backup_writeArcade(void *arg0, BackupArcade *arg1) { BackupArcade buf60 = *arg1; char buf08[8];
-    func_00000000(&buf60);
-    func_00000000(arg0, BACKUP_SRAM_ARCADE, &buf60, sizeof(BackupArcade));
-    func_00000000(buf08, &buf60, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
-    func_00000000(arg0, BACKUP_SRAM_ARCADE_SUM, buf08, 8);
-    func_00000000(arg0, BACKUP_SRAM_ARCADE_MIRROR, &buf60, sizeof(BackupArcade));
-    func_00000000(arg0, BACKUP_SRAM_ARCADE_MIRROR_SUM, buf08, 8);
-    func_00000000(arg0);
+    FCALL(Backup_arcadeClearNew)(&buf60);
+    FCALL(Backup_write)(arg0, BACKUP_SRAM_ARCADE, &buf60, sizeof(BackupArcade));
+    FCALL(backup_checksum)(buf08, &buf60, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
+    FCALL(Backup_write)(arg0, BACKUP_SRAM_ARCADE_SUM, buf08, 8);
+    FCALL(Backup_write)(arg0, BACKUP_SRAM_ARCADE_MIRROR, &buf60, sizeof(BackupArcade));
+    FCALL(Backup_write)(arg0, BACKUP_SRAM_ARCADE_MIRROR_SUM, buf08, 8);
+    FCALL(Backup_writeHeader)(arg0);
 }
 
 /* Backup_checkArcade: record-pair load/compare/store, sibling of Backup_checkOptions
@@ -1780,18 +1781,18 @@ int Backup_checkArcade(int *s0) {
     char cmp[8];
     char bufC[96];
     char bufD[8];
-    gl_func_00000000(s0, bufA, BACKUP_SRAM_ARCADE, sizeof(BackupArcade));
-    gl_func_00000000(s0, bufB, BACKUP_SRAM_ARCADE_SUM, 8);
-    gl_func_00000000(cmp, bufA, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
-    if (gl_func_00000000(cmp, bufB) == 0) {
-        gl_func_00000000(s0, bufC, BACKUP_SRAM_ARCADE_MIRROR, sizeof(BackupArcade));
-        gl_func_00000000(s0, bufD, BACKUP_SRAM_ARCADE_MIRROR_SUM, 8);
-        gl_func_00000000(cmp, bufC, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
-        if (gl_func_00000000(cmp, bufD) == 0) {
+    CALL(Backup_read)(s0, bufA, BACKUP_SRAM_ARCADE, sizeof(BackupArcade));
+    CALL(Backup_read)(s0, bufB, BACKUP_SRAM_ARCADE_SUM, 8);
+    CALL(backup_checksum)(cmp, bufA, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
+    if (CALL(backup_checksumEqual)(cmp, bufB) == 0) {
+        CALL(Backup_read)(s0, bufC, BACKUP_SRAM_ARCADE_MIRROR, sizeof(BackupArcade));
+        CALL(Backup_read)(s0, bufD, BACKUP_SRAM_ARCADE_MIRROR_SUM, 8);
+        CALL(backup_checksum)(cmp, bufC, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
+        if (CALL(backup_checksumEqual)(cmp, bufD) == 0) {
             return 0;
         }
-        gl_func_00000000(s0, BACKUP_SRAM_ARCADE, bufC, sizeof(BackupArcade));
-        gl_func_00000000(s0, BACKUP_SRAM_ARCADE_SUM, bufD, 8);
+        CALL(Backup_write)(s0, BACKUP_SRAM_ARCADE, bufC, sizeof(BackupArcade));
+        CALL(Backup_write)(s0, BACKUP_SRAM_ARCADE_SUM, bufD, 8);
     }
     return 1;
 }
@@ -1800,8 +1801,8 @@ extern int gl_func_00000000();
 void Backup_resetArcade(int a0) {
     int pad_arr[23];
     int scratch;
-    gl_func_00000000(&scratch);
-    gl_func_00000000(a0, &scratch);
+    CALL(Backup_resetArcadeData_0000AAEC)(&scratch);
+    CALL(Backup_writeArcade)(a0, &scratch);
 }
 
 /* Backup_readGhost: 31-insn alloc-init-conditional-finalize (0x7C, frame 0x20).
@@ -1825,12 +1826,12 @@ void Backup_resetArcade(int a0) {
  * substantive decode (per feedback_doc_marker_is_bail.md).
  */
 void* Backup_readGhost(void *arg0) {
-    int *obj = (int*)gl_func_00000000(sizeof(BackupGhost));
-    gl_func_00000000(arg0, obj, BACKUP_SRAM_GHOST, sizeof(BackupGhost));
-    if (gl_func_00000000(obj) != 0) {
-        int v = gl_func_00000000(obj[1] * 4);
+    int *obj = (int*)CALL(mem_new)(sizeof(BackupGhost));
+    CALL(Backup_read)(arg0, obj, BACKUP_SRAM_GHOST, sizeof(BackupGhost));
+    if (CALL(Backup_ghostGetMode)(obj) != 0) {
+        int v = CALL(mem_new)(obj[1] * 4);
         obj[2] = v;
-        gl_func_00000000(arg0, v, BACKUP_SRAM_GHOST_DATA, obj[1] * 4);
+        CALL(Backup_read)(arg0, v, BACKUP_SRAM_GHOST_DATA, obj[1] * 4);
     }
     return obj;
 }
@@ -1856,16 +1857,16 @@ void Backup_writeGhost(C28C_Self *arg0, struct gl_func_0000C28C_Four *arg1) {
     buf10.c = 0;
 
     arg0->f4 = arg1->a;
-    gl_func_00000000(arg0, BACKUP_SRAM_GHOST, &buf10, sizeof(BackupGhost));
-    if (gl_func_00000000(arg1) != 0) {
-        gl_func_00000000(arg0, BACKUP_SRAM_GHOST_DATA, arg1->c, arg1->b * 4);
+    CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST, &buf10, sizeof(BackupGhost));
+    if (CALL(Backup_ghostGetMode)(arg1) != 0) {
+        CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST_DATA, arg1->c, arg1->b * 4);
     }
 
-    gl_func_00000000(buf08, &buf10, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
-    gl_func_00000000(arg0, BACKUP_SRAM_GHOST_SUM, buf08, 8);
-    gl_func_00000000(arg0, BACKUP_SRAM_GHOST_MIRROR, &buf10, sizeof(BackupGhost));
-    gl_func_00000000(arg0, BACKUP_SRAM_GHOST_MIRROR_SUM, buf08, 8);
-    gl_func_00000000(arg0);
+    CALL(backup_checksum)(buf08, &buf10, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
+    CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST_SUM, buf08, 8);
+    CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST_MIRROR, &buf10, sizeof(BackupGhost));
+    CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST_MIRROR_SUM, buf08, 8);
+    CALL(Backup_writeHeader)(arg0);
 }
 
 int Backup_checkGhost(void *arg0) {
@@ -1875,18 +1876,18 @@ int Backup_checkGhost(void *arg0) {
     int backup16[4];
     int backup8[2];
 
-    gl_func_00000000(arg0, current16, BACKUP_SRAM_GHOST, sizeof(BackupGhost));
-    gl_func_00000000(arg0, current8, BACKUP_SRAM_GHOST_SUM, 8);
-    gl_func_00000000(digest, current16, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
-    if (gl_func_00000000(digest, current8) == 0) {
-        gl_func_00000000(arg0, backup16, BACKUP_SRAM_GHOST_MIRROR, sizeof(BackupGhost));
-        gl_func_00000000(arg0, backup8, BACKUP_SRAM_GHOST_MIRROR_SUM, 8);
-        gl_func_00000000(digest, backup16, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
-        if (gl_func_00000000(digest, backup8) == 0) {
+    CALL(Backup_read)(arg0, current16, BACKUP_SRAM_GHOST, sizeof(BackupGhost));
+    CALL(Backup_read)(arg0, current8, BACKUP_SRAM_GHOST_SUM, 8);
+    CALL(backup_checksum)(digest, current16, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
+    if (CALL(backup_checksumEqual)(digest, current8) == 0) {
+        CALL(Backup_read)(arg0, backup16, BACKUP_SRAM_GHOST_MIRROR, sizeof(BackupGhost));
+        CALL(Backup_read)(arg0, backup8, BACKUP_SRAM_GHOST_MIRROR_SUM, 8);
+        CALL(backup_checksum)(digest, backup16, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
+        if (CALL(backup_checksumEqual)(digest, backup8) == 0) {
             return 0;
         }
-        gl_func_00000000(arg0, BACKUP_SRAM_GHOST, backup16, sizeof(BackupGhost));
-        gl_func_00000000(arg0, BACKUP_SRAM_GHOST_SUM, backup8, 8);
+        CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST, backup16, sizeof(BackupGhost));
+        CALL(Backup_write)(arg0, BACKUP_SRAM_GHOST_SUM, backup8, 8);
     }
     return 1;
 }
@@ -1895,8 +1896,8 @@ extern int gl_func_00000000();
 void Backup_resetGhost(int a0) {
     int pad_arr[3];
     int scratch;
-    gl_func_00000000(&scratch);
-    gl_func_00000000(a0, &scratch);
+    CALL(Backup_resetGhostData_0000A990)(&scratch);
+    CALL(Backup_writeGhost)(a0, &scratch);
 }
 
 /* Backup_cacheGhostBits: 21-insn 3-call wrapper. r = g(self); self->1 = r->0;
@@ -1912,12 +1913,12 @@ typedef struct { int x; } C49C_W;
 typedef struct { int pad0; C49C_W f4; } C49C_Self;
 typedef struct { C49C_W f0; int pad4; int f8; } C49C_Rec;
 void Backup_cacheGhostBits(C49C_Self *a0) {
-    C49C_Rec *r = (C49C_Rec *)gl_func_00000000(a0);
+    C49C_Rec *r = (C49C_Rec *)CALL(Backup_readGhost)(a0);
     a0->f4 = r->f0;
     if (r->f8 != 0) {
-        gl_func_00000000(r->f8, r);
+        CALL(mem_delete)(r->f8, r);
     }
-    gl_func_00000000(r);
+    CALL(mem_delete)(r);
 }
 
 extern int gl_ref_0001DCE0();
@@ -2009,7 +2010,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_0000C644(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -2017,14 +2018,14 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_0000C680(float *dst) {
     int pad;
     float scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_0000C6BC(Quad4 *dst) {
     Quad4 scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
@@ -2034,7 +2035,7 @@ void fs_gdlReadVec3_0000C714(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&gSysLib, &raw, 12);
+    CALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -2061,8 +2062,8 @@ extern int gl_func_00000000();
 void *RaceTracker_ctor(RaceTracker *arg0) {
     int v1;
 
-    if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0xB8), (arg0 != 0))) {
-        gl_func_00000000(arg0, (char *)&D_00000000 + 0xD678);
+    if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0xB8), (arg0 != 0))) {
+        CALL(Node_ctor)(arg0, (char *)&D_00000000 + 0xD678);
         arg0->vptr = (int)&RaceTracker_vtbl;
         arg0->session = 0;
         arg0->hudFlags = 0;
@@ -2081,7 +2082,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
         arg0->points94 = 0;
         arg0->cool = 0;
         arg0->numEntries = 0;
-        arg0->entries = (RaceEntry *)gl_func_00000000(0x300);
+        arg0->entries = (RaceEntry *)CALL(mem_new)(0x300);
         for (v1 = 0; v1 != 0x300; v1 += 0x180) {
             *(int *)((char *)arg0->entries + v1) = 0;
             *(int *)((char *)arg0->entries + v1 + 4) = 0;
@@ -2092,9 +2093,9 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
             *(int *)((char *)arg0->entries + v1 + 0x120) = 0;
             *(int *)((char *)arg0->entries + v1 + 0x124) = 0;
         }
-        gl_func_00000000(arg0);
-        gl_func_00000000(*(int *)((char *)&D_00000000 + 0x134), arg0);
-        gl_func_00000000(arg0);
+        CALL(RaceTracker_reset)(arg0);
+        CALL(game_forEachPlayer_000020D8)(*(int *)((char *)&D_00000000 + 0x134), arg0);
+        CALL(Node_pauseUpdate_0000E464)(arg0);
     }
     return arg0;
 }
@@ -2139,9 +2140,9 @@ void RaceTracker_reset(RaceTracker *self) {
     self->courseStart = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xC4);
     self->courseZ = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xCC);
     self->courseLength = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xD8) - self->courseZ;
-    gl_func_00000000(self);
+    CALL(RaceTracker_findGates)(self);
     if (self->pointsList != 0) {
-        gl_func_00000000(self->pointsList, self);
+        CALL(TrickPointsGadget_reset_00003298)(self->pointsList, self);
     }
     p = (char *)self->cool;
     if (p != 0) {
@@ -2230,7 +2231,7 @@ int RaceTracker_checkTimeLimit(RaceTracker *a0) {
     n = a0->timeLimit - 8;
     if (p != 0) {
         a0->elapsed = n;
-        gl_func_00000000(p, n);
+        CALL(TimeGadget_setTime)(p, n);
     }
     return 1;
 retzero:
@@ -2379,7 +2380,7 @@ extern float D_00000000_c760;
 extern int gl_func_00000000();
 void RaceTracker_display(void) {
     if (D_00000000_c758 > 0.0f || D_00000000_c75c > 0.0f || D_00000000_c760 > 0.0f) {
-        gl_func_00000000();
+        CALL(Node_display)();
     }
 }
 
@@ -2395,7 +2396,7 @@ int RaceTracker_handleMsg(int *a0, int *a1) {
         int *new_a0 = (int*)((char*)a0 + *(short*)((char*)p + 0x58));
         (*(int(**)(int*))((char*)p + 0x5C))(new_a0);
     }
-    return gl_func_00000000(a0, a1);
+    return CALL(Node_handleMsg)(a0, a1);
 }
 
 #ifndef FW
@@ -2441,16 +2442,16 @@ void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
                 fl = m->modes;
                 if (CE38_E(i)->finished != 0) {
                     if (fl & BACKUP_MODE_TIME) {
-                        CE38_E(i)->rank[0] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), self->elapsed);
-                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
+                        CE38_E(i)->rank[0] = CALL(Backup_courseRecordFindTimeRank)(CE38_D(0x64) * 0x30 + FW(m, 0x0), self->elapsed);
+                        XCALL(gl_func_00000000_ce38_v, Backup_courseRecordInsertTime)(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
                         v = CE38_E(i)->rank[0];
                         if (v < 3) CE38_D(0x7C) = v + 1;
                         m = self->session;
                         fl = m->modes;
                     }
                     if (fl & BACKUP_MODE_TRICK) {
-                        CE38_E(i)->rank[1] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), CE38_E(i)->time);
-                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
+                        CE38_E(i)->rank[1] = CALL(Backup_courseRecordFindScoreRank)(CE38_D(0x64) * 0x30 + FW(m, 0x0), CE38_E(i)->time);
+                        XCALL(gl_func_00000000_ce38_v, Backup_courseRecordInsertScore)(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
                         v = CE38_E(i)->rank[1];
                         if (v < 3) CE38_D(0x7C) = v + 1;
                         m = self->session;
@@ -2458,8 +2459,8 @@ void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
                     }
                 }
                 if (fl & BACKUP_MODE_ARCADE) {
-                    CE38_E(i)->rank[2] = gl_func_00000000(m->arcade, CE38_E(i)->time);
-                    gl_func_00000000_ce38_v(self->session->arcade, CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
+                    CE38_E(i)->rank[2] = CALL(Backup_arcadeFindRank)(m->arcade, CE38_E(i)->time);
+                    XCALL(gl_func_00000000_ce38_v, Backup_arcadeInsert)(self->session->arcade, CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
                     v = CE38_E(i)->rank[2];
                     if (v < 3) CE38_D(0x7C) = v + 1;
                 }
@@ -2653,7 +2654,7 @@ void RaceTracker_onCheckpoint(RaceTracker *a0, int *a1) {
     float denom;
 
     if (a0->hudFlags & 8) {
-        obj = (int*)gl_func_00000000(a0->pointsList, a1[0x88 / 4], 0, 1);
+        obj = (int*)CALL(PointsGadget_allocSlot_00003DB8)(a0->pointsList, a1[0x88 / 4], 0, 1);
         POPUP(obj)->accelY = 0.0f;
         gl_proto_D318(obj, 0xDC, 0x78, 1.0f, 1.0f);
         denom = 255.0f;
@@ -2663,7 +2664,7 @@ void RaceTracker_onCheckpoint(RaceTracker *a0, int *a1) {
         POPUP(obj)->colour[1] = 80.0f / denom;
         POPUP(obj)->colour[2] = 80.0f / denom;
         POPUP(obj)->colour[3] = (float)0 / denom;
-        gl_func_00000000(0x17, a0->score / 1000);
+        CALL(snd_sendEvent)(0x17, a0->score / 1000);
         a0->score += a1[0x88 / 4] * 1000;
     }
 }
@@ -2705,17 +2706,17 @@ void RaceTracker_passGates(int *arg0) {
     if (tmp) {}
     if (tmp[0xC8 / 4] & 1) {
         if (*(float *)((char *)e[0x44 / 4] + 8) <= *(float *)((char *)tmp + 0x5C)) {
-            gl_func_00000000((int *)((int)e | (int)arg0), tmp, e);
+            CALL(RaceTracker_onGateCleared)((int *)((int)e | (int)arg0), tmp, e);
             return;
         }
-        gl_func_00000000((int *)((int)e | (int)arg0), tmp, e);
+        CALL(RaceTracker_onGateMissed)((int *)((int)e | (int)arg0), tmp, e);
         return;
     }
     if (*(float *)((char *)tmp + 0x5C) <= *(float *)((char *)e[0x44 / 4] + 8)) {
-        gl_func_00000000((int *)((int)e | (int)arg0), tmp, e);
+        CALL(RaceTracker_onGateCleared)((int *)((int)e | (int)arg0), tmp, e);
         return;
     }
-    gl_func_00000000((int *)((int)e | (int)arg0), tmp, e);
+    CALL(RaceTracker_onGateMissed)((int *)((int)e | (int)arg0), tmp, e);
 }
 
 /* === EXACT MATCH 76/76 (in-tree, clean rebuild x2, 2026-07-03 agent-e) ===
@@ -2759,12 +2760,12 @@ void RaceTracker_onGateCleared(RaceTracker *o, int a1) {
     int *obj;
     float r, g, b;
     if (o->pointsList == 0 || (o->hudFlags & 4) == 0) return;
-    gl_func_00000000(0x2C);
+    CALL(snd_postEvent)(0x2C);
     o->score += 2000;
     if (o->bonus < 500) {
         o->bonus += 100;
     }
-    obj = (int *)gl_func_00000000(o->pointsList, o->bonus, 0, 1);
+    obj = (int *)CALL(PointsGadget_allocSlot_00003C0C)(o->pointsList, o->bonus, 0, 1);
     r = 100.0f;
     g = 235.0f;
     b = 250.0f;
@@ -2775,10 +2776,10 @@ void RaceTracker_onGateCleared(RaceTracker *o, int a1) {
     POPUP(obj)->colour[3] = b / 255.0f;
     POPUP(obj)->font = o->pointsList + 0x150;
     POPUP(obj)->accelY = 0.0f;
-    gl_func_00000000_d548f(obj, 100, 0x86, 1.0f, 1.0f);
+    XCALL(gl_func_00000000_d548f, PointsPopup_setPosScale)(obj, 100, 0x86, 1.0f, 1.0f);
     POPUP(obj)->velY = 0.0f;
     POPUP(obj)->velX = 0.0f;
-    obj = (int *)gl_func_00000000(o->pointsList, 2, 0, 1);
+    obj = (int *)CALL(PointsGadget_allocSlot_00003DB8)(o->pointsList, 2, 0, 1);
     r = 80.0f;
     b = 0.0f;
     POPUP(obj)->colour[0] = g / 255.0f;
@@ -2791,7 +2792,7 @@ extern int gl_func_00000000();
 
 void RaceTracker_onGateMissed(RaceTracker *a0, int a1) {
     if ((a0->hudFlags & 4) != 0) {
-        gl_func_00000000(0x2F, a0);
+        CALL(snd_postEvent)(0x2F, a0);
         a0->bonus = 0;
     }
 }
@@ -2816,7 +2817,7 @@ void RaceTracker_popComboBonus(RaceTracker *o, int a1) {
     int node = o->pointsList;
     int *obj;
     if (node == 0 || (o->hudFlags & 2) == 0) return;
-    obj = (int *)gl_func_00000000(node, a1, 0, 1);
+    obj = (int *)CALL(PointsGadget_allocSlot_00003C0C)(node, a1, 0, 1);
     r = 250.0f;
     g = 219.0f;
     b = 68.0f;
@@ -2859,8 +2860,8 @@ void RaceTracker_popTrickPointsCombo(RaceTracker *arg0, int arg1, int arg2) {
 
     a3 = arg0->pointsList;
     if ((a3 != 0) && (arg0->hudFlags & 2)) {
-        gl_func_00000000(0x27, arg1 + arg2);
-        v0 = (char *)gl_func_00000000(arg0->pointsList, arg1, 0, 1);
+        CALL(snd_sendEvent)(0x27, arg1 + arg2);
+        v0 = (char *)CALL(PointsGadget_allocSlot_00003C0C)(arg0->pointsList, arg1, 0, 1);
         denom = 255.0f;
         POPUP(v0)->parms.yps.value = 70.0f;
         POPUP(v0)->velX = 0.0f;
@@ -2877,7 +2878,7 @@ void RaceTracker_popTrickPointsCombo(RaceTracker *arg0, int arg1, int arg2) {
         a3 = arg0->pointsList;
     }
     if ((a3 != 0) && (arg0->hudFlags & 1)) {
-        gl_func_00000000(a3);
+        CALL(TrickPointsGadget_clampRows)(a3);
     }
 }
 
@@ -2899,8 +2900,8 @@ void RaceTracker_popTrickPoints(RaceTracker *arg0, int arg1) {
 
     a2 = arg0->pointsList;
     if ((a2 != 0) && (arg0->hudFlags & 2)) {
-        gl_func_00000000(0x22);
-        v0 = (char *)gl_func_00000000(arg0->pointsList, arg1, 0, 0);
+        CALL(snd_sendEvent)(0x22);
+        v0 = (char *)CALL(PointsGadget_allocSlot_00003B1C)(arg0->pointsList, arg1, 0, 0);
         denom = 255.0f;
         POPUP(v0)->parms.yps.value = 70.0f;
         POPUP(v0)->colour[0] = 250.0f / denom;
@@ -2910,7 +2911,7 @@ void RaceTracker_popTrickPoints(RaceTracker *arg0, int arg1) {
         a2 = arg0->pointsList;
     }
     if ((a2 != 0) && (arg0->hudFlags & 1)) {
-        gl_func_00000000(a2);
+        CALL(TrickPointsGadget_clampRows)(a2);
     }
 }
 
@@ -2923,7 +2924,7 @@ void RaceTracker_popTrickPoints(RaceTracker *arg0, int arg1) {
 extern int gl_func_00000000();
 void RaceTracker_showTrickName(int *a0, int a1, int a2) {
     int *p = (int*)a0[0x1B];
-    if (p != 0) gl_func_00000000(p, a1, a2);
+    if (p != 0) CALL(TrickPointsGadget_push)(p, a1, a2);
 }
 
 
@@ -2943,11 +2944,11 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
 
     sub = (int *)a0->pointsList;
     if ((sub != 0) && (a0->hudFlags & 2) && (*(int **)((char *)&D_00000000 + 0x64) != 0)) {
-        v0 = (int *)gl_func_00000000(sub, (int)((float)a1 / 1000.0f * 100.0f), 0, 1);
+        v0 = (int *)CALL(PointsGadget_allocSlot_00003C0C)(sub, (int)((float)a1 / 1000.0f * 100.0f), 0, 1);
         POPUP(v0)->timer = 230;
         POPUP(v0)->unk7C = 0;
         POPUP(v0)->accelY = 0.0f;
-        gl_func_00000000_d9e4b(v0, 160, 140, 1.0f, 1.0f);
+        XCALL(gl_func_00000000_d9e4b, PointsPopup_setPosScale)(v0, 160, 140, 1.0f, 1.0f);
         POPUP(v0)->velY = 0.0f;
         POPUP(v0)->velX = 0.0f;
         num100 = 100.0f;
@@ -2962,7 +2963,7 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
     sub = (int *)a0->pointsList;
     if (sub != 0) {
         if (a0->hudFlags & 1) {
-            gl_func_00000000(sub);
+            CALL(TrickPointsGadget_clampRows)(sub);
         }
     }
 }
@@ -3151,7 +3152,7 @@ void RaceTracker_setEntrySpeed(int a0, int a1, float a2) {
 extern int gl_func_00000000();
 
 void RaceTracker_setEntryHealth(int a0, int a1, int a2) {
-    int *r = (int*)gl_func_00000000(a0, a1, a2);
+    int *r = (int*)CALL(RaceTracker_findEntry)(a0, a1, a2);
     if (r == 0) return;
     if ((r[1] & 1) == 0) return;
     r[10] = a2;
@@ -3160,7 +3161,7 @@ void RaceTracker_setEntryHealth(int a0, int a1, int a2) {
 extern int gl_func_00000000();
 
 void RaceTracker_setEntryXZ(int a0, int a1, float a2, float a3) {
-    float *r = (float*)gl_func_00000000(a0, a1);
+    float *r = (float*)CALL(RaceTracker_findEntry)(a0, a1);
     if (r != 0) {
         r[2] = a2;
         r[3] = a3;
@@ -3189,7 +3190,7 @@ void RaceTracker_setEntryXZ(int a0, int a1, float a2, float a3) {
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
 void RaceTracker_addTrickPoints(RaceTracker *a0, int a1, int a2) {
-    int *v0 = (int*)gl_func_00000000(a0, a1, a2);
+    int *v0 = (int*)CALL(RaceTracker_findEntry)(a0, a1, a2);
     if (v0 == 0) return;
     if ((v0[0x4 / 4] & 1) == 0) return;
     if ((a0->hudFlags & 2) == 0) return;
@@ -3235,17 +3236,17 @@ void RaceTracker_startTrick(RaceTracker *self, int a1, int a2) {
     int *vt;
     int *new_a0;
     if (a1) {}
-    v0 = (int*)gl_func_00000000(self);
+    v0 = (int*)CALL(RaceTracker_findEntry)(self);
     a2_var = -1;
     if (v0 == 0) return;
     if ((v0[1] & 1) == 0) return;
     if (self->hudFlags & 0x10) {
-        a2_var = (int)gl_func_00000000(*(int*)&D_00000000, a2);
+        a2_var = (int)CALL(TrickTable_getPoints_0000C3CC)(*(int*)&D_00000000, a2);
     }
     if (self->hudFlags & 0x1) {
-        int r1 = (int)gl_func_00000000(*(int*)&D_00000000, a2);
-        gl_func_00000000(self, r1, a2_var);
-        gl_func_00000000(0x24, a2);
+        int r1 = (int)CALL(TrickTable_getEntry_0000C344)(*(int*)&D_00000000, a2);
+        CALL(RaceTracker_showTrickName)(self, r1, a2_var);
+        CALL(snd_sendEvent)(0x24, a2);
     }
     vt = (int*)self->vptr;
     new_a0 = (int*)((char*)self + *(short*)((char*)vt + 0x68));
@@ -3271,14 +3272,14 @@ extern int gl_func_00000000();
 void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
     int v0;
     if (a1) {}
-    v0 = gl_func_00000000();
+    v0 = CALL(RaceTracker_findEntry)();
     if (v0 != 0 && (((RaceEntry *)v0)->flags & 1)) {
         if ((((RaceTracker *)a0)->hudFlags & 2) && ((RaceEntry *)v0)->pending == 1) {
             if (a2 != 0) {
-                gl_func_00000000(a0, ((RaceEntry *)v0)->pendingPoints, a3);
+                CALL(RaceTracker_popTrickPointsCombo)(a0, ((RaceEntry *)v0)->pendingPoints, a3);
                 ((RaceEntry *)v0)->pending = 0;
             } else {
-                gl_func_00000000(a0, ((RaceEntry *)v0)->pendingPoints);
+                CALL(RaceTracker_popTrickPoints)(a0, ((RaceEntry *)v0)->pendingPoints);
                 ((RaceEntry *)v0)->pending = 0;
             }
             ((RaceEntry *)v0)->pendingPoints = 0;
@@ -3291,11 +3292,11 @@ void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
 }
 
 void RaceTracker_showComboBonus(RaceTracker *a0, int a1, int a2) {
-    int *v = (int*)gl_func_00000000(a0, a1, a2);
+    int *v = (int*)CALL(RaceTracker_findEntry)(a0, a1, a2);
     if (v == 0) return;
     if (!(v[1] & 1)) return;
     if (!(a0->hudFlags & 2)) return;
-    gl_func_00000000(a0, a2);
+    CALL(RaceTracker_popComboBonus)(a0, a2);
 }
 
 /* RaceTracker_endAllTricks: BYTE-EXACT (2026-05-30). 29-insn count-loop calling func
@@ -3313,7 +3314,7 @@ void RaceTracker_endAllTricks(RaceTracker *a0) {
     if (a0->numEntries > 0) {
         int offset = 0;
         do {
-            func_00000000(a0, RACE_ENTRY_AT(a0, offset)->rider, 1, 0);
+            FCALL(RaceTracker_endTrick)(a0, RACE_ENTRY_AT(a0, offset)->rider, 1, 0);
             i++;
             offset += 0x60;
         } while (i < a0->numEntries);
@@ -3327,14 +3328,14 @@ void RaceTracker_endAllTricks(RaceTracker *a0) {
  * idiom; cb is the gl_func_00000000 release placeholder. */
 extern int gl_func_00000000();
 void hud_releaseGadgets(Hud *o) {
-    if (o->pointsList) gl_func_00000000(o->pointsList);
-    if (o->speed) gl_func_00000000(o->speed);
-    if (o->points) gl_func_00000000(o->points);
-    if (o->time) gl_func_00000000(o->time);
-    if (o->course) gl_func_00000000(o->course);
-    if (o->countDown) gl_func_00000000(o->countDown);
-    if (o->points94) gl_func_00000000(o->points94);
-    if (o->cool) gl_func_00000000(o->cool);
+    if (o->pointsList) CALL(PointsGadget_release_000033E4)(o->pointsList);
+    if (o->speed) CALL(SpeedGadget_release)(o->speed);
+    if (o->points) CALL(PointsGadget_release)(o->points);
+    if (o->time) CALL(TimeGadget_release)(o->time);
+    if (o->course) CALL(CourseGadget_release)(o->course);
+    if (o->countDown) CALL(CountDownGadget_release)(o->countDown);
+    if (o->points94) CALL(PointsGadget_release_00000F9C)(o->points94);
+    if (o->cool) CALL(CoolGadget_release)(o->cool);
 }
 
 /* RaceTracker_toggleGhost: 42-insn gated flag toggle. Returns early unless bit 16 of
@@ -3354,7 +3355,7 @@ void RaceTracker_toggleGhost(int a0) {
     if (((RaceTracker *)a0)->numEntries != 2) {
         return;
     }
-    if (gl_func_00000000(&D_00000000, 0x20, a0) == 0) {
+    if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x20, a0) == 0) {
         return;
     }
     if (((RaceTracker *)a0)->ghostFlag != 0) {
@@ -3475,22 +3476,22 @@ void Node_hideDisplay_0000E490(char *a0) {
 
 void hud_initSprites_0000E4A8(Hud *a0) {
     int r;
-    r = gl_func_00000000(0, &D_00000000, 16, 320, 1, 10);
+    r = CALL(gui_fontCreate)(0, &D_00000000, 16, 320, 1, 10);
     a0->digitsTall = r;
-    gl_func_00000000(r, -1);
-    r = gl_func_00000000(0, &D_00000000, 160, 16, 10, 1);
+    CALL(gui_fontAdjustAdvance)(r, -1);
+    r = CALL(gui_fontCreate)(0, &D_00000000, 160, 16, 10, 1);
     a0->digitsWide = r;
-    gl_func_00000000(r, -1);
+    CALL(gui_fontAdjustAdvance)(r, -1);
 }
 
 void hud_initSprites_0000E53C(Hud *a0) {
     int r;
-    r = gl_func_00000000(0, &D_00000000, 352, 17, 11, 1);
+    r = CALL(gui_fontCreate)(0, &D_00000000, 352, 17, 11, 1);
     a0->sprites64 = r;
-    gl_func_00000000(r, -5);
-    r = gl_func_00000000(0, &D_00000000, 240, 11, 10, 1);
+    CALL(gui_fontAdjustAdvance)(r, -5);
+    r = CALL(gui_fontCreate)(0, &D_00000000, 240, 11, 10, 1);
     a0->sprites68 = r;
-    gl_func_00000000(r, -4);
+    CALL(gui_fontAdjustAdvance)(r, -4);
 }
 
 /* hud_initSprites_0000E5D0: 39-insn factory + 2-threshold side-effect (0x9C, frame 0x20).
@@ -3512,9 +3513,9 @@ struct gl_E5D0_factory { int n; char pad[0x1c]; int *sub; };
 extern void gl_func_00000000_e5d0_v();
 void hud_initSprites_0000E5D0(Hud *self) {
     struct gl_E5D0_factory *factory =
-        (struct gl_E5D0_factory *)gl_func_00000000(0, &D_00000000, 0xC0, 0xB, 0xC, 1);
+        (struct gl_E5D0_factory *)CALL(gui_fontCreate)(0, &D_00000000, 0xC0, 0xB, 0xC, 1);
     self->sprites60 = (int)factory;
-    gl_func_00000000_e5d0_v(factory, -2);
+    XCALL(gl_func_00000000_e5d0_v, gui_fontAdjustAdvance)(factory, -2);
     factory = (struct gl_E5D0_factory *)self->sprites60;
     if (factory->n >= 0xB) {
         factory->sub[0xD4 / 4] = 8;
@@ -3546,11 +3547,11 @@ void hud_initSprites_0000E5D0(Hud *self) {
 void hud_addPointsGadgetList(Hud *self) {
     int *obj;
     if (self->digitsTall == 0) {
-        gl_func_00000000(self);
+        CALL(hud_initSprites_0000E4A8)(self);
     }
-    obj = (int*)gl_func_00000000(0, self->digitsTall, self->digitsWide, self->pointsListArg);
+    obj = (int*)CALL(PointsGadget_ctor_00003138)(0, self->digitsTall, self->digitsWide, self->pointsListArg);
     self->pointsList = (int)obj;
-    gl_func_00000000(self->children, obj);
+    CALL(list_append)(self->children, obj);
     if (obj[0x14 / 4] != 0) {
         obj[0x4 / 4] = 1;
     }
@@ -3609,13 +3610,13 @@ void hud_addSpeedGadget(Hud *self, int a1, int a2, float *a3_float) {
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
     self->speedValue = (int)a3_float;
     if (self->sprites60 == 0) {
-        gl_func_00000000();
+        CALL(hud_initSprites_0000E5D0)();
     }
-    self->speed = gl_func_00000000(0, self->sprites60);
-    gl_func_00000000((int *)self->speed, (int)*(float *)self->speedValue);
-    gl_func_00000000((int *)self->speed, a1, a2);
+    self->speed = CALL(SpeedGadget_ctor)(0, self->sprites60);
+    CALL(SpeedGadget_setSpeed)((int *)self->speed, (int)*(float *)self->speedValue);
+    CALL(TimeGadgetParms_setPos_00013FE0)((int *)self->speed, a1, a2);
     q = (int *)self->speed;
-    gl_func_00000000(self->children, q);
+    CALL(list_append)(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3657,13 +3658,13 @@ void hud_addCountDownGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
     self->countDownValue = (int)a3_int_ptr;
     if (self->sprites64 == 0) {
-        gl_func_00000000();
+        CALL(hud_initSprites_0000E53C)();
     }
-    self->countDown = gl_func_00000000(0, self->sprites64, self->sprites68);
-    gl_func_00000000((int *)self->countDown, *(int *)self->countDownValue, 1);
-    gl_func_00000000((int *)self->countDown, a1, a2);
+    self->countDown = CALL(CountDownGadget_ctor)(0, self->sprites64, self->sprites68);
+    CALL(CountDownGadget_setTime)((int *)self->countDown, *(int *)self->countDownValue, 1);
+    CALL(CountDownGadget_setPos)((int *)self->countDown, a1, a2);
     q = (int *)self->countDown;
-    gl_func_00000000(self->children, q);
+    CALL(list_append)(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3688,13 +3689,13 @@ extern void gl_func_00000000_e84c2(int, float, float);
 extern void gl_func_00000000_e84c4(int, float, float, float, float);
 void hud_addCourseGadget(int *s0, int a1, int a2, int a3) {
     int *q;
-    s0[0x80 / 4] = gl_func_00000000(0, a3);
-    gl_func_00000000_e84c2(s0[0x80 / 4], 0.0f, 0.0f);
-    gl_func_00000000_e84c4(s0[0x80 / 4], *(float *)&s0[0x38 / 4], *(float *)&s0[0x3C / 4], *(float *)&s0[0x38 / 4], *(float *)&s0[0x3C / 4]);
-    gl_func_00000000((int *)s0[0x80 / 4], s0[0x38 / 4], s0[0x3C / 4], s0[0x40 / 4]);
-    gl_func_00000000((int *)s0[0x80 / 4], a1, a2);
+    s0[0x80 / 4] = CALL(CourseGadget_ctor)(0, a3);
+    XCALL(gl_func_00000000_e84c2, CourseGadget_setFloat2_0000254C)(s0[0x80 / 4], 0.0f, 0.0f);
+    XCALL(gl_func_00000000_e84c4, CourseGadget_setVec4_00002580)(s0[0x80 / 4], *(float *)&s0[0x38 / 4], *(float *)&s0[0x3C / 4], *(float *)&s0[0x38 / 4], *(float *)&s0[0x3C / 4]);
+    CALL(CourseGadget_setVec3_00002560)((int *)s0[0x80 / 4], s0[0x38 / 4], s0[0x3C / 4], s0[0x40 / 4]);
+    CALL(CourseGadget_setPos)((int *)s0[0x80 / 4], a1, a2);
     q = (int *)s0[0x80 / 4];
-    gl_func_00000000((char *)s0 + 0x10, q);
+    CALL(list_append)((char *)s0 + 0x10, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3737,14 +3738,14 @@ void hud_addTimeGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
     int *q;
     volatile int pad[2];
     if (self->sprites60 == 0) {
-        gl_func_00000000();
+        CALL(hud_initSprites_0000E5D0)();
     }
     self->timeValue = (int)a3_int_ptr;
-    self->time = gl_func_00000000(0, self->sprites60);
-    gl_func_00000000((int *)self->time, *(int *)self->timeValue);
-    gl_func_00000000((int *)self->time, a1, a2);
+    self->time = CALL(TimeGadget_ctor)(0, self->sprites60);
+    CALL(TimeGadget_setTime)((int *)self->time, *(int *)self->timeValue);
+    CALL(TimeGadgetParms_setPos_00013FE0)((int *)self->time, a1, a2);
     q = (int *)self->time;
-    gl_func_00000000(self->children, q);
+    CALL(list_append)(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3774,11 +3775,11 @@ void hud_addPointsGadget(Hud *self, int a1, int a2, int a3) {
     volatile int pad;
     inv = 255.0f;
     if (self->sprites60 == 0) {
-        gl_func_00000000();
+        CALL(hud_initSprites_0000E5D0)();
     }
     self->pointsValue = a3;
-    self->points = gl_func_00000000(0, self->sprites60);
-    gl_func_00000000((int *)self->points, a1, a2);
+    self->points = CALL(PointsGadget_ctor)(0, self->sprites60);
+    CALL(TimeGadgetParms_setPos_00013FE0)((int *)self->points, a1, a2);
     q = (int *)self->points;
     q = (int *)((char *)q + 0xC4);
     ((float *)q)[0] = 250.0f / inv;
@@ -3786,7 +3787,7 @@ void hud_addPointsGadget(Hud *self, int a1, int a2, int a3) {
     ((float *)q)[2] = 100.0f / inv;
     ((float *)q)[3] = 0.0f / inv;
     q = (int *)self->points;
-    gl_func_00000000(self->children, q);
+    CALL(list_append)(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3817,11 +3818,11 @@ void hud_addPointsGadget(Hud *self, int a1, int a2, int a3) {
 void hud_addCoolGadget(Hud *self, int a1, int a2, int a3) {
     int *q;
     self->coolValue = a3;
-    self->cool = gl_func_00000000(0, 0x4B);
-    gl_func_00000000((int *)self->cool, *(int *)self->coolValue);
-    gl_func_00000000((int *)self->cool, a1, a2);
+    self->cool = CALL(CoolGadget_ctor)(0, 0x4B);
+    CALL(CoolGadget_setValue)((int *)self->cool, *(int *)self->coolValue);
+    CALL(CoolGadget_setPos)((int *)self->cool, a1, a2);
     q = (int *)self->cool;
-    gl_func_00000000(self->children, q);
+    CALL(list_append)(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
