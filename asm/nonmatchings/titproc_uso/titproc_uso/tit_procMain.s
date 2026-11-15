@@ -186,20 +186,20 @@ glabel tit_procMain
     /* 59A580 000008B4 0C000000 */  jal        titproc_uso_func_000B6C
     /* 59A584 000008B8 24160001 */  .word 0x24160001
     /* 59A588 000008BC 8E480000 */  .word 0x8E480000
-    /* 59A58C 000008C0 0C000000 */  jal        titproc_uso_func_01EF10
+    /* 59A58C 000008C0 0C000000 */  jal        tit_imp_Backup_ghostGetRider
     /* 59A590 000008C4 8D040008 */  .word 0x8D040008
     /* 59A594 000008C8 A2020181 */  .word 0xA2020181
     /* 59A598 000008CC 8E490000 */  .word 0x8E490000
-    /* 59A59C 000008D0 0C000000 */  jal        titproc_uso_func_01EF44
+    /* 59A59C 000008D0 0C000000 */  jal        tit_imp_Backup_ghostGetBoardFlag
     /* 59A5A0 000008D4 8D240008 */  .word 0x8D240008
     /* 59A5A4 000008D8 A2020182 */  .word 0xA2020182
     /* 59A5A8 000008DC 8E4A0000 */  .word 0x8E4A0000
-    /* 59A5AC 000008E0 0C000000 */  jal        titproc_uso_func_01EF94
+    /* 59A5AC 000008E0 0C000000 */  jal        tit_imp_Backup_ghostGetBoard
     /* 59A5B0 000008E4 8D440008 */  .word 0x8D440008
     /* 59A5B4 000008E8 1220000B */  .word 0x1220000B
     /* 59A5B8 000008EC A2020183 */  .word 0xA2020183
     /* 59A5BC 000008F0 8E4B0000 */  .word 0x8E4B0000
-    /* 59A5C0 000008F4 0C000000 */  jal        titproc_uso_func_01EFC8
+    /* 59A5C0 000008F4 0C000000 */  jal        tit_imp_Backup_ghostGetCourse
     /* 59A5C4 000008F8 8D640008 */  .word 0x8D640008
     /* 59A5C8 000008FC 02002025 */  .word 0x02002025
     /* 59A5CC 00000900 2405000A */  .word 0x2405000A
@@ -209,7 +209,7 @@ glabel tit_procMain
     /* 59A5DC 00000910 1000000A */  .word 0x1000000A
     /* 59A5E0 00000914 240D0006 */  .word 0x240D0006
     /* 59A5E4 00000918 8E4C0000 */  .word 0x8E4C0000
-    /* 59A5E8 0000091C 0C000000 */  jal        titproc_uso_func_01EFC8
+    /* 59A5E8 0000091C 0C000000 */  jal        tit_imp_Backup_ghostGetCourse
     /* 59A5EC 00000920 8D840008 */  .word 0x8D840008
     /* 59A5F0 00000924 02002025 */  .word 0x02002025
     /* 59A5F4 00000928 24050004 */  .word 0x24050004
@@ -219,7 +219,7 @@ glabel tit_procMain
     /* 59A604 00000938 240D0006 */  .word 0x240D0006
     /* 59A608 0000093C AE0D0034 */  .word 0xAE0D0034
     /* 59A60C 00000940 8E4E0000 */  .word 0x8E4E0000
-    /* 59A610 00000944 0C000000 */  jal        titproc_uso_func_01EFC8
+    /* 59A610 00000944 0C000000 */  jal        tit_imp_Backup_ghostGetCourse
     /* 59A614 00000948 8DC40008 */  .word 0x8DC40008
     /* 59A618 0000094C AE020064 */  .word 0xAE020064
     /* 59A61C 00000950 02002025 */  .word 0x02002025
@@ -272,20 +272,20 @@ glabel tit_procMain
     /* 59A6D8 00000A0C 0C000000 */  jal        titproc_uso_func_000B6C
     /* 59A6DC 00000A10 24160001 */  .word 0x24160001
     /* 59A6E0 00000A14 8E4A0000 */  .word 0x8E4A0000
-    /* 59A6E4 00000A18 0C000000 */  jal        titproc_uso_func_01EF10
+    /* 59A6E4 00000A18 0C000000 */  jal        tit_imp_Backup_ghostGetRider
     /* 59A6E8 00000A1C 8D440008 */  .word 0x8D440008
     /* 59A6EC 00000A20 A2020181 */  .word 0xA2020181
     /* 59A6F0 00000A24 8E4B0000 */  .word 0x8E4B0000
-    /* 59A6F4 00000A28 0C000000 */  jal        titproc_uso_func_01EF44
+    /* 59A6F4 00000A28 0C000000 */  jal        tit_imp_Backup_ghostGetBoardFlag
     /* 59A6F8 00000A2C 8D640008 */  .word 0x8D640008
     /* 59A6FC 00000A30 A2020182 */  .word 0xA2020182
     /* 59A700 00000A34 8E4C0000 */  .word 0x8E4C0000
-    /* 59A704 00000A38 0C000000 */  jal        titproc_uso_func_01EF94
+    /* 59A704 00000A38 0C000000 */  jal        tit_imp_Backup_ghostGetBoard
     /* 59A708 00000A3C 8D840008 */  .word 0x8D840008
     /* 59A70C 00000A40 1220000B */  .word 0x1220000B
     /* 59A710 00000A44 A2020183 */  .word 0xA2020183
     /* 59A714 00000A48 8E4D0000 */  .word 0x8E4D0000
-    /* 59A718 00000A4C 0C000000 */  jal        titproc_uso_func_01EFC8
+    /* 59A718 00000A4C 0C000000 */  jal        tit_imp_Backup_ghostGetCourse
     /* 59A71C 00000A50 8DA40008 */  .word 0x8DA40008
     /* 59A720 00000A54 02002025 */  .word 0x02002025
     /* 59A724 00000A58 2405000A */  .word 0x2405000A
@@ -295,7 +295,7 @@ glabel tit_procMain
     /* 59A734 00000A68 1000000A */  .word 0x1000000A
     /* 59A738 00000A6C 8E4F0000 */  .word 0x8E4F0000
     /* 59A73C 00000A70 8E4E0000 */  .word 0x8E4E0000
-    /* 59A740 00000A74 0C000000 */  jal        titproc_uso_func_01EFC8
+    /* 59A740 00000A74 0C000000 */  jal        tit_imp_Backup_ghostGetCourse
     /* 59A744 00000A78 8DC40008 */  .word 0x8DC40008
     /* 59A748 00000A7C 02002025 */  .word 0x02002025
     /* 59A74C 00000A80 24050004 */  .word 0x24050004
@@ -303,7 +303,7 @@ glabel tit_procMain
     /* 59A754 00000A88 0C000000 */  jal        titproc_uso_func_0120A8
     /* 59A758 00000A8C 00003825 */  .word 0x00003825
     /* 59A75C 00000A90 8E4F0000 */  .word 0x8E4F0000
-    /* 59A760 00000A94 0C000000 */  jal        titproc_uso_func_01EFC8
+    /* 59A760 00000A94 0C000000 */  jal        tit_imp_Backup_ghostGetCourse
     /* 59A764 00000A98 8DE40008 */  .word 0x8DE40008
     /* 59A768 00000A9C AE020064 */  .word 0xAE020064
     /* 59A76C 00000AA0 02002025 */  .word 0x02002025

@@ -17,10 +17,10 @@ extern int titproc_uso_func_000C0C();
 extern int titproc_uso_func_000418();
 extern int titproc_uso_func_011CD8();
 extern int titproc_uso_func_001E9C();
-extern int titproc_uso_func_01EF10();
-extern int titproc_uso_func_01EF44();
-extern int titproc_uso_func_01EF94();
-extern int titproc_uso_func_01EFC8();
+extern int tit_imp_Backup_ghostGetRider();
+extern int tit_imp_Backup_ghostGetBoardFlag();
+extern int tit_imp_Backup_ghostGetBoard();
+extern int tit_imp_Backup_ghostGetCourse();
 extern int import_000B3268();
 
 
@@ -109,16 +109,16 @@ void tit_procMain(char *a0, int a1) {
             mask = (s5v | 0x8020000) | 0x80000;
             titproc_uso_func_000B6C(a0, 2);
             done = 1;
-            *(char *)(d + 0x181) = titproc_uso_func_01EF10(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x182) = titproc_uso_func_01EF44(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x183) = titproc_uso_func_01EF94(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x181) = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x182) = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x183) = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
             if (t != 0) {
-                titproc_uso_func_0120A8(d, 10, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 2);
+                titproc_uso_func_0120A8(d, 10, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 2);
             } else {
-                titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 0);
+                titproc_uso_func_0120A8(d, 4, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 0);
             }
             ((InputMgr *)d)->nextFlowMode = 6;
-            t = titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8));
+            t = tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8));
             ((InputMgr *)d)->course = t;
             r = (int *)titproc_uso_func_0027E8(d, t, 4, 1);
             ((InputMgr *)d)->nextFlowMode = 1;
@@ -144,15 +144,15 @@ void tit_procMain(char *a0, int a1) {
             mask = (s5v | 0x8020000) | 0x80000;
             titproc_uso_func_000B6C(a0, 1);
             done = 1;
-            *(char *)(d + 0x181) = titproc_uso_func_01EF10(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x182) = titproc_uso_func_01EF44(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x183) = titproc_uso_func_01EF94(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x181) = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x182) = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
+            *(char *)(d + 0x183) = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
             if (t != 0) {
-                titproc_uso_func_0120A8(d, 10, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 1);
+                titproc_uso_func_0120A8(d, 10, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 1);
             } else {
-                titproc_uso_func_0120A8(d, 4, titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8)), 0);
+                titproc_uso_func_0120A8(d, 4, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 0);
             }
-            t = titproc_uso_func_01EFC8(*(int *)(*(int *)a0 + 8));
+            t = tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8));
             ((InputMgr *)d)->course = t;
             r = (int *)titproc_uso_func_0027E8(d, t, 4, 1);
             t = (int)r;

@@ -317,10 +317,10 @@ extern int titproc_uso_func_000C0C();
 extern int titproc_uso_func_000418();
 extern int titproc_uso_func_011CD8();
 extern int titproc_uso_func_001E9C();
-extern int titproc_uso_func_01EF10();
-extern int titproc_uso_func_01EF44();
-extern int titproc_uso_func_01EF94();
-extern int titproc_uso_func_01EFC8();
+extern int tit_imp_Backup_ghostGetRider();
+extern int tit_imp_Backup_ghostGetBoardFlag();
+extern int tit_imp_Backup_ghostGetBoard();
+extern int tit_imp_Backup_ghostGetCourse();
 extern int import_000B3268();
 
 
