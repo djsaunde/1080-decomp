@@ -5333,7 +5333,7 @@ end:
     return a0;
 }
 
-// SnowBCollider_onContact — STRUCTURAL PASS (0x344 / 209 insns, no episode).
+// SnowBCollider_onContact (0x344 / 209 insns): summary of the donor body.
 // Collision impulse / force-application onto a physics body, gated by
 // the body's flag-class (body->0x174) and the impulse magnitude.
 //
@@ -5374,132 +5374,13 @@ end:
 //     contact code (s16), 0xA10 merged flag bits.
 //   Consts: -30.0 max-neg clamp, 0.5 half, 50.0 light threshold,
 //     0.1f (0x3DCCCCCD) restitution; code 0x61/62/63 = skip set.
-// Caps (64.1%->83.9% 2026-07-30 agent-g): structural residuals closed —
-//   single-deref D_0 arg (*(char**)&D_0 + 0x84, was double), value-form ||
-//   skip test (xori/sltiu chain + one bnel), de-named per-block pointer
-//   locals for each cx accumulation group (fp/ap/tp/mp + light gp/np/wp;
-//   kills the cx s-reg web -> v0/v1/a0 reloads like target), nnA = impB
-//   (second marshal reads the staging copy, not nn), light-branch flag
-//   merge re-reads *(u16*)(b+0x174) (not fl), two-var ternary fabs
-//   (t/q -> bc1fl+mov/b+neg/dead-mov shape). b->s0, dir->s1 now exact.
-//   REMAINING CAP (sole driver of every residual class): target parks amt
-//   in callee-saved $f20 from the prologue (sdc1/ldc1, mtc1 a1,f20, frame
-//   0xB8); our recomp IDO 7.1 spills the param to its arg-slot home around
-//   each call (swc1/lwc1, f14) instead. Probe battery all-negative:
-//   param copy-local (splits f12/f14 +mov.s), register kw, while(0)
-//   ref-multiplier in 5 placements (assign-amt, dead-def-dup titproc
-//   pattern), if(1)/else dead use, call-return web, multidef. Only a REAL
-//   loop (for i<1, bne kept) promotes fp params to f20 in this toolchain
-//   at depth 0 = the documented "live-across-call float in $f20" toolchain
-//   cap (docs/IDO_CODEGEN.md 19555 class). Cascade: f2/f12/f14 free in
-//   target = grouped 3-load/3-mul/3-store vec schedules, ||-ring a0-first,
-//   entry lhu v0, mfc1-before-lui tail; all pressure-coupled to f20.
-//   Frame-gap note: target locals impA@A0 nnA@94 impB@84 imp@74 nn@40
-//   (+0x28 mid-gap, +0x10 low-gap); padded-carrier-struct probe ballooned
-//   frame 0xF0 (cfe no-overlay) — offsets stay shifted, weigh light.
-/* SnowBCollider_onContact: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_8BD4.cpp, REPLACE_FUNC_BODY-spliced
- * over the placeholder below on both build paths (agent-c run 238). The superseded in-unit decode is kept
- * for reference under BOOTUP_8BD4_OLD_DECODE (never defined). */
-#ifdef BOOTUP_8BD4_OLD_DECODE
-/* typed-float protos (0x0-aliases): float args (q*q; amt, 0.1f) pass single,
- * not K&R double-promote. */
-extern void func_8bd4_a(void *, void *, void *, float *, float);
-extern void func_8bd4_b(char *, float, float *, float);
-extern void func_8bd4_heavy(void *, void *, void *, void *);
-typedef struct { float x, y, z; } BD4V;
-void SnowBCollider_onContact(char *b, float amt, float *dir, int a3) {
-    unsigned short fl = *(unsigned short *)(b + 0x174);
-    int code;
-    int skip;
-    float s;
-    float negamt;
-    BD4V impA, nnA, impB, imp, nn;
-    float t;
-    float q;
-    if (fl & 0x1F0) {
-        if (amt < 0.0f) {
-            code = (int)func_00000000(*(int *)(*(char **)&D_00000000 + 0x84), *(int *)(b + 0x14C));
-            skip = (code == 0x61 || code == 0x62 || code == 0x63);
-            if (!skip) {
-                *(int *)((*(char **)(b + 0x170)) + 0x938) += 1;
-                *(short *)((*(char **)(b + 0x170)) + 0x9A4) = (short)code;
-                if (amt < -30.0f) amt = -30.0f;
-                negamt = -amt;
-                {
-                    unsigned short *fp = (unsigned short *)(*(char **)(b + 0x170) + 0xA10);
-                    *fp |= *(unsigned short *)(b + 0x174);
-                }
-                s = (float)((double)negamt * 0.5);
-                imp.x = dir[0] * s;
-                imp.y = dir[1] * s;
-                imp.z = dir[2] * s;
-                impB = imp;
-                impA = impB;
-                {
-                    float *ap = (float *)(*(char **)(b + 0x170) + 0xB4);
-                    ap[0] += impA.x;
-                    ap[1] += impA.y;
-                    ap[2] += impA.z;
-                }
-                {
-                    float *tp = (float *)(*(char **)(b + 0x170) + 0x93C);
-                    tp[0] += dir[0];
-                    tp[1] += dir[1];
-                    tp[2] += dir[2];
-                }
-                {
-                    float *mp = (float *)(*(char **)(b + 0x170) + 0x968);
-                    *mp += amt;
-                }
-                { /* run 156: held products, stored afterwards (target f2 / f12 / f14) */
-                float hx = dir[0] * negamt;
-                float hy = dir[1] * negamt;
-                float hz = dir[2] * negamt;
-                nn.x = hx; nn.y = hy; nn.z = hz;
-                }
-                impB = nn;
-                nnA = impB;
-                func_8bd4_heavy(*(char **)(b + 0x170), b + 0x120, &nnA, &impB);
-            }
-        }
-        return;
-    }
-    if (fl & 0xF) {
-        if (amt < 50.0f) {
-            *(int *)(*(char **)(b + 0x170) + 0x938) += 1;
-            {
-                unsigned short *gp = (unsigned short *)(*(char **)(b + 0x170) + 0xA10);
-                *gp |= *(unsigned short *)(b + 0x174);
-            }
-            {
-                float *np = (float *)(*(char **)(b + 0x170) + 0x968);
-                *np += amt;
-            }
-            {
-                float *wp = (float *)(*(char **)(b + 0x170) + 0x93C);
-                wp[0] += dir[0];
-                wp[1] += dir[1];
-                wp[2] += dir[2];
-            }
-            {
-                char *cxa = *(char **)(b + 0x170);
-                t = *(float *)(cxa + 0x970);
-                if (t < 0.0f) {
-                    q = -t;
-                } else {
-                    q = t;
-                }
-                func_8bd4_a(cxa, b + 0x120, b + 0x114, dir, q * q);
-            }
-            func_8bd4_b(b, amt, dir, 0.1f);
-        }
-    }
-}
-#else
+/* SnowBCollider_onContact: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_8BD4.cpp
+ * (the real body, on SnowBCollider fields), REPLACE_FUNC_BODY-spliced over this placeholder on both
+ * build paths (agent-c run 238). The superseded in-unit decode was deleted in agent-h run 505 (git
+ * history has it). */
 void SnowBCollider_onContact(char *b) {
     volatile char *r = b;
 }
-#endif
 
 /* ShpNode_ctor: 36-insn (0x90) optional-alloc + multi-call init. */
 extern char D_00008708;
