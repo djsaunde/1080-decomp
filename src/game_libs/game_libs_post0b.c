@@ -13,6 +13,7 @@
 #include "gdl/console.h"
 #include "gdl/mnode.h"
 #include "gdl/coll.h"
+#include "gdl/item.h"
 extern int AnimPlayer_reset();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -6455,10 +6456,10 @@ char *ItemType_ctor(char *o, S3D16C a1, S3D16C a2) {
         p->w = 0;
     }
     *(S3D16C *)(o + 0x2C) = a1;
-    *(int *)(o + 0x3C) = 0;
-    *(int *)(o + 0x40) = a2.w;
-    *(int *)(o + 0x38) = 0;
-    *(int *)(o + 0x44) = -1;
+    ITEMTYPE(o)->unk3C = 0;
+    ITEMTYPE(o)->unk40 = a2.w;
+    ITEMTYPE(o)->unk38 = 0;
+    ITEMTYPE(o)->typeId = -1;
 out:
     return o;
 }
@@ -6591,7 +6592,7 @@ void ItemType_load(char *o) {
     char *h;
     char *h2;
     int s2;
-    *(int *)(o + 0x10) = 0;
+    ITEMTYPE(o)->node.children = 0;
     gl_func_0003D3C4_51630(&count);
     gl_func_00000000(GL_DATA_STR(0x1F2C0, "Loading ItemType '%s' (%d)\n"), (float *)(o + 0x2C), count);
     if (count == 0) {
@@ -6599,7 +6600,7 @@ void ItemType_load(char *o) {
     }
     s2 = 0;
     do {
-        h = *(char **)(o + 0x28);
+        h = (char *)ITEMTYPE(o)->node.vptr;
         s0 = ((char *(*)(int))*(int *)(h + 0x5C))(*(short *)(h + 0x58) + (int)o);
         gl_func_00000000(o, s0);
         *(char **)(s0 + 0x0C) = s3;
@@ -6858,10 +6859,10 @@ int *arg0; int arg1, arg2, arg3;
     gl_func_00000000(pa0, *(struct { int x; } *)&arg1, ia2);
     pa0[0x28 / 4] = (int)&D_00000000;
     if (pa3 == 0) {
-        *(float *)((char *)pa0 + 0x4C) = 0.0f;
-        *(float *)((char *)pa0 + 0x50) = 0.0f;
-        *(float *)((char *)pa0 + 0x48) = 1.0f;
-        *(float *)((char *)pa0 + 0x54) = 1.0f;
+        COLOURITEMTYPE(pa0)->colour[1] = 0.0f;
+        COLOURITEMTYPE(pa0)->colour[2] = 0.0f;
+        COLOURITEMTYPE(pa0)->colour[0] = 1.0f;
+        COLOURITEMTYPE(pa0)->colour[3] = 1.0f;
     } else {
         *(struct q3d *)((char *)pa0 + 0x48) = **(struct q3d **)&arg3;
     }
@@ -7543,9 +7544,9 @@ void *ItemMgr_ctor(int *a0, int a1, int a2) {
     }
     gl_func_00000000(a0, a1);
     ((Node *)a0)->vptr = (s32)&ItemMgr_vtbl;
-    a0[13] = a2;                  /* [0x34] */
-    a0[12] = 0;                   /* [0x30] */
-    a0[11] = 0;                   /* [0x2C] */
+    ITEMMGR(a0)->unk34 = a2;
+    ITEMMGR(a0)->unk30 = 0;
+    ITEMMGR(a0)->types = 0;
     p = a0;
     if (1) { p += 6; }
     *p &= ~2;                     /* [0x18] clear bit 1 */
@@ -7699,20 +7700,20 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", ItemMgr_Load);
 #endif
 
 void ItemMgr_removeItems(int **a0) {
-    int *p = (int *)a0[0xB];
+    int *p = (int *)ITEMMGR(a0)->types;
     while (p != 0) {
-        p[0xF] = 0;
-        p[4] = 0;
-        p = (int *)p[0xC];
+        ITEMTYPE(p)->unk3C = 0;
+        ITEMTYPE(p)->node.children = 0;
+        p = (int *)ITEMTYPE(p)->next;
     }
 }
 
 extern int gl_func_00000000();
 void ItemMgr_removeItem(int *a0, int a1) {
-    int *item = (int*)a0[0xB];
+    int *item = (int *)ITEMMGR(a0)->types; /* each type */
     while (item != 0) {
         gl_func_00000000(item, a1);
-        item = (int*)item[0xC];
+        item = (int *)ITEMTYPE(item)->next;
     }
 }
 
@@ -7721,12 +7722,12 @@ void ItemMgr_removeItem(int *a0, int a1) {
  * off = obj->[0x60] (signed short). beql/bnel branch-likely loop. */
 typedef int (*gl_e594_fn_t)();
 void ItemMgr_rebuildAll(int *a0) {
-    int *node = (int*)*(int*)((char*)a0 + 0x2C);
+    int *node = (int *)ITEMMGR(a0)->types;
     if (node != 0) {
         do {
-            int *obj = (int*)*(int*)((char*)node + 0x28);
+            int *obj = (int*)ITEMTYPE(node)->node.vptr;
             ((gl_e594_fn_t)*(int*)((char*)obj + 0x64))(*(short*)((char*)obj + 0x60) + (char*)node);
-            node = (int*)*(int*)((char*)node + 0x30);
+            node = (int *)ITEMTYPE(node)->next;
         } while (node != 0);
     }
 }
@@ -7856,14 +7857,14 @@ char *ItemMgr_spawnItem(void *a0, char *a1, int a2) {
  * the jal (a2 still holds the incoming value by coincidence), so the callee
  * takes two args; a2 is homed at entry and reloaded into t9 after the call. */
 void ItemMgr_addType(int *a0, int *a1, int a2) {
-    a1[0x30/4] = a0[0x2C/4];
-    a0[0x2C/4] = (int)a1;
+    ITEMTYPE(a1)->next = ITEMMGR(a0)->types;
+    ITEMMGR(a0)->types = ITEMTYPE(a1);
     gl_func_00000000((char*)a0 + 0x10, a1);
     if (a1[0x14/4] != 0) {
         a1[1] = 1;
     }
     a1[0x14/4] = (int)a0;
-    a1[0x44/4] = a2;
+    ITEMTYPE(a1)->typeId = a2;
 }
 
 /* ItemMgr_registerTemplate: call rec->fn(*rec->p) (a 4-byte struct passed by value),
@@ -7969,12 +7970,12 @@ void ItemMgr_changeType(void *a0) {
  * emits naturally instead of IDO's bnel-likely+delay-load. */
 void *ItemMgr_findType_0003EA98(int *a0, int a1) {
     volatile int *p = &a1;
-    int *node = (int*)a0[0x2C/4];
+    int *node = (int *)ITEMMGR(a0)->types;
     if (node != 0) {
         volatile int key = a1;
         do {
-            if (node[0x2C/4] == key) return node;
-            node = (int*)node[0x30/4];
+            if (ITEMTYPE(node)->tag == key) return node;
+            node = (int *)ITEMTYPE(node)->next;
         } while (node != 0);
     }
     (void)p;
