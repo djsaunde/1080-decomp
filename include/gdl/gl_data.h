@@ -207,7 +207,7 @@
 #define gSysImDepth            D_00000000 /* Data+0x21DE8 Sym 2345: the gSysImStack depth / count (sys_imin increments, sys_imout's --count < 0 test, sys_stackPeek_0006170C) */
 #define gGfxFbWidth            D_00000000 /* Data+0x1F974 Sym 1853: framebuffer width; gfx_clearFbRect_00043468 uses it as the row stride in halfwords (y * w + x), gfx_setScreenSize(w, h) stores it with Sym 1854; GfxLib_init / reset */
 #define gGfxFbHeight           D_00000000 /* Data+0x1F978 Sym 1854: framebuffer height (gfx_setScreenSize second argument; GfxLib_init / reset, gfx_drawFbSplash_00048184) */
-#define gSysDevBlock_3A4E8     D_00000000 /* Bss+0x3A4E8 Sym 1505, 5112 bytes (inferred span): the pad / device block of RcpMgr_service, pad_initGlobal, pad_requestGlobal, pad_setSlotValueGlobal, pad_isSlotState2Global, pad_decodeButtonMap_00034CC8, sys_pollDevices_00034B64, sys_fatalHaltLoop. Kind only */
+#define gSysDevBlock_3A4E8     D_00000000 /* Bss+0x3A4E8 Sym 1505, 5112 bytes (inferred span): the pad / device block of RcpMgr_service, pad_initGlobal, pad_requestGlobal, pad_setSlotValueGlobal, pad_hasRumblePakGlobal, pad_decodeButtonMap_00034CC8, sys_pollDevices_00034B64, sys_fatalHaltLoop. Kind only */
 
 /* ---- string / path tables (DataRelocs point at RoData strings; agent-a run 491) ---- */
 #define gBoardModelUsoPaths    D_00000000 /* Data+0x8338 Sym 486, 9 char*: "rom/tahoe151.uso", "rom/merlot147.uso", ... the board model USOs (SnowBoarder_loadBoardModel / createBoardShape) */

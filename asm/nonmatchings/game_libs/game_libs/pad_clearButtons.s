@@ -1,6 +1,6 @@
-nonmatching pad_clear_00067AA0, 0x1C
+nonmatching pad_clearButtons, 0x1C
 
-glabel pad_clear_00067AA0
+glabel pad_clearButtons
     /* E4CB78 00067AA0 AC800020 */  .word 0xAC800020
     /* E4CB7C 00067AA4 AC800010 */  .word 0xAC800010
     /* E4CB80 00067AA8 AC800014 */  .word 0xAC800014
@@ -8,4 +8,4 @@ glabel pad_clear_00067AA0
     /* E4CB88 00067AB0 AC80001C */  .word 0xAC80001C
     /* E4CB8C 00067AB4 03E00008 */  .word 0x03E00008
     /* E4CB90 00067AB8 AC800024 */  .word 0xAC800024
-endlabel pad_clear_00067AA0
+endlabel pad_clearButtons

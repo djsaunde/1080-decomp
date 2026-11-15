@@ -1,6 +1,6 @@
-nonmatching pad_setIfNewer_00067A54, 0x3C
+nonmatching pad_startRumble, 0x3C
 
-glabel pad_setIfNewer_00067A54
+glabel pad_startRumble
     /* E4CB2C 00067A54 27BDFFE8 */  .word 0x27BDFFE8
     /* E4CB30 00067A58 AFBF0014 */  .word 0xAFBF0014
     /* E4CB34 00067A5C 8C8E0078 */  .word 0x8C8E0078
@@ -16,4 +16,4 @@ glabel pad_setIfNewer_00067A54
     /* E4CB5C 00067A84 27BD0018 */  .word 0x27BD0018
     /* E4CB60 00067A88 03E00008 */  .word 0x03E00008
     /* E4CB64 00067A8C 00000000 */  .word 0x00000000
-endlabel pad_setIfNewer_00067A54
+endlabel pad_startRumble

@@ -1,6 +1,6 @@
-nonmatching pad_testButton_00067550, 0x54
+nonmatching pad_isConnected, 0x54
 
-glabel pad_testButton_00067550
+glabel pad_isConnected
     /* E4C628 00067550 27BDFFE8 */  .word 0x27BDFFE8
     /* E4C62C 00067554 AFBF0014 */  .word 0xAFBF0014
     /* E4C630 00067558 8C8E0034 */  .word 0x8C8E0034
@@ -22,4 +22,4 @@ glabel pad_testButton_00067550
     /* E4C670 00067598 27BD0018 */  .word 0x27BD0018
     /* E4C674 0006759C 03E00008 */  .word 0x03E00008
     /* E4C678 000675A0 00000000 */  .word 0x00000000
-endlabel pad_testButton_00067550
+endlabel pad_isConnected

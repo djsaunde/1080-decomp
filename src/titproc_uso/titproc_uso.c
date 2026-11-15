@@ -565,7 +565,7 @@ void TitleDemoProcess_buildMenu(int *a0) {
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 4, 4, &D_t_arg4_101C);
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
     CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
-    if (CALL(pad_testButton_00067550)(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
+    if (CALL(pad_isConnected)(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
         *(int*)((char*)(int *)TITLEDEMO(a0)->menu + 0x128) = 0;
     }
 }
@@ -1386,7 +1386,7 @@ void GameDemoProcess_buildMenu(GameDemoProcess *a0) {
     CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 4, 4, &titproc_uso_D_arg4_22BC);
     CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 7, 5, &titproc_uso_D_arg5_22BC);
     CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 5, 6, &titproc_uso_D_arg6_22BC);
-    if (CALL(pad_testButton_00067550)(*(int*)((char*)&titproc_uso_D_target_22BC + 0xC4)) == 0) {
+    if (CALL(pad_isConnected)(*(int*)((char*)&titproc_uso_D_target_22BC + 0xC4)) == 0) {
         *(int*)((char*)a0->menu + 0x128) = 0;
     }
 }

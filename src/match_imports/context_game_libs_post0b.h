@@ -501,7 +501,7 @@ int pad_initGlobal(int a0);
 extern int gl_func_00000000();
 void pad_setSlotValueGlobal(int a0);
 extern int gl_func_00000000();
-int pad_isSlotState2Global(int a0);
+int pad_hasRumblePakGlobal(int a0);
 extern int gl_func_00000000();
 void pad_requestGlobal(int a0);
 extern int gl_func_00000000();

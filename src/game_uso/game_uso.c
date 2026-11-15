@@ -7776,23 +7776,23 @@ void RiderAnim_hitFeedback_0001189C(int *a0, int a1, int a2) {
     int s1 = a2;
     switch (a1) {
     case 1:
-        FCALL(pad_set_00067A90)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x109C, 10);
+        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x109C, 10);
         FCALL(SndHandle_triggerEvent3_00000940)((int)s0[0xB4 / 4] + 0x808, s1);
         break;
     case 2:
-        FCALL(pad_set_00067A90)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10AC, 10);
+        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10AC, 10);
         FCALL(SndHandle_triggerEvent0_000008F4)((int)s0[0xB4 / 4] + 0x808, s1);
         break;
     case 3:
-        FCALL(pad_set_00067A90)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10A4, 10);
+        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10A4, 10);
         FCALL(SndHandle_triggerEvent0_000008F4)((int)s0[0xB4 / 4] + 0x808, s1);
         break;
     case 4:
-        FCALL(pad_set_00067A90)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10C0, 10);
+        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10C0, 10);
         FCALL(SndHandle_triggerEvent1_0000098C)((int)s0[0xB4 / 4] + 0x808, s1);
         break;
     case 5:
-        FCALL(pad_set_00067A90)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10DC, 10);
+        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10DC, 10);
         FCALL(SndHandle_triggerEvent2_000009D8)((int)s0[0xB4 / 4] + 0x808, s1);
         break;
     }

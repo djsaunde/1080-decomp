@@ -834,7 +834,7 @@ void pad_setSlotValueGlobal(int a0) {
 }
 
 extern int gl_func_00000000();
-int pad_isSlotState2Global(int a0) {
+int pad_hasRumblePakGlobal(int a0) {
     return CALL(pad_getSlotState_00067358)(gl_func_00000000) == 2;
 }
 
@@ -26184,7 +26184,7 @@ void sys_listFindUnlink_00061C9C(int *self, int *target) {
     int *cur = (int*)self[0xC / 4];
     while (cur != 0) {
         if (cur == target) {
-            CALL(pad_clearSlot)(cur);
+            CALL(pad_stopMotor)(cur);
             if (prev != 0) {
                 prev[0x60 / 4] = target[0x60 / 4];
             } else {

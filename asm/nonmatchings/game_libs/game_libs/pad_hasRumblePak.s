@@ -1,6 +1,6 @@
-nonmatching pad_isSlotState2, 0x40
+nonmatching pad_hasRumblePak, 0x40
 
-glabel pad_isSlotState2
+glabel pad_hasRumblePak
     /* E4C5E8 00067510 27BDFFE8 */  .word 0x27BDFFE8
     /* E4C5EC 00067514 AFBF0014 */  .word 0xAFBF0014
     /* E4C5F0 00067518 8C820034 */  .word 0x8C820034
@@ -17,4 +17,4 @@ glabel pad_isSlotState2
     /* E4C61C 00067544 27BD0018 */  .word 0x27BD0018
     /* E4C620 00067548 03E00008 */  .word 0x03E00008
     /* E4C624 0006754C 00000000 */  .word 0x00000000
-endlabel pad_isSlotState2
+endlabel pad_hasRumblePak

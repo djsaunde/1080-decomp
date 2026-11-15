@@ -1,6 +1,6 @@
-nonmatching pad_isSlotState2Global, 0x2C
+nonmatching pad_hasRumblePakGlobal, 0x2C
 
-glabel pad_isSlotState2Global
+glabel pad_hasRumblePakGlobal
     /* E19EE8 00034E10 27BDFFE8 */  .word 0x27BDFFE8
     /* E19EEC 00034E14 AFA40018 */  .word 0xAFA40018
     /* E19EF0 00034E18 AFBF0014 */  .word 0xAFBF0014
@@ -12,4 +12,4 @@ glabel pad_isSlotState2Global
     /* E19F08 00034E30 2C420001 */  .word 0x2C420001
     /* E19F0C 00034E34 03E00008 */  .word 0x03E00008
     /* E19F10 00034E38 27BD0018 */  .word 0x27BD0018
-endlabel pad_isSlotState2Global
+endlabel pad_hasRumblePakGlobal

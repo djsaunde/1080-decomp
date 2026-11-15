@@ -3211,7 +3211,7 @@ void pad_reset_000673FC(int *a0, int a1) {
     PADCTL(a0)->replayMode = PAD_REPLAY_OFF;
     PADCTL(a0)->port = a1;
     PADCTL(a0)->unk30 = 0;
-    CALL(pad_clear_00067AA0)(a0);
+    CALL(pad_clearButtons)(a0);
     PADCTL(a0)->unk28 = 0;
     PADCTL(a0)->unk2C = 0;
     PADCTL(a0)->tapTimer = 0;
@@ -3237,22 +3237,22 @@ void pad_setPause_00067470(int* a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void pad_clearSlot(int *a0) {
+void pad_stopMotor(int *a0) {
     int v = PADCTL(a0)->port;
     if (v != 0) {
         CALL(pad_setSlotValueGlobal)(gl_func_00000000, v - 1, 0);
     }
 }
 
-int pad_isSlotState2(int *a0) {
+int pad_hasRumblePak(int *a0) {
     int v = PADCTL(a0)->port;
     if (v != 0) {
-        return CALL(pad_isSlotState2Global)(&gSysLib, v - 1);
+        return CALL(pad_hasRumblePakGlobal)(&gSysLib, v - 1);
     }
     return 0;
 }
 
-/* pad_testButton_00067550: 21-insn bit-test helper. If a0->[0x34] != 0:
+/* pad_isConnected: 21-insn bit-test helper. If a0->[0x34] != 0:
  * call gl_func(&D_0, a0); return v0 & (1 << (a0->[0x34] + 31)); else return 0.
  *
  * MATCH (2026-06-21, agent-b, permuter): the residual was the commutative-AND
@@ -3261,7 +3261,7 @@ int pad_isSlotState2(int *a0) {
  * v0 operand in a `(0, v0)` comma expression forces v0 to be re-materialized as
  * the rs operand at coloring time, flipping the AND to the target order.
  * Byte-exact in-tree (reloc-filtered word-compare: 0 diffs). */
-int pad_testButton_00067550(int *a0) {
+int pad_isConnected(int *a0) {
     int v0 = 0;
     if (PADCTL(a0)->port != 0) {
         v0 = CALL(pad_getFlagGlobal)(&gSysLib, a0);
@@ -3353,7 +3353,7 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
     CALL(dbg_printf)(GL_DATA_STR(0x22604, "Ctl %d: start play\n"), PADCTL(a0)->port);
 }
 
-/* pad_setIfNewer_00067A54: too-big-N-function-bundle (declared size 0x74, 29 words).
+/* pad_startRumble: too-big-N-function-bundle (declared size 0x74, 29 words).
  * Splat grouped 3 distinct functions + a 3-insn trailing fragment under one symbol.
  * Candidate for split-fragments.py — needs the script to recurse on each newly-
  * split-off boundary until no more splits happen.
@@ -3399,23 +3399,23 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
  *    "too-big-N-function-bundle".
  *  - Now split to 0x3C (this fn only); decoded 2026-05-24. */
 extern int gl_func_00000000();
-void pad_setIfNewer_00067A54(int a0, int a1, int a2) {
+void pad_startRumble(int a0, int a1, int a2) {
     if ((u8 *)a1 == PADCTL(a0)->rumble) {
         return;
     }
     if (a2 < PADCTL(a0)->rumblePrio) {
         return;
     }
-    CALL(pad_set_00067A90)(a0, a1, a2);
+    CALL(pad_setRumble)(a0, a1, a2);
 }
 
-void pad_set_00067A90(char *a0, int a1, int a2) {
+void pad_setRumble(char *a0, int a1, int a2) {
     PADCTL(a0)->rumble = (u8 *)a1;
     PADCTL(a0)->rumblePrio = a2;
     PADCTL(a0)->rumblePos = 0;
 }
 
-void pad_clear_00067AA0(int *a0) {
+void pad_clearButtons(int *a0) {
     PADCTL(a0)->doubleTap = 0;
     PADCTL(a0)->held = 0;
     PADCTL(a0)->prevHeld = 0;
@@ -3426,7 +3426,7 @@ void pad_clear_00067AA0(int *a0) {
 
 /* The 2 zero words at 0x67ABC/0x67AC0 (the 8-byte gap before
  * math_atan2sZero_00067AC4) are alignment padding, not a function: they are
- * appended to pad_clear_00067AA0 as an all-zero SUFFIX_BYTES_FORCE
+ * appended to pad_clearButtons as an all-zero SUFFIX_BYTES_FORCE
  * (Makefile, both trees; was the pseudo-function game_libs_func_00067ABC).
  * The `mtc1 $zero,$f12` word at 0x67AC4 is the real function's hoisted
  * first-arg materialization (2026-09-05, below). */

@@ -1,6 +1,6 @@
-nonmatching pad_clearSlot, 0x34
+nonmatching pad_stopMotor, 0x34
 
-glabel pad_clearSlot
+glabel pad_stopMotor
     /* E4C5B4 000674DC 27BDFFE8 */  .word 0x27BDFFE8
     /* E4C5B8 000674E0 AFBF0014 */  .word 0xAFBF0014
     /* E4C5BC 000674E4 8C820034 */  .word 0x8C820034
@@ -14,4 +14,4 @@ glabel pad_clearSlot
     /* E4C5DC 00067504 27BD0018 */  .word 0x27BD0018
     /* E4C5E0 00067508 03E00008 */  .word 0x03E00008
     /* E4C5E4 0006750C 00000000 */  .word 0x00000000
-endlabel pad_clearSlot
+endlabel pad_stopMotor

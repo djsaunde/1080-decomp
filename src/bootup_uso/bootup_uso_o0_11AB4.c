@@ -14,7 +14,7 @@ void GameFlow_addPads_00011AB4(char *a0) {
     GAMEFLOW(a0)->activePad = -1;
     i = 0;
     do {
-        if (FCALL(pad_testButton_00067550)(GAMEFLOW(a0)->ctrls[0]) == 0) {
+        if (FCALL(pad_isConnected)(GAMEFLOW(a0)->ctrls[0]) == 0) {
             GAMEFLOW(a0)->locked = 1;
         } else {
             FCALL(input_addPad_00011C70)(a0, *(s32*)(a0 + 0xC0 + (i * 4)));
