@@ -1390,7 +1390,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 extern int D_41820_a;
 extern int import_80000310;
-extern int D_41820_b;
+extern int gConsoleNode_3EF04_41820_b;
 extern int gSysLib_3c740;
 extern int gGfxLib_41820_c;
 extern int D_41820_d;

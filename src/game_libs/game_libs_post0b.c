@@ -9909,12 +9909,12 @@ typedef struct { int a0, a4, a8, aC, a10, a14; float f18, f1C; char pad20[8]; in
 extern int D_415A4_z;
 extern char gSysLib_415A4_s1[], gMainHeap_415A4_s2[], D_415A4_s3[], gSysLib_415A4_s4[], gGfxLib_415A4_s5[], gSysLib_415A4_s6[];
 extern O415A4 *D_415A4_g1;
-extern int D_415A4_g2, D_415A4_g3;
+extern int D_415A4_g2, gConsoleNode_3EF04_415A4_g3;
 extern T415A4 gWindowDefaults_415A4_t;
 extern T415A4 gWindowDefaults_415A4_tA; /* run 149: second name for the a28 stores (absolute lui at like the target) */
 extern char D_415A4_u[];
 extern char D_415A4_v[];
-extern char *D_415A4_g4;
+extern char *gConsoleNode_3EF04_415A4_g4;
 
 void App_main(O415A4 *self) {
     int a;
@@ -9932,7 +9932,7 @@ void App_main(O415A4 *self) {
     if (1) {}
     (D_415A4_g1 = self)->pC = GL_DATA_STR(0x1F5D0, "App");
     D_415A4_g2 = gl_func_00000000(0);
-    D_415A4_g3 = gl_func_00000000(0);
+    gConsoleNode_3EF04_415A4_g3 = gl_func_00000000(0);
     if (1) {} /* agent-c run 303: BB split (the mode word v leaves the call block: v0 allowed) */
     t = &gWindowDefaults_415A4_t;
     t->a4 = 2; /* agent-c run 303: agent-g run 210's `+ 0 * (int)(t->v30)` fold dropped (its address CSE took the Vec4 base off v0) */
@@ -9971,7 +9971,7 @@ void App_main(O415A4 *self) {
     if (p != 0) {
         gl_func_00000000(p, 1);
     }
-    *(char **)(D_415A4_g4 + 0x34) = p;
+    *(char **)(gConsoleNode_3EF04_415A4_g4 + 0x34) = p;
     p = (char *)self->vt;
     ((VT415A4 *)p)->fn6C(((VT415A4 *)p)->off68 + (char *)self); /* agent-g run 257: the vtable held in the dead p (its alloc web sits in a2) -- the target loads vt into a2 and self into v0: 95.27 -> 95.53 */
     gl_func_00000000(gSysLib_415A4_s6, self);
@@ -20907,12 +20907,12 @@ Gl5591CArg *a3;
      * `lui at; sw zero` per clear, so route each through a DISTINCT extern to
      * bust IDO's base CSE (else they all share one lui). */
     {
-        extern int D_5591C_z0a, D_5591C_z0b, D_5591C_z4, D_5591C_z8, D_5591C_zc;
+        extern int D_5591C_z0a, gProcNodeList_41700_5591C_z0b, gProcNodeList_41700_5591C_z4, gProcNodeList_41700_5591C_z8, gProcNodeList_41700_5591C_zc;
         D_5591C_z0a = 0;
-        D_5591C_z0b = 0;
-        *(int*)((char*)&D_5591C_z4 + 0x4) = 0;
-        *(int*)((char*)&D_5591C_z8 + 0x8) = 0;
-        *(int*)((char*)&D_5591C_zc + 0xC) = 0;
+        gProcNodeList_41700_5591C_z0b = 0;
+        *(int*)((char*)&gProcNodeList_41700_5591C_z4 + 0x4) = 0;
+        *(int*)((char*)&gProcNodeList_41700_5591C_z8 + 0x8) = 0;
+        *(int*)((char*)&gProcNodeList_41700_5591C_zc + 0xC) = 0;
     }
     v0 = 0;
     if (a0 == 0) {

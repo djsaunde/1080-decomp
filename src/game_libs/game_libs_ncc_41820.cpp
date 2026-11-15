@@ -29,7 +29,7 @@ struct Rec { int f0; int f4; int f8; int fC; int f10; void *f14; };
 struct Arr { int *data; int f4; int cap; int n; int f10; Arr(int c) { cap = c; n = 0; data = new int[c]; } };
 struct B44 : Rec { char pad[0x28 - 0x18]; B44(char *name); };
 struct O44 : B44 { O44() : B44(D_00000000 + 0x1F630) {} virtual void f(); };
-extern "C" { extern Rec *D_41820_b; extern Arr *D_41820_e; extern Rec *D_41820_f; }
+extern "C" { extern Rec *gConsoleNode_3EF04_41820_b; extern Arr *D_41820_e; extern Rec *D_41820_f; }
 struct SB {
     char pad[0x10];
     int m10;
@@ -52,7 +52,7 @@ void Self::init() {
         gl_func_00000000(D_00000000 + 0x1F600);
     }
     gl_func_00000000(D_00000000 + 0x1F618);
-    gl_func_00000000(D_41820_b, 1);
+    gl_func_00000000(gConsoleNode_3EF04_41820_b, 1);
     gl_func_00000000(D_00000000 + 0x1F624);
     gl_func_00000000(gSysLib_3c740, 1);
     local[0] = 0x10;
@@ -70,7 +70,7 @@ void Self::init() {
     m2C = 0;
     D_41820_g = 0;
     lnkB(D_41820_f, this);
-    lnk(D_41820_b, this);
+    lnk(gConsoleNode_3EF04_41820_b, this);
     gl_func_00000000(gSysLib_3c740);
     gl_func_00000000(gGfxLib_41820_c);
     linkN(new O44);

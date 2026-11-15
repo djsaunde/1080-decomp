@@ -16823,7 +16823,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
  *
  * The hoisted load has lo16 field 0 in the ROM words (game_libs bakes
  * addends: cf. 21D2C's `lw v1,0x2534`), so it is a DISTINCT symbol from the
- * later `&D_00000000 + 0x240` device loads -> base-0 alias gl_d_34180_dev
+ * later `&D_00000000 + 0x240` device loads -> base-0 alias gConsoleNode_3EF04_34180_dev
  * (undefined_syms_auto.txt).
  *
  * Coloring keys (all v0/v1 + held-base residuals, 33 -> 0 diffs):
@@ -16839,13 +16839,13 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
  *  - `if (1) {}` BB barrier before the 2,000,000-iteration delay loop flips
  *    counter/bound v1/v0 -> v0/v1 (IDO unrolls the empty i++ loop x4 ->
  *    `addiu 4; bnel`).  Standalone 48/48, in-tree 48/48. */
-extern char *gl_d_34180_dev;
+extern char *gConsoleNode_3EF04_34180_dev;
 void sys_fatalSwapBuffer_00034180(void) {
     char *vt;
     int i;
 
-    vt = *(char **)(gl_d_34180_dev + 0x28);
-    (*(int (**)())(vt + 0x1C))(gl_d_34180_dev + *(short *)(vt + 0x18));
+    vt = *(char **)(gConsoleNode_3EF04_34180_dev + 0x28);
+    (*(int (**)())(vt + 0x1C))(gConsoleNode_3EF04_34180_dev + *(short *)(vt + 0x18));
     gl_func_00000000();
     while ((u32)gl_func_00000000() < 0x1E0) {}
     vt = *(char **)(*(char **)((char *)&D_00000000 + 0x240) + 0x28);
@@ -16904,17 +16904,17 @@ void sys_fatalSwapBuffer_00034180(void) {
 //   Byte-match deferred. Name pre-checked: no extern reuse.
 // EXACT 2026-10-16 (87.4 -> 100): the record pointer, the poll arg, the two
 //   cb args and the config table were all one &D_00000000 placeholder. Target
-//   has distinct symbols: D_34240_G (record ptr, address hoisted to s4),
+//   has distinct symbols: gConsoleNode_3EF04_34240_G (record ptr, address hoisted to s4),
 //   gGfxLib_34240_X / gGfxLib_34240_Y (cb args, fresh lui/addiu each), gSysDevBlock_3A4E8_34240_P (poll
 //   arg, s3, rematerialized per loop) and the table D_0001E21C (pinned to its
 //   real address; `&D_00000000 + 0x1E21C` folds the first test into
 //   `lui; lw -7652`, a zero-offset symbol keeps `lw 0(s2)`). No param (the
 //   old `a2` homed a0). d[0x80] + saved34 declared before the named pointers
 //   = frame 0xC0; `dp = d` assigned in the first call's arg; the empty
-//   `if (D_34240_G) {}` after the first store keeps `addiu s1,sp,64` next to
+//   `if (gConsoleNode_3EF04_34240_G) {}` after the first store keeps `addiu s1,sp,64` next to
 //   its use instead of right after `sw s1`.
 extern int D_00000000;
-extern char *D_34240_G;
+extern char *gConsoleNode_3EF04_34240_G;
 extern char D_0001E21C, gGfxLib_34240_X, gSysDevBlock_3A4E8_34240_P, gGfxLib_34240_Y;
 void sys_fatalHaltLoop(void) {
     char d[0x80];
@@ -16923,10 +16923,10 @@ void sys_fatalHaltLoop(void) {
     char *s0;
     char *dp;
 
-    *(int *)(D_34240_G + 0x38) = 1;
-    if (D_34240_G) {}
+    *(int *)(gConsoleNode_3EF04_34240_G + 0x38) = 1;
+    if (gConsoleNode_3EF04_34240_G) {}
     gl_func_00000000(dp = d, -1);
-    saved34 = *(int *)(D_34240_G + 0x34);
+    saved34 = *(int *)(gConsoleNode_3EF04_34240_G + 0x34);
     gl_func_00000000(&gGfxLib_34240_X, 1);
 
     cfg = &D_0001E21C;
@@ -16948,12 +16948,12 @@ void sys_fatalHaltLoop(void) {
     gl_func_00000000(0);
     gl_func_00000000(&gGfxLib_34240_Y, 0);
 
-    (*(void (**)(char *))(*(char **)(D_34240_G + 0x28) + 0x1C))(D_34240_G + *(short *)(*(char **)(D_34240_G + 0x28) + 0x18));
+    (*(void (**)(char *))(*(char **)(gConsoleNode_3EF04_34240_G + 0x28) + 0x1C))(gConsoleNode_3EF04_34240_G + *(short *)(*(char **)(gConsoleNode_3EF04_34240_G + 0x28) + 0x18));
     gl_func_00000000();
     gl_func_00000000();
 
     for (;;) {
-        *(int *)(D_34240_G + 0x34) = (int)dp;
+        *(int *)(gConsoleNode_3EF04_34240_G + 0x34) = (int)dp;
         if (*(int *)(dp + 0x10) != 0) {
             gl_func_00000000();
         }
@@ -16968,8 +16968,8 @@ void sys_fatalHaltLoop(void) {
         gl_func_00000000(dp);
     }
     gl_func_00000000(0x202);
-    *(int *)(D_34240_G + 0x38) = 0;
-    *(int *)(D_34240_G + 0x34) = saved34;
+    *(int *)(gConsoleNode_3EF04_34240_G + 0x38) = 0;
+    *(int *)(gConsoleNode_3EF04_34240_G + 0x34) = saved34;
 }
 
 // Indexed read from the segment-base int table: return D[a0]. Builds byte-exact

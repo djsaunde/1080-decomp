@@ -1676,7 +1676,7 @@ extern u8 sStr_Read_read_not_at_end_1E37C;
 extern u8 sStr_Read_write_not_at_end_1E394;
 extern u8 sStr_Read_ve_len_1E3AC;
 void fs_bufRead_33EB8(s32 dst, u32 flags);
-extern char *gl_d_34180_dev;
+extern char *gConsoleNode_3EF04_34180_dev;
 void sys_fatalSwapBuffer_00034180(void);
 typedef struct {
     char field_00[0x10];
