@@ -25,6 +25,7 @@ typedef double f64; typedef short s16; typedef unsigned char u8; typedef unsigne
  * include/game/snowboarder.h (included by relative path; their asserts are C-only). */
 #include "../../include/game/snowboarder.h"
 #include "../../include/game/camera.h"
+#include "../../include/game/input.h"
 extern "C" {
 typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
@@ -55,13 +56,13 @@ void game_uso_func_00000940_lay(char *arg0) {
     s32 var_a1;
 
     var_a1 = -1;
-    switch (*(int *)((char *)*(int *)((char *)arg0 + 0x150) + 0xA54)) {
+    switch (((CourseCam *)arg0)->rider->raceResult) {
     case 0:
-        temp_v0 = *(int *)((char *)&import_80020098 + 0x34);
-        if ((temp_v0 == 4) || (temp_v0 == 6) || (temp_v0 == 7) || ((temp_v0 == 1) && (*(int *)((char *)&import_80020098 + 0x40) == 0))) {
+        temp_v0 = INPUT_MGR(import_80020098).nextFlowMode;
+        if ((temp_v0 == 4) || (temp_v0 == 6) || (temp_v0 == 7) || ((temp_v0 == 1) && (INPUT_MGR(import_80020098).procState == 0))) {
             var_a1 = 1;
         } else {
-            switch (*(int *)((char *)&import_80020098 + 0x64)) {
+            switch (INPUT_MGR(import_80020098).course) {
             case 2: var_a1 = 6; break;
             case 3: var_a1 = 7; break;
             case 4: var_a1 = 8; break;
@@ -76,7 +77,7 @@ void game_uso_func_00000940_lay(char *arg0) {
         if (*(int *)((char *)&import_80020098 + 0x7C) != 0) {
             var_a1 = 0xB;
         } else {
-            switch (*(int *)((char *)&import_80020098 + 0x64)) {
+            switch (INPUT_MGR(import_80020098).course) {
             case 2: var_a1 = 0xD; break;
             case 3: var_a1 = 2; break;
             case 4: var_a1 = 0xD; break;
@@ -94,7 +95,7 @@ void game_uso_func_00000940_lay(char *arg0) {
         var_a1 = 3;
         break;
     case 6:
-        if (*(int *)((char *)&import_80020098 + 0x64) != 7) {
+        if (INPUT_MGR(import_80020098).course != 7) {
             var_a1 = 4;
         } else {
             var_a1 = 5;
@@ -185,9 +186,9 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
                 SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 0, (int)s->rider->dnode.vel);
             }
             if (seg->lookMode == 1) {
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8((int *)((LookAtNode *)ob[0])->chase, 1, (int)s->rider->dnode.vel);
             } else {
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 0, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8((int *)((LookAtNode *)ob[0])->chase, 0, (int)s->rider->dnode.vel);
             }
             s->savedChaseMode = 0;
             s->chaseMode = 0;
@@ -224,22 +225,22 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
             switch (s->chaseMode) {
             case 0: /* chase at height toy, look at the aim point */
                 SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 1, (int)s->rider->dnode.vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8((int *)((LookAtNode *)ob[0])->chase, 1, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 1: /* chase at height ty2 */
                 SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 2, (int)s->rider->dnode.vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8((int *)((LookAtNode *)ob[0])->chase, 1, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 2: /* fixed eye, looking 1000 ahead */
                 SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 3, (int)s->rider->dnode.vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 2, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8((int *)((LookAtNode *)ob[0])->chase, 2, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             case 3: /* fixed eye, looking 1000 behind */
                 SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 3, (int)s->rider->dnode.vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 3, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8((int *)((LookAtNode *)ob[0])->chase, 3, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             }

@@ -158,6 +158,7 @@ typedef struct SnowBChild {
 
 struct SnowAI;
 struct RiderAnim;
+struct CourseMarker;
 
 /* The input object a rider reads (SnowBoarder +0x800): a pad, a replay player or the SnowAI writes it, so the
  * physics never knows who steers (the same object family as InputMgr.pads[], include/game/input.h: held at 0x10).
@@ -286,7 +287,8 @@ typedef struct SnowBoarder {
                              * increments it; SnowBoarder_limitSpeed applies the wfr air drag only while it is 0 */
     SnowBVec3 contactNormal; /* 0x93C: summed contact directions, divided by contactCount in procColl */
     SnowBVec3 lastContactNormal; /* 0x948: the averaged contactNormal of the last frame with contacts */
-    char pad954[0x95C - 0x954];
+    struct CourseMarker *marker; /* 0x954: the course marker SnowAI_updateMarker (game.uso) found nearest */
+    struct CourseMarker *markerLink; /* 0x958: marker->link, the end of the current path segment (0 = none) */
     s32 noGroundFrames;     /* 0x95C: frames the ground query found nothing; after 151 procColl respawns the
                              * rider 200 above the nearest course point (DNode_resetXform) */
     s32 slowdown;           /* 0x960: percent: updateDyn zeroes edgeGrip, adds slowdown / 100 to friction and scales vel.xz
@@ -309,7 +311,9 @@ typedef struct SnowBoarder {
     s16 contactSurface;     /* 0x9A4: surface code of the last object contact */
     char pad9A6[0x9A8 - 0x9A6];
     s32 groundFlags;        /* 0x9A8: ground attribute bits; 0x400 switches the sub808 member on */
-    char pad9AC[0x9CC - 0x9AC];
+    char pad9AC[0x9B8 - 0x9AC];
+    SnowBVec3 linkDir;      /* 0x9B8: normalize((pos - markerLink->pos) in XZ, y = 0) (SnowAI_updateMarker) */
+    char pad9C4[0x9CC - 0x9C4];
     s32 useDParms;          /* 0x9CC: input bit 0x400 held: updateDyn uses the d* parms (dbf, del, dts) instead of n* */
     f32 groundDist;         /* 0x9D0: distance to the ground below (a RoData default when nothing is found) */
     s32 airFrames;          /* 0x9D4: frames since the last collider contact (procColl) */
@@ -345,7 +349,8 @@ typedef struct SnowBoarder {
     u32 flags;              /* 0xA58: SNOWB_FLAG_* */
     s32 shake;              /* 0xA5C: percent: random jitter of six body nodes (update); 20 + 30 * |edge| on the ground,
                              * +20 on a counter-steer bump, 100 / 70 on surface 'd' / 'c' (procColl) */
-    char padA60[0xA6C - 0xA60];
+    char padA60[0xA68 - 0xA60];
+    s32 unkA68;             /* 0xA68: set to 1 by RiderAnim_stateTrickWindup (game.uso); no reader found */
     s16 spinHold;           /* 0xA6C: frames pad button 0x200 has been held in the air with groundFlags & 1 */
     char padA6E[0xA70 - 0xA6E];
     f32 airSpin;            /* 0xA70: yaw rate in the air: after 11 frames of spinHold, += stick x * 0.015, clamped +-0.2 */

@@ -34,6 +34,8 @@ struct H : A { char pad2[200-44]; PM pm; };
 #define F(b,o) (*(float *)((char *)(b) + (o)))
 extern "C" void RiderAnim_update_0000D204(H *a0) {
     H *a3 = a0;
+    /* import_80020098 is GameFlow (include/game/input.h): +0x64 course, +0x138 dataMgr (RaceTracker),
+     * whose +0xB4 hudFlags get RTF_FLUSH | RTF_POINTS (3) while endTrickFlag (0x120) is set */
     if (I(&import_80020098, 0x64) == 0) {
         float th = F(&D_00000000, 0x1F4);
         if (F(I(a0, 0xB4), 0xBC) < th) {
@@ -58,7 +60,7 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
     if (a3->pm != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*(a3->pm))();
     game_uso_func_0000ECE8(a3);
     if (I(a3, 0x74) != 0) {
-        game_uso_func_076E78(I(a3, 0x58), I(a3, 0x74));
+        game_uso_func_076E78(I(a3, 0x58), I(a3, 0x74)); /* AnimDataMgr_lookup(player.mgr, player.anim) */
         if (I(a3, 0x104) != I(a3, 0x74)) I(a3, 0x104) = I(a3, 0x74);
     }
     game_uso_func_0775F8(a3);

@@ -86,7 +86,8 @@ typedef struct RiderAnim {
     s32 animSet;            /* 0xFC: 0x10000 regular / 0x50000 switch stance (flipStance); anim numbers are ORed in */
     s32 comboCount;         /* 0x100: tricks in the current combo (endTrick scores min(count, 10)) */
     s32 loadedAnim;         /* 0x104: player.anim as last handed to the anim data manager: RiderAnim_update calls
-                             * game_uso 0x76E78(player.mgr, player.anim) when anim != 0 and latches it here;
+                             * AnimDataMgr_lookup(player.mgr, player.anim) (token game_uso_func_076E78 = game_libs
+                             * 0x6280C) when anim != 0 and latches it here;
                              * -1 from init */
     s32 selectedAnim;       /* 0x108: selectAnim's result (animSet | anim number) */
     s32 hitKind;            /* 0x10C: 1..5, set by game_uso 0xEDCC; ECEC uses it to pick st1..st3 / sl1 / sl2 */
@@ -102,8 +103,9 @@ typedef struct RiderAnim {
                              * during stateCushionIn, 1.0 from init, after a hit and at stateCushionEnd; one hit
                              * case needs it == 1.0 */
     s32 endTrickFlag;       /* 0x120: set to 1 by endTrick; RiderAnim_update clears it when rider->dnode.vqs.trans[2] < D+0x1F4
-                             * and, while it is set, ORs 3 into the word at (import_80020098+0x138)+0xB4 (else
-                             * clears those bits) */
+                             * and, while it is set (on course 0 only: GameFlow.course == 0), sets RTF_FLUSH | RTF_POINTS
+                             * in GameFlow.dataMgr->hudFlags (import_80020098 = the GameFlow object, input.h; +0x138 =
+                             * dataMgr, a RaceTracker; +0xB4 = hudFlags), else clears them: the trick-points HUD */
     s16 lastStickDir;       /* 0x124: rider->input->stickDir seen last frame (readStickSpin) */
     s16 spinFrames;         /* 0x126: frames of the running stick-spin gesture: 1 at the first step, counts up;
                              * the gesture ends (and is scored) at 6 frames or when the stick centres */

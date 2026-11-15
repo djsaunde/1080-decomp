@@ -188,6 +188,14 @@ typedef struct SnowChaseActorLook {
     SnowChaseActorLookParms parms; /* 0x44 */
 } SnowChaseActorLook;
 
+/* LookAtNode (0xB8): the "snowlookat" node, CourseCam.cam.target (bootup cam_create; its C++ class in
+ * bootup_uso_ncc_31C0.cpp has the same name): an MNode plus its chase component (cam_reset_000008FC resets it,
+ * cam_updateView_00000B3C switches its mode). */
+typedef struct LookAtNode {
+    CamMNode mnode;         /* 0x00 */
+    SnowChaseActorLook *chase; /* 0xB4: "LookAtChase" */
+} LookAtNode;
+
 /* "Parms" of SnowChaseActor (0xE8, SnowChaseActorParms_ctor; tags at game.uso Data 0x37C) */
 typedef struct SnowChaseActorParms {
     const char *name;       /* 0x00: "Parms" */

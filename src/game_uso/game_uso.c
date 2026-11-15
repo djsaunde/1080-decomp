@@ -4,6 +4,7 @@
 #include "game/camera.h"
 #include "game/course.h"
 #include "game/sun.h"
+#include "game/input.h"
 #include "gdl/item.h"
 #include "uso_call.h"
 
@@ -377,7 +378,7 @@ int *cam_ctor_00000858(int *a0, int arg1, int arg2, int arg3, int arg4, float ar
         if (a0 == 0) goto out;
     }
     game_uso_func_047484(a0, arg2, arg3, arg4, arg5); /* MCamera ctor (target, x, y, z) */
-    *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE770; /* vptr */
+    NODE(a0)->vptr = (int)&game_uso_D_807FE770;
     ((CourseCam *)a0)->numLists = 0;
     ((CourseCam *)a0)->numPaths = 0;
     if (arg7 != 0) game_uso_func_04C774(a0, 1, arg7); /* load arg7 ("rom/cam_info.bin") */
@@ -392,7 +393,7 @@ out:
 
 void cam_reset_000008FC(int *a0) {
     int *v0 = (int*)((CourseCam *)a0)->cam.target;
-    CALL(SnowChaseActorLook_reset_000028A8)(*(int*)((char*)v0 + 0xB4), a0); /* the look-at node's chase component */
+    CALL(SnowChaseActorLook_reset_000028A8)(((LookAtNode *)v0)->chase, a0);
     CALL(SnowChaseActorCam_reset_00001DC4)(((CourseCam *)a0)->eyeChase, a0);
     ((CourseCam *)a0)->lastResult = 0;
     CALL(cam_pickResultView_00000940)(a0);
@@ -430,11 +431,11 @@ void cam_pickResultView_00000940(char *arg0) {
     var_a1 = -1;
     switch (((CourseCam *)arg0)->rider->raceResult) { /* switch 1: the race result */
     case 0:                                         /* switch 1 */
-        temp_v0 = *(int *)((char *)&import_80020098 + 0x34);
-        if ((temp_v0 == 4) || (temp_v0 == 6) || (temp_v0 == 7) || ((temp_v0 == 1) && (*(int *)((char *)&import_80020098 + 0x40) == 0))) {
+        temp_v0 = INPUT_MGR(import_80020098).nextFlowMode;
+        if ((temp_v0 == 4) || (temp_v0 == 6) || (temp_v0 == 7) || ((temp_v0 == 1) && (INPUT_MGR(import_80020098).procState == 0))) {
             var_a1 = 1;
         } else {
-            switch (*(int *)((char *)&import_80020098 + 0x64)) {                      /* switch 2 */
+            switch (INPUT_MGR(import_80020098).course) {                      /* switch 2 */
             case 2:                                 /* switch 2 */
                 var_a1 = 6;
                 break;
@@ -463,7 +464,7 @@ void cam_pickResultView_00000940(char *arg0) {
         if (*(int *)((char *)&import_80020098 + 0x7C) != 0) {
             var_a1 = 0xB;
         } else {
-            switch (*(int *)((char *)&import_80020098 + 0x64)) {                      /* switch 3 */
+            switch (INPUT_MGR(import_80020098).course) {                      /* switch 3 */
             case 2:                                 /* switch 3 */
                 var_a1 = 0xD;
                 break;
@@ -495,7 +496,7 @@ void cam_pickResultView_00000940(char *arg0) {
         var_a1 = 3;
         break;
     case 6:                                         /* switch 1 */
-        if (*(int *)((char *)&import_80020098 + 0x64) != 7) {
+        if (INPUT_MGR(import_80020098).course != 7) {
             var_a1 = 4;
         } else {
             var_a1 = 5;
@@ -608,7 +609,7 @@ void cam_handleMsg_00001714(int a0, int *a1) {
  * inverted skip + unconditional goto (`if (a1 != 18) goto end; goto c18;`) so
  * the optimizer can't fold the epilogue into a branch-likely. 0 diffs. */
 void cam_command_0000174C(int *a0, int a1, int a2) {
-    *(int*)((char*)a0 + 0x268) = 0;
+    ((CourseCam *)a0)->freeRot = 0;
     if (a1 == 3)  goto c3;
     if (a1 == 4)  goto c4;
     if (a1 == 5)  goto c5;
@@ -626,7 +627,7 @@ void cam_command_0000174C(int *a0, int a1, int a2) {
     if (a1 == 17) goto c17;
     if (a1 != 18) goto end;
     goto c18;
-c3:  cam_setView_00000AEC(a0, 1); *(int*)((char*)a0 + 0x268) = 1; goto end;
+c3:  cam_setView_00000AEC(a0, 1); ((CourseCam *)a0)->freeRot = 1; goto end;
 c4:  cam_setView_00000AEC(a0, 15); goto end;
 c5:  cam_setView_00000AEC(a0, 16); goto end;
 c6:  cam_setView_00000AEC(a0, 17); goto end;
@@ -747,7 +748,7 @@ SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, &D_00000000 + 0x340); /* Node init, name "SnowChaseActorCam" */
-    *(int*)((char *)a0 + 0x28) = (int)&D_00000000; /* vptr */
+    NODE(a0)->vptr = (int)&D_00000000;
     CALL(SnowChaseActorCamParms_ctor)(&a0->parms); /* SnowChaseActorCamParms_ctor */
     if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
         CALL(Node_Load)(a0, 1, parmsFile);
@@ -1137,7 +1138,7 @@ SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, 
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, &D_00000000 + 0x360); /* Node init, name "SnowChaseActorLook" */
-    *(int*)((char *)a0 + 0x28) = (int)&D_00000000; /* vptr */
+    NODE(a0)->vptr = (int)&D_00000000;
     CALL(SnowChaseActorLookParms_ctor)(&a0->parms); /* SnowChaseActorLookParms_ctor */
     if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
         CALL(Node_Load)(a0, 1, parmsFile);
@@ -1454,7 +1455,7 @@ SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody
         if (a0 == 0) goto out;
     }
     game_uso_func_04C678((int *)a0, (char *)&game_uso_D_807FE990 + 0x3A0); /* Node init, name "SnowChaseActor" */
-    *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE8A8; /* vptr */
+    NODE(a0)->vptr = (int)&game_uso_D_807FE8A8;
     SnowChaseActorParms_ctor(&a0->parms);
     /* load the parms file */
     if (parmsFile != 0) game_uso_func_04C774((int *)a0, 1, parmsFile);
@@ -1965,7 +1966,7 @@ void *SnowAI_ctor(char *a0, int a1, int a2) {
 
     /* Stage 2: the Node base (name at D[0x6D0]); then the SnowAI vtable at +0x28 */
     CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x6D0);
-    *(char**)(a0 + 0x28) = &D_00000000;
+    NODE(a0)->vptr = (int)&D_00000000;
 
     /* Stage 3: sub-region; alloc failure still runs the finalize phase */
     s1 = a0 + 0xE4;
@@ -2548,7 +2549,7 @@ void SnowAI_reset(SnowAI *self) {
 
 void SnowAI_dtor(int *a0, int a1) {
     if (a0 == 0) return;
-    *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
+    NODE(a0)->vptr = (int)&D_00000000;
     if (a1 & 1) {
         GCALL(mem_delete)();
     }
@@ -2627,18 +2628,17 @@ void SnowAI_timeoutRun(int *a0) {
     base_vec = *(V3_6A30 *)&((SnowAI *)a0)->rider->dnode.vqs.trans;
     dispatch_arg = 0;    /* early: move a1,zero schedules into the stage-1 copy */
 
-    /* int-typed read: not CSE'd with the char** read above, so the target's
-     * second lw is kept WITHOUT volatile (volatile moved the a0/a2 split) */
-    p = (char*)a0[0x30 / 4];
+    /* the target reloads rider here (a second lw); no volatile needed (volatile moved the a0/a2 split) */
+    p = (char *)((SnowAI *)a0)->rider;
     {
         register float scale;     /* block-scope: $f0, no home */
         scale = ((SnowAI *)a0)->lookAhead;
         p += 0x318;               /* rider->dnode.vel; bump FIRST, read through it: copyprop
                                      folds the reads to 0x318(v0).. but the
                                      bump survives as the dead addiu */
-        rx = *(float*)(p + 0) * scale;
-        ry = *(float*)(p + 4) * scale;
-        rz = *(float*)(p + 8) * scale;
+        rx = ((float *)p)[0] * scale;
+        ry = ((float *)p)[1] * scale;
+        rz = ((float *)p)[2] * scale;
         if (p) {}                 /* needed: without it 16 diff lines */
         scaled_vec.x = rx;
         scaled_vec.y = ry;
@@ -2720,7 +2720,8 @@ int SnowAI_isAtFinish(int *a0) {
     int b;
 
     v.a = **(int **)((char *)&game_uso_D_807FEB38 + 0x548);
-    r = (int *)SnowAI_findNearestMarker_0000A374((int)a0, v, *(int *)((char *)a0 + 0x30) + 0xB4);
+    r = (int *)SnowAI_findNearestMarker_0000A374((int)a0, v, (int)AI(a0)->rider->dnode.vqs.trans);
+
     b = (r != 0);
     if (b) {
         b = ((((CourseMarker *)r)->parms.flg.value & MARKER_F_FINISH) != 0);
@@ -3031,11 +3032,11 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_applyStickInput);
  * ordering emits bnezl-skip with the null epilogue inline (12 insns, the
  * "cap" every prior note described). */
 float SnowAI_rivalLeadZ(int *a0) {
-    int *v0 = (int *)a0[0x30 / 4];
-    int *v1 = (int *)v0[0x908 / 4];
+    SnowBoarder *v0 = AI(a0)->rider;
+    SnowBoarder *v1 = v0->rival;
     float ret;
     if (v1 != 0) {
-        ret = *(float *)((char *)v1 + 0xBC) - *(float *)((char *)v0 + 0xBC);
+        ret = v1->dnode.vqs.trans[2] - v0->dnode.vqs.trans[2];
     } else {
         ret = 0.0f;
     }
@@ -3088,20 +3089,20 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
 
     inner = (int*)r[0x2C / 4];
     *a1 = (int)inner;
-    *(int*)((char*)a0[0x30 / 4] + 0x954) = (int)r;
-    *(int*)((char*)a0[0x30 / 4] + 0x958) =
-        *(int*)((char*)*(int*)((char*)a0[0x30 / 4] + 0x954) + 0x2C);
+    AI(a0)->rider->marker = (CourseMarker *)r;
+    AI(a0)->rider->markerLink = AI(a0)->rider->marker->link;
 
-    arg3 = *(int*)((char*)a0[0x30 / 4] + 0x958);
+    arg3 = (int)AI(a0)->rider->markerLink;
     if (arg3 != 0) {
-        *(float*)((char*)a0[0x30 / 4] + 0x9B8) =
-            *(float*)((char*)a0[0x30 / 4] + 0xB4) - *(float*)((char*)arg3 + 0x30);
-        *(float*)((char*)a0[0x30 / 4] + 0x9BC) = 0.0f;
-        inner = (int*)*(int*)((char*)a0[0x30 / 4] + 0x958);
-        *(float*)((char*)a0[0x30 / 4] + 0x9C0) =
-            *(float*)((char*)a0[0x30 / 4] + 0xBC) - *(float*)((char*)inner + 0x38);
-        game_uso_func_071028((char*)a0[0x30 / 4] + 0x9B8);
+        AI(a0)->rider->linkDir.x =
+            AI(a0)->rider->dnode.vqs.trans[0] - ((CourseMarker *)arg3)->pos[0];
+        AI(a0)->rider->linkDir.y = 0.0f;
+        inner = (int*)AI(a0)->rider->markerLink;
+        AI(a0)->rider->linkDir.z =
+            AI(a0)->rider->dnode.vqs.trans[2] - ((CourseMarker *)inner)->pos[2];
+        game_uso_func_071028((Vec3 *)&AI(a0)->rider->linkDir);
     }
+
     return (int)r;
 }
 
@@ -3231,12 +3232,12 @@ int SnowAI_isInSegmentWidth(a0, a1, a2)
         if (out == 0) goto skip1;
     }
     {
-        src_vec = 0; if (1) { src_vec = (float*)((char*)a2 + 0x30); }
+        src_vec = 0; if (1) { src_vec = ((CourseMarker *)a2)->pos; }
         src_x = src_vec[0];
         src_z = src_vec[2];
-        *(float*)((char*)out + 0x4) = 0.0f;
-        *(float*)((char*)out + 0x8) = src_z;
-        *(float*)((char*)out + 0x0) = src_x;
+        ((float*)out)[1] = 0.0f;
+        ((float*)out)[2] = src_z;
+        ((float*)out)[0] = src_x;
     }
 skip1:;
 
@@ -3247,11 +3248,12 @@ skip1:;
         if (out == 0) goto skip2;
     }
     {
-        delta_src = 0; if (1) { delta_src = (float*)((char*)a1 + 0x30); }
+        delta_src = 0; if (1) { delta_src = ((CourseMarker *)a1)->pos; }
         src_x = local_190[0] - delta_src[0]; src_z = local_190[2] - delta_src[2];
-        *(float*)((char*)out + 0x4) = 0.0f;
-        *(float*)((char*)out + 0x8) = src_z;
-        *(float*)((char*)out + 0x0) = src_x;
+        ((float*)out)[1] = 0.0f;
+        ((float*)out)[2] = src_z;
+        ((float*)out)[0] = src_x;
+
     }
 skip2:;
 
@@ -3274,16 +3276,16 @@ skip3:;
     game_uso_func_071028((Vec3 *)local_138);
 
     *(Tri3i *)local_12C = *(Tri3i *)local_138;
-    scale0 = (*(float*)((char*)a1 + 0x54)) * (src_x = 250.0f) + 50.0f;
+    scale0 = (((CourseMarker *)a1)->parms.wid.value) * (src_x = 250.0f) + 50.0f;
     local_12C[0] *= scale0;
     local_12C[1] *= scale0;
     local_12C[2] *= scale0;
-    scale0 = 250.0f; scale0 *= (*(float*)((char*)a2 + 0x54) - *(float*)((char*)a1 + 0x54));
+    scale0 = 250.0f; scale0 *= (((CourseMarker *)a2)->parms.wid.value - ((CourseMarker *)a1)->parms.wid.value);
     local_138[0] *= scale0;
     local_138[1] *= scale0;
     local_138[2] *= scale0;
 
-    src_vec = (float*)((char*)*(int*)((char*)a0 + 0x30) + 0xB4);
+    src_vec = AI(a0)->rider->dnode.vqs.trans;
     out = (int*)(unsigned)local_184;
     if (out == 0) {
         out = (int*)game_uso_func_055750(0xC);
@@ -3304,7 +3306,7 @@ skip4:;
         if (out == 0) goto skip5;
     }
     {
-        delta_src = 0; if (1) { delta_src = (float*)((char*)a1 + 0x30); }
+        delta_src = 0; if (1) { delta_src = ((CourseMarker *)a1)->pos; }
         src_x = local_184[0] - delta_src[0]; src_z = local_184[2] - delta_src[2];
         ((float*)out)[0] = src_x;
         ((float*)out)[1] = 0.0f;
@@ -4008,7 +4010,7 @@ void *Sun_ctor(void *arg0) {
         if (s0 == NULL) goto skip_sub;
     }
     game_uso_func_04C678(s0, (char *)&game_uso_D_807FF340 + 0xD50);
-    *(int *)((char *)s0 + 0x28) = (int)&import_80086288;
+    NODE(s0)->vptr = (int)&import_80086288;
 
     p = (char *)s0 + 0x2C;
     if (s0 == (void *)-0x2C) {
@@ -4027,7 +4029,7 @@ after_node:
     game_uso_func_072EE8((char *)s0 + 0x30, (Vec3 *)v3);
 skip_sub:
 
-    *(int *)((char *)arg0 + 0x28) = (int)&game_uso_D_807FF24C;
+    NODE(arg0)->vptr = (int)&game_uso_D_807FF24C;
 
     s0 = (char *)arg0 + 0xDC;
     if (arg0 == (void *)-0xDC) {
@@ -4433,7 +4435,7 @@ void *LensFlare_create(void *arg0, int arg1, int arg2) {
         if (sp1 == NULL) goto skip_sub;
     }
     game_uso_func_04C678((int *)sp1, (char *)&game_uso_D_807FF360 + 0xD70);
-    *(int *)(sp1 + 0x28) = (int)&import_80086288;
+    NODE(sp1)->vptr = (int)&import_80086288;
 
     p = sp1 + 0x2C;
     if (sp1 == (char *)-0x2C) {
@@ -4454,7 +4456,7 @@ after_node:
     game_uso_func_072EE8(sp1 + 0x30, &v3);
 skip_sub:
 
-    *(int *)((char *)arg0 + 0x28) = (int)&game_uso_D_807FF2D8;
+    NODE(arg0)->vptr = (int)&game_uso_D_807FF2D8;
     ((LensFlare *)arg0)->sun = (Sun *)a2v;
     sp1 = (char *)arg0 + 0x224;
     if (arg0 == (void *)-0x224) {
@@ -4505,7 +4507,7 @@ stage_c:
     ((SunParm *)n)->unk14 = 0;
     ((SunParm *)n)->value.f = 0.0f;
 finalize:
-    *(int *)((char *)arg0 + 0xC) = (int)((char *)&game_uso_D_807FF388 + 0xD98);
+    NODE(arg0)->name = (int)((char *)&game_uso_D_807FF388 + 0xD98);
     ((LensFlare *)arg0)->sprite = (Sprite *)import_000F5ADC(0, &game_uso_D_807FF214);
     ((LensFlare *)arg0)->numElems = LENSFLARE_MAX_ELEMS;
     i = 0;
@@ -4714,7 +4716,7 @@ void *TrickTable_ctor_0000C2D4(void *a0, int a1) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x121C);
-    *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
+    NODE(a0)->vptr = (int)&D_00000000;
     if (a1 != 0) {
         CALL(Node_Load)(a0, 1, a1);
     }
@@ -4872,7 +4874,7 @@ void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     struct C48CArg t;
     if (p == 0) { p = (char *)game_uso_func_055750(0x444); if (p == 0) goto end; }
     import_0010D33C(p, a1);
-    *(int *)(p + 0x28) = (int)&game_uso_D_807FF74C;
+    NODE(p)->vptr = (int)&game_uso_D_807FF74C;
     s1 = (int *)(p + 0x13C);
     if (p == (char *)-0x13C) { s1 = (int *)game_uso_func_055750(0x308); if (s1 == 0) goto tail; }
     v1 = s1;
@@ -5221,7 +5223,7 @@ stage0:;
         }
     }
 tail:
-    *(int *)(p + 0xB4) = a2;
+    ((RiderAnim *)p)->rider = (SnowBoarder *)a2;
     RiderAnim_init_0000D458(p);
 end:
     return p;
@@ -5232,7 +5234,7 @@ end:
  * and set/clear the child mode bits import->0x138->0xB4 & 3; trigger
  * 07C0C0 when the 0xB4 object's 0x938 flag is clear and its 0x9D0 < 700 /
  * 0x31C < -100; D9CC when self->0x114; then `if (self->pm) (self->*pm)();`
- * (pointer-to-member at +200); ECE8; 076E78 + latch 0x74 into 0x104; 0775F8.
+ * (pointer-to-member at +200); ECE8; 076E78 (AnimDataMgr_lookup) + latch 0x74 into 0x104; 0775F8.
  * EXACT via REPLACE_FUNC_BODY donor splice: game_uso is C++, and the real
  * body lives in the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_D204.cpp
  * (133/133 words + all 13 relocs identical). The pointer-to-member compare
@@ -5312,7 +5314,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
     game_uso_func_077574(arg0);
     game_uso_func_077C44(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
-    if (*(int *)((char *)&import_800200CC + 0x34) == 3) {
+    if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
         RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
     } else {
         RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
@@ -5419,14 +5421,14 @@ void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
             }
             value = *(int*)((char*)&game_uso_D_807FF7B4 + (idx<<0<<1<<1));
             if (value != 0) {
-                import_000B8698(*(int*)((char*)&import_800201D0 + 0x138),
+                import_000B8698((int)INPUT_MGR(import_800201D0).dataMgr,
                                 (int)RA(a0)->rider, value | 0, value);
             }
         }
     }
     RA(a0)->lastTrick = 0;
     RA(a0)->comboCount = 0;
-    game_uso_func_022784(*(int*)((char*)&import_800201D0 + 0x138),
+    game_uso_func_022784((int)INPUT_MGR(import_800201D0).dataMgr,
                          (int)RA(a0)->rider, a1, value);
     RA(a0)->endTrickFlag = 1;
 }
@@ -6298,12 +6300,12 @@ void RiderAnim_stateStopped(void *a0) {
 extern char game_uso_D_807FF488;
 void RiderAnim_stateSwitchStance(int *a0) {
     int a1;
-    *(float *)((char *)(int *)a0[0xB4 / 4] + 0xA74) = 0.0f;
-    *(float *)((char *)(int *)a0[0xB4 / 4] + 0xA70) = 0.0f;
-    if (*(int *)((char *)(int *)a0[0xB4 / 4] + 0x9CC) != 0) {
-        a1 = a0[0xFC / 4] | RANIM_DEEP_SWITCH;
+    RA(a0)->rider->unkA74 = 0.0f;
+    RA(a0)->rider->airSpin = 0.0f;
+    if (RA(a0)->rider->useDParms != 0) {
+        a1 = RA(a0)->animSet | RANIM_DEEP_SWITCH;
     } else {
-        a1 = a0[0xFC / 4] | RANIM_SWITCH_STANCE;
+        a1 = RA(a0)->animSet | RANIM_SWITCH_STANCE;
     }
     game_uso_func_077C44(a0, a1, 0, 1, 1, 1);
     RiderAnim_setState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
@@ -6554,13 +6556,13 @@ void RiderAnim_stateTrickEnd(int *a0) {
  *   else:    gl_func_0(a0, D[0xED8], D[0xEDC]);
  * gl_func_0(a0). */
 void RiderAnim_stateTrickWindup(int *a0) {
-    int *p2;
+    RiderInput *p2;
     CALL(RiderAnim_stateTrickAir)(a0);
     /* inline `sub` (a0[0xB4], read twice) so it takes $t-regs, but NAME p2 so it
      * claims $v0 like the target (same lever as RiderAnim_stateHopStart). */
-    ((int*)a0[0xB4/4])[0xA68/4] = 1;
-    p2 = *(int**)((char*)(int*)a0[0xB4/4] + 0x800);
-    if (!(p2[0x10/4] & 0x200)) {
+    RA(a0)->rider->unkA68 = 1;
+    p2 = RA(a0)->rider->input;
+    if (!(p2->held & 0x200)) {
         CALL(RiderAnim_setNextState_0000D5BC)(a0,
             *(Pair2*)((char*)&D_00000000 + 0xED8));
     } else {
@@ -6741,7 +6743,7 @@ void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
 void RiderAnim_blendTurn_0000FBF8(int *a0) {
     int v = RA(a0)->animSet;
     GCALL(AnimPlayer_setBlend)(a0, v | 2, v | 3,
-        *(int*)((char*)*(int**)((char*)a0 + 0xB4) + 0x970), 0, 1);
+        *(int*)&RA(a0)->rider->edge, 0, 1);
 }
 
 extern int gl_func_00000000();
@@ -6774,16 +6776,16 @@ void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3);
 void game_uso_func_0000D5BC_a3(char *, Pair2, char *);  /* alias of D5BC (pinned 0) with the a3 word the target passes */
 extern int import_0010DB28();
 void RiderAnim_startOllie_0000FC34(int *a0) {
-    char *base = (char*)*(int**)((char*)a0 + 0xB4);
-    int *flag_loc = *(int**)(base + 0x800);
-    char *field_770;
-    field_770 = base;
-    field_770 += 0x770;
-    if ((flag_loc[0x10/4] & 0x100) == 0) {
+    SnowBoarder *base = RA(a0)->rider;
+    RiderInput *flag_loc = base->input;
+    SnowBParm *field_770;
+    field_770 = &base->parms.jmp;
+    if ((flag_loc->held & 0x100) == 0) {
         float *field_31C;
-        field_31C = (float*)(base + 0x31C);
+        field_31C = &base->dnode.vel[1];
         do {
-            *field_31C = (float)((double)*(float*)(field_770 + 0x10)
+            *field_31C = (float)((double)field_770->value
+
                 * 0.8
                 + (double)*field_31C);
         } while (0);
@@ -6814,9 +6816,9 @@ void RiderAnim_clearNextState_0000D5DC(char *a0);
 void RiderAnim_stateOllieTakeoff(int *a0) {
     int *s0 = a0;
     /* base inlined -> expression temp t6 (dies at the flags load) */
-    int *flags = *(int**)((char*)*(int**)((char*)s0 + 0xB4) + 0x800);
+    RiderInput *flags = RA(s0)->rider->input;
 
-    if ((flags[0x10 / 4] & 0x100) == 0) {
+    if ((flags->held & 0x100) == 0) {
         float zero;
         float *base_788;
         float *base_31C;
@@ -6827,10 +6829,10 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
         RiderAnim_clearNextState_0000D5DC((char*)s0);
 
         zero = 0.0f;
-        base_788 = (float*)(*(char**)((char*)s0 + 0xB4) + 0x788);
-        base_31C = (float*)(*(char**)((char*)s0 + 0xB4) + 0x31C);
+        base_788 = (float*)&RA(s0)->rider->parms.djp;
+        base_31C = &RA(s0)->rider->dnode.vel[1];
         base_31C[0] = base_788[0x10 / 4] + base_31C[0];
-        base_2FC = (float*)(*(char**)((char*)s0 + 0xB4) + 0x2FC);
+        base_2FC = RA(s0)->rider->dnode.angVel;
         base_2FC[3] = 1.0f;
         base_2FC[2] = zero;
         base_2FC[1] = zero;
@@ -6852,9 +6854,9 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
  * spills — cracking the precall-spill "cap" (see docs/PATTERNS.md). Replaces the
  * banned SUFFIX_BYTES + INSN_PATCH recipe. */
 void RiderAnim_stateOllieRise(int *a0) {
-    int *base = *(int**)((char*)a0 + 0xB4);
-    if (*(float*)((char*)base + 0x31C) < -1.0f) {
-        if (*(float*)((char*)base + 0x9D0) < 1000.0f) {
+    SnowBoarder *base = RA(a0)->rider;
+    if (base->dnode.vel[1] < -1.0f) {
+        if (base->groundDist < 1000.0f) {
             CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 6, ANIM_BLENDIN, 0x14);
             CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), -1);
             CALL(RiderAnim_clearNextState_0000D5DC)(a0);
@@ -6920,8 +6922,8 @@ void RiderAnim_stateHopStart(int *a0) {
     /* Conditional Call 3 — inline `outer` (arg0[0xB4]) so it takes $t1 not $v0,
      * but NAME the middle pointer `mid` so it claims $v0 like the target. */
     {
-        int *mid = (int*)((int*)*(int**)((char*)a0 + 0xB4))[0x800 / 4];
-        if (mid[0x18 / 4] & 0x400) {
+        RiderInput *mid = RA(a0)->rider->input;
+        if (mid->pressed & 0x400) {
             CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDE0));
         }
     }
@@ -7123,7 +7125,8 @@ void RiderAnim_stateHopDrop(int *arg0) {
     CALL(AnimPlayer_startIfChanged)(arg0, RA(arg0)->animSet | RANIM_HOP, 4, 5, 1, 1);
     CALL(RiderAnim_readTrickInput_0000E5C8)(arg0, 0);
     if (CALL(RiderAnim_startQueuedTrick_0000E35C)(arg0) == 0) {
-        if ((*(int**)((char*)arg0 + 0xB4))[0x938 / 4] != 0) {
+        if (RA(arg0)->rider->contactCount != 0) {
+
             CALL(RiderAnim_setNextState_0000D5BC)(arg0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
             CALL(RiderAnim_stateHopLand)(arg0);
         }
@@ -7556,8 +7559,7 @@ void RiderAnim_startEndingCpu_00011258(int *a0) {
     game_uso_func_077C44(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_LOSE), 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
     RiderAnim_clearNextState_0000D5DC((char*)a0);
-    p = *(int**)((char*)a0 + 0xB4);
-    p = (int*)((char*)p + 0xA58);
+    p = (int *)&RA(a0)->rider->flags;
     *p = *p & ~0x800;
 }
 
@@ -7571,8 +7573,7 @@ void RiderAnim_startEnding_000112E0(int *a0) {
     game_uso_func_077C44(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_WIN), 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
     RiderAnim_clearNextState_0000D5DC((char*)a0);
-    p = *(int**)((char*)a0 + 0xB4);
-    p = (int*)((char*)p + 0xA58);
+    p = (int *)&RA(a0)->rider->flags;
     *p = *p & ~0x800;
 }
 
@@ -7677,7 +7678,7 @@ void RiderAnim_crashRecover_000116D4(void *a0) {
         CALL(AnimPlayer_startIfChanged)(s0, RA(s0)->selectedAnim, 2, 1, 1, 1);
         CALL(RiderAnim_setState_0000D5F8)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
     }
-    *(int *)((char *)s0 + 0x114) = 0;
+    RA(s0)->trickPhase = 0;
 }
 
 // RiderAnim_checkBackwardSwitch_00011750 — STRUCTURAL PASS (0x118 / 70 words,

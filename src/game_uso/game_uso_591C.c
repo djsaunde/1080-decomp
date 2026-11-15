@@ -15,6 +15,8 @@
  *    cfe's own join temp the temp took f2 once z no longer reached a join block. */
 #include "common.h"
 #include "game/snowai.h"
+#include "game/course.h"
+#include "game/input.h"
 extern char import_80020110;
 extern int import_8006EF48;
 typedef struct { float x, y, z; } Vec3;
@@ -54,8 +56,8 @@ void SnowAI_steer(int *a0) {
     int out_w;
     int hit_out;
     Vec3 scratch_xz;
-    char *sub; /* the rider; `*(float*)(sub + 0x348)` is rider->dnode.speed, kept raw: the field form moves FP registers
-                * (agent-g run 512; rival / useDParms convert cleanly) */
+    char *sub; /* the rider (SnowBoarder *). Its two `dnode.speed * reachTime` products are written member-first:
+                * with the member second the FP registers move (agent-g run 523) */
     float yaw_metric;
     float accel_metric;
     int v0;
@@ -101,7 +103,7 @@ void SnowAI_steer(int *a0) {
     Vec3 diff_g;
     Vec3 *delta_g_dst;
     self = (SnowAI *)a0;
-    if (*(int*)((char*)&import_80020110 + 0x78) != 0) return;
+    if (INPUT_MGR(import_80020110).unk78 != 0) return;
     if (import_8006EF48 == 0) return;
     v0 = self->modeFlags;
     if (v0 & 1) {
@@ -118,12 +120,11 @@ void SnowAI_steer(int *a0) {
     }
     *(Tri3i *)&staged_axis = *(Tri3i *)&self->rider->dnode.vqs.trans;
     {
-        axis_src = (float *)self->rider;
-        axis_src = (float *)((int)axis_src + 0x318);
+        axis_src = self->rider->dnode.vel;
         fsel = self->lookAhead;
         scale = *axis_src * fsel;
-        z = *(float *)((int)axis_src + 4) * fsel; if (z) {}
-        x = *(float *)((int)axis_src + 8) * fsel;
+        z = axis_src[1] * fsel; if (z) {}
+        x = axis_src[2] * fsel;
         scaled_axis.z = x; if (1) {}
         scaled_axis.y = z;
         scaled_axis.x = scale;
@@ -136,7 +137,7 @@ void SnowAI_steer(int *a0) {
     staged_axis.z += copy2.z;
     helper_ptr = (char*)SnowAI_updateMarker(self, &hit_parent, &staged_axis, &hit_obj);
     if (helper_ptr == 0) return;
-    state_flag = *(int*)(helper_ptr + 0x84);
+    state_flag = ((CourseMarker *)helper_ptr)->parms.flg.value;
     if (hit_obj != 0) {
         resolved_state = state_flag;
     } else {
@@ -148,7 +149,7 @@ void SnowAI_steer(int *a0) {
     case 0:
         if (metric_a <= self->weaveLead) {
             if (((v0 = state_flag) == 0) && (hit_parent != 0)
-                    && (*(int*)(hit_parent + 0x84) == 0)) {
+                    && (((CourseMarker *)hit_parent)->parms.flg.value == 0)) {
                 if (self->minSpeed <= self->rider->dnode.speed) {
                     self->aimMode = 1;
                     t0 = 1;
@@ -160,7 +161,7 @@ void SnowAI_steer(int *a0) {
         v0 = self->level;
         fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_SE + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_SE + 1].value : self->parms.parm[SNOWAI_PARM_SE].value, scale);
         if (!(metric_a <= fsel) || state_flag != 0 || hit_parent == 0
-                || *(int*)(hit_parent + 0x84) != 0
+                || ((CourseMarker *)hit_parent)->parms.flg.value != 0
                 || !(self->minSpeed
                      <= self->rider->dnode.speed)) {
             self->aimMode = 0;
@@ -203,9 +204,9 @@ void SnowAI_steer(int *a0) {
     neg = -yaw_raw;
     sub = (char *)self->rider;
     {
-        axis_src = (float *)(*(char**)((char*)a0 + 0x30) + 1784);
+        axis_src = (float *)&((SnowAI *)a0)->rider->parms.nts;
         self->unk3C =
-            (neg * (1.0f + (*(float*)(sub + 0x348) / self->turnSpeedRef))
+            (neg * (1.0f + (((SnowBoarder *)sub)->dnode.speed / self->turnSpeedRef))
              * self->turnGain) / *(float *)((int)axis_src + 16);
     }
     f2v = self->unk3C;
@@ -226,26 +227,26 @@ void SnowAI_steer(int *a0) {
             }
             goto tail_common;
         }
-        if (hit_parent == 0 || !(*(int*)(hit_parent + 0x84) & 2))
+        if (hit_parent == 0 || !(((CourseMarker *)hit_parent)->parms.flg.value & 2))
             goto tail_common;
         p = 0;
         if (1) { p = &pos_a; }
-        src = (float *)((int)helper_ptr + 48);
+        src = ((CourseMarker *)helper_ptr)->pos;
         if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
             fsel = *src;
-            z = *(float *)((int)src + 8);
+            z = src[2];
             p->y = 0.0f;
             p->z = z;
             p->x = fsel;
         }
         p = 0;
         if (1) { p = &diff_a; }
-        hsrc = (float *)((int)hit_parent + 48);
+        hsrc = ((CourseMarker *)hit_parent)->pos;
         {
             delta_a_dst = p;
             if (delta_a_dst != 0 || (delta_a_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
                 x = pos_a.x - *hsrc;
-                z = pos_a.z - *(float *)((int)hsrc + 8);
+                z = pos_a.z - hsrc[2];
                 delta_a_dst->y = 0.0f;
                 delta_a_dst->x = x;
                 delta_a_dst->z = z;
@@ -255,10 +256,10 @@ void SnowAI_steer(int *a0) {
         delta_a = stage;
         p = 0;
         if (1) { p = &pos_c; }
-        child_flags = (int *)((int)(char *)self->rider + 180);
+        child_flags = (int *)self->rider->dnode.vqs.trans;
         if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
             fsel = *(float *)child_flags;
-            z = *(float *)((int)child_flags + 8);
+            z = ((float *)child_flags)[2];
             p->y = 0.0f;
             p->x = fsel;
             p->z = z;
@@ -278,8 +279,8 @@ void SnowAI_steer(int *a0) {
         }
         stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
         delta_b = stage;
-        sub = *(char**)((char*)a0 + 0x30);
-        f2v = self->reachTime * *(float*)(sub + 0x348);
+        sub = (char *)((SnowAI *)a0)->rider;
+        f2v = ((SnowBoarder *)sub)->dnode.speed * self->reachTime;
         dist_sq = (delta_a.x * delta_a.x) + (delta_a.z * delta_a.z);
         if (0.0f == dist_sq) {
         f12v = 0.0f;
@@ -294,7 +295,7 @@ void SnowAI_steer(int *a0) {
         goto tail_common;
     }
     if (bits != 0) goto tail_common;
-    if (hit_parent == 0 || !((v0 = *(int*)(hit_parent + 0x84)) & 1)) goto yaw_region;
+    if (hit_parent == 0 || !((v0 = ((CourseMarker *)hit_parent)->parms.flg.value) & 1)) goto yaw_region;
     if (v0 & 0x804) {
         if (((SnowBoarder *)sub)->rival != 0) {
             if (!(metric_a <= -2000.0f)) goto yaw_region;
@@ -302,22 +303,22 @@ void SnowAI_steer(int *a0) {
     }
     p = 0;
     if (1) { p = &pos_e; }
-    src = (float *)((int)helper_ptr + 48);
+    src = ((CourseMarker *)helper_ptr)->pos;
     if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
         fsel = *src;
-        z = *(float *)((int)src + 8);
+        z = src[2];
         p->y = 0.0f;
         p->z = z;
         p->x = fsel;
     }
     p = 0;
     if (1) { p = &diff_e; }
-    hsrc = (float *)((int)hit_parent + 48);
+    hsrc = ((CourseMarker *)hit_parent)->pos;
     {
         delta_e_dst = p;
         if (delta_e_dst != 0 || (delta_e_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
             x = pos_e.x - *hsrc;
-            z = pos_e.z - *(float *)((int)hsrc + 8);
+            z = pos_e.z - hsrc[2];
             delta_e_dst->y = 0.0f;
             delta_e_dst->x = x;
             delta_e_dst->z = z;
@@ -327,10 +328,10 @@ void SnowAI_steer(int *a0) {
     delta_e = stage;
     p = 0;
     if (1) { p = &pos_g; }
-    child_flags = (int *)((int)(char *)self->rider + 180);
+    child_flags = (int *)self->rider->dnode.vqs.trans;
     if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
         fsel = *(float *)child_flags;
-        z = *(float *)((int)child_flags + 8);
+        z = ((float *)child_flags)[2];
         p->y = 0.0f;
         p->x = fsel;
         p->z = z;
@@ -351,7 +352,7 @@ void SnowAI_steer(int *a0) {
     stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
     delta_g = stage;
     sub = (char *)self->rider;
-    f2v = (self->reachTime + 12.0f) * *(float*)(sub + 0x348);
+    f2v = ((SnowBoarder *)sub)->dnode.speed * (self->reachTime + 12.0f);
     dist_sq = (delta_e.x * delta_e.x) + (delta_e.z * delta_e.z);
     if (0.0f == dist_sq) {
         f12v = 0.0f;
@@ -364,7 +365,7 @@ void SnowAI_steer(int *a0) {
     }
 yaw_region:
     sub = (char *)self->rider;
-    dot = *(float*)(sub + 0x348);
+    dot = ((SnowBoarder *)sub)->dnode.speed;
     if (self->stallYaw <= yaw_metric) {
         if (dot < 50.0f) {
             out_flags |= 0x40;
@@ -373,7 +374,7 @@ yaw_region:
     if (dot < self->minSpeed) {
         if (hit_out == 0) {
             if ((double)yaw_metric < 0.125) {
-                if (*(int*)((char*)&import_80020110 + 0x78) == 0) {
+                if (INPUT_MGR(import_80020110).unk78 == 0) {
                     out_flags |= 4;
                 }
             }
@@ -435,6 +436,7 @@ yaw_region:
         }
     }
 tail_common:
+        /* self->level, read as unsigned: the member form (even cast) moves the code by 10 words */
         v0 = *(unsigned int*)((char*)self + 0x2C);
         break;
     case 1:
@@ -445,7 +447,7 @@ tail_common:
     fsel = v0 == 1 ? self->parms.parm[SNOWAI_PARM_CF].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_CF + 1].value : self->parms.parm[SNOWAI_PARM_CF + 2].value, scale);
     sub = (char *)self->rider;
     {
-        child_flags = (int *)((int)sub + 2648);
+        child_flags = (int *)&((SnowBoarder *)sub)->flags;
         if ((metric_a < fsel) && (((int)metric_a & 3) == 0)) {
             *child_flags |= 0x4000;
         } else {
@@ -481,14 +483,14 @@ tail_common:
         goto commit_flags;
     }
     if (resolved_state & 0x10) {
-        self->altNode = *(int*)(helper_ptr + 0x6C);
+        self->altNode = ((CourseMarker *)helper_ptr)->parms.ext.value;
         if (resolved_state & 0x200) {
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BJ + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BJ + 1].value : self->parms.parm[SNOWAI_PARM_BJ].value, scale);
             if (!(fsel <= metric_a)) {
-                v0 = *(int*)((char *)self->rider + 0x908);
+                v0 = (int)self->rider->rival;
                 if (v0 == 0) goto commit_flags;
-                yaw_raw = *(float*)(v0 + 0xBC);
+                yaw_raw = ((SnowBoarder *)v0)->dnode.vqs.trans[2];
                 f2v = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
                 if (((int)f2v % 5) != 0) goto commit_flags;
             }
@@ -513,21 +515,21 @@ tail_common:
             } else if (0.0f < metric_a) {
                 self->modeFlags |= 1;
             } else {
-                v0 = *(int*)((char *)self->rider + 0x908);
+                v0 = (int)self->rider->rival;
                 if (v0 == 0) goto commit_flags;
-                yaw_raw = *(float*)(v0 + 0xBC);
+                yaw_raw = ((SnowBoarder *)v0)->dnode.vqs.trans[2];
                 fsel = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
                 if (((int)fsel % 5) != 0) goto commit_flags;
                 self->targetNode = self->altNode;
             }
         }
-    } else if (hit_parent != 0 && *(int*)(hit_parent + 0x2C) == 0) {
+    } else if (hit_parent != 0 && (int)((CourseMarker *)hit_parent)->link == 0) {
         if (self->targetNode != 0) {
-            self->targetNode = *(int*)(hit_parent + 0x6C);
+            self->targetNode = ((CourseMarker *)hit_parent)->parms.ext.value;
         }
     } else if (hit_parent == 0) {
         if (self->targetNode != 0) {
-            self->targetNode = *(int*)(helper_ptr + 0x6C);
+            self->targetNode = ((CourseMarker *)helper_ptr)->parms.ext.value;
         } else {
             out_flags |= 0x10;
         }
