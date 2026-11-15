@@ -189,6 +189,13 @@
 #define gMemTrackerMgr         D_00000000 /* Bss+0x3EEF0 Sym 2306, POINTER to the MemTrackerMgr singleton: MemTrackerMgr_ctor stores `this` there; memtrack_begin / end / find walk its head / tail */
 #define gl_osViModeTable       D_00000000 /* Data+0x2D700 Sym 1947, 3360 bytes = 42 x 0x50 OSViMode (type byte i at entry i, NTSC/PAL/MPAL x 14): game_libs' libultra osViModeTable; gfx_setVideoMode indexes it */
 
+/* ---- Bss / Data objects, wave 3 (agent-a run 493) ---- */
+#define gSysImStack            D_00000000 /* Bss+0x3EF10 Sym 2344, 256 bytes = 64 words: sys_imin pushes its argument at [depth] (and clears [depth + 1]; "too deep" print at depth >= 63), sys_imout walks it up to the first 0 and releases each entry, sys_stackPeek_0006170C reads [depth - 1] */
+#define gSysImDepth            D_00000000 /* Data+0x21DE8 Sym 2345: the gSysImStack depth / count (sys_imin increments, sys_imout's --count < 0 test, sys_stackPeek_0006170C) */
+#define gGfxFbWidth            D_00000000 /* Data+0x1F974 Sym 1853: framebuffer width; gfx_clearFbRect_00043468 uses it as the row stride in halfwords (y * w + x), gfx_setSizePairA_00044C9C(w, h) stores it with Sym 1854; GfxLib_init / reset */
+#define gGfxFbHeight           D_00000000 /* Data+0x1F978 Sym 1854: framebuffer height (gfx_setSizePairA_00044C9C second argument; GfxLib_init / reset, gfx_drawFbSplash_00048184) */
+#define gSysDevBlock_3A4E8     D_00000000 /* Bss+0x3A4E8 Sym 1505, 5112 bytes (inferred span): the pad / device block of RcpMgr_service, pad_initGlobal, pad_requestGlobal, pad_setSlotValueGlobal, pad_isSlotState2Global, pad_decodeButtonMap_00034CC8, sys_pollDevices_00034B64, sys_fatalHaltLoop. Kind only */
+
 /* ---- string / path tables (DataRelocs point at RoData strings; agent-a run 491) ---- */
 #define gBoardModelUsoPaths    D_00000000 /* Data+0x8338 Sym 486, 9 char*: "rom/tahoe151.uso", "rom/merlot147.uso", ... the board model USOs (SnowBoarder_loadBoardModel / createBoardShape) */
 #define gBoardBinPaths         D_00000000 /* Data+0x8360 Sym 487, 10 char*: "rom/board1.bin", ... (SnowBoarder_func_0000CAE8) */

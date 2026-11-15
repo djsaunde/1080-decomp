@@ -1,7 +1,8 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post.c. Target bytes unchanged. */
 #include "context_game_libs_post.h"
+#include "../../include/gdl/gl_data.h"
 void snd_TriggerChannel8Cue(s32 duration, s32 hold, s32 mode) {
-    S307A8 *g = (S307A8 *)&D_00000000;
+    S307A8 *g = (S307A8 *)&gSndCueQueues; /* Sym 1448: all 18 Sym-relocated LO16 sites */
     s32 state;
     s32 remaining;
     remaining = g->cnt;
