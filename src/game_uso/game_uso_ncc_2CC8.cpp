@@ -21,7 +21,9 @@
  *  - Frame 216: both arms open with a dead `int` and a nested block (as in
  *    28C0: edg places a block's temporaries before its named locals).
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
- * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). */
+ * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe).
+ * agent-g run 475: member names follow include/game/camera.h (names only, same bytes): Self = SnowChaseActorLook, Src = SnowChaseActorCam; the Out / Node /
+ * Body views are the CamMNode bodies (local matrix 0x30, localPos = local[3] at 0x60, world matrix 0x70, worldPos 0xA0). */
 struct P3 { float x, y, z; };
 struct V3 {
     float x, y, z;
@@ -49,16 +51,16 @@ struct Out {
     void setG(const V3 &v) { gx = v.x; gy = v.y; gz = v.z; }
     void setP(const V3 &v) { px = v.x; py = v.y; pz = v.z; }
 };
-struct Body { char pad[0x70]; M4 mtx; };
+struct Body { char pad[0x70]; M4 world; };
 struct Src;
-struct Self { char pad[0x14]; Out *out; char pad18[0x38 - 0x18]; Body *obj; Src *src; int key; char pad44[0x5C - 0x44]; float k; };
-struct Src { char pad[0x38]; Body *body; };
+struct Self { char pad[0x14]; Out *body; char pad18[0x38 - 0x18]; Body *anchor; Src *cam; int mode; char pad44[0x5C - 0x44]; float ch0; };
+struct Src { char pad[0x38]; Body *target; };
 extern "C" {
 P3 cam_toTargetLocal_000023D4(Src *a1);
 }
 struct Ctx {
     Body *tgt; Out *out;
-    Ctx(Self *s) { out = s->out; tgt = s->src->body; }
+    Ctx(Self *s) { out = s->body; tgt = s->cam->target; }
     Out *getOut() const { return out; }
     Body *getTgt() const { return tgt; }
 };
@@ -68,15 +70,15 @@ extern "C" void SnowChaseActorLook_applyMode_00002CC8(Self *a0, V3 *vel) {
     P3 r;
     V3 q;
     V3 d;
-    key = a0->key;
+    key = a0->mode;
     if (key == 0) return;
     if (key == 1) {
         int yy; yy = 0;
         {
-        q.x = c.getTgt()->mtx.m[3][0]; q.y = c.getTgt()->mtx.m[3][1]; q.z = c.getTgt()->mtx.m[3][2];
-        r = cam_toTargetLocal_000023D4(a0->src);
+        q.x = c.getTgt()->world.m[3][0]; q.y = c.getTgt()->world.m[3][1]; q.z = c.getTgt()->world.m[3][2];
+        r = cam_toTargetLocal_000023D4(a0->cam);
         q += r;
-        d = *vel / a0->k;
+        d = *vel / a0->ch0;
         q -= d;
         c.getOut()->setG(q);
         c.getOut()->setP(q);
@@ -85,9 +87,9 @@ extern "C" void SnowChaseActorLook_applyMode_00002CC8(Self *a0, V3 *vel) {
         int zz; zz = 0;
         {
         V3 p;
-        a0->obj->mtx.getPos(p);
-        V3 v = V3(0.0f, 0.0f, a0->key == 3 ? -1000.0f : 1000.0f);
-        c.getTgt()->mtx.rotate(v);
+        a0->anchor->world.getPos(p);
+        V3 v = V3(0.0f, 0.0f, a0->mode == 3 ? -1000.0f : 1000.0f);
+        c.getTgt()->world.rotate(v);
         p += v;
         c.getOut()->setG(p);
         c.getOut()->setP(p);

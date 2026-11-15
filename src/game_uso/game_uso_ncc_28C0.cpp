@@ -16,7 +16,9 @@
  * out as the pooled temp in v0; routing them through the named pointer makes
  * it outrank the pooled temp and flips every v0/v1 (29-31 words).
  * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM.
- * docs/IDO_CODEGEN.md kit XLII (agent-g run 131). */
+ * docs/IDO_CODEGEN.md kit XLII (agent-g run 131).
+ * agent-g run 475: member names follow include/game/camera.h (names only, same bytes): Self = SnowChaseActorLook, Src = SnowChaseActorCam; the Out / Node /
+ * Body views are the CamMNode bodies (local matrix 0x30, localPos = local[3] at 0x60, world matrix 0x70, worldPos 0xA0). */
 struct V3 {
     float x, y, z;
     V3() {}
@@ -38,52 +40,52 @@ struct M4 {
     }
     void getPos(V3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; }
 };
-struct Node { char pad[0x30]; char acc[0x30]; float gx, gy, gz; char pad6c[4]; M4 mtx; };
+struct Node { char pad[0x30]; char local[0x30]; float gx, gy, gz; char pad6c[4]; M4 world; };
 struct Src;
-struct Self { char pad[0x14]; Node *out; char pad18[0x38 - 0x18]; Node *obj; Src *src; int key; char pad44[0x5C - 0x44]; float k; };
-struct Src { char pad[0x38]; Node *body; };
+struct Self { char pad[0x14]; Node *body; char pad18[0x38 - 0x18]; Node *anchor; Src *cam; int mode; char pad44[0x5C - 0x44]; float ch0; };
+struct Src { char pad[0x38]; Node *target; };
 extern "C" {
 V3 cam_toTargetLocal_000023D4(Src *a1);
 float game_uso_func_070238(float);
 void game_uso_func_071028(V3 *);
 void game_uso_func_072EE8(void *, V3 *);
 }
-struct Ctx { Node *tgt; Node *out; Ctx(Self *s) { out = s->out; tgt = s->src->body; }
+struct Ctx { Node *tgt; Node *out; Ctx(Self *s) { out = s->body; tgt = s->cam->target; }
     Node *getOut() const { return out; } Node *getTgt() const { return tgt; } };
 extern "C" void SnowChaseActorLook_update(Self *a0) {
     Ctx c(a0);
     int key;
     V3 r; V3 p; V3 q; V3 d;
     float len;
-    key = a0->key;
+    key = a0->mode;
     if (key == 0) return;
     if (key == 1) {
-        p.x = c.getOut()->mtx.m[3][0]; p.y = c.getOut()->mtx.m[3][1]; p.z = c.getOut()->mtx.m[3][2];
-        q.x = c.getTgt()->mtx.m[3][0]; q.y = c.getTgt()->mtx.m[3][1]; q.z = c.getTgt()->mtx.m[3][2];
-        r = cam_toTargetLocal_000023D4(a0->src);
+        p.x = c.getOut()->world.m[3][0]; p.y = c.getOut()->world.m[3][1]; p.z = c.getOut()->world.m[3][2];
+        q.x = c.getTgt()->world.m[3][0]; q.y = c.getTgt()->world.m[3][1]; q.z = c.getTgt()->world.m[3][2];
+        r = cam_toTargetLocal_000023D4(a0->cam);
         q += r;
         d = q - p;
         len = game_uso_func_070238(d.x * d.x + d.y * d.y + d.z * d.z);
         game_uso_func_071028(&d);
-        float f = len * a0->k; d.x *= f; d.y *= f; d.z *= f;
-        game_uso_func_072EE8(c.getOut()->acc, &d);
-        c.out->mtx.m[3][0] = c.out->gx; c.out->mtx.m[3][1] = c.out->gy; c.out->mtx.m[3][2] = c.out->gz;
+        float f = len * a0->ch0; d.x *= f; d.y *= f; d.z *= f;
+        game_uso_func_072EE8(c.getOut()->local, &d);
+        c.out->world.m[3][0] = c.out->gx; c.out->world.m[3][1] = c.out->gy; c.out->world.m[3][2] = c.out->gz;
     } else {
         Node *o;
         {
         V3 p; V3 q; V3 v;
         float len;
-        o = c.getOut(); p.x = o->mtx.m[3][0]; p.y = o->mtx.m[3][1]; p.z = o->mtx.m[3][2];
-        a0->obj->mtx.getPos(q);
-        v = V3(0.0f, 0.0f, a0->key == 3 ? -1000.0f : 1000.0f);
-        o = c.getTgt(); o->mtx.rotate(v);
+        o = c.getOut(); p.x = o->world.m[3][0]; p.y = o->world.m[3][1]; p.z = o->world.m[3][2];
+        a0->anchor->world.getPos(q);
+        v = V3(0.0f, 0.0f, a0->mode == 3 ? -1000.0f : 1000.0f);
+        o = c.getTgt(); o->world.rotate(v);
         q += v;
         q -= p;
         len = game_uso_func_070238(q.x * q.x + q.y * q.y + q.z * q.z);
         game_uso_func_071028(&q);
-        float f2 = len * a0->k; q.x *= f2; q.y *= f2; q.z *= f2;
-        game_uso_func_072EE8(c.getOut()->acc, &q);
-        c.out->mtx.m[3][0] = c.out->gx; c.out->mtx.m[3][1] = c.out->gy; c.out->mtx.m[3][2] = c.out->gz;
+        float f2 = len * a0->ch0; q.x *= f2; q.y *= f2; q.z *= f2;
+        game_uso_func_072EE8(c.getOut()->local, &q);
+        c.out->world.m[3][0] = c.out->gx; c.out->world.m[3][1] = c.out->gy; c.out->world.m[3][2] = c.out->gz;
         }
     }
 }

@@ -19,7 +19,9 @@
  * forwards to set(const V3 &) (the parameter-temp hop + the frame-384 reference slots).
  * LEFT (99.77): the key-3 source / non-3 object pointers take v0 where the target has v1, and the
  * f23D4 return slot sits 8 bytes lower (the ref read's pointer temps are allocated before it).
- * The cfe body in game_uso.c stays as the C reference (99.10). */
+ * The cfe body in game_uso.c stays as the C reference (99.10).
+ * agent-g run 475: member names follow include/game/camera.h (names only, same bytes): Self = SnowChaseActorCam; the Out / Node /
+ * Body views are the CamMNode bodies (local matrix 0x30, localPos = local[3] at 0x60, world matrix 0x70, worldPos 0xA0). */
 struct V3 {
     float x, y, z;
     V3() {}
@@ -36,28 +38,28 @@ struct M4 {
     const M4 *me() const { return this; }
     void getPos(V3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; }
 };
-struct Out { char pad[0x30]; char acc[0x30]; V3 goal; char pad6c[0x34]; V3 pos; };
-struct Body { char pad[0x70]; M4 mtx; };
-struct Self { char pad[0x14]; Out *out; char pad18[0x2C - 0x18]; V3 vel; Body *obj; Body *src; int key;
-              char pad44[0x7C - 0x44]; float lim; char pad80[0x94 - 0x80]; float spd; char pad98[0xAC - 0x98]; float sx;
-              char padb0[0xC4 - 0xB0]; float vlim; char padc8[0xDC - 0xC8]; float hA; char pade0[0xF4 - 0xE0]; float hB;
-              char padf8[0x10C - 0xF8]; float sy; };
+struct Out { char pad[0x30]; char local[0x30]; V3 localPos; char pad6c[0x34]; V3 worldPos; };
+struct Body { char pad[0x70]; M4 world; };
+struct Self { char pad[0x14]; Out *body; char pad18[0x2C - 0x18]; V3 eyeOffset; Body *target; Body *source; int mode;
+              char pad44[0x7C - 0x44]; float mxz; char pad80[0x94 - 0x80]; float txz; char pad98[0xAC - 0x98]; float cxz;
+              char padb0[0xC4 - 0xB0]; float miy; char padc8[0xDC - 0xC8]; float toy; char pade0[0xF4 - 0xE0]; float ty2;
+              char padf8[0x10C - 0xF8]; float chy; };
 extern "C" {
 V3 cam_toTargetLocal_000023D4(Self *a1);
 float game_uso_func_070238(float);
 void game_uso_func_071028(V3 *);
 void game_uso_func_072EE8(void *, V3 *);
 }
-struct Ctx { Out *out; Ctx(Self *s) { out = s->out; }
+struct Ctx { Out *out; Ctx(Self *s) { out = s->body; }
     Out *getOut() const { return out; } };
 extern "C" void SnowChaseActorCam_update(Self *a0) {
-    if (a0->key == 0) return;
-    if (a0->key == 3) {
+    if (a0->mode == 0) return;
+    if (a0->mode == 3) {
         V3 m;
         Ctx c(a0);
-        a0->src->mtx.me()->getPos(m);
-        c.getOut()->goal.set(m);
-        c.getOut()->pos.set(m);
+        a0->source->world.me()->getPos(m);
+        c.getOut()->localPos.set(m);
+        c.getOut()->worldPos.set(m);
     } else {
         V3 r;
         V3 e;
@@ -65,33 +67,33 @@ extern "C" void SnowChaseActorCam_update(Self *a0) {
         V3 self;
         Ctx c(a0);
         V3 acc;
-        ref.set(c.getOut()->pos);
+        ref.set(c.getOut()->worldPos);
         if (0) { r = cam_toTargetLocal_000023D4(a0); }
         { int p1 = 0, p2 = 0; }
-        a0->obj->mtx.me()->getPos(self);
+        a0->target->world.me()->getPos(self);
         r = cam_toTargetLocal_000023D4(a0);
         self.x += r.x; self.y += r.y; self.z += r.z; /* run 179: spelled out (grid) */
-        float speed = a0->spd;
+        float speed = a0->txz;
         V3 diff(self.x - ref.x, 0.0f, self.z - ref.z);
         float mag = game_uso_func_070238(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
         game_uso_func_071028(&diff);
-        if (mag < a0->lim) {
-            acc.put(diff * (mag - a0->lim));
+        if (mag < a0->mxz) {
+            acc.put(diff * (mag - a0->mxz));
         } else {
-            acc.put(diff * (mag - speed) * a0->sx);
+            acc.put(diff * (mag - speed) * a0->cxz);
         }
-        game_uso_func_072EE8(c.getOut()->acc, &acc);
-        a0->vel.put(diff * speed);
-        float sel = (a0->key == 2) ? a0->hB : a0->hA;
+        game_uso_func_072EE8(c.getOut()->local, &acc);
+        a0->eyeOffset.put(diff * speed);
+        float sel = (a0->mode == 2) ? a0->ty2 : a0->toy;
         diff.set(0.0f, 1.0f, 0.0f);
         mag = ref.y - self.y;
-        if (mag < a0->vlim) {
-            acc.put(diff * (a0->vlim - mag));
+        if (mag < a0->miy) {
+            acc.put(diff * (a0->miy - mag));
         } else {
-            acc.put(diff * (sel - mag) * a0->sy);
+            acc.put(diff * (sel - mag) * a0->chy);
         }
-        game_uso_func_072EE8(c.getOut()->acc, &acc);
+        game_uso_func_072EE8(c.getOut()->local, &acc);
         e = diff * sel;
-        a0->vel -= e;
+        a0->eyeOffset -= e;
     }
 }

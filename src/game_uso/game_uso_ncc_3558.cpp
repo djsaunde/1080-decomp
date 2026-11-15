@@ -36,7 +36,9 @@
  *    stage copy).
  * RESIDUAL: the target stores vb after its init and reloads it in the block
  * (split LR; ours keeps it in f14..f18 throughout), va.y is held in f20 until
- * the block (target reloads va from 240..248), tmp at 148 vs 140. */
+ * the block (target reloads va from 240..248), tmp at 148 vs 140.
+ * agent-g run 475: member names follow include/game/camera.h (names only, same bytes): S = SnowChaseActor; the Out / Node /
+ * Body views are the CamMNode bodies (local matrix 0x30, localPos = local[3] at 0x60, world matrix 0x70, worldPos 0xA0). */
 template <class T> inline T *me(T *p) { return p; } /* agent-c run 253: zero-code accessor (kit CCLXXXIV) */
 struct Vec3 {
     float x, y, z;
@@ -55,18 +57,18 @@ struct M4 {
     float m[4][4];
     void getPos(Vec3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; } /* agent-c run 248: the BB split moved out to before the vb getPos call */
 };
-struct Node { char pad[0x30]; char f30[0x70]; Vec3 pos; };
-struct Body { char pad[0x70]; M4 mtx; };
+struct Node { char pad[0x30]; char local[0x70]; Vec3 pos; };
+struct Body { char pad[0x70]; M4 world; };
 struct S {
-    char pad0[0x14]; Node *node;
-    char pad18[0x3C - 0x18]; Vec3 v3C;
-    Body *b0; Body *b1;
-    char pad50[0x68 - 0x50]; Vec3 v68;
-    char pad74[0x88 - 0x74]; float f88;
-    char pad8C[0xA0 - 0x8C]; float fA0;
-    char padA4[0xB8 - 0xA4]; float fB8;
-    char padBC[0x118 - 0xBC]; float f118;
-    char pad11C[0x130 - 0x11C]; float f130;
+    char pad0[0x14]; Node *body;
+    char pad18[0x3C - 0x18]; Vec3 toGoal;
+    Body *target; Body *lookBody;
+    char pad50[0x68 - 0x50]; Vec3 off;
+    char pad74[0x88 - 0x74]; float xxz;
+    char pad8C[0xA0 - 0x8C]; float mxz;
+    char padA4[0xB8 - 0xA4]; float txz;
+    char padBC[0x118 - 0xBC]; float cxz;
+    char pad11C[0x130 - 0x11C]; float chy;
 };
 extern "C" {
 float game_uso_func_070238(float);
@@ -75,7 +77,7 @@ void game_uso_func_072EE8(void *, Vec3 *);
 }
 struct Ctx { Node *out; Node *getOut() const { return out; } };
 extern "C" void SnowChaseActor_update(S *s0) {
-    if (1) {} Ctx c = { s0->node }; if (1) {} /* agent-c run 340: block splits around the ctx init (constrained climb, kit CDXXXII 6) */
+    if (1) {} Ctx c = { s0->body }; if (1) {} /* agent-c run 340: block splits around the ctx init (constrained climb, kit CDXXXII 6) */
     Vec3 va;
     Vec3 vb;
     Vec3 e;
@@ -90,15 +92,15 @@ extern "C" void SnowChaseActor_update(S *s0) {
     { Node *o = me(c.getOut()); va.x = o->pos.x; va.y = o->pos.y; va.z = o->pos.z; } /* agent-c run 340: me() on the node read keeps the ctx pool word's live range in the first blocks (ctx reloads v1 like the target) */
     /* agent-c run 248 / 247: vb through getPos (address taken = memory-resident like the target's stores after init).
      * agent-c run 340 (kit CDXXXII 6): getPos's `this` and the matrix pointer are ONE variable m, reassigned before the
-     * matrix rows (the target reloads s0->b0 after the stage copy, both in v0); the rows' locals sit in an inner block
+     * matrix rows (the target reloads s0->target after the stage copy, both in v0); the rows' locals sit in an inner block
      * opened after the stage copy so the frame homes keep their order (tmp 140, r 104, bt 76). */
     {
         M4 *m;
-        (m = &s0->b0->mtx)->getPos(vb);
+        (m = &s0->target->world)->getPos(vb);
         zero = 0.0f;
-        stage = s0->v68;
+        stage = s0->off;
         {
-            m = &s0->b0->mtx;
+            m = &s0->target->world;
             const Vec3 &v = stage;
             float x = m->m[0][0] * v.x + m->m[1][0] * v.y + m->m[2][0] * v.z;
             float y = m->m[0][1] * v.x + m->m[1][1] * v.y + m->m[2][1] * v.z;
@@ -108,30 +110,30 @@ extern "C" void SnowChaseActor_update(S *s0) {
     }
     if (1) {} /* agent-c run 340: with the operator- split, uopt promotes vb.x / y / z over the block (kit CDXXX 5) */
     e = vb - *me(&va); /* agent-c run 340: me() on va (one pool word: the op- temporaries at the target's 104..112) */
-    s0->v3C = e;
+    s0->toGoal = e;
     mag = game_uso_func_070238(e.len2x());
     {
         Vec3 side;
-        k = e.y * s0->f130;
-        side.x = zero; side.y = k; side.z = zero; game_uso_func_072EE8(c.getOut()->f30, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */
+        k = e.y * s0->chy;
+        side.x = zero; side.y = k; side.z = zero; game_uso_func_072EE8(c.getOut()->local, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */
     }
     game_uso_func_071028(&e);
-    me(s0)->b1->mtx.getPos(w); /* agent-c run 253: accessor sweep (kit CCLXXXIV): 93.49 -> 93.61 */
+    me(s0)->lookBody->world.getPos(w); /* agent-c run 253: accessor sweep (kit CCLXXXIV): 93.49 -> 93.61 */
     w.x = w.x - va.x;
     w.z = w.z - va.z;
     w.y = zero;
     l = w.len2(); /* agent-g run 259 (kit CCXCIV): len2's named r was an inline-expansion home at the frame bottom (every low object 8 above the target); as a function-scope l declared after t its home sits in the decl region instead -- the sp-offset set now equals the target's (93.61 -> 93.68 standalone) */
     t = game_uso_func_070238(l);
     game_uso_func_071028(&w);
-    if (s0->f88 < t) {
-        w *= t - s0->f88;
-    } else if (t < s0->fA0) {
-        w *= t - s0->fA0;
+    if (s0->xxz < t) {
+        w *= t - s0->xxz;
+    } else if (t < s0->mxz) {
+        w *= t - s0->mxz;
     } else {
         w *= 0.0f;
     }
-    k2 = (mag - s0->fB8) * s0->f118; /* agent-c run 288: operands swapped (target mul.s f0,f10,f4) */
+    k2 = (mag - s0->txz) * s0->cxz; /* agent-c run 288: operands swapped (target mul.s f0,f10,f4) */
     e *= k2;
     e += w;
-    game_uso_func_072EE8(c.getOut()->f30, &e);
+    game_uso_func_072EE8(c.getOut()->local, &e);
 }

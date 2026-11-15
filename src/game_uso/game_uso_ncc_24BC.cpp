@@ -19,7 +19,9 @@
  *  - one empty if after `q += r` ends a block, so a2 is reloaded after the
  *    first call and re-saved before the second, as in the target.
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
- * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). */
+ * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe).
+ * agent-g run 475: member names follow include/game/camera.h (names only, same bytes): Self = SnowChaseActorCam; the Out / Node /
+ * Body views are the CamMNode bodies (local matrix 0x30, localPos = local[3] at 0x60, world matrix 0x70, worldPos 0xA0). */
 struct V3 {
     float x, y, z;
     V3() {}
@@ -34,44 +36,44 @@ struct M4 {
     float m[4][4];
     void getPos(V3 &v) const { v.x = m[3][0]; v.y = m[3][1]; v.z = m[3][2]; }
 };
-struct Out { char pad[0x60]; V3 goal; char pad6c[0x34]; V3 pos;
-    void setG(const V3 &v) { goal.x = v.x; goal.y = v.y; goal.z = v.z; }
-    void setP(const V3 &v) { pos.x = v.x; pos.y = v.y; pos.z = v.z; } };
-struct Body { char pad[0x70]; M4 mtx; };
-struct Self { char pad[0x14]; Out *out; char pad18[0x38 - 0x18]; Body *obj; Body *src; int key;
-              char pad44[0x94 - 0x44]; float spd; char pad98[0xAC - 0x98]; float sx;
-              char padb0[0xDC - 0xB0]; float hA; char pade0[0xF4 - 0xE0]; float hB;
-              char padf8[0x10C - 0xF8]; float sy; };
+struct Out { char pad[0x60]; V3 localPos; char pad6c[0x34]; V3 worldPos;
+    void setG(const V3 &v) { localPos.x = v.x; localPos.y = v.y; localPos.z = v.z; }
+    void setP(const V3 &v) { worldPos.x = v.x; worldPos.y = v.y; worldPos.z = v.z; } };
+struct Body { char pad[0x70]; M4 world; };
+struct Self { char pad[0x14]; Out *body; char pad18[0x38 - 0x18]; Body *target; Body *source; int mode;
+              char pad44[0x94 - 0x44]; float txz; char pad98[0xAC - 0x98]; float cxz;
+              char padb0[0xDC - 0xB0]; float toy; char pade0[0xF4 - 0xE0]; float ty2;
+              char padf8[0x10C - 0xF8]; float chy; };
 extern "C" {
 V3 cam_toTargetLocal_000023D4(Self *a1);
 void game_uso_func_071028(V3 *);
 }
-struct Ctx { Out *out; Ctx(Self *s) { out = s->out; }
+struct Ctx { Out *out; Ctx(Self *s) { out = s->body; }
     Out *getOut() const { return out; } };
 extern "C" void SnowChaseActorCam_applyMode_000024BC(Self *a0, V3 *in) {
     Ctx c(a0);
-    if (a0->key == 0) return;
-    if (a0->key == 3) {
+    if (a0->mode == 0) return;
+    if (a0->mode == 3) {
         V3 m;
-        a0->src->mtx.getPos(m);
-        Out *o = c.getOut(); o->goal.x = m.x; o->goal.y = m.y; o->goal.z = m.z;
+        a0->source->world.getPos(m);
+        Out *o = c.getOut(); o->localPos.x = m.x; o->localPos.y = m.y; o->localPos.z = m.z;
         int zz; zz = 0;
-        o = c.getOut(); o->pos.x = m.x; o->pos.y = m.y; o->pos.z = m.z;
+        o = c.getOut(); o->worldPos.x = m.x; o->worldPos.y = m.y; o->worldPos.z = m.z;
     } else {
         V3 r;
         V3 q;
         V3 n;
         V3 s;
-        a0->obj->mtx.getPos(q);
+        a0->target->world.getPos(q);
         r = cam_toTargetLocal_000023D4(a0);
         q += r;
         if (1) {}
         n.set(in->x, 0.0f, in->z);
         game_uso_func_071028(&n);
-        n *= a0->spd;
+        n *= a0->txz;
         q -= n;
-        q.y += a0->key == 2 ? a0->hB : a0->hA;
-        s.x = in->x / a0->sx; s.y = in->y / a0->sy; s.z = in->z / a0->sx;
+        q.y += a0->mode == 2 ? a0->ty2 : a0->toy;
+        s.x = in->x / a0->cxz; s.y = in->y / a0->chy; s.z = in->z / a0->cxz;
         q -= s;
         { Out *o = c.getOut(); o->setG(q);
         o = c.getOut(); o->setP(q); }

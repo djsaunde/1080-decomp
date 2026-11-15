@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/snowai.h"
 #include "game/rideranim.h"
+#include "game/camera.h"
 
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
@@ -1116,28 +1117,28 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
  * (drop the `register char *p = a0;` fresh local). With direct
  * param-mutation, IDO schedules `move s0, a0` BEFORE the sw ra/a1/a2
  * chain (matching target) instead of into the bne delay slot. */
-char *SnowChaseActorCam_ctor(char *a0, int a1, int a2, int a3) {
+SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int source, int parent) {
     if (a0 == 0) {
-        a0 = (char*)gl_func_00000000(0x124);
+        a0 = (SnowChaseActorCam *)gl_func_00000000(0x124);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, &D_00000000 + 0x340);
-    *(int*)(a0 + 0x28) = (int)&D_00000000;
-    gl_func_00000000(a0 + 0x44);
-    if (a3 != 0) {
-        gl_func_00000000(a0, 1, a3);
+    gl_func_00000000(a0, &D_00000000 + 0x340); /* Node init, name "SnowChaseActorCam" */
+    *(int*)((char *)a0 + 0x28) = (int)&D_00000000; /* vptr */
+    gl_func_00000000(&a0->parms); /* SnowChaseActorCamParms_ctor */
+    if (parent != 0) {
+        gl_func_00000000(a0, 1, parent);
     }
-    *(int*)(a0 + 0x38) = a1;
-    *(int*)(a0 + 0x3C) = a2;
+    a0->target = (CamMNode *)target;
+    a0->source = (CamMNode *)source;
 end:
     return a0;
 }
 
-void SnowChaseActorCam_reset_00001DC4(void *a0) {
-    *(s32*)((char*)a0 + 0x40) = 0;
-    *(f32*)((char*)a0 + 0x2C) = 0.0f;
-    *(f32*)((char*)a0 + 0x30) = 0.0f;
-    *(f32*)((char*)a0 + 0x34) = 0.0f;
+void SnowChaseActorCam_reset_00001DC4(SnowChaseActorCam *a0) {
+    a0->mode = 0;
+    a0->eyeOffset.x = 0.0f;
+    a0->eyeOffset.y = 0.0f;
+    a0->eyeOffset.z = 0.0f;
 }
 
 /* SnowChaseActorCam_update: 0x5F8 (382 words). Two-pass entity homing.
@@ -1398,9 +1399,9 @@ void SnowChaseActorCam_update(int *a0) {
  * v.y-term-first (`M[4]*v.y + M[0]*v.x`) restores IDO's RTL evaluation so the
  * M[0]*v.x product/load is emitted first, matching the target's load schedule.
  * Both are commutative no-ops at the value level, byte-flips at the encoding. */
-Vec3* cam_toTargetLocal_000023D4(Vec3 *a0, char *a1) {
-    Vec3 v = *(Vec3*)(a1 + 0x5C);
-    float *mm = (float*)((char*)(*(void**)(a1 + 0x38)) + 0x70);
+Vec3* cam_toTargetLocal_000023D4(Vec3 *a0, char *a1) { /* a1: SnowChaseActorCam */
+    Vec3 v = *(Vec3*)&((SnowChaseActorCam *)a1)->parms.cof.value; /* the aim offset, rotated into the target's axes */
+    float *mm = &((SnowChaseActorCam *)a1)->target->world[0][0];
     float X = mm[8]*v.z + (mm[4]*v.y + mm[0]*v.x);
     float Y = mm[9]*v.z + (mm[5]*v.y + mm[1]*v.x);
     float Z = mm[10]*v.z + (mm[6]*v.y + mm[2]*v.x);
@@ -1411,8 +1412,8 @@ Vec3* cam_toTargetLocal_000023D4(Vec3 *a0, char *a1) {
 
 extern void game_uso_func_00000000();
 
-void SnowChaseActorCam_loadParms(char *a0) {
-    game_uso_func_00000000(a0 + 0x44);
+void SnowChaseActorCam_loadParms(SnowChaseActorCam *a0) {
+    game_uso_func_00000000(&a0->parms);
 }
 
 /* SnowChaseActorCam_applyMode_000024BC: camera-homing update (0x258 / 150 words).
@@ -1426,9 +1427,11 @@ void SnowChaseActorCam_applyMode_000024BC(int *a0, int *a1) {
     volatile int *ret = a0;
 }
 
+/* mode: see SnowChaseActorCam.mode; a2 = the rider's velocity (cam_setView passes rider + 0x318): applyMode snaps
+ * the eye behind the direction of travel */
 void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2) {
-    if (*(int*)((char*)a0 + 0x40) == a1) return;
-    *(int*)((char*)a0 + 0x40) = a1;
+    if (((SnowChaseActorCam *)a0)->mode == a1) return;
+    ((SnowChaseActorCam *)a0)->mode = a1;
     SnowChaseActorCam_applyMode_000024BC(a0, (int *)a2);
 }
 
@@ -1550,28 +1553,28 @@ void *SnowChaseActorLookParms_ctor(void *arg0) {
 /* Mirror of SnowChaseActorCam_ctor (alloc(0x64) variant; dispatch table
  * at &D_0+0x360). Lever: reuse a0 (drop the `register char *p = a0`
  * fresh local). */
-char *SnowChaseActorLook_ctor(char *a0, int a1, int a2, int a3) {
+SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, int cam, int parent) {
     if (a0 == 0) {
-        a0 = (char*)gl_func_00000000(0x64);
+        a0 = (SnowChaseActorLook *)gl_func_00000000(0x64);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, &D_00000000 + 0x360);
-    *(int*)(a0 + 0x28) = (int)&D_00000000;
-    gl_func_00000000(a0 + 0x44);
-    if (a3 != 0) {
-        gl_func_00000000(a0, 1, a3);
+    gl_func_00000000(a0, &D_00000000 + 0x360); /* Node init, name "SnowChaseActorLook" */
+    *(int*)((char *)a0 + 0x28) = (int)&D_00000000; /* vptr */
+    gl_func_00000000(&a0->parms); /* SnowChaseActorLookParms_ctor */
+    if (parent != 0) {
+        gl_func_00000000(a0, 1, parent);
     }
-    *(int*)(a0 + 0x38) = a1;
-    *(int*)(a0 + 0x3C) = a2;
+    a0->anchor = (CamMNode *)anchor;
+    a0->cam = (SnowChaseActorCam *)cam;
 end:
     return a0;
 }
 
-void SnowChaseActorLook_reset_000028A8(void *a0) {
-    *(s32*)((char*)a0 + 0x40) = 0;
-    *(f32*)((char*)a0 + 0x2C) = 0.0f;
-    *(f32*)((char*)a0 + 0x30) = 0.0f;
-    *(f32*)((char*)a0 + 0x34) = 0.0f;
+void SnowChaseActorLook_reset_000028A8(SnowChaseActorLook *a0) {
+    a0->mode = 0;
+    a0->unk2C.x = 0.0f;
+    a0->unk2C.y = 0.0f;
+    a0->unk2C.z = 0.0f;
 }
 
 // SnowChaseActorLook_update — STRUCTURAL PASS (0x3E8 / 250 words,
@@ -1731,8 +1734,8 @@ void SnowChaseActorLook_update(char *a0) {
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowChaseActorLook_update);
 #endif
 
-void SnowChaseActorLook_loadParms(char *a0) {
-    game_uso_func_00000000(a0 + 0x44);
+void SnowChaseActorLook_loadParms(SnowChaseActorLook *a0) {
+    game_uso_func_00000000(&a0->parms);
 }
 
 /* SnowChaseActorLook_applyMode_00002CC8: camera position snap (0x300 / 192 words).
@@ -1747,8 +1750,8 @@ void SnowChaseActorLook_applyMode_00002CC8(char *a0, char *a1) {
 }
 
 void SnowChaseActorLook_setMode_00002FC8(int *a0, int a1, int a2) {
-    if (*(int*)((char*)a0 + 0x40) == a1) return;
-    *(int*)((char*)a0 + 0x40) = a1;
+    if (((SnowChaseActorLook *)a0)->mode == a1) return;
+    ((SnowChaseActorLook *)a0)->mode = a1;
     SnowChaseActorLook_applyMode_00002CC8((char *)a0, a2);
 }
 
@@ -1907,24 +1910,24 @@ extern char game_uso_D_807FE8A8;
 extern void game_uso_func_04C678(int *dst, void *tmpl);
 extern void *SnowChaseActorParms_ctor();
 
-int *SnowChaseActor_ctor(int *a0, int a1, int a2, int a3) {
+SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody, int parent) {
     if (a0 == 0) {
-        a0 = (int *)game_uso_func_055750(0x138);
+        a0 = (SnowChaseActor *)game_uso_func_055750(0x138);
         if (a0 == 0) goto out;
     }
-    game_uso_func_04C678(a0, (char *)&game_uso_D_807FE990 + 0x3A0);
-    *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE8A8;
-    SnowChaseActorParms_ctor((int*)((char*)a0 + 0x50));
-    if (a3 != 0) game_uso_func_04C774(a0, 1, a3);
-    *(int*)((char*)a0 + 0x48) = a1;
-    *(int*)((char*)a0 + 0x4C) = a2;
-    *(int*)((char*)a0 + 0x2C) = 0;
-    *(float*)((char*)a0 + 0x38) = 0.0f;
-    *(float*)((char*)a0 + 0x34) = 0.0f;
-    *(float*)((char*)a0 + 0x30) = 0.0f;
-    *(float*)((char*)a0 + 0x44) = 0.0f;
-    *(float*)((char*)a0 + 0x40) = 0.0f;
-    *(float*)((char*)a0 + 0x3C) = 0.0f;
+    game_uso_func_04C678((int *)a0, (char *)&game_uso_D_807FE990 + 0x3A0); /* Node init, name "SnowChaseActor" */
+    *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE8A8; /* vptr */
+    SnowChaseActorParms_ctor(&a0->parms);
+    if (parent != 0) game_uso_func_04C774((int *)a0, 1, parent);
+    a0->target = (CamMNode *)target;
+    a0->lookBody = (CamMNode *)lookBody;
+    a0->unk2C = 0;
+    a0->unk30.z = 0.0f;
+    a0->unk30.y = 0.0f;
+    a0->unk30.x = 0.0f;
+    a0->toGoal.z = 0.0f;
+    a0->toGoal.y = 0.0f;
+    a0->toGoal.x = 0.0f;
 out:
     return a0;
 }
@@ -2184,8 +2187,8 @@ void SnowChaseActor_update(char *s0) {
 }
 #endif
 
-void SnowChaseActor_loadParms(char *a0) {
-    game_uso_func_00000000(a0 + 0x50);
+void SnowChaseActor_loadParms(SnowChaseActor *a0) {
+    game_uso_func_00000000(&a0->parms);
 }
 
 void game_readFloatParm_00003968(char *dst) {
