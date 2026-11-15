@@ -1,6 +1,4 @@
-.section .rodata
-
-nonmatching func_80009EA0
+.section .data
 
 dlabel func_80009EA0
     /* AEA0 80009EA0 8000A5B0 */ .word D_8000A5B0

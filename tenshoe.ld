@@ -137,6 +137,10 @@ SECTIONS
         kernel_RODATA_END = .;
         kernel_RODATA_SIZE = ABSOLUTE(kernel_RODATA_END - kernel_RODATA_START);
         kernel_DATA_START = .;
+        /* 0x80009E60..0x80009FD0: kernel_026.c's tables + printf strings.
+           IDO 7.1 always emits address-initialised data (even `const`)
+           into .data, so this span is .data, not splat's .rodata guess. */
+        build/src/kernel/kernel_026.c.o(.data);
         build/assets/kernel.data.bin.o(.data);
         kernel_DATA_END = .;
         kernel_DATA_SIZE = ABSOLUTE(kernel_DATA_END - kernel_DATA_START);

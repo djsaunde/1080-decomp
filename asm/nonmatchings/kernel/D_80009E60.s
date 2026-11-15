@@ -1,6 +1,4 @@
-.section .rodata
-
-nonmatching D_80009E60
+.section .data
 
 dlabel D_80009E60
     /* AE60 80009E60 8000A590 */ .word D_8000A590
@@ -18,5 +16,8 @@ dlabel D_80009E60
     /* AE90 80009E90 00000000 */ .word 0x00000000
     /* AE94 80009E94 00000000 */ .word 0x00000000
     /* AE98 80009E98 00000000 */ .word 0x00000000
-    /* AE9C 80009E9C 00000000 */ .word 0x00000000
 enddlabel D_80009E60
+
+dlabel D_80009E9C
+    /* AE9C 80009E9C 00000000 */ .word 0x00000000
+enddlabel D_80009E9C

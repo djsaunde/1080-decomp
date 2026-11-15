@@ -48,8 +48,10 @@ segments:
     vram: 0x80000000
     subsegments:
       - [0x1000, c, kernel]
-      - [0xAE60, .rodata, kernel]
-      - [0xAFD0, .data, kernel]
+      # Kernel .data starts at 0xAE60: kernel_026.c's tables + printf strings
+      # (IDO puts address-initialised data in .data, never .rodata), followed
+      # by the hand-carved kernel.data.bin at 0xAFD0 (see tenshoe.ld).
+      - [0xAE60, .data, kernel]
 
   # USO overlays. Each USO is a self-contained, relocatable overlay loaded
   # at runtime. Progress tracking is NOT yet wired up — these are raw bin
