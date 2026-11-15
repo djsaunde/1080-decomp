@@ -6,11 +6,6 @@
 #include "game/input.h"
 #include "game/course.h"
 #include "uso_call.h"
-#ifndef WORLD_MAP
-/* The course map of a WorldRegistry: unk98 is game_createMap's result (game_init stores it), a
- * MapProp whose start / goal hold the course's st0 / gol positions (agent-h run 524). */
-#define WORLD_MAP(w) ((MapProp *)WORLDREG(w)->unk98)
-#endif
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).

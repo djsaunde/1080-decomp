@@ -74,8 +74,9 @@ typedef struct WorldRegistry {
     s32 mainGame;               /* 0x8C: Node "MainGame" */
     s32 light0;                 /* 0x90: light passed to the sun / flare entries and the map lighter */
     s32 light1;                 /* 0x94 */
-    char *unk98;                /* 0x98: set by game_init from a call result; every game_setup* passes its
-                                   +0xC4 / +0xCC floats to the rider builds (agent-h run 496) */
+    struct MapProp *map;        /* 0x98: the course map, game_createMap's result (game_init stores it);
+                                   every game_setup* passes its start[0] / start[2] (+0xC4 / +0xCC) to the
+                                   rider builds (agent-h runs 496, 524) */
     char pad9C[0xC0 - 0x9C];
     s32 numPlayers;             /* 0xC0: game_clearPlayers / game_addPlayer / game_forEachPlayer */
     WorldPlayer players[8];     /* 0xC4: the InputMgr reads players[i].rider->input */
@@ -86,6 +87,9 @@ typedef struct WorldRegistry {
 
 /* Field access through an untyped `char *` registry pointer (the game_* bodies; agent-h run 496) */
 #define WORLDREG(p) ((WorldRegistry *)(p))
+/* The course map of an untyped registry pointer: a MapProp whose start / goal hold the course's st0 / gol
+ * positions (agent-h run 524) */
+#define WORLD_MAP(w) (WORLDREG(w)->map)
 
 /* ---- item templates (bootup Data 0x7B6C: {name, create, flags} until a NULL name) ----
  * hel hem bal ba2 chk gtr gtl cfr snw fog sn2 fo2 sn3 fo3; item_create<Name> builds the ItemType
@@ -212,6 +216,7 @@ COURSE_ASSERT(WorldRegistry, numCourses, 0x78);
 COURSE_ASSERT(WorldRegistry, ogRoot, 0x7C);
 COURSE_ASSERT(WorldRegistry, mainGame, 0x8C);
 COURSE_ASSERT(WorldRegistry, light1, 0x94);
+COURSE_ASSERT(WorldRegistry, map, 0x98);
 COURSE_ASSERT(WorldRegistry, players, 0xC4);
 COURSE_ASSERT(WorldRegistry, numWindows, 0x104);
 COURSE_ASSERT(WorldRegistry, windows, 0x108);

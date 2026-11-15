@@ -9,11 +9,6 @@
 #include "gdl/light.h"
 #include "game/envobj.h"
 #include "uso_call.h"
-#ifndef WORLD_MAP
-/* The course map of a WorldRegistry: unk98 is game_createMap's result (game_init stores it), a
- * MapProp whose start / goal hold the course's st0 / gol positions (agent-h run 524). */
-#define WORLD_MAP(w) ((MapProp *)WORLDREG(w)->unk98)
-#endif
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -1646,7 +1641,7 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     func_00000000((int)((InputMgr *)scene)->game, func_00000000((int)((InputMgr *)scene)->game, a1), a2);
     g = ((InputMgr *)scene)->game;
     m = (int)func_00000000(&D_00000000);
-    WORLDREG(g)->unk98 = (char *)m;
+    WORLDREG(g)->map = (MapProp *)m;
     fd = (f32)(u32)*(int *)((char *)&D_00000000 + 0x20C);
     func_00000000((char *)&D_00000000 + 0x73B4,
                   ((f32)(u32)m - (f32)(u32)sv) / fd);
