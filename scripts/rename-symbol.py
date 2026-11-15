@@ -39,7 +39,13 @@ link, so symbol strings are not emitted. The only ways a rename could change
 bytes are guarded here):
   * OLD inside a C string literal / .ascii(z) (would change data bytes);
   * OLD appearing mangled (`OLD__F...`, C++ objcopy --redefine-sym maps);
-  * OLD is a zero-address sentinel (`*_00000000*`, USO import/base placeholders);
+  * OLD is a zero-address sentinel (`*_00000000*`, USO import/base placeholders),
+    EXCEPT a per-site DATA alias `D_00000000_<suffix>` pinned `= 0x00000000` in
+    undefined_syms_auto.txt: that is an ordinary data symbol (one more name for
+    the section-base placeholder, kept distinct to defeat IDO's address CSE), so
+    renaming it to an object-derived name (`gAudioContext_345c0`, READABILITY_PLAN
+    9.1.2) is a plain linker-symbol rename. D_00000000 itself, func_/gl_func_
+    placeholders and their blank-import aliases stay refused;
   * NEW not a valid identifier / is a C keyword / already a symbol in any
     expected or build object, undefined_syms, symbol_addrs or tenshoe.ld
     (exception, "alias merge": NEW is only a second undefined_syms pin of
@@ -301,6 +307,15 @@ def dedupe_pin(new, dry):
             (ROOT / "undefined_syms_auto.txt").write_text(t2, encoding="utf-8", errors="surrogateescape")
 
 
+ZERO_DATA_ALIAS = re.compile(r"^D_00000000_[A-Za-z0-9_]+$")
+
+
+def zero_pinned(name):
+    """True when undefined_syms_auto.txt pins NAME to address 0 (a per-site zero alias)."""
+    pat = re.compile(r"^\s*%s\s*=\s*0x0+\s*;" % re.escape(name), re.M)
+    return bool(pat.search((ROOT / "undefined_syms_auto.txt").read_text(errors="surrogateescape")))
+
+
 def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     errs, warns = [], []
     if not IDENT.match(new) or new in C_KEYWORDS:
@@ -308,7 +323,10 @@ def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     if old == new:
         errs.append("OLD == NEW")
     if "00000000" in old:
-        errs.append(f"{old} is a zero-address sentinel/placeholder name (USO import/base); never rename")
+        if ZERO_DATA_ALIAS.match(old) and zero_pinned(old):
+            warns.append(f"{old} is a per-site zero DATA alias (pinned 0x0); renamed as a data symbol")
+        else:
+            errs.append(f"{old} is a zero-address sentinel/placeholder name (USO import/base); never rename")
     if new in pending_new:
         errs.append(f"NEW {new} already used earlier in this batch")
     elif new in idx.all_names:
