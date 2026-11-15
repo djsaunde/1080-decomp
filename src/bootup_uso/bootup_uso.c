@@ -6936,7 +6936,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     sb->vel.z = sb->vel.z + v74.z;
     if (((s32)sb->flags << 14) < 0) {  /* SNOWB_FLAG_CATCHUP */
         p = (char *)sb->rival;
-        t = sb->baseMaxSpeed;
+        t = sb->parms.max.value;
         if (p != NULL) {
             d = ((SnowBoarder *)p)->pos.z - sb->pos.z;
             if (bu_b520_k48 < d) {
@@ -6948,7 +6948,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
         k = sb->maxSpeed;
         sb->maxSpeed = (f64)k + (f64)(t - k) * bu_b520_kc;
     } else {
-        sb->maxSpeed = sb->baseMaxSpeed;
+        sb->maxSpeed = sb->parms.max.value;
     }
     if (sb->maxSpeed < sb->speed) {
         func_00000000(&sb->vel, sb);  /* normalize */
@@ -6958,7 +6958,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
         sb->vel.z = sb->vel.z * k;
     }
     if (sb->unk938 == 0) {
-        k = 1.0f - sb->dragXZ;
+        k = 1.0f - sb->parms.wfr.value;
         sb->vel.x = sb->vel.x * k;
         sb->vel.z = sb->vel.z * k;
     }
@@ -8543,7 +8543,7 @@ void func_0000DDC4(int a0) {
  * the $v1 reuse (the load is post-call so $v1 is the next free caller-saved reg).
  * INCLUDE_ASM remains build path. */
 void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
-    unsigned int st = sb->state;
+    unsigned int st = sb->character;
     if (st == 7 || st == 6) {
         func_00000000(sb);
         return;
@@ -8644,7 +8644,7 @@ void SnowBoarder_func_0000E124(SnowBoarder *sb) {
     } else {
         func_00000000(sb);
     }
-    sb->unk978 = -sb->unk978;
+    sb->spin.z = -sb->spin.z;
     up[0] = 0.0f;
     up[1] = 1.0f;
     up[2] = 0.0f;

@@ -28,6 +28,34 @@ typedef struct SnowBVec3 {
     f32 x, y, z;
 } SnowBVec3;
 
+/* one 0x18-byte float parm (game_libs parm base 0x35B1C + float subclass; same layout as SnowAIParm) */
+typedef struct SnowBParm {
+    char pad00[0xC];        /* 0x00: owner list link and the 4-char tag (game_libs Parms_addParm) */
+    void *vptr;             /* 0x0C: float-parm vtable (bootup Data 0x8018) */
+    f32 value;              /* 0x10: ctor default, overwritten by the parms file */
+    s32 unk14;              /* 0x14 */
+} SnowBParm;
+
+/* "SnowBoarder::Parms" (0x2C0), embedded at SnowBoarder +0x540. Members are named by their
+ * parms-file tag, in SnowBoarder_ctor construction order (bootup 0x9680..). Meanings are only
+ * given where a reader proves them. */
+typedef struct SnowBoarderParms {
+    const char *name;       /* 0x00: "SnowBoarder::Parms" */
+    s32 unk04;              /* 0x04: parm list head */
+    SnowBParm hpf, snf, dsf, icf, tfc, edf, bdf, ure, mro, mpi, mdr; /* 0x08..0x0F8 */
+    SnowBParm axr, ayr, azr, tlt; /* 0x110..0x158 */
+    SnowBParm wfr;          /* 0x170 (SnowBoarder +0x6B0): XZ drag; SnowBoarder_limitSpeed scales vel.x / vel.z by 1 - value */
+    SnowBParm sfr, dts;     /* 0x188, 0x1A0 (+0x6E0: dts, scaled by SnowAI_scaleRiderParms) */
+    SnowBParm nts;          /* 0x1B8 (+0x6F8): steering rate; SnowAI_finishRun divides its turn output by it */
+    SnowBParm trt, twt, min; /* 0x1D0..0x200 */
+    SnowBParm max;          /* 0x218 (+0x758): max speed; maxSpeed eases toward max.value (SnowBoarder_limitSpeed);
+                             * SnowAI_update sets it per rival character from ms1..ms8 */
+    SnowBParm jmp, djp, ufs, bdm, cdm, tch; /* 0x230..0x2A8 */
+} SnowBoarderParms;
+
+struct SnowAI;
+struct RiderAnim;
+
 typedef struct SnowBoarder {
     char pad000[0x0B4];
     SnowBVec3 pos;          /* 0x0B4: world position (the node position: the ctor also sets a child node's
@@ -44,24 +72,26 @@ typedef struct SnowBoarder {
     SnowBVec3 startPos;     /* 0x3A4: spawn point: ctor args (x, z), y = ground height at (x, z) + a RoData offset */
     char pad3B0[0x3C8 - 0x3B0];
     SnowBVec3 dir;          /* 0x3C8: unit forward direction (B520 nudge axis; dotted with vel in updateDyn) */
-    char pad3D4[0x6C0 - 0x3D4];
-    f32 dragXZ;             /* 0x6C0: B520 scales vel.x / vel.z by (1 - dragXZ) while unk938 == 0 */
-    char pad6C4[0x768 - 0x6C4];
-    f32 baseMaxSpeed;       /* 0x768: the value maxSpeed eases toward (B520) */
-    char pad76C[0x800 - 0x76C];
+    char pad3D4[0x540 - 0x3D4];
+    SnowBoarderParms parms; /* 0x540: "SnowBoarder::Parms" (the ctor builds it in place) */
     char *input;            /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
                              * by replay_addInput); its +0x10 word carries the direction bits 4 / 8 (B520) */
-    char *unk804;           /* 0x804: child created last in the ctor from (0, this, ...) */
+    struct SnowAI *ai;      /* 0x804: the AI controller (game.uso SnowAI_ctor(0, this, ...), the ctor's last child);
+                             * SnowBoarder_handleMsg forwards win / lose / timeout to SnowAI_onWin / onLose / onTimeout */
     char sub808[0xC];       /* 0x808: embedded 0xC-byte member, constructed in place and initialised
                              * with (ctor arg 1, ctor arg 2) */
-    char pad814[0x844 - 0x814];
+    char pad814[0x840 - 0x814];
+    struct RiderAnim *anim; /* 0x840: the RiderAnim (game.uso C48C) built by the ctor; the SnowAI run-out steps and
+                             * SnowBoarder_handleMsg's ending ("en1" / "en2") call its state methods */
     char *unk844;           /* 0x844: child object A; its +0x30 float is negated on a mirror flip */
-    s32 unk848;             /* 0x848: ctor arg 1 (also passed to the 0x808 member) */
+    s32 controller;         /* 0x848: ctor arg 1 (also passed to the 0x808 member). 0 = pad rider, 2 = CPU rider
+                             * (game_setupVsCpu; SnowAI_update and SnowAI_onLose test == 2); 1 = other (not yet proven) */
     char pad84C[0x864 - 0x84C];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
     char pad868[0x8C0 - 0x868];
-    s32 unk8C0;             /* 0x8C0: 1 << state (a one-hot mask of 0x8C4, set by the ctor) */
-    u32 state;              /* 0x8C4: ctor arg 2; SnowBoarder_func_0000DDCC skips its update for 6 and 7 */
+    s32 unk8C0;             /* 0x8C0: 1 << character (one-hot mask, set by the ctor) */
+    u32 character;          /* 0x8C4: rider character 1..8: ctor arg 2 = game_createPlayers' index + 1; SnowAI_update
+                             * picks ms1..ms8 by it; 6 and 7 get special ctor handling and DDCC skips them */
     char pad8C8[0x8E0 - 0x8C8];
     f32 tint[4];            /* 0x8E0: r, g, b, a as 0..1 (ctor: colour byte / 255, alpha 255 / 164 / 117 / 70) */
     char pad8F0[0x8F4 - 0x8F0];
@@ -73,11 +103,23 @@ typedef struct SnowBoarder {
                                 * B520's catch-up compares positions with it */
     char pad90C[0x938 - 0x90C];
     s32 unk938;             /* 0x938: B520 applies dragXZ only while this is 0 (contact / state flag) */
-    char pad93C[0x978 - 0x93C];
-    f32 unk978;             /* 0x978: axis/spin value, sign-flipped on a mirror flip */
-    char pad97C[0xA38 - 0x97C];
+    char pad93C[0x970 - 0x93C];
+    SnowBVec3 spin;         /* 0x970: rotation rates; RiderAnim_clearRiderSpin_00011868 zeroes all three,
+                             * RiderAnim_selectAnim tests |spin.x|, spin.z is negated on a mirror flip */
+    char pad97C[0xA10 - 0x97C];
+    u16 hitFlags;           /* 0xA10: SnowBoarder_handleMsg msg 20 (bumped by an object) sets 0x1F0;
+                             * RiderAnim_selectAnim picks a stumble anim while (hitFlags & 0x1F0) */
+    char padA12[0xA14 - 0xA12];
+    s32 health;             /* 0xA14: damage meter; RiderAnim_applyDamage_0000EDD4 subtracts dm1..dm4;
+                             * game_setupVsCpu gives the CPU rider 10000000 */
+    char padA18[0xA1C - 0xA18];
+    f32 unkA1C;             /* 0xA1C: lateral wobble: msg 20 adds the bump along the side axis 0x3BC;
+                             * selectAnim compares |unkA1C| with RiderAnim parms to choose a stumble side */
+    char padA20[0xA38 - 0xA20];
     f32 unkA38;             /* 0xA38: cleared on a mirror flip */
-    char padA3C[0xA58 - 0xA3C];
+    char padA3C[0xA54 - 0xA3C];
+    s32 raceResult;         /* 0xA54: SnowBoarder_handleMsg: 1 win (msg 1000), 2 lose (1001), 3 timeout (1003),
+                             * 4 (1002), 5 (1004), 6 ending (1005..1007) */
     u32 flags;              /* 0xA58: SNOWB_FLAG_* */
     char padA5C[0xA78 - 0xA5C];
     f32 maxSpeed;           /* 0xA78: speed cap; eased toward baseMaxSpeed (+-catch-up) by B520 */
@@ -99,26 +141,35 @@ SNOWB_ASSERT_OFFSET(speed, 0x348);
 SNOWB_ASSERT_OFFSET(unk38C, 0x38C);
 SNOWB_ASSERT_OFFSET(startPos, 0x3A4);
 SNOWB_ASSERT_OFFSET(dir, 0x3C8);
-SNOWB_ASSERT_OFFSET(dragXZ, 0x6C0);
-SNOWB_ASSERT_OFFSET(baseMaxSpeed, 0x768);
+SNOWB_ASSERT_OFFSET(parms, 0x540);
+SNOWB_ASSERT_OFFSET(parms.wfr, 0x6B0);
+SNOWB_ASSERT_OFFSET(parms.nts, 0x6F8);
+SNOWB_ASSERT_OFFSET(parms.max, 0x758);
 SNOWB_ASSERT_OFFSET(input, 0x800);
-SNOWB_ASSERT_OFFSET(unk804, 0x804);
+SNOWB_ASSERT_OFFSET(ai, 0x804);
+SNOWB_ASSERT_OFFSET(anim, 0x840);
 SNOWB_ASSERT_OFFSET(sub808, 0x808);
 SNOWB_ASSERT_OFFSET(unk844, 0x844);
-SNOWB_ASSERT_OFFSET(unk848, 0x848);
+SNOWB_ASSERT_OFFSET(controller, 0x848);
 SNOWB_ASSERT_OFFSET(unk864, 0x864);
 SNOWB_ASSERT_OFFSET(unk8C0, 0x8C0);
-SNOWB_ASSERT_OFFSET(state, 0x8C4);
+SNOWB_ASSERT_OFFSET(character, 0x8C4);
 SNOWB_ASSERT_OFFSET(tint, 0x8E0);
 SNOWB_ASSERT_OFFSET(unk8F4, 0x8F4);
 SNOWB_ASSERT_OFFSET(unk900, 0x900);
 SNOWB_ASSERT_OFFSET(unk902, 0x902);
 SNOWB_ASSERT_OFFSET(rival, 0x908);
 SNOWB_ASSERT_OFFSET(unk938, 0x938);
-SNOWB_ASSERT_OFFSET(unk978, 0x978);
+SNOWB_ASSERT_OFFSET(spin, 0x970);
+SNOWB_ASSERT_OFFSET(hitFlags, 0xA10);
+SNOWB_ASSERT_OFFSET(health, 0xA14);
+SNOWB_ASSERT_OFFSET(unkA1C, 0xA1C);
+SNOWB_ASSERT_OFFSET(raceResult, 0xA54);
 SNOWB_ASSERT_OFFSET(unkA38, 0xA38);
 SNOWB_ASSERT_OFFSET(flags, 0xA58);
 SNOWB_ASSERT_OFFSET(maxSpeed, 0xA78);
+typedef char snowb_assert_parm_size[sizeof(SnowBParm) == 0x18 ? 1 : -1];
+typedef char snowb_assert_parms_size[sizeof(SnowBoarderParms) == 0x2C0 ? 1 : -1];
 typedef char snowb_assert_size[sizeof(SnowBoarder) == 0xA8C ? 1 : -1];
 
 #endif /* GAME_SNOWBOARDER_H */

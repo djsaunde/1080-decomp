@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/snowai.h"
+#include "game/rideranim.h"
 
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
@@ -26,7 +27,7 @@ extern int D_game_11564_table;
 typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { int a, b, c, d; } Quad4;
-typedef struct { int a, b; } Pair2;
+/* Pair2 is defined in game/rideranim.h */
 
 #ifdef NON_MATCHING
 /* Macro definitions for NM-wrap bodies. Auto-managed by /struct-name-tick.
