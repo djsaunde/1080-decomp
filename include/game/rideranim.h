@@ -4,6 +4,7 @@
 #include "game/snowboarder.h"
 #include "gdl/anim.h"
 #include "game/rideranim_anims.h"
+#include "game/tricktable.h"
 
 /*
  * RiderAnim: the rider animation state machine of game.uso (C++ class at 0xC48C, vtable Data 0x115C,
@@ -61,8 +62,18 @@ typedef struct RiderAnim {
     char pad0B8[0xC0 - 0xB8];
     Pair2 state;            /* 0xC0: current state PMF */
     Pair2 nextState;        /* 0xC8: next state PMF (reset copies state into it) */
-    char pad0D0[0xF8 - 0xD0];
-    s32 unkF8;              /* 0xF8: cleared by endTrick */
+    char pad0D0[0xE4 - 0xD0];
+    s16 jumpCharge;         /* 0xE4: frames the jump has been held (statePreJumpHold, holdJumpLift: < jlt;
+                             * jumpTakeoff scales jca by it); -1 = not charging */
+    s16 unkE6;              /* 0xE6 */
+    s32 trickButtons;       /* 0xE8: trick button bits gathered by readTrickInput (cleared by clearTricks) */
+    s32 trickInputFrames;   /* 0xEC: frames trickButtons has been non-zero; readTrickInput picks the entry
+                             * whose inputMask equals trickButtons once it exceeds the tkt parm */
+    TrickEntry *queuedTrick; /* 0xF0: the trick picked from the input, started by stateTrickStart /
+                             * startQueuedTrick (cleared by clearTricks, jumpTakeoff) */
+    TrickEntry *curTrick;   /* 0xF4: the trick being played (anim = curTrick->anim); stateTrickEnd clears it */
+    TrickEntry *lastTrick;  /* 0xF8: the previous trick: starting the same one again resets comboCount;
+                             * cleared by endTrick */
     s32 animSet;            /* 0xFC: 0x10000 regular / 0x50000 switch stance (flipStance); anim numbers are ORed in */
     s32 comboCount;         /* 0x100: tricks in the current combo (endTrick scores min(count, 10)) */
     s32 unk104;             /* 0x104: -1 from init */
@@ -81,7 +92,11 @@ RIDERANIM_ASSERT_OFFSET(player.blendEvent, 0x68);
 RIDERANIM_ASSERT_OFFSET(rider, 0xB4);
 RIDERANIM_ASSERT_OFFSET(state, 0xC0);
 RIDERANIM_ASSERT_OFFSET(nextState, 0xC8);
-RIDERANIM_ASSERT_OFFSET(unkF8, 0xF8);
+RIDERANIM_ASSERT_OFFSET(jumpCharge, 0xE4);
+RIDERANIM_ASSERT_OFFSET(trickButtons, 0xE8);
+RIDERANIM_ASSERT_OFFSET(queuedTrick, 0xF0);
+RIDERANIM_ASSERT_OFFSET(curTrick, 0xF4);
+RIDERANIM_ASSERT_OFFSET(lastTrick, 0xF8);
 RIDERANIM_ASSERT_OFFSET(animSet, 0xFC);
 RIDERANIM_ASSERT_OFFSET(comboCount, 0x100);
 RIDERANIM_ASSERT_OFFSET(selectedAnim, 0x108);

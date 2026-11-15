@@ -19,6 +19,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
+typedef int s32;
+typedef unsigned int u32;
+#include "../../include/game/tricktable.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -38,37 +41,44 @@ void RiderAnim_setNextState_0000D5BC(void *, PM);
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
 #define P(b,o) AT(char *,b,o)
+/* RiderAnim members (include/game/rideranim.h; the donor keeps byte-offset views) */
+#define QUEUED_TRICK(s) AT(TrickEntry *, s, 0xF0)   /* RiderAnim.queuedTrick */
+#define CUR_TRICK(s)    AT(TrickEntry *, s, 0xF4)   /* RiderAnim.curTrick */
+#define LAST_TRICK(s)   AT(TrickEntry *, s, 0xF8)   /* RiderAnim.lastTrick */
+#define COMBO_COUNT(s)  I(s, 0x100)                 /* RiderAnim.comboCount */
+#define RIDER(s)        P(s, 0xB4)                  /* RiderAnim.rider */
+#define RIDER_FLAGS(s)  I(RIDER(s), 0xA58)          /* SnowBoarder.flags */
 extern "C" void RiderAnim_stateTrickStart(char *s0) {
-    char *f4;
-    if (I(P(s0, 0xF4), 0x38) & 1) {
+    TrickEntry *f4;
+    if (CUR_TRICK(s0)->flags & TRICK_FLAG_HALF_TURN) {
         RiderAnim_flipStance_0000D6E4(s0);
     }
-    RiderAnim_addTrickPoints_0000EE30(s0, I(P(s0, 0xF0), 0x30), 1);
-    if (I(P(s0, 0xB4), 0xA58) & 0x20) {
+    RiderAnim_addTrickPoints_0000EE30(s0, QUEUED_TRICK(s0)->points, 1);
+    if (RIDER_FLAGS(s0) & 0x20) {
         int base = (int)game_uso_D_807FFBC0;
-        import_000B8518(I(&import_800201D0, 0x138), P(s0, 0xB4),
-            ((base + (I(P(s0, 0xF0), 0x3C) << 6)) - base) / 64);
+        import_000B8518(I(&import_800201D0, 0x138), RIDER(s0),
+            ((base + (QUEUED_TRICK(s0)->mirrorIndex << 6)) - base) / 64);
     } else {
-        import_000B8518(I(&import_800201D0, 0x138), P(s0, 0xB4),
-            ((int)P(s0, 0xF0) - (int)game_uso_D_807FFBC0) / 64);
+        import_000B8518(I(&import_800201D0, 0x138), RIDER(s0),
+            ((int)QUEUED_TRICK(s0) - (int)game_uso_D_807FFBC0) / 64);
     }
-    I(s0, 0x100) = I(s0, 0x100) + 1;
-    P(s0, 0xF4) = P(s0, 0xF0);
-    P(s0, 0xF0) = 0;
-    if (P(s0, 0xF8) == P(s0, 0xF4)) { I(s0, 0x100) = 0; }
-    P(s0, 0xF8) = P(s0, 0xF4);
+    COMBO_COUNT(s0) = COMBO_COUNT(s0) + 1;
+    CUR_TRICK(s0) = QUEUED_TRICK(s0);
+    QUEUED_TRICK(s0) = 0;
+    if (LAST_TRICK(s0) == CUR_TRICK(s0)) { COMBO_COUNT(s0) = 0; }
+    LAST_TRICK(s0) = CUR_TRICK(s0);
     RiderAnim_playSpinSound_0000E564(s0);
-    if ((I(P(s0, 0xB4), 0xA58) & 0x40) && I(P(s0, 0xF4), 0x28) != 0) {
-        I(P(s0, 0xF4), 0x20) = I(P(s0, 0xF4), 0x28);
+    if ((RIDER_FLAGS(s0) & 0x40) && CUR_TRICK(s0)->animSwitch != 0) {
+        CUR_TRICK(s0)->anim = CUR_TRICK(s0)->animSwitch;
     } else {
-        I(P(s0, 0xF4), 0x20) = I(P(s0, 0xF4), 0x24);
+        CUR_TRICK(s0)->anim = CUR_TRICK(s0)->animRegular;
     }
-    f4 = P(s0, 0xF4);
-    if (I(f4, 0x38) & 2) {
-        game_uso_func_077C44(s0, I(f4, 0x20), 4, 2, 1, 1);
+    f4 = CUR_TRICK(s0);
+    if (f4->flags & TRICK_FLAG_GRAB) {
+        game_uso_func_077C44(s0, f4->anim, 4, 2, 1, 1);
         RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B0, 0xEC0), 2);
     } else {
-        game_uso_func_077C44(s0, I(f4, 0x20), 4, 3, 1, 1);
+        game_uso_func_077C44(s0, f4->anim, 4, 3, 1, 1);
         RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B8, 0xEC8), 3);
     }
     RiderAnim_setNextState_0000D5BC(s0, AT(PM, &game_uso_D_807FF4C0, 0xED0));

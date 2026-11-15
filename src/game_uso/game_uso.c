@@ -8558,7 +8558,7 @@ void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
             }
         }
     }
-    RA(a0)->unkF8 = 0;
+    RA(a0)->lastTrick = 0;
     RA(a0)->comboCount = 0;
     game_uso_func_022784(*(int*)((char*)&import_800201D0 + 0x138),
                          (int)RA(a0)->rider, a1, value);
@@ -8802,10 +8802,10 @@ char *a0;
     char *block;
     float *acc;
 
-    if (*(int*)&game_uso_D_807FF684 == 0 && (frame = *(s16*)(a0 + 0xE4), frame >= 0)) {
+    if (*(int*)&game_uso_D_807FF684 == 0 && (frame = RA(a0)->jumpCharge, frame >= 0)) {
         block = *(char**)(*(char**)(a0 + 0xB4) + 0x800);
         if (*(int*)(block + 0x10) & 0x300) {
-            *(s16*)(a0 + 0xE4) = (s16)frame + 1;
+            RA(a0)->jumpCharge = (s16)frame + 1;
             if ((s16)frame < *(int*)(a0 + 0x1CC)) {
                 char *parent = *(char**)(a0 + 0xB4);
                 acc = (float*)(parent + 0x31C);
@@ -8814,7 +8814,7 @@ char *a0;
                 }
             }
         } else {
-            *(s16*)(a0 + 0xE4) = -1;
+            RA(a0)->jumpCharge = -1;
         }
     }
 }
@@ -8846,10 +8846,10 @@ int RiderAnim_startQueuedTrick_0000E35C(char *arg0) {
 }
 
 void RiderAnim_playSpinSound_0000E564(int *a0) {
-    int v0 = ((int*)a0[0xF4/4])[0x2C/4];
+    int v0 = RA(a0)->curTrick->inputMask;
     if (v0 & 0xC000) {
         gl_func_00000000((char*)a0[0xB4/4] + 0x808);
-        v0 = ((int*)a0[0xF4/4])[0x2C/4];
+        v0 = RA(a0)->curTrick->inputMask;
     }
     if (v0 & 0x3000) {
         gl_func_00000000((char*)a0[0xB4/4] + 0x808);
@@ -9628,13 +9628,13 @@ void RiderAnim_statePreJumpCancel(int *a0) {
 extern void import_00096874(int);
 extern void RiderAnim_startHop_0001001C(int *);
 void RiderAnim_jumpTakeoff_0000F360(int *a0) {
-    int v0 = *(short*)((char*)a0 + 0xE4);
+    int v0 = RA(a0)->jumpCharge;
     int *p;
     char *b770, *b510, *b788, *b31C;
     float f2, f0;
     if (v0 < 0) {
-        *(short*)((char*)a0 + 0xE4) = 0;
-        v0 = *(short*)((char*)a0 + 0xE4);
+        RA(a0)->jumpCharge = 0;
+        v0 = RA(a0)->jumpCharge;
     }
     p = *(int**)((char*)a0 + 0xB4);
     f2 = *(float*)((char*)a0 + 0x1B4) * (float)v0;
@@ -9652,7 +9652,7 @@ void RiderAnim_jumpTakeoff_0000F360(int *a0) {
     b31C = (char*)p; if (1) { b31C += 0x31C; }
     f0 *= *(float*)(b510 + 0x10);
     *(float*)(b31C) = *(float*)(b31C) + f0;
-    *(int*)((char*)a0 + 0xF0) = 0;
+    RA(a0)->queuedTrick = 0;
     import_00096874((int)(*(char**)((char*)a0 + 0xB4) + 0x808));
     RiderAnim_startHop_0001001C(a0);
 }
@@ -9697,11 +9697,11 @@ void RiderAnim_stateTrickAir(int *a0) {
  * `*(Pair2*)(&D+0xDF0)` homes a1,a2 to sp+4/sp+8. */
 void RiderAnim_stateTrickEnd(int *a0) {
     a0[0x114/4] = 2;
-    if (*(int*)((char*)(int*)a0[0xF4/4] + 0x38) & 1) {
+    if (RA(a0)->curTrick->flags & TRICK_FLAG_HALF_TURN) {
         gl_func_00000000(a0);
     }
     ((int*)a0[0xB4/4])[0xA18/4] = 1;
-    a0[0xF4/4] = 0;
+    RA(a0)->curTrick = 0;
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xDF0));
     gl_func_00000000(a0);
 }
@@ -9753,14 +9753,14 @@ void RiderAnim_stateTrickStart(char *a0);
  * 00011258/000112E0). Byte-exact (0 SUSPECT / 0 reloc-type diffs). */
 void RiderAnim_stateTrickRelease(int *a0) {
     int *s0 = a0;
-    if (s0[0xF0 / 4] != 0) {
+    if (RA(s0)->queuedTrick != 0) {
         if (RiderAnim_trickCrash_0000D74C((char*)a0) == 0) {
             char *p = (char *)&game_uso_D_807FF4D0 + 0xEE0;
             RiderAnim_setNextState_0000D5BC((char*)s0, *(Pair2*)p);
             RiderAnim_stateTrickStart((char*)s0);
         }
     } else {
-        import_0010DB28(s0, *(int *)((char *)s0[0xF4 / 4] + 0x20), 3, 1, 1, 1);
+        import_0010DB28(s0, RA(s0)->curTrick->anim, 3, 1, 1, 1);
         RiderAnim_setState_0000D5F8((char*)s0,
             *(Pair2 *)((char *)&game_uso_D_807FF4D8 + 0xEE8), 1);
         RiderAnim_clearNextState_0000D5DC((char*)s0);
@@ -9772,7 +9772,7 @@ void RiderAnim_stateTrickRelease(int *a0) {
  * "precall-arg-spill cap" was wrong. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateTrickHold(char *a0) {
-    gl_func_00000000(a0, *(int*)(*(char**)(a0 + 0xF4) + 0x20), 2, 3, 1, 1);
+    gl_func_00000000(a0, RA(a0)->curTrick->anim, 2, 3, 1, 1);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xEC8), 3);
     gl_func_00000000(a0, 0);
 }
@@ -10287,7 +10287,7 @@ extern int RiderAnim_startQueuedTrick_0000E35C(char *);
 extern void RiderAnim_holdJumpLift_0000E2D0();
 extern void RiderAnim_checkBackwardSwitch_00011750(char *);
 void RiderAnim_stateHopRise(int *a0) {
-    int *inner;
+    TrickEntry *inner;
     int *mid;
 
     ((int*)a0[0xB4 / 4])[0xA18 / 4] = 1;
@@ -10301,8 +10301,8 @@ void RiderAnim_stateHopRise(int *a0) {
             RiderAnim_setNextState_0000D5BC((char*)a0,
                              *(Pair2*)((char*)&game_uso_D_807FF3D8 + 0xDE8));
         }
-        inner = (int*)a0[0xF4 / 4];
-        if ((inner != 0) && (inner[0x38 / 4] & 1)) {
+        inner = RA(a0)->curTrick;
+        if ((inner != 0) && (inner->flags & TRICK_FLAG_HALF_TURN)) {
             import_0010DB28(a0,
                              *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
                              5, 5, 1, 1);
@@ -11069,9 +11069,9 @@ void RiderAnim_clearRiderEdge_00011868(int *a0) {
 }
 
 void RiderAnim_clearTricks_00011888(int *a0) {
-    a0[0xE8 / 4] = 0;
-    a0[0xEC / 4] = 0;
-    a0[0xF0 / 4] = 0;
+    RA(a0)->trickButtons = 0;
+    RA(a0)->trickInputFrames = 0;
+    RA(a0)->queuedTrick = 0;
     a0[0x12C / 4] = 0;
 }
 
