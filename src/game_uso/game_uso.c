@@ -4,6 +4,7 @@
 #include "game/camera.h"
 #include "game/course.h"
 #include "game/sun.h"
+#include "gdl/item.h"
 #include "uso_call.h"
 
 /* typed views of an untyped object pointer (same base + offset access as the raw form) */
@@ -177,13 +178,8 @@ static void stream_readQuad_0000039C(Quad4 *dst) {
  * Keep the asm label before that instruction so baseline regeneration uses
  * the same complete function boundary as the compiled C. */
 
-/* Camera/view init: initializes a 0x38-byte struct at a0:
- *   a0+0x00..0x08 = Vec3(0, 0, 0)        ; eye position
- *   a0+0x0C..0x14 = Vec3(0, 0, -1000)    ; target / look-at (z = -1000)
- *   a0+0x18..0x20 = Vec3(0, 1, 0)        ; up vector (Y-up)
- *   a0+0x24       = 85.0f                ; FOV (degrees)
- *   a0+0x28       = 15 (int)             ; mode/flags
- *   a0+0x2C..0x34 = Vec3(0, 0, 0)        ; offset
+/* camKey_init: the CamKey defaults (include/game/camera.h): look (0, 0, 0), eye (0, 0, -1000),
+ * up (0, 1, 0), fov 85, frames 15, rot (0, 0, 0).
  *
  * EXACT, 78 words. The old caller-supplied-f0 diagnosis was wrong: the
  * module exports 0x3F4 (Sym[56], call relocation at text+0x788), not 0x3F8.
@@ -192,7 +188,7 @@ static void stream_readQuad_0000039C(Quad4 *dst) {
  * so a pure-ASM baseline refresh spuriously changed 100% to 98.70%.
  * Boundary corrected 2026-09-09; no instruction bytes changed.
  * See docs/IDO_CODEGEN.md#camera-hoisted-zero-baseline-3f8. */
-void camKey_init_000003F8(void *a0) {
+void camKey_init_000003F8(CamKey *a0) {
     Vec3 zero, fwd, up, zero2;
     Vec3 pad0, pad1;
     Vec3 tmp;
@@ -202,32 +198,32 @@ void camKey_init_000003F8(void *a0) {
     zero.y = 0.0f;
     zero.z = 0.0f;
     *(Tri3i *)&tmp = *(Tri3i *)&zero;
-    *(float *)((char *)a0 + 0x00) = tmp.x;
-    *(float *)((char *)a0 + 0x04) = tmp.y;
-    *(float *)((char *)a0 + 0x08) = tmp.z;
+    a0->look.x = tmp.x;
+    a0->look.y = tmp.y;
+    a0->look.z = tmp.z;
     fwd.y = 0.0f;
     fwd.x = 0.0f;
     fwd.z = -1000.0f;
     *(Tri3i *)&tmp = *(Tri3i *)&fwd;
-    *(float *)((char *)a0 + 0x0C) = tmp.x;
-    *(float *)((char *)a0 + 0x10) = tmp.y;
-    *(float *)((char *)a0 + 0x14) = tmp.z;
+    a0->eye.x = tmp.x;
+    a0->eye.y = tmp.y;
+    a0->eye.z = tmp.z;
     up.z = 0.0f;
     up.x = 0.0f;
     up.y = 1.0f;
     *(Tri3i *)&tmp = *(Tri3i *)&up;
-    *(float *)((char *)a0 + 0x18) = tmp.x;
-    *(float *)((char *)a0 + 0x1C) = tmp.y;
-    *(float *)((char *)a0 + 0x20) = tmp.z;
-    *(float *)((char *)a0 + 0x24) = 85.0f;
-    *(int *)((char *)a0 + 0x28) = 15;
+    a0->up.x = tmp.x;
+    a0->up.y = tmp.y;
+    a0->up.z = tmp.z;
+    a0->fov = 85.0f;
+    a0->frames = 15;
     zero2.z = 0.0f;
     zero2.y = 0.0f;
     zero2.x = 0.0f;
     *(Tri3i *)&tmp = *(Tri3i *)&zero2;
-    *(float *)((char *)a0 + 0x2C) = tmp.x;
-    *(float *)((char *)a0 + 0x30) = tmp.y;
-    *(float *)((char *)a0 + 0x34) = tmp.z;
+    a0->rot.x = tmp.x;
+    a0->rot.y = tmp.y;
+    a0->rot.z = tmp.z;
 }
 
 /* paths whose eye / look mode is 2 are relative: eye += aim (the chase aim point), then look += eye */
@@ -1555,9 +1551,9 @@ void game_readIntParm_000039F8(char *dst) {
     stream_readS32_00000280((int*)(dst + 0x10));
 }
 
-/* game_ItemType_create_00003A28: 36-insn alloc-init constructor. alloc(0x40) +
- * init(051C28), set vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
- * a0->0x40 node and link it back via 07ACE0.
+/* game_ItemType_create_00003A28: item factory of an ItemType (arg0): a 0x40-byte ColourItem
+ * (mem_new + ColourItem_ctor, vptr import_8006ED80, +0x3C = 0); when the type's unk40
+ * node is set, it becomes the item's child (list_append on children + the parent link).
  *
  * 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact). The prior "89.22% NM ceiling / v0-v1 regalloc +
@@ -1571,21 +1567,21 @@ int *game_ItemType_create_00003A28(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)game_uso_func_055750(0x40);
+    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
-        game_uso_func_051C28(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&import_8006ED80;
+        XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (int)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
     p1 = arg0;
-    head = (int*)p1[0x40 / 4];
-    if ((int*)p1[0x40 / 4] != 0) {
-        game_uso_func_07ACE0((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+    head = (int*)ITEMTYPE(p1)->unk40;
+    if ((int*)ITEMTYPE(p1)->unk40 != 0) {
+        XCALL(game_uso_func_07ACE0, list_append)(&NODE(p2)->children, head);
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -1869,403 +1865,13 @@ void CourseMarker_readParms(char *a0) {
     GCALL(Parms_load_00035C6C)(&((CourseMarker *)a0)->parms);
 }
 
-/* SnowAI_ctor: 0x1234 (1165 insns, 4.6 KB) — spine candidate #1
- * "main GameState constructor" per project_1080_game_uso_map.md.
- *
- * 2026-06-11 STATUS: C body scores 100.0 on objdiff, exact-word LCS
- * 1165/1165 vs target (reloc-masked). Cracked by the STRUCT-MARSHALLING
- * rewrite (see comment inside the function body): the marshalling slot is
- * a 4-byte struct passed by value, the per-iter spill slots are 41 named
- * struct locals in decl order, sentinels are -SLOT (natural
- * `p = s1 + SLOT; if (p == NULL)` form), iter alloc-failure skips to the
- * next iter, and the finalize float-table loads use 5 unique externs
- * (D_44F4_st12_*) to break base-CSE. Historical analysis below is kept
- * for archeology; the "REMAINING CAP" sections are all RESOLVED.
- * 0xE8-byte stack frame, 86 cross-USO calls (mostly alloc() and
- * init_subobject()).
- *
- * DECODED ENTRY (first ~25 insns, 0x44F4-0x4564):
- *   prologue:
- *     addiu sp, -0xE8; sw ra,0x24; sw s0-s2,0x18-0x20
- *     sw a0,0xE8(sp); sw a1,0xEC(sp); sw a2,0xF0(sp)  ; 3 args spilled
- *   if (a0 == NULL) {               ; bne a0, zero, +5
- *     self = gl_func_0(0x4E0);      ; alloc 1248-byte main obj
- *     if (self == NULL) goto epi;   ; beq v0, zero, +0x47A (to ~0x5A4B)
- *     a0_spill = self;              ; sw v0, 0xE8(sp)
- *   }
- *   gl_func_0(&D_0 + 0x6D0, a0);    ; init from template at D_06D0 (1st call)
- *   a0->field_28 = &D_0;            ; 1st parent ptr
- *
- *   if (a0_spill != -0xE4) {         ; unusual address-as-signed-imm compare
- *     s1 = a0_spill + 0xE4;          ; s1 = main + 0xE4 (sub-region)
- *   } else {
- *     s1 = alloc(0x3E0);             ; alloc 992-byte child obj
- *     if (!s1) goto epi;
- *   }
- *   // ... 1140 more insns: allocates ~16 x 0x18-byte sub-objects,
- *   //     initialized from templates, linked via a0[0x2C], a0[0x38], etc.
- *
- * Full decode is a multi-day effort. This tick captures entry pattern +
- * struct-field offsets identified so far. Future ticks: decode the
- * sub-object allocation loop, type the GameState struct, then refine.
- *
- * 2026-05-06 RE-MEASURE: 62.05% NM (objdiff fuzzy score on the
- * #ifdef-NM-aliased OBJECT symbol). Built emits 1020 insns / 0xFF0 vs
- * target 1165 insns / 0x1234 — gap of 145 missing insns (~12% of
- * function) IN THE C-EMIT PATH. The DEFAULT INCLUDE_ASM (#else) path
- * is BYTE-IDENTICAL to expected/.o (verified 2026-05-06: `cmp` shows
- * identical .text section, no-aliases objdump diff is empty). An
- * episode is logged at episodes/SnowAI_ctor.json — the
- * function is BYTE-CORRECT in ROM via the INCLUDE_ASM path per
- * docs/MATCHING_WORKFLOW.md feedback-byte-correct-match-via-include-asm-not-c-body.
- * The 62% score is the .NON_MATCHING-alias scoring quirk on the C-body
- * emit, which is documentation-only.
- *
- * Remaining work for full C-emit byte-equivalence (low-priority since
- * ROM is already exact): un-decoded sub-object init blocks between the
- * tail-stage (0x5658-0x5724, mostly written) and the early-stage
- * stub-list (0x4564-0x4710, partially written). The new
- * feedback-ido-cse-bust-via-distinct-externs technique
- * (docs/IDO_CODEGEN.md) may help if any of the remaining ~145-insn gap
- * stems from CSE-folded `&D_00000000` accesses. Multi-pass continuation
- * is research-only — primary decomp goal already met.
- *
- * 2026-05-27 retest: prologue mismatch is INTERLOCKED between three knobs:
- *   - `volatile int a1_sp = a1; a2_sp = a2;` puts the spills at sp+0x34/0x30
- *     (LOCAL stack) — current state, scores 70.03%.
- *   - `(void)&a0; (void)&a1; (void)&a2;` flips the spills to sp+0xE0/0xE4/0xE8
- *     (CALLER's outgoing-arg shadow) BUT drops 8 bytes of frame (volatile
- *     locals gone) → frame 0xE0 not 0xE8 → regression to 69.55%.
- *   - Keeping `_pad[168]` after the (void)&aN switch restores frame 0xE8 with
- *     a0/a1/a2 at sp+0xE8/0xEC/0xF0 (matching target's lines 1/6/8) → but
- *     ra/s0/s1 stay at sp+0x1c/0x18/0x14 instead of target's sp+0x24/0x1c/0x18
- *     because target SAVES s2 too (`sw s2, 0x20(sp)`) and our C has no
- *     $s2-class variable. Net 69.56% — the +0x8 shift on every downstream
- *     sp-relative ref loses more than the a0/a1/a2 fix gains.
- * Cracking the prologue needs (a) take-addr-of-args for shadow spills AND
- * (b) a fourth s-class variable live across calls so IDO allocates $s2 at
- * sp+0x20. Without (b), the (a) win is a net negative.
- *
- * 2026-06-01 SOURCE=5 remeasure: current C path scores 79.56824%. A stale
- * pad[160] had drifted back to frame 0xF0; pad[152] restores target frame
- * 0xE8 and moves the score from 79.56223 to 79.56824. The remaining prologue
- * mismatch is still the known $s2 marshalling-base problem plus local-vs-home
- * arg spills, not a frame-size issue.
- *
- * 2026-05-28: the s2-pseudo IS now identified — disassembling expected/.o
- * shows `addiu s2, sp, 0x2c` (insn @0x45a0) materialized ONCE, then 38×
- * `sw t?, 0(s2)` / `lw a2, 0(s2)` pairs: $s2 holds the ADDRESS of the
- * per-iter marshalling scratch at sp+0x2C (the template ptr is stored
- * there then reloaded as the 3rd arg `a2` of each init call). BLOCKER
- * confirmed not-yet-crackable: declaring `char *_s2_buf; char *s2 = &_s2_buf;`
- * at function scope + `(void)&aN` home-slot spills builds, but IDO FOLDS
- * `*s2` into direct `sw v0, 0xD0(sp)` (sp+const addressing) and never keeps
- * the address in a register → no $s2, frame stays 0xE0, net 70.04% (a 0.49pp
- * REGRESSION vs the 70.53% volatile-local baseline). Making `_s2_buf`
- * volatile forces the memory roundtrip but STILL uses direct sp-relative (no
- * $s2). Register-indirect via a held $s2 is strictly worse codegen than
- * direct addressing for a known sp+const, so IDO won't emit it from a plain
- * `&local`. The target's register-indirect $s2 must come from the original
- * source giving the marshalling slot an address IDO can't prove is sp+const
- * (e.g. a pointer param threaded through, or an aliased struct field) —
- * reverse-engineering that provenance is the multi-day task. Baseline
- * (volatile a1_sp/a2_sp local spills, inner-block s2) restored at 70.53%.
- *
- * EXTENDED DECODE @ 0x4580-0x45F8 (insns 25-50, sub-object init loop):
- *   // After s1 setup (s1 = main+0xE4 sub-region or alloc(0x3E0)):
- *   t0 = &D + 0x6D8;             // sub-region template ptr
- *   *(int*)s1 = t0;
- *   *(int*)(s1+4) = 0;
- *   count = *(int*)(&D + 0x6E8); // sub-object count
- *   *(int*)(sp+0xE0) = count;     // spill loop counter
- *   s2 = a0 + 0x2C;               // loop pointer base (sub-obj table)
- *   // Loop body (per-iteration, ~25 insns):
- *   for (s0 = a0+0x2C; ...; s0 += 8) {
- *     int t4 = *(int*)(sp+0xE0);  // reload counter
- *     if (t4 != -8) {              // -8 sentinel = bump-allocator slot
- *       sub = alloc(0x18);
- *     } else {
- *       sub = (s0 cached val);
- *     }
- *     if (!sub) break;
- *     init_sub(sub, s1, *(int*)s2, 1);  // 4-arg init
- *     sub[0xC/4] = &D + 0x3C8;    // template2 ptr
- *     sub[0x14/4] = 0;
- *     *(float*)(sub+0x10) = D[0x9C];  // float constant
- *     // ... loop continues with more init writes
- *   }
- *
- * The -8 sentinel is the "use cached/bump-allocator chunk vs alloc fresh"
- * branch. Each sub-object is 0x18 bytes, indexed via s0 += 8 (so s0 is
- * a TABLE-of-pointers stride, not the object stride).
- *
- * NEXT PASS: decode the sub-object loops tail (set-and-link to parents
- * 0x38 chain), and the second template-table iteration (~16 sub-objects).
- *
- * 2026-05-04 EXTENDED DECODE @ 0x45E0-0x4710 (insns 50-128, 4 iterations of
- * the sub-object init group). The body is NOT a simple loop — its an
- * UNROLLED chain of per-template-entry init groups. Each group is ~30
- * insns and follows this pattern (group 1 @ 0x45E0-0x4604 reproduced for
- * 0x4640-0x4664, 0x46A8-0x46CC, 0x4710-0x... — 4 occurrences seen):
- *
- *   load_template_ptr:
- *     t0 = D[0x6E8 + group_idx*4]    ; template-list ptr (group-specific)
- *     sp[0xE0/0xDC/0xD8/0xD4] = t0    ; spill to per-group local
- *     at = -0xN0                       ; sentinel for cached-vs-alloc
- *   load_or_alloc_sub:
- *     s0 += STRIDE                     ; STRIDE = 0x20, 0x38, 0x50, ... (varies)
- *     entry = t0[0]                    ; first entry of template-list
- *     if (entry != sentinel) {
- *       *s0 = entry                    ; cached val, store back
- *       jal alloc(0x18)                ; alloc 24-byte sub-object
- *     } else {
- *       sub = entry                    ; bump-allocator path
- *     }
- *     sp[8] = sub                      ; (varargs slot 5 for next call)
- *   if (sub == 0) goto epi
- *   init_sub:
- *     a1=parent_obj; a2=parent_obj; a3=1
- *     a0=0x18 (size hint?)
- *     jal init_sub_obj(0x18, parent, parent, 1)  ; (varargs in sp[8] = sub)
- *     sub[0xC] = D + 0x3C8             ; type-tag pointer (constant)
- *     sub[0x14] = 0                    ; flag/state
- *     sub[0x10] = D[0x9C, 0xA0, 0xA4, 0xA8, ...]  ; per-group float constant
- *     ; stride to next group
- *
- * Per-group constants (from disassembly):
- *   group 0: stride=0x08, sentinel=-0x08 (0xFFFFFFF8), float@D+0x9C, tlist@D+0x6E8
- *   group 1: stride=0x20, sentinel=-0xE0 (0xFFFFFF20), float@D+0xA0, tlist@D+0x6EC
- *   group 2: stride=0x38, sentinel=-0xC8 (0xFFFFFFB0), float@D+0xA4, tlist@D+0x6F0
- *   group 3: stride=0x50, sentinel=-0xB0 (0xFFFFFF50), float@D+0xA8, tlist@D+0x6F4
- *
- * The strides are CUMULATIVE (s0 += STRIDE each group, not absolute).
- * tlist offset increases by 4 each group (D+0x6E8, +0x6EC, +0x6F0, +0x6F4).
- * Float constants step by 4 (D+0x9C through 0xA8). Sentinel stride pattern
- * is irregular: -8, -0xE0, -0xC8, -0xB0 — implies negative offsets in the
- * struct layout (sub-objects placed BEFORE the parents a0 in memory layout?
- * or sentinel = (-base+offset) form for the 'use cached if existing' check).
- *
- * Total of ~16 such groups suggested by the original spine analysis. Linear
- * extrapolation: 16 groups × 30 insns = 480 insns of sub-object init.
- * The remaining ~600 insns are likely sub-object linkage to a0[0x38] chain,
- * second-pass init (validation/finalize), and the alloc-fail epilogue
- * cleanup path.
- *
- * NEXT PASS: continue from 0x4710 (group 4 onwards); confirm if all 16
- * groups follow this pattern or if some have FPU-heavy variants.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x4710-0x47B0 (groups 4-6):
- *   Group 4 @ 0x4710-0x4738: stride=0x68, sentinel=-0x68, tlist=D+0x6F8,
- *     float=D+0xA8 — same template pattern as groups 0-3.
- *   Group 5 @ 0x4718 has a SPECIAL `lui at, 0xC448 / mtc1 at, $f10`
- *     emit interleaved with the standard init: f10 = -800.0f
- *     (bit pattern 0xC4480000 → -800.0f). This float is loaded but its
- *     consumer is later in the function — likely a per-group threshold
- *     or scale factor for the sub-objects FPU state, NOT consumed by
- *     gl_func_00000000(...) directly.
- *   Group 6 @ 0x473C-0x47B0: stride=0x68, sentinel=-0x80, tlist=D+0x6FC,
- *     float=D+0xA8 (same as group 4? or 5? the asm is dense). Standard
- *     init pattern resumes.
- *
- * Group strides observed so far: 0x08, 0x20, 0x38, 0x50, 0x68, 0x68 —
- * the stride pattern is roughly arithmetic progression +0x18 then
- * stable at 0x68. Suggests the sub-objects are 0x18 bytes each and
- * groups 0-3 are partial groups (smaller sub-region) while groups 4+
- * are full-size groups. tlist offsets are sequential
- * (+0x4 each: 6E8, 6EC, 6F0, 6F4, 6F8, 6FC).
- *
- * NEXT-NEXT PASS: continue from 0x47B0; expect 10+ more groups before
- * reaching the linkage/finalize phase (~insn 600+).
- *
- * 2026-05-04 EXTENDED DECODE @ 0x47B0-0x48F8 (groups 7-10, ~80 insns):
- *   Group 7 @ 0x47B0-0x4800: stride=0x80, sentinel=-0x80, tlist=D+0x6FC,
- *     float=D+0xAC. Standard pattern.
- *   Group 8 @ 0x4804-0x4868: stride=0x98, sentinel=-0x98, tlist=D+0x700.
- *     PATTERN SHIFT: float is an INLINE literal (`lui at,0xC57A; mtc1 at,$f4`)
- *     = -4000.0f, NOT a D-table lookup. This changes IDOs codegen pattern
- *     for the float store (mtc1+swc1 pair instead of lwc1+swc1).
- *   Group 9 @ 0x486C-0x48D0: stride=0xB0, sentinel=-0xB0, tlist=D+0x704.
- *     INLINE float = -8000.0f (`lui at,0xC5FA; mtc1 at,$f6`).
- *   Group 10 @ 0x48D4-0x48F8: stride=0xC8, sentinel=-0xC8, tlist=D+0x708.
- *     Pattern continues with inline floats.
- *
- * Stride progression: 0x08, 0x20, 0x38, 0x50, 0x68, 0x68, 0x68, 0x80, 0x98,
- * 0xB0, 0xC8 — arithmetic +0x18 per group with anomaly at groups 4-6 (all
- * 0x68). Tlist offsets D+0x6E8..D+0x708 (+4 per group, sequential).
- *
- * KEY FINDING: groups 0-7 use D-table float lookups; groups 8+ use INLINE
- * float literals. The pattern shift means future C decode needs separate
- * group templates for "table-float" vs "literal-float" sub-groups. The
- * literal floats are fall-rate constants for pumice/wind sub-objects
- * (-4000, -8000 magnitudes suggest distance thresholds in fixed-point).
- *
- * NEXT PASS: continue from 0x48F8; ~14+ more groups expected before
- * the linkage/finalize phase (~insn 600). The literal-float groups are
- * the harder ones to match — multiple lui/mtc1 emit forms IDO can pick.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x48F8-0x4A0C (groups 10-12, ~70 insns):
- *   Group 10 (continuing) @ 0x48EC-0x4934: stride=0xC8, sentinel=-0xC8,
- *     tlist=D+0x708, float=D+0xB0 (back to D-table lookup form).
- *   Group 11 @ 0x493C-0x49A0: stride=0xE0, sentinel=-0xE0, tlist=D+0x70C,
- *     float=D+0xB4.
- *   Group 12 @ 0x49A4-0x4A08: stride=0xF8, sentinel=-0xF8, tlist=D+0x710,
- *     float=D+0xB8.
- *
- * Pattern correction: groups 8-9 inline-float was a transient — groups
- * 10+ revert to D-table lookup form. The inline-float at groups 8-9 may
- * have been special-case constants for sub-objects with non-D-table
- * fall-rates. Stride progression now stable +0x18 (0xC8, 0xE0, 0xF8).
- * Tlist offsets continuing sequentially (+4 per group: D+0x708, +0x70C,
- * +0x710). Float-table offsets +0x4 (+0xB0, +0xB4, +0xB8).
- *
- * Type tag is constant across all groups: D+0x3C8 (template-type ptr).
- * Same value used for sub->0xC in every group, suggesting all sub-
- * objects share a single class/dispatch type — only the float-rate and
- * tlist entry vary by group.
- *
- * NEXT PASS: continue from 0x4A0C; ~10 more groups expected.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x4A0C-0x4B40 (groups 13-15, ~75 insns):
- *   Group 13 @ 0x4A0C-0x4A70: stride=0x110, sentinel=-0x110, tlist=D+0x714,
- *     float=D+0xBC. Standard pattern.
- *   Group 14 @ 0x4A74-0x4AD8: stride=0x128, sentinel=-0x128, tlist=D+0x718,
- *     float=D+0xC0.
- *   Group 15 @ 0x4ADC-0x4B40: stride=0x140, sentinel=-0x140, tlist=D+0x71C
- *     (float TBD next read).
- *
- * Stride continues +0x18 progression (0x110, 0x128, 0x140). Tlists
- * sequential D+0x714, +0x718, +0x71C. Floats D+0xBC, +0xC0.
- *
- * Total groups decoded so far: 0-15 (16 of estimated ~28 total).
- * Cumulative stride from start: 0x140 = 320 bytes (vs s1s expected
- * coverage of ~0x3E0-byte child obj).
- *
- * NEXT PASS: continue from 0x4B40; expect ~13 more groups before
- * reaching the linkage/finalize phase.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x4B40-0x4C78 (groups 16-18, ~80 insns):
- *   Group 15 (completing) @ 0x4B3C: float=D+0xC4.
- *   Group 16 @ 0x4B44-0x4BA8: stride=0x158, sentinel=-0x158, tlist=D+0x720,
- *     float=D+0xC8.
- *   Group 17 @ 0x4BAC-0x4C10: stride=0x170, sentinel=-0x170, tlist=D+0x724,
- *     float=D+0xCC.
- *   Group 18 @ 0x4C14-0x4C78: stride=0x188, sentinel=-0x188, tlist=D+0x728,
- *     float=D+0xD0 (TBD next read).
- *
- * 19 of ~28 groups decoded. Strides 0x140, 0x158, 0x170, 0x188 (stable
- * +0x18). Tlists D+0x720, +0x724, +0x728 (still sequential). Floats
- * D+0xC4, +0xC8, +0xCC (still sequential). Cumulative stride from start
- * of init loop: 0x188 = 392 bytes, approaching the ~0x3E0 child obj
- * boundary.
- *
- * NEXT PASS: continue from 0x4C78; expect 9 more groups before finalize.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x4C7C-0x4D80 (groups 19-21, ~70 insns):
- *   Group 19 @ 0x4C7C-0x4CE0: stride=0x1A0, sentinel=-0x1A0, tlist=D+0x72C,
- *     float=D+0xD4 (D-table form).
- *   Group 20 @ 0x4CE4-0x4D48: stride=0x1B8, sentinel=-0x1B8, tlist=D+0x730.
- *     PATTERN SHIFT (return of inline-float): float is INLINE literal
- *     (`lui at,0x4496; mtc1 at,$f4`) = 1200.0f (0x44960000 bit pattern).
- *   Group 21 @ 0x4D4C-0x4D80+: stride=0x1D0, sentinel=-0x1D0, tlist=D+0x734.
- *
- * 22 of ~28 groups decoded. Strides 0x1A0, 0x1B8, 0x1D0 (stable +0x18).
- * Tlists D+0x72C, +0x730, +0x734. Cumulative stride: 464 bytes.
- * Inline-float pattern returns at group 20 (1200.0f) — second occurrence
- * after groups 8-9 (-4000.0f, -8000.0f). Suggests inline floats correspond
- * to specific velocity/threshold sub-objects that arent D-table indexed.
- *
- * NEXT PASS: continue from 0x4D80; expect ~6 more groups before
- * linkage/finalize phase.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x4D80-0x4E80 (groups 22-23, ~70 insns):
- *   Group 21 (completing) @ 0x4D98: float = INLINE 1200.0f (lui 0x4496+mtc1).
- *   Group 22 @ 0x4DB4-0x4E18: stride=0x1E8, sentinel=-0x1E8, tlist=D+0x738,
- *     float = INLINE 1200.0f (same as 21).
- *   Group 23 @ 0x4E1C-0x4E80: stride=0x200, sentinel=-0x200, tlist=D+0x73C,
- *     float = INLINE 60.0f (lui 0x4270+mtc1).
- *
- * 24 of ~28 groups decoded. Strides 0x1D0, 0x1E8, 0x200 (stable +0x18).
- * Tlists D+0x738, +0x73C. INLINE floats are: 1200.0f (groups 20-22) and
- * 60.0f (group 23). The 1200.0f triplet suggests these are correlated
- * sub-objects (3 sequential at same drop-rate), and 60.0f is a
- * frame-rate-related constant.
- *
- * NEXT PASS: continue from 0x4E80; expect ~4 more groups before
- * linkage/finalize phase.
- *
- * 2026-05-04 EXTENDED DECODE @ 0x4E80-0x5638 (groups 24-37, ~140 insns).
- * Found end-of-loop boundary: linkage/finalize phase begins at 0x563C.
- *
- *   Group 24 @ 0x4E84-0x4EE8: stride=0x218, sentinel=-0x218, tlist=D+0x740,
- *     float = INLINE 60.0f.
- *   Group 25 @ 0x4EEC-0x4F50: stride=0x230, tlist=D+0x744, float=INLINE 60.0f.
- *   Group 26 @ 0x4F54-0x4FB8: stride=0x248, tlist=D+0x748, float=INLINE 1.5f
- *     (lui 0x3FC0).
- *   Group 27 @ 0x4FBC-0x5020: stride=0x260, tlist=D+0x74C, float=D+0xD8
- *     (D-table form returns).
- *   Group 28 @ 0x5024-0x5088: stride=0x278, tlist=D+0x750, float=INLINE 1.5f.
- *   Group 29 @ 0x508C-0x50F0: stride=0x290, tlist=D+0x754, float=INLINE
- *     2000.0f (lui 0x44FA).
- *   Group 30 @ 0x50F4-0x5158: stride=0x2A8, tlist=D+0x758, float=INLINE 2000.0f.
- *   Group 31 @ 0x515C-0x51C0: stride=0x2C0, tlist=D+0x75C, float=INLINE 2000.0f.
- *   Group 32 @ 0x51C4-0x5228: stride=0x2D8, tlist=D+0x760, float=D+0xDC.
- *   Group 33 @ 0x522C-0x5290: stride=0x2F0, tlist=D+0x764, float=D+0xE0.
- *   Group 34 @ 0x5294-0x52F8: stride=0x308, tlist=D+0x768, float=D+0xE4.
- *   Group 35 @ 0x52FC-...: stride=0x320, tlist=D+0x76C.
- *   ...
- *   Group 37 @ ...0x5638: stride=0x3C8, tlist=D+0x788, ends with INLINE
- *     `lui 0x4370+mtc1` (240.0f) and final swc1.
- *
- * 38 of 38 groups decoded! Loop ends at 0x563C. The unrolled chain spans
- * 0x4580-0x563C (~1071 insns / 4280 bytes). Strides progress arithmetically
- * +0x18 from 0x08 (group 0) to 0x3C8 (group 37). Tlists D+0x6E8..0x788
- * (sequential +4). Type tag D+0x3C8 constant across all 38 groups.
- *
- * LINKAGE/FINALIZE PHASE @ 0x563C-end (~50 insns):
- *   - Reload spilled values from caller-arg slots (sp+0xE8, +0xEC, +0xF0)
- *   - Multiple FPU constant loads (lui 0x43FA, lui 0x428C, lui 0x4366,
- *     lui 0x4370 — 500.0f, 70.0f, 230.0f, 240.0f)
- *   - Stores to a0+0x2C, a0+0x30, a0+0xA8, a0+0xAC, a0+0xB0, a0+0xB4,
- *     a0+0xB8 (config slots in main object)
- *   - Final return path: ret = a0
- *
- * NEXT PASS: decode the linkage phase fully (~50 insns at 0x563C-end).
- *
- * 2026-05-04 LINKAGE/FINALIZE PHASE FULLY DECODED @ 0x563C-0x5724
- * (~57 insns). All initializers identified:
- *
- *   v0 = arg0;                      // reload from sp+0xE8
- *   t8 = arg1;                      // reload from sp+0xEC
- *   t9 = arg2;                      // reload from sp+0xF0
- *   arg0->0x30 = arg1;
- *   arg0->0x2C = arg2;
- *   arg0->0xA8 = 0.0f;
- *   arg0->0xAC = D[0xE8];           // float from D-table
- *   arg0->0xB0 = 500.0f;            // (lui 0x43FA)
- *   arg0->0xB4 = 70.0f;             // (lui 0x428C)
- *   arg0->0xB8 = 230.0f;            // (lui 0x4366)
- *   arg0->0xBC = D[0xEC];
- *   arg0->0xC0 = 12.0f;             // (lui 0x4140)
- *   arg0->0xC4 = D[0xF0];
- *   arg0->0xC8 = 2.0f;              // (lui 0x4000)
- *   arg0->0xCC = 50.0f;             // (lui 0x4248)
- *   arg0->0xD0 = 20.0f;             // (lui 0x41A0)
- *   arg0->0xD4 = 500.0f;            // ($f0 carried — same as 0xB0)
- *   arg0->0xDC = 15.0f;             // (lui 0x4170)
- *   arg0->0xE0 = D[0xF4];
- *   arg0->0xD8 = D[0xF8];
- *   arg0->0xA0 = 1000.0f;           // (lui 0x447A)
- *   arg0->0x4DC = 3;                // int constant
- *   epilogue: lw ra; lw v0=arg0; lw s0/s1/s2; jr ra; addiu sp +0xE8
- *
- * FUNCTION FULLY DECODED. Total: prologue (entry + 1st alloc + sub-region
- * setup) + 38-group unrolled init chain (groups 0-37, ~1071 insns) +
- * linkage/finalize phase (~57 insns + epilogue).
- *
- * Combined init phase config slots span:
- *   arg0->0x2C, 0x30: arg pointers (entity refs)
- *   arg0->0xA0..0xDC: ~16 float constants (gameplay tunables)
- *   arg0->0x4DC: counter/state init = 3 */
+/* SnowAI_ctor (0x1234 bytes, 0xE8 frame): new(0x4E0) when a0 == 0, the base ctor, the 0x3E0 child at +0xE4,
+ * then the unrolled build of the AI's parms (INIT_ITER in the body: each alloc'd, built from a template
+ * and linked under the AI; the D_44F4_iter*_t / _p / _f externs below are unused leftovers), and last the
+ * tunables at 0xA0..0xE0 and 0x4DC = 3 (field names in include/game/snowai.h). Exact (objdiff 100.0); the
+ * matching levers (the by-value marshalling struct, 41 named spill structs, -SLOT sentinels, the
+ * distinct D_44F4_st12_* externs) are explained at the top of the body. The pre-2026-06-11 decode
+ * notes (prologue knobs, per-phase listings) were dropped in agent-g run 516; git history has them. */
 extern char D_44F4_iterA_t, D_44F4_iterA_p, D_44F4_iterA_f, D_44F4_iterB_t, D_44F4_iterB_p, D_44F4_iterB_f, D_44F4_iterC_t, D_44F4_iterC_p;
 extern char D_44F4_iterD_t, D_44F4_iterD_p, D_44F4_iterD_f, D_44F4_iterE_t, D_44F4_iterE_p, D_44F4_iterE_f, D_44F4_iterF_t, D_44F4_iterF_p;
 extern char D_44F4_iterG_t, D_44F4_iterG_p, D_44F4_iterH_t, D_44F4_iterH_p, D_44F4_iterH_f, D_44F4_iterI_t, D_44F4_iterI_p, D_44F4_iterI_f;
@@ -4287,9 +3893,9 @@ void game_readIntParm_0000AC48(char *dst) {
     stream_readS32_00004080((int*)(dst + 0x10));
 }
 
-/* game_ItemType_create_0000AC78: 36-insn alloc-init constructor. alloc(0x40) +
- * init(051C28), set vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
- * a0->0x40 node and link it back via 07ACE0.
+/* game_ItemType_create_0000AC78: item factory of an ItemType (arg0): a 0x40-byte ColourItem
+ * (mem_new + ColourItem_ctor, vptr import_8006ED80, +0x3C = 0); when the type's unk40
+ * node is set, it becomes the item's child (list_append on children + the parent link).
  *
  * 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact). The prior "25-diff v1-vs-a2 regalloc cap" was a
@@ -4304,21 +3910,21 @@ int *game_ItemType_create_0000AC78(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)game_uso_func_055750(0x40);
+    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
-        game_uso_func_051C28(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&import_8006ED80;
+        XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (int)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
     p1 = arg0;
-    head = (int*)p1[0x40 / 4];
-    if ((int*)p1[0x40 / 4] != 0) {
-        game_uso_func_07ACE0((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+    head = (int*)ITEMTYPE(p1)->unk40;
+    if ((int*)ITEMTYPE(p1)->unk40 != 0) {
+        XCALL(game_uso_func_07ACE0, list_append)(&NODE(p2)->children, head);
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -8216,9 +7822,9 @@ void game_readIntParm_00011A64(char *dst) {
     stream_readS32_0000C194((int*)(dst + 0x10));
 }
 
-/* game_ItemType_create_00011A94: 36-insn alloc-init constructor. alloc(0x40) +
- * init(051C28), set vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
- * a0->0x40 node and link it back via 07ACE0.
+/* game_ItemType_create_00011A94: item factory of an ItemType (arg0): a 0x40-byte ColourItem
+ * (mem_new + ColourItem_ctor, vptr import_8006ED80, +0x3C = 0); when the type's unk40
+ * node is set, it becomes the item's child (list_append on children + the parent link).
  *
  * 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact); identical to the 3A28/AC78 lands. The prior body
@@ -8230,21 +7836,21 @@ void *game_ItemType_create_00011A94(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)game_uso_func_055750(0x40);
+    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
-        game_uso_func_051C28(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&import_8006ED80;
+        XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (int)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
     p1 = arg0;
-    head = (int*)p1[0x40 / 4];
-    if ((int*)p1[0x40 / 4] != 0) {
-        game_uso_func_07ACE0((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+    head = (int*)ITEMTYPE(p1)->unk40;
+    if ((int*)ITEMTYPE(p1)->unk40 != 0) {
+        XCALL(game_uso_func_07ACE0, list_append)(&NODE(p2)->children, head);
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
