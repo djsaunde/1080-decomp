@@ -846,7 +846,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 void AudioThread_InitExternalPool(int a0, int a1);
 void AudioThread_ResetExternalPool(void);
-void AudioThread_ProcessSeqPlayerCmd(unsigned char *a0, unsigned char *a1);
+void AudioThread_ProcessChannelCmd(unsigned char *a0, unsigned char *a1);
 void game_libs_func_000274E0(char *a0, signed char *a1);
 extern int gl_func_00000000();
 void AudioThread_Noop1Cmd(int a0, int a1, int a2);

@@ -1,6 +1,6 @@
-nonmatching AudioThread_ProcessSeqPlayerCmd, 0x18C
+nonmatching AudioThread_ProcessChannelCmd, 0x18C
 
-glabel AudioThread_ProcessSeqPlayerCmd
+glabel AudioThread_ProcessChannelCmd
     /* E0C490 000273B8 90AE0000 */  .word 0x90AE0000
     /* E0C494 000273BC 25CFFFFF */  .word 0x25CFFFFF
     /* E0C498 000273C0 2DE1000E */  .word 0x2DE1000E
@@ -100,4 +100,4 @@ glabel AudioThread_ProcessSeqPlayerCmd
     /* E0C610 00027538 A08800E0 */  .word 0xA08800E0
     /* E0C614 0002753C 03E00008 */  .word 0x03E00008
     /* E0C618 00027540 00000000 */  .word 0x00000000
-endlabel AudioThread_ProcessSeqPlayerCmd
+endlabel AudioThread_ProcessChannelCmd

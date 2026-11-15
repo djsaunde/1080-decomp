@@ -1,11 +1,11 @@
-/* AudioThread_ProcessSeqPlayerCmd -- 14-case jumptable message handler (switch on
+/* AudioThread_ProcessChannelCmd -- 14-case jumptable message handler (switch on
  * msg[0]): float/s8/short setters on the object with change-flag bits in
  * byte 1, a bit-4 insert into byte 0, and one indexed byte store.
  *
  * IDO 7.1 -O2 REPLACE_FUNC_BODY donor for game_libs_post.c.o (99/99 words;
  * the only word the build cannot bake is the `lw t7,%lo(jtbl)(at)` load).
  * A C `switch` puts its jumptable in this unit's local .rodata; the splice
- * renames that reloc to AudioThread_ProcessSeqPlayerCmd_rodata, pinned in
+ * renames that reloc to AudioThread_ProcessChannelCmd_rodata, pinned in
  * undefined_syms_auto.txt to the table the USO ships in its data at +0xF88
  * (14 entries; entry 7 = default). Same recipe as game_libs_o2_29CCC.c.
  *
@@ -26,7 +26,7 @@
  * Compare order: channel field FIRST (`channel->volumeScale != cmd->arg.asFloat`)
  * gives the target's `c.eq.s $f0,$f4` / `beq v0,t4`; the command-first field
  * spelling swaps both (the raw form needed the opposite order). */
-void AudioThread_ProcessSeqPlayerCmd(SequenceChannel *channel, AudioCmd *cmd) {
+void AudioThread_ProcessChannelCmd(SequenceChannel *channel, AudioCmd *cmd) {
     switch (cmd->op) {
     case 1: /* SET_VOL_SCALE */
         if (channel->volumeScale != cmd->arg.asFloat) {

@@ -2583,10 +2583,10 @@ GAMELIBS_343F4_DONOR := build/src/game_libs/game_libs_o2_343F4.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += dbg_threadStateName=$(GAMELIBS_343F4_DONOR)
 # 273B8 = 14-case message-handler switch, IDO 7.1 -O2 donor:
 # game_libs_o2_273B8.c (99/99 word-exact). Spliced only so the C switch's
-# local .rodata jumptable reloc gets renamed to AudioThread_ProcessSeqPlayerCmd_rodata
+# local .rodata jumptable reloc gets renamed to AudioThread_ProcessChannelCmd_rodata
 # and pinned to the USO's table at +0xF88 (the 29CCC recipe).
 GAMELIBS_273B8_DONOR := build/src/game_libs/game_libs_o2_273B8.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessSeqPlayerCmd=$(GAMELIBS_273B8_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessChannelCmd=$(GAMELIBS_273B8_DONOR)
 # 31334 = stepped cue driver with two jumptable switches (15 + 11 entries),
 # IDO 7.1 -O2 donor: game_libs_o2_31334.c (123/123 word-exact). Spliced only
 # so the donor-local .rodata reloc (both tables, +0 and +0x3C) is renamed

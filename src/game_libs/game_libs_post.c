@@ -7666,7 +7666,7 @@ void AudioThread_ResetExternalPool(void) {
     *(int *)((char *)&gAudioContext + 0x2178) = 0;
 }
 
-/* AudioThread_ProcessSeqPlayerCmd [0x273B8..0x27544): ONE 14-case jumptable
+/* AudioThread_ProcessChannelCmd [0x273B8..0x27544): ONE 14-case jumptable
  * message-handler switch on msg[0] that splat shattered into 13
  * symbols (the 27534-hub "family" was its case bodies; the "shared
  * tail" was the default/epilogue). MERGED 2026-06-10 (13 -> 1, 0x18C).
@@ -7699,9 +7699,9 @@ void AudioThread_ResetExternalPool(void) {
  * #single-bit-bitfield-set-extra-ring-temp-29000). WIRED via
  * REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2
  * donor game_libs_o2_273B8.c; the splice renames the switch's donor-local
- * .rodata jumptable reloc to AudioThread_ProcessSeqPlayerCmd_rodata (pinned to the
+ * .rodata jumptable reloc to AudioThread_ProcessChannelCmd_rodata (pinned to the
  * USO table at +0xF88). Body below is a placeholder for the splice. */
-void AudioThread_ProcessSeqPlayerCmd(unsigned char *a0, unsigned char *a1) {
+void AudioThread_ProcessChannelCmd(unsigned char *a0, unsigned char *a1) {
     a0[0] = a1[0];
 }
 
