@@ -1,0 +1,14 @@
+nonmatching AudioSynth_SaveBuffer, 0x28
+
+glabel AudioSynth_SaveBuffer
+    /* E027D0 0001D6F8 00067103 */  .word 0x00067103
+    /* E027D4 0001D6FC 31CF00FF */  .word 0x31CF00FF
+    /* E027D8 0001D700 000FC400 */  .word 0x000FC400
+    /* E027DC 0001D704 3C011500 */  .word 0x3C011500
+    /* E027E0 0001D708 0301C825 */  .word 0x0301C825
+    /* E027E4 0001D70C 30A8FFFF */  .word 0x30A8FFFF
+    /* E027E8 0001D710 03284825 */  .word 0x03284825
+    /* E027EC 0001D714 AC890000 */  .word 0xAC890000
+    /* E027F0 0001D718 03E00008 */  .word 0x03E00008
+    /* E027F4 0001D71C AC870004 */  .word 0xAC870004
+endlabel AudioSynth_SaveBuffer

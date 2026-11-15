@@ -988,7 +988,7 @@ build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_TEXT_CLIP_KEEP
 # old 61w NM body; EBC8 NM offset 0x5520 -> 0x5524, clip = offset + 0x30.
 # 0x17a38 -> 0x17a48 (2026-09-05 agent-g): game_libs_func_000343F4 absorbed the
 # 0x10-byte g3_34448 carve-out (its own switch default block).
-# 0x17a48 -> 0x17a74 (2026-10-23 agent-c): game_libs_func_0001C9E4 absorbed the 11-word head
+# 0x17a48 -> 0x17a74 (2026-10-23 agent-c): AudioSynth_InitNextRingBuf absorbed the 11-word head
 # that sat at the end of the game_libs_text2_tail bin (tenshoe.yaml boundary 0xE01AE8 -> 0xE01ABC).
 build/src/game_libs/game_libs_post.c.o: TRUNCATE_TEXT := 0x17a74
 # game_libs_func_000295BC: the two all-zero ROM words at 0x295BC-0x295C3 are
@@ -996,13 +996,13 @@ build/src/game_libs/game_libs_post.c.o: TRUNCATE_TEXT := 0x17a74
 # SUFFIX_BYTES_FORCE. expected/ metadata: 29494 size 0x128->0x130, 295BC value +8
 # size 0x1D0->0x1C8 (scripts/elf-symtab-edit.py; .text + relocs unchanged).
 # game_libs_func_0001F6A8: the three all-zero ROM words at 0x1F6A8-0x1F6B3 are inter-fn
-# pad (real entry 0x1F6B4); appended to gl_func_0001F3C8 (expected/: F3C8 size 0x2E0->0x2EC,
+# pad (real entry 0x1F6B4); appended to AudioSynth_ApplyHaasEffect (expected/: F3C8 size 0x2E0->0x2EC,
 # 1F6A8 value +0xC size 0x378->0x36C).
 # game_libs_func_0002266C / game_libs_func_0002D36C: 2-word all-zero pads folded into gl_func_00022464 /
 # gl_func_0002D2F4 as zero SUFFIX words (agent-c run 150; expected/ symbols deleted with
 # scripts/elf-symtab-delete.py, predecessors +8; .text + relocs unchanged).
-build/src/game_libs/game_libs_post.c.o: SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 gl_func_0001F3C8=0x00000000,0x00000000,0x00000000 gl_func_00022464=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 gl_func_0001F3C8=0x00000000,0x00000000,0x00000000 gl_func_00022464=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
+build/src/game_libs/game_libs_post.c.o: SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 gl_func_00022464=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 gl_func_00022464=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
 # 70FA4 = the merged full function (head fragment 70FA0 + the old g3_70FBC
 # tail carve); -O1 -g3 is the matching mode. .text ends with 8 bytes of
 # natural zero padding = the 0x70FCC/0x70FD0 pad nops before 70FCC=fcos.

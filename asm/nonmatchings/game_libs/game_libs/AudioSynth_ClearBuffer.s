@@ -1,0 +1,12 @@
+nonmatching AudioSynth_ClearBuffer, 0x20
+
+glabel AudioSynth_ClearBuffer
+    /* E02634 0001D55C 3C0100FF */  .word 0x3C0100FF
+    /* E02638 0001D560 3421FFFF */  .word 0x3421FFFF
+    /* E0263C 0001D564 00A17024 */  .word 0x00A17024
+    /* E02640 0001D568 3C010200 */  .word 0x3C010200
+    /* E02644 0001D56C 01C17825 */  .word 0x01C17825
+    /* E02648 0001D570 AC8F0000 */  .word 0xAC8F0000
+    /* E0264C 0001D574 03E00008 */  .word 0x03E00008
+    /* E02650 0001D578 AC860004 */  .word 0xAC860004
+endlabel AudioSynth_ClearBuffer

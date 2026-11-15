@@ -1,0 +1,11 @@
+nonmatching AudioSynth_S8Dec, 0x1C
+
+glabel AudioSynth_S8Dec
+    /* E0282C 0001D754 30AE00FF */  .word 0x30AE00FF
+    /* E02830 0001D758 000E7C00 */  .word 0x000E7C00
+    /* E02834 0001D75C 3C011700 */  .word 0x3C011700
+    /* E02838 0001D760 01E1C025 */  .word 0x01E1C025
+    /* E0283C 0001D764 AC980000 */  .word 0xAC980000
+    /* E02840 0001D768 03E00008 */  .word 0x03E00008
+    /* E02844 0001D76C AC860004 */  .word 0xAC860004
+endlabel AudioSynth_S8Dec

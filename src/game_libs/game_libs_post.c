@@ -17,7 +17,7 @@ typedef struct { int a, b, c; } Tri3i;
 typedef struct { int a, b; } Pair2;
 typedef struct { float x, y, z; } Vec3;
 
-/* game_libs_func_0001C9E4 -- EXACT (run 136). Was gl_func_0001CA10 (648 B, no C):
+/* AudioSynth_InitNextRingBuf -- EXACT (run 136). Was gl_func_0001CA10 (648 B, no C):
  * a mid-function split. The real entry's first 11 words (the `k * 344` record
  * index chain + the hoisted `lbu f4`) sat at the end of the game_libs_text2_tail
  * bin (ROM 0xE01ABC); tenshoe.yaml's game_libs_post start moved 0xE01AE8 ->
@@ -38,7 +38,7 @@ typedef struct {
 } VbSub;
 typedef struct { u8 pad[0x18]; VbSub sub; } VbRec;
 extern int gl_func_00000000();
-void game_libs_func_0001C9E4(int n, int j, int k) {
+void AudioSynth_InitNextRingBuf(int n, int j, int k) {
     VbElem *e;
     VbRec *r = &((VbRec *)&D_00000000)[k];
     VbSub *s;
@@ -78,7 +78,7 @@ void game_libs_func_0001C9E4(int n, int j, int k) {
     e->f2 = n;
 }
 
-/* game_libs_func_0001CC98: publish the flagged 0x20-byte element of every record
+/* AudioSynth_SyncSampleStates: publish the flagged 0x20-byte element of every record
  * (TU-local, baked jal callee; section 0x31304 not exported). Base = bootup.uso
  * Data sym1255 @0x345C0 (lui/addiu t0 held), spelled as a TYPED struct through the
  * per-site alias D_345c0_1CC98 (pinned 0 in undefined_syms_auto.txt; the file's
@@ -148,7 +148,7 @@ typedef struct {
     char tbl5378[4];
 } gl_1CC98_GS;
 extern gl_1CC98_GS D_345c0_1CC98;
-void game_libs_func_0001CC98(int arg0) {
+void AudioSynth_SyncSampleStates(int arg0) {
     int i;
     gl_1CC98_Elem *s;
     gl_1CC98_Elem *d;
@@ -165,7 +165,7 @@ void game_libs_func_0001CC98(int arg0) {
     }
 }
 
-/* gl_func_0001CD64: per-frame batch builder over bootup.uso sym1255 (shared typed alias
+/* AudioSynth_Update: per-frame batch builder over bootup.uso sym1255 (shared typed alias
  * D_345c0_1CC98; all three lui/addiu pairs are sym1255 addend 0). Exported (section
  * 0x313D0 = sym1259, TextReloc ref @0x3ACA4). Points G.elems (+0x14) at a 4 KB stack
  * buffer; drains n = G.n2040 (+0x2040) calling blank sym1260(n-1) and the TU-local
@@ -185,7 +185,7 @@ extern int gl_func_00000000();
 extern void gl_ref_00031304();
 extern void gl_ref_00031050();
 extern gl_1CD64_Gfx *gl_ref_00032320();
-gl_1CD64_Gfx *gl_func_0001CD64(gl_1CD64_Gfx *gfx, int *outLen, int *src, int budget) {
+gl_1CD64_Gfx *AudioSynth_Update(gl_1CD64_Gfx *gfx, int *outLen, int *src, int budget) {
     gl_1CD64_Gfx *p;
     int *cur;
     int n;
@@ -253,7 +253,7 @@ gl_1CD64_Gfx *gl_func_0001CD64(gl_1CD64_Gfx *gfx, int *outLen, int *src, int bud
  * docs/IDO_CODEGEN.md#same-stride-cursor-sweep-iv-init-order-33b6c (tail).
  * Reloc-blind (&D_00000000). */
 typedef struct { unsigned b0:1, b1:1, rest:30; } ElemFlags1CF68;
-void game_libs_func_0001CF68(int a0, int a1) {
+void AudioSynth_DisableSampleStates(int a0, int a1) {
     int v0 = a0 + 1;
     int v1 = a1 << 5;
 
@@ -269,13 +269,13 @@ void game_libs_func_0001CF68(int a0, int a1) {
 }
 
 
-// gl_func_0001CFDC — STRUCTURAL PASS (0xD0 / 52 words, no episode).
+// AudioSynth_LoadRingBuffer1AtTemp — STRUCTURAL PASS (0xD0 / 52 words, no episode).
 // Raw-.word USO form (game_libs RSP/graphics-library segment).
 // Hand-decoded.
 //
 // game_libs glyph / sprite draw helper (returns advance width).
 //
-//   int gl_func_0001CFDC(int code, Spec spec) {           // spec by value
+//   int AudioSynth_LoadRingBuffer1AtTemp(int code, Spec spec) {           // spec by value
 //     int hi = spec.0x2;
 //     E *e = &D_0 + idx(code) ;  e += 0x50;                // glyph entry
 //     int w = e->0x10;  int h = e->0x0E;                   // metrics
@@ -315,7 +315,7 @@ typedef struct { short h0, h1, h2, h3; } Spec8_1CFDC;
 typedef struct { char p[0xE]; unsigned short w; short h; short n; } Ent_1CFDC;
 typedef struct { Ent_1CFDC ent[5]; } Grp_1CFDC;
 typedef struct { char p[0x1B]; unsigned char attr; char p2[0x50 - 0x1C]; Grp_1CFDC grp[2]; char p3[0x40]; } Rec_1CFDC;
-int gl_func_0001CFDC(int code, Spec8_1CFDC spec) {
+int AudioSynth_LoadRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
@@ -328,13 +328,13 @@ int gl_func_0001CFDC(int code, Spec8_1CFDC spec) {
     return r;
 }
 
-// gl_func_0001D0AC — STRUCTURAL PASS (0x154 / 85 words, no episode).
+// AudioSynth_SaveRingBuffer1AtTemp — STRUCTURAL PASS (0x154 / 85 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
 // (named fn + 1 tiny trailing setter `sw t9,4(t8)`) — deferred USO
-// re-split. Near-identical SIBLING of gl_func_0001CFDC (same glyph/
+// re-split. Near-identical SIBLING of AudioSynth_LoadRingBuffer1AtTemp (same glyph/
 // sprite draw helper; differs only in the fixed blit target).
 //
-//   int gl_func_0001D0AC(int code, Spec spec) {           // spec by value
+//   int AudioSynth_SaveRingBuffer1AtTemp(int code, Spec spec) {           // spec by value
 //     E *e = (&D_0 + idx(code)) + 0x50;                    // glyph entry
 //     int w = e->0x10;  int h = e->0x0E;
 //     v0 = jal 0x31F4C(0x3E0, …, w, h, spec.0x2);          // blit pass 1
@@ -345,26 +345,26 @@ int gl_func_0001CFDC(int code, Spec8_1CFDC spec) {
 //     return v0;                                            // advance
 //   }
 //
-// Struct-typing reference: identical to gl_func_0001CFDC (see its
+// Struct-typing reference: identical to AudioSynth_LoadRingBuffer1AtTemp (see its
 //   comment) — &D_0 glyph table, entry+0x50, e->0x10 width/advance,
 //   e->0x0E height, e->0x12 secondary-pass flag, spec by-value
 //   halfword struct, 0x3E0 blit mode. The ONLY difference: this
 //   variant calls the fixed blit routine at 0x0C00C813 (≈0x31F4C)
-//   instead of gl_func_0001CFDC's 0x0C00C7EC (≈0x31FB0) — likely a
+//   instead of AudioSynth_LoadRingBuffer1AtTemp's 0x0C00C7EC (≈0x31FB0) — likely a
 //   different render target / layer.
 // Caps (DEFERRED): single jr $ra (older "unsplit bundle" note is
 //   STALE; .s is 0xD0/52 words, one function). Exact structural TWIN
-//   of gl_func_0001CFDC — identical glyph-draw logic, only the blit
+//   of AudioSynth_LoadRingBuffer1AtTemp — identical glyph-draw logic, only the blit
 //   jal target differs (0xC813 -> 0x3204C here vs 0xC7EC -> 0x31FB0).
 //   Real-C structural body below; byte-match deferred (resolve the
 //   0x3204C blit symbol + the idx*0x158 / attr*0x64 / sub*0x14
 //   index-multiply chains + beql codegen). Name pre-checked: no
 //   extern reuse (collision-safe). gl_func_00000000 = canonical
 //   never-defined USO placeholder for the 0x3204C blit routine.
-/* EXACT 2026-10-17 agent-c run 106 (87.3 -> 100): gl_func_0001CFDC twin
+/* EXACT 2026-10-17 agent-c run 106 (87.3 -> 100): AudioSynth_LoadRingBuffer1AtTemp twin
  * (same typed view and by-value spec); blit = baked jal 0x3204C. */
 extern int gl_ref_0003204C(); /* baked in-unit jal 0x3204C (blit) */
-int gl_func_0001D0AC(int code, Spec8_1CFDC spec) {
+int AudioSynth_SaveRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
@@ -377,7 +377,7 @@ int gl_func_0001D0AC(int code, Spec8_1CFDC spec) {
     return r;
 }
 
-/* game_libs_func_0001D17C EXACT 2026-10-23 (agent-c run 140, 96.21 -> 100): OoT's
+/* AudioSynth_LeakReverb EXACT 2026-10-23 (agent-c run 140, 96.21 -> 100): OoT's
  * AudioSynth_LeakReverb in the older (SM64-era) index form: `(cmd, s32 reverbIndex)`
  * with every field read written as gSynthesisReverbs[reverbIndex].leakRtl / .leakLtr
  * (a named `reverb` pointer local colours the base v1 instead of a3). One DMEM move +
@@ -396,7 +396,7 @@ typedef union { gl_1D17C_Awords words; long long force_structure_alignment; } gl
 typedef struct { char pad[0x28]; u16 leakRtl; u16 leakLtr; char pad2c[0x158 - 0x2C]; } gl_1D17C_Reverb;
 #define gl_1D17C_gSynthesisReverbs ((gl_1D17C_Reverb *)&D_00000000)
 
-gl_1D17C_Acmd *game_libs_func_0001D17C(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
+gl_1D17C_Acmd *AudioSynth_LeakReverb(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
     aDMEMMove(cmd++, DMEM_WET_LEFT_CH, DMEM_WET_TEMP, DMEM_1CH_SIZE);
     aMix(cmd++, DMEM_1CH_SIZE >> 4, gl_1D17C_gSynthesisReverbs[reverbIndex].leakRtl, DMEM_WET_RIGHT_CH, DMEM_WET_LEFT_CH);
     aMix(cmd++, DMEM_1CH_SIZE >> 4, gl_1D17C_gSynthesisReverbs[reverbIndex].leakLtr, DMEM_WET_TEMP, DMEM_WET_RIGHT_CH);
@@ -413,14 +413,14 @@ gl_1D17C_Acmd *game_libs_func_0001D17C(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
 #undef aMix
 #undef gl_1D17C_gSynthesisReverbs
 
-// gl_func_0001D200 — STRUCTURAL PASS (0x2C0 / 176 words, no episode).
+// AudioSynth_LoadAuxBufferC — STRUCTURAL PASS (0x2C0 / 176 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
 // (named fn + 1 trailing helper) — deferred USO re-split. Same glyph-
-// table FAMILY as gl_func_0001CFDC / gl_func_0001D0AC, but the larger
+// table FAMILY as AudioSynth_LoadRingBuffer1AtTemp / AudioSynth_SaveRingBuffer1AtTemp, but the larger
 // STRING-draw variant: it loops over a packed glyph spec, accumulating
 // an advance, rather than drawing a single glyph.
 //
-//   int gl_func_0001D200(args…, Spec spec) {            // spec by value
+//   int AudioSynth_LoadAuxBufferC(args…, Spec spec) {            // spec by value
 //     E *base = &D_0 + idx(...);                         // glyph table
 //     E *e = base + 0x50;
 //     int packed = e->0x5C;                              // word at +0x5C
@@ -434,7 +434,7 @@ gl_1D17C_Acmd *game_libs_func_0001D17C(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
 //     return v0;                                          // advance px
 //   }
 //
-// Struct-typing reference: shares gl_func_0001CFDC's glyph layout —
+// Struct-typing reference: shares AudioSynth_LoadRingBuffer1AtTemp's glyph layout —
 //   &D_0 table, entry+0x50, fixed blit 0x0C00C7EC (≈0x31FB0), 0x3E0
 //   blit mode, spec by-value halfword struct. NEW here vs the single-
 //   glyph helpers: packed metric word at e->0x5C decoded via
@@ -443,7 +443,7 @@ gl_1D17C_Acmd *game_libs_func_0001D17C(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
 //   blit. This is the multi-glyph / string-row entry of the family.
 // Caps (DEFERRED): single jr $ra (older "2-jr bundle" note is STALE;
 //   .s is 0x1E0/120 words, one function). Multi-glyph/string-row
-//   variant of the gl_func_0001CFDC family. Real-C structural body
+//   variant of the AudioSynth_LoadRingBuffer1AtTemp family. Real-C structural body
 //   below per the analysis; byte-match deferred — fixed blit target
 //   0x31FB0 needs its symbol, the e->0x5C packed-bitfield decode
 //   (&7 / >>4 &0xFFF) and the trailing F3D command-pair emission
@@ -466,10 +466,10 @@ extern int gl_func_00031FB0();
  * 2026-06-27 logic fixes: p[0]/p[4] mask (s2+offs)&0xFFFF; u4=(a1<<1)&0xFFFF
  * (shift-then-mask, not &0x7FFF first); matches asm GBI word packing. */
 /* 2026-10-20 (agent-c run 114): packets rewritten in the gbi-macro shape of
- * the exact sibling game_libs_func_0001D3E0 (`{ G *_g = gfx++; w0; w1; }`),
+ * the exact sibling AudioSynth_FilterReverb (`{ G *_g = gfx++; w0; w1; }`),
  * with the half-width terms as s16 locals. */
 typedef struct { unsigned int w0, w1; } G1D200;
-unsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3) {
+unsigned int *AudioSynth_LoadAuxBufferC(G1D200 *gfx, unsigned int a1, short a2, short a3) {
     char *e;
     short w2;
     short wr;
@@ -489,7 +489,7 @@ unsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3)
 #undef rec
 }
 
-/* game_libs_func_0001D3E0: display-list emitter for registry record a2 (bootup.uso
+/* AudioSynth_FilterReverb: display-list emitter for registry record a2 (bootup.uso
  * Data sym1255 @0x345C0 = D_00000000_345c0, stride 0x158). For each nonzero
  * pointer at rec+0x118 / rec+0x11C emit two 0x07 packets: {0x0702 | (a1 & 0xFFFF),
  * ptr} then {0x07 | rec[0x18] << 16 | 0x0C80 / 0x0E20, rec+0x120 / rec+0x124};
@@ -502,7 +502,7 @@ unsigned int *gl_func_0001D200(G1D200 *gfx, unsigned int a1, short a2, short a3)
 extern int D_00000000_345c0;
 typedef struct { unsigned int w0, w1; } gl_1D3E0_Gfx;
 #define SHL_1D3E0(v, s, w) ((((unsigned int)(v)) & ((1 << (w)) - 1)) << (s))
-gl_1D3E0_Gfx *game_libs_func_0001D3E0(gl_1D3E0_Gfx *gfx, int a1, int a2) {
+gl_1D3E0_Gfx *AudioSynth_FilterReverb(gl_1D3E0_Gfx *gfx, int a1, int a2) {
     char *rec = (char *)&D_00000000_345c0 + a2 * 0x158;
     if (*(int *)(rec + 0x118) != 0) {
         { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(2, 16, 8) | SHL_1D3E0(a1, 0, 16); _g->w1 = *(int *)(rec + 0x118); }
@@ -516,17 +516,17 @@ gl_1D3E0_Gfx *game_libs_func_0001D3E0(gl_1D3E0_Gfx *gfx, int a1, int a2) {
 }
 #undef SHL_1D3E0
 
-// game_libs_func_0001D4B0 -- MERGED 2026-09-09 (agent-c): the 4-word orphan
+// AudioSynth_MaybeMixRingBuffer1 -- MERGED 2026-09-09 (agent-c): the 4-word orphan
 // `li t0,0x158; multu a1,t0; lui v0; addiu v0` was the hoisted record-index head of
 // gl_func_0001D4C0 (splat mis-split; 0x1D4C0 is a mid-function word, neither address
 // is in bootup.uso's Sym export table -- the fn is TU-local, reached by the BAKED
-// `jal 0x0C00C6C7` from gl_func_0001DCB4 @0x1DFF0). One symbol, 0xA4 / 41 words;
+// `jal 0x0C00C6C7` from AudioSynth_DoOneAudioUpdate @0x1DFF0). One symbol, 0xA4 / 41 words;
 // the 1D4C0 wrap (10.5) + .s retired.
 //
 // Glyph DL emit: rec = &registry[a1] (sym1255 @ Data 0x345C0, addend 0, stride 0x158);
 // if registry[rec->k].flag == 1: p = reserve(dl, (short)rec->k, (short)a2) [baked
-// jal 0x31648 = gl_func_0001CFDC]; p[0] = rec->w20 | 0x0C340000; p[1] = 0x0C8003E0;
-// dl = submit(p + 2, rec->k, (short)a2) [baked jal 0x31718 = gl_func_0001D0AC];
+// jal 0x31648 = AudioSynth_LoadRingBuffer1AtTemp]; p[0] = rec->w20 | 0x0C340000; p[1] = 0x0C8003E0;
+// dl = submit(p + 2, rec->k, (short)a2) [baked jal 0x31718 = AudioSynth_SaveRingBuffer1AtTemp];
 // return dl. The baked jals are the absolute `gl_ref_<section>` symbols (0x0C00C592 /
 // 0x0C00C5C6), same class as gl_func_00025C54's gl_ref_0003A268.
 //
@@ -561,9 +561,9 @@ typedef struct {
     char pad2[0x158 - 0x22];
 } GlyphRec1D4B0;
 #define GLYPHTAB_1D4B0 ((GlyphRec1D4B0 *)&D_00000000)
-extern int *gl_ref_00031648(); /* baked USO jal 0x0C00C592 -> 0x31648 (= gl_func_0001CFDC, TU-local) */
-extern int gl_ref_00031718();  /* baked USO jal 0x0C00C5C6 -> 0x31718 (= gl_func_0001D0AC, TU-local) */
-int game_libs_func_0001D4B0(int dl, int a1, int a2) {
+extern int *gl_ref_00031648(); /* baked USO jal 0x0C00C592 -> 0x31648 (= AudioSynth_LoadRingBuffer1AtTemp, TU-local) */
+extern int gl_ref_00031718();  /* baked USO jal 0x0C00C5C6 -> 0x31718 (= AudioSynth_SaveRingBuffer1AtTemp, TU-local) */
+int AudioSynth_MaybeMixRingBuffer1(int dl, int a1, int a2) {
 #define e (&GLYPHTAB_1D4B0[a1]) /* unnamed: its cross-call spill is a temp, not a declared-local word */
     if (GLYPHTAB_1D4B0[e->k].flag == 1) {
         int k = e->k;
@@ -576,15 +576,15 @@ int game_libs_func_0001D4B0(int dl, int a1, int a2) {
 #undef e
 }
 
-void game_libs_func_0001D554(void) {}
+void AudioSynth_Stub_800DBB94(void) {}
 
-void game_libs_func_0001D55C(int *a0, int a1, int a2) { a0[0] = (a1 & 0x00FFFFFF) | 0x02000000; a0[1] = a2; }
+void AudioSynth_ClearBuffer(int *a0, int a1, int a2) { a0[0] = (a1 & 0x00FFFFFF) | 0x02000000; a0[1] = a2; }
 
-void game_libs_func_0001D57C(void) {}
+void AudioSynth_Stub_800DBBBC(void) {}
 
-void game_libs_func_0001D584(void) {}
+void AudioSynth_Stub_800DBBC4(void) {}
 
-void game_libs_func_0001D58C(void) {}
+void AudioSynth_Stub_800DBBCC(void) {}
 
 /* gbi 2-word command builder (5 args). NATURAL CEILING: word-1 register-
  * exact; word-2's temps are uniformly +1 vs target (allocno-numbering,
@@ -593,31 +593,31 @@ void game_libs_func_0001D58C(void) {}
  * as match-faking (per feedback_no_instruction_forcing_matches_policy). */
 // GBI 2-word command packer (cmd 0x0C000000), sibling of 0001D770/D7A4.
 // (a3<<15)<<1 renumbers the second-word temps to match (t2/t3/t4/t5).
-void game_libs_func_0001D594(int *a0, int a1, int a2, int a3, int a4) {
+void AudioSynth_Mix(int *a0, int a1, int a2, int a3, int a4) {
     a0[0] = (((a1 & 0xFF) << 16) | 0x0C000000) | (a2 & 0xFFFF);
     a0[1] = ((a3 << 15) << 1) | (a4 & 0xFFFF);
 }
 
-void game_libs_func_0001D5C8(void) {}
+void AudioSynth_Stub_800DBC08(void) {}
 
-void game_libs_func_0001D5D0(void) {}
+void AudioSynth_Stub_800DBC10(void) {}
 
-void game_libs_func_0001D5D8(void) {}
+void AudioSynth_Stub_800DBC18(void) {}
 
 /* gbi 2-word command builder (5 args), cmd 0x08. Same word-2 INSN_PATCH
  * register-renumber as 0001D594. */
 // GBI 2-word command packer (cmd 0x08000000), sibling of 0001D770/D7A4.
 // (a3<<15)<<1 renumbers the second-word temps to match (t2/t3/t4/t5).
-void game_libs_func_0001D5E0(int *a0, int a1, int a2, int a3, int a4) {
+void AudioSynth_SetBuffer(int *a0, int a1, int a2, int a3, int a4) {
     a0[0] = (((a1 & 0xFF) << 16) | 0x08000000) | (a2 & 0xFFFF);
     a0[1] = ((a3 << 15) << 1) | (a4 & 0xFFFF);
 }
 
-void game_libs_func_0001D614(void) {}
+void AudioSynth_Stub_800DBC54(void) {}
 
-void game_libs_func_0001D61C(void) {}
+void AudioSynth_Stub_800DBC5C(void) {}
 
-void game_libs_func_0001D624(int *a0, int a1, int a2, int a3)
+void AudioSynth_DMemMove(int *a0, int a1, int a2, int a3)
 {
  if (0) { }
   a0[0] = (a1 & 0xFFFFFF) | 0x0A000000;
@@ -626,15 +626,15 @@ void game_libs_func_0001D624(int *a0, int a1, int a2, int a3)
 }
 
 
-void game_libs_func_0001D650(void) {}
+void AudioSynth_Stub_800DBC90(void) {}
 
-void game_libs_func_0001D658(void) {}
+void AudioSynth_Stub_800DBC98(void) {}
 
-void game_libs_func_0001D660(void) {}
+void AudioSynth_Stub_800DBCA0(void) {}
 
-void game_libs_func_0001D668(void) {}
+void AudioSynth_Stub_800DBCA8(void) {}
 
-void game_libs_func_0001D670(int *a0, int a1, int a2, int a3) {
+void AudioSynth_InterL(int *a0, int a1, int a2, int a3) {
     a0[0] = (a3 & 0xFFFF) | 0x11000000;
     a0[1] = ((a1 << 15) << 1) | (a2 & 0xFFFF);
 }
@@ -644,30 +644,30 @@ void game_libs_func_0001D670(int *a0, int a1, int a2, int a3) {
  * register-renumber as 0001D594. */
 // GBI 2-word command packer (cmd 0x12000000), sibling of 0001D770/D7A4.
 // (a3<<15)<<1 renumbers the second-word temps to match (t2/t3/t4/t5).
-void game_libs_func_0001D694(int *a0, int a1, int a2, int a3, int a4) {
+void AudioSynth_EnvSetup1(int *a0, int a1, int a2, int a3, int a4) {
     a0[0] = (((a1 & 0xFF) << 16) | 0x12000000) | (a2 & 0xFFFF);
     a0[1] = ((a3 << 15) << 1) | (a4 & 0xFFFF);
 }
 
-void game_libs_func_0001D6C8(void) {}
+void AudioSynth_Stub_800DBD08(void) {}
 
-void game_libs_func_0001D6D0(int *a0, int a1, int a2, int a3) { a0[0] = ((((a2 >> 4) & 0xFF) << 16) | 0x14000000) | (a1 & 0xFFFF); a0[1] = a3; }
+void AudioSynth_LoadBuffer(int *a0, int a1, int a2, int a3) { a0[0] = ((((a2 >> 4) & 0xFF) << 16) | 0x14000000) | (a1 & 0xFFFF); a0[1] = a3; }
 
-void game_libs_func_0001D6F8(int *a0, int a1, int a2, int a3) { a0[0] = ((((a2 >> 4) & 0xFF) << 16) | 0x15000000) | (a1 & 0xFFFF); a0[1] = a3; }
+void AudioSynth_SaveBuffer(int *a0, int a1, int a2, int a3) { a0[0] = ((((a2 >> 4) & 0xFF) << 16) | 0x15000000) | (a1 & 0xFFFF); a0[1] = a3; }
 
-void game_libs_func_0001D720(int *a0, int a1, int a2) {
+void AudioSynth_EnvSetup2(int *a0, int a1, int a2) {
     a0[0] = 0x16000000;
     a0[1] = ((a1 << 15) << 1) | (a2 & 0xFFFF);
 }
 
 
-void game_libs_func_0001D73C(void) {}
+void AudioSynth_Stub_800DBD7C(void) {}
 
-void game_libs_func_0001D744(void) {}
+void AudioSynth_Stub_800DBD84(void) {}
 
-void game_libs_func_0001D74C(void) {}
+void AudioSynth_Stub_800DBD8C(void) {}
 
-void game_libs_func_0001D754(int *a0, int a1, int a2) {
+void AudioSynth_S8Dec(int *a0, int a1, int a2) {
     a0[0] = ((a1 & 0xFF) << 16) | 0x17000000;
     a0[1] = a2;
 }
@@ -675,7 +675,7 @@ void game_libs_func_0001D754(int *a0, int a1, int a2) {
 // Pack a GBI-style 2-word command: word0 = (a1&0xFF)<<16 | 0x0E000000 |
 // (arg4&0xFFFF); word1 = a2<<16 | (a3&0xFFFF). The (a2<<15)<<1 form makes IDO
 // renumber the second-word temps to match (t3/t4/t5). Permuter match, byte-exact.
-void game_libs_func_0001D770(int *a0, int a1, int a2, int a3, int arg4)
+void AudioSynth_HiLoGain(int *a0, int a1, int a2, int a3, int arg4)
 {
   a0[0] = (((a1 & 0xFF) << 16) | 0x0E000000) | (arg4 & 0xFFFF);
   a0[1] = ((a2 << 15) << 1) | (a3 & 0xFFFF);
@@ -686,7 +686,7 @@ void game_libs_func_0001D770(int *a0, int a1, int a2, int a3, int arg4)
 // (a2&0xFFFF). Matches byte-exact via `long long new_var = 16` trick that
 // forces IDO to renumber the second-word temps to t3/t4/t5 (no INSN_PATCH
 // needed; the old "INSN_PATCH 4/13" plan was superseded by the C lever).
-void game_libs_func_0001D7A4(int *a0, int a1, int a2, int a3, int arg4)
+void AudioSynth_UnkCmd19(int *a0, int a1, int a2, int a3, int arg4)
 {
   long long new_var;
   new_var = 16;
@@ -696,43 +696,43 @@ void game_libs_func_0001D7A4(int *a0, int a1, int a2, int a3, int arg4)
 }
 
 
-void game_libs_func_0001D7D8(void) {}
+void AudioSynth_Stub_800DBE18(void) {}
 
-void game_libs_func_0001D7E0(void) {}
+void AudioSynth_Stub_800DBE20(void) {}
 
-void game_libs_func_0001D7E8(void) {}
+void AudioSynth_Stub_800DBE28(void) {}
 
-void game_libs_func_0001D7F0(void) {}
+void AudioSynth_Stub_800DBE30(void) {}
 
-void game_libs_func_0001D7F8(int *a0, int a1, int a2, int a3) {
+void AudioSynth_UnkCmd3(int *a0, int a1, int a2, int a3) {
     a0[0] = (a3 & 0xFFFF) | 0x03000000;
     a0[1] = ((a1 << 15) << 1) | (a2 & 0xFFFF);
 }
 
 
-void game_libs_func_0001D81C(void) {}
+void AudioSynth_Stub_800DBE5C(void) {}
 
-void game_libs_func_0001D824(void) {}
+void AudioSynth_Stub_800DBE64(void) {}
 
-void game_libs_func_0001D82C(void) {}
+void AudioSynth_Stub_800DBE6C(void) {}
 
-void game_libs_func_0001D834(int *a0, int a1, int a2, int a3) {
+void AudioSynth_LoadFilterBuffer(int *a0, int a1, int a2, int a3) {
     a0[0] = (((a1 & 0xFF) << 16) | 0x07000000) | (a2 & 0xFFFF);
     a0[1] = a3;
 }
 
-void game_libs_func_0001D858(int *a0, int a1, int a2) {
+void AudioSynth_LoadFilterSize(int *a0, int a1, int a2) {
     a0[0] = (a1 & 0xFFFF) | 0x07020000;
     a0[1] = a2;
 }
 
-// gl_func_0001D870 — STRUCTURAL PASS (0x20C / 131 words, no episode).
+// AudioSynth_LoadRingBuffer1 — STRUCTURAL PASS (0x20C / 131 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 3-jr USO bundle
 // (named fn + trailing helpers) — deferred USO re-split. Near-
-// identical SIBLING of gl_func_0001D0AC / gl_func_0001CFDC (glyph/
+// identical SIBLING of AudioSynth_SaveRingBuffer1AtTemp / AudioSynth_LoadRingBuffer1AtTemp (glyph/
 // sprite draw helper); differs only in the blit-mode constant.
 //
-//   int gl_func_0001D870(int code, Spec spec) {           // spec by val
+//   int AudioSynth_LoadRingBuffer1(int code, Spec spec) {           // spec by val
 //     E *e = (&D_0 + idx(code)) + 0x50;                    // glyph entry
 //     int w = e->0x10;  int h = e->0x0E;
 //     v0 = jal 0x31FB0(0x0C80, …, w, h, spec.0x2);          // blit pass1
@@ -743,7 +743,7 @@ void game_libs_func_0001D858(int *a0, int a1, int a2) {
 //     return v0;                                             // advance
 //   }
 //
-// Struct-typing reference: identical to gl_func_0001CFDC / 0001D0AC
+// Struct-typing reference: identical to AudioSynth_LoadRingBuffer1AtTemp / 0001D0AC
 //   (&D_0 glyph table, entry+0x50, e->0x10 width/advance, e->0x0E
 //   height, e->0x12 secondary-pass flag, spec by-value halfword
 //   struct, fixed blit 0x0C00C7EC ≈0x31FB0). The ONLY difference vs
@@ -772,12 +772,12 @@ void game_libs_func_0001D858(int *a0, int a1, int a2) {
 //   reloc artifact (extern reloc target 0 = symbol at .text 0), not a real diff.
 typedef struct { short h0, h1, h2, h3, h4, h5; } Spec12_1D870;
 /* EXACT 2026-10-17 agent-c run 106 (95.1 -> 100): the "coloring-preference"
- * residual was the flat byte arithmetic. The gl_func_0001CFDC typed record
+ * residual was the flat byte arithmetic. The AudioSynth_LoadRingBuffer1AtTemp typed record
  * view (&rec->grp[rec->attr].ent[sub]) colours the entry web like the
  * target. The callee is the baked jal 0x31FB0 (word 0x0C00C7EC, same as
  * 1CFDC), not game_libs_func_0003443C: gl_ref_00031FB0 pin. */
 extern int gl_ref_00031FB0();
-int gl_func_0001D870(int code, Spec12_1D870 spec) {
+int AudioSynth_LoadRingBuffer1(int code, Spec12_1D870 spec) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
@@ -790,7 +790,7 @@ int gl_func_0001D870(int code, Spec12_1D870 spec) {
     return r;
 }
 
-/* Double F3D/GBI command builder (sibling of the gl_func_0001D870 family).
+/* Double F3D/GBI command builder (sibling of the AudioSynth_LoadRingBuffer1 family).
  * Writes two 8-byte commands (4 words) to the $a0 DList buffer, indexing the
  * 0x158-stride record table at &D_00000000 by the 5th (stack) arg, reading the
  * segment-offset fields +0x38/+0x3C and KSEG0-biasing them. Returns buf+16.
@@ -811,7 +811,7 @@ int gl_func_0001D870(int code, Spec12_1D870 spec) {
  * (permuter find; separate lines, `a1 += 0` or `a1 = a1` do not). */
 extern int D_00000000;
 typedef struct { unsigned int w0, w1; } G1D944;
-int game_libs_func_0001D944(gfx, a1, a2, a3, idx)
+int AudioSynth_LoadRingBufferPart(gfx, a1, a2, a3, idx)
 G1D944 *gfx;
 unsigned short a1;
 unsigned short a2;
@@ -832,14 +832,14 @@ int idx;
 }
 
 /* Double F3D/GBI command builder -- byte-identical sibling of
- * game_libs_func_0001D944 (same body; command opcode 0x15 vs 0x14). Writes two
+ * AudioSynth_LoadRingBufferPart (same body; command opcode 0x15 vs 0x14). Writes two
  * 8-byte commands (4 words) to the $a0 buffer, indexing the 0x158-stride record
  * table at &D_00000000 by the 5th (stack) arg, reading segment-offset fields
  * +0x38/+0x3C and KSEG0-biasing, returns buf+16. Same cap as 0001D944: D_ ref
  * -> objdiff reloc-depressed + IDO dead arg-home-stores (sw a1/a2 to home).
  * 2026-10-22 EXACT with 0001D944's u16 a1 + `a1++; a1--;`. */
 typedef struct { unsigned int w0, w1; } G1D9E0;
-int game_libs_func_0001D9E0(gfx, a1, a2, a3, idx)
+int AudioSynth_SaveRingBufferPart(gfx, a1, a2, a3, idx)
 G1D9E0 *gfx;
 unsigned short a1;
 unsigned short a2;
@@ -859,12 +859,12 @@ int idx;
 #undef cmd
 }
 
-// gl_func_0001DA7C — STRUCTURAL PASS (0x10C / 67 words, no episode).
+// AudioSynth_LoadReverbSamples — STRUCTURAL PASS (0x10C / 67 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). An F3D/GBI glyph-command builder in the gl_func_0001D4C0
 // display-list family.
 //
-//   int gl_func_0001DA7C(int a0, int a1, short idx) {
+//   int AudioSynth_LoadReverbSamples(int a0, int a1, short idx) {
 //     E *e = &D_0 + idx_scaled(idx);            // signed-halfword idx
 //     byte flag = e->0x1C;
 //     int r;
@@ -906,7 +906,7 @@ extern void *gl_ref_0003186C();
 extern void *gl_ref_000317E8();
 typedef struct { unsigned int w0, w1; } Gfx1DA7C;
 #define G1DA7C(pkt, a, b) { Gfx1DA7C *_g = (Gfx1DA7C *)(pkt); _g->w0 = (a); _g->w1 = (b); }
-Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
+Gfx1DA7C *AudioSynth_LoadReverbSamples(Gfx1DA7C *dl, int a1, short a2, short a3) {
     int pad[1];
     char *rec = (char *)&D_00000000 + a2 * 0x158;
     if (*(unsigned char *)(rec + 0x1C) == 1) {
@@ -922,12 +922,12 @@ Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
     return dl;
 }
 
-// gl_func_0001DB88 — STRUCTURAL PASS (0x12C / 75 words, no episode).
+// AudioSynth_SaveReverbSamples — STRUCTURAL PASS (0x12C / 75 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
-// bundle). Glyph/sprite draw helper in the gl_func_0001CFDC family,
+// bundle). Glyph/sprite draw helper in the AudioSynth_LoadRingBuffer1AtTemp family,
 // the two-flag conditional variant.
 //
-//   int gl_func_0001DB88(int a0, short idx) {
+//   int AudioSynth_SaveReverbSamples(int a0, short idx) {
 //     E *base = &D_0 + idx_scaled(idx);          // signed-hw index
 //     byte f1 = base->0x1B;
 //     byte f2 = (base + ...)->0x1C;              // second flag
@@ -940,13 +940,13 @@ Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
 //     ...
 //   }
 //
-// Struct-typing reference: same glyph layout as gl_func_0001CFDC /
+// Struct-typing reference: same glyph layout as AudioSynth_LoadRingBuffer1AtTemp /
 //   0001D0AC (&D_0 table, +0x50 entry, e->0x0E height, e->0x10
 //   width/advance) plus TWO gating flag bytes read off the pre-+0x50
 //   base: byte base->0x1B (primary path selector, compared != 1) and
 //   byte base->0x1C (secondary). Uses the 0x0C80 blit-mode constant
 //   and the fixed blit routine 0x0C00C813 (≈0x31F4C) — same
-//   mode/target combination as the gl_func_0001D0AC sibling but with
+//   mode/target combination as the AudioSynth_SaveRingBuffer1AtTemp sibling but with
 //   the extra two-flag conditional structure.
 // Caps: single jr $ra. CORRECTED DECODE EXECUTED 2026-07-30 agent-h:
 //   48.6 -> 78.6 fuzzy. Body below IS the correct structure; two levers
@@ -980,7 +980,7 @@ Gfx1DA7C *gl_func_0001DA7C(Gfx1DA7C *dl, int a1, short a2, short a3) {
 //     lui at/sw t0 order (tie). jals 0x3204C/0x31D64 are baked
 //     USO-LOCAL (mid-fragment targets, no in-tree symbol);
 //     gl_func_00000000 placeholder convention.
-/* gl_func_0001DB88 EXACT 2026-10-23 (agent-c run 140, 91.59 -> 100): OoT's
+/* AudioSynth_SaveReverbSamples EXACT 2026-10-23 (agent-c run 140, 91.59 -> 100): OoT's
  * AudioSynth_SaveReverbSamples in the older (SM64-era) form: `(cmd, s16 reverbIndex,
  * s16 updateIndex)`, every reverb field read as gSynthesisReverbs[reverbIndex].x (no
  * pointer local -- that kept the first reverbIndex load in t6 and added an 8-byte
@@ -1002,7 +1002,7 @@ typedef struct {
 #define gl_1DB88_gSynthesisReverbs ((gl_1DB88_Reverb *)&D_00000000)
 extern gl_1DB88_Acmd *gl_1db88_saveRingBufferPart(gl_1DB88_Acmd *cmd, u16 dmem, u16 startPos, s32 size, s16 reverbIndex);
 extern void gl_1db88_saveBuffer(gl_1DB88_Acmd *cmd, s32 dmemSrc, s32 size, u32 addrDest);
-gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateIndex) {
+gl_1DB88_Acmd *AudioSynth_SaveReverbSamples(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateIndex) {
     gl_1DB88_RingItem *bufItem = &gl_1DB88_gSynthesisReverbs[reverbIndex].items[gl_1DB88_gSynthesisReverbs[reverbIndex].curFrame][updateIndex];
 
     switch (gl_1DB88_gSynthesisReverbs[reverbIndex].downsampleRate) {
@@ -1021,12 +1021,12 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 }
 #undef gl_1DB88_gSynthesisReverbs
 
-// gl_func_0001DCB4 — STRUCTURAL PASS (0x480 / 288 words, no episode).
+// AudioSynth_DoOneAudioUpdate — STRUCTURAL PASS (0x480 / 288 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle) — a LARGE text-run layout/measure orchestrator above the
-// gl_func_0001CFDC glyph-draw family. -0xC0 frame, full s0-s8/ra save.
+// AudioSynth_LoadRingBuffer1AtTemp glyph-draw family. -0xC0 frame, full s0-s8/ra save.
 //
-//   ret gl_func_0001DCB4(a0, a1, a2, a3) {
+//   ret AudioSynth_DoOneAudioUpdate(a0, a1, a2, a3) {
 //     S *g = &D_0;                                // global state base
 //     if (g->byte_1 == 0) {                        // config gate
 //       int n   = g->w_0x2070;                     // item count
@@ -1043,7 +1043,7 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 //       }
 //     }
 //     ... second phase: walk the classified buf, emit per-run glyph
-//         draws via the gl_func_0001CFDC family ...
+//         draws via the AudioSynth_LoadRingBuffer1AtTemp family ...
 //   }
 //
 // Struct-typing reference: global state struct at &D_0 — signed byte
@@ -1054,9 +1054,9 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 //   byte array is built at sp+0x84 holding the per-item indices, then
 //   consumed by a second phase that issues the actual glyph draws.
 //   This is the run-layout/measure front-end of the game_libs text
-//   subsystem; the leaf draws delegate to the gl_func_0001CFDC family.
+//   subsystem; the leaf draws delegate to the AudioSynth_LoadRingBuffer1AtTemp family.
 // Caps (DEFERRED): CLEAN single jr $ra. Large text-run layout/measure
-//   orchestrator over the gl_func_0001CFDC glyph-draw family.
+//   orchestrator over the AudioSynth_LoadRingBuffer1AtTemp glyph-draw family.
 //   Real-C STRUCTURAL body below per the analysis (two-phase: classify
 //   g->0x2070 items by item-word sign bit into a sp+0x84 byte buffer,
 //   then emit per-run glyph draws); byte-match deferred — ~288-insn
@@ -1064,7 +1064,7 @@ gl_1DB88_Acmd *gl_func_0001DB88(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateI
 //   reloc infra) and -0xC0 frame s0-s8 schedule. Name pre-checked: no
 //   extern reuse (collision-safe). gl_func_00000000 = canonical
 //   never-defined USO placeholder for the leaf glyph draws.
-// gl_func_0001DCB4 — FULL m2c DECODE (57.35% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
+// AudioSynth_DoOneAudioUpdate — FULL m2c DECODE (57.35% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
 // PASS-2 2026-07-23 (agent-h) 62.8->63.2: s32 arg3 (target uses a3 raw, no sll/sra 0x10 narrowing);
 // real s8 buf[56] array (target buf at sp+0x84, top-of-locals); (u32) cast on *(u8*)(e+1)>>5 -> srl
 // (was sra); merged var_s1/var_s1_2 + temp_a0_2/3 into single locals (target reuses s1/a0).
@@ -1130,7 +1130,7 @@ extern gl_dcb4_Acmd *gl_1dcb4_f5(gl_dcb4_Acmd *, s32, s32);
 #define AudioSynth_SaveReverbSamples gl_1dcb4_f4
 #define AudioSynth_MaybeMixRingBuffer1 gl_1dcb4_f5
 
-gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 updateIndex) {
+gl_dcb4_Acmd *AudioSynth_DoOneAudioUpdate(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 updateIndex) {
     gl_dcb4_SampleState *sampleState;
     u8 noteIndices[56];
     s16 count;
@@ -1231,7 +1231,7 @@ gl_dcb4_Acmd *gl_func_0001DCB4(s16 *aiBuf, s32 aiBufLen, gl_dcb4_Acmd *cmd, s32 
 #undef DMEM_2CH_SIZE
 #undef SAMPLE_SIZE
 
-/* gl_func_0001E134 = AudioSynth_ProcessNote (OoT synthesis.c), EXACT (run 143,
+/* AudioSynth_ProcessNote = AudioSynth_ProcessNote (OoT synthesis.c), EXACT (run 143,
  * agent-c; was a 65.94 m2c NM). OoT's body verbatim with the 1080 deltas:
  * - needsInit compared as `(s32)sampleState->needsInit == 1` (both tests): the
  *   target holds one SIGNED constant 1 for those tests, flags = A_INIT and the
@@ -1350,7 +1350,7 @@ extern gl_e134_Acmd *gl_e134_ApplyHaasEffect(gl_e134_Acmd *, gl_e134_SampleState
 #define Note gl_e134_Note
 #define D_8012FBA8 gl_e134_D_8012FBA8
 
-gl_e134_Acmd *gl_func_0001E134(s32 noteIndex, NoteSampleState *sampleState, NoteSynthesisState *synthState, s16 *aiBuf,
+gl_e134_Acmd *AudioSynth_ProcessNote(s32 noteIndex, NoteSampleState *sampleState, NoteSynthesisState *synthState, s16 *aiBuf,
                        s32 aiBufLen, gl_e134_Acmd *cmd, s32 updateIndex) {
     s32 pad1[3];
     Sample *sample;
@@ -1807,12 +1807,12 @@ gl_e134_Acmd *gl_func_0001E134(s32 noteIndex, NoteSampleState *sampleState, Note
 #undef Note
 #undef D_8012FBA8
 
-// gl_func_0001EE78 — STRUCTURAL PASS (0xA8 / 42 words, no episode).
+// AudioSynth_FinalResample — STRUCTURAL PASS (0xA8 / 42 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). Small F3D/GBI display-list command-pair emitter in the
 // game_libs graphics family.
 //
-//   Gfx *gl_func_0001EE78(Gfx *dl, a1, a2, a3) {
+//   Gfx *AudioSynth_FinalResample(Gfx *dl, a1, a2, a3) {
 //     a3 &= 0xFFFF;
 //     if (a3 == 0) {
 //       jal 0x31BC8(dl, 0x3C0, …);              // 0x0C00C6F2
@@ -1835,7 +1835,7 @@ gl_e134_Acmd *gl_func_0001E134(s32 noteIndex, NoteSampleState *sampleState, Note
 //   segment-relative pointer word1 = a1[0x0C] + 0x80000020. The
 //   a3==0 fast path instead delegates to fixed routine 0x0C00C6F2
 //   (≈0x31BC8) and consumes a single command. Sibling of the
-//   gl_func_0001D4C0 / gl_func_0001DA7C F3D-builder family.
+//   gl_func_0001D4C0 / AudioSynth_LoadReverbSamples F3D-builder family.
 // Caps (DEFERRED): single jr $ra. F3D DL command emitter: if
 //   (a3&0xFFFF)==0 call helper(dl,0x3C0) and return dl+8; else emit
 //   two GBI command pairs into dl ((arg4|0x08000000)/((a2&0xFFFF)|
@@ -1871,7 +1871,7 @@ gl_e134_Acmd *gl_func_0001E134(s32 noteIndex, NoteSampleState *sampleState, Note
 //   pair-2 cursor copy). docs/IDO_CODEGEN.md#knr-u16-not-test-inplace-narrow-1ee78
 typedef struct { int w0, w1; } GfxPair1EE78;
 extern int gl_ref_00031BC8(); /* baked USO jal 0x0C00C6F2 -> 0x31BC8 (shared with 1EF20) */
-int gl_func_0001EE78(dl, a1, a2, a3, arg4, arg5)
+int AudioSynth_FinalResample(dl, a1, a2, a3, arg4, arg5)
 GfxPair1EE78 *dl;
 int *a1;
 int a2;
@@ -1954,11 +1954,11 @@ extern u32 gl_aud_sEnvMixerDefaultDmemDests;    /* 0x1A2DC, pinned */
 #define AudioSynth_EnvSetup1 gl_ref_00031D00
 #define AudioSynth_EnvSetup2 gl_ref_00031D8C
 
-/* gl_func_0001EF20 EXACT 2026-10-23 (agent-c run 140, 71.65 -> 100): OoT's
+/* AudioSynth_ProcessEnvelope EXACT 2026-10-23 (agent-c run 140, 71.65 -> 100): OoT's
  * AudioSynth_ProcessEnvelope verbatim; the three dmemDests words and the
  * envmixer op are the module data at 0x1A2D0..0x1A2DC (pinned externs: absolute
  * casts give each load its own temp register instead of a1). */
-gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState, s32 aiBufLen,
+gl_aud_Acmd *AudioSynth_ProcessEnvelope(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState, s32 aiBufLen,
                                  u16 dmemSrc, s32 haasEffectDelaySide, s32 flags) {
     u32 dmemDests;
     u16 curVolLeft;
@@ -2035,12 +2035,12 @@ gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 }
 
 
-// gl_func_0001F248 — STRUCTURAL PASS (0x180 / 96 words, no episode).
+// AudioSynth_LoadWaveSamples — STRUCTURAL PASS (0x180 / 96 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A texture-block-load display-list builder in the game_libs
 // F3D family. -0x20 frame, ra/s0 saved, a3 at sp+0x2C.
 //
-//   Gfx *gl_func_0001F248(Gfx *dst, H *a1, B *a2, int a3) {
+//   Gfx *AudioSynth_LoadWaveSamples(Gfx *dst, H *a1, B *a2, int a3) {
 //     int   w   = a1[0];
 //     byte  b6  = a1->b_6;
 //     int   typ = (w << 11) >> 30;              // 2-bit type field
@@ -2064,10 +2064,10 @@ gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 //   a2->0x10 feeds the tile-setup command. Emitted commands use the
 //   0x580 tile descriptor and a 0x14080580 word0 (a load-block-class
 //   GBI op). Fixed routine 0x0C00C74F (≈0x31D3C) does the actual
-//   DMA/load setup. Sibling of the gl_func_0001EE78 / gl_func_0001EF20
+//   DMA/load setup. Sibling of the AudioSynth_FinalResample / AudioSynth_ProcessEnvelope
 //   F3D-emitter family.
 // Caps (DEFERRED): CLEAN single jr $ra. Texture-block-load DL
-//   builder (gl_func_0001EE78/EF20 F3D family). Real-C STRUCTURAL
+//   builder (AudioSynth_FinalResample/EF20 F3D family). Real-C STRUCTURAL
 //   body below per the analysis (packed 2-bit type gate
 //   (a1[0]<<11)>>30, 16-aligned size (a3*2+0xF)&~0xF, src =
 //   a2->8|0x80000000, fixed 0x31D3C load-setup call, then
@@ -2075,7 +2075,7 @@ gl_aud_Acmd *gl_func_0001EF20(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 //   placeholder jal needs USO reloc infra + bitfield/align schedule.
 //   Name pre-checked: no extern reuse (collision-safe).
 //   gl_func_00000000 = canonical never-defined USO placeholder.
-/* gl_func_0001F248 EXACT 2026-10-24 (agent-c run 141, 98.44 -> 100): OoT's
+/* AudioSynth_LoadWaveSamples EXACT 2026-10-24 (agent-c run 141, 98.44 -> 100): OoT's
  * AudioSynth_LoadWaveSamples verbatim -- `AudioSynth_LoadBuffer(cmd++, ...)` and
  * gWaveSamples as a TYPED extern array (gl_1F248_gWaveSamples) for both the read and
  * the += (the `(s16 **)&D` cast form needed the split cursor copy and still missed
@@ -2099,7 +2099,7 @@ extern s16 *gl_1F248_gWaveSamples[];
 #define WAVE_SAMPLE_COUNT 64
 #define SAMPLE_SIZE 2
 #define aDuplicate(pkt, numCopies, dmemSrc, dmemDest) { gl_aud_Acmd *_a = (gl_aud_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_DUPLICATE, 24, 8) | _SHIFTL(numCopies, 16, 8) | _SHIFTL(dmemSrc, 0, 16)); _a->words.w1 = _SHIFTL(dmemDest, 16, 16) | _SHIFTL(0x80, 0, 16); }
-gl_aud_Acmd *gl_func_0001F248(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState,
+gl_aud_Acmd *AudioSynth_LoadWaveSamples(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState,
                                  s32 numSamplesToLoad) {
     s32 numSamplesAvail;
     s32 harmonicIndexCurAndPrev = sampleState->harmonicIndexCurAndPrev;
@@ -2138,7 +2138,7 @@ gl_aud_Acmd *gl_func_0001F248(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
 #undef SAMPLE_SIZE
 #undef aDuplicate
 
-/* gl_func_0001F3C8 EXACT 2026-10-23 (agent-c run 140, 63.55 -> 100): the audio
+/* AudioSynth_ApplyHaasEffect EXACT 2026-10-23 (agent-c run 140, 63.55 -> 100): the audio
  * driver's Haas-effect stage -- the same function as OoT's
  * AudioSynth_ProcessHaasEffect (references/oot/src/audio/internal/synthesis.c),
  * compiled verbatim from that source with the aspMain ABI macros (`cmd++` packet
@@ -2148,7 +2148,7 @@ gl_aud_Acmd *gl_func_0001F248(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
  * synthState previous sizes at +2 / +3, synthesisBuffers at +0xC. The trailing
  * three zero words stay an all-zero SUFFIX_BYTES_FORCE (game_libs_func_0001F6A8's
  * alignment pad). Uses the audio block above 1EF20; its macros are #undef'd after. */
-gl_aud_Acmd *gl_func_0001F3C8(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState, s32 size, s32 flags, s32 haasEffectDelaySide) {
+gl_aud_Acmd *AudioSynth_ApplyHaasEffect(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState, gl_aud_SynthState *synthState, s32 size, s32 flags, s32 haasEffectDelaySide) {
     u16 dmemDest;
     u16 pitch;
     u8 prevHaasEffectDelaySize;
@@ -2251,7 +2251,7 @@ gl_aud_Acmd *gl_func_0001F3C8(gl_aud_Acmd *cmd, gl_aud_SampleState *sampleState,
  *   two constant candidates, so the third loop re-materialises 60.0 (f12) and
  *   480.0 takes f2, as in the target.
  * Boundary: the .s began with three all-zero pad words (real entry 0x1F6B4);
- * they sit on gl_func_0001F3C8 as an all-zero SUFFIX_BYTES_FORCE. */
+ * they sit on AudioSynth_ApplyHaasEffect as an all-zero SUFFIX_BYTES_FORCE. */
 extern f32 gl_1f6a8_kE70, gl_1f6a8_kE74;  /* data f32 at 0xE70 / 0xE74, pinned */
 #define K1F6A8 (*(f32 *)((char *)&D_00000000 + 0x2054))
 #define T1F6A8 (*(f32 **)((char *)&D_00000000 + 0x2CF8))
@@ -2318,7 +2318,7 @@ void game_libs_func_0001FA20(void) {
 }
 
 /* gl_func_0001FAE8: "reactivate records of group a0" sweep (exported, section
- * 0x34154). Same sym1255 block and 0xD0 record table as game_libs_func_0001CC98
+ * 0x34154). Same sym1255 block and 0xD0 record table as AudioSynth_SyncSampleStates
  * (shared typed alias D_345c0_1CC98 / gl_1CC98_* types): for every record whose
  * byte +0x33 == a0, if +0x34 == 0 && +0x30 != 0 clear the top flag bit and set
  * bit 30 of the element it points to (+0x44), then call three in-unit callees
@@ -9045,7 +9045,7 @@ void gl_func_00028A18(char *a0) {
 //   }
 //
 // Struct-typing reference: iterates the SAME primary sprite record
-//   table as gl_func_0001E134 / gl_func_0001FAE8 / gl_func_00027E24 —
+//   table as AudioSynth_ProcessNote / gl_func_0001FAE8 / gl_func_00027E24 —
 //   live count word &D_0+0x2070, record-table pointer &D_0+0x2CFC —
 //   here with a per-record stride of 0xD0. For every record it writes
 //   a self-referential pointer at +0x8, zeroes word +0x0, and calls a
@@ -11470,7 +11470,7 @@ void gl_func_0002BB7C(void *o) {
 //   constant 2). The body then indexes a &D_0 table by a packed index
 //   derived from o->0 and reads the sprite-subsystem count globals
 //   &D_0+0x2040 (halfword) / &D_0+0x2070 (word — the same record
-//   count gl_func_0001E134 / gl_func_00027E24 use). A heavyweight
+//   count AudioSynth_ProcessNote / gl_func_00027E24 use). A heavyweight
 //   command/state-advance peer to gl_func_0002BB7C — the
 //   gl_func_0002AD1C interpreter's other large per-object driver.
 // Caps (DEFERRED): raw-word USO + large multi-phase command
@@ -15676,7 +15676,7 @@ void gl_func_00032DC0(Quad4 *dst) {
  * (target: x, a0, y, z in the jal delay = the comma-argument form, which
  * moves the homes: with it zv 64 / v 36 vs target 68 / 32). */
 typedef char *(*GP_00032E18)();
-extern int gl_32e18_blank();  /* blank jal 0 (gl_func_0001CA10 was renamed game_libs_func_0001C9E4) */
+extern int gl_32e18_blank();  /* blank jal 0 (gl_func_0001CA10 was renamed AudioSynth_InitNextRingBuf) */
 #define gl_func_0001CA10 gl_32e18_blank
 char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
     char *o;
