@@ -4439,9 +4439,9 @@ int *gl_func_000088B4(int *arg0) {
  * SUFFIX_BYTES-absorbed orphan variant. */
 
 /* Additional SUFFIX_BYTES-absorbed orphans (same pattern as the cluster
- * above): game_libs_func_0003058C → gl_func_00030564 SUFFIX_BYTES (3 words
+ * above): game_libs_func_0003058C → snd_SetPlayer0Channel8IO1_30564 SUFFIX_BYTES (3 words
  * 0x3C020000,0x24420000,0x8C4E0008); game_libs_func_00030610 →
- * gl_func_000305CC SUFFIX_BYTES (3 words 0x3C020000,0x24420000,0x8C4E0000);
+ * snd_SetPlayer0Channel8Pan_305CC SUFFIX_BYTES (3 words 0x3C020000,0x24420000,0x8C4E0000);
  * game_libs_func_0005FDC0 → gl_func_0005FD20 SUFFIX_BYTES (3 words
  * 0x00000000,0x3C060000,0x8CC60000); snd_PlayPlayer2Seq_2DEF4 →
  * snd_PlayPlayer0Seq0_2DED0 SUFFIX_BYTES (3 words 0x000470C0,0x01C52021,0x2484001A).

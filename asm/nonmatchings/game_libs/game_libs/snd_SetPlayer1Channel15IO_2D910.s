@@ -1,6 +1,6 @@
-nonmatching gl_func_0002D910, 0x364
+nonmatching snd_SetPlayer1Channel15IO_2D910, 0x364
 
-glabel gl_func_0002D910
+glabel snd_SetPlayer1Channel15IO_2D910
     /* E129E8 0002D910 27BDFFE8 */  .word 0x27BDFFE8
     /* E129EC 0002D914 3C0E0000 */  .word 0x3C0E0000
     /* E129F0 0002D918 8DCE0000 */  .word 0x8DCE0000
@@ -218,4 +218,4 @@ glabel gl_func_0002D910
     /* E12D40 0002DC68 27BD0018 */  .word 0x27BD0018
     /* E12D44 0002DC6C 03E00008 */  .word 0x03E00008
     /* E12D48 0002DC70 00000000 */  .word 0x00000000
-endlabel gl_func_0002D910
+endlabel snd_SetPlayer1Channel15IO_2D910

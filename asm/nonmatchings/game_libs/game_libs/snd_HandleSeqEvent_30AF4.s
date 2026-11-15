@@ -1,6 +1,6 @@
-nonmatching gl_func_00030AF4, 0x840
+nonmatching snd_HandleSeqEvent_30AF4, 0x840
 
-glabel gl_func_00030AF4
+glabel snd_HandleSeqEvent_30AF4
     /* E15BCC 00030AF4 27BDFFC8 */  .word 0x27BDFFC8
     /* E15BD0 00030AF8 3C0E0000 */  .word 0x3C0E0000
     /* E15BD4 00030AFC 8DCE0000 */  .word 0x8DCE0000
@@ -529,4 +529,4 @@ glabel gl_func_00030AF4
     /* E16400 00031328 27BD0038 */  .word 0x27BD0038
     /* E16404 0003132C 03E00008 */  .word 0x03E00008
     /* E16408 00031330 00000000 */  .word 0x00000000
-endlabel gl_func_00030AF4
+endlabel snd_HandleSeqEvent_30AF4

@@ -8894,7 +8894,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 //     its case targets from the NAMED global table D_807FF3E0+0x3C0, NOT a
 //     compiler-emitted local .rodata jumptable. C `switch` always emits a
 //     LOCAL jumptable+relocs, so this dispatch (~90 words) is C-irreproducible.
-//     Same cap class as gl_func_00030AF4 (flagged in the 1F14 commit).
+//     Same cap class as snd_HandleSeqEvent_30AF4 (flagged in the 1F14 commit).
 //  2) Register-allocation/frame divergence: target saves only s0 and spills
 //     a0-a3 to sp+0x60..0x6C, reloading per-use (IDO -O2 on a 1680B
 //     call-heavy fn); C reconstruction holds more in regs -> larger frame,

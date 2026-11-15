@@ -11741,11 +11741,11 @@ void AudioSeq_InitSequencePlayers(void) {
 
 /* game_libs_func_0002D36C: 2-word all-zero inter-function ROM pad (0x2D36C/0x2D370).
  * The old 4-word orphan also carried `lui t6; lw t6,0(t6)` = the hoisted first
- * statement (mode read) of game_libs_func_0002D374 below (merged 2026-09-06). */
+ * statement (mode read) of snd_UpdateTimers_2D374 below (merged 2026-09-06). */
 /* (folded 2026-10-24 agent-c run 150: the two zero words are an all-zero
  * SUFFIX_BYTES_FORCE on AudioSeq_InitSequencePlayers; expected/ symbol deleted, AudioSeq_InitSequencePlayers grown by 8.) */
 
-// game_libs_func_0002D374 (ex gl_func_0002D37C; bootup.uso Sym exports section
+// snd_UpdateTimers_2D374 (ex gl_func_0002D37C; bootup.uso Sym exports section
 // 0x419E0 = splat 0x2D374, the `lui t6; lw t6` mode read that splat had lumped
 // into the 2D36C pad orphan; 0x2D37C is NOT exported -- merged 2026-09-06 agent-c)
 // -- full hand re-derivation from ground truth (2026-09-04
@@ -11802,7 +11802,7 @@ extern f32 D_2D37C_f358s[], D_2D37C_f358l[], D_2D37C_f35Cs[], D_2D37C_f35Cl[], D
  * the post-call i reload a3 (t2) and rec[2] t2 (t3). Note the target stores z to 35C BEFORE fr
  * to 358 (swapping the two stores reads 0.03 lower only because f0 then lines up by chance).
  * Spelling-grid over assign order x keep-alives x store order x i spelling x decl order: flat. */
-void game_libs_func_0002D374(void) {
+void snd_UpdateTimers_2D374(void) {
     int st;
     int v;
     int i;
@@ -12251,7 +12251,7 @@ void snd_ApplyPlayer2VolumeLevel_2D8D8(void) {
 }
 
 #ifdef NON_MATCHING
-/* gl_func_0002D910: 219-insn (0x36C) multi-armed input/state-machine
+/* snd_SetPlayer1Channel15IO_2D910: 219-insn (0x36C) multi-armed input/state-machine
  * handler. 0x18-byte stack frame, spills all 4 args (sw a0/a1/a2/a3 to
  * caller slots sp+0x18/0x1C/0x20/0x24) — K&R signature.
  *
@@ -12364,7 +12364,7 @@ extern int D_0001C1D0, D_0001C1D0_b, D_0001C1D0_c, D_0001C1D0_d, D_0001C1D0_e,
 extern int D_0001C1D4, D_0001C1D4_b, D_0001C1D4_c, D_0001C1D4_d, D_0001C1D4_e,
     D_0001C1D4_f, D_0001C1D4_g;
 
-void gl_func_0002D910(int a0, int a1, int a2, int a3) {
+void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3) {
     int v0;
     if (D_00000000 != 10) {
         return;
@@ -12446,7 +12446,7 @@ void gl_func_0002D910(int a0, int a1, int a2, int a3) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002D910);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer1Channel15IO_2D910);
 #endif
 
 
@@ -12464,7 +12464,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002D910);
  * 0xDD0A6C; jal'd from TextReloc @0x3E0); 0x422E8 = 0x2DC7C is NOT exported.
  * The 2-word orphan `lui t6; lw t6,0(t6)` was the hoisted first statement (the
  * mode-word read scheduled above `addiu sp`), not a "prologue-stolen $t6
- * dispatch global" of gl_func_0002D910. The old gl_func_0002DC7C wrap's
+ * dispatch global" of snd_SetPlayer1Channel15IO_2D910. The old gl_func_0002DC7C wrap's
  * "mfc1-from-C cap" was the K&R callee: the (int, float) prototype puts the
  * float in a1 via mfc1 with no frame slot. BYTE-EXACT 33/33 on the first
  * compile (agent-c 2026-09-06). */
@@ -13841,11 +13841,11 @@ void game_libs_func_0002F578(char *o, int a1, int a2, f32 v, unsigned char b) {
 void game_libs_func_0002F630(void) {
 }
 
-// gl_func_0002F638 — STRUCTURAL PASS (0xF4 / 61 words, no episode).
+// snd_SetPlayer0ChannelPanIO_2F638 — STRUCTURAL PASS (0xF4 / 61 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A command-word emitter / mode dispatcher leaf.
 //
-//   void gl_func_0002F638(int a0, int sel, int arg3, int arg4,
+//   void snd_SetPlayer0ChannelPanIO_2F638(int a0, int sel, int arg3, int arg4,
 //                         ... byte at sp+0x43 ...) {
 //     int op = a0 ? 6 : 2;                  // opcode select from arg0
 //     int sub = op & 0xFF;
@@ -13881,7 +13881,7 @@ extern int gl_func_00000000();
  * gl(cmd3, (s8)stk_43). Then sel in {0,8,12} → gl(cmd6|6,(s8)arg4),
  * gl(cmd6|1,(s8)(sel+arg3)); otherwise → gl(cmd6|5,(s8)arg4),
  * gl(cmd6,(s8)(sel+arg3)). */
-void gl_func_0002F638(int a0, int sel, int arg3, int arg4, int stk_43) {
+void snd_SetPlayer0ChannelPanIO_2F638(int a0, int sel, int arg3, int arg4, int stk_43) {
     int v1 = (((a0 == 0) ? 2 : 6) & 0xFF) << 8;
     gl_func_00000000(0x03000000 | v1, (signed char)stk_43);
     if (sel == 0 || sel == 8 || sel == 12) {
@@ -13900,11 +13900,11 @@ void game_libs_func_0002F720(char *o, f32 in, signed char idxb) {
 }
 
 
-// gl_func_0002F8A0 — STRUCTURAL PASS (0x94 / 37 words, no episode).
+// snd_Player0ChannelIOPreset_2F8A0 — STRUCTURAL PASS (0x94 / 37 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A small command-sequence selector by mode.
 //
-//   void gl_func_0002F8A0(int mode) {
+//   void snd_Player0ChannelIOPreset_2F8A0(int mode) {
 //     switch (mode) {
 //       case 0:
 //         emit(0x06000100, 1);              // jal 0 (USO callback)
@@ -13929,13 +13929,13 @@ void game_libs_func_0002F720(char *o, f32 in, signed char idxb) {
 //   submitted via a USO-relocated callback (jal 0 → resolved at load)
 //   with the second arg fixed at 1. A canned-sequence emitter leaf of
 //   the game_libs object subsystem (issues preset command groups; the
-//   0x06000000 bank matches gl_func_0002F638's command-word banks).
+//   0x06000000 bank matches snd_SetPlayer0ChannelPanIO_2F638's command-word banks).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks +
 //   canned switch dispatch — byte-match needs USO mnemonic disasm
 //   + reloc-pad jal infra. Real-C STRUCTURAL body below per the
 //   analysis. Byte-match deferred. Name pre-checked: no extern reuse.
 extern int gl_func_00000000();
-void gl_func_0002F8A0(int mode) {
+void snd_Player0ChannelIOPreset_2F8A0(int mode) {
     switch (mode) {
         case 0:
             gl_func_00000000(0x06000100, 1);
@@ -13953,8 +13953,8 @@ void gl_func_0002F8A0(int mode) {
     }
 }
 
-/* gl_func_0002F934: canned command-sequence selector (0xA0 / 40 words),
- * sibling of gl_func_0002F8A0. mode 0 emits 0x06000100/0x06000101 (-1) and
+/* snd_Player0ChannelIOPreset_2F934: canned command-sequence selector (0xA0 / 40 words),
+ * sibling of snd_Player0ChannelIOPreset_2F8A0. mode 0 emits 0x06000100/0x06000101 (-1) and
  * 0x06000300 (0); modes 1 AND 2 share one body (0x06000700, 0;
  * 0x06000500, -1; 0x06000501, -1); anything else is a no-op.
  * The old wrap gave mode 2 only the last call: the target's `beql a0,2`
@@ -13962,7 +13962,7 @@ void gl_func_0002F8A0(int mode) {
  * case-1 test's delay slot `move a1,zero` covers both modes, so the two
  * labels share the arm. */
 extern int gl_func_00000000();
-void gl_func_0002F934(int mode) {
+void snd_Player0ChannelIOPreset_2F934(int mode) {
     switch (mode) {
         case 0:
             gl_func_00000000(0x06000100, -1);
@@ -13978,11 +13978,11 @@ void gl_func_0002F934(int mode) {
     }
 }
 
-// gl_func_0002F9D4 — STRUCTURAL PASS (0xBC / 47 words, no episode).
+// snd_SetPlayer0ChannelParams_2F9D4 — STRUCTURAL PASS (0xBC / 47 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A composite multi-bank command emitter.
 //
-//   void gl_func_0002F9D4(int a0, int b, int arg3, int arg4,
+//   void snd_SetPlayer0ChannelParams_2F9D4(int a0, int b, int arg3, int arg4,
 //                         ... bytes at sp+0x43, sp+0x47 ...) {
 //     int op  = a0 ? 5 : 1;                 // opcode select
 //     int sub = (op & 0xFF) << 8;
@@ -14004,7 +14004,7 @@ void gl_func_0002F934(int mode) {
 //   is 127.0f); the rest pass sign-extended byte args (the b arg and
 //   stack bytes sp+0x43 / sp+0x47) plus arg4. A multi-attribute
 //   command-submission leaf of the game_libs object subsystem
-//   (richer sibling of gl_func_0002F638 — same 0x03/0x06 banks plus
+//   (richer sibling of snd_SetPlayer0ChannelPanIO_2F638 — same 0x03/0x06 banks plus
 //   the 0x01/0x04 attribute banks and the /127 normalization).
 // 2026-07-11 (agent-g): the "/127.0f normalize" was NOT a cap — the residual
 //   cvt.d.s was the K&R float->double promotion of the placeholder call (same
@@ -14028,7 +14028,7 @@ void gl_func_0002F934(int mode) {
  * arg, named cmd/op locals (frame +8), pads (frame +8), &b/&arg4/&s43 as
  * the address-taken param -- all keep the a2 reload. */
 extern int gl_func_00000000();
-void gl_func_0002F9D4(int a0, int b, int arg3, ...) {
+void snd_SetPlayer0ChannelParams_2F9D4(int a0, int b, int arg3, ...) {
     int sub = (((a0 == 0) ? 1 : 5) & 0xFF) << 8;
     gl_func_00000000(0x06000000 | sub | 5, (signed char)b, arg3, b);
     gl_func_00000000_f(0x01000000 | sub, (float)arg3 / 127.0f);
@@ -14037,14 +14037,14 @@ void gl_func_0002F9D4(int a0, int b, int arg3, ...) {
     gl_func_00000000(0x03000000 | sub, ((signed char *)&arg3)[15]);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002F9D4);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer0ChannelParams_2F9D4);
 #endif
 
-// gl_func_0002FA90 — STRUCTURAL PASS (0x80 / 32 words, no episode).
+// snd_SetPlayer0ChannelIO12_2FA90 — STRUCTURAL PASS (0x80 / 32 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A small biased two-command emitter.
 //
-//   void gl_func_0002FA90(int a0, int arg1, int arg2) {
+//   void snd_SetPlayer0ChannelIO12_2FA90(int a0, int arg1, int arg2) {
 //     int op  = a0 ? 5 : 1;                 // opcode select
 //     int idx = arg2 + 0x40;                // bias
 //     if (idx >= 0x80) idx = 0x7F;          // clamp 7-bit
@@ -14054,7 +14054,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002F9D4);
 //   }
 //
 // Struct-typing reference: a compact command-stream builder, a close
-//   sibling of gl_func_0002F638. arg0 selects the opcode (1 vs 5),
+//   sibling of snd_SetPlayer0ChannelPanIO_2F638. arg0 selects the opcode (1 vs 5),
 //   packed as an 8-bit subfield (<<8) into a 0x06000000-bank command
 //   word. A byte index is formed as arg2 + 0x40 and saturated to
 //   0x7F (the recurring bias-then-clamp idiom of this subsystem),
@@ -14062,8 +14062,8 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002F9D4);
 //   (jal 0 → resolved at load) with tag bits 2 then 1; the second
 //   passes a sign-extended (arg1 + 8). A two-attribute command-submit
 //   leaf of the game_libs object subsystem (same 0x06000000 bank and
-//   sign-extend-byte-arg convention as gl_func_0002F638 /
-//   gl_func_0002F9D4).
+//   sign-extend-byte-arg convention as snd_SetPlayer0ChannelPanIO_2F638 /
+//   snd_SetPlayer0ChannelParams_2F9D4).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks +
 //   bias/clamp index — byte-match needs USO mnemonic disasm +
 //   reloc-pad jal infra. Real-C STRUCTURAL body below per the
@@ -14079,7 +14079,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002F9D4);
  * not the IDO allocator. See docs/IDO_CODEGEN.md "Remove an obvious
  * idiomatic local..." entry. */
 extern int gl_func_00000000();
-void gl_func_0002FA90(int a0, int arg1, int arg2) {
+void snd_SetPlayer0ChannelIO12_2FA90(int a0, int arg1, int arg2) {
     int op = (a0 == 0) ? 1 : 5;
     int idx = arg2 + 0x40;
     if (idx >= 0x80) idx = 0x7F;
@@ -14088,7 +14088,7 @@ void gl_func_0002FA90(int a0, int arg1, int arg2) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0002FB10(int a0) {
+void snd_ResetPlayer0ChannelIO1_2FB10(int a0) {
     int v = a0 == 0 ? 1 : 5;
     int x = (v & 0xFF) << 8;
     x |= 0x06000000;
@@ -14101,28 +14101,28 @@ int gl_func_0002FB54(int a0) {
     return gl_func_00000000(a0, 0);
 }
 
-/* gl_func_0002FB74: event -> sound command dispatcher (0x990 / 612 words).
+/* snd_HandleEvent_2FB74: event -> sound command dispatcher (0x990 / 612 words).
  * Gate switch on st.w10 (sel 19..39), then the main switch over sel (dense
  * 2..50 table + sparse 160/256/258/260/309/405/512/523/934/1190), each arm
  * issuing USO-relocated sound submits and ending cmd = D_2FB74_cmdsrc; the
- * tail remaps sel 14/21 -> 52 when cmd == 0 and calls gl_func_00030504(sel).
+ * tail remaps sel 14/21 -> 52 when cmd == 0 and calls snd_SetPlayer0Channel0IO_30504(sel).
  * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1
  * -O2 donor unit game_libs_o2_2FB74.c (612/612 words); the splice renames the
  * two switches' donor-local .rodata jumptable reloc to
- * gl_func_0002FB74_rodata (pinned to the USO tables at +0x1750 / +0x17A4).
+ * snd_HandleEvent_2FB74_rodata (pinned to the USO tables at +0x1750 / +0x17A4).
  * Body below is a placeholder for the splice. */
-void gl_func_0002FB74(s32 sel, s32 v) {
+void snd_HandleEvent_2FB74(s32 sel, s32 v) {
     volatile int ret = sel;
 }
 
 extern int gl_func_00000000();
 
-/* gl_func_00030504: bias/clamp command emitter. key = (a0 >= 0x101) ? a0&0xFF : a0;
+/* snd_SetPlayer0Channel0IO_30504: bias/clamp command emitter. key = (a0 >= 0x101) ? a0&0xFF : a0;
  * below 0x80 -> submit (0x06000000, (s8)key); at/above -> (0x06000001, (s8)(key-0x80)).
  * MATCH: modifying the parameter a0 IN PLACE (not a separate `key` local) makes IDO
  * keep the value in $a2 (the target's reg), not $v0 -- the reuse-param lever, see
  * docs/IDO_CODEGEN.md#feedback-ido-reuse-param-as-object-caller-slot-spill. Byte-exact. */
-void gl_func_00030504(int a0) {
+void snd_SetPlayer0Channel0IO_30504(int a0) {
     if (a0 >= 0x101) {
         a0 = a0 & 0xFF;
     }
@@ -14133,12 +14133,12 @@ void gl_func_00030504(int a0) {
     }
 }
 
-/* gl_func_00030564: 1-call wrapper (0x28). LANDED fuzzy=100. The 12-byte
+/* snd_SetPlayer0Channel8IO1_30564: 1-call wrapper (0x28). LANDED fuzzy=100. The 12-byte
  * SUFFIX_BYTES recipe (`lui v0; addiu v0; lw t6,0x8(v0)` — stolen prologue
  * for SUCCESSOR gl_func_00030598) was REMOVED 2026-05-23 as match-faking.
  * Those bytes belong to separate symbols now. (Previously-documented 0x34
  * size is stale.) */
-void gl_func_00030564(void) {
+void snd_SetPlayer0Channel8IO1_30564(void) {
     gl_func_00000000(0x06000801, 1);
 }
 
@@ -14155,14 +14155,14 @@ end:
     return;
 }
 
-/* gl_func_000305CC: 17-insn signed-clamp + 2-arg call wrapper.
+/* snd_SetPlayer0Channel8Pan_305CC: 17-insn signed-clamp + 2-arg call wrapper.
  *
  * Promoted 2026-05-14 from 80% NM → byte-exact via:
  *   (a) 1-arg signature + named-int `a2` local (drops the unused-a1 spill
  *       caused by 3-arg signature).
  *   (b) 5-entry INSN_PATCH for $v0 → $a2 regalloc rename (target uses
  *       $a2 for the temp; IDO -O2 picks $v0). Same recipe as adjacent
- *       gl_func_00030504 — file-wide pattern for game_libs G_DL helpers.
+ *       snd_SetPlayer0Channel0IO_30504 — file-wide pattern for game_libs G_DL helpers.
  *   (c) 3-word SUFFIX_BYTES (0x3c020000, 0x24420000, 0x8c4e0000) appending
  *       the next-function-prologue-steal (lui v0, 0; addiu v0, v0, 0;
  *       lw t6, 0(v0)) that splat absorbed into 305CC's 0x50 declared
@@ -14178,7 +14178,7 @@ extern int gl_func_00000000();
 /* Clamp a0 to [0, 0x7F] then call gl_func_00000000(0x03000800, (s8)a0).
  * Lever: reuse `a0` (no fresh `int a2 = a0;` local) — IDO then picks $a2
  * as the working register instead of $v0, matching the target. */
-void gl_func_000305CC(int a0) {
+void snd_SetPlayer0Channel8Pan_305CC(int a0) {
     if (a0 < 0) a0 = 0;
     if (a0 >= 0x80) a0 = 0x7F;
     gl_func_00000000(0x03000800, (s8)a0);
@@ -14214,7 +14214,7 @@ void gl_func_000305CC(int a0) {
 //   selector at &D_0+4, then performs FP scaling against a 1.5f
 //   constant (0x3FC00000). A control/state-bookkeeping node of the
 //   game_libs object subsystem (the kind of mode-arbitration helper
-//   the gl_func_0002FB74 interpreter and the emitter family call to
+//   the snd_HandleEvent_2FB74 interpreter and the emitter family call to
 //   resolve which command opcode applies).
 // Caps (DEFERRED): raw-word USO + global-state &D_0 base + multi-
 //   branch mode cascade + conditional commit — byte-match needs
@@ -14306,7 +14306,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003061C);
  * reloaded through `lwc1 $f0; mfc1 a1`.
  *
  * Boundary: 0x44E14 = splat 0x307A8 is NOT in the bootup.uso Sym export table
- * but it is the target of the baked jal 0x0C011385 in game_libs_func_0002D374
+ * but it is the target of the baked jal 0x0C011385 in snd_UpdateTimers_2D374
  * (TU-local callee, section-relative); 0x44E1C = 0x307B0 has neither an
  * export nor a jal. So the 2-word orphan `lui t6; lw t6,0(t6)` is the hoisted
  * flag read of this function scheduled above `addiu sp` (the gl_func_000307B0
@@ -14436,7 +14436,7 @@ void game_libs_func_000309AC(int sel) {
 //   (*p + 0x29 / *p + 0x04). A state-gated registration/command-
 //   submission node of the game_libs object subsystem (companion to
 //   the gl_func_000309B4 selector-recorder; both stash into the
-//   &D_0 global record and feed the gl_func_0002FB74 interpreter).
+//   &D_0 global record and feed the snd_HandleEvent_2FB74 interpreter).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks + &D_0
 //   global state gate + branch-likely thresholds — byte-match
 //   needs USO mnemonic disasm + reloc-pad jal infra. Real-C
@@ -14481,12 +14481,12 @@ void gl_func_00030A20(s32 arg0, s32 arg1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00030A20);
 #endif
 
-// gl_func_00030AF4 — STRUCTURAL PASS (0x840 / 528 words, no episode).
+// snd_HandleSeqEvent_30AF4 — STRUCTURAL PASS (0x840 / 528 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr $ra)
 // with one internal computed jump. A MAJOR SUBSYSTEM CONSTRUCTOR /
 // top-level initializer — the biggest node decoded in this vein.
 //
-//   void gl_func_00030AF4(void *a, void *b, void *c) {
+//   void snd_HandleSeqEvent_30AF4(void *a, void *b, void *c) {
 //     if (*(int*)&D_0 != 1) fixed_init_0743(); // one-time guard
 //     void *blk = alloc(0x45010);              // large arena
 //                                              //  (lui 4; +0x5010)
@@ -14518,7 +14518,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00030A20);
 //   - extensive FP field seeding (74 lwc1 / 42 swc1): default
 //     matrices / ramps / thresholds for the object.
 //   It is the producer for the consumers documented across this
-//   vein: the gl_func_0002FB74 command interpreter, the
+//   vein: the snd_HandleEvent_2FB74 command interpreter, the
 //   gl_func_0002F584/0002F72C quantizer/table-apply leaves, the
 //   canned-sequence and multi-bank emitters, and the
 //   gl_func_000307B0 per-frame timer all run against the record
@@ -14653,7 +14653,7 @@ extern void gl_func_emit_30AF4v();
 extern void gl_func_00030AF4_44F18v(); /* void-result alias of gl_func_00044F18 for 30AF4's never-read calls */
 extern void gl_func_00030AF4_42364v(); /* void-result alias of gl_func_00042364 (case-9 call, result never read) */
 extern void gl_func_00030AF4_460D0v(); /* void-result alias of gl_func_000460D0 (result never read; an int result defines v0 in the hoist's block) */
-void gl_func_00030AF4(mode, sub, arg2)
+void snd_HandleSeqEvent_30AF4(mode, sub, arg2)
 s32 mode; /* agent-g run 288: s32 (stored to the s32 gl_state.f0; only == / != tests and the two switches read it):
            * the switch-1 jump index then takes a fresh ugen temp (target `sll t0,t9,2`) -> 100.0 */
 u32 sub;
@@ -14970,7 +14970,7 @@ s32 arg2;
 }
 #undef CMD_B3
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00030AF4);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_HandleSeqEvent_30AF4);
 #endif
 
 /* gl_func_00031334: stepped cue driver (0x1EC / 123 words). Clears/sets up
@@ -15294,12 +15294,12 @@ int gl_func_00031898(int *a0) {
     return ret_val;
 }
 
-// gl_func_0003190C — STRUCTURAL PASS (0x158 / 86 words, no episode).
+// snd_SetPlayer2ChannelIO_3190C — STRUCTURAL PASS (0x158 / 86 words, no episode).
 // permuter resists: verify-fails every batch (x5+, 2026-06-19) — factory skip.
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A dual state-block conditional command emitter.
 //
-//   void gl_func_0003190C(void) {
+//   void snd_SetPlayer2ChannelIO_3190C(void) {
 //     // block A: state record at &D_0 + 0x368
 //     if (query_0117C1(&D_0 + 0x368)) {
 //       u16 s = *(u16*)(&D_0 + 0x3C8);
@@ -15331,7 +15331,7 @@ int gl_func_00031898(int *a0) {
 //   vs a "zero state" variant (subfield 0x00/0x100, a1 = the
 //   sign-extended state byte). A per-frame two-channel command
 //   flush leaf of the game_libs object subsystem (the 0x06020000
-//   bank is the gl_func_0002F638 / 0002F9D4 emitter family with a
+//   bank is the snd_SetPlayer0ChannelPanIO_2F638 / 0002F9D4 emitter family with a
 //   0x02xx sub-bank; the query helper 0x0117C1 is shared with the
 //   gl_func_00031710 table cluster).
 // 2026-05-31 FULL DECODE 45.0->95.66%: it is THREE identical blocks (not
@@ -15347,7 +15347,7 @@ int gl_func_00031898(int *a0) {
 //   v1-vs-v0 renumber + last-block beql. INCLUDE_ASM stays the build path.
 /* EXACT (agent-c run 122): the query callee is a baked in-unit jal (gl_ref_00045F04); each else arm's second command is 0x0602x000 (the NM had x004); s as int reuses v0; the function is int with no return, so v0 is live at the exit and the last guard's beqzl takes lw ra instead of the lui. */
 extern int gl_ref_00045F04();
-int gl_func_0003190C(void) {
+int snd_SetPlayer2ChannelIO_3190C(void) {
     if (gl_ref_00045F04((char *)&D_00000000 + 0x368)) {
         int s = *(unsigned short *)((char *)&D_00000000 + 0x3C8);
         if (s == 0) {
@@ -15383,7 +15383,7 @@ int gl_func_0003190C(void) {
     }
 }
 
-/* Split off from gl_func_0003190C bundle 2026-05-08: 4-insn setter.
+/* Split off from snd_SetPlayer2ChannelIO_3190C bundle 2026-05-08: 4-insn setter.
  * Clears the global at &D_00000000 + 0x1CAA8 to -1. */
 void game_libs_func_00031A64(void) {
     *(int*)((char*)&D_00000000 + 0x1CAA8) = -1;
@@ -15653,8 +15653,8 @@ void gl_func_00032DC0(Quad4 *dst) {
 //   inits before returning the constructed object. The args
 //   (a/b/c/d, spilled to sp+0x64..0x6C) select the construction
 //   variant. A producer leaf of the game_libs object subsystem —
-//   it manufactures the records the gl_func_0002FB74 interpreter,
-//   the emitter family and the gl_func_00030AF4 top-level
+//   it manufactures the records the snd_HandleEvent_2FB74 interpreter,
+//   the emitter family and the snd_HandleSeqEvent_30AF4 top-level
 //   constructor operate on (0x0001E178 is the deferred-symbolization
 //   template-data site; the 0x150 / 0xB4 sizes are the struct sizes
 //   to type when this object family is formalized).
@@ -15795,7 +15795,7 @@ end:
 //   classic position / velocity / transform update shape. Uses a
 //   large 0x90 stack frame purely as FP scratch (Vec3 spills at
 //   sp+0x54..0x8C). A geometry/kinematics leaf of the game_libs
-//   object subsystem (the per-object math the gl_func_0002FB74
+//   object subsystem (the per-object math the snd_HandleEvent_2FB74
 //   interpreter and the integrator family (0002F288 / 0002F584 /
 //   00031A74) drive each frame; o->0xF4 is the child/parent link
 //   also touched by the gl_func_00032E18 constructor's sub-record).
@@ -15844,7 +15844,7 @@ int gl_func_00033094(char *o) {
 //   object-lifecycle / registration leaf of the game_libs object
 //   subsystem (the per-instance counterpart to the gl_func_00032E18
 //   constructor and the gl_func_00030A20 registration node; the
-//   list it enlists into is the collection the gl_func_0002FB74
+//   list it enlists into is the collection the snd_HandleEvent_2FB74
 //   interpreter iterates).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 factory/insert
 //   callbacks + intrusive-list splice — byte-match needs USO
@@ -16068,7 +16068,7 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 //   version marker — `lui 0x1234; ori 0x0002`). Performs the usual
 //   pointer alignment fix-ups (`& 7`, subtract misalignment). A
 //   memory/region-management leaf of the game_libs object subsystem
-//   (the allocator behind the gl_func_00030AF4 constructor's
+//   (the allocator behind the snd_HandleSeqEvent_30AF4 constructor's
 //   0x45010 arena and the gl_func_00032E18 / gl_func_00033228
 //   sub-record allocations — 0x12340002 is the heap block magic to
 //   key on when that allocator is formalized).
@@ -16444,7 +16444,7 @@ int gl_func_00033B28(int a0, int a1, int a2) {{
 //   form the lifecycle trio for the registry table of the
 //   game_libs object subsystem (per-frame or per-state-change
 //   teardown before re-registration; the table is the collection
-//   the gl_func_0002FB74 interpreter iterates).
+//   the snd_HandleEvent_2FB74 interpreter iterates).
 // BYTE-EXACT 30/30 2026-09-11 (agent-c): the 98.67% wrap's residual (the four
 //   preheader `addiu sN,sN,K` cursor inits emitted s0..s3 where the target has
 //   s3..s0, colours already right) was the eliminated-induction-variable shape of
@@ -16499,7 +16499,7 @@ void gl_func_00033B6C(void) {
 //   consistent with this being the "allocate/grow with options"
 //   entry vs 000334E8's "init/setup" entry of the SAME allocator.
 //   Together with gl_func_000334E8 these form the alloc front-end
-//   for the gl_func_00030AF4 0x45010 arena and the
+//   for the snd_HandleSeqEvent_30AF4 0x45010 arena and the
 //   gl_func_00032E18 / gl_func_00033228 sub-record allocations
 //   (0x12340002 is the shared heap block magic; 0x0001E280 /
 //   0x0001E330 are the deferred template-symbolization sites).
@@ -16700,7 +16700,7 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
 //   &D_0+0x0C and &D_0+0x2C cursors. This is the allocator's
 //   "reset / reclaim" front-end — the lifecycle complement to
 //   000334E8 (init) and 00033BE4 (allocate). The trio is the heap
-//   manager behind the gl_func_00030AF4 0x45010 arena and the
+//   manager behind the snd_HandleSeqEvent_30AF4 0x45010 arena and the
 //   gl_func_00032E18 / gl_func_00033228 sub-record allocations
 //   (block magics 0x12340002 / 0x12340003; templates 0x0001E280 /
 //   0x0001E330 / 0x0001E368 are deferred symbolization sites).

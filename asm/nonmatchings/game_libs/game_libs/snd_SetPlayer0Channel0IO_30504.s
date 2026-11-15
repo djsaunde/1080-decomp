@@ -1,6 +1,6 @@
-nonmatching gl_func_00030504, 0x60
+nonmatching snd_SetPlayer0Channel0IO_30504, 0x60
 
-glabel gl_func_00030504
+glabel snd_SetPlayer0Channel0IO_30504
     /* E155DC 00030504 27BDFFE8 */  .word 0x27BDFFE8
     /* E155E0 00030508 28810101 */  .word 0x28810101
     /* E155E4 0003050C AFBF0014 */  .word 0xAFBF0014
@@ -25,4 +25,4 @@ glabel gl_func_00030504
     /* E15630 00030558 27BD0018 */  .word 0x27BD0018
     /* E15634 0003055C 03E00008 */  .word 0x03E00008
     /* E15638 00030560 00000000 */  .word 0x00000000
-endlabel gl_func_00030504
+endlabel snd_SetPlayer0Channel0IO_30504

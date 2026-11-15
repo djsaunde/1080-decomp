@@ -1,5 +1,5 @@
 {
-  "function": "gl_func_00030AF4",
+  "function": "snd_HandleSeqEvent_30AF4",
   "raw_sha256": "26e0841af3376f6219f08bd3bad89e553b93e456c306bd78074c20920b15a619",
   "renames": {
     ".rodata": "snw_port_gl_func_00030AF4_rodata",

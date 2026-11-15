@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post.c. Target bytes unchanged. */
 #include "context_game_libs_post.h"
-void gl_func_0002F9D4(s32 selector, s32 byte_value, s32 level, s32 raw_word,
+void snd_SetPlayer0ChannelParams_2F9D4(s32 selector, s32 byte_value, s32 level, s32 raw_word,
                      s32 byte_10, s32 byte_14) {
     s32 *word_home = &raw_word;
     s32 op = (selector == 0) ? 1 : 5;

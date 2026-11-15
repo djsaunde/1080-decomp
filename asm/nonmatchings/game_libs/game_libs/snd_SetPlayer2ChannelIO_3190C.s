@@ -1,6 +1,6 @@
-nonmatching gl_func_0003190C, 0x158
+nonmatching snd_SetPlayer2ChannelIO_3190C, 0x158
 
-glabel gl_func_0003190C
+glabel snd_SetPlayer2ChannelIO_3190C
     /* E169E4 0003190C 27BDFFE8 */  .word 0x27BDFFE8
     /* E169E8 00031910 AFBF0014 */  .word 0xAFBF0014
     /* E169EC 00031914 3C040000 */  .word 0x3C040000
@@ -87,4 +87,4 @@ glabel gl_func_0003190C
     /* E16B30 00031A58 27BD0018 */  .word 0x27BD0018
     /* E16B34 00031A5C 03E00008 */  .word 0x03E00008
     /* E16B38 00031A60 00000000 */  .word 0x00000000
-endlabel gl_func_0003190C
+endlabel snd_SetPlayer2ChannelIO_3190C

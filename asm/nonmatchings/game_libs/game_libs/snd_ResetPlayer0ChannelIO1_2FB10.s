@@ -1,6 +1,6 @@
-nonmatching gl_func_0002FB10, 0x44
+nonmatching snd_ResetPlayer0ChannelIO1_2FB10, 0x44
 
-glabel gl_func_0002FB10
+glabel snd_ResetPlayer0ChannelIO1_2FB10
     /* E14BE8 0002FB10 27BDFFE8 */  .word 0x27BDFFE8
     /* E14BEC 0002FB14 14800003 */  .word 0x14800003
     /* E14BF0 0002FB18 AFBF0014 */  .word 0xAFBF0014
@@ -18,4 +18,4 @@ glabel gl_func_0002FB10
     /* E14C20 0002FB48 27BD0018 */  .word 0x27BD0018
     /* E14C24 0002FB4C 03E00008 */  .word 0x03E00008
     /* E14C28 0002FB50 00000000 */  .word 0x00000000
-endlabel gl_func_0002FB10
+endlabel snd_ResetPlayer0ChannelIO1_2FB10

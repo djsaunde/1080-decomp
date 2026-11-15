@@ -1,5 +1,5 @@
 {
-  "function": "gl_func_0002D910",
+  "function": "snd_SetPlayer1Channel15IO_2D910",
   "raw_sha256": "7bf00bb9f1ff84014fa0a18b60dc9ee8d7d76386b2d981c5155637721a2ff18b",
   "renames": {
     "gl_2D910_mode": "snw_port_gl_func_0002D910_gl_2D910_mode",

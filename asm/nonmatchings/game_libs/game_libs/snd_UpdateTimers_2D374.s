@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002D374, 0x2A4
+nonmatching snd_UpdateTimers_2D374, 0x2A4
 
-glabel game_libs_func_0002D374
+glabel snd_UpdateTimers_2D374
     /* E1244C 0002D374 3C0E0000 */  .word 0x3C0E0000
     /* E12450 0002D378 8DCE0000 */  .word 0x8DCE0000
     /* E12454 0002D37C 27BDFFD8 */  .word 0x27BDFFD8
@@ -170,4 +170,4 @@ glabel game_libs_func_0002D374
     /* E126E4 0002D60C 27BD0028 */  .word 0x27BD0028
     /* E126E8 0002D610 03E00008 */  .word 0x03E00008
     /* E126EC 0002D614 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002D374
+endlabel snd_UpdateTimers_2D374

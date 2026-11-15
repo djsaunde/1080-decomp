@@ -1,5 +1,5 @@
 /* Standard linker bindings; original USO identity is independently audited.
- * gl_func_00030AF4 (agent-g run 288): callees at their own addresses (the target's baked jal words; the void aliases
+ * snd_HandleSeqEvent_30AF4 (agent-g run 288): callees at their own addresses (the target's baked jal words; the void aliases
  * gl_func_00030AF4_{42364,44F18,460D0}v at their callee's), the two arena addresses at the values in their names
  * (baked lui / addiu), the TU's .rodata (switch-1 table, 0.1f literal, switch-2 / switch-3 tables) at the USO RoData
  * 0x1874 (target 0x1874 / 0x18AC / 0x18B0 / 0x18E0), everything else 0. */

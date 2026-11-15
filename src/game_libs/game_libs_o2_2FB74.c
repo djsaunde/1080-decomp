@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_0002FB74 -- event -> sound command
+/* IDO 7.1 -O2 donor for snd_HandleEvent_2FB74 -- event -> sound command
  * dispatcher (612/612 words; st_size 0x990).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post.c.o (the
@@ -6,7 +6,7 @@
  * 31334). Both jumptables land in this unit's local .rodata (the st.w10 gate
  * switch, 21 entries for sel 19..39, at +0; the main switch, 49 entries for
  * sel 2..50, at +0x54); the splice renames the reloc to
- * gl_func_0002FB74_rodata, pinned to 0x1750, so the %lo words link to
+ * snd_HandleEvent_2FB74_rodata, pinned to 0x1750, so the %lo words link to
  * 0x1750 / 0x17A4 as the USO ships them.
  *
  * Load-bearing shapes (97.0 -> exact, 2026-10-15 agent-c):
@@ -34,7 +34,7 @@
 extern void gl2FB74_snd();                  /* USO-relocated submit (jal 0) */
 extern int gl_func_00000000_f(int, float);  /* (int, float) blank alias */
 extern int gl_func_00042428();              /* pinned 0x42428, case 50 */
-void gl_ref_00044B70(int a0);               /* baked tail call (gl_func_00030504) */
+void gl_ref_00044B70(int a0);               /* baked tail call (snd_SetPlayer0Channel0IO_30504) */
 void gl_ref_000423A4(unsigned char a0);     /* baked call (game_libs_func_0002DD38), case 512 */
 
 extern s32 D_2FB74_mode;                    /* t2 web (==0/1/8 state) */
@@ -76,7 +76,7 @@ typedef struct Gl2FB74Bank {
 } Gl2FB74Bank;
 extern Gl2FB74Bank D_2FB74_bank;
 
-void gl_func_0002FB74(s32 sel, s32 v) {
+void snd_HandleEvent_2FB74(s32 sel, s32 v) {
     s32 t;
     s32 cmd;
     s32 c;

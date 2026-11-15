@@ -1,6 +1,6 @@
-nonmatching gl_func_000305CC, 0x44
+nonmatching snd_SetPlayer0Channel8Pan_305CC, 0x44
 
-glabel gl_func_000305CC
+glabel snd_SetPlayer0Channel8Pan_305CC
     /* E156A4 000305CC 27BDFFE8 */  .word 0x27BDFFE8
     /* E156A8 000305D0 AFBF0014 */  .word 0xAFBF0014
     /* E156AC 000305D4 04810002 */  .word 0x04810002
@@ -18,4 +18,4 @@ glabel gl_func_000305CC
     /* E156DC 00030604 27BD0018 */  .word 0x27BD0018
     /* E156E0 00030608 03E00008 */  .word 0x03E00008
     /* E156E4 0003060C 00000000 */  .word 0x00000000
-endlabel gl_func_000305CC
+endlabel snd_SetPlayer0Channel8Pan_305CC

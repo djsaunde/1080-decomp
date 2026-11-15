@@ -410,7 +410,7 @@ void game_libs_func_0003487C(int a0, int a1) {
 //   back-reference (the o argument) at offset +0x04. A factory leaf
 //   of the game_libs object subsystem (manufactures a 3-part typed
 //   object; companion to the gl_func_00032E18 / gl_func_00033228
-//   constructors and consumed by the gl_func_0002FB74 interpreter —
+//   constructors and consumed by the snd_HandleEvent_2FB74 interpreter —
 //   0x0001E1E8 / 0x0001E1B0 are the object's vtable/type tables,
 //   deferred data-segment symbolization sites; the 0x10/0x10/0x04
 //   sizes are the struct sizes to type when this family is
@@ -1638,7 +1638,7 @@ void gl_func_000359C4(int a0, int a1, int a2, int a3) {
 //   dispatch leaf of the game_libs object subsystem (the 8-byte
 //   {tag, handler} table is the per-message handler array; sibling
 //   of the gl_func_00035A18-family vtable dispatchers and the
-//   gl_func_0002FB74 interpreter's opcode arms — this one keys on
+//   snd_HandleEvent_2FB74 interpreter's opcode arms — this one keys on
 //   the record's own 0x08/0x0A id fields rather than a global
 //   handler vtable).
 // Caps (DEFERRED): raw-word USO + jalr through an 8-byte {tag,
@@ -3131,7 +3131,7 @@ void gl_func_00037AF0(int a0) {
 //   object-lifecycle / registration leaf of the game_libs object
 //   subsystem — the template-driven sibling of gl_func_00033228;
 //   the list it enlists into is the collection the
-//   gl_func_00034458 processor / gl_func_0002FB74 interpreter
+//   gl_func_00034458 processor / snd_HandleEvent_2FB74 interpreter
 //   iterate. 0x0001EBF0 is a deferred data-segment template-
 //   symbolization site.
 // NOTE: the splice tests/writes the NEW node n (n->0x14 / n->0x04) and
@@ -3915,7 +3915,7 @@ void gl_func_00038728(char *o) {
 //   operation. A factored command handler of the game_libs object
 //   subsystem's command VM — the same per-tag dispatch shape as
 //   gl_func_000332B4 (which keyed tag 0x69 and o->0xF4); together
-//   they are the externalized arms of the gl_func_0002FB74
+//   they are the externalized arms of the snd_HandleEvent_2FB74
 //   interpreter for specific opcodes.
 // Caps (DEFERRED): raw-word USO + command-tag switch + USO-reloc jal-0 cb.
 //   2026-05-31 FULL DECODE + completion 49.3->84.6%: the sketch had the case
@@ -4080,7 +4080,7 @@ int gl_func_00038964(char *o, void *ctx) {
 //   template at 0x0001EC6C. The jump-table-driven sibling of the
 //   if/else command handlers gl_func_000332B4 (tag 0x69) and
 //   gl_func_00038830 (tags 0xC/0xD/0xE/2); together they are the
-//   externalized opcode arms of the gl_func_0002FB74 command
+//   externalized opcode arms of the snd_HandleEvent_2FB74 command
 //   interpreter (the &D_0+0x1A1C table and 0x0001EC6C template are
 //   deferred symbolization sites — the table is the 9-entry
 //   opcode-0x64.. dispatch array to symbolize).
@@ -4926,7 +4926,7 @@ int gl_func_0003A044(char *a0) {
 //   dispatch trampolines over the 8-byte {tag, fn-ptr} handler
 //   array (cf. gl_func_00035A18). A polymorphic-dispatch cluster
 //   of the game_libs object subsystem (sibling of the
-//   gl_func_0002FB74 interpreter's opcode arms; the handler table
+//   snd_HandleEvent_2FB74 interpreter's opcode arms; the handler table
 //   is the per-message routing array to type when this family is
 //   formalized).
 // Caps (DEFERRED): raw-word USO + ~10-fn no-frame-leaf bundle + jalr

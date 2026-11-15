@@ -1,6 +1,6 @@
-nonmatching gl_func_0002F638, 0xE8
+nonmatching snd_SetPlayer0ChannelPanIO_2F638, 0xE8
 
-glabel gl_func_0002F638
+glabel snd_SetPlayer0ChannelPanIO_2F638
     /* E14710 0002F638 27BDFFD0 */  .word 0x27BDFFD0
     /* E14714 0002F63C AFB00018 */  .word 0xAFB00018
     /* E14718 0002F640 00A08025 */  .word 0x00A08025
@@ -59,4 +59,4 @@ glabel gl_func_0002F638
     /* E147EC 0002F714 27BD0030 */  .word 0x27BD0030
     /* E147F0 0002F718 03E00008 */  .word 0x03E00008
     /* E147F4 0002F71C 00000000 */  .word 0x00000000
-endlabel gl_func_0002F638
+endlabel snd_SetPlayer0ChannelPanIO_2F638

@@ -1,7 +1,7 @@
-/* Native original-compiler source port from src/game_libs/game_libs_post.c (the gl_func_00030AF4 NON_MATCHING body,
+/* Native original-compiler source port from src/game_libs/game_libs_post.c (the snd_HandleSeqEvent_30AF4 NON_MATCHING body,
  * comments dropped; see that file for the per-line lever history). agent-g run 288: the in-tree body compiles to the
  * target's 528 words once linked with the callees / arena addresses at their own values and the TU's .rodata (switch-1
- * table, the 0.1f literal, switch-2 / switch-3 tables) at the USO RoData 0x1874 (scripts/match-origins-gl_func_00030AF4.ld).
+ * table, the 0.1f literal, switch-2 / switch-3 tables) at the USO RoData 0x1874 (scripts/match-origins-snd_HandleSeqEvent_30AF4.ld).
  * Void prototypes gl_func_emit_30AF4v / gl_func_00030AF4_{44F18,42364,460D0}v: calls whose result is never read. */
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -32,7 +32,7 @@ extern void gl_func_emit_30AF4v();
 extern void gl_func_00030AF4_44F18v();
 extern void gl_func_00030AF4_42364v();
 extern void gl_func_00030AF4_460D0v();
-void gl_func_00030AF4(mode, sub, arg2)
+void snd_HandleSeqEvent_30AF4(mode, sub, arg2)
 s32 mode;
 u32 sub;
 s32 arg2;

@@ -2597,10 +2597,10 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 2FB74 = event -> sound command dispatcher with two jumptable switches (21 +
 # 49 entries), IDO 7.1 -O2 donor: game_libs_o2_2FB74.c (612/612 words).
 # Spliced only so the donor-local .rodata reloc (both tables, +0 and +0x54) is
-# renamed gl_func_0002FB74_rodata and pinned to the USO tables at +0x1750 (the
+# renamed snd_HandleEvent_2FB74_rodata and pinned to the USO tables at +0x1750 (the
 # 29CCC / 31334 recipe). Uses += (composes).
 GAMELIBS_2FB74_DONOR := build/src/game_libs/game_libs_o2_2FB74.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002FB74=$(GAMELIBS_2FB74_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleEvent_2FB74=$(GAMELIBS_2FB74_DONOR)
 # 26D64 = sound-command queue drain (14-entry switch on the command code),
 # IDO 7.1 -O2 donor: game_libs_o2_26D64.c (230/230 words). Spliced only so the
 # donor-local .rodata jumptable reloc is renamed AudioThread_ProcessCmds_rodata and
@@ -3852,10 +3852,10 @@ build/src/match_imports/AudioSeq_InitSequencePlayer.c.o: src/match_imports/Audio
 build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_0002D910.c.o: src/match_imports/gl_func_0002D910.c src/match_imports/context_game_libs_post.h
+build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o: src/match_imports/snd_SetPlayer1Channel15IO_2D910.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_0002D910.c.o: src/match_imports/gl_func_0002D910.c src/match_imports/context_game_libs_post.h
+build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o: src/match_imports/snd_SetPlayer1Channel15IO_2D910.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gl_func_0002F288.c.o: src/match_imports/gl_func_0002F288.c src/match_imports/context_game_libs_post.h
@@ -3864,10 +3864,10 @@ build/src/match_imports/gl_func_0002F288.c.o: src/match_imports/gl_func_0002F288
 build/non_matching/src/match_imports/gl_func_0002F288.c.o: src/match_imports/gl_func_0002F288.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_0002F9D4.c.o: src/match_imports/gl_func_0002F9D4.c src/match_imports/context_game_libs_post.h
+build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o: src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_0002F9D4.c.o: src/match_imports/gl_func_0002F9D4.c src/match_imports/context_game_libs_post.h
+build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o: src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gl_func_0003061C.c.o: src/match_imports/gl_func_0003061C.c src/match_imports/context_game_libs_post.h
@@ -3897,11 +3897,11 @@ build/non_matching/src/match_imports/gl_func_0002E354.c.o: src/match_imports/gl_
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 # 30AF4 = EXACT (agent-g run 288): the post NM body as its own TU, linked with the callees / arena addresses at their
-# own values and the TU .rodata at the USO RoData 0x1874 (scripts/match-origins-gl_func_00030AF4.ld), spliced on both paths.
-build/src/match_imports/gl_func_00030AF4.c.o: src/match_imports/gl_func_00030AF4.c
+# own values and the TU .rodata at the USO RoData 0x1874 (scripts/match-origins-snd_HandleSeqEvent_30AF4.ld), spliced on both paths.
+build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_00030AF4.c.o: src/match_imports/gl_func_00030AF4.c
+build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gl_func_000346F0.c.o: src/match_imports/gl_func_000346F0.c src/match_imports/context_game_libs_post0b.h
@@ -4426,24 +4426,24 @@ build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf: build/src/ma
 build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf: build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o scripts/match-origins-AudioSeq_InitSequencePlayer-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-AudioSeq_InitSequencePlayer-nm.ld -e AudioSeq_InitSequencePlayer -o $@ $@.stripped.o
-build/src/match_imports/gl_func_0002D910.c.o.linked.elf: build/src/match_imports/gl_func_0002D910.c.o scripts/match-origins-gl_func_0002D910.ld
+build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf: build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o scripts/match-origins-snd_SetPlayer1Channel15IO_2D910.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D910.ld -e gl_func_0002D910 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002D910.c.o scripts/match-origins-gl_func_0002D910-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SetPlayer1Channel15IO_2D910.ld -e snd_SetPlayer1Channel15IO_2D910 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf: build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o scripts/match-origins-snd_SetPlayer1Channel15IO_2D910-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D910-nm.ld -e gl_func_0002D910 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SetPlayer1Channel15IO_2D910-nm.ld -e snd_SetPlayer1Channel15IO_2D910 -o $@ $@.stripped.o
 build/src/match_imports/gl_func_0002F288.c.o.linked.elf: build/src/match_imports/gl_func_0002F288.c.o scripts/match-origins-gl_func_0002F288.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F288.ld -e gl_func_0002F288 -o $@ $@.stripped.o
 build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002F288.c.o scripts/match-origins-gl_func_0002F288-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F288-nm.ld -e gl_func_0002F288 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf: build/src/match_imports/gl_func_0002F9D4.c.o scripts/match-origins-gl_func_0002F9D4.ld
+build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf: build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o scripts/match-origins-snd_SetPlayer0ChannelParams_2F9D4.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F9D4.ld -e gl_func_0002F9D4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002F9D4.c.o scripts/match-origins-gl_func_0002F9D4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SetPlayer0ChannelParams_2F9D4.ld -e snd_SetPlayer0ChannelParams_2F9D4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf: build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o scripts/match-origins-snd_SetPlayer0ChannelParams_2F9D4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002F9D4-nm.ld -e gl_func_0002F9D4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SetPlayer0ChannelParams_2F9D4-nm.ld -e snd_SetPlayer0ChannelParams_2F9D4 -o $@ $@.stripped.o
 build/src/match_imports/gl_func_0003061C.c.o.linked.elf: build/src/match_imports/gl_func_0003061C.c.o scripts/match-origins-gl_func_0003061C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0003061C.ld -e gl_func_0003061C -o $@ $@.stripped.o
@@ -4468,12 +4468,12 @@ build/src/match_imports/gl_func_0002E354.c.o.linked.elf: build/src/match_imports
 build/non_matching/src/match_imports/gl_func_0002E354.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002E354.c.o scripts/match-origins-gl_func_0002E354-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002E354-nm.ld -e gl_func_0002E354 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_00030AF4.c.o.linked.elf: build/src/match_imports/gl_func_00030AF4.c.o scripts/match-origins-gl_func_00030AF4.ld
+build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf: build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o scripts/match-origins-snd_HandleSeqEvent_30AF4.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00030AF4.ld -e gl_func_00030AF4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_00030AF4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00030AF4.c.o scripts/match-origins-gl_func_00030AF4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_HandleSeqEvent_30AF4.ld -e snd_HandleSeqEvent_30AF4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o scripts/match-origins-snd_HandleSeqEvent_30AF4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00030AF4-nm.ld -e gl_func_00030AF4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_HandleSeqEvent_30AF4-nm.ld -e snd_HandleSeqEvent_30AF4 -o $@ $@.stripped.o
 build/src/match_imports/gl_func_000346F0.c.o.linked.elf: build/src/match_imports/gl_func_000346F0.c.o scripts/match-origins-gl_func_000346F0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000346F0.ld -e gl_func_000346F0 -o $@ $@.stripped.o
@@ -4940,18 +4940,18 @@ build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: bu
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_InitSequencePlayer.json $@
 build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf scripts/match-bindings-AudioSeq_InitSequencePlayer-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_InitSequencePlayer-nm.json $@
-build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002D910.c.o.linked.elf scripts/match-bindings-gl_func_0002D910.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D910.json $@
-build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf scripts/match-bindings-gl_func_0002D910-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D910-nm.json $@
+build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf: build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf scripts/match-bindings-snd_SetPlayer1Channel15IO_2D910.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SetPlayer1Channel15IO_2D910.json $@
+build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf scripts/match-bindings-snd_SetPlayer1Channel15IO_2D910-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SetPlayer1Channel15IO_2D910-nm.json $@
 build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002F288.c.o.linked.elf scripts/match-bindings-gl_func_0002F288.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F288.json $@
 build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf scripts/match-bindings-gl_func_0002F288-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F288-nm.json $@
-build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf scripts/match-bindings-gl_func_0002F9D4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F9D4.json $@
-build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf scripts/match-bindings-gl_func_0002F9D4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002F9D4-nm.json $@
+build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf: build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf scripts/match-bindings-snd_SetPlayer0ChannelParams_2F9D4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SetPlayer0ChannelParams_2F9D4.json $@
+build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf scripts/match-bindings-snd_SetPlayer0ChannelParams_2F9D4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SetPlayer0ChannelParams_2F9D4-nm.json $@
 build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0003061C.c.o.linked.elf scripts/match-bindings-gl_func_0003061C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0003061C.json $@
 build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf scripts/match-bindings-gl_func_0003061C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -4968,10 +4968,10 @@ build/src/match_imports/gl_func_0002E354.c.o.linked.elf.bound.elf: build/src/mat
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002E354.json $@
 build/non_matching/src/match_imports/gl_func_0002E354.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002E354.c.o.linked.elf scripts/match-bindings-gl_func_0002E354-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002E354-nm.json $@
-build/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00030AF4.c.o.linked.elf scripts/match-bindings-gl_func_00030AF4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00030AF4.json $@
-build/non_matching/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00030AF4.c.o.linked.elf scripts/match-bindings-gl_func_00030AF4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00030AF4-nm.json $@
+build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf scripts/match-bindings-snd_HandleSeqEvent_30AF4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_HandleSeqEvent_30AF4.json $@
+build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json $@
 build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000346F0.c.o.linked.elf scripts/match-bindings-gl_func_000346F0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000346F0.json $@
 build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf scripts/match-bindings-gl_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5318,18 +5318,18 @@ build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_In
 build/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c scripts/match-bindings-AudioSeq_InitSequencePlayer.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_InitSequencePlayer=build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c scripts/match-bindings-AudioSeq_InitSequencePlayer-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D910=build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D910.c scripts/match-bindings-gl_func_0002D910.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D910=build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D910.c scripts/match-bindings-gl_func_0002D910-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SetPlayer1Channel15IO_2D910=build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SetPlayer1Channel15IO_2D910.c scripts/match-bindings-snd_SetPlayer1Channel15IO_2D910.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SetPlayer1Channel15IO_2D910=build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SetPlayer1Channel15IO_2D910.c scripts/match-bindings-snd_SetPlayer1Channel15IO_2D910-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F288=build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F288.c scripts/match-bindings-gl_func_0002F288.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F288=build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F288.c scripts/match-bindings-gl_func_0002F288-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F9D4=build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F9D4.c scripts/match-bindings-gl_func_0002F9D4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002F9D4=build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002F9D4.c scripts/match-bindings-gl_func_0002F9D4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SetPlayer0ChannelParams_2F9D4=build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c scripts/match-bindings-snd_SetPlayer0ChannelParams_2F9D4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SetPlayer0ChannelParams_2F9D4=build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c scripts/match-bindings-snd_SetPlayer0ChannelParams_2F9D4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0003061C=build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0003061C.c scripts/match-bindings-gl_func_0003061C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0003061C=build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
@@ -5346,10 +5346,10 @@ build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_000
 build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002E354.c scripts/match-bindings-gl_func_0002E354.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002E354=build/non_matching/src/match_imports/gl_func_0002E354.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002E354.c scripts/match-bindings-gl_func_0002E354-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00030AF4=build/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_00030AF4.c scripts/match-bindings-gl_func_00030AF4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00030AF4=build/non_matching/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_00030AF4.c scripts/match-bindings-gl_func_00030AF4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEvent_30AF4=build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c scripts/match-bindings-snd_HandleSeqEvent_30AF4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEvent_30AF4=build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000346F0=build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000346F0.c scripts/match-bindings-gl_func_000346F0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000346F0=build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
@@ -5724,18 +5724,18 @@ build/src/game_libs/game_libs_post.c.o: build/src/match_imports/AudioSeq_InitSeq
 build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf
+build/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/snd_SetPlayer1Channel15IO_2D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_0002F288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_0002F9D4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf
+build/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/snd_SetPlayer0ChannelParams_2F9D4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0003061C.c.o.linked.elf.bound.elf
@@ -5752,10 +5752,10 @@ build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002E354
 build/src/match_imports/gl_func_0002E354.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002E354.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_0002E354.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_00030AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
+build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf

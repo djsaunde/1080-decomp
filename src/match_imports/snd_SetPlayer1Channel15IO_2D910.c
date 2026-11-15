@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post.c. Target bytes unchanged. */
 #include "context_game_libs_post.h"
-void gl_func_0002D910(int a0, int a1, int a2, int a3)
+void snd_SetPlayer1Channel15IO_2D910(int a0, int a1, int a2, int a3)
 {
   int v0;
   int *primary_input_home;

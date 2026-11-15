@@ -1,6 +1,6 @@
-nonmatching gl_func_00030564, 0x28
+nonmatching snd_SetPlayer0Channel8IO1_30564, 0x28
 
-glabel gl_func_00030564
+glabel snd_SetPlayer0Channel8IO1_30564
     /* E1563C 00030564 27BDFFE8 */  .word 0x27BDFFE8
     /* E15640 00030568 AFBF0014 */  .word 0xAFBF0014
     /* E15644 0003056C 3C040600 */  .word 0x3C040600
@@ -11,4 +11,4 @@ glabel gl_func_00030564
     /* E15658 00030580 27BD0018 */  .word 0x27BD0018
     /* E1565C 00030584 03E00008 */  .word 0x03E00008
     /* E15660 00030588 00000000 */  .word 0x00000000
-endlabel gl_func_00030564
+endlabel snd_SetPlayer0Channel8IO1_30564

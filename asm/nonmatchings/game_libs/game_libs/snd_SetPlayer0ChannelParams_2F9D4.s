@@ -1,6 +1,6 @@
-nonmatching gl_func_0002F9D4, 0xBC
+nonmatching snd_SetPlayer0ChannelParams_2F9D4, 0xBC
 
-glabel gl_func_0002F9D4
+glabel snd_SetPlayer0ChannelParams_2F9D4
     /* E14AAC 0002F9D4 27BDFFD0 */  .word 0x27BDFFD0
     /* E14AB0 0002F9D8 AFA7003C */  .word 0xAFA7003C
     /* E14AB4 0002F9DC 00A03825 */  .word 0x00A03825
@@ -48,4 +48,4 @@ glabel gl_func_0002F9D4
     /* E14B5C 0002FA84 27BD0030 */  .word 0x27BD0030
     /* E14B60 0002FA88 03E00008 */  .word 0x03E00008
     /* E14B64 0002FA8C 00000000 */  .word 0x00000000
-endlabel gl_func_0002F9D4
+endlabel snd_SetPlayer0ChannelParams_2F9D4
