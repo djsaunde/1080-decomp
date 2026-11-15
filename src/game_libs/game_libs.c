@@ -4378,11 +4378,11 @@ int *gl_func_000088B4(int *arg0) {
 
 /* game_libs_func_0004D014 split off from gl_func_0004CFD4 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
-/* game_libs_func_00054144 split off from gl_func_00053C04 bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
+/* BasePolyShape_triCentroid split off from BasePolyShape_genNormalsFast bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
 /* game_libs_func_00031580 split off from gl_func_00031560 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
-/* game_libs_func_0004EB28 + game_libs_func_0004EB4C split off from gl_func_0004E96C bundle on 2026-05-08; decompiled in game_libs_post.c. */
+/* Window_updateAspect + game_libs_func_0004EB4C split off from gl_func_0004E96C bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
 /* game_libs_func_0003EB90, _0003EB98 split off from gl_func_0003EB3C bundle
  * 2026-05-08; decompiled in game_libs_post.c. */
@@ -4418,7 +4418,7 @@ int *gl_func_000088B4(int *arg0) {
  * bodies live in game_libs_post.c next to parent. */
 
 /* game_libs_func_0004D3D0: orphan absorbed by the C-emit of
- * game_libs_func_0004D39C (doubly-linked-list insert-after-head;
+ * RcpMgr_insertTask (doubly-linked-list insert-after-head;
  * 18/18 exact at .o size 0x48 in game_libs_post.c.o, covers vram
  * 0x4D39C-0x4D3E3 inclusive of the orphan's 5-insn range). The
  * INCLUDE_ASM here was past TRUNCATE_TEXT=0x8944 anyway (dead).
@@ -4442,7 +4442,7 @@ int *gl_func_000088B4(int *arg0) {
  * above): game_libs_func_0003058C → snd_SetPlayer0Channel8IO1_30564 SUFFIX_BYTES (3 words
  * 0x3C020000,0x24420000,0x8C4E0008); game_libs_func_00030610 →
  * snd_SetPlayer0Channel8Pan_305CC SUFFIX_BYTES (3 words 0x3C020000,0x24420000,0x8C4E0000);
- * game_libs_func_0005FDC0 → gl_func_0005FD20 SUFFIX_BYTES (3 words
+ * game_libs_func_0005FDC0 → math_printBounds SUFFIX_BYTES (3 words
  * 0x00000000,0x3C060000,0x8CC60000); snd_PlayPlayer2Seq_2DEF4 →
  * snd_PlayPlayer0Seq0_2DED0 SUFFIX_BYTES (3 words 0x000470C0,0x01C52021,0x2484001A).
  * All four predecessor recipes live on game_libs_post.c.o. */

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0005F5F0 (look-at matrix, 229 words): EXACT (agent-g run 247), spliced
+/* IDO 7.1 NCC (C++) donor for math_lookAtF (look-at matrix, 229 words): EXACT (agent-g run 247), spliced
  * over the empty placeholder in game_libs_post0b.c on both build paths.
  * Custom guLookAtF with an eye-to-at distance clamp: if dist2 > far2 (D+0x205C = 10000.0f) or dist2 < 10.0f the
  * look vector is reset to (0, 0, 1) (dist2 < 1) or normalised in place, scaled to length 10 and dist2 forced
@@ -16,7 +16,7 @@ extern int D_00000000;
 extern f32 gl_func_0005F5F0_sqrtf(f32);
 extern void gl_func_0005F5F0_normalize(f32 *);
 }
-extern "C" void gl_func_0005F5F0(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32 zAt, f32 xUp, f32 yUp, f32 zUp) {
+extern "C" void math_lookAtF(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32 zAt, f32 xUp, f32 yUp, f32 zUp) {
     f32 slen;
     f32 len;
     f32 xLook, yLook, zLook;

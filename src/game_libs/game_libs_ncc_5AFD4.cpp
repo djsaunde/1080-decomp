@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0005AFD4 (0x9C / 39 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) EXACT donor for Mem_init (0x9C / 39 words), agent-c run 162.
  * Heap init: register the range, clear the counters, make the empty free-list head, then make the whole range
  * one block {hdr = 0xFF << 24 | size / 16, minus one; next / prev = the heap head; magic 0x87654321} and
  * link it. The cfe body (91.77, 40 words) folded `(size >> 4) + 0xFF000000 - 1` into one 0xFEFFFFFF
@@ -12,7 +12,7 @@ extern char D_00000000[];
 }
 struct Blk { unsigned hdr; Blk *next; Blk *prev; unsigned magic; };
 struct Heap { Blk head; Blk list; unsigned n20; unsigned n24; int size; };
-extern "C" void gl_func_0005AFD4(Heap *h, Blk *b, char *end) {
+extern "C" void Mem_init(Heap *h, Blk *b, char *end) {
     gl_func_00000000(D_00000000 + 0x219F8, b, end, 0x10);
     h->n24 = 0;
     int size = end - (char *)b;

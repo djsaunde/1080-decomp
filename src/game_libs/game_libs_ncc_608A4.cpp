@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000608A4 (0x1D0 / 116 words), agent-c run 175, spliced over an empty
+/* IDO 7.1 NCC (C++) EXACT donor for TextWin_draw (0x1D0 / 116 words), agent-c run 175, spliced over an empty
  * placeholder in game_libs_post0b.c in both build trees (Makefile rename of draw__7TextWinFi).
  * `void TextWin::draw(int big)`: the cfe body (83.91, m2c temps) as a C++ text-window member -- an optional big-font
  * switch, a by-address Pt(0, 0x408) passed to the frame call, the clipped right edge (290), the title through the

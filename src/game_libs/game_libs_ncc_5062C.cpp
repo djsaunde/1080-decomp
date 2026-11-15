@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0005062C (0xAC4 / 689 words) -- EXACT.
+/* IDO 7.1 NCC (C++) donor for BasePolyShape_subdivide (0xAC4 / 689 words) -- EXACT.
  *
  * REPLACE_FUNC_BODY-spliced over the placeholder in both post0b objects
  * (Makefile GAMELIBS_5062C_DONOR); callees are blank USO imports (jal 0,
@@ -42,7 +42,7 @@ int gl_func_00000000_5062c_vtx(int, int, V3 *, V3 *, int);
 void gl_func_00000000_5062c_tri(int, int, int, int, int, int);
 int gl_func_00000000_5062c_rec(int, int, int, int, int, int, int, V3, V3, V3, V3, V3, V3);
 }
-extern "C" int gl_func_0005062C(int scale, int a1, int level, int a3, int a4, int a5, int a6,
+extern "C" int BasePolyShape_subdivide(int scale, int a1, int level, int a3, int a4, int a5, int a6,
                                 V3 v0, V3 v1, V3 v2, V3 t0, V3 t1, V3 t2) {
     V3 s1, s2, s3, s4, s5, s6;
     V3 m01, m12, m20, u01, u12, u20;

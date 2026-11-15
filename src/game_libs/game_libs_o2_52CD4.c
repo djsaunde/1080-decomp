@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00052CD4 -- command-stream decoder
+/* IDO 7.1 -O2 donor for BasePolyShape_parse -- command-stream decoder
  * (0x468 / 282 words; 282/282 word-exact standalone apart from reloc fields).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
@@ -6,7 +6,7 @@
  * switch-jumptable-rodata-rename). The C switch over op 0..36 puts its
  * 37-entry jumptable at donor .rodata +0 and the 10000.0f literal right
  * behind it at +0x94; the splice renames that reloc to
- * gl_func_00052CD4_rodata, pinned to 0x1BE4 in undefined_syms_auto.txt, so
+ * BasePolyShape_parse_rodata, pinned to 0x1BE4 in undefined_syms_auto.txt, so
  * the `lw t6,0x1BE4(at)` table load and the `lwc1 f8,0x1C78(at)` literal both
  * link exactly as the USO ships them (bootup.uso RoData file offset = imm + 4:
  * table at 0x1BE8..0x1C78, 0x461C4000 at 0x1C7C). scripts/extract-uso-
@@ -48,7 +48,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 extern char gl_ref_00020FD4_52CD4[], gl_ref_00020FDC_52CD4[], gl_ref_00020FF4_52CD4[];
 
-s32 *gl_func_00052CD4(char *arg0, s32 *arg1) {
+s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
     s32 op;
     s32 *cur;
     s32 v;

@@ -1,17 +1,17 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004D688 -- EXACT (agent-g run 256), spliced over the post0b placeholder on
- * both build paths via REPLACE_FUNC_BODY (only gl_func_0004D688 = `Obj::run()` is taken from this object).
+/* IDO 7.1 NCC (C++) donor for RcpMgr_service -- EXACT (agent-g run 256), spliced over the post0b placeholder on
+ * both build paths via REPLACE_FUNC_BODY (only RcpMgr_service = `Obj::run()` is taken from this object).
  * The debug-console event loop (agent-c run 137 NCC goto form; agent-g runs 192 / 204: member function, for(;;) loop
  * holding &g2 / 1, source-order edg switch = beq chain, static guard pair, k homed above e, dead multi-def on e;
  * agent-g run 256: the old-n copy of the 'd' toggle through the dead e, `e = (Ev *)n; n++; if ((int)e & 1)`, which
  * puts it in a0 like the target).
  * TRANSLATION UNIT: the loop never returns, so ugen emits `.align 5` before the dead epilogue. In a standalone object
  * that pads 5 nops (run() at offset 0, epilogue at 0x38C); the target has none because run() was NOT first in its
- * file. The guard static is shared with gl_func_0004D468 (it stores the 0x1234567812345678 magic that run() checks),
+ * file. The guard static is shared with RcpMgr_ctor (it stores the 0x1234567812345678 magic that run() checks),
  * so this file reconstructs the unit from gl_func_0004D354 (the nearest preceding function whose start puts run()'s
  * epilogue on a 32-byte boundary: 0x334 + 0x38C = 0x6C0): 4D354 / 4D39C / 4D3E4 (the post0b C bodies as extern "C"),
  * 4D468 (the exact NCC donor body, see game_libs_ncc_4D468.cpp for its notes), 4D658, then run(). Every compiled
  * size equals the target's (4D3E4 scores 99.70 under NCC; only run() is spliced). The guard's .bss reloc is renamed
- * gl_func_0004D688_bss by the splice (pinned to 0x3CB00, the address gl_func_0004D468_bss already uses); calls go
+ * RcpMgr_service_bss by the splice (pinned to 0x3CB00, the address RcpMgr_ctor_bss already uses); calls go
  * through gl_func_00000000 (the USO's zero jal). */
 extern "C" {
 int gl_func_00000000(...);
@@ -31,7 +31,7 @@ extern "C" void gl_func_0004D354(int *arg0) {
     arg0[0x60/4] = 1;
     arg0[0x64/4] = 0;
 }
-extern "C" void game_libs_func_0004D39C(int *a0, int **a1) {
+extern "C" void RcpMgr_insertTask(int *a0, int **a1) {
     if (*a1 != 0) {
         *(int*)((char*)a0 + 0x50) = (int)*a1;
         *(int*)((char*)a0 + 0x54) = *(int*)((char*)*a1 + 0x54);
@@ -43,7 +43,7 @@ extern "C" void game_libs_func_0004D39C(int *a0, int **a1) {
         *a1 = a0;
     }
 }
-extern "C" void gl_func_0004D3E4(int node, int *head) {
+extern "C" void RcpMgr_removeTask(int node, int *head) {
     if (*head == 0) {
         gl_func_00000000(D_00000000 + 0x201E4, head, node);
     }
@@ -59,7 +59,7 @@ struct E { E() {} char pad[0x78]; };
 void *operator new(unsigned int n, int al);
 struct S4D { int w0, w4, w8, wC; int w10; int w14; int w18; int w1C, w20, w24, w28, w2C; char pad30[0x14]; int w44; };
 inline void bind(int k, int h, int id) { if (0) { h = 0; } gl_func_00000000(k, h, id); }
-extern "C" S4D *gl_func_0004D468(S4D *s) {
+extern "C" S4D *RcpMgr_ctor(S4D *s) {
     if (s != 0 || (s = (S4D *)gl_func_00000000(0x50)) != 0) {
     gl_func_00000000(D_00000000 + 0x201F4, 0);
     gl_func_00000000(D_00000000 + 0x3EB00, 0xB0000B70, 0x100);
@@ -94,7 +94,7 @@ extern "C" S4D *gl_func_0004D468(S4D *s) {
     return s;
 }
 
-extern "C" void gl_func_0004D658(int a0) {
+extern "C" void RcpMgr_update(int a0) {
     gl_func_00000000(D_00000000 + 0x000201FC);
     gl_func_00000000(a0);
 }

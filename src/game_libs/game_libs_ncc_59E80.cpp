@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00059E80 (0x444 / 273 words): lift agent-c run 164, exact agent-c run 296.
+/* IDO 7.1 NCC (C++) EXACT donor for gfx_initRDPState (0x444 / 273 words): lift agent-c run 164, exact agent-c run 296.
  * Fixed render-state display list (kit CX family): gSPSegment(0, 0), two gSPDisplayList(sub-DL builder results),
  * SetOtherMode_H texture LOD / alpha dither / colour dither / bilerp / perspective, SetCombine, clear + set
  * geometry mode, cycle type, alpha compare, blend + prim colour, gSPClipRatio(3) as four movewords, then the
@@ -24,7 +24,7 @@ struct Obj { char pad[0x104]; int f104; char pad108[0x148 - 0x108]; Sub *s148; }
  * LR across both packets' blocks, so packet 2's n skips a2 like the target (dl a1 / n a3 in packets 2 and 3); the
  * code-free `d` read of c->dl before next() keeps the 0xFFFD / t1 sharing */
 inline void dlist(Ctx *c, int v) { DLHead *d = c->dl; Gfx *_g = c->next(); _g->w0 = 0x06000000; _g->w1 = v; }
-extern "C" void gl_func_00059E80(Ctx *c, Obj *o) {
+extern "C" void gfx_initRDPState(Ctx *c, Obj *o) {
     int r1, r2;
     /* agent-c runs 293-295 (kit CCCLXV): uopt colours each packet pointer as a block-granular LR, so packets the
      * target gives the SAME register share one pointer variable: gv = the v0 packets (0x602 / 0x1301 / 0xF9 /

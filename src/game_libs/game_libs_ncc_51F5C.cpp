@@ -1,10 +1,10 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00051F5C: token-stream interpreter; the switch is edg's case-order compare chain (100, 101, 0), which cfe could not lay out (95.4 cap).
+/* IDO 7.1 NCC (C++) donor for BasePolyShape_parseMats: token-stream interpreter; the switch is edg's case-order compare chain (100, 101, 0), which cfe could not lay out (95.4 cap).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
 extern int D_00000000;
 int gl_func_00034458_51F5C(...);
 }
-extern "C" void gl_func_00051F5C(char *arg0, int *arg1) {
+extern "C" void BasePolyShape_parseMats(char *arg0, int *arg1) {
     char *node;
     char *prev;
     int idx;

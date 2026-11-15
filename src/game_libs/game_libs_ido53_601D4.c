@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 -mips2 donor for gl_func_000601DC = lazy-init tracker
+/* IDO 5.3 -O2 -mips2 donor for memtrack_end = lazy-init tracker
  * update. PROVEN EXACT 30/30 standalone against the 0x601D4..0x60248
  * stream (the .s was already boundary-merged 2026-05-30: splat's 2-word
  * `lui $t6; lw $t6,0(t6)` pre-prologue head, true entry 0x601D4, 0x78).
@@ -40,7 +40,7 @@ extern char D_00000000[];
 extern void gl_func_00000000_init601();
 extern int gl_func_00000000_get601();
 
-int gl_func_000601DC(void) {
+int memtrack_end(void) {
     Rec601 *v1 = D_00000000_trk601->f40;
     int v0;
 

@@ -1,11 +1,11 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_000526D0 (0x248 / 146 words) -- EXACT.
+/* IDO 7.1 NCC (C++) donor for BasePolyShape_ctor (0x248 / 146 words) -- EXACT.
  *
  * A C++ constructor Obj::Obj(void *, void *, Obj *src) with cfront's
  * `this == 0 -> new(0xB0)` protocol, the external base ctor, the vptr store
  * at 0x28, the inline Sub() member ctor (its own alloc-fallback for 0x14) and
  * an optional implicit memberwise copy from src. The donor's symbols are
  * renamed in the Makefile (names only, no bytes change): the ctor to
- * gl_func_000526D0, and the base ctor / vtable / callees to zero-valued
+ * BasePolyShape_ctor, and the base ctor / vtable / callees to zero-valued
  * aliases (the ROM's calls are blank USO imports, jal 0 / lui-addiu 0).
  * What pins it (docs/IDO_CODEGEN.md, agent-g run 147):
  * - the 0x18 member is a one-word STRUCT (Flags): a 1-word struct copy takes

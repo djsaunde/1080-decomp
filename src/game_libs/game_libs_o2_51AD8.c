@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for gl_func_00051AD8 -- draw-state command decoder
+/* IDO 7.1 -O2 donor for gfx_decodeMatCmd -- draw-state command decoder
  * (0x3C0 / 240 words; 240/240 word-exact standalone apart from reloc fields).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
  * 29CCC / 52CD4 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-
  * jumptable-rodata-rename). The C switch over op 200..211 puts its 12-entry
  * jumptable at donor .rodata +0; the splice renames that reloc to
- * gl_func_00051AD8_rodata, pinned to 0x1BB4 in undefined_syms_auto.txt, so the
+ * gfx_decodeMatCmd_rodata, pinned to 0x1BB4 in undefined_syms_auto.txt, so the
  * `lw t6,0x1BB4(at)` table load links exactly as the USO ships it.
  *
  * EXACT 2026-11-06 (agent-c run 326): the last word was the bound check's
@@ -62,7 +62,7 @@ typedef struct {
     s32 *cur;
 } Strm_51AD8;
 
-void gl_func_00051AD8(State_51AD8 *out, Strm_51AD8 *s) {
+void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
     s32 *r;
     s32 op;
     State_51AD8 **pp;

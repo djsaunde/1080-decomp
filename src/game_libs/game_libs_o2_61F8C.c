@@ -1,10 +1,10 @@
-/* IDO 7.1 -O2 donor for gl_func_00061F8C -- (cmd, val) record loader
+/* IDO 7.1 -O2 donor for AnimData_load -- (cmd, val) record loader
  * (0x208 / 130 words; 130/130 word-exact apart from reloc fields).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
  * 52CD4 / 3AC5C recipe, docs/MATCHING_WORKFLOW.md#post0b-jumptable-donor-52cd4).
  * switch (cmd) cases 1..5: the 5-entry table sits at donor .rodata +0, renamed
- * gl_func_00061F8C_rodata and pinned to bootup.uso RoData +0x2080 (the
+ * AnimData_load_rodata and pinned to bootup.uso RoData +0x2080 (the
  * extractor dump at roff 0x2084 lists exactly the five arms in address order).
  *
  * Load-bearing shapes:
@@ -26,7 +26,7 @@ extern int gl_ref_00076400(); /* baked jal 0x0C01D900: debug print */
 extern char gl_ref_0002205C_61F8C[], gl_ref_00022068_61F8C[], gl_ref_00022078_61F8C[];
 extern char gl_ref_00022088_61F8C[], gl_ref_00022098_61F8C[], gl_ref_000220AC_61F8C[];
 
-void gl_func_00061F8C(char *self) {
+void AnimData_load(char *self) {
     int *base;
     int cmd;
     int val;

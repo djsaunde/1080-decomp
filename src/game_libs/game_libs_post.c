@@ -15342,7 +15342,7 @@ int gl_func_00031898(int *a0) {
 //   `else` (s != 0) does { func(A,(s8)s); func(A,(s8)byte) }. Writing it
 //   `if(s!=0)` emits `beq` and mis-aligns the whole block — match the
 //   target's fall-through. Residual ~4%: the check jal is a CONCRETE
-//   alt-entry at 0x45f04 (gl_func_000628EC+0x64) but C emits the generic
+//   alt-entry at 0x45f04 (Animator_ctor+0x64) but C emits the generic
 //   gl_func_00000000 reloc (alt-entry-jal cap, cf. func_00039194) + s in
 //   v1-vs-v0 renumber + last-block beql. INCLUDE_ASM stays the build path.
 /* EXACT (agent-c run 122): the query callee is a baked in-unit jal (gl_ref_00045F04); each else arm's second command is 0x0602x000 (the NM had x004); s as int reuses v0; the function is int with no return, so v0 is live at the exit and the last guard's beqzl takes lw ra instead of the lui. */

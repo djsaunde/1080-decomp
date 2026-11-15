@@ -21,7 +21,7 @@
  * 0x3C0, 0x960 -> the addends bake into the lui/addiu pairs), case 2 picks
  * &modes[2] for osTvType == 1 (sym1351 = 0x80000300 = D_00000000_tvtype)
  * else &modes[30], and cases 4/6/7 + out-of-range go to the error printer
- * (sym306 = text 0x75AE4 = gl_func_00061478) with the Data string at
+ * (sym306 = text 0x75AE4 = sys_fatal) with the Data string at
  * +0x1FE78 "video mode not supported". Tail: osViSetSpecialFeatures-style
  * callee (sym1989 = text 0x857B0 = osViSetSpecialFeatures) with
  * 2 | (mode & 0x200 ? 0x40 : 0), bit 1 cleared when mode & 0x400. All three

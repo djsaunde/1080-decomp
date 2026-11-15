@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00050444 (0x1E8 / 122 words), REPLACE_FUNC_BODY-spliced over the empty
+/* IDO 7.1 NCC (C++) EXACT donor for BasePolyShape_addPoints (0x1E8 / 122 words), REPLACE_FUNC_BODY-spliced over the empty
  * placeholder in game_libs_post0b.c in both build trees (symbol `intern` renamed in the Makefile).
  * Vertex intern: truncate the position (3 floats) and uv (2) to s16 keys, scan the mesh's position / uv tables
  * from `start` for an equal pair (S3 / S2 inline `operator==` returning int = the target's xor / sltiu results),

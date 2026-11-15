@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00055470 (0x430 / 268 words): the command-stream
+/* IDO 7.1 NCC (C++) donor for nodelist_dispatch (0x430 / 268 words): the command-stream
  * opcode dispatcher. A `switch` under edg is a compare chain in CASE order (1014, 1012,
  * ... 1018), which is why the cfe goto-ladder NM needed `if (1) goto` tricks. Shapes:
  * - `next()` = `return cmd = *(*cp)++;` (inline, its result temp is the v1 value);
@@ -29,7 +29,7 @@ struct Strm {
     int f13; int f14; int w15; int f16; int f17; int f18;
     int next() { return cmd = *(*cp)++; }
 };
-extern "C" void gl_func_00055470(Strm *s) {
+extern "C" void nodelist_dispatch(Strm *s) {
     Two pt;
     Two vt;
     switch (s->cmd) {

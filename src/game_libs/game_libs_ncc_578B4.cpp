@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000578B4 (texture loader: gbi LoadTextureTile /
+/* IDO 7.1 NCC (C++) EXACT donor for gfx_loadTexture (texture loader: gbi LoadTextureTile /
  * LoadBlock per format, CI8 with a TLUT). REPLACE_FUNC_BODY-spliced over the empty placeholder
  * in game_libs_post0b.c.o on both build paths (agent-c run 236); the cfe body kept in
  * game_libs_post0b.c under GL_578B4_OLD_DECODE is the m2c transcription. The 0x34458 calls go
@@ -36,7 +36,7 @@ extern char gl_d_578b4_s2a[];
 extern char gl_d_578b4_s2b[];
 }
 extern "C"
-void gl_func_000578B4(char *arg0, char *arg1, s32 arg2) {
+void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
     s32 sp1EC;
     s32 sp1E8;
     s32 sp1E4;

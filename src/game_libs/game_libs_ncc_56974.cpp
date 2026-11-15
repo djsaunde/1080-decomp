@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00056974 (0x3A0) and gl_func_00056D14 (0x2E0):
+/* IDO 7.1 NCC (C++) donor for gfx_emitCombine1 (0x3A0) and gfx_emitCombine2 (0x2E0):
  * gDPSetCombineMode-style selectors. `switch (mode & 0xF00)` lowers under edg to a
  * compare chain in CASE order (the cfe NMs needed if-goto ladders + if (1) {} and still
  * lost the last test's polarity and a temp-ring phase); each arm appends one 8-byte
@@ -14,7 +14,7 @@ struct Ctx { char pad[0xC]; DL *dl;
     G *next() { int n = dl->n++; return &dl->buf[n]; } };
 struct Cmd { int w0, w1; };
 #define SET(a, b) { G *g = c->next(); g->w0 = a; g->w1 = b; }
-extern "C" void gl_func_00056974(Ctx *c, Cmd *m) {
+extern "C" void gfx_emitCombine1(Ctx *c, Cmd *m) {
     int k = m->w1 & 0xF00;
     switch (k) {
     case 0x0: SET(0xFCFFFFFF, 0xFFFE793C); break;
@@ -36,7 +36,7 @@ extern "C" void gl_func_00056974(Ctx *c, Cmd *m) {
     }
 }
 
-extern "C" void gl_func_00056D14(Ctx *c, Cmd *m) {
+extern "C" void gfx_emitCombine2(Ctx *c, Cmd *m) {
     int k = m->w1 & 0xF00;
     switch (k) {
     case 0: SET(0xFCFFFFFF, 0xFFFE7838); break;

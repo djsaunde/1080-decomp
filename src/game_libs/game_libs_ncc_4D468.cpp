@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004D468 (0x1F0 / 124
+/* IDO 7.1 NCC (C++) donor for RcpMgr_ctor (0x1F0 / 124
  * words): module init -- allocate the 0x50 owner if none, clear it, register 16
  * new 0x78-byte nodes, allocate the 0x19000-byte heap with a 0x12345678 guard
  * word, start the 0x3C950 task, set the 0x3CB00 guard pair, three bind calls.
@@ -15,7 +15,7 @@
  * handle parameter kept (`if (0) { h = 0; }`): its pooled int temp reuses the node ternary's slot (edg pools 4-byte
  * temps by size), the merged live range now crosses a2 argument setups, so the ternary result takes the target's a3
  * at both merge sites (binding all three calls that way re-ranks s1 / s2 instead). The static guard pair's .bss
- * reloc is renamed gl_func_0004D468_bss by the splice and pinned to 0x3CB00. Spliced into both build trees. */
+ * reloc is renamed RcpMgr_ctor_bss by the splice and pinned to 0x3CB00. Spliced into both build trees. */
 extern "C" {
 extern int gl_func_00000000(...);
 extern char D_00000000[];
@@ -28,7 +28,7 @@ void *operator new(unsigned int n, int al);
 static long long sCanL;
 struct S4D { int w0, w4, w8, wC; int w10; int w14; int w18; int w1C, w20, w24, w28, w2C; char pad30[0x14]; int w44; };
 inline void bind(int k, int h, int id) { if (0) { h = 0; } gl_func_00000000(k, h, id); }
-extern "C" S4D *gl_func_0004D468(S4D *s) {
+extern "C" S4D *RcpMgr_ctor(S4D *s) {
     if (s != 0 || (s = (S4D *)gl_func_00000000(0x50)) != 0) {
     gl_func_00000000(D_00000000 + 0x201F4, 0);
     gl_func_00000000(D_00000000 + 0x3EB00, 0xB0000B70, 0x100);

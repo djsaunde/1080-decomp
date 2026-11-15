@@ -106,7 +106,7 @@ void game_uso_func_00000000(out, t)
  * sum3 as fs; ours swaps to p3 as fs). RE-CONFIRMED 2026-05-31: the
  * assignment-expr lever `... + (t = b[3]*a[3])` REGRESSES to 15 diffs — pinning
  * p3 reschedules the whole reduction (sum3 is a multi-op chain, can't be the
- * pinned operand). Same class as game_libs_func_0005D588. Genuine cap; do not
+ * pinned operand). Same class as math_vec3CrossDot. Genuine cap; do not
  * re-grind with the assignment-expr lever. */
 float game_uso_func_000000A0(float *a, float *b) {
     /* 2026-06-11 rules-sweep CRACK: right-nested grouping flips the final
