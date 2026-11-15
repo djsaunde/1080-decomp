@@ -3086,7 +3086,7 @@ void MNode_def(int a0) {
     gl_func_00000000(a0);
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
-        gl_func_00000000(o, (char *)&D_00000000 + 0x0001EBE4);
+        gl_func_00000000(o, GL_DATA_STR(0x1EBE4, "DefMNode"));
         MNODE(o)->node.vptr = (s32)((char *)&MNode_vtbl);
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
@@ -24798,7 +24798,7 @@ void MemTracker_ctor(int *a0, int a1) {
     int v0;
     int local_buf[26];
     gl_func_00000000(MEMTRACKER(a0)->name, a1);
-    gl_func_00000000((char*)&D_00000000 + 0x21C50);
+    gl_func_00000000(GL_DATA_STR(0x21C50, "MemTracker::MemTracker"));
     v0 = gl_func_00000000(a1, &local_buf[2]);
     if (v0 != 0) {
         gl_func_00000000(MEMTRACKER(a0)->name, &local_buf[2]);
@@ -24852,7 +24852,7 @@ void MemTracker_printTree(int *a0) {
     int *s0;
     ratio = (float)MEMTRACKER(a0)->bytes / (f32)1024;
     MEMTRACKER(a0)->kb = ratio;
-    gl_func_00000000(buf, (char *)&D_00000000 + 0x21C7C, MEMTRACKER(a0)->name, (double)ratio);
+    gl_func_00000000(buf, GL_DATA_STR(0x21C7C, "%s - %5.1fk\n"), MEMTRACKER(a0)->name, (double)ratio);
     gl_func_00000000(&gHostio, buf, 0);
     s0 = (int *)MEMTRACKER(a0)->children;
     while (s0 != 0) {
@@ -25056,7 +25056,7 @@ void MemTracker_printByName(char *a0) {
  *     1/1024 (lui 0x3A80); `(float)1024` in a local also works. */
 void MemTracker_printEntry(int *a0) {
     int **pp = &a0;
-    gl_func_00000000((char *)&D_00000000 + 0x21CD8, MEMTRACKER(*pp)->name,
+    gl_func_00000000(GL_DATA_STR(0x21CD8, "  %s = %6.3fk\n"), MEMTRACKER(*pp)->name,
                      (double)((float)MEMTRACKER(*pp)->bytes / 1024));
 }
 
