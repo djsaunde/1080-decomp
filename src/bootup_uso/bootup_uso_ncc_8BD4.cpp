@@ -24,7 +24,7 @@ extern "C" {
 extern char D_00000000;
 extern int func_00000000(...);
 /* per-site import aliases (USO relocs at 0; agent-g run 475 resolved the targets with the bootup TextReloc table): */
-extern unsigned char func_8bd4_c(...);          /* BasePolyShape_func_00052A4C(shape, tri): the triangle's surface code */
+extern unsigned char func_8bd4_c(...);          /* BasePolyShape_getMatCodeChar_00052A4C(shape, tri): the triangle's surface code */
 extern void func_8bd4_a(void *, void *, void *, void *, float); /* SnowBCollider_edgeGrip_0000E2D0: the edge-grip response */
 extern void func_8bd4_b(void *, float, void *, float);          /* Friction_vfn11_00063F34 (the collider's base) */
 extern void func_8bd4_heavy(void *, void *, void *);            /* DNode_addImpulseAt_00065250(rider, point, force) */

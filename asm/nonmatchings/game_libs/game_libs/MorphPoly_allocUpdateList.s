@@ -1,6 +1,6 @@
-nonmatching MorphPoly_func_0004ACD4, 0xE0
+nonmatching MorphPoly_allocUpdateList, 0xE0
 
-glabel MorphPoly_func_0004ACD4
+glabel MorphPoly_allocUpdateList
     /* E2FDAC 0004ACD4 27BDFFE0 */  .word 0x27BDFFE0
     /* E2FDB0 0004ACD8 AFBF0014 */  .word 0xAFBF0014
     /* E2FDB4 0004ACDC 8C810040 */  .word 0x8C810040
@@ -57,4 +57,4 @@ glabel MorphPoly_func_0004ACD4
     /* E2FE80 0004ADA8 27BD0020 */  .word 0x27BD0020
     /* E2FE84 0004ADAC 03E00008 */  .word 0x03E00008
     /* E2FE88 0004ADB0 00000000 */  .word 0x00000000
-endlabel MorphPoly_func_0004ACD4
+endlabel MorphPoly_allocUpdateList

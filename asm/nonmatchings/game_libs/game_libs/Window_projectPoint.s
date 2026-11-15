@@ -1,6 +1,6 @@
- nonmatching Sprite_func_0004F0C8, 0x214
+ nonmatching Window_projectPoint, 0x214
 
-glabel Sprite_func_0004F0C8
+glabel Window_projectPoint
     /* E341A0 0004F0C8 C4A20000 */  .word 0xC4A20000
     /* E341A4 0004F0CC C484003C */  .word 0xC484003C
     /* E341A8 0004F0D0 C4AC0004 */  .word 0xC4AC0004
@@ -134,4 +134,4 @@ glabel Sprite_func_0004F0C8
     /* E343A8 0004F2D0 24020001 */  .word 0x24020001
     /* E343AC 0004F2D4 03E00008 */  .word 0x03E00008
     /* E343B0 0004F2D8 27BD0018 */  .word 0x27BD0018
-endlabel Sprite_func_0004F0C8
+endlabel Window_projectPoint

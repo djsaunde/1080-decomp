@@ -14685,7 +14685,7 @@ void MorphPoly_updateColours(char *self) {
 void gfx_emptyStub_0004ACCC(int a0) {
 }
 
-/* MorphPoly_func_0004ACD4: alloc + memset16(-1). Decoded from bare stub
+/* MorphPoly_allocUpdateList: alloc + memset16(-1). Decoded from bare stub
  * 2026-05-19. void f(int *self):
  *   count = self->0x40 * 10;            // sll<<2; addu; sll<<1
  *   buf = cb_alloc(&D_00000000, count * 2);
@@ -14708,7 +14708,7 @@ void gfx_emptyStub_0004ACCC(int a0) {
  * without the frame cost. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void MorphPoly_func_0004ACD4(int *self) {
+void MorphPoly_allocUpdateList(int *self) {
     int i;
     int count = self[0x40 / 4] * 10;
     self[0xD0 / 4] = gl_func_00000000(&gSysLib, count * 2);
@@ -17569,7 +17569,7 @@ void gfx_stub_0004F0AC(int a0, int a1, int a2, int a3) {
 
 void gfx_stub_0004F0C0(int a0) {}
 
-/* Sprite_func_0004F0C8 (0x214, 133 words): the 6-word Sprite_func_0004F0C8
+/* Window_projectPoint (0x214, 133 words): the 6-word Window_projectPoint
  * orphan + gl_func_0004F0E0 are ONE function -- bootup.uso Sym exports text
  * 0x63734 (= splat 0x4F0C8); 0x4F0E0 is not exported/referenced. The orphan is
  * the hoisted head (the v->x/y/z loads + the first two m[.][3] loads and the
@@ -17602,7 +17602,7 @@ typedef struct {
     int w, h;                   /* 0xC8, 0xCC: viewport size */
     int d0, d1;                 /* 0xD0, 0xD4: second offset */
 } Cam4F0C8;
-int Sprite_func_0004F0C8(Cam4F0C8 *cam, Vec3_4F0C8 *v, int flag, float *outw) {
+int Window_projectPoint(Cam4F0C8 *cam, Vec3_4F0C8 *v, int flag, float *outw) {
     float pad[5];
     float z, w, y, x;
     float inv;
@@ -19319,11 +19319,11 @@ D:
     gl_func_00000000();
 }
 
-unsigned char BasePolyShape_func_00052A4C(char *a0, int a1) {
+unsigned char BasePolyShape_getMatCodeChar_00052A4C(char *a0, int a1) {
     return *(unsigned char *)(*(int *)(*(int *)(a0 + 0x84) + a1 * 4) + 0x32);
 }
 
-short BasePolyShape_func_00052A64(char *a0, int a1) {
+short BasePolyShape_getMatCodeNum_00052A64(char *a0, int a1) {
     return *(short *)(*(int *)(*(int *)(a0 + 0x84) + a1 * 4) + 0x30);
 }
 
@@ -19983,7 +19983,7 @@ void BasePolyShape_triCentroid(BasePolyShape *m, Vec3 *out, s32 t) {
 }
 
 
-/* light_func_00054210 — EXACT 21/21 words (2026-07-08, agent-e). REVERSE-MERGE of
+/* BasePolyShape_getFaceNormal — EXACT 21/21 words (2026-07-08, agent-e). REVERSE-MERGE of
  * the 6-word "orphan" game_libs_func_00054210 (no jr ra; it was this function's
  * real head, computing src = *(a0+0x54) + a2*12 with the first lw scheduled
  * ABOVE the addiu sp) + the old gl_func_00054228 (whose "$t9/$t1 register
@@ -19995,7 +19995,7 @@ void BasePolyShape_triCentroid(BasePolyShape *m, Vec3 *out, s32 t) {
  * (a2<<2 - a2)<<2 from Vec3f* + a2 indexing. volatile pad SANDWICH (2 above,
  * 2 below v) lands the temp at sp+0xC with frame -0x20 — pads LOAD-BEARING. */
 typedef struct { float x, y, z; } Vec3_54210;
-void light_func_00054210(char *a0, float *a1, int a2) {
+void BasePolyShape_getFaceNormal(char *a0, float *a1, int a2) {
     volatile int pad_a;
     volatile int pad_b;
     Vec3_54210 v;
@@ -20007,7 +20007,7 @@ void light_func_00054210(char *a0, float *a1, int a2) {
     a1[2] = v.z;
 }
 
-/* light_func_00054264: 214-insn (0x358) FPU-heavy Vec3-transform builder.
+/* BasePolyShape_sampleTri: 214-insn (0x358) FPU-heavy Vec3-transform builder.
  * Structural identification (2026-05-08, no C body decoded yet):
  *   - Frame -0x78. Saves a0/a1/a2/a3 to sp+0x78..0x84 (preserving args
  *     across the body's heavy FPU use). 2 jal's right at top via a 0x0
@@ -20022,7 +20022,7 @@ void light_func_00054210(char *a0, float *a1, int a2) {
  * (Superseded: it is Mesh::sample(), a random point in a triangle -- see the donor.) */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_54264.cpp (`void Mesh::sample(V3 &p, V3 &n,
  * int t)`), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 175). */
-void light_func_00054264(char *arg0, f32 *arg1, f32 *arg2, s32 arg3) {
+void BasePolyShape_sampleTri(char *arg0, f32 *arg1, f32 *arg2, s32 arg3) {
 }
 
 /* CMod_ctor: 43-insn alloc-init + conditional sub-alloc + 4-float-copy.

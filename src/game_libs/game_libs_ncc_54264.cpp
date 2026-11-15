@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for light_func_00054264 (0x358 / 214 words), agent-c run 175, spliced over an empty
+/* IDO 7.1 NCC (C++) EXACT donor for BasePolyShape_sampleTri (0x358 / 214 words), agent-c run 175, spliced over an empty
  * placeholder in game_libs_post0b.c in both build trees (Makefile rename of sample__4MeshFR2V3T1i).
  * The cfe body (85.11: volatile Vec3 locals, a `mult` variable for the multu, an int-copy temp) is plain C++:
  * `void Mesh::sample(V3 &p, V3 &n, int t)` -- a uniform random point in triangle t (u, v from two calls through the

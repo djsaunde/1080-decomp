@@ -1,6 +1,6 @@
-nonmatching light_func_00054264, 0x358
+nonmatching BasePolyShape_sampleTri, 0x358
 
-glabel light_func_00054264
+glabel BasePolyShape_sampleTri
     /* E3933C 00054264 27BDFF88 */  .word 0x27BDFF88
     /* E39340 00054268 AFBF0014 */  .word 0xAFBF0014
     /* E39344 0005426C AFA5007C */  .word 0xAFA5007C
@@ -215,4 +215,4 @@ glabel light_func_00054264
     /* E39688 000545B0 27BD0078 */  .word 0x27BD0078
     /* E3968C 000545B4 03E00008 */  .word 0x03E00008
     /* E39690 000545B8 00000000 */  .word 0x00000000
-endlabel light_func_00054264
+endlabel BasePolyShape_sampleTri

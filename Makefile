@@ -2032,8 +2032,8 @@ GAMELIBS_54264_DONOR := build/src/game_libs/game_libs_ncc_54264.cpp.o
 $(GAMELIBS_54264_DONOR): src/game_libs/game_libs_ncc_54264.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym sample__4MeshFR2V3T1i=light_func_00054264 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += light_func_00054264=$(GAMELIBS_54264_DONOR)
+	$(OBJCOPY) --redefine-sym sample__4MeshFR2V3T1i=BasePolyShape_sampleTri $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BasePolyShape_sampleTri=$(GAMELIBS_54264_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_54264_DONOR)
 # 608A4 = real C++ `void TextWin::draw(int big)` (agent-c run 175: context set through inline size() / pos() members). EXACT NCC donor over an empty placeholder; symbol renamed (name only).
 GAMELIBS_608A4_DONOR := build/src/game_libs/game_libs_ncc_608A4.cpp.o
