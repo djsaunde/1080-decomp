@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/race.h"
 
 /* P0 AUDIT WARNING 2026-06-10: the decompressed block3 build differs
  * from ROM (assets/timproc_uso_block_3.bin) by 963 words in
@@ -397,12 +398,12 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
  * dispatcher with computed (s0+offset, immediate-or-globalload) args.
  * First 2 calls use D[0x4C/0x54] OR'd with high-half flags 0x001D/0x001E;
  * latter 3 use precomputed 32-bit constants 0x0021_xxxx. */
-void TrkRace_initLabels_00000D60(char *a0) {
-    gl_func_00000000(a0 + 0x6B4, *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
-    gl_func_00000000(a0 + 0x6CC, *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
-    gl_func_00000000(a0 + 0x6FC, 0x0021000B);
-    gl_func_00000000(a0 + 0x714, 0x0021000D);
-    gl_func_00000000(a0 + 0x6E4, 0x00210009);
+void TrkRace_initLabels_00000D60(TimRace *a0) {
+    gl_func_00000000((char *)&a0->labels[0], *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
+    gl_func_00000000((char *)&a0->labels[1], *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
+    gl_func_00000000((char *)&a0->labels[3], 0x0021000B);
+    gl_func_00000000((char *)&a0->labels[4], 0x0021000D);
+    gl_func_00000000((char *)&a0->labels[2], 0x00210009);
 }
 
 /* TrkRace_freeLabels_00000DE4: F1 (19-insn 5-call wrapper) only.
@@ -418,12 +419,12 @@ void TrkRace_initLabels_00000D60(char *a0) {
  *     a0->[0x6A8]->[0x6C]->[0xEC] != 0).
  * F3 @ 0xE54-0xE5C: `return 0;` 3-insn stub. */
 extern int func_00000000();
-void TrkRace_freeLabels_00000DE4(char *a0) {
-    func_00000000(a0 + 0x6B4);
-    func_00000000(a0 + 0x6CC);
-    func_00000000(a0 + 0x6FC);
-    func_00000000(a0 + 0x714);
-    func_00000000(a0 + 0x6E4);
+void TrkRace_freeLabels_00000DE4(TimRace *a0) {
+    func_00000000((char *)&a0->labels[0]);
+    func_00000000((char *)&a0->labels[1]);
+    func_00000000((char *)&a0->labels[3]);
+    func_00000000((char *)&a0->labels[4]);
+    func_00000000((char *)&a0->labels[2]);
 }
 
 /* TrkRace_endTimerEnabled: triple-deref non-null check RECOVERED +
@@ -432,8 +433,8 @@ void TrkRace_freeLabels_00000DE4(char *a0) {
  * shared `return 0` produces the beql branch-likely idiom (v0=0 in the
  * delay slot) — the plain `if(...)return 0` form emits bnel and grows to
  * 14 insns (the cap that NM'd sibling ARCRaceProcess_endTimerEnabled). */
-int TrkRace_endTimerEnabled(int *a0) {
-    int *p = (int*)((int*)a0[0x6A8 / 4])[0x6C / 4];
+int TrkRace_endTimerEnabled(TimRace *a0) {
+    int *p = (int*)((int*)a0->dataManager)[0x6C / 4];
     if (p == 0) {
         goto ret0;
     }
@@ -472,7 +473,7 @@ ret0:
  * (its exact twin): base = &D re-assigned right after the 0x6A8 load, the
  * count stored to 0x6B0 and read back as the loop init (store-forward), and
  * a for-loop that REUSES `state` as the counter with the call argument spelled
- * mult-first `base[0x64/4] * 0x30 + *(int *)*(char **)(a0 + 0x528)` (no table
+ * mult-first `base[0x64/4] * 0x30 + *(int *)(char *)a0->race.session` (no table
  * local, which took v0). The break now exits to the base re-assignment, giving
  * the target's bne + nop instead of bnel.
  */
@@ -541,15 +542,15 @@ state1:
  *
  * F1: gate=gl_func(a0->0x528). If non-zero set D[0x40]=0xC,D[0x44]=9.
  *     Else set D[0x40]=9. Tail: if(a0->0x4F8) gl_func(a0,-1,0); else a0->0x504=0. */
-void TrkRace_onEndTimerDone(char *a0) {
-    if (gl_func_00000000(*(char**)(a0 + 0x528)) != 0) {
+void TrkRace_onEndTimerDone(TimRace *a0) {
+    if (gl_func_00000000((char*)a0->race.session) != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
         *(int*)((char*)&D_00000000 + 0x44) = 9;
     } else {
         *(int*)((char*)&D_00000000 + 0x40) = 9;
     }
-    if (*(int*)(a0 + 0x4F8) == 0) {
-        *(int*)(a0 + 0x504) = 0;
+    if (a0->race.result == 0) {
+        a0->race.unk504 = 0;
     } else {
         gl_func_00000000(a0, -1, 0);
     }
@@ -643,32 +644,32 @@ void TrkRace_onPauseSelect(int *self) {
  *   if (a0->0x4FC == 0) { X(a0->0x6A8,0,1); X(a0->0x6A8); a0->0x4FC=1; }
  * orig a0 saved @sp+0x18, reloaded across the 2 calls. USO: call ->
  * func_00000000. */
-void TrkRace_onLeave(int *a0) {
-    if (a0[0x4FC / 4] == 0) {
-        func_00000000((int *)a0[0x6A8 / 4], 0, 1);
-        func_00000000((int *)a0[0x6A8 / 4]);
-        a0[0x4FC / 4] = 1;
+void TrkRace_onLeave(TimRace *a0) {
+    if (a0->race.unk4FC == 0) {
+        func_00000000((int *)a0->dataManager, 0, 1);
+        func_00000000((int *)a0->dataManager);
+        a0->race.unk4FC = 1;
     }
 }
 
-void TrkRace_onPause(int *a0) {
+void TrkRace_onPause(TimRace *a0) {
     int *p;
 
-    p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x6C);
+    p = (int*)*(int*)((char*)a0->dataManager + 0x6C);
     p = (int*)((char*)p + 0x18);
     *p &= ~4;
-    p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x94);
+    p = (int*)*(int*)((char*)a0->dataManager + 0x94);
     p = (int*)((char*)p + 0x18);
     *p &= ~4;
 }
 
-void TrkRace_hideHud_0000120C(int *a0) {
+void TrkRace_hideHud_0000120C(TimRace *a0) {
     int *p;
 
-    p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x6C);
+    p = (int*)*(int*)((char*)a0->dataManager + 0x6C);
     p = (int*)((char*)p + 0x18);
     *p |= 4;
-    p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x94);
+    p = (int*)*(int*)((char*)a0->dataManager + 0x94);
     p = (int*)((char*)p + 0x18);
     *p |= 4;
 }
@@ -735,7 +736,7 @@ extern char *D_b3_1240_ptr138;
  * with the frame unchanged. The undefined_syms values above are not needed
  * for the bytes (the .text is taken from the unlinked object).
  */
-void TrkRace_drawResultExtra(char *a0) {
+void TrkRace_drawResultExtra(TimRace *a0) {
     float color[4];
     char pad[28];
     char *saved;
@@ -748,33 +749,33 @@ void TrkRace_drawResultExtra(char *a0) {
     (void)color;
     (void)pad;
 
-    if (*(int*)(a0 + 0x500) != 0) {
+    if (a0->race.leave != 0) {
         if (D_b3_1240_f0 <= 0.0f) {
-            if (*(float*)(a0 + 0x72C) < *(float*)((char*)&D_b3_1240_f40 + 0x40)) {
-                *(float*)(a0 + 0x72C) += *(float*)((char*)&D_b3_1240_f44 + 0x44);
+            if (a0->recordFade < *(float*)((char*)&D_b3_1240_f40 + 0x40)) {
+                a0->recordFade += *(float*)((char*)&D_b3_1240_f44 + 0x44);
             }
 
-            *(int*)(a0 + 0x508) = *(int*)(a0 + 0x508) + 1;
+            a0->race.unk508 = a0->race.unk508 + 1;
             armed = 0;
-            if ((*(int*)(*(char**)(a0 + 0x528) + 0x14) & 2) != 0 &&
-                *(int*)(a0 + 0x4FC) != 0 &&
+            if ((*(int*)((char*)a0->race.session + 0x14) & 2) != 0 &&
+                a0->race.unk4FC != 0 &&
                 *(int*)(*(char**)(*(char**)((char*)&D_b3_1240_ptr138 + 0x138) + 0x44) + 0x3C) < 3) {
                 armed = 1;
             }
 
             if (armed != 0) {
                 gl_func_00000000(&D_b3_1240_base,
-                                 (int)(*(float*)(a0 + 0x72C) * (0, 255.0f)),
-                                 a0 + 0x2F0,
-                                 a0 + 0x314);
-                saved = a0 + 0x6E4;
+                                 (int)(a0->recordFade * (0, 255.0f)),
+                                 (char *)a0 + 0x2F0,
+                                 (char *)a0 + 0x314);
+                saved = (char *)&a0->labels[2];
                 gl_func_00000000(saved);
-                if ((*(int*)(a0 + 0x508) & 8) != 0) {
+                if ((a0->race.unk508 & 8) != 0) {
                     gl_func_00000000(saved, 0xA0, 0xA0, 3);
-                    gl_func_00000000(a0, 0x8C, *(int*)(*(char**)(*(char**)(a0 + 0x6A8) + 0x44) + 0x14));
+                    gl_func_00000000(a0, 0x8C, *(int*)(*(char**)((char*)a0->dataManager + 0x44) + 0x14));
                 }
             } else {
-                gl_func_00000000(a0, 0x8C, *(int*)(*(char**)(*(char**)(a0 + 0x6A8) + 0x44) + 0x14));
+                gl_func_00000000(a0, 0x8C, *(int*)(*(char**)((char*)a0->dataManager + 0x44) + 0x14));
             }
         }
     }

@@ -2064,7 +2064,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0xB8), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xD678);
         arg0->vptr = (int)&D_00000000;
-        arg0->records = 0;
+        arg0->session = 0;
         arg0->hudFlags = 0;
         arg0->digitsWide = 0;
         arg0->digitsTall = 0;
@@ -2434,30 +2434,30 @@ void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
     if (n) {}
     for (i = 0; i < n; i++) {
         if ((CE38_E(i)->flags & 1) == 1) {
-            m = (char *)self->records;
+            m = (char *)self->session;
             if (m != 0) {
                 fl = FW(m, 0x14);
                 if (CE38_E(i)->finished != 0) {
                     if (fl & 1) {
                         CE38_E(i)->rank[0] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), self->elapsed);
-                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->records, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
+                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
                         v = CE38_E(i)->rank[0];
                         if (v < 3) CE38_D(0x7C) = v + 1;
-                        m = (char *)self->records;
+                        m = (char *)self->session;
                         fl = FW(m, 0x14);
                     }
                     if (fl & 2) {
                         CE38_E(i)->rank[1] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), CE38_E(i)->time);
-                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->records, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
+                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
                         v = CE38_E(i)->rank[1];
                         if (v < 3) CE38_D(0x7C) = v + 1;
-                        m = (char *)self->records;
+                        m = (char *)self->session;
                         fl = FW(m, 0x14);
                     }
                 }
                 if (fl & 4) {
                     CE38_E(i)->rank[2] = gl_func_00000000(FW(m, 0x4), CE38_E(i)->time);
-                    gl_func_00000000_ce38_v(FW(self->records, 0x4), CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
+                    gl_func_00000000_ce38_v(FW(self->session, 0x4), CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
                     v = CE38_E(i)->rank[2];
                     if (v < 3) CE38_D(0x7C) = v + 1;
                 }

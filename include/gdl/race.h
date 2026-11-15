@@ -104,7 +104,8 @@ typedef struct RaceProcess {
     /* 0x51C */ s32 replayCam;          /* RaceProcess_createReplayCam */
     /* 0x520 */ s32 savedCam;           /* the world camera replaced by replayCam */
     /* 0x524 */ s32 unk524;
-    /* 0x528 */ s32 session;            /* course / session object (see 1080_MODES.md) */
+    /* 0x528 */ s32 session;            /* record session (*_openSession): +0 course record table, 0x30 per course
+                                     * (indexed by the game global +0x64), +0x14 mode bits; = RaceTracker.session */
     /* 0x52C */ char unk52C[8];
     /* 0x534 */ f32 scaleX;             /* countdown digit scale (1.0 after reset) */
     /* 0x538 */ f32 scaleY;
@@ -133,6 +134,22 @@ typedef char RaceProcess_scaleX_check[(int)&((RaceProcess *)0)->scaleX == 0x534 
 typedef char RaceProcess_msgFloor_check[(int)&((RaceProcess *)0)->msgFloor == 0x554 ? 1 : -1];
 typedef char RaceProcess_spriteSet_check[(int)&((RaceProcess *)0)->spriteSet == 0x568 ? 1 : -1];
 typedef char RaceProcess_sprites_check[(int)&((RaceProcess *)0)->sprites[1] == 0x5A0 ? 1 : -1];
+
+/* ---- TimRace / TrkRace (timproc / trkproc, "TIMRace Process", alloc 0x730) ----
+ * Identical layouts in both modules. The ctor inlines Node (0x2C) -> 0x50 ->
+ * RaceProcess (0x6A8) and then builds the 0xE0 DataManager (a RaceTracker
+ * subclass) into dataManager. */
+typedef struct TimRace {
+    /* 0x000 */ RaceProcess race;
+    /* 0x6A8 */ s32 dataManager;        /* Tim/TrkDataManager (RaceTracker *) */
+    /* 0x6AC */ s32 finalTime;          /* checkRecord: dataManager->elapsed */
+    /* 0x6B0 */ s32 recordRank;         /* checkRecord: dataManager->entries[0].rank[0], then tie-scan */
+    /* 0x6B4 */ RaceSprite labels[5];   /* initLabels: 0x1D / 0x1E / 0x210009 / 0x21000A / 0x21000D */
+    /* 0x72C */ f32 recordFade;         /* drawHud: "new record" label alpha 0..1 */
+} TimRace;
+
+typedef char TimRace_size_check[sizeof(TimRace) == 0x730 ? 1 : -1];
+typedef char TimRace_labels_check[(int)&((TimRace *)0)->labels[2] == 0x6E4 ? 1 : -1];
 
 /* ---- RaceTracker (game_libs 0xC784.., alloc 0xB8; vtable Data+0xD678) ----
  * The race-progress / HUD object: per-rider entries, the time limit, and the
@@ -188,7 +205,7 @@ typedef struct RaceTracker {
     /* 0x40 */ f32 courseLength;         /* world->0x98 +0xD8 - courseZ */
     /* 0x44 */ RaceEntry *entries;       /* alloc 0x300 = 8 entries */
     /* 0x48 */ s32 numEntries;
-    /* 0x4C */ s32 records;              /* record manager (+0x14 mode bits, +0 / +4 tables) */
+    /* 0x4C */ s32 session;              /* = RaceProcess.session (+0 course record table, 0x30 per course; +0x14 mode bits) */
     /* 0x50 */ s32 unk50;
     /* 0x54 */ s32 pointsListArg;        /* 3rd ctor arg of PointsGadget_ctor_00003138 */
     /* 0x58 */ s32 digitsTall;           /* hud_initSprites_0000E4A8: 16x320 grid, 1x10 cells */

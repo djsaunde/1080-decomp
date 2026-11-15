@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/race.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -379,20 +380,20 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
  * with values loaded from D[0x4C]/D[0x54]; last three use pure constants
  * (0x0021000A / 0x0021000D / 0x00210009). */
 extern int gl_func_00000000();
-void TimRace_initLabels_00000D1C(char *a0) {
-    gl_func_00000000(a0 + 0x6B4, *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
-    gl_func_00000000(a0 + 0x6CC, *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
-    gl_func_00000000(a0 + 0x6FC, 0x0021000A);
-    gl_func_00000000(a0 + 0x714, 0x0021000D);
-    gl_func_00000000(a0 + 0x6E4, 0x00210009);
+void TimRace_initLabels_00000D1C(TimRace *a0) {
+    gl_func_00000000((char *)&a0->labels[0], *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
+    gl_func_00000000((char *)&a0->labels[1], *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
+    gl_func_00000000((char *)&a0->labels[3], 0x0021000A);
+    gl_func_00000000((char *)&a0->labels[4], 0x0021000D);
+    gl_func_00000000((char *)&a0->labels[2], 0x00210009);
 }
 
-void TimRace_freeLabels_00000DA0(char *a0) {
-    gl_func_00000000(a0 + 0x6B4);
-    gl_func_00000000(a0 + 0x6CC);
-    gl_func_00000000(a0 + 0x6FC);
-    gl_func_00000000(a0 + 0x714);
-    gl_func_00000000(a0 + 0x6E4);
+void TimRace_freeLabels_00000DA0(TimRace *a0) {
+    gl_func_00000000((char *)&a0->labels[0]);
+    gl_func_00000000((char *)&a0->labels[1]);
+    gl_func_00000000((char *)&a0->labels[3]);
+    gl_func_00000000((char *)&a0->labels[4]);
+    gl_func_00000000((char *)&a0->labels[2]);
 }
 
 /* TWIN-LEVER 2026-06-21: cracked via b3_func_00001184 twin shape. The old
@@ -400,11 +401,11 @@ void TimRace_freeLabels_00000DA0(char *a0) {
  * lever was `int *a0` array-index form (a0[off/4]) instead of `char *a0`
  * pointer arith — array indexing keeps the post-call self web memory-
  * resident, forcing fresh reload temps that match the target. Byte-exact. */
-int TimRace_endTimerEnabled(int *a0) {
-    if (a0[0x4FC / 4] == 0) {
-        gl_func_00000000((int *)a0[0x6A8 / 4], 0, 1);
-        gl_func_00000000((int *)a0[0x6A8 / 4]);
-        a0[0x4FC / 4] = 1;
+int TimRace_endTimerEnabled(TimRace *a0) {
+    if (a0->race.unk4FC == 0) {
+        gl_func_00000000((int *)a0->dataManager, 0, 1);
+        gl_func_00000000((int *)a0->dataManager);
+        a0->race.unk4FC = 1;
     }
     return 1;
 }
@@ -412,16 +413,16 @@ int TimRace_endTimerEnabled(int *a0) {
 /* 32-insn dispatcher: lookup-call gates state set on D[0x40]/D[0x44]
  * then ALWAYS runs the t9 check (a0->[0x4F8] -> store-or-call).
  * v0!=0: D[0x40]=12, D[0x44]=9; v0==0: D[0x40]=9 (no D[0x44] write). */
-void TimRace_onEndTimerDone(int *a0) {
-    int v0 = gl_func_00000000(*(int*)((char*)a0 + 0x528));
+void TimRace_onEndTimerDone(TimRace *a0) {
+    int v0 = gl_func_00000000(a0->race.session);
     if (v0 != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
         *(int*)((char*)&D_00000000 + 0x44) = 9;
     } else {
         *(int*)((char*)&D_00000000 + 0x40) = 9;
     }
-    if (*(int*)((char*)a0 + 0x4F8) == 0) {
-        *(int*)((char*)a0 + 0x504) = 0;
+    if (a0->race.result == 0) {
+        a0->race.unk504 = 0;
     } else {
         gl_func_00000000(a0, -1, 0);
     }
@@ -460,7 +461,7 @@ void TimRace_onAltEndTimerDone(int a0) {
  * .o, so the placeholder callees/data stay 0 like the ROM. */
 void TimRace_onRaceOver(char *a0arg) {
     volatile int *base;
-    char *s2 = a0arg;
+    TimRace *s2 = (TimRace *)a0arg;
     int state = *(int *)(a0arg + 0x504);
     char *work;
     char *s1;
@@ -477,21 +478,21 @@ void TimRace_onRaceOver(char *a0arg) {
     goto state1;
 
 state0:
-    work = *(char **)(s2 + 0x6A8);
+    work = (char *)s2->dataManager;
     base = (volatile int *)&D_00000000;
-    *(int *)(s2 + 0x6AC) = *(int *)(work + 0x30);
-    *(int *)(s2 + 0x6B0) = *(int *)(*(char **)(work + 0x44) + 0x38);
-    s1 = (char *)gl_func_00000000(*(int *)((int)base + 0x64) * 0x30 + *(int *)*(char **)(s2 + 0x528), *(int *)(s2 + 0x6B0));
-    for (state = *(int *)(s2 + 0x6B0) - 1; state >= 0; state--) {
-        r = (char *)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int *)*(char **)(s2 + 0x528), state);
+    s2->finalTime = *(int *)(work + 0x30);
+    s2->recordRank = *(int *)(*(char **)(work + 0x44) + 0x38);
+    s1 = (char *)gl_func_00000000(*(int *)((int)base + 0x64) * 0x30 + *(int *)s2->race.session, s2->recordRank);
+    for (state = s2->recordRank - 1; state >= 0; state--) {
+        r = (char *)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int *)s2->race.session, state);
         if (*(unsigned char *)(s1 + 5) != *(unsigned char *)(r + 5)) break;
         if (*(unsigned char *)(s1 + 6) != *(unsigned char *)(r + 6)) break;
         if (*(unsigned char *)(s1 + 7) != *(unsigned char *)(r + 7)) break;
-        *(int *)(s2 + 0x6B0) = *(int *)(s2 + 0x6B0) - 1;
+        s2->recordRank = s2->recordRank - 1;
     }
-    *(int *)(s2 + 0x4D8) = 1;
+    s2->race.subState = 1;
     gl_func_00000000(base[0x190 / 4], 3, 1);
-    *(int *)(s2 + 0x504) = 1;
+    s2->race.unk504 = 1;
     return;
 
 state1:
@@ -503,10 +504,10 @@ state1:
     gl_func_00000000(base);
     gl_func_00000000(s2);
     gl_func_00000000(s2, base[0x170 / 4] + 0x00220000);
-    *(int *)(s2 + 0x524) = gl_func_00000000(0, s2, 0);
-    gl_func_00000000(*(int *)(s2 + 0x524), *(int *)(s2 + 0x528));
-    created = *(int **)(s2 + 0x524);
-    link = *(char **)(s2 + 0x56C);
+    s2->race.unk524 = gl_func_00000000(0, s2, 0);
+    gl_func_00000000(s2->race.unk524, s2->race.session);
+    created = (int *)s2->race.unk524;
+    link = (char *)s2->race.handler;
     gl_func_00000000(link + 0x10, created);
     if (created[0x14 / 4] != 0) {
         created[1] = 1;
@@ -642,7 +643,7 @@ extern char D_b1_11d8_a, D_b1_11d8_b, D_b1_11d8_c, D_b1_11d8_d;
  * constant the later ring reg ($f18, field $f4). The new float local ft costs
  * one stack word, so ONE volatile pad is dropped (7 -> 6) to keep the call-arg
  * spill home at sp+0x24. */
-void TimRace_drawResultExtra(char *a0) {
+void TimRace_drawResultExtra(TimRace *a0) {
     float buf[4];            /* dead color buffer, sp+0x50..0x5C (frame top) */
     volatile int pad0, pad1, pad2, pad3, pad4, pad5;
     char *saved;             /* call-arg spill home sp+0x24 */
@@ -654,30 +655,30 @@ void TimRace_drawResultExtra(char *a0) {
     buf[1] = 1.0f;
     buf[2] = 1.0f;
     buf[3] = 1.0f;
-    if (*(int *)(a0 + 0x500) == 0) return;
+    if (a0->race.leave == 0) return;
     if (*(float *)&D_b1_11d8_a <= 0.0f) {
-        fv = *(float *)(a0 + 0x72C);
+        fv = a0->recordFade;
         if (fv < *(float *)((char *)&D_b1_11d8_b + 0x40)) {
-            *(float *)(a0 + 0x72C) = *(float *)((char *)&D_b1_11d8_c + 0x44) + (ft = fv);
+            a0->recordFade = *(float *)((char *)&D_b1_11d8_c + 0x44) + (ft = fv);
         }
-        *(int *)(a0 + 0x508) = *(int *)(a0 + 0x508) + 1;
+        a0->race.unk508 = a0->race.unk508 + 1;
         flag = 0;
-        if ((*(int *)(*(char **)(a0 + 0x528) + 0x14) & 1) &&
-            (*(int *)(a0 + 0x4FC) != 0) &&
+        if ((*(int *)((char *)a0->race.session + 0x14) & 1) &&
+            (a0->race.unk4FC != 0) &&
             (*(int *)(*(char **)(*(char **)((char *)&D_b1_11d8_d + 0x138) + 0x44) + 0x38) < 3)) {
             flag = 1;
         }
         if (flag != 0) {
-            saved = a0 + 0x6E4;
+            saved = (char *)&a0->labels[2];
             gl_func_00000000(saved);
-            gl_func_00000000(saved, (int)(*(float *)(a0 + 0x72C) * (fv = 255.0f)),
-                             a0 + 0x2F0, a0 + 0x314);
-            if (*(int *)(a0 + 0x508) & 8) {
+            gl_func_00000000(saved, (int)(a0->recordFade * (fv = 255.0f)),
+                             (char *)a0 + 0x2F0, (char *)a0 + 0x314);
+            if (a0->race.unk508 & 8) {
                 gl_func_00000000(saved, 160, 160, 3);
-                gl_func_00000000(a0, 140, *(int *)(*(char **)(a0 + 0x6A8) + 0x30));
+                gl_func_00000000(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
             }
         } else {
-            gl_func_00000000(a0, 140, *(int *)(*(char **)(a0 + 0x6A8) + 0x30));
+            gl_func_00000000(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
         }
     }
 }
