@@ -1,8 +1,8 @@
 nonmatching __osLeoInterrupt, 0x6A4
 
 glabel __osLeoInterrupt
-    /* 4D40 80003D40 3C0E8002 */  lui        $t6, %hi(D_80019644)
-    /* 4D44 80003D44 8DCE9644 */  lw         $t6, %lo(D_80019644)($t6)
+    /* 4D40 80003D40 3C0E8002 */  lui        $t6, %hi(__osDiskHandle)
+    /* 4D44 80003D44 8DCE9644 */  lw         $t6, %lo(__osDiskHandle)($t6)
     /* 4D48 80003D48 27BDFFC0 */  addiu      $sp, $sp, -0x40
     /* 4D4C 80003D4C AFBF001C */  sw         $ra, 0x1C($sp)
     /* 4D50 80003D50 25CF0014 */  addiu      $t7, $t6, 0x14
@@ -179,7 +179,7 @@ glabel __osLeoInterrupt
     /* 4FD0 80003FD0 24020001 */   addiu     $v0, $zero, 0x1
   .L80003FD4:
     /* 4FD4 80003FD4 8FA9002C */  lw         $t1, 0x2C($sp)
-    /* 4FD8 80003FD8 3C048002 */  lui        $a0, %hi(D_80019644)
+    /* 4FD8 80003FD8 3C048002 */  lui        $a0, %hi(__osDiskHandle)
     /* 4FDC 80003FDC 3C060500 */  lui        $a2, (0x5000400 >> 16)
     /* 4FE0 80003FE0 8D390004 */  lw         $t9, 0x4($t1)
     /* 4FE4 80003FE4 8D2A000C */  lw         $t2, 0xC($t1)
@@ -192,7 +192,7 @@ glabel __osLeoInterrupt
     /* 5000 80004000 25D80001 */  addiu      $t8, $t6, 0x1
     /* 5004 80004004 AD980008 */  sw         $t8, 0x8($t4)
     /* 5008 80004008 8FAF002C */  lw         $t7, 0x2C($sp)
-    /* 500C 8000400C 8C849644 */  lw         $a0, %lo(D_80019644)($a0)
+    /* 500C 8000400C 8C849644 */  lw         $a0, %lo(__osDiskHandle)($a0)
     /* 5010 80004010 8DE8000C */  lw         $t0, 0xC($t7)
     /* 5014 80004014 8DE70004 */  lw         $a3, 0x4($t7)
     /* 5018 80004018 0C0015BC */  jal        func_800056F0
@@ -348,8 +348,8 @@ glabel __osLeoInterrupt
     /* 5240 80004240 AD600000 */  sw         $zero, 0x0($t3)
   .L80004244:
     /* 5244 80004244 8FB9002C */  lw         $t9, 0x2C($sp)
-    /* 5248 80004248 3C048002 */  lui        $a0, %hi(D_80019644)
-    /* 524C 8000424C 8C849644 */  lw         $a0, %lo(D_80019644)($a0)
+    /* 5248 80004248 3C048002 */  lui        $a0, %hi(__osDiskHandle)
+    /* 524C 8000424C 8C849644 */  lw         $a0, %lo(__osDiskHandle)($a0)
     /* 5250 80004250 8F2F000C */  lw         $t7, 0xC($t9)
     /* 5254 80004254 8F270008 */  lw         $a3, 0x8($t9)
     /* 5258 80004258 00002825 */  or         $a1, $zero, $zero
@@ -420,12 +420,12 @@ glabel __osLeoInterrupt
     /* 5350 80004350 24020001 */   addiu     $v0, $zero, 0x1
   .L80004354:
     /* 5354 80004354 8FB9002C */  lw         $t9, 0x2C($sp)
-    /* 5358 80004358 3C048002 */  lui        $a0, %hi(D_80019644)
+    /* 5358 80004358 3C048002 */  lui        $a0, %hi(__osDiskHandle)
     /* 535C 8000435C 3C060500 */  lui        $a2, (0x5000400 >> 16)
     /* 5360 80004360 8F2C000C */  lw         $t4, 0xC($t9)
     /* 5364 80004364 8F270004 */  lw         $a3, 0x4($t9)
     /* 5368 80004368 34C60400 */  ori        $a2, $a2, (0x5000400 & 0xFFFF)
-    /* 536C 8000436C 8C849644 */  lw         $a0, %lo(D_80019644)($a0)
+    /* 536C 8000436C 8C849644 */  lw         $a0, %lo(__osDiskHandle)($a0)
     /* 5370 80004370 00002825 */  or         $a1, $zero, $zero
     /* 5374 80004374 0C0015BC */  jal        func_800056F0
     /* 5378 80004378 AFAC0010 */   sw        $t4, 0x10($sp)

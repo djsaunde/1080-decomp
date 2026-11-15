@@ -447,7 +447,7 @@ extern void	blkclr(void *, int);
  * definition in this TU (an `extern` LeoDiskHandle loses the shared lui $at
  * of the pageSize/relDuration sb pair: ROM mismatch) but stops the donor .o
  * exporting a second LeoDiskHandle / __osDiskHandle, so the kernel's own
- * symbols (D_800195D0 / D_80019644) can carry those names. The splice renames
+ * symbols (LeoDiskHandle / __osDiskHandle) can carry those names. The splice renames
  * the .bss relocs to osLeoDiskInit_bss, pinned at 0x800195D0 in
  * undefined_syms_auto.txt: LeoDiskHandle = bss+0, __osDiskHandle = bss+0x74
  * (0x80019644 - 0x800195D0 = 0x74, the OSPiHandle size). */

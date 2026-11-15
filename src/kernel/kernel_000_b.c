@@ -225,7 +225,7 @@ void osDestroyThread(int *target) {
  * sp-resident at -O1) and its static sibling at 0x43E4 (sp -0x20) into one
  * .s. Port of game_libs' copy gl___osLeoInterrupt (game_libs_ido53_6B0FC.c,
  * twin-finder.py 0.936; the +58 words were __osLeoAbnormalResume).
- *   D_80019644 = __osDiskHandle, __OSGlobalIntMask = __OSGlobalIntMask,
+ *   __osDiskHandle = __osDiskHandle, __OSGlobalIntMask = __OSGlobalIntMask,
  *   func_800048CC = __osLeoResume, func_800047E4 = abnormal-resume entry
  *   used by this copy, func_800056F0 = osEPiRawStartDma (post-addiu entry).
  * The old alabels func_80003E0C/3E54/3E64/3FF0/4030 and D_80003FE0 point
@@ -271,7 +271,7 @@ typedef struct LeoPiHandle_s {
     __OSTranxInfo transferInfo; /* 0x14 */
 } LeoPiHandle;
 
-extern LeoPiHandle *D_80019644;     /* __osDiskHandle */
+extern LeoPiHandle *__osDiskHandle;     /* __osDiskHandle */
 #define LEO_PI_STATUS (*(volatile u32 *)0xA4600010) /* PI_STATUS_REG */
 #define LEO_STATUS    (*(volatile u32 *)0xA5000508)
 #define LEO_BM_CTL    (*(volatile u32 *)0xA5000510) /* write CTL / read STATUS */
@@ -291,7 +291,7 @@ s32 __osLeoInterrupt(void)
     __OSBlockInfo *blockInfo;
 
     stat = 0;
-    info = &D_80019644->transferInfo;
+    info = &__osDiskHandle->transferInfo;
     blockInfo = &info->block[info->blockNum];
     pi_stat = LEO_PI_STATUS;
     if (pi_stat & 1) {
@@ -334,7 +334,7 @@ s32 __osLeoInterrupt(void)
         }
         blockInfo->dramAddr = (void *)((u32)blockInfo->dramAddr + blockInfo->sectorSize);
         info->sectorNum++;
-        func_800056F0(D_80019644, 1, 0x05000400, blockInfo->dramAddr,
+        func_800056F0(__osDiskHandle, 1, 0x05000400, blockInfo->dramAddr,
                       blockInfo->sectorSize);
         return 1;
     }
@@ -384,7 +384,7 @@ s32 __osLeoInterrupt(void)
                 info->cmdType = 2;
                 blockInfo->errStatus = 0;
             }
-            func_800056F0(D_80019644, 0, 0x05000000, blockInfo->C2Addr,
+            func_800056F0(__osDiskHandle, 0, 0x05000000, blockInfo->C2Addr,
                           blockInfo->sectorSize * 4);
             return 1;
         }
@@ -408,7 +408,7 @@ s32 __osLeoInterrupt(void)
                 func_800047E4();
                 return 1;
             }
-            func_800056F0(D_80019644, 0, 0x05000400, blockInfo->dramAddr,
+            func_800056F0(__osDiskHandle, 0, 0x05000400, blockInfo->dramAddr,
                           blockInfo->sectorSize);
             blockInfo->errStatus = 0;
             return 1;
@@ -430,7 +430,7 @@ void __osLeoAbnormalResume(void)
     __OSTranxInfo *info;
     volatile u32 pi_stat;
 
-    info = &D_80019644->transferInfo;
+    info = &__osDiskHandle->transferInfo;
     LEO_WAIT_ON_IOBUSY(pi_stat);
     LEO_BM_CTL = info->bmCtlShadow | 0x10000000;
     LEO_WAIT_ON_IOBUSY(pi_stat);

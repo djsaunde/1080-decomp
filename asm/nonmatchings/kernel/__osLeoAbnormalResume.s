@@ -1,8 +1,8 @@
 nonmatching __osLeoAbnormalResume, 0xE8
 
 glabel __osLeoAbnormalResume
-    /* 53E4 800043E4 3C0E8002 */  lui        $t6, %hi(D_80019644)
-    /* 53E8 800043E8 8DCE9644 */  lw         $t6, %lo(D_80019644)($t6)
+    /* 53E4 800043E4 3C0E8002 */  lui        $t6, %hi(__osDiskHandle)
+    /* 53E8 800043E8 8DCE9644 */  lw         $t6, %lo(__osDiskHandle)($t6)
     /* 53EC 800043EC 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* 53F0 800043F0 AFBF0014 */  sw         $ra, 0x14($sp)
     /* 53F4 800043F4 25CF0014 */  addiu      $t7, $t6, 0x14
