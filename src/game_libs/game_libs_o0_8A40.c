@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* -O0 Vec3 reader at 0x8A40. Mirrors bootup_uso stream_readVec3_0000F2EC:
  * same logical body, same s-reg/stack-offset encoding patch class.
@@ -72,7 +73,7 @@ void fs_gdlReadVec3_00008A40(Vec3 *dst) {
     Tri3i tmp;
     int pad_mid[2];
     register float *src;
-    gl_func_00000000(&D_00000000, &raw, 12);
+    gl_func_00000000(&gSysLib, &raw, 12);
     p1 = dst;
     tmp = raw;
     p2 = p1;

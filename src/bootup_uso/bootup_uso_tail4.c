@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -281,19 +282,19 @@ void Fader_buildTexture(char *arg0) {
 
 void stream_readS32_00013C70(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_00013CAC(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_00013CE8(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 

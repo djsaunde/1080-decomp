@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -43,18 +44,18 @@ typedef struct { int a, b, c, d; } Quad4;
  * truncated at 0x8944, game_libs_mid.c handles 0x8A40..0x949C. */
 void fs_gdlReadInt_00008944(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    gl_func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_00008990(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 0x10);
+    gl_func_00000000(&gSysLib, &buf, 0x10);
     *dst = buf;
 }
 
 void fs_gdlReadFloat_000089F4(float *dst) {
     float buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    gl_func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }

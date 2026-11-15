@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int gl_data_67470_addr;
@@ -435,7 +436,7 @@ void fs_gdlReadVec3_000637BC(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    gl_func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -696,12 +697,12 @@ extern int gl_func_00000000();
 extern int gl_func_00000000f(void *, void *, void *, float, float, int);
 extern int D_00000000;
 void Friction_hostioParms_00063E84(char *a0) {
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x22398, 0);
-    gl_func_00000000f(&D_00000000, (char*)&D_00000000 + 0x223A4,
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x22398, 0);
+    gl_func_00000000f(&gHostio, (char*)&D_00000000 + 0x223A4,
                       a0 + 0x150, 0.0f, 2.0f, 1);
-    gl_func_00000000f(&D_00000000, (char*)&D_00000000 + 0x223B0,
+    gl_func_00000000f(&gHostio, (char*)&D_00000000 + 0x223B0,
                       a0 + 0x154, 0.0f, 10.0f, 1);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
 }
 
@@ -2030,11 +2031,11 @@ void DNode_update(int *a0) {
  * refs (&D + offset -> lui; addiu), not literals (lui; ori). Decode the symbol
  * (docs/IDO_CODEGEN.md#feedback-return-const-lui-addiu-vs-lui-ori). Byte-exact. */
 void DNode_hostioParms(int *a0) {
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x2240C, 0);
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x22414);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x2240C, 0);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x22414);
     gl_func_00000000((char *)a0 + 0x108, 0);
-    gl_func_00000000(&D_00000000);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio);
+    gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
 }
 
@@ -2306,7 +2307,7 @@ void fs_gdlWriteInt_000663D0(int *a0) {
 extern int gl_func_00000000();
 void fs_read_00066404(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    gl_func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -3313,7 +3314,7 @@ int pad_func_00067394(int *a0, int a1) {
     int rv = func_00000000(a0, a1);
     a0[0x64/4] = rv;
     if (a1 >= 0) {
-        func_00000000(&D_00000000, a0);
+        func_00000000(&gSysLib, a0);
     } else {
         a1 = -a1;
     }
@@ -3366,7 +3367,7 @@ void pad_func_000674DC(int *a0) {
 int pad_func_00067510(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
-        return gl_func_00000000(&D_00000000, v - 1);
+        return gl_func_00000000(&gSysLib, v - 1);
     }
     return 0;
 }
@@ -3383,7 +3384,7 @@ int pad_func_00067510(int *a0) {
 int pad_testButton_00067550(int *a0) {
     int v0 = 0;
     if (a0[0x34 / 4] != 0) {
-        v0 = gl_func_00000000(&D_00000000, a0);
+        v0 = gl_func_00000000(&gSysLib, a0);
         return (1 << (a0[0x34 / 4] + 31)) & ((0, v0));
     }
     return v0;
@@ -4094,7 +4095,7 @@ void fs_gdlReadInt_000681F4(int *dst) {
 void fs_gdlReadVec3_00068230(Tri3i *dst) {
     int pad;
     Tri3i buf;
-    gl_func_00000000(&D_00000000, &buf, 0xC);
+    gl_func_00000000(&gSysLib, &buf, 0xC);
     *dst = buf;
     (void)pad;
 }
@@ -4166,7 +4167,7 @@ void BinFile_load_00068350(int *self) {
     if (*(int *)((char *)&D_00000000 + 4) == 0) {
         self[0] |= 1;
     } else {
-        self[1] = gl_func_00000000(&D_00000000, 1, 0);
+        self[1] = gl_func_00000000(&gSysLib, 1, 0);
     }
 }
 
@@ -4269,7 +4270,7 @@ extern int gl_func_00000000();
 extern int func_7C860();
 void BinFileMgr_vfn8_00068524(int *a0, int a1) {
     int s1, s0;
-    a0[0x2C/4] = (int)gl_func_00000000(&D_00000000, a1);
+    a0[0x2C/4] = (int)gl_func_00000000(&gSysLib, a1);
     func_7C860((int)&a0[0x34/4]);
     a0[0x30/4] = (int)gl_func_00000000(a0[0x34/4] << 4);
     if (a0[0x34/4] != 0) {

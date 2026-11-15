@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -11,22 +12,22 @@ extern int D_8AE4_mode;  /* = 0x34 in undefined_syms_auto.txt; bare-symbol read
 void app_launchGenProc(int a0, int a1, int a2, int a3) {
     register int rv;
 
-    gl_func_00000000(&D_00000000, *(int*)((char*)&D_00000000_a + 0x0));
-    gl_func_00000000(&D_00000000, *(int*)((char*)&D_00000000_a + 0xC));
+    gl_func_00000000(&gInputMgr, *(int*)((char*)&D_00000000_a + 0x0));
+    gl_func_00000000(&gInputMgr, *(int*)((char*)&D_00000000_a + 0xC));
 
     if (D_8AE4_mode == 3) {
-        gl_func_00000000(&D_00000000, *(int*)((char*)&D_00000000_a + 0x10));
+        gl_func_00000000(&gInputMgr, *(int*)((char*)&D_00000000_a + 0x10));
     }
 
     if (D_8AE4_mode != 2) {
-        gl_func_00000000(&D_00000000, *(int*)((char*)&D_00000000_a + 0x14));
+        gl_func_00000000(&gInputMgr, *(int*)((char*)&D_00000000_a + 0x14));
     }
 
     if ((D_8AE4_mode != 3) && (D_8AE4_mode != 5)) {
-        gl_func_00000000(&D_00000000, *(int*)((char*)&D_00000000_a + 0x18));
+        gl_func_00000000(&gInputMgr, *(int*)((char*)&D_00000000_a + 0x18));
     }
 
-    gl_func_00000000(&D_00000000, 3, 0, 0);
+    gl_func_00000000(&gInputMgr, 3, 0, 0);
     rv = gl_func_00000000(0, a1, a2, a3);
     gl_func_00000000(a0, 0, rv);
 }

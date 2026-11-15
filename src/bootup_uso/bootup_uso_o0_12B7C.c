@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* Run 10 members (now covers 0x12818..0x12BF8). */
 
@@ -49,7 +50,7 @@ void settings_set8_00012818(char *a0, char *a1) {
         (*(char**)(a0 + 0x154))[i + 6] = a1[i];
     } while (++i < 8);
 
-    unused = &D_00000000;
+    unused = &gSysLib;
 
     if (*(int*)0xA0000200 == 0xAC290000) {
         func_00000000(a0);

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* -O0 accessor cluster at 0xF1F0..0xF38F. Split out of bootup_uso.c so
  * these wrappers build at -O0, matching their original frame +
@@ -20,19 +21,19 @@ typedef struct { float x, y, z; } Vec3;
 
 void stream_readS32_0000F1F0(int *a0) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *a0 = buf[0];
 }
 
 void stream_readF32_0000F23C(float *a0) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *a0 = buf[0];
 }
 
 void stream_readQuad_0000F288(Quad4 *a0) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *a0 = buf;
 }
 
@@ -75,7 +76,7 @@ void stream_readVec3_0000F2EC(Vec3 *dst) {
     Tri3i tmp;
     register float *src;
     int pad_lo[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     p1 = dst;
     tmp = raw;
     p2 = p1;

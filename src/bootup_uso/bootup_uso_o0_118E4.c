@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -19,7 +20,7 @@ void game_loadUso(int *head_holder, int data) {
     node[1] = head_holder[0x130 / 4];
     head_holder[0x130 / 4] = (int)node;
     node[0] = data;
-    func_00000000(&D_00000000, node[0]);
+    func_00000000(&gSysLib, node[0]);
 }
 
 /* game_unloadUso: walk the arg0->0x130 singly-linked list; for the first node
@@ -39,7 +40,7 @@ void game_unloadUso(int *arg0, void *arg1) {
                 } else {
                     prev[1] = node[1];
                 }
-                func_00000000(&D_00000000, ((int *)node)[0]);
+                func_00000000(&gSysLib, ((int *)node)[0]);
                 func_00000000(node);
                 return;
             }

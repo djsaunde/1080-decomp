@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "gdl/hud.h"
 #include "gdl/backup.h"
 
@@ -35,7 +36,7 @@ void fs_gdlReadVec3_000096EC(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    gl_func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -48,7 +49,7 @@ void fs_gdlReadVec3_000096EC(Vec3 *dst) {
  * jr-ra sequences), split via scripts/split-fragments.py. */
 void fs_gdlReadQuad_0000975C(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 0x10);
+    gl_func_00000000(&gSysLib, &buf, 0x10);
     *dst = buf;
 }
 
@@ -2031,7 +2032,7 @@ void fs_gdlReadVec3_0000C714(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    gl_func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -39,7 +40,7 @@ void PauseMenu_func_0001034C(char *a0) {
     s = a0;
     *(int*)(s + 0x38) += 1;
     if (*(int*)(a0 + 0x80) == 0) {
-        if (func_00000000(&D_00000000, 0x2004) != 0) {
+        if (func_00000000(&gInputMgr, 0x2004) != 0) {
             func_00000000(1);
             counter = 0;
             if (*(int*)(a0 + 0x78) > 0) {
@@ -57,7 +58,7 @@ void PauseMenu_func_0001034C(char *a0) {
         }
     }
     if (*(int*)(a0 + 0x80) == 0) {
-        if (func_00000000(&D_00000000, 0x8008) != 0) {
+        if (func_00000000(&gInputMgr, 0x8008) != 0) {
             func_00000000(1);
             counter = 0;
             if (*(int*)(a0 + 0x78) > 0) {

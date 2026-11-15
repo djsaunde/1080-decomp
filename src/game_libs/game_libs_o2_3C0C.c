@@ -22,6 +22,7 @@
  *  - the two float calls are prototyped blanks: (obj, f32, f32) with mfc1
  *    a1/a2 and an f32-returning no-arg blank. */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -65,7 +66,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
             gl_func_00000000_i3ff((int)slot, 160, arg2 + 90, 1.0f, 1.0f);
             p->slot->unkA0 = 0;
             p->slot->unk7C = 1;
-            q = (s32 *)(*(char **)(*(char **)((char *)&D_00000000 + 0x138) + 0x44) + 0x14);
+            q = (s32 *)(*(char **)(*(char **)((char *)&gInputMgr + 0x138) + 0x44) + 0x14);
             *q += arg1;
             if (arg3 != 0) {
                 p->slot->unk94 = 3;

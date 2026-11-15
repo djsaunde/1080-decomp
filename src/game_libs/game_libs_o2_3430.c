@@ -18,6 +18,7 @@
  *  - see the comment above the game_libs.c placeholder for the field-level
  *    spellings (PASS-3/4). */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
@@ -76,7 +77,7 @@ void PointsGadget_update_00003430(char *arg0) {
                 if (FW(s0, 0x78) < 0) {
                     FW(s0, 0x78) = 0;
                     FW(s0, 0x94) = 0;
-                    p = (s32 *)(FW(*(char **)((char *)&D_00000000 + 0x138), 0x44) + 0x18);
+                    p = (s32 *)(FW(*(char **)((char *)&gInputMgr + 0x138), 0x44) + 0x18);
                     *p = FW(s0, 0x98) + *p;
                 }
             }

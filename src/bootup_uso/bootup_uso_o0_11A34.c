@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -12,7 +13,7 @@ void GameFlow_unloadUso_00011A34(char *a0) {
     if ((cur = *(char**)(a0 + 0x130)) != 0) {
         do {
             next = *(char**)(cur + 4);
-            func_00000000(&D_00000000, *(int*)cur);
+            func_00000000(&gSysLib, *(int*)cur);
             func_00000000(cur);
         } while ((cur = next) != 0);
     }

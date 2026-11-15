@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "gdl/node.h"
 #include "gdl/mem.h"
 #include "gdl/dlctx.h"
@@ -1406,7 +1407,7 @@ L1:
     gl_func_00000000(&gl_ref_0001E608);
     goto end;
 L0:
-    return gl_func_00000000(&D_00000000, a1, a2);
+    return gl_func_00000000(&gHostio, a1, a2);
 L2: {
         Msg35440 s;
         char buf[24];
@@ -2032,10 +2033,10 @@ void coll_nop_00035FCC(void) {}
  * direct jal (the cast was the lui t9; jalr residual). */
 extern int gl_func_00000000_35fd4f(char *, char *, int, float, float, int);
 void BallRotator_hostioParms(char *a0) {
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1E9F4, 0);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1E9F4, 0);
     gl_func_00000000_35fd4f(
-        (char *)&D_00000000, (char *)&D_00000000 + 0x1EA00, (int)a0 + 0x44, 10.0f, 400.0f, 0);
-    gl_func_00000000(&D_00000000);
+        (char *)&gHostio, (char *)&D_00000000 + 0x1EA00, (int)a0 + 0x44, 10.0f, 400.0f, 0);
+    gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
 }
 
@@ -2888,7 +2889,7 @@ void Spinner_update(int *a0) {
 /* Spinner_hostioParms: 21-insn 2-call helper. */
 extern int gl_proto_3787C(void*, void*, void*, int, float, int);
 void Spinner_hostioParms(void *a0) {
-    gl_proto_3787C(&D_00000000, (char*)&D_00000000 + 0x1EA18,
+    gl_proto_3787C(&gHostio, (char*)&D_00000000 + 0x1EA18,
                    (char*)a0 + 0x2C, 0xC0C00000, 6.0f, 0);
     gl_func_00000000(a0);
 }
@@ -3177,7 +3178,7 @@ void fs_gdlReadVec3_00037C70(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    gl_func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -3192,7 +3193,7 @@ void fs_gdlReadVec3_00037C70(Vec3 *dst) {
 struct gl_func_00037CE0_Six { int a, b, c, d, e, f; };
 void fs_gdlRead24_00037CE0(struct gl_func_00037CE0_Six *a0) {
     struct gl_func_00037CE0_Six buf;
-    func_00000000(&D_00000000, &buf, 24);
+    func_00000000(&gSysLib, &buf, 24);
     *a0 = buf;
 }
 
@@ -3227,7 +3228,7 @@ void fs_gdlWriteVec3_00037D48(int *a0) {
     volatile int padC[3];
     *(Tri3i *)tmp = *(Tri3i *)a0;
     fbuf[0] = tmp[0]; fbuf[1] = tmp[1]; fbuf[2] = tmp[2];
-    func_00000000(&D_00000000, fbuf, 12);
+    func_00000000(&gSysLib, fbuf, 12);
     (void)padA;
     (void)padB;
     (void)padC;
@@ -3244,7 +3245,7 @@ struct gl_func_00037DA8_Six { int a, b, c, d, e, f; };
 void fs_gdlWrite24_00037DA8(struct gl_func_00037DA8_Six *a0) {
     struct gl_func_00037DA8_Six local;
     local = *a0;
-    gl_func_00000000(&D_00000000, &local, 0x18);
+    gl_func_00000000(&gSysLib, &local, 0x18);
 }
 
 extern int gl_func_00000000();
@@ -3259,7 +3260,7 @@ void fs_gdlReadInt_00037E04(int *dst) {
  * 4-function bundle. */
 void fs_gdlReadQuad_00037E40(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 0x10);
+    gl_func_00000000(&gSysLib, &buf, 0x10);
     *dst = buf;
 }
 
@@ -3547,7 +3548,7 @@ extern int D_00000000_f;
 void Node_Save(char *o) {
     char *r;
     gl_func_00000000(&D_00000000_c, 0);
-    if (gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001EC20,
+    if (gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x0001EC20,
                          (char *)&D_00000000 + 0x0001EC28, &D_00000000_d, 0)) {
         if (gl_func_00000000(&D_00000000_e, &D_00000000_f,
                              (char *)&D_00000000 + 0x0001EC30)) {
@@ -3649,7 +3650,7 @@ void Node_hostioLink(int *arg0) {
         }
         *a2 = (int)((char *)&D_00000000 + 0x1EB40);
     }
-    gl_func_00000000((char *)&D_00000000, saved, a2);
+    gl_func_00000000((char *)&gHostio, saved, a2);
 }
 
 // Node_hostioParms — STRUCTURAL PASS (0x238 / 142 words, no episode).
@@ -3702,11 +3703,11 @@ typedef struct { int a, b; } Pair38360;
 void Node_hostioParms(char *arg0) {
     int *v1b, *a2, *v1, *a1;
     char *p18;
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC34, 0);
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC3C, arg0 + 0x1C, 0);
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC40, arg0 + 0x20, 0);
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC44, p18 = arg0 + 0x18, 8);
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC50, p18, 4);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC34, 0);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC3C, arg0 + 0x1C, 0);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC40, arg0 + 0x20, 0);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC44, p18 = arg0 + 0x18, 8);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC50, p18, 4);
     a2 = (int *)gl_func_00000000(0x10);
     if (a2 != 0) {
         v1 = a2;
@@ -3720,7 +3721,7 @@ void Node_hostioParms(char *arg0) {
         }
         *a2 = (int)((char *)&D_00000000 + 0x1EB40);
     }
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC5C, a2, 1);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC5C, a2, 1);
     a2 = (int *)gl_func_00000000(0x18);
     if (a2 != 0) {
         v1 = a2;
@@ -3739,8 +3740,8 @@ void Node_hostioParms(char *arg0) {
         a2[4] = 0;
         a2[5] = 0;
     }
-    gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC64, a2, 1);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x1EC64, a2, 1);
+    gl_func_00000000(&gHostio);
 }
 
 // Node_updateChildren — STRUCTURAL PASS (0xA4 / 41 words, no episode).
@@ -4301,12 +4302,12 @@ int MNode_updateChildren(int *root) {
 }
 
 void MNode_hostioParms(char *a0) {
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECD0, 0);
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECD8, a0 + 0xB0, 0);
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECE0, a0 + 0x2C, 0);
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECE8, a0 + 0x30, 0x3C);
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECEC, a0 + 0x70, 0x3C);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ECD0, 0);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ECD8, a0 + 0xB0, 0);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ECE0, a0 + 0x2C, 0);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ECE8, a0 + 0x30, 0x3C);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ECEC, a0 + 0x70, 0x3C);
+    gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
 }
 
@@ -4772,17 +4773,17 @@ extern char D_39C8C_max;  /* distinct base (=0) so the 0x1A80 max-bound load
                              gets a fresh lui+lwc1 instead of CSE-reusing $s0 */
 void SNode_hostioParms(int *a0) {
     extern int gl_proto_39C8C(void*, void*, void*, float, float, int);
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECFC, 0);
-    gl_func_00000000(&D_00000000, a0, 19);
-    gl_proto_39C8C(&D_00000000, (char*)&D_00000000 + 0x1ED04, (char*)a0 + 0x70, 0.01f, 100.0f, 1);
-    gl_proto_39C8C(&D_00000000, (char*)&D_00000000 + 0x1ED0C, (char*)a0 + 0x74, -180.0f, 180.0f, 1);
-    gl_proto_39C8C(&D_00000000, (char*)&D_00000000 + 0x1ED14, (char*)a0 + 0x78, -180.0f, 180.0f, 1);
-    gl_proto_39C8C(&D_00000000, (char*)&D_00000000 + 0x1ED1C, (char*)a0 + 0x7C, -180.0f, 180.0f, 1);
-    gl_proto_39C8C(&D_00000000, (char*)&D_00000000 + 0x1ED24, (char*)a0 + 0x6C, -500.0f, 500.0f, 1);
-    gl_proto_39C8C(&D_00000000, (char*)&D_00000000 + 0x1ED2C, (char*)a0 + 0x80, 0.0f, *(float*)((char*)&D_39C8C_max + 0x1A80), 1);
-    gl_func_00000000(&D_00000000, 0, 0);
-    gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ED34, (char*)a0 + 0x2C, 0);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ECFC, 0);
+    gl_func_00000000(&gHostio, a0, 19);
+    gl_proto_39C8C(&gHostio, (char*)&D_00000000 + 0x1ED04, (char*)a0 + 0x70, 0.01f, 100.0f, 1);
+    gl_proto_39C8C(&gHostio, (char*)&D_00000000 + 0x1ED0C, (char*)a0 + 0x74, -180.0f, 180.0f, 1);
+    gl_proto_39C8C(&gHostio, (char*)&D_00000000 + 0x1ED14, (char*)a0 + 0x78, -180.0f, 180.0f, 1);
+    gl_proto_39C8C(&gHostio, (char*)&D_00000000 + 0x1ED1C, (char*)a0 + 0x7C, -180.0f, 180.0f, 1);
+    gl_proto_39C8C(&gHostio, (char*)&D_00000000 + 0x1ED24, (char*)a0 + 0x6C, -500.0f, 500.0f, 1);
+    gl_proto_39C8C(&gHostio, (char*)&D_00000000 + 0x1ED2C, (char*)a0 + 0x80, 0.0f, *(float*)((char*)&D_39C8C_max + 0x1A80), 1);
+    gl_func_00000000(&gHostio, 0, 0);
+    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x1ED34, (char*)a0 + 0x2C, 0);
+    gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
 }
 
@@ -5160,7 +5161,7 @@ void fs_gdlReadInt_0003A9AC(int *dst) {
  * Quad4-reader signature in feedback_uso_accessor_template_reuse.md. */
 void fs_gdlReadQuad_0003A9E8(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 0x10);
+    gl_func_00000000(&gSysLib, &buf, 0x10);
     *dst = buf;
 }
 
@@ -7573,14 +7574,14 @@ void ItemMgr_saveData(void *a0) {
       if (*((int *) (((char *) node) + 0x10)) != 0) {
         int *vt;
         gl_ref_000516A0(((char *) node) + 0x2C);
-        hA = gl_func_00000000(&D_00000000, 1, 0);
+        hA = gl_func_00000000(&gSysLib, 1, 0);
         gl_ref_0005166C(&hA);
         vt = *((int **) (((char *) node) + 0x28));
         (*((void (**)()) (((char *) vt) + 0x44)))((*((short *) (((char *) vt) + 0x40))) + ((int) node));
-        hB = (gl_func_00000000(&D_00000000, 1, 0) - hA) - 4;
-        gl_func_00000000(&D_00000000, 0, hA);
+        hB = (gl_func_00000000(&gSysLib, 1, 0) - hA) - 4;
+        gl_func_00000000(&gSysLib, 0, hA);
         gl_ref_0005166C(&hB);
-        gl_func_00000000(&D_00000000, 1, hB);
+        gl_func_00000000(&gSysLib, 1, hB);
       }
       node = *((int **) (((char *) node) + 0x30));
   }
@@ -7945,10 +7946,10 @@ void ItemMgr_changeType(void *a0) {
     char *o2;
     int *p1, *p2;
     *(Tag3E9C8 *)&key = *(Tag3E9C8 *)((char *)&D_00000000 + 0x0001F34C);
-    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001F350, &key)) return;
+    if (!gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x0001F350, &key)) return;
     k1.w = key.w; o1 = (char *)gl_func_00000000(a0, k1);
     if (!o1) return;
-    if (!gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001F358, &key)) return;
+    if (!gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x0001F358, &key)) return;
     k2.w = key.w; o2 = (char *)gl_func_00000000(a0, k2);
     if (!o2) return;
     p1 = (int *)(o1 + 0x2C);
@@ -8758,7 +8759,7 @@ int hostio_msg2F_0003F82C(int a0, int a1) {
     marker = 0x2F;
     gl_func_00000000(&marker);
     gl_func_00000000(buf1, a1);
-    gl_func_00000000(&D_00000000, buf1, 0x100);
+    gl_func_00000000(&gSysLib, buf1, 0x100);
     return 1;
 }
 
@@ -8875,7 +8876,7 @@ int hostio_writeFile(int a0, int a1, int a2) {
     *(int*)&buf[0] = 31;
     *(int*)&buf[0x4C] = a2;
     gl_func_00000000(&buf);
-    gl_func_00000000(&D_00000000, a1, a2);
+    gl_func_00000000(&gSysLib, a1, a2);
     return a2;
 }
 
@@ -9032,7 +9033,7 @@ void hostio_sendImage(void *a0, int a1, int a2, int a3, int a4) {
     if (a1 == 0x508) sz += 0x200;
     s.size = sz;
     gl_func_00000000(&s);
-    gl_func_00000000(&D_00000000, a2, sz);
+    gl_func_00000000(&gSysLib, a2, sz);
     gl_func_00000000(&s);
 }
 
@@ -9575,12 +9576,12 @@ void QNode_handleMsg(char *a0, int *a1) {
 //   Byte-match deferred. Name pre-checked: no extern reuse.
 extern int D_00000000;
 void QNode_hostioParms(char *a0) {
-    char *g = (char *)&D_00000000;
+    char *g = (char *)&gHostio;
     gl_func_00000000(g, (char *)&D_00000000 + 0x0001F494, 0);
     gl_func_00000000(g, (char *)&D_00000000 + 0x0001F49C, a0 + 0xB4, 0x3C);
     gl_func_00000000(g, (char *)&D_00000000 + 0x0001F4A0, a0 + 0xDC, 0x3C);
     gl_func_00000000(g, (char *)&D_00000000 + 0x0001F4A8, a0 + 0xB0, 0);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
 }
 
@@ -10590,7 +10591,7 @@ int dbg_func_00042540(int a0) {
  * gl_func(&D, &buf, 16). Writer counterpart of the int-reader template. */
 void fs_gdlWriteQuad_00042570(Quad4 *src) {
     Quad4 buf = *src;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    gl_func_00000000(&gSysLib, &buf, 16);
 }
 
 extern int gl_func_00000000();
@@ -17095,7 +17096,7 @@ void fs_gdlReadInt_0004E4E8(int *dst) {
  * 0x4E57C, 0x84) -- see the note on that function. */
 void fs_gdlReadQuad_0004E524(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    gl_func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -18486,7 +18487,7 @@ void fs_gdlReadInt_000515C0(int *dst) {
  * 0x40) -- see the note on that function. */
 void fs_gdlReadQuad_000515FC(Quad4 *dst) {
     volatile Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    gl_func_00000000(&gSysLib, &buf, 16);
     *dst = *(Quad4*)&buf;
 }
 
@@ -24405,13 +24406,13 @@ extern int D_00000000;
 extern void gl_proto_5c810(int, int, int, float, float, int);
 void math_logFloatDiffs(int obj, float a, float b, float c, float d, float e, float f) {
     if (a != b) {
-        gl_proto_5c810((int)&D_00000000, (int)((char *)&D_00000000 + 0x21B1C), obj, a, b, 0);
+        gl_proto_5c810((int)&gHostio, (int)((char *)&D_00000000 + 0x21B1C), obj, a, b, 0);
     }
     if (c != d) {
-        gl_proto_5c810((int)&D_00000000, (int)((char *)&D_00000000 + 0x21B20), obj + 4, c, d, 0);
+        gl_proto_5c810((int)&gHostio, (int)((char *)&D_00000000 + 0x21B20), obj + 4, c, d, 0);
     }
     if (e != f) {
-        gl_proto_5c810((int)&D_00000000, (int)((char *)&D_00000000 + 0x21B24), obj + 8, e, f, 0);
+        gl_proto_5c810((int)&gHostio, (int)((char *)&D_00000000 + 0x21B24), obj + 8, e, f, 0);
     }
 }
 
@@ -26149,13 +26150,13 @@ void MemTracker_printTree(int *a0) {
     ratio = (float)(u32)a0[0x8 / 4] / (f32)1024;
     *(float *)((char *)a0 + 0xC) = ratio;
     gl_func_00000000(buf, (char *)&D_00000000 + 0x21C7C, (char *)a0 + 0x24, (double)ratio);
-    gl_func_00000000(&D_00000000, buf, 0);
+    gl_func_00000000(&gHostio, buf, 0);
     s0 = (int*)a0[0x18 / 4];
     while (s0 != 0) {
         gl_func_00000000(s0);
         s0 = (int*)s0[0x14 / 4];
     }
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio);
 }
 
 /* memtrack_find: 22-insn 2-call pick wrapper, BYTE-EXACT 2026-10-14 (was NM
@@ -27587,7 +27588,7 @@ void anim_createAnimator(int *arg0) {
  * 0003A9E8/0000975C/00037E40. Standard 22-insn body. */
 void fs_gdlReadQuad_00061F18(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 0x10);
+    gl_func_00000000(&gSysLib, &buf, 0x10);
     *dst = buf;
 }
 
@@ -27717,7 +27718,7 @@ int AnimDataMgr_loadAsync_00062194(char *self, int a1, unsigned int a2, unsigned
 extern int gl_func_00000000();
 void AnimDataMgr_wait_00062298(int a0, int a1) {
     if (a1 != -1) {
-        gl_func_00000000(&D_00000000);
+        gl_func_00000000(&gSysLib);
     }
 }
 

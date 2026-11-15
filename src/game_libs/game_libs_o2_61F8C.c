@@ -18,6 +18,7 @@
  *  - `base[1]` with base = &D_00000000 constant-folds to a fresh lui t0; a
  *    volatile read through the s3 base keeps the target's `lw t0,4(s3)`. */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -33,7 +34,7 @@ void AnimData_load(char *self) {
     int n;
     int buf;
 
-    base = &D_00000000;
+    base = &gSysLib;
     *(s16 *)(self + 0) = 0;
     for (;;) {
         gl_ref_0007644C(&cmd);

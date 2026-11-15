@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* -O0 cluster at offsets 0xF390..0xF6C3. -O0 wrappers split out of
  * bootup_uso.c so they build at -O0 (matching the originals' frame +
@@ -11,7 +12,7 @@ extern char D_00000000;
 extern char D_0000C574;
 
 void input_ctor_0000F390(void) {
-    register char *p = &D_00000000;
+    register char *p = &gInputMgr;
     func_00000000(p, &D_0000C574);
 }
 

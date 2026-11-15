@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "game/snowboarder.h"
 #include "game/camera.h"
 #include "audio.h"
@@ -36,13 +37,13 @@ extern char D_00000000;
 
 void func_00000008(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void func_00000044(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -54,7 +55,7 @@ void func_00000080(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -64,7 +65,7 @@ void func_00000080(Vec3 *dst) {
 typedef struct { int a, b, c, d; } Quad4;
 void func_000000F0(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -1021,13 +1022,13 @@ void U64BGWall_func_00001A44(char *a0) {
 
 void stream_readS32_00001C10(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_00001C4C(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -1038,7 +1039,7 @@ void stream_readVec3_00001C88(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1047,13 +1048,13 @@ void stream_readVec3_00001C88(Vec3 *dst) {
 
 void stream_readS32_00001CF8(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_00001D34(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -1281,13 +1282,13 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
 
 void stream_readS32_000022E0(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000231C(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -1298,7 +1299,7 @@ void stream_readVec3_00002358(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1307,7 +1308,7 @@ void stream_readVec3_00002358(Vec3 *dst) {
 
 void stream_readQuad_000023C8(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -2568,9 +2569,9 @@ void game_setupVsCpu(char *s1, int a1) {
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 0);
     o2 = t;
-    func_00000000(&D_00000000, o1);
-    func_00000000(&D_00000000, o2);
-    func_00000000(&D_00000000, o1, 0);
+    func_00000000(&gInputMgr, o1);
+    func_00000000(&gInputMgr, o2);
+    func_00000000(&gInputMgr, o1, 0);
     r = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
                              o1, *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50) | 1 | 0x10000 | 0x40000, 0x1B);
@@ -2620,9 +2621,9 @@ void game_setupVs2P(char *s1, int a1) {
     if (t != 0) func_00000000(t, 2);
     o[1] = t;
     if (1) { }
-    func_00000000(&D_00000000, o[0]);
-    func_00000000(&D_00000000, t);
-    func_00000000(&D_00000000, o[0], t);
+    func_00000000(&gInputMgr, o[0]);
+    func_00000000(&gInputMgr, t);
+    func_00000000(&gInputMgr, o[0], t);
     r1 = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
                              o[0], *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50), 0x15);
@@ -2715,7 +2716,7 @@ void game_setupDemoRace(char *s1, int a1) {
     o1 = t;
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 0);
-    func_00000000(&D_00000000, o1);
+    func_00000000(&gInputMgr, o1);
     func_00000000(&bu_411c_d00_b, t);
     idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);
     idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;
@@ -2782,7 +2783,7 @@ void game_setupDemoSplit(char *s0, int a1) {
     o1 = t;
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 0);
-    func_00000000(&D_00000000, o1);
+    func_00000000(&gInputMgr, o1);
     func_00000000(&bu_43d4_d00_b, t);
     idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);
     idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;
@@ -2924,13 +2925,13 @@ void cam_func_00004948(char *obj) {
 
 void stream_readS32_00004FF0(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readS32_0000502C(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -3708,7 +3709,7 @@ void item_registerTemplates(char *b) {
 
 void stream_readS32_00005EF8(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -3795,13 +3796,13 @@ char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
 
 void stream_readF32_00006100(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_0000613C(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -3812,7 +3813,7 @@ void stream_readVec3_00006194(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -5038,10 +5039,10 @@ void Snower_display(int *a0) {
 extern char D_00007FD4;
 extern char D_00007FDC;
 void Snower_hostioParms(int *a0) {
-    func_00000000(&D_00000000, &D_00007FD4, 0);
-    func_00000000(&D_00000000, &D_00007FDC, (int)a0 + 0x6C, 1);
+    func_00000000(&gHostio, &D_00007FD4, 0);
+    func_00000000(&gHostio, &D_00007FDC, (int)a0 + 0x6C, 1);
     func_00000000((int)a0 + 0x3C, 0);
-    func_00000000(&D_00000000);
+    func_00000000(&gHostio);
     func_00000000(a0);
 }
 /* Status 2026-05-18: build-path tested. 30/30 insns, build/.o vs
@@ -5315,7 +5316,7 @@ int game_isUsoLoaded(int a0) {
 
 int game_loadUsoOnce(int arg0) {
     if (func_00000000(arg0) == 0) {
-        func_00000000(&D_00000000, arg0);
+        func_00000000(&gInputMgr, arg0);
         return 1;
     }
     return 0;
@@ -5323,13 +5324,13 @@ int game_loadUsoOnce(int arg0) {
 
 void stream_readS32_000089C0(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void func_000089FC(short *dst) {
     short buf[4];
-    func_00000000(&D_00000000, buf, 2);
+    func_00000000(&gSysLib, buf, 2);
     *dst = buf[0];
 }
 
@@ -5338,7 +5339,7 @@ void func_00008A38(int a0) {
 
 void func_00008A40(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -5349,7 +5350,7 @@ void func_00008A7C(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -5358,7 +5359,7 @@ void func_00008A7C(Vec3 *dst) {
 
 void func_00008AEC(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -8949,13 +8950,13 @@ void SnowBoard_func_0000E800(void) {
 
 void stream_readS32_0000E8BC(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000E8F8(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -8966,7 +8967,7 @@ void stream_readVec3_0000E934(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -8975,7 +8976,7 @@ void stream_readVec3_0000E934(Vec3 *dst) {
 
 void stream_readQuad_0000E9A4(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -9085,13 +9086,13 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
 
 void stream_readS32_0000EC80(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000ECBC(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -9102,7 +9103,7 @@ void stream_readVec3_0000ECF8(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -9111,7 +9112,7 @@ void stream_readVec3_0000ECF8(Vec3 *dst) {
 
 void stream_readQuad_0000ED68(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -9180,13 +9181,13 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
 
 void stream_readS32_0000EF20(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000EF5C(float *dst) {
     float buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -9197,7 +9198,7 @@ void stream_readVec3_0000EF98(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&D_00000000, &raw, 12);
+    func_00000000(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -9206,7 +9207,7 @@ void stream_readVec3_0000EF98(Vec3 *dst) {
 
 void stream_readQuad_0000F008(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -9236,13 +9237,13 @@ void boot_readIntParm_0000F0F0(char *a0) {
 
 void stream_readS32_0000F120(int *dst) {
     int buf[2];
-    func_00000000(&D_00000000, buf, 4);
+    func_00000000(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_0000F15C(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&D_00000000, &buf, 16);
+    func_00000000(&gSysLib, &buf, 16);
     *dst = buf;
 }
 

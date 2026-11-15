@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -73,8 +74,8 @@ extern int gl_func_00000000();
 extern char D_0000D150;
 void app_launchViewRec(int a0, int a1, int a2, int a3) {
     register int rv;
-    gl_func_00000000(&D_00000000, &D_0000D150);
-    gl_func_00000000(&D_00000000, 8, 0, 0);
+    gl_func_00000000(&gInputMgr, &D_0000D150);
+    gl_func_00000000(&gInputMgr, 8, 0, 0);
     rv = gl_func_00000000(0, a1, a2, a3);
     gl_func_00000000(a0, 1, rv);
 }
@@ -182,7 +183,7 @@ void app_runProcess(int a0, int a1, int *a2) {
     register char *p;     /* s2 */
     D_w0 = gl_func_00000000(a2, a1);
     obj = a2;
-    base = (char *)&D_00000000;
+    base = (char *)&gInputMgr;
     p = base + 0x10;
     gl_func_00000000(p, obj);
     if (*(int *)((char *)obj + 0x14) != 0) {
