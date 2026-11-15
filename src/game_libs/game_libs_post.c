@@ -6992,6 +6992,11 @@ s32 AudioLoad_ProcessSamplePreloads(s32 resetStatus) {
 #undef osRecvMesg
 #undef AudioLoad_StartAsyncLoad
 
+/* From here on gAudioCtx is the include/audio.h AudioContext laid over the
+ * bootup.uso audio data block (section base D_00000000 + 0): the field form
+ * keeps the symbol and the offset, so the HI16/LO16 relocations are unchanged. */
+#define gAudioCtx (*(AudioContext *)&D_00000000)
+
 // Add a0 to the pointer array a2[0..a1) if its key (a0[1]) isn't already
 // present (matched against a2[i][1]); append + bump count when absent.
 // Returns the resulting count. BYTE-EXACT: current C emits the target's
@@ -7257,14 +7262,14 @@ void AudioThread_ProcessGlobalCmd(unsigned char *cmd) {
  * keeps the full &D + a0*352 + 0x2D00 materialization (small field offsets);
  * computed after the if, the +0x2D00 folds into every access offset. */
 void AudioThread_SetFadeOutTimer(int a0, int a1) {
-    char *base;
-    base = (char *)&D_00000000 + a0 * 352 + 0x2D00;
+    SequencePlayer *player;
+    player = (SequencePlayer *)((char *)&D_00000000 + a0 * 352 + 0x2D00); /* &gAudioCtx.seqPlayers[a0] */
     if (a1 == 0) {
         a1 = 1;
     }
-    base[1] = 2;
-    *(short *)(base + 0x12) = a1;
-    *(float *)(base + 0x20) = -(*(float *)(base + 0x1C) / (float)a1);
+    player->state = 2;
+    player->fadeTimer = a1;
+    player->fadeVelocity = -(player->fadeVolume / (float)a1);
 }
 
 void AudioThread_SetFadeInTimer(int a0, int a1) {
@@ -7705,7 +7710,7 @@ int AudioThread_GetChannelIO(int a0, int a1, int a2) {
 }
 
 signed char AudioThread_GetSeqPlayerIO(int a0, int a1) {
-    return *(signed char *)((char *)&D_00000000 + a0 * 352 + a1 + 0x2E58);
+    return gAudioCtx.seqPlayers[a0].seqScriptIO[a1];
 }
 
 // AudioThread_InitExternalPool — STRUCTURAL PASS (0x1CC / 115 words, no episode).
@@ -10212,7 +10217,7 @@ void AudioSeq_InitSequenceChannel(char *obj) {
     int c, i;
     char *v1;
 
-    if (obj == (char *)&D_00000000 + 0x5280) {
+    if (obj == (char *)&gAudioCtx.sequenceChannelNone) {
         return;
     }
     p = (unsigned char *)obj;
@@ -10317,7 +10322,7 @@ int AudioSeq_SeqChannelSetLayer(char *base, int idx) {
     if (s != 0) {
         gl_func_0001CA10(s);
     } else {
-        no = (char *)gl_func_0001CA10((char *)&D_00000000 + 0x5368);
+        no = (char *)gl_func_0001CA10((char *)&gAudioCtx.layerFreeList);
         if (no == 0) {
             *(int *)(slot + 0x50) = 0;
             return -1;
@@ -10389,7 +10394,7 @@ void AudioSeq_SeqLayerDisable(unsigned char *a0) {
 void AudioSeq_SeqLayerFree(int **a0, int a1) {
     int *obj = a0[a1 + 0x14];
     if (obj != 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x5368, (char*)obj + 0x70);
+        gl_func_00000000((char *)&gAudioCtx.layerFreeList, (char*)obj + 0x70);
         gl_func_00000000(obj);
         a0[a1 + 0x14] = 0;
     }
@@ -10539,7 +10544,7 @@ unsigned short a1;
 //   as1 scheduler tie. gl_func_00000000 = canonical USO placeholder callee.
 extern int gl_func_00000000();
 void AudioSeq_SequencePlayerDisableChannels(char *arg0, s32 arg1) {
-    s32 dflt = (s32)((char *)&D_00000000 + 0x5280);
+    s32 dflt = (s32)&gAudioCtx.sequenceChannelNone;
     s32 var_s0;
     char *var_s1;
 
@@ -12611,7 +12616,7 @@ void snd_PlayPlayer1Seq_2DE24(unsigned char a0, int a1) {
 extern int gl_func_00000000();
 extern int D_00000000;
 void snd_StopPlayer1Seq_2DE9C(void) {
-    if ((unsigned int)*(int*)((char*)&D_00000000 + 0x2E60) >> 31) {
+    if (gAudioCtx.seqPlayers[1].enabled) {
         gl_func_00000000(0x83010000, 0);
     }
 }
@@ -12656,7 +12661,7 @@ void snd_PlayPlayer2Seq_2DEF4(int a0, int a1) {
  * mtc1 a1,$f12 (0x2DF64, the next function's stolen prologue that splat lumped into
  * DF38's symbol) was split off as game_libs_func_0002DF64 (1 word). */
 void snd_StopPlayer0Seq_2DF30(void) {
-    if ((unsigned int)*(int*)((char*)&D_00000000 + 0x2D00) >> 31) {
+    if (gAudioCtx.seqPlayers[0].enabled) {
         gl_func_00000000(0x83000000, 0);
     }
 }
