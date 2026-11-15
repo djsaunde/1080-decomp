@@ -15,8 +15,8 @@
 extern void gl_ref_00034810(char *, ...);
 extern int gl_ref_00034240();
 extern int D_00000000;
-extern int D_6170C_idx;
-extern int D_6170C_arr[];
+extern int gSysImDepth_6170C_idx;
+extern int gSysImStack_6170C_arr[];
 /* console_itoa: one C function spans the original 0x610F4 and
  * 0x6110C asm entries (0x18 + 0xD8 = 0xF0; splat split the a1 != 0 path). */
 char *console_itoa(char *a0, int a1, int a2) {
@@ -170,7 +170,7 @@ fmt_x:
                               *(unsigned int *)(args - 4));
             goto next;
 fmt_r:
-            gl_ref_00034810((char *)D_6170C_arr[D_6170C_idx - 1]);
+            gl_ref_00034810((char *)gSysImStack_6170C_arr[gSysImDepth_6170C_idx - 1]);
             goto next;
 fmt_default:
             gl_ref_00034810((char *)&D_00000000 + 0x21E5C, c);
@@ -189,8 +189,8 @@ next:
         } while (*old != 0);
     }
     gl_ref_00034810((char *)&D_00000000 + 0x21E6C);
-    for (i = 0; i < D_6170C_idx; i++) {
-        gl_ref_00034810((char *)&D_00000000 + 0x21E70, (char *)D_6170C_arr[i]);
+    for (i = 0; i < gSysImDepth_6170C_idx; i++) {
+        gl_ref_00034810((char *)&D_00000000 + 0x21E70, (char *)gSysImStack_6170C_arr[i]);
     }
     gl_ref_00034810((char *)&D_00000000 + 0x21E7C);
     gl_ref_00034810((char *)&D_00000000 + 0x21E80);

@@ -16899,7 +16899,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 // EXACT 2026-10-16 (87.4 -> 100): the record pointer, the poll arg, the two
 //   cb args and the config table were all one &D_00000000 placeholder. Target
 //   has distinct symbols: D_34240_G (record ptr, address hoisted to s4),
-//   gGfxLib_34240_X / gGfxLib_34240_Y (cb args, fresh lui/addiu each), D_34240_P (poll
+//   gGfxLib_34240_X / gGfxLib_34240_Y (cb args, fresh lui/addiu each), gSysDevBlock_3A4E8_34240_P (poll
 //   arg, s3, rematerialized per loop) and the table D_0001E21C (pinned to its
 //   real address; `&D_00000000 + 0x1E21C` folds the first test into
 //   `lui; lw -7652`, a zero-offset symbol keeps `lw 0(s2)`). No param (the
@@ -16909,7 +16909,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 //   its use instead of right after `sw s1`.
 extern int D_00000000;
 extern char *D_34240_G;
-extern char D_0001E21C, gGfxLib_34240_X, D_34240_P, gGfxLib_34240_Y;
+extern char D_0001E21C, gGfxLib_34240_X, gSysDevBlock_3A4E8_34240_P, gGfxLib_34240_Y;
 void sys_fatalHaltLoop(void) {
     char d[0x80];
     int saved34;
@@ -16927,7 +16927,7 @@ void sys_fatalHaltLoop(void) {
     s0 = cfg;
     if (*(int *)s0 != 0) {
         do {
-            gl_func_00000000(&D_34240_P);
+            gl_func_00000000(&gSysDevBlock_3A4E8_34240_P);
             gl_func_00000000(dp);
             if (*(int *)(dp + 0x18) != 0) {
                 if (*(int *)(dp + 0x18) == *(int *)s0) {
@@ -16958,7 +16958,7 @@ void sys_fatalHaltLoop(void) {
             gl_func_00000000();
             gl_func_00000000();
         }
-        gl_func_00000000(&D_34240_P);
+        gl_func_00000000(&gSysDevBlock_3A4E8_34240_P);
         gl_func_00000000(dp);
     }
     gl_func_00000000(0x202);

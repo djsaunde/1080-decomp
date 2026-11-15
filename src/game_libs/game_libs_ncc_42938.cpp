@@ -61,7 +61,7 @@ struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 -
 extern "C" {
 extern u32 gl_d_42938_idx;
 extern Rec gl_osViModeTable_42938_rec[];
-extern int gl_d_42938_ia, gl_d_42938_ib;
+extern int gGfxFbWidth_42938_ia, gGfxFbHeight_42938_ib;
 extern char gl_d_42938_cb, gl_d_42938_z;
 extern int gl_d_42938_fa[], gl_d_42938_fb[], gl_d_42938_fc[];
 extern GState gGfxLib_42938_gb;
@@ -120,7 +120,7 @@ extern "C" void dbg_screenOverlay_00042938(void) {
         gl_d_42938_fc[0] = 1;
         gl_d_42938_pc = gl_osViModeTable_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].c;
     }
-    gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
+    gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gGfxFbWidth_42938_ia, gGfxFbHeight_42938_ib);
     gImmp1(G.o->ctx->nC(), 0xB6, -1);
     /* agent-g run 381: a code-free block cut before 0xB9, the 0xB9 packet on nA() (no test) in the call's block, the call
      * as `G.o->me()->cf()` and 0xB7 on nE(): the 0xB9 dl / count / slot and the call's G.o take the target's v0 / v1 /
@@ -152,7 +152,7 @@ extern "C" void dbg_screenOverlay_00042938(void) {
      * then `+ 0 * (w + w)` (two more counted uses of w: it now colours before the x / y phantoms, t0 like the target):
      * 99.537 -> 99.563 */
     /* agent-g run 381: w is the function-scope `t` (see the top) */
-    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gl_d_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
+    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gGfxFbWidth_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;

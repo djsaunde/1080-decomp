@@ -10,8 +10,8 @@ SECTIONS {
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
 D_00000000 = 0x0;
-D_6170C_arr = 0x0;
-D_6170C_idx = 0x0;
+gSysImStack_6170C_arr = 0x0;
+gSysImDepth_6170C_idx = 0x0;
 gl_ref_00034240 = 0x0;
 gl_ref_00034810 = 0x0;
 /* callees of the C context functions (never linked into the ROM) */

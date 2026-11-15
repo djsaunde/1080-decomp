@@ -7,7 +7,7 @@
  * inline Ctx::next() reached through o->sub->ctx, the fixed packets are plain word pairs, and the glyph is the
  * stock gbi.h gSPTextureRectangle with `CTX->next()` as its pkt argument (its two gImmp1 re-evaluations ARE the
  * RDPHALF_1 / RDPHALF_2 appends; s = (cc & 0xF) << 8, t = ((cc & 0xF0) >> 1) << 5, dsdx / dtdy = 0x2000 / charw
- * / lineh): length 1840 -> 1848 = target. The right-margin word is read as an ARRAY global (`D_46050_m[0]`):
+ * / lineh): length 1840 -> 1848 = target. The right-margin word is read as an ARRAY global (`gGfxFbWidth_46050_m[0]`):
  * through `&D_00000000` / a held `int *` uopt folds it into `lui; lw %lo` per iteration, as an array element
  * the address is a loop-invariant web hoisted into s8 as in the target (which then also stops the 0xE4000000
  * constant from taking s8). 89.71 -> 92.20 standalone. LEFT: the first two prologue appends read o from a0
@@ -57,7 +57,7 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32;
 typedef float f32;
 extern "C" {
-extern int D_00000000; extern int D_46050_m[];
+extern int D_00000000; extern int gGfxFbWidth_46050_m[];
 extern int dbg_printThreads(...);
 }
 #define _SHIFTL(v, s, w) ((unsigned int) (((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
@@ -133,7 +133,7 @@ extern "C" s32 gfx_drawText(Font *o, u8 *arg1, s32 arg2) {
                 cc = 0x4F;
                 break;
             }
-            if ((D_46050_m[0] - 0x14) < (o->x + charw)) {
+            if ((gGfxFbWidth_46050_m[0] - 0x14) < (o->x + charw)) {
                 o->x = startx;
                 o->y = o->y + lineh;
             }

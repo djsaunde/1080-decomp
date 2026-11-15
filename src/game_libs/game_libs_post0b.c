@@ -10756,8 +10756,8 @@ void gfx_calcHilite_00042778(int *a0, float *a1, float *a2) {
  * t2/t0/s0 as separate registers. */
 extern int gl_d_42938_idx;            /* record index global (base-0 sym) */
 extern char gl_osViModeTable_42938_rec;           /* 0x50-stride record array base    */
-extern int gl_d_42938_ia;             /* SetTextureImage src A            */
-extern int gl_d_42938_ib;             /* SetTextureImage src B            */
+extern int gGfxFbWidth_42938_ia;             /* SetTextureImage src A            */
+extern int gGfxFbHeight_42938_ib;             /* SetTextureImage src B            */
 extern char gl_d_42938_cb;            /* arg0 of the three draw calls     */
 extern char gl_d_42938_z;             /* a1 of the three flush calls      */
 /* prime flags @0x3C890/94/98 -- array form materializes the address into a
@@ -10817,8 +10817,8 @@ void dbg_screenOverlay_00042938(void) {
     }
 
     four = 4.0f;
-    EM38(0xED000000, ((((int)((f32)gl_d_42938_ia * four)) & 0xFFF) << 12) |
-                     (((int)((f32)gl_d_42938_ib * four)) & 0xFFF));
+    EM38(0xED000000, ((((int)((f32)gGfxFbWidth_42938_ia * four)) & 0xFFF) << 12) |
+                     (((int)((f32)gGfxFbHeight_42938_ib * four)) & 0xFFF));
     EM38(0xB6000000, -1);
     EM38(0xB900031D, 0x442478);
     {
@@ -11093,7 +11093,7 @@ void gfx_transformLightDirs_000432BC(s32 arg0, f32 *m, s32 arg2) {
  * current-object loads scheduled above `addiu sp`). Zero-fills a w x h
  * halfword rectangle at (x, y) of the current object's 16-bit buffer
  * (D+0x240 -> ((short **)(obj + 0xF4))[D+0x204]) with a row stride read from
- * its own data word (D_43468_a, re-read after every row because the `sh`
+ * its own data word (gGfxFbWidth_43468_a, re-read after every row because the `sh`
  * stores may alias it). Leaf, frame 0x10, no calls.
  * Levers (docs/IDO_CODEGEN.md#volatile-cursor-unrolled-fill-named-index-43468):
  * (1) the cursor is `short * volatile p` -- every `*p++` is `lw home; addiu;
@@ -11106,17 +11106,17 @@ void gfx_transformLightDirs_000432BC(s32 arg0, f32 *m, s32 arg2) {
  * `((int *)(obj + 0xF4))[idx]` evaluates the object before the index
  * (t7/t8/t9); (5) `int i, j;` declared BEFORE the volatile p = the two
  * phantom slots above the cursor home (p at sp+4, frame 0x10). */
-extern int D_43468_a;   /* row stride (halfwords) data word, per-site alias of D_00000000 */
+extern int gGfxFbWidth_43468_a;   /* row stride (halfwords) data word, per-site alias of D_00000000 */
 void gfx_clearFbRect_00043468(int x, int y, int w, int h) {
     int i, j;
     short * volatile p;
     int n;
     short *q;
-    n = y * D_43468_a + x;
+    n = y * gGfxFbWidth_43468_a + x;
     p = (short *)((int *)(*(int *)((char *)&D_00000000 + 0x240) + 0xF4))[*(int *)((char *)&D_00000000 + 0x204)] + n;
     for (i = 0; i < h; i++) {
         for (j = 0; j < w; j++) { q = p; p = q + 1; *q = 0; }
-        p += D_43468_a - w;
+        p += gGfxFbWidth_43468_a - w;
     }
 }
 
@@ -11906,10 +11906,10 @@ void gfx_setVideoMode(int mode) {
 
 /* two-global word setter (D_X=a0; D_Y=a1) — two distinct externs force the 2 luis.
  * Reloc-blind segment-base convention (=0x0 undefined_syms). No episode. */
-extern int D_44C9C_X, D_44C9C_Y;
+extern int gGfxFbWidth_44C9C_X, gGfxFbHeight_44C9C_Y;
 void gfx_setSizePairA_00044C9C(int a0, int a1) {
-    D_44C9C_X = a0;
-    D_44C9C_Y = a1;
+    gGfxFbWidth_44C9C_X = a0;
+    gGfxFbHeight_44C9C_Y = a1;
 }
 
 extern int D_44CB0_X, D_44CB0_Y;
@@ -13396,7 +13396,7 @@ void gfx_makeVtx_00048104(int a0, short *a1, short *a2, short *a3, short arg5, u
  * image centred in it. EXACT: x0/y0 on ONE source line puts the h load ahead
  * of the w load (two lines schedule w first); the table index as an array
  * subscript gives the 576-chain the lower t-reg. */
-extern int D_48184_w, D_48184_h;
+extern int gGfxFbWidth_48184_w, gGfxFbHeight_48184_h;
 extern unsigned short D_48184_img[];
 void gfx_drawFbSplash_00048184(char *a0) {
     unsigned short *dst;
@@ -13404,16 +13404,16 @@ void gfx_drawFbSplash_00048184(char *a0) {
     int i, x, y, x0, y0;
 
     src = D_48184_img;
-    x0 = D_48184_w / 2 - 64; y0 = D_48184_h / 2 - 64;
+    x0 = gGfxFbWidth_48184_w / 2 - 64; y0 = gGfxFbHeight_48184_h / 2 - 64;
     dst = ((unsigned short **)(*(char **)(*(char **)(a0 + 576) + 328) + 244))[*(int *)(a0 + 516)];
-    for (i = 0; i < D_48184_w * D_48184_h; i++) {
+    for (i = 0; i < gGfxFbWidth_48184_w * gGfxFbHeight_48184_h; i++) {
         dst[i] = 0;
     }
     for (y = y0; y < y0 + 128; y++) {
         for (x = x0; x < x0 + 128; x++) {
             unsigned short *p = src;
             src = p + 1;
-            dst[y * D_48184_w + x] = *p;
+            dst[y * gGfxFbWidth_48184_w + x] = *p;
         }
     }
 }
@@ -27141,10 +27141,10 @@ void sys_fatal(char *fmt, ...) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", sys_fatal);
 #endif
 
-extern int D_6170C_idx;
-extern int D_6170C_arr[];
+extern int gSysImDepth_6170C_idx;
+extern int gSysImStack_6170C_arr[];
 int sys_stackPeek_0006170C(void) {
-    return D_6170C_arr[D_6170C_idx - 1];
+    return gSysImStack_6170C_arr[gSysImDepth_6170C_idx - 1];
 }
 
 /* sys_imin (0x74, 29 words) = the old 3-word orphan
@@ -27153,9 +27153,9 @@ int sys_stackPeek_0006170C(void) {
  * 0xE46800 - 0xDD0A6C) as sym117 (jal'd from TextReloc @0x77C64 = 635F8 and
  * @0x7A384 = 65D18); 0x75DA0 = 0x61734 is NOT exported. The `lui a1; addiu
  * a1; lw v1,0(a1)` orphan is the successor's hoisted first statement: the
- * held-base read of the stack count (sym2345 @ Data 0x21DE8 = D_6170C_idx,
+ * held-base read of the stack count (sym2345 @ Data 0x21DE8 = gSysImDepth_6170C_idx,
  * the same symbol the matched 6170C top-of-stack reader uses) scheduled
- * above `addiu sp`; the table is sym2344 @ 0x3EF10 = D_6170C_arr. Push:
+ * above `addiu sp`; the table is sym2344 @ 0x3EF10 = gSysImStack_6170C_arr. Push:
  * `if (count >= 63) debugprint(msg); table[count] = e; table[count + 1] =
  * 0; count++` with msg = sym2 + 0x21EB4; the callee is a blank R_MIPS_26
  * import (TextReloc sym306 = text 0x75AE4 = splat 0x61478 = the 61478 table-dump
@@ -27176,21 +27176,21 @@ int sys_stackPeek_0006170C(void) {
 void sys_imin(int a0)
 {
     int n;
-    if (D_6170C_idx >= 0x3F) {
+    if (gSysImDepth_6170C_idx >= 0x3F) {
         gl_func_00000000((char *)&D_00000000 + 0x21EB4);
     }
-    n = D_6170C_idx;
-    D_6170C_idx = n + 1;
-    D_6170C_arr[n] = a0;
-    D_6170C_arr[D_6170C_idx] = 0;
+    n = gSysImDepth_6170C_idx;
+    gSysImDepth_6170C_idx = n + 1;
+    gSysImStack_6170C_arr[n] = a0;
+    gSysImStack_6170C_arr[gSysImDepth_6170C_idx] = 0;
 }
 
 /* sys_imout -- MERGED 2026-09-09 (agent-c): the 3-word orphan
  * `lui v0; addiu v0; lw t6,0(v0)` was the hoisted countdown load of gl_func_000617A8
  * (splat mis-split; 0x6179C IS the export, sym119, jal'd from text 0x77CBC/0x7A3B4;
  * 0x617A8 is a mid-function word). One symbol, 0x88 / 34 words; 617A8 .s retired.
- * Run-once teardown: when the countdown (sym2345, addend 0 -> D_6179C_a) goes
- * negative, walk the 64-entry handle table (sym2344 -> D_6179C_b) up to the first
+ * Run-once teardown: when the countdown (sym2345, addend 0 -> gSysImDepth_6179C_a) goes
+ * negative, walk the 64-entry handle table (sym2344 -> gSysImStack_6179C_b) up to the first
  * zero entry, releasing each via the blank import (sym76) with &D+0x21ED0, then the
  * final blank import (sym306) with &D+0x21ED8. BYTE-EXACT 34/34: the `break` on the
  * first zero entry is the plain `beqz`+nop onto the post-loop block (an `if` guard
@@ -27198,16 +27198,16 @@ void sys_imin(int a0)
  * &tbl[64] as its own held s2 with the addend baked (a pointer cursor with the same
  * symbol recomputes `addiu t9,base,256` per iteration, a distinct end alias splits the
  * addend or grows an entry guard). */
-extern int D_6179C_a;      /* sym2345: run-once countdown (zero alias of D_00000000) */
-extern int D_6179C_b[64];  /* sym2344: handle table (zero alias of D_00000000) */
+extern int gSysImDepth_6179C_a;      /* sym2345: run-once countdown (zero alias of D_00000000) */
+extern int gSysImStack_6179C_b[64];  /* sym2344: handle table (zero alias of D_00000000) */
 void sys_imout(void) {
     int i;
-    if (--D_6179C_a < 0) {
+    if (--gSysImDepth_6179C_a < 0) {
         for (i = 0; i < 64; i++) {
-            if (D_6179C_b[i] == 0) {
+            if (gSysImStack_6179C_b[i] == 0) {
                 break;
             }
-            gl_func_00000000((char *)&D_00000000 + 0x21ED0, D_6179C_b[i]);
+            gl_func_00000000((char *)&D_00000000 + 0x21ED0, gSysImStack_6179C_b[i]);
         }
         gl_func_00000000((char *)&D_00000000 + 0x21ED8);
     }

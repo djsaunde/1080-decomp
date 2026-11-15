@@ -18,7 +18,7 @@ int gl_func_00000000(...);
 extern char D_00000000[];
 extern char gSysLib_4D688_g1[];
 extern int D_4D688_g2;
-extern char D_4D688_g3[];
+extern char gSysDevBlock_3A4E8_4D688_g3[];
 extern int D_4D468_x, D_4D468_y, D_4D468_z;
 extern char gSysLib_4D468_w[];
 extern char D_4D468_a2[];
@@ -227,7 +227,7 @@ void Obj::run()
             gl_func_00000000(DSTR(0x202D0));
             break;
         case 'l':
-            gl_func_00000000(D_4D688_g3, k);
+            gl_func_00000000(gSysDevBlock_3A4E8_4D688_g3, k);
             gl_func_00000000();
             m48 = 1;
             break;
