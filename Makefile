@@ -1,5 +1,9 @@
 # donor rules defined early (e.g. the 62A2C NCC splice) must not become the default goal
 .DEFAULT_GOAL := all
+# A .c.o recipe edits its object in place over several steps (post-process,
+# donor splice, truncate). If a step fails, delete the half-built object so the
+# next make rebuilds it instead of treating it as up to date.
+.DELETE_ON_ERROR:
 BASENAME  := tenshoe
 TARGET    := $(BASENAME)
 ROM       := $(TARGET).z64
@@ -2914,6 +2918,50 @@ C_FILES := $(filter-out src/kernel/kernel_000_1EC8.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_000_1594.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_022_ido53_858C.c,$(C_FILES))
 C_FILES := $(filter-out src/kernel/kernel_054_c_ido53_9474.c,$(C_FILES))
+# Every .c REPLACE_FUNC_BODY donor must be filtered out here. A donor left in
+# C_FILES is built twice under -j: by the top-level make (it is in C_O_FILES) and
+# by the consumer recipe's `$(MAKE) $$donor` sub-make, which cannot see the
+# parent's in-flight job. The two runs overwrite the same build/src/X.c and X.c.o
+# (and re-run POST_COMPILE symbol renames), so the consumer can splice a
+# half-built donor: `KeyError: symbol ... not found` -> make exit 2, or silently
+# wrong bytes. That is the intermittent CI "Build C objects" failure on cc154311e
+# (agent-g run 438; reproduced with a delayed-parent wrapper, 7/15 timings failed).
+# The recipe guard DONOR_IN_C_O_FILES below rejects a new unfiltered donor.
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_69E04.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_69F64.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6A144.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6BA7C.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6C9F4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6CCD4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6E1A4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6F17C.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6F1D8.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6F218.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6F534.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6FBE4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_6FFE4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_70634.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_70694.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_70854.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_70954.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_70A14.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_732C4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_743C4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_747F4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_74C04.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_ido53_74EF4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_mips3_6C740.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o1_6F3E4.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o1_6FB54.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o1_6FE5C.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o1_71304.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o2_38A28.c,$(C_FILES))
+C_FILES := $(filter-out src/game_libs/game_libs_o2_4E96C.c,$(C_FILES))
+C_FILES := $(filter-out src/kernel/kernel_ido53_4E50.c,$(C_FILES))
+C_FILES := $(filter-out src/kernel/kernel_ido53_5C50.c,$(C_FILES))
+# Recursive (=): expanded inside the .c.o recipes, where REPLACE_FUNC_BODY holds
+# the consumer's target-specific fn=donor specs.
+DONOR_IN_C_O_FILES = $(filter $(C_O_FILES),$(foreach s,$(REPLACE_FUNC_BODY),$(lastword $(subst =, ,$(s)))))
 ASM_FILES := $(shell find asm -maxdepth 1 -name '*.s' -type f 2>/dev/null)
 BIN_FILES := $(shell find assets -name '*.bin' -type f)
 
@@ -3322,7 +3370,8 @@ build/src/%.c.o: src/%.c
 	$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(CC_ONLY_FLAGS) $(MIPSISET) $(CPPFLAGS) -o $@ build/$<
 	$(ASM_PROC) $(OPT_FLAGS) $< --post-process $@ 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PRELUDE)
 	$(POST_COMPILE)
-	@if [ -n "$(REPLACE_FUNC_BODY)" ]; then for spec in $(REPLACE_FUNC_BODY); do 		fn=$$(echo $$spec | cut -d= -f1); 		donor=$$(echo $$spec | cut -d= -f2); 		$(MAKE) $$donor; 		python3 scripts/replace-function-body.py $@ $$fn $$donor; 	done; fi
+	@$(if $(DONOR_IN_C_O_FILES),echo "$@: REPLACE_FUNC_BODY donor(s) $(DONOR_IN_C_O_FILES) are also in C_O_FILES -- filter their sources out of C_FILES (parallel-make double build)" >&2; exit 1,:)
+	@if [ -n "$(REPLACE_FUNC_BODY)" ]; then for spec in $(REPLACE_FUNC_BODY); do 		fn=$$(echo $$spec | cut -d= -f1); 		donor=$$(echo $$spec | cut -d= -f2); 		$(MAKE) $$donor || exit 1;		python3 scripts/replace-function-body.py $@ $$fn $$donor || exit 1;	done; fi
 	@if [ -n "$(PREFIX_BYTES)" ]; then for spec in $(PREFIX_BYTES); do 		fn=$$(echo $$spec | cut -d= -f1); 		words=$$(echo $$spec | cut -d= -f2); 		python3 scripts/inject-prefix-bytes.py $@ $$fn $$words; 	done; fi
 	@if [ -n "$(SUFFIX_BYTES)" ]; then for spec in $(SUFFIX_BYTES); do 		fn=$$(echo $$spec | cut -d= -f1); 		words=$$(echo $$spec | cut -d= -f2); 		python3 scripts/inject-suffix-bytes.py $@ $$fn $$words; 	done; fi
 	@if [ -n "$(SUFFIX_BYTES_FORCE)" ]; then for spec in $(SUFFIX_BYTES_FORCE); do 		fn=$$(echo $$spec | cut -d= -f1); 		words=$$(echo $$spec | cut -d= -f2); 		python3 scripts/inject-suffix-bytes.py $@ $$fn $$words --allow-natural-epilogue; 	done; fi
@@ -3350,7 +3399,8 @@ build/non_matching/src/%.c.o: src/%.c
 	$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(CC_ONLY_FLAGS) $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ build/non_matching/$<
 	$(ASM_PROC) $(OPT_FLAGS) $< --post-process $@ 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PRELUDE)
 	$(POST_COMPILE)
-	@if [ -n "$(REPLACE_FUNC_BODY)" ]; then for spec in $(REPLACE_FUNC_BODY); do 		fn=$$(echo $$spec | cut -d= -f1); 		donor=$$(echo $$spec | cut -d= -f2); 		$(MAKE) $$donor; 		python3 scripts/replace-function-body.py $@ $$fn $$donor; 	done; fi
+	@$(if $(DONOR_IN_C_O_FILES),echo "$@: REPLACE_FUNC_BODY donor(s) $(DONOR_IN_C_O_FILES) are also in C_O_FILES -- filter their sources out of C_FILES (parallel-make double build)" >&2; exit 1,:)
+	@if [ -n "$(REPLACE_FUNC_BODY)" ]; then for spec in $(REPLACE_FUNC_BODY); do 		fn=$$(echo $$spec | cut -d= -f1); 		donor=$$(echo $$spec | cut -d= -f2); 		$(MAKE) $$donor || exit 1;		python3 scripts/replace-function-body.py $@ $$fn $$donor || exit 1;	done; fi
 	@if [ -n "$(NON_MATCHING_PREFIX_BYTES)" ]; then for spec in $(NON_MATCHING_PREFIX_BYTES); do 		fn=$$(echo $$spec | cut -d= -f1); 		words=$$(echo $$spec | cut -d= -f2); 		python3 scripts/inject-prefix-bytes.py $@ $$fn $$words; 	done; fi
 	@if [ -n "$(NON_MATCHING_SUFFIX_BYTES_FORCE)" ]; then for spec in $(NON_MATCHING_SUFFIX_BYTES_FORCE); do 		fn=$$(echo $$spec | cut -d= -f1); 		words=$$(echo $$spec | cut -d= -f2); 		python3 scripts/inject-suffix-bytes.py $@ $$fn $$words --allow-natural-epilogue; 	done; fi
 	@if [ -n "$(NON_MATCHING_TRUNCATE_TEXT)" ]; then python3 scripts/truncate-elf-text.py $@ $(NON_MATCHING_TRUNCATE_TEXT); fi
