@@ -267,26 +267,27 @@ void camKey_init_000003F8(void *a0) {
     *(float *)((char *)a0 + 0x34) = tmp.z;
 }
 
-void cam_applyRelative_0000052C(int unused, Vec3 *a1, Vec3 *a2, int *a3, Vec3 *p4) {
-    if (a3[4] == 2) {
-        a2->x += p4->x;
-        a2->y += p4->y;
-        a2->z += p4->z;
+/* paths whose eye / look mode is 2 are relative: eye += aim (the chase aim point), then look += eye */
+void cam_applyRelative_0000052C(int unused, Vec3 *look, Vec3 *eye, CamPath *path, Vec3 *aim) {
+    if (path->eyeMode == 2) {
+        eye->x += aim->x;
+        eye->y += aim->y;
+        eye->z += aim->z;
     }
-    if (a3[0] == 2) {
-        a1->x += a2->x;
-        a1->y += a2->y;
-        a1->z += a2->z;
+    if (path->lookMode == 2) {
+        look->x += eye->x;
+        look->y += eye->y;
+        look->z += eye->z;
     }
 }
 
-void camKey_read_000005B8(Vec3 *a0) {
-    stream_readVec3_000001D4(a0);
-    stream_readVec3_000001D4((Vec3*)((char*)a0 + 0xC));
-    stream_readVec3_000001D4((Vec3*)((char*)a0 + 0x18));
-    stream_readF32_00000244((float*)((char*)a0 + 0x24));
-    stream_readS32_00000280((int*)((char*)a0 + 0x28));
-    stream_readVec3_000001D4((Vec3*)((char*)a0 + 0x2C));
+void camKey_read_000005B8(CamKey *a0) {
+    stream_readVec3_000001D4((Vec3 *)&a0->look);
+    stream_readVec3_000001D4((Vec3 *)&a0->eye);
+    stream_readVec3_000001D4((Vec3 *)&a0->up);
+    stream_readF32_00000244(&a0->fov);
+    stream_readS32_00000280(&a0->frames);
+    stream_readVec3_000001D4((Vec3 *)&a0->rot);
 }
 
 void *camPath_new_00000608(void *a0) {
@@ -296,21 +297,22 @@ void *camPath_new_00000608(void *a0) {
     return a0;
 }
 
-void camPath_init_00000634(int *a0) {
-    a0[0] = 1;
-    a0[1] = 0;
-    a0[2] = 0;
-    a0[3] = 0;
-    a0[4] = 1;
-    a0[5] = 0;
-    a0[6] = 0;
-    a0[7] = 0;
-    a0[8] = 0;
-    a0[9] = 0;
-    a0[10] = 0;
-    a0[11] = 0;
-    a0[12] = 0;
-    a0[13] = 0;
+/* defaults: both bodies on their chase components, no splines, no keys */
+void camPath_init_00000634(CamPath *a0) {
+    a0->lookMode = 1;
+    a0->lookSpline = 0;
+    a0->unk08 = 0;
+    a0->unk0C = 0;
+    a0->eyeMode = 1;
+    a0->eyeSpline = 0;
+    a0->unk18 = 0;
+    a0->unk1C = 0;
+    a0->upSpline = 0;
+    a0->unk24 = 0;
+    a0->fovMode = 0;
+    a0->unk2C = 0;
+    a0->rotMode = 0;
+    a0->numKeys = 0;
 }
 
 /* State-check: returns 1 if any of the three sub-states is active.
@@ -320,13 +322,15 @@ void camPath_init_00000634(int *a0) {
  * and the loads take $v1 (the target's order); the bare return-expr
  * form creates the load pseudo first (30 diffs). Same family as the
  * web-order inversion (h2hproc E04). */
-int camPath_isRelative_00000674(int *a0) {
+/* any channel on a spline (look / eye keyed (mode 2 / 3) with spline 1, up spline, fov / rot mode 2): such a
+ * path ends one key early (cam_updateView_00000B3C) */
+int camPath_isRelative_00000674(CamPath *a0) {
     int r = 0;
-    r = ((a0[0] == 2 || a0[0] == 3) && a0[1] == 1)
-        || ((a0[4] == 2 || a0[4] == 3) && a0[5] == 1)
-        || a0[8] == 1
-        || a0[10] == 2
-        || a0[12] == 2;
+    r = ((a0->lookMode == 2 || a0->lookMode == 3) && a0->lookSpline == 1)
+        || ((a0->eyeMode == 2 || a0->eyeMode == 3) && a0->eyeSpline == 1)
+        || a0->upSpline == 1
+        || a0->fovMode == 2
+        || a0->rotMode == 2;
     return r;
 }
 
@@ -361,7 +365,7 @@ void camPath_read_00000724(char *a0) {
         *((int *) (((char *) p) + 0x38)) = tmp;
         game_uso_func_000003F4(tmp);
       }
-      camKey_read_000005B8((Vec3 *) *((int *) (((char *) p) + 0x38)));
+      camKey_read_000005B8((CamKey *) *((int *) (((char *) p) + 0x38)));
       if (!a0)
       {
       }
@@ -419,7 +423,7 @@ int *cam_ctor_00000858(int *a0, int arg1, int arg2, int arg3, int arg4, float ar
     ((CourseCam *)a0)->numPaths = 0;
     if (arg7 != 0) game_uso_func_04C774(a0, 1, arg7); /* load arg7 ("rom/cam_info.bin") */
     ((CourseCam *)a0)->rider = (struct SnowBoarder *)arg1;
-    ((CourseCam *)a0)->pad = arg6;
+    ((CourseCam *)a0)->pad = (struct RiderInput *)arg6;
     ((CourseCam *)a0)->chaseMode = 0;
     ((CourseCam *)a0)->savedChaseMode = 0;
     ((CourseCam *)a0)->freeRot = 0;
@@ -465,7 +469,7 @@ void cam_pickResultView_00000940(char *arg0) {
     s32 var_a1;
 
     var_a1 = -1;
-    switch (*(int *)((char *)*(int *)((char *)arg0 + 0x150) + 0xA54)) {                              /* switch 1 */
+    switch (((CourseCam *)arg0)->rider->raceResult) { /* switch 1: the race result */
     case 0:                                         /* switch 1 */
         temp_v0 = *(int *)((char *)&import_80020098 + 0x34);
         if ((temp_v0 == 4) || (temp_v0 == 6) || (temp_v0 == 7) || ((temp_v0 == 1) && (*(int *)((char *)&import_80020098 + 0x40) == 0))) {

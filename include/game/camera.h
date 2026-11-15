@@ -230,20 +230,27 @@ typedef struct CamKey {     /* 0x38, read in this order by cam_readParms */
     CamVec3 rot;            /* 0x2C: MCamera pitch / yaw / unk13C */
 } CamKey;
 
-typedef struct CamPath {    /* 0x7C */
-    s32 lookMode;           /* 0x00: 1 = the look-at node is moved by its chase component; else from the keys */
+typedef struct CamPath {    /* 0x7C, camPath_read_00000724 */
+    /* channel modes: lookMode / eyeMode 1 = the body is moved by its chase component (camPath_init's default),
+     * 2 = keys relative (eye: + the chase aim point; look: + the eye; cam_applyRelative_0000052C), 3 = absolute */
+    s32 lookMode;           /* 0x00 */
     s32 lookSpline;         /* 0x04: 0 = key.look of the current key; else spline */
-    char pad08[8];
-    s32 eyeMode;            /* 0x10: 1 = the eye is moved by the chase component (MCamera world[3] is kept) */
+    s32 unk08;              /* 0x08: read with lookMode / lookSpline (a 4-word record), not used */
+    s32 unk0C;
+    s32 eyeMode;            /* 0x10: as lookMode (1 = MCamera world[3] is kept) */
     s32 eyeSpline;          /* 0x14 */
-    char pad18[8];
+    s32 unk18;              /* 0x18: read with eyeMode / eyeSpline, not used */
+    s32 unk1C;
     s32 upSpline;           /* 0x20: 0 = key.up, else spline */
     s32 unk24;
     s32 fovMode;            /* 0x28: 1 = key.fov, 2 = spline */
     s32 unk2C;
     s32 rotMode;            /* 0x30: 1 = key.rot, 2 = spline; also MCamera.rotEnable = (rotMode != 0) */
-    s32 numKeys;            /* 0x34 */
-    CamKey *keys[17];       /* 0x38: key k uses keys[k - 1 .. k + 2] (B3C indexes from 0x34) */
+    s32 numKeys;            /* 0x34: keys 1..numKeys are played (at most 15) */
+    CamKey *keys[17];       /* 0x38: keys[1..numKeys] read from the file; keys[0] = keys[1] and
+                             * keys[numKeys + 1] = keys[numKeys] pad the ends, so the spline at key k reads
+                             * keys[k - 1 .. k + 2]. A path with any spline channel (camPath_hasSpline) ends
+                             * at key numKeys, one key early */
 } CamPath;
 
 typedef struct CamList {
@@ -272,7 +279,7 @@ typedef struct CourseCam {
                                (eye height ty2), 2 = 3 / 2 (fixed eye, look ahead), 3 = 3 / 3 (look back, while
                                pad held 0x80); pad pressed 0x40 cycles 0..2. 2 / 3 set rider +0xA58 bit 0x2000 */
     s32 savedChaseMode;     /* 0x270: chaseMode to restore when the look-back button is released */
-    s32 pad;                /* 0x274: input pad (cam_create p4): +0x10 held (0x80 = look back), +0x18 pressed */
+    struct RiderInput *pad; /* 0x274: input pad (cam_create p4): held 0x80 = look back, pressed 0x40 = next chaseMode */
     s32 unk278;
 } CourseCam;                /* 0x27C */
 
