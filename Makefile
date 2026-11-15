@@ -5522,7 +5522,6 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # 7C1C: EXACT (agent-c run 231) via the cfront-style cfe C donor game_uso_7C1C.c (kits CCXL / CCXLI),
 # filtered out of C_FILES and spliced over the placeholder on both paths. The placeholder re-emits the
 # RoData +0xFC float (3000.0f) the donor reads through SnowAI_aimAlongSegment_rodata (= 0) + 0xFC.
-# The NCC donor game_uso_ncc_7C1C_nm.cpp is kept as a reference only.
 GAMEUSO_7C1C_DONOR := build/src/game_uso/game_uso_7C1C.c.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_aimAlongSegment=$(GAMEUSO_7C1C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_7C1C_DONOR)

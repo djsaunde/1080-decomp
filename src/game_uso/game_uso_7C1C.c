@@ -1,7 +1,8 @@
 /* SnowAI_aimAlongSegment: EXACT donor, cfront-style C for IDO 7.1 cfe -O2 (agent-c
  * runs 230-231, from agent-g's run 229 port c7c7.c), REPLACE_FUNC_BODY-spliced over
  * the placeholder in src/game_uso/game_uso.c on both build paths (GAMEUSO_7C1C_DONOR).
- * The NCC donor game_uso_ncc_7C1C_nm.cpp is kept as a C++-shape reference. Kits CCXL /
+ * The unbuilt NCC C++-shape donor game_uso_ncc_7C1C_nm.cpp was removed in agent-g run 506
+ * (git e6043cf4d has it). Kits CCXL /
  * CCXLI in docs/IDO_CODEGEN.md have the levers.
  *
  * Steering target in the XZ plane: every bnez &stack / jal 055750(12) guard is a

@@ -2,7 +2,7 @@
  * in-unit NM body: agent-e / agent-g / agent-c runs 182-236, 99.977 -> 100),
  * REPLACE_FUNC_BODY-spliced over the placeholder in src/game_uso/game_uso.c on both
  * build paths (GAMEUSO_591C_DONOR). The superseded in-unit body (with its decode
- * history) is kept under GAMEUSO_591C_OLD_DECODE in game_uso.c.
+ * history) was removed from game_uso.c in agent-g run 506 (git e6043cf4d has it).
  *
  * The last two cells (docs/IDO_CODEGEN.md kit for agent-c run 237):
  *  - `v0 * 1 == 0x10000`: uopt input swaps ==/!= when the left operand is not an
