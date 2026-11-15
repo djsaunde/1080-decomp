@@ -18,6 +18,12 @@ What it touches (all whole-word, `[A-Za-z0-9_]` boundaries):
   * DERIVED build symbols `OLD_rodata`, `OLD_bss`, `OLD_data`, ... (made by
     replace-function-body.py as func_name + section name, pinned in
     undefined_syms) are renamed to `NEW_<sect>` too;
+  * OLD-derived alias FAMILIES (agent-a run 517): the RoData pool macro `kRo_<OLD>`
+    (include/gdl/gl_data.h; macro only) and its per-site linker aliases `kRo_<OLD>_<K>`
+    (K = upper-case hex) become `kRo_<NEW>[_<K>]`; the aliases go through the full
+    symbol rename (undefined_syms pins, expected/ objects). They are not added to
+    renames.tsv (replaying OLD NEW re-derives them). sStr_/sTag_ names are content-
+    named and do not follow functions;
   * file NAMES whose stem token is OLD (INCLUDE_ASM resolves `<dir>/<NAME>.s`,
     src/match_imports/<NAME>.c, scripts/match-bindings-<NAME>[-nm].json) via git mv;
   * expected/**/*.o symbol tables (objdiff matches target symbols BY NAME):
@@ -521,9 +527,56 @@ def derived_tokens(name, files):
     return found
 
 
+RO_SUFFIX = re.compile(r"^_([0-9A-F]{2,6})$")
+
+
+def family_renames(old, new, idx, files):
+    """OLD-derived alias families (agent-a run 517): the RoData pool `kRo_<OLD>` (a gl_data.h
+    macro, no linker symbol) and its per-site linker aliases `kRo_<OLD>_<K>` (K = upper-case
+    hex RoData offset, READABILITY_PLAN 9.1.2 / uso-data-sites.py RO_ALIAS_RE). A function
+    rename must carry them, or `uso-data-sites check` fails on the stale pool name.
+    -> (symbol pairs, macro-only pairs, warnings). `kRo_<OLD>_<K>` is skipped when <OLD>_<K>
+    is itself a symbol (that is <OLD>_<K>'s own pool header, not a site of <OLD>)."""
+    base = "kRo_" + old
+    pat = re.compile(r"(?<![A-Za-z0-9_])" + re.escape(base) + r"(_[A-Za-z0-9_]+)?(?![A-Za-z0-9_])")
+    toks, warns = set(), []
+    for p in files:
+        t = read_text(p)
+        if t is None or base not in t:
+            continue
+        toks.update(m.group(0) for m in pat.finditer(t))
+    syms, macros = [], []
+    for tok in sorted(toks):
+        suf = tok[len(base):]
+        if suf and not RO_SUFFIX.match(suf):
+            continue                     # kRo_<OLD>_<more name>: another function's pool
+        if suf and (old + suf) in idx.all_names:
+            warns.append(f"{tok}: {old}{suf} is a symbol of its own; not treated as a {base} site")
+            continue
+        pair = (tok, "kRo_" + new + suf)
+        (syms if tok in idx.all_names else macros).append(pair)
+    return syms, macros, warns
+
+
 def apply(renames, dry, allow_scoped_alias=False):
     idx = Index()
     files = tracked_text_files()
+    # expand OLD-derived alias families (kRo_<OLD>, kRo_<OLD>_<K>); not written to the ledger:
+    # replaying OLD NEW re-derives them. An explicit batch line for one of them wins.
+    explicit = {o for o, _ in renames}
+    derived_pairs, macro_pairs = set(), []
+    expanded = []
+    for old, new in renames:
+        expanded.append((old, new))
+        fs, fm, fw = family_renames(old, new, idx, files)
+        for w in fw:
+            print(f"  note [{old} -> {new}] {w}")
+        for pair in fs:
+            if pair[0] not in explicit:
+                expanded.append(pair)
+                derived_pairs.add(pair)
+        macro_pairs += [pr for pr in fm if pr[0] not in explicit]
+    renames = expanded
     pending = set()
     moved = {}
     all_errs = []
@@ -536,9 +589,26 @@ def apply(renames, dry, allow_scoped_alias=False):
         if errs:
             all_errs += [f"[{old} -> {new}] {e}" for e in errs]
         plan.append((old, new, hits))
+    macro_hits = []
+    for mo, mn in macro_pairs:
+        wo, wn = word_re(mo), word_re(mn)
+        if mn in idx.all_names or any((read_text(p) or "").find(mn) >= 0 and wn.search(read_text(p))
+                                      for p in files):
+            all_errs.append(f"[{mo} -> {mn}] derived pool macro NEW {mn} already exists")
+        macro_hits.append((mo, mn, [p for p in files if read_text(p) and mo in read_text(p)
+                                    and wo.search(read_text(p))]))
     if all_errs:
         print("REFUSED:\n  " + "\n  ".join(all_errs), file=sys.stderr)
         return 1
+    for mo, mn, mh in macro_hits:
+        n = 0
+        for p in mh:
+            t2, k = word_re(mo).subn(mn, read_text(p))
+            n += k
+            if k and not dry:
+                (ROOT / p).write_text(t2, encoding="utf-8", errors="surrogateescape")
+            _text_cache[p] = t2
+        print(f"{'[dry] ' if dry else ''}{mo} -> {mn}: {n} refs in {len(mh)} files (RoData pool macro, derived)")
 
     for old, new, hits in plan:
         derived_before = derived_tokens(old, files)
@@ -608,7 +678,9 @@ def apply(renames, dry, allow_scoped_alias=False):
               + (f", {kept} kernel call/address refs kept as the {old} alias" if kept else ""))
         for a, b in moves:
             print(f"    mv {a} -> {b}")
-        if not dry:
+        if (old, new) in derived_pairs:
+            print(f"    (derived from a function rename; not added to renames.tsv)")
+        elif not dry:
             led = ROOT / "renames.tsv"
             new_ledger = not led.exists()
             with led.open("a") as fh:
