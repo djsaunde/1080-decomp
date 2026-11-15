@@ -304,6 +304,24 @@ typedef struct SelectWin {
 /* View a raw item pointer (the item virtuals take char * / int *) as SelItem. */
 #define SELITEM(p) ((SelItem *)(p))
 
+/* The select-screen room (gen_buildRoom_0000131C: a 0x60 "<Node>"; gen_createScene_00008DB4
+ * builds it). gen_createLights / gen_createVRBox fill the lights and the sky box. */
+typedef struct GenRoom {
+    char node[0x2C];        /* 0x00: Node */
+    char *world;            /* 0x2C: (app +0x134) +0x84; the room is appended to modifier,
+                             * modifier to world */
+    char *unk30;            /* 0x30: (app +0x134) +0x80 */
+    char *unk34;            /* 0x34: (app +0x134) +0x8C */
+    char *ambient;          /* 0x38: BaseLight "Ambient Light", colour 1, flags |= 0xC0, mask 1 */
+    char *local;            /* 0x3C: BaseLight "Local Light", colour 1, mask 2 */
+    char *ambient2;         /* 0x40: BaseLight "Ambient Light", colour (174, 113, 61) / 255,
+                             * flags |= 0xC0, mask 4 */
+    char *walls[6];         /* 0x44: the "VRBox" / "TheBox" sky box faces: U64BGWall_ctor with
+                             * (pitch, yaw) (0,0) (0,90) (0,180) (0,270) (-90,0) (-270,0), all
+                             * children of the "BGBox2" BGBox (gen_createVRBox) */
+    char *modifier;         /* 0x5C: RoomModifier_ctor */
+} GenRoom;                  /* 0x60 */
+
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
 SELECT_ASSERT(parmi_size, sizeof(SelParmI) == 0x18);
 SELECT_ASSERT(parmv3_size, sizeof(SelParmV3) == 0x20);
@@ -344,6 +362,8 @@ SELECT_ASSERT(win_fade, (int)&((SelectWin *)0)->fade == 0x480);
 SELECT_ASSERT(win_busy, (int)&((SelectWin *)0)->busy == 0x4B4);
 SELECT_ASSERT(win_cam, (int)&((SelectWin *)0)->camPos == 0x4C4);
 SELECT_ASSERT(win_flags, (int)&((SelectWin *)0)->eventFlags == 0x4D4);
+SELECT_ASSERT(room_walls, (int)&((GenRoom *)0)->walls == 0x44);
+SELECT_ASSERT(room_size, sizeof(GenRoom) == 0x60);
 SELECT_ASSERT(win_size, sizeof(SelectWin) == 0x4F0);
 
 #endif

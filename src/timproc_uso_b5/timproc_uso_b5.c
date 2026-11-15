@@ -788,16 +788,16 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
         if (self == 0) goto end;
     }
     gen_imp_Node_ctor(self, (char*)&timproc_uso_b5_D_807FE8F4 + 0x1084);
-    *(int*)(self + 0x2C) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x84);
-    *(int*)(self + 0x30) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x80);
-    *(int*)(self + 0x34) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x8C);
+    ((GenRoom *)self)->world = (char *)(*(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x84));
+    ((GenRoom *)self)->unk30 = (char *)(*(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x80));
+    ((GenRoom *)self)->unk34 = (char *)(*(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x8C));
     sub = (char*)RoomModifier_ctor(0);
-    entity = *(char**)(self + 0x2C);
-    *(int*)(self + 0x5C) = (int)sub;
+    entity = ((GenRoom *)self)->world;
+    ((GenRoom *)self)->modifier = sub;
     gen_imp_list_append(entity + 0x10, sub);
     if (*(int*)(sub + 0x14) != 0) *(int*)(sub + 0x4) = 1;
     *(int*)(sub + 0x14) = (int)entity;
-    entity = *(char**)(self + 0x5C);
+    entity = ((GenRoom *)self)->modifier;
     gen_imp_list_append(entity + 0x10, self);
     if (*(int*)(self + 0x14) != 0) *(int*)(self + 0x4) = 1;
     *(int*)(self + 0x14) = (int)entity;
@@ -818,40 +818,14 @@ end:
     return self;
 }
 
-// gen_createLights_00001460 — STRUCTURAL PASS (0x1F8 / 126 words,
-// no episode). Raw-.word USO form (genuine code; splat can't
-// mnemonic-disasm relocatable USO). Hand-decoded from word encodings.
-//
-// Two-widget HUD/replay-element constructor for timproc_uso_b5:
-//   void gen_createLights_00001460(Owner *o) {     // o -> s1 (arg0)
-//     // widget A:
-//     A = func_00000000(0, &D_0000108C);              // named factory
-//     o->0x38 = A;
-//     A->0x124 = A->0x128 = A->0x12C = A->0x130 = 255.0f/255.0f; // =1.0 white RGBA
-//     A->0xC4 |= 0x40;  A->0xC4 |= 0x80;              // flag bits
-//     A->0xD0 = 1;                                     // element id 1
-//     func_00000000(., A);                             // post-init
-//     func_00000000(o+0x10, A);                        // register/attach
-//     if (!o->0x14) { o->0x4 = 1; func_00000000(0, &D_0000109C);
-//                     o->0x14 = o; }                   // one-time owner init
-//     // widget B:
-//     B = func_00000000(...);  o->0x3C = B;
-//     B->0x124..0x130 = 1.0f;                          // white RGBA
-//     B->0xD0 = 2;                                      // element id 2
-//     func_00000000(., B);  func_00000000(o+0x10, B);   // post-init+attach
-//   }
-//
-// Struct-typing reference:
-//   o(a0=s1): 0x04 init-done flag, 0x10 attach-target/container,
-//     0x14 self-init latch, 0x38 widget A ptr, 0x3C widget B ptr.
-//   widget: 0xC4 flag word (bits 0x40/0x80 set), 0xD0 element id
-//     (A=1, B=2), 0x124/0x128/0x12C/0x130 f32 RGBA (set 1.0 = white).
-//   &D_0000108C / &D_0000109C = factory name/desc args (USO data refs).
-//   func_00000000 = the USO placeholder dispatcher (factory / attach).
-// Caps (DEFERRED): raw-word USO + placeholder func_00000000 calls;
-//   USO mnemonic disasm limitation prevents byte-match. Real-C
-//   STRUCTURAL body below — three-widget HUD constructor.
-//   Name pre-checked: no extern reuse.
+// gen_createLights_00001460 (agent-c run 503, from the bootup imports): the room's three
+// BaseLights, each BaseLight_ctor(0, name), colour parm (+0x124..0x130), mask (+0xD0),
+// gfx_listAppend(&gGfxLib, light) and appended to the room:
+//   room->ambient  "Ambient Light"  colour 1, 1, 1, 1           flags |= 0x40 | 0x80, mask 1
+//   room->local    "Local Light"    colour 1, 1, 1, 1           mask 2
+//   room->ambient2 "Ambient Light"  colour 174, 113, 61 (/255)  flags |= 0x40 | 0x80, mask 4
+// (BaseLight flag 0x80 = skipped by the directional light walk, include/gdl/light.h.)
+// The matching bytes come from src/match_imports/gen_createLights_00001460.c.
 // 2026-07-10 (78.22 -> 93.68 fuzzy): the widget A whites (255/255) and widget C
 //   colors (174/255, 113/255, 61/255) are RUNTIME div.s in the target; writing
 //   them as literal `N.0f / 255.0f` const-folds (A -> 1.0f literal, C -> .rodata
@@ -893,22 +867,22 @@ void gen_createLights_00001460(char *arg0) {
 
     /* widget A (id 1) — white RGBA = num / (float)255 (runtime div) */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE8FC + 0x108C);
-    *(char **)(arg0 + 0x38) = o;
+    ((GenRoom *)arg0)->ambient = o;
     retA = num / (float)255;
     *(float *)(o + 0x124) = retA;
     *(float *)(o + 0x128) = retA;
     *(float *)(o + 0x12C) = retA;
     *(float *)(o + 0x130) = retA;
-    o = *(char **)(arg0 + 0x38);
+    o = ((GenRoom *)arg0)->ambient;
     o += 0xC4;
     *(int *)o |= 0x40;
-    o = *(char **)(arg0 + 0x38);
+    o = ((GenRoom *)arg0)->ambient;
     o += 0xC4;
     *(int *)o |= 0x80;
-    o = *(char **)(arg0 + 0x38);
+    o = ((GenRoom *)arg0)->ambient;
     *(int *)(o + 0xD0) = 1;
-    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, *(char **)(arg0 + 0x38));
-    o = *(char **)(arg0 + 0x38);
+    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, ((GenRoom *)arg0)->ambient);
+    o = ((GenRoom *)arg0)->ambient;
     gen_imp_list_append(reg, o);
     if (*(int *)(o + 0x14) != 0) {
         *(int *)(o + 0x4) = 1;
@@ -917,15 +891,15 @@ void gen_createLights_00001460(char *arg0) {
 
     /* widget B (id 2) — white RGBA = 1.0f */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE90C + 0x109C);
-    *(char **)(arg0 + 0x3C) = o;
+    ((GenRoom *)arg0)->local = o;
     *(float *)(o + 0x124) = 1.0f;
     *(float *)(o + 0x128) = 1.0f;
     *(float *)(o + 0x12C) = 1.0f;
     *(float *)(o + 0x130) = 1.0f;
-    o = *(char **)(arg0 + 0x3C);
+    o = ((GenRoom *)arg0)->local;
     *(int *)(o + 0xD0) = 2;
-    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, *(char **)(arg0 + 0x3C));
-    o = *(char **)(arg0 + 0x3C);
+    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, ((GenRoom *)arg0)->local);
+    o = ((GenRoom *)arg0)->local;
     gen_imp_list_append(reg, o);
     if (*(int *)(o + 0x14) != 0) {
         *(int *)(o + 0x4) = 1;
@@ -934,21 +908,21 @@ void gen_createLights_00001460(char *arg0) {
 
     /* widget C (id 4) — RGBA = 174/255, 113/255, 61/255, retA */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE918 + 0x10A8);
-    *(char **)(arg0 + 0x40) = o;
+    ((GenRoom *)arg0)->ambient2 = o;
     *(float *)(o + 0x124) = 174.0f / denom;
     *(float *)(o + 0x128) = 113.0f / denom;
     *(float *)(o + 0x12C) = 61.0f / denom;
     *(float *)(o + 0x130) = retA;
-    o = *(char **)(arg0 + 0x40);
+    o = ((GenRoom *)arg0)->ambient2;
     o += 0xC4;
     *(int *)o |= 0x40;
-    o = *(char **)(arg0 + 0x40);
+    o = ((GenRoom *)arg0)->ambient2;
     o += 0xC4;
     *(int *)o |= 0x80;
-    o = *(char **)(arg0 + 0x40);
+    o = ((GenRoom *)arg0)->ambient2;
     *(int *)(o + 0xD0) = 4;
-    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, *(char **)(arg0 + 0x40));
-    o = *(char **)(arg0 + 0x40);
+    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, ((GenRoom *)arg0)->ambient2);
+    o = ((GenRoom *)arg0)->ambient2;
     gen_imp_list_append(reg, o);
     if (*(int *)(o + 0x14) != 0) {
         *(int *)(o + 0x4) = 1;
@@ -960,36 +934,11 @@ void gen_createLights_00001460(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", gen_createLights_00001460);
 #endif
 
-// gen_createVRBox_00001658 — STRUCTURAL PASS (0x25C / 151 words,
-// no episode). Raw-.word USO form (genuine code). Hand-decoded.
-//
-// Radial-dial HUD panel constructor (timproc_uso_b5): builds a parent
-// container plus a set of child marks at cardinal angle parameters.
-//
-//   void gen_createVRBox_00001658(Owner *o) {     // o -> s1 (arg0)
-//     func_00000000(&D_000010B8, 0);                   // named setup x2
-//     func_00000000(&D_000010C0, 0);
-//     P = func_00000000(0, &D_000010C8, 1, 0x100);     // parent container
-//     func_00000000(o+0x10, P);                        // attach to owner
-//     if (!o->0x14) { o->0x4 = 1; o->0x14 = o; }       // one-time init
-//     // create child marks, each func_00000000(0,&D_0,0, ANGLE, sp10=0)
-//     //   stored into o->{0x44,0x48,0x4C,0x50,0x54,0x58}; ANGLE =
-//     //   0, 0x5A(90), 0xB4(180), 0x10E(270), -0x5A(-90), -0x10E(-270)
-//     //   -> a radial gauge / dial with cardinal tick marks.
-//     // then for each child c in o->0x44..0x58:
-//     //   func_00000000(c+0x10, P);                    // attach to P
-//     //   if (!c->0x14) c->0x4 = 1;  c->0x14 = P;       // dirty+link
-//     func_00000000(.);  func_00000000();               // finalize
-//   }
-//
-// Struct-typing reference:
-//   o(a0=s1): 0x04 init-done flag, 0x10 attach-target, 0x14 self/link
-//     latch, 0x44/0x48/0x4C/0x50/0x54/0x58 = 6 child mark ptrs;
-//     P = parent container (from &D_000010C8 factory).
-//   child: 0x04 dirty flag, 0x14 parent link (dirty-and-attach idiom).
-//   ANGLE args 0/±90/±180/±270 (deg*1, signed) = dial tick positions.
-//   &D_000010B8 / &D_000010C0 / &D_000010C8 = USO name/desc data refs;
-//   func_00000000 = USO placeholder dispatcher (setup/factory/attach).
+// gen_createVRBox_00001658 (agent-c run 503): the select-screen sky box. Inside a
+// memtrack_begin("VRBox") / ("TheBox") pair it builds BGBox_ctor(0, "BGBox2", 1, 0x100),
+// appends it to the room, then six U64BGWall faces (texture import, pitch, yaw):
+// (0,0) (0,90) (0,180) (0,270) (-90,0) (-270,0) into room->walls[0..5], each appended
+// to the BGBox.
 // 2026-07-08 EXACT 151/151 (agent-e, fresh NM build, reloc-aware word
 //   diff vs .s: every word + every reloc symbol matches). Levers:
 //   (1) P and ap(=P+0x10) are `char * volatile` locals -> stack homes
@@ -1029,43 +978,43 @@ void gen_createVRBox_00001658(char *arg0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = arg0;
-    *(char **)(arg0 + 0x44) = (char *)gen_imp_U64BGWall_ctor(0, &import_807C3820, 0, 0, 0);
-    *(char **)(arg0 + 0x48) = (char *)gen_imp_U64BGWall_ctor(0, &import_807D3A40, 0, 0x5A, 0);
-    *(char **)(arg0 + 0x4C) = (char *)gen_imp_U64BGWall_ctor(0, &import_807B3600, 0, 0xB4, 0);
-    *(char **)(arg0 + 0x50) = (char *)gen_imp_U64BGWall_ctor(0, &timproc_uso_b5_D_807E3C60, 0, 0x10E, 0);
-    *(char **)(arg0 + 0x54) = (char *)gen_imp_U64BGWall_ctor(0, &import_807A33E0, -0x5A, 0, 0);
-    *(char **)(arg0 + 0x58) = (char *)gen_imp_U64BGWall_ctor(0, &import_807931C0, -0x10E, 0, 0);
-    c = *(char **)(arg0 + 0x44);
+    ((GenRoom *)arg0)->walls[0] = (char *)gen_imp_U64BGWall_ctor(0, &import_807C3820, 0, 0, 0);
+    ((GenRoom *)arg0)->walls[1] = (char *)gen_imp_U64BGWall_ctor(0, &import_807D3A40, 0, 0x5A, 0);
+    ((GenRoom *)arg0)->walls[2] = (char *)gen_imp_U64BGWall_ctor(0, &import_807B3600, 0, 0xB4, 0);
+    ((GenRoom *)arg0)->walls[3] = (char *)gen_imp_U64BGWall_ctor(0, &timproc_uso_b5_D_807E3C60, 0, 0x10E, 0);
+    ((GenRoom *)arg0)->walls[4] = (char *)gen_imp_U64BGWall_ctor(0, &import_807A33E0, -0x5A, 0, 0);
+    ((GenRoom *)arg0)->walls[5] = (char *)gen_imp_U64BGWall_ctor(0, &import_807931C0, -0x10E, 0, 0);
+    c = ((GenRoom *)arg0)->walls[0];
     gen_imp_list_append(ap = P + 0x10, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
-    c = *(char **)(arg0 + 0x48);
+    c = ((GenRoom *)arg0)->walls[1];
     gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
-    c = *(char **)(arg0 + 0x4C);
+    c = ((GenRoom *)arg0)->walls[2];
     gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
-    c = *(char **)(arg0 + 0x50);
+    c = ((GenRoom *)arg0)->walls[3];
     gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
-    c = *(char **)(arg0 + 0x54);
+    c = ((GenRoom *)arg0)->walls[4];
     gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
-    c = *(char **)(arg0 + 0x58);
+    c = ((GenRoom *)arg0)->walls[5];
     gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
