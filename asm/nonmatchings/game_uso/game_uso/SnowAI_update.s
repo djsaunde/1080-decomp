@@ -68,15 +68,15 @@ glabel SnowAI_update
     /* 0058D8 000058D8 00000000 */  .word 0x00000000
     /* 0058DC 000058DC 1000000C */  .word 0x1000000C
     /* 0058E0 000058E0 8FBF0014 */  .word 0x8FBF0014
-    jal game_uso_func_00006A30   /* 0058E4 0C000000 -> game_uso_func_00006A30 */
+    jal SnowAI_finishRun   /* 0058E4 0C000000 -> SnowAI_finishRun */
     /* 0058E8 000058E8 00000000 */  .word 0x00000000
     /* 0058EC 000058EC 10000008 */  .word 0x10000008
     /* 0058F0 000058F0 8FBF0014 */  .word 0x8FBF0014
-    jal game_uso_func_00006CF0   /* 0058F4 0C000000 -> game_uso_func_00006CF0 */
+    jal SnowAI_timeoutRun   /* 0058F4 0C000000 -> SnowAI_timeoutRun */
     /* 0058F8 000058F8 00000000 */  .word 0x00000000
     /* 0058FC 000058FC 10000004 */  .word 0x10000004
     /* 005900 00005900 8FBF0014 */  .word 0x8FBF0014
-    jal game_uso_func_000071E0   /* 005904 0C000000 -> game_uso_func_000071E0 */
+    jal SnowAI_recoverStuck   /* 005904 0C000000 -> SnowAI_recoverStuck */
     /* 005908 00005908 00000000 */  .word 0x00000000
     /* 00590C 0000590C 8FBF0014 */  .word 0x8FBF0014
     /* 005910 00005910 27BD0018 */  .word 0x27BD0018

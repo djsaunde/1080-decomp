@@ -7,9 +7,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
 void SnowAI_steer(char *);
-void game_uso_func_00006A30(char *);
-void game_uso_func_00006CF0(char *);
-void game_uso_func_000071E0(char *);
+void SnowAI_finishRun(char *);
+void SnowAI_timeoutRun(char *);
+void SnowAI_recoverStuck(char *);
 }
 struct Val { char pad[0x10]; float v; void set(float f) { v = f; } };
 #define AT(T, p, o) (*(T *)((char *)(p) + (o)))
@@ -35,8 +35,8 @@ extern "C" void SnowAI_update(char *a0) {
     AT(float, a0, 0x3C) = 0.0f;
     switch (AT(int, a0, 0x64)) {
     case 0: SnowAI_steer(a0); break;
-    case 1: game_uso_func_00006A30(a0); break;
-    case 2: game_uso_func_00006CF0(a0); break;
-    case 3: game_uso_func_000071E0(a0); break;
+    case 1: SnowAI_finishRun(a0); break;
+    case 2: SnowAI_timeoutRun(a0); break;
+    case 3: SnowAI_recoverStuck(a0); break;
     }
 }

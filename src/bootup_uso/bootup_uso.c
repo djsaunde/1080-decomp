@@ -5360,7 +5360,7 @@ void func_00008AEC(Quad4 *dst) {
 }
 
 /* SnowBCollider_ctor: 36-insn (0x90) alloc-or-given init. BYTE-EXACT (0 non-reloc
- * diffs, 36/36 insns). SnowBoarder_checkRaceEnd (still INCLUDE_ASM) takes the address of
+ * diffs, 36/36 insns). SnowBoarder_handleMsg (still INCLUDE_ASM) takes the address of
  * two interior points of this function (8B44+0x28, 8B44+0x2C); its .s now
  * references them as `SnowBCollider_ctor + 0x28 / + 0x2C` (identical relocation
  * bytes) instead of the now-removed local labels `.L00008B6C` / `D_00008B70`.
@@ -6888,7 +6888,7 @@ void func_0000B49C(int idx, int j) {
  * int structs with (f32)/(s32) casts (4 cvt + 4 trunc too many) and a K&R call
  * carrying stale f12/f14. 143/143 words; 19 differ: the 0.0 constant / s
  * swap f0<->f2, the v5C copy base v1 (target v0), and the four pool addends
- * (k48/k44/kc need pins for an exact). Same shape as SnowBoarder_checkRaceEnd: named
+ * (k48/k44/kc need pins for an exact). Same shape as SnowBoarder_handleMsg: named
  * products, v50 -> v5C -> v74 struct copies, decl-order frame (an unused
  * Vec3 between v74 and v5C, pad[3] below v50). Also: q = arg0 + 0x3C8 assigned
  * before the if (target re-forms it on both join edges, addiu v0,a1,968); the
@@ -8308,12 +8308,12 @@ void SnowBoarder_update(char *st) {
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 #endif
 
-// SnowBoarder_checkRaceEnd — STRUCTURAL PASS (0x4C4 / 305 insns, no episode).
+// SnowBoarder_handleMsg — STRUCTURAL PASS (0x4C4 / 305 insns, no episode).
 // Event/message dispatcher: switch on the incoming message opcode and
 // run the matching handler (FP threshold checks + table-driven actions
 // + vtable sub-updates) on the state struct.
 //
-//   void SnowBoarder_checkRaceEnd(State *st, Msg *m) {     // st -> a3
+//   void SnowBoarder_handleMsg(State *st, Msg *m) {     // st -> a3
 //     switch (m->0x0) {                          // opcode
 //       case 0x14:                               // .L0000D98C
 //         if (st->0xA80) break;                  // busy
@@ -8390,7 +8390,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 extern f64 D_00000988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it func_0000098C + 4) */
 extern char bu_d900_aec[], bu_d900_b44[];  /* data aliases of func_00008AEC / SnowBCollider_ctor (target lui/addiu %hi/%lo(sym+K)) */
 typedef struct { s32 w; } S4D900;  /* 4-byte struct passed by value (target sw a1,4(sp) arg-area copy) */
-void SnowBoarder_checkRaceEnd(char *arg0, char *arg1) {
+void SnowBoarder_handleMsg(char *arg0, char *arg1) {
     S4D900 sp8C;
     s32 temp_v0_3;
     S4D900 *sp84;
@@ -8517,7 +8517,7 @@ cdef:
         func_00000000(arg0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_checkRaceEnd);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_handleMsg);
 #endif
 
 void func_0000DDC4(int a0) {

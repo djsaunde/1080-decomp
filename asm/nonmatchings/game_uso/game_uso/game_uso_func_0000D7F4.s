@@ -17,7 +17,7 @@ glabel game_uso_func_0000D7F4
     /* 00D828 0000D828 24050001 */  .word 0x24050001
     /* 00D82C 0000D82C 51C0001A */  .word 0x51C0001A
     /* 00D830 0000D830 8FBF0024 */  .word 0x8FBF0024
-    jal game_uso_func_0000EDD4   /* 00D834 0C000000 -> game_uso_func_0000EDD4 */
+    jal RiderAnim_applyDamage_0000EDD4   /* 00D834 0C000000 -> RiderAnim_applyDamage_0000EDD4 */
     /* 00D838 0000D838 24060002 */  .word 0x24060002
     /* 00D83C 0000D83C 8E0500FC */  .word 0x8E0500FC
     /* 00D840 0000D840 240F0001 */  .word 0x240F0001

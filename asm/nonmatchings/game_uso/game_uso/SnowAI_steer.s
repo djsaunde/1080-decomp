@@ -689,7 +689,7 @@ glabel SnowAI_steer
     /* 0063D0 000063D0 8E0C04C4 */  .word 0x8E0C04C4
     /* 0063D4 000063D4 19800088 */  .word 0x19800088
     /* 0063D8 000063D8 00000000 */  .word 0x00000000
-    jal SnowAI_func_000074D8   /* 0063DC 0C000000 -> SnowAI_func_000074D8 */
+    jal SnowAI_restoreRiderParms   /* 0063DC 0C000000 -> SnowAI_restoreRiderParms */
     /* 0063E0 000063E0 02002025 */  .word 0x02002025
     /* 0063E4 000063E4 44808000 */  .word 0x44808000
     /* 0063E8 000063E8 AE0004C4 */  .word 0xAE0004C4
@@ -717,7 +717,7 @@ glabel SnowAI_steer
     /* 006440 00006440 00000000 */  .word 0x00000000
     /* 006444 00006444 4500006C */  .word 0x4500006C
     /* 006448 00006448 00000000 */  .word 0x00000000
-    jal SnowAI_func_0000751C   /* 00644C 0C000000 -> SnowAI_func_0000751C */
+    jal SnowAI_scaleRiderMax   /* 00644C 0C000000 -> SnowAI_scaleRiderMax */
     /* 006450 00006450 02002025 */  .word 0x02002025
     /* 006454 00006454 8E02002C */  .word 0x8E02002C
     /* 006458 00006458 44808000 */  .word 0x44808000
@@ -743,7 +743,7 @@ glabel SnowAI_steer
     /* 0064A8 000064A8 2443FFFF */  .word 0x2443FFFF
     /* 0064AC 000064AC 14600005 */  .word 0x14600005
     /* 0064B0 000064B0 AE0304C4 */  .word 0xAE0304C4
-    jal SnowAI_func_000074D8   /* 0064B4 0C000000 -> SnowAI_func_000074D8 */
+    jal SnowAI_restoreRiderParms   /* 0064B4 0C000000 -> SnowAI_restoreRiderParms */
     /* 0064B8 000064B8 02002025 */  .word 0x02002025
     /* 0064BC 000064BC 44808000 */  .word 0x44808000
     /* 0064C0 000064C0 00000000 */  .word 0x00000000
@@ -771,7 +771,7 @@ glabel SnowAI_steer
     /* 006518 00006518 45020008 */  .word 0x45020008
     /* 00651C 0000651C 24010003 */  .word 0x24010003
     /* 006520 00006520 AE0304C4 */  .word 0xAE0304C4
-    jal SnowAI_func_00007448   /* 006524 0C000000 -> SnowAI_func_00007448 */
+    jal SnowAI_scaleRiderParms   /* 006524 0C000000 -> SnowAI_scaleRiderParms */
     /* 006528 00006528 02002025 */  .word 0x02002025
     /* 00652C 0000652C 44808000 */  .word 0x44808000
     /* 006530 00006530 8E040030 */  .word 0x8E040030
@@ -872,7 +872,7 @@ glabel SnowAI_steer
     /* 0066AC 000066AC 2861004B */  .word 0x2861004B
     /* 0066B0 000066B0 14200007 */  .word 0x14200007
     /* 0066B4 000066B4 AE030054 */  .word 0xAE030054
-    jal SnowAI_func_00007424   /* 0066B8 0C000000 -> SnowAI_func_00007424 */
+    jal SnowAI_enterRecover   /* 0066B8 0C000000 -> SnowAI_enterRecover */
     /* 0066BC 000066BC AE000054 */  .word 0xAE000054
     /* 0066C0 000066C0 44808000 */  .word 0x44808000
     /* 0066C4 000066C4 10000003 */  .word 0x10000003
@@ -913,7 +913,7 @@ glabel SnowAI_steer
     /* 006750 00006750 30590400 */  .word 0x30590400
     /* 006754 00006754 13200007 */  .word 0x13200007
     /* 006758 00006758 30490010 */  .word 0x30490010
-    jal SnowAI_func_000071A4   /* 00675C 0C000000 -> SnowAI_func_000071A4 */
+    jal SnowAI_enterFinish   /* 00675C 0C000000 -> SnowAI_enterFinish */
     /* 006760 00006760 02002025 */  .word 0x02002025
     jal SnowAI_func_00006FA8   /* 006764 0C000000 -> SnowAI_func_00006FA8 */
     /* 006768 00006768 02002025 */  .word 0x02002025
@@ -1087,7 +1087,7 @@ glabel SnowAI_steer
     /* 006A08 00006A08 AE0A0040 */  .word 0xAE0A0040
     /* 006A0C 00006A0C AFAD01B4 */  .word 0xAFAD01B4
     /* 006A10 00006A10 02002025 */  .word 0x02002025
-    jal SnowAI_func_00007538   /* 006A14 0C000000 -> SnowAI_func_00007538 */
+    jal SnowAI_applyStickInput   /* 006A14 0C000000 -> SnowAI_applyStickInput */
     /* 006A18 00006A18 8FA501B4 */  .word 0x8FA501B4
     /* 006A1C 00006A1C 8FBF0024 */  .word 0x8FBF0024
     /* 006A20 00006A20 8FB00020 */  .word 0x8FB00020
@@ -1095,4 +1095,4 @@ glabel SnowAI_steer
     /* 006A28 00006A28 03E00008 */  .word 0x03E00008
     /* 006A2C 00006A2C 00000000 */  .word 0x00000000
 endlabel SnowAI_steer
-/* (the 44F4 .late_rodata words that followed here moved to SnowAI_func_00007448.s) */
+/* (the 44F4 .late_rodata words that followed here moved to SnowAI_scaleRiderParms.s) */

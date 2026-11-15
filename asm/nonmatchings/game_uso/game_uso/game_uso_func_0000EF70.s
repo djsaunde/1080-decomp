@@ -9,7 +9,7 @@ glabel game_uso_func_0000EF70
     /* 00EF84 0000EF84 8E0400B4 */  .word 0x8E0400B4
     jal import_000A40C0   /* 00EF88 0C000000 -> import_000A40C0 */
     /* 00EF8C 0000EF8C 3C053F80 */  .word 0x3C053F80
-    jal game_uso_func_00011868   /* 00EF90 0C000000 -> game_uso_func_00011868 */
+    jal RiderAnim_clearRiderSpin_00011868   /* 00EF90 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
     /* 00EF94 0000EF94 02002025 */  .word 0x02002025
     /* 00EF98 0000EF98 8E0E00B4 */  .word 0x8E0E00B4
     /* 00EF9C 0000EF9C 02002025 */  .word 0x02002025

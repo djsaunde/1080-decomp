@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_checkRaceEnd, 0x4C4
+nonmatching SnowBoarder_handleMsg, 0x4C4
 
-glabel SnowBoarder_checkRaceEnd
+glabel SnowBoarder_handleMsg
     /* DDE36C 0000D900 27BDFF70 */  addiu      $sp, $sp, -0x90
     /* DDE370 0000D904 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DDE374 0000D908 8CA20000 */  lw         $v0, 0x0($a1)
@@ -325,4 +325,4 @@ glabel SnowBoarder_checkRaceEnd
     /* DDE824 0000DDB8 27BD0090 */  addiu      $sp, $sp, 0x90
     /* DDE828 0000DDBC 03E00008 */  jr         $ra
     /* DDE82C 0000DDC0 00000000 */   nop
-endlabel SnowBoarder_checkRaceEnd
+endlabel SnowBoarder_handleMsg

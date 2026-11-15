@@ -28,17 +28,17 @@ int SnowAI_func_00007ACC();
 float SnowAI_func_00007A98(SnowAI *);
 int SnowAI_func_00007C1C();
 void *SnowAI_func_00008CD8();
-void SnowAI_func_000074D8(SnowAI *);
-void SnowAI_func_0000751C(SnowAI *);
-void SnowAI_func_00007448(SnowAI *);
-void SnowAI_func_00007424(void *);
+void SnowAI_restoreRiderParms(SnowAI *);
+void SnowAI_scaleRiderMax(SnowAI *);
+void SnowAI_scaleRiderParms(SnowAI *);
+void SnowAI_enterRecover(void *);
 int SnowAI_func_00009B88();
 void SnowAI_startNodeScan(SnowAI *);
 int SnowAI_func_0000A0E8(SnowAI *, char *, char *);
 void SnowAI_startSegmentScan(void *);
-void SnowAI_func_000071A4(SnowAI *);
+void SnowAI_enterFinish(SnowAI *);
 int SnowAI_func_00006FA8(SnowAI *);
-void SnowAI_func_00007538();
+void SnowAI_applyStickInput();
 void SnowAI_steer(int *a0) {
     Vec3 copy2;
     Vec3 staged_axis;
@@ -383,7 +383,7 @@ yaw_region:
     }
     if (state_flag & 8) {
         if (self->unk4C4 > 0) {
-            SnowAI_func_000074D8(self);
+            SnowAI_restoreRiderParms(self);
             self->unk4C4 = 0;
         }
         goto tail_common;
@@ -393,7 +393,7 @@ yaw_region:
         v0 = self->level;
         fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD0 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD0 + 1].value : self->parms.parm[SNOWAI_PARM_DD0].value, scale);
         if (metric_a < fsel) {
-            SnowAI_func_0000751C(self);
+            SnowAI_scaleRiderMax(self);
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD1 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD1 + 1].value : self->parms.parm[SNOWAI_PARM_DD1].value, scale);
             self->unk4C4 = (int)fsel;
@@ -402,7 +402,7 @@ yaw_region:
     } else if (v0 > 0) {
         self->unk4C4 = v0 - 1;
         if (self->unk4C4 == 0) {
-            SnowAI_func_000074D8(self);
+            SnowAI_restoreRiderParms(self);
         }
     } else {
         v0 = self->level;
@@ -410,7 +410,7 @@ yaw_region:
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DP + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DP + 1].value : self->parms.parm[SNOWAI_PARM_DP].value, scale);
             if (fsel < metric_a) {
                 self->unk4C4 = 0x10000;
-                SnowAI_func_00007448(self);
+                SnowAI_scaleRiderParms(self);
             }
         }
     }
@@ -457,7 +457,7 @@ tail_common:
         if (child_flags) {}
         if (cnt >= 75) {
             self->unk54 = 0;
-            SnowAI_func_00007424(self);
+            SnowAI_enterRecover(self);
         } }
     } else {
         self->unk54 = 0;
@@ -475,7 +475,7 @@ tail_common:
         }
     }
     if (resolved_state & 0x400) {
-        SnowAI_func_000071A4(self);
+        SnowAI_enterFinish(self);
         self->targetNode = SnowAI_func_00006FA8(self);
         goto commit_flags;
     }
@@ -532,5 +532,5 @@ tail_common:
         }
     }
 commit_flags:
-    SnowAI_func_00007538(self, out_flags);
+    SnowAI_applyStickInput(self, out_flags);
 }

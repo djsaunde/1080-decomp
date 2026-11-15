@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
-void SnowAI_func_00007538(int *a0, int arg1) {
+void SnowAI_applyStickInput(int *a0, int arg1) {
     GameEventStateLayout *arg0 = (GameEventStateLayout *)a0;
     f32 temp_f12;
     f32 output_44;

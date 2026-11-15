@@ -14559,7 +14559,7 @@ s16 *MorphPoly_genUpdateList(char *arg0, s32 arg1, s16 *arg2) {
  * in $a3 (caller-save — valid, no calls), while IDO promotes self to $s0 (long
  * live range across the inner loop), forcing a stack frame + s0 save/restore;
  * that cascades the t-reg names. The callee-save-vs-leaf choice for a loop-live
- * value isn't C-steerable (cf. SnowAI_func_00007538 s0-vs-leaf). Stays NM.
+ * value isn't C-steerable (cf. SnowAI_applyStickInput s0-vs-leaf). Stays NM.
  * Run 133 (agent-c): under NCC it IS steerable -- the NM comparison object now
  * uses src/game_libs/game_libs_ncc_4A9F0_nm.cpp (inline Self::put member, self
  * as `this` in a3, frameless, 40 words, 89.25).

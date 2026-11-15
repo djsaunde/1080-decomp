@@ -425,7 +425,7 @@ glabel RiderAnim_selectAnim_0000D9CC
     /* 00E060 0000E060 02002025 */  .word 0x02002025
     /* 00E064 0000E064 E612011C */  .word 0xE612011C
     /* 00E068 0000E068 8FA6002C */  .word 0x8FA6002C
-    jal game_uso_func_0000EDD4   /* 00E06C 0C000000 -> game_uso_func_0000EDD4 */
+    jal RiderAnim_applyDamage_0000EDD4   /* 00E06C 0C000000 -> RiderAnim_applyDamage_0000EDD4 */
     /* 00E070 0000E070 8FA50028 */  .word 0x8FA50028
     /* 00E074 0000E074 8E0200B4 */  .word 0x8E0200B4
     /* 00E078 0000E078 3C013F80 */  .word 0x3C013F80

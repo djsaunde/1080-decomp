@@ -3,7 +3,7 @@ nonmatching game_uso_func_0000FB04, 0x78
 glabel game_uso_func_0000FB04
     /* 00FB04 0000FB04 27BDFFE0 */  .word 0x27BDFFE0
     /* 00FB08 0000FB08 AFBF001C */  .word 0xAFBF001C
-    jal game_uso_func_00011868   /* 00FB0C 0C000000 -> game_uso_func_00011868 */
+    jal RiderAnim_clearRiderSpin_00011868   /* 00FB0C 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
     /* 00FB10 0000FB10 AFA40020 */  .word 0xAFA40020
     /* 00FB14 0000FB14 8FA40020 */  .word 0x8FA40020
     /* 00FB18 0000FB18 24060002 */  .word 0x24060002

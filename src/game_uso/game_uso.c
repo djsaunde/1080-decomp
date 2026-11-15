@@ -3680,7 +3680,7 @@ void SnowAI_update(char *a0) {
  *   sp[0x1BC] = t2->0xB8                 ; Vec3.y
  *   sp[0x1C0] = t2->0xBC                 ; Vec3.z
  *
- * This Vec3-stage shape is IDENTICAL to game_uso_func_00006A30 (per
+ * This Vec3-stage shape is IDENTICAL to SnowAI_finishRun (per
  * its own NM-wrap doc — both stage a0->0x30->{0xB4,0xB8,0xBC} into a
  * local Vec3 buffer at sp+0x9C resp. sp+0x1B8). Both are per-frame
  * compute functions that work on the same sub-struct family. Suggests
@@ -3958,17 +3958,17 @@ int SnowAI_func_00007ACC();
 float SnowAI_func_00007A98(int *);
 int SnowAI_func_00007C1C();
 void *SnowAI_func_00008CD8();
-void SnowAI_func_000074D8(char *);
-void SnowAI_func_0000751C(char *);
-void SnowAI_func_00007448(char *);
-void SnowAI_func_00007424(void *);
+void SnowAI_restoreRiderParms(char *);
+void SnowAI_scaleRiderMax(char *);
+void SnowAI_scaleRiderParms(char *);
+void SnowAI_enterRecover(void *);
 int SnowAI_func_00009B88();
 void SnowAI_startNodeScan(SnowAI *);
 int SnowAI_func_0000A0E8(char *, char *, char *);
 void SnowAI_startSegmentScan(SnowAI *);
-void SnowAI_func_000071A4(int *);
+void SnowAI_enterFinish(int *);
 int SnowAI_func_00006FA8(int *);
-void SnowAI_func_00007538();
+void SnowAI_applyStickInput();
 #endif
 /* SnowAI_steer: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
  * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c
@@ -4429,7 +4429,7 @@ yaw_region:
     /* 0x4C4 counter machine (0xAA8-0xC18): keyed off state_flag&8 */
     if (state_flag & 8) {
         if (*(int*)((char*)self + 0x4C4) > 0) {
-            SnowAI_func_000074D8(self);
+            SnowAI_restoreRiderParms(self);
             *(int*)((char*)self + 0x4C4) = 0;
         }
         goto tail_common;
@@ -4444,7 +4444,7 @@ yaw_region:
              : v0 == 2 ? *(float*)((char*)self + 0x2C4)
                        : *(float*)((char*)self + 0x2AC);
         if (metric_a < fsel) {
-            SnowAI_func_0000751C(self);
+            SnowAI_scaleRiderMax(self);
             v0 = *(int*)((char*)self + 0x2C);
             fsel = v0 == 3 ? *(float*)((char*)self + 0x324)
                  : v0 == 2 ? *(float*)((char*)self + 0x30C)
@@ -4455,7 +4455,7 @@ yaw_region:
     } else if (v0 > 0) {
         *(int*)((char*)self + 0x4C4) = v0 - 1;
         if (*(int*)((char*)self + 0x4C4) == 0) {
-            SnowAI_func_000074D8(self);
+            SnowAI_restoreRiderParms(self);
         }
     } else {
         v0 = *(int*)((char*)self + 0x2C);
@@ -4465,7 +4465,7 @@ yaw_region:
                            : *(float*)((char*)self + 0x384);
             if (fsel < metric_a) {
                 *(int*)((char*)self + 0x4C4) = 0x10000;
-                SnowAI_func_00007448(self);
+                SnowAI_scaleRiderParms(self);
             }
         }
     }
@@ -4528,7 +4528,7 @@ tail_common:
         if (child_flags) {}
         if (cnt >= 75) {
             *(int*)((char*)self + 0x54) = 0;
-            SnowAI_func_00007424(self);
+            SnowAI_enterRecover(self);
         } }
     } else {
         *(int*)((char*)self + 0x54) = 0;
@@ -4548,7 +4548,7 @@ tail_common:
     }
 
     if (resolved_state & 0x400) {
-        SnowAI_func_000071A4(self);
+        SnowAI_enterFinish(self);
         *(int*)((char*)self + 0x40) = SnowAI_func_00006FA8(self);
         goto commit_flags;
     }
@@ -4617,7 +4617,7 @@ tail_common:
     }
 
 commit_flags:
-    SnowAI_func_00007538(self, out_flags);
+    SnowAI_applyStickInput(self, out_flags);
 }
 #else
 void SnowAI_steer(int *a0) {
@@ -4625,10 +4625,10 @@ void SnowAI_steer(int *a0) {
 }
 #endif
 
-/* V3_6A30 is outside the NM block: the exact game_uso_func_00006CF0 uses it. */
+/* V3_6A30 is outside the NM block: the exact SnowAI_timeoutRun uses it. */
 typedef struct { float x, y, z; } V3_6A30;
 
-/* game_uso_func_00006A30: per-frame steer update (0x2C0 / 176 words).
+/* SnowAI_finishRun: per-frame steer update (0x2C0 / 176 words).
  * EXACT via REPLACE_FUNC_BODY donor splice: game_uso is C++, and the real
  * body lives in the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_6A30.cpp
  * (176/176 words + all 7 relocs identical). The bnez-on-&pt + 055750(0xC)
@@ -4636,15 +4636,15 @@ typedef struct { float x, y, z; } V3_6A30;
  * and the copy chain is operator* returning by value; cfe capped at 93.2%.
  * docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe. Body below
  * is a placeholder for the splice. */
-void game_uso_func_00006A30(int *a0) {
+void SnowAI_finishRun(int *a0) {
     volatile int *ret = a0;
 }
 
-/* game_uso_func_00006CF0: 102-insn (0x198) per-frame update. Copies
+/* SnowAI_timeoutRun: 102-insn (0x198) per-frame update. Copies
  * sub->{0xB4..0xBC} (sub = a0->0x30), adds sub->0x318 Vec3 scaled by
  * a0->0xA8, gates on sub->0x938 / 0xA54 and the a0->0x70 timer (dispatch
  * through game_uso_func_00011024(sub->0x840, flag) when sub->0x348 <= 30 or
- * timer == 60), then tail-calls SnowAI_func_00007538(a0, flag); flag is 0x10
+ * timer == 60), then tail-calls SnowAI_applyStickInput(a0, flag); flag is 0x10
  * when a0->0x6C == 0.
  *
  * Exact-match notes (see the agent-g 2026-07-15 / 2026-10-15 passes in
@@ -4657,8 +4657,8 @@ void game_uso_func_00006A30(int *a0) {
  * the target; (2) the dead `addiu v0,v0,0x318` is `p += 0x318` placed BEFORE
  * the three reads, which read through p (folded back to 0x318(v0)..). */
 void game_uso_func_00011024();
-void SnowAI_func_00007538();
-void game_uso_func_00006CF0(int *a0) {
+void SnowAI_applyStickInput();
+void SnowAI_timeoutRun(int *a0) {
     V3_6A30 added_vec;   /* sp+0x7C */
     V3_6A30 base_vec;    /* sp+0x70 */
     int dispatch_arg;    /* sp+0x6C (a1 spill home) */
@@ -4720,10 +4720,10 @@ void game_uso_func_00006CF0(int *a0) {
         }
     }
 
-    SnowAI_func_00007538(a0, dispatch_arg);
+    SnowAI_applyStickInput(a0, dispatch_arg);
 }
 
-void game_uso_func_00006E88(int *a0) {
+void SnowAI_onWin(int *a0) {
     int r;
     gl_func_00000000(a0);
     r = gl_func_00000000(a0);
@@ -4732,7 +4732,7 @@ void game_uso_func_00006E88(int *a0) {
     *(int*)((char*)a0 + 0x40) = gl_func_00000000(a0);
 }
 
-void game_uso_func_00006ECC(int *a0) {
+void SnowAI_onLose(int *a0) {
     int v;
     if (*(int*)(*(int*)((char*)a0 + 0x30) + 0x848) != 2) {
         gl_func_00000000();
@@ -4744,12 +4744,12 @@ void game_uso_func_00006ECC(int *a0) {
     }
 }
 
-void game_uso_func_00006F28(int *a0) {
+void SnowAI_onTimeout(int *a0) {
     *(int*)((char*)a0 + 0x64) = 2;
     *(int*)((char*)a0 + 0x70) = 0;
 }
 
-/* game_uso_func_00006F38 - MATCHED 2026-07-08 (28/28 words incl. reloc fields).
+/* SnowAI_isAtFinish - MATCHED 2026-07-08 (28/28 words incl. reloc fields).
  * Flag-test cascade over a chain pointer:
  * v = **(D_807FEB38+0x548); r = A374(a0, v BY-VALUE 1-int struct, a0->0x30+0xB4).
  * Levers: (1) a1 passed by-VALUE as 1-int struct (S1_6F38) -> IDO homes it to
@@ -4761,7 +4761,7 @@ void game_uso_func_00006F28(int *a0) {
 extern char game_uso_D_807FEB38;
 extern int game_uso_func_0000A374();
 typedef struct { int a; } S1_6F38;
-int game_uso_func_00006F38(int *a0) {
+int SnowAI_isAtFinish(int *a0) {
     S1_6F38 v;
     volatile char pad[0x18];
     int *r;
@@ -4797,7 +4797,7 @@ int SnowAI_func_00006FA8(int *a0) {
     return 0;
 }
 
-void SnowAI_func_000071A4(int *a0) {
+void SnowAI_enterFinish(int *a0) {
     *(int*)((char*)a0 + 0x64) = 1;
     *(int*)((char*)a0 + 0x70) = 0;
     if (*(int*)((char*)a0 + 0x4C4) > 0) {
@@ -4806,24 +4806,24 @@ void SnowAI_func_000071A4(int *a0) {
     }
 }
 
-/* game_uso_func_000071E0: speed-gated counter + state-3 steer stage (0x244 / 145 words).
+/* SnowAI_recoverStuck: speed-gated counter + state-3 steer stage (0x244 / 145 words).
  * EXACT via REPLACE_FUNC_BODY donor splice: game_uso is C++, and the real
  * body lives in the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_71E0.cpp
  * (145/145 words + all 6 relocs identical); sibling of 6A30 (Vec3 value class,
  * derived-class constructor protocol for the alloc-or-stack block); cfe
  * capped at 83.6%. docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe.
  * Body below is a placeholder for the splice. */
-void game_uso_func_000071E0(int *a0) {
+void SnowAI_recoverStuck(int *a0) {
     volatile int *ret = a0;
 }
 
-void SnowAI_func_00007424(void *a0) {
+void SnowAI_enterRecover(void *a0) {
     *(int*)((char*)a0 + 0x64) = 3;
     gl_func_00000000(a0);
 }
 
 #ifdef NON_MATCHING
-void SnowAI_func_00007448(char *a0) {
+void SnowAI_scaleRiderParms(char *a0) {
     char *t;
     char *table;
     char *q;
@@ -4862,7 +4862,7 @@ void SnowAI_func_00007448(char *a0) {
     *(float*)(t + 0x10) = *(float*)(q + 0x10);
 }
 
-/* SnowAI_func_00007448 — 24/36 exact, LENGTH-EXACT, structure fully aligned
+/* SnowAI_scaleRiderParms — 24/36 exact, LENGTH-EXACT, structure fully aligned
  * (was 73.5%; ~86% fuzzy now). NOT exact — genuine coloring cap. 2026-07-03
  * (agent-e). Levers that landed (see also docs/IDO_CODEGEN.md):
  *  (1) base materialization: `t = table; if (1) { t += K; }` — if(1){} blocks
@@ -4878,10 +4878,10 @@ void SnowAI_func_00007448(char *a0) {
  * leaving v0/v1 free post-block1 — uopt's lowest-available-reuse picker can't
  * produce that from any of 12 probed candidate-order permutations. */
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_func_00007448);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_scaleRiderParms);
 #endif
 
-void SnowAI_func_000074D8(char *a0) {
+void SnowAI_restoreRiderParms(char *a0) {
     char *t;
     t = *(char**)(a0 + 0x30) + 0x758;
     *(float*)(t + 0x10) = *(float*)(a0 + 0x4C8);
@@ -4893,7 +4893,7 @@ void SnowAI_func_000074D8(char *a0) {
     *(float*)(t + 0x10) = *(float*)(a0 + 0x4D4);
 }
 
-void SnowAI_func_0000751C(char *a0) {
+void SnowAI_scaleRiderMax(char *a0) {
     char *t = *(char**)(a0 + 0x30) + 0x758;
     *(float*)(t + 0x10) = *(float*)(a0 + 0x354) * *(float*)(a0 + 0x4C8);
 }
@@ -4925,7 +4925,7 @@ extern char game_uso_D_807FEC28;
 #define FF7(p, o) (*(float *)((char *)(p) + (o)))
 #define O938(a) FW(FW(a, 0x30), 0x938)
 #define TBL ((float *)((char *)&game_uso_D_807FEC28 + 0x638))
-void SnowAI_func_00007538(char *a0, int arg) {
+void SnowAI_applyStickInput(char *a0, int arg) {
     float zero = 0.0f;
     float fx = zero;
     float fy = zero;
@@ -5059,7 +5059,7 @@ end:
 
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_func_00007538);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_applyStickInput);
 #endif
 
 /* SnowAI_func_00007A98 (13 insns, 0x34): returns the float delta
@@ -8497,7 +8497,7 @@ void RiderAnim_setAnim_0000D5F8(char *a0, Pair2 pair, int a3) {
  * (void)a0 cast makes IDO -O2 emit the arg-save `sw a0, 0(sp)` and the empty
  * leaf fills the jr delay slot with it. (Earlier "unmatchable" comment was
  * wrong — verified raw-diff=0, reloc-free.) */
-void game_uso_func_0000D634(int a0) {
+void RiderAnim_display_0000D634(int a0) {
     (void)a0;
 }
 
@@ -9365,7 +9365,7 @@ void game_uso_func_0000EDCC(int *a0, int a1) {
     a0[0x10C / 4] = a1;
 }
 
-/* game_uso_func_0000EDD4: 23-insn 5-way switch + back-subtract.
+/* RiderAnim_applyDamage_0000EDD4: 23-insn 5-way switch + back-subtract.
  *
  * Structure:
  *   if (a1 < 5) v0 = pickByA1[a1] from {a0[0x34C], a0[0x364], a0[0x37C],
@@ -9392,7 +9392,7 @@ void game_uso_func_0000EDCC(int *a0, int a1) {
  *
  * a2 is an unused 3rd arg saved to caller arg-slot at sp+0x8 by IDO arg-
  * save (per docs/IDO_CODEGEN.md#feedback-ido-unused-arg-save). */
-void game_uso_func_0000EDD4(int *a0, unsigned int a1, int a2) {
+void RiderAnim_applyDamage_0000EDD4(int *a0, unsigned int a1, int a2) {
     int v0 = 0;
     int *p;
     (void)a2;
@@ -11048,7 +11048,7 @@ void game_uso_func_00011750(char *obj) {
     }
 }
 
-void game_uso_func_00011868(int *a0) {
+void RiderAnim_clearRiderSpin_00011868(int *a0) {
     *(float *)((char *)a0[0xB4 / 4] + 0x970) = 0.0f;
     *(float *)((char *)a0[0xB4 / 4] + 0x974) = 0.0f;
     *(float *)((char *)a0[0xB4 / 4] + 0x978) = 0.0f;

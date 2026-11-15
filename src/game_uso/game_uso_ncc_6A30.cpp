@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_00006A30 (0x2C0 / 176 words).
+/* IDO 7.1 NCC (C++) donor for SnowAI_finishRun (0x2C0 / 176 words).
  *
  * Per-frame steer update: va = w->pos; va += w->vel * k; 7ACC(self, &n, &va)
  * (return without 7538 on null); rv = 7C1C(...) (Vec3 by value); pt = the
@@ -59,7 +59,7 @@ int SnowAI_func_00007ACC(Self *, int *, Vec3 *, int);
 Vec3 SnowAI_func_00007C1C(Self *, int, int, Vec3 *, int);
 float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
 void game_uso_func_000110A4(int);
-void SnowAI_func_00007538(Self *, int);
+void SnowAI_applyStickInput(Self *, int);
 }
 struct Self {
     char pad0[0x30]; W *w;   /* 0x30 */
@@ -68,7 +68,7 @@ struct Self {
     char pad74[0x80 - 0x74]; int f80;
     char pad84[0xA8 - 0x84]; float fA8; float fAC; float fB0;
 };
-extern "C" void game_uso_func_00006A30(Self *s0) {
+extern "C" void SnowAI_finishRun(Self *s0) {
     int flag = 0;
     if (s0->f80 != 0) {
         Vec3 va = s0->w->pos;
@@ -104,5 +104,5 @@ extern "C" void game_uso_func_00006A30(Self *s0) {
             s0->f70 = 61;
         }
     }
-    SnowAI_func_00007538(s0, flag);
+    SnowAI_applyStickInput(s0, flag);
 }

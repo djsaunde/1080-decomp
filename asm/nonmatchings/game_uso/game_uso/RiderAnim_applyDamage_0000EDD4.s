@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000EDD4, 0x5C
+nonmatching RiderAnim_applyDamage_0000EDD4, 0x5C
 
-glabel game_uso_func_0000EDD4
+glabel RiderAnim_applyDamage_0000EDD4
     /* 00EDD4 0000EDD4 2CA10005 */  .word 0x2CA10005
     /* 00EDD8 0000EDD8 AFA60008 */  .word 0xAFA60008
     /* 00EDDC 0000EDDC 1020000E */  .word 0x1020000E
@@ -24,4 +24,4 @@ glabel game_uso_func_0000EDD4
     /* 00EE24 0000EE24 01E2C023 */  .word 0x01E2C023
     /* 00EE28 0000EE28 03E00008 */  .word 0x03E00008
     /* 00EE2C 0000EE2C AC780000 */  .word 0xAC780000
-endlabel game_uso_func_0000EDD4
+endlabel RiderAnim_applyDamage_0000EDD4

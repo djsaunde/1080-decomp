@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM donor for SnowBoarder_checkRaceEnd (event handler, 0x4C4 / 305
+/* IDO 7.1 NCC (C++) NM donor for SnowBoarder_handleMsg (event handler, 0x4C4 / 305
  * words). The dispatcher is an edg case-order compare chain (20, 9, 6, 1000,
  * 1001, 1003, 1002, 1004, 1005..1007, default), so the function is C++.
  * 10 raw words left (agent-c run 125):
@@ -35,7 +35,7 @@ extern int D_00000000;
 #define F(p,o) (*(float *)((char *)(p) + (o)))
 #define W(p,o) (*(int *)((char *)(p) + (o)))
 #define H(p,o) (*(unsigned short *)((char *)(p) + (o)))
-extern "C" void SnowBoarder_checkRaceEnd(char *self, Ev *ev) {
+extern "C" void SnowBoarder_handleMsg(char *self, Ev *ev) {
     S4 sp8C;
     Data *p;
     S4 *sp84;

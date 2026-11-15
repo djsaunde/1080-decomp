@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/bootup_uso/bootup_uso_pool_D900.c. Target bytes unchanged. */
 #include "context_bootup_uso_pool_D900.h"
-void SnowBoarder_checkRaceEnd(BootupState *st, BootupD900Message *m) {
+void SnowBoarder_handleMsg(BootupState *st, BootupD900Message *m) {
     BootupD900Word name;
     int opcode;
     s32 *desc;

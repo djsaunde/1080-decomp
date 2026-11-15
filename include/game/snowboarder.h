@@ -8,7 +8,7 @@
  * calls the base Node ctor with the name "SnowB" and stores the vtable
  * (bootup Data 0x83D0) at +0x28. Its vtable slots are SnowBoarder_func_0000CFA0
  * (2), SnowBoarder_update (3, the "SnowB" perf section with the SnowBai /
- * SnowBDyn / SnowBAnm / SnowBChild sub-sections), SnowBoarder_checkRaceEnd (4)
+ * SnowBDyn / SnowBAnm / SnowBChild sub-sections), SnowBoarder_handleMsg (4)
  * and SnowBoarder_func_0000E4DC (8). The physics step SnowBoarder_updateDyn and
  * the collision pass SnowBoarder_procColl take the same `this`.
  *

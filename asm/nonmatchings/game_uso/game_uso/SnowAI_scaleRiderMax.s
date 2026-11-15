@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_0000751C, 0x1C
+nonmatching SnowAI_scaleRiderMax, 0x1C
 
-glabel SnowAI_func_0000751C
+glabel SnowAI_scaleRiderMax
     /* 00751C 0000751C C48404C8 */  .word 0xC48404C8
     /* 007520 00007520 C4860354 */  .word 0xC4860354
     /* 007524 00007524 8C820030 */  .word 0x8C820030
@@ -8,4 +8,4 @@ glabel SnowAI_func_0000751C
     /* 00752C 0000752C 24420758 */  .word 0x24420758
     /* 007530 00007530 03E00008 */  .word 0x03E00008
     /* 007534 00007534 E4480010 */  .word 0xE4480010
-endlabel SnowAI_func_0000751C
+endlabel SnowAI_scaleRiderMax

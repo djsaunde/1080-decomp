@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00007448, 0x90
+nonmatching SnowAI_scaleRiderParms, 0x90
 
-glabel SnowAI_func_00007448
+glabel SnowAI_scaleRiderParms
     /* 007448 00007448 8C830030 */  .word 0x8C830030
     /* 00744C 0000744C C492033C */  .word 0xC492033C
     /* 007450 00007450 2487035C */  .word 0x2487035C
@@ -37,7 +37,7 @@ glabel SnowAI_func_00007448
     /* 0074CC 000074CC 24650498 */  .word 0x24650498
     /* 0074D0 000074D0 03E00008 */  .word 0x03E00008
     /* 0074D4 000074D4 E4A60010 */  .word 0xE4A60010
-endlabel SnowAI_func_00007448
+endlabel SnowAI_scaleRiderParms
 
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */

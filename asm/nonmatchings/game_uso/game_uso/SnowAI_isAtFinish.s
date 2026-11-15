@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00006F38, 0x70
+nonmatching SnowAI_isAtFinish, 0x70
 
-glabel game_uso_func_00006F38
+glabel SnowAI_isAtFinish
     lui $t6, %hi(game_uso_D_807FEB38)   /* 006F38 3C0E0000 -> game_uso_D_807FEB38 */
     /* 006F3C 00006F3C 8DCE0548 */  .word 0x8DCE0548
     /* 006F40 00006F40 27BDFFC0 */  .word 0x27BDFFC0
@@ -29,4 +29,4 @@ glabel game_uso_func_00006F38
     /* 006F9C 00006F9C 00601025 */  .word 0x00601025
     /* 006FA0 00006FA0 03E00008 */  .word 0x03E00008
     /* 006FA4 00006FA4 27BD0040 */  .word 0x27BD0040
-endlabel game_uso_func_00006F38
+endlabel SnowAI_isAtFinish

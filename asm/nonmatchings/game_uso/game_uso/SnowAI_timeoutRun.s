@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00006CF0, 0x198
+nonmatching SnowAI_timeoutRun, 0x198
 
-glabel game_uso_func_00006CF0
+glabel SnowAI_timeoutRun
     /* 006CF0 00006CF0 27BDFF78 */  .word 0x27BDFF78
     /* 006CF4 00006CF4 AFBF0014 */  .word 0xAFBF0014
     /* 006CF8 00006CF8 8C8F0030 */  .word 0x8C8F0030
@@ -97,10 +97,10 @@ glabel game_uso_func_00006CF0
     /* 006E64 00006E64 8FA5006C */  .word 0x8FA5006C
     /* 006E68 00006E68 2409003D */  .word 0x2409003D
     /* 006E6C 00006E6C ACC90070 */  .word 0xACC90070
-    jal SnowAI_func_00007538   /* 006E70 0C000000 -> SnowAI_func_00007538 */
+    jal SnowAI_applyStickInput   /* 006E70 0C000000 -> SnowAI_applyStickInput */
     /* 006E74 00006E74 00C02025 */  .word 0x00C02025
     /* 006E78 00006E78 8FBF0014 */  .word 0x8FBF0014
     /* 006E7C 00006E7C 27BD0088 */  .word 0x27BD0088
     /* 006E80 00006E80 03E00008 */  .word 0x03E00008
     /* 006E84 00006E84 00000000 */  .word 0x00000000
-endlabel game_uso_func_00006CF0
+endlabel SnowAI_timeoutRun

@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00006A30, 0x2C0
+nonmatching SnowAI_finishRun, 0x2C0
 
-glabel game_uso_func_00006A30
+glabel SnowAI_finishRun
     /* 006A30 00006A30 27BDFF48 */  .word 0x27BDFF48
     /* 006A34 00006A34 AFBF0024 */  .word 0xAFBF0024
     /* 006A38 00006A38 AFB00020 */  .word 0xAFB00020
@@ -170,11 +170,11 @@ glabel game_uso_func_00006A30
     /* 006CC8 00006CC8 2408003D */  .word 0x2408003D
     /* 006CCC 00006CCC AE080070 */  .word 0xAE080070
     /* 006CD0 00006CD0 02002025 */  .word 0x02002025
-    jal SnowAI_func_00007538   /* 006CD4 0C000000 -> SnowAI_func_00007538 */
+    jal SnowAI_applyStickInput   /* 006CD4 0C000000 -> SnowAI_applyStickInput */
     /* 006CD8 00006CD8 8FA500B4 */  .word 0x8FA500B4
     /* 006CDC 00006CDC 8FBF0024 */  .word 0x8FBF0024
     /* 006CE0 00006CE0 8FB00020 */  .word 0x8FB00020
     /* 006CE4 00006CE4 27BD00B8 */  .word 0x27BD00B8
     /* 006CE8 00006CE8 03E00008 */  .word 0x03E00008
     /* 006CEC 00006CEC 00000000 */  .word 0x00000000
-endlabel game_uso_func_00006A30
+endlabel SnowAI_finishRun

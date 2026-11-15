@@ -1,6 +1,6 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_000071E0 (0x244 / 145 words).
+/* IDO 7.1 NCC (C++) donor for SnowAI_recoverStuck (0x244 / 145 words).
  *
- * Sibling of game_uso_func_00006A30 (same Vec3 / derived-class XZ shapes; see
+ * Sibling of SnowAI_finishRun (same Vec3 / derived-class XZ shapes; see
  * game_uso_ncc_6A30.cpp). Flag-4 early call to A7F8; speed >= 30 counter
  * (reset state 0x64 and the counter at 30); state 3 runs the stage:
  * va = w->pos + w->vel * k, 7ACC / 7C1C, XZ pt(w->0x3C8), yaw = 3ED4,
@@ -51,7 +51,7 @@ int SnowAI_func_00007ACC(Self *, int *, Vec3 *, int);
 Vec3 SnowAI_func_00007C1C(Self *, int, int, Vec3 *, int);
 float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
 void game_uso_func_000110A4(int);
-void SnowAI_func_00007538(Self *, int);
+void SnowAI_applyStickInput(Self *, int);
 void SnowAI_scanSegments(Self *);
 }
 struct Self {
@@ -68,7 +68,7 @@ struct Self {
         }
     }
 };
-extern "C" void game_uso_func_000071E0(Self *s0) {
+extern "C" void SnowAI_recoverStuck(Self *s0) {
     if (s0->f68 & 4) {
         SnowAI_scanSegments(s0);
         return;
@@ -98,6 +98,6 @@ extern "C" void game_uso_func_000071E0(Self *s0) {
         if (s0->f6C == 0) {
             if (s0->w->f938 != 0) flag = 256;
         }
-        SnowAI_func_00007538(s0, flag);
+        SnowAI_applyStickInput(s0, flag);
     }
 }

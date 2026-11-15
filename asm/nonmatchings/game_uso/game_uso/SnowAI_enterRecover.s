@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00007424, 0x24
+nonmatching SnowAI_enterRecover, 0x24
 
-glabel SnowAI_func_00007424
+glabel SnowAI_enterRecover
     /* 007424 00007424 27BDFFE8 */  .word 0x27BDFFE8
     /* 007428 00007428 AFBF0014 */  .word 0xAFBF0014
     /* 00742C 0000742C 240E0003 */  .word 0x240E0003
@@ -10,4 +10,4 @@ glabel SnowAI_func_00007424
     /* 00743C 0000743C 27BD0018 */  .word 0x27BD0018
     /* 007440 00007440 03E00008 */  .word 0x03E00008
     /* 007444 00007444 00000000 */  .word 0x00000000
-endlabel SnowAI_func_00007424
+endlabel SnowAI_enterRecover

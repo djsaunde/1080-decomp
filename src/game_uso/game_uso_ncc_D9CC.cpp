@@ -29,7 +29,7 @@ void RiderAnim_setAnim_0000D5F8(char *a0, Pair2 pair, int a3);
 void RiderAnim_endTrick_0000D63C(char *a0, int a1);
 void game_uso_func_07C0FC(...);
 void game_uso_func_0000EDCC(int *a0, int a1);
-void game_uso_func_0000EDD4(int *a0, unsigned int a1, char *a2);
+void RiderAnim_applyDamage_0000EDD4(int *a0, unsigned int a1, char *a2);
 void game_uso_func_0001189C(int *a0, int a1, char *a2);
 extern char game_uso_D_807FF478;
 extern char game_uso_D_807FF480;
@@ -222,7 +222,7 @@ after_24:;
     if (FW(arg0, 0x108) != 0) {
         game_uso_func_0001189C((int *)arg0, (s32) var_a3, sp2C);
         FF(arg0, 0x11C) = 1.0f;
-        game_uso_func_0000EDD4((int *)arg0, sp28, sp2C);
+        RiderAnim_applyDamage_0000EDD4((int *)arg0, sp28, sp2C);
         temp_v0_3 = (char *)FW(arg0, 0xB4) + 0x2FC;
         FF(temp_v0_3, 0) = 0.0f; FF(temp_v0_3, 0x4) = 0.0f; FF(temp_v0_3, 0x8) = 0.0f; FF(temp_v0_3, 0xC) = 1.0f;
         RiderAnim_endTrick_0000D63C(arg0, (sp28 == 0));

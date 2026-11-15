@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_000074D8, 0x44
+nonmatching SnowAI_restoreRiderParms, 0x44
 
-glabel SnowAI_func_000074D8
+glabel SnowAI_restoreRiderParms
     /* 0074D8 000074D8 8C820030 */  .word 0x8C820030
     /* 0074DC 000074DC C48404C8 */  .word 0xC48404C8
     /* 0074E0 000074E0 24420758 */  .word 0x24420758
@@ -18,4 +18,4 @@ glabel SnowAI_func_000074D8
     /* 007510 00007510 24420498 */  .word 0x24420498
     /* 007514 00007514 03E00008 */  .word 0x03E00008
     /* 007518 00007518 E44A0010 */  .word 0xE44A0010
-endlabel SnowAI_func_000074D8
+endlabel SnowAI_restoreRiderParms

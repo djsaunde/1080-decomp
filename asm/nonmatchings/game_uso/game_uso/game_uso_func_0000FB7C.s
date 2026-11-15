@@ -24,7 +24,7 @@ glabel game_uso_func_0000FB7C
     /* 00FBCC 0000FBCC 8F060004 */  .word 0x8F060004
     jal RiderAnim_setAnim_0000D5F8   /* 00FBD0 0C000000 -> RiderAnim_setAnim_0000D5F8 */
     /* 00FBD4 0000FBD4 AFA60008 */  .word 0xAFA60008
-    jal game_uso_func_00011868   /* 00FBD8 0C000000 -> game_uso_func_00011868 */
+    jal RiderAnim_clearRiderSpin_00011868   /* 00FBD8 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
     /* 00FBDC 0000FBDC 02002025 */  .word 0x02002025
     /* 00FBE0 0000FBE0 AE000114 */  .word 0xAE000114
     /* 00FBE4 0000FBE4 8FBF0024 */  .word 0x8FBF0024

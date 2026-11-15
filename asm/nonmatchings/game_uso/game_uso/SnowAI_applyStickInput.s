@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00007538, 0x560
+nonmatching SnowAI_applyStickInput, 0x560
 
-glabel SnowAI_func_00007538
+glabel SnowAI_applyStickInput
     /* 007538 00007538 44808000 */  .word 0x44808000
     /* 00753C 0000753C 8C860050 */  .word 0x8C860050
     /* 007540 00007540 00A03825 */  .word 0x00A03825
@@ -345,4 +345,4 @@ glabel SnowAI_func_00007538
     /* 007A8C 00007A8C 8D230800 */  .word 0x8D230800
     /* 007A90 00007A90 03E00008 */  .word 0x03E00008
     /* 007A94 00007A94 AC620040 */  .word 0xAC620040
-endlabel SnowAI_func_00007538
+endlabel SnowAI_applyStickInput
