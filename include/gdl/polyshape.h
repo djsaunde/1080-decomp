@@ -41,7 +41,12 @@ typedef struct BasePolyShape {
     /* 0x78 */ s32 unk78;
     /* 0x7C */ s32 unk7C;
     /* 0x80 */ s32 unk80;
-    /* 0x84 */ s32 unk84[5];
+    /* 0x84 */ struct BaseMat **mats; /* parse cmd 29: alloc(matCap * 4); PolyShape_clipToWindow_00049308 culls
+                                       * each by its minCut / maxCut, getMatCodeNum / Char read its code */
+    /* 0x88 */ s32 unk88;
+    /* 0x8C */ s32 matCap;         /* parse cmd 29 */
+    /* 0x90 */ s32 nMats;          /* 0 at cmd 29 */
+    /* 0x94 */ s32 unk94;
     /* 0x98 */ s32 unk98;          /* -1 after reset */
     /* 0x9C */ f32 unk9C;          /* 1.0f after reset */
     /* 0xA0 */ s32 unkA0;

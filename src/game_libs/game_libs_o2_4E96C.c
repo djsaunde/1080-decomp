@@ -14,6 +14,7 @@
  * cursor. That puts the cursor in v1 and the word in v0, as in the target;
  * separate locals give v0/v1 the other way round. */
 #include "common.h"
+#include "gdl/window.h"
 
 extern int gl_func_00000000();
 
@@ -26,40 +27,40 @@ void Window_doCommand(char *a0, C4E96C *a1) {
     switch (a1->op) {
     case 109:
         v = (int)a1->args; a1->args = (int *)v + 1; p = *(int **)v;
-        *(int *)(a0 + 0x100) = 0;
-        *(int *)(a0 + 0x104) = (int)p;
+        ((Window *)a0)->unk100 = 0;
+        ((Window *)a0)->clearFlags = (int)p;
         break;
     case 117:
-        *(int *)(a0 + 0x108) = A4E96C(a1);
+        ((Window *)a0)->displayMask = A4E96C(a1);
         break;
     case 110:
         v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xC0) = v;
-        *(int *)(a0 + 0xD0) = v;
+        ((Window *)a0)->originX = v;
+        ((Window *)a0)->vpX = v;
         v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xC4) = v;
-        *(int *)(a0 + 0xD4) = v;
+        ((Window *)a0)->originY = v;
+        ((Window *)a0)->vpY = v;
         break;
     case 111:
         v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xB8) = v;
-        *(int *)(a0 + 0xC8) = v;
+        ((Window *)a0)->width = v;
+        ((Window *)a0)->vpW = v;
         v = (int)(float)A4E96C(a1);
-        *(int *)(a0 + 0xBC) = v;
-        *(int *)(a0 + 0xCC) = v;
+        ((Window *)a0)->height = v;
+        ((Window *)a0)->vpH = v;
         break;
     case 112:
         v = (int)a1->args; a1->args = (int *)v + 1; p = *(int **)v;
-        *(int *)(a0 + 0x78) = (int)p;
+        ((Window *)a0)->flags = (int)p;
         break;
     case 113:
-        *(int *)(a0 + 0x7C) = A4E96C(a1);
+        ((Window *)a0)->projType = A4E96C(a1);
         break;
     case 115:
-        *(float *)(a0 + 0xAC) = A4E96C(a1);
+        ((Window *)a0)->near = A4E96C(a1);
         break;
     case 116:
-        *(float *)(a0 + 0xB0) = A4E96C(a1);
+        ((Window *)a0)->far = A4E96C(a1);
         break;
     default:
         gl_func_00000000(a0, a1);

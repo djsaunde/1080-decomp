@@ -19100,7 +19100,7 @@ s32 *BasePolyShape_parseCmd(char *arg0, s32 arg1, s32 *cur) {
     goto dflt;
 c3:
     p = cur; cur++;
-    *(s32 *)(arg0 + 0xC) = *p;
+    BASEPOLY(arg0)->unk0C[0] = *p;
     goto done;
 c13:
     p = cur; cur++;
@@ -19136,7 +19136,7 @@ c17:
     goto done;
 c24:
     p = cur; cur++;
-    *(s32 *)(arg0 + 0x38) |= *p;
+    BASEPOLY(arg0)->unk0C[11] |= *p;
     if (1) goto done;
 dflt:
     gl_func_00000000((char *)&D_00000000 + 0x20FA8, arg1, cur, arg0);
@@ -19314,11 +19314,11 @@ D:
 }
 
 unsigned char BasePolyShape_getMatCodeChar_00052A4C(char *a0, int a1) {
-    return *(unsigned char *)(*(int *)(*(int *)(a0 + 0x84) + a1 * 4) + 0x32);
+    return *(unsigned char *)(*(int *)((int)BASEPOLY(a0)->mats + a1 * 4) + 0x32);
 }
 
 short BasePolyShape_getMatCodeNum_00052A64(char *a0, int a1) {
-    return *(short *)(*(int *)(*(int *)(a0 + 0x84) + a1 * 4) + 0x30);
+    return *(short *)(*(int *)((int)BASEPOLY(a0)->mats + a1 * 4) + 0x30);
 }
 
 /* BasePolyShape_setFlags_00052A7C: symmetric flag pair on *(int*)(a0+0x38) --
@@ -19527,19 +19527,19 @@ void PolyShape_getNormal8(char *a0, int a1, unsigned char *a2) {
     unsigned short *tbl;
     RGB5323C *pal;
     int idx;
-    tbl = *(unsigned short **)(a0 + 0x70);
+    tbl = (unsigned short *)BASEPOLY(a0)->remap;
     if (tbl != 0) {
         idx = *(unsigned short *)((char *)tbl + a1 * 6);
     } else {
         idx = a1;
     }
-    pal = *(RGB5323C **)(a0 + 0x5C);
+    pal = (RGB5323C *)BASEPOLY(a0)->palette;
     if (pal != 0) {
         *(RGB5323C *)a2 = pal[idx];
     } else {
-        a2[0] = (int)((*(float **)(a0 + 0x58))[idx * 3 + 0] * 127.0f);
-        a2[1] = (int)((*(float **)(a0 + 0x58))[idx * 3 + 1] * 127.0f);
-        a2[2] = (int)((*(float **)(a0 + 0x58))[idx * 3 + 2] * 127.0f);
+        a2[0] = (int)(((float *)BASEPOLY(a0)->vtxNormals)[idx * 3 + 0] * 127.0f);
+        a2[1] = (int)(((float *)BASEPOLY(a0)->vtxNormals)[idx * 3 + 1] * 127.0f);
+        a2[2] = (int)(((float *)BASEPOLY(a0)->vtxNormals)[idx * 3 + 2] * 127.0f);
     }
 }
 
@@ -19999,7 +19999,7 @@ void BasePolyShape_getFaceNormal(char *a0, float *a1, int a2) {
     Vec3_54210 v;
     volatile int pad_c;
     volatile int pad_d;
-    v = *(*(Vec3_54210 **)(a0 + 0x54) + a2);
+    v = *((Vec3_54210 *)BASEPOLY(a0)->faceNormals + a2);
     a1[0] = v.x;
     a1[1] = v.y;
     a1[2] = v.z;

@@ -43,6 +43,7 @@
  *  - the three message addresses 0x20FD4/0x20FDC/0x20FF4 are pinned data
  *    refs (gl_ref_000xxxxx_52CD4) so the lui 2 / addiu pairs bake. */
 #include "common.h"
+#include "gdl/polyshape.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -71,54 +72,54 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
         do {
             switch (op) {
             case 35:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0xA0) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unkA0 = *q;
                 break;
             case 6:
                 q = cur; cur += 1; v = *q;
                 gl_func_00000000(arg0, v);
                 break;
             case 27:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x40) = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x60) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->nVerts = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->verts = (s16 (*)[3])(*q);
                 break;
             case 28:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x44) = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x68) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->nTris = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->tris = (PolyTri *)(*q);
                 dflag = 1;
                 break;
             case 29:
                 gl_func_00000000(gl_ref_00020FD4_52CD4, 0);
                 q = cur; cur += 1; v = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x80) = *q;
-                *(s32 *)(arg0 + 0x90) = 0;
-                *(s32 *)(arg0 + 0x8C) = v;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk80 = *q;
+                BASEPOLY(arg0)->nMats = 0;
+                BASEPOLY(arg0)->matCap = v;
                 if (v != 0) {
                     pp = (s32 *)(arg0 + 0x84);
                     *pp = gl_func_00000000(v * 4);
                 }
-                gl_func_00000000(arg0, *(s32 *)(arg0 + 0x80));
+                gl_func_00000000(arg0, BASEPOLY(arg0)->unk80);
                 gl_func_00000000();
                 break;
             case 31:
                 gl_func_00000000(gl_ref_00020FDC_52CD4);
                 break;
             case 4:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x64) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk64 = *q;
                 break;
             case 7:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x78) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk78 = *q;
                 break;
             case 8:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x7C) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk7C = *q;
                 p = arg0 + 0x34;
                 if (1) { *(s32 *)(p + 4) |= 8; }
                 break;
             case 9:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x50) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk50 = *q;
                 break;
             case 26:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x44) = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x4C) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->nTris = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk4C = *q;
                 break;
             case 0:
                 lflag = 1;
@@ -137,11 +138,11 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 gl_func_00000000(gl_ref_00020FF4_52CD4);
                 break;
             case 12:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x98) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk98 = *q;
                 break;
             case 18:
                 q = cur; cur += 1;
-                *(f32 *)(arg0 + 0x9C) = (f32) *q / 10000.0f;
+                BASEPOLY(arg0)->unk9C = (f32) *q / 10000.0f;
                 break;
             case 19:
                 cur++;
@@ -162,19 +163,19 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 cur++;
                 break;
             case 25:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x5C) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->palette = (u8 *)(*q);
                 break;
             case 30:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x48) = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x6C) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk48 = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk6C = *q;
                 break;
             case 34:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x58) = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x54) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->vtxNormals = (f32 *)(*q);
+                q = cur; cur += 1; BASEPOLY(arg0)->faceNormals = (f32 *)(*q);
                 break;
             case 32:
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x74) = *q;
-                q = cur; cur += 1; *(s32 *)(arg0 + 0x70) = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->unk74 = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->remap = (u16 *)(*q);
                 break;
             default:
                 cur = (s32 *)gl_func_00000000(arg0, op, cur);
@@ -186,15 +187,15 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
         } while (op != 2);
     }
     if (dflag != 0) {
-        if (*(s32 *)(arg0 + 0x5C) == 0 && *(s32 *)(arg0 + 0x58) == 0) {
-            n = *(s32 *)(arg0 + 0x40);
-            *(s32 *)(arg0 + 0x58) = gl_func_00000000(n * 0xC);
+        if ((int)BASEPOLY(arg0)->palette == 0 && (int)BASEPOLY(arg0)->vtxNormals == 0) {
+            n = BASEPOLY(arg0)->nVerts;
+            BASEPOLY(arg0)->vtxNormals = (f32 *)(gl_func_00000000(n * 0xC));
         }
-        if (*(s32 *)(arg0 + 0x54) == 0) {
-            n = *(s32 *)(arg0 + 0x44);
-            *(s32 *)(arg0 + 0x54) = gl_func_00000000(n * 0xC);
+        if ((int)BASEPOLY(arg0)->faceNormals == 0) {
+            n = (s32)BASEPOLY(arg0)->nTris;
+            BASEPOLY(arg0)->faceNormals = (f32 *)(gl_func_00000000(n * 0xC));
         }
-        if (*(s32 *)(arg0 + 0x5C) != 0) {
+        if ((int)BASEPOLY(arg0)->palette != 0) {
             gl_func_00000000(arg0);
         } else {
             gl_func_00000000(arg0, lflag, 1);
@@ -204,9 +205,9 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
         gl_func_00000000(arg0);
     }
     if (!(D_00000000 & 0x100)) {
-        if (*(s32 *)(arg0 + 0x54) != 0) {
-            gl_func_00000000(*(s32 *)(arg0 + 0x54));
-            *(s32 *)(arg0 + 0x54) = 0;
+        if ((int)BASEPOLY(arg0)->faceNormals != 0) {
+            gl_func_00000000((int)BASEPOLY(arg0)->faceNormals);
+            BASEPOLY(arg0)->faceNormals = (f32 *)0;
         }
     }
     return cur;
