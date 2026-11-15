@@ -3584,3 +3584,4 @@ D_8000A59C	gBootUsoPath
 D_8000A744	gKmcExcCodeTable
 D_8000ABC0	gKernelBssStart
 D_8000A46C	__osPiTable
+SnowBCollider_func_0000E2D0	SnowBCollider_edgeGrip_0000E2D0

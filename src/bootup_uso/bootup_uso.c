@@ -8687,9 +8687,9 @@ void SnowBoarder_yawPiOver_0000E270(char *arg0, float arg1) {
     aE270(arg0 + 0xF4, arg0 + 0x3B0, 3.14159265f / arg1);
 }
 
-/* SnowBCollider_func_0000E2D0 - verified structural decode (0x20C, 131 insns,
+/* SnowBCollider_edgeGrip_0000E2D0 - verified structural decode (0x20C, 131 insns,
  * FP vector reflect/project math helper).
- *   void SnowBCollider_func_0000E2D0(Obj *a0, int a1, Vec3f *a2, Vec3f *a3) {
+ *   void SnowBCollider_edgeGrip_0000E2D0(Obj *a0, int a1, Vec3f *a2, Vec3f *a3) {
  *       // pass 1: input vector a2 vs axis a3
  *       Vec3f v = *a2;                            // sp+0x64
  *       f32 d = v.x*a3->x + v.y*a3->y + v.z*a3->z;// dot
@@ -8728,7 +8728,7 @@ void SnowBoarder_yawPiOver_0000E270(char *arg0, float arg1) {
  * + spilled f-temps + the file-split needed to fold the pool load. Full body
  * INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode).
  * EXACT (agent-h run 408) via the IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
- * (REPLACE_FUNC_BODY, SnowBCollider_func_0000E2D0_rodata = 0x9A0 for the 0.1 literal). The
+ * (REPLACE_FUNC_BODY, SnowBCollider_edgeGrip_0000E2D0_rodata = 0x9A0 for the 0.1 literal). The
  * in-unit body is the same C (keeps the .text size). The post-call FP ring:
  * the two code-free tests after the 9F8 line hand ugen a shared v[]
  * sub-expression that it evaluates into ring temps which as1 deletes as dead,
@@ -8747,7 +8747,7 @@ void SnowBoarder_yawPiOver_0000E270(char *arg0, float arg1) {
  * Residual: d and the arg3->x load colour f2/f0 swapped, the dot/scale tail
  * colours, frame 0x50 vs 0x70. */
 /* Run 123 (agent-c, raw 55 -> 19 words): the f64 at RoData +0x9A0 is the literal
- * 0.1 (exact needs a donor, SnowBCollider_func_0000E2D0_rodata = 0x9A0 - 0); the frame is 112:
+ * 0.1 (exact needs a donor, SnowBCollider_edgeGrip_0000E2D0_rodata = 0x9A0 - 0); the frame is 112:
  * one unused word between s and dot and seven below dot (dot's home at sp+68);
  * dot and s are ONE variable (f0 across the call, spilled to its home); the
  * normalise call takes only &v[0] but arg3 stays live in a3 (spilled at 124),
@@ -8759,7 +8759,7 @@ void SnowBoarder_yawPiOver_0000E270(char *arg0, float arg1) {
  * ring offset it causes in the final scale block.
  * NCC compiles of this body are much worse (frame 80, no pads). */
 extern f64 bu_e2d0_k9a0;  /* rodata f64 (target SndHandle_triggerEvent1_0000098C + 0x14) */
-void SnowBCollider_func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
+void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     Vec3 v[2];
     f32 d;
     f32 lim;

@@ -1694,7 +1694,7 @@ extern float bootup_E270_rodata_098C[4];
 extern void bootup_E270_func_071AE0(float *quat, Vec3 *axis, float angle);
 void SnowBoarder_yawPiOver_0000E270(char *arg0, float arg1);
 typedef char *(*GP_0000E2D0)();
-void SnowBCollider_func_0000E2D0(char *arg0, s32 arg1, char *arg2, char *arg3, f32 arg4);
+void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, char *arg2, char *arg3, f32 arg4);
 void SnowBoarder_readParms(char *a0);
 void boot_readFloatParm_0000E588(char *a0);
 void boot_readVec3Parm_0000E5B8(char *a0);

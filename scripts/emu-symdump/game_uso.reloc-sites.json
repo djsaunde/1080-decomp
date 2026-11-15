@@ -8721,7 +8721,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "SnowBCollider_func_0000E2D0"
+"name": "SnowBCollider_edgeGrip_0000E2D0"
 },
 {
 "off": 62596,
@@ -9444,7 +9444,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "SnowBCollider_func_0000E2D0"
+"name": "SnowBCollider_edgeGrip_0000E2D0"
 },
 {
 "off": 65796,
@@ -9552,7 +9552,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "SnowBCollider_func_0000E2D0"
+"name": "SnowBCollider_edgeGrip_0000E2D0"
 },
 {
 "off": 66224,
@@ -9566,7 +9566,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "SnowBCollider_func_0000E2D0"
+"name": "SnowBCollider_edgeGrip_0000E2D0"
 },
 {
 "off": 66304,

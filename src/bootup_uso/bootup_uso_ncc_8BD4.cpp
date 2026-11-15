@@ -25,7 +25,7 @@ extern char D_00000000;
 extern int func_00000000(...);
 /* per-site import aliases (USO relocs at 0; agent-g run 475 resolved the targets with the bootup TextReloc table): */
 extern unsigned char func_8bd4_c(...);          /* BasePolyShape_func_00052A4C(shape, tri): the triangle's surface code */
-extern void func_8bd4_a(void *, void *, void *, void *, float); /* SnowBCollider_func_0000E2D0: the edge-grip response */
+extern void func_8bd4_a(void *, void *, void *, void *, float); /* SnowBCollider_edgeGrip_0000E2D0: the edge-grip response */
 extern void func_8bd4_b(void *, float, void *, float);          /* Friction_vfn11_00063F34 (the collider's base) */
 extern void func_8bd4_heavy(void *, void *, void *);            /* DNode_addImpulseAt_00065250(rider, point, force) */
 }
@@ -60,7 +60,7 @@ struct GameWorld { char p[0x84]; int courseShape; };
  * stumble), 0xF = a board probe (edge grip and friction). */
 struct SnowBCollider {
     char p0[0x114];
-    char pointVel[0xC];     /* 0x114: velocity at the probe; SnowBCollider_func_0000E2D0 projects it onto the contact plane */
+    char pointVel[0xC];     /* 0x114: velocity at the probe; SnowBCollider_edgeGrip_0000E2D0 projects it onto the contact plane */
     char worldPoint[0x2C];  /* 0x120: probe position in world space (the impulse application point) */
     int hitTri;             /* 0x14C: index of the touched course triangle (surface lookup) */
     char p150[0x170 - 0x150];

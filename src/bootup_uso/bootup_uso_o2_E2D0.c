@@ -1,9 +1,9 @@
-/* IDO 7.1 -O2 donor for SnowBCollider_func_0000E2D0 -- plane reflect / scale helper (0x20C / 131 words).
+/* IDO 7.1 -O2 donor for SnowBCollider_edgeGrip_0000E2D0 -- plane reflect / scale helper (0x20C / 131 words).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the E270 recipe):
  * the f64 literal 0.1 lives in bootup.uso RoData at +0x9A0 (target reloc
  * SndHandle_triggerEvent1_0000098C + 0x14); the donor-local .rodata reloc is renamed
- * SnowBCollider_func_0000E2D0_rodata and pinned to 0x9A0.
+ * SnowBCollider_edgeGrip_0000E2D0_rodata and pinned to 0x9A0.
  *
  * The post-call FP temp ring (1.0 f8 / edgeSq f16 / sum f18, then f4 f10 f16 /
  * f6 f8 f18 in the scale block) comes from the two code-free tests after the
@@ -25,7 +25,7 @@ void func_00000000();
  * v[1] = -(pointVel's in-plane part), v[0] = -(the side axis's in-plane part). When the in-plane side axis is long
  * enough (> 0.1), it is normalized and the sideways slip dot(v[1], v[0]) * edgeFriction, clamped to +-edgeGrip and
  * scaled by 1 + edgeSq, is applied along it as an impulse at the probe (DNode_addImpulseAt): the edge bites. */
-void SnowBCollider_func_0000E2D0(SnowBoarder *rider, s32 point, Vec3 *pointVel, Vec3 *normal, f32 edgeSq) {
+void SnowBCollider_edgeGrip_0000E2D0(SnowBoarder *rider, s32 point, Vec3 *pointVel, Vec3 *normal, f32 edgeSq) {
     Vec3 v[2];
     f32 d;
     f32 lim;

@@ -274,10 +274,10 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_yawPiOver_0000E270=$(BOOTUP_E270_DONOR)
 # E2D0 = plane reflect / scale helper; the f64 literal 0.1 is in bootup.uso RoData
-# +0x9A0 (SnowBCollider_func_0000E2D0_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
+# +0x9A0 (SnowBCollider_edgeGrip_0000E2D0_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
 # (agent-h run 408: code-free tests after the 9F8 line rotate the FP temp ring).
 BOOTUP_E2D0_DONOR := build/src/bootup_uso/bootup_uso_o2_E2D0.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBCollider_func_0000E2D0=$(BOOTUP_E2D0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBCollider_edgeGrip_0000E2D0=$(BOOTUP_E2D0_DONOR)
 # 6808 = scene/screen constructor (13-way record dispatch); IDO 7.1 -O2 donor
 # bootup_uso_o2_6808.c over an empty placeholder (agent-g run 223). EXACT.
 # Jumptable reloc renamed game_createMap_rodata, pinned to 0x5B4.

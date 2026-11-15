@@ -1,6 +1,6 @@
-nonmatching SnowBCollider_func_0000E2D0, 0x20C
+nonmatching SnowBCollider_edgeGrip_0000E2D0, 0x20C
 
-glabel SnowBCollider_func_0000E2D0
+glabel SnowBCollider_edgeGrip_0000E2D0
     /* DDED3C 0000E2D0 27BDFF90 */  addiu      $sp, $sp, -0x70
     /* DDED40 0000E2D4 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DDED44 0000E2D8 AFB00018 */  sw         $s0, 0x18($sp)
@@ -135,4 +135,4 @@ glabel SnowBCollider_func_0000E2D0
     /* DDEF3C 0000E4D0 27BD0070 */  addiu      $sp, $sp, 0x70
     /* DDEF40 0000E4D4 03E00008 */  jr         $ra
     /* DDEF44 0000E4D8 00000000 */   nop
-endlabel SnowBCollider_func_0000E2D0
+endlabel SnowBCollider_edgeGrip_0000E2D0
