@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for game_libs_func_0002E290 -- selector-byte lookup
+/* IDO 7.1 -O2 donor for snd_SoundObjEventIndex_2E290 -- selector-byte lookup
  * with a mask-narrowing retry loop. PROVEN EXACT 49/49 words standalone
  * (the 50th-52nd build words are .text alignment zeros; st_size = 0xC4).
  *
@@ -16,7 +16,7 @@
  * 29CCC / 6DD14 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-
  * jumptable-rodata-rename): a C `switch` puts its 32-entry jumptable in
  * the donor's local .rodata; the splice renames that reloc to
- * game_libs_func_0002E290_rodata, pinned in undefined_syms_auto.txt to
+ * snd_SoundObjEventIndex_2E290_rodata, pinned in undefined_syms_auto.txt to
  * the table the USO ships in game_libs rodata at +0x1660 (read straight
  * out of bootup.uso RoData/RoDataReloc: sel 2 -> 2E2D8, 3 -> 2E300,
  * 5 -> 2E308, 9 -> 2E310, 17 -> 2E318, all others -> 2E330 default;
@@ -37,7 +37,7 @@
  *    `move v0,zero; jr ra; nop` exit; the hoisted `li a2,0x40` is the
  *    switch's out-of-table compare constant made loop-invariant.
  *  - `return (unsigned char)(o[0x15] + 12)` = lbu/addiu/jr/andi tail. */
-int game_libs_func_0002E290(unsigned char *o) {
+int snd_SoundObjEventIndex_2E290(unsigned char *o) {
     unsigned char mask = 0xFF;
     unsigned char sel = o[0x31];
     do {

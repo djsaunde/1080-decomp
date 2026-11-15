@@ -340,4 +340,4 @@ extern char gl_31608_storage[];
 extern int gl_31608_gate;
 extern int gl_31608_state;
 extern int gl_31608_set(Ring3183C *, int, int, int);
-void gl_func_00031608(GlState2E0C4 *a0, int a1);
+void snd_SoundObjRequestCue_31608(GlState2E0C4 *a0, int a1);

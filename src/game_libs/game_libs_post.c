@@ -12498,10 +12498,10 @@ void snd_StopAudioCmds_2DCF8(void) {
     gl_func_00000000(0xF8000000, 0);
 }
 
-/* game_libs_func_0002DD30: 2-insn empty stub (jr ra; nop). */
-void game_libs_func_0002DD30(void) { }
+/* snd_Stub_2DD30: 2-insn empty stub (jr ra; nop). */
+void snd_Stub_2DD30(void) { }
 
-/* game_libs_func_0002DD38: 8-insn 2-global setter. EXACT 2026-10-14
+/* snd_ScheduleSeqDefault_2DD38: 8-insn 2-global setter. EXACT 2026-10-14
  * (agent-c), 85.0 -> 100. The "entry arg-home not C-reachable" cap (and the
  * `int *p = &a0` lever that only worked standalone) was a type decode error:
  * the param is an `unsigned char`. IDO homes the narrow param
@@ -12510,7 +12510,7 @@ void game_libs_func_0002DD30(void) { }
  * (no copy register here since a0 is dead after the store). */
 extern int D_2DD38_byte;
 extern int D_2DD38_const;
-void game_libs_func_0002DD38(unsigned char a0) {
+void snd_ScheduleSeqDefault_2DD38(unsigned char a0) {
     D_2DD38_byte = a0;
     D_2DD38_const = 0xD2;
 }
@@ -12528,14 +12528,14 @@ void snd_PlayPlayer3Seq_2DD58(char a0) {
     gl_func_00000000(0x82030000 | ((a0 & 0xFF) << 8), 1000);
 }
 
-/* gl_func_0002DD90: 1-call wrapper. gl_func_00042428((u8)a0, a1, 0, 0x3F800000
+/* snd_ScheduleSeqAfter_2DD90: 1-call wrapper. gl_func_00042428((u8)a0, a1, 0, 0x3F800000
  * /1.0f-as-int/). Byte-exact: gl_func_00042428 reloc resolves to 0x42428
  * (verified, false-100 gated). Successors DDBC/DDEC kept INCLUDE_ASM. */
 extern int gl_func_00042428();
-int gl_func_0002DD90(int a0, int a1) {
+int snd_ScheduleSeqAfter_2DD90(int a0, int a1) {
     return gl_func_00042428(a0 & 0xFF, a1, 0, 0x3F800000);
 }
-/* game_libs_func_0002DDBC: 12-insn 4-global setter. Stores (a0&0xFF, a1,
+/* snd_ScheduleSeq_2DDBC: 12-insn 4-global setter. Stores (a0&0xFF, a1,
  * a2) to 3 int D-symbols + a3 (float bits via mtc1) to a 4th D-symbol.
  *
  * Byte-exact 2026-05-27 via sig-type-fix (a3 as float → mtc1 a3, $f12)
@@ -12545,7 +12545,7 @@ int gl_func_0002DD90(int a0, int a1) {
  * externs resolving to 0x0 (4 distinct names break IDO's CSE on the
  * lui+sw pair — per feedback-ido-cse-bust-via-distinct-externs). */
 extern char D_2DDBC_a, D_2DDBC_b, D_2DDBC_c, D_2DDBC_d;
-void game_libs_func_0002DDBC(int a0, int a1, int a2, float a3) {
+void snd_ScheduleSeq_2DDBC(int a0, int a1, int a2, float a3) {
     int *p = &a0;
     a0 &= 0xFF;
     *(int*)&D_2DDBC_a = a0;
@@ -12569,7 +12569,7 @@ void game_libs_func_0002DDBC(int a0, int a1, int a2, float a3) {
  * `addiu sp` (the 11D0/1920/67AC4 shape). The old gl_func_0002DDF4 "dual entry,
  * caller pre-sets $f4" verdict and its `int fval_bits` stub are retired.
  * The dead `sw a0,0x18(sp)` home that blocked the 2026-05-30 merge attempt is
- * the &param lever (`int *p = &a0`, same as game_libs_func_0002DDBC above);
+ * the &param lever (`int *p = &a0`, same as snd_ScheduleSeq_2DDBC above);
  * `unsigned char a0` gives the home but extends into a2 (+`or a0,a2`, 15 insns).
  * BYTE-EXACT 14/14 (agent-c 2026-09-06). */
 extern int gl_ref_00042490();
@@ -12677,7 +12677,7 @@ void snd_SetPlayer0ChannelFreqScale_2DF64(int a0, float a2) {
     gl_func_00000000_f(0x04000000 | ((a0 & 0xFF) << 8), a2);
 }
 
-/* gl_func_0002DF98: 53-insn struct-init constructor. MATCHED 2026-07-11
+/* snd_SoundObjInit_2DF98: 53-insn struct-init constructor. MATCHED 2026-07-11
  * (agent-f): the three 1.0f stores (0x54/0x58/0x5C) — target materializes
  * 1.0f into TWO fp regs ($f2 for 0x54/0x58, $f4 for 0x5C); IDO's natural emit
  * CSE-folds all three into $f2. FIX: spell the odd 0x5C store's constant as
@@ -12698,7 +12698,7 @@ void snd_SetPlayer0ChannelFreqScale_2DF64(int a0, float a2) {
  * No prologue-stolen complications. Sibling of 0002DF00 in
  * sibling-chain context (source 2 of /decompile). */
 extern int gl_func_00000000();
-void gl_func_0002DF98(unsigned char *a0, int a1) {
+void snd_SoundObjInit_2DF98(unsigned char *a0, int a1) {
     a0[0x21] = a1;
     a0[0x14] = 1;
     a0[0x15] = 1;
@@ -12739,12 +12739,12 @@ void gl_func_0002DF98(unsigned char *a0, int a1) {
     }
 }
 
-// gl_func_0002E06C — STRUCTURAL PASS (0x154 / 85 words, no episode).
+// snd_SoundObjReset_2E06C — STRUCTURAL PASS (0x154 / 85 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 6-jr USO bundle
 // (named fn + 5 tiny trailing one-line setters) — deferred USO
 // re-split. The named leading fn (~12 words) is a small object init.
 //
-//   void gl_func_0002E06C(O *o) {
+//   void snd_SoundObjReset_2E06C(O *o) {
 //     o->b_20 = 0;                                      // clear flags
 //     o->b_23 = 0;
 //     o->f_0  = 0.0f;                                    // zero floats
@@ -12767,7 +12767,7 @@ void gl_func_0002DF98(unsigned char *a0, int a1) {
 //   fn). Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
 extern int gl_func_00000000();
-void gl_func_0002E06C(char *o) {
+void snd_SoundObjReset_2E06C(char *o) {
     *(unsigned char *)(o + 0x20) = 0;
     *(unsigned char *)(o + 0x23) = 0;
     *(float *)(o + 0) = 0.0f;
@@ -12775,15 +12775,15 @@ void gl_func_0002E06C(char *o) {
     gl_func_00000000(*(unsigned char *)(o + 0x21));
 }
 
-void game_libs_func_0002E0A0(char *a0) {
+void snd_SoundObjSetScaleIdx15_2E0A0(char *a0) {
     a0[0x32] = 0xF;
 }
 
-void game_libs_func_0002E0AC(char *a0) {
+void snd_SoundObjSetScaleIdx31_2E0AC(char *a0) {
     a0[0x32] = 0x1F;
 }
 
-void game_libs_func_0002E0B8(char *a0) {
+void snd_SoundObjSetFlag1A_2E0B8(char *a0) {
     *(short *)(a0 + 0x1A) = 1;
 }
 
@@ -12792,7 +12792,7 @@ void game_libs_func_0002E0B8(char *a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0002E0C4)();
-void game_libs_func_0002E0C4(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void snd_SoundObjTriggerEvent_2E0C4(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 temp_f0;
 
     if (((FW(arg0, 0x48) == 0) && !(*(u8 *)(arg0 + 0x16) & 4)) || (((*(u16 *)(arg0 + 0x30) != 1) || (*(u8 *)(arg0 + 0x29) != 3)) && ((s32) *(u8 *)(arg0 + 0x29) >= (s32) *(u8 *)(arg0 + 0x2D)))) {
@@ -12817,16 +12817,16 @@ void game_libs_func_0002E0C4(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002E0C4);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjTriggerEvent_2E0C4);
 #endif
 
-void game_libs_func_0002E1A8(unsigned char *a0) {
+void snd_SoundObjDisable_2E1A8(unsigned char *a0) {
     a0[0x16] |= 1;
     a0[0x16] &= ~0x20;
 }
 
 // MATCHED 2026-05-30. Fire-once event trigger (counterpart to the
-//   gl_func_0002E24C stop). Flag byte o->0x16: bit0 = disabled, bit5 =
+//   snd_SoundObjStop_2E24C stop). Flag byte o->0x16: bit0 = disabled, bit5 =
 //   already-fired latch (set here so the event emits once). After
 //   latching, a 2nd gate on o->0x1C bit0 (NOT o->0x16 — the prior decode
 //   had this wrong), then variant byte o->0x14 (==1 vs other) picks event
@@ -12840,7 +12840,7 @@ void game_libs_func_0002E1A8(unsigned char *a0) {
 //   Float in a3 lands as raw 0x42A00000 thanks to the float-PROTOTYPED extern
 //   (a0-a2 int, so arg4 float goes to the a3 GPR; K&R would double-promote it).
 extern void gl_func_00043BE4(char *o, int event, int zero, float vol, int idx);
-void gl_func_0002E1C0(char *o) {
+void snd_SoundObjStart_2E1C0(char *o) {
     unsigned char f = *(unsigned char *)(o + 0x16);
     if (f & 0x01) return;
     if (f & 0x20) return;
@@ -12853,13 +12853,13 @@ void gl_func_0002E1C0(char *o) {
     }
 }
 
-// gl_func_0002E24C — STRUCTURAL PASS (0x108 / 66 words, no episode).
+// snd_SoundObjStop_2E24C — STRUCTURAL PASS (0x108 / 66 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 10-jr USO bundle
 // (named fn + 9 tiny trailing accessors/dispatcher) — deferred USO
 // re-split. The named leading fn (~16 words) is the "un-fire"
-// counterpart to gl_func_0002E1C0.
+// counterpart to snd_SoundObjStart_2E1C0.
 //
-//   void gl_func_0002E24C(O *o) {
+//   void snd_SoundObjStop_2E24C(O *o) {
 //     byte f = o->b_16;
 //     if (!(f & 0x20)) return;                          // not fired
 //     byte k = o->b_21;
@@ -12869,7 +12869,7 @@ void gl_func_0002E1C0(char *o) {
 //   }
 //
 // Struct-typing reference: the stop/cancel partner to the
-//   gl_func_0002E1C0 one-shot trigger. It tests the same fired-latch
+//   snd_SoundObjStart_2E1C0 one-shot trigger. It tests the same fired-latch
 //   bit (bit5 of flag byte o->0x16); if the event is currently
 //   active it clears that latch and invokes a USO-relocated stop
 //   routine (`jal 0` slot) with event id 0x3D — i.e. "stop the
@@ -12880,14 +12880,14 @@ void gl_func_0002E1C0(char *o) {
 //   o->0x21 through the table at &D_0+0x1660 (another entry in the
 //   game_libs &D_0+0x16xx dispatch-table bank) — left for the
 //   deferred USO re-split.
-// MATCHED 2026-05-30. Stop/cancel counterpart to the gl_func_0002E1C0
+// MATCHED 2026-05-30. Stop/cancel counterpart to the snd_SoundObjStart_2E1C0
 //   fire-once trigger: if the fired-latch bit5 of o->0x16 is set, clear it
 //   and (unless variant o->0x21 == 2) invoke the USO-relocated stop routine
 //   (gl_func_00000000 at jal-0) with event id 0x3D, passing the object.
 //   Reg-alloc crack: inline the o->0x21 deref (k → throwaway $t8) + a SEPARATE
 //   named local for the masked store value (→ $t7), leaving f in $v0.
 extern int gl_func_00000000();
-void gl_func_0002E24C(char *o) {
+void snd_SoundObjStop_2E24C(char *o) {
     unsigned char f = *(unsigned char *)(o + 0x16);
     unsigned char nf;
     if (!(f & 0x20)) return;
@@ -12898,7 +12898,7 @@ void gl_func_0002E24C(char *o) {
 }
 
 
-/* game_libs_func_0002E290: selector-byte lookup with a mask-narrowing retry
+/* snd_SoundObjEventIndex_2E290: selector-byte lookup with a mask-narrowing retry
  * loop -- switch on o->0x31 (sel 2: o->0x14==1 ? (u8)(o->0x15+12) : 16;
  * sel 3/5/9/17/1/0x40 -> 0/2/4/6/8/10; anything else: mask <<= 1,
  * sel &= mask, retry until sel == 0 -> 0).
@@ -12914,9 +12914,9 @@ void gl_func_0002E24C(char *o) {
  * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO
  * 7.1 -O2 donor unit game_libs_o2_2E290.c (49/49 word-exact); the splice
  * renames the switch's donor-local .rodata jumptable reloc to
- * game_libs_func_0002E290_rodata (pinned to the USO table at +0x1660).
+ * snd_SoundObjEventIndex_2E290_rodata (pinned to the USO table at +0x1660).
  * Body below is a placeholder for the splice. */
-int game_libs_func_0002E290(unsigned char *o) {
+int snd_SoundObjEventIndex_2E290(unsigned char *o) {
     volatile int ret = 0;
     if (o[0x31] != 0) {
         ret = 16;
@@ -12924,13 +12924,13 @@ int game_libs_func_0002E290(unsigned char *o) {
     return ret;
 }
 
-// gl_func_0002E354 — STRUCTURAL PASS (0xF34 / 973 words ≈ 3.9KB, no
+// snd_SoundObjUpdate_2E354 — STRUCTURAL PASS (0xF34 / 973 words ≈ 3.9KB, no
 // episode). Raw-.word USO form (game_libs). BOUNDARY NOTE: 4-jr USO
 // bundle (named fn + 3 trailing helpers) — deferred USO re-split.
 // The named leading fn is the LARGEST function in this file: the
 // main per-object update + render orchestrator. Huge -0x80 frame.
 //
-//   void gl_func_0002E354(O *o, int a1) {
+//   void snd_SoundObjUpdate_2E354(O *o, int a1) {
 //     int cfg = *(int*)(&D_xxx);                        // global mode
 //     if (cfg == 0) { ... minimal/idle path ... return; }
 //     if (cfg == 4) { ... }
@@ -12950,7 +12950,7 @@ int game_libs_func_0002E290(unsigned char *o) {
 //   in this file: the AudioSeq_SequenceChannelProcessScript / AudioSeq_SequencePlayerProcessSequence command
 //   drivers, the Audio_GetVibratoFreqScale / AudioSeq_SeqLayerProcessScript keyframe
 //   steppers, the Audio_InitSampleState / Audio_NoteInitAll matrix loaders
-//   and the gl_func_0002E1C0 / gl_func_0002E24C event triggers. It is
+//   and the snd_SoundObjStart_2E1C0 / snd_SoundObjStop_2E24C event triggers. It is
 //   gated on a global config word (`*&D_xxx`, 0 = idle, 4 = special)
 //   and a global state machine word (`*&D_yyy` in 1..3); object
 //   fields o->0x1C / o->0x21 carry the per-object sub-state advanced
@@ -13089,7 +13089,7 @@ extern s32 D_E354_GB[];
  * NM-only like gl_E354_emitf). With an int result the call defines v0 inside the 8 / 0x40 pick's live range and uopt
  * forbids the pick v0 (zdbug:5 `forbidden: [1 ...]`); the target keeps the pick in v0 across these calls. */
 extern void gl_E354_v(s32, s32);
-void gl_func_0002E354(char *arg0, s32 arg1) {
+void snd_SoundObjUpdate_2E354(char *arg0, s32 arg1) {
     /* agent-g run 224: declaration order and count from the target frame (0x80: saves end 0x28,
      * spill 0x2C, 20 home words 0x30..0x7F): sp7D at frame-3 behind two u8s, three words before
      * sp6B (frame-21) whose word holds three more u8s, var_v0's home at frame-40 (the target's
@@ -13594,10 +13594,10 @@ block_83:
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002E354);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjUpdate_2E354);
 #endif
 
-/* game_libs_func_0002F1B8: 52-insn (0xD0) binary search over a sorted f32
+/* snd_FindNearestF32_2F1B8: 52-insn (0xD0) binary search over a sorted f32
  * array, returning the bracketing index nearest to key. BOUNDARY MERGED
  * 2026-06-02 (absorbed over-split 2F224 + 2F270). RISE 2026-07-08 agent-e:
  * m2c sketch -> 41/52 words, size-exact, structure-exact. Working form:
@@ -13621,7 +13621,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002E354);
  * target a1,t6) resists array-IXA respelling here. NM wrap;
  * INCLUDE_ASM is the build path. */
 #ifdef NON_MATCHING
-s32 game_libs_func_0002F1B8(f32 key, f32 *arr, s32 n) {
+s32 snd_FindNearestF32_2F1B8(f32 key, f32 *arr, s32 n) {
     s32 mid = n >> 1;
     s32 step = mid + 1;
     s32 nxt;
@@ -13667,14 +13667,14 @@ retmid:
     return mid;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002F1B8);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_FindNearestF32_2F1B8);
 #endif
 
-// gl_func_0002F288 — STRUCTURAL PASS (0x2FC / 191 words, no episode).
+// snd_SoundObjUpdateChannel_2F288 — STRUCTURAL PASS (0x2FC / 191 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A heavily-FP per-object physics / value-ramp update.
 //
-//   void gl_func_0002F288(O *o) {
+//   void snd_SoundObjUpdateChannel_2F288(O *o) {
 //     int mode = o->b_21;
 //     float acc = o->f_0;
 //     if (mode == 2) return;                            // skip mode
@@ -13700,7 +13700,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002F1B8);
 //   127.0f (0x3E80/0x3F00/0x42FE0000) before write-back to o->0. A
 //   physics/easing leaf of the game_libs object subsystem (peer to
 //   the Audio_SequencePlayerProcessSound ramp / Audio_GetVibratoFreqScale tween steppers,
-//   driven by the gl_func_0002E354 orchestrator).
+//   driven by the snd_SoundObjUpdate_2E354 orchestrator).
 // Caps (DEFERRED): raw-word USO + heavy single-prec FP integrate/
 //   clamp idiom — byte-match needs USO mnemonic disasm. Real-C
 //   STRUCTURAL body below per the analysis. Byte-match deferred.
@@ -13714,7 +13714,7 @@ extern void gl_setf_2F288(int, float);
 extern int D_2F288_g[];
 extern char D_2F288_a[], D_2F288_b[], D_2F288_c[], D_2F288_d[], D_2F288_n[], D_2F288_m[], D_2F288_r[], D_2F288_e[];
 extern float D_2F288_ta[], D_2F288_tb[]; /* file-static tables at D+0x1C330 / D+0x1C3B0 */
-void gl_func_0002F288(char *o) {
+void snd_SoundObjUpdateChannel_2F288(char *o) {
     u8 mode = o[0x21];
     float f = *(float *)o;
     int k = o[0x14];
@@ -13790,11 +13790,11 @@ void gl_func_0002F288(char *o) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002F288);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjUpdateChannel_2F288);
 #endif
 
 
-/* game_libs_func_0002F578: one ~46-insn (0xB8) FP value-quantize / clamp-to-byte
+/* snd_SoundObjPlay_2F578: one ~46-insn (0xB8) FP value-quantize / clamp-to-byte
  * helper. BOUNDARY MERGED 2026-06-02: splat had split it into 0002F578 (3-insn
  * FP-const prologue: `mtc1 a3,$f12` (the input value, ARG-DERIVED) + `mtc1
  * zero,$f4`=0.0 + `lui 0x42fe`→$f6=127.0 — hoisted above the frame; the real
@@ -13814,7 +13814,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002F288);
  * in the if-arm, forwarded otherwise), and missed the trailing 5-arg jal-0
  * dispatch (o->0x21 byte, a1/a2 forwarded untouched, (int)w clamped [0,127],
  * b). w = |v|+15.0 is a separate float local (fresh $f2 web, v stays $f12). */
-void game_libs_func_0002F578(char *o, int a1, int a2, f32 v, unsigned char b) {
+void snd_SoundObjPlay_2F578(char *o, int a1, int a2, f32 v, unsigned char b) {
     int iv;
     float w;
 
@@ -13839,7 +13839,7 @@ void game_libs_func_0002F578(char *o, int a1, int a2, f32 v, unsigned char b) {
     gl_func_00000000(*(unsigned char *)(o + 0x21), a1, a2, iv, b);
 }
 
-void game_libs_func_0002F630(void) {
+void snd_Stub_2F630(void) {
 }
 
 // snd_SetPlayer0ChannelPanIO_2F638 — STRUCTURAL PASS (0xF4 / 61 words, no episode).
@@ -13897,7 +13897,7 @@ void snd_SetPlayer0ChannelPanIO_2F638(int a0, int sel, int arg3, int arg4, int s
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_2F720.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 84.68 (double store DSE'd / if(1)-split, operand order). */
-void game_libs_func_0002F720(char *o, f32 in, signed char idxb) {
+void snd_SoundObjSetAngle_2F720(char *o, f32 in, signed char idxb) {
 }
 
 
@@ -14098,7 +14098,7 @@ void snd_ResetPlayer0ChannelIO1_2FB10(int a0) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0002FB54(int a0) {
+int snd_PostEvent_2FB54(int a0) {
     return gl_func_00000000(a0, 0);
 }
 
@@ -14136,19 +14136,19 @@ void snd_SetPlayer0Channel0IO_30504(int a0) {
 
 /* snd_SetPlayer0Channel8IO1_30564: 1-call wrapper (0x28). LANDED fuzzy=100. The 12-byte
  * SUFFIX_BYTES recipe (`lui v0; addiu v0; lw t6,0x8(v0)` — stolen prologue
- * for SUCCESSOR gl_func_00030598) was REMOVED 2026-05-23 as match-faking.
+ * for SUCCESSOR snd_TriggerChannel8CueIfIdle_3058C) was REMOVED 2026-05-23 as match-faking.
  * Those bytes belong to separate symbols now. (Previously-documented 0x34
  * size is stale.) */
 void snd_SetPlayer0Channel8IO1_30564(void) {
     gl_func_00000000(0x06000801, 1);
 }
 
-/* gl_func_00030598: gate — calls gl_func_00000000 only if both D[2] and
+/* snd_TriggerChannel8CueIfIdle_3058C: gate — calls gl_func_00000000 only if both D[2] and
  * D[3] (base-relative ints at &D+8 / &D+0xC) are zero. Reads the relocated
  * &D base directly (NOT a held pointer deref): the two `if (X) goto end`
  * arms each emit a `bnezl ...,end` likely-branch that hoists the epilogue's
  * `lw ra` into the delay slot. Byte-exact (16/16 words, reloc-filtered). */
-void gl_func_00030598(void) {
+void snd_TriggerChannel8CueIfIdle_3058C(void) {
     if (*(int *)((char *)&D_00000000 + 8) != 0) goto end;
     if (*(int *)((char *)&D_00000000 + 0xC) != 0) goto end;
     gl_func_00000000();
@@ -14185,11 +14185,11 @@ void snd_SetPlayer0Channel8Pan_305CC(int a0) {
     gl_func_00000000(0x03000800, (s8)a0);
 }
 
-// gl_func_0003061C — STRUCTURAL PASS (0x194 / 101 words, no episode).
+// snd_TriggerChannel8Cue_30610 — STRUCTURAL PASS (0x194 / 101 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A state-transition / mode-mapper with conditional commit.
 //
-//   void gl_func_0003061C(int lim, int val, int m, int kind) {
+//   void snd_TriggerChannel8Cue_30610(int lim, int val, int m, int kind) {
 //     if (kind == 4) return;                 // early-out
 //     int *rec = *(int**)&D_0;               // global record ptr
 //     if (gstate != 2) { ... alt path ... }
@@ -14235,7 +14235,7 @@ void snd_SetPlayer0Channel8Pan_305CC(int a0) {
 //   placeholder (final jal 0).
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
-void gl_func_0003061C(s32 arg0, s32 arg1, s32 arg2) {
+void snd_TriggerChannel8Cue_30610(s32 arg0, s32 arg1, s32 arg2) {
     char *g = (char *)&D_00000000;
     f32 temp_f8;
     s32 temp_v0;
@@ -14290,11 +14290,11 @@ void gl_func_0003061C(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003061C);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_TriggerChannel8Cue_30610);
 #endif
 
 
-/* game_libs_func_000307A8 (0x104, 65 insns): per-frame fade timer tick on the
+/* snd_TickChannel8Fade_307A8 (0x104, 65 insns): per-frame fade timer tick on the
  * 8-word state record at bootup.uso Data sym1448 @0x338 (addend 0; every
  * access is its own `lui at` %hi macro -- no held base anywhere): +0 flag,
  * +8 fade-in count, +0xC hold count, +0x10 float level, +0x14 floor, +0x18
@@ -14348,22 +14348,22 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003061C);
  * (3) goes with the hold-count re-read spelled `(&D_307A8_i.fC)[0] - 1` (uopt
  * keeps no candidate; ugen reuses the t8 load from the fall-through test). The
  * cfe C body (96.38) is in git history before this commit. */
-void game_libs_func_000307A8(void) {
+void snd_TickChannel8Fade_307A8(void) {
 }
 
 
-/* game_libs_func_000308AC -- EXACT (run 136) via an IDO 7.1 NCC (C++) donor:
+/* snd_SetChannel8Mode_308AC -- EXACT (run 136) via an IDO 7.1 NCC (C++) donor:
  * src/game_libs/game_libs_ncc_308AC.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder. Absorbs the old gl_func_000308C8 (the 7-word head + 55-word body
  * are one function; 0x308C8 is neither exported nor called). The state block is
  * module-local static data (see the donor's comment for the as1 `lui at` rule). */
-void game_libs_func_000308AC(int mode) {
+void snd_SetChannel8Mode_308AC(int mode) {
 }
 
-void game_libs_func_000309A4(void) {
+void snd_Stub_309A4(void) {
 }
 
-/* game_libs_func_000309AC (0x74, 29 insns): mode selector -> record init.
+/* snd_SetLevelRampTarget_309AC (0x74, 29 insns): mode selector -> record init.
  * bootup.uso Sym exports section offset 0x45018 = splat 0x309AC (ROM 0xE15A84 -
  * 0xDD0A6C; sym81, jal'd from TextReloc @0x1D4/@0x1E4/@0x45978); 0x45020 =
  * 0x309B4 is NOT exported. The 2-word orphan `lui t6; lw t6,0x10(t6)` was the
@@ -14377,7 +14377,7 @@ void game_libs_func_000309A4(void) {
  * through the per-site alias D_309AC_a (IDO_CODEGEN#alias-budget-call-free-
  * same-symbol-pair-349e0); the post-call store is call-separated and folds under
  * its own `lui at` by itself. Callee = text-base (sym3) R_MIPS_26 with 0x46314
- * baked = splat 0x31CA8 = game_libs_func_00031CA8 (rec[0] = p, rec[2] = 30,
+ * baked = splat 0x31CA8 = snd_RampInit_31CA8 (rec[0] = p, rec[2] = 30,
  * rec[3] = 0) -> gl_ref_00046314 (call-side gl_ref rule); the third arg 30 is
  * the `li a2,30` hoisted into the beqz delay.
  *
@@ -14393,7 +14393,7 @@ void game_libs_func_000309A4(void) {
 extern int D_00000000_1c0c0;
 extern int D_309AC_a;
 extern int gl_ref_00046314();
-void game_libs_func_000309AC(int sel) {
+void snd_SetLevelRampTarget_309AC(int sel) {
     int p;
     if (sel != *(int *)((char *)&D_309AC_a + 0x10)) {
         switch (sel) {
@@ -14407,11 +14407,11 @@ void game_libs_func_000309AC(int sel) {
     }
 }
 
-// gl_func_00030A20 — STRUCTURAL PASS (0xD4 / 53 words, no episode).
+// snd_StartPlayer2Seq_30A20 — STRUCTURAL PASS (0xD4 / 53 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A two-arg registration + state-conditional sequencer.
 //
-//   void gl_func_00030A20(int a, int b) {
+//   void snd_StartPlayer2Seq_30A20(int a, int b) {
 //     callback0();                            // jal 0 (USO callback)
 //     *(int*)&D_0_slotA = a;                  // register both args
 //     callback(0xF);
@@ -14455,7 +14455,7 @@ void game_libs_func_000309AC(int sel) {
 //   held-pointer lever lands it. Faithful structural body below per m2c.
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
-void gl_func_00030A20(s32 arg0, s32 arg1) {
+void snd_StartPlayer2Seq_30A20(s32 arg0, s32 arg1) {
     char *g = (char *)&D_00000000;
     s32 temp_v0;
 
@@ -14479,7 +14479,7 @@ void gl_func_00030A20(s32 arg0, s32 arg1) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00030A20);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_StartPlayer2Seq_30A20);
 #endif
 
 // snd_HandleSeqEvent_30AF4 — STRUCTURAL PASS (0x840 / 528 words, no episode).
@@ -14974,46 +14974,46 @@ s32 arg2;
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_HandleSeqEvent_30AF4);
 #endif
 
-/* gl_func_00031334: stepped cue driver (0x1EC / 123 words). Clears/sets up
+/* snd_HandleSeqEnd_31334: stepped cue driver (0x1EC / 123 words). Clears/sets up
  * via cross-USO calls, then switch (step word) over -1..13 (arms 0, 3, 4, 5,
  * 7, 10-12 issue 0x83010000-bank cue calls / the baked jal 0x44F18) and
  * switch (a) over -1..9 (a == 6 sets *(&D + 0xC) = 256).
  * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1
  * -O2 donor unit game_libs_o2_31334.c (123/123 word-exact); the splice
  * renames the two switches' donor-local .rodata jumptable reloc to
- * gl_func_00031334_rodata (pinned to the USO tables at +0x1900 / +0x193C).
+ * snd_HandleSeqEnd_31334_rodata (pinned to the USO tables at +0x1900 / +0x193C).
  * The old wrap's "a+1 switch" / two-arg (0xFF, 0) call were decode errors
  * (see the donor header). Body below is a placeholder for the splice. */
-void gl_func_00031334(int a, int b, int c) {
+void snd_HandleSeqEnd_31334(int a, int b, int c) {
     volatile int ret = a;
 }
 
 extern int gl_func_00000000();
-int gl_func_00031520() {
+int snd_AddSoundHeap_31520() {
     return gl_func_00000000();
 }
 
 extern int gl_func_00000000();
-int gl_func_00031540() {
+int snd_RemoveSoundHeap_31540() {
     return gl_func_00000000();
 }
 
-/* gl_func_00031560: 8-insn (0x20) bare wrapper — calls gl_func_0() with
+/* snd_PreNMI_31560: 8-insn (0x20) bare wrapper — calls gl_func_0() with
  * no args and no return-value use. Original splat bundle was 0x68 with
  * 2 jr-ras + R-type stolen-prologue tail; split-fragments separated
- * game_libs_func_00031580 (0x44 array-init loop, NM-wrapped below). */
-void gl_func_00031560(void) {
+ * snd_InitCueQueues_31580 (0x44 array-init loop, NM-wrapped below). */
+void snd_PreNMI_31560(void) {
     gl_func_00000000();
 }
 
-/* game_libs_func_00031580: 15-insn (0x3C) array-init loop. Sets per-record
+/* snd_InitCueQueues_31580: 15-insn (0x3C) array-init loop. Sets per-record
  * fields in &D+0x368[0..1] (2 records of 0x64 stride). LANDED fuzzy=100.
  * The 2-insn stolen-prologue tail at 0x315BC-0x315C0 (R-type donation to
  * successor gl_func_000315C4: sll/subu = a0*3) was historically absorbed
  * via SUFFIX_BYTES recipe — REMOVED 2026-05-23 as match-faking. Those
  * 2 insns are now tracked as separate symbols (function size 0x3C, not
  * the previously-documented 0x44). */
-void game_libs_func_00031580(void) {
+void snd_InitCueQueues_31580(void) {
     int i;
     char *base = (char *)&D_00000000 + 0x368;
     for (i = 0; i != 2; i++) {
@@ -15027,25 +15027,25 @@ void game_libs_func_00031580(void) {
     }
 }
 
-/* game_libs_func_000315BC: array-element-call helper. Indexes &gl_ref_00000368
+/* snd_RequestCue_315BC: array-element-call helper. Indexes &gl_ref_00000368
  * by a0 * 100 (record stride) and calls helper at 0x045DC0 with (ptr, 1, a1, 0x7F). */
 extern int gl_ref_00045DC0();
 extern char gl_ref_00000368;
 
-/* game_libs_func_000315BC (cross-TU orphan merge, MATCHED 2026-05-31): the orphan
+/* snd_RequestCue_315BC (cross-TU orphan merge, MATCHED 2026-05-31): the orphan
  * (sll t7,a0,2; subu t7,t7,a0 = a0*3) was in game_libs.c; merged into the body .s.
  * Cracked the "hoist-breaks-reuse" cap by writing the stride as `a0 * 100` and letting
  * IDO strength-reduce it — that emits the single-$t7 reuse chain (a0*3->24->25->100)
  * hoisted above the prologue. Hand-expanded shift chains (`t<<=2; t-=a0; ...`) break
  * to fresh $t8/$t9 pseudos (96.8%). See docs/IDO_CODEGEN.md#strength-reduce-multiply. */
-void game_libs_func_000315BC(int a0, int a1) {
+void snd_RequestCue_315BC(int a0, int a1) {
     gl_ref_00045DC0(&gl_ref_00000368 + a0 * 100, 1, a1, 0x7F);
 }
 
-/* gl_func_00031608: full decode 2026-05-31 (was 33.8% stub). Gated on D[0]==4,
+/* snd_SoundObjRequestCue_31608: full decode 2026-05-31 (was 33.8% stub). Gated on D[0]==4,
  * dispatches on b21/b22 to compute `val`, then writes *(short*)(ptr+0x62)=val and
  * calls gl_ref_00045DC0(ptr, 1, (val<<6)+a1, 0x7F) where ptr=&gl_ref_00000368 +
- * b21*100 (same strength-reduced index as sibling game_libs_func_000315BC). The
+ * b21*100 (same strength-reduced index as sibling snd_RequestCue_315BC). The
  * inner g-recheck (D[0]==1/2/3/5) is logically dead after the ==4 gate but the
  * target reloads g from memory so IDO can't fold it (cf. eddproc_uso_func_0000025C). */
 /* RUN 107 (agent-c, unsorted-chain scan): 78.3 -> 87.7. The two reads of the
@@ -15056,7 +15056,7 @@ void game_libs_func_000315BC(int a0, int a1) {
 #ifdef NON_MATCHING
 extern char gl_ref_00000368;
 extern int D_31608_g0, D_31608_g1;
-void gl_func_00031608(char *a0, int a1) {
+void snd_SoundObjRequestCue_31608(char *a0, int a1) {
     unsigned char b22 = *(unsigned char *)(a0 + 0x22);
     unsigned char b21 = *(unsigned char *)(a0 + 0x21);
     int idx;
@@ -15086,17 +15086,17 @@ void gl_func_00031608(char *a0, int a1) {
     gl_ref_00045DC0(&gl_ref_00000368 + idx * 100, 1, (val << 6) + a1, 0x7F);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00031608);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjRequestCue_31608);
 #endif
 
 extern int gl_ref_00045DC0();
 extern int gl_ref_00045DF0();
-void gl_func_000316CC(int a0) {
+void snd_RequestCue2Prio_316CC(int a0) {
     gl_ref_00045DC0((char *)&D_00000000 + 0x430, 1, a0 + 0x17F, 0x7F);
     gl_ref_00045DF0((char *)&D_00000000 + 0x430);
 }
 
-// gl_func_00031710 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// snd_RequestCue2_31710 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x188 / 98 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE: this .s has SEVEN jr $ra sequences —
@@ -15108,8 +15108,8 @@ void gl_func_000316CC(int a0) {
 // tooling — raw-.word relocatable USO needs the spimdisasm-USO
 // migration to re-derive the boundaries).
 //
-// Leading fn gl_func_00031710 (0x31710..0x3174C, ~16 words):
-//   void gl_func_00031710(int arg) {
+// Leading fn snd_RequestCue2_31710 (0x31710..0x3174C, ~16 words):
+//   void snd_RequestCue2_31710(int arg) {
 //     helper_011770(&D_0_table_0430, 0, arg + 0x17F, 0x7F);
 //     helper_01177C(&D_0_table_0430);
 //   }
@@ -15138,7 +15138,7 @@ void gl_func_000316CC(int a0) {
 //   no extern reuse.
 extern int gl_ref_00045DC0();
 extern int gl_ref_00045DF0();
-void gl_func_00031710(int arg) {
+void snd_RequestCue2_31710(int arg) {
     gl_ref_00045DC0((char *)&D_00000000 + 0x430, 0, arg + 0x17F, 0x7F);
     gl_ref_00045DF0((char *)&D_00000000 + 0x430);
 }
@@ -15147,14 +15147,14 @@ void gl_func_00031710(int arg) {
 // and store &D + (v & ~1) (rounded-down even index back into the table) to
 // a0->0x5C. Single segment-base ref (one &D_00000000), real index logic →
 // builds byte-exact as plain C (moves %). No episode (reloc-blind base).
-void game_libs_func_00031754(int *a0, int a1, int a2, int a3) {
+void snd_CueQueueSet_31754(int *a0, int a1, int a2, int a3) {
     unsigned short v = *(unsigned short *)((char *)&D_00000000 + a2 * 2);
     a0[0x58 / 4] = a3;
     a0[0x54 / 4] = a1;
     a0[0x5C / 4] = (int)((char *)&D_00000000 + (((int)v >> 1) << 1));
 }
 
-/* game_libs_func_00031784 — EXACT MATCH, 27/27 words, verified in-tree
+/* snd_CueQueuePush_31784 — EXACT MATCH, 27/27 words, verified in-tree
  * (build/non_matching/src/game_libs/game_libs_post.c.o) 2026-07-02 agent-e.
  *
  * PROMOTION-READY: function is RELOC-FREE (no relocs in [fn, fn+0x6C) in the
@@ -15175,7 +15175,7 @@ void game_libs_func_00031754(int *a0, int a1, int a2, int a3) {
  */
 
 /* ring-buffer write-index advance (mask-wrap by 0xF) */
-void game_libs_func_00031784(int *a0) {
+void snd_CueQueuePush_31784(int *a0) {
     int v0 = a0[0x54 / 4];
 
     if (v0 != 0) {
@@ -15209,7 +15209,7 @@ end:
  * re-bases the arg block on t9 with 0-offsets AND fills the beqz delay with
  * `li v0,1` (kills beqzl-dup); no `arg` intermediate + counter-store-first
  * gives *q=t0 / q+1=t1 temp numbering with scheduler store order. */
-int game_libs_func_000317F0(int *a0) {
+int snd_CueQueueStep_317F0(int *a0) {
     int ret = 0;
     unsigned short *p;
     unsigned short *q;
@@ -15232,7 +15232,7 @@ int game_libs_func_000317F0(int *a0) {
     return ret;
 }
 
-/* game_libs_func_0003183C: 23-insn (0x5C) ring-buffer dequeue scan (16-entry
+/* snd_CueQueuePop_3183C: 23-insn (0x5C) ring-buffer dequeue scan (16-entry
  * inline ring at +0, write idx 0x40, read idx 0x44; clears 0x4C, stores each
  * entry to 0x50, sets 0x48=1 and returns on the first nonzero entry).
  * BOUNDARY MERGED 2026-06-02 (absorbed loop-tail 00031880).
@@ -15256,7 +15256,7 @@ typedef struct {
     int out;       /* 0x50 */
 } Ring3183C;
 
-void game_libs_func_0003183C(Ring3183C *r) {
+void snd_CueQueuePop_3183C(Ring3183C *r) {
     while (r->wr != r->rd) {
         r->f4c = 0;
         r->out = r->buf[r->rd];
@@ -15273,7 +15273,7 @@ extern int gl_ref_00045DF0();
 extern int gl_ref_00045E5C();
 extern int gl_ref_00045EA8();
 
-/* gl_func_00031898: 29-insn (0x74) tri-call dispatcher.
+/* snd_CueQueueUpdate_31898: 29-insn (0x74) tri-call dispatcher.
  *   - if a0->field_5C != 0: call gl_ref_00045DF0(a0)
  *   - if a0->field_48 != 0: ret_val = gl_ref_00045E5C(a0)
  *   - if a0->field_48 == 0: call gl_ref_00045EA8(a0)
@@ -15281,7 +15281,7 @@ extern int gl_ref_00045EA8();
  * The previously-documented "branch-likely cap" was a misread: the third
  * call passes the struct pointer (a0), NOT ret_val — that arg fix makes
  * IDO emit the bnezl with lw-ra hoisted into the annulled delay (exact). */
-int gl_func_00031898(int *a0) {
+int snd_CueQueueUpdate_31898(int *a0) {
     int ret_val = 0;
     if (a0[23] != 0) {
         gl_ref_00045DF0(a0);
@@ -15334,7 +15334,7 @@ int gl_func_00031898(int *a0) {
 //   flush leaf of the game_libs object subsystem (the 0x06020000
 //   bank is the snd_SetPlayer0ChannelPanIO_2F638 / 0002F9D4 emitter family with a
 //   0x02xx sub-bank; the query helper 0x0117C1 is shared with the
-//   gl_func_00031710 table cluster).
+//   snd_RequestCue2_31710 table cluster).
 // 2026-05-31 FULL DECODE 45.0->95.66%: it is THREE identical blocks (not
 //   two), bases 0x06020004/0x104/0x204, checks &D+0x368/0x3CC/0x430,
 //   state halfwords &D+0x3C8/0x42C/0x490, sign bytes &D+0x3CB/0x42F/0x493.
@@ -15386,11 +15386,11 @@ int snd_SetPlayer2ChannelIO_3190C(void) {
 
 /* Split off from snd_SetPlayer2ChannelIO_3190C bundle 2026-05-08: 4-insn setter.
  * Clears the global at &D_00000000 + 0x1CAA8 to -1. */
-void game_libs_func_00031A64(void) {
+void snd_ResetChannel10Mode_31A64(void) {
     *(int*)((char*)&D_00000000 + 0x1CAA8) = -1;
 }
 
-// gl_func_00031A74 — full hand re-derivation from ground truth (2026-09-04
+// snd_UpdateChannel10Emitter_31A74 — full hand re-derivation from ground truth (2026-09-04
 // agent-g). Audio/ramp level driver: (mode, f32 v, s8 sel) prototyped (v in
 // a1 -> mtc1 f12; sel char-homed at 32(sp)+3).
 //   mode==1: st=G_st; if st not in {4,11}: acc=D+0x1CAC0; acc = (pool[1968]<acc)
@@ -15427,7 +15427,7 @@ extern f32 D_31A74_tbl[];   /* base-0 f32 table indexed by mode (lui at; addu at
 #define ACCS2_31A74 (*(f32 *)((char *)&D_31A74_accs2 + 0x1CAC0))
 extern int D_31A74_curv;   /* agent-c run 183: pinned at 0x1CAA8 itself (target addiu v0,%lo + lw/sw 0(v0)) */
 #define CUR_31A74 D_31A74_curv
-void gl_func_00031A74(int mode, f32 v, s8 sel) {
+void snd_UpdateChannel10Emitter_31A74(int mode, f32 v, s8 sel) {
     f32 acc;
     f32 r;
     f32 lim;
@@ -15504,9 +15504,9 @@ z31t:
     if (1) {} ACCS2_31A74 = r; goto c31t;
 }
 
-void game_libs_func_00031CA8(int *a0, int a1, int a2) { *(int*)((char*)a0 + 0) = a1; *(int*)((char*)a0 + 8) = a2; *(int*)((char*)a0 + 0xC) = 0; }
+void snd_RampInit_31CA8(int *a0, int a1, int a2) { *(int*)((char*)a0 + 0) = a1; *(int*)((char*)a0 + 8) = a2; *(int*)((char*)a0 + 0xC) = 0; }
 
-/* game_libs_func_00031CB8: fixed-point value stepper (8.8): while count
+/* snd_RampTick_31CB8: fixed-point value stepper (8.8): while count
  * (p[2]) is nonzero, accumulate |(target-current)<<8 / count| into the
  * fraction accumulator p[3], and for every 0x100 of accumulated fraction
  * step current (p[1]) by +/-1 toward target (p[0]); then decrement count.
@@ -15516,7 +15516,7 @@ void game_libs_func_00031CA8(int *a0, int a1, int a2) { *(int*)((char*)a0 + 0) =
  * ((x >= 0) ? pos : neg), and arg0[1] += dir BEFORE arg0[3] -= 0x100
  * (provably non-aliasing stores; scheduler re-orders, but the temp ring
  * t0/t1/t2 follows source statement order). */
-void game_libs_func_00031CB8(s32 *arg0) {
+void snd_RampTick_31CB8(s32 *arg0) {
     s32 diff;
     s32 step;
     s32 dir;
@@ -15536,7 +15536,7 @@ void game_libs_func_00031CB8(s32 *arg0) {
     }
 }
 
-/* game_libs_func_00031D70 (0x34, 13 insns): store the three args to three
+/* snd_Init_31D70 (0x34, 13 insns): store the three args to three
  * consecutive Data words (bootup.uso Data 0x498 / 0x49C / 0x4A0, separate
  * relocs) and call the exported text callee at 0x389E4 (blank jal). The Sym
  * table exports section offset 0x463DC = splat 0x31D70 (ROM 0xE16E48 -
@@ -15549,25 +15549,25 @@ void game_libs_func_00031CB8(s32 *arg0) {
 extern int gl_data_00000000;
 extern int D_00000000_c;
 
-void game_libs_func_00031D70(int a0, int a1, int a2) {
+void snd_Init_31D70(int a0, int a1, int a2) {
     D_00000000 = a0;
     gl_data_00000000 = a1;
     D_00000000_c = a2;
     gl_func_00000000();
 }
 
-int gl_func_00031DA4(void) {
+int snd_AudioUpdate_31DA4(void) {
     int v = gl_func_00000000();
     if (v == 0) return 0;
     return v;
 }
 
-// gl_func_00031DD8 — STRUCTURAL PASS + BOUNDARY / DATA-MISID NOTE
+// snd_FrameUpdate_31DD8 — STRUCTURAL PASS + BOUNDARY / DATA-MISID NOTE
 // (0xF9C / 999 words, no episode). Raw-.word USO form (game_libs).
 //
 // The NAMED leading function is TINY — a one-call trampoline
 // (0x31DD8..0x31DF0, 6 instructions):
-//   void gl_func_00031DD8(void) {
+//   void snd_FrameUpdate_31DD8(void) {
 //     callback0();                            // jal 0 (USO callback)
 //   }
 // i.e. save ra, call a single USO-relocated callback (jal 0 →
@@ -15595,7 +15595,7 @@ int gl_func_00031DA4(void) {
 //   deferred (USO boundary re-split + data/ucode reclassification
 //   needs spimdisasm-USO migration). Name pre-checked: no extern
 //   reuse.
-void gl_func_00031DD8(void) {
+void snd_FrameUpdate_31DD8(void) {
     gl_func_00000000();
 }
 
@@ -15844,7 +15844,7 @@ int gl_func_00033094(char *o) {
 //   (lst->0x04 = 1) under a branch-likely empty-list guard. An
 //   object-lifecycle / registration leaf of the game_libs object
 //   subsystem (the per-instance counterpart to the gl_func_00032E18
-//   constructor and the gl_func_00030A20 registration node; the
+//   constructor and the snd_StartPlayer2Seq_30A20 registration node; the
 //   list it enlists into is the collection the snd_HandleEvent_2FB74
 //   interpreter iterates).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 factory/insert

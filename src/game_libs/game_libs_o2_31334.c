@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for gl_func_00031334 -- stepped sound/cue driver with two
+/* IDO 7.1 -O2 donor for snd_HandleSeqEnd_31334 -- stepped sound/cue driver with two
  * jumptable switches (123/123 words standalone; st_size 0x1EC).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post.c.o (the
  * 29CCC / 2E290 / 343F4 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-
  * switch-jumptable-rodata-rename). Both tables land in the donor's local
  * .rodata (switch 1 at +0, 15 entries; switch 2 at +0x3C, 11 entries); the
- * splice renames the reloc to gl_func_00031334_rodata, pinned to 0x1900 in
+ * splice renames the reloc to snd_HandleSeqEnd_31334_rodata, pinned to 0x1900 in
  * undefined_syms_auto.txt, so the %lo words link to 0x1900 / 0x193C exactly
  * as the USO ships them (tables read from bootup.uso RoData with
  * scripts/extract-uso-jumptable.py --shim 0x1466C; that dump starts one
@@ -31,7 +31,7 @@ extern int D_31334_st, D_31334_x, D_31334_y, D_31334_z;
 extern void gl_ref_00044F18();
 extern int gl_func_00000000_fi(int, float, int);
 
-void gl_func_00031334(int a, int b, int c) {
+void snd_HandleSeqEnd_31334(int a, int b, int c) {
     gl_func_00000000(0);
     gl_func_00000000(1);
     *(int *)&D_00000000 = 1;

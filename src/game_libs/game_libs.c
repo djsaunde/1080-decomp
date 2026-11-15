@@ -4381,7 +4381,7 @@ int *gl_func_000088B4(int *arg0) {
 
 /* BasePolyShape_triCentroid split off from BasePolyShape_genNormalsFast bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
-/* game_libs_func_00031580 split off from gl_func_00031560 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
+/* snd_InitCueQueues_31580 split off from snd_PreNMI_31560 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
 /* Window_updateAspect + game_libs_func_0004EB4C split off from gl_func_0004E96C bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
