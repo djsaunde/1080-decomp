@@ -35,6 +35,13 @@ Subcommands:
                      (`#define gX D_00000000 /* ... Sym N ... */`) where the relocs prove
                      the site is that object (see cmd_convert); adds the gl_data.h include
                      (relative path in NCC .cpp donors, which build without -I include)
+  spell-base FILE.. [--exclude RE] [--write]
+                     respell plain section-base sites (`(char *)&D_00000000 + K` whose relocs
+                     all name ONE section-base Sym) as GL_DATA_STR(K, "text") /
+                     GL_RODATA_STR(K, "text") when K starts a string in that section, else
+                     GL_DATA(K) / GL_RODATA(K) / GL_BSS(K). `check` verifies every direct
+                     GL_*(K) use (a base site with that section and K in the function) and
+                     every *_STR text against the ROM bytes.
   selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype).
 
 Run from the project root, with the venv python (pyelftools, crunch64):
@@ -53,6 +60,8 @@ TEXT_DELTA = 0x1466C          # game_libs VRAM -> bootup.uso Text section offset
 SECT_NAME = {5: 'Text', 6: 'Data', 7: 'RoData', 8: 'Bss'}
 SECT_ABBR = {5: 'T', 6: 'D', 7: 'R', 8: 'B'}
 BASE_MACRO = {'GL_DATA': 6, 'GL_RODATA': 7, 'GL_BSS': 8, 'GL_TEXT': 5}
+# string-documenting section-base spellings: GL_DATA_STR(K, "text") == GL_DATA(K)
+STR_MACRO = {'GL_DATA_STR': 6, 'GL_RODATA_STR': 7}
 TYPES = {1: 'Sym', 2: 'TextReloc', 3: 'DataReloc', 4: 'RoDataReloc', 5: 'Text', 6: 'Data',
          7: 'RoData', 9: 'EntrySym', 11: 'End'}
 
@@ -444,7 +453,7 @@ def scan_macros():
             if not m:
                 continue
             name, params, body = m.group(1), m.group(2), m.group(3)
-            if name in BASE_MACRO:
+            if name in BASE_MACRO or name in STR_MACRO:
                 continue
             cm = re.search(r'/\*(.*?)(\*/|$)', body)
             comment = cm.group(1) if cm else ''
@@ -479,7 +488,7 @@ def scan_macros():
     aliases = header_aliases(out)
     seen = {(m['path'], m['name']) for m in out}
     for path, (name, params, body, line, own) in pending:
-        if (path, name) in seen or name in BASE_MACRO:
+        if (path, name) in seen or name in BASE_MACRO or name in STR_MACRO:
             continue
         hit = None
         for tok in re.findall(r'\b[A-Za-z_]\w*\b', body):
@@ -684,6 +693,134 @@ def claim_hits(c, func, cl):
     return [s for s in ss if s.sym.is_base and s.sym.sect == cl[1] and s.k == cl[2]]
 
 
+# `(char *)&D_00000000 + K`, or `&D_00000000 + K` in a TU whose D_00000000 is plain `char`
+BASE_SITE_RE = re.compile(r'(\(\s*char\s*\*\s*\)\s*)?&D_00000000\s*\+\s*(0x[0-9A-Fa-f]+|\d+)\b')
+# operators around the site that must not bind tighter than the `+` (the macro adds parentheses)
+_BAD_BEFORE = re.compile(r'(\)|[-*/%!~&]|\bsizeof)\s*$')
+_BAD_AFTER = re.compile(r'^\s*(\[|\(|->|\.|\+\+|--|[*/%](?!=)|[*/%]=)')
+_GOOD_BEFORE = re.compile(r'([(,=?:{;]|\breturn|\|\||==|!=|<|>)\s*$')
+
+
+def rom_string(c, sect, k):
+    """The NUL-terminated printable string starting at section offset k, or None."""
+    d = c.secs.get(SECT_NAME.get(sect))
+    if d is None or k >= len(d) or (k and d[k - 1] != 0):
+        return None
+    e = d.find(b'\0', k)
+    if e <= k:
+        return None
+    b = d[k:e]
+    if len(b) < 3 or any((x < 0x20 and x not in (9, 10)) or x > 0x7E for x in b):
+        return None
+    return b.decode()
+
+
+def c_literal(t):
+    return '"' + t.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\t', '\\t') + '"'
+
+
+def c_unliteral(lit):
+    body = lit[1:-1]
+    return re.sub(r'\\(.)', lambda m: {'n': '\n', 't': '\t'}.get(m.group(1), m.group(1)), body)
+
+
+def char_decl_only(src):
+    decls = re.findall(r'^\s*extern\s+([\w ]+?)\s+D_00000000\s*(\[\s*\])?\s*;', src, re.M)
+    return bool(decls) and all(t.strip() == 'char' and not arr for t, arr in decls)
+
+
+def cmd_spell_base(c, a):
+    """Spell plain section-base sites with GL_DATA/GL_RODATA/GL_BSS(K), or with
+    GL_DATA_STR/GL_RODATA_STR(K, "text") when K starts a string. Proof rule (as convert):
+    every D_00000000-relocated LO16 of the function with that K names the same section-base
+    Sym. The expansion is the old expression plus parentheses, so it is byte-safe when no
+    neighbouring operator binds tighter than `+` (checked on both sides)."""
+    excl = re.compile(a.exclude) if a.exclude else None
+    total = collections.Counter()
+    for path in a.files:
+        src = open(path, errors='replace').read()
+        plain_char = char_decl_only(src)
+        edits = []
+        for f, b0, b1 in func_spans(src):
+            if excl and excl.search(f):
+                continue
+            ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
+            if not ss or any(x.placeholder is None for x in ss):
+                continue
+            byk = collections.defaultdict(set)
+            for x in ss:
+                if x.placeholder == 'D_00000000':
+                    byk[x.k].add((x.sym.is_base, x.sym.sect))
+            for mm in BASE_SITE_RE.finditer(src, b0, b1):
+                if not mm.group(1) and not plain_char:
+                    continue
+                k = int(mm.group(2), 0)
+                kinds = byk.get(k)
+                if not kinds or len(kinds) != 1:
+                    continue
+                isb, sect = next(iter(kinds))
+                if not isb or sect not in (6, 7, 8):
+                    continue
+                before = src[max(b0, mm.start() - 12):mm.start()]
+                if _BAD_BEFORE.search(before) or not _GOOD_BEFORE.search(before):
+                    continue
+                if _BAD_AFTER.match(src[mm.end():mm.end() + 3]):
+                    continue
+                t = rom_string(c, sect, k) if sect in (6, 7) else None
+                if t is not None:
+                    name = {6: 'GL_DATA_STR', 7: 'GL_RODATA_STR'}[sect]
+                    rep = f'{name}(0x{k:X}, {c_literal(t)})'
+                else:
+                    name = {6: 'GL_DATA', 7: 'GL_RODATA', 8: 'GL_BSS'}[sect]
+                    rep = f'{name}(0x{k:X})'
+                edits.append((mm.start(), mm.end(), rep, f, name))
+        if not edits:
+            continue
+        fs = sorted({e[3] for e in edits})
+        print(f'{path}: {len(edits)} sites in {len(fs)} functions')
+        if a.verbose:
+            for e in edits:
+                print(f'    {e[3]}: {src[e[0]:e[1]]} -> {e[2]}')
+        for e in edits:
+            total[e[4]] += 1
+        if a.write:
+            for s0, s1, rep, _, _ in sorted(edits, reverse=True):
+                src = src[:s0] + rep + src[s1:]
+            src = add_gl_data_include(path, src)
+            open(path, 'w').write(src)
+    print(f'spell-base: {sum(total.values())} sites {dict(total)}' + ('' if a.write else ' (dry run; --write to apply)'))
+
+
+DIRECT_RE = re.compile(r'\b(GL_DATA|GL_RODATA|GL_BSS|GL_TEXT)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*\)'
+                       r'|\b(GL_DATA_STR|GL_RODATA_STR)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*,\s*("(?:[^"\\]|\\.)*")\s*\)')
+
+
+def check_direct(c, bodies, verbose=False):
+    """Direct GL_*(K) / GL_*_STR(K, "text") uses inside function bodies."""
+    ok = bad = 0
+    for p, fb in bodies.items():
+        for f, b in fb.items():
+            for mm in DIRECT_RE.finditer(b):
+                if mm.group(1):
+                    sect, k, lit = BASE_MACRO[mm.group(1)], int(mm.group(2), 0), None
+                else:
+                    sect, k, lit = STR_MACRO[mm.group(3)], int(mm.group(4), 0), mm.group(5)
+                ss = [s for s in c.by_func.get(f, []) if s.rtype == 2]
+                if not ss:
+                    continue
+                why = None
+                if not claim_hits(c, f, ('base', sect, k)):
+                    why = f'no {SECT_NAME[sect]}-base site with K=0x{k:X}'
+                elif lit is not None and rom_string(c, sect, k) != c_unliteral(lit):
+                    why = f'ROM string is {rom_string(c, sect, k)!r}'
+                if why:
+                    bad += 1
+                    print(f'MISMATCH {mm.group(0)[:60]} in {f} ({p}): {why}')
+                else:
+                    ok += 1
+    return ok, bad
+
+
 def cmd_check(c, a):
     macros = scan_macros()
     claimed = [m for m in macros if m['claim']]
@@ -746,13 +883,15 @@ def cmd_check(c, a):
         ps_bad += 1
         print(f'MISMATCH per-site alias {s.placeholder} (named after {hit[0]} = sym{n}) in {s.func} '
               f'T+0x{s.off:05X}: the reloc names {c.obj_label(s.obj)}')
+    d_ok, d_bad = check_direct(c, bodies, a.verbose)
+    print(f'check: {d_ok} direct GL_DATA/GL_RODATA/GL_BSS(_STR) uses verified, {d_bad} mismatches')
     nvia = sum(1 for m in claimed if m.get('via'))
     print(f'check: {len(macros)} placeholder macros ({nvia} spelled over a header alias), '
           f'{len(claimed)} with a Sym/section claim; {ok} (macro, function) uses verified, '
           f'{bad} mismatches, {unused} claimed macros unused')
     print(f'check: {len(ps_names)} per-site aliases named after an object, {ps_ok} LO16 sites verified, '
           f'{ps_bad} mismatches')
-    return 1 if bad or ps_bad else 0
+    return 1 if bad or ps_bad or d_bad else 0
 
 
 def cmd_selftest(c, a):
@@ -820,11 +959,16 @@ def main():
     p.add_argument('--bare', action='store_true',
                    help='also respell bare value uses (`D_00000000 = x`) when every K = 0 site names the Sym')
     p.add_argument('--write', action='store_true')
+    p = sub.add_parser('spell-base'); p.add_argument('files', nargs='+')
+    p.add_argument('--exclude', help='regex of function names to leave alone (owned by another area)')
+    p.add_argument('-v', '--verbose', action='store_true')
+    p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
     a = ap.parse_args()
     c = Census('.', a.no_build)
-    sys.exit({'sites': cmd_sites, 'calls': cmd_calls, 'census': cmd_census, 'object': cmd_object,
-              'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert}[a.cmd](c, a) or 0)
+    sys.exit({'sites': cmd_sites, 'census': cmd_census, 'object': cmd_object,
+              'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert,
+              'spell-base': cmd_spell_base}[a.cmd](c, a) or 0)
 
 
 if __name__ == '__main__':
