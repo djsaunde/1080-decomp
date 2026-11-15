@@ -200,6 +200,45 @@ def scoped_alias_ok(path, text, old, new):
     return saw_scope and not inside
 
 
+def c_definitions(path, name):
+    """Function definitions of NAME in a C file, comments stripped and whitespace
+    collapsed: from the start of the line holding `NAME(` (not a prototype) to the
+    matching closing brace."""
+    text = strip_comments(path, read_text(path) or "")
+    out = []
+    for m in re.finditer(r"(?m)^[^\n;#]*(?<![A-Za-z0-9_])" + re.escape(name) + r"\s*\(", text):
+        i = text.find("{", m.end())
+        semi = text.find(";", m.end())
+        if i < 0 or (0 <= semi < i):
+            continue
+        depth, j = 0, i
+        while j < len(text):
+            if text[j] == "{":
+                depth += 1
+            elif text[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        out.append(" ".join(text[m.start():j + 1].split()))
+    return out
+
+
+def copies_identical(old, host_seg):
+    host, copies = [], []
+    for p in (ROOT / "src" / host_seg).rglob("*.c"):
+        host += c_definitions(str(p.relative_to(ROOT)), old)
+    for p in (ROOT / "src" / "match_imports").glob("*.c"):
+        copies += c_definitions(str(p.relative_to(ROOT)), old)
+    if len(host) != 1:
+        return False, f"{len(host)} host definitions"
+    if not copies:
+        return False, "no match_imports definition found"
+    if any(c != host[0] for c in copies):
+        return False, "text differs from the host definition"
+    return True, ""
+
+
 def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     errs, warns = [], []
     if not IDENT.match(new) or new in C_KEYWORDS:
@@ -222,6 +261,18 @@ def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     # {host, match_imports} pair is not ambiguous (agent-g run 447; the gate verifies the splice).
     if len(segs) == 2 and "match_imports" in segs and (ROOT / "src" / "match_imports" / f"{old}.c").exists():
         segs = segs - {"match_imports"}
+    # A match_imports file named after ANOTHER function may carry verbatim context copies
+    # of its predecessors (e.g. src/match_imports/sys_fatal.c holds 610F4/611E4/6126C so
+    # the spliced function keeps its original alignment). Allowed only when every
+    # match_imports definition of OLD is textually identical (comments stripped,
+    # whitespace normalized) to the single host definition (agent-b run 454).
+    if len(segs) == 2 and "match_imports" in segs:
+        host = segs - {"match_imports"}
+        same, why = copies_identical(old, next(iter(host)))
+        if same:
+            segs = host
+        else:
+            warns.append(f"{old}: match_imports copy is not an exact-same-function copy ({why})")
     if len(segs) > 1:
         errs.append(f"{old} is defined in several segments {sorted(segs)}; rename is ambiguous")
     wr, nr = word_re(old), word_re(new)
