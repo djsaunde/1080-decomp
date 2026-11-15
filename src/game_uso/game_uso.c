@@ -74,52 +74,7 @@ void game_uso_func_00000000(out, t)
 /* 4-element dot product. CRACKED 2026-06-11 to 100.0 via fully right-nested
  * grouping `a[3]*b[3] + (a[2]*b[2] + (a[1]*b[1] + b[0]*a[0]))` (exhaustive
  * 1920-variant enumeration; the "cap" below was a left-assoc-family-only
- * conclusion). Historical analysis kept for the record:
- * 4-element dot product. C body NATURAL CAP 99.375% (1 insn diff).
- * The SINGLE diff is the FINAL add.s (insn 15): IDO emits `add.s f0,f10,f8`
- * (p3 + sum) where target wants `add.s f0,f8,f10` (sum + p3); f8=sum of the
- * first three products, f10=the 4th product. The earlier "second-to-last add"
- * note is stale — insn 13 (`add f8,f4,f16`) now matches; only the outermost
- * commutative add differs. IDO commutes `sum + p3` to `p3 + sum` regardless of
- * source operand order — it is FPU instruction-selection, not C-controllable.
- * EXHAUSTIVE NEGATIVE RESULT (2026-05-28, 8 fresh variants, all >= baseline's
- * 1 diff so none adopted):
- *   a[i]*b[i] all-ab .................. 3   (a[0]*b[0]+..+a[3]*b[3])
- *   (sum3) + a[3]*b[3] parens ......... 3
- *   right-assoc a[0]*b[0]+(a[1]*b[1]+..) 8
- *   b[i]*a[i] all-ba .................. 7
- *   float p3=b[3]*a[3]; sum+p3 ........ 15  (temp spills, reschedules all)
- *   float p3=a[3]*b[3]; sum+p3 ........ 15
- *   float s=sum3; s + b[3]*a[3] ....... 8
- *   float s=sum3; s + a[3]*b[3] ....... 8
- * Current `a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+b[3]*a[3]` (1 diff) is optimal.
- * INSN_PATCH was REMOVED 2026-05-23 (match-faking, banned per
- * feedback_no_instruction_forcing_matches_policy). The 100% match this
- * function had pre-removal was via post-cc byte editing — not a real compile.
- * Permanent NM cap. 2026-05-30: PERMUTER TESTED (decomp-permuter -j4, 150s) — 0
- * candidates. Confirmed the final `add.s $f0,$f8,$f10` (sum,product) vs mine
- * `$f0,$f10,$f8` is COUPLED to the body schedule: every C form that flips the add
- * to the target order (product-first, named sum/p3 temps) also reschedules the 15
- * body insns (body no longer matches), and the only body-exact form forces the
- * swapped add. Not independently controllable — the commutative canonicalization
- * follows term order, which also drives the dot-product schedule. The permuter
- * can't isolate the flip either. RE-CONFIRMED 2026-05-30 (no-caps re-grind): the
- * docs#feedback-ido-fp-commutative-operand-order-assignment-lever `X + (t = Y)`
- * lever RESCHEDULES here (the fs operand is a 3-mul CHAIN, not a simple value as
- * in 00003FAC — pinning it moves the muls, 8 diffs); reassociation 8-12 diffs;
- * source mul order a3*b3 vs b3*a3 is identical; 180s permuter floored at score 10
- * (no 0). The assignment-expr lever's SCOPE LIMIT: it only decouples operand order
- * when the pinned operand is a SINGLE load/value; a multi-op reduction operand
- * can't be pinned without rescheduling. Still a permuter/PERM_-macro target, not
- * a permanent cap — but the simple levers are genuinely exhausted here. */
-/* 2026-06-11 permuter CONCLUDED: base 10 (1 true diff) flat through
- * 665k iterations -- allocator-internal. 99.38 stands. */
-/* 1-diff FP-REDUCTION operand-order cap (final add: target `f0=sum3+p3` with
- * sum3 as fs; ours swaps to p3 as fs). RE-CONFIRMED 2026-05-31: the
- * assignment-expr lever `... + (t = b[3]*a[3])` REGRESSES to 15 diffs — pinning
- * p3 reschedules the whole reduction (sum3 is a multi-op chain, can't be the
- * pinned operand). Same class as math_vec3CrossDot. Genuine cap; do not
- * re-grind with the assignment-expr lever. */
+ * conclusion; the left-assoc forms all leave the final add.s operands swapped). */
 float math_dot4_000000A0(float *a, float *b) {
     /* 2026-06-11 rules-sweep CRACK: right-nested grouping flips the final
      * add.s to target order (cfe ufad ichain = ucode shape, rule-1 cousin);
@@ -610,30 +565,30 @@ void cam_readParms_00001644(int *a0) {
     int *p;
     int v;
 
-    stream_readS32_00000280((int*)((char*)a0 + 0x24C));
+    stream_readS32_00000280(&((CourseCam *)a0)->numPaths);
     i = 0;
-    p = a0;
-    while (i < *(int*)((char*)a0 + 0x24C)) {
-        v = gl_func_00000000(0);
+    p = a0; /* p walks a0 one word per entry: p + 0x1D4 = &paths[i], p + 0x158 = &lists[i] */
+    while (i < ((CourseCam *)a0)->numPaths) {
+        v = CALL(camPath_new_00000608)(0);
         *(int*)((char*)p + 0x1D4) = v;
-        gl_func_00000000(v);
-        gl_func_00000000(*(int*)((char*)p + 0x1D4));
+        CALL(camPath_init_00000634)(v);
+        CALL(camPath_read_00000724)(*(int*)((char*)p + 0x1D4));
         i++;
         p++;
     }
 
     i = 0;
-    stream_readS32_00000280((int*)((char*)a0 + 0x1D0));
-    if (*(int*)((char*)a0 + 0x1D0) > 0) {
+    stream_readS32_00000280(&((CourseCam *)a0)->numLists);
+    if (((CourseCam *)a0)->numLists > 0) {
         p = a0;
         do {
-            v = gl_func_00000000(40);
+            v = CALL(mem_new)(sizeof(CamList));
             *(int*)((char*)p + 0x158) = v;
-            gl_func_00000000(v);
-            gl_func_00000000(*(int*)((char*)p + 0x158));
+            CALL(camList_init_000007E0)(v);
+            CALL(camList_read_000007EC)(*(int*)((char*)p + 0x158));
             i++;
             p++;
-        } while (i < *(int*)((char*)a0 + 0x1D0));
+        } while (i < ((CourseCam *)a0)->numLists);
     }
 }
 
@@ -694,60 +649,21 @@ c18: cam_setView_00000AEC(a0, 29);
 end: ;
 }
 
-/* 3.83% NM (stub body, alloc-or-passthrough only). 269-insn / 0x434 size,
- * frame ~0xE0 with 4 saved $s-regs. Single-arg constructor.
- *
- * First-pass structural decode (top ~30 insns):
- *   p = a0;
- *   if (p == NULL) {
- *       p = gl_func_00000000(0xD0);          // alloc 208 bytes
- *       if (p == NULL) return NULL;
- *   }
- *   q = gl_func_00000000(8);                  // alloc 8-byte node
- *   if (q == NULL) {
- *       *(int*)((char*)&D_00000000 + 0x318) = p;  // ?? store p, then continue init
- *       *(int*)((char*)&D_00000000 + 0x31C) = 0;
- *   }
- *   // Stack buffer setup: floats at sp+0xC8..0xD4 = (1.0, 0.0, -1000.0, 64.0)
- *   //                     ints at sp+0xBC..0xC4 = (0, 0, 0)
- *   // Pointer link table at sp+0x44..0x64 (4 entries, each = sp+OFF):
- *   //   ptr[0] = sp+0x64; ptr[1] = sp+0x54; ptr[2] = sp+0x44; ptr[3] = sp+0x34
- *   // Source data table at *(D+0x320) — 8-byte entries, copied 6+ times into
- *   // the stack buffer at +0/+4 of each copy.
- *
- * Likely a graphics/transform constructor — sets up a 0xD0-byte graphics
- * primitive object (allocates if not provided, builds a 4-element vertex
- * buffer + transform matrix, copies template data from D[0x320]). Spine
- * function in the call-graph (multiple game_uso entries reach here).
- *
- * Multi-tick decomp expected. Stub body keeps wrap parsable; default
- * INCLUDE_ASM build matches. */
 extern int game_uso_func_055750();
 extern int game_uso_func_04A188();
 extern char game_uso_D_807FE908, game_uso_D_807FE910, game_uso_D_807FE914,
             game_uso_D_807FE918, game_uso_D_807FE91C, game_uso_D_807FE920,
             game_uso_D_807FE924, game_uso_D_807FE928, game_uso_D_807FE92C,
             game_uso_D_807FE608, game_uso_D_807FE620;
-/* Whole-body decode 2026-06-01 (was 3.83% stub). alloc(0xD0)+q-node init, an
- * FP stack-buffer setup, then 8 dead-sentinel-guarded sub-object stages
- * (s0+8/40/64/88/112/136/160/184; guard `s0==-off` never true so IDO emits the
- * dead alloc arms — 41C0/cascade family), each func_04A188(obj,s0,*D9xx,1) +
- * template ptr + FP/Vec3 init. FP stack-buffer copies approximate; ~multi-tick.
- * 2026-10-17 agent-g (run 106) 50.9 -> 91.2: same inlined-cfront-ctor shape
- * as 41C0 (see there): `if (s0 || (s0 = alloc(0xD0)))` around everything,
- * the 8-byte base sub-object with its result discarded, then per member
- * `o = s0 + off; if (o || (o = alloc(..))) {...}` -- a failed alloc skips
- * only THAT member (the old body's `goto end` was wrong). Each template word
- * is a by-value 4-byte struct (per-stage temp t2..t8, escaped, copied by .w
- * into one shared inline param prm); stage 1 also takes three by-value Vec3
- * params (pa/pb/pc = struct assignments of hi/lo/big.v, addiu-addressed word
- * copies) and copies pa through a temp into o+0x10. The int pads reproduce
- * the target's home-slot map (all homes match). RESIDUAL: the hi/lo/big
- * constant stores -- the target stores them in source order reusing f0 for
- * 0/-1000/1000 (64 in f4); here uopt hoists all four constants and reorders
- * the stores. */
-/* SnowChaseActorCamParms_ctor: EXACT 2026-10-21 (agent-g run 116), from 91.2 NM,
- * with the 3018 recipe (docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018):
+/* SnowChaseActorCamParms_ctor (0x434): cfront's inlined ctor of the 0xD0-byte SnowChaseActorCamParms
+ * (camera.h). `if (s0 || (s0 = new(0xD0)))` around everything; the Parms base part (name, list), whose own
+ * alloc-or-given arm is dead; then per member parm `o = s0 + off; if (o || (o = new(size))) {...}` (the
+ * member-address null test is never true; a failed alloc would skip only that member): Parms_addParm(o,
+ * owner s0, tag word, 1), the parm-type vtable and the default. Member 0 (cof) is a CamVec3Parm (min / max /
+ * default vectors passed by value: lo, big.v, hi = (0, 64, 0)); the other seven are CamParm floats
+ * (default 0). Each tag word is a by-value 4-byte struct (per-stage temp t2..t8, copied into one shared
+ * param prm).
+ * EXACT 2026-10-21 (agent-g run 116) with the 3018 recipe (docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018):
  * per-stage struct copy `prm = T`, s0 as the parameter, `if (1) {}` between
  * the stage-1 vectors and int zeros in hi, and the pad map re-fit (no g8,
  * g0[3], one int after o1). */
@@ -778,8 +694,8 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
     if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xD0)) != 0) {
         b = s0;
         if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
-            *(char **)(b + 0) = &game_uso_D_807FE908 + 0x318;
-            *(int *)(b + 4) = 0;
+            ((SnowChaseActorCamParms *)b)->name = &game_uso_D_807FE908 + 0x318;
+            ((SnowChaseActorCamParms *)b)->unk04 = 0;
         }
         hi.x = 0; hi.y = 64.0f; hi.z = 0;
         if (1) {}
@@ -795,12 +711,12 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
         o1 = s0 + 8;
         if (o1 != 0 || (o1 = (char *)game_uso_func_055750(0x20)) != 0) {
             game_uso_func_04A188(o1, s0, prm, 1);
-            *(char **)(o1 + 0xC) = &game_uso_D_807FE620 + 48;
-            *(int *)(o1 + 0x1C) = 0;
+            ((CamVec3Parm *)o1)->vptr = &game_uso_D_807FE620 + 48;
+            ((CamVec3Parm *)o1)->unk1C = 0;
             tmp = pa;
-            *(f32 *)(o1 + 0x10) = tmp.x;
-            *(f32 *)(o1 + 0x14) = tmp.y;
-            *(f32 *)(o1 + 0x18) = tmp.z;
+            ((CamVec3Parm *)o1)->value.x = tmp.x;
+            ((CamVec3Parm *)o1)->value.y = tmp.y;
+            ((CamVec3Parm *)o1)->value.z = tmp.z;
         }
 #define STAGE(OFF, T, SYM, TOFF) \
         T.w = ((T4_18FC *)(&(SYM) + (TOFF)))->w; \
@@ -808,9 +724,9 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
         o = s0 + (OFF); \
         if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
             game_uso_func_04A188(o, s0, prm, 1); \
-            *(char **)(o + 0xC) = &game_uso_D_807FE608 + 24; \
-            *(int *)(o + 0x14) = 0; \
-            *(f32 *)(o + 0x10) = 0.0f; \
+            ((CamParm *)o)->vptr = &game_uso_D_807FE608 + 24; \
+            ((CamParm *)o)->unk14 = 0; \
+            ((CamParm *)o)->value = 0.0f; \
         }
         STAGE(40,  t2, game_uso_D_807FE914, 0x324)
         STAGE(64,  t3, game_uso_D_807FE918, 0x328)
@@ -1147,58 +1063,12 @@ void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2) {
     SnowChaseActorCam_applyMode_000024BC(a0, (int *)a2);
 }
 
-/* SnowChaseActorLookParms_ctor: 52-insn (0xD0) lazy-init/sub-allocator wrapper.
- * Pattern: take optional pre-existing pointer; if NULL, alloc(0x20). Then if
- * matched a sentinel constraint (a1 == -8), alloc(0x18) for an inner object
- * and chain-init via gl_func_00000000(.., .., handle, 1).
- *
- * Loads two data refs: &D_0+0x354 (stored at p[0]) and *(int*)(&D_0+0x35C)
- * (spilled to stack but dead-store — the inner-init load that never gets
- * stored to a useful field). The dead-load pattern suggests this is one arm
- * of a larger wrapper class where other variants DO use the 0x35C value.
- *
- * Sentinel `a1 == -8` check (bne $a1, $at where $at = -8) is unusual — likely
- * a tagged-pointer convention or an enum-as-pointer trick from the original
- * source. m2c rendered it literally as `var_a1 == (void *)-8`. Documented
- * as-is; semantic interpretation deferred until siblings emerge.
- *
- * Initial decode 2026-05-05; refined 2026-05-06: re-traced asm flow and
- * found the "p2 == NULL ? alloc(8)" branch is DEAD CODE in the reachable
- * paths. At 0x20 (`bne a1, zero, +7`), a1 is guaranteed non-zero on every
- * reachable entry (a1 = arg0 if non-null, OR a1 = alloc(0x20) result if
- * we got here without taking the early-exit branch at 0x18). The bne is
- * always taken, jumping past 0x28 alloc(8) to 0x40 template-init.
- *
- * The asm STILL contains the alloc(8) call as physical insns — IDO -O2
- * couldn't prove a1 != 0 across the cross-USO call to gl_func at 0x10
- * (jal might have side-effects on a1 from caller's perspective, even
- * though the spill at 0x30/reload at 0x34 makes it concrete). So the
- * compiled C source likely had an explicit redundant null-check that
- * IDO preserved.
- *
- * 2026-05-17 Codex: real control flow is "init var_v1, then always run the
- * sub-init call on either a1+8 or alloc(0x18)"; prior NM only ran that block
- * for the -8 sentinel. C body rose 57.63% -> 95.40%; remaining stack-slot
- * and scheduler differences were byte-restored with INSN_PATCH. INSN_PATCH
- * REMOVED 2026-05-23 as match-faking per
- * feedback_no_instruction_forcing_matches_policy; docs/POST_CC_RECIPES.md
- * DEPRECATED.
- *
- * 2026-06-20 agent-b: the 0x35C value is loaded once and homed to slot 0x1C
- * as the call arg; passing it as `init_arg = init_arg_copy` (assign-expr in
- * the call) made IDO emit an EXTRA volatile store + reload (53 words = SIZE
- * MISMATCH vs the 52-word target). Splitting it into `init_arg_copy = load;
- * init_arg = init_arg_copy;` and passing the plain `init_arg_copy` drops the
- * extra word -> 52 words = CORRECT SIZE, 23 non-reloc diffs. Residuals are now
- * pure frame-layout caps: frame -0x38 vs -0x30 (one extra stack slot) and
- * var_a1 spill at sp+0x38 vs sp+0x2C, plus the dead-store(0x34)/spill(0x1C)
- * two-homes-no-reload pattern that IDO only emits with the original (lost)
- * source. NATURAL CEILING ~95.40% NM; remaining gap = sp-offset coloring. */
-/* SnowChaseActorLookParms_ctor — EXACT 52/52 words (self-verified clean rebuild of
- * build/non_matching/src/game_uso/game_uso.c.o, 0 diffs vs
- * asm/nonmatchings/game_uso/game_uso/SnowChaseActorLookParms_ctor.s; jal words
- * 0x0C000000 both sides).
- * Levers that cracked the "sp-offset coloring / two-homes-no-reload" cap:
+/* SnowChaseActorLookParms_ctor (52 words): the 0x20-byte Parms object of SnowChaseActorLook, cfront's
+ * inlined ctor chain. `this` = arg0 or new(0x20); the Parms base part (vtable &D+0x354, count 0; its own
+ * alloc-or-given `new(8)` arm is dead but kept by IDO); then the one embedded float parm at this + 8
+ * (a ParmNode: Parms_addParm(node, owner, tag word D+0x35C, 1), float-parm vtable &D+0x18, default 0.0f).
+ * `arg0 == -8` is cfront's null test of the member address `this + 8`.
+ * Levers that give the exact frame:
  *  (1) PARAM REUSE: drop var_a1, reassign arg0 itself -> IDO homes the spill
  *      at the PARAM HOME slot sp+0x38 (= frame+0), frame grows -0x30 -> -0x38.
  *  (2) DECL-ORDER slot map (locals decl-order TOP-DOWN from 0x34):
@@ -1482,49 +1352,9 @@ void CameraBase_update_00002FF8(void) {
  * stores: every constant then lives in $f0 in turn, as in the target.
  * docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018.
  *
- * SnowChaseActorParms_ctor: 291-insn (0x48C) alloc-cascade constructor, frame
- * -0xE8. RECONSTRUCTED from expected/game_uso.c.o to the REAL callees + globals:
- *   alloc  = game_uso_func_055750(size)
- *   init   = game_uso_func_04A188(obj, s0, *D_807FE9xx[+TVAL], 1)
- *   vtable = &D_807FE964 + 0x374 ; tags &D_807FE620+48 (st1), &D_807FE608+24
- *   per-stage word = *( &D_807FE970..98C + 0x380..0x39C )
- * Structure: alloc-or-passthrough(0xE8) -> secondary alias/alloc(8)+template
- * -> 3 Vec3 buffers on stack (0/0/0, -1000/-1000/-1000, 1000/1000/1000) +
- * counter word D_807FE96C+0x37C, Tri3i-copied to 3 ent slots -> 9 sentinel-
- * guarded sub-object stages (s0+8 then +0x28..+0xD0, stride 0x18).
- *
- * 2026-06-26 DECODE-PROGRESS (agent-e): 53.35% -> 56.97% fuzzy via one LOGIC
- * fix:
- *   - First-alloc-failure path returned 0 via a SEPARATE `b epilogue;
- *     move v0,zero` (return 0). The TARGET routes that failure through the
- *     SHARED epilogue (beqz v0,3490) which does `move v0,s0` with s0==v0==0
- *     -- identical result, one fewer return path. Changed `return 0` ->
- *     `goto end` so the failure folds into the single shared epilogue,
- *     removing the extra b/move-zero block and re-aligning every downstream
- *     stage's branch target. (+3.6pp)
- *   - Reordered the `counter` load to after nbuf so the FP-buffer block
- *     reads in target stack-address order (cosmetic; no byte change but
- *     structurally faithful).
- *
- * **DECODE-ONLY: unpaired-HI16 reloc cap (confirmed).** Every D_807FE6xx/9xx
- * data symbol is NON-page-aligned (low16 = 0xe608/0xe620/0xe964/... != 0) and
- * the target reaches each via `lui %hi(SYM)` (R_MIPS_HI16) + an addiu whose
- * displacement literal is BAKED (loader patches HI16 only). expected has ZERO
- * R_MIPS_LO16 for any of these syms across the whole .o; IDO from any C
- * `&SYM + off` ALWAYS emits a HI16/LO16 PAIR, so the ~12 data loads can never
- * be byte-exact. (docs/MATCHING_WORKFLOW.md #unpaired-hi16-nonaligned-symbol.)
- * Residual on top of that is pure register-coloring + stack-slot scheduling
- * (target saves only $s0 + spills the field base to a fixed caller-save slot;
- * IDO-from-C promotes to $s1, cascading the frame to -0xD8 vs -0xE8). Both
- * the volatile-buffer and inline-base levers were tried in prior runs and
- * REGRESSED; FP-constant hoist ($f0 reuse vs 3 regs) is also coloring. Logic /
- * callees / globals are faithful end-to-end; left NON_MATCHING (reloc-cap).
- * 2026-10-17 agent-g (run 106) 56.0 -> 93.1: re-decoded with the 18FC
- * inlined-ctor template (per-member alloc-or-given, by-value 4-byte template
- * params through one shared `prm`, three by-value Vec3 params for stage 1,
- * int pads for the home-slot map). Same residual as 18FC (constant-store
- * order; plus the pads leave the frame at 0xF0 vs 0xE8 -- the pad set that
- * gives 0xE8 scores 0.1 lower). */
+ * The 0x48C-byte inlined ctor of the 0xE8-byte SnowChaseActorParms (camera.h), the same shape as
+ * SnowChaseActorCamParms_ctor: the Parms base part, the CamVec3Parm "off" (default (0, 0, 0)), then eight
+ * CamParm floats (s0 + 0x28 .. 0xD0, stride 0x18). */
 typedef struct { int w; } T4_3018;
 extern int game_uso_func_055750();
 extern int game_uso_func_04A188();
@@ -1557,8 +1387,8 @@ void *SnowChaseActorParms_ctor(char *s0) {
     if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xE8)) != 0) {
         b = s0;
         if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
-            *(char **)(b + 0) = &game_uso_D_807FE964 + 0x374;
-            *(int *)(b + 4) = 0;
+            ((SnowChaseActorParms *)b)->name = &game_uso_D_807FE964 + 0x374;
+            ((SnowChaseActorParms *)b)->unk04 = 0;
         }
         hi.x = 0; hi.y = 0; hi.z = 0;
         if (1) {}
@@ -1574,20 +1404,20 @@ void *SnowChaseActorParms_ctor(char *s0) {
         o1 = s0 + 8;
         if (o1 != 0 || (o1 = (char *)game_uso_func_055750(0x20)) != 0) {
             game_uso_func_04A188(o1, s0, prm, 1);
-            *(char **)(o1 + 0xC) = &game_uso_D_807FE620 + 48;
-            *(int *)(o1 + 0x1C) = 0;
+            ((CamVec3Parm *)o1)->vptr = &game_uso_D_807FE620 + 48;
+            ((CamVec3Parm *)o1)->unk1C = 0;
             tmp = pa;
-            *(f32 *)(o1 + 0x10) = tmp.x;
-            *(f32 *)(o1 + 0x14) = tmp.y;
-            *(f32 *)(o1 + 0x18) = tmp.z;
+            ((CamVec3Parm *)o1)->value.x = tmp.x;
+            ((CamVec3Parm *)o1)->value.y = tmp.y;
+            ((CamVec3Parm *)o1)->value.z = tmp.z;
         }
 #define STAGE(OFF, T, SYM, TOFF) \
 T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
         if (o != 0 || (o = (char *)game_uso_func_055750(0x18)) != 0) { \
             game_uso_func_04A188(o, s0, prm, 1); \
-            *(char **)(o + 0xC) = &game_uso_D_807FE608 + 24; \
-            *(int *)(o + 0x14) = 0; \
-            *(f32 *)(o + 0x10) = 0.0f; \
+            ((CamParm *)o)->vptr = &game_uso_D_807FE608 + 24; \
+            ((CamParm *)o)->unk14 = 0; \
+            ((CamParm *)o)->value = 0.0f; \
         }
         STAGE(40,  t2, game_uso_D_807FE970, 0x380)
         STAGE(64,  t3, game_uso_D_807FE974, 0x384)
@@ -1685,17 +1515,7 @@ out:
  *   sp+0xB0 *= scale;
  *   k = (sp+0xBC - s0->[0xB8]) * s0->[0x118];
  *   sp+0xD8 = sp+0xD8*k + sp+0xB0; gl_func(...);
- * Frame -0x100 saving s0/ra + double $f20 (sdc1 0x18 / ldc1 epilogue).
- *
- * First-pass structural NM wrap below @ 39.82% (was comment-only/bare
- * INCLUDE_ASM) — float scheduling NOT matched (USO raw-word, no m2c; IDO
- * float-sched is the multi-run tail). Captures the control flow, struct
- * offsets, and gl_func dispatch points as compilable reference. Next-run
- * levers: the exact M-row index mapping (0x00/0x10/0x20 vs 0x00/0x04/0x08
- * — disasm shows interleaved 112/128/.. (v0) offsets, verify per-row), and
- * the sub-frame build at p->[0x48] (mtc1 zero,$f20 + 2 gl_func, currently
- * elided). Picked source-2 (sibling of 0x3AC0). INCLUDE_ASM is the build
- * path so ROM stays byte-correct. */
+ * Frame -0x100 saving s0/ra + double $f20 (sdc1 0x18 / ldc1 epilogue). */
 /* SnowChaseActor_update: 252-insn (0x3F0) camera/spring vector solve. Callees: game_uso_func_070238
  * (magnitude), game_uso_func_071028 (normalize a Vec3), game_uso_func_072EE8 (accumulate into a node
  * position). EXACT via REPLACE_FUNC_BODY donor splice of the IDO 7.1 NCC (C++) donor
@@ -2445,11 +2265,7 @@ void CourseMarker_readParms(char *a0) {
  * Combined init phase config slots span:
  *   arg0->0x2C, 0x30: arg pointers (entity refs)
  *   arg0->0xA0..0xDC: ~16 float constants (gameplay tunables)
- *   arg0->0x4DC: counter/state init = 3
- *
- * Multi-tick refinement target — the C body would be ~150 lines of
- * sequential field assignments. Large-but-tractable for next decomp
- * pass. Default INCLUDE_ASM build matches the (yay0-compressed) ROM. */
+ *   arg0->0x4DC: counter/state init = 3 */
 extern char D_44F4_iterA_t, D_44F4_iterA_p, D_44F4_iterA_f, D_44F4_iterB_t, D_44F4_iterB_p, D_44F4_iterB_f, D_44F4_iterC_t, D_44F4_iterC_p;
 extern char D_44F4_iterD_t, D_44F4_iterD_p, D_44F4_iterD_f, D_44F4_iterE_t, D_44F4_iterE_p, D_44F4_iterE_f, D_44F4_iterF_t, D_44F4_iterF_p;
 extern char D_44F4_iterG_t, D_44F4_iterG_p, D_44F4_iterH_t, D_44F4_iterH_p, D_44F4_iterH_f, D_44F4_iterI_t, D_44F4_iterI_p, D_44F4_iterI_f;
@@ -2537,29 +2353,29 @@ void *SnowAI_ctor(char *a0, int a1, int a2) {
 
     /* Stage 1: allocate main object if not provided */
     if (a0 == NULL) {
-        a0 = (char*)gl_func_00000000(0x4E0);
+        a0 = (char*)CALL(mem_new)(0x4E0);
         if (a0 == NULL) goto epi;
     }
 
-    /* Stage 2: init main from template at D[0x6D0]; set parent ptr */
-    gl_func_00000000(a0, (char*)&D_00000000 + 0x6D0);
+    /* Stage 2: the Node base (name at D[0x6D0]); then the SnowAI vtable at +0x28 */
+    CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x6D0);
     *(char**)(a0 + 0x28) = &D_00000000;
 
     /* Stage 3: sub-region; alloc failure still runs the finalize phase */
     s1 = a0 + 0xE4;
     if (s1 == NULL) {
-        s1 = (char*)gl_func_00000000(0x3E0);
+        s1 = (char*)CALL(mem_new)(0x3E0);
         if (s1 == NULL) goto finalize;
     }
 
     /* Stage 4: template-head init; alloc(8) failure skips only the stores */
     v1 = s1;
     if (v1 == NULL) {
-        v1 = (char*)gl_func_00000000(8);
+        v1 = (char*)CALL(mem_new)(8);
         if (v1 == NULL) goto skip_head;
     }
-    *(char**)v1 = (char*)&D_00000000 + 0x6D8;
-    *(int*)(v1 + 4) = 0;
+    ((SnowAIParms *)v1)->name = (char*)&D_00000000 + 0x6D8;
+    ((SnowAIParms *)v1)->unk04 = 0;
 skip_head:
 
     {
@@ -2578,16 +2394,18 @@ skip_head:
          * &D base — target reloads lui per access. */
 /* one SnowAIParm: s1 = the embedded SnowAIParms (this + 0xE4); IDX = its SNOWAI_PARM_* index; TMPL_OFF = the
  * Data slot of its 4-char tag (0x6E8 + 4 * IDX); the game_libs parm ctor 0x35B1C(parm, owner, tag, 1), then the
- * float-parm vtable (Data 0x3C8) and the default value */
+ * float-parm vtable (Data 0x3C8) and the default value. The two calls are named by hand (name-placeholder-calls.py
+ * does not see inside a #define): the ROM TextRelocs of SnowAI_ctor's 82 macro jals are 41 x (mem_new,
+ * Parms_addParm), in that order (agent-g run 512) */
 #define INIT_ITER(ID, IDX, TMPL_OFF, FLOAT_EXPR, DB) \
         slot_##ID.p = *(char**)((char*)&DB + (TMPL_OFF)); \
         *s2 = slot_##ID; \
         s0 = (char *)&((SnowAIParms *)s1)->parm[IDX]; \
         if (s0 == NULL) { \
-            s0 = (char*)gl_func_00000000(0x18); \
+            s0 = (char*)CALL(mem_new)(0x18); \
             if (s0 == NULL) goto skip_##ID; \
         } \
-        gl_func_00000000(s0, s1, *s2, 1); \
+        CALL(Parms_addParm)(s0, s1, *s2, 1); \
         ((SnowAIParm *)s0)->vptr = (char*)&DB + 0x3C8; \
         ((SnowAIParm *)s0)->unk14 = 0; \
         ((SnowAIParm *)s0)->value = (FLOAT_EXPR); \
@@ -3713,38 +3531,7 @@ void *SnowAI_aimWeave(char *arg0) {
 
 /* (The cfe NM body of SnowAI_aimWeave was removed in agent-g run 506; git e6043cf4d has it.) */
 
-// SnowAI_isRivalInPath_000097EC — STRUCTURAL PASS (0x39C / 231 words,
-// no episode). Raw-.word USO form (single function, game_uso main
-// game-logic segment). FP-heavy (33 FP ops, ~6 calls).
-//
-// Multi-point ground/height-contact query: for several reference
-// points on an object, raycast/sample the terrain and store the
-// flattened contact position (snowboard ground-contact sampling).
-//
-//   void SnowAI_isRivalInPath_000097EC(Obj *obj, A a1) {
-//     World *w = obj->0x30;
-//     if (!w->0x908) return;                              // no terrain
-//     // repeated unit (~4-5x), once per reference point:
-//     //   r = func_00000000(0xC, &w->0x318[k], &sp.scratch);
-//     //   if (r) {                                        // hit
-//     //     dst->x = scratch[0];  dst->y = 0.0f;          // flatten Y
-//     //     dst->z = scratch[2];
-//     //   }
-//     //   k advances; dst is the next contact-point slot.
-//   }
-//
-// Struct-typing reference:
-//   obj->0x30 = World/terrain ctx; w->0x908 = terrain-loaded flag;
-//   w->0x318 = base of reference-point records (per-point input to
-//     the op-0xC raycast). func_00000000(0xC, point, &out) = the USO
-//     terrain height/raycast query (op code 0xC); out Vec3 -> the
-//     object's contact-point array with Y zeroed (XZ-plane contact).
-//   sp+0xF4 / sp+0x100 = result scratch. a1 = a secondary param.
-// Caps: raw-word USO + placeholder calls + 231-word FP loop — not
-//   exact-matchable without proper USO mnemonic disasm; structural
-//   pass only, no byte body.
-// Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
-/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_uso/game_uso_ncc_97EC.cpp,
+/* SnowAI_isRivalInPath_000097EC (0x39C): EXACT via an IDO 7.1 NCC (C++) donor: src/game_uso/game_uso_ncc_97EC.cpp,
  * REPLACE_FUNC_BODY-spliced over the placeholder below in both build trees
  * (agent-g run 237). */
 int SnowAI_isRivalInPath_000097EC(char *a0) {
@@ -4229,34 +4016,12 @@ skip3:
 //     (bit 0x2 cleared each step), 0xB4/0xB8/0xBC a transform Vec3,
 //     0x38/0x54/0x84 f32 state. const 250.0f. func_00000000 = USO
 //     placeholder dispatcher (sample / query).
-// State 2026-06-23: 78.55% -> 89.54% (objdiff fuzzy). Structural
-//   bugs FIXED this pass:
-//   (1) FP clamp `f0 = f0 + 250.0f*x` -> compound `f0 += 250.0f*x`
-//       gives IDO's const-first operand order (mtc1 const; lwc1 x;
-//       mul) + `add.s f0,f0,prod` (was operand-swapped). [line-109
-//       FP-compound-assign lever]
-//   (2) scaled = w->0x318[i]*s computed via 3 temp scalars
-//       (mx/my/mz) THEN stored -> grouped lwc1/lwc1/lwc1 then
-//       mul.s f2/f12/f14 (exact target reg/eval order). Per-element
-//       store-immediately interleaved load/mul/store (wrong).
-//   (3) `w` re-derefed inline (`*(char**)(obj+0x30)` twice, no held
-//       local) -> target's TWO `lw,48(a0)` (t6 for tbuf copy, v0 for
-//       scale) instead of a single cached load.
-// RESIDUAL CAP (frame-spread coloring): build frame -0x80 vs target
-//   -0x98 (6 words short). Target interleaves the v0/a1arg/a2 call-
-//   spill slots AMONG the 4 Vec3 buffers (scaled 0x50, copy1 0x64,
-//   tbuf 0x7C, copy2 0x8C w/ gaps); our build packs the buffers
-//   contiguously + spills low. Every downstream sp-offset then
-//   cascades (the remaining ~88 "other" diffs are all same-opcode
-//   offset shifts, NOT structure). Permuter base score 1705, NOT
-//   beaten across 500 iters (randomize/reorder-decl/temp-for-expr/
-//   commutative) -> genuine slot-allocation cap. .text-only ROM gate
-//   would land IF the frame matched; it does not. Left NM at 89.54%.
-//   Name pre-checked: no extern reuse.
-/* SnowAI_scanNodes — EXACT 117/117 words (self-verified clean rebuild of
- * build/non_matching/src/game_uso/game_uso.c.o, 0 diffs vs
- * asm/nonmatchings/game_uso/game_uso/SnowAI_scanNodes.s; jal words
- * 0x0C000000 both sides). Was the "frame-spread coloring cap" NM at 90.01%.
+// Levers kept from the decode: the FP clamp is the compound `f0 += 250.0f*x`
+//   (const-first operand order); scaled = w->0x318[i]*s goes through three
+//   temp scalars before the stores; `w` is re-read inline (the target's two
+//   `lw 48(a0)`).
+/* SnowAI_scanNodes — EXACT 117/117 words; the interleaved call-spill slots
+ * among the four Vec3 buffers come from the levers below.
  *
  * PREREQUISITE (outside this body): the SnowAI_findNearestMarker_0000A374 DEFINITION
  * (line ~8425) must be converted from ANSI `(int a0, int a1, int a2)` to K&R
@@ -6142,12 +5907,6 @@ void RiderAnim_checkBrake_0000D8A8(char *a0) {
 }
 
 /* RiderAnim_checkJump_0000D8EC: 56-insn dispatch + 3-call wrapper.
- * NATURAL CEILING via C-shape (branch layout + post-call reload). The
- * remaining caller-slot spill + D-base scheduling family cap (same as
- * D7F4/D8A8) was previously promoted via Makefile SUFFIX_BYTES_FORCE/
- * INSN_PATCH — both REMOVED 2026-05-23 as match-faking (per
- * feedback_no_instruction_forcing_matches_policy). Default build is
- * INCLUDE_ASM.
  *
  * Mixed control flow:
  *   if (a0->[0xB4]->[0x938] == 0) {  ; v1->[0x938] gate
@@ -6894,15 +6653,8 @@ void RiderAnim_setHitKind_0000EDCC(int *a0, int a1) {
  * else-if chain (20% match). WITHOUT v0=0 pre-init, IDO emits redundant
  * `or v0, zero, zero` in the default arm before/after the jump (70.95%).
  *
- * NATURAL CEILING: high-NM (the case-fall-through C + v0=0 pre-init gets
- * IDO to emit a sltiu+jumptable shape). The remaining diff is on the
- * jumptable `lui/lw` pair: C emits a local .rodata table at +0x4 while
- * target raw-asm bytes address +0x224. Was previously documented as
- * "Exact via Makefile INSN_PATCH" patching the lui/lw HI16/LO16 pair —
- * INSN_PATCH REMOVED 2026-05-23 as match-faking (per
- * feedback_no_instruction_forcing_matches_policy). The explicit char-
- * pointer add keeps IDO from folding the final `addiu v1, v1, 0xA14`
- * into the store. Default build is INCLUDE_ASM.
+ * The explicit char-pointer add keeps IDO from folding the final
+ * `addiu v1, v1, 0xA14` into the store.
  *
  * a2 is an unused 3rd arg saved to caller arg-slot at sp+0x8 by IDO arg-
  * save (per docs/IDO_CODEGEN.md#feedback-ido-unused-arg-save). */
@@ -6936,14 +6688,7 @@ void RiderAnim_stateStopped(void *a0) {
  *   X(a0, a0->0xFC, 0, 1, 1, 1);
  *   X(a0, D[0xE98], D[0xE9C], 1, ...); X(a0);
  * beql: ==0 case (|=0x1D) load in delay slot. USO: call->func_00000000,
- * data->&D_00000000+off.
- *
- * NATURAL CEILING: C emits the correct control flow but IDO misses the
- * target's outgoing a1/a2 stack spills and picks different scratch regs
- * in the D+0xE98 call tail. Was previously promoted to byte-exact via
- * Makefile INSN_PATCH + SUFFIX_BYTES_FORCE — both REMOVED 2026-05-23 as
- * match-faking (per feedback_no_instruction_forcing_matches_policy).
- * Default build is INCLUDE_ASM. */
+ * data->&D_00000000+off. */
 extern char game_uso_D_807FF488;
 void RiderAnim_stateSwitchStance(int *a0) {
     int a1;
@@ -7183,18 +6928,9 @@ void RiderAnim_stateTrickAir(int *a0) {
  * (`extern void RiderAnim_holdJumpLift_0000E2D0(char *);` near func_00010128) REMOVED,
  * so the 3-arg call above is legal (extras unchecked, materialize a1/a2). */
 
-/* RiderAnim_stateTrickEnd: 30-insn state-init.
- * NATURAL CEILING: ~70% NM. The inlined `flags_ptr`/`sub` derefs drive
- * t7/t8/t9/t1/t0 regalloc to match the target; the remaining diff is
- * (a) 10 insns at 0x38..0x6C reshaping the 2nd-call D-base + tail to add
- * cross-USO varargs spills `sw a1, 0x4(sp)` / `sw a2, 0x8(sp)`, and
- * (b) 8 trailing bytes for the jr-ra+nop epilogue. Both were previously
- * documented as INSN_PATCH + SUFFIX_BYTES_FORCE (the family-cap recipe,
- * same as 10B38/10E2C) — REMOVED 2026-05-23 as match-faking (per
- * feedback_no_instruction_forcing_matches_policy). Default build is
- * INCLUDE_ASM. */
-/* MATCHED via struct-by-value arg-home: D[0xDF0]/D[0xDF4] pair passed as
- * `*(Pair2*)(&D+0xDF0)` homes a1,a2 to sp+4/sp+8. */
+/* RiderAnim_stateTrickEnd: 30-insn state-init. Matched via struct-by-value
+ * arg-home: the D[0xDF0]/D[0xDF4] pair passed as `*(Pair2*)(&D+0xDF0)` homes
+ * a1,a2 to sp+4/sp+8. */
 void RiderAnim_stateTrickEnd(int *a0) {
     RA(a0)->trickPhase = 2;
     if (RA(a0)->curTrick->flags & TRICK_FLAG_HALF_TURN) {
@@ -7210,12 +6946,7 @@ void RiderAnim_stateTrickEnd(int *a0) {
  * gl_func_0(a0); a0->0xB4->0xA68 = 1; check (a0->0xB4)->0x800->0x10 & 0x200:
  *   if set:  gl_func_0(a0); gl_func_0(a0, 1, 1);
  *   else:    gl_func_0(a0, D[0xED8], D[0xEDC]);
- * gl_func_0(a0). NATURAL CEILING: the C body gives the correct branch
- * layout but cannot reach the target's caller-slot D-pair spills and
- * epilogue. Was previously promoted via the game_uso call-tail recipe
- * (Makefile SUFFIX_BYTES_FORCE + INSN_PATCH) — both REMOVED 2026-05-23
- * as match-faking (per feedback_no_instruction_forcing_matches_policy).
- * Default build is INCLUDE_ASM. */
+ * gl_func_0(a0). */
 void RiderAnim_stateTrickWindup(int *a0) {
     int *p2;
     CALL(RiderAnim_stateTrickAir)(a0);
@@ -7381,16 +7112,7 @@ void RiderAnim_stateResumeRide(int a0) {
 }
 
 /* RiderAnim_stateCrashRecover: 30-insn dispatcher with conditional gate.
- * NATURAL CEILING: 89.90% NM. Same family-cap shape as
- * 10E2C/10B38/F49C: the 3rd-call tail needs separate addiu+lw+lw form
- * + cross-USO varargs spills (`sw a1, 0x4(sp)` / `sw a2, 0x8(sp)`),
- * 8-byte jr-ra+nop epilogue, and a branch immediate at 0x28 (built +0xE
- * for short body vs target +0x10 after extension). Was previously
- * promoted via 12-insn INSN_PATCH + SUFFIX_BYTES_FORCE — both REMOVED
- * 2026-05-23 as match-faking (per
- * feedback_no_instruction_forcing_matches_policy). Default build is
- * INCLUDE_ASM. */
-/* MATCHED via struct-by-value arg-home: D[0xE40]/D[0xE44] pair passed as
+ * Matched via struct-by-value arg-home: the D[0xE40]/D[0xE44] pair passed as
  * `*(Pair2*)(&D+0xE40)` homes a1,a2 to sp+4/sp+8. */
 void RiderAnim_stateCrashRecover(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
@@ -7400,15 +7122,7 @@ void RiderAnim_stateCrashRecover(int *a0) {
     }
 }
 
-/* RiderAnim_startCrashSlide_0000FB7C: 31-insn 3-call dispatcher.
- * NATURAL CEILING: 79.97% NM. Same family-cap shape as 10E2C/10B38/F49C/
- * FB04: the 2nd-call D-base + tail needs cross-USO varargs spills
- * (sw a1@4(sp), sw a2@8(sp)) and the s0-restore delay-slot trick
- * (or a0,s0,0; sw 0,0x114(s0) before lw ra/s0), plus an 8-byte jr-ra+
- * nop epilogue. Was previously promoted via 14-insn INSN_PATCH +
- * SUFFIX_BYTES_FORCE — both REMOVED 2026-05-23 as match-faking (per
- * feedback_no_instruction_forcing_matches_policy). Default build is
- * INCLUDE_ASM. */
+/* RiderAnim_startCrashSlide_0000FB7C: 31-insn 3-call dispatcher. */
 void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
     int v = a0[0xFC/4] | RANIM_CRASH_SLIDE;
     a0[0x108/4] = v;
@@ -7424,25 +7138,11 @@ void RiderAnim_blendTurn_0000FBF8(int *a0) {
         *(int*)((char*)*(int**)((char*)a0 + 0xB4) + 0x970), 0, 1);
 }
 
-/* RiderAnim_startOllie_0000FC34: 52-insn (0xD0) FPU-heavy 3-jal orchestrator. 96.6% NM.
- * BREAKTHROUGH 2026-05-30: the two pair-arg calls (D+0xE10, D+0xE20) are now
- * `*(Pair2*)(&D+off)` BY VALUE — the by-value struct both clusters the base AND
- * homes a1/a2 to sp+4/sp+8, cracking BOTH the cluster-form AND the precall-spill
- * residuals at once (82.5->96.6%). The old "register-pressure cap" diagnosis was
- * WRONG — it was the wrong C shape (separate int args). Remaining ~2 residuals:
- * the field_770 single-field base-fold (`lwc1 1920(v1)` vs `addiu a3,v1,1904;
- * lwc1 16(a3)`) + an FP-reg cascade in the double mul/add (f2/f4 choice for `v`)
- * — ugen FP-scheduling, not coloring. */
 extern int gl_func_00000000();
 extern char D_00000000;
-/* RiderAnim_startOllie_0000FC34: EE84-family state setter (52 insns, 0xD0). ~89% NM.
- * 2026-06-21 (call-graph DFS): callees corrected from the cross-USO placeholder
- * gl_func_00000000 (+ pairs from &D_00000000) to the resolved in-TU symbols
- * RiderAnim_setNextState_0000D5BC (pair-copy, now homing via the Pair2-by-value
- * prototype flip), import_0010DB28 (logger), RiderAnim_setState_0000D5F8 (pair-sink)
- * and the real globals game_uso_D_807FFB68/400/410. The D5BC/D5F8/logger half
- * now matches byte-for-byte.
- * 2026-07-18 (agent-g, 89.38->97.96): three levers landed together:
+/* RiderAnim_startOllie_0000FC34: EE84-family state setter (52 insns, 0xD0), EXACT.
+ * The two pair-arg calls (D+0xE10, D+0xE20) pass `*(Pair2*)(&D+off)` BY VALUE
+ * (clusters the base and homes a1/a2 to sp+4/sp+8). Other levers:
  *   (1) do-while(0) BB-break between field_31C's def and its load+store uses
  *       blocks the same-BB base+offset fold -> target's `addiu v0,v1,0x31C;
  *       lwc1/swc1 0(v0)` (docs #goto-mid-ptr-fold-block, 65060 kit).
@@ -7682,41 +7382,11 @@ void RiderAnim_stateHopStart(int *a0) {
  *   }
  *   // (no else for the float-compare — bc1fl annulled the bc1fl arm)
  *
- * Multi-tick byte-matching pending. Many tricky pieces:
- *   - bc1fl branch-likely with delay slot annulment
- *   - Multiple O32 shadow-arg spills (sw a1, 4(sp); sw a2, 8(sp))
- *     between gl_func calls (matches sibling 0x10068's style)
- *   - 6-arg stack-arg-spill calls (call C-1/C-2/C-3) with stack slots
- *     at sp+0x10 and sp+0x14
- *   - Branch-likely inside float-compare arm
- *
- * 2026-05-31: 73.8%->79.0% by INLINING a0->0xB4 (outer) at each use instead of
- * caching it in a local — the target reloads a0->0xB4 per access (the cache forced an
- * extra saved-reg + frame slot). Sibling RiderAnim_stateHopStart (the shared
- * outer->0x800->0x18&0x400 pattern) is now 100%.
- * 2026-06-21: 79.0%->97.90% (COUNT-EXACT 112=112; residual = PURE v0/v1 + t-reg
- * renumber, every remaining diff is a register name only). The over-production was
- * THREE structural bugs, NOT the claimed regalloc cap: (1) every 6-arg C-call
- * (import_DB28) had a spurious leading `0` arg, pushing 5,5/1,1 down a slot and
- * inflating the frame; the calls are (a0, a0->0xFC|0x19, a2, a3, sp16, sp20).
- * (2) the inner==0 path is NOT a separate (0,0)-arg call — it FALLS THROUGH to the
- * &1==0 body (args 5,5,0x100,10), so the guard is `(inner != 0) && (inner->0x38&1)`.
- * (3) the float-compare `>= 1000.0f` has a REAL else (bc1fl .L10254): C-call args
- * 2,3,1,1 then gl_func(a0,&D+0xDF0,3) (D5F8) + gl_func(a0) (D5DC) — those two run
- * ONLY on the >=1000 arm, not unconditionally. Both arms converge to E5C8(a0,0) +
- * E35C(a0)->v0 + v0==0 tail. Residual v0/v1 placement = coloring cap.
- * 2026-06-21 (agent-e): 79%->94.29% raw-word (count-exact 105=105). Naming the
- * `outer->0x800` deref as a local `mid` (outer stays inlined) keeps the flag-test
- * chain TIGHT at v0/v1+t8/t9 and pulls the D-base to $8 — matching the target's
- * register shape for ALL of the function EXCEPT the outer<->mid v0/v1 PAIR: the
- * target colors `outer` (the a0->0xB4 reload) into $v0 and `mid` into $v1; the
- * named `mid` web always claims $v0 instead, pushing the inline `outer` reload to
- * $v1. Exhaustively floored (agent-e, 14 src variants): naming outer instead
- * collapses the chain (climbs to $24/$25, 36 diffs); naming both, register-kw,
- * inner-scope, embedded-assign (mid=(outer=..)[..]), leaf-field-name, held-outer
- * (spills, +1 frame) all leave the same outer<->mid v0/v1 web tie. Permuter is
- * inapplicable (raw-.word USO asm, no mnemonic/reloc form). Genuine spilltemp-web
- * coloring cap (the named pointer web's $v0 claim is unreachable from C). */
+ * Shape notes from the decode: a0->0xB4 (the rider) is re-read at each use, not
+ * cached; the 6-arg AnimPlayer calls are (a0, anim, a2, a3, sp16, sp20); the
+ * inner == 0 path falls through to the &1 == 0 body, so the guard is
+ * `(inner != 0) && (inner->0x38 & 1)`; the `>= 1000.0f` test has a real else.
+ * The input word is named (`mid`) so the flag tests stay in v0/v1. */
 extern char game_uso_D_807FF3D0;
 extern char game_uso_D_807FF3D8;
 extern char game_uso_D_807FF3E0;
@@ -7767,9 +7437,7 @@ void RiderAnim_stateHopRise(int *a0) {
     }
 }
 
-/* RiderAnim_stateHopAir — verified EE84-family decode (29%, LEN-DIFF 72/79;
- * branch-likely + float short-circuit + D-pair stack-args cap → <80 so
- * INCLUDE_ASM build path; PATTERNS.md EE84-family template). Structure:
+/* RiderAnim_stateHopAir — EE84-family state (PATTERNS.md EE84-family template). Structure:
  *   func_00000000(a0);                                    // X1
  *   func_00000000(s0, s0->0xFC | 0x19, 3, 4, 2, 1);       // X2 (6 args; 2,1 @sp)
  *   v0 = (int*)s0->0xB4;
@@ -8196,22 +7864,8 @@ void RiderAnim_stateTimeUp(int *a0) {
  * 240/240 bytes identical to expected/.o.
  *
  * RiderAnim_stateFinish: 60-insn 4-way dispatcher, 0xF0 size, frame 0x18.
- * 61.23% NM (up from 12.33% stub). Re-decoded 2026-05-05 — prior wrap doc
- * had 2 errors:
- *   - "t7 == 0" branch used `t8->0x64` (wrong); asm reads `D[0x64]` directly.
- *   - "t7 == 2" branch claimed D[0xF38]; actually D[0x64] threshold gates
- *     between D[0xF30] and D[0xF38] (under flag==1 && D[0x7C]==0).
  *
- * Remaining ~39pp gap is precall-arg-spill class (per
- * `feedback_ido_precall_arg_spill_unreachable.md`): expected emits
- * `sw a1, 4(sp); sw a2, 8(sp)` outgoing-arg-slot stores around each of the
- * 4 jals (8 extra insns), AND uses a single t9 base register set up via
- * `lui+addiu` for both `a1=base[0]` and `a2=base[1]` loads. Build folds
- * to per-load lui+lw immediate. BNEL vs BNE for the flag check is also
- * a related codegen-shape diff. Same class as RiderAnim_stateTimeUp
- * (sibling at 82.17% cap).
- *
- * Corrected dispatch (asm 0x11168-0x11254):
+ * Dispatch (asm 0x11168-0x11254):
  *
  *   gl_func_00000000(a0);                            // unconditional pre-call
  *   flag = a0->0xB4->0xA54;
@@ -8231,15 +7885,10 @@ void RiderAnim_stateTimeUp(int *a0) {
  *       gl_func_00000000(a0, D[0xF38+0], D[0xF38+4], 1);
  *   }
  *
- * The 4 inner calls share signature (a0, Pair2-by-value, 1). The target's
- * `sw a1,4(sp); sw a2,8(sp)` outgoing home-stores are NOT a "precall-arg-spill
- * cap" (feedback_ido_precall_arg_spill_unreachable was WRONG): they come from
- * passing the adjacent int pair AS A STRUCT BY VALUE — `gl_func(a0, *(Pair2*)p,
- * 1)`. IDO places the 2-int struct in a1,a2 AND homes them to sp+4/sp+8, exactly
- * matching the target. Two separate int args (p[0],p[1]) do NOT home them.
- * This lifted 61.2% -> 93.92% (2026-05-28). Residual ~6% is a $v0-vs-$v1 &D-base
- * register-renumber (target holds &D in $v0; single-base-pointer local
- * regressed). See docs/IDO_CODEGEN.md struct-by-value-homes-arg-pair. */
+ * The 4 inner calls share signature (a0, Pair2-by-value, 1): the target's
+ * `sw a1,4(sp); sw a2,8(sp)` outgoing home-stores come from passing the
+ * adjacent int pair AS A STRUCT BY VALUE (two separate int args do not home
+ * them). See docs/IDO_CODEGEN.md struct-by-value-homes-arg-pair. */
 void RiderAnim_stateFinish(int *a0) {
     CALL(RiderAnim_stateStand)(a0);
 
@@ -8342,10 +7991,7 @@ void RiderAnim_stateEnding3(int *a0) {
 }
 
 /* RiderAnim_stateStartIntro: 39-insn — a1 = ((u)a0->0xB4->0x8C4 % 5)+10 | 0x70000;
- * then 3 USO calls with D[] arg-pairs (same family as RiderAnim_stateSwitchStance).
- * NATURAL CEILING: 83.18% NM. Cap: target uses base-register form for the
- * D-pair calls + caller-slot spills around them. SUFFIX_BYTES_FORCE +
- * INSN_PATCH promotion was REMOVED 2026-05-23 as match-faking. */
+ * then 3 USO calls with D[] arg-pairs (same family as RiderAnim_stateSwitchStance). */
 void RiderAnim_stateStartIntro(int *a0) {
     int v = (int)((unsigned int)((int *)a0[0xB4 / 4])[0x8C4 / 4] % 5U);
     int a1 = (v + RANIM_START_INTRO) | RANIM_GROUP_EVENT;
@@ -8515,18 +8161,10 @@ void RiderAnim_clearTricks_00011888(int *a0) {
     RA(a0)->spinKind = 0;
 }
 
-/* RiderAnim_hitFeedback_0001189C — verified decode, 77/78 (99%), single-insn blocker.
- * Dense switch(a1) 1..5; each case: func_00000000((s0->0xB4)->0x800,
- * &D+off_k, 10); func_00000000((s0->0xB4)+0x808, s1). off_k =
- * {0x109C,0x10AC,0x10A4,0x10C0,0x10DC}. The C switch is byte-exact EXCEPT
- * 0x030: target `lw t6,608(at)` (jtbl @ D_00000000+0x260, inside the USO
- * data blob) vs IDO-emit `lw t6,0(at)` (IDO synthesizes its own .rodata
- * jump table at reloc offset 0). This is the documented unmatchable-via-C
- * USO case: docs/IDO_CODEGEN.md#feedback-ido-switch-rodata-jumptable —
- * 1080's linker discards .rodata so the IDO jtbl can't even link, and the
- * goto-chain recipe doesn't apply (target is a genuine jr-jumptable, not a
- * beq chain). NM wrap; INCLUDE_ASM build path (no episode; the .rodata
- * jtbl C neither links nor byte-matches — tautology-trap rule). */
+/* RiderAnim_hitFeedback_0001189C: hit kind a1 = 1..5 (a jump table at D+0x260): a pad
+ * record on the rider's input (pad_set(rider->input, &D+off_k, 10), off_k =
+ * {0x109C, 0x10AC, 0x10A4, 0x10C0, 0x10DC}) and a sound event on the rider's SndHandle
+ * (rider + 0x808) with a2. */
 void RiderAnim_hitFeedback_0001189C(int *a0, int a1, int a2) {
     int *s0 = a0;
     int s1 = a2;
