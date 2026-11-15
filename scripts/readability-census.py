@@ -14,13 +14,16 @@ Measures (per segment = src/<segment>/ or the report.json unit's segment):
     weak (`<Kind>_func_<addr>`, `<Kind>_vfnN_<addr>`, `<Kind>_vslotN_<addr>`: the class/area
     is known, the role is not), real (everything else, address-suffixed or not).
   * Calls (scripts/name-placeholder-calls.py scan): CALL/FCALL/GCALL/XCALL-named sites vs raw
-    placeholder call sites left, in compiled code.
+    placeholder call sites left, in compiled code (address tokens such as game_uso_func_055750
+    count as placeholders since run 520).
   * Data sites (scripts/uso-data-sites.py, bootup.uso Text = game_libs + bootup_uso, ROM relocs):
     LO16 sites on named objects / on section bases; provable raw sites left (`convert` and
     `spell-base` dry-run plans); source spellings (GL_*_STR, GL_*, sStr_/sFmt_/sTag_, kRo_, raw
     `&D_00000000`).
   * Raw struct offsets in compiled code: `*(T *)(expr + K)` casts and uses of offset-accessor
     macros (any `#define NAME(p, o ...)` whose body is `*(T *)((char *)(p) + (o))`, e.g. FW / FF).
+    Per file for the C++ donors (.cpp), and the top N functions by raw-site count with their
+    owner area (owner(): b / c / g / h / a, run 520).
   * Globals: distinct `D_<8 hex>` names (not the D_00000000 sentinels) in compiled code.
   * Headers: include/ headers and the struct / union / class definitions in them.
   * Dead code: never-compiled `#if 0` / undefined-macro blocks (scripts/deadblocks.py).
@@ -185,9 +188,10 @@ def accessor_macros():
     return names
 
 
-def raw_offsets(code, acc_re):
-    """Count `*(T *)(expr + K)` casts (not data-placeholder sites) and accessor-macro uses."""
-    n_cast = 0
+def raw_offset_sites(code, acc_re):
+    """Positions of `*(T *)(expr + K)` casts (not data-placeholder sites) and of accessor-macro
+    uses: ([cast pos], [accessor pos])."""
+    casts = []
     for m in CAST_RE.finditer(code):
         i, depth = m.end(), 1
         while i < len(code) and depth:
@@ -195,9 +199,55 @@ def raw_offsets(code, acc_re):
             i += 1
         inner = code[m.end():i - 1]
         if TAIL_OFF.search(inner) and 'D_00000000' not in inner and 'gl_data' not in inner:
-            n_cast += 1
-    n_acc = len(acc_re.findall(code)) if acc_re else 0
-    return n_cast, n_acc
+            casts.append(m.start())
+    accs = [m.start() for m in acc_re.finditer(code)] if acc_re else []
+    return casts, accs
+
+
+def raw_offsets(code, acc_re):
+    """Count `*(T *)(expr + K)` casts (not data-placeholder sites) and accessor-macro uses."""
+    c, a = raw_offset_sites(code, acc_re)
+    return len(c), len(a)
+
+
+def block_names(m):
+    """[(open, close, name)] for file-scope brace blocks: functions by their (Class::)name, other
+    blocks (C++ class bodies with inline members, initialisers) as `<struct X>` / `<block>`."""
+    out = []
+    for boundary, op, cl in NPC.top_blocks(m):
+        h = m[boundary:op]
+        if re.fullmatch(r'\s*(?:extern\s*|namespace\s+\w*\s*)', h):
+            # `extern "C" { ... }` (the string is masked) / namespace: name the blocks inside
+            out += [(o + op + 1, c + op + 1, n) for o, c, n in block_names(m[op + 1:cl])]
+            continue
+        f = re.search(r'((?:\w+\s*::\s*)*~?[A-Za-z_]\w*)\s*\(', h) if ')' in h and '=' not in h else None
+        if f:
+            name = re.sub(r'\s+', '', f.group(1))
+        else:
+            k = re.search(r'\b(?:struct|union|class)\s+(\w+)', h)
+            name = f'<{k.group(0).split()[0]} {k.group(1)}>' if k else '<block>'
+        out.append((op, cl, name))
+    return out
+
+
+AUDIO_FN = re.compile(r'(?:\w+::)?(?:Audio|snd_|Snd|Note_|Seq_)\w*')
+HOME_H = re.compile(r'^src/(?:bootup_uso|titproc_uso|arcproc_uso|mgrproc_uso|h2hproc_uso|timproc_uso_b1|timproc_uso_b3)/'
+                    r'|^src/game_libs/game_libs(?:_tail)?\.c$')
+
+
+def owner(path, func):
+    """Area owner for the readability phase (coordinator's table, run 520): b = game_libs_post0b /
+    post1b*; c = timproc_uso_b5* and the audio driver; g = game_uso; h = bootup_uso / titproc /
+    game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; a = everything else."""
+    if re.search(r'/game_libs_post(?:0b|1b)', path):
+        return 'b'
+    if path.startswith('src/timproc_uso_b5') or AUDIO_FN.fullmatch(func):
+        return 'c'
+    if path.startswith('src/game_uso/'):
+        return 'g'
+    if HOME_H.search(path):
+        return 'h'
+    return 'a'
 
 
 D_NAME = re.compile(r'\bD_([0-9A-Fa-f]{8})\b(?!_)')
@@ -289,6 +339,7 @@ def main():
 
     calls = collections.defaultdict(collections.Counter)
     offs = collections.defaultdict(collections.Counter)
+    fn_off = collections.Counter()          # (file, function) -> raw sites (casts + accessor uses)
     seg_off = collections.defaultdict(collections.Counter)
     dnames = collections.defaultdict(set)
     spell = collections.Counter()
@@ -297,11 +348,18 @@ def main():
         live = live_mask(src, p.endswith('.cpp'), defined)
         m = NPC.mask(live)
         seg = segment_of(p)
-        sites, _ = NPC.scan(live, m)
+        # address tokens (game_uso_func_055750(...)) are placeholder calls too (run 520)
+        sites, _ = NPC.scan(live, m, extra=NPC.addr_tokens(p))
         for s in sites:
             calls[seg]['named' if s.name else 'left'] += 1
         # C code without the preprocessor lines (masked), but keep string text out too
-        nc, na = raw_offsets(m, acc_re)
+        cpos, apos = raw_offset_sites(m, acc_re)
+        nc, na = len(cpos), len(apos)
+        if cpos or apos:
+            blks = block_names(m)
+            for pos in cpos + apos:
+                b = next((x for x in blks if x[0] < pos < x[1]), None)
+                fn_off[(p, b[2] if b else '<file scope>')] += 1
         offs[p]['cast'] += nc
         offs[p]['macro'] += na
         seg_off[seg]['cast'] += nc
@@ -361,6 +419,22 @@ def main():
     worst = sorted(offs.items(), key=lambda kv: -(kv[1]['cast'] + kv[1]['macro']))[:top]
     L += tbl(['file', 'casts', 'accessor uses', 'total'],
              [(f'`{p}`', c['cast'], c['macro'], c['cast'] + c['macro']) for p, c in worst if c['cast'] + c['macro']])
+    cpp = sorted(((p, c) for p, c in offs.items() if p.endswith('.cpp') and c['cast'] + c['macro']),
+                 key=lambda kv: (-(kv[1]['cast'] + kv[1]['macro']), kv[0]))
+    ncpp = sum(1 for p in offs if p.endswith('.cpp'))
+    L += ['', f'### Raw struct offsets in C++ donors (.cpp, per file): {len(cpp)} of {ncpp} compiled donors, '
+          f'{sum(c["cast"] + c["macro"] for _, c in cpp)} sites', '']
+    L += tbl(['file', 'owner', 'casts', 'accessor uses', 'total'],
+             [(f'`{p}`', owner(p, ''), c['cast'], c['macro'], c['cast'] + c['macro']) for p, c in cpp])
+    L += ['', f'### Raw struct offsets: top {top} functions', '']
+    wf = sorted(fn_off.items(), key=lambda kv: (-kv[1], kv[0]))[:top]
+    L += tbl(['function', 'file', 'owner', 'raw sites'], [(f'`{f}`', f'`{p}`', owner(p, f), n) for (p, f), n in wf])
+    byown = collections.Counter()
+    for (p, f), n in fn_off.items():
+        byown[owner(p, f)] += n
+    L += ['', 'Owners: b = game_libs_post0b / post1b*; c = timproc_uso_b5* and audio (Audio* / snd_* / Snd* / Note_ / Seq_ '
+          'functions); g = game_uso; h = bootup_uso / titproc / game_libs.c / game_libs_tail / arc / mgr / h2h / tim / trk; '
+          'a = everything else. Raw sites per owner: ' + ', '.join(f'{o} {byown[o]}' for o in 'abcgh') + '.']
     L += ['', '### Headers', '']
     L += tbl(['include/ dir', 'headers', 'struct/union/class defs'],
              [(f'`{d}`', hdr[d], nstruct[d]) for d in sorted(hdr)] +
