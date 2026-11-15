@@ -128,10 +128,11 @@ typedef struct SnowBoarderParms {
     SnowBParm sfr, dts;     /* 0x188, 0x1A0 (+0x6E0: dts, scaled by SnowAI_scaleRiderParms) */
     SnowBParm nts;          /* 0x1B8 (+0x6F8): steering rate; SnowAI_finishRun divides its turn output by it */
     SnowBParm trt;          /* 0x1D0 (+0x720): edgeSteer decay: edgeSteer -= edgeSteer * trt * turnRate */
-    SnowBParm twt, min;     /* 0x1E8, 0x200 */
+    SnowBParm twt, min;     /* 0x1E8, 0x200; twt is an int parm (type Data 0x8060, default 25; the ctor
+                             * writes it as a GdlParm) */
     SnowBParm max;          /* 0x218 (+0x758): max speed; maxSpeed eases toward max.value (SnowBoarder_limitSpeed);
                              * SnowAI_update sets it per rival character from ms1..ms8 */
-    SnowBParm jmp, djp, ufs, bdm, cdm; /* 0x230..0x290 */
+    SnowBParm jmp, djp, ufs, bdm, cdm; /* 0x230..0x290; bdm / cdm are int parms (Data 0x8060, defaults 10 / 15) */
     SnowBParm tch;          /* 0x2A8 (+0x7F8): angVel decay factor while groundFlags & 1 is clear (0.724 otherwise) */
 } SnowBoarderParms;
 
@@ -246,7 +247,11 @@ typedef struct SnowBoarder {
     char *unk860;           /* 0x860: registry slot 33: a bootup-data SkinShape (Data 0xC104, mask bit 2) */
     char *boardNode;        /* 0x864: registry slot 32: the unnamed MNode under "board_a" that holds the board
                              * shape (one of the nine board USOs by board index); may be NULL; transform at +0x30 */
-    char pad868[0x874 - 0x868];
+    char *dispTrails;       /* 0x868: Node "DispTrails" (ctor, flags & 3): appended to the display root's +0x84 list with
+                             * doFlags &= ~8; holds the 0x23C and the two 0x174 trail emitters (agent-h run 529) */
+    char *dispSpray;        /* 0x86C: Node "DispSpray" (ctor, flags & 3; root list +0x88, doFlags &= ~8): holds the
+                             * 0x1F4 emitter built when flags & 1; each emitter's draw slot 10 gets (trails, dispSpray) */
+    char *trails;           /* 0x870: Node "Trails", an MNode child of the rider (doFlags &= ~4) the emitters attach to */
     char *camSource;        /* 0x874: the rider's HEAD node: slot 22 of the shape-file node registry, the unnamed
                              * MNode child of "chest_jnt_2" that carries the head shape (slot 31) (agent-g run 502:
                              * the rider node list at bootup Data 0xABBC);
@@ -255,12 +260,17 @@ typedef struct SnowBoarder {
                              * right after the model is built, like 0x820..0x864 (agent-g run 488).
                              * cam_create passes it as the SnowChaseActorCam source, where a mode-3
                              * (fixed) eye parks */
-    char pad878[0x890 - 0x878];
+    char pad878[0x88C - 0x878]; /* 0x878..0x8B8 is a 0x40 CollObj built in place by coll_boxCtor_0003CAA0 (gdl/coll.h;
+                             * the ctor sets its vptr +0x30 and adds it with CollObjMgr_addDynamic); prevPos / prevVel
+                             * below are its pos / vel */
+    s16 collHitMask;        /* 0x88C: CollObj.hitMask: 4 when flags & 8, else 5 (ctor) */
+    s16 collCategory;       /* 0x88E: CollObj.category: 2 when flags & 8, else 1 */
     SnowBVec3 prevPos;      /* 0x890: pos saved at the start of SnowBoarder_procColl */
     SnowBVec3 prevVel;      /* 0x89C: vel saved at the start of SnowBoarder_procColl */
     char pad8A8[0x8B8 - 0x8A8];
     s32 unk8B8;             /* 0x8B8: bit mask set by the ctor; bits 1 / 4 pick which of unk81C / unk818 gets landImpact */
-    char pad8BC[0x8C0 - 0x8BC];
+    s32 initFlags;          /* 0x8BC: ctor arg 7 | 0x4800, the initial flags (0xA58); SnowBoarder_reset copies it back
+                             * into flags (agent-h run 529) */
     s32 unk8C0;             /* 0x8C0: 1 << character (one-hot mask, set by the ctor) */
     u32 character;          /* 0x8C4: rider character 1..8: ctor arg 2 = game_createPlayers' index + 1; SnowAI_update
                              * picks ms1..ms8 by it; 6 and 7 get special ctor handling and DDCC skips them */
@@ -276,7 +286,9 @@ typedef struct SnowBoarder {
                              * slot 2 with ids 0xD and 6 */
     s16 unk900;             /* 0x900: the rider's own first DDM id (setRiderDdms) when (flags & SNOWB_FLAG_MIRROR) == 0 */
     s16 unk902;             /* 0x902: the same when mirrored */
-    char pad904[0x908 - 0x904];
+    s16 board;              /* 0x904: board index, ctor arg 3 (SnowBoarder_loadBoardModel_0000B1B4's arg 2; SnowBoarder_reset
+                             * picks the board binary path by it) */
+    char pad906[0x908 - 0x906];
     struct SnowBoarder *rival; /* 0x908: the other rider; game_setupVsCpu links the two riders through it,
                                 * B520's catch-up compares positions with it */
     char pad90C[0x910 - 0x90C];
@@ -452,6 +464,11 @@ SNOWB_ASSERT_OFFSET(parms.hpf, 0x548);
 SNOWB_ASSERT_OFFSET(parms.trt, 0x710);
 SNOWB_ASSERT_OFFSET(parms.tch, 0x7E8);
 SNOWB_ASSERT_OFFSET(prevPos, 0x890);
+SNOWB_ASSERT_OFFSET(dispTrails, 0x868);
+SNOWB_ASSERT_OFFSET(trails, 0x870);
+SNOWB_ASSERT_OFFSET(collHitMask, 0x88C);
+SNOWB_ASSERT_OFFSET(initFlags, 0x8BC);
+SNOWB_ASSERT_OFFSET(board, 0x904);
 SNOWB_ASSERT_OFFSET(impactScale, 0x910);
 SNOWB_ASSERT_OFFSET(unk91C, 0x91C);
 SNOWB_ASSERT_OFFSET(penetration, 0x920);
