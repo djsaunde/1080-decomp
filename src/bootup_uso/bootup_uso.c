@@ -6,6 +6,7 @@
 #include "audio.h"
 #include "game/input.h"
 #include "gdl/node.h"
+#include "gdl/light.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -1851,34 +1852,34 @@ void game_createLights(char *s1) {
     c = (char *)func_00000000(0, &D_00007424);
     {
         float k = D_00000524;
-        *(char **)(s1 + 0x90) = c;
+        WORLDREG(s1)->light0 = (s32)c;
         *(float *)(c + 0x12C) = k;
         *(float *)(c + 0x128) = k;
         *(float *)(c + 0x124) = k;
         *(float *)(c + 0x130) = 1.0f;
     }
-    p90 = *(char **)(s1 + 0x90); *(int *)(p90 + 0xD0) = 1;
-    p90 = *(char **)(s1 + 0x90); if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
-    p90 = *(char **)(s1 + 0x90); if (1) { p90 += 0xC4; } *(int *)p90 |= 0x80;
+    p90 = (char *)WORLDREG(s1)->light0; ((BaseLight *)p90)->mask = 1;
+    p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
+    p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x80;
     c = (char *)func_00000000(0, &D_00007434);
-    *(char **)(s1 + 0x94) = c;
+    WORLDREG(s1)->light1 = (s32)c;
     *(float *)(c + 0x130) = 1.0f;
     *(float *)(c + 0x12C) = 1.0f;
     *(float *)(c + 0x128) = 1.0f;
     *(float *)(c + 0x124) = 1.0f;
-    p90 = *(char **)(s1 + 0x94); *(int *)(p90 + 0xD0) = 2;
-    p90 = *(char **)(s1 + 0x94); if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
+    p90 = (char *)WORLDREG(s1)->light1; ((BaseLight *)p90)->mask = 2;
+    p90 = (char *)WORLDREG(s1)->light1; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
     o = (char *)func_00000000(0, &D_00007444);
     vec[0] = 0.0f;
     vec[2] = 0.0f;
     vec[1] = D_00000528;
     func_00000000_2F90_v(o + 0x70, vec);
     c = o; if (1) { c += 0xC4; } *(int *)c |= 0x40;
-    func_00000000_2F90_v(&gGfxLib_2F90_reg, *(int *)(s1 + 0x94));
-    func_00000000_2F90_v(&gGfxLib_2F90_reg, *(int *)(s1 + 0x90));
-    func_00000000_2F90_v(&gGfxLib_2F90_reg, *(int *)(s1 + 0x94));
-    p90 = *(char **)(s1 + 0x90);
-    o = *(char **)(s1 + 0x84);
+    func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
+    func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light0);
+    func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
+    p90 = (char *)WORLDREG(s1)->light0;
+    o = (char *)WORLDREG(s1)->bgRoot;
     func_00000000_2F90_v(o + 0x10, p90);
     if (NODE(p90)->parent != 0) {
         NODE(p90)->unk04 = 1;
@@ -1888,13 +1889,13 @@ void game_createLights(char *s1) {
     if (o != 0) {
         func_00000000_2F90_f(o, &D_00007454, 0.0f, 0.0f, 0.0f);
         k2 = D_0000052C;
-        NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; *(int *)(o + 0x120) = 0xFFFF;
-        *(float *)(o + 0x108) = k2;
-        *(float *)(o + 0x10C) = k2;
-        *(float *)(o + 0x110) = k2;
-        *(float *)(o + 0x124) = 1.0f;
+        NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; ((LightTarget *)o)->mask = 0xFFFF;
+        ((LightTarget *)o)->unk108[0] = k2;
+        ((LightTarget *)o)->unk108[1] = k2;
+        ((LightTarget *)o)->unk108[2] = k2;
+        ((LightTarget *)o)->scale = 1.0f;
     }
-    n2 = *(int *)(s1 + 0x84);
+    n2 = WORLDREG(s1)->bgRoot;
     func_00000000_2F90_v(n2 + 0x10, o);
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
@@ -1977,7 +1978,7 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
             if (p == 0) goto post;
         }
         fn_31c0_init(p, &D_31c0_a);
-        *(void **)(p + 0x28) = &D_31c0_b;
+        NODE(p)->vptr = (s32)(&D_31c0_b);
         m = (int *)(p + 0x2C);
         if (m == 0) {
             m = (int *)fn_31c0_alloc(4);
@@ -2000,45 +2001,45 @@ post:
     case 0:
     case 2:
         h = w = (char *)fn_31c0_A1(0, a3v, obj, 0.0f, 500.0f, 1.0e-20f, p4, &D_31c0_c);
-        r2 = (char *)fn_31c0_A2(0, a3v, *(int *)(a3v + 0x874), &D_31c0_d);
+        r2 = (char *)fn_31c0_A2(0, a3v, (int)SNOWB(a3v)->camSource, &D_31c0_d);
         fn_31c0_link(w, r2);
         *(char **)(w + 0x154) = r2;
         r3 = (char *)fn_31c0_A4(0, w, r2, (char *)&D_31c0_e + 0x7490);
         fn_31c0_link(obj2, r3);
         *(char **)(obj2 + 0xB4) = r3;
-        *(void **)(r3 + 0xC) = &D_31c0_f;
+        NODE(r3)->name = (s32)(&D_31c0_f);
         break;
     case 1:
         e = (char *)fn_31c0_alloc(0x15C);
         if (e != 0) {
             fn_31c0_B2(e, obj, 0.0f, 500.0f, 1.0e-21f);
-            *(void **)(e + 0x28) = &D_31c0_g;
-            *(int *)(e + 0x158) = 0;
-            *(char **)(e + 0x154) = a3v;
-            *(f32 *)(e + 0x150) = *(f32 *)(e + 0x14C);
+            NODE(e)->vptr = (s32)(&D_31c0_g);
+            ((RiderCam *)e)->mode = 0;
+            ((RiderCam *)e)->rider = SNOWB(a3v);
+            ((RiderCam *)e)->baseFov = ((RiderCam *)e)->cam.fov;
         }
         h = e;
         v = (char *)fn_31c0_B3(0, a3v, a3v, &D_31c0_h);
         fn_31c0_link(obj2, v);
-        *(void **)(v + 0xC) = &D_31c0_f;
+        NODE(v)->name = (s32)(&D_31c0_f);
         break;
     }
     fn_31c0_tail(parent + 0x10, h);
-    if (*(int *)(h + 0x14) != 0) {
-        *(int *)(h + 0x4) = 1;
+    if (NODE(h)->parent != 0) {
+        NODE(h)->unk04 = 1;
     }
-    *(char **)(h + 0x14) = parent;
+    NODE(h)->parent = (s32)parent;
     fn_31c0_tail(parent + 0x10, obj2);
-    if (*(int *)(obj2 + 0x14) != 0) {
-        *(int *)(obj2 + 0x4) = 1;
+    if (NODE(obj2)->parent != 0) {
+        NODE(obj2)->unk04 = 1;
     }
-    *(char **)(obj2 + 0x14) = parent;
-    *(f32 *)(obj2 + 0x60) = *(f32 *)(a3v + 0x3A4);
-    *(f32 *)(obj2 + 0x64) = *(f32 *)(a3v + 0x3A8);
-    *(f32 *)(obj2 + 0x68) = *(f32 *)(a3v + 0x3AC);
-    *(f32 *)(h + 0x60) = *(f32 *)(a3v + 0x3A4);
-    *(f32 *)(h + 0x64) = *(f32 *)(a3v + 0x3A8);
-    *(f32 *)(h + 0x68) = *(f32 *)(a3v + 0x3AC);
+    NODE(obj2)->parent = (s32)parent;
+    ((CamMNode *)obj2)->local[3][0] = SNOWB(a3v)->startPos.x;
+    ((CamMNode *)obj2)->local[3][1] = SNOWB(a3v)->startPos.y;
+    ((CamMNode *)obj2)->local[3][2] = SNOWB(a3v)->startPos.z;
+    ((CamMNode *)h)->local[3][0] = SNOWB(a3v)->startPos.x;
+    ((CamMNode *)h)->local[3][1] = SNOWB(a3v)->startPos.y;
+    ((CamMNode *)h)->local[3][2] = SNOWB(a3v)->startPos.z;
     vec2[1] = 0.0f;
     vec2[0] = 0.0f;
     vec2[2] = -1000.0f;
@@ -2570,8 +2571,8 @@ void game_setupVs2P(char *s1, int a1) {
     r2 = func_00000000_3d3cm(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
                              t, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x5C), 0x15);
-    *(char**)(r1 + 0xC) = D_000074E4;
-    *(char**)(r2 + 0xC) = D_000074EC;
+    NODE(r1)->name = (s32)D_000074E4;
+    NODE(r2)->name = (s32)D_000074EC;
     SNOWB(r1)->rival = SNOWB(r2);
     SNOWB(r2)->rival = SNOWB(r1);
     x = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
@@ -2846,11 +2847,11 @@ void Mountain_display(char *a0) {
 }
 
 void cam_func_00004914(char *a0, int a1, char *a2) {
-    *(float*)(a0 + 0x60) = *(float*)(a2 + 0x30);
-    *(float*)(a0 + 0x64) = *(float*)(a2 + 0x34);
-    *(float*)(a0 + 0x68) = *(float*)(a2 + 0x38);
-    *(int*)(a0 + 0x158) = a1;
-    *(float*)(a0 + 0x64) += 100.0f;
+    ((RiderCam *)a0)->cam.mnode.local[3][0] = *(float*)(a2 + 0x30);
+    ((RiderCam *)a0)->cam.mnode.local[3][1] = *(float*)(a2 + 0x34);
+    ((RiderCam *)a0)->cam.mnode.local[3][2] = *(float*)(a2 + 0x38);
+    ((RiderCam *)a0)->mode = a1;
+    ((RiderCam *)a0)->cam.mnode.local[3][1] += 100.0f;
 }
 
 /* cam_func_00004948: camera transition tick keyed by obj->0x158 (snap / distance-table
