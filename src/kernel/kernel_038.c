@@ -1,35 +1,39 @@
 #include "common.h"
+#include "libultra/os_thread.h"
 
-extern s32 D_80003FE0;
-extern s32 D_8000A41C;
-extern s32 func_800066B0(void);
-extern void func_800066D0(s32);
+extern s32 D_80003FE0;          /* __osCleanupThread (thread return address) */
+extern OSThread *D_8000A41C;    /* __osActiveQueue */
+extern s32 func_800066B0(void); /* __osDisableInt */
+extern void func_800066D0(s32); /* __osRestoreInt */
 
-/* osCreateThread */
-void func_80005B10(s32* t, s32 id, void* entry, s32 arg, void* sp, s32 p) {
+/* osCreateThread. STRUCT PROTOTYPE (agent-a run 441): the raw
+ * `*(T*)((char*)t + 0xNN)` stores became OSThread field stores in the SAME
+ * statement order with the SAME access widths -- byte-identical (see
+ * docs/READABILITY_PLAN.md "struct path"). */
+void func_80005B10(OSThread *t, OSId id, void *entry, s32 arg, void *sp, OSPri p) {
     register s32 saveMask;
     /* u32: ROM emits srl (not sra) for (mask & 0x3F0000) >> 16 — the old
      * s32 decl was ONE WORD off ROM (sra), caught in the 2026-06-10 kernel
      * relayout audit. */
     u32 mask;
-    t[5] = id;
-    t[1] = p;
-    t[0] = 0;
-    t[2] = 0;
-    *(s32*)((char*)t + 0x11C) = (s32)entry;
-    *(s64*)((char*)t + 0x38) = (s64)arg;
-    *(s64*)((char*)t + 0xF0) = (s64)(s32)sp - 16;
-    *(s64*)((char*)t + 0x100) = (s64)(s32)&D_80003FE0;
+    t->id = id;
+    t->priority = p;
+    t->next = NULL;
+    t->queue = NULL;
+    t->context.pc = (u32)entry;
+    t->context.a0 = (s64)arg;
+    t->context.sp = (s64)(s32)sp - 16;
+    t->context.ra = (s64)(s32)&D_80003FE0;
     mask = 0x3FFF01;
-    *(s32*)((char*)t + 0x118) = 0xFF03;
-    *(s32*)((char*)t + 0x128) = (mask & 0x3F0000) >> 16;
-    *(s32*)((char*)t + 0x12C) = 0x01000800;
-    *(s32*)((char*)t + 0x18) = 0;
-    *(u16*)((char*)t + 0x10) = 1;
-    *(u16*)((char*)t + 0x12) = 0;
+    t->context.sr = 0xFF03;
+    t->context.rcp = (mask & 0x3F0000) >> 16;
+    t->context.fpcsr = 0x01000800;
+    t->fp = 0;
+    t->state = OS_STATE_STOPPED;
+    t->flags = 0;
     saveMask = func_800066B0();
-    *(s32*)((char*)t + 0x0C) = D_8000A41C;
-    D_8000A41C = (s32)t;
+    t->tlnext = D_8000A41C;
+    D_8000A41C = t;
     func_800066D0(saveMask);
 }
 /* func_80005B10 (osCreateThread): ALREADY MATCHED -- this C is the
