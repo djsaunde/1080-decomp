@@ -35,7 +35,7 @@ extern void gl2FB74_snd();                  /* USO-relocated submit (jal 0) */
 extern int gl_func_00000000_f(int, float);  /* (int, float) blank alias */
 extern int gl_func_00042428();              /* pinned 0x42428, case 50 */
 void gl_ref_00044B70(int a0);               /* baked tail call (snd_SetPlayer0Channel0IO_30504) */
-void gl_ref_000423A4(unsigned char a0);     /* baked call (snd_ScheduleSeqDefault_2DD38), case 512 */
+void gl_ref_000423A4(unsigned char a0);     /* baked call (snd_ScheduleSeqDefault), case 512 */
 
 extern s32 D_2FB74_mode;                    /* t2 web (==0/1/8 state) */
 extern s32 D_2FB74_cmdsrc;                  /* per-case cmd reload */

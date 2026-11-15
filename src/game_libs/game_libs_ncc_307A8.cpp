@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for snd_TickChannel8Fade_307A8 (0x104 / 65 words), agent-c run 177 / agent-g run 202.
+/* IDO 7.1 NCC (C++) EXACT donor for snd_TickChannel8Fade (0x104 / 65 words), agent-c run 177 / agent-g run 202.
  * Fade timer tick over the 8-word state block that the exact sibling 308AC (game_libs_ncc_308AC.cpp) reads as a
  * FILE-LOCAL static: as1 shares one `lui at` between two accesses only when both hit the same LOCAL symbol and
  * uopt has not CSE'd the address. So the two target pairs -- the zeroing stores `lui at; sw zero,12(at);
@@ -13,7 +13,7 @@
  * fall-through predecessor and reuses it -- one load, t8 / t9, word-exact (plain `D_307A8_i.fC`, a volatile or
  * unsigned re-read, the static block and `((int *)&D_307A8_i)[3]` all keep the candidate or reload).
  * Spliced into game_libs_post.c.o (build and non_matching); the .bss reloc to A308 is renamed
- * snd_TickChannel8Fade_307A8_bss by the splice (pinned to 0, the 308AC recipe). */
+ * snd_TickChannel8Fade_bss by the splice (pinned to 0, the 308AC recipe). */
 typedef float f32;
 typedef struct { int mode; int f4; int f8; int fC; f32 f10; f32 f14; f32 f18; f32 f1C; } St308;
 static St308 A308;
@@ -21,7 +21,7 @@ extern "C" St308 D_307A8_a, D_307A8_d, D_307A8_e, D_307A8_f, D_307A8_g, D_307A8_
     D_307A8_m, D_307A8_n, D_307A8_o, D_307A8_p;
 extern "C" int D_00000000_1c0a8;
 extern "C" void gl_func_00000000_f(int, f32);
-extern "C" void snd_TickChannel8Fade_307A8(void) {
+extern "C" void snd_TickChannel8Fade(void) {
     int c;
     f32 f;
     f32 fl;

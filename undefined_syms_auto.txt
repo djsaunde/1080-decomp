@@ -1426,11 +1426,11 @@ D_00000000_a = 0x00000000;
 D_00000000_b = 0x00000000;
 D_00000000_c = 0x00000000;
 D_00000000_3c8e0 = 0x00000000;  /* GBI-emit flags word (bootup.uso sym1924 @0x3C8E0) read by gfx_clearScreen */
-D_00000000_324 = 0x00000000;  /* Data float @0x324 (bootup.uso sym1441, addend 0) stored 1.0f by snd_PlayPlayer1SeqDefault_2DDEC */
+D_00000000_324 = 0x00000000;  /* Data float @0x324 (bootup.uso sym1441, addend 0) stored 1.0f by snd_PlayPlayer1SeqDefault */
 D_00000000_50 = 0x00000000;  /* Data pointer @0x50 (bootup.uso sym451, addend 0): the projection context read by coll_pushClear_00035E64 */
-D_00000000_1c0ac = 0x00000000;  /* Data int @0x1C0AC (bootup.uso sym1430, addend 0): the mode word tested == 15 by snd_SetPlayer3FreqScaleFromStick_2DC74 */
-D_00000000_1c0c0 = 0x00000000;  /* Data record @0x1C0C0 (bootup.uso sym1443, addend 0): the 5-word mode record initialised by snd_SetLevelRampTarget_309AC via snd_RampInit_31CA8 (w0 = param, w8 = 30, wC = 0, w10 = selector) */
-D_309AC_a = 0x00000000;  /* per-site alias of D_00000000_1c0c0 for the hoisted `cur` read in snd_SetLevelRampTarget_309AC (call-free pair with the &rec arg) */
+D_00000000_1c0ac = 0x00000000;  /* Data int @0x1C0AC (bootup.uso sym1430, addend 0): the mode word tested == 15 by snd_SetPlayer3FreqScaleFromStick */
+D_00000000_1c0c0 = 0x00000000;  /* Data record @0x1C0C0 (bootup.uso sym1443, addend 0): the 5-word mode record initialised by snd_SetLevelRampTarget via snd_RampInit (w0 = param, w8 = 30, wC = 0, w10 = selector) */
+D_309AC_a = 0x00000000;  /* per-site alias of D_00000000_1c0c0 for the hoisted `cur` read in snd_SetLevelRampTarget (call-free pair with the &rec arg) */
 gAudioContext_345c0 = 0x00000000;  /* Data base @0x345C0 (bootup.uso sym1255, addend 0): the registry block held in t0 by AudioLoad_SlowLoadSeq (limit +0x202C, count +0x1578, records +0x157C stride 0x64) */
 D_00000000_3c150 = 0x00000000;  /* Data int @0x3C150 (bootup.uso sym1760, addend 0): the pool counter drained by hostio_readFile (copied into the request block +0x4C, then clamped RMW) */
 D_00000000_3c154 = 0x00000000;  /* Data int @0x3C154 (bootup.uso sym1761, addend 0): the pending flag tested at the head of hostio_readFile and cleared after its first call */
@@ -3519,7 +3519,7 @@ gl_ref_000423C4 = 0x000423C4;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked U
 gl_ref_00041E9C = 0x00041E9C;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
 gl_ref_00042490 = 0x00042490;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
 gl_ref_00041ED4 = 0x00041ED4;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
-gl_ref_00046314 = 0x00046314;  /* snd_SetLevelRampTarget_309AC baked USO jal (text-base sym3 + 0x46314 = splat 0x31CA8 = snd_RampInit_31CA8) */
+gl_ref_00046314 = 0x00046314;  /* snd_SetLevelRampTarget baked USO jal (text-base sym3 + 0x46314 = splat 0x31CA8 = snd_RampInit) */
 gl_ref_00046324 = 0x00046324;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
 gl_ref_00044E14 = 0x00044E14;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
 D_2D37C_mode = 0x00000000;  /* snd_UpdateTimers (ex gl_func_0002D37C) per-site base-0 aliases (distinct syms = fresh lui per read, no base CSE) */
@@ -3541,7 +3541,7 @@ D_2D37C_f35Cl = 0x00000000;
 D_2D37C_f35Cw = 0x00000000;
 D_2D37C_f360s = 0x00000000;
 D_2D37C_f360l = 0x00000000;
-D_31A74_st = 0x00000000;  /* snd_UpdateChannel10Emitter_31A74 per-site base-0 aliases */
+D_31A74_st = 0x00000000;  /* snd_UpdateChannel10Emitter per-site base-0 aliases */
 D_31A74_g2 = 0x00000000;
 D_31A74_g3 = 0x00000000;
 D_31A74_accl = 0x00000000;
@@ -3703,7 +3703,7 @@ gl_ref_00001014_f = 0x00001014;  /* 32767.0f literal (game_libs data), Audio_Ads
 gl_ref_00001018_f = 0x00001018;  /* 1e-5f literal (game_libs data), Audio_AdsrUpdate */
 gl_ref_00002058_f = 0x00002058;  /* 0.017453292f (pi/180) literal (game_libs data), Audio_AdsrUpdate */
 gl_d_34180_dev = 0x00000000;  /* sys_fatalSwapBuffer_00034180: base-0 alias of D_00000000 -- the hoisted head load `lui v1; lw v1,0(v1)` is a distinct symbol (lo16 field 0, NOT &D+0x240 which bakes 0x240); the later held-base loads use &D_00000000+0x240/0x204 */
-snd_SoundObjEventIndex_2E290_rodata = 0x00001660;  /* switch(sel) 32-entry jumptable (cases 1..32): USO ships it in game_libs rodata at +0x1660; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2E290.c) */
+snd_SoundObjEventIndex_rodata = 0x00001660;  /* switch(sel) 32-entry jumptable (cases 1..32): USO ships it in game_libs rodata at +0x1660; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2E290.c) */
 dbg_threadStateName_rodata = 0x000019B8;  /* switch(a0) 8-entry jumptable (cases 1..8): USO ships it in game_libs rodata at +0x19B8; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_343F4.c) */
 ImageFile_load_00068990_rodata = 0x00002220;  /* switch(tag) 6-entry jumptable (tags -1..4): bootup.uso ships it in RoData at +0x2220; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_68990.c) */
 gl_ref_0007C8EC = 0x0007C8EC;  /* ImageFile_load_00068990 baked USO jal (0x0C01F23B) = fs_gdlReadInt_00068280 int reader (splat + 0x1466C) */
@@ -3921,7 +3921,7 @@ gl_ref_00022098_61F8C = 0x00022098;  /* AnimData_load baked lui/addiu message ad
 gl_ref_000220AC_61F8C = 0x000220AC;  /* AnimData_load baked lui/addiu message address (exit check) */
 snd_HandleEvent_2FB74_rodata = 0x00001750;  /* snd_HandleEvent_2FB74 two jumptables (21 entries at +0x1750, 49 at +0x17A4) in game_libs rodata; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2FB74.c) */
 AudioThread_ProcessCmds_rodata = 0x00000F50;  /* AudioThread_ProcessCmds switch (code) jumptable (14 entries, 0x41..0x4E) in game_libs rodata; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_26D64.c) */
-gl_ref_000423A4 = 0x000423A4;  /* snd_HandleEvent_2FB74 baked in-unit jal (snd_ScheduleSeqDefault_2DD38, 0x0C0108E9) */
+gl_ref_000423A4 = 0x000423A4;  /* snd_HandleEvent_2FB74 baked in-unit jal (snd_ScheduleSeqDefault, 0x0C0108E9) */
 gl_ref_00044B70 = 0x00044B70;  /* snd_HandleEvent_2FB74 baked in-unit tail jal (snd_SetPlayer0Channel0IO_30504) */
 gl2FB74_snd = 0x00000000;  /* snd_HandleEvent_2FB74 USO-relocated sound submit (blank jal 0) */
 D_2FB74_mode = 0x00000000;  /* snd_HandleEvent_2FB74 USO load-resolved words (D_00000000 aliases) */
@@ -3994,9 +3994,9 @@ D_0001E21C = 0x0001E21C;  /* sys_fatalHaltLoop config table (lui 2; addiu -7652)
 D_53C04_tbl = 0x00000000;  /* BasePolyShape_genNormalsFast base-0 face->vertex s16 table (address hoisted to s6) */
 D_53C04_n = 0x00000000;  /* BasePolyShape_genNormalsFast base-0 scalar vertex count (lui; lw 0, re-read per test) */
 D_53C04_map = 0x00000000;  /* BasePolyShape_genNormalsFast base-0 u16 remap table (lui v1; addiu v1) */
-D_2DE24_a = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 store target (u8 a0 -> sw 0(at)) */
-D_2DE24_b = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 store target (sw zero,0xC(at)), distinct so its lui is not CSE'd */
-D_2DE24_c = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 final call arg (lui a1; lw a1,0(a1)) */
+D_2DE24_a = 0x00000000;  /* snd_PlayPlayer1Seq base-0 store target (u8 a0 -> sw 0(at)) */
+D_2DE24_b = 0x00000000;  /* snd_PlayPlayer1Seq base-0 store target (sw zero,0xC(at)), distinct so its lui is not CSE'd */
+D_2DE24_c = 0x00000000;  /* snd_PlayPlayer1Seq base-0 final call arg (lui a1; lw a1,0(a1)) */
 import_80263D60_30 = 0x00000030;
 game_setupMode_rodata = 0x000004F4;  /* game_setupMode 12-entry jumptable (cases 1..12): bootup_uso ships it in RoData at +0x4F4 (file offset +0x4F8); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_2DA4.c) */
 SnowBoarder_yawPiOver_0000E270_rodata = 0x00000998;  /* SnowBoarder_yawPiOver_0000E270 f32 literal pi in bootup.uso RoData +0x998; donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E270.c) */
@@ -4074,7 +4074,7 @@ gAudioContext_1fbcc = 0x00000000;
 /* AudioThread_PreNMIInternal base-0 placeholders, one per store site (target lui 0 / addiu 0 each) */
 gAudioContext_23f98 = 0x00000000;
 gAudioContext_272c4 = 0x00000000;
-/* snd_SetPlayer2VolumeLevel_2D784 store / load-array base-0 placeholders (target lui 0 each) */
+/* snd_SetPlayer2VolumeLevel store / load-array base-0 placeholders (target lui 0 each) */
 D_2D788_a = 0x00000000;
 D_2D788_b = 0x00000000;
 /* TimMenu_draw_00002838 blank callee alias (target jal 0 at every call site) */
@@ -4305,16 +4305,16 @@ D_41A9C_v1 = 0x00000000;  /* App_hostioParms NCC donor: blank USO data ref (lui/
 D_41A9C_v2 = 0x00000000;  /* App_hostioParms NCC donor: blank USO data ref (lui/addiu 0) */
 D_41A9C_v3 = 0x00000000;  /* App_hostioParms NCC donor: blank USO data ref (lui/addiu 0) */
 D_41A9C_v4 = 0x00000000;  /* App_hostioParms NCC donor: blank USO data ref (lui/addiu 0) */
-gl_ref_00043824 = 0x00043824;  /* snd_SoundObjSetAngle_2F720 NCC donor: baked USO jal (0x0C010E09) */
-D_2F720_t1 = 0x00000000;  /* snd_SoundObjSetAngle_2F720 NCC donor: blank USO data ref */
-D_2F720_t2 = 0x00000000;  /* snd_SoundObjSetAngle_2F720 NCC donor: blank USO data ref */
-D_2F720_t3 = 0x00000000;  /* snd_SoundObjSetAngle_2F720 NCC donor: blank USO data ref */
-D_2F720_lut = 0x00000000;  /* snd_SoundObjSetAngle_2F720 NCC donor: blank USO data ref */
-D_2F720_flut = 0x00000000;  /* snd_SoundObjSetAngle_2F720 NCC donor: blank USO data ref */
-D_2F720_p1740 = 0x00001740;  /* snd_SoundObjSetAngle_2F720 NCC donor: FP pool read (lui 0 / lwc1 0x1740) */
-D_2F720_p1744 = 0x00001744;  /* snd_SoundObjSetAngle_2F720 NCC donor: FP pool read */
-D_2F720_p1748 = 0x00001748;  /* snd_SoundObjSetAngle_2F720 NCC donor: FP pool read */
-D_2F720_p174C = 0x0000174C;  /* snd_SoundObjSetAngle_2F720 NCC donor: FP pool read */
+gl_ref_00043824 = 0x00043824;  /* snd_SoundObjSetAngle NCC donor: baked USO jal (0x0C010E09) */
+D_2F720_t1 = 0x00000000;  /* snd_SoundObjSetAngle NCC donor: blank USO data ref */
+D_2F720_t2 = 0x00000000;  /* snd_SoundObjSetAngle NCC donor: blank USO data ref */
+D_2F720_t3 = 0x00000000;  /* snd_SoundObjSetAngle NCC donor: blank USO data ref */
+D_2F720_lut = 0x00000000;  /* snd_SoundObjSetAngle NCC donor: blank USO data ref */
+D_2F720_flut = 0x00000000;  /* snd_SoundObjSetAngle NCC donor: blank USO data ref */
+D_2F720_p1740 = 0x00001740;  /* snd_SoundObjSetAngle NCC donor: FP pool read (lui 0 / lwc1 0x1740) */
+D_2F720_p1744 = 0x00001744;  /* snd_SoundObjSetAngle NCC donor: FP pool read */
+D_2F720_p1748 = 0x00001748;  /* snd_SoundObjSetAngle NCC donor: FP pool read */
+D_2F720_p174C = 0x0000174C;  /* snd_SoundObjSetAngle NCC donor: FP pool read */
 gl_ref_00037B00 = 0x00037B00;  /* AudioLoad_DiscardSeqFonts: baked USO jal (0x0C00DEC0) */
 gl_ref_0003A0EC = 0x0003A0EC;  /* AudioLoad_GetSamplesForFont: baked USO jal (0x0C00E83B) */
 h2h_void_1204 = 0x00000000;  /* h2h_WinsDisplay_update_00001204 NCC donor: void-returning blank import (jal 0) */
@@ -4342,7 +4342,7 @@ gl_ref_0004B8E8 = 0x0004B8E8;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_00045F04 = 0x00045F04;  /* snd_SetPlayer2ChannelIO_3190C baked in-unit jal (agent-c run 122) */
 gSysLib_445AC_b = 0x00000000;  /* GfxLib_init: distinct zero alias for the g+0x1C store (target materialises the base: lui/addiu v0 + sw 28(v0)) */
 AudioLoad_SyncLoad_rodata = 0x00000EA0;  /* switch(mode) 5-entry jumptable: USO ships it in game_libs rodata at +0xEA0; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_23914.c) */
-D_2D7D0_a = 0x00000000;  /* snd_ResetVolumeLevels_2D7C0: three blank USO data refs each set to 8 (distinct zero aliases) */
+D_2D7D0_a = 0x00000000;  /* snd_ResetVolumeLevels: three blank USO data refs each set to 8 (distinct zero aliases) */
 D_2D7D0_b = 0x00000000;
 D_2D7D0_c = 0x00000000;
 gl_ref_55470_d = 0x00000000;  /* nodelist_dispatch 1008 store target (NCC donor game_libs_ncc_55470.cpp): distinct zero alias of the D_00000000 block */
@@ -5238,13 +5238,13 @@ gl_func_00040304_quat = 0x00000000;
 gl_data_0001EE5C = 0x0001EE5C;
 gl_data_0001EE70 = 0x0001EE70;
 D_00000000F = 0x00000128;
-/* snd_SetChannel8Mode_308AC NCC donor: module-local state block (.bss reloc renamed by the splice) + second data block */
-snd_SetChannel8Mode_308AC_bss = 0x00000000;
+/* snd_SetChannel8Mode NCC donor: module-local state block (.bss reloc renamed by the splice) + second data block */
+snd_SetChannel8Mode_bss = 0x00000000;
 D_308AC_k0 = 0x00000000;
 D_308AC_k1 = 0x00000000;
 D_308AC_k2 = 0x00000000;
-/* snd_TickChannel8Fade_307A8 NCC donor: module-local state block (.bss reloc renamed by the splice), per-site aliases of the same block, mode word */
-snd_TickChannel8Fade_307A8_bss = 0x00000000;
+/* snd_TickChannel8Fade NCC donor: module-local state block (.bss reloc renamed by the splice), per-site aliases of the same block, mode word */
+snd_TickChannel8Fade_bss = 0x00000000;
 D_307A8_a = 0x00000000;
 D_307A8_d = 0x00000000;
 D_307A8_e = 0x00000000;

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for snd_SoundObjSetAngle_2F720 (0x180 / 96 words): sound-voice
+/* IDO 7.1 NCC (C++) donor for snd_SoundObjSetAngle (0x180 / 96 words): sound-voice
  * parameter update (pan from a signed byte, three table lookups through the 0x43824
  * helper, a damped float, a clamped rate). Two spellings the cfe NM could not reach:
  * the high-nibble byte is a store plus a compound shift `p[0xF] = t / 2; p[0xF] <<= 4;`
@@ -13,7 +13,7 @@ extern int D_00000000;
 extern int D_2F720_t1, D_2F720_t2, D_2F720_t3;
 extern int D_2F720_lut, D_2F720_flut;
 extern int D_2F720_p1740, D_2F720_p1744, D_2F720_p1748, D_2F720_p174C;
-void snd_SoundObjSetAngle_2F720(char *o, f32 in, signed char idxb) {
+void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
     float dlt;
     int v;
     char *p;

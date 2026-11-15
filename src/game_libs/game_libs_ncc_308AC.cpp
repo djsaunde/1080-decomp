@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) donor for snd_SetChannel8Mode_308AC (0xF8 / 62 words = the old
- * 7-word head snd_SetChannel8Mode_308AC + gl_func_000308C8, one function; neither
+/* IDO 7.1 NCC (C++) donor for snd_SetChannel8Mode (0xF8 / 62 words = the old
+ * 7-word head snd_SetChannel8Mode + gl_func_000308C8, one function; neither
  * 0x308AC's successor 0x308C8 is exported nor called). Mode setter for a
  * module-local state block: mode / f8 / fC / f1C in the head, per-mode f4 / f14 /
  * f1C, then f10 = f14 and two blank-import emits ((s8)f4 as `lb a1,7(a1)`, the
@@ -9,7 +9,7 @@
  * of the jal (lb in the delay) only when the lb hits that same symbol. Per-site
  * C++ references stop uopt from CSE-ing &A308 into v0 outside the head (the head's
  * four stores are the only v0 CSE in the target). The donor's .bss reloc is
- * renamed snd_SetChannel8Mode_308AC_bss by the splice and pinned to 0 (the USO
+ * renamed snd_SetChannel8Mode_bss by the splice and pinned to 0 (the USO
  * relocs bake section-relative offsets 0x0..0x1C); D_308AC_k* are the second
  * data block (offsets 0x1868..0x1870), pinned to 0.
  * Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY (agent-c run 136). */
@@ -20,7 +20,7 @@ static St308 A308;
 extern "C" int gl_func_00000000(...);
 extern "C" void gl_func_00000000_f(int, f32);
 extern "C" char D_308AC_k0[], D_308AC_k1[], D_308AC_k2[];
-extern "C" void snd_SetChannel8Mode_308AC(int mode) {
+extern "C" void snd_SetChannel8Mode(int mode) {
     A308.mode = mode;
     A308.f8 = 0;
     A308.fC = 0;
