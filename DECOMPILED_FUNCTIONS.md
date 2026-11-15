@@ -121,7 +121,7 @@ Before treating a function as exact, also compare built vs expected with
   The combined original span is 0x178 / 94 instructions, reproduced by
   IDO 7.1 -O1 from the libultra C. Historical alias retained at 0x842E4.
 
-- `gl_func_000032B0` merged into `PointsGadget_func_00003298`: six hoisted
+- `gl_func_000032B0` merged into `TrickPointsGadget_reset_00003298`: six hoisted
   FP-constant instructions plus the contiguous body, 0x14C / 83 instructions.
   `uso-sym-oracle.py baserom.z64 0xD9FE28 0x17904 0x1791C` confirms Sym[943]
   exports the head (two call relocations), not the former internal split.

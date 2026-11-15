@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) -O0 donor for QuitProcess_func_0000FC28 QuitProcess_func_0000FD4C PauseMenu_create: the NM C body of
+/* IDO 7.1 NCC (C++) -O0 donor for QuitProcess_ctor0 QuitProcess_ctor PauseMenu_create: the NM C body of
  * bootup_uso_tail1_bot.c compiled as C++ (bootup_uso is C++). cfe -O0 left a dead
  * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.
  * Spliced into bootup_uso_tail1_bot.c.o via REPLACE_FUNC_BODY. */
@@ -24,7 +24,7 @@ extern char D_0000C5BC;
 extern char D_0000C5C4;
 extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $at-fused scratch store/reload */
 
-/* QuitProcess_func_0000FC28: 73-insn (0x124) constructor + init chain, returns a0.
+/* QuitProcess_ctor0: 73-insn (0x124) constructor + init chain, returns a0.
  *
  * 2026-07-10: 56.23% -> 97.06%. 2026-09-05: -> 73/75 insns byte-exact;
  * the ONLY residual is the documented -O0 return-value dead-double-b
@@ -50,7 +50,7 @@ extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $
  * `b epilogue` only (value-return -O0 cap, NOT C-fixable; re-probed
  * 2026-09-05: switch/if(1)/for(;;)/goto-end/same-line-brace/ternary tails
  * all keep or worsen it). NM stays. */
-void *QuitProcess_func_0000FC28(void *a0) {
+void *QuitProcess_ctor0(void *a0) {
     register void *s0, *s1;
 
     if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
@@ -74,8 +74,8 @@ void *QuitProcess_func_0000FC28(void *a0) {
     return a0;
 }
 
-/* QuitProcess_func_0000FD4C: 85-insn (0x154) alloc-chain + multi-init helper, returns a0.
- * Larger sibling of QuitProcess_func_0000FC28 (+ a1/a2 global stashes, 0x44/0x48 zeroing).
+/* QuitProcess_ctor: 85-insn (0x154) alloc-chain + multi-init helper, returns a0.
+ * Larger sibling of QuitProcess_ctor0 (+ a1/a2 global stashes, 0x44/0x48 zeroing).
  *
  * 2026-07-10: 58.18% -> 97.47%. 2026-09-05: -> 85/87 insns byte-exact; the
  * ONLY residual is the documented -O0 return-value dead-double-b toolchain
@@ -105,7 +105,7 @@ void *QuitProcess_func_0000FC28(void *a0) {
  * (5) D_bootup_scratch0 = int-typed base-0 alias of D_00000000 (undefined_syms)
  *     $at-fuses the *&D scratch store + reload.
  * RESIDUAL = the dead double-b only. NM stays. */
-void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
+void *QuitProcess_ctor(void *a0, int a1, int a2) {
     register void *s0, *s1;
 
     if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
@@ -133,7 +133,7 @@ void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
     return a0;
 }
 
-/* QuitProcess_func_0000FEA0: 18-insn indirect-call wrapper:
+/* QuitProcess_onQuit: 18-insn indirect-call wrapper:
  *   p = a0->field_28; (*p->field_64)(a0 + (short)p->field_60).
  * MATCHED 2026-07-10 (w50 island sweep, 18/18): the long-documented
  * "double-reload residual cap" (19 vs 18 insns) was the cfe DAG-share
@@ -145,14 +145,14 @@ void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
  * Required flipping this file to -O0 (all other members stay INCLUDE_ASM
  * so the flag only affects this compiled body). Old exhaustive-variant
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
-void QuitProcess_func_0000FEA0(char *a0) {
+void QuitProcess_onQuit(char *a0) {
     register char *p;
     (*(void(**)(...))(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
 }
 
 /* PauseMenu_create - verified structural decode (0x208, 130 insns,
  * get-or-create constructor + normalized-colour init). bootup_uso
- * constructor family (cf. item_createBal / TimeGadget_func_0001438C).
+ * constructor family (cf. item_createBal / TimeGadgetParms_ctor_0001438C).
  *   void *PauseMenu_create(void *a0) {
  *       o = a0 ? a0 : func_00000000(0x304);
  *       if (!o) return 0;

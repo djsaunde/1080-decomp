@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for SnowBoard_func_0000E800 (0xBC / 47 words) -- reads three
+/* IDO 7.1 NCC (C++) donor for SnowBoard_ctor (0xBC / 47 words) -- reads three
  * config ints by key, applies them, then installs a handler pointer at
  * func_00000008+0x20 and calls the root object's virtual slot 10
  * (vptr +0x28: lh +0x58 / lw +0x5C).
@@ -23,7 +23,7 @@ struct VO { char pad[0x28];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
     virtual void f(); };
-extern "C" void SnowBoard_func_0000E800(void) {
+extern "C" void SnowBoard_ctor(void) {
     VO *root;
     int z, x, y;
     func_00000000();

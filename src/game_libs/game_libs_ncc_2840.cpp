@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for CourseGadget_func_00002840 (0x1B8 / 110 words), spliced over a placeholder in both
+/* IDO 7.1 NCC (C++) EXACT donor for CourseGadget_drawMarker (0x1B8 / 110 words), spliced over a placeholder in both
  * build trees (agent-g run 277). History: NM comparison donor since run 139 (cfe 89.75 -> NCC 90.81), 99.97 at
  * run 276 with every home on the target except p (spill word sp+0x20, target sp+0x28).
  * agent-g run 277: p is an ADDRESS-TAKEN local in the target. The words below p are not temps: with p scalar
@@ -19,7 +19,7 @@ extern int D_00000000;
 extern int gl_func_00000000(...);
 extern f32 gl_func_00000000_sqf(f32);
 }
-extern "C" void CourseGadget_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
+extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
     /* agent-g run 263: declaration order from a random home-layout search (the volatile pads are
      * unreferenced home-keeping words)
      * agent-g run 273: pair-swap hill climb on the order (dy <-> f0, then d4 <-> temp_v0): dy's home at 56 and

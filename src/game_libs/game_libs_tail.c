@@ -3366,7 +3366,7 @@ void RaceTracker_toggleGhost(int a0) {
     }
 }
 
-/* hud_func_0000E410..E490: CONTIGUOUS lower-opt (-O1/-g) family. Each is
+/* Node_enableAll_0000E410..E490: CONTIGUOUS lower-opt (-O1/-g) family. Each is
  * `int *p=(int*)(a0+0x18); *p OP= BIT; return p;` (E410 |=4|=8, E42C &=~4&=~8,
  * E450 |=8, E464 &=~8, E47C |=4, E490 &=~4). CAP under -O2: target uses
  * addiu v0,a0,0x18 + 0(v0) RMW addressing AND keeps redundant stores (E410/E42C),
@@ -3389,14 +3389,14 @@ void RaceTracker_toggleGhost(int a0) {
  * promote therefore belongs to the RELAYOUT SESSION with the other
  * ready bodies; the verified unit source is preserved in this comment
  * block's history (commit) and each wrap below. */
-/* hud_func_0000E410: set flags 4|8 on a0->i_18, returns the
+/* Node_enableAll_0000E410: set flags 4|8 on a0->i_18, returns the
  * field pointer. BYTE-EXACT C FOUND 2026-06-10 (0 diffs standalone):
  * the same role-#6 barrier as the E450 quartet -- `int *p; p = ...;
  * if (1) {}` materializes the addiu base so ALL accesses go via 0(v0)
  * (without it the first load folds to 24(a0) and the stores split).
  * Fifth member of the flag-helper family, all five now byte-exact.
  * LAND BLOCKED on the mid-file constraint; relayout session. */
-int *hud_func_0000E410(char *a0) {
+int *Node_enableAll_0000E410(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
@@ -3405,12 +3405,12 @@ int *hud_func_0000E410(char *a0) {
     return p;
 }
 
-/* hud_func_0000E42C: clear flags 4+8 on a0->i_18, returns the
+/* Node_disableAll_0000E42C: clear flags 4+8 on a0->i_18, returns the
  * field pointer. BYTE-EXACT 2026-06-10 (0 diffs standalone) via the
  * role-#6 barrier; SIXTH member of the flag-helper family (E410/E42C/
  * E450/E464/E47C/E490 -- set/clear x {4, 8, both}, all solved). LAND
  * BLOCKED mid-file; relayout session. */
-int *hud_func_0000E42C(char *a0) {
+int *Node_disableAll_0000E42C(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
@@ -3419,52 +3419,52 @@ int *hud_func_0000E42C(char *a0) {
     return p;
 }
 
-/* hud_func_0000E450: set flag 8 on a0->i_18. BYTE-EXACT C FOUND
+/* Node_resumeUpdate_0000E450: set flag 8 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void hud_func_0000E450(char *a0) {
+void Node_resumeUpdate_0000E450(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
     *p = *p | 8;
 }
 
-/* hud_func_0000E464: clear flag 8 on a0->i_18. BYTE-EXACT C FOUND
+/* Node_pauseUpdate_0000E464: clear flag 8 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void hud_func_0000E464(char *a0) {
+void Node_pauseUpdate_0000E464(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
     *p = *p & ~8;
 }
 
-/* hud_func_0000E47C: set flag 4 on a0->i_18. BYTE-EXACT C FOUND
+/* Node_showDisplay_0000E47C: set flag 4 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void hud_func_0000E47C(char *a0) {
+void Node_showDisplay_0000E47C(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
     *p = *p | 4;
 }
 
-/* hud_func_0000E490: clear flag 4 on a0->i_18. BYTE-EXACT C FOUND
+/* Node_hideDisplay_0000E490: clear flag 4 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void hud_func_0000E490(char *a0) {
+void Node_hideDisplay_0000E490(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}

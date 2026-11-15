@@ -9,6 +9,6 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-RoomModifier_func_0000896C = 0x0;
-RoomModifier_func_00008AFC = 0x0;
+RoomModifier_applyScale_0000896C = 0x0;
+RoomModifier_resetScale_00008AFC = 0x0;
 timproc_uso_b5_func_04CCA8 = 0x0;

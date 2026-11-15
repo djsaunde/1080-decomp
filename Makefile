@@ -158,7 +158,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # call; NCC donors.
 BOOTUP_E740_DONOR := build/src/bootup_uso/bootup_uso_ncc_E740.cpp.o
 BOOTUP_E800_DONOR := build/src/bootup_uso/bootup_uso_ncc_E800.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000E740=$(BOOTUP_E740_DONOR) SnowBoard_func_0000E800=$(BOOTUP_E800_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000E740=$(BOOTUP_E740_DONOR) SnowBoard_ctor=$(BOOTUP_E800_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_E740_DONOR) $(BOOTUP_E800_DONOR)
 # B1B4 = sound bank lazy loader + registry add (cfront Bank chain, inline Reg::add); NCC donor.
 BOOTUP_B1B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_B1B4.cpp.o
@@ -207,8 +207,8 @@ BOOTUP_E9FC_DONOR := build/src/bootup_uso/bootup_uso_ncc_E9FC.cpp.o
 $(BOOTUP_E9FC_DONOR): src/bootup_uso/bootup_uso_ncc_E9FC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=SnowBoard_func_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += boot_staticInit_00006204=$(BOOTUP_6204_DONOR) SnowBoard_func_0000E9FC=$(BOOTUP_E9FC_DONOR)
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=SnowBoard_staticCtor_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += boot_staticInit_00006204=$(BOOTUP_6204_DONOR) SnowBoard_staticCtor_0000E9FC=$(BOOTUP_E9FC_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR) $(BOOTUP_E9FC_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
@@ -301,10 +301,10 @@ build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: NON_MATCHING_TRUNCATE_TE
 build/src/bootup_uso/bootup_uso_o0_FBCC.c.o: TRUNCATE_TEXT := 0x5C
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o: TRUNCATE_TEXT := 0x4C8
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: OPT_FLAGS := -O0
-# FC28: -O0 C++ donor(s) for QuitProcess_func_0000FC28 QuitProcess_func_0000FD4C PauseMenu_create (edg -O0 has no dead closing-brace branch)
+# FC28: -O0 C++ donor(s) for QuitProcess_ctor0 QuitProcess_ctor PauseMenu_create (edg -O0 has no dead closing-brace branch)
 BOOTUP_FC28_DONOR := build/src/bootup_uso/bootup_uso_ncc_FC28.cpp.o
 $(BOOTUP_FC28_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: private REPLACE_FUNC_BODY += QuitProcess_func_0000FC28=$(BOOTUP_FC28_DONOR) QuitProcess_func_0000FD4C=$(BOOTUP_FC28_DONOR) PauseMenu_create=$(BOOTUP_FC28_DONOR)
+build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: private REPLACE_FUNC_BODY += QuitProcess_ctor0=$(BOOTUP_FC28_DONOR) QuitProcess_ctor=$(BOOTUP_FC28_DONOR) PauseMenu_create=$(BOOTUP_FC28_DONOR)
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: $(BOOTUP_FC28_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x4C8
 # 2026-07-10: gui_centerAt_000102A4 (-O0 island) carved out of tail2 into o0_1024C.
@@ -341,7 +341,7 @@ build/non_matching/src/bootup_uso/bootup_uso_o0_10324.c.o: NON_MATCHING_TRUNCATE
 build/src/bootup_uso/bootup_uso_o0_1034C.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_1034C.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_1034C.c.o: TRUNCATE_TEXT := 0x1F4
 build/non_matching/src/bootup_uso/bootup_uso_o0_1034C.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1F4
-# 2026-09-04 carve: PauseMenu_func_00010540 out of tail3a_10540 into o0_10540 (-O0,
+# 2026-09-04 carve: PauseMenu_display out of tail3a_10540 into o0_10540 (-O0,
 # MATCHED 343/343, TRUNCATE 0x55C clips the -O0 trailing pad word).
 # 2026-09-05: tail3a_10540 -> o0_10A9C (-O0): the 2-word "func_00010AA8" was
 # 10A9C's dead -O0 `$exit` pair (fall-off fn: our -O0 emits the 0xC body + ONE
@@ -465,7 +465,7 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: SUFFIX_BYTES_FORCE := Fader_buildText
 # 1304C = fire-grid blur + texture DL; C++ (inline next() appends, uopt block
 # boundaries placed with empty ifs). NCC donor, exact.
 BOOTUP_1304C_DONOR := build/src/bootup_uso/bootup_uso_ncc_1304C.cpp.o
-build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_func_0001304C=$(BOOTUP_1304C_DONOR)
+build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_display=$(BOOTUP_1304C_DONOR)
 build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: $(BOOTUP_1304C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := Fader_buildTexture=0x00000000,0x00000000,0x00000000
 # game_libs split around the 56 KB RSP microcode blob at 0xEBF8..0x1CA10.
@@ -1748,15 +1748,15 @@ build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o
 # 25A8 = mode -> eight 0x18-stride slot values + alloc(24) init (6-entry
 # jumptable switch, cases 2..7 + default), IDO 7.1 -O2 donor:
 # game_libs_o2_25A8.c (166/166 word-exact). Spliced only so the donor-local
-# .rodata jumptable reloc is renamed CourseGadget_func_000025A8_rodata and pinned to
+# .rodata jumptable reloc is renamed CourseGadget_setCourse_rodata and pinned to
 # the table at bootup.uso RoData +0xC9C.
 GAMELIBS_25A8_DONOR := build/src/game_libs/game_libs_o2_25A8.c.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CourseGadget_func_000025A8=$(GAMELIBS_25A8_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CourseGadget_setCourse=$(GAMELIBS_25A8_DONOR)
 # 2840 = facing-gated HUD marker draw (sqrt-normalised delta, three blank calls); EXACT NCC donor over a
 # placeholder (agent-g run 277: p address-taken by a code-free `if (&p == 0) {}`, so it is stored to its own
 # home sp+0x28 instead of a uopt spill temp). Relocs: D_00000000 / gl_func_00000000 / gl_func_00000000_sqf (all 0).
 GAMELIBS_2840_DONOR := build/src/game_libs/game_libs_ncc_2840.cpp.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CourseGadget_func_00002840=$(GAMELIBS_2840_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CourseGadget_drawMarker=$(GAMELIBS_2840_DONOR)
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_2840_DONOR)
 GAMELIBS_68990_DONOR := build/src/game_libs/game_libs_o2_68990.c.o
 # 44B78 = video-mode selector (9-case jumptable switch), IDO 7.1 -O2 donor:
@@ -3558,7 +3558,7 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 # 8AFC = per-group element refresh (72/72 words under NCC; K = 0.9f literal,
 # rodata pinned at +0x238) (agent-g run 138).
 TIMB5_8AFC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_func_00008AFC=$(TIMB5_8AFC_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_resetScale_00008AFC=$(TIMB5_8AFC_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8AFC_DONOR)
 # 2B74 = composite panel constructor (469/469 words under NCC; vec3 constants
 # as source literals, rodata pinned at +0x11C) (agent-g run 140).
@@ -3762,10 +3762,10 @@ build/src/match_imports/Fader_ctor.c.o: src/match_imports/Fader_ctor.c src/match
 build/non_matching/src/match_imports/Fader_ctor.c.o: src/match_imports/Fader_ctor.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/TimeGadget_func_0001438C.c.o: src/match_imports/TimeGadget_func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o: src/match_imports/TimeGadget_func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/CountDownGadget_setTime.c.o: src/match_imports/CountDownGadget_setTime.c src/match_imports/context_game_libs.h
@@ -4336,12 +4336,12 @@ build/src/match_imports/Fader_ctor.c.o.linked.elf: build/src/match_imports/Fader
 build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf: build/non_matching/src/match_imports/Fader_ctor.c.o scripts/match-origins-Fader_ctor-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Fader_ctor-nm.ld -e Fader_ctor -o $@ $@.stripped.o
-build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf: build/src/match_imports/TimeGadget_func_0001438C.c.o scripts/match-origins-TimeGadget_func_0001438C.ld
+build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf: build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o scripts/match-origins-TimeGadgetParms_ctor_0001438C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadget_func_0001438C.ld -e TimeGadget_func_0001438C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o scripts/match-origins-TimeGadget_func_0001438C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadgetParms_ctor_0001438C.ld -e TimeGadgetParms_ctor_0001438C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o scripts/match-origins-TimeGadgetParms_ctor_0001438C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadget_func_0001438C-nm.ld -e TimeGadget_func_0001438C -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadgetParms_ctor_0001438C-nm.ld -e TimeGadgetParms_ctor_0001438C -o $@ $@.stripped.o
 build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf: build/src/match_imports/CountDownGadget_setTime.c.o scripts/match-origins-CountDownGadget_setTime.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CountDownGadget_setTime.ld -e CountDownGadget_setTime -o $@ $@.stripped.o
@@ -4880,10 +4880,10 @@ build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: build/src/match_imp
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Fader_ctor.json $@
 build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf scripts/match-bindings-Fader_ctor-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Fader_ctor-nm.json $@
-build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadget_func_0001438C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadget_func_0001438C.json $@
-build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadget_func_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadget_func_0001438C-nm.json $@
+build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadgetParms_ctor_0001438C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadgetParms_ctor_0001438C.json $@
+build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadgetParms_ctor_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadgetParms_ctor_0001438C-nm.json $@
 build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf scripts/match-bindings-CountDownGadget_setTime.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CountDownGadget_setTime.json $@
 build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf scripts/match-bindings-CountDownGadget_setTime-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5258,10 +5258,10 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_ct
 build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/Fader_ctor.c scripts/match-bindings-Fader_ctor.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_ctor=build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/Fader_ctor.c scripts/match-bindings-Fader_ctor-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadget_func_0001438C=build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadget_func_0001438C.c scripts/match-bindings-TimeGadget_func_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadget_func_0001438C=build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadget_func_0001438C.c scripts/match-bindings-TimeGadget_func_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadgetParms_ctor_0001438C=build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c scripts/match-bindings-TimeGadgetParms_ctor_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadgetParms_ctor_0001438C=build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c scripts/match-bindings-TimeGadgetParms_ctor_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CountDownGadget_setTime=build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs.c.o: src/match_imports/CountDownGadget_setTime.c scripts/match-bindings-CountDownGadget_setTime.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CountDownGadget_setTime=build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
@@ -5664,10 +5664,10 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/Fader_ctor.c.
 build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
-build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
+build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs.c.o: build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
 build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs.c.o: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf

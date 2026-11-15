@@ -8,7 +8,7 @@ typedef struct { int a, b, c, d; } Quad4;
 
 /* Fader_ctor - verified structural decode (0x24C, 147 insns,
  * get-or-create constructor + work-buffer allocation). bootup_uso
- * constructor family (cf. item_createBal / TimeGadget_func_0001438C).
+ * constructor family (cf. item_createBal / TimeGadgetParms_ctor_0001438C).
  *   void *Fader_ctor(void *a0, int a1) {
  *       o = a0 ? a0 : func_00000000(0x78); if (!o) return 0;
  *       s = func_00000000(0x2C);
@@ -125,13 +125,13 @@ end:
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", Fader_ctor);
 #endif
 
-/* Fader_func_0001304C: fire-grid blur (32x32 four-neighbour diffusion into a texel
+/* Fader_display: fire-grid blur (32x32 four-neighbour diffusion into a texel
  * buffer) + texture-upload display list. EXACT via an IDO 7.1 NCC (C++) donor:
  * src/bootup_uso/bootup_uso_ncc_1304C.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 126). */
 extern f32 D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
 extern char func_0000023C[];  /* data-symbol base: ctx ptr @ +0x18 */
-void Fader_func_0001304C(char *arg0) {
+void Fader_display(char *arg0) {
     volatile int r = 0;
 }
 
@@ -560,9 +560,9 @@ void BestGadget_display_00014228(char *s0) {
     func_00000000(*(int*)(s0 + 0xE0), *(int*)(s0 + 0x44), *(int*)(s0 + 0x5C), s0 + 0xE4);
 }
 
-/* TimeGadget_func_0001438C - verified structural decode (0x128, 74 insns,
+/* TimeGadgetParms_ctor_0001438C - verified structural decode (0x128, 74 insns,
  * get-or-create constructor + 2 child sub-objects).
- *   void *TimeGadget_func_0001438C(void *a0) {
+ *   void *TimeGadgetParms_ctor_0001438C(void *a0) {
  *       o = a0;
  *       if (o == 0) { o = alloc(0x38); if (!o) return 0; }
  *       s1 = alloc(8);
@@ -636,7 +636,7 @@ void BestGadget_display_00014228(char *s0) {
  */
 extern int SnowBoarder_func_0000CAE8[];  /* data words 0xCAE8/0xCAEC/0xCAF0 (table) */
 extern char D_0000C83C;
-char *TimeGadget_func_0001438C(char *arg0) {
+char *TimeGadgetParms_ctor_0001438C(char *arg0) {
     char *o;
     char *s;
     char *c;
@@ -677,7 +677,7 @@ end:
     return o;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", TimeGadget_func_0001438C);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", TimeGadgetParms_ctor_0001438C);
 #endif
 
 void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float arg5) {

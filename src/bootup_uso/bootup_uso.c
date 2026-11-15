@@ -4790,7 +4790,7 @@ void Fog_readParms(char *a0) {
 }
 
 /* FogTmpl_create - verified structural decode (0x1D4, 117 insns).
- * NEAR-SIBLING of TimeGadget_func_0001438C / SnowTmpl_create (bootup_uso
+ * NEAR-SIBLING of TimeGadgetParms_ctor_0001438C / SnowTmpl_create (bootup_uso
  * get-or-create constructor + child sub-objects family); variant
  * params: object 0x90, init datum D_00007878, child descriptor
  * D_00007FC4, child type D_00007540, child->0x10 = 200.0f
@@ -4814,7 +4814,7 @@ void Fog_readParms(char *a0) {
  *       }
  *       ... (further child from D_00007FD0, same family shape)
  *   }
- * Struct-typing reference (same as TimeGadget_func_0001438C): o = 0x90-byte
+ * Struct-typing reference (same as TimeGadgetParms_ctor_0001438C): o = 0x90-byte
  * object, o->0x28 (40) descriptor (&D_00007878). s = 0x38-byte
  * sub; c = 8-byte aux (c->0x0 = &D_00007FC4 descriptor, c->0x4=0);
  * c2 = 0x18-byte child: c2->0xC (12) type ptr (&D_00007540),
@@ -5004,7 +5004,7 @@ void Snower_readParms(char *a0) {
 /* SnowTmpl_create - verified structural decode (0x1C4, 113 insns,
  * guarded singleton constructor). Member of the bootup_uso
  * alloc-cascade-ctor + defensive-dead-check family (cf.
- * item_createBal / TimeGadget_func_0001438C / MapProp_ctor).
+ * item_createBal / TimeGadgetParms_ctor_0001438C / MapProp_ctor).
  *   void SnowTmpl_create(void *a0) {
  *       g = *(St**)&D_root;
  *       if (g->0x40 != 0) return;                 // already built
@@ -8863,7 +8863,7 @@ void SnowBoarder_func_0000E740(char *a0, int a1) {
     volatile char *r = a0;
 }
 
-/* SnowBoard_func_0000E800 - verified structural decode (0xBC, 47 insns,
+/* SnowBoard_ctor - verified structural decode (0xBC, 47 insns,
  * config-parse + init routine).
  * Struct-typing reference: D_00008D34 / D_00008D48 / D_00008D5C =
  * three config-key data (string/descriptor) parsed by the reloc
@@ -8877,7 +8877,7 @@ void SnowBoarder_func_0000E740(char *a0, int a1) {
 extern char D_00008D34, D_00008D48, D_00008D5C;
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E800.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
-void SnowBoard_func_0000E800(void) {
+void SnowBoard_ctor(void) {
     volatile int r = 0;
 }
 
@@ -8913,14 +8913,14 @@ void stream_readQuad_0000E9A4(Quad4 *dst) {
     *dst = buf;
 }
 
-/* SnowBoard_func_0000E9FC: EXACT via an IDO 7.1 NCC (C++) donor,
+/* SnowBoard_staticCtor_0000E9FC: EXACT via an IDO 7.1 NCC (C++) donor,
  * src/bootup_uso/bootup_uso_ncc_E9FC.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 349). It is the edg static initializer (__sti__)
  * for a global object of a class whose inline ctor calls the out-of-line base
  * ctor and then stores the vtable address into the vptr at +0x28 (the ROM
  * word is `sw t6, 0x28(at)` with the object at 0); same end-of-TU line
  * mechanism as boot_staticInit_00006204 (`lui a0` above `sw ra`). */
-void SnowBoard_func_0000E9FC(void) {
+void SnowBoard_staticCtor_0000E9FC(void) {
     volatile int r = 0;
 }
 
@@ -8930,7 +8930,7 @@ extern char D_00008D8C;
 extern char D_00008D9C;
 extern char D_00000000_a;
 extern char D_00000000_b;
-void SnowBoard_func_0000EA2C(char *arg0) {
+void SnowBoard_InitInstance(char *arg0) {
     char pad[4];
     int saved;
 
@@ -8951,7 +8951,7 @@ void SnowBoard_func_0000EA2C(char *arg0) {
 }
 
 extern int D_00000190;
-void SnowBoard_func_0000EAF8(int a0) {
+void SnowBoard_vslot14(int a0) {
     func_00000000(D_00000190, 3, 0);
 }
 
@@ -9200,6 +9200,6 @@ void boot_readQuadParm_0000F1B4(char *a0) {
 /* stream_readS32_0000F1F0, F23C, F288, F2EC moved to bootup_uso_o0_F1F0.c (-O0 file
  * split, see Makefile + tenshoe.ld). The 4 -O0 accessor templates promote
  * to byte-correct in the new file.
- * input_ctor_0000F390, SnowBoard_func_0000F3D4, SnowBoard_func_0000F404 moved to bootup_uso_o0_F390.c
+ * input_ctor_0000F390, SnowBoard_restart, SnowBoard_softReset moved to bootup_uso_o0_F390.c
  * (-O0 file split, see Makefile + tenshoe.ld).
  * Process_start..Process_update moved to bootup_uso_F434.c (layout shim). */

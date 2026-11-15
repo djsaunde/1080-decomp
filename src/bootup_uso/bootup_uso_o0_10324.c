@@ -24,8 +24,8 @@ char *gui_getCurrentRow_00010324(a0) char *a0; {
 }
 
 /* 2026-07-10 -O0 island carve (this file was bootup_uso_tail3a.c until
- * 2026-09-05): PauseMenu_func_0001034C moved to bootup_uso_o0_1034C.c
- * and MATCHED there at -O0 (125/125). PauseMenu_func_00010540 (INCLUDE_ASM, honest NM;
+ * 2026-09-05): PauseMenu_update moved to bootup_uso_o0_1034C.c
+ * and MATCHED there at -O0 (125/125). PauseMenu_display (INCLUDE_ASM, honest NM;
  * its own blocker is also -O0 but the 343-insn body has pervasive typed-struct
  * eval-order divergence, see its wrap doc) + gui_clearRows_00010A9C + func_00010AA8
  * moved to bootup_uso_tail3a_10540.c (-O2 -g3). gui_addRow_00010AB0 moved to
@@ -35,7 +35,7 @@ char *gui_getCurrentRow_00010324(a0) char *a0; {
 /* gui_addRowSub_00010B6C (0x10B6C..0x10C8B) split to bootup_uso_o0_10B6C.c on
  * 2026-07-10 and MATCHED there at -O0 (72/72). tail3a now ends at 0x10B6C
  * (TRUNCATE_TEXT 0x848); the 0x10C8C..0x116C7 remainder (GameFlow_create +
- * GameFlow_func_00010FEC, both honest-NM INCLUDE_ASM) moved to
+ * GameFlow_startMode, both honest-NM INCLUDE_ASM) moved to
  * bootup_uso_tail3a_10C8C.c, still -O2 -g3. */
 
 

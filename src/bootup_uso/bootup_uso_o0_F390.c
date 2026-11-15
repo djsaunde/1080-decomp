@@ -16,11 +16,11 @@ void input_ctor_0000F390(void) {
     func_00000000(p, &D_0000C574);
 }
 
-void SnowBoard_func_0000F3D4(int a0) {
+void SnowBoard_restart(int a0) {
     func_00000000(a0);
 }
 
-void SnowBoard_func_0000F404(int a0) {
+void SnowBoard_softReset(int a0) {
     func_00000000(a0);
 }
 

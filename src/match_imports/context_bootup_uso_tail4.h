@@ -320,7 +320,7 @@ extern f32 D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
 extern char func_0000023C[];
 extern void boot1304C_set_enabled(void *, s32);
 extern void boot1304C_update_pixels(BootupGrid139B0 *);
-void Fader_func_0001304C(BootupGrid139B0 *arg0);
+void Fader_display(BootupGrid139B0 *arg0);
 int Fader_checkDone_00013924(int *a0);
 int Fader_isDone_00013980(float *a0);
 extern f32 func_411c_rf(void);
@@ -369,7 +369,7 @@ extern Val13D40 SnowBoarder_func_0000CAE8[];
 extern char D_0000C83C;
 extern char *bootup_1438C_alloc(s32);
 extern char *bootup_1438C_init(char *, char *, Val13D40, int);
-char *TimeGadget_func_0001438C(char *arg0);
+char *TimeGadgetParms_ctor_0001438C(char *arg0);
 void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float arg5);
 void TimeGadget_setPos_000144E0(void *a0, float a1, float a2);
 typedef struct {

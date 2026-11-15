@@ -500,8 +500,8 @@ typedef struct TimB5SlotController {
     s32 field_34;
     TimB5Screen *field_38[2];
 } TimB5SlotController;
-void RoomModifier_func_0000896C();
-void RoomModifier_func_00008AFC();
+void RoomModifier_applyScale_0000896C();
+void RoomModifier_resetScale_00008AFC();
 extern void timproc_uso_b5_func_04CCA8();
 void RoomModifier_display_0000117C(TimB5SlotController *a0);
 extern char D_00000000;
@@ -970,14 +970,14 @@ int SelectWin_prevStageBit_000088A0(char *a0);
 int SelectWin_callPrevStageBit_0000894C();
 extern float D_b5_896C_234;
 extern float D_b5_896C_2A0;
-void RoomModifier_func_0000896C(char *a0);
+void RoomModifier_applyScale_0000896C(char *a0);
 s32 SelectWin_findItem_00008988(char *arg0, s32 arg1, s32 arg2);
 int SelectWin_curItem_00008A38();
 int SelectWin_prevStageItem_00008A64(int *a0);
 int SelectWin_chosenItem_00008A90(int *a0);
 void SelectWin_chooseCurrent_00008ABC(int *a0);
 int SelectWin_prevFocusItem_00008AD4(int *a0);
-void RoomModifier_func_00008AFC(char *scr);
+void RoomModifier_resetScale_00008AFC(char *scr);
 int SelectWin_itemCount_00008C1C(int *a0);
 int SelectWin_listCount_00008C38(char *scr);
 typedef struct {

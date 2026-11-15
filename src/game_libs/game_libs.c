@@ -261,7 +261,7 @@ void CountDownGadget_setPos(int *a0, int a1, int a2) {
 }
 
 /* 3-insn 2-field setter: a0[0x74]=a1, a0[0x8C]=a2. Sibling of 0x999C. */
-void CountDownGadget_func_000009A8(int *a0, int a1, int a2) {
+void CountDownGadget_setPair_000009A8(int *a0, int a1, int a2) {
     a0[0x74/4] = a1;
     a0[0x8C/4] = a2;
 }
@@ -512,7 +512,7 @@ void PointsGadget_release_00000F9C(int a0) {
 
 extern int gl_func_00000000();
 extern char gl_ref_0000CBF8;
-int PointsGadget_func_00000FA4(char *a0, int arg1) {
+int PointsGadget_setValue(char *a0, int arg1) {
     return gl_func_00000000(a0 + 0xB4, &gl_ref_0000CBF8, arg1);
 }
 
@@ -836,14 +836,14 @@ void CoolGadget_setValue(int *a0, int a1) {
 }
 
 /* 3-insn 2-field setter: a0[0x130]=a1, a0[0x134]=a2. */
-void CoolGadget_func_000017F4(int *a0, int a1, int a2) {
+void CoolGadget_setPair_000017F4(int *a0, int a1, int a2) {
     a0[0x130/4] = a1;
     a0[0x134/4] = a2;
 }
 
 /* 6-insn 4-arg setter: a0[0x74]=a1, a0[0x8C]=a2, a0[0xA4]=a3, a0[0xBC]=a4
  * (a4 from caller-arg-save sp+0x10). */
-void CoolGadget_func_00001800(int *a0, int a1, int a2, int a3, int a4) {
+void CoolGadget_setQuad_00001800(int *a0, int a1, int a2, int a3, int a4) {
     a0[0x74/4] = a1;
     a0[0x8C/4] = a2;
     a0[0xA4/4] = a3;
@@ -1252,45 +1252,45 @@ void CourseGadget_setPos(int *a0, int a1, int a2) {
 }
 
 /* 5-insn 2-float setter (mtc1 in body — caller passes int in $a1/$a2). */
-void CourseGadget_func_0000254C(int *a0, float a1, float a2) {
+void CourseGadget_setFloat2_0000254C(int *a0, float a1, float a2) {
     *(float*)((char*)a0 + 0x1CC) = a1;
     *(float*)((char*)a0 + 0x1D0) = a2;
 }
 
 /* 8-insn 3-float setter (3rd float via stack round-trip per K&R ABI). */
-void CourseGadget_func_00002560(int *a0, float a1, float a2, float a3) {
+void CourseGadget_setVec3_00002560(int *a0, float a1, float a2, float a3) {
     *(float*)((char*)a0 + 0x1E4) = a1;
     *(float*)((char*)a0 + 0x1E8) = a2;
     *(float*)((char*)a0 + 0x1EC) = a3;
 }
 
 /* 10-insn 4-float setter (3rd+4th via stack round-trip; 4th from caller sp+0x10). */
-void CourseGadget_func_00002580(int *a0, float a1, float a2, float a3, float a4) {
+void CourseGadget_setVec4_00002580(int *a0, float a1, float a2, float a3, float a4) {
     *(float*)((char*)a0 + 0x1D4) = a1;
     *(float*)((char*)a0 + 0x1D8) = a2;
     *(float*)((char*)a0 + 0x1DC) = a3;
     *(float*)((char*)a0 + 0x1E0) = a4;
 }
 
-/* CourseGadget_func_000025A8: mode -> slot-value setter (0x298, 166 words) -- EXACT
+/* CourseGadget_setCourse: mode -> slot-value setter (0x298, 166 words) -- EXACT
  * via the IDO 7.1 -O2 donor src/game_libs/game_libs_o2_25A8.c
  * (REPLACE_FUNC_BODY splice). switch(arg1) cases 2..7 (table read from
  * bootup.uso RoData +0xC9C: arms in order 2,3,4,5,6,7) each write eight
  * 0x18-stride slot values at +0x74 and store an alloc(24) result at +0x1F0;
  * default writes four values and clears +0x1F0. The jumptable's donor-local
- * .rodata reloc is renamed CourseGadget_func_000025A8_rodata and pinned to +0xC9C (an
+ * .rodata reloc is renamed CourseGadget_setCourse_rodata and pinned to +0xC9C (an
  * in-unit compile cannot bake the %lo). Body below is a placeholder for the
  * splice. */
-void CourseGadget_func_000025A8(char *arg0, s32 arg1) {
+void CourseGadget_setCourse(char *arg0, s32 arg1) {
     *(s32 *)(arg0 + 0x1F0) = arg1;
 }
 
-/* CourseGadget_func_00002840: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_2840.cpp
+/* CourseGadget_drawMarker: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_2840.cpp
  * (agent-g run 277; REPLACE_FUNC_BODY splice over the placeholder below, both build
  * trees). The donor's p is address-taken by a code-free `if (&p == 0) {}`, so it is
  * stored to its own home sp+0x28 like the target instead of a uopt spill temp (the
  * cfe decode that preceded the NCC donor is in git history). */
-void CourseGadget_func_00002840(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
+void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4) {
 }
 
 /* hud_findMarkers_000029F8: list walk -> per-item marker draw (0x19C, 103 words).
@@ -1441,7 +1441,7 @@ char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
  * keeps v0 busy, so 0xFF goes to v1 as in the target. */
 extern void gl_reset_3298(void *, int, int, float, float);
 typedef struct { float r, g, b, a; } Color3298;
-void PointsGadget_func_00003298(int *a0) {
+void TrickPointsGadget_reset_00003298(int *a0) {
     Color3298 *color;
     float div255 = 255.0f;
     float r = 100.0f / div255;
@@ -1787,7 +1787,7 @@ GlSlot3DB8 *PointsGadget_allocSlot_00003DB8(GlOwn3DB8 *arg0, s32 arg1, int arg2,
     return 0;
 }
 
-void PointsGadget_func_00003F08(int *a0, int a1, int a2) {
+void TrickPointsGadget_push(int *a0, int a1, int a2) {
     int diff;
     *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0x5C) = a1;
     *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0x6C) = a2;
@@ -1809,12 +1809,12 @@ void PointsGadget_func_00003F08(int *a0, int a1, int a2) {
     }
 }
 
-/* PointsGadget_func_00003FF8: clamp four ring-slot fields (+0x8C..+0x98) to a floor of 112.
+/* TrickPointsGadget_clampRows: clamp four ring-slot fields (+0x8C..+0x98) to a floor of 112.
  * VOID return is load-bearing: as int*-returning, the return-value LR claims $v0 (3-LR
  * coloring p=v1/R=v0 + trailing move v0,v1 — unflippable, every barrier/decl lever floored);
  * as void, the copy candidate p itself colors $v0 first-appearance and the jr delay is a nop.
  * The a0=0 kill after block 1 keeps p as a real second web (block 1 via a0, blocks 2-4 via p). */
-void PointsGadget_func_00003FF8(int *a0) {
+void TrickPointsGadget_clampRows(int *a0) {
     int *p;
     p = a0;
     if (a0[0x8C / 4] < 112) a0[0x8C / 4] = 112;

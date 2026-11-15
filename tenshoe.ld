@@ -1472,7 +1472,7 @@ SECTIONS
     game_data_ROM_END = __romPos;
     game_data_VRAM_END = .;
 
-    /* GameFlow_func_00010FEC (bootup_uso_tail3a_10C8C.c) is a 9-case C switch: IDO
+    /* GameFlow_startMode (bootup_uso_tail3a_10C8C.c) is a 9-case C switch: IDO
      * emits its jumptable into the unit's local .rodata, but the real table
      * lives in the baked bootup.uso RoData asset at module offset 0xC20.
      * Pin the unit's .rodata at VMA 0xC20 (NOLOAD -> zero ROM bytes) so the

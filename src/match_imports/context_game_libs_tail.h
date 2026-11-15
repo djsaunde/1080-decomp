@@ -737,12 +737,12 @@ extern int gl_func_00000000();
 void hud_releaseGadgets(int *o);
 extern s32 game_libs_E368_11E00(void *, s32, GameLibsC784 *);
 void RaceTracker_toggleGhost(GameLibsC784 *self);
-int *hud_func_0000E410(char *a0);
-int *hud_func_0000E42C(char *a0);
-void hud_func_0000E450(char *a0);
-void hud_func_0000E464(char *a0);
-void hud_func_0000E47C(char *a0);
-void hud_func_0000E490(char *a0);
+int *Node_enableAll_0000E410(char *a0);
+int *Node_disableAll_0000E42C(char *a0);
+void Node_resumeUpdate_0000E450(char *a0);
+void Node_pauseUpdate_0000E464(char *a0);
+void Node_showDisplay_0000E47C(char *a0);
+void Node_hideDisplay_0000E490(char *a0);
 void hud_initSprites_0000E4A8(int *a0);
 void hud_initSprites_0000E53C(int *a0);
 typedef struct {

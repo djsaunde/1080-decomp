@@ -21,17 +21,17 @@ extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $
 
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-void *QuitProcess_func_0000FC28(void *a0) {
+void *QuitProcess_ctor0(void *a0) {
     return 0;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
+void *QuitProcess_ctor(void *a0, int a1, int a2) {
     return 0;
 }
 
-/* QuitProcess_func_0000FEA0: 18-insn indirect-call wrapper:
+/* QuitProcess_onQuit: 18-insn indirect-call wrapper:
  *   p = a0->field_28; (*p->field_64)(a0 + (short)p->field_60).
  * MATCHED 2026-07-10 (w50 island sweep, 18/18): the long-documented
  * "double-reload residual cap" (19 vs 18 insns) was the cfe DAG-share
@@ -43,14 +43,14 @@ void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
  * Required flipping this file to -O0 (all other members stay INCLUDE_ASM
  * so the flag only affects this compiled body). Old exhaustive-variant
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
-void QuitProcess_func_0000FEA0(char *a0) {
+void QuitProcess_onQuit(char *a0) {
     register char *p;
     (*(void(**)())(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
 }
 
 /* PauseMenu_create - verified structural decode (0x208, 130 insns,
  * get-or-create constructor + normalized-colour init). bootup_uso
- * constructor family (cf. item_createBal / TimeGadget_func_0001438C).
+ * constructor family (cf. item_createBal / TimeGadgetParms_ctor_0001438C).
  *   void *PauseMenu_create(void *a0) {
  *       o = a0 ? a0 : func_00000000(0x304);
  *       if (!o) return 0;

@@ -2,7 +2,7 @@
 
 extern int func_00000000();
 
-/* PauseMenu_func_00010540: -O0 island carved out of bootup_uso_tail3a_10540.c on
+/* PauseMenu_display: -O0 island carved out of bootup_uso_tail3a_10540.c on
  * 2026-09-04 and MATCHED at -O0 (343/343 target words; the 1 trailing pad
  * word is clipped by TRUNCATE_TEXT 0x55C). Same carve recipe as o0_1034C /
  * o0_10AB0.
@@ -55,7 +55,7 @@ typedef struct {
     Elem540 el[1];
 } Obj540;
 
-void PauseMenu_func_00010540(Obj540 *arg0) {
+void PauseMenu_display(Obj540 *arg0) {
     int i;
     int pos;
     register char *s;
