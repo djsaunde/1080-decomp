@@ -10,11 +10,17 @@
  *         in 16-byte units;
  *   magic MEM_MAGIC_ALLOC while allocated, MEM_MAGIC_FREE after a split/free
  *         (Mem_checkAlloc / Mem_checkFree report "Bad Mem::Alloc/Free").
+ * heap_new (0x41148, "New(): Cant allocate %dk") is the front end that
+ * mem_new / mem_newAligned call; its debug print reads the owner id from the
+ * header in front of the returned payload.
  * Mem_allocLow walks the free list forward (first fit, split from the front),
  * Mem_allocHigh walks it backwards and carves from the end of the block. */
 
 #define MEM_MAGIC_ALLOC 0x12345678
 #define MEM_MAGIC_FREE  0x87654321
+
+/* owner id of a block (the heap id; 0xFF while free) */
+#define MEM_BLOCK_OWNER(b) ((b)->hdr >> 24)
 
 typedef struct MemBlock {
     /* 0x0 */ u32 hdr;

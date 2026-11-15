@@ -1,6 +1,6 @@
 #include "common.h"
 #include "gdl/node.h"
-#include "gdl/heap.h"
+#include "gdl/mem.h"
 extern int game_libs_func_00062F08();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -9779,7 +9779,7 @@ int heap_new(unsigned int s1, int arg1) {
     }
     if (*(int *)((char *)&D_00000000 + 0x3C160) != 0) {
         gl_proto_41148((int)((char *)&D_00000000 + 0x1F598), (int)s0,
-                       (int)HEAP_BLOCK_ID((HeapBlock *)s0 - 1), (int)s1, arg1,
+                       (int)MEM_BLOCK_OWNER((MemBlock *)s0 - 1), (int)s1, arg1,
                        (double)((float)(unsigned int)s1 / div));
     }
     if (arg1 != 0) {
@@ -23586,7 +23586,6 @@ void Mem_init(int *a0, int *a1, int *a2) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0005B070)();
-#include "gdl/mem.h"
 u8 *Mem_allocLow(MemBlock *h, u32 size) {
     extern void gl_ref_0006F620(); /* baked in-unit jal 0x0C01BD88 (game_libs_func_0005AFB0 entry 0x5AFB4) */
     MemBlock *b;
