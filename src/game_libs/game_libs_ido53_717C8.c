@@ -11,15 +11,7 @@
  * the single data reloc pair (__osPfsPifRam lui/addiu) is addend-0 =
  * blank D_00000000 extern; no calls. CHNL_ERR = (rxsize & 0xC0) >> 4.
  * Spliced into game_libs_post2.c.o via REPLACE_FUNC_BODY. */
-typedef unsigned short u16;
-typedef unsigned char u8;
-
-typedef struct
-{
-    u16 type;   /* 0x0 */
-    u8 status;  /* 0x2 */
-    u8 errno;   /* 0x3 */
-} OSContStatus;
+#include "libultra/os_cont.h"
 
 typedef struct
 {

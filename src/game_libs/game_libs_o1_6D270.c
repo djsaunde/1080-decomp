@@ -15,23 +15,7 @@
  * _MakeMotorData, the target's BAKED intra-game_libs `jal 0x81760`
  * (no reloc in the .s) — resolved at link like gl_ref_0007FEEC.
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
-typedef int s32;
-typedef unsigned char u8;
-typedef struct {
-    int status;           /* 0x00 */
-    void *queue;          /* 0x04 */
-    int channel;          /* 0x08 */
-    u8 id[32];            /* 0x0C */
-    u8 label[32];         /* 0x2C */
-    int version;          /* 0x4C */
-    int dir_size;         /* 0x50 */
-    int inode_table;      /* 0x54 */
-    int minode_table;     /* 0x58 */
-    int dir_table;        /* 0x5C */
-    int inode_start_page; /* 0x60 */
-    u8 banks;             /* 0x64 */
-    u8 activebank;        /* 0x65 */
-} OSPfs;
+#include "libultra/os_cont.h"
 extern s32 gl_func_00000000(void *, int, int, u8 *, int); /* __osContRamWrite */
 extern s32 gl_func_00000001(void *, int, int, u8 *);      /* __osContRamRead */
 extern s32 gl_ref_00081760(int, int, u8 *, void *);       /* _MakeMotorData */

@@ -12,69 +12,7 @@
  * are the seven blank jals. Spliced into game_libs_post1b2c.c.o via
  * REPLACE_FUNC_BODY (donor relocs imported, resolve to 0 via
  * undefined_syms_auto). */
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
-typedef int s32;
-typedef void *OSMesg;
-
-typedef struct {
-    u32 errStatus;      /* 0x00 */
-    void *dramAddr;     /* 0x04 */
-    void *C2Addr;       /* 0x08 */
-    u32 sectorSize;     /* 0x0C */
-    u32 C1ErrNum;       /* 0x10 */
-    u32 C1ErrSector[4]; /* 0x14 */
-} __OSBlockInfo; /* sizeof = 0x24 */
-
-typedef struct {
-    u32 cmdType;          /* 0x00 */
-    u16 transferMode;     /* 0x04 */
-    u16 blockNum;         /* 0x06 */
-    s32 sectorNum;        /* 0x08 */
-    u32 devAddr;          /* 0x0C */
-    u32 bmCtlShadow;      /* 0x10 */
-    u32 seqCtlShadow;     /* 0x14 */
-    __OSBlockInfo block[2]; /* 0x18 */
-} __OSTranxInfo;
-
-typedef struct OSPiHandle_s {
-    struct OSPiHandle_s *next;  /* 0x00 */
-    u8 type;                    /* 0x04 */
-    u8 latency;                 /* 0x05 */
-    u8 pageSize;                /* 0x06 */
-    u8 relDuration;             /* 0x07 */
-    u8 pulse;                   /* 0x08 */
-    u8 domain;                  /* 0x09 */
-    u32 baseAddress;            /* 0x0C */
-    u32 speed;                  /* 0x10 */
-    __OSTranxInfo transferInfo; /* 0x14 */
-} OSPiHandle;
-
-typedef struct {
-    u16 type;   /* 0x00 */
-    u8 pri;     /* 0x02 */
-    u8 status;  /* 0x03 */
-    void *retQueue; /* 0x04 (OSMesgQueue *) */
-} OSIoMesgHdr;
-
-typedef struct {
-    OSIoMesgHdr hdr;    /* 0x00 */
-    void *dramAddr;     /* 0x08 */
-    u32 devAddr;        /* 0x0C */
-    u32 size;           /* 0x10 */
-    OSPiHandle *piHandle; /* 0x14 */
-} OSIoMesg;
-
-typedef struct {
-    s32 active;         /* 0x00 */
-    void *thread;       /* 0x04 */
-    void *cmdQueue;     /* 0x08 (OSMesgQueue *) */
-    void *evtQueue;     /* 0x0C */
-    void *acsQueue;     /* 0x10 */
-    s32 (*dma)(s32, u32, void *, u32);              /* 0x14 */
-    s32 (*edma)(OSPiHandle *, s32, u32, void *, u32); /* 0x18 */
-} OSDevMgr;
+#include "libultra/os_pi.h"
 
 extern s32 gl_func_00000000_recv(void *, OSMesg *, s32);   /* osRecvMesg */
 extern s32 gl_func_00000000_send(void *, OSMesg, s32);     /* osSendMesg */

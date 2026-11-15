@@ -7,23 +7,7 @@
  * FUNC_6EF64_b = osJamMesg; FUNC_6EF64_d = osSendMesg. USO relocs pin
  * these to zero in the ROM image; the loader supplies real addresses.
  */
-typedef int s32;
-typedef struct OSPiHandle OSPiHandle;
-typedef struct OSMesgQueue OSMesgQueue;
-typedef void *OSMesg;
-typedef struct {
-    unsigned short type;
-    unsigned char pri;
-    unsigned char status;
-    OSMesgQueue *retQueue;
-} OSIoMesgHdr;
-typedef struct {
-    OSIoMesgHdr hdr;
-    void *dramAddr;
-    unsigned int devAddr;
-    unsigned int size;
-    OSPiHandle *piHandle;
-} OSIoMesg;
+#include "libultra/os_pi.h"
 extern int D_6EF64_g;
 extern OSMesgQueue *FUNC_6EF64_a(void);
 extern s32 FUNC_6EF64_b(OSMesgQueue *, OSMesg, s32);

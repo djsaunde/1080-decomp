@@ -12,17 +12,7 @@
  * D_00000000_timerlist = __osTimerList (OSTimer*, next+0 prev+4
  * interval+8 value+0x10).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
-typedef unsigned int u32;
-typedef unsigned long long OSTime;
-
-typedef struct OSTimer_s {
-    /* 0x00 */ struct OSTimer_s *next;
-    /* 0x04 */ struct OSTimer_s *prev;
-    /* 0x08 */ OSTime interval;
-    /* 0x10 */ OSTime value;
-    /* 0x18 */ void *mq;
-    /* 0x1C */ void *msg;
-} OSTimer;
+#include "libultra/os_timer.h"
 
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
