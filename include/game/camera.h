@@ -1,6 +1,8 @@
 #ifndef GAME_CAMERA_H
 #define GAME_CAMERA_H
 
+struct SnowBoarder;
+
 /*
  * The race camera (agent-g run 475). docs/1080_CAMERA.md explains how it follows the rider.
  *
@@ -34,7 +36,90 @@ typedef struct CamMNode {
     char pad2C[0x30 - 0x2C];
     f32 local[4][4];        /* 0x30: local matrix; local[3] = the body's own translation */
     f32 world[4][4];        /* 0x70: world matrix; world[3][0..2] = world position */
-} CamMNode;
+    s32 unkB0;              /* 0xB0 */
+} CamMNode;                 /* 0xB4 (the MNode alloc size in MCamera_ctor gl 32E18) */
+
+/* MCamera: the libgdl "camera" node (game_libs ctor gl_func_00032E18(this, target, x, y, z), 0x150). Every 3D view's
+ * camera derives from it; the per-frame lookAt (gl 33094, NCC donor game_libs_ncc_33094.cpp) builds `view` from the
+ * eye (world[3]) toward target's world position (or eye + lookDir * 10 without a target), then turns it by
+ * pitch / yaw while rotEnable. Field names are from those bodies (agent-g run 475; the ctor defaults in brackets). */
+typedef struct MCamera {
+    CamMNode mnode;         /* 0x00: the eye: local[3] / world[3] = eye position (the ctor sets local[3] = (x, y, z)) */
+    f32 view[4][4];         /* 0xB4: view matrix (lookAt output; CamFollow / FreeCam read its rows as the camera axes) */
+    CamMNode *target;       /* 0xF4: the node looked at (MCamera command 0x69 picks it from a table) */
+    s32 unkF8;
+    f32 unkFC;              /* 0xFC: [0] */
+    s32 unk100;
+    CamVec3 lookDir;        /* 0x104: [(0, 0, 1)] look direction while target is NULL */
+    char unk110[0x20];      /* 0x110: a sub-object */
+    s32 rotEnable;          /* 0x130: [0] pitch / yaw are applied only while set */
+    f32 pitch;              /* 0x134: [0] CamDirector manual mode adds stick y * 2; setActiveCam clears 0x134..0x13C */
+    f32 yaw;                /* 0x138: [0] CamDirector manual mode adds stick x * 2 */
+    f32 unk13C;             /* 0x13C: [0] cleared with pitch / yaw (roll? unproven) */
+    CamVec3 up;             /* 0x140: [(0, 1, 0)] the lookAt up vector */
+    f32 fov;                /* 0x14C: [85] field of view in degrees; CamDirector manual mode keeps it in 45..120,
+                             * RiderCam (bootup 4948) sets it from distance / angle tables */
+} MCamera;
+
+/* the 3D window a camera renders into: only the active-camera slot is known */
+typedef struct CamWindow {
+    char pad00[0x70];
+    MCamera *cam;           /* 0x70: the camera drawn (CamDirector_setActiveCam) */
+} CamWindow;
+
+/* RiderCam (bootup, 0x15C, vtbl bootup Data 0x7120): the camera bootup cam_create builds in mode 1 (MCamera_ctor(lookat,
+ * 0, 500, -1500)). Slot 3 cam_func_00004948 = per-frame tick (fov by distance / angle tables, mode 2 drift with the
+ * rider's velocity), slot 12 cam_func_00004914 = command (mode = arg, eye = the course "cam" node position + 100 up). */
+typedef struct RiderCam {
+    MCamera cam;            /* 0x000 */
+    f32 baseFov;            /* 0x150: the ctor's fov (85); restored in mode 2 and by default */
+    struct SnowBoarder *rider; /* 0x154: the rider; mode 2 moves the eye by rider->vel * k */
+    s32 mode;               /* 0x158: the course "cam" node kind (CamDirector passes 3..0x26) */
+} RiderCam;
+
+struct RiderInput;
+
+/* CamDirector (bootup, 0x50, vtbl Data 0x6FD8, base Node "<Node>"): picks the race camera. Auto mode: every 60
+ * frames it finds the course "cam" node (kind at +0x3C) nearest the rider; kinds 3..0x12 go to cams[0] (the game.uso
+ * path camera), others to cams[1] (RiderCam), through the camera's command slot. Pad button 0x40 toggles manual mode
+ * (fov / pitch / yaw by pad). CamDirector_ctor(this, pad, rider, window, cam0, cam1). */
+typedef struct CamDirector {
+    char node[0x2C];        /* 0x00: Node; +0x18 bit 8 = enabled (onMessage 0x3ED clears it) */
+    CamWindow *window;      /* 0x2C */
+    MCamera *cams[2];       /* 0x30 */
+    struct RiderInput *pad; /* 0x38: stick x / y floats at 0 / 4, raw s8 stick 8 / 9, held 0x10, pressed 0x18 */
+    s32 activeCam;          /* 0x3C: index into cams (setActiveCam) */
+    struct SnowBoarder *rider; /* 0x40: the nearest-node search is keyed on rider->pos */
+    void *lastCamNode;      /* 0x44: the course "cam" node last acted on */
+    s32 pollTimer;          /* 0x48: [10000] search when it reaches 60, then 0 */
+    s32 manual;             /* 0x4C: toggled by pad pressed 0x40 */
+} CamDirector;
+
+/* FreeCam (game_libs, 0x50; renames.tsv CamMan_*: the matching C++ calls its update FreeCam::update): the debug fly
+ * camera. Its parent (Node +0x14) is the MCamera it moves: eye = pos + (0, 0, dist) turned by pitch / yaw. */
+typedef struct FreeCam {
+    char node[0x14];
+    MCamera *cam;           /* 0x14: Node parent */
+    char pad18[0x2C - 0x18];
+    f32 dist;               /* 0x2C: [1000] boom length */
+    f32 pitch;              /* 0x30: [-90] clamped to +-89; -= stick y * 4 while button 0x1000 */
+    f32 yaw;                /* 0x34: [180] += stick x * 4 while button 0x1000 */
+    f32 unk38;
+    s32 accel;              /* 0x3C: ramps to 100 while moving; speed = accel / 10 */
+    CamVec3 pos;            /* 0x40: the look-at point (also written to the target's local[3]) */
+    void *ctl;              /* 0x4C: its +0xB4 is the pad (buttons 0x40 / 0x80 = +-z, 0x400 = stick xy) */
+} FreeCam;
+
+/* CamFollow (game_libs, 0x3C, vtbl gl Data 0x1E878): a debug orbit controller on its parent camera (Node +0x14):
+ * pans camera and target by owner's pan vector (button 0x200), and orbits the eye about the target by +-2 degrees
+ * (buttons 1 / 2 about Y, 4 / 8 about the view's right axis). It does not follow the rider. */
+typedef struct CamFollow {
+    char node[0x14];
+    MCamera *cam;           /* 0x14: Node parent */
+    char pad18[0x2C - 0x18];
+    CamVec3 unk2C;          /* 0x2C: cleared by the ctor */
+    void *owner;            /* 0x38: +0xB4 pad, +0xD4..0xDC pan vector, +0x110 window */
+} CamFollow;
 
 /* one 0x18-byte float parm (the same layout as snowboarder.h SnowBParm) */
 typedef struct CamParm {
@@ -146,6 +231,24 @@ CAM_ASSERT(SnowChaseActor, parms.off.value, 0x68);
 CAM_ASSERT(SnowChaseActor, parms.xxz.value, 0x88);
 CAM_ASSERT(SnowChaseActor, parms.cxz.value, 0x118);
 CAM_ASSERT(SnowChaseActor, parms.chy.value, 0x130);
+CAM_ASSERT(MCamera, view, 0xB4);
+CAM_ASSERT(MCamera, target, 0xF4);
+CAM_ASSERT(MCamera, lookDir, 0x104);
+CAM_ASSERT(MCamera, rotEnable, 0x130);
+CAM_ASSERT(MCamera, up, 0x140);
+CAM_ASSERT(MCamera, fov, 0x14C);
+CAM_ASSERT(RiderCam, rider, 0x154);
+CAM_ASSERT(CamDirector, window, 0x2C);
+CAM_ASSERT(CamDirector, pad, 0x38);
+CAM_ASSERT(CamDirector, manual, 0x4C);
+CAM_ASSERT(FreeCam, pos, 0x40);
+CAM_ASSERT(CamFollow, owner, 0x38);
+typedef char cam_assert_mnode_size[sizeof(CamMNode) == 0xB4 ? 1 : -1];
+typedef char cam_assert_mcamera_size[sizeof(MCamera) == 0x150 ? 1 : -1];
+typedef char cam_assert_ridercam_size[sizeof(RiderCam) == 0x15C ? 1 : -1];
+typedef char cam_assert_director_size[sizeof(CamDirector) == 0x50 ? 1 : -1];
+typedef char cam_assert_freecam_size[sizeof(FreeCam) == 0x50 ? 1 : -1];
+typedef char cam_assert_follow_size[sizeof(CamFollow) == 0x3C ? 1 : -1];
 typedef char cam_assert_cam_size[sizeof(SnowChaseActorCam) == 0x124 ? 1 : -1];
 typedef char cam_assert_look_size[sizeof(SnowChaseActorLook) == 0x64 ? 1 : -1];
 typedef char cam_assert_actor_size[sizeof(SnowChaseActor) == 0x138 ? 1 : -1];

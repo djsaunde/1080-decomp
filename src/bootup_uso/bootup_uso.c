@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/snowboarder.h"
+#include "game/camera.h"
 #include "audio.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
@@ -1321,22 +1322,23 @@ void stream_readQuad_000023C8(Quad4 *dst) {
  * materialises as `lui 0; addiu 0` post-link, byte-identical to the target's
  * reloc-stripped `lui (0x0>>16); addiu 0x0`). */
 extern char D_0000731C;
-int *CamDirector_ctor(int *a0, int a1, int a2, int a3, int s4, int s5) {
+/* include/game/camera.h CamDirector (agent-g run 475 field form) */
+CamDirector *CamDirector_ctor(CamDirector *a0, int pad, int rider, int window, int cam0, int cam1) {
     if (a0 == 0) {
-        a0 = (int*)func_00000000(0x50);
+        a0 = (CamDirector *)func_00000000(0x50);
         if (a0 == 0) goto end;
     }
-    func_00000000(a0, &D_0000731C);
-    *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
-    *(int*)((char*)a0 + 0x38) = a1;
-    *(int*)((char*)a0 + 0x40) = a2;
-    *(int*)((char*)a0 + 0x2C) = a3;
-    *(int*)((char*)a0 + 0x30) = s4;
-    *(int*)((char*)a0 + 0x34) = s5;
-    *(int*)((char*)a0 + 0x3C) = 0;
-    *(int*)((char*)a0 + 0x44) = 0;
-    *(int*)((char*)a0 + 0x48) = 0x2710;
-    *(int*)((char*)a0 + 0x4C) = 0;
+    func_00000000(a0, &D_0000731C); /* Node init, "<Node>" */
+    *(int*)((char*)a0 + 0x28) = (int)&D_00000000; /* vptr (Data 0x6FD8) */
+    a0->pad = (struct RiderInput *)pad;
+    a0->rider = (SnowBoarder *)rider;
+    a0->window = (CamWindow *)window;
+    a0->cams[0] = (MCamera *)cam0;
+    a0->cams[1] = (MCamera *)cam1;
+    a0->activeCam = 0;
+    a0->lastCamNode = 0;
+    a0->pollTimer = 10000;
+    a0->manual = 0;
 end:
     return a0;
 }
@@ -1516,15 +1518,15 @@ void CamDirector_update(char *arg0) {
     }
 }
 
-void CamDirector_setActiveCam(char *a0, int a1) {
-    if (*(int*)(a0 + 0x18) & 8) {
-        char *p;
-        *(int*)(a0 + 0x3C) = a1;
-        *(int*)(*(char**)(a0 + 0x2C) + 0x70) = ((int*)a0)[a1 + 12];
-        p = *(char**)(*(char**)(a0 + 0x2C) + 0x70) + 0x134;
-        *(float*)(p + 8) = 0.0f;
-        *(float*)(p + 4) = 0.0f;
-        *(float*)p = 0.0f;
+void CamDirector_setActiveCam(CamDirector *a0, int a1) {
+    if (*(int*)((char *)a0 + 0x18) & 8) { /* Node flag 8: enabled */
+        f32 *p;
+        a0->activeCam = a1;
+        a0->window->cam = a0->cams[a1];
+        p = &a0->window->cam->pitch;
+        p[2] = 0.0f; /* unk13C */
+        p[1] = 0.0f; /* yaw */
+        p[0] = 0.0f; /* pitch */
     }
 }
 
