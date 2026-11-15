@@ -23584,14 +23584,13 @@ void Mem_init(int *a0, int *a1, int *a2) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0005B070)();
-typedef struct Blk5B070 { u32 hdr; struct Blk5B070 *next; struct Blk5B070 *prev; u32 magic; } Blk5B070;
-typedef struct { u32 x0; Blk5B070 *next; char pad8[8]; char list[0x10]; s32 id; s32 used; } Heap5B070;
-u8 *Mem_allocLow(Blk5B070 *h, u32 size) {
+#include "gdl/mem.h"
+u8 *Mem_allocLow(MemBlock *h, u32 size) {
     extern void gl_ref_0006F620(); /* baked in-unit jal 0x0C01BD88 (game_libs_func_0005AFB0 entry 0x5AFB4) */
-    Blk5B070 *b;
-    Blk5B070 *p;
-    Blk5B070 *r;
-    Blk5B070 *nx;
+    MemBlock *b;
+    MemBlock *p;
+    MemBlock *r;
+    MemBlock *nx;
     u32 n;
     s32 d;
     u8 *q;
@@ -23615,22 +23614,22 @@ u8 *Mem_allocLow(Blk5B070 *h, u32 size) {
         b->next->prev = b->prev;
         b->prev->next = b->next;
     } else {
-        r = (Blk5B070 *)((char *)b + n * 16) + 1;
+        r = (MemBlock *)((char *)b + n * 16) + 1;
         r->next = b->next;
         r->prev = b->prev;
         r->next->prev = r;
         r->prev->next = r;
         r->hdr = b->hdr - n - 1;
-        r->magic = 0x87654321;
+        r->magic = MEM_MAGIC_FREE;
     }
-    gl_ref_0006F620(b, (((Heap5B070 *)h)->id << 24) + n, ((Heap5B070 *)h)->list, n);
+    gl_ref_0006F620(b, (((MemHeap *)h)->id << 24) + n, (char *)&((MemHeap *)h)->usedList, n);
     q = (u8 *)(b + 1);
     c = q;
     for (i = 0; i != size; i++) {
         *(p8 = c, c = p8 + 1, p8) = 0xFF;
     }
-    ((Heap5B070 *)h)->used += b->hdr & 0xFFFFFF;
-    b->magic = 0x12345678;
+    ((MemHeap *)h)->usedSize += b->hdr & 0xFFFFFF;
+    b->magic = MEM_MAGIC_ALLOC;
     return q;
 }
 
@@ -23645,11 +23644,11 @@ u8 *Mem_allocLow(Blk5B070 *h, u32 size) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0005B23C)();
-u8 *Mem_allocHigh(Blk5B070 *h, u32 size) {
+u8 *Mem_allocHigh(MemBlock *h, u32 size) {
     extern void gl_ref_0006F620();
-    Blk5B070 *r;
-    Blk5B070 *b;
-    Blk5B070 *p;
+    MemBlock *r;
+    MemBlock *b;
+    MemBlock *p;
     u32 n;
     s32 d;
     u8 *q;
@@ -23675,16 +23674,16 @@ u8 *Mem_allocHigh(Blk5B070 *h, u32 size) {
         b->prev->next = b->next;
     } else {
         b->hdr = b->hdr - n - 1;
-        r = (Blk5B070 *)((char *)b + (b->hdr & 0xFFFFFF) * 16) + 1;
+        r = (MemBlock *)((char *)b + (b->hdr & 0xFFFFFF) * 16) + 1;
     }
-    gl_ref_0006F620(r, (((Heap5B070 *)h)->id << 24) + n, ((Heap5B070 *)h)->list, n);
+    gl_ref_0006F620(r, (((MemHeap *)h)->id << 24) + n, (char *)&((MemHeap *)h)->usedList, n);
     q = (u8 *)(r + 1);
     c = q;
     for (i = 0; i != size; i++) {
         *(p8 = c, c = p8 + 1, p8) = 0xFF;
     }
-    ((Heap5B070 *)h)->used += r->hdr & 0xFFFFFF;
-    r->magic = 0x12345678;
+    ((MemHeap *)h)->usedSize += r->hdr & 0xFFFFFF;
+    r->magic = MEM_MAGIC_ALLOC;
     return q;
 }
 
@@ -23701,21 +23700,16 @@ u8 *Mem_allocHigh(Blk5B070 *h, u32 size) {
  * header word h is reused for the prev pointer (the second merge then sits in
  * v1, and the b spill lands at 28(sp)); `h + 1 + size` gives addu v1,t2. */
 extern int gl_func_00000000();
-typedef struct Blk5B3E0 {
-    u32 hdr;                       /* top byte flags, low 24 bits = size in 16-byte units */
-    struct Blk5B3E0 *next;
-    struct Blk5B3E0 *prev;
-} Blk5B3E0;
-extern void gl_ref_0006F620(Blk5B3E0 *node, u32 hdr, Blk5B3E0 *anchor); /* game_libs_func_0005AFB0 entry 0x5AFB4 */
-void Mem_free(Blk5B3E0 *heap, char *ptr) {
-    Blk5B3E0 *b;
-    Blk5B3E0 *q;
-    Blk5B3E0 *p;
+extern void gl_ref_0006F620(MemBlock *node, u32 hdr, MemBlock *anchor); /* game_libs_func_0005AFB0 entry 0x5AFB4 */
+void Mem_free(MemBlock *heap, char *ptr) {
+    MemBlock *b;
+    MemBlock *q;
+    MemBlock *p;
     u32 h;
 
-    b = (Blk5B3E0 *) (ptr - 0x10);
+    b = (MemBlock *) (ptr - 0x10);
     gl_func_00000000(heap, b);
-    *(s32 *) ((char *) heap + 0x24) -= b->hdr & 0xFFFFFF;
+    ((MemHeap *) heap)->usedSize -= b->hdr & 0xFFFFFF;
     p = heap->next;
     q = heap;
     while (p != heap && q == heap) {
@@ -23729,13 +23723,13 @@ void Mem_free(Blk5B3E0 *heap, char *ptr) {
     gl_ref_0006F620(b, (b->hdr & 0xFFFFFF) + 0xFF000000, q);
     h = b->hdr;
     p = b->next;
-    if (p == (Blk5B3E0 *) ((char *) b + (h & 0xFFFFFF) * 16 + 16)) {
+    if (p == (MemBlock *) ((char *) b + (h & 0xFFFFFF) * 16 + 16)) {
         b->hdr = h + 1 + (p->hdr & 0xFFFFFF);
         p->next->prev = b;
         b->next = b->next->next;
     }
     h = (u32) b->prev;
-    if (b == (Blk5B3E0 *) ((char *) h + (((Blk5B3E0 *) h)->hdr & 0xFFFFFF) * 16 + 16)) {
+    if (b == (MemBlock *) ((char *) h + (((MemBlock *) h)->hdr & 0xFFFFFF) * 16 + 16)) {
         *(s32 *) h += (b->hdr & 0xFFFFFF) + 1;
         b->next->prev = b->prev;
         b->prev->next = b->next;
@@ -23834,18 +23828,18 @@ void game_libs_func_0005B680(int a0, int a1) {
  * ARG: the call is gl_func(&D+ofs, a0->0x20, a1[3], a1) (4 args, a1[3] passed
  * BY VALUE before the store), not the 3-arg form. Ported the donor's exact
  * match-form. */
-void Mem_checkFree(int *a0, int *a1) {
-    if (a1[3] != 0x12345678) {
-        gl_func_00000000((char*)&D_00000000 + 0x21A0C, *(int*)((char*)a0 + 0x20), a1[3], a1);
+void Mem_checkFree(MemHeap *heap, MemBlock *b) {
+    if (b->magic != MEM_MAGIC_ALLOC) {
+        gl_func_00000000((char*)&D_00000000 + 0x21A0C, heap->id, b->magic, b);
     }
-    a1[3] = 0x87654321;
+    b->magic = MEM_MAGIC_FREE;
 }
 
-void Mem_checkAlloc(int *a0, int *a1) {
-    if (a1[3] != 0x87654321) {
-        gl_func_00000000((char*)&D_00000000 + 0x21A20, *(int*)((char*)a0 + 0x20), a1[3], a1);
+void Mem_checkAlloc(MemHeap *heap, MemBlock *b) {
+    if (b->magic != MEM_MAGIC_FREE) {
+        gl_func_00000000((char*)&D_00000000 + 0x21A20, heap->id, b->magic, b);
     }
-    a1[3] = 0x12345678;
+    b->magic = MEM_MAGIC_ALLOC;
 }
 
 /* Mem_countBlocks: circular-DLL node counter (excludes anchor). The
