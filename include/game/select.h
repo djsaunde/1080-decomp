@@ -234,8 +234,9 @@ struct SelectWin;
 
 typedef struct SelectionMgr {
     char pad00[0x2C];
-    char *sceneSet;         /* 0x2C: ctor arg 5; +0 root (its +0x5C +0x38 / +0x3C get the two
-                             * windows), +4 / +8 the per-player scene handed to each SelectWin */
+    char *sceneSet;         /* 0x2C: ctor arg 5, a GenScene (gen_createScene): room->modifier
+                             * +0x38 / +0x3C get the two windows; cam / cam2 are handed to each
+                             * SelectWin as its scene */
     s32 numPlayers;         /* 0x30 */
     struct SelectWin *wins[2]; /* 0x34 */
     char pad3C[0x48 - 0x3C];
@@ -339,6 +340,17 @@ typedef struct GenRoom {
                              * children of the "BGBox2" BGBox (gen_createVRBox) */
     char *modifier;         /* 0x5C: RoomModifier_ctor */
 } GenRoom;                  /* 0x60 */
+
+/* The select scene (gen_createScene_00008DB4, alloc 0xC; = SelectionMgr.sceneSet). It also
+ * builds the "MainGame" node with its "bg" / "fg" children (game_setParams(app, fg, bg,
+ * MainGame)) and hangs MainGame under the app root. */
+typedef struct GenScene {
+    GenRoom *room;          /* 0x0: gen_buildRoom(0, numPlayers) */
+    char *cam;              /* 0x4: player 0's camera: gen_createCamera(0, 1, 1, 0x3C) with 1 player,
+                             * (0, 1, 2, 0x29) with 2 (= SelectWin.scene of player 0) */
+    char *cam2;             /* 0x8: 2 players only: gen_createCamera(0, 2, 3, 0x29); its +0xC +0x1B8
+                             * gets cam's +0xC */
+} GenScene;                 /* 0xC */
 
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
 SELECT_ASSERT(parmi_size, sizeof(SelParmI) == 0x18);

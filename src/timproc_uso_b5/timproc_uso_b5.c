@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/select.h"
+#include "gdl/node.h"
 #include "uso_call.h"
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
@@ -1088,42 +1089,42 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
         gen_imp_Node_ctor(arg0, &timproc_uso_b5_D_807FE940 + 0x10D0);
         FW(arg0, 0x28) = (int)&timproc_uso_b5_D_807FE7E0;
         FW(arg0, 0xC) = (int)(&timproc_uso_b5_D_807FE7E0 + 0x10D8);
-        FW(arg0, 0x30) = d;
-        FW(arg0, 0x2C) = (int)E;
+        ((SelectionMgr *)arg0)->numPlayers = d;
+        ((SelectionMgr *)arg0)->sceneSet = E;
         if (d == 1) {
-            w = SelectWin_ctor(0, arg0, arg1, 1, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE958 + 0x10E8, 0);
-            FW(arg0, 0x34) = w;
+            w = SelectWin_ctor(0, arg0, arg1, 1, 0, arg3, arg4, arg6, E, ((GenScene *)E)->cam, &timproc_uso_b5_D_807FE958 + 0x10E8, 0);
+            ((SelectionMgr *)arg0)->wins[0] = (SelectWin *)w;
             SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
-            w = FW(arg0, 0x34);
+            w = (char *)((SelectionMgr *)arg0)->wins[0];
             gen_imp_list_append(arg0 + 0x10, w);
             if (FW(w, 0x14) != 0) {
                 FW(w, 0x4) = 1;
             }
             FW(w, 0x14) = arg0;
-            FW(FW(FW(E, 0x0), 0x5C), 0x38) = (char *) FW(arg0, 0x34);
+            FW(((GenScene *)E)->room->modifier, 0x38) = (int)((SelectionMgr *)arg0)->wins[0];
         } else {
-            w = SelectWin_ctor(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
-            FW(arg0, 0x34) = w;
+            w = SelectWin_ctor(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, ((GenScene *)E)->cam, &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
+            ((SelectionMgr *)arg0)->wins[0] = (SelectWin *)w;
             SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
-            w = FW(arg0, 0x34);
+            w = (char *)((SelectionMgr *)arg0)->wins[0];
             sp4C = arg0 + 0x10;
             gen_imp_list_append(sp4C, w);
             if (FW(w, 0x14) != 0) {
                 FW(w, 0x4) = 1;
             }
             FW(w, 0x14) = arg0;
-            FW(FW(FW(E, 0x0), 0x5C), 0x38) = (char *) FW(arg0, 0x34);
-            w = SelectWin_ctor(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, FW(E, 0x8), &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
-            FW(arg0, 0x38) = w;
+            FW(((GenScene *)E)->room->modifier, 0x38) = (int)((SelectionMgr *)arg0)->wins[0];
+            w = SelectWin_ctor(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, ((GenScene *)E)->cam2, &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
+            ((SelectionMgr *)arg0)->wins[1] = (SelectWin *)w;
             SelectWin_init_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &gInputMgr_800200FC + 0x60, &gInputMgr_800200FC + 0x64);
-            w = FW(arg0, 0x38);
+            w = (char *)((SelectionMgr *)arg0)->wins[1];
             gen_imp_list_append(sp4C, w);
             if (FW(w, 0x14) != 0) {
                 FW(w, 0x4) = 1;
             }
             FW(w, 0x14) = arg0;
-            FW(FW(FW(E, 0x0), 0x5C), 0x3C) = (char *) FW(arg0, 0x38);
-            if (FW(FW(arg0, 0x34), 0x3C8) != 4) {
+            FW(((GenScene *)E)->room->modifier, 0x3C) = (int)((SelectionMgr *)arg0)->wins[1];
+            if (((SelectionMgr *)arg0)->wins[0]->stageBit != 4) {
                 FW(arg0, 0x3C) = 0;
                 FW(arg0, 0x40) = 0;
                 FW(arg0, 0x44) = 0x78;
@@ -5511,9 +5512,10 @@ void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
     w->cheatTimer = *(int *)((char *)&D_00000000 + 0xF18);
 }
 
-// gen_createScene_00008DB4 — STRUCTURAL PASS w/ REAL SYMBOLS
-// (0x1E4 / 121 words, no episode). Timing-screen sub-panel constructor
-// (alloc-or-reuse); returns self. Default build is INCLUDE_ASM.
+// gen_createScene_00008DB4 (0x1E4 / 121 words, EXACT, see 2026-07-08 below): builds the
+// select scene (GenScene, include/game/select.h): the "MainGame" node with its "bg" / "fg"
+// children under the app root, the room, and one camera per player. Returns self.
+// History:
 //
 // 2026-06-20: rewrote the NM body to reference the RESOLVED .s symbols
 // (gen_imp_mem_new/002C94/04C678/002060/07ACE0/0000131C/
@@ -5588,31 +5590,31 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     B = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB0 + 0x1340);
     C = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB4 + 0x1344);
     gen_imp_game_setParams_00002060(*(char **)((char *)&import_800201CC + 0x134), C, B, A, 0, 0);
-    gen_imp_list_append(A + 0x10, B);
-    if (*(char **)(B + 0x14) != 0) {
-        *(int *)(B + 0x4) = 1;
+    gen_imp_list_append(&NODE(A)->children, B);
+    if (NODE(B)->parent != 0) {
+        NODE(B)->unk04 = 1;
     }
-    *(char **)(B + 0x14) = A;
-    gen_imp_list_append(A + 0x10, C);
+    NODE(B)->parent = (int)A;
+    gen_imp_list_append(&NODE(A)->children, C);
     if (1) { }
-    if (*(char **)(C + 0x14) != 0) {
-        *(int *)(C + 0x4) = 1;
+    if (NODE(C)->parent != 0) {
+        NODE(C)->unk04 = 1;
     }
-    *(char **)(C + 0x14) = A;
+    NODE(C)->parent = (int)A;
     gen_imp_list_append((char *)&import_800200A8 + 0x10, A);
-    if (*(char **)(A + 0x14) != 0) {
-        *(int *)(A + 0x4) = 1;
+    if (NODE(A)->parent != 0) {
+        NODE(A)->unk04 = 1;
     }
-    *(char **)(A + 0x14) = (char *)&import_80020098;
-    *(int *)(self + 0x00) = gen_buildRoom_0000131C(0, a1);
+    NODE(A)->parent = (int)&import_80020098;
+    ((GenScene *)self)->room = gen_buildRoom_0000131C(0, a1);
     if (a1 == 1) {
-        *(int *)(self + 0x04) = gen_createCamera_0000283C(0, 1, 1, 0x3C);
+        ((GenScene *)self)->cam = (char *)gen_createCamera_0000283C(0, 1, 1, 0x3C);
         goto end;
     }
-    *(int *)(self + 0x04) = gen_createCamera_0000283C(0, 1, 2, 0x29);
+    ((GenScene *)self)->cam = (char *)gen_createCamera_0000283C(0, 1, 2, 0x29);
     p39c = (char *)gen_createCamera_0000283C(0, 2, 3, 0x29);
-    *(char **)(self + 0x08) = p39c;
-    *(int *)(*(char **)(p39c + 0x0C) + 0x1B8) = *(int *)(*(char **)(self + 0x04) + 0x0C);
+    ((GenScene *)self)->cam2 = p39c;
+    *(int *)(*(char **)(p39c + 0x0C) + 0x1B8) = *(int *)(((GenScene *)self)->cam + 0x0C);
 end:
     return self;
 }
