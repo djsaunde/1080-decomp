@@ -70,12 +70,20 @@
  * the remaining slot order, kit CDXCIX). */
 extern "C" void *game_uso_func_055750(unsigned);
 template <class T> inline const T &KR1(const T &r) { const T *p = &r; if (0) { p = 0; } return *p; } /* kept const-ref identity with a dead block */
+/* agent-c run 423 (kit DVII): the same dead-block identity written with parameters only. Its pointer is a pooled
+ * edg VREG, so it adds no frame word (KR1's named `p` gets its own word at every expansion). */
+template <class T> inline const T *KP(const T *p) { if (0) { p = 0; } return p; }
+template <class T> inline const T &KR2(const T &r) { return *KP(&r); }
 struct Vec3 {
     void *operator new(unsigned n) { return game_uso_func_055750(n); }
     float x, y, z;
     Vec3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3(float a, float b, float c) { set(a, b, c); }
+    /* agent-h run 422 (kit DVI, scratch h422/46): kept float / int dummies that hoist the x product into its own
+     * def / use block, so the else-arm product slots and dot take the target's FP registers */
+    Vec3(float a, float d1, float d2, float b, float c, int, int, int, int, int, int, int, int, int, int, int, int, int) { d1 = d1; d2 = d2; set(a, b, c); }
+    Vec3(float a, float b, float c, float d, int) { d = d; set(a, b, c); }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     Vec3 &operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
     Vec3 &operator*=(float s) { x = x * s; y = y * s; z = z * s; return *this; }
@@ -91,6 +99,11 @@ struct XZ : Vec3 {
     /* run 415: XZ's own copy of Vec3::operator* (only `e * dot` uses it; the dir products are byte-identical
      * either way): the else-arm product's float temps leave the Vec3 operator's words, 97.458 -> 97.472 */
     Vec3 operator*(float s) const { return KR1(Vec3(x * s, y * s, z * s)); }
+    /* agent-h run 422: e * dot and the first flag-arm product through the hoisting ctors above. mvf alone grew the
+     * frame 528 -> 536 (its fifth float slot); agent-c run 423: mvf and its `+=` operand through KR2 instead of KR1
+     * give the two named words back (frame 528, pool a2 at sp+372), 98.508 -> 98.550 */
+    Vec3 mv(float s) const { return KR1(Vec3(x * s, x, x, y * s, z * s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
+    Vec3 mvf(float s) const { return KR2(Vec3(x * s, y * s, z * s, x, 0)); }
     /* agent-h run 414: code-free block splits inside the plain-return (subp1 / subp2 / perp) chain temps' ctor:
      * their `this` address LRs grow from 7 to 11 blocks, uopt priority 3/3 = 1.0 -> 3/4 = 0.75 */
     XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} }
@@ -121,7 +134,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
         float dot = lenf; /* run 415: one named dot read by both operands, 97.289 -> 97.458, frame 528 */
         K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
         s->p84 = s->p90;
-        s->p84 += KR1(dir * (dot + (s->w->speed * s->kDC) / 2));
+        s->p84 += KR2(dir.mvf(dot + (s->w->speed * s->kDC) / 2));
         s->p90 += dir * (dot - (s->w->speed * s->kDC) / 2);
         s->phase = 0;
     } else {
@@ -139,10 +152,12 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             const Vec3 &h = subp2((int)a, (int)a, s->p90, a->pos);
             float dot = h.x * e.x + e.z * h.z; /* run 422: the h.e partial in a uopt register (target f12, no ring pop) */
             dot += K3(s)->w->speed * K3(s)->kDC;
-            K1(s)->p84 += e * dot;
+            K1(s)->p84 += e.mv(dot);
             side *= (250.0f * b->width) * s->kE0; /* the target muls 250 * width first, then kE0 (run 422: as the left operand) */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
-            switch (s->phase &= 3) {
+            /* agent-c run 423: the switch reads the stored phase back through a kept pointer identity, so the masked
+             * value is no uopt live range (v0) but a ugen temp (t8 / t9, as in the target), 98.550 -> 98.719 */
+            switch (*K3(&(s->phase &= 3))) {
             case 0:
                 side *= 0.0f;
                 break;
