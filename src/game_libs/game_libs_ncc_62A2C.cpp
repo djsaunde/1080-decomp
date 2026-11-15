@@ -40,60 +40,64 @@ struct V3c {
     V3c &operator=(const V3c &v) { set(v); return *this; }
 };
 
-struct Pose {
-    V3 a;           /* 0x00 */
-    V3 b;           /* 0x0C */
-    V3c c;          /* 0x18 */
-    float d;        /* 0x24 */
+/* Local C++ views of include/gdl/anim.h's AnimPose / Animator with its field names
+ * (agent-b run 489); the member classes (V3 by value, V3c by reference) carry the match. */
+struct AnimPose {
+    V3 trans;       /* 0x00 */
+    V3 scale;       /* 0x0C */
+    V3c quat;       /* 0x18 x y z */
+    float quatW;    /* 0x24 */
 };
 
 struct Pair { V3 v; V3 w; };
 
-struct Listener {
+struct Listener {   /* the animated node */
     char pad[0x28];
     virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
     virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
     virtual void m8();
-    virtual void notify(void *src);     /* vtable +0x50 / +0x54 */
+    virtual void notify(void *src);     /* vtable +0x50 / +0x54 (slot 9) */
 };
 
-struct Blend {
+struct Animator {
     char pad0[0x4C];
-    int w4C;            /* 0x4C */
-    int w50;            /* 0x50 */
-    Listener *w54;      /* 0x54 */
+    int unk4C;          /* 0x4C */
+    int unk50;          /* 0x50 */
+    Listener *target;   /* 0x54 */
     char pad58[0x28];
-    Pose cur;           /* 0x80 */
+    AnimPose cur;       /* 0x80 */
     char padA8[0x28];
-    Pose dst;           /* 0xD0 */
+    AnimPose dst;       /* 0xD0 */
 };
 
 extern "C" {
-void gl_func_00000000_62a2c_get(void *, int, void *);
-void gl_func_00000000_62a2c_lerp(void *, void *, float, int);
+void gl_func_00000000_62a2c_get(void *, int, void *);           /* anim_unpackKey(animator, record, out) */
+void gl_func_00000000_62a2c_lerp(void *, void *, float, int);   /* math_quatSlerp */
 }
 
-extern "C" void anim_blendPose(Blend *o, int from, int to, float t, int mode, float t2) {
-    Pose x;
+/* key0 / key1: the AnimNodeKey records of frame0 / frame1 for this node; frac: time - frame0;
+ * blendLeft != 0: blend dst from cur toward the keyed pose by blendWeight (docs/1080_GRAPHICS.md 11) */
+extern "C" void anim_blendPose(Animator *o, int key0, int key1, float frac, int blendLeft, float blendWeight) {
+    AnimPose x;
     float q[4];
     Pair p;
 
-    o->w50 = 22;
-    o->w4C = 7;
-    gl_func_00000000_62a2c_get(o, from, &x);
-    gl_func_00000000_62a2c_get(o, to, &p.v);
-    gl_func_00000000_62a2c_lerp(&x.c, q, t, 0);
-    x.a.lerp(p.v, t);
-    if (mode != 0) {
+    o->unk50 = 22;
+    o->unk4C = 7;
+    gl_func_00000000_62a2c_get(o, key0, &x);
+    gl_func_00000000_62a2c_get(o, key1, &p.v);
+    gl_func_00000000_62a2c_lerp(&x.quat, q, frac, 0);
+    x.trans.lerp(p.v, frac);
+    if (blendLeft != 0) {
         o->dst = o->cur;
-        gl_func_00000000_62a2c_lerp(&o->dst.c, &x.c, t2, 0);
-        o->dst.a.lerp(x.a, t2);
+        gl_func_00000000_62a2c_lerp(&o->dst.quat, &x.quat, blendWeight, 0);
+        o->dst.trans.lerp(x.trans, blendWeight);
     } else {
         o->dst = x;
     }
-    if (mode < 2) {
+    if (blendLeft < 2) {
         o->cur = o->dst;
     }
-    o->dst.b.x = 1.0f;
-    o->w54->notify(o);
+    o->dst.scale.x = 1.0f;
+    o->target->notify(o);
 }

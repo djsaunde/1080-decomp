@@ -27618,35 +27618,39 @@ void AnimGroup_load(AnimGroup *self, int a1) {
  * IDO then moves a0 into s2 at the top of the prologue as the target does
  * (param-reassign lever, same as the || alloc-fallback constructor kit). */
 extern int gl_func_00000000();
-int AnimDataMgr_initSlots(int *s2, int count, int a2) {
+/* (agent-b run 489: anim.h field names; the slot address stays `slots + byte offset`,
+ * the loops' two-IV shape is the match) */
+#define SLOT_AT(c, off) ((AnimFrameSlot *)((c)->slots + (off)))
+int AnimDataMgr_initSlots(AnimFrameCache *s2, int count, int poseBytes) {
     int i, off;
     if (s2 == 0) {
-        s2 = (int *)gl_func_00000000(8);
+        s2 = (AnimFrameCache *)gl_func_00000000(8);
         if (s2 == 0) goto end;
     }
-    s2[1] = count;
-    s2[0] = gl_func_00000000(count * 20);
-    for (i = 0, off = 0; i < s2[1]; i++, off += 20) {
-        *(int *)(s2[0] + off) = gl_func_00000000(a2);
-        *(int *)(s2[0] + off + 4) = -1;
-        *(int *)(s2[0] + off + 8) = 0;
-        *(int *)(s2[0] + off + 12) = 0;
+    s2->count = count;
+    s2->slots = gl_func_00000000(count * 20);
+    for (i = 0, off = 0; i < s2->count; i++, off += 20) {
+        SLOT_AT(s2, off)->pose = gl_func_00000000(poseBytes);
+        SLOT_AT(s2, off)->frame = -1;
+        SLOT_AT(s2, off)->anim = 0;
+        SLOT_AT(s2, off)->inUse = 0;
     }
 end:
     return (int)s2;
 }
 
-void AnimFrameCache_releaseAll(int *a0) {
-    int v0 = 0;
-    int v1 = 0;
-    if (a0[1] > 0) {
+void AnimFrameCache_releaseAll(AnimFrameCache *c) {
+    int i = 0;
+    int off = 0;
+    if (c->count > 0) {
         do {
-            v0++;
-            *(int *)(a0[0] + v1 + 12) = 0;
-            v1 += 20;
-        } while (v0 < a0[1]);
+            i++;
+            SLOT_AT(c, off)->inUse = 0;
+            off += 20;
+        } while (i < c->count);
     }
 }
+#undef SLOT_AT
 
 /* AnimDataMgr_allocSlot: 26-insn alloc-empty-slot + 21-insn lookup-by-key BUNDLE (0xBC declared).
  *
@@ -27673,21 +27677,23 @@ void AnimFrameCache_releaseAll(int *a0) {
  * 0x68 now). EXACT: unwrapped 2026-10-16 (callee and data symbols are both
  * at 0, so the jal and HI/LO words link to the ROM words).
  */
+/* (agent-b run 489) self is reused as the slot cursor (an int * walking 5 words = one
+ * AnimFrameSlot); self[3] is the slot's inUse word. */
 int AnimDataMgr_allocSlot(int *self) {
     extern int D_00000000;
     int count;
     int i;
-    count = self[1];
+    count = ((AnimFrameCache *)self)->count;
     i = 0;
     if (count <= 0) goto fail;
-    self = (int *)self[0];
+    self = (int *)((AnimFrameCache *)self)->slots;
 loop:
-    if (self[3] == 0) {
-        self[3] = 1;
+    if (((AnimFrameSlot *)self)->inUse == 0) {
+        ((AnimFrameSlot *)self)->inUse = 1;
         return i;
     }
     i++;
-    self += 5;
+    self += sizeof(AnimFrameSlot) / 4;
     if (i < count) goto loop;
 fail:
     gl_func_00000000((char *)&D_00000000 + 0x220C4);
