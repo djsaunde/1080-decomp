@@ -1,5 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/gadget.h"
+#include "game/fader.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -75,21 +77,21 @@ void *Fader_ctor(arg0, arg1) void *arg0; s32 arg1; {
 derived:
     *(void **)(o + 0x28) = &D_12e00_c;
     *(void **)(o + 0xC) = &D_12e00_d;
-    *(s32 *)(o + 0x5C) = 32;
-    *(s32 *)(o + 0x60) = 32;
-    *(s32 *)(o + 0x64) = 1024;
-    *(s32 *)(o + 0x2C) = arg1;
-    *(f32 *)(o + 0x48) = 1.0f;
+    FADER(o)->cols = 32;
+    FADER(o)->rows = 32;
+    FADER(o)->cells = 1024;
+    FADER(o)->arg = arg1;
+    FADER(o)->progress = 1.0f;
     mark = (void *)func_00000000(0);
-    *(s32 *)(o + 0x4C) = func_00000000(0x800, 16);
-    *(s32 *)(o + 0x50) = func_00000000(0x400, 16);
-    *(s32 *)(o + 0x58) = func_00000000(0x1000);
-    *(s32 *)(o + 0x54) = func_00000000(0x1000);
+    FADER(o)->texture = (u16 *)func_00000000(0x800, 16);
+    FADER(o)->buf50 = func_00000000(0x400, 16);
+    FADER(o)->grid = (f32 *)func_00000000(0x1000);
+    FADER(o)->screenIdx = (s32 *)func_00000000(0x1000);
     func_00000000(mark);
-    *(f32 *)(o + 0x3C) = 1.0f;
-    *(f32 *)(o + 0x38) = 1.0f;
-    *(f32 *)(o + 0x34) = 1.0f;
-    *(f32 *)(o + 0x30) = 1.0f;
+    FADER(o)->colour[3] = 1.0f;
+    FADER(o)->colour[2] = 1.0f;
+    FADER(o)->colour[1] = 1.0f;
+    FADER(o)->colour[0] = 1.0f;
     cw = 10.0f;
     ch = 7.5f;
     i = 0;
@@ -104,7 +106,7 @@ derived:
             if (y >= 240) {
                 yy = 239;
             }
-            (*(s32 **)(o + 0x54))[i] = yy * 320 + x;
+            FADER(o)->screenIdx[i] = yy * 320 + x;
             i++;
             x = (s32)((f32)(col + 1) * cw + cw / (f32)2);
             yy = y;
@@ -114,7 +116,7 @@ derived:
             if (y >= 240) {
                 yy = 239;
             }
-            (*(s32 **)(o + 0x54))[i] = yy * 320 + x;
+            FADER(o)->screenIdx[i] = yy * 320 + x;
             i++;
         }
     }
@@ -136,8 +138,8 @@ void Fader_display(char *arg0) {
 }
 
 int Fader_checkDone_00013924(int *a0) {
-    if (*(float*)((char*)a0 + 0x48) == 1.0f) {
-        if (*(int*)((char*)a0 + 0x68) == 0) {
+    if (FADER(a0)->progress == 1.0f) {
+        if (FADER(a0)->mode == 0) {
             func_00000000(&gGfxLib, 1);
         }
         return 1;
@@ -146,7 +148,7 @@ int Fader_checkDone_00013924(int *a0) {
 }
 
 int Fader_isDone_00013980(float *a0) {
-    if (*(float*)((char*)a0 + 0x48) == 1.0f) {
+    if (FADER(a0)->progress == 1.0f) {
         return 1;
     }
     return 0;
@@ -183,22 +185,22 @@ void Fader_start(char *s1, int a1, int a2) {
     int x, y, n;
     f32 sc;
 
-    *(int *)(s1 + 0x68) = a2;
+    FADER(s1)->mode = a2;
     if (a2 == 0) {
-        *(int *)(s1 + 0x6C) = 1;
-        *(int *)(s1 + 0x70) = 3;
+        FADER(s1)->unk6C = 1;
+        FADER(s1)->unk70 = 3;
     } else {
-        *(int *)(s1 + 0x6C) = 0;
+        FADER(s1)->unk6C = 0;
     }
-    if (a1 == *(int *)(s1 + 0x40)) {
+    if (a1 == FADER(s1)->key) {
         return;
     }
-    *(int *)(s1 + 0x40) = a1;
-    *(int *)(s1 + 0x44) = 4;
-    *(int *)(s1 + 0x74) = 0;
-    for (i = 0, y = 0; y < *(int *)(s1 + 0x60); y++) {
-        for (x = 0; x < *(int *)(s1 + 0x5C); x++) {
-            (*(float **)(s1 + 0x58))[i] = 0.0f;
+    FADER(s1)->key = a1;
+    FADER(s1)->state = 4;
+    FADER(s1)->unk74 = 0;
+    for (i = 0, y = 0; y < FADER(s1)->rows; y++) {
+        for (x = 0; x < FADER(s1)->cols; x++) {
+            FADER(s1)->grid[i] = 0.0f;
             i++;
         }
     }
@@ -208,11 +210,11 @@ void Fader_start(char *s1, int a1, int a2) {
     do {
         x = (int)(func_00000000_139B0_f() * 32.0f);
         y = (int)(func_00000000_139B0_f() * 32.0f);
-        (*(float **)(s1 + 0x58))[x + y * 32] = func_00000000_139B0_f() * sc;
+        FADER(s1)->grid[x + y * 32] = func_00000000_139B0_f() * sc;
         k++;
     } while (k < n);
     func_00000000_139B0_v(s1);
-    *(float *)(s1 + 0x48) = 0.0f;
+    FADER(s1)->progress = 0.0f;
 }
 
 /* Fader_buildTexture - verified structural decode (0x144, 84 insns,
@@ -269,13 +271,13 @@ void Fader_buildTexture(char *arg0) {
     if (1) { }
     vt = *(char **)(o + 0x28);
     pal = (*(u16 *(**)(char *, char *))(vt + 0x64))(o + *(s16 *)(vt + 0x60), arg0);
-    if (*(int *)(arg0 + 0x68) != 0) {
+    if (FADER(arg0)->mode != 0) {
         for (i = 0; i != 0x400; i++) {
-            (*(u16 **)(arg0 + 0x4C))[i] = pal[(*(s32 **)(arg0 + 0x54))[i]];
+            FADER(arg0)->texture[i] = pal[FADER(arg0)->screenIdx[i]];
         }
     } else {
         for (j = 0; j != 0x400; j++) {
-            (*(u16 **)(arg0 + 0x4C))[j] = 1;
+            FADER(arg0)->texture[j] = 1;
         }
     }
 }
@@ -329,8 +331,8 @@ char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 t2;
     if (self != 0 || (self = (char *)func_00000000(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)func_00000000(8)) != 0) {
-            *(char **)(p2 + 0) = &sStr_TimeGadget_Parms_CAAC;
-            *(int *)(p2 + 4) = 0;
+            TGPARMS(p2)->name = (s32)&sStr_TimeGadget_Parms_CAAC;
+            TGPARMS(p2)->unk04 = 0;
         }
         u1.v = sTag_xps_CAC0;
         t2 = u1;
@@ -372,21 +374,22 @@ char *TimeGadget_ctor_00013D40(char *self) {
     return self;
 }
 
+/* The three Gadget setters (a0 = the gadget): text position, label offsets, label sprites. */
 void TimeGadgetParms_setPos_00013FE0(char *a0, int a1, int a2) {
-    *(int*)(a0 + 0x44) = a1;
-    *(int*)(a0 + 0x5C) = a2;
+    GADGET(a0)->parms.xps.value = a1;
+    GADGET(a0)->parms.yps.value = a2;
 }
 
 void TimeGadgetParms_setLabelPos_00013FEC(char *a0, int a1, int a2, int a3, int arg5) {
-    *(int*)(a0 + 0x74) = a1;
-    *(int*)(a0 + 0x8C) = a2;
-    *(int*)(a0 + 0xA4) = a3;
-    *(int*)(a0 + 0xBC) = arg5;
+    GADGET(a0)->parms.lbx.value = a1;
+    GADGET(a0)->parms.lby.value = a2;
+    GADGET(a0)->parms.l2x.value = a3;
+    GADGET(a0)->parms.l2y.value = arg5;
 }
 
 void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
-    *(int*)(a0 + 0x104) = a1;
-    *(int*)(a0 + 0x108) = a2;
+    GADGET(a0)->label1 = a1;
+    GADGET(a0)->label2 = a2;
 }
 
 /* gadget_decodeStringE4_00014010 - verified structural decode (0xB4, 45 insns,
@@ -470,26 +473,26 @@ void TimeGadget_display_000140C4(char *s0) {
     int n;
     col[0] = 1.0f; col[1] = 1.0f; col[2] = 1.0f; col[3] = 1.0f;
     if (1) { }
-    if (*(int*)(s0 + 0x104)) {
-        func_00000000(*(int*)(s0 + 0x104));
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC));
-        func_00000000(*(int*)(s0 + 0x104), n, col, 0);
-        func_00000000(*(int*)(s0 + 0x104),
-                      *(int*)(s0 + 0x74) + *(int*)(s0 + 0x44),
-                      *(int*)(s0 + 0x8C) + *(int*)(s0 + 0x5C), 0);
+    if (GADGET(s0)->label1) {
+        func_00000000(GADGET(s0)->label1);
+        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC)); /* labelAlpha */
+        func_00000000(GADGET(s0)->label1, n, col, 0);
+        func_00000000(GADGET(s0)->label1,
+                      GADGET(s0)->parms.xps.value + GADGET(s0)->parms.lbx.value,
+                      GADGET(s0)->parms.yps.value + GADGET(s0)->parms.lby.value, 0);
     }
-    if (*(int*)(s0 + 0x108)) {
-        func_00000000(*(int*)(s0 + 0x108));
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8));
-        func_00000000(*(int*)(s0 + 0x108), n, col, 0);
-        func_00000000(*(int*)(s0 + 0x108),
-                      *(int*)(s0 + 0xA4) + *(int*)(s0 + 0x44),
-                      *(int*)(s0 + 0xBC) + *(int*)(s0 + 0x5C), 0);
+    if (GADGET(s0)->label2) {
+        func_00000000(GADGET(s0)->label2);
+        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+        func_00000000(GADGET(s0)->label2, n, col, 0);
+        func_00000000(GADGET(s0)->label2,
+                      GADGET(s0)->parms.xps.value + GADGET(s0)->parms.l2x.value,
+                      GADGET(s0)->parms.yps.value + GADGET(s0)->parms.l2y.value, 0);
     }
-    func_00000000(*(int*)(s0 + 0xE0));
-    n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8));
-    func_00000000(*(int*)(s0 + 0xE0), n, s0 + 0xC4, *(int*)(s0 + 0xD4));
-    func_00000000(*(int*)(s0 + 0xE0), *(int*)(s0 + 0x44), *(int*)(s0 + 0x5C), s0 + 0xE4);
+    func_00000000(GADGET(s0)->font);
+    n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+    func_00000000(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
+    func_00000000(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
 
 /* BestGadget_display_00014228 - 3-element draw/place dispatcher (twin of TimeGadget_display_000140C4).
@@ -538,26 +541,26 @@ void BestGadget_display_00014228(char *s0) {
     int n;
     col[0] = 1.0f; col[1] = 1.0f; col[2] = 1.0f; col[3] = 1.0f;
     if (1) { }
-    if (*(int*)(s0 + 0x104)) {
-        func_00000000(*(int*)(s0 + 0x104));
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC));
-        func_00000000(*(int*)(s0 + 0x104), n, col, 0);
-        func_00000000(*(int*)(s0 + 0x104),
-                      *(int*)(s0 + 0x74) + *(int*)(s0 + 0x44),
-                      *(int*)(s0 + 0x8C) + *(int*)(s0 + 0x5C), 0);
+    if (GADGET(s0)->label1) {
+        func_00000000(GADGET(s0)->label1);
+        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC)); /* labelAlpha */
+        func_00000000(GADGET(s0)->label1, n, col, 0);
+        func_00000000(GADGET(s0)->label1,
+                      GADGET(s0)->parms.xps.value + GADGET(s0)->parms.lbx.value,
+                      GADGET(s0)->parms.yps.value + GADGET(s0)->parms.lby.value, 0);
     }
-    if (*(int*)(s0 + 0x108)) {
-        func_00000000(*(int*)(s0 + 0x108));
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8));
-        func_00000000(*(int*)(s0 + 0x108), n, col, 0);
-        func_00000000(*(int*)(s0 + 0x108),
-                      *(int*)(s0 + 0xA4) + *(int*)(s0 + 0x44),
-                      *(int*)(s0 + 0xBC) + *(int*)(s0 + 0x5C), 0);
+    if (GADGET(s0)->label2) {
+        func_00000000(GADGET(s0)->label2);
+        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+        func_00000000(GADGET(s0)->label2, n, col, 0);
+        func_00000000(GADGET(s0)->label2,
+                      GADGET(s0)->parms.xps.value + GADGET(s0)->parms.l2x.value,
+                      GADGET(s0)->parms.yps.value + GADGET(s0)->parms.l2y.value, 0);
     }
-    func_00000000(*(int*)(s0 + 0xE0));
-    n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8));
-    func_00000000(*(int*)(s0 + 0xE0), n, s0 + 0xC4, *(int*)(s0 + 0xD4));
-    func_00000000(*(int*)(s0 + 0xE0), *(int*)(s0 + 0x44), *(int*)(s0 + 0x5C), s0 + 0xE4);
+    func_00000000(GADGET(s0)->font);
+    n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+    func_00000000(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
+    func_00000000(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
 
 /* TimeGadgetParms_ctor_0001438C - verified structural decode (0x128, 74 insns,

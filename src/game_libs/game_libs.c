@@ -33,13 +33,13 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x50007);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
         ((Gadget *)arg0)->unkD4 = 0;
-        ((Gadget *)arg0)->unkD8 = 0xFF;
-        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->alpha = 0xFF;
+        ((Gadget *)arg0)->labelAlpha = 0x82;
         ((Gadget *)arg0)->colour[0] = 250.0f / d255;
         ((Gadget *)arg0)->colour[1] = 235.0f / d255;
         ((Gadget *)arg0)->colour[2] = 100.0f / d255;
         ((Gadget *)arg0)->colour[3] = 0.0f / d255;
-        ((Gadget *)arg0)->arg = arg1;
+        ((Gadget *)arg0)->font = arg1;
         gl_func_00000000(arg0, -78, -1, -51, 0);
     }
     return arg0;
@@ -96,8 +96,8 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x5001D);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
         ((Gadget *)arg0)->unkD4 = 0;
-        ((Gadget *)arg0)->unkD8 = 0xFF;
-        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->alpha = 0xFF;
+        ((Gadget *)arg0)->labelAlpha = 0x82;
         ((Gadget *)arg0)->colour[0] = 250.0f;
         ((Gadget *)arg0)->colour[1] = 235.0f;
         ((Gadget *)arg0)->colour[2] = 100.0f;
@@ -106,7 +106,7 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
         ((Gadget *)arg0)->colour[1] /= 255.0f;
         ((Gadget *)arg0)->colour[2] /= 255.0f;
         ((Gadget *)arg0)->colour[3] /= 255.0f;
-        ((Gadget *)arg0)->arg = arg1;
+        ((Gadget *)arg0)->font = arg1;
         gl_func_00000000(arg0, -80, -1, -61, 0);
     }
     return arg0;
@@ -149,8 +149,8 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x5001D);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
         ((Gadget *)arg0)->unkD4 = 0;
-        ((Gadget *)arg0)->unkD8 = 0xFF;
-        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->alpha = 0xFF;
+        ((Gadget *)arg0)->labelAlpha = 0x82;
         ((Gadget *)arg0)->colour[0] = 250.0f;
         ((Gadget *)arg0)->colour[1] = 235.0f;
         ((Gadget *)arg0)->colour[2] = 100.0f;
@@ -159,7 +159,7 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
         ((Gadget *)arg0)->colour[1] /= 255.0f;
         ((Gadget *)arg0)->colour[2] /= 255.0f;
         ((Gadget *)arg0)->colour[3] /= 255.0f;
-        ((Gadget *)arg0)->arg = arg1;
+        ((Gadget *)arg0)->font = arg1;
         gl_func_00000000(arg0, -56, -1, -38, 0);
     }
     return arg0;
@@ -254,16 +254,16 @@ char *TimeGadgetParms_ctor(char *self) {
 }
 
 
-/* 3-insn 2-field setter: a0[0x44]=a1, a0[0x5C]=a2. No frame, no jal. */
+/* 3-insn 2-field setter: xps / yps. No frame, no jal. */
 void CountDownGadget_setPos(int *a0, int a1, int a2) {
-    a0[0x44/4] = a1;
-    a0[0x5C/4] = a2;
+    COUNTDOWN(a0)->parms.xps.value = a1;
+    COUNTDOWN(a0)->parms.yps.value = a2;
 }
 
-/* 3-insn 2-field setter: a0[0x74]=a1, a0[0x8C]=a2. Sibling of 0x999C. */
+/* 3-insn 2-field setter: the shadow offset shx / shy. Sibling of 0x999C. */
 void CountDownGadget_setPair_000009A8(int *a0, int a1, int a2) {
-    a0[0x74/4] = a1;
-    a0[0x8C/4] = a2;
+    COUNTDOWN(a0)->parms.shx.value = a1;
+    COUNTDOWN(a0)->parms.shy.value = a2;
 }
 
 extern int gl_func_00000000();
@@ -271,20 +271,20 @@ void CountDownGadget_display(char *arg0) {
     char *a2;
     volatile int pad[7];  /* phantom-slot lever: the target's 0x20 unused stack (cf. 628EC) */
 
-    gl_func_00000000(*(int *)(arg0 + 0xAC));
+    gl_func_00000000(COUNTDOWN(arg0)->arg1);
     a2 = arg0 + 0x94;
-    gl_func_00000000(*(int *)(arg0 + 0xAC),
-                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)),
-                     a2, *(int *)(arg0 + 0xA4));
-    gl_func_00000000(*(int *)(arg0 + 0xAC), *(int *)(arg0 + 0x44),
-                     *(int *)(arg0 + 0x5C), arg0 + 0xB4);
-    gl_func_00000000(*(int *)(arg0 + 0xB0));
-    gl_func_00000000(*(int *)(arg0 + 0xB0),
-                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)),
-                     a2, *(int *)(arg0 + 0xA4));
-    gl_func_00000000(*(int *)(arg0 + 0xB0),
-                     *(int *)(arg0 + 0x74) + *(int *)(arg0 + 0x44),
-                     *(int *)(arg0 + 0x8C) + *(int *)(arg0 + 0x5C),
+    gl_func_00000000(COUNTDOWN(arg0)->arg1,
+                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha */
+                     a2, COUNTDOWN(arg0)->unkA4);
+    gl_func_00000000(COUNTDOWN(arg0)->arg1, COUNTDOWN(arg0)->parms.xps.value,
+                     COUNTDOWN(arg0)->parms.yps.value, arg0 + 0xB4);
+    gl_func_00000000(COUNTDOWN(arg0)->arg2);
+    gl_func_00000000(COUNTDOWN(arg0)->arg2,
+                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha */
+                     a2, COUNTDOWN(arg0)->unkA4);
+    gl_func_00000000(COUNTDOWN(arg0)->arg2,
+                     COUNTDOWN(arg0)->parms.xps.value + COUNTDOWN(arg0)->parms.shx.value,
+                     COUNTDOWN(arg0)->parms.yps.value + COUNTDOWN(arg0)->parms.shy.value,
                      arg0 + 0xBC);
 }
 
@@ -311,7 +311,7 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
         ((CountDownGadget *)arg0)->colour[3] = 0.0f / d255;
         ((CountDownGadget *)arg0)->node.name = (s32)(sCountDownGadgetName);
         ((CountDownGadget *)arg0)->unkA4 = 0;
-        ((CountDownGadget *)arg0)->unkA8 = 0xFF;
+        ((CountDownGadget *)arg0)->alpha = 0xFF;
         ((CountDownGadget *)arg0)->arg1 = a1;
         ((CountDownGadget *)arg0)->arg2 = a2;
         gl_func_00000000(arg0, 0x59, 2);
@@ -443,13 +443,13 @@ skip_init:
     gl_func_00000000(s0, ((Gadget *)s0)->sprite1, ((Gadget *)s0)->sprite0);
     k = *(float*)(GL_RODATA(0xC70));
     ((Gadget *)s0)->unkD4 = 0;
-    ((Gadget *)s0)->unkD8 = 255;
-    ((Gadget *)s0)->unkDC = 130;
+    ((Gadget *)s0)->alpha = 255;
+    ((Gadget *)s0)->labelAlpha = 130;
     ((Gadget *)s0)->colour[0] = k;
     ((Gadget *)s0)->colour[1] = k;
     ((Gadget *)s0)->colour[2] = k;
     ((Gadget *)s0)->colour[3] = 0.0f;
-    ((Gadget *)s0)->arg = a1;
+    ((Gadget *)s0)->font = a1;
     gl_func_00000000(s0, -56, -1, -13, 0);
 done:
     return s0;
@@ -539,13 +539,13 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
         gl_func_00000000(((Gadget *)arg0)->sprite1, 0x50008);
         gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
         ((Gadget *)arg0)->unkD4 = 0x80;
-        ((Gadget *)arg0)->unkD8 = 0xFF;
-        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->alpha = 0xFF;
+        ((Gadget *)arg0)->labelAlpha = 0x82;
         ((Gadget *)arg0)->colour[0] = 250.0f / d255;
         ((Gadget *)arg0)->colour[1] = 235.0f / d255;
         ((Gadget *)arg0)->colour[2] = 100.0f / d255;
         ((Gadget *)arg0)->colour[3] = 0.0f / d255;
-        ((Gadget *)arg0)->arg = arg1;
+        ((Gadget *)arg0)->font = arg1;
         gl_func_00000000(arg0, -3, -1, 0x25, 0);
     }
     return arg0;
