@@ -14,6 +14,7 @@
 #include "gdl/mnode.h"
 #include "gdl/coll.h"
 #include "gdl/item.h"
+#include "gdl/ballrot.h"
 #include "game/camera.h"
 #include "uso_call.h"
 extern int AnimPlayer_reset();
@@ -2056,9 +2057,9 @@ void BallRotator_hostioParms(char *a0) {
  * dead spill" cap. */
 extern int gl_func_00000000();
 void BallRotator_update_0003604C(int *a0) {
-    int t = a0[5];
+    int t = BALLROT(a0)->node.parent;
     int *p = &t;
-    CALL(BallRotator_func_00036224)(a0, t + 0x30);
+    CALL(BallRotator_func_00036224)(a0, t + 0x30);   /* &parent->mtx (MNode) */
     (void)p;
 }
 
@@ -2090,32 +2091,32 @@ void BallRotator_reset_00036074(char *o) {
     ((f32 *)&D_00000000)[1] = 0.0f;
     ((f32 *)&D_00000000)[2] = 0.0f;
     ((f32 *)&D_00000000)[3] = 1.0f;
-    *(f32 *)(o + 0x88) = 0.0f;
-    *(s32 *)(o + 0x1D8) = 0;
-    *(f32 *)(o + 0x40) = 0.0f;
-    *(f32 *)(o + 0x3C) = 0.0f;
-    *(f32 *)(o + 0x38) = 0.0f;
-    *(f32 *)(o + 0x34) = 0.0f;
-    *(f32 *)(o + 0x30) = 0.0f;
-    *(f32 *)(o + 0x2C) = 0.0f;
-    *(f32 *)(o + 0x90) = 0.0f;
-    *(f32 *)(o + 0x8C) = 0.0f;
-    *(f32 *)(o + 0x44) = 200.0f;
-    a = *(Vec3 *)(o + 0x88);
-    *(f32 *)(o + 0x94) = a.x; *(f32 *)(o + 0x98) = a.y; *(f32 *)(o + 0x9C) = a.z;
-    b = *(Vec3 *)(o + 0x94);
-    *(f32 *)(o + 0xD0) = b.x; *(f32 *)(o + 0xD4) = b.y; *(f32 *)(o + 0xD8) = b.z;
+    BALLROT(o)->unk88[0] = 0.0f;
+    BALLROT(o)->invert = 0;
+    BALLROT(o)->offset[2] = 0.0f;
+    BALLROT(o)->offset[1] = 0.0f;
+    BALLROT(o)->offset[0] = 0.0f;
+    BALLROT(o)->center[2] = 0.0f;
+    BALLROT(o)->center[1] = 0.0f;
+    BALLROT(o)->center[0] = 0.0f;
+    BALLROT(o)->unk88[2] = 0.0f;
+    BALLROT(o)->unk88[1] = 0.0f;
+    BALLROT(o)->radius = 200.0f;
+    a = *(Vec3 *)BALLROT(o)->unk88;
+    BALLROT(o)->unk94[0] = a.x; BALLROT(o)->unk94[1] = a.y; BALLROT(o)->unk94[2] = a.z;
+    b = *(Vec3 *)BALLROT(o)->unk94;
+    BALLROT(o)->lastHit[0] = b.x; BALLROT(o)->lastHit[1] = b.y; BALLROT(o)->lastHit[2] = b.z;
     a = *(Vec3 *)&D_00000000;
-    *(f32 *)(o + 0x48) = a.x; *(f32 *)(o + 0x4C) = a.y; *(f32 *)(o + 0x50) = a.z; *(f32 *)(o + 0x54) = ((f32 *)&D_00000000)[3];
-    b = *(Vec3 *)(o + 0x48);
-    *(f32 *)(o + 0x58) = b.x; *(f32 *)(o + 0x5C) = b.y; *(f32 *)(o + 0x60) = b.z; *(f32 *)(o + 0x64) = *(f32 *)(o + 0x54);
-    c = *(Vec3 *)(o + 0x58);
-    *(f32 *)(o + 0x78) = c.x; *(f32 *)(o + 0x7C) = c.y; *(f32 *)(o + 0x80) = c.z; *(f32 *)(o + 0x84) = *(f32 *)(o + 0x64);
-    CALL(math_mtx4Identity)(o + 0xDC, o);
-    CALL(math_mtx4Identity)(o + 0x11C, o);
-    *(s32 *)(o + 0x160) = 0;
-    *(s32 *)(o + 0x15C) = 0;
-    *(s32 *)(o + 0x184) = 0;
+    BALLROT(o)->rot[0] = a.x; BALLROT(o)->rot[1] = a.y; BALLROT(o)->rot[2] = a.z; BALLROT(o)->rot[3] = ((f32 *)&D_00000000)[3];
+    b = *(Vec3 *)BALLROT(o)->rot;
+    BALLROT(o)->prevRot[0] = b.x; BALLROT(o)->prevRot[1] = b.y; BALLROT(o)->prevRot[2] = b.z; BALLROT(o)->prevRot[3] = BALLROT(o)->rot[3];
+    c = *(Vec3 *)BALLROT(o)->prevRot;
+    BALLROT(o)->baseRot[0] = c.x; BALLROT(o)->baseRot[1] = c.y; BALLROT(o)->baseRot[2] = c.z; BALLROT(o)->baseRot[3] = BALLROT(o)->prevRot[3];
+    CALL(math_mtx4Identity)(BALLROT(o)->mtxA, o);
+    CALL(math_mtx4Identity)(BALLROT(o)->mtxB, o);
+    BALLROT(o)->unk160 = 0;
+    BALLROT(o)->unk15C = 0;
+    BALLROT(o)->unk184 = 0;
 }
 
 // BallRotator_func_00036224 — STRUCTURAL PASS (0x470 / 284 words, no episode).
@@ -2180,13 +2181,13 @@ void BallRotator_func_00036224(char *o, char *arg1) {
 
     pA = &vecA.v;
     pB = &vecB.v;
-    tmp.v = *(Vec3 *)(*(char **)(o + 0x1CC) + 0xF8);
+    tmp.v = *(Vec3 *)(BALLROT(o)->input + 0xF8);
     vecA.p[2] = tmp.v.z;
     vecA.p[1] = tmp.v.y;
     vecA.p[0] = tmp.v.x;
     vecA.v.x = vecA.p[0] - 160.0f;
     vecA.v.y = vecA.p[1] - 120.0f;
-    tmp.v = *(Vec3 *)(*(char **)(o + 0x1CC) + 0xBC);
+    tmp.v = *(Vec3 *)(BALLROT(o)->input + 0xBC);
     vecB.p[0] = tmp.v.x;
     vecB.p[1] = tmp.v.y;
     vecB.v.x = vecB.p[0] - 160.0f;
@@ -2194,7 +2195,7 @@ void BallRotator_func_00036224(char *o, char *arg1) {
     vecB.v.y = vecB.p[1] - 120.0f;
     vecB.v.y = vecB.v.y * -1.0f;
     vecA.v.y = vecA.v.y * -1.0f;
-    if (*(int *)(o + 0x1D8) != 0) {
+    if (BALLROT(o)->invert != 0) {
         vecB.v.x *= -1.0f;
         vecB.v.y *= -1.0f;
         vecB.v.z *= -1.0f;
@@ -2207,54 +2208,54 @@ void BallRotator_func_00036224(char *o, char *arg1) {
          * (swc1 32(sp)); NM object is compile-only, symbol unresolved is
          * fine and target .o is reloc-free so the name doesn't score. */
         int gl_func_00034458_p5(Vec3 *, char *, Vec3, Vec3, f32);
-        rv = *(Vec3 *)gl_func_00034458_p5(&tmp.v, o, vecA.v, *(Vec3 *)(o + 0x2C), *(f32 *)(o + 0x44));
-        *(f32 *)(o + 0xA0) = rv.x;
-        *(f32 *)(o + 0xA4) = rv.y;
-        *(f32 *)(o + 0xA8) = rv.z;
-        rv = *(Vec3 *)gl_func_00034458_p5(&tmp.v, o, vecB.v, *(Vec3 *)(o + 0x2C), *(f32 *)(o + 0x44));
-        *(f32 *)(o + 0xAC) = rv.x;
-        *(f32 *)(o + 0xB0) = rv.y;
-        *(f32 *)(o + 0xB4) = rv.z;
+        rv = *(Vec3 *)gl_func_00034458_p5(&tmp.v, o, vecA.v, *(Vec3 *)BALLROT(o)->center, BALLROT(o)->radius);
+        BALLROT(o)->hitCur[0] = rv.x;
+        BALLROT(o)->hitCur[1] = rv.y;
+        BALLROT(o)->hitCur[2] = rv.z;
+        rv = *(Vec3 *)gl_func_00034458_p5(&tmp.v, o, vecB.v, *(Vec3 *)BALLROT(o)->center, BALLROT(o)->radius);
+        BALLROT(o)->hitPrev[0] = rv.x;
+        BALLROT(o)->hitPrev[1] = rv.y;
+        BALLROT(o)->hitPrev[2] = rv.z;
     }
-    dbg_printThreads(*(char **)(o + 0x1D0) + 0xB4, mtx);
-    x = *(f32 *)(o + 0xA0);
-    y = *(f32 *)(o + 0xA4);
-    z = *(f32 *)(o + 0xA8);
+    dbg_printThreads(BALLROT(o)->camera + 0xB4, mtx);
+    x = BALLROT(o)->hitCur[0];
+    y = BALLROT(o)->hitCur[1];
+    z = BALLROT(o)->hitCur[2];
     out1[0] = mtx[0][0] * x + mtx[1][0] * y + mtx[2][0] * z;
     out1[1] = mtx[0][1] * x + mtx[1][1] * y + mtx[2][1] * z;
     out1[2] = mtx[0][2] * x + mtx[1][2] * y + mtx[2][2] * z;
-    *(f32 *)(o + 0xA0) = out1[0];
-    *(f32 *)(o + 0xA4) = out1[1];
-    *(f32 *)(o + 0xA8) = out1[2];
-    x = *(f32 *)(o + 0xAC);
-    y = *(f32 *)(o + 0xB0);
-    z = *(f32 *)(o + 0xB4);
+    BALLROT(o)->hitCur[0] = out1[0];
+    BALLROT(o)->hitCur[1] = out1[1];
+    BALLROT(o)->hitCur[2] = out1[2];
+    x = BALLROT(o)->hitPrev[0];
+    y = BALLROT(o)->hitPrev[1];
+    z = BALLROT(o)->hitPrev[2];
     out2[0] = mtx[0][0] * x + mtx[1][0] * y + mtx[2][0] * z;
     out2[1] = mtx[0][1] * x + mtx[1][1] * y + mtx[2][1] * z;
     out2[2] = mtx[0][2] * x + mtx[1][2] * y + mtx[2][2] * z;
-    *(f32 *)(o + 0xAC) = out2[0];
-    *(f32 *)(o + 0xB0) = out2[1];
-    *(f32 *)(o + 0xB4) = out2[2];
-    src = *(char **)(o + 0x1CC);
-    if ((*(int *)(*(char **)(src + 0xB4) + 0x10) & *(int *)(o + 0x1D4)) && (*(int *)(src + 0x108) != 0)) {
-        dbg_printThreads(o + 0x68, o + 0xA0, o + 0xAC);
-        dbg_printThreads(o + 0x68, o + 0x58, o + 0x48);
-        dbg_printThreads(o + 0x78, o + 0xD0, o + 0xAC);
-        tmp.v = *(Vec3 *)(o + 0xAC);
-        *(f32 *)(o + 0xD0) = tmp.v.x;
-        *(f32 *)(o + 0xD4) = tmp.v.y;
-        *(f32 *)(o + 0xD8) = tmp.v.z;
+    BALLROT(o)->hitPrev[0] = out2[0];
+    BALLROT(o)->hitPrev[1] = out2[1];
+    BALLROT(o)->hitPrev[2] = out2[2];
+    src = BALLROT(o)->input;
+    if ((*(int *)(*(char **)(src + 0xB4) + 0x10) & BALLROT(o)->buttonMask) && (*(int *)(src + 0x108) != 0)) {
+        dbg_printThreads(BALLROT(o)->dragRot, BALLROT(o)->hitCur, BALLROT(o)->hitPrev);
+        dbg_printThreads(BALLROT(o)->dragRot, BALLROT(o)->prevRot, BALLROT(o)->rot);
+        dbg_printThreads(BALLROT(o)->baseRot, BALLROT(o)->lastHit, BALLROT(o)->hitPrev);
+        tmp.v = *(Vec3 *)BALLROT(o)->hitPrev;
+        BALLROT(o)->lastHit[0] = tmp.v.x;
+        BALLROT(o)->lastHit[1] = tmp.v.y;
+        BALLROT(o)->lastHit[2] = tmp.v.z;
     } else {
-        dbg_printThreads(o + 0x78, o + 0x48, o + 0x48);
-        tmp.v = *(Vec3 *)(o + 0x48);
-        *(f32 *)(o + 0x58) = tmp.v.x;
-        *(f32 *)(o + 0x5C) = tmp.v.y;
-        *(f32 *)(o + 0x60) = tmp.v.z;
-        *(f32 *)(o + 0x64) = *(f32 *)(o + 0x54);
+        dbg_printThreads(BALLROT(o)->baseRot, BALLROT(o)->rot, BALLROT(o)->rot);
+        tmp.v = *(Vec3 *)BALLROT(o)->rot;
+        BALLROT(o)->prevRot[0] = tmp.v.x;
+        BALLROT(o)->prevRot[1] = tmp.v.y;
+        BALLROT(o)->prevRot[2] = tmp.v.z;
+        BALLROT(o)->prevRot[3] = BALLROT(o)->rot[3];
     }
-    dbg_printThreads(o + 0x48, &vecC);
+    dbg_printThreads(BALLROT(o)->rot, &vecC);
     dbg_printThreads(arg1, &vecC);
-    dbg_printThreads(arg1, o + 0x38);
+    dbg_printThreads(arg1, BALLROT(o)->offset);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BallRotator_func_00036224);
