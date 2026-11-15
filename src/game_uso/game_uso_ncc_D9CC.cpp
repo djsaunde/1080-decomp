@@ -24,8 +24,8 @@ typedef struct { int a, b; } Pair2;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 int game_uso_func_077C44(...);
-void RiderAnim_setDefaultNext_0000D5DC(char *a0);
-void RiderAnim_setAnim_0000D5F8(char *a0, Pair2 pair, int a3);
+void RiderAnim_clearNextState_0000D5DC(char *a0);
+void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3);
 void RiderAnim_endTrick_0000D63C(char *a0, int a1);
 void game_uso_func_07C0FC(...);
 void game_uso_func_0000EDCC(int *a0, int a1);
@@ -229,12 +229,12 @@ after_24:;
         FW(FW(arg0, 0xB4), 0x3DC) = 0;
         if (sp30 != 0) {
             game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 2, 1, 1);
-            RiderAnim_setAnim_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
+            RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
         } else {
             game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 1, 1, 1);
-            RiderAnim_setAnim_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
+            RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
         }
-        RiderAnim_setDefaultNext_0000D5DC(arg0);
+        RiderAnim_clearNextState_0000D5DC(arg0);
         FW(arg0, 0x114) = 0;
     }
     if (FW(FW(arg0, 0xB4), 0xA14) <= 0) {
@@ -242,10 +242,10 @@ after_24:;
         if (FW(arg0, 0x108) != 0) {
             FW(arg0, 0x108) = (FW(arg0, 0x108) & 0xFFFF) | 0x60000;
             game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 1, 1, 1);
-            RiderAnim_setAnim_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
+            RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
         }
         FW(FW(arg0, 0xB4), 0x960) = 0x64;
-        RiderAnim_setDefaultNext_0000D5DC(arg0);
+        RiderAnim_clearNextState_0000D5DC(arg0);
     }
 }
 }

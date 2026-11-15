@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000F060 (0xDC / 55 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_state_0000F060 (0xDC / 55 words).
  *
  * Flag-dispatch state handler: clear self->0xF4, run 11888, then if the
  * 0xB4 object's 0x800 child has (!(flags & 0x100) || (flags & 0x200)) and
@@ -22,12 +22,12 @@ void import_0010DB28(void *, int, int, int, int, int);
 void import_000966AC(void *);
 void game_uso_func_0000F360(void *);
 void game_uso_func_00011888(void *);
-void RiderAnim_setAnim_0000D5F8(void *, PM, int);
+void RiderAnim_setState_0000D5F8(void *, PM, int);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
 struct V { int *child() { return AT(int *, this, 0x800); } };
-extern "C" void game_uso_func_0000F060(int *a0) {
+extern "C" void RiderAnim_state_0000F060(int *a0) {
     int *s0 = a0;
     a0[0xF4 / 4] = 0;
     game_uso_func_00011888(a0);
@@ -37,7 +37,7 @@ extern "C" void game_uso_func_0000F060(int *a0) {
         return;
     }
     import_0010DB28(s0, 0x10011, 0, 0, 0x100, s0[0x16C / 4]);
-    RiderAnim_setAnim_0000D5F8(s0, AT(PM, &game_uso_D_807FF4A0, 0xEB0), -1);
+    RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4A0, 0xEB0), -1);
     AT(short, s0, 0xE6) = 0;
     AT(short, s0, 0xE4) = AT(short, s0, 0xE4) + 1;
     import_000966AC(AT(char *, s0, 0xB4) + 0x808);

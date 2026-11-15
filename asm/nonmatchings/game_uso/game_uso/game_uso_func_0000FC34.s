@@ -28,7 +28,7 @@ glabel game_uso_func_0000FC34
     /* 00FC94 0000FC94 8FA40020 */  .word 0x8FA40020
     /* 00FC98 0000FC98 AFA50004 */  .word 0xAFA50004
     /* 00FC9C 0000FC9C 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setNextAnim_0000D5BC   /* 00FCA0 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
+    jal RiderAnim_setNextState_0000D5BC   /* 00FCA0 0C000000 -> RiderAnim_setNextState_0000D5BC */
     /* 00FCA4 0000FCA4 AFA60008 */  .word 0xAFA60008
     /* 00FCA8 0000FCA8 3C050003 */  .word 0x3C050003
     /* 00FCAC 0000FCAC 240A0100 */  .word 0x240A0100
@@ -47,7 +47,7 @@ glabel game_uso_func_0000FC34
     /* 00FCE0 0000FCE0 2407FFFF */  .word 0x2407FFFF
     /* 00FCE4 0000FCE4 AFA50004 */  .word 0xAFA50004
     /* 00FCE8 0000FCE8 8D860004 */  .word 0x8D860004
-    jal RiderAnim_setAnim_0000D5F8   /* 00FCEC 0C000000 -> RiderAnim_setAnim_0000D5F8 */
+    jal RiderAnim_setState_0000D5F8   /* 00FCEC 0C000000 -> RiderAnim_setState_0000D5F8 */
     /* 00FCF0 0000FCF0 AFA60008 */  .word 0xAFA60008
     /* 00FCF4 0000FCF4 8FBF001C */  .word 0x8FBF001C
     /* 00FCF8 0000FCF8 27BD0020 */  .word 0x27BD0020

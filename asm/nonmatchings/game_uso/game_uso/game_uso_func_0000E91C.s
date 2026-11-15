@@ -110,9 +110,9 @@ glabel game_uso_func_0000E91C
     /* 00EAC4 0000EAC4 24070001 */  .word 0x24070001
     /* 00EAC8 0000EAC8 AFA50004 */  .word 0xAFA50004
     /* 00EACC 0000EACC 8DC60004 */  .word 0x8DC60004
-    jal RiderAnim_setAnim_0000D5F8   /* 00EAD0 0C000000 -> RiderAnim_setAnim_0000D5F8 */
+    jal RiderAnim_setState_0000D5F8   /* 00EAD0 0C000000 -> RiderAnim_setState_0000D5F8 */
     /* 00EAD4 0000EAD4 AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_setDefaultNext_0000D5DC   /* 00EAD8 0C000000 -> RiderAnim_setDefaultNext_0000D5DC */
+    jal RiderAnim_clearNextState_0000D5DC   /* 00EAD8 0C000000 -> RiderAnim_clearNextState_0000D5DC */
     /* 00EADC 0000EADC 02002025 */  .word 0x02002025
     /* 00EAE0 0000EAE0 8FBF0024 */  .word 0x8FBF0024
     /* 00EAE4 0000EAE4 8FB00020 */  .word 0x8FB00020

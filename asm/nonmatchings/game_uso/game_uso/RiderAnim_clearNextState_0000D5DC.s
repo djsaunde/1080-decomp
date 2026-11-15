@@ -1,0 +1,11 @@
+nonmatching RiderAnim_clearNextState_0000D5DC, 0x1C
+
+glabel RiderAnim_clearNextState_0000D5DC
+    lui $t6, %hi(game_uso_D_807FF3B8)   /* 00D5DC 3C0E0000 -> game_uso_D_807FF3B8 */
+    /* 00D5E0 0000D5E0 25CE0DC8 */  .word 0x25CE0DC8
+    /* 00D5E4 0000D5E4 8DD80000 */  .word 0x8DD80000
+    /* 00D5E8 0000D5E8 AC9800C8 */  .word 0xAC9800C8
+    /* 00D5EC 0000D5EC 8DCF0004 */  .word 0x8DCF0004
+    /* 00D5F0 0000D5F0 03E00008 */  .word 0x03E00008
+    /* 00D5F4 0000D5F4 AC8F00CC */  .word 0xAC8F00CC
+endlabel RiderAnim_clearNextState_0000D5DC

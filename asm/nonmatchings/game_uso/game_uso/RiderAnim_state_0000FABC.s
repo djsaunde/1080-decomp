@@ -1,0 +1,22 @@
+nonmatching RiderAnim_state_0000FABC, 0x48
+
+glabel RiderAnim_state_0000FABC
+    /* 00FABC 0000FABC 27BDFFE8 */  .word 0x27BDFFE8
+    /* 00FAC0 0000FAC0 AFBF0014 */  .word 0xAFBF0014
+    jal RiderAnim_clearRiderSpin_00011868   /* 00FAC4 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
+    /* 00FAC8 0000FAC8 AFA40018 */  .word 0xAFA40018
+    lui $t6, %hi(game_uso_D_807FF430)   /* 00FACC 3C0E0000 -> game_uso_D_807FF430 */
+    /* 00FAD0 0000FAD0 25CE0E40 */  .word 0x25CE0E40
+    /* 00FAD4 0000FAD4 8DC50000 */  .word 0x8DC50000
+    /* 00FAD8 0000FAD8 8FA40018 */  .word 0x8FA40018
+    /* 00FADC 0000FADC AFA50004 */  .word 0xAFA50004
+    /* 00FAE0 0000FAE0 8DC60004 */  .word 0x8DC60004
+    jal RiderAnim_setNextState_0000D5BC   /* 00FAE4 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    /* 00FAE8 0000FAE8 AFA60008 */  .word 0xAFA60008
+    jal RiderAnim_state_00010694   /* 00FAEC 0C000000 -> RiderAnim_state_00010694 */
+    /* 00FAF0 0000FAF0 8FA40018 */  .word 0x8FA40018
+    /* 00FAF4 0000FAF4 8FBF0014 */  .word 0x8FBF0014
+    /* 00FAF8 0000FAF8 27BD0018 */  .word 0x27BD0018
+    /* 00FAFC 0000FAFC 03E00008 */  .word 0x03E00008
+    /* 00FB00 0000FB00 00000000 */  .word 0x00000000
+endlabel RiderAnim_state_0000FABC

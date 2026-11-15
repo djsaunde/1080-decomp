@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000F13C (0x144 / 81 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_state_0000F13C (0x144 / 81 words).
  *
  * Same opening flag block as F060: if the 0xB4 object's 0x800 child has
  * (!(flags & 0x100) || (flags & 0x200)) and the 0xB4 object's 0x938 is set,
@@ -21,12 +21,12 @@ void import_0010DB28(void *, int, int, int, int, int);
 void import_0010DB78(void *, int, int, float, int, int);
 void game_uso_func_0000F360(void *);
 void game_uso_func_0001001C(void *);
-void RiderAnim_setNextAnim_0000D5BC(void *, PM);
+void RiderAnim_setNextState_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
 struct V { int *child() { return AT(int *, this, 0x800); } };
-extern "C" void game_uso_func_0000F13C(int *a0, int *a1) {
+extern "C" void RiderAnim_state_0000F13C(int *a0, int *a1) {
     int *s0 = a0;
     a1 = AT(V *, s0, 0xB4)->child();
     if ((((a1[0x10 / 4] & 0x100) != 0) == 0 || (((unsigned int *)a1)[0x10 / 4] & 0x200)) && I(AT(V *, s0, 0xB4), 0x938) != 0) {
@@ -47,7 +47,7 @@ extern "C" void game_uso_func_0000F13C(int *a0, int *a1) {
         short v0 = AT(short, s0, 0xE6);
         AT(short, s0, 0xE6) = v0 + 1;
         if (s0[0x184 / 4] < v0) {
-            RiderAnim_setNextAnim_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
+            RiderAnim_setNextState_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
         }
     }
 }
