@@ -211,8 +211,8 @@
 
 /* ---- string / path tables (DataRelocs point at RoData strings; agent-a run 491) ---- */
 #define gBoardModelUsoPaths    D_00000000 /* Data+0x8338 Sym 486, 9 char*: "rom/tahoe151.uso", "rom/merlot147.uso", ... the board model USOs (SnowBoarder_loadBoardModel / createBoardShape) */
-#define gBoardBinPaths         D_00000000 /* Data+0x8360 Sym 487, 10 char*: "rom/board1.bin", ... (SnowBoarder_func_0000CAE8) */
-#define gPlayerBinPaths        D_00000000 /* Data+0x8388 Sym 488, 8 char*: "rom/player1.bin" .. (SnowBoarder_func_0000CAE8) */
+#define gBoardBinPaths         D_00000000 /* Data+0x8360 Sym 487, 10 char*: "rom/board1.bin", ... (SnowBoarder_reset) */
+#define gPlayerBinPaths        D_00000000 /* Data+0x8388 Sym 488, 8 char*: "rom/player1.bin" .. (SnowBoarder_reset) */
 #define gBoarderUsoPaths       D_00000000 /* Data+0x83AC Sym 489, 8 char*: "rom/boarder1.uso" .. (SnowBoarder_loadBoardModel) */
 #define gProcUsoPaths          D_00000000 /* Data+0xC510 Sym 727, 7 char*: "rom/genproc.uso", "rom/nameent.uso", "rom/gamegfx.uso", "rom/charsel.uso", "rom/charsps.uso", "rom/charfir.uso", "rom/charmap.uso" (app_launchGenProc, app_launchNameEnt, app_createGame_*) */
 #define gGameModeNames         D_00000000 /* Data+0xC450 Sym 852, 10 char*: "N64DEMO", "TITLEDEMO", "HEAD2HEAD", "MULTIGAMERACE", ... (GameFlow_startMode) */

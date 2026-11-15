@@ -140,7 +140,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # (V3 operator=(const V3 &) forwarding to a by-value set; named locals pin the
 # frame), 126/126 words. docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116.
 BOOTUP_CAE8_DONOR := build/src/bootup_uso/bootup_uso_ncc_CAE8.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000CAE8=$(BOOTUP_CAE8_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_reset=$(BOOTUP_CAE8_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CAE8_DONOR)
 # 485C = vector debug push, NCC donor (V3 ctor forwarding to set, block-scope b2).
 BOOTUP_485C_DONOR := build/src/bootup_uso/bootup_uso_ncc_485C.cpp.o

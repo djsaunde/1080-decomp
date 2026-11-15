@@ -1611,7 +1611,7 @@ extern int bu_cae8_global_flags_read[], bu_cae8_global_flags_write[], bu_cae8_gl
 extern float bu_cae8_pool[];
 extern int gInputMgr_cae8_mode[];
 extern char bu_cae8_notify[];
-void SnowBoarder_func_0000CAE8(BootupState *st);
+void SnowBoarder_reset(BootupState *st);
 extern char *func_cce0(int, char *, int, float, float, float);
 extern int bootup_cce0_attach(char *, char *);
 extern int bootup_cce0_process(char *, char *);

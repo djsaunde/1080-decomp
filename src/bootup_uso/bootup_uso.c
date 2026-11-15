@@ -5557,11 +5557,11 @@ void func_0000CACC(char *a0) {
     SNOWB(a0)->flags = (int)SNOWB(a0)->flags ^ 0x100;
 }
 
-// SnowBoarder_func_0000CAE8 — STRUCTURAL PASS (0x1F8 / 126 insns, no episode).
+// SnowBoarder_reset — STRUCTURAL PASS (0x1F8 / 126 insns, no episode).
 // Per-round / per-attempt state reset & re-arm on a large state struct
 // (st = a0 = s0).
 //
-//   void SnowBoarder_func_0000CAE8(State *st) {
+//   void SnowBoarder_reset(State *st) {
 //     func_00000000(?, 1, tableA[st->0x8C4]);            // indexed trigger
 //     int j = (s16)*(s16*)((char*)st + st->0x904*2 + 0x8C6);
 //     func_00000000(st+0x3EC, 1, tableB[j]);             // 2nd idx trigger
@@ -5607,7 +5607,7 @@ void func_0000CACC(char *a0) {
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). The
  * Vec3 snapshots are an inline V3::operator=(const V3 &) forwarding to a
  * by-value set(V3); see docs/IDO_CODEGEN.md#ncc-game-libs-vec3-62a2c. */
-void SnowBoarder_func_0000CAE8(char *st) {
+void SnowBoarder_reset(char *st) {
     volatile char *r = st;
 }
 

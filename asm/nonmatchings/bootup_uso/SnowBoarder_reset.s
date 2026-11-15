@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000CAE8, 0x1F8
+nonmatching SnowBoarder_reset, 0x1F8
 
-glabel SnowBoarder_func_0000CAE8
+glabel SnowBoarder_reset
     /* DDD554 0000CAE8 27BDFFB0 */  addiu      $sp, $sp, -0x50
     /* DDD558 0000CAEC AFB00018 */  sw         $s0, 0x18($sp)
     /* DDD55C 0000CAF0 00808025 */  or         $s0, $a0, $zero
@@ -133,4 +133,4 @@ glabel SnowBoarder_func_0000CAE8
     /* DDD740 0000CCD4 27BD0050 */  addiu      $sp, $sp, 0x50
     /* DDD744 0000CCD8 03E00008 */  jr         $ra
     /* DDD748 0000CCDC 00000000 */   nop
-endlabel SnowBoarder_func_0000CAE8
+endlabel SnowBoarder_reset
