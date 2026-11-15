@@ -81,12 +81,14 @@ typedef struct MgrRace {
     /* 0x6AC */ s32 dataMgr;         /* MgrDataManager * (also InputMgr.dataMgr) */
     /* 0x6B0 */ RaceSprite sprites[10]; /* mgr_loadSprites: 0x6B0 0x6C8 0x6E0(course n of m)
                                       * 0x6F8 (0x710 unused) 0x728 0x740 0x758 0x770 0x788 */
-    /* 0x7A0 */ f32 unk7A0;
-    /* 0x7A4 */ f32 unk7A4;
+    /* 0x7A0 */ f32 overlayAlpha;     /* 0..1: drawIntro / the 23FC draws scale it to 0..255;
+                                      * rises by Data 0x5D0 to Data 0x5CC while timer >= 11, falls after */
+    /* 0x7A4 */ f32 fade7A4;          /* 0..1: rises with overlayAlpha in drawIntro; drawHud decays
+                                      * it in phase 3 when the result is 0 / 2; startEnding zeroes it */
     /* 0x7A8 */ f32 retriesX;        /* 160 - (retries * 2 - 2) */
     /* 0x7AC */ f32 retriesY;        /* 210 */
     /* 0x7B0 */ char unk7B0[8];
-    /* 0x7B8 */ f32 unk7B8;
+    /* 0x7B8 */ f32 retriesVel;       /* drawHud: velocity of retriesX (bounces at 36, -v / 4) */
     /* 0x7BC */ char unk7BC[8];
     /* 0x7C4 */ s32 unk7C4;
     /* 0x7C8 */ s32 retries;         /* courseList->retries at ctor; 0 = cart check failed */
@@ -102,7 +104,8 @@ typedef struct MgrRace {
 } MgrRace;
 
 typedef char MgrRace_size_check[sizeof(MgrRace) == 0x7F0 ? 1 : -1];
-typedef char MgrRace_unk7A0_check[(int)&((MgrRace *)0)->unk7A0 == 0x7A0 ? 1 : -1];
+typedef char MgrRace_overlayAlpha_check[(int)&((MgrRace *)0)->overlayAlpha == 0x7A0 ? 1 : -1];
+typedef char MgrRace_retriesVel_check[(int)&((MgrRace *)0)->retriesVel == 0x7B8 ? 1 : -1];
 typedef char MgrRace_retries_check[(int)&((MgrRace *)0)->retries == 0x7C8 ? 1 : -1];
 typedef char MgrRace_endingFrame_check[(int)&((MgrRace *)0)->endingFrame == 0x7EC ? 1 : -1];
 
@@ -140,7 +143,7 @@ typedef char H2HDataManager_size_check[sizeof(H2HDataManager) == 0xF0 ? 1 : -1];
  * The attract-mode race: a RaceProcess with the title overlays on top. */
 typedef struct GameDemoProcess {
     /* 0x000 */ RaceProcess race;
-    /* 0x6A8 */ s32 unk6A8;
+    /* 0x6A8 */ s32 unused6A8;        /* no titproc access (tim / trk keep their DataManager here) */
     /* 0x6AC */ s32 dataMgr;         /* a plain DataManager (the base ctor, import 0xB6C40, with 0) */
     /* 0x6B0 */ s32 keyMessage;      /* KeyMessage_ctor; only built when flags bit 25 is clear */
     /* 0x6B4 */ s32 mainLogo;        /* MainLogo_ctor; 0 when flags bit 25 is set */
