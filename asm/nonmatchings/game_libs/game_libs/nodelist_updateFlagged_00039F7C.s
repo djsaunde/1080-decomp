@@ -1,6 +1,6 @@
-nonmatching coll_func_00039F7C, 0x98
+nonmatching nodelist_updateFlagged_00039F7C, 0x98
 
-glabel coll_func_00039F7C
+glabel nodelist_updateFlagged_00039F7C
     /* E1F054 00039F7C 27BDFFE0 */  .word 0x27BDFFE0
     /* E1F058 00039F80 AFBF0014 */  .word 0xAFBF0014
     /* E1F05C 00039F84 8C8E0000 */  .word 0x8C8E0000
@@ -39,4 +39,4 @@ glabel coll_func_00039F7C
     /* E1F0E0 0003A008 27BD0020 */  .word 0x27BD0020
     /* E1F0E4 0003A00C 03E00008 */  .word 0x03E00008
     /* E1F0E8 0003A010 00000000 */  .word 0x00000000
-endlabel coll_func_00039F7C
+endlabel nodelist_updateFlagged_00039F7C

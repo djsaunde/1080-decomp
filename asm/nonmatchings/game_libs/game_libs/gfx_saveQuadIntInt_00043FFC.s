@@ -1,6 +1,6 @@
-nonmatching gfx_func_00043FFC, 0x38
+nonmatching gfx_saveQuadIntInt_00043FFC, 0x38
 
-glabel gfx_func_00043FFC
+glabel gfx_saveQuadIntInt_00043FFC
     /* E290D4 00043FFC 27BDFFE8 */  .word 0x27BDFFE8
     /* E290D8 00044000 AFBF0014 */  .word 0xAFBF0014
     /* E290DC 00044004 0C015AF7 */  .word 0x0C015AF7
@@ -15,4 +15,4 @@ glabel gfx_func_00043FFC
     /* E29100 00044028 27BD0018 */  .word 0x27BD0018
     /* E29104 0004402C 03E00008 */  .word 0x03E00008
     /* E29108 00044030 00000000 */  .word 0x00000000
-endlabel gfx_func_00043FFC
+endlabel gfx_saveQuadIntInt_00043FFC

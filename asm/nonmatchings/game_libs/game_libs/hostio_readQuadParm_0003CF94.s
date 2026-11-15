@@ -1,6 +1,6 @@
-nonmatching coll_func_0003CF94, 0x30
+nonmatching hostio_readQuadParm_0003CF94, 0x30
 
-glabel coll_func_0003CF94
+glabel hostio_readQuadParm_0003CF94
     /* E2206C 0003CF94 27BDFFE0 */  .word 0x27BDFFE0
     /* E22070 0003CF98 AFBF0014 */  .word 0xAFBF0014
     /* E22074 0003CF9C AFA40020 */  .word 0xAFA40020
@@ -13,4 +13,4 @@ glabel coll_func_0003CF94
     /* E22090 0003CFB8 27BD0020 */  .word 0x27BD0020
     /* E22094 0003CFBC 03E00008 */  .word 0x03E00008
     /* E22098 0003CFC0 00000000 */  .word 0x00000000
-endlabel coll_func_0003CF94
+endlabel hostio_readQuadParm_0003CF94

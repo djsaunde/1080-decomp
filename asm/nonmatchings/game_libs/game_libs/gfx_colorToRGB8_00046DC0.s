@@ -1,6 +1,6 @@
-nonmatching gfx_func_00046DC0, 0x1C0
+nonmatching gfx_colorToRGB8_00046DC0, 0x1C0
 
-glabel gfx_func_00046DC0
+glabel gfx_colorToRGB8_00046DC0
     /* E2BE98 00046DC0 AFA40000 */  .word 0xAFA40000
     /* E2BE9C 00046DC4 3C01437F */  .word 0x3C01437F
     /* E2BEA0 00046DC8 44810000 */  .word 0x44810000
@@ -113,4 +113,4 @@ glabel gfx_func_00046DC0
     /* E2C04C 00046F74 44C8F800 */  .word 0x44C8F800
     /* E2C050 00046F78 03E00008 */  .word 0x03E00008
     /* E2C054 00046F7C A0A90002 */  .word 0xA0A90002
-endlabel gfx_func_00046DC0
+endlabel gfx_colorToRGB8_00046DC0

@@ -4398,7 +4398,7 @@ int *ColourItem_create_000088B4(int *arg0) {
  * game_libs_post.c next to the parent RcpMgr_loadTask_0004D354. */
 
 /* sys_timeInFrames_00033444 split 2026-05-15; INCLUDE_ASM lives in
- * game_libs_post.c next to parent gl_func_0003341C. */
+ * game_libs_post.c next to parent heap_tempFreeDefault_0003341C. */
 
 /* MNode_vslot10_00039988 split 2026-05-15; INCLUDE_ASM/body lives in
  * game_libs_post.c next to parent MNode_vslot9_00039960. */

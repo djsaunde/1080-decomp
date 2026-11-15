@@ -1651,7 +1651,7 @@ void dma_rawRead(int a0, int a1, int a2, int a3) {
 //   needs USO mnemonic disasm + record/table structs typed. Real-C
 //   STRUCTURAL body below per the analysis. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
-/* 2026-05-31: BYTE-IDENTICAL to coll_func_0003A044 / 0003EBDC / 0003EC5C
+/* 2026-05-31: BYTE-IDENTICAL to MemberCallback_invoke_0003A044 / 0003EBDC / 0003EC5C
  * (same vtable-dispatch, diff address) — a match here lands all four.
  * 2026-07-07 (agent-e): RISE to 30/32 words byte-exact (fresh make + reloc-aware
  * objdump), up from 20/32. THREE breakthroughs, TWO documented caps CRACKED:
@@ -1672,7 +1672,7 @@ void dma_rawRead(int a0, int a1, int a2, int a3) {
  *   the t6 ring burn. Statement-SPLIT forms keep the late lh; nested-assign
  *   `arg = off + (arg = load4)` gets the schedule but flips the addu operand
  *   order. Reloc-free (all derefs off a0, indirect jalr) → PROMOTED to plain
- *   C. BYTE-IDENTICAL family coll_func_0003A044 / 0003EBDC / 0003EC5C matched
+ *   C. BYTE-IDENTICAL family MemberCallback_invoke_0003A044 / 0003EBDC / 0003EC5C matched
  *   with the same recipe. */
 int MemberCallback_invoke(char *a0) {
     char *arg;
@@ -2422,7 +2422,7 @@ int cam_func_00036A48(void *o, Vec3 dir, Vec3 *arr, int n) {
 }
 
 /* CamFollow_ctor: 27-insn alloc-or-given + init constructor (sibling
- * of CollObjMgr_ctor and coll_func_0003CAA0). Same `goto end` recipe
+ * of CollObjMgr_ctor and coll_boxCtor_0003CAA0). Same `goto end` recipe
  * (docs/PATTERNS.md#feedback-alloc-or-init-goto-pattern). a1 is spilled
  * to home slot (0x1C) before alloc, reloaded into t7 at end for the
  * a0[0x38] = a1 store. */
@@ -4789,7 +4789,7 @@ void SNode_hostioParms(int *a0) {
 void SNode_display(char *a0) {
 }
 
-/* coll_func_00039EE4: 38-insn standalone bundle-iterator + vtable-dispatch
+/* nodelist_displayFlagged_00039EE4: 38-insn standalone bundle-iterator + vtable-dispatch
  * (EXACT 38/38, 2026-07-09 agent-e). For each node in head[0] list:
  *   if (node->[0x18] & 0x4) (node->[0x28]->[0x1C])(node->[0x28]->s16[0x18] + node);
  * Load-bearing levers (do not "clean up"):
@@ -4800,7 +4800,7 @@ void SNode_display(char *a0) {
  *     (fall-off-end int) = node web colors $v0, no trailing move;
  *   - if(0){vt=NULL;} dead multi-def = vt LR rejected -> ugen binds $v1
  *     (single lw 0x28, no CSE-candidate $v0 steal, no ghost ring slot). */
-int coll_func_00039EE4(int **head) {
+int nodelist_displayFlagged_00039EE4(int **head) {
     int *next;
     int *cur;
     int *node;
@@ -4827,10 +4827,10 @@ int coll_func_00039EE4(int **head) {
     }
 }
 
-/* coll_func_00039F7C: twin of coll_func_00039EE4 (EXACT 38/38, 2026-07-09
+/* nodelist_updateFlagged_00039F7C: twin of nodelist_displayFlagged_00039EE4 (EXACT 38/38, 2026-07-09
  * agent-e): mask 0x8 (vs 0x4), dispatch vt->[0x24]/s16[0x20] (vs
  * 0x1C/0x18). Same load-bearing levers — see 39EE4's comment. */
-int coll_func_00039F7C(int **head) {
+int nodelist_updateFlagged_00039F7C(int **head) {
     int *next;
     int *cur;
     int *node;
@@ -4859,18 +4859,18 @@ int coll_func_00039F7C(int **head) {
 
 extern int gl_ref_0004C470();
 extern int gl_ref_0004C4AC();
-int coll_func_0003A014(char *a0) {
+int hostio_readQuadParm_0003A014(char *a0) {
     int scratch;
     gl_ref_0004C470(&scratch);
     return gl_ref_0004C4AC(a0 + 0x10);
 }
 
-/* coll_func_0003A044: 8-byte {tag,fn-ptr} handler-table dispatcher, BYTE-IDENTICAL
+/* MemberCallback_invoke_0003A044: 8-byte {tag,fn-ptr} handler-table dispatcher, BYTE-IDENTICAL
  * to MemberCallback_invoke / 0003EBDC / 0003EC5C. 2026-07-15 (agent-f): BYTE-EXACT
  * 32/32 via the 35A18 recipe (same-line join of arg load + accumulate kills
  * the 2-word load-order scheduler tie — see the 35A18 note). Reloc-free →
  * PROMOTED to plain C. */
-int coll_func_0003A044(char *a0) {
+int MemberCallback_invoke_0003A044(char *a0) {
     char *arg;
     char *v1;
     char *entry;
@@ -4986,7 +4986,7 @@ int coll_func_0003A0C4(char *r) {
 
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0003A0C4_pad.s")
 
-/* coll_func_0003A164 — box-vs-box corner overlap: return 1 iff any of 8
+/* coll_boxOverlap_0003A164 — box-vs-box corner overlap: return 1 iff any of 8
  * corner-in-box tests holds (4 A-corners in B, then 4 B-corners in A; axes
  * checked x,z,y; boxes are {min[0..2], max[3..5]}). REVERSE-MERGE of what splat
  * split as 3A158/3A1F0/3A278/3A2FC/3A380/3A400/3A484/3A504 + the "empty fn"
@@ -4995,7 +4995,7 @@ int coll_func_0003A0C4(char *r) {
  * the printed boundaries, and the fragment head words are the classic annulled
  * delay-slot dups. The 3 nops at 3A158 are inter-function padding after
  * coll_func_0003A0C4 (pad sidecar above); real entry is 3A164. */
-int coll_func_0003A164(float *a0, float *a1) {
+int coll_boxOverlap_0003A164(float *a0, float *a1) {
     if (a1[0] <= a0[0] && a0[0] <= a1[3] && a1[2] <= a0[2] && a0[2] <= a1[5] && a1[1] <= a0[1] && a0[1] <= a1[4]) {
         return 1;
     }
@@ -5161,7 +5161,7 @@ void fs_gdlReadQuad_0003A9E8(Quad4 *dst) {
 }
 
 /* 7-insn leaf — zero out 4 floats at dst[0..3] (split off from 3A9E8 bundle). */
-void coll_func_0003AA40(float *dst) {
+void coll_zeroQuad_0003AA40(float *dst) {
     dst[3] = 0.0f;
     dst[0] = 0.0f;
     dst[1] = 0.0f;
@@ -5375,14 +5375,14 @@ int coll_func_0003B01C(char *o, char *other) {
     return 0;
 }
 
-/* coll_func_0003B198: 4-insn `return 0.0f` with both arg-saves spilled
+/* coll_return0f_0003B198: 4-insn `return 0.0f` with both arg-saves spilled
  * to caller's outgoing-arg slots (no frame). Boundary fix 2026-05-27: the
  * splat .s was 0x14 (5 insns); the trailing `lw v1, 0x8C(a0)` was an
  * alt-entry prologue for the successor (gl_func_0003B1AC enters with $v1
  * uninitialised, so callers route through the +0x10 alt-entry that sets
  * v1 from arg-struct field 0x8C). Split into coll_func_0003B1A8 via
  * scripts/split-fragments.py. */
-float coll_func_0003B198(int a0, int a1) {
+float coll_return0f_0003B198(int a0, int a1) {
     (void)a0;
     (void)a1;
     return 0.0f;
@@ -5919,14 +5919,14 @@ int CollShape_nearestHit(char *o, int *r, float s, void *a3) {
     return 0;
 }
 
-// coll_func_0003C7A4 — STRUCTURAL PASS (0x70 / 28 insns, no episode).
+// coll_markZeroWeight_0003C7A4 — STRUCTURAL PASS (0x70 / 28 insns, no episode).
 //
 // Walks v0->items[] (each item = 0xC bytes wide) iterating up to n items,
 // checking items[i].field_04 (a float) for == 0.0f, and on equal stores
 // -1 (as short) at parallel-array (a0->[0x2C])[off+4].
 //
 // Pseudo-C (decoded 2026-05-27 PM):
-//   void coll_func_0003C7A4(int *a0) {
+//   void coll_markZeroWeight_0003C7A4(int *a0) {
 //       int *v0 = *(int**)((char*)a0 + 0x84);
 //       unsigned int i = 0;
 //       int n, off = 0;
@@ -5958,9 +5958,9 @@ int CollShape_nearestHit(char *o, int *r, float s, void *a3) {
 //
 // Body left INCLUDE_ASM; pseudo-C above is documentation only (below the
 // 80% NM-wrap-promote threshold per CLAUDE.md).
-/* coll_func_0003C7A4: for each zero-weight entry of o->0x84's table
+/* coll_markZeroWeight_0003C7A4: for each zero-weight entry of o->0x84's table
  * (count +0x44, 12-byte records, float at +4), mark o->0x2C[i].s4 = -1. */
-void coll_func_0003C7A4(char *a0) {
+void coll_markZeroWeight_0003C7A4(char *a0) {
     unsigned int i;
     char *rec;
 
@@ -5976,7 +5976,7 @@ void coll_func_0003C7A4(char *a0) {
 }
 
 /* CollObjMgr_ctor: 22-insn optional-alloc + init constructor (sibling of
- * coll_func_0003CAA0). Same alloc-or-init recipe — uses `goto end` to merge
+ * coll_boxCtor_0003CAA0). Same alloc-or-init recipe — uses `goto end` to merge
  * the alloc-fail path into the shared epilogue.
  * docs/PATTERNS.md#feedback-alloc-or-init-goto-pattern. */
 int CollObjMgr_ctor(int *a0) {
@@ -6124,8 +6124,8 @@ void coll_func_0003CA80(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((ch
 
 void coll_func_0003CA90(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x30); *(int*)((char*)a0 + 0x30) = (int)a1; }
 
-/* coll_func_0003CAA0: 24-insn alloc-or-given Vec6-zero constructor. */
-int* coll_func_0003CAA0(int *a0) {
+/* coll_boxCtor_0003CAA0: 24-insn alloc-or-given Vec6-zero constructor. */
+int* coll_boxCtor_0003CAA0(int *a0) {
     if (a0 == 0) {
         a0 = (int*)gl_func_00000000(0x34);
         if (a0 == 0) goto end;
@@ -6331,7 +6331,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CollShape_func_0003CBB4);
 
 extern int gl_ref_0004F018();
 extern int gl_ref_0004F054();
-int coll_func_0003CF94(char *a0) {
+int hostio_readQuadParm_0003CF94(char *a0) {
     int scratch;
     gl_ref_0004F018(&scratch);
     return gl_ref_0004F054(a0 + 0x10);
@@ -8049,7 +8049,7 @@ int ItemType_vslot12_0003EB98(int a0, int a1, int a2) { return 0; }
 
 extern int gl_ref_00051744();
 extern int gl_ref_00051780();
-int item_func_0003EBAC(char *a0) {
+int hostio_readQuadParm_0003EBAC(char *a0) {
     int scratch;
     gl_ref_00051744(&scratch);
     return gl_ref_00051780(a0 + 0x10);
@@ -10169,7 +10169,7 @@ void App_Update(s32 arg0) {
 // list-iterate-and-dispatch: cb1(&D+0x1F6D0); walk the {cur,next} cursor
 // rooted at self->0x2C; for each node with node->0x18 & 4 call
 // vt->0x1C((short)vt->0x18 + node) with vt = node->0x28; cb2().
-// Re-decoded on the coll_func_00039EE4 iterator kit (exact sibling, same
+// Re-decoded on the nodelist_displayFlagged_00039EE4 iterator kit (exact sibling, same
 // dispatch body): dead while(0){pp=&cur;pp=&next;} anchor = sp+0x18/0x1C
 // memory homes; ternary-comma advance = collapsed-else b+1; if(0){vt=NULL;}
 // = vt in v1. The entry sw a0 / lw t6 home reload is just the param
@@ -11500,13 +11500,13 @@ void FogParms_hostioParms(int *a0) {
 
 extern int gl_ref_00056BDC();
 extern int gl_ref_00056C28();
-void gfx_func_00043FFC(char *a0) {
+void gfx_saveQuadIntInt_00043FFC(char *a0) {
     gl_ref_00056BDC(a0);
     gl_ref_00056C28(a0 + 0x10);
     gl_ref_00056C28(a0 + 0x14);
 }
 
-// gfx_func_00044034 — STRUCTURAL PASS (0x10C / 68 words, no episode). Raw-.word
+// gfx_loadQuadIntInt_00044034 — STRUCTURAL PASS (0x10C / 68 words, no episode). Raw-.word
 // USO. realjr=2, regjr=0 → 2-function BUNDLE + BOUNDARY NOTE: named fn ends
 // at the jr at 0x44064 (~13 words); a SECOND substantial real function
 // (~54 words, FP quaternion/matrix-vector transform) follows at 0x4406C —
@@ -11514,7 +11514,7 @@ void gfx_func_00043FFC(char *a0) {
 //
 // Named fn = small 3-call init/register wrapper (single prologue frame 0x18,
 // saves ra; H_0145xx = jal-encoded fixed intra-USO helper trio):
-//   void gfx_func_00044034(void *a0) {
+//   void gfx_loadQuadIntInt_00044034(void *a0) {
 //     H_0145B17(a0);                                // init/register base
 //     H_0145B2D((char*)a0 + 0x10);                   // register sub-field @0x10
 //     H_0145B2D((char*)a0 + 0x14);                   // register sub-field @0x14
@@ -11537,7 +11537,7 @@ void gfx_func_00043FFC(char *a0) {
 extern int gl_func_00000000();
 extern int gl_ref_00056C5C();
 extern int gl_ref_00056CB4();
-void gfx_func_00044034(void *a0) {
+void gfx_loadQuadIntInt_00044034(void *a0) {
     gl_ref_00056C5C(a0);
     gl_ref_00056CB4((char *)a0 + 0x10);
     gl_ref_00056CB4((char *)a0 + 0x14);
@@ -12888,8 +12888,8 @@ void gfx_func_00046DA0(int a0, char *a1, char *a2) {
     a1[2] = a2[2];
 }
 
-/* gfx_func_00046DC0: float RGB [0,1] -> u8 RGB via (u32)(c * 255.0f). */
-void gfx_func_00046DC0(int a0, unsigned char *a1, float *a2) {
+/* gfx_colorToRGB8_00046DC0: float RGB [0,1] -> u8 RGB via (u32)(c * 255.0f). */
+void gfx_colorToRGB8_00046DC0(int a0, unsigned char *a1, float *a2) {
     a1[0] = (unsigned int)(a2[0] * 255.0f);
     a1[1] = (unsigned int)(a2[1] * 255.0f);
     a1[2] = (unsigned int)(a2[2] * 255.0f);
@@ -13091,8 +13091,8 @@ void gfx_func_000476DC(char *a0, int a1, S476DC a2, S476DC a3) {
     gl_func_00000000(*(void **)(*(char **)(a0 + 0x254) + 0x158), a2.lo, a3.lo, a1);
 }
 
-/* gfx_func_0004771C: float RGB [0,1] -> u16 triple at +0x1FC via (u32)(c * 255.0f). */
-void gfx_func_0004771C(char *a0, float *a1) {
+/* gfx_colorToRGB16_0004771C: float RGB [0,1] -> u16 triple at +0x1FC via (u32)(c * 255.0f). */
+void gfx_colorToRGB16_0004771C(char *a0, float *a1) {
     *(unsigned short *)(a0 + 508) = (unsigned int)(a1[0] * 255.0f);
     *(unsigned short *)(a0 + 510) = (unsigned int)(a1[1] * 255.0f);
     *(unsigned short *)(a0 + 512) = (unsigned int)(a1[2] * 255.0f);

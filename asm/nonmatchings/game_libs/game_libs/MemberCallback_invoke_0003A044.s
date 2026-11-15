@@ -1,6 +1,6 @@
-nonmatching coll_func_0003A044, 0x80
+nonmatching MemberCallback_invoke_0003A044, 0x80
 
-glabel coll_func_0003A044
+glabel MemberCallback_invoke_0003A044
     /* E1F11C 0003A044 27BDFFE8 */  .word 0x27BDFFE8
     /* E1F120 0003A048 AFBF0014 */  .word 0xAFBF0014
     /* E1F124 0003A04C 848F000A */  .word 0x848F000A
@@ -33,4 +33,4 @@ glabel coll_func_0003A044
     /* E1F190 0003A0B8 27BD0018 */  .word 0x27BD0018
     /* E1F194 0003A0BC 03E00008 */  .word 0x03E00008
     /* E1F198 0003A0C0 00000000 */  .word 0x00000000
-endlabel coll_func_0003A044
+endlabel MemberCallback_invoke_0003A044

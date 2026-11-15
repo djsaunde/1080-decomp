@@ -1,6 +1,6 @@
-nonmatching gfx_func_0004771C, 0x1BC
+nonmatching gfx_colorToRGB16_0004771C, 0x1BC
 
-glabel gfx_func_0004771C
+glabel gfx_colorToRGB16_0004771C
     /* E2C7F4 0004771C 3C01437F */  .word 0x3C01437F
     /* E2C7F8 00047720 44810000 */  .word 0x44810000
     /* E2C7FC 00047724 C4A40000 */  .word 0xC4A40000
@@ -112,4 +112,4 @@ glabel gfx_func_0004771C
     /* E2C9A4 000478CC 44C8F800 */  .word 0x44C8F800
     /* E2C9A8 000478D0 03E00008 */  .word 0x03E00008
     /* E2C9AC 000478D4 A4890200 */  .word 0xA4890200
-endlabel gfx_func_0004771C
+endlabel gfx_colorToRGB16_0004771C

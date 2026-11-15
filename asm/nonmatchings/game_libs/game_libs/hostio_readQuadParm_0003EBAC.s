@@ -1,6 +1,6 @@
-nonmatching item_func_0003EBAC, 0x30
+nonmatching hostio_readQuadParm_0003EBAC, 0x30
 
-glabel item_func_0003EBAC
+glabel hostio_readQuadParm_0003EBAC
     /* E23C84 0003EBAC 27BDFFE0 */  .word 0x27BDFFE0
     /* E23C88 0003EBB0 AFBF0014 */  .word 0xAFBF0014
     /* E23C8C 0003EBB4 AFA40020 */  .word 0xAFA40020
@@ -13,4 +13,4 @@ glabel item_func_0003EBAC
     /* E23CA8 0003EBD0 27BD0020 */  .word 0x27BD0020
     /* E23CAC 0003EBD4 03E00008 */  .word 0x03E00008
     /* E23CB0 0003EBD8 00000000 */  .word 0x00000000
-endlabel item_func_0003EBAC
+endlabel hostio_readQuadParm_0003EBAC

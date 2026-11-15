@@ -1,6 +1,6 @@
-nonmatching coll_func_0003CAA0, 0x60
+nonmatching coll_boxCtor_0003CAA0, 0x60
 
-glabel coll_func_0003CAA0
+glabel coll_boxCtor_0003CAA0
     /* E21B78 0003CAA0 27BDFFE8 */  .word 0x27BDFFE8
     /* E21B7C 0003CAA4 14800005 */  .word 0x14800005
     /* E21B80 0003CAA8 AFBF0014 */  .word 0xAFBF0014
@@ -25,4 +25,4 @@ glabel coll_func_0003CAA0
     /* E21BCC 0003CAF4 00801025 */  .word 0x00801025
     /* E21BD0 0003CAF8 03E00008 */  .word 0x03E00008
     /* E21BD4 0003CAFC 00000000 */  .word 0x00000000
-endlabel coll_func_0003CAA0
+endlabel coll_boxCtor_0003CAA0

@@ -1,6 +1,6 @@
-nonmatching gfx_func_00044034, 0x38
+nonmatching gfx_loadQuadIntInt_00044034, 0x38
 
-glabel gfx_func_00044034
+glabel gfx_loadQuadIntInt_00044034
     /* E2910C 00044034 27BDFFE8 */  .word 0x27BDFFE8
     /* E29110 00044038 AFBF0014 */  .word 0xAFBF0014
     /* E29114 0004403C 0C015B17 */  .word 0x0C015B17
@@ -15,4 +15,4 @@ glabel gfx_func_00044034
     /* E29138 00044060 27BD0018 */  .word 0x27BD0018
     /* E2913C 00044064 03E00008 */  .word 0x03E00008
     /* E29140 00044068 00000000 */  .word 0x00000000
-endlabel gfx_func_00044034
+endlabel gfx_loadQuadIntInt_00044034

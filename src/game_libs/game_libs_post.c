@@ -15944,21 +15944,21 @@ void hostio_readQuadParm_000333B4(char *a0) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000333B4_pad.s")
 
-/* gl_func_000333F4: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
+/* heap_tempAllocDefault_000333F4: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
  * Target prologue is `addiu sp; or a1,a0; lui a0; sw ra` (lui BEFORE sw ra).
  * IDO 7.1 -O2 tie-breaks the independent `sw ra,0x14(sp)` (function-entry
  * line) vs `lui a0,%hi(SYM)` (call line) by SOURCE LINE: with the call on its
  * own line the entry-line store stays first (the old "unflippable scheduler
  * cap"); with the call on the SAME line as the `{` the lui schedules first.
  * See docs/IDO_CODEGEN.md#same-line-brace-return-sinks-arg-home-c3e8. */
-int gl_func_000333F4(int a0) { return gl_func_00000000(&D_00000000, a0); }
+int heap_tempAllocDefault_000333F4(int a0) { return gl_func_00000000(&D_00000000, a0); }
 
-/* gl_func_0003341C: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
- * Same shape and same source-line tie-break as gl_func_000333F4 above
+/* heap_tempFreeDefault_0003341C: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
+ * Same shape and same source-line tie-break as heap_tempAllocDefault_000333F4 above
  * (target prologue `addiu sp; or a1,a0; lui a0; sw ra`); the call must
  * share the `{` line so `lui a0` schedules ahead of `sw ra,0x14(sp)`.
  * See docs/IDO_CODEGEN.md#same-line-brace-call-wrapper-lui-a0-sw-ra. */
-void gl_func_0003341C(int a0) { gl_func_00000000(&D_00000000, a0); }
+void heap_tempFreeDefault_0003341C(int a0) { gl_func_00000000(&D_00000000, a0); }
 
 /* sys_timeInFrames_00033444 -- ratio of a callback's u32 result to the u32
  * counter at &D+0x20C (0x6C / 27 words, EXACT).

@@ -1,6 +1,6 @@
-nonmatching gl_func_0003341C, 0x28
+nonmatching heap_tempFreeDefault_0003341C, 0x28
 
-glabel gl_func_0003341C
+glabel heap_tempFreeDefault_0003341C
     /* E184F4 0003341C 27BDFFE8 */  .word 0x27BDFFE8
     /* E184F8 00033420 00802825 */  .word 0x00802825
     /* E184FC 00033424 3C040000 */  .word 0x3C040000
@@ -11,4 +11,4 @@ glabel gl_func_0003341C
     /* E18510 00033438 27BD0018 */  .word 0x27BD0018
     /* E18514 0003343C 03E00008 */  .word 0x03E00008
     /* E18518 00033440 00000000 */  .word 0x00000000
-endlabel gl_func_0003341C
+endlabel heap_tempFreeDefault_0003341C
