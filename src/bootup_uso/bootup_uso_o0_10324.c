@@ -61,7 +61,7 @@ char *gui_getCurrentRow_00010324(a0) char *a0; {
  * contiguous before the existing 11C70 split.
  *
  * input_addPad_00011C70 split out to bootup_uso_o0_11C70.c on 2026-05-07 (verified
- * byte-exact at -O0). replay_addInput + input_setActive_00011CD8 also moved into that
+ * byte-exact at -O0). input_addRacePad + input_setActive_00011CD8 also moved into that
  * file as INCLUDE_ASM stubs (INCLUDE_ASM is opt-level-independent) so the
  * 11C70..11D40 .o region is contiguous; they migrate to C bodies in
  * future passes when individually verified at -O0.

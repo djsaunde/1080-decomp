@@ -1,6 +1,6 @@
-nonmatching snd_soundObjEventIndex_00000A9C, 0x78
+nonmatching SndHandle_contactEventType, 0x78
 
-glabel snd_soundObjEventIndex_00000A9C
+glabel SndHandle_contactEventType
     /* DD1508 00000A9C 10A00011 */  beqz       $a1, .L00000AE4
     /* DD150C 00000AA0 AFA40000 */   sw        $a0, 0x0($sp)
     /* DD1510 00000AA4 24010065 */  addiu      $at, $zero, 0x65
@@ -37,4 +37,4 @@ glabel snd_soundObjEventIndex_00000A9C
   .L00000B0C:
     /* DD1578 00000B0C 03E00008 */  jr         $ra
     /* DD157C 00000B10 00601025 */   or        $v0, $v1, $zero
-endlabel snd_soundObjEventIndex_00000A9C
+endlabel SndHandle_contactEventType

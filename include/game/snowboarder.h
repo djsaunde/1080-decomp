@@ -184,7 +184,7 @@ typedef struct SnowBoarder {
     SnowBChild child;       /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
     SnowBoarderParms parms; /* 0x540: "SnowBoarder::Parms" (the ctor builds it in place) */
     RiderInput *input;      /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
-                             * by replay_addInput); its +0x10 word carries the direction bits 4 / 8 (B520) */
+                             * by input_addRacePad); its +0x10 word carries the direction bits 4 / 8 (B520) */
     struct SnowAI *ai;      /* 0x804: the AI controller (game.uso SnowAI_ctor(0, this, ...), the ctor's last child);
                              * SnowBoarder_handleMsg forwards win / lose / timeout to SnowAI_onWin / onLose / onTimeout */
     char sound[0xC];        /* 0x808: embedded 0xC-byte sound object, constructed in place with (ctor arg 1,

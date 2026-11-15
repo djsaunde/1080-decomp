@@ -72,7 +72,7 @@ typedef struct InputMgr {
     /* 0x6C */ s32 demoIndex;      /* which attract demo n64proc / titproc runs next */
     char pad70[0xE0 - 0x70];
     /* 0xE0 */ InputPad *pads[8];  /* input_addPad_00011C70 appends; numPads counts */
-    /* 0x100 */ InputPad *racePads[8]; /* the race's pads (replay_addInput, every game_setup*
+    /* 0x100 */ InputPad *racePads[8]; /* the race's pads (input_addRacePad, every game_setup*
                                     * builder): input_pauseAll / unpauseAll call pad_setPause on each;
                                     * pads[] above are the controllers (GameFlow_addPads) */
     /* 0x120 */ s32 numPads;

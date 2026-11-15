@@ -412,7 +412,7 @@ void SndHandle_setFlag1A(SndHandle *h) {
     }
 }
 
-void SndHandle_setEventArg(SndHandle *h, int a1) {
+void SndHandle_setContactSurface(SndHandle *h, int a1) {
     h->contactSurface = a1;
 }
 
@@ -450,7 +450,7 @@ void SndHandle_setEventArg(SndHandle *h, int a1) {
  * can't move it; duplicate-block forms leave a ghost twin, 32 insns).
  * = the documented "branch-likely vs regular branch" as1 cap class
  * (docs/IDO_CODEGEN branch-likely entry). Stays NM at 2 diffs. */
-/* snd_soundObjEventIndex_00000A9C — best NM body (28/30 words, 97.83%). CAP CONFIRMED 2026-07-02
+/* SndHandle_contactEventType — best NM body (28/30 words, 97.83%). CAP CONFIRMED 2026-07-02
  * (agent-e deep session, ~25 new C shapes + 4 phase-split configs + IDO 5.3 + -g1/2/3).
  *
  * The two residual words: target stages the n/s-case 8 in $v1
@@ -502,7 +502,7 @@ void SndHandle_setEventArg(SndHandle *h, int a1) {
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 121). The old
  * goto chain returned constants directly; the target is a switch that assigns
  * one result variable (the 'n'/'s' value is hoisted into v1). */
-int snd_soundObjEventIndex_00000A9C(int a0, int a1) {
+int SndHandle_contactEventType(int a0, int a1) {
     volatile int r = 0;
     return r;
 }

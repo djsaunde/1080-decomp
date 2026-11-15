@@ -1,6 +1,6 @@
-nonmatching input_unpauseAll_00011BF0, 0x80
+nonmatching input_unpauseRacePads, 0x80
 
-glabel input_unpauseAll_00011BF0
+glabel input_unpauseRacePads
     /* DE265C 00011BF0 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DE2660 00011BF4 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE2664 00011BF8 AFA40020 */  sw         $a0, 0x20($sp)
@@ -36,4 +36,4 @@ glabel input_unpauseAll_00011BF0
     /* DE26D0 00011C64 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DE26D4 00011C68 03E00008 */  jr         $ra
     /* DE26D8 00011C6C 00000000 */   nop
-endlabel input_unpauseAll_00011BF0
+endlabel input_unpauseRacePads

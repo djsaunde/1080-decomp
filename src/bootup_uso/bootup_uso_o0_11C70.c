@@ -28,7 +28,7 @@ void input_addPad_00011C70(InputMgr *a0, InputPad *a1) {
  * (count) + 0x100 (4-byte entries). Verified byte-exact at -O0 with the
  * same `register s32 idx; register s32 *p = a0;` decl-order recipe
  * (2026-05-07). */
-void replay_addInput(InputMgr *a0, InputPad *a1) {
+void input_addRacePad(InputMgr *a0, InputPad *a1) {
     register s32 idx;
     register InputMgr *p = a0;
     idx = p->numRacePads;

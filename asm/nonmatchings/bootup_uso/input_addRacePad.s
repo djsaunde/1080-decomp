@@ -1,6 +1,6 @@
-nonmatching replay_addInput, 0x34
+nonmatching input_addRacePad, 0x34
 
-glabel replay_addInput
+glabel input_addRacePad
     /* DE2710 00011CA4 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE2714 00011CA8 00803825 */  or         $a3, $a0, $zero
     /* DE2718 00011CAC 8CE60124 */  lw         $a2, 0x124($a3)
@@ -15,4 +15,4 @@ glabel replay_addInput
     /* DE2738 00011CCC 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE273C 00011CD0 03E00008 */  jr         $ra
     /* DE2740 00011CD4 00000000 */   nop
-endlabel replay_addInput
+endlabel input_addRacePad

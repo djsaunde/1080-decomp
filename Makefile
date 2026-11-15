@@ -178,7 +178,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7328_DONOR)
 # A9C = mode letter -> flag bit: switch assigning one result variable (compare chain, 'n'/'s' result hoisted into v1); NCC donor.
 BOOTUP_A9C_DONOR := build/src/bootup_uso/bootup_uso_ncc_A9C.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += snd_soundObjEventIndex_00000A9C=$(BOOTUP_A9C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SndHandle_contactEventType=$(BOOTUP_A9C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_A9C_DONOR)
 # 7204 = new {word, M4} record + inline L::add(n) forwarding to the import (separate result web); NCC donor.
 BOOTUP_7204_DONOR := build/src/bootup_uso/bootup_uso_ncc_7204.cpp.o
@@ -381,10 +381,10 @@ build/src/bootup_uso/bootup_uso_o0_11A34.c.o: TRUNCATE_TEXT := 0x80
 build/src/bootup_uso/bootup_uso_o0_11AB4.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11AB4.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_11AB4.c.o: TRUNCATE_TEXT := 0xA8
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: OPT_FLAGS := -O0
-# 11B5C: -O0 C++ donor(s) for input_pauseAll_00011B5C (edg -O0 has no dead closing-brace branch)
+# 11B5C: -O0 C++ donor(s) for input_pauseRacePads (edg -O0 has no dead closing-brace branch)
 BOOTUP_11B5C_DONOR := build/src/bootup_uso/bootup_uso_ncc_11B5C.cpp.o
 $(BOOTUP_11B5C_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: private REPLACE_FUNC_BODY += input_pauseAll_00011B5C=$(BOOTUP_11B5C_DONOR)
+build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: private REPLACE_FUNC_BODY += input_pauseRacePads=$(BOOTUP_11B5C_DONOR)
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: $(BOOTUP_11B5C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x114
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o: TRUNCATE_TEXT := 0x114
