@@ -8,7 +8,7 @@
  * section (`for (;;) g();` epilogues land at 0x20, 0x60, 0xA0, ... in a
  * test file). The target's epilogue sits at 0x34654 (2 nops after the
  * back branch), which is 32-aligned relative to 0x343F4: the original
- * translation unit starts at game_libs_func_000343F4. splat cut that unit
+ * translation unit starts at dbg_threadStateName. splat cut that unit
  * at 0x34458, so in game_libs_post0b.c the same C gets 3 nops (320
  * bytes). This file is the original unit's head: the real C of its two
  * leading functions (343F4 = game_libs_o2_343F4.c, 34458 =
@@ -24,7 +24,7 @@
 extern char D_00000000;
 extern int gl_func_00000000();
 
-int game_libs_func_000343F4(int a0) {
+int dbg_threadStateName(int a0) {
     switch (a0) {
     case 2:
         return (int)(&D_00000000 + 0x1E3BC);

@@ -45,18 +45,18 @@ void gl_viMgrMain(char *arg0) {
 }
 
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/game_libs_func_00075248_pad.s")
-/* game_libs_func_00075254: the standard cross-USO int-reader template
+/* gl___osViGetCurrentContext: the standard cross-USO int-reader template
  * (return D_global), matched in-place at the unit's default 7.1 -O2.
  * The symbol was mis-split as 75248 (3 leading zero pad words now in the
  * _pad sidecar); cc's natural function padding supplies the trailing
  * alignment pad (see below). */
 extern int D_75254_v;
-int game_libs_func_00075254(void) {
+int gl___osViGetCurrentContext(void) {
     return D_75254_v;
 }
 
 /* The zero word at 0x75260 is 75254's trailing alignment pad, appended to
- * game_libs_func_00075254 as an all-zero SUFFIX_BYTES_FORCE (Makefile, both
+ * gl___osViGetCurrentContext as an all-zero SUFFIX_BYTES_FORCE (Makefile, both
  * trees; was the pseudo-function game_libs_func_00075260). */
 
 /* gl_func_0007526C MATCHED 2026-06-10 as gl___osSpSetPc (own

@@ -72,7 +72,7 @@ int gl_osSetTimer(char *obj, int a1, int a2, int a3, int arg5, int arg6, int arg
  * splice: real C lives in the IDO 5.3 -O3 donor unit
  * game_libs_ido53_73904.c (346/346 raw words spliced; the donor TU also
  * reproduces the [0x73E6C,0x73E74) jr-ra tail word-exact, which stays
- * the separate game_libs_func_00073E6C def below.
+ * the separate gl_xldtob_stub_00073E6C def below.
  * The only non-zero reloc imm is the "0" string %lo,
  * .rodata base pinned 0x2540). The old "caller-set s-reg argument cap"
  * was the -O3 WHOLE-TU custom linkage: _Genld is static in xldtob.c and
@@ -86,7 +86,7 @@ void gl_Genld(void *px, char *p, int xexp, int nsig, int code) {
     }
 }
 
-void game_libs_func_00073E6C(void) {}
+void gl_xldtob_stub_00073E6C(void) {}
 
 /* gl_Ldtob = _Ldtob (Plauger libc xldtob.c verbatim) -- the
  * printf float-converter, sibling of _Genld/73904. LANDED 2026-08-22
@@ -271,7 +271,7 @@ GLOBAL_ASM("src/libultra/game_libs/writebackdcacheall.s")
  * relocs; ROM stores the unrelocated zeros, D_00000000 at VRAM 0
  * resolves identically). */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/_pad_pre_74894.s")
-int game_libs_func_00074894(void) {
+int gl___osGetCurrFaultedThread(void) {
     return D_00000000;
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000747F4_pad.s")

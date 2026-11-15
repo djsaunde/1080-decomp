@@ -407,7 +407,7 @@ void AnimPlayer_vfn10_00063704(int a0) {}
 
 extern int gl_ref_00076488();
 extern int gl_ref_00076584();
-void gl_func_0006370C(char *a0) {
+void hostio_readQuadParm_0006370C(char *a0) {
     int local;
     gl_ref_00076488(&local);
     gl_ref_00076584(a0 + 0x10);
@@ -1981,7 +1981,7 @@ void DNode_quatToMtx_00065B40(char *s) {
  * buffer are distinct operations. Keep the three float copies on one line
  * for the descending load/store schedule. The one-shot dispatch block fixes
  * the struct-copy temporary registers; the spare locals preserve frame gaps.
- * Bootup TextReloc +0x7A320 -> Sym1794 (Text 0x54910, gl_func_000402A4),
+ * Bootup TextReloc +0x7A320 -> Sym1794 (Text 0x54910, QNode_translate),
  * +0x7A35C -> Sym265 (Text 0x4DC90, MNode_handleMsg). Both jal fields are
  * zero in the ROM and are resolved by the original USO loader.
  */
@@ -2040,7 +2040,7 @@ void DNode_hostioParms(int *a0) {
 
 extern int gl_ref_00077DB0();
 extern int gl_ref_00077DEC();
-int gl_func_00065DDC(char *a0) {
+int hostio_readFloatParm_00065DDC(char *a0) {
     int scratch;
     gl_ref_00077DB0(&scratch);
     return gl_ref_00077DEC(a0 + 0x10);
@@ -2052,7 +2052,7 @@ int gl_func_00065DDC(char *a0) {
  * objdiff is reloc-aware so build/.o matches expected/.o without any patch. */
 extern int gl_ref_00077DB0();
 extern int gl_ref_00077E28();
-void gl_func_00065E0C(char *a0) {
+void hostio_readVec3Parm_00065E0C(char *a0) {
     int local;
     gl_ref_00077DB0(&local);
     gl_ref_00077E28(a0 + 0x10);
@@ -2074,18 +2074,18 @@ int DNode_func_00065E64(char *a0) {
 
 extern int gl_ref_00077DB0();
 extern int gl_ref_00077E98();
-int gl_func_00065E84(char *a0) {
+int hostio_readQuadParm_00065E84(char *a0) {
     int scratch;
     gl_ref_00077DB0(&scratch);
     return gl_ref_00077E98(a0 + 0x10);
 }
 
-/* gl_func_00065EB4: 12-insn 2-call wrapper. Both calls target func_00077DB0
+/* hostio_readIntParm_00065EB4: 12-insn 2-call wrapper. Both calls target func_00077DB0
  * (0x77DB0, cross-segment). Call 1 with &stack_local (out-param), call 2 with
  * a0+0x10. Byte-exact: func_00077DB0 reloc resolves to 0x77DB0 (verified
  * raw-diff=0). Successor fs_piXfer_00065EE4 stays INCLUDE_ASM. */
 extern void func_00077DB0();
-void gl_func_00065EB4(int a0) {
+void hostio_readIntParm_00065EB4(int a0) {
     int local;
     func_00077DB0(&local);
     func_00077DB0(a0 + 0x10);
@@ -3564,7 +3564,7 @@ void math_func_00067AC4(void) {
     game_libs_func_00067AC4_inner(0.0f, 0.0f);
 }
 
-/* Varargs empty stub (sibling of matched gl_func_0006F144). */
+/* Varargs empty stub (sibling of matched gl_osSyncPrintf). */
 void sys_printStub_00067AE8(int a0, ...) {
 }
 
@@ -3788,7 +3788,7 @@ void *str_func_00067D50(void *s, int c, int n) {
 }
 
 /* Returns 0 (sibling of matched _0003D480). */
-int game_libs_func_00067D80(int a0) {
+int str_stubReturn0_00067D80(int a0) {
     return 0;
 }
 
@@ -5335,7 +5335,7 @@ int SkinMgr_addAnim_00069C38(char *a0) {
 
 extern int gl_ref_0007D594();
 extern int gl_ref_0007D5D0();
-void gl_func_00069C58(char *a0) {
+void hostio_readQuadParm_00069C58(char *a0) {
     int local;
     gl_ref_0007D594(&local);
     gl_ref_0007D5D0(a0 + 0x10);

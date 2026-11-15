@@ -642,11 +642,11 @@ void *gl_osLeoDiskInit(void) {
     return (void *)ready;
 }
 
-void gl_func_0006F144(int a0, ...) {
+void gl_osSyncPrintf(int a0, ...) {
 }
 
-/* Varargs empty stub (sibling of matched gl_func_0006F144). */
-void gl_func_0006F160(int a0, ...) {
+/* Varargs empty stub (sibling of matched gl_osSyncPrintf). */
+void gl_rmonPrintf(int a0, ...) {
 }
 
 /* memcpy = libc memcpy (Plauger verbatim, IDO 5.3 -O2
@@ -908,7 +908,7 @@ s32 gl_osEPiRawStartDma(void) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006F8A4_pad.s")
 
-/* gl_func_0006FAD4: 32-insn flag-extract + conditional bit-set/clear.
+/* gl_osSpTaskYielded: 32-insn flag-extract + conditional bit-set/clear.
  *   v0 = gl_func_00000000(a0); flag = (v0 & 0x100) ? 1 : 0;
  *   if (v0 & 0x80) { a0[1] |= flag; a0[1] &= ~2; }  return flag;
  * LANDED 2026-07-09 via REPLACE_FUNC_BODY donor splice: the target is plain
@@ -917,7 +917,7 @@ s32 gl_osEPiRawStartDma(void) {
  * -O1 donor unit game_libs_o1_6FAD4.c (32/32), spliced over this -O2
  * stand-in. Body below is a placeholder for the splice (its bytes are
  * replaced by the donor). */
-int gl_func_0006FAD4(int* a0) {
+int gl_osSpTaskYielded(int* a0) {
     volatile int v0 = gl_func_00000000(a0);
     volatile int flag = (v0 & 0x100) ? 1 : 0;
     if (v0 & 0x80) {

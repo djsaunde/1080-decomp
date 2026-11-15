@@ -1,4 +1,4 @@
-/* trailing alignment padding for gl_func_000410AC */
+/* trailing alignment padding for hostio_readQuadParm_000410AC */
 glabel _pad_gl_func_000410AC, local
 .word 0x00000000
 .word 0x00000000

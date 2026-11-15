@@ -225,7 +225,7 @@ void __osViSwapContext(void) {
     (void)ret;
 }
 
-/* game_libs_func_00070FA0 moved to its own -O1 -g3 unit
+/* gl_osPiGetCmdQueue moved to its own -O1 -g3 unit
  * game_libs_o1g3_70FA4.c (2026-07-10): the "leaf-branch-past-end CAP"
  * fragment was the head of ONE function whose tail splat carved off as
  * game_libs_g3_70FBC.c; true entry 0x70FA4 (the 0x70FA0 pad nop is the

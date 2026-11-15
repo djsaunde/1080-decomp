@@ -474,7 +474,7 @@ build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTE
 # sizes (drift included) so no real code gets truncated; same accumulated
 # drift as main's pre-split game_libs.c.o. See feedback_non_aligned_o_split.md.
 build/src/game_libs/game_libs.c.o: TRUNCATE_TEXT := 0x8778
-# game_libs_head.c = game_libs_func_FFFFFFE0 (0x1EC), the first game_libs function
+# game_libs_head.c = PointsGadget_display_FFFFFFE0 (0x1EC), the first game_libs function
 # whose 0x20-byte hoisted head precedes game_libs VRAM 0 (own .game_libs_head output
 # section in tenshoe.ld; was gl_func_00000000 at the start of game_libs.c, 8944 -> 8778).
 build/src/game_libs/game_libs_head.c.o: TRUNCATE_TEXT := 0x1EC
@@ -500,8 +500,8 @@ build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # console_formatHex8: .s began with 5 all-zero pad words (ROM 0x61040-0x61053); the real
 # body starts at 0x61054. Pad -> 61030 SUFFIX (both builds); expected/ metadata: 61030 size
 # 0x10->0x24, 61040 value +0x14, size 0xb4->0xa0 (2026-10-15).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_func_00060574=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_func_00060574=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # RcpTask_ctor's leading zero word (0x4D0B0) is vFP1_invokeFn_0004D084's all-zero tail pad (agent-c run 122):
 # 4D0B4 is plain C again; the NM symbol of 4D084 is resized back to 0x2c in the clip line below.
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += vFP1_invokeFn_0004D084=0x00000000
@@ -511,7 +511,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # with scripts/elf-symtab-delete.py, predecessors grown; .text + relocs unchanged).
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_func_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_func_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-# gl_func_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
+# hostio_readQuadParm_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
 # vs target 0x2c (nop is baserom alignment). Resize non_matching symbol to 0x2c so
 # objdiff scores 11w not 12w. ROM-neutral (non_matching .o only). (Same class as EBC8.)
 # (0x2b76c -> 0x2b750 on 2026-07-18: the exact 453A8 twin-mirror body is 0x1c
@@ -821,7 +821,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 260: 4C5E4 NM donor viewport conversions as named locals (832 -> 836 bytes = target): 0x2eaf0 -> 0x2eaf4 (62F08 NM offset 0x2eaa4).
 # agent-c run 266: 3B9C0 NM donor qa / qb loads in one basic block (1104 -> 1108 bytes, target 1116): 0x2eaf4 -> 0x2eaf8 (62F08 NM offset 0x2eaa8).
 # agent-c run 284: 3B9C0 NM donor tris[i] reads + off split like the target (1108 -> 1116 bytes = target): 0x2eaf8 -> 0x2eb00 (62F08 NM offset 0x2eab0).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eb00 CMod_callbackInvoke_000551E0=0x7c gl_func_00055B10=0x2c vFP1_invokeFn_0004D084=0x2c SeekNode_update=0x158
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eb00 CMod_callbackInvoke_000551E0=0x7c hostio_readQuadParm_00055B10=0x2c vFP1_invokeFn_0004D084=0x2c SeekNode_update=0x158
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -959,7 +959,7 @@ build/src/game_libs/game_libs_tail.c.o: TRUNCATE_TEXT := 0x5584
 # SUFFIX_BYTES_FORCE word; the old 1-word _pad.s GLOBAL_ASM emits 8 bytes after a C body.
 build/src/game_libs/game_libs_tail.c.o: SUFFIX_BYTES_FORCE := ColourItem_create_0000C5B0=0x00000000
 build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := ColourItem_create_0000C5B0=0x00000000
-# gl_func_0000EBC8 is a byte-correct real-def (ROM matches, make verify OK) but IDO
+# hostio_readVec3Parm_0000EBC8 is a byte-correct real-def (ROM matches, make verify OK) but IDO
 # emits a trailing jr-delay nop so its symbol is 0x30 (12w) vs the target's 0x2c (11w
 # — baserom attributes that nop to alignment). objdiff per-symbol scored 90.9%=11/12.
 # Resize the non_matching symbol to 0x2c so objdiff sees the matching 11w. ROM-neutral
@@ -983,10 +983,10 @@ build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_SUFFIX_BYTES_F
 # moved out to game_libs_o0_949C.c; EBC8 NM offset 0x55f8 -> 0x5560, clip = offset + 0x30.
 # tail clip 0x5590 -> 0x558c (2026-10-16 agent-g): ColourItem_create_0000C5B0 unwrapped; its 8-byte _pad.s
 # block became a 4-byte SUFFIX_BYTES_FORCE word. EBC8 NM offset 0x5560 -> 0x555c, clip = offset + 0x30.
-build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x5580 gl_func_0000EBC8=0x2c ColourItem_create_0000C5B0=0x8c
+build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x5580 hostio_readVec3Parm_0000EBC8=0x2c ColourItem_create_0000C5B0=0x8c
 # tail clip 0x5550 -> 0x5554 (2026-09-11 agent-g): Backup_resetCourseData_0000A670 real def is 62w vs its
 # old 61w NM body; EBC8 NM offset 0x5520 -> 0x5524, clip = offset + 0x30.
-# 0x17a38 -> 0x17a48 (2026-09-05 agent-g): game_libs_func_000343F4 absorbed the
+# 0x17a38 -> 0x17a48 (2026-09-05 agent-g): dbg_threadStateName absorbed the
 # 0x10-byte g3_34448 carve-out (its own switch default block).
 # 0x17a48 -> 0x17a74 (2026-10-23 agent-c): AudioSynth_InitNextRingBuf absorbed the 11-word head
 # that sat at the end of the game_libs_text2_tail bin (tenshoe.yaml boundary 0xE01AE8 -> 0xE01ABC).
@@ -1047,8 +1047,8 @@ build/src/game_libs/game_libs_ido53_74DB4.c.o: SUFFIX_BYTES_FORCE := gl_osViSetX
 build/non_matching/src/game_libs/game_libs_ido53_74DB4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_osViSetXScale=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 build/src/game_libs/game_libs_post2b_f.c.o: TRUNCATE_TEXT := 0x370
 # 75254's trailing pad word (formerly the pseudo-fn game_libs_func_00075260).
-build/src/game_libs/game_libs_post2b_f.c.o: SUFFIX_BYTES_FORCE := game_libs_func_00075254=0x00000000
-build/non_matching/src/game_libs/game_libs_post2b_f.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := game_libs_func_00075254=0x00000000
+build/src/game_libs/game_libs_post2b_f.c.o: SUFFIX_BYTES_FORCE := gl___osViGetCurrentContext=0x00000000
+build/non_matching/src/game_libs/game_libs_post2b_f.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl___osViGetCurrentContext=0x00000000
 build/src/game_libs/game_libs_ido_75264.c.o build/non_matching/src/game_libs/game_libs_ido_75264.c.o: OPT_FLAGS := -O1
 # 2026-06-10: pad sidecar trimmed 5->2 words (0x48->0x3C). The segment truly ends at
 # VRAM 0x752A0 (ROM 0xE5A378 = game_libs_post bin start); the extra 3 zero words were
@@ -1514,7 +1514,7 @@ build/src/game_libs/game_libs_ido53_6F38C.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_mips3_6C740.c.o build/non_matching/src/game_libs/game_libs_mips3_6C740.c.o: MIPSISET := -mips3 -32
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := gl___ull_divremi=$(GAMELIBS_6C8AC_DONOR) gl___ll_mod=$(GAMELIBS_6C8AC_DONOR) gl_osPiRawStartDma=$(GAMELIBS_6C9F4_DONOR) gl_osSetThreadPri=$(GAMELIBS_6F534_DONOR) gl___osSiRawReadIo_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_osSetEventMesg=$(GAMELIBS_6E1A4_DONOR) gl___osSetGlobalIntMask=$(GAMELIBS_6FFE4_DONOR) gl_func_0006FAD4=$(GAMELIBS_6FAD4_DONOR) gl___ull_rem=$(GAMELIBS_6C740_DONOR) gl___ull_div=$(GAMELIBS_6C740_DONOR) gl___ll_lshift=$(GAMELIBS_6C740_DONOR) gl___ll_rem=$(GAMELIBS_6C740_DONOR) gl___ll_div=$(GAMELIBS_6C740_DONOR) gl___ll_mul=$(GAMELIBS_6C740_DONOR) gl___ll_rshift=$(GAMELIBS_6C740_DONOR) gl__MakeMotorData=$(GAMELIBS_6D0F4_DONOR) gl_osCreatePiManager=$(GAMELIBS_6DA74_DONOR) gl_osMotorStop=$(GAMELIBS_6CDB4_DONOR) gl_osMotorStart=$(GAMELIBS_6CDB4_DONOR) gl___ull_rshift=$(GAMELIBS_6C740_DONOR) osPfsIsPlug=$(GAMELIBS_6D554_DONOR) __osPfsRequestData=$(GAMELIBS_6D6F4_DONOR) __osPfsGetInitData=$(GAMELIBS_6D7CC_DONOR) gl___osSiRawStartDma=$(GAMELIBS_6CAD4_DONOR) gl___osSpRawStartDma=$(GAMELIBS_6CB84_DONOR) osViBlack=$(GAMELIBS_6CC64_DONOR) osMotorInit=$(GAMELIBS_6D270_DONOR) osAiSetFrequency=$(GAMELIBS_70040_DONOR) gl_osLeoDiskInit=$(GAMELIBS_6F088_DONOR) gl___osSpDeviceBusy=$(GAMELIBS_6F38C_DONOR) gl___osSiDeviceBusy=$(GAMELIBS_6F3BC_DONOR) gl_osCartRomInit=$(GAMELIBS_6DC0C_DONOR) gl___osDevMgrMain=$(GAMELIBS_6DD14_DONOR) gl_osEPiRawStartDma=$(GAMELIBS_6F8A4_DONOR) osGetTime=$(GAMELIBS_6FB54_DONOR) __osInsertTimer=$(GAMELIBS_6FE5C_DONOR) gl_osJamMesg=$(GAMELIBS_6F3E4_DONOR) _Putfld=$(GAMELIBS_6E224_DONOR) _Printf=$(GAMELIBS_6E224_DONOR) gl_strchr=$(GAMELIBS_6F1D8_DONOR) gl_strchr_tail_0006F1FC=$(GAMELIBS_6F1D8_DONOR) memcpy=$(GAMELIBS_6F17C_DONOR) gl_osCreateMesgQueue=$(GAMELIBS_6F218_DONOR) __osTimerServicesInit=$(GAMELIBS_6FBE4_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := gl___ull_divremi=$(GAMELIBS_6C8AC_DONOR) gl___ll_mod=$(GAMELIBS_6C8AC_DONOR) gl_osPiRawStartDma=$(GAMELIBS_6C9F4_DONOR) gl_osSetThreadPri=$(GAMELIBS_6F534_DONOR) gl___osSiRawReadIo_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_osSetEventMesg=$(GAMELIBS_6E1A4_DONOR) gl___osSetGlobalIntMask=$(GAMELIBS_6FFE4_DONOR) gl_osSpTaskYielded=$(GAMELIBS_6FAD4_DONOR) gl___ull_rem=$(GAMELIBS_6C740_DONOR) gl___ull_div=$(GAMELIBS_6C740_DONOR) gl___ll_lshift=$(GAMELIBS_6C740_DONOR) gl___ll_rem=$(GAMELIBS_6C740_DONOR) gl___ll_div=$(GAMELIBS_6C740_DONOR) gl___ll_mul=$(GAMELIBS_6C740_DONOR) gl___ll_rshift=$(GAMELIBS_6C740_DONOR) gl__MakeMotorData=$(GAMELIBS_6D0F4_DONOR) gl_osCreatePiManager=$(GAMELIBS_6DA74_DONOR) gl_osMotorStop=$(GAMELIBS_6CDB4_DONOR) gl_osMotorStart=$(GAMELIBS_6CDB4_DONOR) gl___ull_rshift=$(GAMELIBS_6C740_DONOR) osPfsIsPlug=$(GAMELIBS_6D554_DONOR) __osPfsRequestData=$(GAMELIBS_6D6F4_DONOR) __osPfsGetInitData=$(GAMELIBS_6D7CC_DONOR) gl___osSiRawStartDma=$(GAMELIBS_6CAD4_DONOR) gl___osSpRawStartDma=$(GAMELIBS_6CB84_DONOR) osViBlack=$(GAMELIBS_6CC64_DONOR) osMotorInit=$(GAMELIBS_6D270_DONOR) osAiSetFrequency=$(GAMELIBS_70040_DONOR) gl_osLeoDiskInit=$(GAMELIBS_6F088_DONOR) gl___osSpDeviceBusy=$(GAMELIBS_6F38C_DONOR) gl___osSiDeviceBusy=$(GAMELIBS_6F3BC_DONOR) gl_osCartRomInit=$(GAMELIBS_6DC0C_DONOR) gl___osDevMgrMain=$(GAMELIBS_6DD14_DONOR) gl_osEPiRawStartDma=$(GAMELIBS_6F8A4_DONOR) osGetTime=$(GAMELIBS_6FB54_DONOR) __osInsertTimer=$(GAMELIBS_6FE5C_DONOR) gl_osJamMesg=$(GAMELIBS_6F3E4_DONOR) _Putfld=$(GAMELIBS_6E224_DONOR) _Printf=$(GAMELIBS_6E224_DONOR) gl_strchr=$(GAMELIBS_6F1D8_DONOR) gl_strchr_tail_0006F1FC=$(GAMELIBS_6F1D8_DONOR) memcpy=$(GAMELIBS_6F17C_DONOR) gl_osCreateMesgQueue=$(GAMELIBS_6F218_DONOR) __osTimerServicesInit=$(GAMELIBS_6FBE4_DONOR)
 build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += __osTimerInterrupt=$(GAMELIBS_6FC70_DONOR) __osSetTimerIntr=$(GAMELIBS_6FC70_DONOR) gl_osInitialize=$(GAMELIBS_6C484_DONOR) osViSetMode=$(GAMELIBS_6CD44_DONOR) guPosition=$(GAMELIBS_6F834_DONOR) osViSwapBuffer=$(GAMELIBS_6F634_DONOR) gl_osEPiLinkHandle=$(GAMELIBS_6CC14_DONOR) guPositionF=$(GAMELIBS_6F684_DONOR) gl_osPiStartDma=$(GAMELIBS_6D964_DONOR)
 # gl_sprintf: -O2 body emits the 0x58 target function (jr-ra + delay nop);
 build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += gl_osEPiStartDma=$(GAMELIBS_6EF64_DONOR)
@@ -2564,7 +2564,7 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 33094 = camera look-at update as real C++ on the V3 kit (agent-c run 202; agent-g run 289: named `f32 ten` scale
 # factor + += order x y z). EXACT NCC donor over an empty placeholder (agent-g run 289).
 GAMELIBS_33094_DONOR := build/src/game_libs/game_libs_ncc_33094.cpp.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00033094=$(GAMELIBS_33094_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += MCamera_updateLookAt=$(GAMELIBS_33094_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_33094_DONOR)
 # 307A8 = EXACT NCC (C++) donor: fade timer tick with the 308AC file-local static block for the two shared-`lui at` pairs
 # (agent-c run 177: 260 bytes = target) and the hold-count re-read spelled `(&D_307A8_i.fC)[0]` so uopt keeps no
@@ -2576,11 +2576,11 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 343F4 = selector -> 0xC-stride table-entry address (8-entry jumptable switch,
 # cases 2/3/5/1 + default), IDO 7.1 -O2 donor: game_libs_o2_343F4.c (25/25
 # word-exact). Same splice-for-the-rodata-rename reason as 2E290: the reloc is
-# renamed game_libs_func_000343F4_rodata and pinned to the USO table at
+# renamed dbg_threadStateName_rodata and pinned to the USO table at
 # +0x19B8. Absorbs the former game_libs_g3_34448.c carve-out (the switch's own
 # default block; plain -O2 emits its unfilled `jr ra; nop`). Uses += (composes).
 GAMELIBS_343F4_DONOR := build/src/game_libs/game_libs_o2_343F4.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000343F4=$(GAMELIBS_343F4_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += dbg_threadStateName=$(GAMELIBS_343F4_DONOR)
 # 273B8 = 14-case message-handler switch, IDO 7.1 -O2 donor:
 # game_libs_o2_273B8.c (99/99 word-exact). Spliced only so the C switch's
 # local .rodata jumptable reloc gets renamed to AudioThread_ProcessSeqPlayerCmd_rodata
@@ -3335,7 +3335,7 @@ build/src/game_libs/game_libs_o1_6AF0C.c.o: src/game_libs/game_libs_o1_6AF0C.c
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O1 $(MIPSISET) $(CPPFLAGS) -o $@ $<
 
-# game_libs_func_00070FA0 merged unit: -O1 -g3, direct CC (asm-processor
+# gl_osPiGetCmdQueue merged unit: -O1 -g3, direct CC (asm-processor
 # rejects -O1 -g3). Same rule pair for the non_matching build.
 build/src/game_libs/game_libs_o1g3_70FA4.c.o: src/game_libs/game_libs_o1g3_70FA4.c
 	@mkdir -p $(dir $@)
@@ -3768,10 +3768,10 @@ build/src/match_imports/TimeGadget_func_0001438C.c.o: src/match_imports/TimeGadg
 build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o: src/match_imports/TimeGadget_func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_libs_func_00000B94.c.o: src/match_imports/game_libs_func_00000B94.c src/match_imports/context_game_libs.h
+build/src/match_imports/CountDownGadget_setTime.c.o: src/match_imports/CountDownGadget_setTime.c src/match_imports/context_game_libs.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_libs_func_00000B94.c.o: src/match_imports/game_libs_func_00000B94.c src/match_imports/context_game_libs.h
+build/non_matching/src/match_imports/CountDownGadget_setTime.c.o: src/match_imports/CountDownGadget_setTime.c src/match_imports/context_game_libs.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/RaceTracker_update.c.o: src/match_imports/RaceTracker_update.c src/match_imports/context_game_libs_tail.h
@@ -4342,12 +4342,12 @@ build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf: build/src/match
 build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o scripts/match-origins-TimeGadget_func_0001438C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadget_func_0001438C-nm.ld -e TimeGadget_func_0001438C -o $@ $@.stripped.o
-build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf: build/src/match_imports/game_libs_func_00000B94.c.o scripts/match-origins-game_libs_func_00000B94.ld
+build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf: build/src/match_imports/CountDownGadget_setTime.c.o scripts/match-origins-CountDownGadget_setTime.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00000B94.ld -e game_libs_func_00000B94 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o scripts/match-origins-game_libs_func_00000B94-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CountDownGadget_setTime.ld -e CountDownGadget_setTime -o $@ $@.stripped.o
+build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o scripts/match-origins-CountDownGadget_setTime-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00000B94-nm.ld -e game_libs_func_00000B94 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CountDownGadget_setTime-nm.ld -e CountDownGadget_setTime -o $@ $@.stripped.o
 build/src/match_imports/RaceTracker_update.c.o.linked.elf: build/src/match_imports/RaceTracker_update.c.o scripts/match-origins-RaceTracker_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RaceTracker_update.ld -e RaceTracker_update -o $@ $@.stripped.o
@@ -4884,10 +4884,10 @@ build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: build
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadget_func_0001438C.json $@
 build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadget_func_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadget_func_0001438C-nm.json $@
-build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf scripts/match-bindings-game_libs_func_00000B94.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00000B94.json $@
-build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf scripts/match-bindings-game_libs_func_00000B94-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00000B94-nm.json $@
+build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf scripts/match-bindings-CountDownGadget_setTime.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CountDownGadget_setTime.json $@
+build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf scripts/match-bindings-CountDownGadget_setTime-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CountDownGadget_setTime-nm.json $@
 build/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf: build/src/match_imports/RaceTracker_update.c.o.linked.elf scripts/match-bindings-RaceTracker_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_update.json $@
 build/non_matching/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RaceTracker_update.c.o.linked.elf scripts/match-bindings-RaceTracker_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5262,10 +5262,10 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadg
 build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadget_func_0001438C.c scripts/match-bindings-TimeGadget_func_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadget_func_0001438C=build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadget_func_0001438C.c scripts/match-bindings-TimeGadget_func_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += game_libs_func_00000B94=build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs.c.o: src/match_imports/game_libs_func_00000B94.c scripts/match-bindings-game_libs_func_00000B94.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += game_libs_func_00000B94=build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs.c.o: src/match_imports/game_libs_func_00000B94.c scripts/match-bindings-game_libs_func_00000B94-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CountDownGadget_setTime=build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs.c.o: src/match_imports/CountDownGadget_setTime.c scripts/match-bindings-CountDownGadget_setTime.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CountDownGadget_setTime=build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs.c.o: src/match_imports/CountDownGadget_setTime.c scripts/match-bindings-CountDownGadget_setTime-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_update=build/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_update.c scripts/match-bindings-RaceTracker_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_update=build/non_matching/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf
@@ -5668,10 +5668,10 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/TimeGadget_fu
 build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs.c.o: build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
-build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs.c.o: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs.c.o: build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
+build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs.c.o: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf
 build/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/RaceTracker_update.c.o.linked.elf.bound.elf

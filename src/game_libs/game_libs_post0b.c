@@ -129,7 +129,7 @@ extern void gl_func_0003D074();
 //   node+0x70 indirection makes the collection elements polymorphic
 //   — 0x70 is the element's "process/render" vtable slot. This is
 //   the per-frame UPDATE/RENDER traversal over the collection that
-//   the device-object family builds: it pairs with gl_func_00034240
+//   the device-object family builds: it pairs with sys_fatalHaltLoop
 //   (init/constructor) and gl_func_00034188 (device tick) over the
 //   same &D_0-rooted record; the dma_init registry sweep
 //   resets the slots this pass walks.
@@ -414,7 +414,7 @@ void sys_func_0003487C(int a0, int a1) {
 //   and 0x0001E1B0) into the new records and storing a parent
 //   back-reference (the o argument) at offset +0x04. A factory leaf
 //   of the game_libs object subsystem (manufactures a 3-part typed
-//   object; companion to the gl_func_00032E18 / gl_func_00033228
+//   object; companion to the MCamera_ctor / cam_createDefault_00033228
 //   constructors and consumed by the snd_HandleEvent_2FB74 interpreter —
 //   0x0001E1E8 / 0x0001E1B0 are the object's vtable/type tables,
 //   deferred data-segment symbolization sites; the 0x10/0x10/0x04
@@ -1796,7 +1796,7 @@ void Parms_func_00035C60(int a0, int a1) {
 //   branch-likely compares against the accumulator's tracked
 //   fields (0x5C vs 0x4C). A find/min/aggregate-over-list operation
 //   of the game_libs object subsystem (the list it walks is the
-//   collection the gl_func_00033228 enlist helper builds and the
+//   collection the cam_createDefault_00033228 enlist helper builds and the
 //   dbg_printThreads processor iterates; 0x0001E6C0 is a referenced
 //   deferred data-segment template-symbolization site).
 // Caps (DEFERRED): raw-word USO + fixed intra-USO call (0x012844) +
@@ -1878,7 +1878,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Parms_load_00035C6C);
 //   Parms_load_00035C6C this establishes a small iterator API in this
 //   USO — 0x012844 = begin/init, 0x012853 = step/get — over the
 //   game_libs object subsystem's collections (the same lists the
-//   gl_func_00033228 enlist / dbg_printThreads process family
+//   cam_createDefault_00033228 enlist / dbg_printThreads process family
 //   touch).
 // Caps (DEFERRED): raw-word USO + fixed intra-USO iterator API.
 //   2026-05-31: body completed 40.0->62.1%. The sketch passed &it (base)
@@ -2135,7 +2135,7 @@ void cam_func_00036074(char *o) {
 //   transform-matrix block (src->0xBC..0xC4 copied into the object
 //   at +0x00/+0x04/+0x08). A projection/viewport node of the
 //   game_libs object subsystem — the matrix producer that feeds the
-//   gl_func_00035E6C point projector and the gl_func_00033094 Vec3
+//   gl_func_00035E6C point projector and the MCamera_updateLookAt Vec3
 //   transform (those consume the matrix this builds); o->0x1CC is
 //   the camera/transform handle.
 // Caps (DEFERRED): 0x470 raw-word USO + heavy FP projection-matrix
@@ -2561,7 +2561,7 @@ void CamFollow_update(char *o) {
 //   }
 //
 // Struct-typing reference: a constructor of the same family as
-//   gl_func_00036088 / hostio_sendNodeTree / gl_func_00032E18. It
+//   gl_func_00036088 / hostio_sendNodeTree / MCamera_ctor. It
 //   allocate-or-reuses a 0x50-byte record via a USO-relocated
 //   allocator callback (jal 0 → resolved at load), runs a second
 //   callback to initialize it from a fixed data-segment template
@@ -3024,7 +3024,7 @@ void dbg_printIndent(int count) {
 //   }
 //
 // Struct-typing reference: a constructor of the same family as
-//   Parms_addParm / hostio_sendNodeTree / gl_func_00032E18 /
+//   Parms_addParm / hostio_sendNodeTree / MCamera_ctor /
 //   CamMan_ctor. It allocate-or-reuses a 0xB4-byte record via
 //   USO-relocated allocator callbacks (jal 0 → resolved at load),
 //   initializes it from a fixed data-segment template at
@@ -3105,7 +3105,7 @@ void MNode_def(int a0) {
 
 // Node_def — STRUCTURAL PASS (0x84 / 33 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). The direct SIBLING of gl_func_00033228 — an object
+// prologue). The direct SIBLING of cam_createDefault_00033228 — an object
 // construct-and-enlist helper (template-init variant).
 //
 //   void Node_def(P *p) {
@@ -3123,10 +3123,10 @@ void MNode_def(int a0) {
 //   }
 //
 // Struct-typing reference: the construct-and-link counterpart of
-//   gl_func_00033228. It runs a USO-relocated factory callback
+//   cam_createDefault_00033228. It runs a USO-relocated factory callback
 //   (jal 0 → resolved at load), builds a sub-object via a second
 //   callback parameterized by a FIXED data-segment template at
-//   0x0001EBF0 (vs gl_func_00033228's untyped make), publishes the
+//   0x0001EBF0 (vs cam_createDefault_00033228's untyped make), publishes the
 //   resulting pointer into the parent at p->0x10 (clearing the
 //   companion field p->0x0C), and — gated on p->0x38 being set —
 //   splices the new node into an intrusive list reached via
@@ -3134,7 +3134,7 @@ void MNode_def(int a0) {
 //   updates the list head pointer (lst->0x14) and an active flag
 //   (lst->0x04 = 1) under a branch-likely empty-list guard. An
 //   object-lifecycle / registration leaf of the game_libs object
-//   subsystem — the template-driven sibling of gl_func_00033228;
+//   subsystem — the template-driven sibling of cam_createDefault_00033228;
 //   the list it enlists into is the collection the
 //   dbg_printThreads processor / snd_HandleEvent_2FB74 interpreter
 //   iterate. 0x0001EBF0 is a deferred data-segment template-
@@ -3864,7 +3864,7 @@ void Node_display(char *arg0) {
 //   (excluding) does it invoke a process callback with node-
 //   relative pointers (&node->0x30, &node->0x70). A per-frame
 //   "process only fully-eligible nodes" traversal of the game_libs
-//   object subsystem (same list/collection the gl_func_00033228
+//   object subsystem (same list/collection the cam_createDefault_00033228
 //   enlist / dbg_printThreads / 00035C6C family operate on; the
 //   &D_0-base mask is a global enable/category gate).
 // Caps (DEFERRED): raw-word USO + intrusive-list walk + USO-relocated
@@ -3887,7 +3887,7 @@ void Node_update(char *o) {
 // Node_handleMsg — STRUCTURAL PASS (0x134 / 77 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A command / message handler — sibling of
-// gl_func_000332B4 (command-stream opcode dispatch).
+// MCamera_doCommand (command-stream opcode dispatch).
 //
 //   void Node_handleMsg(O *o, Cmd *c) {
 //     switch (c->tag_0) {
@@ -3908,7 +3908,7 @@ void Node_update(char *o) {
 //   }
 //
 // Struct-typing reference: a per-opcode command interpreter step,
-//   the sibling of gl_func_000332B4. It dispatches on the incoming
+//   the sibling of MCamera_doCommand. It dispatches on the incoming
 //   command record's tag word (*c) — values {0xC, 0xD, 0xE, 0x2},
 //   anything else a no-op. Commands 0xC / 0xD SET / CLEAR the
 //   single flag bit 0x80 in the target object's state word
@@ -3919,7 +3919,7 @@ void Node_update(char *o) {
 //   data (*c->0x04); command 0x2 performs another field
 //   operation. A factored command handler of the game_libs object
 //   subsystem's command VM — the same per-tag dispatch shape as
-//   gl_func_000332B4 (which keyed tag 0x69 and o->0xF4); together
+//   MCamera_doCommand (which keyed tag 0x69 and o->0xF4); together
 //   they are the externalized arms of the snd_HandleEvent_2FB74
 //   interpreter for specific opcodes.
 // Caps (DEFERRED): raw-word USO + command-tag switch + USO-reloc jal-0 cb.
@@ -4083,7 +4083,7 @@ int Node_broadcastMsg(char *o, void *ctx) {
 //   (o->0x20, o->0x0C, …) or a USO-relocated callback (jal 0 →
 //   resolved at load) parameterized by a fixed data-segment
 //   template at 0x0001EC6C. The jump-table-driven sibling of the
-//   if/else command handlers gl_func_000332B4 (tag 0x69) and
+//   if/else command handlers MCamera_doCommand (tag 0x69) and
 //   Node_handleMsg (tags 0xC/0xD/0xE/2); together they are the
 //   externalized opcode arms of the snd_HandleEvent_2FB74 command
 //   interpreter (the &D_0+0x1A1C table and 0x0001EC6C template are
@@ -4132,7 +4132,7 @@ void Node_loadData(int a0) {}
 void Node_vslot9_00038B7C(int a0, int a1) {
 }
 
-/* D_X setter (sibling of matched gl_func_000275B0). */
+/* D_X setter (sibling of matched AudioThread_SetExtWord_000275B0). */
 extern int D_38B88;
 void Node_func_00038B88(int a0) {
     D_38B88 = a0;
@@ -4145,7 +4145,7 @@ int Node_func_00038B94(void) {
     return D_38B88;
 }
 
-/* D_X setter (sibling of matched gl_func_000275B0). */
+/* D_X setter (sibling of matched AudioThread_SetExtWord_000275B0). */
 extern int D_38BA0;
 void Node_func_00038BA0(int a0) {
     D_38BA0 = a0;
@@ -6389,7 +6389,7 @@ void fs_gdlReadQuad_0003D114(Quad4 *dst) {
 // ItemType_ctor — STRUCTURAL PASS (0xBC / 47 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). An object constructor (same family as MNode_def
-// / Node_ctor / gl_func_00032E18).
+// / Node_ctor / MCamera_ctor).
 //
 //   O *ItemType_ctor(O *o, int a1, int a2) {
 //     if (o == 0) {
@@ -7160,7 +7160,7 @@ int SNodeItemType_buildItems(D914Obj *a0) {
 //   dispatch family — calling the handler method at
 //   (o->0x28)+0x2C with a self-relative arg and a pointer to a
 //   local 0x13 (=19) sentinel; (3) the construct-and-enlist family
-//   (cf. gl_func_00033228 / Node_def / ItemType_load):
+//   (cf. cam_createDefault_00033228 / Node_def / ItemType_load):
 //   splicing the new object into an intrusive list anchored at
 //   o->0x10 via a second USO callback and updating the list head
 //   (node->0x14 = o) plus an active flag (node->0x04 = 1) under a
@@ -9133,14 +9133,14 @@ void QNode_def(int *self) {
 }
 
 extern int gl_func_00000000();
-void hostio_func_0003FFDC(int *dst) {
+void fs_gdlReadInt_0003FFDC(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void hostio_func_00040018(Quad4 *dst) {
+void fs_gdlReadQuad_00040018(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
@@ -9205,7 +9205,7 @@ s32 *QNode_ctor(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
     return arg0;
 }
 
-/* gl_func_000402A4: 24-insn Vec3 add-to-fields-and-call.
+/* QNode_translate: 24-insn Vec3 add-to-fields-and-call.
  *   a0->vec[0..2] += (dx, dy, dz);  // floats at offsets 0xB4/B8/BC
  *   gl_func(&a0->vec[0], &a0->[0x30], a0);
  *
@@ -9217,7 +9217,7 @@ s32 *QNode_ctor(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
  * as match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int gl_func_00000000();
-void gl_func_000402A4(int *a0, float dx, float dy, float dz) {
+void QNode_translate(int *a0, float dx, float dy, float dz) {
  *((float *) (((char *) a0) + 0xB4)) += dx; *((float *) (((char *) a0) + 0xB8)) += dy;
   *((float *) (((char *) a0) + 0xBC)) += dz;
   gl_func_00000000(((char *) a0) + 0xB4, ((char *) a0) + 0x30, a0);
@@ -9683,14 +9683,14 @@ void QNode_vslot9_00041008(char *a0, char *a1) {
     *(float *)(a0 + 0xD8) = *(float *)(a1 + 0xF4);
 }
 
-/* gl_func_000410AC: 12-insn 2-call wrapper. Mid-function aliases
+/* hostio_readQuadParm_000410AC: 12-insn 2-call wrapper. Mid-function aliases
  * gl_func_00054648 (= CMod_ctor + 0x8C) and gl_func_00054684
  * (= CMod_hostioParms + 0x1C) added to undefined_syms_auto.txt so the
  * byte-correct build links cleanly. Per memo
  * feedback_mid_function_jal_targets_block_byte_correct_link.md option 2. */
 extern int gl_func_00054648();
 extern int gl_func_00054684();
-void gl_func_000410AC(char *a0) {
+void hostio_readQuadParm_000410AC(char *a0) {
     int local_buf;
     gl_func_00054648(&local_buf);
     gl_func_00054684(a0 + 0x10);
@@ -16291,7 +16291,7 @@ int ScreenWindow_getCurBuffer_0004D014(char *a0) {
 
 extern int gl_ref_00056CB4();
 extern int gl_ref_00056C5C();
-int gl_func_0004D02C(char *a0) {
+int hostio_readQuadParm_0004D02C(char *a0) {
     int scratch;
     gl_ref_00056CB4(&scratch);
     return gl_ref_00056C5C(a0 + 0x10);
@@ -17045,7 +17045,7 @@ void List_add_0004E37C(int *a0, int a1) {
 
 extern int gl_ref_000623D0();
 extern int gl_ref_0006240C();
-int gl_func_0004E3F4(char *a0) {
+int hostio_readQuadParm_0004E3F4(char *a0) {
     int scratch;
     gl_ref_000623D0(&scratch);
     return gl_ref_0006240C(a0 + 0x10);
@@ -17866,7 +17866,7 @@ char *Mat_fromFrameBuffer_0004F85C(char *self, char *spec) {
 
 extern int gl_ref_00062B54();
 extern int gl_ref_00062B90();
-void gl_func_0004F9AC(char *a0) {
+void hostio_readQuadParm_0004F9AC(char *a0) {
     int local;
     gl_ref_00062B54(&local);
     gl_ref_00062B90(a0 + 0x10);
@@ -20726,7 +20726,7 @@ void light_stub_000551A0(int a0, int a1, int a2) {
 
 extern int gl_ref_00065C2C();
 extern int gl_ref_00065C68();
-int gl_func_000551B0(char *a0) {
+int hostio_readQuadParm_000551B0(char *a0) {
     int scratch;
     gl_ref_00065C2C(&scratch);
     return gl_ref_00065C68(a0 + 0x10);
@@ -21104,7 +21104,7 @@ void fs_gdlReadQuad_00055AB8(Quad4 *dst) {
 
 extern int gl_ref_0006A0E8();
 extern int gl_ref_0006A124();
-void gl_func_00055B10(char *a0) {
+void hostio_readQuadParm_00055B10(char *a0) {
     int local;
     gl_ref_0006A0E8(&local);
     gl_ref_0006A124(a0 + 0x10);
@@ -21126,7 +21126,7 @@ extern int gl_data_00000000;
  * (split lines schedule `addiu s1` above the lbu). Nested-if + for loops give
  * the target's single-epilogue beqz/blez guards (early returns -> beqzl).
  * The pre-function pad word is an all-zero SUFFIX_BYTES_FORCE on
- * gl_func_00055B10 (Makefile). */
+ * hostio_readQuadParm_00055B10 (Makefile). */
 void sys_dumpMemory(int arg0, unsigned char *byte_array, int outer_count) {
     int row;
     int col;

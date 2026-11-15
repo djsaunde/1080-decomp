@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00033094 (0x194 / 101 words): EXACT, REPLACE_FUNC_BODY-spliced over the
+/* IDO 7.1 NCC (C++) donor for MCamera_updateLookAt (0x194 / 101 words): EXACT, REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_libs_post.c on both build paths (agent-g run 289; was game_libs_ncc_33094_nm.cpp, NM 94.31).
  * Camera look-at update: eye = o->pos; target = the parent's pos, or o->pos + o->v104 * 10; both scaled by the
  * module vector at USO address 0x128 (D_33094_k), then emitted with the up vector o->v140; two optional calls keyed
@@ -30,7 +30,7 @@ extern int gl_func_00000000(...);
 extern void gl_33094_emit(void *, float, float, float, float, float, float, float, float, float);
 extern char D_33094_k[];
 }
-extern "C" int gl_func_00033094(Obj *o) {
+extern "C" int MCamera_updateLookAt(Obj *o) {
     V3 b;
     V3 a;
     a.set(o->pos.x, o->pos.y, o->pos.z);

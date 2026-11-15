@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006FAD4 — 32-insn flag-extract + conditional
+/* -O1 donor for gl_osSpTaskYielded — 32-insn flag-extract + conditional
  * bit-set/clear (frame 0x20, saves ra only). PROVEN EXACT 32/32 at IDO 7.1
  * -O1 (2026-07-08 standalone probe; plain -O1, no -g3; 5.3 -O1 emits the
  * identical 32 words). post1b2c builds -O2, where the flag if/else collapses
@@ -12,7 +12,7 @@
  * compiler output; blank-extern jal reloc imported by the splice). */
 extern int gl_func_00000000();
 
-int gl_func_0006FAD4(int *arg) {
+int gl_osSpTaskYielded(int *arg) {
     int state;
     int flag;
 

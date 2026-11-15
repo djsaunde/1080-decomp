@@ -1,0 +1,15 @@
+nonmatching AudioThread_WaitForAudioTask, 0x2C
+
+glabel AudioThread_WaitForAudioTask
+    /* E0C6A0 000275C8 27BDFFE8 */  .word 0x27BDFFE8
+    /* E0C6A4 000275CC AFBF0014 */  .word 0xAFBF0014
+    /* E0C6A8 000275D0 3C040000 */  .word 0x3C040000
+    /* E0C6AC 000275D4 8C8453C8 */  .word 0x8C8453C8
+    /* E0C6B0 000275D8 00002825 */  .word 0x00002825
+    /* E0C6B4 000275DC 0C000000 */  .word 0x0C000000
+    /* E0C6B8 000275E0 24060001 */  .word 0x24060001
+    /* E0C6BC 000275E4 8FBF0014 */  .word 0x8FBF0014
+    /* E0C6C0 000275E8 27BD0018 */  .word 0x27BD0018
+    /* E0C6C4 000275EC 03E00008 */  .word 0x03E00008
+    /* E0C6C8 000275F0 00000000 */  .word 0x00000000
+endlabel AudioThread_WaitForAudioTask

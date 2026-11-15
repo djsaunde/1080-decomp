@@ -1373,7 +1373,7 @@ SECTIONS
     bootup_uso_VRAM = ADDR(.bootup_uso);
     bootup_uso_VRAM_END = .;
 
-    /* game_libs_func_FFFFFFE0 (bootup.uso Text offset 0x1464C): the first
+    /* PointsGadget_display_FFFFFFE0 (bootup.uso Text offset 0x1464C): the first
        game_libs function. Its 8-word hoisted head lies 0x20 bytes before
        game_libs VRAM 0 (it replaced the bootup_uso_post / game_libs_pre bins),
        so it is linked as its own section; its VRAM is nominal (no absolute

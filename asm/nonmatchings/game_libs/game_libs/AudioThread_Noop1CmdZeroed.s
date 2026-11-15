@@ -1,0 +1,13 @@
+nonmatching AudioThread_Noop1CmdZeroed, 0x24
+
+glabel AudioThread_Noop1CmdZeroed
+    /* E0C664 0002758C 27BDFFE8 */  .word 0x27BDFFE8
+    /* E0C668 00027590 AFBF0014 */  .word 0xAFBF0014
+    /* E0C66C 00027594 3C04FA00 */  .word 0x3C04FA00
+    /* E0C670 00027598 0C000000 */  .word 0x0C000000
+    /* E0C674 0002759C 00002825 */  .word 0x00002825
+    /* E0C678 000275A0 8FBF0014 */  .word 0x8FBF0014
+    /* E0C67C 000275A4 27BD0018 */  .word 0x27BD0018
+    /* E0C680 000275A8 03E00008 */  .word 0x03E00008
+    /* E0C684 000275AC 00000000 */  .word 0x00000000
+endlabel AudioThread_Noop1CmdZeroed

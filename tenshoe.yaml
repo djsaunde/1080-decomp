@@ -262,7 +262,7 @@ segments:
     vram: 0x00000000
     subsegments:
       - [0xDD0A6C, c, bootup_uso]
-  # game_libs_func_FFFFFFE0 (bootup.uso Text offset 0x1464C, USO export 871):
+  # PointsGadget_display_FFFFFFE0 (bootup.uso Text offset 0x1464C, USO export 871):
   # the first game_libs function; its 8-word hoisted head lies 0x20 bytes before
   # game_libs VRAM 0. Was split across the old bootup_uso_post (0xDE50B8, 0x1C)
   # and game_libs_pre (0xDE50D4, 0x4) bins + gl_func_00000000 (run 144). Linked

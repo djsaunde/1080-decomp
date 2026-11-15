@@ -5,7 +5,7 @@
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 
-/* gl_func_00000000 (0x1CC) was the tail of game_libs_func_FFFFFFE0, whose 8-word
+/* gl_func_00000000 (0x1CC) was the tail of PointsGadget_display_FFFFFFE0, whose 8-word
  * hoisted head sits before VRAM 0: it moved to game_libs_head.c (its own unit). */
 
 /* TimeGadget_ctor: get-or-create constructor (0x13C object, one inlined
@@ -322,8 +322,8 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
 
 void CountDownGadget_release(int a0) {}
 
-/* game_libs_func_00000B94: ms->time formatter (a1 / 60000 = minutes, etc.).
- * Merged 2026-05-23: splat mis-split this at 0xBAC into game_libs_func_00000B94
+/* CountDownGadget_setTime: ms->time formatter (a1 / 60000 = minutes, etc.).
+ * Merged 2026-05-23: splat mis-split this at 0xBAC into CountDownGadget_setTime
  * (head: div a1,60000; v0<<4; multu v0,60000 — no prologue/jr) + gl_func_00000BAC
  * (body: mflo of B94's multu, prologue, sprintf-style calls, epilogue). The
  * multu(B94)/mflo(BAC) LO-register dependency proves they are one function;
@@ -349,7 +349,7 @@ void CountDownGadget_release(int a0) {}
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 
-void game_libs_func_00000B94(CountDownGadget *arg0, s32 arg1, s32 arg2) {
+void CountDownGadget_setTime(CountDownGadget *arg0, s32 arg1, s32 arg2) {
     s32 sp24;
     s32 qmin;
     s32 rem;
@@ -387,7 +387,7 @@ void game_libs_func_00000B94(CountDownGadget *arg0, s32 arg1, s32 arg2) {
     gl_func_00000000(arg0->csText, (char *)&D_00000000 + 0xCBB8, sp24);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00000B94);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CountDownGadget_setTime);
 #endif
 
 /* PointsGadget_ctor - verified structural decode (0x118, 70 insns,
@@ -4083,14 +4083,14 @@ void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
     arg0->timeout = arg1 & 0xFFFF;
 }
 
-/* gl_func_00008674: RECONSTRUCTED 2026-07-11. NOT caller-set — the prior
+/* RaceProcess_callGlobalSlot11_00008674: RECONSTRUCTED 2026-07-11. NOT caller-set — the prior
  * comment mis-read the prologue. The dispatcher pointer comes from a GLOBAL:
  *   v1 = &D_00000000 (absolute base, links at 0)
  *   v0 = *(int**)(v1 + 0x28)          (the object)
  * then calls obj->fn64 with arg = &D_00000000 + (s16)obj->off60 (addu reuses
  * the live base register v1). The incoming $a0 is homed to 0x18(sp) via
  * &unused. This is a global-table indirect dispatch, coaxable in C. */
-int gl_func_00008674(int unused) {
+int RaceProcess_callGlobalSlot11_00008674(int unused) {
     int *obj = *(int**)((char*)&D_00000000 + 0x28);
     volatile int *spill = &unused;
     (void)spill;
@@ -4397,7 +4397,7 @@ int *ColourItem_create_000088B4(int *arg0) {
 /* RcpMgr_loadTask_0004D354 bundle split 2026-05-08; children INCLUDE_ASM live in
  * game_libs_post.c next to the parent RcpMgr_loadTask_0004D354. */
 
-/* game_libs_func_00033444 split 2026-05-15; INCLUDE_ASM lives in
+/* sys_timeInFrames_00033444 split 2026-05-15; INCLUDE_ASM lives in
  * game_libs_post.c next to parent gl_func_0003341C. */
 
 /* MNode_vslot10_00039988 split 2026-05-15; INCLUDE_ASM/body lives in

@@ -1,13 +1,13 @@
 #include "common.h"
 
-/* game_libs_func_00070FA0 (true entry 0x70FA4): guarded VI-side getter
+/* gl_osPiGetCmdQueue (true entry 0x70FA4): guarded VI-side getter
  * `if (!flag) return 0; return buf.field8;`. PROVEN EXACT 10/10 at IDO
  * 7.1 -O1 -g3 (5.3 agrees): -O1 -g3 is the only mode that emits the
  * unfilled bnez delay + the un-hoisted %lo-folded `lui v0; lw v0,8(v0)`
  * tail (-O2 hoists the lui above the branch; plain -O1 materializes an
  * addiu base; -O2 -g/-g2 add per-return jr-ra echoes).
  * BOUNDARY FIX: this function's splat coverage was THREE pieces --
- * game_libs_func_00070FA0 (0x1C fragment: leading pad nop 0x70FA0 +
+ * gl_osPiGetCmdQueue (0x1C fragment: leading pad nop 0x70FA0 +
  * insns 1-6, "leaf-branch-past-end CAP": its bnez targets 0x70FBC) +
  * the game_libs_g3_70FBC.c carve (the lui/lw/jr/nop tail, previously
  * "matched" as a standalone -g3 INT-reader) -- one function split
@@ -27,7 +27,7 @@ extern struct {
     int c;
 } D_00000000_vibuf;
 
-int game_libs_func_00070FA0(void) {
+int gl_osPiGetCmdQueue(void) {
     if (D_00000000_vistate == 0) {
         return 0;
     }

@@ -3851,7 +3851,7 @@ int Parm_read_0000EB98(char *a0) {
 
 extern int gl_ref_00020CB0();
 extern int gl_ref_00020D80();
-int gl_func_0000EBC8(char *a0) {
+int hostio_readVec3Parm_0000EBC8(char *a0) {
     int scratch;
     gl_ref_00020CB0(&scratch);
     return gl_ref_00020D80(a0 + 0x10);

@@ -433,7 +433,7 @@ GameLibsTwoFieldDisplay *CountDownGadget_ctor(GameLibsTwoFieldDisplay *self, int
 void CountDownGadget_release(int a0);
 extern s32 game_libs_B94_format(char *, const char *, s32, ...);
 extern void game_libs_B94_notify(s32, s32);
-void game_libs_func_00000B94(GameLibsTwoFieldDisplay *arg0, s32 arg1, s32 arg2);
+void CountDownGadget_setTime(GameLibsTwoFieldDisplay *arg0, s32 arg1, s32 arg2);
 void *PointsGadget_ctor(char *s0, int a1);
 extern int gl_func_00000000();
 int PointsGadget_release(char *a0);
@@ -859,7 +859,7 @@ extern void gl_call_08510_679BC(char *, int, int, int *);
 extern int gl_call_08510_08674(int *);
 void RaceProcess_restartCameras_00008510(int *arg0);
 void RaceProcess_restartWithTimeout(int *arg0, int arg1);
-int gl_func_00008674(int unused);
+int RaceProcess_callGlobalSlot11_00008674(int unused);
 void RaceProcess_raiseMessage(char *a0);
 void RaceProcess_dropMessage(int *a0);
 extern int gl_ref_00018770();

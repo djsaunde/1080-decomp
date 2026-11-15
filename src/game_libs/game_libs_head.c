@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* game_libs_func_FFFFFFE0: the FIRST function of the game_libs text, bootup.uso
+/* PointsGadget_display_FFFFFFE0: the FIRST function of the game_libs text, bootup.uso
  * Text section offset 0x1464C (USO Sym export 871, ROM 0xDE50B8). Its first 8
  * words (the 255 / 235 / 80 / 0 FP constants and the first div.s, hoisted above
  * the prologue) sit 0x20 bytes BEFORE game_libs VRAM 0, so the function used to
@@ -22,7 +22,7 @@ extern int gl_func_00000000();
 extern int gl_func_00000000f(char *, int, int, int, f32, char *);
 extern f32 D_00000000;
 
-void game_libs_func_FFFFFFE0(char *o) {
+void PointsGadget_display_FFFFFFE0(char *o) {
     f32 base[4];
     f32 col[4];
     f32 d255 = 255.0f;

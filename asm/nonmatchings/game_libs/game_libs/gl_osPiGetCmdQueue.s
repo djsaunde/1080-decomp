@@ -1,0 +1,11 @@
+nonmatching gl_osPiGetCmdQueue, 0x1C
+
+glabel gl_osPiGetCmdQueue
+    /* E56078 00070FA0 00000000 */  .word 0x00000000
+    /* E5607C 00070FA4 3C0E0000 */  .word 0x3C0E0000
+    /* E56080 00070FA8 8DCE0000 */  .word 0x8DCE0000
+    /* E56084 00070FAC 15C00003 */  .word 0x15C00003
+    /* E56088 00070FB0 00000000 */  .word 0x00000000
+    /* E5608C 00070FB4 03E00008 */  .word 0x03E00008
+    /* E56090 00070FB8 00001025 */  .word 0x00001025
+endlabel gl_osPiGetCmdQueue

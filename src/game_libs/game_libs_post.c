@@ -7505,9 +7505,9 @@ int AudioThread_GetFontsForSequence() {
     return gl_func_00000000();
 }
 
-/* gl_func_00027180: 22-insn predicate. Loads via gl_func(&D_0+0x53C4,
+/* AudioThread_CheckSpecChange: 22-insn predicate. Loads via gl_func(&D_0+0x53C4,
  * &local, 0); returns 0 if -1, else returns local == byte(&D_0+0x2CF1). */
-int gl_func_00027180(void) {
+int AudioThread_CheckSpecChange(void) {
     int v;
     int local;
     v = gl_func_00000000(*(int*)((char*)&D_00000000 + 0x53C4), &local, 0);
@@ -7518,7 +7518,7 @@ int gl_func_00027180(void) {
     return 1;
 }
 
-/* gl_func_000271D8: 21-insn do-while loop. Repeatedly calls
+/* AudioThread_ClearSpecChangeQueue: 21-insn do-while loop. Repeatedly calls
  * gl_func(*(int*)&D_0+0x53C4, &scratch, 0) until result is -1.
  * MATCH (permuter, 2026-06-21): assigning the sentinel `sentinel = -1`
  * INSIDE the do-loop body (rather than as a first-statement initializer)
@@ -7526,7 +7526,7 @@ int gl_func_00027180(void) {
  * sentinel `addiu s0,zero,-1`, matching the target. The in-loop reassign is
  * free (-1 is loop-invariant; IDO hoists it) and resolves the 2-word
  * const-materialization-order tie. Frame -48, byte-exact (84 bytes). */
-void gl_func_000271D8(void) {
+void AudioThread_ClearSpecChangeQueue(void) {
     int sentinel;
     int scratch;
     do {
@@ -7859,7 +7859,7 @@ void game_libs_func_000274E0(char *a0, signed char *a1) {
  *      leaf that can't reach 100%. Sibling of 00027528. Stays INCLUDE_ASM. */
 
 
-/* gl_func_00027548: 17-insn (0x44) F3DEX2-style display-list-word builder.
+/* AudioThread_Noop1Cmd: 17-insn (0x44) F3DEX2-style display-list-word builder.
  * Computes a packed 32-bit dlist word:
  *   packed = 0xFA000000 | ((a0 & 0xFF) << 16) | ((a1 & 0xFF) << 8) | (a2 & 0xFF)
  * (G_SETPRIMCOLOR-like opcode 0xFA + 3 bytes) and calls gl_func_0(packed, 1).
@@ -7873,27 +7873,27 @@ void game_libs_func_000274E0(char *a0, signed char *a1) {
  * the natural C `(a0 & 0xFF) << 16` emits the andi at function start = exact. */
 extern int gl_func_00000000();
 
-void gl_func_00027548(int a0, int a1, int a2) {
+void AudioThread_Noop1Cmd(int a0, int a1, int a2) {
     int packed = 0xFA000000 | ((a0 & 0xFF) << 16) | ((a1 & 0xFF) << 8) | (a2 & 0xFF);
     gl_func_00000000(packed, 1);
 }
 
-void gl_func_0002758C(void) {
+void AudioThread_Noop1CmdZeroed(void) {
     gl_func_00000000(0xFA000000, 0);
 }
 
 extern int D_gl275B0;
-void gl_func_000275B0(int a0) { D_gl275B0 = a0; }
+void AudioThread_SetExtWord_000275B0(int a0) { D_gl275B0 = a0; }
 
 extern int D_gl275BC;
-void gl_func_000275BC(void) { D_gl275BC = 0; }
+void AudioThread_ClearExtWord_000275BC(void) { D_gl275BC = 0; }
 
-// gl_func_000275C8 — STRUCTURAL PASS (0x11C / 71 words, no episode).
+// AudioThread_WaitForAudioTask — STRUCTURAL PASS (0x11C / 71 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 8-jr USO bundle
 // (named fn + 7 trailing record-accessors) — deferred USO re-split.
 // The named leading fn (~10 words) is a thin process-global thunk.
 //
-//   void gl_func_000275C8(void) {
+//   void AudioThread_WaitForAudioTask(void) {
 //     void *obj = *(void**)(&D_0 + 0x53C8);             // global obj
 //     (*proc)(obj, 0, 1);                                // jal 0 USO
 //   }
@@ -7917,12 +7917,12 @@ void gl_func_000275BC(void) { D_gl275BC = 0; }
 //   (collision-safe). gl_func_00000000 = canonical never-defined
 //   USO placeholder.
 extern int gl_func_00000000();
-void gl_func_000275C8(void) {
+void AudioThread_WaitForAudioTask(void) {
     char *g = (char *)&D_00000000;
     gl_func_00000000(*(void **)(g + 0x53C8), 0, 1);
 }
 
-/* game_libs_func_000275F4: EXACT MATCH (60/60 words, 2026-07-08 agent-e)
+/* AudioThread_GetLayerSamplesLeft: EXACT MATCH (60/60 words, 2026-07-08 agent-e)
  * after the FULL reverse-merge. History: absorbed 2765C/27684/27694
  * (2026-06-10 census), then 2026-07-08 absorbed the remaining three
  * "adjacent leaves" 276B8/276D0/276D8 too (0xC4 -> 0xF0, ends at 276E4):
@@ -7956,7 +7956,7 @@ void gl_func_000275C8(void) {
  *  - tail operands NAMED (`end`/`start`, end assigned first) -> color
  *    $a1/$a2 with the target's subu order. */
 extern char gl_d_275F4[];
-int game_libs_func_000275F4(int a0, int a1, int a2) {
+int AudioThread_GetLayerSamplesLeft(int a0, int a1, int a2) {
     char *rec = gl_d_275F4 + a0 * 0x160;
     char *p1;
     char *p2;
@@ -15568,24 +15568,24 @@ void snd_FrameUpdate_31DD8(void) {
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00031DD8_pad.s")
 
 extern int gl_func_00000000();
-void gl_func_00032D84(int *dst) {
+void fs_gdlReadInt_00032D84(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00032DC0(Quad4 *dst) {
+void fs_gdlReadQuad_00032DC0(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
-// gl_func_00032E18 — STRUCTURAL PASS (0x27C / 159 words, no episode).
+// MCamera_ctor — STRUCTURAL PASS (0x27C / 159 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — large 0x60 frame). An OBJECT CONSTRUCTOR.
 //
-//   O *gl_func_00032E18(int a, int b, int c, int d) {
+//   O *MCamera_ctor(int a, int b, int c, int d) {
 //     if (a == 0) { alloc(0x150); ... }      // jal 0 allocator
 //     O *o = (O*)v0;
 //     if (o == 0) return 0;                   // alloc-fail guard
@@ -15620,7 +15620,7 @@ void gl_func_00032DC0(Quad4 *dst) {
 //   + 0x150/0xB4 structs typed. Real-C STRUCTURAL body below per
 //   the analysis. Byte-match deferred. Name pre-checked: no extern
 //   reuse.
-// gl_func_00032E18 — re-decoded 2026-10-17 agent-c run 105 (77.1 -> 94.0): the m2c body
+// MCamera_ctor — re-decoded 2026-10-17 agent-c run 105 (77.1 -> 94.0): the m2c body
 // used s32* arithmetic (every member offset x4) and an int for a float temp. Real shape:
 // placement-new constructor chain, (self, int, float x, float y, float z). Open: zv
 // slot +4, -1/0x8000 materialization order, a second zero for +0xFC.
@@ -15638,7 +15638,7 @@ void gl_func_00032DC0(Quad4 *dst) {
 typedef char *(*GP_00032E18)();
 extern int gl_32e18_blank();  /* blank jal 0 (gl_func_0001CA10 was renamed AudioSynth_InitNextRingBuf) */
 #define gl_func_0001CA10 gl_32e18_blank
-char *gl_func_00032E18(char *self, int arg1, float x, float y, float z) {
+char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     char *o;
     char *b;
     int *p;
@@ -15718,12 +15718,12 @@ end:
 }
 #undef gl_func_0001CA10
 
-// gl_func_00033094 — STRUCTURAL PASS (0x194 / 101 words, no episode).
+// MCamera_updateLookAt — STRUCTURAL PASS (0x194 / 101 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — large 0x90 FP-heavy frame). An FP vector / transform
 // composition routine.
 //
-//   void gl_func_00033094(O *o) {
+//   void MCamera_updateLookAt(O *o) {
 //     Vec3 base = { o->f_A0, o->f_A4, o->f_A8 };   // primary Vec3
 //     O *child = o->p_F4;
 //     Vec3 off;
@@ -15754,7 +15754,7 @@ end:
 //   object subsystem (the per-object math the snd_HandleEvent_2FB74
 //   interpreter and the integrator family (0002F288 / 0002F584 /
 //   00031A74) drive each frame; o->0xF4 is the child/parent link
-//   also touched by the gl_func_00032E18 constructor's sub-record).
+//   also touched by the MCamera_ctor constructor's sub-record).
 // Caps (DEFERRED): raw-word USO + FP Vec3 mul-add + conditional
 //   child-deref — byte-match needs USO mnemonic disasm + object's
 //   Vec3/child layout typed. Real-C STRUCTURAL body below per the
@@ -15763,15 +15763,15 @@ end:
  * placeholder in both build trees (agent-g run 289). The structural notes above predate the decode: the routine is
  * the camera look-at update (eye = o->pos; target = parent pos or o->pos + o->v104 * 10; both scaled by the
  * module vector D_33094_k at 0x128; emitted with the up vector o->v140). */
-int gl_func_00033094(char *o) {
+int MCamera_updateLookAt(char *o) {
     return 0;
 }
 
-// gl_func_00033228 — STRUCTURAL PASS (0x8C / 35 words, no episode).
+// cam_createDefault_00033228 — STRUCTURAL PASS (0x8C / 35 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). An object allocate-and-enlist helper.
 //
-//   void gl_func_00033228(O *o) {
+//   void cam_createDefault_00033228(O *o) {
 //     callback0();                            // jal 0 (USO factory)
 //     // build a sub-object: a1=0, a2=0.0f, a3=0.0f, sp+0x10=0.0f
 //     N *n = make(0, 0, 0.0f, 0.0f);          // 2nd USO callback
@@ -15798,7 +15798,7 @@ int gl_func_00033094(char *o) {
 //   and updates the list head field (lst->0x14 = node) plus a flag
 //   (lst->0x04 = 1) under a branch-likely empty-list guard. An
 //   object-lifecycle / registration leaf of the game_libs object
-//   subsystem (the per-instance counterpart to the gl_func_00032E18
+//   subsystem (the per-instance counterpart to the MCamera_ctor
 //   constructor and the snd_StartPlayer2Seq_30A20 registration node; the
 //   list it enlists into is the collection the snd_HandleEvent_2FB74
 //   interpreter iterates).
@@ -15807,7 +15807,7 @@ int gl_func_00033094(char *o) {
 //   mnemonic disasm + object/list structs typed. Real-C STRUCTURAL
 //   body below per the analysis. Byte-match deferred. Name pre-
 //   checked: no extern reuse.
-/* gl_func_00033228: 33/35 words exact — cvt.d.s float-promote cap CRACKED,
+/* cam_createDefault_00033228: 33/35 words exact — cvt.d.s float-promote cap CRACKED,
  * one residual (frame-size pad). Route the 5-arg (int,int,float,float,float)
  * factory callback through a typed absolute-0 alias gl_func_00000000_f228 →
  * single mfc1/swc1, no cvt.d.s/sdc1. Structural fixes vs the old body:
@@ -15848,7 +15848,7 @@ int gl_func_00033094(char *o) {
  * pad[4]` / four volatile ints FIRST also work (docs/IDO_CODEGEN.md
  * #unreferenced-array-first-decl-frame-pad-33228). */
 extern void *gl_func_00000000_f228(int, int, float, float, float);
-void gl_func_00033228(char *o) {
+void cam_createDefault_00033228(char *o) {
     char pad[16];
     char *n;
     char *lst;
@@ -15865,7 +15865,7 @@ void gl_func_00033228(char *o) {
     *(int *)(n + 0x14) = (int)lst;
 }
 
-// gl_func_000332B4 — command-stream handler step (0x84 / 33 words).
+// MCamera_doCommand — command-stream handler step (0x84 / 33 words).
 // CLEAN SINGLE FUNCTION (1 jr, one prologue).
 //
 // CORRECTED logic 2026-06-22 (prior comment had the if/else inverted).
@@ -15874,7 +15874,7 @@ void gl_func_00033228(char *o) {
 // paths (they reconverge), and the o-callback is the shared tail for the
 // tag-mismatch case only:
 //
-//   void gl_func_000332B4(O *o, Cmd *c) {
+//   void MCamera_doCommand(O *o, Cmd *c) {
 //     if (c->tag_0 == 0x69) {
 //       int *sp = (int*)c->cur_4;
 //       c->cur_4 = (int)(sp + 1);              // advance cursor +4
@@ -15897,7 +15897,7 @@ void gl_func_00033228(char *o) {
 //   suffered (idx anchors $a2, restoring the `move a1,a2` arg copy);
 //   (3) prior fixes retained (reloc-form &D+0x1E194 arg, corrected control
 //   flow). Frame 32, spills 24/32(sp) match (a3 shares a0's dead arg home).
-void gl_func_000332B4(char *o, char *c) {
+void MCamera_doCommand(char *o, char *c) {
     int *sp;
     int idx;
     int val;
@@ -15917,14 +15917,14 @@ void gl_func_000332B4(char *o, char *c) {
     gl_func_00000000(o);
 }
 
-/* gl_func_00033338: 27-insn 3-call wrapper. The float-promote "cap" was
+/* MCamera_hostioParms: 27-insn 3-call wrapper. The float-promote "cap" was
  * mis-diagnosed: route the 6-arg float call through a typed absolute-0 alias
  * gl_func_00000000_33338(int,int,int,float,float,int) → single swc1, no
  * cvt.d.s (same fix as snd_SetPlayer0ChannelFreqScale_2DF64). arg4 = 0.0f (float bit pattern in
  * a3 → addiu a3,zero,0, the li form) not int 0; call1 takes a 3rd arg 0
  * (a2=0 in the jal delay). Byte-exact. */
 extern int gl_func_00000000_33338(int, int, int, float, float, int);
-void gl_func_00033338(int *a0) {
+void MCamera_hostioParms(int *a0) {
     int arg1 = *(int*)((char*)a0 + 0xC);
     gl_func_00000000(&D_00000000, arg1, 0);
     gl_func_00000000_33338((int)&D_00000000, (int)((char*)&D_00000000 + 0x1E1AC),
@@ -15932,12 +15932,12 @@ void gl_func_00033338(int *a0) {
     gl_func_00000000(&D_00000000);
 }
 
-void game_libs_func_000333A4(int a0, int a1, int a2) {
+void MCamera_vfn12_000333A4(int a0, int a1, int a2) {
 }
 
 extern int gl_ref_000473F0();
 extern int gl_ref_0004742C();
-void gl_func_000333B4(char *a0) {
+void hostio_readQuadParm_000333B4(char *a0) {
     int scratch;
     gl_ref_000473F0(&scratch);
     gl_ref_0004742C(a0 + 0x10);
@@ -15960,10 +15960,10 @@ int gl_func_000333F4(int a0) { return gl_func_00000000(&D_00000000, a0); }
  * See docs/IDO_CODEGEN.md#same-line-brace-call-wrapper-lui-a0-sw-ra. */
 void gl_func_0003341C(int a0) { gl_func_00000000(&D_00000000, a0); }
 
-/* game_libs_func_00033444 -- ratio of a callback's u32 result to the u32
+/* sys_timeInFrames_00033444 -- ratio of a callback's u32 result to the u32
  * counter at &D+0x20C (0x6C / 27 words, EXACT).
  *
- * Boundary: the 8-byte "head fragment" game_libs_func_00033444 (`lui t6;
+ * Boundary: the 8-byte "head fragment" sys_timeInFrames_00033444 (`lui t6;
  * lw t6,0x20C(t6)`, no prologue, no jr ra -- filed 2026-05 as a "deferred
  * USO boundary re-split") was the first load of its successor
  * gl_func_0003344C (18% NM wrap, "byte-match deferred"), hoisted above
@@ -15984,13 +15984,13 @@ void gl_func_0003341C(int a0) { gl_func_00000000(&D_00000000, a0); }
  * the counter reads through the per-site alias D_33444_a (= 0x0 in
  * undefined_syms_auto.txt; the ROM word bakes the 0x20C addend either way). */
 extern int D_33444_a;
-float game_libs_func_00033444(void) {
+float sys_timeInFrames_00033444(void) {
     float a = (float)*(unsigned int *)((char *)&D_33444_a + 0x20C);
     return (float)(unsigned int)gl_func_00000000(&D_00000000) / a;
 }
 
 extern int gl_func_00000000();
-void gl_func_000334B0(int a0, int a1, int a2) {
+void sys_assertFail(int a0, int a1, int a2) {
     gl_func_00000000((char *)&D_00000000 + 0x1E250, a0, a1, a2);
 }
 
@@ -16025,7 +16025,7 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 //   pointer alignment fix-ups (`& 7`, subtract misalignment). A
 //   memory/region-management leaf of the game_libs object subsystem
 //   (the allocator behind the snd_HandleSeqEvent_30AF4 constructor's
-//   0x45010 arena and the gl_func_00032E18 / gl_func_00033228
+//   0x45010 arena and the MCamera_ctor / cam_createDefault_00033228
 //   sub-record allocations — 0x12340002 is the heap block magic to
 //   key on when that allocator is formalized).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks + global
@@ -16462,7 +16462,7 @@ void dma_init(void) {
 //   entry vs 000334E8's "init/setup" entry of the SAME allocator.
 //   Together with fs_bufWrite_334E8 these form the alloc front-end
 //   for the snd_HandleSeqEvent_30AF4 0x45010 arena and the
-//   gl_func_00032E18 / gl_func_00033228 sub-record allocations
+//   MCamera_ctor / cam_createDefault_00033228 sub-record allocations
 //   (0x12340002 is the shared heap block magic; 0x0001E280 /
 //   0x0001E330 are the deferred template-symbolization sites).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks + global
@@ -16663,7 +16663,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
 //   "reset / reclaim" front-end — the lifecycle complement to
 //   000334E8 (init) and 00033BE4 (allocate). The trio is the heap
 //   manager behind the snd_HandleSeqEvent_30AF4 0x45010 arena and the
-//   gl_func_00032E18 / gl_func_00033228 sub-record allocations
+//   MCamera_ctor / cam_createDefault_00033228 sub-record allocations
 //   (block magics 0x12340002 / 0x12340003; templates 0x0001E280 /
 //   0x0001E330 / 0x0001E368 are deferred symbolization sites).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks + global
@@ -16802,10 +16802,10 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
 }
 
 
-/* game_libs_func_00034180: device-object tick.  BYTE-EXACT 2026-09-05
+/* sys_fatalSwapBuffer_00034180: device-object tick.  BYTE-EXACT 2026-09-05
  * (agent-g) as ONE 48-word function [0x34180,0x34240).
  *
- * BOUNDARY FIX: the former 8-byte orphan symbol game_libs_func_00034180
+ * BOUNDARY FIX: the former 8-byte orphan symbol sys_fatalSwapBuffer_00034180
  * (`lui v1,0; lw v1,0(v1)`, no jr ra, no prologue) was NOT a head fragment
  * to defer on -- it is this function's own first load, HOISTED ABOVE the
  * `addiu sp` prologue by the -O2 scheduler; splat cut the symbol at the sp
@@ -16833,7 +16833,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
  *    counter/bound v1/v0 -> v0/v1 (IDO unrolls the empty i++ loop x4 ->
  *    `addiu 4; bnel`).  Standalone 48/48, in-tree 48/48. */
 extern char *gl_d_34180_dev;
-void game_libs_func_00034180(void) {
+void sys_fatalSwapBuffer_00034180(void) {
     char *vt;
     int i;
 
@@ -16848,7 +16848,7 @@ void game_libs_func_00034180(void) {
     for (i = 0; i < 2000000; i++) {}
 }
 
-// gl_func_00034240 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// sys_fatalHaltLoop — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x218 / 134 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE. The .s has SEVEN jr $ra but only ONE
@@ -16866,8 +16866,8 @@ void game_libs_func_00034180(void) {
 // merge-fragments — raw-.word relocatable USO needs the
 // spimdisasm-USO migration).
 //
-// Leading fn gl_func_00034240 (0x34240..~0x343D8):
-//   void gl_func_00034240(int a2) {
+// Leading fn sys_fatalHaltLoop (0x34240..~0x343D8):
+//   void sys_fatalHaltLoop(int a2) {
 //     R *r = *(R**)&D_0;
 //     Desc d;                                  // local at sp+0x40
 //     callback(&d, -1);                         // jal 0 (USO cb)
@@ -16909,7 +16909,7 @@ void game_libs_func_00034180(void) {
 extern int D_00000000;
 extern char *D_34240_G;
 extern char D_0001E21C, D_34240_X, D_34240_P, D_34240_Y;
-void gl_func_00034240(void) {
+void sys_fatalHaltLoop(void) {
     char d[0x80];
     int saved34;
     char *cfg;
@@ -16968,11 +16968,11 @@ void gl_func_00034240(void) {
 // Indexed read from the segment-base int table: return D[a0]. Builds byte-exact
 // as plain C (single &D_00000000 segment-base ref, resolves to addr 0). No
 // episode (reloc-blind base) but the C body is the build path (moves %).
-int game_libs_func_000343E0(int a0) {
+int dbg_threadName(int a0) {
     return *(int *)((char *)&D_00000000 + a0 * 4);
 }
 
-/* game_libs_func_000343F4: selector -> address of a 0xC-stride table entry
+/* dbg_threadStateName: selector -> address of a 0xC-stride table entry
  * (segment data +0x1E3BC + 0xC*k): a0 == 2 -> k=0, 3 -> 1, 5 -> 2, 1 -> 3,
  * anything else (incl. 4/6/7/8) -> 4.
  * BOUNDARY FIX (2026-09-05, agent-g): ONE function that splat had split
@@ -16989,11 +16989,11 @@ int game_libs_func_000343E0(int a0) {
  * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO
  * 7.1 -O2 donor unit game_libs_o2_343F4.c (25/25 word-exact); the splice
  * renames the switch's donor-local .rodata jumptable reloc to
- * game_libs_func_000343F4_rodata (pinned to the USO table at +0x19B8).
+ * dbg_threadStateName_rodata (pinned to the USO table at +0x19B8).
  * Body below is a placeholder for the splice. (The NM bodies in this file
  * that call a `game_libs_func_0003443C` are placeholder decodes of a
  * TextReloc jal to symIdx 3, not calls into this fn's case arm.) */
-int game_libs_func_000343F4(int a0) {
+int dbg_threadStateName(int a0) {
     volatile int ret = 0x1E3EC;
     if (a0 == 2) {
         ret = 0x1E3BC;

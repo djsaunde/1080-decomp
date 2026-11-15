@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for game_libs_func_000343F4 -- selector -> address of
+/* IDO 7.1 -O2 donor for dbg_threadStateName -- selector -> address of
  * a 0xC-stride table entry (game_libs data +0x1E3BC..+0x1E3EC). PROVEN
  * EXACT 25/25 words standalone (st_size = 0x64).
  *
@@ -20,7 +20,7 @@
  * 29CCC / 6DD14 / 2E290 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-
  * switch-jumptable-rodata-rename): the C `switch` puts its 8-entry table
  * in the donor's local .rodata; the splice renames that reloc to
- * game_libs_func_000343F4_rodata, pinned in undefined_syms_auto.txt to the
+ * dbg_threadStateName_rodata, pinned in undefined_syms_auto.txt to the
  * table the USO ships in game_libs rodata at +0x19B8 (raw words: entry 1
  * (a0=2) -> 34418, 2 (a0=3) -> 34424, 4 (a0=5) -> 34430, 3/5/6/7 -> 34448
  * default; the a0=1 entry at +0x19B8 is the unrelocated quirk word and the
@@ -39,7 +39,7 @@
  * the bootup TextReloc table to symIdx 3, not to this address). */
 extern char D_00000000;
 
-int game_libs_func_000343F4(int a0) {
+int dbg_threadStateName(int a0) {
     switch (a0) {
     case 2:
         return (int)(&D_00000000 + 0x1E3BC);

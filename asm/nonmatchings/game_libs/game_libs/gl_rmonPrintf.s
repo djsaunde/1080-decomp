@@ -1,0 +1,11 @@
+nonmatching gl_rmonPrintf, 0x1C
+
+glabel gl_rmonPrintf
+    /* E54238 0006F160 27BDFFF8 */  .word 0x27BDFFF8
+    /* E5423C 0006F164 AFA40008 */  .word 0xAFA40008
+    /* E54240 0006F168 AFA5000C */  .word 0xAFA5000C
+    /* E54244 0006F16C AFA60010 */  .word 0xAFA60010
+    /* E54248 0006F170 AFA70014 */  .word 0xAFA70014
+    /* E5424C 0006F174 03E00008 */  .word 0x03E00008
+    /* E54250 0006F178 27BD0008 */  .word 0x27BD0008
+endlabel gl_rmonPrintf
