@@ -1,6 +1,6 @@
-nonmatching CharacterItem_vfunc18_0000B928, 0x64
+nonmatching CharacterItem_playPickAnim_0000B928, 0x64
 
-glabel CharacterItem_vfunc18_0000B928
+glabel CharacterItem_playPickAnim_0000B928
     /* 00B928 0000B928 27BDFFE0 */  .word 0x27BDFFE0
     /* 00B92C 0000B92C AFBF001C */  .word 0xAFBF001C
     /* 00B930 0000B930 AFA40020 */  .word 0xAFA40020
@@ -26,4 +26,4 @@ glabel CharacterItem_vfunc18_0000B928
     /* 00B980 0000B980 27BD0020 */  .word 0x27BD0020
     /* 00B984 0000B984 03E00008 */  .word 0x03E00008
     /* 00B988 0000B988 00000000 */  .word 0x00000000
-endlabel CharacterItem_vfunc18_0000B928
+endlabel CharacterItem_playPickAnim_0000B928

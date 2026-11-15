@@ -1,6 +1,6 @@
-nonmatching CharacterItem_vfunc19_0000B98C, 0x64
+nonmatching CharacterItem_playAcceptAnim_0000B98C, 0x64
 
-glabel CharacterItem_vfunc19_0000B98C
+glabel CharacterItem_playAcceptAnim_0000B98C
     /* 00B98C 0000B98C 27BDFFE0 */  .word 0x27BDFFE0
     /* 00B990 0000B990 AFBF001C */  .word 0xAFBF001C
     /* 00B994 0000B994 AFA40020 */  .word 0xAFA40020
@@ -26,4 +26,4 @@ glabel CharacterItem_vfunc19_0000B98C
     /* 00B9E4 0000B9E4 27BD0020 */  .word 0x27BD0020
     /* 00B9E8 0000B9E8 03E00008 */  .word 0x03E00008
     /* 00B9EC 0000B9EC 00000000 */  .word 0x00000000
-endlabel CharacterItem_vfunc19_0000B98C
+endlabel CharacterItem_playAcceptAnim_0000B98C

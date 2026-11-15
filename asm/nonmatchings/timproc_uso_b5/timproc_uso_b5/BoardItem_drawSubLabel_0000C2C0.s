@@ -1,6 +1,6 @@
-nonmatching BoardItem_vfunc24_0000C2C0, 0x50
+nonmatching BoardItem_drawSubLabel_0000C2C0, 0x50
 
-glabel BoardItem_vfunc24_0000C2C0
+glabel BoardItem_drawSubLabel_0000C2C0
     /* 00C2C0 0000C2C0 27BDFFE0 */  .word 0x27BDFFE0
     /* 00C2C4 0000C2C4 AFA60028 */  .word 0xAFA60028
     /* 00C2C8 0000C2C8 8FAE0028 */  .word 0x8FAE0028
@@ -21,4 +21,4 @@ glabel BoardItem_vfunc24_0000C2C0
     /* 00C304 0000C304 27BD0020 */  .word 0x27BD0020
     /* 00C308 0000C308 03E00008 */  .word 0x03E00008
     /* 00C30C 0000C30C 00000000 */  .word 0x00000000
-endlabel BoardItem_vfunc24_0000C2C0
+endlabel BoardItem_drawSubLabel_0000C2C0

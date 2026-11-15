@@ -6867,7 +6867,7 @@ void SelItem_setAlpha_0000ABD4(int a0, int a1) {
 void SelItem_drawLabel_0000ABE0(int a0, int a1, int a2, int a3) {
 }
 
-void SelItem_vfunc24_0000ABF4(int a0, int a1, int a2) {
+void SelItem_drawSubLabel_0000ABF4(int a0, int a1, int a2) {
 }
 
 
@@ -7128,18 +7128,18 @@ void CharacterItem_updateHighlight_0000B850(char *a0, float target) {
     }
 }
 
-void CharacterItem_vfunc17_0000B914(SelItemEx *it) {
+void CharacterItem_toggleVariant_0000B914(SelItemEx *it) {
     it->base.flags ^= 0x20000;
 }
 
-void CharacterItem_vfunc18_0000B928(SelItemEx *it) {
+void CharacterItem_playPickAnim_0000B928(SelItemEx *it) {
     char *p = it->model;
     gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 1, 1, 1);
     *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
     *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
 }
 
-void CharacterItem_vfunc19_0000B98C(SelItemEx *it) {
+void CharacterItem_playAcceptAnim_0000B98C(SelItemEx *it) {
     char *p = it->model;
     gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 2, 3, 1, 1);
     *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
@@ -7172,12 +7172,12 @@ void CharacterItem_unfocus_0000BAE8(SelItemEx *it) {
     *(int*)(it->model + 0x144) = 0x20;
 }
 
-void CharacterItem_vfunc13_0000BB44(SelItemEx *it) {
+void CharacterItem_onStageLeave_0000BB44(SelItemEx *it) {
     *(int*)(it->model + 0x138) = 0;
     *(int*)(it->model + 0x144) = 8;
 }
 
-void CharacterItem_vfunc14_0000BB5C(int a0) {
+void CharacterItem_onStageReturn_0000BB5C(int a0) {
 }
 
 void CharacterItem_setChosen_0000BB64(SelItemEx *it, int unused) {
@@ -7480,10 +7480,10 @@ void BoardItem_updateHighlight_0000C044(char *a0, float target) {
     }
 }
 
-void BoardItem_vfunc18_0000C108(int a0) {
+void BoardItem_playPickAnim_0000C108(int a0) {
 }
 
-void BoardItem_vfunc19_0000C110(int a0) {
+void BoardItem_playAcceptAnim_0000C110(int a0) {
 }
 
 void BoardItem_confirm_0000C118(int a0) {
@@ -7502,15 +7502,15 @@ void BoardItem_unfocus_0000C150(SelItemEx *it) {
     *(int*)(it->model + 0x130) = 0;
 }
 
-void BoardItem_vfunc13_0000C164(SelItemEx *it) {
+void BoardItem_onStageLeave_0000C164(SelItemEx *it) {
     *(int*)(it->model + 0x130) = 0;
 }
 
-void BoardItem_vfunc14_0000C170(SelItemEx *it) {
+void BoardItem_onStageReturn_0000C170(SelItemEx *it) {
     *(int*)(it->model + 0x130) = 1;
 }
 
-void BoardItem_vfunc17_0000C180(SelItemEx *it) {
+void BoardItem_toggleVariant_0000C180(SelItemEx *it) {
     it->base.flags ^= 0x20;
 }
 
@@ -7585,7 +7585,7 @@ void BoardItem_drawLabel_0000C208(int *a0, int a1, int a2, int a3) {
 }
 
 extern char D_b5_C2C0_table;
-void BoardItem_vfunc24_0000C2C0(int *a0, int a1, int a2) {
+void BoardItem_drawSubLabel_0000C2C0(int *a0, int a1, int a2) {
     (void)a1;
     gl_func_00000000(a0, a0[0x104/4], a0[0x11C/4], (char*)&D_b5_C2C0_table + a2 * 24, 0xFF);
 }
@@ -7830,13 +7830,13 @@ void CourseItem_copyState_0000C7E8(SelItemEx *it, SelItemEx *other) {
     *(int *)(other->model + 0x13C) = *(int *)(it->model + 0x13C);
 }
 
-void CourseItem_vfunc17_0000C82C(int a0) {
+void CourseItem_toggleVariant_0000C82C(int a0) {
 }
 
-void CourseItem_vfunc18_0000C834(int a0) {
+void CourseItem_playPickAnim_0000C834(int a0) {
 }
 
-void CourseItem_vfunc19_0000C83C(int a0) {
+void CourseItem_playAcceptAnim_0000C83C(int a0) {
 }
 
 void CourseItem_confirm_0000C844(int a0) {
@@ -7851,10 +7851,10 @@ void CourseItem_unfocus_0000C85C(SelItemEx *it) {
     *(int*)(it->model + 0x134) = 0;
 }
 
-void CourseItem_vfunc13_0000C870(int a0) {
+void CourseItem_onStageLeave_0000C870(int a0) {
 }
 
-void CourseItem_vfunc14_0000C878(SelItemEx *it) {
+void CourseItem_onStageReturn_0000C878(SelItemEx *it) {
     *(int*)(it->model + 0x134) = 1;
 }
 
@@ -8134,11 +8134,11 @@ void TesuriItem_updateHighlight_0000CB40(char *a0, float target) {
 
 /* timproc_uso_b5_func_0000CBD0 MERGED into CB40 2026-06-10 (bc1f tail fragment, fourth of the fade-helper family; the .s merge that the earlier nested-wrap decode described but never executed). */
 
-void TesuriItem_vfunc17_0000CC04(int a0) {}
+void TesuriItem_toggleVariant_0000CC04(int a0) {}
 
-void TesuriItem_vfunc18_0000CC0C(int a0) {}
+void TesuriItem_playPickAnim_0000CC0C(int a0) {}
 
-void TesuriItem_vfunc19_0000CC14(int a0) {}
+void TesuriItem_playAcceptAnim_0000CC14(int a0) {}
 
 void TesuriItem_confirm_0000CC1C(int a0) {}
 
@@ -8150,9 +8150,9 @@ void TesuriItem_unfocus_0000CC34(SelItemEx *it) {
     *(int*)(it->model + 0x134) = 0;
 }
 
-void TesuriItem_vfunc13_0000CC40(int a0) {}
+void TesuriItem_onStageLeave_0000CC40(int a0) {}
 
-void TesuriItem_vfunc14_0000CC48(int a0) {}
+void TesuriItem_onStageReturn_0000CC48(int a0) {}
 
 void TesuriItem_setChosen_0000CC50(SelItemEx *it, int a1) {
     *(int*)(it->model + 0x138) = 1;
@@ -8277,11 +8277,11 @@ void LevelItem_updateHighlight_0000CD24(char *a0, float a1u) {
 
 /* timproc_uso_b5_func_0000CDC8 MERGED into CD24 2026-06-10 (bc1f tail fragment, fifth and FINAL fade-helper family member; nested double-wrap flattened same as CB40). */
 
-void LevelItem_vfunc17_0000CDFC(int a0) {}
+void LevelItem_toggleVariant_0000CDFC(int a0) {}
 
-void LevelItem_vfunc18_0000CE04(int a0) {}
+void LevelItem_playPickAnim_0000CE04(int a0) {}
 
-void LevelItem_vfunc19_0000CE0C(int a0) {}
+void LevelItem_playAcceptAnim_0000CE0C(int a0) {}
 
 void LevelItem_confirm_0000CE14(int a0) {}
 
@@ -8293,9 +8293,9 @@ void LevelItem_unfocus_0000CE2C(SelItemEx *it) {
     *(int*)(it->model + 0x130) = 0;
 }
 
-void LevelItem_vfunc13_0000CE38(int a0) {}
+void LevelItem_onStageLeave_0000CE38(int a0) {}
 
-void LevelItem_vfunc14_0000CE40(int a0) {}
+void LevelItem_onStageReturn_0000CE40(int a0) {}
 
 void LevelItem_setChosen_0000CE48(SelItemEx *it, int a1) {
     *(int*)(it->model + 0x138) = 1;
