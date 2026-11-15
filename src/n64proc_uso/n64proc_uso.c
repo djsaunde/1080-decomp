@@ -11,7 +11,7 @@ extern int gl_func_00000000();
 void n64proc_uso_func_00000000(void) {
 }
 
-void n64proc_uso_func_0000000C(void) {
+void n64_nop_0000000C(void) {
 }
 
 extern char D_00000000;

@@ -183,7 +183,7 @@ void TimRace_pauseRow1_000006F0(void) {
  * (now 17 insns / 0x44, starts 0x72C) and removed that pad pragma. ROM bytes
  * preserved. (This fn's OWN pad sidecar below still holds 0x778's orphan.) */
 extern int D_state_b1_734;
-void TimRace_pauseExit1_00000734(void) {
+void TimRace_pauseChangeCharacter(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 1;
     gl_func_00000000(D_state_b1_734, -1, 0);
@@ -192,7 +192,7 @@ void TimRace_pauseExit1_00000734(void) {
  * lui v0,0; addiu v0,0 moved from func_00000734's pad into this fn's .s;
  * 0x3C->0x44, starts 0x770; pad pragma+.s removed). */
 extern int D_state_b1_778;
-void TimRace_pauseExit2_00000778(void) {
+void TimRace_pauseChangeBoard(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
     gl_func_00000000(D_state_b1_778, -1, 0);
@@ -200,7 +200,7 @@ void TimRace_pauseExit2_00000778(void) {
 /* Chain sibling: t7=3. MATCHED via pad-sidecar boundary correction (orphan
  * moved from func_00000778's pad into this fn's .s; 0x3C->0x44, starts 0x7B4). */
 extern int D_state_b1_7BC;
-void TimRace_pauseExit3_000007BC(void) {
+void TimRace_pauseChangeCourse(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 3;
     gl_func_00000000(D_state_b1_7BC, -1, 0);
@@ -1179,13 +1179,13 @@ void TimMenu_rowToggle_00002028(void) {
     }
 }
 
-void TimMenu_rowExit1_000020AC(void) {
+void TimMenu_rowChangeCharacter(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 1;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
 }
 
-void TimMenu_rowExit2_000020F0(void) {
+void TimMenu_rowChangeBoard(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 2;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
@@ -1194,7 +1194,7 @@ void TimMenu_rowExit2_000020F0(void) {
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void TimMenu_rowExit3_00002134(void) {
+void TimMenu_rowChangeCourse(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 3;
     gl_func_00000000(gl_ref_0000020C, -1, 0);

@@ -164,7 +164,7 @@ extern char *D_h2h_2FC_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_2FC_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_2FC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2h_pauseExitState2_000002FC(void) {
+void h2h_pauseChangeCharacter(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_2FC_a + 4));
     *(int*)((char*)&D_h2h_2FC_b + 0x40) = 2;
     gl_func_00000000(&D_h2h_2FC_b);
@@ -176,7 +176,7 @@ extern char *D_h2h_354_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_354_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_354_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2h_pauseExitState3_00000354(void) {
+void h2h_pauseChangeBoard(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_354_a + 4));
     *(int*)((char*)&D_h2h_354_b + 0x40) = 3;
     gl_func_00000000(&D_h2h_354_b);
@@ -188,7 +188,7 @@ extern char *D_h2h_3AC_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_3AC_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_3AC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2h_pauseExitState4_000003AC(void) {
+void h2h_pauseChangeCourse(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_3AC_a + 4));
     *(int*)((char*)&D_h2h_3AC_b + 0x40) = 4;
     gl_func_00000000(&D_h2h_3AC_b);
@@ -214,7 +214,7 @@ void h2h_pauseContinue_0000045C(void) {
     gl_func_00000000(&D_00000000);
 }
 
-/* h2hproc_uso_func_0000049C (0x44, 17 insns): TWENTY-FIFTH mis-split case,
+/* h2h_pauseForfeit_0000049C (0x44, 17 insns): TWENTY-FIFTH mis-split case,
  * hoisted-head merge of 049C + 04A4 (2026-09-05 agent-c). The 8-byte 049C
  * "alternate entry" (`lui a0; lw a0,0(a0)`, no jr ra) is this function's own
  * first statement, scheduled above `addiu sp` by IDO 7.1 -O2; 04A4 was never a
@@ -224,7 +224,7 @@ void h2h_pauseContinue_0000045C(void) {
  * 0x49C's address (a function-pointer store). The old 04A4 "exact" existed
  * only via a fake `char *a0` parameter. See docs/MATCHING_WORKFLOW.md
  * #hoisted-head-119c-11a4-mgrproc (same mechanism, same fix). */
-void h2hproc_uso_func_0000049C(void) {
+void h2h_pauseForfeit_0000049C(void) {
     char *a0 = *(char **)&D_00000000;
     gl_func_00000000(a0, *(int*)(a0 + 0x6B4) ^ 1);
     gl_func_00000000(*(int*)&D_00000000);
@@ -510,7 +510,7 @@ extern int gl_func_h2hproc_8EC_f();
  * 2nd arg keeps it live in $a1 across the call so the post-jal reload
  * goes to $a1 (matching) instead of $t7. No volatile/spill-shaping needed.
  * (Lever: faithful arg count from the asm beats reg-alloc grinding.) */
-void h2hproc_uso_func_000008EC(char *a0, int a1) {
+void h2h_winByFinish_000008EC(char *a0, int a1) {
     *(int*)(a0 + 0x6B8) = a1;
     gl_func_h2hproc_8EC_pre(*(int*)(a0 + 0x6A8), a1);
     if (a1 == 0) {
@@ -521,7 +521,7 @@ void h2hproc_uso_func_000008EC(char *a0, int a1) {
 }
 
 /* MATCHED 2026-05-29: byte-identical sibling of 000008EC; same 2-arg-call1 fix. */
-void h2hproc_uso_func_00000944(char *a0, int a1) {
+void h2h_winByRetire_00000944(char *a0, int a1) {
     *(int*)(a0 + 0x6B8) = a1;
     gl_func_h2hproc_8EC_pre(*(int*)(a0 + 0x6A8), a1);
     if (a1 == 0) {
@@ -908,7 +908,7 @@ INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2h_setupCameras_00000C1
  * (unused-low, spill-high) -- confirmed same irreducible class. C-side
  * forcers exhausted; only an allocator-internal account (uoptlist
  * occupant trace) could name the residual mechanism. */
-void h2hproc_uso_func_00000E04(int *a0, unsigned int a1) {
+void h2h_startReplay_00000E04(int *a0, unsigned int a1) {
     /* Decl order IS the frame map (dead-scalar-home rule): homes assign
      * top-down in decl order -- slotC4 0x2C (dead), r1 0x28 (spill),
      * slotCC 0x24 (dead), r2 0x20 (spill). The old slotC4,slotCC,r1,r2

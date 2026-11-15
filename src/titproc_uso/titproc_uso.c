@@ -330,12 +330,12 @@ extern int import_000B3268();
 INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", tit_procMain);
 #endif
 
-/* titproc_uso_func_00000B6C: 40-insn (0xA0) 3-call alloc-and-link wrapper.
+/* tit_openSession_00000B6C: 40-insn (0xA0) 3-call alloc-and-link wrapper.
  * 1st cross-USO call allocates context (kept across calls), 2nd registers
  * via globals, 3rd cleans up the temporary. Inlining (*a0) twice in the
  * if-block (vs caching to a local p) is what commits IDO to keeping the
  * int** in $v1 — the cached form let IDO pick $t0 instead. */
-void titproc_uso_func_00000B6C(int **a0, int a1) {
+void tit_openSession_00000B6C(int **a0, int a1) {
     int *r1;
     int *r2;
     r1 = gl_func_00000000(2);
@@ -350,7 +350,7 @@ void titproc_uso_func_00000B6C(int **a0, int a1) {
     }
 }
 
-void titproc_uso_func_00000C0C(int *a0) {
+void tit_closeSession_00000C0C(int *a0) {
     int v = *a0;
     if (v != 0) {
         gl_func_00000000(v, 3);
@@ -1023,7 +1023,7 @@ extern void import_0024F34C();
  * (import_0024E608, import_0024F2C8, import_0024F34C); the first call's a0 is
  * import_0024CAF8 in BOTH branches, only a2 (lerped &sp36 vs ones &sp96) and
  * the tgt base (+0x18 in if, +0 in else) differ. Twin of
- * mgrproc_uso_func_00002850 (loop form). RELOCS + LOGIC now byte-faithful.
+ * mgr_drawSpriteStack_00002850 (loop form). RELOCS + LOGIC now byte-faithful.
  * PRIOR NOTE CORRECTED 2026-07-15 (stolen-prologue re-verify vein): the
  * "FRAME-SIZE cap" was NOT a cap. The whole -0x70 frame + sp+96 ones-vec +
  * sp+92 tgt-spill + 76-insn schedule is C-reproducible: (1) lerp must read
@@ -1180,7 +1180,7 @@ extern void import_0024E388();
  * buf_b@sp+0x28, frame -0x60). Callees import_0024F2C8 (begin),
  * import_0024E388 (alpha+rgba), import_0024F34C (coords); base
  * import_00263D30 +0x60/+0x78/+0x90. Twin family KeyMessage_display /
- * mgrproc_uso_func_00002E3C. */
+ * MgrNameEntry_drawBlinkBanner_00002E3C. */
 void MainLogo_display(int *s0) {
     volatile int vpad;
     float buf_a[4];

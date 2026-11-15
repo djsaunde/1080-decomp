@@ -203,7 +203,7 @@ void TrkRace_pauseRow1_000006FC(void) {
  * correction (orphan lui v0,0; addiu v0,0 moved from func_000006FC's pad into
  * this fn's .s; 0x3C->0x44, starts 0x744). Same recipe as b1 chain 0x734-0x800. */
 extern int D_state_b3_74C;
-void TrkRace_pauseExit1_0000074C(void) {
+void TrkRace_pauseChangeCharacter(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 1;
     gl_func_00000000(D_state_b3_74C, -1, 0);
@@ -211,7 +211,7 @@ void TrkRace_pauseExit1_0000074C(void) {
 /* Chain sibling: t7=2. MATCHED via pad-sidecar boundary correction (orphan
  * moved from func_0000074C's pad into this fn's .s; 0x3C->0x44, starts 0x788). */
 extern int D_state_b3_790;
-void TrkRace_pauseExit2_00000790(void) {
+void TrkRace_pauseChangeBoard(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
     gl_func_00000000(D_state_b3_790, -1, 0);
@@ -219,7 +219,7 @@ void TrkRace_pauseExit2_00000790(void) {
 /* Chain sibling: t7=3. MATCHED via pad-sidecar boundary correction (orphan
  * moved from func_00000790's pad into this fn's .s; 0x3C->0x44, starts 0x7CC). */
 extern int D_state_b3_7D4;
-void TrkRace_pauseExit3_000007D4(void) {
+void TrkRace_pauseChangeCourse(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 3;
     gl_func_00000000(D_state_b3_7D4, -1, 0);
@@ -932,7 +932,7 @@ void TrkNameEntry_vfunc18_00001870(int *self) {
  * this block's module tables (trkproc.uso, inner header ROM 0x5B3DE2):
  * Sym[163] EXPORTS 0x1920 and two intra-module jal's (TextReloc kind 1 at
  * 0x1844 and 0x1878) target it; 0x1928 has no export and no R_MIPS_26.
- * Body = arcproc_uso_func_00001C74's canonical TRUE-BYTE decode (byte-identical
+ * Body = ArcNameEntry_drawBlinkBanner_00001C74's canonical TRUE-BYTE decode (byte-identical
  * clone family sig=739fd8d1d3, with b1_19C0): buf[] = 1.0f, tgt = a0+0xF0
  * spill at sp+0x20, frame 0x58.
  * EXACT 2026-09-09: field * (scale = 255.0f) materializes the constant
@@ -1285,7 +1285,7 @@ void TrkMenu_rowRetry_000021B0(void) {
     gl_func_00000000(gl_ref_0000020C, -1, 0);
 }
 
-/* func_000021F4 (0x44): byte-identical twin of TimMenu_rowExit1_000020AC
+/* func_000021F4 (0x44): byte-identical twin of TimMenu_rowChangeCharacter
  * (matched) except the state constant (li 6 vs li 1). Ported donor body w/
  * gl_ref_00000040 = 6. */
 void TrkMenu_rowGhost_000021F4(void) {
@@ -1318,7 +1318,7 @@ void TrkMenu_rowToggle_00002238(void) {
     }
 }
 
-void TrkMenu_rowExit1_000022BC(void) {
+void TrkMenu_rowChangeCharacter(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 1;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
@@ -1327,7 +1327,7 @@ void TrkMenu_rowExit1_000022BC(void) {
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void TrkMenu_rowExit2_00002300(void) {
+void TrkMenu_rowChangeBoard(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 2;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
@@ -1336,7 +1336,7 @@ void TrkMenu_rowExit2_00002300(void) {
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void TrkMenu_rowExit3_00002344(void) {
+void TrkMenu_rowChangeCourse(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 3;
     gl_func_00000000(gl_ref_0000020C, -1, 0);

@@ -107,7 +107,7 @@ glabel MGRRaceProcess_drawHud
     /* 0020CC 000020CC 4600910D */  .word 0x4600910D
     /* 0020D0 000020D0 44058000 */  .word 0x44058000
     /* 0020D4 000020D4 44062000 */  .word 0x44062000
-    jal mgrproc_uso_func_00002850   /* 0020D8 0C000000 -> mgrproc_uso_func_00002850 */
+    jal mgr_drawSpriteStack_00002850   /* 0020D8 0C000000 -> mgr_drawSpriteStack_00002850 */
     /* 0020DC 000020DC 00000000 */  .word 0x00000000
     /* 0020E0 000020E0 8E0B07C4 */  .word 0x8E0B07C4
     /* 0020E4 000020E4 51600067 */  .word 0x51600067
@@ -145,7 +145,7 @@ glabel MGRRaceProcess_drawHud
     /* 002164 00002164 4600418D */  .word 0x4600418D
     /* 002168 00002168 44065000 */  .word 0x44065000
     /* 00216C 0000216C 44053000 */  .word 0x44053000
-    jal mgrproc_uso_func_00002850   /* 002170 0C000000 -> mgrproc_uso_func_00002850 */
+    jal mgr_drawSpriteStack_00002850   /* 002170 0C000000 -> mgr_drawSpriteStack_00002850 */
     /* 002174 00002174 00000000 */  .word 0x00000000
     /* 002178 00002178 8E0E07C8 */  .word 0x8E0E07C8
     /* 00217C 0000217C 3C014100 */  .word 0x3C014100

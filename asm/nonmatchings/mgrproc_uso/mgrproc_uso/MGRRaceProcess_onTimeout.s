@@ -35,7 +35,7 @@ glabel MGRRaceProcess_onTimeout
     /* 001570 00001570 8CA50170 */  .word 0x8CA50170
     /* 001574 00001574 3C010026 */  .word 0x3C010026
     /* 001578 00001578 3421000F */  .word 0x3421000F
-    jal mgrproc_uso_func_00001AD0   /* 00157C 0C000000 -> mgrproc_uso_func_00001AD0 */
+    jal mgr_startReplay_00001AD0   /* 00157C 0C000000 -> mgr_startReplay_00001AD0 */
     /* 001580 00001580 00A12821 */  .word 0x00A12821
     /* 001584 00001584 8FBF0014 */  .word 0x8FBF0014
     /* 001588 00001588 27BD0018 */  .word 0x27BD0018

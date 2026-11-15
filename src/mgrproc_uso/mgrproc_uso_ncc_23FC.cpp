@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for mgrproc_uso_func_000023FC, EXACT (run 198, see the end of this comment)
+/* IDO 7.1 NCC (C++) donor for mgr_drawResults_000023FC, EXACT (run 198, see the end of this comment)
  * (0x454 / 277 words): results-panel draw (alpha panels, mm:ss.cc timer text
  * rendered glyph by glyph, flag panel). agent-g run 172: the cfe NM body
  * ported to C++ (mgrproc is C++, like the other proc USOs).
@@ -58,7 +58,7 @@ struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { retur
 struct Spr { char p[0x10]; Img *img; char p14[4]; s32 width() { Img *i = img; return i->w; } s32 height() { Img *i = img; return i->h; } s32 pw() { return img->gw(); } };
 #define SPR(o) ((Spr *)(arg0 + (o)))
 extern "C" {
-void mgrproc_uso_func_000023FC(char *arg0) {
+void mgr_drawResults_000023FC(char *arg0) {
     f32 one[4];
     u8 buf[0x80];
     char *p770;

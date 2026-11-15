@@ -25,10 +25,10 @@ glabel mgr_startEnding_00001BE4
     /* 001C24 00001C24 ACD807E8 */  .word 0xACD807E8
     jal mgrproc_uso_func_012110   /* 001C28 0C000000 -> mgrproc_uso_func_012110 */
     /* 001C2C 00001C2C AFA60018 */  .word 0xAFA60018
-    jal mgrproc_uso_func_00001A64   /* 001C30 0C000000 -> mgrproc_uso_func_00001A64 */
+    jal mgr_switchToView2_00001A64   /* 001C30 0C000000 -> mgr_switchToView2_00001A64 */
     /* 001C34 00001C34 8FA40018 */  .word 0x8FA40018
     /* 001C38 00001C38 8FA40018 */  .word 0x8FA40018
-    jal mgrproc_uso_func_00001B58   /* 001C3C 0C000000 -> mgrproc_uso_func_00001B58 */
+    jal mgr_restartForEnding_00001B58   /* 001C3C 0C000000 -> mgr_restartForEnding_00001B58 */
     /* 001C40 00001C40 3C05000A */  .word 0x3C05000A
     /* 001C44 00001C44 2404000B */  .word 0x2404000B
     /* 001C48 00001C48 00002825 */  .word 0x00002825

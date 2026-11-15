@@ -47,7 +47,7 @@ glabel MGRRaceProcess_onRaceOver
     /* 0016C0 000016C0 3C010026 */  .word 0x3C010026
     /* 0016C4 000016C4 3421000F */  .word 0x3421000F
     /* 0016C8 000016C8 02002025 */  .word 0x02002025
-    jal mgrproc_uso_func_00001AD0   /* 0016CC 0C000000 -> mgrproc_uso_func_00001AD0 */
+    jal mgr_startReplay_00001AD0   /* 0016CC 0C000000 -> mgr_startReplay_00001AD0 */
     /* 0016D0 000016D0 00A12821 */  .word 0x00A12821
     /* 0016D4 000016D4 00002025 */  .word 0x00002025
     /* 0016D8 000016D8 02002825 */  .word 0x02002825

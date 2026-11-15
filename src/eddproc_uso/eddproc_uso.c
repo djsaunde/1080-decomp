@@ -51,12 +51,12 @@ void fs_gdlReadVec3_edd_000000D4(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void eddproc_uso_func_00000144(int a0, int a1) {
+void edd_procMain(int a0, int a1) {
     (void)&a0;
     (void)&a1;
 }
 
-void eddproc_uso_func_00000150(int a0, int a1) {
+void edd_nop_00000150(int a0, int a1) {
     (void)&a0;
     (void)&a1;
 }
@@ -197,7 +197,7 @@ Ret:
     return a0;
 }
 
-void eddproc_uso_func_00000324(int a0) {
+void edd_EditorsProcess_handleInput(int a0) {
 }
 
 void edd_readIntParm_0000032C(char *dst) {

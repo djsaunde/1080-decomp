@@ -111,7 +111,7 @@ glabel MGRRaceProcess_updateSub2
     /* 0019D0 000019D0 3C010026 */  .word 0x3C010026
     /* 0019D4 000019D4 3421000F */  .word 0x3421000F
     /* 0019D8 000019D8 02002025 */  .word 0x02002025
-    jal mgrproc_uso_func_00001AD0   /* 0019DC 0C000000 -> mgrproc_uso_func_00001AD0 */
+    jal mgr_startReplay_00001AD0   /* 0019DC 0C000000 -> mgr_startReplay_00001AD0 */
     /* 0019E0 000019E0 00A12821 */  .word 0x00A12821
     /* 0019E4 000019E4 8E190524 */  .word 0x8E190524
     /* 0019E8 000019E8 240F0003 */  .word 0x240F0003

@@ -31,7 +31,7 @@ glabel MGRRaceProcess_drawResultExtra
     /* 002300 00002300 00000000 */  .word 0x00000000
     /* 002304 00002304 45020004 */  .word 0x45020004
     /* 002308 00002308 8FBF0014 */  .word 0x8FBF0014
-    jal mgrproc_uso_func_000023FC   /* 00230C 0C000000 -> mgrproc_uso_func_000023FC */
+    jal mgr_drawResults_000023FC   /* 00230C 0C000000 -> mgr_drawResults_000023FC */
     /* 002310 00002310 00000000 */  .word 0x00000000
     /* 002314 00002314 8FBF0014 */  .word 0x8FBF0014
     /* 002318 00002318 27BD0018 */  .word 0x27BD0018

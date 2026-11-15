@@ -743,7 +743,7 @@ void arc_resumePlayers_00001228(int *a0) {
  * each time). Switching to three DISTINCT externs (D_arc125C_30/_34/_38) makes
  * each float its own address -> per-use `lui at`, byte-matching the dispatch
  * AND flipping the second threshold arm from bc1f to bc1fl (both arms now
- * branch-likely). Same cocktail as arcproc_uso_func_000014C8. Also read the
+ * branch-likely). Same cocktail as arc_drawResultScore_000014C8. Also read the
  * 0x6E4-field before 0x6FC in the first `sum` to match the add operand order.
  *
  * 2026-07-10 (80.42 -> 90.01): three FP-scheduling/regalloc levers landed the
@@ -855,7 +855,7 @@ void ARCRaceProcess_drawTimeUpExtra(void) {
     gl_func_00000000();
 }
 
-/* arcproc_uso_func_000014C8: gated HUD fade/draw. Sets a {1,1,1,1} Vec4 (sp48..54).
+/* arc_drawResultScore_000014C8: gated HUD fade/draw. Sets a {1,1,1,1} Vec4 (sp48..54).
  * If arg0->0x500 != 0 && *(float*)&D <= 0.0f: fade 0x77C up by &D+0x40 (clamp <
  * &D+0x3C); 0x508++; if cb(arg0->0x528): draw a panel at 0x2F0 with alpha (int)
  * (255*0x77C), draw arg0+0x764, and on (0x508 & 8) draw it + cb(arg0, 0xA0, arg0->
@@ -878,7 +878,7 @@ void ARCRaceProcess_drawTimeUpExtra(void) {
  * Notes above are historical. */
 extern int gl_func_00000000();
 extern float D_flt_arc0, D_0000003C, D_00000040;
-void arcproc_uso_func_000014C8(char *a0) {
+void arc_drawResultScore_000014C8(char *a0) {
     float color[4];
     char pad[28];
     char *saved;
@@ -949,7 +949,7 @@ void arcproc_uso_func_000014C8(char *a0) {
  *   a0->0x4FC = 1;                           ; mark whole function done
  *   end:
  *
- * Sibling of recently-doc'd arcproc_uso_func_000014C8 (FPU scoring update);
+ * Sibling of recently-doc'd arc_drawResultScore_000014C8 (FPU scoring update);
  * both are per-frame state-driver functions with bnel-likely entry gates and
  * cross-USO callback dispatch. Default INCLUDE_ASM build remains exact.
  *
@@ -1191,14 +1191,14 @@ void ArcNameEntry_vfunc18_00001BBC(int *self) {
     }
 }
 
-/* arcproc_uso_func_00001C74: historical name, true entry 0x1C6C.
+/* ArcNameEntry_drawBlinkBanner_00001C74: historical name, true entry 0x1C6C.
  * EXACT 2026-10-20 via twin port (twin-finder.py): byte-identical to
  * TimNameEntry_drawTitle_000019C0 (entry 0x19B8) / b3_func_00001920. BOUNDARY
  * FIX: the 2 words at 0x1C6C (lui at,0x3F80; mtc1 at,$f0 = buf[]'s 1.0f
  * hoisted above the prologue) moved from 1BBC.s's tail into this .s head.
  * The old "FP pair-swap" residual is the b1 recipe: field * (scale = 255.0f)
  * with scale's home + pad[0x1C] preserving the 0x58 frame. */
-void arcproc_uso_func_00001C74(int *a0) {
+void ArcNameEntry_drawBlinkBanner_00001C74(int *a0) {
     float buf[4];
     char *tgt;
     float scale;
@@ -1530,13 +1530,13 @@ void ARCMenuProcess_rowRetry_000023F4(void) {
     gl_func_00000000(gl_ref_00000074, -1, 0);
 }
 
-void ARCMenuProcess_rowExit1_00002438(void) {
+void ARCMenuProcess_rowChangeCharacter(void) {
     gl_func_00000000(gl_ref_00000070);
     gl_ref_00000040 = 1;
     gl_func_00000000(gl_ref_00000074, -1, 0);
 }
 
-void ARCMenuProcess_rowExit2_0000247C(void) {
+void ARCMenuProcess_rowChangeBoard(void) {
     gl_func_00000000(gl_ref_00000070);
     gl_ref_00000040 = 2;
     gl_func_00000000(gl_ref_00000074, -1, 0);
@@ -1739,7 +1739,7 @@ void ARCMenuProcess_drawGui(void) {
     arcproc_uso_func_00000000();
 }
 
-/* arcproc_uso_func_00002884: 62-insn double-loop initializer (fresh decode
+/* arc_drawMenuBackground_00002884: 62-insn double-loop initializer (fresh decode
  * 2026-05-29 -> ~92% / 5-diff). Copies a 5-int table from &D+0x4A0 to a stack
  * buffer, then for each outer step (s3: 16..208 step 32) iterates the 5 buffer
  * entries (s0: 0..256 step 64), computing s1 = &D+0x10 + buf[i]*24 and calling
@@ -1777,7 +1777,7 @@ void ARCMenuProcess_drawGui(void) {
  *    historical. */
 typedef struct { int w[5]; } Arc2884Buf;
 typedef struct { char pad[0x18]; } ArcS18_2884;
-void arcproc_uso_func_00002884(int *a0) {
+void arc_drawMenuBackground_00002884(int *a0) {
     int vec4[5];
     ArcS18_2884 *s4;
     char *s2;

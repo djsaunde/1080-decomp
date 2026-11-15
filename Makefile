@@ -2847,7 +2847,7 @@ build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/
 # 23FC = results-panel draw, the cfe NM body ported to C++ (NCC digit loop = the target's 13*i
 # counter vs 13*n bound; agent-g run 172, cfe 97.25). EXACT NCC donor (run 198, edg pool-temp / home order).
 MGR_23FC_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp.o
-build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_000023FC=$(MGR_23FC_DONOR)
+build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgr_drawResults_000023FC=$(MGR_23FC_DONOR)
 build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: $(MGR_23FC_DONOR)
 # 2B7C = number / glyph display dispatcher as C++ (unused `Col col;` with an inline ctor = the four 1.0f
 # stores; agent-c run 243, cfe 98.24). EXACT NCC donor (agent-c run 244: case-1 panel pointer p in v0).
@@ -4196,10 +4196,10 @@ build/src/match_imports/MGRRaceProcess_drawIntro.c.o: src/match_imports/MGRRaceP
 build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o: src/match_imports/MGRRaceProcess_drawIntro.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
+build/src/match_imports/mgr_drawSpriteStack_00002850.c.o: src/match_imports/mgr_drawSpriteStack_00002850.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
+build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o: src/match_imports/mgr_drawSpriteStack_00002850.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/RoomModifier_display_0000117C.c.o: src/match_imports/RoomModifier_display_0000117C.c src/match_imports/context_timproc_uso_b5.h
@@ -4762,12 +4762,12 @@ build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf: build/src/match
 build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o scripts/match-origins-MGRRaceProcess_drawIntro-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawIntro-nm.ld -e MGRRaceProcess_drawIntro -o $@ $@.stripped.o
-build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850.ld
+build/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf: build/src/match_imports/mgr_drawSpriteStack_00002850.c.o scripts/match-origins-mgr_drawSpriteStack_00002850.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgr_drawSpriteStack_00002850.ld -e mgr_drawSpriteStack_00002850 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf: build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o scripts/match-origins-mgr_drawSpriteStack_00002850-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850-nm.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgr_drawSpriteStack_00002850-nm.ld -e mgr_drawSpriteStack_00002850 -o $@ $@.stripped.o
 build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf: build/src/match_imports/RoomModifier_display_0000117C.c.o scripts/match-origins-RoomModifier_display_0000117C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RoomModifier_display_0000117C.ld -e RoomModifier_display_0000117C -o $@ $@.stripped.o
@@ -5164,10 +5164,10 @@ build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: build
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawIntro.json $@
 build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawIntro-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawIntro-nm.json $@
-build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850.json $@
-build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850-nm.json $@
+build/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf: build/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf scripts/match-bindings-mgr_drawSpriteStack_00002850.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgr_drawSpriteStack_00002850.json $@
+build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf scripts/match-bindings-mgr_drawSpriteStack_00002850-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgr_drawSpriteStack_00002850-nm.json $@
 build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf scripts/match-bindings-RoomModifier_display_0000117C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RoomModifier_display_0000117C.json $@
 build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf scripts/match-bindings-RoomModifier_display_0000117C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5567,10 +5567,10 @@ build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProce
 build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawIntro.c scripts/match-bindings-MGRRaceProcess_drawIntro.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawIntro=build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawIntro.c scripts/match-bindings-MGRRaceProcess_drawIntro-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
-build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgr_drawSpriteStack_00002850=build/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf
+build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgr_drawSpriteStack_00002850.c scripts/match-bindings-mgr_drawSpriteStack_00002850.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgr_drawSpriteStack_00002850=build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgr_drawSpriteStack_00002850.c scripts/match-bindings-mgr_drawSpriteStack_00002850-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_display_0000117C=build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/RoomModifier_display_0000117C.c scripts/match-bindings-RoomModifier_display_0000117C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_display_0000117C=build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
@@ -5948,10 +5948,10 @@ build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/MGRRaceProcess_dr
 build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
-build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf
+build/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/mgr_drawSpriteStack_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
 build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf

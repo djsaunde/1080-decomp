@@ -42,7 +42,7 @@ mgr_pauseContinue_00000AE0() {
 
 extern char D_mgr_B20_1;
 extern char D_mgr_B20_2;
-void mgrproc_uso_func_00000B20(void) {
+void mgr_pauseRetire_00000B20(void) {
     gl_func_00000000(*(int*)(&D_00000000 + 0x30));
     gl_func_00000000(*(int*)(&D_mgr_B20_1 + 0x30));
     gl_func_00000000(&D_mgr_B20_2);
@@ -519,7 +519,7 @@ extern char import_802649F8;
 extern int import_80020228;
 extern char import_80020208;
 extern void mgrproc_uso_func_048E7C(void *, int);
-extern void mgrproc_uso_func_00001AD0(int *, int);
+extern void mgr_startReplay_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
 void MGRRaceProcess_onTimeout(int *a0) {
     int v;
@@ -536,7 +536,7 @@ case_2:
     *(int*)((char*)a0 + 0x7D4) = 1;
     return;
 case_13:
-    mgrproc_uso_func_00001AD0(a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
+    mgr_startReplay_00001AD0(a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
 }
 
 /* MGRRaceProcess_onPauseSelect: 32-insn (0x80) check-then-vtable-call helper.
@@ -667,7 +667,7 @@ void MGRRaceProcess_onRaceOver(char *arg0) {
             mgrproc_uso_func_000148(7, 0, 0);
             mgrproc_uso_func_012110(&import_80020098);
             import_000B2888(arg0);
-            mgrproc_uso_func_00001AD0(arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
+            mgr_startReplay_00001AD0(arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
             *(void **)(arg0 + 0x524) = (void *)MgrNameEntry_ctor_00002940(0, arg0, *(int *)(arg0 + 0x7D8));
             import_007FE4E8(*(void **)(arg0 + 0x524), *(int *)(arg0 + 0x528));
             hdr = *(char **)(arg0 + 0x56C);
@@ -765,7 +765,7 @@ extern int mgrproc_uso_func_0002DC();
 extern int mgrproc_uso_func_000188();
 extern int mgrproc_uso_func_000148();
 extern int mgrproc_uso_func_01FA1C();
-extern void mgrproc_uso_func_00001AD0(int *, int);
+extern void mgr_startReplay_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
 extern int mgrproc_uso_func_00F954();
 /* RoData +0x30..+0x5B8 (0x588 bytes, assets/mgrproc_uso_pre.bin +0x74): the staff-credit
@@ -872,7 +872,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
         if (r != 0) {
             import_000B2888(s0);
             mgrproc_uso_func_000148(7, 0, 0);
-            mgrproc_uso_func_00001AD0(s0, *(int *)(&import_80020208 + 368) + 0x26000F);
+            mgr_startReplay_00001AD0(s0, *(int *)(&import_80020208 + 368) + 0x26000F);
             vt = (char *)&import_80020098;
             *(int *)(s0 + 0x4D8) = 3;
             *(int *)(*(char **)(s0 + 0x524) + 0x60) = 1;
@@ -895,7 +895,7 @@ void MGRRaceProcess_updateSub3(int a0) {
 }
 
 extern char import_800201CC;
-void mgrproc_uso_func_00001A64(int *a0) {
+void mgr_switchToView2_00001A64(int *a0) {
   int *ptr;
   ptr = *((int **) (((char *) a0) + 0x51C));
   ptr = (int *) (((char *) ptr) + 0x18);
@@ -912,12 +912,12 @@ void mgrproc_uso_func_00001A64(int *a0) {
   *((int **) ((*((int *) (((char *) (&import_800201CC)) + 0x134))) + 0x108)) = *((int **) (((char *) a0) + 0x520));
 }
 
-/* mgrproc_uso_func_00001AD0: 34-insn (0x88) 5-call orchestrator.
+/* mgr_startReplay_00001AD0: 34-insn (0x88) 5-call orchestrator.
  * Interleaving the int/pointer local declarations (v0, n0, p0, n1, p1) makes
  * IDO assign the n0/n1 spill slots to the same 8-aligned 0x18/0x20 offsets the
  * target uses, matching the 0x28 frame. */
 extern int gl_func_00000000();
-void mgrproc_uso_func_00001AD0(int *a0, int a1) {
+void mgr_startReplay_00001AD0(int *a0, int a1) {
     int *v0;
     int n0;
     int *p0;
@@ -936,7 +936,7 @@ void mgrproc_uso_func_00001AD0(int *a0, int a1) {
     *(int*)((char*)a0 + 0x4F4) = a1 & 0xFFFF;
 }
 
-/* mgrproc_uso_func_00001B58: 0x7C, 31-insn leaf orchestrator. BYTE-EXACT.
+/* mgr_restartForEnding_00001B58: 0x7C, 31-insn leaf orchestrator. BYTE-EXACT.
  *
  * Two regalloc levers landed it (2026-06-20, agent-e):
  *  1. $v1-coloring: naming the throwaway intermediate `c4 = p[0xC4/4]` as its
@@ -953,7 +953,7 @@ extern int mgrproc_uso_func_01B0F8();
 extern int mgrproc_uso_func_01CCD4();
 extern int mgrproc_uso_func_07BA68();
 extern int import_000B7FF0();
-void mgrproc_uso_func_00001B58(int *a0) {
+void mgr_restartForEnding_00001B58(int *a0) {
   int *p;
   int *t6;
   int *c4;
@@ -997,7 +997,7 @@ void mgr_startEnding_00001BE4(int *state) {
     *(int*)((char*)state + 0x7E8) = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC);
     *(int*)((char*)state + 0x7EC) = 0;
     mgrproc_uso_func_012110(base);
-    mgrproc_uso_func_00001A64(state);
+    mgr_switchToView2_00001A64(state);
     mgrproc_1BE4_call_1B58(state, 0xA0000);
     mgrproc_uso_func_000188(0xB, 0, 0);
     mgrproc_uso_func_000148(0xB, *(int*)((char*)&import_800200FC + 0x64) - 5, 0);
@@ -1338,13 +1338,13 @@ extern void import_0024EAA0();
 extern void import_0024F75C();
 extern int mgrproc_uso_func_07C610();
 extern char import_80264A10;
-void mgrproc_uso_func_000023FC(char *arg0) {
+void mgr_drawResults_000023FC(char *arg0) {
     volatile char *r = arg0;
 }
 
-/* mgrproc_uso_func_00002850 - verified structural decode (0xF0,
+/* mgr_drawSpriteStack_00002850 - verified structural decode (0xF0,
  * jr-count 2 = main body + 1 bundled tail leaf).
- *   void mgrproc_uso_func_00002850(St *s0, int *a1, int *a2,
+ *   void mgr_drawSpriteStack_00002850(St *s0, int *a1, int *a2,
  *                                  int a3) {
  *       f32 buf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };  // sp+88
  *       int n = (int)(255.0f * s0->0x7A4);        // trunc.w.s
@@ -1400,7 +1400,7 @@ extern void import_0024E608();
 extern void import_0024F2C8();
 extern void import_0024F34C();
 #ifdef NON_MATCHING
-void mgrproc_uso_func_00002850(char *s0, int *a1, int *a2, int a3) {
+void mgr_drawSpriteStack_00002850(char *s0, int *a1, int *a2, int a3) {
     float buf[4];
     volatile int pad0, pad1, pad2, pad3;
     int n;
@@ -1428,7 +1428,7 @@ void mgrproc_uso_func_00002850(char *s0, int *a1, int *a2, int a3) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00002850);
+INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgr_drawSpriteStack_00002850);
 #endif
 
 void MGRRaceProcess_onEndRaceAlt(int *a0) {
@@ -1594,7 +1594,7 @@ void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
     volatile char *r = arg0;
 }
 
-/* mgrproc_uso_func_00002E3C: historical name, true entry 0x2E34.
+/* MgrNameEntry_drawBlinkBanner_00002E3C: historical name, true entry 0x2E34.
  * a0->0x68++; state = X(a0->0x50); target = a0 + (state == 1 ? 0x120 : 0x138);
  * X(target); X(target, (int)(a0->0x168 * 255.0f), rgba, 255); blink-gated
  * X(target, 160, 124, 3).
@@ -1605,7 +1605,7 @@ void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
  * 1C74 / b1 19C0): field * (scale = 255.0f). */
 extern int mgrproc_uso_func_01F874();
 extern void import_0024E388();
-void mgrproc_uso_func_00002E3C(char *a0) {
+void MgrNameEntry_drawBlinkBanner_00002E3C(char *a0) {
   float rgba[4];
   char *target;
   float scale;
@@ -1788,14 +1788,14 @@ void mgr_DataManager_update(char *arg0) {
     mgrproc_uso_func_04CD94(arg0);
 }
 
-/* mgrproc_uso_func_00003240: state-gated 3-call dispatch. Reads
+/* mgr_DataManager_display: state-gated 3-call dispatch. Reads
  * a0->[0xBC]->[0x4E0] (state field). If state in {0,1,2} OR either of two
  * float globals D[0]/D2[0] is positive, fall through to a single tail-call.
  * Otherwise run two leading cross-USO calls then fall through. The 4th
  * jal at the merge label ends with `jr ra` so all paths converge. */
 extern char D_mgr3240_a;
 extern char D_mgr3240_b;
-void mgrproc_uso_func_00003240(int *a0) {
+void mgr_DataManager_display(int *a0) {
     int v0 = ((int*)a0[0xBC/4])[0x4E0/4];
     if (v0 == 0) goto end;
     if (v0 == 1) goto end;
