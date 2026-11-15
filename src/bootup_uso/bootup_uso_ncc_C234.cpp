@@ -3,10 +3,13 @@
  * counter test is a post-increment compare on the old value (`slti v1,151`), the func_00008A7C sites are per-site symbols (target re-materialises
  * lui/addiu per call, one shared symbol is CSE-spilled to sp+52), the 0x2C mode word reads through a data symbol (lw %lo folded), sp40 declared first.
  * EXACT (agent-g run 236): spliced over the bootup_uso.c placeholder on both build paths via REPLACE_FUNC_BODY; the
- * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / SndHandle_triggerEvent3_00000940 + addend). */
+ * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / SndHandle_triggerEvent3_00000940 + addend).
+ * agent-g run 475: field form over include/game/snowboarder.h (included by relative path; the header's asserts are
+ * C-only). Same bytes: every access keeps its width / type (a mismatched read stays `*(T *)&rider->field`). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
+#include "../../include/game/snowboarder.h"
 inline void zf(float &f, int z) { f = z; }
 #undef NULL
 #define NULL 0
@@ -36,7 +39,7 @@ extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_0000087
 extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
 extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
 extern char D_00000000;
-extern void bu_b75c_mvf(char *, char *, f32, char *);
+extern void bu_b75c_mvf(char *, char *, f32, SnowBoarder *);
 extern int func_00000000(...);
 extern void func_00000008(...);
 extern float func_411c_rf(void);
@@ -63,7 +66,7 @@ extern f32 bu_c234_k944;
 extern f32 bu_c234_k948;
 extern s32 D_000081C0[];
 }
-extern "C" void SnowBoarder_procColl(char *arg0) {
+extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     /* agent-g run 232: frame fit (NCC homes every used local in declaration order, top down): 20 used scalars in the
      * target's gaps (1 / spCC / 3 / spB4 / 9 / sp8C / 1 / sp7C / 2 / sp68 / 2 / sp54 / 2 / sp40) give frame 0xf8 and
      * every struct offset of the target; the block products are function-scope ga..ge, temp_a1 / temp_v0 de-named */
@@ -99,168 +102,168 @@ extern "C" void SnowBoarder_procColl(char *arg0) {
     char *sp3C; /* agent-g run 235: last home = the target's sp+0x3C (kit CCXLVIII) */
 
 
-#define temp_v0 (*(s32 *)((char *)(arg0) + 0xA80))
+#define temp_v0 (rider->msgCooldown)
     if (temp_v0 != 0) {
-        *(s32 *)((char *)(arg0) + 0xA80) = (s32) (temp_v0 - 1);
+        rider->msgCooldown = (s32) (temp_v0 - 1);
     }
-    spB4 = *(V3C234 *)((char *)(arg0) + 0xB4);
-    *(f32 *)((char *)(arg0) + 0x890) = spB4.x;
-    *(f32 *)((char *)(arg0) + 0x894) = spB4.y;
-    *(f32 *)((char *)(arg0) + 0x898) = spB4.z;
-    spB4 = *(V3C234 *)((char *)(arg0) + 0x318);
-    *(f32 *)((char *)(arg0) + 0x89C) = spB4.x;
-    *(f32 *)((char *)(arg0) + 0x8A0) = spB4.y;
-    *(f32 *)((char *)(arg0) + 0x8A4) = spB4.z;
+    spB4 = *(V3C234 *)&rider->pos.x;
+    rider->prevPos.x = spB4.x;
+    rider->prevPos.y = spB4.y;
+    rider->prevPos.z = spB4.z;
+    spB4 = *(V3C234 *)&rider->vel.x;
+    rider->prevVel.x = spB4.x;
+    rider->prevVel.y = spB4.y;
+    rider->prevVel.z = spB4.z;
     spCC.f0 = 0.0f;
     spCC.ec = 0.0f;
     spCC.e4 = 0.0f;
     spCC.e8 = 1.0f;
-    *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4]; /* agent-g run 231: above the 0x9A2 store (as1 line order: the pool load issues before the spCC stores) */
-    *(s16 *)((char *)(arg0) + 0x9A2) = 0; if (arg0) {}
+    rider->groundDist = D_bu_ro_pool[0x920 / 4]; /* agent-g run 231: above the 0x9A2 store (as1 line order: the pool load issues before the spCC stores) */
+    rider->surface = 0; if (rider) {}
     /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
-     * temp area): the folded read of *arg0 stops uopt copy-propagating it; defined in the argument list after
+     * temp area): the folded read of *rider stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
-    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = arg0 + 0xDC + 0 * (int)(*arg0), 0x457A0000, &spCC)) != 0) {
-        *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
+    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = (char *)&rider->lastPos + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
+        rider->groundSurface = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
-            *(s16 *)((char *)(arg0) + 0x9A2) = *(s16 *)((char *)(arg0) + 0x9A0);
+            rider->surface = rider->groundSurface;
         } else {
-            *(s16 *)((char *)(arg0) + 0x9A2) = 0;
+            rider->surface = 0;
         }
-        *(s32 *)((char *)(arg0) + 0x9A8) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
-        *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
+        rider->groundFlags = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
+        rider->groundDist = spCC.d8;
         /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
         /* agent-g run 232: the scaled sum alone on the line, `+ 4.0f` in the test (product first in the add, spCC.f0 loads before it): 98.68 -> 99.10 */
         /* agent-g run 233: the scaled sum in temp_f0 (target mul.s into f0) */
-        temp_f0 = (D_bu_ro_pool[0x128 / 4] * (((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))));
-        if ((spCC.f0 < temp_f0 + 4.0f) ||(*(s32 *)((char *)(arg0) + 0x938) != 0)) {
-            *(s32 *)((char *)(arg0) + 0xA4C) = 1;
+        temp_f0 = (D_bu_ro_pool[0x128 / 4] * (((rider->lastPos.x * spCC.e4) + ((rider->lastPos.y + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (rider->lastPos.z * spCC.ec))));
+        if ((spCC.f0 < temp_f0 + 4.0f) ||(rider->contactCount != 0)) {
+            rider->onGround = 1;
             spB4 = *(V3C234 *)&spCC.e4;
-            *(f32 *)((char *)(arg0) + 0x9D8) = spB4.x;
-            *(f32 *)((char *)(arg0) + 0x9DC) = spB4.y;
-            *(f32 *)((char *)(arg0) + 0x9E0) = spB4.z;
-            *(f32 *)((char *)(arg0) + 0x9E4) = spCC.f0;
+            rider->groundNormal.x = spB4.x;
+            rider->groundNormal.y = spB4.y;
+            rider->groundNormal.z = spB4.z;
+            rider->groundPlaneD = spCC.f0;
             /* agent-g run 233: the compare stored directly -- the 0/1 is a ugen temp (t0), not a uopt-coloured
              * local (v0); this moves the ugen round-robin on by one, as the target's t1/t2 below */
-            *(s32 *)((char *)(arg0) + 0xA50) = (bu_c234_k930 <(f64) *(f32 *)((char *)(arg0) + 0x9DC));
+            rider->groundGentle = (bu_c234_k930 <(f64) rider->groundNormal.y);
         } else {
-            *(s32 *)((char *)(arg0) + 0xA4C) = 0;
-            *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
-            *(s32 *)((char *)(arg0) + 0xA50) = 0;
-            *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
+            rider->onGround = 0;
+            rider->groundNormal.x = (f32) 0;
+            rider->groundNormal.z = (f32) 0;
+            rider->groundPlaneD = (f32) 0;
+            rider->groundGentle = 0;
+            rider->groundNormal.y = 1.0f;
         }
-        if ((*(f32 *)((char *)(arg0) + 0x9D0) < (f32) 0) && (spCC.e8 > (f32) 0)) {
-            *(f32 *)((char *)(arg0) + 0x31C) = 10.0f;
+        if ((rider->groundDist < (f32) 0) && (spCC.e8 > (f32) 0)) {
+            rider->vel.y = 10.0f;
         }
-        if ((*(s32 *)((char *)(arg0) + 0x938) != 0) && (*(f32 *)((char *)(arg0) + 0x348) > 10.0f)) {
-#define temp_v1 (*(s16 *)((char *)(arg0) + 0x9A0)) /* run 184: de-named (lever-sweep) */
+        if ((rider->contactCount != 0) && (rider->speed > 10.0f)) {
+#define temp_v1 (rider->groundSurface) /* run 184: de-named (lever-sweep) */
             var_v0 = 0;
             if (temp_v1 == 0x64) {
-                *(s32 *)((char *)(arg0) + 0xA5C) = 0x64;
+                rider->shake = 0x64;
                 var_v0 = 2;
             } else if (temp_v1 == 0x63) {
-                *(s32 *)((char *)(arg0) + 0xA5C) = 0x46;
+                rider->shake = 0x46;
                 var_v0 = 1;
             }
             if (var_v0 != 0) {
-                temp_f2 = *(f32 *)((char *)(arg0) + 0x970);
+                temp_f2 = rider->edge;
                 if (temp_f2 < 0.0f) {
                     temp_f0 = -temp_f2;
                 } else {
                     temp_f0 = temp_f2;
                 }
                 var_v0 = (s32) ((f32) var_v0 + (temp_f0 * 3.0f)); /* agent-g run 233: index in var_v0 (target mfc1 v0, coloured, not a ugen temp) */
-                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[var_v0], 2);
+                func_00000000(rider->input, D_000081C0[var_v0], 2);
             }
         }
         /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,
          * 0x61, 0x62 (flat goto ladder); the 0x940/0x944/0x948 pool reads are
          * per-address scalars (D_bu_ro_pool[] here CSEs the base, -0.1). */
-        temp_v0_2 = *(s16 *)((char *)(arg0) + 0x9A0);
+        temp_v0_2 = rider->groundSurface;
         if (temp_v0_2 == 0x61) goto c61;
         if (temp_v0_2 == 0x62) goto c62;
-        *(f32 *)((char *)(arg0) + 0x288) = (f32) D_00000938;
-        *(f32 *)((char *)(arg0) + 0x28C) = (f32) D_0000093C;
-        *(f32 *)((char *)(arg0) + 0x290) = bu_c234_k940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
-        *(u8 *)((char *)(arg0) + 0xA33) = 0;
-        *(u8 *)((char *)(arg0) + 0xA32) = 0;
-        *(u8 *)((char *)(arg0) + 0xA31) = 0;
-        *(u8 *)((char *)(arg0) + 0xA30) = 0;
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x5A0);
+        rider->surfImp = (f32) D_00000938;
+        rider->surfSpd = (f32) D_0000093C;
+        rider->surfVsc = bu_c234_k940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
+        rider->groundColor[3] = 0;
+        rider->groundColor[2] = 0;
+        rider->groundColor[1] = 0;
+        rider->groundColor[0] = 0;
+        rider->impactScale = (f32) rider->parms.icf.value;
         goto cend;
 c61:
-        *(f32 *)((char *)(arg0) + 0x288) = (f32) *(f32 *)((char *)(arg0) + 0x120);
-        *(f32 *)((char *)(arg0) + 0x28C) = (f32) *(f32 *)((char *)(arg0) + 0x138);
-        *(f32 *)((char *)(arg0) + 0x290) = (f32) *(f32 *)((char *)(arg0) + 0x1B0);
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x570);
-        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
+        rider->surfImp = (f32) rider->dparms.imp.value;
+        rider->surfSpd = (f32) rider->dparms.spd.value;
+        rider->surfVsc = (f32) rider->dparms.vsc.value;
+        rider->impactScale = (f32) rider->parms.snf.value;
+        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
         goto cend;
 c62:
-        *(f32 *)((char *)(arg0) + 0x288) = 0.0f;
-        *(f32 *)((char *)(arg0) + 0x28C) = bu_c234_k944;
-        *(f32 *)((char *)(arg0) + 0x290) = bu_c234_k948;
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
-        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
+        rider->surfImp = 0.0f;
+        rider->surfSpd = bu_c234_k944;
+        rider->surfVsc = bu_c234_k948;
+        rider->impactScale = (f32) rider->parms.dsf.value;
+        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
 cend:
-        *(s32 *)((char *)(arg0) + 0x95C) = 0;
+        rider->noGroundFrames = 0;
     } else {
-        *(s32 *)((char *)(arg0) + 0xA4C) = 0;
-        *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
+        rider->onGround = 0;
+        rider->groundNormal.x = (f32) 0;
+        rider->groundNormal.z = (f32) 0;
+        rider->groundPlaneD = (f32) 0;
+        rider->groundNormal.y = 1.0f;
         /* agent-g run 235: the call result held in var_v0 with a folded use at the compare: its v0 LR now overlaps
          * the post-increment's old value, which colours v1 like the target (99.85 -> 99.87) */
-        if ((*(s32 *)((char *)(arg0) + 0x95C))++ + 0 * var_v0 >= 0x97) {
+        if ((rider->noGroundFrames)++ + 0 * var_v0 >= 0x97) {
             sp8C.v = *(s32 *)((char *)&func_00008A40 + 0x38);
             temp_v0_3 = (char *)(bu_c234_sv(*(s32 *)((char *)&D_00000000 + 0), sp8C, sp3C, 0));
             if (temp_v0_3 != 0) {
                 sp7C = *(V3C234 *)((char *)(temp_v0_3) + 0x30);
                 sp7C.y += 200.0f;
-                func_00000000(arg0, &sp7C);
-                *(s32 *)((char *)(arg0) + 0x95C) = 0;
+                func_00000000(rider, &sp7C);
+                rider->noGroundFrames = 0;
                 func_00000000(bu_c234_k0 + 0);
                 bu_c234_v5(bu_c234_k1 + 0x18, bu_c234_k2 + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
             }
         }
     }
-    *(f32 *)((char *)(arg0) + 0x968) = 0.0f;
-    *(s32 *)((char *)(arg0) + 0x938) = 0;
-    zf(*(f32 *)((char *)(arg0) + 0x93C), 0); /* run 196: int-zero inline (kit CLVIII): the target's own f0 zero */
-    zf(*(f32 *)((char *)(arg0) + 0x940), 0);
-    zf(*(f32 *)((char *)(arg0) + 0x944), 0);
+    rider->contactDepth = 0.0f;
+    rider->contactCount = 0;
+    zf(rider->contactNormal.x, 0); /* run 196: int-zero inline (kit CLVIII): the target's own f0 zero */
+    zf(rider->contactNormal.y, 0);
+    zf(rider->contactNormal.z, 0);
     func_00000000(bu_c234_k3 + 0x28);
-    func_00000000(arg0);
+    func_00000000(rider);
     func_00000000(bu_c234_k4 + 0x34);
-    if (*(s32 *)((char *)(arg0) + 0x9A8) & 0x400) {
-        func_00000000(arg0 + 0x808, 1);
+    if (rider->groundFlags & 0x400) {
+        func_00000000((char *)&rider->sound, 1);
         var_f2 = D_bu_ro_pool[0x94C / 4];
     } else {
-        func_00000000(arg0 + 0x808, 0);
+        func_00000000((char *)&rider->sound, 0);
         var_f2 = 1.0f;
     }
     if (*(s32 *)(bu_c234_g8 + 0x2C) != 2) {
-        temp_f0 = *(f32 *)((char *)(arg0) + 0x91C);
-        *(f32 *)((char *)(arg0) + 0x91C) = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
-        func_00000000(*(s32 *)((char *)(arg0) + 0x850), *(s32 *)((char *)(arg0) + 0x91C));
+        temp_f0 = rider->unk91C;
+        rider->unk91C = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
+        func_00000000(rider->light, *(s32 *)&rider->unk91C);
     }
-    temp_v0_4 = *(s32 *)((char *)(arg0) + 0x938);
+    temp_v0_4 = rider->contactCount;
     if (temp_v0_4 != 0) {
         /* agent-g run 236: the divisor is a named variable kept by a folded memory read (kit CCXLVIII), so uopt
          * colours it (f2) instead of leaving the cvt to ugen (f0) */
-        temp_f2_3 = (f32) (temp_v0_4 + 0 * (int)(*arg0));
+        temp_f2_3 = (f32) (temp_v0_4 + 0 * (int)(*(char *)rider));
 #define temp_f2_2 temp_f2_3
-        var_v0_2 = arg0 + 0x93C;
-        *(f32 *)((char *)(arg0) + 0x93C) = (f32) (*(f32 *)((char *)(arg0) + 0x93C) / temp_f2_2);
-        *(f32 *)((char *)(arg0) + 0x940) = (f32) (*(f32 *)((char *)(arg0) + 0x940) / temp_f2_2);
-        *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2); /* run 200: 0x944 before 0x968 (target load order; div block word-for-word) */
-        *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2); /* agent-g run 236: no BB split here: temp_f12 shares the divisor's block, so it cannot take f2 (f12), ga gets f2 */
-        temp_f12 = *(f32 *)((char *)(arg0) + 0x968);
+        var_v0_2 = (char *)&rider->contactNormal;
+        rider->contactNormal.x = (f32) (rider->contactNormal.x / temp_f2_2);
+        rider->contactNormal.y = (f32) (rider->contactNormal.y / temp_f2_2);
+        rider->contactNormal.z = (f32) (rider->contactNormal.z / temp_f2_2); /* run 200: 0x944 before 0x968 (target load order; div block word-for-word) */
+        rider->contactDepth = (f32) (rider->contactDepth / temp_f2_2); /* agent-g run 236: no BB split here: temp_f12 shares the divisor's block, so it cannot take f2 (f12), ga gets f2 */
+        temp_f12 = rider->contactDepth;
         if (temp_f12 < (f32) 0) {
-            var_v0_2 = arg0 + 0x93C; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
+            var_v0_2 = (char *)&rider->contactNormal; if (1) {} /* run 182 (lever-sweep bbsplit, +1 word toward the target) */
             { /* run 156: held products, stored afterwards (kit LXXXVI) */
                 /* agent-g run 232: the target's mov.s copy (z scaled by a copy in f0, y's product back into f12):
                  * the copy is taken before temp_f12 is overwritten by the y product, so uopt cannot propagate it */
@@ -272,19 +275,19 @@ cend:
             }
             spB4 = sp68;
             sp54 = spB4;
-            *(f32 *)((char *)(arg0) + 0x920) = sp54.x;
-            *(f32 *)((char *)(arg0) + 0x924) = sp54.y;
-            *(f32 *)((char *)(arg0) + 0x928) = sp54.z;
+            rider->penetration.x = sp54.x;
+            rider->penetration.y = sp54.y;
+            rider->penetration.z = sp54.z;
         } else {
-            *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x928) = (f32) 0;
+            rider->penetration.x = (f32) 0;
+            rider->penetration.y = (f32) 0;
+            rider->penetration.z = (f32) 0;
         }
         spB4 = *(V3C234 *)((char *)(var_v0_2) + 0x0);
-        *(f32 *)((char *)(arg0) + 0x948) = spB4.x;
-        *(f32 *)((char *)(arg0) + 0x94C) = spB4.y;
-        *(f32 *)((char *)(arg0) + 0x950) = spB4.z;
-        var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x340) * *(f32 *)((char *)(arg0) + 0x940)) + (*(f32 *)((char *)(arg0) + 0x344) * *(f32 *)((char *)(arg0) + 0x944));
+        rider->lastContactNormal.x = spB4.x;
+        rider->lastContactNormal.y = spB4.y;
+        rider->lastContactNormal.z = spB4.z;
+        var_f2_2 = (rider->lastVel.x * rider->contactNormal.x) + (rider->lastVel.y * rider->contactNormal.y) + (rider->lastVel.z * rider->contactNormal.z);
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
@@ -297,28 +300,28 @@ cend:
         }
         spB4 = sp40;
         sp54 = spB4;
-        *(f32 *)((char *)(arg0) + 0x92C) = sp54.x;
-        *(f32 *)((char *)(arg0) + 0x930) = sp54.y;
-        *(f32 *)((char *)(arg0) + 0x934) = sp54.z;
-        *(s32 *)((char *)(arg0) + 0x9D4) = 0; /* run 200: after the 0x934 store (statement-order grid) */
+        rider->impactVel.x = sp54.x;
+        rider->impactVel.y = sp54.y;
+        rider->impactVel.z = sp54.z;
+        rider->airFrames = 0; /* run 200: after the 0x934 store (statement-order grid) */
     } else {
-        *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
-        *(s32 *)((char *)(arg0) + 0x9D4) = (s32) (*(s32 *)((char *)(arg0) + 0x9D4) + 1);
-        *(f32 *)((char *)(arg0) + 0x928) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x92C) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x930) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x934) = (f32) 0;
+        rider->penetration.x = (f32) 0;
+        rider->penetration.y = (f32) 0;
+        rider->airFrames = (s32) (rider->airFrames + 1);
+        rider->penetration.z = (f32) 0;
+        rider->impactVel.x = (f32) 0;
+        rider->impactVel.y = (f32) 0;
+        rider->impactVel.z = (f32) 0;
     }
-    temp_f2_3 = *(f32 *)((char *)(arg0) + 0x92C);
-    temp_f12_2 = *(f32 *)((char *)(arg0) + 0x930);
-    temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
+    temp_f2_3 = rider->impactVel.x;
+    temp_f12_2 = rider->impactVel.y;
+    temp_f16 = rider->impactScale;
     /* agent-g run 232: each dot product in temp_f0 (the target's sums are all in f0, which pushes 0x910 out of f0), then `sum * scale` */
     /* agent-g run 234: 0x934 assigned inside its first use (target loads 0x3C4 before 0x934) */
-    temp_f0 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * (temp_f14 = *(f32 *)((char *)(arg0) + 0x934)));
-    *(f32 *)((char *)(arg0) + 0xA1C) = *(f32 *)((char *)(arg0) + 0xA1C) + (temp_f0 * temp_f16);
-    temp_f0 = (*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14);
-    *(f32 *)((char *)(arg0) + 0xA20) = *(f32 *)((char *)(arg0) + 0xA20) + (temp_f0 * temp_f16);
-    temp_f0 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14);
-    *(f32 *)((char *)(arg0) + 0xA24) = *(f32 *)((char *)(arg0) + 0xA24) - temp_f0;
+    temp_f0 = (rider->side.x * temp_f2_3) + (rider->side.y * temp_f12_2) + (rider->side.z * (temp_f14 = rider->impactVel.z));
+    rider->bumpSide = rider->bumpSide + (temp_f0 * temp_f16);
+    temp_f0 = (rider->up.x * temp_f2_3) + (rider->up.y * temp_f12_2) + (rider->up.z * temp_f14);
+    rider->bumpUp = rider->bumpUp + (temp_f0 * temp_f16);
+    temp_f0 = (rider->dir.x * temp_f2_3) + (rider->dir.y * temp_f12_2) + (rider->dir.z * temp_f14);
+    rider->bumpFwd = rider->bumpFwd - temp_f0;
 }

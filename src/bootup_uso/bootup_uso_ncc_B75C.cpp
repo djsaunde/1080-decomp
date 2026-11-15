@@ -19,18 +19,23 @@
  * it takes the first slot (coloured v0: the never-stored word) and the 0x3C4 spill drops one slot; holding the
  * dot3 value in var_f0 drops its home, moving the whole temp block up one word (target float 0x1C, unused 0x20,
  * a0 0x24, a1 0x28). Spliced over the bootup_uso.c placeholder on both build paths; the literal pool is the donor
- * .rodata (SnowBoarder_updateOrient_rodata pin = 0x8C8, same layout as the USO's 0x8C8..0x914 pool). */
+ * .rodata (SnowBoarder_updateOrient_rodata pin = 0x8C8, same layout as the USO's 0x8C8..0x914 pool).
+ * agent-g run 475: field form over include/game/snowboarder.h (included by relative path; the header's asserts are
+ * C-only). Same bytes: every access keeps its width / type (a mismatched read stays `*(T *)&rider->field`). */
 typedef float f32; typedef double f64; typedef int s32; typedef short s16;
+typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
+#include "../../include/game/snowboarder.h"
 extern "C" {
-void bu_b75c_mvf(char *, char *, f32, char *);
+/* math_quatRotateAxisAngle(quat, axis, angle, owner): turn quat about axis (per-site alias of the game_libs helper) */
+void bu_b75c_mvf(char *, char *, f32, SnowBoarder *);
 extern char D_00008170[];
 void func_00000000(...);
 #define temp_f12_2 (-0.2f)
 #define temp_f12_3 (0.2f)
-void SnowBoarder_updateOrient(char *arg0);
+void SnowBoarder_updateOrient(SnowBoarder *rider);
 }
-static inline f32 dot3(char *p, f32 *v) { return (*(f32 *)(p + 0x3BC) * v[0]) + (*(f32 *)(p + 0x3C0) * v[1]) + (*(f32 *)(p + 0x3C4) * v[2]); }
-void SnowBoarder_updateOrient(char *arg0) {
+static inline f32 dot3(SnowBoarder *p, f32 *v) { return (p->side.x * v[0]) + (p->side.y * v[1]) + (p->side.z * v[2]); }
+void SnowBoarder_updateOrient(SnowBoarder *rider) {
     f32 sp6C[3];
     f32 temp_f12;
     s32 var_v0;
@@ -52,38 +57,38 @@ void SnowBoarder_updateOrient(char *arg0) {
     sp6C[2] = var_v0;
     if (1) {}
     sp6C[1] = 1.0f;
-    temp_f0 = (f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800));
+    temp_f0 = (f64) rider->input->stickX;
     var_f12 = (f32) (temp_f0 * 0.15);
     sp60 = (f32) (temp_f0 * -0.04);
-    if (*(s32 *)((char *)(arg0) + 0x960) == 0x64) {
+    if (rider->slowdown == 0x64) {
         var_f12 = 0.0f;
         sp60 = 0.0f;
     }
-    var_f0 = *(f32 *)((char *)(arg0) + 0x974);
-    var_f2 = *(f32 *)((char *)(arg0) + 0xA00);
-    *(f32 *)((char *)(arg0) + 0x974) = (f32) (var_f0 - (var_f0 * *(f32 *)((char *)(arg0) + 0x720) * var_f2));
-    *(f32 *)((char *)(arg0) + 0x974) = (f32) (*(volatile f32 *)((char *)(arg0) + 0x974) + (var_f12 * var_f2));
-    if (*(s32 *)((char *)(arg0) + 0x990) != 0) {
+    var_f0 = rider->edgeSteer;
+    var_f2 = rider->turnRate;
+    rider->edgeSteer = (f32) (var_f0 - (var_f0 * rider->parms.trt.value * var_f2));
+    rider->edgeSteer = (f32) (*(volatile f32 *)&rider->edgeSteer + (var_f12 * var_f2));
+    if (rider->crouch != 0) {
         sp5C = 0;
     } else {
-        sp5C = -((*(f32 *)((char *)(arg0) + 0x3BC) * sp6C[0]) + (*(f32 *)((char *)(arg0) + 0x3C0) * sp6C[1]) + (*(f32 *)((char *)(arg0) + 0x3C4) * sp6C[2]));
+        sp5C = -((rider->side.x * sp6C[0]) + (rider->side.y * sp6C[1]) + (rider->side.z * sp6C[2]));
     }
-    var_f0 = *(f32 *)((char *)(arg0) + 0x978);
-    temp_f2_2 = *(f32 *)((char *)(arg0) + 0x30C);
-    temp_f12 = *(f32 *)((char *)(arg0) + 0x310);
-#define temp_f14 (*(f32 *)((char *)(arg0) + 0x314))
-    *(f32 *)((char *)(arg0) + 0x978) = (f32) (var_f0 + (f64) ((f64) (sp5C - var_f0) * 0.4));
-    sp58 = (*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14);
-    sp54 = (*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_2) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14);
-    if (*(s32 *)((char *)(arg0) + 0x990) != 0) {
+    var_f0 = rider->edgeSlope;
+    temp_f2_2 = rider->velDir.x;
+    temp_f12 = rider->velDir.y;
+#define temp_f14 (rider->velDir.z)
+    rider->edgeSlope = (f32) (var_f0 + (f64) ((f64) (sp5C - var_f0) * 0.4));
+    sp58 = (rider->dir.x * temp_f2_2) + (rider->dir.y * temp_f12) + (rider->dir.z * temp_f14);
+    sp54 = (rider->side.x * temp_f2_2) + (rider->side.y * temp_f12) + (rider->side.z * temp_f14);
+    if (rider->crouch != 0) {
         sp60 = (f32) ((f64) sp60 * 0.5);
     }
     var_f12 = -1.0f;
-    *(f32 *)((char *)(arg0) + 0x970) = (f32) (*(f32 *)((char *)(arg0) + 0x974) + *(f32 *)((char *)(arg0) + 0x978));
-    if (*(s32 *)((char *)(arg0) + 0xA58) & 0x80) {
-        *(f32 *)((char *)(arg0) + 0x970) = (f32) -*(f32 *)((char *)(arg0) + 0x970);
+    rider->edge = (f32) (rider->edgeSteer + rider->edgeSlope);
+    if (rider->flags & SNOWB_FLAG_MIRROR) {
+        rider->edge = (f32) -rider->edge;
     }
-    var_f0 = *(f32 *)((char *)(arg0) + 0x970);
+    var_f0 = rider->edge;
     if (var_f0 < -1.0f) {
         var_f2 = -1.0f;
     } else if (var_f0 > 1.0f) {
@@ -91,30 +96,30 @@ void SnowBoarder_updateOrient(char *arg0) {
     } else {
         var_f2 = var_f0;
     }
-    *(f32 *)((char *)(arg0) + 0x970) = var_f2;
-    if ((*(s32 *)((char *)(arg0) + 0x9A8) & 1) || (*(s32 *)((char *)(arg0) + 0xA50) == 0)) {
-        *(f32 *)((char *)(arg0) + 0xA04) = (f32) *(f32 *)((char *)(arg0) + 0x3CC);
-        *(f32 *)((char *)(arg0) + 0xA08) = (f32) -*(f32 *)((char *)(arg0) + 0x3C0);
-        *(f32 *)((char *)(arg0) + 0xA0C) = (f32) *(f32 *)((char *)(arg0) + 0x3B4);
+    rider->edge = var_f2;
+    if ((rider->groundFlags & 1) || (rider->groundGentle == 0)) {
+        rider->localUp.x = (f32) rider->dir.y;
+        rider->localUp.y = (f32) -rider->side.y;
+        rider->localUp.z = (f32) rider->up.y;
     } else {
-        var_f0 = *(f32 *)((char *)(arg0) + 0x9D8);
-        var_f12 = *(f32 *)((char *)(arg0) + 0x9E0);
-        *(f32 *)((char *)(arg0) + 0xA04) = (f32) ((*(f32 *)((char *)(arg0) + 0x3C8) * var_f0) + (*(f32 *)((char *)(arg0) + 0x3CC) * *(f32 *)((char *)(arg0) + 0x9DC)) + (*(f32 *)((char *)(arg0) + 0x3D0) * var_f12));
-        *(f32 *)((char *)(arg0) + 0xA08) = (f32) -((*(f32 *)((char *)(arg0) + 0x3BC) * var_f0) + (*(f32 *)((char *)(arg0) + 0x3C0) * *(f32 *)((char *)(arg0) + 0x9DC)) + (*(f32 *)((char *)(arg0) + 0x3C4) * var_f12));
-        *(f32 *)((char *)(arg0) + 0xA0C) = (f32) ((*(f32 *)((char *)(arg0) + 0x3B0) * var_f0) + (*(f32 *)((char *)(arg0) + 0x3B4) * *(f32 *)((char *)(arg0) + 0x9DC)) + (*(f32 *)((char *)(arg0) + 0x3B8) * var_f12));
+        var_f0 = rider->groundNormal.x;
+        var_f12 = rider->groundNormal.z;
+        rider->localUp.x = (f32) ((rider->dir.x * var_f0) + (rider->dir.y * rider->groundNormal.y) + (rider->dir.z * var_f12));
+        rider->localUp.y = (f32) -((rider->side.x * var_f0) + (rider->side.y * rider->groundNormal.y) + (rider->side.z * var_f12));
+        rider->localUp.z = (f32) ((rider->up.x * var_f0) + (rider->up.y * rider->groundNormal.y) + (rider->up.z * var_f12));
     }
-    if (*(s32 *)((char *)(arg0) + 0x938) == 0) {
-        *(s32 *)((char *)(arg0) + 0xA5C) = 0;
-        *(f32 *)((char *)(arg0) + 0x2FC) = 0;
-        *(f32 *)((char *)(arg0) + 0x300) = 0;
-        *(f32 *)((char *)(arg0) + 0x304) = 0;
-        *(f32 *)((char *)(arg0) + 0x308) = 1.0f;
-        var_a0 = *(char **)((char *)(arg0) + 0x800);
-        if ((*(s32 *)(var_a0 + 0x10) & 0x200) && (*(s32 *)((char *)(arg0) + 0x9A8) & 1)) {
-            temp_v0_2 = *(s16 *)((char *)(arg0) + 0xA6C);
-            *(s16 *)((char *)(arg0) + 0xA6C) = (s16) (temp_v0_2 + 1);
+    if (rider->contactCount == 0) {
+        rider->shake = 0;
+        rider->angVel.x = 0;
+        rider->angVel.y = 0;
+        rider->angVel.z = 0;
+        rider->angVel.w = 1.0f;
+        var_a0 = (char *)rider->input;
+        if ((((RiderInput *)var_a0)->held & 0x200) && (rider->groundFlags & 1)) {
+            temp_v0_2 = rider->spinHold;
+            rider->spinHold = (s16) (temp_v0_2 + 1);
             if (temp_v0_2 >= 0xB) {
-                var_f0 = (f32) ((f64) *(f32 *)((char *)(arg0) + 0xA70) + ((f64) *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * 0.015));
+                var_f0 = (f32) ((f64) rider->airSpin + ((f64) rider->input->stickX * 0.015));
                 if (var_f0 < temp_f12_2) {
                     var_f2 = temp_f12_2;
                 } else {
@@ -124,93 +129,93 @@ void SnowBoarder_updateOrient(char *arg0) {
                         var_f2 = var_f0;
                     }
                 }
-                *(f32 *)((char *)(arg0) + 0xA70) = var_f2;
+                rider->airSpin = var_f2;
             }
         } else {
-            *(s16 *)((char *)(arg0) + 0xA6C) = 0;
-            if (*(s32 *)((char *)(arg0) + 0x9A8) & 1) {
-                temp_a1 = arg0 + 0x3B0;
-                bu_b75c_mvf(arg0 + 0xCC, temp_a1, -*(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x678), arg0);
+            rider->spinHold = 0;
+            if (rider->groundFlags & 1) {
+                temp_a1 = (char *)&rider->up;
+                bu_b75c_mvf((char *)&rider->orient, temp_a1, -rider->input->stickX * rider->parms.ayr.value, rider);
             } else {
-                var_a0 = arg0 + 0xCC;
-                temp_a1 = arg0 + 0x3C8;
-                var_f0 = dot3(arg0, sp6C);
-                bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) var_f0 * -0.1), arg0);
-                if (*(s32 *)((char *)(arg0) + 0xA18) != 0) {
-                    bu_b75c_mvf(var_a0, temp_a1, *(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x690), arg0);
-                    bu_b75c_mvf(var_a0, arg0 + 0x3BC, *(f32 *)((char *)(*(s32 *)((char *)(arg0) + 0x800)) + 0x4) * *(f32 *)((char *)(arg0) + 0x660), arg0);
-                    bu_b75c_mvf(var_a0, arg0 + 0x3B0, -*(f32 *)(*(s32 *)((char *)(arg0) + 0x800)) * *(f32 *)((char *)(arg0) + 0x678), arg0);
+                var_a0 = (char *)&rider->orient;
+                temp_a1 = (char *)&rider->dir;
+                var_f0 = dot3(rider, sp6C);
+                bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) var_f0 * -0.1), rider);
+                if (rider->unkA18 != 0) {
+                    bu_b75c_mvf(var_a0, temp_a1, rider->input->stickX * rider->parms.azr.value, rider);
+                    bu_b75c_mvf(var_a0, (char *)&rider->side, rider->input->stickY * rider->parms.axr.value, rider);
+                    bu_b75c_mvf(var_a0, (char *)&rider->up, -rider->input->stickX * rider->parms.ayr.value, rider);
                 }
             }
         }
-        var_v0 = *(s32 *)((char *)(arg0) + 0x9A8) & 1;
+        var_v0 = rider->groundFlags & 1;
         if (var_v0 != 0) {
-            if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < 0.8) {
-                *(f32 *)((char *)(arg0) + 0x318) = 0;
+            if ((f64) rider->up.y < 0.8) {
+                rider->vel.x = 0;
             }
-            bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3B0, -*(f32 *)((char *)(arg0) + 0xA70), arg0);
-            var_v0 = *(s32 *)((char *)(arg0) + 0x9A8) & 1;
+            bu_b75c_mvf((char *)&rider->orient, (char *)&rider->up, -rider->airSpin, rider);
+            var_v0 = rider->groundFlags & 1;
         }
     } else {
-        *(s16 *)((char *)(arg0) + 0xA6C) = 0;
-        *(f32 *)((char *)(arg0) + 0xA74) = 0;
-        *(f32 *)((char *)(arg0) + 0xA70) = 0;
-        if (*(f32 *)((char *)(arg0) + 0x970) < 0.0f) {
-            var_f0 = -*(f32 *)((char *)(arg0) + 0x970);
+        rider->spinHold = 0;
+        rider->unkA74 = 0;
+        rider->airSpin = 0;
+        if (rider->edge < 0.0f) {
+            var_f0 = -rider->edge;
         } else {
-            var_f0 = *(f32 *)((char *)(arg0) + 0x970);
+            var_f0 = rider->edge;
         }
-        *(s32 *)((char *)(arg0) + 0xA5C) = (s32) (20.0f + (30.0f * var_f0));
-        if (*(s32 *)((char *)(arg0) + 0x9A8) & 1) {
-            func_00000000(arg0 + 0x808, *(s32 *)((char *)(arg0) + 0xB4));
-            if (*(s32 *)((char *)(arg0) + 0x960) == 0) {
-                if (*(f32 *)((char *)(arg0) + 0x3C8) < 0.0f) {
-                    var_f0 = -*(f32 *)((char *)(arg0) + 0x3C8);
+        rider->shake = (s32) (20.0f + (30.0f * var_f0));
+        if (rider->groundFlags & 1) {
+            func_00000000((char *)&rider->sound, *(s32 *)&rider->pos.x);
+            if (rider->slowdown == 0) {
+                if (rider->dir.x < 0.0f) {
+                    var_f0 = -rider->dir.x;
                 } else {
-                    var_f0 = *(f32 *)((char *)(arg0) + 0x3C8);
+                    var_f0 = rider->dir.x;
                 }
-                *(f32 *)((char *)(arg0) + 0x318) += *(f32 *)((char *)(arg0) + 0x318) * *(f32 *)((char *)(arg0) + 0x558) * var_f0;
+                rider->vel.x += rider->vel.x * rider->parms.hpf.value * var_f0;
             }
-            if ((f64) *(f32 *)((char *)(arg0) + 0x3B4) < 0.8) {
+            if ((f64) rider->up.y < 0.8) {
                 sp60 *= 2.0f;
             }
-            var_a0 = arg0 + 0xCC;
+            var_a0 = (char *)&rider->orient;
         } else {
-            if ((sp58 < *(f32 *)((char *)(arg0) + 0x648)) && (((sp54 > 0.0f) && (sp60 < 0.0f)) || ((sp54 < 0.0f) && (sp60 > 0.0f)))) {
-                *(s32 *)((char *)(arg0) + 0xA5C) = (s32) (*(s32 *)((char *)(arg0) + 0xA5C) + 0x14);
-                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_00008170, 1, arg0);
+            if ((sp58 < rider->parms.mdr.value) && (((sp54 > 0.0f) && (sp60 < 0.0f)) || ((sp54 < 0.0f) && (sp60 > 0.0f)))) {
+                rider->shake = (s32) (rider->shake + 0x14);
+                func_00000000(rider->input, D_00008170, 1, rider);
                 sp60 = 0.0f;
             }
-            if (*(f32 *)((char *)(arg0) + 0xA08) < 0.0f) {
-                var_f0 = -*(f32 *)((char *)(arg0) + 0xA08);
+            if (rider->localUp.y < 0.0f) {
+                var_f0 = -rider->localUp.y;
             } else {
-                var_f0 = *(f32 *)((char *)(arg0) + 0xA08);
+                var_f0 = rider->localUp.y;
             }
-            if (*(f32 *)((char *)(arg0) + 0x618) < var_f0) {
-                bu_b75c_mvf(arg0 + 0xCC, arg0 + 0x3C8, *(f32 *)((char *)(arg0) + 0xA08) * *(f32 *)((char *)(arg0) + 0x600), arg0);
+            if (rider->parms.mro.value < var_f0) {
+                bu_b75c_mvf((char *)&rider->orient, (char *)&rider->dir, rider->localUp.y * rider->parms.ure.value, rider);
             }
-            var_a0 = arg0 + 0xCC;
-            if (*(f32 *)((char *)(arg0) + 0xA04) < 0.0f) {
-                var_f0 = -*(f32 *)((char *)(arg0) + 0xA04);
+            var_a0 = (char *)&rider->orient;
+            if (rider->localUp.x < 0.0f) {
+                var_f0 = -rider->localUp.x;
             } else {
-                var_f0 = *(f32 *)((char *)(arg0) + 0xA04);
+                var_f0 = rider->localUp.x;
             }
-            if (*(f32 *)((char *)(arg0) + 0x630) < var_f0) {
-                bu_b75c_mvf(var_a0, arg0 + 0x3BC, *(f32 *)((char *)(arg0) + 0xA04) * *(f32 *)((char *)(arg0) + 0x600), arg0);
+            if (rider->parms.mpi.value < var_f0) {
+                bu_b75c_mvf(var_a0, (char *)&rider->side, rider->localUp.x * rider->parms.ure.value, rider);
             }
         }
-        bu_b75c_mvf(var_a0, arg0 + 0x3B0, sp60, arg0);
-        var_v0 = *(s32 *)((char *)(arg0) + 0x9A8) & 1;
+        bu_b75c_mvf(var_a0, (char *)&rider->up, sp60, rider);
+        var_v0 = rider->groundFlags & 1;
     }
     if (var_v0 != 0) {
         var_f0 = 0.724f;
     } else {
-        var_f0 = *(f32 *)((char *)(arg0) + 0x7F8);
+        var_f0 = rider->parms.tch.value;
     }
-    var_f2 = *(f32 *)((char *)(arg0) + 0x308);
-    *(f32 *)((char *)(arg0) + 0x2FC) = (f32) (*(f32 *)((char *)(arg0) + 0x2FC) * var_f0);
-    *(f32 *)((char *)(arg0) + 0x300) = (f32) (*(f32 *)((char *)(arg0) + 0x300) * var_f0);
-    *(f32 *)((char *)(arg0) + 0x304) = (f32) (*(f32 *)((char *)(arg0) + 0x304) * var_f0);
-    *(f32 *)((char *)(arg0) + 0x308) = (f32) ((f64) var_f2 + ((f64) (1.0f - var_f2) * (1.0 - (f64) var_f0)));
+    var_f2 = rider->angVel.w;
+    rider->angVel.x = (f32) (rider->angVel.x * var_f0);
+    rider->angVel.y = (f32) (rider->angVel.y * var_f0);
+    rider->angVel.z = (f32) (rider->angVel.z * var_f0);
+    rider->angVel.w = (f32) ((f64) var_f2 + ((f64) (1.0f - var_f2) * (1.0 - (f64) var_f0)));
 }
 #undef temp_f14

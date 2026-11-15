@@ -124,6 +124,16 @@ typedef struct SnowBChild {
 struct SnowAI;
 struct RiderAnim;
 
+/* The input object a rider reads (SnowBoarder +0x800): a pad, a replay player or the SnowAI writes it, so the
+ * physics never knows who steers (the same object family as InputMgr.pads[], include/game/input.h: held at 0x10).
+ * stickX / stickY are -1..1 (updateOrient: steer = stickX * 0.15; updateDyn: crouch = stickY < -0.75). */
+typedef struct RiderInput {
+    f32 stickX;             /* 0x00 */
+    f32 stickY;             /* 0x04 */
+    char pad08[0x10 - 0x08];
+    s32 held;               /* 0x10: held buttons: 4 / 8 nudge (limitSpeed), 0x200 air spin, 0x400 alternate parms */
+} RiderInput;
+
 typedef struct SnowBoarder {
     /* 0x000..0x3D4: the game_libs DNode base (DNode_ctor, DNode_update) */
     char pad000[0x0B4];
@@ -167,7 +177,7 @@ typedef struct SnowBoarder {
     char pad3D4[0x3EC - 0x3D4];
     SnowBChild child;       /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
     SnowBoarderParms parms; /* 0x540: "SnowBoarder::Parms" (the ctor builds it in place) */
-    char *input;            /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
+    RiderInput *input;      /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
                              * by replay_addInput); its +0x10 word carries the direction bits 4 / 8 (B520) */
     struct SnowAI *ai;      /* 0x804: the AI controller (game.uso SnowAI_ctor(0, this, ...), the ctor's last child);
                              * SnowBoarder_handleMsg forwards win / lose / timeout to SnowAI_onWin / onLose / onTimeout */
@@ -180,7 +190,9 @@ typedef struct SnowBoarder {
     char *unk844;           /* 0x844: child object A; its +0x30 float is negated on a mirror flip */
     s32 controller;         /* 0x848: ctor arg 1 (also passed to the 0x808 member). 0 = pad rider, 2 = CPU rider
                              * (game_setupVsCpu; SnowAI_update and SnowAI_onLose test == 2); 1 = other (not yet proven) */
-    char pad84C[0x864 - 0x84C];
+    char pad84C[0x850 - 0x84C];
+    char *light;            /* 0x850: a light object; procColl passes unk91C to it (light_setF124_000550A0) */
+    char pad854[0x864 - 0x854];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
     char pad868[0x890 - 0x868];
     SnowBVec3 prevPos;      /* 0x890: pos saved at the start of SnowBoarder_procColl */
@@ -286,6 +298,7 @@ typedef struct SnowBoarder {
 #define SNOWB_FLAG_NUDGE  0x100 /* SnowBoarder_limitSpeed: input bits 4 / 8 push the rider along dir */
 #define SNOWB_FLAG_CATCHUP 0x20000 /* SnowBoarder_limitSpeed: maxSpeed gets +-k when the rival is > k' ahead / behind in z */
 
+#ifndef __cplusplus /* edg (the NCC donors include this header too) rejects the &((T *)0)->f constant form */
 /* compile-time offset checks (array size -1 => error) */
 #define SNOWB_ASSERT_OFFSET(field, off) \
     typedef char snowb_assert_##off[(int)&((SnowBoarder *)0)->field == (off) ? 1 : -1]
@@ -305,6 +318,7 @@ SNOWB_ASSERT_OFFSET(anim, 0x840);
 SNOWB_ASSERT_OFFSET(sound, 0x808);
 SNOWB_ASSERT_OFFSET(unk844, 0x844);
 SNOWB_ASSERT_OFFSET(controller, 0x848);
+SNOWB_ASSERT_OFFSET(light, 0x850);
 SNOWB_ASSERT_OFFSET(unk864, 0x864);
 SNOWB_ASSERT_OFFSET(unk8C0, 0x8C0);
 SNOWB_ASSERT_OFFSET(character, 0x8C4);
@@ -387,5 +401,7 @@ typedef char snowb_assert_parm_size[sizeof(SnowBParm) == 0x18 ? 1 : -1];
 typedef char snowb_assert_child_size[sizeof(SnowBChild) == 0x154 ? 1 : -1];
 typedef char snowb_assert_parms_size[sizeof(SnowBoarderParms) == 0x2C0 ? 1 : -1];
 typedef char snowb_assert_size[sizeof(SnowBoarder) == 0xA8C ? 1 : -1];
+typedef char snowb_assert_input_held[(int)&((RiderInput *)0)->held == 0x10 ? 1 : -1];
+#endif
 
 #endif /* GAME_SNOWBOARDER_H */

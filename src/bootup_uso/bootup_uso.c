@@ -6917,7 +6917,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     q = (char *)&sb->dir;
     t = 0.0f;
     if (sb->flags & SNOWB_FLAG_NUDGE) {
-        p = sb->input;
+        p = (char *)sb->input;
         if (FW(p, 0x10) & 4) {
             t += 10.0f;
         }
@@ -7351,7 +7351,7 @@ void SnowBoarder_updateDyn(char *arg0) {
     char *temp_v0;
 
     var_f12 = 0.0f;
-    temp_v0 = sb->input;
+    temp_v0 = (char *)sb->input;
     sb->crouch = (f64) (*(f32 *)((char *)temp_v0 + 0x4)) < -0.75; /* input stick y */
     if ((sb->useDParms = (*(s32 *)((char *)temp_v0 + 0x10) & 0x400) != 0, sb->edgeFriction = sb->child.parms.efr.value, sb->useDParms) != 0) {
         sb->edgeGrip = sb->child.parms.del.value;
