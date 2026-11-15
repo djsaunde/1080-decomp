@@ -1,5 +1,7 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
+#define LIST(p) ((SelItemList *)(p))
+#define MODEL(p) ((SelBoardModel *)(p))
 char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     char *volatile r;
     char *g2;
@@ -24,7 +26,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         }
         (*(s32 *)((char *)(child) + 0x28)) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x6D4); (*(s32 *)((char *)(child) + 0xC)) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x15F8); SelItem_reset_00003890(child);
         (*(s32 *)((char *)(child) + 0x2C4)) = 0;
-        (*(s32 *)((char *)(child) + 0x2B4)) = 0;
+        SELITEM(child)->flags = 0;
     }
     r = child;
     gen_imp_list_append(arg0 + 0x10, child);
@@ -56,10 +58,10 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             *(f32 *)(g2 + 0x110) = cf;
             *(f32 *)(g2 + 0x124) = 1.0f;
         }
-        (*(s32 *)((char *)(child) + 0x108)) = (s32) gc;
+        MODEL(child)->head.inner = gc;
         gen_imp_MNode_addChild(child, gc);
         if (1) {}
-        p = (char *)(*(s32 *)((char *)(child) + 0x108));
+        p = MODEL(child)->head.inner;
         p += 0xB4;
         ((Vec3 *)p)->z = (f32)0;
         ((Vec3 *)p)->y = (f32)0;
@@ -72,17 +74,17 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             p = (char *)((*(s32 *)((char *)&d550_ee6c_l4 + 4)) & 0xFFF7FFFF);
             (*(s32 *)((char *)&d550_ee6c_s3 + 4)) = (s32) p;
         }
-        *(f32 *)(child + 0xDC) = arg3;
-        *(f32 *)(child + 0xE0) = arg4;
-        *(f32 *)(child + 0xE4) = arg5;
-        *(f32 *)(child + 0x10C) = (f32) 0;
-        *(f32 *)(child + 0x110) = arg6;
-        *(f32 *)(child + 0x114) = arg7;
-        *(f32 *)(child + 0x118) = arg8;
-        (*(s32 *)((char *)(child) + 0x12C)) = 0;
-        (*(s32 *)((char *)(child) + 0x130)) = 0;
-        *(f32 *)(child + 0x120) = 1.0f;
-        *(f32 *)(child + 0x124) = (f32) 0;
+        MODEL(child)->head.qnode.cvqs.trans[0] = arg3;
+        MODEL(child)->head.qnode.cvqs.trans[1] = arg4;
+        MODEL(child)->head.qnode.cvqs.trans[2] = arg5;
+        MODEL(child)->spin = (f32) 0;
+        MODEL(child)->view[0] = arg6;
+        MODEL(child)->view[1] = arg7;
+        MODEL(child)->view[2] = arg8;
+        MODEL(child)->focused = 0;
+        MODEL(child)->lit = 0;
+        MODEL(child)->alpha = 1.0f;
+        MODEL(child)->highlight = (f32) 0;
     }
     {
         g2 = r;
@@ -92,7 +94,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         ((TimB5EntryFields *)g2)->node = child;
         } while (0);
     }
-    p = (char *)(*(s32 *)((char *)(arg0) + 0x38));
+    p = LIST(arg0)->dispItems;
     {
         register char *list = p + 0x10;
         if (list) {}
@@ -103,8 +105,8 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         ((TimB5ObjectPrefix *)child)->field_04 = 1;
     }
     ((TimB5ObjectPrefix *)child)->field_14 = obj;
-    child = (char *)(*(s32 *)((char *)(arg0) + 0x6C));
-    (*(s32 *)((char *)(arg0) + 0x6C)) = (s32) child + 1;
-    (*(s32 *)((char *)(arg0 + (s32) child * 4) + 0x3C)) = (s32) r;
+    child = (char *)LIST(arg0)->count;
+    LIST(arg0)->count = (s32) child + 1;
+    LIST(arg0)->items[(s32) child] = (SelItem *) r;
     return r;
 }

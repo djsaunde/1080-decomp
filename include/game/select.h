@@ -1,6 +1,27 @@
 #ifndef GAME_SELECT_H
 #define GAME_SELECT_H
 
+#ifndef __cplusplus
+#include "gdl/mnode.h"  /* QNode (the SelModel base) */
+#include "gdl/window.h" /* Window (SelectWin.scene +0xC) */
+#else
+/* The edg (NCC) donors build without -I include and edg rejects the gdl headers' offset
+ * asserts: they get this mirror of include/gdl/window.h's Window with the members the
+ * split-screen code (SelectionMgr_setSplit / _update) touches. Keep the two in step. */
+typedef struct Window {
+    char pad000[0xB4];
+    f32 aspect;             /* 0x0B4 */
+    s32 width;              /* 0x0B8 */
+    s32 height;             /* 0x0BC */
+    s32 originX;            /* 0x0C0 */
+    s32 originY;            /* 0x0C4 */
+    s32 vpW;                /* 0x0C8 */
+    s32 vpH;                /* 0x0CC */
+    s32 vpX;                /* 0x0D0 */
+    s32 vpY;                /* 0x0D4 */
+} Window;
+#endif
+
 /*
  * genproc.uso (splat segment timproc_uso_b5): the select screens (agent-c runs 459 / 464).
  *
@@ -107,14 +128,33 @@ typedef struct SelItemEx {
  * `highlight` the f32 that updateHighlight fades toward its target, `focused`
  * the int that forces the highlight target to 1. ---- */
 
+/* The common 0x10C head of the five models (agent-c run 525). Every createItem
+ * (CharacterList / BoardList / CourseList / LevelList, SelItemsMgr's Tesuri items) allocates
+ * the model, runs QNode_ctor(model, name, 0, 0, 0), stores the class vtable at +0x28, then
+ * allocates a 0x16C child QNode (QNode_ctor, its +0x108 / 0x10C / 0x110 set to one RoData
+ * constant, +0x124 = 1.0), stores it at +0x108, MNode_addChild(model, inner) and clears or
+ * sets inner->vqs.trans. SelectWin_ctor hands the three Tesuri models' inner to the 0.5f
+ * setup calls. The edg (NCC) donors see the QNode base as opaque bytes (no gdl headers). */
+typedef struct SelModel {
+#ifndef __cplusplus
+    QNode qnode;            /* 0x000 */
+#else
+    char qnode[0x104];      /* 0x000 */
+#endif
+    s32 unk104;             /* 0x104 */
+    char *inner;            /* 0x108: the child QNode (0x16C) */
+} SelModel;                 /* 0x10C */
+
 typedef struct SelCharModel {   /* SelCharacter (vtbl Data 0x57C) */
-    char pad000[0x10C];
+    SelModel head;          /* 0x000 */
     s32 anim;               /* 0x10C: the SelCharAnim player (+0x64 / +0xB0 reset on each anim) */
     f32 view[4];            /* 0x110 */
-    f32 alpha;              /* 0x120: setAlpha */
-    char pad124[0x130 - 0x124];
-    f32 highlight;          /* 0x130 */
-    char pad134[0x138 - 0x134];
+    f32 alpha;              /* 0x120: setAlpha (createItem: 0) */
+    f32 unk124;             /* 0x124: createItem: RoData 0x3A8 */
+    f32 unk128;             /* 0x128: createItem: RoData 0x3AC */
+    char pad12C[0x130 - 0x12C];
+    f32 highlight;          /* 0x130 (createItem: RoData 0x3A4) */
+    s32 unk134;             /* 0x134: createItem: 0 */
     s32 focused;            /* 0x138 */
     s32 chosen;             /* 0x13C: setChosen / clearChosen */
     s32 animSet;            /* 0x140: arg 2 of every anim change */
@@ -122,7 +162,7 @@ typedef struct SelCharModel {   /* SelCharacter (vtbl Data 0x57C) */
 } SelCharModel;
 
 typedef struct SelBoardModel {  /* SelBoard (vtbl Data 0x444) */
-    char pad000[0x10C];
+    SelModel head;          /* 0x000 */
     f32 spin;               /* 0x10C: reset to 0 on focus */
     f32 view[4];            /* 0x110 */
     f32 alpha;              /* 0x120 */
@@ -134,7 +174,7 @@ typedef struct SelBoardModel {  /* SelBoard (vtbl Data 0x444) */
 } SelBoardModel;
 
 typedef struct SelCourseModel { /* SelCourseMap (vtbl Data 0x514) */
-    char pad000[0x10C];
+    SelModel head;          /* 0x000 */
     f32 view[4];            /* 0x10C */
     f32 alpha;              /* 0x11C */
     char pad120[0x124 - 0x120];
@@ -148,7 +188,7 @@ typedef struct SelCourseModel { /* SelCourseMap (vtbl Data 0x514) */
 } SelCourseModel;
 
 typedef struct SelTesuriModel { /* SelTesuri (vtbl Data 0x4AC) */
-    char pad000[0x10C];
+    SelModel head;          /* 0x000 */
     f32 view[4];            /* 0x10C */
     f32 alpha;              /* 0x11C */
     char pad120[0x124 - 0x120];
@@ -159,7 +199,7 @@ typedef struct SelTesuriModel { /* SelTesuri (vtbl Data 0x4AC) */
 } SelTesuriModel;
 
 typedef struct SelLevelModel {  /* LevelItem's model */
-    char pad000[0x10C];
+    SelModel head;          /* 0x000 */
     f32 view[4];            /* 0x10C */
     f32 alpha;              /* 0x11C */
     char pad120[0x124 - 0x120];
@@ -332,6 +372,11 @@ typedef struct SelectWin {
  * every state function. As an `|` operand, the struct-member form takes its temp
  * register later and renumbers t6..t8 (checked in state0/3/4/6/7/8/9, agent-c run 484). */
 #define SELWIN(p) ((SelectWin *)(p))
+/* The screen Window of a SelectWin (scene +0xC; scene +0xC +0x70 is its camera, fov at +0x14C).
+ * The two-player split is vertical: SelectionMgr_setSplit gives wins[0] height = vpH = split at
+ * originY = vpY = 0 and wins[1] height = vpH = 0xF0 - split at originY = vpY = split, and
+ * blends aspect (1.333 + 1.3333 * t). */
+#define SELWIN_VIEW(w) (*(Window **)((w)->scene + 0xC))
 /* View a raw item pointer (the item virtuals take char * / int *) as SelItem. */
 #define SELITEM(p) ((SelItem *)(p))
 
@@ -364,6 +409,8 @@ typedef struct GenScene {
                              * gets cam's +0xC */
 } GenScene;                 /* 0xC */
 
+#ifndef __cplusplus /* edg (the NCC donors ncc_1DB0 / ncc_1F14 include this header) rejects the
+                     * &((T *)0)->f constant form; the C builds check the offsets */
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
 SELECT_ASSERT(parmi_size, sizeof(SelParmI) == 0x18);
 SELECT_ASSERT(parmv3_size, sizeof(SelParmV3) == 0x20);
@@ -380,6 +427,8 @@ SELECT_ASSERT(item_id, (int)&((SelItem *)0)->id == 0x2B0);
 SELECT_ASSERT(item_size, sizeof(SelItem) == 0x2B8);
 SELECT_ASSERT(itemex_model, (int)&((SelItemEx *)0)->model == 0x2B8);
 SELECT_ASSERT(itemex_size, sizeof(SelItemEx) == 0x2C4);
+SELECT_ASSERT(model_inner, (int)&((SelModel *)0)->inner == 0x108);
+SELECT_ASSERT(model_size, sizeof(SelModel) == 0x10C);
 SELECT_ASSERT(charmodel_mode, (int)&((SelCharModel *)0)->animMode == 0x144);
 SELECT_ASSERT(boardmodel_chosen, (int)&((SelBoardModel *)0)->chosen == 0x134);
 SELECT_ASSERT(coursemodel_13c, (int)&((SelCourseModel *)0)->unk13C == 0x13C);
@@ -417,5 +466,6 @@ SELECT_ASSERT(win_flags, (int)&((SelectWin *)0)->eventFlags == 0x4D4);
 SELECT_ASSERT(room_walls, (int)&((GenRoom *)0)->walls == 0x44);
 SELECT_ASSERT(room_size, sizeof(GenRoom) == 0x60);
 SELECT_ASSERT(win_size, sizeof(SelectWin) == 0x4F0);
+#endif /* !__cplusplus */
 
 #endif

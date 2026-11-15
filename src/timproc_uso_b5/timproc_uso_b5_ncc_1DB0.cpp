@@ -8,32 +8,34 @@ extern char timproc_uso_b5_D_807FF0D8, timproc_uso_b5_D_807FF0E0;
 #define D_dbl_1DB0_B8 (*(double *)(&timproc_uso_b5_D_807FF0D8 + 0xB8))
 #define D_dbl_1DB0_C0 (*(double *)(&timproc_uso_b5_D_807FF0E0 + 0xC0))
 typedef int s32; typedef float f32; typedef double f64;
+#include "../../include/game/select.h"  /* NCC donors build without -I include */
+#define MGR ((SelectionMgr *)a0)
 void SelectionMgr_setSplit_00001DB0(char *a0) {
     char *t;
     char *u;
 
-    *(s32 *)(*(char **)(a0 + 0x34) + 0x4D8) = *(s32 *)(a0 + 0x44);
-    t = *(char **)(a0 + 0x34);
-    if (*(s32 *)(t + 0x4D8) == 0) {
-        *(s32 *)(*(char **)(*(char **)(t + 0x414) + 0xC) + 0xBC) = 0;
+    MGR->wins[0]->centerX = MGR->split;
+    t = (char *)MGR->wins[0];
+    if (SELWIN(t)->centerX == 0) {
+        SELWIN_VIEW(SELWIN(t))->height = 0;
     } else {
-        *(s32 *)(*(char **)(*(char **)(t + 0x414) + 0xC) + 0xC4) = 0;
-        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(a0 + 0x44);
-        *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(a0 + 0x44);
-        *(f32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x34) + 0x414) + 0xC) + 0xB4) =
-            D_dbl_1DB0_C0 + D_dbl_1DB0_B8 * (f64)(1.0f - *(f32 *)(a0 + 0x54));
-        *(f32 *)(*(char **)(a0 + 0x34) + 0x49C) = 41.0f + 5.0f * *(f32 *)(a0 + 0x54);
+        SELWIN_VIEW(SELWIN(t))->originY = 0;
+        SELWIN_VIEW(MGR->wins[0])->vpY = 0;
+        SELWIN_VIEW(MGR->wins[0])->height = MGR->split;
+        SELWIN_VIEW(MGR->wins[0])->vpH = MGR->split;
+        SELWIN_VIEW(MGR->wins[0])->aspect =
+            D_dbl_1DB0_C0 + D_dbl_1DB0_B8 * (f64)(1.0f - MGR->splitT);
+        MGR->wins[0]->fovBase = 41.0f + 5.0f * MGR->splitT;
     }
-    *(s32 *)(*(char **)(a0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(a0 + 0x44);
-    u = *(char **)(a0 + 0x38);
-    if (*(s32 *)(u + 0x4D8) == 0) {
-        *(s32 *)(*(char **)(*(char **)(u + 0x414) + 0xC) + 0xBC) = 0;
+    MGR->wins[1]->centerX = 0xF0 - MGR->split;
+    u = (char *)MGR->wins[1];
+    if (SELWIN(u)->centerX == 0) {
+        SELWIN_VIEW(SELWIN(u))->height = 0;
         return;
     }
-    *(s32 *)(*(char **)(*(char **)(u + 0x414) + 0xC) + 0xC4) = *(s32 *)(a0 + 0x44);
-    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(a0 + 0x44);
-    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(a0 + 0x44);
-    *(s32 *)(*(char **)(*(char **)(*(char **)(a0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(a0 + 0x44);
+    SELWIN_VIEW(SELWIN(u))->originY = MGR->split;
+    SELWIN_VIEW(MGR->wins[1])->vpY = MGR->split;
+    SELWIN_VIEW(MGR->wins[1])->height = 0xF0 - MGR->split;
+    SELWIN_VIEW(MGR->wins[1])->vpH = 0xF0 - MGR->split;
 }
 }

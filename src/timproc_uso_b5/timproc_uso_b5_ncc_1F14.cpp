@@ -11,6 +11,9 @@ extern void SelectionMgr_setSplit_00001DB0(char *);
 extern int gen_stageBitToIndex_000087A0(...);
 extern void gen_imp_Node_update(char *);
 }
+#include "../../include/game/select.h"  /* NCC donors build without -I include */
+#define MGR ((SelectionMgr *)arg0)
+
 extern "C" void SelectionMgr_update_00001F14(char *arg0) {
     s32 dst;
     s32 frame;
@@ -23,179 +26,179 @@ extern "C" void SelectionMgr_update_00001F14(char *arg0) {
     char *r38b;
     char *r38c;
 
-    *(s32 *)(arg0 + 0x3C) = 0;
-    if (*(s32 *)(arg0 + 0x30) == 2) {
-        if (*(s32 *)(*(char **)(arg0 + 0x34) + 0x3CC) == 8) {
-            *(s32 *)(arg0 + 0x3C) |= 1;
+    MGR->waitMask = 0;
+    if (MGR->numPlayers == 2) {
+        if (MGR->wins[0]->state == 8) {
+            MGR->waitMask |= 1;
         }
-        if (*(s32 *)(*(char **)(arg0 + 0x38) + 0x3CC) == 8) {
-            *(s32 *)(arg0 + 0x3C) = *(s32 *)(arg0 + 0x3C) | 2;
+        if (MGR->wins[1]->state == 8) {
+            MGR->waitMask = MGR->waitMask | 2;
         }
-        if (*(s32 *)(arg0 + 0x3C) != 0) {
-            if (*(s32 *)(arg0 + 0x3C) == 3) {
-                if (*(s32 *)(arg0 + 0x44) == 0x78) {
-                    if (*(s32 *)(arg0 + 0x40) == 1) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 1;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
-                    } else if (*(s32 *)(arg0 + 0x40) == 2) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 2;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
+        if (MGR->waitMask != 0) {
+            if (MGR->waitMask == 3) {
+                if (MGR->split == 0x78) {
+                    if (MGR->prevWaitMask == 1) {
+                        MGR->busy = 1;
+                        MGR->zoomWin = 1;
+                        MGR->splitT = 0.0f;
+                    } else if (MGR->prevWaitMask == 2) {
+                        MGR->busy = 1;
+                        MGR->zoomWin = 2;
+                        MGR->splitT = 0.0f;
                     }
                 }
-                if (*(s32 *)(arg0 + 0x48) == 1) {
-                    dst = gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x38), 4, arg0);
-                    *(s32 *)(*(s32 *)(arg0 + 0x38) + (dst * 4) + 0x3D0) =
-                        ((s32 *)(*(s32 *)(arg0 + 0x34) + 0x3D0))[gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x34), 4, arg0)];
+                if (MGR->zoomWin == 1) {
+                    dst = gen_stageBitToIndex_000087A0((char *)MGR->wins[1], 4, arg0);
+                    MGR->wins[1]->curItem[dst] =
+                        MGR->wins[0]->curItem[gen_stageBitToIndex_000087A0((char *)MGR->wins[0], 4, arg0)];
                 } else {
-                    dst = gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x34), 4, arg0);
-                    *(s32 *)(*(s32 *)(arg0 + 0x34) + (dst * 4) + 0x3D0) =
-                        ((s32 *)(*(s32 *)(arg0 + 0x38) + 0x3D0))[gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x38), 4, arg0)];
+                    dst = gen_stageBitToIndex_000087A0((char *)MGR->wins[0], 4, arg0);
+                    MGR->wins[0]->curItem[dst] =
+                        MGR->wins[1]->curItem[gen_stageBitToIndex_000087A0((char *)MGR->wins[1], 4, arg0)];
                 }
-                if (*(s32 *)(arg0 + 0x4C) != 0) {
-                    if (*(s32 *)(arg0 + 0x48) == 1) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + 0.05f;
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
+                if (MGR->busy != 0) {
+                    if (MGR->zoomWin == 1) {
+                        MGR->splitT = MGR->splitT + 0.05f;
+                        if (MGR->splitT >= 1.0f) {
+                            MGR->splitT = 1.0f;
+                            MGR->busy = 0;
                         }
-                        *(s32 *)(arg0 + 0x44) = (s32) (120.0f + (*(f32 *)(arg0 + 0x54) * 120.0f));
+                        MGR->split = (s32) (120.0f + (MGR->splitT * 120.0f));
                         SelectionMgr_setSplit_00001DB0(arg0);
                     }
-                    if (*(s32 *)(arg0 + 0x48) == 2) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + 0.05f;
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
+                    if (MGR->zoomWin == 2) {
+                        MGR->splitT = MGR->splitT + 0.05f;
+                        if (MGR->splitT >= 1.0f) {
+                            MGR->splitT = 1.0f;
+                            MGR->busy = 0;
                         }
-                        frame = (s32) (120.0f - (*(f32 *)(arg0 + 0x54) * 120.0f)); if (arg0) {}
-                        *(s32 *)(arg0 + 0x44) = frame;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame;
-                        r34 = *(char **)(arg0 + 0x34);
-                        if (*(s32 *)(r34 + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34 + 0x414) + 0xC) + 0xBC) = 0;
+                        frame = (s32) (120.0f - (MGR->splitT * 120.0f)); if (arg0) {}
+                        MGR->split = frame;
+                        MGR->wins[0]->centerX = frame;
+                        r34 = (char *)MGR->wins[0];
+                        if (SELWIN(r34)->centerX == 0) {
+                            SELWIN_VIEW(SELWIN(r34))->height = 0;
                         } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34 + 0x414) + 0xC) + 0xC4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(arg0 + 0x44);
+                            SELWIN_VIEW(SELWIN(r34))->originY = 0;
+                            SELWIN_VIEW(MGR->wins[0])->vpY = 0;
+                            SELWIN_VIEW(MGR->wins[0])->height = MGR->split;
+                            SELWIN_VIEW(MGR->wins[0])->vpH = MGR->split;
                         }
-                        *(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                        r38 = *(char **)(arg0 + 0x38);
-                        if (*(s32 *)(r38 + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38 + 0x414) + 0xC) + 0xBC) = 0;
+                        MGR->wins[1]->centerX = 0xF0 - MGR->split;
+                        r38 = (char *)MGR->wins[1];
+                        if (SELWIN(r38)->centerX == 0) {
+                            SELWIN_VIEW(SELWIN(r38))->height = 0;
                         } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38 + 0x414) + 0xC) + 0xC4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xB4) =
-                                1.333f + (1.3333 * (f64) (1.0f - *(f32 *)(arg0 + 0x54)));
-                            *(f32 *)(*(char **)(arg0 + 0x38) + 0x49C) = 41.0f + (5.0f * *(f32 *)(arg0 + 0x54));
+                            SELWIN_VIEW(SELWIN(r38))->originY = MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->vpY = MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->height = 0xF0 - MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->vpH = 0xF0 - MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->aspect =
+                                1.333f + (1.3333 * (f64) (1.0f - MGR->splitT));
+                            MGR->wins[1]->fovBase = 41.0f + (5.0f * MGR->splitT);
                         }
                     }
                 }
             } else {
-                if ((*(s32 *)(arg0 + 0x44) == 0) || (*(s32 *)(arg0 + 0x44) == 0xF0)) {
-                    if (*(s32 *)(arg0 + 0x3C) == 1) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 1;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
+                if ((MGR->split == 0) || (MGR->split == 0xF0)) {
+                    if (MGR->waitMask == 1) {
+                        MGR->busy = 1;
+                        MGR->zoomWin = 1;
+                        MGR->splitT = 0.0f;
                     }
-                    if (*(s32 *)(arg0 + 0x3C) == 2) {
-                        *(s32 *)(arg0 + 0x4C) = 1;
-                        *(s32 *)(arg0 + 0x48) = 2;
-                        *(f32 *)(arg0 + 0x54) = 0.0f;
+                    if (MGR->waitMask == 2) {
+                        MGR->busy = 1;
+                        MGR->zoomWin = 2;
+                        MGR->splitT = 0.0f;
                     }
                 }
-                if (*(s32 *)(arg0 + 0x4C) != 0) {
-                    if (*(s32 *)(arg0 + 0x48) == 1) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + 0.05f;
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
-                            *(s32 *)(arg0 + 0x48) = 0;
+                if (MGR->busy != 0) {
+                    if (MGR->zoomWin == 1) {
+                        MGR->splitT = MGR->splitT + 0.05f;
+                        if (MGR->splitT >= 1.0f) {
+                            MGR->splitT = 1.0f;
+                            MGR->busy = 0;
+                            MGR->zoomWin = 0;
                         }
-                        frame2 = (s32) (240.0f - (*(f32 *)(arg0 + 0x54) * 120.0f)); if (arg0) {}
-                        *(s32 *)(arg0 + 0x44) = frame2;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame2;
-                        r34b = *(char **)(arg0 + 0x34);
-                        if (*(s32 *)(r34b + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34b + 0x414) + 0xC) + 0xBC) = 0;
+                        frame2 = (s32) (240.0f - (MGR->splitT * 120.0f)); if (arg0) {}
+                        MGR->split = frame2;
+                        MGR->wins[0]->centerX = frame2;
+                        r34b = (char *)MGR->wins[0];
+                        if (SELWIN(r34b)->centerX == 0) {
+                            SELWIN_VIEW(SELWIN(r34b))->height = 0;
                         } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34b + 0x414) + 0xC) + 0xC4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xB4) =
-                                1.333f + (1.3333 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x34) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
+                            SELWIN_VIEW(SELWIN(r34b))->originY = 0;
+                            SELWIN_VIEW(MGR->wins[0])->vpY = 0;
+                            SELWIN_VIEW(MGR->wins[0])->height = MGR->split;
+                            SELWIN_VIEW(MGR->wins[0])->vpH = MGR->split;
+                            SELWIN_VIEW(MGR->wins[0])->aspect =
+                                1.333f + (1.3333 * (f64) MGR->splitT);
+                            MGR->wins[0]->fovBase = 41.0f + (5.0f * (1.0f - MGR->splitT));
                         }
-                        *(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                        r38b = *(char **)(arg0 + 0x38);
-                        if (*(s32 *)(r38b + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38b + 0x414) + 0xC) + 0xBC) = 0;
+                        MGR->wins[1]->centerX = 0xF0 - MGR->split;
+                        r38b = (char *)MGR->wins[1];
+                        if (SELWIN(r38b)->centerX == 0) {
+                            SELWIN_VIEW(SELWIN(r38b))->height = 0;
                         } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38b + 0x414) + 0xC) + 0xC4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xB4) =
-                                1.333f + (1.3333 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x38) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
+                            SELWIN_VIEW(SELWIN(r38b))->originY = MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->vpY = MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->height = 0xF0 - MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->vpH = 0xF0 - MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->aspect =
+                                1.333f + (1.3333 * (f64) MGR->splitT);
+                            MGR->wins[1]->fovBase = 41.0f + (5.0f * (1.0f - MGR->splitT));
                         }
                     }
-                    if (*(s32 *)(arg0 + 0x48) == 2) {
-                        *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + 0.05f;
-                        if (*(f32 *)(arg0 + 0x54) >= 1.0f) {
-                            *(f32 *)(arg0 + 0x54) = 1.0f;
-                            *(s32 *)(arg0 + 0x4C) = 0;
-                            *(s32 *)(arg0 + 0x48) = 0;
+                    if (MGR->zoomWin == 2) {
+                        MGR->splitT = MGR->splitT + 0.05f;
+                        if (MGR->splitT >= 1.0f) {
+                            MGR->splitT = 1.0f;
+                            MGR->busy = 0;
+                            MGR->zoomWin = 0;
                         }
-                        frame3 = (s32) (*(f32 *)(arg0 + 0x54) * 120.0f); if (arg0) {}
-                        *(s32 *)(arg0 + 0x44) = frame3;
-                        *(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) = frame3;
-                        r34c = *(char **)(arg0 + 0x34);
-                        if (*(s32 *)(r34c + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34c + 0x414) + 0xC) + 0xBC) = 0;
+                        frame3 = (s32) (MGR->splitT * 120.0f); if (arg0) {}
+                        MGR->split = frame3;
+                        MGR->wins[0]->centerX = frame3;
+                        r34c = (char *)MGR->wins[0];
+                        if (SELWIN(r34c)->centerX == 0) {
+                            SELWIN_VIEW(SELWIN(r34c))->height = 0;
                         } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r34c + 0x414) + 0xC) + 0xC4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xD4) = 0;
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xBC) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xCC) = *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x34) + 0x414) + 0xC) + 0xB4) =
-                                1.333f + (1.3333 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x34) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
+                            SELWIN_VIEW(SELWIN(r34c))->originY = 0;
+                            SELWIN_VIEW(MGR->wins[0])->vpY = 0;
+                            SELWIN_VIEW(MGR->wins[0])->height = MGR->split;
+                            SELWIN_VIEW(MGR->wins[0])->vpH = MGR->split;
+                            SELWIN_VIEW(MGR->wins[0])->aspect =
+                                1.333f + (1.3333 * (f64) MGR->splitT);
+                            MGR->wins[0]->fovBase = 41.0f + (5.0f * (1.0f - MGR->splitT));
                         }
-                        *(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                        r38c = *(char **)(arg0 + 0x38);
-                        if (*(s32 *)(r38c + 0x4D8) == 0) {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38c + 0x414) + 0xC) + 0xBC) = 0;
+                        MGR->wins[1]->centerX = 0xF0 - MGR->split;
+                        r38c = (char *)MGR->wins[1];
+                        if (SELWIN(r38c)->centerX == 0) {
+                            SELWIN_VIEW(SELWIN(r38c))->height = 0;
                         } else {
-                            *(s32 *)(*(s32 *)(*(s32 *)(r38c + 0x414) + 0xC) + 0xC4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xD4) = *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xBC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(s32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xCC) = 0xF0 - *(s32 *)(arg0 + 0x44);
-                            *(f32 *)(*(s32 *)(*(s32 *)(*(char **)(arg0 + 0x38) + 0x414) + 0xC) + 0xB4) =
-                                1.333f + (1.3333 * (f64) *(f32 *)(arg0 + 0x54));
-                            *(f32 *)(*(char **)(arg0 + 0x38) + 0x49C) = 41.0f + (5.0f * (1.0f - *(f32 *)(arg0 + 0x54)));
+                            SELWIN_VIEW(SELWIN(r38c))->originY = MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->vpY = MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->height = 0xF0 - MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->vpH = 0xF0 - MGR->split;
+                            SELWIN_VIEW(MGR->wins[1])->aspect =
+                                1.333f + (1.3333 * (f64) MGR->splitT);
+                            MGR->wins[1]->fovBase = 41.0f + (5.0f * (1.0f - MGR->splitT));
                         }
                     }
                 }
             }
         }
-        if (*(s32 *)(*(char **)(arg0 + 0x34) + 0x4D8) != 0) {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) | 1;
+        if (MGR->wins[0]->centerX != 0) {
+            MGR->shownMask = MGR->shownMask | 1;
         } else {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) & ~1;
+            MGR->shownMask = MGR->shownMask & ~1;
         }
-        if (*(s32 *)(*(char **)(arg0 + 0x38) + 0x4D8) != 0) {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) | 2;
+        if (MGR->wins[1]->centerX != 0) {
+            MGR->shownMask = MGR->shownMask | 2;
         } else {
-            *(s32 *)(arg0 + 0x50) = *(s32 *)(arg0 + 0x50) & ~2;
+            MGR->shownMask = MGR->shownMask & ~2;
         }
-        *(s32 *)(arg0 + 0x40) = *(s32 *)(arg0 + 0x3C);
+        MGR->prevWaitMask = MGR->waitMask;
     }
     gen_imp_Node_update(arg0);
 }

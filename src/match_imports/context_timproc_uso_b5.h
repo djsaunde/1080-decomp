@@ -9,6 +9,7 @@ typedef signed int s32;
 typedef signed long long s64;
 typedef float f32;
 typedef double f64;
+#include "game/select.h"  /* SelItemList / Sel*Model / SelModel for the createItem donors (run 525) */
 typedef struct GlInputFrame675A4 {
     s8 field_00;
     s8 field_01;
@@ -1341,26 +1342,9 @@ struct TimB5UiObject {
     char pad_18[0x10];
     void *field_28;
 };
-typedef struct {
-    TimB5UiObject base;
-    char pad_2C[0xC];
-    TimB5UiObject *field_38;
-    TimB5UiObject *field_3C[12];
-    s32 field_6C;
-} TimB5UiOwner;
-typedef struct {
-    TimB5UiObject base;
-    char pad_2C[0x108];
-    f32 field_134;
-    char pad_138[0x164];
-    TimB5UiObject *field_29C;
-    f32 field_2A0;
-    f32 field_2A4;
-    char pad_2A8[8];
-    s32 field_2B0;
-    char pad_2B4[4];
-    TimB5UiObject *field_2B8;
-} TimB5UiPanel;
+/* CharacterList_createItem works on the select.h types (run 525): the list is a SelItemList,
+ * the item a SelCharacterItem, its model a SelCharModel. TimB5UiObject stays the Node head
+ * (parent at +0x14, the "has parent" flag at +0x4, name at +0xC, vptr at +0x28). */
 struct TimB5ImportedFlags { s32 reserved; s32 flags; };
 extern struct TimB5ImportedFlags d14c_ee6c_l1, d14c_ee6c_l2, d14c_ee6c_s1;
 extern struct TimB5ImportedFlags d14c_ee6c_l3, d14c_ee6c_l4, d14c_ee6c_s2, d14c_ee6c_s3;
@@ -1370,7 +1354,7 @@ struct TimB5UiMethod24 { char pad[0x20]; s16 adjustment; s16 reserved; void (*me
 extern void *timproc_uso_b5_d14c_alloc(s32);
 extern char *SelItemParms_ctor(char *);
 extern char *SelItemInfo_ctor(char *);
-TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32 arg3,
+SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, u32 arg3,
                                  u32 arg4, u32 arg5, float arg6,
                                  float arg7, float arg8);
 extern char timproc_uso_b5_D_807FDB64;

@@ -1,6 +1,8 @@
 /* Native original-compiler source port from src/timproc_uso_b5/timproc_uso_b5.c. Target bytes unchanged. */
 #include "context_timproc_uso_b5.h"
-TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32 arg3,
+#define ITEM(p) ((SelCharacterItem *)(p))
+#define MODEL(p) ((SelCharModel *)(p))
+SelCharacterItem *CharacterList_createItem(SelItemList *a0, int arg1, int arg2, u32 arg3,
                                  u32 arg4, u32 arg5, float arg6,
                                  float arg7, float arg8) {
     char *volatile r;
@@ -34,8 +36,8 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
     {
         char *rr = r;
         ((TimB5UiObject *)child.ptr)->field_14 = (TimB5UiObject *)a0;
-        ((TimB5UiPanel *)rr)->field_2A4 = (float)arg1;
-        ((TimB5UiPanel *)rr)->field_2B0 = arg2 - 1;
+        ITEM(rr)->base.enabled = (float)arg1;
+        ITEM(rr)->base.id = arg2 - 1;
     }
     child.ptr = (char *)timproc_uso_b5_d14c_alloc(0x148);
     if (child.ptr != 0) {
@@ -54,17 +56,17 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
             *(float *)(gc + 0x110) = cf;
             *(float *)(gc + 0x124) = 1.0f;
         }
-        *(char **)(child.ptr + 0x108) = gc;
+        MODEL(child.ptr)->head.inner = gc;
         gen_imp_MNode_addChild(child.ptr, gc);
         if (1) {}
-        p = *(char **)(child.ptr + 0x108);
+        p = MODEL(child.ptr)->head.inner;
         p += 0xB4;
         do {
             ((struct TimB5V3 *)p)->x = 0.0f;
             ((struct TimB5V3 *)p)->z = 0.0f;
             ((struct TimB5V3 *)p)->y = 100.0f;
         } while (0);
-        *(float *)(child.ptr + 0x130) = *(float *)((char *)&import_80800078 + 0x3A4);
+        MODEL(child.ptr)->highlight = *(float *)((char *)&import_80800078 + 0x3A4);
         n = *(int *)&import_80020078;
         if (1) {}
         p = (char *)timproc_uso_b5_d14c_alloc(0xB4);
@@ -74,14 +76,14 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
             (*(int *)((char *)(p) + (0xB0))) = 0;
             gen_imp_AnimPlayer_reset(p);
         }
-        *(char **)(child.ptr + 0x10C) = p;
+        MODEL(child.ptr)->anim = (s32)p;
         gen_imp_MNode_addChild(child.ptr, p);
-        savedbit = d14c_ee6c_l1.flags & 0x80000; if (1) {} { int x = (d14c_ee6c_l2.flags & 0xFFF7FFFF) | 0x20000 | 0x2000 | 2 | 1; d14c_ee6c_s1.flags = x; } d14c_ee64_st = d14c_ee64_ld & ~8; p = *(char **)(child.ptr + 0x10C); gen_imp_SnowBoarder_loadBoardModel_0000B1B4(arg2, 0, 0x201, p, child.ptr);
-        (*(int *)((char *)(child.ptr) + (0x140))) = ((s32 *)&timproc_uso_b5_D_807FDB4C)[arg2];
-        gen_imp_AnimPlayer_start(*(char **)(child.ptr + 0x10C), (*(int *)((char *)(child.ptr) + (0x140))), 0, 2, 2, 1);
+        savedbit = d14c_ee6c_l1.flags & 0x80000; if (1) {} { int x = (d14c_ee6c_l2.flags & 0xFFF7FFFF) | 0x20000 | 0x2000 | 2 | 1; d14c_ee6c_s1.flags = x; } d14c_ee64_st = d14c_ee64_ld & ~8; p = (char *)MODEL(child.ptr)->anim; gen_imp_SnowBoarder_loadBoardModel_0000B1B4(arg2, 0, 0x201, p, child.ptr);
+        MODEL(child.ptr)->animSet = ((s32 *)&timproc_uso_b5_D_807FDB4C)[arg2];
+        gen_imp_AnimPlayer_start((char *)MODEL(child.ptr)->anim, MODEL(child.ptr)->animSet, 0, 2, 2, 1);
         if (1) {}
         {
-            char *p2 = *(char **)(child.ptr + 0x10C);
+            char *p2 = (char *)MODEL(child.ptr)->anim;
             struct TimB5UiMethod24 *vt;
             char *adjusted;
             p = *(char **)(p2 + 0x28);
@@ -96,30 +98,30 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
             int x = d14c_ee6c_l4.flags & 0xFFF7FFFF;
             d14c_ee6c_s3.flags = x;
         }
-        *(float *)(child.ptr + 0x110) = arg6;
-        *(float *)(child.ptr + 0x114) = arg7;
-        *(float *)(child.ptr + 0x118) = arg8;
-        *(float *)(child.ptr + 0x120) = 0.0f;
-        *(float *)(child.ptr + 0x124) = d14c_fb8_a[0x3A8 / sizeof(f32)];
-        *(float *)(child.ptr + 0x128) = d14c_fb8_b[0x3AC / sizeof(f32)];
-        (*(int *)((char *)(child.ptr) + (0x144))) = 1;
-        (*(int *)((char *)(child.ptr) + (0x138))) = 0;
-        (*(int *)((char *)(child.ptr) + (0x134))) = 0;
+        MODEL(child.ptr)->view[0] = arg6;
+        MODEL(child.ptr)->view[1] = arg7;
+        MODEL(child.ptr)->view[2] = arg8;
+        MODEL(child.ptr)->alpha = 0.0f;
+        MODEL(child.ptr)->unk124 = d14c_fb8_a[0x3A8 / sizeof(f32)];
+        MODEL(child.ptr)->unk128 = d14c_fb8_b[0x3AC / sizeof(f32)];
+        MODEL(child.ptr)->animMode = 1;
+        MODEL(child.ptr)->focused = 0;
+        MODEL(child.ptr)->unk134 = 0;
     }
     {
         char *rr = r;
-        ((TimB5UiPanel *)rr)->field_2B8 = (TimB5UiObject *)child.ptr;
-        ((TimB5UiPanel *)rr)->field_134 = d14c_fb8_c[0x3B0 / sizeof(f32)];
-        ((TimB5UiPanel *)rr)->field_29C = (TimB5UiObject *)child.ptr;
+        ITEM(rr)->model = MODEL(child.ptr);
+        ITEM(rr)->base.parms.cfv.value = d14c_fb8_c[0x3B0 / sizeof(f32)];
+        ITEM(rr)->base.node = child.ptr;
     }
-    obj = (char *)a0->field_38;
+    obj = a0->dispItems;
     gen_imp_list_append(obj + 0x10, child.ptr);
     if (((TimB5UiObject *)child.ptr)->field_14 != 0) {
         ((TimB5UiObject *)child.ptr)->field_04 = 1;
     }
     ((TimB5UiObject *)child.ptr)->field_14 = (TimB5UiObject *)obj;
-    child.index = a0->field_6C;
-    a0->field_6C = child.index + 1;
-    a0->field_3C[child.index] = (TimB5UiObject *)r;
-    return (TimB5UiPanel *)r;
+    child.index = a0->count;
+    a0->count = child.index + 1;
+    a0->items[child.index] = (SelItem *)r;
+    return ITEM(r);
 }
