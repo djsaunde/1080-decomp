@@ -240,4 +240,18 @@ typedef char MainLogo_size_check[sizeof(MainLogo) == 0x74 ? 1 : -1];
 #define KEYMSG(p)   ((KeyMessage *)(p))
 #define MAINLOGO(p) ((MainLogo *)(p))
 
+/* WhiteFader (0x40; tit_WhiteFader_ctor / h2h_WhiteFader_ctor, the same class in both modules,
+ * agent-h run 519): a full-screen white fill. display clamps alpha to 0xFF, draws nothing at 0,
+ * else fills (0, 0) .. (319, 239) with colour at that alpha. GameDemoProcess_handleInput steps
+ * alpha by 16 toward 255 (then parks it at 720) or down to 0, and onQuitButton waits for 0. */
+typedef struct WhiteFader {
+    /* 0x00 */ char node[0x2C];     /* Node (vptr 0x28, name 0xC) */
+    /* 0x2C */ f32 colour[4];       /* 1.0 x 4 */
+    /* 0x3C */ s32 alpha;           /* 0 in the ctor */
+} WhiteFader;
+
+typedef char WhiteFader_size_check[sizeof(WhiteFader) == 0x40 ? 1 : -1];
+
+#define WFADER(p) ((WhiteFader *)(p))
+
 #endif

@@ -997,11 +997,11 @@ int *h2h_WhiteFader_ctor(int *a0) {
 tail:
     *(int*)((char*)a0 + 0x28) = (int)&D_h2h_eb0_y;
     *(int*)((char*)a0 + 0xC) = (int)((char*)&D_00000000 + 0x3E8);
-    *(int*)((char*)a0 + 0x3C) = 0;
-    *(float*)((char*)a0 + 0x2C) = 1.0f;
-    *(float*)((char*)a0 + 0x30) = 1.0f;
-    *(float*)((char*)a0 + 0x34) = 1.0f;
-    *(float*)((char*)a0 + 0x38) = 1.0f;
+    WFADER(a0)->alpha = 0;
+    WFADER(a0)->colour[0] = 1.0f;
+    WFADER(a0)->colour[1] = 1.0f;
+    WFADER(a0)->colour[2] = 1.0f;
+    WFADER(a0)->colour[3] = 1.0f;
 end:
     return a0;
 }
@@ -1011,10 +1011,10 @@ end:
  *   v = a0->0x3C; if (v >= 0x100) v = 0xFF; if (v == 0) return;
  *   gl_func(&D_0, v, a0+0x2C); gl_func(&D_0, 0, 0, 0x13F, 0xEF, 0x10001); */
 void h2h_WhiteFader_display(char *a0) {
-    int v = *(int*)(a0 + 0x3C);
+    int v = WFADER(a0)->alpha;
     if (v >= 0x100) v = 0xFF;
     if (v == 0) return;
-    CALL(gui_setFillColor_00001CA8)(&D_00000000, v, a0 + 0x2C);
+    CALL(gui_setFillColor_00001CA8)(&D_00000000, v, WFADER(a0)->colour);
     CALL(gui_fillRect)(&D_00000000, 0, 0, 0x13F, 0xEF, 0x10001);
 }
 

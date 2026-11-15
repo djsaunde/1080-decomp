@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "game/modeproc.h"
+#include "game/guimenu.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -1166,11 +1167,11 @@ void *tit_WhiteFader_ctor(void *self) {
     }
  } titproc_uso_func_04C678(sub, base + 0x500); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18); common: *((int *) (((char *) self) + 0x28)) = (int) (&titproc_uso_D_0002CC);
   *((int *) (((char *) self) + 0x0C)) = (int) (base + 0x508);
-  *((int *) (((char *) self) + 0x3C)) = 0;
-  *((float *) (((char *) self) + 0x2C)) = 1.0f;
-  *((float *) (((char *) self) + 0x30)) = 1.0f;
-  *((float *) (((char *) self) + 0x34)) = 1.0f;
-  *((float *) (((char *) self) + 0x38)) = 1.0f;
+  WFADER(self)->alpha = 0;
+  WFADER(self)->colour[0] = 1.0f;
+  WFADER(self)->colour[1] = 1.0f;
+  WFADER(self)->colour[2] = 1.0f;
+  WFADER(self)->colour[3] = 1.0f;
   end:
   return self;
 
@@ -1186,10 +1187,10 @@ extern char D_00000000;
  * Cross-USO template — same body matches h2h_WhiteFader_display byte-
  * identical (per feedback_uso_accessor_template_reuse.md). */
 void tit_WhiteFader_display(char *a0) {
-    int v = *(int*)(a0 + 0x3C);
+    int v = WFADER(a0)->alpha;
     if (v >= 0x100) v = 0xFF;
     if (v == 0) return;
-    CALL(gui_setFillColor_00001CA8)(&D_00000000, v, a0 + 0x2C);
+    CALL(gui_setFillColor_00001CA8)(&D_00000000, v, WFADER(a0)->colour);
     CALL(gui_fillRect)(&D_00000000, 0, 0, 0x13F, 0xEF, 0x10001);
 }
 
@@ -1439,10 +1440,10 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
             if (SETTINGS(INPUT_MGR(import_00020098).options)->flags & 0x8) {
                 titproc_uso_func_0002DC(144);
                 if (1) {
-                    vtA = *(char **)((char *)s0->langMenu + 0x28);
+                    vtA = (char *)NODE(s0->langMenu)->vptr;
                     objA = (char *)s0->langMenu;
-                    (*(void (**)(char *))(vtA + 0x5C))(
-                        (char *)((int)*(short *)(vtA + 0x58) + (int)objA));
+                    ((void (*)(char *))VT_SLOT(vtA, 10).fn)(
+                        (char *)((int)VT_SLOT(vtA, 10).delta + (int)objA));
                 }
                 if (s0->keyMessage != 0) {
                     titproc_uso_func_00F4CC(s0->keyMessage);
@@ -1450,10 +1451,10 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                 s0->menuState = 2;
             } else {
                 {
-                    vt = *(char **)((char *)s0->menu + 0x28);
+                    vt = (char *)NODE(s0->menu)->vptr;
                     obj = (char *)s0->menu;
-                    (*(void (**)(char *))(vt + 0x5C))(
-                        (char *)((int)*(short *)(vt + 0x58) + (int)obj));
+                    ((void (*)(char *))VT_SLOT(vt, 10).fn)(
+                        (char *)((int)VT_SLOT(vt, 10).delta + (int)obj));
                 }
                 if (s0->keyMessage != 0) {
                     titproc_uso_func_00F4CC(s0->keyMessage);
@@ -1463,15 +1464,15 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
             }
             break;
         case 1:
-            if (*(int *)((char *)s0->whiteFader + 0x3C) == 0 &&
+            if (WFADER(s0->whiteFader)->alpha == 0 &&
                 titproc_uso_func_011E00((char *)&import_00020098, 0x200) != 0) {
                 titproc_uso_func_0002DC(0x802);
                 titproc_uso_func_00F4CC(s0->menu);
                 y = (char *)s0->mainLogo;
                 if (y != 0) {
-                    vt1 = *(char **)(y + 0x28);
-                    (*(void (**)(char *))(vt1 + 0x5C))(
-                        (char *)((int)*(short *)(vt1 + 0x58) + (int)y));
+                    vt1 = (char *)NODE(y)->vptr;
+                    ((void (*)(char *))VT_SLOT(vt1, 10).fn)(
+                        (char *)((int)VT_SLOT(vt1, 10).delta + (int)y));
                 }
                 if (s0->keyMessage != 0) {
                     titproc_uso_func_00F4CC(s0->keyMessage);
@@ -1481,12 +1482,11 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                 import_000A53B4(s0->menu);
                 titproc_uso_func_0002DC(5);
                 obj = (char *)s0->menu;
-                if (((int (*)[10])(obj + 0x90))[*(int *)(obj + 0x7C)][0] == 0) {
+                if (GUIMENU(obj)->rows[GUIMENU(obj)->cursor].arg == 0) {
                     return;
                 }
                 *(int *)((char *)&import_00263D30 + 0xA8) = (int)s0;
-                *(int *)((char *)&import_00020098 + 0x84) =
-                    *(int *)((char *)s0->menu + 0x7C);
+                INPUT_MGR(import_00020098).unk84 = GUIMENU(s0->menu)->cursor;
                 if ((s0->race.flags << 4) < 0) {
                     if (s0->race.session != 0) {
                         titproc_uso_func_01F7FC(s0->race.session, 3);
@@ -1495,7 +1495,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                     INPUT_MGR(import_00020098).session = 0;
                 }
                 obj = (char *)s0->menu;
-                (*(void (*)(void))(((int (*)[10])(obj + 0x90))[*(int *)(obj + 0x7C)][0]))();
+                (*(void (*)(void))(GUIMENU(obj)->rows[GUIMENU(obj)->cursor].arg))();
             }
             return;
         case 2:
@@ -1507,10 +1507,10 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
             titproc_uso_func_012150((char *)&import_00020098);
             titproc_uso_func_00F4CC(s0->langMenu);
             if (1) {
-                vt2 = *(char **)((char *)s0->menu + 0x28);
+                vt2 = (char *)NODE(s0->menu)->vptr;
                 obj2 = (char *)s0->menu;
-                (*(void (**)(char *))(vt2 + 0x5C))(
-                    (char *)((int)*(short *)(vt2 + 0x58) + (int)obj2));
+                ((void (*)(char *))VT_SLOT(vt2, 10).fn)(
+                    (char *)((int)VT_SLOT(vt2, 10).delta + (int)obj2));
             }
             s0->menuState = 1;
             break;
@@ -1526,8 +1526,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
         INPUT_MGR(import_00020098).session = 0;
     }
     if (1) {
-        *(int *)((char *)&import_00020098 + 0x40) =
-            *(int *)((char *)&import_00020098 + 0x44);
+        INPUT_MGR(import_00020098).procState = INPUT_MGR(import_00020098).nextProcState;
     }
     titproc_uso_func_00F954(s0, 0, 0);
     }
@@ -1606,12 +1605,12 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
     }
     v1 = (char *)s0->whiteFader;
     {
-        p3c = (int*)(v1 + 0x3C);
+        p3c = &WFADER(v1)->alpha;
         if (*p3c < 255) {
             *p3c += 16;
             v1 = (char *)s0->whiteFader;
-            if (*(int*)(v1 + 0x3C) < 256) goto final;
-            *(int*)(v1 + 0x3C) = 720;
+            if (WFADER(v1)->alpha < 256) goto final;
+            WFADER(v1)->alpha = 720;
             goto final;
         }
     }
@@ -1621,25 +1620,25 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
         p3c = *(int**)(INPUT_MGR(import_00020098).game + 0xC4);
         arg = *(int*)((char*)p3c + 0x800);
         titproc_uso_func_07BA68(arg, 0);
-        a1 = *(int*)(*(char**)((char *)s0->race.session + 8) + 8);
+        a1 = s0->race.session->ghost->data;
         titproc_uso_func_07C07C(arg, a1,
-                         *(int*)(*(char**)((char *)s0->race.session + 8) + 4));
+                         s0->race.session->ghost->count);
         titproc_uso_func_01CCD4(s0);
         s0->race.timeout = s0->race.flags & 0xFFFF;
         goto ret;
     }
-    (*(void (**)(char*))((char*)*(int**)((char*)&import_0001FFF8 + 0x28) + 0x64))(
-        (char*)((int)(short)*(short*)((char*)*(int**)((char*)&import_0001FFF8 + 0x28) + 0x60) + (int)&import_0001FFF8));
+    ((void (*)(char *))VT_SLOT(NODE(&import_0001FFF8)->vptr, 11).fn)(
+        (char*)((int)(short)VT_SLOT(NODE(&import_0001FFF8)->vptr, 11).delta + (int)&import_0001FFF8));
     goto final;
 
 dec_path:
     v1 = (char *)s0->whiteFader;
     {
-        p3c = (int*)(v1 + 0x3C);
+        p3c = &WFADER(v1)->alpha;
         if (*p3c > 0) {
             *p3c -= 16;
             v1 = (char *)s0->whiteFader;
-            if (*(int*)(v1 + 0x3C) < 0) *(int*)(v1 + 0x3C) = 0;
+            if (WFADER(v1)->alpha < 0) WFADER(v1)->alpha = 0;
         }
     }
     goto final;
