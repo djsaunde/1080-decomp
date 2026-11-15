@@ -1,6 +1,6 @@
-nonmatching RcpMgr_func_00043D38, 0x174
+nonmatching PolyShape_clipRows_00043D38, 0x174
 
-glabel RcpMgr_func_00043D38
+glabel PolyShape_clipRows_00043D38
     /* E28E10 00043D38 27BDFFC8 */  .word 0x27BDFFC8
     /* E28E14 00043D3C AFBF0014 */  .word 0xAFBF0014
     /* E28E18 00043D40 8C8E007C */  .word 0x8C8E007C
@@ -94,4 +94,4 @@ glabel RcpMgr_func_00043D38
     /* E28F78 00043EA0 27BD0038 */  .word 0x27BD0038
     /* E28F7C 00043EA4 03E00008 */  .word 0x03E00008
     /* E28F80 00043EA8 00000000 */  .word 0x00000000
-endlabel RcpMgr_func_00043D38
+endlabel PolyShape_clipRows_00043D38

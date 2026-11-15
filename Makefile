@@ -2064,8 +2064,8 @@ GAMELIBS_43D38_DONOR := build/src/game_libs/game_libs_ncc_43D38.cpp.o
 $(GAMELIBS_43D38_DONOR): src/game_libs/game_libs_ncc_43D38.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym clip__4ElemFv=RcpMgr_func_00043D38 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += RcpMgr_func_00043D38=$(GAMELIBS_43D38_DONOR)
+	$(OBJCOPY) --redefine-sym clip__4ElemFv=PolyShape_clipRows_00043D38 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_clipRows_00043D38=$(GAMELIBS_43D38_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_DONOR)
 # 45178 = history clamp + gSPMatrix packet as NCC C++ (agent-c run 162: the gDma1p `_g` homed after the post-increment temp = the target's sp+0x24 spill). EXACT NCC donor over an empty placeholder; the literals' .rodata reloc is renamed gfx_emitProjection_rodata (pinned to the USO RoData at +0x1B60).
 GAMELIBS_45178_DONOR := build/src/game_libs/game_libs_ncc_45178.cpp.o
@@ -2373,7 +2373,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41A9C_DONOR)
 # 43654 = display-list setup with flag-gated subobject; cfe NM body as C++ + a dead if(!sp34){} in the else append (permuter); NCC donor.
 GAMELIBS_43654_DONOR := build/src/game_libs/game_libs_ncc_43654.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_func_00043654=$(GAMELIBS_43654_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_buildStateDL_00043654=$(GAMELIBS_43654_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43654_DONOR)
 # 38728 = child-list update with matrix rebuild + owner attach + virtual slot 3 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_38728_DONOR := build/src/game_libs/game_libs_ncc_38728.cpp.o

@@ -1,6 +1,6 @@
-nonmatching RcpMgr_func_00049308, 0xA4
+nonmatching PolyShape_clipToWindow_00049308, 0xA4
 
-glabel RcpMgr_func_00049308
+glabel PolyShape_clipToWindow_00049308
     /* E2E3E0 00049308 27BDFFD8 */  .word 0x27BDFFD8
     /* E2E3E4 0004930C AFBF0024 */  .word 0xAFBF0024
     /* E2E3E8 00049310 AFB30020 */  .word 0xAFB30020
@@ -42,4 +42,4 @@ glabel RcpMgr_func_00049308
     /* E2E478 000493A0 8FB30020 */  .word 0x8FB30020
     /* E2E47C 000493A4 03E00008 */  .word 0x03E00008
     /* E2E480 000493A8 27BD0028 */  .word 0x27BD0028
-endlabel RcpMgr_func_00049308
+endlabel PolyShape_clipToWindow_00049308

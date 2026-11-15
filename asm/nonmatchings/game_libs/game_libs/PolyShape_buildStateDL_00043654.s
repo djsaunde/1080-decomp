@@ -1,6 +1,6 @@
-nonmatching PolyShape_func_00043654, 0x16C
+nonmatching PolyShape_buildStateDL_00043654, 0x16C
 
-glabel PolyShape_func_00043654
+glabel PolyShape_buildStateDL_00043654
     /* E2872C 00043654 27BDFFC8 */  .word 0x27BDFFC8
     /* E28730 00043658 3C0E0000 */  .word 0x3C0E0000
     /* E28734 0004365C 8DCE0214 */  .word 0x8DCE0214
@@ -92,4 +92,4 @@ glabel PolyShape_func_00043654
     /* E2888C 000437B4 27BD0038 */  .word 0x27BD0038
     /* E28890 000437B8 03E00008 */  .word 0x03E00008
     /* E28894 000437BC 00000000 */  .word 0x00000000
-endlabel PolyShape_func_00043654
+endlabel PolyShape_buildStateDL_00043654

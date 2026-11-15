@@ -1,6 +1,6 @@
-nonmatching ScreenWindow_func_00038C04, 0x6C
+nonmatching Node_runCommands_00038C04, 0x6C
 
-glabel ScreenWindow_func_00038C04
+glabel Node_runCommands_00038C04
     /* E1DCDC 00038C04 27BDFFE0 */  .word 0x27BDFFE0
     /* E1DCE0 00038C08 AFBF001C */  .word 0xAFBF001C
     /* E1DCE4 00038C0C AFB10018 */  .word 0xAFB10018
@@ -28,4 +28,4 @@ glabel ScreenWindow_func_00038C04
     /* E1DD3C 00038C64 8FB10018 */  .word 0x8FB10018
     /* E1DD40 00038C68 03E00008 */  .word 0x03E00008
     /* E1DD44 00038C6C 27BD0020 */  .word 0x27BD0020
-endlabel ScreenWindow_func_00038C04
+endlabel Node_runCommands_00038C04

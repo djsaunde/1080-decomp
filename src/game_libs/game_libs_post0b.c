@@ -4203,12 +4203,12 @@ int Node_sendMsg14(int *a0, int a1) {
     return req.return_slot;
 }
 
-/* ScreenWindow_func_00038C04: 27-insn list-walk + vtable-dispatch loop. Matched
+/* Node_runCommands_00038C04: 27-insn list-walk + vtable-dispatch loop. Matched
  * 2026-05-14 via 5-step refinement chain (see git log). The method takes
  * 2 args (adjusted_addr, state) — IDO's `or a1, s0, zero` (where s0 =
  * state) before the jalr is the diagnostic that revealed the 2nd arg is
  * `state`, not `self` (which is in $s1). */
-void ScreenWindow_func_00038C04(int *self, int **state) {
+void Node_runCommands_00038C04(int *self, int **state) {
     int next_val;
     if (state[0] == 0) return;
     do {
@@ -4224,7 +4224,7 @@ void ScreenWindow_func_00038C04(int *self, int **state) {
 }
 
 extern int gl_func_00000000();
-void ScreenWindow_func_00038C70(int a0, int a1, int a2) {
+void Node_runCommandArgs_00038C70(int a0, int a1, int a2) {
     int args[2];
     int pad[4];
     args[0] = a1;
@@ -11155,12 +11155,12 @@ int PolyShape_allocLightDL_000435FC(int *a0, int a1) {
     return gl_func_00000000(v);
 }
 
-// PolyShape_func_00043654 — STRUCTURAL PASS (0x168 / 91 words, no episode). Raw-.word
+// PolyShape_buildStateDL_00043654 — STRUCTURAL PASS (0x168 / 91 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x38
 // (saves ra, s0). Handler-init + multi-cb pipeline + conditional
 // error-format (cbN = jal 0 USO-relocated; error string &D_0002FD1C).
 //
-//   void PolyShape_func_00043654(void *a0, void *a1) {
+//   void PolyShape_buildStateDL_00043654(void *a0, void *a1) {
 //     void *g = *(void**)(&D_0 + 0x214);             // module global
 //     a0->p64 = g;                                    // bind global into obj
 //     void *h = g->p0C;
@@ -11208,7 +11208,7 @@ int PolyShape_allocLightDL_000435FC(int *a0, int a1) {
 // temp-ring residual. Caps: object/g struct, cb identities untyped.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_43654.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 99.84 (the else-branch append pointer coloured v1, target a1). */
-void PolyShape_func_00043654(char *arg0, char *arg1) {
+void PolyShape_buildStateDL_00043654(char *arg0, char *arg1) {
 }
 
 // BaseMat_vslot4_000437C0 (0x428 / 267 words): per-object update tick. Bails unless
@@ -11422,12 +11422,12 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_func_00043BEC);
 
 void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); }
 
-// RcpMgr_func_00043D38 — STRUCTURAL PASS (0x170 / 93 words, no episode). Raw-.word
+// PolyShape_clipRows_00043D38 — STRUCTURAL PASS (0x170 / 93 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x38
 // (saves ra). Packed-table-entry invalidation over an index range (no cb
 // calls — pure table maintenance).
 //
-//   void RcpMgr_func_00043D38(void *a0) {
+//   void PolyShape_clipRows_00043D38(void *a0) {
 //     self = a0;
 //     if (self->p7C == 0) return;                    // beql skip-all guard
 //     Tbl *tb = *(Tbl**)(&D_g + 0x254);               // global table base
@@ -11459,7 +11459,7 @@ void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(
 // struct + &D_g global untyped. Full body INCLUDE_ASM-preserved.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_43D38.cpp (`void Elem::clip()`),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 161). */
-void RcpMgr_func_00043D38(char *arg0) {
+void PolyShape_clipRows_00043D38(char *arg0) {
 }
 
 /* FogParms_setDefault_00043EAC: 17-insn wrapper. Builds a 4-float buf {1,1,1,0} on
@@ -14032,18 +14032,18 @@ void PolyShape_display(char *arg0) {
 }
 #endif
 
-/* RcpMgr_func_00049308: per-record bounds scan (exported, Sym @section 0x5D974).
+/* PolyShape_clipToWindow_00049308: per-record bounds scan (exported, Sym @section 0x5D974).
  * For each of self->0x90 records in the self->0x84 pointer array, test it
  * against the global bounds object q = *(D+0x254) (sym154 @0x3C168 =
  * gGfxLib_41820_c): rec->0x54 >= q->0x10C && rec->0x50 <= q->0x110 -> in-unit
- * callee sym1967 (section 0x583A4 = RcpMgr_func_00043D38, blank jal) on rec.
+ * callee sym1967 (section 0x583A4 = PolyShape_clipRows_00043D38, blank jal) on rec.
  * Plain indexed for-loop: IDO builds the s1 = i*4 cursor, hoists &D into
  * s3, re-reads the bound after the call, and folds i++ into both bnezl
  * likely slots. Old wrap's 2-param arity, self->0x254 misread and
  * hand-written off += 4 cursor were the residual. */
 extern int gl_func_00000000();
 extern int gGfxLib_41820_c;
-void RcpMgr_func_00049308(char *self) {
+void PolyShape_clipToWindow_00049308(char *self) {
     int i;
     for (i = 0; i < *(int *)(self + 0x90); i++) {
         char *rec = (*(char ***)(self + 0x84))[i];
@@ -14862,7 +14862,7 @@ int MorphPoly_vslot12_0004AFB4(int *a0, int a1, int a2, int a3, int stack_arg) {
  * (callee may mutate). Naming `count` as a local regresses to 88% by
  * pinning $v0; full-inline form preserves target's $t6/$t7/$t8/$t9
  * use-and-discard pattern. */
-void MorphPoly_func_0004B040(int *a0) {
+void MorphPoly_morphAll_0004B040(int *a0) {
     int i;
     for (i = 0; i < a0[0xC/4]; i++) {
         func_00000000(((int*)a0[0])[i]);
@@ -17379,7 +17379,7 @@ void Window_stub_0004EB4C(int a0) {}
 // then — when self->0x70 is set — invokes the node's virtual method
 // (vt = node->0x28, fnptr vt->0x64, arg (short)vt->0x60 + node) and proceeds
 // with an 85.0f (0x42AA0000) FP constant. Family: flag-gated init +
-// diagnostic + vtable-dispatch (siblings PolyShape_func_00043654 / 000469A8).
+// diagnostic + vtable-dispatch (siblings PolyShape_buildStateDL_00043654 / 000469A8).
 // Decode keys that made it exact: (short) vtable member offsets read via lh
 // (sign-extending lo16 tell); every tail cb site passes a &D symbol (NOT 0 —
 // zero-args CSE'd into move a0,zero and broke the beq/nop + per-site lui/addiu

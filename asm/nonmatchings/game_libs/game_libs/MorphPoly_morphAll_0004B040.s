@@ -1,6 +1,6 @@
-nonmatching MorphPoly_func_0004B040, 0x68
+nonmatching MorphPoly_morphAll_0004B040, 0x68
 
-glabel MorphPoly_func_0004B040
+glabel MorphPoly_morphAll_0004B040
     /* E30118 0004B040 27BDFFD8 */  .word 0x27BDFFD8
     /* E3011C 0004B044 AFBF0024 */  .word 0xAFBF0024
     /* E30120 0004B048 AFB20020 */  .word 0xAFB20020
@@ -27,4 +27,4 @@ glabel MorphPoly_func_0004B040
     /* E30174 0004B09C 8FB20020 */  .word 0x8FB20020
     /* E30178 0004B0A0 03E00008 */  .word 0x03E00008
     /* E3017C 0004B0A4 27BD0028 */  .word 0x27BD0028
-endlabel MorphPoly_func_0004B040
+endlabel MorphPoly_morphAll_0004B040
