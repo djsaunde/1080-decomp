@@ -1,15 +1,16 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 extern s32 func_800066F0(void*, s32, s32);
 
 /* __rmonSendHeader (rmonmain.c). Named k___rmonSendHeader: the plain name
  * is the +0x400 runtime call alias (undefined_syms_auto.txt). */
-void k___rmonSendHeader(char* buf, s32 size, s32 domain) {
+void k___rmonSendHeader(KKHeader* block, s32 size, s32 type) {
     s32 totalSent;
-    char* p = buf;
+    char* p = (char*)block;
 
-    *(u8*)(buf + 8) = 2;
-    *(u8*)(buf + 5) = domain;
+    block->rev = KK_REV;
+    block->type = type;
     totalSent = 0;
     if (size != 0) {
         do {
@@ -19,16 +20,16 @@ void k___rmonSendHeader(char* buf, s32 size, s32 domain) {
     }
 }
 
-extern void __rmonSendHeader(s32*, s32, s32);
+extern void __rmonSendHeader(KKHeader*, s32, s32);
 extern void func_80005534(void);
 
-/* writes the 32-bit value arg1 at *arg0, copies 4 bytes from arg1's
+/* writes the packet length arg1 into block->length, copies 4 bytes from arg1's
  * stack slot via func_800066F0, then __rmonMaskIdleThreadInts + func_80005534. */
-void __rmonSendReply(s32* arg0, s32 arg1, s32 arg2) {
+void __rmonSendReply(KKHeader* block, s32 arg1, s32 arg2) {
     char* p;
     s32 totalRecv;
     totalRecv = 0;
-    *arg0 = arg1;
+    block->length = arg1;
     p = (char*)&arg1;
     if (totalRecv < 4) {
         do {
@@ -36,6 +37,6 @@ void __rmonSendReply(s32* arg0, s32 arg1, s32 arg2) {
             totalRecv += recv;
         } while (totalRecv < 4);
     }
-    __rmonSendHeader(arg0, arg1, arg2);
+    __rmonSendHeader(block, arg1, arg2);
     func_80005534();
 }

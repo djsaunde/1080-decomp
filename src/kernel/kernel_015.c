@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -79,26 +80,20 @@ s32 rmon_NotImplemented(s32 arg0) {
  * is steps 2+3 (same-file merge into single C body at -O1).
  * 80006640 cross-function shared-tail entry preserved via
  * undefined_syms_auto.txt. */
-extern s32 (*rmon_dispatchTable[])(u8 *);
+extern s32 (*rmon_dispatchTable[])(KKHeader *);
 extern void func_800073F8(void *buf, s32 size, s32 flag);
-typedef struct {
-    char pad0[4];
-    char idx;
-    char pad5;
-    s16 result;
-    char pad8[4];
-} ErrPkt;
-s32 __rmonExecute(u8 *a0) {
+/* func_800073F8 = __rmonSendReply (+0x400 call alias) */
+s32 __rmonExecute(KKHeader *req) {
     s32 v0;
-    ErrPkt pkt;
-    if (a0[4] >= 0x35) {
-        return -1;
+    KKHeader reply;
+    if (req->code >= 0x35) {
+        return TV_ERROR_ILLEGAL_CALL;
     }
-    v0 = rmon_dispatchTable[a0[4]](a0);
-    if (v0 < 0) {
-        pkt.idx = a0[4];
-        pkt.result = (s16)v0;
-        func_800073F8(&pkt, 0xC, 1);
+    v0 = rmon_dispatchTable[req->code](req);
+    if (v0 < TV_ERROR_NO_ERROR) {
+        reply.code = req->code;
+        reply.error = (s16)v0;
+        func_800073F8(&reply, sizeof(KKHeader), KK_TYPE_REPLY);
     }
     return v0;
 }

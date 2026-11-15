@@ -1,27 +1,23 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 extern void func_800073F8(void*, s32, s32);
 
-typedef struct {
-    s32 pad0; u8 type; char pad5; u16 flags;
-    s32 pad8; s32 zeroed; s16 one_val; s16 pad_s; s32 code;
-} RmonHdr24;
-typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; } RmonMsg2;
 
 /* __rmonListProcesses (rmonmem.c): rmon dispatchTable[1] */
-s32 __rmonListProcesses(RmonMsg2* msg) {
-    RmonMsg2* p = msg;
-    RmonHdr24 hdr;
-    hdr.zeroed = 0;
-    hdr.one_val = 1;
-    if (p->domain == 1) {
-        *(s32*)((char*)&hdr + 0x14) = 0x3E9;
+s32 __rmonListProcesses(KKHeader* req) {
+    KKHeader* p = req;
+    KKObjsEvent reply;
+    reply.object = 0;
+    reply.objs.number = 1;
+    if (p->method == 1) {   /* 1080's 2.0I rmon: method 1 answers pid 1001 */
+        reply.objs.objects[0] = 0x3E9;
     } else {
-        *(s32*)((char*)&hdr + 0x14) = 0x3EA;
+        reply.objs.objects[0] = 0x3EA;
     }
-    hdr.type = p->type;
-    hdr.flags = 0;
-    func_800073F8(&hdr, 0x18, 1);
+    reply.header.code = p->code;
+    reply.header.error = TV_ERROR_NO_ERROR;
+    func_800073F8(&reply, sizeof(KKObjsEvent), KK_TYPE_REPLY); /* __rmonSendReply */
     return 0;
 }
 
