@@ -1,6 +1,8 @@
 #ifndef GDL_DMA_H
 #define GDL_DMA_H
 
+#include "gdl/gl_data.h"
+
 /* One libgdl PI DMA slot (game_libs 0x337AC-0x33B6C, src/game_libs/game_libs_post.c).
  * The table is 10 slots of 0x44 bytes at the start of game_libs' data base
  * (&D_00000000 + 0). Slot 0 is the synchronous slot (dma_read / dma_write
@@ -26,6 +28,18 @@ typedef struct DmaSlot {
 } DmaSlot;
 
 #define DMA_NUM_SLOTS 10
+
+/* The slot table: bootup.uso Bss object at Bss+0x3A240 (Sym 1504, tag
+ * 0x008277D2). Every dma_* TextReloc names that Sym; the instructions carry
+ * only the field offsets (include/gdl/gl_data.h). */
+#define gDmaSlots ((DmaSlot *)&D_00000000)
+
+/* dma_* error strings, Data-section-base sites (Sym 2): */
+#define sDmaReadNotAligned  GL_DATA(0x1E2C0) /* "read not aligned %d %x" */
+#define sDmaBadReadLen      GL_DATA(0x1E2D8) /* "bad read len %d\n" */
+#define sDmaWriteNotAligned GL_DATA(0x1E2EC) /* "write not aligned %d, %x" */
+#define sDmaBadWriteLen     GL_DATA(0x1E308) /* "bad write len %d\n" */
+#define sDmaOutOfSlots      GL_DATA(0x1E31C) /* "Out of DMA slots" */
 
 typedef char DmaSlot_size_check[sizeof(DmaSlot) == 0x44 ? 1 : -1];
 typedef char DmaSlot_mq_check[(int)&((DmaSlot *)0)->mq == 0x18 ? 1 : -1];

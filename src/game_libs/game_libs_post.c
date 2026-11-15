@@ -16214,12 +16214,12 @@ void fs_bufWrite_334E8(void) {
 void dma_startRead(int id, unsigned dram, int devAddr, int len) {
     DmaSlot *rec;
     if (dram & 7) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E2C0, id, dram);
+        gl_func_00000000(sDmaReadNotAligned, id, dram);
     }
     if (len & 1) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E2D8, len);
+        gl_func_00000000(sDmaBadReadLen, len);
     }
-    rec = (DmaSlot *)((char *)&D_00000000 + id * 0x44);
+    rec = &gDmaSlots[id];
     rec->busy = 1;
     gl_func_00000000(dram, len);
     gl_func_00000000(rec, 0, 0, devAddr, dram, len, rec->mq);
@@ -16276,12 +16276,12 @@ void dma_startRead(int id, unsigned dram, int devAddr, int len) {
 void dma_startWrite(int id, int devAddr, unsigned dram, int len) {
     DmaSlot *rec;
     if (dram & 7) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E2EC, len);
+        gl_func_00000000(sDmaWriteNotAligned, len);
     }
     if (len & 1) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E308, len);
+        gl_func_00000000(sDmaBadWriteLen, len);
     }
-    rec = (DmaSlot *)((char *)&D_00000000 + id * 0x44);
+    rec = &gDmaSlots[id];
     rec->busy = 1;
     gl_func_00000000(dram, len);
     gl_func_00000000(rec, 0, 1, devAddr, dram, len, rec->mq);
@@ -16307,7 +16307,7 @@ void dma_startWrite(int id, int devAddr, unsigned dram, int len) {
 void dma_wait(int idx) {
     int local;
     DmaSlot *rec;
-    rec = (DmaSlot *)((char *)&D_00000000 + idx * 0x44);
+    rec = &gDmaSlots[idx];
     if (rec->busy != 0) {
         gl_func_00000000(rec->mq, &local, 1);
         if (rec->invalidate != 0) {
@@ -16319,7 +16319,7 @@ void dma_wait(int idx) {
 
 /* dma_read: 27-insn busy-wait + 2-call. */
 void dma_read(int a0, int a1, int a2) {
-    while (((DmaSlot *)&D_00000000)->busy != 0) {
+    while (gDmaSlots[0].busy != 0) {
         func_00000000();
     }
     func_00000000(0, a0, a1, a2);
@@ -16328,7 +16328,7 @@ void dma_read(int a0, int a1, int a2) {
 
 /* dma_write: 27-insn busy-wait + 2-call wrapper. */
 void dma_write(int a0, int a1, int a2) {
-    while (((DmaSlot *)&D_00000000)->busy != 0) {
+    while (gDmaSlots[0].busy != 0) {
         func_00000000();
     }
     func_00000000(0, a0, a1, a2);
@@ -16339,13 +16339,13 @@ void dma_write(int a0, int a1, int a2) {
  * &D_0 + 0x44 (stride 0x44); returns index of first record where
  * field_0x3C == 0; if none, calls gl_func(&D_0 + 0x1E31C) and returns 0. */
 int dma_allocSlot(void) {
-    DmaSlot *p = (DmaSlot *)&D_00000000 + 1;
+    DmaSlot *p = gDmaSlots + 1;
     int i;
     for (i = 1; i != DMA_NUM_SLOTS; i++) {
         if (p->busy == 0) return i;
         p++;
     }
-    gl_func_00000000((char*)&D_00000000 + 0x1E31C);
+    gl_func_00000000(sDmaOutOfSlots);
     return 0;
 }
 
