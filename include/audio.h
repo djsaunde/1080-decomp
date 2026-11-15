@@ -17,7 +17,8 @@
  * function that proves each one is cited); everything else is padding. This
  * is the 1080 layout, not OoT's: OoT's context is larger and shifted (OoT
  * notes at 0x3530, here 0x2CFC). Sub-structures whose fields are not yet
- * verified are opaque blocks of their verified stride.
+ * verified are opaque blocks of their verified stride (SynthesisReverb,
+ * AudioAsyncLoad; Note 0xD0 / NoteSampleState are not modelled yet).
  * Opt-in header: include it only in TUs that do not already typedef these
  * names (a duplicate typedef is a cfe error). */
 
@@ -33,8 +34,199 @@ typedef struct AudioAllocPool {
 
 /* Opaque until their fields are verified; the strides are verified. */
 typedef struct SynthesisReverb { u8 data[0x158]; } SynthesisReverb; /* AudioSynth_*: reverbIndex * 0x158 */
-typedef struct SequencePlayer { u8 data[0x160]; } SequencePlayer;   /* AudioThread_SetFadeOutTimer: i * 352 */
 typedef struct AudioAsyncLoad { u8 data[0x54]; } AudioAsyncLoad;   /* AudioLoad_ProcessAsyncLoads: 16 x 0x54 */
+
+/* AudioSeq_AudioListPushBack (0x2A884): prev 0x0, next 0x4, count/value 0x8
+ * (list->u.count++), pool 0xC (item->pool = list->pool). */
+typedef struct AudioListItem {
+    /* 0x0 */ struct AudioListItem *prev;
+    /* 0x4 */ struct AudioListItem *next;
+    /* 0x8 */ union { void *value; s32 count; } u;
+    /* 0xC */ struct NotePool *pool;
+} AudioListItem; /* size = 0x10 */
+
+/* Audio_InitNoteLists / Audio_NotePoolClear: four lists, 0x40 (SequencePlayer
+ * 0x9C..0xDC, SequenceChannel 0x94..0xD4, gAudioCtx 0x5378..0x53B8). */
+typedef struct NotePool {
+    /* 0x00 */ AudioListItem disabled;
+    /* 0x10 */ AudioListItem decaying;
+    /* 0x20 */ AudioListItem releasing;
+    /* 0x30 */ AudioListItem active;
+} NotePool; /* size = 0x40 */
+
+/* Matched donors game_libs_o2_2BB7C.c / _2C7A4.c (script interpreters). */
+typedef struct SeqScriptState {
+    /* 0x00 */ u8 *pc;
+    /* 0x04 */ u8 *stack[4];
+    /* 0x14 */ u8 remLoopIters[4];
+    /* 0x18 */ u8 depth;           /* AudioSeq_InitSequenceChannel clears channel+0x88 */
+    /* 0x19 */ s8 value;
+} SeqScriptState; /* size = 0x1C */
+
+/* AudioSeq_InitSequenceChannel: decayIndex 0xF0, sustain 0, envelope = default;
+ * AudioSeq_SeqChannelSetLayer copies the 8 bytes channel+0x8C -> layer+0x18. */
+typedef struct AdsrSettings {
+    /* 0x0 */ u8 decayIndex;
+    /* 0x1 */ u8 sustain;
+    /* 0x4 */ void *envelope;
+} AdsrSettings; /* size = 0x8 */
+
+/* Matched donor game_libs_o2_2BB7C.c (channel->stereo.asByte = cmd & 0x7F). */
+typedef union Stereo {
+    struct {
+        u8 unused : 2;
+        u8 bit2 : 2;
+        u8 strongRight : 1;
+        u8 strongLeft : 1;
+        u8 stereoHeadsetEffects : 1;
+        u8 usesHeadsetPanEffects : 1;
+    } s;
+    u8 asByte;
+} Stereo; /* size = 0x1 */
+
+struct SequenceChannel;
+struct SequenceLayer;
+
+/* 0x160, the OoT layout unchanged. AudioSeq_ResetSequencePlayer (stopScript
+ * bit, delay 0x10, state 1, fade timers 0x12/0x14, tempoAcc 0xA, tempo 0x8 =
+ * 0x1680 = 120 * 48, tempoChange 0xC, transposition 0xE, noteAllocPolicy 0x2,
+ * velocity/gate tables 0x94/0x98, scriptCounter 0xE0, fadeVolume 0x1C,
+ * fadeVelocity 0x20, volume 0x24, muteVolumeScale 0x28 = 0.5, 16 channels at
+ * 0x38); AudioSeq_InitSequencePlayer (muteBehavior 0x3 = 0x60, fadeVolumeScale
+ * 0x2C, bend 0x34, seqScriptIO 0x158 = -1, notePool 0x9C);
+ * AudioSeq_SkipForwardSequence (skipTicks 0xDC); AudioSeq_SequencePlayerDisable
+ * (seqId 0x4, defaultFont 0x5). The flag byte is declared with u32 bitfields
+ * exactly as the matched donor game_libs_o2_2C7A4.c spells it (container type
+ * steers IDO's bitfield loads). */
+typedef struct SequencePlayer {
+    /* 0x000 */ u32 enabled : 1;
+    /* 0x000 */ u32 finished : 1;
+    /* 0x000 */ u32 muted : 1;
+    /* 0x000 */ u32 seqDmaInProgress : 1;
+    /* 0x000 */ u32 fontDmaInProgress : 1;
+    /* 0x000 */ u32 recalculateVolume : 1;
+    /* 0x000 */ u32 stopScript : 1;
+    /* 0x000 */ u32 applyBend : 1;
+    /* 0x001 */ u8 state;
+    /* 0x002 */ u8 noteAllocPolicy;
+    /* 0x003 */ u8 muteBehavior;
+    /* 0x004 */ u8 seqId;
+    /* 0x005 */ u8 defaultFont;
+    /* 0x006 */ u8 unk_06;
+    /* 0x007 */ s8 playerIdx;
+    /* 0x008 */ u16 tempo;
+    /* 0x00A */ u16 tempoAcc;
+    /* 0x00C */ s16 tempoChange;
+    /* 0x00E */ s16 transposition;
+    /* 0x010 */ u16 delay;
+    /* 0x012 */ u16 fadeTimer;
+    /* 0x014 */ u16 fadeTimerUnkEu;
+    /* 0x016 */ char unk_16[2];
+    /* 0x018 */ u8 *seqData;
+    /* 0x01C */ f32 fadeVolume;
+    /* 0x020 */ f32 fadeVelocity;
+    /* 0x024 */ f32 volume;
+    /* 0x028 */ f32 muteVolumeScale;
+    /* 0x02C */ f32 fadeVolumeScale;
+    /* 0x030 */ f32 appliedFadeVolume;
+    /* 0x034 */ f32 bend;
+    /* 0x038 */ struct SequenceChannel *channels[16];
+    /* 0x078 */ SeqScriptState scriptState;
+    /* 0x094 */ u8 *shortNoteVelocityTable;
+    /* 0x098 */ u8 *shortNoteGateTimeTable;
+    /* 0x09C */ NotePool notePool;
+    /* 0x0DC */ s32 skipTicks;
+    /* 0x0E0 */ u32 scriptCounter;
+    /* 0x0E4 */ char unk_E4[0x158 - 0xE4];
+    /* 0x158 */ s8 seqScriptIO[8];
+} SequencePlayer; /* size = 0x160 (AudioThread_SetFadeOutTimer: i * 352) */
+
+/* 0xE4 (AudioSeq_InitSequencePlayerChannels allocates 228 from miscPool), the
+ * OoT layout up to 0x4C, then EIGHT layers (OoT: four) and everything after
+ * shifted by 0x10. Offsets: AudioSeq_InitSequenceChannel (every field it
+ * resets: changes 0x1 = 0xFF, newPan 0xA = 64, panChannelWeight 0xB = 128,
+ * notePriority 0x5 = 3, someOtherPriority 0x6 = 1, vibrato 0x10..0x1C = 0x800 /
+ * 0, delay 0x1E, combFilterGain 0x20, transposition 0x26, volumeScale 0x28,
+ * volume 0x2C, freqScale 0x38, noteUnused 0x40, adsr 0x8C, notePool 0x94,
+ * seqScriptIO 0xD4 = -1, filter 0xDC, stereo 0xE0); seqPlayer 0x4C / layers
+ * 0x50 (InitSequencePlayerChannels). Bitfields as the matched donor
+ * game_libs_o2_2BB7C.c declares them (u32 container covering 0x0..0x1). */
+typedef struct SequenceChannel {
+    /* 0x00 */ u32 enabled : 1;
+    /* 0x00 */ u32 finished : 1;
+    /* 0x00 */ u32 stopScript : 1;
+    /* 0x00 */ u32 stopSomething2 : 1;
+    /* 0x00 */ u32 hasInstrument : 1;
+    /* 0x00 */ u32 stereoHeadsetEffects : 1;
+    /* 0x00 */ u32 largeNotes : 1;
+    /* 0x00 */ u32 unused : 1;
+    /* 0x01 */ u32 changesFreqScale : 1;
+    /* 0x01 */ u32 changesVolume : 1;
+    /* 0x01 */ u32 changesPan : 1;
+    /* 0x01 */ u32 changesRest : 5;
+    /* 0x02 */ u8 noteAllocPolicy;
+    /* 0x03 */ u8 muteBehavior;
+    /* 0x04 */ u8 targetReverbVol;
+    /* 0x05 */ u8 notePriority;
+    /* 0x06 */ u8 someOtherPriority;
+    /* 0x07 */ u8 fontId;
+    /* 0x08 */ u8 reverbIndex;
+    /* 0x09 */ u8 bookOffset;
+    /* 0x0A */ u8 newPan;
+    /* 0x0B */ u8 panChannelWeight;
+    /* 0x0C */ u8 gain;
+    /* 0x0D */ u8 velocityRandomVariance;
+    /* 0x0E */ u8 gateTimeRandomVariance;
+    /* 0x0F */ u8 combFilterSize;
+    /* 0x10 */ u16 vibratoRateStart;
+    /* 0x12 */ u16 vibratoDepthStart;
+    /* 0x14 */ u16 vibratoRateTarget;
+    /* 0x16 */ u16 vibratoDepthTarget;
+    /* 0x18 */ u16 vibratoRateChangeDelay;
+    /* 0x1A */ u16 vibratoDepthChangeDelay;
+    /* 0x1C */ u16 vibratoDelay;
+    /* 0x1E */ u16 delay;
+    /* 0x20 */ u16 combFilterGain;
+    /* 0x22 */ u16 unk_22;
+    /* 0x24 */ s16 instOrWave;
+    /* 0x26 */ s16 transposition;
+    /* 0x28 */ f32 volumeScale;
+    /* 0x2C */ f32 volume;
+    /* 0x30 */ s32 pan;
+    /* 0x34 */ f32 appliedVolume;
+    /* 0x38 */ f32 freqScale;
+    /* 0x3C */ u8 (*dynTable)[][2];
+    /* 0x40 */ void *noteUnused;
+    /* 0x44 */ void *layerUnused;
+    /* 0x48 */ void *instrument;
+    /* 0x4C */ SequencePlayer *seqPlayer;
+    /* 0x50 */ struct SequenceLayer *layers[8];
+    /* 0x70 */ SeqScriptState scriptState;
+    /* 0x8C */ AdsrSettings adsr;
+    /* 0x94 */ NotePool notePool;
+    /* 0xD4 */ s8 seqScriptIO[8];
+    /* 0xDC */ s16 *filter;
+    /* 0xE0 */ Stereo stereo;
+    /* 0xE1 */ char unk_E1[3];
+} SequenceChannel; /* size = 0xE4 */
+
+/* 0x80 (AudioSeq_InitLayerFreelist: 64 x 0x80 at gAudioCtx+0x3280, list item
+ * at +0x70 registered on layerFreeList). Named: the flag word (the
+ * game_libs_o2_2BB7C.c donor's enabled/finished bits), adsr 0x18 (copied from
+ * channel->adsr by AudioSeq_SeqChannelSetLayer), channel 0x50 (SetLayer),
+ * scriptState 0x54 (2BB7C donor), listItem 0x70. The rest differs from OoT's
+ * layer and stays padding until verified. */
+typedef struct SequenceLayer {
+    /* 0x00 */ u32 enabled : 1;
+    /* 0x00 */ u32 finished : 1;
+    /* 0x00 */ u32 rest : 30;
+    /* 0x04 */ char unk_04[0x18 - 0x04];
+    /* 0x18 */ AdsrSettings adsr;
+    /* 0x20 */ char unk_20[0x50 - 0x20];
+    /* 0x50 */ SequenceChannel *channel;
+    /* 0x54 */ SeqScriptState scriptState;
+    /* 0x70 */ AudioListItem listItem;
+} SequenceLayer; /* size = 0x80 */
 
 typedef struct AudioContext {
     /* 0x0000 */ char unk_0000;
@@ -132,8 +324,11 @@ typedef struct AudioContext {
     /* 0x2CF8 */ f32 *adsrDecayTable;
     /* 0x2CFC */ void *notes;                         /* Note[numNotes], stride 0xD0 */
     /* 0x2D00 */ SequencePlayer seqPlayers[4];
-    /* 0x3280 */ char unk_3280[0x5378 - 0x3280];
-    /* 0x5378 */ u8 noteFreeLists[0x53B8 - 0x5378];   /* NotePool (NotePoolClear, AllocNote) */
+    /* 0x3280 */ SequenceLayer sequenceLayers[64];   /* AudioSeq_InitLayerFreelist */
+    /* 0x5280 */ SequenceChannel sequenceChannelNone; /* InitSequenceChannel early-out, InitSequencePlayer */
+    /* 0x5364 */ s32 noteSubEuOffset;                 /* AudioSeq_ProcessSequences */
+    /* 0x5368 */ AudioListItem layerFreeList;         /* InitLayerFreelist, SeqChannelSetLayer */
+    /* 0x5378 */ NotePool noteFreeLists;              /* NotePoolClear, AllocNote */
     /* 0x53B8 */ u8 threadCmdWritePos;                /* AudioThread_QueueCmd */
     /* 0x53B9 */ u8 threadCmdReadPos;
     /* 0x53BA */ u8 threadCmdQueueFinished;
@@ -173,10 +368,47 @@ AUDIO_ASSERT_OFFSET(sampleFontLoadStatus, 0x2C10);
 AUDIO_ASSERT_OFFSET(resetStatus, 0x2CF0);
 AUDIO_ASSERT_OFFSET(notes, 0x2CFC);
 AUDIO_ASSERT_OFFSET(seqPlayers, 0x2D00);
+AUDIO_ASSERT_OFFSET(sequenceLayers, 0x3280);
+AUDIO_ASSERT_OFFSET(sequenceChannelNone, 0x5280);
+AUDIO_ASSERT_OFFSET(noteSubEuOffset, 0x5364);
+AUDIO_ASSERT_OFFSET(layerFreeList, 0x5368);
 AUDIO_ASSERT_OFFSET(noteFreeLists, 0x5378);
 AUDIO_ASSERT_OFFSET(threadCmdChannelMask, 0x53BC);
 typedef char audio_pool_size_assert[sizeof(AudioAllocPool) == 0x10 ? 1 : -1];
 typedef char audio_reverb_size_assert[sizeof(SynthesisReverb) == 0x158 ? 1 : -1];
 typedef char audio_seqplayer_size_assert[sizeof(SequencePlayer) == 0x160 ? 1 : -1];
+typedef char audio_listitem_size_assert[sizeof(AudioListItem) == 0x10 ? 1 : -1];
+typedef char audio_notepool_size_assert[sizeof(NotePool) == 0x40 ? 1 : -1];
+typedef char audio_scriptstate_size_assert[sizeof(SeqScriptState) == 0x1C ? 1 : -1];
+typedef char audio_channel_size_assert[sizeof(SequenceChannel) == 0xE4 ? 1 : -1];
+typedef char audio_layer_size_assert[sizeof(SequenceLayer) == 0x80 ? 1 : -1];
+#define AUDIO_ASSERT_MEMBER(type, field, off) \
+    typedef char audio_##type##_##field##_assert[(int)&((type *)0)->field == (off) ? 1 : -1]
+AUDIO_ASSERT_MEMBER(SequencePlayer, tempo, 0x008);
+AUDIO_ASSERT_MEMBER(SequencePlayer, seqData, 0x018);
+AUDIO_ASSERT_MEMBER(SequencePlayer, bend, 0x034);
+AUDIO_ASSERT_MEMBER(SequencePlayer, channels, 0x038);
+AUDIO_ASSERT_MEMBER(SequencePlayer, scriptState, 0x078);
+AUDIO_ASSERT_MEMBER(SequencePlayer, shortNoteVelocityTable, 0x094);
+AUDIO_ASSERT_MEMBER(SequencePlayer, notePool, 0x09C);
+AUDIO_ASSERT_MEMBER(SequencePlayer, skipTicks, 0x0DC);
+AUDIO_ASSERT_MEMBER(SequencePlayer, scriptCounter, 0x0E0);
+AUDIO_ASSERT_MEMBER(SequencePlayer, seqScriptIO, 0x158);
+AUDIO_ASSERT_MEMBER(SequenceChannel, noteAllocPolicy, 0x02);
+AUDIO_ASSERT_MEMBER(SequenceChannel, vibratoRateStart, 0x10);
+AUDIO_ASSERT_MEMBER(SequenceChannel, transposition, 0x26);
+AUDIO_ASSERT_MEMBER(SequenceChannel, freqScale, 0x38);
+AUDIO_ASSERT_MEMBER(SequenceChannel, seqPlayer, 0x4C);
+AUDIO_ASSERT_MEMBER(SequenceChannel, layers, 0x50);
+AUDIO_ASSERT_MEMBER(SequenceChannel, scriptState, 0x70);
+AUDIO_ASSERT_MEMBER(SequenceChannel, adsr, 0x8C);
+AUDIO_ASSERT_MEMBER(SequenceChannel, notePool, 0x94);
+AUDIO_ASSERT_MEMBER(SequenceChannel, seqScriptIO, 0xD4);
+AUDIO_ASSERT_MEMBER(SequenceChannel, filter, 0xDC);
+AUDIO_ASSERT_MEMBER(SequenceChannel, stereo, 0xE0);
+AUDIO_ASSERT_MEMBER(SequenceLayer, adsr, 0x18);
+AUDIO_ASSERT_MEMBER(SequenceLayer, channel, 0x50);
+AUDIO_ASSERT_MEMBER(SequenceLayer, scriptState, 0x54);
+AUDIO_ASSERT_MEMBER(SequenceLayer, listItem, 0x70);
 
 #endif /* AUDIO_H */

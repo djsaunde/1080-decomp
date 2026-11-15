@@ -10,32 +10,13 @@
  * low-nibble table) to AudioSeq_SequenceChannelProcessScript_rodata, pinned to the USO tables at
  * +0x10B0. The DYNCALL push is written as an s32 copy of the depth, a store, then
  * a separate increment (OoT's stack[depth++] colours the depth t3, target v1). */
-typedef union { struct { u8 unused : 2; u8 bit2 : 2; u8 strongRight : 1; u8 strongLeft : 1; u8 stereoHeadsetEffects : 1; u8 usesHeadsetPanEffects : 1; } s; u8 asByte; } gl_2BB7C_Stereo;
-typedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2BB7C_SeqScriptState;
-typedef struct { u8 decayIndex; u8 sustain; void *envelope; } gl_2BB7C_AdsrSettings;
-typedef struct { u32 enabled : 1; u32 finished : 1; u32 rest : 30; char pad4[0x54 - 4]; gl_2BB7C_SeqScriptState scriptState; } gl_2BB7C_Layer;
-typedef struct gl_2BB7C_Channel gl_2BB7C_Channel;
-typedef struct {
-    u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 rest : 29;
-    u8 seqId; u8 defaultFont; char pad6[0x18 - 6];
-    u8 *seqData; char pad1c[0x38 - 0x1C]; gl_2BB7C_Channel *channels[16];
-} gl_2BB7C_SeqPlayer;
-struct gl_2BB7C_Channel {
-    u32 enabled : 1; u32 finished : 1; u32 stopScript : 1; u32 stopSomething2 : 1;
-    u32 hasInstrument : 1; u32 stereoHeadsetEffects : 1; u32 largeNotes : 1; u32 unused : 1;
-    u32 changesFreqScale : 1; u32 changesVolume : 1; u32 changesPan : 1; u32 changesRest : 5;
-    u8 noteAllocPolicy; u8 muteBehavior; u8 targetReverbVol; u8 notePriority; u8 someOtherPriority;
-    u8 fontId; u8 reverbIndex; u8 bookOffset; u8 newPan; u8 panChannelWeight; u8 gain;
-    u8 velocityRandomVariance; u8 gateTimeRandomVariance; u8 combFilterSize;
-    u16 vibratoRateStart; u16 vibratoDepthStart; u16 vibratoRateTarget; u16 vibratoDepthTarget;
-    u16 vibratoRateChangeDelay; u16 vibratoDepthChangeDelay; u16 vibratoDelay; u16 delay;
-    u16 combFilterGain; u16 unk_22; s16 instOrWave; s16 transposition;
-    f32 volumeScale; f32 volume; s32 pan; f32 appliedVolume; f32 freqScale;
-    u8 (*dynTable)[][2]; void *noteUnused; void *layerUnused; void *instrument;
-    gl_2BB7C_SeqPlayer *seqPlayer; gl_2BB7C_Layer *layers[8];
-    gl_2BB7C_SeqScriptState scriptState; gl_2BB7C_AdsrSettings adsr; char notePool[0x40];
-    s8 seqScriptIO[8]; s16 *filter; gl_2BB7C_Stereo stereo;
-};
+/* include/audio.h types (the layouts this donor used to spell privately). */
+typedef Stereo gl_2BB7C_Stereo;
+typedef SeqScriptState gl_2BB7C_SeqScriptState;
+typedef AdsrSettings gl_2BB7C_AdsrSettings;
+typedef SequenceLayer gl_2BB7C_Layer;
+typedef SequenceChannel gl_2BB7C_Channel;
+typedef SequencePlayer gl_2BB7C_SeqPlayer;
 typedef AudioContext gl_2BB7C_Ctx; /* include/audio.h (sequenceFontTable 0x2028, audioRandom 0x2154) */
 extern gl_2BB7C_Ctx gl_2BB7C_gAudioCtx;
 #define gAudioCtx gl_2BB7C_gAudioCtx

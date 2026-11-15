@@ -12,18 +12,10 @@
  * donor-local .rodata jumptable relocs (0xC5..0xF1 table, then the 0x40..0xB0
  * low-nibble table) to AudioSeq_SequencePlayerProcessSequence_rodata, pinned to the USO table at
  * +0x13E0. */
-typedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2C7A4_SeqScriptState;
-typedef struct { u32 enabled : 1; u32 rest : 31; } gl_2C7A4_Channel;
-typedef struct {
-    u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 seqDmaInProgress : 1;
-    u32 fontDmaInProgress : 1; u32 recalculateVolume : 1; u32 stopScript : 1; u32 applyBend : 1;
-    u8 state; u8 noteAllocPolicy; u8 muteBehavior; u8 seqId; u8 defaultFont; u8 unk_06; s8 playerIdx;
-    u16 tempo; u16 tempoAcc; s16 unk_0C; s16 transposition; u16 delay; u16 fadeTimer; u16 fadeTimerUnkEu; char pad16[2];
-    u8 *seqData; f32 fadeVolume; f32 fadeVelocity; f32 volume; f32 muteVolumeScale; f32 fadeVolumeScale; f32 appliedFadeVolume;
-    f32 unk_34; gl_2C7A4_Channel *channels[16]; gl_2C7A4_SeqScriptState scriptState;
-    u8 *shortNoteVelocityTable; u8 *shortNoteGateTimeTable; char notePool[0x44]; s32 scriptCounter;
-    char padE4[0x158 - 0xE4]; s8 seqScriptIO[8];
-} gl_2C7A4_SeqPlayer;
+/* include/audio.h types (the layouts this donor used to spell privately). */
+typedef SeqScriptState gl_2C7A4_SeqScriptState;
+typedef SequenceChannel gl_2C7A4_Channel;
+typedef SequencePlayer gl_2C7A4_SeqPlayer;
 typedef AudioContext gl_2C7A4_Ctx; /* include/audio.h (tempoInternalToExternal 0x2074, audioRandom 0x2154) */
 extern int D_00000000;
 #define gAudioCtx (*(gl_2C7A4_Ctx *)&D_00000000)
@@ -78,7 +70,7 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
     seqPlayer->scriptCounter++;
 
     seqPlayer->tempoAcc += seqPlayer->tempo;
-    seqPlayer->tempoAcc += (s16)seqPlayer->unk_0C;
+    seqPlayer->tempoAcc += (s16)seqPlayer->tempoChange;
 
     if (seqPlayer->tempoAcc < gAudioCtx.tempoInternalToExternal) {
         return;
@@ -151,7 +143,7 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
                         break;
 
                     case 0xDC:
-                        seqPlayer->unk_0C = (s8)AudioSeq_ScriptReadU8(seqScript) * 48;
+                        seqPlayer->tempoChange = (s8)AudioSeq_ScriptReadU8(seqScript) * 48;
                         break;
 
                     case 0xDA:
