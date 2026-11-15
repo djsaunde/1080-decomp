@@ -1,5 +1,5 @@
-nonmatching gl_func_0006D7CC, 0xD0
-glabel gl_func_0006D7CC
+nonmatching __osPfsGetInitData, 0xD0
+glabel __osPfsGetInitData
 .word 0x3C0F0000
 .word 0x91EF0000
 .word 0x27BDFFE8
@@ -52,4 +52,4 @@ glabel gl_func_0006D7CC
 .word 0x27BD0018
 .word 0x03E00008
 .word 0xA08B0000
-endlabel gl_func_0006D7CC
+endlabel __osPfsGetInitData

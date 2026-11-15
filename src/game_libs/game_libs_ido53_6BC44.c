@@ -2,7 +2,7 @@
 extern char D_00000000;
 extern u8 gl_data_00000000;
 
-/* gl_func_0006BC44 = 1080-customized osContGetReadData (libultra
+/* osContGetReadData = 1080-customized osContGetReadData (libultra
  * contreaddata.c ancestry; statically-linked libultra, ido53-carve vein).
  * Boundary-fixed 2026-06-09: splat had split the leading MAX_CONTROLLERS
  * load (lui+lbu) into a phantom 8-byte symbol "game_libs_func_0006BC44";
@@ -17,7 +17,7 @@ typedef struct {
     u8 button_hi; u8 button_lo; u8 stick_x; u8 stick_y;
 } GlContReadFormat;
 
-void gl_func_0006BC44(u8 *maskOut, u8 *pads) {
+void osContGetReadData(u8 *maskOut, u8 *pads) {
     u8 *ptr;
     GlContReadFormat fmt;
     int i;
@@ -37,8 +37,8 @@ void gl_func_0006BC44(u8 *maskOut, u8 *pads) {
     *maskOut = mask;
 }
 
-/* gl_func_0006BD14 = 1080-customized __osPackReadData (contreaddata.c
- * sibling of gl_func_0006BC44 above): clears the 15-word PIF command
+/* __osPackReadData = 1080-customized __osPackReadData (contreaddata.c
+ * sibling of osContGetReadData above): clears the 15-word PIF command
  * buffer, sets pifstatus = CONT_CMD_EXE, builds the 8-byte read-command
  * record (dummy=0xFF, tx=1, rx=3 -- 4-byte responses -- cmd byte passed as
  * the ARG, 4x 0xFF payload), then stamps it per controller (swl/swr
@@ -52,7 +52,7 @@ void gl_func_0006BC44(u8 *maskOut, u8 *pads) {
 typedef struct { int ramarray[15]; int pifstatus; } GlPifRam;
 extern GlPifRam D_6BD14_pifram;
 
-void gl_func_0006BD14(u8 cmd) {
+void __osPackReadData(u8 cmd) {
     u8 *ptr;
     GlContReadFormat fmt;
     int i;

@@ -15,7 +15,7 @@
  * script and covers 0x70FA4..0x70CC8; the 0x70FA0 pad nop moved to
  * SUFFIX_BYTES_FORCE on gl_func_00070C44 (post1c.c), and the 8 bytes
  * of natural -g3 .text zero-padding here cover the 0x70FCC/0x70FD0 pad
- * nops before game_libs_func_00070FCC (= cosf, post2.c).
+ * nops before fcos (= cosf, post2.c).
  * Blank externs (runtime-reloc'd words): D_00000000_vistate (guard
  * flag), D_00000000_vibuf (+8 field read; struct-field spelling keeps
  * the %lo fold). Identity: sits between __osViSwapContext and fcos --

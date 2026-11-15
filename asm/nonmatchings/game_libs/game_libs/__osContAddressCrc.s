@@ -1,6 +1,6 @@
-nonmatching gl_func_00070194, 0xB0
+nonmatching __osContAddressCrc, 0xB0
 
-glabel gl_func_00070194
+glabel __osContAddressCrc
     /* E5526C 00070194 27BDFFF0 */  .word 0x27BDFFF0
     /* E55270 00070198 3084FFFF */  .word 0x3084FFFF
     /* E55274 0007019C A3A0000F */  .word 0xA3A0000F
@@ -45,4 +45,4 @@ glabel gl_func_00070194
     /* E55310 00070238 304B00FF */  .word 0x304B00FF
     /* E55314 0007023C 03E00008 */  .word 0x03E00008
     /* E55318 00070240 01601025 */  .word 0x01601025
-endlabel gl_func_00070194
+endlabel __osContAddressCrc

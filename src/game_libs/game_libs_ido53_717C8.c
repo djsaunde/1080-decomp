@@ -1,11 +1,11 @@
-/* IDO 5.3 -O1 donor for gl_func_000717CC = libultra
+/* IDO 5.3 -O1 donor for __osPfsGetOneChannelData = libultra
  * __osPfsGetOneChannelData (io/pfsgetstatus.c verbatim, 2.0I layout) --
  * pfs sibling family; __osPfsGetStatus=__osPfsGetStatus jals this as its
  * last call. TRUE ENTRY 0x717C8: the compiled function's first insn is
  * `lui $t6,%hi(__osPfsPifRam)`, which the old split carried as the
  * 1-word _pad_pre_717CC stolen-prologue orphan (split off
  * gl_func_00071708.s, see that donor's comment); folded back into
- * gl_func_000717CC.s so the symbol covers all 39 words. PROVEN EXACT
+ * __osPfsGetOneChannelData.s so the symbol covers all 39 words. PROVEN EXACT
  * 39/39 vs the 0x717C8..0x71860 stream (2026-07-30 probe): donor word k
  * == expected[k-1] for the old 38-word symbol, word 0 == the orphan lui;
  * the single data reloc pair (__osPfsPifRam lui/addiu) is addend-0 =
@@ -33,7 +33,7 @@ typedef struct
 
 extern u8 D_00000000; /* __osPfsPifRam */
 
-void gl_func_000717CC(int channel, OSContStatus *data)
+void __osPfsGetOneChannelData(int channel, OSContStatus *data)
 {
     u8 *ptr;
     __OSContRequesFormatShort requestformat;

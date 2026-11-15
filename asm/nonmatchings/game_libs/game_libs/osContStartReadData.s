@@ -1,6 +1,6 @@
-nonmatching gl_func_0006C084, 0x8C
+nonmatching osContStartReadData, 0x8C
 
-glabel gl_func_0006C084
+glabel osContStartReadData
     /* E5115C 0006C084 27BDFFE0 */  .word 0x27BDFFE0
     /* E51160 0006C088 AFBF0014 */  .word 0xAFBF0014
     /* E51164 0006C08C AFA40020 */  .word 0xAFA40020
@@ -36,4 +36,4 @@ glabel gl_func_0006C084
     /* E511DC 0006C104 27BD0020 */  .word 0x27BD0020
     /* E511E0 0006C108 03E00008 */  .word 0x03E00008
     /* E511E4 0006C10C 00000000 */  .word 0x00000000
-endlabel gl_func_0006C084
+endlabel osContStartReadData

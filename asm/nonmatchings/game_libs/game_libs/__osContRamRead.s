@@ -1,6 +1,6 @@
-nonmatching gl_func_000748A4, 0x21C
+nonmatching __osContRamRead, 0x21C
 
-glabel gl_func_000748A4
+glabel __osContRamRead
     /* E5997C 000748A4 27BDFFA0 */  .word 0x27BDFFA0
     /* E59980 000748A8 3C0E0000 */  .word 0x3C0E0000
     /* E59984 000748AC AFBF001C */  .word 0xAFBF001C
@@ -136,4 +136,4 @@ glabel gl_func_000748A4
     /* E59B8C 00074AB4 27BD0060 */  .word 0x27BD0060
     /* E59B90 00074AB8 03E00008 */  .word 0x03E00008
     /* E59B94 00074ABC 00000000 */  .word 0x00000000
-endlabel gl_func_000748A4
+endlabel __osContRamRead

@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006D6F4 — 52-insn __osPfsRequestData
+/* IDO 5.3 -O1 donor for __osPfsRequestData — 52-insn __osPfsRequestData
  * (libultra pfsisplug.c TU sibling of 6D554 = osPfsIsPlug; identified
  * 2026-07-09 vs references/libreultra/src/io/pfsisplug.c). PROVEN EXACT
  * 52/52 at IDO 5.3 -O1 (7.1 -O1 = 44/52 — the 8-byte `*(fmt*)ptr =
@@ -23,7 +23,7 @@ typedef struct { u8 ramarray[60]; s32 pifstatus; } PifRam;
 extern PifRam D_00000000_pifram;
 extern u8 D_00000000_max;
 extern u8 D_00000000_lastcmd;
-void gl_func_0006D6F4(u8 cmd) {
+void __osPfsRequestData(u8 cmd) {
     u8 *ptr;
     ReqFormat requestformat;
     int i;

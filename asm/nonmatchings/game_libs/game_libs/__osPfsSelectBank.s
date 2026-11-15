@@ -1,6 +1,6 @@
-nonmatching gl_func_00072550, 0x6C
+nonmatching __osPfsSelectBank, 0x6C
 
-glabel gl_func_00072550
+glabel __osPfsSelectBank
     /* E57628 00072550 27BDFFB8 */  .word 0x27BDFFB8
     /* E5762C 00072554 AFBF001C */  .word 0xAFBF001C
     /* E57630 00072558 AFA40048 */  .word 0xAFA40048
@@ -28,4 +28,4 @@ glabel gl_func_00072550
     /* E57688 000725B0 8FA20020 */  .word 0x8FA20020
     /* E5768C 000725B4 03E00008 */  .word 0x03E00008
     /* E57690 000725B8 27BD0048 */  .word 0x27BD0048
-endlabel gl_func_00072550
+endlabel __osPfsSelectBank

@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for game_libs_func_00070FCC = libultra fcos/__cosf
+/* IDO 7.1 -O2 donor for fcos = libultra fcos/__cosf
  * (gu/cosf.c verbatim, Cody-Waite reduction). PROVEN EXACT 90/90
  * standalone at -O2 (5.3 -O2 agrees; -O1 is 112 insns) against the
  * concatenated 0x70FD4..0x71138 stream -- the 5 rodata addend words
@@ -39,7 +39,7 @@ extern const du gl_ref_00002518;   /* pilo */
 extern const fu gl_ref_00002520;   /* zero */
 extern float D_00000000_qnanf;     /* __libm_qnan_f */
 
-float game_libs_func_00070FCC(float x) {
+float fcos(float x) {
     float absx;
     double dx, xsq, poly;
     double dn;

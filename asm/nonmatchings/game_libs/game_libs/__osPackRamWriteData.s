@@ -1,6 +1,6 @@
-nonmatching gl_func_00073538, 0x150
+nonmatching __osPackRamWriteData, 0x150
 
-glabel gl_func_00073538
+glabel __osPackRamWriteData
     /* E58610 00073538 27BDFFB8 */  .word 0x27BDFFB8
     /* E58614 0007353C 3C0E0000 */  .word 0x3C0E0000
     /* E58618 00073540 AFBF0014 */  .word 0xAFBF0014
@@ -85,4 +85,4 @@ glabel gl_func_00073538
     /* E58754 0007367C 27BD0048 */  .word 0x27BD0048
     /* E58758 00073680 03E00008 */  .word 0x03E00008
     /* E5875C 00073684 00000000 */  .word 0x00000000
-endlabel gl_func_00073538
+endlabel __osPackRamWriteData

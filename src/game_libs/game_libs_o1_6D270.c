@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006D270 = libultra osMotorInit
+/* IDO -O1 donor for osMotorInit = libultra osMotorInit
  * (references/libreultra/src/io/motor.c, verbatim: pfs init with
  * activebank = 128, 32-byte 0xFE probe write (retry on 2) + read
  * (2 -> PFS_ERR_CONTRFAIL(4)) to pak address 1024, temp[31]==0xFE ->
@@ -41,7 +41,7 @@ extern u8 D_00000000_stopbuf[];    /* _motorstopbuf */
 extern u8 D_00000000_startdata[];  /* _MotorStartData (0x40 stride) */
 extern u8 D_00000000_stopdata[];   /* _MotorStopData */
 
-s32 gl_func_0006D270(void *mq, OSPfs *pfs, int channel) {
+s32 osMotorInit(void *mq, OSPfs *pfs, int channel) {
     int i;
     s32 ret;
     u8 temp[32];

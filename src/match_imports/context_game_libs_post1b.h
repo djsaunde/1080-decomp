@@ -844,7 +844,7 @@ extern void gl_69F64_start(Thread_69E04 *);
 extern Thread_69E04 *gl_69F64_running;
 int gl_func_00069F64(OSMesgQueue_69E04 *mq, void **msg, int flags);
 void _asmpp_func39(void);
-float game_libs_func_0006A144(float x);
+float fsin(float x);
 extern char D_00041710[];
 int gl_func_0006A304(int a0);
 extern int game_libs_func_00070FA0(f32, f32);

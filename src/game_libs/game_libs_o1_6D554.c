@@ -1,4 +1,4 @@
-/* IDO 7.1 -O1 donor for gl_func_0006D554 — 104-insn osPfsIsPlug (libultra
+/* IDO 7.1 -O1 donor for osPfsIsPlug — 104-insn osPfsIsPlug (libultra
  * pfsisplug.c, identified 2026-07-09 vs references/libreultra/src/io/
  * pfsisplug.c; decode matches line-for-line). PROVEN EXACT 104/104 at plain
  * 7.1 -O1, first probe (5.3 not needed — no struct copy, so no $at
@@ -31,7 +31,7 @@ extern s32 gl_func_00000002(s32, void *);
 extern s32 gl_func_00000003(void *, void *, s32);
 extern void gl_func_00000004(u8 *, StatusData *);
 extern void gl_func_00000005(void);
-s32 gl_func_0006D554(void *queue, u8 *pattern) {
+s32 osPfsIsPlug(void *queue, u8 *pattern) {
     s32 ret;
     void *dummy;
     u8 bitpattern;

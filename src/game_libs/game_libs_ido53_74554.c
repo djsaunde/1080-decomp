@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 donor for gl_func_00074554 = _Litob (Plauger libc
+/* IDO 5.3 -O2 donor for _Litob = _Litob (Plauger libc
  * xlitob.c verbatim) -- the printf integer-formatter, completing the
  * xldtob.c pair (73904=_Genld / 73E74=_Ldtob) and the ldiv identity
  * (744CC). PROVEN EXACT 2026-08-22 probe: 166/166 words vs expected
@@ -7,7 +7,7 @@
  * are the four ldigs/udigs .data reloc fields: target bakes hi 0x3 /
  * lo 0xE620("0123..def")+0xE634("0123..DEF") = .data base 0x2E620 in
  * the USO data segment; donor-local .data reloc renamed
- * gl_func_00074554_data by the splice, pinned 0x2E620.
+ * _Litob_data by the splice, pinned 0x2E620.
  * Blank USO jals (field 0 both sides): __ull_rem / __ull_div
  * (compiler-generated for the u64 %/ base -- POST_COMPILE objcopy
  * redefines them to gl_func_00000000_* blanks, since __ull_div is
@@ -61,7 +61,7 @@ extern lldiv_t gl_func_00000000_lldiv74(long long, long long);
 static char ldigs[] = "0123456789abcdef";
 static char udigs[] = "0123456789ABCDEF";
 
-void gl_func_00074554(printf_struct *args, char type)
+void _Litob(printf_struct *args, char type)
 {
   char buff[BUFF_LEN];
   const char *digs;

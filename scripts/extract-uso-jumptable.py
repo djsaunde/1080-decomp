@@ -14,7 +14,7 @@ Reuses the Kyoto-USO section/reloc format (see uso-reloc-symbolize.py):
   [flag, (symIdx<<4)|kind, section_offset]; target = symval(symIdx)+addend
   where addend = the placeholder word in the data section at that offset.
 GAME_LIBS lives inside bootup.uso at shim +0x1466C: pass --shim 0x1466C with
-the game_libs-local --vaddr (validated: gl_func_0006E224 52-case table extracted,
+the game_libs-local --vaddr (validated: _Putfld 52-case table extracted,
 all targets landed in range). The decoded m2c may need extra cleanup for
 register-carrying switches (unset-reg reads) + pointer post-incr (->unk-N).
 

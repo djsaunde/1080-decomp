@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006D7CC — 52-insn __osPfsGetInitData
+/* IDO 5.3 -O1 donor for __osPfsGetInitData — 52-insn __osPfsGetInitData
  * (libultra pfsisplug.c TU sibling of 6D554 = osPfsIsPlug; identified
  * 2026-07-09 vs references/libreultra/src/io/pfsisplug.c). PROVEN EXACT
  * 52/52 at IDO 5.3 -O1 against the MERGED span 0x6D7C4..0x6D890 (7.1 -O1
@@ -22,7 +22,7 @@ typedef struct { u8 dummy; u8 txsize; u8 rxsize; u8 cmd; u8 typeh; u8 typel; u8 
 typedef struct { u16 type; u8 status; u8 errnum; } StatusData;
 extern u8 D_00000000_pifram[];
 extern u8 D_00000000_max;
-void gl_func_0006D7CC(u8 *pattern, StatusData *data) {
+void __osPfsGetInitData(u8 *pattern, StatusData *data) {
     u8 *ptr;
     ReqFormat requestformat;
     int i;

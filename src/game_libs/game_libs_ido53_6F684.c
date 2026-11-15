@@ -1,10 +1,10 @@
-/* IDO 5.3 -O3 -mips2 donor for game_libs_func_0006F684 = libultra guPositionF
+/* IDO 5.3 -O3 -mips2 donor for guPositionF = libultra guPositionF
  * (references/libreultra/src/gu/position.c, verbatim). PROVEN 105/108 words
  * standalone at BOTH 5.3 -O3 and 7.1 -O3 (agent-g 2026-09-09), the three
  * remaining words being the reloc addends of the two `dtor` accesses, which
  * the in-tree link bakes via pins (see below) -> 108/108 in the unit. -O2 is
  * 96 words off (frame/spill layout, no static write-back). Section 0x83CF0 =
- * bootup.uso export sym 2629; its one jal ref is at 0x83EE4 = gl_func_0006F834
+ * bootup.uso export sym 2629; its one jal ref is at 0x83EE4 = guPosition
  * + 0x44, i.e. the "guFrustum" wrapper 6F834 is really guPosition (the
  * guFrustum / guPosition wrapper bodies are byte-identical: Matrix mf at
  * sp+40, mtc1/mfc1 re-marshal of three float args, F-variant jal then
@@ -18,13 +18,13 @@
  * into it on every entry (`lwc1 f0,%lo(lit)(at)` ... `swc1 f0,%lo(dtor)(at)`,
  * the lui at,0x0004 / swc1 0x4030 pair). Both relocs are against donor-local
  * section symbols; replace-function-body.py renames them to
- * game_libs_func_0006F684_rodata / _bss, pinned in undefined_syms_auto.txt to
+ * guPositionF_rodata / _bss, pinned in undefined_syms_auto.txt to
  * the USO's baked 0x24D0 / 0x44030 (the 6DD14 jumptable recipe).
  * Blank externs (USO load-time relocs, pins = 0): gl_func_00000000_sinf6f =
  * sinf, gl_func_00000000_cosf6f = cosf. Built by the direct-CC rule pair
  * (asm-processor rejects -O3), spliced into game_libs_post1b2c.c.o via
  * REPLACE_FUNC_BODY; no pad (the C body is the same 0x1B0 as the old .s). */
-extern float gl_func_00000000_sinf6f(float); /* sinf = game_libs_func_0006A144 (fsin) */
+extern float gl_func_00000000_sinf6f(float); /* sinf = fsin (fsin) */
 extern float gl_func_00000000_cosf6f(float); /* cosf = gl_func_00070FCC (fcos) */
 #define sinf gl_func_00000000_sinf6f
 #define cosf gl_func_00000000_cosf6f
@@ -41,7 +41,7 @@ extern float gl_func_00000000_cosf6f(float); /* cosf = gl_func_00070FCC (fcos) *
  *
  */
 
-void game_libs_func_0006F684(float mf[4][4], float r, float p, float h, float s,
+void guPositionF(float mf[4][4], float r, float p, float h, float s,
 		 float x, float y, float z)
 {
         static float    dtor = 3.1415926 / 180.0;

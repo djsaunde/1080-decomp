@@ -1,6 +1,6 @@
-nonmatching gl_func_0006F834, 0x68
+nonmatching guPosition, 0x68
 
-glabel gl_func_0006F834
+glabel guPosition
     /* E5490C 0006F834 27BDFF98 */  .word 0x27BDFF98
     /* E54910 0006F838 44856000 */  .word 0x44856000
     /* E54914 0006F83C 44867000 */  .word 0x44867000
@@ -27,4 +27,4 @@ glabel gl_func_0006F834
     /* E54968 0006F890 27BD0068 */  .word 0x27BD0068
     /* E5496C 0006F894 03E00008 */  .word 0x03E00008
     /* E54970 0006F898 00000000 */  .word 0x00000000
-endlabel gl_func_0006F834
+endlabel guPosition

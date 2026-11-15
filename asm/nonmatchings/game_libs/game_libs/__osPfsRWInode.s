@@ -1,6 +1,6 @@
-nonmatching gl_func_00072230, 0x320
+nonmatching __osPfsRWInode, 0x320
 
-glabel gl_func_00072230
+glabel __osPfsRWInode
     /* E57308 00072230 27BDFFC8 */  .word 0x27BDFFC8
     /* E5730C 00072234 AFA40038 */  .word 0xAFA40038
     /* E57310 00072238 8FAE0038 */  .word 0x8FAE0038
@@ -201,4 +201,4 @@ glabel gl_func_00072230
     /* E5761C 00072544 27BD0038 */  .word 0x27BD0038
     /* E57620 00072548 03E00008 */  .word 0x03E00008
     /* E57624 0007254C 00000000 */  .word 0x00000000
-endlabel gl_func_00072230
+endlabel __osPfsRWInode

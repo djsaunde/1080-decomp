@@ -1,6 +1,6 @@
-nonmatching gl_func_0006D270, 0x2DC
+nonmatching osMotorInit, 0x2DC
 
-glabel gl_func_0006D270
+glabel osMotorInit
     /* E52348 0006D270 27BDFFB8 */  .word 0x27BDFFB8
     /* E5234C 0006D274 AFA40048 */  .word 0xAFA40048
     /* E52350 0006D278 AFA5004C */  .word 0xAFA5004C
@@ -184,4 +184,4 @@ glabel gl_func_0006D270
     /* E52618 0006D540 27BD0048 */  .word 0x27BD0048
     /* E5261C 0006D544 03E00008 */  .word 0x03E00008
     /* E52620 0006D548 00000000 */  .word 0x00000000
-endlabel gl_func_0006D270
+endlabel osMotorInit

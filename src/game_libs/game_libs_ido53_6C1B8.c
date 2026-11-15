@@ -1,5 +1,5 @@
 /* IDO 5.3 -O1 donor for gl_func_0006C1B8 — 59-insn table-reset + 8-byte
- * record emitter, reset-sibling of gl_func_0006BD14 and same family as the
+ * record emitter, reset-sibling of __osPackReadData and same family as the
  * landed gl_func_0006C11C decoder (frame 0x10, leaf). PROVEN EXACT 59/59
  * (2026-07-09 standalone probe). 5.3 required: it colors the struct-copy
  * scratch $at for the swl/swr pair (7.1 uses $t-regs — 44/59 floor).

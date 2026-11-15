@@ -1,6 +1,6 @@
-nonmatching gl_func_00074AC0, 0x13C
+nonmatching __osPackRamReadData, 0x13C
 
-glabel gl_func_00074AC0
+glabel __osPackRamReadData
     /* E59B98 00074AC0 27BDFFB8 */  .word 0x27BDFFB8
     /* E59B9C 00074AC4 3C0E0000 */  .word 0x3C0E0000
     /* E59BA0 00074AC8 AFBF0014 */  .word 0xAFBF0014
@@ -80,4 +80,4 @@ glabel gl_func_00074AC0
     /* E59CC8 00074BF0 27BD0048 */  .word 0x27BD0048
     /* E59CCC 00074BF4 03E00008 */  .word 0x03E00008
     /* E59CD0 00074BF8 00000000 */  .word 0x00000000
-endlabel gl_func_00074AC0
+endlabel __osPackRamReadData

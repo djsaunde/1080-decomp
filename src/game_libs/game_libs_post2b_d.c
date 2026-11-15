@@ -201,17 +201,17 @@ void ldiv(void) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000744CC_pad.s")
 
-/* gl_func_00074554 = _Litob (Plauger libc xlitob.c verbatim) -- the
+/* _Litob = _Litob (Plauger libc xlitob.c verbatim) -- the
  * printf integer-formatter, completing the printf-machinery vein
  * (73904=_Genld, 73E74=_Ldtob, 744CC=ldiv). LANDED 2026-08-22 via
  * REPLACE_FUNC_BODY donor splice: real C in the IDO 5.3 -O2 donor unit
  * game_libs_ido53_74554.c (166/166 raw words; 7.1 -O2 diverges 77
  * words). ldigs/udigs .data base pinned 0x2E620
- * (gl_func_00074554_data); blank jals __ull_rem/__ull_div (objcopy
+ * (_Litob_data); blank jals __ull_rem/__ull_div (objcopy
  * -redefined; USO load-time relocs point them at the game_libs copies
  * 6C740/6C77C), lldiv, memcpy. Body below is a placeholder for the
  * splice. */
-void gl_func_00074554(void *args, int type) {
+void _Litob(void *args, int type) {
     volatile int litob_spliced = 0;
     if (type != 0) {
         litob_spliced = type;

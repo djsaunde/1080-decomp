@@ -1,4 +1,4 @@
-/* game_libs ido53 carve unit: gl_func_00072C88, the first -Olimit-fallback
+/* game_libs ido53 carve unit: corrupted_init, the first -Olimit-fallback
  * match (IDO 5.3, -O1 -Olimit 1 -- uopt skipped so the emit is -O0-shaped
  * with homed args and per-use reloads, but the -O1 pipeline still fills
  * delay slots). 1080-custom osPfsChecker-family helper: builds a 256-byte
@@ -30,7 +30,7 @@ typedef struct {
 
 extern int gl_func_00000000();
 
-s32 gl_func_00072C88(OSPfs *pfs, u8 *map) {
+s32 corrupted_init(OSPfs *pfs, u8 *map) {
     s32 i;
     s32 idx;
     s32 startpage;
@@ -69,7 +69,7 @@ s32 gl_func_00072C88(OSPfs *pfs, u8 *map) {
     return 0;
 }
 
-/* gl_func_00072E3C = `corrupted` (io/pfschecker.c static helper) -- the
+/* corrupted = `corrupted` (io/pfschecker.c static helper) -- the
  * pfschecker.c trio is COMPLETE: osPfsChecker (725C4, -O1) /
  * corrupted_init (72C88, above) / corrupted (here). Verbatim libreultra
  * source, 122/122 first try; byte-identical under BOTH -O1 and the
@@ -80,7 +80,7 @@ typedef struct {
     __OSInode inode; u8 bank; u8 map[256];
 } __OSInodeCache;
 
-s32 gl_func_00072E3C(OSPfs *pfs, __OSInodeUnit fpage, __OSInodeCache *cache)
+s32 corrupted(OSPfs *pfs, __OSInodeUnit fpage, __OSInodeCache *cache)
 {
     int j;
     int n;

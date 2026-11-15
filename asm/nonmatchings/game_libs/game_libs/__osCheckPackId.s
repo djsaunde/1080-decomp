@@ -1,6 +1,6 @@
-nonmatching gl_func_00071D40, 0x198
+nonmatching __osCheckPackId, 0x198
 
-glabel gl_func_00071D40
+glabel __osCheckPackId
     /* E56E18 00071D40 27BDFFC8 */  .word 0x27BDFFC8
     /* E56E1C 00071D44 AFA40038 */  .word 0xAFA40038
     /* E56E20 00071D48 8FAE0038 */  .word 0x8FAE0038
@@ -103,4 +103,4 @@ glabel gl_func_00071D40
     /* E56FA4 00071ECC 27BD0038 */  .word 0x27BD0038
     /* E56FA8 00071ED0 03E00008 */  .word 0x03E00008
     /* E56FAC 00071ED4 00000000 */  .word 0x00000000
-endlabel gl_func_00071D40
+endlabel __osCheckPackId

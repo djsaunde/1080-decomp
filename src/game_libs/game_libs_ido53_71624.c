@@ -7,7 +7,7 @@
  * addend-0 lui/addiu pairs = blank D_00000000 extern; all 6 jals are
  * blank USO runtime relocs = gl_func_00000000 placeholder, real callees
  * __osPfsRequestOneChannel / __osSiRawStartDma x2 / osRecvMesg x2 /
- * __osPfsGetOneChannelData=gl_func_000717CC). post2 builds -O2 7.1;
+ * __osPfsGetOneChannelData=__osPfsGetOneChannelData). post2 builds -O2 7.1;
  * only 5.3 -O1 reproduces the stack-resident ret/data locals.
  * Spliced into game_libs_post2.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned short u16;

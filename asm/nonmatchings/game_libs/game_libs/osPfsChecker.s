@@ -1,6 +1,6 @@
-nonmatching gl_func_000725C4, 0x6C4
+nonmatching osPfsChecker, 0x6C4
 
-glabel gl_func_000725C4
+glabel osPfsChecker
     /* E5769C 000725C4 27BDFB78 */  .word 0x27BDFB78
     /* E576A0 000725C8 AFBF001C */  .word 0xAFBF001C
     /* E576A4 000725CC AFA40488 */  .word 0xAFA40488
@@ -434,4 +434,4 @@ glabel gl_func_000725C4
     /* E57D54 00072C7C 27BD0488 */  .word 0x27BD0488
     /* E57D58 00072C80 03E00008 */  .word 0x03E00008
     /* E57D5C 00072C84 00000000 */  .word 0x00000000
-endlabel gl_func_000725C4
+endlabel osPfsChecker

@@ -5478,7 +5478,7 @@ int gl_func_00069F64(OSMesgQueue_69F64 *mq, int **msg, int flags) {
 /* game_libs_func_0006A09C = libultra osSetIntMask (game_libs copy; handwritten mfc0/mtc0 SR + MI_INTR_MASK): real source in src/libultra/game_libs/setintmask.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/setintmask.s")
 
-/* game_libs_func_0006A144 = libultra fsin/__sinf (libreultra gu/sinf.c
+/* fsin = libultra fsin/__sinf (libreultra gu/sinf.c
  * verbatim, IDO 5.3 -O2 -mips2 donor: game_libs_ido53_6A144.c). LANDED
  * 2026-09-05 via REPLACE_FUNC_BODY donor splice: 112/112 words exact on the
  * first compile (5.3 -O3 agrees; 7.1 -O2/-O3 diverge in the poly chain).
@@ -5489,14 +5489,14 @@ GLOBAL_ASM("src/libultra/game_libs/setintmask.s")
  *   for |x| < 2^28), 6A2C0 (the old "caller-set $f2 double-poly CAP" -- it
  *   is just the n-odd negated-result tail), 6A2DC (the NaN check), 6A2F8
  *   (the old "prologue-stolen $at CAP" -- the `return zero.f` tail).
- * All six INCLUDE_ASMs merged into the single game_libs_func_0006A144.s
+ * All six INCLUDE_ASMs merged into the single fsin.s
  * (0x1C0, 0x6A144..0x6A303); gl_func_0006A304 follows directly, no pad.
  * Static rodata (P[5]/rpi/pihi/pilo/zero) lives in the ROM's game_libs data
  * at segment offsets 0x2310..0x2353 -> extern gl_ref_* baked pins;
  * __libm_qnan_f is the runtime-reloc blanked extern D_00000000_qnanf.
  * Sibling of 70FCC = fcos (game_libs_o2_70FCC.c, same table shape at
  * 0x24E0). Body below is a placeholder for the splice. */
-float game_libs_func_0006A144(float x) {
+float fsin(float x) {
     volatile float ret = 0.0f;
     if (x != 0.0f) {
         ret = x;

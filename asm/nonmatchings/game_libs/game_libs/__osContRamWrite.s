@@ -1,6 +1,6 @@
-nonmatching gl_func_00073334, 0x204
+nonmatching __osContRamWrite, 0x204
 
-glabel gl_func_00073334
+glabel __osContRamWrite
     /* E5840C 00073334 27BDFFA0 */  .word 0x27BDFFA0
     /* E58410 00073338 8FB80070 */  .word 0x8FB80070
     /* E58414 0007333C 3C0E0000 */  .word 0x3C0E0000
@@ -130,4 +130,4 @@ glabel gl_func_00073334
     /* E58604 0007352C 27BD0060 */  .word 0x27BD0060
     /* E58608 00073530 03E00008 */  .word 0x03E00008
     /* E5860C 00073534 00000000 */  .word 0x00000000
-endlabel gl_func_00073334
+endlabel __osContRamWrite

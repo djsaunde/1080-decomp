@@ -1,8 +1,8 @@
-/* game_libs post2b unit == gl_func_000725C4 == libultra osPfsChecker
+/* game_libs post2b unit == osPfsChecker == libultra osPfsChecker
  * (io/pfschecker.c), verbatim at IDO 5.3 -O1 -- 433/433 FIRST TRY, the
  * largest ido53-carve recovery (1.7KB). The pfschecker.c trio is now
  * identified in segment order: osPfsChecker (here), corrupted_init
- * (= gl_func_00072C88, the -Olimit-fallback match -- mixed compilation
+ * (= corrupted_init, the -Olimit-fallback match -- mixed compilation
  * within one source file!), corrupted (likely 0x72E3C). All callees are
  * gl_func_00000000 runtime-patch placeholders; constants as literals:
  * PFS_ERR_NEW_PACK=2 (this build), PFS_ERR_INCONSISTENT=3, OS_WRITE=1,
@@ -44,7 +44,7 @@ extern int gl_func_00000000();
     if (ret != 0) \
         return ret;
 
-s32 gl_func_000725C4(OSPfs *pfs)
+s32 osPfsChecker(OSPfs *pfs)
 {
     int j;
     s32 ret;

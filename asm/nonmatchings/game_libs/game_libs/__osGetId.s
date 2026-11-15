@@ -1,6 +1,6 @@
-nonmatching gl_func_00071ED8, 0x25C
+nonmatching __osGetId, 0x25C
 
-glabel gl_func_00071ED8
+glabel __osGetId
     /* E56FB0 00071ED8 27BDFF98 */  .word 0x27BDFF98
     /* E56FB4 00071EDC AFA40068 */  .word 0xAFA40068
     /* E56FB8 00071EE0 8FAE0068 */  .word 0x8FAE0068
@@ -152,4 +152,4 @@ glabel gl_func_00071ED8
     /* E57200 00072128 27BD0068 */  .word 0x27BD0068
     /* E57204 0007212C 03E00008 */  .word 0x03E00008
     /* E57208 00072130 00000000 */  .word 0x00000000
-endlabel gl_func_00071ED8
+endlabel __osGetId

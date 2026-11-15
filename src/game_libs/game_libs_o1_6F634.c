@@ -11,7 +11,7 @@
  * Blank externs (USO load-time relocs, existing pins = 0):
  * D_00000000_vinext = __osViNext, gl_func_00000000_disint = __osDisableInt,
  * gl_func_00000000_resint = __osRestoreInt. Spliced into
- * game_libs_post1b2c.c.o via REPLACE_FUNC_BODY; no pad (game_libs_func_0006F684
+ * game_libs_post1b2c.c.o via REPLACE_FUNC_BODY; no pad (guPositionF
  * follows directly), the C body is the same 0x50 as the old .s. */
 typedef unsigned int u32;
 typedef unsigned short u16;

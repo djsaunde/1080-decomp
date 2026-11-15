@@ -4,7 +4,7 @@
 WHY THIS EXISTS (vs `disasm-func.py`): `disasm-func.py` objdumps the BUILT
 `build/non_matching/**/*.c.o`. For a function that ALREADY has a
 `#ifdef NON_MATCHING` body, that shows YOUR CURRENT C body's compilation, NOT
-the target bytes (cost a wasted reconstruction on gl_func_000717CC 2026-06-06).
+the target bytes (cost a wasted reconstruction on __osPfsGetOneChannelData 2026-06-06).
 It also resolves branch targets against `.o` offsets, which fall outside the
 symbol range for some functions ("label .LXXXX does not exist").
 

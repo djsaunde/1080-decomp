@@ -1,7 +1,7 @@
 /* IDO 5.3 -O3 donor for the libc printf core pair (Plauger xprintf.c
  * verbatim, libreultra source):
- *   gl_func_0006E224 = _Putfld (donor .text [0x000,0x670), static)
- *   gl_func_0006E894 = _Printf (donor .text [0x670,0xCB8))
+ *   _Putfld = _Putfld (donor .text [0x000,0x670), static)
+ *   _Printf = _Printf (donor .text [0x670,0xCB8))
  * PROVEN EXACT 2026-08-22: 814/814 words vs expected post1b2c.c.o
  * [0x1E24,0x2ADC) with every diff word a reloc field:
  *   - spaces/zeroes TU statics: target bakes ABSOLUTE %hi/%lo 0x2E460
@@ -12,14 +12,14 @@
  *   - donor-local .rodata ("hlL" +0x00, fchar " +-#0" +0x04, fbit[6]
  *     +0x0C, _Putfld's 25-entry 'F'..'^' jumptable +0x24): target bakes
  *     lo 9168/9172/9180/9204 = single base 0x23D0; splice renames the
- *     section relocs to gl_func_0006E224_rodata / gl_func_0006E894_rodata
+ *     section relocs to _Putfld_rodata / _Printf_rodata
  *     (pins = 0x23D0). Table/rodata CONTENT already ships in the USO
  *     data segment (6DD14 technique).
  *   - blank USO jals: strchr x3, strlen, _Litob x3, _Ldtob
  *     (gl_func_00000000_* externs, field 0 both sides).
  *   - the ONE intra-TU jal _Printf->_Putfld: target bakes 0x0C020A24
  *     (jal 0x82890, _Putfld's original-link address); donor reloc vs
- *     local .text renamed to gl_func_0006E894_text by the splice,
+ *     local .text renamed to _Printf_text by the splice,
  *     pinned = 0x82890.
  * WHY -O3: whole-TU interprocedural regalloc gives static _Putfld its
  * custom linkage -- px arrives in $s0 (never saved; the long-documented
@@ -29,7 +29,7 @@
  * ROM/donor emission order is _Putfld then _Printf (IDO -O3 emits the
  * static first, as with _Genld in game_libs_ido53_73904.c).
  * Statics keep no symtab entry at -O3, so the donor rule's POST_COMPILE
- * injects gl_func_0006E224 and renames _Printf -> gl_func_0006E894.
+ * injects _Putfld and renames _Printf -> _Printf.
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 
 typedef unsigned int size_t;

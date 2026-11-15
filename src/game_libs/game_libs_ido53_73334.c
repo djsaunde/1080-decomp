@@ -1,5 +1,5 @@
 /* game_libs ido53 carve: contramwrite.c pair, verbatim at IDO 5.3 -O1.
- * gl_func_00073334 = __osContRamWrite (129/129) and gl_func_00073538 =
+ * __osContRamWrite = __osContRamWrite (129/129) and __osPackRamWriteData =
  * __osPackRamWriteData (84/84), both first try. PARITY NOTE: this carve
  * span is [0x73334..0x73694) = 0x360 (0 mod 8) -- PackRamWriteData gets a
  * 12-byte all-zero SUFFIX (the genuine padding mechanism) so the tail
@@ -33,7 +33,7 @@ extern int gl_ref_00087BA4();
 extern GlPifRam D_73334_pifram;
 extern u8 D_73334_lastcmd;
 
-s32 gl_func_00073334(void *mq, int channel, u16 address, u8 *buffer, int force)
+s32 __osContRamWrite(void *mq, int channel, u16 address, u8 *buffer, int force)
 {
     s32 ret;
     int i;
@@ -87,7 +87,7 @@ s32 gl_func_00073334(void *mq, int channel, u16 address, u8 *buffer, int force)
     return ret;
 }
 
-void gl_func_00073538(int channel, u16 address, u8 *buffer)
+void __osPackRamWriteData(int channel, u16 address, u8 *buffer)
 {
     u8 *ptr;
     __OSContRamReadFormat ramreadformat;

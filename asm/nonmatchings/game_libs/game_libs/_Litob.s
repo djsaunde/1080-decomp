@@ -1,6 +1,6 @@
-nonmatching gl_func_00074554, 0x298
+nonmatching _Litob, 0x298
 
-glabel gl_func_00074554
+glabel _Litob
     /* E5962C 00074554 27BDFF70 */  .word 0x27BDFF70
     /* E59630 00074558 AFB10020 */  .word 0xAFB10020
     /* E59634 0007455C 30A200FF */  .word 0x30A200FF
@@ -167,4 +167,4 @@ glabel gl_func_00074554
     /* E598B8 000747E0 8FB30028 */  .word 0x8FB30028
     /* E598BC 000747E4 03E00008 */  .word 0x03E00008
     /* E598C0 000747E8 27BD0090 */  .word 0x27BD0090
-endlabel gl_func_00074554
+endlabel _Litob

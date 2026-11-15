@@ -1020,7 +1020,7 @@ build/src/game_libs/game_libs_ido53_72C88.c.o: TRUNCATE_TEXT := 0x3AC
 build/src/game_libs/game_libs_post2b_c.c.o: TRUNCATE_TEXT := 0x300
 build/src/game_libs/game_libs_ido53_73334.c.o build/non_matching/src/game_libs/game_libs_ido53_73334.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_73334.c.o build/non_matching/src/game_libs/game_libs_ido53_73334.c.o: OPT_FLAGS := -O1
-build/src/game_libs/game_libs_ido53_73334.c.o: SUFFIX_BYTES := gl_func_00073538=0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_ido53_73334.c.o: SUFFIX_BYTES := __osPackRamWriteData=0x00000000,0x00000000,0x00000000
 build/src/game_libs/game_libs_ido53_73334.c.o: TRUNCATE_TEXT := 0x360
 build/src/game_libs/game_libs_post2b_d.c.o: TRUNCATE_TEXT := 0x1210
 # 74840/74850 boundary fix (2026-09-09): the leading nops of the old INCLUDE blocks
@@ -1031,7 +1031,7 @@ build/src/game_libs/game_libs_post2b_d.c.o: SUFFIX_BYTES_FORCE := gl_func_000747
 build/non_matching/src/game_libs/game_libs_post2b_d.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000747F4=0x00000000 game_libs_func_00074844=0x00000000
 build/src/game_libs/game_libs_ido53_748A4.c.o build/non_matching/src/game_libs/game_libs_ido53_748A4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_748A4.c.o build/non_matching/src/game_libs/game_libs_ido53_748A4.c.o: OPT_FLAGS := -O1
-build/src/game_libs/game_libs_ido53_748A4.c.o: SUFFIX_BYTES := gl_func_00074AC0=0x00000000,0x00000000
+build/src/game_libs/game_libs_ido53_748A4.c.o: SUFFIX_BYTES := __osPackRamReadData=0x00000000,0x00000000
 build/src/game_libs/game_libs_ido53_748A4.c.o: TRUNCATE_TEXT := 0x360
 build/src/game_libs/game_libs_post2b_e.c.o: TRUNCATE_TEXT := 0x150
 build/src/game_libs/game_libs_ido53_74D54.c.o build/non_matching/src/game_libs/game_libs_ido53_74D54.c.o: CC := $(IDO53_DIR)/cc
@@ -1345,12 +1345,12 @@ GAMELIBS_6D0F4_DONOR := build/src/game_libs/game_libs_ido53_6D0F4.c.o
 # _Putfld its $s0 state-ptr linkage (the retracted "caller-set $s0
 # permanent cap"). 814/814 words vs expected (all diffs = reloc fields:
 # spaces/zeroes absolute pins, <func>_rodata base 0x23D0, blank USO
-# jals, intra-TU jal pinned via gl_func_0006E894_text). -O3 drops the
-# static's symtab entry, so POST_COMPILE re-injects gl_func_0006E224
+# jals, intra-TU jal pinned via _Printf_text). -O3 drops the
+# static's symtab entry, so POST_COMPILE re-injects _Putfld
 # and renames _Printf. See game_libs_ido53_6E224.c.
 build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/game_libs_ido53_6E224.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/game_libs_ido53_6E224.c.o: OPT_FLAGS := -O3
-build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/game_libs_ido53_6E224.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ _Printf=gl_func_0006E894 && python3 scripts/add-elf-func-symbol.py $@ gl_func_0006E224=0x0:0x670
+build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/game_libs_ido53_6E224.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ _Printf=_Printf && python3 scripts/add-elf-func-symbol.py $@ _Putfld=0x0:0x670
 GAMELIBS_6E224_DONOR := build/src/game_libs/game_libs_ido53_6E224.c.o
 # osInitialize = osInitialize: IDO 5.3 -O1 island inside the 7.1 -O2
 # kernel_000 unit (proven exact 284/284 standalone; see donor header).
@@ -1514,8 +1514,8 @@ build/src/game_libs/game_libs_ido53_6F38C.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_mips3_6C740.c.o build/non_matching/src/game_libs/game_libs_mips3_6C740.c.o: MIPSISET := -mips3 -32
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := game_libs_func_0006C8AC=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C90C=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C9F4=$(GAMELIBS_6C9F4_DONOR) gl_func_0006F534=$(GAMELIBS_6F534_DONOR) gl_func_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_func_0006E1A4=$(GAMELIBS_6E1A4_DONOR) gl_func_0006FFE4=$(GAMELIBS_6FFE4_DONOR) gl_func_0006FAD4=$(GAMELIBS_6FAD4_DONOR) game_libs_func_0006C740=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C77C=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C7B8=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C7E4=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C820=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C87C=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C9A8=$(GAMELIBS_6C740_DONOR) gl_func_0006D0F4=$(GAMELIBS_6D0F4_DONOR) gl_func_0006DA74=$(GAMELIBS_6DA74_DONOR) gl_func_0006CDB4=$(GAMELIBS_6CDB4_DONOR) gl_func_0006CF54=$(GAMELIBS_6CDB4_DONOR) game_libs_func_0006C714=$(GAMELIBS_6C740_DONOR) gl_func_0006D554=$(GAMELIBS_6D554_DONOR) gl_func_0006D6F4=$(GAMELIBS_6D6F4_DONOR) gl_func_0006D7CC=$(GAMELIBS_6D7CC_DONOR) gl_func_0006CAD4=$(GAMELIBS_6CAD4_DONOR) gl_func_0006CB84=$(GAMELIBS_6CB84_DONOR) gl_func_0006CC64=$(GAMELIBS_6CC64_DONOR) gl_func_0006D270=$(GAMELIBS_6D270_DONOR) gl_func_00070040=$(GAMELIBS_70040_DONOR) gl_func_0006F088=$(GAMELIBS_6F088_DONOR) gl_func_0006F38C=$(GAMELIBS_6F38C_DONOR) gl_func_0006F3BC=$(GAMELIBS_6F3BC_DONOR) gl_func_0006DC0C=$(GAMELIBS_6DC0C_DONOR) gl_func_0006DD14=$(GAMELIBS_6DD14_DONOR) gl_func_0006F8A4=$(GAMELIBS_6F8A4_DONOR) gl_func_0006FB54=$(GAMELIBS_6FB54_DONOR) gl_func_0006FE5C=$(GAMELIBS_6FE5C_DONOR) gl_func_0006F3E4=$(GAMELIBS_6F3E4_DONOR) gl_func_0006E224=$(GAMELIBS_6E224_DONOR) gl_func_0006E894=$(GAMELIBS_6E224_DONOR) game_libs_func_0006F1D8=$(GAMELIBS_6F1D8_DONOR) game_libs_func_0006F1FC=$(GAMELIBS_6F1D8_DONOR) memcpy=$(GAMELIBS_6F17C_DONOR) game_libs_func_0006F218=$(GAMELIBS_6F218_DONOR) game_libs_func_0006FBE4=$(GAMELIBS_6FBE4_DONOR)
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += game_libs_func_0006FC70=$(GAMELIBS_6FC70_DONOR) gl_func_0006FDE8=$(GAMELIBS_6FC70_DONOR) gl_func_0006C484=$(GAMELIBS_6C484_DONOR) gl_func_0006CD44=$(GAMELIBS_6CD44_DONOR) gl_func_0006F834=$(GAMELIBS_6F834_DONOR) gl_func_0006F634=$(GAMELIBS_6F634_DONOR) gl_func_0006CC14=$(GAMELIBS_6CC14_DONOR) game_libs_func_0006F684=$(GAMELIBS_6F684_DONOR) gl_func_0006D964=$(GAMELIBS_6D964_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := game_libs_func_0006C8AC=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C90C=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C9F4=$(GAMELIBS_6C9F4_DONOR) gl_func_0006F534=$(GAMELIBS_6F534_DONOR) gl_func_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_func_0006E1A4=$(GAMELIBS_6E1A4_DONOR) gl_func_0006FFE4=$(GAMELIBS_6FFE4_DONOR) gl_func_0006FAD4=$(GAMELIBS_6FAD4_DONOR) game_libs_func_0006C740=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C77C=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C7B8=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C7E4=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C820=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C87C=$(GAMELIBS_6C740_DONOR) game_libs_func_0006C9A8=$(GAMELIBS_6C740_DONOR) gl_func_0006D0F4=$(GAMELIBS_6D0F4_DONOR) gl_func_0006DA74=$(GAMELIBS_6DA74_DONOR) gl_func_0006CDB4=$(GAMELIBS_6CDB4_DONOR) gl_func_0006CF54=$(GAMELIBS_6CDB4_DONOR) game_libs_func_0006C714=$(GAMELIBS_6C740_DONOR) osPfsIsPlug=$(GAMELIBS_6D554_DONOR) __osPfsRequestData=$(GAMELIBS_6D6F4_DONOR) __osPfsGetInitData=$(GAMELIBS_6D7CC_DONOR) gl_func_0006CAD4=$(GAMELIBS_6CAD4_DONOR) gl_func_0006CB84=$(GAMELIBS_6CB84_DONOR) gl_func_0006CC64=$(GAMELIBS_6CC64_DONOR) osMotorInit=$(GAMELIBS_6D270_DONOR) gl_func_00070040=$(GAMELIBS_70040_DONOR) gl_func_0006F088=$(GAMELIBS_6F088_DONOR) gl_func_0006F38C=$(GAMELIBS_6F38C_DONOR) gl_func_0006F3BC=$(GAMELIBS_6F3BC_DONOR) gl_func_0006DC0C=$(GAMELIBS_6DC0C_DONOR) gl_func_0006DD14=$(GAMELIBS_6DD14_DONOR) gl_func_0006F8A4=$(GAMELIBS_6F8A4_DONOR) gl_func_0006FB54=$(GAMELIBS_6FB54_DONOR) gl_func_0006FE5C=$(GAMELIBS_6FE5C_DONOR) gl_func_0006F3E4=$(GAMELIBS_6F3E4_DONOR) _Putfld=$(GAMELIBS_6E224_DONOR) _Printf=$(GAMELIBS_6E224_DONOR) game_libs_func_0006F1D8=$(GAMELIBS_6F1D8_DONOR) game_libs_func_0006F1FC=$(GAMELIBS_6F1D8_DONOR) memcpy=$(GAMELIBS_6F17C_DONOR) game_libs_func_0006F218=$(GAMELIBS_6F218_DONOR) game_libs_func_0006FBE4=$(GAMELIBS_6FBE4_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += game_libs_func_0006FC70=$(GAMELIBS_6FC70_DONOR) gl_func_0006FDE8=$(GAMELIBS_6FC70_DONOR) gl_func_0006C484=$(GAMELIBS_6C484_DONOR) gl_func_0006CD44=$(GAMELIBS_6CD44_DONOR) guPosition=$(GAMELIBS_6F834_DONOR) gl_func_0006F634=$(GAMELIBS_6F634_DONOR) gl_func_0006CC14=$(GAMELIBS_6CC14_DONOR) guPositionF=$(GAMELIBS_6F684_DONOR) gl_func_0006D964=$(GAMELIBS_6D964_DONOR)
 # gl_func_0006EF08: -O2 body emits the 0x58 target function (jr-ra + delay nop);
 build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += gl_func_0006EF64=$(GAMELIBS_6EF64_DONOR)
 # append the 1-word all-zero alignment pad at 0x6EF60 so gl_func_0006EF64 sits at
@@ -2504,7 +2504,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_49B3C_DONOR := build/src/game_libs/game_libs_ncc_49B3C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00049B3C=$(GAMELIBS_49B3C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49B3C_DONOR)
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := gl_func_000669B8=$(GAMELIBS_669AC_DONOR) gl_func_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_func_00069E04=$(GAMELIBS_69E04_DONOR) gl_func_00069F64=$(GAMELIBS_69F64_DONOR) gl_func_0006AF0C=$(GAMELIBS_6AF0C_DONOR) gl_func_0006A304=$(GAMELIBS_6A304_DONOR) gl_func_0006AF44=$(GAMELIBS_6AF44_DONOR) gl_func_0006B880=$(GAMELIBS_6B880_DONOR) gl_func_0006B974=$(GAMELIBS_6B974_DONOR) gl_func_0006BAD4=$(GAMELIBS_6BAD4_DONOR) gl_func_0006B7A0=$(GAMELIBS_6B7A0_DONOR) gl_func_0006B0FC=$(GAMELIBS_6B0FC_DONOR) game_libs_func_0006A144=$(GAMELIBS_6A144_DONOR) gl_func_00068990=$(GAMELIBS_68990_DONOR) gl_func_0006A420=$(GAMELIBS_6A420_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := gl_func_000669B8=$(GAMELIBS_669AC_DONOR) gl_func_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_func_00069E04=$(GAMELIBS_69E04_DONOR) gl_func_00069F64=$(GAMELIBS_69F64_DONOR) gl_func_0006AF0C=$(GAMELIBS_6AF0C_DONOR) gl_func_0006A304=$(GAMELIBS_6A304_DONOR) gl_func_0006AF44=$(GAMELIBS_6AF44_DONOR) gl_func_0006B880=$(GAMELIBS_6B880_DONOR) gl_func_0006B974=$(GAMELIBS_6B974_DONOR) gl_func_0006BAD4=$(GAMELIBS_6BAD4_DONOR) gl_func_0006B7A0=$(GAMELIBS_6B7A0_DONOR) gl_func_0006B0FC=$(GAMELIBS_6B0FC_DONOR) fsin=$(GAMELIBS_6A144_DONOR) gl_func_00068990=$(GAMELIBS_68990_DONOR) gl_func_0006A420=$(GAMELIBS_6A420_DONOR)
 # 675A4 = input debounce / stick flags, IDO 7.1 -O2 donor: game_libs_o2_675A4.c
 # (262/262 word-exact). Spliced so the donor-local .rodata reloc of the 0.2
 # dead-zone double literal is renamed gl_func_000675A4_rodata and pinned to
@@ -2512,7 +2512,7 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_675A4_DONOR := build/src/game_libs/game_libs_o2_675A4.c.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000675A4=$(GAMELIBS_675A4_DONOR)
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl_func_0006C11C=$(GAMELIBS_6C11C_DONOR) gl_func_0006BF34=$(GAMELIBS_6BF34_DONOR) gl_func_0006C1B8=$(GAMELIBS_6C1B8_DONOR) gl_func_0006C2AC=$(GAMELIBS_6C2A4_DONOR)
-build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += gl_func_0006C084=$(GAMELIBS_6C084_DONOR)
+build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += osContStartReadData=$(GAMELIBS_6C084_DONOR)
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
 # EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.
 GAMELIBS_63964_DONOR := build/src/game_libs/game_libs_ncc_63964.cpp.o
@@ -2714,7 +2714,7 @@ GAMELIBS_71384_DONOR := build/src/game_libs/game_libs_ido53_71384.c.o
 build/src/game_libs/game_libs_ido53_71624.c.o build/non_matching/src/game_libs/game_libs_ido53_71624.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_71624.c.o build/non_matching/src/game_libs/game_libs_ido53_71624.c.o: OPT_FLAGS := -O1
 GAMELIBS_71624_DONOR := build/src/game_libs/game_libs_ido53_71624.c.o
-build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: REPLACE_FUNC_BODY := gl_func_00071708=$(GAMELIBS_71708_DONOR) game_libs_func_00070FCC=$(GAMELIBS_70FCC_DONOR) __osPfsGetStatus=$(GAMELIBS_71624_DONOR) osPfsInitPak=$(GAMELIBS_71384_DONOR) gl_func_000717CC=$(GAMELIBS_717C8_DONOR) gl_func_00071144=$(GAMELIBS_71144_DONOR)
+build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: REPLACE_FUNC_BODY := gl_func_00071708=$(GAMELIBS_71708_DONOR) fcos=$(GAMELIBS_70FCC_DONOR) __osPfsGetStatus=$(GAMELIBS_71624_DONOR) osPfsInitPak=$(GAMELIBS_71384_DONOR) __osPfsGetOneChannelData=$(GAMELIBS_717C8_DONOR) gl_func_00071144=$(GAMELIBS_71144_DONOR)
 # osViSetEvent: full, unmodified IDO -O1 function body; no instruction patches.
 build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: private REPLACE_FUNC_BODY += gl_func_00071304=$(GAMELIBS_71304_DONOR)
 # gl_func_00067370: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
@@ -2792,7 +2792,7 @@ build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/game_libs_ido53_70A14.c.o: OPT_FLAGS := -O2
 build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/game_libs_ido53_70A14.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ guMtxL2F=guMtxL2F
 build/src/game_libs/game_libs_post2b_f.c.o build/non_matching/src/game_libs/game_libs_post2b_f.c.o: REPLACE_FUNC_BODY := gl_func_00074EFC=$(GAMELIBS_74EF4_DONOR) gl_func_0007507C=$(GAMELIBS_74EF4_DONOR)
-build/src/game_libs/game_libs_post2b_d.c.o build/non_matching/src/game_libs/game_libs_post2b_d.c.o: REPLACE_FUNC_BODY := gl_func_000747F4=$(GAMELIBS_747F4_DONOR) gl_func_00073824=$(GAMELIBS_73824_DONOR) gl_func_0007369C=$(GAMELIBS_7369C_DONOR) ldiv=$(GAMELIBS_744C4_DONOR) lldiv=$(GAMELIBS_743C4_DONOR) gl_func_00073904=$(GAMELIBS_73904_DONOR) gl_func_00073E74=$(GAMELIBS_73904_DONOR) gl_func_00074554=$(GAMELIBS_74554_DONOR)
+build/src/game_libs/game_libs_post2b_d.c.o build/non_matching/src/game_libs/game_libs_post2b_d.c.o: REPLACE_FUNC_BODY := gl_func_000747F4=$(GAMELIBS_747F4_DONOR) gl_func_00073824=$(GAMELIBS_73824_DONOR) gl_func_0007369C=$(GAMELIBS_7369C_DONOR) ldiv=$(GAMELIBS_744C4_DONOR) lldiv=$(GAMELIBS_743C4_DONOR) gl_func_00073904=$(GAMELIBS_73904_DONOR) gl_func_00073E74=$(GAMELIBS_73904_DONOR) _Litob=$(GAMELIBS_74554_DONOR)
 build/src/game_libs/game_libs_post2b_c.c.o build/non_matching/src/game_libs/game_libs_post2b_c.c.o: REPLACE_FUNC_BODY := gl_func_000732C4=$(GAMELIBS_732C4_DONOR) gl_func_000730CC=$(GAMELIBS_730CC_DONOR) game_libs_func_00073310=$(GAMELIBS_73310_DONOR) gl_func_0007307C=$(GAMELIBS_73074_DONOR) gl_func_00073034=$(GAMELIBS_73034_DONOR)
 # arcproc_uso_func_00000748: byte-identical sibling of mgrproc_uso_func_000009A8.
 # arcproc is non-Yay0 but the donor-splice still applies (relocatable USO: a

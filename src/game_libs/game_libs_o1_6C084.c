@@ -25,7 +25,7 @@ extern int gl_si_raw_start_dma_6C084(int, void *);
 extern int gl_recv_mesg_6C084(void *, void *, int);
 extern void gl_si_rel_access_6C084(void);
 
-int gl_func_0006C084(void *mq)
+int osContStartReadData(void *mq)
 {
     int ret;
     int i;

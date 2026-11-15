@@ -1,6 +1,6 @@
-nonmatching gl_func_0006E224, 0x670
+nonmatching _Putfld, 0x670
 
-glabel gl_func_0006E224
+glabel _Putfld
     /* E532FC 0006E224 27BDFFE8 */  .word 0x27BDFFE8
     /* E53300 0006E228 AFA50020 */  .word 0xAFA50020
     /* E53304 0006E22C AFBF0014 */  .word 0xAFBF0014
@@ -413,4 +413,4 @@ glabel gl_func_0006E224
     /* E53960 0006E888 27BD0018 */  .word 0x27BD0018
     /* E53964 0006E88C 03E00008 */  .word 0x03E00008
     /* E53968 0006E890 00000000 */  .word 0x00000000
-endlabel gl_func_0006E224
+endlabel _Putfld

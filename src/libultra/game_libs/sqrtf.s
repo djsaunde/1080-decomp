@@ -5,7 +5,7 @@
 # tail pad (gl_func_0006E1A4 all-zero SUFFIX_BYTES_FORCE); the two after it
 # are this object's pad (_pad_gl_func_0006E1A4 sidecar in the host unit).
 
-glabel game_libs_func_0006E214
+glabel sqrtf
     jr      $ra
      sqrt.s  $f0, $f12
-endlabel game_libs_func_0006E214
+endlabel sqrtf

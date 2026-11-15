@@ -1,6 +1,6 @@
-nonmatching gl_func_0006D554, 0x1A0
+nonmatching osPfsIsPlug, 0x1A0
 
-glabel gl_func_0006D554
+glabel osPfsIsPlug
     /* E5262C 0006D554 27BDFFC0 */  .word 0x27BDFFC0
     /* E52630 0006D558 AFBF0014 */  .word 0xAFBF0014
     /* E52634 0006D55C 240E0003 */  .word 0x240E0003
@@ -105,4 +105,4 @@ glabel gl_func_0006D554
     /* E527C0 0006D6E8 27BD0040 */  .word 0x27BD0040
     /* E527C4 0006D6EC 03E00008 */  .word 0x03E00008
     /* E527C8 0006D6F0 00000000 */  .word 0x00000000
-endlabel gl_func_0006D554
+endlabel osPfsIsPlug

@@ -3,7 +3,7 @@
  * verify; 7.1 -O1 emits the same shape but colors the template struct-copy
  * scratch $t1/$t0 — only 5.3 uses $at, the target's register). The target
  * .s carries one TRAILING word (lui $t6 at 0x717C8) that is really
- * gl_func_000717CC's stolen prologue; it is emitted by the new 1-word
+ * __osPfsGetOneChannelData's stolen prologue; it is emitted by the new 1-word
  * orphan game_libs_func_000717C8.s in the host, so this donor covers
  * exactly 0x71708..0x717C4. post2 builds -O2. Levers:
  *   (1) 6-byte struct/union template built field-by-field in the sp home,

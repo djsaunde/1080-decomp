@@ -1,6 +1,6 @@
-nonmatching gl_func_0006D6F4, 0xD0
+nonmatching __osPfsRequestData, 0xD0
 
-glabel gl_func_0006D6F4
+glabel __osPfsRequestData
     /* E527CC 0006D6F4 27BDFFF0 */  .word 0x27BDFFF0
     /* E527D0 0006D6F8 3C0D0000 */  .word 0x3C0D0000
     /* E527D4 0006D6FC 91AD0000 */  .word 0x91AD0000
@@ -53,4 +53,4 @@ glabel gl_func_0006D6F4
     /* E52890 0006D7B8 27BD0010 */  .word 0x27BD0010
     /* E52894 0006D7BC 03E00008 */  .word 0x03E00008
     /* E52898 0006D7C0 A30D0000 */  .word 0xA30D0000
-endlabel gl_func_0006D6F4
+endlabel __osPfsRequestData

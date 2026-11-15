@@ -288,7 +288,7 @@ void gl_func_0006D0F4(int count, unsigned short x, unsigned char *src, int *out)
     }
 }
 
-/* gl_func_0006D270 = libultra osMotorInit (motor.c verbatim): OSPfs init
+/* osMotorInit = libultra osMotorInit (motor.c verbatim): OSPfs init
  * (queue/channel/status=0/activebank=128), 32-byte 0xFE probe write
  * (retry on 2) + read (2 -> PFS_ERR_CONTRFAIL) to pak address 1024,
  * temp[31]==0xFE -> PFS_ERR_DEVICE (a mempack holds the write), same
@@ -300,7 +300,7 @@ void gl_func_0006D0F4(int count, unsigned short x, unsigned char *src, int *out)
  * -O1), spliced over this -O2 stand-in. The 2-word inter-function
  * alignment pad at 0x6D54C stays in its _pad.s sidecar below. Body below
  * is a placeholder for the splice. */
-int gl_func_0006D270(void *mq, void *pfs, int channel) {
+int osMotorInit(void *mq, void *pfs, int channel) {
     volatile int ret = 0;
     if (channel == 0) {
         ret = 11;
@@ -309,19 +309,19 @@ int gl_func_0006D270(void *mq, void *pfs, int channel) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006D270_pad.s")
 
-/* gl_func_0006D554: libultra osPfsIsPlug (pfsisplug.c; 1080 deltas:
+/* osPfsIsPlug: libultra osPfsIsPlug (pfsisplug.c; 1080 deltas:
  * MAXCONTROLLERS=4, compact 4-byte OSContStatus). TU siblings 6D6F4 =
  * __osPfsRequestData and 6D7CC = __osPfsGetInitData below.
  * WIRED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in the
  * IDO 7.1 -O1 donor unit game_libs_o1_6D554.c (104/104), spliced over this
  * -O2 stand-in. Body below is a placeholder for the splice. */
-int gl_func_0006D554(void *queue, unsigned char *pattern) {
+int osPfsIsPlug(void *queue, unsigned char *pattern) {
     volatile int ret = 0;
     *pattern = 0;
     return ret;
 }
 
-/* gl_func_0006D6F4: libultra __osPfsRequestData (pfsisplug.c TU, sibling
+/* __osPfsRequestData: libultra __osPfsRequestData (pfsisplug.c TU, sibling
  * of 6D554 = osPfsIsPlug above and 6D7CC = __osPfsGetInitData below).
  * Retires the old "record-stream emit helper" decode: the template is
  * __OSContRequesFormat {FF,1,3,cmd,FF,FF,FF,FF}, the "D+0 blob" is really
@@ -330,12 +330,12 @@ int gl_func_0006D554(void *queue, unsigned char *pattern) {
  * WIRED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in the
  * IDO 5.3 -O1 donor unit game_libs_ido53_6D6F4.c (52/52), spliced over
  * this -O2 stand-in. Body below is a placeholder for the splice. */
-void gl_func_0006D6F4(unsigned char cmd) {
+void __osPfsRequestData(unsigned char cmd) {
     volatile unsigned char c = cmd;
     (void)c;
 }
 
-/* gl_func_0006D7CC: libultra __osPfsGetInitData (pfsisplug.c TU; 1080
+/* __osPfsGetInitData: libultra __osPfsGetInitData (pfsisplug.c TU; 1080
  * compact 4-byte OSContStatus). BOUNDARY FIX: the 2-word orphan
  * game_libs_func_0006D7C4 (lui/lbu __osMaxControllers) was this
  * function's first load scheduled before the prologue by IDO 5.3; its
@@ -343,7 +343,7 @@ void gl_func_0006D6F4(unsigned char cmd) {
  * WIRED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in the
  * IDO 5.3 -O1 donor unit game_libs_ido53_6D7CC.c (52/52), spliced over
  * this -O2 stand-in. Body below is a placeholder for the splice. */
-void gl_func_0006D7CC(unsigned char *pattern, void *data) {
+void __osPfsGetInitData(unsigned char *pattern, void *data) {
     *pattern = 0;
 }
 
@@ -539,11 +539,11 @@ void gl_func_0006E1A4(int event, void *queue, int msg) {
 }
 
 
-/* game_libs_func_0006E214 = sqrtf (game_libs libultra copy): real source in src/libultra/game_libs/sqrtf.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* sqrtf = sqrtf (game_libs libultra copy): real source in src/libultra/game_libs/sqrtf.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/sqrtf.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006E1A4_pad.s")
 
-/* gl_func_0006E224 = _Putfld (Plauger libc xprintf.c verbatim) -- the
+/* _Putfld = _Putfld (Plauger libc xprintf.c verbatim) -- the
  * printf conversion dispatcher. LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice: real C lives in the IDO 5.3 -O3 whole-TU donor
  * game_libs_ido53_6E224.c (see its header for the full reloc story).
@@ -551,14 +551,14 @@ GLOBAL_ASM("src/libultra/game_libs/sqrtf.s")
  * long-documented "caller-set $s0 permanent cap" -- RETRACTED: it was
  * whole-TU static linkage all along); no per-function compile can emit
  * that. Body below is a placeholder for the splice. */
-void gl_func_0006E224(void *px, char *pap, int code, char *ac) {
+void _Putfld(void *px, char *pap, int code, char *ac) {
     volatile int putfld_spliced = 0;
     if (code != 0) {
         putfld_spliced = (int)pap + (int)ac;
     }
 }
 
-/* gl_func_0006E894 = _Printf (Plauger libc xprintf.c verbatim) -- the
+/* _Printf = _Printf (Plauger libc xprintf.c verbatim) -- the
  * printf core loop (prout callback in $s4, spaces/zeroes baked absolute
  * 0x2E460/0x2E484 in s7/s5, fchar rodata lo 9172 in s6). LANDED
  * 2026-08-22 via REPLACE_FUNC_BODY donor splice from the same IDO 5.3
@@ -566,7 +566,7 @@ void gl_func_0006E224(void *px, char *pap, int code, char *ac) {
  * Printf; the "extra baked jal 0x20A24" is the intra-TU call to
  * _Putfld at its original link address). Body below is a placeholder
  * for the splice. */
-int gl_func_0006E894(char *(*prout)(char *, const char *, unsigned int), char *arg, const char *fmt, char *args) {
+int _Printf(char *(*prout)(char *, const char *, unsigned int), char *arg, const char *fmt, char *args) {
     volatile int printf_spliced = 0;
     if (fmt != 0) {
         printf_spliced = (int)arg + (int)args;
@@ -668,7 +668,7 @@ void *memcpy(void *a0, void *a1, unsigned int a2) {
     return a0;
 }
 
-int game_libs_func_0006F1B0(char *a0) {
+int strlen(char *a0) {
     char *p = a0;
     if (*p != 0) {
         do {
@@ -845,20 +845,20 @@ int game_libs_func_0006F614(int *a0) {
  * decode ("2-call + 2-global-state-update, D_6F634_state / D_6F634_flag")
  * was this function: both globals are __osViNext (framep @4 = frameBufPtr,
  * state u16 @0 |= VI_STATE_BUFFER_UPDATED 0x10), the sp+0x1C spill is the
- * un-`register`ed saveMask. No pad (game_libs_func_0006F684 follows
+ * un-`register`ed saveMask. No pad (guPositionF follows
  * directly); the C body is the same 0x50 as the old .s. Body below is a
  * placeholder for the splice. */
 void gl_func_0006F634(void *frameBufPtr) {
 }
 
 
-/* game_libs_func_0006F684 = libultra guPositionF (gu/position.c verbatim),
+/* guPositionF = libultra guPositionF (gu/position.c verbatim),
  * section 0x83CF0 = export sym 2629 (one jal ref at 0x83EE4 = 6F834+0x44, so
  * the 6F834 wrapper is guPosition -- byte-identical to the guFrustum wrapper
  * shape it was landed as). LANDED 2026-09-09 (agent-g) via REPLACE_FUNC_BODY
  * donor splice: real C lives in the IDO 5.3 -O3 donor
  * game_libs_ido53_6F684.c (108/108 in-tree; 105/108 standalone, the three
- * reloc-addend words bake through the game_libs_func_0006F684_rodata / _bss
+ * reloc-addend words bake through the guPositionF_rodata / _bss
  * pins = 0x24D0 / 0x44030). The old 84% wrap ("Vec3-style float triple *
  * D[0x24D0], six game_libs_func_0006C400 calls") was this function: the
  * literal is `dtor` (pi/180), the six calls are sinf/cosf (fsin 6A144 /
@@ -867,25 +867,25 @@ void gl_func_0006F634(void *frameBufPtr) {
  * BOUNDARY MERGED 2026-06-02 (0006F684 6-insn hoisted head + 0006F69C body,
  * 0x18 -> 0x1B0). No pad; the C body is the same 0x1B0 as the old .s. Body
  * below is a placeholder for the splice. */
-void game_libs_func_0006F684(void *mf) {
+void guPositionF(void *mf) {
 }
 
-/* gl_func_0006F834 = libultra guPosition (gu/position.c wrapper), section
+/* guPosition = libultra guPosition (gu/position.c wrapper), section
  * 0x83EA0 = export sym 162. LANDED 2026-09-09 (agent-g) via REPLACE_FUNC_BODY
  * donor splice: real C lives in the IDO 5.3 -O3 donor game_libs_ido53_6F834.c
  * (26/26 at both 5.3 and 7.1 -O3). It was landed and the donor written as
  * guFrustum (gu/frustum.c); the guFrustum and guPosition wrapper TUs compile
  * to byte-identical 26-word bodies (Matrix mf at sp+40, three mtc1/mfc1
  * re-marshals, F-variant jal, guMtxF2L), and the in-unit callee at +0x44 is
- * game_libs_func_0006F684 = guPositionF (108 words; NOT guFrustumF), so the
+ * guPositionF = guPositionF (108 words; NOT guFrustumF), so the
  * true identity is guPosition(Mtx *m, float r, float p, float h, float s,
  * float x, float y, float z). The 87.7% wrap's "2-FP-home budget cap" (only
  * two float params homed in f12/f14, third stack-homed) was -O2 vs -O3 --
  * the same class as the guOrtho donor (70694/707E8). Callee 1 is the in-unit
- * guPositionF = game_libs_func_0006F684 (blank import), callee 2 is guMtxF2L
+ * guPositionF = guPositionF (blank import), callee 2 is guMtxF2L
  * (70854). The 2-word gl_func_0006F834_pad.s below is unchanged. Body below
  * is a placeholder for the splice. */
-void gl_func_0006F834(void *m) {
+void guPosition(void *m) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006F834_pad.s")
 

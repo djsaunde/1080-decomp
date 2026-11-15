@@ -1,6 +1,6 @@
-nonmatching gl_func_00072C88, 0x1B4
+nonmatching corrupted_init, 0x1B4
 
-glabel gl_func_00072C88
+glabel corrupted_init
     /* E57D60 00072C88 27BDFED0 */  .word 0x27BDFED0
     /* E57D64 00072C8C AFBF0014 */  .word 0xAFBF0014
     /* E57D68 00072C90 AFA40130 */  .word 0xAFA40130
@@ -110,4 +110,4 @@ glabel gl_func_00072C88
     /* E57F08 00072E30 27BD0130 */  .word 0x27BD0130
     /* E57F0C 00072E34 03E00008 */  .word 0x03E00008
     /* E57F10 00072E38 00000000 */  .word 0x00000000
-endlabel gl_func_00072C88
+endlabel corrupted_init

@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006A144, 0x1C0
+nonmatching fsin, 0x1C0
 
-glabel game_libs_func_0006A144
+glabel fsin
     /* E4F21C 0006A144 E7AC0000 */  .word 0xE7AC0000
     /* E4F220 0006A148 8FA20000 */  .word 0x8FA20000
     /* E4F224 0006A14C C7A40000 */  .word 0xC7A40000
@@ -113,4 +113,4 @@ glabel game_libs_func_0006A144
     /* E4F3D0 0006A2F8 C4202350 */  .word 0xC4202350
     /* E4F3D4 0006A2FC 03E00008 */  .word 0x03E00008
     /* E4F3D8 0006A300 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006A144
+endlabel fsin

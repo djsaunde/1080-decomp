@@ -27739,7 +27739,7 @@ void game_libs_func_000622C8(int *a0, int a1) {
  *
  * Loop optimized via delay-slot reuse: `lw t8, 0(s2)` lives in bnel's
  * delay slot. Direct jal to 0x764C4 (no R_MIPS_26 reloc) is another
- * hardcoded-address-jal pattern (cf. 0x80824 in gl_func_0006C084).
+ * hardcoded-address-jal pattern (cf. 0x80824 in osContStartReadData).
  *
  * EXACT 2026-10-17 agent-g (run 104; was 55.7, first compile): count is a
  * stack local filled by the stream reader (&count -> sp+0x34, re-read after

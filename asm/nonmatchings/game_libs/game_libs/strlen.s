@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006F1B0, 0x28
+nonmatching strlen, 0x28
 
-glabel game_libs_func_0006F1B0
+glabel strlen
     /* E54288 0006F1B0 908E0000 */  .word 0x908E0000
     /* E5428C 0006F1B4 00801825 */  .word 0x00801825
     /* E54290 0006F1B8 11C00005 */  .word 0x11C00005
@@ -11,4 +11,4 @@ glabel game_libs_func_0006F1B0
     /* E542A4 0006F1CC 906F0001 */  .word 0x906F0001
     /* E542A8 0006F1D0 03E00008 */  .word 0x03E00008
     /* E542AC 0006F1D4 00641023 */  .word 0x00641023
-endlabel game_libs_func_0006F1B0
+endlabel strlen

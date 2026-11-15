@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006F684, 0x1B0
+nonmatching guPositionF, 0x1B0
 
-glabel game_libs_func_0006F684
+glabel guPositionF
     /* E5475C 0006F684 3C010000 */  .word 0x3C010000
     /* E54760 0006F688 C42024D0 */  .word 0xC42024D0
     /* E54764 0006F68C 44856000 */  .word 0x44856000
@@ -109,4 +109,4 @@ glabel game_libs_func_0006F684
     /* E54900 0006F828 D7B40018 */  .word 0xD7B40018
     /* E54904 0006F82C 03E00008 */  .word 0x03E00008
     /* E54908 0006F830 27BD0048 */  .word 0x27BD0048
-endlabel game_libs_func_0006F684
+endlabel guPositionF

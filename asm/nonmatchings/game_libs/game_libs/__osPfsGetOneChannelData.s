@@ -1,6 +1,6 @@
-nonmatching gl_func_000717CC, 0x9C
+nonmatching __osPfsGetOneChannelData, 0x9C
 
-glabel gl_func_000717CC
+glabel __osPfsGetOneChannelData
     /* true entry 0x717C8: `lui $t6,%hi(__osPfsPifRam)` was the old _pad_pre_717CC stolen-prologue orphan (split off gl_func_00071708.s); folded into the symbol 2026-07-30 when 717CC = __osPfsGetOneChannelData landed (39-word donor covers 0x717C8..0x71860) */
     /* E568A0 000717C8 3C0E0000 */  .word 0x3C0E0000
     /* E568A4 000717CC 27BDFFF0 */  .word 0x27BDFFF0
@@ -41,4 +41,4 @@ glabel gl_func_000717CC
     /* E56930 00071858 A0AA0002 */  .word 0xA0AA0002
     /* E56934 0007185C 03E00008 */  .word 0x03E00008
     /* E56938 00071860 27BD0010 */  .word 0x27BD0010
-endlabel gl_func_000717CC
+endlabel __osPfsGetOneChannelData

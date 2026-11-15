@@ -1,13 +1,13 @@
 #include "common.h"
 
-/* gl_func_00070194 = libultra __osContAddressCrc and gl_func_00070244 =
+/* __osContAddressCrc = libultra __osContAddressCrc and __osContDataCrc =
  * __osContDataCrc (io/crc.c), statically linked into game_libs. Both
  * byte-exact ONLY with IDO 5.3 -O1 (per-file CC/OPT_FLAGS override) from
  * VERBATIM libreultra source — same compiler-version story as the contpfs
  * pair at 0x71864/0x718C0 (see docs/MATCHING_WORKFLOW.md ido53-carve
  * recipe). TRUNCATE_TEXT 0x180 normalizes section align so the unit sits
  * flush at USO 0x70194. */
-u8 gl_func_00070194(u16 addr)
+u8 __osContAddressCrc(u16 addr)
 {
     u8 temp;
     u8 temp2;
@@ -28,7 +28,7 @@ u8 gl_func_00070194(u16 addr)
     return temp & 0x1f;
 }
 
-u8 gl_func_00070244(u8 *data)
+u8 __osContDataCrc(u8 *data)
 {
     u8 temp;
     u8 temp2;

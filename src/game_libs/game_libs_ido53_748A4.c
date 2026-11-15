@@ -1,5 +1,5 @@
 /* game_libs ido53 carve: contramread.c pair, verbatim at IDO 5.3 -O1.
- * gl_func_000748A4 = __osContRamRead (135/135) and gl_func_00074AC0 =
+ * __osContRamRead = __osContRamRead (135/135) and __osPackRamReadData =
  * __osPackRamReadData (79/79), both first try -- mirror of the
  * contramwrite.c carve. RamRead calls PackRamReadData via the BUILD-TIME-
  * PATCHED hardcoded jal gl_ref_0008912C (= USO 0x74AC0 + reloc base
@@ -28,7 +28,7 @@ extern int gl_ref_0008912C();
 extern GlPifRam D_748A4_pifram;
 extern u8 D_748A4_lastcmd;
 
-s32 gl_func_000748A4(void *mq, int channel, u16 address, u8 *buffer)
+s32 __osContRamRead(void *mq, int channel, u16 address, u8 *buffer)
 {
     s32 ret;
     int i;
@@ -90,7 +90,7 @@ s32 gl_func_000748A4(void *mq, int channel, u16 address, u8 *buffer)
     return ret;
 }
 
-void gl_func_00074AC0(int channel, u16 address)
+void __osPackRamReadData(int channel, u16 address)
 {
     u8 *ptr;
     __OSContRamReadFormat ramreadformat;

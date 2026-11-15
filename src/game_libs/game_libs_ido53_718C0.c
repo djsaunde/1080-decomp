@@ -5,7 +5,7 @@ extern int D_00000000;
  * linked into game_libs. Byte-exact ONLY with IDO 5.3 -O1 (per-file
  * CC/OPT_FLAGS override) from the verbatim libreultra source — same story
  * as __osSumcalc in the sibling unit. This unit starts 16-aligned
- * (0x718C0) and also carries gl_func_00071928's INCLUDE_ASM so the
+ * (0x718C0) and also carries __osRepairPackId's INCLUDE_ASM so the
  * following unit can start at the 16-aligned 0x71D40. */
 s32 __osIdCheckSum(u16 *ptr, u16 *csum, u16 *icsum)
 {
@@ -23,7 +23,7 @@ s32 __osIdCheckSum(u16 *ptr, u16 *csum, u16 *icsum)
     return 0;
 }
 
-/* gl_func_00071928 = libultra __osRepairPackId (io/contpfs.c), statically
+/* __osRepairPackId = libultra __osRepairPackId (io/contpfs.c), statically
  * linked into game_libs -- third contpfs function recovered via the ido53
  * carve (5.3 -O1, this unit's per-file override). Verbatim libreultra
  * source; the only edit vs libreultra is PFS_ERR_ID_FATAL = 10 spelled as a
@@ -66,7 +66,7 @@ extern int gl_func_00000000();
     if (ret != 0) \
         return ret;
 
-s32 gl_func_00071928(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
+s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
 {
     s32 ret;
     u8 temp[32];
@@ -142,13 +142,13 @@ s32 gl_func_00071928(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
     return 0;
 }
 
-/* gl_func_00071D40 = libultra __osCheckPackId (io/contpfs.c) -- fourth
+/* __osCheckPackId = libultra __osCheckPackId (io/contpfs.c) -- fourth
  * contpfs recovery via the ido53 carve (5.3 -O1). Verbatim libreultra
  * source; all callees are runtime-patched placeholders (gl_func_00000000):
  * __osPfsSelectBank, __osContRamRead, __osContRamWrite, __osIdCheckSum.
  * 102/102 raw words incl. jal fields. Moved here from game_libs_post2b
  * (whose TRUNCATE shrinks 0x356C->0x33D4; this unit grows 0x480->0x618). */
-s32 gl_func_00071D40(OSPfs *pfs, __OSPackId *temp)
+s32 __osCheckPackId(OSPfs *pfs, __OSPackId *temp)
 {
     u16 index[4];
     s32 ret;
@@ -185,7 +185,7 @@ s32 gl_func_00071D40(OSPfs *pfs, __OSPackId *temp)
     return 0;
 }
 
-/* gl_func_00071ED8 = libultra __osGetId, gl_func_00072134 = __osCheckId
+/* __osGetId = libultra __osGetId, __osCheckId = __osCheckId
  * (io/contpfs.c) -- fifth and sixth contpfs recoveries via the ido53
  * carve. Verbatim libreultra source at IDO 5.3 -O1; all callees are
  * gl_func_00000000 runtime-patch placeholders; literals: PFS_ERR_ID_FATAL
@@ -193,7 +193,7 @@ s32 gl_func_00071D40(OSPfs *pfs, __OSPackId *temp)
  * return is 2 in this libultra build (not the modern PFS_ERR_NEW_PACK
  * value). The entire contpfs.c is now matched: Sumcalc, IdCheckSum,
  * RepairPackId, CheckPackId, GetId, CheckId. */
-s32 gl_func_00071ED8(OSPfs *pfs)
+s32 __osGetId(OSPfs *pfs)
 {
     int k;
     u16 sum;
@@ -245,7 +245,7 @@ s32 gl_func_00071ED8(OSPfs *pfs)
     return 0;
 }
 
-s32 gl_func_00072134(OSPfs *pfs)
+s32 __osCheckId(OSPfs *pfs)
 {
     int k;
     u8 temp[32];
@@ -271,7 +271,7 @@ s32 gl_func_00072134(OSPfs *pfs)
     return 0;
 }
 
-/* gl_func_00072230 = libultra __osPfsRWInode (io/contpfs.c continues) --
+/* __osPfsRWInode = libultra __osPfsRWInode (io/contpfs.c continues) --
  * seventh recovery via the ido53 carve. Verbatim libreultra source at
  * IDO 5.3 -O1, first try, 200/200. Literals: PFS_WRITE=1, PFS_READ=0,
  * PFS_ERR_INCONSISTENT=3, PFS_ONE_PAGE=8 (confirmed vs 2.0I os.h). All
@@ -292,7 +292,7 @@ extern int gl_func_00000000();
     if (ret != 0) \
         return ret;
 
-s32 gl_func_00072230(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank)
+s32 __osPfsRWInode(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank)
 {
     u8 sum;
     int j;
@@ -357,11 +357,11 @@ s32 gl_func_00072230(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank)
     return 0;
 }
 
-/* gl_func_00072550 = libultra __osPfsSelectBank (io/contpfs.c) -- eighth
+/* __osPfsSelectBank = libultra __osPfsSelectBank (io/contpfs.c) -- eighth
  * ido53 recovery, first try, 27/27. Fills a 32-byte block with activebank
  * and RamWrites it to page 1024. Callee = gl_func_00000000 placeholder.
  * The 8-byte trailing pad sidecar rides along below. */
-s32 gl_func_00072550(OSPfs *pfs)
+s32 __osPfsSelectBank(OSPfs *pfs)
 {
     u8 temp[32];
     int i;

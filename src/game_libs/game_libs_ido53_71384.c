@@ -8,7 +8,7 @@
  * the 10 blank USO jals (= gl_func_00000000 placeholder; real callees
  * __osSiGetAccess, __osPfsGetStatus=__osPfsGetStatus, __osSiRelAccess,
  * __osPfsSelectBank, __osContRamRead x2, __osIdCheckSum=__osIdCheckSum,
- * __osCheckPackId=gl_func_00071D40, __osRepairPackId=gl_func_00071928,
+ * __osCheckPackId=__osCheckPackId, __osRepairPackId=__osRepairPackId,
  * osPfsChecker). post2 builds -O2 7.1; only 5.3 -O1 reproduces the
  * stack-resident ret/temp/newid locals and sequential sp-reload chains.
  * Spliced into game_libs_post2.c.o via REPLACE_FUNC_BODY. */

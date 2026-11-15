@@ -1,6 +1,6 @@
-nonmatching gl_func_00071928, 0x418
+nonmatching __osRepairPackId, 0x418
 
-glabel gl_func_00071928
+glabel __osRepairPackId
     /* E56A00 00071928 27BDFF88 */  .word 0x27BDFF88
     /* E56A04 0007192C AFA40078 */  .word 0xAFA40078
     /* E56A08 00071930 8FAE0078 */  .word 0x8FAE0078
@@ -263,4 +263,4 @@ glabel gl_func_00071928
     /* E56E0C 00071D34 27BD0078 */  .word 0x27BD0078
     /* E56E10 00071D38 03E00008 */  .word 0x03E00008
     /* E56E14 00071D3C 00000000 */  .word 0x00000000
-endlabel gl_func_00071928
+endlabel __osRepairPackId

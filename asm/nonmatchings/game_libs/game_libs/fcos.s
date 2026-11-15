@@ -1,5 +1,5 @@
-nonmatching game_libs_func_00070FCC, 0x168
-glabel game_libs_func_00070FCC
+nonmatching fcos, 0x168
+glabel fcos
     .word 0xE7AC0000
     .word 0x8FA20000
     .word 0xC7A60000
@@ -90,4 +90,4 @@ glabel game_libs_func_00070FCC
     .word 0xC4200000
     .word 0x03E00008
     .word 0x00000000
-endlabel game_libs_func_00070FCC
+endlabel fcos

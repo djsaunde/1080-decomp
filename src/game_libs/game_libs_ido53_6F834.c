@@ -1,9 +1,9 @@
-/* IDO 5.3 -O3 -mips2 donor for gl_func_0006F834 = libultra guPosition
+/* IDO 5.3 -O3 -mips2 donor for guPosition = libultra guPosition
  * (references/libreultra/src/gu/position.c wrapper). Written and landed as
  * guFrustum (gu/frustum.c): the two wrapper TUs compile to BYTE-IDENTICAL
  * 26-word bodies (same Matrix mf + three mtc1/mfc1 re-marshals + F-variant
  * jal + guMtxF2L), and the identity was corrected 2026-09-09 (agent-g) when
- * the callee at +0x44 landed as guPositionF (game_libs_func_0006F684, 108
+ * the callee at +0x44 landed as guPositionF (guPositionF, 108
  * words -- not the 88-word guFrustumF). The guFrustum spelling below is kept
  * as the proven-exact source; read l/r/b/t/n/f/scale as r/p/h/s/x/y/z and
  * guFrustumF as guPositionF. PROVEN EXACT 26/26
@@ -17,7 +17,7 @@
  * re-marshal of l/r/b (a1-a3 -> f12/f14/f16 -> a1-a3), t/n/f/scale copied
  * sp+0x78.. -> sp+0x10.. via lwc1/swc1, two blank jals = guFrustumF(mf, ...)
  * then guMtxF2L(mf, m).
- * The F-variant callee is the in-unit game_libs_func_0006F684 = guPositionF
+ * The F-variant callee is the in-unit guPositionF = guPositionF
  * (0x1B0, 108 words, landed from gu/position.c; NOT the 88-word libreultra
  * guFrustumF -- that is how the identity was resolved) -- named through the
  * blank import gl_func_00000000_frustumf
@@ -35,12 +35,12 @@ typedef union {
 } Mtx;
 typedef float Matrix[4][4];
 
-extern void gl_func_00000000_frustumf(float mf[4][4], float l, float r, float b, float t, float n, float f, float scale); /* guFrustumF = game_libs_func_0006F684 */
+extern void gl_func_00000000_frustumf(float mf[4][4], float l, float r, float b, float t, float n, float f, float scale); /* guFrustumF = guPositionF */
 extern void gl_func_00000000_f2l706(float mf[4][4], Mtx *m);                                                         /* guMtxF2L = guMtxF2L */
 #define guFrustumF gl_func_00000000_frustumf
 #define guMtxF2L gl_func_00000000_f2l706
 
-void gl_func_0006F834(Mtx *m, float l, float r, float b, float t, float n, float f, float scale)
+void guPosition(Mtx *m, float l, float r, float b, float t, float n, float f, float scale)
 {
 	Matrix	mf;
 

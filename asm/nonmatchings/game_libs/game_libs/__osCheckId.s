@@ -1,6 +1,6 @@
-nonmatching gl_func_00072134, 0xFC
+nonmatching __osCheckId, 0xFC
 
-glabel gl_func_00072134
+glabel __osCheckId
     /* E5720C 00072134 27BDFFC0 */  .word 0x27BDFFC0
     /* E57210 00072138 AFA40040 */  .word 0xAFA40040
     /* E57214 0007213C 8FAE0040 */  .word 0x8FAE0040
@@ -64,4 +64,4 @@ glabel gl_func_00072134
     /* E572FC 00072224 27BD0040 */  .word 0x27BD0040
     /* E57300 00072228 03E00008 */  .word 0x03E00008
     /* E57304 0007222C 00000000 */  .word 0x00000000
-endlabel gl_func_00072134
+endlabel __osCheckId

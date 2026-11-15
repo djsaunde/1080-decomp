@@ -1,6 +1,6 @@
-nonmatching gl_func_0006E894, 0x648
+nonmatching _Printf, 0x648
 
-glabel gl_func_0006E894
+glabel _Printf
     /* E5396C 0006E894 27BDFF28 */  .word 0x27BDFF28
     /* E53970 0006E898 AFB70034 */  .word 0xAFB70034
     /* E53974 0006E89C AFB60030 */  .word 0xAFB60030
@@ -403,4 +403,4 @@ glabel gl_func_0006E894
     /* E53FA8 0006EED0 8FBE0038 */  .word 0x8FBE0038
     /* E53FAC 0006EED4 03E00008 */  .word 0x03E00008
     /* E53FB0 0006EED8 27BD00D8 */  .word 0x27BD00D8
-endlabel gl_func_0006E894
+endlabel _Printf

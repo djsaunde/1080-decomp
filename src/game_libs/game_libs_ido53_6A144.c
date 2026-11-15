@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 -mips2 donor for game_libs_func_0006A144 = libultra
+/* IDO 5.3 -O2 -mips2 donor for fsin = libultra
  * fsin/__sinf (libreultra gu/sinf.c verbatim). PROVEN EXACT 2026-09-05:
  * 112/112 words identical on the first compile against the concatenated
  * 0x6A144..0x6A303 stream (six splat fragments unified: 6A144/6A1BC/6A1C4/
@@ -31,7 +31,7 @@ extern const du gl_ref_00002348;   /* pilo */
 extern const fu gl_ref_00002350;   /* zero */
 extern float D_00000000_qnanf;     /* __libm_qnan_f */
 
-float game_libs_func_0006A144(float x) {
+float fsin(float x) {
     double dx, xsq, poly;
     double dn;
     int n;

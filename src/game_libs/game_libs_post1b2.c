@@ -59,12 +59,12 @@ void gl_func_0006BF34(int *a0, int a1, int a2, int a3, int arg5, int arg6) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006BF34_pad.s")
 
-/* gl_func_0006C084 = osContStartReadData (35 instructions).
+/* osContStartReadData = osContStartReadData (35 instructions).
  * Exact IDO 7.1 -O1 implementation: game_libs_o1_6C084.c. This -O2
  * placeholder is replaced with the whole compiled body by the Makefile.
  * The former scheduling mismatch was the wrong optimization level and
  * command-store order; __osContLastCmd is set BEFORE __osSiRelAccess. */
-int gl_func_0006C084(void *mq) {
+int osContStartReadData(void *mq) {
     return 0;
 }
 
@@ -103,7 +103,7 @@ void gl_func_0006C11C(char *out, char *cursor, int count) {
 }
 
 /* gl_func_0006C1B8: 59-insn table-reset + 8-byte record emitter,
- * reset-sibling of gl_func_0006BD14 (template {0xFF,1,4,1,0xFFFF,-1,-1},
+ * reset-sibling of __osPackReadData (template {0xFF,1,4,1,0xFFFF,-1,-1},
  * type=4/subtype=1) and emitter-sibling of the landed gl_func_0006C11C
  * decoder. Zeroes D_c[0..14], sets D_c[15]=1, emits the template
  * D_a times via swl/swr struct copies, then a 0xFE terminator.
