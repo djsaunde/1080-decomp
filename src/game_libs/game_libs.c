@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gadget.h"
 
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
@@ -25,18 +26,18 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
             *(s32 *)(sub + 0x28) = (s32)&D_00000000;
             gl_func_00000000(sub + 0x2C);
         }
-        *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCAFC);
-        gl_func_00000000(arg0 + 0x10C, 0x50000);
-        gl_func_00000000(arg0 + 0x124, 0x50007);
-        gl_func_00000000(arg0, arg0 + 0x124, arg0 + 0x10C);
-        *(s32 *)(arg0 + 0xD4) = 0;
-        *(s32 *)(arg0 + 0xD8) = 0xFF;
-        *(s32 *)(arg0 + 0xDC) = 0x82;
-        *(f32 *)(arg0 + 0xC4) = 250.0f / d255;
-        *(f32 *)(arg0 + 0xC8) = 235.0f / d255;
-        *(f32 *)(arg0 + 0xCC) = 100.0f / d255;
-        *(f32 *)(arg0 + 0xD0) = 0.0f / d255;
-        *(s32 *)(arg0 + 0xE0) = arg1;
+        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCAFC);
+        gl_func_00000000(((Gadget *)arg0)->sprite0, 0x50000);
+        gl_func_00000000(((Gadget *)arg0)->sprite1, 0x50007);
+        gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
+        ((Gadget *)arg0)->unkD4 = 0;
+        ((Gadget *)arg0)->unkD8 = 0xFF;
+        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->colour[0] = 250.0f / d255;
+        ((Gadget *)arg0)->colour[1] = 235.0f / d255;
+        ((Gadget *)arg0)->colour[2] = 100.0f / d255;
+        ((Gadget *)arg0)->colour[3] = 0.0f / d255;
+        ((Gadget *)arg0)->arg = arg1;
         gl_func_00000000(arg0, -78, -1, -51, 0);
     }
     return arg0;
@@ -44,8 +45,8 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
 
 extern int gl_func_00000000();
 int TimeGadget_release(char *a0) {
-    gl_func_00000000(a0 + 0x10C);
-    return gl_func_00000000(a0 + 0x124);
+    gl_func_00000000(((Gadget *)a0)->sprite0);
+    return gl_func_00000000(((Gadget *)a0)->sprite1);
 }
 
 /* TimeGadget_setTime: MATCHED 2026-05-31. ms time formatter — SIGNED div (the
@@ -59,7 +60,7 @@ void TimeGadget_setTime(char *a0, int a1) {
     int rem = a1 - mins * 60000;
     int secs = rem / 1000;
     int ms_part = (rem - secs * 1000) / 10;
-    gl_func_00000000(a0 + 0xE4, (char*)&D_00000000 + 0xCB08, mins, secs, ms_part);
+    gl_func_00000000(((Gadget *)a0)->text, (char*)&D_00000000 + 0xCB08, mins, secs, ms_part);
 }
 
 /* BestTimeGadget_ctor: three-level get-or-create constructor (0x13C object ->
@@ -540,18 +541,18 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
             *(s32 *)(sub + 0x28) = (s32)&D_00000000;
             gl_func_00000000(sub + 0x2C);
         }
-        *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCC04);
-        gl_func_00000000(arg0 + 0x10C, 0x50002);
-        gl_func_00000000(arg0 + 0x124, 0x50008);
-        gl_func_00000000(arg0, arg0 + 0x124, arg0 + 0x10C);
-        *(s32 *)(arg0 + 0xD4) = 0x80;
-        *(s32 *)(arg0 + 0xD8) = 0xFF;
-        *(s32 *)(arg0 + 0xDC) = 0x82;
-        *(f32 *)(arg0 + 0xC4) = 250.0f / d255;
-        *(f32 *)(arg0 + 0xC8) = 235.0f / d255;
-        *(f32 *)(arg0 + 0xCC) = 100.0f / d255;
-        *(f32 *)(arg0 + 0xD0) = 0.0f / d255;
-        *(s32 *)(arg0 + 0xE0) = arg1;
+        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCC04);
+        gl_func_00000000(((Gadget *)arg0)->sprite0, 0x50002);
+        gl_func_00000000(((Gadget *)arg0)->sprite1, 0x50008);
+        gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
+        ((Gadget *)arg0)->unkD4 = 0x80;
+        ((Gadget *)arg0)->unkD8 = 0xFF;
+        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->colour[0] = 250.0f / d255;
+        ((Gadget *)arg0)->colour[1] = 235.0f / d255;
+        ((Gadget *)arg0)->colour[2] = 100.0f / d255;
+        ((Gadget *)arg0)->colour[3] = 0.0f / d255;
+        ((Gadget *)arg0)->arg = arg1;
         gl_func_00000000(arg0, -3, -1, 0x25, 0);
     }
     return arg0;
@@ -559,7 +560,7 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
 
 extern int gl_func_00000000();
 int SpeedGadget_release(char *a0) {
-    return gl_func_00000000(a0 + 0x10C);
+    return gl_func_00000000(((Gadget *)a0)->sprite0);
 }
 
 /* SpeedGadget_setSpeed: 3-way value-formatter dispatcher — picks one of
@@ -568,11 +569,11 @@ int SpeedGadget_release(char *a0) {
 extern int gl_data_00000000;
 void SpeedGadget_setSpeed(char *a0, int a1) {
     if (a1 < 10) {
-        gl_func_00000000(a0 + 0xE4, (char*)&gl_data_00000000 + 0xCC10, a1);
+        gl_func_00000000(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC10, a1);
     } else if (a1 < 100) {
-        gl_func_00000000(a0 + 0xE4, (char*)&gl_data_00000000 + 0xCC18);
+        gl_func_00000000(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC18);
     } else {
-        gl_func_00000000(a0 + 0xE4, (char*)&gl_data_00000000 + 0xCC1C);
+        gl_func_00000000(((Gadget *)a0)->text, (char*)&gl_data_00000000 + 0xCC1C);
     }
 }
 
