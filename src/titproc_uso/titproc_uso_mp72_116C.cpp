@@ -7,9 +7,44 @@
  * block starts by READING v1 and as1 xbb can no longer hoist the else-arm's `la v1` into the if-head (it
  * pulls the addu back instead: the target's `addiu v0,v1,60; slti; beqz; nop`). The `if (1) {}` splits in the fade / record
  * spread v1's live range over more uopt blocks: its priority drops below `c`'s, so `c` and the constant 40
- * take v0 and the pointer v1 as in the target. The record's code-free `if (*(char **)(s0 + 0x5C)) {}`
+ * take v0 and the pointer v1 as in the target. The record's code-free `if ((char *)TITLEDEMO(s0)->menu) {}`
  * tests are gone (they made a second record-pointer LR). Unused d3 kept from the earlier body.
  */
+/* Field views (agent-h run 529). edg rejects the gdl headers' &((T *)0)->f asserts, so this donor
+ * gets layout mirrors of the include/ types it touches (keep them in step): TitleDemoProcess
+ * (game/modeproc.h), WhiteFader (modeproc.h), GuiMenu rows / cursor (game/guimenu.h), the Node vptr
+ * and Cfront vtable slots (gdl/node.h VT_SLOT) and the DataManager entries[0].finished
+ * (gdl/race.h RaceTracker / RaceEntry). */
+typedef struct Node { char pad00[0x28]; int vptr; } Node;
+typedef struct GdlVtEnt { short delta; short pad; int (*fn)(...); } GdlVtEnt;
+#define VT_SLOT(vt, n) (((GdlVtEnt *)((char *)(vt) + 8))[n])
+#define NODE(p) ((Node *)(p))
+typedef struct TitleDemoProcess {
+    /* 0x00 */ char process[0x3C];
+    /* 0x3C */ int timer;
+    /* 0x40 */ int state;
+    /* 0x44 */ char unk44[0x50 - 0x44];
+    /* 0x50 */ int dataMgr;
+    /* 0x54 */ int keyMessage;
+    /* 0x58 */ int mainLogo;
+    /* 0x5C */ int menu;
+    /* 0x60 */ int langMenu;
+    /* 0x64 */ int whiteFader;
+    /* 0x68 */ int keyDelay;
+    /* 0x6C */ int unk6C;
+    /* 0x70 */ int unk70;
+    /* 0x74 */ int unk74;
+} TitleDemoProcess;
+#define TITLEDEMO(p) ((TitleDemoProcess *)(p))
+typedef struct WhiteFader { char node[0x2C]; float colour[4]; int alpha; } WhiteFader;
+#define WFADER(p) ((WhiteFader *)(p))
+typedef struct GuiRow { int label; int enabled; int id; int arg; char sub[0x18]; } GuiRow;
+typedef struct GuiMenu { char head[0x7C]; int cursor; int locked; GuiRow rows[16]; } GuiMenu;
+#define GUIMENU(p) ((GuiMenu *)(p))
+typedef struct RaceEntry { char pad00[0x34]; int finished; } RaceEntry;
+typedef struct DataManager { char pad00[0x44]; RaceEntry *entries; } DataManager;
+#define DATAMGR(p) ((DataManager *)(p))
+
 extern "C" {
 extern int gl_func_00000000(...);
 extern char D_00000000;
@@ -38,70 +73,70 @@ void TitleDemoProcess_handleInput(char *s0) {
     void (*fn)(int);
     int v;
 
-    switch (*(int *)(s0 + 0x40)) {
+    switch (TITLEDEMO(s0)->state) {
     case 0: {
-        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x3C) - 1;
-        if (*(int *)(s0 + 0x3C) >= 0) {
+        TITLEDEMO(s0)->timer = TITLEDEMO(s0)->timer - 1;
+        if (TITLEDEMO(s0)->timer >= 0) {
             if (gl_func_00000000((char *)&D_00000000, 0x40300) == 0) {
                 return;
             }
         }
-        vt = *(char **)(*(char **)(s0 + 0x58) + 0x28);
-        v1 = *(char **)(s0 + 0x58);
-        (*(void (**)(int))(vt + 0x5C))((*(short *)(vt + 0x58) + (int)v1));
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
-        *(int *)(s0 + 0x40) = *(int *)(s0 + 0x40) + 1;
-        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x70) * 30;
-        *(int *)(s0 + 0x68) = 40;
+        vt = (char *)NODE(TITLEDEMO(s0)->mainLogo)->vptr;
+        v1 = (char *)TITLEDEMO(s0)->mainLogo;
+        ((void (*)(int))VT_SLOT(vt, 10).fn)((VT_SLOT(vt, 10).delta + (int)v1));
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+        TITLEDEMO(s0)->state = TITLEDEMO(s0)->state + 1;
+        TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk70 * 30;
+        TITLEDEMO(s0)->keyDelay = 40;
         gl_func_00000000_116c_v(13);
         break;
     }
     case 1: {
-        v = *(int *)(s0 + 0x68);
+        v = TITLEDEMO(s0)->keyDelay;
         if (v != 0) {
-            *(int *)(s0 + 0x68) = v - 1; if (s0) {}
-            v = *(int *)(s0 + 0x68);
+            TITLEDEMO(s0)->keyDelay = v - 1; if (s0) {}
+            v = TITLEDEMO(s0)->keyDelay;
         }
         if (v == 0) {
-            vt2 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
-            v1 = *(char **)(s0 + 0x54);
-            (*(void (**)(int))(vt2 + 0x5C))((*(short *)(vt2 + 0x58) + (int)v1));
+            vt2 = (char *)NODE(TITLEDEMO(s0)->keyMessage)->vptr;
+            v1 = (char *)TITLEDEMO(s0)->keyMessage;
+            ((void (*)(int))VT_SLOT(vt2, 10).fn)((VT_SLOT(vt2, 10).delta + (int)v1));
         }
-        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x3C) - 1;
-        if (*(int *)(s0 + 0x3C) == 0) goto fire;
-        if (*(int *)(*(char **)(*(char **)(s0 + 0x50) + 0x44) + 0x34) != 0) {
+        TITLEDEMO(s0)->timer = TITLEDEMO(s0)->timer - 1;
+        if (TITLEDEMO(s0)->timer == 0) goto fire;
+        if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {
 fire:
             *(int *)((char *)&D_00000000 + 0x34) = 1;
             v = gl_func_00000000();
             gl_func_00000000_116c_v(s0, v, 0);
             return;
         }
-        if (*(int *)(s0 + 0x68) != 0) {
+        if (TITLEDEMO(s0)->keyDelay != 0) {
             return;
         }
         if (gl_func_00000000((char *)&D_00000000, 0x40300) == 0) {
             return;
         }
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x54));
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->keyMessage);
         if (*(unsigned short *)(*(char **)((char *)&D_00000000 + 0x154) + 4) & 8) {
-            vt3 = *(char **)(*(char **)(s0 + 0x60) + 0x28);
-            v1 = *(char **)(s0 + 0x60);
-            (*(void (**)(int))(vt3 + 0x5C))((*(short *)(vt3 + 0x58) + (int)v1));
-            *(int *)(s0 + 0x40) = 2;
+            vt3 = (char *)NODE(TITLEDEMO(s0)->langMenu)->vptr;
+            v1 = (char *)TITLEDEMO(s0)->langMenu;
+            ((void (*)(int))VT_SLOT(vt3, 10).fn)((VT_SLOT(vt3, 10).delta + (int)v1));
+            TITLEDEMO(s0)->state = 2;
             gl_func_00000000_116c_v(144);
         } else {
-            vt4 = *(char **)(*(char **)(s0 + 0x5C) + 0x28);
-            v1 = *(char **)(s0 + 0x5C);
-            (*(void (**)(int))(vt4 + 0x5C))((*(short *)(vt4 + 0x58) + (int)v1));
-            *(int *)(s0 + 0x40) = 3;
-            *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x74) * 30;
+            vt4 = (char *)NODE(TITLEDEMO(s0)->menu)->vptr;
+            v1 = (char *)TITLEDEMO(s0)->menu;
+            ((void (*)(int))VT_SLOT(vt4, 10).fn)((VT_SLOT(vt4, 10).delta + (int)v1));
+            TITLEDEMO(s0)->state = 3;
+            TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk74 * 30;
             gl_func_00000000_116c_v(144);
         }
         break;
     }
     case 2: {
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->langMenu);
         if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
             gl_func_00000000_116c_v(5);
             if (1) {
@@ -109,88 +144,88 @@ fire:
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
             gl_func_00000000_116c_v((char *)&D_00000000);
-            gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
-            vt5 = *(char **)(*(char **)(s0 + 0x5C) + 0x28);
-            v1 = *(char **)(s0 + 0x5C);
-            (*(void (**)(int))(vt5 + 0x5C))((*(short *)(vt5 + 0x58) + (int)v1));
-            *(int *)(s0 + 0x40) = 3;
-            *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x74) * 30;
+            gl_func_00000000_116c_v(TITLEDEMO(s0)->langMenu);
+            vt5 = (char *)NODE(TITLEDEMO(s0)->menu)->vptr;
+            v1 = (char *)TITLEDEMO(s0)->menu;
+            ((void (*)(int))VT_SLOT(vt5, 10).fn)((VT_SLOT(vt5, 10).delta + (int)v1));
+            TITLEDEMO(s0)->state = 3;
+            TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk74 * 30;
         }
         break;
     }
     case 3: {
         int *c;
-        if (*(int *)(s0 + 0x3C) == 0) {
+        if (TITLEDEMO(s0)->timer == 0) {
             *(int *)((char *)&D_00000000 + 0x34) = 1;
             v = gl_func_00000000();
             gl_func_00000000_116c_v(s0, v, 0);
         }
-        if (*(int *)(*(char **)(*(char **)(s0 + 0x50) + 0x44) + 0x34) != 0) {
-            v1 = *(char **)(s0 + 0x64);
-            c = (int *)(v1 + 0x3C);
-            if (*(int *)(v1 + 0x3C) < 255) {
+        if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {
+            v1 = (char *)TITLEDEMO(s0)->whiteFader;
+            c = &WFADER(v1)->alpha;
+            if (WFADER(v1)->alpha < 255) {
                 *c = *c + 16;
                 if (1) {}
-                v1 = *(char **)(s0 + 0x64);
-                if (*(int *)(v1 + 0x3C) >= 256) {
-                    *(int *)(v1 + 0x3C) = 720;
+                v1 = (char *)TITLEDEMO(s0)->whiteFader;
+                if (WFADER(v1)->alpha >= 256) {
+                    WFADER(v1)->alpha = 720;
                 }
             } else {
                 v1 = (char *)&D_00000000;
-                vt6 = *(char **)(v1 + 0x28);
-                (*(void (**)(int))(vt6 + 0x64))((*(short *)(vt6 + 0x60) + (int)v1));
+                vt6 = (char *)NODE(v1)->vptr;
+                ((void (*)(int))VT_SLOT(vt6, 11).fn)((VT_SLOT(vt6, 11).delta + (int)v1));
             }
         } else {
             int av;
-            v1 = *(char **)(s0 + 0x64);
+            v1 = (char *)TITLEDEMO(s0)->whiteFader;
             if (1) {}
             if (1) {}
-            av = *(int *)(v1 + 0x3C);
+            av = WFADER(v1)->alpha;
             if (1) {}
             if (1) {}
             if (1) {}
-            c = (int *)(v1 + 0x3C);
+            c = &WFADER(v1)->alpha;
             if (av > 0) {
                 *c = *c - 16;
-                v1 = *(char **)(s0 + 0x64);
+                v1 = (char *)TITLEDEMO(s0)->whiteFader;
                 if (1) {}
                 if (1) {}
-                av = *(int *)(v1 + 0x3C);
+                av = WFADER(v1)->alpha;
                 if (1) {}
                 if (1) {}
                 if (av < 0) {
                     if (1) {}
-                    *(int *)(v1 + 0x3C) = 0;
-                    av = *(int *)(*(char **)(s0 + 0x64) + 0x3C);
+                    WFADER(v1)->alpha = 0;
+                    av = WFADER(TITLEDEMO(s0)->whiteFader)->alpha;
                 }
             }
             if (av == 0) {
                 if (gl_func_00000000((char *)&D_00000000, 512) != 0) {
-                    vt7 = *(char **)(*(char **)(s0 + 0x58) + 0x28);
-                    v1 = *(char **)(s0 + 0x58);
-                    (*(void (**)(int))(vt7 + 0x5C))((*(short *)(vt7 + 0x58) + (int)v1));
-                    gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
-                    vt8 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
-                    v1 = *(char **)(s0 + 0x54);
-                    (*(void (**)(int))(vt8 + 0x5C))((*(short *)(vt8 + 0x58) + (int)v1));
-                    gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
-                    *(int *)(s0 + 0x40) = 1;
-                    *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x70) * 30;
+                    vt7 = (char *)NODE(TITLEDEMO(s0)->mainLogo)->vptr;
+                    v1 = (char *)TITLEDEMO(s0)->mainLogo;
+                    ((void (*)(int))VT_SLOT(vt7, 10).fn)((VT_SLOT(vt7, 10).delta + (int)v1));
+                    gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+                    vt8 = (char *)NODE(TITLEDEMO(s0)->keyMessage)->vptr;
+                    v1 = (char *)TITLEDEMO(s0)->keyMessage;
+                    ((void (*)(int))VT_SLOT(vt8, 10).fn)((VT_SLOT(vt8, 10).delta + (int)v1));
+                    gl_func_00000000_116c_v(TITLEDEMO(s0)->menu);
+                    TITLEDEMO(s0)->state = 1;
+                    TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk70 * 30;
                     gl_func_00000000_116c_v(2050);
                 }
             }
             if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
-                gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
+                gl_func_00000000_116c_v(TITLEDEMO(s0)->menu);
                 gl_func_00000000_116c_v(5);
-                v1 = *(char **)(s0 + 0x5C);
+                v1 = (char *)TITLEDEMO(s0)->menu;
                 if (1) {}
                 if (1) {}
-                if (*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90) != 0) {
+                if (GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg != 0) {
                     *(char **)((char *)&import_00263D30 + 0xA8) = s0;
-                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C);
-                    v1 = *(char **)(s0 + 0x5C);
+                    *(int *)((char *)&import_00020098 + 0x84) = GUIMENU(TITLEDEMO(s0)->menu)->cursor;
+                    v1 = (char *)TITLEDEMO(s0)->menu;
                     if (1) {}
-                    ((void (*)(void))(*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90)))();
+                    ((void (*)(void))(GUIMENU(v1)->rows[GUIMENU(v1)->cursor].arg))();
                 }
             }
         }
