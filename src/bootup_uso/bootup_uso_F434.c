@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* -O0 sub-file covering bootup_uso offset 0xF6C4..0xF76B (single function,
  * 42 insns, 0xA8 bytes). Layout shim between bootup_uso_o0_F390.c and
@@ -32,9 +33,9 @@ void Process_update(char *a0) {
     if (*(int*)(a0 + 0x2C) == 0) {
         (*(int(**)())(m + 0x6C))(*(short*)((m = *(char**)(a0 + 0x28)) + 0x68) + a0);
     }
-    func_00000000(a0);
+    FCALL(Node_update)(a0);
     if (*(int*)(a0 + 0x2C) != 0) {
-        if (func_00000000(func_00000188.c)) {
+        if (FCALL(Fader_checkDone_00013924)(func_00000188.c)) {
             (*(int(**)())(m + 0x64))(*(short*)((m = *(char**)(a0 + 0x28)) + 0x60) + a0);
         }
     }

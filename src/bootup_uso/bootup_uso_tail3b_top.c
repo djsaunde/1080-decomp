@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -46,7 +47,7 @@ void settings_stepSequence_000122C4(char *a0, int a1) {
         if (a1 + 1 == ((Obj22C4*)a0)->seq->step) {
             st = GAMEFLOW(a0)->options;
             SETTINGS(st)->seqStep += 1;
-            func_00000000(a0);
+            FCALL(settings_save_00012150)(a0);
         }
     } else {
         if (a1 == 2) {
@@ -55,7 +56,7 @@ void settings_stepSequence_000122C4(char *a0, int a1) {
                 if (((TblView22C4*)((char*)&tbl - 0x10))->v[((Obj22C4*)a0)->seq->step] == (0, ((Obj22C4*)a0)->score + 1)) {
                     st = GAMEFLOW(a0)->options;
                     SETTINGS(st)->seqStep += 1;
-                    func_00000000(a0);
+                    FCALL(settings_save_00012150)(a0);
                 }
             }
         }

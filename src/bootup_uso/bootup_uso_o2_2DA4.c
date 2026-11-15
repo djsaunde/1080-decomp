@@ -30,6 +30,7 @@
  *  - `v | 0x80000 | 0x2000 | 0x20000` stays unfolded (lui/or, ori, lui/or). */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern void func_00000000_2DA4_v();
@@ -43,36 +44,36 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
     int v;
-    func_00000000_2DA4_v(&sStr_ImgFileMgr_73EC, 0);
-    func_00000000_2DA4_v();
-    D_2DA4_obj = func_00000000(0, &sStr_rom_tricks_bin_73F8);
+    XCALL(func_00000000_2DA4_v, memtrack_begin)(&sStr_ImgFileMgr_73EC, 0);
+    XCALL(func_00000000_2DA4_v, memtrack_end)();
+    D_2DA4_obj = FCALL(TrickTable_ctor_0000C2D4)(0, &sStr_rom_tricks_bin_73F8);
     v1 = (char *)FW(arg0, 0x84);
     a1 = (char *)D_2DA4_obj_rd;
-    func_00000000_2DA4_v(v1 + 0x10, a1);
+    XCALL(func_00000000_2DA4_v, list_append)(v1 + 0x10, a1);
     if (FW(a1, 0x14) != 0) {
         FW(a1, 0x4) = 1;
     }
     FW(a1, 0x14) = (int)v1;
-    func_00000000_2DA4_v(D_2DA4_obj);
+    XCALL(func_00000000_2DA4_v, AnimDataMgr_releaseFrames)(D_2DA4_obj);
     v = *(int *)((char *)&gPolyGeomMode_3EEC8_2DA4_cfg + 4);
     v = v | 0x80000 | 0x2000 | 0x20000;
     *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
     switch (arg1) {
-    case 2: func_00000000_2DA4_v(arg0, arg2); break;
-    case 4: func_00000000_2DA4_v(arg0, arg2); break;
-    case 12: func_00000000_2DA4_v(arg0, arg2); break;
-    case 3: func_00000000_2DA4_v(arg0, arg2); break;
-    case 5: func_00000000_2DA4_v(arg0, arg2); break;
-    case 6: func_00000000_2DA4_v(arg0, arg2); break;
+    case 2: XCALL(func_00000000_2DA4_v, game_setupSolo)(arg0, arg2); break;
+    case 4: XCALL(func_00000000_2DA4_v, game_setupReplay)(arg0, arg2); break;
+    case 12: XCALL(func_00000000_2DA4_v, game_setupReplay)(arg0, arg2); break;
+    case 3: XCALL(func_00000000_2DA4_v, game_setupVsGhost)(arg0, arg2); break;
+    case 5: XCALL(func_00000000_2DA4_v, game_setupVsCpu)(arg0, arg2); break;
+    case 6: XCALL(func_00000000_2DA4_v, game_setupVs2P)(arg0, arg2); break;
     case 1:
-        func_00000000_2DA4_v(arg0, 0);
+        XCALL(func_00000000_2DA4_v, game_setupEmpty)(arg0, 0);
         a1 = (char *)D_2DA4_obj; if (1) { a1 += 0x18; } *(int *)a1 = *(int *)a1 | 4;
         break;
-    case 9: func_00000000_2DA4_v(arg0, arg2); break;
-    case 10: func_00000000_2DA4_v(arg0, arg2); break;
-    case 11: func_00000000_2DA4_v(arg0, arg2); break;
+    case 9: XCALL(func_00000000_2DA4_v, game_setupDemoSolo)(arg0, arg2); break;
+    case 10: XCALL(func_00000000_2DA4_v, game_setupDemoRace)(arg0, arg2); break;
+    case 11: XCALL(func_00000000_2DA4_v, game_setupDemoSplit)(arg0, arg2); break;
     default:
-        func_00000000_2DA4_v(&sStr_unknown_GAME_MODE_7408);
+        XCALL(func_00000000_2DA4_v, sys_fatal)(&sStr_unknown_GAME_MODE_7408);
         break;
     }
 }

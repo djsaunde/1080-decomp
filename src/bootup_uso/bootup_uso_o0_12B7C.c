@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "uso_call.h"
 
 /* Run 10 members (now covers 0x12818..0x12BF8). */
 
@@ -55,7 +56,7 @@ void settings_set8_00012818(char *a0, char *a1) {
     unused = &gSysLib;
 
     if (*(int*)0xA0000200 == 0xAC290000) {
-        func_00000000(a0);
+        FCALL(settings_save_00012150)(a0);
     }
 }
 
@@ -70,7 +71,7 @@ void settings_set8_00012818(char *a0, char *a1) {
 void replay_beginRecordWithGhost(InputMgr *mgr, InputPad *pad, InputPad *ghost) {
     if (ghost != 0) {
         ghost->recordMask = 0xFFFBFFFF;
-        func_00000000(ghost, mgr->session->ghost->data, mgr->session->ghost->count);
+        FCALL(pad_startPlay_00067A10)(ghost, mgr->session->ghost->data, mgr->session->ghost->count);
     }
     if (pad != 0) {
         if (mgr->replayData[0] == 0) {
@@ -81,7 +82,7 @@ void replay_beginRecordWithGhost(InputMgr *mgr, InputPad *pad, InputPad *ghost) 
         mgr->recFlags = mgr->playerFlags;
         mgr->recBoard = mgr->playerBoard;
         pad->recordMask = 0xFFFBFFFF;
-        func_00000000(pad, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
+        FCALL(pad_startRecord_000679BC)(pad, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
         mgr->unk184 = 0;
     }
 }
@@ -97,15 +98,15 @@ void replay_beginRecord2P(InputMgr *mgr, InputPad *pad1, InputPad *pad2) {
         mgr->recFlags = mgr->playerFlags;
         mgr->recBoard = mgr->playerBoard;
         pad1->recordMask = 0xFFFBFFFF;
-        func_00000000(pad1, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
+        FCALL(pad_startRecord_000679BC)(pad1, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
         mgr->unk184 = 0;
     }
     if (pad2 != 0) {
         if (mgr->replayData[1] == 0) {
-            mgr->replayData[1] = func_00000000(mgr->recordCap << 2);
+            mgr->replayData[1] = FCALL(mem_new)(mgr->recordCap << 2);
         }
         pad2->recordMask = 0xFFFBFFFF;
-        func_00000000(pad2, mgr->replayData[1], mgr->recordCap, &mgr->replayLen[1]);
+        FCALL(pad_startRecord_000679BC)(pad2, mgr->replayData[1], mgr->recordCap, &mgr->replayLen[1]);
         mgr->unk184 = 0;
     }
 }
@@ -120,7 +121,7 @@ void replay_beginRecord1P(InputMgr *mgr, InputPad *pad, int unused) {
         mgr->recFlags = mgr->playerFlags;
         mgr->recBoard = mgr->playerBoard;
         pad->recordMask = 0xFFFBFFFF;
-        func_00000000(pad, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
+        FCALL(pad_startRecord_000679BC)(pad, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
         mgr->unk184 = 0;
     }
 }
@@ -128,9 +129,9 @@ void replay_beginRecord1P(InputMgr *mgr, InputPad *pad, int unused) {
 /* replay the last recording on `pad` and/or the saved ghost on `ghost`. */
 void replay_beginPlayback(InputMgr *mgr, InputPad *pad, InputPad *ghost) {
     if (pad != 0) {
-        func_00000000(pad, mgr->replayData[0], mgr->replayLen[0]);
+        FCALL(pad_startPlay_00067A10)(pad, mgr->replayData[0], mgr->replayLen[0]);
     }
     if (ghost != 0) {
-        func_00000000(ghost, mgr->session->ghost->data, mgr->session->ghost->count);
+        FCALL(pad_startPlay_00067A10)(ghost, mgr->session->ghost->data, mgr->session->ghost->count);
     }
 }

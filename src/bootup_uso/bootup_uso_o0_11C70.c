@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 
@@ -41,10 +42,10 @@ void input_addRacePad(InputMgr *a0, InputPad *a1) {
  * byte-exact at -O0 standalone (2026-05-07). */
 void input_setRacePadsActive(int *a0, int a1) {
     if (a1 != 0) {
-        func_00000000(a0);
+        FCALL(input_unpauseRacePads)(a0);
         *(int*)((char*)a0 + 0x188) = 0;
     } else {
-        func_00000000(a0);
+        FCALL(input_pauseRacePads)(a0);
         *(int*)((char*)a0 + 0x188) = 1;
     }
 }

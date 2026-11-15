@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -15,12 +16,12 @@ extern struct { int a, b, c; } func_00000188;
  * an extra addiu materializing the address). */
 void Process_fadeOut_0000F954(int *a0, int a1, int a2) {
     if (*(int*)((char*)a0 + 0x48) != 0) {
-        func_00000000(*(int*)((char*)a0 + 0x48));
+        FCALL(Node_clearFlag4_0000F614)(*(int*)((char*)a0 + 0x48));
     }
-    func_00000000(&gInputMgr);
-    func_00000000(func_00000188.c, 3, 0);
+    FCALL(input_pauseRacePads)(&gInputMgr);
+    FCALL(Fader_start)(func_00000188.c, 3, 0);
     *(int*)((char*)a0 + 0x2C) = 1;
-    func_00000000(a1, a2, 0);
+    FCALL(func_00000188)(a1, a2, 0);
 }
 
 /* Process_pause_0000F9E8 — 64/64 EXACT (2026-07-03, agent-e).
@@ -36,8 +37,8 @@ void Process_pause_0000F9E8(int *self) {
     register int flag;
     register int *x;
 
-    func_00000000();
-    self[0x38 / 4] = func_00000000(&gInputMgr);
+    FCALL(func_0000029C)();
+    self[0x38 / 4] = FCALL(input_pauseRacePads)(&gInputMgr);
     ((void(*)(int))vt[0x5C / 4])(self[0x48 / 4] + (int)*(short*)((char*)(vt = (int*)((int*)self[0x48 / 4])[0x28 / 4]) + 0x58));
     ((int*)self[0x48 / 4])[0x7C / 4] = 0;
     self[0x30 / 4] = 1;

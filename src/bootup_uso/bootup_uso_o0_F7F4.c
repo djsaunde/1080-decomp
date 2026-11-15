@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* -O0 run: 0xF6C4..0xFBCB. These functions compile at -O0, not -O2.
  * See project_1080_bootup_uso_o0_runs.md + feedback_ido_o0_empty_stub.md. */
@@ -17,10 +18,10 @@ extern char D_00000000;
  * (same lever as gui_initRows_000100F0 in bootup_uso_o0_100F0.c). */
 void Process_display(char *a0) {
     register char *p;
-    func_00000000(&D_00000000);
+    FCALL(gui_beginFrame_000016A4)(&D_00000000);
     (**(void (**)())(p + 0x74))(
         *(short*)((p = *(char**)(a0 + 0x28)) + 0x70) + (int)a0);
-    func_00000000(a0);
+    FCALL(Node_display)(a0);
 }
 
 void Process_exit(int a0) {

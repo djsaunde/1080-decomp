@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "game/guimenu.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -39,8 +40,8 @@ void PauseMenu_update(char *a0) {
     s = a0;
     GUIMENU(s)->timer += 1;
     if (GUIMENU(a0)->locked == 0) {
-        if (func_00000000(&gInputMgr, 0x2004) != 0) {
-            func_00000000(1);
+        if (FCALL(input_checkPressed_00011E00)(&gInputMgr, 0x2004) != 0) {
+            FCALL(snd_postEvent)(1);
             counter = 0;
             if (GUIMENU(a0)->numRows > 0) {
                 do {
@@ -57,8 +58,8 @@ void PauseMenu_update(char *a0) {
         }
     }
     if (GUIMENU(a0)->locked == 0) {
-        if (func_00000000(&gInputMgr, 0x8008) != 0) {
-            func_00000000(1);
+        if (FCALL(input_checkPressed_00011E00)(&gInputMgr, 0x8008) != 0) {
+            FCALL(snd_postEvent)(1);
             counter = 0;
             if (GUIMENU(a0)->numRows > 0) {
                 do {

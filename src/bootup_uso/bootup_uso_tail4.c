@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/gadget.h"
 #include "game/fader.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -140,7 +141,7 @@ void Fader_display(char *arg0) {
 int Fader_checkDone_00013924(int *a0) {
     if (FADER(a0)->progress == 1.0f) {
         if (FADER(a0)->mode == 0) {
-            func_00000000(&gGfxLib, 1);
+            FCALL(gfx_viBlack)(&gGfxLib, 1);
         }
         return 1;
     }
@@ -208,12 +209,12 @@ void Fader_start(char *s1, int a1, int a2) {
     n = 5; k = 0;
     if (1) { }
     do {
-        x = (int)(func_00000000_139B0_f() * 32.0f);
-        y = (int)(func_00000000_139B0_f() * 32.0f);
-        FADER(s1)->grid[x + y * 32] = func_00000000_139B0_f() * sc;
+        x = (int)(XCALL(func_00000000_139B0_f, sys_randf)() * 32.0f);
+        y = (int)(XCALL(func_00000000_139B0_f, sys_randf)() * 32.0f);
+        FADER(s1)->grid[x + y * 32] = XCALL(func_00000000_139B0_f, sys_randf)() * sc;
         k++;
     } while (k < n);
-    func_00000000_139B0_v(s1);
+    XCALL(func_00000000_139B0_v, Fader_buildTexture)(s1);
     FADER(s1)->progress = 0.0f;
 }
 
@@ -284,19 +285,19 @@ void Fader_buildTexture(char *arg0) {
 
 void stream_readS32_00013C70(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_00013CAC(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_00013CE8(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -331,45 +332,45 @@ char *TimeGadget_ctor_00013D40(char *self) {
     volatile int pad2;
     char *m2;
     Val13D40 t2;
-    if (self != 0 || (self = (char *)func_00000000(0x98)) != 0) {
-        if ((p2 = self) != 0 || (p2 = (char *)func_00000000(8)) != 0) {
+    if (self != 0 || (self = (char *)FCALL(mem_new)(0x98)) != 0) {
+        if ((p2 = self) != 0 || (p2 = (char *)FCALL(mem_new)(8)) != 0) {
             TGPARMS(p2)->name = (s32)&sStr_TimeGadget_Parms_CAAC;
             TGPARMS(p2)->unk04 = 0;
         }
         u1.v = sTag_xps_CAC0;
         t2 = u1;
-        if ((m2 = self + 8) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
-            func_00000000(m2, self, t2, 1);
+        if ((m2 = self + 8) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+            FCALL(Parms_addParm)(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
         }
         u2.v = sTag_yps_CAC4;
         t2 = u2;
-        if ((m2 = self + 0x20) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
-            func_00000000(m2, self, t2, 1);
+        if ((m2 = self + 0x20) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+            FCALL(Parms_addParm)(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
         }
         u3.v = sTag_lbx_CAC8;
         t2 = u3;
-        if ((m2 = self + 0x38) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
-            func_00000000(m2, self, t2, 1);
+        if ((m2 = self + 0x38) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+            FCALL(Parms_addParm)(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
         }
         u4.v = sTimeGadgetParmsTags_CACC[0];
         t2 = u4;
-        if ((m2 = self + 0x50) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
-            func_00000000(m2, self, t2, 1);
+        if ((m2 = self + 0x50) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+            FCALL(Parms_addParm)(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
         }
         u5.v = sTimeGadgetParmsTags_CACC[1];
         t2 = u5;
-        if ((m2 = self + 0x68) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
-            func_00000000(m2, self, t2, 1);
+        if ((m2 = self + 0x68) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+            FCALL(Parms_addParm)(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
         }
         u6.v = sTimeGadgetParmsTags_CACC[2];
         t2 = u6;
-        if ((m2 = self + 0x80) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
-            func_00000000(m2, self, t2, 1);
+        if ((m2 = self + 0x80) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+            FCALL(Parms_addParm)(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
         }
     }
@@ -427,7 +428,7 @@ void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
 void gadget_decodeStringE4_00014010(char *a0) {
     unsigned int i;
     unsigned char c;
-    for (i = 0; i < (unsigned int)func_00000000(a0 + 0xE4); i++) {
+    for (i = 0; i < (unsigned int)FCALL(str_len)(a0 + 0xE4); i++) {
         if ((u8)(a0 + i)[0xE4] != 0x61 && (u8)(a0 + i)[0xE4] != 0x62 && (u8)(a0 + i)[0xE4] != 0x20) {
             (a0 + i)[0xE4] = 0x69 - (u8)(a0 + i)[0xE4];
         }
@@ -476,25 +477,25 @@ void TimeGadget_display_000140C4(char *s0) {
     col[0] = 1.0f; col[1] = 1.0f; col[2] = 1.0f; col[3] = 1.0f;
     if (1) { }
     if (GADGET(s0)->label1) {
-        func_00000000(GADGET(s0)->label1);
+        FCALL(gui_spriteRefresh)(GADGET(s0)->label1);
         n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC)); /* labelAlpha */
-        func_00000000(GADGET(s0)->label1, n, col, 0);
-        func_00000000(GADGET(s0)->label1,
+        FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label1, n, col, 0);
+        FCALL(gui_drawSprite)(GADGET(s0)->label1,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.lbx.value,
                       GADGET(s0)->parms.yps.value + GADGET(s0)->parms.lby.value, 0);
     }
     if (GADGET(s0)->label2) {
-        func_00000000(GADGET(s0)->label2);
+        FCALL(gui_spriteRefresh)(GADGET(s0)->label2);
         n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
-        func_00000000(GADGET(s0)->label2, n, col, 0);
-        func_00000000(GADGET(s0)->label2,
+        FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label2, n, col, 0);
+        FCALL(gui_drawSprite)(GADGET(s0)->label2,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.l2x.value,
                       GADGET(s0)->parms.yps.value + GADGET(s0)->parms.l2y.value, 0);
     }
-    func_00000000(GADGET(s0)->font);
+    FCALL(gui_setupRenderMode_0000055C)(GADGET(s0)->font);
     n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
-    func_00000000(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
-    func_00000000(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
+    FCALL(gui_setPrimColor_000006B8)(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
+    FCALL(gui_drawString_00000D04)(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
 
 /* BestGadget_display_00014228 - 3-element draw/place dispatcher (twin of TimeGadget_display_000140C4).
@@ -544,25 +545,25 @@ void BestGadget_display_00014228(char *s0) {
     col[0] = 1.0f; col[1] = 1.0f; col[2] = 1.0f; col[3] = 1.0f;
     if (1) { }
     if (GADGET(s0)->label1) {
-        func_00000000(GADGET(s0)->label1);
+        FCALL(gui_spriteRefresh)(GADGET(s0)->label1);
         n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC)); /* labelAlpha */
-        func_00000000(GADGET(s0)->label1, n, col, 0);
-        func_00000000(GADGET(s0)->label1,
+        FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label1, n, col, 0);
+        FCALL(gui_drawSprite)(GADGET(s0)->label1,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.lbx.value,
                       GADGET(s0)->parms.yps.value + GADGET(s0)->parms.lby.value, 0);
     }
     if (GADGET(s0)->label2) {
-        func_00000000(GADGET(s0)->label2);
+        FCALL(gui_spriteRefresh)(GADGET(s0)->label2);
         n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
-        func_00000000(GADGET(s0)->label2, n, col, 0);
-        func_00000000(GADGET(s0)->label2,
+        FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label2, n, col, 0);
+        FCALL(gui_drawSprite)(GADGET(s0)->label2,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.l2x.value,
                       GADGET(s0)->parms.yps.value + GADGET(s0)->parms.l2y.value, 0);
     }
-    func_00000000(GADGET(s0)->font);
+    FCALL(gui_setupRenderMode_0000055C)(GADGET(s0)->font);
     n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
-    func_00000000(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
-    func_00000000(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
+    FCALL(gui_setPrimColor_000006B8)(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
+    FCALL(gui_drawString_00000D04)(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
 
 /* FloatPosParms_ctor - verified structural decode (0x128, 74 insns,
@@ -780,7 +781,7 @@ int PointsPopup_slideStep(char *a0, int a1) {
 void gadget_decodeStringB4_00014598(char *a0) {
     unsigned int i;
     unsigned char c;
-    for (i = 0; i < (unsigned int)func_00000000(a0 + 0xB4); i++) {
+    for (i = 0; i < (unsigned int)FCALL(str_len)(a0 + 0xB4); i++) {
         if ((u8)(a0 + i)[0xB4] != 0x61 && (u8)(a0 + i)[0xB4] != 0x62 && (u8)(a0 + i)[0xB4] != 0x20) {
             (a0 + i)[0xB4] = 0x69 - (u8)(a0 + i)[0xB4];
         }

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 
@@ -71,14 +72,14 @@ void PauseMenu_display(Obj540 *arg0) {
                     s = (char *)&arg0->q3C.c; *(float *)s /= 2.0f;
                 }
                 if (arg0->el[i].p84 != NULL) {
-                    func_00000000(arg0->n30);
-                    func_00000000(arg0->n30, arg0->p34, &arg0->q3C, 0);
-                    s = (char *)func_00000000(arg0->n30, (int)arg0->f6C, arg0->el[i].p84);
-                    func_00000000(arg0->n30, s, pos - arg0->n30->w / 2, arg0->el[i].p84);
+                    FCALL(gui_setupRenderMode_0000055C)(arg0->n30);
+                    FCALL(gui_setPrimColor_000006B8)(arg0->n30, arg0->p34, &arg0->q3C, 0);
+                    s = (char *)FCALL(gui_centerStringX)(arg0->n30, (int)arg0->f6C, arg0->el[i].p84);
+                    FCALL(gui_drawString)(arg0->n30, s, pos - arg0->n30->w / 2, arg0->el[i].p84);
                 } else {
-                    func_00000000(arg0->el[i].sub94);
-                    func_00000000(arg0->el[i].sub94, arg0->p34, &arg0->q3C, 0);
-                    func_00000000(arg0->el[i].sub94, (int)arg0->f6C, pos, 3);
+                    FCALL(gui_spriteRefresh)(arg0->el[i].sub94);
+                    FCALL(gui_setColorEnvPrim_000017DC)(arg0->el[i].sub94, arg0->p34, &arg0->q3C, 0);
+                    FCALL(gui_drawSprite)(arg0->el[i].sub94, (int)arg0->f6C, pos, 3);
                 }
             }
         }
@@ -91,15 +92,15 @@ void PauseMenu_display(Obj540 *arg0) {
         }
         if (arg0->flags38 & 8) {
             if (arg0->el[arg0->cur7C].p84 != NULL) {
-                func_00000000(arg0->n30);
-                func_00000000(arg0->n30, arg0->p34, &arg0->q3C, arg0->flags38);
-                s = (char *)func_00000000(arg0->n30, (int)arg0->f6C, arg0->el[arg0->cur7C].p84);
-                func_00000000(arg0->n30, s, pos - arg0->n30->w / 2, arg0->el[arg0->cur7C].p84);
+                FCALL(gui_setupRenderMode_0000055C)(arg0->n30);
+                FCALL(gui_setPrimColor_000006B8)(arg0->n30, arg0->p34, &arg0->q3C, arg0->flags38);
+                s = (char *)FCALL(gui_centerStringX)(arg0->n30, (int)arg0->f6C, arg0->el[arg0->cur7C].p84);
+                FCALL(gui_drawString)(arg0->n30, s, pos - arg0->n30->w / 2, arg0->el[arg0->cur7C].p84);
             } else {
                 i = arg0->cur7C;
-                func_00000000(arg0->el[i].sub94);
-                func_00000000(arg0->el[i].sub94, arg0->p34, &arg0->q3C, arg0->flags38);
-                func_00000000(arg0->el[i].sub94, (int)arg0->f6C, pos, 3);
+                FCALL(gui_spriteRefresh)(arg0->el[i].sub94);
+                FCALL(gui_setColorEnvPrim_000017DC)(arg0->el[i].sub94, arg0->p34, &arg0->q3C, arg0->flags38);
+                FCALL(gui_drawSprite)(arg0->el[i].sub94, (int)arg0->f6C, pos, 3);
             }
         }
     }

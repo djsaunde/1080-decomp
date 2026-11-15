@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 
@@ -16,7 +17,7 @@ void input_unpauseRacePads(char *a0) {
     i = 0;
     if (*(s32*)(a0 + 0x124) > 0) {
         do {
-            func_00000000(*(s32*)(a0 + 0x100 + i * 4), 0);
+            FCALL(pad_setPause_00067470)(*(s32*)(a0 + 0x100 + i * 4), 0);
         } while (++i < *(s32*)(a0 + 0x124));
     }
     *(s32*)(a0 + 0x188) = 0;

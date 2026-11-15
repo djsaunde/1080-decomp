@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* -O0 empty stub; see feedback_ido_o0_empty_stub.md + feedback_non_aligned_o_split.md. */
 
@@ -10,9 +11,9 @@ void PauseMenu_exit(int a0) {}
  * unfilled jal delays). */
 extern int func_00000000();
 void PauseMenu_start(int *a0) {
-    func_00000000(a0);
+    FCALL(gui_stub_00010310)(a0);
     a0[0x80/4] = 0;
-    func_00000000(a0);
+    FCALL(Process_start)(a0);
 }
 
 /* gui_centerAt_000102A4 (0x44 bytes / 17 insns at -O0) — moved from bootup_uso_tail2.c

@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "uso_call.h"
 
 /* Run 9 subset: byte increment/decrement helpers at 0x123F0..0x1266C.
  * 3 decrementers (if byte > 0) and 3 incrementers (if byte < 10), at offsets
@@ -19,7 +20,7 @@ void settings_vol1Down_000123F0(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[0] -= 1;
     }
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->levels[0]);
+    FCALL(snd_setPlayer1VolumeLevel)(SETTINGS(GAMEFLOW(a0)->options)->levels[0]);
 }
 
 void settings_vol1Up_00012458(char *a0) {
@@ -28,7 +29,7 @@ void settings_vol1Up_00012458(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[0] += 1;
     }
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->levels[0]);
+    FCALL(snd_setPlayer1VolumeLevel)(SETTINGS(GAMEFLOW(a0)->options)->levels[0]);
 }
 
 void settings_vol0Down_000124C4(char *a0) {
@@ -37,7 +38,7 @@ void settings_vol0Down_000124C4(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[1] -= 1;
     }
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
+    FCALL(func_0000023C)(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
 }
 
 void settings_vol0Up_0001252C(char *a0) {
@@ -46,7 +47,7 @@ void settings_vol0Up_0001252C(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[1] += 1;
     }
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
+    FCALL(func_0000023C)(SETTINGS(GAMEFLOW(a0)->options)->levels[1]);
 }
 
 void settings_vol2Down_00012598(char *a0) {
@@ -55,7 +56,7 @@ void settings_vol2Down_00012598(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[2] -= 1;
     }
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->levels[2]);
+    FCALL(snd_setPlayer2VolumeLevel)(SETTINGS(GAMEFLOW(a0)->options)->levels[2]);
 }
 
 void settings_vol2Up_00012600(char *a0) {
@@ -64,5 +65,5 @@ void settings_vol2Up_00012600(char *a0) {
         p = GAMEFLOW(a0)->options;
         SETTINGS(p)->levels[2] += 1;
     }
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->levels[2]);
+    FCALL(snd_setPlayer2VolumeLevel)(SETTINGS(GAMEFLOW(a0)->options)->levels[2]);
 }

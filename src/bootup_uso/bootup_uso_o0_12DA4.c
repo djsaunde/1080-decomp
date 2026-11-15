@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern void stream_readS32_0000F1F0(int *dst);
@@ -12,7 +13,7 @@ extern void stream_readVec3_0000F2EC(int *dst);
 void replay_freeRecord(InputMgr *mgr) {
     mgr->replayData[0] = 0;
     if (mgr->replayData[1] != 0) {
-        func_00000000(mgr->replayData[1]);
+        FCALL(mem_delete)(mgr->replayData[1]);
     }
     mgr->replayData[1] = 0;
 }
@@ -23,10 +24,10 @@ void replay_freeRecord(InputMgr *mgr) {
  * `mode` is the caller's BACKUP_MODE_* (the ghost header bits 0-1). */
 void replay_saveGhost(InputMgr *mgr, int mode) {
     int v0;
-    mgr->session = (struct BackupSession *)func_00000000(0, mgr->backup, 3, -1);
-    v0 = func_00000000(mgr->replayLen[0] << 2);
-    func_00000000(v0, mgr->replayData[0], mgr->replayLen[0] << 2);
-    func_00000000(
+    mgr->session = (struct BackupSession *)FCALL(Backup_openSession)(0, mgr->backup, 3, -1);
+    v0 = FCALL(mem_new)(mgr->replayLen[0] << 2);
+    FCALL(memcpy)(v0, mgr->replayData[0], mgr->replayLen[0] << 2);
+    FCALL(Backup_ghostSetHeader)(
         mgr->session->ghost,
         mode,
         mgr->recCourse,
@@ -36,8 +37,8 @@ void replay_saveGhost(InputMgr *mgr, int mode) {
         v0,
         mgr->replayLen[0]
     );
-    func_00000000(mgr->backup, mgr->session->ghost);
-    func_00000000(mgr->session, 3);
+    FCALL(Backup_writeGhost)(mgr->backup, mgr->session->ghost);
+    FCALL(Backup_closeSession)(mgr->session, 3);
     mgr->unk184 = 0;
     mgr->demoIndex = -1;
 }

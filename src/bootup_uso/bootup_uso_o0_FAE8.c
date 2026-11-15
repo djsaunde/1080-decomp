@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -11,11 +12,11 @@ void Process_resume_0000FAE8(int *self) {
     register int flag;
     register int *x;
 
-    func_00000000();
+    FCALL(snd_unmuteAll)();
     if (self[0x38 / 4] == 0) {
-        func_00000000(&gInputMgr);
+        FCALL(input_unpauseRacePads)(&gInputMgr);
     }
-    func_00000000(self[0x48 / 4]);
+    FCALL(Process_stop)(self[0x48 / 4]);
     self[0x30 / 4] = 0;
     self[0x34 / 4] = 0;
     if (self[0x4C / 4] != 0) {

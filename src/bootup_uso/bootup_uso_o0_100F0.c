@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/guimenu.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 /* The FP literal pool gui_centerRows_0001016C reads is reached through the symbol splat
@@ -36,7 +37,7 @@ void gui_initRows_000100F0(int *a0, int a1) {
     register int *p;
     GUIMENU(a0)->arg = a1;
     GUIMENU(a0)->cursor = 0;
-    func_00000000(a0);
+    FCALL(gui_clearRows_00010A9C)(a0);
     (**(void (**)())((char*)p + 0x64))(
         *(short*)((char*)(p = (int*)*(int*)((char*)a0 + 0x28)) + 0x60) + (int)a0);
     GUIMENU(a0)->rowHeight = 17.0f;
@@ -64,6 +65,6 @@ void gui_centerRows_0001016C(int *a0) {
     q[1] = func_00000C10.f1;
     q[2] = func_00000C10.f2;
     q[3] = 0.0f;
-    func_00000000(a0);
-    func_00000000(a0);
+    FCALL(gui_stub_00010310)(a0);
+    FCALL(Process_stop)(a0);
 }

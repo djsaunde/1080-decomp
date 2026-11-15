@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -16,11 +17,11 @@ extern char D_00000000;
  * alloc(8); new->next = head_holder->[0x130]; head_holder->[0x130] = new;
  * new->data = arg1; notify(&D_0, new->data). */
 void game_loadUso(int *head_holder, int data) {
-    int *node = (int*)func_00000000(8);
+    int *node = (int*)FCALL(mem_new)(8);
     node[1] = head_holder[0x130 / 4];
     head_holder[0x130 / 4] = (int)node;
     node[0] = data;
-    func_00000000(&gSysLib, node[0]);
+    FCALL(app_loadUso)(&gSysLib, node[0]);
 }
 
 /* game_unloadUso: walk the arg0->0x130 singly-linked list; for the first node
@@ -34,14 +35,14 @@ void game_unloadUso(int *arg0, void *arg1) {
     int *prev = 0;
     if ((node = (int *)arg0[0x4C]) != 0) {
         do {
-            if (func_00000000(((int *)node)[0], arg1) == 0) {
+            if (FCALL(str_compare_00067B04)(((int *)node)[0], arg1) == 0) {
                 if (prev == 0) {
                     arg0[0x4C] = node[1];
                 } else {
                     prev[1] = node[1];
                 }
-                func_00000000(&gSysLib, ((int *)node)[0]);
-                func_00000000(node);
+                FCALL(app_unloadUso)(&gSysLib, ((int *)node)[0]);
+                FCALL(mem_delete)(node);
                 return;
             }
             prev = node;

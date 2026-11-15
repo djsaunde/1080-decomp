@@ -8,6 +8,7 @@
 #include "gdl/node.h"
 #include "gdl/light.h"
 #include "game/envobj.h"
+#include "uso_call.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -42,13 +43,13 @@ extern char D_00000000;
 
 void func_00000008(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void func_00000044(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -60,7 +61,7 @@ void func_00000080(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -70,90 +71,90 @@ void func_00000080(Vec3 *dst) {
 typedef struct { int a, b, c, d; } Quad4;
 void func_000000F0(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
 extern char sStr_Poop_start_6538;
 void func_00000148(int a0, int a1, int a2) {
-    func_00000000(&sStr_Poop_start_6538);
-    func_00000000(a0, a1, a2);
+    FCALL(dbg_printf)(&sStr_Poop_start_6538);
+    FCALL(snd_HandleSeqEvent_30AF4)(a0, a1, a2);
 }
 
 extern char sStr_Poop_end_6544;
 void func_00000188(int a0, int a1, int a2) {
-    func_00000000(&sStr_Poop_end_6544);
-    func_00000000(a0, a1, a2);
+    FCALL(dbg_printf)(&sStr_Poop_end_6544);
+    FCALL(snd_HandleSeqEnd)(a0, a1, a2);
 }
 
 void snd_setLevelRampTarget(int a0) {
     if (a0 != 0) {
-        func_00000000(2);
+        FCALL(snd_SetLevelRampTarget)(2);
     } else {
-        func_00000000(0);
+        FCALL(snd_SetLevelRampTarget)(0);
     }
 }
 
 void func_000001FC(void) {
-    func_00000000();
+    FCALL(snd_SetSoundOutputMode)();
 }
 
 void snd_setPlayer1VolumeLevel(void) {
-    func_00000000();
+    FCALL(snd_SetPlayer1VolumeLevel)();
 }
 
 void func_0000023C(void) {
-    func_00000000();
+    FCALL(snd_SetPlayer0VolumeLevel)();
 }
 
 void snd_setPlayer2VolumeLevel(void) {
-    func_00000000();
+    FCALL(snd_SetPlayer2VolumeLevel)();
 }
 
 void func_0000027C(void) {
-    func_00000000();
+    FCALL(snd_StartPlayer2Seq)();
 }
 
 void func_0000029C(void) {
-    func_00000000();
+    FCALL(snd_MuteAll)();
 }
 
 void snd_unmuteAll(void) {
-    func_00000000();
+    FCALL(snd_UnmuteAll)();
 }
 
 void snd_postEvent(void) {
-    func_00000000();
+    FCALL(snd_PostEvent)();
 }
 
 void snd_sendEvent(void) {
-    func_00000000();
+    FCALL(snd_HandleEvent_2FB74)();
 }
 
 void snd_updateChannel10Emitter(int a0, int a1, int a2) {
     int local1, local2;
-    func_00000000(a1, &local1, &local2, a2);
-    func_00000000(a0, local1, (signed char)local2);
+    FCALL(func_000003F8)(a1, &local1, &local2, a2);
+    FCALL(snd_UpdateChannel10Emitter)(a0, local1, (signed char)local2);
 }
 
 extern char sStr_Poop_Added_sound_heap_6550;
 void snd_addSoundHeap(void) {
-    func_00000000();
-    func_00000000(&sStr_Poop_Added_sound_heap_6550);
+    FCALL(snd_AddSoundHeap)();
+    FCALL(dbg_printf)(&sStr_Poop_Added_sound_heap_6550);
 }
 
 extern char sStr_Poop_Removed_sound_heap_6568;
 void snd_removeSoundHeap(void) {
-    func_00000000();
-    func_00000000(&sStr_Poop_Removed_sound_heap_6568);
+    FCALL(snd_RemoveSoundHeap)();
+    FCALL(dbg_printf)(&sStr_Poop_Removed_sound_heap_6568);
 }
 
 void snd_setPlayer1Channel15IO(void) {
-    func_00000000();
+    FCALL(snd_SetPlayer1Channel15IO_2D910)();
 }
 
 void snd_setPlayer3FreqScaleFromStick(void) {
-    func_00000000();
+    FCALL(snd_SetPlayer3FreqScaleFromStick)();
 }
 
 // func_000003F8(Vec3 *world, float *outDist, int *outProj, Obj *obj):
@@ -202,7 +203,7 @@ void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
     d.x = d.x - *(f32 *)(*(char **)(obj + 0x70) + 0xA0);
     d.y = d.y - *(f32 *)(*(char **)(obj + 0x70) + 0xA4);
     d.z = d.z - *(f32 *)(*(char **)(obj + 0x70) + 0xA8);
-    *dist = func_00000000_3F8_f(d.x * d.x + d.y * d.y + d.z * d.z);
+    *dist = XCALL(func_00000000_3F8_f, math_vec3Length_0005BBCC)(d.x * d.x + d.y * d.y + d.z * d.z);
     inv = 1.0 / *dist;
     d.x *= inv;
     d.y *= inv;
@@ -224,7 +225,7 @@ void func_000003F8(V3_3F8 *pos, f32 *dist, s32 *proj, char *obj) {
  * be set AFTER the alloc call so it stays in $a2 (before-the-call spills it). */
 void func_0000057C(int *arg0, int arg1, int arg2) {
     int sel;
-    arg0[0] = (int)func_00000000(0x64);
+    arg0[0] = (int)FCALL(mem_new)(0x64);
     sel = 0;
     switch (arg1) {
     case 0: break;
@@ -234,7 +235,7 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
     *(char *)(arg0[0] + 0x22) = (char)arg2;
     *(float *)(arg0[0] + 0x10) = 0.0f;
     arg0[2] = 0;
-    func_00000000(arg0[0], sel);
+    FCALL(snd_SoundObjInit)(arg0[0], sel);
 }
 
 /* snd_updatePlayer - corrected full decode (0x24C, 147 insns, FP param
@@ -343,61 +344,61 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", snd_updatePlayer);
 void SndHandle_start(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
-        func_00000000(o);
+        FCALL(snd_SoundObjStart)(o);
     }
 }
 
 void SndHandle_stop(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
-        func_00000000(o);
+        FCALL(snd_SoundObjStop)(o);
     }
 }
 
 void SndHandle_setScaleIdx15(SndHandle *h) {
-    func_00000000(h->obj);
+    FCALL(snd_SoundObjSetScaleIdx15)(h->obj);
 }
 
 void SndHandle_setScaleIdx31(SndHandle *h) {
-    func_00000000(h->obj);
+    FCALL(snd_SoundObjSetScaleIdx31)(h->obj);
 }
 
 void SndHandle_triggerEvent0_000008F4(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->contactSurface);
+    int ret = FCALL(SndHandle_contactEventType)(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
-        func_00000000(node, ret, 0, a1_orig);
+        FCALL(snd_SoundObjTriggerEvent)(node, ret, 0, a1_orig);
     }
 }
 
 void SndHandle_triggerEvent3_00000940(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->contactSurface);
+    int ret = FCALL(SndHandle_contactEventType)(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
-        func_00000000(node, ret, 3, a1_orig);
+        FCALL(snd_SoundObjTriggerEvent)(node, ret, 3, a1_orig);
     }
 }
 
 void SndHandle_triggerEvent1_0000098C(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->contactSurface);
+    int ret = FCALL(SndHandle_contactEventType)(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
-        func_00000000(node, ret, 1, a1_orig);
+        FCALL(snd_SoundObjTriggerEvent)(node, ret, 1, a1_orig);
     }
 }
 
 void SndHandle_triggerEvent2_000009D8(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->contactSurface);
+    int ret = FCALL(SndHandle_contactEventType)(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
-        func_00000000(node, ret, 2, a1_orig);
+        FCALL(snd_SoundObjTriggerEvent)(node, ret, 2, a1_orig);
     }
 }
 
 void SndHandle_disable(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
-        func_00000000(o);
+        FCALL(snd_SoundObjDisable)(o);
     }
 }
 
@@ -411,7 +412,7 @@ void SndHandle_setUnk1F_00000A50(SndHandle *h, int a1) {
 void SndHandle_setFlag1A(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
-        func_00000000(o);
+        FCALL(snd_SoundObjSetFlag1A)(o);
     }
 }
 
@@ -559,9 +560,9 @@ void *func_00000C10(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)func_00000000(0x40);
+    p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
-        func_00000000(p1);
+        FCALL(ColourItem_ctor)(p1);
         *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -569,7 +570,7 @@ void *func_00000C10(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        func_00000000((char*)p2 + 0x10, head);
+        FCALL(list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -655,8 +656,8 @@ void BGBox_func_00000D94(char *a0) {
     int *p;
     int on;
     if ((double)*(float *)(gGfxLib_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
-        func_00000000(gGfxLib_d94_g, gGfxLib_d94_src);
-        func_00000000(a0);
+        FCALL(gfx_setPrimColour)(gGfxLib_d94_g, gGfxLib_d94_src);
+        FCALL(Node_display)(a0);
         p = (int *)(*(char **)(gGfxLib_d94_g + 0x254) + 0x78);
         on = *(int *)(a0 + 0x3C);
         if (on != 0) {
@@ -810,8 +811,8 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     int padq[3]; /* agent-h run 399: 3 words without c3; agent-h run 397: back to 2 words with c3 in the all-NEXTB phase 2 (the spill temps sit at the target's 76 / 80 / 84 again); agent-g run 293: no longer volatile (byte-identical); run 253: 3 words (the block-scope vs / ve take no home); run 138: frame = target; agent-g run 224: declared LAST, the four words sit under the named homes (ult at frame-40, i/head at -184 like the target); agent-c run 353: 2 words with m2 (frame still 0x1D8) */
 
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
-    if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
-        func_00000000(self, &sStr_Node_66B0);
+    if ((self != 0) || (self = (char *)FCALL(mem_new)(0x4C)) != 0) {
+        FCALL(Node_ctor)(self, &sStr_Node_66B0);
         NODE(self)->vptr = (s32)(&U64BGWall_vtbl);
         NODE(self)->name = (s32)(&sStr_U64BGWall_66B8);
         timg = *(u32 *)(cfg + 0x8);
@@ -823,9 +824,9 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         ((U64BGWall *)self)->scale[2] = 1.0f;
         ((U64BGWall *)self)->scale[1] = 1.0f;
         ((U64BGWall *)self)->scale[0] = 1.0f;
-        buf = (VtxE68 *)func_00000000(0x800, 16);
+        buf = (VtxE68 *)FCALL(mem_newAligned)(0x800, 16);
         if (arg2 != 0x123456) {}
-        func_00000000_e68v(buf, 0x800, 0);
+        XCALL(func_00000000_e68v, str_fill)(buf, 0x800, 0);
         vidx = 0;
         y = import_8001FFA0_h[1] / 2 - 16;
         for (row = 0; row < import_8001FFA0_h[1] / 32; row++) {
@@ -922,7 +923,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         { GwE68 *_h = E68_NEXTBI(m2);
           _h[0 * ((int)_h)].w0 = E68_SHL(0x04, 24, 8) | E68_SHL(0, 16, 8) | E68_SHL(((4) << 10) | (sizeof(VtxE68) * (4) - 1), 0, 16);
           *(u32 *)&head = (u32)_h;
-          head->w1 = (u32)(func_00000000(&D_e68_vtx)); }
+          head->w1 = (u32)(FCALL(gl_osVirtualToPhysical)(&D_e68_vtx)); }
         E68_W(E68_NEXTB(m2), 0xBE000000, 6);
         E68_W(E68_NEXTB(m2), 0xE7000000, 0); if (1) {} /* run 182 (lever-sweep bbsplit); agent-c run 288: the run-210 folded h use dropped (inert, byte-identical) */
         E68_W(E68_NEXTB(m2), 0xBA001402, 0);
@@ -945,7 +946,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
          * address the target holds in s8 -- 94.59 -> 95.10 standalone; spelled (int)&h[1] the +4 folds
          * into the lui/addiu pair (sym+4) like the target -- 95.17 -> 95.31 */
         for (i = 0; i < *(s32 *)(int)&import_8001FFA0_h[1] / 64; i++) {
-            E68_VTX(E68_NEXTB(m2), func_00000000(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
+            E68_VTX(E68_NEXTB(m2), FCALL(gl_osVirtualToPhysical)(&vp[i * (n * 4)]), n * 4, 0); if (1) {} /* run 233 (lever-sweep bbsplit) */
             for (col = 0; col < n; col++) { /* agent-g run 250: phase-3 counter in col, not j (uopt colours per variable) */
                 /* run 192: the target loads arr[] BEFORE the append (named before the packet) -- 90.82 -> 92.78 standalone */
                 /* agent-g run 254: explicit-increment append here (per-site NEXT / NEXTB greedy, 98.21 -> 98.41) */
@@ -1027,13 +1028,13 @@ void U64BGWall_func_00001A44(char *a0) {
 
 void stream_readS32_00001C10(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_00001C4C(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -1044,7 +1045,7 @@ void stream_readVec3_00001C88(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1053,29 +1054,29 @@ void stream_readVec3_00001C88(Vec3 *dst) {
 
 void stream_readS32_00001CF8(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_00001D34(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
 void *WorldCourse_ctorEmpty_00001D8C(void *a0) {
     if (a0 == 0) {
-        a0 = (void*)func_00000000(0x48);
+        a0 = (void*)FCALL(mem_new)(0x48);
     }
     return a0;
 }
 
 void *WorldCourse_ctor_00001DB8(void *a0, int a1, int a2) {
     if (a0 == 0) {
-        a0 = (void*)func_00000000(0x48);
+        a0 = (void*)FCALL(mem_new)(0x48);
         if (a0 == 0) goto end;
     }
-    func_00000000(a0, a1);
+    FCALL(str_copyEnd)(a0, a1);
     ((WorldCourse *)a0)->desc = (s32 *)a2;
 end:
     return a0;
@@ -1107,27 +1108,27 @@ void *WorldRegistry_create_00001E08(char *o) {
     char *pad;
     char *sub;
     if (o == 0) {
-        o = (char*)func_00000000(0x118);
+        o = (char*)FCALL(mem_new)(0x118);
         if (o == 0) goto end;
     }
-    func_00000000(o, &sStr_Node_6E30);
+    FCALL(Node_ctor)(o, &sStr_Node_6E30);
     ((WorldRegistry *)o)->vptr = (s32)&D_1E08_d;
     sub = (char *)&((WorldRegistry *)o)->head;
-    func_00000000(sub);
+    FCALL(WorldCourse_ctorEmpty_00001D8C)(sub);
     *(void**)(o + 0xC) = &sStr_World_Registry_6E38; /* Node name "World Registry" */
     ((WorldRegistry *)o)->head.next = 0;
     ((WorldRegistry *)o)->numCourses = 0;
     ((WorldRegistry *)o)->tail = (WorldCourse *)sub;
-    func_00000000(o, &sStr_One_Make_6E48, &D_1E08_a);
-    func_00000000(o, &sStr_HalfPipe_6E54, &D_1E08_b);
-    func_00000000(o, &sStr_Slalom_Course_6E60, &D_1E08_c);
-    func_00000000(o, &sStr_Stunt_Course_6E70, &D_1E08_d);
-    func_00000000(o, &sStr_Long_Course_6E80, &D_1E08_e);
-    func_00000000(o, &sStr_New_Course_6E8C, &D_1E08_f);
-    func_00000000(o, &sStr_Night_Course_6E98, &D_1E08_g);
-    func_00000000(o, &sStr_Black_Diamond_6EA8, &D_1E08_h);
-    func_00000000(o, &sStr_Practice_6EB8, &D_1E08_i);
-    func_00000000(o, &sStr_Test_Grid_6EC4, &D_1E08_j);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_One_Make_6E48, &D_1E08_a);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_HalfPipe_6E54, &D_1E08_b);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Slalom_Course_6E60, &D_1E08_c);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Stunt_Course_6E70, &D_1E08_d);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Long_Course_6E80, &D_1E08_e);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_New_Course_6E8C, &D_1E08_f);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Night_Course_6E98, &D_1E08_g);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Black_Diamond_6EA8, &D_1E08_h);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Practice_6EB8, &D_1E08_i);
+    FCALL(WorldRegistry_addCourse_00001F78)(o, &sStr_Test_Grid_6EC4, &D_1E08_j);
 end:
     return o;
 }
@@ -1140,7 +1141,7 @@ end:
 // entry's canonical example). Permuter-only; no episode (tautology-trap rule).
 void WorldRegistry_addCourse_00001F78(WorldRegistry *obj, int d1, int d2) {
     WorldCourse *n;
-    n = (WorldCourse *)func_00000000(0, d1, d2, obj); /* WorldCourse_ctor_00001DB8(0, name, desc) */
+    n = (WorldCourse *)FCALL(WorldCourse_ctor_00001DB8)(0, d1, d2, obj); /* WorldCourse_ctor_00001DB8(0, name, desc) */
     n->next = obj->tail->next;
     obj->tail->next = n;
     obj->tail = n;
@@ -1210,7 +1211,7 @@ void game_forEachPlayer_000020D8(char *a0, int a1) {
         i = 0;
         p = a0;
         do {
-            func_00000000(a1, *(int*)(p + 0xC4), *(int*)(p + 0xC8));
+            FCALL(RaceTracker_addEntry)(a1, *(int*)(p + 0xC4), *(int*)(p + 0xC8));
             i++;
             p += 8;
         } while (i < WORLDREG(a0)->numPlayers);
@@ -1265,8 +1266,8 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
     int *ret;
     int *target;
     int *p;
-    if ((p = (int*)func_00000000(0x40)) != 0) {
-        func_00000000(p);
+    if ((p = (int*)FCALL(mem_new)(0x40)) != 0) {
+        FCALL(ColourItem_ctor)(p);
         p[0x28/4] = (int)&ColourItem_vtbl_75A0;
         p[0x3C/4] = 0;
     }
@@ -1274,7 +1275,7 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
     p += 0x10/4;
     if (caller_a0[0x40/4] != 0) {
         target = (int*)caller_a0[0x40/4];
-        func_00000000(p, target);
+        FCALL(list_append)(p, target);
         if (target[0x14/4] != 0) {
             target[0x4/4] = 1;
         }
@@ -1287,13 +1288,13 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
 
 void stream_readS32_000022E0(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000231C(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -1304,7 +1305,7 @@ void stream_readVec3_00002358(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1313,7 +1314,7 @@ void stream_readVec3_00002358(Vec3 *dst) {
 
 void stream_readQuad_000023C8(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -1331,10 +1332,10 @@ extern char sStr_Node_731C;
 /* include/game/camera.h CamDirector (agent-g run 475 field form) */
 CamDirector *CamDirector_ctor(CamDirector *a0, int pad, int rider, int window, int cam0, int cam1) {
     if (a0 == 0) {
-        a0 = (CamDirector *)func_00000000(0x50);
+        a0 = (CamDirector *)FCALL(mem_new)(0x50);
         if (a0 == 0) goto end;
     }
-    func_00000000(a0, &sStr_Node_731C); /* Node init, "<Node>" */
+    FCALL(Node_ctor)(a0, &sStr_Node_731C); /* Node init, "<Node>" */
     *(int*)((char*)a0 + 0x28) = (int)&CamDirector_vtbl; /* vptr (Data 0x6FD8) */
     a0->pad = (struct RiderInput *)pad;
     a0->rider = (SnowBoarder *)rider;
@@ -1426,7 +1427,7 @@ void CamDirector_update(CamDirector *self) {
     if (gInputMgr_00000064 == 1) {
         v0 = (char *)self->pad + 0 * (int)(CD_BYTE(0x4C));
         r = 0;
-        s0 = (char *)((CD_PAD(v0)->held & 0x400) != 0); func_00000000_24b8v((int)s0, (*(u32 *)&CD_PAD(v0)->held & 0x1000) != 0, CD_PAD(v0)->rawX, CD_PAD(v0)->rawY); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
+        s0 = (char *)((CD_PAD(v0)->held & 0x400) != 0); XCALL(func_00000000_24b8v, snd_setPlayer1Channel15IO)((int)s0, (*(u32 *)&CD_PAD(v0)->held & 0x1000) != 0, CD_PAD(v0)->rawX, CD_PAD(v0)->rawY); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
         k = r;
     }
     s0 = (char *)self->pad;
@@ -1439,7 +1440,7 @@ void CamDirector_update(CamDirector *self) {
         f32 two = 2.0f;
         if (k != 0) {
             /* entering: make the path camera active and reset it */
-            func_00000000_24b8v(self, 0);
+            XCALL(func_00000000_24b8v, CamDirector_setActiveCam)(self, 0);
             v0 = (char *)self->cams[0];
             s0 = (char *)CD_VPTR(v0);
             CD_SLOT_FN(s0)(CD_SLOT_DELTA(s0) + v0, 3, 0);
@@ -1477,18 +1478,18 @@ void CamDirector_update(CamDirector *self) {
     self->pollTimer = (int)s0 + 1;
     if ((int)s0 >= 0x3C) {
         tb.w = sStr_cam_7324;
-        p = (char *)func_00000000(D_24B8_tbl, tb, &self->rider->pos, 0);
+        p = (char *)FCALL(ItemMgr_queryType)(D_24B8_tbl, tb, &self->rider->pos, 0);
         if (p != 0 && p != self->lastCamNode) {
             k2 = FW(p, 0x3C);
             if ((u32)k2 >= 3 && (u32)k2 < 0x13) {
                 /* kinds 3..0x12: the game.uso path camera (CourseCam views) */
-                func_00000000_24b8v(self, 0);
+                XCALL(func_00000000_24b8v, CamDirector_setActiveCam)(self, 0);
                 v0 = (char *)self->cams[0];
                 s0 = (char *)CD_VPTR(v0);
                 CD_SLOT_FN(s0)(CD_SLOT_DELTA(s0) + v0, k2, p);
             } else {
                 /* other kinds: RiderCam */
-                func_00000000_24b8v(self, 1);
+                XCALL(func_00000000_24b8v, CamDirector_setActiveCam)(self, 1);
                 v0 = (char *)self->cams[1];
                 s0 = (char *)CD_VPTR(v0);
                 CD_SLOT_FN(s0)(CD_SLOT_DELTA(s0) + v0, k2, p);
@@ -1709,8 +1710,8 @@ void game_initDdm_00002C94(void *a0, void *a1) {
     gGfxLib_2c94_dst[0] = k;
     gGfxLib_2c94_dst[1] = k;
     gGfxLib_2c94_dst[2] = k;
-    func_00000000(gGfxLib_2c94_src);
-    func_00000000(gGfxLib_2c94_src, gGfxLib_2c94_dst);
+    FCALL(math_mtx4Identity)(gGfxLib_2c94_src);
+    FCALL(math_mtxScaleRows)(gGfxLib_2c94_src, gGfxLib_2c94_dst);
     bu_2c94_mode = 6;
     gPolyFlags_3EEC4_2c94_x_st = gPolyFlags_3EEC4_2c94_x_ld & ~8;
     v = gPolyGeomMode_3EEC8_2c94_y_ld[1];
@@ -1719,14 +1720,14 @@ void game_initDdm_00002C94(void *a0, void *a1) {
     v |= 0x80000;
     gPolyGeomMode_3EEC8_2c94_y_st[1] = v;
     p = bu_2c94_tbl;
-    func_00000000(&sStr_ddm_73E8, 0);
+    FCALL(memtrack_begin)(&sStr_ddm_73E8, 0);
     if (bu_2c94_gate != 0) {
         do {
-            func_00000000(gGfxLib_2c94_ctx, p[0], p[1]);
+            FCALL(gfx_addDdm)(gGfxLib_2c94_ctx, p[0], p[1]);
             p += 2;
         } while (p[0] != 0);
     }
-    func_00000000();
+    FCALL(memtrack_end)();
 }
 
 /* game_setupMode: bootup_uso subsystem init + 12-way command dispatch
@@ -1752,36 +1753,36 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
     int v;
-    func_00000000_2DA4_v(&sStr_ImgFileMgr_73EC, 0);
-    func_00000000_2DA4_v();
-    D_2DA4_obj = func_00000000(0, &sStr_rom_tricks_bin_73F8);
+    XCALL(func_00000000_2DA4_v, memtrack_begin)(&sStr_ImgFileMgr_73EC, 0);
+    XCALL(func_00000000_2DA4_v, memtrack_end)();
+    D_2DA4_obj = FCALL(TrickTable_ctor_0000C2D4)(0, &sStr_rom_tricks_bin_73F8);
     v1 = (char *)FW2DA4(arg0, 0x84);
     a1 = (char *)D_2DA4_obj_rd;
-    func_00000000_2DA4_v(v1 + 0x10, a1);
+    XCALL(func_00000000_2DA4_v, list_append)(v1 + 0x10, a1);
     if (FW2DA4(a1, 0x14) != 0) {
         FW2DA4(a1, 0x4) = 1;
     }
     FW2DA4(a1, 0x14) = (int)v1;
-    func_00000000_2DA4_v(D_2DA4_obj);
+    XCALL(func_00000000_2DA4_v, AnimDataMgr_releaseFrames)(D_2DA4_obj);
     v = *(int *)((char *)&gPolyGeomMode_3EEC8_2DA4_cfg + 4);
     v = v | 0x80000 | 0x2000 | 0x20000;
     *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
     switch (arg1) {
-    case 2: func_00000000_2DA4_v(arg0, arg2); break;
-    case 4: func_00000000_2DA4_v(arg0, arg2); break;
-    case 12: func_00000000_2DA4_v(arg0, arg2); break;
-    case 3: func_00000000_2DA4_v(arg0, arg2); break;
-    case 5: func_00000000_2DA4_v(arg0, arg2); break;
-    case 6: func_00000000_2DA4_v(arg0, arg2); break;
+    case 2: XCALL(func_00000000_2DA4_v, game_setupSolo)(arg0, arg2); break;
+    case 4: XCALL(func_00000000_2DA4_v, game_setupReplay)(arg0, arg2); break;
+    case 12: XCALL(func_00000000_2DA4_v, game_setupReplay)(arg0, arg2); break;
+    case 3: XCALL(func_00000000_2DA4_v, game_setupVsGhost)(arg0, arg2); break;
+    case 5: XCALL(func_00000000_2DA4_v, game_setupVsCpu)(arg0, arg2); break;
+    case 6: XCALL(func_00000000_2DA4_v, game_setupVs2P)(arg0, arg2); break;
     case 1:
-        func_00000000_2DA4_v(arg0, 0);
+        XCALL(func_00000000_2DA4_v, game_setupEmpty)(arg0, 0);
         a1 = (char *)D_2DA4_obj; if (1) { a1 += 0x18; } *(int *)a1 = *(int *)a1 | 4;
         break;
-    case 9: func_00000000_2DA4_v(arg0, arg2); break;
-    case 10: func_00000000_2DA4_v(arg0, arg2); break;
-    case 11: func_00000000_2DA4_v(arg0, arg2); break;
+    case 9: XCALL(func_00000000_2DA4_v, game_setupDemoSolo)(arg0, arg2); break;
+    case 10: XCALL(func_00000000_2DA4_v, game_setupDemoRace)(arg0, arg2); break;
+    case 11: XCALL(func_00000000_2DA4_v, game_setupDemoSplit)(arg0, arg2); break;
     default:
-        func_00000000_2DA4_v(&sStr_unknown_GAME_MODE_7408);
+        XCALL(func_00000000_2DA4_v, sys_fatal)(&sStr_unknown_GAME_MODE_7408);
         break;
     }
 }
@@ -1849,8 +1850,8 @@ void game_createLights(char *s1) {
     float k2;
     char *o;
     char *c;
-    func_00000000_2F90_v(&sStr_Lights_741C, 0);
-    c = (char *)func_00000000(0, &sStr_Ambient_Light_7424);
+    XCALL(func_00000000_2F90_v, memtrack_begin)(&sStr_Lights_741C, 0);
+    c = (char *)FCALL(BaseLight_ctor)(0, &sStr_Ambient_Light_7424);
     {
         float k = kRo_game_createLights_524;
         WORLDREG(s1)->light0 = (s32)c;
@@ -1862,7 +1863,7 @@ void game_createLights(char *s1) {
     p90 = (char *)WORLDREG(s1)->light0; ((BaseLight *)p90)->mask = 1;
     p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
     p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x80;
-    c = (char *)func_00000000(0, &sStr_Infinite_Light_7434);
+    c = (char *)FCALL(BaseLight_ctor)(0, &sStr_Infinite_Light_7434);
     WORLDREG(s1)->light1 = (s32)c;
     *(float *)(c + 0x130) = 1.0f;
     *(float *)(c + 0x12C) = 1.0f;
@@ -1870,25 +1871,25 @@ void game_createLights(char *s1) {
     *(float *)(c + 0x124) = 1.0f;
     p90 = (char *)WORLDREG(s1)->light1; ((BaseLight *)p90)->mask = 2;
     p90 = (char *)WORLDREG(s1)->light1; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
-    o = (char *)func_00000000(0, &sStr_Shadow_Light_7444);
+    o = (char *)FCALL(BaseLight_ctor)(0, &sStr_Shadow_Light_7444);
     vec[0] = 0.0f;
     vec[2] = 0.0f;
     vec[1] = kRo_game_createLights_528;
-    func_00000000_2F90_v(o + 0x70, vec);
+    XCALL(func_00000000_2F90_v, math_mtxAddTranslation)(o + 0x70, vec);
     c = o; if (1) { c += 0xC4; } *(int *)c |= 0x40;
-    func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
-    func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light0);
-    func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
+    XCALL(func_00000000_2F90_v, gfx_setShadowLight)(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
+    XCALL(func_00000000_2F90_v, gfx_listAppend_0004E214)(&gGfxLib_2F90_reg, WORLDREG(s1)->light0);
+    XCALL(func_00000000_2F90_v, gfx_listAppend_0004E214)(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
     p90 = (char *)WORLDREG(s1)->light0;
     o = (char *)WORLDREG(s1)->bgRoot;
-    func_00000000_2F90_v(o + 0x10, p90);
+    XCALL(func_00000000_2F90_v, list_append)(o + 0x10, p90);
     if (NODE(p90)->parent != 0) {
         NODE(p90)->unk04 = 1;
     }
     NODE(p90)->parent = (int)o;
-    o = (char *)func_00000000(0x16C);
+    o = (char *)FCALL(mem_new)(0x16C);
     if (o != 0) {
-        func_00000000_2F90_f(o, &sStr_lighttarget_7454, 0.0f, 0.0f, 0.0f);
+        XCALL(func_00000000_2F90_f, QNode_ctor)(o, &sStr_lighttarget_7454, 0.0f, 0.0f, 0.0f);
         k2 = kRo_game_createLights_52C;
         NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; ((LightTarget *)o)->mask = 0xFFFF;
         ((LightTarget *)o)->unk108[0] = k2;
@@ -1897,12 +1898,12 @@ void game_createLights(char *s1) {
         ((LightTarget *)o)->scale = 1.0f;
     }
     n2 = WORLDREG(s1)->bgRoot;
-    func_00000000_2F90_v(n2 + 0x10, o);
+    XCALL(func_00000000_2F90_v, list_append)(n2 + 0x10, o);
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
     NODE(o)->parent = n2;
-    func_00000000_2F90_v();
+    XCALL(func_00000000_2F90_v, memtrack_end)();
 }
 
 void game_stub_000031B8(int a0) {
@@ -1971,15 +1972,15 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
     g[1] = kRo_game_create3DWindow_53C;
     g[2] = kRo_game_create3DWindow_540;
     g[3] = 0.0f;
-    r = (char *)func_00000000(0, 0x64, &sStr_3DWindow_74D0, 0x6D,
+    r = (char *)FCALL(ScreenWindow_ctor)(0, 0x64, &sStr_3DWindow_74D0, 0x6D,
                               2, 0x6E, a1[0], a1[1], 0x6F, a1[2], a1[3],
                               0x70, a1[6] | 2, 0x71, 1, 0x73, a1[4],
                               0x74, a1[5], 0);
     *(int *)(r + 0x70) = a2;
-    func_00000000(&gSnowBoard_0000002C, r);
-    if ((p = WORLDREG(a0)->bgRoot) != 0) func_00000000(r, p);
-    if ((p = WORLDREG(a0)->fgRoot) != 0) func_00000000(r, p);
-    func_00000000(a0, r);
+    FCALL(list_append)(&gSnowBoard_0000002C, r);
+    if ((p = WORLDREG(a0)->bgRoot) != 0) FCALL(node_linkBack_0004E8D4)(r, p);
+    if ((p = WORLDREG(a0)->fgRoot) != 0) FCALL(node_linkBack_0004E920)(r, p);
+    FCALL(game_addWindow_00002088)(a0, r);
     return r;
 }
 
@@ -2118,26 +2119,26 @@ void game_setupDemoSolo(char *s1, int a1) {
     char *r1, *r2, *r3, *r4;
     volatile int pad1, pad2, pad3, pad4;  /* 4 ghost home words 0x3C-0x48 (phantom-slot lever) */
     char *p;
-    s0 = (char*)func_00000000(0x80);
+    s0 = (char*)FCALL(mem_new)(0x80);
     if (s0 != 0) {
-        func_00000000(s0, 0);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
+        FCALL(pad_open)(s0, 0);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
     }
-    func_00000000_3734_v(&D_00000000, s0);
+    XCALL(func_00000000_3734_v, input_addRacePad)(&D_00000000, s0);
     r1 = func_3734_r1(s1, 2, 1, gInputMgr_3734_v,
                       s0, WORLDREG(s1)->fgRoot,
                       *(float*)(WORLDREG(s1)->unk98 + 0xC4),
                       *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                       0x58005, 0x1B);
-    r2 = (char*)func_00000000(s1, 0, WORLDREG(s1)->fgRoot, r1, s0);
-    r3 = (char*)func_00000000(s1, 1, WORLDREG(s1)->fgRoot, r1, s0);
-    r4 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, r2);
-    s0 = (char*)func_00000000(0x80);   /* merged $s0 web: o -> sub -> r5 */
+    r2 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, r1, s0);
+    r3 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r1, s0);
+    r4 = (char*)FCALL(game_create3DWindow)(s1, (char*)&D_00000000 + a1 * 0x1C, r2);
+    s0 = (char*)FCALL(mem_new)(0x80);   /* merged $s0 web: o -> sub -> r5 */
     if (s0 != 0) {
-        func_00000000(s0, 1);
+        FCALL(pad_open)(s0, 1);
     }
-    s0 = (char*)func_00000000(0, s0, r1, r4, r2, r3);
+    s0 = (char*)FCALL(CamDirector_ctor)(0, s0, r1, r4, r2, r3);
     p = (char *)WORLDREG(s1)->bgRoot;
-    func_00000000(p + 0x10, s0);
+    FCALL(list_append)(p + 0x10, s0);
     if (NODE(s0)->parent != 0) NODE(s0)->unk04 = 1;
     NODE(s0)->parent = (s32)p;
     SNOWB(r1)->camera = r4;
@@ -2186,24 +2187,24 @@ extern int gInputMgr_38c0_z[];   /* D_z global — array-typed so the base is he
 /* void-returning alias for reg_b: kills the dead $v0 def so Dz/cfg color v1/v0 */
 extern void func_00000000_38C0_v(void *, void *, int);
 void game_setupSolo(char *s1, int a1) {
-    char *o = (char*)func_00000000(0x80);
+    char *o = (char*)FCALL(mem_new)(0x80);
     char *r;
     char *r2;
     int *row;
     char *res;
     if (o != 0) {
-        func_00000000(o, 1);   /* alloc-fail SKIPS ONLY THIS (target beq +4) */
+        FCALL(pad_open)(o, 1);   /* alloc-fail SKIPS ONLY THIS (target beq +4) */
     }
-    func_00000000(&D_00000000, o);          /* reg_a — D_x placeholder */
-    func_00000000_38C0_v(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
+    FCALL(input_addRacePad)(&D_00000000, o);          /* reg_a — D_x placeholder */
+    XCALL(func_00000000_38C0_v, replay_beginRecordWithGhost)(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
     r = func_38c0_r(s1, 0, SOLO_MGR->playerRider, SOLO_MGR->playerBoard,
                     o, WORLDREG(s1)->fgRoot,
                     *(float*)(WORLDREG(s1)->unk98 + 0xC4),
                     *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                     (SOLO_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
-    r2 = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r, o);
+    r2 = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r, o);
     row = (int*)((char*)&D_00000000 + a1 * 0x1C);  /* D_w placeholder */
-    res = (char*)func_00000000(s1, row, r2);
+    res = (char*)FCALL(game_create3DWindow)(s1, row, r2);
     SNOWB(r)->camera = res;
 }
 
@@ -2242,19 +2243,19 @@ void game_setupVsGhost(char *s2, int a1) {
     char *o1;
     char *o2;
     char *r1, *r2, *b3, *f1;
-    o2 = (char*)func_00000000(0x80);  /* o2 is the MERGED $s1 web: o1-carrier, then o2 */
+    o2 = (char*)FCALL(mem_new)(0x80);  /* o2 is the MERGED $s1 web: o1-carrier, then o2 */
     if (o2 != 0) {
-        func_00000000(o2, 1);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
+        FCALL(pad_open)(o2, 1);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
     }
     if (0) { func_00000000(&o1); }  /* address-escape: o1 memory-homed at 0x4C */
     o1 = o2;  /* carrier ($s1) -> home store at the branch join */
-    o2 = (char*)func_00000000(0x80);
+    o2 = (char*)FCALL(mem_new)(0x80);
     if (o2 != 0) {
-        func_00000000(o2, 0);
+        FCALL(pad_open)(o2, 0);
     }
-    func_00000000(gInputMgr_39d8_g, o1);
-    func_00000000(gInputMgr_39d8_g, o2);
-    func_00000000(gInputMgr_39d8_g, o1, o2);
+    FCALL(input_addRacePad)(gInputMgr_39d8_g, o1);
+    FCALL(input_addRacePad)(gInputMgr_39d8_g, o2);
+    FCALL(replay_beginRecordWithGhost)(gInputMgr_39d8_g, o1, o2);
     r1 = func_39d8_r(s2, 0, VG_MGR->playerRider, VG_MGR->playerBoard,
                      o1, WORLDREG(s2)->fgRoot,
                      *(float*)(WORLDREG(s2)->unk98 + 0xC4),
@@ -2266,8 +2267,8 @@ void game_setupVsGhost(char *s2, int a1) {
                      *(float*)(WORLDREG(s2)->unk98 + 0xCC),
                      (VG_MGR->ghostFlags | 0x8) | 0x8000, 0x14);
     SNOWB(r2)->unk38C = 0;
-    b3 = (char*)func_00000000(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
-    f1 = (char*)func_00000000(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
+    b3 = (char*)FCALL(cam_create)(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
+    f1 = (char*)FCALL(game_create3DWindow)(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
     SNOWB(r1)->camera = f1;
     SNOWB(r2)->camera = f1;
 }
@@ -2330,29 +2331,29 @@ void game_setupReplay(char *s1, int a1) {
     char *r1, *b2, *b3, *f1;
     volatile int pad1, pad2, pad3, pad4;  /* ghost home words (phantom-slot lever) */
     int v1_84;
-    o = (char*)func_00000000(0x80);
+    o = (char*)FCALL(mem_new)(0x80);
     if (o != 0) {
-        func_00000000(o, 0);
+        FCALL(pad_open)(o, 0);
     }
-    func_00000000(gInputMgr_CFG_3b78, o);
-    func_00000000_3B78_v(gInputMgr_CFG_3b78, o, 0);
+    FCALL(input_addRacePad)(gInputMgr_CFG_3b78, o);
+    XCALL(func_00000000_3B78_v, replay_beginPlayback)(gInputMgr_CFG_3b78, o, 0);
     r1 = func_3b78_r(s1, 0,
                      RP_MGR->ghostRider,
                      RP_MGR->ghostBoard,
                      o, WORLDREG(s1)->fgRoot,
                      *(float*)(WORLDREG(s1)->unk98 + 0xC4), *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                      (RP_MGR->ghostFlags | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
-    b2 = (char*)func_00000000(s1, 0, WORLDREG(s1)->fgRoot, r1, o);
-    b3 = (char*)func_00000000(s1, 1, WORLDREG(s1)->fgRoot, r1, o);
-    f1 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
+    b2 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, r1, o);
+    b3 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r1, o);
+    f1 = (char*)FCALL(game_create3DWindow)(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
     *(float*)(b2 + 0x14C) = 85.0f;
-    o = (char*)func_00000000(0x80);
+    o = (char*)FCALL(mem_new)(0x80);
     if (o != 0) {
-        func_00000000(o, 1);
+        FCALL(pad_open)(o, 1);
     }
-    o = (char*)func_00000000(0, o, r1, f1, b2, b3);
+    o = (char*)FCALL(CamDirector_ctor)(0, o, r1, f1, b2, b3);
     v1_84 = WORLDREG(s1)->bgRoot;
-    func_00000000(v1_84 + 0x10, o);
+    FCALL(list_append)(v1_84 + 0x10, o);
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
@@ -2384,25 +2385,25 @@ extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, floa
 extern char bu_3d3c_d7294[];
 void game_setupVsCpu(char *s1, int a1) {
     char *o2, *o3, *o1, *o4, *t, *r, *cfg;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 1);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 1);
     o1 = t;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 0);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 0);
     o2 = t;
-    func_00000000(&gInputMgr, o1);
-    func_00000000(&gInputMgr, o2);
-    func_00000000(&gInputMgr, o1, 0);
-    r = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
+    FCALL(input_addRacePad)(&gInputMgr, o1);
+    FCALL(input_addRacePad)(&gInputMgr, o2);
+    FCALL(replay_beginRecordWithGhost)(&gInputMgr, o1, 0);
+    r = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
                              o1, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50) | 1 | 0x10000 | 0x40000, 0x1B);
-    o3 = func_00000000_3d3cm(s1, 2, *(unsigned char*)((char*)&D_00000000 + 0x17D),
+    o3 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 2, *(unsigned char*)((char*)&D_00000000 + 0x17D),
                               *(unsigned char*)((char*)&D_00000000 + 0x17F), o2, WORLDREG(s1)->fgRoot,
                               *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x8004, 0x1D);
     SNOWB(o3)->health = 0x989680;
     SNOWB(r)->rival = SNOWB(o3);
     SNOWB(o3)->rival = SNOWB(r);
-    o4 = (char*)func_00000000(s1, bu_3d3c_d7294 + a1 * 0x1C, func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r, o1));
+    o4 = (char*)FCALL(game_create3DWindow)(s1, bu_3d3c_d7294 + a1 * 0x1C, FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r, o1));
     SNOWB(r)->camera = o4;
     if (1) { }
     if (1) { }
@@ -2435,33 +2436,33 @@ extern char sStr_Player1_74E4[], sStr_Player2_74EC[], bu_3f00_d7294[];
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void game_setupVs2P(char *s1, int a1) {
     char *o[2], *t, *r1, *r2, *x, *y, *b4, *f2, *row;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 1);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 1);
     o[0] = t;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 2);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 2);
     o[1] = t;
     if (1) { }
-    func_00000000(&gInputMgr, o[0]);
-    func_00000000(&gInputMgr, t);
-    func_00000000(&gInputMgr, o[0], t);
-    r1 = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
+    FCALL(input_addRacePad)(&gInputMgr, o[0]);
+    FCALL(input_addRacePad)(&gInputMgr, t);
+    FCALL(replay_beginRecord2P)(&gInputMgr, o[0], t);
+    r1 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
                              o[0], WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50), 0x15);
-    r2 = func_00000000_3d3cm(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
+    r2 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
                              t, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x5C), 0x15);
     NODE(r1)->name = (s32)sStr_Player1_74E4;
     NODE(r2)->name = (s32)sStr_Player2_74EC;
     SNOWB(r1)->rival = SNOWB(r2);
     SNOWB(r2)->rival = SNOWB(r1);
-    x = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
-    b4 = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r2, o[1]);
+    x = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
+    b4 = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r2, o[1]);
     *(float*)(x + 0x14C) = 55.0f;
     *(float*)(b4 + 0x14C) = 55.0f;
     row = bu_3f00_d7294 + a1 * 0x1C;
-    y = (char*)func_00000000(s1, row, x);
-    f2 = (char*)func_00000000(s1, row + 0x1C, b4);
+    y = (char*)FCALL(game_create3DWindow)(s1, row, x);
+    f2 = (char*)FCALL(game_create3DWindow)(s1, row + 0x1C, b4);
     SNOWB(r1)->camera = y;
     SNOWB(r2)->camera = f2;
     *(char**)(f2 + 0x1B8) = y;
@@ -2532,28 +2533,28 @@ void game_setupDemoRace(char *s1, int a1) {
     char *b3, *b4, *f;
     int unused[4];  /* frame words between f (sp+76) and the p84 home (sp+56) */
     char *p84;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 0);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 0);
     o1 = t;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 0);
-    func_00000000(&gInputMgr, o1);
-    func_00000000(&gInputMgr_411c_d00_b, t);
-    idx1 = (int)(func_00000000_411c_f() * kRo_game_setupDemoRace_544);
-    idx2 = (int)(func_00000000_411c_f() * kRo_game_setupDemoRace_548 + (float)idx1 + 1.0f) % 3;
-    r[0] = func_00000000_3d3cm(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, WORLDREG(s1)->fgRoot,
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 0);
+    FCALL(input_addRacePad)(&gInputMgr, o1);
+    FCALL(input_addRacePad)(&gInputMgr_411c_d00_b, t);
+    idx1 = (int)(XCALL(func_00000000_411c_f, sys_randf)() * kRo_game_setupDemoRace_544);
+    idx2 = (int)(XCALL(func_00000000_411c_f, sys_randf)() * kRo_game_setupDemoRace_548 + (float)idx1 + 1.0f) % 3;
+    r[0] = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, WORLDREG(s1)->fgRoot,
                              *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x58005, 0x1B);
-    r[1] = func_00000000_3d3cm(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, WORLDREG(s1)->fgRoot,
+    r[1] = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, WORLDREG(s1)->fgRoot,
                              *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x48024, 0x1B);
     { char *a = r[0], *b = r[1]; SNOWB(a)->rival = SNOWB(b); SNOWB(b)->rival = SNOWB(a);
-    b3 = (char*)func_00000000(s1, 0, WORLDREG(s1)->fgRoot, a, o1); }
-    b4 = (char*)func_00000000(s1, 1, WORLDREG(s1)->fgRoot, r[0], o1);
-    f = (char*)func_00000000(s1, bu_411c_d7294 + a1 * 0x1C, b3);
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 1);
-    t = (char*)func_00000000(0, t, r[0], f, b3, b4);
+    b3 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, a, o1); }
+    b4 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r[0], o1);
+    f = (char*)FCALL(game_create3DWindow)(s1, bu_411c_d7294 + a1 * 0x1C, b3);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 1);
+    t = (char*)FCALL(CamDirector_ctor)(0, t, r[0], f, b3, b4);
     p84 = (char *)WORLDREG(s1)->bgRoot;
-    func_00000000(p84 + 0x10, t);
+    FCALL(list_append)(p84 + 0x10, t);
     if (NODE(t)->parent != 0) NODE(t)->unk04 = 1;
     NODE(t)->parent = (s32)p84;
     *(char**)(r[0] + 0x8DC) = f;
@@ -2599,27 +2600,27 @@ void game_setupDemoSplit(char *s0, int a1) {
     char *t, *o1, *r[2];
     int idx1, idx2;
     char *f1, *row, *b3, *b4;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 0);
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 0);
     o1 = t;
-    t = (char*)func_00000000(0x80);
-    if (t != 0) func_00000000(t, 0);
-    func_00000000(&gInputMgr, o1);
-    func_00000000(&gInputMgr_43d4_d00_b, t);
-    idx1 = (int)(func_00000000_43d4_f() * kRo_game_setupDemoSplit_54C);
-    idx2 = (int)(func_00000000_43d4_f() * kRo_game_setupDemoSplit_550 + (float)idx1 + 1.0f) % 3;
-    r[0] = func_00000000_3d3cm(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, WORLDREG(s0)->fgRoot,
+    t = (char*)FCALL(mem_new)(0x80);
+    if (t != 0) FCALL(pad_open)(t, 0);
+    FCALL(input_addRacePad)(&gInputMgr, o1);
+    FCALL(input_addRacePad)(&gInputMgr_43d4_d00_b, t);
+    idx1 = (int)(XCALL(func_00000000_43d4_f, sys_randf)() * kRo_game_setupDemoSplit_54C);
+    idx2 = (int)(XCALL(func_00000000_43d4_f, sys_randf)() * kRo_game_setupDemoSplit_550 + (float)idx1 + 1.0f) % 3;
+    r[0] = XCALL(func_00000000_3d3cm, game_createPlayers)(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, WORLDREG(s0)->fgRoot,
                              *(float*)(WORLDREG(s0)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8004, 0x15);
-    r[1] = func_00000000_3d3cm(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, WORLDREG(s0)->fgRoot,
+    r[1] = XCALL(func_00000000_3d3cm, game_createPlayers)(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, WORLDREG(s0)->fgRoot,
                              *(float*)(WORLDREG(s0)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8024, 0x15);
     { char *a = r[0], *b = r[1]; SNOWB(a)->rival = SNOWB(b); SNOWB(b)->rival = SNOWB(a);
-    b3 = (char*)func_00000000(s0, 2, WORLDREG(s0)->fgRoot, a, o1); }
-    b4 = (char*)func_00000000(s0, 2, WORLDREG(s0)->fgRoot, r[1], t);
+    b3 = (char*)FCALL(cam_create)(s0, 2, WORLDREG(s0)->fgRoot, a, o1); }
+    b4 = (char*)FCALL(cam_create)(s0, 2, WORLDREG(s0)->fgRoot, r[1], t);
     *(float*)(b3 + 0x14C) = 55.0f;
     *(float*)(b4 + 0x14C) = 55.0f;
     row = bu_43d4_d7294 + a1 * 0x1C;
-    f1 = (char*)func_00000000(s0, row, b3);
-    b4 = (char*)func_00000000(s0, row + 0x1C, b4);
+    f1 = (char*)FCALL(game_create3DWindow)(s0, row, b3);
+    b4 = (char*)FCALL(game_create3DWindow)(s0, row + 0x1C, b4);
     *(char**)(r[0] + 0x8DC) = f1;
     *(char**)(r[1] + 0x8DC) = b4;
 }
@@ -2661,9 +2662,9 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)func_00000000(0x40);
+    p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
-        func_00000000(p1);
+        FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -2671,7 +2672,7 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        func_00000000((char*)p2 + 0x10, head);
+        FCALL(list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -2699,12 +2700,12 @@ extern char sStr_Mountain_74F4, sStr_Pos_Y_7500, sStr_Scale_Y_7508, sStr_Scale_X
  * single floats (a3 reg + swc1 0x10 stack) instead of K&R double-promote. */
 extern void func_477c_reg(void *, void *, void *, float, float, int);
 void Mountain_hostioParms(char *a0) {
-    func_00000000(&gHostio, &sStr_Mountain_74F4, 0);
+    FCALL(hostio_beginGroup)(&gHostio, &sStr_Mountain_74F4, 0);
     func_477c_reg(&gHostio, &sStr_Pos_Y_7500, &((Mountain *)a0)->posY, -2000.0f,  2000.0f, 0);  /* "Pos.Y" */
     func_477c_reg(&gHostio, &sStr_Scale_Y_7508, &((Mountain *)a0)->scaleY,    0.01f,    1.0f, 0); /* "Scale.Y" */
     func_477c_reg(&gHostio, &sStr_Scale_XZ_7510, &((Mountain *)a0)->scaleXZ,    0.01f,    1.0f, 0); /* "Scale.XZ" */
-    func_00000000(&gHostio);
-    func_00000000(a0);
+    FCALL(hostio_endGroup)(&gHostio);
+    FCALL(Node_hostioParms)(a0);
 }
 
 /* Mountain_display - verified structural decode (0xB8, 46 insns,
@@ -2746,13 +2747,13 @@ void RiderCam_update_00004948(char *obj) {
 
 void stream_readS32_00004FF0(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readS32_0000502C(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -2766,7 +2767,7 @@ void stream_readS32_0000502C(int *dst) {
 extern char D_00007D94;
 struct OneI { int x; };
 void item_createHel(int a0) {
-    func_00000000(&D_00007D94);
+    FCALL(game_loadUsoOnce)(&D_00007D94);
     func_00000000(0, *(struct OneI*)&a0);
 }
 
@@ -2856,16 +2857,16 @@ int item_createHem(int a0) {
   char pad[16];
   volatile int saved_a0;
   (void) pad;
-  func_00000000(&sStr_rom_heli_uso_7DA4);
+  FCALL(game_loadUsoOnce)(&sStr_rom_heli_uso_7DA4);
   buf[1] = (0, 0.0f);
   buf[2] = 0.0f;
   buf[3] = 0.0f;
   buf[4] = 0.0f;
   saved_a0 = a0;
-  p = (int *) func_00000000(0x58);
+  p = (int *) FCALL(mem_new)(0x58);
   if (p != 0)
   {
-    func_00000000(p, *(S50A0*)&saved_a0, *((int *) (&D_00000000)), &buf[1]);
+    FCALL(ColourItemType_ctor)(p, *(S50A0*)&saved_a0, *((int *) (&D_00000000)), &buf[1]);
     *((int *) (((char *) p) + 0x28)) = (int) (&D_00000000);
   }
   return (int) p;
@@ -2917,14 +2918,14 @@ void *item_createBal(Box5124 arg) {
     char *o2;
     volatile int p2;
     Box5124 b2;
-    func_00000000(&sStr_rom_balloon_uso_7DB4);
+    FCALL(game_loadUsoOnce)(&sStr_rom_balloon_uso_7DB4);
     b1 = arg;
-    obj = (char *)func_00000000(0x4C);
+    obj = (char *)FCALL(mem_new)(0x4C);
     if (obj != 0) {
         b2 = b1;
         o2 = obj;
-        if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+        if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
         { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
@@ -2971,14 +2972,14 @@ void *item_createBa2(Box51D4 arg) {
     char *o2;
     volatile int p2;
     Box51D4 b2;
-    func_00000000(&sStr_rom_balloon_uso_7DC4);
+    FCALL(game_loadUsoOnce)(&sStr_rom_balloon_uso_7DC4);
     b1 = arg;
-    obj = (char *)func_00000000(0x4C);
+    obj = (char *)FCALL(mem_new)(0x4C);
     if (obj != 0) {
         b2 = b1;
         o2 = obj;
-        if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+        if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
         { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
@@ -3024,14 +3025,14 @@ void *item_createChk(Box5284 arg) {
     char *o2;
     volatile int p2;
     Box5284 b2;
-    func_00000000(&sStr_rom_checkpoint_uso_7DD4);
+    FCALL(game_loadUsoOnce)(&sStr_rom_checkpoint_uso_7DD4);
     b1 = arg;
-    obj = (char *)func_00000000(0x4C);
+    obj = (char *)FCALL(mem_new)(0x4C);
     if (obj != 0) {
         b2 = b1;
         o2 = obj;
-        if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+        if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
         { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
@@ -3076,14 +3077,14 @@ void *item_createGtr(Box5334 arg) {
     char *o2;
     volatile int p2;
     Box5334 b2;
-    func_00000000(&sStr_rom_checkpoint_uso_7DE8);
+    FCALL(game_loadUsoOnce)(&sStr_rom_checkpoint_uso_7DE8);
     b1 = arg;
-    obj = (char *)func_00000000(0x50);
+    obj = (char *)FCALL(mem_new)(0x50);
     if (obj != 0) {
         b2 = b1;
         o2 = obj;
-        if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+        if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
         { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x4C) = t; *(int *)(obj + 0x48) = 0; }
@@ -3130,14 +3131,14 @@ void *item_createGtl(Box53E8 arg) {
     char *o2;
     volatile int p2;
     Box53E8 b2;
-    func_00000000(&sStr_rom_checkpoint_uso_7DFC);
+    FCALL(game_loadUsoOnce)(&sStr_rom_checkpoint_uso_7DFC);
     b1 = arg;
-    obj = (char *)func_00000000(0x50);
+    obj = (char *)FCALL(mem_new)(0x50);
     if (obj != 0) {
         b2 = b1;
         o2 = obj;
-        if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+        if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); store order b,1,c = temp numbering t0/t1/t2; whole tail on ONE line (multi-line tail perturbs the li/addiu schedule) */
         { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(int *)(obj + 0x48) = 1; *(char **)(obj + 0x4C) = t; }
@@ -3151,7 +3152,7 @@ void *item_createGtl(Box53E8 arg) {
  * `sw a1, 0x4(sp)` without instruction patching. */
 extern char sStr_rom_fire_uso_7E10;
 void item_createCfr(int a0) {
-    func_00000000(&sStr_rom_fire_uso_7E10);
+    FCALL(game_loadUsoOnce)(&sStr_rom_fire_uso_7E10);
     func_00000000(0, *(struct OneI*)&a0);
 }
 
@@ -3170,9 +3171,9 @@ int *item_createFog(struct OneI arg0) {
     volatile int pad;
     int *p;
     int saved_a0 = arg0.x;
-    p = (int*)func_00000000(0x58);
+    p = (int*)FCALL(mem_new)(0x58);
     if (p == 0) goto end;
-    func_00000000(p, *(struct OneI*)&saved_a0, *(int*)&D_54D8_init_value, &D_54D8_init_arg);
+    FCALL(ColourItemType_ctor)(p, *(struct OneI*)&saved_a0, *(int*)&D_54D8_init_value, &D_54D8_init_arg);
     p[10] = (int)&D_000078D8;
 end:
     return p;
@@ -3198,9 +3199,9 @@ int *item_createSnow(struct OneI arg0) {
     volatile int pad;
     int *p;
     int saved_a0 = arg0.x;
-    p = (int*)func_00000000(0x58);
+    p = (int*)FCALL(mem_new)(0x58);
     if (p == 0) goto end;
-    func_00000000(p, *(struct OneI*)&saved_a0, *(int*)&D_553C_init_value, &D_553C_init_arg);
+    FCALL(ColourItemType_ctor)(p, *(struct OneI*)&saved_a0, *(int*)&D_553C_init_value, &D_553C_init_arg);
     p[10] = (int)&D_000079C8;
 end:
     return p;
@@ -3215,7 +3216,7 @@ void item_registerTemplates(char *b) {
 
 void stream_readS32_00005EF8(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -3250,37 +3251,37 @@ void stream_readS32_00005EF8(int *dst) {
  * Frame 64 with list at sp+0x28. */
 extern char sStr_BGBox_7E6C;
 char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
-  char *s1 = (char *) func_00000000(0, &sStr_BGBox_7E6C, 0, a0);
+  char *s1 = (char *) FCALL(BGBox_ctor)(0, &sStr_BGBox_7E6C, 0, a0);
   char *list;
   char *r;
   volatile int pad[2];
- r = (char *) func_00000000(0, a1, 0, 0, 0); list = s1 + 0x10; func_00000000(list, r); if ((*((int *) (r + 0x14))) != 0) {
+ r = (char *) FCALL(U64BGWall_ctor)(0, a1, 0, 0, 0); list = s1 + 0x10; FCALL(list_append)(list, r); if ((*((int *) (r + 0x14))) != 0) {
     *((int *) (r + 0x4)) = 1;
   }
   *((void **) (r + 0x14)) = s1;
-  r = (char *) func_00000000(0, a2, 0, 90, 0);
-  func_00000000(list, r);
+  r = (char *) FCALL(U64BGWall_ctor)(0, a2, 0, 90, 0);
+  FCALL(list_append)(list, r);
   if ((*((int *) (r + 0x14))) != 0)
   {
     *((int *) (r + 0x4)) = 1;
   }
   *((void **) (r + 0x14)) = s1;
-  r = (char *) func_00000000(0, a3, 0, 180, 0);
-  func_00000000(list, r);
+  r = (char *) FCALL(U64BGWall_ctor)(0, a3, 0, 180, 0);
+  FCALL(list_append)(list, r);
   if ((*((int *) (r + 0x14))) != 0)
   {
     *((int *) (r + 0x4)) = 1;
   }
   *((void **) (r + 0x14)) = s1;
-  r = (char *) func_00000000(0, a4, 0, 270, 0);
-  func_00000000(list, r);
+  r = (char *) FCALL(U64BGWall_ctor)(0, a4, 0, 270, 0);
+  FCALL(list_append)(list, r);
   if ((*((int *) (r + 0x14))) != 0)
   {
     *((int *) (r + 0x4)) = 1;
   }
   *((void **) (r + 0x14)) = s1;
-  r = (char *) func_00000000(0, a5, -90, 0, 0);
-  func_00000000(list, r);
+  r = (char *) FCALL(U64BGWall_ctor)(0, a5, -90, 0, 0);
+  FCALL(list_append)(list, r);
   if ((*((int *) (r + 0x14))) != 0)
   {
     *((int *) (r + 0x4)) = 1;
@@ -3288,8 +3289,8 @@ char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
   *((void **) (r + 0x14)) = s1;
   if (a6 != 0)
   {
-    r = (char *) func_00000000(0, a6, 90, 0, 0);
-    func_00000000(list, r);
+    r = (char *) FCALL(U64BGWall_ctor)(0, a6, 90, 0, 0);
+    FCALL(list_append)(list, r);
     if ((*((int *) (r + 0x14))) != 0)
     {
       *((int *) (r + 0x4)) = 1;
@@ -3302,13 +3303,13 @@ char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
 
 void stream_readF32_00006100(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_0000613C(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -3319,7 +3320,7 @@ void stream_readVec3_00006194(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -3340,7 +3341,7 @@ void boot_staticInit_00006204(void) {
 
 void ColourItem_readParms_00006228(char *a0) {
     stream_readS32_0000502C((int*)(a0 + 0x3C));
-    func_00000000(a0);
+    FCALL(ColourItem_load)(a0);
 }
 
 /* MapProp_ctor - verified structural decode (0x160, 88 insns,
@@ -3371,30 +3372,30 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     volatile int pad[3];
     float z[3];
     volatile int pad2[1];
-    if (a0 != 0 || (a0 = (char*)func_00000000(0xDC)) != 0) {
+    if (a0 != 0 || (a0 = (char*)FCALL(mem_new)(0xDC)) != 0) {
     s = a0;
-    if (s != 0 || (s = (char*)func_00000000(0xB4)) != 0) {
-        func_00000000(s, &sStr_MNode_7E74);
+    if (s != 0 || (s = (char*)FCALL(mem_new)(0xB4)) != 0) {
+        FCALL(Node_ctor)(s, &sStr_MNode_7E74);
         NODE(s)->vptr = (s32)(&MNode_vtbl);
         {
             int *c = (int*)(s + 0x2C);
-            if (c != 0 || (c = (int*)func_00000000(4)) != 0) {
+            if (c != 0 || (c = (int*)FCALL(mem_new)(4)) != 0) {
                 int *c2 = c;
-                if (c2 != 0 || (c2 = (int*)func_00000000(4)) != 0) {
+                if (c2 != 0 || (c2 = (int*)FCALL(mem_new)(4)) != 0) {
                     *c2 = 0;
                 }
             }
         }
-        func_00000000(s);
+        FCALL(MNode_initMatrices)(s);
         z[0] = 0.0f;
-        func_00000000(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
+        FCALL(math_mtxAddTranslation)(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
     NODE(a0)->vptr = (s32)(&MapProp_vtbl);
     *(void**)(a0 + 0xC) = &sStr_Course_7E7C;
     ((MapProp *)a0)->shape = a1;
-    func_00000000(a0, a1);
+    FCALL(MNode_addChild)(a0, a1);
     if (*(int*)((char*)((MapProp *)a0)->shape + 0xA0) == 0) /* shp->pGrid != NULL */
-        func_00000000(&sStr_shp_pGrid_NULL_7E84, &sStr_mapprop_cpp_7E98, 0x3E4);
+        FCALL(sys_assertFail)(&sStr_shp_pGrid_NULL_7E84, &sStr_mapprop_cpp_7E98, 0x3E4);
     ((MapProp *)a0)->end = a3;
     ((MapProp *)a0)->angle = a2;
     ((MapProp *)a0)->add = a4;
@@ -3455,12 +3456,12 @@ void MapProp_display(char *obj) {
  * passing (sp+0x10/0x14). INCLUDE_ASM remains build path. */
 extern char sStr_Map_7EA4, sStr_end_7EA8, sStr_add_7EAC, sStr_angle_7EB0;
 void MapProp_hostioParms(char *a0) {
-    func_00000000(&gHostio, &sStr_Map_7EA4, 0);
-    func_00000000(&gHostio, &sStr_end_7EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
-    func_00000000(&gHostio, &sStr_add_7EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
-    func_00000000(&gHostio, &sStr_angle_7EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
-    func_00000000(&gHostio);
-    func_00000000(a0);
+    FCALL(hostio_beginGroup)(&gHostio, &sStr_Map_7EA4, 0);
+    FCALL(hostio_addInt)(&gHostio, &sStr_end_7EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
+    FCALL(hostio_addInt)(&gHostio, &sStr_add_7EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
+    FCALL(hostio_addInt)(&gHostio, &sStr_angle_7EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
+    FCALL(hostio_endGroup)(&gHostio);
+    FCALL(MNode_hostioParms)(a0);
 }
 
 // game_createMap — STRUCTURAL PASS (0x948 / 594 insns, no episode).
@@ -3595,15 +3596,15 @@ void *game_createMap(char *obj, char *arg1, s32 arg2) {
 extern char sStr_EnvSettings_7F84;
 void *EnvSettings_ctor(char *a0) {
     if (a0 == 0) {
-        a0 = (char*)func_00000000(0x44);
+        a0 = (char*)FCALL(mem_new)(0x44);
         if (a0 == 0) goto end;
     }
-    func_00000000(a0, &sStr_EnvSettings_7F84);
+    FCALL(Node_ctor)(a0, &sStr_EnvSettings_7F84);
     NODE(a0)->vptr = (s32)(&EnvSettings_vtbl);
     {
         int *v1 = (int *)(a0 + 0x2C);
         if (v1 == 0) {
-            int *r = (int *)func_00000000(4);
+            int *r = (int *)FCALL(mem_new)(4);
             if ((v1 = r) == 0) goto after_v1;
         }
         *v1 = 0;
@@ -3767,12 +3768,12 @@ void FallingSnow_create(char *a0) {
     char *sub;
     char *head;
     if (*(int*)((char*)&gInputMgr_74e8_g + 0x2C) == 8) return;
-    func_00000000(&sStr_FallingSnow_7FB0, 0);
-    r = (char*)func_00000000(0x134);
+    FCALL(memtrack_begin)(&sStr_FallingSnow_7FB0, 0);
+    r = (char*)FCALL(mem_new)(0x134);
     if (r != 0) {
         sub = r;
-        if (sub != 0 || (sub = (char*)func_00000000(0x48)) != 0) {
-            func_00000000(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (s32)(&D_00000000);
+        if (sub != 0 || (sub = (char*)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(Node_ctor)(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (s32)(&D_00000000);
         }
         NODE(r)->vptr = (s32)(&D_00000000);
     }
@@ -3787,7 +3788,7 @@ void FallingSnow_create(char *a0) {
     if (1) { }
     if (1) { }
     if (1) { char **pa = &a0; }
-    func_00000000(head + 0x10, r);
+    FCALL(list_append)(head + 0x10, r);
     if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
     NODE(r)->parent = (s32)head;
     v = *(int**)(*(char**)(a0 + 0x40) + 0x28);
@@ -3797,7 +3798,7 @@ void FallingSnow_create(char *a0) {
     v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->enabled = 1;
     v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->unk4C = 0.0f;
     *(int*)(*(char**)(a0 + 0x40) + 0x48) = 0;
-    func_00000000();
+    FCALL(memtrack_end)();
 }
 
 /* func_00007620 - verified structural decode (0xD4, 53 insns,
@@ -3824,7 +3825,7 @@ extern float D_000005E8;
 void func_00007620(char *a0, int a1) {
     int *f;
     if (ST_7620 == 0) return;
-    func_00000000(a1);
+    FCALL(snd_setLevelRampTarget)(a1);
     if (a1 == 0) {
         if (((FallingSnow *)ST_7620)->unkBC == 0) {
             f = (int*)(ST_7620 + 0x18); *f &= ~0x8;
@@ -4068,9 +4069,9 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)func_00000000(0x40);
+    p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
-        func_00000000(p1);
+        FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -4078,7 +4079,7 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        func_00000000((char*)p2 + 0x10, head);
+        FCALL(list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -4095,7 +4096,7 @@ void boot_readIntParm_00007B98(char *a0) {
 
 void ColourItem_readParms_00007BC8(char *a0) {
     stream_readS32_00004FF0((int*)(a0 + 0x3C));
-    func_00000000(a0);
+    FCALL(ColourItem_load)(a0);
 }
 
 /* MemberCallback_invoke_00007BF4 - EXACT (run 113 agent-c): twin port of MemberCallback_invoke
@@ -4173,15 +4174,15 @@ void *Tv1Tmpl_create(char *a0) {
     int *link;
     char *ret;
 
-    ret = (char*)func_00000000(0x88);
+    ret = (char*)FCALL(mem_new)(0x88);
     if (ret != 0) {
-        func_00000000(ret);
+        FCALL(SNode_ctor)(ret);
         NODE(ret)->vptr = (s32)(&Tv1_vtbl);
     }
 
     *(float*)(ret + 0x80) = D_000005EC;
     link = (int *)((Tv1Tmpl *)a0)->model;
-    func_00000000(ret + 0x10, link);
+    FCALL(list_append)(ret + 0x10, link);
     if (link[5] != 0) {
         link[1] = 1;
     }
@@ -4256,27 +4257,27 @@ c2:
 end:
     { int *l;
     k = ((Tv1Tmpl *)s0)->model; l = *(int **)(k + 0x84);
-    func_00000000(s0, *(int *)(*l + 0x1C), 0, a3); if (1) {}
+    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)(*l + 0x1C), 0, a3); if (1) {}
     k = ((Tv1Tmpl *)s0)->model; l = *(int **)(k + 0x84) + 1;
-    func_00000000(s0, *(int *)(*l + 0x1C), 1, a3); }
+    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)(*l + 0x1C), 1, a3); }
     ((Tv1Tmpl *)s0)->state = a3;
 }
 
 void Tv1Tmpl_update(int *a0) {
     ((Tv1Tmpl *)a0)->displayCount = 0;
-    func_00000000(a0);
+    FCALL(Node_update)(a0);
 }
 
 extern int D_func_00007E70_a;
 extern int D_func_00007E70_b;
 void Tv1Tmpl_display(char *a0) {
     D_func_00007E70_a = 0;
-    func_00000000(a0);
+    FCALL(Node_display)(a0);
     if (D_func_00007E70_b != 0) {
         int counter = ((Tv1Tmpl *)a0)->displayCount + 1;
         ((Tv1Tmpl *)a0)->displayCount = counter;
         if (counter == 1) {
-            func_00000000();
+            FCALL(Tv1Tmpl_func_00007D04)();
         }
     }
 }
@@ -4334,32 +4335,32 @@ void Fog_display(char *s0) {
         }
         if (hit != 0) {
             *(S24_7EC8 *)(gGfxLib_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;
-            func_00000000_7ec8_c(gGfxLib_7ec8_src, s0 + 0x74, frac);
+            XCALL(func_00000000_7ec8_c, FogParms_lerp_0004406C)(gGfxLib_7ec8_src, s0 + 0x74, frac);
         }
     } else {
-        if (func_00000000_7ec8_t(*(int *)(gGfxLib_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
+        if (XCALL(func_00000000_7ec8_t, cam_isSphereInView)(*(int *)(gGfxLib_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
                           *(int *)(s0 + 0x34), FOGITEM(s0)->pos[2], 0, 0.0f) != 0) {
-            func_00000000(s0);
+            FCALL(ColourItem_display)(s0);
         }
     }
 }
 
 void Fog_hostioParms(char *a0) {
-    func_00000000(a0 + 0x3C, 0);
-    func_00000000(a0 + 0x74);
-    func_00000000(a0);
+    FCALL(Parms_hostio)(a0 + 0x3C, 0);
+    FCALL(FogParms_hostioParms)(a0 + 0x74);
+    FCALL(Node_hostioParms)(a0);
 }
 
 void Fog_func_000080B4(char *a0) {
-    func_00000000((int*)(a0 + 0x3C));
-    func_00000000((int*)(a0 + 0x74));
-    func_00000000(a0);
+    FCALL(Parms_save)((int*)(a0 + 0x3C));
+    FCALL(gfx_saveQuadIntInt_00043FFC)((int*)(a0 + 0x74));
+    FCALL(Node_saveData)(a0);
 }
 
 void Fog_readParms(char *a0) {
-    func_00000000((int*)(a0 + 0x3C));
-    func_00000000((int*)(a0 + 0x74));
-    func_00000000(a0);
+    FCALL(Parms_load_00035C6C)((int*)(a0 + 0x3C));
+    FCALL(gfx_loadQuadIntInt_00044034)((int*)(a0 + 0x74));
+    FCALL(ColourItem_load)(a0);
 }
 
 /* FogTmpl_create - verified structural decode (0x1D4, 117 insns).
@@ -4511,12 +4512,12 @@ void Snower_display(int *a0) {
 
     if (f12 < f2) {
         if (*(float*)((char*)a0 + 0x54) + f12 > f2) {
-            func_00000000_082F8_v(*(int*)&D_00000000_a, *(int*)((char*)a0 + 0x6C));
+            XCALL(func_00000000_082F8_v, func_00007620)(*(int*)&D_00000000_a, *(int*)((char*)a0 + 0x6C));
         }
     }
 
     if (*(int*)(&D_func_00000008_data + 0x2C) == 8) {
-        if (func_00000000_082F8(
+        if (XCALL(func_00000000_082F8, cam_isSphereInView)(
             *(int*)((char*)&gGfxLib + 0x254),
             3,
             *(int*)((char*)a0 + 0x30),
@@ -4524,7 +4525,7 @@ void Snower_display(int *a0) {
             *(float*)((char*)a0 + 0x38),
             0,
             0.0f) != 0) {
-            func_00000000(a0);
+            FCALL(ColourItem_display)(a0);
         }
     }
 }
@@ -4545,11 +4546,11 @@ void Snower_display(int *a0) {
 extern char sStr_Snower_7FD4;
 extern char sStr_Snow_7FDC;
 void Snower_hostioParms(int *a0) {
-    func_00000000(&gHostio, &sStr_Snower_7FD4, 0);
-    func_00000000(&gHostio, &sStr_Snow_7FDC, (int)a0 + 0x6C, 1);
-    func_00000000((int)a0 + 0x3C, 0);
-    func_00000000(&gHostio);
-    func_00000000(a0);
+    FCALL(hostio_beginGroup)(&gHostio, &sStr_Snower_7FD4, 0);
+    FCALL(hostio_addFlag)(&gHostio, &sStr_Snow_7FDC, (int)a0 + 0x6C, 1);
+    FCALL(Parms_hostio)((int)a0 + 0x3C, 0);
+    FCALL(hostio_endGroup)(&gHostio);
+    FCALL(Node_hostioParms)(a0);
 }
 /* Status 2026-05-18: build-path tested. 30/30 insns, build/.o vs
  * expected/.o differ at EXACTLY ONE word (w5, 0x14): the call-1
@@ -4565,13 +4566,13 @@ void Snower_hostioParms(int *a0) {
  * INSN_PATCH-unsafe. One-word symbol-form cap; rest byte-exact. */
 
 void Snower_saveData(char *a0) {
-    func_00000000((int*)(a0 + 0x3C));
-    func_00000000(a0);
+    FCALL(Parms_save)((int*)(a0 + 0x3C));
+    FCALL(Node_saveData)(a0);
 }
 
 void Snower_readParms(char *a0) {
-    func_00000000((int*)(a0 + 0x3C));
-    func_00000000(a0);
+    FCALL(Parms_load_00035C6C)((int*)(a0 + 0x3C));
+    FCALL(ColourItem_load)(a0);
 }
 
 /* SnowTmpl_create - verified structural decode (0x1C4, 113 insns,
@@ -4690,7 +4691,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowTmpl_create);
 #endif
 
 void Tree_handleMsg(char *a0, int *a1) {
-    func_00000000(a0);
+    FCALL(SNode_handleMsg)(a0);
     if (*a1 == 7 || *a1 == 19) {
         *(float*)(a0 + 0xA0) = *(float*)(a0 + 0x5C);
         *(float*)(a0 + 0xA4) = *(float*)(a0 + 0x60);
@@ -4711,8 +4712,8 @@ void TreeTmpl_display(char *arg0) {
     char *node;
     char *obj;
 
-    func_00000000(&gGfxLib, arg0 + 0x4C);
-    func_00000000(arg0 + 0x5C);
+    FCALL(gfx_setPrimColour)(&gGfxLib, arg0 + 0x4C);
+    FCALL(FogParms_emit_00043F1C)(arg0 + 0x5C);
 
     node = *(char**)(arg0 + 0x34);
     if (node != 0) {
@@ -4725,18 +4726,18 @@ void TreeTmpl_display(char *arg0) {
             arg0 = *(char**)(arg0 + 0x84);
         } while (arg0 != 0);
     }
-    func_00000000(&gGfxLib_00000294);  /* alt-entry tail call to func_0000027C+0x18 */
+    FCALL(FogParms_emit_00043F1C)(&gGfxLib_00000294);  /* alt-entry tail call to func_0000027C+0x18 */
 }
 
 extern char gHostio_func_00008744_arg1;
 extern char gHostio_func_00008744_arg2;
 void TreeTmpl_hostioParms(char *a0) {
     int arg = *(int*)(a0 + 0xC);
-    func_00000000(&gHostio_func_00008744_arg1, arg, 0);
-    func_00000000(a0 + 0x4C, 0);
-    func_00000000(a0 + 0x5C);
-    func_00000000(&gHostio_func_00008744_arg2);
-    func_00000000(a0);
+    FCALL(hostio_beginGroup)(&gHostio_func_00008744_arg1, arg, 0);
+    FCALL(gfx_declColourParm)(a0 + 0x4C, 0);
+    FCALL(FogParms_hostioParms)(a0 + 0x5C);
+    FCALL(hostio_endGroup)(&gHostio_func_00008744_arg2);
+    FCALL(Node_hostioParms)(a0);
 }
 
 extern char sStr_tree_7FF4;
@@ -4812,7 +4813,7 @@ extern char *gInputMgr_00000130;
 int game_isUsoLoaded(int a0) {
     char *p = gInputMgr_00000130;
     while (p != 0) {
-        if (func_00000000(*(int*)p, a0) == 0) {
+        if (FCALL(str_compare_00067B04)(*(int*)p, a0) == 0) {
             return 1;
         }
         p = *(char**)(p + 4);
@@ -4821,8 +4822,8 @@ int game_isUsoLoaded(int a0) {
 }
 
 int game_loadUsoOnce(int arg0) {
-    if (func_00000000(arg0) == 0) {
-        func_00000000(&gInputMgr, arg0);
+    if (FCALL(game_isUsoLoaded)(arg0) == 0) {
+        FCALL(game_loadUso)(&gInputMgr, arg0);
         return 1;
     }
     return 0;
@@ -4830,13 +4831,13 @@ int game_loadUsoOnce(int arg0) {
 
 void stream_readS32_000089C0(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void func_000089FC(short *dst) {
     short buf[4];
-    func_00000000(&gSysLib, buf, 2);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 2);
     *dst = buf[0];
 }
 
@@ -4845,7 +4846,7 @@ void func_00008A38(int a0) {
 
 void func_00008A40(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -4856,7 +4857,7 @@ void func_00008A7C(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -4865,7 +4866,7 @@ void func_00008A7C(Vec3 *dst) {
 
 void func_00008AEC(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -4884,7 +4885,7 @@ void func_00008AEC(Quad4 *dst) {
 extern void func_8b44_init(char *, int, int, int, float);
 char* SnowBCollider_ctor(char *a0, int a1, int a2, int a3, int a4, float f_arg) {
     if (a0 == 0) {
-        a0 = (char*)func_00000000(0x178);
+        a0 = (char*)FCALL(mem_new)(0x178);
         if (a0 == 0) goto end;
     }
     func_8b44_init(a0, a1, a3, a4, f_arg);
@@ -4954,13 +4955,13 @@ extern char D_8F18_call_arg;
 char *ShpNode_ctor(char *self) {
     int handle;
     if (self == 0) {
-        self = (char*)func_00000000(0x3D8);
+        self = (char*)FCALL(mem_new)(0x3D8);
         if (self == 0) goto end;
     }
-    func_00000000(self, &sStr_QNode_8708);
+    FCALL(DNode_ctor)(self, &sStr_QNode_8708);
     NODE(self)->vptr = (s32)(&ShpNode_vtbl_8F18_vtable);
-    handle = func_00000000(0, &sStr_shp_8710, &D_8F18_call_arg, 0);
-    func_00000000(self, handle);
+    handle = FCALL(PolyShape_ctor)(0, &sStr_shp_8710, &D_8F18_call_arg, 0);
+    FCALL(MNode_addChild)(self, handle);
     SHPNODE(self)->life = 100;
     SHPNODE(self)->unk260 = 50.0f;
 end:
@@ -5020,7 +5021,7 @@ void ShpNode_func_00008FA8(int *self) {
     SHPNODE(self)->lastOrient[1] = *(float*)&scratch.b;
     SHPNODE(self)->lastOrient[2] = *(float*)&scratch.c;
     SHPNODE(self)->lastOrient[3] = SHPNODE(self)->orient[3];
-    func_00000000(self);
+    FCALL(DNode_update)(self);
     {
         int counter = SHPNODE(self)->life;
         SHPNODE(self)->life = counter - 1;
@@ -5028,7 +5029,7 @@ void ShpNode_func_00008FA8(int *self) {
             int count;
             tbl = *(int**)&D_00000000;
             if (tbl[3] >= tbl[2]) {
-                func_00000000(&sStr_Too_many_objects_for_List_8714, self);
+                FCALL(sys_fatal)(&sStr_Too_many_objects_for_List_8714, self);
             }
             count = tbl[3];
             tbl[3] = count + 1;
@@ -5175,10 +5176,10 @@ extern int D_00000000_b49c[];  /* base-0 alias: 3rd table's separate lui (no CSE
 void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
     j = idx;
     if (j >= 10) j = 9;
-    if (gl_func_00000000(((int*)&D_00000000)[j], j) == 0) {
-        gl_func_00000000(&D_00000000, ((int*)&D_00000000)[j]);
+    if (CALL(game_isUsoLoaded)(((int*)&D_00000000)[j], j) == 0) {
+        CALL(game_loadUso)(&D_00000000, ((int*)&D_00000000)[j]);
     }
-    gl_func_00000000(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
+    CALL(PolyShape_ctor)(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
 }
 
 /* SnowBoarder_limitSpeed - verified structural decode (0x23C, 143 insns,
@@ -5286,7 +5287,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
         sb->maxSpeed = sb->parms.max.value;
     }
     if (sb->maxSpeed < sb->speed) {
-        func_00000000(&sb->vel, sb);  /* normalize */
+        FCALL(math_vec3Normalize)(&sb->vel, sb);  /* normalize */
         k = sb->maxSpeed;
         sb->vel.x = sb->vel.x * k;
         sb->vel.y = sb->vel.y * k;
@@ -5666,33 +5667,33 @@ void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
     char *g4, *g3, *g2, *g1;
     volatile int pad[1];
     char *g0, *e3, *e2, *e1, *e0;
-    func_00000000(cont, e0 = (char *)func_cce0(0, st, 2, 140.0f, D_bu_ro_pool[0x95C / 4], -350.0f));
+    FCALL(list_append)(cont, e0 = (char *)func_cce0(0, st, 2, 140.0f, D_bu_ro_pool[0x95C / 4], -350.0f));
     e1 = (char *)func_cce0(0, st, 8, -140.0f, D_bu_ro_pool[0x960 / 4], -350.0f);
-    func_00000000(cont, e1);
+    FCALL(list_append)(cont, e1);
     e2 = (char *)func_cce0(0, st, 1, 140.0f, D_bu_ro_pool[0x964 / 4], 350.0f);
-    func_00000000(cont, e2);
+    FCALL(list_append)(cont, e2);
     e3 = (char *)func_cce0(0, st, 4, -140.0f, D_bu_ro_pool[0x968 / 4], 350.0f);
-    func_00000000(cont, e3);
-    func_00000000(st, e0);
-    func_00000000(st, e1);
-    func_00000000(st, e2);
-    func_00000000(st, e3);
+    FCALL(list_append)(cont, e3);
+    FCALL(MNode_addChild)(st, e0);
+    FCALL(MNode_addChild)(st, e1);
+    FCALL(MNode_addChild)(st, e2);
+    FCALL(MNode_addChild)(st, e3);
     if ((int)SNOWB(st)->flags & 0x200) return;
     g0 = (char *)func_cce0(0, st, 0x00, 0.0f, D_bu_ro_pool[0x96C / 4], 0.0f);
-    func_00000000(cont, g0);
-    func_00000000(st, g0);
+    FCALL(list_append)(cont, g0);
+    FCALL(MNode_addChild)(st, g0);
     g1 = (char *)func_cce0(0, st, 0x20, 250.0f, -150.0f, -400.0f);
-    func_00000000(cont, g1);
+    FCALL(list_append)(cont, g1);
     g2 = (char *)func_cce0(0, st, 0x80, -250.0f, -150.0f, -400.0f);
-    func_00000000(cont, g2);
+    FCALL(list_append)(cont, g2);
     g3 = (char *)func_cce0(0, st, 0x10, 250.0f, -150.0f, 400.0f);
-    func_00000000(cont, g3);
+    FCALL(list_append)(cont, g3);
     g4 = (char *)func_cce0(0, st, 0x40, -250.0f, -150.0f, 400.0f);
-    func_00000000(cont, g4);
-    func_00000000(st, g1);
-    func_00000000(st, g2);
-    func_00000000(st, g3);
-    func_00000000(st, g4);
+    FCALL(list_append)(cont, g4);
+    FCALL(MNode_addChild)(st, g1);
+    FCALL(MNode_addChild)(st, g2);
+    FCALL(MNode_addChild)(st, g3);
+    FCALL(MNode_addChild)(st, g4);
 }
 
 // SnowBoarder_display — STRUCTURAL PASS (0x4A0 / 296 insns, 64.76% fuzzy, no episode).
@@ -6323,17 +6324,17 @@ void SnowBoarder_stub_0000DDC4(int a0) {
 void SnowBoarder_setDefaultDdms(SnowBoarder *sb) {
     unsigned int st = sb->character;
     if (st == 7 || st == 6) {
-        func_00000000(sb);
+        FCALL(SnowBoarder_setRiderDdms)(sb);
         return;
     }
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xE);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xF);
+        *sb->unk8F4[0] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0xE);
+        *sb->unk8F4[1] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0xF);
     } else {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xA);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xB);
+        *sb->unk8F4[0] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0xA);
+        *sb->unk8F4[1] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0xB);
     }
-    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xC);
+    *sb->unk8F4[2] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0xC);
 }
 
 /* SnowBoarder_setReflectionDdms - verified structural decode (0x110, 68 insns,
@@ -6350,13 +6351,13 @@ void SnowBoarder_setDefaultDdms(SnowBoarder *sb) {
 /* SnowBoarder_setReflectionDdms — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
 void SnowBoarder_setReflectionDdms(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x11);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x12);
+        *sb->unk8F4[0] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0x11);
+        *sb->unk8F4[1] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0x12);
     } else {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x14);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x15);
+        *sb->unk8F4[0] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0x14);
+        *sb->unk8F4[1] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0x15);
     }
-    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x16);
+    *sb->unk8F4[2] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 0x16);
 }
 /* VERIFIED in-tree 68/68 EXACT on clean rebuild (was 97.8%).
    Single lever: Tri3i struct-assign cascade (same form as promoted E014/DDCC siblings).
@@ -6378,13 +6379,13 @@ void SnowBoarder_setReflectionDdms(SnowBoarder *sb) {
  * build path. */
 void SnowBoarder_setRiderDdms(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, sb->unk902);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 8);
+        *sb->unk8F4[0] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, sb->unk902);
+        *sb->unk8F4[1] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 8);
     } else {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, sb->unk900);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 5);
+        *sb->unk8F4[0] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, sb->unk900);
+        *sb->unk8F4[1] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 5);
     }
-    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 6);
+    *sb->unk8F4[2] = *(SnowBRec3 *)FCALL(gfx_getDdm)(&gGfxLib, 6);
 }
 
 /* SnowBoarder_mirrorFlip_0000E124 - verified structural decode (0x14C, 83 insns,
@@ -6418,9 +6419,9 @@ void SnowBoarder_mirrorFlip_0000E124(SnowBoarder *sb) {
     sb->flags ^= SNOWB_FLAG_MIRROR;
     sb->fwdSpeed = 0.0f;
     if (sb->flags & SNOWB_FLAG_08) {
-        func_00000000();
+        FCALL(SnowBoarder_setDefaultDdms)();
     } else {
-        func_00000000(sb);
+        FCALL(SnowBoarder_setRiderDdms)(sb);
     }
     sb->edgeSlope = -sb->edgeSlope;
     up[0] = 0.0f;
@@ -6429,22 +6430,22 @@ void SnowBoarder_mirrorFlip_0000E124(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
         p = (float *)(sb->top + 0x30);
         *p = *p * -1.0f;
-        if (sb->boardNode != 0) {
-            p = (float *)(sb->boardNode + 0x30);
-            func_00000000(p);
-            p = (float *)(sb->boardNode + 0x30);
+        if (sb->unk864 != 0) {
+            p = (float *)(sb->unk864 + 0x30);
+            FCALL(math_mtx4Identity)(p);
+            p = (float *)(sb->unk864 + 0x30);
             r[0] = -1.0f;
             r[2] = 1.0f;
             r[1] = 1.0f;
-            func_00000000(p, r);
+            FCALL(math_mtxScaleRows)(p, r);
         }
     } else {
         p = (float *)(sb->top + 0x30);
         *p = *p * -1.0f;
-        if (sb->boardNode != 0) { p = (float *)(sb->boardNode + 0x30); func_00000000(p); }
+        if (sb->unk864 != 0) { p = (float *)(sb->unk864 + 0x30); FCALL(math_mtx4Identity)(p); }
     }
     if (sb->flags & SNOWB_FLAG_20) {
-        if (sb->boardNode != 0) func_00000000_e124_r(sb->boardNode + 0x30, up, 180.0f);
+        if (sb->unk864 != 0) XCALL(func_00000000_e124_r, math_mtxRotateAxis)(sb->unk864 + 0x30, up, 180.0f);
     }
 }
 
@@ -6600,7 +6601,7 @@ void SnowBoarder_readParms(char *a0) {
   short *p;
   int i;
   int *v;
-  func_00000000(a0 + 0x540);
+  FCALL(Parms_load_00035C6C)(a0 + 0x540);
   stream_readS32_000089C0(&n);
   i = 0;
   p = (short *) (a0 + 0x8C8);
@@ -6613,7 +6614,7 @@ void SnowBoarder_readParms(char *a0) {
  do { v = *((int **) (*((char **) (a0 + 0x840)) + 0x28)); (*((void (**)(char *)) (((char *) v) + 0x4C)))((char *) (((int) *((char **) (a0 + 0x840))) + ((int) ((short) (*((short *) (((char *) v) + 0x48))))))); } while (0);
   v = *((int **) (*((char **) (a0 + 0x804)) + 0x28));
   (*((void (**)(char *)) (((char *) v) + 0x4C)))((char *) (((int) *((char **) (a0 + 0x804))) + ((int) ((short) (*((short *) (((char *) v) + 0x48)))))));
-  func_00000000(a0 + 0x108);
+  FCALL(Parms_load_00035C6C)(a0 + 0x108);
   if (v)
   {
   }
@@ -6634,11 +6635,11 @@ void boot_readVec3Parm_0000E5B8(char *a0) {
 float ShpNode_func_0000E5E8(char *a0) { return *(float*)(a0 + 0x198); }
 
 void ShpNode_func_0000E5F0(char *a0) {
-    func_00000000(a0 + 0x108);
+    FCALL(Parms_save)(a0 + 0x108);
 }
 
 void ShpNode_readParms(char *a0) {
-    func_00000000(a0 + 0x108);
+    FCALL(Parms_load_00035C6C)(a0 + 0x108);
 }
 
 void boot_readQuadParm_0000E630(char *a0) {
@@ -6662,9 +6663,9 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)func_00000000(0x40);
+    p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
-        func_00000000(p1);
+        FCALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -6672,7 +6673,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        func_00000000((char*)p2 + 0x10, head);
+        FCALL(list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -6682,7 +6683,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
 }
 
 void SnowBChild_readParms_0000E720(char *a0) {
-    func_00000000(a0 + 0x2C);
+    FCALL(Parms_load_00035C6C)(a0 + 0x2C);
 }
 
 /* SnowBoarder_grabScreenThumb_0000E740 - verified structural decode (0xB4, 48 insns,
@@ -6722,13 +6723,13 @@ void SnowBoard_ctor(void) {
 
 void stream_readS32_0000E8BC(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000E8F8(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -6739,7 +6740,7 @@ void stream_readVec3_0000E934(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -6748,7 +6749,7 @@ void stream_readVec3_0000E934(Vec3 *dst) {
 
 void stream_readQuad_0000E9A4(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -6775,23 +6776,23 @@ void SnowBoard_InitInstance(char *arg0) {
 
     (void)pad;
     *(int *)(arg0 + 0xC) = (int)&sStr_SnowBoard_8D70;
-    func_00000000(arg0, &sStr_rom_version_bin_8D7C);
-    saved = func_00000000(0);
-    *(int *)&D_00000000 = func_00000000(0, &sStr_rom_anims_bin_8D8C, 0x20, 0xC);
-    func_00000000(saved);
+    FCALL(fs_readRecord_00041F90)(arg0, &sStr_rom_version_bin_8D7C);
+    saved = FCALL(app_setHeapMode)(0);
+    *(int *)&D_00000000 = FCALL(AnimDataMgr_ctor)(0, &sStr_rom_anims_bin_8D8C, 0x20, 0xC);
+    FCALL(app_setHeapMode)(saved);
     /* Distinct zero-address aliases keep IDO from caching the base in $s0. */
-    func_00000000(&D_00000000_a, &sStr_Node_8D9C);
-    func_00000000(&D_00000000_b, arg0);
-    if (func_00000000(&D_00000000) != 0) {
-        func_00000000(&D_00000000_a, 1, 0);
+    FCALL(Node_ctor)(&D_00000000_a, &sStr_Node_8D9C);
+    FCALL(GameFlow_create)(&D_00000000_b, arg0);
+    if (FCALL(sys_getResetType)(&D_00000000) != 0) {
+        FCALL(GameFlow_startMode)(&D_00000000_a, 1, 0);
     } else {
-        func_00000000(&D_00000000_b, 0, 0);
+        FCALL(GameFlow_startMode)(&D_00000000_b, 0, 0);
     }
 }
 
 extern int gInputMgr_00000190;
 void SnowBoard_vslot14(int a0) {
-    func_00000000(gInputMgr_00000190, 3, 0);
+    FCALL(Fader_start)(gInputMgr_00000190, 3, 0);
 }
 
 void boot_readFloatParm_0000EB28(char *a0) {
@@ -6858,13 +6859,13 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
 
 void stream_readS32_0000EC80(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000ECBC(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -6875,7 +6876,7 @@ void stream_readVec3_0000ECF8(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -6884,7 +6885,7 @@ void stream_readVec3_0000ECF8(Vec3 *dst) {
 
 void stream_readQuad_0000ED68(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -6953,13 +6954,13 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
 
 void stream_readS32_0000EF20(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readF32_0000EF5C(float *dst) {
     float buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -6970,7 +6971,7 @@ void stream_readVec3_0000EF98(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    func_00000000(&gSysLib, &raw, 12);
+    FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -6979,7 +6980,7 @@ void stream_readVec3_0000EF98(Vec3 *dst) {
 
 void stream_readQuad_0000F008(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 
@@ -7009,13 +7010,13 @@ void boot_readIntParm_0000F0F0(char *a0) {
 
 void stream_readS32_0000F120(int *dst) {
     int buf[2];
-    func_00000000(&gSysLib, buf, 4);
+    FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
 void stream_readQuad_0000F15C(Quad4 *dst) {
     Quad4 buf;
-    func_00000000(&gSysLib, &buf, 16);
+    FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
     *dst = buf;
 }
 

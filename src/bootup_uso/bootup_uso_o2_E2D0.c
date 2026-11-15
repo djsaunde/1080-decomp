@@ -15,6 +15,7 @@
  * live, so it is a ring temp as in the target. */
 #include "common.h"
 #include "game/snowboarder.h"
+#include "uso_call.h"
 
 typedef struct { float x, y, z; } Vec3;
 extern float func_00000000_4948_ff(float);
@@ -48,9 +49,9 @@ void SnowBCollider_edgeGrip_0000E2D0(SnowBoarder *rider, s32 point, Vec3 *pointV
     v[0].x = d * normal->x - v[0].x;
     v[0].y = d * normal->y - v[0].y;
     v[0].z = d * normal->z - v[0].z;
-    if (0.1 < (f64)func_00000000_4948_ff( /* math_vec3Length_0005BBCC */v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
+    if (0.1 < (f64)XCALL(func_00000000_4948_ff, math_vec3Length_0005BBCC)( /* math_vec3Length_0005BBCC */v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
         dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[0].x * v[1].x);
-        func_00000000(&v[0]); if (normal) {} /* math_vec3Normalize */
+        FCALL(math_vec3Normalize)(&v[0]); if (normal) {} /* math_vec3Normalize */
         lim = rider->edgeGrip;
         dot *= rider->edgeFriction;
         if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != lim) {} if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != dot) {}
@@ -64,6 +65,6 @@ void SnowBCollider_edgeGrip_0000E2D0(SnowBoarder *rider, s32 point, Vec3 *pointV
         v[0].x *= dot;
         v[0].y *= dot;
         v[0].z *= dot;
-        func_00000000(rider, point, &v[0]); /* DNode_addImpulseAt_00065250 */
+        FCALL(DNode_addImpulseAt_00065250)(rider, point, &v[0]); /* DNode_addImpulseAt_00065250 */
     }
 }

@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "game/input.h"
+#include "uso_call.h"
 
 /* -O0 sub-file covering bootup_uso offset 0x117FC..0x118E3 (single function,
  * 58 insns, 0xE8 bytes), split from the tail of bootup_uso_tail3a.c
@@ -27,16 +28,16 @@ void GameFlow_loadProcUso_000117FC(char *a0, void *a1) {
     int h;
 
     if (GAMEFLOW(a0)->procUsoPath == 0 ||
-        func_00000000(a1, GAMEFLOW(a0)->procUsoPath) != 0) {
+        FCALL(str_compare_00067B04)(a1, GAMEFLOW(a0)->procUsoPath) != 0) {
         if (GAMEFLOW(a0)->procUsoPath != 0) {
-            func_00000000(&gSysLib, GAMEFLOW(a0)->procUsoPath);
-            func_00000000(3);
+            FCALL(app_unloadUso)(&gSysLib, GAMEFLOW(a0)->procUsoPath);
+            FCALL(app_freeAllOfType)(3);
         }
-        h = func_00000000(3);
-        func_00000000(&gSnowBoard, 1);
-        func_00000000(&gSysLib, a1);
-        func_00000000(&gSnowBoard, 0);
-        func_00000000(h);
+        h = FCALL(app_setHeapMode)(3);
+        FCALL(app_setCurrentHeap)(&gSnowBoard, 1);
+        FCALL(app_loadUso)(&gSysLib, a1);
+        FCALL(app_setCurrentHeap)(&gSnowBoard, 0);
+        FCALL(app_setHeapMode)(h);
         GAMEFLOW(a0)->procUsoPath = a1;
     }
 }

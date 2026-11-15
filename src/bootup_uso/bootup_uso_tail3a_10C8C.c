@@ -3,6 +3,7 @@
 #include "gdl/node.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "uso_call.h"
 
 /* bootup_uso 0x10C8C..0x116C7 remainder of the former tail3a mid-section,
  * moved out of bootup_uso_tail3a.c on 2026-07-10 when gui_addRowSub_00010B6C
@@ -48,9 +49,9 @@ void GameFlow_create(int *arg0, int arg1) {
     q = (char *)&sStr_GameFlow_C5D0;
     NODE(p)->name = (int)q;
     GAMEFLOW(arg0)->app = (void *)arg1;
-    sp68 = func_00000000(0);
+    sp68 = FCALL(app_setHeapMode)(0);
     p = (char *)&rec;
-    if (p != 0 || (p = (char *)func_00000000(0x10)) != 0) {
+    if (p != 0 || (p = (char *)FCALL(mem_new)(0x10)) != 0) {
         q = p;
         x = 0;
         y = 0;
@@ -61,44 +62,44 @@ void GameFlow_create(int *arg0, int arg1) {
         *(float *)(q + 8) = z;
         *(float *)(q + 0xC) = w;
     }
-    func_000000F0 = func_00000000(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
-    func_00000000(sp68);
+    func_000000F0 = FCALL(TextWin_ctor)(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
+    FCALL(app_setHeapMode)(sp68);
     GAMEFLOW(arg0)->usoList = 0;
     GAMEFLOW(arg0)->procUsoPath = 0;
     GAMEFLOW(arg0)->flowMode = 9;
     GAMEFLOW(arg0)->demoIndex = -1;
     GAMEFLOW(arg0)->unk70 = 0;
     GAMEFLOW(arg0)->seq = 0;
-    sp84 = func_00000000(0);
-    func_00000000(&gSysLib, &sStr_rom_gui_uso_C5E4);
+    sp84 = FCALL(app_setHeapMode)(0);
+    FCALL(app_loadUso)(&gSysLib, &sStr_rom_gui_uso_C5E4);
     p = 0;
-    if (p != 0 || (p = (char *)func_00000000(0x80)) != 0) {
-        func_00000000(p, 1);
+    if (p != 0 || (p = (char *)FCALL(mem_new)(0x80)) != 0) {
+        FCALL(pad_open)(p, 1);
     }
     GAMEFLOW(arg0)->ctrls[0] = p;
     p = 0;
-    if (p != 0 || (p = (char *)func_00000000(0x80)) != 0) {
-        func_00000000(p, 2);
+    if (p != 0 || (p = (char *)FCALL(mem_new)(0x80)) != 0) {
+        FCALL(pad_open)(p, 2);
     }
     GAMEFLOW(arg0)->ctrls[1] = p;
-    func_00000000(arg0);
+    FCALL(input_initDefaults_00012188)(arg0);
     GAMEFLOW(arg0)->unk84 = 0;
     GAMEFLOW(arg0)->unk88 = 1;
     GAMEFLOW(arg0)->locked = 0;
-    GAMEFLOW(arg0)->game = (char *)func_00000000(0);
-    GAMEFLOW(arg0)->fader = (void *)func_00000000(0, 0);
-    GAMEFLOW(arg0)->backup = (void *)func_00000000(0);
-    GAMEFLOW(arg0)->options = (char *)func_00000000(GAMEFLOW(arg0)->backup);
-    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->levels[0]);
-    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->levels[1]);
-    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->levels[2]);
-    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->flags & 3);
+    GAMEFLOW(arg0)->game = (char *)FCALL(WorldRegistry_create_00001E08)(0);
+    GAMEFLOW(arg0)->fader = (void *)FCALL(Fader_ctor)(0, 0);
+    GAMEFLOW(arg0)->backup = (void *)FCALL(Backup_ctor)(0);
+    GAMEFLOW(arg0)->options = (char *)FCALL(Backup_readOptions)(GAMEFLOW(arg0)->backup);
+    FCALL(snd_setPlayer1VolumeLevel)(SETTINGS(GAMEFLOW(arg0)->options)->levels[0]);
+    FCALL(func_0000023C)(SETTINGS(GAMEFLOW(arg0)->options)->levels[1]);
+    FCALL(snd_setPlayer2VolumeLevel)(SETTINGS(GAMEFLOW(arg0)->options)->levels[2]);
+    FCALL(func_000001FC)(SETTINGS(GAMEFLOW(arg0)->options)->flags & 3);
     D_00000000 = (SETTINGS(GAMEFLOW(arg0)->options)->flags & 4) == 4;
     GAMEFLOW(arg0)->recordCap = *(int *)GAMEFLOW(arg0)->backup;
-    GAMEFLOW(arg0)->recordBuf = func_00000000(GAMEFLOW(arg0)->recordCap << 2);
-    GAMEFLOW(arg0)->flowImgs = (void *)func_00000000(0, &sStr_rom_flowimgs_bin_C5F0);
-    func_00000000(sp84);
-    func_00000000(arg0);
+    GAMEFLOW(arg0)->recordBuf = FCALL(mem_new)(GAMEFLOW(arg0)->recordCap << 2);
+    GAMEFLOW(arg0)->flowImgs = (void *)FCALL(ImageFileMgr_ctor)(0, &sStr_rom_flowimgs_bin_C5F0);
+    FCALL(app_setHeapMode)(sp84);
+    FCALL(replay_clearRecord_00012BF8)(arg0);
 }
 
 /* GameFlow_startMode: mode-switch dispatcher (439 insns), -O0. Tears down /
@@ -145,7 +146,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     p = GAMEFLOW(arg0)->game;
     q = (char *)&D_00000000;
     r = q + 0x10;
-    func_00000000(r, p);
+    FCALL(list_append)(r, p);
     if (NODE(p)->parent != 0) {
         NODE(p)->unk04 = 1;
     }
@@ -155,7 +156,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     p = arg0;
     q = (char *)&D_00000000;
     r = q + 0x10;
-    func_00000000(r, p);
+    FCALL(list_append)(r, p);
     if (NODE(p)->parent != 0) {
         NODE(p)->unk04 = 1;
     }
@@ -165,37 +166,37 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     p = (char *)GAMEFLOW(arg0)->flowImgs;
     q = arg0;
     r = q + 0x10;
-    func_00000000(r, p);
+    FCALL(list_append)(r, p);
     if (NODE(p)->parent != 0) {
         NODE(p)->unk04 = 1;
     }
     s = q;
     NODE(p)->parent = (int)s;
 
-    func_00000000(arg0);
+    FCALL(GameFlow_addPads_00011AB4)(arg0);
     GAMEFLOW(arg0)->unk74 = 0;
     GAMEFLOW(arg0)->unk78 = 0;
 
     p = (char *)D_00000000;
     D_00000000 = (int)p + 1;
-    func_00000000(func_000000F0, &sFmt_num_C604, p, (&D_00000000)[arg1]);
-    sp3C = func_00000000(func_000000F0);
+    FCALL(TextWin_printf)(func_000000F0, &sFmt_num_C604, p, (&D_00000000)[arg1]);
+    sp3C = FCALL(app_printHeapOfType)(func_000000F0);
     if (sp3C != 1) {
-        func_00000000(&sStr_FLOW_free_blocks_1_C60C);
+        FCALL(sys_fatal)(&sStr_FLOW_free_blocks_1_C60C);
     }
 
     if (GAMEFLOW(arg0)->flowMode != (0, arg1)) {
         GAMEFLOW(arg0)->nextFlowMode = arg1;
-        func_00000000(arg0);
-        func_00000000(arg0, D_0000C4EC[(&D_00000000)[arg1]]);
-        sp28 = func_00000000(3);
-        func_00000000(&D_00000000, 1);
+        FCALL(replay_clearRecord_00012BF8)(arg0);
+        FCALL(GameFlow_loadProcUso_000117FC)(arg0, D_0000C4EC[(&D_00000000)[arg1]]);
+        sp28 = FCALL(app_setHeapMode)(3);
+        FCALL(app_setCurrentHeap)(&D_00000000, 1);
         switch (arg1) {
         case 0:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(8)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -205,9 +206,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 1:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(8)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -217,9 +218,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 3:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(0xC)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(0xC)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -229,9 +230,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 2:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(0xC)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(0xC)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -241,9 +242,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 4:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(8)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -253,9 +254,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 5:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(0xC)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(0xC)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -265,9 +266,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 6:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(8)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -277,9 +278,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 7:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(8)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -289,9 +290,9 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             break;
         case 8:
             q = 0;
-            if (q != 0 || (q = (char *)func_00000000(8)) != 0) {
+            if (q != 0 || (q = (char *)FCALL(mem_new)(8)) != 0) {
                 r = q;
-                if (r != 0 || (r = (char *)func_00000000(8)) != 0) {
+                if (r != 0 || (r = (char *)FCALL(mem_new)(8)) != 0) {
                     *(int *)(r + 4) = (int)&D_0000C550;
                 }
                 *(int *)(q + 4) = (int)&D_00000000;
@@ -300,8 +301,8 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             GAMEFLOW(arg0)->flowProc = p;
             break;
         }
-        func_00000000(&D_00000000, 0);
-        func_00000000(sp28);
+        FCALL(app_setCurrentHeap)(&D_00000000, 0);
+        FCALL(app_setHeapMode)(sp28);
     }
 
     (*(FN10FEC)*(int *)(p + 0xC))(
@@ -309,7 +310,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
             *(short *)((p = *(char **)(GAMEFLOW(arg0)->flowProc + 4)) + 8),
         arg2);
     GAMEFLOW(arg0)->flowMode = arg1;
-    func_00000000();
+    FCALL(heap_printStats)();
     p = (char *)D_00000000;
-    func_00000000(*(int *)(GAMEFLOW(arg0)->game + 0x114), p);
+    FCALL(node_linkBack_0004E888)(*(int *)(GAMEFLOW(arg0)->game + 0x114), p);
 }

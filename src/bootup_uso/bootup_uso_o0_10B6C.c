@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/guimenu.h"
+#include "uso_call.h"
 
 /* -O0 sub-file covering bootup_uso offset 0x10B6C..0x10C8B (single function,
  * 72 insns, 0x120 bytes), split from the middle of bootup_uso_tail3a.c
@@ -33,7 +34,7 @@ void gui_addRowSub_00010B6C(GuiMenu *a0, void *a1, int a2, int a3) {
         a0->rows[a0->numRows].id = a0->numRows;
     }
     a0->rows[a0->numRows].label = 0;
-    func_00000000(&a0->rows[a0->numRows].sub, a1);
+    FCALL(gui_spriteInit)(&a0->rows[a0->numRows].sub, a1);
     a0->rows[a0->numRows].arg = a3;
     p = a0;
     p->numRows += 1;

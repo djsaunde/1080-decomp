@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 /* -O0 cluster at offsets 0xF390..0xF6C3. -O0 wrappers split out of
  * bootup_uso.c so they build at -O0 (matching the originals' frame +
@@ -13,15 +14,15 @@ extern char sStr_Node_C574;
 
 void input_ctor_0000F390(void) {
     register char *p = &gInputMgr;
-    func_00000000(p, &sStr_Node_C574);
+    FCALL(Node_ctor)(p, &sStr_Node_C574);
 }
 
 void SnowBoard_restart(int a0) {
-    func_00000000(a0);
+    FCALL(App_restart)(a0);
 }
 
 void SnowBoard_softReset(int a0) {
-    func_00000000(a0);
+    FCALL(App_softReset)(a0);
 }
 
 /* Two-block bit set/clear — set=1, masks 4 then 8.

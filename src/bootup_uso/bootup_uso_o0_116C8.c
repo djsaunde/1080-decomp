@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 /* -O0 sub-file covering bootup_uso offset 0x116C8..0x117FB (single function,
  * 77 insns, 0x134 bytes), split from the tail of bootup_uso_tail3a.c
@@ -44,23 +45,23 @@ void GameFlow_restart_000116C8(void) {
     int pad;
     int local;
 
-    func_00000000(&gInputMgr);
-    func_00000000(&gInputMgr);
+    FCALL(GameFlow_releaseFiles_00012110)(&gInputMgr);
+    FCALL(GameFlow_unloadUso_00011A34)(&gInputMgr);
     D_00000000 = 0;
-    func_00000000(1);
-    func_00000000(&sStr_starLine_C624);
-    func_00000000(&gSnowBoard);
-    func_00000000();
-    func_00000000(&sStr_starLine_C65C);
-    func_00000000(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
+    FCALL(app_freeAllOfType)(1);
+    FCALL(dbg_printf)(&sStr_starLine_C624);
+    FCALL(SnowBoard_softReset)(&gSnowBoard);
+    FCALL(heap_printStats)();
+    FCALL(dbg_printf)(&sStr_starLine_C65C);
+    FCALL(GameFlow_startMode)(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
     (*(FN116C8)*(int *)(p + 0x14))(
         *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x10) + (int)&gSnowBoard);
     p = (char *)&local;
-    if (p != 0 || (p = (char *)func_00000000(0xC)) != 0) {
+    if (p != 0 || (p = (char *)FCALL(mem_new)(0xC)) != 0) {
         *(int *)p = 8;
     }
     (*(FN116C8)*(int *)(p + 0x34))(
         *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x30) + (int)&gSnowBoard,
         &local);
-    func_00000000(&sStr_done_C694);
+    FCALL(dbg_printf)(&sStr_done_C694);
 }

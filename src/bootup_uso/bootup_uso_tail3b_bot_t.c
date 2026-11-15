@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "game/input.h"
 #include "gdl/backup.h"
+#include "uso_call.h"
 
 extern int func_00000000();
 typedef struct { int a, b, c, d; } Quad4;
@@ -14,7 +15,7 @@ void settings_applySoundMode_0001266C(char *a0, int a1) {
     *p = *p & ~3;
     p = &SETTINGS(GAMEFLOW(a0)->options)->flags;
     *p = *p | a1;
-    func_00000000(SETTINGS(GAMEFLOW(a0)->options)->flags & 3);
+    FCALL(func_000001FC)(SETTINGS(GAMEFLOW(a0)->options)->flags & 3);
 }
 
 /* settings_setFlag4_000126EC — 56/56 EXACT (2026-07-03, agent-e). Previous "capped 84.95%"
@@ -51,7 +52,7 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
     }
     D_00000000.a = arg1;
     q = &sp34;
-    if ((q != 0) || (q = (s32 *)func_00000000(0xC), (q != 0))) {
+    if ((q != 0) || (q = (s32 *)FCALL(mem_new)(0xC), (q != 0))) {
         *q = 0x15;
     }
     p = (u16 *)q;
