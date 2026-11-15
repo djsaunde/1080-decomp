@@ -8183,13 +8183,13 @@ void Audio_NoteSetResamplingRate(char *arg0, f32 arg1) {
   *((s16 *) (((char *) arg0) + 0xBC)) = (s16) ((s32) (var_f0 * 32768.0f));
 }
 
-// gl_func_00027D00 — STRUCTURAL PASS (0x124 / 73 words, no episode).
+// Audio_NoteInit — STRUCTURAL PASS (0x124 / 73 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
 // (named fn + 1 trailing helper) — deferred USO re-split. The named
 // leading fn pulls a transform from a linked source object and
 // applies it into the object's matrix/flag block.
 //
-//   void gl_func_00027D00(O *obj) {
+//   void Audio_NoteInit(O *obj) {
 //     P *p = obj->w_44;                                 // source obj
 //     if (p->b_18 != 0) {
 //       (*ha)(&obj->_36, p->w_1C, …);                    // jal 0 USO
@@ -8223,7 +8223,7 @@ void Audio_NoteSetResamplingRate(char *arg0, f32 arg1) {
 //   Name pre-checked: no extern reuse (collision-safe).
 /* 2026-10-22 (agent-c run 120) EXACT: the nibble clear is a double mask (f60 & 0xFFFF & ~0xF) -- permuter find; the single 0xFFF0 mask allocated the store temps one register off. */
 extern int gl_func_00000000();
-void gl_func_00027D00(int *obj) {
+void Audio_NoteInit(int *obj) {
     int *p = *(int **)((char *)obj + 0x44);
     int *tmpl;
     unsigned char f60;
@@ -8245,7 +8245,7 @@ void gl_func_00027D00(int *obj) {
     }
 }
 
-/* game_libs_func_00027DC0: object reset. If bit30 of a0->0xB0 is set, clear its
+/* Audio_NoteDisable: object reset. If bit30 of a0->0xB0 is set, clear its
  * bit6; then clear bits 7 and 5 of a0->0xB0, zero the bytes at 0x30/0x34, set
  * the words at 0x40/0x44 to -1, clear the low nibble of byte a0->0x60, and zero
  * the float at 0x70. The `&= ~0xNN` byte masks emit andi 0xffNN (16-bit imm).
@@ -8255,7 +8255,7 @@ void gl_func_00027D00(int *obj) {
  * non-aliasing byte stores let IDO CSE the just-stored value, dropping a reload);
  * routing those two clears through a `volatile unsigned char*` view forces the
  * reloads → byte-exact. */
-void game_libs_func_00027DC0(char *a0) {
+void Audio_NoteDisable(char *a0) {
     if ((((unsigned int)*(int *)(a0 + 0xB0) << 1) >> 31) == 1) {
         *(unsigned char *)(a0 + 0xB0) &= ~0x40;
     }
@@ -8269,7 +8269,7 @@ void game_libs_func_00027DC0(char *a0) {
     *(float *)(a0 + 0x70) = 0.0f;
 }
 
-/* gl_func_00027E24 (0x4F8): per-record attach/detach + sound-param pass over
+/* Audio_ProcessNotes (0x4F8): per-record attach/detach + sound-param pass over
  * the bootup.uso sym1255 record table (count +0x2070, recs +0x2CFC stride 0xD0), through
  * its own typed alias D_345c0_27E24 (pinned 0; +0x204C/+0x2050 float scales). Each
  * record has a sub-block at +0x30 (s, held s0: b0 active, b4 mode, +0x14 obj, +0x18
@@ -8299,7 +8299,7 @@ void game_libs_func_00027DC0(char *a0) {
  * tested locals that could be uninitialised there; the one empty test left is on
  * act inside proc (always assigned on every path into proc). 96.91 -> 97.02 fuzzy,
  * 318 -> 316 words (target 318). */
-/* gl_func_00027E24 EXACT 2026-10-24 (agent-c run 141, 97.37 -> 100): OoT's
+/* Audio_ProcessNotes EXACT 2026-10-24 (agent-c run 141, 97.37 -> 100): OoT's
  * Audio_ProcessNotes (playback.c) in the older form: Audio_InitSampleState takes
  * (note, &attrs) (no sampleStates[] entry), the two disabling arms inside `out:` end
  * with `goto skip` instead of `continue` (the loop tail is shared), and the
@@ -8351,7 +8351,7 @@ extern f32 gl_func_00000000_27E24f();
 extern void gl_ref_0003BE70();
 extern void gl_ref_0003D414();
 
-void gl_func_00027E24(void) {
+void Audio_ProcessNotes(void) {
     s32 pad[2];
     gl_27E24_Attrs *attrs;
     gl_27E24_SampleState *sampleState2;
@@ -8491,7 +8491,7 @@ void gl_func_00027E24(void) {
 }
 #undef gl_27E24_NO_LAYER
 
-/* game_libs_func_0002831C: range-bucket lookup returning &rec[0]/[1]/[2]
+/* Audio_GetInstrumentTunedSample: range-bucket lookup returning &rec[0]/[1]/[2]
  * (a0+8/+16/+24). splat mis-split the two later branch targets into
  * 00028334/00028350; merged here. EXACT 2026-10-14 (agent-c), 95.67 -> 100.
  * The long-standing "multi-def web XOR per-arm jr" cap (agent-h, 2026-07-15/17:
@@ -8507,7 +8507,7 @@ typedef struct {
     char pad3[5];
     char rec[3][8];     /* 0x08 */
 } Gl2831CRange;
-char *game_libs_func_0002831C(Gl2831CRange *a0, int a1) {
+char *Audio_GetInstrumentTunedSample(Gl2831CRange *a0, int a1) {
     char *r;
     if (a1 < a0->lo) {
         r = a0->rec[0];
@@ -8519,9 +8519,9 @@ char *game_libs_func_0002831C(Gl2831CRange *a0, int a1) {
     return r;
 }
 
-// gl_func_00028358 -- registry handle resolve, byte-+0 sub-count variant
+// Audio_GetInstrumentInner -- registry handle resolve, byte-+0 sub-count variant
 // (0xD4 / 53 words). BYTE-EXACT 2026-10-14 (85.47 -> 100). Sibling of
-// gl_func_00028510 / gl_func_0002842C (see
+// Audio_GetSoundEffect / Audio_GetDrum (see
 // docs/IDO_CODEGEN.md#one-arg-lookup-a2-param-copy-28510), but here the
 // jal-0 lookup DOES take (a0, a1): the a1 param stays in a1 (no a2 copy,
 // `sw ra` in the 0xFF-check bne delay). a0 == 0xFF -> 0; lookup miss ->
@@ -8541,7 +8541,7 @@ typedef struct {
 } gl_28358_Rec;
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_00028358(int a0, int a1) {
+int Audio_GetInstrumentInner(int a0, int a1) {
     int r;
     gl_28358_Rec *rec;
     int v;
@@ -8566,9 +8566,9 @@ int gl_func_00028358(int a0, int a1) {
     return v;
 }
 
-// gl_func_0002842C -- registry handle resolve, byte-+1 sub-count variant
+// Audio_GetDrum -- registry handle resolve, byte-+1 sub-count variant
 // (0xE4 / 57 words). BYTE-EXACT 2026-10-14 (88.25 -> 100). Sibling of
-// gl_func_00028510 (same recipe, see
+// Audio_GetSoundEffect (same recipe, see
 // docs/IDO_CODEGEN.md#one-arg-lookup-a2-param-copy-28510): a0 == 0xFF -> 0;
 // lookup(a0) miss -> selection word &D+0x2158 = a0 + 0x10000000; a1 >= rec->b1
 // -> 0x4000000 class; rec->tbl not a KSEG0 pointer -> 0; else return
@@ -8586,7 +8586,7 @@ typedef struct {
 } gl_2842C_Rec;
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_0002842C(int a0, int a1) {
+int Audio_GetDrum(int a0, int a1) {
     int r;
     gl_2842C_Rec *rec;
     int v;
@@ -8613,9 +8613,9 @@ int gl_func_0002842C(int a0, int a1) {
     return v;
 }
 
-// gl_func_00028510 -- registry handle resolve, halfword sub-count variant
+// Audio_GetSoundEffect -- registry handle resolve, halfword sub-count variant
 // (0xF4 / 61 words). BYTE-EXACT 2026-10-14 (89.75 -> 100). Third sibling of
-// gl_func_00028358 / gl_func_0002842C: a0 == 0xFF -> 0; lookup(a0) miss ->
+// Audio_GetInstrumentInner / Audio_GetDrum: a0 == 0xFF -> 0; lookup(a0) miss ->
 // selection word &D+0x2158 = a0 + 0x10000000; a1 >= rec->h4 -> 0x4000000
 // class; rec->tbl not a KSEG0 pointer -> 0; else the 8-byte entry &tbl[a1]
 // is returned if its first word is non-zero (NULL entry -> 0x5000000 class).
@@ -8640,7 +8640,7 @@ typedef struct {
 } gl_28510_Rec;
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_00028510(int a0, int a1) {
+int Audio_GetSoundEffect(int a0, int a1) {
     int r;
     gl_28510_Rec *rec;
     int *e;
@@ -8670,7 +8670,7 @@ int gl_func_00028510(int a0, int a1) {
     return (int)e;
 }
 
-// gl_func_00028604 — STRUCTURAL PASS (0x268 / 154 words, no episode).
+// Audio_SeqLayerDecayRelease — STRUCTURAL PASS (0x268 / 154 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). An object detach / relink manager.
 //
@@ -8700,7 +8700,7 @@ int gl_func_00028510(int a0, int a1) {
 // rotation immune. Classic coloring-search cap class; uoptlist dump
 // would be the next systematic step.
 //
-//   void gl_func_00028604(O *obj, A *a1) {
+//   void Audio_SeqLayerDecayRelease(O *obj, A *a1) {
 //     if (obj == (O*)-1) return;                         // null sentinel
 //     byte fl = obj->b_0;
 //     if (obj->w_2C == 0) return;                         // not linked
@@ -8725,13 +8725,13 @@ int gl_func_00028510(int a0, int a1) {
 //   float constant referenced in the body. The -1 value is the null/
 //   end-of-list sentinel (consistent with the other game_libs
 //   linked-structure helpers). The unlink/detach entry of the
-//   game_libs object subsystem (counterpart to the gl_func_00027D00
+//   game_libs object subsystem (counterpart to the Audio_NoteInit
 //   pull-and-apply link op).
 // Caps (DEFERRED): raw-word USO + linked-structure splice + FP global
 //   load — byte-match needs USO mnemonic disasm. Real-C STRUCTURAL
 //   body below per the analysis (placeholder calls / fields).
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-/* gl_func_00028604 EXACT 2026-10-23 (agent-c run 141, 93.34 -> 100): OoT's
+/* Audio_SeqLayerDecayRelease EXACT 2026-10-23 (agent-c run 141, 93.34 -> 100): OoT's
  * Audio_SeqLayerDecayRelease (playback.c) in the older form without the filterBuf
  * copy (attrs->filter = channel->filter directly; combFilterSize before
  * combFilterGain). Load-bearing: the Stereo union type for layer / channel / attrs
@@ -8769,7 +8769,7 @@ typedef struct { char pad0[0x2050]; f32 ticksPerUpdateInv; char pad2054[0x2CF8 -
 #define gl_28604_gAudioCtx (*(gl_28604_Ctx *)&D_00000000)
 #define gl_28604_NO_LAYER ((gl_28604_Layer *)(-1))
 
-void gl_func_00028604(gl_28604_Layer *layer, s32 target) {
+void Audio_SeqLayerDecayRelease(gl_28604_Layer *layer, s32 target) {
     gl_28604_Note *note;
     gl_28604_Attrs *attrs;
     gl_28604_Channel *channel;
@@ -8854,16 +8854,16 @@ void gl_func_00028604(gl_28604_Layer *layer, s32 target) {
 #undef gl_28604_NO_LAYER
 
 extern int gl_ref_0003CC70();
-int gl_func_0002886C(int a0) {
+int Audio_SeqLayerNoteDecay(int a0) {
     return gl_ref_0003CC70(a0, 6);
 }
 
-// gl_func_0002888C — STRUCTURAL PASS (0x124 / 73 words, no episode).
+// Audio_SeqLayerNoteRelease — STRUCTURAL PASS (0x124 / 73 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
 // (named fn + 1 trailing FP helper) — deferred USO re-split. The
 // named leading fn (~6 words) is a tiny tail-call thunk.
 //
-//   void gl_func_0002888C(int a0) {
+//   void Audio_SeqLayerNoteRelease(int a0) {
 //     (*op)(a0, 7);                                     // jal 0x3CC70
 //   }                                                     //  (0x0C00F31C)
 //
@@ -8884,11 +8884,11 @@ int gl_func_0002886C(int a0) {
 //   the analysis: tail-call thunk forwarding (a0, 7). Byte-match
 //   deferred. Name pre-checked: no extern reuse.
 extern int gl_ref_0003CC70();
-void gl_func_0002888C(int a0) {
+void Audio_SeqLayerNoteRelease(int a0) {
     gl_ref_0003CC70(a0, 7);
 }
 
-/* game_libs_func_000288AC: 65-insn FP threshold-classifier (fresh decode 2026-05-28,
+/* Audio_BuildSyntheticWave: 65-insn FP threshold-classifier (fresh decode 2026-05-28,
  * mnemonic disasm — m2c can't read raw-.word USO). Clamps a2 to >=128, computes a
  * weight f2 from a1->0x30 (scaled by a1->0x28+1 when a1->0x20!=0 && a1->0x28>0),
  * classifies it against 3 thresholds in the D[] float table at +0xFD4.. → tier
@@ -8928,7 +8928,7 @@ extern char D_tbl_288ac;
  * shift) -- both worse than the 99.92 baseline. The original blocked
  * propagation by an unknown structure; single-operand copy-prop gate.
  */
-int game_libs_func_000288AC(char *a0, char *a1, int a2)
+int Audio_BuildSyntheticWave(char *a0, char *a1, int a2)
 {
   float f0;
   float f2;
@@ -8981,7 +8981,7 @@ int game_libs_func_000288AC(char *a0, char *a1, int a2)
 }
 
 
-/* gl_func_000289B0: 22-insn. sel = a1->u8[2]; if (sel==255) sel =
+/* Audio_InitSyntheticWave: 22-insn. sel = a1->u8[2]; if (sel==255) sel =
  * (s16)(*(int**)(a1+0x50))->[0x24]; v1 = a0->u8[0x32];
  * rv = gl_func_0003CF18(a0, a1, sel);   // jal in-segment 0x3CF18
  * if (rv != v1) a0->u8[0xB6] = (rv << 2) + v1;  (bnel sel,255). */
@@ -8990,7 +8990,7 @@ extern int gl_func_0003CF18();
  * v1 = a0->u8[0x32]; rv = gl_func_0003CF18(a0,a1,sel);
  * if (rv != v1) a0->u8[0xB6] = (rv<<2)+v1. Byte-exact: declaring v1 FIRST
  * places its spill at sp+0x1C (first-declared = highest slot) to match. */
-void gl_func_000289B0(int a0, int a1) {
+void Audio_InitSyntheticWave(int a0, int a1) {
     int v1;
     int rv;
     int sel = *(unsigned char*)(a1 + 2);
@@ -9004,19 +9004,19 @@ void gl_func_000289B0(int a0, int a1) {
     }
 }
 
-/* game_libs_func_00028A08: 4-insn self-linked-list init. */
-void game_libs_func_00028A08(int *a0) {
+/* Audio_InitNoteList: 4-insn self-linked-list init. */
+void Audio_InitNoteList(int *a0) {
     a0[0] = (int)a0;
     a0[1] = (int)a0;
     a0[2] = 0;
 }
 
-/* gl_func_00028A18: 20-insn 4-call init wrapper for 4 contiguous 0x10-byte
+/* Audio_InitNoteLists: 20-insn 4-call init wrapper for 4 contiguous 0x10-byte
  * blocks. Calls gl_func_0003D074 (alt-entry inside gl_func_0003D068 at +0xC)
  * on each block, then sets each block's [0xC] field to self-reference (= a0).
  * Byte-exact: 4 jals resolve to gl_func_0003D074 (0x3D074). */
 extern void gl_func_0003D074();
-void gl_func_00028A18(char *a0) {
+void Audio_InitNoteLists(char *a0) {
     gl_func_0003D074(a0);
     gl_func_0003D074(a0 + 0x10);
     gl_func_0003D074(a0 + 0x20);
@@ -9027,11 +9027,11 @@ void gl_func_00028A18(char *a0) {
     *(int*)(a0 + 0x3C) = (int)a0;
 }
 
-// gl_func_00028A68 — STRUCTURAL PASS (0xA4 / 41 words, no episode).
+// Audio_InitNoteFreeList — STRUCTURAL PASS (0xA4 / 41 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). The bulk record-array INITIALIZER of the sprite subsystem.
 //
-//   void gl_func_00028A68(void) {
+//   void Audio_InitNoteFreeList(void) {
 //     (*setup)(&D_5378);                                // jal 0 USO
 //     S *g = &D_0;
 //     int n = g->w_2070;                                 // record count
@@ -9045,7 +9045,7 @@ void gl_func_00028A18(char *a0) {
 //   }
 //
 // Struct-typing reference: iterates the SAME primary sprite record
-//   table as AudioSynth_ProcessNote / AudioHeap_DiscardFont / gl_func_00027E24 —
+//   table as AudioSynth_ProcessNote / AudioHeap_DiscardFont / Audio_ProcessNotes —
 //   live count word &D_0+0x2070, record-table pointer &D_0+0x2CFC —
 //   here with a per-record stride of 0xD0. For every record it writes
 //   a self-referential pointer at +0x8, zeroes word +0x0, and calls a
@@ -9070,7 +9070,7 @@ void gl_func_00028A18(char *a0) {
 //   &recs[i]); a reassigned named local gets the order but colours v0.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_28A68.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-void gl_func_00028A68(void) {
+void Audio_InitNoteFreeList(void) {
 }
 
 // Audio_NotePoolClear — STRUCTURAL PASS (0x160 / 88 words, no episode).
@@ -9094,7 +9094,7 @@ void gl_func_00028A68(void) {
 // Struct-typing reference: routes by a stack-passed `mode` (0..4)
 //   onto one of four parallel fixed descriptor blobs in the &D_53xx
 //   pool — &D_53A8 / &D_5398 / &D_5388 / &D_5378 (the same auxiliary
-//   descriptor/fn-ptr pool AudioHeap_DiscardFont / gl_func_00028A68 use) —
+//   descriptor/fn-ptr pool AudioHeap_DiscardFont / Audio_InitNoteFreeList use) —
 //   and a matching object sub-structure at obj + 0x00 / 0x10 / 0x20 /
 //   0x30 (parallel 0x10-stride sub-blocks). It then registers/binds
 //   the selected sub-block with the selected table. A per-channel
@@ -9150,7 +9150,7 @@ void Audio_NotePoolClear(gl_28B0C_NotePool *pool) {
     }
 }
 
-// gl_func_00028C6C — four-template drain: gl(a0); for mode s4 = 0..3 pick
+// Audio_NotePoolFill — four-template drain: gl(a0); for mode s4 = 0..3 pick
 // tmpl = &D+0x5378+s4*16 and dst = a0+s4*16, then a shared counter s0 drains
 // gl(tmpl) -> v (stop on 0) into gl(dst, v) while s0 < n. s1/s2 are
 // maybe-uninitialised (no default case) so uopt homes them and loads/stores
@@ -9158,7 +9158,7 @@ void Audio_NotePoolClear(gl_28B0C_NotePool *pool) {
 // decl order (s5, g, s4, s1, s2, s0), see docs/IDO_CODEGEN.md
 // #feedback-ido-named-local-count-frame.
 extern int gl_func_00000000();
-void gl_func_00028C6C(int a0, int n) {
+void Audio_NotePoolFill(int a0, int n) {
     char *s5 = (char *)a0;
     char *g = (char *)&D_00000000;
     int s4;
@@ -9186,7 +9186,7 @@ void gl_func_00028C6C(int a0, int n) {
     }
 }
 
-void game_libs_func_00028DA8(int *a0, int *a1) {
+void Audio_AudioListPushFront(int *a0, int *a1) {
     if (*a1 != 0) {
         return;
     }
@@ -9198,7 +9198,7 @@ void game_libs_func_00028DA8(int *a0, int *a1) {
     a1[3] = a0[3];
 }
 
-void game_libs_func_00028DE8(int **a0) {
+void Audio_AudioListRemove(int **a0) {
     int *p = a0[0];
     if (p != 0) {
         p[1] = (int)a0[1];
@@ -9207,7 +9207,7 @@ void game_libs_func_00028DE8(int **a0) {
     }
 }
 
-/* game_libs_func_00028E14: BYTE-EXACT 2026-09-05 (agent-c) after a FOUR-symbol
+/* Audio_FindNodeWithPrioLessThan: BYTE-EXACT 2026-09-05 (agent-c) after a FOUR-symbol
  * boundary merge. The former "game_libs_func_00028E28" (17w, no prologue, $v0
  * live at entry), "28E6C" (8w, first word = dup of 28E14's `bnel v1,zero` delay
  * slot at 0x28E5C, branch target 0x28E70 = 28E6C+4) and "28E8C" (`jr ra; nop`,
@@ -9236,7 +9236,7 @@ typedef struct PrioNode28E14 {
     PrioObj28E14 *obj;
 } PrioNode28E14;
 
-PrioObj28E14 *game_libs_func_00028E14(PrioNode28E14 *head, int lim) {
+PrioObj28E14 *Audio_FindNodeWithPrioLessThan(PrioNode28E14 *head, int lim) {
     PrioNode28E14 *cur = head->next;
     PrioNode28E14 *pos;
     PrioObj28E14 *obj;
@@ -9260,7 +9260,7 @@ PrioObj28E14 *game_libs_func_00028E14(PrioNode28E14 *head, int lim) {
     return obj;
 }
 
-// gl_func_00028E94 — object attach/init (counterpart to gl_func_00028604
+// Audio_NoteInitForLayer — object attach/init (counterpart to Audio_SeqLayerDecayRelease
 // detach). FULL DECODE 35.1->93.1% (+58pp) 2026-06-02: obj->0x40=-1, obj->0x44=
 // d, obj->0x30 = d->0x50->5, d->0x2C=obj, d[0]|=1 then |=8, d->0x50->0x40=obj,
 // d->0x50->0x44=d, d->0x40=0.0f, call 0x3C36C(obj,d); then v1=obj+0xB0:
@@ -9269,7 +9269,7 @@ PrioObj28E14 *game_libs_func_00028E14(PrioNode28E14 *head, int lim) {
 // v0->3=d->0x50->7, v0->5=(d->0x50->0 bit26), v1->1=(v1->1&~0xE0)|((d->0x50->8
 // &3)<<5). Residual ~7% = scheduling/regalloc (d->0x50 reload reg). Body below.
 //
-//   void gl_func_00028E94(O *obj, D *d) {
+//   void Audio_NoteInitForLayer(O *obj, D *d) {
 //     obj->w_40 = -1;                                   // init link
 //     obj->w_44 = d;                                     // descriptor
 //     T *t = d->w_50;
@@ -9287,14 +9287,14 @@ PrioObj28E14 *game_libs_func_00028E14(PrioNode28E14 *head, int lim) {
 // Struct-typing reference: the attach/bind entry. obj fields: word
 //   +0x40 (link, set to -1), word +0x44 (the descriptor pointer),
 //   byte +0x30 (a mode/flag copied from d->0x50->5), block at +0xB0
-//   (the same matrix/Vec4 block Audio_InitSampleState / gl_func_00027D00
+//   (the same matrix/Vec4 block Audio_InitSampleState / Audio_NoteInit
 //   manipulate). descriptor d fields: byte +0 a flag set (bit0 =
 //   active, bit3 = ready, both set here), word +0x2C the owner
 //   back-link to obj, word +0x50 a shared sub-record (cross-linked at
 //   its +0x40/+0x44 to obj/d), float +0x40 zeroed. byte d->2 is a
 //   secondary id (0xFF = none sentinel). A leading USO-relocated
 //   setup 0x0C00F0DB (≈0x3C36C) finishes the bind. The
-//   construct/attach counterpart to the gl_func_00028604 detach in
+//   construct/attach counterpart to the Audio_SeqLayerDecayRelease detach in
 //   the game_libs object subsystem.
 /* EXACT 2026-10-15 (agent-c): 3CF18 takes the resolved sub-id as a 3rd arg
  * (a2 live into the second jal); d->0x00 bits 0/3 and the obj+0xB0 flag /
@@ -9306,7 +9306,7 @@ typedef struct { unsigned x0:4; unsigned ready:1; unsigned x1:2; unsigned active
 typedef struct { unsigned b0:8; unsigned mode:3; unsigned x:2; unsigned flag:1; unsigned rest:18; int w4, w8, wc; int w10; } Gl28E94Xf;
 extern int gl_func_0003C36C();
 extern int gl_func_0003CF18();
-void gl_func_00028E94(char *obj, char *d) {
+void Audio_NoteInitForLayer(char *obj, char *d) {
     Gl28E94Xf *xf;
     char *b30;
     char pad[12];
@@ -9341,7 +9341,7 @@ void gl_func_00028E94(char *obj, char *d) {
     xf->mode = *(unsigned char *)(*(char **)(d + 0x50) + 8) & 3;
 }
 
-void gl_func_00028FCC(int *a0, int a1) {
+void Audio_NoteInterTrack(int *a0, int a1) {
     volatile int **vp0 = (volatile int **)&a0;
     volatile int *vp1 = (volatile int *)&a1;
     gl_func_00000000(a0[0x44/4]);
@@ -9351,7 +9351,7 @@ void gl_func_00028FCC(int *a0, int a1) {
 }
 
 /* Audio_NoteReleaseAndTakeOwnership: 11-insn no-frame config setter (split off from the
- * gl_func_00028FCC bundle 2026-05-08). EXACT 2026-10-14 (agent-c), 96.36 -> 100.
+ * Audio_NoteInterTrack bundle 2026-05-08). EXACT 2026-10-14 (agent-c), 96.36 -> 100.
  * The old "REG_ALLOC_ORDER v0/v1 vs t6/t9 colouring cap" was a type decode
  * error: the `lbu 0x60; ori 0x10; sb 0x60` is a ONE-BIT BITFIELD set (bit 3
  * from the MSB of the word at 0x60), not a char |= 0x10. The bitfield insert
@@ -9453,7 +9453,7 @@ int Audio_AllocNoteFromActive(char *a0, char *a1) {
 // Audio_AllocNote — STRUCTURAL PASS (0x2D4 / 181 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). An object DESTRUCTOR / free — undoes the
-// gl_func_00028E94 attach.
+// Audio_NoteInitForLayer attach.
 //
 //   void Audio_AllocNote(O *obj) {
 //     S *sub = obj->w_50;
@@ -9471,14 +9471,14 @@ int Audio_AllocNoteFromActive(char *a0, char *a1) {
 //   }
 //
 // Struct-typing reference: the teardown/free entry, inverse of
-//   gl_func_00028E94. obj->0x50 is the descriptor sub-record (byte +2
+//   Audio_NoteInitForLayer. obj->0x50 is the descriptor sub-record (byte +2
 //   bit0 = active gate); obj->0x2C the parent/owner back-link; the
 //   parent's word +0x40 / +0x48 form the same intrusive list
-//   gl_func_00028604 splices (-1 = end sentinel). It unlinks obj from
+//   Audio_SeqLayerDecayRelease splices (-1 = end sentinel). It unlinks obj from
 //   that list, invokes the fixed detach routine 0x0C00F59B (≈0x3D66C)
 //   and the fixed block-free 0x0C00F5A6 (≈0x3D698) on obj->0xC + 0x20.
 //   Completes the object lifecycle:
-//   gl_func_00028E94 (attach) → … → gl_func_00028604 (detach link) /
+//   Audio_NoteInitForLayer (attach) → … → Audio_SeqLayerDecayRelease (detach link) /
 //   Audio_AllocNote (destroy+free).
 // Caps (DEFERRED): raw-word USO + intrusive-list unlink + fixed
 //   detach/free calls (0x3D66C / 0x3D698) — byte-match needs USO
@@ -9612,7 +9612,7 @@ null_return:
 #undef Audio_AudioListRemove
 #undef AudioSeq_AudioListPushBack
 
-/* gl_func_00029494: reset every record of the sym1255 record table (shared typed alias
+/* Audio_NoteInitAll: reset every record of the sym1255 record table (shared typed alias
  * D_345c0_1CC98; count +0x2070, recs +0x2CFC stride 0xD0): copy the 0x20-byte template
  * element (bootup.uso Data sym1243 @0x197A4 -> own zero alias D_197a4_29494) into rec->e,
  * clear the state bytes/halves, set the three handles to -1, f58 = 0.0f, then
@@ -9623,7 +9623,7 @@ null_return:
  * `(Elem *)-1` is a separate constant web (two s-regs, frame +8). */
 extern int gl_func_00000000();
 extern gl_1CC98_Elem D_197a4_29494;
-void gl_func_00029494(void) {
+void Audio_NoteInitAll(void) {
     int i;
     gl_1CC98_Rec *r;
     for (i = 0; i < D_345c0_1CC98.count; i++) {
@@ -9659,7 +9659,7 @@ typedef struct { unsigned p0:2; unsigned b29:1; unsigned rest:29; } BF_000295BC;
 #ifndef FF
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 #endif
-void game_libs_func_000295BC(char *arg0, s32 arg1, s32 arg2) {
+void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
     f32 var_f0;
     f32 var_f0_2;
     s32 b;
@@ -9707,12 +9707,12 @@ void game_libs_func_000295BC(char *arg0, s32 arg1, s32 arg2) {
     (*(u8*)(arg0 + 0x1)) = 0;
 }
 
-// gl_func_0002978C — STRUCTURAL PASS (0x1EC / 123 words, no episode).
+// Audio_SequencePlayerProcessSound — STRUCTURAL PASS (0x1EC / 123 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 3-jr USO bundle
 // (named fn + 2 trailing helpers) — deferred USO re-split. The named
 // leading fn is a per-object FP ramp / clamp updater.
 //
-//   void gl_func_0002978C(O *obj) {
+//   void Audio_SequencePlayerProcessSound(O *obj) {
 //     int n = obj->h_12;                                // iteration cnt
 //     if (n == 0) return;
 //     for (int i = 0; i < n; i++) {
@@ -9739,7 +9739,7 @@ void game_libs_func_000295BC(char *arg0, s32 arg1, s32 arg2) {
 //   resets to 0.0 (a saw-tooth/wrap, c.lt.s + bc1fl branch-likely).
 //   A frame-timer/phase-accumulator leaf in the game_libs object
 //   subsystem (same object whose +0xB0 matrix block the
-//   Audio_InitSampleState / gl_func_00029494 family loads).
+//   Audio_InitSampleState / Audio_NoteInitAll family loads).
 // Caps (DEFERRED): raw-word USO + FP ramp/clamp with bc1fl branch-
 //   likely — byte-match needs USO mnemonic disasm. STALE 3-jr-bundle
 //   comment: grep -c 03E00008 = 1 (.s now single fn). Real-C
@@ -9761,7 +9761,7 @@ void game_libs_func_000295BC(char *arg0, s32 arg1, s32 arg2) {
  * callee 0x3DC30 is a baked jal (gl_ref_0003DC30 pin). */
 typedef struct { unsigned int pad:5; unsigned int f4:1; unsigned int p25:1; unsigned int f1:1; unsigned int rest:24; } Fl_2978C;
 extern int gl_ref_0003DC30();
-void gl_func_0002978C(char *obj) {
+void Audio_SequencePlayerProcessSound(char *obj) {
     char *p;
     int s0;
 
@@ -9793,7 +9793,7 @@ void gl_func_0002978C(char *obj) {
     ((Fl_2978C *)obj)->f4 = 0;
 }
 
-/* game_libs_func_000298D8 (0x5C, 23 words, BYTE-EXACT 2026-09-06 agent-g):
+/* Audio_GetPortamentoFreqScale (0x5C, 23 words, BYTE-EXACT 2026-09-06 agent-g):
  * accumulate-and-scale. Adds the two u16 fields at a0+2 and a0+4, stores the
  * sum back to a0+2, takes (sum>>8)&0xFF (arith sra), clamps it to 127 (and
  * zeroes byte a0+0 when clamped), then returns
@@ -9812,7 +9812,7 @@ void gl_func_0002978C(char *obj) {
  * the `h[2] + h[1]` operand order still pin the return path (add -> $f2;
  * mov.s $f0,$f2) and the u16 load order. See docs/IDO_CODEGEN.md
  * #shift-merged-phantom-temp-record-copy-20e24. */
-float game_libs_func_000298D8(void *a0) {
+float Audio_GetPortamentoFreqScale(void *a0) {
     unsigned short *h = (unsigned short *)a0;
     int v = h[2] + h[1];
     h[1] = (unsigned short)v;
@@ -9832,17 +9832,17 @@ float game_libs_func_000298D8(void *a0) {
  * the 64-entry s16 table at a0[2] by (acc>>10)&0x3F, return (s16)(table[idx]>>8).
  * Structurally exact (17/17 insns, same opcodes/immediates); ~10 $t-register
  * fields differ. Straight-line + reloc-free → permuter-crackable episode target. */
-int game_libs_func_00029934(int *a0) {
+int Audio_GetVibratoPitchChange(int *a0) {
   int idx = (((unsigned int)(a0[1] += (int)*(float *)(a0 + 4))) >> 10) & 0x3F;
   return (short)(((short *)a0[2])[idx] >> 8);
 }
 
 
-// gl_func_00029978 — STRUCTURAL PASS (0x1F4 / 125 words, no episode).
+// Audio_GetVibratoFreqScale — STRUCTURAL PASS (0x1F4 / 125 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A heavily-FPU per-object keyframe / tween step.
 //
-//   void gl_func_00029978(O *obj) {
+//   void Audio_GetVibratoFreqScale(O *obj) {
 //     int t = obj->h_1A;                                // tween timer
 //     int s = obj->w_0;
 //     if (t == 0) { obj->h_1A = -1; obj->f_C = 1.0f; ... } // expired
@@ -9868,12 +9868,12 @@ int game_libs_func_00029934(int *a0) {
 //   (cvt.s.w) and single-prec sub/div/mul producing the next
 //   interpolated value written back to obj->0xC. A keyframe stepper
 //   leaf in the game_libs object subsystem — paired with the
-//   gl_func_0002978C ramp updater on the same object.
+//   Audio_SequencePlayerProcessSound ramp updater on the same object.
 // Caps (DEFERRED): raw-word USO + heavy FP interpolation idiom (mul/
 //   div/sub + cvt.s.w) — byte-match needs USO mnemonic disasm.
 //   Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-/* gl_func_00029978 EXACT 2026-10-24 (agent-c run 142, 71.84 -> 100): SM64 (Shindou)
+/* Audio_GetVibratoFreqScale EXACT 2026-10-24 (agent-c run 142, 71.84 -> 100): SM64 (Shindou)
  * get_vibrato_freq_scale / OoT AudioEffects_GetVibratoFreqScale in the SM64 form (the
  * gPitchBendFrequencyScale curve, [128] at +0x200), with OoT's held `channel` local
  * and NO_CHANNEL guard: reading vib->seqChannel through the local keeps it in v1 (the
@@ -9892,7 +9892,7 @@ extern f32 gl_29978_gPitchBendFrequencyScale[];
 #define gPitchBendFrequencyScale gl_29978_gPitchBendFrequencyScale
 #define NO_CHANNEL ((gl_29978_SequenceChannel *)-1)
 
-f32 gl_func_00029978(gl_29978_VibratoState *vib) {
+f32 Audio_GetVibratoFreqScale(gl_29978_VibratoState *vib) {
     s32 pitchChange;
     f32 extent;
     f32 result;
@@ -9945,7 +9945,7 @@ f32 gl_func_00029978(gl_29978_VibratoState *vib) {
     return result;
 }
 
-// gl_func_00029B6C — STRUCTURAL PASS (0x49C / 295 words ≈ 1.2KB, no
+// Audio_NoteVibratoUpdate — STRUCTURAL PASS (0x49C / 295 words ≈ 1.2KB, no
 // episode). Raw-.word USO form (game_libs). BOUNDARY NOTE: LARGE
 // 8-jr USO bundle (named fn + ~7 trailing accessor/setter helpers) —
 // deferred USO re-split. Also carries a trailing
@@ -9953,7 +9953,7 @@ f32 gl_func_00029978(gl_29978_VibratoState *vib) {
 // untouched. The named leading fn (~22 words) resets two object
 // animation sub-channels.
 //
-//   void gl_func_00029B6C(O *obj) {
+//   void Audio_NoteVibratoUpdate(O *obj) {
 //     byte f0 = obj->b_80;
 //     if (f0 != ...) (*reset0)(&obj->_80);              // 0x0C00F7D1
 //     obj->f_38 = 0.0f;                                  // chan-0 phase
@@ -9972,8 +9972,8 @@ f32 gl_func_00029978(gl_29978_VibratoState *vib) {
 //   subsystem's micro-accessors (1.0f / byte / float field
 //   setter-getters over the same sub-channels — e.g. set f_3C, set
 //   b_A0=1, store w_90/w_94/w_8C) left for the deferred USO
-//   re-split. Companion reset to the gl_func_00029978 tween /
-//   gl_func_0002978C ramp steppers on the same object.
+//   re-split. Companion reset to the Audio_GetVibratoFreqScale tween /
+//   Audio_SequencePlayerProcessSound ramp steppers on the same object.
 // Caps (DEFERRED): raw-word USO + fixed-target channel resets
 //   (0x3DF44 / 0x3DFE4) — byte-match needs USO mnemonic disasm +
 //   reloc-pad jal infra. STALE 8-jr-bundle comment: grep -c
@@ -9990,7 +9990,7 @@ f32 gl_func_00029978(gl_29978_VibratoState *vib) {
 // its real address in undefined_syms_auto.txt.
 extern float gl_ref_00029B6C_3DF44();
 extern float gl_ref_00029B6C_3DFE4();
-void gl_func_00029B6C(char *obj) {
+void Audio_NoteVibratoUpdate(char *obj) {
     if (*(unsigned char *)(obj + 0x80) != 0) {
         *(float *)(obj + 0x38) = gl_ref_00029B6C_3DF44(obj + 0x80);
     }
@@ -10004,7 +10004,7 @@ void gl_func_00029B6C(char *obj) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_00029BC8)();
-void game_libs_func_00029BC8(char *arg0) {
+void Audio_NoteVibratoInit(char *arg0) {
     u16 temp_a1;
     u16 temp_a1_2;
     char *temp_t9;
@@ -10035,7 +10035,7 @@ void game_libs_func_00029BC8(char *arg0) {
     *(s16*)((char*)var_v0 + 0x1A) = *(u16*)((char*)temp_t9 + 0x1C);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00029BC8);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Audio_NoteVibratoInit);
 #endif
 
 /* 1.0f init + 3-field pointer copy from a0->0x44. The base pointer + loaded
@@ -10058,13 +10058,13 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00029BC8);
  * into $v0 (97.27% cap). The inline struct-copy form keeps the base off
  * $v0 → IDO colors it $t6, shifting the whole body up to match; the block
  * copy supplies the $t8/$t7/$t8 (X/Y/X reuse) alternation. Byte-exact. */
-void game_libs_func_00029C80(char *a0) {
+void Audio_NotePortamentoInit(char *a0) {
     struct S { int a, b, c; };
     *(float*)(a0 + 0x38) = 1.0f;
     *(struct S*)(a0 + 0x80) = *(struct S*)((char*)*(int**)(a0 + 0x44) + 0x20);
 }
 
-void game_libs_func_00029CAC(char *a0, int a1, int a2) {
+void Audio_AdsrInit(char *a0, int a1, int a2) {
     *(char*)a0 = 0;
     *(short*)(a0 + 2) = 0;
     *(int*)(a0 + 0x1C) = a1;
@@ -10072,7 +10072,7 @@ void game_libs_func_00029CAC(char *a0, int a1, int a2) {
     *(float*)(a0 + 0x10) = 0.0f;
 }
 
-/* game_libs_func_00029CCC: envelope/keyframe stepper (9-state jumptable
+/* Audio_AdsrUpdate: envelope/keyframe stepper (9-state jumptable
  * switch on the packed status byte, returns the value clamped to [0,1]).
  * BOUNDARY FIX (2026-09-05, agent-c): ONE function that splat had split
  * into FOUR symbols -- 29CCC (15-word `jr t6` dispatcher), 29D08 (case
@@ -10083,9 +10083,9 @@ void game_libs_func_00029CAC(char *a0, int a1, int a2) {
  * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO
  * 7.1 -O2 donor unit game_libs_o2_29CCC.c (207/207 word-exact); the
  * splice renames the switch's donor-local .rodata jumptable reloc to
- * game_libs_func_00029CCC_rodata (pinned to the USO table at +0xFF0).
+ * Audio_AdsrUpdate_rodata (pinned to the USO table at +0xFF0).
  * Body below is a placeholder for the splice. */
-float game_libs_func_00029CCC(void *p) {
+float Audio_AdsrUpdate(void *p) {
     volatile float ret = 0.0f;
     if (p != 0) {
         ret = 1.0f;
@@ -10149,7 +10149,7 @@ s32 AudioSeq_HandleScriptFlowControl(void *seqPlayer, void *state, s32 cmd, s32 
 }
 
 
-// game_libs_func_0002A258 (MERGED 2026-07-23: orphan 2A258 2-insn lui/addiu
+// AudioSeq_InitSequenceChannel (MERGED 2026-07-23: orphan 2A258 2-insn lui/addiu
 // $t6 base pair is this fn's own hoisted preamble; was gl_func_0002A260,
 // merged 0x8+0x14C=0x154; 4th hoisted-prologue mis-split retraction) —
 // STRUCTURAL PASS (0x154 / 85 words, no episode).
@@ -10179,13 +10179,13 @@ s32 AudioSeq_HandleScriptFlowControl(void *seqPlayer, void *state, s32 cmd, s32 
 //   no-object/null sentinel (early return). This is the
 //   "reinitialise object to its default/idle state" entry of the
 //   game_libs object subsystem (the state-clear counterpart to the
-//   gl_func_00028E94 attach / gl_func_00029B6C channel-reset).
+//   Audio_NoteInitForLayer attach / Audio_NoteVibratoUpdate channel-reset).
 // Caps (DEFERRED): raw-word USO + sequential single-bit andi flag-
 //   clear idiom (must match GCC's bit-by-bit emit order) — byte-
 //   match needs USO mnemonic disasm. Real-C STRUCTURAL body below
 //   per the analysis. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
-/* game_libs_func_0002A258 EXACT 2026-10-23 (agent-c run 140, 95.29 -> 100):
+/* AudioSeq_InitSequenceChannel EXACT 2026-10-23 (agent-c run 140, 95.29 -> 100):
  * AudioSeq_InitSequenceChannel (seqplayer.c). The residual was store order: OoT sets
  * vibratoRateTarget / vibratoRateStart (0x14 / 0x10 = 0x800) right before the extent
  * fields, not after the flag clears; with that order the old `if (1) {}` and the
@@ -10196,7 +10196,7 @@ extern int D_2A260_deflt; /* distinct placeholder: the obj+0x90 default-target g
                            * independent lui/addiu pairs; one shared extern would CSE). */
 /* Whole-body decode 2026-06-01; redecoded 2026-07-18 (69.1 -> 87.8). Object reset:
  * skip the &D+0x5280 sentinel (base+0x5280 arithmetic NOT reloc-folded; the 2-insn
- * lui/addiu base pair is the game_libs_func_0002A258 stolen-prologue orphan, our
+ * lui/addiu base pair is the AudioSeq_InitSequenceChannel stolen-prologue orphan, our
  * build emits it byte-identically as rows 0-1). 7-step clear cascade as direct RMW
  * statements `*p &= K` with first mask ~0x80 (andi 0xff7f) and the rest as 8-bit
  * literals 0xBF..0xFD (local-var chain narrows or DSEs; volatile widens to 0xffXX).
@@ -10206,7 +10206,7 @@ extern int D_2A260_deflt; /* distinct placeholder: the obj+0x90 default-target g
  * -1 fill: 0xd0 store inside the loop after v1+=4 (becomes the bne delay slot).
  * Residual: sh 0x14/0x10 + addiu 0x800 scheduled ~10 slots earlier than target
  * (const-block interleave), or v1,a1 copy 2 slots early, prologue-orphan boundary. */
-void game_libs_func_0002A258(char *obj) {
+void AudioSeq_InitSequenceChannel(char *obj) {
     unsigned char *p;
     int c, i;
     char *v1;
@@ -10261,11 +10261,11 @@ void game_libs_func_0002A258(char *obj) {
     gl_func_00000000(obj + 0x94);
 }
 
-// gl_func_0002A3AC — STRUCTURAL PASS (0x124 / 73 words, no episode).
+// AudioSeq_SeqChannelSetLayer — STRUCTURAL PASS (0x124 / 73 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A slot-array lazy-construct (allocate-on-demand).
 //
-//   int gl_func_0002A3AC(S *base, int idx) {
+//   int AudioSeq_SeqChannelSetLayer(S *base, int idx) {
 //     Slot *s = base + idx*4;                           // slot array
 //     if (s->w_50 != 0) { ... already built ... }
 //     void *o = (*alloc)(&D_5368);                       // jal 0 USO
@@ -10289,7 +10289,7 @@ void game_libs_func_0002A258(char *obj) {
 //   object's flag byte +0 (set bit7 ready / clear bit6) and copies a
 //   word into newobj->0x18 from a source +0x8C. Returns -1 on
 //   allocation failure. The allocate-on-demand entry of the game_libs
-//   object subsystem (companion to the gl_func_00028E94 attach /
+//   object subsystem (companion to the Audio_NoteInitForLayer attach /
 //   Audio_AllocNote destroy lifecycle).
 // Caps (DEFERRED): raw-word USO + jal-0 USO-reloc alloc/init —
 //   byte-match needs USO mnemonic disasm + reloc-pad jal infra.
@@ -10306,7 +10306,7 @@ extern int D_00000000;
  * 0x40..0x01 one at a time, each stored - volatile), node->0x1c=base->0x90, then
  * ~20 field clears + node->3=128, node->5=64, node->2=255, node->0x30/0x34=1.0,
  * node->0x38=0.0. */
-int gl_func_0002A3AC(char *base, int idx) {
+int AudioSeq_SeqChannelSetLayer(char *base, int idx) {
     char *slot = base + idx * 4;
     char *s = *(char **)(slot + 0x50);
     char *no;
@@ -10356,10 +10356,10 @@ int gl_func_0002A3AC(char *base, int idx) {
     return 0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002A3AC);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", AudioSeq_SeqChannelSetLayer);
 #endif
 
-/* gl_func_0002A4D0: MATCH 2026-07-15 (agent-h) via DE-NAMING: no locals at
+/* AudioSeq_SeqLayerDisable: MATCH 2026-07-15 (agent-h) via DE-NAMING: no locals at
  * all — `*a0 &= 0xFF7F; *a0 |= 0x40;` puts every value in the ugen t-ring
  * (named raw/val forms colored to $v0/$v1 = the old "post-call $v-vs-$t
  * regalloc cap"). Store-to-load forwarding supplies the masked value to the
@@ -10368,7 +10368,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002A3AC);
  * narrowing cvt burns exactly one ring temp. 15/15 words. */
 extern int gl_func_00000000();
 
-void gl_func_0002A4D0(unsigned char *a0) {
+void AudioSeq_SeqLayerDisable(unsigned char *a0) {
   if (a0 == 0)
   {
     return;
@@ -10394,12 +10394,12 @@ void AudioSeq_SeqLayerFree(int **a0, int a1) {
     }
 }
 
-// gl_func_0002A55C — STRUCTURAL PASS (0x164 / 89 words, no episode).
+// AudioSeq_SequenceChannelDisable — STRUCTURAL PASS (0x164 / 89 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
 // (named fn + 1 trailing helper) — deferred USO re-split. The named
 // leading fn is an object multi-element constructor.
 //
-//   void gl_func_0002A55C(O *obj) {
+//   void AudioSeq_SequenceChannelDisable(O *obj) {
 //     for (int i = 0; i < 8; i++)
 //       (*initElem)(obj, i);                            // 0x0C00FADE
 //     (*initTail)(&obj->_94);                            // jal 0 USO
@@ -10415,9 +10415,9 @@ void AudioSeq_SeqLayerFree(int **a0, int a1) {
 //   second USO-relocated init on the embedded sub-block at obj+0x94,
 //   and finally stamps the object's primary flag byte +0 — clearing
 //   bit7 and setting bit6 (the "constructed / not-yet-active" marker
-//   the gl_func_0002A3AC lazy-construct also uses). An 8-channel
+//   the AudioSeq_SeqChannelSetLayer lazy-construct also uses). An 8-channel
 //   object constructor in the game_libs object subsystem (the
-//   build-all-channels counterpart to gl_func_00029B6C's
+//   build-all-channels counterpart to Audio_NoteVibratoUpdate's
 //   reset-all-channels). The 1 trailing bundled helper is its
 //   per-channel leaf, left for the deferred USO re-split.
 // Caps (DEFERRED): raw-word USO + fixed/jal-0 USO-reloc per-element
@@ -10425,7 +10425,7 @@ void AudioSeq_SeqLayerFree(int **a0, int a1) {
 //   pad jal infra. STALE 2-jr-bundle comment: grep -c 03E00008 = 1
 //   (.s now single fn). Real-C STRUCTURAL body below per the
 //   analysis. Byte-match deferred. Name pre-checked: no extern reuse.
-/* gl_func_0002A55C — EXACT (2026-07-03, agent-e): 26/27 raw words in build/non_matching .o;
+/* AudioSeq_SequenceChannelDisable — EXACT (2026-07-03, agent-e): 26/27 raw words in build/non_matching .o;
  * the single word-9 "diff" is the R_MIPS_26 site jal gl_ref_0003EB78, which ld bakes to
  * 0x0C00FADE (0x3EB78 >> 2 = 0xFADE) = the target word. objdiff fuzzy = 100.0.
  *
@@ -10442,7 +10442,7 @@ void AudioSeq_SeqLayerFree(int **a0, int a1) {
 extern int gl_func_00000000();
 extern int gl_ref_0003EB78();  /* baked USO jal 0x0C00FADE = real per-element init @0x3EB78 */
 
-void gl_func_0002A55C(unsigned char *obj) {
+void AudioSeq_SequenceChannelDisable(unsigned char *obj) {
     int i;
     for (i = 0; i != 8; i++) {
         gl_ref_0003EB78(obj, i);
@@ -10495,11 +10495,11 @@ unsigned short a1;
     }
 }
 
-// gl_func_0002A6C0 — STRUCTURAL PASS (0x80 / 32 words, no episode).
+// AudioSeq_SequencePlayerDisableChannels — STRUCTURAL PASS (0x80 / 32 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A 0x40-slot table sweep over the &D_5280 array.
 //
-//   void gl_func_0002A6C0(S *tbl, int arg) {
+//   void AudioSeq_SequencePlayerDisableChannels(S *tbl, int arg) {
 //     S *dflt = &D_5280;                                // default ptr
 //     for (int i = 0; i < 0x40; i++) {                    // 64 slots
 //       void *e = tbl->w_38;                              // slot value
@@ -10513,18 +10513,18 @@ unsigned short a1;
 // Struct-typing reference: walks a fixed 0x40 (64)-entry word-strided
 //   table, comparing each slot's pointer field (+0x38) against the
 //   shared default/sentinel &D_5280 (the same null-object sentinel
-//   gl_func_0002A260 / gl_func_0002A55C test). Every slot that has
+//   gl_func_0002A260 / AudioSeq_SequenceChannelDisable test). Every slot that has
 //   been populated (differs from the &D_5280 default) is passed to a
 //   USO-relocated per-slot handler (`jal 0` slot). The caller arg is
 //   threaded through. A bulk "apply to all live slots" sweep over a
 //   bounded object table in the game_libs object subsystem (the
-//   apply-all counterpart to the gl_func_0002A3AC lazy slot
+//   apply-all counterpart to the AudioSeq_SeqChannelSetLayer lazy slot
 //   constructor).
 // Caps (DEFERRED): raw-word USO + jal-0 USO-reloc per-slot handler —
 //   byte-match needs USO mnemonic disasm + reloc-pad jal infra.
 //   Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-// gl_func_0002A6C0 (game_libs, -O2 USO) — BYTE-EXACT (agent-b 2026-06-21).
+// AudioSeq_SequencePlayerDisableChannels (game_libs, -O2 USO) — BYTE-EXACT (agent-b 2026-06-21).
 //   Bulk "apply to all live slots" sweep: for each of 16 table entries, if the
 //   slot's +0x38 word differs from the default object (&D_0+0x5280), invoke the
 //   per-slot handler. Landed via the held-base-pointer lever + 3 codegen
@@ -10537,7 +10537,7 @@ unsigned short a1;
 //   ahead of the two zero-cost moves in the prologue, closing the last 3-word
 //   as1 scheduler tie. gl_func_00000000 = canonical USO placeholder callee.
 extern int gl_func_00000000();
-void gl_func_0002A6C0(char *arg0, s32 arg1) {
+void AudioSeq_SequencePlayerDisableChannels(char *arg0, s32 arg1) {
     s32 dflt = (s32)((char *)&D_00000000 + 0x5280);
     s32 var_s0;
     char *var_s1;
@@ -10553,7 +10553,7 @@ void gl_func_0002A6C0(char *arg0, s32 arg1) {
 // AudioSeq_SequenceChannelEnable — STRUCTURAL PASS (0x98 / 38 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A slot-object reinitializer — SIBLING of the
-// gl_func_0002A55C 8-channel constructor.
+// AudioSeq_SequenceChannelDisable 8-channel constructor.
 //
 //   void AudioSeq_SequenceChannelEnable(S *base, int idx, int a2) {
 //     idx &= 0xFF;
@@ -10569,13 +10569,13 @@ void gl_func_0002A6C0(char *arg0, s32 arg1) {
 //
 // Struct-typing reference: reinitialises the object held in slot
 //   base[idx*4]->0x38 (the same word-strided slot array
-//   gl_func_0002A3AC lazily fills / gl_func_0002A6C0 sweeps). It
+//   AudioSeq_SeqChannelSetLayer lazily fills / AudioSeq_SequencePlayerDisableChannels sweeps). It
 //   clears byte o->0x88 and halfword o->0x1E, stores the caller arg
 //   into word o->0x70, stamps the flag byte o->0 (set bit7 ready /
-//   clear bit6 — same constructed marker as gl_func_0002A55C /
-//   gl_func_0002A3AC), then re-runs the fixed per-element initializer
+//   clear bit6 — same constructed marker as AudioSeq_SequenceChannelDisable /
+//   AudioSeq_SeqChannelSetLayer), then re-runs the fixed per-element initializer
 //   0x0C00FADE (≈0x3EB78) for all 8 sub-elements. The
-//   reinit-existing-slot counterpart to the gl_func_0002A55C
+//   reinit-existing-slot counterpart to the AudioSeq_SequenceChannelDisable
 //   construct-fresh path.
 // 2026-05-31: 72.58% -> 93.39% by fixing two errors: (1) the flag byte o->0 is
 //   stored TWICE — `o->0 = f|0x80` then `o->0 = (f|0x80)&~0x40` (set bit7, then
@@ -10603,7 +10603,7 @@ void gl_func_0002A6C0(char *arg0, s32 arg1) {
  * agent-b levers retained: unsigned char idx param (sw a1,44 + andi a1,0xff homes),
  * array-index form ((char**)(base+0x38))[idx] for the addu operand order, both flag
  * stores via `|0x80` then `&= 0xBF`.
- * Same lever as gl_func_0002A55C's tail (subsumed-mask single-slot ring burn).
+ * Same lever as AudioSeq_SequenceChannelDisable's tail (subsumed-mask single-slot ring burn).
  */
 extern int gl_func_00000000();
 extern int gl_ref_0003EB78();  /* baked USO jal 0x0C00FADE = real per-element init @0x3EB78 */
@@ -10631,12 +10631,12 @@ void AudioSeq_SequenceChannelEnable(char *base, unsigned char idx, int a2) {
  * gl_ref_0003EB78 = 0x0003EB78;
  */
 
-// gl_func_0002A7D8 — STRUCTURAL PASS (0x12C / 75 words, no episode).
+// AudioSeq_SequencePlayerDisable — STRUCTURAL PASS (0x12C / 75 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 4-jr USO bundle
 // (named fn + 3 trailing helpers) — deferred USO re-split. The named
 // leading fn is an object commit / select-finalize.
 //
-//   void gl_func_0002A7D8(O *o) {
+//   void AudioSeq_SequencePlayerDisable(O *o) {
 //     (*pre)(o, 0xFFFF);                                // 0x0C00FB4B
 //     (*sub)(&o->_9C);                                   // jal 0 USO
 //     byte f = o->b_0;
@@ -10684,7 +10684,7 @@ extern int gl_func_00000000();
 extern int gl_func_0003ED2C();
 extern int D_00000000;
 typedef struct { unsigned char b7 : 1; unsigned char b6 : 1; unsigned char rest : 6; } BF2A7D8;
-void gl_func_0002A7D8(char *o) {
+void AudioSeq_SequencePlayerDisable(char *o) {
     int r;
     gl_func_0003ED2C(o, 0xFFFF);
     gl_func_00000000(o + 0x9C);
@@ -10705,7 +10705,7 @@ void gl_func_0002A7D8(char *o) {
 }
 
 // Doubly-linked-list insert-at-head: link a1 before a0's current head.
-void game_libs_func_0002A884(int *a0, int *a1) {
+void AudioSeq_AudioListPushBack(int *a0, int *a1) {
     if (*a1 != 0) {
         return;
     }
@@ -10717,12 +10717,12 @@ void game_libs_func_0002A884(int *a0, int *a1) {
     a1[3] = a0[3];
 }
 
-/* game_libs_func_0002A8C4: doubly-linked-list node detach. splat's jr-ra
+/* AudioSeq_AudioListPopBack: doubly-linked-list node detach. splat's jr-ra
  * heuristic mis-split this into 0002A8C4 (the v1==a0 early-return preamble)
  * and 0002A8D8 (the detach body, reached via the bnel over the early return);
  * both were mislabeled caps. Merged it is one function: $v1 is a0->next set in
  * the preamble, NOT caller-set. */
-int game_libs_func_0002A8C4(void *a0) {
+int AudioSeq_AudioListPopBack(void *a0) {
     void *v1 = *(void**)a0;
     if (v1 == a0) {
         return 0;
@@ -10734,7 +10734,7 @@ int game_libs_func_0002A8C4(void *a0) {
     return *(int*)((char*)v1 + 8);
 }
 
-/* gl_func_0002A904: pool bring-up over the registry block (bootup.uso Data
+/* AudioSeq_InitLayerFreelist: pool bring-up over the registry block (bootup.uso Data
  * sym1255 @0x345C0 = D_00000000_345c0; every HI16/LO16 pair in the body is that
  * symbol with the offset baked as the addend). The list anchor at +0x5368 is
  * made empty (head = tail = &anchor, +0x5370/+0x5374 = 0), then 64 0x80-byte
@@ -10748,7 +10748,7 @@ int game_libs_func_0002A8C4(void *a0) {
  * as hand-held pointers, which is what made IDO merge/derive the bases. */
 typedef struct { int w0; int w4; int w8; char pad[0x74]; } gl_2A904_Elem;
 #define REG_2A904 ((char *)&D_00000000_345c0)
-void gl_func_0002A904(void) {
+void AudioSeq_InitLayerFreelist(void) {
     int i;
     *(int **)(REG_2A904 + 0x5368) = (int *)(REG_2A904 + 0x5368);
     *(int **)(REG_2A904 + 0x536C) = (int *)(REG_2A904 + 0x5368);
@@ -10842,7 +10842,7 @@ int AudioSeq_ScriptReadCompressedU16(unsigned char **a0) {
 //   — 0x0C00FC68 (≈0x3F1A0) → 0x0C00FCE2 (≈0x3F388) → 0x0C00FF18
 //   (≈0x3FC60) — short-circuiting if the middle stage returns -1.
 //   The object-tick/advance leaf of the game_libs object subsystem
-//   (sibling to the gl_func_00029978 tween / gl_func_0002978C ramp
+//   (sibling to the Audio_GetVibratoFreqScale tween / Audio_SequencePlayerProcessSound ramp
 //   steppers).
 // Caps (DEFERRED): raw-word USO + fixed-target step pipeline
 //   (0x3F1A0 → 0x3F388 → 0x3FC60) — byte-match needs USO mnemonic
@@ -10902,11 +10902,11 @@ void AudioSeq_SeqLayerProcessScript(AA30 *o) {
     }
 }
 
-// gl_func_0002AB34 — STRUCTURAL PASS (0x8C / 35 words, no episode).
+// AudioSeq_SeqLayerProcessScriptStep1 — STRUCTURAL PASS (0x8C / 35 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A small object state-transition / latch.
 //
-//   void gl_func_0002AB34(O *o) {
+//   void AudioSeq_SeqLayerProcessScriptStep1(O *o) {
 //     int s = o->w_0;
 //     if ((s << 3) >= 0) {                              // flag bit gate
 //       (*notify)(o->w_2C);                              // jal 0 USO
@@ -10929,16 +10929,16 @@ void AudioSeq_SeqLayerProcessScript(AA30 *o) {
 //   object's primary flag o->0 has bit0 set (a "transition complete /
 //   needs-redraw" marker). A state-acknowledge leaf in the game_libs
 //   object subsystem (operates on the same o->0/0x20/0x2C fields the
-//   gl_func_00028604 detach / gl_func_0002A7D8 commit use).
+//   Audio_SeqLayerDecayRelease detach / AudioSeq_SequencePlayerDisable commit use).
 // Caps (DEFERRED): raw-word USO + jal-0 USO-reloc notify — byte-
 //   match needs USO mnemonic disasm + reloc-pad jal infra. Real-C
 //   STRUCTURAL body below per the analysis. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
-// gl_func_0002AB34 — STRUCTURAL PASS (0x8C / 35 words, no episode).
+// AudioSeq_SeqLayerProcessScriptStep1 — STRUCTURAL PASS (0x8C / 35 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A small object state-transition / latch.
 //
-//   void gl_func_0002AB34(O *o) {
+//   void AudioSeq_SeqLayerProcessScriptStep1(O *o) {
 //     int s = o->w_0;
 //     if ((s << 3) >= 0) {                              // flag bit gate
 //       (*notify)(o->w_2C);                              // jal 0 USO
@@ -10963,7 +10963,7 @@ void AudioSeq_SeqLayerProcessScript(AA30 *o) {
 //   object's primary flag o->0 has bit0 set (a "transition complete /
 //   needs-redraw" marker). A state-acknowledge leaf in the game_libs
 //   object subsystem (operates on the same o->0/0x20/0x2C fields the
-//   gl_func_00028604 detach / gl_func_0002A7D8 commit use).
+//   Audio_SeqLayerDecayRelease detach / AudioSeq_SequencePlayerDisable commit use).
 // 2026-07-17 AUDIT REWRITE (agent-h, 68.69% -> 27/35 words exact, all 8
 //   residual diffs pure temp-ring numbering). THREE decode errors fixed vs
 //   the old lift: (1) the self-link check is `o == PARENT->w_48` — target
@@ -10989,7 +10989,7 @@ typedef struct {
     unsigned int rest : 24;
 } ObjFlags2AB34;
 extern int gl_func_00000000();
-void gl_func_0002AB34(char *o) {
+void AudioSeq_SeqLayerProcessScriptStep1(char *o) {
     int st;
     if (!((ObjFlags2AB34 *)o)->b3) {
         gl_func_00000000();
@@ -11006,11 +11006,11 @@ void gl_func_0002AB34(char *o) {
     ((ObjFlags2AB34 *)o)->b7 = 1;
 }
 
-// gl_func_0002ABC0 — STRUCTURAL PASS (0x15C / 87 words, no episode).
+// AudioSeq_SeqLayerProcessScriptStep5 — STRUCTURAL PASS (0x15C / 87 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A packed-id decode + list lookup / state toggle.
 //
-//   void gl_func_0002ABC0(O *o) {
+//   void AudioSeq_SeqLayerProcessScriptStep5(O *o) {
 //     int w = o->w_0;
 //     if ((w << 2) < 0) { ... bit29 path ... }
 //     N *list = o->w_4C;
@@ -11038,7 +11038,7 @@ void gl_func_0002AB34(char *o) {
 //   layout AudioLoad_SyncLoadSample / 00023914 use) — byte-match needs USO
 //   mnemonic disasm. Real-C STRUCTURAL body below per the analysis.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-/* gl_func_0002ABC0 EXACT 2026-10-23 (agent-c run 140, 84.24 -> 100): OoT's
+/* AudioSeq_SeqLayerProcessScriptStep5 EXACT 2026-10-23 (agent-c run 140, 84.24 -> 100): OoT's
  * AudioSeq_SeqLayerProcessScriptStep5 (seqplayer.c) verbatim, with the layer flags as
  * one u32 bitfield run (lw + shifts) and `sameTunedSample` declared u32: then its
  * `== 1` test shares the unsigned constant 1 the bitfield compares hold in a0 (an s32
@@ -11057,7 +11057,7 @@ typedef struct gl_2ABC0_Note { char listItem[0x10]; gl_2ABC0_PlaybackState playb
 #define Audio_NoteVibratoInit gl_func_00000000
 #define Audio_NotePortamentoInit gl_func_00000000
 
-s32 gl_func_0002ABC0(gl_2ABC0_Layer *layer, u32 sameTunedSample) {
+s32 AudioSeq_SeqLayerProcessScriptStep5(gl_2ABC0_Layer *layer, u32 sameTunedSample) {
     gl_2ABC0_Note *note;
 
     if (!layer->muted && (layer->tunedSample != NULL) && (layer->tunedSample->sample->codec == 2) &&
@@ -11149,12 +11149,12 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(void *o) {
     return ret;
 }
 
-// gl_func_0002B09C — STRUCTURAL PASS (0x558 / 342 words ≈ 1.4KB, no
+// AudioSeq_SeqLayerProcessScriptStep4 — STRUCTURAL PASS (0x558 / 342 words ≈ 1.4KB, no
 // episode). Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION
 // (1 jr, no bundle). The per-opcode command-step EXECUTOR body that
 // the AudioSeq_SeqLayerProcessScriptStep2 VM run loop calls. Large -0x70 frame.
 //
-//   int gl_func_0002B09C(O *o, int a1) {
+//   int AudioSeq_SeqLayerProcessScriptStep4(O *o, int a1) {
 //     char *buf = o->w_50;                              // script buf
 //     int   cur = o->w_4C;                               // cursor
 //     if (o->b_2 != 0xFF) {
@@ -11231,14 +11231,14 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(void *o) {
  * t3 at 108 and spills a2 into the a0 slot 112); probes (u32 param, local copy,
  * decl order, t3 init order) all keep the home. Tail: target loads the 3-deep
  * 0x4C chain before sp38->8 and puts sh zero,10 after the lwc1s. */
-/* gl_func_0002B09C EXACT 2026-10-24 (agent-c run 141, 87.77 -> 100): OoT's
+/* AudioSeq_SeqLayerProcessScriptStep4 EXACT 2026-10-24 (agent-c run 141, 87.77 -> 100): OoT's
  * AudioSeq_SeqLayerProcessScriptStep4 in its older form (no semitone field, no
  * delay guard on the special portamento speed, short zero-delay tail). WIRED via
  * REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1 -O2 donor unit
  * game_libs_o2_2B09C.c (342/342 words); the splice renames the donor-local
- * .rodata jumptable reloc to gl_func_0002B09C_rodata, pinned to the USO table at
+ * .rodata jumptable reloc to AudioSeq_SeqLayerProcessScriptStep4_rodata, pinned to the USO table at
  * +0x1098. Body below is a placeholder for the splice. */
-int gl_func_0002B09C(char *arg0, int arg1) {
+int AudioSeq_SeqLayerProcessScriptStep4(char *arg0, int arg1) {
     volatile int ret = arg1;
     return ret;
 }
@@ -11247,7 +11247,7 @@ int gl_func_0002B09C(char *arg0, int arg1) {
 // episode). Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO
 // bundle (named fn + 1 trailing helper) — deferred USO re-split. The
 // named leading fn is the 0xC0-class command-step executor — SIBLING
-// of the gl_func_0002B09C per-opcode executor.
+// of the AudioSeq_SeqLayerProcessScriptStep4 per-opcode executor.
 //
 //   int AudioSeq_SeqLayerProcessScriptStep3(O *o, int op) {
 //     char *buf = o->w_50;                              // script buf
@@ -11265,7 +11265,7 @@ int gl_func_0002B09C(char *arg0, int arg1) {
 //   }
 //
 // Struct-typing reference: a second per-opcode command-step body for
-//   the script VM (the 0xC0..0xFF opcode class; gl_func_0002B09C
+//   the script VM (the 0xC0..0xFF opcode class; AudioSeq_SeqLayerProcessScriptStep4
 //   covers a different range). o->0x50 / o->0x4C are the same script
 //   buffer / cursor; o->0x54 the operand sub-block fed to the shared
 //   fixed fetch routine 0x0C00FC17 (≈0x3F05C, the same opcode reader
@@ -11274,7 +11274,7 @@ int gl_func_0002B09C(char *arg0, int arg1) {
 //   cleared — a transient processing marker); word o->0 also carries
 //   packed control bits (the `<<6>>31` test). The opcode group is
 //   `op & 0xC0` with the 0x40 / 0xC0 sub-cases dispatched. Peer to
-//   gl_func_0002B09C in the AudioSeq_SeqLayerProcessScriptStep2 interpreter's executor
+//   AudioSeq_SeqLayerProcessScriptStep4 in the AudioSeq_SeqLayerProcessScriptStep2 interpreter's executor
 //   set. The trailing bundled helper is its leaf, left for the
 //   deferred USO re-split.
 // Caps (DEFERRED): raw-word USO + opcode-group executor with fixed-
@@ -11285,7 +11285,7 @@ int gl_func_0002B09C(char *arg0, int arg1) {
 //   extern reuse.
 // AudioSeq_SeqLayerProcessScriptStep3 — RECONSTRUCTION (75.96% fuzzy, no episode).
 // 0xC0-class command-step executor; game_libs script-VM sibling of
-// gl_func_0002B09C. Reads an argument byte/halfword from the script
+// AudioSeq_SeqLayerProcessScriptStep4. Reads an argument byte/halfword from the script
 // buffer (o->0x54 cursor) gated by op&0xC0, computes a normalized
 // intensity (o->0x3C = arg^2/CONST), applies a per-frame random ramp
 // (o->0x38), and a percent-modulated secondary value (o->0xA). The
@@ -11419,13 +11419,13 @@ void AudioSeq_SetInstrument(char *o, unsigned char op) {
     ((Gl2BAACFlags *)o)->f3 = 1;
 }
 
-/* game_libs_func_0002BB58: 9-insn byte-to-float-scale leaf (EXACT).
+/* AudioSeq_SequenceChannelSetVolume: 9-insn byte-to-float-scale leaf (EXACT).
  * `a0[0x2C] = (float)(a1 & 0xFF) / 127.0f` (div.s, not mul.s).
  * The entry `sw a1,4(sp); andi a1,a1,0xff` is an `unsigned char` param
  * narrowed in place (#uchar-param-inplace-narrow-ushort-burn-2a014) --
  * not an arg-home sentinel. `(int)a1` before the convert keeps the plain
  * cvt.s.w (a bare u8 operand goes through the unsigned bgez/2^32 fixup). */
-void game_libs_func_0002BB58(int *a0, unsigned char a1) {
+void AudioSeq_SequenceChannelSetVolume(int *a0, unsigned char a1) {
     *(float*)((char*)a0 + 0x2C) = (int)a1 / 127.0f;
 }
 
@@ -11464,13 +11464,13 @@ void AudioSeq_SequenceChannelProcessScript(void *o) {
 //
 // Struct-typing reference: the active-bit-gated per-object processor
 //   (word o->0 sign bit = active; the same packed-status word the
-//   AudioSeq_SequenceChannelProcessScript tick / gl_func_0002ABC0 classifier use). Byte
+//   AudioSeq_SequenceChannelProcessScript tick / AudioSeq_SeqLayerProcessScriptStep5 classifier use). Byte
 //   fields o->4 / o->5 are mode/type selectors driving a long chain
 //   of USO-relocated handler calls (`jal 0` slots, several with the
 //   constant 2). The body then indexes a &D_0 table by a packed index
 //   derived from o->0 and reads the sprite-subsystem count globals
 //   &D_0+0x2040 (halfword) / &D_0+0x2070 (word — the same record
-//   count AudioSynth_ProcessNote / gl_func_00027E24 use). A heavyweight
+//   count AudioSynth_ProcessNote / Audio_ProcessNotes use). A heavyweight
 //   command/state-advance peer to AudioSeq_SequenceChannelProcessScript — the
 //   AudioSeq_SeqLayerProcessScriptStep2 interpreter's other large per-object driver.
 // Caps (DEFERRED): raw-word USO + large multi-phase command
@@ -11496,15 +11496,15 @@ void AudioSeq_SequencePlayerProcessSequence(void *o) {
 }
 
 
-/* game_libs_func_0002CF60 (0xB4, 45 insns): per-record activate sweep over the
+/* AudioSeq_ProcessSequences (0xB4, 45 insns): per-record activate sweep over the
  * 0x160-stride record table @+0x2D00 of the registry block (bootup.uso Data
  * sym1255 @0x345C0, addend 0 -> own zero extern D_00000000_345c0; the
  * 24E28 / 258C0 base). Head: caches (h2040 - a0 - 1) * w2070 into +0x5364.
  * Loop: for each of the h2048 records whose word0 sign bit is set, call the
  * baked text jal 0x40E10 (gl_ref_00040E10, mid-body alt-entry of
  * gl_func_00040DE8 -- the 2D014 callee) then the blank jal sym1414 (text
- * 0x3DDF8 = gl_func_0002978C); afterwards the blank jal sym1397 (text 0x3C490
- * = gl_func_00027E24) with no args.
+ * 0x3DDF8 = Audio_SequencePlayerProcessSound); afterwards the blank jal sym1397 (text 0x3C490
+ * = Audio_ProcessNotes) with no args.
  *
  * bootup.uso Sym exports section 0x415CC = splat 0x2CF60 (ROM 0xE12038 -
  * 0xDD0A6C; jal'd from TextReloc @0x3142C); 0x415DC = 0x2CF70 is NOT
@@ -11526,7 +11526,7 @@ extern int D_00000000_345c0;
 extern int gl_func_00000000();
 extern int gl_ref_00040E10();    /* mid-body alt-entry (baked jal 0x0C010384) */
 #define REG_2CF60 ((char *)&D_00000000_345c0)
-void game_libs_func_0002CF60(int a0) {
+void AudioSeq_ProcessSequences(int a0) {
     unsigned int i;
     char *rec;
 
@@ -11541,7 +11541,7 @@ void game_libs_func_0002CF60(int a0) {
     gl_func_00000000();
 }
 
-/* gl_func_0002D014 — EXACT (2026-07-03, agent-e): 19/20 raw words in build/non_matching .o;
+/* AudioSeq_SkipForwardSequence — EXACT (2026-07-03, agent-e): 19/20 raw words in build/non_matching .o;
  * the single word-7 "diff" is the R_MIPS_26 site jal gl_ref_00040E10, which ld bakes to
  * 0x0C010384 (0x40E10 >> 2 = 0x10384) = the target word (mid-function alt-entry into
  * gl_func_00040DE8's body; gl_ref_00040E10 = 0x00040E10; already in undefined_syms_auto.txt).
@@ -11558,7 +11558,7 @@ void game_libs_func_0002CF60(int a0) {
 extern int gl_func_00000000();
 extern int gl_ref_00040E10();    /* mid-body alt-entry (baked jal 0x0C010384) */
 
-void gl_func_0002D014(int *a0) {
+void AudioSeq_SkipForwardSequence(int *a0) {
     register int *s0 = a0;
     if (*(int*)((char*)s0 + 0xDC) > 0) {
         do {
@@ -11569,7 +11569,7 @@ void gl_func_0002D014(int *a0) {
     }
 }
 
-/* gl_func_0002D064: 51-insn (0xCC) per-frame init with 16-iter call loop.
+/* AudioSeq_ResetSequencePlayer: 51-insn (0xCC) per-frame init with 16-iter call loop.
  * Matched 2026-05-14 via 4-step refinement chain: ~K andi mask form,
  * cse-bust-via-distinct-externs for &D_0 stores at +148/+152, $s0
  * priority via `i = 0;` first body assignment, and store-statement
@@ -11577,7 +11577,7 @@ void gl_func_0002D014(int *a0) {
 extern char D_2D064_148;
 extern char D_2D064_152;
 extern int gl_ref_0003E8C4();
-void gl_func_0002D064(char *a0) {
+void AudioSeq_ResetSequencePlayer(char *a0) {
     char *p;
     int i;
     gl_func_00000000();
@@ -11612,7 +11612,7 @@ void gl_func_0002D064(char *a0) {
  * Initializing the walking pointer in the for clause preserves the target
  * prologue schedule. The final call is the nonzero 0x3E8C4 import. */
 extern int gl_alloc_2D130();
-void gl_func_0002D130(int a0) {
+void AudioSeq_InitSequencePlayerChannels(int a0) {
     char *base = (char *)&D_00000000;
     int *s3 = (int*)(base + (a0 * 0x160) + 0x2D00);
     char *d5280 = base + 0x5280;
@@ -11643,7 +11643,7 @@ void gl_func_0002D130(int a0) {
 }
 
 #ifdef NON_MATCHING
-/* gl_func_0002D224: 52-insn (0xD0) init with 2 loops + bit-clear chain.
+/* AudioSeq_InitSequencePlayer: 52-insn (0xD0) init with 2 loops + bit-clear chain.
  *
  *   self = a0;
  *   v1 = self;
@@ -11668,7 +11668,7 @@ void gl_func_0002D130(int a0) {
  *   gl_func(self);                              ; alt-entry call (recursive into init?)
  *
  * Initial structural pass; cross-USO alt-entry call shape caps expected. */
-void gl_func_0002D224(char *a0) {
+void AudioSeq_InitSequencePlayer(char *a0) {
     char *base = &D_00000000;
     char *v1;
     int i;
@@ -11700,10 +11700,10 @@ void gl_func_0002D224(char *a0) {
     gl_func_00000000(a0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002D224);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", AudioSeq_InitSequencePlayer);
 #endif
 
-/* gl_func_0002D2F4: per-frame reset. Call 0x3EF70; for the 64 0x80-byte
+/* AudioSeq_InitSequencePlayers: per-frame reset. Call 0x3EF70; for the 64 0x80-byte
  * records at D+0x3280 clear bit 7 of byte 0 and zero the int at +0x50;
  * then call 0x41890 on each of the 4 0x160-byte entries at D+0x2D00.
  * Baked in-unit jals pinned as gl_ref_0003EF70 / gl_ref_00041890.
@@ -11718,7 +11718,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0002D224);
  * pairs schedule s0,s1,s0,s1 / s1,s0,s1,s0 instead of the target's s0,s1,s1,s0. */
 extern void gl_ref_0003EF70();
 extern void gl_ref_00041890();
-void gl_func_0002D2F4(void) {
+void AudioSeq_InitSequencePlayers(void) {
     char *p, *s0, *end, *end2;
     gl_ref_0003EF70();
     p = (char*)&D_00000000; end = (char*)&D_00000000 + 0x2000;
@@ -11739,7 +11739,7 @@ void gl_func_0002D2F4(void) {
  * The old 4-word orphan also carried `lui t6; lw t6,0(t6)` = the hoisted first
  * statement (mode read) of game_libs_func_0002D374 below (merged 2026-09-06). */
 /* (folded 2026-10-24 agent-c run 150: the two zero words are an all-zero
- * SUFFIX_BYTES_FORCE on gl_func_0002D2F4; expected/ symbol deleted, gl_func_0002D2F4 grown by 8.) */
+ * SUFFIX_BYTES_FORCE on AudioSeq_InitSequencePlayers; expected/ symbol deleted, AudioSeq_InitSequencePlayers grown by 8.) */
 
 // game_libs_func_0002D374 (ex gl_func_0002D37C; bootup.uso Sym exports section
 // 0x419E0 = splat 0x2D374, the `lui t6; lw t6` mode read that splat had lumped
@@ -12943,8 +12943,8 @@ int game_libs_func_0002E290(unsigned char *o) {
 // Struct-typing reference: the top-level per-object processor of the
 //   game_libs object subsystem — it ties together everything decoded
 //   in this file: the AudioSeq_SequenceChannelProcessScript / AudioSeq_SequencePlayerProcessSequence command
-//   drivers, the gl_func_00029978 / AudioSeq_SeqLayerProcessScript keyframe
-//   steppers, the Audio_InitSampleState / gl_func_00029494 matrix loaders
+//   drivers, the Audio_GetVibratoFreqScale / AudioSeq_SeqLayerProcessScript keyframe
+//   steppers, the Audio_InitSampleState / Audio_NoteInitAll matrix loaders
 //   and the gl_func_0002E1C0 / gl_func_0002E24C event triggers. It is
 //   gated on a global config word (`*&D_xxx`, 0 = idle, 4 = special)
 //   and a global state machine word (`*&D_yyy` in 1..3); object
@@ -13694,7 +13694,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0002F1B8);
 //   The result is saturated using the float literals 0.25f / 0.5f /
 //   127.0f (0x3E80/0x3F00/0x42FE0000) before write-back to o->0. A
 //   physics/easing leaf of the game_libs object subsystem (peer to
-//   the gl_func_0002978C ramp / gl_func_00029978 tween steppers,
+//   the Audio_SequencePlayerProcessSound ramp / Audio_GetVibratoFreqScale tween steppers,
 //   driven by the gl_func_0002E354 orchestrator).
 // Caps (DEFERRED): raw-word USO + heavy single-prec FP integrate/
 //   clamp idiom — byte-match needs USO mnemonic disasm. Real-C

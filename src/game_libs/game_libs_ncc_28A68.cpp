@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00028A68 (0xA4 / 41 words): init a list head and
+/* IDO 7.1 NCC (C++) donor for Audio_InitNoteFreeList (0xA4 / 41 words): init a list head and
  * register every 0xD0-byte record of the global pool with it, storing each
  * record's own address at +8 and clearing +0. Under NCC the addu operand order
  * follows the source (kit XX): the stored value is an int sum (off first), the
@@ -9,7 +9,7 @@
 extern "C" {
 extern void gl_func_00000000(...);
 extern int D_00000000;
-void gl_func_00028A68(void) {
+void Audio_InitNoteFreeList(void) {
     char *tbl = (char *)&D_00000000 + 0x5378;
     int i;
     int off;

@@ -1,12 +1,12 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_0002B09C (0x558 / 342 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep4 (0x558 / 342 words) = OoT's
  * AudioSeq_SeqLayerProcessScriptStep4 (seqplayer.c) in its older (SM64-era)
  * form: no layer->semitone field (layer +4 is portamentoTargetNote), no
  * `layer->delay != 0` guard on the special-portamento speed, and the
  * zero-delay tail has no NULL-sample / 0x7FFE clamp / speed2 block. Spliced into
  * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local
- * .rodata jumptable reloc (portamento mode switch) to gl_func_0002B09C_rodata,
+ * .rodata jumptable reloc (portamento mode switch) to AudioSeq_SeqLayerProcessScriptStep4_rodata,
  * pinned to the USO table at +0x1098. Load-bearing: channel / seqPlayer loaded before
  * instOrWave; ticksPerUpdate read through its own audio-buffer-parameters symbol
  * (gl_2B09C_bufParams, SM64's separate gAudioBufferParameters global): through
@@ -46,7 +46,7 @@ extern void *gl_func_00000000();
 #define PORTAMENTO_MODE(p) ((p).mode & ~0x80)
 #define PORTAMENTO_IS_SPECIAL(p) ((p).mode & 0x80)
 
-s32 gl_func_0002B09C(gl_2B09C_Layer *layer, s32 cmd) {
+s32 AudioSeq_SeqLayerProcessScriptStep4(gl_2B09C_Layer *layer, s32 cmd) {
     s32 sameTunedSample = 1;
     s32 instOrWave;
     s32 speed;

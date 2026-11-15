@@ -1,4 +1,4 @@
-/* game_libs_func_00029CCC -- keyframe/envelope stepper: 9-state machine on a
+/* Audio_AdsrUpdate -- keyframe/envelope stepper: 9-state machine on a
  * packed status byte, returns the current value clamped to [0,1].
  *
  * BOUNDARY FIX (2026-09-05, agent-c): ONE function that splat had split into
@@ -12,7 +12,7 @@
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post.c.o: a C
  * `switch` puts its jumptable in the donor's local .rodata; the splice renames
- * that reloc to game_libs_func_00029CCC_rodata, pinned in undefined_syms_auto
+ * that reloc to Audio_AdsrUpdate_rodata, pinned in undefined_syms_auto
  * to the table the USO ships at data +0xFF0 (9 entries: 29CFC 29D08 29D28
  * 29D38 29E78 29F68 29EB0 29EB0 29F40). The three float literals are also
  * shipped in the USO data segment right after the table (+0x1014 = 32767.0f,
@@ -51,7 +51,7 @@ extern float gl_ref_00001014_f;  /* 32767.0f */
 extern float gl_ref_00001018_f;  /* 1e-5f */
 extern float gl_ref_00002058_f;  /* 0.017453292f (pi/180) */
 
-float game_libs_func_00029CCC(Env *p) {
+float Audio_AdsrUpdate(Env *p) {
     unsigned char s = p->state;
     float r;
 

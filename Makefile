@@ -991,18 +991,18 @@ build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_TEXT_CLIP_KEEP
 # 0x17a48 -> 0x17a74 (2026-10-23 agent-c): AudioSynth_InitNextRingBuf absorbed the 11-word head
 # that sat at the end of the game_libs_text2_tail bin (tenshoe.yaml boundary 0xE01AE8 -> 0xE01ABC).
 build/src/game_libs/game_libs_post.c.o: TRUNCATE_TEXT := 0x17a74
-# game_libs_func_000295BC: the two all-zero ROM words at 0x295BC-0x295C3 are
-# inter-fn pad (real entry 0x295C4); appended to gl_func_00029494 as an all-zero
+# Audio_SequenceChannelProcessSound: the two all-zero ROM words at 0x295BC-0x295C3 are
+# inter-fn pad (real entry 0x295C4); appended to Audio_NoteInitAll as an all-zero
 # SUFFIX_BYTES_FORCE. expected/ metadata: 29494 size 0x128->0x130, 295BC value +8
 # size 0x1D0->0x1C8 (scripts/elf-symtab-edit.py; .text + relocs unchanged).
 # AudioHeap_InitAdsrDecayTable: the three all-zero ROM words at 0x1F6A8-0x1F6B3 are inter-fn
 # pad (real entry 0x1F6B4); appended to AudioSynth_ApplyHaasEffect (expected/: F3C8 size 0x2E0->0x2EC,
 # 1F6A8 value +0xC size 0x378->0x36C).
 # game_libs_func_0002266C / game_libs_func_0002D36C: 2-word all-zero pads folded into AudioHeap_DiscardSampleCaches /
-# gl_func_0002D2F4 as zero SUFFIX words (agent-c run 150; expected/ symbols deleted with
+# AudioSeq_InitSequencePlayers as zero SUFFIX words (agent-c run 150; expected/ symbols deleted with
 # scripts/elf-symtab-delete.py, predecessors +8; .text + relocs unchanged).
-build/src/game_libs/game_libs_post.c.o: SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 AudioHeap_DiscardSampleCaches=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 AudioHeap_DiscardSampleCaches=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
+build/src/game_libs/game_libs_post.c.o: SUFFIX_BYTES_FORCE := Audio_NoteInitAll=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 AudioHeap_DiscardSampleCaches=0x00000000,0x00000000 AudioSeq_InitSequencePlayers=0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := Audio_NoteInitAll=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 AudioHeap_DiscardSampleCaches=0x00000000,0x00000000 AudioSeq_InitSequencePlayers=0x00000000,0x00000000
 # 70FA4 = the merged full function (head fragment 70FA0 + the old g3_70FBC
 # tail carve); -O1 -g3 is the matching mode. .text ends with 8 bytes of
 # natural zero padding = the 0x70FCC/0x70FD0 pad nops before 70FCC=fcos.
@@ -2550,7 +2550,7 @@ GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o
 # 29CCC = envelope/keyframe stepper (9-case jumptable switch), IDO 7.1 -O2
 # donor: game_libs_o2_29CCC.c (207/207 word-exact). Spliced only so the C
 # switch's local .rodata jumptable reloc gets renamed to
-# game_libs_func_00029CCC_rodata and pinned to the USO's table at +0xFF0.
+# Audio_AdsrUpdate_rodata and pinned to the USO's table at +0xFF0.
 GAMELIBS_29CCC_DONOR := build/src/game_libs/game_libs_o2_29CCC.c.o
 # 2E290 = selector-byte lookup with mask-narrowing retry loop (32-entry
 # jumptable switch), IDO 7.1 -O2 donor: game_libs_o2_2E290.c (49/49
@@ -2558,9 +2558,9 @@ GAMELIBS_29CCC_DONOR := build/src/game_libs/game_libs_o2_29CCC.c.o
 # reloc is renamed game_libs_func_0002E290_rodata and pinned to the USO's
 # table at +0x1660 (in-unit compile cannot bake the %lo). Uses += so it
 # composes with any other REPLACE_FUNC_BODY spec on game_libs_post.c.o
-# (origin/main carries game_libs_func_00029CCC on the same unit).
+# (origin/main carries Audio_AdsrUpdate on the same unit).
 GAMELIBS_2E290_DONOR := build/src/game_libs/game_libs_o2_2E290.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY := game_libs_func_00029CCC=$(GAMELIBS_29CCC_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: REPLACE_FUNC_BODY := Audio_AdsrUpdate=$(GAMELIBS_29CCC_DONOR)
 # 33094 = camera look-at update as real C++ on the V3 kit (agent-c run 202; agent-g run 289: named `f32 ten` scale
 # factor + += order x y z). EXACT NCC donor over an empty placeholder (agent-g run 289).
 GAMELIBS_33094_DONOR := build/src/game_libs/game_libs_ncc_33094.cpp.o
@@ -2628,9 +2628,9 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 2B09C = AudioSeq_SeqLayerProcessScriptStep4 (OoT seqplayer.c, older form;
 # portamento-mode switch), IDO 7.1 -O2 donor: game_libs_o2_2B09C.c (342/342 words).
 # Spliced so the donor-local .rodata jumptable reloc is renamed
-# gl_func_0002B09C_rodata and pinned to the USO table at +0x1098. Uses +=.
+# AudioSeq_SeqLayerProcessScriptStep4_rodata and pinned to the USO table at +0x1098. Uses +=.
 GAMELIBS_2B09C_DONOR := build/src/game_libs/game_libs_o2_2B09C.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002B09C=$(GAMELIBS_2B09C_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqLayerProcessScriptStep4=$(GAMELIBS_2B09C_DONOR)
 # 2B5F4 = AudioSeq_SeqLayerProcessScriptStep3 (OoT seqplayer.c), IDO 7.1 -O2
 # donor: game_libs_o2_2B5F4.c. Spliced so the donor-local .rodata reloc (the
 # SQ(127.0f) literal) is renamed AudioSeq_SeqLayerProcessScriptStep3_rodata and pinned to the USO
@@ -2681,7 +2681,7 @@ GAMELIBS_26790_DONOR := build/src/game_libs/game_libs_o2_26790.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessGlobalCmd=$(GAMELIBS_26790_DONOR)
 # 28A68 = pool init: link 0xD0-byte records into a list (NCC operand order: int value, pointer address); NCC donor.
 GAMELIBS_28A68_DONOR := build/src/game_libs/game_libs_ncc_28A68.cpp.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00028A68=$(GAMELIBS_28A68_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += Audio_InitNoteFreeList=$(GAMELIBS_28A68_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_28A68_DONOR)
 # 308AC = mode setter over a module-LOCAL static block (merged head 308AC + body 308C8, 62 words); NCC donor.
 # Its .bss reloc is renamed game_libs_func_000308AC_bss by the splice (pinned to 0 in undefined_syms_auto.txt).
@@ -3780,10 +3780,10 @@ build/src/match_imports/game_libs_func_0000CBF0.c.o: src/match_imports/game_libs
 build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o: src/match_imports/game_libs_func_0000CBF0.c src/match_imports/context_game_libs_tail.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_libs_func_00029BC8.c.o: src/match_imports/game_libs_func_00029BC8.c src/match_imports/context_game_libs_post.h
+build/src/match_imports/Audio_NoteVibratoInit.c.o: src/match_imports/Audio_NoteVibratoInit.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o: src/match_imports/game_libs_func_00029BC8.c src/match_imports/context_game_libs_post.h
+build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o: src/match_imports/Audio_NoteVibratoInit.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/game_libs_func_0002E0C4.c.o: src/match_imports/game_libs_func_0002E0C4.c src/match_imports/context_game_libs_post.h
@@ -3840,16 +3840,16 @@ build/src/match_imports/gl_func_0000D288.c.o: src/match_imports/gl_func_0000D288
 build/non_matching/src/match_imports/gl_func_0000D288.c.o: src/match_imports/gl_func_0000D288.c src/match_imports/context_game_libs_tail.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_0002A3AC.c.o: src/match_imports/gl_func_0002A3AC.c src/match_imports/context_game_libs_post.h
+build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o: src/match_imports/AudioSeq_SeqChannelSetLayer.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_0002A3AC.c.o: src/match_imports/gl_func_0002A3AC.c src/match_imports/context_game_libs_post.h
+build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o: src/match_imports/AudioSeq_SeqChannelSetLayer.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_0002D224.c.o: src/match_imports/gl_func_0002D224.c src/match_imports/context_game_libs_post.h
+build/src/match_imports/AudioSeq_InitSequencePlayer.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_0002D224.c.o: src/match_imports/gl_func_0002D224.c src/match_imports/context_game_libs_post.h
+build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gl_func_0002D910.c.o: src/match_imports/gl_func_0002D910.c src/match_imports/context_game_libs_post.h
@@ -4354,12 +4354,12 @@ build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf: build/src/match_
 build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o scripts/match-origins-game_libs_func_0000CBF0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0000CBF0-nm.ld -e game_libs_func_0000CBF0 -o $@ $@.stripped.o
-build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf: build/src/match_imports/game_libs_func_00029BC8.c.o scripts/match-origins-game_libs_func_00029BC8.ld
+build/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf: build/src/match_imports/Audio_NoteVibratoInit.c.o scripts/match-origins-Audio_NoteVibratoInit.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00029BC8.ld -e game_libs_func_00029BC8 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf: build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o scripts/match-origins-game_libs_func_00029BC8-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Audio_NoteVibratoInit.ld -e Audio_NoteVibratoInit -o $@ $@.stripped.o
+build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf: build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o scripts/match-origins-Audio_NoteVibratoInit-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00029BC8-nm.ld -e game_libs_func_00029BC8 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Audio_NoteVibratoInit-nm.ld -e Audio_NoteVibratoInit -o $@ $@.stripped.o
 build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf: build/src/match_imports/game_libs_func_0002E0C4.c.o scripts/match-origins-game_libs_func_0002E0C4.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_0002E0C4.ld -e game_libs_func_0002E0C4 -o $@ $@.stripped.o
@@ -4414,18 +4414,18 @@ build/src/match_imports/gl_func_0000D288.c.o.linked.elf: build/src/match_imports
 build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0000D288.c.o scripts/match-origins-gl_func_0000D288-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0000D288-nm.ld -e gl_func_0000D288 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf: build/src/match_imports/gl_func_0002A3AC.c.o scripts/match-origins-gl_func_0002A3AC.ld
+build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf: build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o scripts/match-origins-AudioSeq_SeqChannelSetLayer.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002A3AC.ld -e gl_func_0002A3AC -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002A3AC.c.o scripts/match-origins-gl_func_0002A3AC-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-AudioSeq_SeqChannelSetLayer.ld -e AudioSeq_SeqChannelSetLayer -o $@ $@.stripped.o
+build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf: build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o scripts/match-origins-AudioSeq_SeqChannelSetLayer-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002A3AC-nm.ld -e gl_func_0002A3AC -o $@ $@.stripped.o
-build/src/match_imports/gl_func_0002D224.c.o.linked.elf: build/src/match_imports/gl_func_0002D224.c.o scripts/match-origins-gl_func_0002D224.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-AudioSeq_SeqChannelSetLayer-nm.ld -e AudioSeq_SeqChannelSetLayer -o $@ $@.stripped.o
+build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf: build/src/match_imports/AudioSeq_InitSequencePlayer.c.o scripts/match-origins-AudioSeq_InitSequencePlayer.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D224.ld -e gl_func_0002D224 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_0002D224.c.o scripts/match-origins-gl_func_0002D224-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-AudioSeq_InitSequencePlayer.ld -e AudioSeq_InitSequencePlayer -o $@ $@.stripped.o
+build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf: build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o scripts/match-origins-AudioSeq_InitSequencePlayer-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D224-nm.ld -e gl_func_0002D224 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-AudioSeq_InitSequencePlayer-nm.ld -e AudioSeq_InitSequencePlayer -o $@ $@.stripped.o
 build/src/match_imports/gl_func_0002D910.c.o.linked.elf: build/src/match_imports/gl_func_0002D910.c.o scripts/match-origins-gl_func_0002D910.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_0002D910.ld -e gl_func_0002D910 -o $@ $@.stripped.o
@@ -4892,10 +4892,10 @@ build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: build/
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0000CBF0.json $@
 build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf scripts/match-bindings-game_libs_func_0000CBF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0000CBF0-nm.json $@
-build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf scripts/match-bindings-game_libs_func_00029BC8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00029BC8.json $@
-build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf scripts/match-bindings-game_libs_func_00029BC8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00029BC8-nm.json $@
+build/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf: build/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf scripts/match-bindings-Audio_NoteVibratoInit.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Audio_NoteVibratoInit.json $@
+build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf scripts/match-bindings-Audio_NoteVibratoInit-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Audio_NoteVibratoInit-nm.json $@
 build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf scripts/match-bindings-game_libs_func_0002E0C4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_0002E0C4.json $@
 build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf scripts/match-bindings-game_libs_func_0002E0C4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -4932,14 +4932,14 @@ build/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: build/src/mat
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0000D288.json $@
 build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf scripts/match-bindings-gl_func_0000D288-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0000D288-nm.json $@
-build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf scripts/match-bindings-gl_func_0002A3AC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002A3AC.json $@
-build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf scripts/match-bindings-gl_func_0002A3AC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002A3AC-nm.json $@
-build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002D224.c.o.linked.elf scripts/match-bindings-gl_func_0002D224.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D224.json $@
-build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf scripts/match-bindings-gl_func_0002D224-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D224-nm.json $@
+build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf scripts/match-bindings-AudioSeq_SeqChannelSetLayer.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_SeqChannelSetLayer.json $@
+build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf scripts/match-bindings-AudioSeq_SeqChannelSetLayer-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_SeqChannelSetLayer-nm.json $@
+build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf scripts/match-bindings-AudioSeq_InitSequencePlayer.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_InitSequencePlayer.json $@
+build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf scripts/match-bindings-AudioSeq_InitSequencePlayer-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_InitSequencePlayer-nm.json $@
 build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_0002D910.c.o.linked.elf scripts/match-bindings-gl_func_0002D910.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_0002D910.json $@
 build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf scripts/match-bindings-gl_func_0002D910-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5270,10 +5270,10 @@ build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += game_libs_f
 build/src/game_libs/game_libs_tail.c.o: src/match_imports/game_libs_func_0000CBF0.c scripts/match-bindings-game_libs_func_0000CBF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += game_libs_func_0000CBF0=build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/game_libs_func_0000CBF0.c scripts/match-bindings-game_libs_func_0000CBF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_00029BC8=build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_00029BC8.c scripts/match-bindings-game_libs_func_00029BC8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_00029BC8=build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_00029BC8.c scripts/match-bindings-game_libs_func_00029BC8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += Audio_NoteVibratoInit=build/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/Audio_NoteVibratoInit.c scripts/match-bindings-Audio_NoteVibratoInit.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += Audio_NoteVibratoInit=build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/Audio_NoteVibratoInit.c scripts/match-bindings-Audio_NoteVibratoInit-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E0C4=build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post.c.o: src/match_imports/game_libs_func_0002E0C4.c scripts/match-bindings-game_libs_func_0002E0C4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002E0C4=build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
@@ -5310,14 +5310,14 @@ build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += gl_func_000
 build/src/game_libs/game_libs_tail.c.o: src/match_imports/gl_func_0000D288.c scripts/match-bindings-gl_func_0000D288.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += gl_func_0000D288=build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/gl_func_0000D288.c scripts/match-bindings-gl_func_0000D288-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002A3AC=build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002A3AC.c scripts/match-bindings-gl_func_0002A3AC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002A3AC=build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002A3AC.c scripts/match-bindings-gl_func_0002A3AC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D224=build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D224.c scripts/match-bindings-gl_func_0002D224.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D224=build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D224.c scripts/match-bindings-gl_func_0002D224-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqChannelSetLayer=build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_SeqChannelSetLayer.c scripts/match-bindings-AudioSeq_SeqChannelSetLayer.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqChannelSetLayer=build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_SeqChannelSetLayer.c scripts/match-bindings-AudioSeq_SeqChannelSetLayer-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_InitSequencePlayer=build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c scripts/match-bindings-AudioSeq_InitSequencePlayer.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_InitSequencePlayer=build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_InitSequencePlayer.c scripts/match-bindings-AudioSeq_InitSequencePlayer-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D910=build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post.c.o: src/match_imports/gl_func_0002D910.c scripts/match-bindings-gl_func_0002D910.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002D910=build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
@@ -5676,10 +5676,10 @@ build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/game_libs_func_0
 build/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/game_libs_func_0000CBF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
-build/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_libs_func_00029BC8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf
+build/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/Audio_NoteVibratoInit.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post.c.o: build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
 build/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/game_libs_func_0002E0C4.c.o.linked.elf.bound.elf
@@ -5716,14 +5716,14 @@ build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/gl_func_0000D288
 build/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_0000D288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_0002A3AC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_0002D224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
+build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf
+build/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/AudioSeq_InitSequencePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post.c.o: build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/gl_func_0002D910.c.o.linked.elf.bound.elf

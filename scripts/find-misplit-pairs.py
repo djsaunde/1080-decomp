@@ -38,7 +38,7 @@ CAVEATS:
     use switch. (This 2-case store variant IS reachable, unlike the denser
     lw-preload sparse switch in IDO_CODEGEN.md#feedback-ido-sparse-switch-...)
 
-MERGE RECIPE (verified game_libs_func_0002A8C4, 00009A2C):
+MERGE RECIPE (verified AudioSeq_AudioListPopBack, 00009A2C):
   1. Append successor pieces' `.word` lines into the head .s before `endlabel`;
      set the head `nonmatching` size to the merged total; `rm` successor .s.
   2. Replace head + successor INCLUDE_ASM/stub lines in src/ with ONE C fn.

@@ -11884,7 +11884,7 @@ void gl_func_00044AEC(int *arg0) {
  * -O2 donor src/game_libs/game_libs_o2_44B78.c (73/73 word-exact), spliced in by
  * REPLACE_FUNC_BODY so the C switch's local .rodata jumptable reloc is renamed to
  * game_libs_func_00044B78_rodata and pinned to the USO RoData table at +0x1B3C
- * (the game_libs_func_00029CCC recipe). This stub only reserves the symbol; its
+ * (the Audio_AdsrUpdate recipe). This stub only reserves the symbol; its
  * bytes never reach the ROM. */
 extern s32 D_00000000_3c8e0;
 void game_libs_func_00044B78(int mode) {
