@@ -1237,54 +1237,54 @@ void ArcNameEntry_drawBlinkBanner_00001C74(int *a0) {
  * t-ring for the rest of the function); the 0x4C = arg4 store is written before
  * 0xB8 = arg3 so ugen loads arg4 from the stack first (t7, ahead of li 255). */
 extern int gl_proto_1d18(void *, int, int, float, float);
-void arc_DataManager_init(char *arg0, char *arg1, int arg2, char *arg3, int arg4) {
+void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3, int arg4) {
     char *sub;
     float denom = 255.0f;
     float r192 = 192.0f / denom;
     float r0;
 
-    *(int *)(arg0 + 0xC) = (int)((char *)&D_00000000 + 0x3E4);
-    *(char **)(arg0 + 0xBC) = arg1;
-    *(int *)(arg0 + 0x4C) = arg4;
-    *(char **)(arg0 + 0xB8) = arg3;
-    *(int *)(arg0 + 0x54) = arg2;
-    *(int *)(arg0 + 0xD0) = 0xFF;
-    *(int *)(arg0 + 0xD4) = 0;
-    *(float *)(arg0 + 0xC8) = r192;
-    *(float *)(arg0 + 0xC0) = r192;
+    *(int *)((char *)arg0 + 0xC) = (int)((char *)&D_00000000 + 0x3E4);
+    arg0->race = (s32)arg1;
+    arg0->base.session = (BackupSession *)arg4;
+    arg0->courseList = (s32)arg3;
+    arg0->base.pointsListArg = arg2;
+    arg0->alpha = 0xFF;
+    arg0->unkD4 = 0;
+    arg0->colour[2] = r192;
+    arg0->colour[0] = r192;
     r0 = 0.0f / denom;
-    *(float *)(arg0 + 0xC4) = (float)255 / denom;
-    *(float *)(arg0 + 0xCC) = r0;
-    if (*(int *)(arg1 + 0x4F0) & 0x10000) {
+    arg0->colour[1] = (float)255 / denom;
+    arg0->colour[3] = r0;
+    if (((RaceProcess *)arg1)->flags & RACEF_SPRITES) {
         gl_func_00000000();
-        gl_func_00000000(arg0, 0xE8, 0x13, *(int *)(arg0 + 0x44) + 0x10);
-        gl_func_00000000(arg0, 0x69, 0x11, arg0 + 0xA0);
+        gl_func_00000000(arg0, 0xE8, 0x13, (int)arg0->base.entries + 0x10);
+        gl_func_00000000(arg0, 0x69, 0x11, &arg0->base.score);
         gl_func_00000000(arg0, 0x123, 0xE1, 1);
-        gl_func_00000000(arg0, 0x21, 0x13, arg0 + 0xA8);
-        gl_func_00000000(*(int *)(arg0 + 0x8C), *(int *)(*(char **)(arg0 + 0xB8) + 0x34));
-        *(char **)(arg0 + 0x94) = (char *)gl_func_00000000(0, *(int *)(arg0 + 0x58));
-        gl_func_00000000(*(char **)(arg0 + 0x94), 0);
-        gl_proto_1d18(*(char **)(arg0 + 0x94), 0xA0, 0x46, 1.0f, 1.0f);
+        gl_func_00000000(arg0, 0x21, 0x13, arg0->base.unkA8);
+        gl_func_00000000(arg0->base.points, ((ArcCourseList *)arg0->courseList)->total);
+        arg0->base.points94 = gl_func_00000000(0, arg0->base.digitsTall);
+        gl_func_00000000((char *)arg0->base.points94, 0);
+        gl_proto_1d18((char *)arg0->base.points94, 0xA0, 0x46, 1.0f, 1.0f);
         {
-            sub = *(char **)(arg0 + 0x94);
+            sub = (char *)arg0->base.points94;
             if (1) { sub += 0x18; }
             *(int *)sub = *(int *)sub & ~4;
-            sub = *(char **)(arg0 + 0x94);
+            sub = (char *)arg0->base.points94;
             if (1) { sub += 0x64; }
             *(float *)(sub + 0x0) = 250.0f / denom;
             *(float *)(sub + 0x4) = 235.0f / denom;
             *(float *)(sub + 0x8) = 100.0f / denom;
             *(float *)(sub + 0xC) = r0;
         }
-        *(int *)(*(char **)(arg0 + 0x94) + 0xA0) = *(int *)(arg0 + 0x6C) + 0x108;
-        *(int *)(*(char **)(arg0 + 0x94) + 0x80) = 0;
-        *(int *)(*(char **)(arg0 + 0x94) + 0x84) = -0x12;
-        sub = *(char **)(arg0 + 0x94);
-        gl_func_00000000(arg0 + 0x10, sub);
+        *(int *)((char *)arg0->base.points94 + 0xA0) = arg0->base.pointsList + 0x108;
+        *(int *)((char *)arg0->base.points94 + 0x80) = 0;
+        *(int *)((char *)arg0->base.points94 + 0x84) = -0x12;
+        sub = (char *)arg0->base.points94;
+        gl_func_00000000(arg0->base.children, sub);
         if (*(int *)(sub + 0x14) != 0) {
             *(int *)(sub + 4) = 1;
         }
-        *(char **)(sub + 0x14) = arg0;
+        *(ArcDataManager **)(sub + 0x14) = arg0;
     }
 }
 
@@ -1292,15 +1292,16 @@ void arc_DataManager_init(char *arg0, char *arg1, int arg2, char *arg3, int arg4
  * words `lui t6,0; lw t6,0x64(t6)` (preloading D[0x64]) sat PAST func_00001D18's
  * `jr ra` epilogue — a splat mis-attribution; they are THIS function's prologue.
  * Shrank func_00001D18.s (0x1F4 -> 0x1EC) and prepended the 2 words here
- * (0x48 -> 0x50). C emits the same lui+lw, so the merged boundary is byte-exact. */
-void arc_DataManager_reset_00001F0C(char *a0) {
+ * (0x48 -> 0x50). C emits the same lui+lw, so the merged boundary is byte-exact.
+ * D+0x64 is InputMgr.course (course 1 gets the longer 50000 ms start). */
+void arc_DataManager_reset_00001F0C(ArcDataManager *a0) {
     if (*(int*)((char*)&D_00000000 + 0x64) == 1) {
-        *(int*)(a0 + 0xA0) = 0xC350;
+        a0->base.score = 0xC350;
     } else {
-        *(int*)(a0 + 0xA0) = 0x7530;
+        a0->base.score = 0x7530;
     }
-    *(int*)(a0 + 0xA8) = *(int*)(*(int*)(a0 + 0xB8) + 0x34);
-    *(int*)(a0 + 0xA4) = 0;
+    *(int *)a0->base.unkA8 = ((ArcCourseList *)a0->courseList)->total;
+    a0->base.bonus = 0;
     gl_func_00000000(a0);
 }
 

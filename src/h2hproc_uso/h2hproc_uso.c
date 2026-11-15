@@ -1333,54 +1333,54 @@ INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2h_WinsDisplay_display_
 extern void gl_func_15f0(void *, int, int, int, float);
 void h2h_DataManager_init(int *a0, int *a1, int a2) {
     char *base = &D_00000000;
-    int *self = a0;
+    H2HDataManager *self = (H2HDataManager *)a0;
     int *src;
     int *sub1, *sub2, *sub3;
     char *self_p10;
     *(int*)((char*)self + 0xC) = (int)(base + 0x41C);
-    *(int*)((char*)self + 0xB8) = (int)a1;
-    *(int*)((char*)self + 0xD4) = 0;
-    *(int*)((char*)self + 0x54) = a2;
-    *(int*)((char*)self + 0xCC) = 0xFF;
-    *(int*)((char*)self + 0xD0) = 0;
-    *(float*)((char*)self + 0xC8) = 1.0f;
-    *(float*)((char*)self + 0xC4) = 1.0f;
-    *(float*)((char*)self + 0xC0) = 1.0f;
-    *(float*)((char*)self + 0xBC) = 1.0f;
-    if ((int)(a1[0x4F0 / 4] << 15) >= 0) return;  /* bit 16 clear: skip */
-    self_p10 = (char*)self + 0x10;
+    self->race = (int)a1;
+    self->unkD4 = 0;
+    self->base.pointsListArg = a2;
+    self->alpha = 0xFF;
+    self->unkD0 = 0;
+    self->colour[3] = 1.0f;
+    self->colour[2] = 1.0f;
+    self->colour[1] = 1.0f;
+    self->colour[0] = 1.0f;
+    if ((int)(((RaceProcess *)a1)->flags << 15) >= 0) return;  /* bit 16 clear: skip */
+    self_p10 = self->base.children;
     sub1 = (int*)gl_func_00000000(0, 90);
-    *(int*)((char*)self + 0xE8) = (int)sub1;
-    gl_func_00000000(sub1, *(int*)((char*)*(int*)((char*)self + 0x44) + 0x28));
-    gl_func_00000000(*(int*)((char*)self + 0xE8), 68, 21);
-    sub1 = (int*)*(int*)((char*)self + 0xE8);
+    self->gadgetE8 = (int)sub1;
+    gl_func_00000000(sub1, self->base.entries[0].unk28);
+    gl_func_00000000(self->gadgetE8, 68, 21);
+    sub1 = (int*)self->gadgetE8;
     gl_func_00000000(self_p10, sub1);
     if (*(int*)((char*)sub1 + 0x14) != 0) *(int*)((char*)sub1 + 0x4) = 1;
     *(int*)((char*)sub1 + 0x14) = (int)self;
 
     sub2 = (int*)gl_func_00000000(0, 90);
-    *(int*)((char*)self + 0xEC) = (int)sub2;
-    gl_func_00000000(sub2, *(int*)((char*)*(int*)((char*)self + 0x44) + 0x88));
-    gl_func_00000000(*(int*)((char*)self + 0xEC), 68, 130);
-    sub2 = (int*)*(int*)((char*)self + 0xEC);
+    self->unkEC = (int)sub2;
+    gl_func_00000000(sub2, self->base.entries[1].unk28);
+    gl_func_00000000(self->unkEC, 68, 130);
+    sub2 = (int*)self->unkEC;
     gl_func_00000000(self_p10, sub2);
     if (*(int*)((char*)sub2 + 0x14) != 0) *(int*)((char*)sub2 + 0x4) = 1;
     *(int*)((char*)sub2 + 0x14) = (int)self;
 
     sub3 = (int*)gl_func_00000000(0, 35);
-    src = (int*)*(int*)((char*)self + 0x44);
-    *(int*)((char*)self + 0x80) = (int)sub3;
+    src = (int*)self->base.entries;
+    self->base.course = (int)sub3;
     gl_func_00000000(sub3, *(int*)((char*)src + 0x30), *(int*)((char*)src + 0x90));
-    src = (int*)*(int*)((char*)self + 0x44);
-    sub3 = (int*)*(int*)((char*)self + 0x80);
+    src = (int*)self->base.entries;
+    sub3 = (int*)self->base.course;
     gl_func_15f0(sub3, *(int*)((char*)src + 0x8), *(int*)((char*)src + 0xC),
                  *(int*)((char*)src + 0x68), *(float*)((char*)src + 0x6C));
-    sub3 = (int*)*(int*)((char*)self + 0x80);
+    sub3 = (int*)self->base.course;
     gl_func_00000000(sub3, *(int*)((char*)self + 0x38),
                      *(int*)((char*)self + 0x3C), *(int*)((char*)self + 0x40));
-    sub3 = (int*)*(int*)((char*)self + 0x80);
+    sub3 = (int*)self->base.course;
     gl_func_00000000(sub3, 285, 179);
-    sub3 = (int*)*(int*)((char*)self + 0x80);
+    sub3 = (int*)self->base.course;
     gl_func_00000000(self_p10, sub3);
     if (*(int*)((char*)sub3 + 0x14) != 0) *(int*)((char*)sub3 + 0x4) = 1;
     *(int*)((char*)sub3 + 0x14) = (int)self;

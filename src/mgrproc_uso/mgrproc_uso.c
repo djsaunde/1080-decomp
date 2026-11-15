@@ -1659,7 +1659,7 @@ void MgrNameEntry_drawBlinkBanner_00002E3C(char *a0) {
  * docs/MATCHING_WORKFLOW.md#yay0-block-unlinked-in-unit-jal-f360. Also
  * dropped a stray unmatched #endif that IDO cfe had silently tolerated. */
 void mgr_DataManager_init(self, a1, a2, a3, arg5)
-    int *self; int a1, a2, a3, arg5;
+    MgrDataManager *self; int a1, a2, a3, arg5;
 {
     int *node;
     int obj;
@@ -1667,32 +1667,32 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
     float div255 = 255.0f;
     float c = 192.0f / div255;   /* the merged FP prologue: div.s f4(192)/f2(255) */
     *(int*)((char*)self + 0xC)  = (int)((char*)&D_00000000 + 0x688);
-    *(int*)((char*)self + 0xBC) = a1;
-    *(int*)((char*)self + 0x4C) = arg5;
-    *(int*)((char*)self + 0xB8) = a3;
-    *(int*)((char*)self + 0x54) = a2;
-    *(int*)((char*)self + 0xD4) = 0xFF;
-    *(int*)((char*)self + 0xD8) = 0;
-    *(int*)((char*)self + 0xDC) = 0;
-    *(int*)((char*)self + 0x30) = 0;
-    *(float*)((char*)self + 0xCC) = c;
-    *(float*)((char*)self + 0xC4) = c;
-    *(float*)((char*)self + 0xC8) = (float)255 / div255;   /* f8 = f6/f2; (float)N cast-literal breaks CSE with div255 */
-    *(float*)((char*)self + 0xD0) = 0.0f / div255;     /* f10 = f10/f2 */
+    self->race = a1;
+    self->base.session = (BackupSession *)arg5;
+    self->courseList = a3;
+    self->base.pointsListArg = a2;
+    self->alpha = 0xFF;
+    self->unkD8 = 0;
+    self->beepTimer = 0;
+    self->base.elapsed = 0;
+    self->colour[2] = c;
+    self->colour[0] = c;
+    self->colour[1] = (float)255 / div255;   /* f8 = f6/f2; (float)N cast-literal breaks CSE with div255 */
+    self->colour[3] = 0.0f / div255;     /* f10 = f10/f2 */
 
-    if (*(int*)((char*)a1 + 0x4F0) & 0x10000) {
-        gl_func_00000000(self, 0xE8, 0x13, *(int*)((char*)self + 0x44) + 0x10);
+    if (((RaceProcess *)a1)->flags & RACEF_SPRITES) {
+        gl_func_00000000(self, 0xE8, 0x13, (int)self->base.entries + 0x10);
         gl_func_00000000(self, 0x123, 0xE1, 0xD);
-        gl_func_00000000(self, 0x47, 0x13, (int)((char*)self + 0x30));
-        gl_func_00000000(self, 0x44, 0x26, *(int*)((char*)self + 0x44) + 0x28);
+        gl_func_00000000(self, 0x47, 0x13, (int)&self->base.elapsed);
+        gl_func_00000000(self, 0x44, 0x26, (int)self->base.entries + 0x28);
         v1 = (unsigned char *)gl_func_00000000(
-                 MGR_D_64 * 48 + *(int*)(*(int*)((char*)self + 0x4C)), 0);
-        obj = gl_func_00000000(0, *(int*)((char*)self + 0x60));
-        *(int*)((char*)self + 0xC0) = obj;
+                 MGR_D_64 * 48 + *(int*)self->base.session, 0);
+        obj = gl_func_00000000(0, self->base.sprites60);
+        self->rankLabel = obj;
         gl_func_00000000(obj, v1[5], v1[6], v1[7]);
-        gl_func_00000000(*(int*)((char*)self + 0xC0), 0x4B, 0xD6);
-        node = (int *)*(int*)((char*)self + 0xC0);
-        gl_func_00000000((int)((char*)self + 0x10), (int)node);
+        gl_func_00000000(self->rankLabel, 0x4B, 0xD6);
+        node = (int *)self->rankLabel;
+        gl_func_00000000((int)self->base.children, (int)node);
         if (*(int*)((char*)node + 0x14) != 0) {
             *(int*)((char*)node + 4) = 1;
         }
@@ -1797,8 +1797,8 @@ void mgr_DataManager_update(char *arg0) {
  * jal at the merge label ends with `jr ra` so all paths converge. */
 extern char D_mgr3240_a;
 extern char D_mgr3240_b;
-void mgr_DataManager_display(int *a0) {
-    int v0 = ((int*)a0[0xBC/4])[0x4E0/4];
+void mgr_DataManager_display(MgrDataManager *a0) {
+    int v0 = ((RaceProcess *)a0->race)->phase;
     if (v0 == 0) goto end;
     if (v0 == 1) goto end;
     if (v0 == 2) goto end;
