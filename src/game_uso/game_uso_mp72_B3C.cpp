@@ -33,7 +33,7 @@ typedef struct { int w[16]; } B3CBlk40;
 float math_dot4_000000A0(float *a, float *b);
 void math_blendVec3x4_000000E0(Vec3 *out, Vec3 **ctrl, float *weights);
 void cam_applyRelative_0000052C(int unused, Vec3 *a1, Vec3 *a2, int *a3, Vec3 *p4);
-int camPath_isRelative_00000674(int *a0);
+int camPath_hasSpline_00000674(int *a0);
 extern char import_80020098;
 void cam_setView_00000AEC(int *a0, int a1);
 void cam_pickResultView_00000940(char *arg0);
@@ -372,7 +372,7 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
         tmp = seg->numKeys;
         ncur += 1;
         nsub = 0;
-        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (camPath_isRelative_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
+        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (camPath_hasSpline_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
     }
     if (nseg < tbl->count) {
         s->frame = nsub;

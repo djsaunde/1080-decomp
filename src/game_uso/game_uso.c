@@ -324,7 +324,7 @@ void camPath_init_00000634(CamPath *a0) {
  * web-order inversion (h2hproc E04). */
 /* any channel on a spline (look / eye keyed (mode 2 / 3) with spline 1, up spline, fov / rot mode 2): such a
  * path ends one key early (cam_updateView_00000B3C) */
-int camPath_isRelative_00000674(CamPath *a0) {
+int camPath_hasSpline_00000674(CamPath *a0) {
     int r = 0;
     r = ((a0->lookMode == 2 || a0->lookMode == 3) && a0->lookSpline == 1)
         || ((a0->eyeMode == 2 || a0->eyeMode == 3) && a0->eyeSpline == 1)
@@ -888,7 +888,7 @@ void cam_updateView_00000B3C(char *arg0) {
         tmp = *(s32 *)(seg + 0x34);
         ncur += 1;
         nsub = 0;
-        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (camPath_isRelative_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
+        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (camPath_hasSpline_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
     }
     if (nseg < tbl[9]) {
         *(s32 *)(s + 0x260) = nsub;

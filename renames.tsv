@@ -3856,3 +3856,4 @@ gfx_texSize_000520B8	gfx_texImageBytes
 gfx_texSize_00052104	gfx_texRowBytes
 gfx_func_00046788	gfx_setCpuDraw
 LightTarget_ctor	shape_cmdLightTarget
+camPath_isRelative_00000674	camPath_hasSpline_00000674

@@ -560,7 +560,7 @@ void cam_applyRelative_0000052C(int unused, Vec3 *a1, Vec3 *a2, int *a3, Vec3 *p
 void camKey_read_000005B8(Vec3 *a0);
 void *camPath_new_00000608(void *a0);
 void camPath_init_00000634(int *a0);
-int camPath_isRelative_00000674(int *a0);
+int camPath_hasSpline_00000674(int *a0);
 void camPath_read_00000724(char *a0);
 void camList_init_000007E0(int *a0);
 void camList_read_000007EC(int *arg0);

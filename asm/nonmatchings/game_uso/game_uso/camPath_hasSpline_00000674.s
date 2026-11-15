@@ -1,6 +1,6 @@
-nonmatching camPath_isRelative_00000674, 0xB0
+nonmatching camPath_hasSpline_00000674, 0xB0
 
-glabel camPath_isRelative_00000674
+glabel camPath_hasSpline_00000674
     /* 000674 00000674 8C820000 */  .word 0x8C820000
     /* 000678 00000678 24050002 */  .word 0x24050002
     /* 00067C 0000067C 00A21826 */  .word 0x00A21826
@@ -45,4 +45,4 @@ glabel camPath_isRelative_00000674
     /* 000718 00000718 2C630001 */  .word 0x2C630001
     /* 00071C 0000071C 03E00008 */  .word 0x03E00008
     /* 000720 00000720 00601025 */  .word 0x00601025
-endlabel camPath_isRelative_00000674
+endlabel camPath_hasSpline_00000674

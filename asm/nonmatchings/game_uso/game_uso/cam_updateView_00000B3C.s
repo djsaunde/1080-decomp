@@ -686,7 +686,7 @@ glabel cam_updateView_00000B3C
     /* 0015E4 000015E4 00E02025 */  .word 0x00E02025
     /* 0015E8 000015E8 AFA300EC */  .word 0xAFA300EC
     /* 0015EC 000015EC AFA000F0 */  .word 0xAFA000F0
-    jal camPath_isRelative_00000674   /* 0015F0 0C000000 -> camPath_isRelative_00000674 */
+    jal camPath_hasSpline_00000674   /* 0015F0 0C000000 -> camPath_hasSpline_00000674 */
     /* 0015F4 000015F4 AFA600E8 */  .word 0xAFA600E8
     /* 0015F8 000015F8 8FA300EC */  .word 0x8FA300EC
     /* 0015FC 000015FC 8FA500F0 */  .word 0x8FA500F0
