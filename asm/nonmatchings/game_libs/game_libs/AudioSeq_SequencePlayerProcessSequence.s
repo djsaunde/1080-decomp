@@ -1,6 +1,6 @@
-nonmatching gl_func_0002C7A4, 0x7BC
+nonmatching AudioSeq_SequencePlayerProcessSequence, 0x7BC
 
-glabel gl_func_0002C7A4
+glabel AudioSeq_SequencePlayerProcessSequence
     /* E1187C 0002C7A4 27BDFF98 */  .word 0x27BDFF98
     /* E11880 0002C7A8 AFBF0024 */  .word 0xAFBF0024
     /* E11884 0002C7AC AFB20020 */  .word 0xAFB20020
@@ -496,4 +496,4 @@ glabel gl_func_0002C7A4
     /* E1202C 0002CF54 8FB20020 */  .word 0x8FB20020
     /* E12030 0002CF58 03E00008 */  .word 0x03E00008
     /* E12034 0002CF5C 27BD0068 */  .word 0x27BD0068
-endlabel gl_func_0002C7A4
+endlabel AudioSeq_SequencePlayerProcessSequence

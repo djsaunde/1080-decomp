@@ -1,6 +1,6 @@
-nonmatching gl_func_0002AA30, 0x104
+nonmatching AudioSeq_SeqLayerProcessScript, 0x104
 
-glabel gl_func_0002AA30
+glabel AudioSeq_SeqLayerProcessScript
     /* E0FB08 0002AA30 27BDFFE0 */  .word 0x27BDFFE0
     /* E0FB0C 0002AA34 AFBF001C */  .word 0xAFBF001C
     /* E0FB10 0002AA38 AFB00018 */  .word 0xAFB00018
@@ -66,4 +66,4 @@ glabel gl_func_0002AA30
     /* E0FC00 0002AB28 27BD0020 */  .word 0x27BD0020
     /* E0FC04 0002AB2C 03E00008 */  .word 0x03E00008
     /* E0FC08 0002AB30 00000000 */  .word 0x00000000
-endlabel gl_func_0002AA30
+endlabel AudioSeq_SeqLayerProcessScript

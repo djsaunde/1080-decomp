@@ -1,6 +1,6 @@
-nonmatching gl_func_0002A014, 0x68
+nonmatching AudioSeq_GetScriptControlFlowArgument, 0x68
 
-glabel gl_func_0002A014
+glabel AudioSeq_GetScriptControlFlowArgument
     /* E0F0EC 0002A014 27BDFFE8 */  .word 0x27BDFFE8
     /* E0F0F0 0002A018 AFA5001C */  .word 0xAFA5001C
     /* E0F0F4 0002A01C 30A500FF */  .word 0x30A500FF
@@ -27,4 +27,4 @@ glabel gl_func_0002A014
     /* E0F148 0002A070 00601025 */  .word 0x00601025
     /* E0F14C 0002A074 03E00008 */  .word 0x03E00008
     /* E0F150 0002A078 00000000 */  .word 0x00000000
-endlabel gl_func_0002A014
+endlabel AudioSeq_GetScriptControlFlowArgument

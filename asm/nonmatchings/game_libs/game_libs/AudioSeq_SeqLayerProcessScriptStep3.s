@@ -1,6 +1,6 @@
-nonmatching gl_func_0002B5F4, 0x414
+nonmatching AudioSeq_SeqLayerProcessScriptStep3, 0x414
 
-glabel gl_func_0002B5F4
+glabel AudioSeq_SeqLayerProcessScriptStep3
     /* E106CC 0002B5F4 27BDFFC0 */  .word 0x27BDFFC0
     /* E106D0 0002B5F8 AFBF0014 */  .word 0xAFBF0014
     /* E106D4 0002B5FC AFA50044 */  .word 0xAFA50044
@@ -262,4 +262,4 @@ glabel gl_func_0002B5F4
     /* E10AD4 0002B9FC 27BD0040 */  .word 0x27BD0040
     /* E10AD8 0002BA00 03E00008 */  .word 0x03E00008
     /* E10ADC 0002BA04 00000000 */  .word 0x00000000
-endlabel gl_func_0002B5F4
+endlabel AudioSeq_SeqLayerProcessScriptStep3

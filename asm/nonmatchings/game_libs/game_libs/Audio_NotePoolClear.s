@@ -1,6 +1,6 @@
-nonmatching gl_func_00028B0C, 0x160
+nonmatching Audio_NotePoolClear, 0x160
 
-glabel gl_func_00028B0C
+glabel Audio_NotePoolClear
     /* E0DBE4 00028B0C 27BDFFB0 */  .word 0x27BDFFB0
     /* E0DBE8 00028B10 AFBE0038 */  .word 0xAFBE0038
     /* E0DBEC 00028B14 AFB70034 */  .word 0xAFB70034
@@ -89,4 +89,4 @@ glabel gl_func_00028B0C
     /* E0DD38 00028C60 8FBE0038 */  .word 0x8FBE0038
     /* E0DD3C 00028C64 03E00008 */  .word 0x03E00008
     /* E0DD40 00028C68 27BD0050 */  .word 0x27BD0050
-endlabel gl_func_00028B0C
+endlabel Audio_NotePoolClear

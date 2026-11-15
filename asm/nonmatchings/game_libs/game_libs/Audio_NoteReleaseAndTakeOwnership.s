@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00029000, 0x2C
+nonmatching Audio_NoteReleaseAndTakeOwnership, 0x2C
 
-glabel game_libs_func_00029000
+glabel Audio_NoteReleaseAndTakeOwnership
     /* E0E0D8 00029000 AC850048 */  .word 0xAC850048
     /* E0E0DC 00029004 8CAE0050 */  .word 0x8CAE0050
     /* E0E0E0 00029008 90990060 */  .word 0x90990060
@@ -12,4 +12,4 @@ glabel game_libs_func_00029000
     /* E0E0F8 00029020 A0880060 */  .word 0xA0880060
     /* E0E0FC 00029024 03E00008 */  .word 0x03E00008
     /* E0E100 00029028 E484006C */  .word 0xE484006C
-endlabel game_libs_func_00029000
+endlabel Audio_NoteReleaseAndTakeOwnership

@@ -1,12 +1,12 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_0002BB7C (0xC28 / 778 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioSeq_SequenceChannelProcessScript (0xC28 / 778 words) = OoT's
  * AudioSeq_SequenceChannelProcessScript (seqplayer.c) in its older form: eight
  * layers (SM64 LAYERS_MAX, so the scriptState sits at +0x70 and every later
  * member is 0x10 above OoT), no 0xBD RANDPTR, a one-form LDSAMPLE. Spliced into
  * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local
  * .rodata jumptable relocs (0xB0..0xF1 table, 0x70..0x98 layer table, 0x00..0x60
- * low-nibble table) to gl_func_0002BB7C_rodata, pinned to the USO tables at
+ * low-nibble table) to AudioSeq_SequenceChannelProcessScript_rodata, pinned to the USO tables at
  * +0x10B0. The DYNCALL push is written as an s32 copy of the depth, a store, then
  * a separate increment (OoT's stack[depth++] colours the depth t3, target v1). */
 typedef union { struct { u8 unused : 2; u8 bit2 : 2; u8 strongRight : 1; u8 strongLeft : 1; u8 stereoHeadsetEffects : 1; u8 usesHeadsetPanEffects : 1; } s; u8 asByte; } gl_2BB7C_Stereo;
@@ -80,7 +80,7 @@ extern s32 gl_2BB7C_SlowLoadSample(s32, u8, s8 *);
 #define true 1
 #define false 0
 
-void gl_func_0002BB7C(gl_2BB7C_Channel *channel) {
+void AudioSeq_SequenceChannelProcessScript(gl_2BB7C_Channel *channel) {
     s32 i;
     u8 *data;
     u8 *seqData;

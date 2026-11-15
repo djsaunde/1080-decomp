@@ -1,9 +1,9 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_0002B5F4 (0x444 / 273 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep3 (0x444 / 273 words) = OoT's
  * AudioSeq_SeqLayerProcessScriptStep3 (seqplayer.c) verbatim. Spliced into
  * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local
- * .rodata reloc (the SQ(127.0f) = 16129.0f literal) to gl_func_0002B5F4_rodata,
+ * .rodata reloc (the SQ(127.0f) = 16129.0f literal) to AudioSeq_SeqLayerProcessScriptStep3_rodata,
  * pinned to the USO RoData word at +0x10AC. Layer: flags byte 0 (muted 0x20,
  * bit1 0x02), gateTime +3, delay +8, gateDelay +0xA, shortNoteDefaultDelay +0x12,
  * lastDelay +0x14, velocitySquare2 +0x38, velocitySquare +0x3C, channel +0x50,
@@ -39,7 +39,7 @@ extern int gl_ref_0003F05C();
 #define AudioSeq_ScriptReadCompressedU16 gl_ref_0003F05C
 #define SQ(x) ((x) * (x))
 
-s32 gl_func_0002B5F4(gl_2B5F4_Layer *layer, s32 cmd) {
+s32 AudioSeq_SeqLayerProcessScriptStep3(gl_2B5F4_Layer *layer, s32 cmd) {
     gl_2B5F4_SeqScriptState *state = &layer->scriptState;
     u16 delay;
     s32 velocity;

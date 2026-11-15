@@ -1,6 +1,6 @@
-nonmatching gl_func_0002BA38, 0x74
+nonmatching AudioSeq_GetInstrument, 0x74
 
-glabel gl_func_0002BA38
+glabel AudioSeq_GetInstrument
     /* E10B10 0002BA38 27BDFFE0 */  .word 0x27BDFFE0
     /* E10B14 0002BA3C AFA50024 */  .word 0xAFA50024
     /* E10B18 0002BA40 93A50027 */  .word 0x93A50027
@@ -30,4 +30,4 @@ glabel gl_func_0002BA38
     /* E10B78 0002BAA0 27BD0020 */  .word 0x27BD0020
     /* E10B7C 0002BAA4 03E00008 */  .word 0x03E00008
     /* E10B80 0002BAA8 00000000 */  .word 0x00000000
-endlabel gl_func_0002BA38
+endlabel AudioSeq_GetInstrument

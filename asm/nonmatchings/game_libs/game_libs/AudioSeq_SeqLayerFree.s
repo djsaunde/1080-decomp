@@ -1,6 +1,6 @@
-nonmatching gl_func_0002A50C, 0x50
+nonmatching AudioSeq_SeqLayerFree, 0x50
 
-glabel gl_func_0002A50C
+glabel AudioSeq_SeqLayerFree
     /* E0F5E4 0002A50C 27BDFFE0 */  .word 0x27BDFFE0
     /* E0F5E8 0002A510 00057080 */  .word 0x00057080
     /* E0F5EC 0002A514 AFBF0014 */  .word 0xAFBF0014
@@ -21,4 +21,4 @@ glabel gl_func_0002A50C
     /* E0F628 0002A550 27BD0020 */  .word 0x27BD0020
     /* E0F62C 0002A554 03E00008 */  .word 0x03E00008
     /* E0F630 0002A558 00000000 */  .word 0x00000000
-endlabel gl_func_0002A50C
+endlabel AudioSeq_SeqLayerFree

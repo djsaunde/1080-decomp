@@ -1,12 +1,12 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_00027804 (0x444 / 273 words) = OoT's
+/* IDO 7.1 -O2 donor for Audio_InitSampleState (0x444 / 273 words) = OoT's
  * Audio_InitSampleState (playback.c; Audio_InitNoteSub in older names) in its
  * older form: the target sample state IS note->sampleState (+0xB0), so there is
  * no bitField / waveSampleAddr copy and no separate parameter, and the resampling
  * rate is set (on the note) before the attribute reads. Spliced into
  * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local
- * .rodata relocs (0.707f, 0x1000 - 0.001f) to gl_func_00027804_rodata, pinned to
+ * .rodata relocs (0.707f, 0x1000 - 0.001f) to Audio_InitSampleState_rodata, pinned to
  * the USO RoData at +0xFC0. The extra s32 pad2 after stereoData is the 8-byte
  * larger frame of the target. */
 typedef struct {
@@ -49,7 +49,7 @@ extern void gl_ref_0003C2B4(gl_27804_Note *, f32);
 #define true 1
 #define false 0
 
-void gl_func_00027804(gl_27804_Note *note, gl_27804_Attrs *attrs) {
+void Audio_InitSampleState(gl_27804_Note *note, gl_27804_Attrs *attrs) {
     gl_27804_NoteSampleState *sampleState;
     f32 volLeft;
     f32 volRight;

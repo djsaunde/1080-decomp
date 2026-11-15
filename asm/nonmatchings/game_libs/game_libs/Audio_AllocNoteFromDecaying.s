@@ -1,6 +1,6 @@
-nonmatching gl_func_00029078, 0x50
+nonmatching Audio_AllocNoteFromDecaying, 0x50
 
-glabel gl_func_00029078
+glabel Audio_AllocNoteFromDecaying
     /* E0E150 00029078 27BDFFE0 */  .word 0x27BDFFE0
     /* E0E154 0002907C AFBF0014 */  .word 0xAFBF0014
     /* E0E158 00029080 AFA40020 */  .word 0xAFA40020
@@ -21,4 +21,4 @@ glabel gl_func_00029078
     /* E0E194 000290BC 27BD0020 */  .word 0x27BD0020
     /* E0E198 000290C0 03E00008 */  .word 0x03E00008
     /* E0E19C 000290C4 00000000 */  .word 0x00000000
-endlabel gl_func_00029078
+endlabel Audio_AllocNoteFromDecaying

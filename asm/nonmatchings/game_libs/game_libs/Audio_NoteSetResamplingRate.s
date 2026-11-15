@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00027C48, 0xB8
+nonmatching Audio_NoteSetResamplingRate, 0xB8
 
-glabel game_libs_func_00027C48
+glabel Audio_NoteSetResamplingRate
     /* E0CD20 00027C48 3C014000 */  .word 0x3C014000
     /* E0CD24 00027C4C 44856000 */  .word 0x44856000
     /* E0CD28 00027C50 44812000 */  .word 0x44812000
@@ -47,4 +47,4 @@ glabel game_libs_func_00027C48
     /* E0CDCC 00027CF4 440A9000 */  .word 0x440A9000
     /* E0CDD0 00027CF8 03E00008 */  .word 0x03E00008
     /* E0CDD4 00027CFC A48A00BC */  .word 0xA48A00BC
-endlabel game_libs_func_00027C48
+endlabel Audio_NoteSetResamplingRate

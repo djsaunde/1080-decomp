@@ -1,6 +1,6 @@
-nonmatching gl_func_000290C8, 0xF8
+nonmatching Audio_AllocNoteFromActive, 0xF8
 
-glabel gl_func_000290C8
+glabel Audio_AllocNoteFromActive
     /* E0E1A0 000290C8 27BDFFC8 */  .word 0x27BDFFC8
     /* E0E1A4 000290CC 240E0010 */  .word 0x240E0010
     /* E0E1A8 000290D0 240F0010 */  .word 0x240F0010
@@ -63,4 +63,4 @@ glabel gl_func_000290C8
     /* E0E28C 000291B4 8FB10018 */  .word 0x8FB10018
     /* E0E290 000291B8 03E00008 */  .word 0x03E00008
     /* E0E294 000291BC 27BD0038 */  .word 0x27BD0038
-endlabel gl_func_000290C8
+endlabel Audio_AllocNoteFromActive

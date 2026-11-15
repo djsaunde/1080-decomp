@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_0002C7A4 (0x7CC / 499 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioSeq_SequencePlayerProcessSequence (0x7CC / 499 words) = OoT's
  * AudioSeq_SequencePlayerProcessSequence (seqplayer.c) in its older form: the
  * load-incomplete path calls two 1-arg blanks on seqId / defaultFont before
  * SequencePlayerDisable, no RUNSEQ (0xC4) / EF opcodes, explicit empty 0x10 / 0x20 /
@@ -9,7 +9,7 @@
  * (gAudioCtx +0x2074) for both the tempo clamp and the tempo accumulator.
  * Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the
  * donor-local .rodata jumptable relocs (0xC5..0xF1 table, then the 0x40..0xB0
- * low-nibble table) to gl_func_0002C7A4_rodata, pinned to the USO table at
+ * low-nibble table) to AudioSeq_SequencePlayerProcessSequence_rodata, pinned to the USO table at
  * +0x13E0. */
 typedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2C7A4_SeqScriptState;
 typedef struct { u32 enabled : 1; u32 rest : 31; } gl_2C7A4_Channel;
@@ -42,7 +42,7 @@ extern void gl_func_000401E8(gl_2C7A4_Channel *);
 #define AudioSeq_SequenceChannelEnable gl_func_0003EDAC
 #define AudioSeq_SequenceChannelProcessScript gl_func_000401E8
 
-void gl_func_0002C7A4(gl_2C7A4_SeqPlayer *seqPlayer) {
+void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
     u8 cmd;
     u8 cmdLowBits;
     gl_2C7A4_SeqScriptState *seqScript = &seqPlayer->scriptState;

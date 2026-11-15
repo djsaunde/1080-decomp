@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002BA08, 0x30
+nonmatching AudioSeq_SetChannelPriorities, 0x30
 
-glabel game_libs_func_0002BA08
+glabel AudioSeq_SetChannelPriorities
     /* E10AE0 0002BA08 30A200FF */  .word 0x30A200FF
     /* E10AE4 0002BA0C 3043000F */  .word 0x3043000F
     /* E10AE8 0002BA10 10600002 */  .word 0x10600002
@@ -13,4 +13,4 @@ glabel game_libs_func_0002BA08
     /* E10B04 0002BA2C A0850006 */  .word 0xA0850006
     /* E10B08 0002BA30 03E00008 */  .word 0x03E00008
     /* E10B0C 0002BA34 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002BA08
+endlabel AudioSeq_SetChannelPriorities

@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002A9F0, 0x40
+nonmatching AudioSeq_ScriptReadCompressedU16, 0x40
 
-glabel game_libs_func_0002A9F0
+glabel AudioSeq_ScriptReadCompressedU16
     /* E0FAC8 0002A9F0 8C820000 */  .word 0x8C820000
     /* E0FACC 0002A9F4 90430000 */  .word 0x90430000
     /* E0FAD0 0002A9F8 244E0001 */  .word 0x244E0001
@@ -17,4 +17,4 @@ glabel game_libs_func_0002A9F0
     /* E0FAFC 0002AA24 AC990000 */  .word 0xAC990000
     /* E0FB00 0002AA28 03E00008 */  .word 0x03E00008
     /* E0FB04 0002AA2C 00601025 */  .word 0x00601025
-endlabel game_libs_func_0002A9F0
+endlabel AudioSeq_ScriptReadCompressedU16

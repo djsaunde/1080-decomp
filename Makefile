@@ -2622,9 +2622,9 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 2AD1C = AudioSeq_SeqLayerProcessScriptStep2 (OoT seqplayer.c; 15-entry layer
 # opcode switch), IDO 7.1 -O2 donor: game_libs_o2_2AD1C.c (224/224 words). Spliced
 # so the donor-local .rodata (SQ(127.0f) literal + jumptable) relocs are renamed
-# gl_func_0002AD1C_rodata and pinned to the USO RoData at +0x1058. Uses +=.
+# AudioSeq_SeqLayerProcessScriptStep2_rodata and pinned to the USO RoData at +0x1058. Uses +=.
 GAMELIBS_2AD1C_DONOR := build/src/game_libs/game_libs_o2_2AD1C.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002AD1C=$(GAMELIBS_2AD1C_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqLayerProcessScriptStep2=$(GAMELIBS_2AD1C_DONOR)
 # 2B09C = AudioSeq_SeqLayerProcessScriptStep4 (OoT seqplayer.c, older form;
 # portamento-mode switch), IDO 7.1 -O2 donor: game_libs_o2_2B09C.c (342/342 words).
 # Spliced so the donor-local .rodata jumptable reloc is renamed
@@ -2633,34 +2633,34 @@ GAMELIBS_2B09C_DONOR := build/src/game_libs/game_libs_o2_2B09C.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002B09C=$(GAMELIBS_2B09C_DONOR)
 # 2B5F4 = AudioSeq_SeqLayerProcessScriptStep3 (OoT seqplayer.c), IDO 7.1 -O2
 # donor: game_libs_o2_2B5F4.c. Spliced so the donor-local .rodata reloc (the
-# SQ(127.0f) literal) is renamed gl_func_0002B5F4_rodata and pinned to the USO
+# SQ(127.0f) literal) is renamed AudioSeq_SeqLayerProcessScriptStep3_rodata and pinned to the USO
 # RoData at +0x10AC. Uses +=.
 GAMELIBS_2B5F4_DONOR := build/src/game_libs/game_libs_o2_2B5F4.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002B5F4=$(GAMELIBS_2B5F4_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqLayerProcessScriptStep3=$(GAMELIBS_2B5F4_DONOR)
 # 2C7A4 = AudioSeq_SequencePlayerProcessSequence (OoT seqplayer.c, older form; two
 # jumptables), IDO 7.1 -O2 donor: game_libs_o2_2C7A4.c (499/499 words). Spliced so
-# the donor-local .rodata jumptable relocs are renamed gl_func_0002C7A4_rodata and
+# the donor-local .rodata jumptable relocs are renamed AudioSeq_SequencePlayerProcessSequence_rodata and
 # pinned to the USO tables at +0x13E0 (second table at +0x1494). Uses +=.
 GAMELIBS_2C7A4_DONOR := build/src/game_libs/game_libs_o2_2C7A4.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002C7A4=$(GAMELIBS_2C7A4_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SequencePlayerProcessSequence=$(GAMELIBS_2C7A4_DONOR)
 # 2BB7C = AudioSeq_SequenceChannelProcessScript (OoT seqplayer.c, older form:
 # eight layers, no 0xBD; three jumptables), IDO 7.1 -O2 donor: game_libs_o2_2BB7C.c
 # (778/778 words). Spliced so the donor-local .rodata jumptable relocs are renamed
-# gl_func_0002BB7C_rodata and pinned to the USO tables at +0x10B0. Uses +=.
+# AudioSeq_SequenceChannelProcessScript_rodata and pinned to the USO tables at +0x10B0. Uses +=.
 GAMELIBS_2BB7C_DONOR := build/src/game_libs/game_libs_o2_2BB7C.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002BB7C=$(GAMELIBS_2BB7C_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SequenceChannelProcessScript=$(GAMELIBS_2BB7C_DONOR)
 # 27804 = Audio_InitSampleState / InitNoteSub (OoT playback.c, older form: the
 # state is note->sampleState, no copies, rate set first), IDO 7.1 -O2 donor:
 # game_libs_o2_27804.c (273/273 words). Spliced so the donor-local .rodata
-# literal relocs are renamed gl_func_00027804_rodata, pinned at +0xFC0. Uses +=.
+# literal relocs are renamed Audio_InitSampleState_rodata, pinned at +0xFC0. Uses +=.
 GAMELIBS_27804_DONOR := build/src/game_libs/game_libs_o2_27804.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00027804=$(GAMELIBS_27804_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += Audio_InitSampleState=$(GAMELIBS_27804_DONOR)
 # 2A07C = AudioSeq_HandleScriptFlowControl (OoT seqplayer.c; 14-entry jumptable),
 # IDO 7.1 -O2 donor: game_libs_o2_2A07C.c (119/119 words). Spliced so the
-# donor-local .rodata jumptable reloc is renamed game_libs_func_0002A07C_rodata and
+# donor-local .rodata jumptable reloc is renamed AudioSeq_HandleScriptFlowControl_rodata and
 # pinned to the USO table at +0x1020. Uses +=.
 GAMELIBS_2A07C_DONOR := build/src/game_libs/game_libs_o2_2A07C.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_0002A07C=$(GAMELIBS_2A07C_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_HandleScriptFlowControl=$(GAMELIBS_2A07C_DONOR)
 # 26214 = AudioThread_UpdateImpl (OoT thread.c, older form), IDO 7.1 -O2 donor:
 # game_libs_o2_26214.c (351/351 words). No rodata. Uses +=.
 GAMELIBS_26214_DONOR := build/src/game_libs/game_libs_o2_26214.c.o

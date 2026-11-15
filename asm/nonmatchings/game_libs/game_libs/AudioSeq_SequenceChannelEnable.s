@@ -1,6 +1,6 @@
-nonmatching gl_func_0002A740, 0x98
+nonmatching AudioSeq_SequenceChannelEnable, 0x98
 
-glabel gl_func_0002A740
+glabel AudioSeq_SequenceChannelEnable
     /* E0F818 0002A740 27BDFFD8 */  .word 0x27BDFFD8
     /* E0F81C 0002A744 AFA5002C */  .word 0xAFA5002C
     /* E0F820 0002A748 30A500FF */  .word 0x30A500FF
@@ -39,4 +39,4 @@ glabel gl_func_0002A740
     /* E0F8A4 0002A7CC 8FB30020 */  .word 0x8FB30020
     /* E0F8A8 0002A7D0 03E00008 */  .word 0x03E00008
     /* E0F8AC 0002A7D4 27BD0028 */  .word 0x27BD0028
-endlabel gl_func_0002A740
+endlabel AudioSeq_SequenceChannelEnable

@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002A5C8, 0xF8
+nonmatching AudioSeq_SequencePlayerSetupChannels, 0xF8
 
-glabel game_libs_func_0002A5C8
+glabel AudioSeq_SequencePlayerSetupChannels
     /* E0F6A0 0002A5C8 AFA50004 */  .word 0xAFA50004
     /* E0F6A4 0002A5CC 30A5FFFF */  .word 0x30A5FFFF
     /* E0F6A8 0002A5D0 00803025 */  .word 0x00803025
@@ -63,4 +63,4 @@ glabel game_libs_func_0002A5C8
     /* E0F78C 0002A6B4 30A5FFFF */  .word 0x30A5FFFF
     /* E0F790 0002A6B8 03E00008 */  .word 0x03E00008
     /* E0F794 0002A6BC 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002A5C8
+endlabel AudioSeq_SequencePlayerSetupChannels

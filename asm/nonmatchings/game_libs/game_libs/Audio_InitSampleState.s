@@ -1,6 +1,6 @@
-nonmatching gl_func_00027804, 0x444
+nonmatching Audio_InitSampleState, 0x444
 
-glabel gl_func_00027804
+glabel Audio_InitSampleState
     /* E0C8DC 00027804 27BDFFB0 */  .word 0x27BDFFB0
     /* E0C8E0 00027808 AFBF0014 */  .word 0xAFBF0014
     /* E0C8E4 0002780C 00A03825 */  .word 0x00A03825
@@ -274,4 +274,4 @@ glabel gl_func_00027804
     /* E0CD14 00027C3C 27BD0050 */  .word 0x27BD0050
     /* E0CD18 00027C40 03E00008 */  .word 0x03E00008
     /* E0CD1C 00027C44 00000000 */  .word 0x00000000
-endlabel gl_func_00027804
+endlabel Audio_InitSampleState

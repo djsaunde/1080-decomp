@@ -1,10 +1,10 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_0002AD1C (0x380 / 224 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep2 (0x380 / 224 words) = OoT's
  * AudioSeq_SeqLayerProcessScriptStep2 (seqplayer.c) verbatim. Spliced into
  * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local
  * .rodata relocs (the SQ(127.0f) literal at +0, the 15-entry 0xC1..0xCF jumptable
- * at +4) to gl_func_0002AD1C_rodata, pinned to the USO RoData at +0x1058.
+ * at +4) to AudioSeq_SeqLayerProcessScriptStep2_rodata, pinned to the USO RoData at +0x1058.
  * Layer: flags 0, stereo 1, instOrWave 2, gateTime 3, portamentoTargetNote 4,
  * pan 5, portamentoTime 0xE, transposition 0x10, shortNoteDefaultDelay 0x12,
  * adsr 0x18, portamento 0x20, bend 0x34, velocitySquare 0x3C, instrument 0x48,
@@ -49,7 +49,7 @@ extern f32 gl_2AD1C_gBendPitchTwoSemitonesFrequencies[];
 #define gBendPitchTwoSemitonesFrequencies gl_2AD1C_gBendPitchTwoSemitonesFrequencies
 #define SQ(x) ((x) * (x))
 
-s32 gl_func_0002AD1C(gl_2AD1C_Layer *layer) {
+s32 AudioSeq_SeqLayerProcessScriptStep2(gl_2AD1C_Layer *layer) {
     gl_2AD1C_Channel *channel = layer->channel;
     gl_2AD1C_SeqScriptState *state = &layer->scriptState;
     gl_2AD1C_SeqPlayer *seqPlayer = channel->seqPlayer;

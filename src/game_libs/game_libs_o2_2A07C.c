@@ -1,17 +1,17 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for game_libs_func_0002A07C (0x1DC / 119 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioSeq_HandleScriptFlowControl (0x1DC / 119 words) = OoT's
  * AudioSeq_HandleScriptFlowControl (seqplayer.c). The CALL / LOOP stack pushes are
  * written as an s32 copy of the depth, the store(s), then a separate increment (OoT's
  * stack[depth++] colours the depth t1, target v0). Spliced into game_libs_post.c.o via
  * REPLACE_FUNC_BODY; the splice renames the donor-local .rodata jumptable reloc
- * (opcodes 0xF2..0xFF) to game_libs_func_0002A07C_rodata, pinned to the USO table at
+ * (opcodes 0xF2..0xFF) to AudioSeq_HandleScriptFlowControl_rodata, pinned to the USO table at
  * +0x1020. */
 typedef struct { u8 *pc; u8 *stack[4]; u8 remLoopIters[4]; u8 depth; s8 value; } gl_2A07C_SeqScriptState;
 typedef struct { char pad[0x18]; u8 *seqData; } gl_2A07C_SeqPlayer;
 extern int gl_func_0003F05C();
 
-s32 game_libs_func_0002A07C(gl_2A07C_SeqPlayer *seqPlayer, gl_2A07C_SeqScriptState *state, s32 cmd, s32 cmdArg) {
+s32 AudioSeq_HandleScriptFlowControl(gl_2A07C_SeqPlayer *seqPlayer, gl_2A07C_SeqScriptState *state, s32 cmd, s32 cmdArg) {
     s32 d;
     switch (cmd) {
         case 0xFF:
