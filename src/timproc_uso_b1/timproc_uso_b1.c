@@ -731,7 +731,7 @@ void timproc_uso_b1_func_00001340(char *arg0, s32 arg1, s32 arg2) {
  * stays 336); sum order count*13 + pt4 + pt2 + pt3 (target addu order). */
 
 /* timproc_uso_b1_func_000016F8 — EXACT (90/90 words incl. relocs, 2026-07-09).
- * Twin of arcproc_uso_func_0000199C (same 4-level alloc-cascade ctor
+ * Twin of ArcNameEntry_ctor_0000199C (same 4-level alloc-cascade ctor
  * template; deltas: init-call base +0x404, a1 float @+0x72c,
  * packed-id ptr field @+0x6b0). Crack lever: the packed-id call's id
  * chain must be ucode-created before the ptr chain — spell the ptr chain

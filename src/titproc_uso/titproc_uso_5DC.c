@@ -1,8 +1,8 @@
-/* titproc_uso_func_000005DC (0x590 / 356 words) -- 12-case jumptable state
+/* tit_procMain (0x590 / 356 words) -- 12-case jumptable state
  * machine. EXACT under IDO 7.1 cfe -O2 (agent-g run 178). Spliced over the
  * unit's INCLUDE_ASM by REPLACE_FUNC_BODY (Makefile TITPROC_5DC_DONOR) so the
  * switch's donor-local .rodata jumptable reloc is renamed
- * titproc_uso_func_000005DC_rodata and pinned to the table the USO ships at
+ * tit_procMain_rodata and pinned to the table the USO ships at
  * RoData +0x0. Decode history: see the note above the placeholder in
  * titproc_uso.c. */
 #include "common.h"
@@ -23,7 +23,7 @@ extern int titproc_uso_func_01EFC8();
 extern int import_000B3268();
 
 
-void titproc_uso_func_000005DC(char *a0, int a1) {
+void tit_procMain(char *a0, int a1) {
     int d;
     int done;
     int s5v;

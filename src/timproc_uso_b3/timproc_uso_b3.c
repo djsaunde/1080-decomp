@@ -446,7 +446,7 @@ ret0:
 }
 
 /* timproc_uso_b3_func_00000E60: state-machine dispatcher, sibling of
- * timproc_uso_b1_func_00000EE8 and arcproc_uso_func_00000FA8.
+ * timproc_uso_b1_func_00000EE8 and ARCRaceProcess_setupRace_00000FA8.
  *
  * Decoded state 0 and state 1 bodies from the target asm. State 0 walks a
  * 0x30-stride table selected by D[0x64], searching for an entry whose
@@ -537,7 +537,7 @@ state1:
  * match-faking. Symbol is now 0x80 / 32 insns (F1 only); the absorbed
  * pieces are tracked as separate symbols. Function lands at fuzzy=100
  * naturally — same pattern as timproc_uso_b3_func_00000DE4 /
- * arcproc_uso_func_00000EBC.
+ * ARCRaceProcess_release_00000EBC.
  *
  * F1: gate=gl_func(a0->0x528). If non-zero set D[0x40]=0xC,D[0x44]=9.
  *     Else set D[0x40]=9. Tail: if(a0->0x4F8) gl_func(a0,-1,0); else a0->0x504=0. */
@@ -820,7 +820,7 @@ void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
  * (uopt cupcosts?); count -> s3 should then cascade the tail exact. */
 
 /* timproc_uso_b3_func_00001660 — EXACT (90/90 words incl. relocs, 2026-07-09).
- * Twin of arcproc_uso_func_0000199C (same 4-level alloc-cascade ctor
+ * Twin of ArcNameEntry_ctor_0000199C (same 4-level alloc-cascade ctor
  * template; deltas: init-call base +0x3dc, a1 float @+0x72c,
  * packed-id ptr field @+0x6b0). Crack lever: the packed-id call's id
  * chain must be ucode-created before the ptr chain — spell the ptr chain
@@ -1077,7 +1077,7 @@ void timproc_uso_b3_func_00001C20(char *a0) {
  * the counter as fl[8] off the re-read 0x44 pointer (target lw 32(v1), no
  * addiu fl); `if (arg0) {}` after the (arg0, 1) call and after the flag-4 RMW. */
 /* timproc_uso_b3_func_00001C68: UI animation/draw orchestrator (sibling of
- * arcproc_uso_func_00001F54 / mgrproc per-frame steps). cb(); gate arg0->0xB8
+ * arc_DataManager_update / mgrproc per-frame steps). cb(); gate arg0->0xB8
  * bit-16 && ->0x4DC==1: bump 0x30, decrement 0xA0 by 0x21 (floor 0 + cleanup that
  * sets sub->0x554=192.0f, ->0x544=0xFF). cb(arg0). Gated block: state-2 sync of
  * 0xD8; optional draw block; ramp 0xA8 toward 0x44->0x18 by 0xFA/0x32/0x19/1;
@@ -1354,7 +1354,7 @@ void timproc_uso_b3_func_000023CC(void) {}
 void timproc_uso_b3_func_000023D4(void) {}
 void timproc_uso_b3_func_000023DC(void) {}
 
-/* Alloc-cascade ctor (sibling of arcproc_uso_func_0000251C): alloc 108/80/44
+/* Alloc-cascade ctor (sibling of ARCMenuProcess_ctor): alloc 108/80/44
  * + ->0x28=&D + &D+1160/1168 descriptors, then a registration tail. Decoded
  * 2026-06-02. Reconstructed 2026-06-22 (agent-e): 59.73 -> 95.54%.
  *  - Whole body wrapped in the `(arg0 != 0 || (alloc; cond))` short-circuit
@@ -1368,7 +1368,7 @@ void timproc_uso_b3_func_000023DC(void) {}
  *  - `(D[0] == 0x17D7) == 0` form emits the target's `xori;sltiu;bnel`
  *    seq-idiom (a plain `!= 0x17D7` regresses to li+beql).
  * 2026-10-16 (agent-g) EXACT (96.32 -> 100): ported the levers of the exact
- *  sibling arcproc_uso_func_0000251C -- the 199C short-circuit head with
+ *  sibling ARCMenuProcess_ctor -- the 199C short-circuit head with
  *  ONE a3 web for level-2 / vtable / registration nodes, `if (1) {}` before
  *  the dispatch base, and the unused `volatile int pad` (+8 frame, lifts the
  *  arg0+16 spill to 0x2C). That fixed every spill slot and the entry delay

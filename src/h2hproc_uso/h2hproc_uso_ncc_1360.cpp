@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM donor for h2hproc_uso_func_00001360 (per-frame menu
+/* IDO 7.1 NCC (C++) NM donor for h2h_WinsDisplay_display_00001360 (per-frame menu
  * draw, 0x290 / 164 words). C++: the edg-order virtual call at the top. 6 raw
  * words left (agent-c run 125): in the two `move(prev->font->w + dx, ...)`
  * calls the target holds the font pointer in v1 and the width in v0; here the
@@ -33,7 +33,7 @@ struct Self {
     Item a, b, c, d;
     int counter;
 };
-extern "C" void h2hproc_uso_func_00001360(Self *self) {
+extern "C" void h2h_WinsDisplay_display_00001360(Self *self) {
     char buf[64];
     int r;
     Item *it;

@@ -1,0 +1,19 @@
+nonmatching fs_gdlReadInt_tit_0000049C, 0x3C
+
+glabel fs_gdlReadInt_tit_0000049C
+    /* 59A168 0000049C 27BDFFE0 */  .word 0x27BDFFE0
+    /* 59A16C 000004A0 AFA40020 */  .word 0xAFA40020
+    /* 59A170 000004A4 AFBF0014 */  .word 0xAFBF0014
+    /* 59A174 000004A8 3C040000 */  lui        $a0, %hi(import_0005C6E0)
+    /* 59A178 000004AC 24840000 */  addiu      $a0, $a0, %lo(import_0005C6E0)
+    /* 59A17C 000004B0 27A50018 */  .word 0x27A50018
+    /* 59A180 000004B4 0C000000 */  jal        titproc_uso_func_049AAC
+    /* 59A184 000004B8 24060004 */  .word 0x24060004
+    /* 59A188 000004BC 8FAE0018 */  .word 0x8FAE0018
+    /* 59A18C 000004C0 8FAF0020 */  .word 0x8FAF0020
+    /* 59A190 000004C4 ADEE0000 */  .word 0xADEE0000
+    /* 59A194 000004C8 8FBF0014 */  .word 0x8FBF0014
+    /* 59A198 000004CC 27BD0020 */  .word 0x27BD0020
+    /* 59A19C 000004D0 03E00008 */  .word 0x03E00008
+    /* 59A1A0 000004D4 00000000 */  .word 0x00000000
+endlabel fs_gdlReadInt_tit_0000049C

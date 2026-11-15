@@ -93,9 +93,9 @@ build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x473C
 # compare build/non_matching vs expected) score the trailing alignment-nop word.
 # splat-symbol-boundary trailing-delay-nop class — see docs/MATCHING_WORKFLOW.md.
 build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_fontAdjustAdvance=0x00000000 gui_drawImage_00003B80=0x00000000,0x00000000,0x00000000
-build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2hproc_uso_func_00001AFC=0x00000000
+build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2hproc_uso_func_00001AFC=0x00000000
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 # 2026-05-27: removed instruction-appending PREFIX_BYTES for game_libs_func_0003ECDC,
 # game_libs_func_0005AFB0, kernel func_80007FC8 — all were leading-nop / self-branch
 # instruction-faking that violated the 2026-05-23 no-instruction-forcing-matches policy
@@ -166,7 +166,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B1B4_DONOR)
 # h2h 1204 = alpha fade + state callback; nested clamps (decode fix), void alias for discarded calls; NCC donor.
 H2H_1204_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp.o
-build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00001204=$(H2H_1204_DONOR)
+build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_WinsDisplay_update_00001204=$(H2H_1204_DONOR)
 build/src/h2hproc_uso/h2hproc_uso.c.o build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1204_DONOR)
 # 1360 = per-frame menu draw; C++ (edg-order virtual call). Still NON_MATCHING
 # (font pointer / width colours in the item tail): NM comparison object only.
@@ -2852,7 +2852,7 @@ build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc
 # 2B7C = number / glyph display dispatcher as C++ (unused `Col col;` with an inline ctor = the four 1.0f
 # stores; agent-c run 243, cfe 98.24). EXACT NCC donor (agent-c run 244: case-1 panel pointer p in v0).
 MGR_2B7C_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp.o
-build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002B7C=$(MGR_2B7C_DONOR)
+build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MgrNameEntry_drawCongrats_00002B7C=$(MGR_2B7C_DONOR)
 build/src/mgrproc_uso/mgrproc_uso.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: $(MGR_2B7C_DONOR)
 
 # timproc_uso_b1 / b3 (Yay0-compressed): same opening -O0 run (int-reader 0x4C +
@@ -3238,9 +3238,9 @@ build/src/titproc_uso/titproc_uso_mp72_%.cpp.o: src/titproc_uso/titproc_uso_mp72
 	$(NCC721) $< $@ $(OPT_FLAGS)
 # titproc 116C: EXACT MIPSpro 7.2.1 donor (native 4-entry table; agent-h run 364, kit CDLI), spliced over a
 # placeholder in both trees. Table at donor .rodata+0x30 (lay_5DC) = the in-place %lo;
-# titproc_uso_func_0000116C_rodata pinned to 0 in undefined_syms_auto.txt.
+# TitleDemoProcess_handleInput_rodata pinned to 0 in undefined_syms_auto.txt.
 TITPROC_116C_DONOR := build/src/titproc_uso/titproc_uso_mp72_116C.cpp.o
-build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_0000116C=$(TITPROC_116C_DONOR)
+build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += TitleDemoProcess_handleInput=$(TITPROC_116C_DONOR)
 build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: $(TITPROC_116C_DONOR)
 build/src/game_libs/game_libs_mp72_%.cpp.o: src/game_libs/game_libs_mp72_%.cpp $(NCC721)
 	@mkdir -p $(dir $@)
@@ -3539,10 +3539,10 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_CEB4_DONOR)
 # titproc 5DC = 12-case state machine (356/356 words, IDO 7.1 cfe -O2 donor
 # titproc_uso_5DC.c, agent-g run 178). Spliced over the unit's INCLUDE_ASM so
-# its .rodata jumptable reloc is renamed titproc_uso_func_000005DC_rodata and
+# its .rodata jumptable reloc is renamed tit_procMain_rodata and
 # pinned to the table the USO ships at RoData +0x0 (the 29CCC recipe).
 TITPROC_5DC_DONOR := build/src/titproc_uso/titproc_uso_5DC.c.o
-build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_000005DC=$(TITPROC_5DC_DONOR)
+build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += tit_procMain=$(TITPROC_5DC_DONOR)
 build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc_uso.c.o: $(TITPROC_5DC_DONOR)
 # timproc_b5 is C++ (cfront-lowered ctors): NCC keeps the source operand
 # order of commutative FP ops where cfe canonicalizes the constant right.
@@ -3702,10 +3702,10 @@ build/src/match_imports/arcproc_uso_func_00001B04.c.o: src/match_imports/arcproc
 build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o: src/match_imports/arcproc_uso_func_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/arcproc_uso_func_00001F54.c.o: src/match_imports/arcproc_uso_func_00001F54.c src/match_imports/context_arcproc_uso_tail1.h
+build/src/match_imports/arc_DataManager_update.c.o: src/match_imports/arc_DataManager_update.c src/match_imports/context_arcproc_uso_tail1.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o: src/match_imports/arcproc_uso_func_00001F54.c src/match_imports/context_arcproc_uso_tail1.h
+build/non_matching/src/match_imports/arc_DataManager_update.c.o: src/match_imports/arc_DataManager_update.c src/match_imports/context_arcproc_uso_tail1.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/snd_updatePlayer.c.o: src/match_imports/snd_updatePlayer.c src/match_imports/context_bootup_uso_o2_0610.h
@@ -4160,22 +4160,22 @@ build/src/match_imports/gui_func_00002BB0.c.o: src/match_imports/gui_func_00002B
 build/non_matching/src/match_imports/gui_func_00002BB0.c.o: src/match_imports/gui_func_00002BB0.c src/match_imports/context_gui_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/h2hproc_uso_func_0000002C.c.o: src/match_imports/h2hproc_uso_func_0000002C.c src/match_imports/context_h2hproc_uso.h
+build/src/match_imports/h2h_procMain.c.o: src/match_imports/h2h_procMain.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o: src/match_imports/h2hproc_uso_func_0000002C.c src/match_imports/context_h2hproc_uso.h
+build/non_matching/src/match_imports/h2h_procMain.c.o: src/match_imports/h2h_procMain.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/h2hproc_uso_func_00000C18.c.o: src/match_imports/h2hproc_uso_func_00000C18.c src/match_imports/context_h2hproc_uso.h
+build/src/match_imports/h2h_setupCameras_00000C18.c.o: src/match_imports/h2h_setupCameras_00000C18.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o: src/match_imports/h2hproc_uso_func_00000C18.c src/match_imports/context_h2hproc_uso.h
+build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o: src/match_imports/h2h_setupCameras_00000C18.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/h2hproc_uso_func_00001360.c.o: src/match_imports/h2hproc_uso_func_00001360.c src/match_imports/context_h2hproc_uso.h
+build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o: src/match_imports/h2hproc_uso_func_00001360.c src/match_imports/context_h2hproc_uso.h
+build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/func_800000B0.c.o: src/match_imports/func_800000B0.c src/match_imports/context_kernel_000.h
@@ -4190,10 +4190,10 @@ build/src/match_imports/func_800021A4.c.o: src/match_imports/func_800021A4.c src
 build/non_matching/src/match_imports/func_800021A4.c.o: src/match_imports/func_800021A4.c src/match_imports/context_kernel_000.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/mgrproc_uso_func_00001C90.c.o: src/match_imports/mgrproc_uso_func_00001C90.c src/match_imports/context_mgrproc_uso.h
+build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o: src/match_imports/mgrproc_uso_func_00001C90.c src/match_imports/context_mgrproc_uso.h
+build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
@@ -4262,10 +4262,10 @@ build/src/match_imports/timproc_uso_b5_func_0000D550.c.o: src/match_imports/timp
 build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/titproc_uso_func_00001710.c.o: src/match_imports/titproc_uso_func_00001710.c src/match_imports/context_titproc_uso.h
+build/src/match_imports/KeyMessage_display.c.o: src/match_imports/KeyMessage_display.c src/match_imports/context_titproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o: src/match_imports/titproc_uso_func_00001710.c src/match_imports/context_titproc_uso.h
+build/non_matching/src/match_imports/KeyMessage_display.c.o: src/match_imports/KeyMessage_display.c src/match_imports/context_titproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 
@@ -4276,12 +4276,12 @@ build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf: build/src/matc
 build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o scripts/match-origins-arcproc_uso_func_00001B04-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001B04-nm.ld -e arcproc_uso_func_00001B04 -o $@ $@.stripped.o
-build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf: build/src/match_imports/arcproc_uso_func_00001F54.c.o scripts/match-origins-arcproc_uso_func_00001F54.ld
+build/src/match_imports/arc_DataManager_update.c.o.linked.elf: build/src/match_imports/arc_DataManager_update.c.o scripts/match-origins-arc_DataManager_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001F54.ld -e arcproc_uso_func_00001F54 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o scripts/match-origins-arcproc_uso_func_00001F54-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arc_DataManager_update.ld -e arc_DataManager_update -o $@ $@.stripped.o
+build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf: build/non_matching/src/match_imports/arc_DataManager_update.c.o scripts/match-origins-arc_DataManager_update-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001F54-nm.ld -e arcproc_uso_func_00001F54 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arc_DataManager_update-nm.ld -e arc_DataManager_update -o $@ $@.stripped.o
 build/src/match_imports/snd_updatePlayer.c.o.linked.elf: build/src/match_imports/snd_updatePlayer.c.o scripts/match-origins-snd_updatePlayer.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_updatePlayer.ld -e snd_updatePlayer -o $@ $@.stripped.o
@@ -4726,24 +4726,24 @@ build/src/match_imports/gui_func_00002BB0.c.o.linked.elf: build/src/match_import
 build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf: build/non_matching/src/match_imports/gui_func_00002BB0.c.o scripts/match-origins-gui_func_00002BB0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_func_00002BB0-nm.ld -e gui_func_00002BB0 -o $@ $@.stripped.o
-build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf: build/src/match_imports/h2hproc_uso_func_0000002C.c.o scripts/match-origins-h2hproc_uso_func_0000002C.ld
+build/src/match_imports/h2h_procMain.c.o.linked.elf: build/src/match_imports/h2h_procMain.c.o scripts/match-origins-h2h_procMain.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_0000002C.ld -e h2hproc_uso_func_0000002C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf: build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o scripts/match-origins-h2hproc_uso_func_0000002C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_procMain.ld -e h2h_procMain -o $@ $@.stripped.o
+build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf: build/non_matching/src/match_imports/h2h_procMain.c.o scripts/match-origins-h2h_procMain-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_0000002C-nm.ld -e h2hproc_uso_func_0000002C -o $@ $@.stripped.o
-build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf: build/src/match_imports/h2hproc_uso_func_00000C18.c.o scripts/match-origins-h2hproc_uso_func_00000C18.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_procMain-nm.ld -e h2h_procMain -o $@ $@.stripped.o
+build/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf: build/src/match_imports/h2h_setupCameras_00000C18.c.o scripts/match-origins-h2h_setupCameras_00000C18.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00000C18.ld -e h2hproc_uso_func_00000C18 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o scripts/match-origins-h2hproc_uso_func_00000C18-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_setupCameras_00000C18.ld -e h2h_setupCameras_00000C18 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf: build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o scripts/match-origins-h2h_setupCameras_00000C18-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00000C18-nm.ld -e h2hproc_uso_func_00000C18 -o $@ $@.stripped.o
-build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf: build/src/match_imports/h2hproc_uso_func_00001360.c.o scripts/match-origins-h2hproc_uso_func_00001360.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_setupCameras_00000C18-nm.ld -e h2h_setupCameras_00000C18 -o $@ $@.stripped.o
+build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf: build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o scripts/match-origins-h2h_WinsDisplay_display_00001360.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00001360.ld -e h2hproc_uso_func_00001360 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o scripts/match-origins-h2hproc_uso_func_00001360-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_WinsDisplay_display_00001360.ld -e h2h_WinsDisplay_display_00001360 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf: build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o scripts/match-origins-h2h_WinsDisplay_display_00001360-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2hproc_uso_func_00001360-nm.ld -e h2hproc_uso_func_00001360 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_WinsDisplay_display_00001360-nm.ld -e h2h_WinsDisplay_display_00001360 -o $@ $@.stripped.o
 build/src/match_imports/func_800000B0.c.o.linked.elf: build/src/match_imports/func_800000B0.c.o scripts/match-origins-func_800000B0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800000B0.ld -e func_800000B0 -o $@ $@.stripped.o
@@ -4756,12 +4756,12 @@ build/src/match_imports/func_800021A4.c.o.linked.elf: build/src/match_imports/fu
 build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf: build/non_matching/src/match_imports/func_800021A4.c.o scripts/match-origins-func_800021A4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800021A4-nm.ld -e func_800021A4 -o $@ $@.stripped.o
-build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf: build/src/match_imports/mgrproc_uso_func_00001C90.c.o scripts/match-origins-mgrproc_uso_func_00001C90.ld
+build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00001C90.ld -e mgrproc_uso_func_00001C90 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o scripts/match-origins-mgrproc_uso_func_00001C90-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90.ld -e MGRRaceProcess_drawOverlay_00001C90 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00001C90-nm.ld -e mgrproc_uso_func_00001C90 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90-nm.ld -e MGRRaceProcess_drawOverlay_00001C90 -o $@ $@.stripped.o
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
@@ -4828,22 +4828,22 @@ build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf: build/src/m
 build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o scripts/match-origins-timproc_uso_b5_func_0000D550-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D550-nm.ld -e timproc_uso_b5_func_0000D550 -o $@ $@.stripped.o
-build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf: build/src/match_imports/titproc_uso_func_00001710.c.o scripts/match-origins-titproc_uso_func_00001710.ld
+build/src/match_imports/KeyMessage_display.c.o.linked.elf: build/src/match_imports/KeyMessage_display.c.o scripts/match-origins-KeyMessage_display.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-titproc_uso_func_00001710.ld -e titproc_uso_func_00001710 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf: build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o scripts/match-origins-titproc_uso_func_00001710-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-KeyMessage_display.ld -e KeyMessage_display -o $@ $@.stripped.o
+build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf: build/non_matching/src/match_imports/KeyMessage_display.c.o scripts/match-origins-KeyMessage_display-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-titproc_uso_func_00001710-nm.ld -e titproc_uso_func_00001710 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-KeyMessage_display-nm.ld -e KeyMessage_display -o $@ $@.stripped.o
 
 # Audited original-ROM carrier bindings.
 build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001B04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001B04.json $@
 build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001B04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001B04-nm.json $@
-build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001F54.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001F54.json $@
-build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001F54-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001F54-nm.json $@
+build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: build/src/match_imports/arc_DataManager_update.c.o.linked.elf scripts/match-bindings-arc_DataManager_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arc_DataManager_update.json $@
+build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf scripts/match-bindings-arc_DataManager_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arc_DataManager_update-nm.json $@
 build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: build/src/match_imports/snd_updatePlayer.c.o.linked.elf scripts/match-bindings-snd_updatePlayer.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_updatePlayer.json $@
 build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf scripts/match-bindings-snd_updatePlayer-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5140,18 +5140,18 @@ build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: build/src/ma
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_func_00002BB0.json $@
 build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf scripts/match-bindings-gui_func_00002BB0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_func_00002BB0-nm.json $@
-build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_0000002C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_0000002C.json $@
-build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json $@
-build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00000C18.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00000C18.json $@
-build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json $@
-build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00001360.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00001360.json $@
-build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf scripts/match-bindings-h2hproc_uso_func_00001360-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2hproc_uso_func_00001360-nm.json $@
+build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: build/src/match_imports/h2h_procMain.c.o.linked.elf scripts/match-bindings-h2h_procMain.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_procMain.json $@
+build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf scripts/match-bindings-h2h_procMain-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_procMain-nm.json $@
+build/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf: build/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf scripts/match-bindings-h2h_setupCameras_00000C18.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_setupCameras_00000C18.json $@
+build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf scripts/match-bindings-h2h_setupCameras_00000C18-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_setupCameras_00000C18-nm.json $@
+build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf scripts/match-bindings-h2h_WinsDisplay_display_00001360.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_WinsDisplay_display_00001360.json $@
+build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf scripts/match-bindings-h2h_WinsDisplay_display_00001360-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_WinsDisplay_display_00001360-nm.json $@
 build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: build/src/match_imports/func_800000B0.c.o.linked.elf scripts/match-bindings-func_800000B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800000B0.json $@
 build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf scripts/match-bindings-func_800000B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5160,10 +5160,10 @@ build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: build/src/match_
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800021A4.json $@
 build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf scripts/match-bindings-func_800021A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800021A4-nm.json $@
-build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00001C90.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00001C90.json $@
-build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json $@
+build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json $@
+build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json $@
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850.json $@
 build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5208,20 +5208,20 @@ build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: b
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D550.json $@
 build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json $@
-build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf scripts/match-bindings-titproc_uso_func_00001710.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-titproc_uso_func_00001710.json $@
-build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf scripts/match-bindings-titproc_uso_func_00001710-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-titproc_uso_func_00001710-nm.json $@
+build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: build/src/match_imports/KeyMessage_display.c.o.linked.elf scripts/match-bindings-KeyMessage_display.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-KeyMessage_display.json $@
+build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf scripts/match-bindings-KeyMessage_display-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-KeyMessage_display-nm.json $@
 
 # Local function union; upstream exacts and unit inventory are unchanged.
 build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001B04=build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
 build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001B04.c scripts/match-bindings-arcproc_uso_func_00001B04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001B04=build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001B04.c scripts/match-bindings-arcproc_uso_func_00001B04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001F54=build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
-build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001F54.c scripts/match-bindings-arcproc_uso_func_00001F54.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001F54=build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001F54.c scripts/match-bindings-arcproc_uso_func_00001F54-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arc_DataManager_update=build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arc_DataManager_update.c scripts/match-bindings-arc_DataManager_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arc_DataManager_update=build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arc_DataManager_update.c scripts/match-bindings-arc_DataManager_update-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += snd_updatePlayer=build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
 build/src/bootup_uso/bootup_uso.c.o: src/match_imports/snd_updatePlayer.c scripts/match-bindings-snd_updatePlayer.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += snd_updatePlayer=build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
@@ -5543,18 +5543,18 @@ build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=bu
 build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
 build/non_matching/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_0000002C=build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
-build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_0000002C.c scripts/match-bindings-h2hproc_uso_func_0000002C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_0000002C=build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_0000002C.c scripts/match-bindings-h2hproc_uso_func_0000002C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00000C18=build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
-build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00000C18.c scripts/match-bindings-h2hproc_uso_func_00000C18.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00000C18=build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00000C18.c scripts/match-bindings-h2hproc_uso_func_00000C18-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00001360=build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
-build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00001360.c scripts/match-bindings-h2hproc_uso_func_00001360.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2hproc_uso_func_00001360=build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2hproc_uso_func_00001360.c scripts/match-bindings-h2hproc_uso_func_00001360-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_procMain=build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
+build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_procMain.c scripts/match-bindings-h2h_procMain.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_procMain=build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_procMain.c scripts/match-bindings-h2h_procMain-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_setupCameras_00000C18=build/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf
+build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_setupCameras_00000C18.c scripts/match-bindings-h2h_setupCameras_00000C18.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_setupCameras_00000C18=build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_setupCameras_00000C18.c scripts/match-bindings-h2h_setupCameras_00000C18-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_WinsDisplay_display_00001360=build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf
+build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c scripts/match-bindings-h2h_WinsDisplay_display_00001360.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_WinsDisplay_display_00001360=build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c scripts/match-bindings-h2h_WinsDisplay_display_00001360-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800000B0=build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
 build/src/kernel/kernel_000.c.o: src/match_imports/func_800000B0.c scripts/match-bindings-func_800000B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800000B0=build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
@@ -5563,10 +5563,10 @@ build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800021A4=buil
 build/src/kernel/kernel_000.c.o: src/match_imports/func_800021A4.c scripts/match-bindings-func_800021A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800021A4=build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
 build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/func_800021A4.c scripts/match-bindings-func_800021A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00001C90=build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
-build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00001C90.c scripts/match-bindings-mgrproc_uso_func_00001C90.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00001C90=build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00001C90.c scripts/match-bindings-mgrproc_uso_func_00001C90-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawOverlay_00001C90=build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
+build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawOverlay_00001C90=build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
 build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
@@ -5611,10 +5611,10 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timpro
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c scripts/match-bindings-timproc_uso_b5_func_0000D550.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D550=build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_00001710=build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
-build/src/titproc_uso/titproc_uso.c.o: src/match_imports/titproc_uso_func_00001710.c scripts/match-bindings-titproc_uso_func_00001710.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += titproc_uso_func_00001710=build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
-build/non_matching/src/titproc_uso/titproc_uso.c.o: src/match_imports/titproc_uso_func_00001710.c scripts/match-bindings-titproc_uso_func_00001710-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += KeyMessage_display=build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
+build/src/titproc_uso/titproc_uso.c.o: src/match_imports/KeyMessage_display.c scripts/match-bindings-KeyMessage_display.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += KeyMessage_display=build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
+build/non_matching/src/titproc_uso/titproc_uso.c.o: src/match_imports/KeyMessage_display.c scripts/match-bindings-KeyMessage_display-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 
 # Host C/ASM definitions retain the original compiler and RoData context only.
 # Both modes require and install the independently checked C implementations above.
@@ -5624,10 +5624,10 @@ build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arcproc_uso
 build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
-build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
+build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
 build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
@@ -5924,18 +5924,18 @@ build/src/gui_uso/gui_uso.c.o: build/src/match_imports/gui_func_00002BB0.c.o.lin
 build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/gui_uso/gui_uso.c.o: build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
-build/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/h2hproc_uso_func_0000002C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
-build/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/h2hproc_uso_func_00000C18.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
-build/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/h2hproc_uso_func_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
+build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf
+build/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/h2h_setupCameras_00000C18.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf
+build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/kernel/kernel_000.c.o: build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
 build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
@@ -5944,10 +5944,10 @@ build/src/kernel/kernel_000.c.o: build/src/match_imports/func_800021A4.c.o.linke
 build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
-build/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/mgrproc_uso_func_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
+build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
@@ -5992,7 +5992,7 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso
 build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/titproc_uso/titproc_uso.c.o: build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
-build/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/titproc_uso/titproc_uso.c.o: build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/titproc_uso_func_00001710.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/titproc_uso/titproc_uso.c.o: build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
+build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/titproc_uso/titproc_uso.c.o: build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py

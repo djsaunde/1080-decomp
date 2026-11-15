@@ -66,7 +66,7 @@ void h2hproc_uso_func_00000014(int *a0, int a1) {
  * struct-vs-cast levers both tested). NOT byte-exact -> cannot land via the
  * arcproc-style jumptable NOLOAD pin (which needs exact .text). INCLUDE_ASM
  * stays the default build. */
-void h2hproc_uso_func_0000002C(int *a0, int a1) {
+void h2h_procMain(int *a0, int a1) {
     int *s0;
     int t1;
     int flag = 0;
@@ -126,7 +126,7 @@ void h2hproc_uso_func_0000002C(int *a0, int a1) {
     } while (flag == 0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2hproc_uso_func_0000002C);
+INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2h_procMain);
 #endif
 
 void h2hproc_uso_func_0000020C(int *a0) {
@@ -152,7 +152,7 @@ extern char *D_h2h_2A4_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_2A4_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_2A4_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2hproc_uso_func_000002A4(void) {
+void h2h_pauseRetry(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_2A4_a + 4));
     *(int*)((char*)&D_h2h_2A4_b + 0x40) = 5;
     gl_func_00000000(&D_h2h_2A4_b);
@@ -164,7 +164,7 @@ extern char *D_h2h_2FC_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_2FC_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_2FC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2hproc_uso_func_000002FC(void) {
+void h2h_pauseExitState2_000002FC(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_2FC_a + 4));
     *(int*)((char*)&D_h2h_2FC_b + 0x40) = 2;
     gl_func_00000000(&D_h2h_2FC_b);
@@ -176,7 +176,7 @@ extern char *D_h2h_354_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_354_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_354_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2hproc_uso_func_00000354(void) {
+void h2h_pauseExitState3_00000354(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_354_a + 4));
     *(int*)((char*)&D_h2h_354_b + 0x40) = 3;
     gl_func_00000000(&D_h2h_354_b);
@@ -188,7 +188,7 @@ extern char *D_h2h_3AC_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_3AC_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_3AC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2hproc_uso_func_000003AC(void) {
+void h2h_pauseExitState4_000003AC(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_3AC_a + 4));
     *(int*)((char*)&D_h2h_3AC_b + 0x40) = 4;
     gl_func_00000000(&D_h2h_3AC_b);
@@ -200,7 +200,7 @@ extern char *D_h2h_404_a;       /* call 1 base, *(D+4) */
 extern char *D_h2h_404_b;       /* call 2 a0 + store +0x40 */
 extern int  *D_h2h_404_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
-void h2hproc_uso_func_00000404(void) {
+void h2h_pauseQuit(void) {
     gl_func_00000000(*(int*)((char*)&D_h2h_404_a + 4));
     *(int*)((char*)&D_h2h_404_b + 0x40) = 6;
     gl_func_00000000(&D_h2h_404_b);
@@ -231,19 +231,19 @@ void h2hproc_uso_func_0000049C(void) {
     gl_func_00000000(&D_00000000);
 }
 
-void h2hproc_uso_func_000004E0(int *dst) {
+void fs_gdlReadInt_h2h_000004E0(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void h2hproc_uso_func_0000051C(float *dst) {
+void fs_gdlReadFloat_h2h_0000051C(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void h2hproc_uso_func_00000558(Quad4 *dst) {
+void fs_gdlReadQuad_h2h_00000558(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -251,7 +251,7 @@ void h2hproc_uso_func_00000558(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-void h2hproc_uso_func_000005B0(Vec3 *dst) {
+void fs_gdlReadVec3_h2h_000005B0(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -264,9 +264,9 @@ void h2hproc_uso_func_000005B0(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* h2hproc_uso_func_00000620: 178-insn / 0x2CC orchestrator constructor.
+/* H2HRaceProcess_ctor: 178-insn / 0x2CC orchestrator constructor.
  * EXACT 2026-10-24 (agent-g run 154): rewritten on the skeleton of its exact
- * sibling arcproc_uso_func_00000A3C (opcode-sequence similarity 0.81; also
+ * sibling ARCRaceProcess_ctor (opcode-sequence similarity 0.81; also
  * timproc_b1 097C 0.82 / mgrproc E04): nested short-circuit base ctors with
  * one o1/o2/o3 chain, the 3-arg registration call through the void alias
  * gl_func_00000000_620v (frees v0 for the vtable base w), one reused o1 for
@@ -360,7 +360,7 @@ extern char D_h2h_620_d0, D_h2h_620_d1, D_h2h_620_d2, D_h2h_620_d3;
 extern char D_h2h_620_r;
 extern void gl_func_00000000_620v();
 
-void *h2hproc_uso_func_00000620(char *obj, int a1, int a2, int a3) {
+void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
     char *o1;
     char *o2;
     char *o3;
@@ -596,7 +596,7 @@ void h2hproc_uso_func_00000A80(int *a0) {
     *(int*)((char*)a0 + 0x504) = 0;
 }
 
-/* h2hproc_uso_func_00000A88: 0x124 state-machine dispatcher on a0->0x504.
+/* H2HRaceProcess_setupRace_00000A88: 0x124 state-machine dispatcher on a0->0x504.
  *   case 0: setter(D[0x190], 3, 1); a0->0x504 = 1; gl(7, 0, 0)
  *   case 1: if (!query(D[0x190])) return; gl(7, 0, 0); local C18(a0);
  *           min(pair[0x170], pair[0x174]) + 0x26000F -> gl(a0, ., pair);
@@ -612,7 +612,7 @@ void h2hproc_uso_func_00000A80(int *a0) {
  * the lui+addiu,0 paired base, decl order tmp/s0/a3/base. */
 extern unsigned A88_diffpair[];
 extern void h2hproc_call_00000C18(int *);
-void h2hproc_uso_func_00000A88(int *a0) {
+void H2HRaceProcess_setupRace_00000A88(int *a0) {
     int tmp = *(int*)((char*)a0 + 0x504);
     int *s0 = a0;
     int a3;
@@ -752,7 +752,7 @@ void h2hproc_uso_func_00000BAC(int *a0) {
  *   overshoot (+2-3 insns, reload per use); (b) -9/-5 masks are uopt candidates in
  *   a0/a1 in the target (blocking the `lui a1` &D+0x1C hoist), t-ring temps here;
  *   (c) first 0x108 clear is symmetric `addiu v1,t7,24` off the loaded temp. */
-void h2hproc_uso_func_00000C18(int *a0) {
+void h2h_setupCameras_00000C18(int *a0) {
     int idx;
     int *slot;
     int *s518_ret;
@@ -840,7 +840,7 @@ void h2hproc_uso_func_00000C18(int *a0) {
 #undef RT
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2hproc_uso_func_00000C18);
+INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2h_setupCameras_00000C18);
 #endif
 
 /* 43-insn / 0xAC h2h dual-side update routine. Sibling-by-offset of
@@ -941,7 +941,7 @@ void h2hproc_uso_func_00000E04(int *a0, unsigned int a1) {
     *(unsigned int*)((char*)a0 + 0x4F4) = a1 & 0xFFFF;
 }
 
-/* h2hproc_uso_func_00000EB0: 44-insn (0xB0) constructor with optional alloc.
+/* h2h_WhiteFader_ctor: 44-insn (0xB0) constructor with optional alloc.
  *
  * Two-tier alloc pattern: takes a0 (preallocated ptr or NULL), if NULL
  * alloc(0x40). Then a SECOND defensive `if (a2 == 0) alloc(0x2C)` which
@@ -980,7 +980,7 @@ void h2hproc_uso_func_00000E04(int *a0, unsigned int a1) {
  *       (LOAD-BEARING shared line; do not re-split). */
 extern char D_h2h_eb0_y;   /* q->0x28 target — distinct extern to force a 2nd
                             * &D materialization (target has separate t6/t7 luis). */
-int *h2hproc_uso_func_00000EB0(int *a0) {
+int *h2h_WhiteFader_ctor(int *a0) {
     int *r;                       /* cascade tier ($a0-colored, spill 0x1C) */
     if (a0 == 0) {
         if ((a0 = (int*)gl_func_00000000(0x40)) == 0) goto end;
@@ -1002,11 +1002,11 @@ end:
     return a0;
 }
 
-/* Cross-USO template: byte-identical to titproc_uso_func_00001E2C. Same C body
+/* Cross-USO template: byte-identical to tit_WhiteFader_display. Same C body
  * matches both per feedback_uso_accessor_template_reuse.md. Logic:
  *   v = a0->0x3C; if (v >= 0x100) v = 0xFF; if (v == 0) return;
  *   gl_func(&D_0, v, a0+0x2C); gl_func(&D_0, 0, 0, 0x13F, 0xEF, 0x10001); */
-void h2hproc_uso_func_00000F60(char *a0) {
+void h2h_WhiteFader_display(char *a0) {
     int v = *(int*)(a0 + 0x3C);
     if (v >= 0x100) v = 0xFF;
     if (v == 0) return;
@@ -1014,7 +1014,7 @@ void h2hproc_uso_func_00000F60(char *a0) {
     gl_func_00000000(&D_00000000, 0, 0, 0x13F, 0xEF, 0x10001);
 }
 
-/* h2hproc_uso_func_00000FD0 — BEST 136/141 words (96.5%), 2026-07-03 agent-e.
+/* h2h_createPauseMenu_00000FD0 — BEST 136/141 words (96.5%), 2026-07-03 agent-e.
  * VERIFIED via clean NM rebuild + word-diff vs own .s. Baseline was 90/142.
  * 15 variants, all COMPILED.
  *
@@ -1050,7 +1050,7 @@ void h2hproc_uso_func_00000F60(char *a0) {
  *    resident from context IDO 7.1 can't reproduce, or an allocator-order
  *    artifact (uoptlist class).
  */
-void *h2hproc_uso_func_00000FD0(void *a0, int *a1) {
+void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
     extern void gl_func_00000000_void();  /* void alias (=0x0): dead-$v0-def lever */
     int *tmp;
     char *base = &D_00000000;
@@ -1107,7 +1107,7 @@ end:
     return a0;
 }
 
-/* h2hproc_uso_func_00001204: 87-insn (0x15C) state-machine + indirect call.
+/* h2h_WinsDisplay_update_00001204: 87-insn (0x15C) state-machine + indirect call.
  * Two-path counter update on a0->[0x34]->[0x3C] gated by
  * a0->[0x2C]->[0x4F4] < 2:
  *   path INCR: clamp [0x3C] to 0xFF, +=0x10, then re-clamp to 0x100->0x2D0;
@@ -1186,11 +1186,11 @@ end:
  * matching needs the a2-split lever first. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 94.48 (clamps not nested, record base v1). */
-void h2hproc_uso_func_00001204(char *a0) {
+void h2h_WinsDisplay_update_00001204(char *a0) {
 }
 
 #ifdef NON_MATCHING
-/* h2hproc_uso_func_00001360: 164-insn (0x290) per-frame compound dispatcher.
+/* h2h_WinsDisplay_display_00001360: 164-insn (0x290) per-frame compound dispatcher.
  *
  * STRUCTURE:
  *   self->[0x98]++;                                 ; counter inc
@@ -1259,7 +1259,7 @@ void h2hproc_uso_func_00001204(char *a0) {
  * a3,v0 copy - probed ternary both arm orders/if-else/register/function-scope
  * color, all inert); top-of-fn v_call/vtable v0<->v1 emission swap; tail lh
  * temps fold into a1 (target lh v0; addiu a1,v0). Coloring-tie class. NM. */
-void h2hproc_uso_func_00001360(int *self) {
+void h2h_WinsDisplay_display_00001360(int *self) {
     extern void gl_func_00000000_1360v();  /* void alias (=0x0): dead-$v0 exclusion, discarded-return calls */
     int *vtable;
     int *v_call;
@@ -1325,11 +1325,11 @@ void h2hproc_uso_func_00001360(int *self) {
     gl_func_00000000_1360v(self);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2hproc_uso_func_00001360);
+INCLUDE_ASM("asm/nonmatchings/h2hproc_uso/h2hproc_uso", h2h_WinsDisplay_display_00001360);
 #endif
 
 extern void gl_func_15f0(void *, int, int, int, float);
-void h2hproc_uso_func_000015F0(int *a0, int *a1, int a2) {
+void h2h_DataManager_init(int *a0, int *a1, int a2) {
     char *base = &D_00000000;
     int *self = a0;
     int *src;
@@ -1384,7 +1384,7 @@ void h2hproc_uso_func_000015F0(int *a0, int *a1, int a2) {
     *(int*)((char*)sub3 + 0x14) = (int)self;
 }
 
-/* h2hproc_uso_func_000017A0: 143-insn (0x23C) per-frame state-machine.
+/* h2h_DataManager_update: 143-insn (0x23C) per-frame state-machine.
  *
  * Sibling of 000015F0 (init) — this is the per-frame UPDATE companion.
  * Tail half (0x17F0-0x185C) re-runs the same 3-sub-init pattern (sub1
@@ -1492,7 +1492,7 @@ void h2hproc_uso_func_000015F0(int *a0, int *a1, int a2) {
  *   temp was the t-ring +1); (c) v->0x94 is re-read inline at each test
  *   (target holds it in ring temp t4, a named p148 coloured v1). */
 extern void gl_func_00000000_17A0v();
-void h2hproc_uso_func_000017A0(int *self) {
+void h2h_DataManager_update(int *self) {
     int *parent = (int*)*(int*)((char*)self + 0xB8);
     int *v;
     int x;
@@ -1552,25 +1552,25 @@ void h2hproc_uso_func_000017A0(int *self) {
 extern int h2hproc_uso_func_h2h_4DC();
 extern int h2hproc_uso_func_h2h_518();
 extern int h2hproc_uso_func_h2h_554();
-void h2hproc_uso_func_000019DC(char *dst) {
+void h2h_readIntParm_000019DC(char *dst) {
     int tmp;
     h2hproc_uso_func_h2h_4DC(&tmp);
     h2hproc_uso_func_h2h_4DC((int*)(dst + 0x10));
 }
 
-void h2hproc_uso_func_00001A0C(char *dst) {
+void h2h_readFloatParm_00001A0C(char *dst) {
     int tmp;
     h2hproc_uso_func_h2h_4DC(&tmp);
     h2hproc_uso_func_h2h_518((float*)(dst + 0x10));
 }
 
-void h2hproc_uso_func_00001A3C(char *dst) {
+void h2h_readQuadParm_00001A3C(char *dst) {
     int tmp;
     h2hproc_uso_func_h2h_4DC(&tmp);
     h2hproc_uso_func_h2h_554((Quad4*)(dst + 0x10));
 }
 
-/* h2hproc_uso_func_00001A6C: 36-insn (0x90) constructor — BYTE-IDENTICAL
+/* h2h_ItemType_create_00001A6C: 36-insn (0x90) constructor — BYTE-IDENTICAL
  * mirror of edd_ItemType_create_000003BC (verified 2026-05-03 via .word diff).
  * Same alloc + init + list-add structure with beql speculative double-store.
  *
@@ -1608,8 +1608,8 @@ void h2hproc_uso_func_00001A3C(char *dst) {
  * mirror edd_ItemType_create_000003BC's exact source pattern (currently
  * also uncapped).
  *
- * 2026-05-08: tested the sibling-port from titproc_uso_func_00002980 /
- * mgrproc_uso_func_00003358 / arcproc_uso_func_00002334 (verbatim
+ * 2026-05-08: tested the sibling-port from tit_ItemType_create_00002980 /
+ * mgr_ItemType_create_00003358 / arc_ItemType_create_00002334 (verbatim
  * 'if (p == 0) return 0; init;' form). Result: REGRESSED 89.19% →
  * 77.83% — same regression as on gl_func_000088B4 in game_libs.c.
  * h2hproc_uso.c has only 35 c-funcs (similar to titproc/mgrproc/arcproc)
@@ -1618,7 +1618,7 @@ void h2hproc_uso_func_00001A3C(char *dst) {
  * function-count. The cap class (alloc-and-link-to-list) seems to
  * legitimately need the `_pad[8]` + `if (p != NULL) {init}` form here,
  * not the matched titproc/mgrproc form. Reverted; defer to permuter. */
-void *h2hproc_uso_func_00001A6C(int *arg0) {
+void *h2h_ItemType_create_00001A6C(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -1644,10 +1644,10 @@ void *h2hproc_uso_func_00001A6C(int *arg0) {
 extern int h2hproc_uso_func_h2h_4DC();
 extern int h2hproc_uso_func_h2h_5AC();
 
-void h2hproc_uso_func_00001AFC(char *a0) {
+void h2h_readVec3Parm_00001AFC(char *a0) {
     int tmp;
     h2hproc_uso_func_h2h_4DC(&tmp);
     h2hproc_uso_func_h2h_5AC(a0 + 0x10);
 }
 /* Trailing alignment nop at 0x1B2C emitted via all-zero SUFFIX_BYTES_FORCE on
- * h2hproc_uso_func_00001AFC (Makefile) — same 1-word-pad-block trap as 0x2A0. */
+ * h2h_readVec3Parm_00001AFC (Makefile) — same 1-word-pad-block trap as 0x2A0. */

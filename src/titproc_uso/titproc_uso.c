@@ -19,7 +19,7 @@ void titproc_uso_func_00000000()
     gl_func_00000000(&D_00000000 + 0x48, ((*(int*)&D_00000000 + 0x31) << 16) | 0xA);
 }
 
-void titproc_uso_func_00000098(void) {
+void tit_loadLogoSprite_00000098(void) {
     gl_func_00000000(&D_00000000 + 0x60, 1);
 }
 
@@ -56,7 +56,7 @@ extern int titproc_uso_func_01EEE4();
  *
  * Diagnosis via -Wo,-zdbug:6 uoptlist constrained-coloring order (colors
  * 2/3/4 = v1/a0/a1) at each step; ~65 standalone variants swept. */
-int titproc_uso_func_000000C0(counter)
+int tit_nextDemo_000000C0(counter)
     int counter;
 {
     int v;
@@ -102,7 +102,7 @@ extern char D_00000194_A;
  * stores) was emitted as predecessor 0xC0's pad sidecar; moved into this fn's
  * .s (0x48->0x50, starts 0x18C) and removed the pad pragma+.s. (The 0x1E4
  * orphan lives in the separate func_000001DC.s, fixed when 0x1E4 lands.) */
-void titproc_uso_func_00000194(void) {
+void tit_menuMultiRace(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 3;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
@@ -115,7 +115,7 @@ extern char D_000001E4_A;
 /* MATCHED via pad-sidecar/orphan boundary correction: leading `lui v0,0; addiu
  * v0,0` (&D base) was the separate fake-fn func_000001DC; merged into this fn's
  * .s (0x4C->0x54, starts 0x1DC), orphan-fn + its INCLUDE_ASM removed. */
-void titproc_uso_func_000001E4(void) {
+void tit_menuTimeAttack(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 4;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
@@ -125,7 +125,7 @@ void titproc_uso_func_000001E4(void) {
 
 extern char D_00000230_A;
 
-void titproc_uso_func_00000230(void) {
+void tit_menuTrick(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 6;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
@@ -140,7 +140,7 @@ extern char D_0000028C_A;
  * into an uncovered gap (prologue-stolen successor). Renamed to the true
  * entry 00000284 + restored the prefix words; the C (mirror of matched
  * sibling 00000230) then matches. */
-void titproc_uso_func_00000284(void) {
+void tit_menuArcade(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 5;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
@@ -153,7 +153,7 @@ extern char D_000002D8_A;
 /* Reverse-merge boundary: real function starts at 0x2D8 (splat put the
  * `lui $v0; addiu $v0` prologue 8 bytes earlier, attributed to 0x28C's
  * trailing bytes). Per feedback_splat_prologue_stolen_by_predecessor.md. */
-void titproc_uso_func_000002D8(void) {
+void tit_menuHead2Head(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 2;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
@@ -166,7 +166,7 @@ extern char D_0000032C_A;
 /* Reverse-merge boundary: real function starts at 0x32C (splat put the
  * `lui $v0; addiu $v0` prologue 8 bytes earlier, attributed to 0x2E0's
  * trailing bytes). Per feedback_splat_prologue_stolen_by_predecessor.md. */
-void titproc_uso_func_0000032C(void) {
+void tit_menuTraining(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 7;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
@@ -180,7 +180,7 @@ extern char D_00000380_A;
  * the `lui $v0; addiu $v0` prologue 8 bytes earlier and attributed it to
  * 0x334's trailing bytes). Per feedback_splat_prologue_stolen_by_predecessor.md.
  * Signature is `void f(void)` — no args; $v0 = &D_00000000 via prologue. */
-void titproc_uso_func_00000380(void) {
+void tit_startTitleDemo_00000380(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 1;
     *(int*)((char*)&D_00000000 + 0x40) = 1;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
@@ -190,14 +190,14 @@ void titproc_uso_func_00000380(void) {
 
 extern char D_000003D0_A;
 
-void titproc_uso_func_000003D0(void) {
+void tit_menuEditors(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 8;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
     gl_func_00000000(*(int*)((char*)&D_000003D0_A + 0xA8), -1, 0);
 }
 
-/* titproc_uso_func_00000418: 33-insn FP selector + scaled return.
+/* tit_randomUnlocked_00000418: 33-insn FP selector + scaled return.
  *
  * D[0x154] is a pointer to a u16 mask. The target loads the pointer before
  * the stack prologue, then keeps the u16 mask in v1 for the loop. For each
@@ -217,7 +217,7 @@ extern float titproc_uso_func_075EE4();
  * `index=0` (or $2,$0,$0), matching the target's order and resolving the
  * documented 2-diff scheduler swap (the 97k-iter run that "could not move
  * it" used the cached-mask shape; this is the inlined-mask + early-read form). */
-int titproc_uso_func_00000418(void) {
+int tit_randomUnlocked_00000418(void) {
     int index = 0;
     int selected;
 
@@ -234,19 +234,19 @@ int titproc_uso_func_00000418(void) {
     return (int)((titproc_uso_func_075EE4() * (float)selected) + 2.0f);
 }
 
-void titproc_uso_func_0000049C(int *dst) {
+void fs_gdlReadInt_tit_0000049C(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void titproc_uso_func_000004D8(float *dst) {
+void fs_gdlReadFloat_tit_000004D8(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void titproc_uso_func_00000514(Quad4 *dst) {
+void fs_gdlReadQuad_tit_00000514(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -254,7 +254,7 @@ void titproc_uso_func_00000514(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-void titproc_uso_func_0000056C(Vec3 *dst) {
+void fs_gdlReadVec3_tit_0000056C(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -267,7 +267,7 @@ void titproc_uso_func_0000056C(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* titproc_uso_func_000005DC: 356-insn do-while + 12-case jr-table state machine.
+/* tit_procMain: 356-insn do-while + 12-case jr-table state machine.
  * Reconstructed 2026-06-22; decode-refined 2026-08-22 (agent-f): 76.66 -> 93.84.
  * Fixes vs the first reconstruction (all read off expected/ .o at 0x5DC):
  *  - 07ACE0 takes a SECOND arg (the 0027E8 result, a1=v0 in the jal delay);
@@ -327,7 +327,7 @@ extern int import_000B3268();
 #ifdef NON_MATCHING
 #include "titproc_uso_5DC.c"
 #else
-INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", titproc_uso_func_000005DC);
+INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", tit_procMain);
 #endif
 
 /* titproc_uso_func_00000B6C: 40-insn (0xA0) 3-call alloc-and-link wrapper.
@@ -360,7 +360,7 @@ void titproc_uso_func_00000C0C(int *a0) {
     *(int*)((char*)&D_00000000 + 0x168) = 0;
 }
 
-/* titproc_uso_func_00000C54: 223-insn (0x37C) title-screen constructor /
+/* TitleDemoProcess_ctor: 223-insn (0x37C) title-screen constructor /
  * orchestrator. Allocates or accepts a 0x78-byte root, sets its template
  * (+0x28) and vtable (+0x0C) pointers, runs the two no-arg init thunks
  * (func_000000/func_000098), then allocates SIX child objects via the
@@ -439,7 +439,7 @@ extern int import_000A5F40();
 extern int import_0024CCF4();
 extern int import_000A5FBC();
 extern int import_000A7ECC();
-void *titproc_uso_func_00000C54(void *root, int a1) {
+void *TitleDemoProcess_ctor(void *root, int a1) {
     void *child;
     void *o2;
     void *sub;
@@ -540,7 +540,7 @@ void *titproc_uso_func_00000C54(void *root, int a1) {
     return root;
 }
 
-void titproc_uso_func_00000FD0(int *a0, int *a1) {
+void TitleDemoProcess_handleMsg(int *a0, int *a1) {
     int v = *a1;
     if (v == 0x15) {
         gl_func_00000000(a0);
@@ -552,7 +552,7 @@ void titproc_uso_func_00000FD0(int *a0, int *a1) {
 extern int D_t_count_101C;
 extern int D_t_target_101C;
 extern int D_t_arg0_101C, D_t_arg1_101C, D_t_arg2_101C, D_t_arg3_101C, D_t_arg4_101C, D_t_arg5_101C, D_t_arg6_101C;
-void titproc_uso_func_0000101C(int *a0) {
+void TitleDemoProcess_buildMenu(int *a0) {
     gl_func_00000000(*(int*)((char*)a0 + 0x5C));
     gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 1, 0, &D_t_arg0_101C);
     gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 2, 1, &D_t_arg1_101C);
@@ -566,14 +566,14 @@ void titproc_uso_func_0000101C(int *a0) {
     }
 }
 
-/* titproc_uso_func_0000116C: title-screen sequence state machine (290 words). EXACT 2026-11-12 (agent-h
+/* TitleDemoProcess_handleInput: title-screen sequence state machine (290 words). EXACT 2026-11-12 (agent-h
  * run 364) through the MIPSpro 7.2.1 C++ front end donor src/titproc_uso/titproc_uso_mp72_116C.cpp
  * (tools/ncc721.sh), REPLACE_FUNC_BODY-spliced in both trees: its 4-label `switch (s0->0x40)` is a native
  * 4-entry jump table only under EDG 2.29. The table's .rodata reloc is renamed
- * titproc_uso_func_0000116C_rodata by the splice and pinned to 0 (in-place %lo 0x30, the donor's lay_5DC
+ * TitleDemoProcess_handleInput_rodata by the splice and pinned to 0 (in-place %lo 0x30, the donor's lay_5DC
  * puts the table at .rodata+0x30). This placeholder's text and relocs are dropped by the splice (the
  * INCLUDE_ASM .s carried no RoData). The cfe body (99.514, phantom `case 4:`) stays under #if 0. */
-void titproc_uso_func_0000116C(char *s0) {
+void TitleDemoProcess_handleInput(char *s0) {
     *(volatile int *)s0 = 0;
 }
 
@@ -706,7 +706,7 @@ void titproc_uso_func_0000116C(char *s0) {
  * native there, so the phantom `case 4:` goes (99.514 -> 99.586). This cfe body stays as the reference. */
 extern char import_00263D30;
 extern void gl_func_00000000_116c_v();
-void titproc_uso_func_0000116C(char *s0) {
+void TitleDemoProcess_handleInput(char *s0) {
     char *v1, *vt;
     char *d3;
     char *vt2;
@@ -880,7 +880,7 @@ fire:
 }
 #endif
 
-/* titproc_uso_func_000015F4 — alloc-or-passthrough constructor. The second
+/* KeyMessage_ctor — alloc-or-passthrough constructor. The second
  * null guard is dead after the first successful alloc, but the original source
  * shape emitted it; preserve it per docs/PATTERNS.md's cascade recipe.
  * int *f(int *a0){
@@ -910,7 +910,7 @@ fire:
  * dead-guard spill and re-lays the whole frame. The tmp/a0 split IS load-bearing;
  * keep it. Arg-count-lever check (per the 8EC win): a2 here is the object
  * pointer held across the calls, NOT an under-counted arg — lever N/A. */
-int *titproc_uso_func_000015F4(a0)
+int *KeyMessage_ctor(a0)
 int *a0;
 {
   int *tmp;
@@ -955,7 +955,7 @@ int *a0;
  * base stores, and the Makefile retargets one %lo relocation for final
  * scheduling. */
 
-/* titproc_uso_func_000016B8: 22-insn field oscillator (a0->0x2C counter,
+/* KeyMessage_update: 22-insn field oscillator (a0->0x2C counter,
  * a0->0x30 direction flag). +6 when flag==0 until >=0xFA, -6 otherwise
  * until <0x41, flipping the flag at each bound (branch-likely bnel idiom).
  *
@@ -969,7 +969,7 @@ int *a0;
 /* In-place `a0[0x2C] += 6` (NOT `cur=...; nv=cur+6; a0[0x2C]=nv`) is what
  * matches: the named-temp form CSEs the field read into $v0/$v1; reading the
  * field fresh per access makes IDO use $t2/$t7/$t8 like the target. */
-void titproc_uso_func_000016B8(int *a0) {
+void KeyMessage_update(int *a0) {
     if (a0[0x30 / 4] == 0) {
         a0[0x2C / 4] += 6;
         if (a0[0x2C / 4] >= 250) {
@@ -983,7 +983,7 @@ void titproc_uso_func_000016B8(int *a0) {
     }
 }
 
-/* titproc_uso_func_00001710 — verified structural decode (FPU lerp, 76
+/* KeyMessage_display — verified structural decode (FPU lerp, 76
  * insns; div.s/mul.s chain + 3 calls + recovered f16=1.0f stolen prologue
  * = documented sub-80 ceiling → INCLUDE_ASM build path; struct-typing ref).
  * Boundary: 0x000-0x004 (lui at,0x3f80; mtc1 at,$f16 = 1.0f) is this fn's
@@ -1043,7 +1043,7 @@ extern void import_0024F34C();
  * branch-duplicated init (hoist), out-via-pointer, t-inline — all 55-word
  * or worse. Same intractable FP-renumber class as twin mgrproc 2E3C's
  * pair-swap. objdiff fuzzy 87.11 -> 95.39. INCLUDE_ASM is the build path. */
-void titproc_uso_func_00001710(char *s0) {
+void KeyMessage_display(char *s0) {
     float ones[4];
     char *tgt;
     char pad[0xC];
@@ -1074,10 +1074,10 @@ void titproc_uso_func_00001710(char *s0) {
     import_0024F34C(tgt, (int)*(float *)(s0 + 0x34), (int)*(float *)(s0 + 0x38), 3);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", titproc_uso_func_00001710);
+INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", KeyMessage_display);
 #endif
 
-/* titproc_uso_func_00001840: 68-insn (0x110) 2-cascade constructor with
+/* MainLogo_ctor: 68-insn (0x110) 2-cascade constructor with
  * 11-int + 4-float constant spray. Allocates main 0x74-byte object,
  * runs init helper from &D_0 + 0x4D8, sets vtable + 11 int field
  * constants (255, 163, 154, 67, 44, 1, -57, 28, 17, -3, 33) at offsets
@@ -1123,7 +1123,7 @@ extern int titproc_uso_func_04C678();
 extern int titproc_uso_func_001AF8();
 extern int titproc_uso_func_00F4CC();
 extern char titproc_uso_D_0001FC;
-void *titproc_uso_func_00001840(void *self) {
+void *MainLogo_ctor(void *self) {
     void *sub;
     if (self == 0) {
         self = (void*)titproc_uso_func_055750(0x74);
@@ -1160,7 +1160,7 @@ skip:
 end:
     return self;
 }
-/* titproc_uso_func_00001950: 106-insn dual-phase display/alpha helper.
+/* MainLogo_display: 106-insn dual-phase display/alpha helper.
  * Decrements/fades through the D+0x60/D+0x78 display blocks while
  * a0->0x38 == 0, then increments/clamps a0->0x2C and dispatches the
  * D+0x90 block. C emit is same length; previously INSN_PATCH closed the
@@ -1179,9 +1179,9 @@ extern void import_0024E388();
  * vpad;` re-occupies the removed local's frame slot (buf_a@sp+0x4C,
  * buf_b@sp+0x28, frame -0x60). Callees import_0024F2C8 (begin),
  * import_0024E388 (alpha+rgba), import_0024F34C (coords); base
- * import_00263D30 +0x60/+0x78/+0x90. Twin family titproc_uso_func_00001710 /
+ * import_00263D30 +0x60/+0x78/+0x90. Twin family KeyMessage_display /
  * mgrproc_uso_func_00002E3C. */
-void titproc_uso_func_00001950(int *s0) {
+void MainLogo_display(int *s0) {
     volatile int vpad;
     float buf_a[4];
     char pad[20];
@@ -1233,13 +1233,13 @@ void titproc_uso_func_00001950(int *s0) {
     (void)pad;
 }
 
-void titproc_uso_func_00001AF8(int *a0) {
+void MainLogo_reset(int *a0) {
     a0[0x38 / 4] = 0;
     a0[0x34 / 4] = 150;
     a0[0x2C / 4] = 255;
 }
 
-/* titproc_uso_func_00001B10: 42-insn (0xA8) 3-stage chained alloc-cascade.
+/* LangMenu_ctor: 42-insn (0xA8) 3-stage chained alloc-cascade.
  * Same shape as edd_EditorsProcess_ctor_0000025C and timproc_uso_b5_func_00000058
  * — gets/allocs primary obj (size 0x40), then init-call into +0x4EC
  * sub-block, then stores D_X pointers at +0x28 / +0xC / +0x3C of stages.
@@ -1282,7 +1282,7 @@ extern int titproc_uso_func_055750();
 extern int titproc_uso_func_04C678();
 extern int titproc_uso_func_00F4CC();
 extern char titproc_uso_D_000264;
-void *titproc_uso_func_00001B10(void *self) {
+void *LangMenu_ctor(void *self) {
   void *sub;
   char *base = &titproc_uso_D_00048C;
   if (self == 0)
@@ -1313,7 +1313,7 @@ void *titproc_uso_func_00001B10(void *self) {
 
 }
 
-/* titproc_uso_func_00001BB8: 42-insn dual-state-bracket helper. Two
+/* tit_langMenuInput_00001BB8: 42-insn dual-state-bracket helper. Two
  * gl_func dispatches with asymmetric inner-D[0] gates. LANDED fuzzy=100
  * at size 0xA8. The previously-documented 8-byte SUFFIX_BYTES tail for
  * SUCCESSOR (0x1C68)'s stolen prologue is no longer in the Makefile —
@@ -1332,7 +1332,7 @@ void *titproc_uso_func_00001B10(void *self) {
 extern int gl_func_00000000();
 extern char D_titproc_BB8_a, D_titproc_BB8_b, D_titproc_BB8_c, D_titproc_BB8_d;
 extern char D_titproc_BB8_e, D_titproc_BB8_f, D_titproc_BB8_g, D_titproc_BB8_h;
-void titproc_uso_func_00001BB8(int a0) {
+void tit_langMenuInput_00001BB8(int a0) {
     if (gl_func_00000000(&D_titproc_BB8_a, 0x10001) != 0) {
         if (*(int*)&D_titproc_BB8_b != 0) {
             gl_func_00000000(1);
@@ -1347,7 +1347,7 @@ void titproc_uso_func_00001BB8(int a0) {
     }
 }
 
-/* titproc_uso_func_00001C68: 69-insn (0x114) dual-dispatch FPU helper.
+/* LangMenu_display: 69-insn (0x114) dual-dispatch FPU helper.
  * Sibling of 0x1BB8 (which provides the stolen-prologue $f0 = 1.0f).
  *
  * 10 unique externs (D_titproc_C68_A1..A4 + B + D + C1..C4) at 0x0 break
@@ -1365,12 +1365,12 @@ extern int gl_func_00000000();
 extern char D_titproc_C68_A1, D_titproc_C68_A2, D_titproc_C68_A3, D_titproc_C68_A4;
 extern char D_titproc_C68_C1, D_titproc_C68_C2, D_titproc_C68_C3, D_titproc_C68_C4;
 extern int D_titproc_C68_B, D_titproc_C68_D;
-/* titproc_uso_func_00001C68: boundary-corrected (orphan-fn delete+merge). The
+/* LangMenu_display: boundary-corrected (orphan-fn delete+merge). The
  * 2-word orphan titproc_uso_func_00001C60 (`lui at,0x3F80; mtc1 at,$f0` = 1.0f)
  * was a splat mis-split of THIS function's prologue — it materializes the 1.0f
- * the C writes as buf[0..3]. Merged into titproc_uso_func_00001C68.s; NM-wrap C
+ * the C writes as buf[0..3]. Merged into LangMenu_display.s; NM-wrap C
  * already built build[2:]==expected -> byte-exact. */
-void titproc_uso_func_00001C68(int *a0) {
+void LangMenu_display(int *a0) {
     float buf[4];
     char pad[24];
     buf[0] = 1.0f;
@@ -1395,7 +1395,7 @@ void titproc_uso_func_00001C68(int *a0) {
     (void)pad;
 }
 
-/* titproc_uso_func_00001D7C: 44-insn (0xB0) 2-cascade ctor + 4 floats=1.0f.
+/* tit_WhiteFader_ctor: 44-insn (0xB0) 2-cascade ctor + 4 floats=1.0f.
  * Sibling of 1840: alloc(0x40) + dead-arm alloc(0x2C), init from
  * &D_0+0x500, vtable, 4 floats=1.0f at +0x2C..0x38, zero at +0x3C.
  *
@@ -1442,7 +1442,7 @@ void titproc_uso_func_00001C68(int *a0) {
 extern int titproc_uso_func_055750();
 extern int titproc_uso_func_04C678();
 extern char titproc_uso_D_0002CC;
-void *titproc_uso_func_00001D7C(void *self) {
+void *tit_WhiteFader_ctor(void *self) {
   void *sub;
   char *base = &titproc_uso_D_00048C;
   if (self == 0)
@@ -1480,9 +1480,9 @@ extern char D_00000000;
  *   v = a0->0x3C; if (v >= 0x100) v = 0xFF; if (v == 0) return;
  *   func_00000000(&D_0, v, a0+0x2C);
  *   func_00000000(&D_0, 0, 0, 0x13F, 0xEF, 0x10001);  // 6-arg call
- * Cross-USO template — same body matches h2hproc_uso_func_00000F60 byte-
+ * Cross-USO template — same body matches h2h_WhiteFader_display byte-
  * identical (per feedback_uso_accessor_template_reuse.md). */
-void titproc_uso_func_00001E2C(char *a0) {
+void tit_WhiteFader_display(char *a0) {
     int v = *(int*)(a0 + 0x3C);
     if (v >= 0x100) v = 0xFF;
     if (v == 0) return;
@@ -1524,7 +1524,7 @@ void titproc_uso_func_00001E2C(char *a0) {
  * 2026-10-16 EXACT: the 04C678 call and the import_00073B18 store on ONE
  * source line flips the as1 pair order (docs/IDO_CODEGEN.md
  * #same-line-registration-schedule-23e4). */
-int *titproc_uso_func_00001E9C(int *arg0, int arg1, int arg2, int arg3) {
+int *GameDemoProcess_ctor(int *arg0, int arg1, int arg2, int arg3) {
 extern char import_000745F8;
 extern char titproc_uso_D_000334;
     register int *node;   /* s0: sub-cascade + every registration node */
@@ -1655,7 +1655,7 @@ done:
     return arg0;
 }
 
-void titproc_uso_func_00002270(int a0, int *a1) {
+void GameDemoProcess_handleMsg(int a0, int *a1) {
     int v = *a1;
     if (v == 0x15) {
         gl_func_00000000(a0);
@@ -1667,13 +1667,13 @@ void titproc_uso_func_00002270(int a0, int *a1) {
 extern int titproc_uso_D_count_22BC;
 extern int titproc_uso_D_target_22BC;
 extern int titproc_uso_D_arg0_22BC, titproc_uso_D_arg1_22BC, titproc_uso_D_arg2_22BC, titproc_uso_D_arg3_22BC, titproc_uso_D_arg4_22BC, titproc_uso_D_arg5_22BC, titproc_uso_D_arg6_22BC;
-/* titproc_uso_func_000022BC: per-frame init orchestrator — submit 7 display
+/* GameDemoProcess_buildMenu: per-frame init orchestrator — submit 7 display
  * lists, then reset slot 0x128. BYTE-EXACT (336 bytes), ported from its
- * masked-hash twin donor titproc_uso_func_0000101C (84-word identical body,
+ * masked-hash twin donor TitleDemoProcess_buildMenu (84-word identical body,
  * only struct offset 0x5C->0x6C0 differs). Reading the count global directly
  * (no `register`) is what makes IDO pin %hi/%lo in $s1 across the 7 calls —
  * the residual the prior register-based NM attempt couldn't crack. */
-void titproc_uso_func_000022BC(int *a0) {
+void GameDemoProcess_buildMenu(int *a0) {
     gl_func_00000000(*(int*)((char*)a0 + 0x6C0));
     gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 1, 0, &titproc_uso_D_arg0_22BC);
     gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 2, 1, &titproc_uso_D_arg1_22BC);
@@ -1688,7 +1688,7 @@ void titproc_uso_func_000022BC(int *a0) {
 }
 
 /* titproc_uso_func_0000240C - EXACT MATCH (177/177 words + relocs, 2026-07-07).
- * SIBLING of titproc_uso_func_000026FC (the titproc state-machine family).
+ * SIBLING of GameDemoProcess_handleInput (the titproc state-machine family).
  * Cracked the former "coloring/scheduling ceiling" via five coupled levers:
  *   1. vt-FIRST def in each vtable block (`vt = *(*(s0+K)+0x28); obj = *(s0+K);`
  *      — CSE folds the reload) flips the vt/obj priority so vt->v0, obj->v1;
@@ -1839,7 +1839,7 @@ void titproc_uso_func_000026D0(int *a0) {
     titproc_uso_func_00000000(p);
 }
 
-/* titproc_uso_func_000026FC — verified structural decode (113-insn scroll/
+/* GameDemoProcess_handleInput — verified structural decode (113-insn scroll/
  * slider state machine; heavy beql/bnel/bgtzl branch-likely + 8 calls =
  * documented sub-80 ceiling → INCLUDE_ASM build path; struct-typing ref).
  * Struct-typing: s0->0x6C0 active flag, 0x6C4 state (==2 special, ==0
@@ -1887,7 +1887,7 @@ extern int titproc_uso_func_01CCD4();
 extern int import_000B1BAC();
 extern char import_0001FFF8;
 
-void titproc_uso_func_000026FC(char *s0) {
+void GameDemoProcess_handleInput(char *s0) {
     int *p3c;
     char *v1;
     int arg;
@@ -1957,32 +1957,32 @@ ret:
     ;
 }
 
-void titproc_uso_func_000028C0(char *dst) {
+void tit_readIntParm_000028C0(char *dst) {
     int tmp;
-    titproc_uso_func_0000049C(&tmp);
-    titproc_uso_func_0000049C((int*)(dst + 0x10));
+    fs_gdlReadInt_tit_0000049C(&tmp);
+    fs_gdlReadInt_tit_0000049C((int*)(dst + 0x10));
 }
 
-void titproc_uso_func_000028F0(char *dst) {
+void tit_readFloatParm_000028F0(char *dst) {
     int tmp;
-    titproc_uso_func_0000049C(&tmp);
-    titproc_uso_func_000004D8((float*)(dst + 0x10));
+    fs_gdlReadInt_tit_0000049C(&tmp);
+    fs_gdlReadFloat_tit_000004D8((float*)(dst + 0x10));
 }
 
-void titproc_uso_func_00002920(char *dst) {
+void tit_readQuadParm_00002920(char *dst) {
     int tmp;
-    titproc_uso_func_0000049C(&tmp);
-    titproc_uso_func_00000514((Quad4*)(dst + 0x10));
+    fs_gdlReadInt_tit_0000049C(&tmp);
+    fs_gdlReadQuad_tit_00000514((Quad4*)(dst + 0x10));
 }
 
-void titproc_uso_func_00002950(char *dst) {
+void tit_readVec3Parm_00002950(char *dst) {
     int tmp;
-    titproc_uso_func_0000049C(&tmp);
-    titproc_uso_func_0000056C((Vec3*)(dst + 0x10));
+    fs_gdlReadInt_tit_0000049C(&tmp);
+    fs_gdlReadVec3_tit_0000056C((Vec3*)(dst + 0x10));
 }
 
-/* titproc_uso_func_00002980: 36-insn (0x90) alloc-and-link node helper.
- * BYTE-IDENTICAL sibling of edd_ItemType_create_000003BC / mgrproc_uso_func_00003358.
+/* tit_ItemType_create_00002980: 36-insn (0x90) alloc-and-link node helper.
+ * BYTE-IDENTICAL sibling of edd_ItemType_create_000003BC / mgr_ItemType_create_00003358.
  * The "frame-0x20-vs-0x28 spill cap" was a MISDIAGNOSIS — porting the exact
  * matched two-web sibling body (p1/p2 split + decl order p2,head,p1 + reload of
  * arg0[0x40] for the second condition) reproduces the frame-0x28 two-web spill
@@ -1990,7 +1990,7 @@ void titproc_uso_func_00002950(char *dst) {
  * load-bearing for the register/slot allocation. The trailing all-zero
  * _pad.s word is legit alignment data (no instruction-faking).
  * --- prior misdiagnosis kept for archaeology below ---
- * Sibling of mgrproc_uso_func_00003358 (same frame/regalloc cap class).
+ * Sibling of mgr_ItemType_create_00003358 (same frame/regalloc cap class).
  *
  * Structure (decoded from asm 0x2980-0x2A0C). The three jals are DISTINCT
  * intra-USO (runtime-relocated, =0 in undefined_syms_auto.txt) targets, not
@@ -2024,7 +2024,7 @@ extern int titproc_uso_func_055750();
 extern int titproc_uso_func_051C28();
 extern int titproc_uso_func_07ACE0();
 extern char import_0006ED80;
-void *titproc_uso_func_00002980(int *arg0) {
+void *tit_ItemType_create_00002980(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -2048,11 +2048,11 @@ void *titproc_uso_func_00002980(int *arg0) {
 }
 
 
-/* titproc_uso_func_00002A10: last function in the segment — a 2-insn
+/* TitleDemoProcess_drawGui: last function in the segment — a 2-insn
  * `void f(int a0){}` save-arg sentinel (jr ra; sw a0,0(sp)). splat declared
  * size 0x1C, absorbing 0x14 of segment-tail data; corrected by shrinking the
  * .s to 0x8 and emitting the trailing data as a local block below. */
-void titproc_uso_func_00002A10(int a0) {
+void TitleDemoProcess_drawGui(int a0) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/titproc_uso/titproc_uso/titproc_uso_tail_data.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/titproc_uso/titproc_uso/titproc_uso_func_00002980_pad.s")

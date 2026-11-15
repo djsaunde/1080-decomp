@@ -1,4 +1,4 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for titproc_uso_func_0000116C (290 words), built by
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for TitleDemoProcess_handleInput (290 words), built by
  * tools/ncc721.sh and spliced over a placeholder in both trees (agent-h runs 355 / 364). Its 4-label
  * `switch (s0->0x40)` is a native 4-entry table only under EDG 2.29 (the cfe body needs a phantom case 4).
  * lay_5DC only puts the table at .rodata+0x30 (5DC's 12-word table is RoData +0x0); it is not spliced.
@@ -25,7 +25,7 @@ void titproc_uso_func_000005DC_lay(int x, int *o) {
     }
 }
 
-void titproc_uso_func_0000116C(char *s0) {
+void TitleDemoProcess_handleInput(char *s0) {
     char *v1, *vt;
     char *d3;
     char *vt2;

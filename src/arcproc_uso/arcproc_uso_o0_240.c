@@ -11,7 +11,7 @@ extern struct DArc {
     int f64;
 } D_00000000;
 
-/* -O0 donor for arcproc_uso_func_00000240 (226-insn / 0x388 11-way state-machine
+/* -O0 donor for arc_procMain (226-insn / 0x388 11-way state-machine
  * dispatcher). VERIFIED BYTE-EXACT: isolated -O0 build = 226/226 words, 0 raw
  * mismatches vs the target .text (all gl_func_00000000 jals + D_arc240_A/B/C +
  * D_00000000 relocs resolve to address 0 in the static USO image, so the linked
@@ -45,7 +45,7 @@ extern struct DArc {
  *  - case 5: `((int**)a0)[2][((int**)a0)[2][1]+3]` — the INT** cast makes IDO -O0
  *    CSE the two identical a0[2] lvalue paths into one load (no named-q spill);
  *    the last call passes r (the 0x450000-call result), not v. */
-void arcproc_uso_func_00000240(int a0, int a1) {
+void arc_procMain(int a0, int a1) {
     int v;
     int done = 0;
     register int r;

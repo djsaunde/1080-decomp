@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for mgrproc_uso_func_00002B7C (0x2B8 / 174 words), EXACT (agent-c run 244, see the
+/* IDO 7.1 NCC (C++) donor for MgrNameEntry_drawCongrats_00002B7C (0x2B8 / 174 words), EXACT (agent-c run 244, see the
  * end of this comment). History: agent-c run 243 (NM donor).
  * The in-tree cfe body (mgrproc_uso.c, 98.24) compiled verbatim under NCC scores 98.17; the four volatile 1.0f
  * "ghost" stores of the cfe body are an unused C++ colour object with an inline constructor (`Col col;` -- the
@@ -37,10 +37,10 @@ extern void import_0024D108(...);
 extern int import_0024E060(...);
 extern int import_0024D704(...);
 extern int mgrproc_uso_func_083574(...);
-void mgrproc_uso_func_00002B7C(char *arg0);
+void MgrNameEntry_drawCongrats_00002B7C(char *arg0);
 }
 struct Col { f32 r, g, b, a; Col() { r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f; } };
-void mgrproc_uso_func_00002B7C(char *arg0) {
+void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
     char *n1;
     Col col;
     char *sub;

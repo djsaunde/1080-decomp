@@ -1483,7 +1483,7 @@ SECTIONS
         build/src/bootup_uso/bootup_uso_tail3a_10C8C.c.o(.rodata.*);
     }
 
-    /* arcproc_uso_func_00000240 (arcproc_uso_o0_240.c) is an 11-way -O0 C switch.
+    /* arc_procMain (arcproc_uso_o0_240.c) is an 11-way -O0 C switch.
      * IDO emits its jumptable into the unit's local .rodata; the real table lives
      * in the baked arcproc.uso RoDataReloc (arcproc_uso_post), runtime-patched by
      * the USO loader. Unlike bootup 10FEC (offset 0xC20 baked into the lw %lo),

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for h2hproc_uso_func_00001204 (0x15C / 87 words): fade a
+/* IDO 7.1 NCC (C++) donor for h2h_WinsDisplay_update_00001204 (0x15C / 87 words): fade a
  * 0..720 alpha up or down by 16, then run the registered state callback. Decode fix:
  * each clamp is NESTED inside its step (`if (a < 0xFF) { a += 16; if (a >= 0x100)
  * a = 0x2D0; }`) -- both branches of the target skip to the shared tail; the old NM
@@ -8,7 +8,7 @@
 extern "C" {
 extern char D_00000000;
 int gl_func_00000000(...); void h2h_void_1204(...);
-void h2hproc_uso_func_00001204(char *a0) {
+void h2h_WinsDisplay_update_00001204(char *a0) {
     char *p1;
     char *v0;
 

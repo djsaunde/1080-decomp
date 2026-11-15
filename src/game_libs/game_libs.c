@@ -4258,7 +4258,7 @@ int gl_func_00008884(char *a0) {
  * existing-link branch. Objdiff C-body score: 88.83%.
  *
  * 2026-05-08 (later): tried the sibling-port test with the matched
- * titproc_uso_func_00002980 / mgrproc_uso_func_00003358 / arcproc_uso
+ * tit_ItemType_create_00002980 / mgr_ItemType_create_00003358 / arcproc_uso
  * _func_00002334 verbatim C body (`if (p == 0) return 0; init;`).
  * Result: fuzzy DROPPED 89.31% → 77.83%. Same C body that lands
  * byte-exact in titproc/mgrproc/arcproc fails here because the file-

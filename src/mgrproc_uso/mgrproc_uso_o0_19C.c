@@ -55,13 +55,13 @@ extern int import_000A5B9C();
 extern int mgrproc_uso_func_07ACE0();
 extern int mgrproc_uso_func_0118E4();
 extern int mgrproc_uso_func_0120A8();
-extern char *mgrproc_uso_func_00000E04();
+extern char *MGRRaceProcess_ctor();
 extern int mgrproc_uso_func_01DA48();
 void mgrproc_uso_func_00000504();
 int mgrproc_uso_func_00000700();
 void mgrproc_uso_func_000009A8();
 s32 mgrproc_uso_func_00000A14();
-mgrproc_uso_func_0000019C(a0, a1) char * a0; int a1; {
+mgr_procMain(a0, a1) char * a0; int a1; {
     int v0_save;          /* sp+0x4C (case 4) */
     int loop_continue;    /* sp+0x48 */
     int buf;              /* sp+0x44 (case 5) */
@@ -104,7 +104,7 @@ mgrproc_uso_func_0000019C(a0, a1) char * a0; int a1; {
                                         import_800200FC.v, 0);
                 import_000A8094(import_80020098, import_800200FC.v);
                 v0_save = import_000B34B8(a0, *(int*)a0, 1);
-                node = (int*)mgrproc_uso_func_00000E04(0, 0x450000, v0_save,
+                node = (int*)MGRRaceProcess_ctor(0, 0x450000, v0_save,
                                                        *(int*)(a0 + 8),
                                                        *(int*)a0);
                 mgrproc_uso_func_01DA48(a0, 0, node);

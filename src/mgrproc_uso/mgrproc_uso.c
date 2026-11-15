@@ -118,19 +118,19 @@ void mgrproc_uso_func_00000C14(void) {
     }
 }
 
-static void mgrproc_uso_func_00000CC4(int *dst) {
+static void fs_gdlReadInt_mgr_00000CC4(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-static void mgrproc_uso_func_00000D00(float *dst) {
+static void fs_gdlReadFloat_mgr_00000D00(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-static void mgrproc_uso_func_00000D3C(Quad4 *dst) {
+static void fs_gdlReadQuad_mgr_00000D3C(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -138,7 +138,7 @@ static void mgrproc_uso_func_00000D3C(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-static void mgrproc_uso_func_00000D94(Vec3 *dst) {
+static void fs_gdlReadVec3_mgr_00000D94(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -151,7 +151,7 @@ static void mgrproc_uso_func_00000D94(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* mgrproc_uso_func_00000E04: 0x398-byte cfront constructor. Each distinct
+/* MGRRaceProcess_ctor: 0x398-byte cfront constructor. Each distinct
  * import_80XXXXXX char symbol keeps its own unpaired HI16 lui (offset folded
  * into the displacement); every cross-USO call is a distinct named target.
  * 2026-10-18 agent-g (run 107) 79.2 -> EXACT:
@@ -180,9 +180,9 @@ extern int import_000A5F40();
 extern int import_000A69BC();
 extern int import_000A5FBC();
 extern int mgrproc_uso_func_04C678();
-extern void mgrproc_uso_func_0000119C();
+extern void mgr_loadSprites_0000119C();
 extern int mgrproc_uso_func_074710();
-extern void mgrproc_uso_func_00002EF0();
+extern void mgr_DataManager_init();
 extern void mgrproc_uso_func_07ACE0();
 extern int mgrproc_uso_func_01B0F8();
 extern int mgrproc_uso_func_0139B0();
@@ -204,7 +204,7 @@ extern char import_802655EC;
 extern char import_802656A4;
 extern int import_80020228;
 extern char import_800200D8;
-char *mgrproc_uso_func_00000E04(char *obj, int a1, int a2, int a3, int arg5) {
+char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
     char *o1;
     char *o2;
     char *o3;
@@ -228,7 +228,7 @@ char *mgrproc_uso_func_00000E04(char *obj, int a1, int a2, int a3, int arg5) {
     *(int *)(obj + 0x528) = arg5;
     *(int *)(obj + 0x6A8) = a3;
     *(int *)(obj + 0x7D4) = 0;
-    mgrproc_uso_func_0000119C(obj);
+    mgr_loadSprites_0000119C(obj);
     *(int *)(obj + 0x7C4) = 0;
     *(float *)(obj + 0x7A0) = 0.0f;
     *(float *)(obj + 0x7A4) = 0.0f;
@@ -249,7 +249,7 @@ char *mgrproc_uso_func_00000E04(char *obj, int a1, int a2, int a3, int arg5) {
         *(int *)(obj + 0x6AC) = (int)o2;
         *(int *)(&import_800201D0 + 312) = (int)o2;
 
-        mgrproc_uso_func_00002EF0(*(int *)(obj + 0x6AC), obj, *(int *)(obj + 0x568),
+        mgr_DataManager_init(*(int *)(obj + 0x6AC), obj, *(int *)(obj + 0x568),
                                   *(int *)(obj + 0x6A8), *(int *)(obj + 0x528));
 
         w = *(char **)(obj + 0x6AC);
@@ -304,10 +304,10 @@ char *mgrproc_uso_func_00000E04(char *obj, int a1, int a2, int a3, int arg5) {
     return obj;
 }
 
-/* mgrproc_uso_func_0000119C (0x110, 68 insns, BYTE-EXACT 2026-09-05 agent-c):
+/* mgr_loadSprites_0000119C (0x110, 68 insns, BYTE-EXACT 2026-09-05 agent-c):
  * sub-object registration table builder. TWENTY-FOURTH mis-split case
  * (docs/MATCHING_WORKFLOW.md#hoisted-head-119c-11a4-mgrproc): the old 8-byte
- * "alternate entry" mgrproc_uso_func_0000119C (`lui a1,%hi(import_80020100);
+ * "alternate entry" mgr_loadSprites_0000119C (`lui a1,%hi(import_80020100);
  * lw a1,0x68(a1)`, no jr ra) was this function's OWN first load, scheduled
  * above `addiu sp` by IDO -O2; the only R_MIPS_26 into the pair targets 119C
  * (nobody jal's 11A4). Merging the head back turns the 2-param "11A4" into a
@@ -326,7 +326,7 @@ extern char import_80263D30;
 extern int import_800200EC;
 extern int import_800200FC;
 extern char import_80020100;
-void mgrproc_uso_func_0000119C(char *s0) {
+void mgr_loadSprites_0000119C(char *s0) {
     int *q;
     import_0024F228(&import_80263D30, (*(int *)((char *)&import_80020100 + 0x68) - 1) | 0x200000);
     import_0024F228(s0 + 0x6B0, *(int *)((char *)&import_800200FC + 0x64) | 0x000A0000);
@@ -345,7 +345,7 @@ void mgrproc_uso_func_0000119C(char *s0) {
     import_0024F278(s0 + 0x788, 0x210000 | 0xD);
 }
 
-void mgrproc_uso_func_000012AC(char *a0) {
+void mgr_releaseSprites_000012AC(char *a0) {
     gl_func_00000000(&D_00000000);
     gl_func_00000000(a0 + 0x6B0);
     gl_func_00000000(a0 + 0x6C8);
@@ -355,7 +355,7 @@ void mgrproc_uso_func_000012AC(char *a0) {
 
 void mgrproc_uso_func_00000000();  /* K&R-style: matches the K&R def above */
 
-void mgrproc_uso_func_00001304(void) {
+void MGRRaceProcess_release_00001304(void) {
     mgrproc_uso_func_00000000();
 }
 
@@ -503,7 +503,7 @@ storestate:
     return;
 }
 
-/* mgrproc_uso_func_000014F4: 40-insn 3-way switch on a0->[0x4D8] (v):
+/* MGRRaceProcess_newReplay_000014F4: 40-insn 3-way switch on a0->[0x4D8] (v):
  *   v == 2: func_0139B0(D[0x190], 3, 1, a0); a0->[0x7D4] = 1;
  *   v == 1 || v == 3: func_00001AD0(a0, D[0x170] + 0x26000F);
  *   else: skip
@@ -521,7 +521,7 @@ extern char import_80020208;
 extern void mgrproc_uso_func_048E7C(void *, int);
 extern void mgrproc_uso_func_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
-void mgrproc_uso_func_000014F4(int *a0) {
+void MGRRaceProcess_newReplay_000014F4(int *a0) {
     int v;
     mgrproc_uso_func_048E7C((char*)&import_802649F8 + 0x628, *(int*)((char*)a0 + 0x4D8));
     v = *(int*)((char*)a0 + 0x4D8);
@@ -539,7 +539,7 @@ case_13:
     mgrproc_uso_func_00001AD0(a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
 }
 
-/* mgrproc_uso_func_00001594: 32-insn (0x80) check-then-vtable-call helper.
+/* MGRRaceProcess_checkFade_00001594: 32-insn (0x80) check-then-vtable-call helper.
  * Decoded:
  *   if (gl_func_0(D[0x190], a0) == 0) return;
  *   int *p = a0[0x48/4]; int idx = p[0x7C/4];
@@ -574,7 +574,7 @@ extern int D_mgr_1594_a, D_mgr_1594_c;
 extern int import_80020228;
 extern int import_80263D60;
 extern int mgrproc_uso_func_013980();
-/* mgrproc_uso_func_00001594 — EXACT 32/32 body (verified clean-rebuild 2026-07-02, agent-e).
+/* MGRRaceProcess_checkFade_00001594 — EXACT 32/32 body (verified clean-rebuild 2026-07-02, agent-e).
  *
  * Replaces the former NM body (which was a documented "register-renumber cap").
  * CAP CRACKED — two levers, in order:
@@ -595,14 +595,14 @@ extern int mgrproc_uso_func_013980();
  *   extern int import_80020228;
  *   extern int import_80263D60;
  */
-void mgrproc_uso_func_00001594(int *a0) {
+void MGRRaceProcess_checkFade_00001594(int *a0) {
     if (mgrproc_uso_func_013980(*(int*)((char*)&import_80020228 + 0x190), a0) == 0) return;
     if (*(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90) == 0) return;
     *(int*)((char*)&import_80263D60 + 0x30) = (int)a0;
     ((void(*)()) *(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90))();
 }
 
-/* mgrproc_uso_func_00001614: state-machine step (switch arg0->0x504, cases 0/1/4
+/* MGRRaceProcess_setupRace_00001614: state-machine step (switch arg0->0x504, cases 0/1/4
  * as an if-else chain). Case 0: cb(&D+0x190,3,1), set state=1, cb(7,0,0). Case 1:
  * if cb(&D+0x190,1,1): set 0x4D8=1, several inits, alloc a node into arg0->0x524,
  * link it into the 0x56C list (header+0x10), conditional flag, register via
@@ -649,8 +649,8 @@ extern void mgrproc_uso_func_07ACE0();
 extern void import_007FE4E8();
 extern int mgrproc_uso_func_00F954();
 extern int mgrproc_uso_func_00001BD4();
-extern void *mgrproc_uso_func_00002940(char *, int, int);
-void mgrproc_uso_func_00001614(char *arg0) {
+extern void *MgrNameEntry_ctor_00002940(char *, int, int);
+void MGRRaceProcess_setupRace_00001614(char *arg0) {
     void *node;
     char *hdr;
     int state = *(int *)(arg0 + 0x504);
@@ -668,7 +668,7 @@ void mgrproc_uso_func_00001614(char *arg0) {
             mgrproc_uso_func_012110(&import_80020098);
             import_000B2888(arg0);
             mgrproc_uso_func_00001AD0(arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
-            *(void **)(arg0 + 0x524) = (void *)mgrproc_uso_func_00002940(0, arg0, *(int *)(arg0 + 0x7D8));
+            *(void **)(arg0 + 0x524) = (void *)MgrNameEntry_ctor_00002940(0, arg0, *(int *)(arg0 + 0x7D8));
             import_007FE4E8(*(void **)(arg0 + 0x524), *(int *)(arg0 + 0x528));
             hdr = *(char **)(arg0 + 0x56C);
             node = *(void **)(arg0 + 0x524);
@@ -1021,7 +1021,7 @@ void mgrproc_uso_func_00001BE4(int *state) {
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 extern float D_flt_5CC, D_flt_5D0, D_flt_5D4, D_flt_5D8;
-void mgrproc_uso_func_00001C90(char *arg0) {
+void MGRRaceProcess_drawOverlay_00001C90(char *arg0) {
     volatile int pt_a, pt_b, pt_c, pt_d;
     float sp50[4];
     volatile int pmid;
@@ -1085,7 +1085,7 @@ void mgrproc_uso_func_00001C90(char *arg0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00001C90);
+INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", MGRRaceProcess_drawOverlay_00001C90);
 #endif
 
 /* mgrproc_uso_func_00001F30: physics/bounce animation step (gated on arg0->0x4F0
@@ -1436,7 +1436,7 @@ void mgrproc_uso_func_00002924(int *a0) {
     *(float *)((char *)a0 + 0x554) = 170.0f;
 }
 
-/* mgrproc_uso_func_00002940 — family variant of arcproc_uso_func_0000199C
+/* MgrNameEntry_ctor_00002940 — family variant of ArcNameEntry_ctor_0000199C
  * (4-level alloc-cascade ctor; head/cascade/field-block identical shape,
  * sizes 0x174/0xD4/0x50/0x2C, init-call base +0x650). mgr-specific tail:
  * 0x16C=0, 0x168=1.0f, 0x170=0xFA, cb(&sym+0x18,7), four cb(self+sub,
@@ -1455,7 +1455,7 @@ extern char D_mgr2940_t[];   /* import_80263D48: cb arg base (+0x18) */
 extern int D_mgr2940_id;     /* import_8002022C: packed-id value read */
 extern struct Mgr2940Q { char pad[0x68]; int v; } D_mgr2940_q; /* import_80020100: packed-id low half (.v @+0x68) */
 
-void *mgrproc_uso_func_00002940(char *arg0, int arg1, int arg2) {
+void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
     char *a2;   /* level-2 (0xD4), home 0x2C(sp) */
     char *v1;   /* level-3 (0x50), home 0x28(sp) */
     char *a0;   /* level-4 (0x2C), home 0x24(sp) */
@@ -1524,7 +1524,7 @@ void mgrproc_uso_func_00002AFC(int *a0) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp,
  * REPLACE_FUNC_BODY-spliced over the placeholder below (agent-c run 244, kit CCLXVII). The history
  * below describes the earlier cfe decode (removed). */
-/* mgrproc_uso_func_00002B7C: number/glyph display dispatcher (switch arg0->0xD4->
+/* MgrNameEntry_drawCongrats_00002B7C: number/glyph display dispatcher (switch arg0->0xD4->
  * 0x7E4). a3 = arg0->0xD4 (the mgr sub-object); s4 = arg0.
  *
  * Case 1: two labeled rows. import_0024D108(a3->0x568); blit a digit/value via
@@ -1590,7 +1590,7 @@ extern int import_0024D108();
 extern int import_0024E060();
 extern int import_0024D704();
 extern int mgrproc_uso_func_083574();
-void mgrproc_uso_func_00002B7C(char *arg0) {
+void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
     volatile char *r = arg0;
 }
 
@@ -1639,7 +1639,7 @@ void mgrproc_uso_func_00002E3C(char *a0) {
   }
 }
 
-/* mgrproc_uso_func_00002EF0: one ~97-insn (0x184) object initializer + draw-list
+/* mgr_DataManager_init: one ~97-insn (0x184) object initializer + draw-list
  * builder. BOUNDARY MERGED 2026-06-02: splat had split it into 2EF0 (8-insn
  * FP-const prologue — f2=255, f4=192, f6=255, f10=0, then div.s f0=192/255 —
  * hoisted above the frame setup; the real entry, jal'd from 0E04) + 2F10 (the
@@ -1656,7 +1656,7 @@ void mgrproc_uso_func_00002E3C(char *a0) {
  * block (cut from the unlinked .o, data relocs baked by bake-data-relocs.py).
  * docs/MATCHING_WORKFLOW.md#yay0-block-unlinked-in-unit-jal-f360. Also
  * dropped a stray unmatched #endif that IDO cfe had silently tolerated. */
-void mgrproc_uso_func_00002EF0(self, a1, a2, a3, arg5)
+void mgr_DataManager_init(self, a1, a2, a3, arg5)
     int *self; int a1, a2, a3, arg5;
 {
     int *node;
@@ -1698,7 +1698,7 @@ void mgrproc_uso_func_00002EF0(self, a1, a2, a3, arg5)
     }
 }
 
-/* mgrproc_uso_func_00003074: per-frame step gated on arg0->0xBC->0x4F0 bit-16 &&
+/* mgr_DataManager_update: per-frame step gated on arg0->0xBC->0x4F0 bit-16 &&
  * ->0x4DC==1. Bumps arg0->0x30 by 0x21 if gated; cb(arg0,sub). Then (if gated):
  * a 3-way dispatch on arg0->0x44->0x94 (0/1/else) when ->0x34 set; a mod-0x33
  * frame counter at arg0->0xDC; periodic cb(0x135,0) when arg0->0x98->0xC4>=0xC;
@@ -1731,7 +1731,7 @@ extern void import_000B14CC();
 extern void mgrproc_uso_func_016BB8();
 extern void mgrproc_uso_func_016BEC(int, int, int, int, float);
 extern void mgrproc_uso_func_04CD94();
-void mgrproc_uso_func_00003074(char *arg0) {
+void mgr_DataManager_update(char *arg0) {
     char *a1;
     int v0;
     char *p;
@@ -1814,35 +1814,35 @@ end:
  *
  * All 4 are byte-correct C — the C body produces the same instructions and
  * register choices as expected/. The only ".o diff" is the unrelocated jal
- * placeholder (`jal 0` + R_MIPS_26 reloc to mgrproc_uso_func_00000CC4);
+ * placeholder (`jal 0` + R_MIPS_26 reloc to fs_gdlReadInt_mgr_00000CC4);
  * objdiff is reloc-symbol-aware and scores them 100%.
  *
  * 2026-06-04: now PROMOTED (plain C build path, episodes logged) — the old
  * reloc-encoding cap (#reloc-encoding-pinning... in docs/MATCHING_WORKFLOW.md,
  * which claimed these score 65%) no longer applies; the report shows 100%. */
-void mgrproc_uso_func_000032C8(char *dst) {
+void mgr_readIntParm_000032C8(char *dst) {
     int tmp;
-    mgrproc_uso_func_00000CC4(&tmp);
-    mgrproc_uso_func_00000CC4((int*)(dst + 0x10));
+    fs_gdlReadInt_mgr_00000CC4(&tmp);
+    fs_gdlReadInt_mgr_00000CC4((int*)(dst + 0x10));
 }
 
-void mgrproc_uso_func_000032F8(char *dst) {
+void mgr_readFloatParm_000032F8(char *dst) {
     int tmp;
     volatile char **p = &dst;   /* forces sw a0, 0x20(sp) caller-slot spill */
-    mgrproc_uso_func_00000CC4(&tmp);
-    mgrproc_uso_func_00000D00((float*)(dst + 0x10));
+    fs_gdlReadInt_mgr_00000CC4(&tmp);
+    fs_gdlReadFloat_mgr_00000D00((float*)(dst + 0x10));
     (void)p;
 }
 
-void mgrproc_uso_func_00003328(char *dst) {
+void mgr_readQuadParm_00003328(char *dst) {
     int tmp;
     volatile char **p = &dst;   /* forces sw a0, 0x20(sp) caller-slot spill, sibling of 32F8 */
-    mgrproc_uso_func_00000CC4(&tmp);
-    mgrproc_uso_func_00000D3C((Quad4*)(dst + 0x10));
+    fs_gdlReadInt_mgr_00000CC4(&tmp);
+    fs_gdlReadQuad_mgr_00000D3C((Quad4*)(dst + 0x10));
     (void)p;
 }
 
-/* mgrproc_uso_func_00003358: 36-insn (0x90) alloc-and-link node helper.
+/* mgr_ItemType_create_00003358: 36-insn (0x90) alloc-and-link node helper.
  * BYTE-IDENTICAL sibling of edd_ItemType_create_000003BC (matched 100%). The
  * "file-level state cap" was a MISDIAGNOSIS — porting eddproc's exact body
  * verbatim (p1/p2 split + decl order p2,head,p1 + reload of arg0[0x40])
@@ -1852,7 +1852,7 @@ void mgrproc_uso_func_00003328(char *dst) {
 extern int mgrproc_uso_func_051C28();
 extern char import_8006ED80;
 
-void *mgrproc_uso_func_00003358(int *arg0) {
+void *mgr_ItemType_create_00003358(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -1875,11 +1875,11 @@ void *mgrproc_uso_func_00003358(int *arg0) {
     return p2;
 }
 
-void mgrproc_uso_func_000033E8(char *dst) {
+void mgr_readVec3Parm_000033E8(char *dst) {
     int tmp;
     volatile char **p = &dst;   /* forces sw a0, 0x20(sp) caller-slot spill, sibling of 32F8/3328 */
-    mgrproc_uso_func_00000CC4(&tmp);
-    mgrproc_uso_func_00000D94((Vec3*)(dst + 0x10));
+    fs_gdlReadInt_mgr_00000CC4(&tmp);
+    fs_gdlReadVec3_mgr_00000D94((Vec3*)(dst + 0x10));
     (void)p;
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso/mgrproc_uso_func_000033E8_pad.s")

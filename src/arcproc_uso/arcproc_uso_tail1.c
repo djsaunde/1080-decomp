@@ -18,7 +18,7 @@ typedef struct { int a, b, c, d; } Quad4;
 
 /* arcproc_uso_func_0000012C and func_0000019C moved to arcproc_uso_o0_12C.c (-O0 file). */
 
-/* arcproc_uso_func_00000240 now LANDED as a compiled -O0 C_FILES unit
+/* arc_procMain now LANDED as a compiled -O0 C_FILES unit
  * (arcproc_uso_o0_240.c), pulled into .text between o0_12C and this tail via
  * tenshoe.ld. Its 11-way switch jumptable .rodata is pinned NOLOAD at VMA 0 so
  * the reloc-form dispatch (lui at,0; lw at,0(at)) bakes byte-exact. */
@@ -135,19 +135,19 @@ void arcproc_uso_func_00000880(void) {
     gl_func_00000000(D_arc880_X, 0, 0);
 }
 
-void arcproc_uso_func_000008FC(int *dst) {
+void fs_gdlReadInt_arc_000008FC(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void arcproc_uso_func_00000938(float *dst) {
+void fs_gdlReadFloat_arc_00000938(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void arcproc_uso_func_00000974(Quad4 *dst) {
+void fs_gdlReadQuad_arc_00000974(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -155,7 +155,7 @@ void arcproc_uso_func_00000974(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-void arcproc_uso_func_000009CC(Vec3 *dst) {
+void fs_gdlReadVec3_arc_000009CC(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -168,7 +168,7 @@ void arcproc_uso_func_000009CC(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* arcproc_uso_func_00000A3C: 205 insns (0x334) — 4-stage allocator/initializer
+/* ARCRaceProcess_ctor: 205 insns (0x334) — 4-stage allocator/initializer
  * constructor. Sibling of 0x880 family in arcproc_uso_tail1.c.
  *
  * 2026-06-01 (23.72 -> 27.62): confirmed member of the 0x6A8-alloc constructor
@@ -232,7 +232,7 @@ extern char D_arc_A3C_v3;
 extern char D_arc_A3C_v4;
 extern void gl_func_00000000_A3Cv();
 extern char D_arc_A3C_r;
-void *arcproc_uso_func_00000A3C(char *obj, int a1, int a2, int a3, int a4) {
+void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
     char *o1;
     char *o2;
     char *o3;
@@ -317,7 +317,7 @@ void *arcproc_uso_func_00000A3C(char *obj, int a1, int a2, int a3, int a4) {
     return obj;
 }
 
-/* arcproc_uso_func_00000D70: 58-insn (0xE8) sub-object register sequence.
+/* arc_loadSprites_00000D70: 58-insn (0xE8) sub-object register sequence.
  * Calls gl_func_00000000 with 8 (a0+offset, id) pairs — registers sub-objects
  * with their parent IDs. The id is a 32-bit packed field: high 16 bits = type
  * code, low 16 bits = data. Branch on a0->[0x6A8]->[0x4]+1 == a0->[0x6A8]->[0x8]
@@ -325,7 +325,7 @@ void *arcproc_uso_func_00000A3C(char *obj, int a1, int a2, int a3, int a4) {
  * (vs holding in a `v1` named local) flips IDO's $t6/$t7 allocation order
  * to match target. */
 extern char D_arc_D70_base;
-void arcproc_uso_func_00000D70(char *a0) {
+void arc_loadSprites_00000D70(char *a0) {
     int *p;
     gl_func_00000000(a0 + 0x6BC, *(int*)(&D_arc_D70_base + 0x64) | 0xA0000);
     gl_func_00000000(a0 + 0x6D4, 0x210000);
@@ -342,7 +342,7 @@ void arcproc_uso_func_00000D70(char *a0) {
     gl_func_00000000(a0 + 0x764, 0x210009);
 }
 
-void arcproc_uso_func_00000E58(char *a0) {
+void arc_releaseSprites_00000E58(char *a0) {
     arcproc_uso_func_00000000(a0 + 0x6BC);
     arcproc_uso_func_00000000(a0 + 0x6D4);
     arcproc_uso_func_00000000(a0 + 0x6EC);
@@ -353,7 +353,7 @@ void arcproc_uso_func_00000E58(char *a0) {
     arcproc_uso_func_00000000(a0 + 0x764);
 }
 
-/* arcproc_uso_func_00000EBC: F1 (11-insn bit-test wrapper) ONLY.
+/* ARCRaceProcess_release_00000EBC: F1 (11-insn bit-test wrapper) ONLY.
  *
  * The 2026-05-07 "SUFFIX_BYTES recipe" (25 words / 0x64 bytes absorbing
  * F2..F6 + stolen prologue) was REMOVED 2026-05-23 as instruction-byte
@@ -395,7 +395,7 @@ void arcproc_uso_func_00000E58(char *a0) {
  * USO splits also break expected/.o. Reverted; bundle stays as-is until
  * the split-script is fixed to write into the right .c. */
 extern int gl_func_00000000();
-void arcproc_uso_func_00000EBC(int *a0) {
+void ARCRaceProcess_release_00000EBC(int *a0) {
     if (*(int*)((char*)a0 + 0x4F0) & 0x10000) {
         gl_func_00000000();
     }
@@ -480,7 +480,7 @@ int arcproc_uso_func_00000F78(int *a0) {
     return 0;
 }
 
-/* arcproc_uso_func_00000FA8: 114-insn (0x1C8) state-machine dispatcher.
+/* ARCRaceProcess_setupRace_00000FA8: 114-insn (0x1C8) state-machine dispatcher.
  * 3-way switch on a0->0x504 (state code) with cases 0, 1, 4 + default.
  *
  * ENTRY DECODE (insns 0-15 @ 0xFA8-0xFE4):
@@ -508,7 +508,7 @@ int arcproc_uso_func_00000F78(int *a0) {
  * Multi-tick refinement target — entry decode is forward progress
  * documenting the dispatch structure. Default INCLUDE_ASM build remains
  * exact. */
-/* arcproc_uso_func_00000FA8: 114-insn (0x1C8) state-machine dispatcher
+/* ARCRaceProcess_setupRace_00000FA8: 114-insn (0x1C8) state-machine dispatcher
  * on a0->[0x504]. Frame 0x30, saves ra/s1/s0.
  *
  * Decoded entry (insns 1-13):
@@ -567,7 +567,7 @@ extern int gl_func_00000000();
  * `((int *)v0)[v0[1] + 4]` for addu v0,t0. All locals at function scope,
  * declared before i/s1 (frame 48, buf home 32). */
 extern void gl_func_00000000_FA8v();
-void arcproc_uso_func_00000FA8(char *a0) {
+void ARCRaceProcess_setupRace_00000FA8(char *a0) {
     int *list;
     char *r;
     char *node;
@@ -616,11 +616,11 @@ void arcproc_uso_func_00000FA8(char *a0) {
     }
 }
 
-/* arcproc_uso_func_00001170: F1 (32-insn dispatcher + indirect call) only.
+/* ARCRaceProcess_checkFade_00001170: F1 (32-insn dispatcher + indirect call) only.
  * EXACT 2026-10-16 (was a "natural ceiling" 97.03% NM). The 2026-05-07 SUFFIX_BYTES recipe (28 words
  * / 0x70 bytes absorbing F2 + F3) was REMOVED 2026-05-23 as match-faking.
  * Symbol is now 0x80 / 32 insns (F1 only); F2 and F3 are separate symbols.
- * Sibling family of arcproc_uso_func_00000EBC, gl_func_000070A0,
+ * Sibling family of ARCRaceProcess_release_00000EBC, gl_func_000070A0,
  * timproc_uso_b3_func_00000DE4 (all same recipe-cleanup pattern).
  *
  * F1 @ 0x1170-0x11EC: gate + indirect callback via vtable.
@@ -664,7 +664,7 @@ void arcproc_uso_func_00000FA8(char *a0) {
 extern int gl_func_00000000();
 extern char D_00000000;
 typedef struct { void (*fn)(void); char pad[0x24]; } Ent1170;
-void arcproc_uso_func_00001170(int *a0) {
+void ARCRaceProcess_checkFade_00001170(int *a0) {
     int *table_root = *(int**)((char*)&D_00000000 + 0x190);
     int *p;
 
@@ -702,7 +702,7 @@ void arcproc_uso_func_00001228(int *a0) {
     *p |= 4;
 }
 
-/* arcproc_uso_func_0000125C: 139-insn (0x22C) FPU-heavy state-update.
+/* ARCRaceProcess_drawOverlay_0000125C: 139-insn (0x22C) FPU-heavy state-update.
  * Single function (1 jr ra). Frame -0x70 with s0/ra saved.
  *
  * ENTRY DECODE (insns 0-15 @ 0x125C-0x1294):
@@ -786,13 +786,13 @@ void arcproc_uso_func_00001228(int *a0) {
  * seq compare and both tail span reloads run one t-register behind the
  * target (t0/t1/t2 vs t1/t2/t3); parameter / local empty tests: no move. */
 /* 2026-10-24 agent-c (run 148) EXACT: ported the exact mgrproc twin
- * mgrproc_uso_func_00001C90 (sibling-scan 0.87): the whole body inside
+ * MGRRaceProcess_drawOverlay_00001C90 (sibling-scan 0.87): the whole body inside
  * if (flag) { ... }, volatile pads bracketing ones[4] (frame map of 1C90 +
  * one more bottom pad), the 0x77C field re-read at every use, the alpha as
  * (int)(field * (0, (float)255)), while (0) {} before the span block and
  * one q / w pair reused in both tails. */
 extern float D_arc125C_30, D_arc125C_34, D_arc125C_38;
-void arcproc_uso_func_0000125C(char *arg0) {
+void ARCRaceProcess_drawOverlay_0000125C(char *arg0) {
     volatile int pt_a, pt_b, pt_c, pt_d;
     float sp50[4];
     volatile int pmid;
@@ -865,7 +865,7 @@ void arcproc_uso_func_000014A8(void) {
  * (2) the &D float consts (&D+0 compare, &D+0x3C clamp, &D+0x40 step) use
  * distinct externs (D_flt_arc0/D_0000003C/D_00000040 in undefined_syms_auto.txt)
  * to bust the &D-base CSE — each lwc1 re-materializes its own lui. Same cocktail
- * as mgrproc_uso_func_00001C90. Residual (~8%): the {1,1,1,1} Vec4 is volatile
+ * as MGRRaceProcess_drawOverlay_00001C90. Residual (~8%): the {1,1,1,1} Vec4 is volatile
  * (write-only — read by a callee via the stack, so no &-arg to make it an
  * address-taken array), and the target reserves ~0x20 extra frame placing it at
  * sp+0x48..0x54 (frame -88) vs mine at sp+0x28 (frame -56); the oversized-
@@ -1053,7 +1053,7 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
     volatile s32 r = arg1;
 }
 
-/* arcproc_uso_func_0000199C — EXACT (90/90 words incl. relocs, 2026-07-09).
+/* ArcNameEntry_ctor_0000199C — EXACT (90/90 words incl. relocs, 2026-07-09).
  * 4-level alloc-cascade constructor: s0 = arg0 ? arg0 : alloc(0x10C), then
  * defensive sub-allocs 0xD4/0x50/0x2C whose skip arms are dead at runtime
  * (s0 != 0 guaranteed) but shape the codegen. Head form = short-circuit
@@ -1065,7 +1065,7 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
  * as a TWO-LEVEL TYPED MEMBER CHAIN ((Arc199C_A *)arg0)->b->v flips the
  * evaluation to textual (id first) with identical bytes — the crack lever.
  * Twins: timproc_uso_b1_func_000016F8, timproc_uso_b3_func_00001660
- * (offset variants), mgrproc_uso_func_00002940 (111-insn family variant,
+ * (offset variants), MgrNameEntry_ctor_00002940 (111-insn family variant,
  * extra registration-call tail). All four EXACT 2026-07-09. */
 extern int gl_func_00000000();
 extern char D_arc199C_v[];   /* sym3:   init-call a1 base (&sym+0x3DC) */
@@ -1078,7 +1078,7 @@ extern int D_arc199C_id;     /* sym133: packed-id value read */
 typedef struct Arc199C_B { char pad[0x6B4]; int v; } Arc199C_B;
 typedef struct Arc199C_A { char p0[0xD4]; Arc199C_B *b; } Arc199C_A;
 
-char *arcproc_uso_func_0000199C(char *arg0, char *arg1, int arg2) {
+char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
     char *a2;   /* level-2 (0xD4), home 0x2C(sp) */
     char *v1;   /* level-3 (0x50), home 0x28(sp) */
     char *a0;   /* level-4 (0x2C), home 0x24(sp) */
@@ -1221,7 +1221,7 @@ void arcproc_uso_func_00001C74(int *a0) {
     }
 }
 
-/* arcproc_uso_func_00001D18: widget constructor. Field inits (0xC=0x3E4, 0xBC=
+/* arc_DataManager_init: widget constructor. Field inits (0xC=0x3E4, 0xBC=
  * arg1, 0xB8=arg3, 0x54=arg2, 0xD0=0xFF, 0xD4=0, 0x4C=arg4); float quad @0xC0/C4/
  * C8/CC = {192,255,192,0}/255 (variable-divisor `float denom=255.0f` → runtime
  * div.s held in $f20). Gated on arg1->0x4F0 bit-16: 5 cb setup calls, alloc a
@@ -1235,7 +1235,7 @@ void arcproc_uso_func_00001C74(int *a0) {
  * t-ring for the rest of the function); the 0x4C = arg4 store is written before
  * 0xB8 = arg3 so ugen loads arg4 from the stack first (t7, ahead of li 255). */
 extern int gl_proto_1d18(void *, int, int, float, float);
-void arcproc_uso_func_00001D18(char *arg0, char *arg1, int arg2, char *arg3, int arg4) {
+void arc_DataManager_init(char *arg0, char *arg1, int arg2, char *arg3, int arg4) {
     char *sub;
     float denom = 255.0f;
     float r192 = 192.0f / denom;
@@ -1303,7 +1303,7 @@ void arcproc_uso_func_00001F0C(char *a0) {
 }
 
 #ifdef NON_MATCHING
-/* arcproc_uso_func_00001F54: UI animation/draw orchestrator (sibling of the
+/* arc_DataManager_update: UI animation/draw orchestrator (sibling of the
  * mgrproc per-frame steps). Gate arg0->0xBC bit-16 && ->0x4DC==1: bump 0x30,
  * decrement 0xA0 by 0x21 (floor 0 + cleanup). Then if gated: optional 4-draw
  * block; ramp arg0->0xA8 toward arg0->0x44->0x18 by 0xFA/0x32/0x19/1; draw; in
@@ -1335,7 +1335,7 @@ void arcproc_uso_func_00001F0C(char *a0) {
  * stale-a2 CSE (addiu from a2 vs reload lw 32(v1)), t-reg renumber cascade. */
 extern int gl_proto_1f54(void *, int, int, float, float);
 extern int gl_proto_1c94(int, int, float);
-void arcproc_uso_func_00001F54(char *arg0) {
+void arc_DataManager_update(char *arg0) {
     char *bc;
     char *p44;
     char *p94;
@@ -1441,7 +1441,7 @@ void arcproc_uso_func_00001F54(char *arg0) {
     gl_func_00000000(arg0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001F54);
+INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arc_DataManager_update);
 #endif
 
 /* Original jals target fn-4 (leading-nop true entries; base never calls the
@@ -1450,26 +1450,26 @@ extern int arcproc_uso_func_arc_8F8();
 extern int arcproc_uso_func_arc_934();
 extern int arcproc_uso_func_arc_970();
 extern int arcproc_uso_func_arc_9C8();
-void arcproc_uso_func_000022A4(char *dst) {
+void arc_readIntParm_000022A4(char *dst) {
     int tmp;
     arcproc_uso_func_arc_8F8(&tmp);
     arcproc_uso_func_arc_8F8((int*)(dst + 0x10));
 }
 
-void arcproc_uso_func_000022D4(char *dst) {
+void arc_readFloatParm_000022D4(char *dst) {
     int tmp;
     arcproc_uso_func_arc_8F8(&tmp);
     arcproc_uso_func_arc_934((float*)(dst + 0x10));
 }
 
-void arcproc_uso_func_00002304(char *dst) {
+void arc_readQuadParm_00002304(char *dst) {
     int tmp;
     arcproc_uso_func_arc_8F8(&tmp);
     arcproc_uso_func_arc_970((Quad4*)(dst + 0x10));
 }
 
-/* arcproc_uso_func_00002334: 36-insn (0x90) constructor — BYTE-IDENTICAL
- * mirror of edd_ItemType_create_000003BC and h2hproc_uso_func_00001A6C
+/* arc_ItemType_create_00002334: 36-insn (0x90) constructor — BYTE-IDENTICAL
+ * mirror of edd_ItemType_create_000003BC and h2h_ItemType_create_00001A6C
  * (verified via signature match, sig=f167638a8a). Same alloc + init +
  * list-add structure with beql speculative double-store.
  *
@@ -1491,7 +1491,7 @@ void arcproc_uso_func_00002304(char *dst) {
  * ~60% NM cap inherited from sibling — register allocation differs
  * ($v0/$v1 chain vs target's $t-regs) and frame layout. Multi-tick
  * decomp; mirror of eddproc_03BC wrap. */
-void *arcproc_uso_func_00002334(int *arg0) {
+void *arc_ItemType_create_00002334(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -1514,7 +1514,7 @@ void *arcproc_uso_func_00002334(int *arg0) {
     return p2;
 }
 
-void arcproc_uso_func_000023C4(char *dst) {
+void arc_readVec3Parm_000023C4(char *dst) {
     int tmp;
     arcproc_uso_func_arc_8F8(&tmp);
     arcproc_uso_func_arc_9C8((Vec3*)(dst + 0x10));
@@ -1577,7 +1577,7 @@ void arcproc_uso_func_00002504(void) {}
 void arcproc_uso_func_0000250C(void) {}
 void arcproc_uso_func_00002514(void) {}
 
-/* arcproc_uso_func_0000251C — EXACT (168/168 words, frame -64, ROM
+/* ARCMenuProcess_ctor — EXACT (168/168 words, frame -64, ROM
  * byte-identical, 2026-09-04). 3-level alloc-cascade constructor
  * (84/80/44) in the 199C short-circuit head form
  * `(x != 0) || (x = alloc(N), x != 0)`, then a 4-slot registration tail
@@ -1602,7 +1602,7 @@ extern int D_arc251C_id;    /* packed-id read */
 extern char D_arc251C_f[];  /* packed-id call a3 */
 extern char D_arc251C_g[];  /* 6-arg call a1 */
 extern char D_arc251C_h[];  /* *(&sym+400) linked-set parent */
-char *arcproc_uso_func_0000251C(char *arg0) {
+char *ARCMenuProcess_ctor(char *arg0) {
     char *a3;   /* level-2 (80) + vt + registration node (shared home) */
     char *a0;   /* level-3 (44) */
     char *v0;   /* dispatch base */
@@ -1656,7 +1656,7 @@ char *arcproc_uso_func_0000251C(char *arg0) {
     return arg0;
 }
 
-/* arcproc_uso_func_000027BC: 42-insn string-match + vtable-dispatch.
+/* ARCMenuProcess_handleInput: 42-insn string-match + vtable-dispatch.
  *
  *   if (gl_func(&D_str, 0x40100, a0) != 0) {
  *     p = a0->[0x48];
@@ -1710,7 +1710,7 @@ extern void gl_func_00000000_void(int);  /* void-prototyped alias (=0x0): dead-r
 extern char D_arc_27BC_str;
 extern int D_arc_27BC_g70;
 extern int D_arc_27BC_g74;
-void arcproc_uso_func_000027BC(int *a0)
+void ARCMenuProcess_handleInput(int *a0)
 {
   int new_var2;
   unsigned char new_var3;
@@ -1735,7 +1735,7 @@ void arcproc_uso_func_000027BC(int *a0)
   }
 }
 
-void arcproc_uso_func_00002864(void) {
+void ARCMenuProcess_drawGui(void) {
     arcproc_uso_func_00000000();
 }
 
