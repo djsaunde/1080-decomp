@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_000008C0 (0x298 / 166 words).
+/* IDO 7.1 NCC (C++) donor for gui_setPrimColorClamped_000008C0 (0x298 / 166 words).
  *
  * Three appends into the widget's gfx context (w->ctx at +0x24): a
  * SETOTHERMODE pair, a SETCOMBINE pair, then a G_SETPRIMCOLOR whose colour
@@ -23,7 +23,7 @@ struct Ctx {
     Gfx *next() { return &dl->buf[dl->n++]; }
 };
 struct W { char pad[0x24]; Ctx *ctx; };
-extern "C" void gui_uso_func_000008C0(W *w) {
+extern "C" void gui_setPrimColorClamped_000008C0(W *w) {
     float col[4];
     Gfx *p1, *p2, *p3;
     float *c;

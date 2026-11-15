@@ -14,7 +14,7 @@ void boarder5_uso_func_00000000(int *dst) {
     *dst = buf[0];
 }
 
-void boarder5_uso_func_00000040(Quad4 *dst) {
+void fs_gdlReadQuad_boarder5_00000040(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -26,26 +26,26 @@ void boarder5_uso_func_00000040(Quad4 *dst) {
 extern int boarder5_uso_func_b5_3C();
 extern int boarder5_uso_func_b5_D0();
 extern int boarder5_uso_func_b5_10C();
-void boarder5_uso_func_00000098(char *dst) {
+void boarder5_readQuadParm_00000098(char *dst) {
     int tmp;
     gl_func_00000000(&tmp);
     boarder5_uso_func_b5_3C((Quad4*)(dst + 0x10));
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/boarder5_uso/boarder5_uso/boarder5_uso_func_00000098_pad.s")
 
-void boarder5_uso_func_000000D4(int *dst) {
+void fs_gdlReadInt_boarder5_000000D4(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void boarder5_uso_func_00000110(Quad4 *dst) {
+void fs_gdlReadQuad_boarder5_00000110(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void boarder5_uso_func_00000168(char *dst) {
+void boarder5_readQuadParm_00000168(char *dst) {
     int tmp;
     boarder5_uso_func_b5_D0(&tmp);
     boarder5_uso_func_b5_10C((Quad4*)(dst + 0x10));

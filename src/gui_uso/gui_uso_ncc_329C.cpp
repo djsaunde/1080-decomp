@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gui_func_0000329C (286 words = target), spliced over an empty placeholder in
+/* IDO 7.1 NCC (C++) EXACT donor for gui_drawSpriteScaled_0000329C (286 words = target), spliced over an empty placeholder in
  * both trees (REPLACE_FUNC_BODY). agent-g run 309 (docs/IDO_CODEGEN.md kit CCCXCVIII): the target's t2 is ONE
  * variable for spr, the yh / yl MAX results AND the RDPHALF_1 x middle `?:` result, so the x middle arm assigns into
  * spr too; a code-free I2(0) pool entry stands where the removed middle temporary was (the MIN temp keeps its pool
@@ -81,7 +81,7 @@ template <class T> inline T I2(T v) { if (0) { v = 0; } return v; } /* agent-g r
 template <class T> inline T I4(T v) { T r = v; return r; } /* agent-g run 308: zero-code named-local identity (kit CCCXCV) */
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
-extern "C" void gui_func_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
+extern "C" void gui_drawSpriteScaled_0000329C(Obj *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     Spr *spr;
     s32 x, y;
     f32 fw, fh;

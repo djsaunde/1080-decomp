@@ -17,10 +17,10 @@ struct GfxRing_413C { int *buf; int idx; };
  * C bodies. */
 
 
-/* gui_func_00000148: single coherent function, 0x148-0x55C (0x414 / 261
+/* gui_fontCreate: single coherent function, 0x148-0x55C (0x414 / 261
  * insns), terminated by `jr ra; addiu sp,sp,0x80`. The earlier "BUNDLED
  * 0x7D0/500-insn / 3 sub-fns + orphan" note was STALE: expected/gui_uso.c.o
- * shows the next symbol gui_uso_func_0000055C starting at 0x55C, and the
+ * shows the next symbol gui_setupRenderMode_0000055C starting at 0x55C, and the
  * function has zero inter-function relocs in range. The two `jal 0` are
  * baked-zero placeholders -> gl_func_00000000 (find-or-create allocator).
  *
@@ -81,26 +81,26 @@ struct GfxRing_413C { int *buf; int idx; };
  * src/gui_uso/gui_uso_ncc_0148.cpp (REPLACE_FUNC_BODY, both trees): the cfe
  * frame residue above was the declaration set (12 NCC scalars, sum in the
  * dead a1 parameter, dead `if (maxw) {}`). This is the splice host. */
-void gui_func_00000148(void) {
+void gui_fontCreate(void) {
 }
 
-/* gui_uso_func_0000055C: display-list emitter (sibling of gui_uso_func_000016A4),
+/* gui_setupRenderMode_0000055C: display-list emitter (sibling of gui_beginFrame_000016A4),
  * six fixed GBI commands into the context cached at a0->0x24. EXACT
  * 2026-10-22 (agent-g run 126) via the IDO 7.1 NCC donor
  * src/gui_uso/gui_uso_ncc_055C.cpp (REPLACE_FUNC_BODY, both trees). The
  * old "slot rotation" residual came from where uopt's basic blocks
  * ended. This is the splice host. */
-void gui_uso_func_0000055C(void) {
+void gui_setupRenderMode_0000055C(void) {
 }
 
-/* gui_uso_func_000006B8: one G_SETPRIMCOLOR append (col[0..2] * 255 above
+/* gui_setPrimColor_000006B8: one G_SETPRIMCOLOR append (col[0..2] * 255 above
  * the alpha byte) into a0->0x24's gfx context. EXACT 2026-10-22 (agent-g run
  * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_06B8.cpp
  * (REPLACE_FUNC_BODY, both trees; the 1A5C recipe). This is the splice host. */
-void gui_uso_func_000006B8(void) {
+void gui_setPrimColor_000006B8(void) {
 }
 
-/* gui_uso_func_000008C0 [0x8C0..0xB58): GUI primitive-color DL builder --
+/* gui_setPrimColorClamped_000008C0 [0x8C0..0xB58): GUI primitive-color DL builder --
  * FULL-CLUSTER MERGE 2026-06-09 of the former 22-insn fall-through head +
  * gui_func_00000918 (144-insn body; splat split at a mid-function
  * scheduling artifact). Merge-safety proven via the gui.uso module tables:
@@ -129,11 +129,11 @@ void gui_uso_func_000006B8(void) {
  * old "ring pointer colour" residual came from where uopt's 20-variable-load
  * rule ended the basic block (the 17DC recipe moves it). This is the splice
  * host. */
-void gui_uso_func_000008C0(void) {
+void gui_setPrimColorClamped_000008C0(void) {
 }
 
 extern int gl_func_00000000();
-/* gui_func_00000B58: glyph-string draw (0x1AC). For each char of the string
+/* gui_drawString: glyph-string draw (0x1AC). For each char of the string
  * (strlen re-called every iteration -> `sltu` vs the unsigned count, a3 homed
  * and reloaded for it while p walks): a space advances x by o->8; any other
  * char looks up its glyph index, reads the 20-byte glyph record at
@@ -146,7 +146,7 @@ extern int gl_func_00000000();
  * call arg -- IDO still evaluates it at the top of the arm, but a named
  * local for it swaps the s4/s5 colouring with the u8 idx. */
 extern int gl_func_00000000();
-void gui_func_00000B58(int *a0, int a1, int a2, unsigned char *a3) {
+void gui_drawString(int *a0, int a1, int a2, unsigned char *a3) {
     int h = a0[0x14 / 4];
     unsigned char *p = a3;
     unsigned int i;
@@ -172,7 +172,7 @@ void gui_func_00000B58(int *a0, int a1, int a2, unsigned char *a3) {
     }
 }
 
-/* gui_func_00000D04: 0x200 (128 insns). Text-rendering function that builds
+/* gui_drawString_00000D04: 0x200 (128 insns). Text-rendering function that builds
  * an RDP command list. Partial structural decode 2026-05-03:
  *
  * PROLOGUE (insns 1-15):
@@ -247,7 +247,7 @@ extern char D_00000000;
  *      `move s8,zero` after the a3 arg copy;
  *  (9) glyph2 x arg as `px = x; px += glyph16;` gives `addu a1,s3,t9` (x first);
  *      `x + glyph16` in either operand order emits `addu a1,t9,s3`. */
-void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
+void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
     int *cmd_state = (int *)a0[0x24 / 4];
     int *cmd_list = (int *)cmd_state[0xC / 4];
     int scale = a0[0x14 / 4];
@@ -288,7 +288,7 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
     }
 }
 
-/* gui_func_00000F04: 313-insn / 0x4E4 F3DEX2 glyph-STRING renderer.
+/* gui_drawStringScaled_00000F04: 313-insn / 0x4E4 F3DEX2 glyph-STRING renderer.
  * 2026-06-05 FULL DECODE (was INCLUDE_ASM-only + prose). Disassembled the
  * raw .word USO body to mnemonics, fed m2c, then translated to compilable C.
  *
@@ -394,7 +394,7 @@ void gui_func_00000D04(int *a0, int *a1, int a2, char *a3) {
  *     src/gui_uso/gui_uso_ncc_0F04.cpp (REPLACE_FUNC_BODY, both trees). This
  *     empty function is the splice host; the cfe reconstruction below is kept
  *     for reference only (not compiled). */
-void gui_func_00000F04(void) {
+void gui_drawStringScaled_00000F04(void) {
 }
 
 #if 0
@@ -505,7 +505,7 @@ void gui_func_00000F04_cfe(void *arg0, int arg1, int arg2, float arg3, float arg
  *   if ' ': total += a0[2] (space-width at +0x8)
  *   else:   key = gl_func_00000000(c);
  *           total += *(int*)(glyph_table + key*20 + 8)  (stride 20). */
-int gui_func_000013E8(char *a0, unsigned char *a1) {
+int gui_stringWidth(char *a0, unsigned char *a1) {
     int total = 0;
     unsigned char *p = a1;
     unsigned int i = 0;
@@ -530,18 +530,18 @@ int gui_func_000013E8(char *a0, unsigned char *a1) {
 
 extern int gui_func_00000000();
 
-int gui_func_000014B4(int a0, int a1, int a2) {
+int gui_centerStringX(int a0, int a1, int a2) {
     return a1 - (gui_func_00000000(a0, a2) / 2);
 }
 
 extern int gl_func_00000000();
 
-int gui_func_000014EC(int a0, int a1, int a2) {
+int gui_rightAlignStringX(int a0, int a1, int a2) {
     return a1 - gl_func_00000000(a0, a2);
 }
 
 extern int gl_func_00000000();
-int gui_func_00001514(int *a0, unsigned char *a1) {
+int gui_stringWidth_00001514(int *a0, unsigned char *a1) {
     int total = 0;
     unsigned char *p = a1;
     unsigned int i = 0;
@@ -562,15 +562,15 @@ int gui_func_00001514(int *a0, unsigned char *a1) {
 
 extern int gui_func_00000000();
 
-int gui_func_000015BC(int a0, int a1, int a2) {
+int gui_centerStringX_000015BC(int a0, int a1, int a2) {
     return a1 - (gui_func_00000000(a0, a2) / 2);
 }
 
-int gui_func_000015F4(int a0, int a1, int a2) {
+int gui_rightAlignStringX_000015F4(int a0, int a1, int a2) {
     return a1 - gl_func_00000000(a0, a2);
 }
 
-/* gui_func_0000161C: shift-all-table-entries-by-delta (advance/kerning
+/* gui_fontAdjustAdvance: shift-all-table-entries-by-delta (advance/kerning
  * adjust): for each of *a0 entries (0x14 stride, base at a0->0x20), add the
  * delta to entry->0xC; then a0->0xC += delta. Split off from the original
  * 4.1 KB splat bundle in a prior tick (the dispatch body lives in the
@@ -581,7 +581,7 @@ int gui_func_000015F4(int a0, int a1, int a2) {
  * (3) write the update as bump-then-RMW (`v1 = v1+0xC; *v1 = *v1 + a2;`)
  * -- the load becomes an expression temp ($t8 pool, not a named-local $a3)
  * and IDO schedules it BEFORE the addiu with the 0xC offset folded. */
-void gui_func_0000161C(int *a0, int a1, int a2) {
+void gui_fontAdjustAdvance(int *a0, int a1, int a2) {
     int i;
     a2 = a1;
     a1 = 0;
@@ -598,17 +598,17 @@ void gui_func_0000161C(int *a0, int a1, int a2) {
     a0[0xC / 4] = a0[0xC / 4] + a2;
 }
 
-/* 0x1670 is a single alignment nop between gui_func_0000161C and the real
+/* 0x1670 is a single alignment nop between gui_fontAdjustAdvance and the real
  * function at 0x1674 — splat mis-placed the gui_uso_func_00001670 symbol on the
  * pad (and over-split the loop tail into 0000168C). The nop is emitted via
- * all-zero SUFFIX_BYTES_FORCE on gui_func_0000161C in the Makefile — a 1-word
+ * all-zero SUFFIX_BYTES_FORCE on gui_fontAdjustAdvance in the Makefile — a 1-word
  * GLOBAL_ASM pad block emits 2 words (+4 segment length drift, the documented
- * trap). The true function is gui_uso_func_00001674 below. */
+ * trap). The true function is gui_floorPow2 below. */
 
-/* gui_uso_func_00001674: highest-set-bit / mask-down scan. Returns the largest
+/* gui_floorPow2: highest-set-bit / mask-down scan. Returns the largest
  * power-of-two <= a0 (walking 0x8000 down), or 1 if a0 < 1. Merged from the
  * mis-split 00001670 body + 0000168C loop tail. */
-int gui_uso_func_00001674(int a0) {
+int gui_floorPow2(int a0) {
     int v1 = 0x8000;
     do {
         if (!(a0 < v1)) {
@@ -619,12 +619,12 @@ int gui_uso_func_00001674(int a0) {
     return 1;
 }
 
-/* gui_uso_func_000016A4: display-list emitter, four fixed GBI commands into
+/* gui_beginFrame_000016A4: display-list emitter, four fixed GBI commands into
  * the gfx builder (*(D+0x254))->0x158 cached in the module global
  * D_gui16a4_cache (pinned = 0). EXACT 2026-10-22 (agent-g run 126) via the
  * IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_16A4.cpp (REPLACE_FUNC_BODY,
  * both trees; the 055C recipe). This is the splice host. */
-void gui_uso_func_000016A4(void) {
+void gui_beginFrame_000016A4(void) {
 }
 
 /* MATCHED 2026-05-31 via decomp-permuter (the prior "permanent NM constant-
@@ -633,7 +633,7 @@ void gui_uso_func_000016A4(void) {
  * source line shifts IDO's lui/ori scheduling to interleave t1's ori before
  * t0's, matching the target. Byte-exact. Lesson: 2-diff load/schedule-ORDER
  * residuals are permuter-crackable even when manual statement-reorder fails. */
-void gui_uso_func_00001794(int a0) {
+void gui_setCombine_00001794(int a0) {
     int *rec = *(int **)&D_00000000;
     int *sub = (int *)rec[3];
     int count = sub[1];
@@ -643,45 +643,45 @@ void gui_uso_func_00001794(int a0) {
     arr[0] = 0xFCFFFFFF; arr[1] = 0xFFFCF279;
 }
 
-/* gui_uso_func_000017DC: DL colour setup (SETCOMBINE FC309A61/FF37FFFF,
+/* gui_setColorEnvPrim_000017DC: DL colour setup (SETCOMBINE FC309A61/FF37FFFF,
  * SETENVCOLOR with the a1 alpha byte, SETPRIMCOLOR from col * 255 + alpha).
  * EXACT 2026-10-22 (agent-g run 126) via the IDO 7.1 NCC donor
  * src/gui_uso/gui_uso_ncc_17DC.cpp (REPLACE_FUNC_BODY, both trees). The old
  * "third slot pointer colour" residual came from where uopt's 20-variable-load
  * block limit ended the block. This is the splice host. */
-void gui_uso_func_000017DC(void) {
+void gui_setColorEnvPrim_000017DC(void) {
 }
 
-/* gui_uso_func_00001A5C: DL colour emitter (SETCOMBINE FC309661/FF2FFFFF, then G_SETPRIMCOLOR
+/* gui_setColor_00001A5C: DL colour emitter (SETCOMBINE FC309661/FF2FFFFF, then G_SETPRIMCOLOR
  * with col[0..2] * 255 above the alpha byte). EXACT 2026-10-22 (agent-g run
  * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_1A5C.cpp
  * (REPLACE_FUNC_BODY, both trees): an inline next() member on the gfx
  * context, and a redundant & 0xFF under the red channel's << 24 that burns
  * the t-ring slot the old cfe body was missing. This is the splice host. */
-void gui_uso_func_00001A5C(void) {
+void gui_setColor_00001A5C(void) {
 }
 
-/* gui_uso_func_00001CA8: DL colour emitter (SETCOMBINE FCFFFFFF/FFFDF6FB, then G_SETPRIMCOLOR
+/* gui_setFillColor_00001CA8: DL colour emitter (SETCOMBINE FCFFFFFF/FFFDF6FB, then G_SETPRIMCOLOR
  * with col[0..2] * 255 above the alpha byte). EXACT 2026-10-22 (agent-g run
  * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_1CA8.cpp
  * (REPLACE_FUNC_BODY, both trees): an inline next() member on the gfx
  * context, and a redundant & 0xFF under the red channel's << 24 that burns
  * the t-ring slot the old cfe body was missing. This is the splice host. */
-void gui_uso_func_00001CA8(void) {
+void gui_setFillColor_00001CA8(void) {
 }
 
-/* gui_uso_func_00001EF4: DL colour setup (SETCOMBINE, SETENVCOLOR from env * 255
+/* gui_setEnvPrimColor_00001EF4: DL colour setup (SETCOMBINE, SETENVCOLOR from env * 255
  * + alpha, SETPRIMCOLOR from prim * 255 + 0xFF). EXACT 2026-10-22 (agent-g
  * run 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_1EF4.cpp
  * (REPLACE_FUNC_BODY, both trees; the 1A5C recipe). This is the splice host. */
-void gui_uso_func_00001EF4(void) {
+void gui_setEnvPrimColor_00001EF4(void) {
 }
 
-/* gui_uso_func_00002334: 17DC with the combiner FC11EA23/FFD7FFFF. EXACT
+/* gui_setColorEnvPrim_00002334: 17DC with the combiner FC11EA23/FFD7FFFF. EXACT
  * 2026-10-22 (agent-g run 126) via the IDO 7.1 NCC donor
  * src/gui_uso/gui_uso_ncc_2334.cpp (REPLACE_FUNC_BODY, both trees; the 17DC
  * recipe). This is the splice host. */
-void gui_uso_func_00002334(void) {
+void gui_setColorEnvPrim_00002334(void) {
 }
 
 /* SOURCE=4 decode (2026-06-01): display-list rectangle command writer.
@@ -690,7 +690,7 @@ void gui_uso_func_00002334(void) {
  * values after multiplying by 4. The target stores a0 into its caller arg slot
  * and reads the fifth arg from sp+0x10; the address-taken K&R arg keeps that
  * shape in the NM body. */
-void gui_uso_func_000025B4(a0, x0, y0, x1, y1)
+void gui_setScissor(a0, x0, y0, x1, y1)
     int a0;
     int x0;
     int y0;
@@ -722,7 +722,7 @@ void gui_uso_func_000025B4(a0, x0, y0, x1, y1)
 extern int gl_func_00000000();
 extern char D_00000000;
 
-void gui_func_0000267C(char *a0, int a1) {
+void gui_spriteLoad(char *a0, int a1) {
     int saved;
     *(int*)(a0 + 0x14) = a1;
     saved = gl_func_00000000(7);
@@ -730,7 +730,7 @@ void gui_func_0000267C(char *a0, int a1) {
     gl_func_00000000(saved);
 }
 
-void gui_func_000026CC(int *a0, int a1) {
+void gui_spriteInit(int *a0, int a1) {
     a0[5] = a1;
     a0[4] = 0;
 }
@@ -738,7 +738,7 @@ void gui_func_000026CC(int *a0, int a1) {
 extern int gui_func_00000000();
 extern char D_00000000;
 
-void gui_func_000026D8(char *a0) {
+void gui_spriteRelease(char *a0) {
     if (*(int*)(a0 + 0x10) != 0) {
         gui_func_00000000((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14), a0);
     }
@@ -746,7 +746,7 @@ void gui_func_000026D8(char *a0) {
 }
 
 extern int gl_func_00000000();
-void gui_func_0000271C(char *a0) {
+void gui_spriteRefresh(char *a0) {
     int saved;
     int v0;
     int v1;
@@ -762,11 +762,11 @@ void gui_func_0000271C(char *a0) {
     gl_func_00000000(saved);
 }
 
-/* gui_func_000027A0: tiled sprite blitter. EXACT 2026-10-22 (agent-g run 125)
+/* gui_drawSprite: tiled sprite blitter. EXACT 2026-10-22 (agent-g run 125)
  * via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_27A0.cpp (REPLACE_FUNC_BODY,
  * both trees). The old cfe reconstruction (~96.5 %) is superseded. This is the
  * splice host. */
-void gui_func_000027A0(void) {
+void gui_drawSprite(void) {
 }
 
 #ifdef NON_MATCHING
@@ -844,11 +844,11 @@ INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002BB0);
  * src/gui_uso/gui_uso_ncc_2DE0.cpp (REPLACE_FUNC_BODY, both trees). This empty
  * function is the splice host; the cfe reconstruction below is kept for
  * reference only (not compiled). */
-void gui_func_00002DE0(void) {
+void gui_drawSpriteScaledF_00002DE0(void) {
 }
 
 #if 0
-/* gui_func_00002DE0: f32-scale sibling of gui_func_0000329C. Re-decoded
+/* gui_drawSpriteScaledF_00002DE0: f32-scale sibling of gui_drawSpriteScaled_0000329C. Re-decoded
  * 2026-10-15 (77.5 -> 80.7) with the same stock gbi.h macro text as 329C:
  * gSPTexture, a 3-way texture-load dispatch on spr->0x24, then
  * gSPScisTextureRectangle(pkt, x<<2, y<<2, (x+(s32)fw)<<2, (y+(s32)fh)<<2,
@@ -868,7 +868,7 @@ void gui_func_00002DE0(void) {
     (*(s32 **)((char *)t + 0xC))[1] = _i + 1; _g = (u32 *)(**(s32 **)((char *)t + 0xC) + _i * 8);
 #define PKT_END }
 
-void gui_func_00002DE0(char *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
+void gui_drawSpriteScaledF_00002DE0(char *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     s32 pad[5]; /* frame placeholder: 10 named words precede w/h (w@0x3C, h@0x38) */
     char *spr;
     f32 fw;
@@ -941,11 +941,11 @@ done:
  * src/gui_uso/gui_uso_ncc_329C.cpp (REPLACE_FUNC_BODY, both trees). This empty
  * function is the splice host; the cfe reconstruction below is kept for
  * reference only (not compiled). */
-void gui_func_0000329C(void) {
+void gui_drawSpriteScaled_0000329C(void) {
 }
 
 #if 0
-/* gui_func_0000329C: int-arg sibling of gui_func_00002DE0. Re-decoded
+/* gui_drawSpriteScaled_0000329C: int-arg sibling of gui_drawSpriteScaledF_00002DE0. Re-decoded
  * 2026-10-15 (74.1 -> 85.3) as the stock libultra gbi.h macros: gSPTexture
  * (0xBB000001/0x80008000), a 3-way texture-load dispatch on spr->0x24, then
  * gSPScisTextureRectangle(pkt, x<<2, y<<2, xh<<2, yh<<2, 0, 0, 0, dsdx, dtdy)
@@ -969,7 +969,7 @@ void gui_func_0000329C(void) {
     (*(s32 **)((char *)t + 0xC))[1] = _i + 1; _g = (u32 *)(**(s32 **)((char *)t + 0xC) + _i * 8);
 #define PKT_END }
 
-void gui_func_0000329C(char *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
+void gui_drawSpriteScaled_0000329C(char *arg0, s32 x0, s32 y0, s32 x1, s32 y1) {
     char *pad;  /* frame placeholder: 6 named decls precede w/h (w@0x3C, h@0x38) */
     char *spr;
     f32 fw;
@@ -1044,11 +1044,11 @@ done:
  * src/gui_uso/gui_uso_ncc_3714.cpp (REPLACE_FUNC_BODY, both trees). This empty
  * function is the splice host; the cfe reconstruction below is kept for
  * reference only (not compiled). */
-void gui_func_00003714(void) {
+void gui_drawSpriteScroll_00003714(void) {
 }
 
 #if 0
-/* gui_func_00003714: f-scroll sibling of gui_func_0000329C, rebuilt 2026-08-22
+/* gui_drawSpriteScroll_00003714: f-scroll sibling of gui_drawSpriteScaled_0000329C, rebuilt 2026-08-22
  * in the 2DE0 kit shape 68.5 -> 83.0. Levers: volatile-deref held base (t4 web
  * + post-call remat, matches ALL packet loads incl. final); two = (f32)2
  * INT-CAST literal keeps div.s-by-2.0f (plain 2.0f local folds to *0.5f here —
@@ -1193,16 +1193,16 @@ void gui_func_00003714_cfe(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f
 }
 #endif
 
-/* gui_uso_func_00003B14: 27-insn / 0x6C RDP G_FILLRECT display-list builder.
+/* gui_fillRect: 27-insn / 0x6C RDP G_FILLRECT display-list builder.
  * 0xF6 << 24 = G_FILLRECT command word (per F3DEX2 gbi.h).
  *
  * MATCHED 2026-05-31 via decomp-permuter. The prior "2-insn order-swap CAP"
  * (target emits entry[1]'s `or` before entry[0]'s) was cracked: putting the two
  * entry[] stores on a SINGLE source line shifts IDO's `or` scheduling to match.
- * Byte-exact. (Same crack as gui_uso_func_00001794.) */
+ * Byte-exact. (Same crack as gui_setCombine_00001794.) */
 extern int gl_func_00000000();
 extern char D_00000000;
-void gui_uso_func_00003B14(int a0, int a1, int a2, int a3, int arg5) {
+void gui_fillRect(int a0, int a1, int a2, int a3, int arg5) {
     typedef struct DLState { int *base; int idx; } DLState;
     typedef struct GameState { char pad[0xC]; DLState *dlp; } GameState;
     GameState *gs = *(GameState**)&D_00000000;
@@ -1215,24 +1215,24 @@ void gui_uso_func_00003B14(int a0, int a1, int a2, int a3, int arg5) {
     entry[0] = 0xF6000000 | ((a3 & 0x3FF) << 14) | ((arg5 & 0x3FF) << 2); entry[1] = ((a1 & 0x3FF) << 14) | ((a2 & 0x3FF) << 2);
 }
 
-/* gui_func_00003B80: image blitter (27A0's sibling). EXACT 2026-10-22 (agent-g
+/* gui_drawImage_00003B80: image blitter (27A0's sibling). EXACT 2026-10-22 (agent-g
  * run 125) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_3B80.cpp
  * (REPLACE_FUNC_BODY, both trees). The old cfe reconstruction (~96.2 %) is
  * superseded. Its three trailing zero words stay the SUFFIX_BYTES_FORCE pad.
  * This is the splice host. */
-void gui_func_00003B80(void) {
+void gui_drawImage_00003B80(void) {
 }
 
-/* gui_uso_func_00003F18: RGBA32 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
+/* gui_loadTileRGBA32: RGBA32 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
  * LOADTILE, PIPESYNC, SETTILE, SETTILESIZE). EXACT 2026-10-22 (agent-g run
  * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_3F18.cpp
  * (REPLACE_FUNC_BODY, both trees; the 413C gbi.h recipe). Its three leading
- * zero words are gui_func_00003B80's pad (SUFFIX_BYTES_FORCE). The notes
+ * zero words are gui_drawImage_00003B80's pad (SUFFIX_BYTES_FORCE). The notes
  * above describe the old cfe reconstruction. This is the splice host. */
-void gui_uso_func_00003F18(void) {
+void gui_loadTileRGBA32(void) {
 }
 
-/* gui_uso_func_0000413C — verified structural decode (no-call/no-branch RDP
+/* gui_loadTileRGBA16 — verified structural decode (no-call/no-branch RDP
  * display-list builder, 134 insns, 1% first pass; GfxCtx-idiom regalloc
  * cascade needs multi-run → INCLUDE_ASM build path; N64-forensics ref).
  * Args: f(GfxCtx **a0, a1, a2, a3, arg4@sp16, arg5@sp20, arg6@sp24,
@@ -1252,16 +1252,16 @@ void gui_uso_func_00003F18(void) {
  * arg7=texH-ish, arg8=tile fmt/palette. Residual <80: cross-packet CSE + the
  * slot-pointer coloring (a3 vs t2) drive a regalloc/scheduling cascade no C
  * reproduces exactly. INCLUDE_ASM remains build path (NM-wrap). */
-/* gui_uso_func_0000413C: RGBA16 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
+/* gui_loadTileRGBA16: RGBA16 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
  * LOADTILE, PIPESYNC, SETTILE, SETTILESIZE). EXACT 2026-10-22 (agent-g run
  * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_413C.cpp
  * (REPLACE_FUNC_BODY, both trees): the real gbi.h macro bodies with
  * `uls + w - 1` corner arguments and the context's inline next() append; the
  * notes above describe the old cfe reconstruction. This is the splice host. */
-void gui_uso_func_0000413C(void) {
+void gui_loadTileRGBA16(void) {
 }
 
-/* gui_uso_func_00004354: 133-insn (0x214) Gfx-display-list builder.
+/* gui_loadTileIA8: 133-insn (0x214) Gfx-display-list builder.
  * Leaf function (no stack frame, only caller-slot a3 spill at sp+0xC)
  * that writes ~6 RDP commands into a display list buffer at a0->[0xC].
  *
@@ -1300,13 +1300,13 @@ void gui_uso_func_0000413C(void) {
  * fields) recurs across gui_uso_func_*413C, *4354, *4568, *4774 —
  * worth typing as `GfxBuf { Gfx **dlist; int count; }` in a future
  * pass once decoded for one of them. */
-/* gui_uso_func_00004354: IA8 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
+/* gui_loadTileIA8: IA8 texture-tile loader (SETTIMG, SETTILE, LOADSYNC,
  * LOADTILE, PIPESYNC, SETTILE, SETTILESIZE). EXACT 2026-10-22 (agent-g run
  * 121) via the IDO 7.1 NCC donor src/gui_uso/gui_uso_ncc_4354.cpp
  * (REPLACE_FUNC_BODY, both trees): the real gbi.h macro bodies with
  * `uls + w - 1` corner arguments and the context's inline next() append; the
  * notes above describe the old cfe reconstruction. This is the splice host. */
-void gui_uso_func_00004354(void) {
+void gui_loadTileIA8(void) {
 }
 
 /* 2026-11-05 agent-c (run 308): EXACT via the IDO 7.1 NCC donor
@@ -1314,11 +1314,11 @@ void gui_uso_func_00004354(void) {
  * gbi.h gSPTextureRectangle / gSPScisTextureRectangle macro bodies over an
  * inline Ctx::next(DL *) append. This empty function is the splice host; the
  * cfe reconstruction below is kept for reference only (not compiled). */
-void gui_func_00004568(void) {
+void gui_texRect_00004568(void) {
 }
 
 #if 0
-/* gui_func_00004568: 198-insn / 0x318 RDP TEXRECT display-list builder.
+/* gui_texRect_00004568: 198-insn / 0x318 RDP TEXRECT display-list builder.
  *
  * 2026-05-07 first-pass structural decode. Frame -8 ($s0 + nothing else;
  * $s0 = a0/ctx). 5-arg signature: a0=ctx, a1=x_lo (signed),

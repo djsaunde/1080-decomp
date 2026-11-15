@@ -1843,7 +1843,7 @@ void mgrproc_uso_func_00003328(char *dst) {
 }
 
 /* mgrproc_uso_func_00003358: 36-insn (0x90) alloc-and-link node helper.
- * BYTE-IDENTICAL sibling of eddproc_uso_func_000003BC (matched 100%). The
+ * BYTE-IDENTICAL sibling of edd_ItemType_create_000003BC (matched 100%). The
  * "file-level state cap" was a MISDIAGNOSIS — porting eddproc's exact body
  * verbatim (p1/p2 split + decl order p2,head,p1 + reload of arg0[0x40])
  * matches byte-for-byte here. The frame-0x28 two-web spill shape is forced

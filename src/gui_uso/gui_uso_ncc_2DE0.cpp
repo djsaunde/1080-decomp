@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gui_func_00002DE0 (303 words = target), spliced over an empty placeholder in
- * both trees (REPLACE_FUNC_BODY). f32-scale sibling of the exact gui_func_0000329C donor: the stock 2.0I gbi.h
+/* IDO 7.1 NCC (C++) EXACT donor for gui_drawSpriteScaledF_00002DE0 (303 words = target), spliced over an empty placeholder in
+ * both trees (REPLACE_FUNC_BODY). f32-scale sibling of the exact gui_drawSpriteScaled_0000329C donor: the stock 2.0I gbi.h
  * gSPTexture / gSPScisTextureRectangle macros with inline Ctx appends as their pkt arguments, the three loader
  * calls through an inline Ctx::load() (the pool variable in $s0 as the target).
  * History (docs/IDO_CODEGEN.md): agent-g run 165 (kit CV) real C++ rewrite; agent-c runs 190-333 / agent-g runs
@@ -50,7 +50,7 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *nD() { int n = dl->n++; return &dl->buf
 #define CTX (*(Ctx **)&D_00000000)
 struct Spr { char p8[8]; int tex; char pc[0x20 - 0xC]; s16 w; s16 h; int fmt; };
 struct Obj { char p[0x10]; Spr *spr; };
-extern "C" void gui_func_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
+extern "C" void gui_drawSpriteScaledF_00002DE0(Obj *arg0, s32 x0, s32 y0, f32 sx, f32 sy) {
     volatile s32 q0, q1, q2, q3; /* frame pads: w / h homes at the target's 0x3C / 0x38 */
     s32 t;
     s32 zq; s32 xq;

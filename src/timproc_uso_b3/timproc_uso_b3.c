@@ -1239,7 +1239,7 @@ void timproc_uso_b3_func_000020BC(char *dst) {
 }
 
 /* timproc_uso_b3_func_000020EC: 36-insn (0x90) constructor — BYTE-IDENTICAL
- * mirror of eddproc_uso_func_000003BC family (5th clone). Apply the
+ * mirror of edd_ItemType_create_000003BC family (5th clone). Apply the
  * eddproc lever (volatile-ptr-to-arg + late head reload) per
  * docs/IDO_CODEGEN.md#feedback-ido-arg-addr-via-volatile-ptr-forces-caller-spill.
  * Expected to land in the 89% file-context band per
@@ -1268,7 +1268,7 @@ void *timproc_uso_b3_func_000020EC(int *arg0) {
     return p2;
 }
 
-/* timproc_uso_b3_func_0000217C: 2-call wrapper (twin of eddproc_uso_func_0000044C).
+/* timproc_uso_b3_func_0000217C: 2-call wrapper (twin of edd_readVec3Parm_0000044C).
  * The ROM symbol is 13 words: the 12-word body plus the zero alignment word
  * before 21B0. A 1-word GLOBAL_ASM pad sidecar emits 8 bytes (+4 shift), so
  * the zero word comes from an all-zero SUFFIX_BYTES_FORCE in both builds

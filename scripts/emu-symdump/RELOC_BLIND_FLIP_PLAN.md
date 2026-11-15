@@ -5,7 +5,7 @@
 > generates report.json → decomp.dev) is RELOC-AWARE: it matches the build's
 > reloc-form (`sw 0` + reloc) against the ROM's baked literal (`sw 4`) as EQUIVALENT,
 > so the reloc-blind "caps" are ALREADY scored 100%. Proof: flipped
-> `eddproc_uso_func_0000015C` (commit a69be69c) → eddproc matched_code UNCHANGED
+> `edd_DataManager_init` (commit a69be69c) → eddproc matched_code UNCHANGED
 > (884/1148), project matched_code UNCHANGED (114160); 015C reports
 > `fuzzy_match_percent: 100.0` both before and after. Only the land-script's RAW-byte
 > `byte_verify` fails on these — which matters ONLY for episode-eligibility (a separate
@@ -34,7 +34,7 @@ quality), it does NOT flip a cap. The reloc-blind CAPS are the opposite shape: t
 
 | function (real-C body)            | expected (baked)        | build (reloc-form) | class        |
 |-----------------------------------|-------------------------|--------------------|--------------|
-| eddproc_uso_func_0000015C         | `sw zero, 4(at)`        | `sw zero, 0(at)`+LO16 | scalar %lo |
+| edd_DataManager_init         | `sw zero, 4(at)`        | `sw zero, 0(at)`+LO16 | scalar %lo |
 | timproc_uso_b1_func_0000065C      | `sw s0, 0x14C(at)`      | `sw s0, 0(at)`+LO16   | scalar %lo |
 | game_uso_func_00003968 (×many)    | `jal 0x280` (baked)     | `jal 0`+R_MIPS_26     | intra jal  |
 | game_uso_func_0000EDD4            | `lw t6, 0x224(at)`      | `lw t6, 0x14(at)` (local jtbl) | jumptable |
@@ -68,7 +68,7 @@ bytes. NAME=0 is WRONG here (that's only for true cross-module imports that reso
 
 ## First target (next tick)
 
-`eddproc_uso_func_0000015C` — single scalar `sw zero, 4(at)` -> reloc-form to a data
+`edd_DataManager_init` — single scalar `sw zero, 4(at)` -> reloc-form to a data
 symbol at module offset 0x4. Smallest, isolated, non-colliding (eddproc, -O2). Prove
 the extension + gate end-to-end on it, THEN generalize per-class.
 

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_00004354.
+/* IDO 7.1 NCC (C++) donor for gui_loadTileIA8.
  *
  * Texture-tile loader for the gfx context c: SETTIMG, load SETTILE (tile 7),
  * LOADSYNC, LOADTILE, PIPESYNC, render SETTILE (tile `tile`, tmem tile << 8)
@@ -22,7 +22,7 @@ struct Ctx {
 #define SIZ G_IM_SIZ_8b
 #define LRS (uls + w - 1)
 #define LRT (ult + h - 1)
-extern "C" void gui_uso_func_00004354(Ctx *c, void *timg, int width, int unused, int uls, int ult, int w, int h,
+extern "C" void gui_loadTileIA8(Ctx *c, void *timg, int width, int unused, int uls, int ult, int w, int h,
                                        int tile) {
     gDPSetTextureImage(c->next(), FMT, SIZ, width, timg);
     gDPSetTile(c->next(), FMT, SIZ, ((((LRS) - (uls) + 1) * G_IM_SIZ_8b_TILE_BYTES) + 7) >> 3, tile << 8, G_TX_LOADTILE,

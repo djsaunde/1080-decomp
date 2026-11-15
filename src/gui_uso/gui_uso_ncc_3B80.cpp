@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_func_00003B80.
+/* IDO 7.1 NCC (C++) donor for gui_drawImage_00003B80.
  *
  * Image blitter (27A0's sibling for a plain {tex, w, h, mode} image): append
  * gSPTexture through the gfx context's inline next(), pick the TMEM budget and
@@ -37,7 +37,7 @@ struct Ctx {
 typedef void (*RFn)(Ctx *, int, int, int, int, int, int, int, int);
 extern "C" { extern char D_3B80_f0, D_3B80_f1, D_3B80_f2; }
 struct Img { int tex; int w; int h; int mode; int width() { return w; } int height() { return h; } };
-extern "C" void gui_func_00003B80(Img *img, int x, int y) {
+extern "C" void gui_drawImage_00003B80(Img *img, int x, int y) {
     int budget;
     int srcx = 0;
     int w, h;

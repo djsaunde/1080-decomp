@@ -542,7 +542,7 @@ void func_00000BE0(char *a0) {
 }
 
 /* func_00000C10: mirror of func_000046EC / func_00007B08 / func_0000E690.
- * BYTE-EXACT twin of donor eddproc_uso_func_000003BC, via the donor's clean C
+ * BYTE-EXACT twin of donor edd_ItemType_create_000003BC, via the donor's clean C
  * form (p2/head/p1 decl order + char*-cast field access + p1[0x40/4] re-read).
  * Was once force-matched via 22-word INSN_PATCH (banned 2026-05-23, recipe
  * deprecated); this is the genuine C match. */
@@ -2826,7 +2826,7 @@ void func_000046BC(char *a0) {
 extern char D_00000000;
 
 /* func_000046EC: 36-insn (0x90) entry-list constructor. BYTE-EXACT, ported
- * from its masked-hash twin donor eddproc_uso_func_000003BC (byte-identical
+ * from its masked-hash twin donor edd_ItemType_create_000003BC (byte-identical
  * body, 0 non-reloc word diffs). The donor's clean C form (p2/head/p1 decl
  * order + char*-cast field access + p1[0x40/4] re-read) reproduces the target's
  * $a0/$v1 regalloc + 0x28 frame that the prior node[]/head[] array-index NM
@@ -4547,7 +4547,7 @@ void func_00007AD8(char *a0) {
 }
 
 /* func_00007B08: 36-insn (0x90) alloc/init/link constructor. BYTE-EXACT,
- * ported from its masked-hash twin donor eddproc_uso_func_000003BC — the two
+ * ported from its masked-hash twin donor edd_ItemType_create_000003BC — the two
  * bodies are byte-identical (0 non-reloc word diffs). The donor's clean C
  * form (int* param + p2/head/p1 decl order + p1[0x40/4] int-array indexing)
  * is what produces the target's frame (0x28) and $a0/$v1 register allocation,
@@ -8876,7 +8876,7 @@ void func_0000E660(char *a0) {
 }
 
 /* func_0000E690: byte-identical mirror of func_00000C10 / func_000046EC /
- * func_00007B08 — all byte-exact twins of donor eddproc_uso_func_000003BC.
+ * func_00007B08 — all byte-exact twins of donor edd_ItemType_create_000003BC.
  * BYTE-EXACT via the donor's clean C form (p2/head/p1 decl order + char*-cast
  * field access + p1[0x40/4] re-read). Was once force-matched via INSN_PATCH
  * (banned 2026-05-23); this is the genuine C match. */
@@ -9143,7 +9143,7 @@ void func_0000EE5C(char *a0) {
  * 0xEF1C (so func_0000EF20 sits at 0xEF20). Resolved by appending that one
  * all-zero (nop) word via `SUFFIX_BYTES_FORCE := func_0000EE8C=0x00000000` in
  * the Makefile — the SAME legitimate alignment-pad mechanism already used for
- * gui_func_0000161C / h2hproc fns. The earlier "cannot land" note assumed a
+ * gui_fontAdjustAdvance / h2hproc fns. The earlier "cannot land" note assumed a
  * GLOBAL_ASM dummy (8-byte -O2 floor → +4 overshoot); SUFFIX_BYTES_FORCE appends
  * exactly one word, so func_0000EF20 lands at 0xEF20 and the ROM stays exact.
  * This works mid-segment (with a following symbol), not just at segment-end. */

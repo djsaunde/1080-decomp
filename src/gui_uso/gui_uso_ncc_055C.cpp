@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_0000055C (0x15C / 87 words).
+/* IDO 7.1 NCC (C++) donor for gui_setupRenderMode_0000055C (0x15C / 87 words).
  *
  * Caches the gfx context (*(D + 0x254))->0x158 in w->ctx, then appends six
  * fixed commands (RDPPIPESYNC, two SETOTHERMODE_H, SETOTHERMODE_L,
@@ -25,7 +25,7 @@ struct Ctx {
 };
 struct G { char pad[0x158]; Ctx *ctx; };
 struct W { char pad[0x24]; Ctx *ctx; };
-extern "C" void gui_uso_func_0000055C(W *w) {
+extern "C" void gui_setupRenderMode_0000055C(W *w) {
     Gfx *p1, *p2, *p3, *p4, *p5, *p6;
     w->ctx = (*(G **)(&D_00000000 + 0x254))->ctx;
     p1 = w->ctx->next();

@@ -16,7 +16,7 @@ void n64proc_uso_func_0000000C(void) {
 extern char D_00000000;
 
 extern char gl_d_n64p14[];
-void n64proc_uso_func_00000014(int arg0, int arg1) {
+void n64_procMain(int arg0, int arg1) {
     char *base = gl_d_n64p14;
     char *base10 = gl_d_n64p14 + 0x10;
     int *cur;
@@ -46,7 +46,7 @@ void n64proc_uso_func_00000014(int arg0, int arg1) {
     } while (flag == 0);
 }
 
-/* n64proc_uso_func_00000100: 76-insn / 0x130 TRIPLE find-or-create cascade.
+/* N64DemoProcess_ctor: 76-insn / 0x130 TRIPLE find-or-create cascade.
  * Fuzzy 99.24 % (13/76 words differ). Residual is a register-renumber +
  * spill-slot-coalescing cap — structure, schedule and CSE are all exact.
  *
@@ -55,7 +55,7 @@ void n64proc_uso_func_00000014(int arg0, int arg1) {
  * sub-object's 0x28 vtable slot, then a large p-init block (see body).
  *
  * PROGRESS 2026-07-10 (agent-g): 95.01 -> 99.24 (+4.23pp) by porting the exact
- * idiom that made the sibling eddproc_uso_func_0000025C BYTE-EXACT:
+ * idiom that made the sibling edd_EditorsProcess_ctor_0000025C BYTE-EXACT:
  *   (1) REUSE the `a0` param as the running object p (not a fresh `void *p`
  *       local) — p lives to `return a0`, so IDO saves it in $s0 and homes its
  *       incoming value without a separate move. This fixed the prologue
@@ -84,7 +84,7 @@ void n64proc_uso_func_00000014(int arg0, int arg1) {
  * different, unreachable allocation. Leave NON_MATCHING. */
 extern int gl_func_00000000();
 extern char D_n64_100_a, D_n64_100_b, D_n64_100_c, D_n64_100_d, D_n64_100_e, D_n64_100_f;
-void *n64proc_uso_func_00000100(void *a0) {
+void *N64DemoProcess_ctor(void *a0) {
     void *q;
     void *r;
 
@@ -130,12 +130,12 @@ end:
     return a0;
 }
 
-void n64proc_uso_func_00000230(char *a0) {
+void n64_loadSprites_00000230(char *a0) {
     gl_func_00000000(a0 + 0x58, 6);
     gl_func_00000000(a0 + 0x70, 3);
 }
 
-/* n64proc_uso_func_00000268: MATCHED 2026-06-01. State machine on a0->0x50
+/* N64DemoProcess_handleInput: MATCHED 2026-06-01. State machine on a0->0x50
  * (key dispatch).
  *   case 0: decrement a0->0x3C; if <16, decay a0->0x54 by 16 (clamp>=0);
  *           when a0->0x3C hits 0, transition to mode 1 + reset a0->0x3C=100.
@@ -145,7 +145,7 @@ void n64proc_uso_func_00000230(char *a0) {
  * Switch form emits the target's beql-to-case dispatch polarity; in-place RMW
  * on the counters makes IDO re-read fields into fresh $t regs instead of
  * collapsing named temporaries into $v0. */
-void n64proc_uso_func_00000268(int *a0) {
+void N64DemoProcess_handleInput(int *a0) {
     int v;
 
     v = a0[0x50/4];
@@ -173,13 +173,13 @@ void n64proc_uso_func_00000268(int *a0) {
     }
 }
 
-/* n64proc_uso_func_0000035C: MATCHED 2026-05-31. key-dispatch on *(a0+0x50):
+/* N64DemoProcess_drawGui: MATCHED 2026-05-31. key-dispatch on *(a0+0x50):
  * case 0 inits a0+0x58 subobject, case 1 inits a0+0x70, both from a 4x1.0f buf.
  * Cracked the key==1 branch-polarity cap with a `switch` — the if/goto chain
  * emitted `bne key,1,end` (k1 as fall-through); the switch emits the target's
  * `beq key,1,k1` dispatch. Frame layout via pad1[4]/pad2[12] around buf[4].
  * See docs/IDO_CODEGEN.md#switch-vs-if-goto-dispatch-polarity. */
-void n64proc_uso_func_0000035C(char *a0) {
+void N64DemoProcess_drawGui(char *a0) {
     char pad1[4];
     float buf[4];
     int key;

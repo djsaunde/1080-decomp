@@ -20228,7 +20228,7 @@ int gl_func_000546BC(char *a0) {
 /* 2026-10-22 (agent-g run 122) EXACT (203/203): the last word was the as1 order of the
  * rematerialized `mtc1 zero,$f2` vs the 0x28 vtable store; writing the s1+0x30 call, the
  * closing brace and the store on ONE source line puts the store first (found by the
- * permuter; same-line scheduling, cf. gui_uso_func_00001794). */
+ * permuter; same-line scheduling, cf. gui_setCombine_00001794). */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif

@@ -1240,7 +1240,7 @@ void titproc_uso_func_00001AF8(int *a0) {
 }
 
 /* titproc_uso_func_00001B10: 42-insn (0xA8) 3-stage chained alloc-cascade.
- * Same shape as eddproc_uso_func_0000025C and timproc_uso_b5_func_00000058
+ * Same shape as edd_EditorsProcess_ctor_0000025C and timproc_uso_b5_func_00000058
  * — gets/allocs primary obj (size 0x40), then init-call into +0x4EC
  * sub-block, then stores D_X pointers at +0x28 / +0xC / +0x3C of stages.
  *
@@ -1982,7 +1982,7 @@ void titproc_uso_func_00002950(char *dst) {
 }
 
 /* titproc_uso_func_00002980: 36-insn (0x90) alloc-and-link node helper.
- * BYTE-IDENTICAL sibling of eddproc_uso_func_000003BC / mgrproc_uso_func_00003358.
+ * BYTE-IDENTICAL sibling of edd_ItemType_create_000003BC / mgrproc_uso_func_00003358.
  * The "frame-0x20-vs-0x28 spill cap" was a MISDIAGNOSIS — porting the exact
  * matched two-web sibling body (p1/p2 split + decl order p2,head,p1 + reload of
  * arg0[0x40] for the second condition) reproduces the frame-0x28 two-web spill

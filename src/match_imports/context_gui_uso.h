@@ -324,17 +324,17 @@ typedef struct GuiGlyphGrid148 {
     GuiGlyphCell148 *cells;
     void *draw_state;
 } GuiGlyphGrid148;
-GuiGlyphGrid148 *gui_func_00000148(GuiGlyphGrid148 *a0, char *a1, int a2, int a3, int rows, int cols);
-void gui_uso_func_0000055C(char *a0);
+GuiGlyphGrid148 *gui_fontCreate(GuiGlyphGrid148 *a0, char *a1, int a2, int a3, int rows, int cols);
+void gui_setupRenderMode_0000055C(char *a0);
 struct GuiDrawState6B8 { char unk00[0xC]; struct GfxRing_413C *ring_0C; };
 struct GuiColorObject6B8 { char unk00[0x24]; struct GuiDrawState6B8 *draw_state_24; };
 struct GuiColorPacket6B8 { unsigned command; unsigned rgba; };
-void gui_uso_func_000006B8(struct GuiColorObject6B8 *a0, int a1, float *a2, int a3);
+void gui_setPrimColor_000006B8(struct GuiColorObject6B8 *a0, int a1, float *a2, int a3);
 typedef struct GuiDLPkt8C0 {
     u32 w0;
     u32 w1;
 } GuiDLPkt8C0;
-void gui_uso_func_000008C0(GuiGlyphGrid148 *a0);
+void gui_setPrimColorClamped_000008C0(GuiGlyphGrid148 *a0);
 extern int gl_func_00000000();
 typedef struct GuiB58Glyph {
     s32 field_00;
@@ -360,7 +360,7 @@ extern u32 gui_b58_import_bf0(u32);
 extern void gui_b58_import_c38(void *, s32, s32, s32, s32, s32, s32, s32, s32);
 extern void gui_b58_import_c8c(void *, s32, s32, s32, s32, s32, s32);
 extern u32 gui_b58_import_cc0(const u8 *);
-void gui_func_00000B58(GuiB58Context *arg0, s32 arg1, s32 arg2, const u8 *arg3);
+void gui_drawString(GuiB58Context *arg0, s32 arg1, s32 arg2, const u8 *arg3);
 typedef struct GuiDrawStateD04 {
     char unk_00[0xC];
     struct GfxRing_413C *ring;
@@ -370,26 +370,26 @@ extern unsigned int gui_D04_bound_EC0(char *);
 extern int gui_D04_glyph(unsigned char);
 extern void gui_D04_load(void *, char *, int, int, int, int, int, int, int);
 extern void gui_D04_draw(void *, int, int, int, int, int, int);
-void gui_func_00000D04(GuiGlyphGrid148 *a0, int a1, int a2, char *a3);
+void gui_drawString_00000D04(GuiGlyphGrid148 *a0, int a1, int a2, char *a3);
 extern int gl_func_00000000();
-void gui_func_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5);
-int gui_func_000013E8(char *a0, unsigned char *a1);
+void gui_drawStringScaled_00000F04(void *arg0, int arg1, int arg2, float arg3, float arg4, unsigned char *arg5);
+int gui_stringWidth(char *a0, unsigned char *a1);
 extern int gui_func_00000000();
-int gui_func_000014B4(int a0, int a1, int a2);
+int gui_centerStringX(int a0, int a1, int a2);
 extern int gl_func_00000000();
-int gui_func_000014EC(int a0, int a1, int a2);
+int gui_rightAlignStringX(int a0, int a1, int a2);
 extern int gl_func_00000000();
-int gui_func_00001514(int *a0, unsigned char *a1);
+int gui_stringWidth_00001514(int *a0, unsigned char *a1);
 extern int gui_func_00000000();
-int gui_func_000015BC(int a0, int a1, int a2);
-int gui_func_000015F4(int a0, int a1, int a2);
-void gui_func_0000161C(int *a0, int a1, int a2);
-int gui_uso_func_00001674(int a0);
+int gui_centerStringX_000015BC(int a0, int a1, int a2);
+int gui_rightAlignStringX_000015F4(int a0, int a1, int a2);
+void gui_fontAdjustAdvance(int *a0, int a1, int a2);
+int gui_floorPow2(int a0);
 struct GuiBuilder_16A4 { int field_0[3]; struct GfxRing_413C *field_C; };
 extern struct GuiBuilder_16A4 *D_gui16a4_cache;
-void gui_uso_func_000016A4(int a0);
-void gui_uso_func_00001794(int a0);
-void gui_uso_func_000017DC(int unused, int blend_alpha, const float rgb[3], int alpha);
+void gui_beginFrame_000016A4(int a0);
+void gui_setCombine_00001794(int a0);
+void gui_setColorEnvPrim_000017DC(int unused, int blend_alpha, const float rgb[3], int alpha);
 typedef struct GuiColorCommand1A5C {
     unsigned int w0;
     unsigned int w1;
@@ -402,21 +402,21 @@ typedef struct GuiColorContext1A5C {
     int unk0[3];
     GuiColorRing1A5C *ring;
 } GuiColorContext1A5C;
-void gui_uso_func_00001A5C(void *a0, int a1, float *a2);
-void gui_uso_func_00001CA8(void *a0, int a1, float *a2);
-void gui_uso_func_00001EF4(void *a0, int a1, float *a2, float *a3);
-void gui_uso_func_00002334(int unused, int environment_alpha,
+void gui_setColor_00001A5C(void *a0, int a1, float *a2);
+void gui_setFillColor_00001CA8(void *a0, int a1, float *a2);
+void gui_setEnvPrimColor_00001EF4(void *a0, int a1, float *a2, float *a3);
+void gui_setColorEnvPrim_00002334(int unused, int environment_alpha,
                          const float *rgb, int primitive_alpha);
-void gui_uso_func_000025B4();
+void gui_setScissor();
 extern int gl_func_00000000();
 extern char D_00000000;
-void gui_func_0000267C(char *a0, int a1);
-void gui_func_000026CC(int *a0, int a1);
+void gui_spriteLoad(char *a0, int a1);
+void gui_spriteInit(int *a0, int a1);
 extern int gui_func_00000000();
 extern char D_00000000;
-void gui_func_000026D8(char *a0);
+void gui_spriteRelease(char *a0);
 extern int gl_func_00000000();
-void gui_func_0000271C(char *a0);
+void gui_spriteRefresh(char *a0);
 extern char gui_27A0_context;
 typedef int (*Gui27A0Render)(void *, void *, int, int, int, int, int, int, int);
 extern int gui_27A0_tile_width(int, GuiTextureInfo *);
@@ -425,25 +425,25 @@ extern int gui_27A0_render1032(void *, void *, int, int, int, int, int, int, int
 extern int gui_27A0_render272(void *, void *, int, int, int, int, int, int, int);
 extern int gui_27A0_render288(void *, void *, int, int, int, int, int, int, int);
 extern int gui_27A0_render_default(void *, void *, int, int, int, int, int, int, int);
-void gui_func_000027A0(GuiTextureObject *a0, int a1, int a2, int a3);
+void gui_drawSprite(GuiTextureObject *a0, int a1, int a2, int a3);
 extern int gui_import_2CEC(int *, void *, int, int, int, int, int, int, int);
 extern int gui_import_2D0C(int *, int, int, int, int, int, int);
 extern int gui_import_2D4C(int *, void *, int, int, int, int, int, int, int);
 extern int gui_import_2DA0(int *, int, int, int, int, int, int);
 void gui_func_00002BB0(GuiTextureObject *object, int x, int y, int source_x, int count);
-void gui_func_00002DE0(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4);
-void gui_func_0000329C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-void gui_func_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6);
+void gui_drawSpriteScaledF_00002DE0(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4);
+void gui_drawSpriteScaled_0000329C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void gui_drawSpriteScroll_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6);
 extern int gl_func_00000000();
 extern char D_00000000;
-void gui_uso_func_00003B14(int a0, int a1, int a2, int a3, int arg5);
+void gui_fillRect(int a0, int a1, int a2, int a3, int arg5);
 extern int D_3B80_f0, D_3B80_f1, D_3B80_f2;
-void gui_func_00003B80(int *a0, int a1, int a2, int a3);
-void gui_uso_func_00003F18(char *a0, int a1, int a2, int a3, int arg5,
+void gui_drawImage_00003B80(int *a0, int a1, int a2, int a3);
+void gui_loadTileRGBA32(char *a0, int a1, int a2, int a3, int arg5,
                            int arg6, int arg7, int arg8, int arg9);
-void gui_uso_func_0000413C(char *a0, int a1, int a2, int a3, int arg4,
+void gui_loadTileRGBA16(char *a0, int a1, int a2, int a3, int arg4,
                            int arg5, int arg6, int arg7, int arg8);
-void gui_uso_func_00004354(char *a0, int a1, int a2, int a3, int arg5,
+void gui_loadTileIA8(char *a0, int a1, int a2, int a3, int arg5,
                            int arg6, int arg7, int arg8, int arg9);
 extern int gl_func_00000000();
-void gui_func_00004568(int *a0, int a1, int a2, int a3, int a4, int a5, int a6);
+void gui_texRect_00004568(int *a0, int a1, int a2, int a3, int a4, int a5, int a6);

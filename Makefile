@@ -87,12 +87,12 @@ build/src/gui_uso/gui_uso_zcopy_0.c.o build/non_matching/src/gui_uso/gui_uso_zco
 build/src/gui_uso/gui_uso_zcopy_0.c.o: TRUNCATE_TEXT := 0x148
 build/src/gui_uso/gui_uso_zcopy_0.c.o: PREFIX_BYTES := gui_func_00000000=0x1000736F
 build/non_matching/src/gui_uso/gui_uso_zcopy_0.c.o: NON_MATCHING_PREFIX_BYTES := gui_func_00000000=0x1000736F
-build/src/gui_uso/gui_uso.c.o: SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000 gui_func_00003B80=0x00000000,0x00000000,0x00000000
+build/src/gui_uso/gui_uso.c.o: SUFFIX_BYTES_FORCE := gui_fontAdjustAdvance=0x00000000 gui_drawImage_00003B80=0x00000000,0x00000000,0x00000000
 build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x473C
 # Mirror the suffix onto the non_matching object so report.json/objdiff (which
 # compare build/non_matching vs expected) score the trailing alignment-nop word.
 # splat-symbol-boundary trailing-delay-nop class — see docs/MATCHING_WORKFLOW.md.
-build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_func_0000161C=0x00000000 gui_func_00003B80=0x00000000,0x00000000,0x00000000
+build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_fontAdjustAdvance=0x00000000 gui_drawImage_00003B80=0x00000000,0x00000000,0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2hproc_uso_func_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2hproc_uso_func_00001AFC=0x00000000
@@ -3110,91 +3110,91 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # gui is C++ too (kit XXIII #3). 1A5C / 1CA8: DL colour emitters (combine +
 # primcolor) with an inline next() append member (147/147 words each).
 GUI_1A5C_DONOR := build/src/gui_uso/gui_uso_ncc_1A5C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00001A5C=$(GUI_1A5C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setColor_00001A5C=$(GUI_1A5C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1A5C_DONOR)
 GUI_1CA8_DONOR := build/src/gui_uso/gui_uso_ncc_1CA8.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00001CA8=$(GUI_1CA8_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setFillColor_00001CA8=$(GUI_1CA8_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1CA8_DONOR)
 # 06B8: one G_SETPRIMCOLOR append into a0->0x24's context (1A5C recipe; 130/130).
 GUI_06B8_DONOR := build/src/gui_uso/gui_uso_ncc_06B8.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000006B8=$(GUI_06B8_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setPrimColor_000006B8=$(GUI_06B8_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_06B8_DONOR)
 # 08C0: SETOTHERMODE + SETCOMBINE + PRIMCOLOR appends (166/166; 17DC recipe:
 # next() without the n copy + Gfx::set() (uopt 20-varref block boundary).
 GUI_08C0_DONOR := build/src/gui_uso/gui_uso_ncc_08C0.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000008C0=$(GUI_08C0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setPrimColorClamped_000008C0=$(GUI_08C0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_08C0_DONOR)
 # 17DC: SETCOMBINE + SETENVCOLOR + SETPRIMCOLOR (160/160); next() without the
 # n copy + Gfx::set() keep uopt's 20-varref block boundary after the 3rd slot.
 GUI_17DC_DONOR := build/src/gui_uso/gui_uso_ncc_17DC.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000017DC=$(GUI_17DC_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setColorEnvPrim_000017DC=$(GUI_17DC_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_17DC_DONOR)
 # 2334: 17DC with another combiner (160/160; the 17DC recipe).
 GUI_2334_DONOR := build/src/gui_uso/gui_uso_ncc_2334.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00002334=$(GUI_2334_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setColorEnvPrim_00002334=$(GUI_2334_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2334_DONOR)
 # 055C: six fixed appends (87/87); block boundaries from empty ifs (kit XXXV).
 GUI_055C_DONOR := build/src/gui_uso/gui_uso_ncc_055C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_0000055C=$(GUI_055C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setupRenderMode_0000055C=$(GUI_055C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_055C_DONOR)
 # 16A4: 055C's four-append sibling (60/60; empty-if block boundaries).
 GUI_16A4_DONOR := build/src/gui_uso/gui_uso_ncc_16A4.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_000016A4=$(GUI_16A4_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_beginFrame_000016A4=$(GUI_16A4_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_16A4_DONOR)
 # 413C: RGBA16 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_413C_DONOR := build/src/gui_uso/gui_uso_ncc_413C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_0000413C=$(GUI_413C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_loadTileRGBA16=$(GUI_413C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_413C_DONOR)
 # 4354: IA8 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_4354_DONOR := build/src/gui_uso/gui_uso_ncc_4354.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00004354=$(GUI_4354_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_loadTileIA8=$(GUI_4354_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4354_DONOR)
 # 3F18: RGBA32 texture-tile loader written with the real gbi.h macros (src/gui_uso/gui_ncc_gbi.h).
 GUI_3F18_DONOR := build/src/gui_uso/gui_uso_ncc_3F18.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00003F18=$(GUI_3F18_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_loadTileRGBA32=$(GUI_3F18_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3F18_DONOR)
 # 1EF4: combine + env + prim colour appends (1A5C recipe; 272/272).
 GUI_1EF4_DONOR := build/src/gui_uso/gui_uso_ncc_1EF4.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_uso_func_00001EF4=$(GUI_1EF4_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_setEnvPrimColor_00001EF4=$(GUI_1EF4_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_1EF4_DONOR)
 # 0148: glyph-grid layout constructor (261/261; NCC frame = declared scalars).
 GUI_0148_DONOR := build/src/gui_uso/gui_uso_ncc_0148.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000148=$(GUI_0148_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_fontCreate=$(GUI_0148_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0148_DONOR)
 # 27A0: tiled sprite blitter (flags align, gSPTexture, mode switch, strip loop;
 # 260/260). The pooled int scratch is passed as the strip helper's 2nd arg.
 GUI_27A0_DONOR := build/src/gui_uso/gui_uso_ncc_27A0.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_000027A0=$(GUI_27A0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSprite=$(GUI_27A0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_27A0_DONOR)
 # 3B80: image blitter, 27A0's sibling (230/230). Budget and fn assignments on
 # separate source lines per arm (as1 schedules per line).
 GUI_3B80_DONOR := build/src/gui_uso/gui_uso_ncc_3B80.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003B80=$(GUI_3B80_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawImage_00003B80=$(GUI_3B80_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3B80_DONOR)
 # 0F04: glyph-string blitter (313/313; agent-g run 294, kit CCCLXVI): inline Ctx appends as the gbi.h pkt
 # arguments, shared packet pointers declared after cy / c, a void alias for the never-read glyph-load result.
 GUI_0F04_DONOR := build/src/gui_uso/gui_uso_ncc_0F04.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00000F04=$(GUI_0F04_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawStringScaled_00000F04=$(GUI_0F04_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_0F04_DONOR)
 # 3714: sprite DL emitter (256/256; agent-g run 300): inline Ctx appends as the gbi.h pkt arguments, the
 # rectangle packet pointer held in the reused spr variable (spr lands in t1 as the target).
 GUI_3714_DONOR := build/src/gui_uso/gui_uso_ncc_3714.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00003714=$(GUI_3714_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSpriteScroll_00003714=$(GUI_3714_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_3714_DONOR)
 # 329C: gui sprite rect (286/286; agent-g run 309, kit CCCXCVIII): inline Ctx appends as the gbi.h pkt arguments,
 # spr = the yh / yl MAX results and the RDPHALF_1 x middle ?: result (one variable, the target's t2).
 GUI_329C_DONOR := build/src/gui_uso/gui_uso_ncc_329C.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_0000329C=$(GUI_329C_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSpriteScaled_0000329C=$(GUI_329C_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_329C_DONOR)
 # 4568: gui texture rect (gbi.h gSPTextureRectangle / gSPScisTextureRectangle pair; 199/199, agent-c run 308):
 # Ctx::next(DL *) with an unused pool parameter separates the append's post-increment slot from the MAX ternaries.
 GUI_4568_DONOR := build/src/gui_uso/gui_uso_ncc_4568.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00004568=$(GUI_4568_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_texRect_00004568=$(GUI_4568_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_4568_DONOR)
 # 2DE0: gui sprite rect, 329C's f32-scale sibling (303/303; agent-c run 337, kit CDXXVIII): the &D lda LR
 # cost-split around the yl < 0 arm (no &D / pc folds, s-term MAX through spr, TEXRECT append me(CTX)->nD()).
 GUI_2DE0_DONOR := build/src/gui_uso/gui_uso_ncc_2DE0.cpp.o
-build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002DE0=$(GUI_2DE0_DONOR)
+build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSpriteScaledF_00002DE0=$(GUI_2DE0_DONOR)
 build/src/gui_uso/gui_uso.c.o build/non_matching/src/gui_uso/gui_uso.c.o: $(GUI_2DE0_DONOR)
 # B274: NM-only NCC donor (frame 88 vs 64: edg double temporaries).
 GAMEUSO_B274_NM_DONOR := build/src/game_uso/game_uso_ncc_B274.cpp.o

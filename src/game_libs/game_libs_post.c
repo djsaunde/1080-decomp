@@ -15002,7 +15002,7 @@ void snd_RequestCue_315BC(int a0, int a1) {
  * calls gl_ref_00045DC0(ptr, 1, (val<<6)+a1, 0x7F) where ptr=&gl_ref_00000368 +
  * b21*100 (same strength-reduced index as sibling snd_RequestCue_315BC). The
  * inner g-recheck (D[0]==1/2/3/5) is logically dead after the ==4 gate but the
- * target reloads g from memory so IDO can't fold it (cf. eddproc_uso_func_0000025C). */
+ * target reloads g from memory so IDO can't fold it (cf. edd_EditorsProcess_ctor_0000025C). */
 /* RUN 107 (agent-c, unsorted-chain scan): 78.3 -> 87.7. The two reads of the
  * zero-page word are separate externs (separate lui/lw, no CSE, no volatile)
  * and the index reuses b21 (`b21 = 1`). Residual: the target loads b22 into

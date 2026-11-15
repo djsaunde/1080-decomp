@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_func_00003714 (256 words; this body 256). EXACT (agent-g run 300):
+/* IDO 7.1 NCC (C++) donor for gui_drawSpriteScroll_00003714 (256 words; this body 256). EXACT (agent-g run 300):
  * spliced into gui_uso.c.o on both build trees via REPLACE_FUNC_BODY.
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): rewritten from the cfe-shaped PKT macro body (93.54) as
  * real C++ -- every append is the gfx context's inline Ctx::next() (n read, n + 1 stored, &buf[n]), and the
@@ -50,7 +50,7 @@ struct Obj { char p[0x10]; Spr *spr; };
 /* agent-g run 299 (kit CCCLXXIV source-line lever): the signature, the declarations and the `if (arg4) {}` split on ONE
  * line -- the entry block's arg1 home store (sw a1,100(sp)) now shares the first statement's line, so as1 issues the
  * CTX address addiu before it like the target (99.141 -> 99.922; signature x declaration x first-test joins, 24) */
-extern "C" void gui_func_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) { volatile s32 q0, q1, q2, q3, q4, q5, q6, q7; s32 x, y; s32 w, h; f32 fw, fh; Spr *spr; if (arg4) {} /* agent-c run 268: BB split -- the texture append in a block of its own (ctx a1 as the target) */
+extern "C" void gui_drawSpriteScroll_00003714(Obj *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6) { volatile s32 q0, q1, q2, q3, q4, q5, q6, q7; s32 x, y; s32 w, h; f32 fw, fh; Spr *spr; if (arg4) {} /* agent-c run 268: BB split -- the texture append in a block of its own (ctx a1 as the target) */
     /* agent-c run 252: per-pkt accessor greedy (kit CCLXXXIV): 97.41 -> 97.94. agent-c run 269 (kit CCCXIV): the gSPTexture
      * macro written out with the BB split BETWEEN the packet allocation and its two stores (and none before spr): the alloc
      * block keeps the ctx on a1, while _g now also lives in the loader-call block, where the call's argument registers are

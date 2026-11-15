@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gui_func_00000F04 (313 words, 1252 bytes): spliced over the empty
+/* IDO 7.1 NCC (C++) EXACT donor for gui_drawStringScaled_00000F04 (313 words, 1252 bytes): spliced over the empty
  * placeholder in gui_uso.c on both build trees (REPLACE_FUNC_BODY). agent-g run 294: EXACT (kit CCCLXVI).
  * History (was the NON_MATCHING comparison donor gui_uso_ncc_0F04_nm.cpp):
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): the string blitter rewritten as C++ in the 329C / 2DE0
@@ -70,7 +70,7 @@ extern "C" int gl_func_00000000(...);
 /* agent-g run 294: the glyph texture-load call through a VOID alias (its result is never read; the target's
  * TEXRECT append right after the call takes v0 for dl, which a discarded int result keeps busy) */
 extern "C" void gui_func_00000F04_load(...);
-extern "C" void gui_func_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsigned char *str) {
+extern "C" void gui_drawStringScaled_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f32 sy, unsigned char *str) {
     f32 cx;
     s32 h;
     unsigned char *p;

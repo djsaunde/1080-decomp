@@ -274,7 +274,7 @@ void h2hproc_uso_func_000005B0(Vec3 *dst) {
  * table as &D_00000000. The history below documents the old NM decodes.
  * Decode pass — 74.07% fuzzy (was 57.5). Applies the triple alloc-cascade
  * recipe from feedback_alloc_or_passthrough_cascade_includes_dead_arms.md
- * (verified +4.64pp on n64proc_uso_func_00000100 sibling).
+ * (verified +4.64pp on N64DemoProcess_ctor sibling).
  * 2026-05-31 (+16.6pp): added the missing p[0x48] sub-object config block —
  * after z[0x14]=p, the seq is func(p, a1); sub=func(0); p[0x48]=sub;
  * func(sub, p); func(p[0x48], (G+3)<<16, -1, &G2); func(p[0x48],
@@ -1571,7 +1571,7 @@ void h2hproc_uso_func_00001A3C(char *dst) {
 }
 
 /* h2hproc_uso_func_00001A6C: 36-insn (0x90) constructor — BYTE-IDENTICAL
- * mirror of eddproc_uso_func_000003BC (verified 2026-05-03 via .word diff).
+ * mirror of edd_ItemType_create_000003BC (verified 2026-05-03 via .word diff).
  * Same alloc + init + list-add structure with beql speculative double-store.
  *
  *   void *p = gl_func_00000000(0x40);    // alloc
@@ -1605,7 +1605,7 @@ void h2hproc_uso_func_00001A3C(char *dst) {
  * across 1st jal; target uses $a0 directly + $v1 later. To get the
  * exact emit shape, p needs to live in $v1 across the 1st-call gap.
  * Possible knob: variable scope, refs count. Defer to permuter or
- * mirror eddproc_uso_func_000003BC's exact source pattern (currently
+ * mirror edd_ItemType_create_000003BC's exact source pattern (currently
  * also uncapped).
  *
  * 2026-05-08: tested the sibling-port from titproc_uso_func_00002980 /

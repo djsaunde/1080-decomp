@@ -4301,7 +4301,7 @@ struct GlExisting {
 extern int gl_func_00000000();
 /* gl_func_000088B4: 36-insn constructor + list insert. MATCHED 2026-06-21 via
  * masked-twin port from game_uso_func_00003A28 (byte-exact donor; same
- * eddproc_uso_func_000003BC family). The prior duplicate struct-typed body sat
+ * edd_ItemType_create_000003BC family). The prior duplicate struct-typed body sat
  * in a dead #else/#ifdef branch (never compiled) while the active body produced
  * frame 0x30; the donor's flat int* form (decl-order p2,head,p1; p1-reuse-for-arg0;
  * condition re-load) gives the tight two-web spill (frame 0x28). jal targets are

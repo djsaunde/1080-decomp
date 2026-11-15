@@ -571,7 +571,7 @@ SECTIONS
     gui_uso_VRAM_END = .;
 
     /* gui_uso_tail (was gui_uso_post at 0x591DB0): its first word, the
-       `addiu sp,sp,8` at 0x591DB0, is gui_func_00004568's jr-ra delay slot
+       `addiu sp,sp,8` at 0x591DB0, is gui_texRect_00004568's jr-ra delay slot
        and now belongs to the gui_uso c segment (agent-g run 212). */
     gui_uso_tail_ROM_START = __romPos;
     gui_uso_tail_VRAM = ADDR(.gui_uso_tail);

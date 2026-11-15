@@ -1,9 +1,9 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_00001EF4 (0x440 / 272 words).
+/* IDO 7.1 NCC (C++) donor for gui_setEnvPrimColor_00001EF4 (0x440 / 272 words).
  *
  * Display-list colour setup: G_SETCOMBINE (0xFC309A61 / 0x5536FF7F), then
  * G_SETENVCOLOR (0xFB) from env[0..2] * 255 with the alpha argument, then
  * G_SETPRIMCOLOR (0xFA) from prim[0..2] * 255 with alpha 0xFF. The
- * gui_uso_func_00001A5C recipe (docs/IDO_CODEGEN.md kit XXV): three appends
+ * gui_setColor_00001A5C recipe (docs/IDO_CODEGEN.md kit XXV): three appends
  * through the context's inline next() member, the context global read as
  * `*(Ctx **)&D_00000000` per append, and every channel masked with & 0xFF
  * before its shift (the gbi.h _SHIFTL form). The old cfe body's "as1
@@ -20,7 +20,7 @@ struct Ctx {
 };
 #define CTX (*(Ctx **)&D_00000000)
 #define C8(x) ((unsigned)((x) * 255.0f) & 0xFF)
-extern "C" void gui_uso_func_00001EF4(void *self, int alpha, float *prim, float *env) {
+extern "C" void gui_setEnvPrimColor_00001EF4(void *self, int alpha, float *prim, float *env) {
     Gfx *p1 = CTX->next();
     p1->w0 = 0xFC309A61; p1->w1 = 0x5536FF7F;
     Gfx *p2 = CTX->next();

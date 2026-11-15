@@ -2215,7 +2215,7 @@ void game_uso_func_000039F8(char *dst) {
  * init(051C28), set vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
  * a0->0x40 node and link it back via 07ACE0.
  *
- * 2026-06-21 CRACKED via masked-twin port from eddproc_uso_func_000003BC
+ * 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact). The prior "89.22% NM ceiling / v0-v1 regalloc +
  * frame + jal-swap cap" was a structure+symbol issue: the old body used
  * placeholder gl_func/&D and the simplified obj/other locals. The donor's
@@ -6774,7 +6774,7 @@ void game_uso_func_0000AC48(char *dst) {
  * init(051C28), set vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
  * a0->0x40 node and link it back via 07ACE0.
  *
- * 2026-06-21 CRACKED via masked-twin port from eddproc_uso_func_000003BC
+ * 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact). The prior "25-diff v1-vs-a2 regalloc cap" was a
  * structure issue, not a true cap: the donor's p2/head/p1 split + p1-reuse-
  * for-arg0 + decl-order (p2,head,p1) + condition re-load (`if((int*)p1[0x40/4]
@@ -11128,7 +11128,7 @@ void game_uso_func_00011A64(char *dst) {
  * init(051C28), set vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
  * a0->0x40 node and link it back via 07ACE0.
  *
- * 2026-06-21 CRACKED via masked-twin port from eddproc_uso_func_000003BC
+ * 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact); identical to the 3A28/AC78 lands. The prior body
  * used placeholder gl_func/&D + the INSN_PATCH-era shape. The donor's
  * p2/head/p1 split + p1-reuse-for-arg0 + decl-order + condition re-load

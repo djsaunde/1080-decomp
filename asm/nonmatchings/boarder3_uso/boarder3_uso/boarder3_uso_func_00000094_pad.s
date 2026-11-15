@@ -1,4 +1,4 @@
-/* trailing alignment padding for boarder3_uso_func_00000094 */
+/* trailing alignment padding for boarder3_readQuadParm_00000094 */
 glabel _pad_boarder3_uso_func_00000094, local
 .word 0x00000000
 .word 0x00000000

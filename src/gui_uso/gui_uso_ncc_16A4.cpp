@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_000016A4 (0xF0 / 60 words).
+/* IDO 7.1 NCC (C++) donor for gui_beginFrame_000016A4 (0xF0 / 60 words).
  *
  * Caches the gfx context (*(D + 0x254))->0x158 in the global
  * D_gui16a4_cache, then appends four fixed commands (RDPPIPESYNC, two
@@ -21,7 +21,7 @@ struct Ctx {
 };
 struct G { char pad[0x158]; Ctx *ctx; };
 extern "C" { extern Ctx *D_gui16a4_cache; }
-extern "C" void gui_uso_func_000016A4(int a0) {
+extern "C" void gui_beginFrame_000016A4(int a0) {
     Gfx *p1, *p2, *p3, *p4;
     D_gui16a4_cache = (*(G **)(&D_00000000 + 0x254))->ctx;
     p1 = D_gui16a4_cache->next();

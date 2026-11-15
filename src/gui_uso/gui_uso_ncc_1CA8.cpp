@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_00001CA8 (0x24C / 147 words).
+/* IDO 7.1 NCC (C++) donor for gui_setFillColor_00001CA8 (0x24C / 147 words).
  *
  * Display-list colour emitter: appends a SETCOMBINE (prim-colour modulate) pair
  * (0xFCFFFFFF / 0xFFFDF6FB), then G_SETPRIMCOLOR (0xFA000000) with the RGB of
@@ -27,7 +27,7 @@ struct Ctx {
     Gfx *next() { int n = dl->n++; return &dl->buf[n]; }
 };
 #define CTX (*(Ctx **)&D_00000000)
-extern "C" void gui_uso_func_00001CA8(void *self, int alpha, float *col) {
+extern "C" void gui_setFillColor_00001CA8(void *self, int alpha, float *col) {
     Gfx *p1 = CTX->next();
     p1->w0 = 0xFCFFFFFF; p1->w1 = 0xFFFDF6FB;
     Gfx *p2 = CTX->next();

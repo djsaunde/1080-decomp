@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gui_func_00004568 (199 words = the .s 0x31C), spliced over the empty host in
+/* IDO 7.1 NCC (C++) EXACT donor for gui_texRect_00004568 (199 words = the .s 0x31C), spliced over the empty host in
  * gui_uso.c on both trees (REPLACE_FUNC_BODY). agent-c run 308 (kit CCCXCII): Ctx::next() takes an unused DL *
  * parameter (passed c->dl) whose edg pool entry separates the post-increment old value from the MAX ternary
  * results; the first arm is then the plain gbi macro. History below. Run 144: the function is the libultra gbi.h
@@ -78,7 +78,7 @@ struct Ctx {
      * first arm's second packet pointer's t0): EXACT */
     Gfx *next(DL *k) { int n = dl->n++; return &dl->buf[n]; }
 };
-extern "C" void gui_func_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
+extern "C" void gui_texRect_00004568(Ctx *c, int x, int y, int w, int h, int dsdx, int dtdy) {
     if (x >= 0 && y >= 0) {
         gSPTextureRectangle(c->next(c->dl), x << 2, y << 2, (x + w) << 2, (y + h) << 2, 0, 0, 0, dsdx, dtdy);
     } else {

@@ -1,9 +1,9 @@
-/* IDO 7.1 NCC (C++) donor for gui_uso_func_00002334 (0x280 / 160 words).
+/* IDO 7.1 NCC (C++) donor for gui_setColorEnvPrim_00002334 (0x280 / 160 words).
  *
  * Three appends into the global gfx context: G_SETCOMBINE (0xFC11EA23 / 0xFFD7FFFF),
  * G_SETENVCOLOR with the a1 alpha byte, then G_SETPRIMCOLOR from col[0..2]
  * * 255 above the a3 alpha byte (the 1EF4 recipe, docs/IDO_CODEGEN.md kit
- * XXV). gui_uso_func_000017DC is the same function with another combiner.
+ * XXV). gui_setColorEnvPrim_000017DC is the same function with another combiner.
  *
  * uopt ends a straight-line basic block after 20 variable loads
  * (varreflimit, a statement boundary). The target needs that boundary to
@@ -29,7 +29,7 @@ struct Ctx {
 };
 #define CTX (*(Ctx **)&D_00000000)
 #define C8(x) ((unsigned)((x) * 255.0f) & 0xFF)
-extern "C" void gui_uso_func_00002334(void *self, int a1, float *col, int alpha) {
+extern "C" void gui_setColorEnvPrim_00002334(void *self, int a1, float *col, int alpha) {
     Gfx *p1 = CTX->next();
     p1->set(0xFC11EA23, 0xFFD7FFFF);
     Gfx *p2 = CTX->next();

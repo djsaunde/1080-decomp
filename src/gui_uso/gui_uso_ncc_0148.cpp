@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_func_00000148 (0x414 / 261 words).
+/* IDO 7.1 NCC (C++) donor for gui_fontCreate (0x414 / 261 words).
  *
  * Glyph-grid layout constructor (find-or-create a 40-byte grid, scan each
  * cell's ink columns, fill the 20-byte cell records). The cfe NM was 255/261
@@ -34,7 +34,7 @@ typedef struct GuiGlyphGrid148 {
     void *draw_state;           /* 0x24: not initialized by this function */
 } GuiGlyphGrid148;
 
-extern "C" GuiGlyphGrid148 *gui_func_00000148(GuiGlyphGrid148 *a0, int a1, int a2, int a3, int rows, int cols) {
+extern "C" GuiGlyphGrid148 *gui_fontCreate(GuiGlyphGrid148 *a0, int a1, int a2, int a3, int rows, int cols) {
     /* NCC frame: the 12 declared scalars (sum lives in the dead a1 parameter). */
     int idx;
     int col;

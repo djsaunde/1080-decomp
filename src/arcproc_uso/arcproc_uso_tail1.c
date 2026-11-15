@@ -1469,7 +1469,7 @@ void arcproc_uso_func_00002304(char *dst) {
 }
 
 /* arcproc_uso_func_00002334: 36-insn (0x90) constructor — BYTE-IDENTICAL
- * mirror of eddproc_uso_func_000003BC and h2hproc_uso_func_00001A6C
+ * mirror of edd_ItemType_create_000003BC and h2hproc_uso_func_00001A6C
  * (verified via signature match, sig=f167638a8a). Same alloc + init +
  * list-add structure with beql speculative double-store.
  *

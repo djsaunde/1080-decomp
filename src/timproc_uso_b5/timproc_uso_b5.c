@@ -6819,7 +6819,7 @@ void timproc_uso_b5_func_0000AAF4(char *a0) {
 }
 
 
-/* 2026-06-21 CRACKED via masked-twin port from eddproc_uso_func_000003BC
+/* 2026-06-21 CRACKED via masked-twin port from edd_ItemType_create_000003BC
  * (donor, byte-exact); identical land to game_uso 3A28/AC78/11A94. alloc(0x40)
  * + init(051C28), vtable 0x28 = &import_8006ED80, clear 0x3C; then walk
  * arg0->0x40 node and link via 07ACE0. The donor's p2/head/p1 split +

@@ -1088,12 +1088,12 @@ void timproc_uso_b1_func_00001EA4(char *dst) {
 }
 
 /* timproc_uso_b1_func_00001ED4: 36-insn (0x90) constructor — BYTE-IDENTICAL
- * mirror of eddproc_uso_func_000003BC (sig=f167638a8a, 4th clone of this
+ * mirror of edd_ItemType_create_000003BC (sig=f167638a8a, 4th clone of this
  * family). Same alloc + init + list-add structure with beql speculative
  * double-store. ~60% NM cap inherited. Multi-tick decomp.
  *
  * Find via: scripts/find-byte-identical-clones.py */
-/* 2026-05-31: BYTE-IDENTICAL to the 100% eddproc_uso_func_000003BC; applied its body
+/* 2026-05-31: BYTE-IDENTICAL to the 100% edd_ItemType_create_000003BC; applied its body
  * (the old structure was wrong — nested the head-insert inside the alloc-success and
  * scrambled the slot/flag order; correct is the two-phase var-reuse below). */
 void *timproc_uso_b1_func_00001ED4(int *arg0) {

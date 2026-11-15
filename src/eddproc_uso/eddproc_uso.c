@@ -26,19 +26,19 @@ void eddproc_uso_func_00000000(int *dst) {
     *dst = buf[0];
 }
 
-void eddproc_uso_func_00000040(float *dst) {
+void fs_gdlReadFloat_edd_00000040(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void eddproc_uso_func_0000007C(Quad4 *dst) {
+void fs_gdlReadQuad_edd_0000007C(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void eddproc_uso_func_000000D4(Vec3 *dst) {
+void fs_gdlReadVec3_edd_000000D4(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -63,7 +63,7 @@ void eddproc_uso_func_00000150(int a0, int a1) {
 
 extern int D_00000004;
 
-void eddproc_uso_func_0000015C(char *a0) {
+void edd_DataManager_init(char *a0) {
     *(char**)(a0 + 0xC) = &D_00000000 + 0x220;
     gl_func_00000000(a0);
     gl_func_00000000(a0, 0xD6, 0x13, *(char**)(a0 + 0x44) + 0x10);
@@ -75,7 +75,7 @@ void eddproc_uso_func_0000015C(char *a0) {
     gl_func_00000000(a0);
 }
 
-void eddproc_uso_func_000001E8(char *a0) {
+void edd_DataManager_update(char *a0) {
     if (*(int*)(&D_00000000 + 0x74) == 0) {
         gl_func_00000000();
         gl_func_00000000(a0);
@@ -167,7 +167,7 @@ void eddproc_uso_func_000001E8(char *a0) {
 extern char D_edd_vt0;
 extern char D_edd_vt1;
 extern char D_edd_vt2;
-void *eddproc_uso_func_0000025C(int *a0, int *a1) {
+void *edd_EditorsProcess_ctor_0000025C(int *a0, int *a1) {
     int *v1, *obj2;
     (void)&a1;
     /* obj0 is the reused `a0` param (homes its spill at sp+0x20 = a0 arg-slot,
@@ -200,19 +200,19 @@ Ret:
 void eddproc_uso_func_00000324(int a0) {
 }
 
-void eddproc_uso_func_0000032C(char *dst) {
+void edd_readIntParm_0000032C(char *dst) {
     int tmp;
     gl_func_00000000(&tmp);
     gl_func_00000000(dst + 0x10);
 }
 
-void eddproc_uso_func_0000035C(char *dst) {
+void edd_readFloatParm_0000035C(char *dst) {
     int tmp;
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_3C((float*)(dst + 0x10));
 }
 
-void eddproc_uso_func_0000038C(char *dst) {
+void edd_readQuadParm_0000038C(char *dst) {
     int tmp;
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_78((Quad4*)(dst + 0x10));
@@ -232,7 +232,7 @@ void eddproc_uso_func_0000038C(char *dst) {
  * arg0[0x40] condition (`if((int*)p1[0x40/4]!=0)`) puts head in $v0 + a plain
  * beqz. Do not "simplify" the variable reuse or the re-load — they're load-
  * bearing for the register/slot allocation. */
-void *eddproc_uso_func_000003BC(int *arg0) {
+void *edd_ItemType_create_000003BC(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -255,7 +255,7 @@ void *eddproc_uso_func_000003BC(int *arg0) {
     return p2;
 }
 
-void eddproc_uso_func_0000044C(char *dst) {
+void edd_readVec3Parm_0000044C(char *dst) {
     int tmp;
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_D0((Vec3*)(dst + 0x10));

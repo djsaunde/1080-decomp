@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gui_func_000027A0.
+/* IDO 7.1 NCC (C++) donor for gui_drawSprite.
  *
  * Tiled sprite blitter: adjust x/y by the sprite size per the alignment flags
  * (4 = right, 1 = centre-x, 2 = centre-y), append gSPTexture through the gfx
@@ -34,7 +34,7 @@ struct Ctx {
 struct Spr { char pad[8]; int tex; char pad2[0x14]; short w; short h; int mode; };
 struct W { char pad[0x10]; Spr *spr; };
 typedef void (*RFn)(Ctx *, int, int, int, int, int, int, int, int);
-extern "C" void gui_func_000027A0(W *self, int x, int y, int flags) {
+extern "C" void gui_drawSprite(W *self, int x, int y, int flags) {
     int t;
     int w, h;
     Spr *p;
