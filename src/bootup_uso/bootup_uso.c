@@ -811,7 +811,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
-        NODE(self)->vptr = (s32)(&D_00000000);
+        NODE(self)->vptr = (s32)(&U64BGWall_vtbl);
         *(void **)(self + 0xC) = &D_000066B8;
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
@@ -3824,7 +3824,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         z[0] = 0.0f;
         func_00000000(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
-    NODE(a0)->vptr = (s32)(&D_00000000);
+    NODE(a0)->vptr = (s32)(&EnvSettings_vtbl);
     *(void**)(a0 + 0xC) = &D_00007E7C;
     ((MapProp *)a0)->shape = a1;
     func_00000000(a0, a1);
@@ -4611,7 +4611,7 @@ void *Tv1Tmpl_create(char *a0) {
     ret = (char*)func_00000000(0x88);
     if (ret != 0) {
         func_00000000(ret);
-        NODE(ret)->vptr = (s32)(&D_00000000);
+        NODE(ret)->vptr = (s32)(&Tv1_vtbl);
     }
 
     *(float*)(ret + 0x80) = D_000005EC;
