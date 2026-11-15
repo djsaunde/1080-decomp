@@ -1,11 +1,11 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_000240A0 (0x290 / 164 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioLoad_AsyncLoadInner (0x290 / 164 words) = OoT's
  * AudioLoad_AsyncLoadInner (load.c), the older form without
  * AudioLoad_GetRealTableIndex (id is used directly) and without the
  * MEDIUM_UNK branch. Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY;
  * the splice renames the donor-local .rodata jumptable reloc (cachePolicy
- * switch, 5 entries, 3 and 4 shared) to gl_func_000240A0_rodata, pinned to the
+ * switch, 5 entries, 3 and 4 shared) to AudioLoad_AsyncLoadInner_rodata, pinned to the
  * USO table at +0xEB4. gAudioCtx load-status arrays: seq 0x2C70, font 0x2C40,
  * sample 0x2C10. Blank-jal callees are gl_func_00000000; the baked jals are
  * the pinned gl_ref_000381B0 (SearchCaches), gl_ref_00038204 (GetLoadTable),
@@ -32,7 +32,7 @@ extern int gl_ref_0003959C();
 #define AudioLoad_SetFontLoadStatus gl_func_00000000
 #define AudioLoad_SetSampleFontLoadStatus gl_func_00000000
 
-void *gl_func_000240A0(s32 tableType, s32 id, s32 nChunks, s32 retData, void *retQueue) {
+void *AudioLoad_AsyncLoadInner(s32 tableType, s32 id, s32 nChunks, s32 retData, void *retQueue) {
     u32 size;
     gl_240A0_Table *sampleBankTable;
     void *ramAddr;

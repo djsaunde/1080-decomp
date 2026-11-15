@@ -9069,7 +9069,7 @@ void timproc_uso_b5_func_0000E5AC(int a0) {
 /* timproc_uso_b5_func_0000E5D8: the `lui v0; lw v0,0(v0)` load of *(&D) (a state
  * pointer) is THIS function's real pre-prologue, mis-split into the E5AC _pad.s;
  * boundary-corrected 2026-05-30 by merging those 2 words into E5D8.s (0x48 ->
- * 0x50, start 0x0000E5D0), same fix as gl_func_0001FC78/000601DC. The old
+ * 0x50, start 0x0000E5D0), same fix as AudioHeap_AllocZeroedAttemptExternal/000601DC. The old
  * PROLOGUE_STEALS=8 note is obsolete (that mechanism was banned 2026-05-23).
  * Body copies 3 floats from (*&D)->0x70's fields (0xBC/0xCC/0xDC) into
  * &D+0/+4/+8, then calls gl_func(a0). Load lands in $v0 (IDO's first-temp) =

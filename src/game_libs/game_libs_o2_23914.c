@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00023914 (0x1F4 / 125 words) -- resource
+/* IDO 7.1 -O2 donor for AudioLoad_SyncLoad (0x1F4 / 125 words) -- resource
  * acquire: begin (baked jal 0x381B0) short-circuits, else fetch the table
  * entry (baked jal 0x38204), allocate by mode (5-entry switch), fill it,
  * then notify per a0. Word-exact standalone apart from relocations.
@@ -6,7 +6,7 @@
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post.c.o (the
  * 29CCC / 343F4 recipe): the C switch puts its 5-entry jumptable in the
  * donor's local .rodata; the splice renames that reloc to
- * gl_func_00023914_rodata, pinned in undefined_syms_auto.txt to the table
+ * AudioLoad_SyncLoad_rodata, pinned in undefined_syms_auto.txt to the table
  * the USO ships in game_libs rodata at +0xEA0.
  *
  * Levers (agent-c run 114 decode + run 122 fix): the two leading callees
@@ -22,7 +22,7 @@ extern int gl_func_00000000();
 extern int gl_ref_000381B0();
 extern int gl_ref_00038204();
 
-int gl_func_00023914(int a0, int a1, int *a2) {
+int AudioLoad_SyncLoad(int a0, int a1, int *a2) {
     int size;
     char *tbl;
     char *e;

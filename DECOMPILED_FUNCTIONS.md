@@ -69,7 +69,7 @@ regress during the O1/O2 file split, restore from the sources listed.
   C remains NON_MATCHING: 99.565216% objdiff, 21/23 raw words exact.
 
 - 2026-09-09: `gl_func_0002349C` merged into its two-word head
-  `game_libs_func_00023494` (0xA8/42 words). The head loads the short
+  `AudioLoad_DiscardFont` (0xA8/42 words). The head loads the short
   ID used immediately by the body. Both lack exports, but the original
   direct jal at ROM 0xE08534 targets the head (module Text+0x37B00).
 

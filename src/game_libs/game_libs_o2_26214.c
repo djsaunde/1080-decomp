@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_00026214 (0x57C / 351 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioThread_UpdateImpl (0x57C / 351 words) = OoT's
  * AudioThread_UpdateImpl (thread.c) in its older form: no AudioLoad_ProcessScriptLoads,
  * the AI buffer to queue is (curAiBufIndex + 1) % 3, and the two statics
  * (sMaxAbiCmdCnt, sWaitingAudioTask) live in the module data at 0x1B3D0 / 0x1B3D4.
@@ -72,7 +72,7 @@ extern u64 *gl_26214_AudioSynth_Update(u64 *, s32 *, s16 *, s32);
 #define AudioSynth_Update gl_26214_AudioSynth_Update
 #define MQ_GET_COUNT(q) ((q)->validCount)
 
-gl_26214_AudioTask *gl_func_00026214(void) {
+gl_26214_AudioTask *AudioThread_UpdateImpl(void) {
     u32 samplesRemainingInAi;
     s32 abiCmdCnt;
     s32 pad;

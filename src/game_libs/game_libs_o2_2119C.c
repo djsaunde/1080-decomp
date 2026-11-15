@@ -1,11 +1,11 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_0002119C (0x2FC / 191 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioHeap_ResetStep (0x2FC / 191 words) = OoT's
  * AudioHeap_ResetStep (heap.c) verbatim, minus the AudioHeap_DiscardSampleBanks
  * call (1080 has only the sample-cache discard); resetStatus is `volatile u8` as in
  * OoT (each case re-reads it). Spliced into game_libs_post.c.o via
  * REPLACE_FUNC_BODY; the splice renames the donor-local .rodata jumptable reloc
- * (resetStatus switch, 5 entries) to gl_func_0002119C_rodata, pinned to the USO
+ * (resetStatus switch, 5 entries) to AudioHeap_ResetStep_rodata, pinned to the USO
  * table. gAudioCtx offsets: specUnk4 0x2034, maxAiBufferLength 0x203C,
  * numSequencePlayers 0x2048, ticksPerUpdateInv 0x2050, numNotes 0x2070,
  * aiBuffers 0x2140, aiBufLengths 0x214C, resetStatus 0x2CF0,
@@ -42,7 +42,7 @@ extern int gl_func_00035B04();
 #define AudioHeap_DiscardSampleCaches gl_func_00036AD0
 #define AudioHeap_Init gl_func_00035B04
 
-s32 gl_func_0002119C(void) {
+s32 AudioHeap_ResetStep(void) {
     s32 i;
     s32 j;
     s32 sp24;

@@ -1,12 +1,12 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_00026790 (0x314 / 197 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioThread_ProcessGlobalCmd (0x314 / 197 words) = OoT's
  * AudioThread_ProcessGlobalCmd (thread.c) in its older form (the 1080 command set:
  * 0x82 / 0x83+0x89 / 0x86 / 0x84 / 0xF1 / 0xF2 mute / 0xF3 stop-notes falling into
  * 0xF0 unmute / 0xF4..0xF7 / 0x90 / 0xFA / 0x81 / 0xFB). Spliced into
  * game_libs_post.c.o via REPLACE_FUNC_BODY; the splice renames the donor-local
  * .rodata jumptable relocs (0xF0..0xFB at +0, 0x81..0x90 at +0x30) to
- * gl_func_00026790_rodata, pinned to the USO tables at +0xEE0. Load-bearing:
+ * AudioThread_ProcessGlobalCmd_rodata, pinned to the USO tables at +0xEE0. Load-bearing:
  * gAudioCtx as a typed extern struct (cursor-first notes[i] addu), seqPlayer /
  * NoteSampleState flags as u32 bitfield runs, the mute / unmute loops walking a
  * byte pointer from their own base symbol (gl_26790_ent) so the bound re-reads
@@ -46,7 +46,7 @@ extern int gl_26790_w;
 extern int gl_func_00000000();
 extern int func_3b164(), func_3b110();
 
-void gl_func_00026790(gl_26790_AudioCmd *cmd) {
+void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
     s32 i;
     s32 pad[3];
     u32 flags;

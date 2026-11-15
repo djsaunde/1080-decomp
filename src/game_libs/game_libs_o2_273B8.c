@@ -1,11 +1,11 @@
-/* game_libs_func_000273B8 -- 14-case jumptable message handler (switch on
+/* AudioThread_ProcessSeqPlayerCmd -- 14-case jumptable message handler (switch on
  * msg[0]): float/s8/short setters on the object with change-flag bits in
  * byte 1, a bit-4 insert into byte 0, and one indexed byte store.
  *
  * IDO 7.1 -O2 REPLACE_FUNC_BODY donor for game_libs_post.c.o (99/99 words;
  * the only word the build cannot bake is the `lw t7,%lo(jtbl)(at)` load).
  * A C `switch` puts its jumptable in this unit's local .rodata; the splice
- * renames that reloc to game_libs_func_000273B8_rodata, pinned in
+ * renames that reloc to AudioThread_ProcessSeqPlayerCmd_rodata, pinned in
  * undefined_syms_auto.txt to the table the USO ships in its data at +0xF88
  * (14 entries; entry 7 = default). Same recipe as game_libs_o2_29CCC.c.
  *
@@ -19,7 +19,7 @@
 #include "common.h"
 
 typedef struct { unsigned int b0hi:3, bit4:1, b0lo:4, f80:1, f40:1, f20:1, b1lo:5, rest:16; } BF_273B8;
-void game_libs_func_000273B8(unsigned char *a0, unsigned char *a1) {
+void AudioThread_ProcessSeqPlayerCmd(unsigned char *a0, unsigned char *a1) {
     switch (a1[0]) {
     case 1:
         if (*(float *)(a1 + 4) != *(float *)(a0 + 40)) {

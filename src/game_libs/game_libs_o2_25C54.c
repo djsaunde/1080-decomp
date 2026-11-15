@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_00025C54 (0x460 / 280 words) = OoT's
+/* IDO 7.1 -O2 donor for AudioLoad_PreloadSamplesForFont (0x460 / 280 words) = OoT's
  * AudioLoad_PreloadSamplesForFont (load.c) in its older form: no sound-effect loop,
  * instruments before drums, a four-argument AllocSampleCache (no cache-type
  * argument; the persistent / temporary calls are the same blank jal), and every
@@ -35,7 +35,7 @@ extern void gl_ref_0003959C(u32, void *, u32, s32, s32, void *, s32);
 #define AudioLoad_StartAsyncLoad gl_ref_0003959C
 #define ALIGN16(x) (((x) + 0xF) & ~0xF)
 
-void gl_func_00025C54(s32 fontId, s32 async, gl_25C54_SampleBankRelocInfo *sampleBankReloc) {
+void AudioLoad_PreloadSamplesForFont(s32 fontId, s32 async, gl_25C54_SampleBankRelocInfo *sampleBankReloc) {
     s32 numDrums;
     s32 numInstruments;
     gl_25C54_Drum *drum;

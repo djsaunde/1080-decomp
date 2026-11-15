@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* IDO 7.1 -O2 donor for gl_func_00025320 (0x90 / 36 words) = OoT's AudioLoad_AsyncDma
+/* IDO 7.1 -O2 donor for AudioLoad_AsyncDma (0x90 / 36 words) = OoT's AudioLoad_AsyncDma
  * (load.c) verbatim; the `if (size) {}` block split after the ALIGN16 keeps size in s1
  * (without it the parameter is homed and reloaded). "BGLOAD" is the module string at
  * 0x1B0C0 (pinned extern). Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY. */
@@ -15,7 +15,7 @@ extern s32 gl_ref_00038604(void *, s32, s32, u32, void *, u32, void *, s32, char
 extern char gl_25320_BGLOAD[];
 #define ALIGN16(x) (((x) + 0xF) & ~0xF)
 
-void gl_func_00025320(gl_25320_AudioAsyncLoad *asyncLoad, u32 size) {
+void AudioLoad_AsyncDma(gl_25320_AudioAsyncLoad *asyncLoad, u32 size) {
     size = ALIGN16(size);
     gl_25320_Audio_InvalDCache(asyncLoad->curRamAddr, size);
     if (size) {}

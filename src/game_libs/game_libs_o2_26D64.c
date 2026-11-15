@@ -1,10 +1,10 @@
-/* IDO 7.1 -O2 donor for gl_func_00026D64 -- sound-command queue drain
+/* IDO 7.1 -O2 donor for AudioThread_ProcessCmds -- sound-command queue drain
  * (230/230 words; st_size 0x398).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post.c.o (the
  * 29CCC / 273B8 / 31334 recipe): the switch (code) jumptable lands in this
  * unit's local .rodata at +0; the splice renames the reloc to
- * gl_func_00026D64_rodata, pinned to 0xF50, so the `lw t2,0xF50(at)` %lo links
+ * AudioThread_ProcessCmds_rodata, pinned to 0xF50, so the `lw t2,0xF50(at)` %lo links
  * as the USO ships it (an in-unit compile cannot bake the %lo).
  *
  * Load-bearing shapes (run 132, agent-c: 43 raw -> exact):
@@ -15,7 +15,7 @@
  *  - case 0x41 compares against a raw `*(f32 *)((u8 *)obj + 0x2C)` read: the
  *    struct-field spelling gives `c.eq.s $f4,$f0`, the raw read the target's
  *    `c.eq.s $f0,$f4`.
- *  - the levers documented above gl_func_00026D64 in game_libs_post.c (the
+ *  - the levers documented above AudioThread_ProcessCmds in game_libs_post.c (the
  *    extern struct-array base, per-access cursor aliases, dead masks in the
  *    prologue, `if (ent) {}` / `if (cur) {}` empty tests). */
 #include "common.h"
@@ -62,7 +62,7 @@ typedef struct {
 } St26D64;
 extern St26D64 D_26D64_arr[];
 #define g (&D_26D64_arr[0])
-void gl_func_00026D64(u32 arg0) {
+void AudioThread_ProcessCmds(u32 arg0) {
     s32 lo;
     s32 cur;
     s32 idx;

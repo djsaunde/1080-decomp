@@ -4355,15 +4355,15 @@ int *gl_func_000088B4(int *arg0) {
 /* game_libs_func_000622C8 split off from gl_func_00062298 bundle on
  * 2026-05-08; decompiled to C body in game_libs_post.c. */
 
-/* game_libs_func_00024360 + game_libs_func_0002436C split off from
- * gl_func_00024330 bundle on 2026-05-08; decompiled to C bodies in
+/* AudioLoad_SetDmaHandler + AudioLoad_SetUnusedHandler split off from
+ * AudioLoad_ProcessLoads bundle on 2026-05-08; decompiled to C bodies in
  * game_libs_post.c.
  *
- * game_libs_func_00024948 split off from gl_func_00024378 bundle on
+ * AudioLoad_InitSlowLoads split off from AudioLoad_Init bundle on
  * 2026-05-08; decompiled to C body in game_libs_post.c (correct file
  * for VRAM > 0x8944 cap).
  *
- * game_libs_func_00024B8C split off from gl_func_00024B28 bundle on
+ * AudioLoad_Unused2 split off from AudioLoad_GetFontSample bundle on
  * 2026-05-08; 2-insn `jr ra; nop` alt-entry stub. Stays INCLUDE_ASM in
  * game_libs_post.c (no C-decompilable form per fall-through-prologue-stub
  * doc — IDO empty void emit doesn't reproduce explicit nop in delay). */

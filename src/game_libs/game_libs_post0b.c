@@ -12259,7 +12259,7 @@ void game_libs_func_00045394(int a0, int a1, int a2, int a3) {
 //   named fn (int→float trampoline) only. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
 /* 2026-07-18 WORD-EXACT (12/12; was 22.4%; twin-scan lead vs exact
- * gl_func_00024330, 3-word delta = the two float-arg moves + a2 home).
+ * AudioLoad_ProcessLoads, 3-word delta = the two float-arg moves + a2 home).
  * The old cap verdict misread the SIGNATURE: the fn is ANSI-prototyped
  * (int, float, float) — o32 passes both floats in GPRs a1/a2 because
  * arg0 is int — and the CALLEE takes a single prototyped float

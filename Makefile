@@ -995,14 +995,14 @@ build/src/game_libs/game_libs_post.c.o: TRUNCATE_TEXT := 0x17a74
 # inter-fn pad (real entry 0x295C4); appended to gl_func_00029494 as an all-zero
 # SUFFIX_BYTES_FORCE. expected/ metadata: 29494 size 0x128->0x130, 295BC value +8
 # size 0x1D0->0x1C8 (scripts/elf-symtab-edit.py; .text + relocs unchanged).
-# game_libs_func_0001F6A8: the three all-zero ROM words at 0x1F6A8-0x1F6B3 are inter-fn
+# AudioHeap_InitAdsrDecayTable: the three all-zero ROM words at 0x1F6A8-0x1F6B3 are inter-fn
 # pad (real entry 0x1F6B4); appended to AudioSynth_ApplyHaasEffect (expected/: F3C8 size 0x2E0->0x2EC,
 # 1F6A8 value +0xC size 0x378->0x36C).
-# game_libs_func_0002266C / game_libs_func_0002D36C: 2-word all-zero pads folded into gl_func_00022464 /
+# game_libs_func_0002266C / game_libs_func_0002D36C: 2-word all-zero pads folded into AudioHeap_DiscardSampleCaches /
 # gl_func_0002D2F4 as zero SUFFIX words (agent-c run 150; expected/ symbols deleted with
 # scripts/elf-symtab-delete.py, predecessors +8; .text + relocs unchanged).
-build/src/game_libs/game_libs_post.c.o: SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 gl_func_00022464=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 gl_func_00022464=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
+build/src/game_libs/game_libs_post.c.o: SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 AudioHeap_DiscardSampleCaches=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00029494=0x00000000,0x00000000 AudioSynth_ApplyHaasEffect=0x00000000,0x00000000,0x00000000 AudioHeap_DiscardSampleCaches=0x00000000,0x00000000 gl_func_0002D2F4=0x00000000,0x00000000
 # 70FA4 = the merged full function (head fragment 70FA0 + the old g3_70FBC
 # tail carve); -O1 -g3 is the matching mode. .text ends with 8 bytes of
 # natural zero padding = the 0x70FCC/0x70FD0 pad nops before 70FCC=fcos.
@@ -2583,10 +2583,10 @@ GAMELIBS_343F4_DONOR := build/src/game_libs/game_libs_o2_343F4.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000343F4=$(GAMELIBS_343F4_DONOR)
 # 273B8 = 14-case message-handler switch, IDO 7.1 -O2 donor:
 # game_libs_o2_273B8.c (99/99 word-exact). Spliced only so the C switch's
-# local .rodata jumptable reloc gets renamed to game_libs_func_000273B8_rodata
+# local .rodata jumptable reloc gets renamed to AudioThread_ProcessSeqPlayerCmd_rodata
 # and pinned to the USO's table at +0xF88 (the 29CCC recipe).
 GAMELIBS_273B8_DONOR := build/src/game_libs/game_libs_o2_273B8.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += game_libs_func_000273B8=$(GAMELIBS_273B8_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessSeqPlayerCmd=$(GAMELIBS_273B8_DONOR)
 # 31334 = stepped cue driver with two jumptable switches (15 + 11 entries),
 # IDO 7.1 -O2 donor: game_libs_o2_31334.c (123/123 word-exact). Spliced only
 # so the donor-local .rodata reloc (both tables, +0 and +0x3C) is renamed
@@ -2603,22 +2603,22 @@ GAMELIBS_2FB74_DONOR := build/src/game_libs/game_libs_o2_2FB74.c.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002FB74=$(GAMELIBS_2FB74_DONOR)
 # 26D64 = sound-command queue drain (14-entry switch on the command code),
 # IDO 7.1 -O2 donor: game_libs_o2_26D64.c (230/230 words). Spliced only so the
-# donor-local .rodata jumptable reloc is renamed gl_func_00026D64_rodata and
+# donor-local .rodata jumptable reloc is renamed AudioThread_ProcessCmds_rodata and
 # pinned to the USO table at +0xF50 (the 29CCC / 31334 recipe). Uses +=.
 GAMELIBS_26D64_DONOR := build/src/game_libs/game_libs_o2_26D64.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00026D64=$(GAMELIBS_26D64_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessCmds=$(GAMELIBS_26D64_DONOR)
 # 240A0 = AudioLoad_AsyncLoadInner (OoT load.c, older form; 5-entry cachePolicy
 # switch), IDO 7.1 -O2 donor: game_libs_o2_240A0.c (164/164 words). Spliced only so
-# the donor-local .rodata jumptable reloc is renamed gl_func_000240A0_rodata and
+# the donor-local .rodata jumptable reloc is renamed AudioLoad_AsyncLoadInner_rodata and
 # pinned to the USO table at +0xEB4 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_240A0_DONOR := build/src/game_libs/game_libs_o2_240A0.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_000240A0=$(GAMELIBS_240A0_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioLoad_AsyncLoadInner=$(GAMELIBS_240A0_DONOR)
 # 2119C = AudioHeap_ResetStep (OoT heap.c; 5-entry resetStatus switch), IDO 7.1
 # -O2 donor: game_libs_o2_2119C.c (191/191 words). Spliced only so the donor-local
-# .rodata jumptable reloc is renamed gl_func_0002119C_rodata and pinned to the USO
+# .rodata jumptable reloc is renamed AudioHeap_ResetStep_rodata and pinned to the USO
 # table at +0xE7C (the 29CCC recipe). Uses += (composes).
 GAMELIBS_2119C_DONOR := build/src/game_libs/game_libs_o2_2119C.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_0002119C=$(GAMELIBS_2119C_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioHeap_ResetStep=$(GAMELIBS_2119C_DONOR)
 # 2AD1C = AudioSeq_SeqLayerProcessScriptStep2 (OoT seqplayer.c; 15-entry layer
 # opcode switch), IDO 7.1 -O2 donor: game_libs_o2_2AD1C.c (224/224 words). Spliced
 # so the donor-local .rodata (SQ(127.0f) literal + jumptable) relocs are renamed
@@ -2664,21 +2664,21 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 26214 = AudioThread_UpdateImpl (OoT thread.c, older form), IDO 7.1 -O2 donor:
 # game_libs_o2_26214.c (351/351 words). No rodata. Uses +=.
 GAMELIBS_26214_DONOR := build/src/game_libs/game_libs_o2_26214.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00026214=$(GAMELIBS_26214_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_UpdateImpl=$(GAMELIBS_26214_DONOR)
 # 25C54 = AudioLoad_PreloadSamplesForFont (OoT load.c, older form), IDO 7.1 -O2
 # donor: game_libs_o2_25C54.c (280/280 words). No rodata. Uses +=.
 GAMELIBS_25C54_DONOR := build/src/game_libs/game_libs_o2_25C54.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00025C54=$(GAMELIBS_25C54_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioLoad_PreloadSamplesForFont=$(GAMELIBS_25C54_DONOR)
 # 25320 = AudioLoad_AsyncDma (OoT load.c), IDO 7.1 -O2 donor: game_libs_o2_25320.c
 # (36/36 words). No rodata. Uses +=.
 GAMELIBS_25320_DONOR := build/src/game_libs/game_libs_o2_25320.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00025320=$(GAMELIBS_25320_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioLoad_AsyncDma=$(GAMELIBS_25320_DONOR)
 # 26790 = AudioThread_ProcessGlobalCmd (OoT thread.c, older form; two jumptables),
 # IDO 7.1 -O2 donor: game_libs_o2_26790.c (197/197 words). Spliced so the
-# donor-local .rodata jumptable relocs are renamed gl_func_00026790_rodata and
+# donor-local .rodata jumptable relocs are renamed AudioThread_ProcessGlobalCmd_rodata and
 # pinned to the USO tables at +0xEE0 (second table at +0xF10). Uses +=.
 GAMELIBS_26790_DONOR := build/src/game_libs/game_libs_o2_26790.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00026790=$(GAMELIBS_26790_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioThread_ProcessGlobalCmd=$(GAMELIBS_26790_DONOR)
 # 28A68 = pool init: link 0xD0-byte records into a list (NCC operand order: int value, pointer address); NCC donor.
 GAMELIBS_28A68_DONOR := build/src/game_libs/game_libs_ncc_28A68.cpp.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00028A68=$(GAMELIBS_28A68_DONOR)
@@ -2694,10 +2694,10 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_2F720_DONOR)
 # 23914 = resource acquire (5-entry jumptable switch on the entry mode), IDO 7.1
 # -O2 donor: game_libs_o2_23914.c (125/125 words). Spliced only so the
-# donor-local .rodata jumptable reloc is renamed gl_func_00023914_rodata and
+# donor-local .rodata jumptable reloc is renamed AudioLoad_SyncLoad_rodata and
 # pinned to the USO table at +0xEA0 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_23914_DONOR := build/src/game_libs/game_libs_o2_23914.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += gl_func_00023914=$(GAMELIBS_23914_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioLoad_SyncLoad=$(GAMELIBS_23914_DONOR)
 # 717CC = __osPfsGetOneChannelData (pfsgetstatus.c), IDO 5.3 -O1 donor;
 # true entry 0x717C8 (stolen-prologue lui folded into the symbol). See
 # game_libs_ido53_717C8.c.

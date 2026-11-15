@@ -1,0 +1,16 @@
+nonmatching AudioThread_InitExternalPool, 0x30
+
+glabel AudioThread_InitExternalPool
+    /* E0C454 0002737C 27BDFFE8 */  .word 0x27BDFFE8
+    /* E0C458 00027380 00A03025 */  .word 0x00A03025
+    /* E0C45C 00027384 00802825 */  .word 0x00802825
+    /* E0C460 00027388 AFA40018 */  .word 0xAFA40018
+    /* E0C464 0002738C AFBF0014 */  .word 0xAFBF0014
+    /* E0C468 00027390 3C040000 */  .word 0x3C040000
+    /* E0C46C 00027394 0C000000 */  .word 0x0C000000
+    /* E0C470 00027398 24842178 */  .word 0x24842178
+    /* E0C474 0002739C 8FBF0014 */  .word 0x8FBF0014
+    /* E0C478 000273A0 27BD0018 */  .word 0x27BD0018
+    /* E0C47C 000273A4 03E00008 */  .word 0x03E00008
+    /* E0C480 000273A8 00000000 */  .word 0x00000000
+endlabel AudioThread_InitExternalPool

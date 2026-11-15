@@ -1058,7 +1058,7 @@ void timproc_uso_b3_func_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
  * stolen prologue of func_00001C28 — it loads the global compared to 1 at the
  * top. Merged FORWARD (one 0x48 symbol; successor .s deleted, no jal targets).
  * Reading TIMB3_D_64 inline at the `== 1` test hoists the lui;lw above the
- * prologue (same recipe as game_libs_func_00026B40). Also fixed the old decode:
+ * prologue (same recipe as AudioThread_InitMesgQueuesImpl). Also fixed the old decode:
  * a0->0xD8 = 1 (the SAME literal 1 IDO materializes for the `== 1` test, in v0,
  * stored in the jal delay slot — NOT the call return). MATCHED 2026-05-30. */
 void timproc_uso_b3_func_00001C20(char *a0) {

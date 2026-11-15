@@ -19,7 +19,7 @@ Usage:
     fix-jumptable-delay-slot.py fn.s      # in place
     uv run m2c --target mips-ido-c fn.s
 
-Validated 2026-06-06: unblocked m2c on gl_func_00026790 / 0002C7A4 / 00039094 /
+Validated 2026-06-06: unblocked m2c on AudioThread_ProcessGlobalCmd / 0002C7A4 / 00039094 /
 0002BB7C / 00030AF4 (game_libs). NOTE: m2c may still need REGISTER-CARRYING
 cleanup afterward (case operands loaded pre-`jr` show as `M2C_ERROR(unset
 register $tN)` — resolve them from the dispatch prologue in the .s).
