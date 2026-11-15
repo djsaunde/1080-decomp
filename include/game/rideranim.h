@@ -63,7 +63,13 @@ typedef struct RiderAnim {
     char pad0B8[0xC0 - 0xB8];
     Pair2 state;            /* 0xC0: current state PMF */
     Pair2 nextState;        /* 0xC8: next state PMF (reset copies state into it) */
-    char pad0D0[0xE4 - 0xD0];
+    Pair2 pendingState;     /* 0xD0: state to enter at the next stateRide (null PMF = none): startFinish /
+                             * startTimeout set stateFinish / stateTimeUp here, so a race that ends mid-move
+                             * changes state once the rider is back to riding */
+    s32 unkD8;              /* 0xD8: 0 after init (no writer in game.uso); 0 lets blendWeight / blendWeightDeep
+                             * fall back to stateRide / stateRideDeep */
+    s32 rideContacts;       /* 0xDC: rider->contactCount sampled by stateRide; 1 from init */
+    s32 unkE0;              /* 0xE0: no user found */
     s16 jumpCharge;         /* 0xE4: frames the jump has been held (statePreJumpHold, holdJumpLift: < jlt;
                              * jumpTakeoff scales jca by it); -1 = not charging */
     s16 unkE6;              /* 0xE6 */
@@ -113,6 +119,9 @@ RIDERANIM_ASSERT_OFFSET(player.blendEvent, 0x68);
 RIDERANIM_ASSERT_OFFSET(rider, 0xB4);
 RIDERANIM_ASSERT_OFFSET(state, 0xC0);
 RIDERANIM_ASSERT_OFFSET(nextState, 0xC8);
+RIDERANIM_ASSERT_OFFSET(pendingState, 0xD0);
+RIDERANIM_ASSERT_OFFSET(unkD8, 0xD8);
+RIDERANIM_ASSERT_OFFSET(rideContacts, 0xDC);
 RIDERANIM_ASSERT_OFFSET(jumpCharge, 0xE4);
 RIDERANIM_ASSERT_OFFSET(trickButtons, 0xE8);
 RIDERANIM_ASSERT_OFFSET(queuedTrick, 0xF0);

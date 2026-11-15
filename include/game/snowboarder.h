@@ -18,7 +18,9 @@
  * everything else is padding. Names stay unkNNN where the meaning is unknown.
  */
 
-/* a 12-byte record returned by the table lookup in the DDCC/DF04/E014 family */
+/* a 12-byte DDM record: what game_libs gfx_getDdm(&gGfxLib, id) returns (the per-frame "DDM" render-state
+ * hooks of GfxLib, table at gGfxLib + 0x2AC); SnowBoarder_setDefaultDdms / setReflectionDdms / setRiderDdms
+ * copy three of them into the rider's slots */
 typedef struct SnowBRec3 {
     int a, b, c;
 } SnowBRec3;
@@ -233,9 +235,12 @@ typedef struct SnowBoarder {
                              * SnowBoarder_update passes it to the 0x808 sound update when non-zero */
     f32 tint[4];            /* 0x8E0: r, g, b, a as 0..1 (ctor: colour byte / 255, alpha 255 / 164 / 117 / 70) */
     char pad8F0[0x8F4 - 0x8F0];
-    SnowBRec3 *unk8F4[3];   /* 0x8F4: three record slots refilled from the table by DDCC/DF04/E014 */
-    s16 unk900;             /* 0x900: table index used when (flags & SNOWB_FLAG_MIRROR) == 0 */
-    s16 unk902;             /* 0x902: table index used when mirrored */
+    SnowBRec3 *unk8F4[3];   /* 0x8F4: three DDM record slots: setDefaultDdms ids 0xA / 0xB / 0xC (mirrored 0xE / 0xF / 0xC),
+                             * setReflectionDdms 0x11 / 0x12 / 0x16 (0x14 / 0x15 / 0x16) around the reflection pass of
+                             * SnowBoarder_display, setRiderDdms unk900 / 5 / 6 (unk902 / 8 / 6); display also writes
+                             * slot 2 with ids 0xD and 6 */
+    s16 unk900;             /* 0x900: the rider's own first DDM id (setRiderDdms) when (flags & SNOWB_FLAG_MIRROR) == 0 */
+    s16 unk902;             /* 0x902: the same when mirrored */
     char pad904[0x908 - 0x904];
     struct SnowBoarder *rival; /* 0x908: the other rider; game_setupVsCpu links the two riders through it,
                                 * B520's catch-up compares positions with it */

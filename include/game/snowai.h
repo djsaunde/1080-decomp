@@ -68,24 +68,34 @@ typedef struct SnowAI {
     s32 modeFlags;          /* 0x68: 1 -> SnowAI_pickFork, 2 -> A604, 4 -> A7F8 run instead of the steering step */
     s32 unk6C;              /* 0x6C: bit flags (bit 0 cleared with unk48 = 20) */
     s32 unk70;              /* 0x70: cleared by SnowAI_reset; read by 71E0 */
-    s32 unk74;              /* 0x74: two-state switch in 591C (0 / 1) */
+    s32 aimMode;            /* 0x74: SnowAI_steer's aim: 0 SnowAI_aimAlongSegment, 1 SnowAI_aimWeave (entered when
+                             * rivalLeadZ <= weaveLead, not at a marker flag, and speed >= minSpeed; left when
+                             * rivalLeadZ > the se parm or those fail) */
     void *unk78;            /* 0x78: last result cached by 7ACC */
     s32 altNode;            /* 0x7C: the other branch node; A3C4 keeps whichever of targetNode / altNode is nearer */
-    char pad080[0xA0 - 0x80];
-    f32 unkA0;              /* 0xA0: 1000.0 from the ctor; hysteresis limit of 7C1C */
-    s32 unkA4;              /* 0xA4: 0/1 hysteresis flag of 7C1C */
-    f32 unkA8;              /* 0xA8: scale applied to rider->vel for the look-ahead point */
-    f32 unkAC;
-    f32 unkB0;
-    f32 unkB4;              /* 0xB4: compared with rider->speed */
-    f32 unkB8;
-    f32 unkBC;
-    f32 unkC0;
-    f32 unkC4;
-    f32 unkC8;
-    char pad0CC[0xD8 - 0xCC];
-    f32 unkD8;
-    char pad0DC[0xE4 - 0xDC];
+    s32 unk80;
+    /* SnowAI_aimWeave (aimMode 1) state: two waypoints laid along the segment and a 4-phase side counter */
+    SnowBVec3 weaveAim;     /* 0x84: current waypoint (XZ, y = 0); the aim is weaveAim - rider->pos */
+    SnowBVec3 weavePrev;    /* 0x90: previous waypoint */
+    s32 weavePhase;         /* 0x9C: (phase + 1) & 3 per new waypoint: 0 centre, 1 side * -1, 2 / 3 side * +1 */
+    /* tunables, all set by SnowAI_ctor (values in parentheses; [Dxx] = a game.uso RoData float) */
+    f32 leadLimit;          /* 0xA0: (1000) SnowAI_aimAlongSegment: sideBlock turns on at rivalLeadZ >= leadLimit, off at <= -leadLimit */
+    s32 sideBlock;          /* 0xA4: 0/1 hysteresis flag of SnowAI_aimAlongSegment (offset half a width toward the rival's side) */
+    f32 lookAhead;          /* 0xA8: (0) time scale on rider->vel for the look-ahead point (steer, scanNodes, scanSegments) */
+    f32 turnGain;           /* 0xAC: [E8] steer: stick = -yaw * (1 + speed / turnSpeedRef) * turnGain / max */
+    f32 turnSpeedRef;       /* 0xB0: (500) */
+    f32 minSpeed;           /* 0xB4: (70) weave needs rider->speed >= minSpeed; below it steer may set out flag 4 */
+    f32 unkB8;              /* 0xB8: (230) steer out flag 8 when speed / unkB8 * accel > 1 */
+    f32 unkBC;              /* 0xBC: [EC] steer: yaw >= unkBC at speed < 50 sets out flag 0x40 */
+    f32 unkC0;              /* 0xC0: (12) steer reach time: distance limit = unkC0 * speed */
+    f32 unkC4;              /* 0xC4: [F0] steer out flag 2 limit (times unkC8 while useDParms) */
+    f32 unkC8;              /* 0xC8: (2) */
+    f32 aimRange;           /* 0xCC: (50) SnowAI_aimAlongSegment: speed * aimRange compare */
+    f32 unkD0;              /* 0xD0: (20) */
+    f32 unkD4;              /* 0xD4: (500) the 97EC distance limit */
+    f32 weaveLead;          /* 0xD8: [F8] steer enters weave (aimMode 1) when rivalLeadZ <= weaveLead */
+    f32 weaveLeadTime;      /* 0xDC: (15) weave waypoints are speed * weaveLeadTime / 2 ahead / behind */
+    f32 weaveSideScale;     /* 0xE0: [F4] weave side offset = 250 * width * weaveSideScale */
     SnowAIParms parms;      /* 0x0E4: embedded "SnowAI::Parms" (0x3E0) */
     s32 unk4C4;             /* 0x4C4: countdown, reloaded from a level parm */
     /* the rider parm values SnowAI_scaleRiderParms saves before scaling them (and SnowAI_restoreRiderParms /
@@ -112,10 +122,14 @@ SNOWAI_ASSERT_OFFSET(SnowAI, unk48, 0x48);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk54, 0x54);
 SNOWAI_ASSERT_OFFSET(SnowAI, modeFlags, 0x68);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk6C, 0x6C);
-SNOWAI_ASSERT_OFFSET(SnowAI, unk74, 0x74);
-SNOWAI_ASSERT_OFFSET(SnowAI, unkA8, 0xA8);
+SNOWAI_ASSERT_OFFSET(SnowAI, aimMode, 0x74);
+SNOWAI_ASSERT_OFFSET(SnowAI, weaveAim, 0x84);
+SNOWAI_ASSERT_OFFSET(SnowAI, weavePhase, 0x9C);
+SNOWAI_ASSERT_OFFSET(SnowAI, lookAhead, 0xA8);
 SNOWAI_ASSERT_OFFSET(SnowAI, unkC8, 0xC8);
-SNOWAI_ASSERT_OFFSET(SnowAI, unkD8, 0xD8);
+SNOWAI_ASSERT_OFFSET(SnowAI, aimRange, 0xCC);
+SNOWAI_ASSERT_OFFSET(SnowAI, weaveLead, 0xD8);
+SNOWAI_ASSERT_OFFSET(SnowAI, weaveSideScale, 0xE0);
 SNOWAI_ASSERT_OFFSET(SnowAI, parms, 0xE4);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk4C4, 0x4C4);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk34, 0x34);
@@ -127,8 +141,8 @@ SNOWAI_ASSERT_OFFSET(SnowAI, aiState, 0x64);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk70, 0x70);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk78, 0x78);
 SNOWAI_ASSERT_OFFSET(SnowAI, altNode, 0x7C);
-SNOWAI_ASSERT_OFFSET(SnowAI, unkA0, 0xA0);
-SNOWAI_ASSERT_OFFSET(SnowAI, unkA4, 0xA4);
+SNOWAI_ASSERT_OFFSET(SnowAI, leadLimit, 0xA0);
+SNOWAI_ASSERT_OFFSET(SnowAI, sideBlock, 0xA4);
 SNOWAI_ASSERT_OFFSET(SnowAI, savedMax, 0x4C8);
 SNOWAI_ASSERT_OFFSET(SnowAI, savedNbf, 0x4D4);
 SNOWAI_ASSERT_OFFSET(SnowAI, initPending, 0x4D8);

@@ -119,7 +119,7 @@ void SnowAI_steer(int *a0) {
     {
         axis_src = (float *)self->rider;
         axis_src = (float *)((int)axis_src + 0x318);
-        fsel = self->unkA8;
+        fsel = self->lookAhead;
         scale = *axis_src * fsel;
         z = *(float *)((int)axis_src + 4) * fsel; if (z) {}
         x = *(float *)((int)axis_src + 8) * fsel;
@@ -143,13 +143,13 @@ void SnowAI_steer(int *a0) {
     }
     metric_a = SnowAI_rivalLeadZ(self);
     t0 = 0;
-    switch (v0 = self->unk74) {
+    switch (v0 = self->aimMode) {
     case 0:
-        if (metric_a <= self->unkD8) {
+        if (metric_a <= self->weaveLead) {
             if (((v0 = state_flag) == 0) && (hit_parent != 0)
                     && (*(int*)(hit_parent + 0x84) == 0)) {
-                if (self->unkB4 <= self->rider->speed) {
-                    self->unk74 = 1;
+                if (self->minSpeed <= self->rider->speed) {
+                    self->aimMode = 1;
                     t0 = 1;
                 }
             }
@@ -160,15 +160,15 @@ void SnowAI_steer(int *a0) {
         fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_SE + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_SE + 1].value : self->parms.parm[SNOWAI_PARM_SE].value, scale);
         if (!(metric_a <= fsel) || state_flag != 0 || hit_parent == 0
                 || *(int*)(hit_parent + 0x84) != 0
-                || !(self->unkB4
+                || !(self->minSpeed
                      <= self->rider->speed)) {
-            self->unk74 = 0;
+            self->aimMode = 0;
         }
         break;
     }
     p = 0;
     if (1) { p = &scratch_xz; }
-    switch (v0 = self->unk74) {
+    switch (v0 = self->aimMode) {
     case 0:
         v0 = SnowAI_aimAlongSegment(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
@@ -204,13 +204,13 @@ void SnowAI_steer(int *a0) {
     {
         axis_src = (float *)(*(char**)((char*)a0 + 0x30) + 1784);
         self->unk3C =
-            (neg * (1.0f + (*(float*)(sub + 0x348) / self->unkB0))
-             * self->unkAC) / *(float *)((int)axis_src + 16);
+            (neg * (1.0f + (*(float*)(sub + 0x348) / self->turnSpeedRef))
+             * self->turnGain) / *(float *)((int)axis_src + 16);
     }
     f2v = self->unk3C;
     fsel = f2v < 0.0f ? -f2v : f2v;
     accel_metric = fsel;
-    v0 = self->unk74;
+    v0 = self->aimMode;
     switch (v0) {
     case 0:
     bits = self->unk6C;
@@ -369,7 +369,7 @@ yaw_region:
             out_flags |= 0x40;
         }
     }
-    if (dot < self->unkB4) {
+    if (dot < self->minSpeed) {
         if (hit_out == 0) {
             if ((double)yaw_metric < 0.125) {
                 if (*(int*)((char*)&import_80020110 + 0x78) == 0) {

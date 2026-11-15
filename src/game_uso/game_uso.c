@@ -3069,61 +3069,64 @@ skip_head:
                     D_44F4_iterKK, D_44F4_iterLL, D_44F4_iterMM, D_44F4_iterNN;
         /* Per-iter unique externs (DB) defeat IDO's global CSE on the
          * &D base — target reloads lui per access. */
-#define INIT_ITER(ID, SLOT, TMPL_OFF, FLOAT_EXPR, DB) \
+/* one SnowAIParm: s1 = the embedded SnowAIParms (this + 0xE4); IDX = its SNOWAI_PARM_* index; TMPL_OFF = the
+ * Data slot of its 4-char tag (0x6E8 + 4 * IDX); the game_libs parm ctor 0x35B1C(parm, owner, tag, 1), then the
+ * float-parm vtable (Data 0x3C8) and the default value */
+#define INIT_ITER(ID, IDX, TMPL_OFF, FLOAT_EXPR, DB) \
         slot_##ID.p = *(char**)((char*)&DB + (TMPL_OFF)); \
         *s2 = slot_##ID; \
-        s0 = s1 + (SLOT); \
+        s0 = (char *)&((SnowAIParms *)s1)->parm[IDX]; \
         if (s0 == NULL) { \
             s0 = (char*)gl_func_00000000(0x18); \
             if (s0 == NULL) goto skip_##ID; \
         } \
         gl_func_00000000(s0, s1, *s2, 1); \
-        *(char**)(s0 + 0xC) = (char*)&DB + 0x3C8; \
-        *(int*)(s0 + 0x14) = 0; \
-        *(float*)(s0 + 0x10) = (FLOAT_EXPR); \
+        ((SnowAIParm *)s0)->vptr = (char*)&DB + 0x3C8; \
+        ((SnowAIParm *)s0)->unk14 = 0; \
+        ((SnowAIParm *)s0)->value = (FLOAT_EXPR); \
 skip_##ID:;
 
-        INIT_ITER(0,  0x08,  0x6E8, *(float*)((char*)&D_44F4_iter0 + 0x9C), D_44F4_iter0)   /* iter 0 */
-        INIT_ITER(A,  0x20,  0x6EC, *(float*)((char*)&D_44F4_iterA + 0xA0), D_44F4_iterA)   /* A */
-        INIT_ITER(B,  0x38,  0x6F0, *(float*)((char*)&D_44F4_iterB + 0xA4), D_44F4_iterB)   /* B */
-        INIT_ITER(C,  0x50,  0x6F4, -800.0f,                                D_44F4_iterC)   /* C (lui 0xC448) */
-        INIT_ITER(D,  0x68,  0x6F8, *(float*)((char*)&D_44F4_iterD + 0xA8), D_44F4_iterD)   /* D */
-        INIT_ITER(E,  0x80,  0x6FC, *(float*)((char*)&D_44F4_iterE + 0xAC), D_44F4_iterE)   /* E */
-        INIT_ITER(F,  0x98,  0x700, -4000.0f,                               D_44F4_iterF)   /* F (lui 0xC57A) */
-        INIT_ITER(G,  0xB0,  0x704, -8000.0f,                               D_44F4_iterG)   /* G (lui 0xC5FA) */
-        INIT_ITER(H,  0xC8,  0x708, *(float*)((char*)&D_44F4_iterH + 0xB0), D_44F4_iterH)   /* H */
-        INIT_ITER(I,  0xE0,  0x70C, *(float*)((char*)&D_44F4_iterI + 0xB4), D_44F4_iterI)   /* I */
-        INIT_ITER(J,  0xF8,  0x710, *(float*)((char*)&D_44F4_iterJ + 0xB8), D_44F4_iterJ)   /* J */
-        INIT_ITER(K,  0x110, 0x714, *(float*)((char*)&D_44F4_iterK + 0xBC), D_44F4_iterK)   /* K */
-        INIT_ITER(L,  0x128, 0x718, *(float*)((char*)&D_44F4_iterL + 0xC0), D_44F4_iterL)   /* L */
-        INIT_ITER(M,  0x140, 0x71C, *(float*)((char*)&D_44F4_iterM + 0xC4), D_44F4_iterM)   /* M */
-        INIT_ITER(N,  0x158, 0x720, *(float*)((char*)&D_44F4_iterN + 0xC8), D_44F4_iterN)   /* N */
-        INIT_ITER(O,  0x170, 0x724, *(float*)((char*)&D_44F4_iterO + 0xCC), D_44F4_iterO)   /* O */
-        INIT_ITER(P,  0x188, 0x728, *(float*)((char*)&D_44F4_iterP + 0xD0), D_44F4_iterP)   /* P */
-        INIT_ITER(Q,  0x1A0, 0x72C, *(float*)((char*)&D_44F4_iterQ + 0xD4), D_44F4_iterQ)   /* Q */
-        INIT_ITER(R,  0x1B8, 0x730, 1200.0f,                                D_44F4_iterR)   /* R (lui 0x4496) */
-        INIT_ITER(S,  0x1D0, 0x734, 1200.0f,                                D_44F4_iterS)   /* S */
-        INIT_ITER(T,  0x1E8, 0x738, 1200.0f,                                D_44F4_iterT)   /* T */
-        INIT_ITER(U,  0x200, 0x73C, 60.0f,                                  D_44F4_iterU)   /* U (lui 0x4270) */
-        INIT_ITER(V,  0x218, 0x740, 60.0f,                                  D_44F4_iterV)   /* V */
-        INIT_ITER(W,  0x230, 0x744, 60.0f,                                  D_44F4_iterW)   /* W */
-        INIT_ITER(X,  0x248, 0x748, 1.5f,                                   D_44F4_iterX)   /* X (lui 0x3FC0) */
-        INIT_ITER(Y,  0x260, 0x74C, *(float*)((char*)&D_44F4_iterY + 0xD8), D_44F4_iterY)   /* Y */
-        INIT_ITER(Z,  0x278, 0x750, 1.5f,                                   D_44F4_iterZ)   /* Z */
-        INIT_ITER(AA, 0x290, 0x754, 2000.0f,                                D_44F4_iterAA)  /* AA (lui 0x44FA) */
-        INIT_ITER(BB, 0x2A8, 0x758, 2000.0f,                                D_44F4_iterBB)  /* BB */
-        INIT_ITER(CC, 0x2C0, 0x75C, 2000.0f,                                D_44F4_iterCC)  /* CC */
-        INIT_ITER(DD, 0x2D8, 0x760, *(float*)((char*)&D_44F4_iterDD + 0xDC), D_44F4_iterDD) /* DD */
-        INIT_ITER(EE, 0x2F0, 0x764, *(float*)((char*)&D_44F4_iterEE + 0xE0), D_44F4_iterEE) /* EE */
-        INIT_ITER(FF, 0x308, 0x768, *(float*)((char*)&D_44F4_iterFF + 0xE4), D_44F4_iterFF) /* FF */
-        INIT_ITER(GG, 0x320, 0x76C, 240.0f,                                 D_44F4_iterGG)  /* GG (lui 0x4370) */
-        INIT_ITER(HH, 0x338, 0x770, 240.0f,                                 D_44F4_iterHH)  /* HH */
-        INIT_ITER(II, 0x350, 0x774, 240.0f,                                 D_44F4_iterII)  /* II */
-        INIT_ITER(JJ, 0x368, 0x778, 240.0f,                                 D_44F4_iterJJ)  /* JJ */
-        INIT_ITER(KK, 0x380, 0x77C, 240.0f,                                 D_44F4_iterKK)  /* KK */
-        INIT_ITER(LL, 0x398, 0x780, 240.0f,                                 D_44F4_iterLL)  /* LL */
-        INIT_ITER(MM, 0x3B0, 0x784, 240.0f,                                 D_44F4_iterMM)  /* MM */
-        INIT_ITER(NN, 0x3C8, 0x788, 240.0f,                                 D_44F4_iterNN)  /* NN (final iter) */
+        INIT_ITER(0,  SNOWAI_PARM_DE + 0,  0x6E8, *(float*)((char*)&D_44F4_iter0 + 0x9C), D_44F4_iter0)   /* iter 0 */
+        INIT_ITER(A,  SNOWAI_PARM_DE + 1,  0x6EC, *(float*)((char*)&D_44F4_iterA + 0xA0), D_44F4_iterA)   /* A */
+        INIT_ITER(B,  SNOWAI_PARM_DE + 2,  0x6F0, *(float*)((char*)&D_44F4_iterB + 0xA4), D_44F4_iterB)   /* B */
+        INIT_ITER(C,  SNOWAI_PARM_BD + 0,  0x6F4, -800.0f,                                D_44F4_iterC)   /* C (lui 0xC448) */
+        INIT_ITER(D,  SNOWAI_PARM_BD + 1,  0x6F8, *(float*)((char*)&D_44F4_iterD + 0xA8), D_44F4_iterD)   /* D */
+        INIT_ITER(E,  SNOWAI_PARM_BD + 2,  0x6FC, *(float*)((char*)&D_44F4_iterE + 0xAC), D_44F4_iterE)   /* E */
+        INIT_ITER(F,  SNOWAI_PARM_BT + 0,  0x700, -4000.0f,                               D_44F4_iterF)   /* F (lui 0xC57A) */
+        INIT_ITER(G,  SNOWAI_PARM_BT + 1,  0x704, -8000.0f,                               D_44F4_iterG)   /* G (lui 0xC5FA) */
+        INIT_ITER(H,  SNOWAI_PARM_BT + 2,  0x708, *(float*)((char*)&D_44F4_iterH + 0xB0), D_44F4_iterH)   /* H */
+        INIT_ITER(I,  SNOWAI_PARM_BU + 0,  0x70C, *(float*)((char*)&D_44F4_iterI + 0xB4), D_44F4_iterI)   /* I */
+        INIT_ITER(J,  SNOWAI_PARM_BU + 1,  0x710, *(float*)((char*)&D_44F4_iterJ + 0xB8), D_44F4_iterJ)   /* J */
+        INIT_ITER(K,  SNOWAI_PARM_BU + 2, 0x714, *(float*)((char*)&D_44F4_iterK + 0xBC), D_44F4_iterK)   /* K */
+        INIT_ITER(L,  SNOWAI_PARM_BJ + 0, 0x718, *(float*)((char*)&D_44F4_iterL + 0xC0), D_44F4_iterL)   /* L */
+        INIT_ITER(M,  SNOWAI_PARM_BJ + 1, 0x71C, *(float*)((char*)&D_44F4_iterM + 0xC4), D_44F4_iterM)   /* M */
+        INIT_ITER(N,  SNOWAI_PARM_BJ + 2, 0x720, *(float*)((char*)&D_44F4_iterN + 0xC8), D_44F4_iterN)   /* N */
+        INIT_ITER(O,  SNOWAI_PARM_CF + 0, 0x724, *(float*)((char*)&D_44F4_iterO + 0xCC), D_44F4_iterO)   /* O */
+        INIT_ITER(P,  SNOWAI_PARM_CF + 1, 0x728, *(float*)((char*)&D_44F4_iterP + 0xD0), D_44F4_iterP)   /* P */
+        INIT_ITER(Q,  SNOWAI_PARM_CF + 2, 0x72C, *(float*)((char*)&D_44F4_iterQ + 0xD4), D_44F4_iterQ)   /* Q */
+        INIT_ITER(R,  SNOWAI_PARM_DD0 + 0, 0x730, 1200.0f,                                D_44F4_iterR)   /* R (lui 0x4496) */
+        INIT_ITER(S,  SNOWAI_PARM_DD0 + 1, 0x734, 1200.0f,                                D_44F4_iterS)   /* S */
+        INIT_ITER(T,  SNOWAI_PARM_DD0 + 2, 0x738, 1200.0f,                                D_44F4_iterT)   /* T */
+        INIT_ITER(U,  SNOWAI_PARM_DD1 + 0, 0x73C, 60.0f,                                  D_44F4_iterU)   /* U (lui 0x4270) */
+        INIT_ITER(V,  SNOWAI_PARM_DD1 + 1, 0x740, 60.0f,                                  D_44F4_iterV)   /* V */
+        INIT_ITER(W,  SNOWAI_PARM_DD1 + 2, 0x744, 60.0f,                                  D_44F4_iterW)   /* W */
+        INIT_ITER(X,  SNOWAI_PARM_DD2 + 0, 0x748, 1.5f,                                   D_44F4_iterX)   /* X (lui 0x3FC0) */
+        INIT_ITER(Y,  SNOWAI_PARM_DD2 + 1, 0x74C, *(float*)((char*)&D_44F4_iterY + 0xD8), D_44F4_iterY)   /* Y */
+        INIT_ITER(Z,  SNOWAI_PARM_DD2 + 2, 0x750, 1.5f,                                   D_44F4_iterZ)   /* Z */
+        INIT_ITER(AA, SNOWAI_PARM_DP + 0, 0x754, 2000.0f,                                D_44F4_iterAA)  /* AA (lui 0x44FA) */
+        INIT_ITER(BB, SNOWAI_PARM_DP + 1, 0x758, 2000.0f,                                D_44F4_iterBB)  /* BB */
+        INIT_ITER(CC, SNOWAI_PARM_DP + 2, 0x75C, 2000.0f,                                D_44F4_iterCC)  /* CC */
+        INIT_ITER(DD, SNOWAI_PARM_SE + 0, 0x760, *(float*)((char*)&D_44F4_iterDD + 0xDC), D_44F4_iterDD) /* DD */
+        INIT_ITER(EE, SNOWAI_PARM_SE + 1, 0x764, *(float*)((char*)&D_44F4_iterEE + 0xE0), D_44F4_iterEE) /* EE */
+        INIT_ITER(FF, SNOWAI_PARM_SE + 2, 0x768, *(float*)((char*)&D_44F4_iterFF + 0xE4), D_44F4_iterFF) /* FF */
+        INIT_ITER(GG, SNOWAI_PARM_MS + 0, 0x76C, 240.0f,                                 D_44F4_iterGG)  /* GG (lui 0x4370) */
+        INIT_ITER(HH, SNOWAI_PARM_MS + 1, 0x770, 240.0f,                                 D_44F4_iterHH)  /* HH */
+        INIT_ITER(II, SNOWAI_PARM_MS + 2, 0x774, 240.0f,                                 D_44F4_iterII)  /* II */
+        INIT_ITER(JJ, SNOWAI_PARM_MS + 3, 0x778, 240.0f,                                 D_44F4_iterJJ)  /* JJ */
+        INIT_ITER(KK, SNOWAI_PARM_MS + 4, 0x77C, 240.0f,                                 D_44F4_iterKK)  /* KK */
+        INIT_ITER(LL, SNOWAI_PARM_MS + 5, 0x780, 240.0f,                                 D_44F4_iterLL)  /* LL */
+        INIT_ITER(MM, SNOWAI_PARM_MS + 6, 0x784, 240.0f,                                 D_44F4_iterMM)  /* MM */
+        INIT_ITER(NN, SNOWAI_PARM_MS + 7, 0x788, 240.0f,                                 D_44F4_iterNN)  /* NN (final iter) */
 #undef INIT_ITER
     }
 finalize:;
@@ -3565,25 +3568,25 @@ finalize:;
     {
         extern char D_44F4_st12_E8, D_44F4_st12_EC, D_44F4_st12_F0,
                     D_44F4_st12_F4, D_44F4_st12_F8;
-        *(int*)(a0 + 0x30) = a1;
-        *(int*)(a0 + 0x2C) = a2;
-        *(float*)(a0 + 0xA8) = 0.0f;
-        *(float*)(a0 + 0xAC) = *(float*)((char*)&D_44F4_st12_E8 + 0xE8);
-        *(float*)(a0 + 0xB0) = 500.0f;
-        *(float*)(a0 + 0xB4) = 70.0f;
-        *(float*)(a0 + 0xB8) = 230.0f;
-        *(float*)(a0 + 0xBC) = *(float*)((char*)&D_44F4_st12_EC + 0xEC);
-        *(float*)(a0 + 0xC0) = 12.0f;
-        *(float*)(a0 + 0xC4) = *(float*)((char*)&D_44F4_st12_F0 + 0xF0);
-        *(float*)(a0 + 0xC8) = 2.0f;
-        *(float*)(a0 + 0xCC) = 50.0f;
-        *(float*)(a0 + 0xD0) = 20.0f;
-        *(float*)(a0 + 0xD4) = 500.0f;
-        *(float*)(a0 + 0xDC) = 15.0f;
-        *(float*)(a0 + 0xE0) = *(float*)((char*)&D_44F4_st12_F4 + 0xF4);
-        *(float*)(a0 + 0xD8) = *(float*)((char*)&D_44F4_st12_F8 + 0xF8);
-        *(float*)(a0 + 0xA0) = 1000.0f;
-        *(int*)(a0 + 0x4DC) = 3;
+        *(int*)&AI(a0)->rider = a1;
+        AI(a0)->level = a2;
+        AI(a0)->lookAhead = 0.0f;
+        AI(a0)->turnGain = *(float*)((char*)&D_44F4_st12_E8 + 0xE8);
+        AI(a0)->turnSpeedRef = 500.0f;
+        AI(a0)->minSpeed = 70.0f;
+        AI(a0)->unkB8 = 230.0f;
+        AI(a0)->unkBC = *(float*)((char*)&D_44F4_st12_EC + 0xEC);
+        AI(a0)->unkC0 = 12.0f;
+        AI(a0)->unkC4 = *(float*)((char*)&D_44F4_st12_F0 + 0xF0);
+        AI(a0)->unkC8 = 2.0f;
+        AI(a0)->aimRange = 50.0f;
+        AI(a0)->unkD0 = 20.0f;
+        AI(a0)->unkD4 = 500.0f;
+        AI(a0)->weaveLeadTime = 15.0f;
+        AI(a0)->weaveSideScale = *(float*)((char*)&D_44F4_st12_F4 + 0xF4);
+        AI(a0)->weaveLead = *(float*)((char*)&D_44F4_st12_F8 + 0xF8);
+        AI(a0)->leadLimit = 1000.0f;
+        AI(a0)->unk4DC = 3;
     }
 epi:
     return a0;
@@ -3603,9 +3606,9 @@ void SnowAI_reset(SnowAI *self) {
     self->unk70 = 0;
     self->modeFlags = 0;
     self->unk6C = 0;
-    self->unk74 = 0;
+    self->aimMode = 0;
     self->unk78 = 0;
-    self->unkA4 = 0;
+    self->sideBlock = 0;
     self->unk4C4 = 0;
     self->initPending = 1;
     self->unk38 = 0.0f;
@@ -4698,7 +4701,7 @@ void SnowAI_timeoutRun(int *a0) {
     p = (char*)a0[0x30 / 4];
     {
         register float scale;     /* block-scope: $f0, no home */
-        scale = ((SnowAI *)a0)->unkA8;
+        scale = ((SnowAI *)a0)->lookAhead;
         p += 0x318;               /* &rider->vel; bump FIRST, read through it: copyprop
                                      folds the reads to 0x318(v0).. but the
                                      bump survives as the dead addiu */
@@ -6575,7 +6578,7 @@ void SnowAI_scanNodes(SnowAI *obj) {
     float mx, my, mz;
 
     tbuf = *(Vec3 *)&obj->rider->pos;
-    s = obj->unkA8;
+    s = obj->lookAhead;
     q = (float *)&obj->rider->vel;
     mx = q[0] * s;
     my = q[1] * s;
@@ -6664,7 +6667,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
     int cnt;
 
     blockA = *(Vec3 *)&obj->rider->pos;
-    f0 = obj->unkA8;
+    f0 = obj->lookAhead;
     q = (float *)&obj->rider->vel;
     f14 = q[0] * f0;
     f2 = q[1] * f0;
@@ -8448,7 +8451,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
     game_uso_func_07F6C0((char *)arg0 + 0xBC, (char *)arg0 + 0x138 - ((char *)arg0 + 0xBC));
     FW(arg0, 0x114) = 2;
     FW(arg0, 0xFC) = RANIM_GROUP_REGULAR;
-    FW(arg0, 0xDC) = 1;
+    RA(arg0)->rideContacts = 1;
     FW(arg0, 0x104) = -1;
     FW(arg0, 0x10C) = 0;
     *(float *)((char *)arg0 + 0x11C) = 1.0f;
@@ -10592,7 +10595,7 @@ void RiderAnim_blendWeight_00010BAC(char *a0) {
     int state = RA(a0)->animSet;
     gl_func_00000000(a0, state | 7, state | 6, *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
-    if (*(int*)(a0 + 0xD8) == 0) {
+    if (RA(a0)->unkD8 == 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
     }
 
@@ -10610,7 +10613,7 @@ void RiderAnim_blendWeightDeep_00010C4C(char *a0) {
     gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_WEIGHT_B), (RANIM_GROUP_DEEP | RANIM_WEIGHT_F),
                      *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
-    if (*(int*)(a0 + 0xD8) == 0) {
+    if (RA(a0)->unkD8 == 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
     }
 
@@ -10710,7 +10713,7 @@ extern char D_00000000;
 void RiderAnim_startTimeout_00011024(int *a0) {
   int v;
   int *p_B4 = *((int **) (((char *) a0) + 0xB4));
-  *((Pair2 *) (((char *) a0) + 0xD0)) = *((Pair2 *) (((char *) (&D_00000000)) + 0xF48));
+  RA(a0)->pendingState = *((Pair2 *) (((char *) (&D_00000000)) + 0xF48)); /* stateTimeUp */
   ;
   p_B4 = (int *) (((char *) p_B4) + 0xA58);
  goto dummy_label_965124; dummy_label_965124: ;
@@ -10741,7 +10744,7 @@ void RiderAnim_startFinish_000110A4(int *a0) {
  do { } while (0);
   new_var = ((char *) (&D_00000000)) + 0xF20;
   new_var3 = a0;
-  *((Pair2 *) (((char *) a0) + 0xD0)) = *((Pair2 *) new_var);
+  RA(a0)->pendingState = *((Pair2 *) new_var); /* stateFinish */
   ;
   new_var2 = (p_B4 = (int *) (((char *) p_B4) + 0xA58));
   *p_B4 = (*new_var2) & (~4);
