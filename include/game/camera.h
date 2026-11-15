@@ -152,7 +152,7 @@ typedef struct SnowChaseActorCamParms {
     CamParm chy;            /* 0xB8 (0x10C): vertical spring gain toward toy / ty2 */
 } SnowChaseActorCamParms;
 
-/* SnowChaseActorCam (0x124, node name "SnowChaseActorCam" at game.uso Data 0x340; SnowChaseActorCam_ctor(this, target, source, parent)):
+/* SnowChaseActorCam (0x124, node name "SnowChaseActorCam" at game.uso Data 0x340; SnowChaseActorCam_ctor(this, target, source, parmsFile)):
  * moves its parent body (the eye). */
 typedef struct SnowChaseActorCam {
     char node[0x14];
@@ -175,7 +175,7 @@ typedef struct SnowChaseActorLookParms {
                              * toward its goal */
 } SnowChaseActorLookParms;
 
-/* SnowChaseActorLook (0x64, node name at Data 0x360; SnowChaseActorLook_ctor(this, anchor, cam, parent)): moves its parent body (the look-at point). */
+/* SnowChaseActorLook (0x64, node name at Data 0x360; SnowChaseActorLook_ctor(this, anchor, cam, parmsFile)): moves its parent body (the look-at point). */
 typedef struct SnowChaseActorLook {
     char node[0x14];
     CamMNode *body;         /* 0x14: the look-at body it moves */
@@ -201,7 +201,7 @@ typedef struct SnowChaseActorParms {
     CamParm chy;            /* 0xD0 (0x130): vertical gain (the goal's height difference) */
 } SnowChaseActorParms;
 
-/* SnowChaseActor (0x138, node name at Data 0x3A0; SnowChaseActor_ctor(this, target, lookBody, parent)) */
+/* SnowChaseActor (0x138, node name at Data 0x3A0; SnowChaseActor_ctor(this, target, lookBody, parmsFile)) */
 typedef struct SnowChaseActor {
     char node[0x14];
     CamMNode *body;         /* 0x14: the body it moves */

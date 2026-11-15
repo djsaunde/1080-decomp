@@ -30,82 +30,101 @@
  * case 1), and `if (obj) {}` for the tail's `if (1) {}`. The two -1500.0f literals are the donor's .rodata +0 / +4,
  * renamed by the splice to cam_create_rodata (pinned to the RoData offset 0x530).
  * Symbols renamed after compile (names only, see Makefile). */
+/* agent-g run 485: the classes carry their game names (include/game/camera.h, docs/1080_CAMERA.md section 2):
+ *   MNode (the out-of-line libgdl matrix-node ctor, name arg) <- LookAtMNode (the "snowlookat" node, 0xB4)
+ *   <- LookAtNode (+ chase, its chase component, 0xB8); MCamera <- RiderCam (mode 1); CourseCam (game.uso, modes 0 / 2);
+ *   the chase components SnowChaseActorCam / SnowChaseActorLook / SnowChaseActor (game.uso; their last ctor argument
+ *   is the parms file); Node::add = Node_addChild (child list +0x10, child->parent +0x14).
+ * The renamed classes change only the mangled ctor names (renamed in the Makefile); the bytes are the run-271 match.
+ * Bootup Data: 0x7460 "snowlookat", 0x746C "rom/cam_info.bin", 0x7480 "rom/cam_ca.bin", 0x7490 "rom/lookat_ca2.bin",
+ * 0x74A4 / 0x74C4 "LookAtChase", 0x74B0 "rom/lookat_ca.bin". */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
+/* SnowBoarder (include/game/snowboarder.h) fields: */
+#define RIDER_CAM_SOURCE(r) FW(r, 0x874)    /* camSource: the body a mode-3 (fixed) eye parks at */
+#define RIDER_START(r, i) FF(r, 0x3A4 + 4 * (i)) /* startPos */
+/* CamMNode fields: */
+#define MNODE_LOCAL_POS(n, i) FF(n, 0x60 + 4 * (i)) /* local[3]: the body's own translation */
+#define MNODE_LOCAL(n) ((n) + 0x30)         /* local matrix (math_mtxAddTranslation target) */
+#define CHASE_NAME(c) FW(c, 0xC)            /* Node name */
+#define COURSECAM_EYE_CHASE(c) FW(c, 0x154) /* CourseCam.eyeChase */
+#define LOOKAT_CHASE(l) FW(l, 0xB4)         /* LookAtNode.chase */
 struct V3 { float x, y, z; void set(float a, float b, float c) { x = a; y = b; z = c; } V3(float a, float b, float c) { set(a, b, c); } };
 extern "C" {
 void *fn_31c0_alloc(int);
 void  fn_31c0_fin(void *);
-void  fn_31c0_vec(void *, const V3 &);
-void  fn_31c0_link(void *, void *);
-void  fn_31c0_tail(void *, void *);
+void  fn_31c0_vec(void *, const V3 &);   /* math_mtxAddTranslation(mtx, &delta) */
+void  fn_31c0_link(void *, void *);      /* link(parent, child) */
+void  fn_31c0_tail(void *, void *);      /* list append */
 extern char D_00007460[], D_0000746C[], D_00007480[], D_000074A4[], D_000074B0[], D_000074C4[], D_00007490[];
 }
 inline void *operator new(unsigned n) { return fn_31c0_alloc(n); }
 struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
-struct B { char p[0x28]; B(void *); virtual void g(); };
-struct Obj : B { M m; char rest[0xB4 - 0x30]; Obj(void *u) : B(D_00007460) { { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
-struct Obj2 : Obj { int x; Obj2() : Obj(this) { Obj2 *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the Obj2 this temp (kit CCLV) */
-struct B2 { char p[0x28]; B2(Obj *, float, float, float); virtual void g(); };
-struct KB : B2 { char q[0x14C - 0x2C]; float f14c; float f150; char *f154; int f158;
-    KB(Obj2 *o, char *a) : B2(o, 0.0f, 500.0f, -1500.0f) { f158 = 0; f154 = a; f150 = f14c; } virtual void g(); };
-struct WA { WA(char *, Obj2 *, float, float, float, int, char *); };
-struct WR { WR(char *, int, char *); };
-struct W4 { W4(char *, char *, char *); };
-struct WV { WV(char *, char *, char *); };
-struct P { char p[0x10]; char list[4];
+struct MNode { char p[0x28]; MNode(void *name); virtual void g(); };
+struct LookAtMNode : MNode { M m; char rest[0xB4 - 0x30]; LookAtMNode(void *u) : MNode(D_00007460) { { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
+struct LookAtNode : LookAtMNode { int chase; LookAtNode() : LookAtMNode(this) { LookAtNode *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the LookAtNode this temp (kit CCLV) */
+struct MCamera { char p[0x28]; MCamera(LookAtMNode *target, float x, float y, float z); virtual void g(); };
+struct RiderCam : MCamera { char q[0x14C - 0x2C]; float fov; float baseFov; char *rider; int mode;
+    RiderCam(LookAtNode *o, char *a) : MCamera(o, 0.0f, 500.0f, -1500.0f) { mode = 0; rider = a; baseFov = fov; } virtual void g(); };
+struct CourseCam { CourseCam(char *rider, LookAtNode *lookat, float x, float y, float z, int pad, char *infoFile); };
+struct SnowChaseActorCam { SnowChaseActorCam(char *target, int source, char *parmsFile); };
+struct SnowChaseActorLook { SnowChaseActorLook(char *anchor, char *cam, char *parmsFile); };
+struct SnowChaseActor { SnowChaseActor(char *target, char *lookBody, char *parmsFile); };
+struct Node { char p[0x10]; char list[4];
     void add(char *n) { fn_31c0_tail(list, n); if (FW(n, 0x14) != 0) FW(n, 0x4) = 1; FW(n, 0x14) = (int)this; } };
 /* agent-c run 271: a dummy whose parameter temp is allocated in the DEAD arm of a folded-zero conditional (case 1) */
 inline char *dm(char *a) { if (0) { a = 0; } return a; }
-extern "C" void *cam_create(int a0, int mode, P *parent, char *a3v, int p4) {
+extern "C" void *cam_create(int a0, int mode, Node *parent, char *a3v, int p4) {
     char *w;
     char *h;
     char *v;
     char *r2;
     char *r3;
-    Obj2 *obj;
-    /* agent-c run 241 (kit CCLX): obj is an Obj2 * (plain `obj = new Obj2`, no conversion temp); uses that need no
-     * conversion (WA / KB take an Obj2 *) are copy-propagated to edg's new-temp (the case-0 WA argument reads sp+0x74
+    LookAtNode *obj;
+    /* agent-c run 241 (kit CCLX): obj is a LookAtNode * (plain `obj = new LookAtNode`, no conversion temp); uses that need no
+     * conversion (CourseCam / RiderCam take a LookAtNode *) are copy-propagated to edg's new-temp (the case-0 CourseCam argument reads sp+0x74
      * as in the target), while a DERIVED-TO-BASE conversion on a use blocks the propagation there (the case-0 link /
-     * 0xB4 store spelled (Obj *)obj read obj's own home sp+0x78 as in the target). Replaces the run-237 folded a3v
+     * 0xB4 store spelled (LookAtMNode *)obj read obj's own home sp+0x78 as in the target). Replaces the run-237 folded a3v
      * read (which kept every use off the new-temp): 99.975 -> see report. */
-    obj = new Obj2;
+    obj = new LookAtNode; /* the look-at point "snowlookat" */
     switch (mode) {
     case 0:
     case 2:
-        w = (char *)new WA(a3v, obj, 0.0f, 500.0f, -1500.0f, p4, D_0000746C);
+        /* the game.uso course camera (eye) with its eye chase component; the look-at gets a SnowChaseActorLook */
+        w = (char *)new CourseCam(a3v, obj, 0.0f, 500.0f, -1500.0f, p4, D_0000746C);
         h = w;
-        r2 = (char *)new WR(a3v, FW(a3v, 0x874), D_00007480);
+        r2 = (char *)new SnowChaseActorCam(a3v, RIDER_CAM_SOURCE(a3v), D_00007480);
         fn_31c0_link(w, r2);
-        FW(w, 0x154) = (int)r2;
-        r3 = (char *)new W4(w, r2, D_00007490);
-        fn_31c0_link((Obj *)obj, r3);
-        FW((Obj *)obj, 0xB4) = (int)r3;
-        FW(r3, 0xC) = (int)D_000074A4;
+        COURSECAM_EYE_CHASE(w) = (int)r2;
+        r3 = (char *)new SnowChaseActorLook(w, r2, D_00007490);
+        fn_31c0_link((LookAtMNode *)obj, r3);
+        LOOKAT_CHASE((LookAtMNode *)obj) = (int)r3;
+        CHASE_NAME(r3) = (int)D_000074A4;
         break;
     case 1:
-        /* agent-c run 271 (EXACT): the KB new-temp on the target's fresh pool entry WITHOUT any live write to T's entry.
+        /* agent-c run 271 (EXACT): the RiderCam new-temp on the target's fresh pool entry WITHOUT any live write to T's entry.
          * `mode * 0` is a folded zero (no code; uopt deletes the dead arm), but edg allocates dm's parameter temp in the
          * dead arm first and keeps it for the whole full-expression, so the new-temp of the live arm lands past it (sp+0x68)
-         * while T (sp+0x74) is never redefined on this path: the KB / B2 `o` argument copy-propagates obj -> T and reads
-         * sp+0x74 like the target. The WV new shares the arm; link / store stay statements (link reads obj's home). */
-        (mode * 0) ? (void)dm(a3v) : (void)(h = (char *)new KB(obj, a3v), v = (char *)new WV(a3v, a3v, D_000074B0));
+         * while T (sp+0x74) is never redefined on this path: the RiderCam / MCamera `o` argument copy-propagates obj -> T and reads
+         * sp+0x74 like the target. The SnowChaseActor new shares the arm; link / store stay statements (link reads obj's home). */
+        (mode * 0) ? (void)dm(a3v) : (void)(h = (char *)new RiderCam(obj, a3v), v = (char *)new SnowChaseActor(a3v, a3v, D_000074B0));
         fn_31c0_link(obj, v);
-        FW(v, 0xC) = (int)D_000074C4;
+        CHASE_NAME(v) = (int)D_000074C4;
         break;
     }
     {
+    /* both bodies go under parent and start at the rider's spawn point; the eye then moves 1000 back */
     parent->add(h);
     parent->add((char *)obj);
-    FF(obj, 0x60) = FF(a3v, 0x3A4);
-    FF(obj, 0x64) = FF(a3v, 0x3A8);
-    FF(obj, 0x68) = FF(a3v, 0x3AC);
-    FF(h, 0x60) = FF(a3v, 0x3A4);
+    MNODE_LOCAL_POS(obj, 0) = RIDER_START(a3v, 0);
+    MNODE_LOCAL_POS(obj, 1) = RIDER_START(a3v, 1);
+    MNODE_LOCAL_POS(obj, 2) = RIDER_START(a3v, 2);
+    MNODE_LOCAL_POS(h, 0) = RIDER_START(a3v, 0);
     if (obj) {} /* run 271: code-free test instead of the run-237 if (1) {} (obj v0 / a3v v1 in the tail as in the target) */
-    FF(h, 0x64) = FF(a3v, 0x3A8);
-    FF(h, 0x68) = FF(a3v, 0x3AC);
-    fn_31c0_vec(h + 0x30, V3(0.0f, 0.0f, -1000.0f));
+    MNODE_LOCAL_POS(h, 1) = RIDER_START(a3v, 1);
+    MNODE_LOCAL_POS(h, 2) = RIDER_START(a3v, 2);
+    fn_31c0_vec(MNODE_LOCAL(h), V3(0.0f, 0.0f, -1000.0f));
     }
     return h;
 }

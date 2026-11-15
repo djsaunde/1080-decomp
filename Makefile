@@ -245,7 +245,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 BOOTUP_1A44_DONOR := build/src/bootup_uso/bootup_uso_ncc_1A44.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += U64BGWall_func_00001A44=$(BOOTUP_1A44_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_1A44_DONOR)
-# 31C0 = mode-switch scene builder written as C++ (new Obj2 / new KB / out-of-line ctor(0, ...) calls; agent-g run 164,
+# 31C0 = cam_create, written as C++ (new LookAtNode / new RiderCam / out-of-line ctor(0, ...) calls; agent-g run 164,
 # cfe 93.61). EXACT NCC donor over a placeholder (agent-c run 271: case 1 through a folded-zero conditional whose dead
 # arm holds a dummy pool temp). Symbols renamed (names only); the donor's .rodata (-1500.0f x2) is renamed by the splice
 # to cam_create_rodata (pinned to RoData 0x530); the fn_31c0_* callees are blank USO jal words (pinned 0).
@@ -253,7 +253,7 @@ BOOTUP_31C0_DONOR := build/src/bootup_uso/bootup_uso_ncc_31C0.cpp.o
 $(BOOTUP_31C0_DONOR): src/bootup_uso/bootup_uso_ncc_31C0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__1BFPv=fn_31c0_init --redefine-sym __ct__2B2FP3ObjfN22=fn_31c0_B2 --redefine-sym __ct__2WAFPcP4Obj2fN23iT1=fn_31c0_A1 --redefine-sym __ct__2WRFPciT1=fn_31c0_A2 --redefine-sym __ct__2W4FPcN21=fn_31c0_A4 --redefine-sym __ct__2WVFPcN21=fn_31c0_B3 --redefine-sym __vtbl__2KB=D_00007120 --redefine-sym __vtbl__3Obj=D_00000000 $@
+	$(OBJCOPY) --redefine-sym __ct__5MNodeFPv=fn_31c0_init --redefine-sym __ct__7MCameraFP11LookAtMNodefN22=fn_31c0_B2 --redefine-sym __ct__9CourseCamFPcP10LookAtNodefN23iT1=fn_31c0_A1 --redefine-sym __ct__17SnowChaseActorCamFPciT1=fn_31c0_A2 --redefine-sym __ct__18SnowChaseActorLookFPcN21=fn_31c0_A4 --redefine-sym __ct__14SnowChaseActorFPcN21=fn_31c0_B3 --redefine-sym __vtbl__8RiderCam=D_00007120 --redefine-sym __vtbl__11LookAtMNode=D_00000000 $@
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += cam_create=$(BOOTUP_31C0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_31C0_DONOR)
 # 90CC = alloc-cascade constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 97.15), then back

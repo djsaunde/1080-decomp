@@ -1345,51 +1345,14 @@ end:
     return a0;
 }
 
-// CamDirector_update(obj): per-frame state/animation tick for a bootup_uso scene object.
-// Sibling of the obj->0x28 vtable-dispatch family (the 0x6C/0x68 jalr idiom appears 3x,
-// same shape as Mountain_display draw-delegate path).
-//
-// Pseudocode:
-//   cfg = obj->0x38;  world = obj->0x2C;  cam = world->0x70;
-//   active = obj->0x4C;
-//   if (READ32(func_00000044 + 0x20) == 1) {
-//       active = func_00000000((cfg->0x10 & 0x400) != 0, (cfg->0x10 & 0x1000) != 0,
-//                              (s8)cfg->0x8, (s8)cfg->0x9);   // result via sp+0x4C slot
-//   }
-//   if (cfg->0x18 & 0x40) { obj->0x4C = (obj->0x4C == 0); t0 = 1; }   // edge-toggle latch
-//   if (obj->0x4C) {
-//       if (t0) {
-//           func_00000000(obj, 0);
-//           d = obj->0x30->0x28;  (d->0x6C)(d->0x68 + func_00000000(obj,3,0));  // vtable
-//           cam->0x14C = 85.0f;                                                 // activate
-//       }
-//       if (cfg->0x10 & 0x8  && cam->0x14C < 120.0f) cam->0x14C += 2.0f;         // ramp up
-//       if (cfg->0x10 & 0x4  && cam->0x14C > 45.0f)   cam->0x14C -= 2.0f;        // ramp dn
-//       cam->0x134 += cfg->0x4 * 2.0f;
-//       cam->0x138 += cfg->0x0 * 2.0f;
-//   } else {
-//       if (t0) obj->0x48 = 10000;                          // 0x2710 retry timeout
-//       if (++obj->0x48 >= 0x3C) {                           // 60-frame poll gate
-//           obj->0x48 = obj->0x48 + 1;
-//           p = func_00000000(READ32(0), D_00007324, obj->0x40 + 0xB4, 0);
-//           if (p && p != obj->0x44) {
-//               k = p->0x3C;
-//               sel = (k >= 3 && k < 0x13) ? obj->0x30 : obj->0x34;  // in-range vs default
-//               func_00000000(obj, (k in-range ? 0 : ...), k);
-//               d = sel->0x28;  (d->0x6C)(d->0x68 + func_00000000(obj,k,p));     // vtable
-//               obj->0x48 = 0;  obj->0x44 = p;
-//           }
-//       }
-//   }
-//
-// Struct-typing reference (obj = arg0):
-//   0x2C world ptr (->0x70 cam: FP 0x134 pan, 0x138 tilt, 0x14C fov-like, slewed +-2.0,
-//        clamp [45.0,120.0], reset 85.0); 0x30/0x34 delegate objs (->0x28 vtable;
-//        vtable->0x6C fnptr, vtable->0x68 s16 base-id; dispatch a0 = base + retval);
-//        0x38 cfg (0x0/0x4 float rates, 0x8/0x9 s8 params, 0x10 flag-bits 0x4/0x8/
-//        0x400/0x1000, 0x18 flag 0x40 latch-enable); 0x40 id (poll key + 0xB4),
-//        0x44 cached poll result, 0x48 frame/timeout counter, 0x4C active latch.
-//   func_00000044+0x20 == 1 = global-mode gate;  D_00007324 = poll-table word arg.
+// CamDirector_update (vtable update slot): picks the race camera each frame (docs/1080_CAMERA.md section 7).
+//   pad pressed 0x40 toggles manual mode. Entering it makes cams[0] active (command 3) at fov 85; while in it,
+//   held 8 / 4 move fov by +-2 within 45..120 and the stick adds 2x to the active camera's pitch / yaw.
+//   (D_00000064 == 1, a global debug mode, also passes the pad to a hook first.)
+//   Auto mode: every 60 frames find the course "cam" node nearest rider->pos; on a new node, kind 3..0x12
+//   goes to cams[0] (the game.uso CourseCam), any other kind to cams[1] (RiderCam), via the camera's
+//   command slot (kind, node), after making that camera active.
+// Match history:
 // NM body now structurally faithful: gate read folds via FW(&func_00000044,0x20)
 //   HI16/LO16 reloc; 0x68 delegate base is s16 (lh, FH macro); cam->0x14C activate
 //   is a FLOAT store (FF, was wrongly FW=int 85); D_00007324 is the poll-table
@@ -1434,88 +1397,103 @@ extern void func_00000000_24b8v();
  * latch to its own home at 76 and k2 at 44. Decl order k / v0 / v1 / p / pad / tb / r / s0 / k2 puts every
  * home on the target (76 / 64 / 56 / 44; the run-272 pad2 is no longer needed). The folded arg0[0x4C]
  * uses in the toggle test and `k = 1` are one zero-code CSE candidate across the head. */
-void CamDirector_update(char *arg0) {
-    int k;
+/* agent-g run 485: on include/game/camera.h CamDirector / MCamera / RiderInput fields. The odd-looking zero-code
+ * uses (`if (CD_BYTE(0x4C)) {}`, `0 * (int)..`, `if (1) {}`) and the one multi-role `s0` are the register-colouring
+ * levers of the exact match (runs 155..276): keep them. CD_BYTE reads a byte of the director (a dead use only). */
+#define CD_BYTE(o) (((char *)self)[o])
+#define CD_CAM(p) ((MCamera *)(p))
+#define CD_PAD(p) ((RiderInput *)(p))
+/* a Node's command slot (vtable slot 12: s16 this-delta at 0x68, fn at 0x6C); RiderCam's is cam_func_00004914 */
+#define CD_VPTR(o) FW(o, 0x28) /* Node vptr (include/gdl/node.h) */
+#define CD_SLOT_DELTA(vt) FH(vt, 0x68)
+#define CD_SLOT_FN(vt) ((VF_24B8)FW(vt, 0x6C))
+void CamDirector_update(CamDirector *self) {
+    int k;                  /* set = manual mode was toggled this frame */
     char *v0;
     char *v1;
-    char *p;
+    char *p;                /* the course "cam" node nearest the rider */
     volatile int pad;
     W24B8 tb;
     int r;
     char *s0;
-    int k2;
+    int k2;                 /* that node's kind */
 
-    k = 0; if (arg0[0x4C]) {} /* agent-g run 275: with the folded use in the gate block, one zero-code arg0[0x4C] candidate across the head takes v1, so the latch colours t0 like the target */
+    k = 0; if (CD_BYTE(0x4C)) {} /* agent-g run 275: with the folded use in the gate block, one zero-code manual candidate across the head takes v1, so the latch colours t0 like the target */
     if (D_00000064 == 1) {
-        v0 = (char *)FW(arg0, 0x38) + 0 * (int)(arg0[0x4C]);
+        v0 = (char *)self->pad + 0 * (int)(CD_BYTE(0x4C));
         r = 0;
-        s0 = (char *)((FW(v0, 0x10) & 0x400) != 0); func_00000000_24b8v((int)s0, (*(u32 *)(v0 + 0x10) & 0x1000) != 0, (s8)v0[8], (s8)v0[9]); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
+        s0 = (char *)((CD_PAD(v0)->held & 0x400) != 0); func_00000000_24b8v((int)s0, (*(u32 *)&CD_PAD(v0)->held & 0x1000) != 0, CD_PAD(v0)->rawX, CD_PAD(v0)->rawY); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
         k = r;
     }
-    s0 = (char *)FW(arg0, 0x38);
-    if (FW(s0, 0x18) & 0x40) {
+    s0 = (char *)self->pad;
+    if (CD_PAD(s0)->pressed & 0x40) {
         k = 1;
-        FW(arg0, 0x4C) = (FW(arg0, 0x4C) != 0) == 0;
+        self->manual = (self->manual != 0) == 0;
     }
-    if (FW(arg0, 0x4C) != 0) {
+    if (self->manual != 0) {
+        /* manual mode: fov on held 8 / 4 (45..120), pitch / yaw by the stick */
         f32 two = 2.0f;
         if (k != 0) {
-            func_00000000_24b8v(arg0, 0);
-            v0 = (char *)FW(arg0, 0x30);
-            s0 = (char *)FW(v0, 0x28);
-            ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, 3, 0);
-            FF(FW(FW(arg0, 0x2C), 0x70), 0x14C) = 85.0f;
+            /* entering: make the path camera active and reset it */
+            func_00000000_24b8v(self, 0);
+            v0 = (char *)self->cams[0];
+            s0 = (char *)CD_VPTR(v0);
+            CD_SLOT_FN(s0)(CD_SLOT_DELTA(s0) + v0, 3, 0);
+            self->window->cam->fov = 85.0f;
         }
-        s0 = (char *)FW(arg0, 0x38); if (arg0) {}
-        if (FW(s0, 0x10) & 8) { /* agent-g run 275: agent-c's run-210 folded use dropped here and in the 0x134 copy; the 0x14C copy counts s0 instead (the head candidate re-phases the temp ring) */
-            v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} /* agent-g run 275: empty blocks in the cam web (1 / 2 / 1) lower its priority below the cfg CSE */
-            if (FF(v1, 0x14C) < 120.0f) { if (arg0[0x40]) {} /* agent-g run 275: zero-code arg0[0x40] candidate over the cam-only blocks (three sites) takes v0 there, so cam colours v1 and the cfg CSE v0 like the target */
-                s0 = v1 + 0x14C + 0 * (int)(*s0); if (1) {} /* folded counted use of s0 (= cfg, set above; zero code) */
+        s0 = (char *)self->pad; if (self) {}
+        if (CD_PAD(s0)->held & 8) { /* agent-g run 275: agent-c's run-210 folded use dropped here and in the 0x134 copy; the 0x14C copy counts s0 instead (the head candidate re-phases the temp ring) */
+            v1 = (char *)self->window->cam; if (1) {} /* agent-g run 275: empty blocks in the cam web (1 / 2 / 1) lower its priority below the cfg CSE */
+            if (CD_CAM(v1)->fov < 120.0f) { if (CD_BYTE(0x40)) {} /* agent-g run 275: zero-code rider-byte candidate over the cam-only blocks (three sites) takes v0 there, so cam colours v1 and the cfg CSE v0 like the target */
+                s0 = (char *)&CD_CAM(v1)->fov + 0 * (int)(*s0); if (1) {} /* folded counted use of s0 (= pad, set above; zero code) */
                 *(f32 *)s0 = *(f32 *)s0 + two;
             }
         }
-        s0 = (char *)FW(arg0, 0x38);
-        if (FW(s0, 0x10) & 4) {
-            v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {} if (1) {}
-            if (FF(v1, 0x14C) > 45.0f) { if (arg0[0x40]) {}
-                s0 = v1 + 0x14C + 0 * (int)(*s0) + 0 * (int)(arg0[0x40]); if (1) {} /* agent-g run 275: folded counted use of s0 (= cfg, set above): the copy keeps s0 (target addiu s0,v1,332), not a v0 CSE temp */
+        s0 = (char *)self->pad;
+        if (CD_PAD(s0)->held & 4) {
+            v1 = (char *)self->window->cam; if (1) {} if (1) {}
+            if (CD_CAM(v1)->fov > 45.0f) { if (CD_BYTE(0x40)) {}
+                s0 = (char *)&CD_CAM(v1)->fov + 0 * (int)(*s0) + 0 * (int)(CD_BYTE(0x40)); if (1) {} /* agent-g run 275: folded counted use of s0 (= pad, set above): the copy keeps s0 (target addiu s0,v1,332), not a v0 CSE temp */
                 *(f32 *)s0 = *(f32 *)s0 - two;
             }
         }
-        v1 = (char *)FW(FW(arg0, 0x2C), 0x70); if (1) {}
-        s0 = v1 + 0x134 + 0 * (int)(*s0); if (1) {} /* folded use of s0 (= cfg): the copy stays in s0 (target addiu s0,v1,308) */
-        *(f32 *)s0 = FF(FW(arg0, 0x38), 4) * two + *(f32 *)s0;
-        s0 = (char *)FW(FW(arg0, 0x2C), 0x70);
-        s0 += 0x138;
-        *(f32 *)s0 = FF(FW(arg0, 0x38), 0) * two + *(f32 *)s0;
+        v1 = (char *)self->window->cam; if (1) {}
+        s0 = (char *)&CD_CAM(v1)->pitch + 0 * (int)(*s0); if (1) {} /* folded use of s0 (= pad): the copy stays in s0 (target addiu s0,v1,308) */
+        *(f32 *)s0 = self->pad->stickY * two + *(f32 *)s0;
+        s0 = (char *)self->window->cam;
+        s0 = (char *)&CD_CAM(s0)->yaw;
+        *(f32 *)s0 = self->pad->stickX * two + *(f32 *)s0;
         return;
     }
+    /* auto mode: every 60 frames find the course "cam" node nearest the rider */
     if (k != 0) {
-        FW(arg0, 0x48) = 10000;
+        self->pollTimer = 10000; /* just left manual mode: search at once */
     }
-    s0 = (char *)FW(arg0, 0x48);
-    FW(arg0, 0x48) = (int)s0 + 1;
+    s0 = (char *)self->pollTimer;
+    self->pollTimer = (int)s0 + 1;
     if ((int)s0 >= 0x3C) {
         tb.w = D_00007324;
-        p = (char *)func_00000000(D_24B8_tbl, tb, FW(arg0, 0x40) + 0xB4, 0);
-        if (p != 0 && (int)p != FW(arg0, 0x44)) {
+        p = (char *)func_00000000(D_24B8_tbl, tb, &self->rider->pos, 0);
+        if (p != 0 && p != self->lastCamNode) {
             k2 = FW(p, 0x3C);
             if ((u32)k2 >= 3 && (u32)k2 < 0x13) {
-                func_00000000_24b8v(arg0, 0);
-                v0 = (char *)FW(arg0, 0x30);
-                s0 = (char *)FW(v0, 0x28);
-                ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k2, p);
+                /* kinds 3..0x12: the game.uso path camera (CourseCam views) */
+                func_00000000_24b8v(self, 0);
+                v0 = (char *)self->cams[0];
+                s0 = (char *)CD_VPTR(v0);
+                CD_SLOT_FN(s0)(CD_SLOT_DELTA(s0) + v0, k2, p);
             } else {
-                func_00000000_24b8v(arg0, 1);
-                v0 = (char *)FW(arg0, 0x34);
-                s0 = (char *)FW(v0, 0x28);
-                ((VF_24B8)FW(s0, 0x6C))(FH(s0, 0x68) + v0, k2, p);
+                /* other kinds: RiderCam */
+                func_00000000_24b8v(self, 1);
+                v0 = (char *)self->cams[1];
+                s0 = (char *)CD_VPTR(v0);
+                CD_SLOT_FN(s0)(CD_SLOT_DELTA(s0) + v0, k2, p);
             }
             /* agent-g run 276: the 0x44 store written first (no test on p): the tail reload of p is then
              * an uncoloured split piece read into the ugen temp t6 like the target (the scheduler still
              * issues the 0x48 store first). 99.91 -> 100. */
-            FW(arg0, 0x44) = (int)p;
-            FW(arg0, 0x48) = 0;
+            self->lastCamNode = p;
+            self->pollTimer = 0;
         }
     }
 }
@@ -1926,62 +1904,16 @@ void game_createLights(char *s1) {
 void game_stub_000031B8(int a0) {
 }
 
-// cam_create — STRUCTURAL PASS (0x328 / 202 insns, no episode).
-// 3-mode UI/scene element constructor (bootup/title).
-//
-//   void *cam_create(A a0, int mode, P parent3, Q a3) {  // spill 0x90..0x9C
-//     obj = func_00000000(0xB8);  if (!obj) obj = func_00000000(0xB4);
-//     if (!obj) goto post;        // alloc primary record (fallback size)
-//     func_00000000(obj, &D_00007460);                 // base-init
-//     obj->0x28 = 0;
-//     sub = (obj == -0x2C) ? func_00000000(4) : obj+0x2C;   // sub-alloc/embed
-//     if (!sub) sub2 = func_00000000(4);
-//     if (sub) *sub = 0;
-//     func_00000000(obj);                                   // finalize
-//     // Vec3-ish default at sp+0x48: {0.0, 500.0f(0x43FA0000), 0.0};
-//     func_00000000(obj+0x30, &sp48);
-//   post:
-//     v = arg1(mode);
-//     switch (mode) {
-//       case 0: case 2:   // .L32CC: build widget kind A
-//         w = func_00000000(0,arg3,obj, 0, 500.0f, func_000003F8+0x138,
-//                           arg_at_0xA0);                    // folded f32
-//         func_00000000(0, arg3->0x874, &D_00007480);
-//         func_00000000(w, ret, &.L00007490);
-//         child = func_00000000(arg1b, ...);  arg1b->0xB4 = child;
-//         child->0xC = &D_000074A4;  break;
-//       case 1:           // .L3384: build widget kind B
-//         e = func_00000000(0x15C);
-//         if (e) { func_00000000(e, obj, 0, 500.0f, func_000003F8+0x13C);
-//                  e->0x28 = &D_00007120;  e->0x158 = 0;
-//                  e->0x154 = arg3;  e->0x150 = e->0x14C; }
-//         func_00000000(0, &D_000074B0, arg3);
-//         f = func_00000000(arg1b);  f->0xC = &D_000074C4;  break;
-//       default: ;        // .L341C
-//     }
-//     // common tail: x2 dirty-and-attach re-parent
-//     //   (if h->0x14: h->0x4=1; h->0x14 = parent3);
-//     // copy Vec3 arg3->{0x3A4,0x3A8,0x3AC} into widget->{0x60,0x64,0x68}
-//     // and into parent3+0x30; consts 500.0f / -1000.0f (0xC47A0000).
-//     return obj;
-//   }
-//
-// Struct-typing reference:
-//   obj sizes 0xB8 / 0xB4 / (kind-B) 0x15C; 0x28 vtable/desc ptr,
-//     0x2C embedded-sub, 0xB4 child, 0x14C/0x150 f32 pair, 0x154 owner,
-//     0x158 flag, 0x60/0x64/0x68 Vec3 (from arg3->0x3A4/0x3A8/0x3AC).
-//   widget handle: 0x04 dirty-flag, 0x14 attached-child (re-parent).
-//   D_00007460/746C/7480/.L7490/74A4/7120/74B0/74C4 = per-mode desc table.
-//   func_000003F8 + 0x138 / + 0x13C (lwc1) = folded f32 consts — yet
-//   another fold target in the bootup_uso literal-pool bug family
-//   (docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
-// Caps (DEFERRED, fuzzy 27.5%->42.0% 2026-07): full faithful body incl.
-//   3-mode switch + common re-parent/Vec3-copy tail reconstructed; typed
-//   float protos suppress K&R double-promote (swc1 not cvt.d.s/sdc1).
-//   Remaining byte-cap: target keeps `obj` in $a2 spilled/reloaded around
-//   each call (0x6C slot) vs the natural callee-saved $s0 here (regalloc
-//   divergence), plus folded f32 consts at func_000003F8+0x138/+0x13C
-//   (bootup_uso literal-pool bug). Name pre-checked: no extern reuse.
+// cam_create(a0, mode, parent, rider, pad): builds the race camera (docs/1080_CAMERA.md section 2; agent-g run 485).
+//   A "snowlookat" look-at node (0xB8: MNode + chase component at +0xB4). Modes 0 / 2: the game.uso CourseCam
+//   (eye; target = the look-at node; "rom/cam_info.bin"), a SnowChaseActorCam under it (rider, rider->camSource,
+//   "rom/cam_ca.bin"; stored at CourseCam.eyeChase) and a SnowChaseActorLook under the look-at node (anchor = the
+//   CourseCam, cam = that SnowChaseActorCam, "rom/lookat_ca2.bin"; named "LookAtChase"). Mode 1: a RiderCam
+//   (MCamera(lookat, 0, 500, -1500)) and a SnowChaseActor under the look-at node (rider, rider,
+//   "rom/lookat_ca.bin"). Both bodies are added under parent, start at rider->startPos, and the eye is then
+//   moved by (0, 0, -1000). Returns the camera (eye).
+// Match history (the bytes come from the NCC donor):
+//   fuzzy 27.5% -> 42.0% (2026-07) as cfe C; regalloc / literal-pool caps.
 // 2026-10-24 agent-g run 164: C++ port src/bootup_uso/bootup_uso_ncc_*31C0*.cpp.
 // 2026-11-04 agent-c run 271: EXACT via the IDO 7.1 NCC (C++) donor
 // src/bootup_uso/bootup_uso_ncc_31C0.cpp, REPLACE_FUNC_BODY-spliced over the

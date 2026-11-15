@@ -130,8 +130,14 @@ struct RiderAnim;
 typedef struct RiderInput {
     f32 stickX;             /* 0x00 */
     f32 stickY;             /* 0x04 */
-    char pad08[0x10 - 0x08];
-    s32 held;               /* 0x10: held buttons: 4 / 8 nudge (limitSpeed), 0x200 air spin, 0x400 alternate parms */
+    signed char rawX;       /* 0x08: raw stick x (CamDirector_update passes it to the manual-mode hook) */
+    signed char rawY;       /* 0x09 */
+    char pad0A[0x10 - 0x0A];
+    s32 held;               /* 0x10: held buttons: 4 / 8 nudge (limitSpeed), 0x200 air spin, 0x400 alternate parms;
+                             * CamDirector: 8 / 4 fov up / down, 0x400 / 0x1000 to the manual hook */
+    s32 unk14;
+    s32 pressed;            /* 0x18: buttons pressed this frame: CamDirector 0x40 toggles manual mode, CourseCam
+                             * 0x40 cycles chaseMode */
 } RiderInput;
 
 typedef struct SnowBoarder {
@@ -194,7 +200,10 @@ typedef struct SnowBoarder {
     char *light;            /* 0x850: a light object; procColl passes unk91C to it (light_setF124_000550A0) */
     char pad854[0x864 - 0x854];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
-    char pad868[0x890 - 0x868];
+    char pad868[0x874 - 0x868];
+    char *camSource;        /* 0x874: a body of the rider model (set by the ctor); cam_create passes it as the
+                             * SnowChaseActorCam source, where a mode-3 (fixed) eye parks */
+    char pad878[0x890 - 0x878];
     SnowBVec3 prevPos;      /* 0x890: pos saved at the start of SnowBoarder_procColl */
     SnowBVec3 prevVel;      /* 0x89C: vel saved at the start of SnowBoarder_procColl */
     char pad8A8[0x8C0 - 0x8A8];
@@ -320,6 +329,7 @@ SNOWB_ASSERT_OFFSET(unk844, 0x844);
 SNOWB_ASSERT_OFFSET(controller, 0x848);
 SNOWB_ASSERT_OFFSET(light, 0x850);
 SNOWB_ASSERT_OFFSET(unk864, 0x864);
+SNOWB_ASSERT_OFFSET(camSource, 0x874);
 SNOWB_ASSERT_OFFSET(unk8C0, 0x8C0);
 SNOWB_ASSERT_OFFSET(character, 0x8C4);
 SNOWB_ASSERT_OFFSET(tint, 0x8E0);
@@ -402,6 +412,7 @@ typedef char snowb_assert_child_size[sizeof(SnowBChild) == 0x154 ? 1 : -1];
 typedef char snowb_assert_parms_size[sizeof(SnowBoarderParms) == 0x2C0 ? 1 : -1];
 typedef char snowb_assert_size[sizeof(SnowBoarder) == 0xA8C ? 1 : -1];
 typedef char snowb_assert_input_held[(int)&((RiderInput *)0)->held == 0x10 ? 1 : -1];
+typedef char snowb_assert_input_pressed[(int)&((RiderInput *)0)->pressed == 0x18 ? 1 : -1];
 #endif
 
 #endif /* GAME_SNOWBOARDER_H */

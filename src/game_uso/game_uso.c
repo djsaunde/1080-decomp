@@ -1118,7 +1118,7 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
  * (drop the `register char *p = a0;` fresh local). With direct
  * param-mutation, IDO schedules `move s0, a0` BEFORE the sw ra/a1/a2
  * chain (matching target) instead of into the bne delay slot. */
-SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int source, int parent) {
+SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int source, int parmsFile) {
     if (a0 == 0) {
         a0 = (SnowChaseActorCam *)gl_func_00000000(0x124);
         if (a0 == 0) goto end;
@@ -1126,8 +1126,8 @@ SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int
     gl_func_00000000(a0, &D_00000000 + 0x340); /* Node init, name "SnowChaseActorCam" */
     *(int*)((char *)a0 + 0x28) = (int)&D_00000000; /* vptr */
     gl_func_00000000(&a0->parms); /* SnowChaseActorCamParms_ctor */
-    if (parent != 0) {
-        gl_func_00000000(a0, 1, parent);
+    if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
+        gl_func_00000000(a0, 1, parmsFile);
     }
     a0->target = (CamMNode *)target;
     a0->source = (CamMNode *)source;
@@ -1554,7 +1554,7 @@ void *SnowChaseActorLookParms_ctor(void *arg0) {
 /* Mirror of SnowChaseActorCam_ctor (alloc(0x64) variant; dispatch table
  * at &D_0+0x360). Lever: reuse a0 (drop the `register char *p = a0`
  * fresh local). */
-SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, int cam, int parent) {
+SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, int cam, int parmsFile) {
     if (a0 == 0) {
         a0 = (SnowChaseActorLook *)gl_func_00000000(0x64);
         if (a0 == 0) goto end;
@@ -1562,8 +1562,8 @@ SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, 
     gl_func_00000000(a0, &D_00000000 + 0x360); /* Node init, name "SnowChaseActorLook" */
     *(int*)((char *)a0 + 0x28) = (int)&D_00000000; /* vptr */
     gl_func_00000000(&a0->parms); /* SnowChaseActorLookParms_ctor */
-    if (parent != 0) {
-        gl_func_00000000(a0, 1, parent);
+    if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
+        gl_func_00000000(a0, 1, parmsFile);
     }
     a0->anchor = (CamMNode *)anchor;
     a0->cam = (SnowChaseActorCam *)cam;
@@ -1911,7 +1911,7 @@ extern char game_uso_D_807FE8A8;
 extern void game_uso_func_04C678(int *dst, void *tmpl);
 extern void *SnowChaseActorParms_ctor();
 
-SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody, int parent) {
+SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody, int parmsFile) {
     if (a0 == 0) {
         a0 = (SnowChaseActor *)game_uso_func_055750(0x138);
         if (a0 == 0) goto out;
@@ -1919,7 +1919,8 @@ SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody
     game_uso_func_04C678((int *)a0, (char *)&game_uso_D_807FE990 + 0x3A0); /* Node init, name "SnowChaseActor" */
     *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE8A8; /* vptr */
     SnowChaseActorParms_ctor(&a0->parms);
-    if (parent != 0) game_uso_func_04C774((int *)a0, 1, parent);
+    /* load the parms file */
+    if (parmsFile != 0) game_uso_func_04C774((int *)a0, 1, parmsFile);
     a0->target = (CamMNode *)target;
     a0->lookBody = (CamMNode *)lookBody;
     a0->unk2C = 0;
