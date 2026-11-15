@@ -11420,7 +11420,7 @@ void BaseMat_func_00043BEC(char *arg0, char *arg1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_func_00043BEC);
 #endif
 
-void gfx_func_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); }
+void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); }
 
 // RcpMgr_func_00043D38 — STRUCTURAL PASS (0x170 / 93 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x38
@@ -11907,15 +11907,15 @@ void gfx_setVideoMode(int mode) {
 /* two-global word setter (D_X=a0; D_Y=a1) — two distinct externs force the 2 luis.
  * Reloc-blind segment-base convention (=0x0 undefined_syms). No episode. */
 extern int gGfxFbWidth_44C9C_X, gGfxFbHeight_44C9C_Y;
-void gfx_setSizePairA_00044C9C(int a0, int a1) {
+void gfx_setScreenSize(int a0, int a1) {
     gGfxFbWidth_44C9C_X = a0;
     gGfxFbHeight_44C9C_Y = a1;
 }
 
-extern int D_44CB0_X, D_44CB0_Y;
-void gfx_setSizePairB_00044CB0(int a0, int a1) {
-    D_44CB0_X = a0;
-    D_44CB0_Y = a1;
+extern int gScreenWidth2_44CB0, gScreenHeight2_44CB0;
+void gfx_setScreenSize2_00044CB0(int a0, int a1) {
+    gScreenWidth2_44CB0 = a0;
+    gScreenHeight2_44CB0 = a1;
 }
 
 extern int gl_func_00000000();
@@ -12258,7 +12258,7 @@ void Window_func_00045178(char *arg0) {
 void gfx_emptyStub_00045394(int a0, int a1, int a2, int a3) {
 }
 
-// gfx_func_000453A8 — STRUCTURAL PASS + BOUNDARY NOTE (0x118 / 71 words, no
+// gfx_floatPairThunk_000453A8 — STRUCTURAL PASS + BOUNDARY NOTE (0x118 / 71 words, no
 // episode). Raw-.word USO. realjr=3, regjr=0 → 3-function BUNDLE: the three
 // jr at 0x453D0 / 0x45410 / 0x454BC delimit three distinct small FP routines
 // (only the first carries the 27BDFFE8 prologue; the other two are no-frame
@@ -12284,7 +12284,7 @@ void gfx_emptyStub_00045394(int a0, int a1, int a2, int a3) {
  * (undefined_syms_auto = 0, same mechanism as _42338/_c43c).
  * EXACT (unwrapped run 95): the alias is pinned to 0, ROM words are jal 0. */
 extern void gl_func_00000000_f(float);
-void gfx_func_000453A8(int a0, float b, float c) {
+void gfx_floatPairThunk_000453A8(int a0, float b, float c) {
     gl_func_00000000_f(b);
     gl_func_00000000_f(c);
     (void)a0;
@@ -12731,7 +12731,7 @@ void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
-int gfx_func_00046B44() {
+int gfx_thunk_00046B44() {
     return gl_func_00000000();
 }
 
@@ -13163,7 +13163,7 @@ void gfx_matrixModeModelView_000478EC(char *a0) {
 void gfx_selectLights_000478FC(char *arg0, char *arg1, s32 arg2, f32 arg3, s32 arg4) {
 }
 
-void gfx_func_00047AB4(char *a0, char *a1) {
+void gfx_setDirBytes_00047AB4(char *a0, char *a1) {
     a0[0x1F8] = a1[0];
     a0[0x1F9] = a1[1];
     a0[0x1FA] = a1[2];
@@ -13173,7 +13173,7 @@ void gfx_func_00047AB4(char *a0, char *a1) {
 // Convert a Vec3 (a1[0..2]) to 3 signed bytes at a0->0x1F8/0x1F9/0x1FA, scaled
 // by 127.0f (0x42FE0000). The (int) cast is required for trunc.w.s — a (char)
 // cast of a float pulls in the soft-float-to-int helper instead.
-void gfx_func_00047AD8(char *a0, float *a1) {
+void gfx_setDirFromVec_00047AD8(char *a0, float *a1) {
     a0[0x1F8] = (int)(a1[0] * 127.0f);
     a0[0x1F9] = (int)(a1[1] * 127.0f);
     a0[0x1FA] = (int)(a1[2] * 127.0f);
@@ -13306,13 +13306,13 @@ int gfx_loadIdentity_00047F48(int *a0) {
     return func_00000000(*(int*)((char*)a0 + 0xE0));
 }
 
-/* gfx_func_00047F68: 13-insn 2-arm store dispatcher. A 2-case
+/* gfx_setViewStage_00047F68: 13-insn 2-arm store dispatcher. A 2-case
  * switch(a1) emits the target's `beq a1,zero` + `beql a1,1` dispatch with the
  * zero-store in the beql delay (if/else-if emits plain bne/nop instead). A
  * prior pass split this into matched case-body stubs 00047F84/00047F90;
  * re-merged here as the one true function (the stubs were switch-case bodies
  * reached via the dispatch branches, not standalone functions). */
-void gfx_func_00047F68(int *a0, int a1) {
+void gfx_setViewStage_00047F68(int *a0, int a1) {
     a0[0x188 / 4] = a1;
     switch (a1) {
     case 0:
@@ -16920,7 +16920,7 @@ end:
 void gfx_initMtxBlock_0004E00C(int *s0) {
 }
 
-void gfx_func_0004E138(int a0) {
+void gfx_setEvery4thFrameFlag(int a0) {
     *(int *)a0 = (*(int *)((char *)&D_00000000 + 0x14) & 3) == 0;
 }
 

@@ -1,6 +1,6 @@
-nonmatching gfx_func_000453A8, 0x30
+nonmatching gfx_floatPairThunk_000453A8, 0x30
 
-glabel gfx_func_000453A8
+glabel gfx_floatPairThunk_000453A8
     /* E2A480 000453A8 27BDFFE8 */  .word 0x27BDFFE8
     /* E2A484 000453AC AFBF0014 */  .word 0xAFBF0014
     /* E2A488 000453B0 44856000 */  .word 0x44856000
@@ -13,4 +13,4 @@ glabel gfx_func_000453A8
     /* E2A4A4 000453CC 27BD0018 */  .word 0x27BD0018
     /* E2A4A8 000453D0 03E00008 */  .word 0x03E00008
     /* E2A4AC 000453D4 00000000 */  .word 0x00000000
-endlabel gfx_func_000453A8
+endlabel gfx_floatPairThunk_000453A8

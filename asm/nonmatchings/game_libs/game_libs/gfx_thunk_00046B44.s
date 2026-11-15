@@ -1,6 +1,6 @@
-nonmatching gfx_func_00046B44, 0x20
+nonmatching gfx_thunk_00046B44, 0x20
 
-glabel gfx_func_00046B44
+glabel gfx_thunk_00046B44
     /* E2BC1C 00046B44 27BDFFE8 */  .word 0x27BDFFE8
     /* E2BC20 00046B48 AFBF0014 */  .word 0xAFBF0014
     /* E2BC24 00046B4C 0C000000 */  .word 0x0C000000
@@ -9,4 +9,4 @@ glabel gfx_func_00046B44
     /* E2BC30 00046B58 27BD0018 */  .word 0x27BD0018
     /* E2BC34 00046B5C 03E00008 */  .word 0x03E00008
     /* E2BC38 00046B60 00000000 */  .word 0x00000000
-endlabel gfx_func_00046B44
+endlabel gfx_thunk_00046B44

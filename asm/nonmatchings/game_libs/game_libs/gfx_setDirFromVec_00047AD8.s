@@ -1,6 +1,6 @@
-nonmatching gfx_func_00047AD8, 0x50
+nonmatching gfx_setDirFromVec_00047AD8, 0x50
 
-glabel gfx_func_00047AD8
+glabel gfx_setDirFromVec_00047AD8
     /* E2CBB0 00047AD8 3C0142FE */  .word 0x3C0142FE
     /* E2CBB4 00047ADC 44810000 */  .word 0x44810000
     /* E2CBB8 00047AE0 C4A40000 */  .word 0xC4A40000
@@ -21,4 +21,4 @@ glabel gfx_func_00047AD8
     /* E2CBF4 00047B1C 44094000 */  .word 0x44094000
     /* E2CBF8 00047B20 03E00008 */  .word 0x03E00008
     /* E2CBFC 00047B24 A08901FA */  .word 0xA08901FA
-endlabel gfx_func_00047AD8
+endlabel gfx_setDirFromVec_00047AD8

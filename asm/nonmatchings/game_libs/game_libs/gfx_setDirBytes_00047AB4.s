@@ -1,6 +1,6 @@
-nonmatching gfx_func_00047AB4, 0x24
+nonmatching gfx_setDirBytes_00047AB4, 0x24
 
-glabel gfx_func_00047AB4
+glabel gfx_setDirBytes_00047AB4
     /* E2CB8C 00047AB4 90AE0000 */  .word 0x90AE0000
     /* E2CB90 00047AB8 A08E01F8 */  .word 0xA08E01F8
     /* E2CB94 00047ABC 90AF0001 */  .word 0x90AF0001
@@ -10,4 +10,4 @@ glabel gfx_func_00047AB4
     /* E2CBA4 00047ACC 90B90003 */  .word 0x90B90003
     /* E2CBA8 00047AD0 03E00008 */  .word 0x03E00008
     /* E2CBAC 00047AD4 A09901FB */  .word 0xA09901FB
-endlabel gfx_func_00047AB4
+endlabel gfx_setDirBytes_00047AB4
