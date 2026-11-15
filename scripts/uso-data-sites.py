@@ -449,8 +449,9 @@ def scan_macros():
                 claim = ('base', BASE_MACRO[bm.group(1)], int(bm.group(2), 0))
             elif sm:
                 claim = ('sym', int(sm.group(1)))
+            plain = bool(re.fullmatch(r'\(?\s*(D_00000000|gl_data_00000000)\s*\)?', body_nc.strip()))
             out.append(dict(name=name, params=params, path=path, line=i, claim=claim,
-                            local=not path.startswith('include/'), via=None))
+                            local=not path.startswith('include/'), via=None, plain=plain))
         pending.extend((path, l) for l in _alias_users(lines, path))
     # second pass: macros spelled over a HEADER OBJECT ALIAS (`(*(T *)&gAudioContext)`) or over a
     # renamed per-site alias of one (`&gAudioContext_345c0`) inherit that alias's Sym claim.
@@ -610,6 +611,9 @@ def cmd_convert(c, a):
     m = [x for x in scan_macros() if x['name'] == a.name and not x['local']]
     if not m or not m[0]['claim'] or m[0]['claim'][0] != 'sym':
         sys.exit(f'{a.name}: no header object alias with a `Sym N` claim')
+    if not m[0].get('plain'):
+        sys.exit(f'{a.name}: not a plain object alias (`#define NAME D_00000000`); a typed accessor '
+                 'cannot replace the bare token, convert its sites by hand')
     n = m[0]['claim'][1]
     excl = re.compile(a.exclude) if a.exclude else None
     total = 0
@@ -664,6 +668,14 @@ def cmd_check(c, a):
         pat = re.compile(r'\b%s\b' % re.escape(m['name']))
         files = [m['path']] if m['local'] else srcs
         users = [(p, f) for p in files for f, b in bodies.get(p, {}).items() if pat.search(b)]
+        if m['local']:
+            # a local macro is in scope from its #define to its #undef (or the end of the file)
+            src = open(m['path'], errors='replace').read()
+            d0 = sum(len(l) + 1 for l in src.split('\n')[:m['line'] - 1])
+            um = re.compile(r'^[ \t]*#[ \t]*undef[ \t]+%s\b' % re.escape(m['name']), re.M).search(src, d0)
+            d1 = um.start() if um else len(src)
+            live = {f for f, f0, f1 in func_spans(src) if f0 < d1 and f1 > d0}
+            users = [(p, f) for p, f in users if f in live]
         if not users:
             unused += 1
             if a.verbose:
