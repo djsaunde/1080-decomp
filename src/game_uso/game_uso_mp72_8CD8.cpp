@@ -61,7 +61,22 @@
  *     inline dot2 (no named d2 word: lenf at the target's M-100), 97.472 -> 97.528; dir's `a` without K3 and
  *     subp2 (the flag-arm `if (1) {}` no longer needed), -> 97.533 (2832 B, pool a2 at sp+372); f as a named
  *     XZ value (`XZ f = subp2(...)`, the target's M-336 between e and g) with g bound as `const XZ &`, -> 97.537.
- * LEFT: the else-arm XZ(wpos) `this` shares its word with perp's `this` (v1; target a0 / v1); d2's conversion `v`
+ *   - agent-h run 426 (kit DX): the pool slot (21 / 30) lost a2 to the plain-return chain temps (3 / 4); block
+ *     counts are ratio-locked (every chain-temp block is also a slot block). A KR5 return (`return r;` through a
+ *     const-ref parameter) reads the copy source through the ctor's `this` result, so the chain temp's num drops
+ *     3 -> 2 (2 / 3 = 0.667) with no code change, provided the site's leading dummy count keeps the `this` result
+ *     out of the shared pooled VREGs: f and h subr1 (1 dummy), g subr (0). perp (no neutral KR form) and dir
+ *     (its chain temp precedes the pool's first use) keep the plain return with 8 ctor blocks (3 / 5), and the
+ *     wpos view takes 8 blocks (3 / 5): pool a2 at 21 / 30 = 0.70 ahead of all of them, every chain temp a3 as in
+ *     the target, 98.966 -> 99.564 (dir as KR5) -> 99.567 (dir plain).
+ *   - agent-c run 426 (kit DXI, frame words by the kit DII model; agent-c 19e708dc8): every edg word from M-96 to
+ *     M-492 at the target's offset (no named dot / wpos, g a value, kept-parameter pool growth in lenf / the chain /
+ *     the inner +=), then the colours back with code-free changes (a block split in Vec3(float x3), K1 on the first
+ *     +=, sub2 return), 98.966 -> 99.113 (2836 B, frame 528), with the pool a3 / chain-temp a2 swap still in it.
+ *   - agent-h run 426: kit DX's lever on that basin (f and h through subr1 / KR5, the dir / perp ctor at 8 blocks;
+ *     g goes through operator-'s KR2 already, and there is no wpos view to steer): pool a2, 99.567 -> 99.997. Left:
+ *     d2's conversion `v` spill word M-120 (sp+408) where the target has M-112 (sp+416), and the jump-table addend.
+ * EARLIER LEFT (before run 426): the else-arm XZ(wpos) `this` shares its word with perp's `this` (v1; target a0 / v1); d2's conversion `v`
  * home sp+400 vs the target's sp+416 (in the target d2's and g's `v` are one word: a direct XZ(K1(s)->w->pos) at g
  * does join them, but the conversion-`this` word then outranks e1189 and s falls to s0, 2712 B); f0 / f12 swaps at
  * the sub / operator* sites; `s->p84 = s->p90` in the target copies through its own by-value operator= temp
@@ -74,18 +89,25 @@ template <class T> inline const T &KR1(const T &r) { const T *p = &r; if (0) { p
  * not a named one; used at the sites below that the target frame has no named word for */
 template <class T> inline const T *KP(const T *p) { if (0) { p = 0; } return p; }
 template <class T> inline const T &KR2(const T &r) { return *KP(&r); }
+template <class T> inline const T &KR5(const T &r) { return r; } /* run 426: plain const-ref identity (chain temp num 3 -> 2) */
 struct Vec3 {
     void *operator new(unsigned n) { return game_uso_func_055750(n); }
     float x, y, z;
     Vec3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
-    Vec3(float a, float b, float c) { set(a, b, c); }
+    /* agent-c run 426: a code-free block split here takes the ctor-`this` word M-128 from 28 / 6 to 28 / 7, under
+     * e1189 (4.5): e1189 takes v1 again and the ctor-`this` sites a0, as in the target */
+    Vec3(float a, float b, float c) { if (1) {} set(a, b, c); }
     /* agent-h run 425: mvf's product ctor, member stores (no set() call, so set's float parameters take no pool
      * words); the kept int splits float slot 3 in the flag arm (kit DVI section 6); the three kept dead floats
      * grow the float pool by one word in that statement (the target's flag-arm pool word), which puts e .. the
      * += objects at the target's offsets */
     Vec3(float a, float b, float c, float d0, float d1, float d2, int d) { x = a; y = b; z = c; d0 = d0; d1 = d1; d2 = d2; d = d; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
+    /* agent-c run 426 (kit DII model): operator= with five kept float parameters. The statement's float demand grows
+     * the pool by two words AFTER the by-value parameter temp (the target's O-244 VV), so mvf's float word is already
+     * there and the dir products land at the target's M-264 / M-276 */
+    Vec3 &asg5(Vec3 v, float f0, float f1, float f2, float f3, float f4) { f0 = f0; f1 = f1; f2 = f2; f3 = f3; f4 = f4; x = v.x; y = v.y; z = v.z; return *this; }
     Vec3 &operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
     Vec3 &operator*=(float s) { x = x * s; y = y * s; z = z * s; return *this; }
     Vec3 operator*(float s) const { return KR1(Vec3(x * s, y * s, z * s)); }
@@ -101,15 +123,23 @@ struct XZ : Vec3 {
      * either way): the else-arm product's float temps leave the Vec3 operator's words, 97.458 -> 97.472 */
     Vec3 operator*(float s) const { return KR2(Vec3(x * s, y * s, z * s)); }
     Vec3 mvf(float s) const { return KR2(Vec3(x * s, y * s, z * s, x, x, x, (int)this)); } /* run 425: first flag-arm dir * (...) */
-    /* agent-h run 414: code-free block splits inside the plain-return (subp1 / subp2 / perp) chain temps' ctor:
-     * their `this` address LRs grow from 7 to 11 blocks, uopt priority 3/3 = 1.0 -> 3/4 = 0.75 */
-    XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} }
+    /* agent-h run 414: code-free block splits inside the plain-return chain temp's ctor (run 426: dir and perp only, 8 blocks:
+     * each `this` address LR grows from 7 to 15 blocks, uopt priority 3/3 = 1.0 -> 3/5 = 0.6, under the pool's 0.70) */
+    XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} }
 };
 inline XZ operator-(const Vec3 &a, const Vec3 &b) { return KR2(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ sub1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return KR2(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ sub2(int z0, int z1, const Vec3 &a, const Vec3 &b) { z0 = z0; z1 = z1; return KR1(XZ(a.x - b.x, a.z - b.z)); }
-inline XZ subp1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return XZ(a.x - b.x, a.z - b.z, 0); }
+/* run 426: KR5 return (chain temp num 2); the dummy count picks the pooled word of the ctor's `this` result */
+inline XZ subr1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return KR5(XZ(a.x - b.x, a.z - b.z)); }
+/* dir keeps the plain return: its chain temp lies before the pool's first use, so the 8 ctor blocks cost the pool
+ * nothing (3 / 5); the KR5 form there scores 99.564, this 99.567 */
 inline XZ subp2(int z0, int z1, const Vec3 &a, const Vec3 &b) { z0 = z0; z1 = z1; return XZ(a.x - b.x, a.z - b.z, 0); }
+/* agent-c run 426: the return's subtraction with the kept dummy AFTER the operands. edg reserves an inline's
+ * parameters in order before it evaluates the arguments, and the pool is one sequence of words for every type, so
+ * b (the w->pos pointer) is the statement's 2nd word, M-108 as in the target; the trailing int keeps the ctor-`this`
+ * in an a0 word */
+inline XZ subz(const Vec3 &a, const Vec3 &b, int z0) { z0 = z0; return KR1(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ perp(const Vec3 &v) { return XZ(v.z, -v.x, 0); }
 struct Node { char pad0[0x30]; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; };
 struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; };
@@ -122,25 +152,28 @@ void game_uso_func_071028(Vec3 *v);
 }
 template <class T> inline T *K3(T *p) { p = p; return p; } /* kept identity: zero code */
 template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* kept identity with a dead block */
-inline float dot2(const Vec3 &u, const Vec3 &v) { return u.x * v.x + u.z * v.z; }
-inline float hdot(const Vec3 &h, const Vec3 &e) { return e.x * h.x + e.z * h.z; } /* run 425: e first (load order) */
+/* agent-c run 426: one kept pointer parameter each, which grows the pointer pool by the words the target has after
+ * d2's object (lenf: 7 -> 9) and after the e * dot product (the inner +=: 2 -> 3, frame 528) */
+inline float dot2p(const Vec3 &u, const Vec3 &v, const Vec3 *p0) { p0 = p0; return u.x * v.x + u.z * v.z; }
+inline float hdotp(const Vec3 &h, const Vec3 &e, const Vec3 *p0) { p0 = p0; return e.x * h.x + e.z * h.z; } /* run 425: e first (load order) */
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
         game_uso_func_071028(&dir);
-        float lenf = dot2(dir, sub1((int)a, XZ(s->w->pos), K3(a)->pos)); /* run 418: d2 a temporary, lenf M-100 */
-        float dot = lenf; /* run 415: one named dot read by both operands, 97.289 -> 97.458, frame 528 */
-        /* run 425: chained (kit CDXCIX): the outer operator=(Vec3) parameter is the 2nd struct pool word (M-244, v0) */
-        s->p84 = K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
-        s->p84 += KR2(dir.mvf(dot + (s->w->speed * s->kDC) / 2));
-        s->p90 += dir * (dot - (s->w->speed * s->kDC) / 2);
+        float lenf = dot2p(dir, sub1((int)a, XZ(s->w->pos), K3(a)->pos), &dir); /* run 418: d2 a temporary, lenf M-100 */
+        /* run 425: chained (kit CDXCIX); agent-c run 426: no named dot (the target's M-104 is a pool word), the outer
+         * assignment through asg5 (its parameter temp at the target's M-244), K1 on the first += receiver */
+        s->p84.asg5(s->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        K1(s)->p84 += KR2(dir.mvf(lenf + (s->w->speed * s->kDC) / 2));
+        s->p90 += dir * (lenf - (s->w->speed * s->kDC) / 2);
         s->phase = 0;
     } else {
         XZ e(XZ((int)a, (int)a, (int)a, b->pos) - a->pos);
-        XZ f = subp2((int)a, (int)a, s->p84, s->p90); /* run 418: a named value at the target's M-336 */
-        const Vec3 &wpos = K1(s)->w->pos; /* zero-code view: keeps s out of s0 with the temporary below */
-        if (1) {} if (1) {} if (1) {} if (1) {} /* run 414: wpos LR 6 -> 10 blocks, priority 1.0 -> 0.75 */
-        const XZ &g = subp1((int)a, XZ(wpos), s->p90);
+        XZ f = subr1((int)a, s->p84, s->p90); /* run 418: a named value at the target's M-336 */
+        /* agent-c run 426: g a named value and no named wpos view (the target's e-324 f-336 g-348 with three block
+         * temps above), written plainly: operator-'s a / b take the statement's first two pool words, so the
+         * w->pos pointer is the 3rd (M-112, v1) as in the target */
+        XZ g = XZ(s->w->pos) - s->p90;
         if (e.x * f.x + e.z * f.z) {} /* run 422: code-free test, the e.f sum becomes a uopt CSE (target f0, no ring pop) */
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
@@ -149,7 +182,7 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             s->p84 = (const Vec3 &)XZ((int)a, (int)a, (int)a, a->pos);
             /* run 425: h is a temporary of the += statement (the target's += operand temp M-408 sits above h's
              * M-420, and h's subtraction takes struct pool word 1, so e * dot returns through word 2 = M-244) */
-            s->p84 += e * (hdot(subp2((int)a, (int)a, s->p90, a->pos), e) + s->w->speed * s->kDC); /* frame 528 */
+            s->p84 += e * (hdotp(subr1((int)a, s->p90, a->pos), e, &a->pos) + s->w->speed * s->kDC); /* frame 528 */
             side *= (250.0f * b->width) * s->kE0; /* the target muls 250 * width first, then kE0 (run 422: as the left operand) */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
             s->phase &= 3; /* run 425: a statement of its own, then switch on the field: the masked value stays a */
@@ -167,5 +200,5 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             s->p84 += side;
         }
     }
-    return sub1((int)a, K3(s)->p84, s->w->pos);
+    return subz(s->p84, s->w->pos, (int)a); /* agent-c run 426: the return `v` at M-108, v1 (target) */
 }
