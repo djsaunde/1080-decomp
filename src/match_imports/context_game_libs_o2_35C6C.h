@@ -305,4 +305,4 @@ typedef struct Gl35C6CWord { int value; } Gl35C6CWord;
 extern void gl_35c6c_read_tag(int *);
 extern void gl_35c6c_read_word(int *);
 extern void gl_35c6c_print(char *, ...);
-int gl_func_00035C6C(SnwRecordCollection *list);
+int Parms_load_00035C6C(SnwRecordCollection *list);

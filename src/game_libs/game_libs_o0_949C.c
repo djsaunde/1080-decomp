@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* (2026-10-15: now also holds gl_func_0000959C, 0x959C..0x9674 -> TRUNCATE
+/* (2026-10-15: now also holds ColourItem_create_0000959C, 0x959C..0x9674 -> TRUNCATE
  * 0x1D8; see its note at the end of the file.)
  * -O0 sub-file split out of game_libs.c on 2026-05-07. Holds the
  * 0x949C..0x959C cluster (4 functions, 16 insns / 0x40 each, total 0x100):
@@ -17,12 +17,12 @@
  *      add this file with `OPT_FLAGS := -O0` + `TRUNCATE_TEXT := 0x100`,
  *      add a new `game_libs_tail.c` with -O2 + TRUNCATE_TEXT 0x5664.
  *   2. Create `src/game_libs/game_libs_tail.c` containing everything from
- *      `gl_func_0000959C` onwards (~825 lines moved from game_libs.c).
+ *      `ColourItem_create_0000959C` onwards (~825 lines moved from game_libs.c).
  *   3. Update tenshoe.ld: insert these two .o files between game_libs.c.o
  *      and game_libs_post.c.o.
  *   4. Strip the 4 #ifdef NON_MATCHING wraps + their INCLUDE_ASMs from
  *      game_libs.c (lines ~729-822).
- *   5. Migrate the SUFFIX_BYTES for `gl_func_0000B560` from game_libs.c.o
+ *   5. Migrate the SUFFIX_BYTES for `Backup_writeCourseArcade_0000B560` from game_libs.c.o
  *      to game_libs_tail.c.o (function lives in the tail half).
  *
  * Until step 1 lands, this file is dead-storage — not built, not linked.
@@ -41,31 +41,31 @@ extern int gl_ref_0001CFFC();
 extern int gl_ref_0001D060();
 extern int gl_ref_0001D0AC();
 
-void gl_func_0000949C(char *a0) {
+void Parm_read_0000949C(char *a0) {
     int scratch;
     gl_ref_0001CFB0(&scratch);
     gl_ref_0001CFFC(a0 + 0x10);
 }
 
-void gl_func_000094DC(char *a0) {
+void Parm_read_000094DC(char *a0) {
     int scratch;
     gl_ref_0001CFB0(&scratch);
     gl_ref_0001CFB0(a0 + 0x10);
 }
 
-void gl_func_0000951C(char *a0) {
+void Parm_read_0000951C(char *a0) {
     int scratch;
     gl_ref_0001CFB0(&scratch);
     gl_ref_0001D060(a0 + 0x10);
 }
 
-void gl_func_0000955C(char *a0) {
+void Parm_read_0000955C(char *a0) {
     int scratch;
     gl_ref_0001CFB0(&scratch);
     gl_ref_0001D0AC(a0 + 0x10);
 }
 
-/* gl_func_0000959C (0xD8 incl. one trailing pad word), moved here from
+/* ColourItem_create_0000959C (0xD8 incl. one trailing pad word), moved here from
  * game_libs_tail.c 2026-10-15 (agent-g): it is -O0 like the cluster above
  * (unfilled jal/branch delays, s-reg `register` locals, arg + result homed),
  * not -O2. Decoded as an inlined constructor `obj = new T` (cfront-style:
@@ -83,6 +83,6 @@ void gl_func_0000955C(char *a0) {
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/game_libs/game_libs_ncc_o0_959C.cpp (the NM body that was here, as C++;
  * no cfe closing-brace b-epilogue). Placeholder spliced over. */
-int *gl_func_0000959C(int *a0) {
+int *ColourItem_create_0000959C(int *a0) {
     return 0;
 }

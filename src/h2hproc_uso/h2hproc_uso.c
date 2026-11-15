@@ -1611,7 +1611,7 @@ void h2h_readQuadParm_00001A3C(char *dst) {
  * 2026-05-08: tested the sibling-port from tit_ItemType_create_00002980 /
  * mgr_ItemType_create_00003358 / arc_ItemType_create_00002334 (verbatim
  * 'if (p == 0) return 0; init;' form). Result: REGRESSED 89.19% →
- * 77.83% — same regression as on gl_func_000088B4 in game_libs.c.
+ * 77.83% — same regression as on ColourItem_create_000088B4 in game_libs.c.
  * h2hproc_uso.c has only 35 c-funcs (similar to titproc/mgrproc/arcproc)
  * but the port still fails. So the docs/MATCHING_WORKFLOW.md sibling-
  * port scale-limit caveat is INCOMPLETE — it's not just about file

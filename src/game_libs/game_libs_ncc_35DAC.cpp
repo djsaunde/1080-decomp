@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00035DAC (0xB0 / 44 words): an outer
+/* IDO 7.1 NCC (C++) donor for Parms_func_00035DAC (0xB0 / 44 words): an outer
  * loop that re-initialises an end marker through gl_ref_0004A110(&end),
  * copies a -1 sentinel into the cursor, and stops when the cursor equals the
  * end. Otherwise it steps a counter through gl_ref_0004A14C(&cnt) and then
@@ -17,7 +17,7 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" { void gl_ref_0004A110(...); void gl_ref_0004A14C(...); }
 struct W { int v; };
-extern "C" void gl_func_00035DAC(void) {
+extern "C" void Parms_func_00035DAC(void) {
     W sent, end, cnt, x, u1, u2, cur;
     u1.v = 0; u2.v = 0;
     for (;;) {

@@ -572,7 +572,7 @@ extern int func_00000000();
 int AudioHeap_AllocPermanent(int a0, int a1, int a2);
 extern void *gl_func_000365AC();
 void *aud_AllocSampleCacheTemporary(int a0, int a1, int a2, signed char a3);
-extern int gl_func_00036A48();
+extern int cam_func_00036A48();
 int *aud_AllocSampleCachePersistent(int a0, int a1, int a2, signed char a3);
 extern int func_00000000();
 void AudioHeap_InitSampleCaches(int a0, int a1);

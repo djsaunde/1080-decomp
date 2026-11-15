@@ -1,5 +1,5 @@
 /* IDO 7.1 -O2 donor for dbg_faultThread (0x13C / 79 words, the
- * subsystem poll loop) and game_libs_func_0003485C (0x20, the hang stub).
+ * subsystem poll loop) and sys_func_0003485C (0x20, the hang stub).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY; only those two
  * functions are imported.
  *
@@ -91,7 +91,7 @@ void dbg_startFaultThread(void) {
     func_00000000((char*)&D_00000000 + 0x3B968);
 }
 
-int gl_func_000346F0(int a0, char *src, int n) {
+int sys_func_000346F0(int a0, char *src, int n) {
     int i;
     int k2;
     char buf[256];
@@ -121,7 +121,7 @@ void dbg_printf(int a0, ...) {
  * at unit offset 0x480 (3 nops), exactly as in the target. 34684 / 346F0 /
  * 34810 above are the real (exact) C of the functions in between, copied
  * from game_libs_post0b.c so the offsets agree. */
-void game_libs_func_0003485C(int a0) {
+void sys_func_0003485C(int a0) {
     int *p = &a0;
     for (;;) {
     }

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_libs_func_0003DB38 (0xB4 / 45 words): among the
+/* IDO 7.1 NCC (C++) donor for ColourItemType_vslot15_0003DB38 (0xB4 / 45 words): among the
  * children, the one whose +0x38 value is the smallest above ref (a1's own value
  * or a pool default) and below a pool limit. The loop variable's registers are
  * colored unconstrained, in first-occurrence (bitpos) order: the dead `n = 0`
@@ -15,7 +15,7 @@ struct Iter {
     Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" Node *game_libs_func_0003DB38(Owner *o, Node *a1) {
+extern "C" Node *ColourItemType_vslot15_0003DB38(Owner *o, Node *a1) {
     float ref = a1 ? a1->v : D_00000000[0x1AC4 / 4];
     Iter it(o->head);
     float lim = D_00000000[0x1AC8 / 4];

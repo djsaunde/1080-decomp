@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_000432BC (0x1A8 / 106 words): for every
+/* IDO 7.1 NCC (C++) donor for gfx_func_000432BC (0x1A8 / 106 words): for every
  * child without flag 0x80, dst = src (by-value V3 operator=, the sp+68 temp) or
  * dst = -src, then a callback, an inline 3x3 transform of dst, and a second callback.
  * The iterator's next() is written as an if/return (not ?:): each call then gets
@@ -23,7 +23,7 @@ struct Iter {
     Iter(Link *h) { nxt = h; }
     Obj *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->obj; } return 0; }
 };
-extern "C" void gl_func_000432BC(int a0, float *m, int neg) {
+extern "C" void gfx_func_000432BC(int a0, float *m, int neg) {
     Iter it(*(Link **)(D_00000000 + 0x18C));
     Obj *o;
     while (o = it.next()) {

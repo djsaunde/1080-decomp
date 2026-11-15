@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00045CB0 (0x170 / 92 words): fill one
+/* IDO 7.1 NCC (C++) donor for BaseMat_func_00045CB0 (0x170 / 92 words): fill one
  * 0x48-byte light record (ambient + light 0 colour/colour-copy bytes from a
  * float RGB) from the context's light pool, then emit gSPNumLights-style
  * 0xBC000002 / 0x80000040 and two G_MOVEMEM light packets whose w1 comes from
@@ -22,7 +22,7 @@ struct Ctx {
     Gfx *next() { int n = dl->n++; return &dl->buf[n]; }
     Lt *nextl() { int n = lb->n++; return &lb->buf[n]; }
 };
-extern "C" void gl_func_00045CB0(int a0, Ctx *c, float *col) {
+extern "C" void BaseMat_func_00045CB0(int a0, Ctx *c, float *col) {
     Lt *l;
     int k1, k2;
     k1 = 0; k2 = 0;

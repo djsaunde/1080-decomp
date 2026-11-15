@@ -30,7 +30,7 @@ CAVEATS:
     re-merging IF the unified function byte-matches: decomp.dev scores matched
     *bytes*, not function count, so folding stub-tails + an unmatched head into
     one matched function raises the byte-metric even though the count drops.
-    Delete the merged-away episodes too. (Verified game_libs_func_00047F68: a
+    Delete the merged-away episodes too. (Verified gfx_func_00047F68: a
     2-case store dispatcher split into 47F84/47F90 stubs; re-merged +40 bytes.)
   - 2-case sparse switch shape: `a0->X = a1; switch(a1){case 0:...; case 1:...;}`
     emits the target `beq a1,zero` + `beql a1,1` dispatch (store in the beql

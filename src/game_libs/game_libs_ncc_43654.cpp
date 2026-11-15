@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00043654 (0x16C / 91 words): the cfe NM body
+/* IDO 7.1 NCC (C++) donor for PolyShape_func_00043654 (0x16C / 91 words): the cfe NM body
  * compiled as C++, plus a dead `if (!sp34) {}` between the two stores of the
  * else-branch display-list append (permuter find, agent-c run 120): it moves the
  * append pointer from v1 to the target's a1. Spliced into game_libs_post0b.c.o via
@@ -8,7 +8,7 @@ typedef int s32; typedef short s16;
 extern "C" {
 extern char D_00000000;
 int gl_func_00000000(...);
-void gl_func_00043654(char *arg0, char *arg1) {
+void PolyShape_func_00043654(char *arg0, char *arg1) {
     char *sp34;
     char *var_a3;
     char *temp_v0;

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00040E90 (0x174 / 93 words): for every child
+/* IDO 7.1 NCC (C++) donor for QNode_updateChildren (0x174 / 93 words): for every child
  * with flag 0x20000, copy its source record (three V3 + a float, the implicit
  * Rec::operator= through the by-value V3 temp at sp+60) into the cached one,
  * or hand both to a callee with the owner's 0xDC block; then fire virtual
@@ -23,7 +23,7 @@ struct Iter {
     Obj *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Own { char pad[0x10]; Link *head; char pad14[0x18]; int flags; char pad30[0xAC]; char xdc[4]; };
-extern "C" void gl_func_00040E90(Own *ow) {
+extern "C" void QNode_updateChildren(Own *ow) {
     Iter it(ow->head);
 
     for (Obj *o = it.first(); o; o = it.next()) {

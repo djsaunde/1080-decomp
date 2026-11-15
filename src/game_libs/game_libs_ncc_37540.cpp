@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00037540 (0x2FC / 191 words), REPLACE_FUNC_BODY-spliced over the
+/* IDO 7.1 NCC (C++) EXACT donor for StickCtrlB_update_00037540 (0x2FC / 191 words), REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_libs_post0b.c on both build paths (agent-c run 200 lift, agent-c run 298 exact).
  * Sibling of the exact 37348 donor: s = o->s homed (`if (0) gl(&s)`), every s access through a kept Node * inline
  * parameter, block-scoped ctor-built push vector, volatile flag word through Inp::fl(). The saved v60 is read in a
@@ -12,7 +12,7 @@
  * gone; operator= / `+=` re-gridded to x, y, z; the frame word pv held is kept by an unused `pad9C` home.
  * 97.770 -> 100. The three pool words are source literals (bootup.uso RoData 0x19F8 / 0x19FC / 0x1A00 = 0.06f,
  * 0.65f, 0.9f; agent-g run 289 literal audit): the donor's .rodata reloc is renamed by the splice to
- * gl_func_00037540_rodata and pinned to 0x19F8 in undefined_syms_auto.txt (the USO already ships the words).
+ * StickCtrlB_update_00037540_rodata and pinned to 0x19F8 in undefined_syms_auto.txt (the USO already ships the words).
  * The three calls are blank USO jal words: gl_func_00000000. */
 typedef float f32;
 struct P3 { f32 x, y, z; };
@@ -34,7 +34,7 @@ inline void sx(Node *n, f32 v) { if (0) { n = 0; } n->v60.x = v; }
 inline void sy(Node *n, f32 v) { if (0) { n = 0; } n->v60.y = v; }
 inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
 inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }
-extern "C" void gl_func_00037540(Obj *o) {
+extern "C" void StickCtrlB_update_00037540(Obj *o) {
     /* declaration order = the target's homes (agent-g runs 206 / 249 / 288): vB4 first, hz 176 / hy 172, hx at the
      * 168 spill word, v9C / v90 at 156 / 144, the unused p1 / p2 frame pads, v6C 108, then b, a, s 96, ab */
     V3 vB4;

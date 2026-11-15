@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00003C0C -- free-slot allocator (3B1C/3DB8
+/* IDO 7.1 -O2 donor for PointsGadget_allocSlot_00003C0C -- free-slot allocator (3B1C/3DB8
  * family; 0x1AC bytes, 107 words). PROVEN EXACT 107/107 words standalone;
  * the link-resolved words are the blank jals, the two &D_00000000 HI/LO
  * pairs (+0x138 global, +0xCD04 baked absolute = the `lui 1; addiu -X`
@@ -7,7 +7,7 @@
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs.c.o (the 2B94 /
  * 7344 recipe, docs/MATCHING_WORKFLOW.md#game-libs-rodata-literals-and-
  * tables-76f0): the 0.1f literal lands at this TU's .rodata +0; the splice
- * renames that reloc gl_func_00003C0C_rodata, pinned to bootup.uso RoData
+ * renames that reloc PointsGadget_allocSlot_00003C0C_rodata, pinned to bootup.uso RoData
  * +0xCF8 (word 0x3DCCCCCD).
  *
  * Load-bearing shapes:
@@ -52,7 +52,7 @@ typedef struct GlEnt3C0C {
     GlSlot3C0C *slot;
 } GlEnt3C0C;
 
-GlSlot3C0C *gl_func_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     GlEnt3C0C *p = (GlEnt3C0C *)arg0;
     s32 off = 0;
     GlSlot3C0C *slot;

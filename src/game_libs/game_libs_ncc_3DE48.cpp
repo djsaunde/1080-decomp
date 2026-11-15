@@ -1,9 +1,9 @@
-/* IDO 7.1 NCC (C++) donor for game_libs_func_0003DE48 (0x110 / 68 words): return the
+/* IDO 7.1 NCC (C++) donor for SNodeItemType_vslot12_0003DE48 (0x110 / 68 words): return the
  * child nearest to *p by |dx| + |dy| + |dz|, skipping one node. The ABS is a
  * preprocessor macro, not an inline function: edg evaluates inline-call operands
  * of a sum out of source order (temps), a plain ?: expression left to right, so
  * only the macro gives the target's x, y, x+y, z, (x+y)+z. Boundary fix: the
- * old .s carried 3DF58's first word (gl_func_0003DF5C renamed gl_func_0003DF58).
+ * old .s carried 3DF58's first word (gl_func_0003DF5C renamed SNodeItemType_vslot15_0003DF58).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" float D_00000000[];
 struct V3 { float x, y, z; };
@@ -17,7 +17,7 @@ struct Iter {
     Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" Node *game_libs_func_0003DE48(Owner *o, V3 *p, Node *skip) {
+extern "C" Node *SNodeItemType_vslot12_0003DE48(Owner *o, V3 *p, Node *skip) {
     float bestd = D_00000000[0x1ACC / 4];
     Node *best = 0;
     Iter it(o->head);

@@ -47,7 +47,7 @@ driving the emulator to a specific mode against that incremental value.
 ## Coverage: `game_libs` is inside bootup.uso's text (one dump covers both)
 
 The project's `game_libs` segment is **not a separate USO** — its functions live
-inside bootup.uso's `.text` section (verified: `game_libs_func_00003298` @ ROM
+inside bootup.uso's `.text` section (verified: `PointsGadget_func_00003298` @ ROM
 0xDE8370 is within bootup text 0xdd0a68–0xE5A378). So game_libs's relocs are in
 the **same** bootup.uso TextReloc table, and its real names are already in
 `bootup_uso.symnames.json` — **no separate dump is needed for game_libs**, which

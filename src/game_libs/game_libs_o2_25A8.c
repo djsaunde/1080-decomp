@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for gl_func_000025A8 -- mode -> slot-value setter
+/* IDO 7.1 -O2 donor for CourseGadget_func_000025A8 -- mode -> slot-value setter
  * (0x298 bytes, 166 words). PROVEN EXACT 166/166 words standalone; the
  * link-resolved words are the blank jals and the jumptable %lo.
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs.c.o (the 7344
  * recipe, docs/MATCHING_WORKFLOW.md#game-libs-rodata-literals-and-tables-76f0):
  * the switch's donor-local .rodata jumptable reloc is renamed
- * gl_func_000025A8_rodata, pinned in undefined_syms_auto.txt to the table the
+ * CourseGadget_func_000025A8_rodata, pinned in undefined_syms_auto.txt to the table the
  * USO ships in bootup.uso RoData at +0xC9C (file offset +0xCA0). Shipped
  * words 0x16C48 0x16CA8 0x16D08 0x16D64 0x16DC4 0x16E1C; minus the 0x1466C
  * shim: cases 2..7 -> 0x25DC 0x263C 0x269C 0x26F8 0x2758 0x27B0, in source
@@ -28,7 +28,7 @@ typedef struct GlObj25A8 {
     s32 unk1F0;
 } GlObj25A8;
 
-void gl_func_000025A8(GlObj25A8 *arg0, s32 arg1) {
+void CourseGadget_func_000025A8(GlObj25A8 *arg0, s32 arg1) {
     s32 r;
 
     switch (arg1) {

@@ -1,9 +1,0 @@
-nonmatching game_libs_func_000359A4, 0x14
-
-glabel game_libs_func_000359A4
-    /* E1AA7C 000359A4 AFA40000 */  .word 0xAFA40000
-    /* E1AA80 000359A8 AFA50004 */  .word 0xAFA50004
-    /* E1AA84 000359AC AFA60008 */  .word 0xAFA60008
-    /* E1AA88 000359B0 03E00008 */  .word 0x03E00008
-    /* E1AA8C 000359B4 24020001 */  .word 0x24020001
-endlabel game_libs_func_000359A4

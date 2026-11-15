@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004A308 -- EXACT (agent-c run 219), REPLACE_FUNC_BODY-spliced over the empty
+/* IDO 7.1 NCC (C++) donor for PolyShape_vslot12_0004A308 -- EXACT (agent-c run 219), REPLACE_FUNC_BODY-spliced over the empty
  * placeholder in src/game_libs/game_libs_post0b.c in both build trees.
  * History (NM donor game_libs_ncc_4A308_nm.cpp): the NM C body lifted under NCC (agent-c run 134, cfe 76.89);
  * run 178 (kit CXXIV de-naming) `v60` and run 179 `t2` as macros re-read per use; agent-g run 190: declarations
@@ -17,7 +17,7 @@ extern "C" {
 extern int D_00000000;
 extern int gl_func_00000000(...);
 }
-extern "C" s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *arg4) {
+extern "C" s32 PolyShape_vslot12_0004A308(char *arg0, int arg1, int arg2, int arg3, char *arg4) {
     char *sp7C;
     char *sp78;
     unsigned char sp74[4];

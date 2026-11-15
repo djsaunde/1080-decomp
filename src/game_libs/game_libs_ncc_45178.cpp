@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00045178 (0x21C / 135 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) EXACT donor for Window_func_00045178 (0x21C / 135 words), agent-c run 162.
  * History-lane clamp (-32700 / 32700 literals) + one Mtx slot from the context's matrix pool + one
  * stock-gbi gDma1p packet (0x01030040 = F3DEX gSPMatrix(m, 3, 64)) + three camera Vec3 calls.
  * The cfe body (99.99, 2 words) could not place the packet pointer's spill: the target spills it at
@@ -7,7 +7,7 @@
  * locals are homed after the temps allocated before them). Decl order t, a, b, q, i, c, n3, m, v, r =
  * the target's homes; the upper clamp bound is a literal (a named `hi` costs a frame word); the w1 call
  * is int-returning (gl_func_00000000_i), the others void. Spliced over an empty placeholder in both
- * build trees; the three literals' .rodata reloc is renamed gl_func_00045178_rodata (pinned 0x1B60). */
+ * build trees; the three literals' .rodata reloc is renamed Window_func_00045178_rodata (pinned 0x1B60). */
 typedef float f32; typedef unsigned int u32;
 struct Gfx { u32 w0, w1; };
 struct Mtx { int m[16]; };
@@ -31,7 +31,7 @@ extern char D_45178_c1, D_45178_c2, D_45178_c3;
 }
 #define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))
 #define gDma1p(pkt, c, s, l, p) { Gfx *_g = (Gfx *)(pkt); _g->w0 = (_SHIFTL((c), 24, 8) | _SHIFTL((p), 16, 8) | _SHIFTL((l), 0, 16)); _g->w1 = (u32)(s); }
-extern "C" void gl_func_00045178(Obj *o) {
+extern "C" void Window_func_00045178(Obj *o) {
     Cam *t;
     V3 a, b;
     f32 *q;

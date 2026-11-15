@@ -1,10 +1,10 @@
-/* IDO 7.1 NCC (C++) -O0 donor for gl_func_0000959C (0xD4 + the 1-word zero
+/* IDO 7.1 NCC (C++) -O0 donor for ColourItem_create_0000959C (0xD4 + the 1-word zero
  * pad the .s carried): the cfe NM body unchanged; edg -O0 emits no closing-brace
  * b-epilogue marker. Spliced into game_libs_o0_949C.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
 int gl_func_00000000(...);
 extern int D_00000000;
-int *gl_func_0000959C(int *a0) {
+int *ColourItem_create_0000959C(int *a0) {
     int *ret;
     register int *s0;
     register int *s1;

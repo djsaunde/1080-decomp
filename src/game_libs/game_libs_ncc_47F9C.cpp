@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00047F9C (0x168 / 90 words): for every
+/* IDO 7.1 NCC (C++) donor for gfx_func_00047F9C (0x168 / 90 words): for every
  * child, reset its dirty word from a global, fetch its position into a V3
  * local through a callee, set dirty if it differs from the cached copy, then
  * store the cache (by-value V3 operator=, the sp+60 temp) and a 16-byte record.
@@ -24,7 +24,7 @@ struct Iter {
     Obj *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Own { char pad[0x18C]; Link *head; };
-extern "C" void gl_func_00047F9C(Own *ow) {
+extern "C" void gfx_func_00047F9C(Own *ow) {
     Iter it(ow->head);
     for (Obj *o = it.next(); o; o = it.next()) {
         o->e0 = gl_d_0001F970;

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_libs_func_0003D54C (0x70 / 28 words):
+/* IDO 7.1 NCC (C++) donor for ItemType_getItem (0x70 / 28 words):
  * return the value of the n-th node of the owner's child list (0 when the
  * list runs out), walked with the stack {cur, nxt} iterator of 3D48C / 38964
  * (cur at sp+0, nxt at sp+4; next() advances through nxt).
@@ -19,7 +19,7 @@ struct Iter {
     int next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" int game_libs_func_0003D54C(Owner *o, int n) {
+extern "C" int ItemType_getItem(Owner *o, int n) {
     Iter it(o->head);
     int i = 0;
     int r = 0;

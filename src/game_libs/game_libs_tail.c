@@ -3,7 +3,7 @@
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
- * Covers fs_gdlReadInt_00009674 onwards (gl_func_0000959C, an -O0 function,
+ * Covers fs_gdlReadInt_00009674 onwards (ColourItem_create_0000959C, an -O0 function,
  * moved to game_libs_o0_949C.c 2026-10-15). Type definitions Tri3i/Vec3
  * (originally declared at game_libs.c:290) re-declared here. */
 
@@ -150,7 +150,7 @@ int backup_checksumEqual(s32 *a0, s32 *a1) {
     return 1;
 }
 
-void game_libs_func_00009978(unsigned char *arg0) {
+void Backup_func_00009978(unsigned char *arg0) {
     *arg0 &= 0x7F;
 }
 
@@ -160,7 +160,7 @@ void game_libs_func_00009978(unsigned char *arg0) {
  * unsigned char params emit BOTH the sw a2,8(sp)/sw a3,0xC(sp) arg homes AND
  * the eager andi 0xFF zero-extends; comma-init for-loop pre-header + trailing
  * if(n==3)break (99DC/9B60/9C04 recipe) gives li a1,3 + sb-in-delay. */
-void game_libs_func_00009988(char *a0, char *a1, unsigned char a2, unsigned char a3) {
+void Backup_func_00009988(char *a0, char *a1, unsigned char a2, unsigned char a3) {
     int n;
     char *d, *s;
     for (n = 0, d = a0, s = a1; ;) {
@@ -182,7 +182,7 @@ void game_libs_func_00009988(char *a0, char *a1, unsigned char a2, unsigned char
  * trailing `if (n == 3) break;`. That ordering makes GCC materialize the
  * bound `li a1,3` immediately after the stores (before the setup moves),
  * exactly as the target schedules it. */
-void game_libs_func_000099DC(char *a0, int a1, int a2, char *a3, int a4, int a5, int a6) {
+void Backup_func_000099DC(char *a0, int a1, int a2, char *a3, int a4, int a5, int a6) {
     int n;
     char *d;
     char *s;
@@ -202,19 +202,19 @@ void game_libs_func_000099DC(char *a0, int a1, int a2, char *a3, int a4, int a5,
     a0[7] = a6;
 }
 
-/* game_libs_func_00009A2C: flag-test accessor. splat's jr-ra heuristic split
+/* Backup_func_00009A2C: flag-test accessor. splat's jr-ra heuristic split
  * the return-0 tail (jr ra; nop) into 00009A48 — which coincidentally matched
  * as an empty `void f(void){}` stub. Merged it is one function: the `beqz`
  * return-0 path targets that tail. The `if(...)return 1; return 0;` form keeps
  * the early `move v0,zero` default + `li v0,1` in the taken jr-ra delay. */
-int game_libs_func_00009A2C(unsigned char *a0) {
+int Backup_func_00009A2C(unsigned char *a0) {
     if (*a0 & 0x80) {
         return 1;
     }
     return 0;
 }
 
-/* game_libs_func_00009A50 (34 insns, 0x88): strict date-triple compare,
+/* Backup_func_00009A50 (34 insns, 0x88): strict date-triple compare,
  * returns 1 if the record's stored triple a0[5..7] is greater than the triple
  * a1[0..2] (field-by-field, most significant first), else 0. Inverse-setter is
  * 9AD8 (a0[5]=a1, a0[6]=a2, a0[7]=a3).
@@ -231,7 +231,7 @@ int game_libs_func_00009A2C(unsigned char *a0) {
  * return 1;` -- IDO hoists `li v0,1` above the `bnez at` and branches to the
  * trailing `jr ra; nop`. `if (a1[2] < a0[7]) return 1; return 0;` puts the
  * `li v0,1` in a taken-branch delay slot instead (3 words differ). */
-int game_libs_func_00009A50(unsigned char *a0, unsigned char *a1) {
+int Backup_func_00009A50(unsigned char *a0, unsigned char *a1) {
     if (a0[5] < a1[0]) return 0;
     if (a1[0] < a0[5]) return 1;
     if (a0[6] < a1[1]) return 0;
@@ -240,7 +240,7 @@ int game_libs_func_00009A50(unsigned char *a0, unsigned char *a1) {
     return 1;
 }
 
-void game_libs_func_00009AD8(unsigned char *a0, int a1, int a2, int a3, int a4) {
+void Backup_func_00009AD8(unsigned char *a0, int a1, int a2, int a3, int a4) {
     a0[5] = a1;
     a0[6] = a2;
     a0[7] = a3;
@@ -249,14 +249,14 @@ void game_libs_func_00009AD8(unsigned char *a0, int a1, int a2, int a3, int a4) 
 }
 
 /* Clears MSB (sibling of matched _00009978). */
-void game_libs_func_00009AFC(unsigned char *arg0) {
+void Backup_func_00009AFC(unsigned char *arg0) {
     *arg0 &= 0x7F;
 }
 
 /* Sibling of 00009988 (copy to a0[1..3] via d[0]; same flag-pack a0[0]).
  * EXACT 21/21 (2026-07-08) via the same uchar-param + comma-init-for-loop
  * lever (see 00009988 / 00009C04). */
-void game_libs_func_00009B0C(char *a0, char *a1, unsigned char a2, unsigned char a3) {
+void Backup_func_00009B0C(char *a0, char *a1, unsigned char a2, unsigned char a3) {
     int n;
     char *d, *s;
     for (n = 0, d = a0, s = a1; ;) {
@@ -276,8 +276,8 @@ void game_libs_func_00009B0C(char *a0, char *a1, unsigned char a2, unsigned char
  * `if (n==3) break;` exit: materializes `li a1,3` right after `sb a1,0(a0)`
  * (target schedule) AND keeps the loop-bottom order (store before branch,
  * `s++` in the delay slot). See docs/IDO_CODEGEN.md "for-loop comma-init
- * flips the loop-pre-header schedule" (sibling game_libs_func_000099DC). */
-void game_libs_func_00009B60(char *a0, int a1, char *a2, int a3) {
+ * flips the loop-pre-header schedule" (sibling Backup_func_000099DC). */
+void Backup_func_00009B60(char *a0, int a1, char *a2, int a3) {
     int n;
     char *d, *s;
     a0[0] = a1;
@@ -295,23 +295,23 @@ void game_libs_func_00009B60(char *a0, int a1, char *a2, int a3) {
 
 /* Flag/compare-test accessor family (sibling of 00009A2C): splat split each
  * return-0 tail into the following empty-stub symbol; merged each is one fn. */
-int game_libs_func_00009B98(unsigned char *a0) {
+int Backup_func_00009B98(unsigned char *a0) {
     if (*a0 & 0x80) {
         return 1;
     }
     return 0;
 }
 
-int game_libs_func_00009BBC(int *a0, int a1) {
+int Backup_func_00009BBC(int *a0, int a1) {
     if (a0[1] < a1) {
         return 1;
     }
     return 0;
 }
 
-void game_libs_func_00009BE0(char *a0, int a1) { *(int*)(a0 + 4) = a1; *(unsigned char*)a0 |= 0x80; }
+void Backup_func_00009BE0(char *a0, int a1) { *(int*)(a0 + 4) = a1; *(unsigned char*)a0 |= 0x80; }
 
-void game_libs_func_00009BF4(int *a0) { *(int*)((char*)a0 + 0x0) &= 0x7F; }
+void Backup_func_00009BF4(int *a0) { *(int*)((char*)a0 + 0x0) &= 0x7F; }
 
 /* Word-variant sibling of 00009988: copy to a0[5..7] via d[4]; word flag-pack
  * *(int*)a0 = (*(int*)a0 & ~0x7F) | a2 | (a3<<3) (lw/sw, mask via li -0x80).
@@ -321,7 +321,7 @@ void game_libs_func_00009BF4(int *a0) { *(int*)((char*)a0 + 0x0) &= 0x7F; }
  * sw a2,8(sp)/sw a3,0xC(sp) homes + eager andi zero-extends; comma-init
  * for-loop pre-header (sibling 99DC recipe) gives li a1,3 + sb-in-delay.
  * Siblings 9988/9B0C should re-try the same lever. */
-void game_libs_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char a3) {
+void Backup_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char a3) {
     int n;
     char *d, *s;
     for (n = 0, d = (char *)a0, s = a1; ;) {
@@ -336,7 +336,7 @@ void game_libs_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char 
     *a0 = (*a0 & ~0x7F) | a2 | (a3 << 3);
 }
 
-/* game_libs_func_00009C5C: a0->0 = a1&0xFF; 3-iter char-transform loop
+/* Backup_func_00009C5C: a0->0 = a1&0xFF; 3-iter char-transform loop
  * (a0 bytes 5..7 = a2[0..2] - 0x61, family 99DC/9B60/9C04 comma-init recipe);
  * then a 5-word copy a0[2..6] = a3[1..5], a0 byte 4 = 5, a0[7] = a3[0].
  * EXACT 32/32 (2026-07-08). The old diagnosis ("shared strength-reduced
@@ -348,7 +348,7 @@ void game_libs_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char 
  * MUST be phrased base-0 (`i=0..4`, indices i+2/i+1): the equivalent
  * `for (i = 1; i < 6; i++) a0[i+1] = a3[i];` materializes i=2 instead
  * (bases +8, offsets 0..C) = 23/32. */
-void game_libs_func_00009C5C(int *a0, int a1, unsigned char *a2, int *a3) {
+void Backup_func_00009C5C(int *a0, int a1, unsigned char *a2, int *a3) {
     int n;
     char *d;
     unsigned char *s;
@@ -370,21 +370,21 @@ void game_libs_func_00009C5C(int *a0, int a1, unsigned char *a2, int *a3) {
     a0[7] = a3[0];
 }
 
-int game_libs_func_00009CDC(int *a0) {
+int Backup_func_00009CDC(int *a0) {
     if (a0[0] & 0x80) {
         return 1;
     }
     return 0;
 }
 
-int game_libs_func_00009D00(int *a0, int a1) {
+int Backup_func_00009D00(int *a0, int a1) {
     if (a0[7] < a1) {
         return 1;
     }
     return 0;
 }
 
-/* game_libs_func_00009D24 — 37/37 EXACT (2026-07-03, agent-e w4).
+/* Backup_func_00009D24 — 37/37 EXACT (2026-07-03, agent-e w4).
  * Target is IDO -O2's 4x-unrolled copy loop (andi rem=n&3 remainder-first
  * pre-loop + pointer-compare main loop). Two source properties required:
  *  1. Natural `for (i = 0; i < arg3; i++)` — NOT m2c's
@@ -400,7 +400,7 @@ int game_libs_func_00009D00(int *a0, int a1) {
  *     after the entry beq) and test the strength-reduced source pointer.
  * Also: `sb a3` needs no mask (& 0xFFFF was harmless but pointless).
  */
-void game_libs_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void Backup_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
   s32 i;
   *((int *) (((char *) arg0) + 0x1C)) = arg1;
   *((s8 *) (((char *) arg0) + 0x4)) = arg3;
@@ -410,7 +410,7 @@ void game_libs_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
   *((int *) (((char *) arg0) + 0x0)) = (s32) ((*((int *) (((char *) arg0) + 0x0))) | 0x80);
 }
 
-/* gl_func_00009DB8: 65-insn 3-iter batch dispatcher (size 0x104, frame 0x48, saves s0-s7).
+/* Backup_func_00009DB8: 65-insn 3-iter batch dispatcher (size 0x104, frame 0x48, saves s0-s7).
  *
  * Iterates 3 times over a 3-element record array (12-byte stride), each
  * iteration computing a grid-index from (counter % 5) + (alignment-adjusted
@@ -492,7 +492,7 @@ void game_libs_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
  * ctx stays the inline `(char *)&D_00000000 + 0xD430` (uopt hoists it: lui
  * s6 / sw ra / addiu s6). */
 extern int gl_func_00000000();
-void gl_func_00009DB8(int *out, int ia, int ib, int *src) {
+void Backup_func_00009DB8(int *out, int ia, int ib, int *src) {
     int k;
     for (k = 0; k < 3; k++) {
         gl_func_00000000(out + k * 2, ((ia + k) % 5) + (((ib + k) % 8) << 3), 0,
@@ -501,7 +501,7 @@ void gl_func_00009DB8(int *out, int ia, int ib, int *src) {
     }
 }
 
-/* gl_func_00009EBC: 3-iteration loop dispatching to gl_func_00000000 with
+/* Backup_func_00009EBC: 3-iteration loop dispatching to gl_func_00000000 with
  * a 5x8 grid index computed as (a1 % 5) + ((a2 % 8) << 3). The signed
  * remainder of a2 by 8 comes from a sign-preserving bgez/andi/beq dance
  * (low 3 bits, adjusted by -8 when a2<0 and low bits nonzero). Args:
@@ -512,7 +512,7 @@ void gl_func_00009DB8(int *out, int ia, int ib, int *src) {
  * 2026-09-11 (agent-g): EXACT 59/59. The 84.1% wrap hand-stepped four
  * cursors (dst += 8; row++; col++; a3++) inside `for (i = 0; i != 12; i += 4)`
  * and named the D+0xD434 arg as a pinned extern. Same shape as its sibling
- * gl_func_00009DB8 (docs/IDO_CODEGEN.md
+ * Backup_func_00009DB8 (docs/IDO_CODEGEN.md
  * #iv-elimination-corollaries-candidate-first-addu-inline-cursors-aaec-9db8-afc4):
  * `for (k = 0; k < 3; k++)` with every cursor derived INLINE in the call --
  * x0 + 0x18 + k*8 (s0, first occurrence = a0 + 24), (a1 + k) % 5 (s1),
@@ -522,7 +522,7 @@ void gl_func_00009DB8(int *out, int ia, int ib, int *src) {
  * `(char *)&D_00000000 + 0xD434` (uopt hoists it to s6, lui s6,1 /
  * addiu s6,s6,-11212 = the carry form). */
 extern int gl_func_00000000();
-void gl_func_00009EBC(char *x0, int a1, int a2, int *a3) {
+void Backup_func_00009EBC(char *x0, int a1, int a2, int *a3) {
     int k;
     for (k = 0; k < 3; k++) {
         gl_func_00000000(x0 + 0x18 + k * 8, ((a1 + k) % 5) + (((a2 + k) % 8) << 3),
@@ -530,10 +530,10 @@ void gl_func_00009EBC(char *x0, int a1, int a2, int *a3) {
     }
 }
 
-/* gl_func_00009FA8: 25-insn 3-iteration loop with 2 cross-USO calls per
+/* Backup_func_00009FA8: 25-insn 3-iteration loop with 2 cross-USO calls per
  * iter. Calls gl_func(a0+i) and gl_func(a0+0x18+i) for i = 0, 8, 0x10. */
 extern int gl_func_00000000();
-void gl_func_00009FA8(char *a0) {
+void Backup_func_00009FA8(char *a0) {
     int i;
     char *p, *q;
     int limit;
@@ -550,13 +550,13 @@ void gl_func_00009FA8(char *a0) {
     } while (i != limit);
 }
 
-/* gl_func_0000A00C: process two parallel slot-arrays (a0 and a0+0x18), 3 iters
+/* Backup_func_0000A00C: process two parallel slot-arrays (a0 and a0+0x18), 3 iters
  * of stride 8: for each slot, if gl_func(slot) != 0, gl_func(slot, a1, a2, a3).
  * a2/a3 are `unsigned char` params -> IDO homes the raw args to their incoming
  * slots (sw a2,0x40; sw a3,0x44) AND eagerly zero-extends once at the top
  * (andi s4,a2,0xFF; andi s5,a3,0xFF), matching the target exactly. */
 extern int gl_func_00000000();
-void gl_func_0000A00C(int a0, int a1, unsigned char a2, unsigned char a3) {
+void Backup_func_0000A00C(int a0, int a1, unsigned char a2, unsigned char a3) {
     int s3 = a1;
     int s4 = a2;
     int s5 = a3;
@@ -576,10 +576,10 @@ void gl_func_0000A00C(int a0, int a1, unsigned char a2, unsigned char a3) {
     } while (s2 != 0x18);
 }
 
-/* gl_func_0000A0CC: 25-insn 3-iter loop calling gl_func_00000000 on
+/* Backup_func_0000A0CC: 25-insn 3-iter loop calling gl_func_00000000 on
  * a0[0], a0+8, a0+0x10. Returns count of non-zero return values. */
 extern int gl_func_00000000();
-int gl_func_0000A0CC(char *a0) {
+int Backup_func_0000A0CC(char *a0) {
     char *p;
     int count;
     int i;
@@ -597,7 +597,7 @@ int gl_func_0000A0CC(char *a0) {
     return count;
 }
 
-/* gl_func_0000A130: 25-insn 3-iter loop counting non-zero callee returns.
+/* Backup_func_0000A130: 25-insn 3-iter loop counting non-zero callee returns.
  * CRACKED 2026-05-27 via first-assignment-order lever:
  *   - `int i, count; char *p;` (decl)
  *   - `count = 0;` then `i = 0;` then `p = a0 + 0x18;` (assignment order)
@@ -608,7 +608,7 @@ int gl_func_0000A0CC(char *a0) {
  * (i); source-order `count = 0; i = 0;` (count assigned first) produces
  * exactly that. Bytes 25/25. */
 extern int gl_func_00000000();
-int gl_func_0000A130(char *a0) {
+int Backup_func_0000A130(char *a0) {
     int i, count;
     char *p;
     count = 0;
@@ -621,33 +621,33 @@ int gl_func_0000A130(char *a0) {
     return count;
 }
 
-/* game_libs_func_0000A194: 3-insn leaf — return base + a1*8.
+/* Backup_func_0000A194: 3-insn leaf — return base + a1*8.
  *   sll t6, a1, 3; jr ra; addu v0, a0, t6 (delay).
  * Array stride-8 element pointer. Index-as-shift+add via int arith. */
-int game_libs_func_0000A194(int a0, int a1) {
+int Backup_func_0000A194(int a0, int a1) {
     int t = a1 << 3;
     return a0 + t;
 }
 
-/* game_libs_func_0000A1A0: 4-insn leaf — return base + a1*8 + 0x18.
+/* Backup_func_0000A1A0: 4-insn leaf — return base + a1*8 + 0x18.
  *   sll t6, a1, 3; addu v0, a0, t6; jr ra; addiu v0, v0, 0x18 (delay).
  * Same stride-8 element pointer + 0x18 field offset. */
-int game_libs_func_0000A1A0(int a0, int a1) {
+int Backup_func_0000A1A0(int a0, int a1) {
     int t = a1 << 3;
     return a0 + t + 0x18;
 }
 
-/* game_libs_func_0000A1B0: ms -> {minutes, seconds, hundredths} byte triple,
+/* Backup_func_0000A1B0: ms -> {minutes, seconds, hundredths} byte triple,
  * then find-first-match over 3 stride-8 entries. BYTE-EXACT 66/66 (2026-09-09,
- * agent-g) as ONE function [0xA1B0,0xA2B8): the 4-word "game_libs_func_0000A1B0"
+ * agent-g) as ONE function [0xA1B0,0xA2B8): the 4-word "Backup_func_0000A1B0"
  * (`ori a3,zero,0xEA60; div a1,a3; mflo v0; li t0,1000`) was the hoisted
  * `ms / 60000` head of the 0xF8 INCLUDE_ASM gl_func_0000A1C0 (agent-c's
  * fake-param class, docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c).
  * Sym oracle (section = splat + 0x1466C): 0x1E81C (0xA1B0) = export sym 1066
  * with 1 R_MIPS_26 ref (TextReloc @0x2154C); 0x1E82C (0xA1C0) not exported, no
  * baked jal. The jal at +0xC4 is blank R_MIPS_26 to sym1044 (text 0x1E0BC =
- * splat 0x9A50, game_libs_func_00009A50) -> func_00000000, same callee shape as
- * the matched gl_func_0000A4D0 sibling below (loop body identical: beqzl +
+ * splat 0x9A50, Backup_func_00009A50) -> func_00000000, same callee shape as
+ * the matched Backup_func_0000A4D0 sibling below (loop body identical: beqzl +
  * `addiu s0` likely-fill, `b` + `or v0,s0` exit, tail-dup `addiu s0`).
  * Shape keys: (1) the remainders are written as `x - q * d` (IDO emits
  * `mflo q; multu q,d; subu` -- a `%` gives `mfhi` instead); (2) `int i`
@@ -656,7 +656,7 @@ int game_libs_func_0000A1A0(int a0, int a1) {
  * to 0x50; (4) i/entry initialised in the for-header so their `or s0/s1` land
  * in the multu latency slot after the second div check, not above it. */
 extern int func_00000000();
-int game_libs_func_0000A1B0(int *a0, int ms) {
+int Backup_func_0000A1B0(int *a0, int ms) {
     int i;
     unsigned char buf[4];
     char *entry;
@@ -676,10 +676,10 @@ int game_libs_func_0000A1B0(int *a0, int ms) {
     return 3;
 }
 
-/* gl_func_0000A2B8: insert a {min, sec, hundredths} record at slot idx of a
+/* Backup_func_0000A2B8: insert a {min, sec, hundredths} record at slot idx of a
  * 3-entry table of 8-byte unaligned records (shift entries [idx..1] up one,
  * then fill slot idx via the blank callee) -- EXACT 134/134 (2026-10-15,
- * agent-g). Sibling of game_libs_func_0000A1B0 above (same ms split, same
+ * agent-g). Sibling of Backup_func_0000A1B0 above (same ms split, same
  * `x - q * d` remainder form). Shape keys: (1) the record is a char[8]
  * struct (alignment 1 -> lwl/lwr + swl/swr struct copy; IDO unrolls the
  * shift loop by 4 with the negu'd (2-idx)&3 remainder prologue); (2) the
@@ -689,7 +689,7 @@ int game_libs_func_0000A1B0(int *a0, int ms) {
  * be the byte-offset form `(char *)a0 + idx * 8` -- `&a0[idx]` / `a0 + idx`
  * swap the t2/t5 colours of the a0 reload vs the idx*8 shift. */
 typedef struct { char b[8]; } Entry8;
-void gl_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
+void Backup_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
     int i;
     int min, rem, sec;
     if (idx < 3) {
@@ -705,7 +705,7 @@ void gl_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
     }
 }
 
-/* gl_func_0000A4D0: 28-insn find-first-match-in-3-entries.
+/* Backup_func_0000A4D0: 28-insn find-first-match-in-3-entries.
  *   for (i = 0; i < 3; i++) {
  *     if (func(a0->[0x18 + i*8], a1) != 0) return i;
  *   }
@@ -717,7 +717,7 @@ void gl_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
  * BEFORE `entry` makes IDO emit the i-init first -> byte-exact. Replaces the
  * old banned 2-insn INSN_PATCH. */
 extern int func_00000000();
-int gl_func_0000A4D0(int *a0, int a1) {
+int Backup_func_0000A4D0(int *a0, int a1) {
     int i = 0;
     char *entry = (char*)a0 + 0x18;
     for (; i < 3; i++) {
@@ -729,9 +729,9 @@ int gl_func_0000A4D0(int *a0, int a1) {
     return 3;
 }
 
-/* gl_func_0000A540: shift-insert into the 3-entry stride-8 table at +0x18
+/* Backup_func_0000A540: shift-insert into the 3-entry stride-8 table at +0x18
  * (aligned int pairs -> lw/sw), then blank callee(&e[idx], arg2) -- EXACT
- * 76/76 (2026-10-15, agent-g). Twin of gl_func_0000A2B8 above: the target's
+ * 76/76 (2026-10-15, agent-g). Twin of Backup_func_0000A2B8 above: the target's
  * unroll-by-4 is IDO's own (one element per source iteration -- the old
  * "double-unroll, per-file -O" note in docs/MATCHING_WORKFLOW.md came from
  * compiling m2c's already-unrolled loop), and the doubled `slti a1,2` entry
@@ -739,7 +739,7 @@ int gl_func_0000A4D0(int *a0, int a1) {
  * (docs/IDO_CODEGEN.md#dup-loop-entry-test-explicit-guard-a2b8). */
 typedef struct { int a, b; } Pair8;
 typedef struct { char pad[0x18]; Pair8 e[3]; } PairTab;
-void gl_func_0000A540(PairTab *a0, int idx, int arg2) {
+void Backup_func_0000A540(PairTab *a0, int idx, int arg2) {
     int i;
     if (idx < 3) {
         if (idx < 2) {
@@ -751,7 +751,7 @@ void gl_func_0000A540(PairTab *a0, int idx, int arg2) {
     }
 }
 
-/* gl_func_0000A670: 8-slot twin-call loop over two data-segment tables (62 insns,
+/* Backup_resetCourseData_0000A670: 8-slot twin-call loop over two data-segment tables (62 insns,
  * frame 0x38, s0-s7) -- EXACT 62/62 (2026-09-11 agent-g; was NM 95.5). The three
  * cursors are BASIC-INDUCTION-VARIABLE derivations, not hand-stepped pointers: written
  * as `for (k = 0; k < 8; k++)` with `arg0 + k*0x30`, `k*3`, `&D + 0xD268 + k*0x24`,
@@ -760,9 +760,9 @@ void gl_func_0000A540(PairTab *a0, int idx, int arg2) {
  * (`lui/addiu -11288` = 0xD3E8), and leaves the eliminated k's init behind as the dead
  * `or v0,zero,zero` (the residual the hand-stepped form could never emit). The s-colours
  * follow first occurrence: the arg cursor must be named BEFORE `i = k * 3` (s0/s1).
- * Both callees are the USO-reloc blank (jal 0x0): the in-TU K&R gl_func_0000959C would
+ * Both callees are the USO-reloc blank (jal 0x0): the in-TU K&R ColourItem_create_0000959C would
  * link a real address into the ROM. See docs/IDO_CODEGEN.md#basic-iv-elimination-leaves-dead-init-a670. */
-void gl_func_0000A670(s32 arg0) {
+void Backup_resetCourseData_0000A670(s32 arg0) {
     s32 k;
     s32 p;
     s32 i;
@@ -776,7 +776,7 @@ void gl_func_0000A670(s32 arg0) {
 
 extern int gl_func_00000000();
 
-void gl_func_0000A768(char *a0) {
+void Backup_writeCourseData_0000A768(char *a0) {
     int i;
     char *p;
     i = 0;
@@ -787,7 +787,7 @@ void gl_func_0000A768(char *a0) {
     }
 }
 
-void gl_func_0000A7B4(char *obj, int a1, unsigned char c2, unsigned char c3, unsigned char *flags) {
+void Backup_func_0000A7B4(char *obj, int a1, unsigned char c2, unsigned char c3, unsigned char *flags) {
     char *p = obj;
     int i;
     for (i = 0; i != 8; i++) {
@@ -814,23 +814,23 @@ void gl_func_0000A7B4(char *obj, int a1, unsigned char c2, unsigned char c3, uns
  *   - after third call: EXACT.
  * Multi-var conditions (a1&&c2 etc.) EMIT +4 insns; only single-var empty-if is free. */
 
-/* Bitfield getter/setter cluster — gl_func_0000A7B4's tail-extracted micros.
+/* Bitfield getter/setter cluster — Backup_func_0000A7B4's tail-extracted micros.
  * Each get returns a sub-field; each set replaces it in place. */
 
 /* getter: bits 0..1 → return (*a0 & 3) */
-int game_libs_func_0000A878(int *a0) { return *a0 & 3; }
+int Backup_func_0000A878(int *a0) { return *a0 & 3; }
 
 /* setter: bits 0..1 ← a1. Target writes the cleared-value intermediate too. */
-void game_libs_func_0000A884(int *a0, int a1) {
+void Backup_func_0000A884(int *a0, int a1) {
     *a0 = *a0 & ~3;
     *a0 = *a0 | (a1 & 3);
 }
 
 /* getter: bits 2..4 → return (*a0 >> 2) & 7 */
-int game_libs_func_0000A8A4(int *a0) { return (*a0 >> 2) & 7; }
+int Backup_func_0000A8A4(int *a0) { return (*a0 >> 2) & 7; }
 
 /* setter: bits 2..4 ← a1 */
-void game_libs_func_0000A8B4(int *a0, int a1) {
+void Backup_func_0000A8B4(int *a0, int a1) {
     *a0 = *a0 & ~0x1C;
     *a0 = *a0 | ((a1 & 7) << 2);
 }
@@ -844,9 +844,9 @@ void game_libs_func_0000A8B4(int *a0, int a1) {
  * function (shared-tail space optimization). Plain C cannot suppress the
  * trailing epilogue; would need a TRUNCATE_TEXT=8 post-cc strip, not
  * worth it for an 8-byte fn. Keep INCLUDE_ASM (no episode). */
-/* game_libs_func_0000A8D8: bit-test accessor; splat split the return-0 tail
+/* Backup_func_0000A8D8: bit-test accessor; splat split the return-0 tail
  * into the 0000A8F8 empty stub (sibling of the 00009A2C family). Merged. */
-int game_libs_func_0000A8D8(int *a0) {
+int Backup_func_0000A8D8(int *a0) {
     if ((a0[0] >> 5) & 1) {
         return 32;
     }
@@ -854,31 +854,31 @@ int game_libs_func_0000A8D8(int *a0) {
 }
 
 /* setter: bit 5 ← (a1 & 0x20) */
-void game_libs_func_0000A900(int *a0, int a1) {
+void Backup_func_0000A900(int *a0, int a1) {
     *a0 = *a0 & ~0x20;
     if (a1 & 0x20) *a0 = *a0 | 0x20;
 }
 
 /* getter: bits 6..9 → return (*a0 >> 6) & 0xF */
-int game_libs_func_0000A928(int *a0) { return (*a0 >> 6) & 0xF; }
+int Backup_func_0000A928(int *a0) { return (*a0 >> 6) & 0xF; }
 
 /* setter: bits 6..9 ← a1 */
-void game_libs_func_0000A938(int *a0, int a1) {
+void Backup_func_0000A938(int *a0, int a1) {
     *a0 = *a0 & ~0x3C0;
     *a0 = *a0 | ((a1 & 0xF) << 6);
 }
 
 /* getter: bits 10..13 → return (*a0 >> 10) & 0xF */
-int game_libs_func_0000A95C(int *a0) { return (*a0 >> 10) & 0xF; }
+int Backup_func_0000A95C(int *a0) { return (*a0 >> 10) & 0xF; }
 
 /* setter: bits 10..13 ← a1 */
-void game_libs_func_0000A96C(int *a0, int a1) {
+void Backup_func_0000A96C(int *a0, int a1) {
     *a0 = *a0 & ~0x3C00;
     *a0 = *a0 | ((a1 & 0xF) << 10);
 }
 
-/* gl_func_0000A990: 25-insn 5-identical-call + 2-zero-fields wrapper. */
-void gl_func_0000A990(int *a0) {
+/* Backup_resetGhostData_0000A990: 25-insn 5-identical-call + 2-zero-fields wrapper. */
+void Backup_resetGhostData_0000A990(int *a0) {
     func_00000000(a0, 0);
     func_00000000(a0, 0);
     func_00000000(a0, 0);
@@ -890,13 +890,13 @@ void gl_func_0000A990(int *a0) {
 
 extern int gl_func_00000000();
 
-int gl_func_0000A9F4(int a0, int a1) {
+int Backup_func_0000A9F4(int a0, int a1) {
     int r = gl_func_00000000(a0, a1);
     if (r == a1) return 1;
     return 0;
 }
 
-/* gl_func_0000AA28 — 21/21 EXACT (2026-07-03, agent-e w4).
+/* Backup_func_0000AA28 — 21/21 EXACT (2026-07-03, agent-e w4).
  * Was documented "cap: IDO scheduling choice, redundant lw a1 reload not
  * reachable from C". FALSE — it was a LOGIC bug. The target has NO a1/a2
  * reloads before the second jal (only `lw a0,0x18(sp)` in the delay slot),
@@ -909,7 +909,7 @@ int gl_func_0000A9F4(int a0, int a1) {
  * Sub-94% "scheduler cap" verdicts can hide arg-list logic diffs: check
  * which arg regs are (re)loaded before each jal FIRST. */
 extern int gl_func_00000000();
-int gl_func_0000AA28(int a0, int a1, int a2) {
+int Backup_func_0000AA28(int a0, int a1, int a2) {
     if (gl_func_00000000(a0, a1, a2) != a1) goto fail;
     if (gl_func_00000000(a0) != a2) goto fail;
     return 1;
@@ -919,7 +919,7 @@ fail:
 
 /* 28-insn / 0x70 5-call wrapper followed by 2-field commit. Each call passes
  * the same a0 plus a different arg as a1; result of last call is ignored. */
-void gl_func_0000AA7C(int *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
+void Backup_func_0000AA7C(int *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
     gl_func_00000000(a0, a1);
     gl_func_00000000(a0, a3);
     gl_func_00000000(a0, arg5);
@@ -929,7 +929,7 @@ void gl_func_0000AA7C(int *a0, int a1, int a2, int a3, int arg5, int arg6, int a
     a0[2] = arg7;
 }
 
-/* gl_func_0000AAEC: 33-insn 3-iter fixed-loop 4-arg helper (0x84, frame 0x30).
+/* Backup_resetArcadeData_0000AAEC: 33-insn 3-iter fixed-loop 4-arg helper (0x84, frame 0x30).
  *
  * Decoded structure (raw-word disasm):
  *   self2 = &D_1D438;                              // s3 (constant ptr1)
@@ -963,7 +963,7 @@ void gl_func_0000AA7C(int *a0, int a1, int a2, int a3, int arg5, int arg6, int a
  * bare `i + ...` / `... + i` both put the sll temp first -- the 675A4
  * deeper-operand-first rule); `(i + 4) * 8 + i` / `i * 9 + 32` are
  * strength-reduced into a second derived IV (32 words, `addiu s2,s2,9`). */
-void gl_func_0000AAEC(char *a0) {
+void Backup_resetArcadeData_0000AAEC(char *a0) {
     int i;
     for (i = 0; i < 3; i++) {
         gl_func_00000000(a0 + i * 0x20, (i | 0) + ((i + 4) << 3),
@@ -974,7 +974,7 @@ void gl_func_0000AAEC(char *a0) {
 
 extern int gl_func_00000000();
 
-void gl_func_0000AB70(char *a0) {
+void Backup_writeArcadeData_0000AB70(char *a0) {
     int i;
     char *p;
     i = 0;
@@ -985,7 +985,7 @@ void gl_func_0000AB70(char *a0) {
     }
 }
 
-/* gl_func_0000ABBC: 3-slot notify loop with flag-history update, BYTE-EXACT
+/* Backup_func_0000ABBC: 3-slot notify loop with flag-history update, BYTE-EXACT
  * 64/64 (2026-10-14 agent-g; the 83.2% wrap hand-carried i / one / limit /
  * cursor locals). For each 0x20-byte slot whose probe returns non-zero: call
  * the second handler with (slot, a1, a2, a3), then shift the history byte
@@ -996,7 +996,7 @@ void gl_func_0000AB70(char *a0) {
  * constants, not locals; the case-1 value puts the shifted term FIRST,
  * `((*f & 2) << 1) | (*f & 1)` (andi-1 then takes t9 with the and-2/sll
  * pair in t0/t1 -- the written-second-is-allocated-first order). */
-void gl_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
+void Backup_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
     int i;
     for (i = 0; i < 3; i++) {
         if (gl_func_00000000(a0 + i * 0x20) != 0) {
@@ -1014,7 +1014,7 @@ void gl_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, unsi
     }
 }
 
-/* gl_func_0000ACBC: 25-insn 3-iter loop, sibling of gl_func_0000A0CC.
+/* Backup_func_0000ACBC: 25-insn 3-iter loop, sibling of Backup_func_0000A0CC.
  * Calls func_00000000 (NOTE: not gl_-prefixed — target's reloc references
  * the intra-segment `func_00000000` symbol, not `gl_func_00000000`).
  * Returns non-zero hit count. Source structurally identical to A0CC;
@@ -1024,7 +1024,7 @@ void gl_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, unsi
  * match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int func_00000000();
-int gl_func_0000ACBC(char *a0) {
+int Backup_func_0000ACBC(char *a0) {
     char *p;
     int count;
     int i;
@@ -1042,19 +1042,19 @@ int gl_func_0000ACBC(char *a0) {
     return count;
 }
 
-char *game_libs_func_0000AD20(char *a0, int a1) {
+char *Backup_func_0000AD20(char *a0, int a1) {
     int off = a1 * 0x20;
     return a0 + off;
 }
 
-/* gl_func_0000AD2C: 28-insn 3-iter try-or-advance loop. MATCHED (byte-exact).
+/* Backup_func_0000AD2C: 28-insn 3-iter try-or-advance loop. MATCHED (byte-exact).
  * The "natural ceiling 92.14%" prologue-setup-reorder cap was MISDIAGNOSED:
  * it was a first-use ordering issue. Fix = a separate pointer local `p = a0`
  * AND initializing `i = 0` BEFORE `p = a0` (so the saved-reg copy order becomes
  *   move s2,a1 / sw ra / move s0,0 (i) / move s1,a0 (p)
  * matching target). Both levers needed: the bare-loop form copied s1=a0 first. */
 extern int gl_func_00000000();
-int gl_func_0000AD2C(char *a0, int a1) {
+int Backup_func_0000AD2C(char *a0, int a1) {
     char *p;
     int i;
     i = 0;
@@ -1066,7 +1066,7 @@ int gl_func_0000AD2C(char *a0, int a1) {
     return 3;
 }
 
-/* gl_func_0000AD9C: insert-shift on a 3-slot array of 32-byte records:
+/* Backup_func_0000AD9C: insert-shift on a 3-slot array of 32-byte records:
  * if idx < 3, move records [idx..1] up one slot (arr[i] = arr[i - 1] for
  * i = 2 down to idx + 1), then hand the freed slot &arr[idx] to the
  * callee with the three trailing args. The 138-word body is IDO's x4
@@ -1080,7 +1080,7 @@ int gl_func_0000AD2C(char *a0, int a1) {
 struct AD9C_Rec {
     int w[8];
 };
-void gl_func_0000AD9C(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
+void Backup_func_0000AD9C(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
     s32 i;
 
     if (idx < 3) {
@@ -1096,7 +1096,7 @@ void gl_func_0000AD9C(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* gl_func_0000AFC4: 57-insn joybus/controller-block init. WAVE-3 REDECODE
+/* Backup_resetOptionsData_0000AFC4: 57-insn joybus/controller-block init. WAVE-3 REDECODE
  * 2026-07-15 (agent-h): old body was mis-typed m2c (int derefs at byte
  * offsets -> swl/swr pairs, 65 insns, 32.65 fuzzy). Retyped: s16/u16 header
  * words, byte stores, u8 call args (lbu), scalar-extern flag store ($at
@@ -1121,7 +1121,7 @@ void gl_func_0000AD9C(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
  * grows the frame (+8) and keeps the web first. */
 typedef char *(*GP_0000AFC4)();
 extern int gl_flag_AFC4_bit2;
-void gl_func_0000AFC4(char *arg0) {
+void Backup_resetOptionsData_0000AFC4(char *arg0) {
     volatile int padA_afc4[2];
     s32 sp3C;
     volatile int padB_afc4[4];
@@ -1159,7 +1159,7 @@ void gl_func_0000AFC4(char *arg0) {
     } while (0);
 }
 
-/* gl_func_0000B0A8: constructor. obj = arg0 ?: alloc(0x18); obj->0x10=arg1,
+/* Backup_openSession: constructor. obj = arg0 ?: alloc(0x18); obj->0x10=arg1,
  * obj->0x14=0; obj->0=cb(arg1); obj->4=cb(obj->0x10); obj->8=cb(obj->0x10);
  * if (arg3==-1) arg3=cb(obj->8); v=cb(obj->8,arg2,arg3); if (v==0) {
  * cb(obj->8,0); obj->8->4=0; if(obj->8->8) cb(obj->8->8); obj->8->8=0; }.
@@ -1195,7 +1195,7 @@ void gl_func_0000AFC4(char *arg0) {
  * the real fn at game_libs VRAM 0, gl_func_00000000_b0a8v pins to 0), so the
  * linked words equal the baked ROM words; cmp stays byte-identical. */
 extern int gl_func_00000000();
-int gl_func_0000B0A8(int *arg0, int arg1, int arg2, int arg3) {
+int Backup_openSession(int *arg0, int arg1, int arg2, int arg3) {
     int v1;
     if (arg0 == 0) {
         arg0 = (int *)gl_func_00000000(0x18);
@@ -1230,7 +1230,7 @@ end:
 }
 
 extern int gl_func_00000000();
-void gl_func_0000B190(int *a0, int a1) {
+void Backup_closeSession(int *a0, int a1) {
     int *inner;
     if (a0 != NULL) {
         gl_func_00000000(*a0);
@@ -1247,7 +1247,7 @@ void gl_func_0000B190(int *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0000B208(int *a0) {
+int Backup_func_0000B208(int *a0) {
     int s0;
     int s1 = 0;
     int s2 = 0;
@@ -1264,7 +1264,7 @@ int gl_func_0000B208(int *a0) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0000B290(int *a0) {
+int Backup_func_0000B290(int *a0) {
     int s0;
     int s2 = 0;
     for (s0 = 0; s0 != 0x180; s0 += 0x30) {
@@ -1276,7 +1276,7 @@ int gl_func_0000B290(int *a0) {
     return s2;
 }
 
-/* gl_func_0000B310: 40-insn 8-iter or-pair counter + index-array-fill.
+/* Backup_func_0000B310: 40-insn 8-iter or-pair counter + index-array-fill.
  *   for (i = 0; i < 8; i++) {
  *     if (func(a0[0]+off) || func(a0[0]+off)) { a1[count++] = i; }
  *     off += 0x30;
@@ -1290,7 +1290,7 @@ int gl_func_0000B290(int *a0) {
  * match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int gl_func_00000000();
-/* gl_func_0000B310 — 40/40 EXACT (2026-07-03, agent-e w4).
+/* Backup_func_0000B310 — 40/40 EXACT (2026-07-03, agent-e w4).
  * Was documented "NATURAL CEILING 92.93% — or v0,s2,zero delay-slot insertion
  * not naturally reachable". CRACKED with three coupled levers:
  *  1. Explicit copy-then-redefine order `r = count; count++; a1[r] = iter;`
@@ -1308,7 +1308,7 @@ extern int gl_func_00000000();
  *     store emits first (40/40). The shared line is LOAD-BEARING.
  */
 extern int gl_func_00000000();
-void gl_func_0000B310(int *a0, int *a1) {
+void Backup_func_0000B310(int *a0, int *a1) {
   int count = 0;
   int iter = 0;
   int offset = 0;
@@ -1324,7 +1324,7 @@ void gl_func_0000B310(int *a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0000B3B0() {
+int Backup_func_0000B3B0() {
     int r = gl_func_00000000();
     if (r != 0) return 1;
     return 0;
@@ -1332,7 +1332,7 @@ int gl_func_0000B3B0() {
 
 extern int func_00000000();
 extern int D_00000000;
-void gl_func_0000B3DC(int *a0) {
+void Backup_writeCourseArcadeOptions_0000B3DC(int *a0) {
     int v = a0[0x14/4];
     if ((v & 3) != 0) {
         func_00000000(a0[0x10/4], a0[0]);
@@ -1344,7 +1344,7 @@ void gl_func_0000B3DC(int *a0) {
     func_00000000(a0[0x10/4], *(int*)((char*)&D_00000000 + 0x154));
 }
 
-void gl_func_0000B450(int *a0) {
+void Backup_func_0000B450(int *a0) {
     int flags = a0[0x14 / 4];
     if (flags & 3) {
         gl_func_00000000(a0[0]);
@@ -1358,7 +1358,7 @@ void gl_func_0000B450(int *a0) {
 extern int gl_func_00000000();
 extern int D_00000000;
 
-void gl_func_0000B4A4(int *a0, int a1, char a2, char a3) {
+void Backup_func_0000B4A4(int *a0, int a1, char a2, char a3) {
     if (a0[5] & 1) {
         gl_func_00000000(a0[0], a1, a2, a3,
             (*(char**)((char*)&D_00000000 + 0x154)) + 0xE);
@@ -1375,21 +1375,21 @@ void gl_func_0000B4A4(int *a0, int a1, char a2, char a3) {
 
 /* 15-insn 2-call wrapper (0x3C). LANDED fuzzy=100. The historical 4-byte
  * SUFFIX_BYTES tail (`sll/subu/addiu/div` computing (a1*3)/5, supplying
- * stolen-prologue setup for successor gl_func_0000B5AC) was REMOVED
+ * stolen-prologue setup for successor Backup_func_0000B5AC) was REMOVED
  * 2026-05-23 as match-faking; those bytes now belong to B5AC's own symbol.
- * The 4 words [0xB59C,0xB5AC) were later restored to gl_func_0000B5AC.s
+ * The 4 words [0xB59C,0xB5AC) were later restored to Backup_func_0000B5AC.s
  * (relayout, 2026-06); they are B5AC's own hoisted head, matched as C
  * 2026-09-09 -- see the successor just below. */
 extern int gl_func_00000000();
-void gl_func_0000B560(int *p) {
+void Backup_writeCourseArcade_0000B560(int *p) {
     gl_func_00000000(p[4], p[0]);
     gl_func_00000000(p[4], p[1]);
 }
 
-/* gl_func_0000B5AC: per-slot dispatch pair, BYTE-EXACT 35/35 (2026-09-09, agent-g)
+/* Backup_func_0000B5AC: per-slot dispatch pair, BYTE-EXACT 35/35 (2026-09-09, agent-g)
  * as ONE function [0xB59C,0xB628) -- the .s already carries the 4-word head
  * (`sll v0,a1,2; subu v0,v0,a1; li at,5; div v0,at`), which is the hoisted
- * `n = a1*3` + `n % 5` of the body, exactly as its twin game_libs_func_0000B628
+ * `n = a1*3` + `n % 5` of the body, exactly as its twin Backup_func_0000B628
  * just below (docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c).
  * Sym oracle (section = splat + 0x1466C): 0x1FC08 (0xB59C) = export sym 1103;
  * 0x1FC18 (0xB5AC) is NOT exported. The 3-month "inherits $hi and $v0 from
@@ -1408,7 +1408,7 @@ void gl_func_0000B560(int *p) {
  * B628 (docs/IDO_CODEGEN.md#bb-boundary-blocks-sym-addend-reassociation-b628).
  * Both jals are blank (R_MIPS_26 -> func_00000000). */
 extern int func_00000000();
-void gl_func_0000B5AC(int *a0, int a1) {
+void Backup_func_0000B5AC(int *a0, int a1) {
     int n = a1 * 3;
     int k = a1 * 9;
     int *tbl;
@@ -1417,8 +1417,8 @@ void gl_func_0000B5AC(int *a0, int a1) {
     func_00000000(a0);
 }
 
-/* game_libs_func_0000B628: per-slot dispatch pair, BYTE-EXACT 33/33 (2026-09-09,
- * agent-g) as ONE function [0xB628,0xB6AC): the 4-word "game_libs_func_0000B628"
+/* Backup_func_0000B628: per-slot dispatch pair, BYTE-EXACT 33/33 (2026-09-09,
+ * agent-g) as ONE function [0xB628,0xB6AC): the 4-word "Backup_func_0000B628"
  * (`sll v0,a1,2; subu v0,v0,a1; li at,5; div v0,at`) was the hoisted `n = a1*3`
  * + `n % 5` head of the 0x74 INCLUDE_ASM gl_func_0000B638 (agent-c's fake-param
  * class, docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c).
@@ -1441,7 +1441,7 @@ void gl_func_0000B5AC(int *a0, int a1) {
  * D+0xD388 with the addend in the hi/lo pair (`sll t0,v0,2; addu a3,t0,t1`)
  * -- docs/IDO_CODEGEN.md#bb-boundary-blocks-sym-addend-reassociation-b628. */
 extern int func_00000000();
-void game_libs_func_0000B628(int *a0, int a1) {
+void Backup_func_0000B628(int *a0, int a1) {
     int n = a1 * 3;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD388); } while (0);
@@ -1450,20 +1450,20 @@ void game_libs_func_0000B628(int *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000B6AC(int *a0) {
+void Backup_func_0000B6AC(int *a0) {
     gl_func_00000000(a0[1]);
     gl_func_00000000(a0);
 }
 
 extern int gl_func_00000000();
-void gl_func_0000B6D8(int *a0) {
+void Backup_func_0000B6D8(int *a0) {
     gl_func_00000000(a0[2]);
     gl_func_00000000(a0[4], a0[2]);
 }
 
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_0000B710(int *a0) {
+void Backup_resetAll_0000B710(int *a0) {
     gl_func_00000000(*a0);
     gl_func_00000000(a0[1]);
     gl_func_00000000(a0);
@@ -1534,7 +1534,7 @@ void Backup_write(int a0, int a1, int a2, int a3) {
     gl_func_00000000(&gl_data_B938_arg, a2, a3);
 }
 
-/* gl_func_0000B958: 69-insn word-array equality predicate. Compares a3/4 words
+/* Backup_func_0000B958: 69-insn word-array equality predicate. Compares a3/4 words
  * (signed div, trunc-toward-zero) of a1[] vs a2[]; returns 0 on first
  * mismatch, 1 if all equal. a0 is dead (saved, never read). RELOC-FREE, -O2.
  * Target is IDO's OWN 4-way loop unroll (andi&3 remainder loop, v0 counts up,
@@ -1553,7 +1553,7 @@ void Backup_write(int a0, int a1, int a2, int a3) {
  * 2026-10-22 agent-g (run 127) EXACT: one empty `if (1) {}` at the top of the
  * loop body (a uopt basic-block boundary; scripts/blockcut-search.py found it
  * in a 45-variant search) moves the copy into the beq delay slot. */
-int gl_func_0000B958(int a0, register int *a1, int *a2, int a3) {
+int Backup_func_0000B958(int a0, register int *a1, int *a2, int a3) {
     int i;
     int *x, *y;
     for (i = 0; i < a3 / 4; i++) {
@@ -1899,7 +1899,7 @@ void Backup_resetGhost(int a0) {
     gl_func_00000000(a0, &scratch);
 }
 
-/* gl_func_0000C49C: 21-insn 3-call wrapper. r = g(self); self->1 = r->0;
+/* Backup_func_0000C49C: 21-insn 3-call wrapper. r = g(self); self->1 = r->0;
  * if (r->2) g(r->2, r); g(r). EXACT 21/21 (2026-10-14, agent-g). Two levers
  * over the 82.29 wrap: (1) the last call takes ONE argument -- the target
  * never writes a1 after the `or a1,v0` at the top, so r colours a1 for the
@@ -1911,7 +1911,7 @@ void Backup_resetGhost(int a0) {
 typedef struct { int x; } C49C_W;
 typedef struct { int pad0; C49C_W f4; } C49C_Self;
 typedef struct { C49C_W f0; int pad4; int f8; } C49C_Rec;
-void gl_func_0000C49C(C49C_Self *a0) {
+void Backup_func_0000C49C(C49C_Self *a0) {
     C49C_Rec *r = (C49C_Rec *)gl_func_00000000(a0);
     a0->f4 = r->f0;
     if (r->f8 != 0) {
@@ -1922,7 +1922,7 @@ void gl_func_0000C49C(C49C_Self *a0) {
 
 extern int gl_ref_0001DCE0();
 extern int gl_ref_0001DD1C();
-int gl_func_0000C4F0(char *a0) {
+int Parm_read_0000C4F0(char *a0) {
     int scratch;
     gl_ref_0001DCE0(&scratch);
     return gl_ref_0001DD1C(a0 + 0x10);
@@ -1930,7 +1930,7 @@ int gl_func_0000C4F0(char *a0) {
 
 extern int gl_ref_0001DCE0();
 extern int gl_ref_0001DD58();
-int gl_func_0000C520(char *a0) {
+int Parm_read_0000C520(char *a0) {
     int scratch;
     gl_ref_0001DCE0(&scratch);
     return gl_ref_0001DD58(a0 + 0x10);
@@ -1938,20 +1938,20 @@ int gl_func_0000C520(char *a0) {
 
 extern int gl_ref_0001DCE0();
 extern int gl_ref_0001DDC8();
-int gl_func_0000C550(char *a0) {
+int Parm_read_0000C550(char *a0) {
     int scratch;
     gl_ref_0001DCE0(&scratch);
     return gl_ref_0001DDC8(a0 + 0x10);
 }
 
 extern int gl_ref_0001DCE0();
-int gl_func_0000C580(char *a0) {
+int Parm_read_0000C580(char *a0) {
     int scratch;
     gl_ref_0001DCE0(&scratch);
     return gl_ref_0001DCE0(a0 + 0x10);
 }
 
-/* gl_func_0000C5B0: byte-identical mirror of gl_func_000088B4 in
+/* ColourItem_create_0000C5B0: byte-identical mirror of ColourItem_create_000088B4 in
  * game_libs.c. Same struct types redeclared locally (file-scope) so
  * game_libs_tail.c can build standalone. 25-word INSN_PATCH in Makefile
  * transferred verbatim. */
@@ -1974,7 +1974,7 @@ struct GlExisting {
 };
 
 /* 2026-07-18 WORD-EXACT (35/35; was 86.1%): raw-word twin scan showed this
- * is 0-delta identical to gl_func_000088B4's 35 body words (88B4 has one
+ * is 0-delta identical to ColourItem_create_000088B4's 35 body words (88B4 has one
  * extra trailing nop delay word). 88B4 was cracked 2026-06-21 with the flat
  * int* donor form (decl-order p2,head,p1; p1-reuse-for-arg0; condition
  * re-load -> two-web spill, frame 0x28). Ported verbatim.
@@ -1983,7 +1983,7 @@ struct GlExisting {
  * alignment nop. The 1-word _pad.s GLOBAL_ASM emitted 8 bytes after a C
  * body, so it is replaced by an all-zero SUFFIX_BYTES_FORCE word (Makefile);
  * the non_matching clip resizes the symbol to 0x8c. */
-int *gl_func_0000C5B0(int *arg0) {
+int *ColourItem_create_0000C5B0(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -2153,7 +2153,7 @@ void RaceTracker_reset(char *self) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void game_libs_func_0000CA30(char *arg0, s32 arg1, s32 arg2) {
+void RaceTracker_func_0000CA30(char *arg0, s32 arg1, s32 arg2) {
     *(int*)(FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)) = arg1;
     FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x4) = arg2;
     *(f32*)((char*)(FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)) + 0x10) = 0.0f;
@@ -2176,7 +2176,7 @@ void game_libs_func_0000CA30(char *arg0, s32 arg1, s32 arg2) {
  * dup-in-delay shape; decl-order i-before-count colors i=v0/count=v1; the dead
  * empty if (a1) {} is an emission-free priority boost that lets the key keep
  * its a1 home so the cursor colors a2 (no move a2,a1). */
-void *game_libs_func_0000CB58(int *a0, int a1) {
+void *RaceTracker_func_0000CB58(int *a0, int a1) {
     int i = 0;
     int count = a0[0x48 / 4];
     int *p;
@@ -2401,7 +2401,7 @@ int RaceTracker_handleMsg(int *a0, int *a1) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* gl_func_0000CE38: per-entry refresh over self->0x44 (count self->0x48,
+/* hud_loadRecords_0000CE38: per-entry refresh over self->0x44 (count self->0x48,
  * stride 0x60). For each entry whose flags (+0x04) bit 0 is set, with the
  * manager m = self->0x4C non-NULL and its mode m->0x14:
  *   bit0 (entry +0x34 set): e->0x38 = f(m->0 + D.0x64*0x30, self->0x30),
@@ -2423,7 +2423,7 @@ int RaceTracker_handleMsg(int *a0, int *a1) {
 extern void gl_func_00000000_ce38_v();
 #define CE38_E(i) ((char *)FW(self, 0x44) + (i) * 0x60)
 #define CE38_D(o) FW(&D_00000000, o)
-void gl_func_0000CE38(char *self, s32 a1, s32 a2) {
+void hud_loadRecords_0000CE38(char *self, s32 a1, s32 a2) {
     s32 i;
     char *m;
     s32 fl;
@@ -2469,7 +2469,7 @@ void gl_func_0000CE38(char *self, s32 a1, s32 a2) {
 #undef CE38_E
 #undef CE38_D
 
-void game_libs_func_0000D090(int *a0) {
+void RaceTracker_func_0000D090(int *a0) {
     if (*(int *)(*(int *)((char *)a0 + 0x44) + 0x34) != 0) {
         if ((unsigned int)*(int *)((char *)&D_00000000 + 0x170) < (unsigned int)*(int *)((char *)&D_00000000 + 0x164) - 1) {
             *(int *)((char *)&D_00000000 + 0x184) = 1;
@@ -2485,7 +2485,7 @@ void game_libs_func_0000D090(int *a0) {
  * D+0xD680/D684/D688 is stored into a struct local (sp 104/100/96) and the
  * by-value arg reloads it through the hoisted &local (s5..s7). Result 0 ->
  * +0x4C; results 1/2 -> +0x54/+0x58 ordered by (+0x64 - owner->0xE4). The old
- * body called through a gl_func_0000959C fn-ptr (jalr) without the struct.
+ * body called through a ColourItem_create_0000959C fn-ptr (jalr) without the struct.
  * RESIDUAL: the target re-materializes each key load per iteration
  * (`lui t9,1; lw t9,-0x2980(t9)`, destructive) while uopt here promotes the
  * key addresses (D_D0D0_D680/D684 -> s5/s7, using s8: +1 save, locals +4).
@@ -2545,7 +2545,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_findGates);
 #endif
 
 #ifdef NON_MATCHING
-/* gl_func_0000D288: 36-insn unlink-and-dispatch (0x90, frame 0x20).
+/* RaceTracker_func_0000D288: 36-insn unlink-and-dispatch (0x90, frame 0x20).
  *   child = self->[0x44]->[0x4C]; if (!child) return;
  *   if (!(child->f64 <= self->[0x44]->fC)) return;      c.le.s f6,f4 + bc1fl
  *   self->[0x44]->[0x4C] = child->[0x84];                unlink
@@ -2574,7 +2574,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_findGates);
  * (`c2 = child` before/after the call), while(0) dead appearances (move
  * next to v0 but child stays a2), `&child` (child memory-resident: wrong).
  */
-void gl_func_0000D288(int *self) {
+void RaceTracker_func_0000D288(int *self) {
     int *child;
     int *next;
     int *o;
@@ -2597,10 +2597,10 @@ void gl_func_0000D288(int *self) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0000D288);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_func_0000D288);
 #endif
 
-/* gl_func_0000D318: 64-insn (0x100) conditional sub-object builder + color init.
+/* RaceTracker_vslot11_0000D318: 64-insn (0x100) conditional sub-object builder + color init.
  * Fresh hand-decode 2026-05-28 (raw-.word USO, m2c can't parse).
  *
  * Structure (asm 0xD318-0xD414):
@@ -2646,7 +2646,7 @@ extern int gl_func_00000000();
  * DIRECT `jal` -- avoids both K&R float->double promotion AND the fn-ptr-cast
  * `jalr $t9`. Per docs/IDO_CODEGEN.md#feedback-ido-knr-float-call verified workaround. */
 extern int gl_proto_D318(void*, int, int, float, float);
-void gl_func_0000D318(int *a0, int *a1) {
+void RaceTracker_vslot11_0000D318(int *a0, int *a1) {
     int *obj;
     float denom;
 
@@ -2667,7 +2667,7 @@ void gl_func_0000D318(int *a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000D418(int *arg0) {
+void RaceTracker_func_0000D418(int *arg0) {
     int *e;
     int *mgr = (int *)arg0[0x44 / 4];
     int *cur = (int *)mgr[0x54 / 4];
@@ -2735,7 +2735,7 @@ void gl_func_0000D418(int *arg0) {
  *    leaves e's last use at the a0-slot -> a2 forbidden -> e lands a3 (+4 words).
  * Callees left as the standard gl_func_00000000 placeholder (jal 0). */
 
-/* gl_func_0000D548: sub-object spawn pair (sibling of D6E8 / D9E4). EXACT 86/86
+/* RaceTracker_func_0000D548: sub-object spawn pair (sibling of D6E8 / D9E4). EXACT 86/86
  * (2026-10-14 agent-g). Levers:
  * - The a4 bump is written on the FIELD with the call arg re-read from it:
  *   `if (o->a4 < 500) o->a4 += 100; g(o->6c, o->a4, 0, 1)`. uopt forwards the
@@ -2753,7 +2753,7 @@ void gl_func_0000D418(int *arg0) {
  * - The h() call needs a prototyped (int*, int, int, float, float) blank
  *   alias: a3 = mfc1 1.0f, 5th arg swc1 at 0x10(sp). */
 extern void gl_func_00000000_d548f(int *, int, int, float, float);
-void gl_func_0000D548(int *o, int a1) {
+void RaceTracker_func_0000D548(int *o, int a1) {
     int *obj;
     float r, g, b;
     if (o[0x6C / 4] == 0 || (o[0xB4 / 4] & 4) == 0) return;
@@ -2787,14 +2787,14 @@ void gl_func_0000D548(int *o, int a1) {
 
 extern int gl_func_00000000();
 
-void gl_func_0000D6A0(char *a0, int a1) {
+void RaceTracker_func_0000D6A0(char *a0, int a1) {
     if ((*(int*)(a0 + 0xB4) & 4) != 0) {
         gl_func_00000000(0x2F, a0);
         *(int*)(a0 + 0xA4) = 0;
     }
 }
 
-/* gl_func_0000D6E8: build+init a sub-object (cb(node, a1, 0, 1) -> obj,
+/* RaceTracker_func_0000D6E8: build+init a sub-object (cb(node, a1, 0, 1) -> obj,
  * then obj->f44 += 70, f5C = 70, fA4/A8/AC = 0, colour f64..f70 =
  * {250,219,68,255}/255, i9C = 30, iA0 = o->6C + 0x138). EXACT 52/52
  * (2026-10-14 agent-g; was NM 78.5).
@@ -2809,7 +2809,7 @@ void gl_func_0000D6A0(char *a0, int a1) {
  * 0x9C = 30 store so the constant takes ring t3 after the o->6C reload.
  * docs/IDO_CODEGEN.md#double-literal-defeats-fp-const-cse-d6e8 */
 extern int gl_func_00000000();
-void gl_func_0000D6E8(int *o, int a1) {
+void RaceTracker_func_0000D6E8(int *o, int a1) {
     float r, g, b, a;
     int node = o[0x6C / 4];
     int *obj;
@@ -2832,7 +2832,7 @@ void gl_func_0000D6E8(int *o, int a1) {
     *(int *)((char *)obj + 0x9C) = 30;
 }
 
-/* gl_func_0000D7B8: gated initializer. Guarded by arg0->0x6C != 0 && (arg0->0xB4
+/* RaceTracker_func_0000D7B8: gated initializer. Guarded by arg0->0x6C != 0 && (arg0->0xB4
  * & 2): calls cb(0x27, arg1+arg2), then cb2(arg0->0x6C, arg1, 0, 1) -> v0; writes
  * float fields (70.0f, three 0.0f, and the 250/235/100/255-over-255 ratios via
  * runtime div.s, variable divisor `float denom = 255.0f`), arg0->0x6C+0x108 then
@@ -2850,7 +2850,7 @@ void gl_func_0000D6E8(int *o, int a1) {
  * store (source order = ring order; the scheduler then hoists the `addiu t1,14`). */
 extern int gl_func_00000000();
 extern int gl_proto_d7b8(void *, float, float);
-void gl_func_0000D7B8(char *arg0, int arg1, int arg2) {
+void RaceTracker_func_0000D7B8(char *arg0, int arg1, int arg2) {
     char *v0;
     int a3;
     float denom;
@@ -2879,7 +2879,7 @@ void gl_func_0000D7B8(char *arg0, int arg1, int arg2) {
     }
 }
 
-/* gl_func_0000D8E0: simpler 2-arg sibling of gl_func_0000D7B8. Gated by arg0->0x6C
+/* RaceTracker_func_0000D8E0: simpler 2-arg sibling of RaceTracker_func_0000D7B8. Gated by arg0->0x6C
  * != 0 && (arg0->0xB4 & 2): cb(0x22), cb2(arg0->0x6C, arg1, 0, 0) -> v0; writes
  * 70.0f + the four x/255 color ratios (250/235/100/255-over-255) via runtime div.s
  * (variable divisor `float denom=255.0f`). Trailing gate arg0->0x6C != 0 &&
@@ -2890,7 +2890,7 @@ void gl_func_0000D7B8(char *arg0, int arg1, int arg2) {
  * the numerator spelled as the CAST class `(float)255` is a distinct pseudo from
  * the `255.0f` literal denom, so it gets its own lui/mtc1 (ring $f6). */
 extern int gl_func_00000000();
-void gl_func_0000D8E0(char *arg0, int arg1) {
+void RaceTracker_func_0000D8E0(char *arg0, int arg1) {
     int a2;
     char *v0;
     float denom;
@@ -2912,27 +2912,27 @@ void gl_func_0000D8E0(char *arg0, int arg1) {
     }
 }
 
-/* gl_func_0000D9B8: CRACKED 2026-06-11 (wave 2, 100.0; was "no C-reachable
+/* RaceTracker_func_0000D9B8: CRACKED 2026-06-11 (wave 2, 100.0; was "no C-reachable
  * fix" 98.64 a1-vs-a3 rename cap). The $a3 temp means $a1/$a2 are LIVE at
  * the load: the original is a 3-arg fn passing a1/a2 THROUGH to the callee
  * (`gl(p, a1, a2)`). Pass-through args occupy a1/a2 (no unused-arg spills,
  * unlike unused named params) -> p colors a3. Recognition: a mid-arg-reg
  * temp ($a3) in a tiny wrapper = hidden pass-through arity. */
 extern int gl_func_00000000();
-void gl_func_0000D9B8(int *a0, int a1, int a2) {
+void RaceTracker_func_0000D9B8(int *a0, int a1, int a2) {
     int *p = (int*)a0[0x1B];
     if (p != 0) gl_func_00000000(p, a1, a2);
 }
 
 
-/* gl_func_0000D9E4: 0x150 (84 insns), 0x30-byte frame. Sub-object spawn
+/* RaceTracker_func_0000D9E4: 0x150 (84 insns), 0x30-byte frame. Sub-object spawn
  * (sibling of D548 / D6E8): when a0->0x6C is set, flag bit 2 is on and the
  * global at D+0x64 is non-null, create a child via the USO placeholder and
  * initialise its colour/scale fields; then fire the bit-1 callback.
  * Unwrapped 2026-10-16 (agent-g): the NM body was word-identical to the target;
  * the second call goes through the blank alias gl_func_00000000_d9e4b (pinned 0). */
 extern void gl_func_00000000_d9e4b(int *, int, int, float, float);
-void gl_func_0000D9E4(int *a0, int a1) {
+void RaceTracker_func_0000D9E4(int *a0, int a1) {
     int *v0;
     int *sub;
     f32 num100;
@@ -2965,7 +2965,7 @@ void gl_func_0000D9E4(int *a0, int a1) {
     }
 }
 
-void gl_func_0000DB34(int a0, int a1, int a2) {
+void RaceTracker_func_0000DB34(int a0, int a1, int a2) {
     char pad1[4];
     int *v0 = *(int**)((char*)&D_00000000 + 0x28);
     int local = 0x3ED;
@@ -2974,7 +2974,7 @@ void gl_func_0000DB34(int a0, int a1, int a2) {
         *(short*)((char*)v0 + 0x30) + (int)&D_00000000, &local);
 }
 
-/* gl_func_0000DB80: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68
+/* RaceTracker_func_0000DB80: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68
  * (2026-10-14 agent-g). Same entry/method shape as the matched twins DC90 /
  * DD44 below: entry = self->0x44[idx*0x60]; q = entry->0x28; method q->0x2C
  * called with ((short)q->0x28 + entry, &msgcode). First the own entry with
@@ -2989,7 +2989,7 @@ void gl_func_0000DB34(int a0, int a1, int a2) {
  *  - the empty `if (v0) {}` after the FIRST arm's q load flips the
  *    entry/q colouring of all three dispatches to v1/v0 (DC90/DD44 nudge; on
  *    the else arm or on the first dispatch it is inert or worse). */
-void gl_func_0000DB80(char *self, int idx) {
+void RaceTracker_func_0000DB80(char *self, int idx) {
     int pad_a[2]; int l0 = 1000; int pad_b[2];
     char *v1, *v0;
     v1 = *(char **)(*(char **)(self + 0x44) + idx * 0x60);
@@ -3012,12 +3012,12 @@ void gl_func_0000DB80(char *self, int idx) {
     }
 }
 
-/* gl_func_0000DC90: vtable-dispatch on indexed 96-byte entry + pair-toggle (0xB4, frame 0x40).
+/* RaceTracker_func_0000DC90: vtable-dispatch on indexed 96-byte entry + pair-toggle (0xB4, frame 0x40).
  * MATCHED (2026-07-14, decomp-permuter --stack-diffs): decl order pins the two
  * by-ref locals in the -0x40 frame. sp34 (msgcode 1001) is declared early to
  * seat at 0x34; sp1C (msgcode 1000) sits between the v0/v1 pointer decls so IDO
  * packs it at 0x1C. pad_a/pad_b/pad_c and the empty `if (v0){}` regalloc nudge
- * were carried over from the twin gl_func_0000DD44; the sp1C decl-slot move was
+ * were carried over from the twin RaceTracker_func_0000DD44; the sp1C decl-slot move was
  * the last-2-word residual the permuter's decl-reorder pass cracked.
  *
  * self->unk44 = base of idx*0x60 entry array; entry[0] -> obj; obj->unk28 ->
@@ -3025,7 +3025,7 @@ void gl_func_0000DB80(char *self, int idx) {
  * method((char*)obj + adj, &msgcode, self) with msgcode 1001, then if
  * self->unk48 == 2 the partner entry (idx^1) with msgcode 1000.
  */
-void gl_func_0000DC90(char *self, int idx) {
+void RaceTracker_func_0000DC90(char *self, int idx) {
     int pad_a[2]; int sp34 = 1001; int pad_b[3]; int pad_c[1];
     char *v0; int sp1C; char *v1;
     v1 = *(char **)(*(char **)(self + 0x44) + idx * 0x60);
@@ -3040,7 +3040,7 @@ void gl_func_0000DC90(char *self, int idx) {
     }
 }
 
-/* Doubled DE30-family vtable dispatcher (sibling of gl_func_0000DDE0/DE30/DE80/
+/* Doubled DE30-family vtable dispatcher (sibling of RaceTracker_func_0000DDE0/DE30/DE80/
  * DED0): runs the same {entry = a0->0x44[idx*0x60]; q = entry->0x28;
  * (*(fn)q->0x2C)((short)q->0x28 + entry, &scratch);} dispatch twice, for idx=a1
  * then idx=a1^1 (a pair/toggle), each with a stack scratch int preloaded to 1001.
@@ -3048,7 +3048,7 @@ void gl_func_0000DC90(char *self, int idx) {
  * frame; deferring l2's assignment defers its li+sw past the first call; the empty
  * if(v0){} on the 2nd dispatch is the regalloc nudge (permuter-found) that gives
  * entry->v1 / q->v0 like the target. */
-void gl_func_0000DD44(char *a0, int a1) {
+void RaceTracker_func_0000DD44(char *a0, int a1) {
     int pad_top[2]; int l1 = 1001; int between[2]; int l2; int pad_bot[2];
     char *v0, *v1;
     v1 = *(char **)(*(char **)(a0 + 0x44) + a1 * 0x60);
@@ -3061,13 +3061,13 @@ void gl_func_0000DD44(char *a0, int a1) {
     (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l2);
 }
 
-/* 20-insn indirect dispatcher (sibling of gl_func_0000DE30/DE80/DED0/0003CB2C).
+/* 20-insn indirect dispatcher (sibling of RaceTracker_func_0000DE30/DE80/DED0/0003CB2C).
  * Same shape as DE30 form (inlined dispatch + pad_top[2]/pad_bot[4] frame
  * sizing), local = 0x3EA. INSN_PATCH on the same 4 reg-rename insns at
  * 0x24/0x2C/0x34/0x3C makes build/.o byte-equal to expected/.o post-cc. */
-/* 20-insn indirect dispatcher (sibling of DE30/DE80/DED0). See gl_func_0000DE30
+/* 20-insn indirect dispatcher (sibling of DE30/DE80/DED0). See RaceTracker_func_0000DE30
  * for the fptr-from-q[0x2C] data flow + the alloc-nudge (empty if + hoist). */
-void gl_func_0000DDE0(int **a0, int a1) {
+void RaceTracker_func_0000DDE0(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3EA;
     int pad_bot[2];
@@ -3079,7 +3079,7 @@ void gl_func_0000DDE0(int **a0, int a1) {
     ((void(*)(int, int*))q[0x2C/4])(*(short*)off28 + (int)p, &local);
 }
 
-/* 20-insn indirect dispatcher (sibling of gl_func_0000DDE0/0003CB2C).
+/* 20-insn indirect dispatcher (sibling of RaceTracker_func_0000DDE0/0003CB2C).
  * 16/20 insns match from C emit; remaining 4-insn diff is a register-shift
  * (v0/t0/t1 ↔ v1/v0/t0) that no C-level lever inside this function
  * reproduces. INSN_PATCH on the 4 reg-shift insns @0x24/0x2C/0x34/0x3C
@@ -3088,7 +3088,7 @@ void gl_func_0000DDE0(int **a0, int a1) {
  * fptr = q[0x2C]; fptr((short)(q+0x28) + p, &local). The empty `if (q)`
  * + hoisted short-address are register-allocation nudges (permuter-found)
  * that put p in $v1 / q in $v0 to match; both are semantically transparent. */
-void gl_func_0000DE30(int **a0, int a1) {
+void RaceTracker_func_0000DE30(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3EB;
     int pad_bot[2];
@@ -3100,14 +3100,14 @@ void gl_func_0000DE30(int **a0, int a1) {
     ((void(*)(int, int*))q[0x2C/4])(*(short*)off28 + (int)p, &local);
 }
 
-/* Sibling of gl_func_0000DDE0/0000DE30/0003CB2C (20-insn indirect dispatcher).
+/* Sibling of RaceTracker_func_0000DDE0/0000DE30/0003CB2C (20-insn indirect dispatcher).
  * local = 0x3EC; otherwise byte-identical to DE30. Same INSN_PATCH recipe:
  * the 4 reg-rename diffs at offsets 0x24/0x2C/0x34/0x3C are post-cc patched
  * to match expected. (The 0x30 word coincidentally byte-matches due to
  * register-rename + same instruction word; runtime semantics flip when the
  * patched 0x2C insn redefines $v0 = p[0x28] before 0x30 reads it.) */
-/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DED0). See gl_func_0000DE30. */
-void gl_func_0000DE80(int **a0, int a1) {
+/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DED0). See RaceTracker_func_0000DE30. */
+void RaceTracker_func_0000DE80(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3EC;
     int pad_bot[2];
@@ -3119,13 +3119,13 @@ void gl_func_0000DE80(int **a0, int a1) {
     ((void(*)(int, int*))q[0x2C/4])(*(short*)off28 + (int)p, &local);
 }
 
-/* Sibling of gl_func_0000DDE0/DE30/DE80/0003CB2C (20-insn indirect dispatcher).
+/* Sibling of RaceTracker_func_0000DDE0/DE30/DE80/0003CB2C (20-insn indirect dispatcher).
  * local = 0x3E9; otherwise byte-identical to DE30/DE80. Same INSN_PATCH recipe:
  * 4 reg-rename diffs at offsets 0x24/0x2C/0x34/0x3C are post-cc patched to
  * match expected. (See DE80 for the byte-identical-bytes-different-semantics
  * mechanism at offset 0x30.) */
-/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DE80). See gl_func_0000DE30. */
-void gl_func_0000DED0(int **a0, int a1) {
+/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DE80). See RaceTracker_func_0000DE30. */
+void RaceTracker_func_0000DED0(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3E9;
     int pad_bot[2];
@@ -3139,7 +3139,7 @@ void gl_func_0000DED0(int **a0, int a1) {
 
 int gl_func_0000DF20_inner(int a0, int a1);
 
-void gl_func_0000DF20(int a0, int a1, float a2) {
+void RaceTracker_func_0000DF20(int a0, int a1, float a2) {
     int rv = gl_func_0000DF20_inner(a0, a1);
     if (rv != 0) {
         *(float*)(rv + 0x10) = a2;
@@ -3148,7 +3148,7 @@ void gl_func_0000DF20(int a0, int a1, float a2) {
 
 extern int gl_func_00000000();
 
-void gl_func_0000DF4C(int a0, int a1, int a2) {
+void RaceTracker_func_0000DF4C(int a0, int a1, int a2) {
     int *r = (int*)gl_func_00000000(a0, a1, a2);
     if (r == 0) return;
     if ((r[1] & 1) == 0) return;
@@ -3157,7 +3157,7 @@ void gl_func_0000DF4C(int a0, int a1, int a2) {
 
 extern int gl_func_00000000();
 
-void gl_func_0000DF8C(int a0, int a1, float a2, float a3) {
+void RaceTracker_func_0000DF8C(int a0, int a1, float a2, float a3) {
     float *r = (float*)gl_func_00000000(a0, a1);
     if (r != 0) {
         r[2] = a2;
@@ -3165,7 +3165,7 @@ void gl_func_0000DF8C(int a0, int a1, float a2, float a3) {
     }
 }
 
-/* gl_func_0000DFC4: 32-insn 3-arg lookup+gate+accumulate (0x80, frame 0x18).
+/* RaceTracker_func_0000DFC4: 32-insn 3-arg lookup+gate+accumulate (0x80, frame 0x18).
  * MATCH: the v0[0x1C]==0 guard (was decoded != 0) emits bnel, matching the asm
  * (store v0[0x20]=0 when v0[0x1C]==0). Byte-exact.
  *
@@ -3186,7 +3186,7 @@ void gl_func_0000DF8C(int a0, int a1, float a2, float a3) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-void gl_func_0000DFC4(int *a0, int a1, int a2) {
+void RaceTracker_func_0000DFC4(int *a0, int a1, int a2) {
     int *v0 = (int*)gl_func_00000000(a0, a1, a2);
     if (v0 == 0) return;
     if ((v0[0x4 / 4] & 1) == 0) return;
@@ -3203,10 +3203,10 @@ void gl_func_0000DFC4(int *a0, int a1, int a2) {
 /* 3-insn save-arg sentinel: sw a0,0(sp); jr ra; sw a1,4(sp).
  * Empty-body 2-arg function — args spilled to caller's arg-save slots.
  * Per docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body. */
-void game_libs_func_0000E044(int a0, int a1) { (void)a0; (void)a1; }
-void game_libs_func_0000E050(int a0, int a1) { (void)a0; (void)a1; }
+void RaceTracker_vslot12_0000E044(int a0, int a1) { (void)a0; (void)a1; }
+void RaceTracker_vslot13_0000E050(int a0, int a1) { (void)a0; (void)a1; }
 
-/* gl_func_0000E05C: 47-insn 2-gate + flag-driven dispatch + vtable tail (0xBC, frame 0x28).
+/* RaceTracker_func_0000E05C: 47-insn 2-gate + flag-driven dispatch + vtable tail (0xBC, frame 0x28).
  *
  *   v0 = func1(self); if (v0 == NULL) return; if ((v0->[0x4] & 1) == 0) return;
  *   a2_var = -1;
@@ -3227,7 +3227,7 @@ void game_libs_func_0000E050(int a0, int a1) { (void)a0; (void)a1; }
  *  3. Vtable tail in the CDDC form (named `new_a0` pointer local, fn-ptr deref
  *     inline) gives the ring t9/t0 + `addu a0,t0,s0`; named fn/off locals colour
  *     a2/a3 and flip the addu. */
-void gl_func_0000E05C(int *self, int a1, int a2) {
+void RaceTracker_func_0000E05C(int *self, int a1, int a2) {
     int *v0;
     int a2_var;
     int *vt;
@@ -3250,7 +3250,7 @@ void gl_func_0000E05C(int *self, int a1, int a2) {
     (*(int(**)(int*, int))((char*)vt + 0x6C))(new_a0, a2);
 }
 
-/* gl_func_0000E118 — 49/49 EXACT (2026-07-03, agent-e w4).
+/* RaceTracker_func_0000E118 — 49/49 EXACT (2026-07-03, agent-e w4).
  * Was documented "cap: IDO spuriously homes the UNUSED a1 placeholder param
  * (sw a1,0x2C); can't be suppressed". CRACKED with two levers:
  *  1. UNREFERENCED-param homing rule: IDO homes a param that has NO
@@ -3266,7 +3266,7 @@ void gl_func_0000E05C(int *self, int a1, int a2) {
  *     into each arm.
  */
 extern int gl_func_00000000();
-void gl_func_0000E118(int a0, int a1, int a2, int a3) {
+void RaceTracker_func_0000E118(int a0, int a1, int a2, int a3) {
     int v0;
     if (a1) {}
     v0 = gl_func_00000000();
@@ -3288,7 +3288,7 @@ void gl_func_0000E118(int a0, int a1, int a2, int a3) {
     }
 }
 
-void gl_func_0000E1DC(int *a0, int a1, int a2) {
+void RaceTracker_func_0000E1DC(int *a0, int a1, int a2) {
     int *v = (int*)gl_func_00000000(a0, a1, a2);
     if (v == 0) return;
     if (!(v[1] & 1)) return;
@@ -3296,7 +3296,7 @@ void gl_func_0000E1DC(int *a0, int a1, int a2) {
     gl_func_00000000(a0, a2);
 }
 
-/* gl_func_0000E230: BYTE-EXACT (2026-05-30). 29-insn count-loop calling func
+/* RaceTracker_func_0000E230: BYTE-EXACT (2026-05-30). 29-insn count-loop calling func
  * per element: for each i (0..a0->0x48), call func(a0, *(a0->0x44 + i*0x60), 1, 0).
  * Was a documented 98.45% s1/s2 reg-swap cap (a0 vs offset swapped). CRACKED via
  * the UCODE-encounter-order lever: the target's `blez` guard reads a0->0x48 and
@@ -3306,7 +3306,7 @@ void gl_func_0000E1DC(int *a0, int a1, int a2) {
  * (guard references a0 first) flips the coloring to match. See
  * docs/IDO_CODEGEN.md "Promoted loop-invariants ... UCODE-encounter order". */
 extern int func_00000000();
-void gl_func_0000E230(int *a0) {
+void RaceTracker_func_0000E230(int *a0) {
     int i = 0;
     if (a0[0x48/4] > 0) {
         int offset = 0;
@@ -3335,7 +3335,7 @@ void hud_releaseGadgets(Hud *o) {
     if (o->cool) gl_func_00000000(o->cool);
 }
 
-/* gl_func_0000E368: 42-insn gated flag toggle. Returns early unless bit 16 of
+/* RaceTracker_func_0000E368: 42-insn gated flag toggle. Returns early unless bit 16 of
  * (a0->0x50)->0x4F0 is set, a0->0x48 == 2, and the callback succeeds; then
  * toggles a0->0xB0 between 0/1 and clears/sets bit 2 of a0->0x44->0x60->0x18.
  * EXACT 42/42 (2026-10-14, agent-g). The old 98.45 wrap's "v1 vs t2 read temp
@@ -3345,7 +3345,7 @@ void hud_releaseGadgets(Hud *o) {
  * of the named `t` candidate (v1). The old "reassign the base" spelling
  * (int t = v[6]; v += 6; *v = t | 4) only reproduced the advance shape.
  * docs/IDO_CODEGEN.md#e368-field-pointer-compound-rmw-ring-temp */
-void gl_func_0000E368(int a0) {
+void RaceTracker_func_0000E368(int a0) {
     if ((*(int *)(*(int *)((char *)a0 + 0x50) + 0x4F0) & 0x10000) == 0) {
         return;
     }
@@ -3366,7 +3366,7 @@ void gl_func_0000E368(int a0) {
     }
 }
 
-/* game_libs_func_0000E410..E490: CONTIGUOUS lower-opt (-O1/-g) family. Each is
+/* hud_func_0000E410..E490: CONTIGUOUS lower-opt (-O1/-g) family. Each is
  * `int *p=(int*)(a0+0x18); *p OP= BIT; return p;` (E410 |=4|=8, E42C &=~4&=~8,
  * E450 |=8, E464 &=~8, E47C |=4, E490 &=~4). CAP under -O2: target uses
  * addiu v0,a0,0x18 + 0(v0) RMW addressing AND keeps redundant stores (E410/E42C),
@@ -3389,14 +3389,14 @@ void gl_func_0000E368(int a0) {
  * promote therefore belongs to the RELAYOUT SESSION with the other
  * ready bodies; the verified unit source is preserved in this comment
  * block's history (commit) and each wrap below. */
-/* game_libs_func_0000E410: set flags 4|8 on a0->i_18, returns the
+/* hud_func_0000E410: set flags 4|8 on a0->i_18, returns the
  * field pointer. BYTE-EXACT C FOUND 2026-06-10 (0 diffs standalone):
  * the same role-#6 barrier as the E450 quartet -- `int *p; p = ...;
  * if (1) {}` materializes the addiu base so ALL accesses go via 0(v0)
  * (without it the first load folds to 24(a0) and the stores split).
  * Fifth member of the flag-helper family, all five now byte-exact.
  * LAND BLOCKED on the mid-file constraint; relayout session. */
-int *game_libs_func_0000E410(char *a0) {
+int *hud_func_0000E410(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
@@ -3405,12 +3405,12 @@ int *game_libs_func_0000E410(char *a0) {
     return p;
 }
 
-/* game_libs_func_0000E42C: clear flags 4+8 on a0->i_18, returns the
+/* hud_func_0000E42C: clear flags 4+8 on a0->i_18, returns the
  * field pointer. BYTE-EXACT 2026-06-10 (0 diffs standalone) via the
  * role-#6 barrier; SIXTH member of the flag-helper family (E410/E42C/
  * E450/E464/E47C/E490 -- set/clear x {4, 8, both}, all solved). LAND
  * BLOCKED mid-file; relayout session. */
-int *game_libs_func_0000E42C(char *a0) {
+int *hud_func_0000E42C(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
@@ -3419,52 +3419,52 @@ int *game_libs_func_0000E42C(char *a0) {
     return p;
 }
 
-/* game_libs_func_0000E450: set flag 8 on a0->i_18. BYTE-EXACT C FOUND
+/* hud_func_0000E450: set flag 8 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void game_libs_func_0000E450(char *a0) {
+void hud_func_0000E450(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
     *p = *p | 8;
 }
 
-/* game_libs_func_0000E464: clear flag 8 on a0->i_18. BYTE-EXACT C FOUND
+/* hud_func_0000E464: clear flag 8 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void game_libs_func_0000E464(char *a0) {
+void hud_func_0000E464(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
     *p = *p & ~8;
 }
 
-/* game_libs_func_0000E47C: set flag 4 on a0->i_18. BYTE-EXACT C FOUND
+/* hud_func_0000E47C: set flag 4 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void game_libs_func_0000E47C(char *a0) {
+void hud_func_0000E47C(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
     *p = *p | 4;
 }
 
-/* game_libs_func_0000E490: clear flag 4 on a0->i_18. BYTE-EXACT C FOUND
+/* hud_func_0000E490: clear flag 4 on a0->i_18. BYTE-EXACT C FOUND
  * 2026-06-10 (0 diffs standalone): the explicit-pointer addiu form
  * needs `int *p; p = (int *)(a0 + 0x18); if (1) {}` -- the BB-split
  * lever's 6th role: it blocks IDO's offset-folding across the block
  * boundary so the addiu v0,a0,24 materializes. LAND BLOCKED on the
  * mid-file in-place constraint; promote via the relayout session. */
-void game_libs_func_0000E490(char *a0) {
+void hud_func_0000E490(char *a0) {
     int *p;
     p = (int *)(a0 + 0x18);
     if (1) {}
@@ -3827,7 +3827,7 @@ void hud_addCoolGadget(Hud *self, int a1, int a2, int a3) {
 }
 
 extern int gl_ref_00020CB0();
-int gl_func_0000EB38(char *a0) {
+int Parm_read_0000EB38(char *a0) {
     int scratch;
     gl_ref_00020CB0(&scratch);
     return gl_ref_00020CB0(a0 + 0x10);
@@ -3835,7 +3835,7 @@ int gl_func_0000EB38(char *a0) {
 
 extern int gl_ref_00020CB0();
 extern int gl_ref_00020CEC();
-int gl_func_0000EB68(char *a0) {
+int Parm_read_0000EB68(char *a0) {
     int scratch;
     gl_ref_00020CB0(&scratch);
     return gl_ref_00020CEC(a0 + 0x10);
@@ -3843,7 +3843,7 @@ int gl_func_0000EB68(char *a0) {
 
 extern int gl_ref_00020CB0();
 extern int gl_ref_00020D28();
-int gl_func_0000EB98(char *a0) {
+int Parm_read_0000EB98(char *a0) {
     int scratch;
     gl_ref_00020CB0(&scratch);
     return gl_ref_00020D28(a0 + 0x10);

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00038DC0 (0x220 / 136 words): for every child
+/* IDO 7.1 NCC (C++) donor for MNode_updateChildren (0x220 / 136 words): for every child
  * with flag 0x200 and not x2c&1, either pass its matrix pair to a callback (owner
  * flag 2) or compute child = m30 * owner.m70 with the natural triple loop, then
  * fire virtual slot 1. Entry through first() + an if/return next() gives the
@@ -18,7 +18,7 @@ struct Iter {
     Node *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->obj; } return 0; }
 };
 struct Root { char pad[0x10]; Link *head; char pad14[0x18]; int x2c; char pad30[0x40]; float m70[16]; };
-extern "C" void gl_func_00038DC0(Root *r) {
+extern "C" void MNode_updateChildren(Root *r) {
     Iter it(r->head);
     for (Node *n = it.first(); n; n = it.next()) {
         if ((n->flags & 0x200) && !(n->x2c & 1)) {

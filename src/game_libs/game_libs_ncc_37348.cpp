@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00037348 (0x1F8 / 126 words), agent-c run 164 / 173, spliced over an
+/* IDO 7.1 NCC (C++) EXACT donor for StickCtrlA_update_00037348 (0x1F8 / 126 words), agent-c run 164 / 173, spliced over an
  * empty placeholder in game_libs_post0b.c in both build trees.
  * Input deadzone + two pushes through the blank callee (jal 0 = gl_func_00000000): s = o->s homed (`if (0) gl(&s)`),
  * every s access through a KEPT Node * inline parameter (`if (0) { n = 0; }`: one pooled pointer temp = the target's
@@ -28,7 +28,7 @@ inline void sz(Node *n, f32 v) { if (0) { n = 0; } n->v60.z = v; }
 inline void call(Node *n, V3 *v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, v, o); }
 inline void callr(Node *n, const V3 &v, Obj *o) { if (0) { n = 0; } gl_func_00000000(n->m30, &v, o); }
 inline void z3(V3 &v, int z) { v.x = z; v.y = z; v.z = z; }
-extern "C" void gl_func_00037348(Obj *o) {
+extern "C" void StickCtrlA_update_00037348(Obj *o) {
     Node *s = o->s;
     volatile int p0, p1;
     V3 save;

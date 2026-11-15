@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_0003DF58 (0x168 / 90
+/* IDO 7.1 NCC (C++) NM-only comparison donor for SNodeItemType_vslot15_0003DF58 (0x168 / 90
  * words): extremal search over the owner's child list through the stack
  * {cur, nxt} iterator of 3D48C / 3D54C (cur sp+4, nxt sp+8): with o->0x38 set,
  * the largest +0x64 value below ref (a1's or the 0x1AD0 literal) and above the
@@ -27,7 +27,7 @@ struct Iter {
     Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner { char pad[0x10]; Link *head; char pad14[0x24]; int x38; };
-extern "C" Node *gl_func_0003DF58(Owner *o, Node *a1) {
+extern "C" Node *SNodeItemType_vslot15_0003DF58(Owner *o, Node *a1) {
     Node *best = 0;
     Iter it(o->head);
     if (o->x38) {

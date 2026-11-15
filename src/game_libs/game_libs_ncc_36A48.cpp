@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00036A48 (0x154 / 85 words), agent-c run 163.
+/* IDO 7.1 NCC (C++) EXACT donor for cam_func_00036A48 (0x154 / 85 words), agent-c run 163.
  * Best-aligned candidate: for each arr[i], r = cb(o, dir, arr[i]) (V3 returned through a hidden
  * pointer, both V3 arguments word-copied into the outgoing area); d = r . dir; keep the index of the
  * largest d (best starts at -1.0f). Load-bearing: V3's `V3 &operator=(V3 v)` taking its argument BY
@@ -15,7 +15,7 @@ struct V3 {
 extern "C" {
 V3 gl_36A48_cb(void *, V3, V3);
 }
-extern "C" int gl_func_00036A48(void *o, V3 dir, V3 *arr, int n) {
+extern "C" int cam_func_00036A48(void *o, V3 dir, V3 *arr, int n) {
     V3 r;
     f32 best;
     int bi;

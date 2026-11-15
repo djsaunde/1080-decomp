@@ -1,6 +1,6 @@
-/* IDO 7.1 NCC (C++) donor for game_libs_func_0003DDC0 (0x88 / 34 words): return 1 and
+/* IDO 7.1 NCC (C++) donor for SNodeItemType_vslot13_0003DDC0 (0x88 / 34 words): return 1 and
  * copy the matching child's position (+0x5C) to *out, else 0. Twin of
- * gl_func_0003E1B0 (+0xA0) and game_libs_func_0003DBEC. The entry next() goes
+ * MNodeItemType_vslot13_0003E1B0 (+0xA0) and ColourItemType_vslot13_0003DBEC. The entry next() goes
  * through an inline first() { return next(); }, which gives it its own edg
  * return temp, so the compare reads the loop variable's v1 copy.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
@@ -15,7 +15,7 @@ struct Iter {
     Node *get() { return cur->obj; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" int game_libs_func_0003DDC0(Owner *o, Node *target, V3 *out) {
+extern "C" int SNodeItemType_vslot13_0003DDC0(Owner *o, Node *target, V3 *out) {
     Iter it(o->head);
     for (Node *n = it.first(); n; n = it.next()) {
         if (n == target) {

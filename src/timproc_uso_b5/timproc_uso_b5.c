@@ -400,7 +400,7 @@ done:
 
 /* GenSelectChar_update_00000770: 2-insn save-arg sentinel.
  * Body is `jr ra; sw $a0, 0($sp)` — arg spilled to caller's arg-save slot
- * in delay slot. Same recipe as game_libs_func_0000E044/E050. */
+ * in delay slot. Same recipe as RaceTracker_vslot12_0000E044/E050. */
 void GenSelectChar_update_00000770(int a0) { (void)a0; }
 
 /* GenSelectChar_initLabels_00000778 -- flat bulk-registration: 76 back-to-back

@@ -62,7 +62,7 @@ regress during the O1/O2 file split, restore from the sources listed.
   Full matrix/graphics submission reconstructed as NON_MATCHING C.
 
 - 2026-09-09: `gl_func_00042484` merged into its two-word hoisted head
-  `game_libs_func_0004247C` (0x5C/23 words), based on agent-c's merge.
+  `hostio_func_0004247C` (0x5C/23 words), based on agent-c's merge.
   bootup.uso Sym1935 exports Text+0x56AE8; TextReloc 0x588B8/0x588BC
   takes its address. Text+0x56AF0 (old 42484) is not exported. The callback
   return, not the pre-call class pointer, supplies the final call's a2.
@@ -121,7 +121,7 @@ Before treating a function as exact, also compare built vs expected with
   The combined original span is 0x178 / 94 instructions, reproduced by
   IDO 7.1 -O1 from the libultra C. Historical alias retained at 0x842E4.
 
-- `gl_func_000032B0` merged into `game_libs_func_00003298`: six hoisted
+- `gl_func_000032B0` merged into `PointsGadget_func_00003298`: six hoisted
   FP-constant instructions plus the contiguous body, 0x14C / 83 instructions.
   `uso-sym-oracle.py baserom.z64 0xD9FE28 0x17904 0x1791C` confirms Sym[943]
   exports the head (two call relocations), not the former internal split.
@@ -149,6 +149,6 @@ splat, ensure these are NOT treated as separate function boundaries.
 | func_800021D0 | func_800021A4 | body continuation; same .c file (kernel_000.c). Combined 0xAC = 43 insns. Fragment had no prologue, used `$t1`/`$t2`/`$a1` set by parent's prologue at 0x800021A4. |
 | timproc_uso_b5_func_0000C7B4 | CourseItem_updateHighlight_0000C710 | tail continuation; bc1f at C710+0x94 branches PAST own declared 0xA4 size into C7B4's body; C7B4 has no prologue + uses caller-set $v1/$at. Combined 0xD8 = 54 insns. |
 | timproc_uso_b5_func_00006890 + _000068A8 + _000068EC | SelectWin_canScrollPrev_0000687C | 4-way merge: bgez at 68EC+0 branches BACKWARDS (-10*4 bytes) into 68A8's body, forming a table-search loop with multi-exit. Splat split at the 4 internal jr-ras. Combined 0x84 = 33 insns. |
-| game_libs_func_0003AC50 | game_libs_func_0003AA5C | bc1fl at 3AC40 (inside parent) targets 3AC54 (inside fragment). Fragment was over-extracted by recursive split-fragments.py — 3-insn `sb t2, 3(a0); jr ra; nop` tail of parent's bc1fl branch landing zone. No prologue, uses caller-set $t2/$a0. Combined 0x200 = 128 insns. |
+| game_libs_func_0003AC50 | CollShape_func_0003AA5C | bc1fl at 3AC40 (inside parent) targets 3AC54 (inside fragment). Fragment was over-extracted by recursive split-fragments.py — 3-insn `sb t2, 3(a0); jr ra; nop` tail of parent's bc1fl branch landing zone. No prologue, uses caller-set $t2/$a0. Combined 0x200 = 128 insns. |
 | RiderAnim_update_0000D204 + game_uso_func_0000D210 | RiderAnim_update_0000D204 | 3-insn prelude loading `t6 = *(D + 0x64)` plus D210 body; D210 is preserved as an internal `alabel`. Combined 0x214 = 132 insns. |
 | timproc_uso_b5_func_00008834 + _00008844 + _00008854 + _0000886C + _0000887C + _00008894 | SelectWin_nextStageBit_000087F4 | switch-case/tail fragments. 0x8834 inherits `$v0/$t9` from 0x87F4, later fragments branch into the shared zero-return tail at 0x8894. Combined 0xAC = 43 insns with split entries preserved as internal `alabel`s. |

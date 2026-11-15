@@ -17,7 +17,7 @@ Usage (in-tree cheap levers -- see the block comment above run_cheap_levers):
 
 Usage (legacy standalone-compile sweep):
   lever-sweep.py [--fuzzy-min FM] [--size-max SZ] [--limit N] [--funcs F1,F2,...]
-  lever-sweep.py --funcs gl_func_00037FAC,DynArr_ctor_00066514
+  lever-sweep.py --funcs Node_func_00037FAC,DynArr_ctor_00066514
 
 Output: per-function lines with best lever and diff count.
 """

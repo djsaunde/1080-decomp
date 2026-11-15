@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00043D38 (0x174 / 93 words), agent-c run 160.
- * Rewritten as real C++ (was the run-134 C lift under NCC, 84.83): `void Elem::clip()` (renamed to gl_func_00043D38 with
+/* IDO 7.1 NCC (C++) donor for RcpMgr_func_00043D38 (0x174 / 93 words), agent-c run 160.
+ * Rewritten as real C++ (was the run-134 C lift under NCC, 84.83): `void Elem::clip()` (renamed to RcpMgr_func_00043D38 with
  * objcopy) patches the element's row display list (the 493AC Elem: ctx6C, rows7C, n80): rows [lo, hi) of the global
  * state become gDPNoOp, the head slot n80 becomes gSPBranchList to the first kept row (or a NoOp), and the row after the
  * last gets gSPEndDisplayList. Stock gbi macro shapes (gDma1p G_DL / G_DL_NOPUSH = 0x06010000, w1 = the
