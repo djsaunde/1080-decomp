@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h" /* AudioContext / SequencePlayer / Note layouts (docs/1080_AUDIO.md) */
 
 extern int D_00000000;
 typedef struct { int w; } SC4_; /* run 131 struct-copy lever: 4-byte word copy type */
