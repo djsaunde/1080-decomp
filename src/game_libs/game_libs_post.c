@@ -4440,7 +4440,7 @@ typedef struct {
     s32 sampleDmaBufSize1; s32 sampleDmaBufSize2; s32 sampleDmaBufSize; char pad206c[4]; s32 numNotes;
     char pad2074[0x2198 - 0x2074]; gl_22A9C_Pool miscPool;
 } gl_22A9C_Ctx;
-#define gl_22A9C_gAudioCtx (*(gl_22A9C_Ctx *)&D_00000000)
+#define gl_22A9C_gAudioCtx (*(gl_22A9C_Ctx *)&gAudioContext)
 #define AudioHeap_Alloc (void *)gl_func_00000000
 #define AudioHeap_AllocAttemptExternal (u8 *)gl_func_00000000
 #define AudioHeap_WritebackDCache gl_func_00000000
@@ -4779,7 +4779,7 @@ void AudioLoad_SyncLoadSeqParts(int a0, int a1) {
 typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_230D0_Sample;
 typedef struct { s16 numEntries; s16 unkMediumParam; } gl_230D0_Table;
 typedef struct { char pad[0x2024]; gl_230D0_Table *sampleBankTable; } gl_230D0_Ctx;
-#define gl_230D0_gAudioCtx (*(gl_230D0_Ctx *)&D_00000000)
+#define gl_230D0_gAudioCtx (*(gl_230D0_Ctx *)&gAudioContext)
 extern void *gl_230d0_allocSampleCache(u32 size, s32 fontId, void *sampleAddr, s8 medium);
 extern void gl_230d0_syncDmaUnkMedium(u32 devAddr, u8 *addr, u32 size, s32 unkMediumParam);
 extern void gl_230d0_syncDma(u32 devAddr, u8 *addr, u32 size, s32 medium);
@@ -5545,7 +5545,7 @@ typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_23BDC_TunedSample
 typedef struct { gl_23BDC_TunedSample tunedSample; } gl_23BDC_Sfx;
 typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; gl_23BDC_Inst **instruments; gl_23BDC_Drum **drums; gl_23BDC_Sfx *soundEffects; } gl_23BDC_Font;
 typedef struct { char pad0[0x2030]; gl_23BDC_Font *soundFontList; } gl_23BDC_Ctx;
-#define gl_23BDC_gAudioCtx (*(gl_23BDC_Ctx *)&D_00000000)
+#define gl_23BDC_gAudioCtx (*(gl_23BDC_Ctx *)&gAudioContext)
 typedef u8 gl_23BDC_FontData;
 typedef struct { s32 a; } gl_23BDC_RelocInfo;
 extern char gl_23bdc_str[];
@@ -5683,7 +5683,7 @@ typedef struct { gl_23F98_IoHdr hdr; void *dramAddr; u32 devAddr; u32 size; } gl
 typedef struct { u32 cmdType; } gl_23F98_Tranx;
 typedef struct { char pad[0x14]; gl_23F98_Tranx transferInfo; } gl_23F98_PiHandle;
 typedef struct { char pad0[0x1644]; gl_23F98_PiHandle *cartHandle; gl_23F98_PiHandle *driveHandle; char pad1650[0x215C - 0x164C]; u32 resetTimer; } gl_23F98_Ctx;
-#define gl_23F98_gAudioCtx (*(gl_23F98_Ctx *)&D_00000000)
+#define gl_23F98_gAudioCtx (*(gl_23F98_Ctx *)&gAudioContext)
 typedef s32 (*gl_23F98_DmaHandler)(gl_23F98_PiHandle *handle, gl_23F98_IoMesg *mb, s32 direction);
 extern gl_23F98_DmaHandler gl_23f98_sDmaHandler;
 #define sDmaHandler gl_23f98_sDmaHandler
@@ -5797,7 +5797,7 @@ typedef struct {
     gl_24378_Pool initPool; char pad2198[0x2528 - 0x2198]; gl_24378_Pool permanentPool;
     char pad2538[0x2CF0 - 0x2538]; u8 resetStatus; u8 specId; char pad2cf2[0x53C8 - 0x2CF2]; void *taskStartQueueP;
 } gl_24378_Ctx;
-#define gl_24378_gAudioCtx (*(gl_24378_Ctx *)&D_00000000)
+#define gl_24378_gAudioCtx (*(gl_24378_Ctx *)&gAudioContext)
 extern void *gl_24378_gAudioCustomUpdateFunction;
 extern u8 gl_24378_gAudioHeap[];
 extern gl_24378_HeapInitSizes gl_24378_gAudioHeapInitSizes;
@@ -6961,7 +6961,7 @@ s32 AudioLoad_ProcessSamplePreloads(s32 resetStatus) {
 /* From here on gAudioCtx is the include/audio.h AudioContext laid over the
  * bootup.uso audio data block (section base D_00000000 + 0): the field form
  * keeps the symbol and the offset, so the HI16/LO16 relocations are unchanged. */
-#define gAudioCtx (*(AudioContext *)&D_00000000)
+#define gAudioCtx (*(AudioContext *)&gAudioContext)
 
 // Add a0 to the pointer array a2[0..a1) if its key (a0[1]) isn't already
 // present (matched against a2[i][1]); append + bump count when absent.
@@ -8732,7 +8732,7 @@ typedef struct gl_28604_Note {
     char pad74[0xB0 - 0x74];
     struct { volatile u8 enabled : 1; u8 needsInit : 1; u8 finished : 1; u8 rest : 5; } bitField0;
 } gl_28604_Note;
-#define gl_28604_gAudioCtx (*(AudioContext *)&D_00000000)
+#define gl_28604_gAudioCtx (*(AudioContext *)&gAudioContext)
 #define gl_28604_NO_LAYER ((gl_28604_Layer *)(-1))
 
 void Audio_SeqLayerDecayRelease(gl_28604_Layer *layer, s32 target) {
@@ -9496,7 +9496,7 @@ typedef struct gl_291C0_Channel { u8 b0; u8 b1; u8 noteAllocPolicy; char pad3[0x
 typedef struct gl_291C0_Layer { u8 enabled : 1; u8 finished : 1; u8 stopSomething : 1; u8 continuousNotes : 1; u8 bit3 : 1; char pad1[0x2C - 1]; struct gl_291C0_Note *note; char pad30[0x50 - 0x30]; gl_291C0_Channel *channel; } gl_291C0_Layer;
 typedef struct { char pad[0x30]; gl_291C0_Layer *prevParentLayer; gl_291C0_Layer *parentLayer; gl_291C0_Layer *wantedParentLayer; } gl_291C0_PlaybackState;
 typedef struct gl_291C0_Note { AudioListItem listItem; gl_291C0_PlaybackState playbackState; } gl_291C0_Note;
-#define gl_291C0_gAudioCtx (*(AudioContext *)&D_00000000)
+#define gl_291C0_gAudioCtx (*(AudioContext *)&gAudioContext)
 #define Audio_NoteReleaseAndTakeOwnership gl_ref_0003D66C
 #define Audio_AllocNoteFromDisabled (gl_291C0_Note *)gl_ref_0003D698
 #define Audio_AllocNoteFromDecaying (gl_291C0_Note *)gl_ref_0003D6E4

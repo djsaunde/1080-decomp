@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "audio.h" /* Note (docs/1080_AUDIO.md) */
 
 /* IDO 7.1 -O2 donor for AudioHeap_ResetStep (0x2FC / 191 words) = OoT's
@@ -22,7 +23,7 @@ typedef struct {
     gl_2119C_SeqPlayer seqPlayers[4];
 } gl_2119C_Ctx;
 extern int D_00000000;
-#define gAudioCtx (*(gl_2119C_Ctx *)&D_00000000)
+#define gAudioCtx (*(gl_2119C_Ctx *)&gAudioContext)
 extern int gl_func_00000000();
 extern int gl_func_00035668();
 extern int gl_func_0003579C();

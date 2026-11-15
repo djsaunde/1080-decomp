@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "audio.h"
 
 /* IDO 7.1 -O2 donor for AudioSeq_SequencePlayerProcessSequence (0x7CC / 499 words) = OoT's
@@ -18,7 +19,7 @@ typedef SequenceChannel gl_2C7A4_Channel;
 typedef SequencePlayer gl_2C7A4_SeqPlayer;
 typedef AudioContext gl_2C7A4_Ctx; /* include/audio.h (tempoInternalToExternal 0x2074, audioRandom 0x2154) */
 extern int D_00000000;
-#define gAudioCtx (*(gl_2C7A4_Ctx *)&D_00000000)
+#define gAudioCtx (*(gl_2C7A4_Ctx *)&gAudioContext)
 extern int gl_func_00000000();
 extern u8 gl_func_0003F010(gl_2C7A4_SeqScriptState *);
 extern s16 gl_func_0003F024(gl_2C7A4_SeqScriptState *);

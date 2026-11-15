@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "audio.h" /* TunedSample / Portamento / AdsrSettings (docs/1080_AUDIO.md) */
 
 /* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep4 (0x558 / 342 words) = OoT's
@@ -33,7 +34,7 @@ typedef struct {
     char pad2042[0x205C - 0x2042]; f32 unk_2870; char pad2060[0x2074 - 0x2060]; s16 maxTempo;
 } gl_2B09C_Ctx;
 extern int D_00000000;
-#define gAudioCtx (*(gl_2B09C_Ctx *)&D_00000000)
+#define gAudioCtx (*(gl_2B09C_Ctx *)&gAudioContext)
 extern gl_2B09C_Ctx gAudioContext_2B09C_bufParams;
 extern f32 gl_2B09C_gPitchFrequencies[];
 #define gPitchFrequencies gl_2B09C_gPitchFrequencies
