@@ -11113,7 +11113,7 @@ void gfx_clearFbRect_00043468(int x, int y, int w, int h) {
     int n;
     short *q;
     n = y * gGfxFbWidth_43468_a + x;
-    p = (short *)((int *)(*(int *)((char *)&D_00000000 + 0x240) + 0xF4))[*(int *)((char *)&D_00000000 + 0x204)] + n;
+    p = (short *)((int *)(*(int *)((char *)&gGfxLib + 0x240) + 0xF4))[*(int *)((char *)&gGfxLib + 0x204)] + n;
     for (i = 0; i < h; i++) {
         for (j = 0; j < w; j++) { q = p; p = q + 1; *q = 0; }
         p += gGfxFbWidth_43468_a - w;
@@ -12707,7 +12707,7 @@ void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
      * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
      * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
      * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
-    FW(*(char **)((int)&D_00000000 + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&gGfxLib, 0x158) = (int)temp_s1 + 0 * (int)&gGfxLib;
+    FW(*(char **)((int)&gGfxLib + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&gGfxLib, 0x158) = (int)temp_s1 + 0 * (int)&gGfxLib;
     if (temp_s0) {} /* agent-c run 318: code-free test of the vcall result after the store (random test search): temp_v0_2 takes v0 like the target, 99.369 -> 99.515 */
     temp_v0_2 = (char *)FW(arg0, 0x290);
     temp_s0 = (char *)FW(temp_v0_2, 0x28);
@@ -13788,7 +13788,7 @@ extern int D_00000000;
 int *PolyShape_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0xC0)) != 0) {
         func_00000000(a0, a1, a2, a3);
-        a0[0x28/4] = (int)&D_00000000;
+        a0[0x28/4] = (int)&PolyShape_vtbl;
         if (a2 != 0) {
             func_00000000(a0);
         }
@@ -13858,13 +13858,13 @@ void PolyShape_display(char *arg0) {
     if (0) { func_00000000(&arg0); }   /* address-escape: arg0 stays memory-homed (target reloads 352(sp)) */
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
     if (*(s32 *)(arg0 + 0x30) & 0x80) {
-        func_00000000(*(int **)((char *)&D_00000000 + 0x254), arg0);
+        func_00000000(*(int **)((char *)&gGfxLib + 0x254), arg0);
     }
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 1) {
         return;
     }
 
-    B = *(f32 (**)[4])((char *)&D_00000000 + 0xE4);
+    B = *(f32 (**)[4])((char *)&gGfxLib + 0xE4);
     A = (f32 (*)[4])((char *)&D_00000000_j + 0xA0);
     if (B != NULL) {
         for (i = 0; i < 4; i++) {
@@ -13876,7 +13876,7 @@ void PolyShape_display(char *arg0) {
             }
         }
         func_00000000(mtx, (char *)&D_00000000_i + 0x3C8A0);
-        gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
+        gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
         slot = (*(int **)((char *)gctx + 0x3C))[1]++;
         cmd = (int *)((*(int **)((char *)gctx + 0x3C))[0] + (slot << 6));
         func_00000000((char *)&D_00000000_i + 0x3C8A0, cmd);
@@ -13885,7 +13885,7 @@ void PolyShape_display(char *arg0) {
         disp[0] = 0x01020040;
         disp[1] = func_00000000(cmd);
     } else {
-        gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
+        gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
         slot = (*(int **)((char *)gctx + 0x3C))[1]++;
         cmd = (int *)((*(int **)((char *)gctx + 0x3C))[0] + (slot << 6));
         func_00000000(A, cmd);
@@ -13894,11 +13894,11 @@ void PolyShape_display(char *arg0) {
         disp[0] = 0x01020040;
         disp[1] = func_00000000(cmd);
     }
-    func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158));
+    func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158));
 
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
         if ((*(s32 *)(arg0 + 0x30) & 8) && (node = *(int **)(arg0 + 0x14)) != NULL) {
-            func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158),
+            func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158),
                           arg0 + 0x34, *(s16 *)((char *)node + 0x1E));
             p = 0;
             if (1) { p = &itA1; }
@@ -13921,7 +13921,7 @@ void PolyShape_display(char *arg0) {
                 if (*(int *)(*(int *)((char *)*(int *)itB1.list + itB1.idx * 4) + 0x6C) != 0) {
                     int *p6c = (int *)*(int *)(((int *)*itB1.list)[itB1.idx] + 0x6C);
                     s32 h = *(s16 *)(*(int *)((char *)itB1.list[0] + itB1.idx * 4) + 0x8A);
-                    gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
+                    gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
                     temp = (int *)func_00000000((*(int **)((char *)p6c + 0xC))[0] + h * 8);
                     slot = (*(int **)((char *)gctx + 0xC))[1]++;
                     disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
@@ -13942,11 +13942,11 @@ void PolyShape_display(char *arg0) {
         gbi[1] = *(s32 *)(arg0 + 0x38);
         gbi[1] = (gbi[1] & ~0xF00) | 0x400;
         gbi[1] = gbi[1] & ~0x80000;
-        func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158), gbi);
-        func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158), gbi);
-        func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158), gbi);
-        func_00000000(*(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158), gbi);
-        gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
+        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
+        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
+        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
+        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
+        gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
         slot = (*(int **)((char *)gctx + 0xC))[1]++;
         disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
         disp[0] = 0xFA000000;
@@ -13972,7 +13972,7 @@ void PolyShape_display(char *arg0) {
             if (*(int *)(*(int *)((char *)*(int *)itB2.list + itB2.idx * 4) + 0x6C) != 0) {
                 int *p6c = (int *)*(int *)(((int *)*itB2.list)[itB2.idx] + 0x6C);
                 s32 h = *(s16 *)(*(int *)((char *)itB2.list[0] + itB2.idx * 4) + 0x8A);
-                gctx = *(int **)((char *)(*(int **)((char *)&D_00000000 + 0x254)) + 0x158);
+                gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
                 temp = (int *)func_00000000((*(int **)((char *)p6c + 0xC))[0] + h * 8);
                 slot = (*(int **)((char *)gctx + 0xC))[1]++;
                 disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
@@ -14421,7 +14421,7 @@ s32 PolyShape_vslot12_0004A308(char *arg0, int arg1, int arg2, int arg3, char *a
 int *MorphPoly_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0xDC)) != 0) {
         func_00000000(a0, a1, a2, a3);
-        a0[0x28/4] = (int)&D_00000000;
+        a0[0x28/4] = (int)&MorphPoly_vtbl;
         if (a2 != 0) {
             func_00000000(a0);
         }
@@ -14467,7 +14467,7 @@ void MorphPoly_init(MorphPoly *self) {
     for (i = 0; i < self->vtxEnd - self->vtxStart; i++) {
         dst[i] = self->updateList[i];
     }
-    gl_func_00000000(&D_00000000, self->updateList);
+    gl_func_00000000(&gSysLib, self->updateList);
     self->updateList = dst;
 }
 
@@ -14672,7 +14672,7 @@ void MorphPoly_updateColours(char *self) {
     for (i = 0, t0 = 0; i < *(short *)(self + 0xD6) - *(short *)(self + 0xD4); i++, t0 += 2) {
         idx = *(short *)(*(char **)(self + 0xD0) + t0);
         if (idx != -1) {
-            g = *(char **)((char *)&D_00000000 + 0x214);
+            g = *(char **)((char *)&gGfxLib + 0x214);
             slot = (char *)(i * 16 + (*(short *)(self + 0xD4) * 16 + **(int **)(g + 0x1C)));
             slot[0xC] = *(*(char **)(self + 0xC4) + idx * 4);
             slot[0xD] = *(*(char **)(self + 0xC4) + idx * 4 + 1);
@@ -14711,7 +14711,7 @@ extern int D_00000000;
 void MorphPoly_func_0004ACD4(int *self) {
     int i;
     int count = self[0x40 / 4] * 10;
-    self[0xD0 / 4] = gl_func_00000000(&D_00000000, count * 2);
+    self[0xD0 / 4] = gl_func_00000000(&gSysLib, count * 2);
     for (i = 0; i < count; i++) {
         ((short *)self[0xD0 / 4])[i] = -1;
     }
@@ -15207,7 +15207,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
             sub->scaleX = 1.0f;
             sub->scaleY = 1.0f;
         }
-        self->node.vptr = (s32) ((char *)&D_00000000 + 0);
+        self->node.vptr = (s32) ((char *)&Sprite_vtbl + 0);
         self->endDL = 0;
         self->unkD4 = 0;
         self->startDL = (DLContext *) gl_func_00000000(0, (char *)&D_00000000 + 0x20104, 0x14, 0, 0, 0, 0); /* "SS StartDL" */
@@ -15486,7 +15486,7 @@ int *ScreenWindow_ctor(int *a0, int a1, ...) {
         }
     }
     gl_func_00000000(a0);
-    a0[0x28 / 4] = (int)&D_00000000;
+    a0[0x28 / 4] = (int)&ScreenWindow_vtbl;
     aligned = (((int)((char *)&a1 + 4)) + 3) & ~3;
     gl_func_00000000(a0, a1, aligned);
     gl_func_00000000(a0);
@@ -16808,7 +16808,7 @@ int *DisplayMgr_ctor(int *s0, int a1) {
         if (s0 == 0) goto out;
     }
     gl_func_00000000(s0, (char *)&D_00000000 + 0x204A8);
-    s0[0x28/4] = (int)&D_00000000;
+    s0[0x28/4] = (int)&DisplayMgr_vtbl;
     s0[0x2C/4] = gl_func_00000000(a1 * 4);
     s0[0x30/4] = gl_func_00000000(a1 * 4);
     s0[0x34/4] = a1;
@@ -16867,7 +16867,7 @@ void GfxObj_ctor_0004DF90(int *a0) {
     void *obj = (void*)gl_func_00000000(24);
     void *v1;
     if (obj == 0) goto end;
-    *(int*)((char*)obj + 0x14) = (int)&D_00000000;
+    *(int*)((char*)obj + 0x14) = (int)&GfxObj_vtbl;
     v1 = obj;
     if (v1 == 0) {
         v1 = (void*)gl_func_00000000(20);
@@ -17164,7 +17164,7 @@ int *Window_ctor(int *a0) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, (char *)&D_00000000 + 0x205CC);
-    *(int *)((char *)a0 + 0x28) = (int)&D_00000000;
+    *(int *)((char *)a0 + 0x28) = (int)&Window_vtbl;
     m = (int *)((char *)a0 + 0x78);
     if (m == 0) { m = (int *)gl_func_00000000(4); if (m == 0) goto s2; }
     p = m;

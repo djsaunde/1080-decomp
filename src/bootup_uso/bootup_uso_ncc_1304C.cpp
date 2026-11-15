@@ -11,6 +11,7 @@
  *   inside one packet macro after its slot pointer (G2B) and inside one next()
  *   between the index bump and the slot address (nextb). Found by an exhaustive
  *   placement search (kit XXXV #4); see docs/IDO_CODEGEN.md kit XXXIV. */
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 typedef struct { unsigned int w0, w1; } Gwords;
 typedef union { Gwords words; long long force_structure_alignment; } Gfx;
 struct DL { Gfx *buf; int n; };
@@ -55,7 +56,7 @@ extern "C" void Fader_display(Fire *f) {
     if (f->timerOn) {
         if (f->timer != 0) f->timer--;
         if (f->timer == 0) {
-            func_00000000(D_00000000, 0);
+            func_00000000(gGfxLib, 0);
             f->timerOn = 0;
             if (f->state == 2) {
                 f->state = 0;

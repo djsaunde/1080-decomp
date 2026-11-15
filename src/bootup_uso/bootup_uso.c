@@ -4938,7 +4938,7 @@ extern void func_00000000_082F8_v(int, int);
 extern char D_00000000_a;
 extern char D_func_00000008_data;
 void Snower_display(int *a0) {
-    float f0 = *(float*)((char*)&D_00000000 + 0x130);
+    float f0 = *(float*)((char*)&gGfxLib + 0x130);
     float f2 = *(float*)((char*)*(int**)((char*)BOOT_SELF_PTR + 0x70) + 0xA8) * f0;
     float f12 = *(float*)((char*)a0 + 0x38) * f0;
 
@@ -4950,7 +4950,7 @@ void Snower_display(int *a0) {
 
     if (*(int*)(&D_func_00000008_data + 0x2C) == 8) {
         if (func_00000000_082F8(
-            *(int*)((char*)&D_00000000 + 0x254),
+            *(int*)((char*)&gGfxLib + 0x254),
             3,
             *(int*)((char*)a0 + 0x30),
             *(int*)((char*)a0 + 0x34),

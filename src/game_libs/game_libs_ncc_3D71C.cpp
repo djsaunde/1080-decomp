@@ -5,6 +5,7 @@
  * (`if (0) { d = 0; }`), which puts its addiu (v0) ahead of the source's (t6) like the target, and each
  * product is written `o->x * factor` (edg keeps the written operand order; the factor loads first).
  * Spliced over an empty placeholder in both build trees. */
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 typedef float f32;
 struct Blk { int w[16]; };
 struct Obj { char pad[0x30]; f32 x, y, z; };
@@ -15,13 +16,13 @@ void gGfxLib_3d71c_dA0();
 extern char D_00000000[];
 }
 extern "C" void ColourItem_display(Obj *o) {
-    if (gl_3D71C_test(*(int *)(D_00000000 + 0x254), 3, o->x, o->y, o->z, 0, 0.0f) != 0) {
+    if (gl_3D71C_test(*(int *)(gGfxLib + 0x254), 3, o->x, o->y, o->z, 0, 0.0f) != 0) {
         Blk *d = (Blk *)gGfxLib_3d71c_dA0;
         if (0) { d = 0; }
-        *d = *(Blk *)(D_00000000 + 0xE8);
-        *(f32 *)((char *)d + 0x30) = o->x * *(f32 *)(D_00000000 + 0x128);
-        *(f32 *)((char *)d + 0x34) = o->y * *(f32 *)(D_00000000 + 0x12C);
-        *(f32 *)((char *)d + 0x38) = o->z * *(f32 *)(D_00000000 + 0x130);
+        *d = *(Blk *)(gGfxLib + 0xE8);
+        *(f32 *)((char *)d + 0x30) = o->x * *(f32 *)(gGfxLib + 0x128);
+        *(f32 *)((char *)d + 0x34) = o->y * *(f32 *)(gGfxLib + 0x12C);
+        *(f32 *)((char *)d + 0x38) = o->z * *(f32 *)(gGfxLib + 0x130);
         gl_func_00000000(o);
     }
 }

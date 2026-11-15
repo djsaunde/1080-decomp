@@ -13,6 +13,7 @@ typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsign
 typedef float f32; typedef double f64;
 #undef NULL
 #define NULL 0
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern "C" {
 extern int D_00000000;
 extern int gl_func_00000000(...);
@@ -77,27 +78,27 @@ extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3
             if (*(s32 *)(arg0 + 0x54) == 0) {
                 gl_func_00000000_49DBCv((char *)&D_00000000 + 0x20014);
             }
-            gl_func_00000000_49DBCv((char *)&D_00000000, &sp94, *(s32 *)(arg0 + 0x54) + arg3 * 0xC);
+            gl_func_00000000_49DBCv((char *)&gGfxLib, &sp94, *(s32 *)(arg0 + 0x54) + arg3 * 0xC);
             *(u8 *)&sp8C = *(u8 *)&sp94;
             *(u8 *)&sp90 = *(u8 *)&sp94;
         }
     } else {
         if (*(s32 *)(arg0 + 0x50) != 0) {
-            gl_func_00000000((char *)&D_00000000, &sp94, *(s32 *)(arg0 + 0x50) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2)) * 4);
-            gl_func_00000000((char *)&D_00000000, &sp90, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4)) * 4);
-            gl_func_00000000((char *)&D_00000000, &sp8C, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6)) * 4);
+            gl_func_00000000((char *)&gGfxLib,&sp94, *(s32 *)(arg0 + 0x50) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x2)) * 4);
+            gl_func_00000000((char *)&gGfxLib,&sp90, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x4)) * 4);
+            gl_func_00000000((char *)&gGfxLib,&sp8C, (*(s32 *)(arg0 + 0x50)) + (*(u16 *)((*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 0x6)) * 4);
         } else {
             sp38[0] = (u8)(s32)(u32)(*(f32 *)(arg4 + 0x0) * 255.0f);
             sp38[1] = (s8)(s32)(u32)(*(f32 *)(arg4 + 0x4) * 255.0f);
             sp38[2] = (s8)(s32)(u32)(*(f32 *)(arg4 + 0x8) * 255.0f);
-            gl_func_00000000((char *)&D_00000000, &sp94, sp38);
-            gl_func_00000000((char *)&D_00000000, &sp90, sp38);
-            gl_func_00000000((char *)&D_00000000, &sp8C, sp38);
+            gl_func_00000000((char *)&gGfxLib,&sp94, sp38);
+            gl_func_00000000((char *)&gGfxLib,&sp90, sp38);
+            gl_func_00000000((char *)&gGfxLib,&sp8C, sp38);
         }
     }
-    gl_func_00000000((char *)&D_00000000, &sp50, spAC, spA0, (s32) sp84, &sp94);
-    gl_func_00000000((char *)&D_00000000, &sp60, spA8, sp9C, (s32) sp86, &sp90);
-    gl_func_00000000((char *)&D_00000000, &sp70, spA4, sp98, (s32) sp88, &sp8C);
+    gl_func_00000000((char *)&gGfxLib,&sp50, spAC, spA0, (s32) sp84, &sp94);
+    gl_func_00000000((char *)&gGfxLib,&sp60, spA8, sp9C, (s32) sp86, &sp90);
+    gl_func_00000000((char *)&gGfxLib,&sp70, spA4, sp98, (s32) sp88, &sp8C);
     if (arg1 != 0) {
         return (u8 *)gl_func_00000000(arg2, &sp50);
     }

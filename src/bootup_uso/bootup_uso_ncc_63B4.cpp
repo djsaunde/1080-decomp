@@ -12,6 +12,7 @@
  *   sp+92; `if (1) {}` before q's stores.
  * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;
  * func_00000000_63b4_* are blank (0) aliases, bu_63b4_c57c = func_0000057C (target reloc func_0000057C + 0x34). */
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 typedef float f32;
 extern "C" {
 extern char D_00000000;
@@ -43,7 +44,7 @@ struct G { char p[0x130]; f32 k; char p134[0x254 - 0x134]; Ctx *ctx; };
 struct Rec { char p[0xC]; int o; char p10[4]; f32 d; };
 struct Rr { char p[0xA0]; Rec *r; };
 struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
-#define gG ((G *)&D_00000000)
+#define gG ((G *)&gGfxLib) /* the GfxLib global (Sym 154): +0x254 = current ScreenWindow */
 extern "C" void MapProp_display(Obj *obj) {
     V3 A;
     V3 B;
