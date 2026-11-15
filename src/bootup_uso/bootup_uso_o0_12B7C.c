@@ -1,5 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "game/input.h"
+#include "gdl/backup.h"
 
 /* Run 10 members (now covers 0x12818..0x12BF8). */
 
@@ -57,70 +59,78 @@ void settings_set8_00012818(char *a0, char *a1) {
     }
 }
 
-void replay_beginRecordWithGhost(char *a0, char *a1, char *a2) {
-    if (a2 != 0) {
-        *(int*)(a2 + 0x6C) = 0xFFFBFFFF;
-        func_00000000(a2,
-            ((int**)(*(char**)(a0 + 0x14C) + 0x8))[0][2],
-            ((int**)(*(char**)(a0 + 0x14C) + 0x8))[0][1]);
+/* The replay recorder (docs/1080_REPLAY.md). `mgr` is the InputMgr, the pads are
+ * InputPad objects; func_00000000 here is pad_startPlay (pad, frames, len) or
+ * pad_startRecord (pad, frames, capacity, &lenOut) (game_libs 0x67A10 / 0x679BC) and,
+ * in beginRecord2P, the allocator. recordMask 0xFFFBFFFF clears one held bit while
+ * recording. */
+
+/* time trial against the saved ghost: `ghost` plays the session's ghost, `pad`
+ * records player 1 into replayData[0] (the preallocated recordBuf). */
+void replay_beginRecordWithGhost(InputMgr *mgr, InputPad *pad, InputPad *ghost) {
+    if (ghost != 0) {
+        ghost->recordMask = 0xFFFBFFFF;
+        func_00000000(ghost, mgr->session->ghost->data, mgr->session->ghost->count);
     }
-    if (a1 != 0) {
-        if (*(int*)(a0 + 0x168) == 0) {
-            *(int*)(a0 + 0x168) = *(int*)(a0 + 0x160);
+    if (pad != 0) {
+        if (mgr->replayData[0] == 0) {
+            mgr->replayData[0] = mgr->recordBuf;
         }
-        *(char*)(a0 + 0x178) = (char)*(int*)(a0 + 0x64);
-        *(char*)(a0 + 0x179) = (char)*(int*)(a0 + 0x4C);
-        *(char*)(a0 + 0x17A) = (char)*(int*)(a0 + 0x50);
-        *(char*)(a0 + 0x17B) = (char)*(int*)(a0 + 0x54);
-        *(int*)(a1 + 0x6C) = 0xFFFBFFFF;
-        func_00000000(a1, *(int*)(a0 + 0x168), *(int*)(a0 + 0x164), a0 + 0x170);
-        *(int*)(a0 + 0x184) = 0;
+        mgr->recCourse = mgr->course;
+        mgr->recRider = mgr->playerRider;
+        mgr->recFlags = mgr->playerFlags;
+        mgr->recBoard = mgr->playerBoard;
+        pad->recordMask = 0xFFFBFFFF;
+        func_00000000(pad, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
+        mgr->unk184 = 0;
     }
 }
 
-void replay_beginRecord2P(char *a0, char *a1, char *a2) {
-    if (a1 != 0) {
-        if (*(int*)(a0 + 0x168) == 0) {
-            *(int*)(a0 + 0x168) = *(int*)(a0 + 0x160);
+/* two players: player 2 records into replayData[1], allocated on first use. */
+void replay_beginRecord2P(InputMgr *mgr, InputPad *pad1, InputPad *pad2) {
+    if (pad1 != 0) {
+        if (mgr->replayData[0] == 0) {
+            mgr->replayData[0] = mgr->recordBuf;
         }
-        *(char*)(a0 + 0x178) = (char)*(int*)(a0 + 0x64);
-        *(char*)(a0 + 0x179) = (char)*(int*)(a0 + 0x4C);
-        *(char*)(a0 + 0x17A) = (char)*(int*)(a0 + 0x50);
-        *(char*)(a0 + 0x17B) = (char)*(int*)(a0 + 0x54);
-        *(int*)(a1 + 0x6C) = 0xFFFBFFFF;
-        func_00000000(a1, *(int*)(a0 + 0x168), *(int*)(a0 + 0x164), a0 + 0x170);
-        *(int*)(a0 + 0x184) = 0;
+        mgr->recCourse = mgr->course;
+        mgr->recRider = mgr->playerRider;
+        mgr->recFlags = mgr->playerFlags;
+        mgr->recBoard = mgr->playerBoard;
+        pad1->recordMask = 0xFFFBFFFF;
+        func_00000000(pad1, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
+        mgr->unk184 = 0;
     }
-    if (a2 != 0) {
-        if (*(int*)(a0 + 0x16C) == 0) {
-            *(int*)(a0 + 0x16C) = func_00000000(*(int*)(a0 + 0x164) << 2);
+    if (pad2 != 0) {
+        if (mgr->replayData[1] == 0) {
+            mgr->replayData[1] = func_00000000(mgr->recordCap << 2);
         }
-        *(int*)(a2 + 0x6C) = 0xFFFBFFFF;
-        func_00000000(a2, *(int*)(a0 + 0x16C), *(int*)(a0 + 0x164), a0 + 0x174);
-        *(int*)(a0 + 0x184) = 0;
+        pad2->recordMask = 0xFFFBFFFF;
+        func_00000000(pad2, mgr->replayData[1], mgr->recordCap, &mgr->replayLen[1]);
+        mgr->unk184 = 0;
     }
 }
 
-void replay_beginRecord1P(char *a0, char *a1, int a2) {
-    if (a1 != 0) {
-        if (*(int*)(a0 + 0x168) == 0) {
-            *(int*)(a0 + 0x168) = *(int*)(a0 + 0x160);
+void replay_beginRecord1P(InputMgr *mgr, InputPad *pad, int unused) {
+    if (pad != 0) {
+        if (mgr->replayData[0] == 0) {
+            mgr->replayData[0] = mgr->recordBuf;
         }
-        *(char*)(a0 + 0x178) = (char)*(int*)(a0 + 0x64);
-        *(char*)(a0 + 0x179) = (char)*(int*)(a0 + 0x4C);
-        *(char*)(a0 + 0x17A) = (char)*(int*)(a0 + 0x50);
-        *(char*)(a0 + 0x17B) = (char)*(int*)(a0 + 0x54);
-        *(int*)(a1 + 0x6C) = 0xFFFBFFFF;
-        func_00000000(a1, *(int*)(a0 + 0x168), *(int*)(a0 + 0x164), a0 + 0x170);
-        *(int*)(a0 + 0x184) = 0;
+        mgr->recCourse = mgr->course;
+        mgr->recRider = mgr->playerRider;
+        mgr->recFlags = mgr->playerFlags;
+        mgr->recBoard = mgr->playerBoard;
+        pad->recordMask = 0xFFFBFFFF;
+        func_00000000(pad, mgr->replayData[0], mgr->recordCap, &mgr->replayLen[0]);
+        mgr->unk184 = 0;
     }
 }
 
-void replay_beginPlayback(char *a0, int a1, int a2) {
-    if (a1 != 0) {
-        func_00000000(a1, *(int*)(a0 + 0x168), *(int*)(a0 + 0x170));
+/* replay the last recording on `pad` and/or the saved ghost on `ghost`. */
+void replay_beginPlayback(InputMgr *mgr, InputPad *pad, InputPad *ghost) {
+    if (pad != 0) {
+        func_00000000(pad, mgr->replayData[0], mgr->replayLen[0]);
     }
-    if (a2 != 0) {
-        func_00000000(a2, ((int**)(*(char**)(a0 + 0x14C) + 0x8))[0][2], ((int**)(*(char**)(a0 + 0x14C) + 0x8))[0][1]);
+    if (ghost != 0) {
+        func_00000000(ghost, mgr->session->ghost->data, mgr->session->ghost->count);
     }
 }

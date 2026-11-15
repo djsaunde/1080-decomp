@@ -129,7 +129,9 @@ typedef struct BackupGhost {
 
 /* The Backup object (8, Backup_ctor). */
 typedef struct Backup {
-    /* 0x0 */ s32 unk0;         /* 6400 */
+    /* 0x0 */ s32 ghostMaxFrames; /* 6400 (Backup_ctor): the replay record capacity in
+                                 * InputFrames (InputMgr.recordCap); 6400 * 4 bytes fit
+                                 * the SRAM ghost data area */
     /* 0x4 */ s32 ghostBits;    /* copy of BackupGhost.bits (Backup_writeGhost, Backup_cacheGhostBits) */
 } Backup;
 

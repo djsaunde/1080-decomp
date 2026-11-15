@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -14,7 +15,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * 0x10 body + that ONE pair = 0x18; TRUNCATE_TEXT 0x18 only clips IDO's
  * section pad. 102A4+"102E8" / 10A9C+"10AA8" precedents;
  * docs/IDO_CODEGEN.md#o0-two-block-predicate-not-adjacent-leaf-cap. 6/6 words. */
-void replay_clearRecord_00012BF8(int *a0) {
-    *(int*)((char*)a0 + 0x168) = 0;
-    *(int*)((char*)a0 + 0x16C) = 0;
+void replay_clearRecord_00012BF8(InputMgr *mgr) {
+    mgr->replayData[0] = 0;
+    mgr->replayData[1] = 0;
 }

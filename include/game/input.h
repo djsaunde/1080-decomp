@@ -25,7 +25,31 @@ typedef struct InputPad {
     char pad14[0x18 - 0x14];
     /* 0x18 */ s32 pressed;   /* tested by input_checkPressed_00011E00 */
     /* 0x1C */ s32 released;  /* tested by input_checkReleased_00011FA8 */
+    char pad20[0x4C - 0x20];
+    /* Input recording / playback (pad_update, game_libs 0x675A4; pad_startRecord /
+     * pad_startPlay). One InputFrame per frame. */
+    /* 0x4C */ s32 replayMode;   /* PAD_REPLAY_OFF / PLAY / RECORD; drops to OFF at replayLen */
+    /* 0x50 */ s32 replayFrame;  /* frame index, counted up by pad_update */
+    /* 0x54 */ s32 replayLen;    /* frames to play, or the record capacity */
+    /* 0x58 */ s32 *replayLenOut; /* RECORD: receives the frame count each frame */
+    /* 0x5C */ struct InputFrame *replayFrames;
+    char pad60[0x6C - 0x60];
+    /* 0x6C */ s32 recordMask;   /* ANDed with held when recording; the replay_begin* functions
+                                  * set 0xFFFBFFFF */
+    /* 0x70 */ s32 mirrorX;      /* nonzero: pad_update negates the stick x byte */
 } InputPad;
+
+/* One recorded frame (4 bytes): pad_update RECORD stores the raw stick bytes and
+ * (recordMask & held & 0x1700); PLAY loads the stick bytes back and ORs the buttons into held. */
+typedef struct InputFrame {
+    /* 0x0 */ signed char stickX;   /* plain C types: the NCC .cpp users have no s8 / s16 */
+    /* 0x1 */ signed char stickY;
+    /* 0x2 */ short buttons;
+} InputFrame;
+
+#define PAD_REPLAY_OFF      0
+#define PAD_REPLAY_PLAY     1   /* pad_startPlay */
+#define PAD_REPLAY_RECORD   2   /* pad_startRecord */
 
 typedef struct InputMgr {
     char pad00[0x34];
@@ -68,7 +92,11 @@ typedef struct InputMgr {
     /* 0x154 */ char *unlocks;     /* the unlock / option record: +0 u16 unlock bits (1 << n),
                                     * +4 u16 option bits (8 = the title language menu),
                                     * +0x12..0x14 u8 settings */
-    char pad158[0x168 - 0x158];
+    char pad158[0x160 - 0x158];
+    /* 0x160 */ s32 recordBuf;     /* InputFrame buffer of recordCap frames, allocated by the
+                                    * ctor (GameFlow, tail3a 10C8C); player 1 records into it */
+    /* 0x164 */ s32 recordCap;     /* record capacity in frames: the first word of the backup
+                                    * object (Backup.unk0 = 6400, 4 bytes a frame) */
     /* 0x168 */ s32 replayData[2]; /* per player: recorded input, pad_startPlay arg 2 */
     /* 0x170 */ s32 replayLen[2];  /* per player: pad_startPlay arg 3; the replay timeouts
                                     * (h2h / mgr / arc onTimeout) are built from it */
@@ -96,6 +124,11 @@ typedef struct InputMgr {
 typedef char InputPad_held_check[(int)&((InputPad *)0)->held == 0x10 ? 1 : -1];
 typedef char InputPad_pressed_check[(int)&((InputPad *)0)->pressed == 0x18 ? 1 : -1];
 typedef char InputPad_released_check[(int)&((InputPad *)0)->released == 0x1C ? 1 : -1];
+typedef char InputPad_replayMode_check[(int)&((InputPad *)0)->replayMode == 0x4C ? 1 : -1];
+typedef char InputPad_recordMask_check[(int)&((InputPad *)0)->recordMask == 0x6C ? 1 : -1];
+typedef char InputPad_mirrorX_check[(int)&((InputPad *)0)->mirrorX == 0x70 ? 1 : -1];
+typedef char InputFrame_size_check[sizeof(InputFrame) == 4 ? 1 : -1];
+typedef char InputMgr_recordBuf_check[(int)&((InputMgr *)0)->recordBuf == 0x160 ? 1 : -1];
 typedef char InputMgr_nextFlowMode_check[(int)&((InputMgr *)0)->nextFlowMode == 0x34 ? 1 : -1];
 typedef char InputMgr_procState_check[(int)&((InputMgr *)0)->procState == 0x40 ? 1 : -1];
 typedef char InputMgr_thenProcState_check[(int)&((InputMgr *)0)->thenProcState == 0x48 ? 1 : -1];

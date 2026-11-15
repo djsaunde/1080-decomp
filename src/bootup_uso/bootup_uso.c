@@ -4,6 +4,7 @@
 #include "game/camera.h"
 #include "game/course.h"
 #include "audio.h"
+#include "game/input.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -2299,6 +2300,7 @@ void game_setupDemoSolo(char *s1, int a1) {
  * (target swc1 0x18); K&R func_00000000 double-promotes them. */
 extern char *func_38c0_r(void *, int, int, int, void *, int, float, float, int, int);
 extern int gInputMgr_38c0_z[];   /* D_z global — array-typed so the base is held in ONE reg */
+#define SOLO_MGR ((InputMgr *)gInputMgr_38c0_z)
 /* void-returning alias for reg_b: kills the dead $v0 def so Dz/cfg color v1/v0 */
 extern void func_00000000_38C0_v(void *, void *, int);
 void game_setupSolo(char *s1, int a1) {
@@ -2312,18 +2314,21 @@ void game_setupSolo(char *s1, int a1) {
     }
     func_00000000(&D_00000000, o);          /* reg_a — D_x placeholder */
     func_00000000_38C0_v(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
-    r = func_38c0_r(s1, 0, gInputMgr_38c0_z[0x4C / 4], gInputMgr_38c0_z[0x54 / 4],
+    r = func_38c0_r(s1, 0, SOLO_MGR->playerRider, SOLO_MGR->playerBoard,
                     o, *(int*)(s1 + 0x80),
                     *(float*)(*(char**)(s1 + 0x98) + 0xC4),
                     *(float*)(*(char**)(s1 + 0x98) + 0xCC),
-                    (gInputMgr_38c0_z[0x50 / 4] | 1) | 0x10000 | 0x40000, 0x1B);
+                    (SOLO_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
     r2 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o);
     row = (int*)((char*)&D_00000000 + a1 * 0x1C);  /* D_w placeholder */
     res = (char*)func_00000000(s1, row, r2);
     *(char**)(r + 0x8DC) = res;
 }
 
-/* game_setupVsGhost - verified structural decode (0x1A0, 104 insns,
+/* game_setupVsGhost: the player rider from InputMgr playerRider / playerFlags /
+ * playerBoard (tag 0x1B), the ghost rider from ghostRider / ghostFlags / ghostBoard
+ * (flags | 0x8008, tag 0x14), one camera window shared by both (+0x8DC).
+ * game_setupVsGhost - verified structural decode (0x1A0, 104 insns,
  * multi-stage builder chain). MEMBER of the game_setupSolo /
  * game_setupDemoSolo builder-chain family (same alloc-0x80 + tagged-arg
  * func_00000000 builder pattern; flags = global|1|0x10000|0x40000,
@@ -2350,6 +2355,7 @@ void game_setupSolo(char *s1, int a1) {
 /* typed-float proto (0x0-alias): 10-arg builders, args 7,8 single floats. */
 extern char *func_39d8_r(char *, int, int, int, char *, int, float, float, int, int);
 extern unsigned char gInputMgr_39d8_g[];  /* D_g placeholder alias — array-typed so base lives in $s0 */
+#define VG_MGR ((InputMgr *)gInputMgr_39d8_g)
 void game_setupVsGhost(char *s2, int a1) {
     char *o1;
     char *o2;
@@ -2367,16 +2373,16 @@ void game_setupVsGhost(char *s2, int a1) {
     func_00000000(gInputMgr_39d8_g, o1);
     func_00000000(gInputMgr_39d8_g, o2);
     func_00000000(gInputMgr_39d8_g, o1, o2);
-    r1 = func_39d8_r(s2, 0, *(int*)(gInputMgr_39d8_g + 0x4C), *(int*)(gInputMgr_39d8_g + 0x54),
+    r1 = func_39d8_r(s2, 0, VG_MGR->playerRider, VG_MGR->playerBoard,
                      o1, *(int*)(s2 + 0x80),
                      *(float*)(*(char**)(s2 + 0x98) + 0xC4),
                      *(float*)(*(char**)(s2 + 0x98) + 0xCC),
-                     (*(int*)(gInputMgr_39d8_g + 0x50) | 1) | 0x10000 | 0x40000, 0x1B);
-    r2 = func_39d8_r(s2, 0, *(unsigned char*)(gInputMgr_39d8_g + 0x181), *(unsigned char*)(gInputMgr_39d8_g + 0x183),
+                     (VG_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
+    r2 = func_39d8_r(s2, 0, VG_MGR->ghostRider, VG_MGR->ghostBoard,
                      o2, *(int*)(s2 + 0x80),
                      *(float*)(*(char**)(s2 + 0x98) + 0xC4),
                      *(float*)(*(char**)(s2 + 0x98) + 0xCC),
-                     (*(unsigned char*)(gInputMgr_39d8_g + 0x182) | 0x8) | 0x8000, 0x14);
+                     (VG_MGR->ghostFlags | 0x8) | 0x8000, 0x14);
     *(int*)(r2 + 0x38C) = 0;
     b3 = (char*)func_00000000(s2, 2, *(int*)(s2 + 0x80), r1, o1);
     f1 = (char*)func_00000000(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
@@ -2391,10 +2397,9 @@ void game_setupVsGhost(char *s2, int a1) {
  * Struct-typing reference (same family as game_setupSolo /
  * game_setupDemoSolo / game_setupVsGhost): s1->0x80 (128) pass-through
  * handle; s1->0x98 (152) -> cfg with f32 0xC4 (196) / 0xCC (204)
- * builder params. CFG = a global byte-config block (lui/addiu 0):
- * CFG->0x181 (385) / 0x182 (386) / 0x183 (387) u8 fields supply
- * arg2/flag-base/arg3 (0x182 OR'd with 0x8001|0x10000|0x40000
- * feature bits). o = the 0x80-byte builder object; a1 indexes the
+ * builder params. CFG = the InputMgr (bootup Bss 0xF8, RP_MGR): its
+ * ghostRider / ghostFlags / ghostBoard bytes (0x181..0x183, written by titproc's
+ * vs-ghost states) build the replayed rider (flags | 0x8001|0x10000|0x40000). o = the 0x80-byte builder object; a1 indexes the
  * 0x1C-stride descriptor table per the family pattern.
  * Caps <80: ~12 reloc + FP stack-arg passing + packed-flag lui/ori
  * (with global u8 inputs) + a1*0x1C index + list-link beql.
@@ -2436,6 +2441,7 @@ void game_setupVsGhost(char *s2, int a1) {
  *      #split-or-constant-ring-burn-3b78. */
 extern char *func_3b78_r(char *, int, int, int, char *, int, float, float, int, int);
 extern unsigned char gInputMgr_CFG_3b78[];
+#define RP_MGR ((InputMgr *)gInputMgr_CFG_3b78)
 extern void func_00000000_3B78_v(void *, void *, int);
 void game_setupReplay(char *s1, int a1) {
     char *o;
@@ -2449,11 +2455,11 @@ void game_setupReplay(char *s1, int a1) {
     func_00000000(gInputMgr_CFG_3b78, o);
     func_00000000_3B78_v(gInputMgr_CFG_3b78, o, 0);
     r1 = func_3b78_r(s1, 0,
-                     gInputMgr_CFG_3b78[0x181],
-                     gInputMgr_CFG_3b78[0x183],
+                     RP_MGR->ghostRider,
+                     RP_MGR->ghostBoard,
                      o, *(int*)(s1 + 0x80),
                      *(float*)(*(char**)(s1 + 0x98) + 0xC4), *(float*)(*(char**)(s1 + 0x98) + 0xCC),
-                     (gInputMgr_CFG_3b78[0x182] | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
+                     (RP_MGR->ghostFlags | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
     b2 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), r1, o);
     b3 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r1, o);
     f1 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
