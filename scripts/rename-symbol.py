@@ -24,7 +24,8 @@ What it touches (all whole-word, `[A-Za-z0-9_]` boundaries):
     OLD, OLD.NON_MATCHING and derived OLD_<sect> are renamed in place with the
     metadata-only strtab repoint of scripts/rename-elf-symbol.py (NOT objcopy,
     which rewrites the symtab and renames local section symbols);
-  * KERNEL symbols (defined in src/kernel objects) rename only the definition
+  * KERNEL code symbols (defined in an executable section of a src/kernel
+    object; kernel DATA symbols get the normal full rename) rename only the definition
     side: the kernel runs at link address + 0x400, so every call / %hi-%lo /
     UND reference to kernel symbol X really means the function at X - 0x400.
     Those references keep the OLD spelling (and UND entries in expected/ objects
@@ -123,6 +124,9 @@ def object_files():
     return objs
 
 
+_code_defs = {}  # object path -> names defined in executable sections
+
+
 def elf_symbols(path):
     try:
         elf = rfb.Elf(path.read_bytes())
@@ -131,10 +135,15 @@ def elf_symbols(path):
         return []
     stt = elf.sections[st][6]
     out = []
+    code = set()
     for _idx, f in elf.iter_symtab(st):
         name = elf.strtab_string(stt, f[0])
         if name:
             out.append((name, f[5] != 0))  # (name, defined)
+            # defined in an executable (SHF_EXECINSTR) section: a code label
+            if 0 < f[5] < len(elf.sections) and elf.sections[f[5]][2] & 0x4:
+                code.add(name)
+    _code_defs[path] = code
     return out
 
 
@@ -151,6 +160,15 @@ class Index:
         self.all_names = set(self.linker_names)
         for syms in self.obj_syms.values():
             self.all_names.update(n for n, _ in syms)
+
+    def defined_as_code(self, name):
+        """True when some object defines NAME in an executable section. Only code
+        symbols get the kernel definition-only rename: a kernel DATA reference
+        (`__OSGlobalIntMask`, a donor's TU-defined `OSTime osClockRate`) is spelled with
+        its runtime address already, so every reference is the same object and
+        a full rename is right (agent-a run 472)."""
+        return any(name in _code_defs.get(o, ()) for o, syms in self.obj_syms.items()
+                   if any(n == name and d for n, d in syms))
 
     def defining_segments(self, name):
         segs = set()
@@ -458,7 +476,7 @@ def apply(renames, dry, allow_scoped_alias=False):
         derived_before = derived_tokens(old, files)
         tr = token_re(old)
         sub = lambda m: new + (m.group(1) or "")
-        kernel = "kernel" in idx.defining_segments(old)
+        kernel = "kernel" in idx.defining_segments(old) and idx.defined_as_code(old)
         nfiles = 0
         nrefs = 0
         kept = 0
